@@ -129,9 +129,9 @@ void spoton_gui_server::slotReadyRead(void)
 		      message = QByteArray::fromBase64(message);
 		      spoton_kernel::s_crypt1 = new spoton_gcrypt
 			(spoton_kernel::s_settings.value("gui/cipherType").
-			 toString(),
+			 toString().trimmed(),
 			 spoton_kernel::s_settings.value("gui/hashType").
-			 toString(), message,
+			 toString().trimmed(), message,
 			 spoton_kernel::s_settings.value("gui/saltLength",
 							 256).toInt(),
 			 spoton_kernel::s_settings.value("gui/iterationCount",
@@ -140,9 +140,9 @@ void spoton_gui_server::slotReadyRead(void)
 			 "private_public_keys.db");
 		      spoton_kernel::s_crypt2 = new spoton_gcrypt
 			(spoton_kernel::s_settings.value("gui/cipherType").
-			 toString(),
+			 toString().trimmed(),
 			 spoton_kernel::s_settings.value("gui/hashType").
-			 toString(), message,
+			 toString().trimmed(), message,
 			 spoton_kernel::s_settings.value("gui/saltLength",
 							 256).toInt(),
 			 spoton_kernel::s_settings.value("gui/iterationCount",

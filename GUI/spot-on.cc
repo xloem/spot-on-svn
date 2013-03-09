@@ -248,8 +248,10 @@ spoton::spoton(void)
     restoreGeometry(m_settings.value("gui/geometry").toByteArray());
 
   if(m_settings.contains("gui/kernelPath") &&
-     QFileInfo(m_settings.value("gui/kernelPath").toString()).isExecutable())
-    ui.kernelPath->setText(m_settings.value("gui/kernelPath").toString());
+     QFileInfo(m_settings.value("gui/kernelPath").toString().trimmed()).
+     isExecutable())
+    ui.kernelPath->setText(m_settings.value("gui/kernelPath").toString().
+			   trimmed());
   else
     ui.kernelPath->setText(QCoreApplication::applicationDirPath() +
 			   QDir::separator() +
@@ -777,7 +779,8 @@ void spoton::slotPopulateListeners(void)
 							       toByteArray()),
 					&ok).constData());
 		else
-		  item = new QTableWidgetItem(query.value(1).toString());
+		  item = new QTableWidgetItem(query.value(1).toString().
+					      trimmed());
 
 		item->setTextAlignment(Qt::AlignCenter);
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -790,12 +793,14 @@ void spoton::slotPopulateListeners(void)
 							       toByteArray()),
 					&ok).constData());
 		else
-		  item = new QTableWidgetItem(query.value(2).toString());
+		  item = new QTableWidgetItem(query.value(2).toString().
+					      trimmed());
 
 		item->setTextAlignment(Qt::AlignCenter);
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		ui.listeners->setItem(row, 2, item);
-		item = new QTableWidgetItem(query.value(3).toString());
+		item = new QTableWidgetItem(query.value(3).toString().
+					    trimmed());
 
 		if(query.value(3).toString().trimmed() == "online")
 		  item->setBackground(QBrush(QColor("lightgreen")));
@@ -813,7 +818,8 @@ void spoton::slotPopulateListeners(void)
 							       toByteArray()),
 					&ok).constData());
 		else
-		  item = new QTableWidgetItem(query.value(4).toString());
+		  item = new QTableWidgetItem(query.value(4).toString().
+					      trimmed());
 
 		item->setTextAlignment(Qt::AlignCenter);
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -826,12 +832,14 @@ void spoton::slotPopulateListeners(void)
 							       toByteArray()),
 					&ok).constData());
 		else
-		  item = new QTableWidgetItem(query.value(5).toString());
+		  item = new QTableWidgetItem(query.value(5).toString().
+					      trimmed());
 
 		item->setTextAlignment(Qt::AlignCenter);
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		ui.listeners->setItem(row, 5, item);
-		item = new QTableWidgetItem(query.value(6).toString());
+		item = new QTableWidgetItem(query.value(6).toString().
+					    trimmed());
 		item->setTextAlignment(Qt::AlignCenter);
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		ui.listeners->setItem(row, 6, item);
@@ -860,7 +868,8 @@ void spoton::slotPopulateListeners(void)
 			this,
 			SLOT(slotMaximumClientsChanged(int)));
 
-		item = new QTableWidgetItem(query.value(8).toString());
+		item = new QTableWidgetItem(query.value(8).toString().
+					    trimmed());
 		item->setTextAlignment(Qt::AlignCenter);
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		ui.listeners->setItem(row, 8, item);
@@ -883,8 +892,8 @@ void spoton::slotPopulateListeners(void)
 		  }
 		else
 		  {
-		    if(ip == query.value(1).toString() &&
-		       port == query.value(2).toString())
+		    if(ip == query.value(1).toString().trimmed() &&
+		       port == query.value(2).toString().trimmed())
 		      ui.listeners->selectRow(row);
 		  }
 
@@ -975,7 +984,8 @@ void spoton::slotPopulateNeighbors(void)
 
 		check = new QCheckBox();
 		check->setToolTip(tr("The sticky feature enables an "
-				     "indefinite lifetime for the neighbor. If "
+				     "indefinite lifetime for a neighbor. "
+				     "If "
 				     "not checked, the neighbor will be "
 				     "terminated after some internal "
 				     "timer expires."));
@@ -1010,10 +1020,11 @@ void spoton::slotPopulateNeighbors(void)
 			  }
 			else
 			  item = new QTableWidgetItem
-			    (query.value(i).toString());
+			    (query.value(i).toString().trimmed());
 		      }
 		    else
-		      item = new QTableWidgetItem(query.value(i).toString());
+		      item = new QTableWidgetItem
+			(query.value(i).toString().trimmed());
 
 		    item->setTextAlignment(Qt::AlignCenter);
 		    item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -1024,6 +1035,9 @@ void spoton::slotPopulateNeighbors(void)
 			  item->setBackground(QBrush(QColor("lightgreen")));
 			else
 			  item->setBackground(QBrush());
+
+			if(query.value(1).toString().trimmed() == "connected")
+			  item->setIcon(QIcon(":/connect_established.png"));
 		      }
 
 		    ui.neighbors->setItem(row, i, item);
@@ -1047,8 +1061,10 @@ void spoton::slotPopulateNeighbors(void)
 		  }
 		else
 		  {
-		    if(remoteIp == query.value(columnREMOTE_IP).toString() &&
-		       remotePort == query.value(columnREMOTE_PORT).toString())
+		    if(remoteIp == query.value(columnREMOTE_IP).
+		       toString().trimmed() &&
+		       remotePort == query.value(columnREMOTE_PORT).
+		       toString().trimmed())
 		      ui.neighbors->selectRow(row);
 		  }
 
@@ -1497,7 +1513,7 @@ void spoton::slotSetPassphrase(void)
 	  spoton_gcrypt::reencodePrivateKey
 	    (ui.cipherType->currentText(),
 	     derivedKey,
-	     m_settings["gui/cipherType"].toString(),
+	     m_settings["gui/cipherType"].toString().trimmed(),
 	     m_crypt->key(),
 	     spoton_misc::homePath() + QDir::separator() +
 	     "private_public_keys.db",
@@ -1513,7 +1529,7 @@ void spoton::slotSetPassphrase(void)
 	      spoton_gcrypt::reencodePrivateKey
 		(ui.cipherType->currentText(),
 		 derivedKey,
-		 m_settings["gui/cipherType"].toString(),
+		 m_settings["gui/cipherType"].toString().trimmed(),
 		 m_crypt->key(),
 		 spoton_misc::homePath() + QDir::separator() + "shared.db",
 		 error2);
@@ -1661,7 +1677,7 @@ void spoton::slotSetPassphrase(void)
       mb.setWindowTitle(tr("Spot-On: Question"));
       mb.setWindowModality(Qt::WindowModal);
       mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-      mb.setText(tr("Would you like to start Spot-On now?"));
+      mb.setText(tr("Would you like the kernel to be activated?"));
 
       if(mb.exec() == QMessageBox::Yes)
 	slotActivateKernel();
@@ -2084,10 +2100,13 @@ void spoton::slotPopulateParticipants(void)
 	** We only wish to display other public keys.
 	*/
 
-	if(query.exec("SELECT name, OID FROM symmetric_keys"))
+	if(query.exec("SELECT name, OID, neighbor_oid FROM symmetric_keys"))
 	  {
 	    while(query.next())
 	      {
+		bool temporary =
+		  query.value(2).toInt() == -1 ? false : true;
+
 		for(int i = 0; i < query.record().count(); i++)
 		  {
 		    QTableWidgetItem *item = 0;
@@ -2106,11 +2125,19 @@ void spoton::slotPopulateParticipants(void)
 		      item = new QTableWidgetItem(query.value(i).toString().
 						  trimmed());
 
-		    item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		    item->setFlags
+		      (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+		    if(!temporary)
+		      item->setIcon(QIcon(":/addkey.png"));
+		    else
+		      item->setToolTip(tr("You have not shared your "
+					  "key with %1.").arg(item->text()));
+
 		    ui.participants->setItem(row - 1, i, item);
 		  }
 
-		if(oids.contains(query.value(1).toString()))
+		if(oids.contains(query.value(1).toString().trimmed()))
 		  ui.participants->selectRow(row - 1);
 	      }
 	  }

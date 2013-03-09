@@ -218,6 +218,29 @@ void spoton_kernel::cleanup(void)
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "kernel");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_symmetric_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	/*
+	** Delete symmetric keys that were not completely shared.
+	*/
+
+	query.exec("DELETE FROM symmetric_keys WHERE neighbor_oid <> -1");
+	db.commit();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("kernel");
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "kernel");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "kernel.db");
 
     if(db.open())
@@ -351,9 +374,9 @@ void spoton_kernel::prepareListeners(void)
 		    }
 		  else
 		    listener = new spoton_listener
-		      (query.value(0).toString(),
-		       query.value(1).toString(),
-		       query.value(2).toString(),
+		      (query.value(0).toString().trimmed(),
+		       query.value(1).toString().trimmed(),
+		       query.value(2).toString().trimmed(),
 		       query.value(4).toInt(),
 		       query.value(5).toLongLong(),
 		       this);
@@ -374,7 +397,7 @@ void spoton_kernel::prepareListeners(void)
 
 		  if(listener)
 		    {
-		      QString state(query.value(3).toString());
+		      QString state(query.value(3).toString().trimmed());
 
 		      if(state == "deleted")
 			{
@@ -461,9 +484,9 @@ void spoton_kernel::prepareNeighbors(void)
 		    }
 		  else
 		    neighbor = new spoton_neighbor
-		      (query.value(0).toString(),
-		       query.value(1).toString(),
-		       query.value(2).toString(),
+		      (query.value(0).toString().trimmed(),
+		       query.value(1).toString().trimmed(),
+		       query.value(2).toString().trimmed(),
 		       query.value(4).toLongLong(),
 		       this);
 
@@ -511,7 +534,7 @@ void spoton_kernel::prepareNeighbors(void)
 
 		  if(neighbor)
 		    {
-		      QString state(query.value(3).toString());
+		      QString state(query.value(3).toString().trimmed());
 
 		      if(state == "deleted")
 			{

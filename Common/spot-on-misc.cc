@@ -72,7 +72,8 @@ void spoton_misc::prepareDatabases(void)
 		   "symmetric_key BLOB, "
 		   "symmetric_key_algorithm TEXT, "
 		   "public_key TEXT NOT NULL, "
-		   "public_key_hash TEXT PRIMARY KEY NOT NULL)");
+		   "public_key_hash TEXT PRIMARY KEY NOT NULL, "
+		   "neighbor_oid INTEGER DEFAULT -1)");
       }
 
     db.close();

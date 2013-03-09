@@ -132,6 +132,34 @@ spoton_neighbor::~spoton_neighbor()
       ("QSQLITE", "neighbor_" + QString::number(s_dbId));
 
     db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() +
+       "friends_symmetric_keys.db");
+
+    if(db.open())
+      {
+	/*
+	** Remove symmetric keys that were not completely shared.
+	*/
+
+	QSqlQuery query(db);
+
+	query.prepare("DELETE FROM symmetric_keys WHERE "
+		      "neighbor_oid = ?");
+	query.bindValue(0, m_id);
+	query.exec();
+	db.commit();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("neighbor_" + QString::number(s_dbId));
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "neighbor_" + QString::number(s_dbId));
+
+    db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
 
     if(db.open())
@@ -183,7 +211,7 @@ void spoton_neighbor::slotTimeout(void)
 	  {
 	    if(query.next())
 	      {
-		QString status(query.value(0).toString());
+		QString status(query.value(0).toString().trimmed());
 
 		if(status == "connected")
 		  {
@@ -547,59 +575,6 @@ void spoton_neighbor::slotReadyRead(void)
 		     GCRY_STRONG_RANDOM);
 		  savePublicKey
 		    (name, publicKey, symmetricKey, symmetricKeyAlgorithm);
-
-		  /*
-		  ** Now let's send the symmetric bundle.
-		  */
-
-		  QByteArray message;
-
-		  message.append(symmetricKey);
-		  message.append
-		    (symmetricKeyAlgorithm.
-		     leftJustified(spoton_send::
-				   SYMMETRIC_KEY_ALGORITHM_MAXIMUM_LENGTH,
-				   '\n'));
-
-		  bool ok = true;
-
-		  message = spoton_gcrypt::publicKeyEncrypt
-		    (message, publicKey, &ok).toBase64();
-
-		  if(ok)
-		    {
-		      QByteArray name
-			(spoton_kernel::s_settings.value("gui/nodeName").
-			 toByteArray().trimmed());
-
-		      name = name.leftJustified
-			(spoton_send::NAME_MAXIMUM_LENGTH, '\n');
-
-		      QByteArray publicKey
-			(spoton_kernel::s_crypt1->publicKey(&ok));
-
-		      if(ok)
-			{
-			  message.append('\n');
-			  message.append(name);
-			  message.append(publicKey);
-			  message = spoton_send::message0012(message);
-
-			  if(write(message.constData(), message.length()) !=
-			     message.length())
-			    spoton_misc::logError
-			      ("spoton_neighbor::slotReadyRead(): "
-			       "write() failure.");
-			}
-		      else
-			spoton_misc::logError
-			  ("spoton_neighbor::slotReadyRead(): "
-			   "publicKey() failure.");
-		    }
-		  else
-		    spoton_misc::logError
-		      ("spoton_neighbor::slotReadyRead(): "
-		       "publicKeyEncrypt() failure.");
 		}
 	      else
 		spoton_misc::logError
@@ -728,8 +703,8 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("INSERT OR REPLACE INTO symmetric_keys "
 		      "(name, symmetric_key, symmetric_key_algorithm, "
-		      "public_key, public_key_hash) "
-		      "VALUES (?, ?, ?, ?, ?)");
+		      "public_key, public_key_hash, neighbor_oid) "
+		      "VALUES (?, ?, ?, ?, ?, ?)");
 	query.bindValue(0, name);
 
 	bool ok = true;
@@ -752,6 +727,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 	query.bindValue(3, publicKey);
 	query.bindValue
 	  (4, spoton_gcrypt::sha512Hash(publicKey, &ok).toHex());
+	query.bindValue(5, m_id);
 	query.exec();
 	db.commit();
       }
@@ -860,4 +836,58 @@ void spoton_neighbor::slotReceivedChatMessage(const QByteArray &message,
 void spoton_neighbor::slotLifetimeExpired(void)
 {
   abort();
+}
+
+void spoton_neighbor::sharePublicKey(void)
+{
+  QByteArray message;
+  QByteArray publicKey; // Receipient's public key.
+  QByteArray symmetricKey;
+  QByteArray symmetricKeyAlgorithm;
+
+  message.append(symmetricKey);
+  message.append(symmetricKeyAlgorithm.
+		 leftJustified(spoton_send::
+			       SYMMETRIC_KEY_ALGORITHM_MAXIMUM_LENGTH,
+			       '\n'));
+
+  bool ok = true;
+
+  message = spoton_gcrypt::publicKeyEncrypt
+    (message, publicKey, &ok).toBase64();
+
+  if(ok)
+    {
+      QByteArray name
+	(spoton_kernel::s_settings.value("gui/nodeName").
+	 toByteArray().trimmed());
+
+      name = name.leftJustified
+	(spoton_send::NAME_MAXIMUM_LENGTH, '\n');
+
+      QByteArray publicKey
+	(spoton_kernel::s_crypt1->publicKey(&ok));
+
+      if(ok)
+	{
+	  message.append('\n');
+	  message.append(name);
+	  message.append(publicKey);
+	  message = spoton_send::message0012(message);
+
+	  if(write(message.constData(), message.length()) !=
+	     message.length())
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotReadyRead(): "
+	       "write() failure.");
+	}
+      else
+	spoton_misc::logError
+	  ("spoton_neighbor::slotReadyRead(): "
+	   "publicKey() failure.");
+    }
+  else
+    spoton_misc::logError
+      ("spoton_neighbor::slotReadyRead(): "
+       "publicKeyEncrypt() failure.");
 }

@@ -1,5 +1,5 @@
 libspoton.target = libspoton.dylib
-libspoton.commands = $(MAKE) -C LibSpotOn
+libspoton.commands = $(MAKE) -C ../../LibSpotOn
 libspoton.depends =
 
 TEMPLATE	= app
@@ -15,7 +15,8 @@ DEFINES         += SPOTON_MINIMUM_GCRYPT_VERSION=0x010500
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of LibSpotOn.
 
-QMAKE_CLEAN     += Spot-On LibSpotOn/*.dylib LibSpotOn/*.o LibSpotOn/test
+QMAKE_CLEAN     += Spot-On ../../LibSpotOn/*.dylib ../../LibSpotOn/*.o \
+		   ../../LibSpotOn/test
 QMAKE_DISTCLEAN += -r temp
 QMAKE_CXXFLAGS_DEBUG -= -O2
 QMAKE_CXXFLAGS_DEBUG += -mtune=generic -Os \
@@ -30,9 +31,9 @@ QMAKE_CXXFLAGS_RELEASE += -mtune=generic -O3 \
 QMAKE_EXTRA_TARGETS = libspoton purge
 QMAKE_LFLAGS_RELEASE =
 QMAKE_LFLAGS_RPATH =
-INCLUDEPATH	+= . GUI /usr/local/include
+INCLUDEPATH	+= . ../../. GUI /usr/local/include
 ICON		= Icons/Logo/spoton-logo-transparent.icns
-LIBS		+= -L/usr/local/lib -lgcrypt -LLibSpotOn -lspoton
+LIBS		+= -L/usr/local/lib -lgcrypt -L../../LibSpotOn -lspoton
 PRE_TARGETDEPS = libspoton.dylib
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui
@@ -139,7 +140,7 @@ spoton.files		= Spot-On.app/*
 icons.path		= /Applications/Spot-On.d
 icons.files		= Icons
 libspoton_install.path  = .
-libspoton_install.extra = cp ./LibSpotOn/libspoton.dylib ./Spot-On.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change /usr/local/lib/libgcrypt.11.dylib @loader_path/libgcrypt.11.dylib ./Spot-On.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change ./LibSpotOn/libspoton.dylib @executable_path/../Frameworks/libspoton.dylib ./Spot-On.app/Contents/MacOS/Spot-On
+libspoton_install.extra = cp ../../LibSpotOn/libspoton.dylib ./Spot-On.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change /usr/local/lib/libgcrypt.11.dylib @loader_path/libgcrypt.11.dylib ./Spot-On.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change ../../LibSpotOn/libspoton.dylib @executable_path/../Frameworks/libspoton.dylib ./Spot-On.app/Contents/MacOS/Spot-On
 lrelease.extra          = $$[QT_INSTALL_BINS]/lrelease spot-on-gui.osx.pro
 lrelease.path           = .
 lupdate.extra           = $$[QT_INSTALL_BINS]/lupdate spot-on-gui.osx.pro

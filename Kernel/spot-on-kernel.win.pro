@@ -1,5 +1,5 @@
 libspoton.target = libspoton.dll
-libspoton.commands = $(MAKE) -C ..\\LibSpotOn
+libspoton.commands = $(MAKE) -C ..\\..\\..\\LibSpotOn
 libspoton.depends =
 purge.commands = del /F *~
 
@@ -17,16 +17,16 @@ DEFINES         += SPOTON_MINIMUM_GCRYPT_VERSION=0x010500
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of LibSpotOn.
 
-QMAKE_CLEAN     += ..\\..\\release\\Spot-On-Kernel ..\\LibSpotOn\\*.dll \
-		   ..\\LibSpotOn\\*.o ..\\LibSpotOn\\test.exe
+QMAKE_CLEAN     += ..\\..\\release\\Spot-On-Kernel ..\\..\\..\\LibSpotOn\\*.dll \
+		   ..\\..\\..\\LibSpotOn\\*.o ..\\..\\..\\LibSpotOn\\test.exe
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -mtune=generic -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
 			  -Werror -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith
 QMAKE_EXTRA_TARGETS = libspoton purge
-INCLUDEPATH	+= . ..\\. ..\\LibSpotOn\\Include.win32
-LIBS		+= -L..\\LibSpotOn -L..\\LibSpotOn\\Libraries.win32 \
+INCLUDEPATH	+= . ..\\. ..\\..\\..\\. ..\\..\\..\\LibSpotOn\\Include.win32
+LIBS		+= -L..\\..\\..\\LibSpotOn -L..\\..\\..\\LibSpotOn\\Libraries.win32 \
 		   -lgcrypt-11 -lpthread -lspoton
 PRE_TARGETDEPS = libspoton.dll
 

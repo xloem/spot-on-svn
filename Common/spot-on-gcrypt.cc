@@ -330,7 +330,8 @@ bool spoton_gcrypt::passphraseSet(void)
   QSettings settings;
 
   return settings.contains("gui/saltedPassphraseHash") &&
-    !settings.value("gui/saltedPassphraseHash", "").toString().isEmpty();
+    !settings.value("gui/saltedPassphraseHash", "").toString().trimmed().
+    isEmpty();
 }
 
 void spoton_gcrypt::reencodePrivateKey(const QString &newCipher,

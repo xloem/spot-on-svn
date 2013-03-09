@@ -13,6 +13,8 @@ Completed Items
        listener and neighbor IP widgets.
 7.     When the RSA key generation is finished, a confirmation should
        be displayed.
+8.     The context menu to share the public key should be a button.
+9.     Add an icon to a connected neighbor.
 
 Remaining Items
 
@@ -24,21 +26,20 @@ Ideas
        libspoton.dll needs to be installed in the executable's path.
 
        Settings tab needs a side splitter for more settings such as: deny-get,
-       deny-put.
+       deny-put. These functions do not exist.
 
-       Fetching of new neighbors needs to be automated.
+       Fetching of new neighbors needs to be automated. Fetching is undefined.
 
-       Auto-fetching needs a checkbox.
+       Auto-fetching needs a checkbox. Fetching is undefined.
 
-       Add one listener before the kernel can be activated?
+       Add one listener before the kernel can be activated?. No,
+       a kernel's importance is not defined by listners.
 
-       When listeners are only used as servers, add the name of the IRC channel.
-       Listeners are always servers.
+       When listeners are only used as servers, add the name of the IRC
+       channel. Listeners are always servers.
 
        Messages from channel nodes need to mirror all incoming messages to all
        connected neighbors with an UUID for that channel.
-
-       The context menu to share the public key should be a button.
 
        Neighbors need names.
 
@@ -53,8 +54,6 @@ Ideas
        Provide a means of filtering messages in chat.
 
        Add a mechanism for saving the chat key to a file.
-
-       Add an icon to a connected neighbor.
 
        Provide a means of sending a message to friends only.
 

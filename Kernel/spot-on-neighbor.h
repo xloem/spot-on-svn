@@ -65,6 +65,7 @@ class spoton_neighbor: public QTcpSocket
 		     const QByteArray &symmetricKeyAlgorithm);
   void savePublicKey(const QByteArray &publicKey);
   void saveStatus(QSqlDatabase &db, const QString &status);
+  void sharePublicKey(void);
 
  private slots:
   void slotConnected(void);
