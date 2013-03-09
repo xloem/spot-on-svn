@@ -69,6 +69,7 @@ class spoton: public QMainWindow
   void slotAddListener(void);
   void slotAddNeighbor(void);
   void slotBlockNeighbor(void);
+  void slotChatSendMethodChanged(int index);
   void slotConnectNeighbor(void);
   void slotDeactivateKernel(void);
   void slotDeleteAllListeners(void);

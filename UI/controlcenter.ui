@@ -184,6 +184,30 @@
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_14">
                  <item>
+                  <widget class="QLabel" name="label_9">
+                   <property name="text">
+                    <string>Preferred Method</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="chatSendMethod">
+                   <property name="sizeAdjustPolicy">
+                    <enum>QComboBox::AdjustToContents</enum>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Artificial GET</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>POST</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="QLineEdit" name="message"/>
                  </item>
                  <item>
@@ -2141,6 +2165,7 @@
   <tabstop>nodeName</tabstop>
   <tabstop>saveNodeName</tabstop>
   <tabstop>participants</tabstop>
+  <tabstop>chatSendMethod</tabstop>
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>

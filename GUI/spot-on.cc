@@ -207,6 +207,10 @@ spoton::spoton(void)
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotListenerIPComboChanged(int)));
+  connect(ui.chatSendMethod,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotChatSendMethodChanged(int)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -274,6 +278,11 @@ spoton::spoton(void)
                            "Spot-On-Kernel"
 #endif
 			   );
+
+  if(m_settings.value("gui/chatSendMethod", "GET").toString() == "GET")
+    ui.chatSendMethod->setCurrentIndex(0);
+  else
+    ui.chatSendMethod->setCurrentIndex(1);
 
   ui.kernelPath->setToolTip(ui.kernelPath->text());
   ui.nodeName->setMaxLength(spoton_send::NAME_MAXIMUM_LENGTH);
@@ -390,8 +399,8 @@ spoton::spoton(void)
 				true);
   ui.neighbors->setColumnHidden(ui.neighbors->columnCount() - 1, true);
   ui.participants->setColumnHidden(ui.participants->columnCount() - 1, true);
-  prepareListenerIPCombo();
   slotPopulateParticipants();
+  prepareListenerIPCombo();
   show();
 }
 
@@ -1468,6 +1477,9 @@ void spoton::slotSetPassphrase(void)
     {
       QMessageBox mb(this);
 
+#ifdef Q_OS_MAC
+      mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
       mb.setIcon(QMessageBox::Question);
       mb.setWindowTitle(tr("Spot-On: Confirmation"));
       mb.setWindowModality(Qt::WindowModal);
@@ -2452,7 +2464,6 @@ void spoton::slotOnlyConnectedNeighborsToggled(bool state)
 
 void spoton::prepareListenerIPCombo(void)
 {
-  ui.listenerIPCombo->blockSignals(true);
   ui.listenerIPCombo->clear();
 
   QList<QHostAddress> addresses(QNetworkInterface::allAddresses());
@@ -2483,12 +2494,14 @@ void spoton::prepareListenerIPCombo(void)
     }
   else
     ui.listenerIPCombo->addItem(tr("Custom"));
-
-  ui.listenerIPCombo->blockSignals(false);
 }
 
 void spoton::slotListenerIPComboChanged(int index)
 {
+  /*
+  ** Method will be called because of activity in prepareListenerIPCombo().
+  */
+
   if(index == 0)
     {
       ui.listenerIP->clear();
@@ -2499,4 +2512,17 @@ void spoton::slotListenerIPComboChanged(int index)
       ui.listenerIP->setText(ui.listenerIPCombo->currentText());
       ui.listenerIP->setVisible(false);
     }
+}
+
+void spoton::slotChatSendMethodChanged(int index)
+{
+  if(index == 0)
+    m_settings["gui/chatSendMethod"] = "GET";
+  else
+    m_settings["gui/chatSendMethod"] = "POST";
+
+  QSettings settings;
+
+  settings.setValue
+    ("gui/chatSendMethod", m_settings.value("gui/chatSendMethod").toString());
 }
