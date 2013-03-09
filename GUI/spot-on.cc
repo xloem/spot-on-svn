@@ -421,7 +421,13 @@ void spoton::slotAddListener(void)
       {
 	spoton_misc::prepareDatabases();
 
-	QString ip(ui.listenerIP->text().trimmed());
+	QString ip("");
+
+	if(ui.listenerIPCombo->currentIndex() == 0)
+	  ip = ui.listenerIP->text().trimmed();
+	else
+	  ip = ui.listenerIPCombo->currentText();
+
 	QString port(QString::number(ui.listenerPort->value()));
 	QString protocol("");
 	QString scopeId(ui.listenerScopeId->text().trimmed());
@@ -458,7 +464,7 @@ void spoton::slotAddListener(void)
 	    QList<int> numbers;
 	    QStringList list;
 
-        if(protocol == "IPv4")
+	    if(protocol == "IPv4")
 	      list = ip.split(".", QString::KeepEmptyParts);
 	    else
 	      list = ip.split(":", QString::KeepEmptyParts);
@@ -466,9 +472,7 @@ void spoton::slotAddListener(void)
 	    for(int i = 0; i < list.size(); i++)
 	      numbers.append(list.at(i).toInt());
 
-	    ip.clear();
-
-        if(protocol == "IPv4")
+	    if(protocol == "IPv4")
 	      {
 		ip = QString::number(numbers.value(0)) + "." +
 		  QString::number(numbers.value(1)) + "." +
@@ -478,22 +482,25 @@ void spoton::slotAddListener(void)
 	      }
 	    else
 	      {
-		ip = QString::number(numbers.value(0)) + ":" +
-		  QString::number(numbers.value(1)) + ":" +
-		  QString::number(numbers.value(2)) + ":" +
-		  QString::number(numbers.value(3)) + ":" +
-		  QString::number(numbers.value(4)) + ":" +
-		  QString::number(numbers.value(5)) + ":" +
-		  QString::number(numbers.value(6)) + ":" +
-		  QString::number(numbers.value(7));
-		ip.remove(":::::::");
+		if(ui.listenerIPCombo->currentIndex() == 0)
+		  {
+		    ip = QString::number(numbers.value(0)) + ":" +
+		      QString::number(numbers.value(1)) + ":" +
+		      QString::number(numbers.value(2)) + ":" +
+		      QString::number(numbers.value(3)) + ":" +
+		      QString::number(numbers.value(4)) + ":" +
+		      QString::number(numbers.value(5)) + ":" +
+		      QString::number(numbers.value(6)) + ":" +
+		      QString::number(numbers.value(7));
+		    ip.remove(":::::::");
 
-		/*
-		** Special exception.
-		*/
+		    /*
+		    ** Special exception.
+		    */
 
-		if(ip == "0:0:0:0:0:0:0:0")
-		  ip = "::";
+		    if(ip == "0:0:0:0:0:0:0:0")
+		      ip = "::";
+		  }
 	      }
 
 	    if(m_crypt)
@@ -598,7 +605,7 @@ void spoton::slotAddNeighbor(void)
 	    QList<int> numbers;
 	    QStringList list;
 
-        if(protocol == "IPv4")
+	    if(protocol == "IPv4")
 	      list = ip.split(".", QString::KeepEmptyParts);
 	    else
 	      list = ip.split(":", QString::KeepEmptyParts);
@@ -608,7 +615,7 @@ void spoton::slotAddNeighbor(void)
 
 	    ip.clear();
 
-        if(protocol == "IPv4")
+	    if(protocol == "IPv4")
 	      {
 		ip = QString::number(numbers.value(0)) + "." +
 		  QString::number(numbers.value(1)) + "." +
@@ -2519,10 +2526,7 @@ void spoton::slotListenerIPComboChanged(int index)
       ui.listenerIP->setVisible(true);
     }
   else
-    {
-      ui.listenerIP->setText(ui.listenerIPCombo->currentText());
-      ui.listenerIP->setVisible(false);
-    }
+    ui.listenerIP->setVisible(false);
 }
 
 void spoton::slotChatSendMethodChanged(int index)

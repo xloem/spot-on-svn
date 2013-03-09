@@ -246,9 +246,9 @@ void spoton_listener::slotNewConnection(void)
 	    query.bindValue(1, m_port);
 
 	    if(m_address.protocol() == QAbstractSocket::IPv4Protocol)
-          query.bindValue(2, "IPv4");
+	      query.bindValue(2, "IPv4");
 	    else
-          query.bindValue(2, "IPv6");
+	      query.bindValue(2, "IPv6");
 
 	    if(spoton_kernel::s_crypt1)
 	      {
