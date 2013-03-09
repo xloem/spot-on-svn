@@ -1,0 +1,79 @@
+Completed Items
+
+1.     Inform the kernel of the key.
+2.     Add colors to the kernel widgets. On OS X and Windows platforms,
+       the kernel path must represent a readable program. On other platforms,
+       the path must represent an executable program.
+3.     If the passphrase is not set, disable all other tabs. Also
+       disable the kernel and listeners group boxes.
+4.     Sticky needs a tooltip describing the feature.
+5.     Add a check box to hide all disconnected neighbors.
+6.     Improve the IP input masks. Removed the underscores so that the
+       spacebar may be used. Attached returnPressed() signals to
+       listener and neighbor IP widgets.
+7.     When the RSA key generation is finished, a confirmation should
+       be displayed.
+
+Remaining Items
+
+1.     Re-encode various databases whenever the passphrase is changed.
+2.     Add a database for the temporary chat keys of connected neighbors.
+
+Ideas
+
+       libspoton.dll needs to be installed in the executable's path.
+
+       Settings tab needs a side splitter for more settings such as: deny-get,
+       deny-put.
+
+       Fetching of new neighbors needs to be automated.
+
+       Auto-fetching needs a checkbox.
+
+       Add one listener before the kernel can be activated?
+
+       When listeners are only used as servers, add the name of the IRC channel.
+       Listeners are always servers.
+
+       Messages from channel nodes need to mirror all incoming messages to all
+       connected neighbors with an UUID for that channel.
+
+       The context menu to share the public key should be a button.
+
+       Neighbors need names.
+
+       Be sure that the sticky of a neighbor is not the IP but the key. DHT?
+
+       Search requires three radio buttons for file, hash, and URL.
+
+       Provide a means of filtering messages for the channel concept.
+
+       The Participants table needs to contain friends and connected neighbors.
+
+       Provide a means of filtering messages in chat.
+
+       Add a mechanism for saving the chat key to a file.
+
+       Add an icon to a connected neighbor.
+
+       Provide a means of sending a message to friends only.
+
+       Spot-On as a plugin.
+
+       Display additional information pertaining to network information in
+       the Neighbors table.
+
+       Do not hide the OID column? The OID is always available. It is
+       an internal database field.
+
+       Add UUIDs to neighbors for DHT purposes.
+
+       TTLs for channels.
+
+       Add presence information to the Participants table.
+
+       The kernel's GUI server port is non-standard. It's fine.
+
+       Adding new neighbors create new local ports. As defined.
+
+       May need GET and PUT messages.

@@ -1,0 +1,34 @@
+<RCC>
+    <qresource prefix="/">
+        <file>add.png</file>
+        <file>block.png</file>
+        <file>connect_creating.png</file>
+        <file>connect_established.png</file>
+        <file>connect_no.png</file>
+        <file>delete.png</file>
+        <file>modify.png</file>
+        <file>quit.png</file>
+        <file>search-active.png</file>
+        <file>tab-heart.png</file>
+        <file>tab-management.png</file>
+        <file>tab-neighbours.png</file>
+        <file>tab-search.png</file>
+        <file>tab-settings.png</file>
+        <file>tab-urlculture.png</file>
+        <file>Logo/spoton-button-32.png</file>
+        <file>Logo/spoton-logo-white.png</file>
+        <file>down.png</file>
+        <file>up.png</file>
+        <file>ok.png</file>
+        <file>Logo/spoton-logo-transparent.png</file>
+        <file>friend_blue_asneighbor.png</file>
+        <file>friend_green_withip.png</file>
+        <file>friend_red_nopresenceforping.png</file>
+        <file>friend_yellow_echochat.png</file>
+        <file>friend_grey_offline.png</file>
+        <file>addkey.png</file>
+        <file>tab-chat.png</file>
+        <file>delete_all.png</file>
+        <file>connect.png</file>
+    </qresource>
+</RCC>
