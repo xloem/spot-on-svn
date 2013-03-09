@@ -1,0 +1,15 @@
+Some tables hold encrypted data.
+
+listeners:
+
+ip_address
+port
+protocol
+scope_id
+
+neighbors:
+
+name
+remote_ip_address
+remote_port
+scope_id
