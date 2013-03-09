@@ -2466,22 +2466,32 @@ void spoton::prepareListenerIPCombo(void)
 {
   ui.listenerIPCombo->clear();
 
-  QList<QHostAddress> addresses(QNetworkInterface::allAddresses());
+  QList<QNetworkInterface> interfaces(QNetworkInterface::allInterfaces());
   QStringList list;
 
-  while(!addresses.isEmpty())
+  while(!interfaces.isEmpty())
     {
-      QHostAddress address(addresses.takeFirst());
+      QNetworkInterface interface(interfaces.takeFirst());
 
-      if(ui.ipv4Listener->isChecked())
+      if(!(interface.flags() & QNetworkInterface::IsUp))
+	continue;
+
+      QList<QNetworkAddressEntry> addresses(interface.addressEntries());
+
+      while(!addresses.isEmpty())
 	{
-	  if(address.protocol() == QAbstractSocket::IPv4Protocol)
-	    list.append(address.toString());
-	}
-      else
-	{
-	  if(address.protocol() == QAbstractSocket::IPv6Protocol)
-	    list.append(address.toString());
+	  QHostAddress address(addresses.takeFirst().ip());
+
+	  if(ui.ipv4Listener->isChecked())
+	    {
+	      if(address.protocol() == QAbstractSocket::IPv4Protocol)
+		list.append(address.toString());
+	    }
+	  else
+	    {
+	      if(address.protocol() == QAbstractSocket::IPv6Protocol)
+		list.append(QHostAddress(address.toIPv6Address()).toString());
+	    }
 	}
     }
 
@@ -2505,6 +2515,7 @@ void spoton::slotListenerIPComboChanged(int index)
   if(index == 0)
     {
       ui.listenerIP->clear();
+      ui.listenerScopeId->clear();
       ui.listenerIP->setVisible(true);
     }
   else
