@@ -30,6 +30,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QNetworkInterface>
 #include <QProcess>
 #include <QSettings>
 #include <QSqlQuery>
@@ -144,7 +145,12 @@ spoton::spoton(void)
 	  SLOT(slotDeleteListener(void)));
   connect(ui.setPassphrase,
 	  SIGNAL(clicked(void)),
-	  this, SLOT(slotSetPassphrase(void)));
+	  this,
+	  SLOT(slotSetPassphrase(void)));
+  connect(ui.kernelPath,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSaveKernelPath(void)));
   connect(ui.passphrase,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -186,9 +192,9 @@ spoton::spoton(void)
 	  this,
 	  SLOT(slotOnlyConnectedNeighborsToggled(bool)));
   connect(ui.pushButtonMakeFriends,
-      SIGNAL(clicked(bool)),
-      this,
-      SLOT(slotSharePublicKey(void)));
+	  SIGNAL(clicked(bool)),
+	  this,
+	  SLOT(slotSharePublicKey(void)));
   connect(ui.listenerIP,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -197,6 +203,10 @@ spoton::spoton(void)
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotAddNeighbor(void)));
+  connect(ui.listenerIPCombo,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotListenerIPComboChanged(int)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -229,6 +239,7 @@ spoton::spoton(void)
 			      "active?"));
   m_generalTimer.start(2500);
   ui.friendName->setText("unknown");
+  ui.ipv4Listener->setChecked(true);
   ui.listenerIP->setInputMask("000.000.000.000; ");
   ui.listenerScopeId->setEnabled(false);
   ui.listenerScopeIdLabel->setEnabled(false);
@@ -379,6 +390,7 @@ spoton::spoton(void)
 				true);
   ui.neighbors->setColumnHidden(ui.neighbors->columnCount() - 1, true);
   ui.participants->setColumnHidden(ui.participants->columnCount() - 1, true);
+  prepareListenerIPCombo();
   slotPopulateParticipants();
   show();
 }
@@ -693,6 +705,8 @@ void spoton::slotListenerRadioToggled(bool state)
 	  ui.neighborScopeIdLabel->setEnabled(true);
 	}
     }
+
+  prepareListenerIPCombo();
 }
 
 void spoton::slotPopulateListeners(void)
@@ -1088,7 +1102,7 @@ void spoton::slotActivateKernel(void)
   QString program(ui.kernelPath->text());
 
 #ifdef Q_OS_MAC
-  if(program.endsWith(".app"))
+  if(QFileInfo(program).isBundle())
     QProcess::startDetached
       ("open", QStringList("-a") << program);
   else
@@ -1210,19 +1224,26 @@ void spoton::slotSelectKernelPath(void)
 #endif
 
   if(dialog.exec() == QDialog::Accepted)
+    saveKernelPath(dialog.selectedFiles().value(0).trimmed());
+}
+
+void spoton::slotSaveKernelPath(void)
+{
+  saveKernelPath(ui.kernelPath->text().trimmed());
+}
+
+void spoton::saveKernelPath(const QString &path)
+{
+  if(!path.isEmpty())
     {
-      QString path(dialog.selectedFiles().value(0).trimmed());
+      m_settings["gui/kernelPath"] = path;
 
-      if(!path.isEmpty())
-	{
-	  m_settings["gui/kernelPath"] = path;
-
-	  QSettings settings;
-
-	  settings.setValue("gui/kernelPath", path);
-	  ui.kernelPath->setText(path);
-	  ui.kernelPath->setToolTip(path);
-	}
+      QSettings settings;
+      
+      settings.setValue("gui/kernelPath", path);
+      ui.kernelPath->setText(path);
+      ui.kernelPath->setToolTip(path);
+      ui.kernelPath->selectAll();
     }
 }
 
@@ -2404,7 +2425,9 @@ void spoton::highlightKernelPath(void)
   QFileInfo fileInfo(ui.kernelPath->text());
   QPalette palette;
 
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN32)
+#if defined(Q_OS_MAC)
+  if((fileInfo.isBundle() || fileInfo.isExecutable()) && fileInfo.size() > 0)
+#elif defined(Q_OS_WIN32)
   if(fileInfo.isReadable() && fileInfo.size() > 0)
 #else
   if(fileInfo.isExecutable() && fileInfo.size() > 0)
@@ -2425,4 +2448,55 @@ void spoton::slotOnlyConnectedNeighborsToggled(bool state)
 
   settings.setValue("gui/showOnlyConnectedNeighbors", state);
   m_neighborsLastModificationTime = QDateTime();
+}
+
+void spoton::prepareListenerIPCombo(void)
+{
+  ui.listenerIPCombo->blockSignals(true);
+  ui.listenerIPCombo->clear();
+
+  QList<QHostAddress> addresses(QNetworkInterface::allAddresses());
+  QStringList list;
+
+  while(!addresses.isEmpty())
+    {
+      QHostAddress address(addresses.takeFirst());
+
+      if(ui.ipv4Listener->isChecked())
+	{
+	  if(address.protocol() == QAbstractSocket::IPv4Protocol)
+	    list.append(address.toString());
+	}
+      else
+	{
+	  if(address.protocol() == QAbstractSocket::IPv6Protocol)
+	    list.append(address.toString());
+	}
+    }
+
+  if(!list.isEmpty())
+    {
+      qSort(list);
+      ui.listenerIPCombo->addItem(tr("Custom"));
+      ui.listenerIPCombo->insertSeparator(1);
+      ui.listenerIPCombo->addItems(list);
+    }
+  else
+    ui.listenerIPCombo->addItem(tr("Custom"));
+
+  ui.listenerIPCombo->blockSignals(false);
+}
+
+void spoton::slotListenerIPComboChanged(int index)
+{
+  if(index == 0)
+    {
+      ui.listenerIP->clear();
+      ui.listenerIP->setVisible(true);
+    }
+  else
+    {
+      ui.listenerIP->setText(ui.listenerIPCombo->currentText());
+      ui.listenerIP->setVisible(false);
+    }
 }

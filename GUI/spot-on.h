@@ -57,6 +57,8 @@ class spoton: public QMainWindow
   spoton_gcrypt *m_crypt;
   void closeEvent(QCloseEvent *event);
   void highlightKernelPath(void);
+  void prepareListenerIPCombo(void);
+  void saveKernelPath(const QString &path);
   void saveSettings(void);
   void sendKeyToKernel(void);
   void updateListenersTable(QSqlDatabase &db);
@@ -77,6 +79,7 @@ class spoton: public QMainWindow
   void slotGeneralTimerTimeout(void);
   void slotKernelSocketState(void);
   void slotListenerCheckChange(int state);
+  void slotListenerIPComboChanged(int index);
   void slotListenerRadioToggled(bool state);
   void slotMaximumClientsChanged(int index);
   void slotNeighborCheckChange(int state);
@@ -87,6 +90,7 @@ class spoton: public QMainWindow
   void slotQuit(void);
   void slotReceivedKernelMessage(void);
   void slotRemoveParticipants(void);
+  void slotSaveKernelPath(void);
   void slotSaveNodeName(void);
   void slotSelectKernelPath(void);
   void slotSendMessage(void);

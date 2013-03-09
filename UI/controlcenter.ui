@@ -226,20 +226,6 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_24">
               <item>
-               <widget class="QPushButton" name="pushButtonMakeFriends">
-                <property name="toolTip">
-                 <string>Share public key with selected neighbor.</string>
-                </property>
-                <property name="text">
-                 <string>&amp;Share Public Key</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
                <widget class="QCheckBox" name="showOnlyConnectedNeighbors">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -346,6 +332,37 @@
                </property>
               </column>
              </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QPushButton" name="pushButtonMakeFriends">
+                <property name="toolTip">
+                 <string>Share public key with selected neighbor.</string>
+                </property>
+                <property name="text">
+                 <string>&amp;Share Public Key</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../Icons/icons.qrc">
+                  <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_24">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </item>
            </layout>
           </widget>
@@ -820,7 +837,7 @@
              <x>0</x>
              <y>0</y>
              <width>975</width>
-             <height>529</height>
+             <height>566</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -917,9 +934,6 @@
                      <verstretch>0</verstretch>
                     </sizepolicy>
                    </property>
-                   <property name="readOnly">
-                    <bool>true</bool>
-                   </property>
                   </widget>
                  </item>
                  <item>
@@ -944,6 +958,30 @@
                  <property name="bottomMargin">
                   <number>6</number>
                  </property>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_10">
+                   <item>
+                    <widget class="QCheckBox" name="checkBox">
+                     <property name="text">
+                      <string>Show Only Online Listeners</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_25">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout">
                    <item>
@@ -1110,6 +1148,18 @@
                       <property name="buddy">
                        <cstring>listenerIP</cstring>
                       </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="listenerIPCombo">
+                      <property name="sizeAdjustPolicy">
+                       <enum>QComboBox::AdjustToContents</enum>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>Custom</string>
+                       </property>
+                      </item>
                      </widget>
                     </item>
                     <item>
@@ -2093,9 +2143,9 @@
   <tabstop>participants</tabstop>
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
-  <tabstop>pushButtonMakeFriends</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>
   <tabstop>neighbors</tabstop>
+  <tabstop>pushButtonMakeFriends</tabstop>
   <tabstop>friendName</tabstop>
   <tabstop>friendPublicKey</tabstop>
   <tabstop>pushButton_6</tabstop>
@@ -2117,9 +2167,11 @@
   <tabstop>deactivateKernel</tabstop>
   <tabstop>kernelPath</tabstop>
   <tabstop>selectKernelPath</tabstop>
+  <tabstop>checkBox</tabstop>
   <tabstop>listeners</tabstop>
   <tabstop>deleteListener</tabstop>
   <tabstop>deleteAllListeners</tabstop>
+  <tabstop>listenerIPCombo</tabstop>
   <tabstop>listenerIP</tabstop>
   <tabstop>listenerScopeId</tabstop>
   <tabstop>listenerPort</tabstop>
