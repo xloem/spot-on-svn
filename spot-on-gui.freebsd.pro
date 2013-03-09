@@ -1,5 +1,5 @@
 libspoton.target = libspoton.so
-libspoton.commands = gmake -C LibSpotOn
+libspoton.commands = gmake -C ../../LibSpotOn
 libspoton.depends =
 
 TEMPLATE	= app
@@ -15,7 +15,8 @@ DEFINES         += SPOTON_MINIMUM_GCRYPT_VERSION=0x010500
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of LibSpotOn.
 
-QMAKE_CLEAN     += Spot-On LibSpotOn/*.o LibSpotOn/*.so LibSpotOn/test
+QMAKE_CLEAN     += Spot-On ../../LibSpotOn/*.o ../../LibSpotOn/*.so \
+		   ../../LibSpotOn/test
 QMAKE_DISTCLEAN += -r temp
 QMAKE_CXXFLAGS_DEBUG -= -O2
 QMAKE_CXXFLAGS_DEBUG += -mtune=generic -Os \
@@ -30,8 +31,8 @@ QMAKE_CXXFLAGS_RELEASE += -mtune=generic -O3 \
 QMAKE_LFLAGS_RELEASE += -Wl,-rpath,/usr/local/spot-on/Lib
 QMAKE_EXTRA_TARGETS = libspoton purge
 QMAKE_LFLAGS_RPATH =
-INCLUDEPATH	+= . GUI
-LIBS		+= -LLibSpotOn -lgcrypt -lspoton
+INCLUDEPATH	+= . ../../. GUI
+LIBS		+= -L../../LibSpotOn -lgcrypt -lspoton
 PRE_TARGETDEPS = libspoton.so
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui

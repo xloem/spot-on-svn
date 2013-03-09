@@ -1,5 +1,5 @@
 libspoton.target = libspoton.dylib
-libspoton.commands = $(MAKE) -C ../LibSpotOn
+libspoton.commands = $(MAKE) -C ../../../LibSpotOn
 libspoton.depends =
 purge.commands = rm -f *~
 
@@ -17,8 +17,8 @@ DEFINES         += SPOTON_MINIMUM_GCRYPT_VERSION=0x010500
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of LibSpotOn.
 
-QMAKE_CLEAN     += ../Spot-On-Kernel ../LibSpotOn/*.dylib ../LibSpotOn/*.o \
-		   ../LibSpotOn/test
+QMAKE_CLEAN     += ../Spot-On-Kernel ../../../LibSpotOn/*.dylib \
+		   ../../../LibSpotOn/*.o ../../../LibSpotOn/test
 QMAKE_DISTCLEAN += -r temp
 QMAKE_CXXFLAGS_DEBUG -= -O2
 QMAKE_CXXFLAGS_DEBUG += -mtune=generic -Os \
@@ -33,9 +33,9 @@ QMAKE_CXXFLAGS_RELEASE += -mtune=generic -O3 \
 QMAKE_EXTRA_TARGETS = libspoton purge
 QMAKE_LFLAGS_RELEASE =
 QMAKE_LFLAGS_RPATH =
-INCLUDEPATH	+= . ../. /usr/local/include
+INCLUDEPATH	+= . ../. ../../../. /usr/local/include
 ICON		=
-LIBS		+= -L../LibSpotOn -L/usr/local/lib -lgcrypt -lspoton
+LIBS		+= -L../../../LibSpotOn -L/usr/local/lib -lgcrypt -lspoton
 PRE_TARGETDEPS = libspoton.dylib
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui
@@ -67,7 +67,7 @@ QMAKE_STRIP	= echo
 spoton.path		= /Applications/Spot-On.d/Spot-On-Kernel.app
 spoton.files		= ../Spot-On-Kernel.app/*
 libspoton_install.path  = .
-libspoton_install.extra = cp ../LibSpotOn/libspoton.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change /usr/local/lib/libgcrypt.11.dylib @loader_path/libgcrypt.11.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change ./LibSpotOn/libspoton.dylib @executable_path/../Frameworks/libspoton.dylib ../Spot-On-Kernel.app/Contents/MacOS/Spot-On-Kernel
+libspoton_install.extra = cp ../../../LibSpotOn/libspoton.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change /usr/local/lib/libgcrypt.11.dylib @loader_path/libgcrypt.11.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change ../../../LibSpotOn/libspoton.dylib @executable_path/../Frameworks/libspoton.dylib ../Spot-On-Kernel.app/Contents/MacOS/Spot-On-Kernel
 macdeployqt.path        = ../Spot-On-Kernel.app
 macdeployqt.extra       = $$[QT_INSTALL_BINS]/macdeployqt ../Spot-On-Kernel.app -verbose=0
 postinstall.path	= /Applications/Spot-On.d
