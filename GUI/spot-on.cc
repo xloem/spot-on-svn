@@ -2195,10 +2195,15 @@ void spoton::slotPopulateParticipants(void)
 		      (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
 		    if(!temporary)
-		      item->setIcon(QIcon(":/addkey.png"));
+		      item->setIcon
+			(QIcon(":/permanent-friendship-confirmed.png"));
 		    else
-		      item->setToolTip(tr("You have not befriended "
-					  "%1.").arg(item->text()));
+		      {
+			item->setIcon
+			  (QIcon(":/permanent-friendship-requested.png"));
+			item->setToolTip(tr("You have not befriended "
+					    "%1.").arg(item->text()));
+		      }
 
 		    item->setData(Qt::UserRole, temporary);
 		    ui.participants->setItem(row - 1, i, item);
