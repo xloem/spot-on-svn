@@ -2197,8 +2197,8 @@ void spoton::slotPopulateParticipants(void)
 		    if(!temporary)
 		      item->setIcon(QIcon(":/addkey.png"));
 		    else
-		      item->setToolTip(tr("You have not shared your public "
-					  "key with %1.").arg(item->text()));
+		      item->setToolTip(tr("You have not befriended "
+					  "%1.").arg(item->text()));
 
 		    item->setData(Qt::UserRole, temporary);
 		    ui.participants->setItem(row - 1, i, item);
