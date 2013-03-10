@@ -57,6 +57,7 @@ class spoton_kernel: public QObject
   spoton_gui_server *m_guiServer;
   void checkForTermination(void);
   void cleanup(void);
+  void cleanupDatabases(void);
   void copyPublicKey(void);
   void prepareListeners(void);
   void prepareNeighbors(void);

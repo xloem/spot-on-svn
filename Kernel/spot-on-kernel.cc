@@ -163,6 +163,7 @@ int main(int argc, char *argv[])
 spoton_kernel::spoton_kernel(void):QObject(0)
 {
   QDir().mkdir(spoton_misc::homePath());
+  cleanupDatabases();
 
   /*
   ** The user interface doesn't yet have a means of preparing advanced
@@ -223,10 +224,25 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 spoton_kernel::~spoton_kernel()
 {
   cleanup();
+  cleanupDatabases();
   QCoreApplication::instance()->quit();
 }
 
 void spoton_kernel::cleanup(void)
+{
+  QString sharedPath(spoton_misc::homePath() + QDir::separator() +
+		     "shared.db");
+  libspoton_handle_t libspotonHandle;
+
+  if(libspoton_init(sharedPath.toStdString().c_str(),
+		    &libspotonHandle) == LIBSPOTON_ERROR_NONE)
+    libspoton_deregister_kernel(QCoreApplication::applicationPid(),
+				&libspotonHandle);
+
+  libspoton_close(&libspotonHandle);
+}
+
+void spoton_kernel::cleanupDatabases(void)
 {
   m_controlDatabaseTimer.stop();
 
@@ -314,17 +330,6 @@ void spoton_kernel::cleanup(void)
   }
 
   QSqlDatabase::removeDatabase("kernel");
-
-  QString sharedPath(spoton_misc::homePath() + QDir::separator() +
-		     "shared.db");
-  libspoton_handle_t libspotonHandle;
-
-  if(libspoton_init(sharedPath.toStdString().c_str(),
-		    &libspotonHandle) == LIBSPOTON_ERROR_NONE)
-    libspoton_deregister_kernel(QCoreApplication::applicationPid(),
-				&libspotonHandle);
-
-  libspoton_close(&libspotonHandle);
 }
 
 void spoton_kernel::slotPollDatabase(void)
