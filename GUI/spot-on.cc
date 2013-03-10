@@ -37,7 +37,7 @@
 #include <QSqlRecord>
 #include <QStyle>
 #include <QTranslator>
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 #include <QMacStyle>
 #endif
 #include <QtDebug>
@@ -61,7 +61,7 @@ extern "C"
 
 int main(int argc, char *argv[])
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   QApplication::setStyle(new QMacStyle());
 #endif
 
@@ -100,7 +100,7 @@ spoton::spoton(void)
   m_neighborsLastModificationTime = QDateTime();
   m_participantsLastModificationTime = QDateTime();
   ui.setupUi(this);
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
   connect(ui.action_Quit,
@@ -1248,7 +1248,7 @@ void spoton::slotSelectKernelPath(void)
   dialog.setDirectory(QDir::homePath());
   dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
   dialog.setAcceptMode(QFileDialog::AcceptOpen);
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #endif
 
@@ -2505,7 +2505,8 @@ void spoton::prepareListenerIPCombo(void)
     {
       QNetworkInterface interface(interfaces.takeFirst());
 
-      if(!(interface.flags() & QNetworkInterface::IsUp))
+      if(!interface.isvalid() || !(interface.flags() &
+				   QNetworkInterface::IsUp))
 	continue;
 
       QList<QNetworkAddressEntry> addresses(interface.addressEntries());
