@@ -9,7 +9,6 @@
         <file>modify.png</file>
         <file>quit.png</file>
         <file>search-active.png</file>
-        <file>tab-heart.png</file>
         <file>tab-management.png</file>
         <file>tab-neighbours.png</file>
         <file>tab-search.png</file>
@@ -30,5 +29,10 @@
         <file>tab-chat.png</file>
         <file>delete_all.png</file>
         <file>connect.png</file>
+        <file>permanent-friendship-confirmed.png</file>
+        <file>permanent-friendship-requested.png</file>
+        <file>neighbor-chat-approved.png</file>
+        <file>neighbor-chat-auto-approval.png</file>
+        <file>neighbor-chat-requested.png</file>
     </qresource>
 </RCC>
