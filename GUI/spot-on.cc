@@ -30,7 +30,12 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
+#ifdef Q_OS_WIN32
+#include <qt_windows.h>
+#include <QtNetwork>
+#else
 #include <QNetworkInterface>
+#endif
 #include <QProcess>
 #include <QSettings>
 #include <QSqlQuery>
@@ -41,10 +46,6 @@
 #include <QMacStyle>
 #endif
 #include <QtDebug>
-#ifdef Q_OS_WIN32
-#include <qt_windows.h>
-#include <QtNetwork>
-#endif
 
 #include <limits>
 
