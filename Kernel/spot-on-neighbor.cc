@@ -577,7 +577,11 @@ void spoton_neighbor::slotReadyRead(void)
 		     static_cast<size_t> (symmetricKey.length()),
 		     GCRY_STRONG_RANDOM);
 		  savePublicKey
-		    (name, publicKey, symmetricKey, symmetricKeyAlgorithm);
+		    (name,
+		     publicKey,
+		     symmetricKey,
+		     symmetricKeyAlgorithm,
+		     m_id);
 		}
 	      else
 		spoton_misc::logError
@@ -635,7 +639,11 @@ void spoton_neighbor::slotReadyRead(void)
 		    trimmed();
 		  data.remove(0, symmetricKeyAlgorithm.length());
 		  savePublicKey
-		    (name, publicKey, symmetricKey, symmetricKeyAlgorithm);
+		    (name,
+		     publicKey,
+		     symmetricKey,
+		     symmetricKeyAlgorithm,
+		     -1);
 		}
 	      else
 		spoton_misc::logError
@@ -685,10 +693,15 @@ void spoton_neighbor::slotConnected(void)
 void spoton_neighbor::savePublicKey(const QByteArray &name,
 				    const QByteArray &publicKey,
 				    const QByteArray &symmetricKey,
-				    const QByteArray &symmetricKeyAlgorithm)
+				    const QByteArray &symmetricKeyAlgorithm,
+				    const qint64 neighborOid)
 {
   /*
   ** Save a friendly key.
+  */
+
+  /*
+  ** If neighborOid is -1, we have bonded two neighbors.
   */
 
   {
@@ -730,7 +743,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 	query.bindValue(3, publicKey);
 	query.bindValue
 	  (4, spoton_gcrypt::sha512Hash(publicKey, &ok).toHex());
-	query.bindValue(5, m_id);
+	query.bindValue(5, neighborOid);
 	query.exec();
 	db.commit();
       }

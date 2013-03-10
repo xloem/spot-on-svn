@@ -65,7 +65,8 @@ class spoton_neighbor: public QTcpSocket
   void savePublicKey(const QByteArray &name,
 		     const QByteArray &publicKey,
 		     const QByteArray &symmetricKey,
-		     const QByteArray &symmetricKeyAlgorithm);
+		     const QByteArray &symmetricKeyAlgorithm,
+		     const qint64 neighborOid);
   void savePublicKey(const QByteArray &publicKey);
   void saveStatus(QSqlDatabase &db, const QString &status);
 
