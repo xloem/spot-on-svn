@@ -2506,7 +2506,7 @@ void spoton::prepareListenerIPCombo(void)
     {
       QNetworkInterface interface(interfaces.takeFirst());
 
-      if(!interface.isvalid() || !(interface.flags() &
+      if(!interface.isValid() || !(interface.flags() &
 				   QNetworkInterface::IsUp))
 	continue;
 
