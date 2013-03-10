@@ -28,6 +28,7 @@
 #ifndef _spoton_kernel_h_
 #define _spoton_kernel_h_
 
+#include <QFileSystemWatcher>
 #include <QHash>
 #include <QPointer>
 #include <QTimer>
@@ -49,6 +50,7 @@ class spoton_kernel: public QObject
   static spoton_gcrypt *s_crypt2;
 
  private:
+  QFileSystemWatcher m_settingsWatcher;
   QHash<qint64, QPointer<spoton_listener> > m_listeners;
   QHash<qint64, QPointer<spoton_neighbor> > m_neighbors;
   QTimer m_controlDatabaseTimer;
@@ -68,6 +70,7 @@ class spoton_kernel: public QObject
   void slotPublicKeyReceivedFromUI(const qint64 oid,
 				   const QByteArray &name,
 				   const QByteArray &publicKey);
+  void slotSettingsChanged(const QString &path);
 
  signals:
   void sendMessage(const QByteArray &message);

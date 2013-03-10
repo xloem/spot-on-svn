@@ -202,6 +202,11 @@ spoton_kernel::spoton_kernel(void):QObject(0)
      SLOT(slotPublicKeyReceivedFromUI(const qint64,
 				      const QByteArray &,
 				      const QByteArray &)));
+  m_settingsWatcher.addPath(settings.fileName());
+  connect(&m_settingsWatcher,
+	  SIGNAL(fileChanged(const QString &)),
+	  this,
+	  SLOT(slotSettingsChanged(const QString &)));
 }
 
 spoton_kernel::~spoton_kernel()
@@ -804,4 +809,20 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
       else
 	m_neighbors[oid]->flush();
     }
+}
+
+void spoton_kernel::slotSettingsChanged(const QString &path)
+{
+  Q_UNUSED(path);
+  s_settings.clear();
+
+  QSettings settings;
+
+  if(!settings.contains("kernel/maximum_number_of_bytes_buffered_by_neighbor"))
+    settings.setValue("kernel/maximum_number_of_bytes_buffered_by_neighbor",
+		      25000);
+
+  for(int i = 0; i < settings.allKeys().size(); i++)
+    s_settings[settings.allKeys().at(i)] = settings.value
+      (settings.allKeys().at(i));
 }
