@@ -120,7 +120,20 @@ void spoton_gui_server::slotReadyRead(void)
 	    {
 	      QByteArray message(list.takeFirst());
 
-	      if(message.startsWith("key_"))
+	      if(message.startsWith("befriendparticipant"))
+		{
+		  message.remove(0, strlen("befriendparticipant_"));
+
+		  QList<QByteArray> list(message.split('_'));
+
+		  emit publicKeyReceivedFromUI
+		    (list.value(0).toLongLong(),
+		     QByteArray::fromBase64(list.value(1)),
+		     QByteArray::fromBase64(list.value(2)),
+		     QByteArray::fromBase64(list.value(3)),
+		     QByteArray::fromBase64(list.value(4)));
+		}
+	      else if(message.startsWith("key_"))
 		{
 		  if(!spoton_kernel::s_crypt1)
 		    {
@@ -211,4 +224,6 @@ void spoton_gui_server::slotReceivedChatMessage(const QByteArray &message)
        write(message.constData(), message.length()) != message.length())
       spoton_misc::logError("spoton_gui_server::slotReceivedChatMessage(): "
 			    "write() failure.");
+    else
+      socket->flush();
 }

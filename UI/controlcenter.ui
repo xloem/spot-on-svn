@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>968</width>
-                <height>533</height>
+                <width>960</width>
+                <height>544</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -202,7 +202,7 @@
                    </item>
                    <item>
                     <property name="text">
-                     <string>POST</string>
+                     <string>Normal POST</string>
                     </property>
                    </item>
                   </widget>
@@ -860,8 +860,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>968</width>
-             <height>533</height>
+             <width>1020</width>
+             <height>566</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2125,7 +2125,7 @@
      <x>0</x>
      <y>0</y>
      <width>990</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

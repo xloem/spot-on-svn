@@ -288,7 +288,8 @@ spoton::spoton(void)
 #endif
 			   );
 
-  if(m_settings.value("gui/chatSendMethod", "GET").toString() == "GET")
+  if(m_settings.value("gui/chatSendMethod", "Artificial_GET").
+     toString() == "Artificial_GET")
     ui.chatSendMethod->setCurrentIndex(0);
   else
     ui.chatSendMethod->setCurrentIndex(1);
@@ -1910,8 +1911,17 @@ void spoton::slotShowContextMenu(const QPoint &point)
     }
   else
     {
-      menu.addAction(tr("&Remove"),
-		     this, SLOT(slotRemoveParticipants(void)));
+      QAction *action = menu.addAction
+	(tr("&Befriend Participant"),
+	 this, SLOT(slotSharePublicKeyWithParticipant(void)));
+      QTableWidgetItem *item = ui.participants->itemAt(point);
+
+      if(item && item->data(Qt::UserRole).toBool()) // Temporary?
+	action->setEnabled(true);
+      else
+	action->setEnabled(false);
+
+      menu.addAction(tr("&Remove"), this, SLOT(slotRemoveParticipants(void)));
       menu.exec(ui.participants->mapToGlobal(point));
     }
 }
@@ -1943,7 +1953,7 @@ void spoton::sendKeyToKernel(void)
 
       if(m_kernelSocket.write(key.constData(), key.length()) != key.length())
 	spoton_misc::logError
-	  ("spoton::sendKeyToKernel(): write failure.");
+	  ("spoton::sendKeyToKernel(): write() failure.");
       else
 	m_kernelSocket.flush();
     }
@@ -2190,6 +2200,7 @@ void spoton::slotPopulateParticipants(void)
 		      item->setToolTip(tr("You have not shared your "
 					  "key with %1.").arg(item->text()));
 
+		    item->setData(Qt::UserRole, temporary);
 		    ui.participants->setItem(row - 1, i, item);
 		  }
 
@@ -2337,54 +2348,34 @@ void spoton::slotSharePublicKey(void)
   if(oid.isEmpty())
     return;
 
-  QString sharedPath(spoton_misc::homePath() + QDir::separator() +
-		     "private_public_keys.db");
-  libspoton_error_t err = LIBSPOTON_ERROR_NONE;
-  libspoton_handle_t libspotonHandle;
+  QByteArray publicKey;
+  bool ok = true;
 
-  if(libspoton_init(sharedPath.toStdString().c_str(),
-		    &libspotonHandle) == LIBSPOTON_ERROR_NONE)
-    err = libspoton_populate_public_key(&libspotonHandle);
+  publicKey = m_crypt->publicKey(&ok);
 
-  if(err == LIBSPOTON_ERROR_NONE)
+  if(ok)
     {
-      size_t length = gcry_sexp_sprint(libspotonHandle.publicKey,
-				       GCRYSEXP_FMT_ADVANCED, 0, 0);
+      QByteArray message;
+      QByteArray name(m_settings.value("gui/nodeName").toByteArray());
 
-      if(length)
-	{
-	  QByteArray buffer(length, 0);
+      if(name.isEmpty())
+	name = "unknown";
 
-	  gcry_sexp_sprint
-	    (libspotonHandle.publicKey,
-	     GCRYSEXP_FMT_ADVANCED,
-	     static_cast<void *> (buffer.data()),
-	     static_cast<size_t> (buffer.length()));
+      message.append("sharepublickey_");
+      message.append(oid);
+      message.append("_");
+      message.append(name.toBase64());
+      message.append("_");
+      message.append(publicKey.toBase64());
+      message.append('\n');
 
-	  QByteArray message;
-	  QByteArray name(m_settings.value("gui/nodeName").toByteArray());
-
-	  if(name.isEmpty())
-	    name = "unknown";
-
-	  message.append("sharepublickey_");
-	  message.append(oid);
-	  message.append("_");
-	  message.append(name.toBase64());
-	  message.append("_");
-	  message.append(buffer.toBase64());
-	  message.append('\n');
-
-	  if(m_kernelSocket.write(message.constData(), message.length()) !=
-	     message.length())
-	    spoton_misc::logError
-	      ("spoton::slotSharePublicKey(): write() failure.");
-	  else
-	    m_kernelSocket.flush();
-	}
+      if(m_kernelSocket.write(message.constData(), message.length()) !=
+	 message.length())
+	spoton_misc::logError
+	  ("spoton::slotSharePublicKey(): write() failure.");
+      else
+	m_kernelSocket.flush();
     }
-
-  libspoton_close(&libspotonHandle);
 }
 
 void spoton::slotRemoveParticipants(void)
@@ -2559,12 +2550,63 @@ void spoton::slotListenerIPComboChanged(int index)
 void spoton::slotChatSendMethodChanged(int index)
 {
   if(index == 0)
-    m_settings["gui/chatSendMethod"] = "GET";
+    m_settings["gui/chatSendMethod"] = "Artificial_GET";
   else
-    m_settings["gui/chatSendMethod"] = "POST";
+    m_settings["gui/chatSendMethod"] = "Normal_POST";
 
   QSettings settings;
 
   settings.setValue
     ("gui/chatSendMethod", m_settings.value("gui/chatSendMethod").toString());
+}
+
+void spoton::slotSharePublicKeyWithParticipant(void)
+{
+  if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+
+  QString oid("");
+  int row = -1;
+
+  if((row = ui.neighbors->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = ui.neighbors->item
+	(row, ui.neighbors->columnCount() - 1);
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  QByteArray publicKey;
+  bool ok = true;
+
+  publicKey = m_crypt->publicKey(&ok);
+
+  if(ok)
+    {
+      QByteArray message;
+      QByteArray name(m_settings.value("gui/nodeName").toByteArray());
+
+      if(name.isEmpty())
+	name = "unknown";
+
+      message.append("befriendparticipant_");
+      message.append(oid);
+      message.append("_");
+      message.append(name.toBase64());
+      message.append("_");
+      message.append(publicKey.toBase64());
+      message.append('\n');
+
+      if(m_kernelSocket.write(message.constData(), message.length()) !=
+	 message.length())
+	spoton_misc::logError
+	  ("spoton::slotSharePublicKeyWithParticipant(): "
+	   "write() failure.");
+      else
+	m_kernelSocket.flush();
+    }
 }

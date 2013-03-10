@@ -49,6 +49,10 @@ class spoton_neighbor: public QTcpSocket
   ~spoton_neighbor();
   qint64 id(void) const;
   void setId(const qint64 id);
+  void sharePublicKey(const QByteArray &name,
+		      const QByteArray &publicKey,
+		      const QByteArray &symmetricKey,
+		      const QByteArray &symmetricKeyAlgorithm);
 
  private:
   QByteArray m_data;
@@ -65,7 +69,6 @@ class spoton_neighbor: public QTcpSocket
 		     const QByteArray &symmetricKeyAlgorithm);
   void savePublicKey(const QByteArray &publicKey);
   void saveStatus(QSqlDatabase &db, const QString &status);
-  void sharePublicKey(void);
 
  private slots:
   void slotConnected(void);

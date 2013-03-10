@@ -70,6 +70,11 @@ class spoton_kernel: public QObject
   void slotPublicKeyReceivedFromUI(const qint64 oid,
 				   const QByteArray &name,
 				   const QByteArray &publicKey);
+  void slotPublicKeyReceivedFromUI(const qint64 oid,
+				   const QByteArray &name,
+				   const QByteArray &publicKey,
+				   const QByteArray &symmetricKey,
+				   const QByteArray &symmetricKeyAlgorithm);
   void slotSettingsChanged(const QString &path);
 
  signals:

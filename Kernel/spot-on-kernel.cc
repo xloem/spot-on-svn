@@ -202,6 +202,19 @@ spoton_kernel::spoton_kernel(void):QObject(0)
      SLOT(slotPublicKeyReceivedFromUI(const qint64,
 				      const QByteArray &,
 				      const QByteArray &)));
+  connect
+    (m_guiServer,
+     SIGNAL(publicKeyReceivedFromUI(const qint64,
+				    const QByteArray &,
+				    const QByteArray &,
+				    const QByteArray &,
+				    const QByteArray &)),
+     this,
+     SLOT(slotPublicKeyReceivedFromUI(const qint64,
+				      const QByteArray &,
+				      const QByteArray &,
+				      const QByteArray &,
+				      const QByteArray &)));
   m_settingsWatcher.addPath(settings.fileName());
   connect(&m_settingsWatcher,
 	  SIGNAL(fileChanged(const QString &)),
@@ -809,6 +822,18 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
       else
 	m_neighbors[oid]->flush();
     }
+}
+
+void spoton_kernel::slotPublicKeyReceivedFromUI
+(const qint64 oid,
+ const QByteArray &name,
+ const QByteArray &publicKey,
+ const QByteArray &symmetricKey,
+ const QByteArray &symmetricKeyAlgorithm)
+{
+  if(m_neighbors.contains(oid))
+    m_neighbors[oid]->sharePublicKey
+      (name, publicKey, symmetricKey, symmetricKeyAlgorithm);
 }
 
 void spoton_kernel::slotSettingsChanged(const QString &path)

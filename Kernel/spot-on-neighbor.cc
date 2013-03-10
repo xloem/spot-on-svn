@@ -258,6 +258,9 @@ void spoton_neighbor::saveStatus(QSqlDatabase &db, const QString &status)
 
 void spoton_neighbor::slotSendKeys(void)
 {
+  if(state() != QAbstractSocket::ConnectedState)
+    return;
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
       ("QSQLITE", "neighbor_" + QString::number(s_dbId));
@@ -838,12 +841,15 @@ void spoton_neighbor::slotLifetimeExpired(void)
   abort();
 }
 
-void spoton_neighbor::sharePublicKey(void)
+void spoton_neighbor::sharePublicKey(const QByteArray &name,
+				     const QByteArray &publicKey,
+				     const QByteArray &symmetricKey,
+				     const QByteArray &symmetricKeyAlgorithm)
 {
+  if(state() != QAbstractSocket::ConnectedState)
+    return;
+
   QByteArray message;
-  QByteArray publicKey; // Receipient's public key.
-  QByteArray symmetricKey;
-  QByteArray symmetricKeyAlgorithm;
 
   message.append(symmetricKey);
   message.append(symmetricKeyAlgorithm.
@@ -858,36 +864,31 @@ void spoton_neighbor::sharePublicKey(void)
 
   if(ok)
     {
-      QByteArray name
-	(spoton_kernel::s_settings.value("gui/nodeName").
-	 toByteArray().trimmed());
-
-      name = name.leftJustified
-	(spoton_send::NAME_MAXIMUM_LENGTH, '\n');
-
-      QByteArray publicKey
+      QByteArray publicKey // My public key.
 	(spoton_kernel::s_crypt1->publicKey(&ok));
 
       if(ok)
 	{
 	  message.append('\n');
-	  message.append(name);
+	  message.append
+	    (name.leftJustified(spoton_send::NAME_MAXIMUM_LENGTH, '\n'));
 	  message.append(publicKey);
 	  message = spoton_send::message0012(message);
 
-	  if(write(message.constData(), message.length()) !=
-	     message.length())
+	  if(write(message.constData(), message.length()) != message.length())
 	    spoton_misc::logError
-	      ("spoton_neighbor::slotReadyRead(): "
+	      ("spoton_neighbor::sharePublicKey(): "
 	       "write() failure.");
+	  else
+	    flush();
 	}
       else
 	spoton_misc::logError
-	  ("spoton_neighbor::slotReadyRead(): "
+	  ("spoton_neighbor::sharePublicKey(): "
 	   "publicKey() failure.");
     }
   else
     spoton_misc::logError
-      ("spoton_neighbor::slotReadyRead(): "
+      ("spoton_neighbor::sharePublicKey(): "
        "publicKeyEncrypt() failure.");
 }
