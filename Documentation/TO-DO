@@ -33,7 +33,7 @@ Ideas
        Auto-fetching needs a checkbox. Fetching is undefined.
 
        Add one listener before the kernel can be activated?. No,
-       a kernel's importance is not defined by listners.
+       a kernel's importance is not defined by listeners.
 
        When listeners are only used as servers, add the name of the IRC
        channel. Listeners are always servers.
