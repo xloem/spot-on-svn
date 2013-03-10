@@ -41,6 +41,10 @@
 #include <QMacStyle>
 #endif
 #include <QtDebug>
+#ifdef Q_OS_WIN32
+#include <qt_windows.h>
+#include <QtNetwork>
+#endif
 
 #include <limits>
 
