@@ -2197,7 +2197,7 @@ void spoton::slotPopulateParticipants(void)
 		    if(!temporary)
 		      item->setIcon(QIcon(":/addkey.png"));
 		    else
-		      item->setToolTip(tr("You have not shared your "
+		      item->setToolTip(tr("You have not shared your public "
 					  "key with %1.").arg(item->text()));
 
 		    item->setData(Qt::UserRole, temporary);
@@ -2251,8 +2251,8 @@ void spoton::slotSendMessage(void)
       if(item)
 	{
 	  QByteArray message("");
-	  QByteArray name(m_settings.value("gui/nodeName").toByteArray().
-			  trimmed());
+	  QByteArray name(m_settings.value("gui/nodeName", "unknown").
+			  toByteArray().trimmed());
 
 	  if(name.isEmpty())
 	    name = "unknown";
@@ -2356,7 +2356,8 @@ void spoton::slotSharePublicKey(void)
   if(ok)
     {
       QByteArray message;
-      QByteArray name(m_settings.value("gui/nodeName").toByteArray());
+      QByteArray name(m_settings.value("gui/nodeName", "unknown").
+		      toByteArray().trimmed());
 
       if(name.isEmpty())
 	name = "unknown";
@@ -2562,16 +2563,17 @@ void spoton::slotChatSendMethodChanged(int index)
 
 void spoton::slotSharePublicKeyWithParticipant(void)
 {
-  if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+  if(!m_crypt)
+    return;
+  else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
     return;
 
   QString oid("");
   int row = -1;
 
-  if((row = ui.neighbors->currentRow()) >= 0)
+  if((row = ui.participants->currentRow()) >= 0)
     {
-      QTableWidgetItem *item = ui.neighbors->item
-	(row, ui.neighbors->columnCount() - 1);
+      QTableWidgetItem *item = ui.participants->item(row, 1);
 
       if(item)
 	oid = item->text();
@@ -2581,32 +2583,65 @@ void spoton::slotSharePublicKeyWithParticipant(void)
     return;
 
   QByteArray publicKey;
-  bool ok = true;
+  QByteArray symmetricKey;
+  QByteArray symmetricKeyAlgorithm;
 
-  publicKey = m_crypt->publicKey(&ok);
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_database");
 
-  if(ok)
-    {
-      QByteArray message;
-      QByteArray name(m_settings.value("gui/nodeName").toByteArray());
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_symmetric_keys.db");
 
-      if(name.isEmpty())
-	name = "unknown";
+    if(db.open())
+      {
+	QSqlQuery query(db);
 
-      message.append("befriendparticipant_");
-      message.append(oid);
-      message.append("_");
-      message.append(name.toBase64());
-      message.append("_");
-      message.append(publicKey.toBase64());
-      message.append('\n');
+	query.setForwardOnly(true);
 
-      if(m_kernelSocket.write(message.constData(), message.length()) !=
-	 message.length())
-	spoton_misc::logError
-	  ("spoton::slotSharePublicKeyWithParticipant(): "
-	   "write() failure.");
-      else
-	m_kernelSocket.flush();
-    }
+	if(query.exec(QString("SELECT public_key, symmetric_key, "
+			      "symmetric_key_algorithm "
+			      "FROM symmetric_keys WHERE "
+			      "OID = %1").arg(oid)))
+	  if(query.next())
+	    {
+	      bool ok = true;
+
+	      publicKey = query.value(0).toByteArray();
+	      symmetricKey = m_crypt->decrypted
+		(QByteArray::fromBase64(query.value(1).toByteArray()),
+		 &ok);
+	      symmetricKeyAlgorithm = m_crypt->decrypted
+		(QByteArray::fromBase64(query.value(2).toByteArray()),
+		 &ok);
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_database");
+
+  if(publicKey.isEmpty() ||
+     symmetricKey.isEmpty() || symmetricKeyAlgorithm.isEmpty())
+    return;
+
+  QByteArray message;
+
+  message.append("befriendparticipant_");
+  message.append(oid);
+  message.append("_");
+  message.append(publicKey.toBase64());
+  message.append("_");
+  message.append(symmetricKey.toBase64());
+  message.append("_");
+  message.append(symmetricKeyAlgorithm.toBase64());
+  message.append('\n');
+
+  if(m_kernelSocket.write(message.constData(), message.length()) !=
+     message.length())
+    spoton_misc::logError
+      ("spoton::slotSharePublicKeyWithParticipant(): "
+       "write() failure.");
+  else
+    m_kernelSocket.flush();
 }

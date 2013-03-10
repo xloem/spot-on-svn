@@ -841,8 +841,7 @@ void spoton_neighbor::slotLifetimeExpired(void)
   abort();
 }
 
-void spoton_neighbor::sharePublicKey(const QByteArray &name,
-				     const QByteArray &publicKey,
+void spoton_neighbor::sharePublicKey(const QByteArray &publicKey,
 				     const QByteArray &symmetricKey,
 				     const QByteArray &symmetricKeyAlgorithm)
 {
@@ -864,6 +863,13 @@ void spoton_neighbor::sharePublicKey(const QByteArray &name,
 
   if(ok)
     {
+      QByteArray name // My name.
+	(spoton_kernel::s_settings.value("gui/nodeName", "unknown").
+	 toByteArray().trimmed());
+
+      if(name.isEmpty())
+	name = "unknown";
+
       QByteArray publicKey // My public key.
 	(spoton_kernel::s_crypt1->publicKey(&ok));
 

@@ -207,11 +207,9 @@ spoton_kernel::spoton_kernel(void):QObject(0)
      SIGNAL(publicKeyReceivedFromUI(const qint64,
 				    const QByteArray &,
 				    const QByteArray &,
-				    const QByteArray &,
 				    const QByteArray &)),
      this,
      SLOT(slotPublicKeyReceivedFromUI(const qint64,
-				      const QByteArray &,
 				      const QByteArray &,
 				      const QByteArray &,
 				      const QByteArray &)));
@@ -826,14 +824,13 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
 
 void spoton_kernel::slotPublicKeyReceivedFromUI
 (const qint64 oid,
- const QByteArray &name,
  const QByteArray &publicKey,
  const QByteArray &symmetricKey,
  const QByteArray &symmetricKeyAlgorithm)
 {
   if(m_neighbors.contains(oid))
     m_neighbors[oid]->sharePublicKey
-      (name, publicKey, symmetricKey, symmetricKeyAlgorithm);
+      (publicKey, symmetricKey, symmetricKeyAlgorithm);
 }
 
 void spoton_kernel::slotSettingsChanged(const QString &path)

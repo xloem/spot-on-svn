@@ -49,8 +49,7 @@ class spoton_neighbor: public QTcpSocket
   ~spoton_neighbor();
   qint64 id(void) const;
   void setId(const qint64 id);
-  void sharePublicKey(const QByteArray &name,
-		      const QByteArray &publicKey,
+  void sharePublicKey(const QByteArray &publicKey,
 		      const QByteArray &symmetricKey,
 		      const QByteArray &symmetricKeyAlgorithm);
 

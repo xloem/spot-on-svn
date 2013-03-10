@@ -120,7 +120,7 @@ void spoton_gui_server::slotReadyRead(void)
 	    {
 	      QByteArray message(list.takeFirst());
 
-	      if(message.startsWith("befriendparticipant"))
+	      if(message.startsWith("befriendparticipant_"))
 		{
 		  message.remove(0, strlen("befriendparticipant_"));
 
@@ -130,8 +130,7 @@ void spoton_gui_server::slotReadyRead(void)
 		    (list.value(0).toLongLong(),
 		     QByteArray::fromBase64(list.value(1)),
 		     QByteArray::fromBase64(list.value(2)),
-		     QByteArray::fromBase64(list.value(3)),
-		     QByteArray::fromBase64(list.value(4)));
+		     QByteArray::fromBase64(list.value(3)));
 		}
 	      else if(message.startsWith("key_"))
 		{
