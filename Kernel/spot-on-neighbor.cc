@@ -899,7 +899,35 @@ void spoton_neighbor::sharePublicKey(const QByteArray &publicKey,
 	      ("spoton_neighbor::sharePublicKey(): "
 	       "write() failure.");
 	  else
-	    flush();
+	    {
+	      flush();
+
+	      {
+		QSqlDatabase db = QSqlDatabase::addDatabase
+		  ("QSQLITE", "neighbor_" + QString::number(s_dbId));
+
+		db.setDatabaseName
+		  (spoton_misc::homePath() + QDir::separator() +
+		   "friends_symmetric_keys.db");
+
+		if(db.open())
+		  {
+		    QSqlQuery query(db);
+
+		    query.prepare("UPDATE symmetric_keys SET "
+				  "neighbor_oid = -1 WHERE neighbor_oid = "
+				  "?");
+		    query.bindValue(0, m_id);
+		    query.exec();
+		    db.commit();
+		  }
+
+		db.close();
+	      }
+
+	      QSqlDatabase::removeDatabase
+		("neighbor_" + QString::number(s_dbId));
+	    }
 	}
       else
 	spoton_misc::logError
