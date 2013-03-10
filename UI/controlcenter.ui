@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>960</width>
-                <height>544</height>
+                <width>968</width>
+                <height>533</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -860,8 +860,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>975</width>
-             <height>566</height>
+             <width>968</width>
+             <height>533</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -985,7 +985,7 @@
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_10">
                    <item>
-                    <widget class="QCheckBox" name="checkBox">
+                    <widget class="QCheckBox" name="showOnlyOnlineListeners">
                      <property name="text">
                       <string>Show Only Online Listeners</string>
                      </property>
@@ -2125,7 +2125,7 @@
      <x>0</x>
      <y>0</y>
      <width>990</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2192,7 +2192,7 @@
   <tabstop>deactivateKernel</tabstop>
   <tabstop>kernelPath</tabstop>
   <tabstop>selectKernelPath</tabstop>
-  <tabstop>checkBox</tabstop>
+  <tabstop>showOnlyOnlineListeners</tabstop>
   <tabstop>listeners</tabstop>
   <tabstop>deleteListener</tabstop>
   <tabstop>deleteAllListeners</tabstop>

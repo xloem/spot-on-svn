@@ -85,6 +85,7 @@ class spoton: public QMainWindow
   void slotMaximumClientsChanged(int index);
   void slotNeighborCheckChange(int state);
   void slotOnlyConnectedNeighborsToggled(bool state);
+  void slotOnlyOnlineListenersToggled(bool state);
   void slotPopulateListeners(void);
   void slotPopulateNeighbors(void);
   void slotPopulateParticipants(void);

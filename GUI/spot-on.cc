@@ -191,6 +191,10 @@ spoton::spoton(void)
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotOnlyConnectedNeighborsToggled(bool)));
+  connect(ui.showOnlyOnlineListeners,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotOnlyOnlineListenersToggled(bool)));
   connect(ui.pushButtonMakeFriends,
 	  SIGNAL(clicked(bool)),
 	  this,
@@ -301,6 +305,8 @@ spoton::spoton(void)
 #endif
   ui.showOnlyConnectedNeighbors->setChecked
     (m_settings.value("gui/showOnlyConnectedNeighbors", false).toBool());
+  ui.showOnlyOnlineListeners->setChecked
+    (m_settings.value("gui/showOnlyOnlineListeners", false).toBool());
 
   /*
   ** Please don't translate n/a.
@@ -772,11 +778,14 @@ void spoton::slotPopulateListeners(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT status_control, ip_address, port, status, "
-		      "protocol, scope_id, connections, "
-		      "maximum_clients, OID "
-		      "FROM listeners WHERE "
-		      "status_control <> 'deleted'"))
+	if(query.exec(QString("SELECT status_control, ip_address, port, "
+			      "status, "
+			      "protocol, scope_id, connections, "
+			      "maximum_clients, OID "
+			      "FROM listeners WHERE "
+			      "status_control <> 'deleted' %1").
+		      arg(ui.showOnlyOnlineListeners->isChecked() ?
+			  "AND status = 'online'" : "")))
 	  {
 	    row = 0;
 
@@ -1279,6 +1288,8 @@ void spoton::saveSettings(void)
 		    ui.neighborsVerticalSplitter->saveState());
   settings.setValue("gui/showOnlyConnectedNeighbors",
 		    ui.showOnlyConnectedNeighbors->isChecked());
+  settings.setValue("gui/showOnlyOnlineListeners",
+		    ui.showOnlyOnlineListeners->isChecked());
 }
 
 void spoton::closeEvent(QCloseEvent *event)
@@ -2467,6 +2478,16 @@ void spoton::slotOnlyConnectedNeighborsToggled(bool state)
 
   settings.setValue("gui/showOnlyConnectedNeighbors", state);
   m_neighborsLastModificationTime = QDateTime();
+}
+
+void spoton::slotOnlyOnlineListenersToggled(bool state)
+{
+  m_settings["gui/showOnlyOnlineListeners"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/showOnlyOnlineListeners", state);
+  m_listenersLastModificationTime = QDateTime();
 }
 
 void spoton::prepareListenerIPCombo(void)
