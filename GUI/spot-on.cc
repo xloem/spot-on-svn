@@ -2587,6 +2587,7 @@ void spoton::slotSharePublicKeyWithParticipant(void)
   if(oid.isEmpty())
     return;
 
+  QString neighborOid("");
   QByteArray publicKey;
   QByteArray symmetricKey;
   QByteArray symmetricKeyAlgorithm;
@@ -2603,7 +2604,8 @@ void spoton::slotSharePublicKeyWithParticipant(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec(QString("SELECT public_key, symmetric_key, "
+	if(query.exec(QString("SELECT neighbor_oid, "
+			      "public_key, symmetric_key, "
 			      "symmetric_key_algorithm "
 			      "FROM symmetric_keys WHERE "
 			      "OID = %1").arg(oid)))
@@ -2611,12 +2613,13 @@ void spoton::slotSharePublicKeyWithParticipant(void)
 	    {
 	      bool ok = true;
 
-	      publicKey = query.value(0).toByteArray();
+	      neighborOid = query.value(0).toString();
+	      publicKey = query.value(1).toByteArray();
 	      symmetricKey = m_crypt->decrypted
-		(QByteArray::fromBase64(query.value(1).toByteArray()),
+		(QByteArray::fromBase64(query.value(2).toByteArray()),
 		 &ok);
 	      symmetricKeyAlgorithm = m_crypt->decrypted
-		(QByteArray::fromBase64(query.value(2).toByteArray()),
+		(QByteArray::fromBase64(query.value(3).toByteArray()),
 		 &ok);
 	    }
       }
@@ -2628,12 +2631,17 @@ void spoton::slotSharePublicKeyWithParticipant(void)
 
   if(publicKey.isEmpty() ||
      symmetricKey.isEmpty() || symmetricKeyAlgorithm.isEmpty())
-    return;
+    {
+      spoton_misc::logError("spoton::slotSharePublicKeyWithParticipant(): "
+			    "publicKey, or symmetricKey, or "
+			    "symmetricKeyAlgorithm is empty.");
+      return;
+    }
 
   QByteArray message;
 
   message.append("befriendparticipant_");
-  message.append(oid);
+  message.append(neighborOid);
   message.append("_");
   message.append(publicKey.toBase64());
   message.append("_");

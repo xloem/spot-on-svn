@@ -836,6 +836,10 @@ void spoton_kernel::slotPublicKeyReceivedFromUI
   if(m_neighbors.contains(oid))
     m_neighbors[oid]->sharePublicKey
       (publicKey, symmetricKey, symmetricKeyAlgorithm);
+  else
+    spoton_misc::logError
+      (QString("spoton_kernel::slotPublicKeyReceivedFromUI(): "
+	       "neighbor %1 not found.").arg(oid));
 }
 
 void spoton_kernel::slotSettingsChanged(const QString &path)
