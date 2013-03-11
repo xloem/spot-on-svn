@@ -1918,7 +1918,8 @@ void spoton::slotShowContextMenu(const QPoint &point)
   else
     {
       QAction *action = menu.addAction
-    (QIcon(":/permanent-friendship-confirmed.png"), tr("&Add participant as friend"),
+	(QIcon(":/permanent-friendship-confirmed.png"),
+	 tr("&Add participant as friend."),
 	 this, SLOT(slotSharePublicKeyWithParticipant(void)));
       QTableWidgetItem *item = ui.participants->itemAt(point);
 
@@ -1927,7 +1928,8 @@ void spoton::slotShowContextMenu(const QPoint &point)
       else
 	action->setEnabled(false);
 
-      menu.addAction(QIcon(":/delete.png"), tr("&Remove"), this, SLOT(slotRemoveParticipants(void)));
+      menu.addAction(QIcon(":/delete.png"), tr("&Remove"), this, 
+		     SLOT(slotRemoveParticipants(void)));
       menu.exec(ui.participants->mapToGlobal(point));
     }
 }
