@@ -2203,21 +2203,19 @@ void spoton::slotPopulateParticipants(void)
 		      (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
 		    if(!temporary)
-                {
-		      item->setIcon
-                (QIcon(":/plist_confirmed_as_permanent_friend.png"));
-              item->setToolTip(tr("%1 is a permanent friend.").
-                       arg(item->text()));
-                }
-
-		    else
-
 		      {
 			item->setIcon
-              (QIcon(":/plist_connected_neighbour.png"));
-            item->setToolTip(tr("Neighbor %1 requests a chat with you. "
-                        "You can add this participant as a permanent friend.").
+			  (QIcon(":/plist_confirmed_as_permanent_friend.png"));
+			item->setToolTip(tr("%1 is a permanent friend.").
 					 arg(item->text()));
+		      }
+		    else
+		      {
+			item->setIcon
+			  (QIcon(":/plist_connected_neighbour.png"));
+			item->setToolTip
+			  (tr("%1 requests your friendship.").
+			   arg(item->text()));
 		      }
 
 		    item->setData(Qt::UserRole, temporary);
