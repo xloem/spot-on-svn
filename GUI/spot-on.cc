@@ -1918,7 +1918,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
   else
     {
       QAction *action = menu.addAction
-    (QIcon(":/add-neighbor-to-chat.png"),
+    (QIcon(":/plist_confirmed_as_permanent_friend.png"),
      tr("&Add participant as friend"),
 	 this, SLOT(slotSharePublicKeyWithParticipant(void)));
       QTableWidgetItem *item = ui.participants->itemAt(point);
