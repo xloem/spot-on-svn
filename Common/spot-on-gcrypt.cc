@@ -1123,10 +1123,10 @@ QByteArray spoton_gcrypt::publicKeyEncrypt(const QByteArray &data,
 
 		  if(buffer)
 		    {
-		      if((err = gcry_sexp_sprint(encodedData_t,
-						 GCRYSEXP_FMT_ADVANCED,
-						 static_cast<void *> (buffer),
-						 length)) != 0)
+		      if(gcry_sexp_sprint(encodedData_t,
+					  GCRYSEXP_FMT_ADVANCED,
+					  static_cast<void *> (buffer),
+					  length) != 0)
 			{
 			  if(ok)
 			    *ok = true;
@@ -1139,9 +1139,8 @@ QByteArray spoton_gcrypt::publicKeyEncrypt(const QByteArray &data,
 			    *ok = false;
 
 			  spoton_misc::logError
-			    (QString("spoton_gcrypt()::publicKeyEncrypt(): "
-				     "gcry_sexp_sprint() failure (%1).").
-			     arg(gcry_strerror(err)));
+			    ("spoton_gcrypt()::publicKeyEncrypt(): "
+			     "gcry_sexp_sprint() failure.");
 			}
 		    }
 		  else
@@ -1413,13 +1412,11 @@ QByteArray spoton_gcrypt::publicKey(bool *ok)
 	{
 	  publicKey.resize(length);
 
-	  gcry_error_t err = 0;
-
-	  if((err = gcry_sexp_sprint(libspotonHandle.publicKey,
-				     GCRYSEXP_FMT_ADVANCED,
-				     static_cast<void *> (publicKey.data()),
-				     static_cast<size_t> (publicKey.
-							  length()))) != 0)
+	  if(gcry_sexp_sprint(libspotonHandle.publicKey,
+			      GCRYSEXP_FMT_ADVANCED,
+			      static_cast<void *> (publicKey.data()),
+			      static_cast<size_t> (publicKey.
+						   length())) != 0)
 	    {
 	      if(ok)
 		*ok = true;
@@ -1430,8 +1427,8 @@ QByteArray spoton_gcrypt::publicKey(bool *ok)
 		*ok = false;
 
 	      spoton_misc::logError
-		(QString("spoton_gcrypt::publicKey(): gcry_sexp_sprint() "
-			 "failure (%1).").arg(gcry_strerror(err)));
+		("spoton_gcrypt::publicKey(): gcry_sexp_sprint() "
+		 "failure.");
 	    }
 	}
       else

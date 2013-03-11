@@ -46,8 +46,9 @@ class spoton_kernel: public QObject
   spoton_kernel(void);
   ~spoton_kernel();
   static QHash<QString, QVariant> s_settings;
-  static spoton_gcrypt *s_crypt1;
-  static spoton_gcrypt *s_crypt2;
+  static spoton_gcrypt *s_crypt1; // private_public_keys.db
+  static spoton_gcrypt *s_crypt2; // shared.db
+  static const short MESSAGE_TTL = 16;
 
  private:
   QFileSystemWatcher m_settingsWatcher;
