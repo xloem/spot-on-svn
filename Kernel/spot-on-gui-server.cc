@@ -134,34 +134,35 @@ void spoton_gui_server::slotReadyRead(void)
 		}
 	      else if(message.startsWith("key_"))
 		{
+		  message.remove(0, strlen("key_"));
+		  message = message.trimmed();
+		  message = QByteArray::fromBase64(message);
+
 		  if(!spoton_kernel::s_crypt1)
-		    {
-		      message.remove(0, strlen("key_"));
-		      message = message.trimmed();
-		      message = QByteArray::fromBase64(message);
-		      spoton_kernel::s_crypt1 = new spoton_gcrypt
-			(spoton_kernel::s_settings.value("gui/cipherType").
-			 toString().trimmed(),
-			 spoton_kernel::s_settings.value("gui/hashType").
-			 toString().trimmed(), message,
-			 spoton_kernel::s_settings.value("gui/saltLength",
-							 256).toInt(),
-			 spoton_kernel::s_settings.value("gui/iterationCount",
-							 1000).toInt(),
-			 spoton_misc::homePath() + QDir::separator() +
-			 "private_public_keys.db");
-		      spoton_kernel::s_crypt2 = new spoton_gcrypt
-			(spoton_kernel::s_settings.value("gui/cipherType").
-			 toString().trimmed(),
-			 spoton_kernel::s_settings.value("gui/hashType").
-			 toString().trimmed(), message,
-			 spoton_kernel::s_settings.value("gui/saltLength",
-							 256).toInt(),
-			 spoton_kernel::s_settings.value("gui/iterationCount",
-							 1000).toInt(),
-			 spoton_misc::homePath() + QDir::separator() +
-			 "shared.db");
-		    }
+		    spoton_kernel::s_crypt1 = new spoton_gcrypt
+		      (spoton_kernel::s_settings.value("gui/cipherType").
+		       toString().trimmed(),
+		       spoton_kernel::s_settings.value("gui/hashType").
+		       toString().trimmed(), message,
+		       spoton_kernel::s_settings.value("gui/saltLength",
+						       256).toInt(),
+		       spoton_kernel::s_settings.value("gui/iterationCount",
+						       1000).toInt(),
+		       spoton_misc::homePath() + QDir::separator() +
+		       "private_public_keys.db");
+
+		  if(!spoton_kernel::s_crypt2)
+		    spoton_kernel::s_crypt2 = new spoton_gcrypt
+		      (spoton_kernel::s_settings.value("gui/cipherType").
+		       toString().trimmed(),
+		       spoton_kernel::s_settings.value("gui/hashType").
+		       toString().trimmed(), message,
+		       spoton_kernel::s_settings.value("gui/saltLength",
+						       256).toInt(),
+		       spoton_kernel::s_settings.value("gui/iterationCount",
+						       1000).toInt(),
+		       spoton_misc::homePath() + QDir::separator() +
+		       "shared.db");
 		}
 	      else if(message.startsWith("message_"))
 		{

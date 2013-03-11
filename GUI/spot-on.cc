@@ -1722,7 +1722,7 @@ void spoton::slotSetPassphrase(void)
 
       QMessageBox::information
 	(this, tr("Spot-On: Information"),
-	 tr("Your RSA keys and the passphrase have been been recorded. "
+	 tr("Your RSA keys and the passphrase have been recorded. "
 	    "You are now ready to use the full power of Spot-On. Enjoy!"));
 
       QMessageBox mb(this);

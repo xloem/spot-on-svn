@@ -371,27 +371,33 @@ void spoton_kernel::prepareListeners(void)
 
 		  if(s_crypt1)
 		    {
-		      bool ok = true;
+		      QList<QByteArray> list;
 
-		      listener = new spoton_listener
-			(s_crypt1->
-			 decrypted(QByteArray::fromBase64(query.
-							  value(0).
-							  toByteArray()),
-				   &ok).constData(),
-			 s_crypt1->
-			 decrypted(QByteArray::fromBase64(query.
-							  value(1).
-							  toByteArray()),
-				   &ok).constData(),
-			 s_crypt1->
-			 decrypted(QByteArray::fromBase64(query.
-							  value(2).
-							  toByteArray()),
-				   &ok).constData(),
-			 query.value(4).toInt(),
-			 query.value(5).toLongLong(),
-			 this);
+		      for(int i = 0; i < 3; i++)
+			{
+			  QByteArray bytes;
+			  bool ok = true;
+
+			  bytes = s_crypt1->
+			    decrypted(QByteArray::fromBase64(query.
+							     value(i).
+							     toByteArray()),
+				      &ok);
+
+			  if(ok)
+			    list.append(bytes);
+			  else
+			    break;
+			}
+
+		      if(list.size() == 3)
+			listener = new spoton_listener
+			  (list.at(0).constData(),
+			   list.at(1).constData(),
+			   list.at(2).constData(),
+			   query.value(4).toInt(),
+			   query.value(5).toLongLong(),
+			   this);
 		    }
 		  else
 		    listener = new spoton_listener
@@ -445,7 +451,7 @@ void spoton_kernel::prepareListeners(void)
 	  (QString("spoton_kernel::prepareListeners(): "
 		   "listener %1 "
 		   " may have been deleted from the listeners table by an"
-		   " external event. Purging listener from listeners "
+		   " external event. Purging listener from the listeners "
 		   "hash.").
 	   arg(m_listeners.keys().at(i)));
 	m_listeners.remove(m_listeners.keys().at(i));
@@ -482,26 +488,32 @@ void spoton_kernel::prepareNeighbors(void)
 
 		  if(s_crypt1)
 		    {
-		      bool ok = true;
+		      QList<QByteArray> list;
 
-		      neighbor = new spoton_neighbor
-			(s_crypt1->
-			 decrypted(QByteArray::fromBase64(query.
-							  value(0).
-							  toByteArray()),
-				   &ok).constData(),
-			 s_crypt1->
-			 decrypted(QByteArray::fromBase64(query.
-							  value(1).
-							  toByteArray()),
-				   &ok).constData(),
-			 s_crypt1->
-			 decrypted(QByteArray::fromBase64(query.
-							  value(1).
-							  toByteArray()),
-				   &ok).constData(),
-			 query.value(4).toLongLong(),
-			 this);
+		      for(int i = 0; i < 3; i++)
+			{
+			  QByteArray bytes;
+			  bool ok = true;
+
+			  bytes = s_crypt1->
+			    decrypted(QByteArray::fromBase64(query.
+							     value(i).
+							     toByteArray()),
+				      &ok);
+
+			  if(ok)
+			    list.append(bytes);
+			  else
+			    break;
+			}
+
+		      if(list.size() == 3)
+			neighbor = new spoton_neighbor
+			  (list.at(0).constData(),
+			   list.at(1).constData(),
+			   list.at(2).constData(),
+			   query.value(4).toLongLong(),
+			   this);
 		    }
 		  else
 		    neighbor = new spoton_neighbor
@@ -581,8 +593,8 @@ void spoton_kernel::prepareNeighbors(void)
 	spoton_misc::logError
 	  (QString("spoton_kernel::prepareNeighbors(): "
 		   "neighbor %1 "
-		   " may have been deleted from the neighbor table by an"
-		   " external event. Purging neighbor from neighbors "
+		   " may have been deleted from the neighbors table by an"
+		   " external event. Purging neighbor from the neighbors "
 		   "hash.").arg(m_neighbors.keys().at(i)));
 	m_neighbors.remove(m_neighbors.keys().at(i));
       }
@@ -825,6 +837,10 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
       else
 	m_neighbors[oid]->flush();
     }
+  else
+    spoton_misc::logError
+      (QString("spoton_kernel::slotPublicKeyReceivedFromUI(): "
+	       "neighbor %1 not found in m_neighbors.").arg(oid));
 }
 
 void spoton_kernel::slotPublicKeyReceivedFromUI
@@ -839,7 +855,7 @@ void spoton_kernel::slotPublicKeyReceivedFromUI
   else
     spoton_misc::logError
       (QString("spoton_kernel::slotPublicKeyReceivedFromUI(): "
-	       "neighbor %1 not found.").arg(oid));
+	       "neighbor %1 not found in m_neighbors.").arg(oid));
 }
 
 void spoton_kernel::slotSettingsChanged(const QString &path)
