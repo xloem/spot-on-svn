@@ -30,10 +30,8 @@
         <file>tab-chat.png</file>
         <file>delete_all.png</file>
         <file>connect.png</file>
-        <file>permanent-friendship-confirmed.png</file>
-        <file>permanent-friendship-requested.png</file>
-        <file>neighbor-chat-approved.png</file>
-        <file>neighbor-chat-auto-approval.png</file>
-        <file>neighbor-chat-requested.png</file>
+        <file>add-neighbor-to-chat.png</file>
+        <file>plist_confirmed_as_permanent_friend.png</file>
+        <file>plist_connected_neighbour.png</file>
     </qresource>
 </RCC>
