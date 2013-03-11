@@ -367,7 +367,7 @@ void spoton_kernel::prepareListeners(void)
 
 	      if(!m_listeners.contains(id))
 		{
-		  spoton_listener *listener = 0;
+		  QPointer<spoton_listener> listener = 0;
 
 		  if(s_crypt1)
 		    {
@@ -484,7 +484,7 @@ void spoton_kernel::prepareNeighbors(void)
 
 	      if(!m_neighbors.contains(id))
 		{
-		  spoton_neighbor *neighbor = 0;
+		  QPointer<spoton_neighbor> neighbor = 0;
 
 		  if(s_crypt1)
 		    {
@@ -525,39 +525,7 @@ void spoton_kernel::prepareNeighbors(void)
 
 		  if(neighbor)
 		    {
-		      connect
-			(neighbor,
-			 SIGNAL(receivedChatMessage(const QByteArray &)),
-			 m_guiServer,
-			 SLOT(slotReceivedChatMessage(const QByteArray &)));
-		      connect(neighbor,
-			      SIGNAL(receivedChatMessage(const QByteArray &,
-							 const qint64)),
-			      this,
-			      SIGNAL(receivedChatMessage(const QByteArray &,
-							 const qint64)));
-		      connect(neighbor,
-			      SIGNAL(receivedPublicKey(const QByteArray &,
-						       const qint64)),
-			      this,
-			      SIGNAL(receivedPublicKey(const QByteArray &,
-						       const qint64)));
-		      connect(this,
-			      SIGNAL(sendMessage(const QByteArray &)),
-			      neighbor,
-			      SLOT(slotSendMessage(const QByteArray &)));
-		      connect(this,
-			      SIGNAL(receivedChatMessage(const QByteArray &,
-							 const qint64)),
-			      neighbor,
-			      SLOT(slotReceivedChatMessage(const QByteArray &,
-							   const qint64)));
-		      connect(this,
-			      SIGNAL(receivedPublicKey(const QByteArray &,
-						       const qint64)),
-			      neighbor,
-			      SLOT(slotReceivedPublicKey(const QByteArray &,
-							 const qint64)));
+		      connectSignalsToNeighbor(neighbor);
 		      m_neighbors.insert(id, neighbor);
 		    }
 		}
@@ -654,27 +622,7 @@ void spoton_kernel::slotNewNeighbor(QPointer<spoton_neighbor> neighbor)
       if(!m_neighbors.contains(id))
 	{
 	  neighbor->setParent(this);
-	  connect
-	    (neighbor,
-	     SIGNAL(receivedChatMessage(const QByteArray &)),
-	     m_guiServer,
-	     SLOT(slotReceivedChatMessage(const QByteArray &)));
-	  connect(neighbor,
-		  SIGNAL(receivedPublicKey(const QByteArray &,
-					   const qint64)),
-		  this,
-		  SIGNAL(receivedPublicKey(const QByteArray &,
-					   const qint64)));
-	  connect(this,
-		  SIGNAL(sendMessage(const QByteArray &)),
-		  neighbor,
-		  SLOT(slotSendMessage(const QByteArray &)));
-	  connect(this,
-		  SIGNAL(receivedPublicKey(const QByteArray &,
-					   const qint64)),
-		  neighbor,
-		  SLOT(slotReceivedPublicKey(const QByteArray &,
-					     const qint64)));
+	  connectSignalsToNeighbor(neighbor);
 	  m_neighbors.insert(id, neighbor);
 	}
     }
@@ -895,4 +843,43 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
   for(int i = 0; i < settings.allKeys().size(); i++)
     s_settings[settings.allKeys().at(i)] = settings.value
       (settings.allKeys().at(i));
+}
+
+void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
+{
+  if(!neighbor)
+    return;
+
+  connect(neighbor,
+	  SIGNAL(receivedChatMessage(const QByteArray &)),
+	  m_guiServer,
+	  SLOT(slotReceivedChatMessage(const QByteArray &)));
+  connect(neighbor,
+	  SIGNAL(receivedChatMessage(const QByteArray &,
+				     const qint64)),
+	  this,
+	  SIGNAL(receivedChatMessage(const QByteArray &,
+				     const qint64)));
+  connect(neighbor,
+	  SIGNAL(receivedPublicKey(const QByteArray &,
+				   const qint64)),
+	  this,
+	  SIGNAL(receivedPublicKey(const QByteArray &,
+				   const qint64)));
+  connect(this,
+	  SIGNAL(sendMessage(const QByteArray &)),
+	  neighbor,
+	  SLOT(slotSendMessage(const QByteArray &)));
+  connect(this,
+	  SIGNAL(receivedChatMessage(const QByteArray &,
+				     const qint64)),
+	  neighbor,
+	  SLOT(slotReceivedChatMessage(const QByteArray &,
+				       const qint64)));
+  connect(this,
+	  SIGNAL(receivedPublicKey(const QByteArray &,
+				   const qint64)),
+	  neighbor,
+	  SLOT(slotReceivedPublicKey(const QByteArray &,
+				     const qint64)));
 }

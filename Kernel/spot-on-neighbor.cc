@@ -493,6 +493,8 @@ void spoton_neighbor::slotReadyRead(void)
 		      else
 			emit receivedChatMessage(originalData, m_id);
 		    }
+		  else
+		    emit receivedChatMessage(originalData, m_id);
 		}
 	      else
 		spoton_misc::logError

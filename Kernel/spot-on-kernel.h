@@ -59,6 +59,7 @@ class spoton_kernel: public QObject
   void checkForTermination(void);
   void cleanup(void);
   void cleanupDatabases(void);
+  void connectSignalsToNeighbor(spoton_neighbor *neighbor);
   void copyPublicKey(void);
   void prepareListeners(void);
   void prepareNeighbors(void);
