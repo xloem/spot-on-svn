@@ -369,7 +369,7 @@
                 </property>
                 <property name="icon">
                  <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
+                  <normaloff>:/add-neighbor-to-chat.png</normaloff>:/add-neighbor-to-chat.png</iconset>
                 </property>
                </widget>
               </item>

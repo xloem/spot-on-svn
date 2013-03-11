@@ -1911,14 +1911,14 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("Delete &All"),
 		     this, SLOT(slotDeleteAllNeighbors(void)));
       menu.addSeparator();
-      menu.addAction(QIcon(":/addkey.png"), tr("&Share Public Key"),
+      menu.addAction(QIcon(":/add-neighbor-to-chat.png"), tr("&Share Public Key"),
 		     this, SLOT(slotSharePublicKey(void)));
       menu.exec(ui.neighbors->mapToGlobal(point));
     }
   else
     {
       QAction *action = menu.addAction
-	(QIcon(":/permanent-friendship-confirmed.png"),
+    (QIcon(":/add-neighbor-to-chat.png"),
      tr("&Add participant as friend"),
 	 this, SLOT(slotSharePublicKeyWithParticipant(void)));
       QTableWidgetItem *item = ui.participants->itemAt(point);
@@ -2204,11 +2204,11 @@ void spoton::slotPopulateParticipants(void)
 
 		    if(!temporary)
 		      item->setIcon
-			(QIcon(":/permanent-friendship-confirmed.png"));
+                (QIcon(":/plist_confirmed_as_permanent_friend.png"));
 		    else
 		      {
 			item->setIcon
-			  (QIcon(":/permanent-friendship-requested.png"));
+              (QIcon(":/plist_connected_neighbour.png"));
             item->setToolTip(tr("%1 requests your friendship. "
                         "Please add this participant as friend.").
 					 arg(item->text()));
