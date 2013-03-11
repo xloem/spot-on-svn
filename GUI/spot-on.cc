@@ -1912,7 +1912,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
   else
     {
       QAction *action = menu.addAction
-	(tr("&Befriend Participant"),
+    (QIcon(":/permanent-friendship-confirmed.png"), tr("&Add participant as friend"),
 	 this, SLOT(slotSharePublicKeyWithParticipant(void)));
       QTableWidgetItem *item = ui.participants->itemAt(point);
 
@@ -1921,7 +1921,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
       else
 	action->setEnabled(false);
 
-      menu.addAction(tr("&Remove"), this, SLOT(slotRemoveParticipants(void)));
+      menu.addAction(QIcon(":/delete.png"), tr("&Remove"), this, SLOT(slotRemoveParticipants(void)));
       menu.exec(ui.participants->mapToGlobal(point));
     }
 }
@@ -2505,7 +2505,7 @@ void spoton::prepareListenerIPCombo(void)
       QNetworkInterface interface(interfaces.takeFirst());
 
       if(!interface.isValid() || !(interface.flags() &
-				   QNetworkInterface::IsUp))
+                   QNetworkInterface::IsUp))
 	continue;
 
       QList<QNetworkAddressEntry> addresses(interface.addressEntries());
