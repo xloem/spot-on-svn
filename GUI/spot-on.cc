@@ -2209,8 +2209,8 @@ void spoton::slotPopulateParticipants(void)
 		      {
 			item->setIcon
 			  (QIcon(":/permanent-friendship-requested.png"));
-			item->setToolTip(tr("%1 requested your friendship. "
-					    "Please share the love.").
+            item->setToolTip(tr("%1 requests your friendship. "
+                        "Please add this participant as friend.").
 					 arg(item->text()));
 		      }
 
