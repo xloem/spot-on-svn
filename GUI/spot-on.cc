@@ -2196,13 +2196,14 @@ void spoton::slotPopulateParticipants(void)
 
 		    if(!temporary)
 		      item->setIcon
-			(QIcon(":/neighbor-chat-approved.png"));
+			(QIcon(":/permanent-friendship-confirmed.png"));
 		    else
 		      {
 			item->setIcon
-			  (QIcon("neighbor-chat-requested.png"));
-			item->setToolTip(tr("You have not befriended "
-					    "%1.").arg(item->text()));
+			  (QIcon(":/permanent-friendship-requested.png"));
+			item->setToolTip(tr("%1 requested your friendship. "
+					    "Please share the love.").
+					 arg(item->text()));
 		      }
 
 		    item->setData(Qt::UserRole, temporary);
