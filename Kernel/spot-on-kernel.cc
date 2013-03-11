@@ -819,7 +819,19 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 		      memcpy(&c, static_cast<void *> (&ttl), 1);
 		      data.prepend(hash.toHex());
 		      data.prepend(c);
-		      emit sendMessage(spoton_send::message0000(data));
+
+		      if(s_settings.value("gui/chatSendMethod",
+					  "Artificial_GET").toString().
+			 trimmed() == "Artificial_GET")
+			emit sendMessage
+			  (spoton_send::message0000(data,
+						    spoton_send::
+						    ARTIFICIAL_GET));
+		      else
+			emit sendMessage
+			  (spoton_send::message0000(data,
+						    spoton_send::
+						    NORMAL_POST));
 		    }
 		}
 	    }

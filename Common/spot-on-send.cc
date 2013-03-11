@@ -29,13 +29,18 @@
 
 #include "spot-on-send.h"
 
-QByteArray spoton_send::message0000(const QByteArray &message)
+QByteArray spoton_send::message0000(const QByteArray &message,
+				    const spoton_send_method sendMethod)
 {
   QByteArray results;
 
+  if(sendMethod == ARTIFICIAL_GET)
+    results.append("HTTP/1.1 200 OK\r\n");
+  else
+    results.append("POST /echo/ HTTP/1.1\r\n");
+
   results.append
-    ("POST /echo/ HTTP/1.1\r\n"
-     "Content-Type: application/x-www-form-urlencoded\r\n"
+    ("Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
      "type=0000&content=%2\r\n"

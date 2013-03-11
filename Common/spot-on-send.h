@@ -33,11 +33,18 @@
 class spoton_send
 {
  public:
+  enum spoton_send_method
+  {
+    ARTIFICIAL_GET = 0,
+    NORMAL_POST
+  };
   static const int NAME_MAXIMUM_LENGTH = 64;
   static const int SHA512_HEX_OUTPUT_MAXIMUM_LENGTH = 128;
   static const int SYMMETRIC_KEY_MAXIMUM_LENGTH = 64;
   static const int SYMMETRIC_KEY_ALGORITHM_MAXIMUM_LENGTH = 16;
-  static QByteArray message0000(const QByteArray &message);
+  static QByteArray message0000
+    (const QByteArray &message,
+     const spoton_send_method sendMethod = NORMAL_POST);
   static QByteArray message0010(const QByteArray &publicKey);
   static QByteArray message0011(const QByteArray &name,
 				const QByteArray &publicKey);

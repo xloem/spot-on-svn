@@ -1923,7 +1923,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 	 this, SLOT(slotSharePublicKeyWithParticipant(void)));
       QTableWidgetItem *item = ui.participants->itemAt(point);
 
-      if(item && item->data(Qt::UserRole).toBool()) // Temporary?
+      if(item && item->data(Qt::UserRole).toBool()) // Temporary friend?
 	action->setEnabled(true);
       else
 	action->setEnabled(false);
