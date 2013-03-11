@@ -61,8 +61,8 @@ spoton_gui_server::~spoton_gui_server()
       {
 	QSqlQuery query(db);
 
-	query.exec("DELETE FROM kernel_gui_server");
-	db.commit();
+	if(query.exec("DELETE FROM kernel_gui_server"))
+	  db.commit();
       }
 
     db.close();
@@ -207,8 +207,9 @@ void spoton_gui_server::slotTimeout(void)
 	query.prepare("INSERT INTO kernel_gui_server (port) "
 		      "VALUES (?)");
 	query.bindValue(0, serverPort());
-	query.exec();
-	db.commit();
+
+	if(query.exec())
+	  db.commit();
       }
 
     db.close();

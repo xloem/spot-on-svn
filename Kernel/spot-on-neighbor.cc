@@ -146,8 +146,9 @@ spoton_neighbor::~spoton_neighbor()
 	query.prepare("DELETE FROM symmetric_keys WHERE "
 		      "neighbor_oid = ?");
 	query.bindValue(0, m_id);
-	query.exec();
-	db.commit();
+
+	if(query.exec())
+	  db.commit();
       }
 
     db.close();
@@ -165,18 +166,22 @@ spoton_neighbor::~spoton_neighbor()
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool ok1 = true;
+	bool ok2 = true;
 
 	query.prepare("DELETE FROM neighbors WHERE "
 		      "OID = ? AND status_control = 'deleted'");
 	query.bindValue(0, m_id);
-	query.exec();
+	ok1 = query.exec();
 	query.prepare("UPDATE neighbors SET local_ip_address = '127.0.0.1', "
 		      "local_port = 0, "
 		      "status = 'disconnected' "
 		      "WHERE OID = ?");
 	query.bindValue(0, m_id);
-	query.exec();
-	db.commit();
+	ok2 = query.exec();
+
+	if(ok1 && ok2)
+	  db.commit();
       }
 
     db.close();
@@ -252,8 +257,9 @@ void spoton_neighbor::saveStatus(QSqlDatabase &db, const QString &status)
 		"WHERE OID = ? AND status <> 'deleted'");
   query.bindValue(0, status);
   query.bindValue(1, m_id);
-  query.exec();
-  db.commit();
+
+  if(query.exec())
+    db.commit();
 }
 
 void spoton_neighbor::slotSendKeys(void)
@@ -433,8 +439,8 @@ void spoton_neighbor::slotReadyRead(void)
 				      "HEX(public_key_hash) = HEX(?)");
 			query.bindValue(0, hash);
 
-			if(query.exec())
-			  if(query.next())
+			if((ok = query.exec()))
+			  if((ok = query.next()))
 			    {
 			      QByteArray symmetricKey
 				(QByteArray::fromBase64(query.value(0).
@@ -481,7 +487,7 @@ void spoton_neighbor::slotReadyRead(void)
 		      data.remove(0, hash1.length());
 		      hash2 = spoton_gcrypt::sha512Hash(data, &ok).toHex();
 
-		      if(hash1 == hash2)
+		      if(ok && hash1 == hash2)
 			emit receivedChatMessage
 			  ("message_" + data.toBase64().append('\n'));
 		      else
@@ -680,8 +686,9 @@ void spoton_neighbor::slotConnected(void)
 	query.bindValue(0, localAddress().toString());
 	query.bindValue(1, localPort());
 	query.bindValue(2, m_id);
-	query.exec();
-	db.commit();
+
+	if(query.exec())
+	  db.commit();
       }
 
     db.close();
@@ -730,9 +737,11 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 	    query.bindValue
 	      (1, spoton_kernel::s_crypt1->encrypted(symmetricKey,
 						     &ok).toBase64());
-	    query.bindValue
-	      (2, spoton_kernel::s_crypt1->encrypted(symmetricKeyAlgorithm,
-						     &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(2, spoton_kernel::s_crypt1->encrypted(symmetricKeyAlgorithm,
+						       &ok).toBase64());
 	  }
 	else
 	  {
@@ -741,11 +750,16 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 	  }
 
 	query.bindValue(3, publicKey);
-	query.bindValue
-	  (4, spoton_gcrypt::sha512Hash(publicKey, &ok).toHex());
+
+	if(ok)
+	  query.bindValue
+	    (4, spoton_gcrypt::sha512Hash(publicKey, &ok).toHex());
+
 	query.bindValue(5, neighborOid);
-	query.exec();
-	db.commit();
+
+	if(ok)
+	  if(query.exec())
+	    db.commit();
       }
 
     db.close();
@@ -775,8 +789,9 @@ void spoton_neighbor::savePublicKey(const QByteArray &publicKey)
 	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("INSERT INTO public_keys (key) VALUES (?)");
 	query.bindValue(0, publicKey);
-	query.exec();
-	db.commit();
+
+	if(query.exec())
+	  db.commit();
       }
 
     db.close();
@@ -918,8 +933,9 @@ void spoton_neighbor::sharePublicKey(const QByteArray &publicKey,
 				  "neighbor_oid = -1 WHERE neighbor_oid = "
 				  "?");
 		    query.bindValue(0, m_id);
-		    query.exec();
-		    db.commit();
+
+		    if(query.exec())
+		      db.commit();
 		  }
 
 		db.close();

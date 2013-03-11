@@ -260,8 +260,8 @@ void spoton_kernel::cleanupDatabases(void)
 	** Delete symmetric keys that were not completely shared.
 	*/
 
-	query.exec("DELETE FROM symmetric_keys WHERE neighbor_oid <> -1");
-	db.commit();
+	if(query.exec("DELETE FROM symmetric_keys WHERE neighbor_oid <> -1"))
+	  db.commit();
       }
 
     db.close();
@@ -279,8 +279,8 @@ void spoton_kernel::cleanupDatabases(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("DELETE FROM kernel_gui_server");
-	db.commit();
+	if(query.exec("DELETE FROM kernel_gui_server"))
+	  db.commit();
       }
 
     db.close();
@@ -298,10 +298,10 @@ void spoton_kernel::cleanupDatabases(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("UPDATE listeners SET connections = 0, "
-		   "status = 'off' WHERE status = 'online' AND "
-		   "status_control <> 'deleted'");
-	db.commit();
+	if(query.exec("UPDATE listeners SET connections = 0, "
+		      "status = 'off' WHERE status = 'online' AND "
+		      "status_control <> 'deleted'"))
+	  db.commit();
       }
 
     db.close();
@@ -319,11 +319,11 @@ void spoton_kernel::cleanupDatabases(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("UPDATE neighbors SET local_ip_address = '127.0.0.1', "
-		   "local_port = 0, "
-		   "status = 'disconnected' WHERE "
-		   "status = 'connected' AND status_control <> 'deleted'");
-	db.commit();
+	if(query.exec("UPDATE neighbors SET local_ip_address = '127.0.0.1', "
+		      "local_port = 0, "
+		      "status = 'disconnected' WHERE "
+		      "status = 'connected' AND status_control <> 'deleted'"))
+	  db.commit();
       }
 
     db.close();
@@ -720,8 +720,9 @@ void spoton_kernel::copyPublicKey(void)
 		    query.exec("PRAGMA synchronous = OFF");
 		    query.prepare("INSERT INTO public_keys (key) VALUES (?)");
 		    query.bindValue(0, buffer);
-		    query.exec();
-		    db.commit();
+
+		    if(query.exec())
+		      db.commit();
 		  }
 
 		db.close();
