@@ -150,6 +150,8 @@ QByteArray spoton_gcrypt::derivedKey(const QString &cipherType,
 				     const QByteArray &salt,
 				     QString &error)
 {
+  init();
+
 #if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
   QByteArray derivedKey;
   char *key = 0;
@@ -257,6 +259,8 @@ QByteArray spoton_gcrypt::saltedPassphraseHash(const QString &hashType,
 					       const QByteArray &salt,
 					       QString &error)
 {
+  init();
+
   QByteArray saltedPassphraseHash;
   QString saltedPassphrase;
   int hashAlgorithm = gcry_md_map_name(hashType.toLatin1().constData());
@@ -344,6 +348,8 @@ void spoton_gcrypt::reencodePrivateKey(const QString &newCipher,
 				       const QString &databaseFileName,
 				       QString &error)
 {
+  init();
+
   if(!oldPassphrase)
     {
       error = QObject::tr("oldPassphrase is 0.");
@@ -384,8 +390,6 @@ void spoton_gcrypt::reencodePrivateKey(const QString &newCipher,
 			    "table.");
       return;
     }
-
-  init();
 
   QByteArray encryptedData;
   QByteArray originalLength;
@@ -1016,12 +1020,14 @@ QByteArray spoton_gcrypt::keyedHash(const QByteArray &data, bool *ok)
 QByteArray spoton_gcrypt::sha1Hash(const QByteArray &data,
 				   bool *ok)
 {
+  init();
   return shaXHash(GCRY_MD_SHA1, data, ok);
 }
 
 QByteArray spoton_gcrypt::sha512Hash(const QByteArray &data,
 				     bool *ok)
 {
+  init();
   return shaXHash(GCRY_MD_SHA512, data, ok);
 }
 
@@ -1029,6 +1035,8 @@ QByteArray spoton_gcrypt::shaXHash(const int algorithm,
 				   const QByteArray &data,
 				   bool *ok)
 {
+  init();
+
   QByteArray hash;
   unsigned int length = gcry_md_get_algo_dlen(algorithm);
 
@@ -1061,6 +1069,8 @@ QByteArray spoton_gcrypt::publicKeyEncrypt(const QByteArray &data,
 					   const QByteArray &publicKey,
 					   bool *ok)
 {
+  init();
+
   QByteArray encrypted;
   gcry_error_t err = 0;
   gcry_sexp_t key_t = 0;
