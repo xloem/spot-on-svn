@@ -471,15 +471,16 @@ void spoton_gcrypt::reencodePrivateKey(const QString &newCipher,
 
       in >> s;
 
-      if(s > 0 && s <= data.length())
+      if(s >= 0 && s <= data.length())
 	data = data.mid(0, s);
       else
 	{
 	  error = QObject::tr("The length of the decrypted data is "
 			      "irregular.");
 	  spoton_misc::logError
-	    ("spoton_gcrypt::reencodePrivateKey(): The length of the "
-	     "decrypted data is irregular.");
+	    (QString("spoton_gcrypt::reencodePrivateKey(): The length (%1) "
+		     "of the "
+		     "decrypted data is irregular.").arg(s));
 	  goto error_label;
 	}
     }
@@ -760,7 +761,7 @@ QByteArray spoton_gcrypt::decrypted(const QByteArray &data, bool *ok)
 
 	      in >> s;
 
-	      if(s > 0 && s <= decrypted.length())
+	      if(s >= 0 && s <= decrypted.length())
 		{
 		  if(ok)
 		    *ok = true;
@@ -773,8 +774,9 @@ QByteArray spoton_gcrypt::decrypted(const QByteArray &data, bool *ok)
 		    *ok = false;
 
 		  spoton_misc::logError
-		    ("spoton_gcrypt::decrypted(): The length of the "
-		     "decrypted data is irregular.");
+		    (QString("spoton_gcrypt::decrypted(): The length (%1) "
+			     "of the "
+			     "decrypted data is irregular.").arg(s));
 		}
 	    }
 	  else

@@ -299,7 +299,6 @@ spoton::spoton(void)
   ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
 		       toByteArray()).trimmed());
-  ui.tab->setFocus();
   ui.cipherType->clear();
   ui.cipherType->addItems(spoton_gcrypt::cipherTypes());
 #if SPOTON_MINIMUM_GCRYPT_VERSION < 0x010500
@@ -355,7 +354,6 @@ spoton::spoton(void)
     {
       ui.passphrase1->setText("0000000000");
       ui.passphrase2->setText("0000000000");
-      ui.passphrase->setFocus();
       ui.rsaKeySize->setEnabled(false);
 
       for(int i = 0; i < ui.tab->count(); i++)
@@ -368,6 +366,8 @@ spoton::spoton(void)
 	  }
 	else
 	  ui.tab->setTabEnabled(i, false);
+
+      ui.passphrase->setFocus();
     }
   else
     {
@@ -376,6 +376,7 @@ spoton::spoton(void)
       ui.passphraseLabel->setEnabled(false);
       ui.kernelBox->setEnabled(false);
       ui.listenersBox->setEnabled(false);
+      ui.resetSpotOn->setEnabled(false);
 
       for(int i = 0; i < ui.tab->count(); i++)
 	if(ui.tab->tabBar()->tabData(i).toString() == "page_4")
@@ -387,6 +388,8 @@ spoton::spoton(void)
 	  }
 	else
 	  ui.tab->setTabEnabled(i, false);
+
+      ui.passphrase1->setFocus();
     }
 
   if(m_settings.contains("gui/chatHorizontalSplitter"))
@@ -669,14 +672,14 @@ void spoton::slotAddNeighbor(void)
 	    query.bindValue
 	      (4, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
 	    query.bindValue
-	      (6, m_crypt->encrypted(QByteArray(), &ok).toBase64());
+	      (6, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
 	    query.bindValue
 	      (7, m_crypt->keyedHash((ip + port).toLatin1(), &ok).toBase64());
 	  }
 	else
 	  {
 	    query.bindValue(4, port);
-	    query.bindValue(6, QVariant());
+	    query.bindValue(6, scopeId);
 	    query.bindValue(7, ip + port);
 	  }
 
