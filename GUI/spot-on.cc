@@ -1523,14 +1523,17 @@ void spoton::slotSetPassphrase(void)
   ** Create the RSA public and private keys.
   */
 
-  if(!reencode)
-    {
-      statusBar()->showMessage
-	(tr("Generating keys. Please be patient."));
-#ifdef Q_OS_MAC
-      QApplication::processEvents();
+  statusBar()->showMessage
+    (tr(
+#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
+	"Generating a derived key. Please be patient."
+#else
+	"Preparing the passphrase. Please be patient."
 #endif
-    }
+	));
+#ifdef Q_OS_MAC
+  QApplication::processEvents();
+#endif
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
