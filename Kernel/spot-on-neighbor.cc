@@ -372,7 +372,8 @@ void spoton_neighbor::slotReadyRead(void)
 	      QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
 	      QByteArray originalData(data); /*
 					     ** We may need to echo the
-					     ** message.
+					     ** message. Don't forget to
+					     ** decrease the TTL!
 					     */
 
 	      m_data.remove(0, data.length());
@@ -490,11 +491,23 @@ void spoton_neighbor::slotReadyRead(void)
 		      if(ok && hash1 == hash2)
 			emit receivedChatMessage
 			  ("message_" + data.toBase64().append('\n'));
-		      else
-			emit receivedChatMessage(originalData, m_id);
+		      else if(ttl > 0)
+			{
+			  /*
+			  ** Replace TTL.
+			  */
+
+			  emit receivedChatMessage(originalData, m_id);
+			}
 		    }
-		  else
-		    emit receivedChatMessage(originalData, m_id);
+		  else if(ttl > 0)
+		    {
+		      /*
+		      ** Replace TTL.
+		      */
+
+		      emit receivedChatMessage(originalData, m_id);
+		    }
 		}
 	      else
 		spoton_misc::logError
