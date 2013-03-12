@@ -718,6 +718,9 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 				    const QByteArray &symmetricKeyAlgorithm,
 				    const qint64 neighborOid)
 {
+  if(!spoton_kernel::s_crypt1)
+    return;
+
   /*
   ** Save a friendly key.
   */
@@ -725,6 +728,8 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
   /*
   ** If neighborOid is -1, we have bonded two neighbors.
   */
+
+  QList<QByteArray> list;
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
@@ -737,50 +742,104 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
     if(db.open())
       {
 	QSqlQuery query(db);
+	int value = -10;
 
-	query.exec("PRAGMA synchronous = OFF");
-	query.prepare("INSERT OR REPLACE INTO symmetric_keys "
-		      "(name, symmetric_key, symmetric_key_algorithm, "
-		      "public_key, public_key_hash, neighbor_oid) "
-		      "VALUES (?, ?, ?, ?, ?, ?)");
-	query.bindValue(0, name);
-
-	bool ok = true;
-
-	if(spoton_kernel::s_crypt1)
+	if(neighborOid != -1)
 	  {
-	    query.bindValue
-	      (1, spoton_kernel::s_crypt1->encrypted(symmetricKey,
-						     &ok).toBase64());
+	    /*
+	    ** We have received a request for friendship.
+	    ** Do we already have the neighbor's public key?
+	    */
+
+	    query.prepare("SELECT neighbor_oid, "
+			  "symmetric_key, symmetric_key_algorithm "
+			  "FROM symmetric_keys "
+			  "WHERE public_key = ?");
+	    query.bindValue(0, publicKey);
+
+	    if(query.exec())
+	      if(query.next())
+		value = query.value(0).toInt();
+	  }
+
+	if(value != -1)
+	  {
+	    query.exec("PRAGMA synchronous = OFF");
+	    query.prepare("INSERT OR REPLACE INTO symmetric_keys "
+			  "(name, symmetric_key, symmetric_key_algorithm, "
+			  "public_key, public_key_hash, neighbor_oid) "
+			  "VALUES (?, ?, ?, ?, ?, ?)");
+	    query.bindValue(0, name);
+
+	    bool ok = true;
+
+	    if(spoton_kernel::s_crypt1)
+	      {
+		query.bindValue
+		  (1, spoton_kernel::s_crypt1->encrypted(symmetricKey,
+							 &ok).toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (2,
+		     spoton_kernel::s_crypt1->encrypted(symmetricKeyAlgorithm,
+							&ok).toBase64());
+	      }
+	    else
+	      {
+		query.bindValue(1, symmetricKey);
+		query.bindValue(2, symmetricKeyAlgorithm);
+	      }
+
+	    query.bindValue(3, publicKey);
 
 	    if(ok)
 	      query.bindValue
-		(2, spoton_kernel::s_crypt1->encrypted(symmetricKeyAlgorithm,
-						       &ok).toBase64());
+		(4, spoton_gcrypt::sha512Hash(publicKey, &ok).toHex());
+
+	    query.bindValue(5, neighborOid);
+
+	    if(ok)
+	      if(query.exec())
+		db.commit();
 	  }
 	else
 	  {
-	    query.bindValue(1, symmetricKey);
-	    query.bindValue(2, symmetricKeyAlgorithm);
+	    /*
+	    ** We received a key from a neighbor. We already have
+	    ** this approved key. We need to resend the
+	    ** symmetric bundle.
+	    */
+
+	    QByteArray bytes1;
+	    QByteArray bytes2;
+	    bool ok = true;
+
+	    if(ok)
+	      bytes1 = spoton_kernel::s_crypt1->decrypted
+		(QByteArray::fromBase64(query.value(1).toByteArray()),
+		 &ok);
+
+	    if(ok)
+	      bytes2 = spoton_kernel::s_crypt1->decrypted
+		(QByteArray::fromBase64(query.value(2).toByteArray()),
+		 &ok);
+
+	    if(ok)
+	      {
+		list.append(bytes1);
+		list.append(bytes2);
+	      }
 	  }
-
-	query.bindValue(3, publicKey);
-
-	if(ok)
-	  query.bindValue
-	    (4, spoton_gcrypt::sha512Hash(publicKey, &ok).toHex());
-
-	query.bindValue(5, neighborOid);
-
-	if(ok)
-	  if(query.exec())
-	    db.commit();
       }
 
     db.close();
   }
 
   QSqlDatabase::removeDatabase("neighbor_" + QString::number(s_dbId));
+
+  if(!list.isEmpty())
+    sharePublicKey(publicKey, list.value(0), list.value(1));
 }
 
 void spoton_neighbor::savePublicKey(const QByteArray &publicKey)

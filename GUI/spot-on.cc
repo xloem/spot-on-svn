@@ -1911,15 +1911,16 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("Delete &All"),
 		     this, SLOT(slotDeleteAllNeighbors(void)));
       menu.addSeparator();
-      menu.addAction(QIcon(":/add-neighbor-to-chat.png"), tr("&Share Public Key"),
+      menu.addAction(QIcon(":/add-neighbor-to-chat.png"),
+		     tr("&Share Public Key"),
 		     this, SLOT(slotSharePublicKey(void)));
       menu.exec(ui.neighbors->mapToGlobal(point));
     }
   else
     {
       QAction *action = menu.addAction
-    (QIcon(":/plist_confirmed_as_permanent_friend.png"),
-     tr("&Add participant as friend"),
+	(QIcon(":/plist_confirmed_as_permanent_friend.png"),
+	 tr("&Add participant as friend."),
 	 this, SLOT(slotSharePublicKeyWithParticipant(void)));
       QTableWidgetItem *item = ui.participants->itemAt(point);
 
