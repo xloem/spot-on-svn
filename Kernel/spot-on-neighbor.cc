@@ -361,196 +361,10 @@ void spoton_neighbor::slotReadyRead(void)
 		 "spoton_kernel::s_crypt1 is 0.");
 	    }
 	  else
-	    {
-	      length -= strlen("type=0000&content=");
-
-	      /*
-	      ** We may have received a chat message. Let's see if the message
-	      ** is intended for us.
-	      */
-
-	      QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
-	      QByteArray originalData(data); /*
-					     ** We may need to echo the
-					     ** message. Don't forget to
-					     ** decrease the TTL!
-					     */
-
-	      m_data.remove(0, data.length());
-	      data.remove
-		(0,
-		 data.indexOf("type=0000&content=") +
-		 strlen("type=0000&content="));
-
-	      if(length == data.length())
-		{
-		  /*
-		  ** OK, here's what we're going to do.
-		  ** First, we need to convert data from Base64.
-		  ** Second, decrypt the data with the symmetric key.
-		  ** Third, retrieve the checksum from the decrypted data.
-		  ** Fourth, compare the checksum with the computed checksum
-		  ** of the remaining data.
-		  ** Fifth, if the checksums are identical, forward the
-		  ** message to the UI. Otherwise, decrement TTL and
-		  ** forward the original message to the other neighbors if
-		  ** TTL is greater than zero.
-		  */
-
-		  data = QByteArray::fromBase64(data);
-
-		  bool ok = true;
-		  short ttl = 0;
-
-		  if(!data.isEmpty())
-		    memcpy(static_cast<void *> (&ttl),
-			   static_cast<const void *> (data.constData()), 1);
-
-		  if(ttl > 0)
-		    ttl -= 1;
-
-		  data.remove(0, 1); // Remove TTL.
-
-		  /*
-		  ** Find the symmetric key.
-		  */
-
-		  QByteArray hash
-		    (data.mid(0,
-			      spoton_send::SHA512_HEX_OUTPUT_MAXIMUM_LENGTH));
-
-		  data.remove(0, hash.length());
-
-		  {
-		    QSqlDatabase db = QSqlDatabase::addDatabase
-		      ("QSQLITE", "neighbor_" + QString::number(s_dbId));
-
-		    db.setDatabaseName
-		      (spoton_misc::homePath() + QDir::separator() +
-		       "friends_symmetric_keys.db");
-
-		    if(db.open())
-		      {
-			QSqlQuery query(db);
-
-			query.setForwardOnly(true);
-			query.prepare("SELECT symmetric_key, "
-				      "symmetric_key_algorithm "
-				      "FROM symmetric_keys WHERE "
-				      "HEX(public_key_hash) = HEX(?)");
-			query.bindValue(0, hash);
-
-			if((ok = query.exec()))
-			  if((ok = query.next()))
-			    {
-			      QByteArray symmetricKey
-				(QByteArray::fromBase64(query.value(0).
-							toByteArray()));
-			      QByteArray symmetricKeyAlgorithm
-				(QByteArray::fromBase64(query.value(1).
-							toByteArray()));
-
-			      symmetricKey = spoton_kernel::s_crypt1->
-				decrypted(symmetricKey, &ok);
-
-			      if(ok)
-				symmetricKeyAlgorithm =
-				  spoton_kernel::s_crypt1->decrypted
-				  (symmetricKeyAlgorithm, &ok);
-
-			      if(ok)
-				{
-				  spoton_gcrypt crypt(symmetricKeyAlgorithm,
-						      QString(""),
-						      symmetricKey,
-						      0,
-						      0,
-						      QString(""));
-
-				  data = crypt.decrypted(data, &ok);
-				}
-			    }
-		      }
-
-		    db.close();
-		  }
-
-		  QSqlDatabase::removeDatabase
-		    ("neighbor_" + QString::number(s_dbId));
-
-		  if(ok)
-		    {
-		      QByteArray hash1
-			(data.mid(0, spoton_send::
-				  SHA512_HEX_OUTPUT_MAXIMUM_LENGTH));
-		      QByteArray hash2;
-
-		      data.remove(0, hash1.length());
-		      hash2 = spoton_gcrypt::sha512Hash(data, &ok).toHex();
-
-		      if(ok && hash1 == hash2)
-			emit receivedChatMessage
-			  ("message_" + data.toBase64().append('\n'));
-		      else if(ttl > 0)
-			{
-			  /*
-			  ** Replace TTL.
-			  */
-
-			  emit receivedChatMessage(originalData, m_id);
-			}
-		    }
-		  else if(ttl > 0)
-		    {
-		      /*
-		      ** Replace TTL.
-		      */
-
-		      emit receivedChatMessage(originalData, m_id);
-		    }
-		}
-	      else
-		spoton_misc::logError
-		  ("spoton_kernel::slotReadyRead(): 0000 "
-		   "content-length mismatch.");
-	    }
+	    process0000(length);
 	}
       else if(length > 0 && m_data.contains("type=0010&content="))
-	{
-	  length -= strlen("type=0010&content=");
-
-	  /*
-	  ** We may have received a public key.
-	  */
-
-	  QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
-
-	  m_data.remove(0, data.length());
-	  data.remove
-	    (0,
-	     data.indexOf("type=0010&content=") +
-	     strlen("type=0010&content="));
-
-	  if(length == data.length())
-	    {
-	      QByteArray publicKey;
-
-	      publicKey = QByteArray::fromBase64(data).trimmed();
-	      savePublicKey(publicKey);
-	      m_data.clear();
-
-	      /*
-	      ** We received a key. We need to send this key to the
-	      ** other neighbors.
-	      */
-
-	      emit receivedPublicKey(publicKey, m_id);
-	    }
-	  else
-	    spoton_misc::logError
-	      ("spoton_kernel::slotReadyRead(): 0010 "
-	       "content-length mismatch.");
-	}
+	process0010(length);
       else if(length > 0 && m_data.contains("type=0011&content="))
 	{
 	  if(!spoton_kernel::s_crypt1)
@@ -561,120 +375,19 @@ void spoton_neighbor::slotReadyRead(void)
 		 "spoton_kernel::s_crypt1 is 0.");
 	    }
 	  else
-	    {
-	      length -= strlen("type=0011&content=");
-
-	      /*
-	      ** We may have received a name and a public key.
-	      */
-
-	      QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
-
-	      m_data.remove(0, data.length());
-	      data.remove
-		(0,
-		 data.indexOf("type=0011&content=") +
-		 strlen("type=0011&content="));
-
-	      if(length == data.length())
-		{
-		  QByteArray name;
-		  QByteArray publicKey;
-
-		  name = data.mid
-		    (0, 4 * qCeil(spoton_send::NAME_MAXIMUM_LENGTH / 3.0));
-		  data.remove(0, name.length());
-		  name = QByteArray::fromBase64(name).trimmed();
-		  publicKey = QByteArray::fromBase64(data).trimmed();
-
-		  QByteArray symmetricKey
-		    (spoton_send::SYMMETRIC_KEY_MAXIMUM_LENGTH, 0);
-		  QByteArray symmetricKeyAlgorithm
-		    (spoton_kernel::s_settings.value("gui/cipherType").
-		     toByteArray());
-
-		  gcry_randomize
-		    (static_cast<void *> (symmetricKey.data()),
-		     static_cast<size_t> (symmetricKey.length()),
-		     GCRY_STRONG_RANDOM);
-		  savePublicKey
-		    (name,
-		     publicKey,
-		     symmetricKey,
-		     symmetricKeyAlgorithm,
-		     m_id);
-		}
-	      else
-		spoton_misc::logError
-		  ("spoton_kernel::slotReadyRead(): 0011 "
-		   "content-length mismatch.");
-	    }
+	    process0011(length);
 	}
       else if(length > 0 && m_data.contains("type=0012&content="))
 	{
-	  length -= strlen("type=0012&content=");
-
-	  /*
-	  ** We may have received a name and a public key.
-	  */
-
-	  QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
-
-	  m_data.remove(0, data.length());
-	  data.remove
-	    (0,
-	     data.indexOf("type=0012&content=") +
-	     strlen("type=0012&content="));
-
-	  if(length == data.length())
+	  if(!spoton_kernel::s_crypt1)
 	    {
-	      data = QByteArray::fromBase64(data);
-
-	      QByteArray encrypted(data.mid(0, data.indexOf('\n')));
-
-	      data.remove(0, encrypted.length());
-	      data = data.trimmed();
-
-	      QByteArray name(data.mid(0, spoton_send::NAME_MAXIMUM_LENGTH).
-			      trimmed());
-
-	      data.remove(0, name.length());
-	      data = data.trimmed();
-
-	      QByteArray publicKey(data);
-	      bool ok = true;
-
-	      data = spoton_kernel::s_crypt1->publicKeyDecrypt
-		(QByteArray::fromBase64(encrypted), &ok);
-
-	      if(ok)
-		{
-		  QByteArray symmetricKey;
-		  QByteArray symmetricKeyAlgorithm;
-
-		  symmetricKey = data.mid
-		    (0, spoton_send::SYMMETRIC_KEY_MAXIMUM_LENGTH);
-		  data.remove(0, symmetricKey.length());
-		  symmetricKeyAlgorithm = data.mid
-		    (0, spoton_send::SYMMETRIC_KEY_ALGORITHM_MAXIMUM_LENGTH).
-		    trimmed();
-		  data.remove(0, symmetricKeyAlgorithm.length());
-		  savePublicKey
-		    (name,
-		     publicKey,
-		     symmetricKey,
-		     symmetricKeyAlgorithm,
-		     -1);
-		}
-	      else
-		spoton_misc::logError
-		  ("spoton_neighbor::slotReadyRead(): "
-		   "publicKeyDecrypt() error.");
+	      m_data.remove(0, m_data.lastIndexOf("\r\n") + 2);
+	      spoton_misc::logError
+		("spoton_neighbor::slotReadyRead(): "
+		 "spoton_kernel::s_crypt1 is 0.");
 	    }
 	  else
-	    spoton_misc::logError
-	      ("spoton_kernel::slotReadyRead(): 0012 "
-	       "content-length mismatch.");
+	    process0012(length);
 	}
       else
 	m_data.clear();
@@ -749,6 +462,8 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 	    /*
 	    ** We have received a request for friendship.
 	    ** Do we already have the neighbor's public key?
+	    ** If we've already accepted the public key, we should
+	    ** respond with our public key and the symmetric bundle.
 	    */
 
 	    query.prepare("SELECT neighbor_oid, "
@@ -806,8 +521,8 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 	else
 	  {
 	    /*
-	    ** We received a key from a neighbor. We already have
-	    ** this approved key. We need to resend the
+	    ** We received a public key from a neighbor. We already have
+	    ** this approved public key. We need to resend the
 	    ** symmetric bundle.
 	    */
 
@@ -949,6 +664,8 @@ void spoton_neighbor::sharePublicKey(const QByteArray &publicKey,
 {
   if(state() != QAbstractSocket::ConnectedState)
     return;
+  else if(!spoton_kernel::s_crypt1)
+    return;
 
   QByteArray message;
 
@@ -1028,4 +745,319 @@ void spoton_neighbor::sharePublicKey(const QByteArray &publicKey,
     spoton_misc::logError
       ("spoton_neighbor::sharePublicKey(): "
        "publicKeyEncrypt() failure.");
+}
+
+void spoton_neighbor::process0000(int length)
+{
+  if(!spoton_kernel::s_crypt1)
+    return;
+
+  length -= strlen("type=0000&content=");
+
+  /*
+  ** We may have received a chat message. Let's see if the message
+  ** is intended for us.
+  */
+
+  QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
+  QByteArray originalData(data); /*
+				 ** We may need to echo the
+				 ** message. Don't forget to
+				 ** decrease the TTL!
+				 */
+
+  m_data.remove(0, data.length());
+  data.remove
+    (0,
+     data.indexOf("type=0000&content=") +
+     strlen("type=0000&content="));
+
+  if(length == data.length())
+    {
+      /*
+      ** OK, here's what we're going to do.
+      ** First, we need to convert data from Base64.
+      ** Second, decrypt the data with the symmetric key.
+      ** Third, retrieve the checksum from the decrypted data.
+      ** Fourth, compare the checksum with the computed checksum
+      ** of the remaining data.
+      ** Fifth, if the checksums are identical, forward the
+      ** message to the UI. Otherwise, decrement TTL and
+      ** forward the original message to the other neighbors if
+      ** TTL is greater than zero.
+      */
+
+      data = QByteArray::fromBase64(data);
+
+      bool ok = true;
+      short ttl = 0;
+
+      if(!data.isEmpty())
+	memcpy(static_cast<void *> (&ttl),
+	       static_cast<const void *> (data.constData()), 1);
+	  
+      if(ttl > 0)
+	ttl -= 1;
+
+      data.remove(0, 1); // Remove TTL.
+
+      /*
+      ** Find the symmetric key.
+      */
+
+      QByteArray hash
+	(data.mid(0,
+		  spoton_send::SHA512_HEX_OUTPUT_MAXIMUM_LENGTH));
+
+      data.remove(0, hash.length());
+
+      {
+	QSqlDatabase db = QSqlDatabase::addDatabase
+	  ("QSQLITE", "neighbor_" + QString::number(s_dbId));
+
+	db.setDatabaseName
+	  (spoton_misc::homePath() + QDir::separator() +
+	   "friends_symmetric_keys.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+
+	    query.setForwardOnly(true);
+	    query.prepare("SELECT symmetric_key, "
+			  "symmetric_key_algorithm "
+			  "FROM symmetric_keys WHERE "
+			  "HEX(public_key_hash) = HEX(?)");
+	    query.bindValue(0, hash);
+
+	    if((ok = query.exec()))
+	      if((ok = query.next()))
+		{
+		  QByteArray symmetricKey
+		    (QByteArray::fromBase64(query.value(0).
+					    toByteArray()));
+		  QByteArray symmetricKeyAlgorithm
+		    (QByteArray::fromBase64(query.value(1).
+					    toByteArray()));
+
+		  symmetricKey = spoton_kernel::s_crypt1->
+		    decrypted(symmetricKey, &ok);
+
+		  if(ok)
+		    symmetricKeyAlgorithm =
+		      spoton_kernel::s_crypt1->decrypted
+		      (symmetricKeyAlgorithm, &ok);
+
+		  if(ok)
+		    {
+		      spoton_gcrypt crypt(symmetricKeyAlgorithm,
+					  QString(""),
+					  symmetricKey,
+					  0,
+					  0,
+					  QString(""));
+
+		      data = crypt.decrypted(data, &ok);
+		    }
+		}
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase
+	("neighbor_" + QString::number(s_dbId));
+
+      if(ok)
+	{
+	  QByteArray hash1
+	    (data.mid(0, spoton_send::
+		      SHA512_HEX_OUTPUT_MAXIMUM_LENGTH));
+	  QByteArray hash2;
+
+	  data.remove(0, hash1.length());
+	  hash2 = spoton_gcrypt::sha512Hash(data, &ok).toHex();
+
+	  if(ok && hash1 == hash2)
+	    emit receivedChatMessage
+	      ("message_" + data.toBase64().append('\n'));
+	  else if(ttl > 0)
+	    {
+	      /*
+	      ** Replace TTL.
+	      */
+
+	      emit receivedChatMessage(originalData, m_id);
+	    }
+	}
+      else if(ttl > 0)
+	{
+	  /*
+	  ** Replace TTL.
+	  */
+
+	  emit receivedChatMessage(originalData, m_id);
+	}
+    }
+  else
+    spoton_misc::logError
+      ("spoton_kernel::process0000(): 0000 "
+       "content-length mismatch.");
+}
+
+void spoton_neighbor::process0010(int length)
+{
+  length -= strlen("type=0010&content=");
+
+  /*
+  ** We may have received a public key.
+  */
+
+  QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
+
+  m_data.remove(0, data.length());
+  data.remove
+    (0,
+     data.indexOf("type=0010&content=") +
+     strlen("type=0010&content="));
+
+  if(length == data.length())
+    {
+      QByteArray publicKey;
+
+      publicKey = QByteArray::fromBase64(data).trimmed();
+      savePublicKey(publicKey);
+      m_data.clear();
+
+      /*
+      ** We received a key. We need to send this key to the
+      ** other neighbors.
+      */
+
+      emit receivedPublicKey(publicKey, m_id);
+    }
+  else
+    spoton_misc::logError
+      ("spoton_kernel::process0010(): 0010 "
+       "content-length mismatch.");
+}
+
+void spoton_neighbor::process0011(int length)
+{
+  length -= strlen("type=0011&content=");
+
+  /*
+  ** We may have received a name and a public key.
+  */
+
+  QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
+
+  m_data.remove(0, data.length());
+  data.remove
+    (0,
+     data.indexOf("type=0011&content=") +
+     strlen("type=0011&content="));
+
+  if(length == data.length())
+    {
+      QByteArray name;
+      QByteArray publicKey;
+
+      name = data.mid
+	(0, 4 * qCeil(spoton_send::NAME_MAXIMUM_LENGTH / 3.0));
+      data.remove(0, name.length());
+      name = QByteArray::fromBase64(name).trimmed();
+      publicKey = QByteArray::fromBase64(data).trimmed();
+
+      QByteArray symmetricKey
+	(spoton_send::SYMMETRIC_KEY_MAXIMUM_LENGTH, 0);
+      QByteArray symmetricKeyAlgorithm
+	(spoton_kernel::s_settings.value("gui/cipherType").
+	 toByteArray());
+
+      gcry_randomize
+	(static_cast<void *> (symmetricKey.data()),
+	 static_cast<size_t> (symmetricKey.length()),
+	 GCRY_STRONG_RANDOM);
+      savePublicKey
+	(name,
+	 publicKey,
+	 symmetricKey,
+	 symmetricKeyAlgorithm,
+	 m_id);
+    }
+  else
+    spoton_misc::logError
+      ("spoton_kernel::process0011(): 0011 "
+       "content-length mismatch.");
+}
+
+void spoton_neighbor::process0012(int length)
+{
+  if(!spoton_kernel::s_crypt1)
+    return;
+
+  length -= strlen("type=0012&content=");
+
+  /*
+  ** We may have received a name and a public key.
+  */
+
+  QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
+
+  m_data.remove(0, data.length());
+  data.remove
+    (0,
+     data.indexOf("type=0012&content=") +
+     strlen("type=0012&content="));
+
+  if(length == data.length())
+    {
+      data = QByteArray::fromBase64(data);
+
+      QByteArray encrypted(data.mid(0, data.indexOf('\n')));
+
+      data.remove(0, encrypted.length());
+      data = data.trimmed();
+
+      QByteArray name(data.mid(0, spoton_send::NAME_MAXIMUM_LENGTH).
+		      trimmed());
+
+      data.remove(0, name.length());
+      data = data.trimmed();
+
+      QByteArray publicKey(data);
+      bool ok = true;
+
+      data = spoton_kernel::s_crypt1->publicKeyDecrypt
+	(QByteArray::fromBase64(encrypted), &ok);
+
+      if(ok)
+	{
+	  QByteArray symmetricKey;
+	  QByteArray symmetricKeyAlgorithm;
+
+	  symmetricKey = data.mid
+	    (0, spoton_send::SYMMETRIC_KEY_MAXIMUM_LENGTH);
+	  data.remove(0, symmetricKey.length());
+	  symmetricKeyAlgorithm = data.mid
+	    (0, spoton_send::SYMMETRIC_KEY_ALGORITHM_MAXIMUM_LENGTH).
+	    trimmed();
+	  data.remove(0, symmetricKeyAlgorithm.length());
+	  savePublicKey
+	    (name,
+	     publicKey,
+	     symmetricKey,
+	     symmetricKeyAlgorithm,
+	     -1);
+	}
+      else
+	spoton_misc::logError
+	  ("spoton_neighbor::process0012(): "
+	   "publicKeyDecrypt() error.");
+    }
+  else
+    spoton_misc::logError
+      ("spoton_kernel::process0012(): 0012 "
+       "content-length mismatch.");
 }

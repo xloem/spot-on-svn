@@ -1897,8 +1897,8 @@ void spoton::slotShowContextMenu(const QPoint &point)
   if(ui.neighbors == sender())
     {
       menu.addAction(QIcon(":/add-neighbor-to-chat.png"),
-             tr("&Share Public Key"),
-             this, SLOT(slotSharePublicKey(void)));
+		     tr("&Share Public Key"),
+		     this, SLOT(slotSharePublicKey(void)));
       menu.addSeparator();
       menu.addAction(QIcon(":/connect.png"), tr("&Connect"),
 		     this, SLOT(slotConnectNeighbor(void)));
@@ -1910,10 +1910,10 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("Delete &All"),
 		     this, SLOT(slotDeleteAllNeighbors(void)));
       menu.addSeparator();
-      menu.addAction(tr("&Unblock"),
-             this, SLOT(slotUnblockNeighbor(void)));
       menu.addAction(tr("&Block"),
-             this, SLOT(slotBlockNeighbor(void)));
+		     this, SLOT(slotBlockNeighbor(void)));
+      menu.addAction(tr("&Unblock"),
+		     this, SLOT(slotUnblockNeighbor(void)));
       menu.exec(ui.neighbors->mapToGlobal(point));
     }
   else
