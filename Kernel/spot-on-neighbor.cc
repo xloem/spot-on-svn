@@ -980,11 +980,7 @@ void spoton_neighbor::process0011(int length)
 	 static_cast<size_t> (symmetricKey.length()),
 	 GCRY_STRONG_RANDOM);
       savePublicKey
-	(name,
-	 publicKey,
-	 symmetricKey,
-	 symmetricKeyAlgorithm,
-	 m_id);
+	(name, publicKey, symmetricKey, symmetricKeyAlgorithm, m_id);
     }
   else
     spoton_misc::logError
@@ -1045,11 +1041,7 @@ void spoton_neighbor::process0012(int length)
 	    trimmed();
 	  data.remove(0, symmetricKeyAlgorithm.length());
 	  savePublicKey
-	    (name,
-	     publicKey,
-	     symmetricKey,
-	     symmetricKeyAlgorithm,
-	     -1);
+	    (name, publicKey, symmetricKey, symmetricKeyAlgorithm, -1);
 	}
       else
 	spoton_misc::logError

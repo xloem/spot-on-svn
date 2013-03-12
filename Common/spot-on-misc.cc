@@ -73,6 +73,13 @@ void spoton_misc::prepareDatabases(void)
 		   "symmetric_key_algorithm TEXT, "
 		   "public_key TEXT NOT NULL, "
 		   "public_key_hash TEXT PRIMARY KEY NOT NULL, "
+		   /*
+		   ** Why do we need the neighbor's OID?
+		   ** When a neighbor shares a public key, we need
+		   ** to be able to remove the key if the socket connection
+		   ** is lost before we accept the friendship. The field
+		   ** provides us with some safety.
+		   */
 		   "neighbor_oid INTEGER DEFAULT -1)");
       }
 
