@@ -519,23 +519,35 @@ void spoton::slotAddListener(void)
 	      }
 
 	    if(m_crypt)
-	      query.bindValue
-		(0, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
+	      {
+		if(ok)
+		  query.bindValue
+		    (0, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
+	      }
 	    else
 	      query.bindValue(0, ip);
 	  }
 
 	if(m_crypt)
 	  {
-	    query.bindValue
-	      (1, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
-	    query.bindValue
-	      (2, m_crypt->encrypted(protocol.toLatin1(), &ok).toBase64());
-	    query.bindValue
-	      (3, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
+	    if(ok)
+	      query.bindValue
+		(1, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(2, m_crypt->encrypted(protocol.toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(3, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
+
 	    query.bindValue(4, status);
-	    query.bindValue
-	      (5, m_crypt->keyedHash((ip + port).toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(5, m_crypt->keyedHash((ip + port).toLatin1(), &ok).
+		 toBase64());
 	  }
 	else
 	  {
@@ -546,8 +558,9 @@ void spoton::slotAddListener(void)
 	    query.bindValue(5, ip + port);
 	  }
 
-	query.exec();
-	db.commit();
+	if(ok)
+	  if(query.exec())
+	    db.commit();
       }
 
     db.close();
@@ -659,8 +672,11 @@ void spoton::slotAddNeighbor(void)
 	      }
 
 	    if(m_crypt)
-	      query.bindValue
-		(3, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
+	      {
+		if(ok)
+		  query.bindValue
+		    (3, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
+	      }
 	    else
 	      query.bindValue(3, ip);
 	  }
@@ -669,12 +685,18 @@ void spoton::slotAddNeighbor(void)
 
 	if(m_crypt)
 	  {
-	    query.bindValue
-	      (4, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
-	    query.bindValue
-	      (6, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
-	    query.bindValue
-	      (7, m_crypt->keyedHash((ip + port).toLatin1(), &ok).toBase64());
+	    if(ok)
+	      query.bindValue
+		(4, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(6, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(7, m_crypt->keyedHash((ip + port).toLatin1(), &ok).
+		 toBase64());
 	  }
 	else
 	  {
@@ -684,8 +706,10 @@ void spoton::slotAddNeighbor(void)
 	  }
 
 	query.bindValue(8, status);
-	query.exec();
-	db.commit();
+
+	if(ok)
+	  if(query.exec())
+	    db.commit();
       }
 
     db.close();
@@ -2632,9 +2656,11 @@ void spoton::slotSharePublicKeyWithParticipant(void)
 	      symmetricKey = m_crypt->decrypted
 		(QByteArray::fromBase64(query.value(2).toByteArray()),
 		 &ok);
-	      symmetricKeyAlgorithm = m_crypt->decrypted
-		(QByteArray::fromBase64(query.value(3).toByteArray()),
-		 &ok);
+
+	      if(ok)
+		symmetricKeyAlgorithm = m_crypt->decrypted
+		  (QByteArray::fromBase64(query.value(3).toByteArray()),
+		   &ok);
 	    }
       }
 
