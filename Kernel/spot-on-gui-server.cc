@@ -61,8 +61,8 @@ spoton_gui_server::~spoton_gui_server()
       {
 	QSqlQuery query(db);
 
-	query.exec("DELETE FROM kernel_gui_server");
-	db.commit();
+	if(query.exec("DELETE FROM kernel_gui_server"))
+	  db.commit();
       }
 
     db.close();
@@ -120,36 +120,49 @@ void spoton_gui_server::slotReadyRead(void)
 	    {
 	      QByteArray message(list.takeFirst());
 
-	      if(message.startsWith("key_"))
+	      if(message.startsWith("befriendparticipant_"))
 		{
+		  message.remove(0, strlen("befriendparticipant_"));
+
+		  QList<QByteArray> list(message.split('_'));
+
+		  emit publicKeyReceivedFromUI
+		    (list.value(0).toLongLong(),
+		     QByteArray::fromBase64(list.value(1)),
+		     QByteArray::fromBase64(list.value(2)),
+		     QByteArray::fromBase64(list.value(3)));
+		}
+	      else if(message.startsWith("key_"))
+		{
+		  message.remove(0, strlen("key_"));
+		  message = message.trimmed();
+		  message = QByteArray::fromBase64(message);
+
 		  if(!spoton_kernel::s_crypt1)
-		    {
-		      message.remove(0, strlen("key_"));
-		      message = message.trimmed();
-		      message = QByteArray::fromBase64(message);
-		      spoton_kernel::s_crypt1 = new spoton_gcrypt
-			(spoton_kernel::s_settings.value("gui/cipherType").
-			 toString(),
-			 spoton_kernel::s_settings.value("gui/hashType").
-			 toString(), message,
-			 spoton_kernel::s_settings.value("gui/saltLength",
-							 256).toInt(),
-			 spoton_kernel::s_settings.value("gui/iterationCount",
-							 1000).toInt(),
-			 spoton_misc::homePath() + QDir::separator() +
-			 "private_public_keys.db");
-		      spoton_kernel::s_crypt2 = new spoton_gcrypt
-			(spoton_kernel::s_settings.value("gui/cipherType").
-			 toString(),
-			 spoton_kernel::s_settings.value("gui/hashType").
-			 toString(), message,
-			 spoton_kernel::s_settings.value("gui/saltLength",
-							 256).toInt(),
-			 spoton_kernel::s_settings.value("gui/iterationCount",
-							 1000).toInt(),
-			 spoton_misc::homePath() + QDir::separator() +
-			 "shared.db");
-		    }
+		    spoton_kernel::s_crypt1 = new spoton_gcrypt
+		      (spoton_kernel::s_settings.value("gui/cipherType").
+		       toString().trimmed(),
+		       spoton_kernel::s_settings.value("gui/hashType").
+		       toString().trimmed(), message,
+		       spoton_kernel::s_settings.value("gui/saltLength",
+						       256).toInt(),
+		       spoton_kernel::s_settings.value("gui/iterationCount",
+						       1000).toInt(),
+		       spoton_misc::homePath() + QDir::separator() +
+		       "private_public_keys.db");
+
+		  if(!spoton_kernel::s_crypt2)
+		    spoton_kernel::s_crypt2 = new spoton_gcrypt
+		      (spoton_kernel::s_settings.value("gui/cipherType").
+		       toString().trimmed(),
+		       spoton_kernel::s_settings.value("gui/hashType").
+		       toString().trimmed(), message,
+		       spoton_kernel::s_settings.value("gui/saltLength",
+						       256).toInt(),
+		       spoton_kernel::s_settings.value("gui/iterationCount",
+						       1000).toInt(),
+		       spoton_misc::homePath() + QDir::separator() +
+		       "shared.db");
 		}
 	      else if(message.startsWith("message_"))
 		{
@@ -194,8 +207,9 @@ void spoton_gui_server::slotTimeout(void)
 	query.prepare("INSERT INTO kernel_gui_server (port) "
 		      "VALUES (?)");
 	query.bindValue(0, serverPort());
-	query.exec();
-	db.commit();
+
+	if(query.exec())
+	  db.commit();
       }
 
     db.close();
@@ -211,4 +225,6 @@ void spoton_gui_server::slotReceivedChatMessage(const QByteArray &message)
        write(message.constData(), message.length()) != message.length())
       spoton_misc::logError("spoton_gui_server::slotReceivedChatMessage(): "
 			    "write() failure.");
+    else
+      socket->flush();
 }

@@ -30,13 +30,19 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
+#ifdef Q_OS_WIN32
+#include <qt_windows.h>
+#include <QtNetwork>
+#else
+#include <QNetworkInterface>
+#endif
 #include <QProcess>
 #include <QSettings>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QStyle>
 #include <QTranslator>
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 #include <QMacStyle>
 #endif
 #include <QtDebug>
@@ -56,7 +62,7 @@ extern "C"
 
 int main(int argc, char *argv[])
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   QApplication::setStyle(new QMacStyle());
 #endif
 
@@ -95,7 +101,7 @@ spoton::spoton(void)
   m_neighborsLastModificationTime = QDateTime();
   m_participantsLastModificationTime = QDateTime();
   ui.setupUi(this);
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
   connect(ui.action_Quit,
@@ -144,7 +150,12 @@ spoton::spoton(void)
 	  SLOT(slotDeleteListener(void)));
   connect(ui.setPassphrase,
 	  SIGNAL(clicked(void)),
-	  this, SLOT(slotSetPassphrase(void)));
+	  this,
+	  SLOT(slotSetPassphrase(void)));
+  connect(ui.kernelPath,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSaveKernelPath(void)));
   connect(ui.passphrase,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -185,10 +196,14 @@ spoton::spoton(void)
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotOnlyConnectedNeighborsToggled(bool)));
+  connect(ui.showOnlyOnlineListeners,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotOnlyOnlineListenersToggled(bool)));
   connect(ui.pushButtonMakeFriends,
-      SIGNAL(clicked(bool)),
-      this,
-      SLOT(slotSharePublicKey(void)));
+	  SIGNAL(clicked(bool)),
+	  this,
+	  SLOT(slotSharePublicKey(void)));
   connect(ui.listenerIP,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -197,6 +212,14 @@ spoton::spoton(void)
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotAddNeighbor(void)));
+  connect(ui.listenerIPCombo,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotListenerIPComboChanged(int)));
+  connect(ui.chatSendMethod,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotChatSendMethodChanged(int)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -229,6 +252,7 @@ spoton::spoton(void)
 			      "active?"));
   m_generalTimer.start(2500);
   ui.friendName->setText("unknown");
+  ui.ipv4Listener->setChecked(true);
   ui.listenerIP->setInputMask("000.000.000.000; ");
   ui.listenerScopeId->setEnabled(false);
   ui.listenerScopeIdLabel->setEnabled(false);
@@ -248,8 +272,10 @@ spoton::spoton(void)
     restoreGeometry(m_settings.value("gui/geometry").toByteArray());
 
   if(m_settings.contains("gui/kernelPath") &&
-     QFileInfo(m_settings.value("gui/kernelPath").toString()).isExecutable())
-    ui.kernelPath->setText(m_settings.value("gui/kernelPath").toString());
+     QFileInfo(m_settings.value("gui/kernelPath").toString().trimmed()).
+     isExecutable())
+    ui.kernelPath->setText(m_settings.value("gui/kernelPath").toString().
+			   trimmed());
   else
     ui.kernelPath->setText(QCoreApplication::applicationDirPath() +
 			   QDir::separator() +
@@ -262,12 +288,17 @@ spoton::spoton(void)
 #endif
 			   );
 
+  if(m_settings.value("gui/chatSendMethod", "Artificial_GET").
+     toString() == "Artificial_GET")
+    ui.chatSendMethod->setCurrentIndex(0);
+  else
+    ui.chatSendMethod->setCurrentIndex(1);
+
   ui.kernelPath->setToolTip(ui.kernelPath->text());
   ui.nodeName->setMaxLength(spoton_send::NAME_MAXIMUM_LENGTH);
   ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
 		       toByteArray()).trimmed());
-  ui.tab->setFocus();
   ui.cipherType->clear();
   ui.cipherType->addItems(spoton_gcrypt::cipherTypes());
 #if SPOTON_MINIMUM_GCRYPT_VERSION < 0x010500
@@ -279,6 +310,8 @@ spoton::spoton(void)
 #endif
   ui.showOnlyConnectedNeighbors->setChecked
     (m_settings.value("gui/showOnlyConnectedNeighbors", false).toBool());
+  ui.showOnlyOnlineListeners->setChecked
+    (m_settings.value("gui/showOnlyOnlineListeners", false).toBool());
 
   /*
   ** Please don't translate n/a.
@@ -321,7 +354,6 @@ spoton::spoton(void)
     {
       ui.passphrase1->setText("0000000000");
       ui.passphrase2->setText("0000000000");
-      ui.passphrase->setFocus();
       ui.rsaKeySize->setEnabled(false);
 
       for(int i = 0; i < ui.tab->count(); i++)
@@ -334,6 +366,8 @@ spoton::spoton(void)
 	  }
 	else
 	  ui.tab->setTabEnabled(i, false);
+
+      ui.passphrase->setFocus();
     }
   else
     {
@@ -342,6 +376,7 @@ spoton::spoton(void)
       ui.passphraseLabel->setEnabled(false);
       ui.kernelBox->setEnabled(false);
       ui.listenersBox->setEnabled(false);
+      ui.resetSpotOn->setEnabled(false);
 
       for(int i = 0; i < ui.tab->count(); i++)
 	if(ui.tab->tabBar()->tabData(i).toString() == "page_4")
@@ -353,6 +388,8 @@ spoton::spoton(void)
 	  }
 	else
 	  ui.tab->setTabEnabled(i, false);
+
+      ui.passphrase1->setFocus();
     }
 
   if(m_settings.contains("gui/chatHorizontalSplitter"))
@@ -378,6 +415,7 @@ spoton::spoton(void)
   ui.neighbors->setColumnHidden(ui.neighbors->columnCount() - 1, true);
   ui.participants->setColumnHidden(ui.participants->columnCount() - 1, true);
   slotPopulateParticipants();
+  prepareListenerIPCombo();
   show();
 }
 
@@ -398,7 +436,13 @@ void spoton::slotAddListener(void)
       {
 	spoton_misc::prepareDatabases();
 
-	QString ip(ui.listenerIP->text().trimmed());
+	QString ip("");
+
+	if(ui.listenerIPCombo->currentIndex() == 0)
+	  ip = ui.listenerIP->text().trimmed();
+	else
+	  ip = ui.listenerIPCombo->currentText();
+
 	QString port(QString::number(ui.listenerPort->value()));
 	QString protocol("");
 	QString scopeId(ui.listenerScopeId->text().trimmed());
@@ -435,7 +479,7 @@ void spoton::slotAddListener(void)
 	    QList<int> numbers;
 	    QStringList list;
 
-        if(protocol == "IPv4")
+	    if(protocol == "IPv4")
 	      list = ip.split(".", QString::KeepEmptyParts);
 	    else
 	      list = ip.split(":", QString::KeepEmptyParts);
@@ -443,9 +487,7 @@ void spoton::slotAddListener(void)
 	    for(int i = 0; i < list.size(); i++)
 	      numbers.append(list.at(i).toInt());
 
-	    ip.clear();
-
-        if(protocol == "IPv4")
+	    if(protocol == "IPv4")
 	      {
 		ip = QString::number(numbers.value(0)) + "." +
 		  QString::number(numbers.value(1)) + "." +
@@ -455,42 +497,57 @@ void spoton::slotAddListener(void)
 	      }
 	    else
 	      {
-		ip = QString::number(numbers.value(0)) + ":" +
-		  QString::number(numbers.value(1)) + ":" +
-		  QString::number(numbers.value(2)) + ":" +
-		  QString::number(numbers.value(3)) + ":" +
-		  QString::number(numbers.value(4)) + ":" +
-		  QString::number(numbers.value(5)) + ":" +
-		  QString::number(numbers.value(6)) + ":" +
-		  QString::number(numbers.value(7));
-		ip.remove(":::::::");
+		if(ui.listenerIPCombo->currentIndex() == 0)
+		  {
+		    ip = QString::number(numbers.value(0)) + ":" +
+		      QString::number(numbers.value(1)) + ":" +
+		      QString::number(numbers.value(2)) + ":" +
+		      QString::number(numbers.value(3)) + ":" +
+		      QString::number(numbers.value(4)) + ":" +
+		      QString::number(numbers.value(5)) + ":" +
+		      QString::number(numbers.value(6)) + ":" +
+		      QString::number(numbers.value(7));
+		    ip.remove(":::::::");
 
-		/*
-		** Special exception.
-		*/
+		    /*
+		    ** Special exception.
+		    */
 
-		if(ip == "0:0:0:0:0:0:0:0")
-		  ip = "::";
+		    if(ip == "0:0:0:0:0:0:0:0")
+		      ip = "::";
+		  }
 	      }
 
 	    if(m_crypt)
-	      query.bindValue
-		(0, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
+	      {
+		if(ok)
+		  query.bindValue
+		    (0, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
+	      }
 	    else
 	      query.bindValue(0, ip);
 	  }
 
 	if(m_crypt)
 	  {
-	    query.bindValue
-	      (1, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
-	    query.bindValue
-	      (2, m_crypt->encrypted(protocol.toLatin1(), &ok).toBase64());
-	    query.bindValue
-	      (3, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
+	    if(ok)
+	      query.bindValue
+		(1, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(2, m_crypt->encrypted(protocol.toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(3, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
+
 	    query.bindValue(4, status);
-	    query.bindValue
-	      (5, m_crypt->keyedHash((ip + port).toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(5, m_crypt->keyedHash((ip + port).toLatin1(), &ok).
+		 toBase64());
 	  }
 	else
 	  {
@@ -501,8 +558,9 @@ void spoton::slotAddListener(void)
 	    query.bindValue(5, ip + port);
 	  }
 
-	query.exec();
-	db.commit();
+	if(ok)
+	  if(query.exec())
+	    db.commit();
       }
 
     db.close();
@@ -575,7 +633,7 @@ void spoton::slotAddNeighbor(void)
 	    QList<int> numbers;
 	    QStringList list;
 
-        if(protocol == "IPv4")
+	    if(protocol == "IPv4")
 	      list = ip.split(".", QString::KeepEmptyParts);
 	    else
 	      list = ip.split(":", QString::KeepEmptyParts);
@@ -585,7 +643,7 @@ void spoton::slotAddNeighbor(void)
 
 	    ip.clear();
 
-        if(protocol == "IPv4")
+	    if(protocol == "IPv4")
 	      {
 		ip = QString::number(numbers.value(0)) + "." +
 		  QString::number(numbers.value(1)) + "." +
@@ -614,8 +672,11 @@ void spoton::slotAddNeighbor(void)
 	      }
 
 	    if(m_crypt)
-	      query.bindValue
-		(3, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
+	      {
+		if(ok)
+		  query.bindValue
+		    (3, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
+	      }
 	    else
 	      query.bindValue(3, ip);
 	  }
@@ -624,23 +685,31 @@ void spoton::slotAddNeighbor(void)
 
 	if(m_crypt)
 	  {
-	    query.bindValue
-	      (4, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
-	    query.bindValue
-	      (6, m_crypt->encrypted(QByteArray(), &ok).toBase64());
-	    query.bindValue
-	      (7, m_crypt->keyedHash((ip + port).toLatin1(), &ok).toBase64());
+	    if(ok)
+	      query.bindValue
+		(4, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(6, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(7, m_crypt->keyedHash((ip + port).toLatin1(), &ok).
+		 toBase64());
 	  }
 	else
 	  {
 	    query.bindValue(4, port);
-	    query.bindValue(6, QVariant());
+	    query.bindValue(6, scopeId);
 	    query.bindValue(7, ip + port);
 	  }
 
 	query.bindValue(8, status);
-	query.exec();
-	db.commit();
+
+	if(ok)
+	  if(query.exec())
+	    db.commit();
       }
 
     db.close();
@@ -691,6 +760,8 @@ void spoton::slotListenerRadioToggled(bool state)
 	  ui.neighborScopeIdLabel->setEnabled(true);
 	}
     }
+
+  prepareListenerIPCombo();
 }
 
 void spoton::slotPopulateListeners(void)
@@ -740,11 +811,14 @@ void spoton::slotPopulateListeners(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT status_control, ip_address, port, status, "
-		      "protocol, scope_id, connections, "
-		      "maximum_clients, OID "
-		      "FROM listeners WHERE "
-		      "status_control <> 'deleted'"))
+	if(query.exec(QString("SELECT status_control, ip_address, port, "
+			      "status, "
+			      "protocol, scope_id, connections, "
+			      "maximum_clients, OID "
+			      "FROM listeners WHERE "
+			      "status_control <> 'deleted' %1").
+		      arg(ui.showOnlyOnlineListeners->isChecked() ?
+			  "AND status = 'online'" : "")))
 	  {
 	    row = 0;
 
@@ -777,7 +851,8 @@ void spoton::slotPopulateListeners(void)
 							       toByteArray()),
 					&ok).constData());
 		else
-		  item = new QTableWidgetItem(query.value(1).toString());
+		  item = new QTableWidgetItem(query.value(1).toString().
+					      trimmed());
 
 		item->setTextAlignment(Qt::AlignCenter);
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -790,12 +865,14 @@ void spoton::slotPopulateListeners(void)
 							       toByteArray()),
 					&ok).constData());
 		else
-		  item = new QTableWidgetItem(query.value(2).toString());
+		  item = new QTableWidgetItem(query.value(2).toString().
+					      trimmed());
 
 		item->setTextAlignment(Qt::AlignCenter);
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		ui.listeners->setItem(row, 2, item);
-		item = new QTableWidgetItem(query.value(3).toString());
+		item = new QTableWidgetItem(query.value(3).toString().
+					    trimmed());
 
 		if(query.value(3).toString().trimmed() == "online")
 		  item->setBackground(QBrush(QColor("lightgreen")));
@@ -813,7 +890,8 @@ void spoton::slotPopulateListeners(void)
 							       toByteArray()),
 					&ok).constData());
 		else
-		  item = new QTableWidgetItem(query.value(4).toString());
+		  item = new QTableWidgetItem(query.value(4).toString().
+					      trimmed());
 
 		item->setTextAlignment(Qt::AlignCenter);
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -826,12 +904,14 @@ void spoton::slotPopulateListeners(void)
 							       toByteArray()),
 					&ok).constData());
 		else
-		  item = new QTableWidgetItem(query.value(5).toString());
+		  item = new QTableWidgetItem(query.value(5).toString().
+					      trimmed());
 
 		item->setTextAlignment(Qt::AlignCenter);
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		ui.listeners->setItem(row, 5, item);
-		item = new QTableWidgetItem(query.value(6).toString());
+		item = new QTableWidgetItem(query.value(6).toString().
+					    trimmed());
 		item->setTextAlignment(Qt::AlignCenter);
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		ui.listeners->setItem(row, 6, item);
@@ -860,7 +940,8 @@ void spoton::slotPopulateListeners(void)
 			this,
 			SLOT(slotMaximumClientsChanged(int)));
 
-		item = new QTableWidgetItem(query.value(8).toString());
+		item = new QTableWidgetItem(query.value(8).toString().
+					    trimmed());
 		item->setTextAlignment(Qt::AlignCenter);
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		ui.listeners->setItem(row, 8, item);
@@ -883,8 +964,8 @@ void spoton::slotPopulateListeners(void)
 		  }
 		else
 		  {
-		    if(ip == query.value(1).toString() &&
-		       port == query.value(2).toString())
+		    if(ip == query.value(1).toString().trimmed() &&
+		       port == query.value(2).toString().trimmed())
 		      ui.listeners->selectRow(row);
 		  }
 
@@ -975,7 +1056,8 @@ void spoton::slotPopulateNeighbors(void)
 
 		check = new QCheckBox();
 		check->setToolTip(tr("The sticky feature enables an "
-				     "indefinite lifetime for the neighbor. If "
+				     "indefinite lifetime for a neighbor. "
+				     "If "
 				     "not checked, the neighbor will be "
 				     "terminated after some internal "
 				     "timer expires."));
@@ -1010,10 +1092,11 @@ void spoton::slotPopulateNeighbors(void)
 			  }
 			else
 			  item = new QTableWidgetItem
-			    (query.value(i).toString());
+			    (query.value(i).toString().trimmed());
 		      }
 		    else
-		      item = new QTableWidgetItem(query.value(i).toString());
+		      item = new QTableWidgetItem
+			(query.value(i).toString().trimmed());
 
 		    item->setTextAlignment(Qt::AlignCenter);
 		    item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -1024,6 +1107,9 @@ void spoton::slotPopulateNeighbors(void)
 			  item->setBackground(QBrush(QColor("lightgreen")));
 			else
 			  item->setBackground(QBrush());
+
+			if(query.value(1).toString().trimmed() == "connected")
+			  item->setIcon(QIcon(":/connect_established.png"));
 		      }
 
 		    ui.neighbors->setItem(row, i, item);
@@ -1047,8 +1133,10 @@ void spoton::slotPopulateNeighbors(void)
 		  }
 		else
 		  {
-		    if(remoteIp == query.value(columnREMOTE_IP).toString() &&
-		       remotePort == query.value(columnREMOTE_PORT).toString())
+		    if(remoteIp == query.value(columnREMOTE_IP).
+		       toString().trimmed() &&
+		       remotePort == query.value(columnREMOTE_PORT).
+		       toString().trimmed())
 		      ui.neighbors->selectRow(row);
 		  }
 
@@ -1072,7 +1160,7 @@ void spoton::slotActivateKernel(void)
   QString program(ui.kernelPath->text());
 
 #ifdef Q_OS_MAC
-  if(program.endsWith(".app"))
+  if(QFileInfo(program).isBundle())
     QProcess::startDetached
       ("open", QStringList("-a") << program);
   else
@@ -1189,24 +1277,31 @@ void spoton::slotSelectKernelPath(void)
   dialog.setDirectory(QDir::homePath());
   dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
   dialog.setAcceptMode(QFileDialog::AcceptOpen);
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #endif
 
   if(dialog.exec() == QDialog::Accepted)
+    saveKernelPath(dialog.selectedFiles().value(0).trimmed());
+}
+
+void spoton::slotSaveKernelPath(void)
+{
+  saveKernelPath(ui.kernelPath->text().trimmed());
+}
+
+void spoton::saveKernelPath(const QString &path)
+{
+  if(!path.isEmpty())
     {
-      QString path(dialog.selectedFiles().value(0).trimmed());
+      m_settings["gui/kernelPath"] = path;
 
-      if(!path.isEmpty())
-	{
-	  m_settings["gui/kernelPath"] = path;
-
-	  QSettings settings;
-
-	  settings.setValue("gui/kernelPath", path);
-	  ui.kernelPath->setText(path);
-	  ui.kernelPath->setToolTip(path);
-	}
+      QSettings settings;
+      
+      settings.setValue("gui/kernelPath", path);
+      ui.kernelPath->setText(path);
+      ui.kernelPath->setToolTip(path);
+      ui.kernelPath->selectAll();
     }
 }
 
@@ -1226,6 +1321,8 @@ void spoton::saveSettings(void)
 		    ui.neighborsVerticalSplitter->saveState());
   settings.setValue("gui/showOnlyConnectedNeighbors",
 		    ui.showOnlyConnectedNeighbors->isChecked());
+  settings.setValue("gui/showOnlyOnlineListeners",
+		    ui.showOnlyOnlineListeners->isChecked());
 }
 
 void spoton::closeEvent(QCloseEvent *event)
@@ -1431,6 +1528,9 @@ void spoton::slotSetPassphrase(void)
     {
       QMessageBox mb(this);
 
+#ifdef Q_OS_MAC
+      mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
       mb.setIcon(QMessageBox::Question);
       mb.setWindowTitle(tr("Spot-On: Confirmation"));
       mb.setWindowModality(Qt::WindowModal);
@@ -1450,14 +1550,17 @@ void spoton::slotSetPassphrase(void)
   ** Create the RSA public and private keys.
   */
 
-  if(!reencode)
-    {
-      statusBar()->showMessage
-	(tr("Generating keys. Please be patient."));
-#ifdef Q_OS_MAC
-      QApplication::processEvents();
+  statusBar()->showMessage
+    (tr(
+#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
+	"Generating a derived key. Please be patient."
+#else
+	"Preparing the passphrase. Please be patient."
 #endif
-    }
+	));
+#ifdef Q_OS_MAC
+  QApplication::processEvents();
+#endif
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
@@ -1497,7 +1600,7 @@ void spoton::slotSetPassphrase(void)
 	  spoton_gcrypt::reencodePrivateKey
 	    (ui.cipherType->currentText(),
 	     derivedKey,
-	     m_settings["gui/cipherType"].toString(),
+	     m_settings["gui/cipherType"].toString().trimmed(),
 	     m_crypt->key(),
 	     spoton_misc::homePath() + QDir::separator() +
 	     "private_public_keys.db",
@@ -1513,7 +1616,7 @@ void spoton::slotSetPassphrase(void)
 	      spoton_gcrypt::reencodePrivateKey
 		(ui.cipherType->currentText(),
 		 derivedKey,
-		 m_settings["gui/cipherType"].toString(),
+		 m_settings["gui/cipherType"].toString().trimmed(),
 		 m_crypt->key(),
 		 spoton_misc::homePath() + QDir::separator() + "shared.db",
 		 error2);
@@ -1649,7 +1752,7 @@ void spoton::slotSetPassphrase(void)
 
       QMessageBox::information
 	(this, tr("Spot-On: Information"),
-	 tr("Your RSA keys and the passphrase have been been recorded. "
+	 tr("Your RSA keys and the passphrase have been recorded. "
 	    "You are now ready to use the full power of Spot-On. Enjoy!"));
 
       QMessageBox mb(this);
@@ -1661,7 +1764,7 @@ void spoton::slotSetPassphrase(void)
       mb.setWindowTitle(tr("Spot-On: Question"));
       mb.setWindowModality(Qt::WindowModal);
       mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-      mb.setText(tr("Would you like to start Spot-On now?"));
+      mb.setText(tr("Would you like the kernel to be activated?"));
 
       if(mb.exec() == QMessageBox::Yes)
 	slotActivateKernel();
@@ -1817,10 +1920,9 @@ void spoton::slotShowContextMenu(const QPoint &point)
 
   if(ui.neighbors == sender())
     {
-      menu.addAction(tr("&Block"),
-		     this, SLOT(slotBlockNeighbor(void)));
-      menu.addAction(tr("&Unblock"),
-		     this, SLOT(slotUnblockNeighbor(void)));
+      menu.addAction(QIcon(":/add-neighbor-to-chat.png"),
+		     tr("&Share Public Key"),
+		     this, SLOT(slotSharePublicKey(void)));
       menu.addSeparator();
       menu.addAction(QIcon(":/connect.png"), tr("&Connect"),
 		     this, SLOT(slotConnectNeighbor(void)));
@@ -1832,14 +1934,27 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("Delete &All"),
 		     this, SLOT(slotDeleteAllNeighbors(void)));
       menu.addSeparator();
-      menu.addAction(QIcon(":/addkey.png"), tr("&Share Public Key"),
-		     this, SLOT(slotSharePublicKey(void)));
+      menu.addAction(tr("&Block"),
+		     this, SLOT(slotBlockNeighbor(void)));
+      menu.addAction(tr("&Unblock"),
+		     this, SLOT(slotUnblockNeighbor(void)));
       menu.exec(ui.neighbors->mapToGlobal(point));
     }
   else
     {
-      menu.addAction(tr("&Remove"),
-		     this, SLOT(slotRemoveParticipants(void)));
+      QAction *action = menu.addAction
+	(QIcon(":/plist_confirmed_as_permanent_friend.png"),
+	 tr("&Add participant as friend."),
+	 this, SLOT(slotSharePublicKeyWithParticipant(void)));
+      QTableWidgetItem *item = ui.participants->itemAt(point);
+
+      if(item && item->data(Qt::UserRole).toBool()) // Temporary friend?
+	action->setEnabled(true);
+      else
+	action->setEnabled(false);
+
+      menu.addAction(QIcon(":/delete.png"), tr("&Remove"), this, 
+		     SLOT(slotRemoveParticipants(void)));
       menu.exec(ui.participants->mapToGlobal(point));
     }
 }
@@ -1871,7 +1986,7 @@ void spoton::sendKeyToKernel(void)
 
       if(m_kernelSocket.write(key.constData(), key.length()) != key.length())
 	spoton_misc::logError
-	  ("spoton::sendKeyToKernel(): write failure.");
+	  ("spoton::sendKeyToKernel(): write() failure.");
       else
 	m_kernelSocket.flush();
     }
@@ -2084,10 +2199,13 @@ void spoton::slotPopulateParticipants(void)
 	** We only wish to display other public keys.
 	*/
 
-	if(query.exec("SELECT name, OID FROM symmetric_keys"))
+	if(query.exec("SELECT name, OID, neighbor_oid FROM symmetric_keys"))
 	  {
 	    while(query.next())
 	      {
+		bool temporary =
+		  query.value(2).toInt() == -1 ? false : true;
+
 		for(int i = 0; i < query.record().count(); i++)
 		  {
 		    QTableWidgetItem *item = 0;
@@ -2106,11 +2224,30 @@ void spoton::slotPopulateParticipants(void)
 		      item = new QTableWidgetItem(query.value(i).toString().
 						  trimmed());
 
-		    item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		    item->setFlags
+		      (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+		    if(!temporary)
+		      {
+			item->setIcon
+			  (QIcon(":/plist_confirmed_as_permanent_friend.png"));
+			item->setToolTip(tr("%1 is a permanent friend.").
+					 arg(item->text()));
+		      }
+		    else
+		      {
+			item->setIcon
+			  (QIcon(":/plist_connected_neighbour.png"));
+			item->setToolTip
+			  (tr("%1 requests your friendship.").
+			   arg(item->text()));
+		      }
+
+		    item->setData(Qt::UserRole, temporary);
 		    ui.participants->setItem(row - 1, i, item);
 		  }
 
-		if(oids.contains(query.value(1).toString()))
+		if(oids.contains(query.value(1).toString().trimmed()))
 		  ui.participants->selectRow(row - 1);
 	      }
 	  }
@@ -2157,8 +2294,8 @@ void spoton::slotSendMessage(void)
       if(item)
 	{
 	  QByteArray message("");
-	  QByteArray name(m_settings.value("gui/nodeName").toByteArray().
-			  trimmed());
+	  QByteArray name(m_settings.value("gui/nodeName", "unknown").
+			  toByteArray().trimmed());
 
 	  if(name.isEmpty())
 	    name = "unknown";
@@ -2254,54 +2391,35 @@ void spoton::slotSharePublicKey(void)
   if(oid.isEmpty())
     return;
 
-  QString sharedPath(spoton_misc::homePath() + QDir::separator() +
-		     "private_public_keys.db");
-  libspoton_error_t err = LIBSPOTON_ERROR_NONE;
-  libspoton_handle_t libspotonHandle;
+  QByteArray publicKey;
+  bool ok = true;
 
-  if(libspoton_init(sharedPath.toStdString().c_str(),
-		    &libspotonHandle) == LIBSPOTON_ERROR_NONE)
-    err = libspoton_populate_public_key(&libspotonHandle);
+  publicKey = m_crypt->publicKey(&ok);
 
-  if(err == LIBSPOTON_ERROR_NONE)
+  if(ok)
     {
-      size_t length = gcry_sexp_sprint(libspotonHandle.publicKey,
-				       GCRYSEXP_FMT_ADVANCED, 0, 0);
+      QByteArray message;
+      QByteArray name(m_settings.value("gui/nodeName", "unknown").
+		      toByteArray().trimmed());
 
-      if(length)
-	{
-	  QByteArray buffer(length, 0);
+      if(name.isEmpty())
+	name = "unknown";
 
-	  gcry_sexp_sprint
-	    (libspotonHandle.publicKey,
-	     GCRYSEXP_FMT_ADVANCED,
-	     static_cast<void *> (buffer.data()),
-	     static_cast<size_t> (buffer.length()));
+      message.append("sharepublickey_");
+      message.append(oid);
+      message.append("_");
+      message.append(name.toBase64());
+      message.append("_");
+      message.append(publicKey.toBase64());
+      message.append('\n');
 
-	  QByteArray message;
-	  QByteArray name(m_settings.value("gui/nodeName").toByteArray());
-
-	  if(name.isEmpty())
-	    name = "unknown";
-
-	  message.append("sharepublickey_");
-	  message.append(oid);
-	  message.append("_");
-	  message.append(name.toBase64());
-	  message.append("_");
-	  message.append(buffer.toBase64());
-	  message.append('\n');
-
-	  if(m_kernelSocket.write(message.constData(), message.length()) !=
-	     message.length())
-	    spoton_misc::logError
-	      ("spoton::slotSharePublicKey(): write() failure.");
-	  else
-	    m_kernelSocket.flush();
-	}
+      if(m_kernelSocket.write(message.constData(), message.length()) !=
+	 message.length())
+	spoton_misc::logError
+	  ("spoton::slotSharePublicKey(): write() failure.");
+      else
+	m_kernelSocket.flush();
     }
-
-  libspoton_close(&libspotonHandle);
 }
 
 void spoton::slotRemoveParticipants(void)
@@ -2377,7 +2495,9 @@ void spoton::highlightKernelPath(void)
   QFileInfo fileInfo(ui.kernelPath->text());
   QPalette palette;
 
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN32)
+#if defined(Q_OS_MAC)
+  if((fileInfo.isBundle() || fileInfo.isExecutable()) && fileInfo.size() > 0)
+#elif defined(Q_OS_WIN32)
   if(fileInfo.isReadable() && fileInfo.size() > 0)
 #else
   if(fileInfo.isExecutable() && fileInfo.size() > 0)
@@ -2398,4 +2518,183 @@ void spoton::slotOnlyConnectedNeighborsToggled(bool state)
 
   settings.setValue("gui/showOnlyConnectedNeighbors", state);
   m_neighborsLastModificationTime = QDateTime();
+}
+
+void spoton::slotOnlyOnlineListenersToggled(bool state)
+{
+  m_settings["gui/showOnlyOnlineListeners"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/showOnlyOnlineListeners", state);
+  m_listenersLastModificationTime = QDateTime();
+}
+
+void spoton::prepareListenerIPCombo(void)
+{
+  ui.listenerIPCombo->clear();
+
+  QList<QNetworkInterface> interfaces(QNetworkInterface::allInterfaces());
+  QStringList list;
+
+  while(!interfaces.isEmpty())
+    {
+      QNetworkInterface interface(interfaces.takeFirst());
+
+      if(!interface.isValid() || !(interface.flags() &
+                   QNetworkInterface::IsUp))
+	continue;
+
+      QList<QNetworkAddressEntry> addresses(interface.addressEntries());
+
+      while(!addresses.isEmpty())
+	{
+	  QHostAddress address(addresses.takeFirst().ip());
+
+	  if(ui.ipv4Listener->isChecked())
+	    {
+	      if(address.protocol() == QAbstractSocket::IPv4Protocol)
+		list.append(address.toString());
+	    }
+	  else
+	    {
+	      if(address.protocol() == QAbstractSocket::IPv6Protocol)
+		list.append(QHostAddress(address.toIPv6Address()).toString());
+	    }
+	}
+    }
+
+  if(!list.isEmpty())
+    {
+      qSort(list);
+      ui.listenerIPCombo->addItem(tr("Custom"));
+      ui.listenerIPCombo->insertSeparator(1);
+      ui.listenerIPCombo->addItems(list);
+    }
+  else
+    ui.listenerIPCombo->addItem(tr("Custom"));
+}
+
+void spoton::slotListenerIPComboChanged(int index)
+{
+  /*
+  ** Method will be called because of activity in prepareListenerIPCombo().
+  */
+
+  if(index == 0)
+    {
+      ui.listenerIP->clear();
+      ui.listenerScopeId->clear();
+      ui.listenerIP->setVisible(true);
+    }
+  else
+    ui.listenerIP->setVisible(false);
+}
+
+void spoton::slotChatSendMethodChanged(int index)
+{
+  if(index == 0)
+    m_settings["gui/chatSendMethod"] = "Artificial_GET";
+  else
+    m_settings["gui/chatSendMethod"] = "Normal_POST";
+
+  QSettings settings;
+
+  settings.setValue
+    ("gui/chatSendMethod", m_settings.value("gui/chatSendMethod").toString());
+}
+
+void spoton::slotSharePublicKeyWithParticipant(void)
+{
+  if(!m_crypt)
+    return;
+  else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+
+  QString oid("");
+  int row = -1;
+
+  if((row = ui.participants->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = ui.participants->item(row, 1);
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  QString neighborOid("");
+  QByteArray publicKey;
+  QByteArray symmetricKey;
+  QByteArray symmetricKeyAlgorithm;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_database");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_symmetric_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec(QString("SELECT neighbor_oid, "
+			      "public_key, symmetric_key, "
+			      "symmetric_key_algorithm "
+			      "FROM symmetric_keys WHERE "
+			      "OID = %1").arg(oid)))
+	  if(query.next())
+	    {
+	      bool ok = true;
+
+	      neighborOid = query.value(0).toString();
+	      publicKey = query.value(1).toByteArray();
+	      symmetricKey = m_crypt->decrypted
+		(QByteArray::fromBase64(query.value(2).toByteArray()),
+		 &ok);
+
+	      if(ok)
+		symmetricKeyAlgorithm = m_crypt->decrypted
+		  (QByteArray::fromBase64(query.value(3).toByteArray()),
+		   &ok);
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_database");
+
+  if(publicKey.isEmpty() ||
+     symmetricKey.isEmpty() || symmetricKeyAlgorithm.isEmpty())
+    {
+      spoton_misc::logError("spoton::slotSharePublicKeyWithParticipant(): "
+			    "publicKey, or symmetricKey, or "
+			    "symmetricKeyAlgorithm is empty.");
+      return;
+    }
+
+  QByteArray message;
+
+  message.append("befriendparticipant_");
+  message.append(neighborOid);
+  message.append("_");
+  message.append(publicKey.toBase64());
+  message.append("_");
+  message.append(symmetricKey.toBase64());
+  message.append("_");
+  message.append(symmetricKeyAlgorithm.toBase64());
+  message.append('\n');
+
+  if(m_kernelSocket.write(message.constData(), message.length()) !=
+     message.length())
+    spoton_misc::logError
+      ("spoton::slotSharePublicKeyWithParticipant(): "
+       "write() failure.");
+  else
+    m_kernelSocket.flush();
 }

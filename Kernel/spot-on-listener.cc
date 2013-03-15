@@ -85,8 +85,9 @@ spoton_listener::~spoton_listener()
 	query.prepare("UPDATE listeners SET connections = 0, "
 		      "status = 'off' WHERE OID = ?");
 	query.bindValue(0, m_id);
-	query.exec();
-	db.commit();
+
+	if(query.exec())
+	  db.commit();
       }
 
     db.close();
@@ -121,7 +122,7 @@ void spoton_listener::slotTimeout(void)
 	  {
 	    if(query.next())
 	      {
-		QString status(query.value(0).toString());
+		QString status(query.value(0).toString().trimmed());
 
 		if(status == "online")
 		  {
@@ -202,8 +203,9 @@ void spoton_listener::saveStatus(QSqlDatabase &db)
   query.bindValue(1, status);
   query.bindValue(2, m_id);
   query.bindValue(3, status);
-  query.exec();
-  db.commit();
+
+  if(query.exec())
+    db.commit();
 }
 
 void spoton_listener::slotNewConnection(void)
@@ -246,35 +248,41 @@ void spoton_listener::slotNewConnection(void)
 	    query.bindValue(1, m_port);
 
 	    if(m_address.protocol() == QAbstractSocket::IPv4Protocol)
-          query.bindValue(2, "IPv4");
+	      query.bindValue(2, "IPv4");
 	    else
-          query.bindValue(2, "IPv6");
+	      query.bindValue(2, "IPv6");
+
+	    bool ok = true;
 
 	    if(spoton_kernel::s_crypt1)
 	      {
-		bool ok = true;
-
 		query.bindValue
 		  (3,
 		   spoton_kernel::s_crypt1->encrypted(neighbor->peerAddress().
 						      toString().toLatin1(),
 						      &ok).toBase64());
-		query.bindValue
-		  (4,
-		   spoton_kernel::s_crypt1->
-		   encrypted(QString::number(neighbor->peerPort()).
-			     toLatin1(), &ok).toBase64());
-		query.bindValue
-		  (5,
-		   spoton_kernel::s_crypt1->encrypted(neighbor->peerAddress().
-						      scopeId().toLatin1(),
-						      &ok).toBase64());
-		query.bindValue
-		  (7,
-		   spoton_kernel::s_crypt1->
-		   keyedHash((neighbor->peerAddress().toString() +
-			      QString::number(neighbor->peerPort())).
-			     toLatin1(), &ok).toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (4,
+		     spoton_kernel::s_crypt1->
+		     encrypted(QString::number(neighbor->peerPort()).
+			       toLatin1(), &ok).toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (5,
+		     spoton_kernel::s_crypt1->encrypted(neighbor->peerAddress().
+							scopeId().toLatin1(),
+							&ok).toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (7,
+		     spoton_kernel::s_crypt1->
+		     keyedHash((neighbor->peerAddress().toString() +
+				QString::number(neighbor->peerPort())).
+			       toLatin1(), &ok).toBase64());
 	      }
 	    else
 	      {
@@ -288,33 +296,45 @@ void spoton_listener::slotNewConnection(void)
 
 	    query.bindValue(6, "connected");
 	    query.bindValue(8, 0);
-	    created = query.exec();
-	    db.commit();
+
+	    if(ok)
+	      {
+		created = query.exec();
+
+		if(created)
+		  db.commit();
+	      }
 
 	    if(spoton_kernel::s_crypt1)
 	      {
-		if(query.exec("SELECT OID, remote_ip_address, "
-			      "remote_port FROM neighbors"))
-		  while(query.next())
-		    {
-		      QByteArray b1;
-		      QByteArray b2;
-		      bool ok = true;
-
-		      b1 = spoton_kernel::s_crypt1->decrypted
-			(QByteArray::fromBase64(query.value(1).toByteArray()),
-			 &ok);
-		      b2 = spoton_kernel::s_crypt1->decrypted
-			(QByteArray::fromBase64(query.value(2).toByteArray()),
-			 &ok);
-
-		      if(b1 == neighbor->peerAddress().toString() &&
-			 b2.toUShort() == neighbor->peerPort())
+		if(ok)
+		  {
+		    if(query.exec("SELECT OID, remote_ip_address, "
+				  "remote_port FROM neighbors"))
+		      while(query.next())
 			{
-			  id = query.value(0).toLongLong();
-			  break;
+			  QByteArray b1;
+			  QByteArray b2;
+
+			  b1 = spoton_kernel::s_crypt1->decrypted
+			    (QByteArray::fromBase64(query.value(1).
+						    toByteArray()),
+			     &ok);
+
+			  if(ok)
+			    b2 = spoton_kernel::s_crypt1->decrypted
+			      (QByteArray::fromBase64(query.value(2).
+						      toByteArray()),
+			       &ok);
+
+			  if(b1 == neighbor->peerAddress().toString() &&
+			     b2.toUShort() == neighbor->peerPort())
+			    {
+			      id = query.value(0).toLongLong();
+			      break;
+			    }
 			}
-		    }
+		  }
 	      }
 	    else
 	      {
@@ -367,8 +387,9 @@ void spoton_listener::updateConnectionCount(void)
 		      "WHERE OID = ?");
 	query.bindValue(0, QString::number(m_connections));
 	query.bindValue(1, m_id);
-	query.exec();
-	db.commit();
+
+	if(query.exec())
+	  db.commit();
       }
 
     db.close();

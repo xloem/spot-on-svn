@@ -28,6 +28,7 @@
 #ifndef _spoton_kernel_h_
 #define _spoton_kernel_h_
 
+#include <QFileSystemWatcher>
 #include <QHash>
 #include <QPointer>
 #include <QTimer>
@@ -45,16 +46,20 @@ class spoton_kernel: public QObject
   spoton_kernel(void);
   ~spoton_kernel();
   static QHash<QString, QVariant> s_settings;
-  static spoton_gcrypt *s_crypt1;
-  static spoton_gcrypt *s_crypt2;
+  static spoton_gcrypt *s_crypt1; // private_public_keys.db
+  static spoton_gcrypt *s_crypt2; // shared.db
+  static const short MESSAGE_TTL = 16;
 
  private:
+  QFileSystemWatcher m_settingsWatcher;
   QHash<qint64, QPointer<spoton_listener> > m_listeners;
   QHash<qint64, QPointer<spoton_neighbor> > m_neighbors;
   QTimer m_controlDatabaseTimer;
   spoton_gui_server *m_guiServer;
   void checkForTermination(void);
   void cleanup(void);
+  void cleanupDatabases(void);
+  void connectSignalsToNeighbor(spoton_neighbor *neighbor);
   void copyPublicKey(void);
   void prepareListeners(void);
   void prepareNeighbors(void);
@@ -68,6 +73,11 @@ class spoton_kernel: public QObject
   void slotPublicKeyReceivedFromUI(const qint64 oid,
 				   const QByteArray &name,
 				   const QByteArray &publicKey);
+  void slotPublicKeyReceivedFromUI(const qint64 oid,
+				   const QByteArray &publicKey,
+				   const QByteArray &symmetricKey,
+				   const QByteArray &symmetricKeyAlgorithm);
+  void slotSettingsChanged(const QString &path);
 
  signals:
   void sendMessage(const QByteArray &message);

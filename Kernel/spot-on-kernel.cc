@@ -163,6 +163,7 @@ int main(int argc, char *argv[])
 spoton_kernel::spoton_kernel(void):QObject(0)
 {
   QDir().mkdir(spoton_misc::homePath());
+  cleanupDatabases();
 
   /*
   ** The user interface doesn't yet have a means of preparing advanced
@@ -202,17 +203,71 @@ spoton_kernel::spoton_kernel(void):QObject(0)
      SLOT(slotPublicKeyReceivedFromUI(const qint64,
 				      const QByteArray &,
 				      const QByteArray &)));
+  connect
+    (m_guiServer,
+     SIGNAL(publicKeyReceivedFromUI(const qint64,
+				    const QByteArray &,
+				    const QByteArray &,
+				    const QByteArray &)),
+     this,
+     SLOT(slotPublicKeyReceivedFromUI(const qint64,
+				      const QByteArray &,
+				      const QByteArray &,
+				      const QByteArray &)));
+  m_settingsWatcher.addPath(settings.fileName());
+  connect(&m_settingsWatcher,
+	  SIGNAL(fileChanged(const QString &)),
+	  this,
+	  SLOT(slotSettingsChanged(const QString &)));
 }
 
 spoton_kernel::~spoton_kernel()
 {
   cleanup();
+  cleanupDatabases();
   QCoreApplication::instance()->quit();
 }
 
 void spoton_kernel::cleanup(void)
 {
+  QString sharedPath(spoton_misc::homePath() + QDir::separator() +
+		     "shared.db");
+  libspoton_handle_t libspotonHandle;
+
+  if(libspoton_init(sharedPath.toStdString().c_str(),
+		    &libspotonHandle) == LIBSPOTON_ERROR_NONE)
+    libspoton_deregister_kernel(QCoreApplication::applicationPid(),
+				&libspotonHandle);
+
+  libspoton_close(&libspotonHandle);
+}
+
+void spoton_kernel::cleanupDatabases(void)
+{
   m_controlDatabaseTimer.stop();
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "kernel");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_symmetric_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	/*
+	** Delete symmetric keys that were not completely shared.
+	*/
+
+	if(query.exec("DELETE FROM symmetric_keys WHERE neighbor_oid <> -1"))
+	  db.commit();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("kernel");
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "kernel");
@@ -224,8 +279,8 @@ void spoton_kernel::cleanup(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("DELETE FROM kernel_gui_server");
-	db.commit();
+	if(query.exec("DELETE FROM kernel_gui_server"))
+	  db.commit();
       }
 
     db.close();
@@ -243,10 +298,10 @@ void spoton_kernel::cleanup(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("UPDATE listeners SET connections = 0, "
-		   "status = 'off' WHERE status = 'online' AND "
-		   "status_control <> 'deleted'");
-	db.commit();
+	if(query.exec("UPDATE listeners SET connections = 0, "
+		      "status = 'off' WHERE status = 'online' AND "
+		      "status_control <> 'deleted'"))
+	  db.commit();
       }
 
     db.close();
@@ -264,28 +319,17 @@ void spoton_kernel::cleanup(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("UPDATE neighbors SET local_ip_address = '127.0.0.1', "
-		   "local_port = 0, "
-		   "status = 'disconnected' WHERE "
-		   "status = 'connected' AND status_control <> 'deleted'");
-	db.commit();
+	if(query.exec("UPDATE neighbors SET local_ip_address = '127.0.0.1', "
+		      "local_port = 0, "
+		      "status = 'disconnected' WHERE "
+		      "status = 'connected' AND status_control <> 'deleted'"))
+	  db.commit();
       }
 
     db.close();
   }
 
   QSqlDatabase::removeDatabase("kernel");
-
-  QString sharedPath(spoton_misc::homePath() + QDir::separator() +
-		     "shared.db");
-  libspoton_handle_t libspotonHandle;
-
-  if(libspoton_init(sharedPath.toStdString().c_str(),
-		    &libspotonHandle) == LIBSPOTON_ERROR_NONE)
-    libspoton_deregister_kernel(QCoreApplication::applicationPid(),
-				&libspotonHandle);
-
-  libspoton_close(&libspotonHandle);
 }
 
 void spoton_kernel::slotPollDatabase(void)
@@ -323,37 +367,43 @@ void spoton_kernel::prepareListeners(void)
 
 	      if(!m_listeners.contains(id))
 		{
-		  spoton_listener *listener = 0;
+		  QPointer<spoton_listener> listener = 0;
 
 		  if(s_crypt1)
 		    {
-		      bool ok = true;
+		      QList<QByteArray> list;
 
-		      listener = new spoton_listener
-			(s_crypt1->
-			 decrypted(QByteArray::fromBase64(query.
-							  value(0).
-							  toByteArray()),
-				   &ok).constData(),
-			 s_crypt1->
-			 decrypted(QByteArray::fromBase64(query.
-							  value(1).
-							  toByteArray()),
-				   &ok).constData(),
-			 s_crypt1->
-			 decrypted(QByteArray::fromBase64(query.
-							  value(2).
-							  toByteArray()),
-				   &ok).constData(),
-			 query.value(4).toInt(),
-			 query.value(5).toLongLong(),
-			 this);
+		      for(int i = 0; i < 3; i++)
+			{
+			  QByteArray bytes;
+			  bool ok = true;
+
+			  bytes = s_crypt1->
+			    decrypted(QByteArray::fromBase64(query.
+							     value(i).
+							     toByteArray()),
+				      &ok);
+
+			  if(ok)
+			    list.append(bytes);
+			  else
+			    break;
+			}
+
+		      if(list.size() == 3)
+			listener = new spoton_listener
+			  (list.at(0).constData(),
+			   list.at(1).constData(),
+			   list.at(2).constData(),
+			   query.value(4).toInt(),
+			   query.value(5).toLongLong(),
+			   this);
 		    }
 		  else
 		    listener = new spoton_listener
-		      (query.value(0).toString(),
-		       query.value(1).toString(),
-		       query.value(2).toString(),
+		      (query.value(0).toString().trimmed(),
+		       query.value(1).toString().trimmed(),
+		       query.value(2).toString().trimmed(),
 		       query.value(4).toInt(),
 		       query.value(5).toLongLong(),
 		       this);
@@ -374,7 +424,7 @@ void spoton_kernel::prepareListeners(void)
 
 		  if(listener)
 		    {
-		      QString state(query.value(3).toString());
+		      QString state(query.value(3).toString().trimmed());
 
 		      if(state == "deleted")
 			{
@@ -401,7 +451,7 @@ void spoton_kernel::prepareListeners(void)
 	  (QString("spoton_kernel::prepareListeners(): "
 		   "listener %1 "
 		   " may have been deleted from the listeners table by an"
-		   " external event. Purging listener from listeners "
+		   " external event. Purging listener from the listeners "
 		   "hash.").
 	   arg(m_listeners.keys().at(i)));
 	m_listeners.remove(m_listeners.keys().at(i));
@@ -434,74 +484,48 @@ void spoton_kernel::prepareNeighbors(void)
 
 	      if(!m_neighbors.contains(id))
 		{
-		  spoton_neighbor *neighbor = 0;
+		  QPointer<spoton_neighbor> neighbor = 0;
 
 		  if(s_crypt1)
 		    {
-		      bool ok = true;
+		      QList<QByteArray> list;
 
-		      neighbor = new spoton_neighbor
-			(s_crypt1->
-			 decrypted(QByteArray::fromBase64(query.
-							  value(0).
-							  toByteArray()),
-				   &ok).constData(),
-			 s_crypt1->
-			 decrypted(QByteArray::fromBase64(query.
-							  value(1).
-							  toByteArray()),
-				   &ok).constData(),
-			 s_crypt1->
-			 decrypted(QByteArray::fromBase64(query.
-							  value(1).
-							  toByteArray()),
-				   &ok).constData(),
-			 query.value(4).toLongLong(),
-			 this);
+		      for(int i = 0; i < 3; i++)
+			{
+			  QByteArray bytes;
+			  bool ok = true;
+
+			  bytes = s_crypt1->
+			    decrypted(QByteArray::fromBase64(query.
+							     value(i).
+							     toByteArray()),
+				      &ok);
+
+			  if(ok)
+			    list.append(bytes);
+			  else
+			    break;
+			}
+
+		      if(list.size() == 3)
+			neighbor = new spoton_neighbor
+			  (list.at(0).constData(),
+			   list.at(1).constData(),
+			   list.at(2).constData(),
+			   query.value(4).toLongLong(),
+			   this);
 		    }
 		  else
 		    neighbor = new spoton_neighbor
-		      (query.value(0).toString(),
-		       query.value(1).toString(),
-		       query.value(2).toString(),
+		      (query.value(0).toString().trimmed(),
+		       query.value(1).toString().trimmed(),
+		       query.value(2).toString().trimmed(),
 		       query.value(4).toLongLong(),
 		       this);
 
 		  if(neighbor)
 		    {
-		      connect
-			(neighbor,
-			 SIGNAL(receivedChatMessage(const QByteArray &)),
-			 m_guiServer,
-			 SLOT(slotReceivedChatMessage(const QByteArray &)));
-		      connect(neighbor,
-			      SIGNAL(receivedChatMessage(const QByteArray &,
-							 const qint64)),
-			      this,
-			      SIGNAL(receivedChatMessage(const QByteArray &,
-							 const qint64)));
-		      connect(neighbor,
-			      SIGNAL(receivedPublicKey(const QByteArray &,
-						       const qint64)),
-			      this,
-			      SIGNAL(receivedPublicKey(const QByteArray &,
-						       const qint64)));
-		      connect(this,
-			      SIGNAL(sendMessage(const QByteArray &)),
-			      neighbor,
-			      SLOT(slotSendMessage(const QByteArray &)));
-		      connect(this,
-			      SIGNAL(receivedChatMessage(const QByteArray &,
-							 const qint64)),
-			      neighbor,
-			      SLOT(slotReceivedChatMessage(const QByteArray &,
-							   const qint64)));
-		      connect(this,
-			      SIGNAL(receivedPublicKey(const QByteArray &,
-						       const qint64)),
-			      neighbor,
-			      SLOT(slotReceivedPublicKey(const QByteArray &,
-							 const qint64)));
+		      connectSignalsToNeighbor(neighbor);
 		      m_neighbors.insert(id, neighbor);
 		    }
 		}
@@ -511,7 +535,7 @@ void spoton_kernel::prepareNeighbors(void)
 
 		  if(neighbor)
 		    {
-		      QString state(query.value(3).toString());
+		      QString state(query.value(3).toString().trimmed());
 
 		      if(state == "deleted")
 			{
@@ -537,8 +561,8 @@ void spoton_kernel::prepareNeighbors(void)
 	spoton_misc::logError
 	  (QString("spoton_kernel::prepareNeighbors(): "
 		   "neighbor %1 "
-		   " may have been deleted from the neighbor table by an"
-		   " external event. Purging neighbor from neighbors "
+		   " may have been deleted from the neighbors table by an"
+		   " external event. Purging neighbor from the neighbors "
 		   "hash.").arg(m_neighbors.keys().at(i)));
 	m_neighbors.remove(m_neighbors.keys().at(i));
       }
@@ -598,27 +622,7 @@ void spoton_kernel::slotNewNeighbor(QPointer<spoton_neighbor> neighbor)
       if(!m_neighbors.contains(id))
 	{
 	  neighbor->setParent(this);
-	  connect
-	    (neighbor,
-	     SIGNAL(receivedChatMessage(const QByteArray &)),
-	     m_guiServer,
-	     SLOT(slotReceivedChatMessage(const QByteArray &)));
-	  connect(neighbor,
-		  SIGNAL(receivedPublicKey(const QByteArray &,
-					   const qint64)),
-		  this,
-		  SIGNAL(receivedPublicKey(const QByteArray &,
-					   const qint64)));
-	  connect(this,
-		  SIGNAL(sendMessage(const QByteArray &)),
-		  neighbor,
-		  SLOT(slotSendMessage(const QByteArray &)));
-	  connect(this,
-		  SIGNAL(receivedPublicKey(const QByteArray &,
-					   const qint64)),
-		  neighbor,
-		  SLOT(slotReceivedPublicKey(const QByteArray &,
-					     const qint64)));
+	  connectSignalsToNeighbor(neighbor);
 	  m_neighbors.insert(id, neighbor);
 	}
     }
@@ -644,32 +648,43 @@ void spoton_kernel::copyPublicKey(void)
 	{
 	  QByteArray buffer(length, 0);
 
-	  gcry_sexp_sprint
-	    (libspotonHandle.publicKey,
-	     GCRYSEXP_FMT_ADVANCED, buffer.data(), buffer.length());
-
-	  {
-	    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "kernel");
-
-	    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-			       "public_keys.db");
-
-	    if(db.open())
+	  if(gcry_sexp_sprint(libspotonHandle.publicKey,
+			      GCRYSEXP_FMT_ADVANCED,
+			      static_cast<void *> (buffer.data()),
+			      static_cast<size_t> (buffer.length())) != 0)
+	    {
 	      {
-		QSqlQuery query(db);
+		QSqlDatabase db = QSqlDatabase::addDatabase
+		  ("QSQLITE", "kernel");
 
-		query.exec("PRAGMA synchronous = OFF");
-		query.prepare("INSERT INTO public_keys (key) VALUES (?)");
-		query.bindValue(0, buffer);
-		query.exec();
-		db.commit();
+		db.setDatabaseName
+		  (spoton_misc::homePath() + QDir::separator() +
+		   "public_keys.db");
+
+		if(db.open())
+		  {
+		    QSqlQuery query(db);
+
+		    query.exec("PRAGMA synchronous = OFF");
+		    query.prepare("INSERT INTO public_keys (key) VALUES (?)");
+		    query.bindValue(0, buffer);
+
+		    if(query.exec())
+		      db.commit();
+		  }
+
+		db.close();
 	      }
 
-	    db.close();
-	  }
-
-	  QSqlDatabase::removeDatabase("kernel");
+	      QSqlDatabase::removeDatabase("kernel");
+	    }
+	  else
+	    spoton_misc::logError("spoton_kernel::copyPublicKey(): "
+				  "gcry_sexp_sprint() failure.");
 	}
+      else
+	spoton_misc::logError("spoton_kernel::copyPublicKey(): "
+			      "gcry_sexp_sprint() failure.");
     }
 
   libspoton_close(&libspotonHandle);
@@ -748,12 +763,24 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 		  if(ok)
 		    {
 		      char c = 0;
-		      short ttl = 16;
+		      short ttl = MESSAGE_TTL;
 
 		      memcpy(&c, static_cast<void *> (&ttl), 1);
 		      data.prepend(hash.toHex());
 		      data.prepend(c);
-		      emit sendMessage(spoton_send::message0000(data));
+
+		      if(s_settings.value("gui/chatSendMethod",
+					  "Artificial_GET").toString().
+			 trimmed() == "Artificial_GET")
+			emit sendMessage
+			  (spoton_send::message0000(data,
+						    spoton_send::
+						    ARTIFICIAL_GET));
+		      else
+			emit sendMessage
+			  (spoton_send::message0000(data,
+						    spoton_send::
+						    NORMAL_POST));
 		    }
 		}
 	    }
@@ -781,4 +808,78 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
       else
 	m_neighbors[oid]->flush();
     }
+  else
+    spoton_misc::logError
+      (QString("spoton_kernel::slotPublicKeyReceivedFromUI(): "
+	       "neighbor %1 not found in m_neighbors.").arg(oid));
+}
+
+void spoton_kernel::slotPublicKeyReceivedFromUI
+(const qint64 oid,
+ const QByteArray &publicKey,
+ const QByteArray &symmetricKey,
+ const QByteArray &symmetricKeyAlgorithm)
+{
+  if(m_neighbors.contains(oid))
+    m_neighbors[oid]->sharePublicKey
+      (publicKey, symmetricKey, symmetricKeyAlgorithm);
+  else
+    spoton_misc::logError
+      (QString("spoton_kernel::slotPublicKeyReceivedFromUI(): "
+	       "neighbor %1 not found in m_neighbors.").arg(oid));
+}
+
+void spoton_kernel::slotSettingsChanged(const QString &path)
+{
+  Q_UNUSED(path);
+  s_settings.clear();
+
+  QSettings settings;
+
+  if(!settings.contains("kernel/maximum_number_of_bytes_buffered_by_neighbor"))
+    settings.setValue("kernel/maximum_number_of_bytes_buffered_by_neighbor",
+		      25000);
+
+  for(int i = 0; i < settings.allKeys().size(); i++)
+    s_settings[settings.allKeys().at(i)] = settings.value
+      (settings.allKeys().at(i));
+}
+
+void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
+{
+  if(!neighbor)
+    return;
+
+  connect(neighbor,
+	  SIGNAL(receivedChatMessage(const QByteArray &)),
+	  m_guiServer,
+	  SLOT(slotReceivedChatMessage(const QByteArray &)));
+  connect(neighbor,
+	  SIGNAL(receivedChatMessage(const QByteArray &,
+				     const qint64)),
+	  this,
+	  SIGNAL(receivedChatMessage(const QByteArray &,
+				     const qint64)));
+  connect(neighbor,
+	  SIGNAL(receivedPublicKey(const QByteArray &,
+				   const qint64)),
+	  this,
+	  SIGNAL(receivedPublicKey(const QByteArray &,
+				   const qint64)));
+  connect(this,
+	  SIGNAL(sendMessage(const QByteArray &)),
+	  neighbor,
+	  SLOT(slotSendMessage(const QByteArray &)));
+  connect(this,
+	  SIGNAL(receivedChatMessage(const QByteArray &,
+				     const qint64)),
+	  neighbor,
+	  SLOT(slotReceivedChatMessage(const QByteArray &,
+				       const qint64)));
+  connect(this,
+	  SIGNAL(receivedPublicKey(const QByteArray &,
+				   const qint64)),
+	  neighbor,
+	  SLOT(slotReceivedPublicKey(const QByteArray &,
+				     const qint64)));
 }

@@ -9,11 +9,11 @@
         <file>modify.png</file>
         <file>quit.png</file>
         <file>search-active.png</file>
-        <file>tab-heart.png</file>
         <file>tab-management.png</file>
         <file>tab-neighbours.png</file>
         <file>tab-search.png</file>
         <file>tab-settings.png</file>
+        <file>tab-files.png</file>
         <file>tab-urlculture.png</file>
         <file>Logo/spoton-button-32.png</file>
         <file>Logo/spoton-logo-white.png</file>
@@ -30,5 +30,8 @@
         <file>tab-chat.png</file>
         <file>delete_all.png</file>
         <file>connect.png</file>
+        <file>add-neighbor-to-chat.png</file>
+        <file>plist_confirmed_as_permanent_friend.png</file>
+        <file>plist_connected_neighbour.png</file>
     </qresource>
 </RCC>
