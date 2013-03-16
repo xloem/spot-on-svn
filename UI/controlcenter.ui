@@ -362,10 +362,10 @@
               <item>
                <widget class="QPushButton" name="pushButtonMakeFriends">
                 <property name="toolTip">
-                 <string>Share public key with selected neighbor.</string>
+                 <string/>
                 </property>
                 <property name="text">
-                 <string>&amp;Share Public Key</string>
+                 <string>&amp;Add Neighbor to Chat</string>
                 </property>
                 <property name="icon">
                  <iconset resource="../Icons/icons.qrc">
