@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>968</width>
-                <height>534</height>
+                <width>960</width>
+                <height>544</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -112,7 +112,14 @@
                     </layout>
                    </item>
                    <item>
-                    <widget class="QTextBrowser" name="messages"/>
+                    <widget class="QTextBrowser" name="messages">
+                     <property name="textInteractionFlags">
+                      <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+                     </property>
+                     <property name="openLinks">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </widget>
@@ -208,7 +215,26 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLineEdit" name="message"/>
+                  <widget class="spoton_textedit" name="message">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="verticalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAlwaysOff</enum>
+                   </property>
+                   <property name="horizontalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAlwaysOff</enum>
+                   </property>
+                   <property name="tabChangesFocus">
+                    <bool>true</bool>
+                   </property>
+                   <property name="lineWrapMode">
+                    <enum>QTextEdit::NoWrap</enum>
+                   </property>
+                  </widget>
                  </item>
                  <item>
                   <widget class="QPushButton" name="sendMessage">
@@ -860,8 +886,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>968</width>
-             <height>534</height>
+             <width>975</width>
+             <height>614</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2149,7 +2175,7 @@
      <x>0</x>
      <y>0</y>
      <width>990</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2179,6 +2205,11 @@
    <extends>QTabWidget</extends>
    <header>GUI/spot-on-tabwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>spoton_textedit</class>
+   <extends>QTextEdit</extends>
+   <header>GUI/spot-on-textedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

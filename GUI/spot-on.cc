@@ -2269,7 +2269,7 @@ void spoton::slotSendMessage(void)
 {
   if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
     return;
-  else if(ui.message->text().trimmed().isEmpty())
+  else if(ui.message->toHtml().trimmed().isEmpty())
     return;
 
   if(!ui.participants->selectionModel()->hasSelection())
@@ -2283,8 +2283,8 @@ void spoton::slotSendMessage(void)
   QString message("");
 
   message.append(tr("<b>me:</b> "));
-  message.append(ui.message->text().trimmed());
   ui.messages->append(message);
+  ui.messages->insertHtml(ui.message->toHtml().trimmed());
 
   while(!list.isEmpty())
     {
@@ -2308,7 +2308,7 @@ void spoton::slotSendMessage(void)
 	  message.append(QString("%1_").arg(item->text()));
 	  message.append(name.toBase64());
 	  message.append("_");
-	  message.append(ui.message->text().trimmed().toUtf8().toBase64());
+	  message.append(ui.message->toHtml().trimmed().toUtf8().toBase64());
 	  message.append('\n');
 
 	  if(m_kernelSocket.write(message.constData(), message.length()) !=
