@@ -2364,7 +2364,7 @@ void spoton::slotReceivedKernelMessage(void)
 							   name.length())));
 		  msg.append(QString::fromUtf8(message.constData(),
 					       message.length()));
-		  ui.messages->append(msg);
+		  ui.messages->insertHtml(msg);
 		}
 	    }
 	}
