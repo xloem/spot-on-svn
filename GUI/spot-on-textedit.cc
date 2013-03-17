@@ -46,6 +46,7 @@ QSize spoton_textedit::sizeHint(void) const
 
   return QSize(w, h);
 }
+
 void spoton_textedit::keyPressEvent(QKeyEvent *event)
 {
   if(event)
