@@ -20,6 +20,7 @@ Remaining Items
 
 1.     Re-encode various databases whenever the passphrase is changed.
 2.     Add a database for the temporary chat keys of connected neighbors.
+3.     Secure connections between the interface and the kernel.
 
 Ideas
 
