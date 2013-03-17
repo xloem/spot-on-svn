@@ -2269,7 +2269,7 @@ void spoton::slotSendMessage(void)
 {
   if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
     return;
-  else if(ui.message->toHtml().trimmed().isEmpty())
+  else if(ui.message->toPlainText().trimmed().isEmpty())
     return;
 
   if(!ui.participants->selectionModel()->hasSelection())
