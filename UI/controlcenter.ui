@@ -112,14 +112,7 @@
                     </layout>
                    </item>
                    <item>
-                    <widget class="QTextBrowser" name="messages">
-                     <property name="textInteractionFlags">
-                      <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                     </property>
-                     <property name="openLinks">
-                      <bool>false</bool>
-                     </property>
-                    </widget>
+                    <widget class="QTextBrowser" name="messages"/>
                    </item>
                   </layout>
                  </widget>
@@ -222,17 +215,11 @@
                      <verstretch>0</verstretch>
                     </sizepolicy>
                    </property>
-                   <property name="verticalScrollBarPolicy">
-                    <enum>Qt::ScrollBarAlwaysOff</enum>
-                   </property>
-                   <property name="horizontalScrollBarPolicy">
-                    <enum>Qt::ScrollBarAlwaysOff</enum>
-                   </property>
                    <property name="tabChangesFocus">
                     <bool>true</bool>
                    </property>
-                   <property name="lineWrapMode">
-                    <enum>QTextEdit::NoWrap</enum>
+                   <property name="acceptRichText">
+                    <bool>false</bool>
                    </property>
                   </widget>
                  </item>
@@ -886,7 +873,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>975</width>
+             <width>1020</width>
              <height>614</height>
             </rect>
            </property>

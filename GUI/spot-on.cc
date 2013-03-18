@@ -37,6 +37,7 @@
 #include <QNetworkInterface>
 #endif
 #include <QProcess>
+#include <QScrollBar>
 #include <QSettings>
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -2285,6 +2286,7 @@ void spoton::slotSendMessage(void)
   message.append(tr("<b>me:</b> "));
   ui.messages->append(message);
   ui.messages->insertHtml(ui.message->toHtml().trimmed());
+  ui.messages->ensureCursorVisible();
 
   while(!list.isEmpty())
     {
@@ -2367,6 +2369,7 @@ void spoton::slotReceivedKernelMessage(void)
 		  msg.append(QString::fromUtf8(message.constData(),
 					       message.length()));
 		  ui.messages->insertHtml(msg);
+		  ui.messages->ensureCursorVisible();
 		}
 	    }
 	}
