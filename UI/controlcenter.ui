@@ -27,7 +27,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="iconSize">
        <size>
@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>960</width>
-                <height>544</height>
+                <width>968</width>
+                <height>533</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -263,6 +263,13 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_24">
               <item>
+               <widget class="QCheckBox" name="checkBox">
+                <property name="text">
+                 <string>Connect Only to Stick&amp;y Neighbors</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QCheckBox" name="showOnlyConnectedNeighbors">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -272,13 +279,6 @@
                 </property>
                 <property name="text">
                  <string>Show Only &amp;Connected Neighbors</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox">
-                <property name="text">
-                 <string>Connect Only To Sticky Neighbors</string>
                 </property>
                </widget>
               </item>
@@ -333,6 +333,11 @@
               </column>
               <column>
                <property name="text">
+                <string>UUID</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
                 <string>Status</string>
                </property>
                <property name="icon">
@@ -353,6 +358,21 @@
               <column>
                <property name="text">
                 <string>Protocol</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>External IP</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>External Port</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Country</string>
                </property>
               </column>
               <column>
@@ -880,8 +900,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1020</width>
-             <height>614</height>
+             <width>968</width>
+             <height>533</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -1064,17 +1084,22 @@
                      </column>
                      <column>
                       <property name="text">
+                       <string>Status</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
                        <string>Local IP</string>
                       </property>
                      </column>
                      <column>
                       <property name="text">
-                       <string>Port</string>
+                       <string>Local Port</string>
                       </property>
                      </column>
                      <column>
                       <property name="text">
-                       <string>Status</string>
+                       <string>Scope ID</string>
                       </property>
                      </column>
                      <column>
@@ -1084,7 +1109,12 @@
                      </column>
                      <column>
                       <property name="text">
-                       <string>Scope ID</string>
+                       <string>External IP</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>External Port</string>
                       </property>
                      </column>
                      <column>
@@ -2169,7 +2199,7 @@
      <x>0</x>
      <y>0</y>
      <width>990</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2217,6 +2247,7 @@
   <tabstop>chatSendMethod</tabstop>
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
+  <tabstop>checkBox</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>
   <tabstop>neighbors</tabstop>
   <tabstop>pushButtonMakeFriends</tabstop>

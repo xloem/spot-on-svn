@@ -131,6 +131,8 @@ void spoton_misc::prepareDatabases(void)
 		   "status_control TEXT NOT NULL DEFAULT 'online', "
 		   "connections INTEGER NOT NULL DEFAULT 0, "
 		   "maximum_clients INTEGER NOT NULL DEFAULT 5, "
+		   "external_ip_address TEXT, "
+		   "external_port TEXT, "
 		   "hash TEXT PRIMARY KEY NOT NULL)");
       }
 
@@ -159,6 +161,10 @@ void spoton_misc::prepareDatabases(void)
 		   "status TEXT NOT NULL DEFAULT 'disconnected', "
 		   "status_control TEXT NOT NULL DEFAULT 'connected', "
 		   "sticky INTEGER NOT NULL DEFAULT 1, "
+		   "external_ip_address TEXT, "
+		   "external_port TEXT, "
+		   "uuid TEXT, "
+		   "country TEXT, "
 		   "hash TEXT PRIMARY KEY NOT NULL)");
       }
 

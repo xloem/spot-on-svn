@@ -795,12 +795,12 @@ void spoton::slotPopulateListeners(void)
 
 	if((row = ui.listeners->currentRow()) >= 0)
 	  {
-	    QTableWidgetItem *item = ui.listeners->item(row, 1);
+	    QTableWidgetItem *item = ui.listeners->item(row, 2);
 
 	    if(item)
 	      ip = item->text();
 
-	    if((item = ui.listeners->item(row, 2)))
+	    if((item = ui.listeners->item(row, 3)))
 	      port = item->text();
 	  }
 
@@ -812,10 +812,11 @@ void spoton::slotPopulateListeners(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec(QString("SELECT status_control, ip_address, port, "
-			      "status, "
-			      "protocol, scope_id, connections, "
-			      "maximum_clients, OID "
+	if(query.exec(QString("SELECT "
+			      "status_control, status, "
+			      "ip_address, port, scope_id, protocol, "
+			      "external_ip_address, external_port, "
+			      "connections, maximum_clients, OID "
 			      "FROM listeners WHERE "
 			      "status_control <> 'deleted' %1").
 		      arg(ui.showOnlyOnlineListeners->isChecked() ?
@@ -830,122 +831,78 @@ void spoton::slotPopulateListeners(void)
 		QTableWidgetItem *item = 0;
 
 		ui.listeners->setRowCount(row + 1);
-		check = new QCheckBox();
 
-		if(query.value(0) == "online")
-		  check->setChecked(true);
+		for(int i = 0; i < query.record().count(); i++)
+		  {
+		    if(i == 0)
+		      {
+			check = new QCheckBox();
 
-		check->setProperty("oid", query.value(8));
-		check->setProperty("table_row", row);
-		connect(check,
-			SIGNAL(stateChanged(int)),
-			this,
-			SLOT(slotListenerCheckChange(int)));
-		ui.listeners->setCellWidget(row, 0, check);
+			if(query.value(0) == "online")
+			  check->setChecked(true);
 
-		bool ok = true;
+			check->setProperty("oid", query.value(10));
+			check->setProperty("table_row", row);
+			connect(check,
+				SIGNAL(stateChanged(int)),
+				this,
+				SLOT(slotListenerCheckChange(int)));
+			ui.listeners->setCellWidget(row, i, check);
+		      }
+		    else if(i == 9)
+		      {
+			box = new QComboBox();
+			box->setProperty("oid", query.value(10));
+			box->setProperty("table_row", row);
 
-		if(m_crypt)
-		  item = new QTableWidgetItem
-		    (m_crypt->decrypted(QByteArray::fromBase64(query.
-							       value(1).
-							       toByteArray()),
-					&ok).constData());
-		else
-		  item = new QTableWidgetItem(query.value(1).toString().
-					      trimmed());
+			for(int j = 1; j <= 10; j++)
+			  box->addItem(QString::number(5 * j));
 
-		item->setTextAlignment(Qt::AlignCenter);
-		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		ui.listeners->setItem(row, 1, item);
+			box->addItem(tr("Unlimited"));
+			box->setMaximumWidth
+			  (box->fontMetrics().width(tr("Unlimited")) + 50);
+			ui.listeners->setCellWidget(row, i, box);
 
-		if(m_crypt)
-		  item = new QTableWidgetItem
-		    (m_crypt->decrypted(QByteArray::fromBase64(query.
-							       value(2).
-							       toByteArray()),
-					&ok).constData());
-		else
-		  item = new QTableWidgetItem(query.value(2).toString().
-					      trimmed());
+			if(std::numeric_limits<int>::max() == query.value(i).toInt())
+			  box->setCurrentIndex(box->count() - 1);
+			else if(box->findText(QString::number(query.value(i).toInt())))
+			  box->setCurrentIndex
+			    (box->findText(QString::number(query.value(i).toInt())));
+			else
+			  box->setCurrentIndex(0);
 
-		item->setTextAlignment(Qt::AlignCenter);
-		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		ui.listeners->setItem(row, 2, item);
-		item = new QTableWidgetItem(query.value(3).toString().
-					    trimmed());
+			connect(box,
+				SIGNAL(currentIndexChanged(int)),
+				this,
+				SLOT(slotMaximumClientsChanged(int)));
+		      }
+		    else
+		      {
+			bool ok = true;
 
-		if(query.value(3).toString().trimmed() == "online")
-		  item->setBackground(QBrush(QColor("lightgreen")));
-		else
-		  item->setBackground(QBrush());
+			if(i >= 2 && i <= 5 && m_crypt)
+			  item = new QTableWidgetItem
+			    (m_crypt->decrypted(QByteArray::fromBase64(query.
+								       value(i).
+								       toByteArray()),
+						&ok).constData());
+			else
+			  item = new QTableWidgetItem(query.value(i).toString().
+						      trimmed());
 
-		item->setTextAlignment(Qt::AlignCenter);
-		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		ui.listeners->setItem(row, 3, item);
+			item->setTextAlignment(Qt::AlignCenter);
+			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+			ui.listeners->setItem(row, i, item);
 
-		if(m_crypt)
-		  item = new QTableWidgetItem
-		    (m_crypt->decrypted(QByteArray::fromBase64(query.
-							       value(4).
-							       toByteArray()),
-					&ok).constData());
-		else
-		  item = new QTableWidgetItem(query.value(4).toString().
-					      trimmed());
-
-		item->setTextAlignment(Qt::AlignCenter);
-		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		ui.listeners->setItem(row, 4, item);
-
-		if(m_crypt)
-		  item = new QTableWidgetItem
-		    (m_crypt->decrypted(QByteArray::fromBase64(query.
-							       value(5).
-							       toByteArray()),
-					&ok).constData());
-		else
-		  item = new QTableWidgetItem(query.value(5).toString().
-					      trimmed());
-
-		item->setTextAlignment(Qt::AlignCenter);
-		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		ui.listeners->setItem(row, 5, item);
-		item = new QTableWidgetItem(query.value(6).toString().
-					    trimmed());
-		item->setTextAlignment(Qt::AlignCenter);
-		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		ui.listeners->setItem(row, 6, item);
-		box = new QComboBox();
-		box->setProperty("oid", query.value(8));
-		box->setProperty("table_row", row);
-
-		for(int i = 1; i <= 10; i++)
-		  box->addItem(QString::number(5 * i));
-
-		box->addItem(tr("Unlimited"));
-		box->setMaximumWidth
-		  (box->fontMetrics().width(tr("Unlimited")) + 50);
-		ui.listeners->setCellWidget(row, 7, box);
-
-		if(std::numeric_limits<int>::max() == query.value(7).toInt())
-		  box->setCurrentIndex(box->count() - 1);
-		else if(box->findText(QString::number(query.value(7).toInt())))
-		  box->setCurrentIndex
-		    (box->findText(QString::number(query.value(7).toInt())));
-		else
-		  box->setCurrentIndex(0);
-
-		connect(box,
-			SIGNAL(currentIndexChanged(int)),
-			this,
-			SLOT(slotMaximumClientsChanged(int)));
-
-		item = new QTableWidgetItem(query.value(8).toString().
-					    trimmed());
-		item->setTextAlignment(Qt::AlignCenter);
-		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		ui.listeners->setItem(row, 8, item);
+			if(i == 1)
+			  {
+			    if(query.value(i).toString().trimmed() == "online")
+			      item->setBackground(QBrush(QColor("lightgreen")));
+			    else
+			      item->setBackground(QBrush());
+			  }
+		      }
+		  }
 
 		if(m_crypt)
 		  {
@@ -954,10 +911,10 @@ void spoton::slotPopulateListeners(void)
 		    bool ok = true;
 
 		    bytes1 = m_crypt->decrypted
-		      (QByteArray::fromBase64(query.value(1).toByteArray()),
+		      (QByteArray::fromBase64(query.value(2).toByteArray()),
 		       &ok);
 		    bytes2 = m_crypt->decrypted
-		      (QByteArray::fromBase64(query.value(2).toByteArray()),
+		      (QByteArray::fromBase64(query.value(3).toByteArray()),
 		       &ok);
 
 		    if(ip == bytes1 && port == bytes2)
@@ -2284,8 +2241,8 @@ void spoton::slotSendMessage(void)
   QString message("");
 
   message.append(tr("<b>me:</b> "));
+  message.append(ui.message->toPlainText().trimmed());
   ui.messages->append(message);
-  ui.messages->insertHtml(ui.message->toHtml().trimmed());
   ui.messages->ensureCursorVisible();
 
   while(!list.isEmpty())
@@ -2310,7 +2267,7 @@ void spoton::slotSendMessage(void)
 	  message.append(QString("%1_").arg(item->text()));
 	  message.append(name.toBase64());
 	  message.append("_");
-	  message.append(ui.message->toHtml().trimmed().toUtf8().toBase64());
+	  message.append(ui.message->toPlainText().trimmed().toUtf8().toBase64());
 	  message.append('\n');
 
 	  if(m_kernelSocket.write(message.constData(), message.length()) !=
@@ -2364,11 +2321,9 @@ void spoton::slotReceivedKernelMessage(void)
 		  msg.append
 		    (QString("%1: ").arg(QString::fromUtf8(name.constData(),
 							   name.length())));
-		  ui.messages->append(msg);
-		  msg.clear();
 		  msg.append(QString::fromUtf8(message.constData(),
 					       message.length()));
-		  ui.messages->insertHtml(msg);
+		  ui.messages->append(msg);
 		  ui.messages->ensureCursorVisible();
 		}
 	    }
