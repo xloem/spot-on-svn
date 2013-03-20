@@ -27,7 +27,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -900,8 +900,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>968</width>
-             <height>533</height>
+             <width>939</width>
+             <height>520</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">

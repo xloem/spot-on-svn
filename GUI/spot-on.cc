@@ -120,19 +120,19 @@ spoton::spoton(void)
   connect(ui.ipv4Listener,
 	  SIGNAL(toggled(bool)),
 	  this,
-	  SLOT(slotListenerRadioToggled(bool)));
+	  SLOT(slotProtocolRadioToggled(bool)));
   connect(ui.ipv4Neighbor,
 	  SIGNAL(toggled(bool)),
 	  this,
-	  SLOT(slotListenerRadioToggled(bool)));
+	  SLOT(slotProtocolRadioToggled(bool)));
   connect(ui.ipv6Listener,
 	  SIGNAL(toggled(bool)),
 	  this,
-	  SLOT(slotListenerRadioToggled(bool)));
+	  SLOT(slotProtocolRadioToggled(bool)));
   connect(ui.ipv6Neighbor,
 	  SIGNAL(toggled(bool)),
 	  this,
-	  SLOT(slotListenerRadioToggled(bool)));
+	  SLOT(slotProtocolRadioToggled(bool)));
   connect(ui.activateKernel,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -720,7 +720,7 @@ void spoton::slotAddNeighbor(void)
   ui.neighborIP->selectAll();
 }
 
-void spoton::slotListenerRadioToggled(bool state)
+void spoton::slotProtocolRadioToggled(bool state)
 {
   Q_UNUSED(state);
 
@@ -739,6 +739,7 @@ void spoton::slotListenerRadioToggled(bool state)
 	}
       else
 	{
+	  ui.neighborIP->clear();
 	  ui.neighborIP->setInputMask("000.000.000.000; ");
 	  ui.neighborScopeId->setEnabled(false);
 	  ui.neighborScopeIdLabel->setEnabled(false);
@@ -755,6 +756,7 @@ void spoton::slotListenerRadioToggled(bool state)
 	}
       else
 	{
+	  ui.neighborIP->clear();
 	  ui.neighborIP->setInputMask
 	    ("HHHH:HHHH:HHHH:HHHH:HHHH:HHHH:HHHH:HHHH; ");
 	  ui.neighborScopeId->setEnabled(true);
@@ -863,11 +865,16 @@ void spoton::slotPopulateListeners(void)
 			  (box->fontMetrics().width(tr("Unlimited")) + 50);
 			ui.listeners->setCellWidget(row, i, box);
 
-			if(std::numeric_limits<int>::max() == query.value(i).toInt())
+			if(std::numeric_limits<int>::max() ==
+			   query.value(i).toInt())
 			  box->setCurrentIndex(box->count() - 1);
-			else if(box->findText(QString::number(query.value(i).toInt())))
+			else if(box->findText(QString::number(query.
+							      value(i).
+							      toInt())))
 			  box->setCurrentIndex
-			    (box->findText(QString::number(query.value(i).toInt())));
+			    (box->findText(QString::number(query.
+							   value(i).
+							   toInt())));
 			else
 			  box->setCurrentIndex(0);
 
@@ -882,22 +889,26 @@ void spoton::slotPopulateListeners(void)
 
 			if(i >= 2 && i <= 5 && m_crypt)
 			  item = new QTableWidgetItem
-			    (m_crypt->decrypted(QByteArray::fromBase64(query.
-								       value(i).
-								       toByteArray()),
+			    (m_crypt->decrypted(QByteArray::
+						fromBase64(query.
+							   value(i).
+							   toByteArray()),
 						&ok).constData());
 			else
-			  item = new QTableWidgetItem(query.value(i).toString().
+			  item = new QTableWidgetItem(query.
+						      value(i).toString().
 						      trimmed());
 
 			item->setTextAlignment(Qt::AlignCenter);
-			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+			item->setFlags
+			  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			ui.listeners->setItem(row, i, item);
 
 			if(i == 1)
 			  {
 			    if(query.value(i).toString().trimmed() == "online")
-			      item->setBackground(QBrush(QColor("lightgreen")));
+			      item->setBackground
+				(QBrush(QColor("lightgreen")));
 			    else
 			      item->setBackground(QBrush());
 			  }
@@ -968,8 +979,8 @@ void spoton::slotPopulateNeighbors(void)
 
 	QString remoteIp("");
 	QString remotePort("");
-	int columnREMOTE_IP = 5;
-	int columnREMOTE_PORT = 6;
+	int columnREMOTE_IP = 9;
+	int columnREMOTE_PORT = 10;
 	int row = -1;
 
 	if((row = ui.neighbors->currentRow()) >= 0)
@@ -992,9 +1003,11 @@ void spoton::slotPopulateNeighbors(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec(QString("SELECT sticky, status, "
-			      "local_ip_address, local_port, "
-			      "protocol, remote_ip_address, "
+	if(query.exec(QString("SELECT sticky, uuid, status, "
+			      "local_ip_address, local_port, protocol, "
+			      "external_ip_address, external_port, "
+			      "country, "
+			      "remote_ip_address, "
 			      "remote_port, scope_id, OID "
 			      "FROM neighbors WHERE "
 			      "status_control <> 'deleted' %1").
@@ -1023,7 +1036,8 @@ void spoton::slotPopulateNeighbors(void)
 		if(query.value(0).toInt() == 1)
 		  check->setChecked(true);
 
-		check->setProperty("oid", query.value(8));
+		check->setProperty
+		  ("oid", query.value(query.record().count() - 1));
 		check->setProperty("table_row", row);
 		connect(check,
 			SIGNAL(stateChanged(int)),
@@ -1035,22 +1049,16 @@ void spoton::slotPopulateNeighbors(void)
 		  {
 		    QTableWidgetItem *item = 0;
 
-		    if(m_crypt)
+		    if(m_crypt && (i == 9 || i == 10 || i == 11))
 		      {
-			if(i == 5 || i == 6 || i == 7)
-			  {
-			    bool ok = true;
+			bool ok = true;
 
-			    item = new QTableWidgetItem
-			      (m_crypt->decrypted(QByteArray::
-						  fromBase64(query.
-							     value(i).
-							     toByteArray()),
-						  &ok).constData());
-			  }
-			else
-			  item = new QTableWidgetItem
-			    (query.value(i).toString().trimmed());
+			item = new QTableWidgetItem
+			  (m_crypt->decrypted(QByteArray::
+					      fromBase64(query.
+							 value(i).
+							 toByteArray()),
+					      &ok).constData());
 		      }
 		    else
 		      item = new QTableWidgetItem
@@ -1059,14 +1067,14 @@ void spoton::slotPopulateNeighbors(void)
 		    item->setTextAlignment(Qt::AlignCenter);
 		    item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-		    if(i == 1)
+		    if(i == 2)
 		      {
-			if(query.value(1).toString().trimmed() == "connected")
+			if(query.value(i).toString().trimmed() == "connected")
 			  item->setBackground(QBrush(QColor("lightgreen")));
 			else
 			  item->setBackground(QBrush());
 
-			if(query.value(1).toString().trimmed() == "connected")
+			if(query.value(i).toString().trimmed() == "connected")
 			  item->setIcon(QIcon(":/connect_established.png"));
 		      }
 
@@ -2267,7 +2275,8 @@ void spoton::slotSendMessage(void)
 	  message.append(QString("%1_").arg(item->text()));
 	  message.append(name.toBase64());
 	  message.append("_");
-	  message.append(ui.message->toPlainText().trimmed().toUtf8().toBase64());
+	  message.append(ui.message->toPlainText().trimmed().toUtf8().
+			 toBase64());
 	  message.append('\n');
 
 	  if(m_kernelSocket.write(message.constData(), message.length()) !=
