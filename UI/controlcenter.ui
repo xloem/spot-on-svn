@@ -900,8 +900,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>968</width>
-             <height>533</height>
+             <width>939</width>
+             <height>520</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2208,7 +2208,14 @@
     </property>
     <addaction name="action_Quit"/>
    </widget>
+   <widget class="QMenu" name="menu_Tools">
+    <property name="title">
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="action_Log_Viewer"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menu_Tools"/>
   </widget>
   <action name="action_Quit">
    <property name="icon">
@@ -2220,6 +2227,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="action_Log_Viewer">
+   <property name="text">
+    <string>&amp;Log Viewer</string>
    </property>
   </action>
  </widget>

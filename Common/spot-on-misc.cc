@@ -197,6 +197,13 @@ void spoton_misc::logError(const QString &error)
 {
   QFile file(homePath() + QDir::separator() + "error_log.dat");
 
+  if(file.size() >= 5 * 1024)
+    /*
+    ** Too large!
+    */
+
+    file.remove();
+
   if(file.open(QIODevice::Append | QIODevice::WriteOnly))
     {
       QDateTime now(QDateTime::currentDateTime());

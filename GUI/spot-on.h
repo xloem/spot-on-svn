@@ -35,6 +35,7 @@
 #include <QTimer>
 
 #include "Common/spot-on-gcrypt.h"
+#include "spot-on-logviewer.h"
 #include "ui_controlcenter.h"
 
 class spoton: public QMainWindow
@@ -55,6 +56,7 @@ class spoton: public QMainWindow
   QTimer m_tableTimer;
   Ui_spoton_mainwindow ui;
   spoton_gcrypt *m_crypt;
+  spoton_logviewer m_logViewer;
   void closeEvent(QCloseEvent *event);
   void highlightKernelPath(void);
   void prepareListenerIPCombo(void);
@@ -103,6 +105,7 @@ class spoton: public QMainWindow
   void slotTabChanged(int index);
   void slotUnblockNeighbor(void);
   void slotValidatePassphrase(void);
+  void slotViewLog(void);
 };
 
 #endif

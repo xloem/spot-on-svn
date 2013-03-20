@@ -109,6 +109,10 @@ spoton::spoton(void)
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotQuit(void)));
+  connect(ui.action_Log_Viewer,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotViewLog(void)));
   connect(ui.addListener,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -2251,6 +2255,7 @@ void spoton::slotSendMessage(void)
   message.append(tr("<b>me:</b> "));
   message.append(ui.message->toPlainText().trimmed());
   ui.messages->append(message);
+  ui.messages->textCursor().movePosition(QTextCursor::End);
   ui.messages->ensureCursorVisible();
 
   while(!list.isEmpty())
@@ -2333,6 +2338,7 @@ void spoton::slotReceivedKernelMessage(void)
 		  msg.append(QString::fromUtf8(message.constData(),
 					       message.length()));
 		  ui.messages->append(msg);
+		  ui.messages->textCursor().movePosition(QTextCursor::End);
 		  ui.messages->ensureCursorVisible();
 		}
 	    }
@@ -2666,4 +2672,9 @@ void spoton::slotSharePublicKeyWithParticipant(void)
        "write() failure.");
   else
     m_kernelSocket.flush();
+}
+
+void spoton::slotViewLog(void)
+{
+  m_logViewer.show(this);
 }
