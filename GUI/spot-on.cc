@@ -1004,11 +1004,11 @@ void spoton::slotPopulateNeighbors(void)
 	query.setForwardOnly(true);
 
 	if(query.exec(QString("SELECT sticky, uuid, status, "
-			      "local_ip_address, local_port, protocol, "
+			      "local_ip_address, local_port, "
 			      "external_ip_address, external_port, "
 			      "country, "
 			      "remote_ip_address, "
-			      "remote_port, scope_id, OID "
+			      "remote_port, scope_id, protocol, OID "
 			      "FROM neighbors WHERE "
 			      "status_control <> 'deleted' %1").
 		      arg(ui.showOnlyConnectedNeighbors->isChecked() ?
@@ -1049,7 +1049,7 @@ void spoton::slotPopulateNeighbors(void)
 		  {
 		    QTableWidgetItem *item = 0;
 
-		    if(m_crypt && (i == 9 || i == 10 || i == 11))
+		    if(i >= 8 && i <= 10 && m_crypt)
 		      {
 			bool ok = true;
 

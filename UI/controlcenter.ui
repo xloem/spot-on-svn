@@ -357,11 +357,6 @@
               </column>
               <column>
                <property name="text">
-                <string>Protocol</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
                 <string>External IP</string>
                </property>
               </column>
@@ -388,6 +383,11 @@
               <column>
                <property name="text">
                 <string>Scope ID</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Protocol</string>
                </property>
               </column>
               <column>
@@ -900,8 +900,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>939</width>
-             <height>520</height>
+             <width>968</width>
+             <height>533</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
