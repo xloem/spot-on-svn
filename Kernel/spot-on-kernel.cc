@@ -763,7 +763,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 		  if(ok)
 		    {
 		      char c = 0;
-		      short ttl = MESSAGE_TTL;
+		      short ttl = TTL_0000;
 
 		      memcpy(&c, static_cast<void *> (&ttl), 1);
 		      data.prepend(hash.toHex());

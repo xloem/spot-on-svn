@@ -292,8 +292,13 @@ void spoton_neighbor::slotSendKeys(void)
 	  {
 	    if(query.next())
 	      {
-		QByteArray message
-		  (spoton_send::message0010(query.value(0).toByteArray()));
+		QByteArray message(query.value(0).toByteArray());
+		char c = 0;
+		short ttl = spoton_kernel::TTL_0010;
+
+		memcpy(&c, static_cast<void *> (&ttl), 1);
+		message.prepend(c);
+		message = spoton_send::message0010(message);
 
 		if(write(message.constData(), message.length()) !=
 		   message.length())
@@ -887,6 +892,9 @@ void spoton_neighbor::process0000(int length)
 	      ** Replace TTL.
 	      */
 
+	      char c = 0;
+
+	      memcpy(&c, static_cast<void *> (&ttl), 1);
 	      emit receivedChatMessage(originalData, m_id);
 	    }
 	}
@@ -896,13 +904,17 @@ void spoton_neighbor::process0000(int length)
 	  ** Replace TTL.
 	  */
 
+	  char c = 0;
+
+	  memcpy(&c, static_cast<void *> (&ttl), 1);
 	  emit receivedChatMessage(originalData, m_id);
 	}
     }
   else
     spoton_misc::logError
-      ("spoton_kernel::process0000(): 0000 "
-       "content-length mismatch.");
+      (QString("spoton_kernel::process0000(): 0000 "
+	       "content-length mismatch (advertised: %1, received: %2).").
+       arg(length).arg(data.length()));
 }
 
 void spoton_neighbor::process0010(int length)
@@ -938,8 +950,9 @@ void spoton_neighbor::process0010(int length)
     }
   else
     spoton_misc::logError
-      ("spoton_kernel::process0010(): 0010 "
-       "content-length mismatch.");
+      (QString("spoton_kernel::process0010(): 0010 "
+	       "content-length mismatch (advertised: %1, received: %2).").
+       arg(length).arg(data.length()));
 }
 
 void spoton_neighbor::process0011(int length)
@@ -984,8 +997,9 @@ void spoton_neighbor::process0011(int length)
     }
   else
     spoton_misc::logError
-      ("spoton_kernel::process0011(): 0011 "
-       "content-length mismatch.");
+      (QString("spoton_kernel::process0011(): 0011 "
+	       "content-length mismatch (advertised: %1, received: %2).").
+       arg(length).arg(data.length()));
 }
 
 void spoton_neighbor::process0012(int length)
@@ -1050,6 +1064,7 @@ void spoton_neighbor::process0012(int length)
     }
   else
     spoton_misc::logError
-      ("spoton_kernel::process0012(): 0012 "
-       "content-length mismatch.");
+      (QString("spoton_kernel::process0012(): 0012 "
+	       "content-length mismatch (advertised: %1, received: %2).").
+       arg(length).arg(data.length()));
 }
