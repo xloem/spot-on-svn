@@ -919,6 +919,8 @@ void spoton::slotPopulateListeners(void)
 		      }
 		  }
 
+		QWidget *focusWidget = QApplication::focusWidget();
+
 		if(m_crypt)
 		  {
 		    QByteArray bytes1;
@@ -941,6 +943,9 @@ void spoton::slotPopulateListeners(void)
 		       port == query.value(2).toString().trimmed())
 		      ui.listeners->selectRow(row);
 		  }
+
+		if(focusWidget)
+		  focusWidget->setFocus();
 
 		row += 1;
 	      }
@@ -1085,6 +1090,8 @@ void spoton::slotPopulateNeighbors(void)
 		    ui.neighbors->setItem(row, i, item);
 		  }
 
+		QWidget *focusWidget = QApplication::focusWidget();
+
 		if(m_crypt)
 		  {
 		    QByteArray bytes1;
@@ -1109,6 +1116,9 @@ void spoton::slotPopulateNeighbors(void)
 		       toString().trimmed())
 		      ui.neighbors->selectRow(row);
 		  }
+
+		if(focusWidget)
+		  focusWidget->setFocus();
 
 		row += 1;
 	      }
@@ -2162,6 +2172,7 @@ void spoton::slotPopulateParticipants(void)
 	ui.participants->setRowCount(0);
 
 	QSqlQuery query(db);
+	QWidget *focusWidget = QApplication::focusWidget();
 
 	query.setForwardOnly(true);
 
@@ -2221,6 +2232,9 @@ void spoton::slotPopulateParticipants(void)
 		  ui.participants->selectRow(row - 1);
 	      }
 	  }
+
+	if(focusWidget)
+	  focusWidget->setFocus();
 
 	ui.participants->setSortingEnabled(true);
 	ui.participants->resizeColumnsToContents();
