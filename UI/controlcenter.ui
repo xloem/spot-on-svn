@@ -475,6 +475,17 @@
                </widget>
               </item>
               <item>
+               <widget class="QPushButton" name="pushButton">
+                <property name="text">
+                 <string>Copy Own Public Key</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../Icons/icons.qrc">
+                  <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
                <spacer name="horizontalSpacer_24">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
