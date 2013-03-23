@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>968</width>
-                <height>533</height>
+                <width>960</width>
+                <height>544</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -205,6 +205,12 @@
                      </item>
                      <item>
                       <widget class="QLabel" name="label_9">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
                        <property name="text">
                         <string>Preferred Method</string>
                        </property>
@@ -231,13 +237,6 @@
                          <string>Normal POST</string>
                         </property>
                        </item>
-                      </widget>
-                     </item>
-                     <item alignment="Qt::AlignHCenter">
-                      <widget class="QCheckBox" name="checkBox_toallfriends">
-                       <property name="text">
-                        <string>to all friends</string>
-                       </property>
                       </widget>
                      </item>
                      <item>
@@ -487,7 +486,7 @@
                <item>
                 <widget class="QPushButton" name="pushButton">
                  <property name="text">
-                  <string>Copy Own Public Key</string>
+                  <string>View My Public Key</string>
                  </property>
                  <property name="icon">
                   <iconset resource="../Icons/icons.qrc">
@@ -787,7 +786,7 @@
           </widget>
           <widget class="QGroupBox" name="groupBox_2">
            <property name="title">
-            <string>Connect to</string>
+            <string>Approved Countries</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_25">
             <item>
@@ -1024,9 +1023,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
-             <width>939</width>
-             <height>520</height>
+             <y>-85</y>
+             <width>975</width>
+             <height>614</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2324,7 +2323,7 @@
      <x>0</x>
      <y>0</y>
      <width>990</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2388,6 +2387,7 @@
   <tabstop>showOnlyConnectedNeighbors</tabstop>
   <tabstop>neighbors</tabstop>
   <tabstop>pushButtonMakeFriends</tabstop>
+  <tabstop>pushButton</tabstop>
   <tabstop>friendName</tabstop>
   <tabstop>friendPublicKey</tabstop>
   <tabstop>pushButton_6</tabstop>
@@ -2398,6 +2398,8 @@
   <tabstop>ipv6Neighbor</tabstop>
   <tabstop>addNeighbor</tabstop>
   <tabstop>fetchMore</tabstop>
+  <tabstop>checkBox_2</tabstop>
+  <tabstop>checkBox_3</tabstop>
   <tabstop>keywords</tabstop>
   <tabstop>pushButton_11</tabstop>
   <tabstop>textBrowser_2</tabstop>
