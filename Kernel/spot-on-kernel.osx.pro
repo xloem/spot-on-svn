@@ -35,7 +35,8 @@ QMAKE_LFLAGS_RELEASE =
 QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../. ../../../. /usr/local/include
 ICON		=
-LIBS		+= -L../../../LibSpotOn -L/usr/local/lib -lgcrypt -lspoton
+LIBS		+= -L../../../LibSpotOn -L/usr/local/lib -lgcrypt -lspoton \
+                   -L../../../libGeoIP/Libraries.osx64 -lGeoIP
 PRE_TARGETDEPS = libspoton.dylib
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui
@@ -66,6 +67,8 @@ QMAKE_STRIP	= echo
 
 spoton.path		= /Applications/Spot-On.d/Spot-On-Kernel.app
 spoton.files		= ../Spot-On-Kernel.app/*
+libgeoip_install.path  = .
+libgeoip_install.extra = cp ../../../libGeoIP/Libraries.osx64/libGeoIP.1.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libGeoIP.1.dylib && install_name_tool -change ../../../libGeoIP/Libraries.osx64/libGeoIP.1.dylib @executable_path/../Frameworks/libGeoIP.1.dylib ../Spot-On-Kernel.app/Contents/MacOS/Spot-On-Kernel
 libspoton_install.path  = .
 libspoton_install.extra = cp ../../../LibSpotOn/libspoton.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change /usr/local/lib/libgcrypt.11.dylib @loader_path/libgcrypt.11.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change ../../../LibSpotOn/libspoton.dylib @executable_path/../Frameworks/libspoton.dylib ../Spot-On-Kernel.app/Contents/MacOS/Spot-On-Kernel
 macdeployqt.path        = ../Spot-On-Kernel.app
@@ -77,6 +80,7 @@ postinstall.extra	= find /Applications/Spot-On.d -name .svn -exec rm -rf {} \\; 
 
 QMAKE_STRIP	= echo
 INSTALLS	= macdeployqt \
+                  libgeoip_install \
                   libspoton_install \
                   spoton \
                   postinstall
