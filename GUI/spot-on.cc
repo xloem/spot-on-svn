@@ -897,7 +897,7 @@ void spoton::slotPopulateListeners(void)
 						fromBase64(query.
 							   value(i).
 							   toByteArray()),
-						&ok).constData());
+						&ok).trimmed().constData());
 			else
 			  item = new QTableWidgetItem(query.
 						      value(i).toString().
@@ -1062,7 +1062,7 @@ void spoton::slotPopulateNeighbors(void)
 					      fromBase64(query.
 							 value(i).
 							 toByteArray()),
-					      &ok).constData());
+					      &ok).trimmed().constData());
 		      }
 		    else
 		      item = new QTableWidgetItem

@@ -538,12 +538,12 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 	    if(ok)
 	      bytes1 = spoton_kernel::s_crypt1->decrypted
 		(QByteArray::fromBase64(query.value(1).toByteArray()),
-		 &ok);
+		 &ok).trimmed();
 
 	    if(ok)
 	      bytes2 = spoton_kernel::s_crypt1->decrypted
 		(QByteArray::fromBase64(query.value(2).toByteArray()),
-		 &ok);
+		 &ok).trimmed();
 
 	    if(ok)
 	      {
@@ -604,18 +604,19 @@ void spoton_neighbor::setId(const qint64 id)
   m_id = id;
 }
 
-void spoton_neighbor::slotReceivedPublicKey(const QByteArray &publicKey,
+void spoton_neighbor::slotReceivedPublicKey(const QByteArray &data,
 					    const qint64 id)
 {
   /*
   ** A neighbor (id) received a public key. This neighbor now needs
-  ** to send the key to its peer.
+  ** to send the key to its peer. Please note that data also contains
+  ** the TTL.
   */
 
   if(id != m_id)
     if(state() == QAbstractSocket::ConnectedState)
       {
-	QByteArray message(spoton_send::message0010(publicKey));
+	QByteArray message(spoton_send::message0010(data));
 
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
@@ -638,17 +639,20 @@ void spoton_neighbor::slotSendMessage(const QByteArray &message)
     }
 }
 
-void spoton_neighbor::slotReceivedChatMessage(const QByteArray &message,
+void spoton_neighbor::slotReceivedChatMessage(const QByteArray &data,
 					      const qint64 id)
 {
   /*
   ** A neighbor (id) received a message. This neighbor now needs
-  ** to send the message to its peer.
+  ** to send the message to its peer. Please note that data also contains
+  ** the TTL.
   */
 
   if(id != m_id)
     if(state() == QAbstractSocket::ConnectedState)
       {
+	QByteArray message(spoton_send::message0000(data));
+
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
 	    ("spoton_neighbor::slotReceivedChatMessage(): write() "
@@ -765,11 +769,6 @@ void spoton_neighbor::process0000(int length)
   */
 
   QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
-  QByteArray originalData(data); /*
-				 ** We may need to echo the
-				 ** message. Don't forget to
-				 ** decrease the TTL!
-				 */
 
   m_data.remove(0, data.length());
   data.remove
@@ -792,7 +791,7 @@ void spoton_neighbor::process0000(int length)
       ** TTL is greater than zero.
       */
 
-      data = QByteArray::fromBase64(data);
+      data = QByteArray::fromBase64(data).trimmed();
 
       bool ok = true;
       short ttl = 0;
@@ -805,6 +804,12 @@ void spoton_neighbor::process0000(int length)
 	ttl -= 1;
 
       data.remove(0, 1); // Remove TTL.
+
+      QByteArray originalData(data); /*
+				     ** We may need to echo the
+				     ** message. Don't forget to
+				     ** decrease the TTL!
+				     */
 
       /*
       ** Find the symmetric key.
@@ -895,6 +900,7 @@ void spoton_neighbor::process0000(int length)
 	      char c = 0;
 
 	      memcpy(&c, static_cast<void *> (&ttl), 1);
+	      originalData.prepend(c);
 	      emit receivedChatMessage(originalData, m_id);
 	    }
 	}
@@ -907,6 +913,7 @@ void spoton_neighbor::process0000(int length)
 	  char c = 0;
 
 	  memcpy(&c, static_cast<void *> (&ttl), 1);
+	  originalData.prepend(c);
 	  emit receivedChatMessage(originalData, m_id);
 	}
     }
@@ -935,18 +942,34 @@ void spoton_neighbor::process0010(int length)
 
   if(length == data.length())
     {
-      QByteArray publicKey;
+      data = QByteArray::fromBase64(data).trimmed();
 
-      publicKey = QByteArray::fromBase64(data).trimmed();
-      savePublicKey(publicKey);
+      short ttl = 0;
+
+      if(!data.isEmpty())
+	memcpy(static_cast<void *> (&ttl),
+	       static_cast<const void *> (data.constData()), 1);
+	  
+      if(ttl > 0)
+	ttl -= 1;
+
+      data.remove(0, 1); // Remove TTL.
+      savePublicKey(data);
       m_data.clear();
 
-      /*
-      ** We received a key. We need to send this key to the
-      ** other neighbors.
-      */
+      if(ttl > 0)
+	{
+	  /*
+	  ** We received a key. We need to send this key to the
+	  ** other neighbors. Prepend the TTL.
+	  */
 
-      emit receivedPublicKey(publicKey, m_id);
+	  char c = 0;
+
+	  memcpy(&c, static_cast<void *> (&ttl), 1);
+	  data.prepend(c);
+	  emit receivedPublicKey(data, m_id);
+	}
     }
   else
     spoton_misc::logError

@@ -79,8 +79,8 @@ class spoton_neighbor: public QTcpSocket
   void slotLifetimeExpired(void);
   void slotSendMessage(const QByteArray &message);
   void slotReadyRead(void);
-  void slotReceivedChatMessage(const QByteArray &message, const qint64 id);
-  void slotReceivedPublicKey(const QByteArray &publicKey, const qint64 id);
+  void slotReceivedChatMessage(const QByteArray &data, const qint64 id);
+  void slotReceivedPublicKey(const QByteArray &data, const qint64 id);
   void slotSendKeys(void);
   void slotTimeout(void);
 
