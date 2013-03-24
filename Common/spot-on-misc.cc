@@ -234,7 +234,14 @@ QString spoton_misc::countryCodeFromIPAddress(const QString &ipAddress)
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
   GeoIP *gi = 0;
 
+#ifdef Q_OS_WIN32
+  QString path(QDir::currentPath());
+
+  path += QDir::separator() + SPOTON_GEOIP_DATA_FILE;
+  gi = GeoIP_open(path.toUtf8().constData(), GEOIP_MEMORY_CACHE);
+#else
   gi = GeoIP_open(SPOTON_GEOIP_DATA_FILE, GEOIP_MEMORY_CACHE);
+#endif
 
   if(gi)
     code = GeoIP_country_code_by_addr
@@ -254,7 +261,14 @@ QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
   GeoIP *gi = 0;
 
+#ifdef Q_OS_WIN32
+  QString path(QDir::currentPath());
+
+  path += QDir::separator() + SPOTON_GEOIP_DATA_FILE;
+  gi = GeoIP_open(path.toUtf8().constData(), GEOIP_MEMORY_CACHE);
+#else
   gi = GeoIP_open(SPOTON_GEOIP_DATA_FILE, GEOIP_MEMORY_CACHE);
+#endif
 
   if(gi)
     country = GeoIP_country_name_by_addr
