@@ -18,7 +18,7 @@ DEFINES         += SPOTON_GEOIP_DATA_FILE="'\"GeoIP.dat\"'"
 # about the internals of LibSpotOn.
 
 QMAKE_CLEAN     += Spot-On ..\\..\\LibSpotOn\\*.dll ..\\..\\LibSpotOn\\*.o \
-		   ..\\..\\LibSpotOn\\test.exe GeoIP.dat
+		   ..\\..\\LibSpotOn\\test.exe
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -mtune=generic -O3 \
 			  -Wall -Wcast-align -Wcast-qual \

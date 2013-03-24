@@ -18,7 +18,7 @@ DEFINES += SPOTON_GEOIP_DATA_FILE="'\"GeoIP.dat\"'" \
 # about the internals of LibSpotOn.
 
 QMAKE_CLEAN     += Spot-On ../../LibSpotOn/*.dylib ../../LibSpotOn/*.o \
-		   ../../LibSpotOn/test ./GeoIP.dat
+		   ../../LibSpotOn/test
 QMAKE_DISTCLEAN += -r temp
 QMAKE_CXXFLAGS_DEBUG -= -O2
 QMAKE_CXXFLAGS_DEBUG += -mtune=generic -Os \

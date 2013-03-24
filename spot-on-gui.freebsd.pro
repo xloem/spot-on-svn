@@ -10,14 +10,15 @@ CONFIG		+= qt release warn_on
 # The function gcry_kdf_derive() is available in version
 # 1.5.0 of the gcrypt library.
 
-DEFINES         += SPOTON_LINKED_WITH_LIBGEOIP \
-		   SPOTON_MINIMUM_GCRYPT_VERSION=0x010500
+DEFINES += SPOTON_GEOIP_DATA_FILE="'\"/usr/share/GeoIP/GeoIP.dat\"'" \
+	   SPOTON_LINKED_WITH_LIBGEOIP \
+	   SPOTON_MINIMUM_GCRYPT_VERSION=0x010500
 
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of LibSpotOn.
 
 QMAKE_CLEAN     += Spot-On ../../LibSpotOn/*.o ../../LibSpotOn/*.so \
-		   ../../LibSpotOn/test ./GeoIP.dat
+		   ../../LibSpotOn/test
 QMAKE_DISTCLEAN += -r temp
 QMAKE_CXXFLAGS_DEBUG -= -O2
 QMAKE_CXXFLAGS_DEBUG += -mtune=generic -Os \
