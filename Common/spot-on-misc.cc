@@ -40,7 +40,11 @@ QString spoton_misc::homePath(void)
   QString homepath(qgetenv("SPOTON_HOME").trimmed());
 
   if(homepath.isEmpty())
+#ifdef Q_OS_WIN32
+    return QDir::currentPath() + QDir::separator() + ".spot-on";
+#else
     return QDir::homePath() + QDir::separator() + ".spot-on";
+#endif
   else
     return homepath;
 }
