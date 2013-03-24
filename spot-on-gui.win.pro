@@ -25,7 +25,7 @@ QMAKE_CXXFLAGS_RELEASE += -mtune=generic -O3 \
 			  -Woverloaded-virtual -Wpointer-arith
 QMAKE_EXTRA_TARGETS = libspoton purge
 INCLUDEPATH	+= . ..\\..\\. GUI ..\\..\\LibSpotOn\\Include.win32 \
-		   ..\\..\\libGeoIP\Include.win32
+		   ..\\..\\libGeoIP\\Include.win32
 LIBS		+= -L..\\..\\LibSpotOn -L..\\..\\LibSpotOn\\Libraries.win32 \
 		   -L..\\..\\libGeoIP\\Libraries.win32 \
 		   -lGeoIP -lgcrypt-11 -lpthread -lspoton
@@ -120,7 +120,7 @@ TRANSLATIONS    = Translations\\spot-on_af.ts \
                   Translations\\spot-on_zh_TW.ts \
                   Translations\\spot-on_zh_HK.ts
 
-RESOURCES	= Data\geoip.qrc \
+RESOURCES	= Data\\geoip.qrc \
 		  Documentation\\documentation.qrc \
                   Icons\\icons.qrc \
                   Translations\\translations.qrc
