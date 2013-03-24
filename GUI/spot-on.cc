@@ -720,7 +720,11 @@ void spoton::slotAddNeighbor(void)
 	GeoIP *gi = 0;
 
 	if(!QFileInfo("GeoIP.dat").exists())
+#ifdef Q_OS_WIN32
+	  QFile::copy(":/GeoIP-1.5.0\\data\\GeoIP.dat", "GeoIP.dat");
+#else
 	  QFile::copy(":/GeoIP-1.5.0/data/GeoIP.dat", "GeoIP.dat");
+#endif
 
 	gi = GeoIP_open("GeoIP.dat", GEOIP_MEMORY_CACHE);
 
