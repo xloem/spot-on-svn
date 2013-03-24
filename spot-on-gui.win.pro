@@ -10,22 +10,25 @@ CONFIG		+= qt release warn_on
 # The function gcry_kdf_derive() is available in version
 # 1.5.0 of the gcrypt library.
 
-DEFINES         += SPOTON_MINIMUM_GCRYPT_VERSION=0x010500
+DEFINES         += SPOTON_LINKED_WITH_GEOIP \
+		   SPOTON_MINIMUM_GCRYPT_VERSION=0x010500
 
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of LibSpotOn.
 
 QMAKE_CLEAN     += Spot-On ..\\..\\LibSpotOn\\*.dll ..\\..\\LibSpotOn\\*.o \
-		   ..\\..\\LibSpotOn\\test.exe
+		   ..\\..\\LibSpotOn\\test.exe GeoIP.dat
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -mtune=generic -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
 			  -Werror -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith
 QMAKE_EXTRA_TARGETS = libspoton purge
-INCLUDEPATH	+= . ..\\..\\. GUI ..\\..\\LibSpotOn\\Include.win32
+INCLUDEPATH	+= . ..\\..\\. GUI ..\\..\\LibSpotOn\\Include.win32 \
+		   ..\\..\\libGeoIP\Include.win32
 LIBS		+= -L..\\..\\LibSpotOn -L..\\..\\LibSpotOn\\Libraries.win32 \
-		   -lgcrypt-11 -lpthread -lspoton
+		   -L..\\..\\libGeoIP\\Libraries.win32 \
+		   -lGeoIP -lgcrypt-11 -lpthread -lspoton
 PRE_TARGETDEPS = libspoton.dll
 
 FORMS           = UI\\controlcenter.ui \
@@ -117,7 +120,8 @@ TRANSLATIONS    = Translations\\spot-on_af.ts \
                   Translations\\spot-on_zh_TW.ts \
                   Translations\\spot-on_zh_HK.ts
 
-RESOURCES	= Documentation\\documentation.qrc \
+RESOURCES	= Data\geoip.qrc \
+		  Documentation\\documentation.qrc \
                   Icons\\icons.qrc \
                   Translations\\translations.qrc
 

@@ -719,10 +719,13 @@ void spoton::slotAddNeighbor(void)
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
 	GeoIP *gi = 0;
 
-	gi = GeoIP_open(SPOTON_GEOIP_DATA_FILE, GEOIP_MEMORY_CACHE);
+	if(!QFileInfo("GeoIP.dat").exists())
+	  QFile::copy(":/GeoIP-1.5.0/data/GeoIP.dat", "GeoIP.dat");
+
+	gi = GeoIP_open("GeoIP.dat", GEOIP_MEMORY_CACHE);
 
 	if(gi)
-	  country= GeoIP_country_code_by_addr(gi, ip.toLatin1().constData());
+	  country = GeoIP_country_name_by_addr(gi, ip.toLatin1().constData());
 
 	GeoIP_delete(gi);
 #endif

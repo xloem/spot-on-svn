@@ -10,13 +10,14 @@ CONFIG		+= qt release warn_on
 # The function gcry_kdf_derive() is available in version
 # 1.5.0 of the gcrypt library.
 
-DEFINES         += SPOTON_MINIMUM_GCRYPT_VERSION=0x010500
+DEFINES         += SPOTON_LINKED_WITH_LIBGEOIP \
+		   SPOTON_MINIMUM_GCRYPT_VERSION=0x010500
 
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of LibSpotOn.
 
 QMAKE_CLEAN     += Spot-On ../../LibSpotOn/*.o ../../LibSpotOn/*.so \
-		   ../../LibSpotOn/test
+		   ../../LibSpotOn/test ./GeoIP.dat
 QMAKE_DISTCLEAN += -r temp
 QMAKE_CXXFLAGS_DEBUG -= -O2
 QMAKE_CXXFLAGS_DEBUG += -mtune=generic -Os \
@@ -32,7 +33,7 @@ QMAKE_LFLAGS_RELEASE += -Wl,-rpath,/usr/local/spot-on/Lib
 QMAKE_EXTRA_TARGETS = libspoton purge
 QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../../. GUI
-LIBS		+= -L../../LibSpotOn -lgcrypt -lspoton
+LIBS		+= -L../../LibSpotOn -lGeoIP -lgcrypt -lspoton
 PRE_TARGETDEPS = libspoton.so
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui
@@ -127,7 +128,8 @@ TRANSLATIONS    = Translations/spot-on_af.ts \
                   Translations/spot-on_zh_TW.ts \
                   Translations/spot-on_zh_HK.ts
 
-RESOURCES	= Documentation/documentation.qrc \
+RESOURCES	= Data/geoip.qrc \
+		  Documentation/documentation.qrc \
 		  Icons/icons.qrc \
 		  Translations/translations.qrc
 
