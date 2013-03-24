@@ -9,6 +9,7 @@ scope_id
 
 neighbors:
 
+country
 name
 remote_ip_address
 remote_port

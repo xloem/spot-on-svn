@@ -52,6 +52,7 @@
 
 extern "C"
 {
+#include "GeoIP.h"
 #include "LibSpotOn/libspoton.h"
 }
 
@@ -610,9 +611,10 @@ void spoton::slotAddNeighbor(void)
 		      "sticky, "
 		      "scope_id, "
 		      "hash, "
-		      "status_control) "
+		      "status_control, "
+		      "country) "
 		      "VALUES "
-		      "(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	if(protocol == "IPv6")
 	  query.bindValue(0, "::1");
@@ -711,6 +713,28 @@ void spoton::slotAddNeighbor(void)
 	  }
 
 	query.bindValue(8, status);
+
+	const char *country = "";
+
+#ifdef SPOTON_LINKED_WITH_LIBGEOIP
+	GeoIP *gi = 0;
+
+	gi = GeoIP_open(SPOTON_GEOIP_DATA_FILE, GEOIP_MEMORY_CACHE);
+
+	if(gi)
+	  country= GeoIP_country_code_by_addr(gi, ip.toLatin1().constData());
+
+	GeoIP_delete(gi);
+#endif
+
+	if(m_crypt)
+	  {
+	    if(ok)
+	      query.bindValue
+		(9, m_crypt->encrypted(QByteArray(country), &ok).toBase64());
+	  }
+	else
+	  query.bindValue(9, QByteArray(country));
 
 	if(ok)
 	  if(query.exec())
@@ -1058,7 +1082,7 @@ void spoton::slotPopulateNeighbors(void)
 		  {
 		    QTableWidgetItem *item = 0;
 
-		    if(i >= 8 && i <= 10 && m_crypt)
+		    if(i >= 7 && i <= 10 && m_crypt)
 		      {
 			bool ok = true;
 
