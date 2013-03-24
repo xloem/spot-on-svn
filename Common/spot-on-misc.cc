@@ -262,7 +262,7 @@ QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
   gi = GeoIP_open("Data\GeoIP.dat", GEOIP_MEMORY_CACHE);
 #else
   gi = GeoIP_open(SPOTON_GEOIP_DATA_FILE, GEOIP_MEMORY_CACHE);
-#endof
+#endif
 
   if(gi)
     country = GeoIP_country_name_by_addr
