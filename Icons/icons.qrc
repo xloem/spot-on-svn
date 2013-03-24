@@ -34,7 +34,7 @@
         <file>plist_confirmed_as_permanent_friend.png</file>
         <file>plist_connected_neighbour.png</file>
     </qresource>
-    <qresource prefix="/Flags">
+    <qresource prefix="/">
         <file>Flags/ae.png</file>
         <file>Flags/af.png</file>
         <file>Flags/al.png</file>

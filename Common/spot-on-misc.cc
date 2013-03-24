@@ -222,3 +222,43 @@ void spoton_misc::logError(const QString &error)
 
   file.close();
 }
+
+QString spoton_misc::countryCodeFromIPAddress(const QString &ipAddress)
+{
+  const char *code = "";
+
+#ifdef SPOTON_LINKED_WITH_LIBGEOIP
+  GeoIP *gi = 0;
+
+  gi = GeoIP_open(SPOTON_GEOIP_DATA_FILE, GEOIP_MEMORY_CACHE);
+
+  if(gi)
+    code = GeoIP_country_code_by_addr
+      (gi, ipAddress.toLatin1().constData());
+
+  GeoIP_delete(gi);
+#else
+  Q_UNUSED(ipAddress);
+#endif
+  return code;
+}
+
+QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
+{
+  const char *country = "";
+
+#ifdef SPOTON_LINKED_WITH_LIBGEOIP
+  GeoIP *gi = 0;
+
+  gi = GeoIP_open(SPOTON_GEOIP_DATA_FILE, GEOIP_MEMORY_CACHE);
+
+  if(gi)
+    country = GeoIP_country_name_by_addr
+      (gi, ipAddress.toLatin1().constData());
+
+  GeoIP_delete(gi);
+#else
+  Q_UNUSED(ipAddress);
+#endif
+  return country;
+}

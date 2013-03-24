@@ -28,15 +28,27 @@
 #ifndef _spoton_misc_h_
 #define _spoton_misc_h_
 
+#ifdef SPOTON_LINKED_WITH_LIBGEOIP
+extern "C"
+{
+#include <GeoIP.h>
+}
+#endif
+
 class spoton_misc
 {
  public:
+  static QString countryCodeFromIPAddress(const QString &ipAddress);
+  static QString countryNameFromIPAddress(const QString &ipAddress);
   static QString homePath(void);
   static bool isGnome(void);
   static void logError(const QString &error);
   static void prepareDatabases(void);
 
  private:
+#ifdef SPOTON_LINKED_WITH_LIBGEOIP
+  GeoIP *s_gi;
+#endif
   spoton_misc(void);
 };
 

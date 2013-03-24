@@ -52,7 +52,6 @@
 
 extern "C"
 {
-#include "GeoIP.h"
 #include "LibSpotOn/libspoton.h"
 }
 
@@ -714,27 +713,16 @@ void spoton::slotAddNeighbor(void)
 
 	query.bindValue(8, status);
 
-	const char *country = "";
-
-#ifdef SPOTON_LINKED_WITH_LIBGEOIP
-	GeoIP *gi = 0;
-
-	gi = GeoIP_open(SPOTON_GEOIP_DATA_FILE, GEOIP_MEMORY_CACHE);
-
-	if(gi)
-	  country = GeoIP_country_name_by_addr(gi, ip.toLatin1().constData());
-
-	GeoIP_delete(gi);
-#endif
+	QString country(spoton_misc::countryNameFromIPAddress(ip));
 
 	if(m_crypt)
 	  {
 	    if(ok)
 	      query.bindValue
-		(9, m_crypt->encrypted(QByteArray(country), &ok).toBase64());
+		(9, m_crypt->encrypted(country.toLatin1(), &ok).toBase64());
 	  }
 	else
-	  query.bindValue(9, QByteArray(country));
+	  query.bindValue(9, country.toLatin1());
 
 	if(ok)
 	  if(query.exec())
@@ -1112,6 +1100,24 @@ void spoton::slotPopulateNeighbors(void)
 		      }
 
 		    ui.neighbors->setItem(row, i, item);
+		  }
+
+		QTableWidgetItem *item1 = ui.neighbors->item(row, 7);
+
+		if(item1)
+		  {
+		    QTableWidgetItem *item2 = ui.neighbors->item(row, 8);
+
+		    if(item2)
+		      {
+			item1->setIcon
+			  (QIcon(QString(":/Flags/%1.png").
+				 arg(spoton_misc::
+				     countryCodeFromIPAddress(item2->text()).
+				     toLower())));
+		      }
+		    else
+		      item1->setIcon(QIcon(":/Flags/unknown.png"));
 		  }
 
 		QWidget *focusWidget = QApplication::focusWidget();

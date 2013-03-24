@@ -784,33 +784,11 @@
             </layout>
            </widget>
           </widget>
-          <widget class="QGroupBox" name="groupBox_2">
+          <widget class="QGroupBox" name="approvedCountries">
            <property name="title">
             <string>Approved Countries</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_25">
-            <item>
-             <widget class="QCheckBox" name="checkBox_2">
-              <property name="text">
-               <string>Germany</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../Icons/icons.qrc">
-                <normaloff>:/flags/flags/de.png</normaloff>:/flags/flags/de.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="checkBox_3">
-              <property name="text">
-               <string>Russia</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../Icons/icons.qrc">
-                <normaloff>:/flags/flags/ru.png</normaloff>:/flags/flags/ru.png</iconset>
-              </property>
-             </widget>
-            </item>
             <item>
              <spacer name="verticalSpacer_10">
               <property name="orientation">
@@ -1024,8 +1002,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>968</width>
-             <height>533</height>
+             <width>939</width>
+             <height>520</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2398,8 +2376,6 @@
   <tabstop>ipv6Neighbor</tabstop>
   <tabstop>addNeighbor</tabstop>
   <tabstop>fetchMore</tabstop>
-  <tabstop>checkBox_2</tabstop>
-  <tabstop>checkBox_3</tabstop>
   <tabstop>keywords</tabstop>
   <tabstop>pushButton_11</tabstop>
   <tabstop>textBrowser_2</tabstop>
