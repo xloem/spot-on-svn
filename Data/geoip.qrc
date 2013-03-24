@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../../../GeoIP-1.5.0/data/GeoIP.dat</file>
+    </qresource>
+</RCC>
