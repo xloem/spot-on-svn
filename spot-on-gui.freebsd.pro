@@ -128,8 +128,7 @@ TRANSLATIONS    = Translations/spot-on_af.ts \
                   Translations/spot-on_zh_TW.ts \
                   Translations/spot-on_zh_HK.ts
 
-RESOURCES	= Data/geoip.qrc \
-		  Documentation/documentation.qrc \
+RESOURCES	= Documentation/documentation.qrc \
 		  Icons/icons.qrc \
 		  Translations/translations.qrc
 

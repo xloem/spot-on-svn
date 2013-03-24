@@ -10,7 +10,8 @@ CONFIG		+= qt release warn_on app_bundle
 # The function gcry_kdf_derive() is available in version
 # 1.5.0 of the gcrypt library.
 
-DEFINES += SPOTON_LINKED_WITH_LIBGEOIP \
+DEFINES += SPOTON_GEOIP_DATA_FILE="'\"GeoIP.dat\"'" \
+	   SPOTON_LINKED_WITH_LIBGEOIP \
 	   SPOTON_MINIMUM_GCRYPT_VERSION=0x010500
 
 # Unfortunately, the clean target assumes too much knowledge
@@ -130,8 +131,7 @@ TRANSLATIONS    = Translations/spot-on_af.ts \
                   Translations/spot-on_zh_TW.ts \
                   Translations/spot-on_zh_HK.ts
 
-RESOURCES	= Data/geoip.qrc \
-		  Documentation/documentation.qrc \
+RESOURCES	= Documentation/documentation.qrc \
 		  Icons/icons.qrc \
 		  Translations/translations.qrc
 
