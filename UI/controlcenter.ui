@@ -44,7 +44,16 @@
         <string>&amp;Chat</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_18">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item>
@@ -56,7 +65,16 @@
            </sizepolicy>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -72,8 +90,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>968</width>
-                <height>533</height>
+                <width>962</width>
+                <height>530</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -786,21 +804,28 @@
           </widget>
           <widget class="QGroupBox" name="approvedCountries">
            <property name="title">
-            <string>Approved Countries</string>
+            <string>Country Inclusion</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_25">
             <item>
-             <spacer name="verticalSpacer_10">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
+             <widget class="QScrollArea" name="scrollArea_3">
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
+              <property name="widgetResizable">
+               <bool>true</bool>
               </property>
-             </spacer>
+              <widget class="QWidget" name="scrollAreaWidgetContents_3">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>109</width>
+                 <height>466</height>
+                </rect>
+               </property>
+              </widget>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -986,7 +1011,16 @@
         <string>S&amp;ettings</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_15">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item>
@@ -1002,8 +1036,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>939</width>
-             <height>520</height>
+             <width>800</width>
+             <height>526</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2301,7 +2335,7 @@
      <x>0</x>
      <y>0</y>
      <width>990</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
