@@ -126,3 +126,26 @@ RESOURCES	= Documentation\\documentation.qrc \
 
 TARGET		= Spot-On
 PROJECTNAME	= Spot-On
+
+spoton.path		= release
+spoton.files		= Spot-On.exe
+icons.path		= release
+icons.files		= Icons
+libgeoip_install.path   = release
+libgeoip_install.extra  = ..\\..\\libGeoIP\\Libraries.win32\\libGeoIP-1.dll
+libspoton_install.path  = release
+libspoton_install.extra = ..\\..\\LibSpotOn\\libspoton.dll
+lrelease.extra          = $$[QT_INSTALL_BINS]\\lrelease spot-on-gui.win.pro
+lrelease.path           = .
+lupdate.extra           = $$[QT_INSTALL_BINS]\\lupdate spot-on-gui.win.pro
+lupdate.path            = .
+translations.path 	= release\\Translations
+translations.files	= Translations\\*.qm
+
+INSTALLS	= libgeoip_install \
+                  libspoton_install \
+                  icons \
+                  lupdate \
+                  lrelease \
+                  translations \
+                  spoton
