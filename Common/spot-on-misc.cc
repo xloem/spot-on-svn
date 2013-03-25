@@ -235,7 +235,7 @@ QString spoton_misc::countryCodeFromIPAddress(const QString &ipAddress)
   GeoIP *gi = 0;
 
 #ifdef Q_OS_WIN32
-  gi = GeoIP_open("Data\\GeoIP.dat", GEOIP_MEMORY_CACHE);
+  gi = GeoIP_open("Geodata\\GeoIP.dat", GEOIP_MEMORY_CACHE);
 #else
   gi = GeoIP_open(SPOTON_GEOIP_DATA_FILE, GEOIP_MEMORY_CACHE);
 #endif
@@ -259,7 +259,7 @@ QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
   GeoIP *gi = 0;
 
 #ifdef Q_OS_WIN32
-  gi = GeoIP_open("Data\\GeoIP.dat", GEOIP_MEMORY_CACHE);
+  gi = GeoIP_open("Geodata\\GeoIP.dat", GEOIP_MEMORY_CACHE);
 #else
   gi = GeoIP_open(SPOTON_GEOIP_DATA_FILE, GEOIP_MEMORY_CACHE);
 #endif
