@@ -53,7 +53,7 @@ spoton_kernel.files	= Spot-On-Kernel.exe
 libgeoip_install.path   = ..\\..\\release
 libgeoip_install.extra  = ..\\..\\..\\libGeoIP\\Libraries.win32\\libGeoIP-1.dll
 libspoton_install.path  = ..\\..\\release
-libspoton_install.extra = ..\\..\\..\\LibSpotOn\\libspoton.dll
+libspoton_install.extra = ..\\..\\..\\LibSpotOn\\libspoton.dll ..\\..\\..\\LibSpotOn\Libraries.win32\\*.dll
 
 INSTALLS	= libgeoip_install \
                   libspoton_install \
