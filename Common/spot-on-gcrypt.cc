@@ -345,7 +345,7 @@ void spoton_gcrypt::reencodePrivateKey(const QString &newCipher,
 				       const QByteArray &newPassphrase,
 				       const QString &oldCipher,
 				       const char *oldPassphrase,
-				       const QString &databaseFileName,
+				       const QString &id,
 				       QString &error)
 {
   init();
@@ -363,15 +363,17 @@ void spoton_gcrypt::reencodePrivateKey(const QString &newCipher,
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_gcrypt");
 
-    db.setDatabaseName(databaseFileName);
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() + "idiotes.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
+	query.prepare("SELECT private_key FROM idiotes WHERE id = ?");
+	query.bindValue(0, id);
 
-	if(query.exec("SELECT private_key FROM keys"))
+	if(query.exec())
 	  if(query.next())
 	    data = query.value(0).toByteArray();
       }
@@ -622,19 +624,21 @@ void spoton_gcrypt::reencodePrivateKey(const QString &newCipher,
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_gcrypt");
 
-    db.setDatabaseName(databaseFileName);
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() + "idiotes.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
-	query.prepare("UPDATE keys SET private_key = ?");
+	query.prepare("UPDATE idiotes SET private_key = ? "
+		      "WHERE id = ?");
 	query.bindValue(0, encryptedData);
+	query.bindValue(1, id);
 
 	if(!query.exec())
 	  spoton_misc::logError("spoton_gcrypt::reencodePrivateKey(): "
 				"error updating private_key in the "
-				"keys table.");
+				"idiotes table.");
 	else
 	  db.commit();
       }
@@ -655,15 +659,15 @@ spoton_gcrypt::spoton_gcrypt(const QString &cipherType,
 			     const QByteArray &key,
 			     const int saltLength,
 			     const unsigned long iterationCount,
-			     const QString &databaseFileName)
+			     const QString &id)
 {
   init();
   m_cipherAlgorithm = gcry_cipher_map_name(cipherType.toLatin1().constData());
   m_cipherHandle = 0;
   m_cipherType = cipherType;
-  m_databaseFileName = databaseFileName;
   m_hashAlgorithm = gcry_md_map_name(hashType.toLatin1().constData());
   m_hashType = hashType;
+  m_id = id;
   m_iterationCount = iterationCount;
   m_key = 0;
   m_keyLength = qMin(static_cast<size_t> (key.length()),
@@ -1226,15 +1230,17 @@ QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_gcrypt");
 
-    db.setDatabaseName(m_databaseFileName);
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() + "idiotes.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
+	query.prepare("SELECT private_key FROM idiotes WHERE id = ?");
+	query.bindValue(0, m_id);
 
-	if(query.exec("SELECT private_key FROM keys"))
+	if(query.exec())
 	  if(query.next())
 	    keyData = query.value(0).toByteArray();
       }
@@ -1377,73 +1383,41 @@ QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 QByteArray spoton_gcrypt::publicKey(bool *ok)
 {
   /*
-  ** Returns the public key that's contained in m_databaseFileName.
+  ** Returns the correct public key from idiotes.db.
   */
 
   QByteArray publicKey;
-  libspoton_error_t err = LIBSPOTON_ERROR_NONE;
-  libspoton_handle_t libspotonHandle;
 
-  if(libspoton_init(m_databaseFileName.toStdString().c_str(),
-		    &libspotonHandle) == LIBSPOTON_ERROR_NONE)
-    {
-      err = libspoton_populate_public_key(&libspotonHandle);
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_gcrypt");
 
-      if(err != LIBSPOTON_ERROR_NONE)
-	spoton_misc::logError("spoton_gcrypt::publicKey(): "
-			      "libspoton_populate_public_key() "
-			      "failure.");
-    }
-  else
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() + "idiotes.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT public_key FROM idiotes WHERE id = ?");
+	query.bindValue(0, m_id);
+
+	if(query.exec())
+	  if(query.next())
+	    publicKey = query.value(0).toByteArray();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_gcrypt");
+
+  if(publicKey.isEmpty())
     {
       if(ok)
 	*ok = false;
-
-      spoton_misc::logError("spoton_gcrypt::publicKey(): libspoton_init() "
-			    "failure.");
-    }
-
-  if(err == LIBSPOTON_ERROR_NONE)
-    {
-      size_t length = gcry_sexp_sprint(libspotonHandle.publicKey,
-				       GCRYSEXP_FMT_ADVANCED, 0, 0);
-
-      if(length)
-	{
-	  publicKey.resize(length);
-
-	  if(gcry_sexp_sprint(libspotonHandle.publicKey,
-			      GCRYSEXP_FMT_ADVANCED,
-			      static_cast<void *> (publicKey.data()),
-			      static_cast<size_t> (publicKey.
-						   length())) != 0)
-	    {
-	      if(ok)
-		*ok = true;
-	    }
-	  else
-	    {
-	      if(ok)
-		*ok = false;
-
-	      spoton_misc::logError
-		("spoton_gcrypt::publicKey(): gcry_sexp_sprint() "
-		 "failure.");
-	    }
-	}
-      else
-	{
-	  if(ok)
-	    *ok = false;
-
-	  spoton_misc::logError
-	    ("spoton_gcrypt::publicKey(): gcry_sexp_sprint() "
-	     "failure.");
-	}
     }
   else if(ok)
-    *ok = false;
+    *ok = true;
 
-  libspoton_close(&libspotonHandle);
   return publicKey;
 }

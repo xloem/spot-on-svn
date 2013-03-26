@@ -71,14 +71,14 @@ class spoton_gcrypt
 				 const QByteArray &newPassphrase,
 				 const QString &oldCipher,
 				 const char *oldPassphrase,
-				 const QString &databaseFileName,
+				 const QString &id,
 				 QString &error);
   spoton_gcrypt(const QString &cipherType,
 		const QString &hashType,
 		const QByteArray &key,
 		const int saltLength,
 		const unsigned long iterationCount,
-		const QString &databaseFileName);
+		const QString &id);
   ~spoton_gcrypt();
   QByteArray decrypted(const QByteArray &data, bool *ok);
   QByteArray encrypted(const QByteArray &data, bool *ok);
@@ -91,7 +91,7 @@ class spoton_gcrypt
  private:
   QString m_cipherType;
   QString m_hashType;
-  QString m_databaseFileName;
+  QString m_id;
   char *m_key;
   gcry_cipher_hd_t m_cipherHandle;
   int m_cipherAlgorithm;

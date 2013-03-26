@@ -96,6 +96,27 @@ void spoton_misc::prepareDatabases(void)
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "prepare");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "idiotes.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("CREATE TABLE IF NOT EXISTS idiotes ("
+		   "id TEXT NOT NULL PRIMARY KEY, "
+		   "public_key TEXT NOT NULL, "
+		   "private_key BLOB NOT NULL)");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("prepare");
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "prepare");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "kernel.db");
 
     if(db.open())
