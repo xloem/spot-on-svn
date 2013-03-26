@@ -1596,14 +1596,13 @@ void spoton::slotSetPassphrase(void)
 			       str1,
 			       salt,
 			       error1));
-  libspoton_error_t err = LIBSPOTON_ERROR_NONE;
 
   if(error1.isEmpty())
     {
       if(reencode)
 	{
 	  statusBar()->showMessage
-	    (tr("Generating RSA key pair 1 of 2. Please be patient."));
+	    (tr("Re-encoding RSA key pair 1 of 2. Please be patient."));
 #ifdef Q_OS_MAC
 	  QApplication::processEvents();
 #endif
@@ -1619,7 +1618,7 @@ void spoton::slotSetPassphrase(void)
 	  if(error2.isEmpty())
 	    {
 	      statusBar()->showMessage
-		(tr("Generating RSA key pair 2 of 2. Please be patient."));
+		(tr("Re-encoding RSA key pair 2 of 2. Please be patient."));
 #ifdef Q_OS_MAC
 	      QApplication::processEvents();
 #endif
@@ -1636,52 +1635,30 @@ void spoton::slotSetPassphrase(void)
 	{
 	  QStringList list;
 
-	  list << "private_public_keys.db"
-	       << "shared.db";
+	  list << "private"
+	       << "shared";
 
 	  for(int i = 0; i < list.size(); i++)
 	    {
-	      libspoton_handle_t libspotonHandle;
-
-	      if((err =
-		  libspoton_init((spoton_misc::homePath() +
-				  QDir::separator() + list.at(i)).
-				 toStdString().data(),
-				 &libspotonHandle)) !=
-		 LIBSPOTON_ERROR_NONE)
-		goto error_label;
-
 	      statusBar()->showMessage
 		(tr("Generating RSA key pair %1 of %2. Please be patient.").
 		 arg(i + 1).arg(list.size()));
 #ifdef Q_OS_MAC
 	      QApplication::processEvents();
 #endif
+	      spoton_gcrypt::generatePrivatePublicKeys
+		(derivedKey.constData(),
+		 ui.cipherType->currentText(),
+		 ui.rsaKeySize->currentText().toInt(),
+		 error2);
 
-	      if((err =
-		  libspoton_generate_private_public_keys(derivedKey.
-							 constData(),
-							 ui.cipherType->
-							 currentText().
-							 toStdString().
-							 data(),
-							 ui.rsaKeySize->
-							 currentText().
-							 toInt(),
-							 &libspotonHandle))
-		 != LIBSPOTON_ERROR_NONE)
-		goto error_label;
-
-	    error_label:
-	      libspoton_close(&libspotonHandle);
-
-	      if(err != LIBSPOTON_ERROR_NONE)
+	      if(!error2.isEmpty())
 		break;
 	    }
 	}
     }
 
-  if(error1.isEmpty() && error2.isEmpty() && err == LIBSPOTON_ERROR_NONE)
+  if(error1.isEmpty() && error2.isEmpty())
     saltedPassphraseHash = spoton_gcrypt::saltedPassphraseHash
       (ui.hashType->currentText(), str1, salt, error3);
 
@@ -1695,7 +1672,10 @@ void spoton::slotSetPassphrase(void)
 			     "derivedKey().").arg(error1.remove(".")));
   else if(!error2.isEmpty())
     QMessageBox::critical(this, tr("Spot-On: Error"),
-			  tr("An error (%1) occurred with spoton_gcrypt::"
+			  tr("An error (%1) occurred with "
+			     "spoton_gcrypt::"
+			     "generatePrivatePublicKeys() or "
+			     "spoton_gcrypt::"
 			     "reencodePrivateKey().").
 			  arg(error2.remove(".")));
   else if(!error3.isEmpty())
@@ -1703,10 +1683,6 @@ void spoton::slotSetPassphrase(void)
 			  tr("An error (%1) occurred with spoton_gcrypt::"
 			     "saltedPassphraseHash().").
 			  arg(error3.remove(".")));
-  else if(err != LIBSPOTON_ERROR_NONE)
-    QMessageBox::critical(this, tr("Spot-On: Error"),
-			  tr("An error (%1) occurred with libspoton.").
-			  arg(libspoton_strerror(err)));
   else
     {
       if(!m_crypt || reencode)

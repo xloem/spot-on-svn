@@ -1421,3 +1421,14 @@ QByteArray spoton_gcrypt::publicKey(bool *ok)
 
   return publicKey;
 }
+
+void spoton_gcrypt::generatePrivatePublicKeys(const char *derivedKey,
+					      const QString &cipherTYpe,
+					      const int rsaKeySize,
+					      QString &error)
+{
+  Q_UNUSED(derivedKey);
+  Q_UNUSED(cipherTYpe);
+  Q_UNUSED(rsaKeySize);
+  Q_UNUSED(error);
+}

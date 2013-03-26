@@ -33,7 +33,8 @@ QMAKE_CXXFLAGS_RELEASE += -mtune=generic -O3 \
 QMAKE_EXTRA_TARGETS = libspoton purge
 QMAKE_LFLAGS_RELEASE =
 QMAKE_LFLAGS_RPATH =
-INCLUDEPATH	+= . ../../. GUI /usr/local/include
+INCLUDEPATH	+= . ../../. GUI ../../libGeoIP/Include.osx64 \
+                   /usr/local/include
 ICON		= Icons/Logo/spoton-logo-transparent.icns
 LIBS		+= -L/usr/local/lib -lgcrypt -L../../LibSpotOn -lspoton \
                    -L../../libGeoIP/Libraries.osx64 -lGeoIP

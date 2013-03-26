@@ -67,6 +67,10 @@ class spoton_gcrypt
   static QStringList cipherTypes(void);
   static QStringList hashTypes(void);
   static bool passphraseSet(void);
+  static void generatePrivatePublicKeys(const char *derivedKey,
+					const QString &cipherTYpe,
+					const int rsaKeySize,
+					QString &error);
   static void reencodePrivateKey(const QString &newCipher,
 				 const QByteArray &newPassphrase,
 				 const QString &oldCipher,

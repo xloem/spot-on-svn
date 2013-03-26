@@ -630,64 +630,38 @@ void spoton_kernel::slotNewNeighbor(QPointer<spoton_neighbor> neighbor)
 
 void spoton_kernel::copyPublicKey(void)
 {
-  QString sharedPath(spoton_misc::homePath() + QDir::separator() +
-		     "shared.db");
-  libspoton_error_t err = LIBSPOTON_ERROR_NONE;
-  libspoton_handle_t libspotonHandle;
+  QByteArray publicKey;
+  bool ok = true;
 
-  if(libspoton_init(sharedPath.toStdString().c_str(),
-		    &libspotonHandle) == LIBSPOTON_ERROR_NONE)
-    err = libspoton_populate_public_key(&libspotonHandle);
+  if(s_crypt1)
+    publicKey = s_crypt1->publicKey(&ok);
 
-  if(err == LIBSPOTON_ERROR_NONE)
+  if(ok)
     {
-      size_t length = gcry_sexp_sprint(libspotonHandle.publicKey,
-				       GCRYSEXP_FMT_ADVANCED, 0, 0);
+      {
+	QSqlDatabase db = QSqlDatabase::addDatabase
+	  ("QSQLITE", "kernel");
 
-      if(length)
-	{
-	  QByteArray buffer(length, 0);
+	db.setDatabaseName
+	  (spoton_misc::homePath() + QDir::separator() + "public_keys.db");
 
-	  if(gcry_sexp_sprint(libspotonHandle.publicKey,
-			      GCRYSEXP_FMT_ADVANCED,
-			      static_cast<void *> (buffer.data()),
-			      static_cast<size_t> (buffer.length())) != 0)
-	    {
-	      {
-		QSqlDatabase db = QSqlDatabase::addDatabase
-		  ("QSQLITE", "kernel");
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
 
-		db.setDatabaseName
-		  (spoton_misc::homePath() + QDir::separator() +
-		   "public_keys.db");
+	    query.exec("PRAGMA synchronous = OFF");
+	    query.prepare("INSERT INTO public_keys (key) VALUES (?)");
+	    query.bindValue(0, publicKey);
 
-		if(db.open())
-		  {
-		    QSqlQuery query(db);
+	    if(query.exec())
+	      db.commit();
+	  }
 
-		    query.exec("PRAGMA synchronous = OFF");
-		    query.prepare("INSERT INTO public_keys (key) VALUES (?)");
-		    query.bindValue(0, buffer);
+	db.close();
+      }
 
-		    if(query.exec())
-		      db.commit();
-		  }
-
-		db.close();
-	      }
-
-	      QSqlDatabase::removeDatabase("kernel");
-	    }
-	  else
-	    spoton_misc::logError("spoton_kernel::copyPublicKey(): "
-				  "gcry_sexp_sprint() failure.");
-	}
-      else
-	spoton_misc::logError("spoton_kernel::copyPublicKey(): "
-			      "gcry_sexp_sprint() failure.");
+      QSqlDatabase::removeDatabase("kernel");
     }
-
-  libspoton_close(&libspotonHandle);
 }
 
 void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
