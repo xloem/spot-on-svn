@@ -363,7 +363,8 @@ void spoton_gcrypt::reencodePrivateKey(const QString &newCipher,
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_gcrypt");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() + "idiotes.db");
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "idiotes.db");
 
     if(db.open())
       {
@@ -624,7 +625,8 @@ void spoton_gcrypt::reencodePrivateKey(const QString &newCipher,
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_gcrypt");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() + "idiotes.db");
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "idiotes.db");
 
     if(db.open())
       {
@@ -1391,7 +1393,8 @@ QByteArray spoton_gcrypt::publicKey(bool *ok)
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_gcrypt");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() + "idiotes.db");
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "idiotes.db");
 
     if(db.open())
       {
@@ -1429,6 +1432,71 @@ void spoton_gcrypt::generatePrivatePublicKeys(const char *derivedKey,
 {
   Q_UNUSED(derivedKey);
   Q_UNUSED(cipherTYpe);
-  Q_UNUSED(rsaKeySize);
-  Q_UNUSED(error);
+  char *buffer = 0;
+  gcry_sexp_t keyPair = 0;
+  gcry_sexp_t parameters = 0;
+  gcry_sexp_t privateKey = 0;
+  size_t length = 0;
+
+  if(gcry_sexp_build(&parameters, 0, "(genkey (rsa (nbits %d)))",
+		     rsaKeySize) != 0)
+    {
+      error = "gcry_sexp_build() failure";
+      spoton_misc::logError
+	("spoton_gcrypt::generatePrivatePublicKeys(): gcry_sexp_build() "
+	 "failure.");
+      goto error_label;
+    }
+
+  if(gcry_pk_genkey(&keyPair, parameters) != 0)
+    {
+      error = "gcry_pk_genkey() failure";
+      spoton_misc::logError
+	("spoton_gcrypt::generatePrivatePublicKeys(): gcry_pk_genkey() "
+	 "failure.");
+      goto error_label;
+    }
+
+  privateKey = gcry_sexp_find_token(keyPair, "private-key", 0);
+
+  if(!privateKey)
+    {
+      error = "gcry_sexp_find_token() failure";
+      spoton_misc::logError
+	("spoton_gcrypt::generatePrivatePublicKeys(): gcry_sexp_find_token() "
+	 "failure.");
+      goto error_label;
+    }
+
+  length = gcry_sexp_sprint(privateKey, GCRYSEXP_FMT_ADVANCED, 0, 0);
+
+  if(!length)
+    {
+      error = "gcry_sexp_sprint() failure";
+      spoton_misc::logError
+	("spoton_gcrypt::generatePrivatePublicKeys(): gcry_sexp_sprint() "
+	 "failure.");
+      goto error_label;
+    }
+  else
+    {
+      buffer = (char *) malloc(length);
+
+      if(buffer)
+	gcry_sexp_sprint(privateKey, GCRYSEXP_FMT_ADVANCED, buffer, length);
+      else
+	{
+	  error = "gcry_sexp_sprint() failure";
+	  spoton_misc::logError
+	    ("spoton_gcrypt::generatePrivatePublicKeys(): gcry_sexp_sprint() "
+	     "failure.");
+	  goto error_label;
+	}
+    }
+
+ error_label:
+  free(buffer);
+  gcry_free(keyPair);
+  gcry_free(parameters);
+  gcry_free(privateKey);
 }
