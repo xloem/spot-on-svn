@@ -50,11 +50,11 @@ TRANSLATIONS    =
 TARGET		= ..\\..\\release\\Spot-On-Kernel
 PROJECTNAME	= Spot-On-Kernel
 
-spoton_kernel.path	= ..\\..\\release
+spoton_kernel.path	= ..\\release
 spoton_kernel.files	= Spot-On-Kernel.exe
-libgeoip_install.path   = ..\\..\\release
+libgeoip_install.path   = ..\\release
 libgeoip_install.files  = ..\\..\\..\\libGeoIP\\Libraries.win32\\libGeoIP-1.dll
-libspoton_install.path  = ..\\..\\release
+libspoton_install.path  = ..\\release
 libspoton_install.files = ..\\..\\..\\LibSpotOn\\libspoton.dll ..\\..\\..\\LibSpotOn\\Libraries.win32\\*.def ..\\..\\..\\LibSpotOn\\Libraries.win32\\*.dll
 
 INSTALLS	= libgeoip_install \
