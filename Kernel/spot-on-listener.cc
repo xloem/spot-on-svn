@@ -242,8 +242,9 @@ void spoton_listener::slotNewConnection(void)
 		       "scope_id, "
 		       "status, "
 		       "hash, "
-		       "sticky) "
-		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		       "sticky, "
+		       "country) "
+		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
 	    query.bindValue(1, m_port);
 
@@ -272,9 +273,10 @@ void spoton_listener::slotNewConnection(void)
 		if(ok)
 		  query.bindValue
 		    (5,
-		     spoton_kernel::s_crypt1->encrypted(neighbor->peerAddress().
-							scopeId().toLatin1(),
-							&ok).toBase64());
+		     spoton_kernel::s_crypt1->
+		     encrypted(neighbor->peerAddress().
+			       scopeId().toLatin1(),
+			       &ok).toBase64());
 
 		if(ok)
 		  query.bindValue
@@ -296,6 +298,20 @@ void spoton_listener::slotNewConnection(void)
 
 	    query.bindValue(6, "connected");
 	    query.bindValue(8, 0);
+
+	    QString country
+	      (spoton_misc::
+	       countryNameFromIPAddress(neighbor->peerAddress().toString()));
+
+	    if(spoton_kernel::s_crypt1)
+	      {
+		if(ok)
+		  query.bindValue
+		    (9, spoton_kernel::s_crypt1->
+		     encrypted(country.toLatin1(), &ok).toBase64());
+	      }
+	    else
+	      query.bindValue(9, country.toLatin1());
 
 	    if(ok)
 	      {

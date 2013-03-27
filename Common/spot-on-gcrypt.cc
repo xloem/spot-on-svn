@@ -376,7 +376,8 @@ void spoton_gcrypt::reencodePrivateKey(const QString &newCipher,
 
 	if(query.exec())
 	  if(query.next())
-	    data = query.value(0).toByteArray();
+	    data = QByteArray::fromBase64
+	      (query.value(0).toByteArray());
       }
 
     db.close();
@@ -634,7 +635,7 @@ void spoton_gcrypt::reencodePrivateKey(const QString &newCipher,
 
 	query.prepare("UPDATE idiotes SET private_key = ? "
 		      "WHERE id = ?");
-	query.bindValue(0, encryptedData);
+	query.bindValue(0, encryptedData.toBase64());
 	query.bindValue(1, id);
 
 	if(!query.exec())
@@ -1232,7 +1233,8 @@ QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_gcrypt");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() + "idiotes.db");
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "idiotes.db");
 
     if(db.open())
       {
@@ -1244,7 +1246,8 @@ QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 
 	if(query.exec())
 	  if(query.next())
-	    keyData = query.value(0).toByteArray();
+	    keyData = QByteArray::fromBase64
+	      (query.value(0).toByteArray());
       }
 
     db.close();
@@ -1425,17 +1428,15 @@ QByteArray spoton_gcrypt::publicKey(bool *ok)
   return publicKey;
 }
 
-void spoton_gcrypt::generatePrivatePublicKeys(const char *derivedKey,
-					      const QString &cipherTYpe,
-					      const int rsaKeySize,
+void spoton_gcrypt::generatePrivatePublicKeys(const int rsaKeySize,
 					      QString &error)
 {
-  Q_UNUSED(derivedKey);
-  Q_UNUSED(cipherTYpe);
+  QByteArray privateKey;
+  QByteArray publicKey;
   char *buffer = 0;
+  gcry_sexp_t key = 0;
   gcry_sexp_t keyPair = 0;
   gcry_sexp_t parameters = 0;
-  gcry_sexp_t privateKey = 0;
   size_t length = 0;
 
   if(gcry_sexp_build(&parameters, 0, "(genkey (rsa (nbits %d)))",
@@ -1457,34 +1458,25 @@ void spoton_gcrypt::generatePrivatePublicKeys(const char *derivedKey,
       goto error_label;
     }
 
-  privateKey = gcry_sexp_find_token(keyPair, "private-key", 0);
-
-  if(!privateKey)
+  for(int i = 1; i <= 2; i++)
     {
-      error = "gcry_sexp_find_token() failure";
-      spoton_misc::logError
-	("spoton_gcrypt::generatePrivatePublicKeys(): gcry_sexp_find_token() "
-	 "failure.");
-      goto error_label;
-    }
-
-  length = gcry_sexp_sprint(privateKey, GCRYSEXP_FMT_ADVANCED, 0, 0);
-
-  if(!length)
-    {
-      error = "gcry_sexp_sprint() failure";
-      spoton_misc::logError
-	("spoton_gcrypt::generatePrivatePublicKeys(): gcry_sexp_sprint() "
-	 "failure.");
-      goto error_label;
-    }
-  else
-    {
-      buffer = (char *) malloc(length);
-
-      if(buffer)
-	gcry_sexp_sprint(privateKey, GCRYSEXP_FMT_ADVANCED, buffer, length);
+      if(i == 1)
+	key = gcry_sexp_find_token(keyPair, "private-key", 0);
       else
+	key = gcry_sexp_find_token(keyPair, "public-key", 0);
+
+      if(!key)
+	{
+	  error = "gcry_sexp_find_token() failure";
+	  spoton_misc::logError
+	    ("spoton_gcrypt::generatePrivatePublicKeys(): "
+	     "gcry_sexp_find_token() failure.");
+	  goto error_label;
+	}
+
+      length = gcry_sexp_sprint(key, GCRYSEXP_FMT_ADVANCED, 0, 0);
+
+      if(!length)
 	{
 	  error = "gcry_sexp_sprint() failure";
 	  spoton_misc::logError
@@ -1492,11 +1484,83 @@ void spoton_gcrypt::generatePrivatePublicKeys(const char *derivedKey,
 	     "failure.");
 	  goto error_label;
 	}
+      else
+	{
+	  buffer = (char *) malloc(length);
+
+	  if(buffer)
+	    {
+	      gcry_sexp_sprint(key, GCRYSEXP_FMT_ADVANCED, buffer, length);
+
+	      if(i == 1)
+		privateKey = QByteArray(buffer, length);
+	      else
+		publicKey = QByteArray(buffer, length);
+
+	      free(buffer);
+	      buffer = 0;
+	    }
+	  else
+	    {
+	      error = "gcry_sexp_sprint() failure";
+	      spoton_misc::logError
+		("spoton_gcrypt::generatePrivatePublicKeys(): "
+		 "gcry_sexp_sprint() failure.");
+	      goto error_label;
+	    }
+	}
+
+      gcry_free(key);
+      key = 0;
     }
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_gcrypt");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "idiotes.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.setForwardOnly(true);
+	query.prepare("INSERT INTO idiotes (id, private_key, public_key) "
+		      "VALUES (?, ?, ?)");
+	query.bindValue(0, m_id);
+	query.bindValue(1, encrypted(privateKey, &ok).toBase64());
+	query.bindValue(2, publicKey);
+
+	if(ok)
+	  {
+	    if(query.exec())
+	      db.commit();
+	    else
+	      {
+		error = "QSqlQuery::exec() failure";
+		spoton_misc::logError
+		  ("spoton_gcrypt::generatePrivatePublicKeys(): "
+		   "QSqlQuery::exec() failure.");
+	      }
+	  }
+	else
+	  {
+	    error = "encrypted() failure";
+	    spoton_misc::logError
+	      ("spoton_gcrypt::generatePrivatePublicKeys(): "
+	       "encrypted() failure.");
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_gcrypt");
 
  error_label:
   free(buffer);
+  gcry_free(key);
   gcry_free(keyPair);
   gcry_free(parameters);
-  gcry_free(privateKey);
 }

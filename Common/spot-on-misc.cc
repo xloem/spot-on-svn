@@ -103,7 +103,7 @@ void spoton_misc::prepareDatabases(void)
 	QSqlQuery query(db);
 
 	query.exec("CREATE TABLE IF NOT EXISTS idiotes ("
-		   "id TEXT NOT NULL PRIMARY KEY, "
+		   "id TEXT PRIMARY KEY NOT NULL, "
 		   "public_key TEXT NOT NULL, "
 		   "private_key BLOB NOT NULL)");
       }

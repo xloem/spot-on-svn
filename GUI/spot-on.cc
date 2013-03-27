@@ -421,6 +421,7 @@ spoton::spoton(void)
   ui.participants->setColumnHidden(ui.participants->columnCount() - 1, true);
   slotPopulateParticipants();
   prepareListenerIPCombo();
+  spoton_misc::prepareDatabases();
   show();
 }
 
@@ -1611,8 +1612,7 @@ void spoton::slotSetPassphrase(void)
 	     derivedKey,
 	     m_settings["gui/cipherType"].toString().trimmed(),
 	     m_crypt->key(),
-	     spoton_misc::homePath() + QDir::separator() +
-	     "private_public_keys.db",
+	     "private",
 	     error2);
 
 	  if(error2.isEmpty())
@@ -1627,7 +1627,7 @@ void spoton::slotSetPassphrase(void)
 		 derivedKey,
 		 m_settings["gui/cipherType"].toString().trimmed(),
 		 m_crypt->key(),
-		 spoton_misc::homePath() + QDir::separator() + "shared.db",
+		 "shared",
 		 error2);
 	    }
 	}
@@ -1646,11 +1646,17 @@ void spoton::slotSetPassphrase(void)
 #ifdef Q_OS_MAC
 	      QApplication::processEvents();
 #endif
-	      spoton_gcrypt::generatePrivatePublicKeys
-		(derivedKey.constData(),
-		 ui.cipherType->currentText(),
-		 ui.rsaKeySize->currentText().toInt(),
-		 error2);
+	      spoton_gcrypt *g = new spoton_gcrypt
+		(ui.cipherType->currentText(),
+		 ui.hashType->currentText(),
+		 derivedKey,
+		 ui.saltLength->value(),
+		 ui.iterationCount->value(),
+		 list.at(i));
+
+	      g->generatePrivatePublicKeys
+		(ui.rsaKeySize->currentText().toInt(), error2);
+	      delete g;
 
 	      if(!error2.isEmpty())
 		break;
@@ -1695,8 +1701,7 @@ void spoton::slotSetPassphrase(void)
 	     derivedKey,
 	     ui.saltLength->value(),
 	     ui.iterationCount->value(),
-	     spoton_misc::homePath() + QDir::separator() +
-	     "private_public_keys.db");
+	     "private");
 	  m_tableTimer.start(2500);
 
 	  if(m_crypt)
@@ -1790,8 +1795,7 @@ void spoton::slotValidatePassphrase(void)
 	 key,
 	 ui.saltLength->value(),
 	 ui.iterationCount->value(),
-	 spoton_misc::homePath() + QDir::separator() +
-	 "private_public_keys.db");
+	 "private");
       m_tableTimer.start(2500);
 
       if(m_crypt)

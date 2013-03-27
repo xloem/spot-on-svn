@@ -16,7 +16,8 @@ DEFINES         += SPOTON_LINKED_WITH_LIBGEOIP \
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of LibSpotOn.
 
-QMAKE_CLEAN     += Spot-On ..\\..\\LibSpotOn\\*.dll ..\\..\\LibSpotOn\\*.o \
+QMAKE_CLEAN     += Spot-On ..\\..\\LibSpotOn\\libspoton.dll \
+		   ..\\..\\LibSpotOn\\*.o \
 		   ..\\..\\LibSpotOn\\test.exe
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -mtune=generic -O3 \
@@ -132,9 +133,9 @@ spoton.files		= Spot-On.exe
 icons.path		= release
 icons.files		= Icons
 libgeoip_install.path   = release
-libgeoip_install.extra  = ..\\..\\libGeoIP\\Libraries.win32\\libGeoIP-1.dll
+libgeoip_install.files  = ..\\..\\libGeoIP\\Libraries.win32\\libGeoIP-1.dll
 libspoton_install.path  = release
-libspoton_install.extra = ..\\..\\LibSpotOn\\libspoton.dll ..\\..\\LibSpotOn\\Libraries.win32\\*.dll
+libspoton_install.files = ..\\..\\LibSpotOn\\libspoton.dll ..\\..\\LibSpotOn\\Libraries.win32\\*.def ..\\..\\LibSpotOn\\Libraries.win32\\*.dll
 lrelease.extra          = $$[QT_INSTALL_BINS]\\lrelease spot-on-gui.win.pro
 lrelease.path           = .
 lupdate.extra           = $$[QT_INSTALL_BINS]\\lupdate spot-on-gui.win.pro

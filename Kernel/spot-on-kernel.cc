@@ -635,6 +635,8 @@ void spoton_kernel::copyPublicKey(void)
 
   if(s_crypt1)
     publicKey = s_crypt1->publicKey(&ok);
+  else
+    ok = false;
 
   if(ok)
     {

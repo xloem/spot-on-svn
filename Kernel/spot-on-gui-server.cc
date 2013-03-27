@@ -143,7 +143,8 @@ void spoton_gui_server::slotReadyRead(void)
 		      (spoton_kernel::s_settings.value("gui/cipherType").
 		       toString().trimmed(),
 		       spoton_kernel::s_settings.value("gui/hashType").
-		       toString().trimmed(), message,
+		       toString().trimmed(),
+		       message,
 		       spoton_kernel::s_settings.value("gui/saltLength",
 						       256).toInt(),
 		       spoton_kernel::s_settings.value("gui/iterationCount",
@@ -155,7 +156,8 @@ void spoton_gui_server::slotReadyRead(void)
 		      (spoton_kernel::s_settings.value("gui/cipherType").
 		       toString().trimmed(),
 		       spoton_kernel::s_settings.value("gui/hashType").
-		       toString().trimmed(), message,
+		       toString().trimmed(),
+		       message,
 		       spoton_kernel::s_settings.value("gui/saltLength",
 						       256).toInt(),
 		       spoton_kernel::s_settings.value("gui/iterationCount",
