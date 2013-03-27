@@ -17,7 +17,7 @@ Echoed?   Yes
 
 1-4       Message Type ("0010") (Plaintext)
 5         TTL (Plaintext)
-6-EOF     Public Key (Plaintext)
+6-EOF     URL Public Key (Plaintext)
 
 Greetings-2
 Bytes     Description
