@@ -190,7 +190,8 @@ void spoton_misc::prepareDatabases(void)
 		   "external_port TEXT, "
 		   "uuid TEXT, "
 		   "country TEXT, "
-		   "hash TEXT PRIMARY KEY NOT NULL)");
+		   "hash TEXT PRIMARY KEY NOT NULL, "
+		   "remote_ip_address_hash TEXT NOT NULL)");
       }
 
     db.close();

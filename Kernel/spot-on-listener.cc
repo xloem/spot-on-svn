@@ -216,6 +216,48 @@ void spoton_listener::slotNewConnection(void)
   if(!neighbor)
     return;
 
+  int count = 0;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "listener_" + QString::number(s_dbId));
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT COUNT(*) FROM neighbors WHERE "
+		      "remote_ip_address_hash = ? AND "
+		      "status_control = 'blocked'");
+
+	if(spoton_kernel::s_crypt1)
+	  query.bindValue
+	    (0, spoton_kernel::s_crypt1->
+	     keyedHash(neighbor->peerAddress().
+		       toString().toLatin1(), 0).toBase64());
+	else
+	  query.bindValue(0, neighbor->peerAddress().toString());
+
+	if(query.exec())
+	  if(query.next())
+	    count = query.value(0).toInt();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("listener_" + QString::number(s_dbId));
+
+  if(count > 0)
+    {
+      neighbor->deleteLater();
+      return;
+    }
+
   bool created = false;
   qint64 id = -1;
 
@@ -243,8 +285,9 @@ void spoton_listener::slotNewConnection(void)
 		       "status, "
 		       "hash, "
 		       "sticky, "
-		       "country) "
-		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		       "country, "
+		       "remote_ip_address_hash) "
+		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
 	    query.bindValue(1, m_port);
 
@@ -309,9 +352,18 @@ void spoton_listener::slotNewConnection(void)
 		  query.bindValue
 		    (9, spoton_kernel::s_crypt1->
 		     encrypted(country.toLatin1(), &ok).toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (10, spoton_kernel::s_crypt1->
+		     keyedHash(neighbor->peerAddress().
+			       toString().toLatin1(), &ok).toBase64());
 	      }
 	    else
-	      query.bindValue(9, country.toLatin1());
+	      {
+		query.bindValue(9, country.toLatin1());
+		query.bindValue(10, neighbor->peerAddress().toString());
+	      }
 
 	    if(ok)
 	      {

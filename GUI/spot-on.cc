@@ -612,9 +612,10 @@ void spoton::slotAddNeighbor(void)
 		      "scope_id, "
 		      "hash, "
 		      "status_control, "
-		      "country) "
+		      "country, "
+		      "remote_ip_address_hash) "
 		      "VALUES "
-		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	if(protocol == "IPv6")
 	  query.bindValue(0, "::1");
@@ -721,9 +722,17 @@ void spoton::slotAddNeighbor(void)
 	    if(ok)
 	      query.bindValue
 		(9, m_crypt->encrypted(country.toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(10, m_crypt->keyedHash(ip.toLatin1(), &ok).
+		 toBase64());
 	  }
 	else
-	  query.bindValue(9, country.toLatin1());
+	  {
+	    query.bindValue(9, country.toLatin1());
+	    query.bindValue(10, ip);
+	  }
 
 	if(ok)
 	  if(query.exec())
@@ -1927,7 +1936,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("&Block"),
 		     this, SLOT(slotBlockNeighbor(void)));
       menu.addAction(tr("&Unblock"),
-		     this, SLOT(slotUnblockNeighbor(void)));
+		     this, SLOT(slotDisconnectNeighbor(void)));
       menu.exec(ui.neighbors->mapToGlobal(point));
     }
   else
@@ -2070,10 +2079,52 @@ void spoton::slotDisconnectNeighbor(void)
 
 void spoton::slotBlockNeighbor(void)
 {
+  QString oid("");
+  int row = -1;
+
+  if((row = ui.neighbors->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = ui.neighbors->item
+	(row, ui.neighbors->columnCount() - 1);
+
+      if(item)
+	oid = item->text();
+    }
+
+  m_tableTimer.stop();
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_database");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare("UPDATE neighbors SET "
+		      "status_control = ? "
+		      "WHERE OID = ?");
+	query.bindValue(0, "blocked");
+	query.bindValue(1, oid);
+	query.exec();
+	db.commit();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_database");
+  m_tableTimer.start();
 }
 
 void spoton::slotUnblockNeighbor(void)
 {
+  /*
+  ** Not used.
+  */
 }
 
 void spoton::slotDeleteAllListeners(void)
