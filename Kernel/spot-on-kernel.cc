@@ -176,6 +176,12 @@ spoton_kernel::spoton_kernel(void):QObject(0)
     settings.setValue("kernel/maximum_number_of_bytes_buffered_by_neighbor",
 		      25000);
 
+  if(!settings.contains("kernel/ttl_0000"))
+    settings.setValue("kernel/ttl_0000", 16);
+
+  if(!settings.contains("kernel/ttl_0010"))
+    settings.setValue("kernel/ttl_0010", 16);
+
   for(int i = 0; i < settings.allKeys().size(); i++)
     s_settings[settings.allKeys().at(i)] = settings.value
       (settings.allKeys().at(i));
@@ -739,7 +745,8 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 		  if(ok)
 		    {
 		      char c = 0;
-		      short ttl = TTL_0000;
+		      short ttl = s_settings.value
+			("kerne/ttl_0000", 16).toInt();
 
 		      memcpy(&c, static_cast<void *> (&ttl), 1);
 		      data.prepend(hash.toHex());

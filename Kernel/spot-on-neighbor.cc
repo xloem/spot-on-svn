@@ -294,7 +294,8 @@ void spoton_neighbor::slotSendKeys(void)
 	      {
 		QByteArray message(query.value(0).toByteArray());
 		char c = 0;
-		short ttl = spoton_kernel::TTL_0010;
+		short ttl = spoton_kernel::s_settings.value
+		  ("kernel/ttl_0010", 16).toInt();
 
 		memcpy(&c, static_cast<void *> (&ttl), 1);
 		message.prepend(c);

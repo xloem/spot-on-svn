@@ -48,8 +48,6 @@ class spoton_kernel: public QObject
   static QHash<QString, QVariant> s_settings;
   static spoton_gcrypt *s_crypt1; // private
   static spoton_gcrypt *s_crypt2; // shared
-  static const short TTL_0000 = 16;
-  static const short TTL_0010 = 16;
 
  private:
   QFileSystemWatcher m_settingsWatcher;

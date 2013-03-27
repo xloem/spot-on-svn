@@ -2,7 +2,6 @@ Some tables hold encrypted data.
 
 listeners:
 
-external_ip_address
 ip_address
 port
 protocol
