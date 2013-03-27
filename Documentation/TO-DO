@@ -15,6 +15,7 @@ Completed Items
        be displayed.
 8.     The context menu to share the public key should be a button.
 9.     Add an icon to a connected neighbor.
+10.    libspoton.dll needs to be installed in the executable's path.
 
 Remaining Items
 
@@ -23,8 +24,6 @@ Remaining Items
 3.     Secure connections between the interface and the kernel.
 
 Ideas
-
-       libspoton.dll needs to be installed in the executable's path.
 
        Settings tab needs a side splitter for more settings such as: deny-get,
        deny-put. These functions do not exist.
