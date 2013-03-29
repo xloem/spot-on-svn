@@ -882,10 +882,35 @@ void spoton_kernel::slotStatusTimerExpired(void)
   ** Do we have any interfaces attached to the kernel?
   */
 
-  QByteArray status("offline");
+  QByteArray data;
+  QString status("offline");
 
   if(!m_guiServer->findChildren<QTcpSocket *> ().isEmpty())
     status = "online";
 
-  emit sendStatus(status);
+  /*
+  ** Retrieve the symmetric bundle of each participant.
+  */
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "kernel");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "symmetric_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	if(query.exec("SELECT symmetric_key, symmetric_key_algorithm "
+		      "FROM symmetric_keys WHERE neighbor_oid = -1"))
+	  while(query.next())
+	    {
+	    }
+      }
+
+    db.close();
+  }
+
+  emit sendStatus(data);
 }
