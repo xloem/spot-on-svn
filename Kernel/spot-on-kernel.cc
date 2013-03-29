@@ -896,7 +896,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "kernel");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "symmetric_keys.db");
+		       "friends_symmetric_keys.db");
 
     if(db.open())
       {
