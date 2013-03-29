@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>990</width>
-    <height>637</height>
+    <width>992</width>
+    <height>729</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>968</width>
-                <height>533</height>
+                <width>962</width>
+                <height>636</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -495,17 +495,6 @@
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="pushButtonLogViewer">
-                 <property name="text">
-                  <string>Log Viewer</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/logview.png</normaloff>:/logview.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item>
                 <spacer name="horizontalSpacer_24">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
@@ -813,8 +802,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>118</width>
-                 <height>477</height>
+                 <width>99</width>
+                 <height>469</height>
                 </rect>
                </property>
               </widget>
@@ -1020,8 +1009,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>968</width>
-             <height>533</height>
+             <width>975</width>
+             <height>621</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -1651,6 +1640,17 @@
               </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_11">
+                <item>
+                 <widget class="QPushButton" name="pushButtonLogViewer">
+                  <property name="text">
+                   <string>Log Viewer</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../Icons/icons.qrc">
+                    <normaloff>:/logview.png</normaloff>:/logview.png</iconset>
+                  </property>
+                 </widget>
+                </item>
                 <item>
                  <widget class="QPushButton" name="resetSpotOn">
                   <property name="text">
@@ -2318,8 +2318,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>990</width>
-     <height>25</height>
+     <width>992</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2418,6 +2418,7 @@
   <tabstop>passphrase1</tabstop>
   <tabstop>passphrase2</tabstop>
   <tabstop>setPassphrase</tabstop>
+  <tabstop>pushButtonLogViewer</tabstop>
   <tabstop>resetSpotOn</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>acceptlistRadioButton</tabstop>
