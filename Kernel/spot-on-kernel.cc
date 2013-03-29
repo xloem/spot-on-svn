@@ -190,7 +190,12 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotPollDatabase(void)));
+  connect(&m_statusTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotStatusTimerExpired(void)));
   m_controlDatabaseTimer.start(2500);
+  m_statusTimer.start(60000);
   m_guiServer = new spoton_gui_server(this);
   connect(m_guiServer,
 	  SIGNAL(messageReceivedFromUI(const qint64,
@@ -850,10 +855,6 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  SIGNAL(receivedPublicKey(const QByteArray &,
 				   const qint64)));
   connect(this,
-	  SIGNAL(sendMessage(const QByteArray &)),
-	  neighbor,
-	  SLOT(slotSendMessage(const QByteArray &)));
-  connect(this,
 	  SIGNAL(receivedChatMessage(const QByteArray &,
 				     const qint64)),
 	  neighbor,
@@ -865,4 +866,26 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  neighbor,
 	  SLOT(slotReceivedPublicKey(const QByteArray &,
 				     const qint64)));
+  connect(this,
+	  SIGNAL(sendMessage(const QByteArray &)),
+	  neighbor,
+	  SLOT(slotSendMessage(const QByteArray &)));
+  connect(this,
+	  SIGNAL(sendStatus(const QString &)),
+	  this,
+	  SLOT(slotSendStatus(const QString &)));
+}
+
+void spoton_kernel::slotStatusTimerExpired(void)
+{
+  /*
+  ** Do we have any interfaces attached to the kernel?
+  */
+
+  QString status("offline");
+
+  if(!m_guiServer->findChildren<QTcpSocket *> ().isEmpty())
+    status = "online";
+
+  emit sendStatus(status);
 }

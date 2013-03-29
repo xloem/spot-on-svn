@@ -1092,3 +1092,8 @@ void spoton_neighbor::process0012(int length)
 	       "content-length mismatch (advertised: %1, received: %2).").
        arg(length).arg(data.length()));
 }
+
+void spoton_neighbor::slotSendStatus(const QString &status)
+{
+  Q_UNUSED(status);
+}

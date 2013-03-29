@@ -54,6 +54,7 @@ class spoton_kernel: public QObject
   QHash<qint64, QPointer<spoton_listener> > m_listeners;
   QHash<qint64, QPointer<spoton_neighbor> > m_neighbors;
   QTimer m_controlDatabaseTimer;
+  QTimer m_statusTimer;
   spoton_gui_server *m_guiServer;
   void checkForTermination(void);
   void cleanup(void);
@@ -77,12 +78,14 @@ class spoton_kernel: public QObject
 				   const QByteArray &symmetricKey,
 				   const QByteArray &symmetricKeyAlgorithm);
   void slotSettingsChanged(const QString &path);
+  void slotStatusTimerExpired(void);
 
  signals:
-  void sendMessage(const QByteArray &message);
   void receivedChatMessage(const QByteArray &name, const qint64 id);
   void receivedPublicKey(const QByteArray &publicKey,
 			 const qint64 id);
+  void sendMessage(const QByteArray &message);
+  void sendStatus(const QString &status);
 };
 
 #endif

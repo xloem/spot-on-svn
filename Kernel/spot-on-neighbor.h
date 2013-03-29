@@ -77,11 +77,12 @@ class spoton_neighbor: public QTcpSocket
  private slots:
   void slotConnected(void);
   void slotLifetimeExpired(void);
-  void slotSendMessage(const QByteArray &message);
   void slotReadyRead(void);
   void slotReceivedChatMessage(const QByteArray &data, const qint64 id);
   void slotReceivedPublicKey(const QByteArray &data, const qint64 id);
   void slotSendKeys(void);
+  void slotSendMessage(const QByteArray &message);
+  void slotSendStatus(const QString &status);
   void slotTimeout(void);
 
  signals:
