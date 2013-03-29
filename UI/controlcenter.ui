@@ -497,7 +497,7 @@
                <item>
                 <widget class="QPushButton" name="pushButtonLogViewer">
                  <property name="text">
-                  <string>LogView</string>
+                  <string>Log Viewer</string>
                  </property>
                  <property name="icon">
                   <iconset resource="../Icons/icons.qrc">
@@ -2328,14 +2328,7 @@
     </property>
     <addaction name="action_Quit"/>
    </widget>
-   <widget class="QMenu" name="menu_Tools">
-    <property name="title">
-     <string>&amp;Tools</string>
-    </property>
-    <addaction name="action_Log_Viewer"/>
-   </widget>
    <addaction name="menu_File"/>
-   <addaction name="menu_Tools"/>
   </widget>
   <action name="action_Quit">
    <property name="icon">
