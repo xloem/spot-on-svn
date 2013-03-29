@@ -84,7 +84,8 @@ void spoton_misc::prepareDatabases(void)
 		   ** is lost before we accept the friendship. The field
 		   ** provides us with some safety.
 		   */
-		   "neighbor_oid INTEGER DEFAULT -1)");
+		   "neighbor_oid INTEGER DEFAULT -1, "
+		   "status TEXT NOT NULL DEFAULT 'offline')");
       }
 
     db.close();
