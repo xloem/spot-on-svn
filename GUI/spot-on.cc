@@ -209,6 +209,10 @@ spoton::spoton(void)
 	  SIGNAL(clicked(bool)),
 	  this,
 	  SLOT(slotSharePublicKey(void)));
+  connect(ui.pushButtonLogViewer,
+      SIGNAL(clicked(bool)),
+      this,
+      SLOT(slotViewLog(void)));
   connect(ui.listenerIP,
 	  SIGNAL(returnPressed(void)),
 	  this,
