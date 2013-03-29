@@ -495,6 +495,17 @@
                 </widget>
                </item>
                <item>
+                <widget class="QPushButton" name="pushButton_2">
+                 <property name="text">
+                  <string>LogView</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../Icons/icons.qrc">
+                   <normaloff>:/logview.png</normaloff>:/logview.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <spacer name="horizontalSpacer_24">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>

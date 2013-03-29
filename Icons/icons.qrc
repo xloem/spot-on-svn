@@ -33,8 +33,6 @@
         <file>add-neighbor-to-chat.png</file>
         <file>plist_confirmed_as_permanent_friend.png</file>
         <file>plist_connected_neighbour.png</file>
-    </qresource>
-    <qresource prefix="/">
         <file>Flags/ae.png</file>
         <file>Flags/af.png</file>
         <file>Flags/al.png</file>
@@ -206,5 +204,6 @@
         <file>Flags/ye.png</file>
         <file>Flags/za.png</file>
         <file>Flags/zw.png</file>
+        <file>logview.png</file>
     </qresource>
 </RCC>
