@@ -655,8 +655,7 @@ void spoton_kernel::copyPublicKey(void)
   if(ok)
     {
       {
-	QSqlDatabase db = QSqlDatabase::addDatabase
-	  ("QSQLITE", "kernel");
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "kernel");
 
 	db.setDatabaseName
 	  (spoton_misc::homePath() + QDir::separator() + "public_keys.db");
@@ -875,7 +874,7 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  SLOT(slotSendMessage(const QByteArray &)));
   connect(this,
 	  SIGNAL(sendStatus(const QByteArray &)),
-	  this,
+	  neighbor,
 	  SLOT(slotSendStatus(const QByteArray &)));
 }
 
@@ -915,5 +914,6 @@ void spoton_kernel::slotStatusTimerExpired(void)
     db.close();
   }
 
+  QSqlDatabase::removeDatabase("kernel");
   emit sendStatus(data);
 }

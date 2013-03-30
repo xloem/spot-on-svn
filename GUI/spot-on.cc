@@ -2334,8 +2334,8 @@ void spoton::slotSendMessage(void)
   message.append(tr("<b>me:</b> "));
   message.append(ui.message->toPlainText().trimmed());
   ui.messages->append(message);
-  ui.messages->textCursor().movePosition(QTextCursor::End);
-  ui.messages->ensureCursorVisible();
+  ui.messages->verticalScrollBar()->setValue
+    (ui.messages->verticalScrollBar()->maximum());
 
   while(!list.isEmpty())
     {
@@ -2417,8 +2417,8 @@ void spoton::slotReceivedKernelMessage(void)
 		  msg.append(QString::fromUtf8(message.constData(),
 					       message.length()));
 		  ui.messages->append(msg);
-		  ui.messages->textCursor().movePosition(QTextCursor::End);
-		  ui.messages->ensureCursorVisible();
+		  ui.messages->verticalScrollBar()->setValue
+		    (ui.messages->verticalScrollBar()->maximum());
 		}
 	    }
 	}

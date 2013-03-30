@@ -31,6 +31,8 @@
 #include <QSqlQuery>
 #include <QtCore/qmath.h>
 
+#include <limits>
+
 #include "Common/spot-on-gcrypt.h"
 #include "Common/spot-on-misc.h"
 #include "Common/spot-on-send.h"
@@ -45,7 +47,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   s_dbId += 1;
   setSocketDescriptor(socketDescriptor);
   m_address = peerAddress();
-  m_id = -1;
+  m_id = std::numeric_limits<qint64>::min();
   m_port = peerPort();
   m_sendKeysOffset = 0;
   connect(this,

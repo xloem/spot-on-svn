@@ -425,7 +425,7 @@ void spoton_listener::slotNewConnection(void)
 
   QSqlDatabase::removeDatabase("listener_" + QString::number(s_dbId));
 
-  if(created && id > -1)
+  if(created && id != -1)
     {
       m_connections += 1;
       updateConnectionCount();
