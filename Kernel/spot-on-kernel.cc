@@ -236,6 +236,9 @@ spoton_kernel::~spoton_kernel()
 {
   cleanup();
   cleanupDatabases();
+  spoton_misc::logError
+    (QString("Kernel %1 about to exit.").
+     arg(QCoreApplication::applicationPid()));
   QCoreApplication::instance()->quit();
 }
 
