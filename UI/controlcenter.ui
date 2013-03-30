@@ -159,9 +159,12 @@
                            <height>26</height>
                           </size>
                          </property>
+                         <property name="currentIndex">
+                          <number>2</number>
+                         </property>
                          <item>
                           <property name="text">
-                           <string>Online</string>
+                           <string>Away</string>
                           </property>
                          </item>
                          <item>
@@ -171,7 +174,7 @@
                          </item>
                          <item>
                           <property name="text">
-                           <string>Away</string>
+                           <string>Online</string>
                           </property>
                          </item>
                         </widget>
@@ -834,7 +837,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>99</width>
-                 <height>469</height>
+                 <height>561</height>
                 </rect>
                </property>
               </widget>
@@ -1040,7 +1043,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>975</width>
+             <width>1020</width>
              <height>621</height>
             </rect>
            </property>
@@ -2399,6 +2402,7 @@
   <tabstop>messages</tabstop>
   <tabstop>nodeName</tabstop>
   <tabstop>saveNodeName</tabstop>
+  <tabstop>comboBox</tabstop>
   <tabstop>participants</tabstop>
   <tabstop>chatSendMethod</tabstop>
   <tabstop>message</tabstop>
