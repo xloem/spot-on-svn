@@ -123,7 +123,7 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
 spoton_neighbor::~spoton_neighbor()
 {
   spoton_misc::logError
-    (QString("Neighbor %1:%2 disconnected.").arg(m_address.toString()).
+    (QString("Neighbor %1:%2 destroyed.").arg(m_address.toString()).
      arg(m_port));
   m_timer.stop();
 
