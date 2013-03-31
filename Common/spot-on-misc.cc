@@ -74,7 +74,7 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS symmetric_keys ("
 		   "name TEXT NOT NULL DEFAULT 'unknown', "
 		   "symmetric_key BLOB, "
-		   "symmetric_key_algorithm TEXT, "
+		   "symmetric_key_algorithm BLOB, "
 		   "public_key TEXT NOT NULL, "
 		   "public_key_hash TEXT PRIMARY KEY NOT NULL, "
 		   /*

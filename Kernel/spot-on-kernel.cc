@@ -873,22 +873,25 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  neighbor,
 	  SLOT(slotSendMessage(const QByteArray &)));
   connect(this,
-	  SIGNAL(sendStatus(const QByteArray &)),
+	  SIGNAL(sendStatus(const QList<QByteArray> &)),
 	  neighbor,
-	  SLOT(slotSendStatus(const QByteArray &)));
+	  SLOT(slotSendStatus(const QList<QByteArray> &)));
 }
 
 void spoton_kernel::slotStatusTimerExpired(void)
 {
+  if(!s_crypt1)
+    return;
+
   /*
   ** Do we have any interfaces attached to the kernel?
   */
 
-  QByteArray data;
-  QString status("offline");
+  QByteArray status;
+  QList<QByteArray> data;
 
   if(!m_guiServer->findChildren<QTcpSocket *> ().isEmpty())
-    status = "online";
+    status = s_settings.value("gui/my_status", "online").toByteArray();
 
   /*
   ** Retrieve the symmetric bundle of each participant.
@@ -908,6 +911,34 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		      "FROM symmetric_keys WHERE neighbor_oid = -1"))
 	  while(query.next())
 	    {
+	      QByteArray symmetricKey
+		(QByteArray::fromBase64(query.value(0).
+					toByteArray()));
+	      QByteArray symmetricKeyAlgorithm
+		(QByteArray::fromBase64(query.value(1).
+					toByteArray()));
+	      bool ok = true;
+
+	      symmetricKey = s_crypt1->decrypted(symmetricKey, &ok);
+
+	      if(ok)
+		symmetricKeyAlgorithm =
+		  s_crypt1->decrypted(symmetricKeyAlgorithm, &ok);
+
+	      if(ok)
+		{
+		  spoton_gcrypt crypt(symmetricKeyAlgorithm,
+				      QString(""),
+				      symmetricKey,
+				      0,
+				      0,
+				      QString(""));
+
+		  QByteArray encrypted(crypt.encrypted(status, &ok));
+
+		  if(ok)
+		    data.append(encrypted);
+		}
 	    }
       }
 
