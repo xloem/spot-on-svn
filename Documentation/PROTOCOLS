@@ -8,8 +8,8 @@ Echoed?   Yes
 5         TTL (Plaintext)
 6-69      Sender's Sha-512 Hash (Plaintext)
 70-133    Sha-512 Message Digest (Ciphertext)
-133-196   Name (Padded with EOL.) (Ciphertext)
-197-EOF   Message (Ciphertext)
+134-197   Name (Padded with EOL.) (Ciphertext)
+198-EOF   Message (Ciphertext)
 
 Greetings-1
 Bytes     Description
