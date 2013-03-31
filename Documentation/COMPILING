@@ -6,12 +6,16 @@ a distclean before building Spot-On.
 Absolute cleaning:
 make distclean or mingw32-make distclean
 
-OS X:
-qmake -spec macx-g++ -o Makefile spot-on.osx.pro
+FreeBSD:
+qmake -o Makefile spot-on.freebsd.pro
 make
 
-Unix:
+Linux:
 qmake -o Makefile spot-on.pro
+make
+
+OS X:
+qmake -spec macx-g++ -o Makefile spot-on.osx.pro
 make
 
 Windows:
