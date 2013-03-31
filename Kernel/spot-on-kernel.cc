@@ -182,6 +182,9 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   if(!settings.contains("kernel/ttl_0010"))
     settings.setValue("kernel/ttl_0010", 16);
 
+  if(!settings.contains("kernel/ttl_0013"))
+    settings.setValue("kernel/ttl_0013", 16);
+
   for(int i = 0; i < settings.allKeys().size(); i++)
     s_settings[settings.allKeys().at(i)] = settings.value
       (settings.allKeys().at(i));
@@ -887,8 +890,24 @@ void spoton_kernel::slotStatusTimerExpired(void)
   ** Do we have any interfaces attached to the kernel?
   */
 
+  QByteArray publicKey;
+  QByteArray publicKeyHash;
+  bool ok = true;
+
+  publicKey = s_crypt1->publicKey(&ok);
+
+  if(ok)
+    publicKeyHash = s_crypt1->sha512Hash(publicKey, &ok);
+  else
+    return;
+
+  char c = 0;
+  short ttl = s_settings.value("kernel/ttl_0013", 16).toInt();
+
+  memcpy(&c, static_cast<void *> (&ttl), 1);
+
   QByteArray status;
-  QList<QByteArray> data;
+  QList<QByteArray> list;
 
   if(!m_guiServer->findChildren<QTcpSocket *> ().isEmpty())
     status = s_settings.value("gui/my_status", "online").toByteArray();
@@ -917,8 +936,8 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	      QByteArray symmetricKeyAlgorithm
 		(QByteArray::fromBase64(query.value(1).
 					toByteArray()));
-	      bool ok = true;
 
+	      ok = true;
 	      symmetricKey = s_crypt1->decrypted(symmetricKey, &ok);
 
 	      if(ok)
@@ -937,7 +956,11 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		  QByteArray encrypted(crypt.encrypted(status, &ok));
 
 		  if(ok)
-		    data.append(encrypted);
+		    {
+		      QByteArray data;
+
+		      list.append(data);
+		    }
 		}
 	    }
       }
@@ -946,5 +969,5 @@ void spoton_kernel::slotStatusTimerExpired(void)
   }
 
   QSqlDatabase::removeDatabase("kernel");
-  emit sendStatus(data);
+  emit sendStatus(list);
 }

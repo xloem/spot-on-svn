@@ -1095,12 +1095,12 @@ void spoton_neighbor::process0012(int length)
        arg(length).arg(data.length()));
 }
 
-void spoton_neighbor::slotSendStatus(const QList<QByteArray> &data)
+void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
 {
   if(state() == QAbstractSocket::ConnectedState)
-    for(int i = 0; i < data.size(); i++)
+    for(int i = 0; i < list.size(); i++)
       {
-	QByteArray message(spoton_send::message0013(data.at(i)));
+	QByteArray message(spoton_send::message0013(list.at(i)));
 
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
