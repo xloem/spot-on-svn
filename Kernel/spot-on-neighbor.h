@@ -66,6 +66,7 @@ class spoton_neighbor: public QTcpSocket
   void process0010(int length);
   void process0011(int length);
   void process0012(int length);
+  void process0013(int length);
   void savePublicKey(const QByteArray &name,
 		     const QByteArray &publicKey,
 		     const QByteArray &symmetricKey,

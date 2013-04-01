@@ -229,6 +229,10 @@ spoton::spoton(void)
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotChatSendMethodChanged(int)));
+  connect(ui.status,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotStatusChanged(int)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -2756,4 +2760,19 @@ void spoton::slotSharePublicKeyWithParticipant(void)
 void spoton::slotViewLog(void)
 {
   m_logViewer.show(this);
+}
+
+void spoton::slotStatusChanged(int index)
+{
+  if(index == 0)
+    m_settings["gui/my_status"] = "Away";
+  else if(index == 1)
+    m_settings["gui/my_status"] = "Busy";
+  else
+    m_settings["gui/my_status"] = "Online";
+
+  QSettings settings;
+
+  settings.setValue
+    ("gui/my_status", m_settings.value("gui/my_status").toString());
 }

@@ -397,6 +397,18 @@ void spoton_neighbor::slotReadyRead(void)
 	  else
 	    process0012(length);
 	}
+      else if(length > 0 && m_data.contains("type=0013&content="))
+	{
+	  if(!spoton_kernel::s_crypt1)
+	    {
+	      m_data.remove(0, m_data.lastIndexOf("\r\n") + 2);
+	      spoton_misc::logError
+		("spoton_neighbor::slotReadyRead(): "
+		 "spoton_kernel::s_crypt1 is 0.");
+	    }
+	  else
+	    process0013(length);
+	}
       else
 	m_data.clear();
     }
@@ -776,8 +788,7 @@ void spoton_neighbor::process0000(int length)
   m_data.remove(0, data.length());
   data.remove
     (0,
-     data.indexOf("type=0000&content=") +
-     strlen("type=0000&content="));
+     data.indexOf("type=0000&content=") + strlen("type=0000&content="));
 
   if(length == data.length())
     {
@@ -940,8 +951,7 @@ void spoton_neighbor::process0010(int length)
   m_data.remove(0, data.length());
   data.remove
     (0,
-     data.indexOf("type=0010&content=") +
-     strlen("type=0010&content="));
+     data.indexOf("type=0010&content=") + strlen("type=0010&content="));
 
   if(length == data.length())
     {
@@ -994,8 +1004,7 @@ void spoton_neighbor::process0011(int length)
   m_data.remove(0, data.length());
   data.remove
     (0,
-     data.indexOf("type=0011&content=") +
-     strlen("type=0011&content="));
+     data.indexOf("type=0011&content=") + strlen("type=0011&content="));
 
   if(length == data.length())
     {
@@ -1044,8 +1053,7 @@ void spoton_neighbor::process0012(int length)
   m_data.remove(0, data.length());
   data.remove
     (0,
-     data.indexOf("type=0012&content=") +
-     strlen("type=0012&content="));
+     data.indexOf("type=0012&content=") + strlen("type=0012&content="));
 
   if(length == data.length())
     {
@@ -1091,6 +1099,32 @@ void spoton_neighbor::process0012(int length)
   else
     spoton_misc::logError
       (QString("spoton_kernel::process0012(): 0012 "
+	       "content-length mismatch (advertised: %1, received: %2).").
+       arg(length).arg(data.length()));
+}
+
+void spoton_neighbor::process0013(int length)
+{
+  length -= strlen("type=0013&content=");
+
+  /*
+  ** We may have a status message.
+  */
+
+  QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
+
+  m_data.remove(0, data.length());
+  data.remove
+    (0,
+     data.indexOf("type=0013&content=") + strlen("type=0013&content="));
+
+  if(length == data.length())
+    {
+      m_data.clear();
+    }
+  else
+    spoton_misc::logError
+      (QString("spoton_kernel::process0013(): 0013 "
 	       "content-length mismatch (advertised: %1, received: %2).").
        arg(length).arg(data.length()));
 }

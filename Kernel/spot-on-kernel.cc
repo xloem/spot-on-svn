@@ -901,16 +901,15 @@ void spoton_kernel::slotStatusTimerExpired(void)
   else
     return;
 
-  char c = 0;
-  short ttl = s_settings.value("kernel/ttl_0013", 16).toInt();
+  if(!ok)
+    return;
 
-  memcpy(&c, static_cast<void *> (&ttl), 1);
-
-  QByteArray status;
+  QByteArray status("offline");
   QList<QByteArray> list;
 
   if(!m_guiServer->findChildren<QTcpSocket *> ().isEmpty())
-    status = s_settings.value("gui/my_status", "online").toByteArray();
+    status = s_settings.value("gui/my_status", "online").
+      toByteArray().toLower();
 
   /*
   ** Retrieve the symmetric bundle of each participant.
@@ -946,20 +945,35 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 	      if(ok)
 		{
-		  spoton_gcrypt crypt(symmetricKeyAlgorithm,
-				      QString(""),
-				      symmetricKey,
-				      0,
-				      0,
-				      QString(""));
+		  QByteArray hash;
 
-		  QByteArray encrypted(crypt.encrypted(status, &ok));
+		  hash = spoton_gcrypt::sha512Hash(status, &ok);
 
 		  if(ok)
 		    {
-		      QByteArray data;
+		      spoton_gcrypt crypt(symmetricKeyAlgorithm,
+					  QString(""),
+					  symmetricKey,
+					  0,
+					  0,
+					  QString(""));
 
-		      list.append(data);
+		      QByteArray encrypted;
+
+		      encrypted.append(hash).append(status);
+		      encrypted = crypt.encrypted(encrypted, &ok);
+
+		      if(ok)
+			{
+			  char c = 0;
+			  short ttl = s_settings.value
+			    ("kernel/ttl_0013", 16).toInt();
+
+			  memcpy(&c, static_cast<void *> (&ttl), 1);
+			  encrypted.prepend(publicKeyHash.toHex());
+			  encrypted.prepend(c);
+			  list.append(encrypted);
+			}
 		    }
 		}
 	    }

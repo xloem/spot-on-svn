@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>962</width>
-                <height>636</height>
+                <width>970</width>
+                <height>625</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -146,7 +146,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QComboBox" name="comboBox">
+                        <widget class="QComboBox" name="status">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                            <horstretch>0</horstretch>
@@ -839,8 +839,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>101</width>
-                 <height>563</height>
+                 <width>113</width>
+                 <height>571</height>
                 </rect>
                </property>
               </widget>
@@ -1046,8 +1046,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1020</width>
-             <height>621</height>
+             <width>970</width>
+             <height>625</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -1680,7 +1680,7 @@
                 <item>
                  <widget class="QPushButton" name="pushButtonLogViewer">
                   <property name="text">
-                   <string>Log Viewer</string>
+                   <string>Log &amp;Viewer</string>
                   </property>
                   <property name="icon">
                    <iconset resource="../Icons/icons.qrc">
@@ -2356,7 +2356,7 @@
      <x>0</x>
      <y>0</y>
      <width>992</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2405,7 +2405,7 @@
   <tabstop>messages</tabstop>
   <tabstop>nodeName</tabstop>
   <tabstop>saveNodeName</tabstop>
-  <tabstop>comboBox</tabstop>
+  <tabstop>status</tabstop>
   <tabstop>participants</tabstop>
   <tabstop>chatSendMethod</tabstop>
   <tabstop>message</tabstop>

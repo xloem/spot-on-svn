@@ -102,6 +102,7 @@ class spoton: public QMainWindow
   void slotSharePublicKey(void);
   void slotSharePublicKeyWithParticipant(void);
   void slotShowContextMenu(const QPoint &point);
+  void slotStatusChanged(int index);
   void slotTabChanged(int index);
   void slotUnblockNeighbor(void);
   void slotValidatePassphrase(void);
