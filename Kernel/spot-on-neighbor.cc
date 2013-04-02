@@ -728,7 +728,7 @@ void spoton_neighbor::slotReceivedStatusMessage(const QByteArray &data,
   if(id != m_id)
     if(state() == QAbstractSocket::ConnectedState)
       {
-	QByteArray message(spoton_send::message0000(data));
+	QByteArray message(spoton_send::message0013(data));
 
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
