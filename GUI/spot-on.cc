@@ -2338,7 +2338,7 @@ void spoton::slotPopulateParticipants(void)
 			else if(status == "online")
 			  {
 			    item->setIcon
-			      (QIcon(":/Status/status_green.png"));
+                  (QIcon(":/Status/status_lightgreen.png"));
 			    item->setToolTip(tr("User %1 is online.").
 					     arg(item->text()));
 			  }
