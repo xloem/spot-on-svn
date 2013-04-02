@@ -436,7 +436,6 @@ spoton::spoton(void)
   ui.listeners->setColumnHidden(ui.listeners->columnCount() - 1,
 				true);
   ui.neighbors->setColumnHidden(ui.neighbors->columnCount() - 1, true);
-  ui.participants->setColumnHidden(ui.participants->columnCount() - 1, true);
   ui.participants->setColumnHidden(ui.participants->columnCount() - 2, true);
   ui.participants->setColumnHidden(ui.participants->columnCount() - 3, true);
   slotPopulateParticipants();
@@ -2305,6 +2304,23 @@ void spoton::slotPopulateParticipants(void)
 		      item = new QTableWidgetItem
 			(QString::fromUtf8(query.value(i).toByteArray()).
 			 trimmed());
+		    else if(i == 3)
+		      {
+			QString status(query.value(3).toString().trimmed());
+
+			status[0] = status.toUpper()[0];
+
+			if(status == "Away")
+			  item = new QTableWidgetItem(tr("Away"));
+			else if(status == "Busy")
+			  item = new QTableWidgetItem(tr("Busy"));
+			else if(status == "Offline")
+			  item = new QTableWidgetItem(tr("Offline"));
+			else if(status == "Online")
+			  item = new QTableWidgetItem(tr("Online"));
+			else
+			  item = new QTableWidgetItem(tr("Friend"));
+		      }
 		    else
 		      item = new QTableWidgetItem(query.value(i).toString().
 						  trimmed());

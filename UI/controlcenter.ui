@@ -233,7 +233,7 @@
                        </column>
                        <column>
                         <property name="text">
-                         <string>status</string>
+                         <string>Status</string>
                         </property>
                        </column>
                       </widget>
