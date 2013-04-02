@@ -437,6 +437,7 @@ spoton::spoton(void)
 				true);
   ui.neighbors->setColumnHidden(ui.neighbors->columnCount() - 1, true);
   ui.participants->setColumnHidden(ui.participants->columnCount() - 1, true);
+  ui.participants->setColumnHidden(ui.participants->columnCount() - 2, true);
   slotPopulateParticipants();
   prepareListenerIPCombo();
   spoton_misc::prepareDatabases();
@@ -2355,7 +2356,7 @@ void spoton::slotPopulateParticipants(void)
 			item->setIcon
 			  (QIcon(":/plist_connected_neighbour.png"));
 			item->setToolTip
-              (tr("User %1 requests your friendship.").
+			  (tr("User %1 requests your friendship.").
 			   arg(item->text()));
 		      }
 
