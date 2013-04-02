@@ -2316,28 +2316,28 @@ void spoton::slotPopulateParticipants(void)
 			  {
 			    item->setIcon
 			      (QIcon(":/Status/status_yellow_away.png"));
-			    item->setToolTip(tr("%1 is away.").
+			    item->setToolTip(tr("Participant %1 is away.").
 					     arg(item->text()));
 			  }
 			else if(status == "busy")
 			  {
 			    item->setIcon
 			      (QIcon(":/Status/status_red_busy.png"));
-			    item->setToolTip(tr("%1 is busy.").
+			    item->setToolTip(tr("Participant %1 is busy.").
 					     arg(item->text()));
 			  }
 			else if(status == "offline")
 			  {
 			    item->setIcon
 			      (QIcon(":/Status/status_gray_offline.png"));
-			    item->setToolTip(tr("%1 is offline.").
+			    item->setToolTip(tr("Participant %1 is offline.").
 					     arg(item->text()));
 			  }
 			else if(status == "online")
 			  {
 			    item->setIcon
 			      (QIcon(":/Status/status_green_online.png"));
-			    item->setToolTip(tr("%1 is online.").
+			    item->setToolTip(tr("Participant %1 is online.").
 					     arg(item->text()));
 			  }
 			else
@@ -2345,7 +2345,8 @@ void spoton::slotPopulateParticipants(void)
 			    item->setIcon
 			      (QIcon(":/plist_confirmed_as_permanent_"
 				     "friend.png"));
-			    item->setToolTip(tr("%1 is a permanent friend.").
+			    item->setToolTip(tr("Participant %1 is a "
+						"permanent friend.").
 					     arg(item->text()));
 			  }
 		      }
