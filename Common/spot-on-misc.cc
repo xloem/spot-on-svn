@@ -281,7 +281,7 @@ QString spoton_misc::countryCodeFromIPAddress(const QString &ipAddress)
 
 QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
 {
-  const char *country = "";
+  const char *country = 0;
 
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
   GeoIP *gi = 0;
@@ -291,18 +291,25 @@ QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
   ** Windows is awful.
   */
 
-  gi = GeoIP_open("GeoIP\\GeoIP.dat", GEOIP_MEMORY_CACHE);
+  gi = GeoIP_open("GeoIP\\GeoIP.dat", GEOIP_STANDARD | GEOIP_INDEX_CACHE);
 #else
-  gi = GeoIP_open(SPOTON_GEOIP_DATA_FILE, GEOIP_MEMORY_CACHE);
+  gi = GeoIP_open
+    (SPOTON_GEOIP_DATA_FILE, GEOIP_STANDARD | GEOIP_INDEX_CACHE);
 #endif
 
   if(gi)
     country = GeoIP_country_name_by_addr
       (gi, ipAddress.toLatin1().constData());
+  else
+    logError("spoton_misc::countryNameFromIPAddress(): gi is 0.");
 
   GeoIP_delete(gi);
 #else
   Q_UNUSED(ipAddress);
 #endif
-  return country;
+
+  if(!country)
+    return QString();
+  else
+    return QString(country);
 }
