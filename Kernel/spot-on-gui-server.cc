@@ -221,8 +221,8 @@ void spoton_gui_server::slotTimeout(void)
 void spoton_gui_server::slotReceivedChatMessage(const QByteArray &message)
 {
   foreach(QTcpSocket *socket, findChildren<QTcpSocket *> ())
-    if(socket->
-       write(message.constData(), message.length()) != message.length())
+    if(socket->write(message.constData(),
+		     message.length()) != message.length())
       spoton_misc::logError("spoton_gui_server::slotReceivedChatMessage(): "
 			    "write() failure.");
     else

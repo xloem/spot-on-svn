@@ -26,10 +26,12 @@
 */
 
 #include <QCoreApplication>
+#include <QDateTime>
 #include <QDir>
 #include <QSettings>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QtCore/qmath.h>
 
 extern "C"
 {
@@ -198,7 +200,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  this,
 	  SLOT(slotStatusTimerExpired(void)));
   m_controlDatabaseTimer.start(2500);
-  m_statusTimer.start(60000);
+  m_statusTimer.start(15000);
   m_guiServer = new spoton_gui_server(this);
   connect(m_guiServer,
 	  SIGNAL(messageReceivedFromUI(const qint64,
@@ -272,6 +274,9 @@ void spoton_kernel::cleanupDatabases(void)
     if(db.open())
       {
 	QSqlQuery query(db);
+
+	if(query.exec("UPDATE symmetric_keys SET status = 'offline'"))
+	  db.commit();
 
 	/*
 	** Delete symmetric keys that were not completely shared.
@@ -859,6 +864,12 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  this,
 	  SIGNAL(receivedPublicKey(const QByteArray &,
 				   const qint64)));
+  connect(neighbor,
+	  SIGNAL(receivedStatusMessage(const QByteArray &,
+				       const qint64)),
+	  this,
+	  SIGNAL(receivedStatusMessage(const QByteArray &,
+				       const qint64)));
   connect(this,
 	  SIGNAL(receivedChatMessage(const QByteArray &,
 				     const qint64)),
@@ -872,6 +883,12 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  SLOT(slotReceivedPublicKey(const QByteArray &,
 				     const qint64)));
   connect(this,
+	  SIGNAL(receivedStatusMessage(const QByteArray &,
+				       const qint64)),
+	  neighbor,
+	  SLOT(slotReceivedStatusMessage(const QByteArray &,
+					 const qint64)));
+  connect(this,
 	  SIGNAL(sendMessage(const QByteArray &)),
 	  neighbor,
 	  SLOT(slotSendMessage(const QByteArray &)));
@@ -883,6 +900,34 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 
 void spoton_kernel::slotStatusTimerExpired(void)
 {
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "kernel");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_symmetric_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare("UPDATE symmetric_keys SET "
+		      "status = 'offline' WHERE "
+		      "strftime('%s', ?) - "
+		      "strftime('%s', last_status_update) > ?");
+	query.bindValue
+	  (0, QDateTime::currentDateTime().toString(Qt::ISODate));
+	query.bindValue
+	  (1, 2 * qCeil(m_statusTimer.interval() / 1000.0));
+
+	if(query.exec())
+	  db.commit();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("kernel");
+
   if(!s_crypt1)
     return;
 
@@ -960,7 +1005,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 		      QByteArray encrypted;
 
-		      encrypted.append(hash).append(status);
+		      encrypted.append(hash.toHex()).append(status);
 		      encrypted = crypt.encrypted(encrypted, &ok);
 
 		      if(ok)

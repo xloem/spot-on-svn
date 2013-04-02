@@ -38,6 +38,7 @@ class spoton_send
     ARTIFICIAL_GET = 0,
     NORMAL_POST
   };
+  static QByteArray EOM;
   static const int NAME_MAXIMUM_LENGTH = 64;
   static const int SHA512_HEX_OUTPUT_MAXIMUM_LENGTH = 128;
   static const int SYMMETRIC_KEY_MAXIMUM_LENGTH = 64;

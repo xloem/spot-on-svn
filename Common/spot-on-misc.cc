@@ -85,7 +85,8 @@ void spoton_misc::prepareDatabases(void)
 		   ** provides us with some safety.
 		   */
 		   "neighbor_oid INTEGER DEFAULT -1, "
-		   "status TEXT NOT NULL DEFAULT 'offline')");
+		   "status TEXT NOT NULL DEFAULT 'offline', "
+		   "last_status_update TEXT NOT NULL DEFAULT 'now')");
       }
 
     db.close();

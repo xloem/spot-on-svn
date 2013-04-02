@@ -125,7 +125,7 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
 spoton_neighbor::~spoton_neighbor()
 {
   spoton_misc::logError
-    (QString("Neighbor %1:%2 destroyed.").arg(m_address.toString()).
+    (QString("Neighbor %1:%2 deallocated.").arg(m_address.toString()).
      arg(m_port));
   m_timer.stop();
 
@@ -343,74 +343,111 @@ void spoton_neighbor::slotReadyRead(void)
       abort();
     }
 
-  if(m_data.endsWith("\r\n"))
+  if(m_data.endsWith(spoton_send::EOM))
     {
-      int length = 0;
+      QList<QByteArray> list;
 
-      if(m_data.contains("Content-Length: "))
+      while(m_data.contains(spoton_send::EOM))
 	{
-	  QByteArray contentLength(m_data);
+	  QByteArray data
+	    (m_data.mid(0,
+			m_data.indexOf(spoton_send::EOM) +
+			spoton_send::EOM.length()));
 
-	  contentLength.remove
-	    (0,
-	     contentLength.indexOf("Content-Length: ") +
-	     strlen("Content-Length: "));
-	  length = contentLength.mid(0, contentLength.indexOf("\r\n")).
-	    toInt();
+	  m_data.remove(0, data.length());
+	  list.append(data);
 	}
 
-      if(length > 0 && m_data.contains("type=0000&content="))
+      if(list.isEmpty())
+	spoton_misc::logError("spoton_neighbor::slotReadyRead(): "
+			      "list is empty.");
+
+      m_data.clear();
+
+      while(!list.isEmpty())
 	{
-	  if(!spoton_kernel::s_crypt1)
+	  QByteArray data(list.takeFirst());
+	  int length = 0;
+
+	  if(data.contains("Content-Length: "))
 	    {
-	      m_data.remove(0, m_data.lastIndexOf("\r\n") + 2);
-	      spoton_misc::logError
-		("spoton_neighbor::slotReadyRead(): "
-		 "spoton_kernel::s_crypt1 is 0.");
+	      QByteArray contentLength(data);
+
+	      contentLength.remove
+		(0,
+		 contentLength.indexOf("Content-Length: ") +
+		 strlen("Content-Length: "));
+	      length = contentLength.mid(0, contentLength.indexOf("\r\n")).
+		toInt();
 	    }
 	  else
-	    process0000(length);
-	}
-      else if(length > 0 && m_data.contains("type=0010&content="))
-	process0010(length);
-      else if(length > 0 && m_data.contains("type=0011&content="))
-	{
-	  if(!spoton_kernel::s_crypt1)
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotReadyRead() "
+	       "data does not contain Content-Length.");
+
+	  if(length > 0 && data.contains("type=0000&content="))
 	    {
-	      m_data.remove(0, m_data.lastIndexOf("\r\n") + 2);
-	      spoton_misc::logError
-		("spoton_neighbor::slotReadyRead(): "
-		 "spoton_kernel::s_crypt1 is 0.");
+	      if(!spoton_kernel::s_crypt1)
+		spoton_misc::logError
+		  ("spoton_neighbor::slotReadyRead(): "
+		   "spoton_kernel::s_crypt1 is 0.");
+	      else
+		{
+		  m_data = data;
+		  process0000(length);
+		  m_data.clear();
+		}
+	    }
+	  else if(length > 0 && data.contains("type=0010&content="))
+	    {
+	      m_data = data;
+	      process0010(length);
+	      m_data.clear();
+	    }
+	  else if(length > 0 && data.contains("type=0011&content="))
+	    {
+	      if(!spoton_kernel::s_crypt1)
+		spoton_misc::logError
+		  ("spoton_neighbor::slotReadyRead(): "
+		   "spoton_kernel::s_crypt1 is 0.");
+	      else
+		{
+		  m_data = data;
+		  process0011(length);
+		  m_data.clear();
+		}
+	    }
+	  else if(length > 0 && data.contains("type=0012&content="))
+	    {
+	      if(!spoton_kernel::s_crypt1)
+		spoton_misc::logError
+		  ("spoton_neighbor::slotReadyRead(): "
+		   "spoton_kernel::s_crypt1 is 0.");
+	      else
+		{
+		  m_data = data;
+		  process0012(length);
+		  m_data.clear();
+		}
+	    }
+	  else if(length > 0 && data.contains("type=0013&content="))
+	    {
+	      if(!spoton_kernel::s_crypt1)
+		spoton_misc::logError
+		  ("spoton_neighbor::slotReadyRead(): "
+		   "spoton_kernel::s_crypt1 is 0.");
+	      else
+		{
+		  m_data = data;
+		  process0013(length);
+		  m_data.clear();
+		}
 	    }
 	  else
-	    process0011(length);
+	    spoton_misc::logError(QString("spoton_neighbor::slotReadyRead(): "
+					  "received unknown message (%1).").
+				  arg(data.constData()));
 	}
-      else if(length > 0 && m_data.contains("type=0012&content="))
-	{
-	  if(!spoton_kernel::s_crypt1)
-	    {
-	      m_data.remove(0, m_data.lastIndexOf("\r\n") + 2);
-	      spoton_misc::logError
-		("spoton_neighbor::slotReadyRead(): "
-		 "spoton_kernel::s_crypt1 is 0.");
-	    }
-	  else
-	    process0012(length);
-	}
-      else if(length > 0 && m_data.contains("type=0013&content="))
-	{
-	  if(!spoton_kernel::s_crypt1)
-	    {
-	      m_data.remove(0, m_data.lastIndexOf("\r\n") + 2);
-	      spoton_misc::logError
-		("spoton_neighbor::slotReadyRead(): "
-		 "spoton_kernel::s_crypt1 is 0.");
-	    }
-	  else
-	    process0013(length);
-	}
-      else
-	m_data.clear();
     }
 }
 
@@ -502,8 +539,9 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 	    query.exec("PRAGMA synchronous = OFF");
 	    query.prepare("INSERT OR REPLACE INTO symmetric_keys "
 			  "(name, symmetric_key, symmetric_key_algorithm, "
-			  "public_key, public_key_hash, neighbor_oid) "
-			  "VALUES (?, ?, ?, ?, ?, ?)");
+			  "public_key, public_key_hash, neighbor_oid, "
+			  "status) "
+			  "VALUES (?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, name);
 
 	    bool ok = true;
@@ -533,6 +571,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 		(4, spoton_gcrypt::sha512Hash(publicKey, &ok).toHex());
 
 	    query.bindValue(5, neighborOid);
+	    query.bindValue(6, "online");
 
 	    if(ok)
 	      if(query.exec())
@@ -677,6 +716,29 @@ void spoton_neighbor::slotReceivedChatMessage(const QByteArray &data,
       }
 }
 
+void spoton_neighbor::slotReceivedStatusMessage(const QByteArray &data,
+						const qint64 id)
+{
+  /*
+  ** A neighbor (id) received a status message. This neighbor now needs
+  ** to send the message to its peer. Please note that data also contains
+  ** the TTL.
+  */
+
+  if(id != m_id)
+    if(state() == QAbstractSocket::ConnectedState)
+      {
+	QByteArray message(spoton_send::message0000(data));
+
+	if(write(message.constData(), message.length()) != message.length())
+	  spoton_misc::logError
+	    ("spoton_neighbor::slotReceivedStatusMessage(): write() "
+	     "error.");
+	else
+	  flush();
+      }
+}
+
 void spoton_neighbor::slotLifetimeExpired(void)
 {
   abort();
@@ -785,7 +847,6 @@ void spoton_neighbor::process0000(int length)
 
   QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
 
-  m_data.remove(0, data.length());
   data.remove
     (0,
      data.indexOf("type=0000&content=") + strlen("type=0000&content="));
@@ -881,7 +942,7 @@ void spoton_neighbor::process0000(int length)
 					  0,
 					  QString(""));
 
-		      data = crypt.decrypted(data, &ok);
+		      data = crypt.decrypted(data, &ok).trimmed();
 		    }
 		}
 	  }
@@ -948,7 +1009,6 @@ void spoton_neighbor::process0010(int length)
 
   QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
 
-  m_data.remove(0, data.length());
   data.remove
     (0,
      data.indexOf("type=0010&content=") + strlen("type=0010&content="));
@@ -968,7 +1028,6 @@ void spoton_neighbor::process0010(int length)
 
       data.remove(0, 1); // Remove TTL.
       savePublicKey(data);
-      m_data.clear();
 
       if(ttl > 0)
 	{
@@ -1001,7 +1060,6 @@ void spoton_neighbor::process0011(int length)
 
   QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
 
-  m_data.remove(0, data.length());
   data.remove
     (0,
      data.indexOf("type=0011&content=") + strlen("type=0011&content="));
@@ -1050,7 +1108,6 @@ void spoton_neighbor::process0012(int length)
 
   QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
 
-  m_data.remove(0, data.length());
   data.remove
     (0,
      data.indexOf("type=0012&content=") + strlen("type=0012&content="));
@@ -1108,19 +1165,140 @@ void spoton_neighbor::process0013(int length)
   length -= strlen("type=0013&content=");
 
   /*
-  ** We may have a status message.
+  ** We may have received a status message.
   */
 
   QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
 
-  m_data.remove(0, data.length());
   data.remove
     (0,
      data.indexOf("type=0013&content=") + strlen("type=0013&content="));
 
   if(length == data.length())
     {
-      m_data.clear();
+      data = QByteArray::fromBase64(data).trimmed();
+
+      bool ok = true;
+      short ttl = 0;
+
+      if(!data.isEmpty())
+	memcpy(static_cast<void *> (&ttl),
+	       static_cast<const void *> (data.constData()), 1);
+	  
+      if(ttl > 0)
+	ttl -= 1;
+
+      data.remove(0, 1); // Remove TTL.
+
+      QByteArray originalData(data); /*
+				     ** We may need to echo the
+				     ** message. Don't forget to
+				     ** decrease the TTL!
+				     */
+
+      /*
+      ** Find the symmetric key.
+      */
+
+      QByteArray hash
+	(data.mid(0,
+		  spoton_send::SHA512_HEX_OUTPUT_MAXIMUM_LENGTH));
+
+      data.remove(0, hash.length());
+
+      {
+	QSqlDatabase db = QSqlDatabase::addDatabase
+	  ("QSQLITE", "neighbor_" + QString::number(s_dbId));
+
+	db.setDatabaseName
+	  (spoton_misc::homePath() + QDir::separator() +
+	   "friends_symmetric_keys.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+
+	    query.setForwardOnly(true);
+	    query.prepare("SELECT symmetric_key, "
+			  "symmetric_key_algorithm "
+			  "FROM symmetric_keys WHERE "
+			  "HEX(public_key_hash) = HEX(?)");
+	    query.bindValue(0, hash);
+
+	    if((ok = query.exec()))
+	      if((ok = query.next()))
+		{
+		  QByteArray symmetricKey
+		    (QByteArray::fromBase64(query.value(0).
+					    toByteArray()));
+		  QByteArray symmetricKeyAlgorithm
+		    (QByteArray::fromBase64(query.value(1).
+					    toByteArray()));
+
+		  symmetricKey = spoton_kernel::s_crypt1->
+		    decrypted(symmetricKey, &ok);
+
+		  if(ok)
+		    symmetricKeyAlgorithm =
+		      spoton_kernel::s_crypt1->decrypted
+		      (symmetricKeyAlgorithm, &ok);
+
+		  if(ok)
+		    {
+		      spoton_gcrypt crypt(symmetricKeyAlgorithm,
+					  QString(""),
+					  symmetricKey,
+					  0,
+					  0,
+					  QString(""));
+
+		      data = crypt.decrypted(data, &ok);
+		    }
+		}
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase
+	("neighbor_" + QString::number(s_dbId));
+
+      if(ok)
+	{
+	  QByteArray hash1
+	    (data.mid(0, spoton_send::SHA512_HEX_OUTPUT_MAXIMUM_LENGTH));
+	  QByteArray hash2;
+
+	  data.remove(0, hash1.length());
+	  hash2 = spoton_gcrypt::sha512Hash(data, &ok).toHex();
+
+	  if(ok && hash1 == hash2)
+	    saveParticipantStatus(hash, data);
+	  else if(ttl > 0)
+	    {
+	      /*
+	      ** Replace TTL.
+	      */
+
+	      char c = 0;
+
+	      memcpy(&c, static_cast<void *> (&ttl), 1);
+	      originalData.prepend(c);
+	      emit receivedStatusMessage(originalData, m_id);
+	    }
+	}
+      else if(ttl > 0)
+	{
+	  /*
+	  ** Replace TTL.
+	  */
+
+	  char c = 0;
+
+	  memcpy(&c, static_cast<void *> (&ttl), 1);
+	  originalData.prepend(c);
+	  emit receivedStatusMessage(originalData, m_id);
+	}
     }
   else
     spoton_misc::logError
@@ -1143,4 +1321,40 @@ void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
 	else
 	  flush();
       }
+}
+
+void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash,
+					    const QByteArray &status)
+{
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "neighbor_" + QString::number(s_dbId));
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() +
+       "friends_symmetric_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("PRAGMA synchronous = OFF");
+	query.prepare("UPDATE symmetric_keys SET "
+		      "status = ?, "
+		      "last_status_update = ? "
+		      "WHERE HEX(public_key_hash) = HEX(?) "
+		      "AND neighbor_oid = -1");
+	query.bindValue(0, status);
+	query.bindValue
+	  (1, QDateTime::currentDateTime().toString(Qt::ISODate));
+	query.bindValue(2, publicKeyHash);
+
+	if(query.exec())
+	  db.commit();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("neighbor_" + QString::number(s_dbId));
 }

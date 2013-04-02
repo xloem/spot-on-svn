@@ -307,6 +307,16 @@ spoton::spoton(void)
   else
     ui.chatSendMethod->setCurrentIndex(1);
 
+  QByteArray status
+    (m_settings.value("gui/my_status", "Online").toByteArray());
+
+  if(status == "Away")
+    ui.status->setCurrentIndex(0);
+  else if(status == "Busy")
+    ui.status->setCurrentIndex(1);
+  else
+    ui.status->setCurrentIndex(2);
+
   ui.kernelPath->setToolTip(ui.kernelPath->text());
   ui.nodeName->setMaxLength(spoton_send::NAME_MAXIMUM_LENGTH);
   ui.nodeName->setText
@@ -1236,7 +1246,7 @@ void spoton::slotGeneralTimerTimeout(void)
       ui.pid->setText
 	(QString::number(libspoton_registered_kernel_pid(&libspotonHandle)));
 
-      if(ui.pid->text() != "0")
+      if(isKernelActive())
 	{
 	  QColor color(144, 238, 144); // Light green!
 	  QPalette palette(ui.pid->palette());
@@ -1384,7 +1394,7 @@ void spoton::slotDeleteListener(void)
       {
 	QSqlQuery query(db);
 
-	if(ui.pid->text() == "0")
+	if(!isKernelActive())
 	  query.prepare("DELETE FROM listeners WHERE "
 			"OID = ?");
 	else
@@ -1430,7 +1440,7 @@ void spoton::slotDeleteNeighbor(void)
       {
 	QSqlQuery query(db);
 
-	if(ui.pid->text() == "0")
+	if(!isKernelActive())
 	  query.prepare("DELETE FROM neighbors WHERE "
 			"OID = ?");
 	else
@@ -1494,7 +1504,7 @@ void spoton::slotListenerCheckChange(int state)
 
 void spoton::updateListenersTable(QSqlDatabase &db)
 {
-  if(ui.pid->text() == "0") // Is the kernel active?
+  if(!isKernelActive())
     {
       QSqlQuery query(db);
 
@@ -1514,7 +1524,7 @@ void spoton::updateListenersTable(QSqlDatabase &db)
 
 void spoton::updateNeighborsTable(QSqlDatabase &db)
 {
-  if(ui.pid->text() == "0") // Is the kernel active?
+  if(!isKernelActive())
     {
       QSqlQuery query(db);
 
@@ -1528,6 +1538,22 @@ void spoton::updateNeighborsTable(QSqlDatabase &db)
       query.exec("UPDATE neighbors SET local_port = 0, "
 		 "status = 'disconnected' WHERE "
 		 "status = 'connected' AND status_control <> 'deleted'");
+      db.commit();
+    }
+}
+
+void spoton::updateParticipantsTable(QSqlDatabase &db)
+{
+  if(!isKernelActive())
+    {
+      QSqlQuery query(db);
+
+      /*
+      ** OK, so the kernel is inactive. All participants are offline.
+      */
+
+      query.exec("PRAGMA synchronous = OFF");
+      query.exec("UPDATE symmetric_keys SET status = 'offline'");
       db.commit();
     }
 }
@@ -2150,7 +2176,7 @@ void spoton::slotDeleteAllListeners(void)
 
 	query.exec("PRAGMA synchronous = OFF");
 
-	if(ui.pid->text() == "0")
+	if(!isKernelActive())
 	  query.exec("DELETE FROM listeners");
 	else
 	  query.exec("UPDATE listeners SET "
@@ -2183,7 +2209,7 @@ void spoton::slotDeleteAllNeighbors(void)
 
 	query.exec("PRAGMA synchronous = OFF");
 
-	if(ui.pid->text() == "0")
+	if(!isKernelActive())
 	  query.exec("DELETE FROM neighbors");
 	else
 	  query.exec("UPDATE neighbors SET "
@@ -2223,6 +2249,8 @@ void spoton::slotPopulateParticipants(void)
 
     if(db.open())
       {
+	updateParticipantsTable(db);
+
 	QList<QTableWidgetItem *> list(ui.participants->selectedItems());
 	QStringList oids;
 	int row = 0;
@@ -2249,12 +2277,17 @@ void spoton::slotPopulateParticipants(void)
 	** We only wish to display other public keys.
 	*/
 
-	if(query.exec("SELECT name, OID, neighbor_oid FROM symmetric_keys"))
+	if(query.exec("SELECT name, OID, neighbor_oid, status "
+		      "FROM symmetric_keys"))
 	  {
 	    while(query.next())
 	      {
+		QString status(query.value(3).toString().trimmed());
 		bool temporary =
 		  query.value(2).toInt() == -1 ? false : true;
+
+		if(!isKernelActive())
+		  status = "offline";
 
 		for(int i = 0; i < query.record().count(); i++)
 		  {
@@ -2279,10 +2312,42 @@ void spoton::slotPopulateParticipants(void)
 
 		    if(!temporary)
 		      {
-			item->setIcon
-			  (QIcon(":/plist_confirmed_as_permanent_friend.png"));
-			item->setToolTip(tr("%1 is a permanent friend.").
-					 arg(item->text()));
+			if(status == "away")
+			  {
+			    item->setIcon
+			      (QIcon(":/Status/status_yellow_away.png"));
+			    item->setToolTip(tr("%1 is away.").
+					     arg(item->text()));
+			  }
+			else if(status == "busy")
+			  {
+			    item->setIcon
+			      (QIcon(":/Status/status_red_busy.png"));
+			    item->setToolTip(tr("%1 is busy.").
+					     arg(item->text()));
+			  }
+			else if(status == "offline")
+			  {
+			    item->setIcon
+			      (QIcon(":/Status/status_gray_offline.png"));
+			    item->setToolTip(tr("%1 is offline.").
+					     arg(item->text()));
+			  }
+			else if(status == "online")
+			  {
+			    item->setIcon
+			      (QIcon(":/Status/status_green_online.png"));
+			    item->setToolTip(tr("%1 is online.").
+					     arg(item->text()));
+			  }
+			else
+			  {
+			    item->setIcon
+			      (QIcon(":/plist_confirmed_as_permanent_"
+				     "friend.png"));
+			    item->setToolTip(tr("%1 is a permanent friend.").
+					     arg(item->text()));
+			  }
 		      }
 		    else
 		      {
@@ -2775,4 +2840,9 @@ void spoton::slotStatusChanged(int index)
 
   settings.setValue
     ("gui/my_status", m_settings.value("gui/my_status").toString());
+}
+
+bool spoton::isKernelActive(void) const
+{
+  return ui.pid->text() != "0";
 }

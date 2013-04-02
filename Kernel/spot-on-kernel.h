@@ -84,6 +84,8 @@ class spoton_kernel: public QObject
   void receivedChatMessage(const QByteArray &name, const qint64 id);
   void receivedPublicKey(const QByteArray &publicKey,
 			 const qint64 id);
+  void receivedStatusMessage(const QByteArray &data,
+			     const qint64 id);
   void sendMessage(const QByteArray &message);
   void sendStatus(const QList<QByteArray> &status);
 };

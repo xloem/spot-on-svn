@@ -67,6 +67,8 @@ class spoton_neighbor: public QTcpSocket
   void process0011(int length);
   void process0012(int length);
   void process0013(int length);
+  void saveParticipantStatus(const QByteArray &publicKeyHash,
+			     const QByteArray &status);
   void savePublicKey(const QByteArray &name,
 		     const QByteArray &publicKey,
 		     const QByteArray &symmetricKey,
@@ -81,16 +83,18 @@ class spoton_neighbor: public QTcpSocket
   void slotReadyRead(void);
   void slotReceivedChatMessage(const QByteArray &data, const qint64 id);
   void slotReceivedPublicKey(const QByteArray &data, const qint64 id);
+  void slotReceivedStatusMessage(const QByteArray &data, const qint64 id);
   void slotSendKeys(void);
-  void slotSendMessage(const QByteArray &message);
+  void slotSendMessage(const QByteArray &data);
   void slotSendStatus(const QList<QByteArray> &list);
   void slotTimeout(void);
 
  signals:
-  void receivedChatMessage(const QByteArray &message);
-  void receivedChatMessage(const QByteArray &message, const qint64 id);
+  void receivedChatMessage(const QByteArray &data);
+  void receivedChatMessage(const QByteArray &data, const qint64 id);
   void receivedPublicKey(const QByteArray &name, const QByteArray publicKey);
   void receivedPublicKey(const QByteArray &publicKey, const qint64 id);
+  void receivedStatusMessage(const QByteArray &data, const qint64 id);
 };
 
 #endif

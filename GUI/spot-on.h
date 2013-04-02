@@ -57,6 +57,7 @@ class spoton: public QMainWindow
   Ui_spoton_mainwindow ui;
   spoton_gcrypt *m_crypt;
   spoton_logviewer m_logViewer;
+  bool isKernelActive(void) const;
   void closeEvent(QCloseEvent *event);
   void highlightKernelPath(void);
   void prepareListenerIPCombo(void);
@@ -65,6 +66,7 @@ class spoton: public QMainWindow
   void sendKeyToKernel(void);
   void updateListenersTable(QSqlDatabase &db);
   void updateNeighborsTable(QSqlDatabase &db);
+  void updateParticipantsTable(QSqlDatabase &db);
 
  private slots:
   void slotActivateKernel(void);

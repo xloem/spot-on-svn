@@ -29,6 +29,8 @@
 
 #include "spot-on-send.h"
 
+QByteArray spoton_send::EOM = "\r\n\r\n\r\n";
+
 QByteArray spoton_send::message0000(const QByteArray &message,
 				    const spoton_send_method sendMethod)
 {
@@ -44,11 +46,11 @@ QByteArray spoton_send::message0000(const QByteArray &message,
      "Content-Length: %1\r\n"
      "\r\n"
      "type=0000&content=%2\r\n"
-     "\r\n");
+     "\r\n\r\n");
   results.replace
     ("%1",
      QString::number(message.toBase64().length() +
-		     QString("type=0000&content=\r\n\r\n").length()).
+		     QString("type=0000&content=\r\n\r\n\r\n").length()).
      toLatin1());
   results.replace
     ("%2", message.toBase64());
@@ -66,12 +68,12 @@ QByteArray spoton_send::message0010(const QByteArray &publicKey)
      "Content-Length: %1\r\n"
      "\r\n"
      "type=0010&content=%2\r\n"
-     "\r\n");
+     "\r\n\r\n");
   content.append(publicKey.toBase64());
   results.replace
     ("%1",
      QString::number(content.length() +
-		     QString("type=0010&content=\r\n\r\n").
+		     QString("type=0010&content=\r\n\r\n\r\n").
 		     length()).
      toLatin1());
   results.replace
@@ -91,13 +93,13 @@ QByteArray spoton_send::message0011(const QByteArray &name,
      "Content-Length: %1\r\n"
      "\r\n"
      "type=0011&content=%2\r\n"
-     "\r\n");
+     "\r\n\r\n");
   content.append(name.leftJustified(NAME_MAXIMUM_LENGTH, '\n').toBase64());
   content.append(publicKey.toBase64());
   results.replace
     ("%1",
      QString::number(content.length() +
-		     QString("type=0011&content=\r\n\r\n").
+		     QString("type=0011&content=\r\n\r\n\r\n").
 		     length()).
      toLatin1());
   results.replace
@@ -115,11 +117,11 @@ QByteArray spoton_send::message0012(const QByteArray &message)
      "Content-Length: %1\r\n"
      "\r\n"
      "type=0012&content=%2\r\n"
-     "\r\n");
+     "\r\n\r\n");
   results.replace
     ("%1",
      QString::number(message.toBase64().length() +
-		     QString("type=0012&content=\r\n\r\n").length()).
+		     QString("type=0012&content=\r\n\r\n\r\n").length()).
      toLatin1());
   results.replace
     ("%2", message.toBase64());
@@ -136,11 +138,11 @@ QByteArray spoton_send::message0013(const QByteArray &message)
      "Content-Length: %1\r\n"
      "\r\n"
      "type=0013&content=%2\r\n"
-     "\r\n");
+     "\r\n\r\n");
   results.replace
     ("%1",
      QString::number(message.toBase64().length() +
-		     QString("type=0013&content=\r\n\r\n").length()).
+		     QString("type=0013&content=\r\n\r\n\r\n").length()).
      toLatin1());
   results.replace
     ("%2", message.toBase64());
