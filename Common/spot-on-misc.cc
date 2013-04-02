@@ -291,10 +291,10 @@ QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
   ** Windows is awful.
   */
 
-  gi = GeoIP_open("GeoIP\\GeoIP.dat", GEOIP_STANDARD | GEOIP_INDEX_CACHE);
+  gi = GeoIP_open("GeoIP\\GeoIP.dat", GEOIP_MEMORY_CACHE);
 #else
   gi = GeoIP_open
-    (SPOTON_GEOIP_DATA_FILE, GEOIP_STANDARD | GEOIP_INDEX_CACHE);
+    (SPOTON_GEOIP_DATA_FILE, GEOIP_MEMORY_CACHE);
 #endif
 
   if(gi)
