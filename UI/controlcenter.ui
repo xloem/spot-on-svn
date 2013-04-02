@@ -162,6 +162,9 @@
                          <property name="currentIndex">
                           <number>2</number>
                          </property>
+                         <property name="sizeAdjustPolicy">
+                          <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+                         </property>
                          <item>
                           <property name="text">
                            <string>Away</string>

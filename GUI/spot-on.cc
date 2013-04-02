@@ -438,6 +438,7 @@ spoton::spoton(void)
   ui.neighbors->setColumnHidden(ui.neighbors->columnCount() - 1, true);
   ui.participants->setColumnHidden(ui.participants->columnCount() - 1, true);
   ui.participants->setColumnHidden(ui.participants->columnCount() - 2, true);
+  ui.participants->setColumnHidden(ui.participants->columnCount() - 3, true);
   slotPopulateParticipants();
   prepareListenerIPCombo();
   spoton_misc::prepareDatabases();
