@@ -201,13 +201,13 @@
         <file>Flags/zw.png</file>
         <file>logview.png</file>
         <file>Status/status_blue.png</file>
-        <file>Status/status_gray_offline.png</file>
-        <file>Status/status_green_online.png</file>
         <file>Status/status_lightblue.png</file>
         <file>Status/status_lightgreen.png</file>
         <file>Status/status_orange.png</file>
         <file>Status/status_purple.png</file>
-        <file>Status/status_red_busy.png</file>
-        <file>Status/status_yellow_away.png</file>
+        <file>Status/status_gray.png</file>
+        <file>Status/status_green.png</file>
+        <file>Status/status_red.png</file>
+        <file>Status/status_yellow.png</file>
     </qresource>
 </RCC>
