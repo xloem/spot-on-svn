@@ -166,15 +166,27 @@
                           <property name="text">
                            <string>Away</string>
                           </property>
+                          <property name="icon">
+                           <iconset resource="../Icons/icons.qrc">
+                            <normaloff>:/Status/status_blue.png</normaloff>:/Status/status_blue.png</iconset>
+                          </property>
                          </item>
                          <item>
                           <property name="text">
                            <string>Busy</string>
                           </property>
+                          <property name="icon">
+                           <iconset resource="../Icons/icons.qrc">
+                            <normaloff>:/Status/status_red.png</normaloff>:/Status/status_red.png</iconset>
+                          </property>
                          </item>
                          <item>
                           <property name="text">
                            <string>Online</string>
+                          </property>
+                          <property name="icon">
+                           <iconset resource="../Icons/icons.qrc">
+                            <normaloff>:/Status/status_lightgreen.png</normaloff>:/Status/status_lightgreen.png</iconset>
                           </property>
                          </item>
                         </widget>
