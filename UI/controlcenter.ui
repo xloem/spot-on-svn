@@ -534,7 +534,7 @@
                   <string>Share public key with selected neighbor.</string>
                  </property>
                  <property name="text">
-                  <string>&amp;Share Public Key</string>
+                  <string>&amp;Share my Public Key</string>
                  </property>
                  <property name="icon">
                   <iconset resource="../Icons/icons.qrc">
@@ -543,9 +543,9 @@
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="pushButton">
+                <widget class="QPushButton" name="pushButton_CopytoClipboard">
                  <property name="text">
-                  <string>&amp;View My Public Key</string>
+                  <string>Copy my Public Key to Clipboard</string>
                  </property>
                  <property name="icon">
                   <iconset resource="../Icons/icons.qrc">
@@ -2439,7 +2439,7 @@
   <tabstop>showOnlyConnectedNeighbors</tabstop>
   <tabstop>neighbors</tabstop>
   <tabstop>pushButtonMakeFriends</tabstop>
-  <tabstop>pushButton</tabstop>
+  <tabstop>pushButton_CopytoClipboard</tabstop>
   <tabstop>friendName</tabstop>
   <tabstop>friendPublicKey</tabstop>
   <tabstop>pushButton_6</tabstop>
