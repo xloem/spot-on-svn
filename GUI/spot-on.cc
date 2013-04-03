@@ -1955,7 +1955,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
   if(ui.neighbors == sender())
     {
       menu.addAction(QIcon(":/add-neighbor-to-chat.png"),
-		     tr("&Share Public Key"),
+		     tr("&Share my Public Key"),
 		     this, SLOT(slotSharePublicKey(void)));
       menu.addSeparator();
       menu.addAction(QIcon(":/connect.png"), tr("&Connect"),
@@ -2328,53 +2328,56 @@ void spoton::slotPopulateParticipants(void)
 		    item->setFlags
 		      (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-		    if(!temporary)
+		    if(i == 0)
 		      {
-			if(status == "away")
+			if(!temporary)
 			  {
-			    item->setIcon
-			      (QIcon(":/Status/status_blue.png"));
-			    item->setToolTip(tr("Your friend %1 is away.").
-					     arg(item->text()));
-			  }
-			else if(status == "busy")
-			  {
-			    item->setIcon
-			      (QIcon(":/Status/status_red.png"));
-			    item->setToolTip(tr("Your friend %1 is busy.").
-					     arg(item->text()));
-			  }
-			else if(status == "offline")
-			  {
-			    item->setIcon
-			      (QIcon(":/Status/status_gray.png"));
-			    item->setToolTip(tr("Your friend %1 is offline.").
-					     arg(item->text()));
-			  }
-			else if(status == "online")
-			  {
-			    item->setIcon
-			      (QIcon(":/Status/status_lightgreen.png"));
-			    item->setToolTip(tr("User %1 is online.").
-					     arg(item->text()));
+			    if(status == "away")
+			      {
+				item->setIcon
+				  (QIcon(":/Status/status_blue.png"));
+				item->setToolTip(tr("Your friend %1 is away.").
+						 arg(item->text()));
+			      }
+			    else if(status == "busy")
+			      {
+				item->setIcon
+				  (QIcon(":/Status/status_red.png"));
+				item->setToolTip(tr("Your friend %1 is busy.").
+						 arg(item->text()));
+			      }
+			    else if(status == "offline")
+			      {
+				item->setIcon
+				  (QIcon(":/Status/status_gray.png"));
+				item->setToolTip(tr("Your friend %1 is offline.").
+						 arg(item->text()));
+			      }
+			    else if(status == "online")
+			      {
+				item->setIcon
+				  (QIcon(":/Status/status_lightgreen.png"));
+				item->setToolTip(tr("User %1 is online.").
+						 arg(item->text()));
+			      }
+			    else
+			      {
+				item->setIcon
+				  (QIcon(":/plist_confirmed_as_permanent_"
+					 "friend.png"));
+				item->setToolTip(tr("User %1 is a "
+						    "permanent friend.").
+						 arg(item->text()));
+			      }
 			  }
 			else
 			  {
 			    item->setIcon
-			      (QIcon(":/plist_confirmed_as_permanent_"
-				     "friend.png"));
-			    item->setToolTip(tr("User %1 is a "
-						"permanent friend.").
-					     arg(item->text()));
+			      (QIcon(":/plist_connected_neighbour.png"));
+			    item->setToolTip
+			      (tr("User %1 requests your friendship.").
+			       arg(item->text()));
 			  }
-		      }
-		    else
-		      {
-			item->setIcon
-			  (QIcon(":/plist_connected_neighbour.png"));
-			item->setToolTip
-			  (tr("User %1 requests your friendship.").
-			   arg(item->text()));
 		      }
 
 		    item->setData(Qt::UserRole, temporary);

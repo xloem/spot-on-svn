@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>962</width>
-                <height>636</height>
+                <width>970</width>
+                <height>625</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -545,7 +545,7 @@
                <item>
                 <widget class="QPushButton" name="pushButton_CopytoClipboard">
                  <property name="text">
-                  <string>Copy my Public Key to Clipboard</string>
+                  <string>Copy my Public &amp;Key to Clipboard</string>
                  </property>
                  <property name="icon">
                   <iconset resource="../Icons/icons.qrc">
@@ -864,8 +864,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>100</width>
-                 <height>30</height>
+                 <width>120</width>
+                 <height>571</height>
                 </rect>
                </property>
               </widget>
@@ -1071,8 +1071,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1020</width>
-             <height>614</height>
+             <width>942</width>
+             <height>534</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2381,7 +2381,7 @@
      <x>0</x>
      <y>0</y>
      <width>992</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
