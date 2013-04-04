@@ -62,11 +62,11 @@ class spoton_neighbor: public QTcpSocket
   qint64 m_id;
   quint16 m_port;
   quint64 m_sendKeysOffset;
-  void process0000(int length);
-  void process0010(int length);
-  void process0011(int length);
-  void process0012(int length);
-  void process0013(int length);
+  void process0000(int length, const QByteArray &data);
+  void process0010(int length, const QByteArray &data);
+  void process0011(int length, const QByteArray &data);
+  void process0012(int length, const QByteArray &data);
+  void process0013(int length, const QByteArray &data);
   void saveParticipantStatus(const QByteArray &publicKeyHash,
 			     const QByteArray &status);
   void savePublicKey(const QByteArray &name,

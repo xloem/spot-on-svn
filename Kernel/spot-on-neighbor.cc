@@ -343,7 +343,7 @@ void spoton_neighbor::slotReadyRead(void)
       abort();
     }
 
-  if(m_data.endsWith(spoton_send::EOM))
+  if(m_data.contains(spoton_send::EOM))
     {
       QList<QByteArray> list;
 
@@ -361,8 +361,6 @@ void spoton_neighbor::slotReadyRead(void)
       if(list.isEmpty())
 	spoton_misc::logError("spoton_neighbor::slotReadyRead(): "
 			      "list is empty.");
-
-      m_data.clear();
 
       while(!list.isEmpty())
 	{
@@ -392,18 +390,10 @@ void spoton_neighbor::slotReadyRead(void)
 		  ("spoton_neighbor::slotReadyRead(): "
 		   "spoton_kernel::s_crypt1 is 0.");
 	      else
-		{
-		  m_data = data;
-		  process0000(length);
-		  m_data.clear();
-		}
+		process0000(length, data);
 	    }
 	  else if(length > 0 && data.contains("type=0010&content="))
-	    {
-	      m_data = data;
-	      process0010(length);
-	      m_data.clear();
-	    }
+	    process0010(length, data);
 	  else if(length > 0 && data.contains("type=0011&content="))
 	    {
 	      if(!spoton_kernel::s_crypt1)
@@ -411,11 +401,7 @@ void spoton_neighbor::slotReadyRead(void)
 		  ("spoton_neighbor::slotReadyRead(): "
 		   "spoton_kernel::s_crypt1 is 0.");
 	      else
-		{
-		  m_data = data;
-		  process0011(length);
-		  m_data.clear();
-		}
+		process0011(length, data);
 	    }
 	  else if(length > 0 && data.contains("type=0012&content="))
 	    {
@@ -424,11 +410,7 @@ void spoton_neighbor::slotReadyRead(void)
 		  ("spoton_neighbor::slotReadyRead(): "
 		   "spoton_kernel::s_crypt1 is 0.");
 	      else
-		{
-		  m_data = data;
-		  process0012(length);
-		  m_data.clear();
-		}
+		process0012(length, data);
 	    }
 	  else if(length > 0 && data.contains("type=0013&content="))
 	    {
@@ -437,11 +419,7 @@ void spoton_neighbor::slotReadyRead(void)
 		  ("spoton_neighbor::slotReadyRead(): "
 		   "spoton_kernel::s_crypt1 is 0.");
 	      else
-		{
-		  m_data = data;
-		  process0013(length);
-		  m_data.clear();
-		}
+		process0013(length, data);
 	    }
 	  else
 	    spoton_misc::logError(QString("spoton_neighbor::slotReadyRead(): "
@@ -833,7 +811,7 @@ void spoton_neighbor::sharePublicKey(const QByteArray &publicKey,
        "publicKeyEncrypt() failure.");
 }
 
-void spoton_neighbor::process0000(int length)
+void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 {
   if(!spoton_kernel::s_crypt1)
     return;
@@ -845,7 +823,7 @@ void spoton_neighbor::process0000(int length)
   ** is intended for us.
   */
 
-  QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
+  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
 
   data.remove
     (0,
@@ -999,7 +977,7 @@ void spoton_neighbor::process0000(int length)
        arg(length).arg(data.length()));
 }
 
-void spoton_neighbor::process0010(int length)
+void spoton_neighbor::process0010(int length, const QByteArray &dataIn)
 {
   length -= strlen("type=0010&content=");
 
@@ -1007,7 +985,7 @@ void spoton_neighbor::process0010(int length)
   ** We may have received a public key.
   */
 
-  QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
+  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
 
   data.remove
     (0,
@@ -1050,7 +1028,7 @@ void spoton_neighbor::process0010(int length)
        arg(length).arg(data.length()));
 }
 
-void spoton_neighbor::process0011(int length)
+void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 {
   length -= strlen("type=0011&content=");
 
@@ -1058,7 +1036,7 @@ void spoton_neighbor::process0011(int length)
   ** We may have received a name and a public key.
   */
 
-  QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
+  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
 
   data.remove
     (0,
@@ -1095,7 +1073,7 @@ void spoton_neighbor::process0011(int length)
        arg(length).arg(data.length()));
 }
 
-void spoton_neighbor::process0012(int length)
+void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
 {
   if(!spoton_kernel::s_crypt1)
     return;
@@ -1106,7 +1084,7 @@ void spoton_neighbor::process0012(int length)
   ** We may have received a name and a public key.
   */
 
-  QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
+  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
 
   data.remove
     (0,
@@ -1160,7 +1138,7 @@ void spoton_neighbor::process0012(int length)
        arg(length).arg(data.length()));
 }
 
-void spoton_neighbor::process0013(int length)
+void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 {
   length -= strlen("type=0013&content=");
 
@@ -1168,7 +1146,7 @@ void spoton_neighbor::process0013(int length)
   ** We may have received a status message.
   */
 
-  QByteArray data(m_data.mid(0, m_data.lastIndexOf("\r\n") + 2));
+  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
 
   data.remove
     (0,

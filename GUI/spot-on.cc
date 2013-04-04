@@ -2252,17 +2252,16 @@ void spoton::slotPopulateParticipants(void)
       {
 	updateParticipantsTable(db);
 
-	QList<QTableWidgetItem *> list(ui.participants->selectedItems());
+	QModelIndexList list(ui.participants->selectionModel()->selectedRows(1));
 	QStringList oids;
 	int row = 0;
 
-	for(int i = 0; i < list.size(); i++)
+	while(!list.isEmpty())
 	  {
-	    QTableWidgetItem *item = ui.participants->item
-	      (list.at(i)->row(), 1);
+	    QVariant data(list.takeFirst().data());
 
-	    if(item)
-	      oids.append(item->text());
+	    if(!data.isNull() && data.isValid())
+	      oids.append(data.toString());
 	  }
 
 	ui.participants->setSortingEnabled(false);
@@ -2395,8 +2394,6 @@ void spoton::slotPopulateParticipants(void)
 	ui.participants->setSortingEnabled(true);
 	ui.participants->resizeColumnsToContents();
 	ui.participants->horizontalHeader()->setStretchLastSection(true);
-	ui.participants->horizontalHeader()->setSortIndicator
-	  (0, Qt::AscendingOrder);
       }
 
     db.close();
@@ -2419,7 +2416,7 @@ void spoton::slotSendMessage(void)
 
     return;
 
-  QList<QTableWidgetItem *> list(ui.participants->selectedItems());
+  QModelIndexList list(ui.participants->selectionModel()->selectedRows(1));
   QString message("");
 
   message.append(tr("<b>me:</b> "));
@@ -2430,10 +2427,9 @@ void spoton::slotSendMessage(void)
 
   while(!list.isEmpty())
     {
-      int row = list.takeFirst()->row();
-      QTableWidgetItem *item = ui.participants->item(row, 1);
+      QVariant data(list.takeFirst().data());
 
-      if(item)
+      if(!data.isNull() && data.isValid())
 	{
 	  QByteArray message("");
 	  QByteArray name(m_settings.value("gui/nodeName", "unknown").
@@ -2447,7 +2443,7 @@ void spoton::slotSendMessage(void)
 	  */
 
 	  message.append("message_");
-	  message.append(QString("%1_").arg(item->text()));
+	  message.append(QString("%1_").arg(data.toString()));
 	  message.append(name.toBase64());
 	  message.append("_");
 	  message.append(ui.message->toPlainText().trimmed().toUtf8().
@@ -2598,19 +2594,18 @@ void spoton::slotRemoveParticipants(void)
       {
 	m_tableTimer.stop();
 
-	QList<QTableWidgetItem *> list(ui.participants->selectedItems());
+	QModelIndexList list(ui.participants->selectionModel()->selectedRows(1));
 	QSqlQuery query(db);
 
 	query.exec("PRAGMA synchronous = OFF");
 
-	for(int i = 0; i < list.size(); i++)
+	while(!list.isEmpty())
 	  {
-	    QTableWidgetItem *item = ui.participants->item
-	      (list.at(i)->row(), 1);
+	    QVariant data(list.takeFirst().data());
 
-	    if(item)
+	    if(!data.isNull() && data.isValid())
 	      query.exec(QString("DELETE FROM symmetric_keys WHERE "
-				 "OID = %1").arg(item->text()));
+				 "OID = %1").arg(data.toString()));
 	  }
 
 	db.commit();
