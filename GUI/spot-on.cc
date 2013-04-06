@@ -2424,7 +2424,7 @@ void spoton::slotSendMessage(void)
 
   QDateTime now = QDateTime::currentDateTime();
   QString *timestamp = new QString();
-  *timestamp = now.toString(tr("[hh:mm] "));
+  *timestamp = now.toString("[hh:mm] ");
 
   message.append(timestamp);
   message.append(tr("<b>me:</b> "));
@@ -2507,7 +2507,7 @@ void spoton::slotReceivedKernelMessage(void)
 
           QDateTime now = QDateTime::currentDateTime();
           QString *timestamp = new QString();
-          *timestamp = now.toString(tr("[hh:mm] "));
+          *timestamp = now.toString("[hh:mm] ");
 
 		  name = name.mid(0, name.indexOf('\n')).trimmed();
           msg.append(timestamp);
