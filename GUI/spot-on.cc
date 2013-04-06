@@ -2422,7 +2422,7 @@ void spoton::slotSendMessage(void)
   QModelIndexList list(ui.participants->selectionModel()->selectedRows(1));
   QString message("");
 
-  message.append(QDateTime::currentDateTime().toString("[hh:mm] "));
+  message.append(QDateTime::currentDateTime().toString("[hh:mm:ss] "));
   message.append(tr("<b>me:</b> "));
   message.append(ui.message->toPlainText().trimmed());
   ui.messages->append(message);
@@ -2503,7 +2503,7 @@ void spoton::slotReceivedKernelMessage(void)
 
 		  name = name.mid(0, name.indexOf('\n')).trimmed();
 		  msg.append
-		    (QDateTime::currentDateTime().toString("[hh:mm] "));
+            (QDateTime::currentDateTime().toString("[hh:mm:ss] "));
 		  msg.append
 		    (QString("%1: ").arg(QString::fromUtf8(name.constData(),
 							   name.length())));
