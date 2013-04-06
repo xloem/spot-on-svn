@@ -1126,6 +1126,8 @@ void spoton::slotPopulateNeighbors(void)
 
 			if(query.value(i).toString().trimmed() == "connected")
 			  item->setIcon(QIcon(":/connect_established.png"));
+            else
+              item->setIcon(QIcon(":/connect_no.png"));
 		      }
 
 		    ui.neighbors->setItem(row, i, item);
