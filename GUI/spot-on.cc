@@ -27,6 +27,7 @@
 
 #include <QApplication>
 #include <QCheckBox>
+#include <QDateTime>
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -2421,6 +2422,11 @@ void spoton::slotSendMessage(void)
   QModelIndexList list(ui.participants->selectionModel()->selectedRows(1));
   QString message("");
 
+  QDateTime now = QDateTime::currentDateTime();
+  QString *timestamp = new QString();
+  *timestamp = now.toString(tr("[hh:mm] "));
+
+  message.append(timestamp);
   message.append(tr("<b>me:</b> "));
   message.append(ui.message->toPlainText().trimmed());
   ui.messages->append(message);
@@ -2499,7 +2505,12 @@ void spoton::slotReceivedKernelMessage(void)
 		  if(message.isEmpty())
 		    message = "unknown";
 
+          QDateTime now = QDateTime::currentDateTime();
+          QString *timestamp = new QString();
+          *timestamp = now.toString(tr("[hh:mm] "));
+
 		  name = name.mid(0, name.indexOf('\n')).trimmed();
+          msg.append(timestamp);
 		  msg.append
 		    (QString("%1: ").arg(QString::fromUtf8(name.constData(),
 							   name.length())));
