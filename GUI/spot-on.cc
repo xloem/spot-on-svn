@@ -439,7 +439,8 @@ spoton::spoton(void)
   ui.neighbors->setColumnHidden(ui.neighbors->columnCount() - 1, true);
   ui.participants->setColumnHidden(ui.participants->columnCount() - 2, true);
   ui.participants->setColumnHidden(ui.participants->columnCount() - 3, true);
-  slotPopulateParticipants();
+  ui.participants->horizontalHeader()->setSortIndicator
+    (0, Qt::AscendingOrder);
   prepareListenerIPCombo();
   spoton_misc::prepareDatabases();
   show();
@@ -1557,7 +1558,8 @@ void spoton::updateParticipantsTable(QSqlDatabase &db)
       */
 
       query.exec("PRAGMA synchronous = OFF");
-      query.exec("UPDATE symmetric_keys SET status = 'offline'");
+      query.exec("UPDATE symmetric_keys SET status = 'offline' WHERE "
+		 "status <> 'offline'");
       db.commit();
     }
 }
@@ -2255,7 +2257,9 @@ void spoton::slotPopulateParticipants(void)
       {
 	updateParticipantsTable(db);
 
-	QModelIndexList list(ui.participants->selectionModel()->selectedRows(1));
+	QList<int> rows;
+	QModelIndexList list
+	  (ui.participants->selectionModel()->selectedRows(1));
 	QStringList oids;
 	int row = 0;
 
@@ -2282,118 +2286,124 @@ void spoton::slotPopulateParticipants(void)
 
 	if(query.exec("SELECT name, OID, neighbor_oid, status "
 		      "FROM symmetric_keys"))
-	  {
-	    while(query.next())
-	      {
-		QString status(query.value(3).toString().trimmed());
-		bool temporary =
-		  query.value(2).toInt() == -1 ? false : true;
+	  while(query.next())
+	    {
+	      QString status(query.value(3).toString().trimmed());
+	      bool temporary =
+		query.value(2).toInt() == -1 ? false : true;
 
-		if(!isKernelActive())
-		  status = "offline";
+	      if(!isKernelActive())
+		status = "offline";
 
-		for(int i = 0; i < query.record().count(); i++)
-		  {
-		    QTableWidgetItem *item = 0;
+	      for(int i = 0; i < query.record().count(); i++)
+		{
+		  QTableWidgetItem *item = 0;
 
-		    if(i == 0)
-		      {
-			row += 1;
-			ui.participants->setRowCount(row);
-		      }
+		  if(i == 0)
+		    {
+		      row += 1;
+		      ui.participants->setRowCount(row);
+		    }
 
-		    if(i == 0)
-		      item = new QTableWidgetItem
-			(QString::fromUtf8(query.value(i).toByteArray()).
-			 trimmed());
-		    else if(i == 3)
-		      {
-			QString status(query.value(3).toString().trimmed());
+		  if(i == 0)
+		    item = new QTableWidgetItem
+		      (QString::fromUtf8(query.value(i).toByteArray()).
+		       trimmed());
+		  else if(i == 3)
+		    {
+		      QString status(query.value(3).toString().trimmed());
 
-			status[0] = status.toUpper()[0];
+		      status[0] = status.toUpper()[0];
 
-			if(status == "Away")
-			  item = new QTableWidgetItem(tr("Away"));
-			else if(status == "Busy")
-			  item = new QTableWidgetItem(tr("Busy"));
-			else if(status == "Offline")
-			  item = new QTableWidgetItem(tr("Offline"));
-			else if(status == "Online")
-			  item = new QTableWidgetItem(tr("Online"));
-			else
-			  item = new QTableWidgetItem(tr("Friend"));
-		      }
-		    else
-		      item = new QTableWidgetItem(query.value(i).toString().
-						  trimmed());
+		      if(status == "Away")
+			item = new QTableWidgetItem(tr("Away"));
+		      else if(status == "Busy")
+			item = new QTableWidgetItem(tr("Busy"));
+		      else if(status == "Offline")
+			item = new QTableWidgetItem(tr("Offline"));
+		      else if(status == "Online")
+			item = new QTableWidgetItem(tr("Online"));
+		      else
+			item = new QTableWidgetItem(tr("Friend"));
+		    }
+		  else
+		    item = new QTableWidgetItem(query.value(i).toString().
+						trimmed());
 
-		    item->setFlags
-		      (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		  item->setFlags
+		    (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-		    if(i == 0)
-		      {
-			if(!temporary)
-			  {
-			    if(status == "away")
-			      {
-				item->setIcon
-				  (QIcon(":/Status/status_blue.png"));
-				item->setToolTip(tr("Your friend %1 is away.").
-						 arg(item->text()));
-			      }
-			    else if(status == "busy")
-			      {
-				item->setIcon
-				  (QIcon(":/Status/status_red.png"));
-				item->setToolTip(tr("Your friend %1 is busy.").
-						 arg(item->text()));
-			      }
-			    else if(status == "offline")
-			      {
-				item->setIcon
-				  (QIcon(":/Status/status_gray.png"));
-				item->setToolTip(tr("Your friend %1 is offline.").
-						 arg(item->text()));
-			      }
-			    else if(status == "online")
-			      {
-				item->setIcon
-				  (QIcon(":/Status/status_lightgreen.png"));
-				item->setToolTip(tr("User %1 is online.").
-						 arg(item->text()));
-			      }
-			    else
-			      {
-				item->setIcon
-				  (QIcon(":/plist_confirmed_as_permanent_"
-					 "friend.png"));
-				item->setToolTip(tr("User %1 is a "
-						    "permanent friend.").
-						 arg(item->text()));
-			      }
-			  }
-			else
-			  {
-			    item->setIcon
-			      (QIcon(":/plist_connected_neighbour.png"));
-			    item->setToolTip
-			      (tr("User %1 requests your friendship.").
-			       arg(item->text()));
-			  }
-		      }
+		  if(i == 0)
+		    {
+		      if(!temporary)
+			{
+			  if(status == "away")
+			    {
+			      item->setIcon
+				(QIcon(":/Status/status_blue.png"));
+			      item->setToolTip(tr("Your friend %1 is away.").
+					       arg(item->text()));
+			    }
+			  else if(status == "busy")
+			    {
+			      item->setIcon
+				(QIcon(":/Status/status_red.png"));
+			      item->setToolTip(tr("Your friend %1 is busy.").
+					       arg(item->text()));
+			    }
+			  else if(status == "offline")
+			    {
+			      item->setIcon
+				(QIcon(":/Status/status_gray.png"));
+			      item->setToolTip
+				(tr("Your friend %1 is offline.").
+				 arg(item->text()));
+			    }
+			  else if(status == "online")
+			    {
+			      item->setIcon
+				(QIcon(":/Status/status_lightgreen.png"));
+			      item->setToolTip(tr("User %1 is online.").
+					       arg(item->text()));
+			    }
+			  else
+			    {
+			      item->setIcon
+				(QIcon(":/plist_confirmed_as_permanent_"
+				       "friend.png"));
+			      item->setToolTip(tr("User %1 is a "
+						  "permanent friend.").
+					       arg(item->text()));
+			    }
+			}
+		      else
+			{
+			  item->setIcon
+			    (QIcon(":/plist_connected_neighbour.png"));
+			  item->setToolTip
+			    (tr("User %1 requests your friendship.").
+			     arg(item->text()));
+			}
+		    }
 
-		    item->setData(Qt::UserRole, temporary);
-		    ui.participants->setItem(row - 1, i, item);
-		  }
+		  item->setData(Qt::UserRole, temporary);
+		  ui.participants->setItem(row - 1, i, item);
+		}
 
-		if(oids.contains(query.value(1).toString().trimmed()))
-		  ui.participants->selectRow(row - 1);
-	      }
-	  }
+	      if(oids.contains(query.value(1).toString().trimmed()))
+		rows.append(row - 1);
+	    }
 
 	if(focusWidget)
 	  focusWidget->setFocus();
 
+	ui.participants->setSelectionMode(QAbstractItemView::MultiSelection);
+
+	while(!rows.isEmpty())
+	  ui.participants->selectRow(rows.takeFirst());
+
+	ui.participants->setSelectionMode
+	  (QAbstractItemView::ExtendedSelection);
 	ui.participants->setSortingEnabled(true);
 	ui.participants->resizeColumnsToContents();
 	ui.participants->horizontalHeader()->setStretchLastSection(true);
@@ -2600,7 +2610,8 @@ void spoton::slotRemoveParticipants(void)
       {
 	m_tableTimer.stop();
 
-	QModelIndexList list(ui.participants->selectionModel()->selectedRows(1));
+	QModelIndexList list
+	  (ui.participants->selectionModel()->selectedRows(1));
 	QSqlQuery query(db);
 
 	query.exec("PRAGMA synchronous = OFF");
