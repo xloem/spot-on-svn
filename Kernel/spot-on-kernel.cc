@@ -59,6 +59,7 @@ extern "C"
 #include "spot-on-listener.h"
 #include "spot-on-neighbor.h"
 
+QCache<QByteArray, char *> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 spoton_gcrypt *spoton_kernel::s_crypt1 = 0;
 spoton_gcrypt *spoton_kernel::s_crypt2 = 0;

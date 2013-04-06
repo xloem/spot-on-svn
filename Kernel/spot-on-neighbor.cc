@@ -858,6 +858,13 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 
       data.remove(0, 1); // Remove TTL.
 
+      bool duplicate = false;
+
+      if(spoton_kernel::s_messagingCache.contains(data))
+	duplicate = true;
+      else
+	spoton_kernel::s_messagingCache.insert(data, 0);
+
       QByteArray originalData(data); /*
 				     ** We may need to echo the
 				     ** message. Don't forget to
@@ -942,8 +949,11 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	  hash2 = spoton_gcrypt::sha512Hash(data, &ok).toHex();
 
 	  if(ok && hash1 == hash2)
-	    emit receivedChatMessage
-	      ("message_" + data.toBase64().append('\n'));
+	    {
+	      if(!duplicate)
+		emit receivedChatMessage
+		  ("message_" + data.toBase64().append('\n'));
+	    }
 	  else if(ttl > 0)
 	    {
 	      /*
