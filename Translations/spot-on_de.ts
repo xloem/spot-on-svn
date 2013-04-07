@@ -292,7 +292,7 @@
     <message>
         <location filename="../GUI/spot-on.cc" line="1977"/>
         <source>&amp;Disconnect</source>
-        <translation type="unfinished">Verbindung abwerfen.</translation>
+        <translation type="unfinished">Verbindung abwerfen</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on.cc" line="1980"/>
@@ -307,7 +307,7 @@
     <message>
         <location filename="../GUI/spot-on.cc" line="1995"/>
         <source>&amp;Add participant as friend.</source>
-        <translation>Fühge Teilnehmer als Freund hinzu.</translation>
+        <translation type="unfinished">Füge Teilnehmer als Freund hinzu.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on.cc" line="2004"/>
@@ -444,7 +444,7 @@
         <location filename="../UI/controlcenter.ui" line="529"/>
         <location filename="../UI/controlcenter.ui" line="1299"/>
         <source>Protocol</source>
-        <translation>Protokol</translation>
+        <translation type="unfinished">Protokoll</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="514"/>
