@@ -209,5 +209,7 @@
         <file>Status/status_green.png</file>
         <file>Status/status_red.png</file>
         <file>Status/status_yellow.png</file>
+        <file>uuid.png</file>
+        <file>broadcasttoall.png</file>
     </qresource>
 </RCC>
