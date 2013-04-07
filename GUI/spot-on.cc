@@ -948,7 +948,8 @@ void spoton::slotPopulateListeners(void)
 						      value(i).toString().
 						      trimmed());
 
-			item->setTextAlignment(Qt::AlignCenter);
+			item->setTextAlignment(Qt::AlignLeft |
+					       Qt::AlignVCenter);
 			item->setFlags
 			  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			ui.listeners->setItem(row, i, item);
@@ -1122,7 +1123,7 @@ void spoton::slotPopulateNeighbors(void)
 		      item = new QTableWidgetItem
 			(query.value(i).toString().trimmed());
 
-            item->setTextAlignment(Qt::AlignLeft);
+		    item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 		    item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
 		    if(i == 2)
@@ -1195,10 +1196,9 @@ void spoton::slotPopulateNeighbors(void)
 
 	ui.neighbors->setSortingEnabled(true);
 
-    for (int i = 0; i < 13; i++)  // damn columncount const, hardcoded
-         ui.neighbors->horizontalHeaderItem
-         (i)->setTextAlignment(Qt::AlignLeft);
-//  ui.neighbors->resizeColumnsToContents();
+	for(int i = 0; i < ui.neighbors->columnCount(); i++)
+	  ui.neighbors->horizontalHeaderItem(i)->
+	    setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 
 	ui.neighbors->horizontalHeader()->setStretchLastSection(true);
 	ui.neighbors->horizontalScrollBar()->setValue(hval);
