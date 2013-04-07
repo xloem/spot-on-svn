@@ -443,6 +443,18 @@ spoton::spoton(void)
     (0, Qt::AscendingOrder);
   prepareListenerIPCombo();
   spoton_misc::prepareDatabases();
+
+  /*
+  ** Not wise! We may find things we're not prepared for.
+  */
+
+  foreach(QAbstractButton *button,
+	  ui.participants->findChildren<QAbstractButton *> ())
+    {
+      button->setIcon(QIcon(":/broadcasttoall.png"));
+      button->setToolTip(tr("Broadcast"));
+    }
+
   show();
 }
 
@@ -2446,7 +2458,9 @@ void spoton::slotSendMessage(void)
   QModelIndexList list(ui.participants->selectionModel()->selectedRows(1));
   QString message("");
 
-  message.append(QDateTime::currentDateTime().toString("[hh:mm<font color=grey>:ss</font>] "));
+  message.append
+    (QDateTime::currentDateTime().
+     toString("[hh:mm<font color=grey>:ss</font>] "));
   message.append(tr("<b>me:</b> "));
   message.append(ui.message->toPlainText().trimmed());
   ui.messages->append(message);
