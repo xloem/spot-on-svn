@@ -2527,10 +2527,12 @@ void spoton::slotReceivedKernelMessage(void)
 
 		  name = name.mid(0, name.indexOf('\n')).trimmed();
 		  msg.append
-            (QDateTime::currentDateTime().toString("[hh:mm<font color=grey>:ss</font>] "));
+		    (QDateTime::currentDateTime().
+		     toString("[hh:mm<font color=grey>:ss</font>] "));
 		  msg.append
-            (QString("<font color=blue>%1: </font>").arg(QString::fromUtf8(name.constData(),
-							   name.length())));
+		    (QString("<font color=blue>%1: </font>").
+		     arg(QString::fromUtf8(name.constData(),
+					   name.length())));
 		  msg.append(QString::fromUtf8(message.constData(),
 					       message.length()));
 		  ui.messages->append(msg);
