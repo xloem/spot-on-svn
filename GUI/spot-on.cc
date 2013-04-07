@@ -2513,7 +2513,7 @@ void spoton::slotReceivedKernelMessage(void)
 
 		  name = name.mid(0, name.indexOf('\n')).trimmed();
 		  msg.append
-            (QDateTime::currentDateTime().toString("[hh:mm:ss] "));
+		    (QDateTime::currentDateTime().toString("[hh:mm:ss] "));
 		  msg.append
 		    (QString("%1: ").arg(QString::fromUtf8(name.constData(),
 							   name.length())));
