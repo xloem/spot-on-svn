@@ -1388,7 +1388,7 @@
                        <enum>Qt::RightToLeft</enum>
                       </property>
                       <property name="text">
-                       <string>&amp;IP</string>
+                       <string>&amp;IP of my local Device</string>
                       </property>
                       <property name="buddy">
                        <cstring>listenerIP</cstring>
