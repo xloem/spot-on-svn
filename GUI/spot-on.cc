@@ -1122,7 +1122,7 @@ void spoton::slotPopulateNeighbors(void)
 		      item = new QTableWidgetItem
 			(query.value(i).toString().trimmed());
 
-		    item->setTextAlignment(Qt::AlignCenter);
+            item->setTextAlignment(Qt::AlignLeft);
 		    item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
 		    if(i == 2)
@@ -1194,7 +1194,12 @@ void spoton::slotPopulateNeighbors(void)
 	  }
 
 	ui.neighbors->setSortingEnabled(true);
-	ui.neighbors->resizeColumnsToContents();
+
+    for (int i = 0; i < 13; i++)  // damn columncount const, hardcoded
+         ui.neighbors->horizontalHeaderItem
+         (i)->setTextAlignment(Qt::AlignLeft);
+//  ui.neighbors->resizeColumnsToContents();
+
 	ui.neighbors->horizontalHeader()->setStretchLastSection(true);
 	ui.neighbors->horizontalScrollBar()->setValue(hval);
 	ui.neighbors->verticalScrollBar()->setValue(vval);
