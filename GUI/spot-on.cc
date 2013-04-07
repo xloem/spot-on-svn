@@ -840,7 +840,9 @@ void spoton::slotPopulateListeners(void)
 
 	QString ip("");
 	QString port("");
+	int hval = ui.listeners->horizontalScrollBar()->value();
 	int row = -1;
+	int vval = ui.listeners->verticalScrollBar()->value();
 
 	if((row = ui.listeners->currentRow()) >= 0)
 	  {
@@ -997,6 +999,8 @@ void spoton::slotPopulateListeners(void)
 	ui.listeners->setSortingEnabled(true);
 	ui.listeners->resizeColumnsToContents();
 	ui.listeners->horizontalHeader()->setStretchLastSection(true);
+	ui.listeners->horizontalScrollBar()->setValue(hval);
+	ui.listeners->verticalScrollBar()->setValue(vval);
       }
 
     db.close();
@@ -1033,7 +1037,9 @@ void spoton::slotPopulateNeighbors(void)
 	QString remotePort("");
 	int columnREMOTE_IP = 9;
 	int columnREMOTE_PORT = 10;
+	int hval = ui.neighbors->horizontalScrollBar()->value();
 	int row = -1;
+	int vval = ui.neighbors->verticalScrollBar()->value();
 
 	if((row = ui.neighbors->currentRow()) >= 0)
 	  {
@@ -1128,8 +1134,8 @@ void spoton::slotPopulateNeighbors(void)
 
 			if(query.value(i).toString().trimmed() == "connected")
 			  item->setIcon(QIcon(":/connect_established.png"));
-            else
-              item->setIcon(QIcon(":/connect_no.png"));
+			else
+			  item->setIcon(QIcon(":/connect_no.png"));
 		      }
 
 		    ui.neighbors->setItem(row, i, item);
@@ -1190,6 +1196,8 @@ void spoton::slotPopulateNeighbors(void)
 	ui.neighbors->setSortingEnabled(true);
 	ui.neighbors->resizeColumnsToContents();
 	ui.neighbors->horizontalHeader()->setStretchLastSection(true);
+	ui.neighbors->horizontalScrollBar()->setValue(hval);
+	ui.neighbors->verticalScrollBar()->setValue(vval);
       }
 
     db.close();
@@ -1521,7 +1529,8 @@ void spoton::updateListenersTable(QSqlDatabase &db)
 
       query.exec("PRAGMA synchronous = OFF");
       query.exec("UPDATE listeners SET connections = 0, "
-		 "status = 'off' WHERE status = 'online' AND "
+		 "status = 'off' WHERE "
+		 "(status = 'online' OR connections > 0) AND "
 		 "status_control <> 'deleted'");
       db.commit();
     }
@@ -1540,9 +1549,9 @@ void spoton::updateNeighborsTable(QSqlDatabase &db)
       */
 
       query.exec("PRAGMA synchronous = OFF");
-      query.exec("UPDATE neighbors SET local_port = 0, "
-		 "status = 'disconnected' WHERE "
-		 "status = 'connected' AND status_control <> 'deleted'");
+      query.exec("UPDATE neighbors SET local_ip_address = '127.0.0.1', "
+		 "local_port = 0, status = 'disconnected' WHERE "
+		 "status_control <> 'deleted'");
       db.commit();
     }
 }

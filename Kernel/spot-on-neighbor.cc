@@ -176,8 +176,7 @@ spoton_neighbor::~spoton_neighbor()
 	query.bindValue(0, m_id);
 	ok1 = query.exec();
 	query.prepare("UPDATE neighbors SET local_ip_address = '127.0.0.1', "
-		      "local_port = 0, "
-		      "status = 'disconnected' "
+		      "local_port = 0, status = 'disconnected' "
 		      "WHERE OID = ?");
 	query.bindValue(0, m_id);
 	ok2 = query.exec();
