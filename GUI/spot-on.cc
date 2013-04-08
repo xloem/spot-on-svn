@@ -2316,7 +2316,7 @@ void spoton::slotPopulateParticipants(void)
                   publicKey = m_crypt->publicKey(&ok);
                   QString subString = publicKey.mid(25,26);
 
-                    item->setToolTip(tr("Your friend %1 is away. ").
+                    item->setToolTip(tr("Your friend %1 is away. \n").
                            arg(item->text())
                            +(tr("RSA-Key starts with: "))
                            +subString
@@ -2332,7 +2332,7 @@ void spoton::slotPopulateParticipants(void)
                   publicKey = m_crypt->publicKey(&ok);
                   QString subString = publicKey.mid(25,26);
 
-                    item->setToolTip(tr("Your friend %1 is busy. ").
+                    item->setToolTip(tr("Your friend %1 is busy. \n").
                            arg(item->text())
                            +(tr("RSA-Key starts with: "))
                            +subString
@@ -2348,7 +2348,7 @@ void spoton::slotPopulateParticipants(void)
                   publicKey = m_crypt->publicKey(&ok);
                   QString subString = publicKey.mid(25,26);
 
-                    item->setToolTip(tr("Your friend %1 is offline. ").
+                    item->setToolTip(tr("Your friend %1 is offline. \n").
                            arg(item->text())
                            +(tr("RSA-Key starts with: "))
                            +subString
@@ -2364,7 +2364,7 @@ void spoton::slotPopulateParticipants(void)
                   publicKey = m_crypt->publicKey(&ok);
                   QString subString = publicKey.mid(25,26);
 
-                    item->setToolTip(tr("Your friend %1 is online. ").
+                    item->setToolTip(tr("Your friend %1 is online. \n").
                            arg(item->text())
                            +(tr("RSA-Key starts with: "))
                            +subString
@@ -2381,7 +2381,7 @@ void spoton::slotPopulateParticipants(void)
                   publicKey = m_crypt->publicKey(&ok);
                   QString subString = publicKey.mid(25,26);
 
-                    item->setToolTip(tr("User %1 is a permanent friend. ").
+                    item->setToolTip(tr("User %1 is a permanent friend. \n").
                            arg(item->text())
                            +(tr("RSA-Key starts with: "))
                            +subString
@@ -2398,7 +2398,7 @@ void spoton::slotPopulateParticipants(void)
               publicKey = m_crypt->publicKey(&ok);
               QString subString = publicKey.mid(25,26);
 
-                item->setToolTip(tr("User %1 requests your friendship. ").
+                item->setToolTip(tr("User %1 requests your friendship. \n").
                        arg(item->text())
                        +(tr("RSA-Key starts with: "))
                        +subString
