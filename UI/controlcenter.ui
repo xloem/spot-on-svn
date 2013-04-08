@@ -148,16 +148,10 @@
                        <item>
                         <widget class="QComboBox" name="status">
                          <property name="sizePolicy">
-                          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                            <horstretch>0</horstretch>
                            <verstretch>0</verstretch>
                           </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>0</width>
-                           <height>26</height>
-                          </size>
                          </property>
                          <property name="currentIndex">
                           <number>2</number>
@@ -1071,8 +1065,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>942</width>
-             <height>534</height>
+             <width>970</width>
+             <height>625</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -1388,7 +1382,7 @@
                        <enum>Qt::RightToLeft</enum>
                       </property>
                       <property name="text">
-                       <string>&amp;IP of my local Device</string>
+                       <string>&amp;IP</string>
                       </property>
                       <property name="buddy">
                        <cstring>listenerIP</cstring>
