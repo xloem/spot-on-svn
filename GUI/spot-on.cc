@@ -27,6 +27,7 @@
 
 #include <QApplication>
 #include <QCheckBox>
+#include <QClipboard>
 #include <QDateTime>
 #include <QDir>
 #include <QFileDialog>
@@ -234,6 +235,10 @@ spoton::spoton(void)
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotStatusChanged(int)));
+  connect(ui.pushButtonCopytoClipboard,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotCopyMyPublicKey(void)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -465,6 +470,9 @@ void spoton::slotQuit(void)
 
 void spoton::slotAddListener(void)
 {
+  if(!m_crypt)
+    return;
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_database");
 
@@ -506,13 +514,8 @@ void spoton::slotAddListener(void)
 	bool ok = true;
 
 	if(ip.isEmpty())
-	  {
-	    if(m_crypt)
-	      query.bindValue
-		(0, m_crypt->encrypted(QByteArray(), &ok).toBase64());
-	    else
-	      query.bindValue(0, QVariant());
-	  }
+	  query.bindValue
+	    (0, m_crypt->encrypted(QByteArray(), &ok).toBase64());
 	else
 	  {
 	    QList<int> numbers;
@@ -557,45 +560,29 @@ void spoton::slotAddListener(void)
 		  }
 	      }
 
-	    if(m_crypt)
-	      {
-		if(ok)
-		  query.bindValue
-		    (0, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
-	      }
-	    else
-	      query.bindValue(0, ip);
+	    if(ok)
+	      query.bindValue
+		(0, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
 	  }
 
-	if(m_crypt)
-	  {
-	    if(ok)
-	      query.bindValue
-		(1, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
+	if(ok)
+	  query.bindValue
+	    (1, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
 
-	    if(ok)
-	      query.bindValue
-		(2, m_crypt->encrypted(protocol.toLatin1(), &ok).toBase64());
+	if(ok)
+	  query.bindValue
+	    (2, m_crypt->encrypted(protocol.toLatin1(), &ok).toBase64());
 
-	    if(ok)
-	      query.bindValue
-		(3, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
+	if(ok)
+	  query.bindValue
+	    (3, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
 
-	    query.bindValue(4, status);
+	query.bindValue(4, status);
 
-	    if(ok)
-	      query.bindValue
-		(5, m_crypt->keyedHash((ip + port).toLatin1(), &ok).
-		 toBase64());
-	  }
-	else
-	  {
-	    query.bindValue(1, port);
-	    query.bindValue(2, protocol);
-	    query.bindValue(3, scopeId);
-	    query.bindValue(4, status);
-	    query.bindValue(5, ip + port);
-	  }
+	if(ok)
+	  query.bindValue
+	    (5, m_crypt->keyedHash((ip + port).toLatin1(), &ok).
+	     toBase64());
 
 	if(ok)
 	  if(query.exec())
@@ -611,6 +598,9 @@ void spoton::slotAddListener(void)
 
 void spoton::slotAddNeighbor(void)
 {
+  if(!m_crypt)
+    return;
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_database");
 
@@ -662,13 +652,8 @@ void spoton::slotAddNeighbor(void)
 	query.bindValue(2, protocol);
 
 	if(ip.isEmpty())
-	  {
-	    if(m_crypt)
-	      query.bindValue
-		(3, m_crypt->encrypted(QByteArray(), &ok).toBase64());
-	    else
-	      query.bindValue(3, QVariant());
-	  }
+	  query.bindValue
+	    (3, m_crypt->encrypted(QByteArray(), &ok).toBase64());
 	else
 	  {
 	    QList<int> numbers;
@@ -712,60 +697,38 @@ void spoton::slotAddNeighbor(void)
 		  ip = "::";
 	      }
 
-	    if(m_crypt)
-	      {
-		if(ok)
-		  query.bindValue
-		    (3, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
-	      }
-	    else
-	      query.bindValue(3, ip);
+	    if(ok)
+	      query.bindValue
+		(3, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
 	  }
 
 	query.bindValue(5, 1); // Sticky.
 
-	if(m_crypt)
-	  {
-	    if(ok)
-	      query.bindValue
-		(4, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
+	if(ok)
+	  query.bindValue
+	    (4, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
 
-	    if(ok)
-	      query.bindValue
-		(6, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
+	if(ok)
+	  query.bindValue
+	    (6, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
 
-	    if(ok)
-	      query.bindValue
-		(7, m_crypt->keyedHash((ip + port).toLatin1(), &ok).
-		 toBase64());
-	  }
-	else
-	  {
-	    query.bindValue(4, port);
-	    query.bindValue(6, scopeId);
-	    query.bindValue(7, ip + port);
-	  }
+	if(ok)
+	  query.bindValue
+	    (7, m_crypt->keyedHash((ip + port).toLatin1(), &ok).
+	     toBase64());
 
 	query.bindValue(8, status);
 
 	QString country(spoton_misc::countryNameFromIPAddress(ip));
 
-	if(m_crypt)
-	  {
-	    if(ok)
-	      query.bindValue
-		(9, m_crypt->encrypted(country.toLatin1(), &ok).toBase64());
+	if(ok)
+	  query.bindValue
+	    (9, m_crypt->encrypted(country.toLatin1(), &ok).toBase64());
 
-	    if(ok)
-	      query.bindValue
-		(10, m_crypt->keyedHash(ip.toLatin1(), &ok).
-		 toBase64());
-	  }
-	else
-	  {
-	    query.bindValue(9, country.toLatin1());
-	    query.bindValue(10, ip);
-	  }
+	if(ok)
+	  query.bindValue
+	    (10, m_crypt->keyedHash(ip.toLatin1(), &ok).
+	     toBase64());
 
 	if(ok)
 	  if(query.exec())
@@ -828,6 +791,9 @@ void spoton::slotProtocolRadioToggled(bool state)
 
 void spoton::slotPopulateListeners(void)
 {
+  if(!m_crypt)
+    return;
+
   QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
 		     "listeners.db");
 
@@ -948,7 +914,7 @@ void spoton::slotPopulateListeners(void)
 		      {
 			bool ok = true;
 
-			if(i >= 2 && i <= 5 && m_crypt)
+			if(i >= 2 && i <= 5)
 			  item = new QTableWidgetItem
 			    (m_crypt->decrypted(QByteArray::
 						fromBase64(query.
@@ -977,30 +943,20 @@ void spoton::slotPopulateListeners(void)
 		      }
 		  }
 
+		QByteArray bytes1;
+		QByteArray bytes2;
 		QWidget *focusWidget = QApplication::focusWidget();
+		bool ok = true;
 
-		if(m_crypt)
-		  {
-		    QByteArray bytes1;
-		    QByteArray bytes2;
-		    bool ok = true;
+		bytes1 = m_crypt->decrypted
+		  (QByteArray::fromBase64(query.value(2).toByteArray()),
+		   &ok);
+		bytes2 = m_crypt->decrypted
+		  (QByteArray::fromBase64(query.value(3).toByteArray()),
+		   &ok);
 
-		    bytes1 = m_crypt->decrypted
-		      (QByteArray::fromBase64(query.value(2).toByteArray()),
-		       &ok);
-		    bytes2 = m_crypt->decrypted
-		      (QByteArray::fromBase64(query.value(3).toByteArray()),
-		       &ok);
-
-		    if(ip == bytes1 && port == bytes2)
-		      ui.listeners->selectRow(row);
-		  }
-		else
-		  {
-		    if(ip == query.value(1).toString().trimmed() &&
-		       port == query.value(2).toString().trimmed())
-		      ui.listeners->selectRow(row);
-		  }
+		if(ip == bytes1 && port == bytes2)
+		  ui.listeners->selectRow(row);
 
 		if(focusWidget)
 		  focusWidget->setFocus();
@@ -1024,6 +980,9 @@ void spoton::slotPopulateListeners(void)
 
 void spoton::slotPopulateNeighbors(void)
 {
+  if(!m_crypt)
+    return;
+
   QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
 		     "neighbors.db");
 
@@ -1120,7 +1079,7 @@ void spoton::slotPopulateNeighbors(void)
 		  {
 		    QTableWidgetItem *item = 0;
 
-		    if(i >= 7 && i <= 10 && m_crypt)
+		    if(i >= 7 && i <= 10)
 		      {
 			bool ok = true;
 
@@ -1172,32 +1131,20 @@ void spoton::slotPopulateNeighbors(void)
 		      item1->setIcon(QIcon(":/Flags/unknown.png"));
 		  }
 
+		QByteArray bytes1;
+		QByteArray bytes2;
 		QWidget *focusWidget = QApplication::focusWidget();
+		bool ok = true;
 
-		if(m_crypt)
-		  {
-		    QByteArray bytes1;
-		    QByteArray bytes2;
-		    bool ok = true;
+		bytes1 = m_crypt->decrypted
+		  (QByteArray::fromBase64(query.value(columnREMOTE_IP).
+					  toByteArray()), &ok);
+		bytes2 = m_crypt->decrypted
+		  (QByteArray::fromBase64(query.value(columnREMOTE_PORT).
+					  toByteArray()), &ok);
 
-		    bytes1 = m_crypt->decrypted
-		      (QByteArray::fromBase64(query.value(columnREMOTE_IP).
-					      toByteArray()), &ok);
-		    bytes2 = m_crypt->decrypted
-		      (QByteArray::fromBase64(query.value(columnREMOTE_PORT).
-					      toByteArray()), &ok);
-
-		    if(remoteIp == bytes1 && remotePort == bytes2)
-		      ui.neighbors->selectRow(row);
-		  }
-		else
-		  {
-		    if(remoteIp == query.value(columnREMOTE_IP).
-		       toString().trimmed() &&
-		       remotePort == query.value(columnREMOTE_PORT).
-		       toString().trimmed())
-		      ui.neighbors->selectRow(row);
-		  }
+		if(remoteIp == bytes1 && remotePort == bytes2)
+		  ui.neighbors->selectRow(row);
 
 		if(focusWidget)
 		  focusWidget->setFocus();
@@ -1778,9 +1725,7 @@ void spoton::slotSetPassphrase(void)
 	     ui.iterationCount->value(),
 	     "private");
 	  m_tableTimer.start(2500);
-
-	  if(m_crypt)
-	    sendKeyToKernel();
+	  sendKeyToKernel();
 	}
 
       ui.kernelBox->setEnabled(true);
@@ -1872,10 +1817,7 @@ void spoton::slotValidatePassphrase(void)
 	 ui.iterationCount->value(),
 	 "private");
       m_tableTimer.start(2500);
-
-      if(m_crypt)
-	sendKeyToKernel();
-
+      sendKeyToKernel();
       ui.kernelBox->setEnabled(true);
       ui.listenersBox->setEnabled(true);
       ui.passphrase->clear();
@@ -2041,20 +1983,21 @@ void spoton::slotKernelSocketState(void)
 
 void spoton::sendKeyToKernel(void)
 {
-  if(m_crypt && m_kernelSocket.state() == QAbstractSocket::ConnectedState)
-    {
-      QByteArray key(m_crypt->key(), m_crypt->keyLength());
+  if(m_crypt)
+    if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
+      {
+	QByteArray key(m_crypt->key(), m_crypt->keyLength());
 
-      key = key.toBase64();
-      key.prepend("key_");
-      key.append('\n');
+	key = key.toBase64();
+	key.prepend("key_");
+	key.append('\n');
 
-      if(m_kernelSocket.write(key.constData(), key.length()) != key.length())
-	spoton_misc::logError
-	  ("spoton::sendKeyToKernel(): write() failure.");
-      else
-	m_kernelSocket.flush();
-    }
+	if(m_kernelSocket.write(key.constData(), key.length()) != key.length())
+	  spoton_misc::logError
+	    ("spoton::sendKeyToKernel(): write() failure.");
+	else
+	  m_kernelSocket.flush();
+      }
 }
 
 void spoton::slotConnectNeighbor(void)
@@ -2560,7 +2503,9 @@ void spoton::slotReceivedKernelMessage(void)
 
 void spoton::slotSharePublicKey(void)
 {
-  if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+  if(!m_crypt)
+    return;
+  else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
     return;
 
   QString oid("");
@@ -2909,4 +2854,21 @@ void spoton::slotStatusChanged(int index)
 bool spoton::isKernelActive(void) const
 {
   return ui.pid->text() != "0";
+}
+
+void spoton::slotCopyMyPublicKey(void)
+{
+  if(!m_crypt)
+    return;
+
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(!clipboard)
+    return;
+
+  QByteArray publicKey;
+  bool ok = true;
+
+  publicKey = m_crypt->publicKey(&ok);
+  clipboard->setText(publicKey.constData());
 }

@@ -537,7 +537,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="pushButton_CopytoClipboard">
+                <widget class="QPushButton" name="pushButtonCopytoClipboard">
                  <property name="text">
                   <string>Copy my Public &amp;Key to Clipboard</string>
                  </property>
@@ -2433,7 +2433,7 @@
   <tabstop>showOnlyConnectedNeighbors</tabstop>
   <tabstop>neighbors</tabstop>
   <tabstop>pushButtonMakeFriends</tabstop>
-  <tabstop>pushButton_CopytoClipboard</tabstop>
+  <tabstop>pushButtonCopytoClipboard</tabstop>
   <tabstop>friendName</tabstop>
   <tabstop>friendPublicKey</tabstop>
   <tabstop>pushButton_6</tabstop>
