@@ -1,16 +1,29 @@
-Some tables hold encrypted data.
+Some tables contain encrypted data.
 
-listeners:
+friends_symmetric_keys.db:
+
+symmetric_key
+symmetric_key_algorithm
+
+idiotes.db:
+
+private_key
+
+listeners.db:
 
 ip_address
 port
 protocol
 scope_id
 
-neighbors:
+neighbors.db:
 
 country
 name
 remote_ip_address
 remote_port
 scope_id
+
+shared.db:
+
+url
