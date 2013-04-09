@@ -16,6 +16,7 @@ Completed Items
 8.     The context menu to share the public key should be a button.
 9.     Add an icon to a connected neighbor.
 10.    libspoton.dll needs to be installed in the executable's path.
+11.    Add presence information to the Participants table.
 
 Remaining Items
 
@@ -53,11 +54,9 @@ Ideas
 
        Provide a means of filtering messages in chat.
 
-       Add a mechanism for saving the chat key to a file.
-
        Provide a means of sending a message to friends only.
 
-       Spot-On as a plugin.
+       Spot-On as a plugin compile, e.g for Dooble.
 
        Display additional information pertaining to network information in
        the Neighbors table.
@@ -69,10 +68,10 @@ Ideas
 
        TTLs for channels.
 
-       Add presence information to the Participants table.
-
        The kernel's GUI server port is non-standard. It's fine.
 
        Adding new neighbors create new local ports. As defined.
 
-       May need GET and PUT messages.
+       May need GET and PUT messages and denial of those.
+
+       Offline Email.
