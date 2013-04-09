@@ -1488,7 +1488,7 @@ void spoton::updateListenersTable(QSqlDatabase &db)
       /*
       ** OK, so the kernel is inactive. Discover the
       ** listeners that have not been deleted and update some of their
-      ** information. Only update online listeners.
+      ** information.
       */
 
       query.exec("PRAGMA synchronous = OFF");
@@ -1509,12 +1509,14 @@ void spoton::updateNeighborsTable(QSqlDatabase &db)
       /*
       ** OK, so the kernel is inactive. Discover the
       ** neighbors that have not been deleted and update some of their
-      ** information. Only update connected neighbors.
+      ** information.
       */
 
       query.exec("PRAGMA synchronous = OFF");
       query.exec("UPDATE neighbors SET local_ip_address = '127.0.0.1', "
 		 "local_port = 0, status = 'disconnected' WHERE "
+		 "(local_ip_address <> '127.0.0.1' OR local_port <> 0 OR "
+		 "status <> 'disconnected') AND "
 		 "status_control <> 'deleted'");
       db.commit();
     }
