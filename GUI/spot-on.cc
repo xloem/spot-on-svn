@@ -1609,7 +1609,7 @@ void spoton::slotSetPassphrase(void)
 
   salt.resize(ui.saltLength->value());
   gcry_randomize(static_cast<void *> (salt.data()),
-		 static_cast<size_t> (salt.length()), GCRY_STRONG_RANDOM);
+		 static_cast<size_t> (salt.length()), GCRY_VERY_STRONG_RANDOM);
 
   QByteArray derivedKey
     (spoton_gcrypt::derivedKey(ui.cipherType->currentText(),
