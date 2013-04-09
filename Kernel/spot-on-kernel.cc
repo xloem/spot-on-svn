@@ -366,9 +366,8 @@ void spoton_kernel::slotPollDatabase(void)
 
 void spoton_kernel::prepareListeners(void)
 {
-  if(spoton_gcrypt::passphraseSet())
-    if(!s_crypt1)
-      return;
+  if(!s_crypt1)
+    return;
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "kernel");
@@ -386,47 +385,35 @@ void spoton_kernel::prepareListeners(void)
 		      "maximum_clients, OID FROM listeners"))
 	  while(query.next())
 	    {
+	      QPointer<spoton_listener> listener = 0;
 	      qint64 id = query.value(5).toLongLong();
 
 	      if(!m_listeners.contains(id))
 		{
-		  QPointer<spoton_listener> listener = 0;
+		  QList<QByteArray> list;
 
-		  if(s_crypt1)
+		  for(int i = 0; i < 3; i++)
 		    {
-		      QList<QByteArray> list;
+		      QByteArray bytes;
+		      bool ok = true;
 
-		      for(int i = 0; i < 3; i++)
-			{
-			  QByteArray bytes;
-			  bool ok = true;
+		      bytes = s_crypt1->
+			decrypted(QByteArray::fromBase64(query.
+							 value(i).
+							 toByteArray()),
+				  &ok);
 
-			  bytes = s_crypt1->
-			    decrypted(QByteArray::fromBase64(query.
-							     value(i).
-							     toByteArray()),
-				      &ok);
-
-			  if(ok)
-			    list.append(bytes);
-			  else
-			    break;
-			}
-
-		      if(list.size() == 3)
-			listener = new spoton_listener
-			  (list.at(0).constData(),
-			   list.at(1).constData(),
-			   list.at(2).constData(),
-			   query.value(4).toInt(),
-			   query.value(5).toLongLong(),
-			   this);
+		      if(ok)
+			list.append(bytes);
+		      else
+			break;
 		    }
-		  else
+
+		  if(list.size() == 3)
 		    listener = new spoton_listener
-		      (query.value(0).toString().trimmed(),
-		       query.value(1).toString().trimmed(),
-		       query.value(2).toString().trimmed(),
+		      (list.at(0).constData(),
+		       list.at(1).constData(),
+		       list.at(2).constData(),
 		       query.value(4).toInt(),
 		       query.value(5).toLongLong(),
 		       this);
@@ -443,7 +430,7 @@ void spoton_kernel::prepareListeners(void)
 		}
 	      else
 		{
-		  spoton_listener *listener = m_listeners.value(id);
+		  listener = m_listeners.value(id);
 
 		  if(listener)
 		    {
@@ -483,9 +470,10 @@ void spoton_kernel::prepareListeners(void)
 
 void spoton_kernel::prepareNeighbors(void)
 {
-  if(spoton_gcrypt::passphraseSet())
-    if(!s_crypt1)
-      return;
+  if(!s_crypt1)
+    return;
+
+  bool allOffline = true;
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "kernel");
@@ -503,46 +491,35 @@ void spoton_kernel::prepareNeighbors(void)
 		      "status_control, OID FROM neighbors"))
 	  while(query.next())
 	    {
+	      QPointer<spoton_neighbor> neighbor = 0;
 	      qint64 id = query.value(4).toLongLong();
 
 	      if(!m_neighbors.contains(id))
 		{
-		  QPointer<spoton_neighbor> neighbor = 0;
+		  QList<QByteArray> list;
 
-		  if(s_crypt1)
+		  for(int i = 0; i < 3; i++)
 		    {
-		      QList<QByteArray> list;
+		      QByteArray bytes;
+		      bool ok = true;
 
-		      for(int i = 0; i < 3; i++)
-			{
-			  QByteArray bytes;
-			  bool ok = true;
+		      bytes = s_crypt1->
+			decrypted(QByteArray::fromBase64(query.
+							 value(i).
+							 toByteArray()),
+				  &ok);
 
-			  bytes = s_crypt1->
-			    decrypted(QByteArray::fromBase64(query.
-							     value(i).
-							     toByteArray()),
-				      &ok);
-
-			  if(ok)
-			    list.append(bytes);
-			  else
-			    break;
-			}
-
-		      if(list.size() == 3)
-			neighbor = new spoton_neighbor
-			  (list.at(0).constData(),
-			   list.at(1).constData(),
-			   list.at(2).constData(),
-			   query.value(4).toLongLong(),
-			   this);
+		      if(ok)
+			list.append(bytes);
+		      else
+			break;
 		    }
-		  else
+
+		  if(list.size() == 3)
 		    neighbor = new spoton_neighbor
-		      (query.value(0).toString().trimmed(),
-		       query.value(1).toString().trimmed(),
-		       query.value(2).toString().trimmed(),
+		      (list.at(0).constData(),
+		       list.at(1).constData(),
+		       list.at(2).constData(),
 		       query.value(4).toLongLong(),
 		       this);
 
@@ -554,7 +531,7 @@ void spoton_kernel::prepareNeighbors(void)
 		}
 	      else
 		{
-		  spoton_neighbor *neighbor = m_neighbors.value(id);
+		  neighbor = m_neighbors.value(id);
 
 		  if(neighbor)
 		    {
@@ -570,6 +547,10 @@ void spoton_kernel::prepareNeighbors(void)
 		  else
 		    m_neighbors.remove(id);
 		}
+
+	      if(neighbor)
+		if(neighbor->state() == QAbstractSocket::ConnectedState)
+		  allOffline = false;
 	    }
       }
 
@@ -589,8 +570,10 @@ void spoton_kernel::prepareNeighbors(void)
 		   "hash.").arg(m_neighbors.keys().at(i)));
 	m_neighbors.remove(m_neighbors.keys().at(i));
       }
-}
 
+  if(allOffline)
+    s_messagingCache.clear();
+}
 void spoton_kernel::checkForTermination(void)
 {
   QString sharedPath(spoton_misc::homePath() + QDir::separator() +
