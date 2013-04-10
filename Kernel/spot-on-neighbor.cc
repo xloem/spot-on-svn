@@ -523,23 +523,15 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 
 	    bool ok = true;
 
-	    if(spoton_kernel::s_crypt1)
-	      {
-		query.bindValue
-		  (1, spoton_kernel::s_crypt1->encrypted(symmetricKey,
-							 &ok).toBase64());
+	    query.bindValue
+	      (1, spoton_kernel::s_crypt1->encrypted(symmetricKey,
+						     &ok).toBase64());
 
-		if(ok)
-		  query.bindValue
-		    (2,
-		     spoton_kernel::s_crypt1->encrypted(symmetricKeyAlgorithm,
-							&ok).toBase64());
-	      }
-	    else
-	      {
-		query.bindValue(1, symmetricKey);
-		query.bindValue(2, symmetricKeyAlgorithm);
-	      }
+	    if(ok)
+	      query.bindValue
+		(2,
+		 spoton_kernel::s_crypt1->encrypted(symmetricKeyAlgorithm,
+						    &ok).toBase64());
 
 	    query.bindValue(3, publicKey);
 

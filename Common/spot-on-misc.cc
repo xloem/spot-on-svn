@@ -65,6 +65,27 @@ void spoton_misc::prepareDatabases(void)
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "prepare");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "country_inclusion.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("CREATE TABLE IF NOT EXISTS country_inclusion ("
+		   "country BLOB NOT NULL, "
+		   "accepted BLOB NOT NULL, "
+		   "hash TEXT PRIMARY KEY NOT NULL)");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("prepare");
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "prepare");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "friends_symmetric_keys.db");
 
     if(db.open())

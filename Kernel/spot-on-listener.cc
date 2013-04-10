@@ -213,6 +213,9 @@ void spoton_listener::saveStatus(QSqlDatabase &db)
 
 void spoton_listener::slotNewConnection(void)
 {
+  if(!spoton_kernel::s_crypt1)
+    return;
+
   spoton_neighbor *neighbor = qobject_cast<spoton_neighbor *>
     (nextPendingConnection());
 
@@ -236,14 +239,10 @@ void spoton_listener::slotNewConnection(void)
 	query.prepare("SELECT COUNT(*) FROM neighbors WHERE "
 		      "remote_ip_address_hash = ? AND "
 		      "status_control = 'blocked'");
-
-	if(spoton_kernel::s_crypt1)
-	  query.bindValue
-	    (0, spoton_kernel::s_crypt1->
-	     keyedHash(neighbor->peerAddress().
-		       toString().toLatin1(), 0).toBase64());
-	else
-	  query.bindValue(0, neighbor->peerAddress().toString());
+	query.bindValue
+	  (0, spoton_kernel::s_crypt1->
+	   keyedHash(neighbor->peerAddress().
+		     toString().toLatin1(), 0).toBase64());
 
 	if(query.exec())
 	  if(query.next())
@@ -301,46 +300,34 @@ void spoton_listener::slotNewConnection(void)
 
 	    bool ok = true;
 
-	    if(spoton_kernel::s_crypt1)
-	      {
-		query.bindValue
-		  (3,
-		   spoton_kernel::s_crypt1->encrypted(neighbor->peerAddress().
-						      toString().toLatin1(),
-						      &ok).toBase64());
+	    query.bindValue
+	      (3,
+	       spoton_kernel::s_crypt1->encrypted(neighbor->peerAddress().
+						  toString().toLatin1(),
+						  &ok).toBase64());
 
-		if(ok)
-		  query.bindValue
-		    (4,
-		     spoton_kernel::s_crypt1->
-		     encrypted(QString::number(neighbor->peerPort()).
-			       toLatin1(), &ok).toBase64());
+	    if(ok)
+	      query.bindValue
+		(4,
+		 spoton_kernel::s_crypt1->
+		 encrypted(QString::number(neighbor->peerPort()).
+			   toLatin1(), &ok).toBase64());
 
-		if(ok)
-		  query.bindValue
-		    (5,
-		     spoton_kernel::s_crypt1->
-		     encrypted(neighbor->peerAddress().
-			       scopeId().toLatin1(),
-			       &ok).toBase64());
+	    if(ok)
+	      query.bindValue
+		(5,
+		 spoton_kernel::s_crypt1->
+		 encrypted(neighbor->peerAddress().
+			   scopeId().toLatin1(),
+			   &ok).toBase64());
 
-		if(ok)
-		  query.bindValue
-		    (7,
-		     spoton_kernel::s_crypt1->
-		     keyedHash((neighbor->peerAddress().toString() +
-				QString::number(neighbor->peerPort())).
-			       toLatin1(), &ok).toBase64());
-	      }
-	    else
-	      {
-		query.bindValue(3, neighbor->peerAddress().toString());
-		query.bindValue(4, neighbor->peerPort());
-		query.bindValue(5, neighbor->peerAddress().scopeId());
-		query.bindValue(7,
-				neighbor->peerAddress().toString() +
-				QString::number(neighbor->peerPort()));
-	      }
+	    if(ok)
+	      query.bindValue
+		(7,
+		 spoton_kernel::s_crypt1->
+		 keyedHash((neighbor->peerAddress().toString() +
+			    QString::number(neighbor->peerPort())).
+			   toLatin1(), &ok).toBase64());
 
 	    query.bindValue(6, "connected");
 	    query.bindValue(8, 0);
@@ -349,24 +336,16 @@ void spoton_listener::slotNewConnection(void)
 	      (spoton_misc::
 	       countryNameFromIPAddress(neighbor->peerAddress().toString()));
 
-	    if(spoton_kernel::s_crypt1)
-	      {
-		if(ok)
-		  query.bindValue
-		    (9, spoton_kernel::s_crypt1->
-		     encrypted(country.toLatin1(), &ok).toBase64());
+	    if(ok)
+	      query.bindValue
+		(9, spoton_kernel::s_crypt1->
+		 encrypted(country.toLatin1(), &ok).toBase64());
 
-		if(ok)
-		  query.bindValue
-		    (10, spoton_kernel::s_crypt1->
-		     keyedHash(neighbor->peerAddress().
-			       toString().toLatin1(), &ok).toBase64());
-	      }
-	    else
-	      {
-		query.bindValue(9, country.toLatin1());
-		query.bindValue(10, neighbor->peerAddress().toString());
-	      }
+	    if(ok)
+	      query.bindValue
+		(10, spoton_kernel::s_crypt1->
+		 keyedHash(neighbor->peerAddress().
+			   toString().toLatin1(), &ok).toBase64());
 
 	    if(ok)
 	      {
@@ -376,46 +355,33 @@ void spoton_listener::slotNewConnection(void)
 		  db.commit();
 	      }
 
-	    if(spoton_kernel::s_crypt1)
+	    if(ok)
 	      {
-		if(ok)
-		  {
-		    if(query.exec("SELECT OID, remote_ip_address, "
-				  "remote_port FROM neighbors"))
-		      while(query.next())
+		if(query.exec("SELECT OID, remote_ip_address, "
+			      "remote_port FROM neighbors"))
+		  while(query.next())
+		    {
+		      QByteArray b1;
+		      QByteArray b2;
+
+		      b1 = spoton_kernel::s_crypt1->decrypted
+			(QByteArray::fromBase64(query.value(1).
+						toByteArray()),
+			 &ok);
+
+		      if(ok)
+			b2 = spoton_kernel::s_crypt1->decrypted
+			  (QByteArray::fromBase64(query.value(2).
+						  toByteArray()),
+			   &ok);
+
+		      if(b1 == neighbor->peerAddress().toString() &&
+			 b2.toUShort() == neighbor->peerPort())
 			{
-			  QByteArray b1;
-			  QByteArray b2;
-
-			  b1 = spoton_kernel::s_crypt1->decrypted
-			    (QByteArray::fromBase64(query.value(1).
-						    toByteArray()),
-			     &ok);
-
-			  if(ok)
-			    b2 = spoton_kernel::s_crypt1->decrypted
-			      (QByteArray::fromBase64(query.value(2).
-						      toByteArray()),
-			       &ok);
-
-			  if(b1 == neighbor->peerAddress().toString() &&
-			     b2.toUShort() == neighbor->peerPort())
-			    {
-			      id = query.value(0).toLongLong();
-			      break;
-			    }
+			  id = query.value(0).toLongLong();
+			  break;
 			}
-		  }
-	      }
-	    else
-	      {
-		query.prepare("SELECT OID FROM neighbors WHERE "
-			      "remote_ip_address = ? AND remote_port = ?");
-		query.bindValue(0, neighbor->peerAddress().toString());
-		query.bindValue(1, neighbor->peerPort());
-		query.exec();
-		query.next();
-		id = query.value(0).toLongLong();
+		    }
 	      }
 	  }
       }
