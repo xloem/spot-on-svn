@@ -2267,6 +2267,9 @@ void spoton::slotPopulateParticipants(void)
 	ui.participants->setSortingEnabled(false);
 	ui.participants->clearContents();
 	ui.participants->setRowCount(0);
+    ui.participants->setStyleSheet("QTableView {selection-background-color: lightgreen}");
+    //ui.participants->verticalHeader()->hide();
+
 
 	QSqlQuery query(db);
 	QWidget *focusWidget = QApplication::focusWidget();
@@ -3053,6 +3056,390 @@ QIcon spoton::iconForCountry(const QString &country)
 {
   if(country == "Afghanistan")
     return QIcon(":/Flags/af.png");
+  if(country == "Albania")
+    return QIcon(":/Flags/al.png");
+  if(country == "Algeria")
+    return QIcon(":/Flags/dz.png");
+  if(country == "AmericanSamoa")
+    return QIcon(":/Flags/as.png");
+  if(country == "Angola")
+    return QIcon(":/Flags/ao.png");
+  if(country == "Argentina")
+    return QIcon(":/Flags/ar.png");
+  if(country == "Armenia")
+    return QIcon(":/Flags/am.png");
+  if(country == "Aruba")
+    return QIcon(":/Flags/aw.png");
+  if(country == "Algeria")
+    return QIcon(":/Flags/dz.png");
+  if(country == "Australia")
+    return QIcon(":/Flags/au.png");
+  if(country == "Austria")
+    return QIcon(":/Flags/at.png");
+  if(country == "Azerbaijan")
+    return QIcon(":/Flags/az.png");
+  if(country == "Bahrain")
+    return QIcon(":/Flags/bh.png");
+  if(country == "Bangladesh")
+    return QIcon(":/Flags/bd.png");
+  if(country == "Barbados")
+    return QIcon(":/Flags/bb.png");
+  if(country == "Belarus")
+    return QIcon(":/Flags/by.png");
+  if(country == "Belgium")
+    return QIcon(":/Flags/be.png");
+  if(country == "Belize")
+    return QIcon(":/Flags/bz.png");
+  if(country == "Benin")
+    return QIcon(":/Flags/bj.png");
+  if(country == "Bermuda")
+    return QIcon(":/Flags/bm.png");
+  if(country == "Bhutan")
+    return QIcon(":/Flags/bt.png");
+  if(country == "Bolivia")
+    return QIcon(":/Flags/bo.png");
+  if(country == "BosniaAndHerzegowina")
+    return QIcon(":/Flags/ba.png");
+  if(country == "Botswana")
+    return QIcon(":/Flags/bw.png");
+  if(country == "Brazil")
+    return QIcon(":/Flags/br.png");
+  if(country == "BruneiDarussalam")
+    return QIcon(":/Flags/bn.png");
+  if(country == "Bulgaria")
+    return QIcon(":/Flags/bg.png");
+  if(country == "BurkinaFaso")
+    return QIcon(":/Flags/bf.png");
+  if(country == "Burundi")
+    return QIcon(":/Flags/bi.png");
+  if(country == "Cambodia")
+    return QIcon(":/Flags/kh.png");
+  if(country == "Cameroon")
+    return QIcon(":/Flags/cm.png");
+  if(country == "Canada")
+    return QIcon(":/Flags/ca.png");
+  if(country == "CapeVerde")
+    return QIcon(":/Flags/cv.png");
+  if(country == "CentralAfricanRepublic")
+    return QIcon(":/Flags/cf.png");
+  if(country == "Chad")
+    return QIcon(":/Flags/td.png");
+  if(country == "Chile")
+    return QIcon(":/Flags/cl.png");
+  if(country == "China")
+    return QIcon(":/Flags/cn.png");
+  if(country == "Colombia")
+    return QIcon(":/Flags/co.png");
+  if(country == "Comoros")
+    return QIcon(":/Flags/km.png");
+  if(country == "CostaRica")
+    return QIcon(":/Flags/cr.png");
+  if(country == "Croatia")
+    return QIcon(":/Flags/hr.png");
+  if(country == "Cyprus")
+    return QIcon(":/Flags/cy.png");
+  if(country == "CzechRepublic")
+    return QIcon(":/Flags/cz.png");
+  if(country == "Default")
+    return QIcon(":/Flags/us.png");
+  if(country == "DemocraticRepublicOfCongo")
+    return QIcon(":/Flags/cd.png");
+  if(country == "Denmark")
+    return QIcon(":/Flags/dk.png");
+  if(country == "Djibouti")
+    return QIcon(":/Flags/dj.png");
+  if(country == "DominicanRepublic")
+    return QIcon(":/Flags/do.png");
+  if(country == "Ecuador")
+    return QIcon(":/Flags/ec.png");
+  if(country == "Egypt")
+    return QIcon(":/Flags/eg.png");
+  if(country == "ElSalvador")
+    return QIcon(":/Flags/sv.png");
+  if(country == "EquatorialGuinea")
+    return QIcon(":/Flags/gq.png");
+  if(country == "Eritrea")
+    return QIcon(":/Flags/er.png");
+  if(country == "Estonia")
+    return QIcon(":/Flags/ee.png");
+  if(country == "Ethiopia")
+    return QIcon(":/Flags/et.png");
+  if(country == "FaroeIslands")
+    return QIcon(":/Flags/fo.png");
+  if(country == "Finland")
+    return QIcon(":/Flags/fi.png");
+  if(country == "France")
+    return QIcon(":/Flags/fr.png");
+  if(country == "FrenchGuiana")
+    return QIcon(":/Flags/gy.png");
+  if(country == "Gabon")
+    return QIcon(":/Flags/ga.png");
+  if(country == "Georgia")
+    return QIcon(":/Flags/ge.png");
+  if(country == "Germany")
+    return QIcon(":/Flags/de.png");
+  if(country == "Ghana")
+    return QIcon(":/Flags/gh.png");
+  if(country == "Greece")
+    return QIcon(":/Flags/gr.png");
+  if(country == "Greenland")
+    return QIcon(":/Flags/gl.png");
+  if(country == "Guadeloupe")
+    return QIcon(":/Flags/fr.png");
+  if(country == "Guam")
+    return QIcon(":/Flags/gu.png");
+  if(country == "Guatemala")
+    return QIcon(":/Flags/gt.png");
+  if(country == "Guinea")
+    return QIcon(":/Flags/gn.png");
+  if(country == "GuineaBissau")
+    return QIcon(":/Flags/gw.png");
+  if(country == "Guyana")
+    return QIcon(":/Flags/gy.png");
+  if(country == "Honduras")
+    return QIcon(":/Flags/hn.png");
+  if(country == "HongKong")
+    return QIcon(":/Flags/hk.png");
+  if(country == "Hungary")
+    return QIcon(":/Flags/hu.png");
+  if(country == "Iceland")
+    return QIcon(":/Flags/is.png");
+  if(country == "India")
+    return QIcon(":/Flags/in.png");
+  if(country == "Indonesia")
+    return QIcon(":/Flags/id.png");
+  if(country == "Iran")
+    return QIcon(":/Flags/ir.png");
+  if(country == "Iraq")
+    return QIcon(":/Flags/iq.png");
+  if(country == "Ireland")
+    return QIcon(":/Flags/ie.png");
+  if(country == "Israel")
+    return QIcon(":/Flags/il.png");
+  if(country == "Italy")
+    return QIcon(":/Flags/it.png");
+  if(country == "IvoryCoast")
+    return QIcon(":/Flags/ci.png");
+  if(country == "Jamaica")
+    return QIcon(":/Flags/jm.png");
+  if(country == "Japan")
+    return QIcon(":/Flags/jp.png");
+  if(country == "Jordan")
+    return QIcon(":/Flags/jo.png");
+  if(country == "Kazakhstan")
+    return QIcon(":/Flags/kz.png");
+  if(country == "Kenya")
+    return QIcon(":/Flags/ke.png");
+  if(country == "Kuwait")
+    return QIcon(":/Flags/kw.png");
+  if(country == "Kyrgyzstan")
+    return QIcon(":/Flags/kg.png");
+  if(country == "Lao")
+    return QIcon(":/Flags/la.png");
+  if(country == "LatinAmericaAndTheCaribbean")
+    return QIcon(":/Flags/mx.png");
+  if(country == "Latvia")
+    return QIcon(":/Flags/lv.png");
+  if(country == "Lebanon")
+    return QIcon(":/Flags/lb.png");
+  if(country == "Lesotho")
+    return QIcon(":/Flags/ls.png");
+  if(country == "Liberia")
+    return QIcon(":/Flags/lr.png");
+  if(country == "LibyanArabJamahiriya")
+    return QIcon(":/Flags/ly.png");
+  if(country == "Liechtenstein")
+    return QIcon(":/Flags/li.png");
+  if(country == "Lithuania")
+    return QIcon(":/Flags/lt.png");
+  if(country == "Luxembourg")
+    return QIcon(":/Flags/lu.png");
+  if(country == "Macau")
+    return QIcon(":/Flags/mo.png");
+  if(country == "Macedonia")
+    return QIcon(":/Flags/mk.png");
+  if(country == "Madagascar")
+    return QIcon(":/Flags/mg.png");
+  if(country == "Malaysia")
+    return QIcon(":/Flags/my.png");
+  if(country == "Mali")
+    return QIcon(":/Flags/ml.png");
+  if(country == "Malta")
+    return QIcon(":/Flags/mt.png");
+  if(country == "MarshallIslands")
+    return QIcon(":/Flags/mh.png");
+  if(country == "Martinique")
+    return QIcon(":/Flags/fr.png");
+  if(country == "Mauritius")
+    return QIcon(":/Flags/mu.png");
+  if(country == "Mayotte")
+    return QIcon(":/Flags/yt.png");
+  if(country == "Mexico")
+    return QIcon(":/Flags/mx.png");
+  if(country == "Moldova")
+    return QIcon(":/Flags/md.png");
+  if(country == "Monaco")
+    return QIcon(":/Flags/mc.png");
+  if(country == "Mongolia")
+    return QIcon(":/Flags/mn.png");
+  if(country == "Montenegro")
+    return QIcon(":/Flags/me.png");
+  if(country == "Morocco")
+    return QIcon(":/Flags/ma.png");
+  if(country == "Mozambique")
+    return QIcon(":/Flags/mz.png");
+  if(country == "Myanmar")
+    return QIcon(":/Flags/mm.png");
+  if(country == "Namibia")
+    return QIcon(":/Flags/na.png");
+  if(country == "Nepal")
+    return QIcon(":/Flags/np.png");
+  if(country == "Netherlands")
+    return QIcon(":/Flags/nl.png");
+  if(country == "NewZealand")
+    return QIcon(":/Flags/nz.png");
+  if(country == "Nicaragua")
+    return QIcon(":/Flags/ni.png");
+  if(country == "Niger")
+    return QIcon(":/Flags/ne.png");
+  if(country == "Nigeria")
+    return QIcon(":/Flags/ng.png");
+  if(country == "NorthernMarianaIslands")
+    return QIcon(":/Flags/mp.png");
+  if(country == "Norway")
+    return QIcon(":/Flags/no.png");
+  if(country == "Oman")
+    return QIcon(":/Flags/om.png");
+  if(country == "Pakistan")
+    return QIcon(":/Flags/pk.png");
+  if(country == "Panama")
+    return QIcon(":/Flags/pa.png");
+  if(country == "Paraguay")
+    return QIcon(":/Flags/py.png");
+  if(country == "PeoplesRepublicOfCongo")
+    return QIcon(":/Flags/cg.png");
+  if(country == "Peru")
+    return QIcon(":/Flags/pe.png");
+  if(country == "Philippines")
+    return QIcon(":/Flags/ph.png");
+  if(country == "Poland")
+    return QIcon(":/Flags/pl.png");
+  if(country == "Portugal")
+    return QIcon(":/Flags/pt.png");
+  if(country == "PuertoRico")
+    return QIcon(":/Flags/pr.png");
+  if(country == "Qatar")
+    return QIcon(":/Flags/qa.png");
+  if(country == "RepublicOfKorea")
+    return QIcon(":/Flags/kr.png");
+  if(country == "Reunion")
+    return QIcon(":/Flags/fr.png");
+  if(country == "Romania")
+    return QIcon(":/Flags/ro.png");
+  if(country == "RussianFederation")
+    return QIcon(":/Flags/ru.png");
+  if(country == "Rwanda")
+    return QIcon(":/Flags/rw.png");
+  if(country == "Saint Barthelemy")
+    return QIcon(":/Flags/bl.png");
+  if(country == "Saint Martin")
+    return QIcon(":/Flags/fr.png");
+  if(country == "SaoTomeAndPrincipe")
+    return QIcon(":/Flags/st.png");
+  if(country == "SaudiArabia")
+    return QIcon(":/Flags/sa.png");
+  if(country == "Senegal")
+    return QIcon(":/Flags/sn.png");
+  if(country == "Serbia")
+    return QIcon(":/Flags/rs.png");
+  if(country == "SerbiaAndMontenegro")
+    return QIcon(":/Flags/rs.png");
+  if(country == "Singapore")
+    return QIcon(":/Flags/sg.png");
+  if(country == "Slovakia")
+    return QIcon(":/Flags/sk.png");
+  if(country == "Slovenia")
+    return QIcon(":/Flags/si.png");
+  if(country == "Somalia")
+    return QIcon(":/Flags/so.png");
+  if(country == "SouthAfrica")
+    return QIcon(":/Flags/za.png");
+  if(country == "Spain")
+    return QIcon(":/Flags/es.png");
+  if(country == "SriLanka")
+    return QIcon(":/Flags/lk.png");
+  if(country == "Sudan")
+    return QIcon(":/Flags/sd.png");
+  if(country == "Swaziland")
+    return QIcon(":/Flags/sz.png");
+  if(country == "Sweden")
+    return QIcon(":/Flags/se.png");
+  if(country == "Switzerland")
+    return QIcon(":/Flags/ch.png");
+  if(country == "SyrianArabRepublic")
+    return QIcon(":/Flags/sy.png");
+  if(country == "Taiwan")
+    return QIcon(":/Flags/tw.png");
+  if(country == "Tajikistan")
+    return QIcon(":/Flags/tj.png");
+  if(country == "Tanzania")
+    return QIcon(":/Flags/tz.png");
+  if(country == "Thailand")
+    return QIcon(":/Flags/th.png");
+  if(country == "Togo")
+    return QIcon(":/Flags/tg.png");
+  if(country == "Tonga")
+    return QIcon(":/Flags/to.png");
+  if(country == "TrinidadAndTobago")
+    return QIcon(":/Flags/tt.png");
+  if(country == "Tunisia")
+    return QIcon(":/Flags/tn.png");
+  if(country == "Turkey")
+    return QIcon(":/Flags/tr.png");
+  if(country == "USVirginIslands")
+    return QIcon(":/Flags/vi.png");
+  if(country == "Uganda")
+    return QIcon(":/Flags/ug.png");
+  if(country == "Ukraine")
+    return QIcon(":/Flags/ua.png");
+  if(country == "UnitedArabEmirates")
+    return QIcon(":/Flags/ae.png");
+  if(country == "UnitedKingdom")
+    return QIcon(":/Flags/uk.png");
+  if(country == "UnitedStates")
+    return QIcon(":/Flags/us.png");
+  if(country == "UnitedStatesMinorOutlyingIslands")
+    return QIcon(":/Flags/us.png");
+  if(country == "Uruguay")
+    return QIcon(":/Flags/uy.png");
+  if(country == "Uzbekistan")
+    return QIcon(":/Flags/uz.png");
+  if(country == "Venezuela")
+    return QIcon(":/Flags/ve.png");
+  if(country == "VietNam")
+    return QIcon(":/Flags/vn.png");
+  if(country == "Yemen")
+    return QIcon(":/Flags/ye.png");
+  if(country == "Yugoslavia")
+    return QIcon(":/Flags/unkown.png");
+  if(country == "Zambia")
+    return QIcon(":/Flags/zm.png");
+  if(country == "Zimbabwe")
+    return QIcon(":/Flags/zw.png");
   else
     return QIcon(":/Flags/unknown.png");
 }
+
+void spoton::slotConnectOnlyToStickies(void)
+{
+    //if(ui.connectOnlyToStickies->isChecked())
+        ; //block neighbor;
+   // else
+     // ; //unblock neighbor;
+
+    // Qmessagebox: Warning to left the trustedf2fweb
+
+    // keep connections, if countryexclusion
+
+}
+
