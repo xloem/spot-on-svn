@@ -2927,6 +2927,12 @@ void spoton::slotPopulateCountries(void)
 
 	if(query.exec("SELECT country, accepted FROM country_inclusion"))
 	  {
+	    QList<QListWidgetItem *> list(ui.countries->selectedItems());
+	    QString selectedCountry("");
+
+	    if(!list.isEmpty())
+	      selectedCountry = list.at(0)->text();
+
 	    ui.countries->clear();
 
 	    QList<QPair<QString, bool> > countries;
@@ -2985,6 +2991,10 @@ void spoton::slotPopulateCountries(void)
 
 		item->setIcon(icon);
 		ui.countries->addItem(item);
+
+		if(!selectedCountry.isEmpty())
+		  if(item->text() == selectedCountry)
+		    item->setSelected(true);
 	      }
 
 	    connect(ui.countries,

@@ -843,7 +843,11 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_25">
             <item>
-             <widget class="QListWidget" name="countries"/>
+             <widget class="QListWidget" name="countries">
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -1045,8 +1049,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>970</width>
-             <height>625</height>
+             <width>942</width>
+             <height>534</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">

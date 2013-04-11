@@ -213,14 +213,29 @@ void spoton_listener::saveStatus(QSqlDatabase &db)
 
 void spoton_listener::slotNewConnection(void)
 {
-  if(!spoton_kernel::s_crypt1)
-    return;
-
   spoton_neighbor *neighbor = qobject_cast<spoton_neighbor *>
     (nextPendingConnection());
 
   if(!neighbor)
     return;
+
+  if(!spoton_kernel::s_crypt1)
+    {
+      neighbor->deleteLater();
+      return;
+    }
+
+  QString country
+    (spoton_misc::
+     countryNameFromIPAddress(neighbor->peerAddress().toString()));
+
+  if(!country.isEmpty())
+    if(!spoton_misc::countryAllowedToConnect(country.remove(" "),
+					     spoton_kernel::s_crypt1))
+      {
+	neighbor->deleteLater();
+	return;
+      }
 
   int count = 0;
 
@@ -331,10 +346,6 @@ void spoton_listener::slotNewConnection(void)
 
 	    query.bindValue(6, "connected");
 	    query.bindValue(8, 0);
-
-	    QString country
-	      (spoton_misc::
-	       countryNameFromIPAddress(neighbor->peerAddress().toString()));
 
 	    if(ok)
 	      query.bindValue
