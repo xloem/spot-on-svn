@@ -211,5 +211,40 @@
         <file>Status/status_yellow.png</file>
         <file>uuid.png</file>
         <file>broadcasttoall.png</file>
+        <file>Flags/as.png</file>
+        <file>Flags/bl.png</file>
+        <file>Flags/cd.png</file>
+        <file>Flags/dj.png</file>
+        <file>Flags/do.png</file>
+        <file>Flags/gh.png</file>
+        <file>Flags/gn.png</file>
+        <file>Flags/gq.png</file>
+        <file>Flags/gw.png</file>
+        <file>Flags/hn.png</file>
+        <file>Flags/km.png</file>
+        <file>Flags/la.png</file>
+        <file>Flags/li.png</file>
+        <file>Flags/lr.png</file>
+        <file>Flags/ls.png</file>
+        <file>Flags/me.png</file>
+        <file>Flags/mh.png</file>
+        <file>Flags/ml.png</file>
+        <file>Flags/mm.png</file>
+        <file>Flags/mu.png</file>
+        <file>Flags/ne.png</file>
+        <file>Flags/ng.png</file>
+        <file>Flags/ni.png</file>
+        <file>Flags/rs.png</file>
+        <file>Flags/rw.png</file>
+        <file>Flags/sn.png</file>
+        <file>Flags/st.png</file>
+        <file>Flags/sv.png</file>
+        <file>Flags/sz.png</file>
+        <file>Flags/td.png</file>
+        <file>Flags/tj.png</file>
+        <file>Flags/uz.png</file>
+        <file>Flags/yt.png</file>
+        <file>Flags/yu.png</file>
+        <file>Flags/zm.png</file>
     </qresource>
 </RCC>

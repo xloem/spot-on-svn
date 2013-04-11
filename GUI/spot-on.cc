@@ -3405,7 +3405,7 @@ QIcon spoton::iconForCountry(const QString &country)
   if(country == "UnitedArabEmirates")
     return QIcon(":/Flags/ae.png");
   if(country == "UnitedKingdom")
-    return QIcon(":/Flags/uk.png");
+    return QIcon(":/Flags/gb.png");
   if(country == "UnitedStates")
     return QIcon(":/Flags/us.png");
   if(country == "UnitedStatesMinorOutlyingIslands")
@@ -3421,7 +3421,7 @@ QIcon spoton::iconForCountry(const QString &country)
   if(country == "Yemen")
     return QIcon(":/Flags/ye.png");
   if(country == "Yugoslavia")
-    return QIcon(":/Flags/unkown.png");
+    return QIcon(":/Flags/yu.png");
   if(country == "Zambia")
     return QIcon(":/Flags/zm.png");
   if(country == "Zimbabwe")
