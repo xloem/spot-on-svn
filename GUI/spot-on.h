@@ -47,6 +47,7 @@ class spoton: public QMainWindow
 
  private:
   QByteArray m_kernelSocketData;
+  QDateTime m_countriesLastModificationTime;
   QDateTime m_listenersLastModificationTime;
   QDateTime m_neighborsLastModificationTime;
   QDateTime m_participantsLastModificationTime;
@@ -57,6 +58,7 @@ class spoton: public QMainWindow
   Ui_spoton_mainwindow ui;
   spoton_gcrypt *m_crypt;
   spoton_logviewer m_logViewer;
+  QIcon iconForCountry(const QString &country);
   bool isKernelActive(void) const;
   void closeEvent(QCloseEvent *event);
   void highlightKernelPath(void);
@@ -76,6 +78,7 @@ class spoton: public QMainWindow
   void slotChatSendMethodChanged(int index);
   void slotConnectNeighbor(void);
   void slotCopyMyPublicKey(void);
+  void slotCountryChanged(QListWidgetItem *item);
   void slotDeactivateKernel(void);
   void slotDeleteAllListeners(void);
   void slotDeleteAllNeighbors(void);
@@ -90,6 +93,7 @@ class spoton: public QMainWindow
   void slotNeighborCheckChange(int state);
   void slotOnlyConnectedNeighborsToggled(bool state);
   void slotOnlyOnlineListenersToggled(bool state);
+  void slotPopulateCountries(void);
   void slotPopulateListeners(void);
   void slotPopulateNeighbors(void);
   void slotPopulateParticipants(void);

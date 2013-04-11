@@ -131,7 +131,7 @@ spoton_neighbor::~spoton_neighbor()
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "neighbor_" + QString::number(s_dbId));
+      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() +
@@ -156,11 +156,11 @@ spoton_neighbor::~spoton_neighbor()
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("neighbor_" + QString::number(s_dbId));
+  QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "neighbor_" + QString::number(s_dbId));
+      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
@@ -188,7 +188,7 @@ spoton_neighbor::~spoton_neighbor()
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("neighbor_" + QString::number(s_dbId));
+  QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
 }
 
 void spoton_neighbor::slotTimeout(void)
@@ -199,7 +199,7 @@ void spoton_neighbor::slotTimeout(void)
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "neighbor_" + QString::number(s_dbId));
+      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
@@ -246,7 +246,7 @@ void spoton_neighbor::slotTimeout(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("neighbor_" + QString::number(s_dbId));
+  QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
 }
 
 void spoton_neighbor::saveStatus(QSqlDatabase &db, const QString &status)
@@ -270,7 +270,7 @@ void spoton_neighbor::slotSendKeys(void)
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "neighbor_" + QString::number(s_dbId));
+      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "public_keys.db");
@@ -323,7 +323,7 @@ void spoton_neighbor::slotSendKeys(void)
   }
 
   QSqlDatabase::removeDatabase
-    ("neighbor_" + QString::number(s_dbId));
+    ("spoton_neighbor_" + QString::number(s_dbId));
 }
 
 void spoton_neighbor::slotReadyRead(void)
@@ -432,7 +432,7 @@ void spoton_neighbor::slotConnected(void)
 {
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "neighbor_" + QString::number(s_dbId));
+      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
@@ -456,7 +456,7 @@ void spoton_neighbor::slotConnected(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("neighbor_" + QString::number(s_dbId));
+  QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
 }
 
 void spoton_neighbor::savePublicKey(const QByteArray &name,
@@ -480,7 +480,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "neighbor_" + QString::number(s_dbId));
+      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() +
@@ -516,9 +516,8 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 	    query.exec("PRAGMA synchronous = OFF");
 	    query.prepare("INSERT OR REPLACE INTO symmetric_keys "
 			  "(name, symmetric_key, symmetric_key_algorithm, "
-			  "public_key, public_key_hash, neighbor_oid, "
-			  "status) "
-			  "VALUES (?, ?, ?, ?, ?, ?, ?)");
+			  "public_key, public_key_hash, neighbor_oid) "
+			  "VALUES (?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, name);
 
 	    bool ok = true;
@@ -540,7 +539,6 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 		(4, spoton_gcrypt::sha512Hash(publicKey, &ok).toHex());
 
 	    query.bindValue(5, neighborOid);
-	    query.bindValue(6, "online");
 
 	    if(ok)
 	      if(query.exec())
@@ -579,7 +577,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("neighbor_" + QString::number(s_dbId));
+  QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
 
   if(!list.isEmpty())
     sharePublicKey(publicKey, list.value(0), list.value(1));
@@ -593,7 +591,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &publicKey)
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "neighbor_" + QString::number(s_dbId));
+      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() +
@@ -614,7 +612,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &publicKey)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("neighbor_" + QString::number(s_dbId));
+  QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
 }
 
 qint64 spoton_neighbor::id(void) const
@@ -765,7 +763,7 @@ void spoton_neighbor::sharePublicKey(const QByteArray &publicKey,
 
 	      {
 		QSqlDatabase db = QSqlDatabase::addDatabase
-		  ("QSQLITE", "neighbor_" + QString::number(s_dbId));
+		  ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
 
 		db.setDatabaseName
 		  (spoton_misc::homePath() + QDir::separator() +
@@ -788,7 +786,7 @@ void spoton_neighbor::sharePublicKey(const QByteArray &publicKey,
 	      }
 
 	      QSqlDatabase::removeDatabase
-		("neighbor_" + QString::number(s_dbId));
+		("spoton_neighbor_" + QString::number(s_dbId));
 	    }
 	}
       else
@@ -874,7 +872,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 
       {
 	QSqlDatabase db = QSqlDatabase::addDatabase
-	  ("QSQLITE", "neighbor_" + QString::number(s_dbId));
+	  ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
 
 	db.setDatabaseName
 	  (spoton_misc::homePath() + QDir::separator() +
@@ -927,7 +925,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
       }
 
       QSqlDatabase::removeDatabase
-	("neighbor_" + QString::number(s_dbId));
+	("spoton_neighbor_" + QString::number(s_dbId));
 
       if(ok)
 	{
@@ -973,7 +971,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
     }
   else
     spoton_misc::logError
-      (QString("spoton_kernel::process0000(): 0000 "
+      (QString("spoton_neighbor::process0000(): 0000 "
 	       "content-length mismatch (advertised: %1, received: %2).").
        arg(length).arg(data.length()));
 }
@@ -1024,7 +1022,7 @@ void spoton_neighbor::process0010(int length, const QByteArray &dataIn)
     }
   else
     spoton_misc::logError
-      (QString("spoton_kernel::process0010(): 0010 "
+      (QString("spoton_neighbor::process0010(): 0010 "
 	       "content-length mismatch (advertised: %1, received: %2).").
        arg(length).arg(data.length()));
 }
@@ -1057,8 +1055,8 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
       QByteArray symmetricKey
 	(spoton_send::SYMMETRIC_KEY_MAXIMUM_LENGTH, 0);
       QByteArray symmetricKeyAlgorithm
-	(spoton_kernel::s_settings.value("gui/cipherType").
-	 toByteArray());
+	(spoton_kernel::s_settings.value("gui/cipherType", "aes256").
+	 toString().trimmed().toLatin1());
 
       gcry_randomize
 	(static_cast<void *> (symmetricKey.data()),
@@ -1069,7 +1067,7 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
     }
   else
     spoton_misc::logError
-      (QString("spoton_kernel::process0011(): 0011 "
+      (QString("spoton_neighbor::process0011(): 0011 "
 	       "content-length mismatch (advertised: %1, received: %2).").
        arg(length).arg(data.length()));
 }
@@ -1134,7 +1132,7 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
     }
   else
     spoton_misc::logError
-      (QString("spoton_kernel::process0012(): 0012 "
+      (QString("spoton_neighbor::process0012(): 0012 "
 	       "content-length mismatch (advertised: %1, received: %2).").
        arg(length).arg(data.length()));
 }
@@ -1187,7 +1185,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 
       {
 	QSqlDatabase db = QSqlDatabase::addDatabase
-	  ("QSQLITE", "neighbor_" + QString::number(s_dbId));
+	  ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
 
 	db.setDatabaseName
 	  (spoton_misc::homePath() + QDir::separator() +
@@ -1240,7 +1238,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
       }
 
       QSqlDatabase::removeDatabase
-	("neighbor_" + QString::number(s_dbId));
+	("spoton_neighbor_" + QString::number(s_dbId));
 
       if(ok)
 	{
@@ -1281,7 +1279,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
     }
   else
     spoton_misc::logError
-      (QString("spoton_kernel::process0013(): 0013 "
+      (QString("spoton_neighbor::process0013(): 0013 "
 	       "content-length mismatch (advertised: %1, received: %2).").
        arg(length).arg(data.length()));
 }
@@ -1307,7 +1305,7 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash,
 {
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "neighbor_" + QString::number(s_dbId));
+      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() +
@@ -1335,5 +1333,5 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("neighbor_" + QString::number(s_dbId));
+  QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
 }

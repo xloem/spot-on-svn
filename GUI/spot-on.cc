@@ -100,6 +100,7 @@ spoton::spoton(void)
 {
   QDir().mkdir(spoton_misc::homePath());
   m_crypt = 0;
+  m_countriesLastModificationTime = QDateTime();
   m_listenersLastModificationTime = QDateTime();
   m_neighborsLastModificationTime = QDateTime();
   m_participantsLastModificationTime = QDateTime();
@@ -246,6 +247,10 @@ spoton::spoton(void)
   connect(&m_tableTimer,
 	  SIGNAL(timeout(void)),
 	  this,
+	  SLOT(slotPopulateCountries(void)));
+  connect(&m_tableTimer,
+	  SIGNAL(timeout(void)),
+	  this,
 	  SLOT(slotPopulateListeners(void)));
   connect(&m_tableTimer,
 	  SIGNAL(timeout(void)),
@@ -357,19 +362,19 @@ spoton::spoton(void)
 
   QString str("");
 
-  str = m_settings.value("gui/cipherType").toString().toLower().trimmed();
+  str = m_settings.value("gui/cipherType", "aes256").toString().toLower().trimmed();
 
   if(ui.cipherType->findText(str) > -1)
     ui.cipherType->setCurrentIndex(ui.cipherType->findText(str));
 
-  str = m_settings.value("gui/hashType").toString().toLower().trimmed();
+  str = m_settings.value("gui/hashType", "sha512").toString().toLower().trimmed();
 
   if(ui.hashType->findText(str) > -1)
     ui.hashType->setCurrentIndex(ui.hashType->findText(str));
 
   ui.iterationCount->setValue(m_settings.value("gui/iterationCount", 1000).
 			      toInt());
-  str = m_settings.value("gui/rsaKeySize").toString().toLower().trimmed();
+  str = m_settings.value("gui/rsaKeySize", "3072").toString().toLower().trimmed();
 
   if(ui.rsaKeySize->findText(str) > -1)
     ui.rsaKeySize->setCurrentIndex(ui.rsaKeySize->findText(str));
@@ -474,7 +479,7 @@ void spoton::slotAddListener(void)
     return;
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_database");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "listeners.db");
@@ -592,7 +597,7 @@ void spoton::slotAddListener(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_database");
+  QSqlDatabase::removeDatabase("spoton");
   ui.listenerIP->selectAll();
 }
 
@@ -602,7 +607,7 @@ void spoton::slotAddNeighbor(void)
     return;
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_database");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "neighbors.db");
@@ -738,7 +743,7 @@ void spoton::slotAddNeighbor(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_database");
+  QSqlDatabase::removeDatabase("spoton");
   ui.neighborIP->selectAll();
 }
 
@@ -808,7 +813,7 @@ void spoton::slotPopulateListeners(void)
     m_listenersLastModificationTime = QDateTime();
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_database");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
     db.setDatabaseName(fileInfo.absoluteFilePath());
 
@@ -975,7 +980,7 @@ void spoton::slotPopulateListeners(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_database");
+  QSqlDatabase::removeDatabase("spoton");
 }
 
 void spoton::slotPopulateNeighbors(void)
@@ -997,7 +1002,7 @@ void spoton::slotPopulateNeighbors(void)
     m_neighborsLastModificationTime = QDateTime();
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_database");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
     db.setDatabaseName(fileInfo.absoluteFilePath());
 
@@ -1167,7 +1172,7 @@ void spoton::slotPopulateNeighbors(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_database");
+  QSqlDatabase::removeDatabase("spoton");
 }
 
 void spoton::slotActivateKernel(void)
@@ -1242,6 +1247,7 @@ void spoton::slotGeneralTimerTimeout(void)
 
   if(text != ui.pid->text())
     {
+      m_countriesLastModificationTime = QDateTime();
       m_listenersLastModificationTime = QDateTime();
       m_neighborsLastModificationTime = QDateTime();
       m_participantsLastModificationTime = QDateTime();
@@ -1251,8 +1257,7 @@ void spoton::slotGeneralTimerTimeout(void)
     if(m_kernelSocket.state() == QAbstractSocket::UnconnectedState)
       {
 	{
-	  QSqlDatabase db = QSqlDatabase::addDatabase
-	    ("QSQLITE", "spoton_database");
+	  QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
 	  db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 			     "kernel.db");
@@ -1272,7 +1277,7 @@ void spoton::slotGeneralTimerTimeout(void)
 	  db.close();
 	}
 
-	QSqlDatabase::removeDatabase("spoton_database");
+	QSqlDatabase::removeDatabase("spoton");
       }
 }
 
@@ -1362,7 +1367,7 @@ void spoton::slotDeleteListener(void)
     }
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_database");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "listeners.db");
@@ -1387,7 +1392,7 @@ void spoton::slotDeleteListener(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_database");
+  QSqlDatabase::removeDatabase("spoton");
 
   if(row > -1)
     ui.listeners->removeRow(row);
@@ -1408,7 +1413,7 @@ void spoton::slotDeleteNeighbor(void)
     }
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_database");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "neighbors.db");
@@ -1432,7 +1437,7 @@ void spoton::slotDeleteNeighbor(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_database");
+  QSqlDatabase::removeDatabase("spoton");
 
   if(row > -1)
     ui.neighbors->removeRow(row);
@@ -1447,8 +1452,7 @@ void spoton::slotListenerCheckChange(int state)
       m_tableTimer.stop();
 
       {
-	QSqlDatabase db = QSqlDatabase::addDatabase
-	  ("QSQLITE", "spoton_database");
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
 	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 			   "listeners.db");
@@ -1474,7 +1478,7 @@ void spoton::slotListenerCheckChange(int state)
 	db.close();
       }
 
-      QSqlDatabase::removeDatabase("spoton_database");
+      QSqlDatabase::removeDatabase("spoton");
       m_tableTimer.start();
     }
 }
@@ -1634,7 +1638,7 @@ void spoton::slotSetPassphrase(void)
 	  spoton_gcrypt::reencodePrivateKey
 	    (ui.cipherType->currentText(),
 	     derivedKey,
-	     m_settings["gui/cipherType"].toString().trimmed(),
+	     m_settings.value("gui/cipherType", "aes256").toString().trimmed(),
 	     m_crypt->key(),
 	     "private",
 	     error2);
@@ -1649,7 +1653,7 @@ void spoton::slotSetPassphrase(void)
 	      spoton_gcrypt::reencodePrivateKey
 		(ui.cipherType->currentText(),
 		 derivedKey,
-		 m_settings["gui/cipherType"].toString().trimmed(),
+		 m_settings.value("gui/cipherType", "aes256").toString().trimmed(),
 		 m_crypt->key(),
 		 "shared",
 		 error2);
@@ -1726,6 +1730,18 @@ void spoton::slotSetPassphrase(void)
 	     ui.saltLength->value(),
 	     ui.iterationCount->value(),
 	     "private");
+
+	  QString lastStatusBarMessage(statusBar()->currentMessage());
+
+	  statusBar()->showMessage
+	    (tr("Initializing country_inclusion.db."));
+#ifdef Q_OS_MAC
+	  QApplication::processEvents();
+#endif
+	  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+	  spoton_misc::populateCountryDatabase(m_crypt);
+	  QApplication::restoreOverrideCursor();
+	  statusBar()->showMessage(lastStatusBarMessage);
 	  m_tableTimer.start(2500);
 	  sendKeyToKernel();
 	}
@@ -1818,6 +1834,19 @@ void spoton::slotValidatePassphrase(void)
 	 ui.saltLength->value(),
 	 ui.iterationCount->value(),
 	 "private");
+
+      QString lastStatusBarMessage(statusBar()->currentMessage());
+
+      statusBar()->showMessage
+	(tr("Initializing country_inclusion.db."));
+#ifdef Q_OS_MAC
+      QApplication::processEvents();
+#endif
+      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+      spoton_misc::populateCountryDatabase(m_crypt);
+      QApplication::restoreOverrideCursor();
+      statusBar()->showMessage(lastStatusBarMessage);
+      spoton_misc::populateCountryDatabase(m_crypt);
       m_tableTimer.start(2500);
       sendKeyToKernel();
       ui.kernelBox->setEnabled(true);
@@ -1855,8 +1884,7 @@ void spoton::slotNeighborCheckChange(int state)
       m_tableTimer.stop();
 
       {
-	QSqlDatabase db = QSqlDatabase::addDatabase
-	  ("QSQLITE", "spoton_database");
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
 	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 			   "neighbors.db");
@@ -1877,7 +1905,7 @@ void spoton::slotNeighborCheckChange(int state)
 	db.close();
       }
 
-      QSqlDatabase::removeDatabase("spoton_database");
+      QSqlDatabase::removeDatabase("spoton");
       m_tableTimer.start();
     }
 }
@@ -1891,8 +1919,7 @@ void spoton::slotMaximumClientsChanged(int index)
       m_tableTimer.stop();
 
       {
-	QSqlDatabase db = QSqlDatabase::addDatabase
-	  ("QSQLITE", "spoton_database");
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
 	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 			   "listeners.db");
@@ -1918,7 +1945,7 @@ void spoton::slotMaximumClientsChanged(int index)
 	db.close();
       }
 
-      QSqlDatabase::removeDatabase("spoton_database");
+      QSqlDatabase::removeDatabase("spoton");
       m_tableTimer.start();
     }
 }
@@ -2019,8 +2046,7 @@ void spoton::slotConnectNeighbor(void)
   m_tableTimer.stop();
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_database");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "neighbors.db");
@@ -2041,7 +2067,7 @@ void spoton::slotConnectNeighbor(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_database");
+  QSqlDatabase::removeDatabase("spoton");
   m_tableTimer.start();
 }
 
@@ -2062,8 +2088,7 @@ void spoton::slotDisconnectNeighbor(void)
   m_tableTimer.stop();
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_database");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "neighbors.db");
@@ -2084,7 +2109,7 @@ void spoton::slotDisconnectNeighbor(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_database");
+  QSqlDatabase::removeDatabase("spoton");
   m_tableTimer.start();
 }
 
@@ -2105,8 +2130,7 @@ void spoton::slotBlockNeighbor(void)
   m_tableTimer.stop();
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_database");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "neighbors.db");
@@ -2127,7 +2151,7 @@ void spoton::slotBlockNeighbor(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_database");
+  QSqlDatabase::removeDatabase("spoton");
   m_tableTimer.start();
 }
 
@@ -2141,8 +2165,7 @@ void spoton::slotUnblockNeighbor(void)
 void spoton::slotDeleteAllListeners(void)
 {
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_database");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "listeners.db");
@@ -2165,7 +2188,7 @@ void spoton::slotDeleteAllListeners(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_database");
+  QSqlDatabase::removeDatabase("spoton");
 
   while(ui.listeners->rowCount() > 0)
     ui.listeners->removeRow(0);
@@ -2174,8 +2197,7 @@ void spoton::slotDeleteAllListeners(void)
 void spoton::slotDeleteAllNeighbors(void)
 {
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_database");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "neighbors.db");
@@ -2198,7 +2220,7 @@ void spoton::slotDeleteAllNeighbors(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_database");
+  QSqlDatabase::removeDatabase("spoton");
 
   while(ui.neighbors->rowCount() > 0)
     ui.neighbors->removeRow(0);
@@ -2220,7 +2242,7 @@ void spoton::slotPopulateParticipants(void)
     m_participantsLastModificationTime = QDateTime();
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_database");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
     db.setDatabaseName(fileInfo.absoluteFilePath());
 
@@ -2383,7 +2405,7 @@ void spoton::slotPopulateParticipants(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_database");
+  QSqlDatabase::removeDatabase("spoton");
 }
 
 void spoton::slotSendMessage(void)
@@ -2577,8 +2599,7 @@ void spoton::slotRemoveParticipants(void)
     return;
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_database");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "friends_symmetric_keys.db");
@@ -2609,7 +2630,7 @@ void spoton::slotRemoveParticipants(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_database");
+  QSqlDatabase::removeDatabase("spoton");
 }
 
 void spoton::slotSaveNodeName(void)
@@ -2765,7 +2786,7 @@ void spoton::slotSharePublicKeyWithParticipant(void)
   QByteArray symmetricKeyAlgorithm;
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_database");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "friends_symmetric_keys.db");
@@ -2801,7 +2822,7 @@ void spoton::slotSharePublicKeyWithParticipant(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_database");
+  QSqlDatabase::removeDatabase("spoton");
 
   if(publicKey.isEmpty() ||
      symmetricKey.isEmpty() || symmetricKeyAlgorithm.isEmpty())
@@ -2872,5 +2893,156 @@ void spoton::slotCopyMyPublicKey(void)
   bool ok = true;
 
   publicKey = m_crypt->publicKey(&ok);
-  clipboard->setText(publicKey.constData());
+
+  if(ok)
+    clipboard->setText(publicKey.constData());
+}
+
+void spoton::slotPopulateCountries(void)
+{
+  if(!m_crypt)
+    return;
+
+  QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
+		     "country_inclusion.db");
+
+  if(fileInfo.exists())
+    {
+      if(fileInfo.lastModified() <= m_countriesLastModificationTime)
+	return;
+      else
+	m_countriesLastModificationTime = fileInfo.lastModified();
+    }
+  else
+    m_countriesLastModificationTime = QDateTime();
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(fileInfo.absoluteFilePath());
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	if(query.exec("SELECT country, accepted FROM country_inclusion"))
+	  {
+	    ui.countries->clear();
+
+	    QList<QPair<QString, bool> > countries;
+
+	    while(query.next())
+	      {
+		QString country("");
+		bool accepted = true;
+		bool ok = true;
+
+		country = m_crypt->decrypted(QByteArray::
+					     fromBase64(query.
+							value(0).
+							toByteArray()),
+					     &ok).trimmed().constData();
+
+		if(ok)
+		  accepted = m_crypt->decrypted(QByteArray::
+						fromBase64(query.
+							   value(1).
+							   toByteArray()),
+						&ok).toInt();
+
+		if(ok)
+		  {
+		    QPair<QString, bool> pair(country, accepted);
+
+		    countries.append(pair);
+		  }
+	      }
+
+	    qSort(countries);
+	    disconnect(ui.countries,
+		       SIGNAL(itemChanged(QListWidgetItem *)),
+		       this,
+		       SLOT(slotCountryChanged(QListWidgetItem *)));
+
+	    while(!countries.isEmpty())
+	      {
+		QListWidgetItem *item = 0;
+		QPair<QString, bool> pair(countries.takeFirst());
+
+		item = new QListWidgetItem(pair.first);
+		item->setFlags
+		  (Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
+
+		if(pair.second)
+		  item->setCheckState(Qt::Checked);
+		else
+		  item->setCheckState(Qt::Unchecked);
+
+		QIcon icon(iconForCountry(item->text()));
+
+		if(icon.isNull())
+		  icon = QIcon(":/Flags/unknown.png");
+
+		item->setIcon(icon);
+		ui.countries->addItem(item);
+	      }
+
+	    connect(ui.countries,
+		    SIGNAL(itemChanged(QListWidgetItem *)),
+		    this,
+		    SLOT(slotCountryChanged(QListWidgetItem *)));
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton");
+}
+
+void spoton::slotCountryChanged(QListWidgetItem *item)
+{
+  if(!item)
+    return;
+  else if(!m_crypt)
+    return;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "country_inclusion.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("UPDATE country_inclusion SET accepted = ? "
+		      "WHERE hash = ?");
+	query.bindValue
+	  (0, m_crypt->encrypted(QString::number(item->checkState()).
+				 toLatin1(), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (1, m_crypt->keyedHash(item->text().toLatin1(), &ok).toBase64());
+
+	if(ok)
+	  if(query.exec())
+	    db.commit();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton");
+}
+
+QIcon spoton::iconForCountry(const QString &country)
+{
+  if(country == "Afghanistan")
+    return QIcon(":/Flags/af.png");
+  else
+    return QIcon(":/Flags/unknown.png");
 }

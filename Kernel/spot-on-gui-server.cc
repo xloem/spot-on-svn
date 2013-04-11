@@ -52,7 +52,7 @@ spoton_gui_server::spoton_gui_server(QObject *parent):QTcpServer(parent)
 spoton_gui_server::~spoton_gui_server()
 {  
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "gui_server");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_gui_server");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "kernel.db");
@@ -68,7 +68,7 @@ spoton_gui_server::~spoton_gui_server()
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("gui_server");
+  QSqlDatabase::removeDatabase("spoton_gui_server");
 }
 
 void spoton_gui_server::slotClientConnected(void)
@@ -139,23 +139,26 @@ void spoton_gui_server::slotReadyRead(void)
 		  message = QByteArray::fromBase64(message);
 
 		  if(!spoton_kernel::s_crypt1)
-		    spoton_kernel::s_crypt1 = new spoton_gcrypt
-		      (spoton_kernel::s_settings.value("gui/cipherType").
-		       toString().trimmed(),
-		       spoton_kernel::s_settings.value("gui/hashType").
-		       toString().trimmed(),
-		       message,
-		       spoton_kernel::s_settings.value("gui/saltLength",
-						       256).toInt(),
-		       spoton_kernel::s_settings.value("gui/iterationCount",
-						       1000).toInt(),
-		       "private");
+		    {
+		      spoton_kernel::s_crypt1 = new spoton_gcrypt
+			(spoton_kernel::s_settings.value("gui/cipherType", "aes256").
+			 toString().trimmed(),
+			 spoton_kernel::s_settings.value("gui/hashType", "sha512").
+			 toString().trimmed(),
+			 message,
+			 spoton_kernel::s_settings.value("gui/saltLength",
+							 256).toInt(),
+			 spoton_kernel::s_settings.value("gui/iterationCount",
+							 1000).toInt(),
+			 "private");
+		      spoton_misc::populateCountryDatabase(spoton_kernel::s_crypt1);
+		    }
 
 		  if(!spoton_kernel::s_crypt2)
 		    spoton_kernel::s_crypt2 = new spoton_gcrypt
-		      (spoton_kernel::s_settings.value("gui/cipherType").
+		      (spoton_kernel::s_settings.value("gui/cipherType", "aes256").
 		       toString().trimmed(),
-		       spoton_kernel::s_settings.value("gui/hashType").
+		       spoton_kernel::s_settings.value("gui/hashType", "sha512").
 		       toString().trimmed(),
 		       message,
 		       spoton_kernel::s_settings.value("gui/saltLength",
@@ -194,7 +197,7 @@ void spoton_gui_server::slotReadyRead(void)
 void spoton_gui_server::slotTimeout(void)
 {
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "gui_server");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_gui_server");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "kernel.db");
@@ -215,7 +218,7 @@ void spoton_gui_server::slotTimeout(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("gui_server");
+  QSqlDatabase::removeDatabase("spoton_gui_server");
 }
 
 void spoton_gui_server::slotReceivedChatMessage(const QByteArray &message)

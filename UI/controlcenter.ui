@@ -843,27 +843,7 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_25">
             <item>
-             <widget class="QScrollArea" name="scrollArea_3">
-              <property name="frameShape">
-               <enum>QFrame::NoFrame</enum>
-              </property>
-              <property name="horizontalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOff</enum>
-              </property>
-              <property name="widgetResizable">
-               <bool>true</bool>
-              </property>
-              <widget class="QWidget" name="scrollAreaWidgetContents_3">
-               <property name="geometry">
-                <rect>
-                 <x>0</x>
-                 <y>0</y>
-                 <width>120</width>
-                 <height>571</height>
-                </rect>
-               </property>
-              </widget>
-             </widget>
+             <widget class="QListWidget" name="countries"/>
             </item>
            </layout>
           </widget>
@@ -2444,7 +2424,7 @@
   <tabstop>ipv6Neighbor</tabstop>
   <tabstop>addNeighbor</tabstop>
   <tabstop>fetchMore</tabstop>
-  <tabstop>scrollArea_3</tabstop>
+  <tabstop>countries</tabstop>
   <tabstop>keywords</tabstop>
   <tabstop>pushButton_11</tabstop>
   <tabstop>textBrowser_2</tabstop>

@@ -35,14 +35,19 @@ extern "C"
 }
 #endif
 
+class spoton_gcrypt;
+
 class spoton_misc
 {
  public:
   static QString countryCodeFromIPAddress(const QString &ipAddress);
   static QString countryNameFromIPAddress(const QString &ipAddress);
   static QString homePath(void);
+  static bool countryAllowedToConnect(const QString &country,
+				      spoton_gcrypt *crypt);
   static bool isGnome(void);
   static void logError(const QString &error);
+  static void populateCountryDatabase(spoton_gcrypt *crypt);
   static void prepareDatabases(void);
 
  private:

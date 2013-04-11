@@ -28,11 +28,13 @@
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
+#include <QLocale>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QString>
 #include <QtDebug>
 
+#include "spot-on-gcrypt.h"
 #include "spot-on-misc.h"
 
 QString spoton_misc::homePath(void)
@@ -62,7 +64,7 @@ bool spoton_misc::isGnome(void)
 void spoton_misc::prepareDatabases(void)
 {
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "prepare");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "country_inclusion.db");
@@ -80,10 +82,10 @@ void spoton_misc::prepareDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("prepare");
+  QSqlDatabase::removeDatabase("spoton_misc");
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "prepare");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "friends_symmetric_keys.db");
@@ -113,10 +115,10 @@ void spoton_misc::prepareDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("prepare");
+  QSqlDatabase::removeDatabase("spoton_misc");
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "prepare");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "idiotes.db");
@@ -134,10 +136,10 @@ void spoton_misc::prepareDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("prepare");
+  QSqlDatabase::removeDatabase("spoton_misc");
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "prepare");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "kernel.db");
@@ -158,10 +160,10 @@ void spoton_misc::prepareDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("prepare");
+  QSqlDatabase::removeDatabase("spoton_misc");
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "prepare");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "listeners.db");
@@ -187,10 +189,10 @@ void spoton_misc::prepareDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("prepare");
+  QSqlDatabase::removeDatabase("spoton_misc");
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "prepare");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "neighbors.db");
@@ -220,10 +222,10 @@ void spoton_misc::prepareDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("prepare");
+  QSqlDatabase::removeDatabase("spoton_misc");
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "prepare");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "public_keys.db");
@@ -239,7 +241,7 @@ void spoton_misc::prepareDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("prepare");
+  QSqlDatabase::removeDatabase("spoton_misc");
 }
 
 void spoton_misc::logError(const QString &error)
@@ -292,6 +294,8 @@ QString spoton_misc::countryCodeFromIPAddress(const QString &ipAddress)
   if(gi)
     code = GeoIP_country_code_by_addr
       (gi, ipAddress.toLatin1().constData());
+  else
+    logError("spoton_misc::countryCodeFromIPAddress(): gi is 0.");
 
   GeoIP_delete(gi);
 #else
@@ -334,3 +338,94 @@ QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
   else
     return QString(country);
 }
+
+void spoton_misc::populateCountryDatabase(spoton_gcrypt *crypt)
+{
+  if(!crypt)
+    return;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "country_inclusion.db");
+
+    if(db.open())
+      {
+	QList<QLocale> allLocales
+	  (QLocale::matchingLocales(QLocale::AnyLanguage, QLocale::AnyScript,
+				    QLocale::AnyCountry));
+
+	while(!allLocales.isEmpty())
+	  {
+	    QLocale locale(allLocales.takeFirst());
+	    QSqlQuery query(db);
+	    bool ok = true;
+
+	    query.prepare("INSERT INTO country_inclusion "
+			  "(country, accepted, hash) "
+			  "VALUES (?, ?, ?)");
+	    query.bindValue
+	      (0, crypt->encrypted(QLocale::countryToString(locale.country()).
+				   toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(1, crypt->encrypted(QString::number(1).toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(2, crypt->keyedHash(QLocale::countryToString(locale.country()).
+				     toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.exec();
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_misc");
+}
+
+bool spoton_misc::countryAllowedToConnect(const QString &country,
+					  spoton_gcrypt *crypt)
+{
+  if(!crypt)
+    return false;
+
+  bool allowed = false;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "country_inclusion.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("SELECT accepted FROM country_inclusion WHERE "
+		      "hash = ?");
+	query.bindValue(0, crypt->keyedHash(country.toLatin1(), &ok).toBase64());
+
+	if(ok)
+	  if(query.exec())
+	    if(query.next())
+	      allowed = crypt->decrypted(QByteArray::
+					 fromBase64(query.
+						    value(0).
+						    toByteArray()),
+					 &ok).toInt();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_misc");
+  return allowed;
+}
+					  
