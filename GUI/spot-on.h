@@ -77,6 +77,7 @@ class spoton: public QMainWindow
   void slotBlockNeighbor(void);
   void slotChatSendMethodChanged(int index);
   void slotConnectNeighbor(void);
+  void slotConnectOnlyToStickies(void);
   void slotCopyMyPublicKey(void);
   void slotCountryChanged(QListWidgetItem *item);
   void slotDeactivateKernel(void);
