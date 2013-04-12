@@ -3,21 +3,33 @@ Qt 4.8.4, or greater, is highly recommended.
 If header (h) or interface (ui) files have changed, please perform
 a distclean before building Spot-On.
 
+===================================================
+
 Absolute cleaning:
 make distclean or mingw32-make distclean
+
+===================================================
 
 FreeBSD:
 qmake -o Makefile spot-on.freebsd.pro
 make
 
+===================================================
+
 Linux:
 qmake -o Makefile spot-on.pro
 make
+
+===================================================
 
 OS X:
 qmake -spec macx-g++ -o Makefile spot-on.osx.pro
 make
 
+===================================================
+
 Windows:
 qmake -o Makefile spot-on.win.pro
 make or mingw32-make
+
+===================================================

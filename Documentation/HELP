@@ -16,7 +16,7 @@ communications also involve TCP sockets.
 
 <br><br>
 
-If you intend to use to several kernels, please create alternate directories
+If you intend to use several kernels, please create alternate directories
 and set SPOTON_HOME accordingly.
 
 <br>
