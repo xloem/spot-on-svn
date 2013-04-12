@@ -246,5 +246,6 @@
         <file>Flags/yt.png</file>
         <file>Flags/yu.png</file>
         <file>Flags/zm.png</file>
+        <file>Logo/spoton-button-64.ico</file>
     </qresource>
 </RCC>

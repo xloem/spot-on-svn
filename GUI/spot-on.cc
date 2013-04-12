@@ -93,6 +93,8 @@ int main(int argc, char *argv[])
                      spoton_misc::homePath());
   QSettings::setDefaultFormat(QSettings::IniFormat);
   Q_UNUSED(new spoton());
+  qapplication.setWindowIcon( QIcon(":/Logo/spoton-button-64.ico") );
+
   return qapplication.exec();
 }
 
