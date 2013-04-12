@@ -283,6 +283,8 @@ spoton::spoton(void)
   ui.neighborIP->setInputMask("000.000.000.000; ");
   ui.neighborScopeId->setEnabled(false);
   ui.neighborScopeIdLabel->setEnabled(false);
+  ui.participants->setStyleSheet
+    ("QTableView {selection-background-color: lightgreen}");
 
   QSettings settings;
 
@@ -362,19 +364,22 @@ spoton::spoton(void)
 
   QString str("");
 
-  str = m_settings.value("gui/cipherType", "aes256").toString().toLower().trimmed();
+  str = m_settings.value("gui/cipherType", "aes256").
+    toString().toLower().trimmed();
 
   if(ui.cipherType->findText(str) > -1)
     ui.cipherType->setCurrentIndex(ui.cipherType->findText(str));
 
-  str = m_settings.value("gui/hashType", "sha512").toString().toLower().trimmed();
+  str = m_settings.value("gui/hashType", "sha512").
+    toString().toLower().trimmed();
 
   if(ui.hashType->findText(str) > -1)
     ui.hashType->setCurrentIndex(ui.hashType->findText(str));
 
   ui.iterationCount->setValue(m_settings.value("gui/iterationCount", 1000).
 			      toInt());
-  str = m_settings.value("gui/rsaKeySize", "3072").toString().toLower().trimmed();
+  str = m_settings.value("gui/rsaKeySize", "3072").
+    toString().toLower().trimmed();
 
   if(ui.rsaKeySize->findText(str) > -1)
     ui.rsaKeySize->setCurrentIndex(ui.rsaKeySize->findText(str));
@@ -430,6 +435,10 @@ spoton::spoton(void)
     ui.chatHorizontalSplitter->restoreState
       (m_settings.value("gui/chatHorizontalSplitter").toByteArray());
 
+  if(m_settings.contains("gui/neighborsHorizontalSplitter"))
+    ui.neighborsHorizontalSplitter->restoreState
+      (m_settings.value("gui/neighborsHorizontalSplitter").toByteArray());
+
   if(m_settings.contains("gui/neighborsVerticalSplitter"))
     ui.neighborsVerticalSplitter->restoreState
       (m_settings.value("gui/neighborsVerticalSplitter").toByteArray());
@@ -449,6 +458,7 @@ spoton::spoton(void)
   ui.neighbors->setColumnHidden(ui.neighbors->columnCount() - 1, true);
   ui.participants->setColumnHidden(ui.participants->columnCount() - 2, true);
   ui.participants->setColumnHidden(ui.participants->columnCount() - 3, true);
+  ui.participants->setColumnHidden(ui.participants->columnCount() - 4, true);
   ui.participants->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   prepareListenerIPCombo();
@@ -1337,6 +1347,8 @@ void spoton::saveSettings(void)
   settings.setValue("gui/chatHorizontalSplitter",
 		    ui.chatHorizontalSplitter->saveState());
   settings.setValue("gui/currentTabIndex", ui.tab->currentIndex());
+  settings.setValue("gui/neighborsHorizontalSplitter",
+		    ui.neighborsHorizontalSplitter->saveState());
   settings.setValue("gui/neighborsVerticalSplitter",
 		    ui.neighborsVerticalSplitter->saveState());
   settings.setValue("gui/showOnlyConnectedNeighbors",
@@ -1653,7 +1665,8 @@ void spoton::slotSetPassphrase(void)
 	      spoton_gcrypt::reencodePrivateKey
 		(ui.cipherType->currentText(),
 		 derivedKey,
-		 m_settings.value("gui/cipherType", "aes256").toString().trimmed(),
+		 m_settings.value("gui/cipherType", "aes256").
+		 toString().trimmed(),
 		 m_crypt->key(),
 		 "shared",
 		 error2);
@@ -2252,24 +2265,23 @@ void spoton::slotPopulateParticipants(void)
 
 	QList<int> rows;
 	QModelIndexList list
-	  (ui.participants->selectionModel()->selectedRows(1));
-	QStringList oids;
+	  (ui.participants->selectionModel()->selectedRows(3));
+	QStringList hashes;
+	int hval = ui.participants->horizontalScrollBar()->value();
 	int row = 0;
+	int vval = ui.participants->verticalScrollBar()->value();
 
 	while(!list.isEmpty())
 	  {
 	    QVariant data(list.takeFirst().data());
 
 	    if(!data.isNull() && data.isValid())
-	      oids.append(data.toString());
+	      hashes.append(data.toString());
 	  }
 
 	ui.participants->setSortingEnabled(false);
 	ui.participants->clearContents();
 	ui.participants->setRowCount(0);
-    ui.participants->setStyleSheet("QTableView {selection-background-color: lightgreen}");
-    //ui.participants->verticalHeader()->hide();
-
 
 	QSqlQuery query(db);
 	QWidget *focusWidget = QApplication::focusWidget();
@@ -2280,11 +2292,11 @@ void spoton::slotPopulateParticipants(void)
 	** We only wish to display other public keys.
 	*/
 
-	if(query.exec("SELECT name, OID, neighbor_oid, status "
-		      "FROM symmetric_keys"))
+	if(query.exec("SELECT name, OID, neighbor_oid, public_key_hash, "
+		      "status FROM symmetric_keys"))
 	  while(query.next())
 	    {
-	      QString status(query.value(3).toString().trimmed());
+	      QString status(query.value(4).toString().trimmed());
 	      bool temporary =
 		query.value(2).toInt() == -1 ? false : true;
 
@@ -2305,9 +2317,9 @@ void spoton::slotPopulateParticipants(void)
 		    item = new QTableWidgetItem
 		      (QString::fromUtf8(query.value(i).toByteArray()).
 		       trimmed());
-		  else if(i == 3)
+		  else if(i == 4)
 		    {
-		      QString status(query.value(3).toString().trimmed());
+		      QString status(query.value(i).toString().trimmed());
 
 		      status[0] = status.toUpper()[0];
 
@@ -2386,7 +2398,7 @@ void spoton::slotPopulateParticipants(void)
 		  ui.participants->setItem(row - 1, i, item);
 		}
 
-	      if(oids.contains(query.value(1).toString().trimmed()))
+	      if(hashes.contains(query.value(3).toString().trimmed()))
 		rows.append(row - 1);
 	    }
 
@@ -2403,6 +2415,8 @@ void spoton::slotPopulateParticipants(void)
 	ui.participants->setSortingEnabled(true);
 	ui.participants->resizeColumnsToContents();
 	ui.participants->horizontalHeader()->setStretchLastSection(true);
+	ui.participants->horizontalScrollBar()->setValue(hval);
+	ui.participants->verticalScrollBar()->setValue(vval);
       }
 
     db.close();
@@ -2927,11 +2941,14 @@ void spoton::slotPopulateCountries(void)
     if(db.open())
       {
 	QSqlQuery query(db);
+	QWidget *focusWidget = QApplication::focusWidget();
 
 	if(query.exec("SELECT country, accepted FROM country_inclusion"))
 	  {
 	    QList<QListWidgetItem *> list(ui.countries->selectedItems());
 	    QString selectedCountry("");
+	    int hval = ui.countries->horizontalScrollBar()->value();
+	    int vval = ui.countries->verticalScrollBar()->value();
 
 	    if(!list.isEmpty())
 	      selectedCountry = list.at(0)->text();
@@ -2973,6 +2990,8 @@ void spoton::slotPopulateCountries(void)
 		       this,
 		       SLOT(slotCountryChanged(QListWidgetItem *)));
 
+	    QListWidgetItem *selected = 0;
+
 	    while(!countries.isEmpty())
 	      {
 		QListWidgetItem *item = 0;
@@ -2980,7 +2999,8 @@ void spoton::slotPopulateCountries(void)
 
 		item = new QListWidgetItem(pair.first);
 		item->setFlags
-		  (Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
+		  (Qt::ItemIsEnabled | Qt::ItemIsSelectable |
+		   Qt::ItemIsUserCheckable);
 
 		if(pair.second)
 		  item->setCheckState(Qt::Checked);
@@ -2997,13 +3017,21 @@ void spoton::slotPopulateCountries(void)
 
 		if(!selectedCountry.isEmpty())
 		  if(item->text() == selectedCountry)
-		    item->setSelected(true);
+		    selected = item;
 	      }
 
+	    if(selected)
+	      selected->setSelected(true);
+
+	    ui.countries->horizontalScrollBar()->setValue(hval);
+	    ui.countries->verticalScrollBar()->setValue(vval);
 	    connect(ui.countries,
 		    SIGNAL(itemChanged(QListWidgetItem *)),
 		    this,
 		    SLOT(slotCountryChanged(QListWidgetItem *)));
+
+	    if(focusWidget)
+	      focusWidget->setFocus();
 	  }
       }
 
@@ -3056,375 +3084,375 @@ QIcon spoton::iconForCountry(const QString &country)
 {
   if(country == "Afghanistan")
     return QIcon(":/Flags/af.png");
-  if(country == "Albania")
+  else if(country == "Albania")
     return QIcon(":/Flags/al.png");
-  if(country == "Algeria")
+  else if(country == "Algeria")
     return QIcon(":/Flags/dz.png");
-  if(country == "AmericanSamoa")
+  else if(country == "AmericanSamoa")
     return QIcon(":/Flags/as.png");
-  if(country == "Angola")
+  else if(country == "Angola")
     return QIcon(":/Flags/ao.png");
-  if(country == "Argentina")
+  else if(country == "Argentina")
     return QIcon(":/Flags/ar.png");
-  if(country == "Armenia")
+  else if(country == "Armenia")
     return QIcon(":/Flags/am.png");
-  if(country == "Aruba")
+  else if(country == "Aruba")
     return QIcon(":/Flags/aw.png");
-  if(country == "Algeria")
+  else if(country == "Algeria")
     return QIcon(":/Flags/dz.png");
-  if(country == "Australia")
+  else if(country == "Australia")
     return QIcon(":/Flags/au.png");
-  if(country == "Austria")
+  else if(country == "Austria")
     return QIcon(":/Flags/at.png");
-  if(country == "Azerbaijan")
+  else if(country == "Azerbaijan")
     return QIcon(":/Flags/az.png");
-  if(country == "Bahrain")
+  else if(country == "Bahrain")
     return QIcon(":/Flags/bh.png");
-  if(country == "Bangladesh")
+  else if(country == "Bangladesh")
     return QIcon(":/Flags/bd.png");
-  if(country == "Barbados")
+  else if(country == "Barbados")
     return QIcon(":/Flags/bb.png");
-  if(country == "Belarus")
+  else if(country == "Belarus")
     return QIcon(":/Flags/by.png");
-  if(country == "Belgium")
+  else if(country == "Belgium")
     return QIcon(":/Flags/be.png");
-  if(country == "Belize")
+  else if(country == "Belize")
     return QIcon(":/Flags/bz.png");
-  if(country == "Benin")
+  else if(country == "Benin")
     return QIcon(":/Flags/bj.png");
-  if(country == "Bermuda")
+  else if(country == "Bermuda")
     return QIcon(":/Flags/bm.png");
-  if(country == "Bhutan")
+  else if(country == "Bhutan")
     return QIcon(":/Flags/bt.png");
-  if(country == "Bolivia")
+  else if(country == "Bolivia")
     return QIcon(":/Flags/bo.png");
-  if(country == "BosniaAndHerzegowina")
+  else if(country == "BosniaAndHerzegowina")
     return QIcon(":/Flags/ba.png");
-  if(country == "Botswana")
+  else if(country == "Botswana")
     return QIcon(":/Flags/bw.png");
-  if(country == "Brazil")
+  else if(country == "Brazil")
     return QIcon(":/Flags/br.png");
-  if(country == "BruneiDarussalam")
+  else if(country == "BruneiDarussalam")
     return QIcon(":/Flags/bn.png");
-  if(country == "Bulgaria")
+  else if(country == "Bulgaria")
     return QIcon(":/Flags/bg.png");
-  if(country == "BurkinaFaso")
+  else if(country == "BurkinaFaso")
     return QIcon(":/Flags/bf.png");
-  if(country == "Burundi")
+  else if(country == "Burundi")
     return QIcon(":/Flags/bi.png");
-  if(country == "Cambodia")
+  else if(country == "Cambodia")
     return QIcon(":/Flags/kh.png");
-  if(country == "Cameroon")
+  else if(country == "Cameroon")
     return QIcon(":/Flags/cm.png");
-  if(country == "Canada")
+  else if(country == "Canada")
     return QIcon(":/Flags/ca.png");
-  if(country == "CapeVerde")
+  else if(country == "CapeVerde")
     return QIcon(":/Flags/cv.png");
-  if(country == "CentralAfricanRepublic")
+  else if(country == "CentralAfricanRepublic")
     return QIcon(":/Flags/cf.png");
-  if(country == "Chad")
+  else if(country == "Chad")
     return QIcon(":/Flags/td.png");
-  if(country == "Chile")
+  else if(country == "Chile")
     return QIcon(":/Flags/cl.png");
-  if(country == "China")
+  else if(country == "China")
     return QIcon(":/Flags/cn.png");
-  if(country == "Colombia")
+  else if(country == "Colombia")
     return QIcon(":/Flags/co.png");
-  if(country == "Comoros")
+  else if(country == "Comoros")
     return QIcon(":/Flags/km.png");
-  if(country == "CostaRica")
+  else if(country == "CostaRica")
     return QIcon(":/Flags/cr.png");
-  if(country == "Croatia")
+  else if(country == "Croatia")
     return QIcon(":/Flags/hr.png");
-  if(country == "Cyprus")
+  else if(country == "Cyprus")
     return QIcon(":/Flags/cy.png");
-  if(country == "CzechRepublic")
+  else if(country == "CzechRepublic")
     return QIcon(":/Flags/cz.png");
-  if(country == "Default")
+  else if(country == "Default")
     return QIcon(":/Flags/us.png");
-  if(country == "DemocraticRepublicOfCongo")
+  else if(country == "DemocraticRepublicOfCongo")
     return QIcon(":/Flags/cd.png");
-  if(country == "Denmark")
+  else if(country == "Denmark")
     return QIcon(":/Flags/dk.png");
-  if(country == "Djibouti")
+  else if(country == "Djibouti")
     return QIcon(":/Flags/dj.png");
-  if(country == "DominicanRepublic")
+  else if(country == "DominicanRepublic")
     return QIcon(":/Flags/do.png");
-  if(country == "Ecuador")
+  else if(country == "Ecuador")
     return QIcon(":/Flags/ec.png");
-  if(country == "Egypt")
+  else if(country == "Egypt")
     return QIcon(":/Flags/eg.png");
-  if(country == "ElSalvador")
+  else if(country == "ElSalvador")
     return QIcon(":/Flags/sv.png");
-  if(country == "EquatorialGuinea")
+  else if(country == "EquatorialGuinea")
     return QIcon(":/Flags/gq.png");
-  if(country == "Eritrea")
+  else if(country == "Eritrea")
     return QIcon(":/Flags/er.png");
-  if(country == "Estonia")
+  else if(country == "Estonia")
     return QIcon(":/Flags/ee.png");
-  if(country == "Ethiopia")
+  else if(country == "Ethiopia")
     return QIcon(":/Flags/et.png");
-  if(country == "FaroeIslands")
+  else if(country == "FaroeIslands")
     return QIcon(":/Flags/fo.png");
-  if(country == "Finland")
+  else if(country == "Finland")
     return QIcon(":/Flags/fi.png");
-  if(country == "France")
+  else if(country == "France")
     return QIcon(":/Flags/fr.png");
-  if(country == "FrenchGuiana")
+  else if(country == "FrenchGuiana")
     return QIcon(":/Flags/gy.png");
-  if(country == "Gabon")
+  else if(country == "Gabon")
     return QIcon(":/Flags/ga.png");
-  if(country == "Georgia")
+  else if(country == "Georgia")
     return QIcon(":/Flags/ge.png");
-  if(country == "Germany")
+  else if(country == "Germany")
     return QIcon(":/Flags/de.png");
-  if(country == "Ghana")
+  else if(country == "Ghana")
     return QIcon(":/Flags/gh.png");
-  if(country == "Greece")
+  else if(country == "Greece")
     return QIcon(":/Flags/gr.png");
-  if(country == "Greenland")
+  else if(country == "Greenland")
     return QIcon(":/Flags/gl.png");
-  if(country == "Guadeloupe")
+  else if(country == "Guadeloupe")
     return QIcon(":/Flags/fr.png");
-  if(country == "Guam")
+  else if(country == "Guam")
     return QIcon(":/Flags/gu.png");
-  if(country == "Guatemala")
+  else if(country == "Guatemala")
     return QIcon(":/Flags/gt.png");
-  if(country == "Guinea")
+  else if(country == "Guinea")
     return QIcon(":/Flags/gn.png");
-  if(country == "GuineaBissau")
+  else if(country == "GuineaBissau")
     return QIcon(":/Flags/gw.png");
-  if(country == "Guyana")
+  else if(country == "Guyana")
     return QIcon(":/Flags/gy.png");
-  if(country == "Honduras")
+  else if(country == "Honduras")
     return QIcon(":/Flags/hn.png");
-  if(country == "HongKong")
+  else if(country == "HongKong")
     return QIcon(":/Flags/hk.png");
-  if(country == "Hungary")
+  else if(country == "Hungary")
     return QIcon(":/Flags/hu.png");
-  if(country == "Iceland")
+  else if(country == "Iceland")
     return QIcon(":/Flags/is.png");
-  if(country == "India")
+  else if(country == "India")
     return QIcon(":/Flags/in.png");
-  if(country == "Indonesia")
+  else if(country == "Indonesia")
     return QIcon(":/Flags/id.png");
-  if(country == "Iran")
+  else if(country == "Iran")
     return QIcon(":/Flags/ir.png");
-  if(country == "Iraq")
+  else if(country == "Iraq")
     return QIcon(":/Flags/iq.png");
-  if(country == "Ireland")
+  else if(country == "Ireland")
     return QIcon(":/Flags/ie.png");
-  if(country == "Israel")
+  else if(country == "Israel")
     return QIcon(":/Flags/il.png");
-  if(country == "Italy")
+  else if(country == "Italy")
     return QIcon(":/Flags/it.png");
-  if(country == "IvoryCoast")
+  else if(country == "IvoryCoast")
     return QIcon(":/Flags/ci.png");
-  if(country == "Jamaica")
+  else if(country == "Jamaica")
     return QIcon(":/Flags/jm.png");
-  if(country == "Japan")
+  else if(country == "Japan")
     return QIcon(":/Flags/jp.png");
-  if(country == "Jordan")
+  else if(country == "Jordan")
     return QIcon(":/Flags/jo.png");
-  if(country == "Kazakhstan")
+  else if(country == "Kazakhstan")
     return QIcon(":/Flags/kz.png");
-  if(country == "Kenya")
+  else if(country == "Kenya")
     return QIcon(":/Flags/ke.png");
-  if(country == "Kuwait")
+  else if(country == "Kuwait")
     return QIcon(":/Flags/kw.png");
-  if(country == "Kyrgyzstan")
+  else if(country == "Kyrgyzstan")
     return QIcon(":/Flags/kg.png");
-  if(country == "Lao")
+  else if(country == "Lao")
     return QIcon(":/Flags/la.png");
-  if(country == "LatinAmericaAndTheCaribbean")
+  else if(country == "LatinAmericaAndTheCaribbean")
     return QIcon(":/Flags/mx.png");
-  if(country == "Latvia")
+  else if(country == "Latvia")
     return QIcon(":/Flags/lv.png");
-  if(country == "Lebanon")
+  else if(country == "Lebanon")
     return QIcon(":/Flags/lb.png");
-  if(country == "Lesotho")
+  else if(country == "Lesotho")
     return QIcon(":/Flags/ls.png");
-  if(country == "Liberia")
+  else if(country == "Liberia")
     return QIcon(":/Flags/lr.png");
-  if(country == "LibyanArabJamahiriya")
+  else if(country == "LibyanArabJamahiriya")
     return QIcon(":/Flags/ly.png");
-  if(country == "Liechtenstein")
+  else if(country == "Liechtenstein")
     return QIcon(":/Flags/li.png");
-  if(country == "Lithuania")
+  else if(country == "Lithuania")
     return QIcon(":/Flags/lt.png");
-  if(country == "Luxembourg")
+  else if(country == "Luxembourg")
     return QIcon(":/Flags/lu.png");
-  if(country == "Macau")
+  else if(country == "Macau")
     return QIcon(":/Flags/mo.png");
-  if(country == "Macedonia")
+  else if(country == "Macedonia")
     return QIcon(":/Flags/mk.png");
-  if(country == "Madagascar")
+  else if(country == "Madagascar")
     return QIcon(":/Flags/mg.png");
-  if(country == "Malaysia")
+  else if(country == "Malaysia")
     return QIcon(":/Flags/my.png");
-  if(country == "Mali")
+  else if(country == "Mali")
     return QIcon(":/Flags/ml.png");
-  if(country == "Malta")
+  else if(country == "Malta")
     return QIcon(":/Flags/mt.png");
-  if(country == "MarshallIslands")
+  else if(country == "MarshallIslands")
     return QIcon(":/Flags/mh.png");
-  if(country == "Martinique")
+  else if(country == "Martinique")
     return QIcon(":/Flags/fr.png");
-  if(country == "Mauritius")
+  else if(country == "Mauritius")
     return QIcon(":/Flags/mu.png");
-  if(country == "Mayotte")
+  else if(country == "Mayotte")
     return QIcon(":/Flags/yt.png");
-  if(country == "Mexico")
+  else if(country == "Mexico")
     return QIcon(":/Flags/mx.png");
-  if(country == "Moldova")
+  else if(country == "Moldova")
     return QIcon(":/Flags/md.png");
-  if(country == "Monaco")
+  else if(country == "Monaco")
     return QIcon(":/Flags/mc.png");
-  if(country == "Mongolia")
+  else if(country == "Mongolia")
     return QIcon(":/Flags/mn.png");
-  if(country == "Montenegro")
+  else if(country == "Montenegro")
     return QIcon(":/Flags/me.png");
-  if(country == "Morocco")
+  else if(country == "Morocco")
     return QIcon(":/Flags/ma.png");
-  if(country == "Mozambique")
+  else if(country == "Mozambique")
     return QIcon(":/Flags/mz.png");
-  if(country == "Myanmar")
+  else if(country == "Myanmar")
     return QIcon(":/Flags/mm.png");
-  if(country == "Namibia")
+  else if(country == "Namibia")
     return QIcon(":/Flags/na.png");
-  if(country == "Nepal")
+  else if(country == "Nepal")
     return QIcon(":/Flags/np.png");
-  if(country == "Netherlands")
+  else if(country == "Netherlands")
     return QIcon(":/Flags/nl.png");
-  if(country == "NewZealand")
+  else if(country == "NewZealand")
     return QIcon(":/Flags/nz.png");
-  if(country == "Nicaragua")
+  else if(country == "Nicaragua")
     return QIcon(":/Flags/ni.png");
-  if(country == "Niger")
+  else if(country == "Niger")
     return QIcon(":/Flags/ne.png");
-  if(country == "Nigeria")
+  else if(country == "Nigeria")
     return QIcon(":/Flags/ng.png");
-  if(country == "NorthernMarianaIslands")
+  else if(country == "NorthernMarianaIslands")
     return QIcon(":/Flags/mp.png");
-  if(country == "Norway")
+  else if(country == "Norway")
     return QIcon(":/Flags/no.png");
-  if(country == "Oman")
+  else if(country == "Oman")
     return QIcon(":/Flags/om.png");
-  if(country == "Pakistan")
+  else if(country == "Pakistan")
     return QIcon(":/Flags/pk.png");
-  if(country == "Panama")
+  else if(country == "Panama")
     return QIcon(":/Flags/pa.png");
-  if(country == "Paraguay")
+  else if(country == "Paraguay")
     return QIcon(":/Flags/py.png");
-  if(country == "PeoplesRepublicOfCongo")
+  else if(country == "PeoplesRepublicOfCongo")
     return QIcon(":/Flags/cg.png");
-  if(country == "Peru")
+  else if(country == "Peru")
     return QIcon(":/Flags/pe.png");
-  if(country == "Philippines")
+  else if(country == "Philippines")
     return QIcon(":/Flags/ph.png");
-  if(country == "Poland")
+  else if(country == "Poland")
     return QIcon(":/Flags/pl.png");
-  if(country == "Portugal")
+  else if(country == "Portugal")
     return QIcon(":/Flags/pt.png");
-  if(country == "PuertoRico")
+  else if(country == "PuertoRico")
     return QIcon(":/Flags/pr.png");
-  if(country == "Qatar")
+  else if(country == "Qatar")
     return QIcon(":/Flags/qa.png");
-  if(country == "RepublicOfKorea")
+  else if(country == "RepublicOfKorea")
     return QIcon(":/Flags/kr.png");
-  if(country == "Reunion")
+  else if(country == "Reunion")
     return QIcon(":/Flags/fr.png");
-  if(country == "Romania")
+  else if(country == "Romania")
     return QIcon(":/Flags/ro.png");
-  if(country == "RussianFederation")
+  else if(country == "RussianFederation")
     return QIcon(":/Flags/ru.png");
-  if(country == "Rwanda")
+  else if(country == "Rwanda")
     return QIcon(":/Flags/rw.png");
-  if(country == "Saint Barthelemy")
+  else if(country == "Saint Barthelemy")
     return QIcon(":/Flags/bl.png");
-  if(country == "Saint Martin")
+  else if(country == "Saint Martin")
     return QIcon(":/Flags/fr.png");
-  if(country == "SaoTomeAndPrincipe")
+  else if(country == "SaoTomeAndPrincipe")
     return QIcon(":/Flags/st.png");
-  if(country == "SaudiArabia")
+  else if(country == "SaudiArabia")
     return QIcon(":/Flags/sa.png");
-  if(country == "Senegal")
+  else if(country == "Senegal")
     return QIcon(":/Flags/sn.png");
-  if(country == "Serbia")
+  else if(country == "Serbia")
     return QIcon(":/Flags/rs.png");
-  if(country == "SerbiaAndMontenegro")
+  else if(country == "SerbiaAndMontenegro")
     return QIcon(":/Flags/rs.png");
-  if(country == "Singapore")
+  else if(country == "Singapore")
     return QIcon(":/Flags/sg.png");
-  if(country == "Slovakia")
+  else if(country == "Slovakia")
     return QIcon(":/Flags/sk.png");
-  if(country == "Slovenia")
+  else if(country == "Slovenia")
     return QIcon(":/Flags/si.png");
-  if(country == "Somalia")
+  else if(country == "Somalia")
     return QIcon(":/Flags/so.png");
-  if(country == "SouthAfrica")
+  else if(country == "SouthAfrica")
     return QIcon(":/Flags/za.png");
-  if(country == "Spain")
+  else if(country == "Spain")
     return QIcon(":/Flags/es.png");
-  if(country == "SriLanka")
+  else if(country == "SriLanka")
     return QIcon(":/Flags/lk.png");
-  if(country == "Sudan")
+  else if(country == "Sudan")
     return QIcon(":/Flags/sd.png");
-  if(country == "Swaziland")
+  else if(country == "Swaziland")
     return QIcon(":/Flags/sz.png");
-  if(country == "Sweden")
+  else if(country == "Sweden")
     return QIcon(":/Flags/se.png");
-  if(country == "Switzerland")
+  else if(country == "Switzerland")
     return QIcon(":/Flags/ch.png");
-  if(country == "SyrianArabRepublic")
+  else if(country == "SyrianArabRepublic")
     return QIcon(":/Flags/sy.png");
-  if(country == "Taiwan")
+  else if(country == "Taiwan")
     return QIcon(":/Flags/tw.png");
-  if(country == "Tajikistan")
+  else if(country == "Tajikistan")
     return QIcon(":/Flags/tj.png");
-  if(country == "Tanzania")
+  else if(country == "Tanzania")
     return QIcon(":/Flags/tz.png");
-  if(country == "Thailand")
+  else if(country == "Thailand")
     return QIcon(":/Flags/th.png");
-  if(country == "Togo")
+  else if(country == "Togo")
     return QIcon(":/Flags/tg.png");
-  if(country == "Tonga")
+  else if(country == "Tonga")
     return QIcon(":/Flags/to.png");
-  if(country == "TrinidadAndTobago")
+  else if(country == "TrinidadAndTobago")
     return QIcon(":/Flags/tt.png");
-  if(country == "Tunisia")
+  else if(country == "Tunisia")
     return QIcon(":/Flags/tn.png");
-  if(country == "Turkey")
+  else if(country == "Turkey")
     return QIcon(":/Flags/tr.png");
-  if(country == "USVirginIslands")
+  else if(country == "USVirginIslands")
     return QIcon(":/Flags/vi.png");
-  if(country == "Uganda")
+  else if(country == "Uganda")
     return QIcon(":/Flags/ug.png");
-  if(country == "Ukraine")
+  else if(country == "Ukraine")
     return QIcon(":/Flags/ua.png");
-  if(country == "UnitedArabEmirates")
+  else if(country == "UnitedArabEmirates")
     return QIcon(":/Flags/ae.png");
-  if(country == "UnitedKingdom")
+  else if(country == "UnitedKingdom")
     return QIcon(":/Flags/gb.png");
-  if(country == "UnitedStates")
+  else if(country == "UnitedStates")
     return QIcon(":/Flags/us.png");
-  if(country == "UnitedStatesMinorOutlyingIslands")
+  else if(country == "UnitedStatesMinorOutlyingIslands")
     return QIcon(":/Flags/us.png");
-  if(country == "Uruguay")
+  else if(country == "Uruguay")
     return QIcon(":/Flags/uy.png");
-  if(country == "Uzbekistan")
+  else if(country == "Uzbekistan")
     return QIcon(":/Flags/uz.png");
-  if(country == "Venezuela")
+  else if(country == "Venezuela")
     return QIcon(":/Flags/ve.png");
-  if(country == "VietNam")
+  else if(country == "VietNam")
     return QIcon(":/Flags/vn.png");
-  if(country == "Yemen")
+  else if(country == "Yemen")
     return QIcon(":/Flags/ye.png");
-  if(country == "Yugoslavia")
+  else if(country == "Yugoslavia")
     return QIcon(":/Flags/yu.png");
-  if(country == "Zambia")
+  else if(country == "Zambia")
     return QIcon(":/Flags/zm.png");
-  if(country == "Zimbabwe")
+  else if(country == "Zimbabwe")
     return QIcon(":/Flags/zw.png");
   else
     return QIcon(":/Flags/unknown.png");
@@ -3432,14 +3460,5 @@ QIcon spoton::iconForCountry(const QString &country)
 
 void spoton::slotConnectOnlyToStickies(void)
 {
-    //if(ui.connectOnlyToStickies->isChecked())
-        ; //block neighbor;
-   // else
-     // ; //unblock neighbor;
-
-    // Qmessagebox: Warning to left the trustedf2fweb
-
-    // keep connections, if countryexclusion
-
 }
 
