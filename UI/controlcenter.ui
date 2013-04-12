@@ -1166,6 +1166,9 @@
               </item>
               <item>
                <widget class="QGroupBox" name="listenersBox">
+                <property name="toolTip">
+                 <string>&lt;img src=':/tab-settings.png'&gt; Please define a Listener with the local IP of your Device and forward the chosen Port in your Router/Nat.</string>
+                </property>
                 <property name="title">
                  <string>Listening Services</string>
                 </property>
