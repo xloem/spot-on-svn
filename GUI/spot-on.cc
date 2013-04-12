@@ -2044,6 +2044,11 @@ void spoton::sendKeyToKernel(void)
 
 void spoton::slotConnectNeighbor(void)
 {
+    {
+     if(!isKernelActive())
+   return slotActivateKernel();
+    }
+
   QString oid("");
   int row = -1;
 
@@ -3083,7 +3088,7 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
 QIcon spoton::iconForCountry(const QString &country)
 {
   if(country == "Afghanistan")
-    return QIcon(":/Flags/af.png");
+      return QIcon(":/Flags/af.png");
   else if(country == "Albania")
     return QIcon(":/Flags/al.png");
   else if(country == "Algeria")
@@ -3460,5 +3465,44 @@ QIcon spoton::iconForCountry(const QString &country)
 
 void spoton::slotConnectOnlyToStickies(void)
 {
+
+
 }
 
+
+void spoton::slotFetchMoreAlgo(void)
+{
+
+}
+
+void spoton::slotFetchMoreButton(void)
+{
+    {
+     if(!isKernelActive())
+     return slotActivateKernel();
+    }
+
+}
+
+
+void spoton::slotAddFriendsKey(void)
+{
+
+}
+
+void spoton::slotDoSearch(void)
+{
+
+}
+
+void spoton::slotDisplayLocalSearchResults(void)
+
+{
+
+}
+
+void spoton::slotResetAll(void)
+
+{
+
+}

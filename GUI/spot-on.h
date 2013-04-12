@@ -73,6 +73,7 @@ class spoton: public QMainWindow
  private slots:
   void slotActivateKernel(void);
   void slotAddListener(void);
+  void slotAddFriendsKey(void);
   void slotAddNeighbor(void);
   void slotBlockNeighbor(void);
   void slotChatSendMethodChanged(int index);
@@ -86,6 +87,10 @@ class spoton: public QMainWindow
   void slotDeleteListener(void);
   void slotDeleteNeighbor(void);
   void slotDisconnectNeighbor(void);
+  void slotDisplayLocalSearchResults(void);
+  void slotDoSearch(void);
+  void slotFetchMoreAlgo(void);
+  void slotFetchMoreButton(void);
   void slotGeneralTimerTimeout(void);
   void slotKernelSocketState(void);
   void slotListenerCheckChange(int state);
@@ -102,6 +107,7 @@ class spoton: public QMainWindow
   void slotQuit(void);
   void slotReceivedKernelMessage(void);
   void slotRemoveParticipants(void);
+  void slotResetAll(void);
   void slotSaveKernelPath(void);
   void slotSaveNodeName(void);
   void slotSelectKernelPath(void);
