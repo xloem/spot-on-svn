@@ -44,7 +44,16 @@
         <string>&amp;Chat</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_18">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item>
@@ -56,7 +65,16 @@
            </sizepolicy>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -1038,7 +1056,16 @@
         <string>S&amp;ettings</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_15">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item>
@@ -2195,7 +2222,7 @@
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-          <widget class="QGroupBox" name="groupBox_emailin">
+          <widget class="QGroupBox" name="groupBox_inboxEmail">
            <property name="title">
             <string>InBox Email</string>
            </property>
@@ -2222,10 +2249,21 @@
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="participantemail_2"/>
+               <widget class="QComboBox" name="inbox_from"/>
               </item>
               <item>
-               <widget class="QPushButton" name="sendemail_2">
+               <widget class="QPushButton" name="pushButton_retrieveemail">
+                <property name="text">
+                 <string>Retrieve</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../Icons/icons.qrc">
+                  <normaloff>:/down.png</normaloff>:/down.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_deleteemail">
                 <property name="text">
                  <string>Delete</string>
                 </property>
@@ -2259,7 +2297,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QTextBrowser" name="textBrowser_4">
+               <widget class="QTextBrowser" name="textBrowser_inboxtopic">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
                   <horstretch>0</horstretch>
@@ -2298,7 +2336,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QTextBrowser" name="textBrowser_5"/>
+               <widget class="QTextBrowser" name="textBrowser_inboxbody"/>
               </item>
              </layout>
             </item>
@@ -2334,7 +2372,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QGroupBox" name="groupBox_emailout">
+          <widget class="QGroupBox" name="groupBox_outboxEmail">
            <property name="title">
             <string>OutBox Email</string>
            </property>
@@ -2361,7 +2399,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="participantemail"/>
+               <widget class="QComboBox" name="participantEmail"/>
               </item>
              </layout>
             </item>
@@ -2387,7 +2425,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QTextBrowser" name="textBrowser">
+               <widget class="QTextBrowser" name="textBrowser_outboxTopic">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
                   <horstretch>0</horstretch>
@@ -2426,7 +2464,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QTextBrowser" name="textBrowser_3"/>
+               <widget class="QTextBrowser" name="textBrowser_outboxBody"/>
               </item>
              </layout>
             </item>
@@ -2446,7 +2484,7 @@
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="sendemail">
+               <widget class="QPushButton" name="pushButton_sendEmail">
                 <property name="text">
                  <string>Send</string>
                 </property>
