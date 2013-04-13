@@ -248,5 +248,7 @@
         <file>Flags/zm.png</file>
         <file>Logo/spoton-button-64.ico</file>
         <file>tab-email.png</file>
+        <file>attach.png</file>
+        <file>chat.png</file>
     </qresource>
 </RCC>
