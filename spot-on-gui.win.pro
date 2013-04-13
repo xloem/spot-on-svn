@@ -125,8 +125,7 @@ RESOURCES	= Documentation\\documentation.qrc \
                   Icons\\icons.qrc \
                   Translations\\translations.qrc
 
-win32:RC_FILE    = Icons\\Resources\\spot-on.rc\
-
+RC_FILE		= Icons\\Resources\\spot-on.rc
 
 TARGET		= Spot-On
 PROJECTNAME	= Spot-On
