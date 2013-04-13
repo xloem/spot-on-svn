@@ -2181,6 +2181,312 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_email">
+       <attribute name="icon">
+        <iconset resource="../Icons/icons.qrc">
+         <normaloff>:/tab-email.png</normaloff>:/tab-email.png</iconset>
+       </attribute>
+       <attribute name="title">
+        <string>Email</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_37">
+        <item>
+         <widget class="QSplitter" name="splitter">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <widget class="QGroupBox" name="groupBox_emailin">
+           <property name="title">
+            <string>InBox Email</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_27">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_35">
+              <item>
+               <widget class="QLabel" name="label_28">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>75</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Time / From:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="participantemail_2"/>
+              </item>
+              <item>
+               <widget class="QPushButton" name="sendemail_2">
+                <property name="text">
+                 <string>Delete</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../Icons/icons.qrc">
+                  <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_33">
+              <item>
+               <widget class="QLabel" name="label_29">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>75</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Topic</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTextBrowser" name="textBrowser_4">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_36">
+              <item>
+               <widget class="QLabel" name="label_30">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>75</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Text</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTextBrowser" name="textBrowser_5"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_30">
+              <item>
+               <spacer name="horizontalSpacer_29">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_30">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QGroupBox" name="groupBox_emailout">
+           <property name="title">
+            <string>OutBox Email</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_26">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_34">
+              <item>
+               <widget class="QLabel" name="label_10">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>75</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>To:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="participantemail"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_31">
+              <item>
+               <widget class="QLabel" name="label_25">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>75</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Topic</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTextBrowser" name="textBrowser">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_32">
+              <item>
+               <widget class="QLabel" name="label_26">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>75</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Text</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTextBrowser" name="textBrowser_3"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_29">
+              <item>
+               <spacer name="horizontalSpacer_27">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="sendemail">
+                <property name="text">
+                 <string>Send</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../Icons/icons.qrc">
+                  <normaloff>:/tab-email.png</normaloff>:/tab-email.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_28">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_27">
+              <property name="text">
+               <string>Email to offline friends requires a third common friend online, in which the email is stored. </string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="tab_login">
        <attribute name="icon">
         <iconset resource="../Icons/icons.qrc">
@@ -2364,7 +2670,7 @@
      <x>0</x>
      <y>0</y>
      <width>992</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
