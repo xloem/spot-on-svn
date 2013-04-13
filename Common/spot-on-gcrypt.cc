@@ -1564,3 +1564,82 @@ void spoton_gcrypt::generatePrivatePublicKeys(const int rsaKeySize,
   gcry_free(keyPair);
   gcry_free(parameters);
 }
+
+QByteArray spoton_gcrypt::keyedHash(const QByteArray &data,
+				    const QByteArray &key,
+				    const QString &hashType,
+				    bool *ok)
+{
+  QByteArray hash;
+  gcry_error_t err = 0;
+  gcry_md_hd_t hd;
+  int hashAlgorithm = gcry_md_map_name(hashType.toLatin1().constData());
+
+  if((err = gcry_md_open(&hd, hashAlgorithm,
+			 GCRY_MD_FLAG_SECURE | GCRY_MD_FLAG_HMAC)) != 0)
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	(QString("spoton_gcrypt::keyedHash(): gcry_md_open() failure (%1).").
+	 arg(gcry_strerror(err)));
+    }
+  else
+    {
+      if((err = gcry_md_setkey(hd,
+			       static_cast<const void *> (key.constData()),
+			       static_cast<size_t> (key.length()))) != 0)
+	{
+	  if(ok)
+	    *ok = false;
+
+	  spoton_misc::logError
+	    (QString("spoton_gcrypt::keyedHash(): gcry_md_setkey() "
+		     "failure (%1).").arg(gcry_strerror(err)));
+	}
+      else
+	{
+	  gcry_md_write
+	    (hd,
+	     static_cast<const void *> (data.constData()),
+	     static_cast<size_t> (data.length()));
+
+	  unsigned char *buffer = gcry_md_read(hd, hashAlgorithm);
+
+	  if(buffer)
+	    {
+	      unsigned int length = gcry_md_get_algo_dlen(hashAlgorithm);
+
+	      if(length > 0)
+		{
+		  hash.resize(length);
+		  memcpy(static_cast<void *> (hash.data()),
+			 static_cast<const void *> (buffer),
+			 static_cast<size_t> (hash.length()));
+		}
+	      else
+		{
+		  if(ok)
+		    *ok = false;
+
+		  spoton_misc::logError
+		    (QString("spoton_gcrypt::keyedHash(): "
+			     "gcry_md_get_algo_dlen() "
+			     "failure for %1.").arg(hashType));
+		}
+	    }
+	  else
+	    {
+	      if(ok)
+		*ok = false;
+
+	      spoton_misc::logError("spoton_gcrypt::keyedHash(): "
+				    "gcry_md_read() returned 0.");
+	    }
+	}
+    }
+
+  gcry_md_close(hd);
+  return hash;
+}

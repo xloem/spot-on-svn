@@ -53,6 +53,10 @@ class spoton_gcrypt
 			       const QString &passphrase,
 			       const QByteArray &salt,
 			       QString &error);
+  static QByteArray keyedHash(const QByteArray &data,
+			      const QByteArray &key,
+			      const QString &hashType,
+			      bool *ok);
   static QByteArray publicKeyEncrypt(const QByteArray &data,
 				     const QByteArray &publicKey,
 				     bool *ok);

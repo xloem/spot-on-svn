@@ -710,9 +710,11 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 		  (symmetricKeyAlgorithm, &ok);
 
 	      if(ok)
-		hash = spoton_gcrypt::sha512Hash
+		hash = spoton_gcrypt::keyedHash
 		  (name.leftJustified(spoton_send::NAME_MAXIMUM_LENGTH,
-				      '\n') + message, &ok);
+				      '\n') + message,
+		   symmetricKey,
+		   "sha512", &ok);
 
 	      if(ok)
 		{
@@ -976,7 +978,8 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		{
 		  QByteArray hash;
 
-		  hash = spoton_gcrypt::sha512Hash(status, &ok);
+		  hash = spoton_gcrypt::keyedHash(status, symmetricKey,
+						  "sha512", &ok);
 
 		  if(ok)
 		    {

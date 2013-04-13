@@ -867,6 +867,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
       QByteArray hash
 	(data.mid(0,
 		  spoton_send::SHA512_HEX_OUTPUT_MAXIMUM_LENGTH));
+      QByteArray symmetricKey;
 
       data.remove(0, hash.length());
 
@@ -878,7 +879,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	  (spoton_misc::homePath() + QDir::separator() +
 	   "friends_symmetric_keys.db");
 
-	if(db.open())
+	if((ok = db.open()))
 	  {
 	    QSqlQuery query(db);
 
@@ -892,9 +893,10 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	    if((ok = query.exec()))
 	      if((ok = query.next()))
 		{
-		  QByteArray symmetricKey
-		    (QByteArray::fromBase64(query.value(0).
-					    toByteArray()));
+		  symmetricKey = 
+		    QByteArray::fromBase64(query.value(0).
+					   toByteArray());
+
 		  QByteArray symmetricKeyAlgorithm
 		    (QByteArray::fromBase64(query.value(1).
 					    toByteArray()));
@@ -935,7 +937,8 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	  QByteArray hash2;
 
 	  data.remove(0, hash1.length());
-	  hash2 = spoton_gcrypt::sha512Hash(data, &ok).toHex();
+	  hash2 = spoton_gcrypt::keyedHash(data, symmetricKey, "sha512",
+					   &ok).toHex();
 
 	  if(ok && hash1 == hash2)
 	    {
@@ -1180,6 +1183,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
       QByteArray hash
 	(data.mid(0,
 		  spoton_send::SHA512_HEX_OUTPUT_MAXIMUM_LENGTH));
+      QByteArray symmetricKey;
 
       data.remove(0, hash.length());
 
@@ -1191,7 +1195,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	  (spoton_misc::homePath() + QDir::separator() +
 	   "friends_symmetric_keys.db");
 
-	if(db.open())
+	if((ok = db.open()))
 	  {
 	    QSqlQuery query(db);
 
@@ -1205,9 +1209,10 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	    if((ok = query.exec()))
 	      if((ok = query.next()))
 		{
-		  QByteArray symmetricKey
-		    (QByteArray::fromBase64(query.value(0).
-					    toByteArray()));
+		  symmetricKey =
+		    QByteArray::fromBase64(query.value(0).
+					   toByteArray());
+
 		  QByteArray symmetricKeyAlgorithm
 		    (QByteArray::fromBase64(query.value(1).
 					    toByteArray()));
@@ -1247,7 +1252,8 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	  QByteArray hash2;
 
 	  data.remove(0, hash1.length());
-	  hash2 = spoton_gcrypt::sha512Hash(data, &ok).toHex();
+	  hash2 = spoton_gcrypt::keyedHash(data, symmetricKey, "sha512",
+					   &ok).toHex();
 
 	  if(ok && hash1 == hash2)
 	    saveParticipantStatus(hash, data);

@@ -1,7 +1,5 @@
 Messages
 
-===================================================
-
 Chat
 Bytes     Description
 Echoed?   Yes
@@ -9,11 +7,9 @@ Echoed?   Yes
 1-4       Message Type ("0000") (Plaintext)
 5         TTL (Plaintext)
 6-69      Sender's Sha-512 Hash (Hex, Plaintext)
-70-133    Sha-512 Message Digest (Ciphertext)
+70-133    Keyed Sha-512 Message Digest (Ciphertext)
 134-197   Name (Padded with EOL.) (Ciphertext)
 198-EOF   Message (Ciphertext)
-
-===================================================
 
 Greetings-1
 Bytes     Description
@@ -23,17 +19,13 @@ Echoed?   Yes
 5         TTL (Plaintext)
 6-EOF     URL Public Key (Plaintext)
 
-===================================================
-
 Greetings-2
 Bytes     Description
 Echoed?   No
 
-1-4	      Message Type ("0011") (Plaintext)
+1-4	  Message Type ("0011") (Plaintext)
 5-68	  Name (Padded with EOL.) (Plaintext)
 69-EOF    Public Key (Plaintext)
-
-===================================================
 
 Greetings-3
 Bytes     Description
@@ -46,8 +38,6 @@ Echoed?   No
 86-149    Sender's Name (Padded with EOL.) (Plaintext)
 150-EOL   Sender's Public Key (Plaintext)
 
-===================================================
-
 Greetings-4
 Bytes     Description
 Echoed?   Yes
@@ -55,10 +45,8 @@ Echoed?   Yes
 1-4       Message Type ("0013") (Plaintext)
 5         TTL (Plaintext)
 6-69      Sender's Sha-512 Hash (Hex, Plaintext)
-70-133    Sha-512 Message Digest (Ciphertext)
+70-133    Keyed Sha-512 Message Digest (Ciphertext)
 134-EOF   Status (Ciphertext)
-
-===================================================
 
 URL
 Bytes     Description
@@ -68,5 +56,3 @@ Echoed?   Yes
 5         TTL (Plaintext)
 6-69      Sha-512 Message Digest (Ciphertext)
 70-EOF    URL (CipherText)
-
-===================================================

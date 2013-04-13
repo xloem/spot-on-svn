@@ -34,6 +34,7 @@ spoton_logviewer::spoton_logviewer(void):QMainWindow()
 {
   m_position = 0;
   ui.setupUi(this);
+  setWindowIcon(QIcon(":/Logo/spoton-button-64.ico"));
 #ifdef Q_OS_MAC
   setAttribute(Qt::WA_MacMetalStyle, true);
   statusBar()->setSizeGripEnabled(false);
