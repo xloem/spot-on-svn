@@ -277,7 +277,7 @@ void spoton_misc::logError(const QString &error)
 
 QString spoton_misc::countryCodeFromIPAddress(const QString &ipAddress)
 {
-  const char *code = "";
+  const char *code = 0;
 
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
   GeoIP *gi = 0;
@@ -302,7 +302,11 @@ QString spoton_misc::countryCodeFromIPAddress(const QString &ipAddress)
 #else
   Q_UNUSED(ipAddress);
 #endif
-  return code;
+
+  if(!code || strlen(code) == 0)
+    return QString("Unknown");
+  else
+    return QString(code);
 }
 
 QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
@@ -334,8 +338,8 @@ QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
   Q_UNUSED(ipAddress);
 #endif
 
-  if(!country)
-    return QString();
+  if(!country || strlen(country) == 0)
+    return QString("Unknown");
   else
     return QString(country);
 }
