@@ -1097,7 +1097,7 @@ QByteArray spoton_gcrypt::publicKeyEncrypt(const QByteArray &data,
 #if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
       gcry_randomize(static_cast<void *> (random.data()),
 		     static_cast<size_t> (random.length()),
-		     GCRY_VERY_STRONG_RANDOM);
+		     GCRY_STRONG_RANDOM);
 #endif
 
       if((err = gcry_sexp_build(&data_t, 0,
@@ -1325,7 +1325,7 @@ QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 #if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
   gcry_randomize(static_cast<void *> (random.data()),
 		 static_cast<size_t> (random.length()),
-		 GCRY_VERY_STRONG_RANDOM);
+		 GCRY_STRONG_RANDOM);
 #endif
 
   if((err = gcry_sexp_build(&data_t, 0,

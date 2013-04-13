@@ -216,7 +216,8 @@ void spoton_misc::prepareDatabases(void)
 		   "uuid TEXT, "
 		   "country TEXT, "
 		   "hash TEXT PRIMARY KEY NOT NULL, "
-		   "remote_ip_address_hash TEXT NOT NULL)");
+		   "remote_ip_address_hash TEXT NOT NULL, "
+		   "qt_country_hash TEXT)");
       }
 
     db.close();

@@ -652,9 +652,10 @@ void spoton::slotAddNeighbor(void)
 		      "hash, "
 		      "status_control, "
 		      "country, "
-		      "remote_ip_address_hash) "
+		      "remote_ip_address_hash, "
+		      "qt_country_hash) "
 		      "VALUES "
-		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	if(protocol == "IPv6")
 	  query.bindValue(0, "::1");
@@ -744,6 +745,11 @@ void spoton::slotAddNeighbor(void)
 	if(ok)
 	  query.bindValue
 	    (10, m_crypt->keyedHash(ip.toLatin1(), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (11, m_crypt->keyedHash(country.remove(" ").toLatin1(), &ok).
 	     toBase64());
 
 	if(ok)
@@ -3032,6 +3038,8 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
   else if(!m_crypt)
     return;
 
+  bool ok = true;
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
@@ -3041,7 +3049,6 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
     if(db.open())
       {
 	QSqlQuery query(db);
-	bool ok = true;
 
 	query.prepare("UPDATE country_inclusion SET accepted = ? "
 		      "WHERE hash = ?");
@@ -3054,7 +3061,7 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
 	    (1, m_crypt->keyedHash(item->text().toLatin1(), &ok).toBase64());
 
 	if(ok)
-	  if(query.exec())
+	  if((ok = query.exec()))
 	    db.commit();
       }
 
@@ -3062,6 +3069,36 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
   }
 
   QSqlDatabase::removeDatabase("spoton");
+
+  if(ok)
+    {
+      {
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			   "neighbors.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+
+	    query.prepare("UPDATE neighbors SET "
+			  "status_control = 'disconnected' "
+			  "WHERE qt_country_hash = ?");
+	    query.bindValue
+	      (0,
+	       m_crypt->keyedHash(item->text().toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      if(query.exec())
+		db.commit();
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase("spoton");
+    }
 }
 
 QIcon spoton::iconForCountry(const QString &country)

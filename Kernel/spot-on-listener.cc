@@ -292,7 +292,7 @@ void spoton_listener::slotNewConnection(void)
 	    QSqlQuery query(db);
 
 	    query.exec("PRAGMA synchronous = OFF");
-	    query.exec("INSERT OR REPLACE INTO neighbors "
+	    query.exec("INSERT INTO neighbors "
 		       "(local_ip_address, "
 		       "local_port, "
 		       "protocol, "
@@ -303,8 +303,9 @@ void spoton_listener::slotNewConnection(void)
 		       "hash, "
 		       "sticky, "
 		       "country, "
-		       "remote_ip_address_hash) "
-		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		       "remote_ip_address_hash, "
+		       "qt_country_hash) "
+		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
 	    query.bindValue(1, m_port);
 
@@ -357,6 +358,11 @@ void spoton_listener::slotNewConnection(void)
 		(10, spoton_kernel::s_crypt1->
 		 keyedHash(neighbor->peerAddress().
 			   toString().toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(11, spoton_kernel::s_crypt1->
+		 keyedHash(country.remove(" ").toLatin1(), &ok).toBase64());
 
 	    if(ok)
 	      {

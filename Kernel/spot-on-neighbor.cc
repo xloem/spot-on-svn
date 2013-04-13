@@ -1064,7 +1064,7 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
       gcry_randomize
 	(static_cast<void *> (symmetricKey.data()),
 	 static_cast<size_t> (symmetricKey.length()),
-	 GCRY_VERY_STRONG_RANDOM);
+	 GCRY_STRONG_RANDOM);
       savePublicKey
 	(name, publicKey, symmetricKey, symmetricKeyAlgorithm, m_id);
     }
