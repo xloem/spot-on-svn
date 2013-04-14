@@ -570,7 +570,7 @@ p, li { white-space: pre-wrap; }
                <widget class="QComboBox" name="participantEmail">
                 <item>
                  <property name="text">
-                  <string>Email to everyone in your chatlist</string>
+                  <string>Email to every friend in your chatlist</string>
                  </property>
                  <property name="icon">
                   <iconset resource="../Icons/icons.qrc">
