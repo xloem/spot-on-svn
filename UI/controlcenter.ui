@@ -44,16 +44,7 @@
         <string>&amp;Chat</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_18">
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
@@ -65,16 +56,7 @@
            </sizepolicy>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
@@ -90,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>964</width>
-                <height>622</height>
+                <width>962</width>
+                <height>636</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -505,7 +487,7 @@
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
@@ -570,21 +552,11 @@ p, li { white-space: pre-wrap; }
                <widget class="QComboBox" name="participantEmail">
                 <item>
                  <property name="text">
-                  <string>Email to every friend in your chatlist</string>
+                  <string>All Participants</string>
                  </property>
                  <property name="icon">
                   <iconset resource="../Icons/icons.qrc">
                    <normaloff>:/plist_confirmed_as_permanent_friend.png</normaloff>:/plist_confirmed_as_permanent_friend.png</iconset>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Alice</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Bob</string>
                  </property>
                 </item>
                </widget>
@@ -1397,16 +1369,7 @@ p, li { white-space: pre-wrap; }
         <string>S&amp;ettings</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_15">
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
@@ -1422,8 +1385,8 @@ p, li { white-space: pre-wrap; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>964</width>
-             <height>622</height>
+             <width>1020</width>
+             <height>621</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2732,7 +2695,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>992</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2787,8 +2750,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
   <tabstop>tableWidget</tabstop>
-  <tabstop>pushButton_retrieveemail</tabstop>
   <tabstop>pushButton_deleteemail</tabstop>
+  <tabstop>pushButton_retrieveemail</tabstop>
   <tabstop>textBrowser_inboxtopic</tabstop>
   <tabstop>textBrowser_inboxbody</tabstop>
   <tabstop>participantEmail</tabstop>
