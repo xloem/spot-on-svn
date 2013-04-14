@@ -250,5 +250,7 @@
         <file>attach.png</file>
         <file>chat.png</file>
         <file>Resources/spotonbutton64.ico</file>
+        <file>sticky.png</file>
+        <file>nonsticky.png</file>
     </qresource>
 </RCC>
