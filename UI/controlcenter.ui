@@ -572,6 +572,10 @@ p, li { white-space: pre-wrap; }
                  <property name="text">
                   <string>Email to everyone in your chatlist</string>
                  </property>
+                 <property name="icon">
+                  <iconset resource="../Icons/icons.qrc">
+                   <normaloff>:/plist_confirmed_as_permanent_friend.png</normaloff>:/plist_confirmed_as_permanent_friend.png</iconset>
+                 </property>
                 </item>
                 <item>
                  <property name="text">
