@@ -397,7 +397,7 @@ spoton::spoton(void):QMainWindow()
       ui.rsaKeySize->setEnabled(false);
 
       for(int i = 0; i < ui.tab->count(); i++)
-	if(ui.tab->tabBar()->tabData(i).toString() == "page_6")
+	if(ui.tab->tabBar()->tabData(i).toString() == "page_7")
 	  {
 	    ui.tab->blockSignals(true);
 	    ui.tab->setCurrentIndex(i);
@@ -419,7 +419,7 @@ spoton::spoton(void):QMainWindow()
       ui.resetSpotOn->setEnabled(false);
 
       for(int i = 0; i < ui.tab->count(); i++)
-	if(ui.tab->tabBar()->tabData(i).toString() == "page_4")
+	if(ui.tab->tabBar()->tabData(i).toString() == "page_5")
 	  {
 	    ui.tab->blockSignals(true);
 	    ui.tab->setCurrentIndex(i);
@@ -1570,12 +1570,14 @@ void spoton::slotSetPassphrase(void)
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("The passphrases must contain at least "
 			       "sixteen characters each."));
+      ui.passphrase1->setFocus();
       return;
     }
   else if(str1 != str2)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("The passphrases are not equal."));
+      ui.passphrase1->setFocus();
       return;
     }
 
@@ -1877,7 +1879,8 @@ void spoton::slotValidatePassphrase(void)
 	ui.tab->setTabEnabled(i, true);
 
       ui.tab->setCurrentIndex
-	(m_settings.value("gui/currentTabIndex", 0).toInt());
+	(m_settings.value("gui/currentTabIndex", ui.tab->count() - 1).
+	 toInt());
     }
   else
     {
