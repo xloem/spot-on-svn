@@ -1091,7 +1091,7 @@ void spoton::slotPopulateNeighbors(void)
           check->setIcon(QIcon(":/sticky.png"));
           }
         else
-            {
+          {
           check->setChecked(false);
           check->setIcon(QIcon(":/nonsticky.png"));
           }
