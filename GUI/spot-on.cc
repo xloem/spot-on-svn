@@ -1086,15 +1086,7 @@ void spoton::slotPopulateNeighbors(void)
 				     "timer expires."));
 
 		if(query.value(0).toInt() == 1)
-          {
 		  check->setChecked(true);
-          check->setIcon(QIcon(":/sticky.png"));
-          }
-        else
-          {
-          check->setChecked(false);
-          check->setIcon(QIcon(":/nonsticky.png"));
-          }
 
 		check->setProperty
 		  ("oid", query.value(query.record().count() - 1));
