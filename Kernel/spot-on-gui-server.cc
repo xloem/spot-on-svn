@@ -52,7 +52,8 @@ spoton_gui_server::spoton_gui_server(QObject *parent):QTcpServer(parent)
 spoton_gui_server::~spoton_gui_server()
 {  
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_gui_server");
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_gui_server");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "kernel.db");
@@ -141,9 +142,11 @@ void spoton_gui_server::slotReadyRead(void)
 		  if(!spoton_kernel::s_crypt1)
 		    {
 		      spoton_kernel::s_crypt1 = new spoton_gcrypt
-			(spoton_kernel::s_settings.value("gui/cipherType", "aes256").
+			(spoton_kernel::s_settings.value("gui/cipherType",
+							 "aes256").
 			 toString().trimmed(),
-			 spoton_kernel::s_settings.value("gui/hashType", "sha512").
+			 spoton_kernel::s_settings.value("gui/hashType",
+							 "sha512").
 			 toString().trimmed(),
 			 message,
 			 spoton_kernel::s_settings.value("gui/saltLength",
@@ -151,14 +154,17 @@ void spoton_gui_server::slotReadyRead(void)
 			 spoton_kernel::s_settings.value("gui/iterationCount",
 							 1000).toInt(),
 			 "private");
-		      spoton_misc::populateCountryDatabase(spoton_kernel::s_crypt1);
+		      spoton_misc::populateCountryDatabase
+			(spoton_kernel::s_crypt1);
 		    }
 
 		  if(!spoton_kernel::s_crypt2)
 		    spoton_kernel::s_crypt2 = new spoton_gcrypt
-		      (spoton_kernel::s_settings.value("gui/cipherType", "aes256").
+		      (spoton_kernel::s_settings.value("gui/cipherType",
+						       "aes256").
 		       toString().trimmed(),
-		       spoton_kernel::s_settings.value("gui/hashType", "sha512").
+		       spoton_kernel::s_settings.value("gui/hashType",
+						       "sha512").
 		       toString().trimmed(),
 		       message,
 		       spoton_kernel::s_settings.value("gui/saltLength",
@@ -197,7 +203,8 @@ void spoton_gui_server::slotReadyRead(void)
 void spoton_gui_server::slotTimeout(void)
 {
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_gui_server");
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_gui_server");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "kernel.db");

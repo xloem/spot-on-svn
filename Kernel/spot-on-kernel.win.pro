@@ -38,7 +38,8 @@ PRE_TARGETDEPS = libspoton.dll
 HEADERS		= spot-on-gui-server.h \
 		  spot-on-kernel.h \
 		  spot-on-listener.h \
-		  spot-on-neighbor.h
+		  spot-on-neighbor.h \
+		  spot-on-shared-reader.h
 
 SOURCES		= ..\\Common\\spot-on-gcrypt.cc \
 		  ..\\Common\\spot-on-misc.cc \
@@ -46,7 +47,8 @@ SOURCES		= ..\\Common\\spot-on-gcrypt.cc \
 		  spot-on-gui-server.cc \
 		  spot-on-kernel.cc \
 		  spot-on-listener.cc \
-		  spot-on-neighbor.cc
+		  spot-on-neighbor.cc \
+		  spot-on-shared-reader.cc
 
 TRANSLATIONS    =
 
