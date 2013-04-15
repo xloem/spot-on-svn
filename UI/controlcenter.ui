@@ -423,6 +423,9 @@
               </item>
               <item>
                <widget class="QPushButton" name="pushButton_deleteemail">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="text">
                  <string>Delete</string>
                 </property>
@@ -434,6 +437,9 @@
               </item>
               <item>
                <widget class="QPushButton" name="pushButton_retrieveemail">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="statusTip">
                  <string>Your Office-Number is: %1: 643-234-244-234-432.</string>
                 </property>
@@ -662,6 +668,9 @@ p, li { white-space: pre-wrap; }
               </item>
               <item>
                <widget class="QPushButton" name="pushButton_sendEmail">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="toolTip">
                  <string>Email to offline friends requires a third common friend online, in which the email is stored. </string>
                 </property>
@@ -715,6 +724,9 @@ p, li { white-space: pre-wrap; }
               <layout class="QHBoxLayout" name="horizontalLayout_24">
                <item>
                 <widget class="QCheckBox" name="checkBox">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="text">
                   <string>Connect Only to Stick&amp;y Neighbors</string>
                  </property>
@@ -945,6 +957,9 @@ p, li { white-space: pre-wrap; }
                   </item>
                   <item>
                    <widget class="QPushButton" name="pushButton_6">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="toolTip">
                      <string>Add Public Chat Key</string>
                     </property>
@@ -1121,6 +1136,9 @@ p, li { white-space: pre-wrap; }
                   </item>
                   <item>
                    <widget class="QPushButton" name="fetchMore">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="toolTip">
                      <string>Invite More Neighbors</string>
                     </property>
@@ -1239,6 +1257,9 @@ p, li { white-space: pre-wrap; }
             </item>
             <item>
              <widget class="QPushButton" name="pushButton_11">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>&amp;Search</string>
               </property>
@@ -1280,6 +1301,9 @@ p, li { white-space: pre-wrap; }
            <layout class="QHBoxLayout" name="horizontalLayout_16">
             <item>
              <widget class="QPushButton" name="pushButton_9">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="toolTip">
                <string>Delete Selected URL</string>
               </property>
@@ -1336,6 +1360,9 @@ p, li { white-space: pre-wrap; }
             </item>
             <item>
              <widget class="QPushButton" name="pushButton_10">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="toolTip">
                <string>Modify Selected URL</string>
               </property>
@@ -2029,6 +2056,9 @@ p, li { white-space: pre-wrap; }
                 </item>
                 <item>
                  <widget class="QPushButton" name="resetSpotOn">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
                   <property name="text">
                    <string>&amp;Reset Spot-On</string>
                   </property>
@@ -2074,6 +2104,9 @@ p, li { white-space: pre-wrap; }
           <layout class="QVBoxLayout" name="verticalLayout_11">
            <item>
             <widget class="QTabWidget" name="tabWidget">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="currentIndex">
               <number>0</number>
              </property>
