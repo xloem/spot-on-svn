@@ -1057,9 +1057,7 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 
       QByteArray symmetricKey
 	(spoton_send::SYMMETRIC_KEY_MAXIMUM_LENGTH, 0);
-      QByteArray symmetricKeyAlgorithm
-	(spoton_kernel::s_settings.value("gui/cipherType", "aes256").
-	 toString().trimmed().toLatin1());
+      QByteArray symmetricKeyAlgorithm("aes256");
 
       gcry_randomize
 	(static_cast<void *> (symmetricKey.data()),
