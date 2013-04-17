@@ -261,6 +261,7 @@ void spoton_misc::prepareDatabases(void)
 		   "url_hash TEXT NOT NULL, "
 		   "PRIMARY KEY (keyword, url_hash))");
 	query.exec("CREATE TABLE IF NOT EXISTS urls ("
+		   "date_time_inserted TEXT NOT NULL, "
 		   "description BLOB, "
 		   "hash TEXT PRIMARY KEY NOT NULL, "
 		   "title BLOB NOT NULL, "

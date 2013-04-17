@@ -25,6 +25,12 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QDir>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QVariant>
+
+#include "Common/spot-on-misc.h"
 #include "spot-on-shared-reader.h"
 
 spoton_shared_reader::spoton_shared_reader(QObject *parent):QObject(parent)
@@ -33,7 +39,7 @@ spoton_shared_reader::spoton_shared_reader(QObject *parent):QObject(parent)
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTimeout(void)));
-  m_timer.start(10000);
+  m_timer.start(5000);
 }
 
 spoton_shared_reader::~spoton_shared_reader()
@@ -42,4 +48,52 @@ spoton_shared_reader::~spoton_shared_reader()
 
 void spoton_shared_reader::slotTimeout(void)
 {
+  QList<QList<QVariant> > list;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_shared_reader");
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() + "shared.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	int processed = 0;
+
+	if(query.exec("SELECT description, encrypted, title, url "
+		      "FROM urls"))
+	  while(query.next())
+	    {
+	      processed += 1;
+
+	      if(processed > 100)
+		break;
+
+	      QByteArray description;
+	      QByteArray title;
+	      QByteArray url;
+	      bool encrypted = query.value(1).toBool();
+
+	      if(encrypted)
+		{
+		}
+	      else
+		{
+		  description = query.value(0).toByteArray();
+		  title = query.value(2).toByteArray();
+		  url = query.value(3).toByteArray();
+		}
+
+	      QList<QVariant> variants;
+
+	      variants << description << title << url;
+	      list.append(variants);
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_shared_reader");
 }
