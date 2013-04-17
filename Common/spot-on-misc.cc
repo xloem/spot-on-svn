@@ -245,6 +245,32 @@ void spoton_misc::prepareDatabases(void)
   }
 
   QSqlDatabase::removeDatabase("spoton_misc");
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "urls.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("CREATE TABLE IF NOT EXISTS keywords ("
+		   "keyword TEXT NOT NULL, "
+		   "url_hash TEXT NOT NULL, "
+		   "PRIMARY KEY (keyword, url_hash))");
+	query.exec("CREATE TABLE IF NOT EXISTS urls ("
+		   "description BLOB, "
+		   "hash TEXT PRIMARY KEY NOT NULL, "
+		   "title BLOB NOT NULL, "
+		   "url BLOB NOT NULL)");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_misc");
 }
 
 void spoton_misc::logError(const QString &error)
@@ -437,59 +463,4 @@ bool spoton_misc::countryAllowedToConnect(const QString &country,
 
   QSqlDatabase::removeDatabase("spoton_misc");
   return allowed;
-}
-
-QString spoton_misc::urlDatabasePath(void)
-{
-  QDir dir(homePath());
-  QString path("");
-
-  if(dir.mkdir("urls"))
-    if(dir.cd("urls"))
-      {
-	QFileInfoList list
-	  (dir.entryInfoList(QStringList("url*"), QDir::Files, QDir::Name));
-
-	if(!list.isEmpty())
-	  {
-	    for(int i = 0; i < list.size(); i++)
-	      if(list.at(i).size() <=
-		 static_cast<int> (0.95 * std::numeric_limits<int>::max()))
-		{
-		  path = list.at(i).absolutePath();
-		  break;
-		}
-
-	    if(path.isEmpty())
-	      {
-		QString str(QString::number(list.size() + 1));
-
-		str = str.rightJustified(5, '0');
-		str = QString("url%1.db").arg(str);
-		path = dir.absolutePath() + QDir::separator() + str;
-	      }
-	  }
-	else
-	  path = dir.absolutePath() + QDir::separator() + "url00000.db";
-      }
-
-  return path;
-}
-
-void spoton_misc::createUrlDatabase(const QString &path)
-{
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
-
-    db.setDatabaseName(path);
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase("spoton_misc");
 }
