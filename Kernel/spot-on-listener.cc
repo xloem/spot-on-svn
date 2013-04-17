@@ -26,6 +26,7 @@
 */
 
 #include <QDir>
+#include <QNetworkInterface>
 #include <QSqlQuery>
 #include <QSqlDatabase>
 
@@ -229,7 +230,7 @@ void spoton_listener::slotNewConnection(void)
     (spoton_misc::
      countryNameFromIPAddress(neighbor->peerAddress().toString()));
 
-  if(!country.isEmpty())
+  if(!QNetworkInterface::allAddresses().contains(neighbor->peerAddress()))
     if(!spoton_misc::countryAllowedToConnect(country.remove(" "),
 					     spoton_kernel::s_crypt1))
       {

@@ -47,6 +47,7 @@ class spoton_misc
   static bool countryAllowedToConnect(const QString &country,
 				      spoton_gcrypt *crypt);
   static bool isGnome(void);
+  static void createUrlDatabase(const QString &path);
   static void logError(const QString &error);
   static void populateCountryDatabase(spoton_gcrypt *crypt);
   static void prepareDatabases(void);

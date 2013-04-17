@@ -34,6 +34,8 @@
 #include <QString>
 #include <QtDebug>
 
+#include <limits>
+
 #include "spot-on-gcrypt.h"
 #include "spot-on-misc.h"
 
@@ -451,7 +453,8 @@ QString spoton_misc::urlDatabasePath(void)
 	if(!list.isEmpty())
 	  {
 	    for(int i = 0; i < list.size(); i++)
-	      if(list.at(i).size() <= 0.95 * 2147483648)
+	      if(list.at(i).size() <=
+		 static_cast<int> (0.95 * std::numeric_limits<int>::max()))
 		{
 		  path = list.at(i).absolutePath();
 		  break;
@@ -471,4 +474,22 @@ QString spoton_misc::urlDatabasePath(void)
       }
 
   return path;
+}
+
+void spoton_misc::createUrlDatabase(const QString &path)
+{
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+
+    db.setDatabaseName(path);
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_misc");
 }

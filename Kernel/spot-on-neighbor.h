@@ -28,6 +28,7 @@
 #ifndef _spoton_neighbor_h_
 #define _spoton_neighbor_h_
 
+#include <QFuture>
 #include <QHostAddress>
 #include <QSqlDatabase>
 #include <QTcpSocket>
@@ -55,6 +56,7 @@ class spoton_neighbor: public QTcpSocket
 
  private:
   QByteArray m_data;
+  QFuture<void> m_savePublicKeyFuture;
   QHostAddress m_address;
   QTimer m_lifetime;
   QTimer m_sendKeysTimer;
@@ -69,12 +71,15 @@ class spoton_neighbor: public QTcpSocket
   void process0013(int length, const QByteArray &data);
   void saveParticipantStatus(const QByteArray &publicKeyHash,
 			     const QByteArray &status);
+  void savePublicKey(const QByteArray &publicKey);
+  void savePublicKey(const QByteArray &name,
+		     const QByteArray &publicKey,
+		     const qint64 neighborOid);
   void savePublicKey(const QByteArray &name,
 		     const QByteArray &publicKey,
 		     const QByteArray &symmetricKey,
 		     const QByteArray &symmetricKeyAlgorithm,
 		     const qint64 neighborOid);
-  void savePublicKey(const QByteArray &publicKey);
   void saveStatus(QSqlDatabase &db, const QString &status);
 
  private slots:
@@ -85,11 +90,21 @@ class spoton_neighbor: public QTcpSocket
   void slotReceivedPublicKey(const QByteArray &data, const qint64 id);
   void slotReceivedStatusMessage(const QByteArray &data, const qint64 id);
   void slotSendKeys(void);
+  void slotSavePublicKey(const QByteArray &name,
+			 const QByteArray &publicKey,
+			 const QByteArray &symmetricKey,
+			 const QByteArray &symmetricKeyAlgorithm,
+			 const qint64 neighborOid);
   void slotSendMessage(const QByteArray &data);
   void slotSendStatus(const QList<QByteArray> &list);
   void slotTimeout(void);
 
  signals:
+  void randomKeyReady(const QByteArray &name,
+		      const QByteArray &publicKey,
+		      const QByteArray &symmetricKey,
+		      const QByteArray &symmetricKeyAlgorithm,
+		      const qint64 neighborOid);
   void receivedChatMessage(const QByteArray &data);
   void receivedChatMessage(const QByteArray &data, const qint64 id);
   void receivedPublicKey(const QByteArray &name, const QByteArray publicKey);

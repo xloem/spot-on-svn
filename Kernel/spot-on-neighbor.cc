@@ -29,6 +29,7 @@
 #include <QDir>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QtCore>
 #include <QtCore/qmath.h>
 
 #include <limits>
@@ -54,6 +55,18 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(disconnected(void)),
 	  this,
 	  SLOT(deleteLater(void)));
+  connect(this,
+	  SIGNAL(randomKeyReady(const QByteArray &,
+				const QByteArray &,
+				const QByteArray &,
+				const QByteArray &,
+				const qint64)),
+	  this,
+	  SLOT(slotSavePublicKey(const QByteArray &,
+				 const QByteArray &,
+				 const QByteArray &,
+				 const QByteArray &,
+				 const qint64)));
   connect(this,
 	  SIGNAL(readyRead(void)),
 	  this,
@@ -101,6 +114,18 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
 	  SIGNAL(disconnected(void)),
 	  this,
 	  SLOT(deleteLater(void)));
+  connect(this,
+	  SIGNAL(randomKeyReady(const QByteArray &,
+				const QByteArray &,
+				const QByteArray &,
+				const QByteArray &,
+				const qint64)),
+	  this,
+	  SLOT(slotSavePublicKey(const QByteArray &,
+				 const QByteArray &,
+				 const QByteArray &,
+				 const QByteArray &,
+				 const qint64)));
   connect(this,
 	  SIGNAL(readyRead(void)),
 	  this,
@@ -1032,6 +1057,15 @@ void spoton_neighbor::process0010(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 {
+  /*
+  ** If the thread that's responsible for creating a very strong random
+  ** key is active, the neighbor that's connected to this neighbor has already
+  ** requested a bond. Ignore a new request.
+  */
+
+  if(m_savePublicKeyFuture.isRunning())
+    return;
+
   length -= strlen("type=0011&content=");
 
   /*
@@ -1054,17 +1088,8 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
       data.remove(0, name.length());
       name = QByteArray::fromBase64(name).trimmed();
       publicKey = QByteArray::fromBase64(data).trimmed();
-
-      QByteArray symmetricKey
-	(spoton_send::SYMMETRIC_KEY_MAXIMUM_LENGTH, 0);
-      QByteArray symmetricKeyAlgorithm("aes256");
-
-      gcry_randomize
-	(static_cast<void *> (symmetricKey.data()),
-	 static_cast<size_t> (symmetricKey.length()),
-	 GCRY_STRONG_RANDOM);
-      savePublicKey
-	(name, publicKey, symmetricKey, symmetricKeyAlgorithm, m_id);
+      m_savePublicKeyFuture = QtConcurrent::run
+	(this, &spoton_neighbor::savePublicKey, name, publicKey, m_id);
     }
   else
     spoton_misc::logError
@@ -1338,4 +1363,33 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash,
   }
 
   QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
+}
+
+void spoton_neighbor::slotSavePublicKey(const QByteArray &name,
+					const QByteArray &publicKey,
+					const QByteArray &symmetricKey,
+					const QByteArray &symmetricKeyAlgorithm,
+					const qint64 neighborOid)
+{
+  savePublicKey(name, publicKey, symmetricKey, symmetricKeyAlgorithm, neighborOid);
+}
+
+void spoton_neighbor::savePublicKey(const QByteArray &name,
+				    const QByteArray &publicKey,
+				    const qint64 neighborOid)
+{
+  /*
+  ** Should only be called by a thread because gcry_randomize() may
+  ** be very, very slow.
+  */
+
+  QByteArray symmetricKey
+    (spoton_send::SYMMETRIC_KEY_MAXIMUM_LENGTH, 0);
+
+  gcry_randomize
+    (static_cast<void *> (symmetricKey.data()),
+     static_cast<size_t> (symmetricKey.length()),
+     GCRY_VERY_STRONG_RANDOM);
+  emit randomKeyReady
+    (name, publicKey, symmetricKey, QByteArray("aes256"), neighborOid);
 }
