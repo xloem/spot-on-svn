@@ -29,8 +29,17 @@
 
 spoton_shared_reader::spoton_shared_reader(QObject *parent):QObject(parent)
 {
+  connect(&m_timer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotTimeout(void)));
+  m_timer.start(10000);
 }
 
 spoton_shared_reader::~spoton_shared_reader()
 {  
+}
+
+void spoton_shared_reader::slotTimeout(void)
+{
 }

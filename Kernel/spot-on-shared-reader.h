@@ -29,6 +29,7 @@
 #define _spoton_shared_reader_h_
 
 #include <QObject>
+#include <QTimer>
 
 class spoton_shared_reader: public QObject
 {
@@ -37,6 +38,12 @@ class spoton_shared_reader: public QObject
  public:
   spoton_shared_reader(QObject *parent);
   ~spoton_shared_reader();
+
+ private:
+  QTimer m_timer;
+
+ private slots:
+  void slotTimeout(void);
 };
 
 #endif
