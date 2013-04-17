@@ -376,12 +376,14 @@ void spoton_misc::populateCountryDatabase(spoton_gcrypt *crypt)
 
 	    if(ok)
 	      query.bindValue
-		(1, crypt->encrypted(QString::number(1).toLatin1(), &ok).toBase64());
+		(1, crypt->encrypted(QString::number(1).toLatin1(), &ok).
+		 toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(2, crypt->keyedHash(QLocale::countryToString(locale.country()).
-				     toLatin1(), &ok).toBase64());
+		(2,
+		 crypt->keyedHash(QLocale::countryToString(locale.country()).
+				  toLatin1(), &ok).toBase64());
 
 	    if(ok)
 	      query.exec();
@@ -415,7 +417,8 @@ bool spoton_misc::countryAllowedToConnect(const QString &country,
 
 	query.prepare("SELECT accepted FROM country_inclusion WHERE "
 		      "hash = ?");
-	query.bindValue(0, crypt->keyedHash(country.toLatin1(), &ok).toBase64());
+	query.bindValue(0, crypt->keyedHash(country.toLatin1(), &ok).
+			toBase64());
 
 	if(ok)
 	  if(query.exec())
@@ -433,4 +436,39 @@ bool spoton_misc::countryAllowedToConnect(const QString &country,
   QSqlDatabase::removeDatabase("spoton_misc");
   return allowed;
 }
-					  
+
+QString spoton_misc::urlDatabasePath(void)
+{
+  QDir dir(homePath());
+  QString path("");
+
+  if(dir.mkdir("urls"))
+    if(dir.cd("urls"))
+      {
+	QFileInfoList list
+	  (dir.entryInfoList(QStringList("url*"), QDir::Files, QDir::Name));
+
+	if(!list.isEmpty())
+	  {
+	    for(int i = 0; i < list.size(); i++)
+	      if(list.at(i).size() <= 0.95 * 2147483648)
+		{
+		  path = list.at(i).absolutePath();
+		  break;
+		}
+
+	    if(path.isEmpty())
+	      {
+		QString str(QString::number(list.size() + 1));
+
+		str = str.rightJustified(5, '0');
+		str = QString("url%1.db").arg(str);
+		path = dir.absolutePath() + QDir::separator() + str;
+	      }
+	  }
+	else
+	  path = dir.absolutePath() + QDir::separator() + "url00000.db";
+      }
+
+  return path;
+}

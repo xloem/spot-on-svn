@@ -43,6 +43,7 @@ class spoton_misc
   static QString countryCodeFromIPAddress(const QString &ipAddress);
   static QString countryNameFromIPAddress(const QString &ipAddress);
   static QString homePath(void);
+  static QString urlDatabasePath(void);
   static bool countryAllowedToConnect(const QString &country,
 				      spoton_gcrypt *crypt);
   static bool isGnome(void);
