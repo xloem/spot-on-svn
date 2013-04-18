@@ -33,8 +33,8 @@ LIBS		+= -L..\\..\\LibSpotOn -L..\\..\\LibSpotOn\\Libraries.win32 \
 PRE_TARGETDEPS = libspoton.dll
 
 FORMS           = UI\\controlcenter.ui \
-                  UI\\logviewer.ui \
-                  UI\\docviewer.ui
+                  UI\\docviewer.ui \
+                  UI\\logviewer.ui 
 
 UI_HEADERS_DIR  = GUI
 
