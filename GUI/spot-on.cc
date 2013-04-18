@@ -221,7 +221,7 @@ spoton::spoton(void):QMainWindow()
   connect(ui.pushButtonDocViewer,
 	  SIGNAL(clicked(bool)),
 	  this,
-	  SLOT(slotViewDocumenation(void)));
+	  SLOT(slotViewDocumentation(void)));
   connect(ui.listenerIP,
 	  SIGNAL(returnPressed(void)),
 	  this,

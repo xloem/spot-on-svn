@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>HELP</file>
         <file>READ.html</file>
     </qresource>
 </RCC>
