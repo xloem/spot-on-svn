@@ -466,3 +466,13 @@ bool spoton_misc::countryAllowedToConnect(const QString &country,
   QSqlDatabase::removeDatabase("spoton_misc");
   return allowed;
 }
+
+void spoton_misc::populateUrlsDatabase(const QList<QList<QVariant> > &list,
+				       spoton_gcrypt *crypt)
+{
+  if(!crypt)
+    return;
+
+  prepareDatabases();
+  Q_UNUSED(list);
+}

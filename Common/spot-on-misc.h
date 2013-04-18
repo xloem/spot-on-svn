@@ -48,6 +48,8 @@ class spoton_misc
   static bool isGnome(void);
   static void logError(const QString &error);
   static void populateCountryDatabase(spoton_gcrypt *crypt);
+  static void populateUrlsDatabase(const QList<QList<QVariant> > &list,
+				   spoton_gcrypt *gcrypt);
   static void prepareDatabases(void);
 
  private:
