@@ -299,6 +299,7 @@ void spoton_misc::logError(const QString &error)
       file.write(error.toLatin1());
       file.write(eol.toLatin1());
       file.write(eol.toLatin1());
+      file.flush();
     }
 
   file.close();

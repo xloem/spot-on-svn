@@ -416,7 +416,6 @@ spoton::spoton(void):QMainWindow()
       ui.passphraseLabel->setEnabled(false);
       ui.kernelBox->setEnabled(false);
       ui.listenersBox->setEnabled(false);
-      ui.resetSpotOn->setEnabled(false);
 
       for(int i = 0; i < ui.tab->count(); i++)
 	if(ui.tab->tabBar()->tabData(i).toString() == "page_5")
@@ -1663,7 +1662,7 @@ void spoton::slotSetPassphrase(void)
 	    (ui.cipherType->currentText(),
 	     derivedKey,
 	     m_settings.value("gui/cipherType", "aes256").toString().trimmed(),
-	     m_crypt->key(),
+	     m_crypt->symmetricKey(),
 	     "private",
 	     error2);
 
@@ -1679,7 +1678,7 @@ void spoton::slotSetPassphrase(void)
 		 derivedKey,
 		 m_settings.value("gui/cipherType", "aes256").
 		 toString().trimmed(),
-		 m_crypt->key(),
+		 m_crypt->symmetricKey(),
 		 "shared",
 		 error2);
 	    }
@@ -1702,6 +1701,7 @@ void spoton::slotSetPassphrase(void)
 	      spoton_gcrypt *g = new spoton_gcrypt
 		(ui.cipherType->currentText(),
 		 ui.hashType->currentText(),
+		 str1.toUtf8(),
 		 derivedKey,
 		 ui.saltLength->value(),
 		 ui.iterationCount->value(),
@@ -1750,6 +1750,7 @@ void spoton::slotSetPassphrase(void)
 	  m_crypt = new spoton_gcrypt
 	    (ui.cipherType->currentText(),
 	     ui.hashType->currentText(),
+	     str1.toUtf8(),
 	     derivedKey,
 	     ui.saltLength->value(),
 	     ui.iterationCount->value(),
@@ -1853,6 +1854,7 @@ void spoton::slotValidatePassphrase(void)
       m_crypt = new spoton_gcrypt
 	(ui.cipherType->currentText(),
 	 ui.hashType->currentText(),
+	 ui.passphrase->text().toUtf8(),
 	 key,
 	 ui.saltLength->value(),
 	 ui.iterationCount->value(),
@@ -2033,13 +2035,20 @@ void spoton::sendKeyToKernel(void)
   if(m_crypt)
     if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
       {
-	QByteArray key(m_crypt->key(), m_crypt->keyLength());
+	QByteArray keys("keys_");
+	QByteArray passphrase
+	  (m_crypt->passphrase(), m_crypt->passphraseLength());
+	QByteArray symmetricKey
+	  (m_crypt->symmetricKey(), m_crypt->symmetricKeyLength());
 
-	key = key.toBase64();
-	key.prepend("key_");
-	key.append('\n');
+	passphrase = passphrase.toBase64();
+	symmetricKey = symmetricKey.toBase64();
+	keys.append(passphrase);
+	keys.append("_");
+	keys.append(symmetricKey);
+	keys.append('\n');
 
-	if(m_kernelSocket.write(key.constData(), key.length()) != key.length())
+	if(m_kernelSocket.write(keys.constData(), keys.length()) != keys.length())
 	  spoton_misc::logError
 	    ("spoton::sendKeyToKernel(): write() failure.");
 	else

@@ -29,7 +29,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QVariant>
-#include <QtCore>
+#include <QtDebug>
 
 #include "Common/spot-on-gcrypt.h"
 #include "Common/spot-on-misc.h"
@@ -38,10 +38,6 @@
 
 spoton_shared_reader::spoton_shared_reader(QObject *parent):QObject(parent)
 {
-  connect(this,
-	  SIGNAL(processUrls(const QList<QList<QVariant> > &)),
-	  this,
-	  SLOT(slotProcessUrls(const QList<QList<QVariant> > &)));
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -51,22 +47,10 @@ spoton_shared_reader::spoton_shared_reader(QObject *parent):QObject(parent)
 
 spoton_shared_reader::~spoton_shared_reader()
 {
-  m_future.waitForFinished();
 }
 
 void spoton_shared_reader::slotTimeout(void)
 {
-  if(!m_future.isRunning())
-    m_future = QtConcurrent::run(this, &spoton_shared_reader::process);
-}
-
-void spoton_shared_reader::process(void)
-{
-  /*
-  ** Please do not call this method directly unless you can protect it
-  ** from multiple threads.
-  */
-
   QList<QList<QVariant> > list;
 
   {
@@ -101,16 +85,23 @@ void spoton_shared_reader::process(void)
 		  if(!spoton_kernel::s_crypt1)
 		    continue;
 
-		  description = spoton_kernel::s_crypt1->
-		    decrypted(query.value(0).toByteArray(), &ok);
+		  spoton_gcrypt crypt
+		    (QByteArray("aes256"),
+		     QString(""),
+		     QByteArray(),
+		     QByteArray(spoton_kernel::s_crypt1->passphrase(),
+				spoton_kernel::s_crypt1->passphraseLength()),
+		     0,
+		     0,
+		     QString(""));
+
+		  description = crypt.decrypted(query.value(0).toByteArray(), &ok);
 
 		  if(ok)
-		    title = spoton_kernel::s_crypt1->
-		      decrypted(query.value(2).toByteArray(), &ok);
+		    title = crypt.decrypted(query.value(2).toByteArray(), &ok);
 
 		  if(ok)
-		    url = spoton_kernel::s_crypt1->
-		      decrypted(query.value(3).toByteArray(), &ok);
+		    url = crypt.decrypted(query.value(3).toByteArray(), &ok);
 		}
 	      else
 		{
@@ -139,13 +130,4 @@ void spoton_shared_reader::process(void)
   }
 
   QSqlDatabase::removeDatabase("spoton_shared_reader");
-
-  if(!list.isEmpty())
-    emit processUrls(list);
-}
-
-void spoton_shared_reader::slotProcessUrls
-(const QList<QList<QVariant> > &list)
-{
-  Q_UNUSED(list);
 }

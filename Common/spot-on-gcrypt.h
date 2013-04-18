@@ -79,7 +79,8 @@ class spoton_gcrypt
 				 QString &error);
   spoton_gcrypt(const QString &cipherType,
 		const QString &hashType,
-		const QByteArray &key,
+		const QByteArray &passphrase,
+		const QByteArray &symmetricKey,
 		const int saltLength,
 		const unsigned long iterationCount,
 		const QString &id);
@@ -89,20 +90,24 @@ class spoton_gcrypt
   QByteArray keyedHash(const QByteArray &data, bool *ok);
   QByteArray publicKey(bool *ok);
   QByteArray publicKeyDecrypt(const QByteArray &data, bool *ok);
-  char *key(void) const;
-  size_t keyLength(void) const;
+  char *passphrase(void) const;
+  char *symmetricKey(void) const;
+  size_t passphraseLength(void) const;
+  size_t symmetricKeyLength(void) const;
   void generatePrivatePublicKeys(const int rsaKeySize, QString &error);
 
  private:
   QString m_cipherType;
   QString m_hashType;
   QString m_id;
-  char *m_key;
+  char *m_passphrase;
+  char *m_symmetricKey;
   gcry_cipher_hd_t m_cipherHandle;
   int m_cipherAlgorithm;
   int m_hashAlgorithm;
   int m_saltLength;
-  size_t m_keyLength;
+  size_t m_passphraseLength;
+  size_t m_symmetricKeyLength;
   unsigned long m_iterationCount;
   static void init(void);
   bool setInitializationVector(QByteArray &iv);

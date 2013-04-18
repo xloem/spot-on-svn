@@ -730,6 +730,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 
 		  spoton_gcrypt crypt(symmetricKeyAlgorithm,
 				      QString(""),
+				      QByteArray(),
 				      symmetricKey,
 				      0,
 				      0,
@@ -987,6 +988,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		    {
 		      spoton_gcrypt crypt(symmetricKeyAlgorithm,
 					  QString(""),
+					  QByteArray(),
 					  symmetricKey,
 					  0,
 					  0,

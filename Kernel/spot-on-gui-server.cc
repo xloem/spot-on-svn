@@ -133,11 +133,12 @@ void spoton_gui_server::slotReadyRead(void)
 		     QByteArray::fromBase64(list.value(2)),
 		     QByteArray::fromBase64(list.value(3)));
 		}
-	      else if(message.startsWith("key_"))
+	      else if(message.startsWith("keys_"))
 		{
-		  message.remove(0, strlen("key_"));
+		  message.remove(0, strlen("keys_"));
 		  message = message.trimmed();
-		  message = QByteArray::fromBase64(message);
+
+		  QList<QByteArray> list(message.split('_'));
 
 		  if(!spoton_kernel::s_crypt1)
 		    {
@@ -148,7 +149,8 @@ void spoton_gui_server::slotReadyRead(void)
 			 spoton_kernel::s_settings.value("gui/hashType",
 							 "sha512").
 			 toString().trimmed(),
-			 message,
+			 QByteArray::fromBase64(list.value(0)),
+			 QByteArray::fromBase64(list.value(1)),
 			 spoton_kernel::s_settings.value("gui/saltLength",
 							 256).toInt(),
 			 spoton_kernel::s_settings.value("gui/iterationCount",
@@ -166,7 +168,8 @@ void spoton_gui_server::slotReadyRead(void)
 		       spoton_kernel::s_settings.value("gui/hashType",
 						       "sha512").
 		       toString().trimmed(),
-		       message,
+		       QByteArray::fromBase64(list.value(0)),
+		       QByteArray::fromBase64(list.value(1)),
 		       spoton_kernel::s_settings.value("gui/saltLength",
 						       256).toInt(),
 		       spoton_kernel::s_settings.value("gui/iterationCount",

@@ -938,6 +938,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 		    {
 		      spoton_gcrypt crypt(symmetricKeyAlgorithm,
 					  QString(""),
+					  QByteArray(),
 					  symmetricKey,
 					  0,
 					  0,
@@ -1252,6 +1253,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 		    {
 		      spoton_gcrypt crypt(symmetricKeyAlgorithm,
 					  QString(""),
+					  QByteArray(),
 					  symmetricKey,
 					  0,
 					  0,
