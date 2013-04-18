@@ -38,6 +38,7 @@ class spoton_gcrypt;
 class spoton_gui_server;
 class spoton_listener;
 class spoton_neighbor;
+class spoton_shared_reader;
 
 class spoton_kernel: public QObject
 {
@@ -63,6 +64,7 @@ class spoton_kernel: public QObject
   QTimer m_controlDatabaseTimer;
   QTimer m_statusTimer;
   spoton_gui_server *m_guiServer;
+  spoton_shared_reader *m_sharedReader;
   void checkForTermination(void);
   void cleanup(void);
   void cleanupDatabases(void);

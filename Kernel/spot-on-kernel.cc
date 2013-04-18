@@ -58,6 +58,7 @@ extern "C"
 #include "spot-on-kernel.h"
 #include "spot-on-listener.h"
 #include "spot-on-neighbor.h"
+#include "spot-on-shared-reader.h"
 
 QCache<QByteArray, char *> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
@@ -203,6 +204,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_controlDatabaseTimer.start(2500);
   m_statusTimer.start(15000);
   m_guiServer = new spoton_gui_server(this);
+  m_sharedReader = new spoton_shared_reader(this);
   connect(m_guiServer,
 	  SIGNAL(messageReceivedFromUI(const qint64,
 				       const QByteArray &,

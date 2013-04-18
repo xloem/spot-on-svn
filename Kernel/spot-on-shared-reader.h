@@ -28,6 +28,7 @@
 #ifndef _spoton_shared_reader_h_
 #define _spoton_shared_reader_h_
 
+#include <QFuture>
 #include <QObject>
 #include <QTimer>
 
@@ -40,10 +41,16 @@ class spoton_shared_reader: public QObject
   ~spoton_shared_reader();
 
  private:
+  QFuture<void> m_future;
   QTimer m_timer;
+  void process(void);
 
  private slots:
+  void slotProcessUrls(const QList<QList<QVariant> > &list);
   void slotTimeout(void);
+
+ signals:
+  void processUrls(const QList<QList<QVariant> > &list);
 };
 
 #endif

@@ -29,12 +29,19 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QVariant>
+#include <QtCore>
 
+#include "Common/spot-on-gcrypt.h"
 #include "Common/spot-on-misc.h"
+#include "spot-on-kernel.h"
 #include "spot-on-shared-reader.h"
 
 spoton_shared_reader::spoton_shared_reader(QObject *parent):QObject(parent)
 {
+  connect(this,
+	  SIGNAL(processUrls(const QList<QList<QVariant> > &)),
+	  this,
+	  SLOT(slotProcessUrls(const QList<QList<QVariant> > &)));
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -43,15 +50,28 @@ spoton_shared_reader::spoton_shared_reader(QObject *parent):QObject(parent)
 }
 
 spoton_shared_reader::~spoton_shared_reader()
-{  
+{
+  m_future.waitForFinished();
 }
 
 void spoton_shared_reader::slotTimeout(void)
 {
+  if(!m_future.isRunning())
+    m_future = QtConcurrent::run(this, &spoton_shared_reader::process);
+}
+
+void spoton_shared_reader::process(void)
+{
+  /*
+  ** Please do not call this method directly unless you can protect it
+  ** from multiple threads.
+  */
+
   QList<QList<QVariant> > list;
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_shared_reader");
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_shared_reader");
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "shared.db");
@@ -74,9 +94,23 @@ void spoton_shared_reader::slotTimeout(void)
 	      QByteArray title;
 	      QByteArray url;
 	      bool encrypted = query.value(1).toBool();
+	      bool ok = true;
 
 	      if(encrypted)
 		{
+		  if(!spoton_kernel::s_crypt1)
+		    continue;
+
+		  description = spoton_kernel::s_crypt1->
+		    decrypted(QByteArray::fromUtf8(query.value(0).toByteArray()), &ok);
+
+		  if(ok)
+		    title = spoton_kernel::s_crypt1->
+		      decrypted(query.value(2).toByteArray(), &ok);
+
+		  if(ok)
+		    url = spoton_kernel::s_crypt1->
+		      decrypted(query.value(3).toByteArray(), &ok);
 		}
 	      else
 		{
@@ -85,10 +119,19 @@ void spoton_shared_reader::slotTimeout(void)
 		  url = query.value(3).toByteArray();
 		}
 
-	      QList<QVariant> variants;
+	      if(ok)
+		{
+		  QList<QVariant> variants;
 
-	      variants << description << title << url;
-	      list.append(variants);
+		  variants << description << title << url;
+		  list.append(variants);
+		}
+
+	      QSqlQuery deleteQuery(db);
+
+	      deleteQuery.prepare("DELETE FROM urls WHERE url = ?");
+	      deleteQuery.bindValue(0, query.value(3));
+	      deleteQuery.exec();
 	    }
       }
 
@@ -96,4 +139,13 @@ void spoton_shared_reader::slotTimeout(void)
   }
 
   QSqlDatabase::removeDatabase("spoton_shared_reader");
+
+  if(!list.isEmpty())
+    emit processUrls(list);
+}
+
+void spoton_shared_reader::slotProcessUrls
+(const QList<QList<QVariant> > &list)
+{
+  Q_UNUSED(list);
 }
