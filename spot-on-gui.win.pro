@@ -4,7 +4,7 @@ libspoton.depends =
 
 TEMPLATE	= app
 LANGUAGE	= C++
-QT		+= network sql
+QT		+= network sql webkit
 CONFIG		+= qt release warn_on
 
 # The function gcry_kdf_derive() is available in version
@@ -33,11 +33,13 @@ LIBS		+= -L..\\..\\LibSpotOn -L..\\..\\LibSpotOn\\Libraries.win32 \
 PRE_TARGETDEPS = libspoton.dll
 
 FORMS           = UI\\controlcenter.ui \
-		  UI\\logviewer.ui
+                  UI\\logviewer.ui \
+                  UI\\docviewer.ui
 
 UI_HEADERS_DIR  = GUI
 
 HEADERS		= GUI\\spot-on.h \
+                  GUI\\spot-on-docviewer.h \
 		  GUI\\spot-on-logviewer.h \
                   GUI\\spot-on-tabwidget.h \
 		  GUI\\spot-on-textedit.h
@@ -46,6 +48,7 @@ SOURCES		= Common\\spot-on-gcrypt.cc \
 		  Common\\spot-on-misc.cc \
                   Common\\spot-on-send.cc \
 		  GUI\\spot-on.cc \
+                  GUI\\spot-on-docviewer.cc \
 		  GUI\\spot-on-logviewer.cc \
 		  GUI\\spot-on-tabwidget.cc \
 		  GUI\\spot-on-textedit.cc

@@ -252,5 +252,7 @@
         <file>Resources/spotonbutton64.ico</file>
         <file>sticky.png</file>
         <file>nonsticky.png</file>
+        <file>simview.png</file>
+        <file>documentation.png</file>
     </qresource>
 </RCC>

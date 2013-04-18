@@ -1205,6 +1205,17 @@ p, li { white-space: pre-wrap; }
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
+             <widget class="QPushButton" name="pushButtonClearSearch">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../Icons/icons.qrc">
+                <normaloff>:/block.png</normaloff>:/block.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
              <spacer name="horizontalSpacer_4">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -2017,6 +2028,28 @@ p, li { white-space: pre-wrap; }
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_11">
                 <item>
+                 <widget class="QPushButton" name="pushButtonDocViewer">
+                  <property name="text">
+                   <string>Doc Viewer</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../Icons/icons.qrc">
+                    <normaloff>:/documentation.png</normaloff>:/documentation.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButtonSimViewer">
+                  <property name="text">
+                   <string>Sim Viewer</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../Icons/icons.qrc">
+                    <normaloff>:/simview.png</normaloff>:/simview.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QPushButton" name="pushButtonLogViewer">
                   <property name="text">
                    <string>Log &amp;Viewer</string>
@@ -2804,6 +2837,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>passphrase1</tabstop>
   <tabstop>passphrase2</tabstop>
   <tabstop>setPassphrase</tabstop>
+  <tabstop>pushButtonDocViewer</tabstop>
+  <tabstop>pushButtonSimViewer</tabstop>
   <tabstop>pushButtonLogViewer</tabstop>
   <tabstop>resetSpotOn</tabstop>
   <tabstop>tabWidget</tabstop>

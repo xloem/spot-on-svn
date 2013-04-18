@@ -29,6 +29,7 @@
 #include <QCheckBox>
 #include <QClipboard>
 #include <QDateTime>
+#include <QDesktopServices>
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -217,6 +218,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(bool)),
 	  this,
 	  SLOT(slotViewLog(void)));
+  connect(ui.pushButtonSimViewer,
+      SIGNAL(clicked(bool)),
+      this,
+      SLOT(slotSimRun(void)));
+  connect(ui.pushButtonDocViewer,
+      SIGNAL(clicked(bool)),
+      this,
+      SLOT(slotDocRun(void)));
   connect(ui.listenerIP,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -416,6 +425,11 @@ spoton::spoton(void):QMainWindow()
       ui.passphraseLabel->setEnabled(false);
       ui.kernelBox->setEnabled(false);
       ui.listenersBox->setEnabled(false);
+      ui.pushButtonDocViewer->setEnabled(false);
+      ui.pushButtonSimViewer->setEnabled(false);
+      ui.pushButtonLogViewer->setEnabled(false);
+      ui.resetSpotOn->setEnabled(false);
+
 
       for(int i = 0; i < ui.tab->count(); i++)
 	if(ui.tab->tabBar()->tabData(i).toString() == "page_5")
@@ -1773,6 +1787,10 @@ void spoton::slotSetPassphrase(void)
 
       ui.kernelBox->setEnabled(true);
       ui.listenersBox->setEnabled(true);
+      ui.pushButtonDocViewer->setEnabled(true);
+      ui.pushButtonSimViewer->setEnabled(true);
+      ui.pushButtonLogViewer->setEnabled(true);
+      ui.resetSpotOn->setEnabled(true);
       ui.passphrase1->setText("0000000000");
       ui.passphrase2->setText("0000000000");
       ui.rsaKeySize->setEnabled(false);
@@ -1881,6 +1899,10 @@ void spoton::slotValidatePassphrase(void)
       ui.passphraseButton->setEnabled(false);
       ui.passphraseLabel->setEnabled(false);
       ui.rsaKeySize->setEnabled(false);
+      ui.pushButtonDocViewer->setEnabled(true);
+      ui.pushButtonSimViewer->setEnabled(true);
+      ui.pushButtonLogViewer->setEnabled(true);
+      ui.resetSpotOn->setEnabled(true);
 
       for(int i = 0; i < ui.tab->count(); i++)
 	ui.tab->setTabEnabled(i, true);
@@ -2881,6 +2903,16 @@ void spoton::slotSharePublicKeyWithParticipant(void)
 void spoton::slotViewLog(void)
 {
   m_logViewer.show(this);
+}
+
+void spoton::slotSimRun(void)
+{
+    QDesktopServices::openUrl (QUrl("http://spot-on.sourceforge.net/sim/sim.html"));
+}
+
+void spoton::slotDocRun(void)
+{
+   m_docViewer.show(this);
 }
 
 void spoton::slotStatusChanged(int index)
