@@ -102,7 +102,7 @@ void spoton_shared_reader::process(void)
 		    continue;
 
 		  description = spoton_kernel::s_crypt1->
-		    decrypted(QByteArray::fromUtf8(query.value(0).toByteArray()), &ok);
+		    decrypted(query.value(0).toByteArray(), &ok);
 
 		  if(ok)
 		    title = spoton_kernel::s_crypt1->
