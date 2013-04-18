@@ -130,4 +130,5 @@ void spoton_shared_reader::slotTimeout(void)
   }
 
   QSqlDatabase::removeDatabase("spoton_shared_reader");
+  spoton_misc::populateUrlsDatabase(list, spoton_kernel::s_crypt1);
 }

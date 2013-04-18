@@ -418,6 +418,8 @@ void spoton_misc::populateCountryDatabase(spoton_gcrypt *crypt)
 	    if(ok)
 	      query.exec();
 	  }
+
+	db.commit();
       }
 
     db.close();
@@ -474,5 +476,33 @@ void spoton_misc::populateUrlsDatabase(const QList<QList<QVariant> > &list,
     return;
 
   prepareDatabases();
-  Q_UNUSED(list);
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() + "urls.db");
+
+    if(db.open())
+      {
+	QSqlQuery query1(db);
+	QSqlQuery query2(db);
+
+	for(int i = 0; i < list.size(); i++)
+	  {
+	    /*
+	    ** 0: description
+	    ** 1: title
+	    ** 2: url
+	    */
+
+	    QList<QVariant> variants(list.at(i));
+	  }
+
+	db.commit();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_misc");
 }
