@@ -69,9 +69,9 @@ void spoton_logviewer::slotClear(void)
 
 void spoton_logviewer::show(QWidget *parent)
 {
+  QPoint p(parent->pos());
   int X = 0;
   int Y = 0;
-  QPoint p(parent->pos());
 
   if(parent->width() >= width())
     X = p.x() + (parent->width() - width()) / 2;

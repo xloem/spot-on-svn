@@ -28,6 +28,9 @@
 #ifndef _spoton_misc_h_
 #define _spoton_misc_h_
 
+#include <QString>
+#include <QVariant>
+
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
 extern "C"
 {

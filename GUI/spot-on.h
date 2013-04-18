@@ -35,8 +35,8 @@
 #include <QTimer>
 
 #include "Common/spot-on-gcrypt.h"
-#include "spot-on-logviewer.h"
 #include "spot-on-docviewer.h"
+#include "spot-on-logviewer.h"
 #include "ui_controlcenter.h"
 
 class spoton: public QMainWindow
@@ -58,8 +58,8 @@ class spoton: public QMainWindow
   QTimer m_tableTimer;
   Ui_spoton_mainwindow ui;
   spoton_gcrypt *m_crypt;
-  spoton_logviewer m_logViewer;
   spoton_docviewer m_docViewer;
+  spoton_logviewer m_logViewer;
   QIcon iconForCountry(const QString &country);
   bool isKernelActive(void) const;
   void closeEvent(QCloseEvent *event);
@@ -91,7 +91,6 @@ class spoton: public QMainWindow
   void slotDisconnectNeighbor(void);
   void slotDisplayLocalSearchResults(void);
   void slotDoSearch(void);
-  void slotDocRun(void);
   void slotFetchMoreAlgo(void);
   void slotFetchMoreButton(void);
   void slotGeneralTimerTimeout(void);
@@ -119,11 +118,11 @@ class spoton: public QMainWindow
   void slotSharePublicKey(void);
   void slotSharePublicKeyWithParticipant(void);
   void slotShowContextMenu(const QPoint &point);
-  void slotSimRun(void);
   void slotStatusChanged(int index);
   void slotTabChanged(int index);
   void slotUnblockNeighbor(void);
   void slotValidatePassphrase(void);
+  void slotViewDocumentation(void);
   void slotViewLog(void);
 };
 

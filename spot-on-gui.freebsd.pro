@@ -48,7 +48,7 @@ FORMS           = UI/controlcenter.ui \
 UI_HEADERS_DIR  = GUI
 
 HEADERS		= GUI/spot-on.h \
-          GUI/spot-on-docviewer.h \
+          	  GUI/spot-on-docviewer.h \
 		  GUI/spot-on-logviewer.h \
 		  GUI/spot-on-tabwidget.h \
 		  GUI/spot-on-textedit.h
@@ -56,7 +56,7 @@ HEADERS		= GUI/spot-on.h \
 SOURCES		= Common/spot-on-gcrypt.cc \
 		  Common/spot-on-misc.cc \
 		  GUI/spot-on.cc \
-	      GUI/spot-on-docviewer.cc \
+	          GUI/spot-on-docviewer.cc \
 		  GUI/spot-on-logviwer.cc \
 		  GUI/spot-on-tabwidget.cc \
 		  GUI/spot-on-textedit.cc

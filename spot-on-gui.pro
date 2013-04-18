@@ -48,7 +48,7 @@ FORMS           = UI/controlcenter.ui \
 UI_HEADERS_DIR  = GUI
 
 HEADERS		= GUI/spot-on.h \
-          GUI/spot-on-docviewer.h \
+          	  GUI/spot-on-docviewer.h \
 		  GUI/spot-on-logviewer.h \
 		  GUI/spot-on-tabwidget.h \
 		  GUI/spot-on-textedit.h

@@ -872,12 +872,16 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 
       data.remove(0, 1); // Remove TTL.
 
+      QByteArray hash(spoton_gcrypt::sha512Hash(data, &ok));
       bool duplicate = false;
 
-      if(spoton_kernel::s_messagingCache.contains(data))
-	duplicate = true;
-      else
-	spoton_kernel::s_messagingCache.insert(data, 0);
+      if(ok)
+	{
+	  if(spoton_kernel::s_messagingCache.contains(hash))
+	    duplicate = true;
+	  else
+	    spoton_kernel::s_messagingCache.insert(hash, 0);
+	}
 
       QByteArray originalData(data); /*
 				     ** We may need to echo the
@@ -889,9 +893,8 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
       ** Find the symmetric key.
       */
 
-      QByteArray hash
-	(data.mid(0,
-		  spoton_send::SHA512_HEX_OUTPUT_MAXIMUM_LENGTH));
+      hash = data.mid(0, spoton_send::SHA512_HEX_OUTPUT_MAXIMUM_LENGTH);
+
       QByteArray symmetricKey;
 
       data.remove(0, hash.length());

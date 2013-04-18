@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2013 Alexis Megas & Spot-On Team
+** Copyright (c) 2013 Slim
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -25,8 +25,6 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QDir>
-
 #include "Common/spot-on-misc.h"
 #include "spot-on-docviewer.h"
 
@@ -35,20 +33,17 @@ spoton_docviewer::spoton_docviewer(void):QMainWindow()
   m_position = 0;
   ui.setupUi(this);
   setWindowIcon(QIcon(":/Logo/spoton-button-64.ico"));
-
   connect(ui.action_Close,
-      SIGNAL(triggered(void)),
-      this,
-      SLOT(slotClose(void)));
-
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotClose(void)));
 }
-
 
 void spoton_docviewer::show(QWidget *parent)
 {
+  QPoint p(parent->pos());
   int X = 0;
   int Y = 0;
-  QPoint p(parent->pos());
 
   if(parent->width() >= width())
     X = p.x() + (parent->width() - width()) / 2;
@@ -61,15 +56,9 @@ void spoton_docviewer::show(QWidget *parent)
     Y = p.y() - (height() - parent->height()) / 2;
 
   move(X, Y);
-
-//   ui.htmlView->load(QUrl ("qrc:READ.html"));
-//   ui.htmlView->load; (QUrl ("http://sourceforge.net/projects/spot-on/"));
-//   URL set in Designer docviewer.ui file.
-
   QMainWindow::show();
   raise();
 }
-
 
 void spoton_docviewer::slotClose(void)
 {

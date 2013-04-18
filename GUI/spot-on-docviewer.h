@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2013 Alexis Megas & Spot-On Team
+** Copyright (c) 2013 Slim
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -30,13 +30,8 @@
 
 #include <QMainWindow>
 #include <QWidget>
-//#include <QTimer>
 
 #include "ui_docviewer.h"
-
-
-
-
 
 class spoton_docviewer: public QMainWindow
 {
@@ -47,7 +42,6 @@ class spoton_docviewer: public QMainWindow
   void show(QWidget *parent);
 
  private:
-//  QTimer m_timer;
   Ui_spoton_docviewer ui;
   qint64 m_position;
 
