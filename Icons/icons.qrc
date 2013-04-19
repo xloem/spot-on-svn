@@ -255,5 +255,6 @@
         <file>simview.png</file>
         <file>documentation.png</file>
         <file>kugar.png</file>
+        <file>sharekey.png</file>
     </qresource>
 </RCC>

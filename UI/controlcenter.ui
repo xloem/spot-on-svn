@@ -843,7 +843,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/add-neighbor-to-chat.png</normaloff>:/add-neighbor-to-chat.png</iconset>
+                   <normaloff>:/sharekey.png</normaloff>:/sharekey.png</iconset>
                  </property>
                 </widget>
                </item>
@@ -919,7 +919,7 @@
                   <item>
                    <widget class="QRadioButton" name="addFriendSymmetricBundleRadio">
                     <property name="text">
-                     <string>&amp;Symmetric Bundle</string>
+                     <string>&amp;Symmetric Footprint</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../Icons/icons.qrc">
