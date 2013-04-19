@@ -257,5 +257,6 @@
         <file>kugar.png</file>
         <file>sharekey.png</file>
         <file>clean.png</file>
+        <file>reset.png</file>
     </qresource>
 </RCC>

@@ -1965,6 +1965,10 @@
                   <property name="text">
                    <string>&amp;Reset Spot-On</string>
                   </property>
+                  <property name="icon">
+                   <iconset resource="../Icons/icons.qrc">
+                    <normaloff>:/reset.png</normaloff>:/reset.png</iconset>
+                  </property>
                  </widget>
                 </item>
                 <item>
