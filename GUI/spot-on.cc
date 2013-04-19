@@ -2037,10 +2037,11 @@ void spoton::slotShowContextMenu(const QPoint &point)
 	action->setEnabled(false);
 
       menu.addAction(QIcon(":/kugar.png"),
-             tr("Copy Footprint."),
+		     tr("Copy symmetric bundle to the clipboard buffer."),
 		     this, SLOT(slotCopySymmetricBundle(void)));
-      menu.addAction(QIcon(":/delete.png"), tr("&Remove"), this, 
-		     SLOT(slotRemoveParticipants(void)));
+      menu.addAction(QIcon(":/delete.png"),
+		     tr("&Remove"),
+		     this,  SLOT(slotRemoveParticipants(void)));
       menu.exec(ui.participants->mapToGlobal(point));
     }
 }
