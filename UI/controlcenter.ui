@@ -870,23 +870,6 @@
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_22">
                 <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_15">
-                  <item>
-                   <widget class="QLabel" name="label_6">
-                    <property name="text">
-                     <string>N&amp;ame</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>friendName</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLineEdit" name="friendName"/>
-                  </item>
-                 </layout>
-                </item>
-                <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_30">
                   <item>
                    <widget class="QRadioButton" name="addFriendPublicKeyRadio">
@@ -917,6 +900,23 @@
                 </item>
                 <item>
                  <widget class="QTextEdit" name="friendInformation"/>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_15">
+                  <item>
+                   <widget class="QLabel" name="label_6">
+                    <property name="text">
+                     <string>N&amp;ame</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>friendName</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="friendName"/>
+                  </item>
+                 </layout>
                 </item>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_21">
@@ -1211,7 +1211,14 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="keywords"/>
+             <widget class="QLineEdit" name="keywords">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>28</height>
+               </size>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QPushButton" name="pushButton_11">

@@ -2012,7 +2012,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("&Disconnect"),
 		     this, SLOT(slotDisconnectNeighbor(void)));
       menu.addSeparator();
-      menu.addAction(QIcon(":/clean.png"),tr("&Delete"),
+      menu.addAction(QIcon(":/delete.png"),tr("&Delete"),
 		     this, SLOT(slotDeleteNeighbor(void)));
       menu.addAction(tr("Delete &All"),
 		     this, SLOT(slotDeleteAllNeighbors(void)));
