@@ -28,6 +28,7 @@
 #ifndef _spoton_misc_h_
 #define _spoton_misc_h_
 
+#include <QSqlDatabase>
 #include <QString>
 #include <QVariant>
 
@@ -49,6 +50,13 @@ class spoton_misc
   static bool countryAllowedToConnect(const QString &country,
 				      spoton_gcrypt *crypt);
   static bool isGnome(void);
+  static bool saveSymmetricBundle(const QByteArray &name,
+				  const QByteArray &publicKey,
+				  const QByteArray &symmetricKey,
+				  const QByteArray &symmetricKeyAlgorithm,
+				  const int neighborOid,
+				  QSqlDatabase &db,
+				  spoton_gcrypt *crypt);
   static void logError(const QString &error);
   static void populateCountryDatabase(spoton_gcrypt *crypt);
   static void populateUrlsDatabase(const QList<QList<QVariant> > &list,

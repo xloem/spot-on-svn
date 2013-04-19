@@ -536,3 +536,45 @@ void spoton_misc::populateUrlsDatabase(const QList<QList<QVariant> > &list,
 
   QSqlDatabase::removeDatabase("spoton_misc");
 }
+
+bool spoton_misc::saveSymmetricBundle(const QByteArray &name,
+				      const QByteArray &publicKey,
+				      const QByteArray &symmetricKey,
+				      const QByteArray &symmetricKeyAlgorithm,
+				      const int neighborOid,
+				      QSqlDatabase &db,
+				      spoton_gcrypt *crypt)
+{
+  if(!crypt)
+    return false;
+
+  QSqlQuery query(db);
+  bool ok = true;
+
+  query.prepare("INSERT OR REPLACE INTO symmetric_keys "
+		"(name, symmetric_key, symmetric_key_algorithm, "
+		"public_key, public_key_hash, neighbor_oid) "
+		"VALUES (?, ?, ?, ?, ?, ?)");
+  query.bindValue(0, name);
+
+  query.bindValue
+    (1, crypt->encrypted(symmetricKey, &ok).toBase64());
+
+  if(ok)
+    query.bindValue
+      (2, crypt->encrypted(symmetricKeyAlgorithm, &ok).toBase64());
+
+  query.bindValue(3, publicKey);
+
+  if(ok)
+    query.bindValue
+      (4, spoton_gcrypt::sha512Hash(publicKey, &ok).toHex());
+
+  query.bindValue(5, neighborOid);
+  
+  if(ok)
+    if((ok = query.exec()))
+      ok = db.commit();
+
+  return ok;
+}

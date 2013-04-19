@@ -3542,8 +3542,16 @@ void spoton::slotFetchMoreButton(void)
 
 void spoton::slotAddFriendsKey(void)
 {
+  if(!m_crypt)
+    return;
+
   if(ui.addFriendPublicKeyRadio->isChecked())
     {
+      if(ui.friendInformation->toPlainText().trimmed().isEmpty())
+	return;
+      else if(ui.friendName->text().trimmed().isEmpty())
+	return;
+
       QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
       QByteArray symmetricKey
@@ -3553,6 +3561,32 @@ void spoton::slotAddFriendsKey(void)
 	(static_cast<void *> (symmetricKey.data()),
 	 static_cast<size_t> (symmetricKey.length()),
 	 GCRY_VERY_STRONG_RANDOM);
+
+      {
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			   "friends_symmetric_keys.db");
+
+	if(db.open())
+	  {
+	    spoton_misc::prepareDatabases();
+
+	    if(spoton_misc::saveSymmetricBundle(ui.friendName->text().toUtf8(),
+						ui.friendInformation->
+						toPlainText().toLatin1(),
+						symmetricKey,
+						QByteArray("aes256"),
+						-1,
+						db,
+						m_crypt))
+	      ui.friendInformation->selectAll();
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase("spoton");
       QApplication::restoreOverrideCursor();
     }
   else

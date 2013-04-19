@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>970</width>
-                <height>625</height>
+                <width>962</width>
+                <height>636</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -951,12 +951,6 @@
                      <iconset resource="../Icons/icons.qrc">
                       <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
                     </property>
-                    <property name="iconSize">
-                     <size>
-                      <width>16</width>
-                      <height>16</height>
-                     </size>
-                    </property>
                    </widget>
                   </item>
                   <item>
@@ -1118,12 +1112,6 @@
                      <iconset resource="../Icons/icons.qrc">
                       <normaloff>:/add.png</normaloff>:/add.png</iconset>
                     </property>
-                    <property name="iconSize">
-                     <size>
-                      <width>16</width>
-                      <height>16</height>
-                     </size>
-                    </property>
                    </widget>
                   </item>
                   <item>
@@ -1137,12 +1125,6 @@
                     <property name="icon">
                      <iconset resource="../Icons/icons.qrc">
                       <normaloff>:/down.png</normaloff>:/down.png</iconset>
-                    </property>
-                    <property name="iconSize">
-                     <size>
-                      <width>16</width>
-                      <height>16</height>
-                     </size>
                     </property>
                    </widget>
                   </item>
@@ -1212,17 +1194,6 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
-             <widget class="QPushButton" name="pushButtonClearSearch">
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="../Icons/icons.qrc">
-                <normaloff>:/block.png</normaloff>:/block.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
              <spacer name="horizontalSpacer_4">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -1264,12 +1235,6 @@
                <iconset resource="../Icons/icons.qrc">
                 <normaloff>:/tab-search.png</normaloff>:/tab-search.png</iconset>
               </property>
-              <property name="iconSize">
-               <size>
-                <width>16</width>
-                <height>16</height>
-               </size>
-              </property>
              </widget>
             </item>
             <item>
@@ -1307,12 +1272,6 @@
               <property name="icon">
                <iconset resource="../Icons/icons.qrc">
                 <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>16</width>
-                <height>16</height>
-               </size>
               </property>
              </widget>
             </item>
@@ -1364,12 +1323,6 @@
                <iconset resource="../Icons/icons.qrc">
                 <normaloff>:/modify.png</normaloff>:/modify.png</iconset>
               </property>
-              <property name="iconSize">
-               <size>
-                <width>16</width>
-                <height>16</height>
-               </size>
-              </property>
              </widget>
             </item>
            </layout>
@@ -1403,8 +1356,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>970</width>
-             <height>625</height>
+             <width>975</width>
+             <height>621</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -1430,12 +1383,6 @@
                    <property name="icon">
                     <iconset resource="../Icons/icons.qrc">
                      <normaloff>:/connect_creating.png</normaloff>:/connect_creating.png</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>16</width>
-                     <height>16</height>
-                    </size>
                    </property>
                   </widget>
                  </item>
@@ -1470,12 +1417,6 @@
                    <property name="icon">
                     <iconset resource="../Icons/icons.qrc">
                      <normaloff>:/quit.png</normaloff>:/quit.png</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>16</width>
-                     <height>16</height>
-                    </size>
                    </property>
                   </widget>
                  </item>
@@ -1654,12 +1595,6 @@
                         <iconset resource="../Icons/icons.qrc">
                          <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
                        </property>
-                       <property name="iconSize">
-                        <size>
-                         <width>16</width>
-                         <height>16</height>
-                        </size>
-                       </property>
                       </widget>
                      </item>
                      <item>
@@ -1670,12 +1605,6 @@
                        <property name="icon">
                         <iconset resource="../Icons/icons.qrc">
                          <normaloff>:/delete_all.png</normaloff>:/delete_all.png</iconset>
-                       </property>
-                       <property name="iconSize">
-                        <size>
-                         <width>16</width>
-                         <height>16</height>
-                        </size>
                        </property>
                       </widget>
                      </item>
@@ -1821,12 +1750,6 @@
                       <property name="icon">
                        <iconset resource="../Icons/icons.qrc">
                         <normaloff>:/add.png</normaloff>:/add.png</iconset>
-                      </property>
-                      <property name="iconSize">
-                       <size>
-                        <width>16</width>
-                        <height>16</height>
-                       </size>
                       </property>
                      </widget>
                     </item>
@@ -2257,12 +2180,6 @@
                       <iconset resource="../Icons/icons.qrc">
                        <normaloff>:/add.png</normaloff>:/add.png</iconset>
                      </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>16</width>
-                       <height>16</height>
-                      </size>
-                     </property>
                     </widget>
                    </item>
                    <item>
@@ -2276,12 +2193,6 @@
                      <property name="icon">
                       <iconset resource="../Icons/icons.qrc">
                        <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>16</width>
-                       <height>16</height>
-                      </size>
                      </property>
                     </widget>
                    </item>
@@ -2471,12 +2382,6 @@
                       <iconset resource="../Icons/icons.qrc">
                        <normaloff>:/add.png</normaloff>:/add.png</iconset>
                      </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>16</width>
-                       <height>16</height>
-                      </size>
-                     </property>
                     </widget>
                    </item>
                    <item>
@@ -2490,12 +2395,6 @@
                      <property name="icon">
                       <iconset resource="../Icons/icons.qrc">
                        <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>16</width>
-                       <height>16</height>
-                      </size>
                      </property>
                     </widget>
                    </item>
@@ -2610,12 +2509,6 @@
              <iconset resource="../Icons/icons.qrc">
               <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
             </property>
-            <property name="iconSize">
-             <size>
-              <width>16</width>
-              <height>16</height>
-             </size>
-            </property>
            </widget>
           </item>
           <item>
@@ -2724,7 +2617,7 @@
      <x>0</x>
      <y>0</y>
      <width>992</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2852,7 +2745,6 @@
   <tabstop>listWidget_2</tabstop>
   <tabstop>passphrase</tabstop>
   <tabstop>passphraseButton</tabstop>
-  <tabstop>pushButtonClearSearch</tabstop>
  </tabstops>
  <resources>
   <include location="../Icons/icons.qrc"/>

@@ -535,37 +535,9 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 	  }
 
 	if(value != -1)
-	  {
-	    query.prepare("INSERT OR REPLACE INTO symmetric_keys "
-			  "(name, symmetric_key, symmetric_key_algorithm, "
-			  "public_key, public_key_hash, neighbor_oid) "
-			  "VALUES (?, ?, ?, ?, ?, ?)");
-	    query.bindValue(0, name);
-
-	    bool ok = true;
-
-	    query.bindValue
-	      (1, spoton_kernel::s_crypt1->encrypted(symmetricKey,
-						     &ok).toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(2,
-		 spoton_kernel::s_crypt1->encrypted(symmetricKeyAlgorithm,
-						    &ok).toBase64());
-
-	    query.bindValue(3, publicKey);
-
-	    if(ok)
-	      query.bindValue
-		(4, spoton_gcrypt::sha512Hash(publicKey, &ok).toHex());
-
-	    query.bindValue(5, neighborOid);
-
-	    if(ok)
-	      if(query.exec())
-		db.commit();
-	  }
+	  spoton_misc::saveSymmetricBundle
+	    (name, publicKey, symmetricKey, symmetricKeyAlgorithm,
+	     neighborOid, db, spoton_kernel::s_crypt1);
 	else
 	  {
 	    /*
