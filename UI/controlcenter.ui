@@ -915,7 +915,7 @@
                   <item>
                    <widget class="QRadioButton" name="addFriendSymmetricBundleRadio">
                     <property name="text">
-                     <string>Symmetric Bundle</string>
+                     <string>Repleo</string>
                     </property>
                    </widget>
                   </item>
