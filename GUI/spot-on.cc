@@ -2003,7 +2003,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 
   if(ui.neighbors == sender())
     {
-      menu.addAction(QIcon(":/add-neighbor-to-chat.png"),
+      menu.addAction(QIcon(":/sharekey.png"),
 		     tr("&Share my Public Key"),
 		     this, SLOT(slotSharePublicKey(void)));
       menu.addSeparator();
@@ -2037,7 +2037,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 	action->setEnabled(false);
 
       menu.addAction(QIcon(":/kugar.png"),
-             tr("Copy symmetric bundle to clipboard."),
+             tr("Copy Footprint."),
 		     this, SLOT(slotCopySymmetricBundle(void)));
       menu.addAction(QIcon(":/delete.png"), tr("&Remove"), this, 
 		     SLOT(slotRemoveParticipants(void)));

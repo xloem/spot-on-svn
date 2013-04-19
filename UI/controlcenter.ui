@@ -717,6 +717,20 @@
                 </widget>
                </item>
                <item>
+                <widget class="QPushButton" name="pushButtonMakeFriends">
+                 <property name="toolTip">
+                  <string>Share public key with selected neighbor.</string>
+                 </property>
+                 <property name="text">
+                  <string>&amp;Share Key</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../Icons/icons.qrc">
+                   <normaloff>:/sharekey.png</normaloff>:/sharekey.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <spacer name="horizontalSpacer_7">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
@@ -728,6 +742,20 @@
                   </size>
                  </property>
                 </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButtonCopytoClipboard">
+                 <property name="toolTip">
+                  <string>Copy my public key to clipboard.</string>
+                 </property>
+                 <property name="text">
+                  <string>Copy &amp;Key</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../Icons/icons.qrc">
+                   <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
+                 </property>
+                </widget>
                </item>
               </layout>
              </item>
@@ -832,46 +860,7 @@
               </widget>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_4">
-               <item>
-                <widget class="QPushButton" name="pushButtonMakeFriends">
-                 <property name="toolTip">
-                  <string>Share public key with selected neighbor.</string>
-                 </property>
-                 <property name="text">
-                  <string>&amp;Share my Public Key</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/sharekey.png</normaloff>:/sharekey.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButtonCopytoClipboard">
-                 <property name="text">
-                  <string>Copy my Public &amp;Key to Clipboard</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_24">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
+              <layout class="QHBoxLayout" name="horizontalLayout_4"/>
              </item>
             </layout>
            </widget>
@@ -880,7 +869,7 @@
              <item>
               <widget class="QGroupBox" name="groupBox_addkey_2">
                <property name="title">
-                <string>Add Friend (Public Key)</string>
+                <string>Add Friend (Key or Footprint)</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_22">
                 <item>
@@ -905,7 +894,7 @@
                   <item>
                    <widget class="QRadioButton" name="addFriendPublicKeyRadio">
                     <property name="text">
-                     <string>&amp;Public Key</string>
+                     <string>&amp;Key</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../Icons/icons.qrc">
@@ -919,7 +908,7 @@
                   <item>
                    <widget class="QRadioButton" name="addFriendSymmetricBundleRadio">
                     <property name="text">
-                     <string>&amp;Symmetric Footprint</string>
+                     <string>&amp;Footprint</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../Icons/icons.qrc">
@@ -957,7 +946,7 @@
                     </property>
                     <property name="icon">
                      <iconset resource="../Icons/icons.qrc">
-                      <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
+                      <normaloff>:/add.png</normaloff>:/add.png</iconset>
                     </property>
                    </widget>
                   </item>
@@ -968,7 +957,7 @@
                     </property>
                     <property name="icon">
                      <iconset resource="../Icons/icons.qrc">
-                      <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
+                      <normaloff>:/block.png</normaloff>:/block.png</iconset>
                     </property>
                    </widget>
                   </item>
