@@ -375,9 +375,6 @@
        <attribute name="title">
         <string>E-Mail</string>
        </attribute>
-       <attribute name="toolTip">
-        <string notr="true">Echo-Mail</string>
-       </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_37">
         <item>
          <widget class="QSplitter" name="splitter">
