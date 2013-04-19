@@ -246,6 +246,18 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotCopyMyPublicKey(void)));
+  connect(ui.addFriendPublicKeyRadio,
+	  SIGNAL(toggled(bool)),
+	  ui.friendName,
+	  SLOT(setEnabled(bool)));
+  connect(ui.addFriend,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotAddFriendsKey(void)));
+  connect(ui.clearFriend,
+	  SIGNAL(clicked(void)),
+	  ui.friendInformation,
+	  SLOT(clear(void)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -3530,6 +3542,22 @@ void spoton::slotFetchMoreButton(void)
 
 void spoton::slotAddFriendsKey(void)
 {
+  if(ui.addFriendPublicKeyRadio->isChecked())
+    {
+      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+      QByteArray symmetricKey
+	(spoton_send::SYMMETRIC_KEY_MAXIMUM_LENGTH, 0);
+
+      gcry_randomize
+	(static_cast<void *> (symmetricKey.data()),
+	 static_cast<size_t> (symmetricKey.length()),
+	 GCRY_VERY_STRONG_RANDOM);
+      QApplication::restoreOverrideCursor();
+    }
+  else
+    {
+    }
 }
 
 void spoton::slotDoSearch(void)

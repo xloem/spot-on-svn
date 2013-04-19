@@ -1549,7 +1549,6 @@ void spoton_gcrypt::generatePrivatePublicKeys(const int rsaKeySize,
 	QSqlQuery query(db);
 	bool ok = true;
 
-	query.setForwardOnly(true);
 	query.prepare("INSERT INTO idiotes (id, private_key, public_key) "
 		      "VALUES (?, ?, ?)");
 	query.bindValue(0, m_id);

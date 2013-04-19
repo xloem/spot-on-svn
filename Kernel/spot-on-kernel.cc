@@ -649,7 +649,8 @@ void spoton_kernel::copyPublicKey(void)
   if(ok)
     {
       {
-	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
+	QSqlDatabase db = QSqlDatabase::addDatabase
+	  ("QSQLITE", "spoton_kernel");
 
 	db.setDatabaseName
 	  (spoton_misc::homePath() + QDir::separator() + "public_keys.db");
@@ -658,7 +659,6 @@ void spoton_kernel::copyPublicKey(void)
 	  {
 	    QSqlQuery query(db);
 
-	    query.exec("PRAGMA synchronous = OFF");
 	    query.prepare("INSERT INTO public_keys (key) VALUES (?)");
 	    query.bindValue(0, publicKey);
 

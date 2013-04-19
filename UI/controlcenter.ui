@@ -903,7 +903,7 @@
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_30">
                   <item>
-                   <widget class="QRadioButton" name="radioButton">
+                   <widget class="QRadioButton" name="addFriendPublicKeyRadio">
                     <property name="text">
                      <string>Public Key</string>
                     </property>
@@ -913,7 +913,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QRadioButton" name="radioButton_2">
+                   <widget class="QRadioButton" name="addFriendSymmetricBundleRadio">
                     <property name="text">
                      <string>Symmetric Bundle</string>
                     </property>
@@ -922,7 +922,7 @@
                  </layout>
                 </item>
                 <item>
-                 <widget class="QTextEdit" name="friendPublicKey"/>
+                 <widget class="QTextEdit" name="friendInformation"/>
                 </item>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_21">
@@ -940,7 +940,7 @@
                    </spacer>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="pushButton_6">
+                   <widget class="QPushButton" name="addFriend">
                     <property name="toolTip">
                      <string>Add Public Chat Key</string>
                     </property>
@@ -960,7 +960,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="pushButton">
+                   <widget class="QPushButton" name="clearFriend">
                     <property name="text">
                      <string>&amp;Clear</string>
                     </property>
@@ -2793,11 +2793,11 @@
   <tabstop>pushButtonMakeFriends</tabstop>
   <tabstop>pushButtonCopytoClipboard</tabstop>
   <tabstop>friendName</tabstop>
-  <tabstop>radioButton</tabstop>
-  <tabstop>radioButton_2</tabstop>
-  <tabstop>friendPublicKey</tabstop>
-  <tabstop>pushButton_6</tabstop>
-  <tabstop>pushButton</tabstop>
+  <tabstop>addFriendPublicKeyRadio</tabstop>
+  <tabstop>addFriendSymmetricBundleRadio</tabstop>
+  <tabstop>friendInformation</tabstop>
+  <tabstop>addFriend</tabstop>
+  <tabstop>clearFriend</tabstop>
   <tabstop>neighborIP</tabstop>
   <tabstop>neighborPort</tabstop>
   <tabstop>ipv4Neighbor</tabstop>

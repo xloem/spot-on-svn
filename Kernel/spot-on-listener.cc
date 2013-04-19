@@ -194,7 +194,6 @@ void spoton_listener::saveStatus(QSqlDatabase &db)
   QSqlQuery query(db);
   QString status("");
 
-  query.exec("PRAGMA synchronous = OFF");
   query.prepare("UPDATE listeners SET connections = ?, status = ? "
 		"WHERE OID = ? AND status <> ?");
   query.bindValue(0, QString::number(m_connections));
@@ -292,7 +291,6 @@ void spoton_listener::slotNewConnection(void)
 	  {
 	    QSqlQuery query(db);
 
-	    query.exec("PRAGMA synchronous = OFF");
 	    query.exec("INSERT INTO neighbors "
 		       "(local_ip_address, "
 		       "local_port, "
@@ -437,7 +435,6 @@ void spoton_listener::updateConnectionCount(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE listeners SET connections = ? "
 		      "WHERE OID = ?");
 	query.bindValue(0, QString::number(m_connections));

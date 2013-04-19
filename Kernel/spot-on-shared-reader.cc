@@ -95,13 +95,16 @@ void spoton_shared_reader::slotTimeout(void)
 		     0,
 		     QString(""));
 
-		  description = crypt.decrypted(query.value(0).toByteArray(), &ok);
+		  description = crypt.decrypted
+		    (query.value(0).toByteArray(), &ok);
 
 		  if(ok)
-		    title = crypt.decrypted(query.value(2).toByteArray(), &ok);
+		    title = crypt.decrypted
+		      (query.value(2).toByteArray(), &ok);
 
 		  if(ok)
-		    url = crypt.decrypted(query.value(3).toByteArray(), &ok);
+		    url = crypt.decrypted
+		      (query.value(3).toByteArray(), &ok);
 		}
 	      else
 		{

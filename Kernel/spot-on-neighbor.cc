@@ -278,7 +278,6 @@ void spoton_neighbor::saveStatus(QSqlDatabase &db, const QString &status)
 {
   QSqlQuery query(db);
 
-  query.exec("PRAGMA synchronous = OFF");
   query.prepare("UPDATE neighbors SET status = ? "
 		"WHERE OID = ? AND status <> 'deleted'");
   query.bindValue(0, status);
@@ -466,7 +465,6 @@ void spoton_neighbor::slotConnected(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE neighbors SET local_ip_address = ?, "
 		      "local_port = ?, status = 'connected' "
 		      "WHERE OID = ?");
@@ -538,7 +536,6 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 
 	if(value != -1)
 	  {
-	    query.exec("PRAGMA synchronous = OFF");
 	    query.prepare("INSERT OR REPLACE INTO symmetric_keys "
 			  "(name, symmetric_key, symmetric_key_algorithm, "
 			  "public_key, public_key_hash, neighbor_oid) "
@@ -626,7 +623,6 @@ void spoton_neighbor::savePublicKey(const QByteArray &publicKey)
       {
 	QSqlQuery query(db);
 
-	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("INSERT INTO public_keys (key) VALUES (?)");
 	query.bindValue(0, publicKey);
 
@@ -1349,7 +1345,6 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash,
       {
 	QSqlQuery query(db);
 
-	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE symmetric_keys SET "
 		      "status = ?, "
 		      "last_status_update = ? "
@@ -1370,13 +1365,15 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash,
   QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
 }
 
-void spoton_neighbor::slotSavePublicKey(const QByteArray &name,
-					const QByteArray &publicKey,
-					const QByteArray &symmetricKey,
-					const QByteArray &symmetricKeyAlgorithm,
-					const qint64 neighborOid)
+void spoton_neighbor::slotSavePublicKey
+(const QByteArray &name,
+ const QByteArray &publicKey,
+ const QByteArray &symmetricKey,
+ const QByteArray &symmetricKeyAlgorithm,
+ const qint64 neighborOid)
 {
-  savePublicKey(name, publicKey, symmetricKey, symmetricKeyAlgorithm, neighborOid);
+  savePublicKey(name, publicKey, symmetricKey, symmetricKeyAlgorithm,
+		neighborOid);
 }
 
 void spoton_neighbor::savePublicKey(const QByteArray &name,
