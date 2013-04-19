@@ -2036,7 +2036,8 @@ void spoton::slotShowContextMenu(const QPoint &point)
       else
 	action->setEnabled(false);
 
-      menu.addAction(tr("Copy symmetric bundle to the clipboard buffer."),
+      menu.addAction(QIcon(":/kugar.png"),
+             tr("Copy symmetric bundle to clipboard."),
 		     this, SLOT(slotCopySymmetricBundle(void)));
       menu.addAction(QIcon(":/delete.png"), tr("&Remove"), this, 
 		     SLOT(slotRemoveParticipants(void)));
