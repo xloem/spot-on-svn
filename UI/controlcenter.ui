@@ -111,7 +111,7 @@
                          </property>
                          <property name="icon">
                           <iconset resource="../Icons/icons.qrc">
-                           <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
+                           <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -957,7 +957,7 @@
                     </property>
                     <property name="icon">
                      <iconset resource="../Icons/icons.qrc">
-                      <normaloff>:/block.png</normaloff>:/block.png</iconset>
+                      <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
                     </property>
                    </widget>
                   </item>
@@ -1257,11 +1257,11 @@
                <string>Delete Selected URL</string>
               </property>
               <property name="text">
-               <string>&amp;Deny</string>
+               <string>&amp;Delete</string>
               </property>
               <property name="icon">
                <iconset resource="../Icons/icons.qrc">
-                <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
+                <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
               </property>
              </widget>
             </item>
@@ -2119,7 +2119,7 @@
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap resource="../Icons/icons.qrc">:/block.png</pixmap>
+                    <pixmap resource="../Icons/icons.qrc">:/clean.png</pixmap>
                    </property>
                   </widget>
                  </item>
@@ -2321,7 +2321,7 @@
                     <string/>
                    </property>
                    <property name="pixmap">
-                    <pixmap resource="../Icons/icons.qrc">:/block.png</pixmap>
+                    <pixmap resource="../Icons/icons.qrc">:/clean.png</pixmap>
                    </property>
                   </widget>
                  </item>
