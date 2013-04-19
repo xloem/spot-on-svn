@@ -905,7 +905,7 @@
                   <item>
                    <widget class="QRadioButton" name="addFriendPublicKeyRadio">
                     <property name="text">
-                     <string>Public Key</string>
+                     <string>&amp;Public Key</string>
                     </property>
                     <property name="checked">
                      <bool>true</bool>
@@ -915,7 +915,7 @@
                   <item>
                    <widget class="QRadioButton" name="addFriendSymmetricBundleRadio">
                     <property name="text">
-                     <string>Repleo</string>
+                     <string>&amp;Symmetric Bundle</string>
                     </property>
                    </widget>
                   </item>
