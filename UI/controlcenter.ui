@@ -27,7 +27,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="iconSize">
        <size>
@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>962</width>
-                <height>636</height>
+                <width>964</width>
+                <height>622</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -882,11 +882,11 @@
                   <item>
                    <widget class="QRadioButton" name="addFriendSymmetricBundleRadio">
                     <property name="text">
-                     <string>Pawprint</string>
+                     <string>Repleo</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../Icons/icons.qrc">
-                      <normaloff>:/kugar.png</normaloff>:/kugar.png</iconset>
+                      <normaloff>:/repleo.png</normaloff>:/repleo.png</iconset>
                     </property>
                    </widget>
                   </item>
@@ -1329,8 +1329,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1020</width>
-             <height>621</height>
+             <width>838</width>
+             <height>490</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2561,7 +2561,7 @@
      <x>0</x>
      <y>0</y>
      <width>992</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

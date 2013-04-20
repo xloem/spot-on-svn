@@ -258,5 +258,6 @@
         <file>sharekey.png</file>
         <file>clean.png</file>
         <file>reset.png</file>
+        <file>repleo.png</file>
     </qresource>
 </RCC>
