@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>READ.html</file>
+        <file>README.html</file>
     </qresource>
 </RCC>

@@ -19,7 +19,7 @@
      <widget class="QWebView" name="htmlView">
       <property name="url">
        <url>
-        <string>qrc:/READ.html</string>
+        <string>qrc:/README.html</string>
        </url>
       </property>
      </widget>
