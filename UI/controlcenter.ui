@@ -942,6 +942,20 @@
                   </item>
                   <item>
                    <widget class="QPushButton" name="addFriend">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head&gt;&lt;head/&gt;&lt;body&gt;
+&lt;i&gt;Add friend with &lt;b&gt;Repleo Exchange&lt;/b&gt;&lt;/i&gt;&lt;ol&gt;
+&lt;li&gt;Obtain the key from your friend. Paste it and press the Add button.&lt;/li&gt;
+&lt;li&gt;Go to Chat Tab: Participants Table: Copy your Repleo for this friend from the context menu.&lt;/li&gt;
+&lt;li&gt;Send this Repleo to your friend, who paste and adds it.&lt;/li&gt;
+&lt;/ol&gt;&lt;p&gt;
+&lt;i&gt;Alternatively: with &lt;b&gt;Key Exchange&lt;/b&gt; via IP Connection&lt;/i&gt;&lt;ol&gt;
+&lt;li&gt;Add a listener. Forward the Port in your Router/Nat.&lt;/li&gt;
+&lt;li&gt;Send IP/Port to your friend. Add Neighbor: Insert IP.&lt;/li&gt;
+&lt;li&gt;Once connected, both users share the key via the context menu in the Neighbors IP-table. (or: Share Key Button).&lt;/li&gt;
+&lt;li&gt;Go to Chat Tab: Participants Table: Approve of new chat friends via the context menu: &quot;Add as Friends&quot;.&lt;/li&gt;
+&lt;/ol&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
                     <property name="text">
                      <string>Add</string>
                     </property>
