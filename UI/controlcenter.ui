@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>946</width>
-                <height>625</height>
+                <width>938</width>
+                <height>636</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -942,25 +942,6 @@
                   </item>
                   <item>
                    <widget class="QPushButton" name="addFriend">
-                    <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head&gt;&lt;head/&gt;&lt;body&gt;
-&lt;b&gt;How to add a friend: &lt;/b&gt;&lt;p&gt;
-&lt;i&gt;Add Non-Sticky-Modus: &lt;b&gt;Repleo Exchange&lt;/b&gt;&lt;/i&gt;&lt;p&gt;&lt;ol&gt;
-&lt;li&gt;Obtain the key from your friend. Paste it and press the Add button.&lt;/li&gt;
-&lt;li&gt;Copy your Repleo for this friend from the context menu in the Participants table of the Chat tab.&lt;/li&gt;
-&lt;li&gt;Send this Repleo to your friend, who paste and adds it.&lt;/li&gt;
-As a result: Your friend is not sticky.&lt;p&gt;
-&lt;/ol&gt;&lt;p&gt;
-&lt;i&gt;Alternatively: Add-Sticky-Modus: &lt;b&gt;Key Exchange&lt;/b&gt; via IP Connection&lt;/i&gt;&lt;p&gt;&lt;ol&gt;
-&lt;li&gt;Add a listener. Forward the Port in your Router/Nat.&lt;/li&gt;
-&lt;li&gt;Send IP/Port to your friend. Add Neighbor.&lt;/li&gt;
-&lt;li&gt;Once connected, both users share the key via the context menu in the Neighbors IP-table.&lt;/li&gt;
-&lt;li&gt;Approve of new chat friends via the context menu in the Participants table: &quot;Make Permanent Friends&quot;.&lt;/li&gt;
-As a result: Your friend is made a sticky Neighbor.&lt;p&gt;
-&lt;/ol&gt;&lt;/body&gt;&lt;/html&gt;
-
-</string>
-                    </property>
                     <property name="text">
                      <string>Add</string>
                     </property>
@@ -1361,8 +1342,8 @@ As a result: Your friend is made a sticky Neighbor.&lt;p&gt;
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>946</width>
-             <height>625</height>
+             <width>975</width>
+             <height>621</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2593,7 +2574,7 @@ As a result: Your friend is made a sticky Neighbor.&lt;p&gt;
      <x>0</x>
      <y>0</y>
      <width>968</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
