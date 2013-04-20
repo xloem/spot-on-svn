@@ -578,3 +578,53 @@ bool spoton_misc::saveSymmetricBundle(const QByteArray &name,
 
   return ok;
 }
+
+void spoton_misc::retrieveSymmetricData(QByteArray &publicKey,
+					QByteArray &symmetricKey,
+					QByteArray &symmetricKeyAlgorithm,
+					QString &neighborOid,
+					const QString &oid,
+					spoton_gcrypt *crypt)
+{
+  if(!crypt)
+    return;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_symmetric_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec(QString("SELECT neighbor_oid, "
+			      "public_key, symmetric_key, "
+			      "symmetric_key_algorithm "
+			      "FROM symmetric_keys WHERE "
+			      "OID = %1").arg(oid)))
+	  if(query.next())
+	    {
+	      bool ok = true;
+
+	      neighborOid = query.value(0).toString();
+	      publicKey = query.value(1).toByteArray();
+	      symmetricKey = crypt->decrypted
+		(QByteArray::fromBase64(query.value(2).toByteArray()),
+		 &ok);
+
+	      if(ok)
+		symmetricKeyAlgorithm = crypt->decrypted
+		  (QByteArray::fromBase64(query.value(3).toByteArray()),
+		   &ok);
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_misc");
+}

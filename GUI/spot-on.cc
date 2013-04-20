@@ -2037,11 +2037,11 @@ void spoton::slotShowContextMenu(const QPoint &point)
 	action->setEnabled(false);
 
       menu.addAction(QIcon(":/repleo.png"),
-             tr("Copy Repleo to clipboard."),
+		     tr("Copy Repleo to the clipboard buffer."),
 		     this, SLOT(slotCopySymmetricBundle(void)));
       menu.addAction(QIcon(":/delete.png"),
 		     tr("&Remove"),
-		     this,  SLOT(slotRemoveParticipants(void)));
+		     this, SLOT(slotRemoveParticipants(void)));
       menu.exec(ui.participants->mapToGlobal(point));
     }
 }
@@ -2079,7 +2079,8 @@ void spoton::sendKeyToKernel(void)
 	keys.append(symmetricKey);
 	keys.append('\n');
 
-	if(m_kernelSocket.write(keys.constData(), keys.length()) != keys.length())
+	if(m_kernelSocket.write(keys.constData(), keys.length()) !=
+	   keys.length())
 	  spoton_misc::logError
 	    ("spoton::sendKeyToKernel(): write() failure.");
 	else
@@ -2840,44 +2841,12 @@ void spoton::slotSharePublicKeyWithParticipant(void)
   QByteArray symmetricKey;
   QByteArray symmetricKeyAlgorithm;
 
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "friends_symmetric_keys.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.setForwardOnly(true);
-
-	if(query.exec(QString("SELECT neighbor_oid, "
-			      "public_key, symmetric_key, "
-			      "symmetric_key_algorithm "
-			      "FROM symmetric_keys WHERE "
-			      "OID = %1").arg(oid)))
-	  if(query.next())
-	    {
-	      bool ok = true;
-
-	      neighborOid = query.value(0).toString();
-	      publicKey = query.value(1).toByteArray();
-	      symmetricKey = m_crypt->decrypted
-		(QByteArray::fromBase64(query.value(2).toByteArray()),
-		 &ok);
-
-	      if(ok)
-		symmetricKeyAlgorithm = m_crypt->decrypted
-		  (QByteArray::fromBase64(query.value(3).toByteArray()),
-		   &ok);
-	    }
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase("spoton");
+  spoton_misc::retrieveSymmetricData(publicKey,
+				     symmetricKey,
+				     symmetricKeyAlgorithm,
+				     neighborOid,
+				     oid,
+				     m_crypt);
 
   if(publicKey.isEmpty() ||
      symmetricKey.isEmpty() || symmetricKeyAlgorithm.isEmpty())
@@ -3614,4 +3583,83 @@ void spoton::slotResetAll(void)
 
 void spoton::slotCopySymmetricBundle(void)
 {
+  if(!m_crypt)
+    return;
+
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(!clipboard)
+    return;
+
+  QString oid("");
+  int row = -1;
+
+  if((row = ui.participants->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = ui.participants->item(row, 1);
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  /*
+  ** 1. Retrieve the symmetric information of the selected
+  **    participant, S.
+  ** 2. Encrypt S with the participant's public key.
+  ** 3. Encrypt our information (name, public key) with the
+  **    symmetric key. Call the result T.
+  ** 4. Compute a keyed hash of S and T using the symmetric key.
+  ** 5. Encrypt the keyed hash with the symmetric key.
+  ** 6. Create a Base64 representation of the results.
+  */
+
+  QString neighborOid("");
+  QByteArray publicKey;
+  QByteArray symmetricKey;
+  QByteArray symmetricKeyAlgorithm;
+
+  spoton_misc::retrieveSymmetricData(publicKey,
+				     symmetricKey,
+				     symmetricKeyAlgorithm,
+				     neighborOid,
+				     oid,
+				     m_crypt);
+
+  QByteArray message;
+
+  message.append(symmetricKey);
+  message.append(symmetricKeyAlgorithm.
+		 leftJustified(spoton_send::
+			       SYMMETRIC_KEY_ALGORITHM_MAXIMUM_LENGTH,
+			       '\n'));
+
+  bool ok = true;
+
+  message = spoton_gcrypt::publicKeyEncrypt
+    (message, publicKey, &ok).toBase64();
+
+  if(ok)
+    {
+      QByteArray name // My name.
+	(m_settings.value("gui/nodeName", "unknown").
+	 toByteArray().trimmed());
+
+      if(name.isEmpty())
+	name = "unknown";
+
+      QByteArray publicKey // My public key.
+	(m_crypt->publicKey(&ok));
+
+      if(ok)
+	{
+	  message.append('\n');
+	  message.append
+	    (name.leftJustified(spoton_send::NAME_MAXIMUM_LENGTH, '\n'));
+	  message.append(publicKey);
+	  clipboard->setText(message.toBase64());
+	}
+    }
 }

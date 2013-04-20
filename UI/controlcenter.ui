@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>992</width>
+    <width>968</width>
     <height>729</height>
    </rect>
   </property>
@@ -72,7 +72,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>970</width>
+                <width>946</width>
                 <height>625</height>
                </rect>
               </property>
@@ -708,9 +708,23 @@
                 </widget>
                </item>
                <item>
+                <widget class="QPushButton" name="pushButtonCopytoClipboard">
+                 <property name="toolTip">
+                  <string>Copy my public key to the clipboard buffer.</string>
+                 </property>
+                 <property name="text">
+                  <string>Copy Key</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../Icons/icons.qrc">
+                   <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <widget class="QPushButton" name="pushButtonMakeFriends">
                  <property name="toolTip">
-                  <string>Share public key with selected neighbor.</string>
+                  <string>Share my public key with selected neighbor.</string>
                  </property>
                  <property name="text">
                   <string>Share Key</string>
@@ -735,18 +749,17 @@
                 </spacer>
                </item>
                <item>
-                <widget class="QPushButton" name="pushButtonCopytoClipboard">
-                 <property name="toolTip">
-                  <string>Copy my public key to the clipboard buffer.</string>
+                <spacer name="horizontalSpacer_24">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
                  </property>
-                 <property name="text">
-                  <string>Copy Key</string>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
                  </property>
-                 <property name="icon">
-                  <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
-                 </property>
-                </widget>
+                </spacer>
                </item>
               </layout>
              </item>
@@ -860,7 +873,7 @@
              <item>
               <widget class="QGroupBox" name="groupBox_addkey_2">
                <property name="title">
-                <string>Add Friend (Key or Repleo)</string>
+                <string>Add Friend</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_22">
                 <item>
@@ -897,7 +910,7 @@
                   <item>
                    <widget class="QLabel" name="label_6">
                     <property name="text">
-                     <string>N&amp;ame</string>
+                     <string>&amp;Name</string>
                     </property>
                     <property name="buddy">
                      <cstring>friendName</cstring>
@@ -930,16 +943,7 @@
                   <item>
                    <widget class="QPushButton" name="addFriend">
                     <property name="toolTip">
-                     <string>&lt;b&gt;How to add a friend: &lt;/b&gt;&lt;p&gt;
-&lt;i&gt;Key/Repleo Exchange&lt;/i&gt;&lt;p&gt;
-1. Get the key of your friend. Paste and add it.&lt;br&gt;
-2. Copy your Repleo: From context-menu of participants chat-list.&lt;br&gt;
-3. Send your Repleo to your friend, who paste and adds it.&lt;p&gt;
-
-&lt;i&gt;Alternatively: Send and connect IP&lt;/i&gt;&lt;p&gt;
-1. Forward the Port in your Router/Nat. Send IP/Port to your friend.&lt;br&gt;
-2. Add Neighbor. If connected: Both users press Share Key Button.&lt;br&gt;
-3. Both users click &quot;Make Permanent Friends&quot;: Context-menu of participants chat-list.&lt;br&gt;</string>
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Repleo Exchange&lt;/p&gt;&lt;p&gt;1. Obtain the public key from your friend. Paste it and press the Add button.&lt;br/&gt;2. Copy your friend's Repleo from the context menu in the Participants table.&lt;br/&gt;3. Send the Repleo to your friend.&lt;/p&gt;&lt;p&gt;Transfer via Connection&lt;/p&gt;&lt;p&gt;1. Prepare a listener or a neighbor.&lt;br/&gt;2. Once connected, share your public key via a context menu in the Neighbors table.&lt;br/&gt;3. Approve of new participants via a context menu in the Participants table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="text">
                      <string>Add</string>
@@ -982,7 +986,7 @@
              <item>
               <widget class="QGroupBox" name="groupBox_addip_2">
                <property name="title">
-                <string>Add Neighbor (IP)</string>
+                <string>Add Neighbor</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_21">
                 <property name="bottomMargin">
@@ -1341,7 +1345,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>970</width>
+             <width>946</width>
              <height>625</height>
             </rect>
            </property>
@@ -1426,7 +1430,7 @@
                  <item>
                   <widget class="QPushButton" name="selectKernelPath">
                    <property name="text">
-                    <string>S&amp;elect</string>
+                    <string>Select</string>
                    </property>
                   </widget>
                  </item>
@@ -2572,7 +2576,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>992</width>
+     <width>968</width>
      <height>25</height>
     </rect>
    </property>
@@ -2638,8 +2642,8 @@
   <tabstop>pushButton_sendEmail</tabstop>
   <tabstop>checkBox</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>
-  <tabstop>pushButtonMakeFriends</tabstop>
   <tabstop>pushButtonCopytoClipboard</tabstop>
+  <tabstop>pushButtonMakeFriends</tabstop>
   <tabstop>neighbors</tabstop>
   <tabstop>addFriendPublicKeyRadio</tabstop>
   <tabstop>addFriendSymmetricBundleRadio</tabstop>

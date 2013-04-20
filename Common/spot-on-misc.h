@@ -62,6 +62,12 @@ class spoton_misc
   static void populateUrlsDatabase(const QList<QList<QVariant> > &list,
 				   spoton_gcrypt *gcrypt);
   static void prepareDatabases(void);
+  static void retrieveSymmetricData(QByteArray &publicKey,
+				    QByteArray &symmetricKey,
+				    QByteArray &symmetricKeyAlgorithm,
+				    QString &neighborOid,
+				    const QString &oid,
+				    spoton_gcrypt *crypt);
 
  private:
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
