@@ -27,7 +27,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -860,7 +860,7 @@
              <item>
               <widget class="QGroupBox" name="groupBox_addkey_2">
                <property name="title">
-                <string>Add Friend (Key or Footprint)</string>
+                <string>Add Friend (Key or Repleo)</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_22">
                 <item>
