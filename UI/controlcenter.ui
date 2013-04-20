@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>964</width>
-                <height>622</height>
+                <width>970</width>
+                <height>625</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -893,9 +893,6 @@
                  </layout>
                 </item>
                 <item>
-                 <widget class="QTextEdit" name="friendInformation"/>
-                </item>
-                <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_15">
                   <item>
                    <widget class="QLabel" name="label_6">
@@ -911,6 +908,9 @@
                    <widget class="QLineEdit" name="friendName"/>
                   </item>
                  </layout>
+                </item>
+                <item>
+                 <widget class="QTextEdit" name="friendInformation"/>
                 </item>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_21">
@@ -1010,7 +1010,7 @@
                      <enum>Qt::RightToLeft</enum>
                     </property>
                     <property name="text">
-                     <string>Port</string>
+                     <string>&amp;Port</string>
                     </property>
                     <property name="buddy">
                      <cstring>neighborPort</cstring>
@@ -1243,7 +1243,7 @@
             <item>
              <widget class="QPushButton" name="pushButton_9">
               <property name="text">
-               <string>&amp;Delete</string>
+               <string>Delete</string>
               </property>
               <property name="icon">
                <iconset resource="../Icons/icons.qrc">
@@ -1290,7 +1290,7 @@
             <item>
              <widget class="QPushButton" name="pushButton_10">
               <property name="text">
-               <string>&amp;Modify</string>
+               <string>Modify</string>
               </property>
               <property name="icon">
                <iconset resource="../Icons/icons.qrc">
@@ -1329,8 +1329,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>838</width>
-             <height>490</height>
+             <width>970</width>
+             <height>625</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -1703,7 +1703,7 @@
                     <item>
                      <widget class="QPushButton" name="addListener">
                       <property name="text">
-                       <string>&amp;Add</string>
+                       <string>Add</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../Icons/icons.qrc">
@@ -2561,7 +2561,7 @@
      <x>0</x>
      <y>0</y>
      <width>992</width>
-     <height>26</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2626,12 +2626,12 @@
   <tabstop>pushButton_sendEmail</tabstop>
   <tabstop>checkBox</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>
-  <tabstop>neighbors</tabstop>
   <tabstop>pushButtonMakeFriends</tabstop>
   <tabstop>pushButtonCopytoClipboard</tabstop>
-  <tabstop>friendName</tabstop>
+  <tabstop>neighbors</tabstop>
   <tabstop>addFriendPublicKeyRadio</tabstop>
   <tabstop>addFriendSymmetricBundleRadio</tabstop>
+  <tabstop>friendName</tabstop>
   <tabstop>friendInformation</tabstop>
   <tabstop>addFriend</tabstop>
   <tabstop>clearFriend</tabstop>
