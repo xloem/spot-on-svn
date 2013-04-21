@@ -106,7 +106,7 @@ spoton::spoton(void):QMainWindow()
   m_neighborsLastModificationTime = QDateTime();
   m_participantsLastModificationTime = QDateTime();
   ui.setupUi(this);
-  setWindowIcon(QIcon(":/Logo/spoton-button-64.ico"));
+  setWindowIcon(QIcon(":/Logo/spoton-button-16.png"));
 #ifdef Q_OS_MAC
   setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
@@ -349,6 +349,7 @@ spoton::spoton(void):QMainWindow()
     ui.status->setCurrentIndex(2);
 
   ui.kernelPath->setToolTip(ui.kernelPath->text());
+  ui.friendName->setMaxLength(spoton_send::NAME_MAXIMUM_LENGTH);
   ui.nodeName->setMaxLength(spoton_send::NAME_MAXIMUM_LENGTH);
   ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
@@ -1164,18 +1165,20 @@ void spoton::slotPopulateNeighbors(void)
 
 		if(item1)
 		  {
+		    QIcon icon;
 		    QTableWidgetItem *item2 = ui.neighbors->item(row, 8);
 
 		    if(item2)
-		      {
-			item1->setIcon
-			  (QIcon(QString(":/Flags/%1.png").
-				 arg(spoton_misc::
-				     countryCodeFromIPAddress(item2->text()).
-				     toLower())));
-		      }
+		      icon =
+			QIcon(QString(":/Flags/%1.png").
+			      arg(spoton_misc::
+				  countryCodeFromIPAddress(item2->text()).
+				  toLower()));
 		    else
-		      item1->setIcon(QIcon(":/Flags/unknown.png"));
+		      icon = QIcon(":/Flags/unknown.png");
+
+		    if(!icon.isNull())
+		      item1->setIcon(icon);
 		  }
 
 		QByteArray bytes1;
@@ -3024,7 +3027,9 @@ void spoton::slotPopulateCountries(void)
 		if(icon.isNull())
 		  icon = QIcon(":/Flags/unknown.png");
 
-		item->setIcon(icon);
+		if(!icon.isNull())
+		  item->setIcon(icon);
+
 		ui.countries->addItem(item);
 
 		if(!selectedCountry.isEmpty())
@@ -3613,7 +3618,6 @@ void spoton::slotCopySymmetricBundle(void)
   **    symmetric key. Call the result T.
   ** 4. Compute a keyed hash of S and T using the symmetric key.
   ** 5. Encrypt the keyed hash with the symmetric key.
-  ** 6. Create a Base64 representation of the results.
   */
 
   QString neighborOid("");
@@ -3628,38 +3632,62 @@ void spoton::slotCopySymmetricBundle(void)
 				     oid,
 				     m_crypt);
 
-  QByteArray message;
+  if(publicKey.isEmpty() ||
+     symmetricKey.isEmpty() || symmetricKeyAlgorithm.isEmpty())
+    return;
 
-  message.append(symmetricKey);
-  message.append(symmetricKeyAlgorithm.
-		 leftJustified(spoton_send::
-			       SYMMETRIC_KEY_ALGORITHM_MAXIMUM_LENGTH,
-			       '\n'));
-
+  QByteArray data;
   bool ok = true;
 
-  message = spoton_gcrypt::publicKeyEncrypt
-    (message, publicKey, &ok).toBase64();
+  data.append
+    (spoton_gcrypt::publicKeyEncrypt(symmetricKey, publicKey, &ok).
+     toBase64());
+  data.append("\n");
 
-  if(ok)
-    {
-      QByteArray name // My name.
-	(m_settings.value("gui/nodeName", "unknown").
-	 toByteArray().trimmed());
+  if(!ok)
+    return;
 
-      if(name.isEmpty())
-	name = "unknown";
+  data.append
+    (spoton_gcrypt::publicKeyEncrypt(symmetricKeyAlgorithm, publicKey, &ok).
+     toBase64());
+  data.append("\n");
 
-      QByteArray publicKey // My public key.
-	(m_crypt->publicKey(&ok));
+  if(!ok)
+    return;
 
-      if(ok)
-	{
-	  message.append('\n');
-	  message.append
-	    (name.leftJustified(spoton_send::NAME_MAXIMUM_LENGTH, '\n'));
-	  message.append(publicKey);
-	  clipboard->setText(message.toBase64());
-	}
-    }
+  QByteArray myName;
+  spoton_gcrypt crypt(symmetricKeyAlgorithm,
+		      QString("sha512"),
+		      QByteArray(),
+		      symmetricKey,
+		      0,
+		      0,
+		      QString(""));
+
+  myName = m_settings.value("gui/nodeName", "unknown").toByteArray().
+    trimmed();
+
+  if(myName.isEmpty())
+    myName = "unknown";
+
+  data.append(crypt.encrypted(myName, &ok).toBase64());
+  data.append("\n");
+
+  if(!ok)
+    return;
+
+  QByteArray myPublicKey(m_crypt->publicKey(&ok));
+
+  data.append(crypt.encrypted(myPublicKey, &ok).toBase64());
+  data.append("\n");
+
+  if(!ok)
+    return;
+
+  data.append(crypt.keyedHash(data, &ok).toBase64());
+
+  if(!ok)
+    return;
+
+  clipboard->setText(data);
 }

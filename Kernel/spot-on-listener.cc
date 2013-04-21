@@ -248,6 +248,7 @@ void spoton_listener::slotNewConnection(void)
 
     if(db.open())
       {
+	bool ok = true;
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
@@ -257,7 +258,7 @@ void spoton_listener::slotNewConnection(void)
 	query.bindValue
 	  (0, spoton_kernel::s_crypt1->
 	   keyedHash(neighbor->peerAddress().
-		     toString().toLatin1(), 0).toBase64());
+		     toString().toLatin1(), &ok).toBase64());
 
 	if(query.exec())
 	  if(query.next())

@@ -981,8 +981,8 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		{
 		  QByteArray hash;
 
-		  hash = spoton_gcrypt::keyedHash(status, symmetricKey,
-						  "sha512", &ok);
+		  hash = spoton_gcrypt::keyedHash
+		    (status, symmetricKey, "sha512", &ok);
 
 		  if(ok)
 		    {
