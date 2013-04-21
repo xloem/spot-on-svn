@@ -214,28 +214,37 @@ In case your friend is not connected with an IP as a neighbour, the message deco
 <p>All Databases stored on your local machine are as well encrypted. Of course, some users still might create an installation of Spot-On in an TrueCrypt-encrypted container or hard disk. But this is normally not needed. </p>
 <p>==========================================================================</p>
 <p class="Stil1">13. FAQ</p>
-<p>13.1 Will there be a mobile GUI possible? </p>
-<p>13.2. Is FileSharing with this protocol possible? </p>
-<p>13.3. How are IRC rooms possible? </p>
+<p class="Stil2">13.1 Will there be a mobile GUI possible? </p>
+<p>Yes, currently a Android App gui might be worked out: Two ways are possible. A remot gui to a kernel somewhere on a webserver or even running the kernel on the mobile device. But before that can be finished, the connection of the gui and kernel needs to be secure with SSH (currently both on a localhost) and the processing of messagetypes need to be differentiated, so that e.g. mobile devices only process chat messages. </p>
+<p class="Stil2">13.2. Is FileSharing with this protocol possible? </p>
+<p>Needs to have further study. </p>
+<p class="Stil2">13.3. How are IRC rooms possible? </p>
+<p>Yes.</p>
+<p align="left" class="Stil2">13.4. How is Spot-on integrated in the web browser Dooble? </p>
+<p align="left">Install the web browser Dooble and check in the Settings, if Spot-on is enabled. When you surf, you have the option to send the URL of the website to your local database Spot-on. As well you can set as an option, that automatically all browsed, bookmark or cached URLs are sent to your local database Spot-on. For security reasons all Https-URLs are shortend to the domain only, so that individual loggin-URLs are not shared. That means, the URL "https://en.wikipedia.org/wiki/Websearch" will be shortend to "http://en.wikipedia.org". </p>
+<p align="left" class="Stil2">13.5. Can other applications as well share URLs to Spot-on?</p>
+<p align="left">Yes, any other application, we call it "feeder", can contribute and share URLs to your local Spot-on database. In the web browser Dooble you see under settings a database called "Shared.db" which is part of the browser. You first send your URLs, you want to share with the community, to this database. Then Spot-on is looking from time to time for new URLs in this cache and integrates them in the local database.</p>
+<p align="left" class="Stil2">13.6. How is my local Spot-on database taking part in the community distribution?</p>
+<p align="left">Once you enable public connections for your Spot-on, connections to other community members are maintianed. Two Spot-on users then synchronise their database. That means, your Database is growing with a lot of URLs and this improves your search results.</p>
+<p align="left" class="Stil2">13.7. Can I delete an URL from my Database? How to specialize my Database? </p>
+<p align="left">Yes, this is done by a blacklist. If you want to delete an URL from your loca Spot-on database, this URL will never be synchronized with other community members, because the Domain of the URL will be excluded, as well other URLs from this Domain then are not integrated. Of course you can use as well a whitelist, that means, e.g. to only allow URLs e.g. from the domain "http://en.wikipedia.org". This way some users contribute with specialized databases from e.g. several news portals, blogs or collections of their bookmarks etc. </p>
+<p align="left" class="Stil2">13.8. In which DLL is Spot-on present?</p>
+<p align="left">If you install e.g. the windows version of Dooble Web Browser, then in the Install path of dooble you find the "libspoton.dll". This is the console programm, which is creating managing your local URL Database. The "spot-on.exe" file is the graphic user interface (GUI) to adress the settings of Spot-on (in the dll). "Shared.db" is the file, in which a feeder like e.g. Dooble Web Browser adds the URLs, you want to send to Spot-On. These three files manage your local URL database and the distribution of URLs to other users.</p>
+<p align="left" class="Stil2">13.9. Is it possible to access the Spot-on Database without beeing a member of the community? (offline local search) </p>
+<p align="left">The search of the Spot-on database is possible at every time. It makes sense to be part of the community to update the URL database with every start of your machine. </p>
+<p align="left" class="Stil2">13.10. Is it secure to exchange URLs with other users?</p>
+<p align="left">Yes, the connection to other users are a secured connection with encryption. The transfer is done over the http-protocol. It&acute;s just like browsing the web:  it is just like sending data in a website form or browsing the wikipedia. </p>
+<p>&nbsp;</p>
 <p>==========================================================================</p>
 <p class="Stil1">14. Technical Comparison to other Apps </p>
-<p>Nevermind, every application has its own style, methods and techniques, technology and especially purposes, though some techical details may be different. We ar eopen for a comparion within the methods used by other applications, which has similar techniques implemented. This is just a start ramp for students to get familiar with the state of the art. Scientific Research on the comparisons  could be done in terms of: </p>
-<p class="Stil2">Comparison to RetroShare/Alliance: </p>
-<p>Plus: (1) Add Friend features the Repleo-Method without the Need for a DHT or Router Port Forwarding. (2) Group Chat is a Lobby Chat. (3) Http-Protocol. (4) Public and Symmetric Key. (5) keyed-Hashed Encryption (6) OpenNet Hybridity Option. Minus: (1) DHT and Turtle Hopping not yet impemented. </p>
-<p class="Stil2">Comparison to Waste/Mute/Ants/Stealthnet: </p>
-<p>Plus: (1) Active development. (2) Kernel and Gui speration (3) Avanced gui (4) Echo Protocol (5) Advance communication methods. Minus: (1) Higher Bandwidth.</p>
-<p class="Stil2">Comparison to I2P:</p>
-<p>Plus: (1) Integrated p2p and f2f concept. (2) Country Inclusion. (3) layer any onion less concept (4) integrated URL exchange, with local search. Minus: (1) Userbase depends on history of releases. (2) Storage of websites. </p>
-<p class="Stil2">Comparison to YaCy / Faroo: </p>
-<p>Plus: (1) no queryhit in other nodes, no exposed search term due to local database search. Minus: (1) Algorythm for ordered display of search-results </p>
-<p class="Stil2">Comparison to Freenet / Oneswarm / Offsystem / Offload: </p>
-<p>Plus: (1) Local cache search delivers 100 %, no need to load further from other nodes. Minus: (1) Storage of Websites  </p>
-<p><span class="Stil2">Comparison to OTR</span>:</p>
-<p>Plus: (1) Encryption out of the box, no Addon-Install (2) Decentral approach. Minus: (1) </p>
-<p class="Stil2">Comparison to TOR / Peek-A-Booty: </p>
-<p>Plus: (1) No proxies (2) No Forwarding (as every post has a defined header for the destination). Minus: (1) The sending of websites must be transfered manually and needs an f2f architecture. </p>
-<p class="Stil2">Comparison to Arado: </p>
-<p>Arado is a RSS Database as well with a local search-engine and can be used as a feeder for Spot-On. Arado can connect as well to other instances of Arado, the transfers are though not encrypted. Minus: (1) Flashmarks: URLs are searchable with Sha1-Hash. (2) Results ordered by incomming-time. </p>
+<p>Nevermind, every application has its own style, methods and techniques, technology and especially purposes, though some techical details may be different. We ar eopen for a comparion within the methods used by other applications, which has similar techniques implemented. This is just a start ramp for students to get familiar with the state of the art. Scientific Research on the comparisons  could be done in terms of e.g. a matrix out of some criteria and some applications. </p>
+<p>Criteria could be:</p>
+<p>(1) Active Development, (2) Active, huge Userbase, (3) Chat / Email Option, (4) Country Inclusion, (5) Decentral, (6) DHT, (7) Echo, (8) F2F, (9) Flashmarks, (10) HTTP-Protocol, (11) Kernel Separation from Gui, (12) keyed-Hashed Encryption, (13) layer/onion less, (14) LobbyChat, (15) localhost db search, (16) No need for Proxies, (17) Out of the Box encryption, (18) P2P, (19) P2P/F2F hybridity, (20) Public Key, (21) Queryhit Exposition Denial, (22) Repleo Method, (23) Symmetric Keys, (24) Turtle Hopping, (25) URL DB support, (26) Website Storage.<br>
+</p>
+<p>Applications could be:</p>
+<p>(A) Alliance, (B) Antsp2p, (C) Arado, (D) BitMessage, (E) Faroo, (F) Freenet, (G) I2P, (H) Mute, (I) Offload, (J) Offsystem, (K) Oneswarm, (L) OTR, (M) Peek-A-Booty, (N) RetroShare, (O) RShare, (P) Stealthnet, (Q) Tor, (R) Waste, (S) YaCy.<br>
+</p>
+<p>We created that matrix, but do not publish it here, as the comparison needs more words in detail. That is up to the researchers now, to compare Spot-On and research on it.</p>
 <p>==========================================================================</p>
 </BODY>
 </HTML>
