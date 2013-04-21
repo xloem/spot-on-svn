@@ -3664,7 +3664,7 @@ void spoton::slotCopySymmetricBundle(void)
   if(!ok)
     return;
 
-  data.append(crypt.keyedHash(data, &ok).toBase64());
+  data.append(crypt.encrypted(crypt.keyedHash(data, &ok), &ok).toBase64());
 
   if(!ok)
     return;
