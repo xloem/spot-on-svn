@@ -642,8 +642,6 @@ void spoton_gcrypt::reencodePrivateKey(const QString &newCipher,
 	  spoton_misc::logError("spoton_gcrypt::reencodePrivateKey(): "
 				"error updating private_key in the "
 				"idiotes table.");
-	else
-	  db.commit();
       }
 
     db.close();
@@ -1557,9 +1555,7 @@ void spoton_gcrypt::generatePrivatePublicKeys(const int rsaKeySize,
 
 	if(ok)
 	  {
-	    if(query.exec())
-	      db.commit();
-	    else
+	    if(!query.exec())
 	      {
 		error = "QSqlQuery::exec() failure";
 		spoton_misc::logError

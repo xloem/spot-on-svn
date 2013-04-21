@@ -278,15 +278,13 @@ void spoton_kernel::cleanupDatabases(void)
       {
 	QSqlQuery query(db);
 
-	if(query.exec("UPDATE symmetric_keys SET status = 'offline'"))
-	  db.commit();
+	query.exec("UPDATE symmetric_keys SET status = 'offline'");
 
 	/*
 	** Delete symmetric keys that were not completely shared.
 	*/
 
-	if(query.exec("DELETE FROM symmetric_keys WHERE neighbor_oid <> -1"))
-	  db.commit();
+	query.exec("DELETE FROM symmetric_keys WHERE neighbor_oid <> -1");
       }
 
     db.close();
@@ -304,8 +302,7 @@ void spoton_kernel::cleanupDatabases(void)
       {
 	QSqlQuery query(db);
 
-	if(query.exec("DELETE FROM kernel_gui_server"))
-	  db.commit();
+	query.exec("DELETE FROM kernel_gui_server");
       }
 
     db.close();
@@ -323,10 +320,9 @@ void spoton_kernel::cleanupDatabases(void)
       {
 	QSqlQuery query(db);
 
-	if(query.exec("UPDATE listeners SET connections = 0, "
-		      "status = 'off' WHERE status = 'online' AND "
-		      "status_control <> 'deleted'"))
-	  db.commit();
+	query.exec("UPDATE listeners SET connections = 0, "
+		   "status = 'off' WHERE status = 'online' AND "
+		   "status_control <> 'deleted'");
       }
 
     db.close();
@@ -344,11 +340,10 @@ void spoton_kernel::cleanupDatabases(void)
       {
 	QSqlQuery query(db);
 
-	if(query.exec("UPDATE neighbors SET local_ip_address = '127.0.0.1', "
-		      "local_port = 0, "
-		      "status = 'disconnected' WHERE "
-		      "status = 'connected' AND status_control <> 'deleted'"))
-	  db.commit();
+	query.exec("UPDATE neighbors SET local_ip_address = '127.0.0.1', "
+		   "local_port = 0, "
+		   "status = 'disconnected' WHERE "
+		   "status = 'connected' AND status_control <> 'deleted'");
       }
 
     db.close();
@@ -661,9 +656,7 @@ void spoton_kernel::copyPublicKey(void)
 
 	    query.prepare("INSERT INTO public_keys (key) VALUES (?)");
 	    query.bindValue(0, publicKey);
-
-	    if(query.exec())
-	      db.commit();
+	    query.exec();
 	  }
 
 	db.close();
@@ -907,9 +900,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	  (0, QDateTime::currentDateTime().toString(Qt::ISODate));
 	query.bindValue
 	  (1, 2 * qCeil(m_statusTimer.interval() / 1000.0));
-
-	if(query.exec())
-	  db.commit();
+	query.exec();
       }
 
     db.close();

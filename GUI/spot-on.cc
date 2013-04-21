@@ -622,8 +622,7 @@ void spoton::slotAddListener(void)
 	     toBase64());
 
 	if(ok)
-	  if(query.exec())
-	    db.commit();
+	  query.exec();
       }
 
     db.close();
@@ -774,8 +773,7 @@ void spoton::slotAddNeighbor(void)
 	     toBase64());
 
 	if(ok)
-	  if(query.exec())
-	    db.commit();
+	  query.exec();
       }
 
     db.close();
@@ -1433,7 +1431,6 @@ void spoton::slotDeleteListener(void)
 
 	query.bindValue(0, oid);
 	query.exec();
-	db.commit();
       }
 
     db.close();
@@ -1478,7 +1475,6 @@ void spoton::slotDeleteNeighbor(void)
 
 	query.bindValue(0, oid);
 	query.exec();
-	db.commit();
       }
 
     db.close();
@@ -1517,7 +1513,6 @@ void spoton::slotListenerCheckChange(int state)
 
 	    query.bindValue(1, checkBox->property("oid"));
 	    query.exec();
-	    db.commit();
 	  }
 
 	db.close();
@@ -1544,7 +1539,6 @@ void spoton::updateListenersTable(QSqlDatabase &db)
 		 "status = 'off' WHERE "
 		 "(status = 'online' OR connections > 0) AND "
 		 "status_control <> 'deleted'");
-      db.commit();
     }
 }
 
@@ -1566,7 +1560,6 @@ void spoton::updateNeighborsTable(QSqlDatabase &db)
 		 "(local_ip_address <> '127.0.0.1' OR local_port <> 0 OR "
 		 "status <> 'disconnected') AND "
 		 "status_control <> 'deleted'");
-      db.commit();
     }
 }
 
@@ -1583,7 +1576,6 @@ void spoton::updateParticipantsTable(QSqlDatabase &db)
       query.exec("PRAGMA synchronous = OFF");
       query.exec("UPDATE symmetric_keys SET status = 'offline' WHERE "
 		 "status <> 'offline'");
-      db.commit();
     }
 }
 
@@ -1953,7 +1945,6 @@ void spoton::slotNeighborCheckChange(int state)
 	    query.bindValue(0, state > 0 ? 1 : 0);
 	    query.bindValue(1, checkBox->property("oid"));
 	    query.exec();
-	    db.commit();
 	  }
 
 	db.close();
@@ -1990,7 +1981,6 @@ void spoton::slotMaximumClientsChanged(int index)
 
 	    query.bindValue(1, comboBox->property("oid"));
 	    query.exec();
-	    db.commit();
 	  }
 
 	db.close();
@@ -2126,7 +2116,6 @@ void spoton::slotConnectNeighbor(void)
 	query.bindValue(0, "connected");
 	query.bindValue(1, oid);
 	query.exec();
-	db.commit();
       }
 
     db.close();
@@ -2165,7 +2154,6 @@ void spoton::slotDisconnectNeighbor(void)
 	query.bindValue(0, "disconnected");
 	query.bindValue(1, oid);
 	query.exec();
-	db.commit();
       }
 
     db.close();
@@ -2204,7 +2192,6 @@ void spoton::slotBlockNeighbor(void)
 	query.bindValue(0, "blocked");
 	query.bindValue(1, oid);
 	query.exec();
-	db.commit();
       }
 
     db.close();
@@ -2239,8 +2226,6 @@ void spoton::slotDeleteAllListeners(void)
 	else
 	  query.exec("UPDATE listeners SET "
 		     "status_control = 'deleted'");
-
-	db.commit();
       }
 
     db.close();
@@ -2271,8 +2256,6 @@ void spoton::slotDeleteAllNeighbors(void)
 	else
 	  query.exec("UPDATE neighbors SET "
 		     "status_control = 'deleted'");
-
-	db.commit();
       }
 
     db.close();
@@ -2682,8 +2665,6 @@ void spoton::slotRemoveParticipants(void)
 	      query.exec(QString("DELETE FROM symmetric_keys WHERE "
 				 "OID = %1").arg(data.toString()));
 	  }
-
-	db.commit();
       }
 
     db.close();
@@ -3088,8 +3069,7 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
 	    (1, m_crypt->keyedHash(item->text().toLatin1(), &ok).toBase64());
 
 	if(ok)
-	  if((ok = query.exec()))
-	    db.commit();
+	  ok = query.exec();
       }
 
     db.close();
@@ -3117,8 +3097,7 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
 	       m_crypt->keyedHash(item->text().toLatin1(), &ok).toBase64());
 
 	    if(ok)
-	      if(query.exec())
-		db.commit();
+	      query.exec();
 	  }
 
 	db.close();
@@ -3550,7 +3529,8 @@ void spoton::slotAddFriendsKey(void)
 	  {
 	    spoton_misc::prepareDatabases();
 
-	    if(spoton_misc::saveSymmetricBundle(ui.friendName->text().toUtf8(),
+	    if(spoton_misc::saveSymmetricBundle(ui.friendName->text().
+						toUtf8(),
 						ui.friendInformation->
 						toPlainText().toLatin1(),
 						symmetricKey,

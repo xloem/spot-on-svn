@@ -418,8 +418,6 @@ void spoton_misc::populateCountryDatabase(spoton_gcrypt *crypt)
 	    if(ok)
 	      query.exec();
 	  }
-
-	db.commit();
       }
 
     db.close();
@@ -527,8 +525,6 @@ void spoton_misc::populateUrlsDatabase(const QList<QList<QVariant> > &list,
 	    if(ok)
 	      query1.exec();
 	  }
-
-	db.commit();
       }
 
     db.close();
@@ -573,8 +569,7 @@ bool spoton_misc::saveSymmetricBundle(const QByteArray &name,
   query.bindValue(5, neighborOid);
   
   if(ok)
-    if((ok = query.exec()))
-      ok = db.commit();
+    ok = query.exec();
 
   return ok;
 }

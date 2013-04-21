@@ -173,9 +173,7 @@ spoton_neighbor::~spoton_neighbor()
 	query.prepare("DELETE FROM symmetric_keys WHERE "
 		      "neighbor_oid = ?");
 	query.bindValue(0, m_id);
-
-	if(query.exec())
-	  db.commit();
+	query.exec();
       }
 
     db.close();
@@ -193,21 +191,16 @@ spoton_neighbor::~spoton_neighbor()
     if(db.open())
       {
 	QSqlQuery query(db);
-	bool ok1 = true;
-	bool ok2 = true;
 
 	query.prepare("DELETE FROM neighbors WHERE "
 		      "OID = ? AND status_control = 'deleted'");
 	query.bindValue(0, m_id);
-	ok1 = query.exec();
+	query.exec();
 	query.prepare("UPDATE neighbors SET local_ip_address = '127.0.0.1', "
 		      "local_port = 0, status = 'disconnected' "
 		      "WHERE OID = ?");
 	query.bindValue(0, m_id);
-	ok2 = query.exec();
-
-	if(ok1 && ok2)
-	  db.commit();
+	query.exec();
       }
 
     db.close();
@@ -282,9 +275,7 @@ void spoton_neighbor::saveStatus(QSqlDatabase &db, const QString &status)
 		"WHERE OID = ? AND status <> 'deleted'");
   query.bindValue(0, status);
   query.bindValue(1, m_id);
-
-  if(query.exec())
-    db.commit();
+  query.exec();
 }
 
 void spoton_neighbor::slotSendKeys(void)
@@ -471,9 +462,7 @@ void spoton_neighbor::slotConnected(void)
 	query.bindValue(0, localAddress().toString());
 	query.bindValue(1, localPort());
 	query.bindValue(2, m_id);
-
-	if(query.exec())
-	  db.commit();
+	query.exec();
       }
 
     db.close();
@@ -597,9 +586,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &publicKey)
 
 	query.prepare("INSERT INTO public_keys (key) VALUES (?)");
 	query.bindValue(0, publicKey);
-
-	if(query.exec())
-	  db.commit();
+	query.exec();
       }
 
     db.close();
@@ -770,9 +757,7 @@ void spoton_neighbor::sharePublicKey(const QByteArray &publicKey,
 				  "neighbor_oid = -1 WHERE neighbor_oid = "
 				  "?");
 		    query.bindValue(0, m_id);
-
-		    if(query.exec())
-		      db.commit();
+		    query.exec();
 		  }
 
 		db.close();
@@ -1326,9 +1311,7 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash,
 	query.bindValue
 	  (1, QDateTime::currentDateTime().toString(Qt::ISODate));
 	query.bindValue(2, publicKeyHash);
-
-	if(query.exec())
-	  db.commit();
+	query.exec();
       }
 
     db.close();

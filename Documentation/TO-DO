@@ -17,6 +17,7 @@ Completed Items
 9.     Add an icon to a connected neighbor.
 10.    libspoton.dll needs to be installed in the executable's path.
 11.    Add presence information to the Participants table.
+12.    Provide a means of sending a message to friends only.
 
 Remaining Items
 
@@ -53,8 +54,6 @@ Ideas
        The Participants table needs to contain friends and connected neighbors.
 
        Provide a means of filtering messages in chat.
-
-       Provide a means of sending a message to friends only.
 
        Spot-On as a plugin compile, e.g for Dooble.
 

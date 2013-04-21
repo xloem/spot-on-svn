@@ -89,9 +89,7 @@ spoton_listener::~spoton_listener()
 	query.prepare("UPDATE listeners SET connections = 0, "
 		      "status = 'off' WHERE OID = ?");
 	query.bindValue(0, m_id);
-
-	if(query.exec())
-	  db.commit();
+	query.exec();
       }
 
     db.close();
@@ -206,9 +204,7 @@ void spoton_listener::saveStatus(QSqlDatabase &db)
   query.bindValue(1, status);
   query.bindValue(2, m_id);
   query.bindValue(3, status);
-
-  if(query.exec())
-    db.commit();
+  query.exec();
 }
 
 void spoton_listener::slotNewConnection(void)
@@ -365,12 +361,7 @@ void spoton_listener::slotNewConnection(void)
 		 keyedHash(country.remove(" ").toLatin1(), &ok).toBase64());
 
 	    if(ok)
-	      {
-		created = query.exec();
-
-		if(created)
-		  db.commit();
-	      }
+	      created = query.exec();
 
 	    if(ok)
 	      {
@@ -440,9 +431,7 @@ void spoton_listener::updateConnectionCount(void)
 		      "WHERE OID = ?");
 	query.bindValue(0, QString::number(m_connections));
 	query.bindValue(1, m_id);
-
-	if(query.exec())
-	  db.commit();
+	query.exec();
       }
 
     db.close();
