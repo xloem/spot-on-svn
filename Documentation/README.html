@@ -219,69 +219,23 @@ In case your friend is not connected with an IP as a neighbour, the message deco
 <p>13.3. How are IRC rooms possible? </p>
 <p>==========================================================================</p>
 <p class="Stil1">14. Technical Comparison to other Apps </p>
-<p>14.1.</p>
-<p></p>
+<p>Nevermind, every application has its own style, methods and techniques, technology and especially purposes, though some techical details may be different. We ar eopen for a comparion within the methods used by other applications, which has similar techniques implemented. This is just a start ramp for students to get familiar with the state of the art. Scientific Research on the comparisons  could be done in terms of: </p>
+<p class="Stil2">Comparison to RetroShare/Alliance: </p>
+<p>Plus: (1) Add Friend features the Repleo-Method without the Need for a DHT or Router Port Forwarding. (2) Group Chat is a Lobby Chat. (3) Http-Protocol. (4) Public and Symmetric Key. (5) keyed-Hashed Encryption (6) OpenNet Hybridity Option. Minus: (1) DHT and Turtle Hopping not yet impemented. </p>
+<p class="Stil2">Comparison to Waste/Mute/Ants/Stealthnet: </p>
+<p>Plus: (1) Active development. (2) Kernel and Gui speration (3) Avanced gui (4) Echo Protocol (5) Advance communication methods. Minus: (1) Higher Bandwidth.</p>
+<p class="Stil2">Comparison to I2P:</p>
+<p>Plus: (1) Integrated p2p and f2f concept. (2) Country Inclusion. (3) layer any onion less concept (4) integrated URL exchange, with local search. Minus: (1) Userbase depends on history of releases. (2) Storage of websites. </p>
+<p class="Stil2">Comparison to YaCy / Faroo: </p>
+<p>Plus: (1) no queryhit in other nodes, no exposed search term due to local database search. Minus: (1) Algorythm for ordered display of search-results </p>
+<p class="Stil2">Comparison to Freenet / Oneswarm / Offsystem / Offload: </p>
+<p>Plus: (1) Local cache search delivers 100 %, no need to load further from other nodes. Minus: (1) Storage of Websites  </p>
+<p><span class="Stil2">Comparison to OTR</span>:</p>
+<p>Plus: (1) Encryption out of the box, no Addon-Install (2) Decentral approach. Minus: (1) </p>
+<p class="Stil2">Comparison to TOR / Peek-A-Booty: </p>
+<p>Plus: (1) No proxies (2) No Forwarding (as every post has a defined header for the destination). Minus: (1) The sending of websites must be transfered manually and needs an f2f architecture. </p>
+<p class="Stil2">Comparison to Arado: </p>
+<p>Arado is a RSS Database as well with a local search-engine and can be used as a feeder for Spot-On. Arado can connect as well to other instances of Arado, the transfers are though not encrypted. Minus: (1) Flashmarks: URLs are searchable with Sha1-Hash. (2) Results ordered by incomming-time. </p>
 <p>==========================================================================</p>
-</body>
-</html>
-
-
-
-<p><span class="Stil1">Add Neighbor</span><br>
-- Country Inclusion</p>
-<p><br>
-</p>
-<p><span class="Stil1">Local Search</span><br>
-</p>
-<p><span class="Stil1">Settings</span><br>
-  - Set Password<br>
-  - Kernel Path<br>
-  - Kernel Activation<br>
-  - Set Listener<br>
-  - Forward Port in your Router<br>
-</p>
-<p class="Stil1">URL Cultivation</p>
-<p>&nbsp;</p>
-<p class="Stil1">&nbsp;</p>
-<p>&nbsp;</p>
-<p class="Stil1">URLs</p>
-<p>Instead of partitioning URLs, we do this. Since we have public keys, we encrypt a session key (one per URL sent) with the public key, and then we encrypt the url with the session key. The session key is symmetric.<br>
-  So the message includes the encrypted session key and the encrypted url. Only those who have the correct private key can decrypt both. First they decrypt the session key via their private key and then they decrypt the URL with the symmetric key.<br>
-  I have your URL public key. The original idea was to encrypt all URLs that I am about to send via URL public keys.<br>
-  To do this, we must partition the URLs. Instead, we assign session keys with each public key. The session key is encrypted with the public key. The URL is encrypted with the session key. The message is the session key and the URL.<br>
-</p>
-<p>So it is something without partitioning.<br>
-  In order to get the content, they need to break PGP, to get the symmetric key and decrypt the URL.<br>
-  So it is a locked box that contains a key to open another box.<br>
-  That is the box users are exchanging.<br>
-</p>
-<p>Two connected users get all their URL public keys.<br>
-  Its an Exchange. Even if two users are not friends. You just don't know it, wether you are friends or neigbors or echoed nodes.<br>
-</p>
-<p class="Stil1">FAQ</p>
-<p>Will there be a Mobile Gui possible? </p>
-<p>Is FileSharing with this protocol possible? </p>
-<p>Chat: IRC<br>
-  Kernel</p>
-<p>&nbsp;</p>
-<p>Nevermind, every application has its own style, methods and techniques and especially purposes, though some techical details may be different. Scientific Research on the comparisons  could be done by students in terms of: </p>
-<p class="Stil1">Comparison to RetroShare/Alliance: </p>
-<p>Plus: (1) Add Friend features the Repleo-Method without the Need for a DHT or Router Port Forwarding. (2) Group Chat is a Lobby Chat. (3) Http-Protocol. (4) Public and Symmetric Key. (5) Random Hashed Encryption (6) OpenNet Hybridity Option. Minus: (1) DHT and Turtle Hopping not yet impemented. </p>
-<p><span class="Stil1">Comparison to Waste/Mute/Ants/Stealthnet: </span></p>
-<p>&nbsp;</p>
-<p class="Stil1">Comparion to I2P</p>
-<p>Comparion to BitMessage </p>
-<p>Comparison to YaCy / Faroo: </p>
-<p>Comparion to Freenet / Oneswarm / Offsystem / Offload: </p>
-<p><span class="Stil1">Comparion to OTR</span></p>
-<p>Comparison to TOR / Peek-A-Booty </p>
-<p>Comparison to Arado </p>
-<p>&nbsp; </p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp; </p>
-<p>&nbsp;</p>
-<p>&nbsp; </p>
-<p>&nbsp;</p>
 </BODY>
 </HTML>
