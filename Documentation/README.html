@@ -28,12 +28,13 @@
   6. Offline Email<br>
   7. Local Search of URLs <br>
   8. Add URLs with a Feeder<br>
-9. Connections &amp; Transfer <br>
-10. URL Cultivation <br>
+  9. Connections &amp; Transfer <br>
+  10. URL Cultivation <br>
   11. Protocol <br>
   12. Encryption<br>
-  13. FAQ<br>
-  14. Technical Comparison to other Apps <br>
+  13. Believe in Features  <br>
+  14. FAQ<br>
+  15. Technical Comparison to other Apps <br>
 </p>
 <p>==========================================================================</p>
 <p class="Stil1">Translations:</p>
@@ -200,10 +201,10 @@ To do this, Spot-On must partition the URLs. Instead of partitioning URLs, the p
 <p>Peter has a different public key, he gets the message as well and uses his key: the MESSAGE &quot;12345&quot; decrypts into: ABIENTOT. Peter generates the hash of the string &quot;ABIENTOT&quot; and the hash of that word is &quot;MNOP&quot;. Now Peter compares the delivered Hash &quot;ABCD&quot; with his computed hash for the decrypted word &quot;ABIENTOT&quot;, which is: &quot;MNOP&quot;. ABCD != MNOP. That means, the message is decoded wrong and not for Peter.</p>
 <p>Peter forwards the message as follows to all friends and neighbors: 12345+ABCD+0000+TTL15.</p>
 <p>Reduce by one Time-to-Live-Step = 15. </p>
-<p>  Spot On  also has to remind users that they will be acting as middle ware. there is some traffic to be expected, as messages will come in, which are not for you. In a simple sentence: So, you receive a POST. You decompose it, and if you understand it, it's yours. If not, you POST it to other nodes.</p>
+<p>  Spot On  also has to remind users that they will be acting as middle ware. there is some traffic to be expected, as messages will come in, which are not for you. In a simple sentence: So, you receive a POST. You decompose it, and if you understand it, it's yours. If not, you POST it to all other nodes connected.</p>
 <p>One basic of the protocol is futhermore, that only HTTP transfers are used, PUT and GET, and second that the wrap &quot;12345+ABCD+0000+TTL16&quot; is encoded to Base64, which is a Text String of generated characters like: &quot;9f93jf0s30fj49d80lj3o9dn309fj69dk30..&quot;. The receiver needs to re-code from Base64 to &quot;12345+ABCD+0000+TTL16&quot; and start the above described process. </p>
 <p>The most effective way to deliver messages is, that a friend is a neighbour (&quot;Sticky-Modus&quot;), then messages are decoded immediately and not forwarded.<br>
-In case your friend is not connected with an IP as a neighbour, the message decoding fails and will be forwarded to all connected nodes. A Time To live TTL = 16 will a allow a wide spread of the message. Spot-On will let your voice be heard. If there is a path, Spot-on will find it with the echo protocol. Spot, the silent pathfinder.</p>
+In case your friend is not connected with an IP as a neighbour, the message decoding fails and will be forwarded to all connected nodes. A Time To live TTL = 16 will a allow a wide spread of the message. Spot-On will make you sure, that your messages is delivered: and that  your voice is heard by your addressed receiver. If there is a path, Spot-on will find it with the echo protocol. Spot, the communicative pathfinder.</p>
 <p>So virtual friends need just to make sure, that they have within their hops of 15 left distances a common friend/neighbor as well. To connect the route for virtual friends, you ideally have some sticky neighbours with a stable IP or DNS Node or a third common sticky friend </p>
 <p>==========================================================================</p>
 <p class="Stil1">12. Encryption</p>
@@ -213,30 +214,52 @@ In case your friend is not connected with an IP as a neighbour, the message deco
 <p>The usage of a public encryption key, secure with a symmetric key, hash-checks with keyed-hashed, all wraped in an envelope, for email again running thought this process, and then all that tranformed to a base-64 string make the chat and email within Spot-On quite secure. As even your public key is only known by your friends (different in a web of trust with key rings), the sticky modus and the concept of Spot-On does not expose these commuication keys. </p>
 <p>All Databases stored on your local machine are as well encrypted. Of course, some users still might create an installation of Spot-On in an TrueCrypt-encrypted container or hard disk. But this is normally not needed. </p>
 <p>==========================================================================</p>
-<p class="Stil1">13. FAQ</p>
-<p class="Stil2">13.1 Will there be a mobile GUI possible? </p>
+<p class="Stil1">13. Believe in Features </p>
+<p>Why Spot-On with technically advanced and modern features needs to be supported by your contribution. </p>
+<p class="Stil2">13.1. <STRONG>Easy Usage of the  Spot-on <STRONG>web search </STRONG>e.g. in the Web Browser Dooble </STRONG></p>
+<p>For an integrated user-experience Spot-On is implemented as a websearch engine in the Web Browser <A href="http://dooble.sf.net" target="_blank">http://dooble.sf.net</A> (next to Google, Wikipedia, Metager, YaCy, Ixquick and others).         (For developers of other applications the c++-library libspoton is provided as an open source resource).</p>
+<p><em>Some people in the Spot-On Community believe that there is the need for an alternative search engine, which should be easy accessible for the users. To help to collect URLs this is ideally done within a web browser. Therefor Spot-On implemented libspoton in the open source browser Dooble, which has  a lot of privacy and security features. Of course libspoton is an easy to use library, other developers as well can implement in their software applications. </em></p>
+<p class="Stil2"><STRONG>13.2. Collecting URLs within a huge and growing Spot-On community </STRONG></p>
+<p>While you browse the web you can send defined URLs to the your own local database. (It&acute;s easy like creating a bookmark of a webpage, you currently read).                 In contact with other Spot-on-user the URLs of websites you like are exchanged.                 It&acute;s a community-movement to contribute to an open source websearch engine, similar to the wikipedia style. Every user is now able to add the own favourite websites to the spot-on-community.        The connections to other community members are secured and encrypted.</p>
+<p><em>Some people in the Spot-On Community believe that the userbased movement of wikipedia is a great success. Everyone contributing a small part helps to let the basis grow. There have been already several initiatives to extend the user-generated content as well to an URL database for web search. Spot-on has been programmed and released now to enable every internet user to contribute to this open source web search engine and open source database. Collecting URLs to provide a web search is done within a community of solidarity. If you "Like" a website / URL, send it as well to Spot-on and share it with the community. </em></p>
+<p class="Stil2"><STRONG>13.3. Search Yourself. Generating your local Database: 20 Millions URS in 16 GB</STRONG></p>
+<p>The result: you create with the exchange of other users a HUGE Database with URLs of e.g. 16 GB or even 32 GB. This is a small amount of Data, you can store on your hard disk or even on a mobile SD-Card - But it contains 20 Million URLs and more.                         Your local database of 20 Mio URLs allows to search the Web. You own the search engine and the database now.                        The Search Engine and the Database is open source. The Data is generated by Users.</p>
+<p><em>Some people in the Spot-On Community believe that technically and web search architecture is appropriate, in which everyone own every URL. Computers, even mobile Devices and SD-Cards have enough GB of storage, to generate a local database on your device with 20 GB, which are dozen of URLs. Today every user can run an own search engine and hold the database for it. Spot-On is a local database, you do not search other servers, you search yourself. That means others don&acute;t see your search terms and don&acute;t define the filters for you, what you should see or get. There is no central instance or authority which tracks your web search behaviours or defines your given results. Everything is local on your chip. </em></p>
+<p class="Stil2">13.4. Privacy &amp; Transparency: Spot-on is based on a worldwide unique P2P web search architecture and user movement </p>
+<p>This is worldwide a new concept: Public p2p search engines are just two others given, yacy and faroo (closed source and commercial driven),  Spot-On has no problem to mention these similar architectures here.                But both expose your search terms in to others nodes, user and servers.                Spot-On is unique, different and offers a worldwide new concept:        You generate no query hits in other nodes or servers. What you search is totally private and anonymous. You only search your local database. </p>
+<p><em>Some people in the Spot-On Community believe that web search is an essential process for education, to read the web and to explore new content. This should be done with open source search engines and with an open source database. Privacy and tansparency guarantee a free human constitution within these learning processes. Much more important is the ability, that users can contribute to help others to learn and search the web. Beeing a part of the hole community. Big, central search engines do a good job in delivering pre-defined content-links - but with side effects of tracking users interests, bubbling results, advertising and priorising URLs. There is a community, which helps to create an alternative. To contribute to an open source websearch. </em></p>
+<p class="Stil2">13.5. The Echo-Protocol </p>
+<p>The Echo Protocol works on the idea, that if you can decipher the message and the message fits the  hash, it is intended for you. So in simple words: You receive a POST. You decompose it, and if you understand it, it's yours. If not, you post it to all other nodes connected.</p>
+<p> <em>Some people in the Spot-On Community believe that a messaging protocol is needed, that will make you sure, that your messages is delivered: and that  your voice is heard by your addressed receiver. If there is a path, Spot-On will find it with the echo protocol. Spot-On, the communicative pathfinder.</em></p>
+<p class="Stil2">13.6. Let&acute;s spot it: Be part of building a userbased web search with Spot-on. </p>
+<p>Libspoton exchanges URLs, not Search Terms.        This means you get no filtered and commercially driven customized results. Nothing is founded on a tracking of your search and browse behaviours.                        Get all the URLs and search yourself. Search your local datafile with 20 Million URLS in 20 GB with spot-on. Install your Spot-On URL Database now and search yourself. Contribute with your URLs to the Community. It&acute;s implemented in the Web Browser Dooble. Easy to use, open source, ready for your participation to build a userbased web search. </p>
+<p><em>Some people in the Spot-On Community believe in you. Only the community of users have created the distributed URL database. And it is growing and growing. Be part of it and be sure, that search results are convenient to use, not earlier before you have more than 16 GB of URLS stored on your local machine. Every URL you add to Spot-On helps others to grow their database as well.</em></p>
+<p>&nbsp;</p>
+<p>==========================================================================</p>
+<p class="Stil1">14. FAQ</p>
+<p class="Stil2">14.1. Will there be a mobile GUI possible? </p>
 <p>Yes, currently a Android App gui might be worked out: Two ways are possible. A remot gui to a kernel somewhere on a webserver or even running the kernel on the mobile device. But before that can be finished, the connection of the gui and kernel needs to be secure with SSH (currently both on a localhost) and the processing of messagetypes need to be differentiated, so that e.g. mobile devices only process chat messages. </p>
-<p class="Stil2">13.2. Is FileSharing with this protocol possible? </p>
+<p class="Stil2">14.2. Is FileSharing with this protocol possible? </p>
 <p>Needs to have further study. </p>
-<p class="Stil2">13.3. How are IRC rooms possible? </p>
+<p class="Stil2">14.3. How are IRC rooms possible? </p>
 <p>Yes.</p>
-<p align="left" class="Stil2">13.4. How is Spot-on integrated in the web browser Dooble? </p>
+<p align="left" class="Stil2">14.4. How is Spot-on integrated in the web browser Dooble? </p>
 <p align="left">Install the web browser Dooble and check in the Settings, if Spot-on is enabled. When you surf, you have the option to send the URL of the website to your local database Spot-on. As well you can set as an option, that automatically all browsed, bookmark or cached URLs are sent to your local database Spot-on. For security reasons all Https-URLs are shortend to the domain only, so that individual loggin-URLs are not shared. That means, the URL "https://en.wikipedia.org/wiki/Websearch" will be shortend to "http://en.wikipedia.org". </p>
-<p align="left" class="Stil2">13.5. Can other applications as well share URLs to Spot-on?</p>
+<p align="left" class="Stil2">14.5. Can other applications as well share URLs to Spot-on?</p>
 <p align="left">Yes, any other application, we call it "feeder", can contribute and share URLs to your local Spot-on database. In the web browser Dooble you see under settings a database called "Shared.db" which is part of the browser. You first send your URLs, you want to share with the community, to this database. Then Spot-on is looking from time to time for new URLs in this cache and integrates them in the local database.</p>
-<p align="left" class="Stil2">13.6. How is my local Spot-on database taking part in the community distribution?</p>
+<p align="left" class="Stil2">14.6. How is my local Spot-on database taking part in the community distribution?</p>
 <p align="left">Once you enable public connections for your Spot-on, connections to other community members are maintianed. Two Spot-on users then synchronise their database. That means, your Database is growing with a lot of URLs and this improves your search results.</p>
-<p align="left" class="Stil2">13.7. Can I delete an URL from my Database? How to specialize my Database? </p>
+<p align="left" class="Stil2">14.7. Can I delete an URL from my Database? How to specialize my Database? </p>
 <p align="left">Yes, this is done by a blacklist. If you want to delete an URL from your loca Spot-on database, this URL will never be synchronized with other community members, because the Domain of the URL will be excluded, as well other URLs from this Domain then are not integrated. Of course you can use as well a whitelist, that means, e.g. to only allow URLs e.g. from the domain "http://en.wikipedia.org". This way some users contribute with specialized databases from e.g. several news portals, blogs or collections of their bookmarks etc. </p>
-<p align="left" class="Stil2">13.8. In which DLL is Spot-on present?</p>
+<p align="left" class="Stil2">14.8. In which DLL is Spot-on present?</p>
 <p align="left">If you install e.g. the windows version of Dooble Web Browser, then in the Install path of dooble you find the "libspoton.dll". This is the console programm, which is creating managing your local URL Database. The "spot-on.exe" file is the graphic user interface (GUI) to adress the settings of Spot-on (in the dll). "Shared.db" is the file, in which a feeder like e.g. Dooble Web Browser adds the URLs, you want to send to Spot-On. These three files manage your local URL database and the distribution of URLs to other users.</p>
-<p align="left" class="Stil2">13.9. Is it possible to access the Spot-on Database without beeing a member of the community? (offline local search) </p>
+<p align="left" class="Stil2">14.9. Is it possible to access the Spot-on Database without beeing a member of the community? (offline local search) </p>
 <p align="left">The search of the Spot-on database is possible at every time. It makes sense to be part of the community to update the URL database with every start of your machine. </p>
-<p align="left" class="Stil2">13.10. Is it secure to exchange URLs with other users?</p>
+<p align="left" class="Stil2">14.10. Is it secure to exchange URLs with other users?</p>
 <p align="left">Yes, the connection to other users are a secured connection with encryption. The transfer is done over the http-protocol. It&acute;s just like browsing the web:  it is just like sending data in a website form or browsing the wikipedia. </p>
 <p>&nbsp;</p>
 <p>==========================================================================</p>
-<p class="Stil1">14. Technical Comparison to other Apps </p>
+<p class="Stil1">15. Technical Comparison to other Apps </p>
 <p>Nevermind, every application has its own style, methods and techniques, technology and especially purposes, though some techical details may be different. We ar eopen for a comparion within the methods used by other applications, which has similar techniques implemented. This is just a start ramp for students to get familiar with the state of the art. Scientific Research on the comparisons  could be done in terms of e.g. a matrix out of some criteria and some applications. </p>
 <p>Criteria could be:</p>
 <p>(1) Active Development, (2) Active, huge Userbase, (3) Chat / Email Option, (4) Country Inclusion, (5) Decentral, (6) DHT, (7) Echo, (8) F2F, (9) Flashmarks, (10) HTTP-Protocol, (11) Kernel Separation from Gui, (12) keyed-Hashed Encryption, (13) layer/onion less, (14) LobbyChat, (15) localhost db search, (16) No need for Proxies, (17) Out of the Box encryption, (18) P2P, (19) P2P/F2F hybridity, (20) Public Key, (21) Queryhit Exposition Denial, (22) Repleo Method, (23) Symmetric Keys, (24) Turtle Hopping, (25) URL DB support, (26) Website Storage.<br>
