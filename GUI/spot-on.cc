@@ -258,6 +258,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  ui.friendInformation,
 	  SLOT(clear(void)));
+  connect(ui.clearFriend,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotResetFriendName(void)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -2905,15 +2909,13 @@ void spoton::slotCopyMyPublicKey(void)
   QByteArray publicKey;
   bool ok = true;
 
-////  publicKey.append("K"); // Add the Key-Prefix to String.
-//  QByteArray publicKeyplaintext;
-//  publicKeyplaintext = m_crypt->publicKey(&ok);
-//  publicKey.append(publicKeyplaintext.toBase64());
-
-  publicKey = m_crypt->publicKey(&ok); // Delete, if above is uncommented
+  publicKey = m_crypt->publicKey(&ok).toBase64();
 
   if(ok)
-    clipboard->setText(publicKey.constData());
+    {
+      publicKey.prepend("K");
+      clipboard->setText(publicKey);
+    }
   else
     clipboard->clear();
 }
@@ -3532,12 +3534,17 @@ void spoton::slotAddFriendsKey(void)
 	  {
 	    spoton_misc::prepareDatabases();
 
+	    QByteArray publicKey(ui.friendInformation->toPlainText().
+				 trimmed().toLatin1());
+
+	    if(publicKey.startsWith("K") || publicKey.startsWith("k"))
+	      publicKey.remove(0, 1);
+
+	    publicKey = QByteArray::fromBase64(publicKey);
+
 	    if(spoton_misc::saveSymmetricBundle(ui.friendName->text().
 						toUtf8(),
-						ui.friendInformation->
-                    //	toAscii().toPlainText().trimmed().remove(1) // replace prefix "K", base to ascii
-						toPlainText().trimmed().
-						toLatin1(),
+						publicKey,
 						symmetricKey,
 						QByteArray("aes256"),
 						-1,
@@ -3562,11 +3569,13 @@ void spoton::slotAddFriendsKey(void)
       if(ui.friendInformation->toPlainText().trimmed().isEmpty())
 	return;
 
-      QList<QByteArray> list
- //     (ui.friendInformation->toPlainText().trimmed().toAscii().remove(1) // Erase Prefix "R"
- //	 split('\n'));
-	(ui.friendInformation->toPlainText().trimmed().toAscii().
-	 split('\n'));
+      QByteArray repleo(ui.friendInformation->toPlainText().trimmed().
+			toLatin1());
+
+      if(repleo.startsWith("R") || repleo.startsWith("r"))
+	repleo.remove(0, 1);
+
+      QList<QByteArray> list(repleo.split('\n'));
 
       if(list.size() != 5)
 	return;
@@ -3734,7 +3743,6 @@ void spoton::slotCopySymmetricBundle(void)
   QByteArray data;
   bool ok = true;
 
-//  data.append("R"); // Add the Repleo-Prefix to String.
   data.append
     (spoton_gcrypt::publicKeyEncrypt(symmetricKey, publicKey, &ok).
      toBase64());
@@ -3805,5 +3813,11 @@ void spoton::slotCopySymmetricBundle(void)
       return;
     }
 
+  data.prepend("R");
   clipboard->setText(data);
+}
+
+void spoton::slotResetFriendName(void)
+{
+  ui.friendName->setText("unknown");
 }
