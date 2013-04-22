@@ -1037,6 +1037,9 @@
                  <layout class="QHBoxLayout" name="horizontalLayout_30">
                   <item>
                    <widget class="QRadioButton" name="addFriendPublicKeyRadio">
+                    <property name="toolTip">
+                     <string>Starts with &quot;K...&quot;</string>
+                    </property>
                     <property name="text">
                      <string>Key</string>
                     </property>
@@ -1051,6 +1054,9 @@
                   </item>
                   <item>
                    <widget class="QRadioButton" name="addFriendSymmetricBundleRadio">
+                    <property name="toolTip">
+                     <string>Starts with &quot;R...&quot;</string>
+                    </property>
                     <property name="text">
                      <string>Repleo</string>
                     </property>

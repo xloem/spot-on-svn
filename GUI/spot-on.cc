@@ -2905,7 +2905,12 @@ void spoton::slotCopyMyPublicKey(void)
   QByteArray publicKey;
   bool ok = true;
 
-  publicKey = m_crypt->publicKey(&ok);
+////  publicKey.append("K"); // Add the Key-Prefix to String.
+//  QByteArray publicKeyplaintext;
+//  publicKeyplaintext = m_crypt->publicKey(&ok);
+//  publicKey.append(publicKeyplaintext.toBase64());
+
+  publicKey = m_crypt->publicKey(&ok); // Delete, if above is uncommented
 
   if(ok)
     clipboard->setText(publicKey.constData());
@@ -3530,6 +3535,7 @@ void spoton::slotAddFriendsKey(void)
 	    if(spoton_misc::saveSymmetricBundle(ui.friendName->text().
 						toUtf8(),
 						ui.friendInformation->
+                    //	toAscii().toPlainText().trimmed().remove(1) // replace prefix "K", base to ascii
 						toPlainText().trimmed().
 						toLatin1(),
 						symmetricKey,
@@ -3557,6 +3563,8 @@ void spoton::slotAddFriendsKey(void)
 	return;
 
       QList<QByteArray> list
+ //     (ui.friendInformation->toPlainText().trimmed().toAscii().remove(1) // Erase Prefix "R"
+ //	 split('\n'));
 	(ui.friendInformation->toPlainText().trimmed().toAscii().
 	 split('\n'));
 
@@ -3726,6 +3734,7 @@ void spoton::slotCopySymmetricBundle(void)
   QByteArray data;
   bool ok = true;
 
+//  data.append("R"); // Add the Repleo-Prefix to String.
   data.append
     (spoton_gcrypt::publicKeyEncrypt(symmetricKey, publicKey, &ok).
      toBase64());
