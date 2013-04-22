@@ -258,10 +258,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  ui.friendInformation,
 	  SLOT(clear(void)));
-  connect(ui.connectOnlyToStickyNeighbors,
-	  SIGNAL(toggled(bool)),
-	  this,
-	  SLOT(slotConnectOnlyToStickies(bool)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -371,8 +367,6 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/showOnlyConnectedNeighbors", false).toBool());
   ui.showOnlyOnlineListeners->setChecked
     (m_settings.value("gui/showOnlyOnlineListeners", false).toBool());
-  ui.connectOnlyToStickyNeighbors->setChecked
-    (m_settings.value("gui/connectOnlyToStickies", false).toBool());
 
   /*
   ** Please don't translate n/a.
@@ -2915,6 +2909,8 @@ void spoton::slotCopyMyPublicKey(void)
 
   if(ok)
     clipboard->setText(publicKey.constData());
+  else
+    clipboard->clear();
 }
 
 void spoton::slotPopulateCountries(void)
@@ -3491,16 +3487,6 @@ QIcon spoton::iconForCountry(const QString &country)
     return QIcon(":/Flags/unknown.png");
 }
 
-void spoton::slotConnectOnlyToStickies(bool state)
-{
-  m_settings["gui/connectOnlyToStickies"] = state;
-
-  QSettings settings;
-
-  settings.setValue("gui/connectOnlyToStickies", state);
-  m_listenersLastModificationTime = QDateTime();
-}
-
 void spoton::slotFetchMoreAlgo(void)
 {
 }
@@ -3544,7 +3530,8 @@ void spoton::slotAddFriendsKey(void)
 	    if(spoton_misc::saveSymmetricBundle(ui.friendName->text().
 						toUtf8(),
 						ui.friendInformation->
-						toPlainText().toLatin1(),
+						toPlainText().trimmed().
+						toLatin1(),
 						symmetricKey,
 						QByteArray("aes256"),
 						-1,
@@ -3561,6 +3548,105 @@ void spoton::slotAddFriendsKey(void)
     }
   else
     {
+      /*
+      ** Now we have to perform the inverse of slotCopySymmetricBundle().
+      ** Have fun!
+      */
+
+      if(ui.friendInformation->toPlainText().trimmed().isEmpty())
+	return;
+
+      QList<QByteArray> list
+	(ui.friendInformation->toPlainText().trimmed().toAscii().
+	 split('\n'));
+
+      if(list.size() != 5)
+	return;
+
+      for(int i = 0; i < list.size(); i++)
+	list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+      QByteArray hash;
+      QByteArray name;
+      QByteArray publicKey;
+      QByteArray symmetricKey;
+      QByteArray symmetricKeyAlgorithm;
+      bool ok = true;
+
+      symmetricKey = list.value(0);
+      symmetricKey = m_crypt->publicKeyDecrypt(symmetricKey, &ok);
+
+      if(!ok)
+	return;
+
+      symmetricKeyAlgorithm = list.value(1);
+      symmetricKeyAlgorithm = m_crypt->publicKeyDecrypt
+	(symmetricKeyAlgorithm, &ok);
+
+      if(!ok)
+	return;
+
+      spoton_gcrypt crypt(symmetricKeyAlgorithm,
+			  QString("sha512"),
+			  QByteArray(),
+			  symmetricKey,
+			  0,
+			  0,
+			  QString(""));
+
+      name = crypt.decrypted(list.value(2), &ok);
+
+      if(!ok)
+	return;
+
+      publicKey = crypt.decrypted(list.value(3), &ok);
+
+      if(!ok)
+	return;
+
+      hash = crypt.decrypted(list.value(4), &ok);
+
+      if(!ok)
+	return;
+
+      QByteArray computedHash
+	(crypt.keyedHash(symmetricKey +
+			 symmetricKeyAlgorithm +
+			 name +
+			 publicKey, &ok));
+
+      if(!ok)
+	return;
+
+      if(computedHash == hash)
+	{
+	  {
+	    QSqlDatabase db = QSqlDatabase::addDatabase
+	      ("QSQLITE", "spoton");
+
+	    db.setDatabaseName
+	      (spoton_misc::homePath() + QDir::separator() +
+	       "friends_symmetric_keys.db");
+
+	    if(db.open())
+	      {
+		spoton_misc::prepareDatabases();
+
+		if(spoton_misc::saveSymmetricBundle(name,
+						    publicKey,
+						    symmetricKey,
+						    symmetricKeyAlgorithm,
+						    -1,
+						    db,
+						    m_crypt))
+		  ui.friendInformation->selectAll();
+	      }
+
+	    db.close();
+	  }
+
+	  QSqlDatabase::removeDatabase("spoton");
+	}
     }
 }
 
@@ -3580,13 +3666,16 @@ void spoton::slotResetAll(void)
 
 void spoton::slotCopySymmetricBundle(void)
 {
-  if(!m_crypt)
-    return;
-
   QClipboard *clipboard = QApplication::clipboard();
 
   if(!clipboard)
     return;
+
+  if(!m_crypt)
+    {
+      clipboard->clear();
+      return;
+    }
 
   QString oid("");
   int row = -1;
@@ -3600,14 +3689,17 @@ void spoton::slotCopySymmetricBundle(void)
     }
 
   if(oid.isEmpty())
-    return;
+    {
+      clipboard->clear();
+      return;
+    }
 
   /*
   ** 1. Retrieve the symmetric information of the selected
   **    participant, S.
   ** 2. Encrypt S with the participant's public key.
   ** 3. Encrypt our information (name, public key) with the
-  **    symmetric key. Call the result T.
+  **    symmetric key. Call our plaintext information T.
   ** 4. Compute a keyed hash of S and T using the symmetric key.
   ** 5. Encrypt the keyed hash with the symmetric key.
   */
@@ -3626,7 +3718,10 @@ void spoton::slotCopySymmetricBundle(void)
 
   if(publicKey.isEmpty() ||
      symmetricKey.isEmpty() || symmetricKeyAlgorithm.isEmpty())
-    return;
+    {
+      clipboard->clear();
+      return;
+    }
 
   QByteArray data;
   bool ok = true;
@@ -3637,7 +3732,10 @@ void spoton::slotCopySymmetricBundle(void)
   data.append("\n");
 
   if(!ok)
-    return;
+    {
+      clipboard->clear();
+      return;
+    }
 
   data.append
     (spoton_gcrypt::publicKeyEncrypt(symmetricKeyAlgorithm, publicKey, &ok).
@@ -3645,7 +3743,10 @@ void spoton::slotCopySymmetricBundle(void)
   data.append("\n");
 
   if(!ok)
-    return;
+    {
+      clipboard->clear();
+      return;
+    }
 
   QByteArray myName;
   spoton_gcrypt crypt(symmetricKeyAlgorithm,
@@ -3666,7 +3767,10 @@ void spoton::slotCopySymmetricBundle(void)
   data.append("\n");
 
   if(!ok)
-    return;
+    {
+      clipboard->clear();
+      return;
+    }
 
   QByteArray myPublicKey(m_crypt->publicKey(&ok));
 
@@ -3674,12 +3778,23 @@ void spoton::slotCopySymmetricBundle(void)
   data.append("\n");
 
   if(!ok)
-    return;
+    {
+      clipboard->clear();
+      return;
+    }
 
-  data.append(crypt.encrypted(crypt.keyedHash(data, &ok), &ok).toBase64());
+  data.append
+    (crypt.encrypted(crypt.keyedHash(symmetricKey +
+				     symmetricKeyAlgorithm +
+				     myName +
+				     myPublicKey, &ok),
+		     &ok).toBase64());
 
   if(!ok)
-    return;
+    {
+      clipboard->clear();
+      return;
+    }
 
   clipboard->setText(data);
 }

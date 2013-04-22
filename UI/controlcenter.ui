@@ -677,17 +677,6 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_24">
                <item>
-                <widget class="QCheckBox" name="connectOnlyToStickyNeighbors">
-                 <property name="text">
-                  <string>Connect Only to Sticky Neighbors</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/sticky.png</normaloff>:/sticky.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item>
                 <widget class="QCheckBox" name="showOnlyConnectedNeighbors">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2637,7 +2626,6 @@
   <tabstop>lineEdit_2</tabstop>
   <tabstop>textEdit_outboxBody</tabstop>
   <tabstop>pushButton_sendEmail</tabstop>
-  <tabstop>connectOnlyToStickyNeighbors</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>
   <tabstop>pushButtonCopytoClipboard</tabstop>
   <tabstop>pushButtonMakeFriends</tabstop>
