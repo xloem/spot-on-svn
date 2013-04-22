@@ -258,6 +258,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  ui.friendInformation,
 	  SLOT(clear(void)));
+  connect(ui.connectOnlyToStickyNeighbors,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotConnectOnlyToStickies(bool)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -3485,8 +3489,14 @@ QIcon spoton::iconForCountry(const QString &country)
     return QIcon(":/Flags/unknown.png");
 }
 
-void spoton::slotConnectOnlyToStickies(void)
+void spoton::slotConnectOnlyToStickies(bool state)
 {
+  m_settings["gui/connectOnlyToStickies"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/connectOnlyToStickies", state);
+  m_listenersLastModificationTime = QDateTime();
 }
 
 void spoton::slotFetchMoreAlgo(void)

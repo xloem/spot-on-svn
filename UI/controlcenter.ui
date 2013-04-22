@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>938</width>
-                <height>636</height>
+                <width>946</width>
+                <height>625</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -202,9 +202,6 @@
                       <widget class="QTableWidget" name="participants">
                        <property name="verticalScrollBarPolicy">
                         <enum>Qt::ScrollBarAlwaysOn</enum>
-                       </property>
-                       <property name="alternatingRowColors">
-                        <bool>false</bool>
                        </property>
                        <property name="selectionBehavior">
                         <enum>QAbstractItemView::SelectRows</enum>
@@ -680,7 +677,7 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_24">
                <item>
-                <widget class="QCheckBox" name="checkBox">
+                <widget class="QCheckBox" name="connectOnlyToStickyNeighbors">
                  <property name="text">
                   <string>Connect Only to Sticky Neighbors</string>
                  </property>
@@ -1356,8 +1353,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>975</width>
-             <height>621</height>
+             <width>939</width>
+             <height>470</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2588,7 +2585,7 @@
      <x>0</x>
      <y>0</y>
      <width>968</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2651,7 +2648,7 @@
   <tabstop>lineEdit_2</tabstop>
   <tabstop>textEdit_outboxBody</tabstop>
   <tabstop>pushButton_sendEmail</tabstop>
-  <tabstop>checkBox</tabstop>
+  <tabstop>connectOnlyToStickyNeighbors</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>
   <tabstop>pushButtonCopytoClipboard</tabstop>
   <tabstop>pushButtonMakeFriends</tabstop>
