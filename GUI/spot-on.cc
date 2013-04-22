@@ -371,6 +371,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/showOnlyConnectedNeighbors", false).toBool());
   ui.showOnlyOnlineListeners->setChecked
     (m_settings.value("gui/showOnlyOnlineListeners", false).toBool());
+  ui.connectOnlyToStickyNeighbors->setChecked
+    (m_settings.value("gui/connectOnlyToStickies", false).toBool());
 
   /*
   ** Please don't translate n/a.
