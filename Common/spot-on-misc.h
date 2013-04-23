@@ -50,13 +50,10 @@ class spoton_misc
   static bool countryAllowedToConnect(const QString &country,
 				      spoton_gcrypt *crypt);
   static bool isGnome(void);
-  static bool saveSymmetricBundle(const QByteArray &name,
-				  const QByteArray &publicKey,
-				  const QByteArray &symmetricKey,
-				  const QByteArray &symmetricKeyAlgorithm,
-				  const int neighborOid,
-				  QSqlDatabase &db,
-				  spoton_gcrypt *crypt);
+  static bool saveFriendshipBundle(const QByteArray &name,
+				   const QByteArray &publicKey,
+				   const int neighborOid,
+				   QSqlDatabase &db);
   static void logError(const QString &error);
   static void populateCountryDatabase(spoton_gcrypt *crypt);
   static void populateUrlsDatabase(const QList<QList<QVariant> > &list,
@@ -66,8 +63,7 @@ class spoton_misc
 				    QByteArray &symmetricKey,
 				    QByteArray &symmetricKeyAlgorithm,
 				    QString &neighborOid,
-				    const QString &oid,
-				    spoton_gcrypt *crypt);
+				    const QString &oid);
 
  private:
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP

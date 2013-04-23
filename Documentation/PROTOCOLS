@@ -42,11 +42,17 @@ Greetings-4
 Bytes     Description
 Echoed?   Yes
 
-1-4       Message Type ("0013") (Plaintext)
-5         TTL (Plaintext)
-6-69      Sender's Sha-512 Hash (Hex, Plaintext)
-70-133    Keyed Sha-512 Message Digest (Ciphertext)
-134-EOF   Status (Ciphertext)
+Message Type ("0013") (Plaintext)
+TTL (Plaintext)
+Symmetric Key (Base-64) (Ciphertext)
+EOL
+Symmetric Key Algorithm (Base-64) (Ciphertext)
+EOL
+Sender's Sha-512 Hash (Base-64) (Ciphertext)
+EOL
+Keyed Sha-512 Message Digest (Base-64) (Ciphertext)
+EOL
+Status (Base-64) (Ciphertext)
 
 URL
 Bytes     Description

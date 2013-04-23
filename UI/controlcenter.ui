@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Spot-On Retention Center</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../Icons/icons.qrc">
+    <normaloff>:/Logo/spoton-button-32.png</normaloff>:/Logo/spoton-button-32.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <property name="bottomMargin">
@@ -72,8 +76,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>944</width>
-                <height>636</height>
+                <width>952</width>
+                <height>626</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -384,7 +388,7 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_27">
             <item>
-             <widget class="QTableWidget" name="tableWidget">
+             <widget class="QTableWidget" name="incomingMail">
               <attribute name="horizontalHeaderDefaultSectionSize">
                <number>120</number>
               </attribute>
@@ -424,7 +428,7 @@
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_deleteemail">
+               <widget class="QPushButton" name="deleteMail">
                 <property name="text">
                  <string>Delete</string>
                 </property>
@@ -435,7 +439,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_retrieveemail">
+               <widget class="QPushButton" name="retrieveMail">
                 <property name="text">
                  <string>Retrieve</string>
                 </property>
@@ -469,7 +473,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="lineEdit"/>
+               <widget class="QLineEdit" name="incomingSubject"/>
               </item>
              </layout>
             </item>
@@ -495,7 +499,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QTextBrowser" name="textBrowser_inboxbody"/>
+               <widget class="QTextBrowser" name="incomingMessage"/>
               </item>
              </layout>
             </item>
@@ -528,7 +532,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="participantEmail">
+               <widget class="QComboBox" name="participantsCombo">
                 <item>
                  <property name="text">
                   <string>All Participants</string>
@@ -577,7 +581,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="lineEdit_2"/>
+               <widget class="QLineEdit" name="outgoingSubject"/>
               </item>
              </layout>
             </item>
@@ -603,7 +607,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QTextEdit" name="textEdit_outboxBody">
+               <widget class="QTextEdit" name="outgoingMessage">
                 <property name="styleSheet">
                  <string notr="true">background-color: qlineargradient(spread:pad, x1:0.968, y1:0.932, x2:0.513, y2:0.5, stop:0 rgba(183, 235, 255, 255), stop:1 rgba(255, 255, 255, 255));</string>
                 </property>
@@ -627,7 +631,7 @@
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_sendEmail">
+               <widget class="QPushButton" name="sendMail">
                 <property name="text">
                  <string>Send</string>
                 </property>
@@ -685,7 +689,7 @@
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>Show Only Connected Neighbors</string>
+                  <string>Show Only &amp;Connected Neighbors</string>
                  </property>
                  <property name="icon">
                   <iconset resource="../Icons/icons.qrc">
@@ -710,7 +714,7 @@
                <item>
                 <widget class="QPushButton" name="pushButtonMakeFriends">
                  <property name="toolTip">
-                  <string>Share my public key with selected neighbor.</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Share my public key with the selected neighbor.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="text">
                   <string>Share Key</string>
@@ -1030,7 +1034,7 @@
              <item>
               <widget class="QGroupBox" name="groupBox_addkey_2">
                <property name="title">
-                <string>Add Friend</string>
+                <string>Add Participant</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_22">
                 <item>
@@ -1041,7 +1045,7 @@
                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The key must start with the letter &quot;K&quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="text">
-                     <string>Key</string>
+                     <string>&amp;Key</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../Icons/icons.qrc">
@@ -1058,7 +1062,7 @@
                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The repleo must start with the letter &amp;quot;R&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="text">
-                     <string>Repleo</string>
+                     <string>&amp;Repleo</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../Icons/icons.qrc">
@@ -1337,8 +1341,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1020</width>
-             <height>514</height>
+             <width>931</width>
+             <height>501</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -1446,7 +1450,7 @@
                    <item>
                     <widget class="QCheckBox" name="showOnlyOnlineListeners">
                      <property name="text">
-                      <string>Show Only Online Listeners</string>
+                      <string>Show Only &amp;Online Listeners</string>
                      </property>
                     </widget>
                    </item>
@@ -2036,7 +2040,7 @@
                  <item>
                   <widget class="QRadioButton" name="acceptlistRadioButton">
                    <property name="text">
-                    <string>Accept List</string>
+                    <string>&amp;Accept List</string>
                    </property>
                    <property name="checked">
                     <bool>true</bool>
@@ -2112,7 +2116,7 @@
                  <item>
                   <widget class="QRadioButton" name="denylistRadioButton">
                    <property name="text">
-                    <string>Deny List</string>
+                    <string>&amp;Deny List</string>
                    </property>
                    <property name="checked">
                     <bool>false</bool>
@@ -2232,7 +2236,7 @@
                  <item>
                   <widget class="QRadioButton" name="acceptlistRadioButton_2">
                    <property name="text">
-                    <string>Accept List</string>
+                    <string>&amp;Accept List</string>
                    </property>
                    <property name="checked">
                     <bool>true</bool>
@@ -2308,7 +2312,7 @@
                  <item>
                   <widget class="QRadioButton" name="denylistRadioButton_2">
                    <property name="text">
-                    <string>Deny List</string>
+                    <string>&amp;Deny List</string>
                    </property>
                    <property name="checked">
                     <bool>false</bool>
@@ -2569,7 +2573,7 @@
      <x>0</x>
      <y>0</y>
      <width>974</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2623,15 +2627,15 @@
   <tabstop>chatSendMethod</tabstop>
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
-  <tabstop>tableWidget</tabstop>
-  <tabstop>pushButton_deleteemail</tabstop>
-  <tabstop>pushButton_retrieveemail</tabstop>
-  <tabstop>lineEdit</tabstop>
-  <tabstop>textBrowser_inboxbody</tabstop>
-  <tabstop>participantEmail</tabstop>
-  <tabstop>lineEdit_2</tabstop>
-  <tabstop>textEdit_outboxBody</tabstop>
-  <tabstop>pushButton_sendEmail</tabstop>
+  <tabstop>incomingMail</tabstop>
+  <tabstop>deleteMail</tabstop>
+  <tabstop>retrieveMail</tabstop>
+  <tabstop>incomingSubject</tabstop>
+  <tabstop>incomingMessage</tabstop>
+  <tabstop>participantsCombo</tabstop>
+  <tabstop>outgoingSubject</tabstop>
+  <tabstop>outgoingMessage</tabstop>
+  <tabstop>sendMail</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>
   <tabstop>pushButtonCopytoClipboard</tabstop>
   <tabstop>pushButtonMakeFriends</tabstop>

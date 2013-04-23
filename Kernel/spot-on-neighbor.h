@@ -75,11 +75,6 @@ class spoton_neighbor: public QTcpSocket
   void savePublicKey(const QByteArray &name,
 		     const QByteArray &publicKey,
 		     const qint64 neighborOid);
-  void savePublicKey(const QByteArray &name,
-		     const QByteArray &publicKey,
-		     const QByteArray &symmetricKey,
-		     const QByteArray &symmetricKeyAlgorithm,
-		     const qint64 neighborOid);
   void saveStatus(QSqlDatabase &db, const QString &status);
 
  private slots:
@@ -90,21 +85,11 @@ class spoton_neighbor: public QTcpSocket
   void slotReceivedPublicKey(const QByteArray &data, const qint64 id);
   void slotReceivedStatusMessage(const QByteArray &data, const qint64 id);
   void slotSendKeys(void);
-  void slotSavePublicKey(const QByteArray &name,
-			 const QByteArray &publicKey,
-			 const QByteArray &symmetricKey,
-			 const QByteArray &symmetricKeyAlgorithm,
-			 const qint64 neighborOid);
   void slotSendMessage(const QByteArray &data);
   void slotSendStatus(const QList<QByteArray> &list);
   void slotTimeout(void);
 
  signals:
-  void randomKeyReady(const QByteArray &name,
-		      const QByteArray &publicKey,
-		      const QByteArray &symmetricKey,
-		      const QByteArray &symmetricKeyAlgorithm,
-		      const qint64 neighborOid);
   void receivedChatMessage(const QByteArray &data);
   void receivedChatMessage(const QByteArray &data, const qint64 id);
   void receivedPublicKey(const QByteArray &name, const QByteArray publicKey);

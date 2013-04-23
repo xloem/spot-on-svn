@@ -1,10 +1,5 @@
 Some tables contain encrypted data.
 
-friends_symmetric_keys.db:
-
-symmetric_key
-symmetric_key_algorithm
-
 idiotes.db:
 
 private_key

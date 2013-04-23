@@ -29,7 +29,6 @@
 #include <QDir>
 #include <QSqlError>
 #include <QSqlQuery>
-#include <QtCore>
 #include <QtCore/qmath.h>
 
 #include <limits>
@@ -55,18 +54,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(disconnected(void)),
 	  this,
 	  SLOT(deleteLater(void)));
-  connect(this,
-	  SIGNAL(randomKeyReady(const QByteArray &,
-				const QByteArray &,
-				const QByteArray &,
-				const QByteArray &,
-				const qint64)),
-	  this,
-	  SLOT(slotSavePublicKey(const QByteArray &,
-				 const QByteArray &,
-				 const QByteArray &,
-				 const QByteArray &,
-				 const qint64)));
   connect(this,
 	  SIGNAL(readyRead(void)),
 	  this,
@@ -115,18 +102,6 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
 	  this,
 	  SLOT(deleteLater(void)));
   connect(this,
-	  SIGNAL(randomKeyReady(const QByteArray &,
-				const QByteArray &,
-				const QByteArray &,
-				const QByteArray &,
-				const qint64)),
-	  this,
-	  SLOT(slotSavePublicKey(const QByteArray &,
-				 const QByteArray &,
-				 const QByteArray &,
-				 const QByteArray &,
-				 const qint64)));
-  connect(this,
 	  SIGNAL(readyRead(void)),
 	  this,
 	  SLOT(slotReadyRead(void)));
@@ -160,7 +135,7 @@ spoton_neighbor::~spoton_neighbor()
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() +
-       "friends_symmetric_keys.db");
+       "friends_public_keys.db");
 
     if(db.open())
       {
@@ -170,7 +145,7 @@ spoton_neighbor::~spoton_neighbor()
 
 	QSqlQuery query(db);
 
-	query.prepare("DELETE FROM symmetric_keys WHERE "
+	query.prepare("DELETE FROM friends_public_keys WHERE "
 		      "neighbor_oid = ?");
 	query.bindValue(0, m_id);
 	query.exec();
@@ -473,8 +448,6 @@ void spoton_neighbor::slotConnected(void)
 
 void spoton_neighbor::savePublicKey(const QByteArray &name,
 				    const QByteArray &publicKey,
-				    const QByteArray &symmetricKey,
-				    const QByteArray &symmetricKeyAlgorithm,
 				    const qint64 neighborOid)
 {
   if(!spoton_kernel::s_crypt1)
@@ -524,9 +497,8 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 	  }
 
 	if(value != -1)
-	  spoton_misc::saveSymmetricBundle
-	    (name, publicKey, symmetricKey, symmetricKeyAlgorithm,
-	     neighborOid, db, spoton_kernel::s_crypt1);
+	  spoton_misc::saveFriendshipBundle
+	    (name, publicKey, neighborOid, db);
 	else
 	  {
 	    /*
@@ -1045,8 +1017,7 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
       data.remove(0, name.length());
       name = QByteArray::fromBase64(name).trimmed();
       publicKey = QByteArray::fromBase64(data).trimmed();
-      m_savePublicKeyFuture = QtConcurrent::run
-	(this, &spoton_neighbor::savePublicKey, name, publicKey, m_id);
+      savePublicKey(name, publicKey, m_id);
     }
   else
     spoton_misc::logError
@@ -1106,7 +1077,7 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
 	    trimmed();
 	  data.remove(0, symmetricKeyAlgorithm.length());
 	  savePublicKey
-	    (name, publicKey, symmetricKey, symmetricKeyAlgorithm, -1);
+	    (name, publicKey, -1);
 	}
       else
 	spoton_misc::logError
@@ -1155,89 +1126,60 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 				     ** message. Don't forget to
 				     ** decrease the TTL!
 				     */
+      QList<QByteArray> list(data.split('\n'));
 
-      /*
-      ** Find the symmetric key.
-      */
+      if(list.size() != 5)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::process0013(): "
+		     "received irregular data. Expecting 5 entries, "
+		     "received %1.").arg(list.size()));
+	  return;
+	}
 
-      QByteArray hash
-	(data.mid(0,
-		  spoton_send::SHA512_HEX_OUTPUT_MAXIMUM_LENGTH));
-      QByteArray symmetricKey;
+      for(int i = 0; i < list.size(); i++)
+	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      data.remove(0, hash.length());
+      QByteArray symmetricKey(list.at(0));
+      QByteArray symmetricKeyAlgorithm(list.at(1));
 
-      {
-	QSqlDatabase db = QSqlDatabase::addDatabase
-	  ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
+      symmetricKey = spoton_kernel::s_crypt1->
+	publicKeyDecrypt(symmetricKey, &ok);
 
-	db.setDatabaseName
-	  (spoton_misc::homePath() + QDir::separator() +
-	   "friends_symmetric_keys.db");
-
-	if((ok = db.open()))
-	  {
-	    QSqlQuery query(db);
-
-	    query.setForwardOnly(true);
-	    query.prepare("SELECT symmetric_key, "
-			  "symmetric_key_algorithm "
-			  "FROM symmetric_keys WHERE "
-			  "HEX(public_key_hash) = HEX(?)");
-	    query.bindValue(0, hash);
-
-	    if((ok = query.exec()))
-	      if((ok = query.next()))
-		{
-		  symmetricKey =
-		    QByteArray::fromBase64(query.value(0).
-					   toByteArray());
-
-		  QByteArray symmetricKeyAlgorithm
-		    (QByteArray::fromBase64(query.value(1).
-					    toByteArray()));
-
-		  symmetricKey = spoton_kernel::s_crypt1->
-		    decrypted(symmetricKey, &ok);
-
-		  if(ok)
-		    symmetricKeyAlgorithm =
-		      spoton_kernel::s_crypt1->decrypted
-		      (symmetricKeyAlgorithm, &ok);
-
-		  if(ok)
-		    {
-		      spoton_gcrypt crypt(symmetricKeyAlgorithm,
-					  QString(""),
-					  QByteArray(),
-					  symmetricKey,
-					  0,
-					  0,
-					  QString(""));
-
-		      data = crypt.decrypted(data, &ok);
-		    }
-		}
-	  }
-
-	db.close();
-      }
-
-      QSqlDatabase::removeDatabase
-	("spoton_neighbor_" + QString::number(s_dbId));
+      if(ok)
+	symmetricKeyAlgorithm = spoton_kernel::s_crypt1->
+	  publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
 
       if(ok)
 	{
-	  QByteArray hash1
-	    (data.mid(0, spoton_send::SHA512_HEX_OUTPUT_MAXIMUM_LENGTH));
-	  QByteArray hash2;
+	  QByteArray computedHash;
+	  QByteArray messageDigest(list.at(3));
+	  QByteArray publicKeyHash(list.at(2));
+	  QByteArray status(list.at(4));
 
-	  data.remove(0, hash1.length());
-	  hash2 = spoton_gcrypt::keyedHash(data, symmetricKey, "sha512",
-					   &ok).toHex();
+	  spoton_gcrypt crypt(symmetricKeyAlgorithm,
+			      QString("sha512"),
+			      QByteArray(),
+			      symmetricKey,
+			      0,
+			      0,
+			      QString(""));
 
-	  if(ok && hash1 == hash2)
-	    saveParticipantStatus(hash, data);
+	  messageDigest = crypt.decrypted(messageDigest, &ok);
+
+	  if(ok)
+	    publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
+
+	  if(ok)
+	    status = crypt.decrypted(status, &ok);
+
+	  if(ok)
+	    computedHash = crypt.keyedHash
+	      (symmetricKey + symmetricKeyAlgorithm +
+	       publicKeyHash + status, &ok);
+
+	  if(ok && computedHash == messageDigest)
+	    saveParticipantStatus(publicKeyHash, status);
 	  else if(ttl > 0)
 	    {
 	      /*
@@ -1296,21 +1238,21 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash,
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() +
-       "friends_symmetric_keys.db");
+       "friends_public_keys.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
-	query.prepare("UPDATE symmetric_keys SET "
+	query.prepare("UPDATE friends_public_keys SET "
 		      "status = ?, "
 		      "last_status_update = ? "
-		      "WHERE HEX(public_key_hash) = HEX(?) "
+		      "WHERE public_key_hash = ? "
 		      "AND neighbor_oid = -1");
 	query.bindValue(0, status);
 	query.bindValue
 	  (1, QDateTime::currentDateTime().toString(Qt::ISODate));
-	query.bindValue(2, publicKeyHash);
+	query.bindValue(2, publicKeyHash.toBase64());
 	query.exec();
       }
 
@@ -1318,35 +1260,4 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash,
   }
 
   QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
-}
-
-void spoton_neighbor::slotSavePublicKey
-(const QByteArray &name,
- const QByteArray &publicKey,
- const QByteArray &symmetricKey,
- const QByteArray &symmetricKeyAlgorithm,
- const qint64 neighborOid)
-{
-  savePublicKey(name, publicKey, symmetricKey, symmetricKeyAlgorithm,
-		neighborOid);
-}
-
-void spoton_neighbor::savePublicKey(const QByteArray &name,
-				    const QByteArray &publicKey,
-				    const qint64 neighborOid)
-{
-  /*
-  ** Should only be called by a thread because gcry_randomize() may
-  ** be very, very slow.
-  */
-
-  QByteArray symmetricKey
-    (spoton_send::SYMMETRIC_KEY_MAXIMUM_LENGTH, 0);
-
-  gcry_randomize
-    (static_cast<void *> (symmetricKey.data()),
-     static_cast<size_t> (symmetricKey.length()),
-     GCRY_VERY_STRONG_RANDOM);
-  emit randomKeyReady
-    (name, publicKey, symmetricKey, QByteArray("aes256"), neighborOid);
 }

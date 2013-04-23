@@ -272,19 +272,20 @@ void spoton_kernel::cleanupDatabases(void)
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "friends_symmetric_keys.db");
+		       "friends_public_keys.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
-	query.exec("UPDATE symmetric_keys SET status = 'offline'");
+	query.exec("UPDATE friends_public_keys SET status = 'offline'");
 
 	/*
 	** Delete symmetric keys that were not completely shared.
 	*/
 
-	query.exec("DELETE FROM symmetric_keys WHERE neighbor_oid <> -1");
+	query.exec("DELETE FROM friends_public_keys WHERE "
+		   "neighbor_oid <> -1");
       }
 
     db.close();
@@ -677,96 +678,83 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "friends_symmetric_keys.db");
+		       "friends_public_keys.db");
 
     if(db.open())
       {
-	QSqlQuery query(db);
+	QByteArray hash;
+	QByteArray publicKey;
+	QByteArray symmetricKey;
+	QByteArray symmetricKeyAlgorithm;
+	QString neighborOid("");
+	bool ok = true;
 
-	query.setForwardOnly(true);
-	query.prepare("SELECT symmetric_key, symmetric_key_algorithm "
-		      "FROM symmetric_keys WHERE OID = ?");
-	query.bindValue(0, oid);
+	spoton_misc::retrieveSymmetricData(publicKey,
+					   symmetricKey,
+					   symmetricKeyAlgorithm,
+					   neighborOid,
+					   QString::number(oid));
+	hash = spoton_gcrypt::keyedHash
+	  (name.leftJustified(spoton_send::NAME_MAXIMUM_LENGTH,
+			      '\n') + message,
+	   symmetricKey,
+	   "sha512", &ok);
 
-	if(query.exec())
-	  if(query.next())
-	    {
-	      QByteArray hash;
-	      QByteArray symmetricKey
-		(QByteArray::fromBase64(query.value(0).toByteArray()));
-	      QByteArray symmetricKeyAlgorithm
-		(QByteArray::fromBase64(query.value(1).toByteArray()));
-	      bool ok = true;
+	if(ok)
+	  {
+	    QByteArray data;
 
-	      symmetricKey = s_crypt1->decrypted(symmetricKey, &ok);
+	    data.append(hash.toHex());
+	    data.append
+	      (name.leftJustified(spoton_send::NAME_MAXIMUM_LENGTH,
+				  '\n'));
+	    data.append(message);
 
-	      if(ok)
-		symmetricKeyAlgorithm = s_crypt1->decrypted
-		  (symmetricKeyAlgorithm, &ok);
+	    spoton_gcrypt crypt(symmetricKeyAlgorithm,
+				QString(""),
+				QByteArray(),
+				symmetricKey,
+				0,
+				0,
+				QString(""));
 
-	      if(ok)
-		hash = spoton_gcrypt::keyedHash
-		  (name.leftJustified(spoton_send::NAME_MAXIMUM_LENGTH,
-				      '\n') + message,
-		   symmetricKey,
-		   "sha512", &ok);
+	    data = crypt.encrypted(data, &ok);
 
-	      if(ok)
-		{
-		  QByteArray data;
+	    if(ok)
+	      {
+		QByteArray publicKey(s_crypt1->publicKey(&ok));
 
-		  data.append(hash.toHex());
-		  data.append
-		    (name.leftJustified(spoton_send::NAME_MAXIMUM_LENGTH,
-					'\n'));
-		  data.append(message);
+		if(ok)
+		  hash = s_crypt1->sha512Hash(publicKey, &ok);
+	      }
 
-		  spoton_gcrypt crypt(symmetricKeyAlgorithm,
-				      QString(""),
-				      QByteArray(),
-				      symmetricKey,
-				      0,
-				      0,
-				      QString(""));
+	    if(ok)
+	      {
+		char c = 0;
+		short ttl = s_settings.value
+		  ("kernel/ttl_0000", 16).toInt();
 
-		  data = crypt.encrypted(data, &ok);
+		memcpy(&c, static_cast<void *> (&ttl), 1);
+		data.prepend(hash.toHex());
+		data.prepend(c);
 
-		  if(ok)
-		    {
-		      QByteArray publicKey(s_crypt1->publicKey(&ok));
-
-		      if(ok)
-			hash = s_crypt1->sha512Hash(publicKey, &ok);
-		    }
-
-		  if(ok)
-		    {
-		      char c = 0;
-		      short ttl = s_settings.value
-			("kernel/ttl_0000", 16).toInt();
-
-		      memcpy(&c, static_cast<void *> (&ttl), 1);
-		      data.prepend(hash.toHex());
-		      data.prepend(c);
-
-		      if(s_settings.value("gui/chatSendMethod",
-					  "Artificial_GET").toString().
-			 trimmed() == "Artificial_GET")
-			emit sendMessage
-			  (spoton_send::message0000(data,
-						    spoton_send::
-						    ARTIFICIAL_GET));
-		      else
-			emit sendMessage
-			  (spoton_send::message0000(data,
-						    spoton_send::
-						    NORMAL_POST));
-		    }
-		}
-	    }
-
-	db.close();
+		if(s_settings.value("gui/chatSendMethod",
+				    "Artificial_GET").toString().
+		   trimmed() == "Artificial_GET")
+		  emit sendMessage
+		    (spoton_send::message0000(data,
+					      spoton_send::
+					      ARTIFICIAL_GET));
+		else
+		  emit sendMessage
+		    (spoton_send::message0000(data,
+					      spoton_send::
+					      NORMAL_POST));
+	      }
+	  }
       }
+
+    db.close();
   }
 
   QSqlDatabase::removeDatabase("spoton_kernel");
@@ -886,13 +874,13 @@ void spoton_kernel::slotStatusTimerExpired(void)
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "friends_symmetric_keys.db");
+		       "friends_public_keys.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
-	query.prepare("UPDATE symmetric_keys SET "
+	query.prepare("UPDATE friends_public_keys SET "
 		      "status = 'offline' WHERE "
 		      "strftime('%s', ?) - "
 		      "strftime('%s', last_status_update) > ?");
@@ -911,23 +899,23 @@ void spoton_kernel::slotStatusTimerExpired(void)
   if(!s_crypt1)
     return;
 
-  /*
-  ** Do we have any interfaces attached to the kernel?
-  */
-
   QByteArray publicKey;
-  QByteArray publicKeyHash;
+  QByteArray myPublicKeyHash;
   bool ok = true;
 
   publicKey = s_crypt1->publicKey(&ok);
 
-  if(ok)
-    publicKeyHash = s_crypt1->sha512Hash(publicKey, &ok);
-  else
+  if(!ok)
     return;
+
+  myPublicKeyHash = spoton_gcrypt::sha512Hash(publicKey, &ok);
 
   if(!ok)
     return;
+
+  /*
+  ** Do we have any interfaces attached to the kernel?
+  */
 
   QByteArray status("offline");
   QList<QByteArray> list;
@@ -936,71 +924,95 @@ void spoton_kernel::slotStatusTimerExpired(void)
     status = s_settings.value("gui/my_status", "online").
       toByteArray().toLower();
 
-  /*
-  ** Retrieve the symmetric bundle of each participant.
-  */
-
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "friends_symmetric_keys.db");
+		       "friends_public_keys.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
-	if(query.exec("SELECT symmetric_key, symmetric_key_algorithm "
-		      "FROM symmetric_keys WHERE neighbor_oid = -1"))
+	if(query.exec("SELECT public_key "
+		      "FROM friends_public_keys WHERE "
+		      "neighbor_oid = -1"))
 	  while(query.next())
 	    {
-	      QByteArray symmetricKey
-		(QByteArray::fromBase64(query.value(0).
-					toByteArray()));
-	      QByteArray symmetricKeyAlgorithm
-		(QByteArray::fromBase64(query.value(1).
-					toByteArray()));
+	      QByteArray data;
+	      QByteArray publicKey(query.value(0).toByteArray());
+	      QByteArray symmetricKey;
+	      QByteArray symmetricKeyAlgorithm("aes256");
+	      int cipherAlgorithm = gcry_cipher_map_name("aes256");
+	      size_t symmetricKeyLength =
+		gcry_cipher_get_algo_keylen(cipherAlgorithm);
 
-	      ok = true;
-	      symmetricKey = s_crypt1->decrypted(symmetricKey, &ok);
+	      if(symmetricKeyLength > 0)
+		{
+		  symmetricKey.resize(symmetricKeyLength);
+		  gcry_randomize
+		    (static_cast<void *> (symmetricKey.data()),
+		     static_cast<size_t> (symmetricKey.length()),
+		     GCRY_STRONG_RANDOM);
+		}
 
 	      if(ok)
-		symmetricKeyAlgorithm =
-		  s_crypt1->decrypted(symmetricKeyAlgorithm, &ok);
+		{
+		  data.append
+		    (spoton_gcrypt::publicKeyEncrypt(symmetricKey,
+						     publicKey, &ok).
+		     toBase64());
+		  data.append("\n");
+		}
+
+	      if(ok)
+		{
+		  data.append
+		    (spoton_gcrypt::publicKeyEncrypt(symmetricKeyAlgorithm,
+						     publicKey, &ok).
+		     toBase64());
+		  data.append("\n");
+		}
 
 	      if(ok)
 		{
 		  QByteArray hash;
+		  spoton_gcrypt crypt(symmetricKeyAlgorithm,
+				      QString("sha512"),
+				      QByteArray(),
+				      symmetricKey,
+				      0,
+				      0,
+				      QString(""));
 
-		  hash = spoton_gcrypt::keyedHash
-		    (status, symmetricKey, "sha512", &ok);
+		  data.append
+		    (crypt.encrypted(myPublicKeyHash, &ok).toBase64());
+		  data.append("\n");
+
+		  if(ok)
+		    hash =
+		      crypt.keyedHash
+		      (symmetricKey + symmetricKeyAlgorithm +
+		       myPublicKeyHash + status, &ok);
 
 		  if(ok)
 		    {
-		      spoton_gcrypt crypt(symmetricKeyAlgorithm,
-					  QString(""),
-					  QByteArray(),
-					  symmetricKey,
-					  0,
-					  0,
-					  QString(""));
+		      data.append(crypt.encrypted(hash, &ok).toBase64());
+		      data.append("\n");
+		    }
 
-		      QByteArray encrypted;
+		  if(ok)
+		    data.append(crypt.encrypted(status, &ok).toBase64());
 
-		      encrypted.append(hash.toHex()).append(status);
-		      encrypted = crypt.encrypted(encrypted, &ok);
+		  if(ok)
+		    {
+		      char c = 0;
+		      short ttl = s_settings.value
+			("kernel/ttl_0013", 16).toInt();
 
-		      if(ok)
-			{
-			  char c = 0;
-			  short ttl = s_settings.value
-			    ("kernel/ttl_0013", 16).toInt();
-
-			  memcpy(&c, static_cast<void *> (&ttl), 1);
-			  encrypted.prepend(publicKeyHash.toHex());
-			  encrypted.prepend(c);
-			  list.append(encrypted);
-			}
+		      memcpy(&c, static_cast<void *> (&ttl), 1);
+		      data.prepend(c);
+		      list.append(data);
 		    }
 		}
 	    }

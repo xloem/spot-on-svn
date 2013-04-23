@@ -38,6 +38,7 @@
 
 #include "spot-on-gcrypt.h"
 #include "spot-on-misc.h"
+#include "spot-on-send.h"
 
 QString spoton_misc::homePath(void)
 {
@@ -90,16 +91,14 @@ void spoton_misc::prepareDatabases(void)
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "friends_symmetric_keys.db");
+		       "friends_public_keys.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
-	query.exec("CREATE TABLE IF NOT EXISTS symmetric_keys ("
+	query.exec("CREATE TABLE IF NOT EXISTS friends_public_keys ("
 		   "name TEXT NOT NULL DEFAULT 'unknown', "
-		   "symmetric_key BLOB, "
-		   "symmetric_key_algorithm BLOB, "
 		   "public_key TEXT NOT NULL, "
 		   "public_key_hash TEXT PRIMARY KEY NOT NULL, "
 		   /*
@@ -533,41 +532,23 @@ void spoton_misc::populateUrlsDatabase(const QList<QList<QVariant> > &list,
   QSqlDatabase::removeDatabase("spoton_misc");
 }
 
-bool spoton_misc::saveSymmetricBundle(const QByteArray &name,
-				      const QByteArray &publicKey,
-				      const QByteArray &symmetricKey,
-				      const QByteArray &symmetricKeyAlgorithm,
-				      const int neighborOid,
-				      QSqlDatabase &db,
-				      spoton_gcrypt *crypt)
+bool spoton_misc::saveFriendshipBundle(const QByteArray &name,
+				       const QByteArray &publicKey,
+				       const int neighborOid,
+				       QSqlDatabase &db)
 {
-  if(!crypt)
-    return false;
-
   QSqlQuery query(db);
   bool ok = true;
 
-  query.prepare("INSERT OR REPLACE INTO symmetric_keys "
-		"(name, symmetric_key, symmetric_key_algorithm, "
-		"public_key, public_key_hash, neighbor_oid) "
-		"VALUES (?, ?, ?, ?, ?, ?)");
+  query.prepare("INSERT OR REPLACE INTO friends_public_keys "
+		"(name, public_key, public_key_hash, neighbor_oid) "
+		"VALUES (?, ?, ?, ?)");
   query.bindValue(0, name);
-
+  query.bindValue(1, publicKey);
   query.bindValue
-    (1, crypt->encrypted(symmetricKey, &ok).toBase64());
+    (2, spoton_gcrypt::sha512Hash(publicKey, &ok).toBase64());
+  query.bindValue(3, neighborOid);
 
-  if(ok)
-    query.bindValue
-      (2, crypt->encrypted(symmetricKeyAlgorithm, &ok).toBase64());
-
-  query.bindValue(3, publicKey);
-
-  if(ok)
-    query.bindValue
-      (4, spoton_gcrypt::sha512Hash(publicKey, &ok).toHex());
-
-  query.bindValue(5, neighborOid);
-  
   if(ok)
     ok = query.exec();
 
@@ -578,17 +559,13 @@ void spoton_misc::retrieveSymmetricData(QByteArray &publicKey,
 					QByteArray &symmetricKey,
 					QByteArray &symmetricKeyAlgorithm,
 					QString &neighborOid,
-					const QString &oid,
-					spoton_gcrypt *crypt)
+					const QString &oid)
 {
-  if(!crypt)
-    return;
-
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "friends_symmetric_keys.db");
+		       "friends_public_keys.db");
 
     if(db.open())
       {
@@ -596,25 +573,20 @@ void spoton_misc::retrieveSymmetricData(QByteArray &publicKey,
 
 	query.setForwardOnly(true);
 
-	if(query.exec(QString("SELECT neighbor_oid, "
-			      "public_key, symmetric_key, "
-			      "symmetric_key_algorithm "
-			      "FROM symmetric_keys WHERE "
+	if(query.exec(QString("SELECT neighbor_oid, public_key "
+			      "FROM friends_public_keys WHERE "
 			      "OID = %1").arg(oid)))
 	  if(query.next())
 	    {
-	      bool ok = true;
-
 	      neighborOid = query.value(0).toString();
 	      publicKey = query.value(1).toByteArray();
-	      symmetricKey = crypt->decrypted
-		(QByteArray::fromBase64(query.value(2).toByteArray()),
-		 &ok);
-
-	      if(ok)
-		symmetricKeyAlgorithm = crypt->decrypted
-		  (QByteArray::fromBase64(query.value(3).toByteArray()),
-		   &ok);
+	      symmetricKey.resize
+		(spoton_send::SYMMETRIC_KEY_MAXIMUM_LENGTH);
+	      gcry_randomize
+		(static_cast<void *> (symmetricKey.data()),
+		 static_cast<size_t> (symmetricKey.length()),
+		 GCRY_STRONG_RANDOM);
+	      symmetricKeyAlgorithm = "aes256";
 	    }
       }
 
