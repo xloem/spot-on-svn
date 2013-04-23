@@ -1030,7 +1030,7 @@
              <item>
               <widget class="QGroupBox" name="groupBox_addkey_2">
                <property name="title">
-                <string>Add Participant</string>
+                <string>Add Friend</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_22">
                 <item>
