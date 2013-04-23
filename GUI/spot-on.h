@@ -80,8 +80,8 @@ class spoton: public QMainWindow
   void slotBlockNeighbor(void);
   void slotChatSendMethodChanged(int index);
   void slotConnectNeighbor(void);
+  void slotCopyFriendshipBundle(void);
   void slotCopyMyPublicKey(void);
-  void slotCopySymmetricBundle(void);
   void slotCountryChanged(QListWidgetItem *item);
   void slotDeactivateKernel(void);
   void slotDeleteAllListeners(void);

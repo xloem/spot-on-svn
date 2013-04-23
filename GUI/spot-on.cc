@@ -106,7 +106,6 @@ spoton::spoton(void):QMainWindow()
   m_neighborsLastModificationTime = QDateTime();
   m_participantsLastModificationTime = QDateTime();
   ui.setupUi(this);
-  setWindowIcon(QIcon(":/Logo/spoton-button-16.png"));
 #ifdef Q_OS_MAC
   setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
@@ -2035,7 +2034,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 
       menu.addAction(QIcon(":/repleo.png"),
 		     tr("Copy Repleo to the clipboard buffer."),
-		     this, SLOT(slotCopySymmetricBundle(void)));
+		     this, SLOT(slotCopyFriendshipBundle(void)));
       menu.addAction(QIcon(":/delete.png"),
 		     tr("&Remove"),
 		     this, SLOT(slotRemoveParticipants(void)));
@@ -2274,7 +2273,7 @@ void spoton::slotDeleteAllNeighbors(void)
 void spoton::slotPopulateParticipants(void)
 {
   QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
-		     "friends_symmetric_keys.db");
+		     "friends_public_keys.db");
 
   if(fileInfo.exists())
     {
@@ -2313,9 +2312,14 @@ void spoton::slotPopulateParticipants(void)
 
 	ui.participants->setSortingEnabled(false);
 	ui.participants->clearContents();
+
+	for(int i = ui.participantsCombo->count() - 1; i >= 1; i--)
+	  ui.participantsCombo->removeItem(i);
+
 	ui.participants->setRowCount(0);
 
 	QSqlQuery query(db);
+	QStringList participants;
 	QWidget *focusWidget = QApplication::focusWidget();
 
 	query.setForwardOnly(true);
@@ -2325,7 +2329,7 @@ void spoton::slotPopulateParticipants(void)
 	*/
 
 	if(query.exec("SELECT name, OID, neighbor_oid, public_key_hash, "
-		      "status FROM symmetric_keys"))
+		      "status FROM friends_public_keys"))
 	  while(query.next())
 	    {
 	      QString status(query.value(4).toString().trimmed());
@@ -2375,6 +2379,8 @@ void spoton::slotPopulateParticipants(void)
 
 		  if(i == 0)
 		    {
+		      participants.append(item->text());
+
 		      if(!temporary)
 			{
 			  if(status == "away")
@@ -2436,6 +2442,13 @@ void spoton::slotPopulateParticipants(void)
 
 	if(focusWidget)
 	  focusWidget->setFocus();
+
+	if(!participants.isEmpty())
+	  {
+	    qSort(participants);
+	    ui.participantsCombo->insertSeparator(1);
+	    ui.participantsCombo->addItems(participants);
+	  }
 
 	ui.participants->setSelectionMode(QAbstractItemView::MultiSelection);
 
@@ -2651,7 +2664,7 @@ void spoton::slotRemoveParticipants(void)
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "friends_symmetric_keys.db");
+		       "friends_public_keys.db");
 
     if(db.open())
       {
@@ -2666,7 +2679,7 @@ void spoton::slotRemoveParticipants(void)
 	    QVariant data(list.takeFirst().data());
 
 	    if(!data.isNull() && data.isValid())
-	      query.exec(QString("DELETE FROM symmetric_keys WHERE "
+	      query.exec(QString("DELETE FROM friends_public_keys WHERE "
 				 "OID = %1").arg(data.toString()));
 	  }
       }
@@ -2833,8 +2846,7 @@ void spoton::slotSharePublicKeyWithParticipant(void)
 				     symmetricKey,
 				     symmetricKeyAlgorithm,
 				     neighborOid,
-				     oid,
-				     m_crypt);
+				     oid);
 
   if(publicKey.isEmpty() ||
      symmetricKey.isEmpty() || symmetricKeyAlgorithm.isEmpty())
@@ -3504,9 +3516,6 @@ void spoton::slotFetchMoreButton(void)
 
 void spoton::slotAddFriendsKey(void)
 {
-  if(!m_crypt)
-    return;
-
   if(ui.addFriendPublicKeyRadio->isChecked())
     {
       if(ui.friendInformation->toPlainText().trimmed().isEmpty())
@@ -3514,21 +3523,11 @@ void spoton::slotAddFriendsKey(void)
       else if(ui.friendName->text().trimmed().isEmpty())
 	return;
 
-      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
-      QByteArray symmetricKey
-	(spoton_send::SYMMETRIC_KEY_MAXIMUM_LENGTH, 0);
-
-      gcry_randomize
-	(static_cast<void *> (symmetricKey.data()),
-	 static_cast<size_t> (symmetricKey.length()),
-	 GCRY_VERY_STRONG_RANDOM);
-
       {
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
 	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-			   "friends_symmetric_keys.db");
+			   "friends_public_keys.db");
 
 	if(db.open())
 	  {
@@ -3542,14 +3541,11 @@ void spoton::slotAddFriendsKey(void)
 
 	    publicKey = QByteArray::fromBase64(publicKey);
 
-	    if(spoton_misc::saveSymmetricBundle(ui.friendName->text().
-						toUtf8(),
-						publicKey,
-						symmetricKey,
-						QByteArray("aes256"),
-						-1,
-						db,
-						m_crypt))
+	    if(spoton_misc::saveFriendshipBundle(ui.friendName->text().
+						 toUtf8(),
+						 publicKey,
+						 -1,
+						 db))
 	      ui.friendInformation->selectAll();
 	  }
 
@@ -3557,16 +3553,17 @@ void spoton::slotAddFriendsKey(void)
       }
 
       QSqlDatabase::removeDatabase("spoton");
-      QApplication::restoreOverrideCursor();
     }
   else
     {
       /*
-      ** Now we have to perform the inverse of slotCopySymmetricBundle().
+      ** Now we have to perform the inverse of slotCopyFriendshipBundle().
       ** Have fun!
       */
 
-      if(ui.friendInformation->toPlainText().trimmed().isEmpty())
+      if(!m_crypt)
+	return;
+      else if(ui.friendInformation->toPlainText().trimmed().isEmpty())
 	return;
 
       QByteArray repleo(ui.friendInformation->toPlainText().trimmed().
@@ -3643,19 +3640,16 @@ void spoton::slotAddFriendsKey(void)
 
 	    db.setDatabaseName
 	      (spoton_misc::homePath() + QDir::separator() +
-	       "friends_symmetric_keys.db");
+	       "friends_public_keys.db");
 
 	    if(db.open())
 	      {
 		spoton_misc::prepareDatabases();
 
-		if(spoton_misc::saveSymmetricBundle(name,
-						    publicKey,
-						    symmetricKey,
-						    symmetricKeyAlgorithm,
-						    -1,
-						    db,
-						    m_crypt))
+		if(spoton_misc::saveFriendshipBundle(name,
+						     publicKey,
+						     -1,
+						     db))
 		  ui.friendInformation->selectAll();
 	      }
 
@@ -3681,7 +3675,7 @@ void spoton::slotResetAll(void)
 {
 }
 
-void spoton::slotCopySymmetricBundle(void)
+void spoton::slotCopyFriendshipBundle(void)
 {
   QClipboard *clipboard = QApplication::clipboard();
 
@@ -3712,8 +3706,7 @@ void spoton::slotCopySymmetricBundle(void)
     }
 
   /*
-  ** 1. Retrieve the symmetric information of the selected
-  **    participant, S.
+  ** 1. Generate some symmetric information, S.
   ** 2. Encrypt S with the participant's public key.
   ** 3. Encrypt our information (name, public key) with the
   **    symmetric key. Call our plaintext information T.
@@ -3730,8 +3723,7 @@ void spoton::slotCopySymmetricBundle(void)
 				     symmetricKey,
 				     symmetricKeyAlgorithm,
 				     neighborOid,
-				     oid,
-				     m_crypt);
+				     oid);
 
   if(publicKey.isEmpty() ||
      symmetricKey.isEmpty() || symmetricKeyAlgorithm.isEmpty())

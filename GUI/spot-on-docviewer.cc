@@ -32,7 +32,6 @@ spoton_docviewer::spoton_docviewer(void):QMainWindow()
 {
   m_position = 0;
   ui.setupUi(this);
-  setWindowIcon(QIcon(":/Logo/spoton-button-16.png"));
   connect(ui.action_Close,
 	  SIGNAL(triggered(void)),
 	  this,
