@@ -34,6 +34,9 @@
 #include <QTcpSocket>
 #include <QTimer>
 
+#include <Phonon/AudioOutput>
+#include <Phonon/MediaObject>
+ 
 #include "Common/spot-on-gcrypt.h"
 #include "spot-on-docviewer.h"
 #include "spot-on-logviewer.h"

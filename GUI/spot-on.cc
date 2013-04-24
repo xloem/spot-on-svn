@@ -2569,6 +2569,17 @@ void spoton::slotReceivedKernelMessage(void)
 		  ui.messages->append(msg);
 		  ui.messages->verticalScrollBar()->setValue
 		    (ui.messages->verticalScrollBar()->maximum());
+
+          #if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+          Phonon::MediaObject *mediaObject = Phonon::createPlayer(Phonon::NoCategory,
+          Phonon::MediaSource("./Sound/receive.wav"));
+          mediaObject->play();
+          #else
+          Phonon::MediaObject *mediaObject = Phonon::createPlayer(Phonon::NoCategory,
+          Phonon::MediaSource(":/Sound/receive.wav"));
+          mediaObject->play();
+          #endif
+
 		}
 	    }
 	}
