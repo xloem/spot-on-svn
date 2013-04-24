@@ -1324,8 +1324,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>939</width>
-             <height>470</height>
+             <width>952</width>
+             <height>625</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -1785,18 +1785,8 @@
                    <item>
                     <widget class="QComboBox" name="rsaKeySize">
                      <property name="currentIndex">
-                      <number>2</number>
+                      <number>0</number>
                      </property>
-                     <item>
-                      <property name="text">
-                       <string>1024</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>2048</string>
-                      </property>
-                     </item>
                      <item>
                       <property name="text">
                        <string>3072</string>
