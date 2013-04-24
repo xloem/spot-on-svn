@@ -94,7 +94,8 @@ QByteArray spoton_send::message0011(const QByteArray &name,
      "\r\n"
      "type=0011&content=%2\r\n"
      "\r\n\r\n");
-  content.append(name.leftJustified(NAME_MAXIMUM_LENGTH, '\n').toBase64());
+  content.append(name.toBase64());
+  content.append("\n");
   content.append(publicKey.toBase64());
   results.replace
     ("%1",

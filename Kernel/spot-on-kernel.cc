@@ -674,90 +674,106 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
   if(!s_crypt1)
     return;
 
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
+  QByteArray publicKey;
+  bool ok = true;
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "friends_public_keys.db");
+  publicKey = s_crypt1->publicKey(&ok);
 
-    if(db.open())
-      {
-	QByteArray hash;
-	QByteArray publicKey;
-	QByteArray symmetricKey;
-	QByteArray symmetricKeyAlgorithm;
-	QString neighborOid("");
-	bool ok = true;
+  if(!ok)
+    return;
 
-	spoton_misc::retrieveSymmetricData(publicKey,
-					   symmetricKey,
-					   symmetricKeyAlgorithm,
-					   neighborOid,
-					   QString::number(oid));
-	hash = spoton_gcrypt::keyedHash
-	  (name.leftJustified(spoton_send::NAME_MAXIMUM_LENGTH,
-			      '\n') + message,
-	   symmetricKey,
-	   "sha512", &ok);
+  QByteArray myPublicKeyHash;
 
-	if(ok)
-	  {
-	    QByteArray data;
+  myPublicKeyHash = spoton_gcrypt::sha512Hash(publicKey, &ok);
 
-	    data.append(hash.toHex());
-	    data.append
-	      (name.leftJustified(spoton_send::NAME_MAXIMUM_LENGTH,
-				  '\n'));
-	    data.append(message);
+  if(!ok)
+    return;
 
-	    spoton_gcrypt crypt(symmetricKeyAlgorithm,
-				QString(""),
-				QByteArray(),
-				symmetricKey,
-				0,
-				0,
-				QString(""));
+  QByteArray data;
+  QByteArray symmetricKey;
+  QByteArray symmetricKeyAlgorithm("aes256");
+  QString neighborOid("");
 
-	    data = crypt.encrypted(data, &ok);
+  spoton_misc::retrieveSymmetricData(publicKey,
+				     symmetricKey,
+				     symmetricKeyAlgorithm,
+				     neighborOid,
+				     QString::number(oid));
 
-	    if(ok)
-	      {
-		QByteArray publicKey(s_crypt1->publicKey(&ok));
+  data.append
+    (spoton_gcrypt::publicKeyEncrypt(symmetricKey,
+				     publicKey, &ok).
+     toBase64());
+  data.append("\n");
 
-		if(ok)
-		  hash = s_crypt1->sha512Hash(publicKey, &ok);
-	      }
+  if(ok)
+    {
+      data.append
+	(spoton_gcrypt::publicKeyEncrypt(symmetricKeyAlgorithm,
+					 publicKey, &ok).
+	 toBase64());
+      data.append("\n");
+    }
 
-	    if(ok)
-	      {
-		char c = 0;
-		short ttl = s_settings.value
-		  ("kernel/ttl_0000", 16).toInt();
+  if(ok)
+    {
+      QByteArray hash;
+      spoton_gcrypt crypt(symmetricKeyAlgorithm,
+			  QString("sha512"),
+			  QByteArray(),
+			  symmetricKey,
+			  0,
+			  0,
+			  QString(""));
 
-		memcpy(&c, static_cast<void *> (&ttl), 1);
-		data.prepend(hash.toHex());
-		data.prepend(c);
+      data.append
+	(crypt.encrypted(myPublicKeyHash, &ok).toBase64());
+      data.append("\n");
 
-		if(s_settings.value("gui/chatSendMethod",
-				    "Artificial_GET").toString().
-		   trimmed() == "Artificial_GET")
-		  emit sendMessage
-		    (spoton_send::message0000(data,
-					      spoton_send::
-					      ARTIFICIAL_GET));
-		else
-		  emit sendMessage
-		    (spoton_send::message0000(data,
-					      spoton_send::
-					      NORMAL_POST));
-	      }
-	  }
-      }
+      if(ok)
+	hash =
+	  crypt.keyedHash
+	  (symmetricKey + symmetricKeyAlgorithm +
+	   myPublicKeyHash + name + message, &ok);
 
-    db.close();
-  }
+      if(ok)
+	{
+	  data.append(crypt.encrypted(hash, &ok).toBase64());
+	  data.append("\n");
+	}
 
-  QSqlDatabase::removeDatabase("spoton_kernel");
+      if(ok)
+	{
+	  data.append(crypt.encrypted(name, &ok).toBase64());
+	  data.append("\n");
+	}
+    
+      if(ok)
+	data.append(crypt.encrypted(message, &ok).toBase64());
+
+      if(ok)
+	{
+	  char c = 0;
+	  short ttl = s_settings.value
+	    ("kernel/ttl_0000", 16).toInt();
+
+	  memcpy(&c, static_cast<void *> (&ttl), 1);
+	  data.prepend(c);
+
+	  if(s_settings.value("gui/chatSendMethod",
+			      "Artificial_GET").toString().
+	     trimmed() == "Artificial_GET")
+	    emit sendMessage
+	      (spoton_send::message0000(data,
+					spoton_send::
+					ARTIFICIAL_GET));
+	  else
+	    emit sendMessage
+	      (spoton_send::message0000(data,
+					spoton_send::
+					NORMAL_POST));
+	}
+    }
 }
 
 void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,

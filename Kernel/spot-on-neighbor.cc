@@ -675,10 +675,7 @@ void spoton_neighbor::sharePublicKey(const QByteArray &publicKey,
   QByteArray message;
 
   message.append(symmetricKey);
-  message.append(symmetricKeyAlgorithm.
-		 leftJustified(spoton_send::
-			       SYMMETRIC_KEY_ALGORITHM_MAXIMUM_LENGTH,
-			       '\n'));
+  message.append(symmetricKeyAlgorithm);
 
   bool ok = true;
 
@@ -700,8 +697,7 @@ void spoton_neighbor::sharePublicKey(const QByteArray &publicKey,
       if(ok)
 	{
 	  message.append('\n');
-	  message.append
-	    (name.leftJustified(spoton_send::NAME_MAXIMUM_LENGTH, '\n'));
+	  message.append(name);
 	  message.append(publicKey);
 	  message = spoton_send::message0012(message);
 
@@ -791,7 +787,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
       if(!data.isEmpty())
 	memcpy(static_cast<void *> (&ttl),
 	       static_cast<const void *> (data.constData()), 1);
-	  
+
       if(ttl > 0)
 	ttl -= 1;
 
@@ -813,92 +809,69 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 				     ** message. Don't forget to
 				     ** decrease the TTL!
 				     */
+      QList<QByteArray> list(data.split('\n'));
 
-      /*
-      ** Find the symmetric key.
-      */
+      if(list.size() != 6)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::process0000(): "
+		     "received irregular data. Expecting 6 entries, "
+		     "received %1.").arg(list.size()));
+	  return;
+	}
 
-      hash = data.mid(0, spoton_send::SHA512_HEX_OUTPUT_MAXIMUM_LENGTH);
+      for(int i = 0; i < list.size(); i++)
+	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      QByteArray symmetricKey;
+      QByteArray symmetricKey(list.at(0));
+      QByteArray symmetricKeyAlgorithm(list.at(1));
 
-      data.remove(0, hash.length());
+      symmetricKey = spoton_kernel::s_crypt1->
+	publicKeyDecrypt(symmetricKey, &ok);
 
-      {
-	QSqlDatabase db = QSqlDatabase::addDatabase
-	  ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
-
-	db.setDatabaseName
-	  (spoton_misc::homePath() + QDir::separator() +
-	   "friends_symmetric_keys.db");
-
-	if((ok = db.open()))
-	  {
-	    QSqlQuery query(db);
-
-	    query.setForwardOnly(true);
-	    query.prepare("SELECT symmetric_key, "
-			  "symmetric_key_algorithm "
-			  "FROM symmetric_keys WHERE "
-			  "HEX(public_key_hash) = HEX(?)");
-	    query.bindValue(0, hash);
-
-	    if((ok = query.exec()))
-	      if((ok = query.next()))
-		{
-		  symmetricKey = 
-		    QByteArray::fromBase64(query.value(0).
-					   toByteArray());
-
-		  QByteArray symmetricKeyAlgorithm
-		    (QByteArray::fromBase64(query.value(1).
-					    toByteArray()));
-
-		  symmetricKey = spoton_kernel::s_crypt1->
-		    decrypted(symmetricKey, &ok);
-
-		  if(ok)
-		    symmetricKeyAlgorithm =
-		      spoton_kernel::s_crypt1->decrypted
-		      (symmetricKeyAlgorithm, &ok);
-
-		  if(ok)
-		    {
-		      spoton_gcrypt crypt(symmetricKeyAlgorithm,
-					  QString(""),
-					  QByteArray(),
-					  symmetricKey,
-					  0,
-					  0,
-					  QString(""));
-
-		      data = crypt.decrypted(data, &ok).trimmed();
-		    }
-		}
-	  }
-
-	db.close();
-      }
-
-      QSqlDatabase::removeDatabase
-	("spoton_neighbor_" + QString::number(s_dbId));
+      if(ok)
+	symmetricKeyAlgorithm = spoton_kernel::s_crypt1->
+	  publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
 
       if(ok)
 	{
-	  QByteArray hash1
-	    (data.mid(0, spoton_send::
-		      SHA512_HEX_OUTPUT_MAXIMUM_LENGTH));
-	  QByteArray hash2;
+	  QByteArray computedHash;
+	  QByteArray message(list.at(5));
+	  QByteArray messageDigest(list.at(3));
+	  QByteArray name(list.at(4));
+	  QByteArray publicKeyHash(list.at(2));
 
-	  data.remove(0, hash1.length());
-	  hash2 = spoton_gcrypt::keyedHash(data, symmetricKey, "sha512",
-					   &ok).toHex();
+	  spoton_gcrypt crypt(symmetricKeyAlgorithm,
+			      QString("sha512"),
+			      QByteArray(),
+			      symmetricKey,
+			      0,
+			      0,
+			      QString(""));
 
-	  if(ok && hash1 == hash2)
+	  messageDigest = crypt.decrypted(messageDigest, &ok);
+
+	  if(ok)
+	    publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
+
+	  if(ok)
+	    name = crypt.decrypted(name, &ok);
+
+	  if(ok)
+	    message = crypt.decrypted(message, &ok);
+
+	  if(ok)
+	    computedHash = crypt.keyedHash
+	      (symmetricKey + symmetricKeyAlgorithm +
+	       publicKeyHash + name + message, &ok);
+
+	  if(ok && computedHash == messageDigest)
 	    {
 	      if(!duplicate)
 		emit receivedChatMessage
-		  ("message_" + data.toBase64().append('\n'));
+		  ("message_" +
+		   name.toBase64() + "_" +
+		   message.toBase64().append('\n'));
 	    }
 	  else if(ttl > 0)
 	    {
@@ -1013,7 +986,7 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
       QByteArray publicKey;
 
       name = data.mid
-	(0, 4 * qCeil(spoton_send::NAME_MAXIMUM_LENGTH / 3.0));
+	(0, 4);
       data.remove(0, name.length());
       name = QByteArray::fromBase64(name).trimmed();
       publicKey = QByteArray::fromBase64(data).trimmed();
@@ -1052,8 +1025,7 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
       data.remove(0, encrypted.length());
       data = data.trimmed();
 
-      QByteArray name(data.mid(0, spoton_send::NAME_MAXIMUM_LENGTH).
-		      trimmed());
+      QByteArray name(data.mid(0, 0).trimmed());
 
       data.remove(0, name.length());
       data = data.trimmed();
@@ -1070,11 +1042,10 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
 	  QByteArray symmetricKeyAlgorithm;
 
 	  symmetricKey = data.mid
-	    (0, spoton_send::SYMMETRIC_KEY_MAXIMUM_LENGTH);
+	    (0, 0);
 	  data.remove(0, symmetricKey.length());
 	  symmetricKeyAlgorithm = data.mid
-	    (0, spoton_send::SYMMETRIC_KEY_ALGORITHM_MAXIMUM_LENGTH).
-	    trimmed();
+	    (0, 0).trimmed();
 	  data.remove(0, symmetricKeyAlgorithm.length());
 	  savePublicKey
 	    (name, publicKey, -1);
@@ -1165,10 +1136,10 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 			      0,
 			      QString(""));
 
-	  messageDigest = crypt.decrypted(messageDigest, &ok);
+	  publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
 
 	  if(ok)
-	    publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
+	    messageDigest = crypt.decrypted(messageDigest, &ok);
 
 	  if(ok)
 	    status = crypt.decrypted(status, &ok);
@@ -1244,6 +1215,7 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash,
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE friends_public_keys SET "
 		      "status = ?, "
 		      "last_status_update = ? "

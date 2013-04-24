@@ -47,6 +47,7 @@ class spoton: public QMainWindow
   spoton(void);
 
  private:
+  static const int NAME_MAXIMUM_LENGTH = 64;
   QByteArray m_kernelSocketData;
   QDateTime m_countriesLastModificationTime;
   QDateTime m_listenersLastModificationTime;

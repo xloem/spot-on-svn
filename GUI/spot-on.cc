@@ -352,8 +352,8 @@ spoton::spoton(void):QMainWindow()
     ui.status->setCurrentIndex(2);
 
   ui.kernelPath->setToolTip(ui.kernelPath->text());
-  ui.friendName->setMaxLength(spoton_send::NAME_MAXIMUM_LENGTH);
-  ui.nodeName->setMaxLength(spoton_send::NAME_MAXIMUM_LENGTH);
+  ui.friendName->setMaxLength(NAME_MAXIMUM_LENGTH);
+  ui.nodeName->setMaxLength(NAME_MAXIMUM_LENGTH);
   ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
 		       toByteArray()).trimmed());
@@ -2086,10 +2086,8 @@ void spoton::sendKeyToKernel(void)
 
 void spoton::slotConnectNeighbor(void)
 {
-    {
-     if(!isKernelActive())
-   return slotActivateKernel();
-    }
+  if(!isKernelActive())
+    return slotActivateKernel();
 
   QString oid("");
   int row = -1;
@@ -2222,8 +2220,6 @@ void spoton::slotDeleteAllListeners(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("PRAGMA synchronous = OFF");
-
 	if(!isKernelActive())
 	  query.exec("DELETE FROM listeners");
 	else
@@ -2251,8 +2247,6 @@ void spoton::slotDeleteAllNeighbors(void)
     if(db.open())
       {
 	QSqlQuery query(db);
-
-	query.exec("PRAGMA synchronous = OFF");
 
 	if(!isKernelActive())
 	  query.exec("DELETE FROM neighbors");
@@ -2554,12 +2548,16 @@ void spoton::slotReceivedKernelMessage(void)
 
 	      if(!data.isEmpty())
 		{
-		  data = QByteArray::fromBase64(data);
+		  QList<QByteArray> list(data.split('_'));
 
-		  QByteArray name
-		    (data.mid(0, spoton_send::NAME_MAXIMUM_LENGTH));
-		  QByteArray message
-		    (data.mid(spoton_send::NAME_MAXIMUM_LENGTH).trimmed());
+		  if(list.size() != 2)
+		    continue;
+
+		  for(int i = 0; i < list.size(); i++)
+		    list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+		  QByteArray name(list.at(0));
+		  QByteArray message(list.at(1));
 		  QString msg("");
 
 		  if(name.isEmpty())
@@ -2671,8 +2669,6 @@ void spoton::slotRemoveParticipants(void)
 	QModelIndexList list
 	  (ui.participants->selectionModel()->selectedRows(1));
 	QSqlQuery query(db);
-
-	query.exec("PRAGMA synchronous = OFF");
 
 	while(!list.isEmpty())
 	  {

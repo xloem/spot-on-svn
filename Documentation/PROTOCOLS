@@ -1,62 +1,56 @@
 Messages
 
 Chat
-Bytes     Description
 Echoed?   Yes
 
 Message Type ("0000") (Plaintext)
 TTL (Plaintext)
-Symmetric Key (Base-64) (Ciphertext)
+Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
-Symmetric Key Algorithm (Base-64) (Ciphertext)
+Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
 EOL
-Sender's Sha-512 Hash (Base-64) (Ciphertext)
+Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
 EOL
-Keyed Sha-512 Message Digest (Base-64) (Ciphertext)
+Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)
 EOL
-Name (Ciphertext)
+Name (Ciphertext, SK)
 EOL
-Message (Ciphertext)
+Message (Ciphertext, SK)
 
 Greetings-1
-Bytes     Description
 Echoed?   Yes
 
 Message Type ("0010") (Plaintext)
 TTL (Plaintext)
-URL Public Key (Plaintext)
+URL Public Key (Base-64) (Plaintext)
 
 Greetings-2
-Bytes     Description
 Echoed?   No
 
 Message Type ("0011") (Plaintext)
 Name (Base-64) (Plaintext)
-Public Key (Plaintext)
+EOL
+Public Key (Base-64) (Plaintext)
 
 Greetings-3
-Bytes     Description
 Echoed?   No
 
-1-4       Message Type ("0012") (Plaintext)
-5-68      Symmetric Key (Base-64) (Ciphertext)
-69-84     Symmetric Key Algorithm (Padded with EOL.) (Base-64) (Ciphertext)
-85        EOL (Plaintext)
-86-149    Sender's Name (Padded with EOL.) (Plaintext)
-150-EOL   Sender's Public Key (Plaintext)
+Message Type ("0012") (Plaintext)
+Name (Base-64) (Plaintext)
+EOL
+Public Key (Base-64) (Plaintext)
 
 Greetings-4
-Bytes     Description
 Echoed?   Yes
 
 Message Type ("0013") (Plaintext)
 TTL (Plaintext)
-Symmetric Key (Base-64) (Ciphertext)
+Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
-Symmetric Key Algorithm (Base-64) (Ciphertext)
+Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
 EOL
-Sender's Sha-512 Hash (Base-64) (Ciphertext)
+Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
 EOL
-Keyed Sha-512 Message Digest (Base-64) (Ciphertext)
+Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)
 EOL
-Status (Base-64) (Ciphertext)
+Status (Base-64) (Ciphertext, SK)

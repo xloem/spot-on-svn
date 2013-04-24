@@ -578,15 +578,21 @@ void spoton_misc::retrieveSymmetricData(QByteArray &publicKey,
 			      "OID = %1").arg(oid)))
 	  if(query.next())
 	    {
-	      neighborOid = query.value(0).toString();
-	      publicKey = query.value(1).toByteArray();
-	      symmetricKey.resize
-		(spoton_send::SYMMETRIC_KEY_MAXIMUM_LENGTH);
-	      gcry_randomize
-		(static_cast<void *> (symmetricKey.data()),
-		 static_cast<size_t> (symmetricKey.length()),
-		 GCRY_STRONG_RANDOM);
-	      symmetricKeyAlgorithm = "aes256";
+	      int algorithm = gcry_cipher_map_name("aes256");
+	      size_t symmetricKeyLength =
+		gcry_cipher_get_algo_keylen(algorithm);
+
+	      if(symmetricKeyLength > 0)
+		{
+		  neighborOid = query.value(0).toString();
+		  publicKey = query.value(1).toByteArray();
+		  symmetricKey.resize(symmetricKeyLength);
+		  gcry_randomize
+		    (static_cast<void *> (symmetricKey.data()),
+		     static_cast<size_t> (symmetricKey.length()),
+		     GCRY_STRONG_RANDOM);
+		  symmetricKeyAlgorithm = "aes256";
+		}
 	    }
       }
 

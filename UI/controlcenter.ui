@@ -77,7 +77,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>952</width>
-                <height>626</height>
+                <height>625</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1042,7 +1042,7 @@
                   <item>
                    <widget class="QRadioButton" name="addFriendPublicKeyRadio">
                     <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The key must start with the letter &quot;K&quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The key must start with the letter k.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="text">
                      <string>&amp;Key</string>
@@ -1059,7 +1059,7 @@
                   <item>
                    <widget class="QRadioButton" name="addFriendSymmetricBundleRadio">
                     <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The repleo must start with the letter &amp;quot;R&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The repleo must start with the letter r.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="text">
                      <string>&amp;Repleo</string>
@@ -1341,8 +1341,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>931</width>
-             <height>501</height>
+             <width>939</width>
+             <height>470</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2573,7 +2573,7 @@
      <x>0</x>
      <y>0</y>
      <width>974</width>
-     <height>24</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
