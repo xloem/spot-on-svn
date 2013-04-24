@@ -896,6 +896,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE friends_public_keys SET "
 		      "status = 'offline' WHERE "
 		      "strftime('%s', ?) - "
