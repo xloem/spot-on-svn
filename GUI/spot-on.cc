@@ -2570,6 +2570,10 @@ void spoton::slotReceivedKernelMessage(void)
 		  ui.messages->verticalScrollBar()->setValue
 		    (ui.messages->verticalScrollBar()->maximum());
 
+
+          if (ui.checkBoxSound->isChecked())
+          {
+
           QByteArray status
           (m_settings.value("gui/my_status", "Online").toByteArray());
           if(status == "Away")
@@ -2598,6 +2602,8 @@ void spoton::slotReceivedKernelMessage(void)
           #endif
           }
 
+          }
+          else {}
 		}
 	    }
 	}
