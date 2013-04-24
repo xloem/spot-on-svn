@@ -1111,7 +1111,7 @@ QByteArray spoton_gcrypt::publicKeyEncrypt(const QByteArray &data,
 			  static_cast<size_t> (publicKey.length()), 1)) == 0)
     {
 #if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
-      QByteArray random(20, 0);
+      QByteArray random(64, 0);
 #endif
       gcry_sexp_t data_t = 0;
       gcry_sexp_t encodedData_t = 0;
@@ -1124,7 +1124,7 @@ QByteArray spoton_gcrypt::publicKeyEncrypt(const QByteArray &data,
 
       if((err = gcry_sexp_build(&data_t, 0,
 #if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
-				"(data (flags oaep)(hash-algo sha1)"
+				"(data (flags oaep)(hash-algo sha512)"
 				"(value %b)(random-override %b))",
 #else
 				"(data (flags pkcs1)"
@@ -1242,7 +1242,7 @@ QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
   QByteArray decrypted;
   QByteArray keyData;
 #if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
-  QByteArray random(20, 0);
+  QByteArray random(64, 0);
 #endif
   const char *buffer = 0;
   gcry_error_t err = 0;
@@ -1353,7 +1353,7 @@ QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
   if((err = gcry_sexp_build(&data_t, 0,
 #if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
 			    "(enc-val (flags oaep)"
-			    "(hash-algo sha1)(random-override %b) %S)",
+			    "(hash-algo sha512)(random-override %b) %S)",
 			    random.length(),
 			    random.constData(),
 #else
