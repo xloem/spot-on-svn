@@ -2570,15 +2570,33 @@ void spoton::slotReceivedKernelMessage(void)
 		  ui.messages->verticalScrollBar()->setValue
 		    (ui.messages->verticalScrollBar()->maximum());
 
+          QByteArray status
+          (m_settings.value("gui/my_status", "Online").toByteArray());
+          if(status == "Away")
+
+          {
           #if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
           Phonon::MediaObject *mediaObject = Phonon::createPlayer(Phonon::NoCategory,
-          Phonon::MediaSource("./Sound/receive.wav"));
+          Phonon::MediaSource("./Sound/echo.wav"));
           mediaObject->play();
           #else
           Phonon::MediaObject *mediaObject = Phonon::createPlayer(Phonon::NoCategory,
-          Phonon::MediaSource(":/Sound/receive.wav"));
+          Phonon::MediaSource(":/Sound/echo.wav"));
           mediaObject->play();
           #endif
+          }
+          else
+          {
+          #if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+          Phonon::MediaObject *mediaObject2 = Phonon::createPlayer(Phonon::NoCategory,
+          Phonon::MediaSource("./Sound/receive.wav"));
+          mediaObject2->play();
+          #else
+          Phonon::MediaObject *mediaObject2 = Phonon::createPlayer(Phonon::NoCategory,
+          Phonon::MediaSource(":/Sound/receive.wav"));
+          mediaObject2->play();
+          #endif
+          }
 
 		}
 	    }

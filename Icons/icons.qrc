@@ -260,5 +260,6 @@
         <file>reset.png</file>
         <file>repleo.png</file>
         <file>Sound/receive.wav</file>
+        <file>Sound/echo.wav</file>
     </qresource>
 </RCC>
