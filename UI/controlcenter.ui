@@ -700,7 +700,7 @@
                <item>
                 <widget class="QPushButton" name="pushButtonCopytoClipboard">
                  <property name="toolTip">
-                  <string>Copy my public key to the clipboard buffer.</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy my name and public key to the clipboard buffer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="text">
                   <string>Copy Key</string>
@@ -1069,23 +1069,6 @@
                       <normaloff>:/repleo.png</normaloff>:/repleo.png</iconset>
                     </property>
                    </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_15">
-                  <item>
-                   <widget class="QLabel" name="label_6">
-                    <property name="text">
-                     <string>&amp;Name</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>friendName</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLineEdit" name="friendName"/>
                   </item>
                  </layout>
                 </item>
@@ -2649,7 +2632,6 @@
   <tabstop>fetchMore</tabstop>
   <tabstop>addFriendPublicKeyRadio</tabstop>
   <tabstop>addFriendSymmetricBundleRadio</tabstop>
-  <tabstop>friendName</tabstop>
   <tabstop>friendInformation</tabstop>
   <tabstop>addFriend</tabstop>
   <tabstop>clearFriend</tabstop>

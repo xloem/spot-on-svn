@@ -1,7 +1,7 @@
 Messages
 
 Chat
-Echoed?   Yes
+Echoed? Yes
 
 Message Type ("0000") (Plaintext)
 TTL (Plaintext)
@@ -18,14 +18,14 @@ EOL
 Message (Ciphertext, SK)
 
 Greetings-1
-Echoed?   Yes
+Echoed? Yes
 
 Message Type ("0010") (Plaintext)
 TTL (Plaintext)
 URL Public Key (Base-64) (Plaintext)
 
 Greetings-2
-Echoed?   No
+Echoed? No
 
 Message Type ("0011") (Plaintext)
 Name (Base-64) (Plaintext)
@@ -33,7 +33,7 @@ EOL
 Public Key (Base-64) (Plaintext)
 
 Greetings-3
-Echoed?   No
+Echoed? No
 
 Message Type ("0012") (Plaintext)
 Name (Base-64) (Plaintext)
@@ -41,7 +41,7 @@ EOL
 Public Key (Base-64) (Plaintext)
 
 Greetings-4
-Echoed?   Yes
+Echoed? Yes
 
 Message Type ("0013") (Plaintext)
 TTL (Plaintext)

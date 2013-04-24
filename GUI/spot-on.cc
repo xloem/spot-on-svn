@@ -245,10 +245,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotCopyMyPublicKey(void)));
-  connect(ui.addFriendPublicKeyRadio,
-	  SIGNAL(toggled(bool)),
-	  ui.friendName,
-	  SLOT(setEnabled(bool)));
   connect(ui.addFriend,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -257,10 +253,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  ui.friendInformation,
 	  SLOT(clear(void)));
-  connect(ui.clearFriend,
-	  SIGNAL(clicked(void)),
-	  this,
-	  SLOT(slotResetFriendName(void)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -296,7 +288,6 @@ spoton::spoton(void):QMainWindow()
   statusBar()->showMessage(tr("Not connected to the kernel. Is the kernel "
 			      "active?"));
   m_generalTimer.start(2500);
-  ui.friendName->setText("unknown");
   ui.ipv4Listener->setChecked(true);
   ui.listenerIP->setInputMask("000.000.000.000; ");
   ui.listenerScopeId->setEnabled(false);
@@ -352,7 +343,6 @@ spoton::spoton(void):QMainWindow()
     ui.status->setCurrentIndex(2);
 
   ui.kernelPath->setToolTip(ui.kernelPath->text());
-  ui.friendName->setMaxLength(NAME_MAXIMUM_LENGTH);
   ui.nodeName->setMaxLength(NAME_MAXIMUM_LENGTH);
   ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
@@ -2914,16 +2904,16 @@ void spoton::slotCopyMyPublicKey(void)
   if(!clipboard)
     return;
 
+  QByteArray name;
   QByteArray publicKey;
   bool ok = true;
 
+  name = m_settings.value("gui/nodeName", "unknown").toByteArray().
+    trimmed().toBase64();
   publicKey = m_crypt->publicKey(&ok).toBase64();
 
   if(ok)
-    {
-      publicKey.prepend("K");
-      clipboard->setText(publicKey);
-    }
+    clipboard->setText("K" + name + "\n" + publicKey);
   else
     clipboard->clear();
 }
@@ -3516,8 +3506,6 @@ void spoton::slotAddFriendsKey(void)
     {
       if(ui.friendInformation->toPlainText().trimmed().isEmpty())
 	return;
-      else if(ui.friendName->text().trimmed().isEmpty())
-	return;
 
       {
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
@@ -3529,16 +3517,23 @@ void spoton::slotAddFriendsKey(void)
 	  {
 	    spoton_misc::prepareDatabases();
 
-	    QByteArray publicKey(ui.friendInformation->toPlainText().
-				 trimmed().toLatin1());
+	    QList<QByteArray> list
+	      (ui.friendInformation->toPlainText().
+	       trimmed().toLatin1().split('\n'));
 
-	    if(publicKey.startsWith("K") || publicKey.startsWith("k"))
-	      publicKey.remove(0, 1);
+	    if(list.size() != 2)
+	      return;
 
+	    QByteArray name(list.at(0));
+	    QByteArray publicKey(list.at(1));
+
+	    if(name.startsWith("K") || name.startsWith("k"))
+	      name.remove(0, 1);
+
+	    name = QByteArray::fromBase64(name);
 	    publicKey = QByteArray::fromBase64(publicKey);
 
-	    if(spoton_misc::saveFriendshipBundle(ui.friendName->text().
-						 toUtf8(),
+	    if(spoton_misc::saveFriendshipBundle(name,
 						 publicKey,
 						 -1,
 						 db))
@@ -3803,9 +3798,4 @@ void spoton::slotCopyFriendshipBundle(void)
 
   data.prepend("R");
   clipboard->setText(data);
-}
-
-void spoton::slotResetFriendName(void)
-{
-  ui.friendName->setText("unknown");
 }

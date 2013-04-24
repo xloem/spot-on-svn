@@ -111,7 +111,6 @@ class spoton: public QMainWindow
   void slotReceivedKernelMessage(void);
   void slotRemoveParticipants(void);
   void slotResetAll(void);
-  void slotResetFriendName(void);
   void slotSaveKernelPath(void);
   void slotSaveNodeName(void);
   void slotSelectKernelPath(void);
