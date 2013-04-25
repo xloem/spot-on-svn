@@ -1144,10 +1144,10 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash,
 
 	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE friends_public_keys SET "
+		      "neighbor_oid = -1, "
 		      "status = ?, "
 		      "last_status_update = ? "
-		      "WHERE public_key_hash = ? "
-		      "AND neighbor_oid = -1");
+		      "WHERE public_key_hash = ?");
 	query.bindValue(0, status);
 	query.bindValue
 	  (1, QDateTime::currentDateTime().toString(Qt::ISODate));
