@@ -950,6 +950,8 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	  while(query.next())
 	    {
 	      QByteArray data;
+	      QByteArray name(s_settings.value("gui/nodeName", "unknown").
+			      toByteArray().trimmed());
 	      QByteArray publicKey(query.value(0).toByteArray());
 	      QByteArray symmetricKey;
 	      QByteArray symmetricKeyAlgorithm("aes256");
@@ -1002,15 +1004,21 @@ void spoton_kernel::slotStatusTimerExpired(void)
 				      0,
 				      QString(""));
 
-		  data.append
-		    (crypt.encrypted(myPublicKeyHash, &ok).toBase64());
+		  data.append(crypt.encrypted(name, &ok).toBase64());
 		  data.append("\n");
+
+		  if(ok)
+		    {
+		      data.append
+			(crypt.encrypted(myPublicKeyHash, &ok).toBase64());
+		      data.append("\n");
+		    }
 
 		  if(ok)
 		    hash =
 		      crypt.keyedHash
 		      (symmetricKey + symmetricKeyAlgorithm +
-		       myPublicKeyHash + status, &ok);
+		       name + myPublicKeyHash + status, &ok);
 
 		  if(ok)
 		    {

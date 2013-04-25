@@ -815,10 +815,13 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	  if(ok && computedHash == messageDigest)
 	    {
 	      if(!duplicate)
-		emit receivedChatMessage
-		  ("message_" +
-		   name.toBase64() + "_" +
-		   message.toBase64().append('\n'));
+		{
+		  saveParticipantStatus(name, publicKeyHash);
+		  emit receivedChatMessage
+		    ("message_" +
+		     name.toBase64() + "_" +
+		     message.toBase64().append('\n'));
+		}
 	    }
 	  else if(ttl > 0)
 	    {
@@ -1026,11 +1029,11 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 				     */
       QList<QByteArray> list(data.split('\n'));
 
-      if(list.size() != 5)
+      if(list.size() != 6)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0013(): "
-		     "received irregular data. Expecting 5 entries, "
+		     "received irregular data. Expecting 6 entries, "
 		     "received %1.").arg(list.size()));
 	  return;
 	}
@@ -1051,9 +1054,10 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
       if(ok)
 	{
 	  QByteArray computedHash;
-	  QByteArray messageDigest(list.at(3));
-	  QByteArray publicKeyHash(list.at(2));
-	  QByteArray status(list.at(4));
+	  QByteArray messageDigest(list.at(4));
+	  QByteArray name(list.at(2));
+	  QByteArray publicKeyHash(list.at(3));
+	  QByteArray status(list.at(5));
 
 	  spoton_gcrypt crypt(symmetricKeyAlgorithm,
 			      QString("sha512"),
@@ -1063,7 +1067,10 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 			      0,
 			      QString(""));
 
-	  publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
+	  name = crypt.decrypted(name, &ok);
+
+	  if(ok)
+	    publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
 
 	  if(ok)
 	    messageDigest = crypt.decrypted(messageDigest, &ok);
@@ -1074,10 +1081,10 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	  if(ok)
 	    computedHash = crypt.keyedHash
 	      (symmetricKey + symmetricKeyAlgorithm +
-	       publicKeyHash + status, &ok);
+	       name + publicKeyHash + status, &ok);
 
 	  if(ok && computedHash == messageDigest)
-	    saveParticipantStatus(publicKeyHash, status);
+	    saveParticipantStatus(name, publicKeyHash, status);
 	  else if(ttl > 0)
 	    {
 	      /*
@@ -1127,7 +1134,14 @@ void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
       }
 }
 
-void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash,
+void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
+					    const QByteArray &publicKeyHash)
+{
+  saveParticipantStatus(name, publicKeyHash, QByteArray());
+}
+
+void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
+					    const QByteArray &publicKeyHash,
 					    const QByteArray &status)
 {
   {
@@ -1143,15 +1157,34 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash,
 	QSqlQuery query(db);
 
 	query.exec("PRAGMA synchronous = OFF");
-	query.prepare("UPDATE friends_public_keys SET "
-		      "neighbor_oid = -1, "
-		      "status = ?, "
-		      "last_status_update = ? "
-		      "WHERE public_key_hash = ?");
-	query.bindValue(0, status);
-	query.bindValue
-	  (1, QDateTime::currentDateTime().toString(Qt::ISODate));
-	query.bindValue(2, publicKeyHash.toBase64());
+
+	if(status.isEmpty())
+	  {
+	    query.prepare("UPDATE friends_public_keys SET "
+			  "name = ?, "
+			  "neighbor_oid = -1, "
+			  "last_status_update = ? "
+			  "WHERE public_key_hash = ?");
+	    query.bindValue(0, name);
+	    query.bindValue
+	      (1, QDateTime::currentDateTime().toString(Qt::ISODate));
+	    query.bindValue(2, publicKeyHash.toBase64());
+	  }
+	else
+	  {
+	    query.prepare("UPDATE friends_public_keys SET "
+			  "name = ?, "
+			  "neighbor_oid = -1, "
+			  "status = ?, "
+			  "last_status_update = ? "
+			  "WHERE public_key_hash = ?");
+	    query.bindValue(0, name);
+	    query.bindValue(1, status);
+	    query.bindValue
+	      (2, QDateTime::currentDateTime().toString(Qt::ISODate));
+	    query.bindValue(3, publicKeyHash.toBase64());
+	  }
+
 	query.exec();
       }
 

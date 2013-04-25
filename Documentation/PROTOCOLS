@@ -49,6 +49,8 @@ Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
 Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
 EOL
+Name (Base-64) (Ciphertext, SK)
+EOL
 Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
 EOL
 Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)
