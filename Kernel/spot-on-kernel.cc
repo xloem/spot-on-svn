@@ -972,6 +972,13 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		     static_cast<size_t> (symmetricKey.length()),
 		     GCRY_STRONG_RANDOM);
 		}
+	      else
+		{
+		  spoton_misc::logError
+		    ("spoton_kernel::slotStatusTimerExpired(): "
+		     "gcry_cipher_get_algo_keylen() failure.");
+		  continue;
+		}
 
 	      if(ok)
 		{

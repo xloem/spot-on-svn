@@ -593,6 +593,10 @@ void spoton_misc::retrieveSymmetricData(QByteArray &publicKey,
 		     GCRY_STRONG_RANDOM);
 		  symmetricKeyAlgorithm = "aes256";
 		}
+	      else
+		logError
+		  ("spoton_misc::retrieveSymmetricData(): "
+		   "gcry_cipher_get_algo_keylen() failure.");
 	    }
       }
 
