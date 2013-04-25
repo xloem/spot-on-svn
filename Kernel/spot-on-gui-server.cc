@@ -111,10 +111,15 @@ void spoton_gui_server::slotReadyRead(void)
       if(m_guiSocketData[socket->socketDescriptor()].endsWith('\n'))
 	{
 	  QByteArray data(m_guiSocketData[socket->socketDescriptor()]);
+	  QList<QByteArray> list(data.mid(0, data.lastIndexOf('\n')).
+				 split('\n'));
 
-	  m_guiSocketData.remove(socket->socketDescriptor());
+	  data.remove(0, data.lastIndexOf('\n'));
 
-	  QList<QByteArray> list(data.split('\n'));
+	  if(data.isEmpty())
+	    m_guiSocketData.remove(socket->socketDescriptor());
+	  else
+	    m_guiSocketData[socket->socketDescriptor()] = data;
 
 	  while(!list.isEmpty())
 	    {

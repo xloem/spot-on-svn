@@ -323,7 +323,7 @@ void spoton_neighbor::slotReadyRead(void)
   if(m_data.isEmpty() ||
      m_data.length() > spoton_kernel::s_settings.
      value("kernel/maximum_number_of_bytes_buffered_by_neighbor",
-	   25000).toInt())
+	   100000).toInt())
     {
       spoton_misc::logError
 	("spoton_neighbor::slotReadyRead(): m_data.isEmpty() or "
@@ -344,7 +344,9 @@ void spoton_neighbor::slotReadyRead(void)
 			spoton_send::EOM.length()));
 
 	  m_data.remove(0, data.length());
-	  list.append(data);
+
+	  if(!data.isEmpty())
+	    list.append(data);
 	}
 
       if(list.isEmpty())

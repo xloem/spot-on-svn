@@ -2522,9 +2522,11 @@ void spoton::slotReceivedKernelMessage(void)
 
   if(m_kernelSocketData.endsWith('\n'))
     {
-      QList<QByteArray> list(m_kernelSocketData.split('\n'));
+      QList<QByteArray> list
+	(m_kernelSocketData.mid(0, m_kernelSocketData.lastIndexOf('\n')).
+	 split('\n'));
 
-      m_kernelSocketData.clear();
+      m_kernelSocketData.remove(0, m_kernelSocketData.lastIndexOf('\n'));
 
       while(!list.isEmpty())
 	{

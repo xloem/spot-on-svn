@@ -178,7 +178,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 
   if(!settings.contains("kernel/maximum_number_of_bytes_buffered_by_neighbor"))
     settings.setValue("kernel/maximum_number_of_bytes_buffered_by_neighbor",
-		      25000);
+		      100000);
 
   if(!settings.contains("kernel/ttl_0000"))
     settings.setValue("kernel/ttl_0000", 16);
@@ -815,7 +815,7 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
 
   if(!settings.contains("kernel/maximum_number_of_bytes_buffered_by_neighbor"))
     settings.setValue("kernel/maximum_number_of_bytes_buffered_by_neighbor",
-		      25000);
+		      100000);
 
   for(int i = 0; i < settings.allKeys().size(); i++)
     s_settings[settings.allKeys().at(i)] = settings.value
