@@ -461,7 +461,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
   ** If neighborOid is -1, we have bonded two neighbors.
   */
 
-  QList<QByteArray> list;
+  bool share = false;
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
@@ -469,7 +469,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() +
-       "friends_symmetric_keys.db");
+       "friends_public_keys.db");
 
     if(db.open())
       {
@@ -482,12 +482,11 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 	    ** We have received a request for friendship.
 	    ** Do we already have the neighbor's public key?
 	    ** If we've already accepted the public key, we should
-	    ** respond with our public key and the symmetric bundle.
+	    ** respond with our public key.
 	    */
 
-	    query.prepare("SELECT neighbor_oid, "
-			  "symmetric_key, symmetric_key_algorithm "
-			  "FROM symmetric_keys "
+	    query.prepare("SELECT neighbor_oid "
+			  "FROM friends_public_keys "
 			  "WHERE public_key = ?");
 	    query.bindValue(0, publicKey);
 
@@ -500,33 +499,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 	  spoton_misc::saveFriendshipBundle
 	    (name, publicKey, neighborOid, db);
 	else
-	  {
-	    /*
-	    ** We received a public key from a neighbor. We already have
-	    ** this approved public key. We need to resend the
-	    ** symmetric bundle.
-	    */
-
-	    QByteArray bytes1;
-	    QByteArray bytes2;
-	    bool ok = true;
-
-	    if(ok)
-	      bytes1 = spoton_kernel::s_crypt1->decrypted
-		(QByteArray::fromBase64(query.value(1).toByteArray()),
-		 &ok).trimmed();
-
-	    if(ok)
-	      bytes2 = spoton_kernel::s_crypt1->decrypted
-		(QByteArray::fromBase64(query.value(2).toByteArray()),
-		 &ok).trimmed();
-
-	    if(ok)
-	      {
-		list.append(bytes1);
-		list.append(bytes2);
-	      }
-	  }
+	  share = true;
       }
 
     db.close();
@@ -534,8 +507,14 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 
   QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
 
-  if(!list.isEmpty())
-    sharePublicKey(publicKey, list.value(0), list.value(1));
+  if(share)
+    {
+      bool ok = true;
+      QByteArray myPublicKey(spoton_kernel::s_crypt1->publicKey(&ok));
+
+      if(ok)
+	sharePublicKey(myPublicKey);
+    }
 }
 
 void spoton_neighbor::savePublicKey(const QByteArray &publicKey)
@@ -663,9 +642,7 @@ void spoton_neighbor::slotLifetimeExpired(void)
   abort();
 }
 
-void spoton_neighbor::sharePublicKey(const QByteArray &publicKey,
-				     const QByteArray &symmetricKey,
-				     const QByteArray &symmetricKeyAlgorithm)
+void spoton_neighbor::sharePublicKey(const QByteArray &publicKey)
 {
   if(state() != QAbstractSocket::ConnectedState)
     return;
@@ -673,77 +650,55 @@ void spoton_neighbor::sharePublicKey(const QByteArray &publicKey,
     return;
 
   QByteArray message;
-
-  message.append(symmetricKey);
-  message.append(symmetricKeyAlgorithm);
-
+  QByteArray name // My name.
+    (spoton_kernel::s_settings.value("gui/nodeName", "unknown").
+     toByteArray().trimmed());
   bool ok = true;
 
-  message = spoton_gcrypt::publicKeyEncrypt
-    (message, publicKey, &ok).toBase64();
+  if(name.isEmpty())
+    name = "unknown";
 
   if(ok)
     {
-      QByteArray name // My name.
-	(spoton_kernel::s_settings.value("gui/nodeName", "unknown").
-	 toByteArray().trimmed());
+      message.append(name.toBase64());
+      message.append("\n");
+      message.append(publicKey.toBase64());
+      message = spoton_send::message0012(message);
 
-      if(name.isEmpty())
-	name = "unknown";
-
-      QByteArray publicKey // My public key.
-	(spoton_kernel::s_crypt1->publicKey(&ok));
-
-      if(ok)
-	{
-	  message.append('\n');
-	  message.append(name);
-	  message.append(publicKey);
-	  message = spoton_send::message0012(message);
-
-	  if(write(message.constData(), message.length()) != message.length())
-	    spoton_misc::logError
-	      ("spoton_neighbor::sharePublicKey(): "
-	       "write() failure.");
-	  else
-	    {
-	      flush();
-
-	      {
-		QSqlDatabase db = QSqlDatabase::addDatabase
-		  ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
-
-		db.setDatabaseName
-		  (spoton_misc::homePath() + QDir::separator() +
-		   "friends_symmetric_keys.db");
-
-		if(db.open())
-		  {
-		    QSqlQuery query(db);
-
-		    query.prepare("UPDATE symmetric_keys SET "
-				  "neighbor_oid = -1 WHERE neighbor_oid = "
-				  "?");
-		    query.bindValue(0, m_id);
-		    query.exec();
-		  }
-
-		db.close();
-	      }
-
-	      QSqlDatabase::removeDatabase
-		("spoton_neighbor_" + QString::number(s_dbId));
-	    }
-	}
-      else
+      if(write(message.constData(), message.length()) != message.length())
 	spoton_misc::logError
 	  ("spoton_neighbor::sharePublicKey(): "
-	   "publicKey() failure.");
+	   "write() failure.");
+      else
+	{
+	  flush();
+
+	  {
+	    QSqlDatabase db = QSqlDatabase::addDatabase
+	      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
+
+	    db.setDatabaseName
+	      (spoton_misc::homePath() + QDir::separator() +
+	       "friends_public_keys.db");
+
+	    if(db.open())
+	      {
+		QSqlQuery query(db);
+
+		query.prepare("UPDATE friends_public_keys SET "
+			      "neighbor_oid = -1 WHERE neighbor_oid = "
+			      "?");
+		query.bindValue(0, m_id);
+		query.exec();
+	      }
+
+	    db.close();
+	  }
+	  
+	  QSqlDatabase::removeDatabase
+	    ("spoton_neighbor_" + QString::number(s_dbId));
+	}
     }
-  else
-    spoton_misc::logError
-      ("spoton_neighbor::sharePublicKey(): "
-       "publicKeyEncrypt() failure.");
 }
 
 void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
@@ -771,7 +726,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
       ** Please see Documentation/PROTOCOLS.
       */
 
-      data = QByteArray::fromBase64(data).trimmed();
+      data = QByteArray::fromBase64(data);
 
       bool ok = true;
       short ttl = 0;
@@ -914,7 +869,7 @@ void spoton_neighbor::process0010(int length, const QByteArray &dataIn)
 
   if(length == data.length())
     {
-      data = QByteArray::fromBase64(data).trimmed();
+      data = QByteArray::fromBase64(data);
 
       short ttl = 0;
 
@@ -951,15 +906,6 @@ void spoton_neighbor::process0010(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 {
-  /*
-  ** If the thread that's responsible for creating a very strong random
-  ** key is active, the neighbor that's connected to this neighbor has already
-  ** requested a bond. Ignore a new request.
-  */
-
-  if(m_savePublicKeyFuture.isRunning())
-    return;
-
   length -= strlen("type=0011&content=");
 
   /*
@@ -974,15 +920,23 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 
   if(length == data.length())
     {
-      QByteArray name;
-      QByteArray publicKey;
+      data = QByteArray::fromBase64(data);
 
-      name = data.mid
-	(0, 4);
-      data.remove(0, name.length());
-      name = QByteArray::fromBase64(name).trimmed();
-      publicKey = QByteArray::fromBase64(data).trimmed();
-      savePublicKey(name, publicKey, m_id);
+      QList<QByteArray> list(data.split('\n'));
+
+      if(list.size() != 2)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::process0011(): "
+		     "received irregular data. Expecting 2 entries, "
+		     "received %1.").arg(list.size()));
+	  return;
+	}
+
+      for(int i = 0; i < list.size(); i++)
+	list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+      savePublicKey(list.at(0), list.at(1), m_id);
     }
   else
     spoton_misc::logError
@@ -1012,40 +966,21 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
     {
       data = QByteArray::fromBase64(data);
 
-      QByteArray encrypted(data.mid(0, data.indexOf('\n')));
+      QList<QByteArray> list(data.split('\n'));
 
-      data.remove(0, encrypted.length());
-      data = data.trimmed();
-
-      QByteArray name(data.mid(0, 0).trimmed());
-
-      data.remove(0, name.length());
-      data = data.trimmed();
-
-      QByteArray publicKey(data);
-      bool ok = true;
-
-      data = spoton_kernel::s_crypt1->publicKeyDecrypt
-	(QByteArray::fromBase64(encrypted), &ok);
-
-      if(ok)
+      if(list.size() != 2)
 	{
-	  QByteArray symmetricKey;
-	  QByteArray symmetricKeyAlgorithm;
-
-	  symmetricKey = data.mid
-	    (0, 0);
-	  data.remove(0, symmetricKey.length());
-	  symmetricKeyAlgorithm = data.mid
-	    (0, 0).trimmed();
-	  data.remove(0, symmetricKeyAlgorithm.length());
-	  savePublicKey
-	    (name, publicKey, -1);
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::process0012(): "
+		     "received irregular data. Expecting 2 entries, "
+		     "received %1.").arg(list.size()));
+	  return;
 	}
-      else
-	spoton_misc::logError
-	  ("spoton_neighbor::process0012(): "
-	   "publicKeyDecrypt() error.");
+
+      for(int i = 0; i < list.size(); i++)
+	list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+      savePublicKey(list.at(0), list.at(1), -1);
     }
   else
     spoton_misc::logError
@@ -1070,7 +1005,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 
   if(length == data.length())
     {
-      data = QByteArray::fromBase64(data).trimmed();
+      data = QByteArray::fromBase64(data);
 
       bool ok = true;
       short ttl = 0;

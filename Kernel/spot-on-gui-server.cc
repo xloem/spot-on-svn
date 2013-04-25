@@ -128,9 +128,7 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  emit publicKeyReceivedFromUI
 		    (list.value(0).toLongLong(),
-		     QByteArray::fromBase64(list.value(1)),
-		     QByteArray::fromBase64(list.value(2)),
-		     QByteArray::fromBase64(list.value(3)));
+		     QByteArray::fromBase64(list.value(1)));
 		}
 	      else if(message.startsWith("keys_"))
 		{
@@ -194,8 +192,7 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  emit publicKeyReceivedFromUI
 		    (list.value(0).toLongLong(),
-		     QByteArray::fromBase64(list.value(1)),
-		     QByteArray::fromBase64(list.value(2)));
+		     list.value(1), list.value(2));
 		}
 	    }
 	}

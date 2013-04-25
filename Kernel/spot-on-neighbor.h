@@ -28,7 +28,6 @@
 #ifndef _spoton_neighbor_h_
 #define _spoton_neighbor_h_
 
-#include <QFuture>
 #include <QHostAddress>
 #include <QSqlDatabase>
 #include <QTcpSocket>
@@ -50,13 +49,10 @@ class spoton_neighbor: public QTcpSocket
   ~spoton_neighbor();
   qint64 id(void) const;
   void setId(const qint64 id);
-  void sharePublicKey(const QByteArray &publicKey,
-		      const QByteArray &symmetricKey,
-		      const QByteArray &symmetricKeyAlgorithm);
+  void sharePublicKey(const QByteArray &publicKey);
 
  private:
   QByteArray m_data;
-  QFuture<void> m_savePublicKeyFuture;
   QHostAddress m_address;
   QTimer m_lifetime;
   QTimer m_sendKeysTimer;

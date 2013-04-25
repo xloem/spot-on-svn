@@ -2827,21 +2827,17 @@ void spoton::slotSharePublicKeyWithParticipant(void)
   QByteArray publicKey;
   QByteArray symmetricKey;
   QByteArray symmetricKeyAlgorithm;
+  bool ok = true;
 
   spoton_misc::retrieveSymmetricData(publicKey,
 				     symmetricKey,
 				     symmetricKeyAlgorithm,
 				     neighborOid,
 				     oid);
+  publicKey = m_crypt->publicKey(&ok);
 
-  if(publicKey.isEmpty() ||
-     symmetricKey.isEmpty() || symmetricKeyAlgorithm.isEmpty())
-    {
-      spoton_misc::logError("spoton::slotSharePublicKeyWithParticipant(): "
-			    "publicKey, or symmetricKey, or "
-			    "symmetricKeyAlgorithm is empty.");
-      return;
-    }
+  if(!ok)
+    return;
 
   QByteArray message;
 
@@ -2849,10 +2845,6 @@ void spoton::slotSharePublicKeyWithParticipant(void)
   message.append(neighborOid);
   message.append("_");
   message.append(publicKey.toBase64());
-  message.append("_");
-  message.append(symmetricKey.toBase64());
-  message.append("_");
-  message.append(symmetricKeyAlgorithm.toBase64());
   message.append('\n');
 
   if(m_kernelSocket.write(message.constData(), message.length()) !=

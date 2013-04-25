@@ -83,9 +83,7 @@ class spoton_kernel: public QObject
 				   const QByteArray &name,
 				   const QByteArray &publicKey);
   void slotPublicKeyReceivedFromUI(const qint64 oid,
-				   const QByteArray &publicKey,
-				   const QByteArray &symmetricKey,
-				   const QByteArray &symmetricKeyAlgorithm);
+				   const QByteArray &publicKey);
   void slotSettingsChanged(const QString &path);
   void slotStatusTimerExpired(void);
 

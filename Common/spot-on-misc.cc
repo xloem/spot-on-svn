@@ -236,6 +236,11 @@ void spoton_misc::prepareDatabases(void)
       {
 	QSqlQuery query(db);
 
+	/*
+	** A copy of the shared public key from the idiotes
+	** database will be stored in the public_keys database.
+	*/
+
 	query.exec("CREATE TABLE IF NOT EXISTS public_keys ("
 		   "key TEXT PRIMARY KEY NOT NULL)");
       }

@@ -1443,6 +1443,10 @@ QByteArray spoton_gcrypt::publicKey(bool *ok)
     {
       if(ok)
 	*ok = false;
+
+      spoton_misc::logError
+	("spoton_gcrypt::publicKey(): "
+	 "error retrieving public_key from idiotes.db.");
     }
   else if(ok)
     *ok = true;

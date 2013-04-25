@@ -69,15 +69,15 @@ QByteArray spoton_send::message0010(const QByteArray &publicKey)
      "\r\n"
      "type=0010&content=%2\r\n"
      "\r\n\r\n");
-  content.append(publicKey.toBase64());
+  content.append(publicKey);
   results.replace
     ("%1",
-     QString::number(content.length() +
+     QString::number(content.toBase64().length() +
 		     QString("type=0010&content=\r\n\r\n\r\n").
 		     length()).
      toLatin1());
   results.replace
-    ("%2", content);
+    ("%2", content.toBase64());
   return results;
 }
 
@@ -94,17 +94,17 @@ QByteArray spoton_send::message0011(const QByteArray &name,
      "\r\n"
      "type=0011&content=%2\r\n"
      "\r\n\r\n");
-  content.append(name.toBase64());
+  content.append(name);
   content.append("\n");
-  content.append(publicKey.toBase64());
+  content.append(publicKey);
   results.replace
     ("%1",
-     QString::number(content.length() +
+     QString::number(content.toBase64().length() +
 		     QString("type=0011&content=\r\n\r\n\r\n").
 		     length()).
      toLatin1());
   results.replace
-    ("%2", content);
+    ("%2", content.toBase64());
   return results;
 }
 
