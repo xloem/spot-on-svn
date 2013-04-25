@@ -1707,7 +1707,7 @@ void spoton::slotSetPassphrase(void)
 #ifdef Q_OS_MAC
 	      QApplication::processEvents();
 #endif
-	      spoton_gcrypt *g = new spoton_gcrypt
+	      spoton_gcrypt crypt
 		(ui.cipherType->currentText(),
 		 ui.hashType->currentText(),
 		 str1.toUtf8(),
@@ -1716,9 +1716,8 @@ void spoton::slotSetPassphrase(void)
 		 ui.iterationCount->value(),
 		 list.at(i));
 
-	      g->generatePrivatePublicKeys
+	      crypt.generatePrivatePublicKeys
 		(ui.rsaKeySize->currentText().toInt(), error2);
-	      delete g;
 
 	      if(!error2.isEmpty())
 		break;
@@ -2570,40 +2569,6 @@ void spoton::slotReceivedKernelMessage(void)
 		  ui.messages->verticalScrollBar()->setValue
 		    (ui.messages->verticalScrollBar()->maximum());
 
-
-          if (ui.checkBoxSound->isChecked())
-          {
-
-          QByteArray status
-          (m_settings.value("gui/my_status", "Online").toByteArray());
-          if(status == "Away")
-
-          {
-          #if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
-          Phonon::MediaObject *mediaObject = Phonon::createPlayer(Phonon::NoCategory,
-          Phonon::MediaSource("./Sound/echo.wav"));
-          mediaObject->play();
-          #else
-          Phonon::MediaObject *mediaObject = Phonon::createPlayer(Phonon::NoCategory,
-          Phonon::MediaSource(":/Sound/echo.wav"));
-          mediaObject->play();
-          #endif
-          }
-          else
-          {
-          #if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
-          Phonon::MediaObject *mediaObject2 = Phonon::createPlayer(Phonon::NoCategory,
-          Phonon::MediaSource("./Sound/receive.wav"));
-          mediaObject2->play();
-          #else
-          Phonon::MediaObject *mediaObject2 = Phonon::createPlayer(Phonon::NoCategory,
-          Phonon::MediaSource(":/Sound/receive.wav"));
-          mediaObject2->play();
-          #endif
-          }
-
-          }
-          else {}
 		}
 	    }
 	}

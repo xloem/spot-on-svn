@@ -307,17 +307,6 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QCheckBox" name="checkBoxSound">
-                       <property name="text">
-                        <string>Sound</string>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../Icons/icons.qrc">
-                         <normaloff>:/broadcasttoall.png</normaloff>:/broadcasttoall.png</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
                       <spacer name="verticalSpacer_9">
                        <property name="orientation">
                         <enum>Qt::Vertical</enum>
@@ -1053,7 +1042,7 @@
                   <item>
                    <widget class="QRadioButton" name="addFriendPublicKeyRadio">
                     <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The key must start with the letter K.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The key must start with either the letter K or the letter k.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="text">
                      <string>&amp;Key</string>
@@ -1070,7 +1059,7 @@
                   <item>
                    <widget class="QRadioButton" name="addFriendSymmetricBundleRadio">
                     <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The repleo must start with the letter R.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The repleo must start with either the letter R or the letter r.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="text">
                      <string>&amp;Repleo</string>
@@ -1335,8 +1324,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>952</width>
-             <height>625</height>
+             <width>939</width>
+             <height>470</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">

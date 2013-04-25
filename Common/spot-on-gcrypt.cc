@@ -1111,7 +1111,7 @@ QByteArray spoton_gcrypt::publicKeyEncrypt(const QByteArray &data,
 			  static_cast<size_t> (publicKey.length()), 1)) == 0)
     {
 #if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
-      QByteArray random(64, 0);
+      QByteArray random(64, 0); // Output size of Sha-512 divided by 8.
 #endif
       gcry_sexp_t data_t = 0;
       gcry_sexp_t encodedData_t = 0;
@@ -1242,7 +1242,7 @@ QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
   QByteArray decrypted;
   QByteArray keyData;
 #if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
-  QByteArray random(64, 0);
+  QByteArray random(64, 0); // Output size of Sha-512 divided by 8.
 #endif
   const char *buffer = 0;
   gcry_error_t err = 0;

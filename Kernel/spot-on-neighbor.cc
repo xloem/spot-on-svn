@@ -283,7 +283,7 @@ void spoton_neighbor::slotSendKeys(void)
 	  {
 	    if(query.next())
 	      {
-		QByteArray message(query.value(0).toByteArray());
+		QByteArray message(query.value(0).toByteArray().toBase64());
 		char c = 0;
 		short ttl = spoton_kernel::s_settings.value
 		  ("kernel/ttl_0010", 16).toInt();
@@ -767,16 +767,8 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
   if(length == data.length())
     {
       /*
-      ** OK, here's what we're going to do.
-      ** First, we need to convert data from Base64.
-      ** Second, decrypt the data with the symmetric key.
-      ** Third, retrieve the checksum from the decrypted data.
-      ** Fourth, compare the checksum with the computed checksum
-      ** of the remaining data.
-      ** Fifth, if the checksums are identical, forward the
-      ** message to the UI. Otherwise, decrement TTL and
-      ** forward the original message to the other neighbors if
-      ** TTL is greater than zero.
+      ** We are essentially performing an inverse function.
+      ** Please see Documentation/PROTOCOLS.
       */
 
       data = QByteArray::fromBase64(data).trimmed();
@@ -794,6 +786,11 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
       data.remove(0, 1); // Remove TTL.
 
       QByteArray hash(spoton_gcrypt::sha512Hash(data, &ok));
+      QByteArray originalData(data); /*
+				     ** We may need to echo the
+				     ** message. Don't forget to
+				     ** decrease the TTL!
+				     */
       bool duplicate = false;
 
       if(ok)
@@ -804,11 +801,6 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	    spoton_kernel::s_messagingCache.insert(hash, 0);
 	}
 
-      QByteArray originalData(data); /*
-				     ** We may need to echo the
-				     ** message. Don't forget to
-				     ** decrease the TTL!
-				     */
       QList<QByteArray> list(data.split('\n'));
 
       if(list.size() != 6)
@@ -934,7 +926,7 @@ void spoton_neighbor::process0010(int length, const QByteArray &dataIn)
 	ttl -= 1;
 
       data.remove(0, 1); // Remove TTL.
-      savePublicKey(data);
+      savePublicKey(QByteArray::fromBase64(data));
 
       if(ttl > 0)
 	{
