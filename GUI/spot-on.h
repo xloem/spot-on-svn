@@ -75,6 +75,7 @@ class spoton: public QMainWindow
 
  private slots:
   void slotActivateKernel(void);
+  void slotAddBootstrapper(void);
   void slotAddListener(void);
   void slotAddFriendsKey(void);
   void slotAddNeighbor(void);
