@@ -2794,9 +2794,9 @@ void spoton::slotListenerIPComboChanged(int index)
 void spoton::slotChatSendMethodChanged(int index)
 {
   if(index == 0)
-    m_settings["gui/chatSendMethod"] = "Artificial_GET";
-  else
     m_settings["gui/chatSendMethod"] = "Normal_POST";
+  else
+    m_settings["gui/chatSendMethod"] = "Artificial_GET";
 
   QSettings settings;
 
@@ -3486,6 +3486,78 @@ QIcon spoton::iconForCountry(const QString &country)
     return QIcon(":/Flags/unknown.png");
 }
 
+void spoton::slotAddBootstrapper(void)
+{
+  if(!m_crypt)
+    return;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+               "neighbors.db");
+
+    if(db.open())
+      {
+    spoton_misc::prepareDatabases();
+
+    QString ip(ui.neighborIP->text().trimmed());
+    QString port(QString::number(ui.neighborPort->value()));
+    QString protocol("");
+    QString scopeId(ui.neighborScopeId->text().trimmed());
+    QString status("connected");
+    QSqlQuery query(db);
+
+    protocol = "IPv4";
+
+    query.prepare("INSERT INTO neighbors "
+              "(local_ip_address, "
+              "local_port, "
+              "protocol, "
+              "remote_ip_address, "
+              "remote_port, "
+              "sticky, "
+              "scope_id, "
+              "hash, "
+              "status_control, "
+              "country, "
+              "remote_ip_address_hash, "
+              "qt_country_hash) "
+              "VALUES "
+              "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+    if(protocol == "IPv6")
+      query.bindValue(0, "::1");
+    else
+      query.bindValue(0, "127.0.0.1");
+
+    query.bindValue(1, "0");
+
+    bool ok = true;
+
+    query.bindValue(2, protocol);
+
+    if(ip.isEmpty())
+      query.bindValue
+        (3, m_crypt->encrypted(QByteArray(), &ok).toBase64());
+    else
+      {
+
+
+
+        ip = QString::number(numbers.value(0)) + "." +
+
+      query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton");
+  ui.neighborIP->selectAll();
+
+
+}
 void spoton::slotFetchMoreAlgo(void)
 {
 }
