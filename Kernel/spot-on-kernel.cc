@@ -722,19 +722,21 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 			  0,
 			  QString(""));
 
-      data.append
-	(crypt.encrypted(myPublicKeyHash, &ok).toBase64());
-      data.append("\n");
-
-      if(ok)
-	hash =
-	  crypt.keyedHash
-	  (symmetricKey + symmetricKeyAlgorithm +
-	   myPublicKeyHash + name + message, &ok);
+      hash =
+	crypt.keyedHash
+	(symmetricKey + symmetricKeyAlgorithm +
+	 myPublicKeyHash + name + message, &ok);
 
       if(ok)
 	{
 	  data.append(crypt.encrypted(hash, &ok).toBase64());
+	  data.append("\n");
+	}
+
+      if(ok)
+	{
+	  data.append
+	    (crypt.encrypted(myPublicKeyHash, &ok).toBase64());
 	  data.append("\n");
 	}
 
@@ -1004,25 +1006,27 @@ void spoton_kernel::slotStatusTimerExpired(void)
 				      0,
 				      QString(""));
 
-		  data.append(crypt.encrypted(name, &ok).toBase64());
-		  data.append("\n");
+		  hash =
+		    crypt.keyedHash
+		    (symmetricKey + symmetricKeyAlgorithm +
+		     name + myPublicKeyHash + status, &ok);
+
+		  if(ok)
+		    {
+		      data.append(crypt.encrypted(hash, &ok).toBase64());
+		      data.append("\n");
+		    }
+
+		  if(ok)
+		    {
+		      data.append(crypt.encrypted(name, &ok).toBase64());
+		      data.append("\n");
+		    }
 
 		  if(ok)
 		    {
 		      data.append
 			(crypt.encrypted(myPublicKeyHash, &ok).toBase64());
-		      data.append("\n");
-		    }
-
-		  if(ok)
-		    hash =
-		      crypt.keyedHash
-		      (symmetricKey + symmetricKeyAlgorithm +
-		       name + myPublicKeyHash + status, &ok);
-
-		  if(ok)
-		    {
-		      data.append(crypt.encrypted(hash, &ok).toBase64());
 		      data.append("\n");
 		    }
 

@@ -786,9 +786,9 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	{
 	  QByteArray computedHash;
 	  QByteArray message(list.at(5));
-	  QByteArray messageDigest(list.at(3));
+	  QByteArray messageDigest(list.at(2));
 	  QByteArray name(list.at(4));
-	  QByteArray publicKeyHash(list.at(2));
+	  QByteArray publicKeyHash(list.at(3));
 
 	  spoton_gcrypt crypt(symmetricKeyAlgorithm,
 			      QString("sha512"),
@@ -1056,9 +1056,9 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
       if(ok)
 	{
 	  QByteArray computedHash;
-	  QByteArray messageDigest(list.at(4));
-	  QByteArray name(list.at(2));
-	  QByteArray publicKeyHash(list.at(3));
+	  QByteArray messageDigest(list.at(2));
+	  QByteArray name(list.at(3));
+	  QByteArray publicKeyHash(list.at(4));
 	  QByteArray status(list.at(5));
 
 	  spoton_gcrypt crypt(symmetricKeyAlgorithm,

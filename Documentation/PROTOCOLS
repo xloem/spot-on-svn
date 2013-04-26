@@ -9,13 +9,36 @@ Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
 Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
 EOL
-Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
-EOL
 Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)
+EOL
+Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
 EOL
 Name (Ciphertext, SK)
 EOL
 Message (Ciphertext, SK)
+
+E-Mail
+Echoed? Yes
+
+Message Type ("0001") (Plaintext)
+TTL (Plaintext)
+Symmetric Key (Base-64) (Ciphertext, PK)
+EOL
+Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
+EOL
+Keyed Sha-512 Hash (Base-64) (Ciphertext, SK)
+EOL
+Recipient (Base-64) (Ciphertext, SK)
+EOL
+Symmetric Keyed (Base-64) (Ciphertext, PK)
+EOL
+Symmetric Algorithm (Base-64) (Ciphertext, PK)
+EOL
+Keyed Sha-512 Hash (Base-64) (Ciphertext, SK)
+EOL
+Sender's Name (Base-64) (Ciphertext, SK)
+EOL
+Message (Base-64) (Ciphertext, SK)
 
 Greetings-1
 Echoed? Yes
@@ -49,11 +72,11 @@ Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
 Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
 EOL
+Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)
+EOL
 Name (Base-64) (Ciphertext, SK)
 EOL
 Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
-EOL
-Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)
 EOL
 Status (Base-64) (Ciphertext, SK)
 
