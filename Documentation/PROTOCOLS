@@ -56,3 +56,19 @@ EOL
 Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)
 EOL
 Status (Base-64) (Ciphertext, SK)
+
+URL
+Echoed? Yes
+Message Type ("0020") (Plaintext)
+TTL (Plaintext)
+Symmetric Key (Base-64) (Ciphertext, PK)
+EOL
+Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
+EOL
+Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)
+EOL
+URL-1 (Base-64) (Ciphertext, SK)
+EOL
+...
+EOL
+URL-10 (Base-64) (Ciphertext, SK)
