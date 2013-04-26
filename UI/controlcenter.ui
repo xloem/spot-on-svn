@@ -468,7 +468,10 @@
                  </size>
                 </property>
                 <property name="text">
-                 <string>Subject</string>
+                 <string>&amp;Subject</string>
+                </property>
+                <property name="buddy">
+                 <cstring>incomingSubject</cstring>
                 </property>
                </widget>
               </item>
@@ -494,7 +497,10 @@
                  </size>
                 </property>
                 <property name="text">
-                 <string>Message</string>
+                 <string>&amp;Message</string>
+                </property>
+                <property name="buddy">
+                 <cstring>incomingMessage</cstring>
                 </property>
                </widget>
               </item>
@@ -576,7 +582,10 @@
                  </size>
                 </property>
                 <property name="text">
-                 <string>Subject</string>
+                 <string>&amp;Subject</string>
+                </property>
+                <property name="buddy">
+                 <cstring>outgoingSubject</cstring>
                 </property>
                </widget>
               </item>
@@ -602,7 +611,10 @@
                  </size>
                 </property>
                 <property name="text">
-                 <string>Message</string>
+                 <string>&amp;Message</string>
+                </property>
+                <property name="buddy">
+                 <cstring>outgoingMessage</cstring>
                 </property>
                </widget>
               </item>
@@ -1093,7 +1105,7 @@
                   <item>
                    <widget class="QPushButton" name="addFriend">
                     <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add Participant via &lt;span style=&quot; font-weight:600;&quot;&gt;IP Connection&lt;/span&gt;&lt;/p&gt;&lt;ol style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Add a listener. See the Settings tab. Forward the Port in your Router.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Send the connection information to the participant.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Once connected, at least one user must share the public key via the context menu in the Neighbors table.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Confirm participants via the context menu in the Chat tab's Participants table.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;Add Participant with &lt;span style=&quot; font-weight:600;&quot;&gt;Repleo Exchange&lt;/span&gt;&lt;/p&gt;&lt;ol style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Obtain the public key from participant. Paste it in the above textbox. Click the Key radio button and press the Add button.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copy the Repleo of the new participant from the context menu in the Chat tab's Participants table.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Send the Repleo. Your Friend adds it too.&lt;/li&gt;&lt;/ol&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add Participant via &lt;span style=&quot; font-weight:600;&quot;&gt;IP Connection&lt;/span&gt;&lt;/p&gt;&lt;ol style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Add a listener. See the Settings tab. You may be required to forward the port in your router.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Send the connection information to the participant.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Once connected, at least one user must share the public key via the context menu in the Neighbors table.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Confirm participants via the context menu in the Chat tab's Participants table.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;Add Participant with &lt;span style=&quot; font-weight:600;&quot;&gt;Repleo Exchange&lt;/span&gt;&lt;/p&gt;&lt;ol style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Obtain the public key from participant. Paste it in the above textbox. Click the Key radio button and press the Add button.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copy the Repleo of the new participant from the context menu in the Chat tab's Participants table.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Send the Repleo.&lt;/li&gt;&lt;/ol&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="text">
                      <string>Add</string>
@@ -1324,8 +1336,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>939</width>
-             <height>470</height>
+             <width>952</width>
+             <height>625</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2415,7 +2427,7 @@
           <item>
            <widget class="QLabel" name="passphraseLabel">
             <property name="text">
-             <string>&amp;Passphrase</string>
+             <string>P&amp;assphrase</string>
             </property>
             <property name="buddy">
              <cstring>passphrase</cstring>
