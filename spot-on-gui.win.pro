@@ -50,6 +50,7 @@ SOURCES		= Common\\spot-on-gcrypt.cc \
 		  GUI\\spot-on.cc \
                   GUI\\spot-on-docviewer.cc \
 		  GUI\\spot-on-logviewer.cc \
+		  GUI\\spot-on-reencode.cc \
 		  GUI\\spot-on-tabwidget.cc \
 		  GUI\\spot-on-textedit.cc
 

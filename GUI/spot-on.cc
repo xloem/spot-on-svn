@@ -63,6 +63,7 @@ extern "C"
 #include "Common/spot-on-misc.h"
 #include "Common/spot-on-send.h"
 #include "spot-on.h"
+#include "spot-on-reencode.h"
 
 int main(int argc, char *argv[])
 {
@@ -1606,7 +1607,9 @@ void spoton::slotSetPassphrase(void)
       mb.setWindowModality(Qt::WindowModal);
       mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
       mb.setText(tr("Are you sure that you wish to replace the "
-		    "existing passphrase?"));
+		    "existing passphrase? Please note that URL data must "
+		    "be re-encoded via a separate tool. Please see "
+		    "the Tools folder."));
 
       if(mb.exec() != QMessageBox::Yes)
 	return;
@@ -1754,6 +1757,25 @@ void spoton::slotSetPassphrase(void)
     {
       if(!m_crypt || reencode)
 	{
+	  if(reencode)
+	    {
+	      slotDeactivateKernel();
+
+	      spoton_gcrypt *crypt = new spoton_gcrypt
+		(ui.cipherType->currentText(),
+		 ui.hashType->currentText(),
+		 str1.toUtf8(),
+		 derivedKey,
+		 ui.saltLength->value(),
+		 ui.iterationCount->value(),
+		 "private");
+
+	      spoton_reencode reencode;
+
+	      reencode.reencode(statusBar(), crypt, m_crypt);
+	      delete crypt;
+	    }
+
 	  delete m_crypt;
 	  m_crypt = new spoton_gcrypt
 	    (ui.cipherType->currentText(),
