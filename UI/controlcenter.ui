@@ -693,6 +693,17 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_24">
                <item>
+                <widget class="QCheckBox" name="checkBoxOnlyStickies">
+                 <property name="text">
+                  <string>Connect only to sticky neighbors</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../Icons/icons.qrc">
+                   <normaloff>:/plist_confirmed_as_permanent_friend.png</normaloff>:/plist_confirmed_as_permanent_friend.png</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <widget class="QCheckBox" name="showOnlyConnectedNeighbors">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
