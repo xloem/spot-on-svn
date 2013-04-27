@@ -76,8 +76,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>952</width>
-                <height>625</height>
+                <width>944</width>
+                <height>636</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -563,17 +563,6 @@
                 </property>
                </spacer>
               </item>
-              <item>
-               <widget class="QPushButton" name="pushButtonClearOutgoingMessage">
-                <property name="text">
-                 <string>Clear</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
-                </property>
-               </widget>
-              </item>
              </layout>
             </item>
             <item>
@@ -654,6 +643,17 @@
                </spacer>
               </item>
               <item>
+               <widget class="QPushButton" name="pushButtonClearOutgoingMessage">
+                <property name="text">
+                 <string>Clear</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../Icons/icons.qrc">
+                  <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QPushButton" name="sendMail">
                 <property name="text">
                  <string>Send</string>
@@ -703,17 +703,6 @@
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_24">
-               <item>
-                <widget class="QCheckBox" name="checkBoxOnlyStickies">
-                 <property name="text">
-                  <string>Connect only to sticky neighbors</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/plist_confirmed_as_permanent_friend.png</normaloff>:/plist_confirmed_as_permanent_friend.png</iconset>
-                 </property>
-                </widget>
-               </item>
                <item>
                 <widget class="QCheckBox" name="showOnlyConnectedNeighbors">
                  <property name="sizePolicy">
@@ -1317,17 +1306,6 @@
              </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButtonEmailURLPage">
-              <property name="text">
-               <string>E-Mail URL</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../Icons/icons.qrc">
-                <normaloff>:/tab-email.png</normaloff>:/tab-email.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QPushButton" name="pushButton_10">
               <property name="text">
                <string>Modify</string>
@@ -1369,8 +1347,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>952</width>
-             <height>625</height>
+             <width>1020</width>
+             <height>514</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2591,7 +2569,7 @@
      <x>0</x>
      <y>0</y>
      <width>974</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2653,8 +2631,8 @@
   <tabstop>participantsCombo</tabstop>
   <tabstop>outgoingSubject</tabstop>
   <tabstop>outgoingMessage</tabstop>
-  <tabstop>sendMail</tabstop>
   <tabstop>pushButtonClearOutgoingMessage</tabstop>
+  <tabstop>sendMail</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>
   <tabstop>pushButtonCopytoClipboard</tabstop>
   <tabstop>pushButtonMakeFriends</tabstop>
@@ -2677,7 +2655,6 @@
   <tabstop>textBrowser_2</tabstop>
   <tabstop>pushButton_9</tabstop>
   <tabstop>pushButton_10</tabstop>
-  <tabstop>pushButtonEmailURLPage</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>activateKernel</tabstop>
   <tabstop>pid</tabstop>
