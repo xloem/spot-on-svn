@@ -563,6 +563,17 @@
                 </property>
                </spacer>
               </item>
+              <item>
+               <widget class="QPushButton" name="pushButtonClearOutgoingMessage">
+                <property name="text">
+                 <string>Clear</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../Icons/icons.qrc">
+                  <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
+                </property>
+               </widget>
+              </item>
              </layout>
             </item>
             <item>
@@ -2643,6 +2654,7 @@
   <tabstop>outgoingSubject</tabstop>
   <tabstop>outgoingMessage</tabstop>
   <tabstop>sendMail</tabstop>
+  <tabstop>pushButtonClearOutgoingMessage</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>
   <tabstop>pushButtonCopytoClipboard</tabstop>
   <tabstop>pushButtonMakeFriends</tabstop>

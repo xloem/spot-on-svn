@@ -290,6 +290,10 @@ spoton::spoton(void):QMainWindow()
       SIGNAL(clicked(bool)),
       this,
       SLOT(slotEmailURLPage(void)));
+  connect(ui.pushButtonClearOutgoingMessage,
+      SIGNAL(clicked(bool)),
+      this,
+      SLOT(slotClearOutgoingMessage(void)));
   statusBar()->showMessage(tr("Not connected to the kernel. Is the kernel "
 			      "active?"));
   m_generalTimer.start(2500);
@@ -3710,6 +3714,12 @@ void spoton::slotEmailURLPage(void)
     ui.outgoingMessage->setText(BrowsedURLMessage);
 
     ui.tab->setCurrentIndex(1);
+}
+
+void spoton::slotClearOutgoingMessage(void)
+{
+    ui.outgoingMessage->clear();
+    ui.outgoingSubject->clear();
 }
 
 void spoton::slotResetAll(void)
