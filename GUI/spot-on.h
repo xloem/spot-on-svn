@@ -93,6 +93,7 @@ class spoton: public QMainWindow
   void slotDisconnectNeighbor(void);
   void slotDisplayLocalSearchResults(void);
   void slotDoSearch(void);
+  void slotEmailURLPage(void);
   void slotFetchMoreAlgo(void);
   void slotFetchMoreButton(void);
   void slotGeneralTimerTimeout(void);

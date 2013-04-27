@@ -286,6 +286,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(readyRead(void)),
 	  this,
 	  SLOT(slotReceivedKernelMessage(void)));
+  connect(ui.pushButtonEmailURLPage,
+      SIGNAL(clicked(bool)),
+      this,
+      SLOT(slotEmailURLPage(void)));
   statusBar()->showMessage(tr("Not connected to the kernel. Is the kernel "
 			      "active?"));
   m_generalTimer.start(2500);
@@ -3679,6 +3683,33 @@ void spoton::slotDoSearch(void)
 void spoton::slotDisplayLocalSearchResults(void)
 
 {
+}
+
+void spoton::slotEmailURLPage(void)
+{
+    QString websitetitle = *new QString;
+    websitetitle = "DOOBLE - Open Source Web Browser"; // Replaced by selected Search-Result-Item
+
+    QByteArray BrowsedURLTitleSubject;
+    BrowsedURLTitleSubject.append("[URL@SPOT4U] "); // Praefix to filter/hide URL-Emails
+    BrowsedURLTitleSubject.append(websitetitle);
+
+    ui.outgoingSubject->setText(QString (BrowsedURLTitleSubject));
+
+    QString websiteURL = *new QString;
+    websiteURL = "http://dooble.sf.net";  // Replaced by selected Search-Result-Item
+
+    QString websitetext = *new QString;
+    websitetext = "This is the website text of Dooble page and presents the browser.";
+                                    // Replaced by selected Search-Result-Item
+
+    QByteArray BrowsedURLMessage;
+    BrowsedURLMessage.append(websiteURL);
+    BrowsedURLMessage.append("\n\n");
+    BrowsedURLMessage.append(websitetext);
+    ui.outgoingMessage->setText(BrowsedURLMessage);
+
+    ui.tab->setCurrentIndex(1);
 }
 
 void spoton::slotResetAll(void)

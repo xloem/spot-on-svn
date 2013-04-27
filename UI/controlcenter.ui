@@ -1306,6 +1306,17 @@
              </spacer>
             </item>
             <item>
+             <widget class="QPushButton" name="pushButtonEmailURLPage">
+              <property name="text">
+               <string>E-Mail URL</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../Icons/icons.qrc">
+                <normaloff>:/tab-email.png</normaloff>:/tab-email.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="pushButton_10">
               <property name="text">
                <string>Modify</string>
@@ -2654,6 +2665,7 @@
   <tabstop>textBrowser_2</tabstop>
   <tabstop>pushButton_9</tabstop>
   <tabstop>pushButton_10</tabstop>
+  <tabstop>pushButtonEmailURLPage</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>activateKernel</tabstop>
   <tabstop>pid</tabstop>
