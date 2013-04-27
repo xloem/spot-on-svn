@@ -3691,6 +3691,10 @@ void spoton::slotDisplayLocalSearchResults(void)
 
 void spoton::slotEmailURLPage(void)
 {
+
+    QString websiteURL = *new QString;
+    websiteURL = "http://dooble.sf.net";  // Replaced by selected Search-Result-Item
+
     QString websitetitle = *new QString;
     websitetitle = "DOOBLE - Open Source Web Browser"; // Replaced by selected Search-Result-Item
 
@@ -3699,9 +3703,6 @@ void spoton::slotEmailURLPage(void)
     BrowsedURLTitleSubject.append(websitetitle);
 
     ui.outgoingSubject->setText(QString (BrowsedURLTitleSubject));
-
-    QString websiteURL = *new QString;
-    websiteURL = "http://dooble.sf.net";  // Replaced by selected Search-Result-Item
 
     QString websitetext = *new QString;
     websitetext = "This is the website text of Dooble page and presents the browser.";
