@@ -3688,6 +3688,7 @@ void spoton::slotClearOutgoingMessage(void)
 {
   ui.outgoingMessage->clear();
   ui.outgoingSubject->clear();
+  ui.outgoingSubject->setFocus();
 }
 
 void spoton::slotResetAll(void)

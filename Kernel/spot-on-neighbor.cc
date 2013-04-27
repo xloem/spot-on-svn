@@ -50,10 +50,15 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_id = std::numeric_limits<qint64>::min();
   m_port = peerPort();
   m_sendKeysOffset = 0;
+  setSocketOption(QAbstractSocket::KeepAliveOption, 1);
   connect(this,
 	  SIGNAL(disconnected(void)),
 	  this,
 	  SLOT(deleteLater(void)));
+  connect(this,
+	  SIGNAL(error(QAbstractSocket::SocketError)),
+	  this,
+	  SLOT(slotError(QAbstractSocket::SocketError)));
   connect(this,
 	  SIGNAL(readyRead(void)),
 	  this,
@@ -89,6 +94,7 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
   m_port = quint16(port.toInt());
   m_sendKeysOffset = 0;
   m_sendKeysTimer.setInterval(2500);
+  setSocketOption(QAbstractSocket::KeepAliveOption, 1);
   connect(this,
 	  SIGNAL(connected(void)),
 	  &m_sendKeysTimer,
@@ -101,6 +107,10 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
 	  SIGNAL(disconnected(void)),
 	  this,
 	  SLOT(deleteLater(void)));
+  connect(this,
+	  SIGNAL(error(QAbstractSocket::SocketError)),
+	  this,
+	  SLOT(slotError(QAbstractSocket::SocketError)));
   connect(this,
 	  SIGNAL(readyRead(void)),
 	  this,
@@ -1194,4 +1204,12 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
   }
 
   QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
+}
+
+void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
+{
+  spoton_misc::logError
+    (QString("spoton_neighbor::slotError(): socket error %1. "
+	     "Aborting socket.").arg(error)); 
+  abort();
 }

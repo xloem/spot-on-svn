@@ -50,6 +50,5 @@ void spoton_reencode::reencode(QStatusBar *statusBar,
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   QApplication::restoreOverrideCursor();
-
   statusBar->showMessage(lastStatusBarMessage);
 }
