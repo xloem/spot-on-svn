@@ -30,6 +30,7 @@
 #include <QNetworkInterface>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QUuid>
 #include <QtCore/qmath.h>
 
 #include <limits>
@@ -81,6 +82,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_timer.start(2500);
   m_lifetime.setInterval(10 * 60 * 1000);
   m_lifetime.start();
+  sendUuid();
 }
 
 spoton_neighbor::spoton_neighbor(const QString &ipAddress,
@@ -447,6 +449,8 @@ void spoton_neighbor::slotReadyRead(void)
 	      else
 		process0013(length, data);
 	    }
+	  else if(length > 0 && data.contains("type=0014&content="))
+	    process0014(length, data);
 	  else
 	    spoton_misc::logError(QString("spoton_neighbor::slotReadyRead(): "
 					  "received unknown message (%1).").
@@ -481,6 +485,7 @@ void spoton_neighbor::slotConnected(void)
   }
 
   QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
+  sendUuid();
 }
 
 void spoton_neighbor::savePublicKey(const QByteArray &name,
@@ -1155,6 +1160,63 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
        arg(length).arg(data.length()));
 }
 
+void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
+{
+  length -= strlen("type=0014&content=");
+
+  /*
+  ** We may have received a status message.
+  */
+
+  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
+
+  data.remove
+    (0,
+     data.indexOf("type=0014&content=") + strlen("type=0014&content="));
+
+  if(length == data.length())
+    {
+      data = QByteArray::fromBase64(data);
+
+      QUuid uuid(QUuid::fromRfc4122(data));
+
+      if(uuid.isNull())
+	spoton_misc::logError
+	  ("spoton_neighbor::process0014(): QUuid::fromRfc4122() failure.");
+      else
+	{
+	  {
+	    QSqlDatabase db = QSqlDatabase::addDatabase
+	      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
+
+	    db.setDatabaseName
+	      (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
+
+	    if(db.open())
+	      {
+		QSqlQuery query(db);
+
+		query.prepare("UPDATE neighbors SET uuid = ? "
+			      "WHERE OID = ? AND uuid IS NULL");
+		query.bindValue(0, uuid.toString());
+		query.bindValue(1, m_id);
+		query.exec();
+	      }
+
+	    db.close();
+	  }
+
+	  QSqlDatabase::removeDatabase
+	    ("spoton_neighbor_" + QString::number(s_dbId));
+	}
+    }
+  else
+    spoton_misc::logError
+      (QString("spoton_neighbor::process0014(): 0014 "
+	       "content-length mismatch (advertised: %1, received: %2).").
+       arg(length).arg(data.length()));
+}
+
 void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
 {
   if(state() == QAbstractSocket::ConnectedState)
@@ -1263,4 +1325,19 @@ void spoton_neighbor::prepareNetworkInterface(void)
       if(m_networkInterface)
 	break;
     }
+}
+
+void spoton_neighbor::sendUuid(void)
+{
+  QByteArray message;
+  QUuid uuid(QUuid::createUuid());
+
+  message = spoton_send::message0014(uuid.toRfc4122());
+
+  if(write(message.constData(), message.length()) !=
+     message.length())
+    spoton_misc::logError
+      ("spoton_neighbor::sendUuid(): write() error.");
+  else
+    flush();
 }

@@ -47,6 +47,7 @@ class spoton_send
 				const QByteArray &publicKey);
   static QByteArray message0012(const QByteArray &message);
   static QByteArray message0013(const QByteArray &message);
+  static QByteArray message0014(const QByteArray &uuid);
 
  private:
   spoton_send(void);

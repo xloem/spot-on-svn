@@ -80,6 +80,11 @@ Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
 EOL
 Status (Base-64) (Ciphertext, SK)
 
+Greetings-5
+Echoed? No
+Message Type ("0014")
+UUID (Plaintext)
+
 URL
 Echoed? Yes
 Message Type ("0020") (Plaintext)

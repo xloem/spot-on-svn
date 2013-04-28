@@ -69,6 +69,7 @@ class spoton_neighbor: public QTcpSocket
   void process0011(int length, const QByteArray &data);
   void process0012(int length, const QByteArray &data);
   void process0013(int length, const QByteArray &data);
+  void process0014(int length, const QByteArray &data);
   void saveParticipantStatus(const QByteArray &name,
 			     const QByteArray &publicKeyHash);
   void saveParticipantStatus(const QByteArray &name,
@@ -79,6 +80,7 @@ class spoton_neighbor: public QTcpSocket
 		     const QByteArray &publicKey,
 		     const qint64 neighborOid);
   void saveStatus(QSqlDatabase &db, const QString &status);
+  void sendUuid(void);
 
  private slots:
   void slotConnected(void);
