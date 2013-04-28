@@ -32,6 +32,9 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QFileDialog>
+#ifdef Q_OS_MAC
+#include <QMacStyle>
+#endif
 #include <QMessageBox>
 #ifdef Q_OS_WIN32
 #include <qt_windows.h>
@@ -46,9 +49,7 @@
 #include <QSqlRecord>
 #include <QStyle>
 #include <QTranslator>
-#ifdef Q_OS_MAC
-#include <QMacStyle>
-#endif
+#include <QUuid>
 #include <QtDebug>
 
 #include <limits>
@@ -304,6 +305,13 @@ spoton::spoton(void):QMainWindow()
     ("QTableView {selection-background-color: lightgreen}");
 
   QSettings settings;
+
+  if(!settings.contains("gui/uuid"))
+    {
+      QUuid uuid(QUuid::createUuid());
+
+      settings.setValue("gui/uuid", uuid.toRfc4122());
+    }
 
   for(int i = 0; i < settings.allKeys().size(); i++)
     m_settings[settings.allKeys().at(i)] = settings.value
@@ -1072,7 +1080,7 @@ void spoton::slotPopulateNeighbors(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec(QString("SELECT sticky, uuid, status, "
+	if(query.exec(QString("SELECT sticky, UPPER(uuid), status, "
 			      "local_ip_address, local_port, "
 			      "external_ip_address, external_port, "
 			      "country, "
@@ -1616,7 +1624,11 @@ void spoton::slotSetPassphrase(void)
 		    "the Tools folder."));
 
       if(mb.exec() != QMessageBox::Yes)
-	return;
+	{
+	  ui.passphrase1->setText("0000000000");
+	  ui.passphrase2->setText("0000000000");
+	  return;
+	}
       else
 	reencode = true;
     }
@@ -3587,7 +3599,13 @@ void spoton::slotAddFriendsKey(void)
       QList<QByteArray> list(repleo.split('@'));
 
       if(list.size() != 5)
-	return;
+	{
+	  spoton_misc::logError
+	    (QString("spoton::slotAddFriendsKey(): "
+		     "received irregular data. Expecting 5 entries, "
+		     "received %1.").arg(list.size()));
+	  return;
+	}
 
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));

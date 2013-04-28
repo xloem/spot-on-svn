@@ -1330,7 +1330,8 @@ void spoton_neighbor::prepareNetworkInterface(void)
 void spoton_neighbor::sendUuid(void)
 {
   QByteArray message;
-  QUuid uuid(QUuid::createUuid());
+  QUuid uuid(QUuid::fromRfc4122(spoton_kernel::
+				s_settings.value("gui/uuid").toByteArray()));
 
   message = spoton_send::message0014(uuid.toRfc4122());
 
