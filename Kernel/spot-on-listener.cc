@@ -50,6 +50,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
   m_address.setScopeId(scopeId);
   m_connections = 0;
   m_id = id;
+  m_networkInterface = 0;
   m_port = quint16(port.toInt());
   connect(this,
 	  SIGNAL(newConnection(void)),
@@ -96,10 +97,15 @@ spoton_listener::~spoton_listener()
   }
 
   QSqlDatabase::removeDatabase("spoton_listener_" + QString::number(s_dbId));
+
+  if(m_networkInterface)
+    delete m_networkInterface;
 }
 
 void spoton_listener::slotTimeout(void)
 {
+  prepareNetworkInterface();
+
   /*
   ** We'll change states here.
   */
@@ -185,6 +191,23 @@ void spoton_listener::slotTimeout(void)
   }
 
   QSqlDatabase::removeDatabase("spoton_listener_" + QString::number(s_dbId));
+
+  if(isListening())
+    if(!m_networkInterface || !(m_networkInterface->flags() &
+				QNetworkInterface::IsUp))
+      {
+	if(m_networkInterface)
+	  spoton_misc::logError(QString("spoton_listener::slotTimeout(): "
+					"network interface (%1) is not active. "
+					"Aborting.").
+				arg(m_networkInterface->name()));
+	else
+	  spoton_misc::logError("spoton_listener::slotTimeout(): "
+				"undefined network interface. "
+				"Aborting.");
+
+	deleteLater();
+      }
 }
 
 void spoton_listener::saveStatus(QSqlDatabase &db)
@@ -458,4 +481,30 @@ void spoton_listener::slotNeighborDisconnected(void)
 qint64 spoton_listener::id(void) const
 {
   return m_id;
+}
+
+void spoton_listener::prepareNetworkInterface(void)
+{
+  if(m_networkInterface)
+    {
+      delete m_networkInterface;
+      m_networkInterface = 0;
+    }
+
+  QList<QNetworkInterface> list(QNetworkInterface::allInterfaces());
+
+  for(int i = 0; i < list.size(); i++)
+    {
+      QList<QNetworkAddressEntry> addresses(list.at(i).addressEntries());
+
+      for(int j = 0; j < addresses.size(); j++)
+	if(addresses.at(j).ip() == serverAddress())
+	  {
+	    m_networkInterface = new QNetworkInterface(list.at(i));
+	    break;
+	  }
+
+      if(m_networkInterface)
+	break;
+    }
 }

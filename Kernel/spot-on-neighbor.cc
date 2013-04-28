@@ -27,6 +27,7 @@
 
 #include <QDateTime>
 #include <QDir>
+#include <QNetworkInterface>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QtCore/qmath.h>
@@ -48,6 +49,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   setSocketDescriptor(socketDescriptor);
   m_address = peerAddress();
   m_id = std::numeric_limits<qint64>::min();
+  m_networkInterface = 0;
   m_port = peerPort();
   m_sendKeysOffset = 0;
   setSocketOption(QAbstractSocket::KeepAliveOption, 1);
@@ -91,6 +93,7 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
   m_address = QHostAddress(ipAddress);
   m_address.setScopeId(scopeId);
   m_id = id;
+  m_networkInterface = 0;
   m_port = quint16(port.toInt());
   m_sendKeysOffset = 0;
   m_sendKeysTimer.setInterval(2500);
@@ -192,10 +195,15 @@ spoton_neighbor::~spoton_neighbor()
   }
 
   QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
+
+  if(m_networkInterface)
+    delete m_networkInterface;
 }
 
 void spoton_neighbor::slotTimeout(void)
 {
+  prepareNetworkInterface();
+
   /*
   ** We'll change states here.
   */
@@ -250,6 +258,23 @@ void spoton_neighbor::slotTimeout(void)
   }
 
   QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
+
+  if(state() == QAbstractSocket::ConnectedState)
+    if(!m_networkInterface || !(m_networkInterface->flags() &
+				QNetworkInterface::IsUp))
+      {
+	if(m_networkInterface)
+	  spoton_misc::logError(QString("spoton_neighbor::slotTimeout(): "
+					"network interface (%1) is not active. "
+					"Aborting socket.").
+				arg(m_networkInterface->name()));
+	else
+	  spoton_misc::logError("spoton_neighbor::slotTimeout(): "
+				"undefined network interface. "
+				"Aborting socket.");
+
+	abort();
+      }
 }
 
 void spoton_neighbor::saveStatus(QSqlDatabase &db, const QString &status)
@@ -1212,4 +1237,30 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
     (QString("spoton_neighbor::slotError(): socket error %1. "
 	     "Aborting socket.").arg(error)); 
   abort();
+}
+
+void spoton_neighbor::prepareNetworkInterface(void)
+{
+  if(m_networkInterface)
+    {
+      delete m_networkInterface;
+      m_networkInterface = 0;
+    }
+
+  QList<QNetworkInterface> list(QNetworkInterface::allInterfaces());
+
+  for(int i = 0; i < list.size(); i++)
+    {
+      QList<QNetworkAddressEntry> addresses(list.at(i).addressEntries());
+
+      for(int j = 0; j < addresses.size(); j++)
+	if(addresses.at(j).ip() == localAddress())
+	  {
+	    m_networkInterface = new QNetworkInterface(list.at(i));
+	    break;
+	  }
+
+      if(m_networkInterface)
+	break;
+    }
 }

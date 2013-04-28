@@ -33,6 +33,8 @@
 #include <QTcpSocket>
 #include <QTimer>
 
+class QNetworkInterface;
+
 class spoton_neighbor: public QTcpSocket
 {
   Q_OBJECT
@@ -54,12 +56,14 @@ class spoton_neighbor: public QTcpSocket
  private:
   QByteArray m_data;
   QHostAddress m_address;
+  QNetworkInterface *m_networkInterface;
   QTimer m_lifetime;
   QTimer m_sendKeysTimer;
   QTimer m_timer;
   qint64 m_id;
   quint16 m_port;
   quint64 m_sendKeysOffset;
+  void prepareNetworkInterface(void);
   void process0000(int length, const QByteArray &data);
   void process0010(int length, const QByteArray &data);
   void process0011(int length, const QByteArray &data);

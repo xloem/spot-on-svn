@@ -36,6 +36,8 @@
 
 #include "spot-on-neighbor.h"
 
+class QNetworkInterface;
+
 class spoton_listener_tcp_server: public QTcpServer
 {
   Q_OBJECT
@@ -81,11 +83,13 @@ class spoton_listener: public spoton_listener_tcp_server
 
  private:
   QHostAddress m_address;
+  QNetworkInterface *m_networkInterface;
   QTimer m_timer;
   int m_connections;
   qint64 m_id;
   quint16 m_port;
   qint64 id(void) const;
+  void prepareNetworkInterface(void);
   void saveStatus(QSqlDatabase &db);
   void updateConnectionCount(void);
 
