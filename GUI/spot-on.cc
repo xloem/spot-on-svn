@@ -2101,9 +2101,6 @@ void spoton::sendKeyToKernel(void)
 
 void spoton::slotConnectNeighbor(void)
 {
-  if(!isKernelActive())
-    return slotActivateKernel();
-
   QString oid("");
   int row = -1;
 
@@ -2933,7 +2930,7 @@ void spoton::slotCopyMyPublicKey(void)
   publicKey = m_crypt->publicKey(&ok).toBase64();
 
   if(ok)
-    clipboard->setText("K" + name + "\n" + publicKey);
+    clipboard->setText("K" + name + "@" + publicKey);
   else
     clipboard->clear();
 }
@@ -3543,7 +3540,7 @@ void spoton::slotAddFriendsKey(void)
 
 	    QList<QByteArray> list
 	      (ui.friendInformation->toPlainText().
-	       trimmed().toLatin1().split('\n'));
+	       trimmed().toLatin1().split('@'));
 
 	    if(list.size() != 2)
 	      return;
@@ -3587,7 +3584,7 @@ void spoton::slotAddFriendsKey(void)
       if(repleo.startsWith("R") || repleo.startsWith("r"))
 	repleo.remove(0, 1);
 
-      QList<QByteArray> list(repleo.split('\n'));
+      QList<QByteArray> list(repleo.split('@'));
 
       if(list.size() != 5)
 	return;
@@ -3757,7 +3754,7 @@ void spoton::slotCopyFriendshipBundle(void)
   data.append
     (spoton_gcrypt::publicKeyEncrypt(symmetricKey, publicKey, &ok).
      toBase64());
-  data.append("\n");
+  data.append("@");
 
   if(!ok)
     {
@@ -3768,7 +3765,7 @@ void spoton::slotCopyFriendshipBundle(void)
   data.append
     (spoton_gcrypt::publicKeyEncrypt(symmetricKeyAlgorithm, publicKey, &ok).
      toBase64());
-  data.append("\n");
+  data.append("@");
 
   if(!ok)
     {
@@ -3792,7 +3789,7 @@ void spoton::slotCopyFriendshipBundle(void)
     myName = "unknown";
 
   data.append(crypt.encrypted(myName, &ok).toBase64());
-  data.append("\n");
+  data.append("@");
 
   if(!ok)
     {
@@ -3803,7 +3800,7 @@ void spoton::slotCopyFriendshipBundle(void)
   QByteArray myPublicKey(m_crypt->publicKey(&ok));
 
   data.append(crypt.encrypted(myPublicKey, &ok).toBase64());
-  data.append("\n");
+  data.append("@");
 
   if(!ok)
     {
