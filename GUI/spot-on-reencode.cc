@@ -242,6 +242,7 @@ void spoton_reencode::reencode(spoton *ui,
 	for(int i = 0; i < ui->ui().neighbors->rowCount(); i++)
 	  {
 	    QSqlQuery query(db);
+	    bool ok = true;
 
 	    query.prepare("INSERT INTO neighbors "
 			  "(sticky, "
@@ -256,11 +257,10 @@ void spoton_reencode::reencode(spoton *ui,
 			  "remote_port, "
 			  "scope_id, "
 			  "protocol, "
-			  "status_control, "
 			  "hash, "
 			  "remote_ip_address_hash, "
 			  "qt_country_hash) "
-			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, "
+			  "VALUES (?, ?, ?, ?, ?, ?, ?, "
 			  "?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	    for(int j = 0; j < ui->ui().neighbors->columnCount(); j++)
@@ -276,10 +276,31 @@ void spoton_reencode::reencode(spoton *ui,
 		  else
 		    query.bindValue(j, 0);
 		}
-	      else if(j == 1)
+	      else if(j >= 1 && j <= 6)
 		{
+		  QTableWidgetItem *item = ui->ui().neighbors->
+		    item(i, j);
+
+		  if(item)
+		    query.bindValue(j, item->text());
 		}
-		
+	      else if(j >= 7 && j <= 10)
+		{
+		  if(ok)
+		    {
+		      QTableWidgetItem *item =
+			ui->ui().neighbors->item(i, j);
+
+		      if(item)
+			query.bindValue
+			  (j, newCrypt->encrypted(item->text().
+						  toLatin1(), &ok).
+			   toBase64());
+		    }
+		}
+
+	    if(ok)
+	      query.exec();
 	  }
       }
 
