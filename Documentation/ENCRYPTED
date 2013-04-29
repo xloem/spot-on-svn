@@ -1,5 +1,10 @@
 Some tables contain encrypted data.
 
+country_inclusion.db:
+
+country
+accepted
+
 idiotes.db:
 
 private_key
@@ -14,7 +19,6 @@ scope_id
 neighbors.db:
 
 country
-name
 remote_ip_address
 remote_port
 scope_id
