@@ -28,16 +28,15 @@
 #ifndef _spoton_reencode_h_
 #define _spoton_reencode_h_
 
-#include <QStatusBar>
-
 #include "Common/spot-on-gcrypt.h"
+#include "spot-on.h"
 
 class spoton_reencode
 {
  public:
   spoton_reencode(void);
   ~spoton_reencode();
-  void reencode(QStatusBar *statusBar,
+  void reencode(spoton *ui,
 		spoton_gcrypt *newCrypt, spoton_gcrypt *oldCrypt);
 };
 

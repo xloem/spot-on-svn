@@ -45,6 +45,7 @@ class spoton: public QMainWindow
 
  public:
   spoton(void);
+  Ui_spoton_mainwindow ui(void) const;
 
  private:
   static const int NAME_MAXIMUM_LENGTH = 64;
@@ -57,7 +58,7 @@ class spoton: public QMainWindow
   QTcpSocket m_kernelSocket;
   QTimer m_generalTimer;
   QTimer m_tableTimer;
-  Ui_spoton_mainwindow ui;
+  Ui_spoton_mainwindow m_ui;
   spoton_gcrypt *m_crypt;
   spoton_docviewer m_docViewer;
   spoton_logviewer m_logViewer;

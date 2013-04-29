@@ -26,9 +26,15 @@
 */
 
 #include <QApplication>
-#include <QStatusBar>
+#include <QDir>
+#include <QFile>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+
+#include <limits>
 
 #include "Common/spot-on-gcrypt.h"
+#include "Common/spot-on-misc.h"
 #include "spot-on-reencode.h"
 
 spoton_reencode::spoton_reencode(void)
@@ -39,16 +45,247 @@ spoton_reencode::~spoton_reencode()
 {
 }
 
-void spoton_reencode::reencode(QStatusBar *statusBar,
+void spoton_reencode::reencode(spoton *ui,
 			       spoton_gcrypt *newCrypt,
 			       spoton_gcrypt *oldCrypt)
 {
-  if(!statusBar || !newCrypt || !oldCrypt)
+  if(!newCrypt || !oldCrypt || !ui)
     return;
 
-  QString lastStatusBarMessage(statusBar->currentMessage());
-
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+  ui->statusBar()->showMessage
+    (QObject::tr("Re-encoding country_inclusion.db."));
+  QApplication::processEvents();
+  QFile::remove(spoton_misc::homePath() + QDir::separator() +
+		"country_inclusion.db");
+  spoton_misc::prepareDatabases();
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_reencode");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "country_inclusion.db");
+
+    if(db.open())
+      {
+	for(int i = 0; i < ui->ui().countries->count(); i++)
+	  {
+	    QListWidgetItem *item = ui->ui().countries->item(i);
+
+	    if(!item)
+	      continue;
+
+	    QSqlQuery query(db);
+	    bool ok = true;
+
+	    query.prepare("INSERT INTO country_inclusion "
+			  "(country, accepted, hash) "
+			  "VALUES (?, ?, ?)");
+	    query.bindValue
+	      (0, newCrypt->encrypted(item->text().toLatin1(),
+				      &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(1, newCrypt->encrypted(QString::number(item->
+							checkState() ==
+							Qt::Checked).
+					toLatin1(), &ok).
+		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(2,
+		 newCrypt->keyedHash(item->text().toLatin1(),
+				     &ok).toBase64());
+
+	    if(ok)
+	      query.exec();
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_reencode");
+  ui->statusBar()->showMessage
+    (QObject::tr("Re-encoding listeners.db."));
+  QApplication::processEvents();
+  QFile::remove(spoton_misc::homePath() + QDir::separator() +
+		"listeners.db");
+  spoton_misc::prepareDatabases();
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_reencode");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "listeners.db");
+
+    if(db.open())
+      {
+	for(int i = 0; i < ui->ui().listeners->rowCount(); i++)
+	  {
+	    QSqlQuery query(db);
+	    bool ok = true;
+
+	    query.prepare("INSERT INTO listeners "
+			  "(status_control, "
+			  "status, "
+			  "ip_address, "
+			  "port, "
+			  "scope_id, "
+			  "protocol, "
+			  "external_ip_address, "
+			  "external_port, "
+			  "connections, "
+			  "maximum_clients, "
+			  "hash) "
+			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+	    for(int j = 0; j < ui->ui().listeners->columnCount(); j++)
+	      if(j == 0)
+		{
+		  QCheckBox *checkBox =
+		    qobject_cast<QCheckBox *> (ui->ui().
+					       listeners->
+					       cellWidget(i, j));
+
+		  if(checkBox && checkBox->isChecked())
+		    query.bindValue(j, "online");
+		  else
+		    query.bindValue(j, "off");
+		}
+	      else if(j == 1)
+		query.bindValue(j, "off");
+	      else if(j >= 2 && j <= 5)
+		{
+		  if(ok)
+		    {
+		      QTableWidgetItem *item = ui->ui().listeners->item(i, j);
+
+		      if(item)
+			query.bindValue
+			  (j, newCrypt->encrypted(item->text().
+						  toLatin1(), &ok).
+			   toBase64());
+		    }
+		}
+	      else if(j >= 6 && j <= 7)
+		{
+		  QTableWidgetItem *item = ui->ui().listeners->
+		    item(i, j);
+
+		  if(item)
+		    query.bindValue(j, item->text());
+		}
+	      else if(j == 8)
+		query.bindValue(j, 0);
+	      else if(j == 9)
+		{
+		  QComboBox *comboBox = qobject_cast<QComboBox *>
+		    (ui->ui().listeners->cellWidget(i, j));
+
+		  if(comboBox)
+		    {
+		      if(comboBox->currentIndex() != comboBox->count() - 1)
+			query.bindValue
+			  (j, 5 * (comboBox->currentIndex() + 1));
+		      else
+			query.bindValue(j, std::numeric_limits<int>::max());
+		    }
+		  else
+		    query.bindValue(j, 5);
+		}
+ 
+	    if(ok)
+	      {
+		QTableWidgetItem *item1 = ui->ui().listeners->
+		  item(i, 2);
+		QTableWidgetItem *item2 = ui->ui().listeners->
+		  item(i, 3);
+
+		if(item1 && item2)
+		  query.bindValue
+		    (10, newCrypt->keyedHash((item1->text() +
+					      item2->text()).toLatin1(),
+					     &ok).
+		     toBase64());
+	      }
+
+	    if(ok)
+	      query.exec();
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_reencode");
+  ui->statusBar()->showMessage
+    (QObject::tr("Re-encoding neighbors.db."));
+  QApplication::processEvents();
+  QFile::remove(spoton_misc::homePath() + QDir::separator() +
+		"neighbors.db");
+  spoton_misc::prepareDatabases();
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_reencode");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	for(int i = 0; i < ui->ui().neighbors->rowCount(); i++)
+	  {
+	    QSqlQuery query(db);
+
+	    query.prepare("INSERT INTO neighbors "
+			  "(sticky, "
+			  "uuid, "
+			  "status, "
+			  "local_ip_address, "
+			  "local_port, "
+			  "external_ip_address, "
+			  "external_port, "
+			  "country, "
+			  "remote_ip_address, "
+			  "remote_port, "
+			  "scope_id, "
+			  "protocol, "
+			  "status_control, "
+			  "hash, "
+			  "remote_ip_address_hash, "
+			  "qt_country_hash) "
+			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, "
+			  "?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+	    for(int j = 0; j < ui->ui().neighbors->columnCount(); j++)
+	      if(j == 0)
+		{
+		  QCheckBox *checkBox =
+		    qobject_cast<QCheckBox *> (ui->ui().
+					       neighbors->
+					       cellWidget(i, j));
+
+		  if(checkBox && checkBox->isChecked())
+		    query.bindValue(j, 1);
+		  else
+		    query.bindValue(j, 0);
+		}
+	      else if(j == 1)
+		{
+		}
+		
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_reencode");
   QApplication::restoreOverrideCursor();
-  statusBar->showMessage(lastStatusBarMessage);
 }
