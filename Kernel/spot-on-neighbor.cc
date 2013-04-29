@@ -919,10 +919,13 @@ void spoton_neighbor::process0010(int length, const QByteArray &dataIn)
 	ttl -= 1;
 
       data.remove(0, 1); // Remove TTL.
-      savePublicKey(QByteArray::fromBase64(data));
+      data = QByteArray::fromBase64(data);
+      savePublicKey(data);
 
       if(ttl > 0)
 	{
+	  data = data.toBase64(); // The public key as Base-64.
+
 	  /*
 	  ** We received a key. We need to send this key to the
 	  ** other neighbors. Prepend the TTL.
