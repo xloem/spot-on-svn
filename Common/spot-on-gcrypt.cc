@@ -503,7 +503,8 @@ void spoton_gcrypt::reencodePrivateKey(const QString &newCipher,
 
   if((err = gcry_sexp_new(&key_t,
 			  static_cast<const void *> (data.constData()),
-			  static_cast<size_t> (data.length()), 1)) != 0)
+			  static_cast<size_t> (data.length()),
+			  1)) != 0)
     {
       error = QObject::tr("gcry_sexp_new() returned non-zero.");
       spoton_misc::logError
@@ -1108,7 +1109,8 @@ QByteArray spoton_gcrypt::publicKeyEncrypt(const QByteArray &data,
 
   if((err = gcry_sexp_new(&key_t,
 			  static_cast<const void *> (publicKey.constData()),
-			  static_cast<size_t> (publicKey.length()), 1)) == 0)
+			  static_cast<size_t> (publicKey.length()),
+			  1)) == 0 && key_t)
     {
 #if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
       QByteArray random(64, 0); // Output size of Sha-512 divided by 8.
@@ -1139,9 +1141,11 @@ QByteArray spoton_gcrypt::publicKeyEncrypt(const QByteArray &data,
 				data.length(),
 				data.constData()
 #endif
-				)) == 0)
+				)) == 0 && data_t)
 	{
-	  if((err = gcry_pk_encrypt(&encodedData_t, data_t, key_t)) == 0)
+	  if((err = gcry_pk_encrypt(&encodedData_t, data_t,
+				    key_t)) == 0 && encodedData_t)
+	    
 	    {
 	      size_t length = gcry_sexp_sprint
 		(encodedData_t, GCRYSEXP_FMT_ADVANCED, 0, 0);
@@ -1201,10 +1205,15 @@ QByteArray spoton_gcrypt::publicKeyEncrypt(const QByteArray &data,
 	      if(ok)
 		*ok = false;
 
-	      spoton_misc::logError
-		(QString("spoton_gcrypt()::publicKeyEncrypt(): "
-			 "gcry_pk_encrypt() "
-			 "failure (%1).").arg(gcry_strerror(err)));
+	      if(err != 0)
+		spoton_misc::logError
+		  (QString("spoton_gcrypt()::publicKeyEncrypt(): "
+			   "gcry_pk_encrypt() "
+			   "failure (%1).").arg(gcry_strerror(err)));
+	      else
+		spoton_misc::logError
+		  ("spoton_gcrypt::publicKeyEncrypt(): "
+		   "gcry_pk_encrypt() failure.");
 	    }
 
 	  gcry_sexp_release(data_t);
@@ -1215,9 +1224,15 @@ QByteArray spoton_gcrypt::publicKeyEncrypt(const QByteArray &data,
 	  if(ok)
 	    *ok = false;
 
-	  spoton_misc::logError
-	    (QString("spoton_gcrypt()::publicKeyEncrypt(): gcry_sexp_build() "
-		     "failure (%1).").arg(gcry_strerror(err)));
+	  if(err != 0)
+	    spoton_misc::logError
+	      (QString("spoton_gcrypt()::publicKeyEncrypt(): "
+		       "gcry_sexp_build() "
+		       "failure (%1).").arg(gcry_strerror(err)));
+	  else
+	    spoton_misc::logError
+	      ("spoton_gcrypt()::publicKeyEncrypt(): gcry_sexp_build() "
+	       "failure.");
 	}
     }
   else
@@ -1225,9 +1240,13 @@ QByteArray spoton_gcrypt::publicKeyEncrypt(const QByteArray &data,
       if(ok)
 	*ok = false;
 
-      spoton_misc::logError
-	(QString("spoton_gcrypt()::publicKeyEncrypt(): gcry_sexp_new() "
-		 "failure (%1).").arg(gcry_strerror(err)));
+      if(err != 0)
+	spoton_misc::logError
+	  (QString("spoton_gcrypt()::publicKeyEncrypt(): gcry_sexp_new() "
+		   "failure (%1).").arg(gcry_strerror(err)));
+      else
+	spoton_misc::logError
+	  ("spoton_gcrypt::publicKeyEncrypt(): gcry_sexp_new() failure.");
     }
 
   return encrypted;

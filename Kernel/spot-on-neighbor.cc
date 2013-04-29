@@ -492,9 +492,6 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 				    const QByteArray &publicKey,
 				    const qint64 neighborOid)
 {
-  if(!spoton_kernel::s_crypt1)
-    return;
-
   /*
   ** Save a friendly key.
   */
@@ -550,13 +547,20 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
   QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
 
   if(share)
-    {
-      bool ok = true;
-      QByteArray myPublicKey(spoton_kernel::s_crypt1->publicKey(&ok));
+    if(spoton_kernel::s_crypt1)
+      {
+	QByteArray myName
+	  (spoton_kernel::s_settings.
+	   value("gui/nodeName",
+		 "unknown").toByteArray().trimmed());
+	QByteArray myPublicKey;
+	bool ok = true;
 
-      if(ok)
-	sharePublicKey(myPublicKey);
-    }
+	myPublicKey = spoton_kernel::s_crypt1->publicKey(&ok);
+
+	if(ok)
+	  sharePublicKey(myName, myPublicKey);
+      }
 }
 
 void spoton_neighbor::savePublicKey(const QByteArray &publicKey)
@@ -684,62 +688,51 @@ void spoton_neighbor::slotLifetimeExpired(void)
   abort();
 }
 
-void spoton_neighbor::sharePublicKey(const QByteArray &publicKey)
+void spoton_neighbor::sharePublicKey(const QByteArray &name,
+				     const QByteArray &publicKey)
 {
   if(state() != QAbstractSocket::ConnectedState)
     return;
-  else if(!spoton_kernel::s_crypt1)
-    return;
 
   QByteArray message;
-  QByteArray name // My name.
-    (spoton_kernel::s_settings.value("gui/nodeName", "unknown").
-     toByteArray().trimmed());
-  bool ok = true;
 
-  if(name.isEmpty())
-    name = "unknown";
+  message.append(name.toBase64());
+  message.append("\n");
+  message.append(publicKey.toBase64());
+  message = spoton_send::message0012(message);
 
-  if(ok)
+  if(write(message.constData(), message.length()) != message.length())
+    spoton_misc::logError
+      ("spoton_neighbor::sharePublicKey(): "
+       "write() failure.");
+  else
     {
-      message.append(name.toBase64());
-      message.append("\n");
-      message.append(publicKey.toBase64());
-      message = spoton_send::message0012(message);
+      flush();
 
-      if(write(message.constData(), message.length()) != message.length())
-	spoton_misc::logError
-	  ("spoton_neighbor::sharePublicKey(): "
-	   "write() failure.");
-      else
-	{
-	  flush();
+      {
+	QSqlDatabase db = QSqlDatabase::addDatabase
+	  ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
 
+	db.setDatabaseName
+	  (spoton_misc::homePath() + QDir::separator() +
+	   "friends_public_keys.db");
+
+	if(db.open())
 	  {
-	    QSqlDatabase db = QSqlDatabase::addDatabase
-	      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
+	    QSqlQuery query(db);
 
-	    db.setDatabaseName
-	      (spoton_misc::homePath() + QDir::separator() +
-	       "friends_public_keys.db");
-
-	    if(db.open())
-	      {
-		QSqlQuery query(db);
-
-		query.prepare("UPDATE friends_public_keys SET "
-			      "neighbor_oid = -1 WHERE neighbor_oid = "
-			      "?");
-		query.bindValue(0, m_id);
-		query.exec();
-	      }
-
-	    db.close();
+	    query.prepare("UPDATE friends_public_keys SET "
+			  "neighbor_oid = -1 WHERE neighbor_oid = "
+			  "?");
+	    query.bindValue(0, m_id);
+	    query.exec();
 	  }
+
+	db.close();
+      }
 	  
-	  QSqlDatabase::removeDatabase
-	    ("spoton_neighbor_" + QString::number(s_dbId));
-	}
+      QSqlDatabase::removeDatabase
+	("spoton_neighbor_" + QString::number(s_dbId));
     }
 }
 
@@ -1333,12 +1326,18 @@ void spoton_neighbor::sendUuid(void)
   QUuid uuid(QUuid::fromRfc4122(spoton_kernel::
 				s_settings.value("gui/uuid").toByteArray()));
 
-  message = spoton_send::message0014(uuid.toRfc4122());
+  if(!uuid.isNull())
+    {
+      message = spoton_send::message0014(uuid.toRfc4122());
 
-  if(write(message.constData(), message.length()) !=
-     message.length())
-    spoton_misc::logError
-      ("spoton_neighbor::sendUuid(): write() error.");
+      if(write(message.constData(), message.length()) !=
+	 message.length())
+	spoton_misc::logError
+	  ("spoton_neighbor::sendUuid(): write() error.");
+      else
+	flush();
+    }
   else
-    flush();
+    spoton_misc::logError("spoton_neighbor::sendUuid(): "
+			  "QUuid::fromRfc4122() failure.");
 }

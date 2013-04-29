@@ -2851,7 +2851,7 @@ void spoton::slotSharePublicKeyWithParticipant(void)
 
   if((row = ui.participants->currentRow()) >= 0)
     {
-      QTableWidgetItem *item = ui.participants->item(row, 1);
+      QTableWidgetItem *item = ui.participants->item(row, 2);
 
       if(item)
 	oid = item->text();
@@ -2860,37 +2860,35 @@ void spoton::slotSharePublicKeyWithParticipant(void)
   if(oid.isEmpty())
     return;
 
-  QString neighborOid("");
   QByteArray publicKey;
-  QByteArray symmetricKey;
-  QByteArray symmetricKeyAlgorithm;
   bool ok = true;
 
-  spoton_misc::retrieveSymmetricData(publicKey,
-				     symmetricKey,
-				     symmetricKeyAlgorithm,
-				     neighborOid,
-				     oid);
   publicKey = m_crypt->publicKey(&ok);
 
-  if(!ok)
-    return;
+  if(ok)
+    {
+      QByteArray message;
+      QByteArray name(m_settings.value("gui/nodeName", "unknown").
+		      toByteArray().trimmed());
 
-  QByteArray message;
+      if(name.isEmpty())
+	name = "unknown";
 
-  message.append("befriendparticipant_");
-  message.append(neighborOid);
-  message.append("_");
-  message.append(publicKey.toBase64());
-  message.append('\n');
+      message.append("befriendparticipant_");
+      message.append(oid);
+      message.append("_");
+      message.append(name.toBase64());
+      message.append("_");
+      message.append(publicKey.toBase64());
+      message.append('\n');
 
-  if(m_kernelSocket.write(message.constData(), message.length()) !=
-     message.length())
-    spoton_misc::logError
-      ("spoton::slotSharePublicKeyWithParticipant(): "
-       "write() failure.");
-  else
-    m_kernelSocket.flush();
+      if(m_kernelSocket.write(message.constData(), message.length()) !=
+	 message.length())
+	spoton_misc::logError
+	  ("spoton::slotSharePublicKeyWithParticipant(): write() failure.");
+      else
+	m_kernelSocket.flush();
+    }
 }
 
 void spoton::slotViewDocumentation(void)

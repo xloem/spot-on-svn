@@ -217,18 +217,13 @@ spoton_kernel::spoton_kernel(void):QObject(0)
     (m_guiServer,
      SIGNAL(publicKeyReceivedFromUI(const qint64,
 				    const QByteArray &,
-				    const QByteArray &)),
+				    const QByteArray &,
+				    const QString &)),
      this,
      SLOT(slotPublicKeyReceivedFromUI(const qint64,
 				      const QByteArray &,
-				      const QByteArray &)));
-  connect
-    (m_guiServer,
-     SIGNAL(publicKeyReceivedFromUI(const qint64,
-				    const QByteArray &)),
-     this,
-     SLOT(slotPublicKeyReceivedFromUI(const qint64,
-				      const QByteArray &)));
+				      const QByteArray &,
+				      const QString &)));
   m_settingsWatcher.addPath(settings.fileName());
   connect(&m_settingsWatcher,
 	  SIGNAL(fileChanged(const QString &)),
@@ -776,36 +771,38 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 
 void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
 						const QByteArray &name,
-						const QByteArray &publicKey)
+						const QByteArray &publicKey,
+						const QString &messageType)
 {
-  QByteArray data(spoton_send::message0011(name, publicKey));
-
-  if(m_neighbors.contains(oid))
+  if(messageType == "0011")
     {
-      if(m_neighbors[oid]->write(data.constData(), data.length()) !=
-	 data.length())
-	spoton_misc::logError
-	  ("spoton_kernel::slotPublicKeyReceivedFromUI(): "
-	   "write() failure.");
+      QByteArray data(spoton_send::message0011(name, publicKey));
+
+      if(m_neighbors.contains(oid))
+	{
+	  if(m_neighbors[oid]->write(data.constData(), data.length()) !=
+	     data.length())
+	    spoton_misc::logError
+	      ("spoton_kernel::slotPublicKeyReceivedFromUI(): "
+	       "write() failure.");
+	  else
+	    m_neighbors[oid]->flush();
+	}
       else
-	m_neighbors[oid]->flush();
+	spoton_misc::logError
+	  (QString("spoton_kernel::slotPublicKeyReceivedFromUI(): "
+		   "neighbor %1 not found in m_neighbors.").arg(oid));
     }
   else
-    spoton_misc::logError
-      (QString("spoton_kernel::slotPublicKeyReceivedFromUI(): "
-	       "neighbor %1 not found in m_neighbors.").arg(oid));
-}
-
-void spoton_kernel::slotPublicKeyReceivedFromUI
-(const qint64 oid,
- const QByteArray &publicKey)
-{
-  if(m_neighbors.contains(oid))
-    m_neighbors[oid]->sharePublicKey(publicKey);
-  else
-    spoton_misc::logError
-      (QString("spoton_kernel::slotPublicKeyReceivedFromUI(): "
-	       "neighbor %1 not found in m_neighbors.").arg(oid));
+    {
+      if(m_neighbors.contains(oid))
+	m_neighbors[oid]->sharePublicKey(QByteArray::fromBase64(name),
+					 QByteArray::fromBase64(publicKey));
+      else
+	spoton_misc::logError
+	  (QString("spoton_kernel::slotPublicKeyReceivedFromUI(): "
+		   "neighbor %1 not found in m_neighbors.").arg(oid));
+    }
 }
 
 void spoton_kernel::slotSettingsChanged(const QString &path)
