@@ -27,7 +27,6 @@
 
 #include <QApplication>
 #include <QDir>
-#include <QFile>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 
@@ -56,8 +55,6 @@ void spoton_reencode::reencode(spoton *ui,
   ui->statusBar()->showMessage
     (QObject::tr("Re-encoding country_inclusion.db."));
   QApplication::processEvents();
-  QFile::remove(spoton_misc::homePath() + QDir::separator() +
-		"country_inclusion.db");
   spoton_misc::prepareDatabases();
 
   {
@@ -69,40 +66,58 @@ void spoton_reencode::reencode(spoton *ui,
 
     if(db.open())
       {
-	for(int i = 0; i < ui->ui().countries->count(); i++)
-	  {
-	    QListWidgetItem *item = ui->ui().countries->item(i);
+	QSqlQuery query(db);
 
-	    if(!item)
-	      continue;
+	if(query.exec("SELECT country, accepted, hash FROM "
+		      "country_inclusion"))
+	  while(query.next())
+	    {
+	      QSqlQuery updateQuery(db);
+	      QString country("");
+	      bool accepted = true;
+	      bool ok = true;
 
-	    QSqlQuery query(db);
-	    bool ok = true;
+	      updateQuery.prepare("UPDATE country_inclusion "
+				  "SET country = ?, "
+				  "accepted = ?, "
+				  "hash = ? WHERE "
+				  "hash = ?");
+	      country = oldCrypt->decrypted(QByteArray::
+					    fromBase64(query.
+						       value(0).
+						       toByteArray()),
+					    &ok).trimmed().constData();
 
-	    query.prepare("INSERT INTO country_inclusion "
-			  "(country, accepted, hash) "
-			  "VALUES (?, ?, ?)");
-	    query.bindValue
-	      (0, newCrypt->encrypted(item->text().toLatin1(),
-				      &ok).toBase64());
+	      if(ok)
+		accepted = oldCrypt->decrypted(QByteArray::
+					       fromBase64(query.
+							  value(1).
+							  toByteArray()),
+					       &ok).toInt();
 
-	    if(ok)
-	      query.bindValue
-		(1, newCrypt->encrypted(QString::number(item->
-							checkState() ==
-							Qt::Checked).
-					toLatin1(), &ok).
-		 toBase64());
+	      if(ok)
+		updateQuery.bindValue
+		  (0, newCrypt->encrypted(country.toLatin1(),
+					  &ok).toBase64());
 
-	    if(ok)
-	      query.bindValue
-		(2,
-		 newCrypt->keyedHash(item->text().toLatin1(),
-				     &ok).toBase64());
+	      if(ok)
+		updateQuery.bindValue
+		  (1, newCrypt->encrypted(QString::number(accepted).
+					  toLatin1(), &ok).toBase64());
 
-	    if(ok)
-	      query.exec();
-	  }
+	      if(ok)
+		updateQuery.bindValue
+		  (2,
+		   newCrypt->keyedHash(country.toLatin1(),
+				       &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (3, query.value(2));
+
+	      if(ok)
+		updateQuery.exec();
+	    }
       }
 
     db.close();
@@ -112,8 +127,6 @@ void spoton_reencode::reencode(spoton *ui,
   ui->statusBar()->showMessage
     (QObject::tr("Re-encoding listeners.db."));
   QApplication::processEvents();
-  QFile::remove(spoton_misc::homePath() + QDir::separator() +
-		"listeners.db");
   spoton_misc::prepareDatabases();
 
   {
@@ -125,98 +138,85 @@ void spoton_reencode::reencode(spoton *ui,
 
     if(db.open())
       {
-	for(int i = 0; i < ui->ui().listeners->rowCount(); i++)
-	  {
-	    QSqlQuery query(db);
-	    bool ok = true;
+	QSqlQuery query(db);
 
-	    query.prepare("INSERT INTO listeners "
-			  "(status_control, "
-			  "status, "
-			  "ip_address, "
-			  "port, "
-			  "scope_id, "
-			  "protocol, "
-			  "external_ip_address, "
-			  "external_port, "
-			  "connections, "
-			  "maximum_clients, "
-			  "hash) "
-			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	if(query.exec("SELECT ip_address, port, scope_id, "
+		      "protocol, hash FROM listeners"))
+	  while(query.next())
+	    {
+	      QSqlQuery updateQuery(db);
+	      QString ipAddress("");
+	      QString port("");
+	      QString protocol("");
+	      QString scopeId("");
+	      bool ok = true;
 
-	    for(int j = 0; j < ui->ui().listeners->columnCount(); j++)
-	      if(j == 0)
-		{
-		  QCheckBox *checkBox =
-		    qobject_cast<QCheckBox *> (ui->ui().
-					       listeners->
-					       cellWidget(i, j));
+	      updateQuery.prepare("UPDATE listeners "
+				  "SET ip_address = ?, "
+				  "port = ?, "
+				  "scope_id = ?, "
+				  "protocol = ?, "
+				  "hash = ? "
+				  "WHERE hash = ?");
+	      ipAddress = oldCrypt->decrypted(QByteArray::
+					      fromBase64(query.
+							 value(0).
+							 toByteArray()),
+					      &ok).trimmed().constData();
 
-		  if(checkBox && checkBox->isChecked())
-		    query.bindValue(j, "online");
-		  else
-		    query.bindValue(j, "off");
-		}
-	      else if(j == 1)
-		query.bindValue(j, "off");
-	      else if(j >= 2 && j <= 5)
-		{
-		  if(ok)
-		    {
-		      QTableWidgetItem *item = ui->ui().listeners->item(i, j);
+	      if(ok)
+		port = oldCrypt->decrypted(QByteArray::
+					   fromBase64(query.
+						      value(1).
+						      toByteArray()),
+					   &ok).trimmed().constData();
 
-		      if(item)
-			query.bindValue
-			  (j, newCrypt->encrypted(item->text().
-						  toLatin1(), &ok).
-			   toBase64());
-		    }
-		}
-	      else if(j >= 6 && j <= 7)
-		{
-		  QTableWidgetItem *item = ui->ui().listeners->
-		    item(i, j);
+	      if(ok)
+		scopeId = oldCrypt->decrypted(QByteArray::
+					      fromBase64(query.
+							 value(2).
+							 toByteArray()),
+					      &ok).trimmed().constData();
 
-		  if(item)
-		    query.bindValue(j, item->text());
-		}
-	      else if(j == 8)
-		query.bindValue(j, 0);
-	      else if(j == 9)
-		{
-		  QComboBox *comboBox = qobject_cast<QComboBox *>
-		    (ui->ui().listeners->cellWidget(i, j));
+	      if(ok)
+		protocol = oldCrypt->decrypted(QByteArray::
+					       fromBase64(query.
+							  value(3).
+							  toByteArray()),
+					       &ok).trimmed().constData();
 
-		  if(comboBox)
-		    {
-		      if(comboBox->currentIndex() != comboBox->count() - 1)
-			query.bindValue
-			  (j, 5 * (comboBox->currentIndex() + 1));
-		      else
-			query.bindValue(j, std::numeric_limits<int>::max());
-		    }
-		  else
-		    query.bindValue(j, 5);
-		}
- 
-	    if(ok)
-	      {
-		QTableWidgetItem *item1 = ui->ui().listeners->
-		  item(i, 2);
-		QTableWidgetItem *item2 = ui->ui().listeners->
-		  item(i, 3);
+	      if(ok)
+		updateQuery.bindValue
+		  (0, newCrypt->encrypted(ipAddress.
+					  toLatin1(), &ok).toBase64());
 
-		if(item1 && item2)
-		  query.bindValue
-		    (10, newCrypt->keyedHash((item1->text() +
-					      item2->text()).toLatin1(),
-					     &ok).
-		     toBase64());
-	      }
+	      if(ok)
+		updateQuery.bindValue
+		  (1, newCrypt->encrypted(port.toLatin1(), &ok).toBase64());
 
-	    if(ok)
-	      query.exec();
-	  }
+	      if(ok)
+		updateQuery.bindValue
+		  (2, newCrypt->encrypted(scopeId.toLatin1(), &ok).
+		   toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (3, newCrypt->encrypted(protocol.toLatin1(), &ok).
+		   toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (4, newCrypt->keyedHash((ipAddress + port).toLatin1(),
+					  &ok).
+		   toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (5, query.value(4));
+
+	      if(ok)
+		updateQuery.exec();
+	    }
       }
 
     db.close();
@@ -226,8 +226,6 @@ void spoton_reencode::reencode(spoton *ui,
   ui->statusBar()->showMessage
     (QObject::tr("Re-encoding neighbors.db."));
   QApplication::processEvents();
-  QFile::remove(spoton_misc::homePath() + QDir::separator() +
-		"neighbors.db");
   spoton_misc::prepareDatabases();
 
   {
@@ -239,69 +237,97 @@ void spoton_reencode::reencode(spoton *ui,
 
     if(db.open())
       {
-	for(int i = 0; i < ui->ui().neighbors->rowCount(); i++)
-	  {
-	    QSqlQuery query(db);
-	    bool ok = true;
+	QSqlQuery query(db);
 
-	    query.prepare("INSERT INTO neighbors "
-			  "(sticky, "
-			  "uuid, "
-			  "status, "
-			  "local_ip_address, "
-			  "local_port, "
-			  "external_ip_address, "
-			  "external_port, "
-			  "country, "
-			  "remote_ip_address, "
-			  "remote_port, "
-			  "scope_id, "
-			  "protocol, "
-			  "hash, "
-			  "remote_ip_address_hash, "
-			  "qt_country_hash) "
-			  "VALUES (?, ?, ?, ?, ?, ?, ?, "
-			  "?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	if(query.exec("SELECT remote_ip_address, remote_port, "
+		      "scope_id, country, hash FROM neighbors"))
+	  while(query.next())
+	    {
+	      QSqlQuery updateQuery(db);
+	      QString country("");
+	      QString ipAddress("");
+	      QString port("");
+	      QString scopeId("");
+	      bool ok = true;
 
-	    for(int j = 0; j < ui->ui().neighbors->columnCount(); j++)
-	      if(j == 0)
-		{
-		  QCheckBox *checkBox =
-		    qobject_cast<QCheckBox *> (ui->ui().
-					       neighbors->
-					       cellWidget(i, j));
+	      updateQuery.prepare("UPDATE neighbors "
+				  "SET remote_ip_address = ?, "
+				  "remote_port = ?, "
+				  "scope_id = ?, "
+				  "country = ?, "
+				  "hash = ?, "
+				  "remote_ip_address_hash = ?, "
+				  "qt_country_hash = ? "
+				  "WHERE hash = ?");
+	      ipAddress = oldCrypt->decrypted(QByteArray::
+					      fromBase64(query.
+							 value(0).
+							 toByteArray()),
+					      &ok).trimmed().constData();
 
-		  if(checkBox && checkBox->isChecked())
-		    query.bindValue(j, 1);
-		  else
-		    query.bindValue(j, 0);
-		}
-	      else if(j >= 1 && j <= 6)
-		{
-		  QTableWidgetItem *item = ui->ui().neighbors->
-		    item(i, j);
+	      if(ok)
+		port = oldCrypt->decrypted(QByteArray::
+					   fromBase64(query.
+						      value(1).
+						      toByteArray()),
+					   &ok).trimmed().constData();
 
-		  if(item)
-		    query.bindValue(j, item->text());
-		}
-	      else if(j >= 7 && j <= 10)
-		{
-		  if(ok)
-		    {
-		      QTableWidgetItem *item =
-			ui->ui().neighbors->item(i, j);
+	      if(ok)
+		scopeId = oldCrypt->decrypted(QByteArray::
+					      fromBase64(query.
+							 value(2).
+							 toByteArray()),
+					      &ok).trimmed().constData();
 
-		      if(item)
-			query.bindValue
-			  (j, newCrypt->encrypted(item->text().
-						  toLatin1(), &ok).
-			   toBase64());
-		    }
-		}
+	      if(ok)
+		country = oldCrypt->decrypted(QByteArray::
+					      fromBase64(query.
+							 value(3).
+							 toByteArray()),
+					      &ok).trimmed().constData();
 
-	    if(ok)
-	      query.exec();
-	  }
+	      if(ok)
+		updateQuery.bindValue
+		  (0, newCrypt->encrypted(ipAddress.
+					  toLatin1(), &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (1, newCrypt->encrypted(port.toLatin1(), &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (2, newCrypt->encrypted(scopeId.toLatin1(), &ok).
+		   toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (3, newCrypt->encrypted(country.toLatin1(), &ok).
+		   toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (4, newCrypt->keyedHash((ipAddress + port).toLatin1(),
+					  &ok).
+		   toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (5, newCrypt->keyedHash(ipAddress.toLatin1(), &ok).
+		   toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (6, newCrypt->keyedHash(country.toLatin1(), &ok).
+		   toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (7, query.value(4));
+
+	      if(ok)
+		updateQuery.exec();
+	    }
       }
 
     db.close();

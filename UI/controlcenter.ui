@@ -76,8 +76,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>944</width>
-                <height>636</height>
+                <width>952</width>
+                <height>625</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1347,8 +1347,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1020</width>
-             <height>514</height>
+             <width>952</width>
+             <height>625</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -1453,9 +1453,6 @@
                  </property>
                  <item>
                   <widget class="QGroupBox" name="groupBox_7">
-                   <property name="title">
-                    <string>Add Listener</string>
-                   </property>
                    <layout class="QHBoxLayout" name="horizontalLayout_12">
                     <property name="topMargin">
                      <number>6</number>
@@ -2569,7 +2566,7 @@
      <x>0</x>
      <y>0</y>
      <width>974</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2661,10 +2658,6 @@
   <tabstop>deactivateKernel</tabstop>
   <tabstop>kernelPath</tabstop>
   <tabstop>selectKernelPath</tabstop>
-  <tabstop>showOnlyOnlineListeners</tabstop>
-  <tabstop>listeners</tabstop>
-  <tabstop>deleteListener</tabstop>
-  <tabstop>deleteAllListeners</tabstop>
   <tabstop>listenerIPCombo</tabstop>
   <tabstop>listenerIP</tabstop>
   <tabstop>listenerScopeId</tabstop>
@@ -2672,6 +2665,10 @@
   <tabstop>ipv4Listener</tabstop>
   <tabstop>ipv6Listener</tabstop>
   <tabstop>addListener</tabstop>
+  <tabstop>showOnlyOnlineListeners</tabstop>
+  <tabstop>listeners</tabstop>
+  <tabstop>deleteListener</tabstop>
+  <tabstop>deleteAllListeners</tabstop>
   <tabstop>cipherType</tabstop>
   <tabstop>hashType</tabstop>
   <tabstop>iterationCount</tabstop>

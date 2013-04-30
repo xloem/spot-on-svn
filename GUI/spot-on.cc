@@ -1624,9 +1624,7 @@ void spoton::slotSetPassphrase(void)
       mb.setText(tr("Are you sure that you wish to replace the "
 		    "existing passphrase? Please note that URL data must "
 		    "be re-encoded via a separate tool. Please see "
-		    "the Tools folder. Please also note that information "
-		    "that is not readily available during the re-encoding "
-		    "process will assume default values."));
+		    "the Tools folder."));
 
       if(mb.exec() != QMessageBox::Yes)
 	{
