@@ -412,12 +412,24 @@ void spoton_gcrypt::reencodePrivateKey(const QString &newCipher,
   if((err = gcry_cipher_open(&cipherHandle, algorithm,
 			     GCRY_CIPHER_MODE_CBC,
 			     GCRY_CIPHER_SECURE |
-			     GCRY_CIPHER_CBC_CTS)) != 0)
+			     GCRY_CIPHER_CBC_CTS)) != 0 || !cipherHandle)
     {
-      error = QObject::tr("gcry_cipher_open() returned non-zero");
-      spoton_misc::logError
-	(QString("spoton_gcrypt::reencodePrivateKey(): gcry_cipher_open() "
-		 "failure (%1).").arg(gcry_strerror(err)));
+      if(err != 0)
+	{
+	  error = QObject::tr("gcry_cipher_open() returned non-zero");
+	  spoton_misc::logError
+	    (QString("spoton_gcrypt::reencodePrivateKey(): "
+		     "gcry_cipher_open() "
+		     "failure (%1).").arg(gcry_strerror(err)));
+	}
+      else
+	{
+	  error = QObject::tr("gcry_cipher_open() failure");
+	  spoton_misc::logError
+	    ("spoton_gcrypt::reencodePrivateKey(): gcry_cipher_open() "
+	     "failure.");
+	}
+
       goto error_label;
     }
 
@@ -727,10 +739,17 @@ spoton_gcrypt::spoton_gcrypt(const QString &cipherType,
       if((err = gcry_cipher_open(&m_cipherHandle, m_cipherAlgorithm,
 				 GCRY_CIPHER_MODE_CBC,
 				 GCRY_CIPHER_SECURE |
-				 GCRY_CIPHER_CBC_CTS)) != 0)
-	spoton_misc::logError(QString("spoton_gcrypt::spoton_gcrypt(): "
-				      "gcry_cipher_open() failure (%1).").
-			      arg(gcry_strerror(err)));
+				 GCRY_CIPHER_CBC_CTS))
+	 != 0 || !m_cipherAlgorithm)
+	{
+	  if(err != 0)
+	    spoton_misc::logError(QString("spoton_gcrypt::spoton_gcrypt(): "
+					  "gcry_cipher_open() failure (%1).").
+				  arg(gcry_strerror(err)));
+	  else
+	    spoton_misc::logError("spoton_gcrypt::spoton_gcrypt(): "
+				  "gcry_cipher_open() failure.");
+	}
 
       if(err == 0)
 	if((err =
@@ -1537,7 +1556,8 @@ void spoton_gcrypt::generatePrivatePublicKeys(const int rsaKeySize,
   gcry_sexp_t parameters_t = 0;
   size_t length = 0;
 
-  if((err = gcry_sexp_build(&parameters_t, 0, "(genkey (rsa (nbits %d)))",
+  if((err = gcry_sexp_build(&parameters_t, 0,
+			    "(genkey (rsa (nbits %d)))",
 			    rsaKeySize)) != 0 || !parameters_t)
     {
       error = QObject::tr("gcry_sexp_build() failure");
