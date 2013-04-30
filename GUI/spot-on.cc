@@ -255,6 +255,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  m_ui.friendInformation,
 	  SLOT(clear(void)));
+  connect(m_ui.resetSpotOn,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotResetAll(void)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -444,7 +448,6 @@ spoton::spoton(void):QMainWindow()
       m_ui.pushButtonDocViewer->setEnabled(false);
       m_ui.pushButtonLogViewer->setEnabled(false);
       m_ui.resetSpotOn->setEnabled(false);
-
 
       for(int i = 0; i < m_ui.tab->count(); i++)
 	if(m_ui.tab->tabBar()->tabData(i).toString() == "page_5")
@@ -3695,6 +3698,49 @@ void spoton::slotClearOutgoingMessage(void)
 
 void spoton::slotResetAll(void)
 {
+  QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+  mb.setIcon(QMessageBox::Question);
+  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+  mb.setWindowModality(Qt::WindowModal);
+  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+  mb.setText(tr("Are you sure that you wish to reset Spot-On? All "
+		"data will be lost."));
+
+  if(mb.exec() != QMessageBox::Yes)
+    return;
+
+  slotDeactivateKernel();
+
+  QStringList list;
+
+  list << "country_inclusion.db"
+       << "error_log.dat"
+       << "friends_public_keys.db"
+       << "idiotes.db"
+       << "kernel.db"
+       << "listeners.db"
+       << "neighbors.db"
+       << "public_keys.db"
+       << "shared.db"
+       << "urls.db";
+
+  while(!list.isEmpty())
+    QFile::remove
+      (spoton_misc::homePath() + QDir::separator() + list.takeFirst());
+
+  QSettings settings;
+
+  for(int i = settings.allKeys().size() - 1; i >= 0; i--)
+    settings.remove(settings.allKeys().at(i));
+
+  QApplication::instance()->exit(0);
+  QProcess::startDetached(QCoreApplication::applicationDirPath() +
+			  QDir::separator() +
+			  QCoreApplication::applicationName());
 }
 
 void spoton::slotCopyFriendshipBundle(void)
