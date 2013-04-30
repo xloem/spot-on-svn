@@ -166,6 +166,7 @@ int main(int argc, char *argv[])
 
 spoton_kernel::spoton_kernel(void):QObject(0)
 {
+  qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
   cleanupDatabases();
 
@@ -682,7 +683,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 
   QByteArray data;
   QByteArray symmetricKey;
-  QByteArray symmetricKeyAlgorithm("aes256");
+  QByteArray symmetricKeyAlgorithm(spoton_gcrypt::randomCipherType());
   QString neighborOid("");
 
   spoton_misc::retrieveSymmetricData(publicKey,
@@ -952,8 +953,10 @@ void spoton_kernel::slotStatusTimerExpired(void)
 			      toByteArray().trimmed());
 	      QByteArray publicKey(query.value(0).toByteArray());
 	      QByteArray symmetricKey;
-	      QByteArray symmetricKeyAlgorithm("aes256");
-	      int cipherAlgorithm = gcry_cipher_map_name("aes256");
+	      QByteArray symmetricKeyAlgorithm
+		(spoton_gcrypt::randomCipherType());
+	      int cipherAlgorithm = gcry_cipher_map_name
+		(symmetricKeyAlgorithm.constData());
 	      size_t symmetricKeyLength =
 		gcry_cipher_get_algo_keylen(cipherAlgorithm);
 

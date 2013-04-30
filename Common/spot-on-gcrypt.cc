@@ -1818,3 +1818,10 @@ size_t spoton_gcrypt::passphraseLength(void) const
 {
   return m_passphraseLength;
 }
+
+QByteArray spoton_gcrypt::randomCipherType(void)
+{
+  QStringList types(cipherTypes());
+
+  return QByteArray(types.value(qrand() % types.size()).toLatin1());
+}

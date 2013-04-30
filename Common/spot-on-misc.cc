@@ -583,7 +583,8 @@ void spoton_misc::retrieveSymmetricData(QByteArray &publicKey,
 			      "OID = %1").arg(oid)))
 	  if(query.next())
 	    {
-	      int algorithm = gcry_cipher_map_name("aes256");
+	      QByteArray cipherType(spoton_gcrypt::randomCipherType());
+	      int algorithm = gcry_cipher_map_name(cipherType.constData());
 	      size_t symmetricKeyLength =
 		gcry_cipher_get_algo_keylen(algorithm);
 
@@ -596,7 +597,7 @@ void spoton_misc::retrieveSymmetricData(QByteArray &publicKey,
 		    (static_cast<void *> (symmetricKey.data()),
 		     static_cast<size_t> (symmetricKey.length()),
 		     GCRY_STRONG_RANDOM);
-		  symmetricKeyAlgorithm = "aes256";
+		  symmetricKeyAlgorithm = cipherType;
 		}
 	      else
 		logError

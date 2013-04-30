@@ -101,6 +101,7 @@ int main(int argc, char *argv[])
 
 spoton::spoton(void):QMainWindow()
 {
+  qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
   m_crypt = 0;
   m_countriesLastModificationTime = QDateTime();
