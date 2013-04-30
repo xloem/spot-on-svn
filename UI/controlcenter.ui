@@ -1461,6 +1461,36 @@
                      <number>11</number>
                     </property>
                     <item>
+                     <widget class="QRadioButton" name="ipv4Listener">
+                      <property name="layoutDirection">
+                       <enum>Qt::LeftToRight</enum>
+                      </property>
+                      <property name="text">
+                       <string>IPv&amp;4</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QRadioButton" name="ipv6Listener">
+                      <property name="layoutDirection">
+                       <enum>Qt::LeftToRight</enum>
+                      </property>
+                      <property name="text">
+                       <string>IPv&amp;6</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="Line" name="line_8">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <widget class="QLabel" name="label_11">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -1472,7 +1502,7 @@
                        <enum>Qt::RightToLeft</enum>
                       </property>
                       <property name="text">
-                       <string>&amp;IP</string>
+                       <string>My Local Device IP</string>
                       </property>
                       <property name="buddy">
                        <cstring>listenerIP</cstring>
@@ -1536,29 +1566,6 @@
                       </property>
                       <property name="value">
                        <number>4710</number>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QRadioButton" name="ipv4Listener">
-                      <property name="layoutDirection">
-                       <enum>Qt::LeftToRight</enum>
-                      </property>
-                      <property name="text">
-                       <string>IPv&amp;4</string>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QRadioButton" name="ipv6Listener">
-                      <property name="layoutDirection">
-                       <enum>Qt::LeftToRight</enum>
-                      </property>
-                      <property name="text">
-                       <string>IPv&amp;6</string>
                       </property>
                      </widget>
                     </item>
@@ -1728,6 +1735,129 @@
                     </layout>
                    </item>
                   </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="groupBox_ExternalIP">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="title">
+                 <string>External IP + Port</string>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_15">
+                 <item>
+                  <widget class="QCheckBox" name="checkBox_ExternalIPService">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use one of these services to dertermine your external IP and Port:&lt;/p&gt;http://www.displaymyip.com&lt;br&gt;http://showip.net&lt;br&gt;http://www.myip.dk&lt;br&gt;http://checkip.dyndns.org&lt;br&gt;http://whatismyip.com&lt;br&gt;http://whatismyipv6.com&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="text">
+                    <string>Use Service</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="Line" name="line">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="ipv4ExternalIP">
+                   <property name="text">
+                    <string>IPV4</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="ipv6ExternalIP">
+                   <property name="text">
+                    <string>IPV6</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="Line" name="line_7">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_27">
+                   <property name="text">
+                    <string>My External IP</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="externalIPCombo">
+                   <item>
+                    <property name="text">
+                     <string>Custom</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Service: www.whatismyip.com</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Service: ...</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="externalIP"/>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_ExternalIPScopeID">
+                   <property name="text">
+                    <string>Scope ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="externalScopeId"/>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_6">
+                   <property name="text">
+                    <string>Port</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="externalPort">
+                   <property name="maximum">
+                    <number>65535</number>
+                   </property>
+                   <property name="value">
+                    <number>4710</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="setExternalIP">
+                   <property name="text">
+                    <string>Set</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../Icons/icons.qrc">
+                     <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </widget>
@@ -2658,17 +2788,25 @@
   <tabstop>deactivateKernel</tabstop>
   <tabstop>kernelPath</tabstop>
   <tabstop>selectKernelPath</tabstop>
+  <tabstop>ipv4Listener</tabstop>
+  <tabstop>ipv6Listener</tabstop>
   <tabstop>listenerIPCombo</tabstop>
   <tabstop>listenerIP</tabstop>
   <tabstop>listenerScopeId</tabstop>
   <tabstop>listenerPort</tabstop>
-  <tabstop>ipv4Listener</tabstop>
-  <tabstop>ipv6Listener</tabstop>
   <tabstop>addListener</tabstop>
   <tabstop>showOnlyOnlineListeners</tabstop>
   <tabstop>listeners</tabstop>
   <tabstop>deleteListener</tabstop>
   <tabstop>deleteAllListeners</tabstop>
+  <tabstop>checkBox_ExternalIPService</tabstop>
+  <tabstop>ipv4ExternalIP</tabstop>
+  <tabstop>ipv6ExternalIP</tabstop>
+  <tabstop>externalIPCombo</tabstop>
+  <tabstop>externalIP</tabstop>
+  <tabstop>externalScopeId</tabstop>
+  <tabstop>externalPort</tabstop>
+  <tabstop>setExternalIP</tabstop>
   <tabstop>cipherType</tabstop>
   <tabstop>hashType</tabstop>
   <tabstop>iterationCount</tabstop>
