@@ -752,14 +752,23 @@ spoton_gcrypt::spoton_gcrypt(const QString &cipherType,
 	}
 
       if(err == 0)
-	if((err =
-	    gcry_cipher_setkey(m_cipherHandle,
-			       static_cast<const void *> (m_symmetricKey),
-			       m_symmetricKeyLength)) != 0)
-	  spoton_misc::logError(QString("spoton_gcrypt::spoton_gcrypt(): "
-					"gcry_cipher_setkey() "
-					"failure (%1).").
-				arg(gcry_strerror(err)));
+	{
+	  if(m_cipherHandle)
+	    {
+	      if((err =
+		  gcry_cipher_setkey(m_cipherHandle,
+				     static_cast<const void *> (m_symmetricKey),
+				     m_symmetricKeyLength)) != 0)
+		spoton_misc::logError(QString("spoton_gcrypt::spoton_gcrypt(): "
+					      "gcry_cipher_setkey() "
+					      "failure (%1).").
+				      arg(gcry_strerror(err)));
+	    }
+	  else
+	    spoton_misc::logError("spoton_gcrypt::spoton_gcrypt(): "
+				  "m_cipherHandle is 0.");
+	}
+      
     }
   else if(m_symmetricKeyLength > 0)
     {
@@ -777,6 +786,14 @@ spoton_gcrypt::~spoton_gcrypt()
 
 QByteArray spoton_gcrypt::decrypted(const QByteArray &data, bool *ok)
 {
+  if(!m_cipherHandle)
+    {
+      if(ok)
+	*ok = false;
+
+      return data;
+    }
+
   QByteArray decrypted(data);
 
   if(!setInitializationVector(decrypted))
@@ -868,6 +885,14 @@ QByteArray spoton_gcrypt::decrypted(const QByteArray &data, bool *ok)
 
 QByteArray spoton_gcrypt::encrypted(const QByteArray &data, bool *ok)
 {
+  if(!m_cipherHandle)
+    {
+      if(ok)
+	*ok = false;
+
+      return data;
+    }
+
   QByteArray encrypted(data);
   QByteArray iv;
 
@@ -954,6 +979,9 @@ size_t spoton_gcrypt::symmetricKeyLength(void) const
 
 bool spoton_gcrypt::setInitializationVector(QByteArray &bytes)
 {
+  if(!m_cipherHandle)
+    return false;
+
   bool ok = true;
   size_t ivLength = 0;
 
