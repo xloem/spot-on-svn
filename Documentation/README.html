@@ -257,7 +257,8 @@ In case your friend is not connected with an IP as a neighbour, the message deco
 <p align="left">The search of the Spot-on database is possible at every time. It makes sense to be part of the community to update the URL database with every start of your machine. </p>
 <p align="left" class="Stil2">14.10. Is it secure to exchange URLs with other users?</p>
 <p align="left">Yes, the connection to other users are a secured connection with encryption. The transfer is done over the http-protocol. It&acute;s just like browsing the web:  it is just like sending data in a website form or browsing the wikipedia. </p>
-<p>&nbsp;</p>
+<p align="left" class="Stil2">14.11. Can I set up several kernels on my webserver? </p>
+<p align="left">Yes. Spot-On is composed of two separate applications, a kernel and a user interface. Both applications exist independently of one other. The kernel is responsible for all system-level functions. It maintains listener and neighbor activities, URL categorization, and URL searches. The interface communicates with the kernel via SQLite databases. Therefore, an advanced user may direct kernel activity from an SQLite prompt. Some communications also involve TCP sockets. If you intend to use several kernels, please create alternate directories and set SPOTON_HOME accordingly.</p>
 <p>==========================================================================</p>
 <p class="Stil1">15. Technical Comparison to other Apps </p>
 <p>Nevermind, every application has its own style, methods and techniques, technology and especially purposes, though some techical details may be different. We ar eopen for a comparion within the methods used by other applications, which has similar techniques implemented. This is just a start ramp for students to get familiar with the state of the art. Scientific Research on the comparisons  could be done in terms of e.g. a matrix out of some criteria and some applications. </p>
