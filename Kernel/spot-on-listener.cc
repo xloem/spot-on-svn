@@ -197,10 +197,11 @@ void spoton_listener::slotTimeout(void)
 				QNetworkInterface::IsUp))
       {
 	if(m_networkInterface)
-	  spoton_misc::logError(QString("spoton_listener::slotTimeout(): "
-					"network interface (%1) is not active. "
-					"Aborting.").
-				arg(m_networkInterface->name()));
+	  spoton_misc::logError
+	    (QString("spoton_listener::slotTimeout(): "
+		     "network interface (%1) is not active. "
+		     "Aborting.").
+	     arg(m_networkInterface->name()));
 	else
 	  spoton_misc::logError("spoton_listener::slotTimeout(): "
 				"undefined network interface. "
@@ -248,7 +249,7 @@ void spoton_listener::slotNewConnection(void)
     (spoton_misc::
      countryNameFromIPAddress(neighbor->peerAddress().toString()));
 
-  if(!QNetworkInterface::allAddresses().contains(neighbor->peerAddress()))
+  if(country != "Unknown") // Allow unknown countries for now.
     if(!spoton_misc::countryAllowedToConnect(country.remove(" "),
 					     spoton_kernel::s_crypt1))
       {
