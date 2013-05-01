@@ -307,8 +307,6 @@ spoton::spoton(void):QMainWindow()
   m_ui.neighborIP->setInputMask("000.000.000.000; ");
   m_ui.neighborScopeId->setEnabled(false);
   m_ui.neighborScopeIdLabel->setEnabled(false);
-  m_ui.participants->setStyleSheet
-    ("QTableView {selection-background-color: lightgreen}");
 
   QSettings settings;
 
@@ -1132,7 +1130,7 @@ void spoton::slotPopulateNeighbors(void)
 			SLOT(slotNeighborCheckChange(int)));
 		m_ui.neighbors->setCellWidget(row, 0, check);
 
-		for(int i = 1; i < query.record().count(); i++)
+        for(int i = 0; i < query.record().count(); i++)
 		  {
 		    QTableWidgetItem *item = 0;
 
@@ -1153,6 +1151,15 @@ void spoton::slotPopulateNeighbors(void)
 
 		    item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 		    item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+
+            if(i == 0 || i == 1)
+              {
+            if(query.value(2).toString().trimmed() == "connected")
+              item->setBackground(QBrush(QColor("lightgreen")));
+            else
+              item->setBackground(QBrush());
+              }
 
 		    if(i == 2)
 		      {
