@@ -449,6 +449,7 @@ bool spoton_misc::countryAllowedToConnect(const QString &country,
 	QSqlQuery query(db);
 	bool ok = true;
 
+	query.setForwardOnly(true);
 	query.prepare("SELECT accepted FROM country_inclusion WHERE "
 		      "hash = ?");
 	query.bindValue(0, crypt->keyedHash(country.toLatin1(), &ok).
@@ -610,4 +611,34 @@ void spoton_misc::retrieveSymmetricData(QByteArray &publicKey,
   }
 
   QSqlDatabase::removeDatabase("spoton_misc");
+}
+
+bool spoton_misc::isAcceptedParticipant(const QByteArray &publicKeyHash)
+{
+  int count = 0;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT COUNT(*) "
+		      "FROM friends_public_keys WHERE "
+		      "public_key_hash = ?");
+	query.bindValue(0, publicKeyHash.toBase64());
+
+	if(query.exec())
+	  if(query.next())
+	    count = query.value(0).toInt();
+      }
+  }
+
+  QSqlDatabase::removeDatabase("spoton_misc");
+  return count > 0;
 }

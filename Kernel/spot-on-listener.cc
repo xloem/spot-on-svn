@@ -389,6 +389,10 @@ void spoton_listener::slotNewConnection(void)
 
 	    if(ok)
 	      {
+		QSqlQuery query(db);
+
+		query.setForwardOnly(true);
+
 		if(query.exec("SELECT OID, remote_ip_address, "
 			      "remote_port FROM neighbors"))
 		  while(query.next())

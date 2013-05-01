@@ -49,6 +49,7 @@ class spoton_misc
   static QString homePath(void);
   static bool countryAllowedToConnect(const QString &country,
 				      spoton_gcrypt *crypt);
+  static bool isAcceptedParticipant(const QByteArray &publicKeyHash);
   static bool isGnome(void);
   static bool saveFriendshipBundle(const QByteArray &name,
 				   const QByteArray &publicKey,

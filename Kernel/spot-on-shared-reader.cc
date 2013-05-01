@@ -65,6 +65,8 @@ void spoton_shared_reader::slotTimeout(void)
 	QSqlQuery query(db);
 	int processed = 0;
 
+	query.setForwardOnly(true);
+
 	if(query.exec("SELECT description, encrypted, title, url "
 		      "FROM urls"))
 	  while(query.next())

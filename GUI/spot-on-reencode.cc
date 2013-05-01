@@ -68,6 +68,8 @@ void spoton_reencode::reencode(spoton *ui,
       {
 	QSqlQuery query(db);
 
+	query.setForwardOnly(true);
+
 	if(query.exec("SELECT country, accepted, hash FROM "
 		      "country_inclusion"))
 	  while(query.next())
@@ -139,6 +141,8 @@ void spoton_reencode::reencode(spoton *ui,
     if(db.open())
       {
 	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
 
 	if(query.exec("SELECT ip_address, port, scope_id, "
 		      "protocol, hash FROM listeners"))
@@ -238,6 +242,8 @@ void spoton_reencode::reencode(spoton *ui,
     if(db.open())
       {
 	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
 
 	if(query.exec("SELECT remote_ip_address, remote_port, "
 		      "scope_id, country, hash FROM neighbors"))

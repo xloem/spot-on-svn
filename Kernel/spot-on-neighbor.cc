@@ -524,6 +524,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 	    ** respond with our public key.
 	    */
 
+	    query.setForwardOnly(true);
 	    query.prepare("SELECT neighbor_oid "
 			  "FROM friends_public_keys "
 			  "WHERE public_key = ?");
@@ -850,13 +851,14 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	  if(ok && computedHash == messageDigest)
 	    {
 	      if(!duplicate)
-		{
-		  saveParticipantStatus(name, publicKeyHash);
-		  emit receivedChatMessage
-		    ("message_" +
-		     name.toBase64() + "_" +
-		     message.toBase64().append('\n'));
-		}
+		if(spoton_misc::isAcceptedParticipant(publicKeyHash))
+		  {
+		    saveParticipantStatus(name, publicKeyHash);
+		    emit receivedChatMessage
+		      ("message_" +
+		       name.toBase64() + "_" +
+		       message.toBase64().append('\n'));
+		  }
 	    }
 	  else if(ttl > 0)
 	    {
@@ -1122,7 +1124,10 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	       name + publicKeyHash + status, &ok);
 
 	  if(ok && computedHash == messageDigest)
-	    saveParticipantStatus(name, publicKeyHash, status);
+	    {
+	      if(spoton_misc::isAcceptedParticipant(publicKeyHash))
+		saveParticipantStatus(name, publicKeyHash, status);
+	    }
 	  else if(ttl > 0)
 	    {
 	      /*

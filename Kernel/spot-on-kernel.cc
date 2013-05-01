@@ -943,6 +943,8 @@ void spoton_kernel::slotStatusTimerExpired(void)
       {
 	QSqlQuery query(db);
 
+	query.setForwardOnly(true);
+
 	if(query.exec("SELECT public_key "
 		      "FROM friends_public_keys WHERE "
 		      "neighbor_oid = -1"))
