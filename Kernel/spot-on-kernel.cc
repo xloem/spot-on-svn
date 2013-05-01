@@ -683,7 +683,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 
   QByteArray data;
   QByteArray symmetricKey;
-  QByteArray symmetricKeyAlgorithm(spoton_gcrypt::randomCipherType());
+  QByteArray symmetricKeyAlgorithm;
   QString neighborOid("");
 
   spoton_misc::retrieveSymmetricData(publicKey,

@@ -1823,5 +1823,5 @@ QByteArray spoton_gcrypt::randomCipherType(void)
 {
   QStringList types(cipherTypes());
 
-  return QByteArray(types.value(qrand() % types.size()).toLatin1());
+  return types.value(qrand() % types.size()).toLatin1();
 }
