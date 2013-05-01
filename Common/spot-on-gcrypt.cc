@@ -126,7 +126,7 @@ void spoton_gcrypt::init(void)
 	  gcry_control(GCRYCTL_ENABLE_M_GUARD);
 	  gcry_control(GCRYCTL_SUSPEND_SECMEM_WARN);
 
-	  if((err = gcry_control(GCRYCTL_INIT_SECMEM, 16384, 0)) != 0)
+	  if((err = gcry_control(GCRYCTL_INIT_SECMEM, 65536, 0)) != 0)
 	    spoton_misc::logError
 	      (QString("spoton_gcrypt::init(): initializing "
 		       "secure memory failure (%1).").
