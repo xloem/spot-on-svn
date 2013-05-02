@@ -966,13 +966,19 @@ void spoton::slotPopulateListeners(void)
 		      {
 			bool ok = true;
 
-			if(i >= 2 && i <= 5)
-			  item = new QTableWidgetItem
-			    (m_crypt->decrypted(QByteArray::
-						fromBase64(query.
-							   value(i).
-							   toByteArray()),
-						&ok).trimmed().constData());
+			if(i >= 2 && i <= 6)
+			  {
+			    if(query.isNull(i))
+			      item = new QTableWidgetItem();
+			    else
+			      item = new QTableWidgetItem
+				(m_crypt->decrypted(QByteArray::
+						    fromBase64(query.
+							       value(i).
+							       toByteArray()),
+						    &ok).trimmed().
+				 constData());
+			  }
 			else
 			  item = new QTableWidgetItem(query.
 						      value(i).toString().
@@ -1136,16 +1142,21 @@ void spoton::slotPopulateNeighbors(void)
 		  {
 		    QTableWidgetItem *item = 0;
 
-		    if(i >= 7 && i <= 10)
+		    if(i == 5 || (i >= 7 && i <= 10))
 		      {
-			bool ok = true;
+			if(query.value(i).isNull())
+			  item = new QTableWidgetItem();
+			else
+			  {
+			    bool ok = true;
 
-			item = new QTableWidgetItem
-			  (m_crypt->decrypted(QByteArray::
-					      fromBase64(query.
-							 value(i).
-							 toByteArray()),
-					      &ok).trimmed().constData());
+			    item = new QTableWidgetItem
+			      (m_crypt->decrypted(QByteArray::
+						  fromBase64(query.
+							     value(i).
+							     toByteArray()),
+						  &ok).trimmed().constData());
+			  }
 		      }
 		    else
 		      item = new QTableWidgetItem

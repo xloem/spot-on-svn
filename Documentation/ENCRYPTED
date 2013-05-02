@@ -11,6 +11,7 @@ private_key
 
 listeners.db:
 
+external_ip_address
 ip_address
 port
 protocol
@@ -19,6 +20,7 @@ scope_id
 neighbors.db:
 
 country
+external_ip_address
 remote_ip_address
 remote_port
 scope_id

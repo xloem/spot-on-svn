@@ -365,8 +365,9 @@ void spoton_listener::slotNewConnection(void)
 		       "sticky, "
 		       "country, "
 		       "remote_ip_address_hash, "
-		       "qt_country_hash) "
-		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		       "qt_country_hash, "
+		       "external_ip_address) "
+		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
 	    query.bindValue(1, m_port);
 
@@ -424,6 +425,13 @@ void spoton_listener::slotNewConnection(void)
 	      query.bindValue
 		(11, spoton_kernel::s_crypt1->
 		 keyedHash(country.remove(" ").toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(12,
+		 spoton_kernel::s_crypt1->encrypted(neighbor->peerAddress().
+						    toString().toLatin1(),
+						    &ok).toBase64());
 
 	    if(ok)
 	      created = query.exec();
@@ -562,6 +570,7 @@ void spoton_listener::saveExternalAddress(const QHostAddress &address,
     return;
 
   QSqlQuery query(db);
+  bool ok = true;
 
   if(isListening())
     {
@@ -573,11 +582,14 @@ void spoton_listener::saveExternalAddress(const QHostAddress &address,
 			"NOT NULL");
 	  query.bindValue(0, m_id);
 	}
-      else
+      else if(spoton_kernel::s_crypt1)
 	{
 	  query.prepare("UPDATE listeners SET external_ip_address = ? "
 			"WHERE OID = ?");
-	  query.bindValue(0, address.toString());
+	  query.bindValue
+	    (0, spoton_kernel::s_crypt1->encrypted(address.toString().
+						   toLatin1(), &ok).
+	     toBase64());
 	  query.bindValue(1, m_id);
 	}
     }
@@ -588,7 +600,8 @@ void spoton_listener::saveExternalAddress(const QHostAddress &address,
       query.bindValue(0, m_id);
     }
 
-  query.exec();
+  if(ok)
+    query.exec();
 }
 
 void spoton_listener::slotExternalAddressDiscovered
