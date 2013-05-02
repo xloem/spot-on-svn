@@ -50,10 +50,6 @@ void spoton_external_address::discover(void)
 	  SIGNAL(finished(void)),
 	  this,
 	  SLOT(slotFinished(void)));
-  connect(reply,
-	  SIGNAL(metaDataChanged(void)),
-	  reply,
-	  SLOT(deleteLater(void)));
 }
 
 void spoton_external_address::slotFinished(void)
