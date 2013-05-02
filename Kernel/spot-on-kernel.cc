@@ -700,17 +700,38 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
   data.append("\n");
 
   if(ok)
+    data.append
+      (spoton_gcrypt::publicKeyEncrypt(symmetricKeyAlgorithm,
+				       publicKey, &ok).
+       toBase64());
+
+  if(ok)
     {
-      data.append
-	(spoton_gcrypt::publicKeyEncrypt(symmetricKeyAlgorithm,
-					 publicKey, &ok).
-	 toBase64());
-      data.append("\n");
+      char c = 0;
+      short ttl = s_settings.value
+	("kernel/ttl_0000", 16).toInt();
+
+      memcpy(&c, static_cast<void *> (&ttl), 1);
+      data.prepend(c);
+
+      if(s_settings.value("gui/chatSendMethod",
+			  "Artificial_GET").toString().
+	 trimmed() == "Artificial_GET")
+	emit sendMessage
+	  (spoton_send::message0000(data,
+				    spoton_send::
+				    ARTIFICIAL_GET));
+      else
+	emit sendMessage
+	  (spoton_send::message0000(data,
+				    spoton_send::
+				    NORMAL_POST));
     }
 
   if(ok)
     {
-      QByteArray hash;
+      data.clear();
+
       spoton_gcrypt crypt(symmetricKeyAlgorithm,
 			  QString("sha512"),
 			  QByteArray(),
@@ -719,23 +740,9 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 			  0,
 			  QString(""));
 
-      hash =
-	crypt.keyedHash
-	(symmetricKey + symmetricKeyAlgorithm +
-	 myPublicKeyHash + name + message, &ok);
-
-      if(ok)
-	{
-	  data.append(crypt.encrypted(hash, &ok).toBase64());
-	  data.append("\n");
-	}
-
-      if(ok)
-	{
-	  data.append
-	    (crypt.encrypted(myPublicKeyHash, &ok).toBase64());
-	  data.append("\n");
-	}
+      data.append
+	(crypt.encrypted(myPublicKeyHash, &ok).toBase64());
+      data.append("\n");
 
       if(ok)
 	{
