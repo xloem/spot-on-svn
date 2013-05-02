@@ -1461,6 +1461,36 @@
                      <number>11</number>
                     </property>
                     <item>
+                     <widget class="QRadioButton" name="ipv4Listener">
+                      <property name="layoutDirection">
+                       <enum>Qt::LeftToRight</enum>
+                      </property>
+                      <property name="text">
+                       <string>IPv&amp;4</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QRadioButton" name="ipv6Listener">
+                      <property name="layoutDirection">
+                       <enum>Qt::LeftToRight</enum>
+                      </property>
+                      <property name="text">
+                       <string>IPv&amp;6</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="Line" name="line">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <widget class="QLabel" name="label_11">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -1536,29 +1566,6 @@
                       </property>
                       <property name="value">
                        <number>4710</number>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QRadioButton" name="ipv4Listener">
-                      <property name="layoutDirection">
-                       <enum>Qt::LeftToRight</enum>
-                      </property>
-                      <property name="text">
-                       <string>IPv&amp;4</string>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QRadioButton" name="ipv6Listener">
-                      <property name="layoutDirection">
-                       <enum>Qt::LeftToRight</enum>
-                      </property>
-                      <property name="text">
-                       <string>IPv&amp;6</string>
                       </property>
                      </widget>
                     </item>
@@ -2658,12 +2665,12 @@
   <tabstop>deactivateKernel</tabstop>
   <tabstop>kernelPath</tabstop>
   <tabstop>selectKernelPath</tabstop>
+  <tabstop>ipv4Listener</tabstop>
+  <tabstop>ipv6Listener</tabstop>
   <tabstop>listenerIPCombo</tabstop>
   <tabstop>listenerIP</tabstop>
   <tabstop>listenerScopeId</tabstop>
   <tabstop>listenerPort</tabstop>
-  <tabstop>ipv4Listener</tabstop>
-  <tabstop>ipv6Listener</tabstop>
   <tabstop>addListener</tabstop>
   <tabstop>showOnlyOnlineListeners</tabstop>
   <tabstop>listeners</tabstop>
