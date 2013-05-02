@@ -781,6 +781,7 @@ spoton_gcrypt::spoton_gcrypt(const QString &cipherType,
 spoton_gcrypt::~spoton_gcrypt()
 {
   gcry_cipher_close(m_cipherHandle);
+  gcry_free(m_passphrase);
   gcry_free(m_symmetricKey);
 }
 
