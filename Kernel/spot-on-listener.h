@@ -34,6 +34,7 @@
 #include <QTcpServer>
 #include <QTimer>
 
+#include "Common/spot-on-external-address.h"
 #include "spot-on-neighbor.h"
 
 class QNetworkInterface;
@@ -84,16 +85,22 @@ class spoton_listener: public spoton_listener_tcp_server
  private:
   QHostAddress m_address;
   QNetworkInterface *m_networkInterface;
+  QTimer m_externalAddressDiscovererTimer;
   QTimer m_timer;
   int m_connections;
   qint64 m_id;
   quint16 m_port;
+  spoton_external_address *m_externalAddress;
   qint64 id(void) const;
   void prepareNetworkInterface(void);
+  void saveExternalAddress(const QHostAddress &address,
+			   QSqlDatabase &db);
   void saveStatus(QSqlDatabase &db);
   void updateConnectionCount(void);
 
  private slots:
+  void slotDiscoverExternalAddress(void);
+  void slotExternalAddressDiscovered(const QHostAddress &address);
   void slotNeighborDisconnected(void);
   void slotNewConnection(void);
   void slotTimeout(void);

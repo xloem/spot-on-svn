@@ -46,13 +46,15 @@ UI_DIR = temp/ui
 MOC_DIR = temp/moc
 RCC_DIR = temp/rcc
 
-HEADERS		= spot-on-gui-server.h \
+HEADERS		= ../Common/spot-on-external-address.h \
+		  spot-on-gui-server.h \
 		  spot-on-kernel.h \
 		  spot-on-listener.h \
 		  spot-on-neighbor.h \
 		  spot-on-shared-reader.h
 
-SOURCES		= ../Common/spot-on-gcrypt.cc \
+SOURCES		= ../Common/spot-on-external-address.cc \
+		  ../Common/spot-on-gcrypt.cc \
 		  ../Common/spot-on-misc.cc \
 		  ../Common/spot-on-send.cc \
 		  spot-on-gui-server.cc \

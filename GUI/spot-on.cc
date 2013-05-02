@@ -1538,58 +1538,62 @@ void spoton::slotListenerCheckChange(int state)
 void spoton::updateListenersTable(QSqlDatabase &db)
 {
   if(!isKernelActive())
-    {
-      QSqlQuery query(db);
+    if(db.isOpen())
+      {
+	QSqlQuery query(db);
 
-      /*
-      ** OK, so the kernel is inactive. Discover the
-      ** listeners that have not been deleted and update some of their
-      ** information.
-      */
+	/*
+	** OK, so the kernel is inactive. Discover the
+	** listeners that have not been deleted and update some of their
+	** information.
+	*/
 
-      query.exec("PRAGMA synchronous = OFF");
-      query.exec("UPDATE listeners SET connections = 0, "
-		 "status = 'off' WHERE "
-		 "(status = 'online' OR connections > 0) AND "
-		 "status_control <> 'deleted'");
-    }
+	query.exec("PRAGMA synchronous = OFF");
+	query.exec("UPDATE listeners SET connections = 0, "
+		   "external_ip_address = NULL, "
+		   "status = 'off' WHERE "
+		   "(status = 'online' OR connections > 0) AND "
+		   "status_control <> 'deleted'");
+      }
 }
 
 void spoton::updateNeighborsTable(QSqlDatabase &db)
 {
   if(!isKernelActive())
-    {
-      QSqlQuery query(db);
+    if(db.isOpen())
+      {
+	QSqlQuery query(db);
 
-      /*
-      ** OK, so the kernel is inactive. Discover the
-      ** neighbors that have not been deleted and update some of their
-      ** information.
-      */
+	/*
+	** OK, so the kernel is inactive. Discover the
+	** neighbors that have not been deleted and update some of their
+	** information.
+	*/
 
-      query.exec("PRAGMA synchronous = OFF");
-      query.exec("UPDATE neighbors SET local_ip_address = '127.0.0.1', "
-		 "local_port = 0, status = 'disconnected' WHERE "
-		 "(local_ip_address <> '127.0.0.1' OR local_port <> 0 OR "
-		 "status <> 'disconnected') AND "
-		 "status_control <> 'deleted'");
-    }
+	query.exec("PRAGMA synchronous = OFF");
+	query.exec("UPDATE neighbors SET local_ip_address = '127.0.0.1', "
+		   "local_port = 0, status = 'disconnected' WHERE "
+		   "(local_ip_address <> '127.0.0.1' OR local_port <> 0 OR "
+		   "status <> 'disconnected') AND "
+		   "status_control <> 'deleted'");
+      }
 }
 
 void spoton::updateParticipantsTable(QSqlDatabase &db)
 {
   if(!isKernelActive())
-    {
-      QSqlQuery query(db);
+    if(db.isOpen())
+      {
+	QSqlQuery query(db);
 
-      /*
-      ** OK, so the kernel is inactive. All participants are offline.
-      */
+	/*
+	** OK, so the kernel is inactive. All participants are offline.
+	*/
 
-      query.exec("PRAGMA synchronous = OFF");
-      query.exec("UPDATE symmetric_keys SET status = 'offline' WHERE "
-		 "status <> 'offline'");
-    }
+	query.exec("PRAGMA synchronous = OFF");
+	query.exec("UPDATE symmetric_keys SET status = 'offline' WHERE "
+		   "status <> 'offline'");
+      }
 }
 
 void spoton::slotSetPassphrase(void)

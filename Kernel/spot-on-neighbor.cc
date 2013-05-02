@@ -204,11 +204,16 @@ spoton_neighbor::~spoton_neighbor()
 
 void spoton_neighbor::slotTimeout(void)
 {
-  prepareNetworkInterface();
-
   /*
   ** We'll change states here.
   */
+
+  /*
+  ** Retrieve the interface that this neighbor is using.
+  ** If the interface disappears, destroy the neighbor.
+  */
+
+  prepareNetworkInterface();
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase

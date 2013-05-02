@@ -49,6 +49,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
   m_address = QHostAddress(ipAddress);
   m_address.setScopeId(scopeId);
   m_connections = 0;
+  m_externalAddress = new spoton_external_address(this);
   m_id = id;
   m_networkInterface = 0;
   m_port = quint16(port.toInt());
@@ -56,13 +57,20 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 	  SIGNAL(newConnection(void)),
 	  this,
 	  SLOT(slotNewConnection(void)));
+  connect(m_externalAddress,
+	  SIGNAL(ipAddressDiscovered(const QHostAddress &)),
+	  this,
+	  SLOT(slotExternalAddressDiscovered(const QHostAddress &)));
   setMaxPendingConnections(maximumClients);
-  QTcpServer::listen(m_address, m_port);
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTimeout(void)));
   m_timer.start(2500);
+  connect(&m_externalAddressDiscovererTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotDiscoverExternalAddress(void)));
 }
 
 spoton_listener::~spoton_listener()
@@ -88,6 +96,7 @@ spoton_listener::~spoton_listener()
 	query.bindValue(0, m_id);
 	query.exec();
 	query.prepare("UPDATE listeners SET connections = 0, "
+		      "external_ip_address = NULL, "
 		      "status = 'off' WHERE OID = ?");
 	query.bindValue(0, m_id);
 	query.exec();
@@ -104,11 +113,16 @@ spoton_listener::~spoton_listener()
 
 void spoton_listener::slotTimeout(void)
 {
-  prepareNetworkInterface();
-
   /*
   ** We'll change states here.
   */
+
+  /*
+  ** Retrieve the interface that this listener is listening on.
+  ** If the interface disappears, destroy the listener.
+  */
+
+  prepareNetworkInterface();
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
@@ -140,11 +154,24 @@ void spoton_listener::slotTimeout(void)
 			  spoton_misc::logError
 			    (QString("spoton_listener::slotTimeout(): "
 				     "%1.").arg(errorString()));
+			else
+			  {
+			    prepareNetworkInterface();
+
+			    /*
+			    ** Initial discovery of the external
+			    ** IP address.
+			    */
+
+			    m_externalAddress->discover();
+			  }
 		      }
 
 		    if(isListening())
-		      if(query.value(1).toInt() != maxPendingConnections())
-			setMaxPendingConnections(query.value(1).toInt());
+		      {
+			if(query.value(1).toInt() != maxPendingConnections())
+			  setMaxPendingConnections(query.value(1).toInt());
+		      }
 		  }
 		else if(status == "off")
 		  {
@@ -157,6 +184,17 @@ void spoton_listener::slotTimeout(void)
 			socket->abort();
 			socket->deleteLater();
 		      }
+		  }
+
+		if(isListening())
+		  {
+		    if(!m_externalAddressDiscovererTimer.isActive())
+		      m_externalAddressDiscovererTimer.start(60000);
+		  }
+		else
+		  {
+		    m_externalAddressDiscovererTimer.stop();
+		    saveExternalAddress(QHostAddress(), db);
 		  }
 
 		if(status == "off" || status == "online")
@@ -213,6 +251,9 @@ void spoton_listener::slotTimeout(void)
 
 void spoton_listener::saveStatus(QSqlDatabase &db)
 {
+  if(!db.isOpen())
+    return;
+
   QSqlQuery query(db);
   QString status("");
 
@@ -512,4 +553,66 @@ void spoton_listener::prepareNetworkInterface(void)
       if(m_networkInterface)
 	break;
     }
+}
+
+void spoton_listener::saveExternalAddress(const QHostAddress &address,
+					  QSqlDatabase &db)
+{
+  if(!db.isOpen())
+    return;
+
+  QSqlQuery query(db);
+
+  if(isListening())
+    {
+      if(address.isNull())
+	{
+	  query.prepare("UPDATE listeners SET "
+			"external_ip_address = NULL "
+			"WHERE OID = ? AND external_ip_address IS "
+			"NOT NULL");
+	  query.bindValue(0, m_id);
+	}
+      else
+	{
+	  query.prepare("UPDATE listeners SET external_ip_address = ? "
+			"WHERE OID = ?");
+	  query.bindValue(0, address.toString());
+	  query.bindValue(1, m_id);
+	}
+    }
+  else
+    {
+      query.prepare("UPDATE listeners SET external_ip_address = NULL "
+		    "WHERE OID = ? AND external_ip_address IS NOT NULL");
+      query.bindValue(0, m_id);
+    }
+
+  query.exec();
+}
+
+void spoton_listener::slotExternalAddressDiscovered
+(const QHostAddress &address)
+{
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_listener_" + QString::number(s_dbId));
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() + "listeners.db");
+
+    if(db.open())
+      saveExternalAddress(address, db);
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase
+    ("spoton_listener_" + QString::number(s_dbId));
+}
+
+void spoton_listener::slotDiscoverExternalAddress(void)
+{
+  if(isListening())
+    m_externalAddress->discover();
 }

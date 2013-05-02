@@ -543,6 +543,9 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &name,
 				       const int neighborOid,
 				       QSqlDatabase &db)
 {
+  if(!db.isOpen())
+    return false;
+
   QSqlQuery query(db);
   bool ok = true;
 

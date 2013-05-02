@@ -314,6 +314,7 @@ void spoton_kernel::cleanupDatabases(void)
 	QSqlQuery query(db);
 
 	query.exec("UPDATE listeners SET connections = 0, "
+		   "external_ip_address = NULL, "
 		   "status = 'off' WHERE status = 'online' AND "
 		   "status_control <> 'deleted'");
       }
