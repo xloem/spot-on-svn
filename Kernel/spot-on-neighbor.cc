@@ -271,10 +271,11 @@ void spoton_neighbor::slotTimeout(void)
 				QNetworkInterface::IsUp))
       {
 	if(m_networkInterface)
-	  spoton_misc::logError(QString("spoton_neighbor::slotTimeout(): "
-					"network interface (%1) is not active. "
-					"Aborting socket.").
-				arg(m_networkInterface->name()));
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::slotTimeout(): "
+		     "network interface (%1) is not active. "
+		     "Aborting socket.").
+	     arg(m_networkInterface->name()));
 	else
 	  spoton_misc::logError("spoton_neighbor::slotTimeout(): "
 				"undefined network interface. "
@@ -824,12 +825,15 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	    publicKeyDecrypt(symmetricKey, &ok);
 
 	  if(ok)
-	    symmetricKeyAlgorithm = spoton_kernel::s_crypt1->
-	      publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
+	    if(!m_keys.contains(symmetricKey))
+	      {
+		symmetricKeyAlgorithm = spoton_kernel::s_crypt1->
+		  publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
 
-	  if(ok)
-	    m_keys.insert(symmetricKey,
-			  new QByteArray(symmetricKeyAlgorithm));
+		if(ok)
+		  m_keys.insert(symmetricKey,
+				new QByteArray(symmetricKeyAlgorithm));
+	      }
 	}
       else
 	{
@@ -837,8 +841,11 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	  name = list.at(1);
 	  publicKeyHash = list.at(0);
 
+	  bool found = false;
+
 	  for(int i = 0; i < m_keys.keys().size(); i++)
 	    {
+	      bool ok = true;
 	      spoton_gcrypt crypt(*m_keys[m_keys.keys().at(i)],
 				  QString("sha512"),
 				  QByteArray(),
@@ -847,20 +854,23 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 				  0,
 				  QString(""));
 
-	      publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
+	      message = crypt.decrypted(message, &ok);
 
 	      if(ok)
 		name = crypt.decrypted(name, &ok);
 
 	      if(ok)
-		message = crypt.decrypted(message, &ok);
+		publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
 
 	      if(ok)
 		{
+		  found = true;
 		  m_keys.remove(m_keys.keys().at(i));
 		  break;
 		}
 	    }
+
+	  ok = found;
 	}
 
       if(ok)
