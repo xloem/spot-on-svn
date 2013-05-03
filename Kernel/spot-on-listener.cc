@@ -429,7 +429,8 @@ void spoton_listener::slotNewConnection(void)
 	    if(ok)
 	      query.bindValue
 		(12,
-		 spoton_kernel::s_crypt1->encrypted(neighbor->peerAddress().
+		 spoton_kernel::s_crypt1->encrypted(m_externalAddress->
+						    address().
 						    toString().toLatin1(),
 						    &ok).toBase64());
 

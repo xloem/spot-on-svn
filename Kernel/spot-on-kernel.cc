@@ -996,17 +996,26 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		}
 
 	      if(ok)
+		data.append
+		  (spoton_gcrypt::publicKeyEncrypt(symmetricKeyAlgorithm,
+						   publicKey, &ok).
+		   toBase64());
+
+	      if(ok)
 		{
-		  data.append
-		    (spoton_gcrypt::publicKeyEncrypt(symmetricKeyAlgorithm,
-						     publicKey, &ok).
-		     toBase64());
-		  data.append("\n");
+		  char c = 0;
+		  short ttl = s_settings.value
+		    ("kernel/ttl_0013", 16).toInt();
+
+		  memcpy(&c, static_cast<void *> (&ttl), 1);
+		  data.prepend(c);
+		  list.append(data);
 		}
 
 	      if(ok)
 		{
-		  QByteArray hash;
+		  data.clear();
+
 		  spoton_gcrypt crypt(symmetricKeyAlgorithm,
 				      QString("sha512"),
 				      QByteArray(),
@@ -1015,27 +1024,13 @@ void spoton_kernel::slotStatusTimerExpired(void)
 				      0,
 				      QString(""));
 
-		  hash =
-		    crypt.keyedHash
-		    (symmetricKey + symmetricKeyAlgorithm +
-		     name + myPublicKeyHash + status, &ok);
-
-		  if(ok)
-		    {
-		      data.append(crypt.encrypted(hash, &ok).toBase64());
-		      data.append("\n");
-		    }
+		  data.append
+		    (crypt.encrypted(myPublicKeyHash, &ok).toBase64());
+		  data.append("\n");
 
 		  if(ok)
 		    {
 		      data.append(crypt.encrypted(name, &ok).toBase64());
-		      data.append("\n");
-		    }
-
-		  if(ok)
-		    {
-		      data.append
-			(crypt.encrypted(myPublicKeyHash, &ok).toBase64());
 		      data.append("\n");
 		    }
 

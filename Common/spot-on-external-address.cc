@@ -33,6 +33,7 @@
 spoton_external_address::spoton_external_address(QObject *parent):
   QNetworkAccessManager(parent)
 {
+  m_address = QHostAddress();
 }
 
 void spoton_external_address::discover(void)
@@ -63,12 +64,13 @@ void spoton_external_address::slotFinished(void)
       bytes.remove(0, bytes.indexOf("Current IP Address:") +
 		   strlen("Current IP Address:"));
       bytes = bytes.mid(0, bytes.indexOf("<")).trimmed();
-
-      QHostAddress address(bytes.constData());
-
-      if(!address.isNull())
-	emit ipAddressDiscovered(address);
-
+      m_address = QHostAddress(bytes.constData());
+      emit ipAddressDiscovered(m_address);
       reply->deleteLater();
     }
+}
+
+QHostAddress spoton_external_address::address(void) const
+{
+  return m_address;
 }

@@ -19,12 +19,12 @@ Completed Items
 11.    Add presence information to the Participants table.
 12.    Provide a means of sending a message to friends only.
 13.    Add UUIDs to neighbors for DHT/Sticky purposes. 
-14.     Display additional information pertaining to network information in
+14.    Display additional information pertaining to network information in
        the Neighbors table.
+15.    Re-encode various databases whenever the passphrase is changed.
 
 Remaining Items
 
-1.     Re-encode various databases whenever the passphrase is changed.
 2.     Add a database for the temporary chat keys of connected neighbors.
 3.     Secure connections between the interface and the kernel.
 4.     Offline e-mail.
@@ -38,7 +38,7 @@ Ideas
 
        Auto-fetching needs a checkbox. Fetching is undefined.
 
-       Add one listener before the kernel can be activated?. No,
+       Add one listener before the kernel can be activated? No,
        a kernel's importance is not defined by listeners.
 
        When listeners are only used as servers, add the name of the IRC
@@ -49,17 +49,19 @@ Ideas
 
        Neighbors need names.
 
-       Be sure that the sticky of a neighbor is not the IP but the key/UUID -> DHT!
+       Be sure that the sticky of a neighbor is not the IP but the
+       key/UUID. DHT!
 
        Search requires three radio buttons for file, hash, and URL.
 
        Provide a means of filtering messages for the channel concept.
 
-       The Participants table needs to contain friends and connected neighbors.
+       The Participants table needs to contain friends and connected
+       neighbors.
 
        Provide a means of filtering messages in chat.
 
-       Spot-On as a plugin compile, e.g for Dooble.
+       Spot-On as a plugin.
 
        Do not hide the OID column? The OID is always available. It is
        an internal database field.
@@ -68,24 +70,19 @@ Ideas
 
        The kernel's GUI server port is non-standard. It's fine.
 
-       Adding new neighbors create new local ports. As defined.
+       Adding new neighbors creates new local ports. As defined.
 
        May need GET and PUT messages and denial of those.
 
-       When user sets the status = Away, post a Message: "I am away" (to thet the timestamp).
+       WebKit to retrieve a Web site, convert it to ascii and post as
+       e-mail.
 
-       Webkit Load.dll to retrieve a website to ascii and post as email.
+       Micro blog by f2f turtle hopping with new UUID.
 
-       Micro Blog by f2f turtle hopping with new Blog UUID.
+       Check box column in the Participants table to broadcast
+       own IP information to checked friends.
 
-       Check box column in the participants table to broadcast own IP/Port to checked friends.
+       Check box in Neighbors tab to connect only to friends
+       (third option: hybrid f2f and p2p).
 
-       Check box in neighbors tab to connect only to friends (third option: Hybrid f2f and p2p).
-
-       Settings Tab: Manual QBox setting to override my extenral IP and Port.
-
-       OK-Website-Reply for Listeners IP/Port
-
-       Download Destiller Option / Check Box to not accept any incoming URL (Bootstrapper/Chat Server Modus)
-
-       
+       Settings tab: option to override my external IP and port?
