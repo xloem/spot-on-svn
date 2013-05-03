@@ -50,7 +50,7 @@ Ideas
        Neighbors need names.
 
        Be sure that the sticky of a neighbor is not the IP but the
-       key/UUID. DHT!
+       UUID. DHT!
 
        Search requires three radio buttons for file, hash, and URL.
 
@@ -68,7 +68,7 @@ Ideas
 
        TTLs for channels.
 
-       The kernel's GUI server port is non-standard. It's fine.
+       The kernel's server port is non-standard. It's fine.
 
        Adding new neighbors creates new local ports. As defined.
 
@@ -77,10 +77,10 @@ Ideas
        WebKit to retrieve a Web site, convert it to ascii and post as
        e-mail.
 
-       Micro blog by f2f turtle hopping with new UUID.
+       Micro blog by f2f turtle-hopping with new UUID.
 
        Check box column in the Participants table to broadcast
-       own IP information to checked friends.
+       own IP information to friends.
 
        Check box in Neighbors tab to connect only to friends
        (third option: hybrid f2f and p2p).

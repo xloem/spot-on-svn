@@ -82,11 +82,19 @@ Status (Base-64) (Ciphertext, SK)
 
 Greetings-5
 Echoed? No
+
 Message Type ("0014")
 UUID (Plaintext)
 
+Greetings-6
+Echoed? No
+
+Message Type ("0015")
+0 (Plaintext)
+
 URL
 Echoed? Yes
+
 Message Type ("0020") (Plaintext)
 TTL (Plaintext)
 Symmetric Key (Base-64) (Ciphertext, PK)
