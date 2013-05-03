@@ -334,8 +334,8 @@ void spoton_kernel::cleanupDatabases(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("UPDATE neighbors SET local_ip_address = '127.0.0.1', "
-		   "local_port = 0, "
+	query.exec("UPDATE neighbors SET external_ip_address = NULL, "
+		   "local_ip_address = '127.0.0.1', local_port = 0, "
 		   "status = 'disconnected' WHERE "
 		   "status = 'connected' AND status_control <> 'deleted'");
       }

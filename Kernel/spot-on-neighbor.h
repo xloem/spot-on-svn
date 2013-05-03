@@ -34,6 +34,8 @@
 #include <QTcpSocket>
 #include <QTimer>
 
+#include "Common/spot-on-external-address.h"
+
 class QNetworkInterface;
 
 class spoton_neighbor: public QTcpSocket
@@ -60,12 +62,14 @@ class spoton_neighbor: public QTcpSocket
   QHostAddress m_address;
   QCache<QByteArray, QByteArray> m_keys;
   QNetworkInterface *m_networkInterface;
+  QTimer m_externalAddressDiscovererTimer;
   QTimer m_lifetime;
   QTimer m_sendKeysTimer;
   QTimer m_timer;
   qint64 m_id;
   quint16 m_port;
   quint64 m_sendKeysOffset;
+  spoton_external_address *m_externalAddress;
   void prepareNetworkInterface(void);
   void process0000(int length, const QByteArray &data);
   void process0010(int length, const QByteArray &data);
@@ -73,6 +77,8 @@ class spoton_neighbor: public QTcpSocket
   void process0012(int length, const QByteArray &data);
   void process0013(int length, const QByteArray &data);
   void process0014(int length, const QByteArray &data);
+  void saveExternalAddress(const QHostAddress &address,
+			   QSqlDatabase &db);
   void saveParticipantStatus(const QByteArray &name,
 			     const QByteArray &publicKeyHash);
   void saveParticipantStatus(const QByteArray &name,
@@ -87,7 +93,9 @@ class spoton_neighbor: public QTcpSocket
 
  private slots:
   void slotConnected(void);
+  void slotDiscoverExternalAddress(void);
   void slotError(QAbstractSocket::SocketError error);
+  void slotExternalAddressDiscovered(const QHostAddress &address);
   void slotLifetimeExpired(void);
   void slotReadyRead(void);
   void slotReceivedChatMessage(const QByteArray &data, const qint64 id);

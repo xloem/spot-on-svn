@@ -26,7 +26,7 @@
 */
 
 #ifndef _spoton_external_address_h_
-#define _spoton_external_Address_h_
+#define _spoton_external_address_h_
 
 #include <QHostAddress>
 #include <QNetworkAccessManager>

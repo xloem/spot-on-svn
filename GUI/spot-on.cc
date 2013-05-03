@@ -1577,12 +1577,13 @@ void spoton::updateNeighborsTable(QSqlDatabase &db)
 
 	/*
 	** OK, so the kernel is inactive. Discover the
-	** neighbors that have not been deleted and update some of their
-	** information.
+	** neighbors that have not been deleted and not disconnected
+	** and update some of their information.
 	*/
 
 	query.exec("PRAGMA synchronous = OFF");
-	query.exec("UPDATE neighbors SET local_ip_address = '127.0.0.1', "
+	query.exec("UPDATE neighbors SET external_ip_address = NULL, "
+		   "local_ip_address = '127.0.0.1', "
 		   "local_port = 0, status = 'disconnected' WHERE "
 		   "(local_ip_address <> '127.0.0.1' OR local_port <> 0 OR "
 		   "status <> 'disconnected') AND "

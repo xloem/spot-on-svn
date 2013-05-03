@@ -49,6 +49,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   s_dbId += 1;
   setSocketDescriptor(socketDescriptor);
   m_address = peerAddress();
+  m_externalAddress = new spoton_external_address(this);
   m_id = std::numeric_limits<qint64>::min();
   m_networkInterface = 0;
   m_port = peerPort();
@@ -66,6 +67,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(readyRead(void)),
 	  this,
 	  SLOT(slotReadyRead(void)));
+  connect(m_externalAddress,
+	  SIGNAL(ipAddressDiscovered(const QHostAddress &)),
+	  this,
+	  SLOT(slotExternalAddressDiscovered(const QHostAddress &)));
   connect(&m_sendKeysTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -78,6 +83,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotLifetimeExpired(void)));
+  connect(&m_externalAddressDiscovererTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotDiscoverExternalAddress(void)));
   m_sendKeysTimer.start(2500);
   m_timer.start(2500);
   m_lifetime.setInterval(10 * 60 * 1000);
@@ -94,6 +103,7 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
   s_dbId += 1;
   m_address = QHostAddress(ipAddress);
   m_address.setScopeId(scopeId);
+  m_externalAddress = new spoton_external_address(this);
   m_id = id;
   m_networkInterface = 0;
   m_port = quint16(port.toInt());
@@ -120,6 +130,10 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
 	  SIGNAL(readyRead(void)),
 	  this,
 	  SLOT(slotReadyRead(void)));
+  connect(m_externalAddress,
+	  SIGNAL(ipAddressDiscovered(const QHostAddress &)),
+	  this,
+	  SLOT(slotExternalAddressDiscovered(const QHostAddress &)));
   connect(&m_sendKeysTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -132,6 +146,10 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotLifetimeExpired(void)));
+  connect(&m_externalAddressDiscovererTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotDiscoverExternalAddress(void)));
   m_timer.start(2500);
   m_lifetime.setInterval(10 * 60 * 1000);
   m_lifetime.start();
@@ -187,7 +205,8 @@ spoton_neighbor::~spoton_neighbor()
 		      "OID = ? AND status_control = 'deleted'");
 	query.bindValue(0, m_id);
 	query.exec();
-	query.prepare("UPDATE neighbors SET local_ip_address = '127.0.0.1', "
+	query.prepare("UPDATE neighbors SET external_ip_address = NULL, "
+		      "local_ip_address = '127.0.0.1', "
 		      "local_port = 0, status = 'disconnected' "
 		      "WHERE OID = ?");
 	query.bindValue(0, m_id);
@@ -493,6 +512,13 @@ void spoton_neighbor::slotConnected(void)
 
   QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
   sendUuid();
+
+  /*
+  ** Initial discovery of the external IP address.
+  */
+
+  m_externalAddress->discover();
+  m_externalAddressDiscovererTimer.start(60000);
 }
 
 void spoton_neighbor::savePublicKey(const QByteArray &name,
@@ -1369,4 +1395,71 @@ void spoton_neighbor::sendUuid(void)
   else
     spoton_misc::logError("spoton_neighbor::sendUuid(): "
 			  "QUuid::fromRfc4122() failure.");
+}
+
+void spoton_neighbor::saveExternalAddress(const QHostAddress &address,
+					  QSqlDatabase &db)
+{
+  if(!db.isOpen())
+    return;
+
+  QSqlQuery query(db);
+  bool ok = true;
+
+  if(state() == QAbstractSocket::ConnectedState)
+    {
+      if(address.isNull())
+	{
+	  query.prepare("UPDATE neighbors SET "
+			"external_ip_address = NULL "
+			"WHERE OID = ? AND external_ip_address IS "
+			"NOT NULL");
+	  query.bindValue(0, m_id);
+	}
+      else if(spoton_kernel::s_crypt1)
+	{
+	  query.prepare("UPDATE neighbors SET external_ip_address = ? "
+			"WHERE OID = ?");
+	  query.bindValue
+	    (0, spoton_kernel::s_crypt1->encrypted(address.toString().
+						   toLatin1(), &ok).
+	     toBase64());
+	  query.bindValue(1, m_id);
+	}
+    }
+  else
+    {
+      query.prepare("UPDATE neighbors SET external_ip_address = NULL "
+		    "WHERE OID = ? AND external_ip_address IS NOT NULL");
+      query.bindValue(0, m_id);
+    }
+
+  if(ok)
+    query.exec();
+}
+
+void spoton_neighbor::slotExternalAddressDiscovered
+(const QHostAddress &address)
+{
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
+
+    if(db.open())
+      saveExternalAddress(address, db);
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase
+    ("spoton_neighbor_" + QString::number(s_dbId));
+}
+
+void spoton_neighbor::slotDiscoverExternalAddress(void)
+{
+  if(state() == QAbstractSocket::ConnectedState)
+    m_externalAddress->discover();
 }
