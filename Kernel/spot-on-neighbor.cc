@@ -142,6 +142,7 @@ spoton_neighbor::~spoton_neighbor()
   spoton_misc::logError
     (QString("Neighbor %1:%2 deallocated.").arg(m_address.toString()).
      arg(m_port));
+  m_keys.clear();
   m_timer.stop();
 
   {
