@@ -313,6 +313,8 @@ void spoton_kernel::cleanupDatabases(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("DELETE FROM listeners WHERE "
+		   "status_control = 'deleted'");
 	query.exec("UPDATE listeners SET connections = 0, "
 		   "external_ip_address = NULL, "
 		   "status = 'off' WHERE status = 'online' AND "
@@ -334,6 +336,8 @@ void spoton_kernel::cleanupDatabases(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("DELETE FROM neighbors WHERE "
+		   "status_control = 'deleted'");
 	query.exec("UPDATE neighbors SET external_ip_address = NULL, "
 		   "local_ip_address = '127.0.0.1', local_port = 0, "
 		   "status = 'disconnected' WHERE "
@@ -425,7 +429,7 @@ void spoton_kernel::prepareListeners(void)
 
 		  if(listener)
 		    {
-		      QString state(query.value(3).toString().trimmed());
+		      QString state(query.value(3).toString());
 
 		      if(state == "deleted")
 			{
@@ -526,7 +530,7 @@ void spoton_kernel::prepareNeighbors(void)
 
 		  if(neighbor)
 		    {
-		      QString state(query.value(3).toString().trimmed());
+		      QString state(query.value(3).toString());
 
 		      if(state == "deleted")
 			{

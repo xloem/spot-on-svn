@@ -29,6 +29,7 @@
 #define _spoton_neighbor_h_
 
 #include <QCache>
+#include <QDateTime>
 #include <QHostAddress>
 #include <QSqlDatabase>
 #include <QTcpSocket>
@@ -59,6 +60,7 @@ class spoton_neighbor: public QTcpSocket
 
  private:
   QByteArray m_data;
+  QDateTime m_lastReadTime;
   QHostAddress m_address;
   QCache<QByteArray, QByteArray> m_keys;
   QNetworkInterface *m_networkInterface;
@@ -67,8 +69,8 @@ class spoton_neighbor: public QTcpSocket
   QTimer m_sendKeysTimer;
   QTimer m_timer;
   qint64 m_id;
+  qint64 m_sendKeysOffset;
   quint16 m_port;
-  quint64 m_sendKeysOffset;
   spoton_external_address *m_externalAddress;
   void prepareNetworkInterface(void);
   void process0000(int length, const QByteArray &data);

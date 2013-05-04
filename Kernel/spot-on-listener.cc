@@ -144,7 +144,7 @@ void spoton_listener::slotTimeout(void)
 	  {
 	    if(query.next())
 	      {
-		QString status(query.value(0).toString().trimmed());
+		QString status(query.value(0).toString());
 
 		if(status == "online")
 		  {

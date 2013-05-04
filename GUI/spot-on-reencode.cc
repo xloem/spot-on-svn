@@ -88,7 +88,7 @@ void spoton_reencode::reencode(spoton *ui,
 					    fromBase64(query.
 						       value(0).
 						       toByteArray()),
-					    &ok).trimmed().constData();
+					    &ok).constData();
 
 	      if(ok)
 		accepted = oldCrypt->decrypted(QByteArray::
@@ -166,28 +166,28 @@ void spoton_reencode::reencode(spoton *ui,
 					      fromBase64(query.
 							 value(0).
 							 toByteArray()),
-					      &ok).trimmed().constData();
+					      &ok).constData();
 
 	      if(ok)
 		port = oldCrypt->decrypted(QByteArray::
 					   fromBase64(query.
 						      value(1).
 						      toByteArray()),
-					   &ok).trimmed().constData();
+					   &ok).constData();
 
 	      if(ok)
 		scopeId = oldCrypt->decrypted(QByteArray::
 					      fromBase64(query.
 							 value(2).
 							 toByteArray()),
-					      &ok).trimmed().constData();
+					      &ok).constData();
 
 	      if(ok)
 		protocol = oldCrypt->decrypted(QByteArray::
 					       fromBase64(query.
 							  value(3).
 							  toByteArray()),
-					       &ok).trimmed().constData();
+					       &ok).constData();
 
 	      if(ok)
 		updateQuery.bindValue
@@ -269,28 +269,28 @@ void spoton_reencode::reencode(spoton *ui,
 					      fromBase64(query.
 							 value(0).
 							 toByteArray()),
-					      &ok).trimmed().constData();
+					      &ok).constData();
 
 	      if(ok)
 		port = oldCrypt->decrypted(QByteArray::
 					   fromBase64(query.
 						      value(1).
 						      toByteArray()),
-					   &ok).trimmed().constData();
+					   &ok).constData();
 
 	      if(ok)
 		scopeId = oldCrypt->decrypted(QByteArray::
 					      fromBase64(query.
 							 value(2).
 							 toByteArray()),
-					      &ok).trimmed().constData();
+					      &ok).constData();
 
 	      if(ok)
 		country = oldCrypt->decrypted(QByteArray::
 					      fromBase64(query.
 							 value(3).
 							 toByteArray()),
-					      &ok).trimmed().constData();
+					      &ok).constData();
 
 	      if(ok)
 		updateQuery.bindValue

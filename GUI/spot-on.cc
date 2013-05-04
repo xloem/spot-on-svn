@@ -976,13 +976,12 @@ void spoton::slotPopulateListeners(void)
 						    fromBase64(query.
 							       value(i).
 							       toByteArray()),
-						    &ok).trimmed().
+						    &ok).
 				 constData());
 			  }
 			else
 			  item = new QTableWidgetItem(query.
-						      value(i).toString().
-						      trimmed());
+						      value(i).toString());
 
 			item->setTextAlignment(Qt::AlignLeft |
 					       Qt::AlignVCenter);
@@ -992,7 +991,7 @@ void spoton::slotPopulateListeners(void)
 
 			if(i == 1)
 			  {
-			    if(query.value(i).toString().trimmed() == "online")
+			    if(query.value(i).toString() == "online")
 			      item->setBackground
 				(QBrush(QColor("lightgreen")));
 			    else
@@ -1155,24 +1154,24 @@ void spoton::slotPopulateNeighbors(void)
 						  fromBase64(query.
 							     value(i).
 							     toByteArray()),
-						  &ok).trimmed().constData());
+						  &ok).constData());
 			  }
 		      }
 		    else
 		      item = new QTableWidgetItem
-			(query.value(i).toString().trimmed());
+			(query.value(i).toString());
 
 		    item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 		    item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
 		    if(i == 2)
 		      {
-			if(query.value(i).toString().trimmed() == "connected")
+			if(query.value(i).toString() == "connected")
 			  item->setBackground(QBrush(QColor("lightgreen")));
 			else
 			  item->setBackground(QBrush());
 
-			if(query.value(i).toString().trimmed() == "connected")
+			if(query.value(i).toString() == "connected")
 			  item->setIcon(QIcon(":/connect_established.png"));
 			else
 			  item->setIcon(QIcon(":/connect_no.png"));
@@ -1560,6 +1559,8 @@ void spoton::updateListenersTable(QSqlDatabase &db)
 	*/
 
 	query.exec("PRAGMA synchronous = OFF");
+	query.exec("DELETE FROM listeners WHERE "
+		   "status_control = 'deleted'");
 	query.exec("UPDATE listeners SET connections = 0, "
 		   "external_ip_address = NULL, "
 		   "status = 'off' WHERE "
@@ -1582,6 +1583,8 @@ void spoton::updateNeighborsTable(QSqlDatabase &db)
 	*/
 
 	query.exec("PRAGMA synchronous = OFF");
+	query.exec("DELETE FROM neighbors WHERE "
+		   "status_control = 'deleted'");
 	query.exec("UPDATE neighbors SET external_ip_address = NULL, "
 		   "local_ip_address = '127.0.0.1', "
 		   "local_port = 0, status = 'disconnected' WHERE "
@@ -2360,7 +2363,7 @@ void spoton::slotPopulateParticipants(void)
 		      "status FROM friends_public_keys"))
 	  while(query.next())
 	    {
-	      QString status(query.value(4).toString().trimmed());
+	      QString status(query.value(4).toString());
 	      bool temporary =
 		query.value(2).toInt() == -1 ? false : true;
 
@@ -2379,11 +2382,10 @@ void spoton::slotPopulateParticipants(void)
 
 		  if(i == 0)
 		    item = new QTableWidgetItem
-		      (QString::fromUtf8(query.value(i).toByteArray()).
-		       trimmed());
+		      (QString::fromUtf8(query.value(i).toByteArray()));
 		  else if(i == 4)
 		    {
-		      QString status(query.value(i).toString().trimmed());
+		      QString status(query.value(i).toString());
 
 		      status[0] = status.toUpper()[0];
 
@@ -2399,8 +2401,7 @@ void spoton::slotPopulateParticipants(void)
 			item = new QTableWidgetItem(tr("Friend"));
 		    }
 		  else
-		    item = new QTableWidgetItem(query.value(i).toString().
-						trimmed());
+		    item = new QTableWidgetItem(query.value(i).toString());
 
 		  item->setFlags
 		    (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -2464,7 +2465,7 @@ void spoton::slotPopulateParticipants(void)
 		  m_ui.participants->setItem(row - 1, i, item);
 		}
 
-	      if(hashes.contains(query.value(3).toString().trimmed()))
+	      if(hashes.contains(query.value(3).toString()))
 		rows.append(row - 1);
 	    }
 
@@ -2579,7 +2580,6 @@ void spoton::slotReceivedKernelMessage(void)
 
 	  if(data.startsWith("message_"))
 	    {
-	      data = data.trimmed();
 	      data.remove(0, strlen("message_"));
 
 	      if(!data.isEmpty())
@@ -2602,7 +2602,6 @@ void spoton::slotReceivedKernelMessage(void)
 		  if(message.isEmpty())
 		    message = "unknown";
 
-		  name = name.mid(0, name.indexOf('\n')).trimmed();
 		  msg.append
 		    (QDateTime::currentDateTime().
 		     toString("[hh:mm<font color=grey>:ss</font>] "));
@@ -3009,7 +3008,7 @@ void spoton::slotPopulateCountries(void)
 					     fromBase64(query.
 							value(0).
 							toByteArray()),
-					     &ok).trimmed().constData();
+					     &ok).constData();
 
 		if(ok)
 		  accepted = m_crypt->decrypted(QByteArray::
@@ -3568,30 +3567,29 @@ void spoton::slotAddFriendsKey(void)
 	      return;
 
 	    QByteArray name(list.at(0));
-	    QByteArray publicKey(list.at(1));
 
 	    if(name.startsWith("K") || name.startsWith("k"))
-          {
 	      name.remove(0, 1);
-          }
-        else
-          {
-           QMessageBox mb(this);
+	    else
+	      {
+		QMessageBox mb(this);
 
-            #ifdef Q_OS_MAC
-              mb.setAttribute(Qt::WA_MacMetalStyle, true);
-            #endif
-              mb.setIcon(QMessageBox::Question);
-              mb.setWindowTitle(tr("Spot-On: Key Information"));
-              mb.setIconPixmap(QPixmap(":/addkey.png"));
-              mb.setWindowModality(Qt::WindowModal);
-              mb.setText(tr("Are you sure that this is the Key? It "
-                 "seems to be a Repleo or something else? "
-                 "The Key must start with either "
-                 "the letter K or the letter k."));
-              mb.exec();
-             return;
-            }
+#ifdef Q_OS_MAC
+		mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+		mb.setIcon(QMessageBox::Question);
+		mb.setWindowTitle(tr("Spot-On: Key Information"));
+		mb.setIconPixmap(QPixmap(":/addkey.png"));
+		mb.setWindowModality(Qt::WindowModal);
+		mb.setText(tr("The provided key appears invalid. It "
+			      "seems to be a repleo or something else. "
+			      "The key must start with either "
+			      "the letter K or the letter k."));
+		mb.exec();
+		return;
+	      }
+
+	    QByteArray publicKey(list.at(1));
 
 	    name = QByteArray::fromBase64(name);
 	    publicKey = QByteArray::fromBase64(publicKey);
@@ -3607,7 +3605,6 @@ void spoton::slotAddFriendsKey(void)
       }
 
       QSqlDatabase::removeDatabase("spoton");
-      m_ui.tab->setCurrentIndex(0);
     }
   else
     {
@@ -3738,7 +3735,6 @@ void spoton::slotAddFriendsKey(void)
 	  }
 
 	  QSqlDatabase::removeDatabase("spoton");
-      m_ui.tab->setCurrentIndex(0);
 	}
     }
 }

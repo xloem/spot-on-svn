@@ -139,7 +139,6 @@ void spoton_gui_server::slotReadyRead(void)
 	      else if(message.startsWith("keys_"))
 		{
 		  message.remove(0, strlen("keys_"));
-		  message = message.trimmed();
 
 		  QList<QByteArray> list(message.split('_'));
 

@@ -224,6 +224,13 @@ spoton_neighbor::~spoton_neighbor()
 
 void spoton_neighbor::slotTimeout(void)
 {
+  if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 60)
+    {
+      spoton_misc::logError("spoton_neighbor::slotTimeout(): "
+			    "aborting because of silent connection.");
+      abort();
+    }
+
   /*
   ** We'll change states here.
   */
@@ -255,7 +262,7 @@ void spoton_neighbor::slotTimeout(void)
 	  {
 	    if(query.next())
 	      {
-		QString status(query.value(0).toString().trimmed());
+		QString status(query.value(0).toString());
 
 		if(status == "connected")
 		  {
@@ -382,6 +389,7 @@ void spoton_neighbor::slotSendKeys(void)
 void spoton_neighbor::slotReadyRead(void)
 {
   m_data.append(readAll());
+  m_lastReadTime = QDateTime::currentDateTime();
 
   if(m_data.isEmpty() ||
      m_data.length() > spoton_kernel::s_settings.
@@ -478,15 +486,19 @@ void spoton_neighbor::slotReadyRead(void)
 	  else if(length > 0 && data.contains("type=0014&content="))
 	    process0014(length, data);
 	  else
-	    spoton_misc::logError(QString("spoton_neighbor::slotReadyRead(): "
-					  "received unknown message (%1).").
-				  arg(data.constData()));
+	    {
+	      spoton_misc::logError("spoton_neighbor::slotReadyRead(): "
+				    "received irregular data. Aborting.");
+	      abort();
+	    }
 	}
     }
 }
 
 void spoton_neighbor::slotConnected(void)
 {
+  m_lastReadTime = QDateTime::currentDateTime();
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
       ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
@@ -1150,7 +1162,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	  publicKeyHash = list.at(0);
 	  status = list.at(2);
 
-	  bool found = true;
+	  bool found = false;
 
 	  for(int i = 0; i < m_keys.keys().size(); i++)
 	    {

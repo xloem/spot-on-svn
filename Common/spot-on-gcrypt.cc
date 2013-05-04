@@ -792,6 +792,8 @@ QByteArray spoton_gcrypt::decrypted(const QByteArray &data, bool *ok)
       if(ok)
 	*ok = false;
 
+      spoton_misc::logError("spoton_gcrypt::decrypted(): m_cipherHandle "
+			    "is 0.");
       return data;
     }
 
@@ -891,6 +893,8 @@ QByteArray spoton_gcrypt::encrypted(const QByteArray &data, bool *ok)
       if(ok)
 	*ok = false;
 
+      spoton_misc::logError
+	("spoton_gcrypt::encrypted(): m_cipherHandle is 0.");
       return data;
     }
 
@@ -981,7 +985,11 @@ size_t spoton_gcrypt::symmetricKeyLength(void) const
 bool spoton_gcrypt::setInitializationVector(QByteArray &bytes)
 {
   if(!m_cipherHandle)
-    return false;
+    {
+      spoton_misc::logError("spoton_gcrypt::setInitializationVector(): "
+			    "m_cipherHandle is 0.");
+      return false;
+    }
 
   bool ok = true;
   size_t ivLength = 0;
