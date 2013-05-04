@@ -3583,6 +3583,7 @@ void spoton::slotAddFriendsKey(void)
             #endif
               mb.setIcon(QMessageBox::Question);
               mb.setWindowTitle(tr("Spot-On: Key Information"));
+              mb.setIconPixmap(QPixmap(":/addkey.png"));
               mb.setWindowModality(Qt::WindowModal);
               mb.setText(tr("Are you sure that this is the Key? It "
                  "seems to be a Repleo or something else? "
@@ -3606,6 +3607,7 @@ void spoton::slotAddFriendsKey(void)
       }
 
       QSqlDatabase::removeDatabase("spoton");
+      m_ui.tab->setCurrentIndex(0);
     }
   else
     {
@@ -3635,6 +3637,7 @@ void spoton::slotAddFriendsKey(void)
         #endif
           mb.setIcon(QMessageBox::Question);
           mb.setWindowTitle(tr("Spot-On: Repleo Information"));
+          mb.setIconPixmap(QPixmap(":/repleo.png"));
           mb.setWindowModality(Qt::WindowModal);
           mb.setText(tr("Are you sure that this is the Repleo? It "
                 "seems to be a Key or something else? "
@@ -3735,6 +3738,7 @@ void spoton::slotAddFriendsKey(void)
 	  }
 
 	  QSqlDatabase::removeDatabase("spoton");
+      m_ui.tab->setCurrentIndex(0);
 	}
     }
 }
