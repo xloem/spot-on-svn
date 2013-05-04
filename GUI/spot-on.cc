@@ -3571,7 +3571,26 @@ void spoton::slotAddFriendsKey(void)
 	    QByteArray publicKey(list.at(1));
 
 	    if(name.startsWith("K") || name.startsWith("k"))
+          {
 	      name.remove(0, 1);
+          }
+        else
+          {
+           QMessageBox mb(this);
+
+            #ifdef Q_OS_MAC
+              mb.setAttribute(Qt::WA_MacMetalStyle, true);
+            #endif
+              mb.setIcon(QMessageBox::Question);
+              mb.setWindowTitle(tr("Spot-On: Key Information"));
+              mb.setWindowModality(Qt::WindowModal);
+              mb.setText(tr("Are you sure that this is the Key? It "
+                 "seems to be a Repleo or something else? "
+                 "The Key must start with either "
+                 "the letter K or the letter k."));
+              mb.exec();
+             return;
+            }
 
 	    name = QByteArray::fromBase64(name);
 	    publicKey = QByteArray::fromBase64(publicKey);
@@ -3604,7 +3623,26 @@ void spoton::slotAddFriendsKey(void)
 			toLatin1());
 
       if(repleo.startsWith("R") || repleo.startsWith("r"))
-	repleo.remove(0, 1);
+       {
+          repleo.remove(0, 1);
+       }
+      else
+       {
+       QMessageBox mb(this);
+
+        #ifdef Q_OS_MAC
+          mb.setAttribute(Qt::WA_MacMetalStyle, true);
+        #endif
+          mb.setIcon(QMessageBox::Question);
+          mb.setWindowTitle(tr("Spot-On: Repleo Information"));
+          mb.setWindowModality(Qt::WindowModal);
+          mb.setText(tr("Are you sure that this is the Repleo? It "
+                "seems to be a Key or something else? "
+                "The Repleo must start with either "
+                "the letter R or the letter r."));
+          mb.exec();
+            return;
+        }
 
       QList<QByteArray> list(repleo.split('@'));
 
