@@ -51,6 +51,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_address = peerAddress();
   m_externalAddress = new spoton_external_address(this);
   m_id = std::numeric_limits<qint64>::min();
+  m_lastReadTime = QDateTime::currentDateTime();
   m_networkInterface = 0;
   m_port = peerPort();
   m_sendKeysOffset = 0;
@@ -71,6 +72,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(ipAddressDiscovered(const QHostAddress &)),
 	  this,
 	  SLOT(slotExternalAddressDiscovered(const QHostAddress &)));
+  connect(&m_keepAliveTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotSendKeepAlive(void)));
   connect(&m_sendKeysTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -105,6 +110,7 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
   m_address.setScopeId(scopeId);
   m_externalAddress = new spoton_external_address(this);
   m_id = id;
+  m_lastReadTime = QDateTime::currentDateTime();
   m_networkInterface = 0;
   m_port = quint16(port.toInt());
   m_sendKeysOffset = 0;
@@ -134,6 +140,10 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
 	  SIGNAL(ipAddressDiscovered(const QHostAddress &)),
 	  this,
 	  SLOT(slotExternalAddressDiscovered(const QHostAddress &)));
+  connect(&m_keepAliveTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotSendKeepAlive(void)));
   connect(&m_sendKeysTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -485,6 +495,8 @@ void spoton_neighbor::slotReadyRead(void)
 	    }
 	  else if(length > 0 && data.contains("type=0014&content="))
 	    process0014(length, data);
+	  else if(length > 0 && data.contains("type=0015&content="))
+	    process0015(length, data);
 	  else
 	    {
 	      spoton_misc::logError("spoton_neighbor::slotReadyRead(): "
@@ -497,6 +509,7 @@ void spoton_neighbor::slotReadyRead(void)
 
 void spoton_neighbor::slotConnected(void)
 {
+  m_keepAliveTimer.start(60000);
   m_lastReadTime = QDateTime::currentDateTime();
 
   {
@@ -1277,6 +1290,30 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
        arg(length).arg(data.length()));
 }
 
+void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
+{
+  length -= strlen("type=0015&content=");
+
+  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
+
+  data.remove
+    (0,
+     data.indexOf("type=0015&content=") + strlen("type=0015&content="));
+
+  if(length == data.length())
+    {
+      data = QByteArray::fromBase64(data);
+
+      if(data == "0")
+	m_lastReadTime = QDateTime::currentDateTime();
+    }
+  else
+    spoton_misc::logError
+      (QString("spoton_neighbor::process0015(): 0015 "
+	       "content-length mismatch (advertised: %1, received: %2).").
+       arg(length).arg(data.length()));
+}
+
 void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
 {
   if(state() == QAbstractSocket::ConnectedState)
@@ -1389,6 +1426,9 @@ void spoton_neighbor::prepareNetworkInterface(void)
 
 void spoton_neighbor::sendUuid(void)
 {
+  if(state() != QAbstractSocket::ConnectedState)
+    return;
+
   QByteArray message;
   QUuid uuid(QUuid::fromRfc4122(spoton_kernel::
 				s_settings.value("gui/uuid").toByteArray()));
@@ -1474,4 +1514,19 @@ void spoton_neighbor::slotDiscoverExternalAddress(void)
 {
   if(state() == QAbstractSocket::ConnectedState)
     m_externalAddress->discover();
+}
+
+void spoton_neighbor::slotSendKeepAlive(void)
+{
+  if(state() == QAbstractSocket::ConnectedState)
+    {
+      QByteArray message(spoton_send::message0015());
+
+      if(write(message.constData(), message.length()) != message.length())
+	spoton_misc::logError
+	  ("spoton_neighbor::slotSendKeepAlive(): write() "
+	   "error.");
+      else
+	flush();
+    }
 }

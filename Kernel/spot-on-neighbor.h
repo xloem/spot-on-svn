@@ -65,6 +65,7 @@ class spoton_neighbor: public QTcpSocket
   QCache<QByteArray, QByteArray> m_keys;
   QNetworkInterface *m_networkInterface;
   QTimer m_externalAddressDiscovererTimer;
+  QTimer m_keepAliveTimer;
   QTimer m_lifetime;
   QTimer m_sendKeysTimer;
   QTimer m_timer;
@@ -79,6 +80,7 @@ class spoton_neighbor: public QTcpSocket
   void process0012(int length, const QByteArray &data);
   void process0013(int length, const QByteArray &data);
   void process0014(int length, const QByteArray &data);
+  void process0015(int length, const QByteArray &data);
   void saveExternalAddress(const QHostAddress &address,
 			   QSqlDatabase &db);
   void saveParticipantStatus(const QByteArray &name,
@@ -103,6 +105,7 @@ class spoton_neighbor: public QTcpSocket
   void slotReceivedChatMessage(const QByteArray &data, const qint64 id);
   void slotReceivedPublicKey(const QByteArray &data, const qint64 id);
   void slotReceivedStatusMessage(const QByteArray &data, const qint64 id);
+  void slotSendKeepAlive(void);
   void slotSendKeys(void);
   void slotSendMessage(const QByteArray &data);
   void slotSendStatus(const QList<QByteArray> &list);
