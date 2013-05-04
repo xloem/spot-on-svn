@@ -28,7 +28,6 @@
 #ifndef _spoton_neighbor_h_
 #define _spoton_neighbor_h_
 
-#include <QCache>
 #include <QDateTime>
 #include <QHostAddress>
 #include <QSqlDatabase>
@@ -62,7 +61,6 @@ class spoton_neighbor: public QTcpSocket
   QByteArray m_data;
   QDateTime m_lastReadTime;
   QHostAddress m_address;
-  QCache<QByteArray, QByteArray> m_keys;
   QNetworkInterface *m_networkInterface;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_keepAliveTimer;

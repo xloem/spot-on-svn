@@ -8,9 +8,7 @@ TTL (Plaintext)
 Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
 Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
-
-Message Type ("0000") (Plaintext)
-TTL (Plaintext)
+EOL
 Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
 EOL
 Name (Ciphertext, SK)
@@ -71,9 +69,7 @@ TTL (Plaintext)
 Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
 Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
-
-Message Type ("0013") (Plaintext)
-TTL (Plaintext)
+EOL
 Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
 EOL
 Name (Base-64) (Ciphertext, SK)
