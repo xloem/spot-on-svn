@@ -3638,12 +3638,11 @@ void spoton::slotAddFriendsKey(void)
           mb.setWindowTitle(tr("Spot-On: Repleo Information"));
           mb.setIconPixmap(QPixmap(":/repleo.png"));
           mb.setWindowModality(Qt::WindowModal);
-          mb.setText(tr("Are you sure that you are providing a valid repleo? "
-			"The information "
-			"appears to be a key or something else. "
+	  mb.setText(tr("The provided repleo appears invalid. It "
+			"seems to be a key or something else. "
 			"The repleo must start with either "
 			"the letter R or the letter r."));
-          mb.exec();
+	  mb.exec();
 	  return;
         }
 
