@@ -1081,6 +1081,8 @@ bool spoton_gcrypt::setInitializationVector(QByteArray &bytes)
 
 QByteArray spoton_gcrypt::keyedHash(const QByteArray &data, bool *ok)
 {
+  init();
+
   QByteArray hash;
   gcry_error_t err = 0;
   gcry_md_hd_t hd;
@@ -1163,14 +1165,12 @@ QByteArray spoton_gcrypt::keyedHash(const QByteArray &data, bool *ok)
 QByteArray spoton_gcrypt::sha1Hash(const QByteArray &data,
 				   bool *ok)
 {
-  init();
   return shaXHash(GCRY_MD_SHA1, data, ok);
 }
 
 QByteArray spoton_gcrypt::sha512Hash(const QByteArray &data,
 				     bool *ok)
 {
-  init();
   return shaXHash(GCRY_MD_SHA512, data, ok);
 }
 
@@ -1491,6 +1491,7 @@ QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 
   raw_t = gcry_sexp_find_token(data_t, "rsa", 0);
   gcry_sexp_release(data_t);
+  data_t = 0;
 
   if(!raw_t)
     {
@@ -1500,13 +1501,8 @@ QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
       spoton_misc::logError
 	("spoton_gcrypt::publicKeyDecrypt(): gcry_sexp_find_token() "
 	 "failure.");
+      goto error_label;
     }
-
-#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
-  gcry_randomize(static_cast<void *> (random.data()),
-		 static_cast<size_t> (random.length()),
-		 GCRY_STRONG_RANDOM);
-#endif
 
   if((err = gcry_sexp_build(&data_t, 0,
 #if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
@@ -1627,16 +1623,6 @@ QByteArray spoton_gcrypt::publicKey(bool *ok)
       spoton_misc::logError
 	("spoton_gcrypt::publicKey(): decrypted() failure.");
       return publicKey;
-    }
-
-  if(publicKey.isEmpty())
-    {
-      if(ok)
-	*ok = false;
-
-      spoton_misc::logError
-	("spoton_gcrypt::publicKey(): "
-	 "error retrieving public_key from idiotes.db.");
     }
   else if(ok)
     *ok = true;
