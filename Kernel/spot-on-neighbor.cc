@@ -756,6 +756,8 @@ void spoton_neighbor::slotReceivedStatusMessage(const QByteArray &data,
 
 void spoton_neighbor::slotLifetimeExpired(void)
 {
+  spoton_misc::logError("spoton_neighbor::slotLifetimeExpired(): "
+			"expiration time reached. Aborting socket.");
   abort();
 }
 
