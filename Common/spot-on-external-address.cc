@@ -40,20 +40,8 @@ void spoton_external_address::discover(void)
 {
   QNetworkReply *reply = 0;
   QNetworkRequest request;
-  QNetworkRequest request1;
-  QNetworkRequest request2;
-  QNetworkRequest request3;
-  QNetworkRequest request4;
-  QNetworkRequest request5;
-  QNetworkRequest request6;
 
   request.setUrl(QUrl::fromUserInput("http://checkip.dyndns.org"));
-  request1.setUrl(QUrl::fromUserInput("http://www.displaymyip.com")); // with port info
-  request2.setUrl(QUrl::fromUserInput("http://www.checkip.org/"));
-  request3.setUrl(QUrl::fromUserInput("http://whatismyipv6.com"));
-  request4.setUrl(QUrl::fromUserInput("http://www.myip.dk"));
-  request5.setUrl(QUrl::fromUserInput("http://whatismyip.com"));
-  request6.setUrl(QUrl::fromUserInput("http://showip.net"));
 
   reply = get(request);
   connect(reply,
@@ -70,7 +58,7 @@ void spoton_external_address::slotFinished(void)
 {
   QNetworkReply *reply = qobject_cast<QNetworkReply *> (sender());
 
-  if(reply) // http://checkip.dyndns.org
+  if(reply)
     {
       QByteArray bytes(reply->readAll());
 
