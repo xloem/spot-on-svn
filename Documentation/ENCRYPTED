@@ -8,6 +8,7 @@ accepted
 idiotes.db:
 
 private_key
+public_key
 
 listeners.db:
 

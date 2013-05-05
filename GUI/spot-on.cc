@@ -260,6 +260,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotResetAll(void)));
+  connect(m_ui.sendMail,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSendMail(void)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -1695,7 +1699,8 @@ void spoton::slotSetPassphrase(void)
   QByteArray derivedKey
     (spoton_gcrypt::derivedKey(m_ui.cipherType->currentText(),
 			       m_ui.hashType->currentText(),
-			       static_cast<unsigned long> (m_ui.iterationCount->
+			       static_cast<unsigned long> (m_ui.
+							   iterationCount->
 							   value()),
 			       str1,
 			       salt,
@@ -1705,10 +1710,11 @@ void spoton::slotSetPassphrase(void)
     {
       if(reencode)
 	{
+	  slotDeactivateKernel();
 	  statusBar()->showMessage
 	    (tr("Re-encoding RSA key pair 1 of 2. Please be patient."));
 	  QApplication::processEvents();
-	  spoton_gcrypt::reencodePrivateKey
+	  spoton_gcrypt::reencodeRSAKeys
 	    (m_ui.cipherType->currentText(),
 	     derivedKey,
 	     m_settings.value("gui/cipherType", "aes256").toString().trimmed(),
@@ -1721,7 +1727,7 @@ void spoton::slotSetPassphrase(void)
 	      statusBar()->showMessage
 		(tr("Re-encoding RSA key pair 2 of 2. Please be patient."));
 	      QApplication::processEvents();
-	      spoton_gcrypt::reencodePrivateKey
+	      spoton_gcrypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
 		 derivedKey,
 		 m_settings.value("gui/cipherType", "aes256").
@@ -1779,7 +1785,7 @@ void spoton::slotSetPassphrase(void)
 			     "spoton_gcrypt::"
 			     "generatePrivatePublicKeys() or "
 			     "spoton_gcrypt::"
-			     "reencodePrivateKey().").
+			     "reencodeRSAKeys().").
 			  arg(error2.remove(".")));
   else if(!error3.isEmpty())
     QMessageBox::critical(this, tr("Spot-On: Error"),
@@ -1792,8 +1798,6 @@ void spoton::slotSetPassphrase(void)
 	{
 	  if(reencode)
 	    {
-	      slotDeactivateKernel();
-
 	      spoton_gcrypt *crypt = new spoton_gcrypt
 		(m_ui.cipherType->currentText(),
 		 m_ui.hashType->currentText(),
@@ -3937,4 +3941,8 @@ void spoton::slotCopyFriendshipBundle(void)
 Ui_spoton_mainwindow spoton::ui(void) const
 {
   return m_ui;
+}
+
+void spoton::slotSendMail(void)
+{
 }

@@ -130,7 +130,7 @@ void spoton_misc::prepareDatabases(void)
 
 	query.exec("CREATE TABLE IF NOT EXISTS idiotes ("
 		   "id TEXT PRIMARY KEY NOT NULL, "
-		   "public_key TEXT NOT NULL, "
+		   "public_key BLOB NOT NULL, "
 		   "private_key BLOB NOT NULL)");
       }
 

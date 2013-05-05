@@ -117,6 +117,7 @@ class spoton: public QMainWindow
   void slotSaveKernelPath(void);
   void slotSaveNodeName(void);
   void slotSelectKernelPath(void);
+  void slotSendMail(void);
   void slotSendMessage(void);
   void slotSetPassphrase(void);
   void slotSharePublicKey(void);
