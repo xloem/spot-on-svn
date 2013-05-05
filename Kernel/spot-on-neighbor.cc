@@ -848,22 +848,6 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 
       data.remove(0, 1); // Remove TTL.
 
-      QByteArray hash(spoton_gcrypt::sha512Hash(data, &ok));
-      QByteArray originalData(data); /*
-				     ** We may need to echo the
-				     ** message. Don't forget to
-				     ** decrease the TTL!
-				     */
-      bool duplicate = false;
-
-      if(ok)
-	{
-	  if(spoton_kernel::s_messagingCache.contains(hash))
-	    duplicate = true;
-	  else
-	    spoton_kernel::s_messagingCache.insert(hash, 0);
-	}
-
       QList<QByteArray> list(data.split('\n'));
 
       if(list.size() != 5)
@@ -874,6 +858,12 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 		     "received %1.").arg(list.size()));
 	  return;
 	}
+
+      QByteArray originalData(data); /*
+				     ** We may need to echo the
+				     ** message. Don't forget to
+				     ** decrease the TTL!
+				     */
 
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
@@ -913,15 +903,25 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 
       if(ok)
 	{
-	  if(!duplicate)
-	    if(spoton_misc::isAcceptedParticipant(publicKeyHash))
-	      {
-		saveParticipantStatus(name, publicKeyHash);
-		emit receivedChatMessage
-		  ("message_" +
-		   name.toBase64() + "_" +
-		   message.toBase64().append('\n'));
-	      }
+	  if(spoton_misc::isAcceptedParticipant(publicKeyHash))
+	    {
+	      QByteArray hash(spoton_gcrypt::sha512Hash(data, &ok));
+	      bool duplicate = false;
+
+	      if(spoton_kernel::s_messagingCache.contains(hash))
+		duplicate = true;
+	      else
+		spoton_kernel::s_messagingCache.insert(hash, 0);
+
+	      if(!duplicate)
+		{
+		  saveParticipantStatus(name, publicKeyHash);
+		  emit receivedChatMessage
+		    ("message_" +
+		     name.toBase64() + "_" +
+		     message.toBase64().append('\n'));
+		}
+	    }
 	}
       else if(ttl > 0)
 	{
@@ -1112,11 +1112,6 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 
       data.remove(0, 1); // Remove TTL.
 
-      QByteArray originalData(data); /*
-				     ** We may need to echo the
-				     ** message. Don't forget to
-				     ** decrease the TTL!
-				     */
       QList<QByteArray> list(data.split('\n'));
 
       if(list.size() != 5)
@@ -1127,6 +1122,12 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 		     "received %1.").arg(list.size()));
 	  return;
 	}
+
+      QByteArray originalData(data); /*
+				     ** We may need to echo the
+				     ** message. Don't forget to
+				     ** decrease the TTL!
+				     */
 
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
