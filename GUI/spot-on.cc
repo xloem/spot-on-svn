@@ -1118,7 +1118,7 @@ void spoton::slotPopulateNeighbors(void)
 
 		check = new QCheckBox();
 		check->setToolTip(tr("The sticky feature enables an "
-                     "indefinite lifetime for a neighbor.\n"
+				     "indefinite lifetime for a neighbor.\n"
 				     "If "
 				     "not checked, the neighbor will be "
 				     "terminated after some internal "
