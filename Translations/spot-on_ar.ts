@@ -6,7 +6,7 @@
     <message>
         <location filename="../Common/spot-on-gcrypt.cc" line="166"/>
         <source>gcry_cipher_test_algo() returned non-zero</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بقعة على: مسار نواة اختر</translation>
     </message>
     <message>
         <location filename="../Common/spot-on-gcrypt.cc" line="175"/>
@@ -534,27 +534,27 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="377"/>
         <source>E-Mail</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">البريد الإلكتروني</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="387"/>
         <source>Incoming</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">الوارد</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="400"/>
         <source>Date Retrieved</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">وصل لهذا المسار التسجيل</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="405"/>
         <source>Sender</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مرسل</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="410"/>
         <source>Subject</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">موضوع</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="433"/>
@@ -563,29 +563,29 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <location filename="../UI/controlcenter.ui" line="2159"/>
         <location filename="../UI/controlcenter.ui" line="2355"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حذف</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="444"/>
         <source>Retrieve</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">استرجع</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="471"/>
         <location filename="../UI/controlcenter.ui" line="585"/>
         <source>&amp;Subject</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">موضوع</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="500"/>
         <location filename="../UI/controlcenter.ui" line="614"/>
         <source>&amp;Message</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">رسالة</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="516"/>
         <source>Outgoing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خارج</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="536"/>
@@ -595,12 +595,12 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="544"/>
         <source>All Participants</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">جميع المشاركون</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="681"/>
         <source>&amp;Neighbors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">الجيران</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="726"/>
@@ -610,7 +610,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="729"/>
         <source>Copy Key</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نسخة مفتاح</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="740"/>
@@ -620,7 +620,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="743"/>
         <source>Share Key</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حصة مفتاح</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="829"/>
@@ -643,12 +643,12 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="1915"/>
         <source>Set Passphrase</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تعيين عبارة المرور</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="1933"/>
         <source>Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">توثيق</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="1944"/>
@@ -663,7 +663,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="2462"/>
         <source>Authenticate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قسم بصحة الشئ</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="854"/>
@@ -678,7 +678,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="889"/>
         <source>Add Neighbor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">إضافة الجار</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="810"/>
@@ -712,7 +712,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="139"/>
         <source>&amp;My Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">اسم بلدي</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="282"/>
@@ -732,7 +732,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="715"/>
         <source>Show Only &amp;Connected Neighbors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">عرض المشاركات فقط الجيران متصل</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="815"/>
@@ -759,7 +759,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="1186"/>
         <source>&amp;Search</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بحث</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="1288"/>
@@ -769,7 +769,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="1331"/>
         <source>S&amp;ettings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">إعدادات</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="1360"/>
@@ -789,7 +789,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="1898"/>
         <source>P&amp;assphrase Confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">عبارة المرور تأكيد</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="2522"/>
@@ -810,7 +810,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <location filename="../UI/controlcenter.ui" line="1366"/>
         <location filename="../UI/controlcenter.ui" line="1643"/>
         <source>Activate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">نشط</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="244"/>
@@ -834,22 +834,22 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="176"/>
         <source>Away</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">بعيدا</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="185"/>
         <source>Busy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مشغول</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="194"/>
         <source>Online</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">على الانترنت</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="224"/>
         <source>Participant</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مشارك</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="234"/>
@@ -864,7 +864,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="1418"/>
         <source>Path of Spot-On-Kernel Executable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مسار قابل للتنفيذ بقعة على اساس النواة</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="1688"/>
@@ -883,7 +883,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <location filename="../UI/controlcenter.ui" line="2148"/>
         <location filename="../UI/controlcenter.ui" line="2344"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">معدل</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="1018"/>
@@ -893,7 +893,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="1060"/>
         <source>Add Participant</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">إضافة مشارك</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="1068"/>
@@ -1026,7 +1026,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="48"/>
         <source>&amp;Chat</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ثرثرة</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="93"/>

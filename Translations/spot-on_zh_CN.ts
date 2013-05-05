@@ -506,19 +506,19 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="14"/>
         <source>Spot-On Retention Center</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Spot-On 上现货 保留中心</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="114"/>
         <location filename="../UI/controlcenter.ui" line="648"/>
         <location filename="../UI/controlcenter.ui" line="1133"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">抹去</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="152"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">节省</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="239"/>
@@ -529,32 +529,32 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <location filename="../UI/controlcenter.ui" line="348"/>
         <location filename="../UI/controlcenter.ui" line="659"/>
         <source>Send</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">发送</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="377"/>
         <source>E-Mail</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">电邮</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="387"/>
         <source>Incoming</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">来</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="400"/>
         <source>Date Retrieved</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">检索日期</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="405"/>
         <source>Sender</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">寄件人</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="410"/>
         <source>Subject</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">主题</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="433"/>
@@ -563,44 +563,44 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <location filename="../UI/controlcenter.ui" line="2159"/>
         <location filename="../UI/controlcenter.ui" line="2355"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">删除</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="444"/>
         <source>Retrieve</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">取回</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="471"/>
         <location filename="../UI/controlcenter.ui" line="585"/>
         <source>&amp;Subject</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">标题</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="500"/>
         <location filename="../UI/controlcenter.ui" line="614"/>
         <source>&amp;Message</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">信息</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="516"/>
         <source>Outgoing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">即将离任</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="536"/>
         <source>To</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">给</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="544"/>
         <source>All Participants</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">所有参与者</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="681"/>
         <source>&amp;Neighbors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">邻居</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="726"/>
@@ -610,7 +610,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="729"/>
         <source>Copy Key</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">复印键</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="740"/>
@@ -620,7 +620,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="743"/>
         <source>Share Key</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">共享密钥</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="829"/>
@@ -643,12 +643,12 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="1915"/>
         <source>Set Passphrase</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">设置口令</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="1933"/>
         <source>Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">文档</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="1944"/>
@@ -663,7 +663,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="2462"/>
         <source>Authenticate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">认证</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="854"/>
@@ -678,12 +678,12 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="889"/>
         <source>Add Neighbor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">添加邻居</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="810"/>
         <source>Sticky</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">黏</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="900"/>
@@ -712,7 +712,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="139"/>
         <source>&amp;My Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">我的名字</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="282"/>
@@ -732,7 +732,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="715"/>
         <source>Show Only &amp;Connected Neighbors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">仅显示相连的邻居</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="815"/>
@@ -759,7 +759,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="1186"/>
         <source>&amp;Search</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">搜索</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="1288"/>
@@ -769,7 +769,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="1331"/>
         <source>S&amp;ettings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">设置</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="1360"/>
@@ -810,7 +810,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <location filename="../UI/controlcenter.ui" line="1366"/>
         <location filename="../UI/controlcenter.ui" line="1643"/>
         <source>Activate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">激活</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="244"/>
@@ -834,22 +834,22 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="176"/>
         <source>Away</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">远</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="185"/>
         <source>Busy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">忙</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="194"/>
         <source>Online</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">在线</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="224"/>
         <source>Participant</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">参加者</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="234"/>
@@ -883,12 +883,12 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <location filename="../UI/controlcenter.ui" line="2148"/>
         <location filename="../UI/controlcenter.ui" line="2344"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">加</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="1018"/>
         <source>Fetch More</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">取更多</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="1060"/>
@@ -923,7 +923,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="1229"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">搜索</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="1311"/>
@@ -1026,7 +1026,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="48"/>
         <source>&amp;Chat</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">交谈</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="93"/>

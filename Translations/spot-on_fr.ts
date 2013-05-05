@@ -539,12 +539,12 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="387"/>
         <source>Incoming</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Qui arrive</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="400"/>
         <source>Date Retrieved</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Date de réception</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="405"/>
@@ -585,7 +585,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="516"/>
         <source>Outgoing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sortant</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="536"/>
@@ -595,12 +595,12 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="544"/>
         <source>All Participants</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tous les participants</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="681"/>
         <source>&amp;Neighbors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Voisins</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="726"/>
@@ -610,7 +610,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="729"/>
         <source>Copy Key</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Copier Key</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="740"/>
@@ -620,7 +620,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="743"/>
         <source>Share Key</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Partager Key</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="829"/>
@@ -678,7 +678,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="889"/>
         <source>Add Neighbor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ajouter voisin</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="810"/>
@@ -717,7 +717,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="282"/>
         <source>Preferred Method</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Méthode préférée</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="304"/>
@@ -732,7 +732,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="715"/>
         <source>Show Only &amp;Connected Neighbors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Afficher uniquement les voisins connectés</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="815"/>
@@ -769,7 +769,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="1331"/>
         <source>S&amp;ettings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Configuration</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="1360"/>
@@ -834,12 +834,12 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../UI/controlcenter.ui" line="176"/>
         <source>Away</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Loin</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="185"/>
         <source>Busy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Occupé</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="194"/>
