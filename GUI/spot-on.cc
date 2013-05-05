@@ -3626,26 +3626,25 @@ void spoton::slotAddFriendsKey(void)
 			toLatin1());
 
       if(repleo.startsWith("R") || repleo.startsWith("r"))
-       {
-          repleo.remove(0, 1);
-       }
+	repleo.remove(0, 1);
       else
-       {
-       QMessageBox mb(this);
+	{
+	  QMessageBox mb(this);
 
-        #ifdef Q_OS_MAC
+#ifdef Q_OS_MAC
           mb.setAttribute(Qt::WA_MacMetalStyle, true);
-        #endif
+#endif
           mb.setIcon(QMessageBox::Question);
           mb.setWindowTitle(tr("Spot-On: Repleo Information"));
           mb.setIconPixmap(QPixmap(":/repleo.png"));
           mb.setWindowModality(Qt::WindowModal);
-          mb.setText(tr("Are you sure that this is the Repleo? It "
-                "seems to be a Key or something else? "
-                "The Repleo must start with either "
-                "the letter R or the letter r."));
+          mb.setText(tr("Are you sure that you are providing a valid repleo? "
+			"The information "
+			"appears to be a key or something else. "
+			"The repleo must start with either "
+			"the letter R or the letter r."));
           mb.exec();
-            return;
+	  return;
         }
 
       QList<QByteArray> list(repleo.split('@'));
