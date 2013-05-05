@@ -493,9 +493,16 @@ spoton::spoton(void):QMainWindow()
   m_ui.listeners->setColumnHidden(m_ui.listeners->columnCount() - 1,
 				true);
   m_ui.neighbors->setColumnHidden(m_ui.neighbors->columnCount() - 1, true);
-  m_ui.participants->setColumnHidden(m_ui.participants->columnCount() - 2, true);
-  m_ui.participants->setColumnHidden(m_ui.participants->columnCount() - 3, true);
-  m_ui.participants->setColumnHidden(m_ui.participants->columnCount() - 4, true);
+  m_ui.participants->setColumnHidden
+    (m_ui.participants->columnCount() - 2, true);
+  m_ui.participants->setColumnHidden
+    (m_ui.participants->columnCount() - 3, true);
+  m_ui.participants->setColumnHidden
+    (m_ui.participants->columnCount() - 4, true);
+  m_ui.listeners->horizontalHeader()->setSortIndicator
+    (2, Qt::AscendingOrder);
+  m_ui.neighbors->horizontalHeader()->setSortIndicator
+    (1, Qt::AscendingOrder);
   m_ui.participants->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   prepareListenerIPCombo();
@@ -872,22 +879,26 @@ void spoton::slotPopulateListeners(void)
       {
 	updateListenersTable(db);
 
+	QModelIndexList list;
 	QString ip("");
 	QString port("");
+	int columnIP = 2;
+	int columnPORT = 3;
 	int hval = m_ui.listeners->horizontalScrollBar()->value();
 	int row = -1;
 	int vval = m_ui.listeners->verticalScrollBar()->value();
 
-	if((row = m_ui.listeners->currentRow()) >= 0)
-	  {
-	    QTableWidgetItem *item = m_ui.listeners->item(row, 2);
+	list = m_ui.listeners->selectionModel()->selectedRows
+	  (columnIP);
 
-	    if(item)
-	      ip = item->text();
+	if(!list.isEmpty())
+	  ip = list.at(0).data().toString();
 
-	    if((item = m_ui.listeners->item(row, 3)))
-	      port = item->text();
-	  }
+	list = m_ui.listeners->selectionModel()->selectedRows
+	  (columnPORT);
+
+	if(!list.isEmpty())
+	  port = list.at(0).data().toString();
 
 	m_ui.listeners->setSortingEnabled(false);
 	m_ui.listeners->clearContents();
@@ -1066,25 +1077,26 @@ void spoton::slotPopulateNeighbors(void)
       {
 	updateNeighborsTable(db);
 
+	QModelIndexList list;
 	QString remoteIp("");
 	QString remotePort("");
-	int columnREMOTE_IP = 9;
-	int columnREMOTE_PORT = 10;
+	int columnREMOTE_IP = 8;
+	int columnREMOTE_PORT = 9;
 	int hval = m_ui.neighbors->horizontalScrollBar()->value();
 	int row = -1;
 	int vval = m_ui.neighbors->verticalScrollBar()->value();
 
-	if((row = m_ui.neighbors->currentRow()) >= 0)
-	  {
-	    QTableWidgetItem *item = m_ui.neighbors->item
-	      (row, columnREMOTE_IP);
+	list = m_ui.neighbors->selectionModel()->selectedRows
+	  (columnREMOTE_IP);
 
-	    if(item)
-	      remoteIp = item->text();
+	if(!list.isEmpty())
+	  remoteIp = list.at(0).data().toString();
 
-	    if((item = m_ui.neighbors->item(row, columnREMOTE_PORT)))
-	      remotePort = item->text();
-	  }
+	list = m_ui.neighbors->selectionModel()->selectedRows
+	  (columnREMOTE_PORT);
+
+	if(!list.isEmpty())
+	  remotePort = list.at(0).data().toString();
 
 	m_ui.neighbors->setSortingEnabled(false);
 	m_ui.neighbors->clearContents();
