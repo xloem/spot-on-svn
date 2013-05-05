@@ -511,30 +511,42 @@ void spoton_neighbor::slotConnected(void)
   m_keepAliveTimer.start(60000);
   m_lastReadTime = QDateTime::currentDateTime();
 
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
-
-    db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
-
-    if(db.open())
+  if(spoton_kernel::s_crypt1)
+    {
       {
-	QSqlQuery query(db);
+	QSqlDatabase db = QSqlDatabase::addDatabase
+	  ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
 
-	query.prepare("UPDATE neighbors SET local_ip_address = ?, "
-		      "local_port = ?, status = 'connected' "
-		      "WHERE OID = ?");
-	query.bindValue(0, localAddress().toString());
-	query.bindValue(1, localPort());
-	query.bindValue(2, m_id);
-	query.exec();
+	db.setDatabaseName
+	  (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+	    QString country
+	      (spoton_misc::countryNameFromIPAddress(peerAddress().
+						     toString()));
+	    bool ok = true;
+
+	    query.prepare("UPDATE neighbors SET country = ?, "
+			  "local_ip_address = ?, "
+			  "local_port = ?, status = 'connected' "
+			  "WHERE OID = ?");
+	    query.bindValue(0, spoton_kernel::s_crypt1->
+			    encrypted(country.toLatin1(), &ok).toBase64());
+	    query.bindValue(1, localAddress().toString());
+	    query.bindValue(2, localPort());
+	    query.bindValue(3, m_id);
+	    query.exec();
+	  }
+
+	db.close();
       }
 
-    db.close();
-  }
+      QSqlDatabase::removeDatabase
+	("spoton_neighbor_" + QString::number(s_dbId));
+    }
 
-  QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
   sendUuid();
 
   /*
@@ -1025,9 +1037,6 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
 {
-  if(!spoton_kernel::s_crypt1)
-    return;
-
   length -= strlen("type=0012&content=");
 
   /*
@@ -1069,6 +1078,9 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 {
+  if(!spoton_kernel::s_crypt1)
+    return;
+
   length -= strlen("type=0013&content=");
 
   /*
