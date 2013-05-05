@@ -233,12 +233,13 @@ spoton_neighbor::~spoton_neighbor()
 
 void spoton_neighbor::slotTimeout(void)
 {
-  if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 60)
-    {
-      spoton_misc::logError("spoton_neighbor::slotTimeout(): "
-			    "aborting because of silent connection.");
-      abort();
-    }
+  if(state() == QAbstractSocket::ConnectedState)
+    if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 60)
+      {
+	spoton_misc::logError("spoton_neighbor::slotTimeout(): "
+			      "aborting because of silent connection.");
+	abort();
+      }
 
   /*
   ** We'll change states here.
