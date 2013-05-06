@@ -491,14 +491,12 @@ spoton::spoton(void):QMainWindow()
 	  this,
 	  SLOT(slotShowContextMenu(const QPoint &)));
   m_ui.listeners->setColumnHidden(m_ui.listeners->columnCount() - 1,
-				true);
-  m_ui.neighbors->setColumnHidden(m_ui.neighbors->columnCount() - 1, true);
-  m_ui.participants->setColumnHidden
-    (m_ui.participants->columnCount() - 2, true);
-  m_ui.participants->setColumnHidden
-    (m_ui.participants->columnCount() - 3, true);
-  m_ui.participants->setColumnHidden
-    (m_ui.participants->columnCount() - 4, true);
+				  true); // OID
+  m_ui.neighbors->setColumnHidden
+    (m_ui.neighbors->columnCount() - 1, true); // OID
+  m_ui.participants->setColumnHidden(1, true); // OID
+  m_ui.participants->setColumnHidden(2, true); // neighbor_oid
+  m_ui.participants->setColumnHidden(3, true); // public_key_hash
   m_ui.listeners->horizontalHeader()->setSortIndicator
     (2, Qt::AscendingOrder);
   m_ui.neighbors->horizontalHeader()->setSortIndicator
@@ -531,6 +529,8 @@ void spoton::slotAddListener(void)
 {
   if(!m_crypt)
     return;
+
+  bool ok = true;
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
@@ -569,8 +569,6 @@ void spoton::slotAddListener(void)
 		      "hash) "
 		      "VALUES "
 		      "(?, ?, ?, ?, ?, ?)");
-
-	bool ok = true;
 
 	if(ip.isEmpty())
 	  query.bindValue
@@ -644,20 +642,24 @@ void spoton::slotAddListener(void)
 	     toBase64());
 
 	if(ok)
-	  query.exec();
+	  ok = query.exec();
       }
 
     db.close();
   }
 
   QSqlDatabase::removeDatabase("spoton");
-  m_ui.listenerIP->selectAll();
+
+  if(ok)
+    m_ui.listenerIP->selectAll();
 }
 
 void spoton::slotAddNeighbor(void)
 {
   if(!m_crypt)
     return;
+
+  bool ok = true;
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
@@ -705,9 +707,6 @@ void spoton::slotAddNeighbor(void)
 	  query.bindValue(0, "127.0.0.1");
 
 	query.bindValue(1, "0");
-
-	bool ok = true;
-
 	query.bindValue(2, protocol);
 
 	if(ip.isEmpty())
@@ -795,14 +794,16 @@ void spoton::slotAddNeighbor(void)
 	     toBase64());
 
 	if(ok)
-	  query.exec();
+	  ok = query.exec();
       }
 
     db.close();
   }
 
   QSqlDatabase::removeDatabase("spoton");
-  m_ui.neighborIP->selectAll();
+
+  if(ok)
+    m_ui.neighborIP->selectAll();
 }
 
 void spoton::slotProtocolRadioToggled(bool state)
@@ -1080,8 +1081,9 @@ void spoton::slotPopulateNeighbors(void)
 	QModelIndexList list;
 	QString remoteIp("");
 	QString remotePort("");
-	int columnREMOTE_IP = 8;
-	int columnREMOTE_PORT = 9;
+	int columnCOUNTRY = 8;
+	int columnREMOTE_IP = 9;
+	int columnREMOTE_PORT = 10;
 	int hval = m_ui.neighbors->horizontalScrollBar()->value();
 	int row = -1;
 	int vval = m_ui.neighbors->verticalScrollBar()->value();
@@ -1107,6 +1109,7 @@ void spoton::slotPopulateNeighbors(void)
 	query.setForwardOnly(true);
 
 	if(query.exec(QString("SELECT sticky, UPPER(uuid), status, "
+			      "status_control, "
 			      "local_ip_address, local_port, "
 			      "external_ip_address, external_port, "
 			      "country, "
@@ -1157,7 +1160,7 @@ void spoton::slotPopulateNeighbors(void)
 		  {
 		    QTableWidgetItem *item = 0;
 
-		    if(i == 5 || (i >= 7 && i <= 10))
+		    if(i == 6 || (i >= 8 && i <= 11))
 		      {
 			if(query.value(i).isNull())
 			  item = new QTableWidgetItem();
@@ -1196,12 +1199,14 @@ void spoton::slotPopulateNeighbors(void)
 		    m_ui.neighbors->setItem(row, i, item);
 		  }
 
-		QTableWidgetItem *item1 = m_ui.neighbors->item(row, 7);
+		QTableWidgetItem *item1 = m_ui.neighbors->item
+		  (row, columnCOUNTRY);
 
 		if(item1)
 		  {
 		    QIcon icon;
-		    QTableWidgetItem *item2 = m_ui.neighbors->item(row, 8);
+		    QTableWidgetItem *item2 = m_ui.neighbors->item
+		      (row, columnREMOTE_IP);
 
 		    if(item2)
 		      icon =
@@ -1602,10 +1607,10 @@ void spoton::updateNeighborsTable(QSqlDatabase &db)
 	query.exec("DELETE FROM neighbors WHERE "
 		   "status_control = 'deleted'");
 	query.exec("UPDATE neighbors SET external_ip_address = NULL, "
-		   "local_ip_address = '127.0.0.1', "
-		   "local_port = 0, status = 'disconnected' WHERE "
-		   "(local_ip_address <> '127.0.0.1' OR local_port <> 0 OR "
-		   "status <> 'disconnected') AND "
+		   "local_ip_address = NULL, "
+		   "local_port = NULL, status = 'disconnected' WHERE "
+		   "(local_ip_address IS NOT NULL OR local_port IS NOT NULL "
+		   "OR status <> 'disconnected') AND "
 		   "status_control <> 'deleted'");
       }
 }
@@ -2072,7 +2077,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(QIcon(":/block.png"),tr("&Block"),
 		     this, SLOT(slotBlockNeighbor(void)));
       menu.addAction(tr("&Unblock"),
-		     this, SLOT(slotDisconnectNeighbor(void)));
+		     this, SLOT(slotUnblockNeighbor(void)));
       menu.exec(m_ui.neighbors->mapToGlobal(point));
     }
   else
@@ -2218,16 +2223,19 @@ void spoton::slotDisconnectNeighbor(void)
 
 void spoton::slotBlockNeighbor(void)
 {
-  QString oid("");
+  if(!m_crypt)
+    return;
+
+  QString remoteIp("");
   int row = -1;
 
   if((row = m_ui.neighbors->currentRow()) >= 0)
     {
       QTableWidgetItem *item = m_ui.neighbors->item
-	(row, m_ui.neighbors->columnCount() - 1);
+	(row, 9); // Remote IP Address
 
       if(item)
-	oid = item->text();
+	remoteIp = item->text();
     }
 
   {
@@ -2238,14 +2246,47 @@ void spoton::slotBlockNeighbor(void)
 
     if(db.open())
       {
+	/*
+	** We must block all neighbors having the given remote IP
+	** address. The neighbors must be in unblocked control states.
+	** Neighbors that are marked as deleted must be left as is since
+	** they will be purged by either the interface or the kernel.
+	*/
+
 	QSqlQuery query(db);
 
-	query.prepare("UPDATE neighbors SET "
-		      "status_control = ? "
-		      "WHERE OID = ?");
-	query.bindValue(0, "blocked");
-	query.bindValue(1, oid);
-	query.exec();
+	query.setForwardOnly(true);
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	if(query.exec("SELECT remote_ip_address, OID "
+		      "FROM neighbors WHERE status_control <> 'blocked' "
+		      "AND status_control <> 'deleted'"))
+	  while(query.next())
+	    {
+	      bool ok = true;
+
+	      QString ip
+		(m_crypt->decrypted(QByteArray::
+				    fromBase64(query.
+					       value(0).
+					       toByteArray()),
+				    &ok).
+		 constData());
+
+	      if(ok)
+		if(ip == remoteIp)
+		  {
+		    QSqlQuery updateQuery(db);
+
+		    updateQuery.prepare("UPDATE neighbors SET "
+					"status_control = 'blocked' WHERE "
+					"OID = ?");
+		    updateQuery.bindValue(0, query.value(1));
+		    updateQuery.exec();
+		  }
+	    }
+
+	QApplication::restoreOverrideCursor();
       }
 
     db.close();
@@ -2256,9 +2297,75 @@ void spoton::slotBlockNeighbor(void)
 
 void spoton::slotUnblockNeighbor(void)
 {
-  /*
-  ** Not used.
-  */
+  if(!m_crypt)
+    return;
+
+  QString remoteIp("");
+  int row = -1;
+
+  if((row = m_ui.neighbors->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.neighbors->item
+	(row, 9); // Remote IP Address
+
+      if(item)
+	remoteIp = item->text();
+    }
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	/*
+	** We must unblock all neighbors having the given remote IP
+	** address. The neighbors must be in blocked control states. We shall
+	** place the unblocked neighbors in disconnected control states.
+	*/
+
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	if(query.exec("SELECT remote_ip_address, OID "
+		      "FROM neighbors WHERE status_control = 'blocked'"))
+	  while(query.next())
+	    {
+	      bool ok = true;
+
+	      QString ip
+		(m_crypt->decrypted(QByteArray::
+				    fromBase64(query.
+					       value(0).
+					       toByteArray()),
+				    &ok).
+		 constData());
+
+	      if(ok)
+		if(ip == remoteIp)
+		  {
+		    QSqlQuery updateQuery(db);
+
+		    updateQuery.prepare("UPDATE neighbors SET "
+					"status_control = 'disconnected' "
+					"WHERE "
+					"OID = ?");
+		    updateQuery.bindValue(0, query.value(1));
+		    updateQuery.exec();
+		  }
+	    }
+
+	QApplication::restoreOverrideCursor();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton");
 }
 
 void spoton::slotDeleteAllListeners(void)

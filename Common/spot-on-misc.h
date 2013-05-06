@@ -28,16 +28,10 @@
 #ifndef _spoton_misc_h_
 #define _spoton_misc_h_
 
+#include <QHostAddress>
 #include <QSqlDatabase>
 #include <QString>
 #include <QVariant>
-
-#ifdef SPOTON_LINKED_WITH_LIBGEOIP
-extern "C"
-{
-#include <GeoIP.h>
-}
-#endif
 
 class spoton_gcrypt;
 
@@ -51,6 +45,7 @@ class spoton_misc
 				      spoton_gcrypt *crypt);
   static bool isAcceptedParticipant(const QByteArray &publicKeyHash);
   static bool isGnome(void);
+  static bool isPrivateNetwork(const QHostAddress &address);
   static bool saveFriendshipBundle(const QByteArray &name,
 				   const QByteArray &publicKey,
 				   const int neighborOid,
@@ -67,9 +62,6 @@ class spoton_misc
 				    const QString &oid);
 
  private:
-#ifdef SPOTON_LINKED_WITH_LIBGEOIP
-  GeoIP *s_gi;
-#endif
   spoton_misc(void);
 };
 

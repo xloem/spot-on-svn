@@ -77,7 +77,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>952</width>
-                <height>625</height>
+                <height>626</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -826,6 +826,11 @@
                </column>
                <column>
                 <property name="text">
+                 <string>Status Control</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
                  <string>Local IP</string>
                 </property>
                </column>
@@ -1348,7 +1353,7 @@
              <x>0</x>
              <y>0</y>
              <width>952</width>
-             <height>625</height>
+             <height>626</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2573,7 +2578,7 @@
      <x>0</x>
      <y>0</y>
      <width>974</width>
-     <height>25</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

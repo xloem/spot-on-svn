@@ -40,6 +40,13 @@
 #include "spot-on-misc.h"
 #include "spot-on-send.h"
 
+#ifdef SPOTON_LINKED_WITH_LIBGEOIP
+extern "C"
+{
+#include <GeoIP.h>
+}
+#endif
+
 QString spoton_misc::homePath(void)
 {
   QString homepath(qgetenv("SPOTON_HOME").trimmed());
@@ -203,8 +210,8 @@ void spoton_misc::prepareDatabases(void)
 	QSqlQuery query(db);
 
 	query.exec("CREATE TABLE IF NOT EXISTS neighbors ("
-		   "local_ip_address TEXT NOT NULL, "
-		   "local_port TEXT NOT NULL, "
+		   "local_ip_address TEXT , "
+		   "local_port TEXT, "
 		   "remote_ip_address TEXT NOT NULL, "
 		   "remote_port TEXT NOT NULL, "
 		   "scope_id TEXT, "
@@ -644,4 +651,38 @@ bool spoton_misc::isAcceptedParticipant(const QByteArray &publicKeyHash)
 
   QSqlDatabase::removeDatabase("spoton_misc");
   return count > 0;
+}
+
+bool spoton_misc::isPrivateNetwork(const QHostAddress &address)
+{
+  bool isPrivate = false;
+
+  if(address.protocol() == QAbstractSocket::IPv4Protocol)
+    {
+      QPair<QHostAddress, int> pair1
+	(QHostAddress::parseSubnet("10.0.0.0/8"));
+      QPair<QHostAddress, int> pair2
+	(QHostAddress::parseSubnet("127.0.0.0/8"));
+      QPair<QHostAddress, int> pair3
+	(QHostAddress::parseSubnet("169.254.0.0/16"));
+      QPair<QHostAddress, int> pair4
+	(QHostAddress::parseSubnet("172.16.0.0/12"));
+      QPair<QHostAddress, int> pair5
+	(QHostAddress::parseSubnet("192.168.0.0/16"));
+
+      isPrivate = address.isInSubnet(pair1) || address.isInSubnet(pair2) ||
+	address.isInSubnet(pair3) || address.isInSubnet(pair4) ||
+	address.isInSubnet(pair5);
+    }
+  else if(address.protocol() == QAbstractSocket::IPv6Protocol)
+    {
+      QPair<QHostAddress, int> pair1
+	(QHostAddress::parseSubnet("fc00::/7"));
+      QPair<QHostAddress, int> pair2
+	(QHostAddress::parseSubnet("fe80::/10"));
+
+      isPrivate = address.isInSubnet(pair1) || address.isInSubnet(pair2);
+    }
+
+  return isPrivate;
 }

@@ -339,7 +339,7 @@ void spoton_kernel::cleanupDatabases(void)
 	query.exec("DELETE FROM neighbors WHERE "
 		   "status_control = 'deleted'");
 	query.exec("UPDATE neighbors SET external_ip_address = NULL, "
-		   "local_ip_address = '127.0.0.1', local_port = 0, "
+		   "local_ip_address = NULL, local_port = NULL, "
 		   "status = 'disconnected' WHERE "
 		   "status = 'connected' AND status_control <> 'deleted'");
       }
@@ -383,44 +383,52 @@ void spoton_kernel::prepareListeners(void)
 	      QPointer<spoton_listener> listener = 0;
 	      qint64 id = query.value(5).toLongLong();
 
-	      if(!m_listeners.contains(id))
+	      /*
+	      ** We're only interested in creating objects for
+	      ** listeners that will listen.
+	      */
+
+	      if(query.value(3).toString() == "online")
 		{
-		  QList<QByteArray> list;
-
-		  for(int i = 0; i < 3; i++)
+		  if(!m_listeners.contains(id))
 		    {
-		      QByteArray bytes;
-		      bool ok = true;
+		      QList<QByteArray> list;
 
-		      bytes = s_crypt1->
-			decrypted(QByteArray::fromBase64(query.
-							 value(i).
-							 toByteArray()),
-				  &ok);
+		      for(int i = 0; i < 3; i++)
+			{
+			  QByteArray bytes;
+			  bool ok = true;
 
-		      if(ok)
-			list.append(bytes);
-		      else
-			break;
-		    }
+			  bytes = s_crypt1->
+			    decrypted(QByteArray::fromBase64(query.
+							     value(i).
+							     toByteArray()),
+				      &ok);
 
-		  if(list.size() == 3)
-		    listener = new spoton_listener
-		      (list.at(0).constData(),
-		       list.at(1).constData(),
-		       list.at(2).constData(),
-		       query.value(4).toInt(),
-		       query.value(5).toLongLong(),
-		       this);
+			  if(ok)
+			    list.append(bytes);
+			  else
+			    break;
+			}
 
-		  if(listener)
-		    {
-		      connect
-			(listener,
-			 SIGNAL(newNeighbor(QPointer<spoton_neighbor>)),
-			 this,
-			 SLOT(slotNewNeighbor(QPointer<spoton_neighbor>)));
-		      m_listeners.insert(id, listener);
+		      if(list.size() == 3)
+			listener = new spoton_listener
+			  (list.at(0).constData(),
+			   list.at(1).constData(),
+			   list.at(2).constData(),
+			   query.value(4).toInt(),
+			   query.value(5).toLongLong(),
+			   this);
+
+		      if(listener)
+			{
+			  connect
+			    (listener,
+			     SIGNAL(newNeighbor(QPointer<spoton_neighbor>)),
+			     this,
+			     SLOT(slotNewNeighbor(QPointer<spoton_neighbor>)));
+			  m_listeners.insert(id, listener);
+			}
 		    }
 		}
 	      else
@@ -429,17 +437,11 @@ void spoton_kernel::prepareListeners(void)
 
 		  if(listener)
 		    {
-		      QString state(query.value(3).toString());
-
-		      if(state == "deleted")
-			{
-			  m_listeners.remove(id);
-			  listener->close();
-			  listener->deleteLater();
-			}
+		      listener->close();
+		      listener->deleteLater();
 		    }
-		  else
-		    m_listeners.remove(id);
+
+		  m_listeners.remove(id);
 		}
 	    }
       }
@@ -489,40 +491,49 @@ void spoton_kernel::prepareNeighbors(void)
 	      QPointer<spoton_neighbor> neighbor = 0;
 	      qint64 id = query.value(4).toLongLong();
 
-	      if(!m_neighbors.contains(id))
+	      if(query.value(3).toString() == "connected")
 		{
-		  QList<QByteArray> list;
-
-		  for(int i = 0; i < 3; i++)
+		  if(!m_neighbors.contains(id))
 		    {
-		      QByteArray bytes;
-		      bool ok = true;
+		      QList<QByteArray> list;
 
-		      bytes = s_crypt1->
-			decrypted(QByteArray::fromBase64(query.
-							 value(i).
-							 toByteArray()),
-				  &ok);
+		      for(int i = 0; i < 3; i++)
+			{
+			  QByteArray bytes;
+			  bool ok = true;
 
-		      if(ok)
-			list.append(bytes);
-		      else
-			break;
+			  bytes = s_crypt1->
+			    decrypted(QByteArray::fromBase64(query.
+							     value(i).
+							     toByteArray()),
+				      &ok);
+
+			  if(ok)
+			    list.append(bytes);
+			  else
+			    break;
+			}
+
+		      if(list.size() == 3)
+			neighbor = new spoton_neighbor
+			  (list.at(0).constData(),
+			   list.at(1).constData(),
+			   list.at(2).constData(),
+			   query.value(4).toLongLong(),
+			   this);
+
+		      if(neighbor)
+			{
+			  connectSignalsToNeighbor(neighbor);
+			  m_neighbors.insert(id, neighbor);
+			}
 		    }
-
-		  if(list.size() == 3)
-		    neighbor = new spoton_neighbor
-		      (list.at(0).constData(),
-		       list.at(1).constData(),
-		       list.at(2).constData(),
-		       query.value(4).toLongLong(),
-		       this);
+		  else
+		    neighbor = m_neighbors.value(id);
 
 		  if(neighbor)
-		    {
-		      connectSignalsToNeighbor(neighbor);
-		      m_neighbors.insert(id, neighbor);
-		    }
+		    if(neighbor->state() == QAbstractSocket::ConnectedState)
+		      allOffline = false;
 		}
 	      else
 		{
@@ -530,22 +541,12 @@ void spoton_kernel::prepareNeighbors(void)
 
 		  if(neighbor)
 		    {
-		      QString state(query.value(3).toString());
-
-		      if(state == "deleted")
-			{
-			  m_neighbors.remove(id);
-			  neighbor->close();
-			  neighbor->deleteLater();
-			}
+		      neighbor->close();
+		      neighbor->deleteLater();
 		    }
-		  else
-		    m_neighbors.remove(id);
-		}
 
-	      if(neighbor)
-		if(neighbor->state() == QAbstractSocket::ConnectedState)
-		  allOffline = false;
+		  m_neighbors.remove(id);
+		}
 	    }
       }
 

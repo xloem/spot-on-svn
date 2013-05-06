@@ -100,7 +100,7 @@ struct gcry_thread_cbs gcry_threads_qt =
   {
     GCRY_THREAD_OPTION_USER, gcry_qthread_init, gcry_qmutex_init,
     gcry_qmutex_destroy, gcry_qmutex_lock, gcry_qmutex_unlock,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL
+    0, 0, 0, 0, 0, 0, 0, 0
   };
 #endif
 

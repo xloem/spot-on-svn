@@ -290,10 +290,27 @@ void spoton_listener::slotNewConnection(void)
     (spoton_misc::
      countryNameFromIPAddress(neighbor->peerAddress().toString()));
 
-  if(country != "Unknown") // Allow unknown countries for now.
-    if(!spoton_misc::countryAllowedToConnect(country.remove(" "),
+  if(!spoton_misc::isPrivateNetwork(neighbor->peerAddress()))
+    if(country == "Unknown" ||
+       !spoton_misc::countryAllowedToConnect(country.remove(" "),
 					     spoton_kernel::s_crypt1))
       {
+	if(country == "Unknown")
+	  spoton_misc::logError
+	    (QString("spoton_listener::slotNewConnection(): "
+		     "unknown country. Terminating connection from "
+		     "%1:%2.").
+	     arg(neighbor->peerAddress().toString()).
+	     arg(neighbor->peerPort()));
+	else
+	  spoton_misc::logError
+	    (QString("spoton_listener::slotNewConnection(): "
+		     "country %1 is blocked. Terminating "
+		     "connection from %2:%3.").
+	     arg(country).
+	     arg(neighbor->peerAddress().toString()).
+	     arg(neighbor->peerPort()));
+
 	neighbor->deleteLater();
 	return;
       }
@@ -333,6 +350,11 @@ void spoton_listener::slotNewConnection(void)
 
   if(count > 0)
     {
+      spoton_misc::logError(QString("spoton_listener::slotNewConnection(): "
+				    "IP address %1 is blocked. Terminating "
+				    "connection from %1:%2.").
+			    arg(neighbor->peerAddress().toString()).
+			    arg(neighbor->peerPort()));
       neighbor->deleteLater();
       return;
     }
