@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>974</width>
+    <width>1112</width>
     <height>729</height>
    </rect>
   </property>
@@ -31,7 +31,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="iconSize">
        <size>
@@ -76,8 +76,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>944</width>
-                <height>636</height>
+                <width>1084</width>
+                <height>622</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -128,131 +128,269 @@
                    </widget>
                    <widget class="QGroupBox" name="groupBox">
                     <property name="title">
-                     <string>Participants</string>
+                     <string>Friends</string>
                     </property>
-                    <layout class="QVBoxLayout" name="verticalLayout_19">
+                    <layout class="QHBoxLayout" name="horizontalLayout_38">
                      <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_9">
-                       <item>
-                        <widget class="QLabel" name="label_5">
-                         <property name="text">
-                          <string>&amp;My Name</string>
-                         </property>
-                         <property name="buddy">
-                          <cstring>nodeName</cstring>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLineEdit" name="nodeName"/>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="saveNodeName">
-                         <property name="text">
-                          <string>Save</string>
-                         </property>
-                         <property name="icon">
-                          <iconset resource="../Icons/icons.qrc">
-                           <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QComboBox" name="status">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="currentIndex">
-                          <number>0</number>
-                         </property>
-                         <property name="sizeAdjustPolicy">
-                          <enum>QComboBox::AdjustToContents</enum>
-                         </property>
+                      <widget class="QSplitter" name="splitter_2">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <widget class="QWidget" name="">
+                        <layout class="QVBoxLayout" name="verticalLayout_19">
                          <item>
-                          <property name="text">
-                           <string>Away</string>
-                          </property>
-                          <property name="icon">
-                           <iconset resource="../Icons/icons.qrc">
-                            <normaloff>:/Status/status_blue.png</normaloff>:/Status/status_blue.png</iconset>
-                          </property>
+                          <layout class="QHBoxLayout" name="horizontalLayout_9">
+                           <item>
+                            <widget class="QLabel" name="label_5">
+                             <property name="text">
+                              <string>&amp;My Name</string>
+                             </property>
+                             <property name="buddy">
+                              <cstring>nodeName</cstring>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="nodeName">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QPushButton" name="saveNodeName">
+                             <property name="text">
+                              <string>Save</string>
+                             </property>
+                             <property name="icon">
+                              <iconset resource="../Icons/icons.qrc">
+                               <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QComboBox" name="status">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                             <property name="currentIndex">
+                              <number>0</number>
+                             </property>
+                             <property name="sizeAdjustPolicy">
+                              <enum>QComboBox::AdjustToContents</enum>
+                             </property>
+                             <item>
+                              <property name="text">
+                               <string>Away</string>
+                              </property>
+                              <property name="icon">
+                               <iconset resource="../Icons/icons.qrc">
+                                <normaloff>:/Status/status_blue.png</normaloff>:/Status/status_blue.png</iconset>
+                              </property>
+                             </item>
+                             <item>
+                              <property name="text">
+                               <string>Busy</string>
+                              </property>
+                              <property name="icon">
+                               <iconset resource="../Icons/icons.qrc">
+                                <normaloff>:/Status/status_red.png</normaloff>:/Status/status_red.png</iconset>
+                              </property>
+                             </item>
+                             <item>
+                              <property name="text">
+                               <string>Offline</string>
+                              </property>
+                              <property name="icon">
+                               <iconset resource="../Icons/icons.qrc">
+                                <normaloff>:/Status/status_gray.png</normaloff>:/Status/status_gray.png</iconset>
+                              </property>
+                             </item>
+                             <item>
+                              <property name="text">
+                               <string>Online</string>
+                              </property>
+                              <property name="icon">
+                               <iconset resource="../Icons/icons.qrc">
+                                <normaloff>:/Status/status_lightgreen.png</normaloff>:/Status/status_lightgreen.png</iconset>
+                              </property>
+                             </item>
+                            </widget>
+                           </item>
+                          </layout>
                          </item>
                          <item>
-                          <property name="text">
-                           <string>Busy</string>
-                          </property>
-                          <property name="icon">
-                           <iconset resource="../Icons/icons.qrc">
-                            <normaloff>:/Status/status_red.png</normaloff>:/Status/status_red.png</iconset>
-                          </property>
+                          <widget class="QTableWidget" name="participants">
+                           <property name="verticalScrollBarPolicy">
+                            <enum>Qt::ScrollBarAlwaysOn</enum>
+                           </property>
+                           <property name="selectionBehavior">
+                            <enum>QAbstractItemView::SelectRows</enum>
+                           </property>
+                           <property name="horizontalScrollMode">
+                            <enum>QAbstractItemView::ScrollPerPixel</enum>
+                           </property>
+                           <property name="sortingEnabled">
+                            <bool>true</bool>
+                           </property>
+                           <attribute name="horizontalHeaderStretchLastSection">
+                            <bool>true</bool>
+                           </attribute>
+                           <column>
+                            <property name="text">
+                             <string>Friend</string>
+                            </property>
+                           </column>
+                           <column>
+                            <property name="text">
+                             <string>OID</string>
+                            </property>
+                           </column>
+                           <column>
+                            <property name="text">
+                             <string>neighbor_oid</string>
+                            </property>
+                           </column>
+                           <column>
+                            <property name="text">
+                             <string>public_key_hash</string>
+                            </property>
+                           </column>
+                           <column>
+                            <property name="text">
+                             <string>Status</string>
+                            </property>
+                           </column>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                       <widget class="QWidget" name="">
+                        <layout class="QVBoxLayout" name="verticalLayout_29">
+                         <item>
+                          <widget class="QPushButton" name="pushButtonCopytoClipboard">
+                           <property name="toolTip">
+                            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy my name and public key to the clipboard buffer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                           </property>
+                           <property name="text">
+                            <string>Copy Chat-Key</string>
+                           </property>
+                           <property name="icon">
+                            <iconset resource="../Icons/icons.qrc">
+                             <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
+                           </property>
+                          </widget>
                          </item>
                          <item>
-                          <property name="text">
-                           <string>Offline</string>
-                          </property>
-                          <property name="icon">
-                           <iconset resource="../Icons/icons.qrc">
-                            <normaloff>:/Status/status_gray.png</normaloff>:/Status/status_gray.png</iconset>
-                          </property>
+                          <widget class="QGroupBox" name="groupBox_addkey_3">
+                           <property name="title">
+                            <string>Add Chat-Friend</string>
+                           </property>
+                           <layout class="QVBoxLayout" name="verticalLayout_28">
+                            <item>
+                             <layout class="QHBoxLayout" name="horizontalLayout_41">
+                              <item>
+                               <widget class="QRadioButton" name="addFriendPublicKeyRadio">
+                                <property name="toolTip">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The key must start with either the letter K or the letter k.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                                <property name="text">
+                                 <string>&amp;Chat-Key</string>
+                                </property>
+                                <property name="icon">
+                                 <iconset resource="../Icons/icons.qrc">
+                                  <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
+                                </property>
+                                <property name="checked">
+                                 <bool>true</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QRadioButton" name="addFriendSymmetricBundleRadio">
+                                <property name="toolTip">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The repleo must start with either the letter R or the letter r.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                                <property name="text">
+                                 <string>&amp;Chat-Repleo</string>
+                                </property>
+                                <property name="icon">
+                                 <iconset resource="../Icons/icons.qrc">
+                                  <normaloff>:/repleo.png</normaloff>:/repleo.png</iconset>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </item>
+                            <item>
+                             <widget class="QTextEdit" name="friendInformation"/>
+                            </item>
+                            <item>
+                             <layout class="QHBoxLayout" name="horizontalLayout_42">
+                              <item>
+                               <spacer name="horizontalSpacer_30">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                              <item>
+                               <widget class="QPushButton" name="addFriend">
+                                <property name="toolTip">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add Friend via &lt;span style=&quot; font-weight:600;&quot;&gt;IP Connection&lt;/span&gt;&lt;/p&gt;&lt;ol style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Add a listener. See the Settings tab. You may be required to forward the port in your router.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Send the connection information to the participant.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Once connected, at least one user must share the public key via the context menu in the Neighbors table.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Confirm participants via the context menu in the Chat tab's Friends table.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;Add Friend with &lt;span style=&quot; font-weight:600;&quot;&gt;Repleo Exchange&lt;/span&gt;&lt;/p&gt;&lt;ol style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Obtain the public key from Friend. Paste it in the above textbox. Click the Key radio button and press the Add button.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copy the Repleo of the new Friend from the context menu in the Chat tab's Participants table.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Send the Repleo.&lt;/li&gt;&lt;/ol&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                                <property name="text">
+                                 <string>Add</string>
+                                </property>
+                                <property name="icon">
+                                 <iconset resource="../Icons/icons.qrc">
+                                  <normaloff>:/add.png</normaloff>:/add.png</iconset>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QPushButton" name="clearFriend">
+                                <property name="text">
+                                 <string>Clear</string>
+                                </property>
+                                <property name="icon">
+                                 <iconset resource="../Icons/icons.qrc">
+                                  <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="horizontalSpacer_31">
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>40</width>
+                                  <height>20</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                             </layout>
+                            </item>
+                           </layout>
+                          </widget>
                          </item>
-                         <item>
-                          <property name="text">
-                           <string>Online</string>
-                          </property>
-                          <property name="icon">
-                           <iconset resource="../Icons/icons.qrc">
-                            <normaloff>:/Status/status_lightgreen.png</normaloff>:/Status/status_lightgreen.png</iconset>
-                          </property>
-                         </item>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item>
-                      <widget class="QTableWidget" name="participants">
-                       <property name="verticalScrollBarPolicy">
-                        <enum>Qt::ScrollBarAlwaysOn</enum>
-                       </property>
-                       <property name="selectionBehavior">
-                        <enum>QAbstractItemView::SelectRows</enum>
-                       </property>
-                       <property name="horizontalScrollMode">
-                        <enum>QAbstractItemView::ScrollPerPixel</enum>
-                       </property>
-                       <property name="sortingEnabled">
-                        <bool>true</bool>
-                       </property>
-                       <attribute name="horizontalHeaderStretchLastSection">
-                        <bool>true</bool>
-                       </attribute>
-                       <column>
-                        <property name="text">
-                         <string>Participant</string>
-                        </property>
-                       </column>
-                       <column>
-                        <property name="text">
-                         <string>OID</string>
-                        </property>
-                       </column>
-                       <column>
-                        <property name="text">
-                         <string>neighbor_oid</string>
-                        </property>
-                       </column>
-                       <column>
-                        <property name="text">
-                         <string>public_key_hash</string>
-                        </property>
-                       </column>
-                       <column>
-                        <property name="text">
-                         <string>Status</string>
-                        </property>
-                       </column>
+                        </layout>
+                       </widget>
                       </widget>
                      </item>
                     </layout>
@@ -687,7 +825,7 @@
          <normaloff>:/tab-neighbours.png</normaloff>:/tab-neighbours.png</iconset>
        </attribute>
        <attribute name="title">
-        <string>&amp;Neighbors</string>
+        <string>&amp;Connections</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_28">
         <property name="leftMargin">
@@ -721,7 +859,7 @@
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>Show Only &amp;Connected Neighbors</string>
+                  <string>Show Only &amp;Connected</string>
                  </property>
                  <property name="icon">
                   <iconset resource="../Icons/icons.qrc">
@@ -730,30 +868,13 @@
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="pushButtonCopytoClipboard">
-                 <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy my name and public key to the clipboard buffer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
+                <widget class="QCheckBox" name="checkBox">
                  <property name="text">
-                  <string>Copy Key</string>
+                  <string>Connect only to Friends</string>
                  </property>
                  <property name="icon">
                   <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButtonMakeFriends">
-                 <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Share my public key with the selected neighbor.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                 <property name="text">
-                  <string>Share Key</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/sharekey.png</normaloff>:/sharekey.png</iconset>
+                   <normaloff>:/plist_confirmed_as_permanent_friend.png</normaloff>:/plist_confirmed_as_permanent_friend.png</iconset>
                  </property>
                 </widget>
                </item>
@@ -769,6 +890,20 @@
                   </size>
                  </property>
                 </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButtonMakeFriends">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Share my public key with the selected neighbor.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="text">
+                  <string>Share Chat-Key</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../Icons/icons.qrc">
+                   <normaloff>:/sharekey.png</normaloff>:/sharekey.png</iconset>
+                 </property>
+                </widget>
                </item>
                <item>
                 <spacer name="horizontalSpacer_24">
@@ -900,12 +1035,9 @@
              <item>
               <widget class="QGroupBox" name="groupBox_addip_2">
                <property name="title">
-                <string>Add Neighbor</string>
+                <string>Add IP connection</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_21">
-                <property name="bottomMargin">
-                 <number>11</number>
-                </property>
                 <item>
                  <layout class="QGridLayout" name="gridLayout_3">
                   <item row="1" column="0">
@@ -1071,22 +1203,40 @@
              <item>
               <widget class="QGroupBox" name="groupBox_addkey_2">
                <property name="title">
-                <string>Add Participant</string>
+                <string>Add trusted friend connection</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_22">
                 <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_15">
+                  <item>
+                   <widget class="QPushButton" name="pushButtonURLKeyCopytoClipboard">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy my name and public key to the clipboard buffer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="text">
+                     <string>Copy Connection-Key</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/plist_confirmed_as_permanent_friend.png</normaloff>:/plist_confirmed_as_permanent_friend.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_30">
                   <item>
-                   <widget class="QRadioButton" name="addFriendPublicKeyRadio">
+                   <widget class="QRadioButton" name="addtrustedFriendPublicKeyRadio">
                     <property name="toolTip">
                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The key must start with either the letter K or the letter k.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="text">
-                     <string>&amp;Key</string>
+                     <string>&amp;Connection-Key</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../Icons/icons.qrc">
-                      <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
+                      <normaloff>:/plist_confirmed_as_permanent_friend.png</normaloff>:/plist_confirmed_as_permanent_friend.png</iconset>
                     </property>
                     <property name="checked">
                      <bool>true</bool>
@@ -1094,12 +1244,12 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QRadioButton" name="addFriendSymmetricBundleRadio">
+                   <widget class="QRadioButton" name="addtrustedFriendSymmetricBundleRadio">
                     <property name="toolTip">
                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The repleo must start with either the letter R or the letter r.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="text">
-                     <string>&amp;Repleo</string>
+                     <string>&amp;Connection-Repleo</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../Icons/icons.qrc">
@@ -1110,7 +1260,7 @@
                  </layout>
                 </item>
                 <item>
-                 <widget class="QTextEdit" name="friendInformation"/>
+                 <widget class="QTextEdit" name="trustedfriendInformation"/>
                 </item>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_21">
@@ -1128,9 +1278,9 @@
                    </spacer>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="addFriend">
+                   <widget class="QPushButton" name="addtrustedFriend">
                     <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add Participant via &lt;span style=&quot; font-weight:600;&quot;&gt;IP Connection&lt;/span&gt;&lt;/p&gt;&lt;ol style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Add a listener. See the Settings tab. You may be required to forward the port in your router.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Send the connection information to the participant.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Once connected, at least one user must share the public key via the context menu in the Neighbors table.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Confirm participants via the context menu in the Chat tab's Participants table.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;Add Participant with &lt;span style=&quot; font-weight:600;&quot;&gt;Repleo Exchange&lt;/span&gt;&lt;/p&gt;&lt;ol style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Obtain the public key from participant. Paste it in the above textbox. Click the Key radio button and press the Add button.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copy the Repleo of the new participant from the context menu in the Chat tab's Participants table.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Send the Repleo.&lt;/li&gt;&lt;/ol&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add &lt;span style=&quot; font-weight:600;&quot;&gt;IP Connection to a trusted friend&lt;/span&gt;&lt;/p&gt;&lt;ol style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Add a listener. See the Settings tab. You may be required to forward the port in your router.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Send the connection information to the trusted friend.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Confirm trusted friend via the context menu in the Connections tab's table.&lt;/li&gt;&lt;/ol&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="text">
                      <string>Add</string>
@@ -1142,7 +1292,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="clearFriend">
+                   <widget class="QPushButton" name="cleartrustedFriend">
                     <property name="text">
                      <string>Clear</string>
                     </property>
@@ -1361,8 +1511,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1020</width>
-             <height>511</height>
+             <width>1084</width>
+             <height>622</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2586,8 +2736,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>974</width>
-     <height>22</height>
+     <width>1112</width>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2652,8 +2802,6 @@
   <tabstop>pushButtonClearOutgoingMessage</tabstop>
   <tabstop>sendMail</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>
-  <tabstop>pushButtonCopytoClipboard</tabstop>
-  <tabstop>pushButtonMakeFriends</tabstop>
   <tabstop>neighbors</tabstop>
   <tabstop>neighborIP</tabstop>
   <tabstop>neighborPort</tabstop>
@@ -2662,11 +2810,11 @@
   <tabstop>ipv6Neighbor</tabstop>
   <tabstop>addNeighbor</tabstop>
   <tabstop>fetchMore</tabstop>
-  <tabstop>addFriendPublicKeyRadio</tabstop>
-  <tabstop>addFriendSymmetricBundleRadio</tabstop>
-  <tabstop>friendInformation</tabstop>
-  <tabstop>addFriend</tabstop>
-  <tabstop>clearFriend</tabstop>
+  <tabstop>addtrustedFriendPublicKeyRadio</tabstop>
+  <tabstop>addtrustedFriendSymmetricBundleRadio</tabstop>
+  <tabstop>trustedfriendInformation</tabstop>
+  <tabstop>addtrustedFriend</tabstop>
+  <tabstop>cleartrustedFriend</tabstop>
   <tabstop>countries</tabstop>
   <tabstop>keywords</tabstop>
   <tabstop>pushButton_11</tabstop>
