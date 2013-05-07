@@ -1233,6 +1233,8 @@ QByteArray spoton_gcrypt::publicKeyEncrypt(const QByteArray &data,
       gcry_randomize(static_cast<void *> (random.data()),
 		     static_cast<size_t> (random.length()),
 		     GCRY_STRONG_RANDOM);
+#else
+      
 #endif
 
       if((err = gcry_sexp_build(&data_t, 0,
@@ -1884,4 +1886,238 @@ QByteArray spoton_gcrypt::randomCipherType(void)
   QStringList types(cipherTypes());
 
   return types.value(qrand() % types.size()).toLatin1();
+}
+
+QByteArray spoton_gcrypt::digitalSignature(bool *ok)
+{
+  /*
+  ** We need to decipher the private key.
+  */
+
+  QByteArray keyData;
+  QByteArray random1(20, 0); // Output size of Sha-1 divided by 8.
+#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
+  QByteArray random2(20, 0); // Output size of Sha-1 divided by 8.
+#endif
+  QByteArray signature;
+  gcry_error_t err = 0;
+  gcry_sexp_t data_t = 0;
+  gcry_sexp_t key_t = 0;
+  gcry_sexp_t signature_t = 0;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_gcrypt");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "idiotes.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT private_key FROM idiotes WHERE id = ?");
+	query.bindValue(0, m_id);
+
+	if(query.exec())
+	  if(query.next())
+	    keyData = QByteArray::fromBase64
+	      (query.value(0).toByteArray());
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_gcrypt");
+
+  if(keyData.isEmpty())
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	("spoton_gcrypt::digitalSignature(): empty private_key.");
+      goto error_label;
+    }
+
+  {
+    bool ok = true;
+
+    keyData = this->decrypted(keyData, &ok);
+
+    if(!ok)
+      keyData.clear();
+  }
+
+  if(keyData.isEmpty())
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	("spoton_gcrypt::digitalSignature(): decrypted() failure.");
+      goto error_label;
+    }
+
+  /*
+  ** Now let's see if we have a somewhat valid private key.
+  */
+
+  if((err = gcry_sexp_new(&key_t,
+			  static_cast<const void *> (keyData.constData()),
+			  static_cast<size_t> (keyData.length()),
+			  1)) != 0 || !key_t)
+    {
+      if(ok)
+	*ok = false;
+
+      if(err != 0)
+	spoton_misc::logError
+	  (QString("spoton_gcrypt::digitalSignature(): gcry_sexp_new() "
+		   "failure (%1).").arg(gcry_strerror(err)));
+      else
+	spoton_misc::logError
+	  ("spoton_gcrypt::digitalSignature(): gcry_sexp_new() failure.");
+
+      goto error_label;
+    }
+
+  if((err = gcry_pk_testkey(key_t)) != 0)
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	(QString("spoton_gcrypt::digitalSignature(): gcry_pk_testkey() "
+		 "failure (%1).").arg(gcry_strerror(err)));
+      goto error_label;
+    }
+
+  gcry_randomize(static_cast<void *> (random1.data()),
+		 static_cast<size_t> (random1.length()),
+		 GCRY_STRONG_RANDOM);
+  gcry_md_hash_buffer
+    (GCRY_MD_SHA1,
+     static_cast<void *> (random1.data()),
+     static_cast<const void *> (random1.constData()),
+     static_cast<size_t> (random1.length()));
+#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
+  gcry_randomize(static_cast<void *> (random2.data()),
+		 static_cast<size_t> (random2.length()),
+		 GCRY_STRONG_RANDOM);
+#endif
+
+  if((err = gcry_sexp_build(&data_t, 0,
+#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
+			    "(data (flags pss)(hash sha1 %b)"
+			    "(random-override %b))",
+#else
+			    "(data (flags pkcs1)(hash sha1 %b))",
+#endif
+#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
+			    random1.length(), // Our data!
+			    random1.constData(),
+			    random2.length(),
+			    random2.constData()
+#else
+			    random1.length(),
+			    random1.constData()
+#endif
+			    )) == 0 && data_t)
+    {
+      if((err = gcry_pk_sign(&signature_t, data_t,
+			     key_t)) == 0 && signature_t)
+	{
+	  size_t length = gcry_sexp_sprint
+	    (signature_t, GCRYSEXP_FMT_ADVANCED, 0, 0);
+
+	  if(length)
+	    {
+	      char *buffer = (char *) malloc(length);
+
+	      if(buffer)
+		{
+		  if(gcry_sexp_sprint(signature_t,
+				      GCRYSEXP_FMT_ADVANCED,
+				      static_cast<void *> (buffer),
+				      length) != 0)
+		    {
+		      if(ok)
+			*ok = true;
+
+		      signature.append(QByteArray(buffer, length));
+		    }
+		  else
+		    {
+		      if(ok)
+			*ok = false;
+
+		      spoton_misc::logError
+			("spoton_gcrypt()::digitalSignature(): "
+			 "gcry_sexp_sprint() failure.");
+		    }
+		}
+	      else
+		{
+		  if(ok)
+		    *ok = false;
+
+		  spoton_misc::logError
+		    ("spoton_gcrypt()::digitalSignature(): malloc() "
+		     "failure.");
+		}
+
+	      free(buffer);
+	    }
+	  else
+	    {
+	      if(ok)
+		*ok = false;
+
+	      spoton_misc::logError
+		("spoton_gcrypt()::digitalSignature(): "
+		 "gcry_sexp_sprint() failure.");
+	    }
+	}
+      else
+	{
+	  if(ok)
+	    *ok = false;
+
+	  if(err != 0)
+	    spoton_misc::logError
+	      (QString("spoton_gcrypt()::digitalSignature(): "
+		       "gcry_pk_sign() "
+		       "failure (%1).").arg(gcry_strerror(err)));
+	  else
+	    spoton_misc::logError
+	      ("spoton_gcrypt()::digitalSignature(): gcry_pk_sign() "
+	       "failure.");
+
+	  goto error_label;
+	}
+    }
+  else
+    {
+      if(ok)
+	*ok = false;
+
+      if(err != 0)
+	spoton_misc::logError
+	  (QString("spoton_gcrypt()::digitalSignature(): "
+		   "gcry_sexp_build() "
+		   "failure (%1).").arg(gcry_strerror(err)));
+      else
+	spoton_misc::logError
+	  ("spoton_gcrypt()::digitalSignature(): gcry_sexp_build() "
+	   "failure.");
+
+      goto error_label;
+    }
+
+ error_label:
+  gcry_sexp_release(data_t);
+  gcry_sexp_release(key_t);
+  gcry_sexp_release(signature_t);
+  return signature;
 }

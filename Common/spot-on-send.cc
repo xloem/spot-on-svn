@@ -82,7 +82,8 @@ QByteArray spoton_send::message0010(const QByteArray &message)
 }
 
 QByteArray spoton_send::message0011(const QByteArray &name,
-				    const QByteArray &publicKey)
+				    const QByteArray &publicKey,
+				    const QByteArray &signature)
 {
   QByteArray content;
   QByteArray results;
@@ -97,6 +98,8 @@ QByteArray spoton_send::message0011(const QByteArray &name,
   content.append(name.toBase64());
   content.append("\n");
   content.append(publicKey.toBase64());
+  content.append("\n");
+  content.append(signature.toBase64());
   results.replace
     ("%1",
      QString::number(content.toBase64().length() +

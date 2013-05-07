@@ -2769,9 +2769,13 @@ void spoton::slotSharePublicKey(void)
     return;
 
   QByteArray publicKey;
+  QByteArray signature;
   bool ok = true;
 
   publicKey = m_crypt->publicKey(&ok);
+
+  if(ok)
+    signature = m_crypt->digitalSignature(&ok);
 
   if(ok)
     {
@@ -2788,6 +2792,8 @@ void spoton::slotSharePublicKey(void)
       message.append(name.toBase64());
       message.append("_");
       message.append(publicKey.toBase64());
+      message.append("_");
+      message.append(signature.toBase64());
       message.append('\n');
 
       if(m_kernelSocket.write(message.constData(), message.length()) !=
@@ -2995,9 +3001,13 @@ void spoton::slotSharePublicKeyWithParticipant(void)
     return;
 
   QByteArray publicKey;
+  QByteArray signature;
   bool ok = true;
 
   publicKey = m_crypt->publicKey(&ok);
+
+  if(ok)
+    signature = m_crypt->digitalSignature(&ok);
 
   if(ok)
     {
@@ -3014,6 +3024,8 @@ void spoton::slotSharePublicKeyWithParticipant(void)
       message.append(name.toBase64());
       message.append("_");
       message.append(publicKey.toBase64());
+      message.append("_");
+      message.append(signature.toBase64());
       message.append('\n');
 
       if(m_kernelSocket.write(message.constData(), message.length()) !=

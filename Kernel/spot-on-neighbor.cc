@@ -54,7 +54,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_lastReadTime = QDateTime::currentDateTime();
   m_networkInterface = 0;
   m_port = peerPort();
-  m_sendKeysOffset = 0;
   setSocketOption(QAbstractSocket::KeepAliveOption, 1);
   connect(this,
 	  SIGNAL(disconnected(void)),
@@ -76,10 +75,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotSendKeepAlive(void)));
-  connect(&m_sendKeysTimer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotSendKeys(void)));
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -92,7 +87,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotDiscoverExternalAddress(void)));
-  m_sendKeysTimer.start(2500);
   m_timer.start(2500);
   m_lifetime.setInterval(10 * 60 * 1000);
   m_lifetime.start();
@@ -113,13 +107,7 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
   m_lastReadTime = QDateTime::currentDateTime();
   m_networkInterface = 0;
   m_port = quint16(port.toInt());
-  m_sendKeysOffset = 0;
-  m_sendKeysTimer.setInterval(2500);
   setSocketOption(QAbstractSocket::KeepAliveOption, 1);
-  connect(this,
-	  SIGNAL(connected(void)),
-	  &m_sendKeysTimer,
-	  SLOT(start(void)));
   connect(this,
 	  SIGNAL(connected(void)),
 	  this,
@@ -144,10 +132,6 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotSendKeepAlive(void)));
-  connect(&m_sendKeysTimer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotSendKeys(void)));
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -333,69 +317,6 @@ void spoton_neighbor::saveStatus(QSqlDatabase &db, const QString &status)
   query.exec();
 }
 
-void spoton_neighbor::slotSendKeys(void)
-{
-  if(state() != QAbstractSocket::ConnectedState)
-    return;
-
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
-
-    db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() + "public_keys.db");
-
-    if(db.open())
-      {
-	/*
-	** We'll terminate the m_sendKeysTimer once all of the keys
-	** have been read. As new keys arrive, we'll be responsible
-	** for sending them to other neighbors.
-	*/
-
-	QSqlQuery query(db);
-
-	query.setForwardOnly(true);
-
-	if(query.exec(QString("SELECT key FROM public_keys LIMIT 1 "
-			      "OFFSET %1").
-		      arg(m_sendKeysOffset)))
-	  {
-	    if(query.next())
-	      {
-		QByteArray message(query.value(0).toByteArray().toBase64());
-		char c = 0;
-		short ttl = spoton_kernel::s_settings.value
-		  ("kernel/ttl_0010", 16).toInt();
-
-		memcpy(&c, static_cast<void *> (&ttl), 1);
-		message.prepend(c);
-		message = spoton_send::message0010(message);
-
-		if(write(message.constData(), message.length()) !=
-		   message.length())
-		  spoton_misc::logError
-		    ("spoton_neighbor::slotSendKeys(): write() "
-		     "error.");
-		else
-		  flush();
-
-		m_sendKeysOffset += 1;
-	      }
-	    else if(!query.lastError().isValid())
-	      m_sendKeysTimer.stop();
-	  }
-	else if(!query.lastError().isValid())
-	  m_sendKeysTimer.stop();
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase
-    ("spoton_neighbor_" + QString::number(s_dbId));
-}
-
 void spoton_neighbor::slotReadyRead(void)
 {
   m_data.append(readAll());
@@ -464,8 +385,6 @@ void spoton_neighbor::slotReadyRead(void)
 	      else
 		process0000(length, data);
 	    }
-	  else if(length > 0 && data.contains("type=0010&content="))
-	    process0010(length, data);
 	  else if(length > 0 && data.contains("type=0011&content="))
 	    {
 	      if(!spoton_kernel::s_crypt1)
@@ -673,29 +592,6 @@ void spoton_neighbor::setId(const qint64 id)
   m_id = id;
 }
 
-void spoton_neighbor::slotReceivedPublicKey(const QByteArray &data,
-					    const qint64 id)
-{
-  /*
-  ** A neighbor (id) received a public key. This neighbor now needs
-  ** to send the key to its peer. Please note that data also contains
-  ** the TTL.
-  */
-
-  if(id != m_id)
-    if(state() == QAbstractSocket::ConnectedState)
-      {
-	QByteArray message(spoton_send::message0010(data));
-
-	if(write(message.constData(), message.length()) != message.length())
-	  spoton_misc::logError
-	    ("spoton_neighbor::slotReceivedPublicKey(): write() "
-	     "error.");
-	else
-	  flush();
-      }
-}
-
 void spoton_neighbor::slotSendMessage(const QByteArray &message)
 {
   if(state() == QAbstractSocket::ConnectedState)
@@ -829,11 +725,6 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 
   if(length == data.length())
     {
-      /*
-      ** We are essentially performing an inverse function.
-      ** Please see Documentation/PROTOCOLS.
-      */
-
       data = QByteArray::fromBase64(data);
 
       bool ok = true;
@@ -972,60 +863,6 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
        arg(length).arg(data.length()));
 }
 
-void spoton_neighbor::process0010(int length, const QByteArray &dataIn)
-{
-  length -= strlen("type=0010&content=");
-
-  /*
-  ** We may have received a public key.
-  */
-
-  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
-
-  data.remove
-    (0,
-     data.indexOf("type=0010&content=") + strlen("type=0010&content="));
-
-  if(length == data.length())
-    {
-      data = QByteArray::fromBase64(data);
-
-      short ttl = 0;
-
-      if(!data.isEmpty())
-	memcpy(static_cast<void *> (&ttl),
-	       static_cast<const void *> (data.constData()), 1);
-	  
-      if(ttl > 0)
-	ttl -= 1;
-
-      data.remove(0, 1); // Remove TTL.
-      data = QByteArray::fromBase64(data);
-      savePublicKey(data);
-
-      if(ttl > 0)
-	{
-	  data = data.toBase64(); // The public key as Base-64.
-
-	  /*
-	  ** We received a key. We need to send this key to the
-	  ** other neighbors. Prepend the TTL.
-	  */
-
-	  char c = 0;
-
-	  memcpy(&c, static_cast<void *> (&ttl), 1);
-	  data.prepend(c);
-	  emit receivedPublicKey(data, m_id);
-	}
-    }
-  else
-    spoton_misc::logError
-      (QString("spoton_neighbor::process0010(): 0010 "
-	       "content-length mismatch (advertised: %1, received: %2).").
-       arg(length).arg(data.length()));
-}
-
 void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 {
   length -= strlen("type=0011&content=");
@@ -1046,11 +883,11 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 
       QList<QByteArray> list(data.split('\n'));
 
-      if(list.size() != 2)
+      if(list.size() != 3)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0011(): "
-		     "received irregular data. Expecting 2 entries, "
+		     "received irregular data. Expecting 3 entries, "
 		     "received %1.").arg(list.size()));
 	  return;
 	}
@@ -1087,11 +924,11 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
 
       QList<QByteArray> list(data.split('\n'));
 
-      if(list.size() != 2)
+      if(list.size() != 3)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0012(): "
-		     "received irregular data. Expecting 2 entries, "
+		     "received irregular data. Expecting 3 entries, "
 		     "received %1.").arg(list.size()));
 	  return;
 	}

@@ -82,14 +82,13 @@ class spoton_kernel: public QObject
   void slotPublicKeyReceivedFromUI(const qint64 oid,
 				   const QByteArray &name,
 				   const QByteArray &publicKey,
+				   const QByteArray &signature,
 				   const QString &messageType);
   void slotSettingsChanged(const QString &path);
   void slotStatusTimerExpired(void);
 
  signals:
   void receivedChatMessage(const QByteArray &name, const qint64 id);
-  void receivedPublicKey(const QByteArray &publicKey,
-			 const qint64 id);
   void receivedStatusMessage(const QByteArray &data,
 			     const qint64 id);
   void sendMessage(const QByteArray &message);

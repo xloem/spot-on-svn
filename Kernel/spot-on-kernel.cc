@@ -219,9 +219,11 @@ spoton_kernel::spoton_kernel(void):QObject(0)
      SIGNAL(publicKeyReceivedFromUI(const qint64,
 				    const QByteArray &,
 				    const QByteArray &,
+				    const QByteArray &,
 				    const QString &)),
      this,
      SLOT(slotPublicKeyReceivedFromUI(const qint64,
+				      const QByteArray &,
 				      const QByteArray &,
 				      const QByteArray &,
 				      const QString &)));
@@ -781,11 +783,12 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
 						const QByteArray &name,
 						const QByteArray &publicKey,
+						const QByteArray &signature,
 						const QString &messageType)
 {
   if(messageType == "0011")
     {
-      QByteArray data(spoton_send::message0011(name, publicKey));
+      QByteArray data(spoton_send::message0011(name, publicKey, signature));
 
       if(m_neighbors.contains(oid))
 	{
@@ -845,12 +848,6 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  SIGNAL(receivedChatMessage(const QByteArray &,
 				     const qint64)));
   connect(neighbor,
-	  SIGNAL(receivedPublicKey(const QByteArray &,
-				   const qint64)),
-	  this,
-	  SIGNAL(receivedPublicKey(const QByteArray &,
-				   const qint64)));
-  connect(neighbor,
 	  SIGNAL(receivedStatusMessage(const QByteArray &,
 				       const qint64)),
 	  this,
@@ -862,12 +859,6 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  neighbor,
 	  SLOT(slotReceivedChatMessage(const QByteArray &,
 				       const qint64)));
-  connect(this,
-	  SIGNAL(receivedPublicKey(const QByteArray &,
-				   const qint64)),
-	  neighbor,
-	  SLOT(slotReceivedPublicKey(const QByteArray &,
-				     const qint64)));
   connect(this,
 	  SIGNAL(receivedStatusMessage(const QByteArray &,
 				       const qint64)),

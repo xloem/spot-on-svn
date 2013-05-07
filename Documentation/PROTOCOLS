@@ -1,6 +1,6 @@
 Messages
 
-Chat
+Echo Chat
 Echoed? Yes
 
 Message Type ("0000") (Plaintext)
@@ -14,8 +14,10 @@ EOL
 Name (Ciphertext, SK)
 EOL
 Message (Ciphertext, SK)
+EOL
+Keyed Sha-512 Hash (Base-64) (Ciphertext, SK)
 
-E-Mail
+Echo Mail
 Echoed? Yes
 
 Message Type ("0001") (Plaintext)
@@ -28,36 +30,26 @@ Recipient (Base-64) (Ciphertext, SK)
 EOL
 Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
-Keyed Sha-512 Hash (Base-64) (Ciphertext, SK)
-EOL
 Sender's Name (Base-64) (Ciphertext, SK)
 EOL
 Message (Base-64) (Ciphertext, SK)
+EOL
+Keyed Sha-512 Hash (Base-64) (Ciphertext, SK)
 
-Greetings-1
-Echoed? Yes
+Greetings #1, #2
+Echoed? No
 
-Message Type ("0010") (Plaintext)
+Message Type ("0011" or "0012") (Plaintext)
 TTL (Plaintext)
+Public Key (Base-64) (Plaintext)
+EOL
+Signature (Base-64) (Ciphertext, PK)
+EOL
 URL Public Key (Base-64) (Plaintext)
-
-Greetings-2
-Echoed? No
-
-Message Type ("0011") (Plaintext)
-Name (Base-64) (Plaintext)
 EOL
-Public Key (Base-64) (Plaintext)
+Signature (Base-64) (Ciphertext, PK)
 
-Greetings-3
-Echoed? No
-
-Message Type ("0012") (Plaintext)
-Name (Base-64) (Plaintext)
-EOL
-Public Key (Base-64) (Plaintext)
-
-Greetings-4
+Greetings #3
 Echoed? Yes
 
 Message Type ("0013") (Plaintext)
@@ -71,14 +63,16 @@ EOL
 Name (Base-64) (Ciphertext, SK)
 EOL
 Status (Base-64) (Ciphertext, SK)
+EOL
+Keyed Sha-512 Hash (Base-64) (Ciphertext, SK)
 
-Greetings-5
+Greetings #3
 Echoed? No
 
 Message Type ("0014")
 UUID (Plaintext)
 
-Greetings-6
+Greetings #4
 Echoed? No
 
 Message Type ("0015")
@@ -93,10 +87,10 @@ Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
 Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
 EOL
-Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)
-EOL
 URL-1 (Base-64) (Ciphertext, SK)
 EOL
 ...
 EOL
 URL-10 (Base-64) (Ciphertext, SK)
+EOL
+Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)

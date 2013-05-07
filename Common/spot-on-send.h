@@ -44,7 +44,8 @@ class spoton_send
      const spoton_send_method sendMethod = NORMAL_POST);
   static QByteArray message0010(const QByteArray &message);
   static QByteArray message0011(const QByteArray &name,
-				const QByteArray &publicKey);
+				const QByteArray &publicKey,
+				const QByteArray &signature);
   static QByteArray message0012(const QByteArray &message);
   static QByteArray message0013(const QByteArray &message);
   static QByteArray message0014(const QByteArray &uuid);
