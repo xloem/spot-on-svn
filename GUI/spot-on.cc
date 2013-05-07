@@ -2073,6 +2073,8 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotDeleteNeighbor(void)));
       menu.addAction(tr("Delete &All"),
 		     this, SLOT(slotDeleteAllNeighbors(void)));
+      menu.addAction(tr("Delete All Non-Unique &Blocked Neighbors"),
+		     this, SLOT(slotDeleteAllBlockedNeighbors(void)));
       menu.addSeparator();
       menu.addAction(QIcon(":/block.png"),tr("&Block"),
 		     this, SLOT(slotBlockNeighbor(void)));
@@ -3039,6 +3041,8 @@ void spoton::slotStatusChanged(int index)
     m_settings["gui/my_status"] = "Away";
   else if(index == 1)
     m_settings["gui/my_status"] = "Busy";
+  else if(index == 2)
+    m_settings["gui/my_status"] = "Offline";
   else
     m_settings["gui/my_status"] = "Online";
 
@@ -4062,4 +4066,41 @@ Ui_spoton_mainwindow spoton::ui(void) const
 
 void spoton::slotSendMail(void)
 {
+}
+
+void spoton::slotDeleteAllBlockedNeighbors(void)
+{
+  if(!m_crypt)
+    return;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT remote_ip_address, OID FROM neighbors "
+		      "WHERE status_control = 'blocked' ORDER BY OID"))
+	  while(query.next())
+	    {
+	      QByteArray ip;
+	      bool ok = true;
+
+	      ip =
+		m_crypt->decrypted(QByteArray::fromBase64(query.value(0).
+							  toByteArray()),
+				   &ok);
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton");
 }

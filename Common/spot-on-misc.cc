@@ -73,24 +73,6 @@ bool spoton_misc::isGnome(void)
 
 void spoton_misc::prepareDatabases(void)
 {
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "blocked_ip_addresses.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.exec("CREATE TABLE IF NOT EXISTS blocked_ip_addresses ("
-		   "ip_address BLOB NOT NULL, "
-		   "hash TEXT PRIMARY KEY NOT NULL)");
-      }
-
-    db.close();
-  }
-
   QSqlDatabase::removeDatabase("spoton_misc");
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");

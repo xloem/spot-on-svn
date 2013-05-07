@@ -76,8 +76,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>952</width>
-                <height>626</height>
+                <width>944</width>
+                <height>636</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -166,7 +166,7 @@
                           </sizepolicy>
                          </property>
                          <property name="currentIndex">
-                          <number>2</number>
+                          <number>0</number>
                          </property>
                          <property name="sizeAdjustPolicy">
                           <enum>QComboBox::AdjustToContents</enum>
@@ -187,6 +187,15 @@
                           <property name="icon">
                            <iconset resource="../Icons/icons.qrc">
                             <normaloff>:/Status/status_red.png</normaloff>:/Status/status_red.png</iconset>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Offline</string>
+                          </property>
+                          <property name="icon">
+                           <iconset resource="../Icons/icons.qrc">
+                            <normaloff>:/Status/status_gray.png</normaloff>:/Status/status_gray.png</iconset>
                           </property>
                          </item>
                          <item>
@@ -1352,8 +1361,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>952</width>
-             <height>626</height>
+             <width>1020</width>
+             <height>511</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2578,7 +2587,7 @@
      <x>0</x>
      <y>0</y>
      <width>974</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

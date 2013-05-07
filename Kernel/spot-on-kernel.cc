@@ -917,12 +917,13 @@ void spoton_kernel::slotStatusTimerExpired(void)
   ** Do we have any interfaces attached to the kernel?
   */
 
-  QByteArray status("offline");
-  QList<QByteArray> list;
+  QByteArray status(s_settings.value("gui/my_status", "Online").
+		    toByteArray().toLower());
 
-  if(!m_guiServer->findChildren<QTcpSocket *> ().isEmpty())
-    status = s_settings.value("gui/my_status", "online").
-      toByteArray().toLower();
+  if(status == "offline")
+    return;
+
+  QList<QByteArray> list;
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");

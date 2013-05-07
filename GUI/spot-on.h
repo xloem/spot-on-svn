@@ -88,6 +88,7 @@ class spoton: public QMainWindow
   void slotCopyMyPublicKey(void);
   void slotCountryChanged(QListWidgetItem *item);
   void slotDeactivateKernel(void);
+  void slotDeleteAllBlockedNeighbors(void);
   void slotDeleteAllListeners(void);
   void slotDeleteAllNeighbors(void);
   void slotDeleteListener(void);
