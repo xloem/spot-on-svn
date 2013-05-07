@@ -152,7 +152,6 @@ QByteArray spoton_gcrypt::derivedKey(const QString &cipherType,
 {
   init();
 
-#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
   QByteArray derivedKey;
   char *key = 0;
   gcry_error_t err = 0;
@@ -223,48 +222,6 @@ QByteArray spoton_gcrypt::derivedKey(const QString &cipherType,
  error_label:
   gcry_free(key);
   return derivedKey;
-#else
-  Q_UNUSED(cipherType);
-  Q_UNUSED(iterationCount);
-  Q_UNUSED(salt);
-
-  /*
-  ** Retain the passphrase's hash. We'll use the hash as the key.
-  ** We should really abandon old gcrypts.
-  */
-
-  QByteArray derivedKey;
-  int hashAlgorithm = gcry_md_map_name(hashType.toLatin1().constData());
-  unsigned int length = 0;
-
-  if(hashAlgorithm == 0)
-    {
-      error = QObject::tr("gcry_md_map_name() returned zero");
-      spoton_misc::logError
-	(QString("spoton_gcrypt::derivedKey(): gcry_md_map_name() "
-		 "returned zero for %1.").arg(hashType));
-      goto error_label;
-    }
-
-  length = gcry_md_get_algo_dlen(hashAlgorithm);
-
-  if(length == 0)
-    {
-      error = QObject::tr("gcry_md_get_algo_dlen() returned zero");
-      spoton_misc::logError
-	(QString("spoton_gcrypt::derivedKey(): gcry_md_get_algo_dlen() "
-		 "returned zero for %1.").arg(hashType));
-      goto error_label;
-    }
-
-  derivedKey.resize(length);
-  gcry_md_hash_buffer(hashAlgorithm, static_cast<void *> (derivedKey.data()),
-		      static_cast<const void *> (passphrase.toUtf8().
-						 constData()),
-		      static_cast<size_t> (passphrase.toUtf8().length()));
- error_label:
-  return derivedKey;
-#endif
 }
 
 QByteArray spoton_gcrypt::saltedPassphraseHash(const QString &hashType,
@@ -1317,38 +1274,21 @@ QByteArray spoton_gcrypt::publicKeyEncrypt(const QByteArray &data,
 			  static_cast<size_t> (publicKey.length()),
 			  1)) == 0 && key_t)
     {
-#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
       QByteArray random(64, 0); // Output size of Sha-512 divided by 8.
-#endif
       gcry_sexp_t data_t = 0;
       gcry_sexp_t encodedData_t = 0;
 
-#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
       gcry_randomize(static_cast<void *> (random.data()),
 		     static_cast<size_t> (random.length()),
 		     GCRY_STRONG_RANDOM);
-#else
-      
-#endif
 
       if((err = gcry_sexp_build(&data_t, 0,
-#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
 				"(data (flags oaep)(hash-algo sha512)"
 				"(value %b)(random-override %b))",
-#else
-				"(data (flags pkcs1)"
-				"(value %b))",
-#endif
-#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
 				data.length(),
 				data.constData(),
 				random.length(),
-				random.constData()
-#else
-				data.length(),
-				data.constData()
-#endif
-				)) == 0 && data_t)
+				random.constData())) == 0 && data_t)
 	{
 	  if((err = gcry_pk_encrypt(&encodedData_t, data_t,
 				    key_t)) == 0 && encodedData_t)
@@ -1467,9 +1407,7 @@ QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 
   QByteArray decrypted;
   QByteArray keyData;
-#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
   QByteArray random(64, 0); // Output size of Sha-512 divided by 8.
-#endif
   const char *buffer = 0;
   gcry_error_t err = 0;
   gcry_sexp_t data_t = 0;
@@ -1601,14 +1539,10 @@ QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
     }
 
   if((err = gcry_sexp_build(&data_t, 0,
-#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
 			    "(enc-val (flags oaep)"
 			    "(hash-algo sha512)(random-override %b) %S)",
 			    random.length(),
 			    random.constData(),
-#else
-			    "(enc-val (flags pkcs1) %S)",
-#endif
 			    raw_t)) !=0 || !data_t)
     {
       if(ok)
@@ -1998,9 +1932,7 @@ QByteArray spoton_gcrypt::digitalSignature(bool *ok)
 
   QByteArray keyData;
   QByteArray random1(20, 0); // Output size of Sha-1 divided by 8.
-#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
   QByteArray random2(20, 0); // Output size of Sha-1 divided by 8.
-#endif
   QByteArray signature;
   gcry_error_t err = 0;
   gcry_sexp_t data_t = 0;
@@ -2103,29 +2035,17 @@ QByteArray spoton_gcrypt::digitalSignature(bool *ok)
      static_cast<void *> (random1.data()),
      static_cast<const void *> (random1.constData()),
      static_cast<size_t> (random1.length()));
-#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
   gcry_randomize(static_cast<void *> (random2.data()),
 		 static_cast<size_t> (random2.length()),
 		 GCRY_STRONG_RANDOM);
-#endif
 
   if((err = gcry_sexp_build(&data_t, 0,
-#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
 			    "(data (flags pss)(hash sha1 %b)"
 			    "(random-override %b))",
-#else
-			    "(data (flags pkcs1)(hash sha1 %b))",
-#endif
-#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
 			    random1.length(), // Our data!
 			    random1.constData(),
 			    random2.length(),
-			    random2.constData()
-#else
-			    random1.length(),
-			    random1.constData()
-#endif
-			    )) == 0 && data_t)
+			    random2.constData())) == 0 && data_t)
     {
       if((err = gcry_pk_sign(&signature_t, data_t,
 			     key_t)) == 0 && signature_t)

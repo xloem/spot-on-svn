@@ -374,13 +374,6 @@ spoton::spoton(void):QMainWindow()
 		       toByteArray()).trimmed());
   m_ui.cipherType->clear();
   m_ui.cipherType->addItems(spoton_gcrypt::cipherTypes());
-#if SPOTON_MINIMUM_GCRYPT_VERSION < 0x010500
-  m_ui.iterationCount->setEnabled(false);
-  m_ui.iterationCount->setToolTip
-    (tr("The Iteration Count is disabled because "
-	"gcrypt's gcry_kdf_derive() function "
-	"is not available in your version of gcrypt."));
-#endif
   m_ui.showOnlyConnectedNeighbors->setChecked
     (m_settings.value("gui/showOnlyConnectedNeighbors", false).toBool());
   m_ui.showOnlyOnlineListeners->setChecked
@@ -1687,13 +1680,7 @@ void spoton::slotSetPassphrase(void)
   */
 
   statusBar()->showMessage
-    (tr(
-#if SPOTON_MINIMUM_GCRYPT_VERSION >= 0x010500
-	"Generating a derived key. Please be patient."
-#else
-	"Preparing the passphrase. Please be patient."
-#endif
-	));
+    (tr("Generating a derived key. Please be patient."));
 #ifdef Q_OS_MAC
   QApplication::processEvents();
 #endif
