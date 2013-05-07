@@ -31,7 +31,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -130,7 +130,7 @@
                     <property name="title">
                      <string>Friends</string>
                     </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_38">
+                    <layout class="QHBoxLayout" name="horizontalLayout_39">
                      <item>
                       <widget class="QSplitter" name="splitter_2">
                        <property name="orientation">
@@ -139,37 +139,19 @@
                        <widget class="QWidget" name="">
                         <layout class="QVBoxLayout" name="verticalLayout_19">
                          <item>
-                          <layout class="QHBoxLayout" name="horizontalLayout_9">
+                          <layout class="QHBoxLayout" name="horizontalLayout_38">
                            <item>
-                            <widget class="QLabel" name="label_5">
-                             <property name="text">
-                              <string>&amp;My Name</string>
+                            <spacer name="horizontalSpacer_32">
+                             <property name="orientation">
+                              <enum>Qt::Horizontal</enum>
                              </property>
-                             <property name="buddy">
-                              <cstring>nodeName</cstring>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>40</width>
+                               <height>20</height>
+                              </size>
                              </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLineEdit" name="nodeName">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QPushButton" name="saveNodeName">
-                             <property name="text">
-                              <string>Save</string>
-                             </property>
-                             <property name="icon">
-                              <iconset resource="../Icons/icons.qrc">
-                               <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
-                             </property>
-                            </widget>
+                            </spacer>
                            </item>
                            <item>
                             <widget class="QComboBox" name="status">
@@ -178,6 +160,9 @@
                                <horstretch>0</horstretch>
                                <verstretch>0</verstretch>
                               </sizepolicy>
+                             </property>
+                             <property name="layoutDirection">
+                              <enum>Qt::LeftToRight</enum>
                              </property>
                              <property name="currentIndex">
                               <number>0</number>
@@ -273,6 +258,41 @@
                        </widget>
                        <widget class="QWidget" name="">
                         <layout class="QVBoxLayout" name="verticalLayout_29">
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_9">
+                           <item>
+                            <widget class="QLabel" name="label_5">
+                             <property name="text">
+                              <string>&amp;My Name</string>
+                             </property>
+                             <property name="buddy">
+                              <cstring>nodeName</cstring>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="nodeName">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QPushButton" name="saveNodeName">
+                             <property name="text">
+                              <string>Save</string>
+                             </property>
+                             <property name="icon">
+                              <iconset resource="../Icons/icons.qrc">
+                               <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </item>
                          <item>
                           <widget class="QPushButton" name="pushButtonCopytoClipboard">
                            <property name="toolTip">
