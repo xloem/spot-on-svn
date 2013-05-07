@@ -35,7 +35,7 @@
 #include "spot-on-kernel.h"
 #include "spot-on-listener.h"
 
-quint64 spoton_listener::s_dbId = 0;
+qint64 spoton_listener::s_dbId = 0;
 
 spoton_listener::spoton_listener(const QString &ipAddress,
 				 const QString &port,

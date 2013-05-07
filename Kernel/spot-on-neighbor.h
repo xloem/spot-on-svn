@@ -43,7 +43,7 @@ class spoton_neighbor: public QTcpSocket
   Q_OBJECT
 
  public:
-  static quint64 s_dbId;
+  static qint64 s_dbId;
   spoton_neighbor(const QString &ipAddress,
 		  const QString &port,
 		  const QString &scopeId,

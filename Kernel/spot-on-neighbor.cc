@@ -41,7 +41,7 @@
 #include "spot-on-kernel.h"
 #include "spot-on-neighbor.h"
 
-quint64 spoton_neighbor::s_dbId = 0;
+qint64 spoton_neighbor::s_dbId = 0;
 
 spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 QObject *parent):QTcpSocket(parent)
@@ -850,11 +850,11 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 
       QList<QByteArray> list(data.split('\n'));
 
-      if(list.size() != 5)
+      if(list.size() != 6)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0000(): "
-		     "received irregular data. Expecting 5 entries, "
+		     "received irregular data. Expecting 6 entries, "
 		     "received %1.").arg(list.size()));
 	  return;
 	}
@@ -869,6 +869,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
       QByteArray message(list.at(4));
+      QByteArray messageDigest(list.at(5));
       QByteArray name(list.at(3));
       QByteArray publicKeyHash(list.at(2));
       QByteArray symmetricKey(list.at(0));
@@ -899,27 +900,55 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 
 	  if(ok)
 	    publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
+
+	  if(ok)
+	    messageDigest = crypt.decrypted(messageDigest, &ok);
 	}
 
       if(ok)
 	{
 	  if(spoton_misc::isAcceptedParticipant(publicKeyHash))
 	    {
-	      QByteArray hash(spoton_gcrypt::sha512Hash(data, &ok));
-	      bool duplicate = false;
+	      QByteArray computedMessageDigest
+		(spoton_gcrypt::keyedHash(symmetricKey +
+					  symmetricKeyAlgorithm +
+					  publicKeyHash +
+					  name +
+					  message,
+					  symmetricKey,
+					  "sha512",
+					  &ok));
 
-	      if(spoton_kernel::s_messagingCache.contains(hash))
-		duplicate = true;
-	      else
-		spoton_kernel::s_messagingCache.insert(hash, 0);
+	      /*
+	      ** Let's not echo messages whose message digests are
+	      ** incompatible.
+	      */
 
-	      if(!duplicate)
+	      if(ok)
 		{
-		  saveParticipantStatus(name, publicKeyHash);
-		  emit receivedChatMessage
-		    ("message_" +
-		     name.toBase64() + "_" +
-		     message.toBase64().append('\n'));
+		  if(computedMessageDigest == messageDigest)
+		    {
+		      QByteArray hash(spoton_gcrypt::sha512Hash(data, &ok));
+		      bool duplicate = false;
+
+		      if(spoton_kernel::s_messagingCache.contains(hash))
+			duplicate = true;
+		      else
+			spoton_kernel::s_messagingCache.insert(hash, 0);
+
+		      if(!duplicate)
+			{
+			  saveParticipantStatus(name, publicKeyHash);
+			  emit receivedChatMessage
+			    ("message_" +
+			     name.toBase64() + "_" +
+			     message.toBase64().append('\n'));
+			}
+		    }
+		  else
+		    spoton_misc::logError("spoton_neighbor::process0000(): "
+					  "computed message digest does "
+					  "not match provided digest.");
 		}
 	    }
 	}
@@ -1114,7 +1143,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 
       QList<QByteArray> list(data.split('\n'));
 
-      if(list.size() != 5)
+      if(list.size() != 6)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0013(): "
@@ -1132,6 +1161,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
+      QByteArray messageDigest(list.at(5));
       QByteArray name(list.at(3));
       QByteArray publicKeyHash(list.at(2));
       QByteArray status(list.at(4));
@@ -1163,12 +1193,40 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 
 	  if(ok)
 	    status = crypt.decrypted(status, &ok);
+
+	  if(ok)
+	    messageDigest = crypt.decrypted(messageDigest, &ok);
 	}
 
       if(ok)
 	{
-	  if(spoton_misc::isAcceptedParticipant(publicKeyHash))
-	    saveParticipantStatus(name, publicKeyHash, status);
+	  QByteArray computedMessageDigest
+	    (spoton_gcrypt::keyedHash(symmetricKey +
+				      symmetricKeyAlgorithm +
+				      publicKeyHash +
+				      name +
+				      status,
+				      symmetricKey,
+				      "sha512",
+				      &ok));
+
+	  /*
+	  ** Let's not echo messages whose message digests are
+	  ** incompatible.
+	  */
+
+	  if(ok)
+	    {
+	      if(computedMessageDigest == messageDigest)
+		{
+		  if(spoton_misc::isAcceptedParticipant(publicKeyHash))
+		    saveParticipantStatus(name, publicKeyHash, status);
+		}
+	      else
+		spoton_misc::logError("spoton_neighbor::process0013(): "
+				      "computed message digest does "
+				      "not match provided digest.");
+	    }
 	}
       else if(ttl > 0)
 	{

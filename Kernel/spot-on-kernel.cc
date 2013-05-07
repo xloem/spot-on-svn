@@ -734,7 +734,24 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 	}
     
       if(ok)
-	data.append(crypt.encrypted(message, &ok).toBase64());
+	{
+	  data.append(crypt.encrypted(message, &ok).toBase64());
+	  data.append("\n");
+	}
+
+      if(ok)
+	{
+	  QByteArray messageDigest
+	    (crypt.keyedHash(symmetricKey +
+			     symmetricKeyAlgorithm +
+			     myPublicKeyHash +
+			     name +
+			     message,
+			     &ok));
+
+	  if(ok)
+	    data.append(crypt.encrypted(messageDigest, &ok).toBase64());
+	}
 
       if(ok)
 	{
@@ -1009,7 +1026,25 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		    }
 
 		  if(ok)
-		    data.append(crypt.encrypted(status, &ok).toBase64());
+		    {
+		      data.append(crypt.encrypted(status, &ok).toBase64());
+		      data.append("\n");
+		    }
+
+		  if(ok)
+		    {
+		      QByteArray messageDigest
+			(crypt.keyedHash(symmetricKey +
+					 symmetricKeyAlgorithm +
+					 myPublicKeyHash +
+					 name +
+					 status,
+					 &ok));
+
+		      if(ok)
+			data.append
+			  (crypt.encrypted(messageDigest, &ok).toBase64());
+		    }
 
 		  if(ok)
 		    {

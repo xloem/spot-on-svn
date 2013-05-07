@@ -4073,6 +4073,13 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
   if(!m_crypt)
     return;
 
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+  /*
+  ** Locate all blocked neighbors and delete the non-unique ones.
+  ** Do remember that remote_ip_address contains encrypted data.
+  */
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
@@ -4081,6 +4088,7 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
 
     if(db.open())
       {
+	QMultiHash<QByteArray, qint64> hash;
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
@@ -4096,11 +4104,30 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
 		m_crypt->decrypted(QByteArray::fromBase64(query.value(0).
 							  toByteArray()),
 				   &ok);
+
+	      if(ok)
+		hash.insert(ip, query.value(1).toLongLong());
 	    }
+
+	query.prepare("DELETE FROM neighbors WHERE OID = ?");
+
+	for(int i = 0; i < hash.keys().size(); i++)
+	  {
+	    QList<qint64> list(hash.values(hash.keys().at(i)));
+
+	    qSort(list);
+
+	    for(int j = 1; j < list.size(); j++)
+	      {
+		query.bindValue(0, list.at(j));
+		query.exec();
+	      }
+	  }
       }
 
     db.close();
   }
 
   QSqlDatabase::removeDatabase("spoton");
+  QApplication::restoreOverrideCursor();
 }

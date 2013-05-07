@@ -73,7 +73,7 @@ class spoton_listener: public spoton_listener_tcp_server
   Q_OBJECT
 
  public:
-  static quint64 s_dbId;
+  static qint64 s_dbId;
   spoton_listener(const QString &ipAddress,
 		  const QString &port,
 		  const QString &scopeId,
