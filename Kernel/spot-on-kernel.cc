@@ -808,7 +808,7 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
   else
     {
       if(m_neighbors.contains(oid))
-	m_neighbors[oid]->sharePublicKey(name, publicKey);
+	m_neighbors[oid]->sharePublicKey(name, publicKey, signature);
       else
 	spoton_misc::logError
 	  (QString("spoton_kernel::slotPublicKeyReceivedFromUI(): "

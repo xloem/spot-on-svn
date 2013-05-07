@@ -362,8 +362,10 @@ spoton::spoton(void):QMainWindow()
     m_ui.status->setCurrentIndex(0);
   else if(status == "Busy")
     m_ui.status->setCurrentIndex(1);
-  else
+  else if(status == "Offline")
     m_ui.status->setCurrentIndex(2);
+  else
+    m_ui.status->setCurrentIndex(3);
 
   m_ui.kernelPath->setToolTip(m_ui.kernelPath->text());
   m_ui.nodeName->setMaxLength(NAME_MAXIMUM_LENGTH);
@@ -3081,6 +3083,7 @@ void spoton::slotCopyMyPublicKey(void)
 
   QByteArray name;
   QByteArray publicKey;
+  QByteArray signature;
   bool ok = true;
 
   name = m_settings.value("gui/nodeName", "unknown").toByteArray().
@@ -3088,7 +3091,10 @@ void spoton::slotCopyMyPublicKey(void)
   publicKey = m_crypt->publicKey(&ok).toBase64();
 
   if(ok)
-    clipboard->setText("K" + name + "@" + publicKey);
+    signature = m_crypt->digitalSignature(&ok).toBase64();
+
+  if(ok)
+    clipboard->setText("K" + name + "@" + publicKey + "@" + signature);
   else
     clipboard->clear();
 }
@@ -3702,7 +3708,7 @@ void spoton::slotAddFriendsKey(void)
 	      (m_ui.friendInformation->toPlainText().
 	       trimmed().toLatin1().split('@'));
 
-	    if(list.size() != 2)
+	    if(list.size() != 3)
 	      return;
 
 	    QByteArray name(list.at(0));
@@ -3729,9 +3735,11 @@ void spoton::slotAddFriendsKey(void)
 	      }
 
 	    QByteArray publicKey(list.at(1));
+	    QByteArray signature(list.at(2));
 
 	    name = QByteArray::fromBase64(name);
 	    publicKey = QByteArray::fromBase64(publicKey);
+	    signature = QByteArray::fromBase64(signature);
 
 	    if(spoton_misc::saveFriendshipBundle(name,
 						 publicKey,
@@ -3783,11 +3791,11 @@ void spoton::slotAddFriendsKey(void)
 
       QList<QByteArray> list(repleo.split('@'));
 
-      if(list.size() != 5)
+      if(list.size() != 6)
 	{
 	  spoton_misc::logError
 	    (QString("spoton::slotAddFriendsKey(): "
-		     "received irregular data. Expecting 5 entries, "
+		     "received irregular data. Expecting 6 entries, "
 		     "received %1.").arg(list.size()));
 	  return;
 	}
@@ -3798,6 +3806,7 @@ void spoton::slotAddFriendsKey(void)
       QByteArray hash;
       QByteArray name;
       QByteArray publicKey;
+      QByteArray signature;
       QByteArray symmetricKey;
       QByteArray symmetricKeyAlgorithm;
       bool ok = true;
@@ -3833,7 +3842,12 @@ void spoton::slotAddFriendsKey(void)
       if(!ok)
 	return;
 
-      hash = crypt.decrypted(list.value(4), &ok);
+      signature = crypt.decrypted(list.value(4), &ok);
+
+      if(!ok)
+	return;
+
+      hash = crypt.decrypted(list.value(5), &ok);
 
       if(!ok)
 	return;
@@ -3842,7 +3856,8 @@ void spoton::slotAddFriendsKey(void)
 	(crypt.keyedHash(symmetricKey +
 			 symmetricKeyAlgorithm +
 			 name +
-			 publicKey, &ok));
+			 publicKey +
+			 signature, &ok));
 
       if(!ok)
 	return;
@@ -3970,7 +3985,7 @@ void spoton::slotCopyFriendshipBundle(void)
   /*
   ** 1. Generate some symmetric information, S.
   ** 2. Encrypt S with the participant's public key.
-  ** 3. Encrypt our information (name, public key) with the
+  ** 3. Encrypt our information (name, public key, signature) with the
   **    symmetric key. Call our plaintext information T.
   ** 4. Compute a keyed hash of S and T using the symmetric key.
   ** 5. Encrypt the keyed hash with the symmetric key.
@@ -4045,6 +4060,12 @@ void spoton::slotCopyFriendshipBundle(void)
 
   QByteArray myPublicKey(m_crypt->publicKey(&ok));
 
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
   data.append(crypt.encrypted(myPublicKey, &ok).toBase64());
   data.append("@");
 
@@ -4054,12 +4075,37 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  data.append
-    (crypt.encrypted(crypt.keyedHash(symmetricKey +
-				     symmetricKeyAlgorithm +
-				     myName +
-				     myPublicKey, &ok),
-		     &ok).toBase64());
+  QByteArray mySignature(m_crypt->digitalSignature(&ok));
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  data.append(crypt.encrypted(mySignature, &ok).toBase64());
+  data.append("@");
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QByteArray hash
+    (crypt.keyedHash(symmetricKey +
+		     symmetricKeyAlgorithm +
+		     myName +
+		     myPublicKey +
+		     mySignature, &ok));
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  data.append(crypt.encrypted(hash, &ok).toBase64());
 
   if(!ok)
     {

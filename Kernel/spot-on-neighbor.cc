@@ -544,12 +544,16 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 	   value("gui/nodeName",
 		 "unknown").toByteArray().trimmed());
 	QByteArray myPublicKey;
+	QByteArray mySignature;
 	bool ok = true;
 
 	myPublicKey = spoton_kernel::s_crypt1->publicKey(&ok);
 
 	if(ok)
-	  sharePublicKey(myName, myPublicKey);
+	  spoton_kernel::s_crypt1->digitalSignature(&ok);
+
+	if(ok)
+	  sharePublicKey(myName, myPublicKey, mySignature);
       }
 }
 
@@ -658,7 +662,8 @@ void spoton_neighbor::slotLifetimeExpired(void)
 }
 
 void spoton_neighbor::sharePublicKey(const QByteArray &name,
-				     const QByteArray &publicKey)
+				     const QByteArray &publicKey,
+				     const QByteArray &signature)
 {
   if(state() != QAbstractSocket::ConnectedState)
     return;
@@ -668,6 +673,8 @@ void spoton_neighbor::sharePublicKey(const QByteArray &name,
   message.append(name.toBase64());
   message.append("\n");
   message.append(publicKey.toBase64());
+  message.append("\n");
+  message.append(signature.toBase64());
   message = spoton_send::message0012(message);
 
   if(write(message.constData(), message.length()) != message.length())

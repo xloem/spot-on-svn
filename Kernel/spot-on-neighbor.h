@@ -55,7 +55,8 @@ class spoton_neighbor: public QTcpSocket
   qint64 id(void) const;
   void setId(const qint64 id);
   void sharePublicKey(const QByteArray &name,
-		      const QByteArray &publicKey);
+		      const QByteArray &publicKey,
+		      const QByteArray &signature);
 
  private:
   QByteArray m_data;
