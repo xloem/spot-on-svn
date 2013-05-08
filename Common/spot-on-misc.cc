@@ -86,7 +86,34 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS country_inclusion ("
 		   "country BLOB NOT NULL, "
 		   "accepted BLOB NOT NULL, "
-		   "hash TEXT PRIMARY KEY NOT NULL)");
+		   "country_hash TEXT PRIMARY KEY NOT NULL)");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_misc");
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("CREATE TABLE IF NOT EXISTS incoming ("
+		   "date_retrieved BLOB NOT NULL, "
+		   "message BLOB NOT NULL, "
+		   "message_hash TEXT PRIMARY KEY NOT NULL, "
+		   "sender BLOB NOT NULL, "
+		   "subject BLOB NOT NULL)");
+	query.exec("CREATE TABLE IF NOT EXISTS outgoing ("
+		   "message BLOB NOT NULL, "
+		   "subject BLOB NOT NULL, "
+		   "participant_oid INTEGER NOT NULL)");
       }
 
     db.close();
@@ -274,7 +301,7 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS urls ("
 		   "date_time_inserted TEXT NOT NULL, "
 		   "description BLOB, "
-		   "hash TEXT PRIMARY KEY NOT NULL, "
+		   "url_hash TEXT PRIMARY KEY NOT NULL, "
 		   "title BLOB NOT NULL, "
 		   "url BLOB NOT NULL)");
       }
@@ -409,7 +436,7 @@ void spoton_misc::populateCountryDatabase(spoton_gcrypt *crypt)
 	    bool ok = true;
 
 	    query.prepare("INSERT INTO country_inclusion "
-			  "(country, accepted, hash) "
+			  "(country, accepted, country_hash) "
 			  "VALUES (?, ?, ?)");
 	    query.bindValue
 	      (0, crypt->encrypted(QLocale::countryToString(locale.country()).
@@ -458,7 +485,7 @@ bool spoton_misc::countryAllowedToConnect(const QString &country,
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT accepted FROM country_inclusion WHERE "
-		      "hash = ?");
+		      "country_hash = ?");
 	query.bindValue(0, crypt->keyedHash(country.toLatin1(), &ok).
 			toBase64());
 

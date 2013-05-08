@@ -70,7 +70,7 @@ void spoton_reencode::reencode(spoton *ui,
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT country, accepted, hash FROM "
+	if(query.exec("SELECT country, accepted, country_hash FROM "
 		      "country_inclusion"))
 	  while(query.next())
 	    {
@@ -82,8 +82,8 @@ void spoton_reencode::reencode(spoton *ui,
 	      updateQuery.prepare("UPDATE country_inclusion "
 				  "SET country = ?, "
 				  "accepted = ?, "
-				  "hash = ? WHERE "
-				  "hash = ?");
+				  "country_hash = ? WHERE "
+				  "country_hash = ?");
 	      country = oldCrypt->decrypted(QByteArray::
 					    fromBase64(query.
 						       value(0).

@@ -3245,7 +3245,7 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
 	QSqlQuery query(db);
 
 	query.prepare("UPDATE country_inclusion SET accepted = ? "
-		      "WHERE hash = ?");
+		      "WHERE country_hash = ?");
 	query.bindValue
 	  (0, m_crypt->encrypted(QString::number(item->checkState()).
 				 toLatin1(), &ok).toBase64());
@@ -3923,6 +3923,7 @@ void spoton::slotResetAll(void)
   QStringList list;
 
   list << "country_inclusion.db"
+       << "email.db"
        << "error_log.dat"
        << "friends_public_keys.db"
        << "idiotes.db"

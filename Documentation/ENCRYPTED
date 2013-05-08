@@ -1,5 +1,9 @@
 Some tables contain encrypted data.
 
+email.db:
+
+all
+
 country_inclusion.db:
 
 country
