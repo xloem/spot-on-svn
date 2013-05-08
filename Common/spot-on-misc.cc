@@ -73,7 +73,6 @@ bool spoton_misc::isGnome(void)
 
 void spoton_misc::prepareDatabases(void)
 {
-  QSqlDatabase::removeDatabase("spoton_misc");
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 

@@ -1350,8 +1350,17 @@ void spoton::slotGeneralTimerTimeout(void)
 
 	      if(query.exec("SELECT port FROM kernel_gui_server"))
 		if(query.next())
-		  m_kernelSocket.connectToHost
-		    ("127.0.0.1", query.value(0).toInt());
+		  {
+		    m_kernelSocket.connectToHost("127.0.0.1",
+						 query.value(0).toInt());
+
+		    /*
+		    ** If the kernel is not responsive, terminate it.
+		    */
+
+		    if(!m_kernelSocket.waitForConnected(10000))
+		      slotDeactivateKernel();
+		  }
 	    }
 
 	  db.close();
@@ -4162,7 +4171,7 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
 
 	    qSort(list);
 
-	    for(int j = 1; j < list.size(); j++)
+	    for(int j = 1; j < list.size(); j++) // Delete all but one.
 	      {
 		query.bindValue(0, list.at(j));
 		query.exec();
