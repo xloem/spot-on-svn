@@ -26,11 +26,15 @@ Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
 Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
 EOL
-Recipient (Base-64) (Ciphertext, SK)
+Recipient's Keyed Sha-512 Hash (Base-64) (Ciphertext, SK)
 EOL
 Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
+Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
+EOL
 Sender's Name (Base-64) (Ciphertext, SK)
+EOL
+Subject (Base-64) (Ciphertext, SK)
 EOL
 Message (Base-64) (Ciphertext, SK)
 EOL
@@ -49,7 +53,7 @@ URL Public Key (Base-64) (Plaintext)
 EOL
 Signature (Base-64) (Ciphertext, PK)
 
-Greetings #3
+Echoed Status
 Echoed? Yes
 
 Message Type ("0013") (Plaintext)
@@ -78,7 +82,7 @@ Echoed? No
 Message Type ("0015")
 0 (Plaintext)
 
-URL
+Echo URL
 Echoed? Yes
 
 Message Type ("0020") (Plaintext)
