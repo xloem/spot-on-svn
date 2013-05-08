@@ -76,8 +76,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>944</width>
-                <height>636</height>
+                <width>952</width>
+                <height>625</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -730,9 +730,9 @@
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="pushButtonCopytoClipboard">
+                <widget class="QToolButton" name="toolButtonCopytoClipboard">
                  <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy my name and public key to the clipboard buffer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy my name and specified public key to the clipboard buffer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="text">
                   <string>Copy Key</string>
@@ -741,12 +741,18 @@
                   <iconset resource="../Icons/icons.qrc">
                    <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
                  </property>
+                 <property name="popupMode">
+                  <enum>QToolButton::InstantPopup</enum>
+                 </property>
+                 <property name="toolButtonStyle">
+                  <enum>Qt::ToolButtonTextBesideIcon</enum>
+                 </property>
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="pushButtonMakeFriends">
+                <widget class="QToolButton" name="toolButtonMakeFriends">
                  <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Share my public key with the selected neighbor.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Share my specified public key with the selected neighbor.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="text">
                   <string>Share Key</string>
@@ -754,6 +760,12 @@
                  <property name="icon">
                   <iconset resource="../Icons/icons.qrc">
                    <normaloff>:/sharekey.png</normaloff>:/sharekey.png</iconset>
+                 </property>
+                 <property name="popupMode">
+                  <enum>QToolButton::InstantPopup</enum>
+                 </property>
+                 <property name="toolButtonStyle">
+                  <enum>Qt::ToolButtonTextBesideIcon</enum>
                  </property>
                 </widget>
                </item>
@@ -1361,8 +1373,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1020</width>
-             <height>511</height>
+             <width>939</width>
+             <height>470</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2587,7 +2599,7 @@
      <x>0</x>
      <y>0</y>
      <width>974</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2652,8 +2664,8 @@
   <tabstop>pushButtonClearOutgoingMessage</tabstop>
   <tabstop>sendMail</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>
-  <tabstop>pushButtonCopytoClipboard</tabstop>
-  <tabstop>pushButtonMakeFriends</tabstop>
+  <tabstop>toolButtonCopytoClipboard</tabstop>
+  <tabstop>toolButtonMakeFriends</tabstop>
   <tabstop>neighbors</tabstop>
   <tabstop>neighborIP</tabstop>
   <tabstop>neighborPort</tabstop>

@@ -86,11 +86,13 @@ class spoton: public QMainWindow
   void slotConnectNeighbor(void);
   void slotCopyFriendshipBundle(void);
   void slotCopyMyPublicKey(void);
+  void slotCopyMyURLPublicKey(void);
   void slotCountryChanged(QListWidgetItem *item);
   void slotDeactivateKernel(void);
   void slotDeleteAllBlockedNeighbors(void);
   void slotDeleteAllListeners(void);
   void slotDeleteAllNeighbors(void);
+  void slotDeleteAllUuids(void);
   void slotDeleteListener(void);
   void slotDeleteNeighbor(void);
   void slotDisconnectNeighbor(void);
@@ -123,6 +125,7 @@ class spoton: public QMainWindow
   void slotSetPassphrase(void);
   void slotSharePublicKey(void);
   void slotSharePublicKeyWithParticipant(void);
+  void slotShareURLPublicKey(void);
   void slotShowContextMenu(const QPoint &point);
   void slotStatusChanged(int index);
   void slotTabChanged(int index);

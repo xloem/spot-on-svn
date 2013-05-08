@@ -388,8 +388,9 @@ void spoton_listener::slotNewConnection(void)
 		       "country, "
 		       "remote_ip_address_hash, "
 		       "qt_country_hash, "
-		       "external_ip_address) "
-		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		       "external_ip_address, "
+		       "uuid) "
+		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
 	    query.bindValue(1, m_port);
 
@@ -455,6 +456,8 @@ void spoton_listener::slotNewConnection(void)
 						    address().
 						    toString().toLatin1(),
 						    &ok).toBase64());
+
+	    query.bindValue(13, neighbor->receivedUuid().toString());
 
 	    if(ok)
 	      created = query.exec();

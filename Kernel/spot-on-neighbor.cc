@@ -30,7 +30,6 @@
 #include <QNetworkInterface>
 #include <QSqlError>
 #include <QSqlQuery>
-#include <QUuid>
 #include <QtCore/qmath.h>
 
 #include <limits>
@@ -88,9 +87,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  this,
 	  SLOT(slotDiscoverExternalAddress(void)));
   m_timer.start(2500);
+  m_keepAliveTimer.start(45000);
   m_lifetime.setInterval(10 * 60 * 1000);
   m_lifetime.start();
-  sendUuid();
+  QTimer::singleShot(15000, this, SLOT(slotSendUuid(void)));
 }
 
 spoton_neighbor::spoton_neighbor(const QString &ipAddress,
@@ -320,7 +320,6 @@ void spoton_neighbor::saveStatus(QSqlDatabase &db, const QString &status)
 void spoton_neighbor::slotReadyRead(void)
 {
   m_data.append(readAll());
-  m_lastReadTime = QDateTime::currentDateTime();
 
   if(m_data.isEmpty() ||
      m_data.length() > spoton_kernel::s_settings.
@@ -428,7 +427,7 @@ void spoton_neighbor::slotReadyRead(void)
 
 void spoton_neighbor::slotConnected(void)
 {
-  m_keepAliveTimer.start(60000);
+  m_keepAliveTimer.start(45000);
   m_lastReadTime = QDateTime::currentDateTime();
 
   if(spoton_kernel::s_crypt1)
@@ -467,7 +466,7 @@ void spoton_neighbor::slotConnected(void)
 	("spoton_neighbor_" + QString::number(s_dbId));
     }
 
-  sendUuid();
+  QTimer::singleShot(15000, this, SLOT(slotSendUuid(void)));
 
   /*
   ** Initial discovery of the external IP address.
@@ -1117,6 +1116,8 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
 	  ("spoton_neighbor::process0014(): QUuid::fromRfc4122() failure.");
       else
 	{
+	  m_receivedUuid = uuid;
+
 	  {
 	    QSqlDatabase db = QSqlDatabase::addDatabase
 	      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
@@ -1129,7 +1130,7 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
 		QSqlQuery query(db);
 
 		query.prepare("UPDATE neighbors SET uuid = ? "
-			      "WHERE OID = ? AND uuid IS NULL");
+			      "WHERE OID = ?");
 		query.bindValue(0, uuid.toString());
 		query.bindValue(1, m_id);
 		query.exec();
@@ -1283,7 +1284,7 @@ void spoton_neighbor::prepareNetworkInterface(void)
     }
 }
 
-void spoton_neighbor::sendUuid(void)
+void spoton_neighbor::slotSendUuid(void)
 {
   if(state() != QAbstractSocket::ConnectedState)
     return;
@@ -1299,12 +1300,12 @@ void spoton_neighbor::sendUuid(void)
       if(write(message.constData(), message.length()) !=
 	 message.length())
 	spoton_misc::logError
-	  ("spoton_neighbor::sendUuid(): write() error.");
+	  ("spoton_neighbor::slotSendUuid(): write() error.");
       else
 	flush();
     }
   else
-    spoton_misc::logError("spoton_neighbor::sendUuid(): "
+    spoton_misc::logError("spoton_neighbor::slotSendUuid(): "
 			  "QUuid::fromRfc4122() failure.");
 }
 
@@ -1388,4 +1389,9 @@ void spoton_neighbor::slotSendKeepAlive(void)
       else
 	flush();
     }
+}
+
+QUuid spoton_neighbor::receivedUuid(void) const
+{
+  return m_receivedUuid;
 }

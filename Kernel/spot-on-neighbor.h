@@ -33,6 +33,7 @@
 #include <QSqlDatabase>
 #include <QTcpSocket>
 #include <QTimer>
+#include <QUuid>
 
 #include "Common/spot-on-external-address.h"
 
@@ -52,6 +53,7 @@ class spoton_neighbor: public QTcpSocket
   spoton_neighbor(const int socketDescriptor,
 		  QObject *parent);
   ~spoton_neighbor();
+  QUuid receivedUuid(void) const;
   qint64 id(void) const;
   void setId(const qint64 id);
   void sharePublicKey(const QByteArray &name,
@@ -67,6 +69,7 @@ class spoton_neighbor: public QTcpSocket
   QTimer m_keepAliveTimer;
   QTimer m_lifetime;
   QTimer m_timer;
+  QUuid m_receivedUuid;
   qint64 m_id;
   quint16 m_port;
   spoton_external_address *m_externalAddress;
@@ -89,7 +92,6 @@ class spoton_neighbor: public QTcpSocket
 		     const QByteArray &publicKey,
 		     const qint64 neighborOid);
   void saveStatus(QSqlDatabase &db, const QString &status);
-  void sendUuid(void);
 
  private slots:
   void slotConnected(void);
@@ -103,6 +105,7 @@ class spoton_neighbor: public QTcpSocket
   void slotSendKeepAlive(void);
   void slotSendMessage(const QByteArray &data);
   void slotSendStatus(const QList<QByteArray> &list);
+  void slotSendUuid(void);
   void slotTimeout(void);
 
  signals:

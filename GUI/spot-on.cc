@@ -212,10 +212,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotOnlyOnlineListenersToggled(bool)));
-  connect(m_ui.pushButtonMakeFriends,
-	  SIGNAL(clicked(bool)),
-	  this,
-	  SLOT(slotSharePublicKey(void)));
   connect(m_ui.pushButtonLogViewer,
 	  SIGNAL(clicked(bool)),
 	  this,
@@ -244,10 +240,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotStatusChanged(int)));
-  connect(m_ui.pushButtonCopytoClipboard,
-	  SIGNAL(clicked(void)),
-	  this,
-	  SLOT(slotCopyMyPublicKey(void)));
   connect(m_ui.addFriend,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -302,6 +294,20 @@ spoton::spoton(void):QMainWindow()
 	  SLOT(slotClearOutgoingMessage(void)));
   statusBar()->showMessage(tr("Not connected to the kernel. Is the kernel "
 			      "active?"));
+
+  QMenu *menu = new QMenu(this);
+
+  connect(menu->addAction(tr("Copy &Messaging Public Key")),
+	  SIGNAL(triggered(void)), this, SLOT(slotCopyMyPublicKey(void)));
+  connect(menu->addAction(tr("Copy &URL Public Key")),
+	  SIGNAL(triggered(void)), this, SLOT(slotCopyMyURLPublicKey(void)));
+  m_ui.toolButtonCopytoClipboard->setMenu(menu);
+  menu = new QMenu(this);
+  connect(menu->addAction(tr("Share &Messaging Public Key")),
+	  SIGNAL(triggered(void)), this, SLOT(slotSharePublicKey(void)));
+  connect(menu->addAction(tr("Share &URL Public Key")),
+	  SIGNAL(triggered(void)), this, SLOT(slotShareURLPublicKey(void)));
+  m_ui.toolButtonMakeFriends->setMenu(menu);
   m_generalTimer.start(2500);
   m_tableTimer.setInterval(2500);
   m_ui.ipv4Listener->setChecked(true);
@@ -2059,8 +2065,11 @@ void spoton::slotShowContextMenu(const QPoint &point)
   if(m_ui.neighbors == sender())
     {
       menu.addAction(QIcon(":/sharekey.png"),
-		     tr("&Share my Public Key"),
+		     tr("Share &Messaging Public Key"),
 		     this, SLOT(slotSharePublicKey(void)));
+      menu.addAction(QIcon(":/sharekey.png"),
+		     tr("Share &URL Public Key"),
+		     this, SLOT(slotShareURLPublicKey(void)));
       menu.addSeparator();
       menu.addAction(QIcon(":/connect.png"), tr("&Connect"),
 		     this, SLOT(slotConnectNeighbor(void)));
@@ -2073,6 +2082,8 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotDeleteAllNeighbors(void)));
       menu.addAction(tr("Delete All Non-Unique &Blocked Neighbors"),
 		     this, SLOT(slotDeleteAllBlockedNeighbors(void)));
+      menu.addAction(tr("Delete All Non-Unique &Uuids"),
+		     this, SLOT(slotDeleteAllUuids(void)));
       menu.addSeparator();
       menu.addAction(QIcon(":/block.png"),tr("&Block"),
 		     this, SLOT(slotBlockNeighbor(void)));
@@ -4131,7 +4142,7 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   /*
-  ** Locate all blocked neighbors and delete the non-unique ones.
+  ** Delete all non-unique blocked neighbors.
   ** Do remember that remote_ip_address contains encrypted data.
   */
 
@@ -4178,6 +4189,43 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
 		query.exec();
 	      }
 	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton");
+  QApplication::restoreOverrideCursor();
+}
+
+void spoton::slotCopyMyURLPublicKey(void)
+{
+}
+
+void spoton::slotShareURLPublicKey(void)
+{
+}
+
+void spoton::slotDeleteAllUuids(void)
+{
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+  /*
+  ** Delete all non-unique uuids.
+  */
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("DELETE FROM neighbors WHERE OID NOT IN ("
+		   "SELECT OID FROM neighbors GROUP BY uuid)");
       }
 
     db.close();
