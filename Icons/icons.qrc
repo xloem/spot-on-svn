@@ -261,5 +261,6 @@
         <file>repleo.png</file>
         <file>Sound/receive.wav</file>
         <file>Sound/echo.wav</file>
+        <file>pinpad.png</file>
     </qresource>
 </RCC>
