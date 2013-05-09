@@ -1184,7 +1184,15 @@ void spoton::slotPopulateNeighbors(void)
 		    item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 		    item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-		    if(i == 2)
+            if(i == 1) // UUID Column
+              {
+              if(query.value(1).toString().contains("-"))
+               item->setIcon(QIcon(":/plist_confirmed_as_permanent_friend.png"));
+               else
+                item->setBackground(QBrush(QColor("black")));
+              }
+
+            else if(i == 2) // Status Column
 		      {
 			if(query.value(i).toString() == "connected")
 			  item->setBackground(QBrush(QColor("lightgreen")));
