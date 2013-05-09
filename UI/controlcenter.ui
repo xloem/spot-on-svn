@@ -708,12 +708,12 @@
               </column>
               <column>
                <property name="text">
-                <string>ZIP</string>
+                <string>Size</string>
                </property>
               </column>
               <column>
                <property name="text">
-                <string>Size</string>
+                <string>#</string>
                </property>
               </column>
              </widget>
@@ -736,7 +736,7 @@
               <item>
                <widget class="QLabel" name="label_6">
                 <property name="text">
-                 <string>Delete items older than</string>
+                 <string>Delete data older than</string>
                 </property>
                </widget>
               </item>
