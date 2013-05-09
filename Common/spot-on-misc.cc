@@ -239,23 +239,24 @@ void spoton_misc::prepareDatabases(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("CREATE TABLE IF NOT EXISTS neighbors ("
-		   "local_ip_address TEXT , "
-		   "local_port TEXT, "
-		   "remote_ip_address TEXT NOT NULL, "
-		   "remote_port TEXT NOT NULL, "
-		   "scope_id TEXT, "
-		   "protocol TEXT NOT NULL, "
-		   "status TEXT NOT NULL DEFAULT 'disconnected', "
-		   "status_control TEXT NOT NULL DEFAULT 'connected', "
-		   "sticky INTEGER NOT NULL DEFAULT 1, "
-		   "external_ip_address TEXT, "
-		   "external_port TEXT, "
-		   "uuid TEXT, "
-		   "country TEXT, "
-		   "hash TEXT PRIMARY KEY NOT NULL, "
-		   "remote_ip_address_hash TEXT NOT NULL, "
-		   "qt_country_hash TEXT)");
+	query.exec
+	  ("CREATE TABLE IF NOT EXISTS neighbors ("
+	   "local_ip_address TEXT , "
+	   "local_port TEXT, "
+	   "remote_ip_address TEXT NOT NULL, "
+	   "remote_port TEXT NOT NULL, "
+	   "scope_id TEXT, "
+	   "protocol TEXT NOT NULL, "
+	   "status TEXT NOT NULL DEFAULT 'disconnected', "
+	   "status_control TEXT NOT NULL DEFAULT 'connected', "
+	   "sticky INTEGER NOT NULL DEFAULT 1, "
+	   "external_ip_address TEXT, "
+	   "external_port TEXT, "
+	   "uuid TEXT DEFAULT '{00000000-0000-0000-0000-000000000000}', "
+	   "country TEXT, "
+	   "hash TEXT PRIMARY KEY NOT NULL, "
+	   "remote_ip_address_hash TEXT NOT NULL, "
+	   "qt_country_hash TEXT)");
       }
 
     db.close();

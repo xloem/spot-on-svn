@@ -86,10 +86,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotDiscoverExternalAddress(void)));
-  m_timer.start(2500);
+  m_externalAddressDiscovererTimer.start(60000);
   m_keepAliveTimer.start(45000);
-  m_lifetime.setInterval(10 * 60 * 1000);
-  m_lifetime.start();
+  m_lifetime.start(10 * 60 * 1000);
+  m_timer.start(2500);
   QTimer::singleShot(15000, this, SLOT(slotSendUuid(void)));
 }
 
@@ -144,9 +144,10 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotDiscoverExternalAddress(void)));
+  m_externalAddressDiscovererTimer.setInterval(60000);
+  m_keepAliveTimer.setInterval(45000);
+  m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
-  m_lifetime.setInterval(10 * 60 * 1000);
-  m_lifetime.start();
 }
 
 spoton_neighbor::~spoton_neighbor()
@@ -427,7 +428,7 @@ void spoton_neighbor::slotReadyRead(void)
 
 void spoton_neighbor::slotConnected(void)
 {
-  m_keepAliveTimer.start(45000);
+  m_keepAliveTimer.start();
   m_lastReadTime = QDateTime::currentDateTime();
 
   if(spoton_kernel::s_crypt1)
@@ -473,7 +474,7 @@ void spoton_neighbor::slotConnected(void)
   */
 
   m_externalAddress->discover();
-  m_externalAddressDiscovererTimer.start(60000);
+  m_externalAddressDiscovererTimer.start();
 }
 
 void spoton_neighbor::savePublicKey(const QByteArray &name,

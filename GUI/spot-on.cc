@@ -1856,7 +1856,9 @@ void spoton::slotSetPassphrase(void)
 	      QApplication::restoreOverrideCursor();
 	    }
 
-	  m_tableTimer.start();
+	  if(!m_tableTimer.isActive())
+	    m_tableTimer.start();
+
 	  sendKeyToKernel();
 	}
 
@@ -1959,7 +1961,10 @@ void spoton::slotValidatePassphrase(void)
       spoton_misc::populateCountryDatabase(m_crypt);
       QApplication::restoreOverrideCursor();
       spoton_misc::populateCountryDatabase(m_crypt);
-      m_tableTimer.start();
+
+      if(!m_tableTimer.isActive())
+	m_tableTimer.start();
+
       sendKeyToKernel();
       m_ui.kernelBox->setEnabled(true);
       m_ui.listenersBox->setEnabled(true);

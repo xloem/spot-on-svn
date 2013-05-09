@@ -62,6 +62,7 @@ class spoton_kernel: public QObject
   QHash<qint64, QPointer<spoton_listener> > m_listeners;
   QHash<qint64, QPointer<spoton_neighbor> > m_neighbors;
   QTimer m_controlDatabaseTimer;
+  QTimer m_scrambleTimer;
   QTimer m_statusTimer;
   spoton_gui_server *m_guiServer;
   spoton_shared_reader *m_sharedReader;
