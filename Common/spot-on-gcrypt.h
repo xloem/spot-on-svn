@@ -78,6 +78,7 @@ class spoton_gcrypt
 			      const char *oldPassphrase,
 			      const QString &id,
 			      QString &error);
+  spoton_gcrypt(const QString &id); // Random object?
   spoton_gcrypt(const QString &cipherType,
 		const QString &hashType,
 		const QByteArray &passphrase,
@@ -92,6 +93,7 @@ class spoton_gcrypt
   QByteArray keyedHash(const QByteArray &data, bool *ok);
   QByteArray publicKey(bool *ok);
   QByteArray publicKeyDecrypt(const QByteArray &data, bool *ok);
+  QString cipherType(void) const;
   char *passphrase(void) const;
   char *symmetricKey(void) const;
   size_t passphraseLength(void) const;
@@ -99,6 +101,7 @@ class spoton_gcrypt
   void generatePrivatePublicKeys(const int rsaKeySize, QString &error);
 
  private:
+  QByteArray m_publicKey;
   QString m_cipherType;
   QString m_hashType;
   QString m_id;

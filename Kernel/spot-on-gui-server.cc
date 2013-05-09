@@ -158,7 +158,7 @@ void spoton_gui_server::slotReadyRead(void)
 			 spoton_kernel::s_settings.value("gui/saltLength",
 							 256).toInt(),
 			 spoton_kernel::s_settings.value("gui/iterationCount",
-							 1000).toInt(),
+							 10000).toInt(),
 			 "private");
 		      spoton_misc::populateCountryDatabase
 			(spoton_kernel::s_crypt1);
@@ -177,7 +177,7 @@ void spoton_gui_server::slotReadyRead(void)
 		       spoton_kernel::s_settings.value("gui/saltLength",
 						       256).toInt(),
 		       spoton_kernel::s_settings.value("gui/iterationCount",
-						       1000).toInt(),
+						       10000).toInt(),
 		       "shared");
 		}
 	      else if(message.startsWith("message_"))

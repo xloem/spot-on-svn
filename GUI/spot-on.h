@@ -119,6 +119,7 @@ class spoton: public QMainWindow
   void slotResetAll(void);
   void slotSaveKernelPath(void);
   void slotSaveNodeName(void);
+  void slotScramble(bool state);
   void slotSelectKernelPath(void);
   void slotSendMail(void);
   void slotSendMessage(void);

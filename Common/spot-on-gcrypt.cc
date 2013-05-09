@@ -710,6 +710,91 @@ void spoton_gcrypt::reencodeRSAKeys(const QString &newCipher,
   gcry_sexp_release(key_t);
 }
 
+spoton_gcrypt::spoton_gcrypt(const QString &id)
+{
+  init();
+  m_cipherHandle = 0;
+  m_cipherType = randomCipherType();
+  m_cipherAlgorithm = gcry_cipher_map_name(m_cipherType.toLatin1().
+					   constData());
+  m_hashAlgorithm = gcry_md_map_name("sha512");
+  m_hashType = "sha512";
+  m_id = id;
+  m_iterationCount = 0; // We're not deriving keys.
+  m_passphrase = 0;
+  m_passphraseLength = 0;
+  m_symmetricKey = 0;
+
+  if(m_cipherAlgorithm)
+    m_symmetricKeyLength = gcry_cipher_get_algo_keylen(m_cipherAlgorithm);
+  else
+    m_symmetricKeyLength = 0;
+
+  if(m_symmetricKeyLength)
+    {
+      m_symmetricKey = static_cast<char *>
+	(gcry_calloc_secure(m_symmetricKeyLength, sizeof(char)));
+
+      if(m_symmetricKey)
+	gcry_randomize
+	  (static_cast<void *> (m_symmetricKey),
+	   m_symmetricKeyLength,
+	   GCRY_STRONG_RANDOM);
+    }
+
+  if(m_symmetricKey)
+    {
+      gcry_error_t err = 0;
+
+      if(m_cipherAlgorithm)
+	{
+	  if((err = gcry_cipher_open(&m_cipherHandle, m_cipherAlgorithm,
+				     GCRY_CIPHER_MODE_CBC,
+				     GCRY_CIPHER_SECURE |
+				     GCRY_CIPHER_CBC_CTS))
+	     != 0 || !m_cipherAlgorithm)
+	    {
+	      if(err != 0)
+		spoton_misc::logError
+		  (QString("spoton_gcrypt::spoton_gcrypt(): "
+			   "gcry_cipher_open() failure (%1).").
+		   arg(gcry_strerror(err)));
+	      else
+		spoton_misc::logError("spoton_gcrypt::spoton_gcrypt(): "
+				      "gcry_cipher_open() failure.");
+	    }
+	}
+      else
+	spoton_misc::logError("spoton_gcrypt::spoton_gcrypt(): "
+			      "m_cipherAlgorithm is 0.");
+
+      if(err == 0)
+	{
+	  if(m_cipherHandle)
+	    {
+	      if((err =
+		  gcry_cipher_setkey(m_cipherHandle,
+				     static_cast<const void *> (m_symmetricKey),
+				     m_symmetricKeyLength)) != 0)
+		spoton_misc::logError
+		  (QString("spoton_gcrypt::spoton_gcrypt(): "
+			   "gcry_cipher_setkey() "
+			   "failure (%1).").
+		   arg(gcry_strerror(err)));
+	    }
+	  else
+	    spoton_misc::logError("spoton_gcrypt::spoton_gcrypt(): "
+				  "m_cipherHandle is 0.");
+	}
+    }
+  else if(m_symmetricKeyLength > 0)
+    {
+      m_symmetricKeyLength = 0;
+      spoton_misc::logError("spoton_gcrypt::spoton_gcrypt(): "
+			    "gcry_calloc_secure() returned 0.");
+    }
+}
+
 spoton_gcrypt::spoton_gcrypt(const QString &cipherType,
 			     const QString &hashType,
 			     const QByteArray &passphrase,
@@ -807,7 +892,6 @@ spoton_gcrypt::spoton_gcrypt(const QString &cipherType,
 	    spoton_misc::logError("spoton_gcrypt::spoton_gcrypt(): "
 				  "m_cipherHandle is 0.");
 	}
-      
     }
   else if(m_symmetricKeyLength > 0)
     {
@@ -1605,11 +1689,17 @@ QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 
 QByteArray spoton_gcrypt::publicKey(bool *ok)
 {
+  if(!m_publicKey.isEmpty())
+    {
+      if(ok)
+	*ok = true;
+
+      return m_publicKey;
+    }
+
   /*
   ** Returns the correct public key from idiotes.db.
   */
-
-  QByteArray publicKey;
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_gcrypt");
@@ -1627,7 +1717,7 @@ QByteArray spoton_gcrypt::publicKey(bool *ok)
 
 	if(query.exec())
 	  if(query.next())
-	    publicKey = QByteArray::fromBase64
+	    m_publicKey = QByteArray::fromBase64
 	      (query.value(0).toByteArray());
       }
 
@@ -1639,25 +1729,25 @@ QByteArray spoton_gcrypt::publicKey(bool *ok)
   {
     bool ok = true;
 
-    publicKey = this->decrypted(publicKey, &ok);
+    m_publicKey = decrypted(m_publicKey, &ok);
 
     if(!ok)
-      publicKey.clear();
+      m_publicKey.clear();
   }
 
-  if(publicKey.isEmpty())
+  if(m_publicKey.isEmpty())
     {
       if(ok)
 	*ok = false;
 
       spoton_misc::logError
 	("spoton_gcrypt::publicKey(): decrypted() failure.");
-      return publicKey;
+      return m_publicKey;
     }
   else if(ok)
     *ok = true;
 
-  return publicKey;
+  return m_publicKey;
 }
 
 void spoton_gcrypt::generatePrivatePublicKeys(const int rsaKeySize,
@@ -1977,7 +2067,7 @@ QByteArray spoton_gcrypt::digitalSignature(bool *ok)
   {
     bool ok = true;
 
-    keyData = this->decrypted(keyData, &ok);
+    keyData = decrypted(keyData, &ok);
 
     if(!ok)
       keyData.clear();
@@ -2142,4 +2232,9 @@ QByteArray spoton_gcrypt::digitalSignature(bool *ok)
   gcry_sexp_release(key_t);
   gcry_sexp_release(signature_t);
   return signature;
+}
+
+QString spoton_gcrypt::cipherType(void) const
+{
+  return m_cipherType;
 }

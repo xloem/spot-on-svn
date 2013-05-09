@@ -212,10 +212,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotOnlyOnlineListenersToggled(bool)));
-  connect(m_ui.pushButtonLogViewer,
-	  SIGNAL(clicked(bool)),
+  connect(m_ui.scrambler,
+	  SIGNAL(toggled(bool)),
 	  this,
-	  SLOT(slotViewLog(void)));
+	  SLOT(slotScramble(bool)));
   connect(m_ui.pushButtonDocViewer,
 	  SIGNAL(clicked(bool)),
 	  this,
@@ -380,6 +380,8 @@ spoton::spoton(void):QMainWindow()
 		       toByteArray()).trimmed());
   m_ui.cipherType->clear();
   m_ui.cipherType->addItems(spoton_gcrypt::cipherTypes());
+  m_ui.scrambler->setChecked
+    (m_settings.value("gui/scramblerEnabled", false).toBool());
   m_ui.showOnlyConnectedNeighbors->setChecked
     (m_settings.value("gui/showOnlyConnectedNeighbors", false).toBool());
   m_ui.showOnlyOnlineListeners->setChecked
@@ -412,8 +414,8 @@ spoton::spoton(void):QMainWindow()
   if(m_ui.hashType->findText(str) > -1)
     m_ui.hashType->setCurrentIndex(m_ui.hashType->findText(str));
 
-  m_ui.iterationCount->setValue(m_settings.value("gui/iterationCount", 1000).
-			      toInt());
+  m_ui.iterationCount->setValue(m_settings.value("gui/iterationCount",
+						 10000).toInt());
   str = m_settings.value("gui/rsaKeySize", "3072").
     toString().toLower().trimmed();
 
@@ -452,7 +454,6 @@ spoton::spoton(void):QMainWindow()
       m_ui.kernelBox->setEnabled(false);
       m_ui.listenersBox->setEnabled(false);
       m_ui.pushButtonDocViewer->setEnabled(false);
-      m_ui.pushButtonLogViewer->setEnabled(false);
       m_ui.resetSpotOn->setEnabled(false);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
@@ -854,6 +855,15 @@ void spoton::slotProtocolRadioToggled(bool state)
   prepareListenerIPCombo();
 }
 
+void spoton::slotScramble(bool state)
+{
+  m_settings["gui/scramblerEnabled"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/scramblerEnabled", state);
+}
+
 void spoton::slotPopulateListeners(void)
 {
   if(!m_crypt)
@@ -1184,15 +1194,7 @@ void spoton::slotPopulateNeighbors(void)
 		    item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 		    item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-            if(i == 1) // UUID Column
-              {
-              if(query.value(1).toString().contains("-"))
-               item->setIcon(QIcon(":/plist_confirmed_as_permanent_friend.png"));
-               else
-                item->setBackground(QBrush(QColor("black")));
-              }
-
-            else if(i == 2) // Status Column
+		    if(i == 2)
 		      {
 			if(query.value(i).toString() == "connected")
 			  item->setBackground(QBrush(QColor("lightgreen")));
@@ -1873,7 +1875,6 @@ void spoton::slotSetPassphrase(void)
       m_ui.kernelBox->setEnabled(true);
       m_ui.listenersBox->setEnabled(true);
       m_ui.pushButtonDocViewer->setEnabled(true);
-      m_ui.pushButtonLogViewer->setEnabled(true);
       m_ui.resetSpotOn->setEnabled(true);
       m_ui.passphrase1->setText("0000000000");
       m_ui.passphrase2->setText("0000000000");
@@ -1982,7 +1983,6 @@ void spoton::slotValidatePassphrase(void)
       m_ui.passphraseLabel->setEnabled(false);
       m_ui.rsaKeySize->setEnabled(false);
       m_ui.pushButtonDocViewer->setEnabled(true);
-      m_ui.pushButtonLogViewer->setEnabled(true);
       m_ui.resetSpotOn->setEnabled(true);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
@@ -2098,9 +2098,9 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("Delete All Non-Unique &Uuids"),
 		     this, SLOT(slotDeleteAllUuids(void)));
       menu.addSeparator();
-      menu.addAction(QIcon(":/block.png"),tr("&Block"),
+      menu.addAction(QIcon(":/block.png"),tr("B&lock"),
 		     this, SLOT(slotBlockNeighbor(void)));
-      menu.addAction(tr("&Unblock"),
+      menu.addAction(tr("U&nblock"),
 		     this, SLOT(slotUnblockNeighbor(void)));
       menu.exec(m_ui.neighbors->mapToGlobal(point));
     }

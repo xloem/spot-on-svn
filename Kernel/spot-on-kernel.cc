@@ -198,6 +198,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotPollDatabase(void)));
+  connect(&m_scramblerTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotScramble(void)));
   connect(&m_statusTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -232,6 +236,16 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(fileChanged(const QString &)),
 	  this,
 	  SLOT(slotSettingsChanged(const QString &)));
+
+  /*
+  ** The scrambler implements a very simple idea. If enabled, neighbors will
+  ** randomly secrete randomly-encrypted data.
+  */
+
+  m_scramblerTimer.setInterval(qrand() % 20000 + 40000);
+
+  if(s_settings.value("gui/scramblerEnabled", false).toBool())
+    m_scramblerTimer.start();
 }
 
 spoton_kernel::~spoton_kernel()
@@ -830,6 +844,11 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
   for(int i = 0; i < settings.allKeys().size(); i++)
     s_settings[settings.allKeys().at(i)] = settings.value
       (settings.allKeys().at(i));
+
+  if(!s_settings.value("gui/scramblerEnabled", false).toBool())
+    m_scramblerTimer.stop();
+  else
+    m_scramblerTimer.start();
 }
 
 void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
@@ -904,6 +923,12 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
   QSqlDatabase::removeDatabase("spoton_kernel");
 
+  QByteArray status(s_settings.value("gui/my_status", "Online").
+		    toByteArray().toLower());
+
+  if(status == "offline")
+    return;
+
   if(!s_crypt1)
     return;
 
@@ -919,16 +944,6 @@ void spoton_kernel::slotStatusTimerExpired(void)
   myPublicKeyHash = spoton_gcrypt::sha512Hash(publicKey, &ok);
 
   if(!ok)
-    return;
-
-  /*
-  ** Do we have any interfaces attached to the kernel?
-  */
-
-  QByteArray status(s_settings.value("gui/my_status", "Online").
-		    toByteArray().toLower());
-
-  if(status == "offline")
     return;
 
   QList<QByteArray> list;
@@ -1056,4 +1071,55 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
   QSqlDatabase::removeDatabase("spoton_kernel");
   emit sendStatus(list);
+}
+
+void spoton_kernel::slotScramble(void)
+{
+  /*
+  ** Errors? Which errors?
+  */
+
+  QByteArray data;
+  QByteArray random(128, 0);
+  bool ok = true;
+  spoton_gcrypt crypt("scrambler");
+
+  gcry_randomize
+    (static_cast<void *> (random.data()),
+     static_cast<size_t> (random.length()),
+     GCRY_STRONG_RANDOM);
+  data.append(crypt.encrypted(random, &ok).toBase64());
+  data.append("\n");
+  data.append(crypt.encrypted(crypt.cipherType().toLatin1(), &ok).toBase64());
+  data.append("\n");
+  data.append
+    (crypt.encrypted(crypt.keyedHash(data, &ok), &ok).toBase64());
+  data.append("\n");
+  data.append(crypt.encrypted("unknown", &ok).toBase64());
+  data.append("\n");
+  data.append(crypt.encrypted(crypt.keyedHash(random, &ok), &ok).toBase64());
+  data.append("\n");
+  data.append(crypt.encrypted(crypt.keyedHash(random, &ok), &ok).toBase64());
+
+  char c = 0;
+  short ttl = s_settings.value
+    ("kernel/ttl_0000", 16).toInt();
+
+  memcpy(&c, static_cast<void *> (&ttl), 1);
+  data.prepend(c);
+
+  if(s_settings.value("gui/chatSendMethod",
+		      "Artificial_GET").toString().
+     trimmed() == "Artificial_GET")
+    emit sendMessage
+      (spoton_send::message0000(data,
+				spoton_send::
+				ARTIFICIAL_GET));
+  else
+    emit sendMessage
+      (spoton_send::message0000(data,
+				spoton_send::
+				NORMAL_POST));
+
+  m_scramblerTimer.start(qrand() % 20000 + 40000);
 }

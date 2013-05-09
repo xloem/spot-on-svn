@@ -1253,9 +1253,11 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 
 void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
 {
-  spoton_misc::logError
-    (QString("spoton_neighbor::slotError(): socket error %1. "
-	     "Aborting socket.").arg(error)); 
+  if(error != QAbstractSocket::ConnectionRefusedError)
+    spoton_misc::logError
+      (QString("spoton_neighbor::slotError(): socket error %1. "
+	       "Aborting socket.").arg(error)); 
+
   abort();
 }
 
