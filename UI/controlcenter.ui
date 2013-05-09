@@ -1471,7 +1471,7 @@
                    <item>
                     <widget class="QCheckBox" name="scrambler">
                      <property name="text">
-                      <string>Enable Scrambler</string>
+                      <string>Enable Sending of randomized, scrambled Overhead-Data</string>
                      </property>
                     </widget>
                    </item>
