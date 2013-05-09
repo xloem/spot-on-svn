@@ -5,9 +5,9 @@ Echoed? Yes
 
 Message Type ("0000") (Plaintext)
 TTL (Plaintext)
-Symmetric Key (Base-64) (Ciphertext, PK)
+Symmetric Key (Base-64) (Ciphertext, PK, SK)
 EOL
-Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
+Symmetric Key Algorithm (Base-64) (Ciphertext, PK, SK)
 EOL
 Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
 EOL
@@ -26,7 +26,7 @@ Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
 Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
 EOL
-Recipient's Keyed Sha-512 Hash (Base-64) (Ciphertext, SK)
+Recipient's Sha-512 Hash (Base-64) (Ciphertext, SK)
 EOL
 Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
@@ -39,6 +39,10 @@ EOL
 Message (Base-64) (Ciphertext, SK)
 EOL
 Keyed Sha-512 Hash (Base-64) (Ciphertext, SK)
+
+Message Type ("0002") (Plaintext)
+TTL (Plaintext)
+My Sha-512 Hash (Base-64) (Ciphertext, PK, SK)
 
 Greetings #1, #2
 Echoed? No
@@ -58,9 +62,9 @@ Echoed? Yes
 
 Message Type ("0013") (Plaintext)
 TTL (Plaintext)
-Symmetric Key (Base-64) (Ciphertext, PK)
+Symmetric Key (Base-64) (Ciphertext, PK, SK)
 EOL
-Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
+Symmetric Key Algorithm (Base-64) (Ciphertext, PK, SK)
 EOL
 Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
 EOL
@@ -87,9 +91,9 @@ Echoed? Yes
 
 Message Type ("0020") (Plaintext)
 TTL (Plaintext)
-Symmetric Key (Base-64) (Ciphertext, PK)
+Symmetric Key (Base-64) (Ciphertext, PK, SK)
 EOL
-Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
+Symmetric Key Algorithm (Base-64) (Ciphertext, PK, SK)
 EOL
 URL-1 (Base-64) (Ciphertext, SK)
 EOL
