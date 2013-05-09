@@ -2475,6 +2475,7 @@ void spoton::slotPopulateParticipants(void)
 	QList<int> rows;
 	QModelIndexList list
 	  (m_ui.participants->selectionModel()->selectedRows(3));
+	QString participant(m_ui.participantsCombo->currentText());
 	QStringList hashes;
 	int hval = m_ui.participants->horizontalScrollBar()->value();
 	int row = 0;
@@ -2496,8 +2497,8 @@ void spoton::slotPopulateParticipants(void)
 
 	m_ui.participants->setRowCount(0);
 
+	QMap<QString, qint64> participants;
 	QSqlQuery query(db);
-	QStringList participants;
 	QWidget *focusWidget = QApplication::focusWidget();
 
 	query.setForwardOnly(true);
@@ -2555,7 +2556,8 @@ void spoton::slotPopulateParticipants(void)
 
 		  if(i == 0)
 		    {
-		      participants.append(item->text());
+		      participants.insert
+			(item->text(), query.value(1).toLongLong());
 
 		      if(!temporary)
 			{
@@ -2621,9 +2623,17 @@ void spoton::slotPopulateParticipants(void)
 
 	if(!participants.isEmpty())
 	  {
-	    qSort(participants);
 	    m_ui.participantsCombo->insertSeparator(1);
-	    m_ui.participantsCombo->addItems(participants);
+
+	    for(int i = 0; i < participants.keys().size(); i++)
+	      m_ui.participantsCombo->addItem
+		(participants.keys().at(i),
+		 participants[participants.keys().at(i)]);
+
+	    int index = -1;
+
+	    if((index = m_ui.participantsCombo->findText(participant)) > -1)
+	      m_ui.participantsCombo->setCurrentIndex(index);
 	  }
 
 	m_ui.participants->setSelectionMode(QAbstractItemView::MultiSelection);
@@ -4145,6 +4155,71 @@ Ui_spoton_mainwindow spoton::ui(void) const
 
 void spoton::slotSendMail(void)
 {
+  if(!m_crypt)
+    return;
+
+  QByteArray message
+    (m_ui.outgoingMessage->toPlainText().trimmed().toUtf8());
+
+  /*
+  ** Why would you send an empty message?
+  */
+
+  if(message.isEmpty())
+    {
+      QMessageBox::warning
+	(this, tr("Spot-On: Warning"),
+	 tr("Please compose an actual letter."));
+      m_ui.outgoingMessage->setFocus();
+      return;
+    }
+
+  /*
+  ** Bundle the love letter and send it to the email.db file. The
+  ** kernel shall do the rest.
+  */
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	QByteArray subject
+	  (m_ui.outgoingSubject->text().trimmed().toUtf8());
+	QSqlQuery query(db);
+	bool ok = true;
+	qint64 oid = -1;
+
+	if(m_ui.participantsCombo->currentIndex() > 1)
+	  oid = m_ui.participantsCombo->itemData
+	    (m_ui.participantsCombo->currentIndex()).toLongLong();
+
+	query.prepare("INSERT INTO outgoing "
+		      "(message, subject, participant_oid) "
+		      "VALUES (?, ?, ?)");
+	query.bindValue(0, m_crypt->encrypted(message, &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (1, m_crypt->encrypted(subject, &ok).toBase64());
+
+	query.bindValue(2, oid);
+
+	if(ok)
+	  if(query.exec())
+	    {
+	      m_ui.outgoingMessage->clear();
+	      m_ui.outgoingSubject->clear();
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton");
 }
 
 void spoton::slotDeleteAllBlockedNeighbors(void)

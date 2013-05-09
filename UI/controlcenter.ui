@@ -383,7 +383,7 @@
          <normaloff>:/tab-email.png</normaloff>:/tab-email.png</iconset>
        </attribute>
        <attribute name="title">
-        <string>E-Mail</string>
+        <string>Echo Mail</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_37">
         <item>
@@ -542,7 +542,10 @@
                  </size>
                 </property>
                 <property name="text">
-                 <string>To</string>
+                 <string>&amp;To</string>
+                </property>
+                <property name="buddy">
+                 <cstring>participantsCombo</cstring>
                 </property>
                </widget>
               </item>
