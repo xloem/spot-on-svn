@@ -45,7 +45,7 @@
          <normaloff>:/tab-chat.png</normaloff>:/tab-chat.png</iconset>
        </attribute>
        <attribute name="title">
-        <string>&amp;Chat</string>
+        <string>&amp;Echo-Chat</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_18">
         <property name="margin">
@@ -383,7 +383,7 @@
          <normaloff>:/tab-email.png</normaloff>:/tab-email.png</iconset>
        </attribute>
        <attribute name="title">
-        <string>Elastic Mail</string>
+        <string>Elastic-Mail</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_29">
         <item>
