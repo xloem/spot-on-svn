@@ -383,7 +383,7 @@
          <normaloff>:/tab-email.png</normaloff>:/tab-email.png</iconset>
        </attribute>
        <attribute name="title">
-        <string>Echo Mail</string>
+        <string>Elastic Mail</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_29">
         <item>
