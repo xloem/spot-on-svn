@@ -108,6 +108,7 @@ void spoton_misc::prepareDatabases(void)
 		   "date_retrieved BLOB NOT NULL, "
 		   "message BLOB NOT NULL, "
 		   "sender BLOB NOT NULL, "
+		   "status BLOB NOT NULL, "
 		   "subject BLOB NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS outgoing ("
 		   "message BLOB NOT NULL, "

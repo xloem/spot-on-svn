@@ -76,8 +76,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>952</width>
-                <height>785</height>
+                <width>944</width>
+                <height>795</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -383,7 +383,7 @@
          <normaloff>:/tab-email.png</normaloff>:/tab-email.png</iconset>
        </attribute>
        <attribute name="title">
-        <string>Elastic Mail</string>
+        <string>E-Mail</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_29">
         <item>
@@ -408,6 +408,11 @@
              <column>
               <property name="text">
                <string>Sender</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Status</string>
               </property>
              </column>
              <column>
@@ -1435,8 +1440,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>952</width>
-             <height>785</height>
+             <width>1020</width>
+             <height>780</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2681,7 +2686,7 @@
      <x>0</x>
      <y>0</y>
      <width>974</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
