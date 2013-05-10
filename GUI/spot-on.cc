@@ -4481,7 +4481,12 @@ void spoton::slotDeleteMail(void)
       {
 	QSqlQuery query(db);
 
-	query.prepare("DELETE FROM folders WHERE oid = ?");
+	if(m_ui.folder->currentIndex() == 2)
+	  query.prepare("DELETE FROM folders WHERE oid = ?");
+	else
+	  query.prepare("UPDATE folders SET folder_index = 2 WHERE "
+			"oid = ?");
+
 	query.bindValue(0, oid);
 
 	if(query.exec())
