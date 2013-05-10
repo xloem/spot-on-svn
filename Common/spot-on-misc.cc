@@ -109,7 +109,7 @@ void spoton_misc::prepareDatabases(void)
 		   "folder_index INTEGER NOT NULL, "
 		   "message BLOB NOT NULL, "
 		   "participant_oid INTEGER NOT NULL, "
-		   "sender BLOB NOT NULL, "
+		   "receiver_sender BLOB NOT NULL, "
 		   "status BLOB NOT NULL, "
 		   "subject BLOB NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS repository ("

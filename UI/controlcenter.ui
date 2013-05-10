@@ -398,9 +398,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
-             <width>920</width>
-             <height>771</height>
+             <y>-143</y>
+             <width>905</width>
+             <height>914</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -448,6 +448,12 @@
                </item>
                <item>
                 <widget class="QTableWidget" name="mail">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>150</height>
+                  </size>
+                 </property>
                  <property name="selectionMode">
                   <enum>QAbstractItemView::SingleSelection</enum>
                  </property>
@@ -779,6 +785,12 @@
               <layout class="QVBoxLayout" name="verticalLayout_30">
                <item>
                 <widget class="QTableWidget" name="repository">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>150</height>
+                  </size>
+                 </property>
                  <property name="selectionMode">
                   <enum>QAbstractItemView::SingleSelection</enum>
                  </property>
@@ -804,7 +816,7 @@
                  </column>
                  <column>
                   <property name="text">
-                   <string>Recipient's Hash</string>
+                   <string>Receipient's Hash</string>
                   </property>
                  </column>
                  <column>

@@ -232,6 +232,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotListenerIPComboChanged(int)));
+  connect(m_ui.folder,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotRefreshMail(void)));
   connect(m_ui.chatSendMethod,
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
@@ -4213,7 +4217,7 @@ void spoton::slotSendMail(void)
 
 	query.prepare("INSERT INTO folders "
 		      "(date, folder_index, "
-		      "message, sender, status, subject, "
+		      "message, receiver_sender, status, subject, "
 		      "participant_oid) "
 		      "VALUES (?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue
@@ -4226,8 +4230,10 @@ void spoton::slotSendMail(void)
 	  query.bindValue(2, m_crypt->encrypted(message, &ok).toBase64());
 
 	if(ok)
-	  query.bindValue(3, m_crypt->encrypted(tr("me").toUtf8(), &ok).
-			  toBase64());
+	  query.bindValue
+	    (3, m_crypt->encrypted(m_ui.participantsCombo->currentText().
+				   toUtf8(), &ok).
+	     toBase64());
 
 	if(ok)
 	  query.bindValue
@@ -4356,6 +4362,15 @@ void spoton::slotDeleteAllUuids(void)
 
 void spoton::slotRefreshMail(void)
 {
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+  if(m_ui.folder->currentIndex() == 0)
+    m_ui.mail->horizontalHeaderItem(1)->setText(tr("Sender"));
+  else if(m_ui.folder->currentIndex() == 1)
+    m_ui.mail->horizontalHeaderItem(1)->setText(tr("Receipient"));
+  else
+    m_ui.mail->horizontalHeaderItem(1)->setText(tr("Receipient/Sender"));
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
@@ -4373,7 +4388,7 @@ void spoton::slotRefreshMail(void)
 	QSqlQuery query(db);
 	int row = 0;
 
-	if(query.exec(QString("SELECT date, sender, status, "
+	if(query.exec(QString("SELECT date, receiver_sender, status, "
 			      "subject, "
 			      "message, OID FROM folders WHERE "
 			      "folder_index = %1").
@@ -4400,6 +4415,10 @@ void spoton::slotRefreshMail(void)
 		else
 		  item = new QTableWidgetItem(query.value(i).toString());
 
+		item->setTextAlignment(Qt::AlignLeft |
+				       Qt::AlignVCenter);
+		item->setFlags
+		  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		m_ui.mail->setItem(row - 1, i, item);
 	      }
 
@@ -4410,6 +4429,7 @@ void spoton::slotRefreshMail(void)
   }
 
   QSqlDatabase::removeDatabase("spoton");
+  QApplication::restoreOverrideCursor();
 }
 
 void spoton::slotMailSelected(void)
