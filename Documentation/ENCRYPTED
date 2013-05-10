@@ -2,7 +2,7 @@ Some tables contain encrypted data.
 
 email.db:
 
-all
+all, save for folder_index and participant_oid
 
 country_inclusion.db:
 

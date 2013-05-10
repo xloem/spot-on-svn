@@ -407,11 +407,59 @@
             <item>
              <widget class="QGroupBox" name="groupBox_inboxEmail">
               <property name="title">
-               <string>Incoming</string>
+               <string>Folders</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
                <item>
-                <widget class="QTableWidget" name="incomingMail">
+                <layout class="QHBoxLayout" name="horizontalLayout_38">
+                 <item>
+                  <widget class="QComboBox" name="folder">
+                   <item>
+                    <property name="text">
+                     <string>Inbox</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Sent</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Trash</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_32">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QTableWidget" name="mail">
+                 <property name="selectionMode">
+                  <enum>QAbstractItemView::SingleSelection</enum>
+                 </property>
+                 <property name="selectionBehavior">
+                  <enum>QAbstractItemView::SelectRows</enum>
+                 </property>
+                 <property name="horizontalScrollMode">
+                  <enum>QAbstractItemView::ScrollPerPixel</enum>
+                 </property>
+                 <property name="sortingEnabled">
+                  <bool>true</bool>
+                 </property>
                  <attribute name="horizontalHeaderDefaultSectionSize">
                   <number>120</number>
                  </attribute>
@@ -420,7 +468,7 @@
                  </attribute>
                  <column>
                   <property name="text">
-                   <string>Date Retrieved</string>
+                   <string>Date</string>
                   </property>
                  </column>
                  <column>
@@ -436,6 +484,16 @@
                  <column>
                   <property name="text">
                    <string>Subject</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>message</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>OID</string>
                   </property>
                  </column>
                 </widget>
@@ -463,6 +521,13 @@
                    <property name="icon">
                     <iconset resource="../Icons/icons.qrc">
                      <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="refreshMail">
+                   <property name="text">
+                    <string>Refresh</string>
                    </property>
                   </widget>
                  </item>
@@ -499,12 +564,16 @@
                     <string>&amp;Subject</string>
                    </property>
                    <property name="buddy">
-                    <cstring>incomingSubject</cstring>
+                    <cstring>mailSubject</cstring>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLineEdit" name="incomingSubject"/>
+                  <widget class="QLineEdit" name="mailSubject">
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -528,12 +597,12 @@
                     <string>&amp;Message</string>
                    </property>
                    <property name="buddy">
-                    <cstring>incomingMessage</cstring>
+                    <cstring>mailMessage</cstring>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QTextBrowser" name="incomingMessage"/>
+                  <widget class="QTextBrowser" name="mailMessage"/>
                  </item>
                 </layout>
                </item>
@@ -710,6 +779,18 @@
               <layout class="QVBoxLayout" name="verticalLayout_30">
                <item>
                 <widget class="QTableWidget" name="repository">
+                 <property name="selectionMode">
+                  <enum>QAbstractItemView::SingleSelection</enum>
+                 </property>
+                 <property name="selectionBehavior">
+                  <enum>QAbstractItemView::SelectRows</enum>
+                 </property>
+                 <property name="horizontalScrollMode">
+                  <enum>QAbstractItemView::ScrollPerPixel</enum>
+                 </property>
+                 <property name="sortingEnabled">
+                  <bool>true</bool>
+                 </property>
                  <attribute name="horizontalHeaderDefaultSectionSize">
                   <number>120</number>
                  </attribute>
@@ -756,6 +837,13 @@
                    <property name="icon">
                     <iconset resource="../Icons/icons.qrc">
                      <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="refreshRepository">
+                   <property name="text">
+                    <string>Refresh</string>
                    </property>
                   </widget>
                  </item>
@@ -890,9 +978,6 @@
               <widget class="QTableWidget" name="neighbors">
                <property name="verticalScrollBarPolicy">
                 <enum>Qt::ScrollBarAlwaysOn</enum>
-               </property>
-               <property name="alternatingRowColors">
-                <bool>false</bool>
                </property>
                <property name="selectionMode">
                 <enum>QAbstractItemView::SingleSelection</enum>
@@ -1756,9 +1841,6 @@
                     <widget class="QTableWidget" name="listeners">
                      <property name="verticalScrollBarPolicy">
                       <enum>Qt::ScrollBarAlwaysOn</enum>
-                     </property>
-                     <property name="alternatingRowColors">
-                      <bool>true</bool>
                      </property>
                      <property name="selectionMode">
                       <enum>QAbstractItemView::SingleSelection</enum>
@@ -2774,11 +2856,13 @@
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
   <tabstop>scrollArea_3</tabstop>
-  <tabstop>incomingMail</tabstop>
+  <tabstop>folder</tabstop>
+  <tabstop>mail</tabstop>
   <tabstop>deleteMail</tabstop>
+  <tabstop>refreshMail</tabstop>
   <tabstop>retrieveMail</tabstop>
-  <tabstop>incomingSubject</tabstop>
-  <tabstop>incomingMessage</tabstop>
+  <tabstop>mailSubject</tabstop>
+  <tabstop>mailMessage</tabstop>
   <tabstop>participantsCombo</tabstop>
   <tabstop>outgoingSubject</tabstop>
   <tabstop>outgoingMessage</tabstop>
@@ -2786,6 +2870,7 @@
   <tabstop>sendMail</tabstop>
   <tabstop>repository</tabstop>
   <tabstop>deleteRepository</tabstop>
+  <tabstop>refreshRepository</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>
   <tabstop>toolButtonCopytoClipboard</tabstop>
   <tabstop>toolButtonMakeFriends</tabstop>

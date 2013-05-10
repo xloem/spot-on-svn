@@ -217,7 +217,7 @@ spoton::spoton(void):QMainWindow()
 	  this,
 	  SLOT(slotScramble(bool)));
   connect(m_ui.pushButtonDocViewer,
-	  SIGNAL(clicked(bool)),
+	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotViewDocumentation(void)));
   connect(m_ui.listenerIP,
@@ -289,9 +289,17 @@ spoton::spoton(void):QMainWindow()
 	  this,
 	  SLOT(slotReceivedKernelMessage(void)));
   connect(m_ui.pushButtonClearOutgoingMessage,
-	  SIGNAL(clicked(bool)),
+	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotClearOutgoingMessage(void)));
+  connect(m_ui.refreshMail,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotRefreshMail(void)));
+  connect(m_ui.mail,
+	  SIGNAL(itemSelectionChanged(void)),
+	  this,
+	  SLOT(slotMailSelected(void)));
   statusBar()->showMessage(tr("Not connected to the kernel. Is the kernel "
 			      "active?"));
 
@@ -492,6 +500,8 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,
 	  SLOT(slotShowContextMenu(const QPoint &)));
+  m_ui.mail->setColumnHidden(4, true); // message
+  m_ui.mail->setColumnHidden(5, true); // OID
   m_ui.listeners->setColumnHidden(m_ui.listeners->columnCount() - 1,
 				  true); // OID
   m_ui.neighbors->setColumnHidden
@@ -499,12 +509,16 @@ spoton::spoton(void):QMainWindow()
   m_ui.participants->setColumnHidden(1, true); // OID
   m_ui.participants->setColumnHidden(2, true); // neighbor_oid
   m_ui.participants->setColumnHidden(3, true); // public_key_hash
+  m_ui.mail->horizontalHeader()->setSortIndicator
+    (0, Qt::AscendingOrder);
   m_ui.listeners->horizontalHeader()->setSortIndicator
     (2, Qt::AscendingOrder);
   m_ui.neighbors->horizontalHeader()->setSortIndicator
     (1, Qt::AscendingOrder);
   m_ui.participants->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
+  m_ui.neighborsVerticalSplitter->setStretchFactor(0, 1);
+  m_ui.neighborsVerticalSplitter->setStretchFactor(1, 0);
   prepareListenerIPCombo();
   spoton_misc::prepareDatabases();
 
@@ -2491,11 +2505,10 @@ void spoton::slotPopulateParticipants(void)
 
 	m_ui.participants->setSortingEnabled(false);
 	m_ui.participants->clearContents();
+	m_ui.participants->setRowCount(0);
 
 	for(int i = m_ui.participantsCombo->count() - 1; i >= 1; i--)
 	  m_ui.participantsCombo->removeItem(i);
-
-	m_ui.participants->setRowCount(0);
 
 	QMap<QString, qint64> participants;
 	QSqlQuery query(db);
@@ -3931,6 +3944,7 @@ void spoton::slotDisplayLocalSearchResults(void)
 
 void spoton::slotClearOutgoingMessage(void)
 {
+  m_ui.participantsCombo->setCurrentIndex(0);
   m_ui.outgoingMessage->clear();
   m_ui.outgoingSubject->clear();
 }
@@ -4197,16 +4211,33 @@ void spoton::slotSendMail(void)
 	  oid = m_ui.participantsCombo->itemData
 	    (m_ui.participantsCombo->currentIndex()).toLongLong();
 
-	query.prepare("INSERT INTO outgoing "
-		      "(message, subject, participant_oid) "
-		      "VALUES (?, ?, ?)");
-	query.bindValue(0, m_crypt->encrypted(message, &ok).toBase64());
+	query.prepare("INSERT INTO folders "
+		      "(date, folder_index, "
+		      "message, sender, status, subject, "
+		      "participant_oid) "
+		      "VALUES (?, ?, ?, ?, ?, ?, ?)");
+	query.bindValue
+	  (0, m_crypt->encrypted(QDateTime::currentDateTime().
+				 toString(Qt::ISODate).
+				 toUtf8(), &ok).toBase64());
+	query.bindValue(1, 1); // Sent
+
+	if(ok)
+	  query.bindValue(2, m_crypt->encrypted(message, &ok).toBase64());
+
+	if(ok)
+	  query.bindValue(3, m_crypt->encrypted(tr("me").toUtf8(), &ok).
+			  toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (1, m_crypt->encrypted(subject, &ok).toBase64());
+	    (4, m_crypt->encrypted(QByteArray("In Queue"), &ok).toBase64());
 
-	query.bindValue(2, oid);
+	if(ok)
+	  query.bindValue
+	    (5, m_crypt->encrypted(subject, &ok).toBase64());
+
+	query.bindValue(6, oid);
 
 	if(ok)
 	  if(query.exec())
@@ -4321,4 +4352,80 @@ void spoton::slotDeleteAllUuids(void)
 
   QSqlDatabase::removeDatabase("spoton");
   QApplication::restoreOverrideCursor();
+}
+
+void spoton::slotRefreshMail(void)
+{
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	m_ui.mail->clearContents();
+	m_ui.mail->setRowCount(0);
+	m_ui.mail->setSortingEnabled(false);
+	m_ui.mailMessage->clear();
+	m_ui.mailSubject->clear();
+
+	QSqlQuery query(db);
+	int row = 0;
+
+	if(query.exec(QString("SELECT date, sender, status, "
+			      "subject, "
+			      "message, OID FROM folders WHERE "
+			      "folder_index = %1").
+		      arg(m_ui.folder->currentIndex())))
+	  while(query.next())
+	    for(int i = 0; i < query.record().count(); i++)
+	      {
+		bool ok = true;
+		QTableWidgetItem *item = 0;
+
+		if(i == 0)
+		  {
+		    row += 1;
+		    m_ui.mail->setRowCount(row);
+		  }
+
+		if(i >= 0 && i <= 4)
+		  item = new QTableWidgetItem
+		    (m_crypt->decrypted(QByteArray::
+					fromBase64(query.
+						   value(i).
+						   toByteArray()),
+					&ok).constData());
+		else
+		  item = new QTableWidgetItem(query.value(i).toString());
+
+		m_ui.mail->setItem(row - 1, i, item);
+	      }
+
+	m_ui.mail->setSortingEnabled(true);
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton");
+}
+
+void spoton::slotMailSelected(void)
+{
+  int row = m_ui.mail->currentRow();
+
+  if(row < 0)
+    return;
+
+  QTableWidgetItem *item = m_ui.mail->item(row, 3);
+
+  if(item)
+    m_ui.mailSubject->setText(item->text());
+
+  item = m_ui.mail->item(row, 4);
+
+  if(item)
+    m_ui.mailMessage->setPlainText(item->text());
 }

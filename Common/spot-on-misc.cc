@@ -104,16 +104,14 @@ void spoton_misc::prepareDatabases(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("CREATE TABLE IF NOT EXISTS incoming ("
-		   "date_retrieved BLOB NOT NULL, "
+	query.exec("CREATE TABLE IF NOT EXISTS folders ("
+		   "date BLOB NOT NULL, "
+		   "folder_index INTEGER NOT NULL, "
 		   "message BLOB NOT NULL, "
+		   "participant_oid INTEGER NOT NULL, "
 		   "sender BLOB NOT NULL, "
 		   "status BLOB NOT NULL, "
 		   "subject BLOB NOT NULL)");
-	query.exec("CREATE TABLE IF NOT EXISTS outgoing ("
-		   "message BLOB NOT NULL, "
-		   "subject BLOB NOT NULL, "
-		   "participant_oid INTEGER NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS repository ("
 		   "participant_hash TEXT NOT NULL, "
 		   "message_bundle BLOB NOT NULL)");

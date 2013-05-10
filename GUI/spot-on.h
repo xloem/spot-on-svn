@@ -104,6 +104,7 @@ class spoton: public QMainWindow
   void slotKernelSocketState(void);
   void slotListenerCheckChange(int state);
   void slotListenerIPComboChanged(int index);
+  void slotMailSelected(void);
   void slotMaximumClientsChanged(int index);
   void slotNeighborCheckChange(int state);
   void slotOnlyConnectedNeighborsToggled(bool state);
@@ -115,6 +116,7 @@ class spoton: public QMainWindow
   void slotProtocolRadioToggled(bool state);
   void slotQuit(void);
   void slotReceivedKernelMessage(void);
+  void slotRefreshMail(void);
   void slotRemoveParticipants(void);
   void slotResetAll(void);
   void slotSaveKernelPath(void);
