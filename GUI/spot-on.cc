@@ -296,6 +296,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotClearOutgoingMessage(void)));
+  connect(m_ui.deleteMail,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotDeleteMail(void)));
   connect(m_ui.refreshMail,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -4437,7 +4441,11 @@ void spoton::slotMailSelected(void)
   int row = m_ui.mail->currentRow();
 
   if(row < 0)
-    return;
+    {
+      m_ui.mailMessage->clear();
+      m_ui.mailSubject->clear();
+      return;
+    }
 
   QTableWidgetItem *item = m_ui.mail->item(row, 3);
 
@@ -4448,4 +4456,40 @@ void spoton::slotMailSelected(void)
 
   if(item)
     m_ui.mailMessage->setPlainText(item->text());
+}
+
+void spoton::slotDeleteMail(void)
+{
+  int row = m_ui.mail->currentRow();
+
+  if(row < 0)
+    return;
+
+  QString oid("");
+  QTableWidgetItem *item = m_ui.mail->item(row, 5);
+
+  if(item)
+    oid = item->text();
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare("DELETE FROM folders WHERE oid = ?");
+	query.bindValue(0, oid);
+
+	if(query.exec())
+	  m_ui.mail->removeRow(row);
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton");
 }
