@@ -1076,7 +1076,7 @@ QByteArray spoton_gcrypt::encrypted(const QByteArray &data, bool *ok)
 	      (blockLength *
 	       qCeil((qreal) encrypted.length() / (qreal) blockLength), 0);
 
-	  encrypted.append(QByteArray(blockLength, 0));
+	  encrypted.append(QByteArray(2 * blockLength, 0));
 
 	  QByteArray originalLength;
 	  QDataStream out(&originalLength, QIODevice::WriteOnly);

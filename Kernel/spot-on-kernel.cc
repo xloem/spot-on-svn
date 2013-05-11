@@ -64,6 +64,7 @@ QCache<QByteArray, char *> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 spoton_gcrypt *spoton_kernel::s_crypt1 = 0;
 spoton_gcrypt *spoton_kernel::s_crypt2 = 0;
+spoton_gcrypt *spoton_kernel::s_crypt3 = 0;
 
 static void sig_handler(int signum)
 {
@@ -1075,31 +1076,42 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 void spoton_kernel::slotScramble(void)
 {
+  if(!s_crypt2)
+    return;
+
   /*
   ** Errors? Which errors?
   */
 
   QByteArray data;
-  QByteArray random(128, 0);
+  QByteArray publicKey;
+  QByteArray random(32, 0);
   bool ok = true;
-  spoton_gcrypt crypt("scrambler");
 
+  publicKey = s_crypt2->publicKey(&ok);
   gcry_randomize
     (static_cast<void *> (random.data()),
      static_cast<size_t> (random.length()),
      GCRY_STRONG_RANDOM);
-  data.append(crypt.encrypted(random, &ok).toBase64());
-  data.append("\n");
-  data.append(crypt.encrypted(crypt.cipherType().toLatin1(), &ok).toBase64());
+  data.append
+    (spoton_gcrypt::publicKeyEncrypt(random,
+				     publicKey, &ok).toBase64());
   data.append("\n");
   data.append
-    (crypt.encrypted(crypt.keyedHash(data, &ok), &ok).toBase64());
+    (spoton_gcrypt::publicKeyEncrypt(s_crypt2->cipherType().toLatin1(),
+				     publicKey, &ok).toBase64());
   data.append("\n");
-  data.append(crypt.encrypted("unknown", &ok).toBase64());
+  data.append
+    (s_crypt2->encrypted(spoton_gcrypt::sha512Hash(publicKey, &ok),
+			 &ok).toBase64());
   data.append("\n");
-  data.append(crypt.encrypted(crypt.keyedHash(random, &ok), &ok).toBase64());
+  data.append(s_crypt2->encrypted("unknown", &ok).toBase64());
   data.append("\n");
-  data.append(crypt.encrypted(crypt.keyedHash(random, &ok), &ok).toBase64());
+  data.append
+    (s_crypt2->encrypted(random, &ok).toBase64());
+  data.append("\n");
+  data.append
+    (s_crypt2->encrypted(s_crypt2->keyedHash(random, &ok), &ok).toBase64());
 
   char c = 0;
   short ttl = s_settings.value
