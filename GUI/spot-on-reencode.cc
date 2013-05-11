@@ -118,46 +118,57 @@ void spoton_reencode::reencode(spoton *ui,
 		  }
 	    }
 
-	if(query.exec("SELECT message_bundle, participant_hash, OID "
+	if(query.exec("SELECT date_received, message_bundle, "
+		      "participant_hash, OID "
 		      "FROM repository"))
 	  while(query.next())
 	    {
+	      QByteArray dateReceived;
 	      QByteArray messageBundle;
 	      QByteArray participantHash;
 	      QSqlQuery updateQuery(db);
 	      bool ok = true;
 
 	      updateQuery.prepare("UPDATE repository "
-				  "SET message_bundle = ?, "
+				  "SET date_received = ?, "
+				  "message_bundle = ?, "
 				  "participant_hash = ? "
 				  "WHERE "
 				  "OID = ?");
 
-	      messageBundle = oldCrypt->decrypted(QByteArray::
-						  fromBase64(query.
-							     value(0).
-							     toByteArray()),
-						  &ok).constData();
+	      dateReceived = oldCrypt->decrypted
+		(QByteArray::
+		 fromBase64(query.value(0).toByteArray()),
+		 &ok).constData();
+
+	      if(ok)
+		messageBundle = oldCrypt->decrypted
+		  (QByteArray::
+		   fromBase64(query.value(1).toByteArray()),
+		   &ok).constData();
 
 	      if(ok)
 		participantHash = oldCrypt->decrypted
 		  (QByteArray::
-		   fromBase64(query.
-			      value(0).
-			      toByteArray()),
+		   fromBase64(query.value(2).toByteArray()),
 		   &ok).constData();
 
 	      if(ok)
 		updateQuery.bindValue
-		  (0, newCrypt->encrypted(messageBundle,
+		  (0, newCrypt->encrypted(dateReceived,
 					  &ok).toBase64());
 
 	      if(ok)
 		updateQuery.bindValue
-		  (1, newCrypt->encrypted(participantHash,
+		  (1, newCrypt->encrypted(messageBundle,
 					  &ok).toBase64());
 
-	      updateQuery.bindValue(2, query.value(2));
+	      if(ok)
+		updateQuery.bindValue
+		  (2, newCrypt->encrypted(participantHash,
+					  &ok).toBase64());
+
+	      updateQuery.bindValue(3, query.value(3));
 
 	      if(ok)
 		updateQuery.exec();
