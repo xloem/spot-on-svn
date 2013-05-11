@@ -107,12 +107,13 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS folders ("
 		   "date BLOB NOT NULL, "
 		   "folder_index INTEGER NOT NULL, "
+		   "lockness BLOB, " // Outgoing?
 		   "message BLOB NOT NULL, "
 		   "participant_oid INTEGER NOT NULL, "
 		   "receiver_sender BLOB NOT NULL, "
 		   "status BLOB NOT NULL, "
 		   "subject BLOB NOT NULL)");
-	query.exec("CREATE TABLE IF NOT EXISTS repository ("
+	query.exec("CREATE TABLE IF NOT EXISTS postoffice ("
 		   "date_received BLOB NOT NULL, "
 		   "message_bundle BLOB NOT NULL, "
 		   "participant_hash BLOB NOT NULL)");

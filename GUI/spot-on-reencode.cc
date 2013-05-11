@@ -71,15 +71,15 @@ void spoton_reencode::reencode(spoton *ui,
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT date, message, receiver_sender, status, "
-		      "subject, OID FROM folders"))
+	if(query.exec("SELECT date, lockness, message, receiver_sender, "
+		      "status, subject, OID FROM folders"))
 	  while(query.next())
 	    {
 	      QList<QByteArray> list;
 	      bool ok = true;
 
 	      for(int i = 0; i < query.record().count(); i++)
-		if(i >= 0 && i <= 4)
+		if(i >= 0 && i <= 5)
 		  {
 		    QByteArray bytes = oldCrypt->decrypted
 		      (QByteArray::fromBase64(query.value(i).
@@ -98,7 +98,8 @@ void spoton_reencode::reencode(spoton *ui,
 		    QSqlQuery updateQuery(db);
 
 		    updateQuery.prepare("UPDATE folders SET "
-					"date = ?, message = ?, "
+					"date = ?, lockness = ?, "
+					"message = ?, "
 					"receiver_sender = ?, status = ?, "
 					"subject = ? WHERE OID = ?");
 
@@ -112,7 +113,7 @@ void spoton_reencode::reencode(spoton *ui,
 
 		    if(ok)
 		      {
-			updateQuery.bindValue(5, query.value(5));
+			updateQuery.bindValue(6, query.value(6));
 			updateQuery.exec();
 		      }
 		  }
@@ -120,7 +121,7 @@ void spoton_reencode::reencode(spoton *ui,
 
 	if(query.exec("SELECT date_received, message_bundle, "
 		      "participant_hash, OID "
-		      "FROM repository"))
+		      "FROM postoffice"))
 	  while(query.next())
 	    {
 	      QByteArray dateReceived;
@@ -129,7 +130,7 @@ void spoton_reencode::reencode(spoton *ui,
 	      QSqlQuery updateQuery(db);
 	      bool ok = true;
 
-	      updateQuery.prepare("UPDATE repository "
+	      updateQuery.prepare("UPDATE postoffice "
 				  "SET date_received = ?, "
 				  "message_bundle = ?, "
 				  "participant_hash = ? "
