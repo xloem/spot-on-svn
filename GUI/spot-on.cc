@@ -490,10 +490,6 @@ spoton::spoton(void):QMainWindow()
     m_ui.chatHorizontalSplitter->restoreState
       (m_settings.value("gui/chatHorizontalSplitter").toByteArray());
 
-  if(m_settings.contains("gui/mailVerticalSplitter"))
-    m_ui.mailVerticalSplitter->restoreState
-      (m_settings.value("gui/mailVerticalSplitter").toByteArray());
-
   if(m_settings.contains("gui/neighborsHorizontalSplitter"))
     m_ui.neighborsHorizontalSplitter->restoreState
       (m_settings.value("gui/neighborsHorizontalSplitter").toByteArray());
@@ -529,8 +525,6 @@ spoton::spoton(void):QMainWindow()
     (1, Qt::AscendingOrder);
   m_ui.participants->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
-  m_ui.mailVerticalSplitter->setStretchFactor(0, 1);
-  m_ui.mailVerticalSplitter->setStretchFactor(1, 0);
   m_ui.neighborsVerticalSplitter->setStretchFactor(0, 1);
   m_ui.neighborsVerticalSplitter->setStretchFactor(1, 0);
   prepareListenerIPCombo();
@@ -1472,8 +1466,6 @@ void spoton::saveSettings(void)
   settings.setValue("gui/chatHorizontalSplitter",
 		    m_ui.chatHorizontalSplitter->saveState());
   settings.setValue("gui/currentTabIndex", m_ui.tab->currentIndex());
-  settings.setValue("gui/mailVerticalSplitter",
-		    m_ui.mailVerticalSplitter->saveState());
   settings.setValue("gui/neighborsHorizontalSplitter",
 		    m_ui.neighborsHorizontalSplitter->saveState());
   settings.setValue("gui/neighborsVerticalSplitter",

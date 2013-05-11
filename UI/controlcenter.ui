@@ -403,404 +403,440 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>375</width>
-             <height>934</height>
+             <width>920</width>
+             <height>771</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_32">
             <item>
-             <widget class="QSplitter" name="mailVerticalSplitter">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
+             <widget class="QTabWidget" name="mailTab">
+              <property name="currentIndex">
+               <number>0</number>
               </property>
-              <widget class="QWidget" name="layoutWidget">
-               <layout class="QVBoxLayout" name="verticalLayout_31">
+              <widget class="QWidget" name="tab_4">
+               <attribute name="title">
+                <string>Folders</string>
+               </attribute>
+               <layout class="QVBoxLayout" name="verticalLayout_26">
                 <item>
-                 <widget class="QGroupBox" name="groupBox_inboxEmail">
-                  <property name="title">
-                   <string>Folders</string>
+                 <layout class="QHBoxLayout" name="horizontalLayout_38">
+                  <item>
+                   <widget class="QComboBox" name="folder">
+                    <item>
+                     <property name="text">
+                      <string>Inbox</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>Sent</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>Trash</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_32">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <widget class="QTableWidget" name="mail">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>150</height>
+                   </size>
                   </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_27">
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_38">
-                     <item>
-                      <widget class="QComboBox" name="folder">
-                       <item>
-                        <property name="text">
-                         <string>Inbox</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Sent</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Trash</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_32">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <widget class="QTableWidget" name="mail">
-                     <property name="minimumSize">
-                      <size>
-                       <width>0</width>
-                       <height>150</height>
-                      </size>
-                     </property>
-                     <property name="selectionMode">
-                      <enum>QAbstractItemView::SingleSelection</enum>
-                     </property>
-                     <property name="selectionBehavior">
-                      <enum>QAbstractItemView::SelectRows</enum>
-                     </property>
-                     <property name="horizontalScrollMode">
-                      <enum>QAbstractItemView::ScrollPerPixel</enum>
-                     </property>
-                     <property name="sortingEnabled">
-                      <bool>true</bool>
-                     </property>
-                     <attribute name="horizontalHeaderDefaultSectionSize">
-                      <number>120</number>
-                     </attribute>
-                     <attribute name="horizontalHeaderStretchLastSection">
-                      <bool>true</bool>
-                     </attribute>
-                     <column>
-                      <property name="text">
-                       <string>Date</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Sender</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Status</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Subject</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>message</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>OID</string>
-                      </property>
-                     </column>
-                    </widget>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_35">
-                     <item>
-                      <spacer name="horizontalSpacer_29">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="deleteMail">
-                       <property name="text">
-                        <string>Delete</string>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../Icons/icons.qrc">
-                         <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="refreshMail">
-                       <property name="text">
-                        <string>Refresh</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="retrieveMail">
-                       <property name="text">
-                        <string>Retrieve</string>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../Icons/icons.qrc">
-                         <normaloff>:/down.png</normaloff>:/down.png</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_33">
-                     <item>
-                      <widget class="QLabel" name="label_29">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>75</width>
-                         <height>32</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string>&amp;Subject</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>mailSubject</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="mailSubject">
-                       <property name="readOnly">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_36">
-                     <item>
-                      <widget class="QLabel" name="label_30">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>75</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string>&amp;Message</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>mailMessage</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QTextBrowser" name="mailMessage">
-                       <property name="tabChangesFocus">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
+                  <property name="selectionMode">
+                   <enum>QAbstractItemView::SingleSelection</enum>
+                  </property>
+                  <property name="selectionBehavior">
+                   <enum>QAbstractItemView::SelectRows</enum>
+                  </property>
+                  <property name="horizontalScrollMode">
+                   <enum>QAbstractItemView::ScrollPerPixel</enum>
+                  </property>
+                  <property name="sortingEnabled">
+                   <bool>true</bool>
+                  </property>
+                  <attribute name="horizontalHeaderDefaultSectionSize">
+                   <number>120</number>
+                  </attribute>
+                  <attribute name="horizontalHeaderStretchLastSection">
+                   <bool>true</bool>
+                  </attribute>
+                  <column>
+                   <property name="text">
+                    <string>Date</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Sender</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Status</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Subject</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>message</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>OID</string>
+                   </property>
+                  </column>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QGroupBox" name="groupBox_outboxEmail">
-                  <property name="title">
-                   <string>Outgoing</string>
-                  </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_26">
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_34">
-                     <item>
-                      <widget class="QLabel" name="label_10">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>75</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string>&amp;To</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>participantsCombo</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="participantsCombo">
-                       <item>
-                        <property name="text">
-                         <string>All Participants</string>
-                        </property>
-                        <property name="icon">
-                         <iconset resource="../Icons/icons.qrc">
-                          <normaloff>:/plist_confirmed_as_permanent_friend.png</normaloff>:/plist_confirmed_as_permanent_friend.png</iconset>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_28">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_31">
-                     <item>
-                      <widget class="QLabel" name="label_25">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>75</width>
-                         <height>32</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string>&amp;Subject</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>outgoingSubject</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="outgoingSubject"/>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_32">
-                     <item>
-                      <widget class="QLabel" name="label_26">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>75</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string>&amp;Message</string>
-                       </property>
-                       <property name="buddy">
-                        <cstring>outgoingMessage</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QTextEdit" name="outgoingMessage">
-                       <property name="styleSheet">
-                        <string notr="true">background-color: qlineargradient(spread:pad, x1:0.968, y1:0.932, x2:0.513, y2:0.5, stop:0 rgba(183, 235, 255, 255), stop:1 rgba(255, 255, 255, 255));</string>
-                       </property>
-                       <property name="tabChangesFocus">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_29">
-                     <item>
-                      <spacer name="horizontalSpacer_27">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="pushButtonClearOutgoingMessage">
-                       <property name="text">
-                        <string>Clear</string>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../Icons/icons.qrc">
-                         <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="sendMail">
-                       <property name="text">
-                        <string>Send</string>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../Icons/icons.qrc">
-                         <normaloff>:/tab-email.png</normaloff>:/tab-email.png</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </widget>
+                 <layout class="QHBoxLayout" name="horizontalLayout_35">
+                  <item>
+                   <spacer name="horizontalSpacer_29">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="deleteMail">
+                    <property name="text">
+                     <string>Delete</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="refreshMail">
+                    <property name="text">
+                     <string>Refresh</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="retrieveMail">
+                    <property name="text">
+                     <string>Retrieve</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/down.png</normaloff>:/down.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_33">
+                  <item>
+                   <widget class="QLabel" name="label_29">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>75</width>
+                      <height>32</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>&amp;Subject</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>mailSubject</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="mailSubject">
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_36">
+                  <item>
+                   <widget class="QLabel" name="label_30">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>75</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>&amp;Message</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>mailMessage</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QTextBrowser" name="mailMessage">
+                    <property name="tabChangesFocus">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </widget>
-              <widget class="QGroupBox" name="groupBox_2">
-               <property name="title">
-                <string>Repository</string>
-               </property>
+              <widget class="QWidget" name="tab_5">
+               <attribute name="title">
+                <string>New Compositions</string>
+               </attribute>
+               <layout class="QVBoxLayout" name="verticalLayout_27">
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_39">
+                  <item>
+                   <widget class="QLabel" name="label_6">
+                    <property name="text">
+                     <string>&amp;Lock Ness</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>lockness</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="lockness"/>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="generateLockness">
+                    <property name="toolTip">
+                     <string>Generate a random key.</string>
+                    </property>
+                    <property name="text">
+                     <string>Generate</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/pinpad.png</normaloff>:/pinpad.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_33">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_34">
+                  <item>
+                   <widget class="QLabel" name="label_10">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>75</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>&amp;To</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>participantsCombo</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="participantsCombo">
+                    <item>
+                     <property name="text">
+                      <string>All Participants</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../Icons/icons.qrc">
+                       <normaloff>:/plist_confirmed_as_permanent_friend.png</normaloff>:/plist_confirmed_as_permanent_friend.png</iconset>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_28">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_31">
+                  <item>
+                   <widget class="QLabel" name="label_25">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>75</width>
+                      <height>32</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>&amp;Subject</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>outgoingSubject</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="outgoingSubject"/>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_32">
+                  <item>
+                   <widget class="QLabel" name="label_26">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>75</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>&amp;Message</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>outgoingMessage</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QTextEdit" name="outgoingMessage">
+                    <property name="styleSheet">
+                     <string notr="true">background-color: qlineargradient(spread:pad, x1:0.968, y1:0.932, x2:0.513, y2:0.5, stop:0 rgba(183, 235, 255, 255), stop:1 rgba(255, 255, 255, 255));</string>
+                    </property>
+                    <property name="tabChangesFocus">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_29">
+                  <item>
+                   <spacer name="horizontalSpacer_27">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="pushButtonClearOutgoingMessage">
+                    <property name="text">
+                     <string>Clear</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="sendMail">
+                    <property name="text">
+                     <string>Send</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/tab-email.png</normaloff>:/tab-email.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="tab_6">
+               <attribute name="title">
+                <string>Post Office</string>
+               </attribute>
                <layout class="QVBoxLayout" name="verticalLayout_30">
                 <item>
                  <widget class="QTableWidget" name="repository">
@@ -2896,6 +2932,7 @@
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
   <tabstop>scrollArea_3</tabstop>
+  <tabstop>mailTab</tabstop>
   <tabstop>folder</tabstop>
   <tabstop>mail</tabstop>
   <tabstop>deleteMail</tabstop>
@@ -2903,6 +2940,8 @@
   <tabstop>retrieveMail</tabstop>
   <tabstop>mailSubject</tabstop>
   <tabstop>mailMessage</tabstop>
+  <tabstop>lockness</tabstop>
+  <tabstop>generateLockness</tabstop>
   <tabstop>participantsCombo</tabstop>
   <tabstop>outgoingSubject</tabstop>
   <tabstop>outgoingMessage</tabstop>
