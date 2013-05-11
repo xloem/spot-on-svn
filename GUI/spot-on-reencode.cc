@@ -29,6 +29,7 @@
 #include <QDir>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QSqlRecord>
 
 #include <limits>
 
@@ -52,6 +53,122 @@ void spoton_reencode::reencode(spoton *ui,
     return;
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+  ui->statusBar()->showMessage
+    (QObject::tr("Re-encoding email.db."));
+  QApplication::processEvents();
+  spoton_misc::prepareDatabases();
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_reencode");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT date, message, receiver_sender, status, "
+		      "subject, OID FROM folders"))
+	  while(query.next())
+	    {
+	      QList<QByteArray> list;
+	      bool ok = true;
+
+	      for(int i = 0; i < query.record().count(); i++)
+		if(i >= 0 && i <= 4)
+		  {
+		    QByteArray bytes = oldCrypt->decrypted
+		      (QByteArray::fromBase64(query.value(i).
+					      toByteArray()),
+		       &ok).constData();
+
+		    if(ok)
+		      list.append(bytes);
+		    else
+		      break;
+		  }
+
+	      if(ok)
+		if(!list.isEmpty())
+		  {
+		    QSqlQuery updateQuery(db);
+
+		    updateQuery.prepare("UPDATE folders SET "
+					"date = ?, message = ?, "
+					"receiver_sender = ?, status = ?, "
+					"subject = ? WHERE OID = ?");
+
+		    for(int i = 0; i < list.size(); i++)
+		      if(ok)
+			updateQuery.bindValue
+			  (i, newCrypt->encrypted(list.at(i), &ok).
+			   toBase64());
+		      else
+			break;
+
+		    if(ok)
+		      {
+			updateQuery.bindValue(5, query.value(5));
+			updateQuery.exec();
+		      }
+		  }
+	    }
+
+	if(query.exec("SELECT message_bundle, participant_hash, OID "
+		      "FROM repository"))
+	  while(query.next())
+	    {
+	      QByteArray messageBundle;
+	      QByteArray participantHash;
+	      QSqlQuery updateQuery(db);
+	      bool ok = true;
+
+	      updateQuery.prepare("UPDATE repository "
+				  "SET message_bundle = ?, "
+				  "participant_hash = ? "
+				  "WHERE "
+				  "OID = ?");
+
+	      messageBundle = oldCrypt->decrypted(QByteArray::
+						  fromBase64(query.
+							     value(0).
+							     toByteArray()),
+						  &ok).constData();
+
+	      if(ok)
+		participantHash = oldCrypt->decrypted
+		  (QByteArray::
+		   fromBase64(query.
+			      value(0).
+			      toByteArray()),
+		   &ok).constData();
+
+	      if(ok)
+		updateQuery.bindValue
+		  (0, newCrypt->encrypted(messageBundle,
+					  &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (1, newCrypt->encrypted(participantHash,
+					  &ok).toBase64());
+
+	      updateQuery.bindValue(2, query.value(2));
+
+	      if(ok)
+		updateQuery.exec();
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_reencode");
+
   ui->statusBar()->showMessage
     (QObject::tr("Re-encoding country_inclusion.db."));
   QApplication::processEvents();

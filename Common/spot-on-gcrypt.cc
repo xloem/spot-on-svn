@@ -1376,7 +1376,6 @@ QByteArray spoton_gcrypt::publicKeyEncrypt(const QByteArray &data,
 	{
 	  if((err = gcry_pk_encrypt(&encodedData_t, data_t,
 				    key_t)) == 0 && encodedData_t)
-	    
 	    {
 	      size_t length = gcry_sexp_sprint
 		(encodedData_t, GCRYSEXP_FMT_ADVANCED, 0, 0);

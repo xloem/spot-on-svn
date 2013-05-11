@@ -749,7 +749,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 	  data.append(crypt.encrypted(name, &ok).toBase64());
 	  data.append("\n");
 	}
-    
+
       if(ok)
 	{
 	  data.append(crypt.encrypted(message, &ok).toBase64());

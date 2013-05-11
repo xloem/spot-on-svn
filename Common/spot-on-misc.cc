@@ -113,8 +113,8 @@ void spoton_misc::prepareDatabases(void)
 		   "status BLOB NOT NULL, "
 		   "subject BLOB NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS repository ("
-		   "participant_hash TEXT NOT NULL, "
-		   "message_bundle BLOB NOT NULL)");
+		   "message_bundle BLOB NOT NULL, "
+		   "participant_hash BLOB NOT NULL)");
       }
 
     db.close();

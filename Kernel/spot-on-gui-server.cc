@@ -50,7 +50,7 @@ spoton_gui_server::spoton_gui_server(QObject *parent):QTcpServer(parent)
 }
 
 spoton_gui_server::~spoton_gui_server()
-{  
+{
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
       ("QSQLITE", "spoton_gui_server");

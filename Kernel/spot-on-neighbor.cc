@@ -706,7 +706,7 @@ void spoton_neighbor::sharePublicKey(const QByteArray &name,
 
 	db.close();
       }
-	  
+
       QSqlDatabase::removeDatabase
 	("spoton_neighbor_" + QString::number(s_dbId));
     }
@@ -979,7 +979,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
       if(!data.isEmpty())
 	memcpy(static_cast<void *> (&ttl),
 	       static_cast<const void *> (data.constData()), 1);
-	  
+
       if(ttl > 0)
 	ttl -= 1;
 
@@ -1256,7 +1256,7 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
   if(error != QAbstractSocket::ConnectionRefusedError)
     spoton_misc::logError
       (QString("spoton_neighbor::slotError(): socket error %1. "
-	       "Aborting socket.").arg(error)); 
+	       "Aborting socket.").arg(error));
 
   abort();
 }

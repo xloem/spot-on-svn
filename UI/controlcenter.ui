@@ -122,7 +122,11 @@
                       </layout>
                      </item>
                      <item>
-                      <widget class="QTextBrowser" name="messages"/>
+                      <widget class="QTextBrowser" name="messages">
+                       <property name="tabChangesFocus">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
                      </item>
                     </layout>
                    </widget>
@@ -398,7 +402,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-143</y>
+             <y>0</y>
              <width>905</width>
              <height>914</height>
             </rect>
@@ -608,7 +612,11 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QTextBrowser" name="mailMessage"/>
+                  <widget class="QTextBrowser" name="mailMessage">
+                   <property name="tabChangesFocus">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -730,6 +738,9 @@
                   <widget class="QTextEdit" name="outgoingMessage">
                    <property name="styleSheet">
                     <string notr="true">background-color: qlineargradient(spread:pad, x1:0.968, y1:0.932, x2:0.513, y2:0.5, stop:0 rgba(183, 235, 255, 255), stop:1 rgba(255, 255, 255, 255));</string>
+                   </property>
+                   <property name="tabChangesFocus">
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
@@ -1308,7 +1319,11 @@
                  </layout>
                 </item>
                 <item>
-                 <widget class="QTextEdit" name="friendInformation"/>
+                 <widget class="QTextEdit" name="friendInformation">
+                  <property name="tabChangesFocus">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
                 </item>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_21">
@@ -1464,7 +1479,11 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_8">
             <item>
-             <widget class="QTextBrowser" name="textBrowser_2"/>
+             <widget class="QTextBrowser" name="textBrowser_2">
+              <property name="tabChangesFocus">
+               <bool>true</bool>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>

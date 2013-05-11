@@ -4244,7 +4244,7 @@ void spoton::slotSendMail(void)
 	  (0, m_crypt->encrypted(QDateTime::currentDateTime().
 				 toString(Qt::ISODate).
 				 toUtf8(), &ok).toBase64());
-	query.bindValue(1, 1); // Sent
+	query.bindValue(1, 1); // Sent Folder
 
 	if(ok)
 	  query.bindValue(2, m_crypt->encrypted(message, &ok).toBase64());
