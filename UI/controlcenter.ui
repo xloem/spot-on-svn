@@ -621,7 +621,7 @@
               </widget>
               <widget class="QWidget" name="tab_5">
                <attribute name="title">
-                <string>New Compositions</string>
+                <string>Compose</string>
                </attribute>
                <layout class="QVBoxLayout" name="verticalLayout_27">
                 <item>
@@ -824,7 +824,7 @@
               </widget>
               <widget class="QWidget" name="tab_6">
                <attribute name="title">
-                <string>Post Office</string>
+                <string>C/O</string>
                </attribute>
                <layout class="QVBoxLayout" name="verticalLayout_30">
                 <item>
@@ -1636,8 +1636,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>975</width>
-             <height>780</height>
+             <width>1020</width>
+             <height>560</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
