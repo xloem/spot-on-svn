@@ -262,7 +262,7 @@
                        </column>
                        <column>
                         <property name="text">
-                         <string>Lock Ness</string>
+                         <string>Gemini</string>
                         </property>
                        </column>
                       </widget>
@@ -419,7 +419,7 @@
             <item>
              <widget class="QTabWidget" name="mailTab">
               <property name="currentIndex">
-               <number>0</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="tab_4">
                <attribute name="title">
@@ -634,20 +634,20 @@
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_6">
                     <property name="text">
-                     <string>&amp;Lock Ness</string>
+                     <string>&amp;Gemini</string>
                     </property>
                     <property name="buddy">
-                     <cstring>lockness</cstring>
+                     <cstring>gemini</cstring>
                     </property>
                    </widget>
                   </item>
                   <item row="0" column="1">
                    <layout class="QHBoxLayout" name="horizontalLayout_31">
                     <item>
-                     <widget class="QLineEdit" name="lockness"/>
+                     <widget class="QLineEdit" name="gemini"/>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="generateLockness">
+                     <widget class="QPushButton" name="generateGemini">
                       <property name="toolTip">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generate a random AES-256 key.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
@@ -1641,8 +1641,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>975</width>
-             <height>780</height>
+             <width>1020</width>
+             <height>560</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2958,8 +2958,8 @@
   <tabstop>retrieveMail</tabstop>
   <tabstop>mailSubject</tabstop>
   <tabstop>mailMessage</tabstop>
-  <tabstop>lockness</tabstop>
-  <tabstop>generateLockness</tabstop>
+  <tabstop>gemini</tabstop>
+  <tabstop>generateGemini</tabstop>
   <tabstop>participantsCombo</tabstop>
   <tabstop>outgoingSubject</tabstop>
   <tabstop>outgoingMessage</tabstop>

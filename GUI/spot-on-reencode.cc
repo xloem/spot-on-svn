@@ -71,7 +71,7 @@ void spoton_reencode::reencode(spoton *ui,
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT date, lockness, message, receiver_sender, "
+	if(query.exec("SELECT date, gemini, message, receiver_sender, "
 		      "status, subject, OID FROM folders"))
 	  while(query.next())
 	    {
@@ -98,7 +98,7 @@ void spoton_reencode::reencode(spoton *ui,
 		    QSqlQuery updateQuery(db);
 
 		    updateQuery.prepare("UPDATE folders SET "
-					"date = ?, lockness = ?, "
+					"date = ?, gemini = ?, "
 					"message = ?, "
 					"receiver_sender = ?, status = ?, "
 					"subject = ? WHERE OID = ?");

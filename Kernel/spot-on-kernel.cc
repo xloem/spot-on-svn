@@ -214,9 +214,11 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   connect(m_guiServer,
 	  SIGNAL(messageReceivedFromUI(const qint64,
 				       const QByteArray &,
+				       const QByteArray &,
 				       const QByteArray &)),
 	  this,
 	  SLOT(slotMessageReceivedFromUI(const qint64,
+					 const QByteArray &,
 					 const QByteArray &,
 					 const QByteArray &)));
   connect
@@ -684,7 +686,8 @@ void spoton_kernel::copyPublicKey(void)
 
 void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 					      const QByteArray &name,
-					      const QByteArray &message)
+					      const QByteArray &message,
+					      const QByteArray &gemini)
 {
   if(!s_crypt1)
     return;
@@ -769,6 +772,20 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 	  if(ok)
 	    data.append(crypt.encrypted(messageDigest, &ok).toBase64());
 	}
+
+      if(ok)
+	if(!gemini.isEmpty())
+	  {
+	    spoton_gcrypt crypt("aes256",
+				QString("sha512"),
+				QByteArray(),
+				gemini,
+				0,
+				0,
+				QString(""));
+
+	    data = crypt.encrypted(data, &ok).toBase64();
+	  }
 
       if(ok)
 	{

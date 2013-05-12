@@ -107,7 +107,7 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS folders ("
 		   "date BLOB NOT NULL, "
 		   "folder_index INTEGER NOT NULL, "
-		   "lockness BLOB, " // Outgoing?
+		   "gemini BLOB, " // Outgoing?
 		   "message BLOB NOT NULL, "
 		   "participant_oid INTEGER NOT NULL, "
 		   "receiver_sender BLOB NOT NULL, "
@@ -135,6 +135,7 @@ void spoton_misc::prepareDatabases(void)
 	QSqlQuery query(db);
 
 	query.exec("CREATE TABLE IF NOT EXISTS friends_public_keys ("
+		   "gemini BLOB, "
 		   "name TEXT NOT NULL DEFAULT 'unknown', "
 		   "public_key TEXT NOT NULL, "
 		   "public_key_hash TEXT PRIMARY KEY NOT NULL, "

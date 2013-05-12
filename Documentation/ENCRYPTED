@@ -1,13 +1,17 @@
 Some tables contain encrypted data.
 
-email.db:
-
-all, save for folder_index and participant_oid
-
 country_inclusion.db:
 
 country
 accepted
+
+email.db:
+
+all, save for folder_index and participant_oid
+
+friends_public_keys.db:
+
+gemini
 
 idiotes.db:
 

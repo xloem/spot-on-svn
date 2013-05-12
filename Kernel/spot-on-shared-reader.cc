@@ -88,7 +88,7 @@ void spoton_shared_reader::slotTimeout(void)
 		    continue;
 
 		  spoton_gcrypt crypt
-		    (QByteArray("aes256"),
+		    ("aes256",
 		     QString(""),
 		     QByteArray(),
 		     QByteArray(spoton_kernel::s_crypt1->passphrase(),

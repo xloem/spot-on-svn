@@ -390,8 +390,8 @@ spoton::spoton(void):QMainWindow()
     m_ui.status->setCurrentIndex(3);
 
   m_ui.kernelPath->setToolTip(m_ui.kernelPath->text());
-  m_ui.lockness->setMaxLength
-    (spoton_gcrypt::cipherKeyLength(QByteArray("aes256")));
+  m_ui.gemini->setMaxLength
+    (spoton_gcrypt::cipherKeyLength("aes256"));
   m_ui.nodeName->setMaxLength(NAME_MAXIMUM_LENGTH);
   m_ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
@@ -2161,7 +2161,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotCopyFriendshipBundle(void)));
       menu.addAction(QIcon(":/pinpad.png"),
 		     tr("&Generate random, session-only AES-256 key."),
-		     this, SLOT(slotGenerateLockNessInChat(void)));
+		     this, SLOT(slotGenerateGeminiInChat(void)));
       menu.addAction(QIcon(":/delete.png"),
 		     tr("&Remove"),
 		     this, SLOT(slotRemoveParticipants(void)));
@@ -2733,13 +2733,20 @@ void spoton::slotSendMessage(void)
 
   while(!list.isEmpty())
     {
-      QVariant data(list.takeFirst().data());
+      QModelIndex index(list.takeFirst());
+      QVariant data(index.data());
 
       if(!data.isNull() && data.isValid())
 	{
+	  QByteArray gemini;
 	  QByteArray message("");
 	  QByteArray name(m_settings.value("gui/nodeName", "unknown").
 			  toByteArray().trimmed());
+	  QTableWidgetItem *item = m_ui.participants->item
+	    (index.row(), 5); // Lock Ness
+
+	  if(item)
+	    gemini = item->text().toLatin1();
 
 	  if(name.isEmpty())
 	    name = "unknown";
@@ -2754,6 +2761,8 @@ void spoton::slotSendMessage(void)
 	  message.append("_");
 	  message.append(m_ui.message->toPlainText().trimmed().toUtf8().
 			 toBase64());
+	  message.append("_");
+	  message.append(gemini.toBase64());
 	  message.append('\n');
 
 	  if(m_kernelSocket.write(message.constData(), message.length()) !=
@@ -3981,7 +3990,7 @@ void spoton::slotDisplayLocalSearchResults(void)
 
 void spoton::slotClearOutgoingMessage(void)
 {
-  m_ui.lockness->clear();
+  m_ui.gemini->clear();
   m_ui.participantsCombo->setCurrentIndex(0);
   m_ui.outgoingMessage->clear();
   m_ui.outgoingSubject->clear();
@@ -4240,8 +4249,8 @@ void spoton::slotSendMail(void)
 
     if(db.open())
       {
-	QByteArray lockness
-	  (m_ui.lockness->text().trimmed().toLatin1());
+	QByteArray gemini
+	  (m_ui.gemini->text().trimmed().toLatin1());
 	QByteArray subject
 	  (m_ui.outgoingSubject->text().trimmed().toUtf8());
 	QSqlQuery query(db);
@@ -4253,7 +4262,7 @@ void spoton::slotSendMail(void)
 	    (m_ui.participantsCombo->currentIndex()).toLongLong();
 
 	query.prepare("INSERT INTO folders "
-		      "(date, folder_index, lockness, "
+		      "(date, folder_index, gemini, "
 		      "message, receiver_sender, status, subject, "
 		      "participant_oid) "
 		      "VALUES (?, ?, ?, ?, ?, ?, ?)");
@@ -4265,11 +4274,11 @@ void spoton::slotSendMail(void)
 
 	if(ok)
 	  {
-	    if(lockness.isEmpty())
+	    if(gemini.isEmpty())
 	      query.bindValue(2, QVariant(QVariant::ByteArray));
 	    else
 	      query.bindValue
-		(2, m_crypt->encrypted(lockness, &ok).toBase64());
+		(2, m_crypt->encrypted(gemini, &ok).toBase64());
 	  }
 
 	if(ok)
@@ -4283,7 +4292,7 @@ void spoton::slotSendMail(void)
 
 	if(ok)
 	  query.bindValue
-	    (5, m_crypt->encrypted(QByteArray("In Queue"), &ok).toBase64());
+	    (5, m_crypt->encrypted("In Queue", &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
@@ -4294,7 +4303,7 @@ void spoton::slotSendMail(void)
 	if(ok)
 	  if(query.exec())
 	    {
-	      m_ui.lockness->clear();
+	      m_ui.gemini->clear();
 	      m_ui.outgoingMessage->clear();
 	      m_ui.outgoingSubject->clear();
 	    }
@@ -4542,6 +4551,16 @@ void spoton::slotDeleteMail(void)
   QSqlDatabase::removeDatabase("spoton");
 }
 
-void spoton::slotGenerateLockNessInChat(void)
+void spoton::slotGenerateGeminiInChat(void)
 {
+  int row = m_ui.participants->currentRow();
+
+  QTableWidgetItem *item = m_ui.participants->item
+    (row, 5); // Lock Ness
+
+  if(item)
+    item->setText
+      (spoton_gcrypt::strongRandomBytes(spoton_gcrypt::
+					cipherKeyLength("aes256")).
+       toBase64());
 }

@@ -5,6 +5,10 @@ Echoed? Yes
 
 Message Type ("0000") (Plaintext)
 TTL (Plaintext)
+Message (SK)
+
+Message Type ("0000") (Plaintext)
+TTL (Plaintext)
 Symmetric Key (Base-64) (Ciphertext, PK, SK)
 EOL
 Symmetric Key Algorithm (Base-64) (Ciphertext, PK, SK)
