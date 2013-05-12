@@ -64,10 +64,10 @@ class spoton: public QMainWindow
   spoton_logviewer m_logViewer;
   QIcon iconForCountry(const QString &country);
   bool isKernelActive(void) const;
+  bool saveGemini(const QByteArray &gemini, const QString &oid);
   void closeEvent(QCloseEvent *event);
   void highlightKernelPath(void);
   void prepareListenerIPCombo(void);
-  void saveGemini(QTableWidgetItem *item1, QTableWidgetItem *item);
   void saveKernelPath(const QString &path);
   void saveSettings(void);
   void sendKeyToKernel(void);
