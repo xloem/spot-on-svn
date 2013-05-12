@@ -635,10 +635,8 @@ void spoton_misc::retrieveSymmetricData(QByteArray &publicKey,
 		  neighborOid = query.value(0).toString();
 		  publicKey = query.value(1).toByteArray();
 		  symmetricKey.resize(symmetricKeyLength);
-		  gcry_randomize
-		    (static_cast<void *> (symmetricKey.data()),
-		     static_cast<size_t> (symmetricKey.length()),
-		     GCRY_STRONG_RANDOM);
+		  symmetricKey = spoton_gcrypt::strongRandomBytes
+		    (symmetricKey.length());
 		  symmetricKeyAlgorithm = cipherType;
 		}
 	      else

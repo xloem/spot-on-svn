@@ -1362,9 +1362,7 @@ QByteArray spoton_gcrypt::publicKeyEncrypt(const QByteArray &data,
       gcry_sexp_t data_t = 0;
       gcry_sexp_t encodedData_t = 0;
 
-      gcry_randomize(static_cast<void *> (random.data()),
-		     static_cast<size_t> (random.length()),
-		     GCRY_STRONG_RANDOM);
+      random = strongRandomBytes(random.length());
 
       if((err = gcry_sexp_build(&data_t, 0,
 				"(data (flags oaep)(hash-algo sha512)"
@@ -2116,17 +2114,13 @@ QByteArray spoton_gcrypt::digitalSignature(bool *ok)
       goto error_label;
     }
 
-  gcry_randomize(static_cast<void *> (random1.data()),
-		 static_cast<size_t> (random1.length()),
-		 GCRY_STRONG_RANDOM);
+  random1 = strongRandomBytes(random1.length());
   gcry_md_hash_buffer
     (GCRY_MD_SHA1,
      static_cast<void *> (random1.data()),
      static_cast<const void *> (random1.constData()),
      static_cast<size_t> (random1.length()));
-  gcry_randomize(static_cast<void *> (random2.data()),
-		 static_cast<size_t> (random2.length()),
-		 GCRY_STRONG_RANDOM);
+  random2 = strongRandomBytes(random2.length());
 
   if((err = gcry_sexp_build(&data_t, 0,
 			    "(data (flags pss)(hash sha1 %b)"
@@ -2236,4 +2230,14 @@ QByteArray spoton_gcrypt::digitalSignature(bool *ok)
 QString spoton_gcrypt::cipherType(void) const
 {
   return m_cipherType;
+}
+
+QByteArray spoton_gcrypt::strongRandomBytes(const size_t size)
+{
+  QByteArray random(size, 0);
+
+  gcry_randomize(static_cast<void *> (random.data()),
+		 static_cast<size_t> (random.length()),
+		 GCRY_STRONG_RANDOM);
+  return random;
 }

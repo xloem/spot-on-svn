@@ -76,8 +76,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>952</width>
-                <height>784</height>
+                <width>944</width>
+                <height>795</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -406,8 +406,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>934</width>
-             <height>766</height>
+             <width>920</width>
+             <height>771</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -886,17 +886,6 @@
                      </size>
                     </property>
                    </spacer>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="deleteRepository">
-                    <property name="text">
-                     <string>Delete</string>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../Icons/icons.qrc">
-                      <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
-                    </property>
-                   </widget>
                   </item>
                   <item>
                    <widget class="QPushButton" name="refreshRepository">
@@ -1614,8 +1603,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>952</width>
-             <height>784</height>
+             <width>1020</width>
+             <height>560</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2857,7 +2846,7 @@
      <x>0</x>
      <y>0</y>
      <width>974</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2939,7 +2928,6 @@
   <tabstop>pushButtonClearOutgoingMessage</tabstop>
   <tabstop>sendMail</tabstop>
   <tabstop>repository</tabstop>
-  <tabstop>deleteRepository</tabstop>
   <tabstop>refreshRepository</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>
   <tabstop>toolButtonCopytoClipboard</tabstop>

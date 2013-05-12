@@ -69,6 +69,7 @@ class spoton_gcrypt
   static QByteArray sha512Hash(const QByteArray &data, bool *ok);
   static QByteArray shaXHash(const int algorithm,
 			     const QByteArray &data, bool *ok);
+  static QByteArray strongRandomBytes(const size_t size);
   static QStringList cipherTypes(void);
   static QStringList hashTypes(void);
   static bool passphraseSet(void);

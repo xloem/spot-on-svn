@@ -981,10 +981,8 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	      if(symmetricKeyLength > 0)
 		{
 		  symmetricKey.resize(symmetricKeyLength);
-		  gcry_randomize
-		    (static_cast<void *> (symmetricKey.data()),
-		     static_cast<size_t> (symmetricKey.length()),
-		     GCRY_STRONG_RANDOM);
+		  symmetricKey = spoton_gcrypt::strongRandomBytes
+		    (symmetricKey.length());
 		}
 	      else
 		{
@@ -1089,10 +1087,7 @@ void spoton_kernel::slotScramble(void)
   bool ok = true;
 
   publicKey = s_crypt2->publicKey(&ok);
-  gcry_randomize
-    (static_cast<void *> (random.data()),
-     static_cast<size_t> (random.length()),
-     GCRY_STRONG_RANDOM);
+  random = spoton_gcrypt::strongRandomBytes(random.length());
   data.append
     (spoton_gcrypt::publicKeyEncrypt(random,
 				     publicKey, &ok).toBase64());
