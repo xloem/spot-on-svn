@@ -4590,9 +4590,9 @@ void spoton::slotGenerateGeminiInChat(void)
   while(!list.isEmpty())
     {
       QTableWidgetItem *item1 =
-	m_ui.participants->item(list.first().row(), 1); // OID;
+	m_ui.participants->item(list.first().row(), 1); // OID
       QTableWidgetItem *item2 =
-	m_ui.participants->item(list.first().row(), 5); // Gemini;
+	m_ui.participants->item(list.first().row(), 5); // Gemini
 
       list.takeFirst();
 
