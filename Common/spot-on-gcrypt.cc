@@ -2249,6 +2249,9 @@ size_t spoton_gcrypt::cipherKeyLength(const QByteArray &cipherType)
 
   if(cipherAlgorithm)
     keyLength = gcry_cipher_get_algo_keylen(cipherAlgorithm);
+  else
+    spoton_misc::logError("spoton_gcrypt::cipherKeyLength(): "
+			  "gcry_cipher_map_name() failure.");
 
   return keyLength;
 }

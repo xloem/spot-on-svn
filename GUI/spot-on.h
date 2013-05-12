@@ -102,6 +102,7 @@ class spoton: public QMainWindow
   void slotFetchMoreAlgo(void);
   void slotFetchMoreButton(void);
   void slotGeneralTimerTimeout(void);
+  void slotGenerateLockNessInChat(void);
   void slotKernelSocketState(void);
   void slotListenerCheckChange(int state);
   void slotListenerIPComboChanged(int index);

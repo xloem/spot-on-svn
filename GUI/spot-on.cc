@@ -390,6 +390,8 @@ spoton::spoton(void):QMainWindow()
     m_ui.status->setCurrentIndex(3);
 
   m_ui.kernelPath->setToolTip(m_ui.kernelPath->text());
+  m_ui.lockness->setMaxLength
+    (spoton_gcrypt::cipherKeyLength(QByteArray("aes256")));
   m_ui.nodeName->setMaxLength(NAME_MAXIMUM_LENGTH);
   m_ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
@@ -517,6 +519,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.participants->setColumnHidden(1, true); // OID
   m_ui.participants->setColumnHidden(2, true); // neighbor_oid
   m_ui.participants->setColumnHidden(3, true); // public_key_hash
+  m_ui.participants->resizeColumnsToContents();
   m_ui.mail->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   m_ui.listeners->horizontalHeader()->setSortIndicator
@@ -1491,7 +1494,7 @@ void spoton::slotDeleteListener(void)
   if((row = m_ui.listeners->currentRow()) >= 0)
     {
       QTableWidgetItem *item = m_ui.listeners->item
-	(row, m_ui.listeners->columnCount() - 1);
+	(row, m_ui.listeners->columnCount() - 1); // OID
 
       if(item)
 	oid = item->text();
@@ -1536,7 +1539,7 @@ void spoton::slotDeleteNeighbor(void)
   if((row = m_ui.neighbors->currentRow()) >= 0)
     {
       QTableWidgetItem *item = m_ui.neighbors->item
-	(row, m_ui.neighbors->columnCount() - 1);
+	(row, m_ui.neighbors->columnCount() - 1); // OID
 
       if(item)
 	oid = item->text();
@@ -2154,8 +2157,11 @@ void spoton::slotShowContextMenu(const QPoint &point)
 	action->setEnabled(false);
 
       menu.addAction(QIcon(":/repleo.png"),
-		     tr("Copy Repleo to the clipboard buffer."),
+		     tr("&Copy Repleo to the clipboard buffer."),
 		     this, SLOT(slotCopyFriendshipBundle(void)));
+      menu.addAction(QIcon(":/pinpad.png"),
+		     tr("&Generate random, session-only AES-256 key."),
+		     this, SLOT(slotGenerateLockNessInChat(void)));
       menu.addAction(QIcon(":/delete.png"),
 		     tr("&Remove"),
 		     this, SLOT(slotRemoveParticipants(void)));
@@ -2213,7 +2219,7 @@ void spoton::slotConnectNeighbor(void)
   if((row = m_ui.neighbors->currentRow()) >= 0)
     {
       QTableWidgetItem *item = m_ui.neighbors->item
-	(row, m_ui.neighbors->columnCount() - 1);
+	(row, m_ui.neighbors->columnCount() - 1); // OID
 
       if(item)
 	oid = item->text();
@@ -2251,7 +2257,7 @@ void spoton::slotDisconnectNeighbor(void)
   if((row = m_ui.neighbors->currentRow()) >= 0)
     {
       QTableWidgetItem *item = m_ui.neighbors->item
-	(row, m_ui.neighbors->columnCount() - 1);
+	(row, m_ui.neighbors->columnCount() - 1); // OID
 
       if(item)
 	oid = item->text();
@@ -2649,6 +2655,14 @@ void spoton::slotPopulateParticipants(void)
 		  m_ui.participants->setItem(row - 1, i, item);
 		}
 
+	      QTableWidgetItem *item = new QTableWidgetItem();
+
+	      item->setFlags
+		(Qt::ItemIsEditable | Qt::ItemIsSelectable |
+		 Qt::ItemIsEnabled);
+	      m_ui.participants->setItem
+		(row - 1, query.record().count(), item);
+
 	      if(hashes.contains(query.value(3).toString()))
 		rows.append(row - 1);
 	    }
@@ -2826,7 +2840,7 @@ void spoton::slotSharePublicKey(void)
   if((row = m_ui.neighbors->currentRow()) >= 0)
     {
       QTableWidgetItem *item = m_ui.neighbors->item
-	(row, m_ui.neighbors->columnCount() - 1);
+	(row, m_ui.neighbors->columnCount() - 1); // OID
 
       if(item)
 	oid = item->text();
@@ -3058,7 +3072,8 @@ void spoton::slotSharePublicKeyWithParticipant(void)
 
   if((row = m_ui.participants->currentRow()) >= 0)
     {
-      QTableWidgetItem *item = m_ui.participants->item(row, 2);
+      QTableWidgetItem *item = m_ui.participants->item
+	(row, 2); // neighbor_oid
 
       if(item)
 	oid = item->text();
@@ -4038,7 +4053,8 @@ void spoton::slotCopyFriendshipBundle(void)
 
   if((row = m_ui.participants->currentRow()) >= 0)
     {
-      QTableWidgetItem *item = m_ui.participants->item(row, 1);
+      QTableWidgetItem *item = m_ui.participants->item
+	(row, 1); // OID
 
       if(item)
 	oid = item->text();
@@ -4474,12 +4490,12 @@ void spoton::slotMailSelected(void)
       return;
     }
 
-  QTableWidgetItem *item = m_ui.mail->item(row, 3);
+  QTableWidgetItem *item = m_ui.mail->item(row, 3); // Subject
 
   if(item)
     m_ui.mailSubject->setText(item->text());
 
-  item = m_ui.mail->item(row, 4);
+  item = m_ui.mail->item(row, 4); // Message
 
   if(item)
     m_ui.mailMessage->setPlainText(item->text());
@@ -4493,7 +4509,7 @@ void spoton::slotDeleteMail(void)
     return;
 
   QString oid("");
-  QTableWidgetItem *item = m_ui.mail->item(row, 5);
+  QTableWidgetItem *item = m_ui.mail->item(row, 5); // OID
 
   if(item)
     oid = item->text();
@@ -4524,4 +4540,8 @@ void spoton::slotDeleteMail(void)
   }
 
   QSqlDatabase::removeDatabase("spoton");
+}
+
+void spoton::slotGenerateLockNessInChat(void)
+{
 }
