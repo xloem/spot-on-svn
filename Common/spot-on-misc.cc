@@ -626,9 +626,8 @@ void spoton_misc::retrieveSymmetricData(QByteArray &publicKey,
 	  if(query.next())
 	    {
 	      QByteArray cipherType(spoton_gcrypt::randomCipherType());
-	      int algorithm = gcry_cipher_map_name(cipherType.constData());
-	      size_t symmetricKeyLength =
-		gcry_cipher_get_algo_keylen(algorithm);
+	      size_t symmetricKeyLength = spoton_gcrypt::cipherKeyLength
+		(cipherType);
 
 	      if(symmetricKeyLength > 0)
 		{
@@ -642,7 +641,7 @@ void spoton_misc::retrieveSymmetricData(QByteArray &publicKey,
 	      else
 		logError
 		  ("spoton_misc::retrieveSymmetricData(): "
-		   "gcry_cipher_get_algo_keylen() failure.");
+		   "cipherKeyLength() failure.");
 	    }
       }
 

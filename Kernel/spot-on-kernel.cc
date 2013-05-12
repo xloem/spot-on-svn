@@ -973,10 +973,8 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	      QByteArray symmetricKey;
 	      QByteArray symmetricKeyAlgorithm
 		(spoton_gcrypt::randomCipherType());
-	      int cipherAlgorithm = gcry_cipher_map_name
-		(symmetricKeyAlgorithm.constData());
-	      size_t symmetricKeyLength =
-		gcry_cipher_get_algo_keylen(cipherAlgorithm);
+	      size_t symmetricKeyLength = spoton_gcrypt::cipherKeyLength
+		(symmetricKeyAlgorithm);
 
 	      if(symmetricKeyLength > 0)
 		{
@@ -988,7 +986,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		{
 		  spoton_misc::logError
 		    ("spoton_kernel::slotStatusTimerExpired(): "
-		     "gcry_cipher_get_algo_keylen() failure.");
+		     "cipherKeyLength() failure.");
 		  continue;
 		}
 

@@ -2241,3 +2241,14 @@ QByteArray spoton_gcrypt::strongRandomBytes(const size_t size)
 		 GCRY_STRONG_RANDOM);
   return random;
 }
+
+size_t spoton_gcrypt::cipherKeyLength(const QByteArray &cipherType)
+{
+  int cipherAlgorithm = gcry_cipher_map_name(cipherType.constData());
+  size_t keyLength = 0;
+
+  if(cipherAlgorithm)
+    keyLength = gcry_cipher_get_algo_keylen(cipherAlgorithm);
+
+  return keyLength;
+}

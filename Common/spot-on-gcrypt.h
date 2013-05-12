@@ -73,6 +73,7 @@ class spoton_gcrypt
   static QStringList cipherTypes(void);
   static QStringList hashTypes(void);
   static bool passphraseSet(void);
+  static size_t cipherKeyLength(const QByteArray &cipherType);
   static void reencodeRSAKeys(const QString &newCipher,
 			      const QByteArray &newPassphrase,
 			      const QString &oldCipher,

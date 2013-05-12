@@ -673,6 +673,13 @@
                  </layout>
                 </item>
                 <item>
+                 <widget class="Line" name="line_7">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_34">
                   <item>
                    <widget class="QLabel" name="label_10">
@@ -835,6 +842,47 @@
                 <string>Post Office</string>
                </attribute>
                <layout class="QVBoxLayout" name="verticalLayout_30">
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_40">
+                  <item>
+                   <widget class="QLabel" name="label_27">
+                    <property name="text">
+                     <string>Data that has not been requested in more than</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QSpinBox" name="days">
+                    <property name="minimum">
+                     <number>3</number>
+                    </property>
+                    <property name="maximum">
+                     <number>366</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_28">
+                    <property name="text">
+                     <string>days will be purged automatically.</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_34">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
                 <item>
                  <widget class="QTableWidget" name="repository">
                   <property name="selectionMode">
@@ -2927,6 +2975,7 @@
   <tabstop>outgoingMessage</tabstop>
   <tabstop>pushButtonClearOutgoingMessage</tabstop>
   <tabstop>sendMail</tabstop>
+  <tabstop>days</tabstop>
   <tabstop>repository</tabstop>
   <tabstop>refreshRepository</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>
