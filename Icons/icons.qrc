@@ -262,5 +262,12 @@
         <file>Sound/receive.wav</file>
         <file>Sound/echo.wav</file>
         <file>pinpad.png</file>
+        <file>reload.png</file>
+        <file>email.png</file>
+        <file>email-co.png</file>
+        <file>email-inbox.png</file>
+        <file>email-trash.png</file>
+        <file>email-sent.png</file>
+        <file>Logo/spoton-dalmatinerlogo.png</file>
     </qresource>
 </RCC>

@@ -22,12 +22,12 @@ Completed Items
 14.    Display additional information pertaining to network information in
        the Neighbors table.
 15.    Re-encode various databases whenever the passphrase is changed.
+16.    Offline e-mail.
 
 Remaining Items
 
-2.     Add a database for the temporary chat keys of connected neighbors.
-3.     Secure connections between the interface and the kernel.
-4.     Offline e-mail.
+1.     Add a database for the temporary chat keys of connected neighbors.
+2.     Secure connections between the interface and the kernel.
 
 Ideas
 
