@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>933</width>
-    <height>511</height>
+    <width>1024</width>
+    <height>649</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,7 +31,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -76,8 +76,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>507</width>
-                <height>390</height>
+                <width>994</width>
+                <height>556</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -845,7 +845,7 @@
              <normaloff>:/email-co.png</normaloff>:/email-co.png</iconset>
            </attribute>
            <attribute name="title">
-            <string>c/o</string>
+            <string>C/O</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_30">
             <item>
@@ -1648,8 +1648,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>838</width>
-             <height>505</height>
+             <width>979</width>
+             <height>560</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2903,8 +2903,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>933</width>
-     <height>26</height>
+     <width>1024</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2969,8 +2969,11 @@
   <tabstop>chatSendMethod</tabstop>
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
+  <tabstop>mailTab</tabstop>
   <tabstop>folder</tabstop>
   <tabstop>mail</tabstop>
+  <tabstop>retrieveMail</tabstop>
+  <tabstop>refreshMail</tabstop>
   <tabstop>deleteMail</tabstop>
   <tabstop>mailSubject</tabstop>
   <tabstop>mailMessage</tabstop>
@@ -2979,8 +2982,10 @@
   <tabstop>participantsCombo</tabstop>
   <tabstop>outgoingSubject</tabstop>
   <tabstop>outgoingMessage</tabstop>
+  <tabstop>sendMail</tabstop>
   <tabstop>pushButtonClearOutgoingMessage</tabstop>
   <tabstop>repository</tabstop>
+  <tabstop>days</tabstop>
   <tabstop>refreshRepository</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>
   <tabstop>toolButtonCopytoClipboard</tabstop>
