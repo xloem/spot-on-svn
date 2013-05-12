@@ -2743,7 +2743,7 @@ void spoton::slotSendMessage(void)
 	  QByteArray name(m_settings.value("gui/nodeName", "unknown").
 			  toByteArray().trimmed());
 	  QTableWidgetItem *item = m_ui.participants->item
-	    (index.row(), 5); // Lock Ness
+	    (index.row(), 5); // Gemini
 
 	  if(item)
 	    gemini = item->text().toLatin1();
@@ -4556,7 +4556,7 @@ void spoton::slotGenerateGeminiInChat(void)
   int row = m_ui.participants->currentRow();
 
   QTableWidgetItem *item = m_ui.participants->item
-    (row, 5); // Lock Ness
+    (row, 5); // Gemini
 
   if(item)
     item->setText
