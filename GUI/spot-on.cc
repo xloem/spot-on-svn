@@ -260,6 +260,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSendMail(void)));
+  connect(m_ui.participants,
+	  SIGNAL(itemChanged(QTableWidgetItem *)),
+	  this,
+	  SLOT(slotGeminiChanged(QTableWidgetItem *)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -2492,6 +2496,9 @@ void spoton::slotDeleteAllNeighbors(void)
 
 void spoton::slotPopulateParticipants(void)
 {
+  if(!m_crypt)
+    return;
+
   QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
 		     "friends_public_keys.db");
 
@@ -2549,7 +2556,7 @@ void spoton::slotPopulateParticipants(void)
 	*/
 
 	if(query.exec("SELECT name, OID, neighbor_oid, public_key_hash, "
-		      "status FROM friends_public_keys"))
+		      "status, gemini FROM friends_public_keys"))
 	  while(query.next())
 	    {
 	      QString status(query.value(4).toString());
@@ -2588,6 +2595,17 @@ void spoton::slotPopulateParticipants(void)
 			item = new QTableWidgetItem(tr("Online"));
 		      else
 			item = new QTableWidgetItem(tr("Friend"));
+		    }
+		  else if(i == 5)
+		    {
+		      bool ok = true;
+
+		      item = new QTableWidgetItem
+			(m_crypt->decrypted(QByteArray::
+					    fromBase64(query.
+						       value(i).
+						       toByteArray()),
+					    &ok).constData());
 		    }
 		  else
 		    item = new QTableWidgetItem(query.value(i).toString());
@@ -2650,18 +2668,12 @@ void spoton::slotPopulateParticipants(void)
 			     arg(item->text()));
 			}
 		    }
+		  else if(i == 5)
+		    item->setFlags(item->flags() | Qt::ItemIsEditable);
 
 		  item->setData(Qt::UserRole, temporary);
 		  m_ui.participants->setItem(row - 1, i, item);
 		}
-
-	      QTableWidgetItem *item = new QTableWidgetItem();
-
-	      item->setFlags
-		(Qt::ItemIsEditable | Qt::ItemIsSelectable |
-		 Qt::ItemIsEnabled);
-	      m_ui.participants->setItem
-		(row - 1, query.record().count(), item);
 
 	      if(hashes.contains(query.value(3).toString()))
 		rows.append(row - 1);
@@ -4551,16 +4563,66 @@ void spoton::slotDeleteMail(void)
   QSqlDatabase::removeDatabase("spoton");
 }
 
+void spoton::slotGeminiChanged(QTableWidgetItem *item)
+{
+  if(!item)
+    return;
+  else if(item->row() != 5) // Gemini
+    return;
+
+  saveGemini(m_ui.participants->item(item->row(), 1), // OID
+	     item);
+}
+
 void spoton::slotGenerateGeminiInChat(void)
 {
+  if(!m_crypt)
+    return;
+
   int row = m_ui.participants->currentRow();
 
-  QTableWidgetItem *item = m_ui.participants->item
+  QTableWidgetItem *item1 = m_ui.participants->item
+    (row, 1); // OID
+  QTableWidgetItem *item2 = m_ui.participants->item
     (row, 5); // Gemini
 
-  if(item)
-    item->setText
-      (spoton_gcrypt::strongRandomBytes(spoton_gcrypt::
-					cipherKeyLength("aes256")).
-       toBase64());
+  saveGemini(item1, item2);
+}
+
+void spoton::saveGemini(QTableWidgetItem *item1,
+			QTableWidgetItem *item2)
+{
+  if(item1 && item2)
+    {
+      QByteArray random
+	(spoton_gcrypt::
+	 strongRandomBytes(spoton_gcrypt::cipherKeyLength("aes256")));
+
+      {
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			   "friends_public_keys.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+	    bool ok = true;
+
+	    query.prepare("UPDATE friends_public_keys SET "
+			  "gemini = ? WHERE OID = ?");
+	    query.bindValue(0, m_crypt->encrypted(random.toBase64(),
+						  &ok).toBase64());
+	    query.bindValue(1, item1->text());
+
+	    if(ok)
+	      if(query.exec())
+		item2->setText(random.toBase64());
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase("spoton");
+    }
 }

@@ -67,6 +67,7 @@ class spoton: public QMainWindow
   void closeEvent(QCloseEvent *event);
   void highlightKernelPath(void);
   void prepareListenerIPCombo(void);
+  void saveGemini(QTableWidgetItem *item1, QTableWidgetItem *item);
   void saveKernelPath(const QString &path);
   void saveSettings(void);
   void sendKeyToKernel(void);
@@ -101,6 +102,7 @@ class spoton: public QMainWindow
   void slotDoSearch(void);
   void slotFetchMoreAlgo(void);
   void slotFetchMoreButton(void);
+  void slotGeminiChanged(QTableWidgetItem *item);
   void slotGeneralTimerTimeout(void);
   void slotGenerateGeminiInChat(void);
   void slotKernelSocketState(void);
