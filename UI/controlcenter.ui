@@ -824,7 +824,7 @@
               </widget>
               <widget class="QWidget" name="tab_6">
                <attribute name="title">
-                <string>C/O</string>
+                <string>In C/O</string>
                </attribute>
                <layout class="QVBoxLayout" name="verticalLayout_30">
                 <item>

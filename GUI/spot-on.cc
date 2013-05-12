@@ -3966,6 +3966,7 @@ void spoton::slotDisplayLocalSearchResults(void)
 
 void spoton::slotClearOutgoingMessage(void)
 {
+  m_ui.lockness->clear();
   m_ui.participantsCombo->setCurrentIndex(0);
   m_ui.outgoingMessage->clear();
   m_ui.outgoingSubject->clear();
@@ -4277,6 +4278,7 @@ void spoton::slotSendMail(void)
 	if(ok)
 	  if(query.exec())
 	    {
+	      m_ui.lockness->clear();
 	      m_ui.outgoingMessage->clear();
 	      m_ui.outgoingSubject->clear();
 	    }
