@@ -4223,6 +4223,8 @@ void spoton::slotSendMail(void)
 
     if(db.open())
       {
+	QByteArray lockness
+	  (m_ui.lockness->text().trimmed().toLatin1());
 	QByteArray subject
 	  (m_ui.outgoingSubject->text().trimmed().toUtf8());
 	QSqlQuery query(db);
@@ -4234,7 +4236,7 @@ void spoton::slotSendMail(void)
 	    (m_ui.participantsCombo->currentIndex()).toLongLong();
 
 	query.prepare("INSERT INTO folders "
-		      "(date, folder_index, "
+		      "(date, folder_index, lockness, "
 		      "message, receiver_sender, status, subject, "
 		      "participant_oid) "
 		      "VALUES (?, ?, ?, ?, ?, ?, ?)");
@@ -4245,23 +4247,32 @@ void spoton::slotSendMail(void)
 	query.bindValue(1, 1); // Sent Folder
 
 	if(ok)
-	  query.bindValue(2, m_crypt->encrypted(message, &ok).toBase64());
+	  {
+	    if(lockness.isEmpty())
+	      query.bindValue(2, QVariant(QVariant::ByteArray));
+	    else
+	      query.bindValue
+		(2, m_crypt->encrypted(lockness, &ok).toBase64());
+	  }
+
+	if(ok)
+	  query.bindValue(3, m_crypt->encrypted(message, &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (3, m_crypt->encrypted(m_ui.participantsCombo->currentText().
+	    (4, m_crypt->encrypted(m_ui.participantsCombo->currentText().
 				   toUtf8(), &ok).
 	     toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (4, m_crypt->encrypted(QByteArray("In Queue"), &ok).toBase64());
+	    (5, m_crypt->encrypted(QByteArray("In Queue"), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (5, m_crypt->encrypted(subject, &ok).toBase64());
+	    (6, m_crypt->encrypted(subject, &ok).toBase64());
 
-	query.bindValue(6, oid);
+	query.bindValue(7, oid);
 
 	if(ok)
 	  if(query.exec())
