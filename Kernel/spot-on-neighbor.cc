@@ -53,6 +53,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_lastReadTime = QDateTime::currentDateTime();
   m_networkInterface = 0;
   m_port = peerPort();
+  setReadBufferSize
+    (spoton_kernel::s_settings.
+     value("kernel/maximum_number_of_bytes_buffered_by_neighbor",
+	   100000).toInt());
   setSocketOption(QAbstractSocket::KeepAliveOption, 1);
   connect(this,
 	  SIGNAL(disconnected(void)),
@@ -107,6 +111,10 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
   m_lastReadTime = QDateTime::currentDateTime();
   m_networkInterface = 0;
   m_port = quint16(port.toInt());
+  setReadBufferSize
+    (spoton_kernel::s_settings.
+     value("kernel/maximum_number_of_bytes_buffered_by_neighbor",
+	   100000).toInt());
   setSocketOption(QAbstractSocket::KeepAliveOption, 1);
   connect(this,
 	  SIGNAL(connected(void)),
@@ -322,17 +330,9 @@ void spoton_neighbor::slotReadyRead(void)
 {
   m_data.append(readAll());
 
-  if(m_data.isEmpty() ||
-     m_data.length() > spoton_kernel::s_settings.
-     value("kernel/maximum_number_of_bytes_buffered_by_neighbor",
-	   100000).toInt())
-    {
-      spoton_misc::logError
-	("spoton_neighbor::slotReadyRead(): m_data.isEmpty() or "
-	 "m_data.length() > "
-	 "maximum_number_of_bytes_buffered_by_neighbor. Abort!");
-      abort();
-    }
+  if(m_data.isEmpty())
+    spoton_misc::logError
+      ("spoton_neighbor::slotReadyRead(): m_data.isEmpty().");
 
   if(m_data.contains(spoton_send::EOM))
     {
@@ -419,8 +419,9 @@ void spoton_neighbor::slotReadyRead(void)
 	  else
 	    {
 	      spoton_misc::logError("spoton_neighbor::slotReadyRead(): "
-				    "received irregular data. Aborting.");
-	      abort();
+				    "received irregular data. Setting "
+				    "the read buffer size to 1000 bytes.");
+	      setReadBufferSize(1000);
 	    }
 	}
     }
