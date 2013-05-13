@@ -300,7 +300,10 @@
                         </sizepolicy>
                        </property>
                        <property name="text">
-                        <string>Preferred Method</string>
+                        <string>&amp;Preferred Method</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>chatSendMethod</cstring>
                        </property>
                       </widget>
                      </item>
@@ -409,7 +412,7 @@
              <normaloff>:/tab-email.png</normaloff>:/tab-email.png</iconset>
            </attribute>
            <attribute name="title">
-            <string>Read</string>
+            <string>&amp;Read</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_26">
             <item>
@@ -638,7 +641,7 @@
              <normaloff>:/modify.png</normaloff>:/modify.png</iconset>
            </attribute>
            <attribute name="title">
-            <string>Write</string>
+            <string>&amp;Write</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_27">
             <item>
@@ -845,7 +848,7 @@
              <normaloff>:/email-co.png</normaloff>:/email-co.png</iconset>
            </attribute>
            <attribute name="title">
-            <string>C/O</string>
+            <string>&amp;C/O</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_30">
             <item>
@@ -907,7 +910,10 @@
               <item>
                <widget class="QLabel" name="label_28">
                 <property name="text">
-                 <string>days will be purged automatically.</string>
+                 <string>&amp;days will be purged automatically.</string>
+                </property>
+                <property name="buddy">
+                 <cstring>days</cstring>
                 </property>
                </widget>
               </item>
@@ -1718,7 +1724,10 @@
                    <item>
                     <widget class="QLabel" name="label_18">
                      <property name="text">
-                      <string>Path of Spot-On-Kernel Executable</string>
+                      <string>Path of Spot-On-Kernel &amp;Executable</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>kernelPath</cstring>
                      </property>
                     </widget>
                    </item>
