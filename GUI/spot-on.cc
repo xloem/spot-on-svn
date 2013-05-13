@@ -3812,7 +3812,7 @@ void spoton::slotAddFriendsKey(void)
 	      name.remove(0, 1);
 	    else
 	      {
-		QMessageBox mb(this);
+        QMessageBox mb(this);
 
 #ifdef Q_OS_MAC
 		mb.setAttribute(Qt::WA_MacMetalStyle, true);
@@ -4592,6 +4592,27 @@ void spoton::slotGenerateGeminiInChat(void)
 
       if(!item1 || !item2)
 	continue;
+
+          {
+          QMessageBox mb(this);
+
+          #ifdef Q_OS_MAC
+                  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+          #endif
+                  mb.setIcon(QMessageBox::Information);
+                  mb.setWindowTitle(tr("Spot-On: New Gemini"));
+                  mb.setIconPixmap(QPixmap(":/gemini.png"));
+                  mb.setWindowModality(Qt::WindowModal);
+                  mb.setText(tr("A new Gemini-Key will block the communication "
+                                "to this participant until the new Gemini-Key "
+                                "has been entered to the Gemini column "
+                                "at the other side as well. "
+                                "Please inform your friend about the new Gemini "
+                                "or keep your Gemini-Cell empty."
+                                ));
+                  mb.exec();
+                  return;
+             }
 
       QByteArray gemini
 	(spoton_gcrypt::
