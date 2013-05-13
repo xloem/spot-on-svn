@@ -2160,8 +2160,8 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(QIcon(":/repleo.png"),
 		     tr("&Copy Repleo to the clipboard buffer."),
 		     this, SLOT(slotCopyFriendshipBundle(void)));
-      menu.addAction(QIcon(":/pinpad.png"),
-		     tr("&Generate random AES-256 key."),
+      menu.addAction(QIcon(":/gemini.png"),
+             tr("&Generate new random Gemini-Key (AES-256)."),
 		     this, SLOT(slotGenerateGeminiInChat(void)));
       menu.addAction(QIcon(":/delete.png"),
 		     tr("&Remove"),

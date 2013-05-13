@@ -269,5 +269,6 @@
         <file>email-trash.png</file>
         <file>email-sent.png</file>
         <file>Logo/spoton-dalmatinerlogo.png</file>
+        <file>gemini.png</file>
     </qresource>
 </RCC>
