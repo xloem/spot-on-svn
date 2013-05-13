@@ -446,9 +446,6 @@ spoton::spoton(void):QMainWindow()
 
   m_ui.saltLength->setValue(m_settings.value("gui/saltLength", 256).toInt());
 
-  for(int i = 0; i < m_ui.tab->count(); i++)
-    m_ui.tab->tabBar()->setTabData(i, QString("page_%1").arg(i + 1));
-
   if(spoton_gcrypt::passphraseSet())
     {
       m_ui.passphrase1->setText("0000000000");
@@ -456,7 +453,7 @@ spoton::spoton(void):QMainWindow()
       m_ui.rsaKeySize->setEnabled(false);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
-	if(m_ui.tab->tabBar()->tabData(i).toString() == "page_7")
+	if(i == m_ui.tab->count() - 1)
 	  {
 	    m_ui.tab->blockSignals(true);
 	    m_ui.tab->setCurrentIndex(i);
@@ -479,7 +476,7 @@ spoton::spoton(void):QMainWindow()
       m_ui.resetSpotOn->setEnabled(false);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
-	if(m_ui.tab->tabBar()->tabData(i).toString() == "page_5")
+	if(i == 4) // Settings
 	  {
 	    m_ui.tab->blockSignals(true);
 	    m_ui.tab->setCurrentIndex(i);
@@ -2164,7 +2161,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     tr("&Copy Repleo to the clipboard buffer."),
 		     this, SLOT(slotCopyFriendshipBundle(void)));
       menu.addAction(QIcon(":/pinpad.png"),
-		     tr("&Generate random, session-only AES-256 key."),
+		     tr("&Generate random AES-256 key."),
 		     this, SLOT(slotGenerateGeminiInChat(void)));
       menu.addAction(QIcon(":/delete.png"),
 		     tr("&Remove"),
@@ -2675,7 +2672,9 @@ void spoton::slotPopulateParticipants(void)
 		    item->setFlags(item->flags() | Qt::ItemIsEditable);
 
 		  item->setData(Qt::UserRole, temporary);
+		  m_ui.participants->blockSignals(true);
 		  m_ui.participants->setItem(row - 1, i, item);
+		  m_ui.participants->blockSignals(false);
 		}
 
 	      if(hashes.contains(query.value(3).toString()))
@@ -4570,7 +4569,7 @@ void spoton::slotGeminiChanged(QTableWidgetItem *item)
 {
   if(!item)
     return;
-  else if(item->row() != 5) // Gemini
+  else if(item->column() != 5) // Gemini
     return;
   else if(!m_ui.participants->item(item->row(), 1))
     return;
