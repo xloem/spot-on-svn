@@ -1168,3 +1168,18 @@ void spoton_kernel::slotScramble(void)
 
   m_scramblerTimer.start(qrand() % 20000 + 40000);
 }
+
+void spoton_kernel::slotSendMail(const QByteArray &gemini,
+				 const QByteArray &message,
+				 const QByteArray &name,
+				 const QByteArray &publicKey,
+				 const QByteArray &subject,
+				 const qint64 mailOid)
+{
+  Q_UNUSED(gemini);
+  Q_UNUSED(message);
+  Q_UNUSED(name);
+  Q_UNUSED(publicKey);
+  Q_UNUSED(subject);
+  Q_UNUSED(mailOid);
+}

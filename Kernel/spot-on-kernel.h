@@ -87,6 +87,12 @@ class spoton_kernel: public QObject
 				   const QByteArray &signature,
 				   const QString &messageType);
   void slotScramble(void);
+  void slotSendMail(const QByteArray &gemini,
+		    const QByteArray &message,
+		    const QByteArray &name,
+		    const QByteArray &publicKey,
+		    const QByteArray &subject,
+		    const qint64 mailOid);
   void slotSettingsChanged(const QString &path);
   void slotStatusTimerExpired(void);
 

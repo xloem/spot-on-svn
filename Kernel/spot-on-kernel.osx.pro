@@ -49,6 +49,7 @@ HEADERS		= ../Common/spot-on-external-address.h \
 		  spot-on-gui-server.h \
 		  spot-on-kernel.h \
 		  spot-on-listener.h \
+		  spot-on-mailer.h \
 		  spot-on-neighbor.h \
 		  spot-on-shared-reader.h
 
@@ -59,6 +60,7 @@ SOURCES		= ../Common/spot-on-external-address.cc \
 		  spot-on-gui-server.cc \
 		  spot-on-kernel.cc \
 		  spot-on-listener.cc \
+		  spot-on-mailer.cc \
 		  spot-on-neighbor.cc \
 		  spot-on-shared-reader.cc
 

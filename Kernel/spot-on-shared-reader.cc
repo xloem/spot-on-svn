@@ -29,7 +29,6 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QVariant>
-#include <QtDebug>
 
 #include "Common/spot-on-gcrypt.h"
 #include "Common/spot-on-misc.h"

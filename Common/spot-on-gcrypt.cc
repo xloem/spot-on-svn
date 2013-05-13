@@ -30,7 +30,6 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QtCore/qmath.h>
-#include <QtDebug>
 
 #include "spot-on-gcrypt.h"
 #include "spot-on-misc.h"

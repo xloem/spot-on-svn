@@ -32,7 +32,6 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QString>
-#include <QtDebug>
 
 #include <limits>
 
