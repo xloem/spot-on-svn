@@ -178,10 +178,6 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 
   QSettings settings;
 
-  if(!settings.contains("kernel/maximum_number_of_bytes_buffered_by_neighbor"))
-    settings.setValue("kernel/maximum_number_of_bytes_buffered_by_neighbor",
-		      100000);
-
   if(!settings.contains("kernel/ttl_0000"))
     settings.setValue("kernel/ttl_0000", 16);
 

@@ -53,10 +53,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_lastReadTime = QDateTime::currentDateTime();
   m_networkInterface = 0;
   m_port = peerPort();
-  setReadBufferSize
-    (spoton_kernel::s_settings.
-     value("kernel/maximum_number_of_bytes_buffered_by_neighbor",
-	   100000).toInt());
+  setReadBufferSize(8192);
   setSocketOption(QAbstractSocket::KeepAliveOption, 1);
   connect(this,
 	  SIGNAL(disconnected(void)),
@@ -111,10 +108,7 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
   m_lastReadTime = QDateTime::currentDateTime();
   m_networkInterface = 0;
   m_port = quint16(port.toInt());
-  setReadBufferSize
-    (spoton_kernel::s_settings.
-     value("kernel/maximum_number_of_bytes_buffered_by_neighbor",
-	   100000).toInt());
+  setReadBufferSize(8192);
   setSocketOption(QAbstractSocket::KeepAliveOption, 1);
   connect(this,
 	  SIGNAL(connected(void)),
