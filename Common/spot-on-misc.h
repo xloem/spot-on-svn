@@ -38,6 +38,8 @@ class spoton_gcrypt;
 class spoton_misc
 {
  public:
+  static QByteArray findGeminiInCosmos(const QByteArray &data,
+				       spoton_gcrypt *crypt);
   static QString countryCodeFromIPAddress(const QString &ipAddress);
   static QString countryNameFromIPAddress(const QString &ipAddress);
   static QString homePath(void);
@@ -55,11 +57,13 @@ class spoton_misc
   static void populateUrlsDatabase(const QList<QList<QVariant> > &list,
 				   spoton_gcrypt *gcrypt);
   static void prepareDatabases(void);
-  static void retrieveSymmetricData(QByteArray &publicKey,
+  static void retrieveSymmetricData(QByteArray &gemini,
+				    QByteArray &publicKey,
 				    QByteArray &symmetricKey,
 				    QByteArray &symmetricKeyAlgorithm,
 				    QString &neighborOid,
-				    const QString &oid);
+				    const QString &oid,
+				    spoton_gcrypt *crypt);
 
  private:
   spoton_misc(void);

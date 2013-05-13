@@ -54,8 +54,7 @@ class spoton_gui_server: public QTcpServer
  signals:
   void messageReceivedFromUI(const qint64 oid,
 			     const QByteArray &name,
-			     const QByteArray &message,
-			     const QByteArray &gemini);
+			     const QByteArray &message);
   void publicKeyReceivedFromUI(const qint64 oid,
 			       const QByteArray &name,
 			       const QByteArray &publicKey,

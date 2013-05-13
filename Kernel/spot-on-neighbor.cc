@@ -746,32 +746,72 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 
       data.remove(0, 1); // Remove TTL.
 
-      QList<QByteArray> list(data.split('\n'));
-
-      if(list.size() != 6)
-	{
-	  spoton_misc::logError
-	    (QString("spoton_neighbor::process0000(): "
-		     "received irregular data. Expecting 6 entries, "
-		     "received %1.").arg(list.size()));
-	  return;
-	}
-
       QByteArray originalData(data); /*
 				     ** We may need to echo the
 				     ** message. Don't forget to
 				     ** decrease the TTL!
 				     */
+      QList<QByteArray> list(data.split('\n'));
+
+      if(list.size() == 1)
+	{
+	  /*
+	  ** Gemini?
+	  */
+
+	  data = QByteArray::fromBase64(data);
+
+	  QByteArray gemini
+	    (spoton_misc::findGeminiInCosmos(data,
+					     spoton_kernel::s_crypt1));
+
+	  if(!gemini.isEmpty())
+	    {
+	      spoton_gcrypt crypt("aes256",
+				  QString("sha512"),
+				  QByteArray(),
+				  gemini,
+				  0,
+				  0,
+				  QString(""));
+
+	      data = crypt.decrypted(data, &ok);
+
+	      if(ok)
+		{
+		  list = data.split('\n');
+
+		  if(list.size() != 6)
+		    {
+		      spoton_misc::logError
+			(QString("spoton_neighbor::process0000(): "
+				 "received irregular data. Expecting 6 "
+				 "entries, "
+				 "received %1.").arg(list.size()));
+		      return;
+		    }
+		}
+	    }
+	}
+      else if(list.size() != 6)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::process0000(): "
+		     "received irregular data. Expecting 6 "
+		     "entries, "
+		     "received %1.").arg(list.size()));
+	  return;
+	}
 
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      QByteArray message(list.at(4));
-      QByteArray messageDigest(list.at(5));
-      QByteArray name(list.at(3));
-      QByteArray publicKeyHash(list.at(2));
-      QByteArray symmetricKey(list.at(0));
-      QByteArray symmetricKeyAlgorithm(list.at(1));
+      QByteArray message(list.value(4));
+      QByteArray messageDigest(list.value(5));
+      QByteArray name(list.value(3));
+      QByteArray publicKeyHash(list.value(2));
+      QByteArray symmetricKey(list.value(0));
+      QByteArray symmetricKeyAlgorithm(list.value(1));
 
       if(ok)
 	symmetricKey = spoton_kernel::s_crypt1->
@@ -985,32 +1025,72 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 
       data.remove(0, 1); // Remove TTL.
 
-      QList<QByteArray> list(data.split('\n'));
-
-      if(list.size() != 6)
-	{
-	  spoton_misc::logError
-	    (QString("spoton_neighbor::process0013(): "
-		     "received irregular data. Expecting 5 entries, "
-		     "received %1.").arg(list.size()));
-	  return;
-	}
-
       QByteArray originalData(data); /*
 				     ** We may need to echo the
 				     ** message. Don't forget to
 				     ** decrease the TTL!
 				     */
+      QList<QByteArray> list(data.split('\n'));
+
+      if(list.size() == 1)
+	{
+	  /*
+	  ** Gemini?
+	  */
+
+	  data = QByteArray::fromBase64(data);
+
+	  QByteArray gemini
+	    (spoton_misc::findGeminiInCosmos(data,
+					     spoton_kernel::s_crypt1));
+
+	  if(!gemini.isEmpty())
+	    {
+	      spoton_gcrypt crypt("aes256",
+				  QString("sha512"),
+				  QByteArray(),
+				  gemini,
+				  0,
+				  0,
+				  QString(""));
+
+	      data = crypt.decrypted(data, &ok);
+
+	      if(ok)
+		{
+		  list = data.split('\n');
+
+		  if(list.size() != 6)
+		    {
+		      spoton_misc::logError
+			(QString("spoton_neighbor::process0013(): "
+				 "received irregular data. Expecting 6 "
+				 "entries, "
+				 "received %1.").arg(list.size()));
+		      return;
+		    }
+		}
+	    }
+	}
+      else if(list.size() != 6)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::process0013(): "
+		     "received irregular data. Expecting 6 "
+		     "entries, "
+		     "received %1.").arg(list.size()));
+	  return;
+	}
 
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      QByteArray messageDigest(list.at(5));
-      QByteArray name(list.at(3));
-      QByteArray publicKeyHash(list.at(2));
-      QByteArray status(list.at(4));
-      QByteArray symmetricKey(list.at(0));
-      QByteArray symmetricKeyAlgorithm(list.at(1));
+      QByteArray messageDigest(list.value(5));
+      QByteArray name(list.value(3));
+      QByteArray publicKeyHash(list.value(2));
+      QByteArray status(list.value(4));
+      QByteArray symmetricKey(list.value(0));
+      QByteArray symmetricKeyAlgorithm(list.value(1));
 
       if(ok)
 	symmetricKey = spoton_kernel::s_crypt1->

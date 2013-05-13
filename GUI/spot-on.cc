@@ -2752,15 +2752,9 @@ void spoton::slotSendMessage(void)
 
       if(!data.isNull() && data.isValid())
 	{
-	  QByteArray gemini;
 	  QByteArray message("");
 	  QByteArray name(m_settings.value("gui/nodeName", "unknown").
 			  toByteArray().trimmed());
-	  QTableWidgetItem *item = m_ui.participants->item
-	    (index.row(), 5); // Gemini
-
-	  if(item)
-	    gemini = item->text().toLatin1();
 
 	  if(name.isEmpty())
 	    name = "unknown";
@@ -2775,8 +2769,6 @@ void spoton::slotSendMessage(void)
 	  message.append("_");
 	  message.append(m_ui.message->toPlainText().trimmed().toUtf8().
 			 toBase64());
-	  message.append("_");
-	  message.append(gemini.toBase64());
 	  message.append('\n');
 
 	  if(m_kernelSocket.write(message.constData(), message.length()) !=
@@ -4099,15 +4091,18 @@ void spoton::slotCopyFriendshipBundle(void)
   */
 
   QString neighborOid("");
+  QByteArray gemini;
   QByteArray publicKey;
   QByteArray symmetricKey;
   QByteArray symmetricKeyAlgorithm;
 
-  spoton_misc::retrieveSymmetricData(publicKey,
+  spoton_misc::retrieveSymmetricData(gemini,
+				     publicKey,
 				     symmetricKey,
 				     symmetricKeyAlgorithm,
 				     neighborOid,
-				     oid);
+				     oid,
+				     m_crypt);
 
   if(publicKey.isEmpty() ||
      symmetricKey.isEmpty() || symmetricKeyAlgorithm.isEmpty())
@@ -4279,7 +4274,7 @@ void spoton::slotSendMail(void)
 		      "(date, folder_index, gemini, "
 		      "message, receiver_sender, status, subject, "
 		      "participant_oid) "
-		      "VALUES (?, ?, ?, ?, ?, ?, ?)");
+		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue
 	  (0, m_crypt->encrypted(QDateTime::currentDateTime().
 				 toString(Qt::ISODate).
@@ -4602,8 +4597,12 @@ void spoton::slotGenerateGeminiInChat(void)
 	(spoton_gcrypt::
 	 strongRandomBytes(spoton_gcrypt::cipherKeyLength("aes256")));
 
-      if(saveGemini(gemini, item1->text()))
-	item2->setText(gemini.toBase64());
+      if(saveGemini(gemini.toBase64(), item1->text()))
+	{
+	  m_ui.participants->blockSignals(true);
+	  item2->setText(gemini.toBase64());
+	  m_ui.participants->blockSignals(false);
+	}
     }
 }
 
@@ -4613,7 +4612,12 @@ bool spoton::saveGemini(const QByteArray &gemini,
   bool ok = true;
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_save_gemini"); /*
+					 ** We need a special database
+					 ** name. Please see itemChanged()
+					 ** documentation.
+					 */
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "friends_public_keys.db");
@@ -4624,8 +4628,12 @@ bool spoton::saveGemini(const QByteArray &gemini,
 
 	query.prepare("UPDATE friends_public_keys SET "
 		      "gemini = ? WHERE OID = ?");
-	query.bindValue(0, m_crypt->encrypted(gemini.toBase64(),
-					      &ok).toBase64());
+
+	if(gemini.isNull())
+	  query.bindValue(0, QVariant(QVariant::ByteArray));
+	else
+	  query.bindValue(0, m_crypt->encrypted(gemini, &ok).toBase64());
+
 	query.bindValue(1, oid);
 
 	if(ok)
@@ -4635,6 +4643,6 @@ bool spoton::saveGemini(const QByteArray &gemini,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton");
+  QSqlDatabase::removeDatabase("spoton_save_gemini");
   return ok;
 }

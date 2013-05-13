@@ -76,8 +76,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>994</width>
-                <height>556</height>
+                <width>1002</width>
+                <height>546</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -481,7 +481,7 @@
                <bool>true</bool>
               </property>
               <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>120</number>
+               <number>150</number>
               </attribute>
               <attribute name="horizontalHeaderStretchLastSection">
                <bool>true</bool>
@@ -880,7 +880,7 @@
               </column>
               <column>
                <property name="text">
-                <string>#</string>
+                <string>Hash</string>
                </property>
               </column>
              </widget>
@@ -1648,8 +1648,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>979</width>
-             <height>560</height>
+             <width>1002</width>
+             <height>546</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2762,7 +2762,7 @@
             <item>
              <widget class="QLabel" name="label_31">
               <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;quot;The Dalmatian is a breed of dog, noted for its unique black- or brown-spotted coat. This dog is often used as a rescue dog, guardian, athletic partner, and, especially today, the Dalmatian remains most often an active, well-loved family member.&amp;quot; (Wikipedia)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;quot;The Dalmatian is a breed of dog, noted for its unique black- or brown-spotted coat. This dog is often used as a rescue dog, guardian, athletic partner, and, especially today, the Dalmatian remains most often an active, well-loved family member.&amp;quot; - Wikipedia&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="text">
                <string/>
@@ -2941,7 +2941,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

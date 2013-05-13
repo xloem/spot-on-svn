@@ -214,11 +214,9 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   connect(m_guiServer,
 	  SIGNAL(messageReceivedFromUI(const qint64,
 				       const QByteArray &,
-				       const QByteArray &,
 				       const QByteArray &)),
 	  this,
 	  SLOT(slotMessageReceivedFromUI(const qint64,
-					 const QByteArray &,
 					 const QByteArray &,
 					 const QByteArray &)));
   connect
@@ -686,8 +684,7 @@ void spoton_kernel::copyPublicKey(void)
 
 void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 					      const QByteArray &name,
-					      const QByteArray &message,
-					      const QByteArray &gemini)
+					      const QByteArray &message)
 {
   if(!s_crypt1)
     return;
@@ -708,15 +705,18 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
     return;
 
   QByteArray data;
+  QByteArray gemini;
   QByteArray symmetricKey;
   QByteArray symmetricKeyAlgorithm;
   QString neighborOid("");
 
-  spoton_misc::retrieveSymmetricData(publicKey,
+  spoton_misc::retrieveSymmetricData(gemini,
+				     publicKey,
 				     symmetricKey,
 				     symmetricKeyAlgorithm,
 				     neighborOid,
-				     QString::number(oid));
+				     QString::number(oid),
+				     s_crypt1);
 
   data.append
     (spoton_gcrypt::publicKeyEncrypt(symmetricKey,
@@ -978,15 +978,24 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT public_key "
+	if(query.exec("SELECT gemini, public_key "
 		      "FROM friends_public_keys WHERE "
 		      "neighbor_oid = -1"))
 	  while(query.next())
 	    {
 	      QByteArray data;
+	      QByteArray gemini;
+
+	      if(!query.value(0).isNull())
+		gemini = s_crypt1->decrypted
+		  (QByteArray::fromBase64(query.
+					  value(0).
+					  toByteArray()),
+		   &ok);
+
 	      QByteArray name(s_settings.value("gui/nodeName", "unknown").
 			      toByteArray().trimmed());
-	      QByteArray publicKey(query.value(0).toByteArray());
+	      QByteArray publicKey(query.value(1).toByteArray());
 	      QByteArray symmetricKey;
 	      QByteArray symmetricKeyAlgorithm
 		(spoton_gcrypt::randomCipherType());
@@ -1065,6 +1074,20 @@ void spoton_kernel::slotStatusTimerExpired(void)
 			data.append
 			  (crypt.encrypted(messageDigest, &ok).toBase64());
 		    }
+
+		  if(ok)
+		    if(!gemini.isEmpty())
+		      {
+			spoton_gcrypt crypt("aes256",
+					    QString("sha512"),
+					    QByteArray(),
+					    gemini,
+					    0,
+					    0,
+					    QString(""));
+
+			data = crypt.encrypted(data, &ok).toBase64();
+		      }
 
 		  if(ok)
 		    {

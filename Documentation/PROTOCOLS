@@ -5,7 +5,7 @@ Echoed? Yes
 
 Message Type ("0000") (Plaintext)
 TTL (Plaintext)
-Message (SK)
+Message (Gemini)
 
 Message Type ("0000") (Plaintext)
 TTL (Plaintext)
@@ -63,6 +63,10 @@ Signature (Base-64) (Ciphertext, PK)
 
 Echoed Status
 Echoed? Yes
+
+Message Type ("0013") (Plaintext)
+TTL (Plaintext)
+Message (Gemini)
 
 Message Type ("0013") (Plaintext)
 TTL (Plaintext)

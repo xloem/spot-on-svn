@@ -603,12 +603,17 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &name,
   return ok;
 }
 
-void spoton_misc::retrieveSymmetricData(QByteArray &publicKey,
+void spoton_misc::retrieveSymmetricData(QByteArray &gemini,
+					QByteArray &publicKey,
 					QByteArray &symmetricKey,
 					QByteArray &symmetricKeyAlgorithm,
 					QString &neighborOid,
-					const QString &oid)
+					const QString &oid,
+					spoton_gcrypt *crypt)
 {
+  if(!crypt)
+    return;
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
@@ -621,7 +626,7 @@ void spoton_misc::retrieveSymmetricData(QByteArray &publicKey,
 
 	query.setForwardOnly(true);
 
-	if(query.exec(QString("SELECT neighbor_oid, public_key "
+	if(query.exec(QString("SELECT gemini, neighbor_oid, public_key "
 			      "FROM friends_public_keys WHERE "
 			      "OID = %1").arg(oid)))
 	  if(query.next())
@@ -632,8 +637,17 @@ void spoton_misc::retrieveSymmetricData(QByteArray &publicKey,
 
 	      if(symmetricKeyLength > 0)
 		{
-		  neighborOid = query.value(0).toString();
-		  publicKey = query.value(1).toByteArray();
+		  bool ok = true;
+
+		  if(!query.value(0).isNull())
+		    gemini = crypt->decrypted
+		      (QByteArray::fromBase64(query.
+					      value(0).
+					      toByteArray()),
+		       &ok);
+
+		  neighborOid = query.value(1).toString();
+		  publicKey = query.value(2).toByteArray();
 		  symmetricKey.resize(symmetricKeyLength);
 		  symmetricKey = spoton_gcrypt::strongRandomBytes
 		    (symmetricKey.length());
@@ -714,4 +728,62 @@ bool spoton_misc::isPrivateNetwork(const QHostAddress &address)
     }
 
   return isPrivate;
+}
+
+QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
+					   spoton_gcrypt *crypt)
+{
+  QByteArray gemini;
+
+  if(crypt)
+    {
+      {
+	QSqlDatabase db = QSqlDatabase::addDatabase
+	  ("QSQLITE", "spoton_misc");
+
+	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			   "friends_public_keys.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+
+	    if(query.exec("SELECT gemini FROM friends_public_keys WHERE "
+			  "gemini IS NOT NULL"))
+	      while(query.next())
+		{
+		  bool ok = true;
+
+		  gemini = crypt->decrypted
+		    (QByteArray::fromBase64(query.
+					    value(0).
+					    toByteArray()),
+		     &ok);
+
+		  if(ok)
+		    if(!gemini.isEmpty())
+		      {
+			spoton_gcrypt crypt("aes256",
+					    QString("sha512"),
+					    QByteArray(),
+					    gemini,
+					    0,
+					    0,
+					    QString(""));
+
+			crypt.decrypted(data, &ok);
+
+			if(ok)
+			  break; // We have something!
+		      }
+		}
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase("spoton_misc");
+    }
+
+  return gemini;
 }

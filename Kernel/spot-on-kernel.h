@@ -78,8 +78,7 @@ class spoton_kernel: public QObject
  private slots:
   void slotMessageReceivedFromUI(const qint64 oid,
 				 const QByteArray &name,
-				 const QByteArray &message,
-				 const QByteArray &gemini);
+				 const QByteArray &message);
   void slotNewNeighbor(QPointer<spoton_neighbor> neighbor);
   void slotPollDatabase(void);
   void slotPublicKeyReceivedFromUI(const qint64 oid,

@@ -83,8 +83,7 @@ void spoton_reencode::reencode(spoton *ui,
 		  {
 		    QByteArray bytes = oldCrypt->decrypted
 		      (QByteArray::fromBase64(query.value(i).
-					      toByteArray()),
-		       &ok).constData();
+					      toByteArray()), &ok);
 
 		    if(ok)
 		      list.append(bytes);
@@ -140,19 +139,19 @@ void spoton_reencode::reencode(spoton *ui,
 	      dateReceived = oldCrypt->decrypted
 		(QByteArray::
 		 fromBase64(query.value(0).toByteArray()),
-		 &ok).constData();
+		 &ok);
 
 	      if(ok)
 		messageBundle = oldCrypt->decrypted
 		  (QByteArray::
 		   fromBase64(query.value(1).toByteArray()),
-		   &ok).constData();
+		   &ok);
 
 	      if(ok)
 		participantHash = oldCrypt->decrypted
 		  (QByteArray::
 		   fromBase64(query.value(2).toByteArray()),
-		   &ok).constData();
+		   &ok);
 
 	      if(ok)
 		updateQuery.bindValue
