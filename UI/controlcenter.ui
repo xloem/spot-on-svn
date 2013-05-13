@@ -1523,7 +1523,7 @@
             <item>
              <widget class="QPushButton" name="pushButton_11">
               <property name="text">
-               <string>Search</string>
+               <string>Let your Dalmatian search</string>
               </property>
               <property name="icon">
                <iconset resource="../Icons/icons.qrc">
