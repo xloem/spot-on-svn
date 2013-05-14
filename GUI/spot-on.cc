@@ -4432,9 +4432,9 @@ void spoton::slotRefreshMail(void)
   if(m_ui.folder->currentIndex() == 0)
     m_ui.mail->horizontalHeaderItem(1)->setText(tr("Sender"));
   else if(m_ui.folder->currentIndex() == 1)
-    m_ui.mail->horizontalHeaderItem(1)->setText(tr("Receipient"));
+    m_ui.mail->horizontalHeaderItem(1)->setText(tr("Recipient"));
   else
-    m_ui.mail->horizontalHeaderItem(1)->setText(tr("Receipient/Sender"));
+    m_ui.mail->horizontalHeaderItem(1)->setText(tr("Recipient/Sender"));
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
