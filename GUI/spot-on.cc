@@ -398,7 +398,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
 		       toByteArray()).trimmed());
-  m_ui.tumbler->setMaxLength
+  m_ui.goldbug->setMaxLength
     (spoton_gcrypt::cipherKeyLength("aes256"));
   m_ui.cipherType->clear();
   m_ui.cipherType->addItems(spoton_gcrypt::cipherTypes());
@@ -3999,7 +3999,7 @@ void spoton::slotClearOutgoingMessage(void)
   m_ui.participantsCombo->setCurrentIndex(0);
   m_ui.outgoingMessage->clear();
   m_ui.outgoingSubject->clear();
-  m_ui.tumbler->clear();
+  m_ui.goldbug->clear();
 }
 
 void spoton::slotResetAll(void)
@@ -4275,7 +4275,7 @@ void spoton::slotSendMail(void)
 	while(!oids.isEmpty())
 	  {
 	    QByteArray gemini
-	      (m_ui.tumbler->text().trimmed().toLatin1());
+          (m_ui.goldbug->text().trimmed().toLatin1());
 	    QByteArray subject
 	      (m_ui.outgoingSubject->text().trimmed().toUtf8());
 	    QSqlQuery query(db);
@@ -4327,7 +4327,7 @@ void spoton::slotSendMail(void)
 
 	m_ui.outgoingMessage->clear();
 	m_ui.outgoingSubject->clear();
-	m_ui.tumbler->clear();
+    m_ui.goldbug->clear();
       }
 
     db.close();

@@ -270,5 +270,6 @@
         <file>email-sent.png</file>
         <file>Logo/spoton-dalmatinerlogo.png</file>
         <file>gemini.png</file>
+        <file>goldbug.png</file>
     </qresource>
 </RCC>

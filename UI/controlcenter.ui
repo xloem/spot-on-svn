@@ -797,21 +797,27 @@
               <item row="4" column="1">
                <layout class="QHBoxLayout" name="horizontalLayout_31">
                 <item>
-                 <widget class="QLineEdit" name="tumbler"/>
-                </item>
-                <item>
                  <widget class="QPushButton" name="generateGemini">
                   <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generate a random AES-256 key.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generate an additional random AES-256 key for a stronger encryption of your message. Provide the passphrase to the recipient.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                   <property name="text">
-                   <string>Generate</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../Icons/icons.qrc">
-                    <normaloff>:/pinpad.png</normaloff>:/pinpad.png</iconset>
+                   <string>Generate Gold Bug</string>
                   </property>
                  </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_33">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="pixmap">
+                   <pixmap resource="../Icons/icons.qrc">:/goldbug.png</pixmap>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="goldbug"/>
                 </item>
                 <item>
                  <spacer name="horizontalSpacer_33">
@@ -831,10 +837,10 @@
               <item row="4" column="0">
                <widget class="QLabel" name="label_6">
                 <property name="text">
-                 <string>Optional &amp;Tumbler</string>
+                 <string>Optional</string>
                 </property>
                 <property name="buddy">
-                 <cstring>tumbler</cstring>
+                 <cstring>goldbug</cstring>
                 </property>
                </widget>
               </item>
@@ -3028,8 +3034,8 @@
   <tabstop>participantsCombo</tabstop>
   <tabstop>outgoingSubject</tabstop>
   <tabstop>outgoingMessage</tabstop>
-  <tabstop>tumbler</tabstop>
-  <tabstop>generateGemini</tabstop>
+  <tabstop>goldbug</tabstop>
+  <tabstop>generateGoldBug</tabstop>
   <tabstop>repository</tabstop>
   <tabstop>days</tabstop>
   <tabstop>refreshRepository</tabstop>
