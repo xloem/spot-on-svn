@@ -57,6 +57,7 @@ extern "C"
 #include "spot-on-gui-server.h"
 #include "spot-on-kernel.h"
 #include "spot-on-listener.h"
+#include "spot-on-mailer.h"
 #include "spot-on-neighbor.h"
 #include "spot-on-shared-reader.h"
 
@@ -181,6 +182,9 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   if(!settings.contains("kernel/ttl_0000"))
     settings.setValue("kernel/ttl_0000", 16);
 
+  if(!settings.contains("kernel/ttl_0001"))
+    settings.setValue("kernel/ttl_0001", 16);
+
   if(!settings.contains("kernel/ttl_0010"))
     settings.setValue("kernel/ttl_0010", 16);
 
@@ -206,6 +210,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_controlDatabaseTimer.start(2500);
   m_statusTimer.start(15000);
   m_guiServer = new spoton_gui_server(this);
+  m_mailer = new spoton_mailer(this);
   m_sharedReader = new spoton_shared_reader(this);
   connect(m_guiServer,
 	  SIGNAL(messageReceivedFromUI(const qint64,
@@ -228,6 +233,20 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 				      const QByteArray &,
 				      const QByteArray &,
 				      const QString &)));
+  connect(m_mailer,
+	  SIGNAL(sendMail(const QByteArray &,
+			  const QByteArray &,
+			  const QByteArray &,
+			  const QByteArray &,
+			  const QByteArray &,
+			  const qint64)),
+	  this,
+	  SLOT(slotSendMail(const QByteArray &,
+			    const QByteArray &,
+			    const QByteArray &,
+			    const QByteArray &,
+			    const QByteArray &,
+			    const qint64)));
   m_settingsWatcher.addPath(settings.fileName());
   connect(&m_settingsWatcher,
 	  SIGNAL(fileChanged(const QString &)),
@@ -910,6 +929,10 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  SLOT(slotReceivedStatusMessage(const QByteArray &,
 					 const qint64)));
   connect(this,
+	  SIGNAL(sendMail(const QList<QPair<QByteArray, qint64> > &)),
+	  neighbor,
+	  SLOT(slotSendMail(const QList<QPair<QByteArray, qint64> > &)));
+  connect(this,
 	  SIGNAL(sendMessage(const QByteArray &)),
 	  neighbor,
 	  SLOT(slotSendMessage(const QByteArray &)));
@@ -1195,9 +1218,195 @@ void spoton_kernel::slotSendMail(const QByteArray &gemini,
 				 const qint64 mailOid)
 {
   Q_UNUSED(gemini);
-  Q_UNUSED(message);
-  Q_UNUSED(name);
-  Q_UNUSED(publicKey);
-  Q_UNUSED(subject);
-  Q_UNUSED(mailOid);
+
+  /*
+  ** gemini
+  ** message
+  ** name - my name
+  ** publicKey - recipient's public key
+  ** subject
+  ** mailOid
+  */
+
+  QByteArray recipientHash;
+  bool ok = true;
+
+  recipientHash = spoton_gcrypt::sha512Hash(publicKey, &ok);
+
+  if(!ok)
+    return;
+
+  QList<QPair<QByteArray, qint64> > list;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT public_key "
+		      "FROM friends_public_keys WHERE "
+		      "neighbor_oid = -1"))
+	  while(query.next())
+	    {
+	      QByteArray data;
+	      QByteArray participantPublicKey
+		(query.value(0).toByteArray());
+	      QByteArray symmetricKey;
+	      QByteArray symmetricKeyAlgorithm
+		(spoton_gcrypt::randomCipherType());
+	      bool ok = true;
+	      size_t symmetricKeyLength = spoton_gcrypt::cipherKeyLength
+		(symmetricKeyAlgorithm);
+
+	      if(symmetricKeyLength > 0)
+		{
+		  symmetricKey.resize(symmetricKeyLength);
+		  symmetricKey = spoton_gcrypt::strongRandomBytes
+		    (symmetricKey.length());
+		}
+	      else
+		{
+		  spoton_misc::logError
+		    ("spoton_kernel::slotSendMail(): "
+		     "cipherKeyLength() failure.");
+		  continue;
+		}
+
+	      data.append
+		(spoton_gcrypt::publicKeyEncrypt(symmetricKey,
+						 participantPublicKey,
+						 &ok).
+		 toBase64());
+	      data.append("\n");
+
+	      if(ok)
+		{
+		  data.append
+		    (spoton_gcrypt::publicKeyEncrypt(symmetricKey,
+						     participantPublicKey,
+						     &ok).
+		     toBase64());
+		  data.append("\n");
+		}
+
+	      if(ok)
+		{
+		  spoton_gcrypt crypt(symmetricKeyAlgorithm,
+				      QString("sha512"),
+				      QByteArray(),
+				      symmetricKey,
+				      0,
+				      0,
+				      QString(""));
+
+		  data.append(crypt.encrypted(recipientHash, &ok).toBase64());
+		  data.append("\n");
+		}
+
+	      symmetricKeyAlgorithm = spoton_gcrypt::randomCipherType();
+	      symmetricKeyLength = spoton_gcrypt::cipherKeyLength
+		(symmetricKeyAlgorithm);
+
+	      if(symmetricKeyLength > 0)
+		{
+		  symmetricKey.resize(symmetricKeyLength);
+		  symmetricKey = spoton_gcrypt::strongRandomBytes
+		    (symmetricKey.length());
+		}
+	      else
+		{
+		  spoton_misc::logError
+		    ("spoton_kernel::slotSendMail(): "
+		     "cipherKeyLength() failure.");
+		  continue;
+		}
+
+	      if(ok)
+		{
+		  data.append
+		    (spoton_gcrypt::publicKeyEncrypt(symmetricKey,
+						     publicKey,
+						     &ok).
+		     toBase64());
+		  data.append("\n");
+		}
+
+	      if(ok)
+		{
+		  data.append
+		    (spoton_gcrypt::publicKeyEncrypt(symmetricKey,
+						     publicKey,
+						     &ok).
+		     toBase64());
+		  data.append("\n");
+		}
+
+	      if(ok)
+		{
+		  QByteArray messageDigest;
+		  spoton_gcrypt crypt(symmetricKeyAlgorithm,
+				      QString("sha512"),
+				      QByteArray(),
+				      symmetricKey,
+				      0,
+				      0,
+				      QString(""));
+
+		  data.append(crypt.encrypted(name, &ok).toBase64());
+		  data.append("\n");
+
+		  if(ok)
+		    {
+		      data.append(crypt.encrypted(subject, &ok).toBase64());
+		      data.append("\n");
+		    }
+
+		  if(ok)
+		    {
+		      data.append(crypt.encrypted(message, &ok).toBase64());
+		      data.append("\n");
+		    }
+
+		  if(ok)
+		    messageDigest = crypt.keyedHash
+		      (symmetricKey +
+		       symmetricKeyAlgorithm +
+		       name +
+		       subject +
+		       message, &ok);
+
+		  if(ok)
+		    data.append(crypt.encrypted(messageDigest, &ok).
+				toBase64());
+		}
+
+	      if(ok)
+		{
+		  char c = 0;
+		  short ttl = s_settings.value
+		    ("kernel/ttl_0001", 16).toInt();
+
+		  memcpy(&c, static_cast<void *> (&ttl), 1);
+		  data.prepend(c);
+
+		  QPair<QByteArray, qint64> pair
+		    (data, mailOid);
+
+		  list.append(pair);
+		}
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_kernel");qDebug()<<list;
+  emit sendMail(list);
 }

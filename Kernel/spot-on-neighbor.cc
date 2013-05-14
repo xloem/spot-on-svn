@@ -379,6 +379,15 @@ void spoton_neighbor::slotReadyRead(void)
 	      else
 		process0000(length, data);
 	    }
+	  else if(length > 0 && data.contains("type=0001&content="))
+	    {
+	      if(!spoton_kernel::s_crypt1)
+		spoton_misc::logError
+		  ("spoton_neighbor::slotReadyRead(): "
+		   "spoton_kernel::s_crypt1 is 0.");
+	      else
+		process0001(length, data);
+	    }
 	  else if(length > 0 && data.contains("type=0011&content="))
 	    {
 	      if(!spoton_kernel::s_crypt1)
@@ -912,6 +921,26 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0000(): 0000 "
+	       "content-length mismatch (advertised: %1, received: %2).").
+       arg(length).arg(data.length()));
+}
+
+void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
+{
+  length -= strlen("type=0001&content=");
+
+  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
+
+  data.remove
+    (0,
+     data.indexOf("type=0001&content=") + strlen("type=0001&content="));
+
+  if(length == data.length())
+    {
+    }
+  else
+    spoton_misc::logError
+      (QString("spoton_neighbor::process0001(): 0001 "
 	       "content-length mismatch (advertised: %1, received: %2).").
        arg(length).arg(data.length()));
 }
@@ -1494,4 +1523,27 @@ void spoton_neighbor::slotSendKeepAlive(void)
 QUuid spoton_neighbor::receivedUuid(void) const
 {
   return m_receivedUuid;
+}
+
+void spoton_neighbor::slotSendMail
+(const QList<QPair<QByteArray, qint64> > &list)
+{
+  if(state() == QAbstractSocket::ConnectedState)
+    for(int i = 0; i < list.size(); i++)
+      {
+	QByteArray message;
+	QPair<QByteArray, qint64> pair(list.at(i));
+
+	message = spoton_send::message0001(pair.first);
+
+	if(write(message.constData(), message.length()) != message.length())
+	  spoton_misc::logError
+	    ("spoton_neighbor::slotSendMail(): write() "
+	     "error.");
+	else
+	  {
+	    flush();
+	    spoton_misc::moveSentMailToSentFolder(pair.second);
+	  }
+      }
 }

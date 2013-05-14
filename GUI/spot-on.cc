@@ -4258,64 +4258,76 @@ void spoton::slotSendMail(void)
 
     if(db.open())
       {
-	QByteArray gemini
-	  (m_ui.tumbler->text().trimmed().toLatin1());
-	QByteArray subject
-	  (m_ui.outgoingSubject->text().trimmed().toUtf8());
-	QSqlQuery query(db);
-	bool ok = true;
-	qint64 oid = -1;
+	QList<qint64> oids;
 
 	if(m_ui.participantsCombo->currentIndex() > 1)
-	  oid = m_ui.participantsCombo->itemData
-	    (m_ui.participantsCombo->currentIndex()).toLongLong();
+	  oids.append
+	    (m_ui.participantsCombo->itemData(m_ui.participantsCombo->
+					      currentIndex()).toLongLong());
+	else
+	  for(int i = 2; i < m_ui.participantsCombo->count(); i++)
+	    {
+	      qint64 oid = m_ui.participantsCombo->itemData(i).toLongLong();
 
-	query.prepare("INSERT INTO folders "
-		      "(date, folder_index, gemini, "
-		      "message, receiver_sender, status, subject, "
-		      "participant_oid) "
-		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-	query.bindValue
-	  (0, m_crypt->encrypted(QDateTime::currentDateTime().
-				 toString(Qt::ISODate).
-				 toUtf8(), &ok).toBase64());
-	query.bindValue(1, 1); // Sent Folder
+	      oids.append(oid);
+	    }
 
-	if(ok)
+	while(!oids.isEmpty())
 	  {
-	    if(gemini.isEmpty())
-	      query.bindValue(2, QVariant(QVariant::ByteArray));
-	    else
+	    QByteArray gemini
+	      (m_ui.tumbler->text().trimmed().toLatin1());
+	    QByteArray subject
+	      (m_ui.outgoingSubject->text().trimmed().toUtf8());
+	    QSqlQuery query(db);
+	    bool ok = true;
+	    qint64 oid = oids.takeFirst();
+
+	    query.prepare("INSERT INTO folders "
+			  "(date, folder_index, gemini, "
+			  "message, receiver_sender, status, subject, "
+			  "participant_oid) "
+			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+	    query.bindValue
+	      (0, m_crypt->encrypted(QDateTime::currentDateTime().
+				     toString(Qt::ISODate).
+				     toUtf8(), &ok).toBase64());
+	    query.bindValue(1, 1); // Sent Folder
+
+	    if(ok)
+	      {
+		if(gemini.isEmpty())
+		  query.bindValue(2, QVariant(QVariant::ByteArray));
+		else
+		  query.bindValue
+		    (2, m_crypt->encrypted(gemini, &ok).toBase64());
+	      }
+
+	    if(ok)
+	      query.bindValue(3, m_crypt->encrypted(message, &ok).toBase64());
+
+	    if(ok)
 	      query.bindValue
-		(2, m_crypt->encrypted(gemini, &ok).toBase64());
+		(4, m_crypt->encrypted(m_ui.participantsCombo->currentText().
+				       toUtf8(), &ok).
+		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(5, m_crypt->encrypted("Queued", &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(6, m_crypt->encrypted(subject, &ok).toBase64());
+
+	    query.bindValue(7, oid);
+
+	    if(ok)
+	      query.exec();
 	  }
 
-	if(ok)
-	  query.bindValue(3, m_crypt->encrypted(message, &ok).toBase64());
-
-	if(ok)
-	  query.bindValue
-	    (4, m_crypt->encrypted(m_ui.participantsCombo->currentText().
-				   toUtf8(), &ok).
-	     toBase64());
-
-	if(ok)
-	  query.bindValue
-	    (5, m_crypt->encrypted("Queued", &ok).toBase64());
-
-	if(ok)
-	  query.bindValue
-	    (6, m_crypt->encrypted(subject, &ok).toBase64());
-
-	query.bindValue(7, oid);
-
-	if(ok)
-	  if(query.exec())
-	    {
-	      m_ui.outgoingMessage->clear();
-	      m_ui.outgoingSubject->clear();
-	      m_ui.tumbler->clear();
-	    }
+	m_ui.outgoingMessage->clear();
+	m_ui.outgoingSubject->clear();
+	m_ui.tumbler->clear();
       }
 
     db.close();

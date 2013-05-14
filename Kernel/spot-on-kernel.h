@@ -37,6 +37,7 @@
 class spoton_gcrypt;
 class spoton_gui_server;
 class spoton_listener;
+class spoton_mailer;
 class spoton_neighbor;
 class spoton_shared_reader;
 
@@ -66,6 +67,7 @@ class spoton_kernel: public QObject
   QTimer m_scramblerTimer;
   QTimer m_statusTimer;
   spoton_gui_server *m_guiServer;
+  spoton_mailer *m_mailer;
   spoton_shared_reader *m_sharedReader;
   void checkForTermination(void);
   void cleanup(void);
@@ -101,6 +103,7 @@ class spoton_kernel: public QObject
   void receivedStatusMessage(const QByteArray &data,
 			     const qint64 id);
   void sendMessage(const QByteArray &message);
+  void sendMail(const QList<QPair<QByteArray, qint64> > &mail);
   void sendStatus(const QList<QByteArray> &status);
 };
 

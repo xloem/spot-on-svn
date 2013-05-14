@@ -75,6 +75,7 @@ class spoton_neighbor: public QTcpSocket
   spoton_external_address *m_externalAddress;
   void prepareNetworkInterface(void);
   void process0000(int length, const QByteArray &data);
+  void process0001(int length, const QByteArray &data);
   void process0011(int length, const QByteArray &data);
   void process0012(int length, const QByteArray &data);
   void process0013(int length, const QByteArray &data);
@@ -103,6 +104,7 @@ class spoton_neighbor: public QTcpSocket
   void slotReceivedChatMessage(const QByteArray &data, const qint64 id);
   void slotReceivedStatusMessage(const QByteArray &data, const qint64 id);
   void slotSendKeepAlive(void);
+  void slotSendMail(const QList<QPair<QByteArray, qint64> > &list);
   void slotSendMessage(const QByteArray &data);
   void slotSendStatus(const QList<QByteArray> &list);
   void slotSendUuid(void);
