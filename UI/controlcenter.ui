@@ -797,7 +797,7 @@
               <item row="4" column="1">
                <layout class="QHBoxLayout" name="horizontalLayout_31">
                 <item>
-                 <widget class="QPushButton" name="generateGemini">
+                 <widget class="QPushButton" name="generateGoldBug">
                   <property name="toolTip">
                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generate an additional random AES-256 key for a stronger encryption of your message. Provide the passphrase to the recipient.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
@@ -3029,13 +3029,13 @@
   <tabstop>deleteMail</tabstop>
   <tabstop>mailSubject</tabstop>
   <tabstop>mailMessage</tabstop>
-  <tabstop>sendMail</tabstop>
-  <tabstop>pushButtonClearOutgoingMessage</tabstop>
   <tabstop>participantsCombo</tabstop>
   <tabstop>outgoingSubject</tabstop>
   <tabstop>outgoingMessage</tabstop>
-  <tabstop>goldbug</tabstop>
   <tabstop>generateGoldBug</tabstop>
+  <tabstop>goldbug</tabstop>
+  <tabstop>sendMail</tabstop>
+  <tabstop>pushButtonClearOutgoingMessage</tabstop>
   <tabstop>repository</tabstop>
   <tabstop>days</tabstop>
   <tabstop>refreshRepository</tabstop>
