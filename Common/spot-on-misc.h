@@ -53,6 +53,7 @@ class spoton_misc
 				   const int neighborOid,
 				   QSqlDatabase &db);
   static void logError(const QString &error);
+  static void moveSentMailToSentFolder(const qint64 oid);
   static void populateCountryDatabase(spoton_gcrypt *crypt);
   static void populateUrlsDatabase(const QList<QList<QVariant> > &list,
 				   spoton_gcrypt *gcrypt);

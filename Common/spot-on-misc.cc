@@ -786,3 +786,8 @@ QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
 
   return gemini;
 }
+
+void spoton_misc::moveSentMailToSentFolder(const qint64 oid)
+{
+  Q_UNUSED(oid);
+}
