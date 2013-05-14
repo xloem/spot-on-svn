@@ -5,7 +5,9 @@ Echoed? Yes
 
 Message Type ("0000") (Plaintext)
 TTL (Plaintext)
-Message (Gemini)
+Message (Base-64) (Gemini)
+EOL
+Keyed Sha-512 Hash (Base-64) (Gemini)
 
 Message Type ("0000") (Plaintext)
 TTL (Plaintext)
@@ -66,7 +68,9 @@ Echoed? Yes
 
 Message Type ("0013") (Plaintext)
 TTL (Plaintext)
-Message (Gemini)
+Message (Base-64) (Gemini)
+EOL
+Keyed Sha-512 Hash (Base-64) (Gemini)
 
 Message Type ("0013") (Plaintext)
 TTL (Plaintext)

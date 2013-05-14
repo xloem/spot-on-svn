@@ -772,6 +772,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
       if(ok)
 	if(!gemini.isEmpty())
 	  {
+	    QByteArray messageDigest;
 	    spoton_gcrypt crypt("aes256",
 				QString("sha512"),
 				QByteArray(),
@@ -780,7 +781,17 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 				0,
 				QString(""));
 
-	    data = crypt.encrypted(data, &ok).toBase64();
+	    messageDigest = crypt.keyedHash(data, &ok);
+
+	    if(ok)
+	      {
+		data = crypt.encrypted(data, &ok).toBase64();
+		data.append("\n");
+	      }
+
+	    if(ok)
+	      data.append(crypt.encrypted(messageDigest, &ok).
+			  toBase64());
 	  }
 
       if(ok)
@@ -1074,6 +1085,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		  if(ok)
 		    if(!gemini.isEmpty())
 		      {
+			QByteArray messageDigest;
 			spoton_gcrypt crypt("aes256",
 					    QString("sha512"),
 					    QByteArray(),
@@ -1082,7 +1094,17 @@ void spoton_kernel::slotStatusTimerExpired(void)
 					    0,
 					    QString(""));
 
-			data = crypt.encrypted(data, &ok).toBase64();
+			messageDigest = crypt.keyedHash(data, &ok);
+
+			if(ok)
+			  {
+			    data = crypt.encrypted(data, &ok).toBase64();
+			    data.append("\n");
+			  }
+
+			if(ok)
+			  data.append(crypt.encrypted(messageDigest, &ok).
+				      toBase64());
 		      }
 
 		  if(ok)

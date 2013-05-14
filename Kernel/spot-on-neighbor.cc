@@ -748,20 +748,24 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 				     */
       QList<QByteArray> list(data.split('\n'));
 
-      if(list.size() == 1)
+      if(list.size() == 2)
 	{
 	  /*
 	  ** Gemini?
 	  */
 
-	  data = QByteArray::fromBase64(data);
+	  for(int i = 0; i < list.size(); i++)
+	    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
 	  QByteArray gemini
-	    (spoton_misc::findGeminiInCosmos(data,
+	    (spoton_misc::findGeminiInCosmos(list.at(0),
 					     spoton_kernel::s_crypt1));
 
 	  if(!gemini.isEmpty())
 	    {
+	      QByteArray computedMessageDigest;
+	      QByteArray message(list.at(0));
+	      QByteArray messageDigest(list.at(1));
 	      spoton_gcrypt crypt("aes256",
 				  QString("sha512"),
 				  QByteArray(),
@@ -770,22 +774,29 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 				  0,
 				  QString(""));
 
-	      data = crypt.decrypted(data, &ok);
+	      message = crypt.decrypted(message, &ok);
 
 	      if(ok)
-		{
-		  list = data.split('\n');
+		messageDigest = crypt.decrypted(messageDigest, &ok);
 
-		  if(list.size() != 6)
-		    {
-		      spoton_misc::logError
-			(QString("spoton_neighbor::process0000(): "
-				 "received irregular data. Expecting 6 "
-				 "entries, "
-				 "received %1.").arg(list.size()));
-		      return;
-		    }
-		}
+	      if(ok)
+		computedMessageDigest = crypt.keyedHash(message, &ok);
+
+	      if(ok)
+		if(computedMessageDigest == messageDigest)
+		  {
+		    list = message.split('\n');
+
+		    if(list.size() != 6)
+		      {
+			spoton_misc::logError
+			  (QString("spoton_neighbor::process0000(): "
+				   "received irregular data. Expecting 6 "
+				   "entries, "
+				   "received %1.").arg(list.size()));
+			return;
+		      }
+		  }
 	    }
 	}
       else if(list.size() != 6)
@@ -1027,20 +1038,24 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 				     */
       QList<QByteArray> list(data.split('\n'));
 
-      if(list.size() == 1)
+      if(list.size() == 2)
 	{
 	  /*
 	  ** Gemini?
 	  */
 
-	  data = QByteArray::fromBase64(data);
+	  for(int i = 0; i < list.size(); i++)
+	    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
 	  QByteArray gemini
-	    (spoton_misc::findGeminiInCosmos(data,
+	    (spoton_misc::findGeminiInCosmos(list.at(0),
 					     spoton_kernel::s_crypt1));
 
 	  if(!gemini.isEmpty())
 	    {
+	      QByteArray computedMessageDigest;
+	      QByteArray message(list.at(0));
+	      QByteArray messageDigest(list.at(1));
 	      spoton_gcrypt crypt("aes256",
 				  QString("sha512"),
 				  QByteArray(),
@@ -1049,22 +1064,29 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 				  0,
 				  QString(""));
 
-	      data = crypt.decrypted(data, &ok);
+	      message = crypt.decrypted(message, &ok);
 
 	      if(ok)
-		{
-		  list = data.split('\n');
+		messageDigest = crypt.decrypted(messageDigest, &ok);
 
-		  if(list.size() != 6)
-		    {
-		      spoton_misc::logError
-			(QString("spoton_neighbor::process0013(): "
-				 "received irregular data. Expecting 6 "
-				 "entries, "
-				 "received %1.").arg(list.size()));
-		      return;
-		    }
-		}
+	      if(ok)
+		computedMessageDigest = crypt.keyedHash(message, &ok);
+
+	      if(ok)
+		if(computedMessageDigest == messageDigest)
+		  {
+		    list = message.split('\n');
+
+		    if(list.size() != 6)
+		      {
+			spoton_misc::logError
+			  (QString("spoton_neighbor::process0013(): "
+				   "received irregular data. Expecting 6 "
+				   "entries, "
+				   "received %1.").arg(list.size()));
+			return;
+		      }
+		  }
 	    }
 	}
       else if(list.size() != 6)
