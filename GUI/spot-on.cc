@@ -394,12 +394,12 @@ spoton::spoton(void):QMainWindow()
     m_ui.status->setCurrentIndex(3);
 
   m_ui.kernelPath->setToolTip(m_ui.kernelPath->text());
-  m_ui.gemini->setMaxLength
-    (spoton_gcrypt::cipherKeyLength("aes256"));
   m_ui.nodeName->setMaxLength(NAME_MAXIMUM_LENGTH);
   m_ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
 		       toByteArray()).trimmed());
+  m_ui.tumbler->setMaxLength
+    (spoton_gcrypt::cipherKeyLength("aes256"));
   m_ui.cipherType->clear();
   m_ui.cipherType->addItems(spoton_gcrypt::cipherTypes());
   m_ui.scrambler->setChecked
@@ -2161,7 +2161,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     tr("&Copy Repleo to the clipboard buffer."),
 		     this, SLOT(slotCopyFriendshipBundle(void)));
       menu.addAction(QIcon(":/gemini.png"),
-             tr("&Generate new random Gemini (AES-256-Key)."),
+		     tr("&Generate random Gemini (AES-256)."),
 		     this, SLOT(slotGenerateGeminiInChat(void)));
       menu.addAction(QIcon(":/delete.png"),
 		     tr("&Remove"),
@@ -3996,10 +3996,10 @@ void spoton::slotDisplayLocalSearchResults(void)
 
 void spoton::slotClearOutgoingMessage(void)
 {
-  m_ui.gemini->clear();
   m_ui.participantsCombo->setCurrentIndex(0);
   m_ui.outgoingMessage->clear();
   m_ui.outgoingSubject->clear();
+  m_ui.tumbler->clear();
 }
 
 void spoton::slotResetAll(void)
@@ -4259,7 +4259,7 @@ void spoton::slotSendMail(void)
     if(db.open())
       {
 	QByteArray gemini
-	  (m_ui.gemini->text().trimmed().toLatin1());
+	  (m_ui.tumbler->text().trimmed().toLatin1());
 	QByteArray subject
 	  (m_ui.outgoingSubject->text().trimmed().toUtf8());
 	QSqlQuery query(db);
@@ -4301,7 +4301,7 @@ void spoton::slotSendMail(void)
 
 	if(ok)
 	  query.bindValue
-	    (5, m_crypt->encrypted("In Queue", &ok).toBase64());
+	    (5, m_crypt->encrypted("Queued", &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
@@ -4312,9 +4312,9 @@ void spoton::slotSendMail(void)
 	if(ok)
 	  if(query.exec())
 	    {
-	      m_ui.gemini->clear();
 	      m_ui.outgoingMessage->clear();
 	      m_ui.outgoingSubject->clear();
+	      m_ui.tumbler->clear();
 	    }
       }
 

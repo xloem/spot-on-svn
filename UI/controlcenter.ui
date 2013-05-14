@@ -799,12 +799,15 @@
                 <item>
                  <widget class="QLabel" name="label_32">
                   <property name="text">
-                   <string>Multi Encryption Passphrase</string>
+                   <string>&amp;Tumbler</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>tumbler</cstring>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="gemini"/>
+                 <widget class="QLineEdit" name="tumbler"/>
                 </item>
                 <item>
                  <widget class="QPushButton" name="generateGemini">
@@ -838,10 +841,10 @@
               <item row="4" column="0">
                <widget class="QLabel" name="label_6">
                 <property name="text">
-                 <string>Opional</string>
+                 <string>Optional</string>
                 </property>
                 <property name="buddy">
-                 <cstring>gemini</cstring>
+                 <cstring>tumbler</cstring>
                 </property>
                </widget>
               </item>
@@ -3030,13 +3033,13 @@
   <tabstop>deleteMail</tabstop>
   <tabstop>mailSubject</tabstop>
   <tabstop>mailMessage</tabstop>
-  <tabstop>gemini</tabstop>
-  <tabstop>generateGemini</tabstop>
+  <tabstop>sendMail</tabstop>
+  <tabstop>pushButtonClearOutgoingMessage</tabstop>
   <tabstop>participantsCombo</tabstop>
   <tabstop>outgoingSubject</tabstop>
   <tabstop>outgoingMessage</tabstop>
-  <tabstop>sendMail</tabstop>
-  <tabstop>pushButtonClearOutgoingMessage</tabstop>
+  <tabstop>tumbler</tabstop>
+  <tabstop>generateGemini</tabstop>
   <tabstop>repository</tabstop>
   <tabstop>days</tabstop>
   <tabstop>refreshRepository</tabstop>
