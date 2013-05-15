@@ -1170,6 +1170,7 @@ void spoton_kernel::slotScramble(void)
 
   QByteArray data;
   QByteArray publicKey;
+  QByteArray message(qrand() % 1024 + 512, 0);
   QByteArray random(32, 0);
   bool ok = true;
 
@@ -1190,10 +1191,16 @@ void spoton_kernel::slotScramble(void)
   data.append(s_crypt2->encrypted("unknown", &ok).toBase64());
   data.append("\n");
   data.append
-    (s_crypt2->encrypted(random, &ok).toBase64());
+    (s_crypt2->encrypted(message, &ok).toBase64());
   data.append("\n");
   data.append
-    (s_crypt2->encrypted(s_crypt2->keyedHash(random, &ok), &ok).toBase64());
+    (s_crypt2->encrypted(s_crypt2->
+			 keyedHash(random +
+				   s_crypt2->cipherType().toLatin1() +
+				   spoton_gcrypt::sha512Hash(publicKey, &ok) +
+				   QByteArray("unknown") +
+				   message,
+				   &ok), &ok).toBase64());
 
   char c = 0;
   short ttl = s_settings.value
