@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Spot-On Retention Center</string>
+   <string>Spot-On</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../Icons/icons.qrc">
