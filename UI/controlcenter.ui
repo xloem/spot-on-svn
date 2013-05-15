@@ -76,8 +76,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1002</width>
-                <height>546</height>
+                <width>994</width>
+                <height>556</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -797,27 +797,21 @@
               <item row="4" column="1">
                <layout class="QHBoxLayout" name="horizontalLayout_31">
                 <item>
+                 <widget class="QLineEdit" name="goldbug"/>
+                </item>
+                <item>
                  <widget class="QPushButton" name="generateGoldBug">
                   <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generate an additional random AES-256 key for a stronger encryption of your message. Provide the passphrase to the recipient.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generate a random AES-256 key. The final message will be encrypted via the random key. Please remember to notify all recipients of the key.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                   <property name="text">
                    <string>Generate Gold Bug</string>
                   </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_33">
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="pixmap">
-                   <pixmap resource="../Icons/icons.qrc">:/goldbug.png</pixmap>
+                  <property name="icon">
+                   <iconset resource="../Icons/icons.qrc">
+                    <normaloff>:/goldbug.png</normaloff>:/goldbug.png</iconset>
                   </property>
                  </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="goldbug"/>
                 </item>
                 <item>
                  <spacer name="horizontalSpacer_33">
@@ -1660,8 +1654,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1002</width>
-             <height>546</height>
+             <width>979</width>
+             <height>560</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2956,7 +2950,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -3029,13 +3023,13 @@
   <tabstop>deleteMail</tabstop>
   <tabstop>mailSubject</tabstop>
   <tabstop>mailMessage</tabstop>
+  <tabstop>sendMail</tabstop>
+  <tabstop>pushButtonClearOutgoingMessage</tabstop>
   <tabstop>participantsCombo</tabstop>
   <tabstop>outgoingSubject</tabstop>
   <tabstop>outgoingMessage</tabstop>
-  <tabstop>generateGoldBug</tabstop>
   <tabstop>goldbug</tabstop>
-  <tabstop>sendMail</tabstop>
-  <tabstop>pushButtonClearOutgoingMessage</tabstop>
+  <tabstop>generateGoldBug</tabstop>
   <tabstop>repository</tabstop>
   <tabstop>days</tabstop>
   <tabstop>refreshRepository</tabstop>

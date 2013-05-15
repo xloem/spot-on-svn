@@ -4275,7 +4275,7 @@ void spoton::slotSendMail(void)
 	while(!oids.isEmpty())
 	  {
 	    QByteArray gemini
-          (m_ui.goldbug->text().trimmed().toLatin1());
+	      (m_ui.goldbug->text().trimmed().toLatin1());
 	    QByteArray subject
 	      (m_ui.outgoingSubject->text().trimmed().toUtf8());
 	    QSqlQuery query(db);
@@ -4327,7 +4327,7 @@ void spoton::slotSendMail(void)
 
 	m_ui.outgoingMessage->clear();
 	m_ui.outgoingSubject->clear();
-    m_ui.goldbug->clear();
+	m_ui.goldbug->clear();
       }
 
     db.close();
