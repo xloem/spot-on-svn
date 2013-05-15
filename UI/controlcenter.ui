@@ -398,13 +398,13 @@
          <normaloff>:/tab-email.png</normaloff>:/tab-email.png</iconset>
        </attribute>
        <attribute name="title">
-        <string>E-Mail</string>
+        <string>&amp;E-Mail</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_29">
         <item>
          <widget class="QTabWidget" name="mailTab">
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="tab_4">
            <attribute name="icon">
@@ -802,7 +802,7 @@
                 <item>
                  <widget class="QPushButton" name="generateGoldBug">
                   <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generate a random Gold Bug (AES-256). The Bug will apply an additional layer of encryption to the message. Please remember to notify all recipients of your Gold Bug.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generate a random Gold Bug (AES-256). The Gold Bug will apply an additional layer of encryption to the message. Please remember to notify all recipients of your Gold Bug.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                   <property name="text">
                    <string>Generate Gold Bug</string>
