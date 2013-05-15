@@ -1175,6 +1175,7 @@ void spoton_kernel::slotScramble(void)
   bool ok = true;
 
   publicKey = s_crypt2->publicKey(&ok);
+  message = spoton_gcrypt::weakRandomBytes(message.length());
   random = spoton_gcrypt::strongRandomBytes(random.length());
   data.append
     (spoton_gcrypt::publicKeyEncrypt(random,
