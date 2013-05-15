@@ -802,7 +802,7 @@
                 <item>
                  <widget class="QPushButton" name="generateGoldBug">
                   <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generate a random AES-256 key. The final message will be encrypted via the random key. Please remember to notify all recipients of the key.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generate random Gold Bug (AES-256) to additionally encrypted the final message. Please remember to notify all recipients of your Gold Bug.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                   <property name="text">
                    <string>Generate Gold Bug</string>
