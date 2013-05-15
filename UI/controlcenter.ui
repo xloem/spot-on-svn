@@ -831,7 +831,7 @@
               <item row="4" column="0">
                <widget class="QLabel" name="label_6">
                 <property name="text">
-                 <string>Optional</string>
+                 <string>&amp;Optional</string>
                 </property>
                 <property name="buddy">
                  <cstring>goldbug</cstring>
@@ -2987,6 +2987,9 @@
    </property>
    <property name="text">
     <string>&amp;Log Viewer</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
    </property>
   </action>
  </widget>

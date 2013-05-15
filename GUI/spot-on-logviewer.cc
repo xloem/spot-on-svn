@@ -46,6 +46,10 @@ spoton_logviewer::spoton_logviewer(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotClear(void)));
+  connect(ui.clear,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotClear(void)));
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
 	  this,
