@@ -108,7 +108,7 @@ void spoton_misc::prepareDatabases(void)
 		   "folder_index INTEGER NOT NULL, "
 		   "gemini BLOB, " // Outgoing?
 		   "message BLOB NOT NULL, "
-		   "participant_oid INTEGER NOT NULL, "
+		   "participant_oid BLOB NOT NULL, "
 		   "receiver_sender BLOB NOT NULL, "
 		   "status BLOB NOT NULL, "
 		   "subject BLOB NOT NULL)");

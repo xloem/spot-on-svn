@@ -4319,7 +4319,10 @@ void spoton::slotSendMail(void)
 	      query.bindValue
 		(6, m_crypt->encrypted(subject, &ok).toBase64());
 
-	    query.bindValue(7, oid);
+	    if(ok)
+	      query.bindValue
+		(7, m_crypt->encrypted(QString::number(oid).toLatin1(), &ok).
+		 toBase64());
 
 	    if(ok)
 	      query.exec();

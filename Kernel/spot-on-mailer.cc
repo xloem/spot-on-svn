@@ -96,7 +96,7 @@ void spoton_mailer::slotTimeout(void)
 	      QByteArray publicKey;
 	      QByteArray subject;
 	      qint64 mailOid = query.value(5).toLongLong();
-	      qint64 participantOid = query.value(2).toLongLong();
+	      qint64 participantOid = -1;
 
 	      if(!query.value(0).isNull())
 		gemini = spoton_kernel::s_crypt1->
@@ -111,6 +111,13 @@ void spoton_mailer::slotTimeout(void)
 						   value(1).
 						   toByteArray()),
 			    &ok);
+
+	      if(ok)
+		participantOid = spoton_kernel::s_crypt1->
+		  decrypted(QByteArray::fromBase64(query.
+						   value(2).
+						   toByteArray()),
+			    &ok).toLongLong();
 
 	      if(ok)
 		{

@@ -735,10 +735,13 @@ spoton_gcrypt::spoton_gcrypt(const QString &id)
 	(gcry_calloc_secure(m_symmetricKeyLength, sizeof(char)));
 
       if(m_symmetricKey)
-	gcry_randomize
-	  (static_cast<void *> (m_symmetricKey),
-	   m_symmetricKeyLength,
-	   GCRY_STRONG_RANDOM);
+	{
+	  gcry_fast_random_poll();
+	  gcry_randomize
+	    (static_cast<void *> (m_symmetricKey),
+	     m_symmetricKeyLength,
+	     GCRY_STRONG_RANDOM);
+	}
     }
 
   if(m_symmetricKey)
@@ -2235,6 +2238,7 @@ QByteArray spoton_gcrypt::strongRandomBytes(const size_t size)
 {
   QByteArray random(size, 0);
 
+  gcry_fast_random_poll();
   gcry_randomize(static_cast<void *> (random.data()),
 		 static_cast<size_t> (random.length()),
 		 GCRY_STRONG_RANDOM);
@@ -2253,4 +2257,15 @@ size_t spoton_gcrypt::cipherKeyLength(const QByteArray &cipherType)
 			  "gcry_cipher_map_name() failure.");
 
   return keyLength;
+}
+
+QByteArray spoton_gcrypt::weakRandomBytes(const size_t size)
+{
+  QByteArray random(size, 0);
+
+  gcry_fast_random_poll();
+  gcry_randomize(static_cast<void *> (random.data()),
+		 static_cast<size_t> (random.length()),
+		 GCRY_WEAK_RANDOM);
+  return random;
 }

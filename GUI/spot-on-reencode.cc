@@ -71,7 +71,8 @@ void spoton_reencode::reencode(spoton *ui,
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT date, gemini, message, receiver_sender, "
+	if(query.exec("SELECT date, gemini, message, participant_oid, "
+		      "receiver_sender, "
 		      "status, subject, OID FROM folders"))
 	  while(query.next())
 	    {
@@ -79,7 +80,7 @@ void spoton_reencode::reencode(spoton *ui,
 	      bool ok = true;
 
 	      for(int i = 0; i < query.record().count(); i++)
-		if(i >= 0 && i <= 5)
+		if(i >= 0 && i <= 6)
 		  {
 		    QByteArray bytes = oldCrypt->decrypted
 		      (QByteArray::fromBase64(query.value(i).
@@ -98,7 +99,7 @@ void spoton_reencode::reencode(spoton *ui,
 
 		    updateQuery.prepare("UPDATE folders SET "
 					"date = ?, gemini = ?, "
-					"message = ?, "
+					"message = ?, participant_oid = ?, "
 					"receiver_sender = ?, status = ?, "
 					"subject = ? WHERE OID = ?");
 
@@ -112,7 +113,7 @@ void spoton_reencode::reencode(spoton *ui,
 
 		    if(ok)
 		      {
-			updateQuery.bindValue(6, query.value(6));
+			updateQuery.bindValue(7, query.value(7));
 			updateQuery.exec();
 		      }
 		  }

@@ -26,17 +26,17 @@ Completed Items
 
 Remaining Items
 
-1.     Add a database for the temporary chat keys of connected neighbors.
-2.     Secure connections between the interface and the kernel.
+1.     Secure connection between the interface and the kernel.
 
 Ideas
+       Add a database for the temporary chat keys of connected neighbors.
 
        Settings tab needs a side splitter for more settings such as: deny-get,
        deny-put. These functions do not exist.
 
        Fetching of new neighbors needs to be automated. Fetching is undefined.
 
-       Auto-fetching needs a checkbox. Fetching is undefined.
+       Automatic fetching needs a checkbox. Fetching is undefined.
 
        Add one listener before the kernel can be activated? No,
        a kernel's importance is not defined by listeners.
@@ -50,7 +50,7 @@ Ideas
        Neighbors need names.
 
        Be sure that the sticky of a neighbor is not the IP but the
-       UUID. DHT!
+       UUID. DHT.
 
        Search requires three radio buttons for file, hash, and URL.
 
@@ -61,14 +61,14 @@ Ideas
 
        Provide a means of filtering messages in chat.
 
-       Spot-On as a plugin.
+       Spot-On as a plugin. No.
 
        Do not hide the OID column? The OID is always available. It is
        an internal database field.
 
        TTLs for channels.
 
-       The kernel's server port is non-standard. It's fine.
+       The kernel's server port is not standard. It's fine.
 
        Adding new neighbors creates new local ports. As defined.
 
@@ -77,7 +77,7 @@ Ideas
        WebKit to retrieve a Web site, convert it to ascii and post as
        e-mail.
 
-       Micro blog by f2f turtle-hopping with new UUID.
+       Micro blog by f2f turtle hopping with new UUID.
 
        Check box column in the Participants table to broadcast
        own IP information to friends.

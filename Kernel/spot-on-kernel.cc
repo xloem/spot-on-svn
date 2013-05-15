@@ -994,6 +994,9 @@ void spoton_kernel::slotStatusTimerExpired(void)
   if(!ok)
     return;
 
+  if(m_guiServer->findChildren<QTcpSocket *> ().isEmpty())
+    status = "offline";
+
   QList<QByteArray> list;
 
   {
@@ -1035,7 +1038,12 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	      if(symmetricKeyLength > 0)
 		{
 		  symmetricKey.resize(symmetricKeyLength);
-		  symmetricKey = spoton_gcrypt::strongRandomBytes
+
+		  /*
+		  ** Status messages lack sensitive data.
+		  */
+
+		  symmetricKey = spoton_gcrypt::weakRandomBytes
 		    (symmetricKey.length());
 		}
 	      else
@@ -1157,7 +1165,7 @@ void spoton_kernel::slotScramble(void)
     return;
 
   /*
-  ** Errors? Which errors?
+  ** Ignore errors.
   */
 
   QByteArray data;
