@@ -911,6 +911,12 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  SIGNAL(receivedChatMessage(const QByteArray &,
 				     const qint64)));
   connect(neighbor,
+	  SIGNAL(receivedMailMessage(const QByteArray &,
+				     const qint64)),
+	  this,
+	  SIGNAL(receivedMailMessage(const QByteArray &,
+				     const qint64)));
+  connect(neighbor,
 	  SIGNAL(receivedStatusMessage(const QByteArray &,
 				       const qint64)),
 	  this,
@@ -921,6 +927,12 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 				     const qint64)),
 	  neighbor,
 	  SLOT(slotReceivedChatMessage(const QByteArray &,
+				       const qint64)));
+  connect(this,
+	  SIGNAL(receivedMailMessage(const QByteArray &,
+				     const qint64)),
+	  neighbor,
+	  SLOT(slotReceivedMailMessage(const QByteArray &,
 				       const qint64)));
   connect(this,
 	  SIGNAL(receivedStatusMessage(const QByteArray &,
@@ -1305,7 +1317,7 @@ void spoton_kernel::slotSendMail(const QByteArray &gemini,
 	      if(ok)
 		{
 		  data.append
-		    (spoton_gcrypt::publicKeyEncrypt(symmetricKey,
+		    (spoton_gcrypt::publicKeyEncrypt(symmetricKeyAlgorithm,
 						     participantPublicKey,
 						     &ok).
 		     toBase64());
@@ -1357,7 +1369,7 @@ void spoton_kernel::slotSendMail(const QByteArray &gemini,
 	      if(ok)
 		{
 		  data.append
-		    (spoton_gcrypt::publicKeyEncrypt(symmetricKey,
+		    (spoton_gcrypt::publicKeyEncrypt(symmetricKeyAlgorithm,
 						     publicKey,
 						     &ok).
 		     toBase64());
@@ -1423,6 +1435,6 @@ void spoton_kernel::slotSendMail(const QByteArray &gemini,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_kernel");qDebug()<<list;
+  QSqlDatabase::removeDatabase("spoton_kernel");
   emit sendMail(list);
 }

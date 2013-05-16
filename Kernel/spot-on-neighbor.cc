@@ -635,6 +635,29 @@ void spoton_neighbor::slotReceivedChatMessage(const QByteArray &data,
       }
 }
 
+void spoton_neighbor::slotReceivedMailMessage(const QByteArray &data,
+					      const qint64 id)
+{
+  /*
+  ** A neighbor (id) received a letter. This neighbor now needs
+  ** to send the letter to its peer. Please note that data also contains
+  ** the TTL.
+  */
+
+  if(id != m_id)
+    if(state() == QAbstractSocket::ConnectedState)
+      {
+	QByteArray message(spoton_send::message0001(data));
+
+	if(write(message.constData(), message.length()) != message.length())
+	  spoton_misc::logError
+	    ("spoton_neighbor::slotReceivedMailMessage(): write() "
+	     "error.");
+	else
+	  flush();
+      }
+}
+
 void spoton_neighbor::slotReceivedStatusMessage(const QByteArray &data,
 						const qint64 id)
 {
@@ -927,6 +950,9 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
 {
+  if(!spoton_kernel::s_crypt1)
+    return;
+
   length -= strlen("type=0001&content=");
 
   QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
@@ -937,6 +963,110 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
 
   if(length == data.length())
     {
+      data = QByteArray::fromBase64(data);
+
+      bool ok = true;
+      short ttl = 0;
+
+      if(!data.isEmpty())
+	memcpy(static_cast<void *> (&ttl),
+	       static_cast<const void *> (data.constData()), 1);
+
+      if(ttl > 0)
+	ttl -= 1;
+
+      data.remove(0, 1); // Remove TTL.
+
+      QByteArray originalData(data); /*
+				     ** We may need to echo the
+				     ** message. Don't forget to
+				     ** decrease the TTL!
+				     */
+      QList<QByteArray> list(data.split('\n'));
+
+      if(list.size() == 2)
+	{
+	}
+      else if(list.size() != 9)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::process0001(): "
+		     "received irregular data. Expecting 9 "
+		     "entries, "
+		     "received %1.").arg(list.size()));
+	  return;
+	}
+
+      for(int i = 0; i < list.size(); i++)
+	list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+      QByteArray message(list.value(7));
+      QByteArray messageDigest(list.value(8));
+      QByteArray name(list.value(5));
+      QByteArray recipientHash(list.value(2));
+      QByteArray subject(list.value(6));
+      QByteArray symmetricKey1(list.value(0));
+      QByteArray symmetricKey2(list.value(3));
+      QByteArray symmetricKeyAlgorithm1(list.value(1));
+      QByteArray symmetricKeyAlgorithm2(list.value(4));
+
+      if(ok)
+	symmetricKey1 = spoton_kernel::s_crypt1->
+	  publicKeyDecrypt(symmetricKey1, &ok);
+
+      if(ok)
+	symmetricKeyAlgorithm1 = spoton_kernel::s_crypt1->
+	  publicKeyDecrypt(symmetricKeyAlgorithm1, &ok);
+
+      if(ok)
+	{
+	  QByteArray publicKey;
+	  QByteArray publicKeyHash;
+	  spoton_gcrypt crypt(symmetricKeyAlgorithm1,
+			      QString("sha512"),
+			      QByteArray(),
+			      symmetricKey1,
+			      0,
+			      0,
+			      QString(""));
+
+	  recipientHash = crypt.decrypted(recipientHash, &ok);
+
+	  if(ok)
+	    publicKey = spoton_kernel::s_crypt1->publicKey(&ok);
+
+	  if(ok)
+	    publicKeyHash = spoton_gcrypt::sha512Hash(publicKey, &ok);
+
+	  if(ok)
+	    if(publicKeyHash == recipientHash)
+	      /*
+	      ** This is our letter!
+	      */
+
+	      storeLetter(symmetricKey2,
+			  symmetricKeyAlgorithm2,
+			  name,
+			  subject,
+			  message,
+			  messageDigest);
+	}
+
+      if(ok)
+	{
+	}
+      else if(ttl > 0)
+	{
+	  /*
+	  ** Replace TTL.
+	  */
+
+	  char c = 0;
+
+	  memcpy(&c, static_cast<void *> (&ttl), 1);
+	  originalData.prepend(c);
+	  emit receivedMailMessage(originalData, m_id);
+	}
     }
   else
     spoton_misc::logError
@@ -1546,4 +1676,128 @@ void spoton_neighbor::slotSendMail
 	    spoton_misc::moveSentMailToSentFolder(pair.second);
 	  }
       }
+}
+
+void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
+				  QByteArray &symmetricKeyAlgorithm,
+				  QByteArray &name,
+				  QByteArray &subject,
+				  QByteArray &message,
+				  QByteArray &messageDigest)
+{
+  if(!spoton_kernel::s_crypt1)
+    return;
+
+  bool ok = true;
+
+  symmetricKey = spoton_kernel::s_crypt1->publicKeyDecrypt
+    (symmetricKey, &ok);
+
+  if(!ok)
+    return;
+
+  symmetricKeyAlgorithm = spoton_kernel::s_crypt1->publicKeyDecrypt
+    (symmetricKeyAlgorithm, &ok);
+
+  if(!ok)
+    return;
+
+  spoton_gcrypt crypt(symmetricKeyAlgorithm,
+		      QString("sha512"),
+		      QByteArray(),
+		      symmetricKey,
+		      0,
+		      0,
+		      QString(""));
+
+  name = crypt.decrypted(name, &ok);
+
+  if(!ok)
+    return;
+
+  subject = crypt.decrypted(subject, &ok);
+
+  if(!ok)
+    return;
+
+  message = crypt.decrypted(message, &ok);
+
+  if(!ok)
+    return;
+
+  messageDigest = crypt.decrypted(messageDigest, &ok);
+
+  if(!ok)
+    return;
+
+  QByteArray computedMessageDigest;
+
+  computedMessageDigest = crypt.keyedHash(symmetricKey +
+					  symmetricKeyAlgorithm +
+					  name +
+					  subject +
+					  message, &ok);
+
+  if(!ok)
+    return;
+
+  if(computedMessageDigest != messageDigest)
+    return;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare("INSERT INTO folders "
+		      "(date, folder_index, gemini, "
+		      "message, receiver_sender, status, subject, "
+		      "participant_oid) "
+		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+	query.bindValue
+	  (0, spoton_kernel::s_crypt1->
+	   encrypted(QDateTime::currentDateTime().
+		     toString(Qt::ISODate).
+		     toUtf8(), &ok).toBase64());
+	query.bindValue(1, 0); // Inbox Folder
+
+	if(ok)
+	  query.bindValue(2, QVariant(QVariant::ByteArray));
+
+	if(ok)
+	  query.bindValue
+	    (3, spoton_kernel::s_crypt1->encrypted(message, &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (4, spoton_kernel::s_crypt1->encrypted(name, &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (5, spoton_kernel::s_crypt1->encrypted("Unread", &ok).toBase64());
+ 
+	if(ok)
+	  query.bindValue
+	    (6, spoton_kernel::s_crypt1->encrypted(subject, &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (7, spoton_kernel::s_crypt1->
+	     encrypted(QString::number(-1).toLatin1(), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
 }

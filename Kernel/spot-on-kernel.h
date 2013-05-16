@@ -100,6 +100,7 @@ class spoton_kernel: public QObject
 
  signals:
   void receivedChatMessage(const QByteArray &name, const qint64 id);
+  void receivedMailMessage(const QByteArray &name, const qint64 id);
   void receivedStatusMessage(const QByteArray &data,
 			     const qint64 id);
   void sendMessage(const QByteArray &message);
