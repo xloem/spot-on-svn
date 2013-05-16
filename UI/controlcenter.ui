@@ -76,8 +76,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1002</width>
-                <height>545</height>
+                <width>994</width>
+                <height>556</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -471,9 +471,6 @@
             </item>
             <item>
              <widget class="QTableWidget" name="mail">
-              <property name="selectionMode">
-               <enum>QAbstractItemView::SingleSelection</enum>
-              </property>
               <property name="selectionBehavior">
                <enum>QAbstractItemView::SelectRows</enum>
               </property>
@@ -1654,8 +1651,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>939</width>
-             <height>502</height>
+             <width>1020</width>
+             <height>560</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2950,7 +2947,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
