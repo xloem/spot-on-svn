@@ -52,6 +52,8 @@ void spoton_mailer::slotTimeout(void)
   if(!spoton_kernel::s_crypt1)
     return;
 
+  QList<QVector<QVariant> > list;
+
   {
     QSqlDatabase db1 = QSqlDatabase::addDatabase
       ("QSQLITE", "spoton_mailer1");
@@ -141,12 +143,17 @@ void spoton_mailer::slotTimeout(void)
 			    &ok);
 
 	      if(ok)
-		emit sendMail(gemini,
-			      message,
-			      name,
-			      publicKey,
-			      subject,
-			      mailOid);
+		{
+		  QVector<QVariant> vector;
+
+		  vector << gemini
+			 << message
+			 << name
+			 << publicKey
+			 << subject
+			 << mailOid;
+		  list.append(vector);
+		}
 	    }
       }
 
@@ -156,4 +163,16 @@ void spoton_mailer::slotTimeout(void)
 
   QSqlDatabase::removeDatabase("spoton_mailer1");
   QSqlDatabase::removeDatabase("spoton_mailer2");
+
+  for(int i = 0; i < list.size(); i++)
+    {
+      QVector<QVariant> vector(list.at(i));
+
+      emit sendMail(vector.at(0).toByteArray(),
+		    vector.at(1).toByteArray(),
+		    vector.at(2).toByteArray(),
+		    vector.at(3).toByteArray(),
+		    vector.at(4).toByteArray(),
+		    vector.at(5).toLongLong());
+    }
 }

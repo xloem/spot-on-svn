@@ -1018,10 +1018,11 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
 	symmetricKeyAlgorithm1 = spoton_kernel::s_crypt1->
 	  publicKeyDecrypt(symmetricKeyAlgorithm1, &ok);
 
+      QByteArray publicKey;
+      QByteArray publicKeyHash;
+
       if(ok)
 	{
-	  QByteArray publicKey;
-	  QByteArray publicKeyHash;
 	  spoton_gcrypt crypt(symmetricKeyAlgorithm1,
 			      QString("sha512"),
 			      QByteArray(),
@@ -1037,20 +1038,23 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
 
 	  if(ok)
 	    publicKeyHash = spoton_gcrypt::sha512Hash(publicKey, &ok);
-
-	  if(ok)
-	    if(publicKeyHash == recipientHash)
-	      /*
-	      ** This is our letter!
-	      */
-
-	      storeLetter(symmetricKey2,
-			  symmetricKeyAlgorithm2,
-			  name,
-			  subject,
-			  message,
-			  messageDigest);
 	}
+
+      if(ok)
+	if(publicKeyHash == recipientHash)
+	  {
+	    /*
+	    ** This is our letter!
+	    */
+
+	    storeLetter(symmetricKey2,
+			symmetricKeyAlgorithm2,
+			name,
+			subject,
+			message,
+			messageDigest);
+	    return;
+	  }
 
       if(ok)
 	{
@@ -1658,6 +1662,8 @@ QUuid spoton_neighbor::receivedUuid(void) const
 void spoton_neighbor::slotSendMail
 (const QList<QPair<QByteArray, qint64> > &list)
 {
+  QList<qint64> oids;
+
   if(state() == QAbstractSocket::ConnectedState)
     for(int i = 0; i < list.size(); i++)
       {
@@ -1673,9 +1679,13 @@ void spoton_neighbor::slotSendMail
 	else
 	  {
 	    flush();
-	    spoton_misc::moveSentMailToSentFolder(pair.second);
+	    oids.append(pair.second);
 	  }
       }
+
+  if(!oids.isEmpty())
+    spoton_misc::moveSentMailToSentFolder
+      (oids, spoton_kernel::s_crypt1);
 }
 
 void spoton_neighbor::storeLetter(QByteArray &symmetricKey,

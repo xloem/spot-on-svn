@@ -787,7 +787,40 @@ QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
   return gemini;
 }
 
-void spoton_misc::moveSentMailToSentFolder(const qint64 oid)
+void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
+					   spoton_gcrypt *crypt)
 {
-  Q_UNUSED(oid);
+  if(!crypt)
+    return;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare("UPDATE folders SET status = ? WHERE "
+		      "oid = ?");
+
+	for(int i = 0; i < oids.size(); i++)
+	  {
+	    bool ok = true;
+
+	    query.bindValue
+	      (0, crypt->encrypted("Sent", &ok).toBase64());
+	    query.bindValue(1, oids.at(i));
+
+	    if(ok)
+	      query.exec();
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_misc");
 }
