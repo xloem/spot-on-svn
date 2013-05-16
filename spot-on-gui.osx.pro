@@ -135,8 +135,7 @@ TRANSLATIONS    = Translations/spot-on_af.ts \
                   Translations/spot-on_zh_TW.ts \
                   Translations/spot-on_zh_HK.ts
 
-RESOURCES	= Documentation/documentation.qrc \
-		  Icons/icons.qrc \
+RESOURCES	= Icons/icons.qrc \
 		  Translations/translations.qrc
 
 TARGET		= Spot-On
