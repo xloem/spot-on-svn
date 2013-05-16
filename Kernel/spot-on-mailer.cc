@@ -168,11 +168,11 @@ void spoton_mailer::slotTimeout(void)
     {
       QVector<QVariant> vector(list.at(i));
 
-      emit sendMail(vector.at(0).toByteArray(),
-		    vector.at(1).toByteArray(),
-		    vector.at(2).toByteArray(),
-		    vector.at(3).toByteArray(),
-		    vector.at(4).toByteArray(),
-		    vector.at(5).toLongLong());
+      emit sendMail(vector.value(0).toByteArray(),
+		    vector.value(1).toByteArray(),
+		    vector.value(2).toByteArray(),
+		    vector.value(3).toByteArray(),
+		    vector.value(4).toByteArray(),
+		    vector.value(5).toLongLong());
     }
 }
