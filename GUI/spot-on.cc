@@ -4500,6 +4500,9 @@ void spoton::slotRefreshMail(void)
 		item->setFlags
 		  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		m_ui.mail->setItem(row - 1, i, item);
+
+        if(i == 3)
+        item->setIcon(QIcon(":/email.png"));
 	      }
 
 	m_ui.mail->setSortingEnabled(true);
@@ -4527,6 +4530,7 @@ void spoton::slotMailSelected(void)
 
   if(item)
     m_ui.mailSubject->setText(item->text());
+    item->setIcon(QIcon(":/tab-email.png"));
 
   item = m_ui.mail->item(row, 4); // Message
 
