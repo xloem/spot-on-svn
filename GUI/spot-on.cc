@@ -2135,7 +2135,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotDeleteAllNeighbors(void)));
       menu.addAction(tr("Delete All Non-Unique &Blocked Neighbors"),
 		     this, SLOT(slotDeleteAllBlockedNeighbors(void)));
-      menu.addAction(tr("Delete All Non-Unique &Uuids"),
+      menu.addAction(tr("Delete All Non-Unique &UUIDs"),
 		     this, SLOT(slotDeleteAllUuids(void)));
       menu.addSeparator();
       menu.addAction(QIcon(":/block.png"),tr("B&lock"),
