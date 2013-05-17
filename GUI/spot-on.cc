@@ -4541,16 +4541,11 @@ void spoton::slotMailSelected(void)
 
 void spoton::slotDeleteMail(void)
 {
-  int row = m_ui.mail->currentRow();
+  QModelIndexList list
+    (m_ui.mail->selectionModel()->selectedRows(5)); // OID
 
-  if(row < 0)
+  if(list.isEmpty())
     return;
-
-  QString oid("");
-  QTableWidgetItem *item = m_ui.mail->item(row, 5); // OID
-
-  if(item)
-    oid = item->text();
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
@@ -4562,22 +4557,26 @@ void spoton::slotDeleteMail(void)
       {
 	QSqlQuery query(db);
 
-	if(m_ui.folder->currentIndex() == 2)
-	  query.prepare("DELETE FROM folders WHERE oid = ?");
-	else
-	  query.prepare("UPDATE folders SET folder_index = 2 WHERE "
-			"oid = ?");
+	while(!list.isEmpty())
+	  {
+	    QString oid(list.takeFirst().data().toString());
 
-	query.bindValue(0, oid);
+	    if(m_ui.folder->currentIndex() == 2)
+	      query.prepare("DELETE FROM folders WHERE oid = ?");
+	    else
+	      query.prepare("UPDATE folders SET folder_index = 2 WHERE "
+			    "oid = ?");
 
-	if(query.exec())
-	  m_ui.mail->removeRow(row);
+	    query.bindValue(0, oid);
+	    query.exec();
+	  }
       }
 
     db.close();
   }
 
   QSqlDatabase::removeDatabase("spoton");
+  slotRefreshMail();
 }
 
 void spoton::slotGeminiChanged(QTableWidgetItem *item)
