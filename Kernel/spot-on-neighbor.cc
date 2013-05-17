@@ -543,6 +543,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
   if(share)
     if(spoton_kernel::s_crypt1)
       {
+	QByteArray hash;
 	QByteArray myName
 	  (spoton_kernel::s_settings.
 	   value("gui/nodeName",
@@ -554,7 +555,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
 	myPublicKey = spoton_kernel::s_crypt1->publicKey(&ok);
 
 	if(ok)
-	  spoton_kernel::s_crypt1->digitalSignature(&ok);
+	  spoton_kernel::s_crypt1->digitalSignature(hash, &ok);
 
 	if(ok)
 	  sharePublicKey(myName, myPublicKey, mySignature);

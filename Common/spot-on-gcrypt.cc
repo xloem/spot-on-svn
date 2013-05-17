@@ -2013,15 +2013,14 @@ QByteArray spoton_gcrypt::randomCipherType(void)
   return types.value(qrand() % types.size()).toLatin1();
 }
 
-QByteArray spoton_gcrypt::digitalSignature(bool *ok)
+QByteArray spoton_gcrypt::digitalSignature(const QByteArray &hash, bool *ok)
 {
   /*
   ** We need to decipher the private key.
   */
 
   QByteArray keyData;
-  QByteArray random1(20, 0); // Output size of Sha-1 divided by 8.
-  QByteArray random2(20, 0); // Output size of Sha-1 divided by 8.
+  QByteArray random(20, 0); // Output size of Sha-1 divided by 8.
   QByteArray signature;
   gcry_error_t err = 0;
   gcry_sexp_t data_t = 0;
@@ -2116,21 +2115,20 @@ QByteArray spoton_gcrypt::digitalSignature(bool *ok)
       goto error_label;
     }
 
-  random1 = strongRandomBytes(random1.length());
+  random = strongRandomBytes(random.length());
   gcry_md_hash_buffer
     (GCRY_MD_SHA1,
-     static_cast<void *> (random1.data()),
-     static_cast<const void *> (random1.constData()),
-     static_cast<size_t> (random1.length()));
-  random2 = strongRandomBytes(random2.length());
+     static_cast<void *> (random.data()),
+     static_cast<const void *> (random.constData()),
+     static_cast<size_t> (random.length()));
 
   if((err = gcry_sexp_build(&data_t, 0,
 			    "(data (flags pss)(hash sha1 %b)"
 			    "(random-override %b))",
-			    random1.length(), // Our data!
-			    random1.constData(),
-			    random2.length(),
-			    random2.constData())) == 0 && data_t)
+			    hash.length(), // Our data!
+			    hash.constData(),
+			    random.length(),
+			    random.constData())) == 0 && data_t)
     {
       if((err = gcry_pk_sign(&signature_t, data_t,
 			     key_t)) == 0 && signature_t)
