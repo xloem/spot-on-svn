@@ -2864,7 +2864,7 @@ void spoton::slotSharePublicKey(void)
   if(oid.isEmpty())
     return;
 
-  QByteArray hash;
+  QByteArray hash(20, 0); // Sha-1
   QByteArray publicKey;
   QByteArray signature;
   bool ok = true;
@@ -3098,7 +3098,7 @@ void spoton::slotSharePublicKeyWithParticipant(void)
   if(oid.isEmpty())
     return;
 
-  QByteArray hash;
+  QByteArray hash(20, 0); // Sha-1
   QByteArray publicKey;
   QByteArray signature;
   bool ok = true;
@@ -3178,7 +3178,7 @@ void spoton::slotCopyMyPublicKey(void)
   if(!clipboard)
     return;
 
-  QByteArray hash;
+  QByteArray hash(20, 0); // Sha-1
   QByteArray name;
   QByteArray publicKey;
   QByteArray signature;
@@ -4180,7 +4180,7 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  QByteArray hash;
+  QByteArray hash(20, 0); // Sha-1
   QByteArray mySignature(m_crypt->digitalSignature(hash, &ok));
 
   if(!ok)

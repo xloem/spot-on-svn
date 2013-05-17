@@ -543,7 +543,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
   if(share)
     if(spoton_kernel::s_crypt1)
       {
-	QByteArray hash;
+	QByteArray hash(20, 0); // Sha-1
 	QByteArray myName
 	  (spoton_kernel::s_settings.
 	   value("gui/nodeName",
