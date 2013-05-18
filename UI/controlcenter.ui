@@ -1780,7 +1780,7 @@
                    <item>
                     <widget class="QCheckBox" name="scrambler">
                      <property name="text">
-                      <string>Enable Wasabi &amp;Scrambler</string>
+                      <string>Enable Aura &amp;Simulacrum</string>
                      </property>
                     </widget>
                    </item>
