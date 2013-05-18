@@ -2686,9 +2686,9 @@ void spoton::slotPopulateParticipants(void)
 		  (participants[participants.keys().at(i)]);
 
 		m_ui.participantsCombo->setItemData
-		  (i, pair.second, Qt::UserRole);
+		  (i + 2, pair.second, Qt::UserRole);
 		m_ui.participantsCombo->setItemData
-		  (i, pair.first, Qt::UserRole + 1);
+		  (i + 2, pair.first, Qt::UserRole + 1);
 	      }
 
 	    int index = -1;
@@ -4265,6 +4265,8 @@ void spoton::slotSendMail(void)
   ** kernel shall do the rest.
   */
 
+  spoton_misc::prepareDatabases();
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
@@ -4273,35 +4275,44 @@ void spoton::slotSendMail(void)
 
     if(db.open())
       {
-	QList<QByteArray> publicKeys;
+	QList<QByteArray> publicKeyHashes;
 	QList<qint64> oids;
 
 	if(m_ui.participantsCombo->currentIndex() > 1)
-	  oids.append
-	    (m_ui.participantsCombo->itemData(m_ui.participantsCombo->
-					      currentIndex()).toLongLong());
+	  {
+	    int index = m_ui.participantsCombo->currentIndex();
+	    QByteArray publicKeyHash
+	      (m_ui.participantsCombo->itemData(index, Qt::UserRole + 1).
+	       toByteArray());
+	    qint64 oid = m_ui.participantsCombo->
+	      itemData(index, Qt::UserRole).toLongLong();
+
+	    oids.append(oid);
+	    publicKeyHashes.append(publicKeyHash);
+	  }
 	else
 	  for(int i = 2; i < m_ui.participantsCombo->count(); i++)
 	    {
-	      QByteArray publicKey
+	      QByteArray publicKeyHash
 		(m_ui.participantsCombo->itemData(i, Qt::UserRole + 1).
 		 toByteArray());
-	      qint64 oid = m_ui.participantsCombo->itemData(i).toLongLong();
+	      qint64 oid = m_ui.participantsCombo->
+		itemData(i, Qt::UserRole).toLongLong();
 
 	      oids.append(oid);
-	      publicKeys.append(publicKey);
+	      publicKeyHashes.append(publicKeyHash);
 	    }
 
 	while(!oids.isEmpty())
 	  {
 	    QByteArray gemini
 	      (m_ui.goldbug->text().trimmed().toLatin1());
-	    QByteArray publicKey(publicKeys.takeFirst());
+	    QByteArray publicKeyHash(publicKeyHashes.takeFirst());
 	    QByteArray subject
 	      (m_ui.outgoingSubject->text().trimmed().toUtf8());
 	    QSqlQuery query(db);
 	    bool ok = true;
-	    qint64 oid = oids.takeFirst();
+	    qint64 oid = oids.takeFirst();qDebug()<<oid<<publicKeyHash;
 
 	    query.prepare("INSERT INTO folders "
 			  "(date, folder_index, gemini, hash, "
@@ -4338,7 +4349,7 @@ void spoton::slotSendMail(void)
 
 	    if(ok)
 	      query.bindValue
-		(6, spoton_gcrypt::sha512Hash(publicKey, &ok).toBase64());
+		(6, publicKeyHash.toBase64());
 
 	    if(ok)
 	      query.bindValue

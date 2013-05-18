@@ -114,7 +114,7 @@ void spoton_misc::prepareDatabases(void)
 		   "receiver_sender_hash TEXT NOT NULL, "
 		   "status BLOB NOT NULL, "
 		   "subject BLOB NOT NULL, "
-		   "PRIMARY KEY (folder_index, hash, receiver_sender_hash)");
+		   "PRIMARY KEY (folder_index, hash, receiver_sender_hash))");
 	query.exec("CREATE TABLE IF NOT EXISTS postoffice ("
 		   "date_received BLOB NOT NULL, "
 		   "message_bundle BLOB NOT NULL, "

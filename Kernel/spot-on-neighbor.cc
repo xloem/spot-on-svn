@@ -977,11 +977,11 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
       if(list.size() == 2)
 	{
 	}
-      else if(list.size() != 9)
+      else if(list.size() != 10)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0001(): "
-		     "received irregular data. Expecting 9 "
+		     "received irregular data. Expecting 10 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
 	  return;
@@ -994,6 +994,7 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
       QByteArray messageDigest(list.value(8));
       QByteArray name(list.value(5));
       QByteArray recipientHash(list.value(2));
+      QByteArray senderPublicKeyHash;
       QByteArray subject(list.value(6));
       QByteArray symmetricKey1(list.value(0));
       QByteArray symmetricKey2(list.value(3));
@@ -1037,7 +1038,8 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
 	    ** This is our letter!
 	    */
 
-	    storeLetter(symmetricKey2,
+	    storeLetter(senderPublicKeyHash,
+			symmetricKey2,
 			symmetricKeyAlgorithm2,
 			name,
 			subject,
@@ -1683,7 +1685,8 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 				  QByteArray &name,
 				  QByteArray &subject,
 				  QByteArray &message,
-				  QByteArray &messageDigest)
+				  QByteArray &messageDigest,
+				  const QByteArray &publicKeyHash)
 {
   if(!spoton_kernel::s_crypt1)
     return;
@@ -1757,8 +1760,8 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 
 	query.prepare("INSERT INTO folders "
 		      "(date, folder_index, gemini, hash, "
-		      "message, receiver_sender, status, subject, "
-		      "participant_oid) "
+		      "message, receiver_sender, receiver_sender_hash, "
+		      "status, subject, participant_oid) "
 		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue
 	  (0, spoton_kernel::s_crypt1->
@@ -1772,7 +1775,8 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 
 	if(ok)
 	  query.bindValue
-	    (3, spoton_gcrypt::sha512Hash(message + subject, &ok).toBase64());
+	    (3, spoton_kernel::s_crypt1->keyedHash(message + subject, &ok).
+	     toBase64());
 
 	if(ok)
 	  query.bindValue
@@ -1784,15 +1788,19 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 
 	if(ok)
 	  query.bindValue
-	    (6, spoton_kernel::s_crypt1->encrypted("Unread", &ok).toBase64());
- 
-	if(ok)
-	  query.bindValue
-	    (7, spoton_kernel::s_crypt1->encrypted(subject, &ok).toBase64());
+	    (6, publicKeyHash.toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (8, spoton_kernel::s_crypt1->
+	    (7, spoton_kernel::s_crypt1->encrypted("Unread", &ok).toBase64());
+ 
+	if(ok)
+	  query.bindValue
+	    (8, spoton_kernel::s_crypt1->encrypted(subject, &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (9, spoton_kernel::s_crypt1->
 	     encrypted(QString::number(-1).toLatin1(), &ok).
 	     toBase64());
 
