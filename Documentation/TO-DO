@@ -26,7 +26,8 @@ Completed Items
 
 Remaining Items
 
-1.     Secure connection between the interface and the kernel.
+1.	   Email Repleo inside Spot-On.
+2.     Secure connection between the interface and the kernel.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.
@@ -88,3 +89,5 @@ Ideas
        Settings tab: option to override my external IP and port?
 
        Neigbors Tab: Checkbox "Share URLs-Key automatically after connection"
+
+       Include IP+Port in the Copy-Key-Function

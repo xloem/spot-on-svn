@@ -124,6 +124,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotAddListener(void)));
+  connect(m_ui.AddMailedRepleo,
+      SIGNAL(clicked(void)),
+      this,
+      SLOT(slotAddMailedRepleo(void)));
   connect(m_ui.addNeighbor,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -544,6 +548,8 @@ spoton::spoton(void):QMainWindow()
       button->setIcon(QIcon(":/broadcasttoall.png"));
       button->setToolTip(tr("Broadcast"));
     }
+
+   m_ui.AddMailedRepleo->setVisible(false);
 
   show();
 }
@@ -2142,6 +2148,9 @@ void spoton::slotShowContextMenu(const QPoint &point)
       else
 	action->setEnabled(false);
 
+      menu.addAction(QIcon(":/repleo-mail.png"),
+             tr("&Send Repleo via E-Mail."),
+             this, SLOT(slotSendRepleoViaMail(void)));
       menu.addAction(QIcon(":/repleo.png"),
 		     tr("&Copy Repleo to the clipboard buffer."),
 		     this, SLOT(slotCopyFriendshipBundle(void)));
@@ -4341,6 +4350,41 @@ void spoton::slotSendMail(void)
   QSqlDatabase::removeDatabase("spoton");
 }
 
+void spoton::slotSendRepleoViaMail(void)
+{
+    m_ui.tab->setCurrentIndex(1);
+    m_ui.mailTab->setCurrentIndex(1);
+
+    m_ui.outgoingSubject->clear();
+    m_ui.outgoingMessage->clear();
+    show();
+
+        QString subjectprefix("");
+          subjectprefix.append("[REPLEO-SUBSCRIPTION-REQUEST] ");
+          subjectprefix.append(tr("from"));
+          subjectprefix.append(" ");
+          subjectprefix.append("[function for name]");
+
+    m_ui.outgoingSubject->setText(QString (subjectprefix));
+    m_ui.outgoingMessage->setText("Repleotext...");
+
+    // set participantcombo to selected participant
+
+}
+
+void spoton::slotAddMailedRepleo(void)
+{
+ //   if(!m_crypt)
+ //     return;
+ //   else if(m_ui.outgoingMessage->toPlainText().trimmed().isEmpty())
+ //     return;
+ //
+ //   QByteArray repleo(m_ui.outgoingMessage->toPlainText().trimmed().
+ //         toLatin1());
+ //  ...
+
+}
+
 void spoton::slotDeleteAllBlockedNeighbors(void)
 {
   if(!m_crypt)
@@ -4497,6 +4541,11 @@ void spoton::slotRefreshMail(void)
 					  &ok).constData());
 
 		    if(i == 3)
+          //  if (item->contains ("[REPLEO-SUBSCRIPTION-REQUEST]"))
+          //   {
+          //      item->setIcon(QIcon(":/repleomail.png"));
+          //   }
+          //  else
 		      item->setIcon(QIcon(":/email.png"));
 		  }
 		else
@@ -4534,6 +4583,15 @@ void spoton::slotMailSelected(void)
 
   if(item)
     m_ui.mailSubject->setText(item->text());
+
+  if (item->text().contains ("[REPLEO-SUBSCRIPTION-REQUEST]"))
+      {
+         m_ui.AddMailedRepleo->setVisible(true);
+      // item->setIcon(QIcon(":/repleomail.png"));
+      }
+  else
+         m_ui.AddMailedRepleo->setVisible(false);
+      // item->setIcon(QIcon(":/email.png"));
 
   item = m_ui.mail->item(row, 4); // Message
 

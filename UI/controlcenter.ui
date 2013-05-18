@@ -414,7 +414,7 @@
            <attribute name="title">
             <string>&amp;Read</string>
            </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_26">
+           <layout class="QVBoxLayout" name="verticalLayout_31">
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_38">
               <item>
@@ -452,6 +452,17 @@
                    <normaloff>:/email-trash.png</normaloff>:/email-trash.png</iconset>
                  </property>
                 </item>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="retrieveMail">
+                <property name="text">
+                 <string>Retrieve</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../Icons/icons.qrc">
+                  <normaloff>:/down.png</normaloff>:/down.png</iconset>
+                </property>
                </widget>
               </item>
               <item>
@@ -521,17 +532,6 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_35">
               <item>
-               <widget class="QPushButton" name="retrieveMail">
-                <property name="text">
-                 <string>Retrieve</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/down.png</normaloff>:/down.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
                <spacer name="horizontalSpacer_29">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -600,26 +600,54 @@
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QLabel" name="label_30">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>75</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>&amp;Message</string>
-                </property>
-                <property name="buddy">
-                 <cstring>mailMessage</cstring>
-                </property>
-               </widget>
+               <layout class="QVBoxLayout" name="verticalLayout_26">
+                <item>
+                 <widget class="QLabel" name="label_30">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>75</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>&amp;Message</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>mailMessage</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_10">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="AddMailedRepleo">
+                  <property name="text">
+                   <string>Add Repleo</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../Icons/icons.qrc">
+                    <normaloff>:/repleo-mail.png</normaloff>:/repleo-mail.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
               <item row="1" column="1">
                <widget class="QTextBrowser" name="mailMessage">
@@ -3017,10 +3045,11 @@
   <tabstop>sendMessage</tabstop>
   <tabstop>mailTab</tabstop>
   <tabstop>folder</tabstop>
-  <tabstop>mail</tabstop>
   <tabstop>retrieveMail</tabstop>
+  <tabstop>mail</tabstop>
   <tabstop>refreshMail</tabstop>
   <tabstop>deleteMail</tabstop>
+  <tabstop>AddMailedRepleo</tabstop>
   <tabstop>mailSubject</tabstop>
   <tabstop>mailMessage</tabstop>
   <tabstop>sendMail</tabstop>

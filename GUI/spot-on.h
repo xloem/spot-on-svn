@@ -88,6 +88,7 @@ class spoton: public QMainWindow
   void slotAddListener(void);
   void slotAddFriendsKey(void);
   void slotAddNeighbor(void);
+  void slotAddMailedRepleo(void);
   void slotBlockNeighbor(void);
   void slotChatSendMethodChanged(int index);
   void slotClearOutgoingMessage(void);
@@ -135,6 +136,7 @@ class spoton: public QMainWindow
   void slotScramble(bool state);
   void slotSelectKernelPath(void);
   void slotSendMail(void);
+  void slotSendRepleoViaMail(void);
   void slotSendMessage(void);
   void slotSetPassphrase(void);
   void slotSharePublicKey(void);
