@@ -4584,14 +4584,17 @@ void spoton::slotMailSelected(void)
   if(item)
     m_ui.mailSubject->setText(item->text());
 
-  if (item->text().contains ("[REPLEO-SUBSCRIPTION-REQUEST]"))
-      {
-         m_ui.AddMailedRepleo->setVisible(true);
-      // item->setIcon(QIcon(":/repleomail.png"));
-      }
-  else
-         m_ui.AddMailedRepleo->setVisible(false);
-      // item->setIcon(QIcon(":/email.png"));
+   if(m_ui.folder->currentIndex() == 0)
+   {
+       if (item->text().contains ("[REPLEO-SUBSCRIPTION-REQUEST]"))
+          {
+            m_ui.AddMailedRepleo->setVisible(true);
+         // item->setIcon(QIcon(":/repleomail.png"));
+          }
+       else
+             m_ui.AddMailedRepleo->setVisible(false);
+          // item->setIcon(QIcon(":/email.png"));
+    }
 
   item = m_ui.mail->item(row, 4); // Message
 
