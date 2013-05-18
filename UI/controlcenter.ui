@@ -980,7 +980,7 @@
          <normaloff>:/tab-neighbours.png</normaloff>:/tab-neighbours.png</iconset>
        </attribute>
        <attribute name="title">
-        <string>&amp;Neighbors</string>
+        <string>&amp;Matrix</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_28">
         <property name="leftMargin">
