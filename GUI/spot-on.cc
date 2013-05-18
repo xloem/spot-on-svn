@@ -4012,6 +4012,8 @@ void spoton::slotClearOutgoingMessage(void)
   m_ui.outgoingSubject->clear();
   m_ui.goldbug->clear();
   m_ui.participantsCombo->setEnabled(true);
+  m_ui.outgoingSubject->setEnabled(true);
+  m_ui.outgoingMessage->setEnabled(true);
 }
 
 void spoton::slotResetAll(void)
@@ -4351,6 +4353,8 @@ void spoton::slotSendMail(void)
   QSqlDatabase::removeDatabase("spoton");
 
   m_ui.participantsCombo->setEnabled(true);
+  m_ui.outgoingSubject->setEnabled(true);
+  m_ui.outgoingMessage->setEnabled(true);
 }
 
 void spoton::slotSendRepleoViaMail(void)
@@ -4376,6 +4380,8 @@ void spoton::slotSendRepleoViaMail(void)
     
     // disable selection of participantscombo, to avoid wrong addresses
     m_ui.participantsCombo->setEnabled(false);
+    m_ui.outgoingSubject->setEnabled(false);
+    m_ui.outgoingMessage->setEnabled(false);
 
 }
 
