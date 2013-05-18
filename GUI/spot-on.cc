@@ -4595,6 +4595,9 @@ void spoton::slotMailSelected(void)
              m_ui.AddMailedRepleo->setVisible(false);
           // item->setIcon(QIcon(":/email.png"));
     }
+       else
+             m_ui.AddMailedRepleo->setVisible(false);
+          // item->setIcon(QIcon(":/email.png"));
 
   item = m_ui.mail->item(row, 4); // Message
 
