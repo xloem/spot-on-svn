@@ -4387,14 +4387,142 @@ void spoton::slotSendRepleoViaMail(void)
 
 void spoton::slotAddMailedRepleo(void)
 {
- //   if(!m_crypt)
- //     return;
- //   else if(m_ui.outgoingMessage->toPlainText().trimmed().isEmpty())
- //     return;
- //
- //   QByteArray repleo(m_ui.outgoingMessage->toPlainText().trimmed().
- //         toLatin1());
- //  ...
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+               "friends_public_keys.db");
+
+    if(db.open())
+     {
+     }
+     if(!m_crypt)
+       return;
+     else if(m_ui.mailMessage->toPlainText().trimmed().isEmpty())
+       return;
+
+    QByteArray repleo (m_ui.mailMessage->toPlainText().trimmed().
+          toLatin1());
+
+    if(repleo.startsWith("R") || repleo.startsWith("r"))
+  repleo.remove(0, 1);
+    else
+  {
+    QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+        mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+        mb.setIcon(QMessageBox::Question);
+        mb.setWindowTitle(tr("Spot-On: Repleo Information"));
+        mb.setIconPixmap(QPixmap(":/repleo.png"));
+        mb.setWindowModality(Qt::WindowModal);
+    mb.setText(tr("The provided repleo appears invalid. It "
+          "seems to be a key or something else. "
+          "The repleo must start with either "
+          "the letter R or the letter r."));
+    mb.exec();
+    return;
+      }
+
+    QList<QByteArray> list(repleo.split('@'));
+
+    if(list.size() != 6)
+  {
+    spoton_misc::logError
+      (QString("spoton::slotAddFriendsKey(): "
+           "received irregular data. Expecting 6 entries, "
+           "received %1.").arg(list.size()));
+    return;
+  }
+
+    for(int i = 0; i < list.size(); i++)
+  list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+    QByteArray hash;
+    QByteArray name;
+    QByteArray publicKey;
+    QByteArray signature;
+    QByteArray symmetricKey;
+    QByteArray symmetricKeyAlgorithm;
+    bool ok = true;
+
+    symmetricKey = list.value(0);
+    symmetricKey = m_crypt->publicKeyDecrypt(symmetricKey, &ok);
+
+    if(!ok)
+  return;
+
+    symmetricKeyAlgorithm = list.value(1);
+    symmetricKeyAlgorithm = m_crypt->publicKeyDecrypt
+  (symmetricKeyAlgorithm, &ok);
+
+    if(!ok)
+  return;
+
+    spoton_gcrypt crypt(symmetricKeyAlgorithm,
+            QString("sha512"),
+            QByteArray(),
+            symmetricKey,
+            0,
+            0,
+            QString(""));
+
+    name = crypt.decrypted(list.value(2), &ok);
+
+    if(!ok)
+  return;
+
+    publicKey = crypt.decrypted(list.value(3), &ok);
+
+    if(!ok)
+  return;
+
+    signature = crypt.decrypted(list.value(4), &ok);
+
+    if(!ok)
+  return;
+
+    hash = crypt.decrypted(list.value(5), &ok);
+
+    if(!ok)
+  return;
+
+    QByteArray computedHash
+  (crypt.keyedHash(symmetricKey +
+           symmetricKeyAlgorithm +
+           name +
+           publicKey +
+           signature, &ok));
+
+    if(!ok)
+  return;
+
+    if(computedHash == hash)
+  {
+    {
+      QSqlDatabase db = QSqlDatabase::addDatabase
+        ("QSQLITE", "spoton");
+
+      db.setDatabaseName
+        (spoton_misc::homePath() + QDir::separator() +
+         "friends_public_keys.db");
+
+      if(db.open())
+        {
+      spoton_misc::prepareDatabases();
+
+      if(spoton_misc::saveFriendshipBundle(name,
+                           publicKey,
+                           -1,
+                           db))
+        m_ui.mailMessage->selectAll();
+        }
+
+      db.close();
+    }
+
+    QSqlDatabase::removeDatabase("spoton");
+  }
 
 }
 
