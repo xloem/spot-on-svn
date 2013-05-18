@@ -28,6 +28,7 @@
 #ifndef _spoton_h_
 #define _spoton_h_
 
+#include <QCache>
 #include <QDateTime>
 #include <QMainWindow>
 #include <QSqlDatabase>
@@ -50,6 +51,12 @@ class spoton: public QMainWindow
  private:
   static const int NAME_MAXIMUM_LENGTH = 64;
   QByteArray m_kernelSocketData;
+  QCache<QByteArray, char *> m_messagingCache; /*
+					       ** Prevent duplicate
+					       ** messages that are
+					       ** caused by wonderful
+					       ** echoes.
+					       */
   QDateTime m_countriesLastModificationTime;
   QDateTime m_listenersLastModificationTime;
   QDateTime m_neighborsLastModificationTime;

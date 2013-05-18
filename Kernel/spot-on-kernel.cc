@@ -61,7 +61,6 @@ extern "C"
 #include "spot-on-neighbor.h"
 #include "spot-on-shared-reader.h"
 
-QCache<QByteArray, char *> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 spoton_gcrypt *spoton_kernel::s_crypt1 = 0;
 spoton_gcrypt *spoton_kernel::s_crypt2 = 0;
@@ -505,8 +504,6 @@ void spoton_kernel::prepareNeighbors(void)
   if(!s_crypt1)
     return;
 
-  bool allOffline = true;
-
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
 
@@ -565,10 +562,6 @@ void spoton_kernel::prepareNeighbors(void)
 		    }
 		  else
 		    neighbor = m_neighbors.value(id);
-
-		  if(neighbor)
-		    if(neighbor->state() == QAbstractSocket::ConnectedState)
-		      allOffline = false;
 		}
 	      else
 		{
@@ -601,9 +594,6 @@ void spoton_kernel::prepareNeighbors(void)
 		   "hash.").arg(m_neighbors.keys().at(i)));
 	m_neighbors.remove(m_neighbors.keys().at(i));
       }
-
-  if(allOffline)
-    s_messagingCache.clear();
 }
 void spoton_kernel::checkForTermination(void)
 {

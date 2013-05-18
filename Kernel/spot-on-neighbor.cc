@@ -905,22 +905,11 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 		{
 		  if(computedMessageDigest == messageDigest)
 		    {
-		      QByteArray hash(spoton_gcrypt::sha512Hash(data, &ok));
-		      bool duplicate = false;
-
-		      if(spoton_kernel::s_messagingCache.contains(hash))
-			duplicate = true;
-		      else
-			spoton_kernel::s_messagingCache.insert(hash, 0);
-
-		      if(!duplicate)
-			{
-			  saveParticipantStatus(name, publicKeyHash);
-			  emit receivedChatMessage
-			    ("message_" +
-			     name.toBase64() + "_" +
-			     message.toBase64().append('\n'));
-			}
+		      saveParticipantStatus(name, publicKeyHash);
+		      emit receivedChatMessage
+			("message_" +
+			 name.toBase64() + "_" +
+			 message.toBase64().append('\n'));
 		    }
 		  else
 		    spoton_misc::logError("spoton_neighbor::process0000(): "

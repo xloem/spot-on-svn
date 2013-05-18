@@ -107,6 +107,7 @@ void spoton_misc::prepareDatabases(void)
 		   "date BLOB NOT NULL, "
 		   "folder_index INTEGER NOT NULL, "
 		   "gemini BLOB, " // Outgoing?
+		   "hash TEXT PRIMARY KEY NOT NULL, "
 		   "message BLOB NOT NULL, "
 		   "participant_oid BLOB NOT NULL, "
 		   "receiver_sender BLOB NOT NULL, "

@@ -1331,6 +1331,7 @@ void spoton::slotDeactivateKernel(void)
 
   libspoton_close(&libspotonHandle);
   m_kernelSocket.close();
+  m_messagingCache.clear();
 }
 
 void spoton::slotGeneralTimerTimeout(void)
@@ -2789,6 +2790,20 @@ void spoton::slotReceivedKernelMessage(void)
 
 	      if(!data.isEmpty())
 		{
+		  QByteArray hash;
+		  bool duplicate = false;
+		  bool ok = true;
+
+		  hash = spoton_gcrypt::sha512Hash(data, &ok);
+
+		  if(m_messagingCache.contains(hash))
+		    duplicate = true;
+		  else
+		    m_messagingCache.insert(hash, 0);
+
+		  if(duplicate)
+		    continue;
+
 		  QList<QByteArray> list(data.split('_'));
 
 		  if(list.size() != 2)
