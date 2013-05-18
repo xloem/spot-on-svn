@@ -4312,7 +4312,7 @@ void spoton::slotSendMail(void)
 	      (m_ui.outgoingSubject->text().trimmed().toUtf8());
 	    QSqlQuery query(db);
 	    bool ok = true;
-	    qint64 oid = oids.takeFirst();qDebug()<<oid<<publicKeyHash;
+	    qint64 oid = oids.takeFirst();
 
 	    query.prepare("INSERT INTO folders "
 			  "(date, folder_index, gemini, hash, "
