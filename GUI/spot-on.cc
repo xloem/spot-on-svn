@@ -1767,7 +1767,7 @@ void spoton::slotSetPassphrase(void)
 	{
 	  slotDeactivateKernel();
 	  statusBar()->showMessage
-	    (tr("Re-encoding RSA key pair 1 of 3. Please be patient."));
+	    (tr("Re-encoding RSA key pair 1 of 2. Please be patient."));
 	  QApplication::processEvents();
 	  spoton_gcrypt::reencodeRSAKeys
 	    (m_ui.cipherType->currentText(),
@@ -1780,7 +1780,7 @@ void spoton::slotSetPassphrase(void)
 	  if(error2.isEmpty())
 	    {
 	      statusBar()->showMessage
-		(tr("Re-encoding RSA key pair 2 of 3. Please be patient."));
+		(tr("Re-encoding RSA key pair 2 of 2. Please be patient."));
 	      QApplication::processEvents();
 	      spoton_gcrypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
@@ -1788,22 +1788,7 @@ void spoton::slotSetPassphrase(void)
 		 m_settings.value("gui/cipherType", "aes256").
 		 toString().trimmed(),
 		 m_crypt->symmetricKey(),
-		 "scrambler",
-		 error2);
-	    }
-
-	  if(error2.isEmpty())
-	    {
-	      statusBar()->showMessage
-		(tr("Re-encoding RSA key pair 3 of 3. Please be patient."));
-	      QApplication::processEvents();
-	      spoton_gcrypt::reencodeRSAKeys
-		(m_ui.cipherType->currentText(),
-		 derivedKey,
-		 m_settings.value("gui/cipherType", "aes256").
-		 toString().trimmed(),
-		 m_crypt->symmetricKey(),
-		 "shared",
+		 "url",
 		 error2);
 	    }
 	}
@@ -1812,8 +1797,7 @@ void spoton::slotSetPassphrase(void)
 	  QStringList list;
 
 	  list << "private"
-	       << "scrambler"
-	       << "shared";
+	       << "url";
 
 	  for(int i = 0; i < list.size(); i++)
 	    {

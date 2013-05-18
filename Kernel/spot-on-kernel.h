@@ -56,8 +56,7 @@ class spoton_kernel: public QObject
 						      */
   static QHash<QString, QVariant> s_settings;
   static spoton_gcrypt *s_crypt1; // private
-  static spoton_gcrypt *s_crypt2; // scrambler
-  static spoton_gcrypt *s_crypt3; // shared
+  static spoton_gcrypt *s_crypt2; // url
 
  private:
   QFileSystemWatcher m_settingsWatcher;

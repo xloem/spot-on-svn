@@ -1651,7 +1651,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1020</width>
+             <width>979</width>
              <height>560</height>
             </rect>
            </property>
@@ -1752,7 +1752,7 @@
                    <item>
                     <widget class="QCheckBox" name="scrambler">
                      <property name="text">
-                      <string>Enable &amp;Scrambler</string>
+                      <string>Enable Wasabi &amp;Scrambler</string>
                      </property>
                     </widget>
                    </item>

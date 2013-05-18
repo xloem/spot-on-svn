@@ -65,7 +65,6 @@ QCache<QByteArray, char *> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 spoton_gcrypt *spoton_kernel::s_crypt1 = 0;
 spoton_gcrypt *spoton_kernel::s_crypt2 = 0;
-spoton_gcrypt *spoton_kernel::s_crypt3 = 0;
 
 static void sig_handler(int signum)
 {
@@ -268,6 +267,10 @@ spoton_kernel::~spoton_kernel()
 {
   cleanup();
   cleanupDatabases();
+  delete s_crypt1;
+  s_crypt1 = 0;
+  delete s_crypt2;
+  s_crypt2 = 0;
   spoton_misc::logError
     (QString("Kernel %1 about to exit.").
      arg(QCoreApplication::applicationPid()));
@@ -1173,67 +1176,68 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 void spoton_kernel::slotScramble(void)
 {
-  if(!s_crypt2)
-    return;
-
-  /*
-  ** Ignore errors.
-  */
-
   QByteArray data;
-  QByteArray publicKey;
   QByteArray message(qrand() % 1024 + 512, 0);
-  QByteArray random(32, 0);
+  QByteArray messageDigest;
+  QByteArray symmetricKey;
+  QByteArray symmetricKeyAlgorithm(spoton_gcrypt::randomCipherType());
   bool ok = true;
+  size_t symmetricKeyLength = spoton_gcrypt::cipherKeyLength
+    (symmetricKeyAlgorithm);
 
-  publicKey = s_crypt2->publicKey(&ok);
-  message = spoton_gcrypt::weakRandomBytes(message.length());
-  random = spoton_gcrypt::strongRandomBytes(random.length());
-  data.append
-    (spoton_gcrypt::publicKeyEncrypt(random,
-				     publicKey, &ok).toBase64());
-  data.append("\n");
-  data.append
-    (spoton_gcrypt::publicKeyEncrypt(s_crypt2->cipherType().toLatin1(),
-				     publicKey, &ok).toBase64());
-  data.append("\n");
-  data.append
-    (s_crypt2->encrypted(spoton_gcrypt::sha512Hash(publicKey, &ok),
-			 &ok).toBase64());
-  data.append("\n");
-  data.append(s_crypt2->encrypted("unknown", &ok).toBase64());
-  data.append("\n");
-  data.append
-    (s_crypt2->encrypted(message, &ok).toBase64());
-  data.append("\n");
-  data.append
-    (s_crypt2->encrypted(s_crypt2->
-			 keyedHash(random +
-				   s_crypt2->cipherType().toLatin1() +
-				   spoton_gcrypt::sha512Hash(publicKey, &ok) +
-				   QByteArray("unknown") +
-				   message,
-				   &ok), &ok).toBase64());
-
-  char c = 0;
-  short ttl = s_settings.value
-    ("kernel/ttl_0000", 16).toInt();
-
-  memcpy(&c, static_cast<void *> (&ttl), 1);
-  data.prepend(c);
-
-  if(s_settings.value("gui/chatSendMethod",
-		      "Artificial_GET").toString().
-     trimmed() == "Artificial_GET")
-    emit sendMessage
-      (spoton_send::message0000(data,
-				spoton_send::
-				ARTIFICIAL_GET));
+  if(symmetricKeyLength > 0)
+    {
+      symmetricKey.resize(symmetricKeyLength);
+      symmetricKey = spoton_gcrypt::strongRandomBytes
+	(symmetricKey.length());
+    }
   else
-    emit sendMessage
-      (spoton_send::message0000(data,
-				spoton_send::
-				NORMAL_POST));
+    ok = false;
+
+  if(ok)
+    {
+      spoton_gcrypt crypt(symmetricKeyAlgorithm,
+			  QString("sha512"),
+			  QByteArray(),
+			  symmetricKey,
+			  0,
+			  0,
+			  QString(""));
+
+      messageDigest = crypt.keyedHash(message, &ok);
+
+      if(ok)
+	{
+	  data.append(crypt.encrypted(message, &ok).toBase64());
+	  data.append("\n");
+	}
+
+      if(ok)
+	data.append(crypt.encrypted(messageDigest, &ok).toBase64());
+    }
+
+  if(ok)
+    {
+      char c = 0;
+      short ttl = s_settings.value
+	("kernel/ttl_0000", 16).toInt();
+
+      memcpy(&c, static_cast<void *> (&ttl), 1);
+      data.prepend(c);
+
+      if(s_settings.value("gui/chatSendMethod",
+			  "Artificial_GET").toString().
+	 trimmed() == "Artificial_GET")
+	emit sendMessage
+	  (spoton_send::message0000(data,
+				    spoton_send::
+				    ARTIFICIAL_GET));
+      else
+	emit sendMessage
+	  (spoton_send::message0000(data,
+				    spoton_send::
+				    NORMAL_POST));
+    }
 
   m_scramblerTimer.start(qrand() % 20000 + 40000);
 }
