@@ -124,10 +124,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotAddListener(void)));
-  connect(m_ui.AddMailedRepleo,
-      SIGNAL(clicked(void)),
-      this,
-      SLOT(slotAddMailedRepleo(void)));
   connect(m_ui.addNeighbor,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -548,8 +544,6 @@ spoton::spoton(void):QMainWindow()
       button->setIcon(QIcon(":/broadcasttoall.png"));
       button->setToolTip(tr("Broadcast"));
     }
-
-   m_ui.AddMailedRepleo->setVisible(false);
 
   show();
 }
@@ -2148,9 +2142,6 @@ void spoton::slotShowContextMenu(const QPoint &point)
       else
 	action->setEnabled(false);
 
-      menu.addAction(QIcon(":/repleo-mail.png"),
-             tr("&Send Repleo via E-Mail."),
-             this, SLOT(slotSendRepleoViaMail(void)));
       menu.addAction(QIcon(":/repleo.png"),
 		     tr("&Copy Repleo to the clipboard buffer."),
 		     this, SLOT(slotCopyFriendshipBundle(void)));
@@ -2536,7 +2527,7 @@ void spoton::slotPopulateParticipants(void)
 	for(int i = m_ui.participantsCombo->count() - 1; i >= 1; i--)
 	  m_ui.participantsCombo->removeItem(i);
 
-	QMap<QString, qint64> participants;
+	QMap<QString, QPair<QByteArray, qint64> > participants;
 	QSqlQuery query(db);
 	QWidget *focusWidget = QApplication::focusWidget();
 
@@ -2609,8 +2600,11 @@ void spoton::slotPopulateParticipants(void)
 
 		  if(i == 0)
 		    {
-		      participants.insert
-			(item->text(), query.value(1).toLongLong());
+		      QPair<QByteArray, qint64> pair;
+
+		      pair.first = query.value(3).toByteArray();
+		      pair.second = query.value(1).toLongLong();
+		      participants.insert(item->text(), pair);
 
 		      if(!temporary)
 			{
@@ -2684,8 +2678,18 @@ void spoton::slotPopulateParticipants(void)
 
 	    for(int i = 0; i < participants.keys().size(); i++)
 	      m_ui.participantsCombo->addItem
-		(participants.keys().at(i),
-		 participants[participants.keys().at(i)]);
+		(participants.keys().at(i));
+
+	    for(int i = 0; i < participants.size(); i++)
+	      {
+		QPair<QByteArray, qint64> pair
+		  (participants[participants.keys().at(i)]);
+
+		m_ui.participantsCombo->setItemData
+		  (i, pair.second, Qt::UserRole);
+		m_ui.participantsCombo->setItemData
+		  (i, pair.first, Qt::UserRole + 1);
+	      }
 
 	    int index = -1;
 
@@ -4011,9 +4015,6 @@ void spoton::slotClearOutgoingMessage(void)
   m_ui.outgoingMessage->clear();
   m_ui.outgoingSubject->clear();
   m_ui.goldbug->clear();
-  m_ui.participantsCombo->setEnabled(true);
-  m_ui.outgoingSubject->setEnabled(true);
-  m_ui.outgoingMessage->setEnabled(true);
 }
 
 void spoton::slotResetAll(void)
@@ -4272,6 +4273,7 @@ void spoton::slotSendMail(void)
 
     if(db.open())
       {
+	QList<QByteArray> publicKeys;
 	QList<qint64> oids;
 
 	if(m_ui.participantsCombo->currentIndex() > 1)
@@ -4281,15 +4283,20 @@ void spoton::slotSendMail(void)
 	else
 	  for(int i = 2; i < m_ui.participantsCombo->count(); i++)
 	    {
+	      QByteArray publicKey
+		(m_ui.participantsCombo->itemData(i, Qt::UserRole + 1).
+		 toByteArray());
 	      qint64 oid = m_ui.participantsCombo->itemData(i).toLongLong();
 
 	      oids.append(oid);
+	      publicKeys.append(publicKey);
 	    }
 
 	while(!oids.isEmpty())
 	  {
 	    QByteArray gemini
 	      (m_ui.goldbug->text().trimmed().toLatin1());
+	    QByteArray publicKey(publicKeys.takeFirst());
 	    QByteArray subject
 	      (m_ui.outgoingSubject->text().trimmed().toUtf8());
 	    QSqlQuery query(db);
@@ -4297,10 +4304,10 @@ void spoton::slotSendMail(void)
 	    qint64 oid = oids.takeFirst();
 
 	    query.prepare("INSERT INTO folders "
-			  "(date, folder_index, gemini, "
-			  "message, receiver_sender, status, subject, "
-			  "participant_oid) "
-			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+			  "(date, folder_index, gemini, hash, "
+			  "message, receiver_sender, receiver_sender_hash, "
+			  "status, subject, participant_oid) "
+			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue
 	      (0, m_crypt->encrypted(QDateTime::currentDateTime().
 				     toString(Qt::ISODate).
@@ -4317,25 +4324,33 @@ void spoton::slotSendMail(void)
 	      }
 
 	    if(ok)
-	      query.bindValue(3, m_crypt->encrypted(message, &ok).toBase64());
+	      query.bindValue
+		(3, m_crypt->keyedHash(message + subject, &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue(4, m_crypt->encrypted(message, &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(4, m_crypt->encrypted(m_ui.participantsCombo->currentText().
+		(5, m_crypt->encrypted(m_ui.participantsCombo->currentText().
 				       toUtf8(), &ok).
 		 toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(5, m_crypt->encrypted("Queued", &ok).toBase64());
+		(6, spoton_gcrypt::sha512Hash(publicKey, &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(6, m_crypt->encrypted(subject, &ok).toBase64());
+		(7, m_crypt->encrypted("Queued", &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(7, m_crypt->encrypted(QString::number(oid).toLatin1(), &ok).
+		(8, m_crypt->encrypted(subject, &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(9, m_crypt->encrypted(QString::number(oid).toLatin1(), &ok).
 		 toBase64());
 
 	    if(ok)
@@ -4351,179 +4366,6 @@ void spoton::slotSendMail(void)
   }
 
   QSqlDatabase::removeDatabase("spoton");
-
-  m_ui.participantsCombo->setEnabled(true);
-  m_ui.outgoingSubject->setEnabled(true);
-  m_ui.outgoingMessage->setEnabled(true);
-}
-
-void spoton::slotSendRepleoViaMail(void)
-{
-    m_ui.tab->setCurrentIndex(1);
-    m_ui.mailTab->setCurrentIndex(1);
-
-    m_ui.outgoingSubject->clear();
-    m_ui.outgoingMessage->clear();
-    show();
-
-        QString subjectprefix("");
-          subjectprefix.append("[REPLEO-SUBSCRIPTION-REQUEST] ");
-          subjectprefix.append(tr("from"));
-          subjectprefix.append(" ");
-          subjectprefix.append("[function for name]");
-
-    m_ui.outgoingSubject->setText(QString (subjectprefix));
-    m_ui.outgoingMessage->setText("Repleotext...");
-
-    // set participantcombo to selected participant
-    // ...
-    
-    // disable selection of participantscombo, to avoid wrong addresses
-    m_ui.participantsCombo->setEnabled(false);
-    m_ui.outgoingSubject->setEnabled(false);
-    m_ui.outgoingMessage->setEnabled(false);
-
-}
-
-void spoton::slotAddMailedRepleo(void)
-{
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-               "friends_public_keys.db");
-
-    if(db.open())
-     {
-     }
-     if(!m_crypt)
-       return;
-     else if(m_ui.mailMessage->toPlainText().trimmed().isEmpty())
-       return;
-
-    QByteArray repleo (m_ui.mailMessage->toPlainText().trimmed().
-          toLatin1());
-
-    if(repleo.startsWith("R") || repleo.startsWith("r"))
-  repleo.remove(0, 1);
-    else
-  {
-    QMessageBox mb(this);
-
-#ifdef Q_OS_MAC
-        mb.setAttribute(Qt::WA_MacMetalStyle, true);
-#endif
-        mb.setIcon(QMessageBox::Question);
-        mb.setWindowTitle(tr("Spot-On: Repleo Information"));
-        mb.setIconPixmap(QPixmap(":/repleo.png"));
-        mb.setWindowModality(Qt::WindowModal);
-    mb.setText(tr("The provided repleo appears invalid. It "
-          "seems to be a key or something else. "
-          "The repleo must start with either "
-          "the letter R or the letter r."));
-    mb.exec();
-    return;
-      }
-
-    QList<QByteArray> list(repleo.split('@'));
-
-    if(list.size() != 6)
-  {
-    spoton_misc::logError
-      (QString("spoton::slotAddFriendsKey(): "
-           "received irregular data. Expecting 6 entries, "
-           "received %1.").arg(list.size()));
-    return;
-  }
-
-    for(int i = 0; i < list.size(); i++)
-  list.replace(i, QByteArray::fromBase64(list.at(i)));
-
-    QByteArray hash;
-    QByteArray name;
-    QByteArray publicKey;
-    QByteArray signature;
-    QByteArray symmetricKey;
-    QByteArray symmetricKeyAlgorithm;
-    bool ok = true;
-
-    symmetricKey = list.value(0);
-    symmetricKey = m_crypt->publicKeyDecrypt(symmetricKey, &ok);
-
-    if(!ok)
-  return;
-
-    symmetricKeyAlgorithm = list.value(1);
-    symmetricKeyAlgorithm = m_crypt->publicKeyDecrypt
-  (symmetricKeyAlgorithm, &ok);
-
-    if(!ok)
-  return;
-
-    spoton_gcrypt crypt(symmetricKeyAlgorithm,
-            QString("sha512"),
-            QByteArray(),
-            symmetricKey,
-            0,
-            0,
-            QString(""));
-
-    name = crypt.decrypted(list.value(2), &ok);
-
-    if(!ok)
-  return;
-
-    publicKey = crypt.decrypted(list.value(3), &ok);
-
-    if(!ok)
-  return;
-
-    signature = crypt.decrypted(list.value(4), &ok);
-
-    if(!ok)
-  return;
-
-    hash = crypt.decrypted(list.value(5), &ok);
-
-    if(!ok)
-  return;
-
-    QByteArray computedHash
-  (crypt.keyedHash(symmetricKey +
-           symmetricKeyAlgorithm +
-           name +
-           publicKey +
-           signature, &ok));
-
-    if(!ok)
-  return;
-
-    if(computedHash == hash)
-  {
-    {
-      QSqlDatabase db = QSqlDatabase::addDatabase
-        ("QSQLITE", "spoton");
-
-      db.setDatabaseName
-        (spoton_misc::homePath() + QDir::separator() +
-         "friends_public_keys.db");
-
-      if(db.open())
-        {
-      spoton_misc::prepareDatabases();
-
-      if(spoton_misc::saveFriendshipBundle(name,
-                           publicKey,
-                           -1,
-                           db))
-        m_ui.mailMessage->selectAll();
-        }
-
-      db.close();
-    }
-
-    QSqlDatabase::removeDatabase("spoton");
-  }
-
 }
 
 void spoton::slotDeleteAllBlockedNeighbors(void)
@@ -4682,11 +4524,6 @@ void spoton::slotRefreshMail(void)
 					  &ok).constData());
 
 		    if(i == 3)
-          //  if (item->contains ("[REPLEO-SUBSCRIPTION-REQUEST]"))
-          //   {
-          //      item->setIcon(QIcon(":/repleomail.png"));
-          //   }
-          //  else
 		      item->setIcon(QIcon(":/email.png"));
 		  }
 		else
@@ -4724,21 +4561,6 @@ void spoton::slotMailSelected(void)
 
   if(item)
     m_ui.mailSubject->setText(item->text());
-
-   if(m_ui.folder->currentIndex() == 0)
-   {
-       if (item->text().contains ("[REPLEO-SUBSCRIPTION-REQUEST]"))
-          {
-            m_ui.AddMailedRepleo->setVisible(true);
-         // item->setIcon(QIcon(":/repleomail.png"));
-          }
-       else
-             m_ui.AddMailedRepleo->setVisible(false);
-          // item->setIcon(QIcon(":/email.png"));
-    }
-       else
-             m_ui.AddMailedRepleo->setVisible(false);
-          // item->setIcon(QIcon(":/email.png"));
 
   item = m_ui.mail->item(row, 4); // Message
 

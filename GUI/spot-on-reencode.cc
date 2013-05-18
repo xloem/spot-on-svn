@@ -71,7 +71,7 @@ void spoton_reencode::reencode(spoton *ui,
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT date, gemini, message, participant_oid, "
+	if(query.exec("SELECT date, gemini, hash, message, participant_oid, "
 		      "receiver_sender, "
 		      "status, subject, OID FROM folders"))
 	  while(query.next())
@@ -80,11 +80,17 @@ void spoton_reencode::reencode(spoton *ui,
 	      bool ok = true;
 
 	      for(int i = 0; i < query.record().count(); i++)
-		if(i >= 0 && i <= 6)
+		if(i >= 0 && i <= 9)
 		  {
-		    QByteArray bytes = oldCrypt->decrypted
-		      (QByteArray::fromBase64(query.value(i).
-					      toByteArray()), &ok);
+		    QByteArray bytes;
+
+		    if(i == 2)
+		      bytes = QByteArray::fromBase64(query.value(i).
+						     toByteArray());
+		    else
+		      bytes = oldCrypt->decrypted
+			(QByteArray::fromBase64(query.value(i).
+						toByteArray()), &ok);
 
 		    if(ok)
 		      list.append(bytes);
@@ -99,21 +105,30 @@ void spoton_reencode::reencode(spoton *ui,
 
 		    updateQuery.prepare("UPDATE folders SET "
 					"date = ?, gemini = ?, "
+					"hash = ?, "
 					"message = ?, participant_oid = ?, "
-					"receiver_sender = ?, status = ?, "
+					"receiver_sender = ?, "
+					"status = ?, "
 					"subject = ? WHERE OID = ?");
 
 		    for(int i = 0; i < list.size(); i++)
 		      if(ok)
-			updateQuery.bindValue
-			  (i, newCrypt->encrypted(list.at(i), &ok).
-			   toBase64());
+			{
+			  if(i == 2)
+			    updateQuery.bindValue
+			      (i, newCrypt->keyedHash(list.at(i), &ok).
+			       toBase64());
+			  else
+			    updateQuery.bindValue
+			      (i, newCrypt->encrypted(list.at(i), &ok).
+			       toBase64());
+			}
 		      else
 			break;
 
 		    if(ok)
 		      {
-			updateQuery.bindValue(7, query.value(7));
+			updateQuery.bindValue(8, query.value(8));
 			updateQuery.exec();
 		      }
 		  }

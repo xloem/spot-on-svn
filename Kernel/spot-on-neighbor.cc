@@ -1756,10 +1756,10 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 	QSqlQuery query(db);
 
 	query.prepare("INSERT INTO folders "
-		      "(date, folder_index, gemini, "
+		      "(date, folder_index, gemini, hash, "
 		      "message, receiver_sender, status, subject, "
 		      "participant_oid) "
-		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue
 	  (0, spoton_kernel::s_crypt1->
 	   encrypted(QDateTime::currentDateTime().
@@ -1772,23 +1772,27 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 
 	if(ok)
 	  query.bindValue
-	    (3, spoton_kernel::s_crypt1->encrypted(message, &ok).toBase64());
+	    (3, spoton_gcrypt::sha512Hash(message + subject, &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (4, spoton_kernel::s_crypt1->encrypted(name, &ok).toBase64());
+	    (4, spoton_kernel::s_crypt1->encrypted(message, &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (5, spoton_kernel::s_crypt1->encrypted("Unread", &ok).toBase64());
+	    (5, spoton_kernel::s_crypt1->encrypted(name, &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (6, spoton_kernel::s_crypt1->encrypted("Unread", &ok).toBase64());
  
 	if(ok)
 	  query.bindValue
-	    (6, spoton_kernel::s_crypt1->encrypted(subject, &ok).toBase64());
+	    (7, spoton_kernel::s_crypt1->encrypted(subject, &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (7, spoton_kernel::s_crypt1->
+	    (8, spoton_kernel::s_crypt1->
 	     encrypted(QString::number(-1).toLatin1(), &ok).
 	     toBase64());
 

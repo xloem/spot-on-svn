@@ -107,12 +107,14 @@ void spoton_misc::prepareDatabases(void)
 		   "date BLOB NOT NULL, "
 		   "folder_index INTEGER NOT NULL, "
 		   "gemini BLOB, " // Outgoing?
-		   "hash TEXT PRIMARY KEY NOT NULL, "
+		   "hash TEXT NOT NULL, "
 		   "message BLOB NOT NULL, "
 		   "participant_oid BLOB NOT NULL, "
 		   "receiver_sender BLOB NOT NULL, "
+		   "receiver_sender_hash TEXT NOT NULL, "
 		   "status BLOB NOT NULL, "
-		   "subject BLOB NOT NULL)");
+		   "subject BLOB NOT NULL, "
+		   "PRIMARY KEY (folder_index, hash, receiver_sender_hash)");
 	query.exec("CREATE TABLE IF NOT EXISTS postoffice ("
 		   "date_received BLOB NOT NULL, "
 		   "message_bundle BLOB NOT NULL, "
