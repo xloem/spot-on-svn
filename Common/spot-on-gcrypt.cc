@@ -1749,6 +1749,37 @@ QByteArray spoton_gcrypt::publicKey(bool *ok)
   return m_publicKey;
 }
 
+QByteArray spoton_gcrypt::publicKeyHash(bool *ok)
+{
+  QByteArray hash;
+
+  {
+    bool ok = true;
+
+    publicKey(&ok);
+  }
+
+  if(m_publicKey.isEmpty())
+    {
+      if(ok)
+	*ok = false;
+    }
+  else
+    {
+      {
+	bool ok = true;
+
+	hash = sha512Hash(m_publicKey, &ok);
+      }
+    }
+
+  if(hash.isEmpty())
+    if(ok)
+      *ok = false;
+
+  return hash;
+}
+
 void spoton_gcrypt::generatePrivatePublicKeys(const int rsaKeySize,
 					      QString &error)
 {

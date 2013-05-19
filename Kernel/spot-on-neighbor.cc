@@ -990,12 +990,12 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      QByteArray message(list.value(7));
-      QByteArray messageDigest(list.value(8));
-      QByteArray name(list.value(5));
+      QByteArray message(list.value(8));
+      QByteArray messageDigest(list.value(9));
+      QByteArray name(list.value(6));
       QByteArray recipientHash(list.value(2));
-      QByteArray senderPublicKeyHash;
-      QByteArray subject(list.value(6));
+      QByteArray senderPublicKeyHash(list.value(5));
+      QByteArray subject(list.value(7));
       QByteArray symmetricKey1(list.value(0));
       QByteArray symmetricKey2(list.value(3));
       QByteArray symmetricKeyAlgorithm1(list.value(1));
@@ -1040,11 +1040,11 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
 
 	    storeLetter(symmetricKey2,
 			symmetricKeyAlgorithm2,
+			senderPublicKeyHash,
 			name,
 			subject,
 			message,
-			messageDigest,
-			senderPublicKeyHash);
+			messageDigest);
 	    return;
 	  }
 
@@ -1682,11 +1682,11 @@ void spoton_neighbor::slotSendMail
 
 void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 				  QByteArray &symmetricKeyAlgorithm,
+				  QByteArray &senderPublicKeyHash,
 				  QByteArray &name,
 				  QByteArray &subject,
 				  QByteArray &message,
-				  QByteArray &messageDigest,
-				  const QByteArray &publicKeyHash)
+				  QByteArray &messageDigest)
 {
   if(!spoton_kernel::s_crypt1)
     return;
@@ -1713,6 +1713,14 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 		      0,
 		      QString(""));
 
+  senderPublicKeyHash = crypt.decrypted(senderPublicKeyHash, &ok);
+
+  if(!ok)
+    return;
+
+  if(!spoton_misc::isAcceptedParticipant(senderPublicKeyHash))
+    return;
+
   name = crypt.decrypted(name, &ok);
 
   if(!ok)
@@ -1737,6 +1745,7 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 
   computedMessageDigest = crypt.keyedHash(symmetricKey +
 					  symmetricKeyAlgorithm +
+					  senderPublicKeyHash +
 					  name +
 					  subject +
 					  message, &ok);
@@ -1762,7 +1771,7 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 		      "(date, folder_index, gemini, hash, "
 		      "message, receiver_sender, receiver_sender_hash, "
 		      "status, subject, participant_oid) "
-		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue
 	  (0, spoton_kernel::s_crypt1->
 	   encrypted(QDateTime::currentDateTime().
@@ -1771,7 +1780,9 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 	query.bindValue(1, 0); // Inbox Folder
 
 	if(ok)
-	  query.bindValue(2, QVariant(QVariant::ByteArray));
+	  query.bindValue
+	    (2, spoton_kernel::s_crypt1->encrypted(QByteArray(), &ok).
+	     toBase64());
 
 	if(ok)
 	  query.bindValue
@@ -1788,7 +1799,7 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 
 	if(ok)
 	  query.bindValue
-	    (6, publicKeyHash.toBase64());
+	    (6, senderPublicKeyHash.toBase64());
 
 	if(ok)
 	  query.bindValue

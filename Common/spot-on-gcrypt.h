@@ -97,6 +97,7 @@ class spoton_gcrypt
   QByteArray keyedHash(const QByteArray &data, bool *ok);
   QByteArray publicKey(bool *ok);
   QByteArray publicKeyDecrypt(const QByteArray &data, bool *ok);
+  QByteArray publicKeyHash(bool *ok);
   QString cipherType(void) const;
   char *passphrase(void) const;
   char *symmetricKey(void) const;

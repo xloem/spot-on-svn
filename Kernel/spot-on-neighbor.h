@@ -95,11 +95,11 @@ class spoton_neighbor: public QTcpSocket
   void saveStatus(QSqlDatabase &db, const QString &status);
   void storeLetter(QByteArray &symmetricKey,
 		   QByteArray &symmetricKeyAlgorithm,
+		   QByteArray &senderPublicKeyHash,
 		   QByteArray &name,
 		   QByteArray &subject,
 		   QByteArray &message,
-		   QByteArray &messageDigest,
-		   const QByteArray &publicKeyHash);
+		   QByteArray &messageDigest);
 
  private slots:
   void slotConnected(void);

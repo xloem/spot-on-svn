@@ -1239,6 +1239,9 @@ void spoton_kernel::slotSendMail(const QByteArray &gemini,
 				 const QByteArray &subject,
 				 const qint64 mailOid)
 {
+  if(!s_crypt1)
+    return;
+
   Q_UNUSED(gemini);
 
   /*
@@ -1250,8 +1253,15 @@ void spoton_kernel::slotSendMail(const QByteArray &gemini,
   ** mailOid
   */
 
-  QByteArray recipientHash;
+  QByteArray publicKeyHash;
   bool ok = true;
+
+  publicKeyHash = s_crypt1->publicKeyHash(&ok);
+
+  if(!ok)
+    return;
+
+  QByteArray recipientHash;
 
   recipientHash = spoton_gcrypt::sha512Hash(publicKey, &ok);
 
@@ -1381,8 +1391,15 @@ void spoton_kernel::slotSendMail(const QByteArray &gemini,
 				      0,
 				      QString(""));
 
-		  data.append(crypt.encrypted(name, &ok).toBase64());
+		  data.append(crypt.encrypted(publicKeyHash, &ok).
+			      toBase64());
 		  data.append("\n");
+
+		  if(ok)
+		    {
+		      data.append(crypt.encrypted(name, &ok).toBase64());
+		      data.append("\n");
+		    }
 
 		  if(ok)
 		    {
@@ -1400,6 +1417,7 @@ void spoton_kernel::slotSendMail(const QByteArray &gemini,
 		    messageDigest = crypt.keyedHash
 		      (symmetricKey +
 		       symmetricKeyAlgorithm +
+		       publicKeyHash +
 		       name +
 		       subject +
 		       message, &ok);

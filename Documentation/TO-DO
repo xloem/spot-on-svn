@@ -26,8 +26,7 @@ Completed Items
 
 Remaining Items
 
-1.	   Email Repleo inside Spot-On.
-2.     Secure connection between the interface and the kernel.
+1.     Secure connection between the interface and the kernel.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.
@@ -83,11 +82,7 @@ Ideas
        Check box column in the Participants table to broadcast
        own IP information to friends.
 
-       Check box in Neighbors tab to connect only to friends
-       (third option: hybrid f2f and p2p).
+       Check box in Neighbors tab to connect only to friends.
+       Other: hybrid f2f and p2p.
 
        Settings tab: option to override my external IP and port?
-
-       Neigbors Tab: Checkbox "Share URLs-Key automatically after connection"
-
-       Include IP+Port in the Copy-Key-Function

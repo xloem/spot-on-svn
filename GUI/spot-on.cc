@@ -4310,6 +4310,7 @@ void spoton::slotSendMail(void)
 	    QByteArray publicKeyHash(publicKeyHashes.takeFirst());
 	    QByteArray subject
 	      (m_ui.outgoingSubject->text().trimmed().toUtf8());
+	    QDateTime now(QDateTime::currentDateTime());
 	    QSqlQuery query(db);
 	    bool ok = true;
 	    qint64 oid = oids.takeFirst();
@@ -4320,8 +4321,7 @@ void spoton::slotSendMail(void)
 			  "status, subject, participant_oid) "
 			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue
-	      (0, m_crypt->encrypted(QDateTime::currentDateTime().
-				     toString(Qt::ISODate).
+	      (0, m_crypt->encrypted(now.toString(Qt::ISODate).
 				     toUtf8(), &ok).toBase64());
 	    query.bindValue(1, 1); // Sent Folder
 
@@ -4331,7 +4331,8 @@ void spoton::slotSendMail(void)
 
 	    if(ok)
 	      query.bindValue
-		(3, m_crypt->keyedHash(message + subject, &ok).toBase64());
+		(3, m_crypt->keyedHash(now.toString().toLatin1() +
+				       message + subject, &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue(4, m_crypt->encrypted(message, &ok).toBase64());
