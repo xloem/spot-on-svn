@@ -4481,11 +4481,11 @@ void spoton::slotRefreshMail(void)
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   if(m_ui.folder->currentIndex() == 0)
-    m_ui.mail->horizontalHeaderItem(1)->setText(tr("Sender"));
+    m_ui.mail->horizontalHeaderItem(1)->setText(tr("From"));
   else if(m_ui.folder->currentIndex() == 1)
-    m_ui.mail->horizontalHeaderItem(1)->setText(tr("Recipient"));
+    m_ui.mail->horizontalHeaderItem(1)->setText(tr("To"));
   else
-    m_ui.mail->horizontalHeaderItem(1)->setText(tr("Recipient/Sender"));
+    m_ui.mail->horizontalHeaderItem(1)->setText(tr("To/From"));
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");

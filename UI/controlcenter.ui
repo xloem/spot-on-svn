@@ -504,7 +504,7 @@
               </column>
               <column>
                <property name="text">
-                <string>Sender</string>
+                <string>From</string>
                </property>
               </column>
               <column>
