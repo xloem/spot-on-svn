@@ -109,11 +109,6 @@ spoton::spoton(void):QMainWindow()
   m_neighborsLastModificationTime = QDateTime();
   m_participantsLastModificationTime = QDateTime();
   m_ui.setupUi(this);
-#ifdef SPOTON_NORMAL_LANGUAGE_MODE
-  m_ui.mail->horizontalHeaderItem(1)->setText(tr("Sender"));
-#else
-  m_ui.mail->horizontalHeaderItem(1)->setText(tr("From"));
-#endif
 #ifdef Q_OS_MAC
   setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
@@ -269,6 +264,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(itemChanged(QTableWidgetItem *)),
 	  this,
 	  SLOT(slotGeminiChanged(QTableWidgetItem *)));
+  connect(m_ui.generateGoldBug,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotGenerateGoldBug(void)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -4485,21 +4484,12 @@ void spoton::slotRefreshMail(void)
 {
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-#ifdef SPOTON_NORMAL_LANGUAGE_MODE
-  if(m_ui.folder->currentIndex() == 0)
-    m_ui.mail->horizontalHeaderItem(1)->setText(tr("Sender"));
-  else if(m_ui.folder->currentIndex() == 1)
-    m_ui.mail->horizontalHeaderItem(1)->setText(tr("Receiver"));
-  else
-    m_ui.mail->horizontalHeaderItem(1)->setText(tr("Receiver/Sender"));
-#else
   if(m_ui.folder->currentIndex() == 0)
     m_ui.mail->horizontalHeaderItem(1)->setText(tr("From"));
   else if(m_ui.folder->currentIndex() == 1)
     m_ui.mail->horizontalHeaderItem(1)->setText(tr("To"));
   else
     m_ui.mail->horizontalHeaderItem(1)->setText(tr("From/To"));
-#endif
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
@@ -4714,4 +4704,13 @@ bool spoton::saveGemini(const QByteArray &gemini,
 
   QSqlDatabase::removeDatabase("spoton_save_gemini");
   return ok;
+}
+
+void spoton::slotGenerateGoldBug(void)
+{
+  QByteArray goldbug
+    (spoton_gcrypt::
+     strongRandomBytes(spoton_gcrypt::cipherKeyLength("aes256")));
+
+  m_ui.goldbug->setText(goldbug.toBase64());
 }
