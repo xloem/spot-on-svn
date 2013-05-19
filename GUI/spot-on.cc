@@ -109,6 +109,11 @@ spoton::spoton(void):QMainWindow()
   m_neighborsLastModificationTime = QDateTime();
   m_participantsLastModificationTime = QDateTime();
   m_ui.setupUi(this);
+#ifdef SPOTON_NORMAL_LANGUAGE_MODE
+  m_ui.mail->horizontalHeaderItem(1)->setText(tr("Sender"));
+#else
+  m_ui.mail->horizontalHeaderItem(1)->setText(tr("From"));
+#endif
 #ifdef Q_OS_MAC
   setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
@@ -4480,12 +4485,21 @@ void spoton::slotRefreshMail(void)
 {
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
+#ifdef SPOTON_NORMAL_LANGUAGE_MODE
+  if(m_ui.folder->currentIndex() == 0)
+    m_ui.mail->horizontalHeaderItem(1)->setText(tr("Sender"));
+  else if(m_ui.folder->currentIndex() == 1)
+    m_ui.mail->horizontalHeaderItem(1)->setText(tr("Receiver"));
+  else
+    m_ui.mail->horizontalHeaderItem(1)->setText(tr("Receiver/Sender"));
+#else
   if(m_ui.folder->currentIndex() == 0)
     m_ui.mail->horizontalHeaderItem(1)->setText(tr("From"));
   else if(m_ui.folder->currentIndex() == 1)
     m_ui.mail->horizontalHeaderItem(1)->setText(tr("To"));
   else
-    m_ui.mail->horizontalHeaderItem(1)->setText(tr("To/From"));
+    m_ui.mail->horizontalHeaderItem(1)->setText(tr("From/To"));
+#endif
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");

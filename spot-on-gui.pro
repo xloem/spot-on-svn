@@ -11,7 +11,8 @@ CONFIG		+= qt release warn_on
 # 1.5.0 of the gcrypt library.
 
 DEFINES	+= SPOTON_GEOIP_DATA_FILE="'\"/usr/share/GeoIP/GeoIP.dat\"'" \
-	   SPOTON_LINKED_WITH_LIBGEOIP
+	   SPOTON_LINKED_WITH_LIBGEOIP \
+           SPOTON_NORMAL_LANGUAGE_MODE
 
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of LibSpotOn.

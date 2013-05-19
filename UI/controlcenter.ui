@@ -504,7 +504,7 @@
               </column>
               <column>
                <property name="text">
-                <string>From</string>
+                <string>GUI/spot-on.cc</string>
                </property>
               </column>
               <column>
@@ -1651,7 +1651,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>979</width>
+             <width>1020</width>
              <height>560</height>
             </rect>
            </property>
