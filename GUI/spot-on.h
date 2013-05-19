@@ -112,6 +112,7 @@ class spoton: public QMainWindow
   void slotGeminiChanged(QTableWidgetItem *item);
   void slotGeneralTimerTimeout(void);
   void slotGenerateGeminiInChat(void);
+  void slotGenerateGoldBug(void);
   void slotKernelSocketState(void);
   void slotListenerCheckChange(int state);
   void slotListenerIPComboChanged(int index);
