@@ -455,6 +455,17 @@
                </widget>
               </item>
               <item>
+               <widget class="QPushButton" name="retrieveMail">
+                <property name="text">
+                 <string>Retrieve</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../Icons/icons.qrc">
+                  <normaloff>:/down.png</normaloff>:/down.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
                <spacer name="horizontalSpacer_32">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -520,17 +531,6 @@
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_35">
-              <item>
-               <widget class="QPushButton" name="retrieveMail">
-                <property name="text">
-                 <string>Retrieve</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/down.png</normaloff>:/down.png</iconset>
-                </property>
-               </widget>
-              </item>
               <item>
                <spacer name="horizontalSpacer_29">
                 <property name="orientation">
@@ -3017,8 +3017,8 @@
   <tabstop>sendMessage</tabstop>
   <tabstop>mailTab</tabstop>
   <tabstop>folder</tabstop>
-  <tabstop>mail</tabstop>
   <tabstop>retrieveMail</tabstop>
+  <tabstop>mail</tabstop>
   <tabstop>refreshMail</tabstop>
   <tabstop>deleteMail</tabstop>
   <tabstop>mailSubject</tabstop>
