@@ -4326,13 +4326,8 @@ void spoton::slotSendMail(void)
 	    query.bindValue(1, 1); // Sent Folder
 
 	    if(ok)
-	      {
-		if(gemini.isEmpty())
-		  query.bindValue(2, QVariant(QVariant::ByteArray));
-		else
-		  query.bindValue
-		    (2, m_crypt->encrypted(gemini, &ok).toBase64());
-	      }
+	      query.bindValue
+		(2, m_crypt->encrypted(gemini, &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue

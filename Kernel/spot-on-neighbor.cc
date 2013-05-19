@@ -1038,13 +1038,13 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
 	    ** This is our letter!
 	    */
 
-	    storeLetter(senderPublicKeyHash,
-			symmetricKey2,
+	    storeLetter(symmetricKey2,
 			symmetricKeyAlgorithm2,
 			name,
 			subject,
 			message,
-			messageDigest);
+			messageDigest,
+			senderPublicKeyHash);
 	    return;
 	  }
 
