@@ -106,7 +106,7 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS folders ("
 		   "date BLOB NOT NULL, "
 		   "folder_index INTEGER NOT NULL, "
-		   "gemini BLOB, " // Outgoing?
+		   "goldbug BLOB NOT NULL, " // Outgoing?
 		   "hash TEXT NOT NULL, "
 		   "message BLOB NOT NULL, "
 		   "participant_oid BLOB NOT NULL, "

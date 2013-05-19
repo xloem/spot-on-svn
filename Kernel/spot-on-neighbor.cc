@@ -1768,7 +1768,7 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 	QSqlQuery query(db);
 
 	query.prepare("INSERT INTO folders "
-		      "(date, folder_index, gemini, hash, "
+		      "(date, folder_index, goldbug, hash, "
 		      "message, receiver_sender, receiver_sender_hash, "
 		      "status, subject, participant_oid) "
 		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
