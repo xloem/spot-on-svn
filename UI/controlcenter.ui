@@ -490,17 +490,6 @@
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="deleteMail">
-                <property name="text">
-                 <string>Delete</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
                <widget class="QPushButton" name="emptyTrash">
                 <property name="text">
                  <string>Empty Trash</string>
@@ -573,13 +562,6 @@
                 <property name="topMargin">
                  <number>12</number>
                 </property>
-                <item row="0" column="2">
-                 <widget class="QLineEdit" name="mailFrom">
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_from">
                   <property name="text">
@@ -647,6 +629,24 @@
                    <cstring>mailSubject</cstring>
                   </property>
                  </widget>
+                </item>
+                <item row="0" column="2">
+                 <layout class="QHBoxLayout" name="horizontalLayout_35">
+                  <item>
+                   <widget class="QLineEdit" name="mailFrom"/>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="deleteMail">
+                    <property name="text">
+                     <string>Delete</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </widget>
@@ -3041,12 +3041,12 @@
   <tabstop>folder</tabstop>
   <tabstop>retrieveMail</tabstop>
   <tabstop>refreshMail</tabstop>
-  <tabstop>deleteMail</tabstop>
   <tabstop>emptyTrash</tabstop>
   <tabstop>mail</tabstop>
   <tabstop>mailFrom</tabstop>
   <tabstop>mailSubject</tabstop>
   <tabstop>mailMessage</tabstop>
+  <tabstop>deleteMail</tabstop>
   <tabstop>sendMail</tabstop>
   <tabstop>pushButtonClearOutgoingMessage</tabstop>
   <tabstop>participantsCombo</tabstop>
