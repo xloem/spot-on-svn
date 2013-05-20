@@ -414,151 +414,167 @@
            <attribute name="title">
             <string>&amp;Read</string>
            </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_26">
+           <layout class="QVBoxLayout" name="verticalLayout_31">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_38">
-              <item>
-               <widget class="QComboBox" name="folder">
-                <property name="iconSize">
-                 <size>
-                  <width>20</width>
-                  <height>21</height>
-                 </size>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>Inbox</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/email-inbox.png</normaloff>:/email-inbox.png</iconset>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Sent</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/email-sent.png</normaloff>:/email-sent.png</iconset>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Trash</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/email-trash.png</normaloff>:/email-trash.png</iconset>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="retrieveMail">
-                <property name="text">
-                 <string>Retrieve</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/down.png</normaloff>:/down.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="refreshMail">
-                <property name="text">
-                 <string>Refresh</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/reload.png</normaloff>:/reload.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_32">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="emptyTrash">
-                <property name="text">
-                 <string>Empty Trash</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <widget class="QSplitter" name="readVerticalSplitter">
+             <widget class="QSplitter" name="readMailSplitter">
               <property name="orientation">
-               <enum>Qt::Vertical</enum>
+               <enum>Qt::Horizontal</enum>
               </property>
               <property name="childrenCollapsible">
                <bool>false</bool>
               </property>
-              <widget class="QTableWidget" name="mail">
-               <property name="selectionBehavior">
-                <enum>QAbstractItemView::SelectRows</enum>
-               </property>
-               <property name="horizontalScrollMode">
-                <enum>QAbstractItemView::ScrollPerPixel</enum>
-               </property>
-               <property name="sortingEnabled">
-                <bool>true</bool>
-               </property>
-               <attribute name="horizontalHeaderDefaultSectionSize">
-                <number>150</number>
-               </attribute>
-               <attribute name="horizontalHeaderStretchLastSection">
-                <bool>true</bool>
-               </attribute>
-               <column>
-                <property name="text">
-                 <string>Date</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>From</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Status</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Subject</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>message</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>OID</string>
-                </property>
-               </column>
-              </widget>
               <widget class="QWidget" name="layoutWidget">
+               <layout class="QVBoxLayout" name="verticalLayout_26">
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_38">
+                  <item>
+                   <widget class="QComboBox" name="folder">
+                    <property name="iconSize">
+                     <size>
+                      <width>20</width>
+                      <height>21</height>
+                     </size>
+                    </property>
+                    <item>
+                     <property name="text">
+                      <string>Inbox</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../Icons/icons.qrc">
+                       <normaloff>:/email-inbox.png</normaloff>:/email-inbox.png</iconset>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>Sent</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../Icons/icons.qrc">
+                       <normaloff>:/email-sent.png</normaloff>:/email-sent.png</iconset>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>Trash</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../Icons/icons.qrc">
+                       <normaloff>:/email-trash.png</normaloff>:/email-trash.png</iconset>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="retrieveMail">
+                    <property name="text">
+                     <string>Retrieve</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/down.png</normaloff>:/down.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="refreshMail">
+                    <property name="text">
+                     <string>Refresh</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/reload.png</normaloff>:/reload.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="horizontalSplit">
+                    <property name="text">
+                     <string>Toggle View</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_32">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="emptyTrash">
+                    <property name="text">
+                     <string>Empty Trash</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <widget class="QTableWidget" name="mail">
+                  <property name="selectionBehavior">
+                   <enum>QAbstractItemView::SelectRows</enum>
+                  </property>
+                  <property name="horizontalScrollMode">
+                   <enum>QAbstractItemView::ScrollPerPixel</enum>
+                  </property>
+                  <property name="sortingEnabled">
+                   <bool>true</bool>
+                  </property>
+                  <attribute name="horizontalHeaderDefaultSectionSize">
+                   <number>150</number>
+                  </attribute>
+                  <attribute name="horizontalHeaderStretchLastSection">
+                   <bool>true</bool>
+                  </attribute>
+                  <column>
+                   <property name="text">
+                    <string>Date</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>From</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Status</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Subject</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>message</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>OID</string>
+                   </property>
+                  </column>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="layoutWidget1c">
                <layout class="QGridLayout" name="gridLayout_2">
+                <property name="leftMargin">
+                 <number>12</number>
+                </property>
                 <property name="topMargin">
                  <number>12</number>
                 </property>
@@ -1206,7 +1222,7 @@
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="layoutWidget">
+           <widget class="QWidget" name="layoutWidget1d">
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <item>
               <widget class="QGroupBox" name="groupBox_addip_2">

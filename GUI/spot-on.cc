@@ -216,6 +216,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotScramble(bool)));
+  connect(m_ui.horizontalSplit,
+      SIGNAL(toggled(bool)),
+      this,
+      SLOT(slotToggleMailSplitter(bool)));
   connect(m_ui.pushButtonDocViewer,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -418,6 +422,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/keepOnlyUserDefinedNeighbors", false).toBool());
   m_ui.scrambler->setChecked
     (m_settings.value("gui/scramblerEnabled", false).toBool());
+  m_ui.horizontalSplit->setChecked
+    (m_settings.value("gui/readMailSplitter", false).toBool());
   m_ui.showOnlyConnectedNeighbors->setChecked
     (m_settings.value("gui/showOnlyConnectedNeighbors", false).toBool());
   m_ui.showOnlyOnlineListeners->setChecked
@@ -515,9 +521,9 @@ spoton::spoton(void):QMainWindow()
     m_ui.neighborsVerticalSplitter->restoreState
       (m_settings.value("gui/neighborsVerticalSplitter").toByteArray());
 
-  if(m_settings.contains("gui/readVerticalSplitter"))
-    m_ui.readVerticalSplitter->restoreState
-      (m_settings.value("gui/readVerticalSplitter").toByteArray());
+  if(m_settings.contains("gui/readMailSplitter"))
+    m_ui.readMailSplitter->restoreState
+      (m_settings.value("gui/readMailSplitter").toByteArray());
 
   m_ui.neighbors->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.participants->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -549,8 +555,8 @@ spoton::spoton(void):QMainWindow()
     (0, Qt::AscendingOrder);
   m_ui.neighborsVerticalSplitter->setStretchFactor(0, 1);
   m_ui.neighborsVerticalSplitter->setStretchFactor(1, 0);
-  m_ui.readVerticalSplitter->setStretchFactor(0, 1);
-  m_ui.readVerticalSplitter->setStretchFactor(1, 0);
+  m_ui.readMailSplitter->setStretchFactor(0, 1);
+  m_ui.readMailSplitter->setStretchFactor(1, 0);
   prepareListenerIPCombo();
   spoton_misc::prepareDatabases();
 
@@ -908,6 +914,21 @@ void spoton::slotScramble(bool state)
   QSettings settings;
 
   settings.setValue("gui/scramblerEnabled", state);
+}
+
+void spoton::slotToggleMailSplitter(bool state)
+{
+    m_settings["gui/readMailSplitter"] = state;
+
+    QSettings settings;
+
+    settings.setValue("gui/readMailSplitter", state);
+
+    if(!m_settings.value("gui/readMailSplitter", true).toBool())
+       m_ui.readMailSplitter->setOrientation (Qt::Vertical);
+    else
+       m_ui.readMailSplitter->setOrientation (Qt::Horizontal);
+
 }
 
 void spoton::slotPopulateListeners(void)
@@ -1497,8 +1518,8 @@ void spoton::saveSettings(void)
 		    m_ui.neighborsHorizontalSplitter->saveState());
   settings.setValue("gui/neighborsVerticalSplitter",
 		    m_ui.neighborsVerticalSplitter->saveState());
-  settings.setValue("gui/readVerticalSplitter",
-		    m_ui.readVerticalSplitter->saveState());
+  settings.setValue("gui/readMailSplitter",
+            m_ui.readMailSplitter->saveState());
   settings.setValue("gui/showOnlyConnectedNeighbors",
 		    m_ui.showOnlyConnectedNeighbors->isChecked());
   settings.setValue("gui/showOnlyOnlineListeners",
