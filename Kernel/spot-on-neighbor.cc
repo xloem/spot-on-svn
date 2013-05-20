@@ -1063,11 +1063,7 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
       if(ok)
 	{
 	  if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
-	    {
-	      /*
-	      ** Store the message in the post office.
-	      */
-	    }
+	    storeLetter(originalData, recipientHash);
 	}
       else if(ttl > 0)
 	{
@@ -1836,6 +1832,49 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 	if(ok)
 	  if(query.exec())
 	    emit newEMailArrived();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
+}
+
+void spoton_neighbor::storeLetter(const QByteArray &message,
+				  const QByteArray &recipientHash)
+{
+  if(!spoton_kernel::s_crypt1)
+    return;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("INSERT INTO post_office "
+		      "(date_received, message_bundle, recipient_hash) "
+		      "VALUES (?, ?, ?)");
+	query.bindValue
+	  (0, spoton_kernel::s_crypt1->
+	   encrypted(QDateTime::currentDateTime().
+		     toString(Qt::ISODate).
+		     toUtf8(), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (1, spoton_kernel::s_crypt1->encrypted(message, &ok).toBase64());
+
+	query.bindValue(2, recipientHash.toBase64());
+
+	if(ok)
+	  query.exec();
       }
 
     db.close();
