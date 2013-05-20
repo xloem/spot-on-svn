@@ -515,6 +515,10 @@ spoton::spoton(void):QMainWindow()
     m_ui.neighborsVerticalSplitter->restoreState
       (m_settings.value("gui/neighborsVerticalSplitter").toByteArray());
 
+  if(m_settings.contains("gui/readVerticalSplitter"))
+    m_ui.readVerticalSplitter->restoreState
+      (m_settings.value("gui/readVerticalSplitter").toByteArray());
+
   m_ui.neighbors->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.participants->setContextMenuPolicy(Qt::CustomContextMenu);
   connect(m_ui.neighbors,
@@ -545,6 +549,8 @@ spoton::spoton(void):QMainWindow()
     (0, Qt::AscendingOrder);
   m_ui.neighborsVerticalSplitter->setStretchFactor(0, 1);
   m_ui.neighborsVerticalSplitter->setStretchFactor(1, 0);
+  m_ui.readVerticalSplitter->setStretchFactor(0, 1);
+  m_ui.readVerticalSplitter->setStretchFactor(1, 0);
   prepareListenerIPCombo();
   spoton_misc::prepareDatabases();
 
@@ -558,8 +564,6 @@ spoton::spoton(void):QMainWindow()
       button->setIcon(QIcon(":/broadcasttoall.png"));
       button->setToolTip(tr("Broadcast"));
     }
-
-  m_ui.emptyTrash->setVisible(false);
 
   show();
 }
@@ -1493,6 +1497,8 @@ void spoton::saveSettings(void)
 		    m_ui.neighborsHorizontalSplitter->saveState());
   settings.setValue("gui/neighborsVerticalSplitter",
 		    m_ui.neighborsVerticalSplitter->saveState());
+  settings.setValue("gui/readVerticalSplitter",
+		    m_ui.readVerticalSplitter->saveState());
   settings.setValue("gui/showOnlyConnectedNeighbors",
 		    m_ui.showOnlyConnectedNeighbors->isChecked());
   settings.setValue("gui/showOnlyOnlineListeners",
@@ -4526,13 +4532,6 @@ void spoton::slotDeleteAllUuids(void)
 
 void spoton::slotRefreshMail(void)
 {
-    if (m_ui.folder->currentIndex() == 0)
-        m_ui.emptyTrash->setVisible(false);
-    else if(m_ui.folder->currentIndex() == 1)
-        m_ui.emptyTrash->setVisible(false);
-    else
-        m_ui.emptyTrash->setVisible(true);
-
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   if(m_ui.folder->currentIndex() == 0)
@@ -4768,6 +4767,20 @@ void spoton::slotGenerateGoldBug(void)
 
 void spoton::slotEmptyTrash(void)
 {
+  QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+  mb.setIcon(QMessageBox::Question);
+  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+  mb.setWindowModality(Qt::WindowModal);
+  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+  mb.setText(tr("Are you sure that you wish to empty the Trash folder?"));
+
+  if(mb.exec() != QMessageBox::Yes)
+    return;
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
