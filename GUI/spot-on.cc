@@ -4782,7 +4782,6 @@ void spoton::slotGenerateGoldBug(void)
 
 void spoton::slotEmptyTrash(void)
 {
-  m_ui.folder->setCurrentIndex(2);
   QMessageBox mb(this);
 
 #ifdef Q_OS_MAC
@@ -4795,9 +4794,7 @@ void spoton::slotEmptyTrash(void)
   mb.setText(tr("Are you sure that you wish to empty the Trash folder?"));
 
   if(mb.exec() != QMessageBox::Yes)
-  m_ui.folder->setCurrentIndex(0);
     return;
-  m_ui.folder->setCurrentIndex(0);
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
