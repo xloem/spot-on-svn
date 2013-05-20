@@ -4537,17 +4537,17 @@ void spoton::slotRefreshMail(void)
   if(m_ui.folder->currentIndex() == 0)
     {
       m_ui.label_from->setText(tr("&From"));
-      m_ui.mail->horizontalHeaderItem(1)->setText(tr("&From"));
+      m_ui.mail->horizontalHeaderItem(1)->setText(tr("From"));
     }
   else if(m_ui.folder->currentIndex() == 1)
     {
       m_ui.label_from->setText(tr("&To"));
-      m_ui.mail->horizontalHeaderItem(1)->setText(tr("&To"));
+      m_ui.mail->horizontalHeaderItem(1)->setText(tr("To"));
     }
   else
     {
       m_ui.label_from->setText(tr("&From/To"));
-      m_ui.mail->horizontalHeaderItem(1)->setText(tr("&From/To"));
+      m_ui.mail->horizontalHeaderItem(1)->setText(tr("From/To"));
     }
 
   {
