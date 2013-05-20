@@ -245,3 +245,16 @@ void spoton_gui_server::slotReceivedChatMessage(const QByteArray &message)
     else
       socket->flush();
 }
+
+void spoton_gui_server::slotNewEMailArrived(void)
+{
+  QByteArray message("newmail\n");
+
+  foreach(QTcpSocket *socket, findChildren<QTcpSocket *> ())
+    if(socket->write(message.constData(),
+		     message.length()) != message.length())
+      spoton_misc::logError("spoton_gui_server::slotNewEMailArrived() "
+			    "write() failure.");
+    else
+      socket->flush();
+}

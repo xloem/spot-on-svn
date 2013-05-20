@@ -107,12 +107,14 @@ class spoton: public QMainWindow
   void slotDisconnectNeighbor(void);
   void slotDisplayLocalSearchResults(void);
   void slotDoSearch(void);
+  void slotEmptyTrash(void);
   void slotFetchMoreAlgo(void);
   void slotFetchMoreButton(void);
   void slotGeminiChanged(QTableWidgetItem *item);
   void slotGeneralTimerTimeout(void);
   void slotGenerateGeminiInChat(void);
   void slotGenerateGoldBug(void);
+  void slotKeepOnlyUserDefinedNeighbors(bool);
   void slotKernelSocketState(void);
   void slotListenerCheckChange(int state);
   void slotListenerIPComboChanged(int index);

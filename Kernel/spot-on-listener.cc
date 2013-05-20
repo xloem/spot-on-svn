@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2012 Alexis Megas
+** Copyright (c) 2012, 2013 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -389,8 +389,10 @@ void spoton_listener::slotNewConnection(void)
 		       "remote_ip_address_hash, "
 		       "qt_country_hash, "
 		       "external_ip_address, "
-		       "uuid) "
-		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		       "uuid, "
+		       "user_defined) "
+		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, "
+		       "?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
 	    query.bindValue(1, m_port);
 
@@ -458,6 +460,7 @@ void spoton_listener::slotNewConnection(void)
 						    &ok).toBase64());
 
 	    query.bindValue(13, neighbor->receivedUuid().toString());
+	    query.bindValue(14, 0);
 
 	    if(ok)
 	      created = query.exec();

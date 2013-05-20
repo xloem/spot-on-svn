@@ -201,6 +201,17 @@ spoton_neighbor::~spoton_neighbor()
 		      "OID = ? AND status_control = 'deleted'");
 	query.bindValue(0, m_id);
 	query.exec();
+
+	if(spoton_kernel::s_settings.
+	   value("gui/keepOnlyUserDefinedNeighbors", false).toBool())
+	  {
+	    query.prepare("DELETE FROM neighbors WHERE "
+			  "OID = ? AND status_control <> 'blocked' AND "
+			  "user_defined = 0");
+	    query.bindValue(0, m_id);
+	    query.exec();
+	  }
+
 	query.prepare("UPDATE neighbors SET external_ip_address = NULL, "
 		      "local_ip_address = NULL, "
 		      "local_port = NULL, status = 'disconnected' "
@@ -1823,7 +1834,8 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 	     toBase64());
 
 	if(ok)
-	  query.exec();
+	  if(query.exec())
+	    emit newEMailArrived();
       }
 
     db.close();

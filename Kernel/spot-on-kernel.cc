@@ -168,7 +168,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 {
   qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
-  cleanupDatabases();
+  spoton_misc::cleanupDatabases();
 
   /*
   ** The user interface doesn't yet have a means of preparing advanced
@@ -265,7 +265,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 spoton_kernel::~spoton_kernel()
 {
   cleanup();
-  cleanupDatabases();
+  spoton_misc::cleanupDatabases();
   delete s_crypt1;
   s_crypt1 = 0;
   delete s_crypt2;
@@ -288,100 +288,6 @@ void spoton_kernel::cleanup(void)
 				&libspotonHandle);
 
   libspoton_close(&libspotonHandle);
-}
-
-void spoton_kernel::cleanupDatabases(void)
-{
-  m_controlDatabaseTimer.stop();
-
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "friends_public_keys.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.exec("UPDATE friends_public_keys SET status = 'offline'");
-
-	/*
-	** Delete symmetric keys that were not completely shared.
-	*/
-
-	query.exec("DELETE FROM friends_public_keys WHERE "
-		   "neighbor_oid <> -1");
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase("spoton_kernel");
-
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "kernel.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.exec("DELETE FROM kernel_gui_server");
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase("spoton_kernel");
-
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "listeners.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.exec("DELETE FROM listeners WHERE "
-		   "status_control = 'deleted'");
-	query.exec("UPDATE listeners SET connections = 0, "
-		   "external_ip_address = NULL, "
-		   "status = 'off' WHERE status = 'online' AND "
-		   "status_control <> 'deleted'");
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase("spoton_kernel");
-
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "neighbors.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.exec("DELETE FROM neighbors WHERE "
-		   "status_control = 'deleted'");
-	query.exec("UPDATE neighbors SET external_ip_address = NULL, "
-		   "local_ip_address = NULL, local_port = NULL, "
-		   "status = 'disconnected' WHERE "
-		   "status = 'connected' AND status_control <> 'deleted'");
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase("spoton_kernel");
 }
 
 void spoton_kernel::slotPollDatabase(void)
@@ -894,6 +800,10 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
     return;
 
   connect(neighbor,
+	  SIGNAL(newEMailArrived(void)),
+	  m_guiServer,
+	  SLOT(slotNewEMailArrived(void)));
+  connect(neighbor,
 	  SIGNAL(receivedChatMessage(const QByteArray &)),
 	  m_guiServer,
 	  SLOT(slotReceivedChatMessage(const QByteArray &)));
@@ -1338,8 +1248,16 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 				      0,
 				      QString(""));
 
-		  data.append(crypt.encrypted(recipientHash, &ok).toBase64());
+		  data.append(crypt.encrypted(publicKeyHash, &ok).
+			      toBase64());
 		  data.append("\n");
+
+		  if(ok)
+		    {
+		      data.append(crypt.encrypted(recipientHash, &ok).
+				  toBase64());
+		      data.append("\n");
+		    }
 		}
 
 	      symmetricKeyAlgorithm = spoton_gcrypt::randomCipherType();

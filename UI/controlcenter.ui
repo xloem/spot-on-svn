@@ -76,8 +76,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>994</width>
-                <height>556</height>
+                <width>1002</width>
+                <height>546</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -500,6 +500,17 @@
                 </property>
                </widget>
               </item>
+              <item>
+               <widget class="QPushButton" name="emptyTrash">
+                <property name="text">
+                 <string>Empty Trash</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../Icons/icons.qrc">
+                  <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
+                </property>
+               </widget>
+              </item>
              </layout>
             </item>
             <item>
@@ -557,7 +568,7 @@
                 </property>
                </column>
               </widget>
-              <widget class="QWidget" name="">
+              <widget class="QWidget" name="layoutWidget">
                <layout class="QGridLayout" name="gridLayout_2">
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_29">
@@ -968,6 +979,13 @@
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_24">
+               <item>
+                <widget class="QCheckBox" name="keepOnlyUserDefinedNeighbors">
+                 <property name="text">
+                  <string>&amp;Keep Only User-Defined Neighbors</string>
+                 </property>
+                </widget>
+               </item>
                <item>
                 <widget class="QCheckBox" name="showOnlyConnectedNeighbors">
                  <property name="sizePolicy">
@@ -1642,8 +1660,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1020</width>
-             <height>560</height>
+             <width>1002</width>
+             <height>546</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2931,7 +2949,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -3001,12 +3019,11 @@
   <tabstop>sendMessage</tabstop>
   <tabstop>mailTab</tabstop>
   <tabstop>folder</tabstop>
-  <tabstop>refreshMail</tabstop>
   <tabstop>retrieveMail</tabstop>
   <tabstop>refreshMail</tabstop>
   <tabstop>deleteMail</tabstop>
+  <tabstop>emptyTrash</tabstop>
   <tabstop>mail</tabstop>
-  <tabstop>deleteMail</tabstop>
   <tabstop>mailSubject</tabstop>
   <tabstop>mailMessage</tabstop>
   <tabstop>sendMail</tabstop>
@@ -3019,6 +3036,7 @@
   <tabstop>repository</tabstop>
   <tabstop>days</tabstop>
   <tabstop>refreshRepository</tabstop>
+  <tabstop>keepOnlyUserDefinedNeighbors</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>
   <tabstop>toolButtonCopytoClipboard</tabstop>
   <tabstop>toolButtonMakeFriends</tabstop>

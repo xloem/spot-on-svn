@@ -29,6 +29,7 @@
 #include <QDir>
 #include <QFile>
 #include <QLocale>
+#include <QSettings>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QString>
@@ -259,7 +260,8 @@ void spoton_misc::prepareDatabases(void)
 	   "country TEXT, "
 	   "hash TEXT PRIMARY KEY NOT NULL, "
 	   "remote_ip_address_hash TEXT NOT NULL, "
-	   "qt_country_hash TEXT)");
+	   "qt_country_hash TEXT, "
+	   "user_defined INTEGER NOT NULL DEFAULT 1)");
       }
 
     db.close();
@@ -820,6 +822,105 @@ void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
 	    if(ok)
 	      query.exec();
 	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_misc");
+}
+
+void spoton_misc::cleanupDatabases(void)
+{
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("UPDATE friends_public_keys SET status = 'offline'");
+
+	/*
+	** Delete symmetric keys that were not completely shared.
+	*/
+
+	query.exec("DELETE FROM friends_public_keys WHERE "
+		   "neighbor_oid <> -1");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_misc");
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "kernel.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("DELETE FROM kernel_gui_server");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_misc");
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "listeners.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("DELETE FROM listeners WHERE "
+		   "status_control = 'deleted'");
+	query.exec("UPDATE listeners SET connections = 0, "
+		   "external_ip_address = NULL, "
+		   "status = 'off' WHERE status = 'online' AND "
+		   "status_control <> 'deleted'");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_misc");
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	QSettings settings;
+	QSqlQuery query(db);
+
+	query.exec("DELETE FROM neighbors WHERE "
+		   "status_control = 'deleted'");
+
+	if(settings.
+	   value("gui/keepOnlyUserDefinedNeighbors", false).toBool())
+	  query.exec("DELETE FROM neighbors WHERE "
+		     "status_control <> 'blocked' AND user_defined = 0");
+
+	query.exec("UPDATE neighbors SET external_ip_address = NULL, "
+		   "local_ip_address = NULL, local_port = NULL, "
+		   "status = 'disconnected' WHERE "
+		   "status = 'connected' AND status_control <> 'deleted'");
       }
 
     db.close();

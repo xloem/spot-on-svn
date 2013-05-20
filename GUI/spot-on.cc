@@ -268,6 +268,30 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotGenerateGoldBug(void)));
+  connect(m_ui.keepOnlyUserDefinedNeighbors,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotKeepOnlyUserDefinedNeighbors(bool)));
+  connect(m_ui.pushButtonClearOutgoingMessage,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotClearOutgoingMessage(void)));
+  connect(m_ui.deleteMail,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotDeleteMail(void)));
+  connect(m_ui.refreshMail,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotRefreshMail(void)));
+  connect(m_ui.mail,
+	  SIGNAL(itemSelectionChanged(void)),
+	  this,
+	  SLOT(slotMailSelected(void)));
+  connect(m_ui.emptyTrash,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotEmptyTrash(void)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -300,22 +324,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(readyRead(void)),
 	  this,
 	  SLOT(slotReceivedKernelMessage(void)));
-  connect(m_ui.pushButtonClearOutgoingMessage,
-	  SIGNAL(clicked(void)),
-	  this,
-	  SLOT(slotClearOutgoingMessage(void)));
-  connect(m_ui.deleteMail,
-	  SIGNAL(clicked(void)),
-	  this,
-	  SLOT(slotDeleteMail(void)));
-  connect(m_ui.refreshMail,
-	  SIGNAL(clicked(void)),
-	  this,
-	  SLOT(slotRefreshMail(void)));
-  connect(m_ui.mail,
-	  SIGNAL(itemSelectionChanged(void)),
-	  this,
-	  SLOT(slotMailSelected(void)));
   statusBar()->showMessage(tr("Not connected to the kernel. Is the kernel "
 			      "active?"));
 
@@ -406,6 +414,8 @@ spoton::spoton(void):QMainWindow()
     (spoton_gcrypt::cipherKeyLength("aes256"));
   m_ui.cipherType->clear();
   m_ui.cipherType->addItems(spoton_gcrypt::cipherTypes());
+  m_ui.keepOnlyUserDefinedNeighbors->setChecked
+    (m_settings.value("gui/keepOnlyUserDefinedNeighbors", false).toBool());
   m_ui.scrambler->setChecked
     (m_settings.value("gui/scramblerEnabled", false).toBool());
   m_ui.showOnlyConnectedNeighbors->setChecked
@@ -1475,6 +1485,8 @@ void spoton::saveSettings(void)
   settings.setValue("gui/chatHorizontalSplitter",
 		    m_ui.chatHorizontalSplitter->saveState());
   settings.setValue("gui/currentTabIndex", m_ui.tab->currentIndex());
+  settings.setValue("gui/keepOnlyUserDefinedNeighbors",
+		    m_ui.keepOnlyUserDefinedNeighbors->isChecked());
   settings.setValue("gui/neighborsHorizontalSplitter",
 		    m_ui.neighborsHorizontalSplitter->saveState());
   settings.setValue("gui/neighborsVerticalSplitter",
@@ -1643,6 +1655,22 @@ void spoton::updateListenersTable(QSqlDatabase &db)
 
 void spoton::updateNeighborsTable(QSqlDatabase &db)
 {
+  if(m_ui.keepOnlyUserDefinedNeighbors->isChecked())
+    if(db.isOpen())
+      {
+	/*
+	** Delete random, disconnected peers.
+	*/
+
+	QSqlQuery query(db);
+
+	query.exec("PRAGMA synchronous = OFF");
+	query.exec("DELETE FROM neighbors WHERE "
+		   "status <> 'connected' AND "
+		   "status_control <> 'blocked' AND "
+		   "user_defined = 0");
+      }
+
   if(!isKernelActive())
     if(db.isOpen())
       {
@@ -2854,6 +2882,8 @@ void spoton::slotReceivedKernelMessage(void)
 
 		}
 	    }
+	  else if(data == "newmail")
+	    statusBar()->showMessage(tr("New E-Mail!"), 2500);
 	}
     }
 }
@@ -3016,6 +3046,18 @@ void spoton::slotOnlyOnlineListenersToggled(bool state)
 
   settings.setValue("gui/showOnlyOnlineListeners", state);
   m_listenersLastModificationTime = QDateTime();
+}
+
+void spoton::slotKeepOnlyUserDefinedNeighbors(bool state)
+{
+  m_settings["gui/keepOnlyUserDefinedNeighbors"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/keepOnlyUserDefinedNeighbors", state);
+
+  if(state)
+    m_neighborsLastModificationTime = QDateTime();
 }
 
 void spoton::prepareListenerIPCombo(void)
@@ -4713,4 +4755,31 @@ void spoton::slotGenerateGoldBug(void)
      strongRandomBytes(spoton_gcrypt::cipherKeyLength("aes256")));
 
   m_ui.goldbug->setText(goldbug.toBase64());
+}
+
+void spoton::slotEmptyTrash(void)
+{
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("DELETE FROM folders WHERE folder_index = 2");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton");
+
+  if(m_ui.folder->currentIndex() == 2)
+    {
+      m_ui.mail->clearContents();
+      m_ui.mail->setRowCount(0);
+    }
 }

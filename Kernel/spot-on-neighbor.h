@@ -119,6 +119,7 @@ class spoton_neighbor: public QTcpSocket
   void slotTimeout(void);
 
  signals:
+  void newEMailArrived(void);
   void receivedChatMessage(const QByteArray &data);
   void receivedChatMessage(const QByteArray &data, const qint64 id);
   void receivedMailMessage(const QByteArray &data, const qint64 id);
