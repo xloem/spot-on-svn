@@ -455,6 +455,17 @@
                </widget>
               </item>
               <item>
+               <widget class="QPushButton" name="refreshMail">
+                <property name="text">
+                 <string>Refresh</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../Icons/icons.qrc">
+                  <normaloff>:/reload.png</normaloff>:/reload.png</iconset>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QPushButton" name="retrieveMail">
                 <property name="text">
                  <string>Retrieve</string>
@@ -543,17 +554,6 @@
                  </size>
                 </property>
                </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="refreshMail">
-                <property name="text">
-                 <string>Refresh</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/reload.png</normaloff>:/reload.png</iconset>
-                </property>
-               </widget>
               </item>
               <item>
                <widget class="QPushButton" name="deleteMail">
@@ -1819,13 +1819,6 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="Line" name="line">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
                      <widget class="QLabel" name="label_11">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -3017,9 +3010,9 @@
   <tabstop>sendMessage</tabstop>
   <tabstop>mailTab</tabstop>
   <tabstop>folder</tabstop>
+  <tabstop>refreshMail</tabstop>
   <tabstop>retrieveMail</tabstop>
   <tabstop>mail</tabstop>
-  <tabstop>refreshMail</tabstop>
   <tabstop>deleteMail</tabstop>
   <tabstop>mailSubject</tabstop>
   <tabstop>mailMessage</tabstop>

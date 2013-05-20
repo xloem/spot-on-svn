@@ -977,11 +977,11 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
       if(list.size() == 2)
 	{
 	}
-      else if(list.size() != 10)
+      else if(list.size() != 11)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0001(): "
-		     "received irregular data. Expecting 10 "
+		     "received irregular data. Expecting 11 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
 	  return;
@@ -990,16 +990,17 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      QByteArray message(list.value(8));
-      QByteArray messageDigest(list.value(9));
-      QByteArray name(list.value(6));
-      QByteArray recipientHash(list.value(2));
-      QByteArray senderPublicKeyHash(list.value(5));
-      QByteArray subject(list.value(7));
+      QByteArray message(list.value(9));
+      QByteArray messageDigest(list.value(10));
+      QByteArray name(list.value(7));
+      QByteArray recipientHash(list.value(3));
+      QByteArray senderPublicKeyHash1(list.value(2));
+      QByteArray senderPublicKeyHash2(list.value(6));
+      QByteArray subject(list.value(8));
       QByteArray symmetricKey1(list.value(0));
-      QByteArray symmetricKey2(list.value(3));
+      QByteArray symmetricKey2(list.value(4));
       QByteArray symmetricKeyAlgorithm1(list.value(1));
-      QByteArray symmetricKeyAlgorithm2(list.value(4));
+      QByteArray symmetricKeyAlgorithm2(list.value(5));
 
       if(ok)
 	symmetricKey1 = spoton_kernel::s_crypt1->
@@ -1040,7 +1041,7 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
 
 	    storeLetter(symmetricKey2,
 			symmetricKeyAlgorithm2,
-			senderPublicKeyHash,
+			senderPublicKeyHash2,
 			name,
 			subject,
 			message,
@@ -1050,6 +1051,12 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
 
       if(ok)
 	{
+	  if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
+	    {
+	      /*
+	      ** Store the message in the post office.
+	      */
+	    }
 	}
       else if(ttl > 0)
 	{
