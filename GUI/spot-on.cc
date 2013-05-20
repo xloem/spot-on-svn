@@ -559,6 +559,8 @@ spoton::spoton(void):QMainWindow()
       button->setToolTip(tr("Broadcast"));
     }
 
+  m_ui.emptyTrash->setVisible(false);
+
   show();
 }
 
@@ -4524,6 +4526,13 @@ void spoton::slotDeleteAllUuids(void)
 
 void spoton::slotRefreshMail(void)
 {
+    if (m_ui.folder->currentIndex() == 0)
+        m_ui.emptyTrash->setVisible(false);
+    else if(m_ui.folder->currentIndex() == 1)
+        m_ui.emptyTrash->setVisible(false);
+    else
+        m_ui.emptyTrash->setVisible(true);
+
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   if(m_ui.folder->currentIndex() == 0)
