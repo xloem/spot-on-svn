@@ -4532,21 +4532,23 @@ void spoton::slotDeleteAllUuids(void)
 
 void spoton::slotRefreshMail(void)
 {
-    if(m_ui.folder->currentIndex() == 0)
-      m_ui.label_from->setText(tr("From"));
-    else if(m_ui.folder->currentIndex() == 1)
-      m_ui.label_from->setText(tr("To"));
-    else
-      m_ui.label_from->setText(tr("From/To"));
-
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   if(m_ui.folder->currentIndex() == 0)
-    m_ui.mail->horizontalHeaderItem(1)->setText(tr("From"));
+    {
+      m_ui.label_from->setText(tr("&From"));
+      m_ui.mail->horizontalHeaderItem(1)->setText(tr("&From"));
+    }
   else if(m_ui.folder->currentIndex() == 1)
-    m_ui.mail->horizontalHeaderItem(1)->setText(tr("To"));
+    {
+      m_ui.label_from->setText(tr("&To"));
+      m_ui.mail->horizontalHeaderItem(1)->setText(tr("&To"));
+    }
   else
-    m_ui.mail->horizontalHeaderItem(1)->setText(tr("From/To"));
+    {
+      m_ui.label_from->setText(tr("&From/To"));
+      m_ui.mail->horizontalHeaderItem(1)->setText(tr("&From/To"));
+    }
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
@@ -4561,7 +4563,7 @@ void spoton::slotRefreshMail(void)
 	m_ui.mail->setSortingEnabled(false);
 	m_ui.mailMessage->clear();
 	m_ui.mailSubject->clear();
-    m_ui.mailFrom->clear();
+	m_ui.mailFrom->clear();
 
 	QSqlQuery query(db);
 	int row = 0;
@@ -4627,16 +4629,17 @@ void spoton::slotMailSelected(void)
     }
 
   QTableWidgetItem *item = m_ui.mail->item(row, 3); // Subject
+
   if(item)
     m_ui.mailSubject->setText(item->text());
 
-
   item = m_ui.mail->item(row, 4); // Message
+
   if(item)
     m_ui.mailMessage->setPlainText(item->text());
 
-
   item = m_ui.mail->item(row, 1); // From
+
   if(item)
     m_ui.mailFrom->setText(item->text());
 }
