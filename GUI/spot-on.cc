@@ -276,10 +276,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotClearOutgoingMessage(void)));
-  connect(m_ui.deleteMail,
-	  SIGNAL(clicked(void)),
-	  this,
-	  SLOT(slotDeleteMail(void)));
   connect(m_ui.refreshMail,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -2183,7 +2179,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 	action->setEnabled(false);
 
       menu.addAction(QIcon(":/repleo.png"),
-		     tr("&Copy Repleo to the clipboard buffer."),
+		     tr("&Copy Key Bundle to the clipboard buffer."),
 		     this, SLOT(slotCopyFriendshipBundle(void)));
       menu.addAction(QIcon(":/gemini.png"),
 		     tr("&Generate random Gemini (AES-256)."),
@@ -3258,7 +3254,7 @@ void spoton::slotCopyMyPublicKey(void)
     signature = m_crypt->digitalSignature(hash, &ok).toBase64();
 
   if(ok)
-    clipboard->setText("K" + name + "@" + publicKey + "@" + signature);
+    clipboard->setText(name + "@" + publicKey + "@" + signature);
   else
     clipboard->clear();
 }
@@ -3876,28 +3872,6 @@ void spoton::slotAddFriendsKey(void)
 	      return;
 
 	    QByteArray name(list.at(0));
-
-	    if(name.startsWith("K") || name.startsWith("k"))
-	      name.remove(0, 1);
-	    else
-	      {
-		QMessageBox mb(this);
-
-#ifdef Q_OS_MAC
-		mb.setAttribute(Qt::WA_MacMetalStyle, true);
-#endif
-		mb.setIcon(QMessageBox::Question);
-		mb.setWindowTitle(tr("Spot-On: Key Information"));
-		mb.setIconPixmap(QPixmap(":/addkey.png"));
-		mb.setWindowModality(Qt::WindowModal);
-		mb.setText(tr("The provided key appears invalid. It "
-			      "seems to be a repleo or something else. "
-			      "The key must start with either "
-			      "the letter K or the letter k."));
-		mb.exec();
-		return;
-	      }
-
 	    QByteArray publicKey(list.at(1));
 	    QByteArray signature(list.at(2));
 
@@ -3929,31 +3903,9 @@ void spoton::slotAddFriendsKey(void)
       else if(m_ui.friendInformation->toPlainText().trimmed().isEmpty())
 	return;
 
-      QByteArray repleo(m_ui.friendInformation->toPlainText().trimmed().
-			toLatin1());
-
-      if(repleo.startsWith("R") || repleo.startsWith("r"))
-	repleo.remove(0, 1);
-      else
-	{
-	  QMessageBox mb(this);
-
-#ifdef Q_OS_MAC
-          mb.setAttribute(Qt::WA_MacMetalStyle, true);
-#endif
-          mb.setIcon(QMessageBox::Question);
-          mb.setWindowTitle(tr("Spot-On: Repleo Information"));
-          mb.setIconPixmap(QPixmap(":/repleo.png"));
-          mb.setWindowModality(Qt::WindowModal);
-	  mb.setText(tr("The provided repleo appears invalid. It "
-			"seems to be a key or something else. "
-			"The repleo must start with either "
-			"the letter R or the letter r."));
-	  mb.exec();
-	  return;
-        }
-
-      QList<QByteArray> list(repleo.split('@'));
+      QByteArray kb(m_ui.friendInformation->toPlainText().trimmed().
+		    toLatin1());
+      QList<QByteArray> list(kb.split('@'));
 
       if(list.size() != 6)
 	{
@@ -4284,7 +4236,6 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  data.prepend("R");
   clipboard->setText(data);
 }
 
@@ -4535,20 +4486,11 @@ void spoton::slotRefreshMail(void)
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   if(m_ui.folder->currentIndex() == 0)
-    {
-      m_ui.label_from->setText(tr("&From"));
-      m_ui.mail->horizontalHeaderItem(1)->setText(tr("From"));
-    }
+    m_ui.mail->horizontalHeaderItem(1)->setText(tr("From"));
   else if(m_ui.folder->currentIndex() == 1)
-    {
-      m_ui.label_from->setText(tr("&To"));
-      m_ui.mail->horizontalHeaderItem(1)->setText(tr("To"));
-    }
+    m_ui.mail->horizontalHeaderItem(1)->setText(tr("To"));
   else
-    {
-      m_ui.label_from->setText(tr("&From/To"));
-      m_ui.mail->horizontalHeaderItem(1)->setText(tr("From/To"));
-    }
+    m_ui.mail->horizontalHeaderItem(1)->setText(tr("From/To"));
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
@@ -4562,8 +4504,6 @@ void spoton::slotRefreshMail(void)
 	m_ui.mail->setRowCount(0);
 	m_ui.mail->setSortingEnabled(false);
 	m_ui.mailMessage->clear();
-	m_ui.mailSubject->clear();
-	m_ui.mailFrom->clear();
 
 	QSqlQuery query(db);
 	int row = 0;
@@ -4624,24 +4564,13 @@ void spoton::slotMailSelected(void)
   if(row < 0)
     {
       m_ui.mailMessage->clear();
-      m_ui.mailSubject->clear();
       return;
     }
 
-  QTableWidgetItem *item = m_ui.mail->item(row, 3); // Subject
-
-  if(item)
-    m_ui.mailSubject->setText(item->text());
-
-  item = m_ui.mail->item(row, 4); // Message
+  QTableWidgetItem *item = m_ui.mail->item(row, 4); // Message
 
   if(item)
     m_ui.mailMessage->setPlainText(item->text());
-
-  item = m_ui.mail->item(row, 1); // From
-
-  if(item)
-    m_ui.mailFrom->setText(item->text());
 }
 
 void spoton::slotDeleteMail(void)
