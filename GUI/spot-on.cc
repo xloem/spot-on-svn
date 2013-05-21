@@ -296,6 +296,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotEmptyTrash(void)));
+  connect(m_ui.retrieveMail,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotRetrieveMail(void)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -4892,5 +4896,20 @@ void spoton::slotEmptyTrash(void)
     {
       m_ui.mail->clearContents();
       m_ui.mail->setRowCount(0);
+    }
+}
+
+void spoton::slotRetrieveMail(void)
+{
+  if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
+    {
+      QByteArray message("retrievemail\n");
+
+      if(m_kernelSocket.write(message.constData(), message.length()) !=
+	 message.length())
+	spoton_misc::logError
+	  ("spoton::slotRetrieveMail(): write() failure.");
+      else
+	m_kernelSocket.flush();
     }
 }

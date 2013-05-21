@@ -399,6 +399,9 @@ void spoton_neighbor::slotReadyRead(void)
 	      else
 		process0001(length, data);
 	    }
+	  else if(length > 0 && data.contains("type=0002&content="))
+	    {
+	    }
 	  else if(length > 0 && data.contains("type=0011&content="))
 	    {
 	      if(!spoton_kernel::s_crypt1)
@@ -1885,4 +1888,20 @@ void spoton_neighbor::storeLetter(const QByteArray &message,
   }
 
   QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
+}
+
+void spoton_neighbor::slotRetrieveMail(const QList<QByteArray> &list)
+{
+  if(state() == QAbstractSocket::ConnectedState)
+    for(int i = 0; i < list.size(); i++)
+      {
+	QByteArray message(spoton_send::message0002(list.at(i)));
+
+	if(write(message.constData(), message.length()) != message.length())
+	  spoton_misc::logError
+	    ("spoton_neighbor::slotRetrieveMail(): write() "
+	     "error.");
+	else
+	  flush();
+      }
 }

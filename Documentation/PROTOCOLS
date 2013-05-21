@@ -50,6 +50,9 @@ EOL
 EOL
 10 - Message Digest (Base-64) (Ciphertext, SK)
 
+Retrieve Mail
+Echoed? Yes
+
 Message Type ("0002") (Plaintext)
 TTL (Plaintext)
 0 - Requester's Sha-512 Hash (Base-64) (Ciphertext, PK)

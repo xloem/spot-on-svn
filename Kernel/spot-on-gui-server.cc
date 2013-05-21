@@ -191,6 +191,8 @@ void spoton_gui_server::slotReadyRead(void)
 		     QByteArray::fromBase64(list.value(1)),
 		     QByteArray::fromBase64(list.value(2)));
 		}
+	      else if(message.startsWith("retrievemail"))
+		emit retrieveMail();
 	      else if(message.startsWith("sharepublickey_"))
 		{
 		  message.remove(0, strlen("sharepublickey_"));

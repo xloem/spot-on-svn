@@ -134,6 +134,7 @@ class spoton: public QMainWindow
   void slotRefreshPostOffice(void);
   void slotRemoveParticipants(void);
   void slotResetAll(void);
+  void slotRetrieveMail(void);
   void slotSaveKernelPath(void);
   void slotSaveNodeName(void);
   void slotScramble(bool state);

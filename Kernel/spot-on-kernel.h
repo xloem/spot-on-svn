@@ -80,6 +80,7 @@ class spoton_kernel: public QObject
 				   const QByteArray &publicKey,
 				   const QByteArray &signature,
 				   const QString &messageType);
+  void slotRetrieveMail(void);
   void slotScramble(void);
   void slotSendMail(const QByteArray &gemini,
 		    const QByteArray &message,
@@ -95,6 +96,7 @@ class spoton_kernel: public QObject
   void receivedMailMessage(const QByteArray &name, const qint64 id);
   void receivedStatusMessage(const QByteArray &data,
 			     const qint64 id);
+  void retrieveMail(const QList<QByteArray> &list);
   void sendMessage(const QByteArray &message);
   void sendMail(const QList<QPair<QByteArray, qint64> > &mail);
   void sendStatus(const QList<QByteArray> &status);

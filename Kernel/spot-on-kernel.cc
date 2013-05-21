@@ -183,6 +183,9 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   if(!settings.contains("kernel/ttl_0001"))
     settings.setValue("kernel/ttl_0001", 16);
 
+  if(!settings.contains("kernel/ttl_0002"))
+    settings.setValue("kernel/ttl_0002", 16);
+
   if(!settings.contains("kernel/ttl_0010"))
     settings.setValue("kernel/ttl_0010", 16);
 
@@ -231,6 +234,11 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 				      const QByteArray &,
 				      const QByteArray &,
 				      const QString &)));
+  
+  connect(m_guiServer,
+	  SIGNAL(retrieveMail(void)),
+	  this,
+	  SLOT(slotRetrieveMail(void)));
   connect(m_mailer,
 	  SIGNAL(sendMail(const QByteArray &,
 			  const QByteArray &,
@@ -844,6 +852,10 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  SLOT(slotReceivedStatusMessage(const QByteArray &,
 					 const qint64)));
   connect(this,
+	  SIGNAL(retrieveMail(const QList<QByteArray> &)),
+	  neighbor,
+	  SLOT(slotRetrieveMail(const QList<QByteArray> &)));
+  connect(this,
 	  SIGNAL(sendMail(const QList<QPair<QByteArray, qint64> > &)),
 	  neighbor,
 	  SLOT(slotSendMail(const QList<QPair<QByteArray, qint64> > &)));
@@ -1140,6 +1152,68 @@ void spoton_kernel::slotScramble(void)
     }
 
   m_scramblerTimer.start(qrand() % 20000 + 40000);
+}
+
+void spoton_kernel::slotRetrieveMail(void)
+{
+  if(!s_crypt1)
+    return;
+
+  QByteArray publicKeyHash;
+  bool ok = true;
+
+  publicKeyHash = s_crypt1->publicKeyHash(&ok);
+
+  if(!ok)
+    return;
+
+  QList<QByteArray> list;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT public_key "
+		      "FROM friends_public_keys WHERE "
+		      "neighbor_oid = -1"))
+	  while(query.next())
+	    {
+	      QByteArray data;
+	      QByteArray publicKey
+		(query.value(0).toByteArray());
+
+	      data.append
+		(spoton_gcrypt::publicKeyEncrypt(publicKeyHash,
+						 publicKey,
+						 &ok).
+		 toBase64());
+
+	      if(ok)
+		{
+		  char c = 0;
+		  short ttl = s_settings.value
+		    ("kernel/ttl_0002", 16).toInt();
+
+		  memcpy(&c, static_cast<void *> (&ttl), 1);
+		  data.prepend(c);
+		  list.append(data);
+		}
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_kernel");
+  emit retrieveMail(list);
 }
 
 void spoton_kernel::slotSendMail(const QByteArray &gemini,
