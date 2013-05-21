@@ -1,33 +1,37 @@
 <RCC>
     <qresource prefix="/">
         <file>add.png</file>
-        <file>block.png</file>
-        <file>connect_creating.png</file>
-        <file>connect_established.png</file>
-        <file>connect_no.png</file>
-        <file>delete.png</file>
-        <file>modify.png</file>
-        <file>quit.png</file>
-        <file>search-active.png</file>
-        <file>tab-management.png</file>
-        <file>tab-neighbours.png</file>
-        <file>tab-search.png</file>
-        <file>tab-settings.png</file>
-        <file>tab-files.png</file>
-        <file>tab-urlculture.png</file>
-        <file>Logo/spoton-button-32.png</file>
-        <file>Logo/spoton-logo-white.png</file>
-        <file>down.png</file>
-        <file>up.png</file>
-        <file>ok.png</file>
-        <file>Logo/spoton-logo-transparent.png</file>
-        <file>addkey.png</file>
-        <file>tab-chat.png</file>
-        <file>delete_all.png</file>
-        <file>connect.png</file>
-        <file>add-neighbor-to-chat.png</file>
-        <file>plist_confirmed_as_permanent_friend.png</file>
-        <file>plist_connected_neighbour.png</file>
+	<file>add-listener.png</file>
+	<file>add-url.png</file>
+    	<file>away.png</file>
+	<file>busy.png</file>
+	<file>chat.png</file>
+    	<file>clear.png</file>
+	<file>copy.png</file>
+	<file>database.png</file>
+	<file>deactivate.png</file>
+	<file>documentation.png</file>
+	<file>down.png</file>
+	<file>email.png</file>
+	<file>empty-trash.png</file>
+	<file>full-trash.png</file>
+	<file>heart.png</file>
+	<file>inbox.png</file>
+	<file>lock.png</file>
+	<file>modify.png</file>
+	<file>neighbors.png</file>
+	<file>offline.png</file>
+	<file>ok.png</file>
+	<file>online.png</file>
+	<file>outbox.png</file>
+	<file>read.png</file>
+	<file>refresh.png</file>
+	<file>search.png</file>
+	<file>settings.png</file>
+	<file>share.png</file>
+	<file>up.png</file>
+	<file>urls.png</file>
+	<file>write.png</file>
         <file>Flags/ae.png</file>
         <file>Flags/af.png</file>
         <file>Flags/al.png</file>
@@ -199,18 +203,6 @@
         <file>Flags/ye.png</file>
         <file>Flags/za.png</file>
         <file>Flags/zw.png</file>
-        <file>logview.png</file>
-        <file>Status/status_blue.png</file>
-        <file>Status/status_lightblue.png</file>
-        <file>Status/status_lightgreen.png</file>
-        <file>Status/status_orange.png</file>
-        <file>Status/status_purple.png</file>
-        <file>Status/status_gray.png</file>
-        <file>Status/status_green.png</file>
-        <file>Status/status_red.png</file>
-        <file>Status/status_yellow.png</file>
-        <file>uuid.png</file>
-        <file>broadcasttoall.png</file>
         <file>Flags/as.png</file>
         <file>Flags/bl.png</file>
         <file>Flags/cd.png</file>
@@ -246,31 +238,10 @@
         <file>Flags/yt.png</file>
         <file>Flags/yu.png</file>
         <file>Flags/zm.png</file>
-        <file>tab-email.png</file>
-        <file>attach.png</file>
-        <file>chat.png</file>
-        <file>Resources/spotonbutton64.ico</file>
-        <file>sticky.png</file>
-        <file>nonsticky.png</file>
-        <file>simview.png</file>
-        <file>documentation.png</file>
-        <file>kugar.png</file>
-        <file>sharekey.png</file>
-        <file>clean.png</file>
-        <file>reset.png</file>
-        <file>repleo.png</file>
-        <file>Sound/receive.wav</file>
-        <file>Sound/echo.wav</file>
-        <file>pinpad.png</file>
-        <file>reload.png</file>
-        <file>email.png</file>
-        <file>email-co.png</file>
-        <file>email-inbox.png</file>
-        <file>email-trash.png</file>
-        <file>email-sent.png</file>
+        <file>Logo/spoton-button-32.png</file>
         <file>Logo/spoton-dalmatinerlogo.png</file>
-        <file>gemini.png</file>
-        <file>goldbug.png</file>
-        <file>repleo-mail.png</file>
+        <file>Logo/spoton-logo-white.png</file>
+        <file>Logo/spoton-logo-transparent.png</file>
+        <file>Resources/spotonbutton64.ico</file>
     </qresource>
 </RCC>

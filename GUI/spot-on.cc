@@ -264,22 +264,30 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(itemChanged(QTableWidgetItem *)),
 	  this,
 	  SLOT(slotGeminiChanged(QTableWidgetItem *)));
-  connect(m_ui.generateGoldBug,
+  connect(m_ui.generateAES256,
 	  SIGNAL(clicked(void)),
 	  this,
-	  SLOT(slotGenerateGoldBug(void)));
+	  SLOT(slotGenerateAES256(void)));
   connect(m_ui.keepOnlyUserDefinedNeighbors,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotKeepOnlyUserDefinedNeighbors(bool)));
-  connect(m_ui.pushButtonClearOutgoingMessage,
+  connect(m_ui.pushButtonClearMail,
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotClearOutgoingMessage(void)));
+  connect(m_ui.pushButtonClearMail,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotDeleteMail(void)));
   connect(m_ui.refreshMail,
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotRefreshMail(void)));
+  connect(m_ui.refreshMail,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotRefreshPostOffice(void)));
   connect(m_ui.mail,
 	  SIGNAL(itemSelectionChanged(void)),
 	  this,
@@ -406,7 +414,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
 		       toByteArray()).trimmed());
-  m_ui.goldbug->setMaxLength
+  m_ui.aes256->setMaxLength
     (spoton_gcrypt::cipherKeyLength("aes256"));
   m_ui.cipherType->clear();
   m_ui.cipherType->addItems(spoton_gcrypt::cipherTypes());
@@ -543,6 +551,8 @@ spoton::spoton(void):QMainWindow()
     (1, Qt::AscendingOrder);
   m_ui.participants->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
+  m_ui.postoffice->horizontalHeader()->setSortIndicator
+    (0, Qt::AscendingOrder);
   m_ui.neighborsVerticalSplitter->setStretchFactor(0, 1);
   m_ui.neighborsVerticalSplitter->setStretchFactor(1, 0);
   m_ui.readVerticalSplitter->setStretchFactor(0, 1);
@@ -556,10 +566,7 @@ spoton::spoton(void):QMainWindow()
 
   foreach(QAbstractButton *button,
 	  m_ui.participants->findChildren<QAbstractButton *> ())
-    {
-      button->setIcon(QIcon(":/broadcasttoall.png"));
-      button->setToolTip(tr("Broadcast"));
-    }
+    button->setToolTip(tr("Broadcast"));
 
   show();
 }
@@ -1052,8 +1059,6 @@ void spoton::slotPopulateListeners(void)
 			  item = new QTableWidgetItem(query.
 						      value(i).toString());
 
-			item->setTextAlignment(Qt::AlignLeft |
-					       Qt::AlignVCenter);
 			item->setFlags
 			  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			m_ui.listeners->setItem(row, i, item);
@@ -1193,10 +1198,7 @@ void spoton::slotPopulateNeighbors(void)
 				     "timer expires."));
 
 		if(query.value(0).toInt() == 1)
-		  {
-		    check->setChecked(true);
-		    check->setIcon(QIcon(":/sticky.png"));
-		  }
+		  check->setChecked(true);
 		else
 		  check->setChecked(false);
 
@@ -1233,7 +1235,6 @@ void spoton::slotPopulateNeighbors(void)
 		      item = new QTableWidgetItem
 			(query.value(i).toString());
 
-		    item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 		    item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
 		    if(i == 2)
@@ -1242,11 +1243,6 @@ void spoton::slotPopulateNeighbors(void)
 			  item->setBackground(QBrush(QColor("lightgreen")));
 			else
 			  item->setBackground(QBrush());
-
-			if(query.value(i).toString() == "connected")
-			  item->setIcon(QIcon(":/connect_established.png"));
-			else
-			  item->setIcon(QIcon(":/connect_no.png"));
 		      }
 
 		    m_ui.neighbors->setItem(row, i, item);
@@ -1297,11 +1293,6 @@ void spoton::slotPopulateNeighbors(void)
 	  }
 
 	m_ui.neighbors->setSortingEnabled(true);
-
-	for(int i = 0; i < m_ui.neighbors->columnCount(); i++)
-	  m_ui.neighbors->horizontalHeaderItem(i)->
-	    setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-
 	m_ui.neighbors->horizontalHeader()->setStretchLastSection(true);
 	m_ui.neighbors->horizontalScrollBar()->setValue(hval);
 	m_ui.neighbors->verticalScrollBar()->setValue(vval);
@@ -2138,19 +2129,19 @@ void spoton::slotShowContextMenu(const QPoint &point)
 
   if(m_ui.neighbors == sender())
     {
-      menu.addAction(QIcon(":/sharekey.png"),
+      menu.addAction(QIcon(":/share.png"),
 		     tr("Share &Messaging Public Key"),
 		     this, SLOT(slotSharePublicKey(void)));
-      menu.addAction(QIcon(":/sharekey.png"),
+      menu.addAction(QIcon(":/share.png"),
 		     tr("Share &URL Public Key"),
 		     this, SLOT(slotShareURLPublicKey(void)));
       menu.addSeparator();
-      menu.addAction(QIcon(":/connect.png"), tr("&Connect"),
+      menu.addAction(tr("&Connect"),
 		     this, SLOT(slotConnectNeighbor(void)));
       menu.addAction(tr("&Disconnect"),
 		     this, SLOT(slotDisconnectNeighbor(void)));
       menu.addSeparator();
-      menu.addAction(QIcon(":/delete.png"),tr("&Delete"),
+      menu.addAction(QIcon(":/clear.png"),tr("&Delete"),
 		     this, SLOT(slotDeleteNeighbor(void)));
       menu.addAction(tr("Delete &All"),
 		     this, SLOT(slotDeleteAllNeighbors(void)));
@@ -2159,7 +2150,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("Delete All Non-Unique &UUIDs"),
 		     this, SLOT(slotDeleteAllUuids(void)));
       menu.addSeparator();
-      menu.addAction(QIcon(":/block.png"),tr("B&lock"),
+      menu.addAction(tr("B&lock"),
 		     this, SLOT(slotBlockNeighbor(void)));
       menu.addAction(tr("U&nblock"),
 		     this, SLOT(slotUnblockNeighbor(void)));
@@ -2168,7 +2159,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
   else
     {
       QAction *action = menu.addAction
-	(QIcon(":/plist_confirmed_as_permanent_friend.png"),
+	(QIcon(":/add.png"),
 	 tr("&Add participant as friend."),
 	 this, SLOT(slotSharePublicKeyWithParticipant(void)));
       QTableWidgetItem *item = m_ui.participants->itemAt(point);
@@ -2178,13 +2169,12 @@ void spoton::slotShowContextMenu(const QPoint &point)
       else
 	action->setEnabled(false);
 
-      menu.addAction(QIcon(":/repleo.png"),
+      menu.addAction(QIcon(":/copy.png"),
 		     tr("&Copy Key Bundle to the clipboard buffer."),
 		     this, SLOT(slotCopyFriendshipBundle(void)));
-      menu.addAction(QIcon(":/gemini.png"),
-		     tr("&Generate random Gemini (AES-256)."),
+      menu.addAction(tr("&Generate random Gemini (AES-256)."),
 		     this, SLOT(slotGenerateGeminiInChat(void)));
-      menu.addAction(QIcon(":/delete.png"),
+      menu.addAction(QIcon(":/clear.png"),
 		     tr("&Remove"),
 		     this, SLOT(slotRemoveParticipants(void)));
       menu.exec(m_ui.participants->mapToGlobal(point));
@@ -2647,21 +2637,21 @@ void spoton::slotPopulateParticipants(void)
 			  if(status == "away")
 			    {
 			      item->setIcon
-				(QIcon(":/Status/status_blue.png"));
+				(QIcon(":/away.png"));
 			      item->setToolTip(tr("Your friend %1 is away.").
 					       arg(item->text()));
 			    }
 			  else if(status == "busy")
 			    {
 			      item->setIcon
-				(QIcon(":/Status/status_red.png"));
+				(QIcon(":/busy.png"));
 			      item->setToolTip(tr("Your friend %1 is busy.").
 					       arg(item->text()));
 			    }
 			  else if(status == "offline")
 			    {
 			      item->setIcon
-				(QIcon(":/Status/status_gray.png"));
+				(QIcon(":/offline.png"));
 			      item->setToolTip
 				(tr("Your friend %1 is offline.").
 				 arg(item->text()));
@@ -2669,24 +2659,19 @@ void spoton::slotPopulateParticipants(void)
 			  else if(status == "online")
 			    {
 			      item->setIcon
-				(QIcon(":/Status/status_lightgreen.png"));
+				(QIcon(":/online.png"));
 			      item->setToolTip(tr("User %1 is online.").
 					       arg(item->text()));
 			    }
 			  else
-			    {
-			      item->setIcon
-				(QIcon(":/plist_confirmed_as_permanent_"
-				       "friend.png"));
-			      item->setToolTip(tr("User %1 is a "
-						  "permanent friend.").
-					       arg(item->text()));
-			    }
+			    item->setToolTip(tr("User %1 is a "
+						"permanent friend.").
+					     arg(item->text()));
 			}
 		      else
 			{
 			  item->setIcon
-			    (QIcon(":/plist_connected_neighbour.png"));
+			    (QIcon(":/add.png"));
 			  item->setToolTip
 			    (tr("User %1 requests your friendship.").
 			     arg(item->text()));
@@ -4017,10 +4002,13 @@ void spoton::slotDisplayLocalSearchResults(void)
 
 void spoton::slotClearOutgoingMessage(void)
 {
-  m_ui.participantsCombo->setCurrentIndex(0);
-  m_ui.outgoingMessage->clear();
-  m_ui.outgoingSubject->clear();
-  m_ui.goldbug->clear();
+  if(m_ui.mailTab->currentIndex() == 1)
+    {
+      m_ui.participantsCombo->setCurrentIndex(0);
+      m_ui.outgoingMessage->clear();
+      m_ui.outgoingSubject->clear();
+      m_ui.aes256->clear();
+    }
 }
 
 void spoton::slotResetAll(void)
@@ -4311,7 +4299,7 @@ void spoton::slotSendMail(void)
 	while(!oids.isEmpty())
 	  {
 	    QByteArray gemini
-	      (m_ui.goldbug->text().trimmed().toLatin1());
+	      (m_ui.aes256->text().trimmed().toLatin1());
 	    QByteArray publicKeyHash(publicKeyHashes.takeFirst());
 	    QByteArray subject
 	      (m_ui.outgoingSubject->text().trimmed().toUtf8());
@@ -4321,7 +4309,7 @@ void spoton::slotSendMail(void)
 	    qint64 oid = oids.takeFirst();
 
 	    query.prepare("INSERT INTO folders "
-			  "(date, folder_index, goldbug, hash, "
+			  "(date, folder_index, gemini, hash, "
 			  "message, receiver_sender, receiver_sender_hash, "
 			  "status, subject, participant_oid) "
 			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -4371,7 +4359,7 @@ void spoton::slotSendMail(void)
 
 	m_ui.outgoingMessage->clear();
 	m_ui.outgoingSubject->clear();
-	m_ui.goldbug->clear();
+	m_ui.aes256->clear();
       }
 
     db.close();
@@ -4483,6 +4471,11 @@ void spoton::slotDeleteAllUuids(void)
 
 void spoton::slotRefreshMail(void)
 {
+  if(!m_crypt)
+    return;
+  else if(m_ui.mailTab->currentIndex() != 0)
+    return;
+
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   if(m_ui.folder->currentIndex() == 0)
@@ -4540,14 +4533,88 @@ void spoton::slotRefreshMail(void)
 		else
 		  item = new QTableWidgetItem(query.value(i).toString());
 
-		item->setTextAlignment(Qt::AlignLeft |
-				       Qt::AlignVCenter);
 		item->setFlags
 		  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		m_ui.mail->setItem(row - 1, i, item);
 	      }
 
 	m_ui.mail->setSortingEnabled(true);
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton");
+  QApplication::restoreOverrideCursor();
+}
+
+void spoton::slotRefreshPostOffice(void)
+{
+  if(!m_crypt)
+    return;
+  else if(m_ui.mailTab->currentIndex() != 2)
+    return;
+
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	m_ui.postoffice->clearContents();
+	m_ui.postoffice->setRowCount(0);
+	m_ui.postoffice->setSortingEnabled(false);
+
+	QSqlQuery query(db);
+	int row = 0;
+
+	if(query.exec("SELECT date_received, "
+		      "message_bundle, recipient_hash "
+		      "FROM post_office"))
+	  while(query.next())
+	    for(int i = 0; i < query.record().count(); i++)
+	      {
+		bool ok = true;
+		QTableWidgetItem *item = 0;
+
+		if(i == 0)
+		  {
+		    row += 1;
+		    m_ui.postoffice->setRowCount(row);
+		  }
+
+		if(i == 0)
+		  item = new QTableWidgetItem
+		    (m_crypt->decrypted(QByteArray::
+					fromBase64(query.
+						   value(i).
+						   toByteArray()),
+					&ok).constData());
+		else if(i == 1)
+		  {
+		    QByteArray bytes
+		      (m_crypt->decrypted(QByteArray::
+					  fromBase64(query.
+						     value(i).
+						     toByteArray()),
+					  &ok));
+
+		    item = new QTableWidgetItem
+		      (QString::number(bytes.size()));
+		  }
+		else
+		  item = new QTableWidgetItem(query.value(i).toString());
+
+		item->setFlags
+		  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		m_ui.postoffice->setItem(row - 1, i, item);
+	      }
+
+	m_ui.postoffice->setSortingEnabled(true);
       }
 
     db.close();
@@ -4567,14 +4634,87 @@ void spoton::slotMailSelected(void)
       return;
     }
 
-  QTableWidgetItem *item = m_ui.mail->item(row, 4); // Message
+  QString date("");
+  QString fromTo("");
+  QString message("");
+  QString subject("");
+  QString text("");
+  QTableWidgetItem *item = m_ui.mail->item(row, 0); // Date
 
   if(item)
-    m_ui.mailMessage->setPlainText(item->text());
+    date = item->text();
+
+  item = m_ui.mail->item(row, 1); // From / To
+
+  if(item)
+    fromTo = item->text();
+
+  item = m_ui.mail->item(row, 3); // Subject
+
+  if(item)
+    subject = item->text();
+
+  item = m_ui.mail->item(row, 4); // Message
+
+  if(item)
+    message = item->text();
+
+  if(m_ui.folder->currentIndex() == 0)
+    {
+      text.append(tr("<b>From:</b> "));
+      text.append(fromTo);
+      text.append("<br>");
+      text.append(tr("<b>To:</b> me"));
+      text.append("<br>");
+      text.append(tr("<b>Subject:</b> "));
+      text.append(subject);
+      text.append("<br>");
+      text.append(tr("<b>Sent: </b> "));
+      text.append(date);
+      text.append("<br><br>");
+      text.append(message);
+    }
+  else if(m_ui.folder->currentIndex() == 1)
+    {
+      text.append(tr("<b>From:</b> me"));
+      text.append("<br>");
+      text.append(tr("<b>To:</b> "));
+      text.append(fromTo);
+      text.append("<br>");
+      text.append(tr("<b>Subject:</b> "));
+      text.append(subject);
+      text.append("<br>");
+      text.append(tr("<b>Sent: </b> "));
+      text.append(date);
+      text.append("<br><br>");
+      text.append(message);
+    }
+  else
+    {
+      text.append(tr("<b>From/To:</b> "));
+      text.append(fromTo);
+      text.append("<br>");
+      text.append(tr("<b>From/To:</b> "));
+      text.append(fromTo);
+      text.append("<br>");
+      text.append(tr("<b>Subject:</b> "));
+      text.append(subject);
+      text.append("<br>");
+      text.append(tr("<b>Sent: </b> "));
+      text.append(date);
+      text.append("<br><br>");
+      text.append(message);
+    }
+
+  m_ui.mailMessage->clear();
+  m_ui.mailMessage->append(text);
 }
 
 void spoton::slotDeleteMail(void)
 {
+  if(m_ui.mailTab->currentIndex() != 0)
+    return;
+
   QModelIndexList list
     (m_ui.mail->selectionModel()->selectedRows(5)); // OID
 
@@ -4685,7 +4825,12 @@ bool spoton::saveGemini(const QByteArray &gemini,
 	if(gemini.isNull())
 	  query.bindValue(0, QVariant(QVariant::ByteArray));
 	else
-	  query.bindValue(0, m_crypt->encrypted(gemini, &ok).toBase64());
+	  {
+	    if(m_crypt)
+	      query.bindValue(0, m_crypt->encrypted(gemini, &ok).toBase64());
+	    else
+	      query.bindValue(0, QVariant(QVariant::ByteArray));
+	  }
 
 	query.bindValue(1, oid);
 
@@ -4700,13 +4845,13 @@ bool spoton::saveGemini(const QByteArray &gemini,
   return ok;
 }
 
-void spoton::slotGenerateGoldBug(void)
+void spoton::slotGenerateAES256(void)
 {
-  QByteArray goldbug
+  QByteArray aes256
     (spoton_gcrypt::
      strongRandomBytes(spoton_gcrypt::cipherKeyLength("aes256")));
 
-  m_ui.goldbug->setText(goldbug.toBase64());
+  m_ui.aes256->setText(aes256.toBase64());
 }
 
 void spoton::slotEmptyTrash(void)

@@ -46,7 +46,7 @@ class spoton_mailer: public QObject
   void slotTimeout(void);
 
  signals:
-  void sendMail(const QByteArray &goldbug,
+  void sendMail(const QByteArray &gemini,
 		const QByteArray &message,
 		const QByteArray &name,
 		const QByteArray &publicKey,

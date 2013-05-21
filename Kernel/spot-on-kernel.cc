@@ -1142,7 +1142,7 @@ void spoton_kernel::slotScramble(void)
   m_scramblerTimer.start(qrand() % 20000 + 40000);
 }
 
-void spoton_kernel::slotSendMail(const QByteArray &goldbug,
+void spoton_kernel::slotSendMail(const QByteArray &gemini,
 				 const QByteArray &message,
 				 const QByteArray &name,
 				 const QByteArray &publicKey,
@@ -1152,10 +1152,10 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
   if(!s_crypt1)
     return;
 
-  Q_UNUSED(goldbug);
+  Q_UNUSED(gemini);
 
   /*
-  ** goldbug
+  ** gemini
   ** message
   ** name - my name
   ** publicKey - recipient's public key

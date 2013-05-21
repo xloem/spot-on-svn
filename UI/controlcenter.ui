@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1024</width>
-    <height>649</height>
+    <height>890</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -42,7 +42,7 @@
       <widget class="QWidget" name="tab_chat">
        <attribute name="icon">
         <iconset resource="../Icons/icons.qrc">
-         <normaloff>:/tab-chat.png</normaloff>:/tab-chat.png</iconset>
+         <normaloff>:/chat.png</normaloff>:/chat.png</iconset>
        </attribute>
        <attribute name="title">
         <string>&amp;Chat</string>
@@ -76,8 +76,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>994</width>
-                <height>556</height>
+                <width>1002</width>
+                <height>787</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -115,7 +115,7 @@
                          </property>
                          <property name="icon">
                           <iconset resource="../Icons/icons.qrc">
-                           <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
+                           <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                          </property>
                         </widget>
                        </item>
@@ -181,7 +181,7 @@
                           </property>
                           <property name="icon">
                            <iconset resource="../Icons/icons.qrc">
-                            <normaloff>:/Status/status_blue.png</normaloff>:/Status/status_blue.png</iconset>
+                            <normaloff>:/away.png</normaloff>:/away.png</iconset>
                           </property>
                          </item>
                          <item>
@@ -190,7 +190,7 @@
                           </property>
                           <property name="icon">
                            <iconset resource="../Icons/icons.qrc">
-                            <normaloff>:/Status/status_red.png</normaloff>:/Status/status_red.png</iconset>
+                            <normaloff>:/busy.png</normaloff>:/busy.png</iconset>
                           </property>
                          </item>
                          <item>
@@ -199,7 +199,7 @@
                           </property>
                           <property name="icon">
                            <iconset resource="../Icons/icons.qrc">
-                            <normaloff>:/Status/status_gray.png</normaloff>:/Status/status_gray.png</iconset>
+                            <normaloff>:/offline.png</normaloff>:/offline.png</iconset>
                           </property>
                          </item>
                          <item>
@@ -208,7 +208,7 @@
                           </property>
                           <property name="icon">
                            <iconset resource="../Icons/icons.qrc">
-                            <normaloff>:/Status/status_lightgreen.png</normaloff>:/Status/status_lightgreen.png</iconset>
+                            <normaloff>:/online.png</normaloff>:/online.png</iconset>
                           </property>
                          </item>
                         </widget>
@@ -395,12 +395,110 @@
       <widget class="QWidget" name="tab_email">
        <attribute name="icon">
         <iconset resource="../Icons/icons.qrc">
-         <normaloff>:/tab-email.png</normaloff>:/tab-email.png</iconset>
+         <normaloff>:/email.png</normaloff>:/email.png</iconset>
        </attribute>
        <attribute name="title">
         <string>&amp;E-Mail</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_29">
+       <layout class="QVBoxLayout" name="verticalLayout_26">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <item>
+           <spacer name="horizontalSpacer_17">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonClearMail">
+            <property name="minimumSize">
+             <size>
+              <width>130</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Clear</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../Icons/icons.qrc">
+              <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="refreshMail">
+            <property name="minimumSize">
+             <size>
+              <width>130</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Refresh</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../Icons/icons.qrc">
+              <normaloff>:/refresh.png</normaloff>:/refresh.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="retrieveMail">
+            <property name="minimumSize">
+             <size>
+              <width>130</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Retrieve</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../Icons/icons.qrc">
+              <normaloff>:/down.png</normaloff>:/down.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="emptyTrash">
+            <property name="minimumSize">
+             <size>
+              <width>130</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Empty Trash</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../Icons/icons.qrc">
+              <normaloff>:/empty-trash.png</normaloff>:/empty-trash.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_7">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
         <item>
          <widget class="QTabWidget" name="mailTab">
           <property name="currentIndex">
@@ -409,12 +507,12 @@
           <widget class="QWidget" name="tab_4">
            <attribute name="icon">
             <iconset resource="../Icons/icons.qrc">
-             <normaloff>:/tab-email.png</normaloff>:/tab-email.png</iconset>
+             <normaloff>:/read.png</normaloff>:/read.png</iconset>
            </attribute>
            <attribute name="title">
             <string>&amp;Read</string>
            </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_26">
+           <layout class="QVBoxLayout" name="verticalLayout_29">
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_38">
               <item>
@@ -431,7 +529,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/email-inbox.png</normaloff>:/email-inbox.png</iconset>
+                   <normaloff>:/inbox.png</normaloff>:/inbox.png</iconset>
                  </property>
                 </item>
                 <item>
@@ -440,7 +538,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/email-sent.png</normaloff>:/email-sent.png</iconset>
+                   <normaloff>:/outbox.png</normaloff>:/outbox.png</iconset>
                  </property>
                 </item>
                 <item>
@@ -449,20 +547,9 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/email-trash.png</normaloff>:/email-trash.png</iconset>
+                   <normaloff>:/full-trash.png</normaloff>:/full-trash.png</iconset>
                  </property>
                 </item>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="refreshMail">
-                <property name="text">
-                 <string>Refresh</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/reload.png</normaloff>:/reload.png</iconset>
-                </property>
                </widget>
               </item>
               <item>
@@ -477,28 +564,6 @@
                  </size>
                 </property>
                </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="emptyTrash">
-                <property name="text">
-                 <string>Empty Trash</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="retrieveMail">
-                <property name="text">
-                 <string>Retrieve</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/down.png</normaloff>:/down.png</iconset>
-                </property>
-               </widget>
               </item>
              </layout>
             </item>
@@ -569,51 +634,12 @@
           <widget class="QWidget" name="tab_5">
            <attribute name="icon">
             <iconset resource="../Icons/icons.qrc">
-             <normaloff>:/modify.png</normaloff>:/modify.png</iconset>
+             <normaloff>:/write.png</normaloff>:/write.png</iconset>
            </attribute>
            <attribute name="title">
             <string>&amp;Write</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_27">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_29">
-              <item>
-               <spacer name="horizontalSpacer_27">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButtonClearOutgoingMessage">
-                <property name="text">
-                 <string>Clear</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="sendMail">
-                <property name="text">
-                 <string>Send</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/tab-email.png</normaloff>:/tab-email.png</iconset>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
             <item>
              <layout class="QGridLayout" name="gridLayout_4">
               <item row="1" column="0">
@@ -648,7 +674,7 @@
                    </property>
                    <property name="icon">
                     <iconset resource="../Icons/icons.qrc">
-                     <normaloff>:/plist_confirmed_as_permanent_friend.png</normaloff>:/plist_confirmed_as_permanent_friend.png</iconset>
+                     <normaloff>:/heart.png</normaloff>:/heart.png</iconset>
                    </property>
                   </item>
                  </widget>
@@ -717,9 +743,6 @@
               </item>
               <item row="3" column="1">
                <widget class="QTextEdit" name="outgoingMessage">
-                <property name="styleSheet">
-                 <string notr="true">background-color: qlineargradient(spread:pad, x1:0.968, y1:0.932, x2:0.513, y2:0.5, stop:0 rgba(183, 235, 255, 255), stop:1 rgba(255, 255, 255, 255));</string>
-                </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
                 </property>
@@ -728,16 +751,16 @@
               <item row="4" column="1">
                <layout class="QHBoxLayout" name="horizontalLayout_31">
                 <item>
-                 <widget class="QLineEdit" name="goldbug"/>
+                 <widget class="QLineEdit" name="aes256"/>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="generateGoldBug">
+                 <widget class="QPushButton" name="generateAES256">
                   <property name="text">
                    <string>AES-256</string>
                   </property>
                   <property name="icon">
                    <iconset resource="../Icons/icons.qrc">
-                    <normaloff>:/goldbug.png</normaloff>:/goldbug.png</iconset>
+                    <normaloff>:/lock.png</normaloff>:/lock.png</iconset>
                   </property>
                  </widget>
                 </item>
@@ -762,7 +785,35 @@
                  <string>&amp;Optional</string>
                 </property>
                 <property name="buddy">
-                 <cstring>goldbug</cstring>
+                 <cstring>aes256</cstring>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_29">
+              <item>
+               <spacer name="horizontalSpacer_27">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="sendMail">
+                <property name="text">
+                 <string>Send</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../Icons/icons.qrc">
+                  <normaloff>:/write.png</normaloff>:/write.png</iconset>
                 </property>
                </widget>
               </item>
@@ -773,14 +824,14 @@
           <widget class="QWidget" name="tab_6">
            <attribute name="icon">
             <iconset resource="../Icons/icons.qrc">
-             <normaloff>:/email-co.png</normaloff>:/email-co.png</iconset>
+             <normaloff>:/database.png</normaloff>:/database.png</iconset>
            </attribute>
            <attribute name="title">
             <string>&amp;Post Office</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_30">
             <item>
-             <widget class="QTableWidget" name="repository">
+             <widget class="QTableWidget" name="postoffice">
               <property name="selectionMode">
                <enum>QAbstractItemView::SingleSelection</enum>
               </property>
@@ -858,17 +909,6 @@
                 </property>
                </spacer>
               </item>
-              <item>
-               <widget class="QPushButton" name="refreshRepository">
-                <property name="text">
-                 <string>Refresh</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/reload.png</normaloff>:/reload.png</iconset>
-                </property>
-               </widget>
-              </item>
              </layout>
             </item>
            </layout>
@@ -880,7 +920,7 @@
       <widget class="QWidget" name="tab_neighbors">
        <attribute name="icon">
         <iconset resource="../Icons/icons.qrc">
-         <normaloff>:/tab-neighbours.png</normaloff>:/tab-neighbours.png</iconset>
+         <normaloff>:/neighbors.png</normaloff>:/neighbors.png</iconset>
        </attribute>
        <attribute name="title">
         <string>&amp;Neighbors</string>
@@ -926,10 +966,6 @@
                  <property name="text">
                   <string>Show Only &amp;Connected Neighbors</string>
                  </property>
-                 <property name="icon">
-                  <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/connect_established.png</normaloff>:/connect_established.png</iconset>
-                 </property>
                 </widget>
                </item>
                <item>
@@ -942,7 +978,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
+                   <normaloff>:/copy.png</normaloff>:/copy.png</iconset>
                  </property>
                  <property name="popupMode">
                   <enum>QToolButton::InstantPopup</enum>
@@ -962,7 +998,7 @@
                  </property>
                  <property name="icon">
                   <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/sharekey.png</normaloff>:/sharekey.png</iconset>
+                   <normaloff>:/share.png</normaloff>:/share.png</iconset>
                  </property>
                  <property name="popupMode">
                   <enum>QToolButton::InstantPopup</enum>
@@ -1017,27 +1053,15 @@
                 <property name="text">
                  <string>Sticky</string>
                 </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/sticky.png</normaloff>:/sticky.png</iconset>
-                </property>
                </column>
                <column>
                 <property name="text">
                  <string>UUID</string>
                 </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/plist_confirmed_as_permanent_friend.png</normaloff>:/plist_confirmed_as_permanent_friend.png</iconset>
-                </property>
                </column>
                <column>
                 <property name="text">
                  <string>Status</string>
-                </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/connect_established.png</normaloff>:/connect_established.png</iconset>
                 </property>
                </column>
                <column>
@@ -1261,15 +1285,8 @@
                  <layout class="QHBoxLayout" name="horizontalLayout_30">
                   <item>
                    <widget class="QRadioButton" name="addFriendPublicKeyRadio">
-                    <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The key must start with either the letter K or the letter k.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
                     <property name="text">
                      <string>&amp;Key</string>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../Icons/icons.qrc">
-                      <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
                     </property>
                     <property name="checked">
                      <bool>true</bool>
@@ -1278,15 +1295,8 @@
                   </item>
                   <item>
                    <widget class="QRadioButton" name="addFriendSymmetricBundleRadio">
-                    <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The repleo must start with either the letter R or the letter r.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
                     <property name="text">
                      <string>Key &amp;Bundle</string>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../Icons/icons.qrc">
-                      <normaloff>:/repleo.png</normaloff>:/repleo.png</iconset>
                     </property>
                    </widget>
                   </item>
@@ -1332,7 +1342,7 @@
                     </property>
                     <property name="icon">
                      <iconset resource="../Icons/icons.qrc">
-                      <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
+                      <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                     </property>
                    </widget>
                   </item>
@@ -1378,7 +1388,7 @@
       <widget class="QWidget" name="tab_search">
        <attribute name="icon">
         <iconset resource="../Icons/icons.qrc">
-         <normaloff>:/tab-search.png</normaloff>:/tab-search.png</iconset>
+         <normaloff>:/search.png</normaloff>:/search.png</iconset>
        </attribute>
        <attribute name="title">
         <string>&amp;Search</string>
@@ -1416,7 +1426,7 @@
             </property>
             <property name="icon">
              <iconset resource="../Icons/icons.qrc">
-              <normaloff>:/tab-search.png</normaloff>:/tab-search.png</iconset>
+              <normaloff>:/search.png</normaloff>:/search.png</iconset>
             </property>
            </widget>
           </item>
@@ -1451,7 +1461,7 @@
             </property>
             <property name="icon">
              <iconset resource="../Icons/icons.qrc">
-              <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
+              <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
             </property>
            </widget>
           </item>
@@ -1509,7 +1519,7 @@
       <widget class="QWidget" name="tab_settings">
        <attribute name="icon">
         <iconset resource="../Icons/icons.qrc">
-         <normaloff>:/tab-settings.png</normaloff>:/tab-settings.png</iconset>
+         <normaloff>:/settings.png</normaloff>:/settings.png</iconset>
        </attribute>
        <attribute name="title">
         <string>S&amp;ettings</string>
@@ -1531,8 +1541,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>979</width>
-             <height>560</height>
+             <width>1002</width>
+             <height>787</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -1553,7 +1563,7 @@
                      </property>
                      <property name="icon">
                       <iconset resource="../Icons/icons.qrc">
-                       <normaloff>:/connect_creating.png</normaloff>:/connect_creating.png</iconset>
+                       <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -1587,7 +1597,7 @@
                      </property>
                      <property name="icon">
                       <iconset resource="../Icons/icons.qrc">
-                       <normaloff>:/quit.png</normaloff>:/quit.png</iconset>
+                       <normaloff>:/deactivate.png</normaloff>:/deactivate.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -1784,7 +1794,7 @@
                       </property>
                       <property name="icon">
                        <iconset resource="../Icons/icons.qrc">
-                        <normaloff>:/add.png</normaloff>:/add.png</iconset>
+                        <normaloff>:/add-listener.png</normaloff>:/add-listener.png</iconset>
                       </property>
                      </widget>
                     </item>
@@ -1909,7 +1919,7 @@
                        </property>
                        <property name="icon">
                         <iconset resource="../Icons/icons.qrc">
-                         <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
+                         <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                        </property>
                       </widget>
                      </item>
@@ -1917,10 +1927,6 @@
                       <widget class="QPushButton" name="deleteAllListeners">
                        <property name="text">
                         <string>Delete All</string>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../Icons/icons.qrc">
-                         <normaloff>:/delete_all.png</normaloff>:/delete_all.png</iconset>
                        </property>
                       </widget>
                      </item>
@@ -2153,7 +2159,7 @@
                   </property>
                   <property name="icon">
                    <iconset resource="../Icons/icons.qrc">
-                    <normaloff>:/reset.png</normaloff>:/reset.png</iconset>
+                    <normaloff>:/refresh.png</normaloff>:/refresh.png</iconset>
                   </property>
                  </widget>
                 </item>
@@ -2183,7 +2189,7 @@
       <widget class="QWidget" name="tab_cultivation">
        <attribute name="icon">
         <iconset resource="../Icons/icons.qrc">
-         <normaloff>:/tab-urlculture.png</normaloff>:/tab-urlculture.png</iconset>
+         <normaloff>:/urls.png</normaloff>:/urls.png</iconset>
        </attribute>
        <attribute name="title">
         <string>&amp;URLs</string>
@@ -2225,19 +2231,13 @@
                   </spacer>
                  </item>
                  <item>
-                  <widget class="QLabel" name="label_19">
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="pixmap">
-                    <pixmap resource="../Icons/icons.qrc">:/ok.png</pixmap>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
                   <widget class="QRadioButton" name="acceptlistRadioButton">
                    <property name="text">
                     <string>&amp;Accept List</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../Icons/icons.qrc">
+                     <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
                    </property>
                    <property name="checked">
                     <bool>true</bool>
@@ -2245,19 +2245,13 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="label_20">
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="pixmap">
-                    <pixmap resource="../Icons/icons.qrc">:/clean.png</pixmap>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
                   <widget class="QRadioButton" name="denylistRadioButton">
                    <property name="text">
                     <string>&amp;Deny List</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../Icons/icons.qrc">
+                     <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                    </property>
                    <property name="checked">
                     <bool>false</bool>
@@ -2290,7 +2284,7 @@
                      </property>
                      <property name="icon">
                       <iconset resource="../Icons/icons.qrc">
-                       <normaloff>:/add.png</normaloff>:/add.png</iconset>
+                       <normaloff>:/add-url.png</normaloff>:/add-url.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -2301,7 +2295,7 @@
                      </property>
                      <property name="icon">
                       <iconset resource="../Icons/icons.qrc">
-                       <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
+                       <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -2365,19 +2359,13 @@
                   </spacer>
                  </item>
                  <item>
-                  <widget class="QLabel" name="label_21">
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="pixmap">
-                    <pixmap resource="../Icons/icons.qrc">:/ok.png</pixmap>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
                   <widget class="QRadioButton" name="acceptlistRadioButton_2">
                    <property name="text">
                     <string>&amp;Accept List</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../Icons/icons.qrc">
+                     <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
                    </property>
                    <property name="checked">
                     <bool>true</bool>
@@ -2385,19 +2373,13 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="label_22">
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="pixmap">
-                    <pixmap resource="../Icons/icons.qrc">:/clean.png</pixmap>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
                   <widget class="QRadioButton" name="denylistRadioButton_2">
                    <property name="text">
                     <string>&amp;Deny List</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../Icons/icons.qrc">
+                     <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                    </property>
                    <property name="checked">
                     <bool>false</bool>
@@ -2430,7 +2412,7 @@
                      </property>
                      <property name="icon">
                       <iconset resource="../Icons/icons.qrc">
-                       <normaloff>:/add.png</normaloff>:/add.png</iconset>
+                       <normaloff>:/add-url.png</normaloff>:/add-url.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -2441,7 +2423,7 @@
                      </property>
                      <property name="icon">
                       <iconset resource="../Icons/icons.qrc">
-                       <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
+                       <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -2652,7 +2634,7 @@
                </size>
               </property>
               <property name="toolTip">
-               <string>Spot-On Graphical User Interface Version 1.00</string>
+               <string>Spot-On Graphical User Interface Version 0.01</string>
               </property>
               <property name="pixmap">
                <pixmap resource="../Icons/icons.qrc">:/Logo/spoton-logo-transparent.png</pixmap>
@@ -2708,7 +2690,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2729,7 +2711,7 @@
   <action name="action_Quit">
    <property name="icon">
     <iconset resource="../Icons/icons.qrc">
-     <normaloff>:/quit.png</normaloff>:/quit.png</iconset>
+     <normaloff>:/deactivate.png</normaloff>:/deactivate.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Quit</string>
@@ -2739,10 +2721,6 @@
    </property>
   </action>
   <action name="action_Log_Viewer">
-   <property name="icon">
-    <iconset resource="../Icons/icons.qrc">
-     <normaloff>:/logview.png</normaloff>:/logview.png</iconset>
-   </property>
    <property name="text">
     <string>&amp;Log Viewer</string>
    </property>
@@ -2776,23 +2754,22 @@
   <tabstop>chatSendMethod</tabstop>
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
+  <tabstop>pushButtonClearMail</tabstop>
+  <tabstop>refreshMail</tabstop>
+  <tabstop>retrieveMail</tabstop>
+  <tabstop>emptyTrash</tabstop>
   <tabstop>mailTab</tabstop>
   <tabstop>folder</tabstop>
-  <tabstop>refreshMail</tabstop>
-  <tabstop>emptyTrash</tabstop>
-  <tabstop>retrieveMail</tabstop>
   <tabstop>mail</tabstop>
   <tabstop>mailMessage</tabstop>
-  <tabstop>pushButtonClearOutgoingMessage</tabstop>
-  <tabstop>sendMail</tabstop>
   <tabstop>participantsCombo</tabstop>
   <tabstop>outgoingSubject</tabstop>
   <tabstop>outgoingMessage</tabstop>
-  <tabstop>goldbug</tabstop>
-  <tabstop>generateGoldBug</tabstop>
-  <tabstop>repository</tabstop>
+  <tabstop>aes256</tabstop>
+  <tabstop>generateAES256</tabstop>
+  <tabstop>sendMail</tabstop>
+  <tabstop>postoffice</tabstop>
   <tabstop>days</tabstop>
-  <tabstop>refreshRepository</tabstop>
   <tabstop>keepOnlyUserDefinedNeighbors</tabstop>
   <tabstop>showOnlyConnectedNeighbors</tabstop>
   <tabstop>toolButtonCopytoClipboard</tabstop>

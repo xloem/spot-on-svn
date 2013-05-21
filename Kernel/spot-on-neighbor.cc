@@ -1041,6 +1041,10 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
 
 	  if(ok)
 	    publicKeyHash = spoton_gcrypt::sha512Hash(publicKey, &ok);
+
+	  if(ok)
+	    senderPublicKeyHash1 = crypt.decrypted
+	      (senderPublicKeyHash1, &ok);
 	}
 
       if(ok)
@@ -1782,7 +1786,7 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 	QSqlQuery query(db);
 
 	query.prepare("INSERT INTO folders "
-		      "(date, folder_index, goldbug, hash, "
+		      "(date, folder_index, gemini, hash, "
 		      "message, receiver_sender, receiver_sender_hash, "
 		      "status, subject, participant_oid) "
 		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");

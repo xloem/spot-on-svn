@@ -54,7 +54,7 @@
         </property>
         <property name="icon">
          <iconset resource="../Icons/icons.qrc">
-          <normaloff>:/clean.png</normaloff>:/clean.png</iconset>
+          <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
         </property>
        </widget>
       </item>
@@ -68,7 +68,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>25</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
