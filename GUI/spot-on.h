@@ -144,7 +144,6 @@ class spoton: public QMainWindow
   void slotSharePublicKeyWithParticipant(void);
   void slotShareURLPublicKey(void);
   void slotShowContextMenu(const QPoint &point);
-  void slotToggleMailSplitter (bool state);
   void slotStatusChanged(int index);
   void slotTabChanged(int index);
   void slotUnblockNeighbor(void);
