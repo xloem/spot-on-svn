@@ -925,9 +925,14 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 		{
 		  if(computedMessageDigest == messageDigest)
 		    {
+		      QByteArray hash
+			(spoton_kernel::s_crypt1->
+			 keyedHash(originalData, &ok));
+
 		      saveParticipantStatus(name, publicKeyHash);
 		      emit receivedChatMessage
 			("message_" +
+			 hash.toBase64() + "_" +
 			 name.toBase64() + "_" +
 			 message.toBase64().append('\n'));
 		    }
@@ -1075,8 +1080,10 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
 
       if(ok)
 	{
-	  if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
-	    storeLetter(originalData, recipientHash);
+	  if(spoton_kernel::s_settings.value("gui/postoffice_enabled",
+					     false).toBool())
+	    if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
+	      storeLetter(originalData, recipientHash);
 	}
       else if(ttl > 0)
 	{
@@ -1132,6 +1139,15 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
       ** have many letters for the requesting parties. How should
       ** we retrieve the letters in a timely, yet functional, manner?
       */
+
+      QByteArray publicKeyHash(list.at(0));
+      bool ok = true;
+
+      publicKeyHash = spoton_kernel::s_crypt1->publicKeyDecrypt
+	(publicKeyHash, &ok);
+
+      if(ok)
+	emit retrieveMail(publicKeyHash);
     }
   else
     spoton_misc::logError

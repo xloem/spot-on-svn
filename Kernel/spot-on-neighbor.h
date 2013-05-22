@@ -129,6 +129,7 @@ class spoton_neighbor: public QTcpSocket
   void receivedMailMessage(const QByteArray &data, const qint64 id);
   void receivedPublicKey(const QByteArray &name, const QByteArray publicKey);
   void receivedStatusMessage(const QByteArray &data, const qint64 id);
+  void retrieveMail(const QByteArray &publicKeyHash);
 };
 
 #endif

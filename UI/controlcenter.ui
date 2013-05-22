@@ -843,6 +843,30 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_30">
             <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_19">
+              <item>
+               <widget class="QCheckBox" name="postofficeCheckBox">
+                <property name="text">
+                 <string>&amp;Enable</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_18">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
              <widget class="QTableWidget" name="postoffice">
               <property name="selectionMode">
                <enum>QAbstractItemView::SingleSelection</enum>
@@ -1151,61 +1175,6 @@
                 </property>
                 <item>
                  <layout class="QGridLayout" name="gridLayout_3">
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="neighborScopeIdLabel">
-                    <property name="text">
-                     <string>&amp;Scope ID</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>neighborScopeId</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="4">
-                   <widget class="QRadioButton" name="ipv6Neighbor">
-                    <property name="layoutDirection">
-                     <enum>Qt::LeftToRight</enum>
-                    </property>
-                    <property name="text">
-                     <string>IPv&amp;6</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="2">
-                   <widget class="QLabel" name="label_13">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="layoutDirection">
-                     <enum>Qt::RightToLeft</enum>
-                    </property>
-                    <property name="text">
-                     <string>&amp;Port</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>neighborPort</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QLineEdit" name="neighborScopeId"/>
-                  </item>
-                  <item row="0" column="4">
-                   <widget class="QRadioButton" name="ipv4Neighbor">
-                    <property name="layoutDirection">
-                     <enum>Qt::LeftToRight</enum>
-                    </property>
-                    <property name="text">
-                     <string>IPv&amp;4</string>
-                    </property>
-                    <property name="checked">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="0" column="1">
                    <widget class="QLineEdit" name="neighborIP"/>
                   </item>
@@ -1238,6 +1207,71 @@
                     </property>
                     <property name="value">
                      <number>4710</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="5">
+                   <widget class="QRadioButton" name="ipv4Neighbor">
+                    <property name="layoutDirection">
+                     <enum>Qt::LeftToRight</enum>
+                    </property>
+                    <property name="text">
+                     <string>IPv&amp;4</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QLabel" name="label_13">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="layoutDirection">
+                     <enum>Qt::RightToLeft</enum>
+                    </property>
+                    <property name="text">
+                     <string>&amp;Port</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>neighborPort</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="neighborScopeIdLabel">
+                    <property name="text">
+                     <string>&amp;Scope ID</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>neighborScopeId</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLineEdit" name="neighborScopeId"/>
+                  </item>
+                  <item row="1" column="5">
+                   <widget class="QRadioButton" name="ipv6Neighbor">
+                    <property name="layoutDirection">
+                     <enum>Qt::LeftToRight</enum>
+                    </property>
+                    <property name="text">
+                     <string>IPv&amp;6</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="4">
+                   <widget class="QRadioButton" name="dynamicdns">
+                    <property name="toolTip">
+                     <string>Dynamic DNS</string>
+                    </property>
+                    <property name="text">
+                     <string>&amp;DDNS</string>
                     </property>
                    </widget>
                   </item>
@@ -1553,8 +1587,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>939</width>
-             <height>502</height>
+             <width>1002</width>
+             <height>786</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2780,6 +2814,7 @@
   <tabstop>aes256</tabstop>
   <tabstop>generateAES256</tabstop>
   <tabstop>sendMail</tabstop>
+  <tabstop>postofficeCheckBox</tabstop>
   <tabstop>postoffice</tabstop>
   <tabstop>days</tabstop>
   <tabstop>keepOnlyUserDefinedNeighbors</tabstop>
@@ -2789,6 +2824,7 @@
   <tabstop>neighbors</tabstop>
   <tabstop>neighborIP</tabstop>
   <tabstop>neighborPort</tabstop>
+  <tabstop>dynamicdns</tabstop>
   <tabstop>ipv4Neighbor</tabstop>
   <tabstop>neighborScopeId</tabstop>
   <tabstop>ipv6Neighbor</tabstop>

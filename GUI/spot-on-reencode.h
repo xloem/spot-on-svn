@@ -30,13 +30,14 @@
 
 #include "Common/spot-on-gcrypt.h"
 #include "spot-on.h"
+#include "ui_statusbar.h"
 
 class spoton_reencode
 {
  public:
   spoton_reencode(void);
   ~spoton_reencode();
-  void reencode(spoton *ui,
+  void reencode(Ui_statusbar sb,
 		spoton_gcrypt *newCrypt, spoton_gcrypt *oldCrypt);
 };
 

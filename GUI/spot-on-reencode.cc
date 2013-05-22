@@ -45,17 +45,16 @@ spoton_reencode::~spoton_reencode()
 {
 }
 
-void spoton_reencode::reencode(spoton *ui,
+void spoton_reencode::reencode(Ui_statusbar sb,
 			       spoton_gcrypt *newCrypt,
 			       spoton_gcrypt *oldCrypt)
 {
-  if(!newCrypt || !oldCrypt || !ui)
+  if(!newCrypt || !oldCrypt)
     return;
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-  ui->statusBar()->showMessage
+  sb.status->setText
     (QObject::tr("Re-encoding email.db."));
-  QApplication::processEvents();
   spoton_misc::prepareDatabases();
 
   {
@@ -188,9 +187,8 @@ void spoton_reencode::reencode(spoton *ui,
   }
 
   QSqlDatabase::removeDatabase("spoton_reencode");
-  ui->statusBar()->showMessage
+  sb.status->setText
     (QObject::tr("Re-encoding country_inclusion.db."));
-  QApplication::processEvents();
   spoton_misc::prepareDatabases();
 
   {
@@ -262,9 +260,8 @@ void spoton_reencode::reencode(spoton *ui,
   }
 
   QSqlDatabase::removeDatabase("spoton_reencode");
-  ui->statusBar()->showMessage
+  sb.status->setText
     (QObject::tr("Re-encoding listeners.db."));
-  QApplication::processEvents();
   spoton_misc::prepareDatabases();
 
   {
@@ -363,9 +360,8 @@ void spoton_reencode::reencode(spoton *ui,
   }
 
   QSqlDatabase::removeDatabase("spoton_reencode");
-  ui->statusBar()->showMessage
+  sb.status->setText
     (QObject::tr("Re-encoding neighbors.db."));
-  QApplication::processEvents();
   spoton_misc::prepareDatabases();
 
   {
@@ -477,4 +473,5 @@ void spoton_reencode::reencode(spoton *ui,
 
   QSqlDatabase::removeDatabase("spoton_reencode");
   QApplication::restoreOverrideCursor();
+  sb.status->clear();
 }

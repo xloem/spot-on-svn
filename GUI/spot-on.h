@@ -93,6 +93,7 @@ class spoton: public QMainWindow
   void slotAddNeighbor(void);
   void slotBlockNeighbor(void);
   void slotChatSendMethodChanged(int index);
+  void slotChatStatusClicked(void);
   void slotClearOutgoingMessage(void);
   void slotConnectNeighbor(void);
   void slotCopyFriendshipBundle(void);
@@ -110,7 +111,9 @@ class spoton: public QMainWindow
   void slotDisconnectNeighbor(void);
   void slotDisplayLocalSearchResults(void);
   void slotDoSearch(void);
+  void slotEmailStatusClicked(void);
   void slotEmptyTrash(void);
+  void slotEnabledPostOffice(bool state);
   void slotFetchMoreAlgo(void);
   void slotFetchMoreButton(void);
   void slotGeminiChanged(QTableWidgetItem *item);

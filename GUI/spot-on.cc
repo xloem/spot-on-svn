@@ -114,6 +114,16 @@ spoton::spoton(void):QMainWindow()
 #endif
   m_sbWidget = new QWidget(this);
   m_sb.setupUi(m_sbWidget);
+  m_sb.chat->setVisible(false);
+  m_sb.email->setVisible(false);
+  connect(m_sb.chat,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotChatStatusClicked(void)));
+  connect(m_sb.email,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotEmailStatusClicked(void)));
   connect(m_sb.errorlog,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -143,6 +153,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotAddNeighbor(void)));
+  connect(m_ui.dynamicdns,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotProtocolRadioToggled(bool)));
   connect(m_ui.ipv4Listener,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -319,6 +333,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentChanged(int)),
 	  this,
 	  SLOT(slotMailTabChanged(int)));
+  connect(m_ui.postofficeCheckBox,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotEnabledPostOffice(bool)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -445,6 +463,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.cipherType->addItems(spoton_gcrypt::cipherTypes());
   m_ui.keepOnlyUserDefinedNeighbors->setChecked
     (m_settings.value("gui/keepOnlyUserDefinedNeighbors", false).toBool());
+  m_ui.postofficeCheckBox->setChecked
+    (m_settings.value("gui/postoffice_enabled", false).toBool());
   m_ui.scrambler->setChecked
     (m_settings.value("gui/scramblerEnabled", false).toBool());
   m_ui.showOnlyConnectedNeighbors->setChecked
@@ -761,7 +781,7 @@ void spoton::slotAddNeighbor(void)
 	else if(m_ui.ipv6Neighbor->isChecked())
 	  protocol = "IPv6";
 	else
-	  protocol = "dns_domain";
+	  protocol = "Dynamic DNS";
 
 	query.prepare("INSERT INTO neighbors "
 		      "(local_ip_address, "
@@ -779,7 +799,9 @@ void spoton::slotAddNeighbor(void)
 		      "VALUES "
 		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-	if(protocol == "IPv6")
+	if(protocol == "Dynamic DNS")
+	  query.bindValue(0, "localhost");
+	else if(protocol == "IPv6")
 	  query.bindValue(0, "::1");
 	else
 	  query.bindValue(0, "127.0.0.1");
@@ -792,45 +814,48 @@ void spoton::slotAddNeighbor(void)
 	    (3, m_crypt->encrypted(QByteArray(), &ok).toBase64());
 	else
 	  {
-	    QList<int> numbers;
-	    QStringList list;
-
-	    if(protocol == "IPv4")
-	      list = ip.split(".", QString::KeepEmptyParts);
-	    else
-	      list = ip.split(":", QString::KeepEmptyParts);
-
-	    for(int i = 0; i < list.size(); i++)
-	      numbers.append(list.at(i).toInt());
-
-	    ip.clear();
-
-	    if(protocol == "IPv4")
+	    if(protocol == "IPv4" || protocol == "IPv6")
 	      {
-		ip = QString::number(numbers.value(0)) + "." +
-		  QString::number(numbers.value(1)) + "." +
-		  QString::number(numbers.value(2)) + "." +
-		  QString::number(numbers.value(3));
-		ip.remove("...");
-	      }
-	    else
-	      {
-		ip = QString::number(numbers.value(0)) + ":" +
-		  QString::number(numbers.value(1)) + ":" +
-		  QString::number(numbers.value(2)) + ":" +
-		  QString::number(numbers.value(3)) + ":" +
-		  QString::number(numbers.value(4)) + ":" +
-		  QString::number(numbers.value(5)) + ":" +
-		  QString::number(numbers.value(6)) + ":" +
-		  QString::number(numbers.value(7));
-		ip.remove(":::::::");
+		QList<int> numbers;
+		QStringList list;
 
-		/*
-		** Special exception.
-		*/
+		if(protocol == "IPv4")
+		  list = ip.split(".", QString::KeepEmptyParts);
+		else
+		  list = ip.split(":", QString::KeepEmptyParts);
 
-		if(ip == "0:0:0:0:0:0:0:0")
-		  ip = "::";
+		for(int i = 0; i < list.size(); i++)
+		  numbers.append(list.at(i).toInt());
+
+		ip.clear();
+
+		if(protocol == "IPv4")
+		  {
+		    ip = QString::number(numbers.value(0)) + "." +
+		      QString::number(numbers.value(1)) + "." +
+		      QString::number(numbers.value(2)) + "." +
+		      QString::number(numbers.value(3));
+		    ip.remove("...");
+		  }
+		else
+		  {
+		    ip = QString::number(numbers.value(0)) + ":" +
+		      QString::number(numbers.value(1)) + ":" +
+		      QString::number(numbers.value(2)) + ":" +
+		      QString::number(numbers.value(3)) + ":" +
+		      QString::number(numbers.value(4)) + ":" +
+		      QString::number(numbers.value(5)) + ":" +
+		      QString::number(numbers.value(6)) + ":" +
+		      QString::number(numbers.value(7));
+		    ip.remove(":::::::");
+
+		    /*
+		    ** Special exception.
+		    */
+
+		    if(ip == "0:0:0:0:0:0:0:0")
+		      ip = "::";
+		  }
 	      }
 
 	    if(ok)
@@ -893,7 +918,14 @@ void spoton::slotProtocolRadioToggled(bool state)
   if(!radio)
     return;
 
-  if(radio == m_ui.ipv4Listener || radio == m_ui.ipv4Neighbor)
+  if(radio == m_ui.dynamicdns)
+    {
+      m_ui.neighborIP->clear();
+      m_ui.neighborIP->setInputMask("");
+      m_ui.neighborScopeId->setEnabled(true);
+      m_ui.neighborScopeIdLabel->setEnabled(true);
+    }
+  else if(radio == m_ui.ipv4Listener || radio == m_ui.ipv4Neighbor)
     {
       if(radio == m_ui.ipv4Listener)
 	{
@@ -1785,12 +1817,8 @@ void spoton::slotSetPassphrase(void)
   ** Create the RSA public and private keys.
   */
 
-  statusBar()->showMessage
+  m_sb.status->setText
     (tr("Generating a derived key. Please be patient."));
-#ifdef Q_OS_MAC
-  QApplication::processEvents();
-#endif
-
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   /*
@@ -1816,14 +1844,15 @@ void spoton::slotSetPassphrase(void)
 			       salt,
 			       error1));
 
+  m_sb.status->clear();
+
   if(error1.isEmpty())
     {
       if(reencode)
 	{
 	  slotDeactivateKernel();
-	  statusBar()->showMessage
+	  m_sb.status->setText
 	    (tr("Re-encoding RSA key pair 1 of 2. Please be patient."));
-	  QApplication::processEvents();
 	  spoton_gcrypt::reencodeRSAKeys
 	    (m_ui.cipherType->currentText(),
 	     derivedKey,
@@ -1831,12 +1860,12 @@ void spoton::slotSetPassphrase(void)
 	     m_crypt->symmetricKey(),
 	     "private",
 	     error2);
+	  m_sb.status->clear();
 
 	  if(error2.isEmpty())
 	    {
-	      statusBar()->showMessage
+	      m_sb.status->setText
 		(tr("Re-encoding RSA key pair 2 of 2. Please be patient."));
-	      QApplication::processEvents();
 	      spoton_gcrypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
 		 derivedKey,
@@ -1845,6 +1874,7 @@ void spoton::slotSetPassphrase(void)
 		 m_crypt->symmetricKey(),
 		 "url",
 		 error2);
+	      m_sb.status->clear();
 	    }
 	}
       else
@@ -1856,10 +1886,9 @@ void spoton::slotSetPassphrase(void)
 
 	  for(int i = 0; i < list.size(); i++)
 	    {
-	      statusBar()->showMessage
+	      m_sb.status->setText
 		(tr("Generating RSA key pair %1 of %2. Please be patient.").
 		 arg(i + 1).arg(list.size()));
-	      QApplication::processEvents();
 
 	      spoton_gcrypt crypt
 		(m_ui.cipherType->currentText(),
@@ -1872,6 +1901,7 @@ void spoton::slotSetPassphrase(void)
 
 	      crypt.generatePrivatePublicKeys
 		(m_ui.rsaKeySize->currentText().toInt(), error2);
+	      m_sb.status->clear();
 
 	      if(!error2.isEmpty())
 		break;
@@ -1920,7 +1950,7 @@ void spoton::slotSetPassphrase(void)
 	      spoton_reencode reencode;
 
 	      m_tableTimer.stop();
-	      reencode.reencode(this, crypt, m_crypt);
+	      reencode.reencode(m_sb, crypt, m_crypt);
 	      delete crypt;
 	      m_tableTimer.start();
 	    }
@@ -1937,12 +1967,12 @@ void spoton::slotSetPassphrase(void)
 
 	  if(!reencode)
 	    {
-	      statusBar()->showMessage
+	      m_sb.status->setText
 		(tr("Initializing country_inclusion.db."));
-	      QApplication::processEvents();
 	      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	      spoton_misc::populateCountryDatabase(m_crypt);
 	      QApplication::restoreOverrideCursor();
+	      m_sb.status->clear();
 	    }
 
 	  if(!m_tableTimer.isActive())
@@ -2042,14 +2072,13 @@ void spoton::slotValidatePassphrase(void)
 	 m_ui.saltLength->value(),
 	 m_ui.iterationCount->value(),
 	 "private");
-
-      statusBar()->showMessage
+      m_sb.status->setText
 	(tr("Initializing country_inclusion.db."));
-      QApplication::processEvents();
       QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
       spoton_misc::populateCountryDatabase(m_crypt);
       QApplication::restoreOverrideCursor();
       spoton_misc::populateCountryDatabase(m_crypt);
+      m_sb.status->clear();
 
       if(!m_tableTimer.isActive())
 	m_tableTimer.start();
@@ -2859,11 +2888,19 @@ void spoton::slotReceivedKernelMessage(void)
 
 	      if(!data.isEmpty())
 		{
+		  QList<QByteArray> list(data.split('_'));
+
+		  if(list.size() != 3)
+		    continue;
+
+		  for(int i = 0; i < list.size(); i++)
+		    list.replace(i, QByteArray::fromBase64(list.at(i)));
+
 		  QByteArray hash;
 		  bool duplicate = false;
 		  bool ok = true;
 
-		  hash = spoton_gcrypt::sha512Hash(data, &ok);
+		  hash = spoton_gcrypt::sha512Hash(list.at(0), &ok);
 
 		  if(m_messagingCache.contains(hash))
 		    duplicate = true;
@@ -2873,16 +2910,8 @@ void spoton::slotReceivedKernelMessage(void)
 		  if(duplicate)
 		    continue;
 
-		  QList<QByteArray> list(data.split('_'));
-
-		  if(list.size() != 2)
-		    continue;
-
-		  for(int i = 0; i < list.size(); i++)
-		    list.replace(i, QByteArray::fromBase64(list.at(i)));
-
-		  QByteArray name(list.at(0));
-		  QByteArray message(list.at(1));
+		  QByteArray name(list.at(1));
+		  QByteArray message(list.at(2));
 		  QString msg("");
 
 		  if(name.isEmpty())
@@ -2904,10 +2933,12 @@ void spoton::slotReceivedKernelMessage(void)
 		  m_ui.messages->verticalScrollBar()->setValue
 		    (m_ui.messages->verticalScrollBar()->maximum());
 
+		  if(m_ui.tab->currentIndex() != 0)
+		    m_sb.chat->setVisible(true);
 		}
 	    }
 	  else if(data == "newmail")
-	    statusBar()->showMessage(tr("You have new e-mail!"), 2500);
+	    m_sb.email->setVisible(true);
 	}
     }
 }
@@ -4960,4 +4991,26 @@ void spoton::slotMailTabChanged(int index)
   */
 
   m_ui.pushButtonClearMail->setEnabled(index != 2);
+}
+
+void spoton::slotEnabledPostOffice(bool state)
+{
+  m_settings["gui/postoffice_enabled"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/postoffice_enabled", state);
+}
+
+void spoton::slotEmailStatusClicked(void)
+{
+  m_sb.email->setVisible(false);
+  m_ui.mailTab->setCurrentIndex(0);
+  m_ui.tab->setCurrentIndex(1);
+}
+
+void spoton::slotChatStatusClicked(void)
+{
+  m_sb.chat->setVisible(false);
+  m_ui.tab->setCurrentIndex(0);
 }

@@ -33,6 +33,13 @@
     <number>5</number>
    </property>
    <item>
+    <widget class="QLabel" name="status">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item>
     <spacer name="horizontalSpacer">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -44,6 +51,40 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item>
+    <widget class="QToolButton" name="chat">
+     <property name="toolTip">
+      <string>You have received a new message.</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../Icons/icons.qrc">
+       <normaloff>:/chat.png</normaloff>:/chat.png</iconset>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="email">
+     <property name="toolTip">
+      <string>New e-mail has arrived!</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../Icons/icons.qrc">
+       <normaloff>:/write.png</normaloff>:/write.png</iconset>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QToolButton" name="kernelstatus">
@@ -85,6 +126,8 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>chat</tabstop>
+  <tabstop>email</tabstop>
   <tabstop>kernelstatus</tabstop>
   <tabstop>errorlog</tabstop>
  </tabstops>

@@ -439,6 +439,10 @@ void spoton_misc::populateCountryDatabase(spoton_gcrypt *crypt)
 	  (QLocale::matchingLocales(QLocale::AnyLanguage, QLocale::AnyScript,
 				    QLocale::AnyCountry));
 #else
+	/*
+	** Volunteers?
+	*/
+
 	QList<QLocale> allLocales;
 #endif
 
