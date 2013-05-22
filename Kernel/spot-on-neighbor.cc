@@ -1431,11 +1431,11 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
     {
       data = QByteArray::fromBase64(data);
 
-      QUuid uuid(QUuid::fromRfc4122(data));
+      QUuid uuid(data.constData());
 
       if(uuid.isNull())
 	spoton_misc::logError
-	  ("spoton_neighbor::process0014(): QUuid::fromRfc4122() failure.");
+	  ("spoton_neighbor::process0014(): empty UUID.");
       else
 	{
 	  m_receivedUuid = uuid;
@@ -1614,12 +1614,11 @@ void spoton_neighbor::slotSendUuid(void)
     return;
 
   QByteArray message;
-  QUuid uuid(QUuid::fromRfc4122(spoton_kernel::
-				s_settings.value("gui/uuid").toByteArray()));
+  QUuid uuid(spoton_kernel::s_settings.value("gui/uuid").toString());
 
   if(!uuid.isNull())
     {
-      message = spoton_send::message0014(uuid.toRfc4122());
+      message = spoton_send::message0014(uuid.toString().toLatin1());
 
       if(write(message.constData(), message.length()) !=
 	 message.length())
@@ -1630,7 +1629,7 @@ void spoton_neighbor::slotSendUuid(void)
     }
   else
     spoton_misc::logError("spoton_neighbor::slotSendUuid(): "
-			  "QUuid::fromRfc4122() failure.");
+			  "empty UUID.");
 }
 
 void spoton_neighbor::saveExternalAddress(const QHostAddress &address,

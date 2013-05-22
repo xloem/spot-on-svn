@@ -31,7 +31,7 @@ QMAKE_CXXFLAGS_RELEASE += -mtune=generic -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
 			  -Werror -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith
-QMAKE_LFLAGS_RELEASE += -Wl,-rpath,/usr/local/spot-on/Lib
+QMAKE_LFLAGS_RELEASE += -Wl,-rpath,/usr/local/spot-on/Lib -L/usr/local/lib
 QMAKE_EXTRA_TARGETS = libspoton purge
 QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../. ../../../.

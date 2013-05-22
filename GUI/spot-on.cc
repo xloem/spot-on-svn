@@ -387,7 +387,7 @@ spoton::spoton(void):QMainWindow()
     {
       QUuid uuid(QUuid::createUuid());
 
-      settings.setValue("gui/uuid", uuid.toRfc4122());
+      settings.setValue("gui/uuid", uuid.toString());
     }
 
   for(int i = 0; i < settings.allKeys().size(); i++)

@@ -434,9 +434,13 @@ void spoton_misc::populateCountryDatabase(spoton_gcrypt *crypt)
 
     if(db.open())
       {
+#if QT_VERSION >= 0x040800
 	QList<QLocale> allLocales
 	  (QLocale::matchingLocales(QLocale::AnyLanguage, QLocale::AnyScript,
 				    QLocale::AnyCountry));
+#else
+	QList<QLocale> allLocales;
+#endif
 
 	while(!allLocales.isEmpty())
 	  {
