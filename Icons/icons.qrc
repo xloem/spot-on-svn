@@ -4,8 +4,8 @@
         <file>add.png</file>
 	<file>add-listener.png</file>
 	<file>add-url.png</file>
-    	<file>away.svg</file>
-	<file>busy.svg</file>
+    	<file>away.png</file>
+	<file>busy.png</file>
 	<file>chat.png</file>
     	<file>clear.png</file>
 	<file>copy.png</file>
@@ -18,12 +18,13 @@
 	<file>full-trash.png</file>
 	<file>heart.png</file>
 	<file>inbox.png</file>
+	<file>information.png</file>
 	<file>lock.png</file>
 	<file>modify.png</file>
 	<file>neighbors.png</file>
 	<file>offline.png</file>
 	<file>ok.png</file>
-	<file>online.svg</file>
+	<file>online.png</file>
 	<file>outbox.png</file>
 	<file>read.png</file>
 	<file>refresh.png</file>

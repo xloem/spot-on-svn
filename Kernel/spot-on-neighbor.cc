@@ -401,6 +401,12 @@ void spoton_neighbor::slotReadyRead(void)
 	    }
 	  else if(length > 0 && data.contains("type=0002&content="))
 	    {
+	      if(!spoton_kernel::s_crypt1)
+		spoton_misc::logError
+		  ("spoton_neighbor::slotReadyRead(): "
+		   "spoton_kernel::s_crypt1 is 0.");
+	      else
+		process0002(length, data);
 	    }
 	  else if(length > 0 && data.contains("type=0011&content="))
 	    {
@@ -1088,6 +1094,48 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0001(): 0001 "
+	       "content-length mismatch (advertised: %1, received: %2).").
+       arg(length).arg(data.length()));
+}
+
+void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
+{
+  length -= strlen("type=0002&content=");
+
+  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
+
+  data.remove
+    (0,
+     data.indexOf("type=0002&content=") + strlen("type=0002&content="));
+
+  if(length == data.length())
+    {
+      data = QByteArray::fromBase64(data);
+
+      QList<QByteArray> list(data.split('\n'));
+
+      if(list.size() != 1)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::process0002(): "
+		     "received irregular data. Expecting 1 entry, "
+		     "received %1.").arg(list.size()));
+	  return;
+	}
+
+      for(int i = 0; i < list.size(); i++)
+	list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+      /*
+      ** We must do some sort of thinking.
+      ** Remember, we may receive multiple mail requests. And we may
+      ** have many letters for the requesting parties. How should
+      ** we retrieve the letters in a timely, yet functional, manner?
+      */
+    }
+  else
+    spoton_misc::logError
+      (QString("spoton_neighbor::process0011(): 0002 "
 	       "content-length mismatch (advertised: %1, received: %2).").
        arg(length).arg(data.length()));
 }

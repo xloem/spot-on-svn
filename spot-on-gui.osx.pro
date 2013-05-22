@@ -45,7 +45,8 @@ RCC_DIR = temp/rcc
 
 FORMS           = UI/controlcenter.ui \
 		  UI/docviewer.ui \
-                  UI/logviewer.ui 
+                  UI/logviewer.ui \
+		  UI/statusbar.ui
 
 UI_HEADERS_DIR  = GUI
 

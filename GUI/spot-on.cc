@@ -112,6 +112,21 @@ spoton::spoton(void):QMainWindow()
 #ifdef Q_OS_MAC
   setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
+  m_sbWidget = new QWidget(this);
+  m_sb.setupUi(m_sbWidget);
+  connect(m_sb.errorlog,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotViewLog(void)));
+  connect(m_sb.kernelstatus,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotKernelStatus(void)));
+  statusBar()->addPermanentWidget(m_sbWidget, 100);
+  statusBar()->setStyleSheet("QStatusBar::item {"
+			     "border: none; "
+			     "}");
+  statusBar()->setMaximumHeight(m_sbWidget->height());
   connect(m_ui.action_Quit,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -300,6 +315,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotRetrieveMail(void)));
+  connect(m_ui.mailTab,
+	  SIGNAL(currentChanged(int)),
+	  this,
+	  SLOT(slotMailTabChanged(int)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -332,8 +351,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(readyRead(void)),
 	  this,
 	  SLOT(slotReceivedKernelMessage(void)));
-  statusBar()->showMessage(tr("Not connected to the kernel. Is the kernel "
-			      "active?"));
+  m_sb.kernelstatus->setIcon(QIcon(":/deactivate.png"));
+  m_sb.kernelstatus->setToolTip
+    (tr("Not connected to the kernel. Is the kernel "
+	"active?"));
 
   QMenu *menu = new QMenu(this);
 
@@ -470,6 +491,7 @@ spoton::spoton(void):QMainWindow()
 
   if(spoton_gcrypt::passphraseSet())
     {
+      m_sb.kernelstatus->setEnabled(false);
       m_ui.passphrase1->setText("0000000000");
       m_ui.passphrase2->setText("0000000000");
       m_ui.rsaKeySize->setEnabled(false);
@@ -489,6 +511,7 @@ spoton::spoton(void):QMainWindow()
     }
   else
     {
+      m_sb.kernelstatus->setEnabled(false);
       m_ui.passphrase->setEnabled(false);
       m_ui.passphraseButton->setEnabled(false);
       m_ui.passphraseLabel->setEnabled(false);
@@ -1928,6 +1951,7 @@ void spoton::slotSetPassphrase(void)
 	  sendKeyToKernel();
 	}
 
+      m_sb.kernelstatus->setEnabled(true);
       m_ui.kernelBox->setEnabled(true);
       m_ui.listenersBox->setEnabled(true);
       m_ui.pushButtonDocViewer->setEnabled(true);
@@ -2031,6 +2055,7 @@ void spoton::slotValidatePassphrase(void)
 	m_tableTimer.start();
 
       sendKeyToKernel();
+      m_sb.kernelstatus->setEnabled(true);
       m_ui.kernelBox->setEnabled(true);
       m_ui.listenersBox->setEnabled(true);
       m_ui.passphrase->clear();
@@ -2190,15 +2215,20 @@ void spoton::slotKernelSocketState(void)
   if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
     {
       sendKeyToKernel();
-      statusBar()->showMessage(tr("Connected to the kernel on port %1 "
-				  "from local port %2.").
-			       arg(m_kernelSocket.peerPort()).
-			       arg(m_kernelSocket.localPort()),
-			       2500);
+      m_sb.kernelstatus->setIcon(QIcon(":/activate.png"));
+      m_sb.kernelstatus->setToolTip
+	(tr("Connected to the kernel on port %1 "
+	    "from local port %2.").
+	 arg(m_kernelSocket.peerPort()).
+	 arg(m_kernelSocket.localPort()));
     }
   else
-    statusBar()->showMessage(tr("Not connected to the kernel. Is the kernel "
-				"active?"), 2500);
+    {
+      m_sb.kernelstatus->setIcon(QIcon(":/deactivate.png"));
+      m_sb.kernelstatus->setToolTip
+	(tr("Not connected to the kernel. Is the kernel "
+	    "active?"));
+    }
 }
 
 void spoton::sendKeyToKernel(void)
@@ -2642,14 +2672,14 @@ void spoton::slotPopulateParticipants(void)
 			  if(status == "away")
 			    {
 			      item->setIcon
-				(QIcon(":/away.svg"));
+				(QIcon(":/away.png"));
 			      item->setToolTip(tr("Your friend %1 is away.").
 					       arg(item->text()));
 			    }
 			  else if(status == "busy")
 			    {
 			      item->setIcon
-				(QIcon(":/busy.svg"));
+				(QIcon(":/busy.png"));
 			      item->setToolTip(tr("Your friend %1 is busy.").
 					       arg(item->text()));
 			    }
@@ -2664,7 +2694,7 @@ void spoton::slotPopulateParticipants(void)
 			  else if(status == "online")
 			    {
 			      item->setIcon
-				(QIcon(":/online.svg"));
+				(QIcon(":/online.png"));
 			      item->setToolTip(tr("User %1 is online.").
 					       arg(item->text()));
 			    }
@@ -2877,7 +2907,7 @@ void spoton::slotReceivedKernelMessage(void)
 		}
 	    }
 	  else if(data == "newmail")
-	    statusBar()->showMessage(tr("New E-Mail!"), 2500);
+	    statusBar()->showMessage(tr("You have new e-mail!"), 2500);
 	}
     }
 }
@@ -4913,4 +4943,21 @@ void spoton::slotRetrieveMail(void)
       else
 	m_kernelSocket.flush();
     }
+}
+
+void spoton::slotKernelStatus(void)
+{
+  if(isKernelActive())
+    slotDeactivateKernel();
+  else
+    slotActivateKernel();
+}
+
+void spoton::slotMailTabChanged(int index)
+{
+  /*
+  ** Change states of some widgets.
+  */
+
+  m_ui.pushButtonClearMail->setEnabled(index != 2);
 }

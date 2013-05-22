@@ -188,7 +188,6 @@ void spoton_reencode::reencode(spoton *ui,
   }
 
   QSqlDatabase::removeDatabase("spoton_reencode");
-
   ui->statusBar()->showMessage
     (QObject::tr("Re-encoding country_inclusion.db."));
   QApplication::processEvents();

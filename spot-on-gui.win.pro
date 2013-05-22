@@ -33,7 +33,8 @@ PRE_TARGETDEPS = libspoton.dll
 
 FORMS           = UI\\controlcenter.ui \
                   UI\\docviewer.ui \
-                  UI\\logviewer.ui 
+                  UI\\logviewer.ui \
+		  UI\\statusbar.ui
 
 UI_HEADERS_DIR  = GUI
 

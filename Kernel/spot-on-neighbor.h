@@ -76,6 +76,7 @@ class spoton_neighbor: public QTcpSocket
   void prepareNetworkInterface(void);
   void process0000(int length, const QByteArray &data);
   void process0001(int length, const QByteArray &data);
+  void process0002(int length, const QByteArray &data);
   void process0011(int length, const QByteArray &data);
   void process0012(int length, const QByteArray &data);
   void process0013(int length, const QByteArray &data);

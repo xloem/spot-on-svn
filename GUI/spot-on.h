@@ -39,6 +39,7 @@
 #include "spot-on-docviewer.h"
 #include "spot-on-logviewer.h"
 #include "ui_controlcenter.h"
+#include "ui_statusbar.h"
 
 class spoton: public QMainWindow
 {
@@ -65,6 +66,8 @@ class spoton: public QMainWindow
   QTcpSocket m_kernelSocket;
   QTimer m_generalTimer;
   QTimer m_tableTimer;
+  QWidget *m_sbWidget;
+  Ui_statusbar m_sb;
   Ui_spoton_mainwindow m_ui;
   spoton_gcrypt *m_crypt;
   spoton_docviewer m_docViewer;
@@ -116,9 +119,11 @@ class spoton: public QMainWindow
   void slotGenerateGeminiInChat(void);
   void slotKeepOnlyUserDefinedNeighbors(bool);
   void slotKernelSocketState(void);
+  void slotKernelStatus(void);
   void slotListenerCheckChange(int state);
   void slotListenerIPComboChanged(int index);
   void slotMailSelected(void);
+  void slotMailTabChanged(int index);
   void slotMaximumClientsChanged(int index);
   void slotNeighborCheckChange(int state);
   void slotOnlyConnectedNeighborsToggled(bool state);

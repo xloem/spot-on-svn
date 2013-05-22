@@ -152,6 +152,9 @@
                        </item>
                        <item>
                         <widget class="QPushButton" name="saveNodeName">
+                         <property name="toolTip">
+                          <string>Save my name.</string>
+                         </property>
                          <property name="text">
                           <string>Save</string>
                          </property>
@@ -181,7 +184,7 @@
                           </property>
                           <property name="icon">
                            <iconset resource="../Icons/icons.qrc">
-                            <normaloff>:/away.svg</normaloff>:/away.svg</iconset>
+                            <normaloff>:/away.png</normaloff>:/away.png</iconset>
                           </property>
                          </item>
                          <item>
@@ -190,7 +193,7 @@
                           </property>
                           <property name="icon">
                            <iconset resource="../Icons/icons.qrc">
-                            <normaloff>:/busy.svg</normaloff>:/busy.svg</iconset>
+                            <normaloff>:/busy.png</normaloff>:/busy.png</iconset>
                           </property>
                          </item>
                          <item>
@@ -208,7 +211,7 @@
                           </property>
                           <property name="icon">
                            <iconset resource="../Icons/icons.qrc">
-                            <normaloff>:/online.svg</normaloff>:/online.svg</iconset>
+                            <normaloff>:/online.png</normaloff>:/online.png</iconset>
                           </property>
                          </item>
                         </widget>
@@ -424,6 +427,9 @@
               <height>0</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>Clear the contents of the current view.</string>
+            </property>
             <property name="text">
              <string>Clear</string>
             </property>
@@ -457,6 +463,9 @@
               <width>130</width>
               <height>0</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Request e-mail from other post offices.</string>
             </property>
             <property name="text">
              <string>Retrieve</string>
@@ -755,6 +764,9 @@
                 </item>
                 <item>
                  <widget class="QPushButton" name="generateAES256">
+                  <property name="toolTip">
+                   <string>Bundle the e-mail with an additional layer of encryption. Do remember to notify all recipients of the key.</string>
+                  </property>
                   <property name="text">
                    <string>AES-256</string>
                   </property>
@@ -1422,7 +1434,7 @@
           <item>
            <widget class="QPushButton" name="pushButton_11">
             <property name="text">
-             <string>Search</string>
+             <string>Fetch!</string>
             </property>
             <property name="icon">
              <iconset resource="../Icons/icons.qrc">
@@ -1541,8 +1553,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1002</width>
-             <height>786</height>
+             <width>939</width>
+             <height>502</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
