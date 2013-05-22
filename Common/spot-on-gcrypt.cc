@@ -1811,6 +1811,8 @@ void spoton_gcrypt::generatePrivatePublicKeys(const int rsaKeySize,
       goto error_label;
     }
 
+  gcry_fast_random_poll();
+
   if((err = gcry_pk_genkey(&keyPair_t, parameters_t)) != 0 || !keyPair_t)
     {
       error = QObject::tr("gcry_pk_genkey() failure");

@@ -2193,11 +2193,12 @@ void spoton::slotKernelSocketState(void)
       statusBar()->showMessage(tr("Connected to the kernel on port %1 "
 				  "from local port %2.").
 			       arg(m_kernelSocket.peerPort()).
-			       arg(m_kernelSocket.localPort()));
+			       arg(m_kernelSocket.localPort()),
+			       2500);
     }
   else
     statusBar()->showMessage(tr("Not connected to the kernel. Is the kernel "
-				"active?"));
+				"active?"), 2500);
 }
 
 void spoton::sendKeyToKernel(void)
@@ -2641,14 +2642,14 @@ void spoton::slotPopulateParticipants(void)
 			  if(status == "away")
 			    {
 			      item->setIcon
-				(QIcon(":/away.png"));
+				(QIcon(":/away.svg"));
 			      item->setToolTip(tr("Your friend %1 is away.").
 					       arg(item->text()));
 			    }
 			  else if(status == "busy")
 			    {
 			      item->setIcon
-				(QIcon(":/busy.png"));
+				(QIcon(":/busy.svg"));
 			      item->setToolTip(tr("Your friend %1 is busy.").
 					       arg(item->text()));
 			    }
@@ -2663,7 +2664,7 @@ void spoton::slotPopulateParticipants(void)
 			  else if(status == "online")
 			    {
 			      item->setIcon
-				(QIcon(":/online.png"));
+				(QIcon(":/online.svg"));
 			      item->setToolTip(tr("User %1 is online.").
 					       arg(item->text()));
 			    }
