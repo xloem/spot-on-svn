@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
   myappTranslator.load("spot-on_" + QLocale::system().name(),
 		       "Translations");
   qapplication.installTranslator(&myappTranslator);
-  QCoreApplication::setApplicationName("Spot-On: Instant Messenger GUI");
+  QCoreApplication::setApplicationName("Spot-On");
   QCoreApplication::setOrganizationName("Spot-On");
   QCoreApplication::setOrganizationDomain("spot-on.sf.net");
   QCoreApplication::setApplicationVersion(SPOTON_VERSION_STR);
@@ -271,14 +271,21 @@ spoton::spoton(void):QMainWindow()
   statusBar()->showMessage(tr("Not connected to the kernel. Is the kernel "
 			      "active?"));
 
-  QMenu *menu = new QMenu(this);
+//  QMenu *menu = new QMenu(this);
 
-  connect(menu->addAction(tr("Copy &Messaging Public Key")),
-	  SIGNAL(triggered(void)), this, SLOT(slotCopyMyPublicKey(void)));
-  m_ui.toolButtonCopytoClipboard->setMenu(menu);
-  menu = new QMenu(this);
-  connect(menu->addAction(tr("Share &Messaging Public Key")),
-	  SIGNAL(triggered(void)), this, SLOT(slotSharePublicKey(void)));
+  connect(m_ui.toolButtonCopytoClipboard,
+        SIGNAL(clicked(void)),
+        this,
+        SLOT(slotCopyMyPublicKey(void)));
+
+
+  // connect(m_ui.toolButtonCopytoClipboard->addAction(tr("Copy &Messaging Public Key")),
+  //	  SIGNAL(triggered(void)), this, SLOT(slotCopyMyPublicKey(void)));
+  //m_ui.toolButtonCopytoClipboard->setMenu(menu);
+  //menu = new QMenu(this);
+  //connect(menu->addAction(tr("Share &Messaging Public Key")),
+  //	  SIGNAL(triggered(void)), this, SLOT(slotSharePublicKey(void)));
+
   m_generalTimer.start(2500);
   m_tableTimer.setInterval(2500);
   m_ui.ipv4Listener->setChecked(true);

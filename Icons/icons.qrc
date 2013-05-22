@@ -66,5 +66,11 @@
         <file>gemini.png</file>
         <file>goldbug.png</file>
         <file>repleo-mail.png</file>
+        <file>Logo/spoton-button-128.png</file>
+        <file>spoton-button-32_turned.png</file>
+        <file>tab-chat_turned.png</file>
+        <file>tab-email_turned.png</file>
+        <file>tab-neighbours_turned.png</file>
+        <file>tab-settings_turned.png</file>
     </qresource>
 </RCC>

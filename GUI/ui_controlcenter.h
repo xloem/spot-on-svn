@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'controlcenter.ui'
 **
-** Created: Wed 22. May 14:48:45 2013
+** Created: Wed 22. May 19:11:34 2013
 **      by: Qt User Interface Compiler version 4.8.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -92,6 +92,7 @@ public:
     QSpacerItem *horizontalSpacer_32;
     QPushButton *deleteMail;
     QPushButton *emptyTrash;
+    QHBoxLayout *horizontalLayout_19;
     QSplitter *readVerticalSplitter;
     QTableWidget *mail;
     QWidget *layoutWidget_2;
@@ -104,15 +105,13 @@ public:
     QLabel *label_29;
     QWidget *tab_5;
     QVBoxLayout *verticalLayout_27;
-    QHBoxLayout *horizontalLayout_29;
-    QSpacerItem *horizontalSpacer_27;
-    QPushButton *sendMail;
-    QPushButton *pushButtonClearOutgoingMessage;
     QGridLayout *gridLayout_4;
     QLabel *label_10;
     QHBoxLayout *horizontalLayout_33;
     QComboBox *participantsCombo;
     QSpacerItem *horizontalSpacer_28;
+    QPushButton *sendMail;
+    QPushButton *pushButtonClearOutgoingMessage;
     QLabel *label_25;
     QLineEdit *outgoingSubject;
     QLabel *label_26;
@@ -134,6 +133,7 @@ public:
     QPushButton *activateKernel;
     QLabel *label_17;
     QLineEdit *pid;
+    QSpacerItem *horizontalSpacer_4;
     QPushButton *deactivateKernel;
     QHBoxLayout *horizontalLayout_15;
     QLabel *label_18;
@@ -153,39 +153,53 @@ public:
     QLineEdit *neighborIP;
     QSpinBox *neighborPort;
     QHBoxLayout *horizontalLayout_11;
-    QPushButton *addNeighbor;
     QLineEdit *neighborScopeId;
+    QPushButton *addNeighbor;
     QGroupBox *listenersBox;
     QVBoxLayout *verticalLayout_6;
     QHBoxLayout *horizontalLayout_12;
     QRadioButton *ipv4Listener;
     QRadioButton *ipv6Listener;
-    QComboBox *listenerIPCombo;
     QHBoxLayout *horizontalLayout_16;
+    QComboBox *listenerIPCombo;
+    QHBoxLayout *horizontalLayout_17;
     QLabel *label_11;
     QLineEdit *listenerIP;
-    QHBoxLayout *horizontalLayout_17;
     QLabel *listenerScopeIdLabel;
     QLineEdit *listenerScopeId;
     QHBoxLayout *horizontalLayout_18;
     QLabel *label_12;
     QSpinBox *listenerPort;
+    QSpacerItem *horizontalSpacer_3;
     QPushButton *addListener;
+    QGroupBox *groupBox_Proxy;
+    QVBoxLayout *verticalLayout_13;
+    QHBoxLayout *horizontalLayout_2;
+    QLabel *label_2;
+    QComboBox *comboBox;
+    QLabel *label_3;
+    QLineEdit *lineEdit_2;
+    QLabel *label_5;
+    QSpinBox *spinBox;
+    QHBoxLayout *horizontalLayout_5;
+    QLabel *label_7;
+    QLineEdit *lineEdit;
+    QLabel *label_8;
+    QLineEdit *lineEdit_3;
+    QPushButton *pushButton;
     QGroupBox *passphraseGroupBox;
     QVBoxLayout *verticalLayout_9;
-    QHBoxLayout *horizontalLayout_8;
-    QLabel *label_16;
-    QSpinBox *saltLength;
     QHBoxLayout *horizontalLayout_7;
     QLabel *label_23;
     QComboBox *rsaKeySize;
-    QHBoxLayout *horizontalLayout_5;
+    QHBoxLayout *horizontalLayout_8;
+    QLabel *label_16;
+    QSpinBox *saltLength;
     QLabel *label_15;
     QSpinBox *iterationCount;
     QHBoxLayout *horizontalLayout_4;
     QLabel *label_14;
     QComboBox *hashType;
-    QHBoxLayout *horizontalLayout_2;
     QLabel *label;
     QComboBox *cipherType;
     QGridLayout *gridLayout;
@@ -223,7 +237,7 @@ public:
     {
         if (spoton_mainwindow->objectName().isEmpty())
             spoton_mainwindow->setObjectName(QString::fromUtf8("spoton_mainwindow"));
-        spoton_mainwindow->resize(624, 901);
+        spoton_mainwindow->resize(624, 937);
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/Logo/spoton-button-32.png"), QSize(), QIcon::Normal, QIcon::Off);
         spoton_mainwindow->setWindowIcon(icon);
@@ -363,7 +377,7 @@ public:
         verticalLayout_18->addWidget(layouttab);
 
         QIcon icon8;
-        icon8.addFile(QString::fromUtf8(":/tab-chat.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon8.addFile(QString::fromUtf8(":/tab-chat_turned.png"), QSize(), QIcon::Normal, QIcon::Off);
         tab->addTab(tab_chat, icon8, QString());
         tab_neighbors = new QWidget();
         tab_neighbors->setObjectName(QString::fromUtf8("tab_neighbors"));
@@ -447,7 +461,7 @@ public:
         verticalLayout_8->addLayout(verticalLayout_2);
 
         QIcon icon13;
-        icon13.addFile(QString::fromUtf8(":/tab-neighbours.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon13.addFile(QString::fromUtf8(":/tab-neighbours_turned.png"), QSize(), QIcon::Normal, QIcon::Off);
         tab->addTab(tab_neighbors, icon13, QString());
         tab_email = new QWidget();
         tab_email->setObjectName(QString::fromUtf8("tab_email"));
@@ -473,6 +487,11 @@ public:
         icon16.addFile(QString::fromUtf8(":/email-trash.png"), QSize(), QIcon::Normal, QIcon::Off);
         folder->addItem(icon16, QString());
         folder->setObjectName(QString::fromUtf8("folder"));
+        QSizePolicy sizePolicy4(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        sizePolicy4.setHorizontalStretch(0);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(folder->sizePolicy().hasHeightForWidth());
+        folder->setSizePolicy(sizePolicy4);
         folder->setIconSize(QSize(20, 21));
 
         horizontalLayout_38->addWidget(folder);
@@ -513,6 +532,11 @@ public:
 
 
         verticalLayout_26->addLayout(horizontalLayout_38);
+
+        horizontalLayout_19 = new QHBoxLayout();
+        horizontalLayout_19->setObjectName(QString::fromUtf8("horizontalLayout_19"));
+
+        verticalLayout_26->addLayout(horizontalLayout_19);
 
         readVerticalSplitter = new QSplitter(tab_4);
         readVerticalSplitter->setObjectName(QString::fromUtf8("readVerticalSplitter"));
@@ -558,11 +582,11 @@ public:
 
         label_30 = new QLabel(layoutWidget_2);
         label_30->setObjectName(QString::fromUtf8("label_30"));
-        QSizePolicy sizePolicy4(QSizePolicy::Fixed, QSizePolicy::Preferred);
-        sizePolicy4.setHorizontalStretch(0);
-        sizePolicy4.setVerticalStretch(0);
-        sizePolicy4.setHeightForWidth(label_30->sizePolicy().hasHeightForWidth());
-        label_30->setSizePolicy(sizePolicy4);
+        QSizePolicy sizePolicy5(QSizePolicy::Fixed, QSizePolicy::Preferred);
+        sizePolicy5.setHorizontalStretch(0);
+        sizePolicy5.setVerticalStretch(0);
+        sizePolicy5.setHeightForWidth(label_30->sizePolicy().hasHeightForWidth());
+        label_30->setSizePolicy(sizePolicy5);
         label_30->setMinimumSize(QSize(75, 0));
 
         gridLayout_2->addWidget(label_30, 2, 0, 1, 1);
@@ -581,8 +605,8 @@ public:
 
         label_29 = new QLabel(layoutWidget_2);
         label_29->setObjectName(QString::fromUtf8("label_29"));
-        sizePolicy4.setHeightForWidth(label_29->sizePolicy().hasHeightForWidth());
-        label_29->setSizePolicy(sizePolicy4);
+        sizePolicy5.setHeightForWidth(label_29->sizePolicy().hasHeightForWidth());
+        label_29->setSizePolicy(sizePolicy5);
         label_29->setMinimumSize(QSize(75, 32));
 
         gridLayout_2->addWidget(label_29, 1, 0, 1, 1);
@@ -598,33 +622,12 @@ public:
         tab_5->setObjectName(QString::fromUtf8("tab_5"));
         verticalLayout_27 = new QVBoxLayout(tab_5);
         verticalLayout_27->setObjectName(QString::fromUtf8("verticalLayout_27"));
-        horizontalLayout_29 = new QHBoxLayout();
-        horizontalLayout_29->setObjectName(QString::fromUtf8("horizontalLayout_29"));
-        horizontalSpacer_27 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout_29->addItem(horizontalSpacer_27);
-
-        sendMail = new QPushButton(tab_5);
-        sendMail->setObjectName(QString::fromUtf8("sendMail"));
-        sendMail->setIcon(icon20);
-
-        horizontalLayout_29->addWidget(sendMail);
-
-        pushButtonClearOutgoingMessage = new QPushButton(tab_5);
-        pushButtonClearOutgoingMessage->setObjectName(QString::fromUtf8("pushButtonClearOutgoingMessage"));
-        pushButtonClearOutgoingMessage->setIcon(icon12);
-
-        horizontalLayout_29->addWidget(pushButtonClearOutgoingMessage);
-
-
-        verticalLayout_27->addLayout(horizontalLayout_29);
-
         gridLayout_4 = new QGridLayout();
         gridLayout_4->setObjectName(QString::fromUtf8("gridLayout_4"));
         label_10 = new QLabel(tab_5);
         label_10->setObjectName(QString::fromUtf8("label_10"));
-        sizePolicy4.setHeightForWidth(label_10->sizePolicy().hasHeightForWidth());
-        label_10->setSizePolicy(sizePolicy4);
+        sizePolicy5.setHeightForWidth(label_10->sizePolicy().hasHeightForWidth());
+        label_10->setSizePolicy(sizePolicy5);
         label_10->setMinimumSize(QSize(75, 0));
 
         gridLayout_4->addWidget(label_10, 1, 0, 1, 1);
@@ -643,13 +646,25 @@ public:
 
         horizontalLayout_33->addItem(horizontalSpacer_28);
 
+        sendMail = new QPushButton(tab_5);
+        sendMail->setObjectName(QString::fromUtf8("sendMail"));
+        sendMail->setIcon(icon20);
+
+        horizontalLayout_33->addWidget(sendMail);
+
+        pushButtonClearOutgoingMessage = new QPushButton(tab_5);
+        pushButtonClearOutgoingMessage->setObjectName(QString::fromUtf8("pushButtonClearOutgoingMessage"));
+        pushButtonClearOutgoingMessage->setIcon(icon12);
+
+        horizontalLayout_33->addWidget(pushButtonClearOutgoingMessage);
+
 
         gridLayout_4->addLayout(horizontalLayout_33, 1, 1, 1, 1);
 
         label_25 = new QLabel(tab_5);
         label_25->setObjectName(QString::fromUtf8("label_25"));
-        sizePolicy4.setHeightForWidth(label_25->sizePolicy().hasHeightForWidth());
-        label_25->setSizePolicy(sizePolicy4);
+        sizePolicy5.setHeightForWidth(label_25->sizePolicy().hasHeightForWidth());
+        label_25->setSizePolicy(sizePolicy5);
         label_25->setMinimumSize(QSize(75, 32));
 
         gridLayout_4->addWidget(label_25, 2, 0, 1, 1);
@@ -661,8 +676,8 @@ public:
 
         label_26 = new QLabel(tab_5);
         label_26->setObjectName(QString::fromUtf8("label_26"));
-        sizePolicy4.setHeightForWidth(label_26->sizePolicy().hasHeightForWidth());
-        label_26->setSizePolicy(sizePolicy4);
+        sizePolicy5.setHeightForWidth(label_26->sizePolicy().hasHeightForWidth());
+        label_26->setSizePolicy(sizePolicy5);
         label_26->setMinimumSize(QSize(75, 0));
 
         gridLayout_4->addWidget(label_26, 3, 0, 1, 1);
@@ -710,7 +725,9 @@ public:
 
         verticalLayout_29->addWidget(mailTab);
 
-        tab->addTab(tab_email, icon20, QString());
+        QIcon icon24;
+        icon24.addFile(QString::fromUtf8(":/tab-email_turned.png"), QSize(), QIcon::Normal, QIcon::Off);
+        tab->addTab(tab_email, icon24, QString());
         tab_settings = new QWidget();
         tab_settings->setObjectName(QString::fromUtf8("tab_settings"));
         verticalLayout_15 = new QVBoxLayout(tab_settings);
@@ -724,7 +741,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 559, 833));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 559, 869));
         horizontalLayout_26 = new QHBoxLayout(scrollAreaWidgetContents);
         horizontalLayout_26->setObjectName(QString::fromUtf8("horizontalLayout_26"));
         verticalLayout_4 = new QVBoxLayout();
@@ -737,9 +754,9 @@ public:
         horizontalLayout_14->setObjectName(QString::fromUtf8("horizontalLayout_14"));
         activateKernel = new QPushButton(kernelBox);
         activateKernel->setObjectName(QString::fromUtf8("activateKernel"));
-        QIcon icon24;
-        icon24.addFile(QString::fromUtf8(":/connect_creating.png"), QSize(), QIcon::Normal, QIcon::Off);
-        activateKernel->setIcon(icon24);
+        QIcon icon25;
+        icon25.addFile(QString::fromUtf8(":/connect_creating.png"), QSize(), QIcon::Normal, QIcon::Off);
+        activateKernel->setIcon(icon25);
 
         horizontalLayout_14->addWidget(activateKernel);
 
@@ -750,14 +767,18 @@ public:
 
         pid = new QLineEdit(kernelBox);
         pid->setObjectName(QString::fromUtf8("pid"));
-        QSizePolicy sizePolicy5(QSizePolicy::Preferred, QSizePolicy::Fixed);
-        sizePolicy5.setHorizontalStretch(0);
-        sizePolicy5.setVerticalStretch(0);
-        sizePolicy5.setHeightForWidth(pid->sizePolicy().hasHeightForWidth());
-        pid->setSizePolicy(sizePolicy5);
+        QSizePolicy sizePolicy6(QSizePolicy::Preferred, QSizePolicy::Fixed);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(0);
+        sizePolicy6.setHeightForWidth(pid->sizePolicy().hasHeightForWidth());
+        pid->setSizePolicy(sizePolicy6);
         pid->setReadOnly(true);
 
         horizontalLayout_14->addWidget(pid);
+
+        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_14->addItem(horizontalSpacer_4);
 
         deactivateKernel = new QPushButton(kernelBox);
         deactivateKernel->setObjectName(QString::fromUtf8("deactivateKernel"));
@@ -777,11 +798,11 @@ public:
 
         kernelPath = new QLineEdit(kernelBox);
         kernelPath->setObjectName(QString::fromUtf8("kernelPath"));
-        QSizePolicy sizePolicy6(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy6.setHorizontalStretch(0);
-        sizePolicy6.setVerticalStretch(0);
-        sizePolicy6.setHeightForWidth(kernelPath->sizePolicy().hasHeightForWidth());
-        kernelPath->setSizePolicy(sizePolicy6);
+        QSizePolicy sizePolicy7(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy7.setHorizontalStretch(0);
+        sizePolicy7.setVerticalStretch(0);
+        sizePolicy7.setHeightForWidth(kernelPath->sizePolicy().hasHeightForWidth());
+        kernelPath->setSizePolicy(sizePolicy7);
 
         horizontalLayout_15->addWidget(kernelPath);
 
@@ -798,6 +819,8 @@ public:
 
         nodeName_2 = new QGroupBox(scrollAreaWidgetContents);
         nodeName_2->setObjectName(QString::fromUtf8("nodeName_2"));
+        sizePolicy6.setHeightForWidth(nodeName_2->sizePolicy().hasHeightForWidth());
+        nodeName_2->setSizePolicy(sizePolicy6);
         verticalLayout_11 = new QVBoxLayout(nodeName_2);
         verticalLayout_11->setObjectName(QString::fromUtf8("verticalLayout_11"));
         horizontalLayout_6 = new QHBoxLayout();
@@ -856,15 +879,15 @@ public:
 
         horizontalLayout_11 = new QHBoxLayout();
         horizontalLayout_11->setObjectName(QString::fromUtf8("horizontalLayout_11"));
-        addNeighbor = new QPushButton(groupBox_2);
-        addNeighbor->setObjectName(QString::fromUtf8("addNeighbor"));
-
-        horizontalLayout_11->addWidget(addNeighbor);
-
         neighborScopeId = new QLineEdit(groupBox_2);
         neighborScopeId->setObjectName(QString::fromUtf8("neighborScopeId"));
 
         horizontalLayout_11->addWidget(neighborScopeId);
+
+        addNeighbor = new QPushButton(groupBox_2);
+        addNeighbor->setObjectName(QString::fromUtf8("addNeighbor"));
+
+        horizontalLayout_11->addWidget(addNeighbor);
 
 
         verticalLayout_10->addLayout(horizontalLayout_11);
@@ -891,38 +914,38 @@ public:
 
         horizontalLayout_12->addWidget(ipv6Listener);
 
-        listenerIPCombo = new QComboBox(listenersBox);
-        listenerIPCombo->setObjectName(QString::fromUtf8("listenerIPCombo"));
-        listenerIPCombo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-
-        horizontalLayout_12->addWidget(listenerIPCombo);
-
 
         verticalLayout_6->addLayout(horizontalLayout_12);
 
         horizontalLayout_16 = new QHBoxLayout();
         horizontalLayout_16->setObjectName(QString::fromUtf8("horizontalLayout_16"));
-        label_11 = new QLabel(listenersBox);
-        label_11->setObjectName(QString::fromUtf8("label_11"));
-        QSizePolicy sizePolicy7(QSizePolicy::Minimum, QSizePolicy::Preferred);
-        sizePolicy7.setHorizontalStretch(0);
-        sizePolicy7.setVerticalStretch(0);
-        sizePolicy7.setHeightForWidth(label_11->sizePolicy().hasHeightForWidth());
-        label_11->setSizePolicy(sizePolicy7);
-        label_11->setLayoutDirection(Qt::RightToLeft);
+        listenerIPCombo = new QComboBox(listenersBox);
+        listenerIPCombo->setObjectName(QString::fromUtf8("listenerIPCombo"));
+        listenerIPCombo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 
-        horizontalLayout_16->addWidget(label_11);
-
-        listenerIP = new QLineEdit(listenersBox);
-        listenerIP->setObjectName(QString::fromUtf8("listenerIP"));
-
-        horizontalLayout_16->addWidget(listenerIP);
+        horizontalLayout_16->addWidget(listenerIPCombo);
 
 
         verticalLayout_6->addLayout(horizontalLayout_16);
 
         horizontalLayout_17 = new QHBoxLayout();
         horizontalLayout_17->setObjectName(QString::fromUtf8("horizontalLayout_17"));
+        label_11 = new QLabel(listenersBox);
+        label_11->setObjectName(QString::fromUtf8("label_11"));
+        QSizePolicy sizePolicy8(QSizePolicy::Minimum, QSizePolicy::Preferred);
+        sizePolicy8.setHorizontalStretch(0);
+        sizePolicy8.setVerticalStretch(0);
+        sizePolicy8.setHeightForWidth(label_11->sizePolicy().hasHeightForWidth());
+        label_11->setSizePolicy(sizePolicy8);
+        label_11->setLayoutDirection(Qt::RightToLeft);
+
+        horizontalLayout_17->addWidget(label_11);
+
+        listenerIP = new QLineEdit(listenersBox);
+        listenerIP->setObjectName(QString::fromUtf8("listenerIP"));
+
+        horizontalLayout_17->addWidget(listenerIP);
+
         listenerScopeIdLabel = new QLabel(listenersBox);
         listenerScopeIdLabel->setObjectName(QString::fromUtf8("listenerScopeIdLabel"));
 
@@ -940,8 +963,8 @@ public:
         horizontalLayout_18->setObjectName(QString::fromUtf8("horizontalLayout_18"));
         label_12 = new QLabel(listenersBox);
         label_12->setObjectName(QString::fromUtf8("label_12"));
-        sizePolicy7.setHeightForWidth(label_12->sizePolicy().hasHeightForWidth());
-        label_12->setSizePolicy(sizePolicy7);
+        sizePolicy8.setHeightForWidth(label_12->sizePolicy().hasHeightForWidth());
+        label_12->setSizePolicy(sizePolicy8);
         label_12->setLayoutDirection(Qt::RightToLeft);
 
         horizontalLayout_18->addWidget(label_12);
@@ -953,6 +976,10 @@ public:
         listenerPort->setValue(4710);
 
         horizontalLayout_18->addWidget(listenerPort);
+
+        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_18->addItem(horizontalSpacer_3);
 
         addListener = new QPushButton(listenersBox);
         addListener->setObjectName(QString::fromUtf8("addListener"));
@@ -966,27 +993,85 @@ public:
 
         verticalLayout_4->addWidget(listenersBox);
 
+        groupBox_Proxy = new QGroupBox(scrollAreaWidgetContents);
+        groupBox_Proxy->setObjectName(QString::fromUtf8("groupBox_Proxy"));
+        groupBox_Proxy->setEnabled(false);
+        verticalLayout_13 = new QVBoxLayout(groupBox_Proxy);
+        verticalLayout_13->setObjectName(QString::fromUtf8("verticalLayout_13"));
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        label_2 = new QLabel(groupBox_Proxy);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+
+        horizontalLayout_2->addWidget(label_2);
+
+        comboBox = new QComboBox(groupBox_Proxy);
+        comboBox->setObjectName(QString::fromUtf8("comboBox"));
+
+        horizontalLayout_2->addWidget(comboBox);
+
+        label_3 = new QLabel(groupBox_Proxy);
+        label_3->setObjectName(QString::fromUtf8("label_3"));
+
+        horizontalLayout_2->addWidget(label_3);
+
+        lineEdit_2 = new QLineEdit(groupBox_Proxy);
+        lineEdit_2->setObjectName(QString::fromUtf8("lineEdit_2"));
+
+        horizontalLayout_2->addWidget(lineEdit_2);
+
+        label_5 = new QLabel(groupBox_Proxy);
+        label_5->setObjectName(QString::fromUtf8("label_5"));
+
+        horizontalLayout_2->addWidget(label_5);
+
+        spinBox = new QSpinBox(groupBox_Proxy);
+        spinBox->setObjectName(QString::fromUtf8("spinBox"));
+        spinBox->setMaximum(65999);
+        spinBox->setValue(1080);
+
+        horizontalLayout_2->addWidget(spinBox);
+
+
+        verticalLayout_13->addLayout(horizontalLayout_2);
+
+        horizontalLayout_5 = new QHBoxLayout();
+        horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
+        label_7 = new QLabel(groupBox_Proxy);
+        label_7->setObjectName(QString::fromUtf8("label_7"));
+
+        horizontalLayout_5->addWidget(label_7);
+
+        lineEdit = new QLineEdit(groupBox_Proxy);
+        lineEdit->setObjectName(QString::fromUtf8("lineEdit"));
+
+        horizontalLayout_5->addWidget(lineEdit);
+
+        label_8 = new QLabel(groupBox_Proxy);
+        label_8->setObjectName(QString::fromUtf8("label_8"));
+
+        horizontalLayout_5->addWidget(label_8);
+
+        lineEdit_3 = new QLineEdit(groupBox_Proxy);
+        lineEdit_3->setObjectName(QString::fromUtf8("lineEdit_3"));
+
+        horizontalLayout_5->addWidget(lineEdit_3);
+
+        pushButton = new QPushButton(groupBox_Proxy);
+        pushButton->setObjectName(QString::fromUtf8("pushButton"));
+
+        horizontalLayout_5->addWidget(pushButton);
+
+
+        verticalLayout_13->addLayout(horizontalLayout_5);
+
+
+        verticalLayout_4->addWidget(groupBox_Proxy);
+
         passphraseGroupBox = new QGroupBox(scrollAreaWidgetContents);
         passphraseGroupBox->setObjectName(QString::fromUtf8("passphraseGroupBox"));
         verticalLayout_9 = new QVBoxLayout(passphraseGroupBox);
         verticalLayout_9->setObjectName(QString::fromUtf8("verticalLayout_9"));
-        horizontalLayout_8 = new QHBoxLayout();
-        horizontalLayout_8->setObjectName(QString::fromUtf8("horizontalLayout_8"));
-        label_16 = new QLabel(passphraseGroupBox);
-        label_16->setObjectName(QString::fromUtf8("label_16"));
-
-        horizontalLayout_8->addWidget(label_16);
-
-        saltLength = new QSpinBox(passphraseGroupBox);
-        saltLength->setObjectName(QString::fromUtf8("saltLength"));
-        saltLength->setMinimum(256);
-        saltLength->setMaximum(999999999);
-
-        horizontalLayout_8->addWidget(saltLength);
-
-
-        verticalLayout_9->addLayout(horizontalLayout_8);
-
         horizontalLayout_7 = new QHBoxLayout();
         horizontalLayout_7->setObjectName(QString::fromUtf8("horizontalLayout_7"));
         label_23 = new QLabel(passphraseGroupBox);
@@ -1002,12 +1087,24 @@ public:
 
         verticalLayout_9->addLayout(horizontalLayout_7);
 
-        horizontalLayout_5 = new QHBoxLayout();
-        horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
+        horizontalLayout_8 = new QHBoxLayout();
+        horizontalLayout_8->setObjectName(QString::fromUtf8("horizontalLayout_8"));
+        label_16 = new QLabel(passphraseGroupBox);
+        label_16->setObjectName(QString::fromUtf8("label_16"));
+
+        horizontalLayout_8->addWidget(label_16);
+
+        saltLength = new QSpinBox(passphraseGroupBox);
+        saltLength->setObjectName(QString::fromUtf8("saltLength"));
+        saltLength->setMinimum(256);
+        saltLength->setMaximum(999999999);
+
+        horizontalLayout_8->addWidget(saltLength);
+
         label_15 = new QLabel(passphraseGroupBox);
         label_15->setObjectName(QString::fromUtf8("label_15"));
 
-        horizontalLayout_5->addWidget(label_15);
+        horizontalLayout_8->addWidget(label_15);
 
         iterationCount = new QSpinBox(passphraseGroupBox);
         iterationCount->setObjectName(QString::fromUtf8("iterationCount"));
@@ -1015,10 +1112,10 @@ public:
         iterationCount->setMaximum(999999999);
         iterationCount->setValue(10000);
 
-        horizontalLayout_5->addWidget(iterationCount);
+        horizontalLayout_8->addWidget(iterationCount);
 
 
-        verticalLayout_9->addLayout(horizontalLayout_5);
+        verticalLayout_9->addLayout(horizontalLayout_8);
 
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
@@ -1032,23 +1129,18 @@ public:
 
         horizontalLayout_4->addWidget(hashType);
 
-
-        verticalLayout_9->addLayout(horizontalLayout_4);
-
-        horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
         label = new QLabel(passphraseGroupBox);
         label->setObjectName(QString::fromUtf8("label"));
 
-        horizontalLayout_2->addWidget(label);
+        horizontalLayout_4->addWidget(label);
 
         cipherType = new QComboBox(passphraseGroupBox);
         cipherType->setObjectName(QString::fromUtf8("cipherType"));
 
-        horizontalLayout_2->addWidget(cipherType);
+        horizontalLayout_4->addWidget(cipherType);
 
 
-        verticalLayout_9->addLayout(horizontalLayout_2);
+        verticalLayout_9->addLayout(horizontalLayout_4);
 
         gridLayout = new QGridLayout();
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
@@ -1098,9 +1190,9 @@ public:
 
         verticalLayout_15->addWidget(scrollArea);
 
-        QIcon icon25;
-        icon25.addFile(QString::fromUtf8(":/tab-settings.png"), QSize(), QIcon::Normal, QIcon::Off);
-        tab->addTab(tab_settings, icon25, QString());
+        QIcon icon26;
+        icon26.addFile(QString::fromUtf8(":/tab-settings_turned.png"), QSize(), QIcon::Normal, QIcon::Off);
+        tab->addTab(tab_settings, icon26, QString());
         tab_login = new QWidget();
         tab_login->setObjectName(QString::fromUtf8("tab_login"));
         horizontalLayout_34 = new QHBoxLayout(tab_login);
@@ -1173,8 +1265,8 @@ public:
 
         label_4 = new QLabel(tab_login);
         label_4->setObjectName(QString::fromUtf8("label_4"));
-        label_4->setMaximumSize(QSize(485, 240));
-        label_4->setPixmap(QPixmap(QString::fromUtf8(":/Logo/spoton-logo-transparent.png")));
+        label_4->setMaximumSize(QSize(128, 128));
+        label_4->setPixmap(QPixmap(QString::fromUtf8(":/Logo/spoton-button-128.png")));
         label_4->setScaledContents(true);
         label_4->setAlignment(Qt::AlignCenter);
 
@@ -1194,7 +1286,9 @@ public:
 
         horizontalLayout_34->addLayout(verticalLayout_5);
 
-        tab->addTab(tab_login, icon, QString());
+        QIcon icon27;
+        icon27.addFile(QString::fromUtf8(":/spoton-button-32_turned.png"), QSize(), QIcon::Normal, QIcon::Off);
+        tab->addTab(tab_login, icon27, QString());
 
         verticalLayout_3->addWidget(tab);
 
@@ -1220,8 +1314,8 @@ public:
         label_11->setBuddy(listenerIP);
         listenerScopeIdLabel->setBuddy(listenerScopeId);
         label_12->setBuddy(listenerPort);
-        label_16->setBuddy(saltLength);
         label_23->setBuddy(rsaKeySize);
+        label_16->setBuddy(saltLength);
         label_15->setBuddy(iterationCount);
         label_14->setBuddy(hashType);
         label->setBuddy(cipherType);
@@ -1241,9 +1335,7 @@ public:
         QWidget::setTabOrder(mail, mailFrom);
         QWidget::setTabOrder(mailFrom, mailSubject);
         QWidget::setTabOrder(mailSubject, mailMessage);
-        QWidget::setTabOrder(mailMessage, sendMail);
-        QWidget::setTabOrder(sendMail, pushButtonClearOutgoingMessage);
-        QWidget::setTabOrder(pushButtonClearOutgoingMessage, participantsCombo);
+        QWidget::setTabOrder(mailMessage, participantsCombo);
         QWidget::setTabOrder(participantsCombo, outgoingSubject);
         QWidget::setTabOrder(outgoingSubject, outgoingMessage);
         QWidget::setTabOrder(outgoingMessage, goldbug);
@@ -1261,14 +1353,11 @@ public:
         QWidget::setTabOrder(kernelPath, selectKernelPath);
         QWidget::setTabOrder(selectKernelPath, ipv4Listener);
         QWidget::setTabOrder(ipv4Listener, ipv6Listener);
-        QWidget::setTabOrder(ipv6Listener, listenerIP);
-        QWidget::setTabOrder(listenerIP, listenerScopeId);
+        QWidget::setTabOrder(ipv6Listener, listenerScopeId);
         QWidget::setTabOrder(listenerScopeId, listenerPort);
         QWidget::setTabOrder(listenerPort, addListener);
-        QWidget::setTabOrder(addListener, cipherType);
-        QWidget::setTabOrder(cipherType, hashType);
-        QWidget::setTabOrder(hashType, iterationCount);
-        QWidget::setTabOrder(iterationCount, rsaKeySize);
+        QWidget::setTabOrder(addListener, hashType);
+        QWidget::setTabOrder(hashType, rsaKeySize);
         QWidget::setTabOrder(rsaKeySize, saltLength);
         QWidget::setTabOrder(saltLength, passphrase1);
         QWidget::setTabOrder(passphrase1, passphrase2);
@@ -1281,9 +1370,9 @@ public:
 
         retranslateUi(spoton_mainwindow);
 
-        tab->setCurrentIndex(4);
+        tab->setCurrentIndex(2);
         status->setCurrentIndex(0);
-        mailTab->setCurrentIndex(0);
+        mailTab->setCurrentIndex(1);
         rsaKeySize->setCurrentIndex(0);
 
 
@@ -1292,7 +1381,7 @@ public:
 
     void retranslateUi(QMainWindow *spoton_mainwindow)
     {
-        spoton_mainwindow->setWindowTitle(QApplication::translate("spoton_mainwindow", "Spot-On", 0, QApplication::UnicodeUTF8));
+        spoton_mainwindow->setWindowTitle(QApplication::translate("spoton_mainwindow", "Spot-On: Instant Messenger GUI", 0, QApplication::UnicodeUTF8));
         action_Quit->setText(QApplication::translate("spoton_mainwindow", "&Quit", 0, QApplication::UnicodeUTF8));
         action_Quit->setShortcut(QApplication::translate("spoton_mainwindow", "Ctrl+Q", 0, QApplication::UnicodeUTF8));
         action_Log_Viewer->setText(QApplication::translate("spoton_mainwindow", "&Log Viewer", 0, QApplication::UnicodeUTF8));
@@ -1344,10 +1433,10 @@ public:
         folder->setItemText(1, QApplication::translate("spoton_mainwindow", "Sent", 0, QApplication::UnicodeUTF8));
         folder->setItemText(2, QApplication::translate("spoton_mainwindow", "Trash", 0, QApplication::UnicodeUTF8));
 
-        retrieveMail->setText(QApplication::translate("spoton_mainwindow", "Retrieve", 0, QApplication::UnicodeUTF8));
-        refreshMail->setText(QApplication::translate("spoton_mainwindow", "Refresh", 0, QApplication::UnicodeUTF8));
-        deleteMail->setText(QApplication::translate("spoton_mainwindow", "Delete", 0, QApplication::UnicodeUTF8));
-        emptyTrash->setText(QApplication::translate("spoton_mainwindow", "Empty Trash", 0, QApplication::UnicodeUTF8));
+        retrieveMail->setText(QString());
+        refreshMail->setText(QString());
+        deleteMail->setText(QString());
+        emptyTrash->setText(QString());
         QTableWidgetItem *___qtablewidgetitem6 = mail->horizontalHeaderItem(0);
         ___qtablewidgetitem6->setText(QApplication::translate("spoton_mainwindow", "Date", 0, QApplication::UnicodeUTF8));
         QTableWidgetItem *___qtablewidgetitem7 = mail->horizontalHeaderItem(1);
@@ -1364,11 +1453,11 @@ public:
         label_30->setText(QApplication::translate("spoton_mainwindow", "&Message", 0, QApplication::UnicodeUTF8));
         label_29->setText(QApplication::translate("spoton_mainwindow", "&Subject", 0, QApplication::UnicodeUTF8));
         mailTab->setTabText(mailTab->indexOf(tab_4), QApplication::translate("spoton_mainwindow", "&Read", 0, QApplication::UnicodeUTF8));
-        sendMail->setText(QApplication::translate("spoton_mainwindow", "Send", 0, QApplication::UnicodeUTF8));
-        pushButtonClearOutgoingMessage->setText(QApplication::translate("spoton_mainwindow", "Clear", 0, QApplication::UnicodeUTF8));
         label_10->setText(QApplication::translate("spoton_mainwindow", "&To", 0, QApplication::UnicodeUTF8));
         participantsCombo->setItemText(0, QApplication::translate("spoton_mainwindow", "All Participants", 0, QApplication::UnicodeUTF8));
 
+        sendMail->setText(QApplication::translate("spoton_mainwindow", "Send", 0, QApplication::UnicodeUTF8));
+        pushButtonClearOutgoingMessage->setText(QString());
         label_25->setText(QApplication::translate("spoton_mainwindow", "&Subject", 0, QApplication::UnicodeUTF8));
         label_26->setText(QApplication::translate("spoton_mainwindow", "&Message", 0, QApplication::UnicodeUTF8));
 #ifndef QT_NO_TOOLTIP
@@ -1386,12 +1475,12 @@ public:
         deactivateKernel->setText(QApplication::translate("spoton_mainwindow", "Deactivate", 0, QApplication::UnicodeUTF8));
         label_18->setText(QApplication::translate("spoton_mainwindow", "Path of Spot-On-Kernel &Executable", 0, QApplication::UnicodeUTF8));
         selectKernelPath->setText(QApplication::translate("spoton_mainwindow", "Select", 0, QApplication::UnicodeUTF8));
-        nodeName_2->setTitle(QApplication::translate("spoton_mainwindow", "Set your Nick Name", 0, QApplication::UnicodeUTF8));
-        saveNodeName->setText(QApplication::translate("spoton_mainwindow", "saveNodeName", 0, QApplication::UnicodeUTF8));
+        nodeName_2->setTitle(QApplication::translate("spoton_mainwindow", "Set your Chat Name", 0, QApplication::UnicodeUTF8));
+        saveNodeName->setText(QApplication::translate("spoton_mainwindow", "Save", 0, QApplication::UnicodeUTF8));
         groupBox_2->setTitle(QApplication::translate("spoton_mainwindow", "Connect to Server", 0, QApplication::UnicodeUTF8));
         ipv4Neighbor->setText(QApplication::translate("spoton_mainwindow", "IPv4", 0, QApplication::UnicodeUTF8));
         ipv6Neighbor->setText(QApplication::translate("spoton_mainwindow", "IPv6", 0, QApplication::UnicodeUTF8));
-        addNeighbor->setText(QApplication::translate("spoton_mainwindow", "addNeighbor", 0, QApplication::UnicodeUTF8));
+        addNeighbor->setText(QApplication::translate("spoton_mainwindow", "Connect", 0, QApplication::UnicodeUTF8));
         listenersBox->setTitle(QApplication::translate("spoton_mainwindow", "Create own Server", 0, QApplication::UnicodeUTF8));
         ipv4Listener->setText(QApplication::translate("spoton_mainwindow", "IPv&4", 0, QApplication::UnicodeUTF8));
         ipv6Listener->setText(QApplication::translate("spoton_mainwindow", "IPv&6", 0, QApplication::UnicodeUTF8));
@@ -1403,8 +1492,19 @@ public:
         listenerScopeIdLabel->setText(QApplication::translate("spoton_mainwindow", "&Scope ID", 0, QApplication::UnicodeUTF8));
         label_12->setText(QApplication::translate("spoton_mainwindow", "&Port", 0, QApplication::UnicodeUTF8));
         addListener->setText(QApplication::translate("spoton_mainwindow", "Add", 0, QApplication::UnicodeUTF8));
+        groupBox_Proxy->setTitle(QApplication::translate("spoton_mainwindow", "Proxy", 0, QApplication::UnicodeUTF8));
+        label_2->setText(QApplication::translate("spoton_mainwindow", "Type", 0, QApplication::UnicodeUTF8));
+        comboBox->clear();
+        comboBox->insertItems(0, QStringList()
+         << QApplication::translate("spoton_mainwindow", "Socks5", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("spoton_mainwindow", "Http", 0, QApplication::UnicodeUTF8)
+        );
+        label_3->setText(QApplication::translate("spoton_mainwindow", "IP", 0, QApplication::UnicodeUTF8));
+        label_5->setText(QApplication::translate("spoton_mainwindow", "Port", 0, QApplication::UnicodeUTF8));
+        label_7->setText(QApplication::translate("spoton_mainwindow", "Username", 0, QApplication::UnicodeUTF8));
+        label_8->setText(QApplication::translate("spoton_mainwindow", "Passphrase", 0, QApplication::UnicodeUTF8));
+        pushButton->setText(QApplication::translate("spoton_mainwindow", "ok", 0, QApplication::UnicodeUTF8));
         passphraseGroupBox->setTitle(QApplication::translate("spoton_mainwindow", "Passphrase", 0, QApplication::UnicodeUTF8));
-        label_16->setText(QApplication::translate("spoton_mainwindow", "Salt &Length", 0, QApplication::UnicodeUTF8));
         label_23->setText(QApplication::translate("spoton_mainwindow", "&RSA Key Size", 0, QApplication::UnicodeUTF8));
         rsaKeySize->clear();
         rsaKeySize->insertItems(0, QStringList()
@@ -1412,6 +1512,7 @@ public:
          << QApplication::translate("spoton_mainwindow", "7680", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("spoton_mainwindow", "15360", 0, QApplication::UnicodeUTF8)
         );
+        label_16->setText(QApplication::translate("spoton_mainwindow", "Salt &Length", 0, QApplication::UnicodeUTF8));
         label_15->setText(QApplication::translate("spoton_mainwindow", "Iteration &Count", 0, QApplication::UnicodeUTF8));
         label_14->setText(QApplication::translate("spoton_mainwindow", "&Hash", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("spoton_mainwindow", "&Cipher", 0, QApplication::UnicodeUTF8));
@@ -1426,7 +1527,7 @@ public:
 #endif // QT_NO_TOOLTIP
         label_31->setText(QString());
         passphraseLabel->setText(QApplication::translate("spoton_mainwindow", "P&assphrase", 0, QApplication::UnicodeUTF8));
-        passphraseButton->setText(QApplication::translate("spoton_mainwindow", "Authenticate", 0, QApplication::UnicodeUTF8));
+        passphraseButton->setText(QString());
 #ifndef QT_NO_TOOLTIP
         label_4->setToolTip(QApplication::translate("spoton_mainwindow", "Spot-On Graphical User Interface Version 1.00", 0, QApplication::UnicodeUTF8));
 #endif // QT_NO_TOOLTIP
