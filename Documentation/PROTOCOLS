@@ -81,7 +81,7 @@ EOL
 
 Message Type ("0013") (Plaintext)
 TTL (Plaintext)
-0 - 1Symmetric Key (Base-64) (Ciphertext, PK, SK)
+0 - Symmetric Key (Base-64) (Ciphertext, PK, SK)
 EOL
 1 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK, SK)
 EOL
