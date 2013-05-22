@@ -34,7 +34,7 @@
        <enum>QTabWidget::East</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>3</number>
       </property>
       <property name="iconSize">
        <size>
@@ -883,8 +883,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>559</width>
-             <height>869</height>
+             <width>538</width>
+             <height>890</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -1321,6 +1321,22 @@
                     </widget>
                    </item>
                   </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="groupBox_3">
+                <property name="title">
+                 <string>URL Support</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_14">
+                 <item>
+                  <widget class="QCheckBox" name="checkBox">
+                   <property name="text">
+                    <string>Support URL Sharing (&quot;Auto-Share URL-Key on Connections with P2P&quot;).</string>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </widget>
