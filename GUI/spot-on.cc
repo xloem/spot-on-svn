@@ -294,7 +294,12 @@ spoton::spoton(void):QMainWindow()
   m_ui.listenerScopeIdLabel->setEnabled(false);
   m_ui.neighborIP->setInputMask("000.000.000.000; ");
   m_ui.neighborScopeId->setEnabled(false);
-  //m_ui.neighborScopeIdLabel->setEnabled(false);
+  m_ui.neighborScopeIdLabel->setEnabled(false);
+
+  m_ui.groupBox_AddNeighbor->setEnabled(false);
+  m_ui.groupBox_Proxy->setEnabled(false);
+  m_ui.groupBox_URLSupport->setEnabled(false);
+  m_ui.nodeNameBox->setEnabled(false);
   m_ui.participants->setStyleSheet
     ("QTableView {selection-background-color: lightgreen}");
 
@@ -1420,6 +1425,12 @@ void spoton::slotValidatePassphrase(void)
       sendKeyToKernel();
       m_ui.kernelBox->setEnabled(true);
       m_ui.listenersBox->setEnabled(true);
+
+      m_ui.groupBox_AddNeighbor->setEnabled(true);
+      m_ui.groupBox_Proxy->setEnabled(true);
+      m_ui.groupBox_URLSupport->setEnabled(true);
+      m_ui.nodeNameBox->setEnabled(true);
+
       m_ui.passphrase->clear();
       m_ui.passphrase->setEnabled(false);
       m_ui.passphraseButton->setEnabled(false);

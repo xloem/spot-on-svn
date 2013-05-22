@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>624</width>
-    <height>937</height>
+    <width>568</width>
+    <height>968</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -872,6 +872,9 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
@@ -883,8 +886,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>538</width>
-             <height>890</height>
+             <width>503</width>
+             <height>900</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -892,6 +895,9 @@
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <item>
                <widget class="QGroupBox" name="kernelBox">
+                <property name="styleSheet">
+                 <string notr="true">kernelbox background-color: rgb(255, 255, 127);</string>
+                </property>
                 <property name="title">
                  <string>Kernel</string>
                 </property>
@@ -993,7 +999,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QGroupBox" name="nodeName_2">
+               <widget class="QGroupBox" name="nodeNameBox">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1001,7 +1007,7 @@
                  </sizepolicy>
                 </property>
                 <property name="title">
-                 <string>Set your Chat Name</string>
+                 <string>Chat Name</string>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_11">
                  <item>
@@ -1014,6 +1020,10 @@
                      <property name="text">
                       <string>Save</string>
                      </property>
+                     <property name="icon">
+                      <iconset resource="../Icons/icons.qrc">
+                       <normaloff>:/plist_connected_neighbour.png</normaloff>:/plist_connected_neighbour.png</iconset>
+                     </property>
                     </widget>
                    </item>
                   </layout>
@@ -1022,9 +1032,9 @@
                </widget>
               </item>
               <item>
-               <widget class="QGroupBox" name="groupBox_2">
+               <widget class="QGroupBox" name="groupBox_AddNeighbor">
                 <property name="title">
-                 <string>Connect to Server</string>
+                 <string>Add Connection</string>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_10">
                  <item>
@@ -1048,7 +1058,21 @@
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_10">
                    <item>
+                    <widget class="QLabel" name="label_addNIP">
+                     <property name="text">
+                      <string>IP</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QLineEdit" name="neighborIP"/>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_addNPort">
+                     <property name="text">
+                      <string>Port</string>
+                     </property>
+                    </widget>
                    </item>
                    <item>
                     <widget class="QSpinBox" name="neighborPort">
@@ -1065,12 +1089,23 @@
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_11">
                    <item>
+                    <widget class="QLabel" name="neighborScopeIdLabel">
+                     <property name="text">
+                      <string>Scope ID</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QLineEdit" name="neighborScopeId"/>
                    </item>
                    <item>
                     <widget class="QPushButton" name="addNeighbor">
                      <property name="text">
                       <string>Connect</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../Icons/icons.qrc">
+                       <normaloff>:/connect_creating.png</normaloff>:/connect_creating.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -1082,7 +1117,7 @@
               <item>
                <widget class="QGroupBox" name="listenersBox">
                 <property name="title">
-                 <string>Create own Server</string>
+                 <string>Create Listener</string>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_6">
                  <item>
@@ -1233,7 +1268,7 @@
               <item>
                <widget class="QGroupBox" name="groupBox_Proxy">
                 <property name="enabled">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                 <property name="title">
                  <string>Proxy</string>
@@ -1316,7 +1351,11 @@
                    <item>
                     <widget class="QPushButton" name="pushButton">
                      <property name="text">
-                      <string>ok</string>
+                      <string>Set</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../Icons/icons.qrc">
+                       <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -1326,7 +1365,10 @@
                </widget>
               </item>
               <item>
-               <widget class="QGroupBox" name="groupBox_3">
+               <widget class="QGroupBox" name="groupBox_URLSupport">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
                 <property name="title">
                  <string>URL Support</string>
                 </property>
@@ -1381,6 +1423,19 @@
                      </item>
                     </widget>
                    </item>
+                   <item>
+                    <spacer name="horizontalSpacer_10">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
                   </layout>
                  </item>
                  <item>
@@ -1404,6 +1459,19 @@
                       <number>999999999</number>
                      </property>
                     </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_5">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
                    </item>
                    <item>
                     <widget class="QLabel" name="label_15">
@@ -1444,6 +1512,19 @@
                    </item>
                    <item>
                     <widget class="QComboBox" name="hashType"/>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_7">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
                    </item>
                    <item>
                     <widget class="QLabel" name="label">
@@ -1747,7 +1828,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>624</width>
+     <width>568</width>
      <height>26</height>
     </rect>
    </property>
@@ -1833,7 +1914,6 @@
   <tabstop>listenerPort</tabstop>
   <tabstop>addListener</tabstop>
   <tabstop>hashType</tabstop>
-  <tabstop>rsaKeySize</tabstop>
   <tabstop>saltLength</tabstop>
   <tabstop>passphrase1</tabstop>
   <tabstop>passphrase2</tabstop>
