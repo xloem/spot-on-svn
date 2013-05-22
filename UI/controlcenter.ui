@@ -255,24 +255,31 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_22">
              <item>
-              <widget class="QToolButton" name="toolButtonCopytoClipboard">
-               <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy my name and specified public key to the clipboard buffer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <layout class="QHBoxLayout" name="horizontalLayout_20">
+               <property name="bottomMargin">
+                <number>0</number>
                </property>
-               <property name="text">
-                <string>Copy Key</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../Icons/icons.qrc">
-                 <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
-               </property>
-               <property name="popupMode">
-                <enum>QToolButton::InstantPopup</enum>
-               </property>
-               <property name="toolButtonStyle">
-                <enum>Qt::ToolButtonTextBesideIcon</enum>
-               </property>
-              </widget>
+               <item>
+                <widget class="QToolButton" name="toolButtonCopytoClipboard">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy my name and specified public key to the clipboard buffer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="text">
+                  <string>Copy Key</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../Icons/icons.qrc">
+                   <normaloff>:/addkey.png</normaloff>:/addkey.png</iconset>
+                 </property>
+                 <property name="popupMode">
+                  <enum>QToolButton::InstantPopup</enum>
+                 </property>
+                 <property name="toolButtonStyle">
+                  <enum>Qt::ToolButtonTextBesideIcon</enum>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_30">
@@ -292,6 +299,19 @@
                   <bool>true</bool>
                  </property>
                 </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_11">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
                </item>
                <item>
                 <widget class="QRadioButton" name="addFriendSymmetricBundleRadio">
