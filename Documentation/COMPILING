@@ -1,4 +1,5 @@
-Qt 4.8.4, or greater, is highly recommended.
+Qt 4.8.4 is highly recommended. A brief test was
+conducted with Qt 4.6.3. Qt 5.x is not yet supported.
 
 If header (h) or interface (ui) files have changed, please perform
 a distclean before building Spot-On.
