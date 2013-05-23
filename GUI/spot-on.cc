@@ -248,6 +248,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(itemSelectionChanged(void)),
 	  this,
 	  SLOT(slotMailSelected(void)));
+  connect(m_ui.retrieveMail,
+      SIGNAL(clicked(void)),
+      this,
+      SLOT(slotRetrieveMail(void)));
   connect(m_ui.emptyTrash,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -3667,3 +3671,19 @@ void spoton::slotPopulateNeighborsGreen(void)
 
   QSqlDatabase::removeDatabase("spoton");
 }
+
+void spoton::slotRetrieveMail(void)
+{
+  if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
+    {
+      QByteArray message("retrievemail\n");
+
+      if(m_kernelSocket.write(message.constData(), message.length()) !=
+     message.length())
+    spoton_misc::logError
+      ("spoton::slotRetrieveMail(): write() failure.");
+      else
+    m_kernelSocket.flush();
+    }
+}
+
