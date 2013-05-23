@@ -686,6 +686,17 @@
            <layout class="QVBoxLayout" name="verticalLayout_27">
             <item>
              <layout class="QGridLayout" name="gridLayout_4">
+              <item row="3" column="1">
+               <widget class="QPushButton" name="sendMail">
+                <property name="text">
+                 <string>Send</string>
+                </property>
+                <property name="icon">
+                 <iconset resource="../Icons/icons.qrc">
+                  <normaloff>:/tab-email.png</normaloff>:/tab-email.png</iconset>
+                </property>
+               </widget>
+              </item>
               <item row="1" column="0">
                <widget class="QLabel" name="label_10">
                 <property name="sizePolicy">
@@ -737,17 +748,6 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="sendMail">
-                  <property name="text">
-                   <string>Send</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../Icons/icons.qrc">
-                    <normaloff>:/tab-email.png</normaloff>:/tab-email.png</iconset>
-                  </property>
-                 </widget>
-                </item>
-                <item>
                  <widget class="QPushButton" name="pushButtonClearOutgoingMessage">
                   <property name="text">
                    <string/>
@@ -760,7 +760,7 @@
                 </item>
                </layout>
               </item>
-              <item row="2" column="0">
+              <item row="4" column="0">
                <widget class="QLabel" name="label_25">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -782,10 +782,10 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
+              <item row="4" column="1">
                <widget class="QLineEdit" name="outgoingSubject"/>
               </item>
-              <item row="3" column="0">
+              <item row="5" column="0">
                <widget class="QLabel" name="label_26">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -807,7 +807,7 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="1">
+              <item row="5" column="1">
                <widget class="QTextEdit" name="outgoingMessage">
                 <property name="styleSheet">
                  <string notr="true">background-color: qlineargradient(spread:pad, x1:0.968, y1:0.932, x2:0.513, y2:0.5, stop:0 rgba(183, 235, 255, 255), stop:1 rgba(255, 255, 255, 255));</string>
@@ -817,7 +817,7 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="1">
+              <item row="6" column="1">
                <layout class="QHBoxLayout" name="horizontalLayout_31">
                 <item>
                  <widget class="QLineEdit" name="goldbug"/>
@@ -851,7 +851,7 @@
                 </item>
                </layout>
               </item>
-              <item row="4" column="0">
+              <item row="6" column="0">
                <widget class="QLabel" name="label_6">
                 <property name="text">
                  <string>&amp;Optional</string>
@@ -906,8 +906,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>503</width>
-             <height>900</height>
+             <width>482</width>
+             <height>966</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -985,17 +985,17 @@
                   </layout>
                  </item>
                  <item>
+                  <widget class="QLabel" name="label_18">
+                   <property name="text">
+                    <string>Path of Spot-On-Kernel &amp;Executable</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>kernelPath</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_15">
-                   <item>
-                    <widget class="QLabel" name="label_18">
-                     <property name="text">
-                      <string>Path of Spot-On-Kernel &amp;Executable</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>kernelPath</cstring>
-                     </property>
-                    </widget>
-                   </item>
                    <item>
                     <widget class="QLineEdit" name="kernelPath">
                      <property name="sizePolicy">
@@ -1014,6 +1014,237 @@
                     </widget>
                    </item>
                   </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="groupBox_NLTables">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>43</height>
+                 </size>
+                </property>
+                <property name="title">
+                 <string>GroupBox</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_16">
+                 <item>
+                  <widget class="QTableWidget" name="neighbors">
+                   <property name="verticalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAlwaysOn</enum>
+                   </property>
+                   <property name="selectionMode">
+                    <enum>QAbstractItemView::SingleSelection</enum>
+                   </property>
+                   <property name="selectionBehavior">
+                    <enum>QAbstractItemView::SelectRows</enum>
+                   </property>
+                   <property name="horizontalScrollMode">
+                    <enum>QAbstractItemView::ScrollPerPixel</enum>
+                   </property>
+                   <property name="sortingEnabled">
+                    <bool>true</bool>
+                   </property>
+                   <attribute name="horizontalHeaderDefaultSectionSize">
+                    <number>150</number>
+                   </attribute>
+                   <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+                    <bool>true</bool>
+                   </attribute>
+                   <attribute name="horizontalHeaderStretchLastSection">
+                    <bool>true</bool>
+                   </attribute>
+                   <column>
+                    <property name="text">
+                     <string>Sticky</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/sticky.png</normaloff>:/sticky.png</iconset>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>UUID</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/plist_confirmed_as_permanent_friend.png</normaloff>:/plist_confirmed_as_permanent_friend.png</iconset>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Status</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../Icons/icons.qrc">
+                      <normaloff>:/connect_established.png</normaloff>:/connect_established.png</iconset>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Status Control</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Local IP</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Local Port</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>External IP</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>External Port</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Country</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Remote IP</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Remote Port</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Scope ID</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Protocol</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>OID</string>
+                    </property>
+                   </column>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="showOnlyConnectedNeighbors">
+                   <property name="text">
+                    <string>CheckBox</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="showOnlyOnlineListeners">
+                   <property name="text">
+                    <string>CheckBox</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QTableWidget" name="listeners">
+                   <property name="verticalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAlwaysOn</enum>
+                   </property>
+                   <property name="selectionMode">
+                    <enum>QAbstractItemView::SingleSelection</enum>
+                   </property>
+                   <property name="selectionBehavior">
+                    <enum>QAbstractItemView::SelectRows</enum>
+                   </property>
+                   <property name="horizontalScrollMode">
+                    <enum>QAbstractItemView::ScrollPerPixel</enum>
+                   </property>
+                   <property name="sortingEnabled">
+                    <bool>true</bool>
+                   </property>
+                   <attribute name="horizontalHeaderDefaultSectionSize">
+                    <number>200</number>
+                   </attribute>
+                   <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+                    <bool>true</bool>
+                   </attribute>
+                   <attribute name="horizontalHeaderStretchLastSection">
+                    <bool>true</bool>
+                   </attribute>
+                   <column>
+                    <property name="text">
+                     <string>Activate</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Status</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Local IP</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Local Port</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Scope ID</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Protocol</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>External IP</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>External Port</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Connections</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Max. Conn.</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>OID</string>
+                    </property>
+                   </column>
+                  </widget>
                  </item>
                 </layout>
                </widget>
@@ -1063,6 +1294,13 @@
                     <widget class="QRadioButton" name="ipv4Neighbor">
                      <property name="text">
                       <string>IPv4</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QRadioButton" name="dynamicdns">
+                     <property name="text">
+                      <string>DynDNS</string>
                      </property>
                     </widget>
                    </item>

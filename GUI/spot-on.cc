@@ -124,6 +124,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotAddNeighbor(void)));
+  connect(m_ui.dynamicdns,
+      SIGNAL(toggled(bool)),
+      this,
+      SLOT(slotProtocolRadioToggled(bool)));
   connect(m_ui.ipv4Listener,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -772,7 +776,14 @@ void spoton::slotProtocolRadioToggled(bool state)
   if(!radio)
     return;
 
-  if(radio == m_ui.ipv4Listener || radio == m_ui.ipv4Neighbor)
+  if(radio == m_ui.dynamicdns)
+    {
+      m_ui.neighborIP->clear();
+      m_ui.neighborIP->setInputMask("");
+      m_ui.neighborScopeId->setEnabled(true);
+      m_ui.neighborScopeIdLabel->setEnabled(true);
+    }
+  else if(radio == m_ui.ipv4Listener || radio == m_ui.ipv4Neighbor)
     {
       if(radio == m_ui.ipv4Listener)
 	{
@@ -3249,4 +3260,410 @@ void spoton::slotEmptyTrash(void)
       m_ui.mail->clearContents();
       m_ui.mail->setRowCount(0);
     }
+}
+
+
+
+void spoton::slotPopulateListenersGreen(void)
+{
+  if(!m_crypt)
+    return;
+
+  QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
+             "listeners.db");
+
+  if(fileInfo.exists())
+    {
+      if(fileInfo.lastModified() <= m_listenersLastModificationTime)
+    return;
+      else
+    m_listenersLastModificationTime = fileInfo.lastModified();
+    }
+  else
+    m_listenersLastModificationTime = QDateTime();
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(fileInfo.absoluteFilePath());
+
+    if(db.open())
+      {
+    updateListenersTable(db);
+
+    QModelIndexList list;
+    QString ip("");
+    QString port("");
+    int columnIP = 2;
+    int columnPORT = 3;
+    int hval = m_ui.listeners->horizontalScrollBar()->value();
+    int row = -1;
+    int vval = m_ui.listeners->verticalScrollBar()->value();
+
+    list = m_ui.listeners->selectionModel()->selectedRows
+      (columnIP);
+
+    if(!list.isEmpty())
+      ip = list.at(0).data().toString();
+
+    list = m_ui.listeners->selectionModel()->selectedRows
+      (columnPORT);
+
+    if(!list.isEmpty())
+      port = list.at(0).data().toString();
+
+    m_ui.listeners->setSortingEnabled(false);
+    m_ui.listeners->clearContents();
+    m_ui.listeners->setRowCount(0);
+
+    QSqlQuery query(db);
+
+    query.setForwardOnly(true);
+
+    if(query.exec(QString("SELECT "
+                  "status_control, status, "
+                  "ip_address, port, scope_id, protocol, "
+                  "external_ip_address, external_port, "
+                  "connections, maximum_clients, OID "
+                  "FROM listeners WHERE "
+                  "status_control <> 'deleted' %1").
+              arg(m_ui.showOnlyOnlineListeners->isChecked() ?
+              "AND status = 'online'" : "")))
+      {
+        row = 0;
+
+        while(query.next())
+          {
+        QCheckBox *check = 0;
+        QComboBox *box = 0;
+        QTableWidgetItem *item = 0;
+
+        m_ui.listeners->setRowCount(row + 1);
+
+        for(int i = 0; i < query.record().count(); i++)
+          {
+            if(i == 0)
+              {
+            check = new QCheckBox();
+
+            if(query.value(0) == "online")
+              check->setChecked(true);
+
+            check->setProperty("oid", query.value(10));
+            check->setProperty("table_row", row);
+            connect(check,
+                SIGNAL(stateChanged(int)),
+                this,
+                SLOT(slotListenerCheckChange(int)));
+            m_ui.listeners->setCellWidget(row, i, check);
+              }
+            else if(i == 9)
+              {
+            box = new QComboBox();
+            box->setProperty("oid", query.value(10));
+            box->setProperty("table_row", row);
+
+            for(int j = 1; j <= 10; j++)
+              box->addItem(QString::number(5 * j));
+
+            box->addItem(tr("Unlimited"));
+            box->setMaximumWidth
+              (box->fontMetrics().width(tr("Unlimited")) + 50);
+            m_ui.listeners->setCellWidget(row, i, box);
+
+            if(std::numeric_limits<int>::max() ==
+               query.value(i).toInt())
+              box->setCurrentIndex(box->count() - 1);
+            else if(box->findText(QString::number(query.
+                                  value(i).
+                                  toInt())))
+              box->setCurrentIndex
+                (box->findText(QString::number(query.
+                               value(i).
+                               toInt())));
+            else
+              box->setCurrentIndex(0);
+
+            connect(box,
+                SIGNAL(currentIndexChanged(int)),
+                this,
+                SLOT(slotMaximumClientsChanged(int)));
+              }
+            else
+              {
+            bool ok = true;
+
+            if(i >= 2 && i <= 6)
+              {
+                if(query.isNull(i))
+                  item = new QTableWidgetItem();
+                else
+                  item = new QTableWidgetItem
+                (m_crypt->decrypted(QByteArray::
+                            fromBase64(query.
+                                   value(i).
+                                   toByteArray()),
+                            &ok).
+                 constData());
+              }
+            else
+              item = new QTableWidgetItem(query.
+                              value(i).toString());
+
+            item->setTextAlignment(Qt::AlignLeft |
+                           Qt::AlignVCenter);
+            item->setFlags
+              (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+            m_ui.listeners->setItem(row, i, item);
+
+            if(i == 1)
+              {
+                if(query.value(i).toString() == "online")
+                  item->setBackground
+                (QBrush(QColor("lightgreen")));
+                else
+                  item->setBackground(QBrush());
+              }
+              }
+          }
+
+        QByteArray bytes1;
+        QByteArray bytes2;
+        QWidget *focusWidget = QApplication::focusWidget();
+        bool ok = true;
+
+        bytes1 = m_crypt->decrypted
+          (QByteArray::fromBase64(query.value(2).toByteArray()),
+           &ok);
+        bytes2 = m_crypt->decrypted
+          (QByteArray::fromBase64(query.value(3).toByteArray()),
+           &ok);
+
+        if(ip == bytes1 && port == bytes2)
+          m_ui.listeners->selectRow(row);
+
+        if(focusWidget)
+          focusWidget->setFocus();
+
+        row += 1;
+          }
+      }
+
+    m_ui.listeners->setSortingEnabled(true);
+    m_ui.listeners->resizeColumnsToContents();
+    m_ui.listeners->horizontalHeader()->setStretchLastSection(true);
+    m_ui.listeners->horizontalScrollBar()->setValue(hval);
+    m_ui.listeners->verticalScrollBar()->setValue(vval);
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton");
+}
+
+void spoton::slotPopulateNeighborsGreen(void)
+{
+  if(!m_crypt)
+    return;
+
+  QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
+             "neighbors.db");
+
+  if(fileInfo.exists())
+    {
+      if(fileInfo.lastModified() <= m_neighborsLastModificationTime)
+    return;
+      else
+    m_neighborsLastModificationTime = fileInfo.lastModified();
+    }
+  else
+    m_neighborsLastModificationTime = QDateTime();
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(fileInfo.absoluteFilePath());
+
+    if(db.open())
+      {
+    updateNeighborsTable(db);
+
+    QModelIndexList list;
+    QString remoteIp("");
+    QString remotePort("");
+    int columnCOUNTRY = 8;
+    int columnREMOTE_IP = 9;
+    int columnREMOTE_PORT = 10;
+    int hval = m_ui.neighbors->horizontalScrollBar()->value();
+    int row = -1;
+    int vval = m_ui.neighbors->verticalScrollBar()->value();
+
+    list = m_ui.neighbors->selectionModel()->selectedRows
+      (columnREMOTE_IP);
+
+    if(!list.isEmpty())
+      remoteIp = list.at(0).data().toString();
+
+    list = m_ui.neighbors->selectionModel()->selectedRows
+      (columnREMOTE_PORT);
+
+    if(!list.isEmpty())
+      remotePort = list.at(0).data().toString();
+
+    m_ui.neighbors->setSortingEnabled(false);
+    m_ui.neighbors->clearContents();
+    m_ui.neighbors->setRowCount(0);
+
+    QSqlQuery query(db);
+
+    query.setForwardOnly(true);
+
+    if(query.exec(QString("SELECT sticky, UPPER(uuid), status, "
+                  "status_control, "
+                  "local_ip_address, local_port, "
+                  "external_ip_address, external_port, "
+                  "country, "
+                  "remote_ip_address, "
+                  "remote_port, scope_id, protocol, OID "
+                  "FROM neighbors WHERE "
+                  "status_control <> 'deleted' %1").
+              arg(m_ui.showOnlyConnectedNeighbors->isChecked() ?
+              "AND status = 'connected'" : "")))
+      {
+        QString localIp("");
+        QString localPort("");
+
+        row = 0;
+
+        while(query.next())
+          {
+        m_ui.neighbors->setRowCount(row + 1);
+
+        QCheckBox *check = 0;
+
+        check = new QCheckBox();
+        check->setToolTip(tr("The sticky feature enables an "
+                     "indefinite lifetime for a neighbor.\n"
+                     "If "
+                     "not checked, the neighbor will be "
+                     "terminated after some internal "
+                     "timer expires."));
+
+        if(query.value(0).toInt() == 1)
+          {
+            check->setChecked(true);
+            check->setIcon(QIcon(":/sticky.png"));
+          }
+        else
+          check->setChecked(false);
+
+        check->setProperty
+          ("oid", query.value(query.record().count() - 1));
+        check->setProperty("table_row", row);
+        connect(check,
+            SIGNAL(stateChanged(int)),
+            this,
+            SLOT(slotNeighborCheckChange(int)));
+        m_ui.neighbors->setCellWidget(row, 0, check);
+
+        for(int i = 1; i < query.record().count(); i++)
+          {
+            QTableWidgetItem *item = 0;
+
+            if(i == 6 || (i >= 8 && i <= 11))
+              {
+            if(query.value(i).isNull())
+              item = new QTableWidgetItem();
+            else
+              {
+                bool ok = true;
+
+                item = new QTableWidgetItem
+                  (m_crypt->decrypted(QByteArray::
+                          fromBase64(query.
+                                 value(i).
+                                 toByteArray()),
+                          &ok).constData());
+              }
+              }
+            else
+              item = new QTableWidgetItem
+            (query.value(i).toString());
+
+            item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+            item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+
+            if(query.value(2).toString() == "connected")
+              m_ui.neighborIP->setStyleSheet
+                      ("QLineEdit {selection-background-color: lightgreen}");
+            else
+                m_ui.neighborIP->setStyleSheet
+                        ("QLineEdit {selection-background-color: red}");
+
+
+
+            m_ui.neighbors->setItem(row, i, item);
+          }
+
+        QTableWidgetItem *item1 = m_ui.neighbors->item
+          (row, columnCOUNTRY);
+
+        if(item1)
+          {
+            QIcon icon;
+            QTableWidgetItem *item2 = m_ui.neighbors->item
+              (row, columnREMOTE_IP);
+
+            if(item2)
+              icon =
+            QIcon(QString(":/Flags/%1.png").
+                  arg(spoton_misc::
+                  countryCodeFromIPAddress(item2->text()).
+                  toLower()));
+            else
+              icon = QIcon(":/Flags/unknown.png");
+
+            if(!icon.isNull())
+              item1->setIcon(icon);
+          }
+
+        QByteArray bytes1;
+        QByteArray bytes2;
+        QWidget *focusWidget = QApplication::focusWidget();
+        bool ok = true;
+
+        bytes1 = m_crypt->decrypted
+          (QByteArray::fromBase64(query.value(columnREMOTE_IP).
+                      toByteArray()), &ok);
+        bytes2 = m_crypt->decrypted
+          (QByteArray::fromBase64(query.value(columnREMOTE_PORT).
+                      toByteArray()), &ok);
+
+        if(remoteIp == bytes1 && remotePort == bytes2)
+          m_ui.neighbors->selectRow(row);
+
+        if(focusWidget)
+          focusWidget->setFocus();
+
+        row += 1;
+          }
+      }
+
+    m_ui.neighbors->setSortingEnabled(true);
+
+    for(int i = 0; i < m_ui.neighbors->columnCount(); i++)
+      m_ui.neighbors->horizontalHeaderItem(i)->
+        setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+
+    m_ui.neighbors->horizontalHeader()->setStretchLastSection(true);
+    m_ui.neighbors->horizontalScrollBar()->setValue(hval);
+    m_ui.neighbors->verticalScrollBar()->setValue(vval);
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton");
 }
