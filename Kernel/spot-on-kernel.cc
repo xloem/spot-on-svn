@@ -833,6 +833,10 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  this,
 	  SIGNAL(receivedStatusMessage(const QByteArray &,
 				       const qint64)));
+  connect(neighbor,
+	  SIGNAL(retrieveMail(const QByteArray &)),
+	  m_mailer,
+	  SLOT(slotRetrieveMail(const QByteArray &)));
   connect(this,
 	  SIGNAL(receivedChatMessage(const QByteArray &,
 				     const qint64)),

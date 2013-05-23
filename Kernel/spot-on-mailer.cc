@@ -36,10 +36,15 @@
 
 spoton_mailer::spoton_mailer(QObject *parent):QObject(parent)
 {
+  connect(&m_retrieveMailTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotRetrieveMailTimeout(void)));
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTimeout(void)));
+  m_retrieveMailTimer.setInterval(10000);
   m_timer.start(15000);
 }
 
@@ -174,4 +179,32 @@ void spoton_mailer::slotTimeout(void)
 		    vector.value(4).toByteArray(),
 		    vector.value(5).toLongLong());
     }
+}
+
+void spoton_mailer::slotRetrieveMail(const QByteArray &publicKeyHash)
+{
+  if(!m_publicKeyHashes.contains(publicKeyHash))
+    m_publicKeyHashes.append(publicKeyHash);
+
+  if(!m_retrieveMailTimer.isActive())
+    m_retrieveMailTimer.start();
+}
+
+void spoton_mailer::slotRetrieveMailTimeout(void)
+{
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_mailer");
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() + "email.db");
+
+    if(db.open())
+      {
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_mailer");
 }

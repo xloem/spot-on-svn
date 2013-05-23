@@ -898,7 +898,7 @@
               </column>
               <column>
                <property name="text">
-                <string>Hash</string>
+                <string>Recipient Hash</string>
                </property>
               </column>
              </widget>
@@ -1724,125 +1724,134 @@
                  </property>
                  <item>
                   <widget class="QGroupBox" name="groupBox_7">
-                   <layout class="QHBoxLayout" name="horizontalLayout_12">
-                    <property name="topMargin">
-                     <number>6</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>11</number>
-                    </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_31">
                     <item>
-                     <widget class="QRadioButton" name="ipv4Listener">
-                      <property name="layoutDirection">
-                       <enum>Qt::LeftToRight</enum>
-                      </property>
-                      <property name="text">
-                       <string>IPv&amp;4</string>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QRadioButton" name="ipv6Listener">
-                      <property name="layoutDirection">
-                       <enum>Qt::LeftToRight</enum>
-                      </property>
-                      <property name="text">
-                       <string>IPv&amp;6</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_11">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="layoutDirection">
-                       <enum>Qt::RightToLeft</enum>
-                      </property>
-                      <property name="text">
-                       <string>&amp;IP</string>
-                      </property>
-                      <property name="buddy">
-                       <cstring>listenerIP</cstring>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="listenerIPCombo">
-                      <property name="sizeAdjustPolicy">
-                       <enum>QComboBox::AdjustToContents</enum>
-                      </property>
-                      <item>
-                       <property name="text">
-                        <string>Custom</string>
-                       </property>
+                     <layout class="QGridLayout" name="gridLayout_2">
+                      <item row="0" column="0">
+                       <widget class="QLabel" name="label_11">
+                        <property name="layoutDirection">
+                         <enum>Qt::RightToLeft</enum>
+                        </property>
+                        <property name="text">
+                         <string>&amp;IP</string>
+                        </property>
+                        <property name="buddy">
+                         <cstring>listenerIP</cstring>
+                        </property>
+                       </widget>
                       </item>
-                     </widget>
+                      <item row="0" column="1">
+                       <widget class="QComboBox" name="listenerIPCombo">
+                        <property name="sizeAdjustPolicy">
+                         <enum>QComboBox::AdjustToContents</enum>
+                        </property>
+                        <item>
+                         <property name="text">
+                          <string>Custom</string>
+                         </property>
+                        </item>
+                       </widget>
+                      </item>
+                      <item row="0" column="2">
+                       <widget class="QLineEdit" name="listenerIP"/>
+                      </item>
+                      <item row="0" column="3">
+                       <widget class="QLabel" name="label_12">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="layoutDirection">
+                         <enum>Qt::RightToLeft</enum>
+                        </property>
+                        <property name="text">
+                         <string>&amp;Port</string>
+                        </property>
+                        <property name="buddy">
+                         <cstring>listenerPort</cstring>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="4">
+                       <widget class="QSpinBox" name="listenerPort">
+                        <property name="minimum">
+                         <number>1</number>
+                        </property>
+                        <property name="maximum">
+                         <number>65535</number>
+                        </property>
+                        <property name="value">
+                         <number>4710</number>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="5">
+                       <widget class="QRadioButton" name="ipv4Listener">
+                        <property name="layoutDirection">
+                         <enum>Qt::LeftToRight</enum>
+                        </property>
+                        <property name="text">
+                         <string>IPv&amp;4</string>
+                        </property>
+                        <property name="checked">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="6">
+                       <widget class="QRadioButton" name="ipv6Listener">
+                        <property name="layoutDirection">
+                         <enum>Qt::LeftToRight</enum>
+                        </property>
+                        <property name="text">
+                         <string>IPv&amp;6</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="0" colspan="2">
+                       <widget class="QLabel" name="listenerScopeIdLabel">
+                        <property name="text">
+                         <string>&amp;Scope ID</string>
+                        </property>
+                        <property name="buddy">
+                         <cstring>listenerScopeId</cstring>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="2">
+                       <widget class="QLineEdit" name="listenerScopeId"/>
+                      </item>
+                     </layout>
                     </item>
                     <item>
-                     <widget class="QLineEdit" name="listenerIP"/>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="listenerScopeIdLabel">
-                      <property name="text">
-                       <string>&amp;Scope ID</string>
-                      </property>
-                      <property name="buddy">
-                       <cstring>listenerScopeId</cstring>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="listenerScopeId"/>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_12">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="layoutDirection">
-                       <enum>Qt::RightToLeft</enum>
-                      </property>
-                      <property name="text">
-                       <string>&amp;Port</string>
-                      </property>
-                      <property name="buddy">
-                       <cstring>listenerPort</cstring>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QSpinBox" name="listenerPort">
-                      <property name="minimum">
-                       <number>1</number>
-                      </property>
-                      <property name="maximum">
-                       <number>65535</number>
-                      </property>
-                      <property name="value">
-                       <number>4710</number>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="addListener">
-                      <property name="text">
-                       <string>Add</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../Icons/icons.qrc">
-                        <normaloff>:/add-listener.png</normaloff>:/add-listener.png</iconset>
-                      </property>
-                     </widget>
+                     <layout class="QHBoxLayout" name="horizontalLayout_12">
+                      <item>
+                       <spacer name="horizontalSpacer_20">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="addListener">
+                        <property name="text">
+                         <string>Add</string>
+                        </property>
+                        <property name="icon">
+                         <iconset resource="../Icons/icons.qrc">
+                          <normaloff>:/add-listener.png</normaloff>:/add-listener.png</iconset>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
                     </item>
                    </layout>
                   </widget>
@@ -2847,12 +2856,12 @@
   <tabstop>kernelPath</tabstop>
   <tabstop>selectKernelPath</tabstop>
   <tabstop>scrambler</tabstop>
-  <tabstop>ipv4Listener</tabstop>
-  <tabstop>ipv6Listener</tabstop>
   <tabstop>listenerIPCombo</tabstop>
   <tabstop>listenerIP</tabstop>
-  <tabstop>listenerScopeId</tabstop>
   <tabstop>listenerPort</tabstop>
+  <tabstop>ipv4Listener</tabstop>
+  <tabstop>ipv6Listener</tabstop>
+  <tabstop>listenerScopeId</tabstop>
   <tabstop>addListener</tabstop>
   <tabstop>showOnlyOnlineListeners</tabstop>
   <tabstop>listeners</tabstop>

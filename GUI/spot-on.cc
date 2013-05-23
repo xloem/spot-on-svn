@@ -3170,10 +3170,13 @@ void spoton::slotListenerIPComboChanged(int index)
     {
       m_ui.listenerIP->clear();
       m_ui.listenerScopeId->clear();
-      m_ui.listenerIP->setVisible(true);
+      m_ui.listenerIP->setEnabled(true);
     }
   else
-    m_ui.listenerIP->setVisible(false);
+    {
+      m_ui.listenerIP->setText(m_ui.listenerIPCombo->currentText());
+      m_ui.listenerIP->setEnabled(false);
+    }
 }
 
 void spoton::slotChatSendMethodChanged(int index)
