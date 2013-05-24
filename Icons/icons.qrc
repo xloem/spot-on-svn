@@ -72,5 +72,7 @@
         <file>tab-email_turned.png</file>
         <file>tab-neighbours_turned.png</file>
         <file>tab-settings_turned.png</file>
+        <file>Status/status_lightgreen.png</file>
+        <file>Logo/spoton-button-128-gb.png</file>
     </qresource>
 </RCC>
