@@ -30,6 +30,7 @@
 
 #include <QDateTime>
 #include <QHostAddress>
+#include <QHostInfo>
 #include <QSqlDatabase>
 #include <QTcpSocket>
 #include <QTimer>
@@ -109,6 +110,7 @@ class spoton_neighbor: public QTcpSocket
   void slotDiscoverExternalAddress(void);
   void slotError(QAbstractSocket::SocketError error);
   void slotExternalAddressDiscovered(const QHostAddress &address);
+  void slotHostFound(const QHostInfo &hostInfo);
   void slotLifetimeExpired(void);
   void slotReadyRead(void);
   void slotReceivedChatMessage(const QByteArray &data, const qint64 id);

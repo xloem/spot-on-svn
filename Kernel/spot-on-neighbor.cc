@@ -102,6 +102,12 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
 {
   s_dbId += 1;
   m_address = QHostAddress(ipAddress);
+
+  if(m_address.isNull())
+    if(!ipAddress.isEmpty())
+      QHostInfo::lookupHost(ipAddress,
+			    this, SLOT(slotHostFound(const QHostInfo &)));
+
   m_address.setScopeId(scopeId);
   m_externalAddress = new spoton_external_address(this);
   m_id = id;
@@ -474,13 +480,18 @@ void spoton_neighbor::slotConnected(void)
 
 	    query.prepare("UPDATE neighbors SET country = ?, "
 			  "local_ip_address = ?, "
-			  "local_port = ?, status = 'connected' "
+			  "local_port = ?, qt_country_hash = ?, "
+			  "status = 'connected' "
 			  "WHERE OID = ?");
 	    query.bindValue(0, spoton_kernel::s_crypt1->
 			    encrypted(country.toLatin1(), &ok).toBase64());
 	    query.bindValue(1, localAddress().toString());
 	    query.bindValue(2, localPort());
-	    query.bindValue(3, m_id);
+	    query.bindValue
+	      (3, spoton_kernel::s_crypt1->keyedHash(country.remove(" ").
+						     toLatin1(), &ok).
+	       toBase64());
+	    query.bindValue(4, m_id);
 	    query.exec();
 	  }
 
@@ -1966,5 +1977,15 @@ void spoton_neighbor::slotRetrieveMail(const QList<QByteArray> &list)
 	     "error.");
 	else
 	  flush();
+      }
+}
+
+void spoton_neighbor::slotHostFound(const QHostInfo &hostInfo)
+{
+  foreach(const QHostAddress &address, hostInfo.addresses())
+    if(!address.isNull())
+      {
+	m_address = address;
+	break;
       }
 }
