@@ -57,6 +57,9 @@
      <property name="toolTip">
       <string>You have received a new message.</string>
      </property>
+     <property name="styleSheet">
+      <string notr="true">QToolButton {background-color: lightgreen}</string>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -73,6 +76,9 @@
     <widget class="QToolButton" name="email">
      <property name="toolTip">
       <string>New e-mail has arrived!</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QToolButton {background-color: lightgreen}</string>
      </property>
      <property name="text">
       <string/>
