@@ -41,6 +41,7 @@ class spoton_misc
   static QByteArray findGeminiInCosmos(const QByteArray &data,
 				       spoton_gcrypt *crypt);
   static QString countryCodeFromIPAddress(const QString &ipAddress);
+  static QString countryCodeFromName(const QString &country);
   static QString countryNameFromIPAddress(const QString &ipAddress);
   static QString homePath(void);
   static bool countryAllowedToConnect(const QString &country,

@@ -936,3 +936,13 @@ void spoton_misc::cleanupDatabases(void)
 
   QSqlDatabase::removeDatabase("spoton_misc");
 }
+
+QString spoton_misc::countryCodeFromName(const QString &country)
+{
+  QString code("");
+
+  if(country == "United States")
+    code = "us";
+
+  return code;
+}
