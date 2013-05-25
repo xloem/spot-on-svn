@@ -378,13 +378,20 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT remote_ip_address, remote_port, "
-		      "scope_id, country, hash FROM neighbors"))
+		      "scope_id, country, hash, proxy_ip_address, "
+		      "proxy_password, proxy_port, proxy_type, "
+		      "proxy_username FROM neighbors"))
 	  while(query.next())
 	    {
 	      QSqlQuery updateQuery(db);
 	      QString country("");
 	      QString ipAddress("");
 	      QString port("");
+	      QString proxyIp("");
+	      QString proxyPassword("");
+	      QString proxyPort("");
+	      QString proxyType("");
+	      QString proxyUsername("");
 	      QString scopeId("");
 	      bool ok = true;
 
@@ -395,7 +402,12 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "country = ?, "
 				  "hash = ?, "
 				  "remote_ip_address_hash = ?, "
-				  "qt_country_hash = ? "
+				  "qt_country_hash = ?, "
+				  "proxy_ip_address = ?, "
+				  "proxy_password = ?, "
+				  "proxy_port = ?, "
+				  "proxy_type = ?, "
+				  "proxy_username = ? "
 				  "WHERE hash = ?");
 	      ipAddress = oldCrypt->decrypted(QByteArray::
 					      fromBase64(query.
@@ -423,6 +435,41 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 							 value(3).
 							 toByteArray()),
 					      &ok).constData();
+
+	      if(ok)
+		proxyIp = oldCrypt->decrypted(QByteArray::
+					      fromBase64(query.
+							 value(5).
+							 toByteArray()),
+					      &ok).constData();
+
+	      if(ok)
+		proxyPassword = oldCrypt->decrypted(QByteArray::
+						    fromBase64(query.
+							       value(6).
+							       toByteArray()),
+						    &ok).constData();
+
+	      if(ok)
+		proxyPort = oldCrypt->decrypted(QByteArray::
+						fromBase64(query.
+							   value(7).
+							   toByteArray()),
+						&ok).constData();
+
+	      if(ok)
+		proxyType = oldCrypt->decrypted(QByteArray::
+						fromBase64(query.
+							   value(8).
+							   toByteArray()),
+						&ok).constData();
+
+	      if(ok)
+		proxyUsername = oldCrypt->decrypted(QByteArray::
+						    fromBase64(query.
+							       value(9).
+							       toByteArray()),
+						    &ok).constData();
 
 	      if(ok)
 		updateQuery.bindValue
@@ -461,7 +508,32 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      if(ok)
 		updateQuery.bindValue
-		  (7, query.value(4));
+		  (7, newCrypt->encrypted(proxyIp.toLatin1(), &ok).
+		   toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (8, newCrypt->encrypted(proxyPassword.toUtf8(), &ok).
+		   toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (9, newCrypt->encrypted(proxyPort.toLatin1(), &ok).
+		   toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (10, newCrypt->encrypted(proxyType.toLatin1(), &ok).
+		   toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (11, newCrypt->encrypted(proxyUsername.toUtf8(), &ok).
+		   toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (12, query.value(4));
 
 	      if(ok)
 		updateQuery.exec();

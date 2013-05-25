@@ -231,7 +231,7 @@ QByteArray spoton_gcrypt::saltedPassphraseHash(const QString &hashType,
   init();
 
   QByteArray saltedPassphraseHash;
-  QString saltedPassphrase;
+  QString saltedPassphrase("");
   int hashAlgorithm = gcry_md_map_name(hashType.toLatin1().constData());
   unsigned int length = 0;
 
@@ -1208,8 +1208,6 @@ bool spoton_gcrypt::setInitializationVector(QByteArray &bytes)
 
 QByteArray spoton_gcrypt::keyedHash(const QByteArray &data, bool *ok)
 {
-  init();
-
   if(m_hashAlgorithm == 0)
     {
       if(ok)
@@ -2041,6 +2039,8 @@ size_t spoton_gcrypt::passphraseLength(void) const
 
 QByteArray spoton_gcrypt::randomCipherType(void)
 {
+  init();
+
   QStringList types(cipherTypes());
 
   return types.value(qrand() % types.size()).toLatin1();
@@ -2267,6 +2267,8 @@ QString spoton_gcrypt::cipherType(void) const
 
 QByteArray spoton_gcrypt::strongRandomBytes(const size_t size)
 {
+  init();
+
   QByteArray random(size, 0);
 
   gcry_fast_random_poll();
@@ -2278,6 +2280,8 @@ QByteArray spoton_gcrypt::strongRandomBytes(const size_t size)
 
 size_t spoton_gcrypt::cipherKeyLength(const QByteArray &cipherType)
 {
+  init();
+
   int cipherAlgorithm = gcry_cipher_map_name(cipherType.constData());
   size_t keyLength = 0;
 
@@ -2292,6 +2296,8 @@ size_t spoton_gcrypt::cipherKeyLength(const QByteArray &cipherType)
 
 QByteArray spoton_gcrypt::weakRandomBytes(const size_t size)
 {
+  init();
+
   QByteArray random(size, 0);
 
   gcry_fast_random_poll();

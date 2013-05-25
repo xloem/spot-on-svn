@@ -772,11 +772,11 @@ void spoton::slotAddNeighbor(void)
 	QString ip(m_ui.neighborIP->text().trimmed());
 	QString port(QString::number(m_ui.neighborPort->value()));
 	QString protocol("");
-	QString proxyIpAddress;
-	QString proxyPassword;
-	QString proxyPort;
-	QString proxyType;
-	QString proxyUsername;
+	QString proxyIpAddress("");
+	QString proxyPassword("");
+	QString proxyPort("");
+	QString proxyType("");
+	QString proxyUsername("");
 	QString scopeId(m_ui.neighborScopeId->text().trimmed());
 	QString status("connected");
 	QSqlQuery query(db);
@@ -932,7 +932,7 @@ void spoton::slotAddNeighbor(void)
 
 	    if(ok)
 	      query.bindValue
-		(13, m_crypt->encrypted(proxyPassword.toLatin1(), &ok).
+		(13, m_crypt->encrypted(proxyPassword.toUtf8(), &ok).
 		 toBase64());
 
 	    if(ok)
@@ -947,7 +947,7 @@ void spoton::slotAddNeighbor(void)
 
 	    if(ok)
 	      query.bindValue
-		(16, m_crypt->encrypted(proxyUsername.toLatin1(), &ok).
+		(16, m_crypt->encrypted(proxyUsername.toUtf8(), &ok).
 		 toBase64());
 	  }
 
@@ -1211,7 +1211,14 @@ void spoton::slotPopulateListeners(void)
 	  }
 
 	m_ui.listeners->setSortingEnabled(true);
-	m_ui.listeners->resizeColumnsToContents();
+
+	for(int i = 0; i < m_ui.listeners->columnCount() - 1; i++)
+	  /*
+	  ** Ignore the OID column.
+	  */
+
+	  m_ui.listeners->resizeColumnToContents(i);
+
 	m_ui.listeners->horizontalHeader()->setStretchLastSection(true);
 	m_ui.listeners->horizontalScrollBar()->setValue(hval);
 	m_ui.listeners->verticalScrollBar()->setValue(vval);
@@ -2461,15 +2468,16 @@ void spoton::slotBlockNeighbor(void)
 		      "AND status_control <> 'deleted'"))
 	  while(query.next())
 	    {
+	      QString ip("");
 	      bool ok = true;
 
-	      QString ip
-		(m_crypt->decrypted(QByteArray::
-				    fromBase64(query.
-					       value(0).
-					       toByteArray()),
-				    &ok).
-		 constData());
+	      ip =
+		m_crypt->decrypted(QByteArray::
+				   fromBase64(query.
+					      value(0).
+					      toByteArray()),
+				   &ok).
+		constData();
 
 	      if(ok)
 		if(ip == remoteIp)
