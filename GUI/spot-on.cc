@@ -772,7 +772,7 @@ void spoton::slotAddNeighbor(void)
 	QString ip(m_ui.neighborIP->text().trimmed());
 	QString port(QString::number(m_ui.neighborPort->value()));
 	QString protocol("");
-	QString proxyIpAddress("");
+	QString proxyHostname("");
 	QString proxyPassword("");
 	QString proxyPort("");
 	QString proxyType("");
@@ -788,43 +788,26 @@ void spoton::slotAddNeighbor(void)
 	else
 	  protocol = "Dynamic DNS";
 
-	if(!m_ui.proxy->isChecked())
-	  query.prepare("INSERT INTO neighbors "
-			"(local_ip_address, "
-			"local_port, "
-			"protocol, "
-			"remote_ip_address, "
-			"remote_port, "
-			"sticky, "
-			"scope_id, "
-			"hash, "
-			"status_control, "
-			"country, "
-			"remote_ip_address_hash, "
-			"qt_country_hash) "
-			"VALUES "
-			"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-	else
-	  query.prepare("INSERT INTO neighbors "
-			"(local_ip_address, "
-			"local_port, "
-			"protocol, "
-			"remote_ip_address, "
-			"remote_port, "
-			"sticky, "
-			"scope_id, "
-			"hash, "
-			"status_control, "
-			"country, "
-			"remote_ip_address_hash, "
-			"qt_country_hash, "
-			"proxy_ip_address, "
-			"proxy_password, "
-			"proxy_port, "
-			"proxy_type, "
-			"proxy_username) "
-			"VALUES "
-			"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	query.prepare("INSERT INTO neighbors "
+		      "(local_ip_address, "
+		      "local_port, "
+		      "protocol, "
+		      "remote_ip_address, "
+		      "remote_port, "
+		      "sticky, "
+		      "scope_id, "
+		      "hash, "
+		      "status_control, "
+		      "country, "
+		      "remote_ip_address_hash, "
+		      "qt_country_hash, "
+		      "proxy_hostname, "
+		      "proxy_password, "
+		      "proxy_port, "
+		      "proxy_type, "
+		      "proxy_username) "
+		      "VALUES "
+		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
@@ -917,39 +900,41 @@ void spoton::slotAddNeighbor(void)
 	    (11, m_crypt->keyedHash(country.remove(" ").toLatin1(), &ok).
 	     toBase64());
 
+	proxyHostname = m_ui.proxyHostname->text().trimmed();
+	proxyPassword = m_ui.proxyPassword->text();
+	proxyPort = QString::number(m_ui.proxyPort->value());
+
 	if(m_ui.proxy->isChecked())
-	  {
-	    proxyIpAddress = m_ui.proxyIp->text().trimmed();
-	    proxyPassword = m_ui.proxyPassword->text();
-	    proxyPort = QString::number(m_ui.proxyPort->value());
-	    proxyType = m_ui.proxyType->currentText();
-	    proxyUsername = m_ui.proxyUsername->text();
+	  proxyType = m_ui.proxyType->currentText();
+	else
+	  proxyType = "NoProxy";
 
-	    if(ok)
-	      query.bindValue
-		(12, m_crypt->encrypted(proxyIpAddress.toLatin1(), &ok).
-		 toBase64());
+	proxyUsername = m_ui.proxyUsername->text();
 
-	    if(ok)
-	      query.bindValue
-		(13, m_crypt->encrypted(proxyPassword.toUtf8(), &ok).
-		 toBase64());
+	if(ok)
+	  query.bindValue
+	    (12, m_crypt->encrypted(proxyHostname.toLatin1(), &ok).
+	     toBase64());
 
-	    if(ok)
-	      query.bindValue
-		(14, m_crypt->encrypted(proxyPort.toLatin1(),
-					&ok).toBase64());
+	if(ok)
+	  query.bindValue
+	    (13, m_crypt->encrypted(proxyPassword.toUtf8(), &ok).
+	     toBase64());
 
-	    if(ok)
-	      query.bindValue
-		(15, m_crypt->encrypted(proxyType.toLatin1(), &ok).
-		 toBase64());
+	if(ok)
+	  query.bindValue
+	    (14, m_crypt->encrypted(proxyPort.toLatin1(),
+				    &ok).toBase64());
 
-	    if(ok)
-	      query.bindValue
-		(16, m_crypt->encrypted(proxyUsername.toUtf8(), &ok).
-		 toBase64());
-	  }
+	if(ok)
+	  query.bindValue
+	    (15, m_crypt->encrypted(proxyType.toLatin1(), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (16, m_crypt->encrypted(proxyUsername.toUtf8(), &ok).
+	     toBase64());
 
 	if(ok)
 	  ok = query.exec();
@@ -1294,7 +1279,7 @@ void spoton::slotPopulateNeighbors(void)
 			      "country, "
 			      "remote_ip_address, "
 			      "remote_port, scope_id, protocol, "
-			      "proxy_ip_address, proxy_port, OID "
+			      "proxy_hostname, proxy_port, OID "
 			      "FROM neighbors "
 			      "%1").
 		      arg(m_ui.showOnlyConnectedNeighbors->isChecked() ?

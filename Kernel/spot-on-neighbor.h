@@ -31,6 +31,7 @@
 #include <QDateTime>
 #include <QHostAddress>
 #include <QHostInfo>
+#include <QNetworkProxy>
 #include <QSqlDatabase>
 #include <QTcpSocket>
 #include <QTimer>
@@ -46,7 +47,8 @@ class spoton_neighbor: public QTcpSocket
 
  public:
   static qint64 s_dbId;
-  spoton_neighbor(const QString &ipAddress,
+  spoton_neighbor(const QNetworkProxy &proxy,
+		  const QString &ipAddress,
 		  const QString &port,
 		  const QString &scopeId,
 		  const qint64 id,

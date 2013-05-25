@@ -262,11 +262,11 @@ void spoton_misc::prepareDatabases(void)
 	   "remote_ip_address_hash TEXT NOT NULL, "
 	   "qt_country_hash TEXT, "
 	   "user_defined INTEGER NOT NULL DEFAULT 1, "
-	   "proxy_ip_address BLOB, "
-	   "proxy_password BLOB, "
-	   "proxy_port BLOB, "
-	   "proxy_type BLOB, "
-	   "proxy_username BLOB)");
+	   "proxy_hostname BLOB NOT NULL, "
+	   "proxy_password BLOB NOT NULL, "
+	   "proxy_port BLOB NOT NULL, "
+	   "proxy_type BLOB NOT NULL, "
+	   "proxy_username BLOB NOT NULL)");
       }
 
     db.close();

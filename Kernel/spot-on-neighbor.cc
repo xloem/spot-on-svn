@@ -94,7 +94,8 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   QTimer::singleShot(15000, this, SLOT(slotSendUuid(void)));
 }
 
-spoton_neighbor::spoton_neighbor(const QString &ipAddress,
+spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
+				 const QString &ipAddress,
 				 const QString &port,
 				 const QString &scopeId,
 				 const qint64 id,
@@ -114,6 +115,7 @@ spoton_neighbor::spoton_neighbor(const QString &ipAddress,
   m_lastReadTime = QDateTime::currentDateTime();
   m_networkInterface = 0;
   m_port = quint16(port.toInt());
+  setProxy(proxy);
   setReadBufferSize(8192);
   setSocketOption(QAbstractSocket::KeepAliveOption, 1);
   connect(this,

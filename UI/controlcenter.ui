@@ -1315,15 +1315,15 @@
                    <item row="1" column="0">
                     <widget class="QLabel" name="label_7">
                      <property name="text">
-                      <string>&amp;IP</string>
+                      <string>&amp;Hostame</string>
                      </property>
                      <property name="buddy">
-                      <cstring>proxyIp</cstring>
+                      <cstring>proxyHostname</cstring>
                      </property>
                     </widget>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QLineEdit" name="proxyIp"/>
+                    <widget class="QLineEdit" name="proxyHostname"/>
                    </item>
                    <item row="1" column="2">
                     <widget class="QLabel" name="label_8">
@@ -2943,7 +2943,7 @@
   <tabstop>ipv6Neighbor</tabstop>
   <tabstop>proxy</tabstop>
   <tabstop>proxyType</tabstop>
-  <tabstop>proxyIp</tabstop>
+  <tabstop>proxyHostname</tabstop>
   <tabstop>proxyPort</tabstop>
   <tabstop>proxyUsername</tabstop>
   <tabstop>proxyPassword</tabstop>

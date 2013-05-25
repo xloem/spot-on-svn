@@ -28,6 +28,7 @@
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>
+#include <QNetworkProxy>
 #include <QSettings>
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -431,7 +432,9 @@ void spoton_kernel::prepareNeighbors(void)
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT remote_ip_address, remote_port, scope_id, "
-		      "status_control, OID FROM neighbors"))
+		      "status_control, proxy_hostname, proxy_password, "
+		      "proxy_port, proxy_type, proxy_username, "
+		      "OID FROM neighbors"))
 	  while(query.next())
 	    {
 	      QPointer<spoton_neighbor> neighbor = 0;
@@ -443,30 +446,51 @@ void spoton_kernel::prepareNeighbors(void)
 		    {
 		      QList<QByteArray> list;
 
-		      for(int i = 0; i < 3; i++)
+		      for(int i = 0; i < 9; i++)
+			if(i == 3) // Status Control
+			  continue;
+			else
+			  {
+			    QByteArray bytes;
+			    bool ok = true;
+
+			    bytes = s_crypt1->
+			      decrypted(QByteArray::fromBase64(query.
+							       value(i).
+							       toByteArray()),
+					&ok);
+
+			    if(ok)
+			      list.append(bytes);
+			    else
+			      break;
+			  }
+
+		      if(list.size() == 9)
 			{
-			  QByteArray bytes;
-			  bool ok = true;
+			  QNetworkProxy proxy;
 
-			  bytes = s_crypt1->
-			    decrypted(QByteArray::fromBase64(query.
-							     value(i).
-							     toByteArray()),
-				      &ok);
+			  /*
+			  ** list[4] - Proxy Hostname
+			  ** list[5] - Proxy Password
+			  ** list[6] - Proxy Port
+			  ** list[7] - Proxy Type
+			  ** list[8] - Proxy Username
+			  */
 
-			  if(ok)
-			    list.append(bytes);
-			  else
-			    break;
+			  if(list.at(7) == "Socks5")
+			    {
+			      proxy.setType(QNetworkProxy::Socks5Proxy);
+			    }
+
+			  neighbor = new spoton_neighbor
+			    (proxy,
+			     list.at(0).constData(),
+			     list.at(1).constData(),
+			     list.at(2).constData(),
+			     query.value(9).toLongLong(),
+			     this);
 			}
-
-		      if(list.size() == 3)
-			neighbor = new spoton_neighbor
-			  (list.at(0).constData(),
-			   list.at(1).constData(),
-			   list.at(2).constData(),
-			   query.value(4).toLongLong(),
-			   this);
 
 		      if(neighbor)
 			{

@@ -30,7 +30,7 @@ neighbors.db:
 
 country
 external_ip_address
-proxy_ip_address
+proxy_hostname
 proxy_password
 proxy_port
 proxy_type
