@@ -907,7 +907,7 @@
              <x>0</x>
              <y>0</y>
              <width>482</width>
-             <height>993</height>
+             <height>1017</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -1267,7 +1267,7 @@
                    <item>
                     <widget class="QLabel" name="LEDconnected">
                      <property name="text">
-                      <string>LEDconnected</string>
+                      <string/>
                      </property>
                      <property name="pixmap">
                       <pixmap resource="../Icons/icons.qrc">:/Status/status_red.png</pixmap>
@@ -1367,7 +1367,7 @@
                    <item>
                     <widget class="QLabel" name="LEDlistening">
                      <property name="text">
-                      <string>LEDListenercreated</string>
+                      <string/>
                      </property>
                      <property name="pixmap">
                       <pixmap resource="../Icons/icons.qrc">:/Status/status_red.png</pixmap>
@@ -1518,7 +1518,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QGroupBox" name="groupBox_Proxy">
+               <widget class="QGroupBox" name="proxy">
                 <property name="enabled">
                  <bool>true</bool>
                 </property>
@@ -1536,7 +1536,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QComboBox" name="comboBox">
+                    <widget class="QComboBox" name="proxyType">
                      <item>
                       <property name="text">
                        <string>Socks5</string>
@@ -1557,7 +1557,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLineEdit" name="lineEdit_2"/>
+                    <widget class="QLineEdit" name="proxyIp"/>
                    </item>
                    <item>
                     <widget class="QLabel" name="label_5">
@@ -1567,12 +1567,12 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QSpinBox" name="spinBox">
+                    <widget class="QSpinBox" name="proxyPort">
                      <property name="maximum">
                       <number>65999</number>
                      </property>
                      <property name="value">
-                      <number>1080</number>
+                      <number>9050</number>
                      </property>
                     </widget>
                    </item>
@@ -1588,7 +1588,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLineEdit" name="lineEdit"/>
+                    <widget class="QLineEdit" name="proxyUsername"/>
                    </item>
                    <item>
                     <widget class="QLabel" name="label_8">
@@ -1598,7 +1598,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLineEdit" name="lineEdit_3"/>
+                    <widget class="QLineEdit" name="proxyPassword"/>
                    </item>
                    <item>
                     <widget class="QPushButton" name="pushButton">
@@ -2089,7 +2089,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;quot;`The Gold-Bug´ is a short story by Edgar Allan Poe. &lt;/p&gt;&lt;p&gt;The plot follows William LeGrand, who was recently bitten by a gold-colored bug. &lt;/p&gt;&lt;p&gt;His companion Jupiter fears LeGrand is going insane and goes to Legrand's friend, an unnamed narrator, who agrees to visit his old friend. LeGrand starts to pull the other two into an adventure after deciphering a secret message.&lt;/p&gt;&lt;p&gt;Poe took advantage of the popularity of cryptography as he was writing &amp;quot;The Gold-Bug&amp;quot; in 1843, and the success of the story centers e.g. on one such cryptogram. &amp;quot;The Gold-Bug&amp;quot; was an instant success and was the most popular and most widely read of Poe's works during his lifetime. It also helped to popularize cryptograms and secured writing.&amp;quot; - Wikipedia.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;quot; 'The Gold-Bug' is a short story by Edgar Allan Poe. &lt;/p&gt;&lt;p&gt;The plot follows William LeGrand, who was recently bitten by a gold-colored bug. &lt;/p&gt;&lt;p&gt;His companion Jupiter fears LeGrand is going insane and goes to Legrand's friend, an unnamed narrator, who agrees to visit his old friend. LeGrand starts to pull the other two into an adventure after deciphering a secret message.&lt;/p&gt;&lt;p&gt;Poe took advantage of the popularity of cryptography as he was writing &amp;quot;The Gold-Bug&amp;quot; in 1843, and the success of the story centers e.g. on one such cryptogram. &amp;quot;The Gold-Bug&amp;quot; was an instant success and was the most popular and most widely read of Poe's works during his lifetime. It also helped to popularize cryptograms and secured writing.&amp;quot; - Wikipedia.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="pixmap">
              <pixmap resource="../Icons/icons.qrc">:/Logo/spoton-button-128-gb.png</pixmap>

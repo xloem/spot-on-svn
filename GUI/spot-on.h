@@ -129,8 +129,8 @@ class spoton: public QMainWindow
   void slotStatusChanged(int index);
   void slotTabChanged(int index);
   void slotValidatePassphrase(void);
-  void slotLEDconnectedGreen(void);
-  void slotLEDListenercreatedGreen(void);
+  void slotLEDConnectedGreen(void);
+  void slotLEDListenerscreatedGreen(void);
 };
 
 #endif

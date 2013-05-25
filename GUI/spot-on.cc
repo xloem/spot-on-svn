@@ -305,7 +305,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.neighborScopeIdLabel->setEnabled(false);
 
   m_ui.groupBox_AddNeighbor->setEnabled(false);
-  m_ui.groupBox_Proxy->setEnabled(false);
+  m_ui.proxy->setEnabled(false);
   m_ui.groupBox_URLSupport->setEnabled(false);
   m_ui.nodeNameBox->setEnabled(false);
   m_ui.participants->setStyleSheet
@@ -619,6 +619,7 @@ void spoton::slotAddListener(void)
     m_ui.listenerIP->selectAll();
 }
 
+
 void spoton::slotAddNeighbor(void)
 {
   if(!m_crypt)
@@ -630,136 +631,196 @@ void spoton::slotAddNeighbor(void)
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "neighbors.db");
+               "neighbors.db");
 
     if(db.open())
       {
-	spoton_misc::prepareDatabases();
+    spoton_misc::prepareDatabases();
 
-	QString ip(m_ui.neighborIP->text().trimmed());
-	QString port(QString::number(m_ui.neighborPort->value()));
-	QString protocol("");
-	QString scopeId(m_ui.neighborScopeId->text().trimmed());
-	QString status("connected");
-	QSqlQuery query(db);
+    QString ip(m_ui.neighborIP->text().trimmed());
+    QString port(QString::number(m_ui.neighborPort->value()));
+    QString protocol("");
+    QString proxyIpAddress;
+    QString proxyPassword;
+    QString proxyPort;
+    QString proxyType;
+    QString proxyUsername;
+    QString scopeId(m_ui.neighborScopeId->text().trimmed());
+    QString status("connected");
+    QSqlQuery query(db);
 
-	if(m_ui.ipv4Neighbor->isChecked())
-	  protocol = "IPv4";
-	else if(m_ui.ipv6Neighbor->isChecked())
-	  protocol = "IPv6";
-	else
-	  protocol = "dns_domain";
+    if(m_ui.ipv4Neighbor->isChecked())
+      protocol = "IPv4";
+    else if(m_ui.ipv6Neighbor->isChecked())
+      protocol = "IPv6";
+    else
+      protocol = "Dynamic DNS";
 
-	query.prepare("INSERT INTO neighbors "
-		      "(local_ip_address, "
-		      "local_port, "
-		      "protocol, "
-		      "remote_ip_address, "
-		      "remote_port, "
-		      "sticky, "
-		      "scope_id, "
-		      "hash, "
-		      "status_control, "
-		      "country, "
-		      "remote_ip_address_hash, "
-		      "qt_country_hash) "
-		      "VALUES "
-		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    if(!m_ui.proxy->isChecked())
+      query.prepare("INSERT INTO neighbors "
+            "(local_ip_address, "
+            "local_port, "
+            "protocol, "
+            "remote_ip_address, "
+            "remote_port, "
+            "sticky, "
+            "scope_id, "
+            "hash, "
+            "status_control, "
+            "country, "
+            "remote_ip_address_hash, "
+            "qt_country_hash) "
+            "VALUES "
+            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    else
+      query.prepare("INSERT INTO neighbors "
+            "(local_ip_address, "
+            "local_port, "
+            "protocol, "
+            "remote_ip_address, "
+            "remote_port, "
+            "sticky, "
+            "scope_id, "
+            "hash, "
+            "status_control, "
+            "country, "
+            "remote_ip_address_hash, "
+            "qt_country_hash, "
+            "proxy_ip_address, "
+            "proxy_password, "
+            "proxy_port, "
+            "proxy_type, "
+            "proxy_username) "
+            "VALUES "
+            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-	if(protocol == "IPv6")
-	  query.bindValue(0, "::1");
-	else
-	  query.bindValue(0, "127.0.0.1");
+    query.bindValue(0, QVariant(QVariant::String));
+    query.bindValue(1, QVariant(QVariant::String));
+    query.bindValue(2, protocol);
 
-	query.bindValue(1, "0");
-	query.bindValue(2, protocol);
+    if(ip.isEmpty())
+      query.bindValue
+        (3, m_crypt->encrypted(QByteArray(), &ok).toBase64());
+    else
+      {
+        if(protocol == "IPv4" || protocol == "IPv6")
+          {
+        QList<int> numbers;
+        QStringList list;
 
-	if(ip.isEmpty())
-	  query.bindValue
-	    (3, m_crypt->encrypted(QByteArray(), &ok).toBase64());
-	else
-	  {
-	    QList<int> numbers;
-	    QStringList list;
+        if(protocol == "IPv4")
+          list = ip.split(".", QString::KeepEmptyParts);
+        else
+          list = ip.split(":", QString::KeepEmptyParts);
 
-	    if(protocol == "IPv4")
-	      list = ip.split(".", QString::KeepEmptyParts);
-	    else
-	      list = ip.split(":", QString::KeepEmptyParts);
+        for(int i = 0; i < list.size(); i++)
+          numbers.append(list.at(i).toInt());
 
-	    for(int i = 0; i < list.size(); i++)
-	      numbers.append(list.at(i).toInt());
+        ip.clear();
 
-	    ip.clear();
+        if(protocol == "IPv4")
+          {
+            ip = QString::number(numbers.value(0)) + "." +
+              QString::number(numbers.value(1)) + "." +
+              QString::number(numbers.value(2)) + "." +
+              QString::number(numbers.value(3));
+            ip.remove("...");
+          }
+        else
+          {
+            ip = QString::number(numbers.value(0)) + ":" +
+              QString::number(numbers.value(1)) + ":" +
+              QString::number(numbers.value(2)) + ":" +
+              QString::number(numbers.value(3)) + ":" +
+              QString::number(numbers.value(4)) + ":" +
+              QString::number(numbers.value(5)) + ":" +
+              QString::number(numbers.value(6)) + ":" +
+              QString::number(numbers.value(7));
+            ip.remove(":::::::");
 
-	    if(protocol == "IPv4")
-	      {
-		ip = QString::number(numbers.value(0)) + "." +
-		  QString::number(numbers.value(1)) + "." +
-		  QString::number(numbers.value(2)) + "." +
-		  QString::number(numbers.value(3));
-		ip.remove("...");
-	      }
-	    else
-	      {
-		ip = QString::number(numbers.value(0)) + ":" +
-		  QString::number(numbers.value(1)) + ":" +
-		  QString::number(numbers.value(2)) + ":" +
-		  QString::number(numbers.value(3)) + ":" +
-		  QString::number(numbers.value(4)) + ":" +
-		  QString::number(numbers.value(5)) + ":" +
-		  QString::number(numbers.value(6)) + ":" +
-		  QString::number(numbers.value(7));
-		ip.remove(":::::::");
+            /*
+            ** Special exception.
+            */
 
-		/*
-		** Special exception.
-		*/
+            if(ip == "0:0:0:0:0:0:0:0")
+              ip = "::";
+          }
+          }
 
-		if(ip == "0:0:0:0:0:0:0:0")
-		  ip = "::";
-	      }
+        if(ok)
+          query.bindValue
+        (3, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
+      }
 
-	    if(ok)
-	      query.bindValue
-		(3, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
-	  }
+    query.bindValue(5, 1); // Sticky.
 
-	query.bindValue(5, 1); // Sticky.
+    if(ok)
+      query.bindValue
+        (4, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
 
-	if(ok)
-	  query.bindValue
-	    (4, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
+    if(ok)
+      query.bindValue
+        (6, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
 
-	if(ok)
-	  query.bindValue
-	    (6, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
+    if(ok)
+      query.bindValue
+        (7, m_crypt->keyedHash((ip + port).toLatin1(), &ok).
+         toBase64());
 
-	if(ok)
-	  query.bindValue
-	    (7, m_crypt->keyedHash((ip + port).toLatin1(), &ok).
-	     toBase64());
+    query.bindValue(8, status);
 
-	query.bindValue(8, status);
+    QString country(spoton_misc::countryNameFromIPAddress(ip));
 
-	QString country(spoton_misc::countryNameFromIPAddress(ip));
+    if(ok)
+      query.bindValue
+        (9, m_crypt->encrypted(country.toLatin1(), &ok).toBase64());
 
-	if(ok)
-	  query.bindValue
-	    (9, m_crypt->encrypted(country.toLatin1(), &ok).toBase64());
+    if(ok)
+      query.bindValue
+        (10, m_crypt->keyedHash(ip.toLatin1(), &ok).
+         toBase64());
 
-	if(ok)
-	  query.bindValue
-	    (10, m_crypt->keyedHash(ip.toLatin1(), &ok).
-	     toBase64());
+    if(ok)
+      query.bindValue
+        (11, m_crypt->keyedHash(country.remove(" ").toLatin1(), &ok).
+         toBase64());
 
-	if(ok)
-	  query.bindValue
-	    (11, m_crypt->keyedHash(country.remove(" ").toLatin1(), &ok).
-	     toBase64());
+    if(m_ui.proxy->isChecked())
+      {
+        proxyIpAddress = m_ui.proxyIp->text().trimmed();
+        proxyPassword = m_ui.proxyPassword->text();
+        proxyPort = QString::number(m_ui.proxyPort->value());
+        proxyType = m_ui.proxyType->currentText();
+        proxyUsername = m_ui.proxyUsername->text();
 
-	if(ok)
-	  ok = query.exec();
+        if(ok)
+          query.bindValue
+        (12, m_crypt->encrypted(proxyIpAddress.toLatin1(), &ok).
+         toBase64());
+
+        if(ok)
+          query.bindValue
+        (13, m_crypt->encrypted(proxyPassword.toLatin1(), &ok).
+         toBase64());
+
+        if(ok)
+          query.bindValue
+        (14, m_crypt->encrypted(proxyPort.toLatin1(),
+                    &ok).toBase64());
+
+        if(ok)
+          query.bindValue
+        (15, m_crypt->encrypted(proxyType.toLatin1(), &ok).
+         toBase64());
+
+        if(ok)
+          query.bindValue
+        (16, m_crypt->encrypted(proxyUsername.toLatin1(), &ok).
+         toBase64());
+      }
+
+    if(ok)
+      ok = query.exec();
       }
 
     db.close();
@@ -770,6 +831,8 @@ void spoton::slotAddNeighbor(void)
   if(ok)
     m_ui.neighborIP->selectAll();
 }
+
+
 
 void spoton::slotProtocolRadioToggled(bool state)
 {
@@ -1451,7 +1514,7 @@ void spoton::slotValidatePassphrase(void)
       m_ui.listenersBox->setEnabled(true);
 
       m_ui.groupBox_AddNeighbor->setEnabled(true);
-      m_ui.groupBox_Proxy->setEnabled(true);
+      m_ui.proxy->setEnabled(true);
       m_ui.groupBox_URLSupport->setEnabled(true);
       m_ui.nodeNameBox->setEnabled(true);
 
@@ -3277,7 +3340,7 @@ void spoton::slotEmptyTrash(void)
 
 
 
-void spoton::slotLEDListenercreatedGreen(void)
+void spoton::slotLEDListenerscreatedGreen(void)
 {
   if(!m_crypt)
     return;
@@ -3338,10 +3401,10 @@ void spoton::slotLEDListenercreatedGreen(void)
                   "ip_address, port, scope_id, protocol, "
                   "external_ip_address, external_port, "
                   "connections, maximum_clients, OID "
-                  "FROM listeners WHERE "
-                  "status_control <> 'deleted' %1").
+                  "FROM listeners "
+                  "%1").
               arg(m_ui.showOnlyOnlineListeners->isChecked() ?
-              "AND status = 'online'" : "")))
+              "WHERE status = 'online'" : "")))
       {
         row = 0;
 
@@ -3423,8 +3486,6 @@ void spoton::slotLEDListenercreatedGreen(void)
               item = new QTableWidgetItem(query.
                               value(i).toString());
 
-            item->setTextAlignment(Qt::AlignLeft |
-                           Qt::AlignVCenter);
             item->setFlags
               (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
             m_ui.listeners->setItem(row, i, item);
@@ -3475,7 +3536,8 @@ void spoton::slotLEDListenercreatedGreen(void)
   QSqlDatabase::removeDatabase("spoton");
 }
 
-void spoton::slotLEDconnectedGreen(void)
+
+void spoton::slotLEDConnectedGreen(void)
 {
   if(!m_crypt)
     return;
@@ -3505,7 +3567,7 @@ void spoton::slotLEDconnectedGreen(void)
     QModelIndexList list;
     QString remoteIp("");
     QString remotePort("");
-    //int columnCOUNTRY = 8;
+    int columnCOUNTRY = 8;
     int columnREMOTE_IP = 9;
     int columnREMOTE_PORT = 10;
     int hval = m_ui.neighbors->horizontalScrollBar()->value();
@@ -3538,11 +3600,12 @@ void spoton::slotLEDconnectedGreen(void)
                   "external_ip_address, external_port, "
                   "country, "
                   "remote_ip_address, "
-                  "remote_port, scope_id, protocol, OID "
-                  "FROM neighbors WHERE "
-                  "status_control <> 'deleted' %1").
+                  "remote_port, scope_id, protocol, "
+                  "proxy_ip_address, proxy_port, OID "
+                  "FROM neighbors "
+                  "%1").
               arg(m_ui.showOnlyConnectedNeighbors->isChecked() ?
-              "AND status = 'connected'" : "")))
+              "WHERE status = 'connected'" : "")))
       {
         QString localIp("");
         QString localPort("");
@@ -3553,12 +3616,35 @@ void spoton::slotLEDconnectedGreen(void)
           {
         m_ui.neighbors->setRowCount(row + 1);
 
+        QCheckBox *check = 0;
+
+        check = new QCheckBox();
+        check->setToolTip(tr("The sticky feature enables an "
+                     "indefinite lifetime for a neighbor.\n"
+                     "If "
+                     "not checked, the neighbor will be "
+                     "terminated after some internal "
+                     "timer expires."));
+
+        if(query.value(0).toInt() == 1)
+          check->setChecked(true);
+        else
+          check->setChecked(false);
+
+        check->setProperty
+          ("oid", query.value(query.record().count() - 1));
+        check->setProperty("table_row", row);
+        connect(check,
+            SIGNAL(stateChanged(int)),
+            this,
+            SLOT(slotNeighborCheckChange(int)));
+        m_ui.neighbors->setCellWidget(row, 0, check);
 
         for(int i = 1; i < query.record().count(); i++)
           {
             QTableWidgetItem *item = 0;
 
-            if(i == 6 || (i >= 8 && i <= 11))
+            if(i == 6 || (i >= 8 && i <= 11) || (i >= 13 && i <= 14))
               {
             if(query.value(i).isNull())
               item = new QTableWidgetItem();
@@ -3578,51 +3664,64 @@ void spoton::slotLEDconnectedGreen(void)
               item = new QTableWidgetItem
             (query.value(i).toString());
 
-            item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
             item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
+            if(i == 2)
+              {
+            if(query.value(i).toString() == "connected")
+              item->setBackground(QBrush(QColor("lightgreen")));
+            else
+              item->setBackground(QBrush());
+              }
 
             m_ui.neighbors->setItem(row, i, item);
           }
 
+        QTableWidgetItem *item1 = m_ui.neighbors->item
+          (row, columnCOUNTRY);
 
-        // for(int i = 0; i < table->columnCount(); i++)
+        if(item1)
+          {
+            QIcon icon;
+            QTableWidgetItem *item2 = m_ui.neighbors->item
+              (row, columnREMOTE_IP);
 
-        // if(table->item(row, i)->text().contains(str))
+            if(item2)
+              icon =
+            QIcon(QString(":/Flags/%1.png").
+                  arg(spoton_misc::
+                  countryCodeFromIPAddress(item2->text()).
+                  toLower()));
+            else
+              icon = QIcon(":/Flags/unknown.png");
 
+            if(!icon.isNull())
+              item1->setIcon(icon);
+          }
 
-         for(int i = 0; i < m_ui.neighbors->columnCount(); i++)
+        QByteArray bytes1;
+        QByteArray bytes2;
+        QWidget *focusWidget = QApplication::focusWidget();
+        bool ok = true;
 
-             if(m_ui.neighbors->item(row, 2)->text().contains("connected"))
+        bytes1 = m_crypt->decrypted
+          (QByteArray::fromBase64(query.value(columnREMOTE_IP).
+                      toByteArray()), &ok);
+        bytes2 = m_crypt->decrypted
+          (QByteArray::fromBase64(query.value(columnREMOTE_PORT).
+                      toByteArray()), &ok);
 
-        {
+        if(remoteIp == bytes1 && remotePort == bytes2)
+          m_ui.neighbors->selectRow(row);
 
-            m_ui.neighborIP->setStyleSheet
-                    ("QLineEdit {selection-background-color: lightgreen}");
+        if(focusWidget)
+          focusWidget->setFocus();
 
-        }
-
-
-       else
-        m_ui.neighborIP->setStyleSheet
-                ("QLineEdit {selection-background-color: red}");
-
-
-
-
-
-
-
-
+        row += 1;
           }
       }
 
     m_ui.neighbors->setSortingEnabled(true);
-
-    for(int i = 0; i < m_ui.neighbors->columnCount(); i++)
-      m_ui.neighbors->horizontalHeaderItem(i)->
-        setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-
     m_ui.neighbors->horizontalHeader()->setStretchLastSection(true);
     m_ui.neighbors->horizontalScrollBar()->setValue(hval);
     m_ui.neighbors->verticalScrollBar()->setValue(vval);
