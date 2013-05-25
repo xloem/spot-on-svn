@@ -895,12 +895,21 @@ void spoton::slotGeneralTimerTimeout(void)
 
 	  palette.setColor(m_ui.pid->backgroundRole(), color);
 	  m_ui.pid->setPalette(palette);
+      m_ui.LEDactivated->setPixmap(QPixmap(":/Status/status_lightgreen.png"));
+      return;
+
 	}
       else
 	m_ui.pid->setPalette(pidPalette);
+    m_ui.LEDactivated->setPixmap(QPixmap(":/Status/status_red.png"));
+    return;
+
     }
   else
     m_ui.pid->setPalette(pidPalette);
+    m_ui.LEDactivated->setPixmap(QPixmap(":/Status/status_red.png"));
+    return;
+    
 
   libspoton_close(&libspotonHandle);
   highlightKernelPath();
@@ -3268,7 +3277,7 @@ void spoton::slotEmptyTrash(void)
 
 
 
-void spoton::slotPopulateListenersGreen(void)
+void spoton::slotLEDListenercreatedGreen(void)
 {
   if(!m_crypt)
     return;
@@ -3466,7 +3475,7 @@ void spoton::slotPopulateListenersGreen(void)
   QSqlDatabase::removeDatabase("spoton");
 }
 
-void spoton::slotPopulateNeighborsGreen(void)
+void spoton::slotLEDconnectedGreen(void)
 {
   if(!m_crypt)
     return;
@@ -3544,32 +3553,6 @@ void spoton::slotPopulateNeighborsGreen(void)
           {
         m_ui.neighbors->setRowCount(row + 1);
 
-        QCheckBox *check = 0;
-
-        check = new QCheckBox();
-        check->setToolTip(tr("The sticky feature enables an "
-                     "indefinite lifetime for a neighbor.\n"
-                     "If "
-                     "not checked, the neighbor will be "
-                     "terminated after some internal "
-                     "timer expires."));
-
-        if(query.value(0).toInt() == 1)
-          {
-            check->setChecked(true);
-            check->setIcon(QIcon(":/sticky.png"));
-          }
-        else
-          check->setChecked(false);
-
-        check->setProperty
-          ("oid", query.value(query.record().count() - 1));
-        check->setProperty("table_row", row);
-        connect(check,
-            SIGNAL(stateChanged(int)),
-            this,
-            SLOT(slotNeighborCheckChange(int)));
-        m_ui.neighbors->setCellWidget(row, 0, check);
 
         for(int i = 1; i < query.record().count(); i++)
           {
@@ -3599,59 +3582,38 @@ void spoton::slotPopulateNeighborsGreen(void)
             item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
 
-            if(query.value(2).toString() == "connected")
-              m_ui.neighborIP->setStyleSheet
-                      ("QLineEdit {selection-background-color: lightgreen}");
-            else
-                m_ui.neighborIP->setStyleSheet
-                        ("QLineEdit {selection-background-color: red}");
-
-
-
             m_ui.neighbors->setItem(row, i, item);
           }
 
-        QTableWidgetItem *item1 = m_ui.neighbors->item
-          (row, columnCOUNTRY);
 
-        if(item1)
-          {
-            QIcon icon;
-            QTableWidgetItem *item2 = m_ui.neighbors->item
-              (row, columnREMOTE_IP);
+        // for(int i = 0; i < table->columnCount(); i++)
 
-            if(item2)
-              icon =
-            QIcon(QString(":/Flags/%1.png").
-                  arg(spoton_misc::
-                  countryCodeFromIPAddress(item2->text()).
-                  toLower()));
-            else
-              icon = QIcon(":/Flags/unknown.png");
+        // if(table->item(row, i)->text().contains(str))
 
-            if(!icon.isNull())
-              item1->setIcon(icon);
-          }
 
-        QByteArray bytes1;
-        QByteArray bytes2;
-        QWidget *focusWidget = QApplication::focusWidget();
-        bool ok = true;
+         for(int i = 0; i < m_ui.neighbors->columnCount(); i++)
 
-        bytes1 = m_crypt->decrypted
-          (QByteArray::fromBase64(query.value(columnREMOTE_IP).
-                      toByteArray()), &ok);
-        bytes2 = m_crypt->decrypted
-          (QByteArray::fromBase64(query.value(columnREMOTE_PORT).
-                      toByteArray()), &ok);
+             if(m_ui.neighbors->item(row, 2)->text().contains("connected"))
 
-        if(remoteIp == bytes1 && remotePort == bytes2)
-          m_ui.neighbors->selectRow(row);
+        {
 
-        if(focusWidget)
-          focusWidget->setFocus();
+            m_ui.neighborIP->setStyleSheet
+                    ("QLineEdit {selection-background-color: lightgreen}");
 
-        row += 1;
+        }
+
+
+       else
+        m_ui.neighborIP->setStyleSheet
+                ("QLineEdit {selection-background-color: red}");
+
+
+
+
+
+
+
+
           }
       }
 

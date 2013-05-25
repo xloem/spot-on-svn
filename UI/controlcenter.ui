@@ -354,7 +354,7 @@
                <item>
                 <widget class="QPushButton" name="addFriend">
                  <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add Participant via &lt;span style=&quot; font-weight:600;&quot;&gt;IP Connection&lt;/span&gt;&lt;/p&gt;&lt;ol style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Add a listener. See the Settings tab. You may be required to forward the port in your router.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Send the connection information to the participant.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Once connected, at least one user must share the public key via the context menu in the Neighbors table.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Confirm participants via the context menu in the Chat tab's Participants table.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;Add Participant with &lt;span style=&quot; font-weight:600;&quot;&gt;Repleo Exchange&lt;/span&gt;&lt;/p&gt;&lt;ol style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Obtain the public key from participant. Paste it in the above textbox. Click the Key radio button and press the Add button.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copy the Repleo of the new participant from the context menu in the Chat tab's Participants table.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Send the Repleo.&lt;/li&gt;&lt;/ol&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add Participant with &lt;span style=&quot; font-weight:600;&quot;&gt;Key &amp;amp; Repleo Exchange&lt;/span&gt;&lt;/p&gt;&lt;ol style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Obtain the public key from a friend. Paste it in the above textbox. Click the Key radio button and press the Add button.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copy the Repleo of the new participant from the context menu in the Chat tab's friends table.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Send the Repleo. Your friend needs to: Paste it in the above textbox. Click the Repleo radio button and press the Add button.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;To be able to chat, you need to be connected to one server (see Settings Tab).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="text">
                   <string>Add</string>
@@ -907,7 +907,7 @@
              <x>0</x>
              <y>0</y>
              <width>482</width>
-             <height>966</height>
+             <height>993</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -924,6 +924,13 @@
                 <layout class="QVBoxLayout" name="verticalLayout_12">
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_14">
+                   <item>
+                    <widget class="QLabel" name="LEDactivated">
+                     <property name="text">
+                      <string>LEDactivated</string>
+                     </property>
+                    </widget>
+                   </item>
                    <item>
                     <widget class="QPushButton" name="activateKernel">
                      <property name="text">
@@ -1250,39 +1257,6 @@
                </widget>
               </item>
               <item>
-               <widget class="QGroupBox" name="nodeNameBox">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="title">
-                 <string>Chat Name</string>
-                </property>
-                <layout class="QVBoxLayout" name="verticalLayout_11">
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_6">
-                   <item>
-                    <widget class="QLineEdit" name="nodeName"/>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="saveNodeName">
-                     <property name="text">
-                      <string>Save</string>
-                     </property>
-                     <property name="icon">
-                      <iconset resource="../Icons/icons.qrc">
-                       <normaloff>:/plist_connected_neighbour.png</normaloff>:/plist_connected_neighbour.png</iconset>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item>
                <widget class="QGroupBox" name="groupBox_AddNeighbor">
                 <property name="title">
                  <string>Add Connection</string>
@@ -1290,6 +1264,16 @@
                 <layout class="QVBoxLayout" name="verticalLayout_10">
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_9">
+                   <item>
+                    <widget class="QLabel" name="LEDconnected">
+                     <property name="text">
+                      <string>LEDconnected</string>
+                     </property>
+                     <property name="pixmap">
+                      <pixmap resource="../Icons/icons.qrc">:/Status/status_red.png</pixmap>
+                     </property>
+                    </widget>
+                   </item>
                    <item>
                     <widget class="QRadioButton" name="ipv4Neighbor">
                      <property name="text">
@@ -1380,6 +1364,16 @@
                 <layout class="QVBoxLayout" name="verticalLayout_6">
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_12">
+                   <item>
+                    <widget class="QLabel" name="LEDlistening">
+                     <property name="text">
+                      <string>LEDListenercreated</string>
+                     </property>
+                     <property name="pixmap">
+                      <pixmap resource="../Icons/icons.qrc">:/Status/status_red.png</pixmap>
+                     </property>
+                    </widget>
+                   </item>
                    <item>
                     <widget class="QRadioButton" name="ipv4Listener">
                      <property name="layoutDirection">
@@ -1638,6 +1632,46 @@
                    </property>
                   </widget>
                  </item>
+                 <item>
+                  <widget class="QCheckBox" name="checkBox_2">
+                   <property name="text">
+                    <string>Include URL Key in Copies of Repleo and Keys.</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="nodeNameBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="title">
+                 <string>Chat Name</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_11">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_6">
+                   <item>
+                    <widget class="QLineEdit" name="nodeName"/>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="saveNodeName">
+                     <property name="text">
+                      <string>Save</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../Icons/icons.qrc">
+                       <normaloff>:/plist_connected_neighbour.png</normaloff>:/plist_connected_neighbour.png</iconset>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
                 </layout>
                </widget>
               </item>
@@ -1874,38 +1908,115 @@
        <attribute name="title">
         <string/>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_34">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_5">
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_9">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Gold Bug Instant Messenger</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_13">
           <item>
-           <spacer name="verticalSpacer_5">
+           <spacer name="horizontalSpacer">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>20</width>
-              <height>40</height>
+              <width>40</width>
+              <height>20</height>
              </size>
             </property>
            </spacer>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_32">
-            <item>
-             <spacer name="horizontalSpacer_35">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+           <layout class="QGridLayout" name="gridLayout_3">
+            <item row="2" column="0">
+             <widget class="QLabel" name="passphraseLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
+              <property name="text">
+               <string>P&amp;assphrase</string>
               </property>
-             </spacer>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>passphrase</cstring>
+              </property>
+             </widget>
             </item>
-            <item>
+            <item row="2" column="2">
+             <widget class="QPushButton" name="passphraseButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../Icons/icons.qrc">
+                <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="passphrase">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="echoMode">
+               <enum>QLineEdit::Password</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
              <widget class="QLabel" name="label_31">
               <property name="toolTip">
                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;quot;The Dalmatian is a breed of dog, noted for its unique black- or brown-spotted coat. This dog is often used as a rescue dog, guardian, athletic partner, and, especially today, the Dalmatian remains most often an active, well-loved family member.&amp;quot; - Wikipedia.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1921,15 +2032,18 @@
               </property>
              </widget>
             </item>
-            <item>
-             <spacer name="horizontalSpacer_34">
+            <item row="0" column="1">
+             <spacer name="verticalSpacer">
               <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Preferred</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>40</width>
-                <height>20</height>
+                <width>20</width>
+                <height>40</height>
                </size>
               </property>
              </spacer>
@@ -1937,142 +2051,71 @@
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_13">
-            <item>
-             <spacer name="horizontalSpacer_6">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QLabel" name="passphraseLabel">
-              <property name="text">
-               <string>P&amp;assphrase</string>
-              </property>
-              <property name="buddy">
-               <cstring>passphrase</cstring>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="passphrase">
-              <property name="echoMode">
-               <enum>QLineEdit::Password</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="passphraseButton">
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="../Icons/icons.qrc">
-                <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_9">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_7">
+           <spacer name="horizontalSpacer_2">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <item>
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_4">
-              <property name="maximumSize">
-               <size>
-                <width>128</width>
-                <height>128</height>
-               </size>
-              </property>
-              <property name="toolTip">
-               <string>Spot-On Graphical User Interface Version 1.00</string>
-              </property>
-              <property name="pixmap">
-               <pixmap resource="../Icons/icons.qrc">:/Logo/spoton-button-128.png</pixmap>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
+              <width>40</width>
+              <height>20</height>
              </size>
             </property>
            </spacer>
           </item>
          </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>128</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;quot;`The Gold-Bug´ is a short story by Edgar Allan Poe. &lt;/p&gt;&lt;p&gt;The plot follows William LeGrand, who was recently bitten by a gold-colored bug. &lt;/p&gt;&lt;p&gt;His companion Jupiter fears LeGrand is going insane and goes to Legrand's friend, an unnamed narrator, who agrees to visit his old friend. LeGrand starts to pull the other two into an adventure after deciphering a secret message.&lt;/p&gt;&lt;p&gt;Poe took advantage of the popularity of cryptography as he was writing &amp;quot;The Gold-Bug&amp;quot; in 1843, and the success of the story centers e.g. on one such cryptogram. &amp;quot;The Gold-Bug&amp;quot; was an instant success and was the most popular and most widely read of Poe's works during his lifetime. It also helped to popularize cryptograms and secured writing.&amp;quot; - Wikipedia.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="pixmap">
+             <pixmap resource="../Icons/icons.qrc">:/Logo/spoton-button-128-gb.png</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
