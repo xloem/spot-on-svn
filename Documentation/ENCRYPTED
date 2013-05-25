@@ -30,6 +30,11 @@ neighbors.db:
 
 country
 external_ip_address
+proxy_ip_address
+proxy_password
+proxy_port
+proxy_type
+proxy_username
 remote_ip_address
 remote_port
 scope_id

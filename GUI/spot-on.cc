@@ -772,6 +772,11 @@ void spoton::slotAddNeighbor(void)
 	QString ip(m_ui.neighborIP->text().trimmed());
 	QString port(QString::number(m_ui.neighborPort->value()));
 	QString protocol("");
+	QString proxyIpAddress;
+	QString proxyPassword;
+	QString proxyPort;
+	QString proxyType;
+	QString proxyUsername;
 	QString scopeId(m_ui.neighborScopeId->text().trimmed());
 	QString status("connected");
 	QSqlQuery query(db);
@@ -783,30 +788,46 @@ void spoton::slotAddNeighbor(void)
 	else
 	  protocol = "Dynamic DNS";
 
-	query.prepare("INSERT INTO neighbors "
-		      "(local_ip_address, "
-		      "local_port, "
-		      "protocol, "
-		      "remote_ip_address, "
-		      "remote_port, "
-		      "sticky, "
-		      "scope_id, "
-		      "hash, "
-		      "status_control, "
-		      "country, "
-		      "remote_ip_address_hash, "
-		      "qt_country_hash) "
-		      "VALUES "
-		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-	if(protocol == "Dynamic DNS")
-	  query.bindValue(0, "localhost");
-	else if(protocol == "IPv6")
-	  query.bindValue(0, "::1");
+	if(!m_ui.proxy->isChecked())
+	  query.prepare("INSERT INTO neighbors "
+			"(local_ip_address, "
+			"local_port, "
+			"protocol, "
+			"remote_ip_address, "
+			"remote_port, "
+			"sticky, "
+			"scope_id, "
+			"hash, "
+			"status_control, "
+			"country, "
+			"remote_ip_address_hash, "
+			"qt_country_hash) "
+			"VALUES "
+			"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	else
-	  query.bindValue(0, "127.0.0.1");
+	  query.prepare("INSERT INTO neighbors "
+			"(local_ip_address, "
+			"local_port, "
+			"protocol, "
+			"remote_ip_address, "
+			"remote_port, "
+			"sticky, "
+			"scope_id, "
+			"hash, "
+			"status_control, "
+			"country, "
+			"remote_ip_address_hash, "
+			"qt_country_hash, "
+			"proxy_ip_address, "
+			"proxy_password, "
+			"proxy_port, "
+			"proxy_type, "
+			"proxy_username) "
+			"VALUES "
+			"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-	query.bindValue(1, "0");
+	query.bindValue(0, QVariant(QVariant::String));
+	query.bindValue(1, QVariant(QVariant::String));
 	query.bindValue(2, protocol);
 
 	if(ip.isEmpty())
@@ -895,6 +916,40 @@ void spoton::slotAddNeighbor(void)
 	  query.bindValue
 	    (11, m_crypt->keyedHash(country.remove(" ").toLatin1(), &ok).
 	     toBase64());
+
+	if(m_ui.proxy->isChecked())
+	  {
+	    proxyIpAddress = m_ui.proxyIp->text().trimmed();
+	    proxyPassword = m_ui.proxyPassword->text();
+	    proxyPort = QString::number(m_ui.proxyPort->value());
+	    proxyType = m_ui.proxyType->currentText();
+	    proxyUsername = m_ui.proxyUsername->text();
+
+	    if(ok)
+	      query.bindValue
+		(12, m_crypt->encrypted(proxyIpAddress.toLatin1(), &ok).
+		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(13, m_crypt->encrypted(proxyPassword.toLatin1(), &ok).
+		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(14, m_crypt->encrypted(proxyPort.toLatin1(),
+					&ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(15, m_crypt->encrypted(proxyType.toLatin1(), &ok).
+		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(16, m_crypt->encrypted(proxyUsername.toLatin1(), &ok).
+		 toBase64());
+	  }
 
 	if(ok)
 	  ok = query.exec();
@@ -1033,10 +1088,10 @@ void spoton::slotPopulateListeners(void)
 			      "ip_address, port, scope_id, protocol, "
 			      "external_ip_address, external_port, "
 			      "connections, maximum_clients, OID "
-			      "FROM listeners WHERE "
-			      "status_control <> 'deleted' %1").
+			      "FROM listeners "
+			      "%1").
 		      arg(m_ui.showOnlyOnlineListeners->isChecked() ?
-			  "AND status = 'online'" : "")))
+			  "WHERE status = 'online'" : "")))
 	  {
 	    row = 0;
 
@@ -1231,11 +1286,12 @@ void spoton::slotPopulateNeighbors(void)
 			      "external_ip_address, external_port, "
 			      "country, "
 			      "remote_ip_address, "
-			      "remote_port, scope_id, protocol, OID "
-			      "FROM neighbors WHERE "
-			      "status_control <> 'deleted' %1").
+			      "remote_port, scope_id, protocol, "
+			      "proxy_ip_address, proxy_port, OID "
+			      "FROM neighbors "
+			      "%1").
 		      arg(m_ui.showOnlyConnectedNeighbors->isChecked() ?
-			  "AND status = 'connected'" : "")))
+			  "WHERE status = 'connected'" : "")))
 	  {
 	    QString localIp("");
 	    QString localPort("");
@@ -1274,7 +1330,7 @@ void spoton::slotPopulateNeighbors(void)
 		  {
 		    QTableWidgetItem *item = 0;
 
-		    if(i == 6 || (i >= 8 && i <= 11))
+		    if(i == 6 || (i >= 8 && i <= 11) || (i >= 13 && i <= 14))
 		      {
 			if(query.value(i).isNull())
 			  item = new QTableWidgetItem();
@@ -2228,7 +2284,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 	action->setEnabled(false);
 
       menu.addAction(QIcon(":/copy.png"),
-		     tr("&Copy Key Bundle to the clipboard buffer."),
+		     tr("&Copy Repleo to the clipboard buffer."),
 		     this, SLOT(slotCopyFriendshipBundle(void)));
       menu.addAction(tr("&Generate random Gemini (AES-256)."),
 		     this, SLOT(slotGenerateGeminiInChat(void)));
@@ -3308,7 +3364,7 @@ void spoton::slotCopyMyPublicKey(void)
     signature = m_crypt->digitalSignature(hash, &ok).toBase64();
 
   if(ok)
-    clipboard->setText(name + "@" + publicKey + "@" + signature);
+    clipboard->setText("K" + name + "@" + publicKey + "@" + signature);
   else
     clipboard->clear();
 }
@@ -3908,6 +3964,19 @@ void spoton::slotAddFriendsKey(void)
       if(m_ui.friendInformation->toPlainText().trimmed().isEmpty())
 	return;
 
+      QString key(m_ui.friendInformation->toPlainText().trimmed());
+
+      if(!(key.startsWith("K") || key.startsWith("k")))
+	{
+	  QMessageBox::warning
+	    (this, tr("Spot-On: Warning"),
+	     tr("Invalid key. The key must start with either the letter "
+		"K or the letter k."));
+	  return;
+	}
+
+      key.remove(0, 1);
+
       {
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
@@ -3918,9 +3987,7 @@ void spoton::slotAddFriendsKey(void)
 	  {
 	    spoton_misc::prepareDatabases();
 
-	    QList<QByteArray> list
-	      (m_ui.friendInformation->toPlainText().
-	       trimmed().toLatin1().split('@'));
+	    QList<QByteArray> list(key.toLatin1().split('@'));
 
 	    if(list.size() != 3)
 	      return;
@@ -3957,9 +4024,21 @@ void spoton::slotAddFriendsKey(void)
       else if(m_ui.friendInformation->toPlainText().trimmed().isEmpty())
 	return;
 
-      QByteArray kb(m_ui.friendInformation->toPlainText().trimmed().
-		    toLatin1());
-      QList<QByteArray> list(kb.split('@'));
+      QByteArray repleo(m_ui.friendInformation->toPlainText().trimmed().
+			toLatin1());
+
+      if(!(repleo.startsWith("R") || repleo.startsWith("r")))
+	{
+	  QMessageBox::warning
+	    (this, tr("Spot-On: Warning"),
+	     tr("Invalid repleo. The repleo must start with "
+		"either the letter R or the letter r."));
+	  return;
+	}
+
+      repleo.remove(0, 1);
+
+      QList<QByteArray> list(repleo.split('@'));
 
       if(list.size() != 6)
 	{
@@ -4293,7 +4372,7 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  clipboard->setText(data);
+  clipboard->setText("R" + data);
 }
 
 Ui_spoton_mainwindow spoton::ui(void) const
