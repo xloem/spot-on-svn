@@ -480,7 +480,11 @@ void spoton_kernel::prepareNeighbors(void)
 
 			  if(list.at(7) == "Socks5")
 			    {
+			      proxy.setHostName(list.at(4));
+			      proxy.setPassword(list.at(5));
+			      proxy.setPort(list.at(6).toUShort());
 			      proxy.setType(QNetworkProxy::Socks5Proxy);
+			      proxy.setUser(list.at(8));
 			    }
 
 			  neighbor = new spoton_neighbor
