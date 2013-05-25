@@ -3505,7 +3505,7 @@ void spoton::slotLEDconnectedGreen(void)
     QModelIndexList list;
     QString remoteIp("");
     QString remotePort("");
-    int columnCOUNTRY = 8;
+    //int columnCOUNTRY = 8;
     int columnREMOTE_IP = 9;
     int columnREMOTE_PORT = 10;
     int hval = m_ui.neighbors->horizontalScrollBar()->value();
