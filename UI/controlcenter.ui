@@ -1525,6 +1525,12 @@
                 <property name="title">
                  <string>Proxy</string>
                 </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
                 <layout class="QVBoxLayout" name="verticalLayout_13">
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_2">
