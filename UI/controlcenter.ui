@@ -1575,7 +1575,7 @@
                    <item>
                     <widget class="QSpinBox" name="proxyPort">
                      <property name="maximum">
-                      <number>65999</number>
+                      <number>65535</number>
                      </property>
                      <property name="value">
                       <number>9050</number>
