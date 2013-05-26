@@ -466,25 +466,25 @@ void spoton_kernel::prepareNeighbors(void)
 			      break;
 			  }
 
-		      if(list.size() == 9)
+		      if(list.size() == 8)
 			{
 			  QNetworkProxy proxy;
 
 			  /*
-			  ** list[4] - Proxy Hostname
-			  ** list[5] - Proxy Password
-			  ** list[6] - Proxy Port
-			  ** list[7] - Proxy Type
-			  ** list[8] - Proxy Username
+			  ** list[3] - Proxy Hostname
+			  ** list[4] - Proxy Password
+			  ** list[5] - Proxy Port
+			  ** list[6] - Proxy Type
+			  ** list[7] - Proxy Username
 			  */
 
-			  if(list.at(7) == "Socks5")
+			  if(list.at(6) == "Socks5")
 			    {
-			      proxy.setHostName(list.at(4));
-			      proxy.setPassword(list.at(5));
-			      proxy.setPort(list.at(6).toUShort());
+			      proxy.setHostName(list.at(3));
+			      proxy.setPassword(list.at(4));
+			      proxy.setPort(list.at(5).toUShort());
 			      proxy.setType(QNetworkProxy::Socks5Proxy);
-			      proxy.setUser(list.at(8));
+			      proxy.setUser(list.at(7));
 			    }
 
 			  neighbor = new spoton_neighbor
