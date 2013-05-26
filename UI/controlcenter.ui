@@ -1146,7 +1146,7 @@
                </column>
                <column>
                 <property name="text">
-                 <string>Proxy IP Address</string>
+                 <string>Proxy Hostname</string>
                 </property>
                </column>
                <column>
@@ -2301,17 +2301,6 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_11">
                 <item>
-                 <widget class="QPushButton" name="pushButtonDocViewer">
-                  <property name="text">
-                   <string>Documentation</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../Icons/icons.qrc">
-                    <normaloff>:/documentation.png</normaloff>:/documentation.png</iconset>
-                  </property>
-                 </widget>
-                </item>
-                <item>
                  <widget class="QPushButton" name="resetSpotOn">
                   <property name="text">
                    <string>Reset Spot-On</string>
@@ -2864,8 +2853,15 @@
     </property>
     <addaction name="action_Log_Viewer"/>
    </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="action_Documentation"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
+   <addaction name="menu_View"/>
   </widget>
   <action name="action_Quit">
    <property name="icon">
@@ -2885,6 +2881,15 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="action_Documentation">
+   <property name="icon">
+    <iconset resource="../Icons/icons.qrc">
+     <normaloff>:/documentation.png</normaloff>:/documentation.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Documentation</string>
    </property>
   </action>
  </widget>
@@ -2985,7 +2990,6 @@
   <tabstop>passphrase1</tabstop>
   <tabstop>passphrase2</tabstop>
   <tabstop>setPassphrase</tabstop>
-  <tabstop>pushButtonDocViewer</tabstop>
   <tabstop>resetSpotOn</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>acceptlistRadioButton</tabstop>

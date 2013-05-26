@@ -245,8 +245,8 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotScramble(bool)));
-  connect(m_ui.pushButtonDocViewer,
-	  SIGNAL(clicked(void)),
+  connect(m_ui.action_Documentation,
+	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotViewDocumentation(void)));
   connect(m_ui.listenerIP,
@@ -537,7 +537,6 @@ spoton::spoton(void):QMainWindow()
       m_ui.passphraseLabel->setEnabled(false);
       m_ui.kernelBox->setEnabled(false);
       m_ui.listenersBox->setEnabled(false);
-      m_ui.pushButtonDocViewer->setEnabled(false);
       m_ui.resetSpotOn->setEnabled(false);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
@@ -2032,7 +2031,6 @@ void spoton::slotSetPassphrase(void)
       m_sb.kernelstatus->setEnabled(true);
       m_ui.kernelBox->setEnabled(true);
       m_ui.listenersBox->setEnabled(true);
-      m_ui.pushButtonDocViewer->setEnabled(true);
       m_ui.resetSpotOn->setEnabled(true);
       m_ui.passphrase1->setText("0000000000");
       m_ui.passphrase2->setText("0000000000");
@@ -2140,7 +2138,6 @@ void spoton::slotValidatePassphrase(void)
       m_ui.passphraseButton->setEnabled(false);
       m_ui.passphraseLabel->setEnabled(false);
       m_ui.rsaKeySize->setEnabled(false);
-      m_ui.pushButtonDocViewer->setEnabled(true);
       m_ui.resetSpotOn->setEnabled(true);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
