@@ -1691,8 +1691,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1020</width>
-             <height>644</height>
+             <width>975</width>
+             <height>613</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -1904,16 +1904,6 @@
                         </property>
                        </widget>
                       </item>
-                      <item row="0" column="6">
-                       <widget class="QRadioButton" name="ipv6Listener">
-                        <property name="layoutDirection">
-                         <enum>Qt::LeftToRight</enum>
-                        </property>
-                        <property name="text">
-                         <string>IPv&amp;6</string>
-                        </property>
-                       </widget>
-                      </item>
                       <item row="1" column="0" colspan="2">
                        <widget class="QLabel" name="listenerScopeIdLabel">
                         <property name="text">
@@ -1927,24 +1917,7 @@
                       <item row="1" column="2">
                        <widget class="QLineEdit" name="listenerScopeId"/>
                       </item>
-                     </layout>
-                    </item>
-                    <item>
-                     <layout class="QHBoxLayout" name="horizontalLayout_12">
-                      <item>
-                       <spacer name="horizontalSpacer_20">
-                        <property name="orientation">
-                         <enum>Qt::Horizontal</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>40</width>
-                          <height>20</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
-                      <item>
+                      <item row="1" column="6">
                        <widget class="QPushButton" name="addListener">
                         <property name="text">
                          <string>Add</string>
@@ -1952,6 +1925,16 @@
                         <property name="icon">
                          <iconset resource="../Icons/icons.qrc">
                           <normaloff>:/add-listener.png</normaloff>:/add-listener.png</iconset>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="5">
+                       <widget class="QRadioButton" name="ipv6Listener">
+                        <property name="layoutDirection">
+                         <enum>Qt::LeftToRight</enum>
+                        </property>
+                        <property name="text">
+                         <string>IPv&amp;6</string>
                         </property>
                        </widget>
                       </item>
@@ -2975,8 +2958,8 @@
   <tabstop>listenerIP</tabstop>
   <tabstop>listenerPort</tabstop>
   <tabstop>ipv4Listener</tabstop>
-  <tabstop>ipv6Listener</tabstop>
   <tabstop>listenerScopeId</tabstop>
+  <tabstop>ipv6Listener</tabstop>
   <tabstop>addListener</tabstop>
   <tabstop>showOnlyOnlineListeners</tabstop>
   <tabstop>listeners</tabstop>
