@@ -116,6 +116,12 @@ spoton::spoton(void):QMainWindow()
   m_sb.setupUi(m_sbWidget);
   m_sb.chat->setVisible(false);
   m_sb.email->setVisible(false);
+#ifdef Q_OS_MAC
+  foreach(QToolButton *toolButton, m_sbWidget->findChildren<QToolButton *> ())
+    toolButton->setStyleSheet
+    ("QToolButton {border: none;}"
+     "QToolButton::menu-button {border: none;}");
+#endif
   connect(m_sb.chat,
 	  SIGNAL(clicked(void)),
 	  this,
