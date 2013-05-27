@@ -28,6 +28,12 @@ Echoed? Yes
 
 Message Type ("0001") (Plaintext)
 TTL (Plaintext)
+0 - Message (Base-64) (Gemini)
+EOL
+1 - Message Digest (Base-64) (Gemini)
+
+Message Type ("0001") (Plaintext)
+TTL (Plaintext)
 0 - Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
 1 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK)

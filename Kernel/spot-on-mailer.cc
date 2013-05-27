@@ -201,10 +201,36 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 
     if(db.open())
       {
+	QByteArray publicKeyHash(m_publicKeyHashes.first());
+	QSqlQuery query(db);
+
+	query.prepare("SELECT message_bundle FROM post_office "
+		      "WHERE recipient_hash = ?");
+	query.bindValue(0, publicKeyHash.toBase64());
+
+	if(query.exec())
+	  {
+	    if(query.next())
+	      {
+	      }
+	    else
+	      {
+		QSqlQuery deleteQuery(db);
+
+		deleteQuery.prepare("DELETE FROM post_office "
+				    "WHERE recipient_hash = ?");
+		deleteQuery.bindValue(0, publicKeyHash.toBase64());
+		deleteQuery.exec();
+		m_publicKeyHashes.takeFirst();
+	      }
+	  }
       }
 
     db.close();
   }
 
   QSqlDatabase::removeDatabase("spoton_mailer");
+
+  if(m_publicKeyHashes.isEmpty())
+    m_retrieveMailTimer.stop();
 }

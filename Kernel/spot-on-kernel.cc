@@ -1258,8 +1258,6 @@ void spoton_kernel::slotSendMail(const QByteArray &gemini,
   if(!s_crypt1)
     return;
 
-  Q_UNUSED(gemini);
-
   /*
   ** gemini
   ** message
@@ -1450,6 +1448,31 @@ void spoton_kernel::slotSendMail(const QByteArray &gemini,
 		    data.append(crypt.encrypted(messageDigest, &ok).
 				toBase64());
 		}
+
+	      if(ok)
+		if(!gemini.isEmpty())
+		  {
+		    QByteArray messageDigest;
+		    spoton_gcrypt crypt("aes256",
+					QString("sha512"),
+					QByteArray(),
+					gemini,
+					0,
+					0,
+					QString(""));
+
+		    messageDigest = crypt.keyedHash(data, &ok);
+
+		    if(ok)
+		      {
+			data = crypt.encrypted(data, &ok).toBase64();
+			data.append("\n");
+		      }
+
+		    if(ok)
+		      data.append(crypt.encrypted(messageDigest, &ok).
+				  toBase64());
+		  }
 
 	      if(ok)
 		{

@@ -128,7 +128,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	if(query.exec("SELECT date_received, message_bundle, "
 		      "participant_hash, OID "
-		      "FROM postoffice"))
+		      "FROM post_office"))
 	  while(query.next())
 	    {
 	      QByteArray dateReceived;
@@ -137,7 +137,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      QSqlQuery updateQuery(db);
 	      bool ok = true;
 
-	      updateQuery.prepare("UPDATE postoffice "
+	      updateQuery.prepare("UPDATE post_office "
 				  "SET date_received = ?, "
 				  "message_bundle = ?, "
 				  "participant_hash = ? "
