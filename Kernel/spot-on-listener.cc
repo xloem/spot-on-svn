@@ -282,6 +282,9 @@ void spoton_listener::slotNewConnection(void)
 
   if(!spoton_kernel::s_crypt1)
     {
+      spoton_misc::logError
+	("spoton_listener::slotNewConnection(): "
+	 "spoton_kernel::s_crypt1 is 0.");
       neighbor->deleteLater();
       return;
     }
@@ -390,9 +393,14 @@ void spoton_listener::slotNewConnection(void)
 		       "qt_country_hash, "
 		       "external_ip_address, "
 		       "uuid, "
-		       "user_defined) "
+		       "user_defined, "
+		       "proxy_hostname, "
+		       "proxy_password, "
+		       "proxy_port, "
+		       "proxy_type, "
+		       "proxy_username) "
 		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, "
-		       "?, ?, ?, ?, ?, ?, ?)");
+		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
 	    query.bindValue(1, m_port);
 
@@ -461,6 +469,41 @@ void spoton_listener::slotNewConnection(void)
 
 	    query.bindValue(13, neighbor->receivedUuid().toString());
 	    query.bindValue(14, 0);
+
+	    QString proxyHostname("");
+	    QString proxyPassword("");
+	    QString proxyPort("");
+	    QString proxyType(QString::number(QNetworkProxy::NoProxy));
+	    QString proxyUsername("");
+
+	    if(ok)
+	      query.bindValue
+		(15, spoton_kernel::s_crypt1->
+		 encrypted(proxyHostname.toLatin1(), &ok).
+		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(16, spoton_kernel::s_crypt1->
+		 encrypted(proxyPassword.toUtf8(), &ok).
+		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(17, spoton_kernel::s_crypt1->encrypted(proxyPort.toLatin1(),
+							&ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(18, spoton_kernel::s_crypt1->
+		 encrypted(proxyType.toLatin1(), &ok).
+		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(19, spoton_kernel::s_crypt1->
+		 encrypted(proxyUsername.toUtf8(), &ok).
+		 toBase64());
 
 	    if(ok)
 	      created = query.exec();
