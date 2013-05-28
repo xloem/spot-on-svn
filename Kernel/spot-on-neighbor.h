@@ -104,7 +104,7 @@ class spoton_neighbor: public QTcpSocket
 		   QByteArray &subject,
 		   QByteArray &message,
 		   QByteArray &messageDigest);
-  void storeLetter(const QByteArray &message,
+  void storeLetter(const QList<QByteArray> &list,
 		   const QByteArray &recipientHash);
 
  private slots:

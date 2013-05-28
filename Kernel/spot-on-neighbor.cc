@@ -1015,11 +1015,11 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
       if(list.size() == 2)
 	{
 	}
-      else if(list.size() != 11)
+      else if(!(list.size() == 7 || list.size() == 11))
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0001(): "
-		     "received irregular data. Expecting 11 "
+		     "received irregular data. Expecting 7 or 11 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
 	  return;
@@ -1093,11 +1093,12 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
 
       if(ok)
 	{
-	  if(spoton_kernel::s_settings.value("gui/postoffice_enabled",
-					     false).toBool())
-	    if(spoton_misc::isAcceptedParticipant(recipientHash))
-	      if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
-		storeLetter(originalData, recipientHash);
+	  if(list.size() == 11)
+	    if(spoton_kernel::s_settings.value("gui/postoffice_enabled",
+					       false).toBool())
+	      if(spoton_misc::isAcceptedParticipant(recipientHash))
+		if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
+		  storeLetter(list, recipientHash);
 	}
       else if(ttl > 0)
 	{
@@ -1939,7 +1940,7 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
   QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
 }
 
-void spoton_neighbor::storeLetter(const QByteArray &message,
+void spoton_neighbor::storeLetter(const QList<QByteArray> &list,
 				  const QByteArray &recipientHash)
 {
   if(!spoton_kernel::s_crypt1)
@@ -1967,8 +1968,25 @@ void spoton_neighbor::storeLetter(const QByteArray &message,
 		     toUtf8(), &ok).toBase64());
 
 	if(ok)
-	  query.bindValue
-	    (1, spoton_kernel::s_crypt1->encrypted(message, &ok).toBase64());
+	  {
+	    QByteArray data;
+
+	    data.append(list.value(4).toBase64());
+	    data.append("\n");
+	    data.append(list.value(5).toBase64());
+	    data.append("\n");
+	    data.append(list.value(6).toBase64());
+	    data.append("\n");
+	    data.append(list.value(7).toBase64());
+	    data.append("\n");
+	    data.append(list.value(8).toBase64());
+	    data.append("\n");
+	    data.append(list.value(9).toBase64());
+	    data.append("\n");
+	    data.append(list.value(10).toBase64());
+	    query.bindValue
+	      (1, spoton_kernel::s_crypt1->encrypted(data, &ok).toBase64());
+	  }
 
 	query.bindValue(2, recipientHash.toBase64());
 
