@@ -44,7 +44,7 @@ spoton_mailer::spoton_mailer(QObject *parent):QObject(parent)
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTimeout(void)));
-  m_retrieveMailTimer.setInterval(10000);
+  m_retrieveMailTimer.setInterval(1500); // Harvest e-mail every 1.5 seconds.
   m_timer.start(15000);
 }
 
@@ -212,17 +212,22 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 	  {
 	    if(query.next())
 	      {
+		if(!spoton_kernel::s_crypt1)
+		  {
+		    /*
+		    ** Is this a letter?
+		    */
+		  }
 	      }
 	    else
-	      {
-		QSqlQuery deleteQuery(db);
+	      m_publicKeyHashes.takeFirst();
 
-		deleteQuery.prepare("DELETE FROM post_office "
-				    "WHERE recipient_hash = ?");
-		deleteQuery.bindValue(0, publicKeyHash.toBase64());
-		deleteQuery.exec();
-		m_publicKeyHashes.takeFirst();
-	      }
+	    QSqlQuery deleteQuery(db);
+
+	    deleteQuery.prepare("DELETE FROM post_office "
+				"WHERE recipient_hash = ?");
+	    deleteQuery.bindValue(0, publicKeyHash.toBase64());
+	    deleteQuery.exec();
 	  }
       }
 
