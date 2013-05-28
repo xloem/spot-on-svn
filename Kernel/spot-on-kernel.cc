@@ -1300,6 +1300,10 @@ void spoton_kernel::slotSendMail(const QByteArray &gemini,
       {
 	QSqlQuery query(db);
 
+	/*
+	** Use all of our participants as mail carriers.
+	*/
+
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT public_key "
