@@ -366,7 +366,7 @@ void spoton_kernel::prepareListeners(void)
 			   list.at(1).constData(),
 			   list.at(2).constData(),
 			   query.value(4).toInt(),
-			   query.value(5).toLongLong(),
+			   id,
 			   this);
 
 		      if(listener)
@@ -438,7 +438,7 @@ void spoton_kernel::prepareNeighbors(void)
 	  while(query.next())
 	    {
 	      QPointer<spoton_neighbor> neighbor = 0;
-	      qint64 id = query.value(4).toLongLong();
+	      qint64 id = query.value(9).toLongLong();
 
 	      if(query.value(3).toString() == "connected")
 		{
@@ -486,13 +486,15 @@ void spoton_kernel::prepareNeighbors(void)
 			      proxy.setType(QNetworkProxy::Socks5Proxy);
 			      proxy.setUser(list.at(7));
 			    }
+			  else
+			    proxy.setType(QNetworkProxy::NoProxy);
 
 			  neighbor = new spoton_neighbor
 			    (proxy,
 			     list.at(0).constData(),
 			     list.at(1).constData(),
 			     list.at(2).constData(),
-			     query.value(9).toLongLong(),
+			     id,
 			     this);
 			}
 
@@ -835,6 +837,10 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
   if(!neighbor)
     return;
 
+  connect(m_mailer,
+	  SIGNAL(sendMailFromPostOffice(const QByteArray &)),
+	  neighbor,
+	  SLOT(slotSendMailFromPostOffice(const QByteArray &)));
   connect(neighbor,
 	  SIGNAL(newEMailArrived(void)),
 	  m_guiServer,

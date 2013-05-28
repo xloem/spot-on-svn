@@ -212,19 +212,43 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 	  {
 	    if(query.next())
 	      {
-		if(!spoton_kernel::s_crypt1)
+		if(spoton_kernel::s_crypt1)
 		  {
 		    /*
 		    ** Is this a letter?
 		    */
+
+		    QByteArray message;
+		    bool ok = true;
+
+		    message = spoton_kernel::s_crypt1->
+		      decrypted(QByteArray::fromBase64(query.
+						       value(0).
+						       toByteArray()),
+				&ok);
+
+		    if(ok)
+		      {
+			char c = 0;
+			short ttl = spoton_kernel::s_settings.value
+			  ("kernel/ttl_0001", 16).toInt();
+
+			memcpy(&c, static_cast<void *> (&ttl), 1);
+			message.prepend(c);
+			emit sendMailFromPostOffice(message);
+		      }
 		  }
 	      }
 	    else
 	      m_publicKeyHashes.takeFirst();
 
+	    /*
+	    ** Mail delivery is not absolute.
+	    */
+
 	    QSqlQuery deleteQuery(db);
 
-	    deleteQuery.prepare("DELETE FROM post_office "
+	    deleteQuery.prepare("DELETE FROM post_office_1 "
 				"WHERE recipient_hash = ?");
 	    deleteQuery.bindValue(0, publicKeyHash.toBase64());
 	    deleteQuery.exec();

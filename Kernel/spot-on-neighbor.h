@@ -121,6 +121,7 @@ class spoton_neighbor: public QTcpSocket
   void slotRetrieveMail(const QList<QByteArray> &list);
   void slotSendKeepAlive(void);
   void slotSendMail(const QList<QPair<QByteArray, qint64> > &list);
+  void slotSendMailFromPostOffice(const QByteArray &data);
   void slotSendMessage(const QByteArray &data);
   void slotSendStatus(const QList<QByteArray> &list);
   void slotSendUuid(void);

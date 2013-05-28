@@ -1095,8 +1095,9 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
 	{
 	  if(spoton_kernel::s_settings.value("gui/postoffice_enabled",
 					     false).toBool())
-	    if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
-	      storeLetter(originalData, recipientHash);
+	    if(spoton_misc::isAcceptedParticipant(recipientHash))
+	      if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
+		storeLetter(originalData, recipientHash);
 	}
       else if(ttl > 0)
 	{
@@ -1775,6 +1776,21 @@ void spoton_neighbor::slotSendMail
   if(!oids.isEmpty())
     spoton_misc::moveSentMailToSentFolder
       (oids, spoton_kernel::s_crypt1);
+}
+
+void spoton_neighbor::slotSendMailFromPostOffice(const QByteArray &data)
+{
+  if(state() == QAbstractSocket::ConnectedState)
+    {
+      QByteArray message(spoton_send::message0001(data));
+
+      if(write(message.constData(), message.length()) != message.length())
+	spoton_misc::logError
+	  ("spoton_neighbor::slotSendMailFromPostOffice(): write() "
+	   "error.");
+      else
+	flush();
+    }
 }
 
 void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
