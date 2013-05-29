@@ -32,23 +32,7 @@ TTL (Plaintext)
 EOL
 1 - Message Digest (Base-64) (Gemini)
 
-Message Type ("0001") (Plaintext)
-TTL (Plaintext)
-0 - Symmetric Key (Base-64) (Ciphertext, PK)
-EOL
-1 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
-EOL
-2 - Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
-EOL
-3 - Sender's Name (Base-64) (Ciphertext, SK)
-EOL
-4 - Subject (Base-64) (Ciphertext, SK)
-EOL
-5 - Message (Base-64) (Ciphertext, SK)
-EOL
-6 - Message Digest (Base-64) (Ciphertext, SK)
-
-Message Type ("0001") (Plaintext)
+Message Type ("0001a") (Plaintext)
 TTL (Plaintext)
 0 - Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
@@ -71,6 +55,22 @@ EOL
 9 - Message (Base-64) (Ciphertext, SK)
 EOL
 10 - Message Digest (Base-64) (Ciphertext, SK)
+
+Message Type ("0001b") (Plaintext)
+TTL (Plaintext)
+0 - Symmetric Key (Base-64) (Ciphertext, PK)
+EOL
+1 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
+EOL
+2 - Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
+EOL
+3 - Sender's Name (Base-64) (Ciphertext, SK)
+EOL
+4 - Subject (Base-64) (Ciphertext, SK)
+EOL
+5 - Message (Base-64) (Ciphertext, SK)
+EOL
+6 - Message Digest (Base-64) (Ciphertext, SK)
 
 Retrieve Mail
 Echoed? Yes

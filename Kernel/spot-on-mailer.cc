@@ -231,7 +231,7 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 		      {
 			char c = 0;
 			short ttl = spoton_kernel::s_settings.value
-			  ("kernel/ttl_0001", 16).toInt();
+			  ("kernel/ttl_0001b", 16).toInt();
 
 			memcpy(&c, static_cast<void *> (&ttl), 1);
 			message.prepend(c);
@@ -248,7 +248,7 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 
 	    QSqlQuery deleteQuery(db);
 
-	    deleteQuery.prepare("DELETE FROM post_office_1 "
+	    deleteQuery.prepare("DELETE FROM post_office "
 				"WHERE recipient_hash = ?");
 	    deleteQuery.bindValue(0, publicKeyHash.toBase64());
 	    deleteQuery.exec();

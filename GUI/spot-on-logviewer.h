@@ -33,6 +33,8 @@
 
 #include "ui_logviewer.h"
 
+class QKeyEvent;
+
 class spoton_logviewer: public QMainWindow
 {
   Q_OBJECT
@@ -45,6 +47,7 @@ class spoton_logviewer: public QMainWindow
   QTimer m_timer;
   Ui_spoton_logviewer ui;
   qint64 m_position;
+  void keyPressEvent(QKeyEvent *event);
 
  private slots:
   void slotClear(void);

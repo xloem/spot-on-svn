@@ -78,7 +78,8 @@ class spoton_neighbor: public QTcpSocket
   spoton_external_address *m_externalAddress;
   void prepareNetworkInterface(void);
   void process0000(int length, const QByteArray &data);
-  void process0001(int length, const QByteArray &data);
+  void process0001a(int length, const QByteArray &data);
+  void process0001b(int length, const QByteArray &data);
   void process0002(int length, const QByteArray &data);
   void process0011(int length, const QByteArray &data);
   void process0012(int length, const QByteArray &data);
@@ -97,6 +98,10 @@ class spoton_neighbor: public QTcpSocket
 		     const QByteArray &publicKey,
 		     const qint64 neighborOid);
   void saveStatus(QSqlDatabase &db, const QString &status);
+  void storeLetter(QByteArray &senderPublicKeyHash,
+		   QByteArray &name,
+		   QByteArray &subject,
+		   QByteArray &message);
   void storeLetter(QByteArray &symmetricKey,
 		   QByteArray &symmetricKeyAlgorithm,
 		   QByteArray &senderPublicKeyHash,

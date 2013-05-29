@@ -398,14 +398,24 @@ void spoton_neighbor::slotReadyRead(void)
 	      else
 		process0000(length, data);
 	    }
-	  else if(length > 0 && data.contains("type=0001&content="))
+	  else if(length > 0 && data.contains("type=0001a&content="))
 	    {
 	      if(!spoton_kernel::s_crypt1)
 		spoton_misc::logError
 		  ("spoton_neighbor::slotReadyRead(): "
 		   "spoton_kernel::s_crypt1 is 0.");
 	      else
-		process0001(length, data);
+		process0001a(length, data);
+	    }
+	  
+	  else if(length > 0 && data.contains("type=0001b&content="))
+	    {
+	      if(!spoton_kernel::s_crypt1)
+		spoton_misc::logError
+		  ("spoton_neighbor::slotReadyRead(): "
+		   "spoton_kernel::s_crypt1 is 0.");
+	      else
+		process0001b(length, data);
 	    }
 	  else if(length > 0 && data.contains("type=0002&content="))
 	    {
@@ -681,7 +691,7 @@ void spoton_neighbor::slotReceivedMailMessage(const QByteArray &data,
   if(id != m_id)
     if(state() == QAbstractSocket::ConnectedState)
       {
-	QByteArray message(spoton_send::message0001(data));
+	QByteArray message(spoton_send::message0001a(data));
 
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
@@ -849,20 +859,26 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 		computedMessageDigest = crypt.keyedHash(message, &ok);
 
 	      if(ok)
-		if(computedMessageDigest == messageDigest)
-		  {
-		    list = message.split('\n');
+		{
+		  if(computedMessageDigest == messageDigest)
+		    {
+		      list = message.split('\n');
 
-		    if(list.size() != 6)
-		      {
-			spoton_misc::logError
-			  (QString("spoton_neighbor::process0000(): "
-				   "received irregular data. Expecting 6 "
-				   "entries, "
-				   "received %1.").arg(list.size()));
-			return;
-		      }
-		  }
+		      if(list.size() != 6)
+			{
+			  spoton_misc::logError
+			    (QString("spoton_neighbor::process0000(): "
+				     "received irregular data. Expecting 6 "
+				     "entries, "
+				     "received %1.").arg(list.size()));
+			  return;
+			}
+		    }
+		  else
+		    spoton_misc::logError("spoton_neighbor::process0000(): "
+					  "computed message digest does "
+					  "not match provided digest.");
+		}
 	    }
 	}
       else if(list.size() != 6)
@@ -976,18 +992,18 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
        arg(length).arg(data.length()));
 }
 
-void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
+void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 {
   if(!spoton_kernel::s_crypt1)
     return;
 
-  length -= strlen("type=0001&content=");
+  length -= strlen("type=0001a&content=");
 
   QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
 
   data.remove
     (0,
-     data.indexOf("type=0001&content=") + strlen("type=0001&content="));
+     data.indexOf("type=0001a&content=") + strlen("type=0001a&content="));
 
   if(length == data.length())
     {
@@ -1015,11 +1031,11 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
       if(list.size() == 2)
 	{
 	}
-      else if(!(list.size() == 7 || list.size() == 11))
+      else if(list.size() != 11)
 	{
 	  spoton_misc::logError
-	    (QString("spoton_neighbor::process0001(): "
-		     "received irregular data. Expecting 7 or 11 "
+	    (QString("spoton_neighbor::process0001a(): "
+		     "received irregular data. Expecting 11 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
 	  return;
@@ -1093,12 +1109,11 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
 
       if(ok)
 	{
-	  if(list.size() == 11)
-	    if(spoton_kernel::s_settings.value("gui/postoffice_enabled",
-					       false).toBool())
-	      if(spoton_misc::isAcceptedParticipant(recipientHash))
-		if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
-		  storeLetter(list, recipientHash);
+	  if(spoton_kernel::s_settings.value("gui/postoffice_enabled",
+					     false).toBool())
+	    if(spoton_misc::isAcceptedParticipant(recipientHash))
+	      if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
+		storeLetter(list, recipientHash);
 	}
       else if(ttl > 0)
 	{
@@ -1115,7 +1130,154 @@ void spoton_neighbor::process0001(int length, const QByteArray &dataIn)
     }
   else
     spoton_misc::logError
-      (QString("spoton_neighbor::process0001(): 0001 "
+      (QString("spoton_neighbor::process0001a(): 0001a "
+	       "content-length mismatch (advertised: %1, received: %2).").
+       arg(length).arg(data.length()));
+}
+
+void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
+{
+  if(!spoton_kernel::s_crypt1)
+    return;
+
+  length -= strlen("type=0001b&content=");
+
+  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
+
+  data.remove
+    (0,
+     data.indexOf("type=0001b&content=") + strlen("type=0001b&content="));
+
+  if(length == data.length())
+    {
+      data = QByteArray::fromBase64(data);
+
+      bool ok = true;
+      short ttl = 0;
+
+      if(!data.isEmpty())
+	memcpy(static_cast<void *> (&ttl),
+	       static_cast<const void *> (data.constData()), 1);
+
+      if(ttl > 0)
+	ttl -= 1;
+
+      data.remove(0, 1); // Remove TTL.
+
+      QByteArray originalData(data); /*
+				     ** We may need to echo the
+				     ** message. Don't forget to
+				     ** decrease the TTL!
+				     */
+      QList<QByteArray> list(data.split('\n'));
+
+      if(list.size() == 2)
+	{
+	}
+      else if(list.size() != 7)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::process0001b(): "
+		     "received irregular data. Expecting 7 "
+		     "entries, "
+		     "received %1.").arg(list.size()));
+	  return;
+	}
+
+      for(int i = 0; i < list.size(); i++)
+	list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+      QByteArray message(list.value(5));
+      QByteArray messageDigest(list.value(6));
+      QByteArray name(list.value(3));
+      QByteArray publicKeyHash(list.value(2));
+      QByteArray subject(list.value(4));
+      QByteArray symmetricKey(list.value(0));
+      QByteArray symmetricKeyAlgorithm(list.value(1));
+
+      if(ok)
+	symmetricKey = spoton_kernel::s_crypt1->
+	  publicKeyDecrypt(symmetricKey, &ok);
+
+      if(ok)
+	symmetricKeyAlgorithm = spoton_kernel::s_crypt1->
+	  publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
+
+      if(ok)
+	{
+	  spoton_gcrypt crypt(symmetricKeyAlgorithm,
+			      QString("sha512"),
+			      QByteArray(),
+			      symmetricKey,
+			      0,
+			      0,
+			      QString(""));
+
+	  message = crypt.decrypted(message, &ok);
+
+	  if(ok)
+	    name = crypt.decrypted(name, &ok);
+
+	  if(ok)
+	    publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
+
+	  if(ok)
+	    subject = crypt.decrypted(subject, &ok);
+
+	  if(ok)
+	    messageDigest = crypt.decrypted(messageDigest, &ok);
+	}
+
+      if(ok)
+	{
+	  if(spoton_misc::isAcceptedParticipant(publicKeyHash))
+	    {
+	      QByteArray computedMessageDigest
+		(spoton_gcrypt::keyedHash(symmetricKey +
+					  symmetricKeyAlgorithm +
+					  publicKeyHash +
+					  name +
+					  subject +
+					  message,
+					  symmetricKey,
+					  "sha512",
+					  &ok));
+
+	      /*
+	      ** Let's not echo messages whose message digests are
+	      ** incompatible.
+	      */
+
+	      if(ok)
+		{
+		  if(computedMessageDigest == messageDigest)
+		    storeLetter(publicKeyHash,
+				name,
+				subject,
+				message);
+		  else
+		    spoton_misc::logError("spoton_neighbor::process0001b(): "
+					  "computed message digest does "
+					  "not match provided digest.");
+		}
+	    }
+	}
+      else if(ttl > 0)
+	{
+	  /*
+	  ** Replace TTL.
+	  */
+
+	  char c = 0;
+
+	  memcpy(&c, static_cast<void *> (&ttl), 1);
+	  originalData.prepend(c);
+	  emit receivedMailMessage(originalData, m_id);
+	}
+    }
+  else
+    spoton_misc::logError
+      (QString("spoton_neighbor::process0001b(): 0001b "
 	       "content-length mismatch (advertised: %1, received: %2).").
        arg(length).arg(data.length()));
 }
@@ -1328,20 +1490,26 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 		computedMessageDigest = crypt.keyedHash(message, &ok);
 
 	      if(ok)
-		if(computedMessageDigest == messageDigest)
-		  {
-		    list = message.split('\n');
+		{
+		  if(computedMessageDigest == messageDigest)
+		    {
+		      list = message.split('\n');
 
-		    if(list.size() != 6)
-		      {
-			spoton_misc::logError
-			  (QString("spoton_neighbor::process0013(): "
-				   "received irregular data. Expecting 6 "
-				   "entries, "
-				   "received %1.").arg(list.size()));
-			return;
-		      }
-		  }
+		      if(list.size() != 6)
+			{
+			  spoton_misc::logError
+			    (QString("spoton_neighbor::process0013(): "
+				     "received irregular data. Expecting 6 "
+				     "entries, "
+				     "received %1.").arg(list.size()));
+			  return;
+			}
+		    }
+		  else
+		    spoton_misc::logError("spoton_neighbor::process0013(): "
+					  "computed message digest does "
+					  "not match provided digest.");
+		}
 	    }
 	}
       else if(list.size() != 6)
@@ -1761,7 +1929,7 @@ void spoton_neighbor::slotSendMail
 	QByteArray message;
 	QPair<QByteArray, qint64> pair(list.at(i));
 
-	message = spoton_send::message0001(pair.first);
+	message = spoton_send::message0001a(pair.first);
 
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
@@ -1783,7 +1951,7 @@ void spoton_neighbor::slotSendMailFromPostOffice(const QByteArray &data)
 {
   if(state() == QAbstractSocket::ConnectedState)
     {
-      QByteArray message(spoton_send::message0001(data));
+      QByteArray message(spoton_send::message0001b(data));
 
       if(write(message.constData(), message.length()) != message.length())
 	spoton_misc::logError
@@ -1868,7 +2036,12 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
     return;
 
   if(computedMessageDigest != messageDigest)
-    return;
+    {
+      spoton_misc::logError("spoton_neighbor::storeLetter(): "
+			    "computed message digest does "
+			    "not match provided digest.");
+      return;
+    }
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
@@ -2024,4 +2197,83 @@ void spoton_neighbor::slotHostFound(const QHostInfo &hostInfo)
 	m_address = address;
 	break;
       }
+}
+
+void spoton_neighbor::storeLetter(QByteArray &senderPublicKeyHash,
+				  QByteArray &name,
+				  QByteArray &subject,
+				  QByteArray &message)
+{
+  if(!spoton_kernel::s_crypt1)
+    return;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("INSERT INTO folders "
+		      "(date, folder_index, gemini, hash, "
+		      "message, receiver_sender, receiver_sender_hash, "
+		      "status, subject, participant_oid) "
+		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	query.bindValue
+	  (0, spoton_kernel::s_crypt1->
+	   encrypted(QDateTime::currentDateTime().
+		     toString(Qt::ISODate).
+		     toUtf8(), &ok).toBase64());
+	query.bindValue(1, 0); // Inbox Folder
+
+	if(ok)
+	  query.bindValue
+	    (2, spoton_kernel::s_crypt1->encrypted(QByteArray(), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (3, spoton_kernel::s_crypt1->keyedHash(message + subject, &ok).
+	     toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (4, spoton_kernel::s_crypt1->encrypted(message, &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (5, spoton_kernel::s_crypt1->encrypted(name, &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (6, senderPublicKeyHash.toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (7, spoton_kernel::s_crypt1->encrypted("Unread", &ok).toBase64());
+ 
+	if(ok)
+	  query.bindValue
+	    (8, spoton_kernel::s_crypt1->encrypted(subject, &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (9, spoton_kernel::s_crypt1->
+	     encrypted(QString::number(-1).toLatin1(), &ok).
+	     toBase64());
+
+	if(ok)
+	  if(query.exec())
+	    emit newEMailArrived();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
 }

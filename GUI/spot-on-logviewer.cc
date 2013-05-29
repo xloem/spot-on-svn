@@ -26,6 +26,7 @@
 */
 
 #include <QDir>
+#include <QKeyEvent>
 
 #include "Common/spot-on-misc.h"
 #include "spot-on-logviewer.h"
@@ -122,4 +123,15 @@ void spoton_logviewer::slotTimeout(void)
       m_position = 0;
       ui.log->clear();
     }
+}
+
+void spoton_logviewer::keyPressEvent(QKeyEvent *event)
+{
+  if(event)
+    {
+      if(event->key() == Qt::Key_Escape)
+	close();
+    }
+
+  QMainWindow::keyPressEvent(event);
 }

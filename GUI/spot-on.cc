@@ -4878,15 +4878,30 @@ void spoton::slotDeleteMail(void)
 	while(!list.isEmpty())
 	  {
 	    QString oid(list.takeFirst().data().toString());
+	    bool ok = true;
 
 	    if(m_ui.folder->currentIndex() == 2)
-	      query.prepare("DELETE FROM folders WHERE oid = ?");
+	      {
+		query.prepare("DELETE FROM folders WHERE oid = ?");
+		query.bindValue(0, oid);
+	      }
 	    else
-	      query.prepare("UPDATE folders SET folder_index = 2 WHERE "
-			    "oid = ?");
+	      {
+		query.prepare("UPDATE folders SET folder_index = 2, "
+			      "status = ? WHERE "
+			      "oid = ?");
 
-	    query.bindValue(0, oid);
-	    query.exec();
+		if(m_crypt)
+		  query.bindValue
+		    (0, m_crypt->encrypted("Deleted", &ok).toBase64());
+		else
+		  ok = false;
+
+		query.bindValue(1, oid);
+	      }
+
+	    if(ok)
+	      query.exec();
 	  }
       }
 
@@ -5085,6 +5100,7 @@ void spoton::slotEmailStatusClicked(void)
   m_sb.email->setVisible(false);
   m_ui.mailTab->setCurrentIndex(0);
   m_ui.tab->setCurrentIndex(1);
+  slotRefreshMail();
 }
 
 void spoton::slotChatStatusClicked(void)

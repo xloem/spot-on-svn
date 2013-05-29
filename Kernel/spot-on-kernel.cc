@@ -181,8 +181,11 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   if(!settings.contains("kernel/ttl_0000"))
     settings.setValue("kernel/ttl_0000", 16);
 
-  if(!settings.contains("kernel/ttl_0001"))
-    settings.setValue("kernel/ttl_0001", 16);
+  if(!settings.contains("kernel/ttl_0001a"))
+    settings.setValue("kernel/ttl_0001a", 16);
+
+  if(!settings.contains("kernel/ttl_0001b"))
+    settings.setValue("kernel/ttl_0001b", 16);
 
   if(!settings.contains("kernel/ttl_0002"))
     settings.setValue("kernel/ttl_0002", 16);
@@ -1488,7 +1491,7 @@ void spoton_kernel::slotSendMail(const QByteArray &gemini,
 		{
 		  char c = 0;
 		  short ttl = s_settings.value
-		    ("kernel/ttl_0001", 16).toInt();
+		    ("kernel/ttl_0001a", 16).toInt();
 
 		  memcpy(&c, static_cast<void *> (&ttl), 1);
 		  data.prepend(c);
