@@ -299,10 +299,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(itemChanged(QTableWidgetItem *)),
 	  this,
 	  SLOT(slotGeminiChanged(QTableWidgetItem *)));
-  connect(m_ui.generateAES256,
+  connect(m_ui.generateGoldBug,
 	  SIGNAL(clicked(void)),
 	  this,
-	  SLOT(slotGenerateAES256(void)));
+	  SLOT(slotGenerateGoldBug(void)));
   connect(m_ui.keepOnlyUserDefinedNeighbors,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -324,9 +324,9 @@ spoton::spoton(void):QMainWindow()
 	  this,
 	  SLOT(slotRefreshPostOffice(void)));
   connect(m_ui.mail,
-	  SIGNAL(itemSelectionChanged(void)),
+	  SIGNAL(itemClicked(QTableWidgetItem *)),
 	  this,
-	  SLOT(slotMailSelected(void)));
+	  SLOT(slotMailSelected(QTableWidgetItem *)));
   connect(m_ui.emptyTrash,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -463,7 +463,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
 		       toByteArray()).trimmed());
-  m_ui.aes256->setMaxLength
+  m_ui.goldbug->setMaxLength
     (spoton_gcrypt::cipherKeyLength("aes256"));
   m_ui.cipherType->clear();
   m_ui.cipherType->addItems(spoton_gcrypt::cipherTypes());
@@ -4151,7 +4151,7 @@ void spoton::slotClearOutgoingMessage(void)
       m_ui.participantsCombo->setCurrentIndex(0);
       m_ui.outgoingMessage->clear();
       m_ui.outgoingSubject->clear();
-      m_ui.aes256->clear();
+      m_ui.goldbug->clear();
     }
 }
 
@@ -4442,8 +4442,8 @@ void spoton::slotSendMail(void)
 
 	while(!oids.isEmpty())
 	  {
-	    QByteArray gemini
-	      (m_ui.aes256->text().trimmed().toLatin1());
+	    QByteArray goldbug
+	      (m_ui.goldbug->text().trimmed().toLatin1());
 	    QByteArray publicKeyHash(publicKeyHashes.takeFirst());
 	    QByteArray subject
 	      (m_ui.outgoingSubject->text().trimmed().toUtf8());
@@ -4453,7 +4453,7 @@ void spoton::slotSendMail(void)
 	    qint64 oid = oids.takeFirst();
 
 	    query.prepare("INSERT INTO folders "
-			  "(date, folder_index, gemini, hash, "
+			  "(date, folder_index, goldbug, hash, "
 			  "message, receiver_sender, receiver_sender_hash, "
 			  "status, subject, participant_oid) "
 			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -4464,7 +4464,7 @@ void spoton::slotSendMail(void)
 
 	    if(ok)
 	      query.bindValue
-		(2, m_crypt->encrypted(gemini, &ok).toBase64());
+		(2, m_crypt->encrypted(goldbug, &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
@@ -4486,7 +4486,8 @@ void spoton::slotSendMail(void)
 
 	    if(ok)
 	      query.bindValue
-		(7, m_crypt->encrypted("Queued", &ok).toBase64());
+		(7, m_crypt->encrypted(tr("Queued").toUtf8(),
+				       &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
@@ -4503,7 +4504,7 @@ void spoton::slotSendMail(void)
 
 	m_ui.outgoingMessage->clear();
 	m_ui.outgoingSubject->clear();
-	m_ui.aes256->clear();
+	m_ui.goldbug->clear();
       }
 
     db.close();
@@ -4664,12 +4665,21 @@ void spoton::slotRefreshMail(void)
 
 		if(i >= 0 && i <= 4)
 		  {
-		    item = new QTableWidgetItem
-		      (m_crypt->decrypted(QByteArray::
-					  fromBase64(query.
-						     value(i).
-						     toByteArray()),
-					  &ok).constData());
+		    if(i == 2)
+		      item = new QTableWidgetItem
+			(QString::fromUtf8(m_crypt->
+					   decrypted(QByteArray::
+						     fromBase64(query.
+								value(i).
+								toByteArray()),
+						     &ok).constData()));
+		    else
+		      item = new QTableWidgetItem
+			(m_crypt->decrypted(QByteArray::
+					    fromBase64(query.
+						       value(i).
+						       toByteArray()),
+					    &ok).constData());
 
 		    if(i == 3)
 		      item->setIcon(QIcon(":/email.png"));
@@ -4768,9 +4778,12 @@ void spoton::slotRefreshPostOffice(void)
   QApplication::restoreOverrideCursor();
 }
 
-void spoton::slotMailSelected(void)
+void spoton::slotMailSelected(QTableWidgetItem *item)
 {
-  int row = m_ui.mail->currentRow();
+  if(!item)
+    return;
+
+  int row = item->row();
 
   if(row < 0)
     {
@@ -4781,29 +4794,38 @@ void spoton::slotMailSelected(void)
   QString date("");
   QString fromTo("");
   QString message("");
+  QString status("");
   QString subject("");
   QString text("");
-  QTableWidgetItem *item = m_ui.mail->item(row, 0); // Date
 
-  if(item)
-    date = item->text();
+  {
+    QTableWidgetItem *item = m_ui.mail->item(row, 0); // Date
 
-  item = m_ui.mail->item(row, 1); // From / To
+    if(item)
+      date = item->text();
 
-  if(item)
-    fromTo = item->text();
+    item = m_ui.mail->item(row, 1); // From / To
 
-  item = m_ui.mail->item(row, 3); // Subject
+    if(item)
+      fromTo = item->text();
 
-  if(item)
-    subject = item->text();
+    item = m_ui.mail->item(row, 2); // Status
 
-  item = m_ui.mail->item(row, 4); // Message
+    if(item)
+      status = item->text();
 
-  if(item)
-    message = item->text();
+    item = m_ui.mail->item(row, 3); // Subject
 
-  if(m_ui.folder->currentIndex() == 0)
+    if(item)
+      subject = item->text();
+
+    item = m_ui.mail->item(row, 4); // Message
+
+    if(item)
+      message = item->text();
+  }
+
+  if(m_ui.folder->currentIndex() == 0) // Inbox
     {
       text.append(tr("<b>From:</b> "));
       text.append(fromTo);
@@ -4817,8 +4839,21 @@ void spoton::slotMailSelected(void)
       text.append(date);
       text.append("<br><br>");
       text.append(message);
+
+      bool update = false;
+
+      if(status != tr("Read"))
+	{
+	  QTableWidgetItem *item = 0;
+
+	  if((item = m_ui.mail->item(row, 5))) // OID
+	    update = updateMailStatus(item->text(), tr("Read"));
+	}
+
+      if(update)
+	item->setText(tr("Read"));
     }
-  else if(m_ui.folder->currentIndex() == 1)
+  else if(m_ui.folder->currentIndex() == 1) // Sent
     {
       text.append(tr("<b>From:</b> me"));
       text.append("<br>");
@@ -4833,7 +4868,7 @@ void spoton::slotMailSelected(void)
       text.append("<br><br>");
       text.append(message);
     }
-  else
+  else // Trash
     {
       text.append(tr("<b>From/To:</b> "));
       text.append(fromTo);
@@ -4893,7 +4928,8 @@ void spoton::slotDeleteMail(void)
 
 		if(m_crypt)
 		  query.bindValue
-		    (0, m_crypt->encrypted("Deleted", &ok).toBase64());
+		    (0, m_crypt->encrypted(tr("Deleted").toUtf8(), &ok).
+		     toBase64());
 		else
 		  ok = false;
 
@@ -5004,13 +5040,13 @@ bool spoton::saveGemini(const QByteArray &gemini,
   return ok;
 }
 
-void spoton::slotGenerateAES256(void)
+void spoton::slotGenerateGoldBug(void)
 {
-  QByteArray aes256
+  QByteArray goldbug
     (spoton_gcrypt::
      strongRandomBytes(spoton_gcrypt::cipherKeyLength("aes256")));
 
-  m_ui.aes256->setText(aes256.toBase64());
+  m_ui.goldbug->setText(goldbug.toBase64());
 }
 
 void spoton::slotEmptyTrash(void)
@@ -5107,4 +5143,38 @@ void spoton::slotChatStatusClicked(void)
 {
   m_sb.chat->setVisible(false);
   m_ui.tab->setCurrentIndex(0);
+}
+
+bool spoton::updateMailStatus(const QString &oid, const QString &status)
+{
+  if(!m_crypt)
+    return false;
+
+  bool ok = true;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare("UPDATE folders SET status = ? WHERE "
+		      "oid = ?");
+	query.bindValue
+	  (0, m_crypt->encrypted(status.toUtf8(), &ok).toBase64());
+	query.bindValue(1, oid);
+
+	if(ok)
+	  ok = query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton");
+  return ok;
 }

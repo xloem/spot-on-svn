@@ -1257,7 +1257,7 @@ void spoton_kernel::slotRetrieveMail(void)
   emit retrieveMail(list);
 }
 
-void spoton_kernel::slotSendMail(const QByteArray &gemini,
+void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 				 const QByteArray &message,
 				 const QByteArray &name,
 				 const QByteArray &publicKey,
@@ -1268,7 +1268,7 @@ void spoton_kernel::slotSendMail(const QByteArray &gemini,
     return;
 
   /*
-  ** gemini
+  ** goldbug
   ** message
   ** name - my name
   ** publicKey - recipient's public key
@@ -1463,13 +1463,13 @@ void spoton_kernel::slotSendMail(const QByteArray &gemini,
 		}
 
 	      if(ok)
-		if(!gemini.isEmpty())
+		if(!goldbug.isEmpty())
 		  {
 		    QByteArray messageDigest;
 		    spoton_gcrypt crypt("aes256",
 					QString("sha512"),
 					QByteArray(),
-					gemini,
+					goldbug,
 					0,
 					0,
 					QString(""));

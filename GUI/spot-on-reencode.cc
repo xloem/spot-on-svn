@@ -70,7 +70,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT date, gemini, message, participant_oid, "
+	if(query.exec("SELECT date, goldbug, message, participant_oid, "
 		      "receiver_sender, status, subject, OID FROM folders"))
 	  while(query.next())
 	    {
@@ -97,7 +97,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		    QSqlQuery updateQuery(db);
 
 		    updateQuery.prepare("UPDATE folders SET "
-					"date = ?, gemini = ?, "
+					"date = ?, goldbug = ?, "
 					"message = ?, participant_oid = ?, "
 					"receiver_sender = ?, "
 					"status = ?, "

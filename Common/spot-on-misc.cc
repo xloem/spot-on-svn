@@ -107,7 +107,7 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS folders ("
 		   "date BLOB NOT NULL, "
 		   "folder_index INTEGER NOT NULL, "
-		   "gemini BLOB NOT NULL, " // Outgoing?
+		   "goldbug BLOB NOT NULL, " // Outgoing?
 		   "hash TEXT NOT NULL, "
 		   "message BLOB NOT NULL, "
 		   "participant_oid BLOB NOT NULL, "
@@ -829,7 +829,8 @@ void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
 	    bool ok = true;
 
 	    query.bindValue
-	      (0, crypt->encrypted("Sent", &ok).toBase64());
+	      (0, crypt->encrypted(QObject::tr("Sent").toUtf8(), &ok).
+	       toBase64());
 	    query.bindValue(1, oids.at(i));
 
 	    if(ok)

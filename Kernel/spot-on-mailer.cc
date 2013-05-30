@@ -82,30 +82,31 @@ void spoton_mailer::slotTimeout(void)
 	** Send all messages from the sent folder.
 	*/
 
-	if(query.exec("SELECT gemini, message, participant_oid, status, "
+	if(query.exec("SELECT goldbug, message, participant_oid, status, "
 		      "subject, OID FROM folders WHERE folder_index = 1"))
 	  while(query.next())
 	    {
-	      QByteArray status;
+	      QString status;
 	      bool ok = true;
 
-	      status = spoton_kernel::s_crypt1->
-		decrypted(QByteArray::fromBase64(query.
-						 value(3).
-						 toByteArray()),
-			  &ok);
+	      status = QString::fromUtf8
+		(spoton_kernel::s_crypt1->
+		 decrypted(QByteArray::fromBase64(query.
+						  value(3).
+						  toByteArray()),
+			   &ok).constData());
 
-	      if(status != "Queued")
+	      if(status != tr("Queued"))
 		continue;
 
-	      QByteArray gemini;
+	      QByteArray goldbug;
 	      QByteArray message;
 	      QByteArray publicKey;
 	      QByteArray subject;
 	      qint64 mailOid = query.value(5).toLongLong();
 	      qint64 participantOid = -1;
 
-	      gemini = spoton_kernel::s_crypt1->
+	      goldbug = spoton_kernel::s_crypt1->
 		decrypted(QByteArray::fromBase64(query.
 						 value(0).
 						 toByteArray()),
@@ -150,7 +151,7 @@ void spoton_mailer::slotTimeout(void)
 		{
 		  QVector<QVariant> vector;
 
-		  vector << gemini
+		  vector << goldbug
 			 << message
 			 << name
 			 << publicKey

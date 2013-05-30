@@ -75,6 +75,7 @@ class spoton: public QMainWindow
   QIcon iconForCountry(const QString &country);
   bool isKernelActive(void) const;
   bool saveGemini(const QByteArray &gemini, const QString &oid);
+  bool updateMailStatus(const QString &oid, const QString &status);
   void closeEvent(QCloseEvent *event);
   void highlightKernelPath(void);
   void prepareListenerIPCombo(void);
@@ -118,14 +119,14 @@ class spoton: public QMainWindow
   void slotFetchMoreButton(void);
   void slotGeminiChanged(QTableWidgetItem *item);
   void slotGeneralTimerTimeout(void);
-  void slotGenerateAES256(void);
+  void slotGenerateGoldBug(void);
   void slotGenerateGeminiInChat(void);
   void slotKeepOnlyUserDefinedNeighbors(bool);
   void slotKernelSocketState(void);
   void slotKernelStatus(void);
   void slotListenerCheckChange(int state);
   void slotListenerIPComboChanged(int index);
-  void slotMailSelected(void);
+  void slotMailSelected(QTableWidgetItem *item);
   void slotMailTabChanged(int index);
   void slotMaximumClientsChanged(int index);
   void slotNeighborCheckChange(int state);

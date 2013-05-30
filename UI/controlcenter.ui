@@ -76,8 +76,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>965</width>
-                <height>584</height>
+                <width>973</width>
+                <height>574</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -754,15 +754,15 @@
               <item row="4" column="1">
                <layout class="QHBoxLayout" name="horizontalLayout_31">
                 <item>
-                 <widget class="QLineEdit" name="aes256"/>
+                 <widget class="QLineEdit" name="goldbug"/>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="generateAES256">
+                 <widget class="QPushButton" name="generateGoldBug">
                   <property name="toolTip">
                    <string>Bundle the e-mail with an additional layer of encryption. Do remember to notify all recipients of the key.</string>
                   </property>
                   <property name="text">
-                   <string>AES-256</string>
+                   <string>Gold Bug</string>
                   </property>
                   <property name="icon">
                    <iconset resource="../Icons/icons.qrc">
@@ -791,7 +791,7 @@
                  <string>&amp;Optional</string>
                 </property>
                 <property name="buddy">
-                 <cstring>aes256</cstring>
+                 <cstring>goldbug</cstring>
                 </property>
                </widget>
               </item>
@@ -1691,8 +1691,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>975</width>
-             <height>613</height>
+             <width>931</width>
+             <height>567</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2821,7 +2821,7 @@
      <x>0</x>
      <y>0</y>
      <width>995</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2912,8 +2912,8 @@
   <tabstop>participantsCombo</tabstop>
   <tabstop>outgoingSubject</tabstop>
   <tabstop>outgoingMessage</tabstop>
-  <tabstop>aes256</tabstop>
-  <tabstop>generateAES256</tabstop>
+  <tabstop>goldbug</tabstop>
+  <tabstop>generateGoldBug</tabstop>
   <tabstop>sendMail</tabstop>
   <tabstop>postofficeCheckBox</tabstop>
   <tabstop>postoffice</tabstop>
