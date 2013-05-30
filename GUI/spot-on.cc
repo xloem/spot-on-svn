@@ -2169,7 +2169,8 @@ void spoton::slotValidatePassphrase(void)
 
 void spoton::slotTabChanged(int index)
 {
-  Q_UNUSED(index);
+  if(index == 0)
+    m_sb.chat->setVisible(false);
 }
 
 void spoton::slotNeighborCheckChange(int state)
