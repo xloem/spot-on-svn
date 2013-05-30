@@ -808,8 +808,12 @@ QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
 void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
 					   spoton_gcrypt *crypt)
 {
-  if(!crypt)
-    return;
+  QSettings settings;
+  bool keep = settings.value("gui/saveCopy", true).toBool();
+
+  if(keep)
+    if(!crypt)
+      return;
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
@@ -821,17 +825,25 @@ void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
       {
 	QSqlQuery query(db);
 
-	query.prepare("UPDATE folders SET status = ? WHERE "
-		      "oid = ?");
+	if(keep)
+	  query.prepare("UPDATE folders SET status = ? WHERE "
+			"oid = ?");
+	else
+	  query.prepare("DELETE FROM folders WHERE oid = ?");
 
 	for(int i = 0; i < oids.size(); i++)
 	  {
 	    bool ok = true;
 
-	    query.bindValue
-	      (0, crypt->encrypted(QObject::tr("Sent").toUtf8(), &ok).
-	       toBase64());
-	    query.bindValue(1, oids.at(i));
+	    if(keep)
+	      {
+		query.bindValue
+		  (0, crypt->encrypted(QObject::tr("Sent").toUtf8(), &ok).
+		   toBase64());
+		query.bindValue(1, oids.at(i));
+	      }
+	    else
+	      query.bindValue(0, oids.at(i));
 
 	    if(ok)
 	      query.exec();
