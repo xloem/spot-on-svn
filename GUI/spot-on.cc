@@ -4382,7 +4382,7 @@ void spoton::slotSendMail(void)
     return;
 
   QByteArray message
-    (m_ui.outgoingMessage->toPlainText().trimmed().toUtf8());
+    (m_ui.outgoingMessage->toHtml().trimmed().toUtf8());
 
   /*
   ** Why would you send an empty message?
@@ -4884,6 +4884,8 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
 
   m_ui.mailMessage->clear();
   m_ui.mailMessage->append(text);
+  m_ui.mailMessage->horizontalScrollBar()->setValue(0);
+  m_ui.mailMessage->verticalScrollBar()->setValue(0);
 }
 
 void spoton::slotDeleteMail(void)
