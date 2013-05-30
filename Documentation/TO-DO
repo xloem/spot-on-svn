@@ -1,7 +1,7 @@
 Completed Items
 
 1.     Inform the kernel of the key.
-2.     Add colors to the kernel widgets. On OS X and Windows platforms,
+2.     Add colors to the kernel widgets. On Windows platforms,
        the kernel path must represent a readable program. On other platforms,
        the path must represent an executable program.
 3.     If the passphrase is not set, disable all other tabs. Also
@@ -18,7 +18,7 @@ Completed Items
 10.    libspoton.dll needs to be installed in the executable's path.
 11.    Add presence information to the Participants table.
 12.    Provide a means of sending a message to friends only.
-13.    Add UUIDs to neighbors for DHT/Sticky purposes. 
+13.    Add UUIDs to neighbors. 
 14.    Display additional information pertaining to network information in
        the Neighbors table.
 15.    Re-encode various databases whenever the passphrase is changed.
@@ -77,7 +77,7 @@ Ideas
        WebKit to retrieve a Web site, convert it to ascii and post as
        e-mail.
 
-       Micro blog by f2f turtle hopping with new UUID.
+       Micro blog with f2f turtle hopping with new UUID.
 
        Check box column in the Participants table to broadcast
        own IP information to friends.

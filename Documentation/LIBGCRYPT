@@ -2,14 +2,13 @@ Spot-On only supports version 1.5.x of gcrypt.
 
 OS X (32-bit)
 
-You may download the GPGTools installer from
-http://www.gpgtools.org.
+You may download the GPGTools installer from http://www.gpgtools.org.
 
 OS X (64-bit)
 
-Developers, please download the libgpg-error source from
-ftp://ftp.gnupg.org/gcrypt/libgpg-error and the libgcrypt
-source from ftp://ftp.gnupg.org/gcrypt/libgcrypt.
+Developers, please download the libgcrypt source from
+ftp://ftp.gnupg.org/gcrypt/libgcrypt and the libgpg-error source from
+ftp://ftp.gnupg.org/gcrypt/libgpg-error.
 
 Windows
 
