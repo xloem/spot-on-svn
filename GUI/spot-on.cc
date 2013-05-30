@@ -4840,18 +4840,15 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
       text.append("<br><br>");
       text.append(message);
 
-      bool update = false;
-
       if(status != tr("Read"))
 	{
 	  QTableWidgetItem *item = 0;
 
 	  if((item = m_ui.mail->item(row, 5))) // OID
-	    update = updateMailStatus(item->text(), tr("Read"));
+	    if(updateMailStatus(item->text(), tr("Read")))
+	      if((item = m_ui.mail->item(row, 2))) // Status
+		item->setText(tr("Read"));
 	}
-
-      if(update)
-	item->setText(tr("Read"));
     }
   else if(m_ui.folder->currentIndex() == 1) // Sent
     {
