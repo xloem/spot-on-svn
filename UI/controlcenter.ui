@@ -695,6 +695,16 @@
                   </property>
                  </spacer>
                 </item>
+                <item>
+                 <widget class="QCheckBox" name="saveCopy">
+                  <property name="text">
+                   <string>&amp;Save Copy</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
                </layout>
               </item>
               <item row="2" column="0">
@@ -1691,8 +1701,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>931</width>
-             <height>567</height>
+             <width>973</width>
+             <height>574</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -2910,6 +2920,7 @@
   <tabstop>mail</tabstop>
   <tabstop>mailMessage</tabstop>
   <tabstop>participantsCombo</tabstop>
+  <tabstop>saveCopy</tabstop>
   <tabstop>outgoingSubject</tabstop>
   <tabstop>outgoingMessage</tabstop>
   <tabstop>goldbug</tabstop>

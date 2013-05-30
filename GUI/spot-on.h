@@ -121,7 +121,8 @@ class spoton: public QMainWindow
   void slotGeneralTimerTimeout(void);
   void slotGenerateGoldBug(void);
   void slotGenerateGeminiInChat(void);
-  void slotKeepOnlyUserDefinedNeighbors(bool);
+  void slotKeepCopy(bool state);
+  void slotKeepOnlyUserDefinedNeighbors(bool state);
   void slotKernelSocketState(void);
   void slotKernelStatus(void);
   void slotListenerCheckChange(int state);

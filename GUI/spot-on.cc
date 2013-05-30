@@ -343,6 +343,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotEnabledPostOffice(bool)));
+  connect(m_ui.saveCopy,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotKeepCopy(bool)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -406,6 +410,9 @@ spoton::spoton(void):QMainWindow()
     ("QTableView {selection-background-color: lightgreen}");
 
   QSettings settings;
+
+  if(!settings.contains("gui/saveCopy"))
+    settings.setValue("gui/saveCopy", true);
 
   if(!settings.contains("gui/uuid"))
     {
@@ -471,6 +478,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/keepOnlyUserDefinedNeighbors", false).toBool());
   m_ui.postofficeCheckBox->setChecked
     (m_settings.value("gui/postoffice_enabled", false).toBool());
+  m_ui.saveCopy->setChecked
+    (m_settings.value("gui/saveCopy", true).toBool());
   m_ui.scrambler->setChecked
     (m_settings.value("gui/scramblerEnabled", false).toBool());
   m_ui.showOnlyConnectedNeighbors->setChecked
@@ -1590,8 +1599,6 @@ void spoton::saveSettings(void)
   settings.setValue("gui/chatHorizontalSplitter",
 		    m_ui.chatHorizontalSplitter->saveState());
   settings.setValue("gui/currentTabIndex", m_ui.tab->currentIndex());
-  settings.setValue("gui/keepOnlyUserDefinedNeighbors",
-		    m_ui.keepOnlyUserDefinedNeighbors->isChecked());
   settings.setValue("gui/neighborsHorizontalSplitter",
 		    m_ui.neighborsHorizontalSplitter->saveState());
   settings.setValue("gui/neighborsVerticalSplitter",
@@ -4837,7 +4844,7 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
       text.append("<br>");
       text.append(tr("<b>Sent: </b> "));
       text.append(date);
-      text.append("<br><br>");
+      text.append("<br>");
       text.append(message);
 
       if(status != tr("Read"))
@@ -4862,7 +4869,7 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
       text.append("<br>");
       text.append(tr("<b>Sent: </b> "));
       text.append(date);
-      text.append("<br><br>");
+      text.append("<br>");
       text.append(message);
     }
   else // Trash
@@ -4878,7 +4885,7 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
       text.append("<br>");
       text.append(tr("<b>Sent: </b> "));
       text.append(date);
-      text.append("<br><br>");
+      text.append("<br>");
       text.append(message);
     }
 
@@ -5176,4 +5183,13 @@ bool spoton::updateMailStatus(const QString &oid, const QString &status)
 
   QSqlDatabase::removeDatabase("spoton");
   return ok;
+}
+
+void spoton::slotKeepCopy(bool state)
+{
+  m_settings["gui/saveCopy"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/saveCopy", state);
 }
