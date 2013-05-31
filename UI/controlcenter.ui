@@ -2305,6 +2305,20 @@
                  </widget>
                 </item>
                 <item>
+                 <widget class="QComboBox" name="comboBox">
+                  <item>
+                   <property name="text">
+                    <string>Nuvola Iconset</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Crystal Clear Iconset</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item>
                  <spacer name="horizontalSpacer_26">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -2840,27 +2854,14 @@
     </property>
     <addaction name="action_Quit"/>
    </widget>
-   <widget class="QMenu" name="menu_Edit">
-    <property name="title">
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="action_Log_Viewer"/>
-   </widget>
    <widget class="QMenu" name="menu_View">
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="menu_Icons">
-     <property name="title">
-      <string>&amp;Icons</string>
-     </property>
-     <addaction name="action_Nuvola"/>
-    </widget>
     <addaction name="action_Documentation"/>
-    <addaction name="menu_Icons"/>
+    <addaction name="action_Log_Viewer"/>
    </widget>
    <addaction name="menu_File"/>
-   <addaction name="menu_Edit"/>
    <addaction name="menu_View"/>
   </widget>
   <action name="action_Quit">
