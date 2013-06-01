@@ -122,6 +122,10 @@ spoton::spoton(void):QMainWindow()
     ("QToolButton {border: none;}"
      "QToolButton::menu-button {border: none;}");
 #endif
+  connect(this,
+	  SIGNAL(iconsChanged(void)),
+	  &m_logViewer,
+	  SLOT(slotIconsChanged(void)));
   connect(m_sb.chat,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -5198,4 +5202,5 @@ void spoton::slotKeepCopy(bool state)
 
 void spoton::slotSetIcons(void)
 {
+  emit iconsChanged();
 }

@@ -163,6 +163,9 @@ class spoton: public QMainWindow
   void slotValidatePassphrase(void);
   void slotViewDocumentation(void);
   void slotViewLog(void);
+
+ signals:
+  void iconsChanged(void);
 };
 
 #endif

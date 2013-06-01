@@ -135,3 +135,7 @@ void spoton_logviewer::keyPressEvent(QKeyEvent *event)
 
   QMainWindow::keyPressEvent(event);
 }
+
+void spoton_logviewer::slotIconsChanged(void)
+{
+}

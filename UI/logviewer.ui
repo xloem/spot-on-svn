@@ -52,10 +52,6 @@
         <property name="text">
          <string>Clear</string>
         </property>
-        <property name="icon">
-         <iconset resource="../Icons/icons.qrc">
-          <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
-        </property>
        </widget>
       </item>
      </layout>
@@ -68,7 +64,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
