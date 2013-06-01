@@ -5195,3 +5195,7 @@ void spoton::slotKeepCopy(bool state)
 
   settings.setValue("gui/saveCopy", state);
 }
+
+void spoton::slotSetIcons(void)
+{
+}
