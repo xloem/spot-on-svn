@@ -604,6 +604,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.participants->setColumnHidden(2, true); // neighbor_oid
   m_ui.participants->setColumnHidden(3, true); // public_key_hash
   m_ui.participants->resizeColumnsToContents();
+  m_ui.postoffice->setColumnHidden(2, true); // Recipient Hash
   m_ui.mail->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   m_ui.listeners->horizontalHeader()->setSortIndicator
