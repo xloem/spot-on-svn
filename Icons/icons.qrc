@@ -278,6 +278,40 @@
 	<file>nuove/up.png</file>
 	<file>nuove/urls.png</file>
 	<file>nuove/write.png</file>
+	<file>nuvola/activate.png</file>
+        <file>nuvola/add.png</file>
+	<file>nuvola/add-listener.png</file>
+	<file>nuvola/add-url.png</file>
+    	<file>nuvola/away.png</file>
+	<file>nuvola/busy.png</file>
+	<file>nuvola/chat.png</file>
+    	<file>nuvola/clear.png</file>
+	<file>nuvola/copy.png</file>
+	<file>nuvola/database.png</file>
+	<file>nuvola/deactivate.png</file>
+	<file>nuvola/documentation.png</file>
+	<file>nuvola/down.png</file>
+	<file>nuvola/email.png</file>
+	<file>nuvola/empty-trash.png</file>
+	<file>nuvola/full-trash.png</file>
+	<file>nuvola/heart.png</file>
+	<file>nuvola/inbox.png</file>
+	<file>nuvola/information.png</file>
+	<file>nuvola/lock.png</file>
+	<file>nuvola/modify.png</file>
+	<file>nuvola/neighbors.png</file>
+	<file>nuvola/offline.png</file>
+	<file>nuvola/ok.png</file>
+	<file>nuvola/online.png</file>
+	<file>nuvola/outbox.png</file>
+	<file>nuvola/read.png</file>
+	<file>nuvola/refresh.png</file>
+	<file>nuvola/search.png</file>
+	<file>nuvola/settings.png</file>
+	<file>nuvola/share.png</file>
+	<file>nuvola/up.png</file>
+	<file>nuvola/urls.png</file>
+	<file>nuvola/write.png</file>
         <file>Resources/spotonbutton64.ico</file>
     </qresource>
 </RCC>

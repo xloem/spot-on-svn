@@ -642,6 +642,7 @@ spoton::spoton(void):QMainWindow()
 	  m_ui.participants->findChildren<QAbstractButton *> ())
     button->setToolTip(tr("Broadcast"));
 
+  slotSetIcons();
   show();
 }
 
