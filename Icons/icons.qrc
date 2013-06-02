@@ -244,6 +244,7 @@
         <file>Logo/spoton-dalmatinerlogo.png</file>
         <file>Logo/spoton-logo-white.png</file>
         <file>Logo/spoton-logo-transparent.png</file>
+        <file>Resources/spotonbutton64.ico</file>
 	<file>nuove/activate.png</file>
         <file>nuove/add.png</file>
 	<file>nuove/add-listener.png</file>
@@ -312,6 +313,5 @@
 	<file>nuvola/up.png</file>
 	<file>nuvola/urls.png</file>
 	<file>nuvola/write.png</file>
-        <file>Resources/spotonbutton64.ico</file>
     </qresource>
 </RCC>

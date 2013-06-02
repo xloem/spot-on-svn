@@ -391,7 +391,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(readyRead(void)),
 	  this,
 	  SLOT(slotReceivedKernelMessage(void)));
-  m_sb.kernelstatus->setIcon(QIcon(":/deactivate.png"));
   m_sb.kernelstatus->setToolTip
     (tr("Not connected to the kernel. Is the kernel "
 	"active?"));
@@ -436,6 +435,10 @@ spoton::spoton(void):QMainWindow()
   for(int i = 0; i < settings.allKeys().size(); i++)
     m_settings[settings.allKeys().at(i)] = settings.value
       (settings.allKeys().at(i));
+
+  m_sb.kernelstatus->setIcon
+    (QIcon(QString(":/%1/deactivate.png").
+	   arg(m_settings.value("gui/iconSet", "nuove").toString())));
 
   if(spoton_misc::isGnome())
     setGeometry(m_settings.value("gui/geometry").toRect());
@@ -2317,7 +2320,9 @@ void spoton::slotKernelSocketState(void)
   if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
     {
       sendKeyToKernel();
-      m_sb.kernelstatus->setIcon(QIcon(":/activate.png"));
+      m_sb.kernelstatus->setIcon
+	(QIcon(QString(":/%1/activate.png").
+	       arg(m_settings.value("gui/iconSet", "nuove").toString())));
       m_sb.kernelstatus->setToolTip
 	(tr("Connected to the kernel on port %1 "
 	    "from local port %2.").
@@ -2326,7 +2331,9 @@ void spoton::slotKernelSocketState(void)
     }
   else
     {
-      m_sb.kernelstatus->setIcon(QIcon(":/deactivate.png"));
+      m_sb.kernelstatus->setIcon
+	(QIcon(QString(":/%1/deactivate.png").
+	       arg(m_settings.value("gui/iconSet", "nuove").toString())));
       m_sb.kernelstatus->setToolTip
 	(tr("Not connected to the kernel. Is the kernel "
 	    "active?"));
@@ -5213,23 +5220,27 @@ void spoton::slotKeepCopy(bool state)
 void spoton::slotSetIcons(void)
 {
   QAction *action = qobject_cast<QAction *> (sender());
+  QString iconSet("nuove");
 
-  if(!action)
-    return;
+  if(action)
+    {
+      for(int i = 0; i < m_ui.menu_Icons->actions().size(); i++)
+	if(action != m_ui.menu_Icons->actions().at(i))
+	  m_ui.menu_Icons->actions().at(i)->setChecked(false);
 
-  for(int i = 0; i < m_ui.menu_Icons->actions().size(); i++)
-    if(action != m_ui.menu_Icons->actions().at(i))
-      m_ui.menu_Icons->actions().at(i)->setChecked(false);
+      QSettings settings;
 
-  QSettings settings;
-  QString iconSet("");
+      if(action == m_ui.actionNuove)
+	iconSet = "nuove";
+      else
+	iconSet = "nuvola";
 
-  if(action == m_ui.actionNuove)
-    iconSet = "nuove";
-  else
-    iconSet = "nuvola";
+      m_settings["gui/iconSet"] = iconSet;
+      settings.setValue("gui/iconSet", iconSet);
+    }
 
-  m_settings["gui/iconSet"] = iconSet;
-  settings.setValue("gui/iconSet", iconSet);
+  m_sb.chat->setIcon(QIcon(QString(":/%1/chat.png").arg(iconSet)));
+  m_sb.email->setIcon(QIcon(QString(":/%1/email.png").arg(iconSet)));
+  m_sb.errorlog->setIcon(QIcon(QString(":/%1/information.png").arg(iconSet)));
   emit iconsChanged();
 }
