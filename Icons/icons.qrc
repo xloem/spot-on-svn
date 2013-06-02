@@ -1,39 +1,5 @@
 <RCC>
     <qresource prefix="/">
-	<file>activate.png</file>
-        <file>add.png</file>
-	<file>add-listener.png</file>
-	<file>add-url.png</file>
-        <file>away.png</file>
-	<file>busy.png</file>
-	<file>chat.png</file>
-        <file>clear.png</file>
-	<file>copy.png</file>
-	<file>database.png</file>
-	<file>deactivate.png</file>
-	<file>documentation.png</file>
-	<file>down.png</file>
-	<file>email.png</file>
-	<file>empty-trash.png</file>
-	<file>full-trash.png</file>
-	<file>heart.png</file>
-	<file>inbox.png</file>
-	<file>information.png</file>
-	<file>lock.png</file>
-	<file>modify.png</file>
-	<file>neighbors.png</file>
-	<file>offline.png</file>
-	<file>ok.png</file>
-	<file>online.png</file>
-	<file>outbox.png</file>
-	<file>read.png</file>
-	<file>refresh.png</file>
-	<file>search.png</file>
-	<file>settings.png</file>
-	<file>share.png</file>
-	<file>up.png</file>
-	<file>urls.png</file>
-	<file>write.png</file>
         <file>Flags/ae.png</file>
         <file>Flags/af.png</file>
         <file>Flags/al.png</file>
@@ -242,36 +208,27 @@
         <file>Flags/zm.png</file>
         <file>Logo/spoton-button-32.png</file>
         <file>Logo/spoton-dalmatinerlogo.png</file>
-        <file>Logo/spoton-logo-white.png</file>
         <file>Logo/spoton-logo-transparent.png</file>
         <file>Resources/spotonbutton64.ico</file>
-        <file>nuove/accept.png</file>
 	<file>nuove/activate.png</file>
         <file>nuove/add.png</file>
 	<file>nuove/add-listener.png</file>
 	<file>nuove/add-url.png</file>
-        <file>nuove/away.png</file>
+    	<file>nuove/away.png</file>
 	<file>nuove/busy.png</file>
 	<file>nuove/chat.png</file>
-        <file>nuove/chatstatus.png</file>
-        <file>nuove/clear.png</file>
+    	<file>nuove/clear.png</file>
 	<file>nuove/copy.png</file>
 	<file>nuove/database.png</file>
 	<file>nuove/deactivate.png</file>
-        <file>nuove/delete.png</file>
-        <file>nuove/deleteall.png</file>
-        <file>nuove/deny.png</file>
 	<file>nuove/documentation.png</file>
 	<file>nuove/down.png</file>
 	<file>nuove/email.png</file>
 	<file>nuove/empty-trash.png</file>
 	<file>nuove/full-trash.png</file>
-        <file>nuove/goldbug.png</file>
 	<file>nuove/heart.png</file>
 	<file>nuove/inbox.png</file>
 	<file>nuove/information.png</file>
-        <file>nuove/ledstatusgreen.png</file>
-        <file>nuove/ledstatusred.png</file>
 	<file>nuove/lock.png</file>
 	<file>nuove/modify.png</file>
 	<file>nuove/neighbors.png</file>
@@ -281,41 +238,31 @@
 	<file>nuove/outbox.png</file>
 	<file>nuove/read.png</file>
 	<file>nuove/refresh.png</file>
-        <file>nuove/reset.png</file>
 	<file>nuove/search.png</file>
-        <file>nuove/sendchat.png</file>
 	<file>nuove/settings.png</file>
 	<file>nuove/share.png</file>
 	<file>nuove/up.png</file>
 	<file>nuove/urls.png</file>
 	<file>nuove/write.png</file>
-        <file>nuvola/accept.png</file>
 	<file>nuvola/activate.png</file>
         <file>nuvola/add.png</file>
 	<file>nuvola/add-listener.png</file>
 	<file>nuvola/add-url.png</file>
-        <file>nuvola/away.png</file>
+    	<file>nuvola/away.png</file>
 	<file>nuvola/busy.png</file>
 	<file>nuvola/chat.png</file>
-        <file>nuvola/chatstatus.png</file>
-        <file>nuvola/clear.png</file>
+    	<file>nuvola/clear.png</file>
 	<file>nuvola/copy.png</file>
 	<file>nuvola/database.png</file>
 	<file>nuvola/deactivate.png</file>
-        <file>nuvola/delete.png</file>
-        <file>nuvola/deleteall.png</file>
-        <file>nuvola/deny.png</file>
 	<file>nuvola/documentation.png</file>
 	<file>nuvola/down.png</file>
 	<file>nuvola/email.png</file>
 	<file>nuvola/empty-trash.png</file>
 	<file>nuvola/full-trash.png</file>
-        <file>nuvola/goldbug.png</file>
 	<file>nuvola/heart.png</file>
 	<file>nuvola/inbox.png</file>
 	<file>nuvola/information.png</file>
-        <file>nuvola/ledstatusgreen.png</file>
-        <file>nuvola/ledstatusred.png</file>
 	<file>nuvola/lock.png</file>
 	<file>nuvola/modify.png</file>
 	<file>nuvola/neighbors.png</file>
@@ -325,9 +272,7 @@
 	<file>nuvola/outbox.png</file>
 	<file>nuvola/read.png</file>
 	<file>nuvola/refresh.png</file>
-        <file>nuvola/reset.png</file>
 	<file>nuvola/search.png</file>
-        <file>nuvola/sendchat.png</file>
 	<file>nuvola/settings.png</file>
 	<file>nuvola/share.png</file>
 	<file>nuvola/up.png</file>

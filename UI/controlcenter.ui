@@ -40,10 +40,6 @@
        </size>
       </property>
       <widget class="QWidget" name="tab_chat">
-       <attribute name="icon">
-        <iconset resource="../Icons/icons.qrc">
-         <normaloff>:/chat.png</normaloff>:/chat.png</iconset>
-       </attribute>
        <attribute name="title">
         <string>&amp;Chat</string>
        </attribute>
@@ -113,10 +109,6 @@
                          <property name="text">
                           <string>Clear</string>
                          </property>
-                         <property name="icon">
-                          <iconset resource="../Icons/icons.qrc">
-                           <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
-                         </property>
                         </widget>
                        </item>
                       </layout>
@@ -158,10 +150,6 @@
                          <property name="text">
                           <string>Save</string>
                          </property>
-                         <property name="icon">
-                          <iconset resource="../Icons/icons.qrc">
-                           <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
-                         </property>
                         </widget>
                        </item>
                        <item>
@@ -182,36 +170,20 @@
                           <property name="text">
                            <string>Away</string>
                           </property>
-                          <property name="icon">
-                           <iconset resource="../Icons/icons.qrc">
-                            <normaloff>:/away.png</normaloff>:/away.png</iconset>
-                          </property>
                          </item>
                          <item>
                           <property name="text">
                            <string>Busy</string>
-                          </property>
-                          <property name="icon">
-                           <iconset resource="../Icons/icons.qrc">
-                            <normaloff>:/busy.png</normaloff>:/busy.png</iconset>
                           </property>
                          </item>
                          <item>
                           <property name="text">
                            <string>Offline</string>
                           </property>
-                          <property name="icon">
-                           <iconset resource="../Icons/icons.qrc">
-                            <normaloff>:/offline.png</normaloff>:/offline.png</iconset>
-                          </property>
                          </item>
                          <item>
                           <property name="text">
                            <string>Online</string>
-                          </property>
-                          <property name="icon">
-                           <iconset resource="../Icons/icons.qrc">
-                            <normaloff>:/online.png</normaloff>:/online.png</iconset>
                           </property>
                          </item>
                         </widget>
@@ -374,10 +346,6 @@
                        <property name="text">
                         <string>Send</string>
                        </property>
-                       <property name="icon">
-                        <iconset resource="../Icons/icons.qrc">
-                         <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
-                       </property>
                       </widget>
                      </item>
                     </layout>
@@ -396,10 +364,6 @@
        </layout>
       </widget>
       <widget class="QWidget" name="tab_email">
-       <attribute name="icon">
-        <iconset resource="../Icons/icons.qrc">
-         <normaloff>:/email.png</normaloff>:/email.png</iconset>
-       </attribute>
        <attribute name="title">
         <string>&amp;E-Mail</string>
        </attribute>
@@ -433,10 +397,6 @@
             <property name="text">
              <string>Clear</string>
             </property>
-            <property name="icon">
-             <iconset resource="../Icons/icons.qrc">
-              <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
-            </property>
            </widget>
           </item>
           <item>
@@ -449,10 +409,6 @@
             </property>
             <property name="text">
              <string>Refresh</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../Icons/icons.qrc">
-              <normaloff>:/refresh.png</normaloff>:/refresh.png</iconset>
             </property>
            </widget>
           </item>
@@ -470,10 +426,6 @@
             <property name="text">
              <string>Retrieve</string>
             </property>
-            <property name="icon">
-             <iconset resource="../Icons/icons.qrc">
-              <normaloff>:/down.png</normaloff>:/down.png</iconset>
-            </property>
            </widget>
           </item>
           <item>
@@ -486,10 +438,6 @@
             </property>
             <property name="text">
              <string>Empty Trash</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../Icons/icons.qrc">
-              <normaloff>:/empty-trash.png</normaloff>:/empty-trash.png</iconset>
             </property>
            </widget>
           </item>
@@ -514,10 +462,6 @@
            <number>0</number>
           </property>
           <widget class="QWidget" name="tab_4">
-           <attribute name="icon">
-            <iconset resource="../Icons/icons.qrc">
-             <normaloff>:/read.png</normaloff>:/read.png</iconset>
-           </attribute>
            <attribute name="title">
             <string>&amp;Read</string>
            </attribute>
@@ -530,27 +474,15 @@
                  <property name="text">
                   <string>Inbox</string>
                  </property>
-                 <property name="icon">
-                  <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/inbox.png</normaloff>:/inbox.png</iconset>
-                 </property>
                 </item>
                 <item>
                  <property name="text">
                   <string>Sent</string>
                  </property>
-                 <property name="icon">
-                  <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/outbox.png</normaloff>:/outbox.png</iconset>
-                 </property>
                 </item>
                 <item>
                  <property name="text">
                   <string>Trash</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/full-trash.png</normaloff>:/full-trash.png</iconset>
                  </property>
                 </item>
                </widget>
@@ -635,10 +567,6 @@
            </layout>
           </widget>
           <widget class="QWidget" name="tab_5">
-           <attribute name="icon">
-            <iconset resource="../Icons/icons.qrc">
-             <normaloff>:/write.png</normaloff>:/write.png</iconset>
-           </attribute>
            <attribute name="title">
             <string>&amp;Write</string>
            </attribute>
@@ -674,10 +602,6 @@
                   <item>
                    <property name="text">
                     <string>All Participants</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="../Icons/icons.qrc">
-                     <normaloff>:/heart.png</normaloff>:/heart.png</iconset>
                    </property>
                   </item>
                  </widget>
@@ -774,10 +698,6 @@
                   <property name="text">
                    <string>Gold Bug</string>
                   </property>
-                  <property name="icon">
-                   <iconset resource="../Icons/icons.qrc">
-                    <normaloff>:/lock.png</normaloff>:/lock.png</iconset>
-                  </property>
                  </widget>
                 </item>
                 <item>
@@ -827,10 +747,6 @@
                 <property name="text">
                  <string>Send</string>
                 </property>
-                <property name="icon">
-                 <iconset resource="../Icons/icons.qrc">
-                  <normaloff>:/write.png</normaloff>:/write.png</iconset>
-                </property>
                </widget>
               </item>
              </layout>
@@ -838,10 +754,6 @@
            </layout>
           </widget>
           <widget class="QWidget" name="tab_6">
-           <attribute name="icon">
-            <iconset resource="../Icons/icons.qrc">
-             <normaloff>:/database.png</normaloff>:/database.png</iconset>
-           </attribute>
            <attribute name="title">
             <string>&amp;C/O</string>
            </attribute>
@@ -958,10 +870,6 @@
        </layout>
       </widget>
       <widget class="QWidget" name="tab_neighbors">
-       <attribute name="icon">
-        <iconset resource="../Icons/icons.qrc">
-         <normaloff>:/neighbors.png</normaloff>:/neighbors.png</iconset>
-       </attribute>
        <attribute name="title">
         <string>&amp;Neighbors</string>
        </attribute>
@@ -1016,10 +924,6 @@
                  <property name="text">
                   <string>Copy Key</string>
                  </property>
-                 <property name="icon">
-                  <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/copy.png</normaloff>:/copy.png</iconset>
-                 </property>
                  <property name="popupMode">
                   <enum>QToolButton::InstantPopup</enum>
                  </property>
@@ -1035,10 +939,6 @@
                  </property>
                  <property name="text">
                   <string>Share Key</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../Icons/icons.qrc">
-                   <normaloff>:/share.png</normaloff>:/share.png</iconset>
                  </property>
                  <property name="popupMode">
                   <enum>QToolButton::InstantPopup</enum>
@@ -1411,10 +1311,6 @@
                     <property name="text">
                      <string>Add</string>
                     </property>
-                    <property name="icon">
-                     <iconset resource="../Icons/icons.qrc">
-                      <normaloff>:/add.png</normaloff>:/add.png</iconset>
-                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -1489,20 +1385,12 @@
                     <property name="text">
                      <string>Add</string>
                     </property>
-                    <property name="icon">
-                     <iconset resource="../Icons/icons.qrc">
-                      <normaloff>:/add.png</normaloff>:/add.png</iconset>
-                    </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QPushButton" name="clearFriend">
                     <property name="text">
                      <string>Clear</string>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../Icons/icons.qrc">
-                      <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                     </property>
                    </widget>
                   </item>
@@ -1546,10 +1434,6 @@
        </layout>
       </widget>
       <widget class="QWidget" name="tab_search">
-       <attribute name="icon">
-        <iconset resource="../Icons/icons.qrc">
-         <normaloff>:/search.png</normaloff>:/search.png</iconset>
-       </attribute>
        <attribute name="title">
         <string>&amp;Search</string>
        </attribute>
@@ -1584,10 +1468,6 @@
             <property name="text">
              <string>Fetch!</string>
             </property>
-            <property name="icon">
-             <iconset resource="../Icons/icons.qrc">
-              <normaloff>:/search.png</normaloff>:/search.png</iconset>
-            </property>
            </widget>
           </item>
           <item>
@@ -1618,10 +1498,6 @@
            <widget class="QPushButton" name="deleteURL">
             <property name="text">
              <string>Delete</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../Icons/icons.qrc">
-              <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
             </property>
            </widget>
           </item>
@@ -1666,10 +1542,6 @@
             <property name="text">
              <string>Modify</string>
             </property>
-            <property name="icon">
-             <iconset resource="../Icons/icons.qrc">
-              <normaloff>:/modify.png</normaloff>:/modify.png</iconset>
-            </property>
            </widget>
           </item>
          </layout>
@@ -1677,10 +1549,6 @@
        </layout>
       </widget>
       <widget class="QWidget" name="tab_settings">
-       <attribute name="icon">
-        <iconset resource="../Icons/icons.qrc">
-         <normaloff>:/settings.png</normaloff>:/settings.png</iconset>
-       </attribute>
        <attribute name="title">
         <string>S&amp;ettings</string>
        </attribute>
@@ -1721,10 +1589,6 @@
                      <property name="text">
                       <string>Activate</string>
                      </property>
-                     <property name="icon">
-                      <iconset resource="../Icons/icons.qrc">
-                       <normaloff>:/activate.png</normaloff>:/activate.png</iconset>
-                     </property>
                     </widget>
                    </item>
                    <item>
@@ -1754,10 +1618,6 @@
                     <widget class="QPushButton" name="deactivateKernel">
                      <property name="text">
                       <string>Deactivate</string>
-                     </property>
-                     <property name="icon">
-                      <iconset resource="../Icons/icons.qrc">
-                       <normaloff>:/deactivate.png</normaloff>:/deactivate.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -1932,10 +1792,6 @@
                         <property name="text">
                          <string>Add</string>
                         </property>
-                        <property name="icon">
-                         <iconset resource="../Icons/icons.qrc">
-                          <normaloff>:/add-listener.png</normaloff>:/add-listener.png</iconset>
-                        </property>
                        </widget>
                       </item>
                       <item row="1" column="5">
@@ -2068,10 +1924,6 @@
                       <widget class="QPushButton" name="deleteListener">
                        <property name="text">
                         <string>Delete</string>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../Icons/icons.qrc">
-                         <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                        </property>
                       </widget>
                      </item>
@@ -2280,10 +2132,6 @@
                      <property name="text">
                       <string>Set Passphrase</string>
                      </property>
-                     <property name="icon">
-                      <iconset resource="../Icons/icons.qrc">
-                       <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
-                     </property>
                     </widget>
                    </item>
                   </layout>
@@ -2297,10 +2145,6 @@
                  <widget class="QPushButton" name="resetSpotOn">
                   <property name="text">
                    <string>Reset Spot-On</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../Icons/icons.qrc">
-                    <normaloff>:/refresh.png</normaloff>:/refresh.png</iconset>
                   </property>
                  </widget>
                 </item>
@@ -2328,10 +2172,6 @@
        </layout>
       </widget>
       <widget class="QWidget" name="tab_cultivation">
-       <attribute name="icon">
-        <iconset resource="../Icons/icons.qrc">
-         <normaloff>:/urls.png</normaloff>:/urls.png</iconset>
-       </attribute>
        <attribute name="title">
         <string>&amp;URLs</string>
        </attribute>
@@ -2343,15 +2183,11 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_11">
            <item>
-            <widget class="QTabWidget" name="tabWidget">
+            <widget class="QTabWidget" name="urlTab">
              <property name="currentIndex">
               <number>0</number>
              </property>
              <widget class="QWidget" name="tab_2">
-              <attribute name="icon">
-               <iconset resource="../Icons/icons.qrc">
-                <normaloff>:/down.png</normaloff>:/down.png</iconset>
-              </attribute>
               <attribute name="title">
                <string>&amp;Download</string>
               </attribute>
@@ -2376,10 +2212,6 @@
                    <property name="text">
                     <string>&amp;Accept List</string>
                    </property>
-                   <property name="icon">
-                    <iconset resource="../Icons/icons.qrc">
-                     <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
-                   </property>
                    <property name="checked">
                     <bool>true</bool>
                    </property>
@@ -2389,10 +2221,6 @@
                   <widget class="QRadioButton" name="denylistDL">
                    <property name="text">
                     <string>&amp;Deny List</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="../Icons/icons.qrc">
-                     <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                    </property>
                    <property name="checked">
                     <bool>false</bool>
@@ -2423,20 +2251,12 @@
                      <property name="text">
                       <string>Add</string>
                      </property>
-                     <property name="icon">
-                      <iconset resource="../Icons/icons.qrc">
-                       <normaloff>:/add-url.png</normaloff>:/add-url.png</iconset>
-                     </property>
                     </widget>
                    </item>
                    <item>
                     <widget class="QPushButton" name="delDLDistiller">
                      <property name="text">
                       <string>Delete</string>
-                     </property>
-                     <property name="icon">
-                      <iconset resource="../Icons/icons.qrc">
-                       <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -2476,10 +2296,6 @@
               </layout>
              </widget>
              <widget class="QWidget" name="tab_3">
-              <attribute name="icon">
-               <iconset resource="../Icons/icons.qrc">
-                <normaloff>:/up.png</normaloff>:/up.png</iconset>
-              </attribute>
               <attribute name="title">
                <string>&amp;Upload</string>
               </attribute>
@@ -2504,10 +2320,6 @@
                    <property name="text">
                     <string>&amp;Accept List</string>
                    </property>
-                   <property name="icon">
-                    <iconset resource="../Icons/icons.qrc">
-                     <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
-                   </property>
                    <property name="checked">
                     <bool>true</bool>
                    </property>
@@ -2517,10 +2329,6 @@
                   <widget class="QRadioButton" name="denylistUL">
                    <property name="text">
                     <string>&amp;Deny List</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="../Icons/icons.qrc">
-                     <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                    </property>
                    <property name="checked">
                     <bool>false</bool>
@@ -2551,20 +2359,12 @@
                      <property name="text">
                       <string>Add</string>
                      </property>
-                     <property name="icon">
-                      <iconset resource="../Icons/icons.qrc">
-                       <normaloff>:/add-url.png</normaloff>:/add-url.png</iconset>
-                     </property>
                     </widget>
                    </item>
                    <item>
                     <widget class="QPushButton" name="delULDistiller">
                      <property name="text">
                       <string>Delete</string>
-                     </property>
-                     <property name="icon">
-                      <iconset resource="../Icons/icons.qrc">
-                       <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -2717,10 +2517,6 @@
               <property name="text">
                <string>Authenticate</string>
               </property>
-              <property name="icon">
-               <iconset resource="../Icons/icons.qrc">
-                <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
-              </property>
              </widget>
             </item>
             <item>
@@ -2859,10 +2655,6 @@
    <addaction name="menu_View"/>
   </widget>
   <action name="action_Quit">
-   <property name="icon">
-    <iconset resource="../Icons/icons.qrc">
-     <normaloff>:/deactivate.png</normaloff>:/deactivate.png</iconset>
-   </property>
    <property name="text">
     <string>&amp;Quit</string>
    </property>
@@ -2871,10 +2663,6 @@
    </property>
   </action>
   <action name="action_Documentation">
-   <property name="icon">
-    <iconset resource="../Icons/icons.qrc">
-     <normaloff>:/documentation.png</normaloff>:/documentation.png</iconset>
-   </property>
    <property name="text">
     <string>&amp;Documentation</string>
    </property>
@@ -3006,7 +2794,7 @@
   <tabstop>passphrase2</tabstop>
   <tabstop>setPassphrase</tabstop>
   <tabstop>resetSpotOn</tabstop>
-  <tabstop>tabWidget</tabstop>
+  <tabstop>urlTab</tabstop>
   <tabstop>acceptlistDL</tabstop>
   <tabstop>denylistDL</tabstop>
   <tabstop>addDLDistiller</tabstop>

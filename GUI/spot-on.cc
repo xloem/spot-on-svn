@@ -2263,10 +2263,14 @@ void spoton::slotShowContextMenu(const QPoint &point)
 
   if(m_ui.neighbors == sender())
     {
-      menu.addAction(QIcon(":/share.png"),
+      menu.addAction(QIcon(QString(":/%1/share.png").
+			   arg(m_settings.value("gui/iconSet", "nuove").
+			       toString())),
 		     tr("Share &Messaging Public Key"),
 		     this, SLOT(slotSharePublicKey(void)));
-      menu.addAction(QIcon(":/share.png"),
+      menu.addAction(QIcon(QString(":%1//share.png").
+			   arg(m_settings.value("gui/iconSet", "nuove").
+			       toString())),
 		     tr("Share &URL Public Key"),
 		     this, SLOT(slotShareURLPublicKey(void)));
       menu.addSeparator();
@@ -2275,7 +2279,10 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("&Disconnect"),
 		     this, SLOT(slotDisconnectNeighbor(void)));
       menu.addSeparator();
-      menu.addAction(QIcon(":/clear.png"),tr("&Delete"),
+      menu.addAction(QIcon(QString(":/%1/clear.png").
+			   arg(m_settings.value("gui/iconSet", "nuove").
+			       toString())),
+		     tr("&Delete"),
 		     this, SLOT(slotDeleteNeighbor(void)));
       menu.addAction(tr("Delete &All"),
 		     this, SLOT(slotDeleteAllNeighbors(void)));
@@ -2293,7 +2300,8 @@ void spoton::slotShowContextMenu(const QPoint &point)
   else
     {
       QAction *action = menu.addAction
-	(QIcon(":/add.png"),
+	(QIcon(QString(":/%1/add.png").
+	       arg(m_settings.value("gui/iconSet", "nuove").toString())),
 	 tr("&Add participant as friend."),
 	 this, SLOT(slotSharePublicKeyWithParticipant(void)));
       QTableWidgetItem *item = m_ui.participants->itemAt(point);
@@ -2303,12 +2311,16 @@ void spoton::slotShowContextMenu(const QPoint &point)
       else
 	action->setEnabled(false);
 
-      menu.addAction(QIcon(":/copy.png"),
+      menu.addAction(QIcon(QString(":/%1/copy.png").
+			   arg(m_settings.value("gui/iconSet", "nuove").
+			       toString())),
 		     tr("&Copy Repleo to the clipboard buffer."),
 		     this, SLOT(slotCopyFriendshipBundle(void)));
       menu.addAction(tr("&Generate random Gemini (AES-256)."),
 		     this, SLOT(slotGenerateGeminiInChat(void)));
-      menu.addAction(QIcon(":/clear.png"),
+      menu.addAction(QIcon(QString(":/%1/clear.png").
+			   arg(m_settings.value("gui/iconSet", "nuove").
+			       toString())),
 		     tr("&Remove"),
 		     this, SLOT(slotRemoveParticipants(void)));
       menu.exec(m_ui.participants->mapToGlobal(point));
@@ -2328,9 +2340,6 @@ void spoton::slotKernelSocketState(void)
 	    "from local port %2.").
 	 arg(m_kernelSocket.peerPort()).
 	 arg(m_kernelSocket.localPort()));
-     m_sb.statuskernel->setIcon
-        (QIcon(QString(":/%1/ledstatusgreen.png").
-           arg(m_settings.value("gui/iconSet", "nuvola").toString())));
     }
   else
     {
@@ -2340,9 +2349,6 @@ void spoton::slotKernelSocketState(void)
       m_sb.kernelstatus->setToolTip
 	(tr("Not connected to the kernel. Is the kernel "
 	    "active?"));
-      m_sb.statuskernel->setIcon
-    (QIcon(QString(":/%1/ledstatusred.png").
-           arg(m_settings.value("gui/iconSet", "nuvola").toString())));
     }
 }
 
@@ -2788,21 +2794,30 @@ void spoton::slotPopulateParticipants(void)
 			  if(status == "away")
 			    {
 			      item->setIcon
-				(QIcon(":/away.png"));
+				(QIcon(QString(":/%1/away.png").
+				       arg(m_settings.value("gui/iconSet",
+							    "nuove").
+					   toString())));
 			      item->setToolTip(tr("Your friend %1 is away.").
 					       arg(item->text()));
 			    }
 			  else if(status == "busy")
 			    {
 			      item->setIcon
-				(QIcon(":/busy.png"));
+				(QIcon(QString(":/%1/busy.png").
+				       arg(m_settings.value("gui/iconSet",
+							    "nuove").
+					   toString())));
 			      item->setToolTip(tr("Your friend %1 is busy.").
 					       arg(item->text()));
 			    }
 			  else if(status == "offline")
 			    {
 			      item->setIcon
-				(QIcon(":/offline.png"));
+				(QIcon(QString(":/%1/offline.png").
+				       arg(m_settings.value("gui/iconSet",
+							    "nuove").
+					   toString())));
 			      item->setToolTip
 				(tr("Your friend %1 is offline.").
 				 arg(item->text()));
@@ -2810,7 +2825,10 @@ void spoton::slotPopulateParticipants(void)
 			  else if(status == "online")
 			    {
 			      item->setIcon
-				(QIcon(":/online.png"));
+				(QIcon(QString(":/%1/online.png").
+				       arg(m_settings.value("gui/iconSet",
+							    "nuove").
+					   toString())));
 			      item->setToolTip(tr("User %1 is online.").
 					       arg(item->text()));
 			    }
@@ -2822,7 +2840,10 @@ void spoton::slotPopulateParticipants(void)
 		      else
 			{
 			  item->setIcon
-			    (QIcon(":/add.png"));
+			    (QIcon(QString(":/%1/add.png").
+				   arg(m_settings.value("gui/iconSet",
+							"nuove").
+				       toString())));
 			  item->setToolTip
 			    (tr("User %1 requests your friendship.").
 			     arg(item->text()));
@@ -4717,7 +4738,10 @@ void spoton::slotRefreshMail(void)
 					    &ok).constData());
 
 		    if(i == 3)
-		      item->setIcon(QIcon(":/email.png"));
+		      item->setIcon(QIcon(QString(":/%1/email.png").
+					  arg(m_settings.
+					      value("gui/iconSet",
+						    "nuove").toString())));
 		  }
 		else
 		  item = new QTableWidgetItem(query.value(i).toString());
@@ -4873,7 +4897,9 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
       text.append(tr("<b>Sent: </b> "));
       text.append(date);
       text.append("<br>");
+      text.append("<span style=\"font-size:large;\">");
       text.append(message);
+      text.append("</span>");
 
       if(status != tr("Read"))
 	{
@@ -5125,6 +5151,11 @@ void spoton::slotEmptyTrash(void)
     }
 }
 
+void spoton::slotEnableRetrieveMail(void)
+{
+  m_ui.retrieveMail->setEnabled(true);
+}
+
 void spoton::slotRetrieveMail(void)
 {
   if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
@@ -5136,7 +5167,12 @@ void spoton::slotRetrieveMail(void)
 	spoton_misc::logError
 	  ("spoton::slotRetrieveMail(): write() failure.");
       else
-	m_kernelSocket.flush();
+	{
+	  m_kernelSocket.flush();
+	  m_ui.retrieveMail->setEnabled(false);
+	  QTimer::singleShot
+	    (5000, this, SLOT(slotEnableRetrieveMail(void)));
+	}
     }
 }
 
@@ -5230,6 +5266,11 @@ void spoton::slotSetIcons(void)
 
   if(action)
     {
+      action->setChecked(true); /*
+				** Do not allow the user to uncheck
+				** the checked action.
+				*/
+
       for(int i = 0; i < m_ui.menu_Icons->actions().size(); i++)
 	if(action != m_ui.menu_Icons->actions().at(i))
 	  m_ui.menu_Icons->actions().at(i)->setChecked(false);
@@ -5245,56 +5286,106 @@ void spoton::slotSetIcons(void)
       settings.setValue("gui/iconSet", iconSet);
     }
 
-  // Statusbar
-  m_sb.chat->setIcon(QIcon(QString(":/%1/chatstatus.png").arg(iconSet)));
+  /*
+  ** Kernel status icons are prepared elsewhere.
+  */
+
+  QStringList list;
+
+  // Tab Icons
+
+  list << "chat.png" << "email.png" << "neighbors.png" << "search.png"
+       << "settings.png" << "urls.png";
+
+  for(int i = 0; i < list.size(); i++)
+    m_ui.tab->setTabIcon
+      (i, QIcon(QString(":/%1/%2").arg(iconSet).arg(list.at(i))));
+
+  // Status
+
+  m_sb.chat->setIcon(QIcon(QString(":/%1/chat.png").arg(iconSet)));
   m_sb.email->setIcon(QIcon(QString(":/%1/email.png").arg(iconSet)));
   m_sb.errorlog->setIcon(QIcon(QString(":/%1/information.png").arg(iconSet)));
-  //statuskernel: if online = online.png, otherwise offline.png. // done.
-  //statusneigbor: if online = online.png, otherwise offline.png.
-  //statuslistener: if connected = online.png, otherwise offline.png.
 
-  // TAB Chat
-  m_ui.saveNodeName->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
+  // Chat
+
   m_ui.clearMessages->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
-  m_ui.sendMessage->setIcon(QIcon(QString(":/%1/sendchat.png").arg(iconSet)));
-  // TAB Email
-  m_ui.pushButtonClearMail->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
+  m_ui.saveNodeName->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
+  m_ui.sendMessage->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
+  list.clear();
+  list << "away.png" << "busy.png" << "offline.png" << "online.png";
+
+  for(int i = 0; i < list.size(); i++)
+    m_ui.status->setItemIcon
+      (i, QIcon(QString(":/%1/%2").arg(iconSet).arg(list.at(i))));
+
+  // Email
+
+  m_ui.participantsCombo->setItemIcon
+    (0, QIcon(QString(":/%1/heart.png").arg(iconSet)));
+  m_ui.pushButtonClearMail->setIcon
+    (QIcon(QString(":/%1/clear.png").arg(iconSet)));
   m_ui.refreshMail->setIcon(QIcon(QString(":/%1/refresh.png").arg(iconSet)));
   m_ui.retrieveMail->setIcon(QIcon(QString(":/%1/down.png").arg(iconSet)));
   m_ui.emptyTrash->setIcon(QIcon(QString(":/%1/empty-trash.png").arg(iconSet)));
-  m_ui.generateGoldBug->setIcon(QIcon(QString(":/%1/goldbug.png").arg(iconSet)));
+  m_ui.generateGoldBug->setIcon
+    (QIcon(QString(":/%1/lock.png").arg(iconSet)));
   m_ui.sendMail->setIcon(QIcon(QString(":/%1/email.png").arg(iconSet)));
-  // TAB Neighbors
-  m_ui.toolButtonCopytoClipboard->setIcon(QIcon(QString(":/%1/copy.png").arg(iconSet)));
-  m_ui.toolButtonMakeFriends->setIcon(QIcon(QString(":/%1/share.png").arg(iconSet)));
+  list.clear();
+  list << "inbox.png" << "outbox.png" << "full-trash.png";
+
+  for(int i = 0; i < list.size(); i++)
+    m_ui.folder->setItemIcon
+      (i, QIcon(QString(":/%1/%2").arg(iconSet).arg(list.at(i))));
+
+  list.clear();
+  list << "read.png" << "write.png" << "database.png";
+
+  for(int i = 0; i < list.size(); i++)
+    m_ui.mailTab->setTabIcon
+      (i, QIcon(QString(":/%1/%2").arg(iconSet).arg(list.at(i))));
+
+  // Neighbors
+
+  m_ui.toolButtonCopytoClipboard->setIcon
+    (QIcon(QString(":/%1/copy.png").arg(iconSet)));
+  m_ui.toolButtonMakeFriends->setIcon
+    (QIcon(QString(":/%1/share.png").arg(iconSet)));
   m_ui.addNeighbor->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
   m_ui.addFriend->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
   m_ui.clearFriend->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
-  // TAB Search
-  m_ui.deleteURL->setIcon(QIcon(QString(":/%1/delete.png").arg(iconSet)));
+
+  // Search
+
+  m_ui.deleteURL->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
   m_ui.modifyURL->setIcon(QIcon(QString(":/%1/modify.png").arg(iconSet)));
   m_ui.searchURL->setIcon(QIcon(QString(":/%1/search.png").arg(iconSet)));
-  // TAB Settings
-  m_ui.activateKernel->setIcon(QIcon(QString(":/%1/activate.png").arg(iconSet)));
-  m_ui.deactivateKernel->setIcon(QIcon(QString(":/%1/deactivate.png").arg(iconSet)));
-  m_ui.addListener->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
-  m_ui.deleteListener->setIcon(QIcon(QString(":/%1/delete.png").arg(iconSet)));
-  m_ui.deleteAllListeners->setIcon(QIcon(QString(":/%1/deleteall.png").arg(iconSet)));
+
+  // Settings
+
+  m_ui.activateKernel->setIcon
+    (QIcon(QString(":/%1/activate.png").arg(iconSet)));
+  m_ui.deactivateKernel->setIcon
+    (QIcon(QString(":/%1/deactivate.png").arg(iconSet)));
+  m_ui.addListener->setIcon(QIcon(QString(":/%1/add-listener.png").
+				  arg(iconSet)));
+  m_ui.deleteListener->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
   m_ui.setPassphrase->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
-  m_ui.resetSpotOn->setIcon(QIcon(QString(":/%1/reset.png").arg(iconSet)));
-  // TAB URL Cultivation
+  m_ui.resetSpotOn->setIcon(QIcon(QString(":/%1/refresh.png").arg(iconSet)));
+
+  // URLs
+
   m_ui.addDLDistiller->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
-  m_ui.delDLDistiller->setIcon(QIcon(QString(":/%1/delete.png").arg(iconSet)));
+  m_ui.delDLDistiller->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
   m_ui.addULDistiller->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
-  m_ui.delULDistiller->setIcon(QIcon(QString(":/%1/delete.png").arg(iconSet)));
-  m_ui.acceptlistUL->setIcon(QIcon(QString(":/%1/accept.png").arg(iconSet)));
-  m_ui.denylistUL->setIcon(QIcon(QString(":/%1/deny.png").arg(iconSet)));
-  m_ui.acceptlistDL->setIcon(QIcon(QString(":/%1/accept.png").arg(iconSet)));
-  m_ui.denylistDL->setIcon(QIcon(QString(":/%1/deny.png").arg(iconSet)));
-  // TAB Login
+  m_ui.delULDistiller->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
+  m_ui.urlTab->setTabIcon
+    (0, QIcon(QString(":/%1/down.png").arg(iconSet)));
+  m_ui.urlTab->setTabIcon
+    (1, QIcon(QString(":/%1/up.png").arg(iconSet)));
+
+  // Login
+
   m_ui.passphraseButton->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
-  // POP Logview
-  //ui.clear->setIcon(QIcon(QString(":/%1/deny.png").arg(iconSet)));
-  //
   emit iconsChanged();
 }

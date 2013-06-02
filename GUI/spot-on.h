@@ -114,6 +114,7 @@ class spoton: public QMainWindow
   void slotDoSearch(void);
   void slotEmailStatusClicked(void);
   void slotEmptyTrash(void);
+  void slotEnableRetrieveMail(void);
   void slotEnabledPostOffice(bool state);
   void slotFetchMoreAlgo(void);
   void slotFetchMoreButton(void);
