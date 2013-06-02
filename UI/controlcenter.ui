@@ -1580,7 +1580,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_11">
+           <widget class="QPushButton" name="searchURL">
             <property name="text">
              <string>Fetch!</string>
             </property>
@@ -1615,7 +1615,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_16">
           <item>
-           <widget class="QPushButton" name="pushButton_9">
+           <widget class="QPushButton" name="deleteURL">
             <property name="text">
              <string>Delete</string>
             </property>
@@ -1662,7 +1662,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_10">
+           <widget class="QPushButton" name="modifyURL">
             <property name="text">
              <string>Modify</string>
             </property>
@@ -2372,7 +2372,7 @@
                   </spacer>
                  </item>
                  <item>
-                  <widget class="QRadioButton" name="acceptlistRadioButton">
+                  <widget class="QRadioButton" name="acceptlistDL">
                    <property name="text">
                     <string>&amp;Accept List</string>
                    </property>
@@ -2386,7 +2386,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QRadioButton" name="denylistRadioButton">
+                  <widget class="QRadioButton" name="denylistDL">
                    <property name="text">
                     <string>&amp;Deny List</string>
                    </property>
@@ -2419,7 +2419,7 @@
                  <item>
                   <layout class="QVBoxLayout" name="verticalLayout_8">
                    <item>
-                    <widget class="QPushButton" name="pushButton_4">
+                    <widget class="QPushButton" name="addDLDistiller">
                      <property name="text">
                       <string>Add</string>
                      </property>
@@ -2430,7 +2430,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_5">
+                    <widget class="QPushButton" name="delDLDistiller">
                      <property name="text">
                       <string>Delete</string>
                      </property>
@@ -2500,7 +2500,7 @@
                   </spacer>
                  </item>
                  <item>
-                  <widget class="QRadioButton" name="acceptlistRadioButton_2">
+                  <widget class="QRadioButton" name="acceptlistUL">
                    <property name="text">
                     <string>&amp;Accept List</string>
                    </property>
@@ -2514,7 +2514,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QRadioButton" name="denylistRadioButton_2">
+                  <widget class="QRadioButton" name="denylistUL">
                    <property name="text">
                     <string>&amp;Deny List</string>
                    </property>
@@ -2547,7 +2547,7 @@
                  <item>
                   <layout class="QVBoxLayout" name="verticalLayout_14">
                    <item>
-                    <widget class="QPushButton" name="pushButton_8">
+                    <widget class="QPushButton" name="addULDistiller">
                      <property name="text">
                       <string>Add</string>
                      </property>
@@ -2558,7 +2558,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_14">
+                    <widget class="QPushButton" name="delULDistiller">
                      <property name="text">
                       <string>Delete</string>
                      </property>
@@ -2975,10 +2975,10 @@
   <tabstop>clearFriend</tabstop>
   <tabstop>countries</tabstop>
   <tabstop>keywords</tabstop>
-  <tabstop>pushButton_11</tabstop>
+  <tabstop>searchURL</tabstop>
   <tabstop>textBrowser_2</tabstop>
-  <tabstop>pushButton_9</tabstop>
-  <tabstop>pushButton_10</tabstop>
+  <tabstop>deleteURL</tabstop>
+  <tabstop>modifyURL</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>activateKernel</tabstop>
   <tabstop>pid</tabstop>
@@ -3007,15 +3007,15 @@
   <tabstop>setPassphrase</tabstop>
   <tabstop>resetSpotOn</tabstop>
   <tabstop>tabWidget</tabstop>
-  <tabstop>acceptlistRadioButton</tabstop>
-  <tabstop>denylistRadioButton</tabstop>
-  <tabstop>pushButton_4</tabstop>
-  <tabstop>pushButton_5</tabstop>
+  <tabstop>acceptlistDL</tabstop>
+  <tabstop>denylistDL</tabstop>
+  <tabstop>addDLDistiller</tabstop>
+  <tabstop>delDLDistiller</tabstop>
   <tabstop>listWidget</tabstop>
-  <tabstop>acceptlistRadioButton_2</tabstop>
-  <tabstop>denylistRadioButton_2</tabstop>
-  <tabstop>pushButton_8</tabstop>
-  <tabstop>pushButton_14</tabstop>
+  <tabstop>acceptlistUL</tabstop>
+  <tabstop>denylistUL</tabstop>
+  <tabstop>addULDistiller</tabstop>
+  <tabstop>delULDistiller</tabstop>
   <tabstop>listWidget_2</tabstop>
   <tabstop>passphrase</tabstop>
   <tabstop>passphraseButton</tabstop>
