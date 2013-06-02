@@ -5242,5 +5242,47 @@ void spoton::slotSetIcons(void)
   m_sb.chat->setIcon(QIcon(QString(":/%1/chat.png").arg(iconSet)));
   m_sb.email->setIcon(QIcon(QString(":/%1/email.png").arg(iconSet)));
   m_sb.errorlog->setIcon(QIcon(QString(":/%1/information.png").arg(iconSet)));
+
+  // TAB Chat
+  m_ui.saveNodeName->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
+  m_ui.clearMessages->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
+  m_ui.sendMessage->setIcon(QIcon(QString(":/%1/sendchat.png").arg(iconSet)));
+  // TAB Email
+  m_ui.pushButtonClearMail->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
+  m_ui.refreshMail->setIcon(QIcon(QString(":/%1/refresh.png").arg(iconSet)));
+  m_ui.retrieveMail->setIcon(QIcon(QString(":/%1/down.png").arg(iconSet)));
+  m_ui.emptyTrash->setIcon(QIcon(QString(":/%1/empty-trash.png").arg(iconSet)));
+  m_ui.generateGoldBug->setIcon(QIcon(QString(":/%1/goldbug.png").arg(iconSet)));
+  m_ui.sendMail->setIcon(QIcon(QString(":/%1/email.png").arg(iconSet)));
+  // TAB Neighbors
+  m_ui.toolButtonCopytoClipboard->setIcon(QIcon(QString(":/%1/copy.png").arg(iconSet)));
+  m_ui.toolButtonMakeFriends->setIcon(QIcon(QString(":/%1/share.png").arg(iconSet)));
+  m_ui.addNeighbor->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
+  m_ui.addFriend->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
+  m_ui.clearFriend->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
+  // TAB Search
+  m_ui.deleteURL->setIcon(QIcon(QString(":/%1/delete.png").arg(iconSet)));
+  m_ui.modifyURL->setIcon(QIcon(QString(":/%1/modify.png").arg(iconSet)));
+  m_ui.searchURL->setIcon(QIcon(QString(":/%1/search.png").arg(iconSet)));
+  // TAB Settings
+  m_ui.activateKernel->setIcon(QIcon(QString(":/%1/activate.png").arg(iconSet)));
+  m_ui.deactivateKernel->setIcon(QIcon(QString(":/%1/deactivate.png").arg(iconSet)));
+  m_ui.addListener->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
+  m_ui.deleteListener->setIcon(QIcon(QString(":/%1/delete.png").arg(iconSet)));
+  m_ui.deleteAllListeners->setIcon(QIcon(QString(":/%1/deleteall.png").arg(iconSet)));
+  m_ui.setPassphrase->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
+  m_ui.resetSpotOn->setIcon(QIcon(QString(":/%1/reset.png").arg(iconSet)));
+  // TAB URL Cultivation
+  m_ui.addDLDistiller->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
+  m_ui.delDLDistiller->setIcon(QIcon(QString(":/%1/delete.png").arg(iconSet)));
+  m_ui.addULDistiller->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
+  m_ui.delULDistiller->setIcon(QIcon(QString(":/%1/delete.png").arg(iconSet)));
+  m_ui.acceptlistUL->setIcon(QIcon(QString(":/%1/accept.png").arg(iconSet)));
+  m_ui.denylistUL->setIcon(QIcon(QString(":/%1/deny.png").arg(iconSet)));
+  m_ui.acceptlistDL->setIcon(QIcon(QString(":/%1/accept.png").arg(iconSet)));
+  m_ui.denylistDL->setIcon(QIcon(QString(":/%1/deny.png").arg(iconSet)));
+  // TAB Login
+  m_ui.passphraseButton->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
+  //
   emit iconsChanged();
 }
