@@ -137,6 +137,8 @@ spoton.path		= release
 spoton.files		= Spot-On.exe
 icons.path		= release
 icons.files		= Icons
+geoip_data_install.path	= release\\GeoIP
+geoip_data_install.files = ..\\..\\GeoIP-1.5.0\\data\\GeoIP.dat
 libgeoip_install.path   = release
 libgeoip_install.files  = ..\\..\\libGeoIP\\Libraries.win32\\libGeoIP-1.dll
 libspoton_install.path  = release
@@ -148,7 +150,8 @@ lupdate.path            = .
 translations.path 	= release\\Translations
 translations.files	= Translations\\*.qm
 
-INSTALLS	= libgeoip_install \
+INSTALLS	= geoip_data_install \
+			libgeoip_install \
                   libspoton_install \
                   icons \
                   lupdate \
