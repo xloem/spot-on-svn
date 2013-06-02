@@ -245,6 +245,7 @@
         <file>Logo/spoton-logo-white.png</file>
         <file>Logo/spoton-logo-transparent.png</file>
         <file>Resources/spotonbutton64.ico</file>
+        <file>nuove/accept.png</file>
 	<file>nuove/activate.png</file>
         <file>nuove/add.png</file>
 	<file>nuove/add-listener.png</file>
@@ -256,11 +257,15 @@
 	<file>nuove/copy.png</file>
 	<file>nuove/database.png</file>
 	<file>nuove/deactivate.png</file>
+        <file>nuove/delete.png</file>
+        <file>nuove/deleteall.png</file>
+        <file>nuove/deny.png</file>
 	<file>nuove/documentation.png</file>
 	<file>nuove/down.png</file>
 	<file>nuove/email.png</file>
 	<file>nuove/empty-trash.png</file>
 	<file>nuove/full-trash.png</file>
+        <file>nuove/goldbug.png</file>
 	<file>nuove/heart.png</file>
 	<file>nuove/inbox.png</file>
 	<file>nuove/information.png</file>
@@ -273,12 +278,15 @@
 	<file>nuove/outbox.png</file>
 	<file>nuove/read.png</file>
 	<file>nuove/refresh.png</file>
+        <file>nuove/reset.png</file>
 	<file>nuove/search.png</file>
+        <file>nuove/sendchat.png</file>
 	<file>nuove/settings.png</file>
 	<file>nuove/share.png</file>
 	<file>nuove/up.png</file>
 	<file>nuove/urls.png</file>
 	<file>nuove/write.png</file>
+        <file>nuvola/accept.png</file>
 	<file>nuvola/activate.png</file>
         <file>nuvola/add.png</file>
 	<file>nuvola/add-listener.png</file>
@@ -290,11 +298,15 @@
 	<file>nuvola/copy.png</file>
 	<file>nuvola/database.png</file>
 	<file>nuvola/deactivate.png</file>
+        <file>nuvola/delete.png</file>
+        <file>nuvola/deleteall.png</file>
+        <file>nuvola/deny.png</file>
 	<file>nuvola/documentation.png</file>
 	<file>nuvola/down.png</file>
 	<file>nuvola/email.png</file>
 	<file>nuvola/empty-trash.png</file>
 	<file>nuvola/full-trash.png</file>
+        <file>nuvola/goldbug.png</file>
 	<file>nuvola/heart.png</file>
 	<file>nuvola/inbox.png</file>
 	<file>nuvola/information.png</file>
@@ -307,7 +319,9 @@
 	<file>nuvola/outbox.png</file>
 	<file>nuvola/read.png</file>
 	<file>nuvola/refresh.png</file>
+        <file>nuvola/reset.png</file>
 	<file>nuvola/search.png</file>
+        <file>nuvola/sendchat.png</file>
 	<file>nuvola/settings.png</file>
 	<file>nuvola/share.png</file>
 	<file>nuvola/up.png</file>
