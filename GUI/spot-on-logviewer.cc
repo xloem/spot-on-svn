@@ -27,6 +27,7 @@
 
 #include <QDir>
 #include <QKeyEvent>
+#include <QSettings>
 
 #include "Common/spot-on-misc.h"
 #include "spot-on-logviewer.h"
@@ -56,6 +57,7 @@ spoton_logviewer::spoton_logviewer(void):QMainWindow()
 	  this,
 	  SLOT(slotTimeout(void)));
   m_timer.start(2500);
+  slotSetIcons();
 }
 
 void spoton_logviewer::slotClose(void)
@@ -136,6 +138,11 @@ void spoton_logviewer::keyPressEvent(QKeyEvent *event)
   QMainWindow::keyPressEvent(event);
 }
 
-void spoton_logviewer::slotIconsChanged(void)
+void spoton_logviewer::slotSetIcons(void)
 {
+  QSettings settings;
+  QString iconSet(settings.value("gui/iconSet", "nuove").toString().
+		  trimmed());
+
+  ui.clear->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
 }

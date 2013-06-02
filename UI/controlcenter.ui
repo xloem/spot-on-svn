@@ -41,7 +41,7 @@
       </property>
       <widget class="QWidget" name="tab_chat">
        <attribute name="icon">
-        <iconset>
+        <iconset resource="../Icons/icons.qrc">
          <normaloff>:/chat.png</normaloff>:/chat.png</iconset>
        </attribute>
        <attribute name="title">
@@ -114,7 +114,7 @@
                           <string>Clear</string>
                          </property>
                          <property name="icon">
-                          <iconset>
+                          <iconset resource="../Icons/icons.qrc">
                            <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                          </property>
                         </widget>
@@ -159,7 +159,7 @@
                           <string>Save</string>
                          </property>
                          <property name="icon">
-                          <iconset>
+                          <iconset resource="../Icons/icons.qrc">
                            <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
                          </property>
                         </widget>
@@ -183,7 +183,7 @@
                            <string>Away</string>
                           </property>
                           <property name="icon">
-                           <iconset>
+                           <iconset resource="../Icons/icons.qrc">
                             <normaloff>:/away.png</normaloff>:/away.png</iconset>
                           </property>
                          </item>
@@ -192,7 +192,7 @@
                            <string>Busy</string>
                           </property>
                           <property name="icon">
-                           <iconset>
+                           <iconset resource="../Icons/icons.qrc">
                             <normaloff>:/busy.png</normaloff>:/busy.png</iconset>
                           </property>
                          </item>
@@ -201,7 +201,7 @@
                            <string>Offline</string>
                           </property>
                           <property name="icon">
-                           <iconset>
+                           <iconset resource="../Icons/icons.qrc">
                             <normaloff>:/offline.png</normaloff>:/offline.png</iconset>
                           </property>
                          </item>
@@ -210,7 +210,7 @@
                            <string>Online</string>
                           </property>
                           <property name="icon">
-                           <iconset>
+                           <iconset resource="../Icons/icons.qrc">
                             <normaloff>:/online.png</normaloff>:/online.png</iconset>
                           </property>
                          </item>
@@ -375,7 +375,7 @@
                         <string>Send</string>
                        </property>
                        <property name="icon">
-                        <iconset>
+                        <iconset resource="../Icons/icons.qrc">
                          <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
                        </property>
                       </widget>
@@ -397,7 +397,7 @@
       </widget>
       <widget class="QWidget" name="tab_email">
        <attribute name="icon">
-        <iconset>
+        <iconset resource="../Icons/icons.qrc">
          <normaloff>:/email.png</normaloff>:/email.png</iconset>
        </attribute>
        <attribute name="title">
@@ -434,7 +434,7 @@
              <string>Clear</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="../Icons/icons.qrc">
               <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
             </property>
            </widget>
@@ -451,7 +451,7 @@
              <string>Refresh</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="../Icons/icons.qrc">
               <normaloff>:/refresh.png</normaloff>:/refresh.png</iconset>
             </property>
            </widget>
@@ -471,7 +471,7 @@
              <string>Retrieve</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="../Icons/icons.qrc">
               <normaloff>:/down.png</normaloff>:/down.png</iconset>
             </property>
            </widget>
@@ -488,7 +488,7 @@
              <string>Empty Trash</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="../Icons/icons.qrc">
               <normaloff>:/empty-trash.png</normaloff>:/empty-trash.png</iconset>
             </property>
            </widget>
@@ -515,7 +515,7 @@
           </property>
           <widget class="QWidget" name="tab_4">
            <attribute name="icon">
-            <iconset>
+            <iconset resource="../Icons/icons.qrc">
              <normaloff>:/read.png</normaloff>:/read.png</iconset>
            </attribute>
            <attribute name="title">
@@ -531,7 +531,7 @@
                   <string>Inbox</string>
                  </property>
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="../Icons/icons.qrc">
                    <normaloff>:/inbox.png</normaloff>:/inbox.png</iconset>
                  </property>
                 </item>
@@ -540,7 +540,7 @@
                   <string>Sent</string>
                  </property>
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="../Icons/icons.qrc">
                    <normaloff>:/outbox.png</normaloff>:/outbox.png</iconset>
                  </property>
                 </item>
@@ -549,7 +549,7 @@
                   <string>Trash</string>
                  </property>
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="../Icons/icons.qrc">
                    <normaloff>:/full-trash.png</normaloff>:/full-trash.png</iconset>
                  </property>
                 </item>
@@ -636,7 +636,7 @@
           </widget>
           <widget class="QWidget" name="tab_5">
            <attribute name="icon">
-            <iconset>
+            <iconset resource="../Icons/icons.qrc">
              <normaloff>:/write.png</normaloff>:/write.png</iconset>
            </attribute>
            <attribute name="title">
@@ -676,7 +676,7 @@
                     <string>All Participants</string>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="../Icons/icons.qrc">
                      <normaloff>:/heart.png</normaloff>:/heart.png</iconset>
                    </property>
                   </item>
@@ -775,7 +775,7 @@
                    <string>Gold Bug</string>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="../Icons/icons.qrc">
                     <normaloff>:/lock.png</normaloff>:/lock.png</iconset>
                   </property>
                  </widget>
@@ -828,7 +828,7 @@
                  <string>Send</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="../Icons/icons.qrc">
                   <normaloff>:/write.png</normaloff>:/write.png</iconset>
                 </property>
                </widget>
@@ -839,7 +839,7 @@
           </widget>
           <widget class="QWidget" name="tab_6">
            <attribute name="icon">
-            <iconset>
+            <iconset resource="../Icons/icons.qrc">
              <normaloff>:/database.png</normaloff>:/database.png</iconset>
            </attribute>
            <attribute name="title">
@@ -959,7 +959,7 @@
       </widget>
       <widget class="QWidget" name="tab_neighbors">
        <attribute name="icon">
-        <iconset>
+        <iconset resource="../Icons/icons.qrc">
          <normaloff>:/neighbors.png</normaloff>:/neighbors.png</iconset>
        </attribute>
        <attribute name="title">
@@ -1017,7 +1017,7 @@
                   <string>Copy Key</string>
                  </property>
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="../Icons/icons.qrc">
                    <normaloff>:/copy.png</normaloff>:/copy.png</iconset>
                  </property>
                  <property name="popupMode">
@@ -1037,7 +1037,7 @@
                   <string>Share Key</string>
                  </property>
                  <property name="icon">
-                  <iconset>
+                  <iconset resource="../Icons/icons.qrc">
                    <normaloff>:/share.png</normaloff>:/share.png</iconset>
                  </property>
                  <property name="popupMode">
@@ -1412,7 +1412,7 @@
                      <string>Add</string>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../Icons/icons.qrc">
                       <normaloff>:/add.png</normaloff>:/add.png</iconset>
                     </property>
                    </widget>
@@ -1490,7 +1490,7 @@
                      <string>Add</string>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../Icons/icons.qrc">
                       <normaloff>:/add.png</normaloff>:/add.png</iconset>
                     </property>
                    </widget>
@@ -1501,7 +1501,7 @@
                      <string>Clear</string>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../Icons/icons.qrc">
                       <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                     </property>
                    </widget>
@@ -1547,7 +1547,7 @@
       </widget>
       <widget class="QWidget" name="tab_search">
        <attribute name="icon">
-        <iconset>
+        <iconset resource="../Icons/icons.qrc">
          <normaloff>:/search.png</normaloff>:/search.png</iconset>
        </attribute>
        <attribute name="title">
@@ -1585,7 +1585,7 @@
              <string>Fetch!</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="../Icons/icons.qrc">
               <normaloff>:/search.png</normaloff>:/search.png</iconset>
             </property>
            </widget>
@@ -1620,7 +1620,7 @@
              <string>Delete</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="../Icons/icons.qrc">
               <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
             </property>
            </widget>
@@ -1667,7 +1667,7 @@
              <string>Modify</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="../Icons/icons.qrc">
               <normaloff>:/modify.png</normaloff>:/modify.png</iconset>
             </property>
            </widget>
@@ -1678,7 +1678,7 @@
       </widget>
       <widget class="QWidget" name="tab_settings">
        <attribute name="icon">
-        <iconset>
+        <iconset resource="../Icons/icons.qrc">
          <normaloff>:/settings.png</normaloff>:/settings.png</iconset>
        </attribute>
        <attribute name="title">
@@ -1701,7 +1701,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1020</width>
+             <width>975</width>
              <height>613</height>
             </rect>
            </property>
@@ -1722,7 +1722,7 @@
                       <string>Activate</string>
                      </property>
                      <property name="icon">
-                      <iconset>
+                      <iconset resource="../Icons/icons.qrc">
                        <normaloff>:/activate.png</normaloff>:/activate.png</iconset>
                      </property>
                     </widget>
@@ -1756,7 +1756,7 @@
                       <string>Deactivate</string>
                      </property>
                      <property name="icon">
-                      <iconset>
+                      <iconset resource="../Icons/icons.qrc">
                        <normaloff>:/deactivate.png</normaloff>:/deactivate.png</iconset>
                      </property>
                     </widget>
@@ -1933,7 +1933,7 @@
                          <string>Add</string>
                         </property>
                         <property name="icon">
-                         <iconset>
+                         <iconset resource="../Icons/icons.qrc">
                           <normaloff>:/add-listener.png</normaloff>:/add-listener.png</iconset>
                         </property>
                        </widget>
@@ -2070,7 +2070,7 @@
                         <string>Delete</string>
                        </property>
                        <property name="icon">
-                        <iconset>
+                        <iconset resource="../Icons/icons.qrc">
                          <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                        </property>
                       </widget>
@@ -2281,7 +2281,7 @@
                       <string>Set Passphrase</string>
                      </property>
                      <property name="icon">
-                      <iconset>
+                      <iconset resource="../Icons/icons.qrc">
                        <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
                      </property>
                     </widget>
@@ -2299,7 +2299,7 @@
                    <string>Reset Spot-On</string>
                   </property>
                   <property name="icon">
-                   <iconset>
+                   <iconset resource="../Icons/icons.qrc">
                     <normaloff>:/refresh.png</normaloff>:/refresh.png</iconset>
                   </property>
                  </widget>
@@ -2329,7 +2329,7 @@
       </widget>
       <widget class="QWidget" name="tab_cultivation">
        <attribute name="icon">
-        <iconset>
+        <iconset resource="../Icons/icons.qrc">
          <normaloff>:/urls.png</normaloff>:/urls.png</iconset>
        </attribute>
        <attribute name="title">
@@ -2349,7 +2349,7 @@
              </property>
              <widget class="QWidget" name="tab_2">
               <attribute name="icon">
-               <iconset>
+               <iconset resource="../Icons/icons.qrc">
                 <normaloff>:/down.png</normaloff>:/down.png</iconset>
               </attribute>
               <attribute name="title">
@@ -2377,7 +2377,7 @@
                     <string>&amp;Accept List</string>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="../Icons/icons.qrc">
                      <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
                    </property>
                    <property name="checked">
@@ -2391,7 +2391,7 @@
                     <string>&amp;Deny List</string>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="../Icons/icons.qrc">
                      <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                    </property>
                    <property name="checked">
@@ -2424,7 +2424,7 @@
                       <string>Add</string>
                      </property>
                      <property name="icon">
-                      <iconset>
+                      <iconset resource="../Icons/icons.qrc">
                        <normaloff>:/add-url.png</normaloff>:/add-url.png</iconset>
                      </property>
                     </widget>
@@ -2435,7 +2435,7 @@
                       <string>Delete</string>
                      </property>
                      <property name="icon">
-                      <iconset>
+                      <iconset resource="../Icons/icons.qrc">
                        <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                      </property>
                     </widget>
@@ -2477,7 +2477,7 @@
              </widget>
              <widget class="QWidget" name="tab_3">
               <attribute name="icon">
-               <iconset>
+               <iconset resource="../Icons/icons.qrc">
                 <normaloff>:/up.png</normaloff>:/up.png</iconset>
               </attribute>
               <attribute name="title">
@@ -2505,7 +2505,7 @@
                     <string>&amp;Accept List</string>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="../Icons/icons.qrc">
                      <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
                    </property>
                    <property name="checked">
@@ -2519,7 +2519,7 @@
                     <string>&amp;Deny List</string>
                    </property>
                    <property name="icon">
-                    <iconset>
+                    <iconset resource="../Icons/icons.qrc">
                      <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                    </property>
                    <property name="checked">
@@ -2552,7 +2552,7 @@
                       <string>Add</string>
                      </property>
                      <property name="icon">
-                      <iconset>
+                      <iconset resource="../Icons/icons.qrc">
                        <normaloff>:/add-url.png</normaloff>:/add-url.png</iconset>
                      </property>
                     </widget>
@@ -2563,7 +2563,7 @@
                       <string>Delete</string>
                      </property>
                      <property name="icon">
-                      <iconset>
+                      <iconset resource="../Icons/icons.qrc">
                        <normaloff>:/clear.png</normaloff>:/clear.png</iconset>
                      </property>
                     </widget>
@@ -2718,7 +2718,7 @@
                <string>Authenticate</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../Icons/icons.qrc">
                 <normaloff>:/ok.png</normaloff>:/ok.png</iconset>
               </property>
              </widget>
@@ -2840,12 +2840,6 @@
     </property>
     <addaction name="action_Quit"/>
    </widget>
-   <widget class="QMenu" name="menu_Edit">
-    <property name="title">
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="action_Log_Viewer"/>
-   </widget>
    <widget class="QMenu" name="menu_View">
     <property name="title">
      <string>&amp;View</string>
@@ -2855,18 +2849,18 @@
       <string>&amp;Icons</string>
      </property>
      <addaction name="actionNuove"/>
-     <addaction name="action_Nuvola"/>
+     <addaction name="actionNuvola"/>
     </widget>
     <addaction name="action_Documentation"/>
     <addaction name="menu_Icons"/>
+    <addaction name="action_Log_Viewer"/>
    </widget>
    <addaction name="menu_File"/>
-   <addaction name="menu_Edit"/>
    <addaction name="menu_View"/>
   </widget>
   <action name="action_Quit">
    <property name="icon">
-    <iconset>
+    <iconset resource="../Icons/icons.qrc">
      <normaloff>:/deactivate.png</normaloff>:/deactivate.png</iconset>
    </property>
    <property name="text">
@@ -2876,29 +2870,21 @@
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="action_Log_Viewer">
-   <property name="text">
-    <string>&amp;Log Viewer</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+L</string>
-   </property>
-  </action>
   <action name="action_Documentation">
    <property name="icon">
-    <iconset>
+    <iconset resource="../Icons/icons.qrc">
      <normaloff>:/documentation.png</normaloff>:/documentation.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Documentation</string>
    </property>
   </action>
-  <action name="action_Nuvola">
+  <action name="actionNuvola">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;Nuvola</string>
+    <string>Nuvola</string>
    </property>
   </action>
   <action name="actionNuove">
@@ -2910,6 +2896,14 @@
    </property>
    <property name="text">
     <string>Nuove</string>
+   </property>
+  </action>
+  <action name="action_Log_Viewer">
+   <property name="text">
+    <string>&amp;Log Viewer</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
    </property>
   </action>
  </widget>

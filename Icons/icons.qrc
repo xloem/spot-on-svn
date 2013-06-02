@@ -244,6 +244,40 @@
         <file>Logo/spoton-dalmatinerlogo.png</file>
         <file>Logo/spoton-logo-white.png</file>
         <file>Logo/spoton-logo-transparent.png</file>
+	<file>nuove/activate.png</file>
+        <file>nuove/add.png</file>
+	<file>nuove/add-listener.png</file>
+	<file>nuove/add-url.png</file>
+    	<file>nuove/away.png</file>
+	<file>nuove/busy.png</file>
+	<file>nuove/chat.png</file>
+    	<file>nuove/clear.png</file>
+	<file>nuove/copy.png</file>
+	<file>nuove/database.png</file>
+	<file>nuove/deactivate.png</file>
+	<file>nuove/documentation.png</file>
+	<file>nuove/down.png</file>
+	<file>nuove/email.png</file>
+	<file>nuove/empty-trash.png</file>
+	<file>nuove/full-trash.png</file>
+	<file>nuove/heart.png</file>
+	<file>nuove/inbox.png</file>
+	<file>nuove/information.png</file>
+	<file>nuove/lock.png</file>
+	<file>nuove/modify.png</file>
+	<file>nuove/neighbors.png</file>
+	<file>nuove/offline.png</file>
+	<file>nuove/ok.png</file>
+	<file>nuove/online.png</file>
+	<file>nuove/outbox.png</file>
+	<file>nuove/read.png</file>
+	<file>nuove/refresh.png</file>
+	<file>nuove/search.png</file>
+	<file>nuove/settings.png</file>
+	<file>nuove/share.png</file>
+	<file>nuove/up.png</file>
+	<file>nuove/urls.png</file>
+	<file>nuove/write.png</file>
         <file>Resources/spotonbutton64.ico</file>
     </qresource>
 </RCC>

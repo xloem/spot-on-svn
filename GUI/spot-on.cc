@@ -125,7 +125,7 @@ spoton::spoton(void):QMainWindow()
   connect(this,
 	  SIGNAL(iconsChanged(void)),
 	  &m_logViewer,
-	  SLOT(slotIconsChanged(void)));
+	  SLOT(slotSetIcons(void)));
   connect(m_sb.chat,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -351,6 +351,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotKeepCopy(bool)));
+  connect(m_ui.actionNuove,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotSetIcons(void)));
+  connect(m_ui.actionNuvola,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotSetIcons(void)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -5099,6 +5107,7 @@ void spoton::slotEmptyTrash(void)
     {
       m_ui.mail->clearContents();
       m_ui.mail->setRowCount(0);
+      m_ui.mailMessage->clear();
     }
 }
 
@@ -5202,5 +5211,24 @@ void spoton::slotKeepCopy(bool state)
 
 void spoton::slotSetIcons(void)
 {
+  QAction *action = qobject_cast<QAction *> (sender());
+
+  if(!action)
+    return;
+
+  for(int i = 0; i < m_ui.menu_Icons->actions().size(); i++)
+    if(action != m_ui.menu_Icons->actions().at(i))
+      m_ui.menu_Icons->actions().at(i)->setChecked(false);
+
+  QSettings settings;
+  QString iconSet("");
+
+  if(action == m_ui.actionNuove)
+    iconSet = "nuove";
+  else
+    iconSet = "nuvola";
+
+  m_settings["gui/iconSet"] = iconSet;
+  settings.setValue("gui/iconSet", iconSet);
   emit iconsChanged();
 }
