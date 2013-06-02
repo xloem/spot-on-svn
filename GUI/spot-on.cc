@@ -436,6 +436,17 @@ spoton::spoton(void):QMainWindow()
     m_settings[settings.allKeys().at(i)] = settings.value
       (settings.allKeys().at(i));
 
+  if(m_settings.value("gui/iconSet", "nuove").toString() == "nuove")
+    {
+      m_ui.menu_Icons->actions().at(0)->setChecked(true);
+      m_ui.menu_Icons->actions().at(0)->trigger();
+    }
+  else
+    {
+      m_ui.menu_Icons->actions().at(1)->setChecked(true);
+      m_ui.menu_Icons->actions().at(1)->trigger();
+    }
+
   m_sb.kernelstatus->setIcon
     (QIcon(QString(":/%1/deactivate.png").
 	   arg(m_settings.value("gui/iconSet", "nuove").toString())));
@@ -645,7 +656,6 @@ spoton::spoton(void):QMainWindow()
 	  m_ui.participants->findChildren<QAbstractButton *> ())
     button->setToolTip(tr("Broadcast"));
 
-  slotSetIcons();
   show();
 }
 
@@ -3161,12 +3171,19 @@ void spoton::slotRemoveParticipants(void)
 
 void spoton::slotSaveNodeName(void)
 {
-  m_settings["gui/nodeName"] = m_ui.nodeName->text().trimmed().
-    toUtf8();
+  QString str(m_ui.nodeName->text().trimmed());
+
+  if(str.isEmpty())
+    {
+      str = "unknown";
+      m_ui.nodeName->setText(str);
+    }
+
+  m_settings["gui/nodeName"] = str.toUtf8();
 
   QSettings settings;
 
-  settings.setValue("gui/nodeName", m_ui.nodeName->text().trimmed().toUtf8());
+  settings.setValue("gui/nodeName", str.toUtf8());
   m_ui.nodeName->selectAll();
 }
 
@@ -5328,7 +5345,8 @@ void spoton::slotSetIcons(void)
     (QIcon(QString(":/%1/clear.png").arg(iconSet)));
   m_ui.refreshMail->setIcon(QIcon(QString(":/%1/refresh.png").arg(iconSet)));
   m_ui.retrieveMail->setIcon(QIcon(QString(":/%1/down.png").arg(iconSet)));
-  m_ui.emptyTrash->setIcon(QIcon(QString(":/%1/empty-trash.png").arg(iconSet)));
+  m_ui.emptyTrash->setIcon
+    (QIcon(QString(":/%1/empty-trash.png").arg(iconSet)));
   m_ui.generateGoldBug->setIcon
     (QIcon(QString(":/%1/lock.png").arg(iconSet)));
   m_ui.sendMail->setIcon(QIcon(QString(":/%1/email.png").arg(iconSet)));
