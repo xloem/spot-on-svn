@@ -4,10 +4,10 @@
         <file>add.png</file>
 	<file>add-listener.png</file>
 	<file>add-url.png</file>
-    	<file>away.png</file>
+        <file>away.png</file>
 	<file>busy.png</file>
 	<file>chat.png</file>
-    	<file>clear.png</file>
+        <file>clear.png</file>
 	<file>copy.png</file>
 	<file>database.png</file>
 	<file>deactivate.png</file>
@@ -250,10 +250,11 @@
         <file>nuove/add.png</file>
 	<file>nuove/add-listener.png</file>
 	<file>nuove/add-url.png</file>
-    	<file>nuove/away.png</file>
+        <file>nuove/away.png</file>
 	<file>nuove/busy.png</file>
 	<file>nuove/chat.png</file>
-    	<file>nuove/clear.png</file>
+        <file>nuove/chatstatus.png</file>
+        <file>nuove/clear.png</file>
 	<file>nuove/copy.png</file>
 	<file>nuove/database.png</file>
 	<file>nuove/deactivate.png</file>
@@ -291,10 +292,11 @@
         <file>nuvola/add.png</file>
 	<file>nuvola/add-listener.png</file>
 	<file>nuvola/add-url.png</file>
-    	<file>nuvola/away.png</file>
+        <file>nuvola/away.png</file>
 	<file>nuvola/busy.png</file>
 	<file>nuvola/chat.png</file>
-    	<file>nuvola/clear.png</file>
+        <file>nuvola/chatstatus.png</file>
+        <file>nuvola/clear.png</file>
 	<file>nuvola/copy.png</file>
 	<file>nuvola/database.png</file>
 	<file>nuvola/deactivate.png</file>
