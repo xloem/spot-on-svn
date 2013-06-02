@@ -270,6 +270,8 @@
 	<file>nuove/heart.png</file>
 	<file>nuove/inbox.png</file>
 	<file>nuove/information.png</file>
+        <file>nuove/ledstatusgreen.png</file>
+        <file>nuove/ledstatusred.png</file>
 	<file>nuove/lock.png</file>
 	<file>nuove/modify.png</file>
 	<file>nuove/neighbors.png</file>
@@ -312,6 +314,8 @@
 	<file>nuvola/heart.png</file>
 	<file>nuvola/inbox.png</file>
 	<file>nuvola/information.png</file>
+        <file>nuvola/ledstatusgreen.png</file>
+        <file>nuvola/ledstatusred.png</file>
 	<file>nuvola/lock.png</file>
 	<file>nuvola/modify.png</file>
 	<file>nuvola/neighbors.png</file>

@@ -2328,6 +2328,9 @@ void spoton::slotKernelSocketState(void)
 	    "from local port %2.").
 	 arg(m_kernelSocket.peerPort()).
 	 arg(m_kernelSocket.localPort()));
+     m_sb.statuskernel->setIcon
+        (QIcon(QString(":/%1/ledstatusgreen.png").
+           arg(m_settings.value("gui/iconSet", "nuvola").toString())));
     }
   else
     {
@@ -2337,6 +2340,9 @@ void spoton::slotKernelSocketState(void)
       m_sb.kernelstatus->setToolTip
 	(tr("Not connected to the kernel. Is the kernel "
 	    "active?"));
+      m_sb.statuskernel->setIcon
+    (QIcon(QString(":/%1/ledstatusred.png").
+           arg(m_settings.value("gui/iconSet", "nuvola").toString())));
     }
 }
 
@@ -5243,10 +5249,9 @@ void spoton::slotSetIcons(void)
   m_sb.chat->setIcon(QIcon(QString(":/%1/chatstatus.png").arg(iconSet)));
   m_sb.email->setIcon(QIcon(QString(":/%1/email.png").arg(iconSet)));
   m_sb.errorlog->setIcon(QIcon(QString(":/%1/information.png").arg(iconSet)));
-  //statuskernel: if online = online.png, otherwise offline.png.
+  //statuskernel: if online = online.png, otherwise offline.png. // done.
   //statusneigbor: if online = online.png, otherwise offline.png.
   //statuslistener: if connected = online.png, otherwise offline.png.
-  //status->setIcon(QIcon(QString(":/%1/information.png").arg(iconSet)));
 
   // TAB Chat
   m_ui.saveNodeName->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
