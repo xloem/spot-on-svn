@@ -5205,6 +5205,7 @@ void spoton::slotEnabledPostOffice(bool state)
 void spoton::slotEmailStatusClicked(void)
 {
   m_sb.email->setVisible(false);
+  m_ui.folder->setCurrentIndex(0);
   m_ui.mailTab->setCurrentIndex(0);
   m_ui.tab->setCurrentIndex(1);
   slotRefreshMail();
