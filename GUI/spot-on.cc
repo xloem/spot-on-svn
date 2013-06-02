@@ -5239,9 +5239,14 @@ void spoton::slotSetIcons(void)
       settings.setValue("gui/iconSet", iconSet);
     }
 
-  m_sb.chat->setIcon(QIcon(QString(":/%1/chat.png").arg(iconSet)));
+  // Statusbar
+  m_sb.chat->setIcon(QIcon(QString(":/%1/chatstatus.png").arg(iconSet)));
   m_sb.email->setIcon(QIcon(QString(":/%1/email.png").arg(iconSet)));
   m_sb.errorlog->setIcon(QIcon(QString(":/%1/information.png").arg(iconSet)));
+  //kernelstatus->setIcon(QIcon(QString(":/%1/information.png").arg(iconSet)));
+  //listenerstatus: if online = online.png, otherwise offline.png.
+  //neighborstatus: if connected = online.png, otherwise offline.png.
+  //status->setIcon(QIcon(QString(":/%1/information.png").arg(iconSet)));
 
   // TAB Chat
   m_ui.saveNodeName->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
@@ -5283,6 +5288,8 @@ void spoton::slotSetIcons(void)
   m_ui.denylistDL->setIcon(QIcon(QString(":/%1/deny.png").arg(iconSet)));
   // TAB Login
   m_ui.passphraseButton->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
+  // POP Logview
+  //ui.clear->setIcon(QIcon(QString(":/%1/deny.png").arg(iconSet)));
   //
   emit iconsChanged();
 }
