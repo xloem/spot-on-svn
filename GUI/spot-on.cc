@@ -5243,9 +5243,9 @@ void spoton::slotSetIcons(void)
   m_sb.chat->setIcon(QIcon(QString(":/%1/chatstatus.png").arg(iconSet)));
   m_sb.email->setIcon(QIcon(QString(":/%1/email.png").arg(iconSet)));
   m_sb.errorlog->setIcon(QIcon(QString(":/%1/information.png").arg(iconSet)));
-  //kernelstatus->setIcon(QIcon(QString(":/%1/information.png").arg(iconSet)));
-  //listenerstatus: if online = online.png, otherwise offline.png.
-  //neighborstatus: if connected = online.png, otherwise offline.png.
+  //statuskernel: if online = online.png, otherwise offline.png.
+  //statusneigbor: if online = online.png, otherwise offline.png.
+  //statuslistener: if connected = online.png, otherwise offline.png.
   //status->setIcon(QIcon(QString(":/%1/information.png").arg(iconSet)));
 
   // TAB Chat

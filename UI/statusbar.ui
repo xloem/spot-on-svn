@@ -33,6 +33,26 @@
     <number>5</number>
    </property>
    <item>
+    <widget class="QToolButton" name="statuskernel">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="statusneihbor">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="status">
      <property name="text">
       <string/>
@@ -40,17 +60,21 @@
     </widget>
    </item>
    <item>
-    <spacer name="horizontalSpacer">
+    <widget class="QToolButton" name="statuslistener">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
+    </widget>
    </item>
    <item>
     <widget class="QToolButton" name="chat">
@@ -89,6 +113,19 @@
       <bool>true</bool>
      </property>
     </widget>
+   </item>
+   <item>
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
     <widget class="QToolButton" name="kernelstatus">
@@ -133,5 +170,6 @@
   <tabstop>kernelstatus</tabstop>
   <tabstop>errorlog</tabstop>
  </tabstops>
+ <resources/>
  <connections/>
 </ui>
