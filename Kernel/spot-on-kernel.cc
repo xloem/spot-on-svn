@@ -871,9 +871,11 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  SIGNAL(receivedStatusMessage(const QByteArray &,
 				       const qint64)));
   connect(neighbor,
-	  SIGNAL(retrieveMail(const QByteArray &)),
+	  SIGNAL(retrieveMail(const QByteArray &,
+			      const QByteArray &)),
 	  m_mailer,
-	  SLOT(slotRetrieveMail(const QByteArray &)));
+	  SLOT(slotRetrieveMail(const QByteArray &,
+				const QByteArray &)));
   connect(this,
 	  SIGNAL(receivedChatMessage(const QByteArray &,
 				     const qint64)),
@@ -1208,6 +1210,13 @@ void spoton_kernel::slotRetrieveMail(void)
   if(!ok)
     return;
 
+  QByteArray signature;
+
+  signature = s_crypt1->digitalSignature(publicKeyHash, &ok);
+
+  if(!ok)
+    return;
+
   QList<QByteArray> list;
 
   {
@@ -1236,6 +1245,14 @@ void spoton_kernel::slotRetrieveMail(void)
 						 publicKey,
 						 &ok).
 		 toBase64());
+	      data.append("\n");
+
+	      if(ok)
+		data.append
+		  (spoton_gcrypt::publicKeyEncrypt(signature,
+						   publicKey,
+						   &ok).
+		   toBase64());
 
 	      if(ok)
 		{

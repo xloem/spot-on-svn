@@ -2046,7 +2046,7 @@ QByteArray spoton_gcrypt::randomCipherType(void)
   return types.value(qrand() % types.size()).toLatin1();
 }
 
-QByteArray spoton_gcrypt::digitalSignature(const QByteArray &hash, bool *ok)
+QByteArray spoton_gcrypt::digitalSignature(const QByteArray &data, bool *ok)
 {
   /*
   ** We need to decipher the private key.
@@ -2158,8 +2158,8 @@ QByteArray spoton_gcrypt::digitalSignature(const QByteArray &hash, bool *ok)
   if((err = gcry_sexp_build(&data_t, 0,
 			    "(data (flags pss)(hash sha1 %b)"
 			    "(random-override %b))",
-			    hash.length(), // Our data!
-			    hash.constData(),
+			    data.length(), // Our data!
+			    data.constData(),
 			    random.length(),
 			    random.constData())) == 0 && data_t)
     {
@@ -2305,4 +2305,15 @@ QByteArray spoton_gcrypt::weakRandomBytes(const size_t size)
 		 static_cast<size_t> (random.length()),
 		 GCRY_WEAK_RANDOM);
   return random;
+}
+
+bool spoton_gcrypt::isValidSignature(const QByteArray &data,
+				     const QByteArray &signature)
+{
+  bool ok = true;
+
+  Q_UNUSED(data);
+  Q_UNUSED(signature);
+
+  return ok;
 }

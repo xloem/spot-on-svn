@@ -1298,11 +1298,11 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 
       QList<QByteArray> list(data.split('\n'));
 
-      if(list.size() != 1)
+      if(list.size() != 2)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0002(): "
-		     "received irregular data. Expecting 1 entry, "
+		     "received irregular data. Expecting 2 entries, "
 		     "received %1.").arg(list.size()));
 	  return;
 	}
@@ -1318,13 +1318,18 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
       */
 
       QByteArray publicKeyHash(list.at(0));
+      QByteArray signature(list.at(1));
       bool ok = true;
 
       publicKeyHash = spoton_kernel::s_crypt1->publicKeyDecrypt
 	(publicKeyHash, &ok);
 
       if(ok)
-	emit retrieveMail(publicKeyHash);
+	signature = spoton_kernel::s_crypt1->publicKeyDecrypt
+	  (signature, &ok);
+
+      if(ok)
+	emit retrieveMail(publicKeyHash, signature);
     }
   else
     spoton_misc::logError

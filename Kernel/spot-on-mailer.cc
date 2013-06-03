@@ -185,8 +185,15 @@ void spoton_mailer::slotTimeout(void)
     }
 }
 
-void spoton_mailer::slotRetrieveMail(const QByteArray &publicKeyHash)
+void spoton_mailer::slotRetrieveMail(const QByteArray &publicKeyHash,
+				     const QByteArray &signature)
 {
+  if(!spoton_kernel::s_crypt1)
+    return;
+
+  if(!spoton_kernel::s_crypt1->isValidSignature(publicKeyHash, signature))
+    return;
+
   if(!m_publicKeyHashes.contains(publicKeyHash))
     m_publicKeyHashes.append(publicKeyHash);
 
@@ -196,6 +203,12 @@ void spoton_mailer::slotRetrieveMail(const QByteArray &publicKeyHash)
 
 void spoton_mailer::slotRetrieveMailTimeout(void)
 {
+  /*
+  ** We're assuming that only authenticated participants
+  ** can request their e-mail. Let's hope our implementation
+  ** of digital signatures is correct.
+  */
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
       ("QSQLITE", "spoton_mailer");
@@ -246,12 +259,6 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 	      }
 	    else
 	      m_publicKeyHashes.takeFirst();
-
-	    /*
-	    ** Mail delivery is not absolute. We should not delete
-	    ** letters here. Why? We may have letters that were delivered
-	    ** to forged participants.
-	    */
 
 	    QSqlQuery deleteQuery(db);
 

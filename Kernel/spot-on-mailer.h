@@ -45,7 +45,8 @@ class spoton_mailer: public QObject
   QTimer m_timer;
 
  private slots:
-  void slotRetrieveMail(const QByteArray &publicKeyHash);
+  void slotRetrieveMail(const QByteArray &publicKeyHash,
+			const QByteArray &signature);
   void slotRetrieveMailTimeout(void);
   void slotTimeout(void);
 

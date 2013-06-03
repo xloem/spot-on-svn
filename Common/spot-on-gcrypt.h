@@ -91,14 +91,15 @@ class spoton_gcrypt
 		const QString &id);
   ~spoton_gcrypt();
   QByteArray decrypted(const QByteArray &data, bool *ok);
-  QByteArray digitalSignature(const QByteArray &hash,
-			      bool *ok);
+  QByteArray digitalSignature(const QByteArray &data, bool *ok);
   QByteArray encrypted(const QByteArray &data, bool *ok);
   QByteArray keyedHash(const QByteArray &data, bool *ok);
   QByteArray publicKey(bool *ok);
   QByteArray publicKeyDecrypt(const QByteArray &data, bool *ok);
   QByteArray publicKeyHash(bool *ok);
   QString cipherType(void) const;
+  bool isValidSignature(const QByteArray &data,
+			const QByteArray &signature);
   char *passphrase(void) const;
   char *symmetricKey(void) const;
   size_t passphraseLength(void) const;
