@@ -966,3 +966,33 @@ QString spoton_misc::countryCodeFromName(const QString &country)
 
   return code;
 }
+
+QByteArray spoton_misc::publicKeyFromHash(const QByteArray &publicKeyHash)
+{
+  QByteArray publicKey;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT public_key "
+		      "FROM friends_public_keys WHERE "
+		      "public_key_hash = ?");
+	query.bindValue(0, publicKeyHash.toBase64());
+
+	if(query.exec())
+	  if(query.next())
+	    publicKey = query.value(0).toByteArray();
+      }
+  }
+
+  QSqlDatabase::removeDatabase("spoton_misc");
+  return publicKey;
+}

@@ -188,10 +188,22 @@ void spoton_mailer::slotTimeout(void)
 void spoton_mailer::slotRetrieveMail(const QByteArray &publicKeyHash,
 				     const QByteArray &signature)
 {
+  /*
+  ** We must locate the public key that's associated with the provided
+  ** public key hash.
+  */
+
+  QByteArray publicKey(spoton_misc::publicKeyFromHash(publicKeyHash));
+
+  if(publicKey.isEmpty())
+    return;
+
   if(!spoton_kernel::s_crypt1)
     return;
 
-  if(!spoton_kernel::s_crypt1->isValidSignature(publicKeyHash, signature))
+  if(!spoton_kernel::s_crypt1->isValidSignature(publicKeyHash,
+						publicKey,
+						signature))
     return;
 
   if(!m_publicKeyHashes.contains(publicKeyHash))

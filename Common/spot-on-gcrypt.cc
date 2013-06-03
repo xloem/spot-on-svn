@@ -2308,11 +2308,13 @@ QByteArray spoton_gcrypt::weakRandomBytes(const size_t size)
 }
 
 bool spoton_gcrypt::isValidSignature(const QByteArray &data,
+				     const QByteArray &publicKey,
 				     const QByteArray &signature)
 {
   bool ok = true;
 
   Q_UNUSED(data);
+  Q_UNUSED(publicKey);
   Q_UNUSED(signature);
 
   return ok;

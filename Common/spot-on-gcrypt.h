@@ -73,6 +73,9 @@ class spoton_gcrypt
   static QByteArray weakRandomBytes(const size_t size);
   static QStringList cipherTypes(void);
   static QStringList hashTypes(void);
+  static bool isValidSignature(const QByteArray &data,
+			       const QByteArray &publicKey,
+			       const QByteArray &signature);
   static bool passphraseSet(void);
   static size_t cipherKeyLength(const QByteArray &cipherType);
   static void reencodeRSAKeys(const QString &newCipher,
@@ -98,8 +101,6 @@ class spoton_gcrypt
   QByteArray publicKeyDecrypt(const QByteArray &data, bool *ok);
   QByteArray publicKeyHash(bool *ok);
   QString cipherType(void) const;
-  bool isValidSignature(const QByteArray &data,
-			const QByteArray &signature);
   char *passphrase(void) const;
   char *symmetricKey(void) const;
   size_t passphraseLength(void) const;
