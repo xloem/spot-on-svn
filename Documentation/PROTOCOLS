@@ -78,6 +78,7 @@ Echoed? Yes
 Message Type ("0002") (Plaintext)
 TTL (Plaintext)
 0 - Requester's Sha-512 Hash (Base-64) (Ciphertext, PK)
+1 - Requester's Signature (Base-64) (Ciphertext, PK)
 
 Greetings #1, #2
 Echoed? No

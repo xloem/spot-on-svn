@@ -243,14 +243,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSaveNodeName(void)));
-  connect(m_ui.showOnlyConnectedNeighbors,
-	  SIGNAL(toggled(bool)),
-	  this,
-	  SLOT(slotOnlyConnectedNeighborsToggled(bool)));
-  connect(m_ui.showOnlyOnlineListeners,
-	  SIGNAL(toggled(bool)),
-	  this,
-	  SLOT(slotOnlyOnlineListenersToggled(bool)));
   connect(m_ui.scrambler,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -351,7 +343,7 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotKeepCopy(bool)));
-  connect(m_ui.actionNuove,
+  connect(m_ui.actionNouve,
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotSetIcons(void)));
@@ -394,6 +386,8 @@ spoton::spoton(void):QMainWindow()
   m_sb.kernelstatus->setToolTip
     (tr("Not connected to the kernel. Is the kernel "
 	"active?"));
+  m_sb.listeners->setToolTip(tr("Listeners are offline."));
+  m_sb.neighbors->setToolTip(tr("Neighbors are offline."));
 
   QMenu *menu = new QMenu(this);
 
@@ -436,7 +430,7 @@ spoton::spoton(void):QMainWindow()
     m_settings[settings.allKeys().at(i)] = settings.value
       (settings.allKeys().at(i));
 
-  if(m_settings.value("gui/iconSet", "nuove").toString() == "nuove")
+  if(m_settings.value("gui/iconSet", "nouve").toString() == "nouve")
     {
       m_ui.menu_Icons->actions().at(0)->setChecked(true);
       m_ui.menu_Icons->actions().at(0)->trigger();
@@ -449,7 +443,13 @@ spoton::spoton(void):QMainWindow()
 
   m_sb.kernelstatus->setIcon
     (QIcon(QString(":/%1/deactivate.png").
-	   arg(m_settings.value("gui/iconSet", "nuove").toString())));
+	   arg(m_settings.value("gui/iconSet", "nouve").toString())));
+  m_sb.listeners->setIcon
+    (QIcon(QString(":/%1/status-offline.png").
+	   arg(m_settings.value("gui/iconSet", "nouve").toString())));
+  m_sb.neighbors->setIcon
+    (QIcon(QString(":/%1/status-offline.png").
+	   arg(m_settings.value("gui/iconSet", "nouve").toString())));
 
   if(spoton_misc::isGnome())
     setGeometry(m_settings.value("gui/geometry").toRect());
@@ -508,10 +508,6 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/saveCopy", true).toBool());
   m_ui.scrambler->setChecked
     (m_settings.value("gui/scramblerEnabled", false).toBool());
-  m_ui.showOnlyConnectedNeighbors->setChecked
-    (m_settings.value("gui/showOnlyConnectedNeighbors", false).toBool());
-  m_ui.showOnlyOnlineListeners->setChecked
-    (m_settings.value("gui/showOnlyOnlineListeners", false).toBool());
 
   /*
   ** Please don't translate n/a.
@@ -1071,6 +1067,8 @@ void spoton::slotPopulateListeners(void)
   else
     m_listenersLastModificationTime = QDateTime();
 
+  int active = 0;
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
@@ -1109,15 +1107,12 @@ void spoton::slotPopulateListeners(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec(QString("SELECT "
-			      "status_control, status, "
-			      "ip_address, port, scope_id, protocol, "
-			      "external_ip_address, external_port, "
-			      "connections, maximum_clients, OID "
-			      "FROM listeners "
-			      "%1").
-		      arg(m_ui.showOnlyOnlineListeners->isChecked() ?
-			  "WHERE status = 'online'" : "")))
+	if(query.exec("SELECT "
+		      "status_control, status, "
+		      "ip_address, port, scope_id, protocol, "
+		      "external_ip_address, external_port, "
+		      "connections, maximum_clients, OID "
+		      "FROM listeners"))
 	  {
 	    row = 0;
 
@@ -1135,8 +1130,11 @@ void spoton::slotPopulateListeners(void)
 		      {
 			check = new QCheckBox();
 
-			if(query.value(0) == "online")
-			  check->setChecked(true);
+			if(query.value(1) == "online")
+			  {
+			    active += 1;
+			    check->setChecked(true);
+			  }
 
 			check->setProperty("oid", query.value(10));
 			check->setProperty("table_row", row);
@@ -1254,6 +1252,22 @@ void spoton::slotPopulateListeners(void)
   }
 
   QSqlDatabase::removeDatabase("spoton");
+
+  if(active > 0)
+    {
+      m_sb.listeners->setIcon
+	(QIcon(QString(":/%1/status-online.png").
+	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
+      m_sb.listeners->setToolTip
+	(tr("There is (are) %1 active listener(s).").arg(active));
+    }
+  else
+    {
+      m_sb.listeners->setIcon
+	(QIcon(QString(":/%1/status-offline.png").
+	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
+      m_sb.listeners->setToolTip(tr("Listeners are offline."));
+    }
 }
 
 void spoton::slotPopulateNeighbors(void)
@@ -1273,6 +1287,8 @@ void spoton::slotPopulateNeighbors(void)
     }
   else
     m_neighborsLastModificationTime = QDateTime();
+
+  int active = 0;
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
@@ -1313,18 +1329,15 @@ void spoton::slotPopulateNeighbors(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec(QString("SELECT sticky, UPPER(uuid), status, "
-			      "status_control, "
-			      "local_ip_address, local_port, "
-			      "external_ip_address, external_port, "
-			      "country, "
-			      "remote_ip_address, "
-			      "remote_port, scope_id, protocol, "
-			      "proxy_hostname, proxy_port, OID "
-			      "FROM neighbors "
-			      "%1").
-		      arg(m_ui.showOnlyConnectedNeighbors->isChecked() ?
-			  "WHERE status = 'connected'" : "")))
+	if(query.exec("SELECT sticky, UPPER(uuid), status, "
+		      "status_control, "
+		      "local_ip_address, local_port, "
+		      "external_ip_address, external_port, "
+		      "country, "
+		      "remote_ip_address, "
+		      "remote_port, scope_id, protocol, "
+		      "proxy_hostname, proxy_port, OID "
+		      "FROM neighbors"))
 	  {
 	    QString localIp("");
 	    QString localPort("");
@@ -1362,6 +1375,12 @@ void spoton::slotPopulateNeighbors(void)
 		for(int i = 1; i < query.record().count(); i++)
 		  {
 		    QTableWidgetItem *item = 0;
+
+		    if(i == 2)
+		      {
+			if(query.value(i).toString() == "connected")
+			  active += 1;
+		      }
 
 		    if(i == 6 || (i >= 8 && i <= 11) || (i >= 13 && i <= 14))
 		      {
@@ -1450,6 +1469,23 @@ void spoton::slotPopulateNeighbors(void)
   }
 
   QSqlDatabase::removeDatabase("spoton");
+
+  if(active > 0)
+    {
+      m_sb.neighbors->setIcon
+	(QIcon(QString(":/%1/status-online.png").
+	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
+      m_sb.neighbors->setToolTip
+	(tr("There is (are) %1 connected neighbor(s).").
+	 arg(active));
+    }
+  else
+    {
+      m_sb.neighbors->setIcon
+	(QIcon(QString(":/%1/status-offline.png").
+	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
+      m_sb.neighbors->setToolTip(tr("Neighbors are offline."));
+    }
 }
 
 void spoton::slotActivateKernel(void)
@@ -1632,10 +1668,6 @@ void spoton::saveSettings(void)
 		    m_ui.neighborsVerticalSplitter->saveState());
   settings.setValue("gui/readVerticalSplitter",
 		    m_ui.readVerticalSplitter->saveState());
-  settings.setValue("gui/showOnlyConnectedNeighbors",
-		    m_ui.showOnlyConnectedNeighbors->isChecked());
-  settings.setValue("gui/showOnlyOnlineListeners",
-		    m_ui.showOnlyOnlineListeners->isChecked());
 }
 
 void spoton::closeEvent(QCloseEvent *event)
@@ -2274,12 +2306,12 @@ void spoton::slotShowContextMenu(const QPoint &point)
   if(m_ui.neighbors == sender())
     {
       menu.addAction(QIcon(QString(":/%1/share.png").
-			   arg(m_settings.value("gui/iconSet", "nuove").
+			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
 		     tr("Share &Messaging Public Key"),
 		     this, SLOT(slotSharePublicKey(void)));
       menu.addAction(QIcon(QString(":%1//share.png").
-			   arg(m_settings.value("gui/iconSet", "nuove").
+			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
 		     tr("Share &URL Public Key"),
 		     this, SLOT(slotShareURLPublicKey(void)));
@@ -2290,7 +2322,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotDisconnectNeighbor(void)));
       menu.addSeparator();
       menu.addAction(QIcon(QString(":/%1/clear.png").
-			   arg(m_settings.value("gui/iconSet", "nuove").
+			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
 		     tr("&Delete"),
 		     this, SLOT(slotDeleteNeighbor(void)));
@@ -2311,7 +2343,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
     {
       QAction *action = menu.addAction
 	(QIcon(QString(":/%1/add.png").
-	       arg(m_settings.value("gui/iconSet", "nuove").toString())),
+	       arg(m_settings.value("gui/iconSet", "nouve").toString())),
 	 tr("&Add participant as friend."),
 	 this, SLOT(slotSharePublicKeyWithParticipant(void)));
       QTableWidgetItem *item = m_ui.participants->itemAt(point);
@@ -2322,14 +2354,14 @@ void spoton::slotShowContextMenu(const QPoint &point)
 	action->setEnabled(false);
 
       menu.addAction(QIcon(QString(":/%1/copy.png").
-			   arg(m_settings.value("gui/iconSet", "nuove").
+			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
 		     tr("&Copy Repleo to the clipboard buffer."),
 		     this, SLOT(slotCopyFriendshipBundle(void)));
       menu.addAction(tr("&Generate random Gemini (AES-256)."),
 		     this, SLOT(slotGenerateGeminiInChat(void)));
       menu.addAction(QIcon(QString(":/%1/clear.png").
-			   arg(m_settings.value("gui/iconSet", "nuove").
+			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
 		     tr("&Remove"),
 		     this, SLOT(slotRemoveParticipants(void)));
@@ -2344,7 +2376,7 @@ void spoton::slotKernelSocketState(void)
       sendKeyToKernel();
       m_sb.kernelstatus->setIcon
 	(QIcon(QString(":/%1/activate.png").
-	       arg(m_settings.value("gui/iconSet", "nuove").toString())));
+	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
       m_sb.kernelstatus->setToolTip
 	(tr("Connected to the kernel on port %1 "
 	    "from local port %2.").
@@ -2355,7 +2387,7 @@ void spoton::slotKernelSocketState(void)
     {
       m_sb.kernelstatus->setIcon
 	(QIcon(QString(":/%1/deactivate.png").
-	       arg(m_settings.value("gui/iconSet", "nuove").toString())));
+	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
       m_sb.kernelstatus->setToolTip
 	(tr("Not connected to the kernel. Is the kernel "
 	    "active?"));
@@ -2806,7 +2838,7 @@ void spoton::slotPopulateParticipants(void)
 			      item->setIcon
 				(QIcon(QString(":/%1/away.png").
 				       arg(m_settings.value("gui/iconSet",
-							    "nuove").
+							    "nouve").
 					   toString())));
 			      item->setToolTip(tr("Your friend %1 is away.").
 					       arg(item->text()));
@@ -2816,7 +2848,7 @@ void spoton::slotPopulateParticipants(void)
 			      item->setIcon
 				(QIcon(QString(":/%1/busy.png").
 				       arg(m_settings.value("gui/iconSet",
-							    "nuove").
+							    "nouve").
 					   toString())));
 			      item->setToolTip(tr("Your friend %1 is busy.").
 					       arg(item->text()));
@@ -2826,7 +2858,7 @@ void spoton::slotPopulateParticipants(void)
 			      item->setIcon
 				(QIcon(QString(":/%1/offline.png").
 				       arg(m_settings.value("gui/iconSet",
-							    "nuove").
+							    "nouve").
 					   toString())));
 			      item->setToolTip
 				(tr("Your friend %1 is offline.").
@@ -2837,7 +2869,7 @@ void spoton::slotPopulateParticipants(void)
 			      item->setIcon
 				(QIcon(QString(":/%1/online.png").
 				       arg(m_settings.value("gui/iconSet",
-							    "nuove").
+							    "nouve").
 					   toString())));
 			      item->setToolTip(tr("User %1 is online.").
 					       arg(item->text()));
@@ -2852,7 +2884,7 @@ void spoton::slotPopulateParticipants(void)
 			  item->setIcon
 			    (QIcon(QString(":/%1/add.png").
 				   arg(m_settings.value("gui/iconSet",
-							"nuove").
+							"nouve").
 				       toString())));
 			  item->setToolTip
 			    (tr("User %1 requests your friendship.").
@@ -3206,26 +3238,6 @@ void spoton::highlightKernelPath(void)
 
   palette.setColor(m_ui.kernelPath->backgroundRole(), color);
   m_ui.kernelPath->setPalette(palette);
-}
-
-void spoton::slotOnlyConnectedNeighborsToggled(bool state)
-{
-  m_settings["gui/showOnlyConnectedNeighbors"] = state;
-
-  QSettings settings;
-
-  settings.setValue("gui/showOnlyConnectedNeighbors", state);
-  m_neighborsLastModificationTime = QDateTime();
-}
-
-void spoton::slotOnlyOnlineListenersToggled(bool state)
-{
-  m_settings["gui/showOnlyOnlineListeners"] = state;
-
-  QSettings settings;
-
-  settings.setValue("gui/showOnlyOnlineListeners", state);
-  m_listenersLastModificationTime = QDateTime();
 }
 
 void spoton::slotKeepOnlyUserDefinedNeighbors(bool state)
@@ -4719,6 +4731,8 @@ void spoton::slotRefreshMail(void)
 	QSqlQuery query(db);
 	int row = 0;
 
+	query.setForwardOnly(true);
+
 	if(query.exec(QString("SELECT date, receiver_sender, status, "
 			      "subject, "
 			      "message, OID FROM folders WHERE "
@@ -4758,7 +4772,7 @@ void spoton::slotRefreshMail(void)
 		      item->setIcon(QIcon(QString(":/%1/email.png").
 					  arg(m_settings.
 					      value("gui/iconSet",
-						    "nuove").toString())));
+						    "nouve").toString())));
 		  }
 		else
 		  item = new QTableWidgetItem(query.value(i).toString());
@@ -4801,6 +4815,8 @@ void spoton::slotRefreshPostOffice(void)
 
 	QSqlQuery query(db);
 	int row = 0;
+
+	query.setForwardOnly(true);
 
 	if(query.exec("SELECT date_received, "
 		      "message_bundle, recipient_hash "
@@ -5280,7 +5296,7 @@ void spoton::slotKeepCopy(bool state)
 void spoton::slotSetIcons(void)
 {
   QAction *action = qobject_cast<QAction *> (sender());
-  QString iconSet("nuove");
+  QString iconSet("nouve");
 
   if(action)
     {
@@ -5295,8 +5311,8 @@ void spoton::slotSetIcons(void)
 
       QSettings settings;
 
-      if(action == m_ui.actionNuove)
-	iconSet = "nuove";
+      if(action == m_ui.actionNouve)
+	iconSet = "nouve";
       else
 	iconSet = "nuvola";
 
@@ -5305,8 +5321,15 @@ void spoton::slotSetIcons(void)
     }
 
   /*
-  ** Kernel status icons are prepared elsewhere.
+  ** Kernel, listeners, and neighbors icons are prepared elsewhere.
   */
+
+  // Generic
+
+  m_ui.action_Documentation->setIcon
+    (QIcon(QString(":/%1/documentation.png").arg(iconSet)));
+  m_ui.action_Log_Viewer->setIcon
+    (QIcon(QString(":/%1/information.png").arg(iconSet)));
 
   QStringList list;
 
@@ -5406,5 +5429,8 @@ void spoton::slotSetIcons(void)
   // Login
 
   m_ui.passphraseButton->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
+  m_listenersLastModificationTime = QDateTime();
+  m_neighborsLastModificationTime = QDateTime();
+  m_participantsLastModificationTime = QDateTime();
   emit iconsChanged();
 }

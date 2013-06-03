@@ -82,6 +82,8 @@ void spoton_mailer::slotTimeout(void)
 	** Send all messages from the sent folder.
 	*/
 
+	query.setForwardOnly(true);
+
 	if(query.exec("SELECT goldbug, message, participant_oid, status, "
 		      "subject, OID FROM folders WHERE folder_index = 1"))
 	  while(query.next())
@@ -130,6 +132,7 @@ void spoton_mailer::slotTimeout(void)
 		{
 		  QSqlQuery query(db2);
 
+		  query.setForwardOnly(true);
 		  query.prepare("SELECT public_key FROM "
 				"friends_public_keys "
 				"WHERE OID = ?");
@@ -205,6 +208,7 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 	QByteArray publicKeyHash(m_publicKeyHashes.first());
 	QSqlQuery query(db);
 
+	query.setForwardOnly(true);
 	query.prepare("SELECT message_bundle FROM post_office "
 		      "WHERE recipient_hash = ?");
 	query.bindValue(0, publicKeyHash.toBase64());
@@ -244,7 +248,9 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 	      m_publicKeyHashes.takeFirst();
 
 	    /*
-	    ** Mail delivery is not absolute.
+	    ** Mail delivery is not absolute. We should not delete
+	    ** letters here. Why? We may have letters that were delivered
+	    ** to forged participants.
 	    */
 
 	    QSqlQuery deleteQuery(db);

@@ -210,40 +210,42 @@
         <file>Logo/spoton-dalmatinerlogo.png</file>
         <file>Logo/spoton-logo-transparent.png</file>
         <file>Resources/spotonbutton64.ico</file>
-	<file>nuove/activate.png</file>
-        <file>nuove/add.png</file>
-	<file>nuove/add-listener.png</file>
-	<file>nuove/add-url.png</file>
-    	<file>nuove/away.png</file>
-	<file>nuove/busy.png</file>
-	<file>nuove/chat.png</file>
-    	<file>nuove/clear.png</file>
-	<file>nuove/copy.png</file>
-	<file>nuove/database.png</file>
-	<file>nuove/deactivate.png</file>
-	<file>nuove/documentation.png</file>
-	<file>nuove/down.png</file>
-	<file>nuove/email.png</file>
-	<file>nuove/empty-trash.png</file>
-	<file>nuove/full-trash.png</file>
-	<file>nuove/heart.png</file>
-	<file>nuove/inbox.png</file>
-	<file>nuove/information.png</file>
-	<file>nuove/lock.png</file>
-	<file>nuove/modify.png</file>
-	<file>nuove/neighbors.png</file>
-	<file>nuove/offline.png</file>
-	<file>nuove/ok.png</file>
-	<file>nuove/online.png</file>
-	<file>nuove/outbox.png</file>
-	<file>nuove/read.png</file>
-	<file>nuove/refresh.png</file>
-	<file>nuove/search.png</file>
-	<file>nuove/settings.png</file>
-	<file>nuove/share.png</file>
-	<file>nuove/up.png</file>
-	<file>nuove/urls.png</file>
-	<file>nuove/write.png</file>
+	<file>nouve/activate.png</file>
+        <file>nouve/add.png</file>
+	<file>nouve/add-listener.png</file>
+	<file>nouve/add-url.png</file>
+    	<file>nouve/away.png</file>
+	<file>nouve/busy.png</file>
+	<file>nouve/chat.png</file>
+    	<file>nouve/clear.png</file>
+	<file>nouve/copy.png</file>
+	<file>nouve/database.png</file>
+	<file>nouve/deactivate.png</file>
+	<file>nouve/documentation.png</file>
+	<file>nouve/down.png</file>
+	<file>nouve/email.png</file>
+	<file>nouve/empty-trash.png</file>
+	<file>nouve/full-trash.png</file>
+	<file>nouve/heart.png</file>
+	<file>nouve/inbox.png</file>
+	<file>nouve/information.png</file>
+	<file>nouve/lock.png</file>
+	<file>nouve/modify.png</file>
+	<file>nouve/neighbors.png</file>
+	<file>nouve/offline.png</file>
+	<file>nouve/ok.png</file>
+	<file>nouve/online.png</file>
+	<file>nouve/outbox.png</file>
+	<file>nouve/read.png</file>
+	<file>nouve/refresh.png</file>
+	<file>nouve/search.png</file>
+	<file>nouve/settings.png</file>
+	<file>nouve/share.png</file>
+	<file>nouve/status-offline.png</file>
+	<file>nouve/status-online.png</file>
+	<file>nouve/up.png</file>
+	<file>nouve/urls.png</file>
+	<file>nouve/write.png</file>
 	<file>nuvola/activate.png</file>
         <file>nuvola/add.png</file>
 	<file>nuvola/add-listener.png</file>
@@ -275,6 +277,8 @@
 	<file>nuvola/search.png</file>
 	<file>nuvola/settings.png</file>
 	<file>nuvola/share.png</file>
+	<file>nuvola/status-offline.png</file>
+	<file>nuvola/status-online.png</file>
 	<file>nuvola/up.png</file>
 	<file>nuvola/urls.png</file>
 	<file>nuvola/write.png</file>

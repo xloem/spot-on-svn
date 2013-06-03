@@ -7,7 +7,10 @@ Completed Items
 3.     If the passphrase is not set, disable all other tabs. Also
        disable the kernel and listeners group boxes.
 4.     Sticky needs a tooltip describing the feature.
-5.     Add a check box to hide all disconnected neighbors.
+5.     Add a check box to hide all disconnected neighbors. This was
+       completed, however, it was removed on 06/03/2013. The option
+       may cause confusion when a new neighbor is defined if a uniqueness
+       error arises. Similar confusion may arise for listeners.
 6.     Improve the IP input masks. Removed the underscores so that the
        spacebar may be used. Attached returnPressed() signals to
        listener and neighbor IP widgets.

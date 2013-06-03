@@ -132,8 +132,6 @@ class spoton: public QMainWindow
   void slotMailTabChanged(int index);
   void slotMaximumClientsChanged(int index);
   void slotNeighborCheckChange(int state);
-  void slotOnlyConnectedNeighborsToggled(bool state);
-  void slotOnlyOnlineListenersToggled(bool state);
   void slotPopulateCountries(void);
   void slotPopulateListeners(void);
   void slotPopulateNeighbors(void);

@@ -73,7 +73,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>973</width>
-                <height>573</height>
+                <height>574</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -904,19 +904,6 @@
                 </widget>
                </item>
                <item>
-                <widget class="QCheckBox" name="showOnlyConnectedNeighbors">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>Show Only &amp;Connected Neighbors</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
                 <widget class="QToolButton" name="toolButtonCopytoClipboard">
                  <property name="toolTip">
                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy my name and specified public key to the clipboard buffer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1569,8 +1556,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>939</width>
-             <height>538</height>
+             <width>973</width>
+             <height>574</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -1808,30 +1795,6 @@
                     </item>
                    </layout>
                   </widget>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_10">
-                   <item>
-                    <widget class="QCheckBox" name="showOnlyOnlineListeners">
-                     <property name="text">
-                      <string>Show Only &amp;Online Listeners</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_25">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
                  </item>
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout">
@@ -2627,7 +2590,7 @@
      <x>0</x>
      <y>0</y>
      <width>995</width>
-     <height>25</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2644,7 +2607,7 @@
      <property name="title">
       <string>&amp;Icons</string>
      </property>
-     <addaction name="actionNuove"/>
+     <addaction name="actionNouve"/>
      <addaction name="actionNuvola"/>
     </widget>
     <addaction name="action_Documentation"/>
@@ -2675,12 +2638,12 @@
     <string>Nuvola</string>
    </property>
   </action>
-  <action name="actionNuove">
+  <action name="actionNouve">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Nuove</string>
+    <string>Nouve</string>
    </property>
   </action>
   <action name="action_Log_Viewer">
@@ -2736,7 +2699,6 @@
   <tabstop>postoffice</tabstop>
   <tabstop>days</tabstop>
   <tabstop>keepOnlyUserDefinedNeighbors</tabstop>
-  <tabstop>showOnlyConnectedNeighbors</tabstop>
   <tabstop>toolButtonCopytoClipboard</tabstop>
   <tabstop>toolButtonMakeFriends</tabstop>
   <tabstop>neighbors</tabstop>
@@ -2778,7 +2740,6 @@
   <tabstop>listenerScopeId</tabstop>
   <tabstop>ipv6Listener</tabstop>
   <tabstop>addListener</tabstop>
-  <tabstop>showOnlyOnlineListeners</tabstop>
   <tabstop>listeners</tabstop>
   <tabstop>deleteListener</tabstop>
   <tabstop>deleteAllListeners</tabstop>

@@ -765,6 +765,8 @@ QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
 	  {
 	    QSqlQuery query(db);
 
+	    query.setForwardOnly(true);
+
 	    if(query.exec("SELECT gemini FROM friends_public_keys WHERE "
 			  "gemini IS NOT NULL"))
 	      while(query.next())
