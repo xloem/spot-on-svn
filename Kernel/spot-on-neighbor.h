@@ -123,6 +123,7 @@ class spoton_neighbor: public QTcpSocket
   void slotReceivedChatMessage(const QByteArray &data, const qint64 id);
   void slotReceivedMailMessage(const QByteArray &data, const qint64 id);
   void slotReceivedStatusMessage(const QByteArray &data, const qint64 id);
+  void slotRetrieveMail(const QByteArray &data, const qint64 id);
   void slotRetrieveMail(const QList<QByteArray> &list);
   void slotSendKeepAlive(void);
   void slotSendMail(const QList<QPair<QByteArray, qint64> > &list);
@@ -141,6 +142,7 @@ class spoton_neighbor: public QTcpSocket
   void receivedStatusMessage(const QByteArray &data, const qint64 id);
   void retrieveMail(const QByteArray &publicKeyHash,
 		    const QByteArray &signature);
+  void retrieveMail(const QByteArray &data, const qint64 id);
 };
 
 #endif

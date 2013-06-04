@@ -876,6 +876,12 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  m_mailer,
 	  SLOT(slotRetrieveMail(const QByteArray &,
 				const QByteArray &)));
+  connect(neighbor,
+	  SIGNAL(retrieveMail(const QByteArray &,
+			      const qint64)),
+	  this,
+	  SIGNAL(retrieveMail(const QByteArray &,
+			      const qint64)));
   connect(this,
 	  SIGNAL(receivedChatMessage(const QByteArray &,
 				     const qint64)),
@@ -894,6 +900,12 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  neighbor,
 	  SLOT(slotReceivedStatusMessage(const QByteArray &,
 					 const qint64)));
+  connect(this,
+	  SIGNAL(retrieveMail(const QByteArray &,
+			      const qint64)),
+	  neighbor,
+	  SLOT(slotRetrieveMail(const QByteArray &,
+				const qint64)));
   connect(this,
 	  SIGNAL(retrieveMail(const QList<QByteArray> &)),
 	  neighbor,
@@ -1210,9 +1222,7 @@ void spoton_kernel::slotRetrieveMail(void)
   if(!ok)
     return;
 
-  QByteArray signature;
-
-  signature = s_crypt1->digitalSignature(publicKeyHash, &ok);
+  QByteArray signature(s_crypt1->digitalSignature(publicKeyHash, &ok));
 
   if(!ok)
     return;
@@ -1239,20 +1249,77 @@ void spoton_kernel::slotRetrieveMail(void)
 	      QByteArray data;
 	      QByteArray publicKey
 		(query.value(0).toByteArray());
+	      QByteArray symmetricKey;
+	      QByteArray symmetricKeyAlgorithm
+		(spoton_gcrypt::randomCipherType());
+	      bool ok = true;
+	      size_t symmetricKeyLength = spoton_gcrypt::cipherKeyLength
+		(symmetricKeyAlgorithm);
+
+	      if(symmetricKeyLength > 0)
+		{
+		  symmetricKey.resize(symmetricKeyLength);
+		  symmetricKey = spoton_gcrypt::strongRandomBytes
+		    (symmetricKey.length());
+		}
+	      else
+		{
+		  spoton_misc::logError
+		    ("spoton_kernel::slotRetrieveMail(): "
+		     "cipherKeyLength() failure.");
+		  continue;
+		}
 
 	      data.append
-		(spoton_gcrypt::publicKeyEncrypt(publicKeyHash,
+		(spoton_gcrypt::publicKeyEncrypt(symmetricKey,
 						 publicKey,
 						 &ok).
 		 toBase64());
 	      data.append("\n");
 
 	      if(ok)
-		data.append
-		  (spoton_gcrypt::publicKeyEncrypt(signature,
-						   publicKey,
-						   &ok).
-		   toBase64());
+		{
+		  data.append
+		    (spoton_gcrypt::publicKeyEncrypt(symmetricKeyAlgorithm,
+						     publicKey,
+						     &ok).
+		     toBase64());
+		  data.append("\n");
+		}
+
+	      if(ok)
+		{
+		  QByteArray messageDigest;
+		  spoton_gcrypt crypt(symmetricKeyAlgorithm,
+				      QString("sha512"),
+				      QByteArray(),
+				      symmetricKey,
+				      0,
+				      0,
+				      QString(""));
+
+		  data.append(crypt.encrypted(publicKeyHash, &ok).
+			      toBase64());
+		  data.append("\n");
+
+		  if(ok)
+		    {
+		      data.append(crypt.encrypted(signature, &ok).
+				  toBase64());
+		      data.append("\n");
+		    }
+
+		  if(ok)
+		    messageDigest = crypt.keyedHash
+		      (symmetricKey +
+		       symmetricKeyAlgorithm +
+		       publicKeyHash +
+		       signature, &ok);
+
+		  if(ok)
+		    data.append(crypt.encrypted(messageDigest, &ok).
+				toBase64());
+		}
 
 	      if(ok)
 		{

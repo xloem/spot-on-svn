@@ -549,6 +549,8 @@ spoton::spoton(void):QMainWindow()
   if(spoton_gcrypt::passphraseSet())
     {
       m_sb.kernelstatus->setEnabled(false);
+      m_sb.listeners->setEnabled(false);
+      m_sb.neighbors->setEnabled(false);
       m_ui.passphrase1->setText("0000000000");
       m_ui.passphrase2->setText("0000000000");
       m_ui.rsaKeySize->setEnabled(false);
@@ -569,6 +571,8 @@ spoton::spoton(void):QMainWindow()
   else
     {
       m_sb.kernelstatus->setEnabled(false);
+      m_sb.listeners->setEnabled(false);
+      m_sb.neighbors->setEnabled(false);
       m_ui.passphrase->setEnabled(false);
       m_ui.passphraseButton->setEnabled(false);
       m_ui.passphraseLabel->setEnabled(false);
@@ -2101,6 +2105,8 @@ void spoton::slotSetPassphrase(void)
 	}
 
       m_sb.kernelstatus->setEnabled(true);
+      m_sb.listeners->setEnabled(true);
+      m_sb.neighbors->setEnabled(true);
       m_ui.kernelBox->setEnabled(true);
       m_ui.listenersBox->setEnabled(true);
       m_ui.resetSpotOn->setEnabled(true);
@@ -2203,6 +2209,8 @@ void spoton::slotValidatePassphrase(void)
 
       sendKeyToKernel();
       m_sb.kernelstatus->setEnabled(true);
+      m_sb.listeners->setEnabled(true);
+      m_sb.neighbors->setEnabled(true);
       m_ui.kernelBox->setEnabled(true);
       m_ui.listenersBox->setEnabled(true);
       m_ui.passphrase->clear();
@@ -3115,15 +3123,18 @@ void spoton::slotSharePublicKey(void)
   if(oid.isEmpty())
     return;
 
-  QByteArray hash(20, 0); // Sha-1
   QByteArray publicKey;
+  QByteArray publicKeyHash;
   QByteArray signature;
   bool ok = true;
 
   publicKey = m_crypt->publicKey(&ok);
 
   if(ok)
-    signature = m_crypt->digitalSignature(hash, &ok);
+    publicKeyHash = m_crypt->publicKeyHash(&ok);
+
+  if(ok)
+    signature = m_crypt->digitalSignature(publicKeyHash, &ok);
 
   if(ok)
     {
@@ -3351,15 +3362,18 @@ void spoton::slotSharePublicKeyWithParticipant(void)
   if(oid.isEmpty())
     return;
 
-  QByteArray hash(20, 0); // Sha-1
   QByteArray publicKey;
+  QByteArray publicKeyHash;
   QByteArray signature;
   bool ok = true;
 
   publicKey = m_crypt->publicKey(&ok);
 
   if(ok)
-    signature = m_crypt->digitalSignature(hash, &ok);
+    publicKeyHash = m_crypt->publicKeyHash(&ok);
+
+  if(ok)
+    signature = m_crypt->digitalSignature(publicKeyHash, &ok);
 
   if(ok)
     {
@@ -3431,9 +3445,9 @@ void spoton::slotCopyMyPublicKey(void)
   if(!clipboard)
     return;
 
-  QByteArray hash(20, 0); // Sha-1
   QByteArray name;
   QByteArray publicKey;
+  QByteArray publicKeyHash;
   QByteArray signature;
   bool ok = true;
 
@@ -3442,7 +3456,10 @@ void spoton::slotCopyMyPublicKey(void)
   publicKey = m_crypt->publicKey(&ok).toBase64();
 
   if(ok)
-    signature = m_crypt->digitalSignature(hash, &ok).toBase64();
+    publicKeyHash = m_crypt->publicKeyHash(&ok);
+
+  if(ok)
+    signature = m_crypt->digitalSignature(publicKeyHash, &ok).toBase64();
 
   if(ok)
     clipboard->setText("K" + name + "@" + publicKey + "@" + signature);
@@ -4415,8 +4432,15 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  QByteArray hash(20, 0); // Sha-1
-  QByteArray mySignature(m_crypt->digitalSignature(hash, &ok));
+  QByteArray myPublicKeyHash(m_crypt->publicKeyHash(&ok));
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QByteArray mySignature(m_crypt->digitalSignature(myPublicKeyHash, &ok));
 
   if(!ok)
     {
@@ -4433,11 +4457,11 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  hash = crypt.keyedHash(symmetricKey +
-			 symmetricKeyAlgorithm +
-			 myName +
-			 myPublicKey +
-			 mySignature, &ok);
+  QByteArray hash(crypt.keyedHash(symmetricKey +
+				  symmetricKeyAlgorithm +
+				  myName +
+				  myPublicKey +
+				  mySignature, &ok));
 
   if(!ok)
     {

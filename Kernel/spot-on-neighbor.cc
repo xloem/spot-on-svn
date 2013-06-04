@@ -586,19 +586,22 @@ void spoton_neighbor::savePublicKey(const QByteArray &name,
   if(share)
     if(spoton_kernel::s_crypt1)
       {
-	QByteArray hash(20, 0); // Sha-1
 	QByteArray myName
-	  (spoton_kernel::s_settings.
-	   value("gui/nodeName",
-		 "unknown").toByteArray().trimmed());
+	  (spoton_kernel::s_settings.value("gui/nodeName",
+					   "unknown").
+	   toByteArray().trimmed());
 	QByteArray myPublicKey;
+	QByteArray myPublicKeyHash;
 	QByteArray mySignature;
 	bool ok = true;
 
 	myPublicKey = spoton_kernel::s_crypt1->publicKey(&ok);
 
 	if(ok)
-	  spoton_kernel::s_crypt1->digitalSignature(hash, &ok);
+	  myPublicKeyHash = spoton_kernel::s_crypt1->publicKeyHash(&ok);
+
+	if(ok)
+	  spoton_kernel::s_crypt1->digitalSignature(myPublicKeyHash, &ok);
 
 	if(ok)
 	  sharePublicKey(myName, myPublicKey, mySignature);
@@ -719,6 +722,29 @@ void spoton_neighbor::slotReceivedStatusMessage(const QByteArray &data,
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
 	    ("spoton_neighbor::slotReceivedStatusMessage(): write() "
+	     "error.");
+	else
+	  flush();
+      }
+}
+
+void spoton_neighbor::slotRetrieveMail(const QByteArray &data,
+				       const qint64 id)
+{
+  /*
+  ** A neighbor (id) received a message. This neighbor now needs
+  ** to send the message to its peer. Please note that data also contains
+  ** the TTL.
+  */
+
+  if(id != m_id)
+    if(state() == QAbstractSocket::ConnectedState)
+      {
+	QByteArray message(spoton_send::message0002(data));
+
+	if(write(message.constData(), message.length()) != message.length())
+	  spoton_misc::logError
+	    ("spoton_neighbor::slotRetrieveMail(): write() "
 	     "error.");
 	else
 	  flush();
@@ -1284,6 +1310,9 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 {
+  if(!spoton_kernel::s_crypt1)
+    return;
+
   length -= strlen("type=0002&content=");
 
   QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
@@ -1296,13 +1325,30 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
     {
       data = QByteArray::fromBase64(data);
 
+      bool ok = true;
+      short ttl = 0;
+
+      if(!data.isEmpty())
+	memcpy(static_cast<void *> (&ttl),
+	       static_cast<const void *> (data.constData()), 1);
+
+      if(ttl > 0)
+	ttl -= 1;
+
+      data.remove(0, 1); // Remove TTL.
+
+      QByteArray originalData(data); /*
+				     ** We may need to echo the
+				     ** message. Don't forget to
+				     ** decrease the TTL!
+				     */
       QList<QByteArray> list(data.split('\n'));
 
-      if(list.size() != 2)
+      if(list.size() != 5)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0002(): "
-		     "received irregular data. Expecting 2 entries, "
+		     "received irregular data. Expecting 5 entries, "
 		     "received %1.").arg(list.size()));
 	  return;
 	}
@@ -1317,23 +1363,81 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
       ** we retrieve the letters in a timely, yet functional, manner?
       */
 
-      QByteArray publicKeyHash(list.at(0));
-      QByteArray signature(list.at(1));
-      bool ok = true;
-
-      publicKeyHash = spoton_kernel::s_crypt1->publicKeyDecrypt
-	(publicKeyHash, &ok);
-
-      if(ok)
-	signature = spoton_kernel::s_crypt1->publicKeyDecrypt
-	  (signature, &ok);
+      QByteArray messageDigest(list.at(4));
+      QByteArray publicKeyHash(list.at(2));
+      QByteArray signature(list.at(3));
+      QByteArray symmetricKey(list.at(0));
+      QByteArray symmetricKeyAlgorithm(list.at(1));
 
       if(ok)
-	emit retrieveMail(publicKeyHash, signature);
+	symmetricKey = spoton_kernel::s_crypt1->
+	  publicKeyDecrypt(symmetricKey, &ok);
+
+      if(ok)
+	symmetricKeyAlgorithm = spoton_kernel::s_crypt1->
+	  publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
+
+      if(ok)
+	{
+	  spoton_gcrypt crypt(symmetricKeyAlgorithm,
+			      QString("sha512"),
+			      QByteArray(),
+			      symmetricKey,
+			      0,
+			      0,
+			      QString(""));
+
+	  publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
+
+	  if(ok)
+	    signature = crypt.decrypted(signature, &ok);
+
+	  if(ok)
+	    messageDigest = crypt.decrypted(messageDigest, &ok);
+	}
+
+      if(ok)
+	{
+	  QByteArray computedMessageDigest
+	    (spoton_gcrypt::keyedHash(symmetricKey +
+				      symmetricKeyAlgorithm +
+				      publicKeyHash +
+				      signature,
+				      symmetricKey,
+				      "sha512",
+				      &ok));
+
+	  /*
+	  ** Let's not echo messages whose message digests are
+	  ** incompatible.
+	  */
+
+	  if(ok)
+	    {
+	      if(computedMessageDigest == messageDigest)
+		emit retrieveMail(publicKeyHash, signature);
+	      else
+		spoton_misc::logError("spoton_neighbor::process0002(): "
+				      "computed message digest does "
+				      "not match provided digest.");
+	    }
+	}
+      else if(ttl > 0)
+	{
+	  /*
+	  ** Replace TTL.
+	  */
+
+	  char c = 0;
+
+	  memcpy(&c, static_cast<void *> (&ttl), 1);
+	  originalData.prepend(c);
+	  emit retrieveMail(originalData, m_id);
+	}
     }
   else
     spoton_misc::logError
-      (QString("spoton_neighbor::process0011(): 0002 "
+      (QString("spoton_neighbor::process0002(): 0002 "
 	       "content-length mismatch (advertised: %1, received: %2).").
        arg(length).arg(data.length()));
 }
