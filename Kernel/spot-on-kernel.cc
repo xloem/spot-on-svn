@@ -872,9 +872,11 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 				       const qint64)));
   connect(neighbor,
 	  SIGNAL(retrieveMail(const QByteArray &,
+			      const QByteArray &,
 			      const QByteArray &)),
 	  m_mailer,
 	  SLOT(slotRetrieveMail(const QByteArray &,
+				const QByteArray &,
 				const QByteArray &)));
   connect(neighbor,
 	  SIGNAL(retrieveMail(const QByteArray &,
@@ -1218,12 +1220,7 @@ void spoton_kernel::slotRetrieveMail(void)
   bool ok = true;
 
   publicKeyHash = s_crypt1->publicKeyHash(&ok);
-
-  if(!ok)
-    return;
-
-  QByteArray signature(s_crypt1->digitalSignature(publicKeyHash, &ok));
-
+  
   if(!ok)
     return;
 
@@ -1249,6 +1246,7 @@ void spoton_kernel::slotRetrieveMail(void)
 	      QByteArray data;
 	      QByteArray publicKey
 		(query.value(0).toByteArray());
+	      QByteArray signature;
 	      QByteArray symmetricKey;
 	      QByteArray symmetricKeyAlgorithm
 		(spoton_gcrypt::randomCipherType());
@@ -1301,6 +1299,17 @@ void spoton_kernel::slotRetrieveMail(void)
 		  data.append(crypt.encrypted(publicKeyHash, &ok).
 			      toBase64());
 		  data.append("\n");
+
+		  if(ok)
+		    messageDigest = crypt.keyedHash
+		      (symmetricKey +
+		       symmetricKeyAlgorithm +
+		       publicKeyHash,
+		       &ok);
+
+		  if(ok)
+		    signature = s_crypt1->digitalSignature
+		      (messageDigest, &ok);
 
 		  if(ok)
 		    {

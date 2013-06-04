@@ -185,7 +185,8 @@ void spoton_mailer::slotTimeout(void)
     }
 }
 
-void spoton_mailer::slotRetrieveMail(const QByteArray &publicKeyHash,
+void spoton_mailer::slotRetrieveMail(const QByteArray &data,
+				     const QByteArray &publicKeyHash,
 				     const QByteArray &signature)
 {
   /*
@@ -201,7 +202,7 @@ void spoton_mailer::slotRetrieveMail(const QByteArray &publicKeyHash,
   if(!spoton_kernel::s_crypt1)
     return;
 
-  if(!spoton_kernel::s_crypt1->isValidSignature(publicKeyHash,
+  if(!spoton_kernel::s_crypt1->isValidSignature(data,
 						publicKey,
 						signature))
     return;

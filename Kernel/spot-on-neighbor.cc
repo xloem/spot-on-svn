@@ -1415,7 +1415,20 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 	  if(ok)
 	    {
 	      if(computedMessageDigest == messageDigest)
-		emit retrieveMail(publicKeyHash, signature);
+		{
+		  QByteArray messageDigest
+		    (spoton_gcrypt::keyedHash(symmetricKey +
+					      symmetricKeyAlgorithm +
+					      publicKeyHash,
+					      symmetricKey,
+					      "sha512",
+					      &ok));
+
+		  if(ok)
+		    emit retrieveMail
+		      (messageDigest,
+		       publicKeyHash, signature);
+		}
 	      else
 		spoton_misc::logError("spoton_neighbor::process0002(): "
 				      "computed message digest does "
