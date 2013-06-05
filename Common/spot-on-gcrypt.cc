@@ -1528,7 +1528,7 @@ QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 	*ok = false;
 
       spoton_misc::logError
-	("spoton_gcrypt::publicKeyDecrypt(): empty private_key.");
+	("spoton_gcrypt::publicKeyDecrypt(): empty private key.");
       goto done_label;
     }
 
@@ -2092,7 +2092,7 @@ QByteArray spoton_gcrypt::digitalSignature(const QByteArray &data, bool *ok)
 	*ok = false;
 
       spoton_misc::logError
-	("spoton_gcrypt::digitalSignature(): empty private_key.");
+	("spoton_gcrypt::digitalSignature(): empty private key.");
       goto done_label;
     }
 
