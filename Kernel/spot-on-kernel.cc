@@ -684,7 +684,6 @@ void spoton_kernel::slotNewNeighbor(QPointer<spoton_neighbor> neighbor)
 
       if(!m_neighbors.contains(id))
 	{
-	  neighbor->setParent(this);
 	  connectSignalsToNeighbor(neighbor);
 	  m_neighbors.insert(id, neighbor);
 	}

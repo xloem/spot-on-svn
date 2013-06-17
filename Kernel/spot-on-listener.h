@@ -47,7 +47,6 @@ class spoton_listener_tcp_server: public QTcpServer
  public:
   spoton_listener_tcp_server(QObject *parent):QTcpServer(parent)
   {
-    m_neighbors = 0;
   }
 
   QTcpSocket *nextPendingConnection(void)
@@ -64,12 +63,9 @@ class spoton_listener_tcp_server: public QTcpServer
   void incomingConnection(int socketDescriptor)
 #endif
   {
-    /*
-    ** We cannot use findChildren() because the neighbor object
-    ** may become a child of another object.
-    */
+    int m = findChildren<spoton_neighbor *> ().size();
 
-    if(m_neighbors >= maxPendingConnections())
+    if(m >= maxPendingConnections())
       {
 	QTcpSocket socket;
 
@@ -81,29 +77,12 @@ class spoton_listener_tcp_server: public QTcpServer
 	QPointer<spoton_neighbor> neighbor = new spoton_neighbor
 	  (socketDescriptor, this);
 
-	connect(neighbor,
-		SIGNAL(destroyed(void)),
-		this,
-		SLOT(slotNeighborDestroyed(void)));
 	m_queue.enqueue(neighbor);
-	m_neighbors += 1;
       }
   }
 
  private:
-  int m_neighbors;
   QQueue<QPointer<spoton_neighbor> > m_queue;
-
- private slots:
-  void slotNeighborDestroyed(void)
-  {
-    if(m_neighbors > 0)
-      m_neighbors -= 1;
-    else
-      spoton_misc::logError
-	("spoton_listener_tcp_server::slotNeighborDestroyed(): m_neighbors "
-	 "equals zero. Cannot decrement. Internal problem. Please report.");
-  }
 };
 
 class spoton_listener: public spoton_listener_tcp_server
