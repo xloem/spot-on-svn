@@ -7,7 +7,7 @@ accepted
 
 email.db:
 
-all, save for folder_index and recipient_hash
+all, save for folder_index, hash, receiver_sender_hash, and recipient_hash
 
 friends_public_keys.db:
 

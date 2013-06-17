@@ -7,7 +7,7 @@ Message Type ("0000") (Plaintext)
 TTL (Plaintext)
 0 - Message (Base-64) (Gemini)
 EOL
-1 - Message Digest (Base-64) (Gemini)
+1 - Keyed Sha-512 Message Digest (Base-64) (Gemini)
 
 Message Type ("0000") (Plaintext)
 TTL (Plaintext)
@@ -21,16 +21,10 @@ EOL
 EOL
 4 - Message (Ciphertext, SK)
 EOL
-5 - Message Digest (Base-64) (Ciphertext, SK)
+5 - Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)
 
 Echo Mail
 Echoed? Yes
-
-Message Type ("0001") (Plaintext)
-TTL (Plaintext)
-0 - Message (Base-64) (Gemini)
-EOL
-1 - Message Digest (Base-64) (Gemini)
 
 Message Type ("0001a") (Plaintext)
 TTL (Plaintext)
@@ -46,7 +40,7 @@ EOL
 EOL
 5 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
 EOL
-6 - Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
+6 - Sender's Sha-512 Hash (Base-64) (Ciphertext, PK)
 EOL
 7 - Sender's Name (Base-64) (Ciphertext, SK)
 EOL
@@ -54,7 +48,7 @@ EOL
 EOL
 9 - Message (Base-64) (Ciphertext, SK)
 EOL
-10 - Message Digest (Base-64) (Ciphertext, SK)
+10 - Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)
 
 Message Type ("0001b") (Plaintext)
 TTL (Plaintext)
@@ -62,7 +56,7 @@ TTL (Plaintext)
 EOL
 1 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
 EOL
-2 - Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
+2 - Sender's Sha-512 Hash (Base-64) (Ciphertext, PK)
 EOL
 3 - Sender's Name (Base-64) (Ciphertext, SK)
 EOL
@@ -70,7 +64,7 @@ EOL
 EOL
 5 - Message (Base-64) (Ciphertext, SK)
 EOL
-6 - Message Digest (Base-64) (Ciphertext, SK)
+6 - Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)
 
 Retrieve Mail
 Echoed? Yes
@@ -81,24 +75,24 @@ TTL (Plaintext)
 EOL
 1 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
 EOL
-2 - Requester's Sha-512 Hash (Base-64) (Ciphertext, SK)
+2 - Requester's Sha-512 Hash (Base-64) (Ciphertext, PK)
 EOL
 3 - Requester's Signature (Base-64) (Ciphertext, SK)
 EOL
-4 - Message Digest (Base-64) (Ciphertext, SK)
+4 - Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)
 
-Greetings #1, #2
+Key Exchange
 Echoed? No
 
 Message Type ("0011" or "0012") (Plaintext)
 TTL (Plaintext)
-0 - Public Key (Base-64) (Plaintext)
+0 - Key Type (Base-64) (Plaintext)
 EOL
-1 - Signature (Base-64) (Ciphertext, PK)
+1 - Sender's Name (Base-64) (Plaintext)
 EOL
-2 - URL Public Key (Base-64) (Plaintext)
+2 - Sender's Public Key (Base-64) (Plaintext)
 EOL
-3 - Signature (Base-64) (Ciphertext, PK)
+3 - Signature (Base-64) (Plaintext)
 
 Status
 Echoed? Yes
@@ -107,7 +101,7 @@ Message Type ("0013") (Plaintext)
 TTL (Plaintext)
 0 - Message (Base-64) (Gemini)
 EOL
-1 - Message Digest (Base-64) (Gemini)
+1 - Keyed Sha-512 Message Digest (Base-64) (Gemini)
 
 Message Type ("0013") (Plaintext)
 TTL (Plaintext)
@@ -121,15 +115,15 @@ EOL
 EOL
 4 - Status (Base-64) (Ciphertext, SK)
 EOL
-5 - Message Digest (Base-64) (Ciphertext, SK)
+5 - Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)
 
-Greetings #3
+UUID Exchange
 Echoed? No
 
 Message Type ("0014")
 UUID (Plaintext)
 
-Greetings #4
+Keep Alive
 Echoed? No
 
 Message Type ("0015")
@@ -150,4 +144,4 @@ EOL
 EOL
 11 - URL-10 (Base-64) (Ciphertext, SK)
 EOL
-12 - Message Digest (Base-64) (Ciphertext, SK)
+12 - Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)
