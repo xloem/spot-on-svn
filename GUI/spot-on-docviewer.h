@@ -44,6 +44,7 @@ class spoton_docviewer: public QMainWindow
  private:
   Ui_spoton_docviewer ui;
   qint64 m_position;
+  void keyPressEvent(QKeyEvent *event);
 
  private slots:
   void slotClose(void);

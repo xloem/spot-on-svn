@@ -25,6 +25,8 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QKeyEvent>
+
 #include "Common/spot-on-misc.h"
 #include "spot-on-docviewer.h"
 
@@ -32,6 +34,12 @@ spoton_docviewer::spoton_docviewer(void):QMainWindow()
 {
   m_position = 0;
   ui.setupUi(this);
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+  statusBar()->setSizeGripEnabled(false);
+#endif
   connect(ui.action_Close,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -57,6 +65,17 @@ void spoton_docviewer::show(QWidget *parent)
   move(X, Y);
   QMainWindow::show();
   raise();
+}
+
+void spoton_docviewer::keyPressEvent(QKeyEvent *event)
+{
+  if(event)
+    {
+      if(event->key() == Qt::Key_Escape)
+	close();
+    }
+
+  QMainWindow::keyPressEvent(event);
 }
 
 void spoton_docviewer::slotClose(void)

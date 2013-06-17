@@ -28,16 +28,56 @@
 #ifndef _spoton_h_
 #define _spoton_h_
 
+#include <QApplication>
 #include <QCache>
+#include <QCheckBox>
+#include <QClipboard>
 #include <QDateTime>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileDialog>
+#include <QInputDialog>
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+#include <QMacStyle>
+#endif
+#endif
 #include <QMainWindow>
+#include <QMessageBox>
+#ifdef Q_OS_WIN32
+#include <qt_windows.h>
+#include <QtNetwork>
+#else
+#include <QNetworkInterface>
+#endif
+#include <QProcess>
+#include <QScrollBar>
+#include <QSettings>
 #include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QStyle>
 #include <QTcpSocket>
 #include <QTimer>
+#include <QTranslator>
+#include <QUuid>
+#include <QtDebug>
+
+#include <limits>
+
+extern "C"
+{
+#include "LibSpotOn/libspoton.h"
+}
  
+#include "Common/spot-on-common.h"
 #include "Common/spot-on-gcrypt.h"
+#include "Common/spot-on-misc.h"
+#include "Common/spot-on-send.h"
 #include "spot-on-docviewer.h"
 #include "spot-on-logviewer.h"
+#include "spot-on-reencode.h"
 #include "ui_controlcenter.h"
 #include "ui_statusbar.h"
 
@@ -50,6 +90,9 @@ class spoton: public QMainWindow
   Ui_spoton_mainwindow ui(void) const;
 
  private:
+  static const int APPLY_GOLDBUG_TO_INBOX_ERROR_CORRUPT_MESSAGE_DIGEST = 1;
+  static const int APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL = 2;
+  static const int APPLY_GOLDBUG_TO_INBOX_ERROR_MEMORY = 3;
   static const int NAME_MAXIMUM_LENGTH = 64;
   QByteArray m_kernelSocketData;
   QCache<QByteArray, char *> m_messagingCache; /*
@@ -76,12 +119,14 @@ class spoton: public QMainWindow
   bool isKernelActive(void) const;
   bool saveGemini(const QByteArray &gemini, const QString &oid);
   bool updateMailStatus(const QString &oid, const QString &status);
+  int applyGoldbugToInboxLetter(const QByteArray &goldbug,
+				const int row);
   void closeEvent(QCloseEvent *event);
   void highlightKernelPath(void);
   void prepareListenerIPCombo(void);
   void saveKernelPath(const QString &path);
   void saveSettings(void);
-  void sendKeyToKernel(void);
+  void sendKeysToKernel(void);
   void updateListenersTable(QSqlDatabase &db);
   void updateNeighborsTable(QSqlDatabase &db);
   void updateParticipantsTable(QSqlDatabase &db);
@@ -94,13 +139,13 @@ class spoton: public QMainWindow
   void slotAddNeighbor(void);
   void slotBlockNeighbor(void);
   void slotChatSendMethodChanged(int index);
-  void slotChatStatusClicked(void);
   void slotClearOutgoingMessage(void);
   void slotConnectNeighbor(void);
   void slotCopyFriendshipBundle(void);
   void slotCopyMyPublicKey(void);
   void slotCopyMyURLPublicKey(void);
   void slotCountryChanged(QListWidgetItem *item);
+  void slotDaysChanged(int value);
   void slotDeactivateKernel(void);
   void slotDeleteAllBlockedNeighbors(void);
   void slotDeleteAllListeners(void);
@@ -112,7 +157,6 @@ class spoton: public QMainWindow
   void slotDisconnectNeighbor(void);
   void slotDisplayLocalSearchResults(void);
   void slotDoSearch(void);
-  void slotEmailStatusClicked(void);
   void slotEmptyTrash(void);
   void slotEnableRetrieveMail(void);
   void slotEnabledPostOffice(bool state);
@@ -142,6 +186,7 @@ class spoton: public QMainWindow
   void slotRefreshMail(void);
   void slotRefreshPostOffice(void);
   void slotRemoveParticipants(void);
+  void slotReply(void);
   void slotResetAll(void);
   void slotRetrieveMail(void);
   void slotSaveKernelPath(void);
@@ -156,6 +201,7 @@ class spoton: public QMainWindow
   void slotSharePublicKeyWithParticipant(void);
   void slotShareURLPublicKey(void);
   void slotShowContextMenu(const QPoint &point);
+  void slotStatusButtonClicked(void);
   void slotStatusChanged(int index);
   void slotTabChanged(int index);
   void slotUnblockNeighbor(void);
