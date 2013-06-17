@@ -446,7 +446,8 @@ void spoton_listener::slotNewConnection(void)
 		(7,
 		 spoton_kernel::s_crypt1->
 		 keyedHash((neighbor->peerAddress().toString() +
-			    QString::number(neighbor->peerPort())).
+			    QString::number(neighbor->peerPort()) +
+			    neighbor->peerAddress().scopeId()).
 			   toLatin1(), &ok).toBase64());
 
 	    query.bindValue(6, "connected");
@@ -524,11 +525,12 @@ void spoton_listener::slotNewConnection(void)
 		query.setForwardOnly(true);
 
 		if(query.exec("SELECT OID, remote_ip_address, "
-			      "remote_port FROM neighbors"))
+			      "remote_port, scope_id FROM neighbors"))
 		  while(query.next())
 		    {
 		      QByteArray b1;
 		      QByteArray b2;
+		      QByteArray b3;
 
 		      b1 = spoton_kernel::s_crypt1->decrypted
 			(QByteArray::fromBase64(query.value(1).
@@ -541,8 +543,15 @@ void spoton_listener::slotNewConnection(void)
 						  toByteArray()),
 			   &ok);
 
+		      if(ok)
+			b3 = spoton_kernel::s_crypt1->decrypted
+			  (QByteArray::fromBase64(query.value(3).
+						  toByteArray()),
+			   &ok);
+
 		      if(b1 == neighbor->peerAddress().toString() &&
-			 b2.toUShort() == neighbor->peerPort())
+			 b2.toUShort() == neighbor->peerPort() &&
+			 b3 == neighbor->peerAddress().scopeId())
 			{
 			  id = query.value(0).toLongLong();
 			  break;

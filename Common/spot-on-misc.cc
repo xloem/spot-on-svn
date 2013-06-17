@@ -254,8 +254,9 @@ void spoton_misc::prepareDatabases(void)
 		   "external_port TEXT, "
 		   "hash TEXT PRIMARY KEY NOT NULL)"); /*
 						       ** The hash of the
-						       ** IP address and
-						       ** the port.
+						       ** IP address,
+						       ** the port, and
+						       ** the scope.
 						       */
       }
 
@@ -291,9 +292,10 @@ void spoton_misc::prepareDatabases(void)
 	   "'{00000000-0000-0000-0000-000000000000}', "
 	   "country TEXT, "
 	   "hash TEXT PRIMARY KEY NOT NULL, " /*
-					      ** Hash of the remote IP
-					      ** address and the remote
-					      ** port.
+					      ** Hash of the proxy IP address,
+					      ** the proxy port, the remote IP
+					      ** address, the remote
+					      ** port, and the scope id.
 					      */
 	   "remote_ip_address_hash TEXT NOT NULL, "
 	   "qt_country_hash TEXT, "

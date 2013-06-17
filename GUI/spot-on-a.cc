@@ -789,7 +789,7 @@ void spoton::slotAddListener(void)
 
 	if(ok)
 	  query.bindValue
-	    (5, m_crypt->keyedHash((ip + port).toLatin1(), &ok).
+	    (5, m_crypt->keyedHash((ip + port + scopeId).toLatin1(), &ok).
 	     toBase64());
 
 	if(ok)
@@ -930,9 +930,14 @@ void spoton::slotAddNeighbor(void)
 	  query.bindValue
 	    (6, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
 
+	proxyHostname = m_ui.proxyHostname->text().trimmed();
+	proxyPort = QString::number(m_ui.proxyPort->value());
+
 	if(ok)
 	  query.bindValue
-	    (7, m_crypt->keyedHash((ip + port).toLatin1(), &ok).
+	    (7, m_crypt->
+	     keyedHash((proxyHostname + proxyPort + ip + port + scopeId).
+		       toLatin1(), &ok).
 	     toBase64());
 
 	query.bindValue(8, status);
@@ -953,9 +958,7 @@ void spoton::slotAddNeighbor(void)
 	    (11, m_crypt->keyedHash(country.remove(" ").toLatin1(), &ok).
 	     toBase64());
 
-	proxyHostname = m_ui.proxyHostname->text().trimmed();
 	proxyPassword = m_ui.proxyPassword->text();
-	proxyPort = QString::number(m_ui.proxyPort->value());
 
 	if(m_ui.proxy->isChecked())
 	  proxyType = m_ui.proxyType->currentText();
@@ -1097,8 +1100,10 @@ void spoton::slotPopulateListeners(void)
 	QModelIndexList list;
 	QString ip("");
 	QString port("");
+	QString scopeId("");
 	int columnIP = 2;
 	int columnPORT = 3;
+	int columnSCOPE_ID = 4;
 	int hval = m_ui.listeners->horizontalScrollBar()->value();
 	int row = -1;
 	int vval = m_ui.listeners->verticalScrollBar()->value();
@@ -1114,6 +1119,12 @@ void spoton::slotPopulateListeners(void)
 
 	if(!list.isEmpty())
 	  port = list.at(0).data().toString();
+
+	list = m_ui.listeners->selectionModel()->selectedRows
+	  (columnSCOPE_ID);
+
+	if(!list.isEmpty())
+	  scopeId = list.at(0).data().toString();
 
 	m_ui.listeners->setSortingEnabled(false);
 	m_ui.listeners->clearContents();
@@ -1231,6 +1242,7 @@ void spoton::slotPopulateListeners(void)
 
 		QByteArray bytes1;
 		QByteArray bytes2;
+		QByteArray bytes3;
 		QWidget *focusWidget = QApplication::focusWidget();
 		bool ok = true;
 
@@ -1240,8 +1252,11 @@ void spoton::slotPopulateListeners(void)
 		bytes2 = m_crypt->decrypted
 		  (QByteArray::fromBase64(query.value(3).toByteArray()),
 		   &ok);
+		bytes3 = m_crypt->decrypted
+		  (QByteArray::fromBase64(query.value(4).toByteArray()),
+		   &ok);
 
-		if(ip == bytes1 && port == bytes2)
+		if(ip == bytes1 && port == bytes2 && scopeId == bytes3)
 		  m_ui.listeners->selectRow(row);
 
 		if(focusWidget)
@@ -1317,14 +1332,32 @@ void spoton::slotPopulateNeighbors(void)
 	updateNeighborsTable(db);
 
 	QModelIndexList list;
+	QString proxyIp("");
+	QString proxyPort("");
 	QString remoteIp("");
 	QString remotePort("");
+	QString scopeId("");
 	int columnCOUNTRY = 8;
+	int columnPROXY_IP = 13;
+	int columnPROXY_PORT = 14;
 	int columnREMOTE_IP = 9;
 	int columnREMOTE_PORT = 10;
+	int columnSCOPE_ID = 11;
 	int hval = m_ui.neighbors->horizontalScrollBar()->value();
 	int row = -1;
 	int vval = m_ui.neighbors->verticalScrollBar()->value();
+
+	list = m_ui.neighbors->selectionModel()->selectedRows
+	  (columnPROXY_IP);
+
+	if(!list.isEmpty())
+	  proxyIp = list.at(0).data().toString();
+
+	list = m_ui.neighbors->selectionModel()->selectedRows
+	  (columnPROXY_PORT);
+
+	if(!list.isEmpty())
+	  proxyPort = list.at(0).data().toString();
 
 	list = m_ui.neighbors->selectionModel()->selectedRows
 	  (columnREMOTE_IP);
@@ -1337,6 +1370,12 @@ void spoton::slotPopulateNeighbors(void)
 
 	if(!list.isEmpty())
 	  remotePort = list.at(0).data().toString();
+
+	list = m_ui.neighbors->selectionModel()->selectedRows
+	  (columnSCOPE_ID);
+
+	if(!list.isEmpty())
+	  scopeId = list.at(0).data().toString();
 
 	m_ui.neighbors->setSortingEnabled(false);
 	m_ui.neighbors->clearContents();
@@ -1456,6 +1495,9 @@ void spoton::slotPopulateNeighbors(void)
 
 		QByteArray bytes1;
 		QByteArray bytes2;
+		QByteArray bytes3;
+		QByteArray bytes4;
+		QByteArray bytes5;
 		QWidget *focusWidget = QApplication::focusWidget();
 		bool ok = true;
 
@@ -1465,8 +1507,19 @@ void spoton::slotPopulateNeighbors(void)
 		bytes2 = m_crypt->decrypted
 		  (QByteArray::fromBase64(query.value(columnREMOTE_PORT).
 					  toByteArray()), &ok);
+		bytes3 = m_crypt->decrypted
+		  (QByteArray::fromBase64(query.value(columnSCOPE_ID).
+					  toByteArray()), &ok);
+		bytes4 = m_crypt->decrypted
+		  (QByteArray::fromBase64(query.value(columnPROXY_IP).
+					  toByteArray()), &ok);
+		bytes5 = m_crypt->decrypted
+		  (QByteArray::fromBase64(query.value(columnPROXY_PORT).
+					  toByteArray()), &ok);
 
-		if(remoteIp == bytes1 && remotePort == bytes2)
+		if(remoteIp == bytes1 && remotePort == bytes2 &&
+		   scopeId == bytes3 && proxyIp == bytes4 &&
+		   proxyPort == bytes5)
 		  m_ui.neighbors->selectRow(row);
 
 		if(focusWidget)
