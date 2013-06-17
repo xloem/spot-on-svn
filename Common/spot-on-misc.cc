@@ -84,8 +84,8 @@ void spoton_misc::prepareDatabases(void)
 	QSqlQuery query(db);
 
 	query.exec("CREATE TABLE IF NOT EXISTS country_inclusion ("
-		   "country BLOB NOT NULL, "
-		   "accepted BLOB NOT NULL, "
+		   "country TEXT NOT NULL, "
+		   "accepted TEXT NOT NULL, "
 		   "country_hash TEXT PRIMARY KEY NOT NULL)");
       }
 
@@ -105,21 +105,42 @@ void spoton_misc::prepareDatabases(void)
 	QSqlQuery query(db);
 
 	query.exec("CREATE TABLE IF NOT EXISTS folders ("
-		   "date BLOB NOT NULL, "
+		   "date TEXT NOT NULL, "
 		   "folder_index INTEGER NOT NULL, "
-		   "goldbug BLOB NOT NULL, " // Outgoing?
-		   "hash TEXT NOT NULL, "
+		   "goldbug TEXT NOT NULL, " /*
+					     ** "0" or "1" for inbound.
+					     ** Symmetric key for outbound.
+					     */
+		   "hash TEXT NOT NULL, "   /*
+					    ** Hash of the message and
+					    ** the subject.
+					    */
 		   "message BLOB NOT NULL, "
-		   "participant_oid BLOB NOT NULL, "
-		   "receiver_sender BLOB NOT NULL, "
-		   "receiver_sender_hash TEXT NOT NULL, "
-		   "status BLOB NOT NULL, "
+		   "message_digest BLOB, " /*
+					   ** Should only be used when
+					   ** a goldbug is provided.
+					   */
+		   "participant_oid TEXT NOT NULL, "
+		   "receiver_sender TEXT NOT NULL, "
+		   "receiver_sender_hash TEXT NOT NULL, " /*
+							  ** Hash of the
+							  ** receiver's or
+							  ** the sender's
+							  ** public key.
+							  */
+		   "status TEXT NOT NULL, " /*
+					    ** Deleted, read, etc.
+					    */
 		   "subject BLOB NOT NULL, "
 		   "PRIMARY KEY (folder_index, hash, receiver_sender_hash))");
 	query.exec("CREATE TABLE IF NOT EXISTS post_office ("
-		   "date_received BLOB NOT NULL, "
+		   "date_received TEXT NOT NULL, "
 		   "message_bundle BLOB NOT NULL, "
-		   "recipient_hash TEXT NOT NULL)");
+		   "recipient_hash TEXT NOT NULL)"); /*
+						     ** Hash of the
+						     ** recipient's public
+						     ** key.
+						     */
       }
 
     db.close();
@@ -138,18 +159,24 @@ void spoton_misc::prepareDatabases(void)
 	QSqlQuery query(db);
 
 	query.exec("CREATE TABLE IF NOT EXISTS friends_public_keys ("
-		   "gemini BLOB, "
+		   "gemini TEXT, "
+		   "key_type TEXT NOT NULL DEFAULT 'messaging', "
 		   "name TEXT NOT NULL DEFAULT 'unknown', "
 		   "public_key TEXT NOT NULL, "
-		   "public_key_hash TEXT PRIMARY KEY NOT NULL, "
+		   "public_key_hash TEXT PRIMARY KEY NOT NULL, " /*
+								 ** Sha-512
+								 ** hash of
+								 ** the public
+								 ** key.
+								 */
 		   /*
 		   ** Why do we need the neighbor's OID?
 		   ** When a neighbor shares a public key, we need
 		   ** to be able to remove the key if the socket connection
-		   ** is lost before we accept the friendship. The field
+		   ** is lost before we complete the exchange. The field
 		   ** provides us with some safety.
 		   */
-		   "neighbor_oid INTEGER DEFAULT -1, "
+		   "neighbor_oid INTEGER NOT NULL DEFAULT -1, "
 		   "status TEXT NOT NULL DEFAULT 'offline', "
 		   "last_status_update TEXT NOT NULL DEFAULT 'now')");
       }
@@ -219,13 +246,17 @@ void spoton_misc::prepareDatabases(void)
 		   "port TEXT NOT NULL, "
 		   "scope_id TEXT, "
 		   "protocol TEXT NOT NULL, "
-		   "status TEXT NOT NULL DEFAULT 'off', "
+		   "status TEXT NOT NULL DEFAULT 'offline', "
 		   "status_control TEXT NOT NULL DEFAULT 'online', "
 		   "connections INTEGER NOT NULL DEFAULT 0, "
 		   "maximum_clients INTEGER NOT NULL DEFAULT 5, "
 		   "external_ip_address TEXT, "
 		   "external_port TEXT, "
-		   "hash TEXT PRIMARY KEY NOT NULL)");
+		   "hash TEXT PRIMARY KEY NOT NULL)"); /*
+						       ** The hash of the
+						       ** IP address and
+						       ** the port.
+						       */
       }
 
     db.close();
@@ -256,41 +287,22 @@ void spoton_misc::prepareDatabases(void)
 	   "sticky INTEGER NOT NULL DEFAULT 1, "
 	   "external_ip_address TEXT, "
 	   "external_port TEXT, "
-	   "uuid TEXT DEFAULT '{00000000-0000-0000-0000-000000000000}', "
+	   "uuid TEXT NOT NULL DEFAULT "
+	   "'{00000000-0000-0000-0000-000000000000}', "
 	   "country TEXT, "
-	   "hash TEXT PRIMARY KEY NOT NULL, "
+	   "hash TEXT PRIMARY KEY NOT NULL, " /*
+					      ** Hash of the remote IP
+					      ** address and the remote
+					      ** port.
+					      */
 	   "remote_ip_address_hash TEXT NOT NULL, "
 	   "qt_country_hash TEXT, "
 	   "user_defined INTEGER NOT NULL DEFAULT 1, "
-	   "proxy_hostname BLOB NOT NULL, "
-	   "proxy_password BLOB NOT NULL, "
-	   "proxy_port BLOB NOT NULL, "
-	   "proxy_type BLOB NOT NULL, "
-	   "proxy_username BLOB NOT NULL)");
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase("spoton_misc");
-
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "public_keys.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	/*
-	** A copy of the shared public key from the idiotes
-	** database will be stored in the public_keys database.
-	*/
-
-	query.exec("CREATE TABLE IF NOT EXISTS public_keys ("
-		   "key TEXT PRIMARY KEY NOT NULL)");
+	   "proxy_hostname TEXT NOT NULL, "
+	   "proxy_password TEXT NOT NULL, "
+	   "proxy_port TEXT NOT NULL, "
+	   "proxy_type TEXT NOT NULL, "
+	   "proxy_username TEXT NOT NULL)");
       }
 
     db.close();
@@ -444,25 +456,213 @@ void spoton_misc::populateCountryDatabase(spoton_gcrypt *crypt)
 	  (QLocale::matchingLocales(QLocale::AnyLanguage, QLocale::AnyScript,
 				    QLocale::AnyCountry));
 #else
-	/*
-	** Volunteers?
-	*/
+	QStringList allLocales;
 
-	QList<QLocale> allLocales;
+	allLocales << "Afghanistan"
+		   << "Albania"
+		   << "Algeria"
+		   << "AmericanSamoa"
+		   << "Angola"
+		   << "Argentina"
+		   << "Armenia"
+		   << "Aruba"
+		   << "Australia"
+		   << "Austria"
+		   << "Azerbaijan"
+		   << "Bahrain"
+		   << "Bangladesh"
+		   << "Barbados"
+		   << "Belarus"
+		   << "Belgium"
+		   << "Belize"
+		   << "Benin"
+		   << "Bermuda"
+		   << "Bhutan"
+		   << "Bolivia"
+		   << "BosniaAndHerzegowina"
+		   << "Botswana"
+		   << "Brazil"
+		   << "BruneiDarussalam"
+		   << "Bulgaria"
+		   << "BurkinaFaso"
+		   << "Burundi"
+		   << "Cambodia"
+		   << "Cameroon"
+		   << "Canada"
+		   << "CapeVerde"
+		   << "CentralAfricanRepublic"
+		   << "Chad"
+		   << "Chile"
+		   << "China"
+		   << "Colombia"
+		   << "Comoros"
+		   << "CostaRica"
+		   << "Croatia"
+		   << "Cyprus"
+		   << "CzechRepublic"
+		   << "Default"
+		   << "DemocraticRepublicOfCongo"
+		   << "Denmark"
+		   << "Djibouti"
+		   << "DominicanRepublic"
+		   << "Ecuador"
+		   << "Egypt"
+		   << "ElSalvador"
+		   << "EquatorialGuinea"
+		   << "Eritrea"
+		   << "Estonia"
+		   << "Ethiopia"
+		   << "FaroeIslands"
+		   << "Finland"
+		   << "France"
+		   << "FrenchGuiana"
+		   << "Gabon"
+		   << "Georgia"
+		   << "Germany"
+		   << "Ghana"
+		   << "Greece"
+		   << "Greenland"
+		   << "Guadeloupe"
+		   << "Guam"
+		   << "Guatemala"
+		   << "Guinea"
+		   << "GuineaBissau"
+		   << "Guyana"
+		   << "Honduras"
+		   << "HongKong"
+		   << "Hungary"
+		   << "Iceland"
+		   << "India"
+		   << "Indonesia"
+		   << "Iran"
+		   << "Iraq"
+		   << "Ireland"
+		   << "Israel"
+		   << "Italy"
+		   << "IvoryCoast"
+		   << "Jamaica"
+		   << "Japan"
+		   << "Jordan"
+		   << "Kazakhstan"
+		   << "Kenya"
+		   << "Kuwait"
+		   << "Kyrgyzstan"
+		   << "Lao"
+		   << "LatinAmericaAndTheCaribbean"
+		   << "Latvia"
+		   << "Lebanon"
+		   << "Lesotho"
+		   << "Liberia"
+		   << "LibyanArabJamahiriya"
+		   << "Liechtenstein"
+		   << "Lithuania"
+		   << "Luxembourg"
+		   << "Macau"
+		   << "Macedonia"
+		   << "Madagascar"
+		   << "Malaysia"
+		   << "Mali"
+		   << "Malta"
+		   << "MarshallIslands"
+		   << "Martinique"
+		   << "Mauritius"
+		   << "Mayotte"
+		   << "Mexico"
+		   << "Moldova"
+		   << "Monaco"
+		   << "Mongolia"
+		   << "Montenegro"
+		   << "Morocco"
+		   << "Mozambique"
+		   << "Myanmar"
+		   << "Namibia"
+		   << "Nepal"
+		   << "Netherlands"
+		   << "NewZealand"
+		   << "Nicaragua"
+		   << "Niger"
+		   << "Nigeria"
+		   << "NorthernMarianaIslands"
+		   << "Norway"
+		   << "Oman"
+		   << "Pakistan"
+		   << "Panama"
+		   << "Paraguay"
+		   << "PeoplesRepublicOfCongo"
+		   << "Peru"
+		   << "Philippines"
+		   << "Poland"
+		   << "Portugal"
+		   << "PuertoRico"
+		   << "Qatar"
+		   << "RepublicOfKorea"
+		   << "Reunion"
+		   << "Romania"
+		   << "RussianFederation"
+		   << "Rwanda"
+		   << "Saint Barthelemy"
+		   << "Saint Martin"
+		   << "SaoTomeAndPrincipe"
+		   << "SaudiArabia"
+		   << "Senegal"
+		   << "Serbia"
+		   << "SerbiaAndMontenegro"
+		   << "Singapore"
+		   << "Slovakia"
+		   << "Slovenia"
+		   << "Somalia"
+		   << "SouthAfrica"
+		   << "Spain"
+		   << "SriLanka"
+		   << "Sudan"
+		   << "Swaziland"
+		   << "Sweden"
+		   << "Switzerland"
+		   << "SyrianArabRepublic"
+		   << "Taiwan"
+		   << "Tajikistan"
+		   << "Tanzania"
+		   << "Thailand"
+		   << "Togo"
+		   << "Tonga"
+		   << "TrinidadAndTobago"
+		   << "Tunisia"
+		   << "Turkey"
+		   << "USVirginIslands"
+		   << "Uganda"
+		   << "Ukraine"
+		   << "UnitedArabEmirates"
+		   << "UnitedKingdom"
+		   << "UnitedStates"
+		   << "UnitedStatesMinorOutlyingIslands"
+		   << "Uruguay"
+		   << "Uzbekistan"
+		   << "Venezuela"
+		   << "VietNam"
+		   << "Yemen"
+		   << "Yugoslavia"
+		   << "Zambia"
+		   << "Zimbabwe";
 #endif
 
 	while(!allLocales.isEmpty())
 	  {
+#if QT_VERSION >= 0x040800
 	    QLocale locale(allLocales.takeFirst());
+	    QString country(QLocale::countryToString(locale.country()));
+#else
+	    QString country(allLocales.takeFirst());
+#endif
 	    QSqlQuery query(db);
 	    bool ok = true;
 
 	    query.prepare("INSERT INTO country_inclusion "
 			  "(country, accepted, country_hash) "
 			  "VALUES (?, ?, ?)");
-	    query.bindValue
-	      (0, crypt->encrypted(QLocale::countryToString(locale.country()).
-				   toLatin1(), &ok).toBase64());
+
+	    if(!country.isEmpty())
+	      query.bindValue
+		(0, crypt->encrypted(country.toLatin1(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
@@ -472,8 +672,7 @@ void spoton_misc::populateCountryDatabase(spoton_gcrypt *crypt)
 	    if(ok)
 	      query.bindValue
 		(2,
-		 crypt->keyedHash(QLocale::countryToString(locale.country()).
-				  toLatin1(), &ok).toBase64());
+		 crypt->keyedHash(country.toLatin1(), &ok).toBase64());
 
 	    if(ok)
 	      query.exec();
@@ -594,7 +793,8 @@ void spoton_misc::populateUrlsDatabase(const QList<QList<QVariant> > &list,
   QSqlDatabase::removeDatabase("spoton_misc");
 }
 
-bool spoton_misc::saveFriendshipBundle(const QByteArray &name,
+bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
+				       const QByteArray &name,
 				       const QByteArray &publicKey,
 				       const int neighborOid,
 				       QSqlDatabase &db)
@@ -606,13 +806,15 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &name,
   bool ok = true;
 
   query.prepare("INSERT OR REPLACE INTO friends_public_keys "
-		"(name, public_key, public_key_hash, neighbor_oid) "
-		"VALUES (?, ?, ?, ?)");
-  query.bindValue(0, name);
-  query.bindValue(1, publicKey);
+		"(key_type, name, public_key, public_key_hash, "
+		"neighbor_oid) "
+		"VALUES (?, ?, ?, ?, ?)");
+  query.bindValue(0, keyType.constData());
+  query.bindValue(1, name);
+  query.bindValue(2, publicKey);
   query.bindValue
-    (2, spoton_gcrypt::sha512Hash(publicKey, &ok).toBase64());
-  query.bindValue(3, neighborOid);
+    (3, spoton_gcrypt::sha512Hash(publicKey, &ok).toBase64());
+  query.bindValue(4, neighborOid);
 
   if(ok)
     ok = query.exec();
@@ -700,6 +902,7 @@ bool spoton_misc::isAcceptedParticipant(const QByteArray &publicKeyHash)
 	query.setForwardOnly(true);
 	query.prepare("SELECT COUNT(*) "
 		      "FROM friends_public_keys WHERE "
+		      "neighbor_oid = -1 AND "
 		      "public_key_hash = ?");
 	query.bindValue(0, publicKeyHash.toBase64());
 
@@ -829,9 +1032,9 @@ void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
 
 	if(keep)
 	  query.prepare("UPDATE folders SET status = ? WHERE "
-			"oid = ?");
+			"OID = ?");
 	else
-	  query.prepare("DELETE FROM folders WHERE oid = ?");
+	  query.prepare("DELETE FROM folders WHERE OID = ?");
 
 	for(int i = 0; i < oids.size(); i++)
 	  {
@@ -917,7 +1120,7 @@ void spoton_misc::cleanupDatabases(void)
 		   "status_control = 'deleted'");
 	query.exec("UPDATE listeners SET connections = 0, "
 		   "external_ip_address = NULL, "
-		   "status = 'off' WHERE status = 'online' AND "
+		   "status = 'offline' WHERE status = 'online' AND "
 		   "status_control <> 'deleted'");
       }
 

@@ -50,7 +50,8 @@ class spoton_misc
   static bool isAcceptedParticipant(const QByteArray &publicKeyHash);
   static bool isGnome(void);
   static bool isPrivateNetwork(const QHostAddress &address);
-  static bool saveFriendshipBundle(const QByteArray &name,
+  static bool saveFriendshipBundle(const QByteArray &keyType,
+				   const QByteArray &name,
 				   const QByteArray &publicKey,
 				   const int neighborOid,
 				   QSqlDatabase &db);

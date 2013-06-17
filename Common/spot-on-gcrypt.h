@@ -113,12 +113,14 @@ class spoton_gcrypt
   QString m_hashType;
   QString m_id;
   char *m_passphrase;
+  char *m_privateKey;
   char *m_symmetricKey;
   gcry_cipher_hd_t m_cipherHandle;
   int m_cipherAlgorithm;
   int m_hashAlgorithm;
   int m_saltLength;
   size_t m_passphraseLength;
+  size_t m_privateKeyLength;
   size_t m_symmetricKeyLength;
   unsigned long m_iterationCount;
   static void init(void);
