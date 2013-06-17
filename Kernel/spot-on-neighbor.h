@@ -59,7 +59,8 @@ class spoton_neighbor: public QTcpSocket
   QUuid receivedUuid(void) const;
   qint64 id(void) const;
   void setId(const qint64 id);
-  void sharePublicKey(const QByteArray &name,
+  void sharePublicKey(const QByteArray &keyType,
+		      const QByteArray &name,
 		      const QByteArray &publicKey,
 		      const QByteArray &signature);
 
@@ -68,6 +69,7 @@ class spoton_neighbor: public QTcpSocket
   QDateTime m_lastReadTime;
   QHostAddress m_address;
   QNetworkInterface *m_networkInterface;
+  QString m_ipAddress;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_keepAliveTimer;
   QTimer m_lifetime;
@@ -93,22 +95,20 @@ class spoton_neighbor: public QTcpSocket
   void saveParticipantStatus(const QByteArray &name,
 			     const QByteArray &publicKeyHash,
 			     const QByteArray &status);
-  void savePublicKey(const QByteArray &publicKey);
-  void savePublicKey(const QByteArray &name,
+  void savePublicKey(const QByteArray &keyType,
+		     const QByteArray &name,
 		     const QByteArray &publicKey,
+		     const QByteArray &signature,
 		     const qint64 neighborOid);
   void saveStatus(QSqlDatabase &db, const QString &status);
-  void storeLetter(QByteArray &senderPublicKeyHash,
-		   QByteArray &name,
-		   QByteArray &subject,
-		   QByteArray &message);
   void storeLetter(QByteArray &symmetricKey,
 		   QByteArray &symmetricKeyAlgorithm,
 		   QByteArray &senderPublicKeyHash,
 		   QByteArray &name,
 		   QByteArray &subject,
 		   QByteArray &message,
-		   QByteArray &messageDigest);
+		   QByteArray &messageDigest,
+		   const QString &messageType);
   void storeLetter(const QList<QByteArray> &list,
 		   const QByteArray &recipientHash);
 

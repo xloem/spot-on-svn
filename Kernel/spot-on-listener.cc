@@ -97,7 +97,7 @@ spoton_listener::~spoton_listener()
 	query.exec();
 	query.prepare("UPDATE listeners SET connections = 0, "
 		      "external_ip_address = NULL, "
-		      "status = 'off' WHERE OID = ?");
+		      "status = 'offline' WHERE OID = ?");
 	query.bindValue(0, m_id);
 	query.exec();
       }
@@ -173,7 +173,7 @@ void spoton_listener::slotTimeout(void)
 			  setMaxPendingConnections(query.value(1).toInt());
 		      }
 		  }
-		else if(status == "off")
+		else if(status == "offline")
 		  {
 		    close();
 		    m_connections = 0;
@@ -197,7 +197,7 @@ void spoton_listener::slotTimeout(void)
 		    saveExternalAddress(QHostAddress(), db);
 		  }
 
-		if(status == "off" || status == "online")
+		if(status == "offline" || status == "online")
 		  saveStatus(db);
 	      }
 	    else
@@ -264,7 +264,7 @@ void spoton_listener::saveStatus(QSqlDatabase &db)
   if(isListening())
     status = "online";
   else
-    status = "off";
+    status = "offline";
 
   query.bindValue(1, status);
   query.bindValue(2, m_id);
@@ -293,6 +293,7 @@ void spoton_listener::slotNewConnection(void)
     (spoton_misc::
      countryNameFromIPAddress(neighbor->peerAddress().toString()));
 
+#ifdef SPOTON_LINKED_WITH_LIBGEOIP
   if(!spoton_misc::isPrivateNetwork(neighbor->peerAddress()))
     if(country == "Unknown" ||
        !spoton_misc::countryAllowedToConnect(country.remove(" "),
@@ -317,8 +318,9 @@ void spoton_listener::slotNewConnection(void)
 	neighbor->deleteLater();
 	return;
       }
+#endif
 
-  int count = 0;
+  int count = -1;
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
@@ -351,7 +353,14 @@ void spoton_listener::slotNewConnection(void)
 
   QSqlDatabase::removeDatabase("spoton_listener_" + QString::number(s_dbId));
 
-  if(count > 0)
+  if(count == -1)
+    spoton_misc::logError(QString("spoton_listener::slotNewConnection(): "
+				  "unable to determine if IP address %1 "
+				  "is blocked. Accepting "
+				  "connection from %1:%2.").
+			  arg(neighbor->peerAddress().toString()).
+			  arg(neighbor->peerPort()));
+  else if(count > 0)
     {
       spoton_misc::logError(QString("spoton_listener::slotNewConnection(): "
 				    "IP address %1 is blocked. Terminating "

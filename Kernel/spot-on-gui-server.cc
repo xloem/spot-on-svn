@@ -136,6 +136,7 @@ void spoton_gui_server::slotReadyRead(void)
 		     QByteArray::fromBase64(list.value(1)),
 		     QByteArray::fromBase64(list.value(2)),
 		     QByteArray::fromBase64(list.value(3)),
+		     QByteArray::fromBase64(list.value(4)),
 		     "0012");
 		}
 	      else if(message.startsWith("keys_"))
@@ -159,7 +160,7 @@ void spoton_gui_server::slotReadyRead(void)
 							 256).toInt(),
 			 spoton_kernel::s_settings.value("gui/iterationCount",
 							 10000).toInt(),
-			 "private");
+			 "messaging");
 		      spoton_misc::populateCountryDatabase
 			(spoton_kernel::s_crypt1);
 		    }
@@ -204,6 +205,7 @@ void spoton_gui_server::slotReadyRead(void)
 		     QByteArray::fromBase64(list.value(1)),
 		     QByteArray::fromBase64(list.value(2)),
 		     QByteArray::fromBase64(list.value(3)),
+		     QByteArray::fromBase64(list.value(4)),
 		     "0011");
 		}
 	    }

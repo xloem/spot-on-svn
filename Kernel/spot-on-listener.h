@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2012 Alexis Megas
+** Copyright (c) 2012, 2013 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,7 @@
 #include <QTimer>
 
 #include "Common/spot-on-external-address.h"
+#include "Common/spot-on-misc.h"
 #include "spot-on-neighbor.h"
 
 class QNetworkInterface;
@@ -46,6 +47,7 @@ class spoton_listener_tcp_server: public QTcpServer
  public:
   spoton_listener_tcp_server(QObject *parent):QTcpServer(parent)
   {
+    m_neighbors = 0;
   }
 
   QTcpSocket *nextPendingConnection(void)
@@ -56,16 +58,52 @@ class spoton_listener_tcp_server: public QTcpServer
       return m_queue.dequeue();
   }
 
+#if QT_VERSION >= 0x050000
+  void incomingConnection(qintptr socketDescriptor)
+#else
   void incomingConnection(int socketDescriptor)
+#endif
   {
-    QPointer<spoton_neighbor> neighbor = new spoton_neighbor
-      (socketDescriptor, this);
+    /*
+    ** We cannot use findChildren() because the neighbor object
+    ** may become a child of another object.
+    */
 
-    m_queue.enqueue(neighbor);
+    if(m_neighbors >= maxPendingConnections())
+      {
+	QTcpSocket socket;
+
+	socket.setSocketDescriptor(socketDescriptor);
+	socket.close();
+      }
+    else
+      {
+	QPointer<spoton_neighbor> neighbor = new spoton_neighbor
+	  (socketDescriptor, this);
+
+	connect(neighbor,
+		SIGNAL(destroyed(void)),
+		this,
+		SLOT(slotNeighborDestroyed(void)));
+	m_queue.enqueue(neighbor);
+	m_neighbors += 1;
+      }
   }
 
  private:
+  int m_neighbors;
   QQueue<QPointer<spoton_neighbor> > m_queue;
+
+ private slots:
+  void slotNeighborDestroyed(void)
+  {
+    if(m_neighbors > 0)
+      m_neighbors -= 1;
+    else
+      spoton_misc::logError
+	("spoton_listener_tcp_server::slotNeighborDestroyed(): m_neighbors "
+	 "equals zero. Cannot decrement. Internal problem. Please report.");
+  }
 };
 
 class spoton_listener: public spoton_listener_tcp_server

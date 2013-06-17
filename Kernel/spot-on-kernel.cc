@@ -47,7 +47,13 @@ extern "C"
 #endif
 #include <signal.h>
 #if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+#include <termios.h>
 #include <unistd.h>
+#else
+#if QT_VERSION >= 0x050000
+#include <winsock2.h>
+#endif
+#include <windows.h>
 #endif
 }
 
@@ -69,6 +75,24 @@ spoton_gcrypt *spoton_kernel::s_crypt2 = 0;
 static void sig_handler(int signum)
 {
   Q_UNUSED(signum);
+
+  /*
+  ** Resume console input echo.
+  */
+
+#ifdef Q_OS_WIN32
+  DWORD mode = 0;
+  HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE); 
+
+  GetConsoleMode(hStdin, &mode);
+  SetConsoleMode(hStdin, mode | ENABLE_ECHO_INPUT);
+#else
+  termios oldt;
+
+  tcgetattr(STDIN_FILENO, &oldt);
+  oldt.c_lflag |= ECHO;
+  tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+#endif
 
   QString sharedPath(spoton_misc::homePath() + QDir::separator() +
 		     "shared.db");
@@ -167,6 +191,11 @@ int main(int argc, char *argv[])
 
 spoton_kernel::spoton_kernel(void):QObject(0)
 {
+  m_guiServer = 0;
+  m_mailer = 0;
+  m_sharedReader = 0;
+  s_crypt1 = 0;
+  s_crypt2 = 0;
   qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
   spoton_misc::cleanupDatabases();
@@ -200,6 +229,53 @@ spoton_kernel::spoton_kernel(void):QObject(0)
     s_settings[settings.allKeys().at(i)] = settings.value
       (settings.allKeys().at(i));
 
+  QStringList arguments(QCoreApplication::arguments());
+
+  for(int i = 0; i < arguments.size(); i++)
+    if(arguments.at(i) == "--passphrase")
+      {
+	/*
+	** Attempt to disable input echo.
+	*/
+
+#ifdef Q_OS_WIN32
+	DWORD mode = 0;
+	HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE); 
+
+	GetConsoleMode(hStdin, &mode);
+	SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT));
+#else
+	termios newt;
+	termios oldt;
+
+	tcgetattr(STDIN_FILENO, &oldt);
+	newt = oldt;
+	newt.c_lflag &= ~ECHO;
+	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+#endif
+	QString input("");
+	QTextStream cin(stdin);
+	QTextStream cout(stdout);
+
+	cout << "Passphrase: ";
+	cout.flush();
+	input = cin.readLine();
+
+#ifdef Q_OS_WIN32
+	SetConsoleMode(hStdin, mode);
+#else
+	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+#endif
+
+	if(!initializeSecurityContainers(input))
+	  {
+	    qDebug() << "Invalid passphrase?";
+	    deleteLater();
+	  }
+
+	break;
+      }
+
   connect(&m_controlDatabaseTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -231,9 +307,11 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 				    const QByteArray &,
 				    const QByteArray &,
 				    const QByteArray &,
+				    const QByteArray &,
 				    const QString &)),
      this,
      SLOT(slotPublicKeyReceivedFromUI(const qint64,
+				      const QByteArray &,
 				      const QByteArray &,
 				      const QByteArray &,
 				      const QByteArray &,
@@ -305,7 +383,6 @@ void spoton_kernel::cleanup(void)
 void spoton_kernel::slotPollDatabase(void)
 {
   spoton_misc::prepareDatabases();
-  copyPublicKey();
   prepareListeners();
   prepareNeighbors();
   checkForTermination();
@@ -474,6 +551,9 @@ void spoton_kernel::prepareNeighbors(void)
 			  QNetworkProxy proxy;
 
 			  /*
+			  ** The indices of the list do not correspond
+			  ** with the indices of the query container.
+			  **
 			  ** list[3] - Proxy Hostname
 			  ** list[4] - Proxy Password
 			  ** list[5] - Proxy Port
@@ -481,12 +561,21 @@ void spoton_kernel::prepareNeighbors(void)
 			  ** list[7] - Proxy Username
 			  */
 
-			  if(list.at(6) == "Socks5")
+			  if(list.at(6) == "HTTP" ||
+			     list.at(6) == "Socks5")
 			    {
+			      proxy.setCapabilities
+				(QNetworkProxy::HostNameLookupCapability |
+				 QNetworkProxy::TunnelingCapability);
 			      proxy.setHostName(list.at(3));
 			      proxy.setPassword(list.at(4));
 			      proxy.setPort(list.at(5).toUShort());
-			      proxy.setType(QNetworkProxy::Socks5Proxy);
+
+			      if(list.at(6) == "HTTP")
+				proxy.setType(QNetworkProxy::HttpProxy);
+			      else
+				proxy.setType(QNetworkProxy::Socks5Proxy);
+
 			      proxy.setUser(list.at(7));
 			    }
 			  else
@@ -599,41 +688,6 @@ void spoton_kernel::slotNewNeighbor(QPointer<spoton_neighbor> neighbor)
 	  connectSignalsToNeighbor(neighbor);
 	  m_neighbors.insert(id, neighbor);
 	}
-    }
-}
-
-void spoton_kernel::copyPublicKey(void)
-{
-  QByteArray publicKey;
-  bool ok = true;
-
-  if(s_crypt1)
-    publicKey = s_crypt1->publicKey(&ok);
-  else
-    ok = false;
-
-  if(ok)
-    {
-      {
-	QSqlDatabase db = QSqlDatabase::addDatabase
-	  ("QSQLITE", "spoton_kernel");
-
-	db.setDatabaseName
-	  (spoton_misc::homePath() + QDir::separator() + "public_keys.db");
-
-	if(db.open())
-	  {
-	    QSqlQuery query(db);
-
-	    query.prepare("INSERT INTO public_keys (key) VALUES (?)");
-	    query.bindValue(0, publicKey);
-	    query.exec();
-	  }
-
-	db.close();
-      }
-
-      QSqlDatabase::removeDatabase("spoton_kernel");
     }
 }
 
@@ -779,6 +833,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 }
 
 void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
+						const QByteArray &keyType,
 						const QByteArray &name,
 						const QByteArray &publicKey,
 						const QByteArray &signature,
@@ -786,7 +841,8 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
 {
   if(messageType == "0011")
     {
-      QByteArray data(spoton_send::message0011(name, publicKey, signature));
+      QByteArray data
+	(spoton_send::message0011(keyType, name, publicKey, signature));
 
       if(m_neighbors.contains(oid))
 	{
@@ -806,7 +862,8 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
   else
     {
       if(m_neighbors.contains(oid))
-	m_neighbors[oid]->sharePublicKey(name, publicKey, signature);
+	m_neighbors[oid]->sharePublicKey
+	  (keyType, name, publicKey, signature);
       else
 	spoton_misc::logError
 	  (QString("spoton_kernel::slotPublicKeyReceivedFromUI(): "
@@ -941,6 +998,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE friends_public_keys SET "
 		      "status = 'offline' WHERE "
+		      "neighbor_oid = -1 AND "
 		      "strftime('%s', ?) - "
 		      "strftime('%s', last_status_update) > ?");
 	query.bindValue
@@ -1216,11 +1274,16 @@ void spoton_kernel::slotRetrieveMail(void)
   if(!s_crypt1)
     return;
 
-  QByteArray publicKeyHash;
+  QByteArray publicKey;
   bool ok = true;
 
-  publicKeyHash = s_crypt1->publicKeyHash(&ok);
-  
+  publicKey = s_crypt1->publicKey(&ok);
+
+  if(!ok)
+    return;
+
+  QByteArray myPublicKeyHash(spoton_gcrypt::sha512Hash(publicKey, &ok));
+
   if(!ok)
     return;
 
@@ -1287,6 +1350,15 @@ void spoton_kernel::slotRetrieveMail(void)
 
 	      if(ok)
 		{
+		  data.append
+		    (spoton_gcrypt::publicKeyEncrypt(myPublicKeyHash,
+						     publicKey, &ok).
+		     toBase64());
+		  data.append("\n");
+		}
+
+	      if(ok)
+		{
 		  QByteArray messageDigest;
 		  spoton_gcrypt crypt(symmetricKeyAlgorithm,
 				      QString("sha512"),
@@ -1296,16 +1368,11 @@ void spoton_kernel::slotRetrieveMail(void)
 				      0,
 				      QString(""));
 
-		  data.append(crypt.encrypted(publicKeyHash, &ok).
-			      toBase64());
-		  data.append("\n");
-
-		  if(ok)
-		    messageDigest = crypt.keyedHash
-		      (symmetricKey +
-		       symmetricKeyAlgorithm +
-		       publicKeyHash,
-		       &ok);
+		  messageDigest = crypt.keyedHash
+		    (symmetricKey +
+		     symmetricKeyAlgorithm +
+		     myPublicKeyHash,
+		     &ok);
 
 		  if(ok)
 		    signature = s_crypt1->digitalSignature
@@ -1322,7 +1389,7 @@ void spoton_kernel::slotRetrieveMail(void)
 		    messageDigest = crypt.keyedHash
 		      (symmetricKey +
 		       symmetricKeyAlgorithm +
-		       publicKeyHash +
+		       myPublicKeyHash +
 		       signature, &ok);
 
 		  if(ok)
@@ -1369,10 +1436,15 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
   ** mailOid
   */
 
-  QByteArray publicKeyHash;
+  QByteArray myPublicKey;
   bool ok = true;
 
-  publicKeyHash = s_crypt1->publicKeyHash(&ok);
+  myPublicKey = s_crypt1->publicKey(&ok);
+
+  if(!ok)
+    return;
+
+  QByteArray myPublicKeyHash(spoton_gcrypt::sha512Hash(myPublicKey, &ok));
 
   if(!ok)
     return;
@@ -1458,7 +1530,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 				      0,
 				      QString(""));
 
-		  data.append(crypt.encrypted(publicKeyHash, &ok).
+		  data.append(crypt.encrypted(myPublicKeyHash, &ok).
 			      toBase64());
 		  data.append("\n");
 
@@ -1510,75 +1582,82 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	      if(ok)
 		{
-		  QByteArray messageDigest;
-		  spoton_gcrypt crypt(symmetricKeyAlgorithm,
-				      QString("sha512"),
-				      QByteArray(),
-				      symmetricKey,
-				      0,
-				      0,
-				      QString(""));
+		  data.append
+		    (spoton_gcrypt::publicKeyEncrypt(myPublicKeyHash,
+						     publicKey, &ok).
+		     toBase64());
+		  data.append("\n");
+		}
 
-		  data.append(crypt.encrypted(publicKeyHash, &ok).
-			      toBase64());
+	      if(ok)
+		{
+		  QByteArray messageDigest;
+		  spoton_gcrypt *crypt = 0;
+
+		  /*
+		  ** If we have a goldbug, encrypt several parts of
+		  ** the message with it. The symmetric key that
+		  ** we established above will be ignored.
+		  */
+
+		  if(goldbug.isEmpty())
+		    crypt = new spoton_gcrypt(symmetricKeyAlgorithm,
+					      QString("sha512"),
+					      QByteArray(),
+					      symmetricKey,
+					      0,
+					      0,
+					      QString(""));
+		  else
+		    crypt = new spoton_gcrypt("aes256",
+					      QString("sha512"),
+					      QByteArray(),
+					      goldbug,
+					      0,
+					      0,
+					      QString(""));
+
+		  data.append(crypt->encrypted(name, &ok).toBase64());
 		  data.append("\n");
 
 		  if(ok)
 		    {
-		      data.append(crypt.encrypted(name, &ok).toBase64());
+		      data.append(crypt->encrypted(subject, &ok).toBase64());
 		      data.append("\n");
 		    }
 
 		  if(ok)
 		    {
-		      data.append(crypt.encrypted(subject, &ok).toBase64());
+		      data.append(crypt->encrypted(message, &ok).toBase64());
 		      data.append("\n");
 		    }
 
 		  if(ok)
 		    {
-		      data.append(crypt.encrypted(message, &ok).toBase64());
-		      data.append("\n");
+		      if(goldbug.isEmpty())
+			messageDigest = crypt->keyedHash
+			  (symmetricKey +
+			   symmetricKeyAlgorithm +
+			   myPublicKeyHash +
+			   name +
+			   subject +
+			   message, &ok);
+		      else
+			messageDigest = crypt->keyedHash
+			  (goldbug +
+			   "aes256" +
+			   myPublicKeyHash +
+			   name +
+			   subject +
+			   message, &ok);
 		    }
 
 		  if(ok)
-		    messageDigest = crypt.keyedHash
-		      (symmetricKey +
-		       symmetricKeyAlgorithm +
-		       publicKeyHash +
-		       name +
-		       subject +
-		       message, &ok);
-
-		  if(ok)
-		    data.append(crypt.encrypted(messageDigest, &ok).
+		    data.append(crypt->encrypted(messageDigest, &ok).
 				toBase64());
+
+		  delete crypt;
 		}
-
-	      if(ok)
-		if(!goldbug.isEmpty())
-		  {
-		    QByteArray messageDigest;
-		    spoton_gcrypt crypt("aes256",
-					QString("sha512"),
-					QByteArray(),
-					goldbug,
-					0,
-					0,
-					QString(""));
-
-		    messageDigest = crypt.keyedHash(data, &ok);
-
-		    if(ok)
-		      {
-			data = crypt.encrypted(data, &ok).toBase64();
-			data.append("\n");
-		      }
-
-		    if(ok)
-		      data.append(crypt.encrypted(messageDigest, &ok).
-				  toBase64());
-		  }
 
 	      if(ok)
 		{
@@ -1602,4 +1681,76 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
   QSqlDatabase::removeDatabase("spoton_kernel");
   emit sendMail(list);
+}
+
+bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
+{
+  if(s_crypt1 && s_crypt2)
+    return true;
+
+  QByteArray salt;
+  QByteArray saltedPassphraseHash;
+  QString error("");
+  bool ok = false;
+
+  salt = QByteArray::fromHex(s_settings.value("gui/salt", "").toByteArray());
+  saltedPassphraseHash = s_settings.value("gui/saltedPassphraseHash", "").
+    toByteArray();
+
+  if(saltedPassphraseHash ==
+     spoton_gcrypt::saltedPassphraseHash(s_settings.value("gui/hashType",
+							  "sha512").toString(),
+					 passphrase,
+					 salt, error).toHex())
+    if(error.isEmpty())
+      {
+	QByteArray key
+	  (spoton_gcrypt::derivedKey(s_settings.value("gui/cipherType",
+						      "aes256").toString(),
+				     s_settings.value("gui/hashType",
+						      "sha512").toString(),
+				     static_cast
+				     <unsigned long> (s_settings.
+						      value("gui/"
+							    "iterationCount",
+							    10000).toInt()),
+				     passphrase,
+				     salt,
+				     error));
+
+	if(error.isEmpty())
+	  {
+	    ok = true;
+
+	    if(!s_crypt1)
+	      {
+		s_crypt1 = new spoton_gcrypt
+		  (s_settings.value("gui/cipherType",
+				    "aes256").toString().trimmed(),
+		   s_settings.value("gui/hashType",
+				    "sha512").toString().trimmed(),
+		   passphrase.toUtf8(),
+		   key,
+		   s_settings.value("gui/saltLength", 256).toInt(),
+		   s_settings.value("gui/iterationCount", 10000).toInt(),
+		   "messaging");
+		spoton_misc::populateCountryDatabase
+		  (spoton_kernel::s_crypt1);
+	      }
+
+	    if(!s_crypt2)
+	      s_crypt1 = new spoton_gcrypt
+		(s_settings.value("gui/cipherType",
+				  "aes256").toString().trimmed(),
+		 s_settings.value("gui/hashType",
+				  "sha512").toString().trimmed(),
+		 passphrase.toUtf8(),
+		 key,
+		 s_settings.value("gui/saltLength", 256).toInt(),
+		 s_settings.value("gui/iterationCount", 10000).toInt(),
+		 "url");
+	  }
+      }
+
+  return ok;
 }

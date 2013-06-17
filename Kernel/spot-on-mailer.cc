@@ -25,6 +25,7 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QDateTime>
 #include <QDir>
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -36,6 +37,10 @@
 
 spoton_mailer::spoton_mailer(QObject *parent):QObject(parent)
 {
+  connect(&m_reaperTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotReap(void)));
   connect(&m_retrieveMailTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -44,8 +49,15 @@ spoton_mailer::spoton_mailer(QObject *parent):QObject(parent)
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTimeout(void)));
-  m_retrieveMailTimer.setInterval(1500); // Harvest e-mail every 1.5 seconds.
-  m_timer.start(15000);
+  m_reaperTimer.start(60000); /*
+			      ** Reap old letters from our post office
+			      ** once per minute.
+			      */
+  m_retrieveMailTimer.setInterval(5000); /*
+					 ** Harvest a letter from our post
+					 ** office every 5 seconds.
+					 */
+  m_timer.start(15000); // Send queued mail every 15 seconds.
 }
 
 spoton_mailer::~spoton_mailer()
@@ -135,7 +147,7 @@ void spoton_mailer::slotTimeout(void)
 		  query.setForwardOnly(true);
 		  query.prepare("SELECT public_key FROM "
 				"friends_public_keys "
-				"WHERE OID = ?");
+				"WHERE OID = ? AND neighbor_oid = -1");
 		  query.bindValue(0, participantOid);
 
 		  if((ok = query.exec()))
@@ -235,7 +247,7 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT message_bundle FROM post_office "
+	query.prepare("SELECT message_bundle, OID FROM post_office "
 		      "WHERE recipient_hash = ?");
 	query.bindValue(0, publicKeyHash.toBase64());
 
@@ -267,18 +279,20 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 			memcpy(&c, static_cast<void *> (&ttl), 1);
 			message.prepend(c);
 			emit sendMailFromPostOffice(message);
+			
+			QSqlQuery deleteQuery(db);
+
+			deleteQuery.prepare("DELETE FROM post_office "
+					    "WHERE recipient_hash = ? AND "
+					    "OID = ?");
+			deleteQuery.bindValue(0, publicKeyHash.toBase64());
+			deleteQuery.bindValue(1, query.value(1));
+			deleteQuery.exec();
 		      }
 		  }
 	      }
 	    else
 	      m_publicKeyHashes.takeFirst();
-
-	    QSqlQuery deleteQuery(db);
-
-	    deleteQuery.prepare("DELETE FROM post_office "
-				"WHERE recipient_hash = ?");
-	    deleteQuery.bindValue(0, publicKeyHash.toBase64());
-	    deleteQuery.exec();
 	  }
       }
 
@@ -289,4 +303,57 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 
   if(m_publicKeyHashes.isEmpty())
     m_retrieveMailTimer.stop();
+}
+
+void spoton_mailer::slotReap(void)
+{
+  if(!spoton_kernel::s_crypt1)
+    return;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_mailer");
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() + "email.db");
+
+    if(db.open())
+      {
+	QDateTime now(QDateTime::currentDateTime());
+	QSqlQuery query(db);
+	int days = spoton_kernel::s_settings.value
+	  ("gui/postofficeDays", 1).toInt();
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT date_received, OID FROM post_office"))
+	  while(query.next())
+	    {
+	      QDateTime dateTime;
+	      bool ok = true;
+
+	      dateTime = QDateTime::fromString
+		(spoton_kernel::s_crypt1->decrypted(QByteArray::
+						    fromBase64(query.
+							       value(0).
+							       toByteArray()),
+						    &ok).constData(),
+		 Qt::ISODate);
+
+	      if(dateTime.daysTo(now) > days)
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare("DELETE FROM post_office "
+				      "WHERE OID = ?");
+		  deleteQuery.bindValue(0, query.value(1));
+		  deleteQuery.exec();
+		}
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_mailer");
 }

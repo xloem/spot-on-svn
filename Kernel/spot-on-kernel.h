@@ -61,11 +61,11 @@ class spoton_kernel: public QObject
   spoton_gui_server *m_guiServer;
   spoton_mailer *m_mailer;
   spoton_shared_reader *m_sharedReader;
+  bool initializeSecurityContainers(const QString &passphrase);
   void checkForTermination(void);
   void cleanup(void);
   void cleanupDatabases(void);
   void connectSignalsToNeighbor(spoton_neighbor *neighbor);
-  void copyPublicKey(void);
   void prepareListeners(void);
   void prepareNeighbors(void);
 
@@ -76,6 +76,7 @@ class spoton_kernel: public QObject
   void slotNewNeighbor(QPointer<spoton_neighbor> neighbor);
   void slotPollDatabase(void);
   void slotPublicKeyReceivedFromUI(const qint64 oid,
+				   const QByteArray &keyType,
 				   const QByteArray &name,
 				   const QByteArray &publicKey,
 				   const QByteArray &signature,
