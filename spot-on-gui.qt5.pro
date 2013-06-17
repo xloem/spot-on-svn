@@ -1,16 +1,16 @@
 libspoton.target = libspoton.so
-libspoton.commands = gmake -C ../../LibSpotOn
+libspoton.commands = $(MAKE) -C ../../LibSpotOn
 libspoton.depends =
 
 TEMPLATE	= app
 LANGUAGE	= C++
-QT		+= network sql
+QT		+= network sql widgets
 CONFIG		+= qt release warn_on
 
 # The function gcry_kdf_derive() is available in version
 # 1.5.0 of the gcrypt library.
 
-DEFINES += SPOTON_GEOIP_DATA_FILE="'\"/usr/local/share/GeoIP/GeoIP.dat\"'" \
+DEFINES	+= SPOTON_GEOIP_DATA_FILE="'\"/usr/share/GeoIP/GeoIP.dat\"'" \
 	   SPOTON_LINKED_WITH_LIBGEOIP
 
 # Unfortunately, the clean target assumes too much knowledge
@@ -56,8 +56,8 @@ HEADERS		= GUI/spot-on.h \
 SOURCES		= Common/spot-on-gcrypt.cc \
 		  Common/spot-on-misc.cc \
 		  GUI/spot-on-a.cc \
-		  GUI/spot-on.b.cc \
-	          GUI/spot-on-docviewer.cc \
+		  GUI/spot-on-b.cc \
+		  GUI/spot-on-docviewer.cc \
 		  GUI/spot-on-logviewer.cc \
 		  GUI/spot-on-reencode.cc \
 		  GUI/spot-on-tabwidget.cc \
