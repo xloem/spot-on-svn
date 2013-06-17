@@ -238,6 +238,7 @@
 	<file>nouve/outbox.png</file>
 	<file>nouve/read.png</file>
 	<file>nouve/refresh.png</file>
+	<file>nouve/reply.png</file>
 	<file>nouve/search.png</file>
 	<file>nouve/settings.png</file>
 	<file>nouve/share.png</file>
@@ -274,6 +275,7 @@
 	<file>nuvola/outbox.png</file>
 	<file>nuvola/read.png</file>
 	<file>nuvola/refresh.png</file>
+	<file>nuvola/reply.png</file>
 	<file>nuvola/search.png</file>
 	<file>nuvola/settings.png</file>
 	<file>nuvola/share.png</file>
