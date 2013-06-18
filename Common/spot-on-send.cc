@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2013 Alexis Megas
+** Copyright (c) 2011, 2012, 2013 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -267,5 +267,34 @@ QByteArray spoton_send::message0015(void)
      toLatin1());
   results.replace
     ("%2", QByteArray("0").toBase64());
+  return results;
+}
+
+QByteArray spoton_send::message0030(const QHostAddress &address,
+				    const quint16 port)
+{
+  QByteArray content;
+  QByteArray results;
+
+  results.append
+    ("POST /echo/ HTTP/1.1\r\n"
+     "Content-Type: application/x-www-form-urlencoded\r\n"
+     "Content-Length: %1\r\n"
+     "\r\n"
+     "type=0030&content=%2\r\n"
+     "\r\n\r\n");
+  content.append(address.toString().toLatin1().toBase64());
+  content.append("\n");
+  content.append(QString::number(port).toLatin1().toBase64());
+  content.append("\n");
+  content.append(address.scopeId().toLatin1().toBase64());
+  results.replace
+    ("%1",
+     QString::number(content.toBase64().length() +
+		     QString("type=0030&content=\r\n\r\n\r\n").
+		     length()).
+     toLatin1());
+  results.replace
+    ("%2", content.toBase64());
   return results;
 }

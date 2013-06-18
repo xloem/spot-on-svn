@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2013 Alexis Megas
+** Copyright (c) 2011, 2012, 2013 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -461,9 +461,11 @@ void spoton_neighbor::slotReadyRead(void)
 	    process0015(length, data);
 	  else
 	    {
-	      spoton_misc::logError("spoton_neighbor::slotReadyRead(): "
-				    "received irregular data. Setting "
-				    "the read buffer size to 1000 bytes.");
+	      spoton_misc::logError
+		(QString("spoton_neighbor::slotReadyRead(): "
+			 "received irregular data on %1:%2. Setting "
+			 "the read buffer size to 1000 bytes.").
+		 arg(localAddress().toString()).arg(localPort()));
 	      setReadBufferSize(1000);
 	    }
 	}
@@ -2319,4 +2321,20 @@ void spoton_neighbor::slotHostFound(const QHostInfo &hostInfo)
 	m_ipAddress = m_address.toString();
 	break;
       }
+}
+
+void spoton_neighbor::slotPublicizeListenerPlaintext
+(const QHostAddress &address, const quint16 port)
+{
+  if(state() == QAbstractSocket::ConnectedState)
+    {
+      QByteArray message(spoton_send::message0030(address, port));
+
+      if(write(message.constData(), message.length()) != message.length())
+	spoton_misc::logError
+	  ("spoton_neighbor::slotPublicizeListenerPlaintext(): write() "
+	   "error.");
+      else
+	flush();
+    }
 }

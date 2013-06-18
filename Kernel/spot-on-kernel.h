@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2012, 2013 Alexis Megas
+** Copyright (c) 2011, 2012, 2013 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@
 
 #include <QFileSystemWatcher>
 #include <QHash>
+#include <QHostAddress>
 #include <QPointer>
 #include <QSqlDatabase>
 #include <QTimer>
@@ -84,6 +85,7 @@ class spoton_kernel: public QObject
 				   const QByteArray &publicKey,
 				   const QByteArray &signature,
 				   const QString &messageType);
+  void slotPublicizeListenerPlaintext(const qint64 oid);
   void slotRetrieveMail(void);
   void slotScramble(void);
   void slotSendMail(const QByteArray &goldbug,
@@ -96,6 +98,8 @@ class spoton_kernel: public QObject
   void slotStatusTimerExpired(void);
 
  signals:
+  void publicizeListenerPlaintext(const QHostAddress &address,
+				  const quint16 port);
   void receivedChatMessage(const QByteArray &name, const qint64 id);
   void receivedMailMessage(const QByteArray &name, const qint64 id);
   void receivedStatusMessage(const QByteArray &data,

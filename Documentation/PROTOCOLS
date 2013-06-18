@@ -145,3 +145,14 @@ EOL
 11 - URL-10 (Base-64) (Ciphertext, SK)
 EOL
 12 - Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)
+
+Echo Listener Publication
+Echoed? Yes
+
+Message Type ("0030") (Plaintext)
+TTL (Plaintext)
+0 - IP Address (Base-64) (Plaintext)
+EOL
+1 - Port (Base-64) (Plaintext)
+EOL
+2 - Scope ID (Base-64) (Plaintext)

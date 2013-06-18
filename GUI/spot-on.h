@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2012, 2013 Alexis Megas
+** Copyright (c) 2011, 2012, 2013 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -182,6 +182,7 @@ class spoton: public QMainWindow
   void slotPopulateNeighbors(void);
   void slotPopulateParticipants(void);
   void slotProtocolRadioToggled(bool state);
+  void slotPublicizeListenerPlaintext(void);
   void slotQuit(void);
   void slotReceivedKernelMessage(void);
   void slotRefreshMail(void);

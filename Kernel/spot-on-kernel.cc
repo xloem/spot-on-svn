@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2012, 2013 Alexis Megas
+** Copyright (c) 2011, 2012, 2013 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -316,7 +316,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 				      const QByteArray &,
 				      const QByteArray &,
 				      const QString &)));
-  
+  connect(m_guiServer,
+	  SIGNAL(publicizeListenerPlaintext(const qint64)),
+	  this,
+	  SLOT(slotPublicizeListenerPlaintext(const qint64)));
   connect(m_guiServer,
 	  SIGNAL(retrieveMail(void)),
 	  this,
@@ -949,6 +952,12 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  this,
 	  SIGNAL(retrieveMail(const QByteArray &,
 			      const qint64)));
+  connect(this,
+	  SIGNAL(publicizeListenerPlaintext(const QHostAddress &,
+					    const quint16)),
+	  neighbor,
+	  SLOT(slotPublicizeListenerPlaintext(const QHostAddress &,
+					      const quint16)));
   connect(this,
 	  SIGNAL(receivedChatMessage(const QByteArray &,
 				     const qint64)),
@@ -1789,4 +1798,13 @@ void spoton_kernel::cleanupNeighborsDatabase(QSqlDatabase &db)
 
   query.exec("DELETE FROM neighbors WHERE "
 	     "status_control = 'deleted'");
+}
+
+void spoton_kernel::slotPublicizeListenerPlaintext(const qint64 oid)
+{
+  QPointer<spoton_listener> listener = m_listeners.value(oid);
+
+  if(listener)
+    emit publicizeListenerPlaintext(listener->externalAddress(),
+				    listener->externalPort());
 }

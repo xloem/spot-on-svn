@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2013 Alexis Megas
+** Copyright (c) 2011, 2012, 2013 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@
 #define _spoton_send_h_
 
 #include <QByteArray>
+#include <QHostAddress>
 
 class spoton_send
 {
@@ -38,6 +39,7 @@ class spoton_send
     ARTIFICIAL_GET = 0,
     NORMAL_POST
   };
+
   static QByteArray EOM;
   static QByteArray message0000
     (const QByteArray &message,
@@ -54,6 +56,8 @@ class spoton_send
   static QByteArray message0013(const QByteArray &message);
   static QByteArray message0014(const QByteArray &uuid);
   static QByteArray message0015(void);
+  static QByteArray message0030(const QHostAddress &address,
+				const quint16 port);
 
  private:
   spoton_send(void);

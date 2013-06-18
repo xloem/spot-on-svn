@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2013 Alexis Megas
+** Copyright (c) 2011, 2012, 2013 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -131,19 +131,23 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  QList<QByteArray> list(message.split('_'));
 
-		  emit publicKeyReceivedFromUI
-		    (list.value(0).toLongLong(),
-		     QByteArray::fromBase64(list.value(1)),
-		     QByteArray::fromBase64(list.value(2)),
-		     QByteArray::fromBase64(list.value(3)),
-		     QByteArray::fromBase64(list.value(4)),
-		     "0012");
+		  if(list.size() == 5)
+		    emit publicKeyReceivedFromUI
+		      (list.at(0).toLongLong(),
+		       QByteArray::fromBase64(list.at(1)),
+		       QByteArray::fromBase64(list.at(2)),
+		       QByteArray::fromBase64(list.at(3)),
+		       QByteArray::fromBase64(list.at(4)),
+		       "0012");
 		}
 	      else if(message.startsWith("keys_"))
 		{
 		  message.remove(0, strlen("keys_"));
 
 		  QList<QByteArray> list(message.split('_'));
+
+		  if(list.size() != 2)
+		    continue;
 
 		  if(!spoton_kernel::s_crypt1)
 		    {
@@ -154,8 +158,8 @@ void spoton_gui_server::slotReadyRead(void)
 			 spoton_kernel::s_settings.value("gui/hashType",
 							 "sha512").
 			 toString().trimmed(),
-			 QByteArray::fromBase64(list.value(0)),
-			 QByteArray::fromBase64(list.value(1)),
+			 QByteArray::fromBase64(list.at(0)),
+			 QByteArray::fromBase64(list.at(1)),
 			 spoton_kernel::s_settings.value("gui/saltLength",
 							 256).toInt(),
 			 spoton_kernel::s_settings.value("gui/iterationCount",
@@ -187,10 +191,21 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  QList<QByteArray> list(message.split('_'));
 
-		  emit messageReceivedFromUI
-		    (list.value(0).toLongLong(),
-		     QByteArray::fromBase64(list.value(1)),
-		     QByteArray::fromBase64(list.value(2)));
+		  if(list.size() == 3)
+		    emit messageReceivedFromUI
+		      (list.at(0).toLongLong(),
+		       QByteArray::fromBase64(list.at(1)),
+		       QByteArray::fromBase64(list.at(2)));
+		}
+	      else if(message.startsWith("publicizelistenerplaintext"))
+		{
+		  message.remove(0, strlen("publicizelistenerplaintext_"));
+
+		  QList<QByteArray> list(message.split('_'));
+
+		  if(list.size() == 1)
+		    emit publicizeListenerPlaintext
+		      (list.at(0).toLongLong());
 		}
 	      else if(message.startsWith("retrievemail"))
 		emit retrieveMail();
@@ -200,13 +215,14 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  QList<QByteArray> list(message.split('_'));
 
-		  emit publicKeyReceivedFromUI
-		    (list.value(0).toLongLong(),
-		     QByteArray::fromBase64(list.value(1)),
-		     QByteArray::fromBase64(list.value(2)),
-		     QByteArray::fromBase64(list.value(3)),
-		     QByteArray::fromBase64(list.value(4)),
-		     "0011");
+		  if(list.size() == 5)
+		    emit publicKeyReceivedFromUI
+		      (list.at(0).toLongLong(),
+		       QByteArray::fromBase64(list.at(1)),
+		       QByteArray::fromBase64(list.at(2)),
+		       QByteArray::fromBase64(list.at(3)),
+		       QByteArray::fromBase64(list.at(4)),
+		       "0011");
 		}
 	    }
 	}

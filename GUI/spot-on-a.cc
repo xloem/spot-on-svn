@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2012, 2013 Alexis Megas
+** Copyright (c) 2011, 2012, 2013 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -2413,6 +2413,9 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotDeleteListener(void)));
       menu.addAction(tr("Delete &All"),
 		     this, SLOT(slotDeleteAllListeners(void)));
+      menu.addSeparator();
+      menu.addAction(tr("&Publicize Information (Plaintext)"),
+		     this, SLOT(slotPublicizeListenerPlaintext(void)));
       menu.exec(m_ui.neighbors->mapToGlobal(point));
     }
   else if(m_ui.neighbors == sender())

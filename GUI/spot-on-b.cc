@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2012, 2013 Alexis Megas
+** Copyright (c) 2011, 2012, 2013 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -66,10 +66,6 @@ void spoton::slotSendMessage(void)
 
 	  if(name.isEmpty())
 	    name = "unknown";
-
-	  /*
-	  ** message_participantoid_myname_message
-	  */
 
 	  message.append("message_");
 	  message.append(QString("%1_").arg(data.toString()));
@@ -2992,4 +2988,35 @@ void spoton::slotReply(void)
 
   m_ui.outgoingMessage->moveCursor(QTextCursor::Start);
   m_ui.outgoingMessage->setFocus();
+}
+
+void spoton::slotPublicizeListenerPlaintext(void)
+{
+  if(!isKernelActive())
+    return;
+
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.listeners->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.listeners->item
+	(row, m_ui.listeners->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  QByteArray message;
+
+  message.append("publicizelistenerplaintext_");
+  message.append(oid);
+  message.append('\n');
+
+  if(m_kernelSocket.write(message.constData(), message.length()) !=
+     message.length())
+    spoton_misc::logError
+      ("spoton::slotPublicizeListenerPlaintext(): write() failure.");
+  else
+    m_kernelSocket.flush();
 }

@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2013 Alexis Megas
+** Copyright (c) 2011, 2012, 2013 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -119,6 +119,8 @@ class spoton_neighbor: public QTcpSocket
   void slotExternalAddressDiscovered(const QHostAddress &address);
   void slotHostFound(const QHostInfo &hostInfo);
   void slotLifetimeExpired(void);
+  void slotPublicizeListenerPlaintext(const QHostAddress &address,
+				      const quint16 port);
   void slotReadyRead(void);
   void slotReceivedChatMessage(const QByteArray &data, const qint64 id);
   void slotReceivedMailMessage(const QByteArray &data, const qint64 id);

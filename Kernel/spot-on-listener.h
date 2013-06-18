@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2012, 2013 Alexis Megas
+** Copyright (c) 2011, 2012, 2013 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -98,6 +98,8 @@ class spoton_listener: public spoton_listener_tcp_server
 		  const qint64 id,
 		  QObject *parent);
   ~spoton_listener();
+  QHostAddress externalAddress(void) const;
+  quint16 externalPort(void) const;
 
  private:
   QHostAddress m_address;
@@ -106,6 +108,7 @@ class spoton_listener: public spoton_listener_tcp_server
   QTimer m_timer;
   int m_connections;
   qint64 m_id;
+  quint16 m_externalPort;
   quint16 m_port;
   spoton_external_address *m_externalAddress;
   qint64 id(void) const;

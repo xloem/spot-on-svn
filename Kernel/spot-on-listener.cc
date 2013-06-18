@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2012, 2013 Alexis Megas
+** Copyright (c) 2011, 2012, 2013 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
   m_externalAddress = new spoton_external_address(this);
   m_id = id;
   m_networkInterface = 0;
-  m_port = quint16(port.toInt());
+  m_port = m_externalPort = quint16(port.toInt());
   connect(this,
 	  SIGNAL(newConnection(void)),
 	  this,
@@ -718,4 +718,21 @@ void spoton_listener::slotDiscoverExternalAddress(void)
 {
   if(isListening())
     m_externalAddress->discover();
+}
+
+QHostAddress spoton_listener::externalAddress(void) const
+{
+  if(m_externalAddress)
+    return m_externalAddress->address();
+  else
+    return QHostAddress();
+}
+
+quint16 spoton_listener::externalPort(void) const
+{
+  /*
+  ** The external port is currently the local port.
+  */
+
+  return m_externalPort;
 }
