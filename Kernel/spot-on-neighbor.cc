@@ -1792,7 +1792,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
   if(!spoton_kernel::s_crypt1)
     return;
 
-  length -= strlen("type=0013&content=");
+  length -= strlen("type=0030&content=");
 
   /*
   ** We may have received a status message.
@@ -1832,7 +1832,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
       if(list.size() != 3)
 	{
 	  spoton_misc::logError
-	    (QString("spoton_neighbor::process0000(): "
+	    (QString("spoton_neighbor::process0030(): "
 		     "received irregular data. Expecting 3 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
@@ -1854,7 +1854,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
     }
   else
     spoton_misc::logError
-      (QString("spoton_neighbor::process0013(): 0030 "
+      (QString("spoton_neighbor::process0030(): 0030 "
 	       "content-length mismatch (advertised: %1, received: %2).").
        arg(length).arg(data.length()));
 }
