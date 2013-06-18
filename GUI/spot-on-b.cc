@@ -325,6 +325,15 @@ void spoton::highlightKernelPath(void)
   m_ui.kernelPath->setPalette(palette);
 }
 
+void spoton::slotAcceptPublicizedListeners(bool state)
+{
+  m_settings["gui/acceptPublicizedListeners"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/acceptPublicizedListeners", state);
+}
+
 void spoton::slotKeepOnlyUserDefinedNeighbors(bool state)
 {
   m_settings["gui/keepOnlyUserDefinedNeighbors"] = state;

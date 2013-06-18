@@ -942,11 +942,14 @@ bool spoton_misc::isPrivateNetwork(const QHostAddress &address)
   else if(address.protocol() == QAbstractSocket::IPv6Protocol)
     {
       QPair<QHostAddress, int> pair1
-	(QHostAddress::parseSubnet("fc00::/7"));
+	(QHostAddress::parseSubnet("::1/128"));
       QPair<QHostAddress, int> pair2
+	(QHostAddress::parseSubnet("fc00::/7"));
+      QPair<QHostAddress, int> pair3
 	(QHostAddress::parseSubnet("fe80::/10"));
 
-      isPrivate = address.isInSubnet(pair1) || address.isInSubnet(pair2);
+      isPrivate = address.isInSubnet(pair1) || address.isInSubnet(pair2) ||
+	address.isInSubnet(pair3);
     }
 
   return isPrivate;

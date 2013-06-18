@@ -471,6 +471,7 @@ void spoton_kernel::prepareListeners(void)
 		    }
 
 		  m_listeners.remove(id);
+		  cleanupListenersDatabase(db);
 		}
 	    }
       }
@@ -610,6 +611,7 @@ void spoton_kernel::prepareNeighbors(void)
 		    }
 
 		  m_neighbors.remove(id);
+		  cleanupNeighborsDatabase(db);
 		}
 	    }
       }
@@ -631,6 +633,7 @@ void spoton_kernel::prepareNeighbors(void)
 	m_neighbors.remove(m_neighbors.keys().at(i));
       }
 }
+
 void spoton_kernel::checkForTermination(void)
 {
   QString sharedPath(spoton_misc::homePath() + QDir::separator() +
@@ -1764,4 +1767,26 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
       }
 
   return ok;
+}
+
+void spoton_kernel::cleanupListenersDatabase(QSqlDatabase &db)
+{
+  if(!db.isOpen())
+    return;
+
+  QSqlQuery query(db);
+
+  query.exec("DELETE FROM listeners WHERE "
+	     "status_control = 'deleted'");
+}
+
+void spoton_kernel::cleanupNeighborsDatabase(QSqlDatabase &db)
+{
+  if(!db.isOpen())
+    return;
+
+  QSqlQuery query(db);
+
+  query.exec("DELETE FROM neighbors WHERE "
+	     "status_control = 'deleted'");
 }

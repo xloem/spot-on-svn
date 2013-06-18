@@ -271,6 +271,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotGenerateGoldBug(void)));
+  connect(m_ui.acceptPublicizedListeners,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotAcceptPublicizedListeners(bool)));
   connect(m_ui.keepOnlyUserDefinedNeighbors,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -495,6 +499,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.cipherType->clear();
   m_ui.cipherType->addItems(spoton_gcrypt::cipherTypes());
   m_ui.days->setValue(m_settings.value("gui/postofficeDays", 1).toInt());
+  m_ui.acceptPublicizedListeners->setChecked
+    (m_settings.value("gui/acceptPublicizedListeners", false).toBool());
   m_ui.keepOnlyUserDefinedNeighbors->setChecked
     (m_settings.value("gui/keepOnlyUserDefinedNeighbors", false).toBool());
   m_ui.postofficeCheckBox->setChecked
@@ -1042,7 +1048,7 @@ void spoton::slotProtocolRadioToggled(bool state)
       if(radio == m_ui.ipv6Listener)
 	{
 	  m_ui.listenerIP->setInputMask
-	    ("HHHH:HHHH:HHHH:HHHH:HHHH:HHHH:HHHH:HHHH; ");
+	    ("hhhh:hhhh:hhhh:hhhh:hhhh:hhhh:hhhh:hhhh; ");
 	  m_ui.listenerScopeId->setEnabled(true);
 	  m_ui.listenerScopeIdLabel->setEnabled(true);
 	}
@@ -1050,7 +1056,7 @@ void spoton::slotProtocolRadioToggled(bool state)
 	{
 	  m_ui.neighborIP->clear();
 	  m_ui.neighborIP->setInputMask
-	    ("HHHH:HHHH:HHHH:HHHH:HHHH:HHHH:HHHH:HHHH; ");
+	    ("hhhh:hhhh:hhhh:hhhh:hhhh:hhhh:hhhh:hhhh; ");
 	  m_ui.neighborScopeId->setEnabled(true);
 	  m_ui.neighborScopeIdLabel->setEnabled(true);
 	}

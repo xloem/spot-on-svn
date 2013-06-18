@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>965</width>
-                <height>584</height>
+                <width>973</width>
+                <height>574</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1145,6 +1145,13 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_24">
               <item>
+               <widget class="QCheckBox" name="acceptPublicizedListeners">
+                <property name="text">
+                 <string>&amp;Accept Publicized Listeners</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QCheckBox" name="keepOnlyUserDefinedNeighbors">
                 <property name="text">
                  <string>&amp;Keep Only User-Defined Neighbors</string>
@@ -1800,8 +1807,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>993</width>
-             <height>569</height>
+             <width>973</width>
+             <height>574</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -2702,7 +2709,7 @@
      <x>0</x>
      <y>0</y>
      <width>995</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2820,6 +2827,7 @@
   <tabstop>ipv6Listener</tabstop>
   <tabstop>addListener</tabstop>
   <tabstop>countries</tabstop>
+  <tabstop>acceptPublicizedListeners</tabstop>
   <tabstop>keepOnlyUserDefinedNeighbors</tabstop>
   <tabstop>toolButtonCopytoClipboard</tabstop>
   <tabstop>toolButtonMakeFriends</tabstop>

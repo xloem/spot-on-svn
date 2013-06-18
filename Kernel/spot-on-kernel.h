@@ -31,6 +31,7 @@
 #include <QFileSystemWatcher>
 #include <QHash>
 #include <QPointer>
+#include <QSqlDatabase>
 #include <QTimer>
 
 class spoton_gcrypt;
@@ -65,6 +66,8 @@ class spoton_kernel: public QObject
   void checkForTermination(void);
   void cleanup(void);
   void cleanupDatabases(void);
+  void cleanupListenersDatabase(QSqlDatabase &db);
+  void cleanupNeighborsDatabase(QSqlDatabase &db);
   void connectSignalsToNeighbor(spoton_neighbor *neighbor);
   void prepareListeners(void);
   void prepareNeighbors(void);
