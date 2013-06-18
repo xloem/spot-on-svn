@@ -111,10 +111,10 @@ void spoton_misc::prepareDatabases(void)
 					     ** "0" or "1" for inbound.
 					     ** Symmetric key for outbound.
 					     */
-		   "hash TEXT NOT NULL, "   /*
-					    ** Hash of the message and
-					    ** the subject.
-					    */
+		   "hash TEXT NOT NULL, " /*
+					  ** Hash of the message and
+					  ** the subject.
+					  */
 		   "message BLOB NOT NULL, "
 		   "message_digest BLOB, " /*
 					   ** Should only be used when
@@ -160,7 +160,7 @@ void spoton_misc::prepareDatabases(void)
 
 	query.exec("CREATE TABLE IF NOT EXISTS friends_public_keys ("
 		   "gemini TEXT, "
-		   "key_type TEXT NOT NULL DEFAULT 'messaging', "
+		   "key_type_hash TEXT NOT NULL, "
 		   "name TEXT NOT NULL DEFAULT 'unknown', "
 		   "public_key TEXT NOT NULL, "
 		   "public_key_hash TEXT PRIMARY KEY NOT NULL, " /*
@@ -197,7 +197,7 @@ void spoton_misc::prepareDatabases(void)
 	QSqlQuery query(db);
 
 	query.exec("CREATE TABLE IF NOT EXISTS idiotes ("
-		   "id TEXT PRIMARY KEY NOT NULL, "
+		   "id_hash TEXT PRIMARY KEY NOT NULL, "
 		   "public_key BLOB NOT NULL, "
 		   "private_key BLOB NOT NULL)");
       }
