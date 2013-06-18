@@ -1867,12 +1867,10 @@ void spoton::slotDeleteAllUuids(void)
 
 void spoton::slotRefreshMail(void)
 {
-  if(!m_crypt)
-    return;
-  else if(m_ui.mailTab->currentIndex() != 0)
+  if(m_ui.mailTab->currentIndex() != 0)
     return;
 
-  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+  m_ui.reply->setEnabled(m_ui.folder->currentIndex() == 0);
 
   if(m_ui.folder->currentIndex() == 0)
     {
@@ -1883,6 +1881,11 @@ void spoton::slotRefreshMail(void)
     m_ui.mail->horizontalHeaderItem(1)->setText(tr("To"));
   else
     m_ui.mail->horizontalHeaderItem(1)->setText(tr("From/To"));
+
+  if(!m_crypt)
+    return;
+
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
@@ -2213,6 +2216,17 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
       text.append(date);
       text.append("<br>");
       text.append(message);
+
+      if(status != tr("Deleted"))
+	{
+	  QTableWidgetItem *item = 0;
+
+	  if((item = m_ui.mail->
+	      item(row, m_ui.mail->columnCount() - 1))) // OID
+	    if(updateMailStatus(item->text(), tr("Deleted")))
+	      if((item = m_ui.mail->item(row, 2))) // Status
+		item->setText(tr("Deleted"));
+	}
     }
 
   m_ui.mailMessage->clear();
