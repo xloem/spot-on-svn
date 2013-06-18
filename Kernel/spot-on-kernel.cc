@@ -225,6 +225,9 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   if(!settings.contains("kernel/ttl_0013"))
     settings.setValue("kernel/ttl_0013", 16);
 
+  if(!settings.contains("kernel/ttl_0030"))
+    settings.setValue("kernel/ttl_0030", 16);
+
   for(int i = 0; i < settings.allKeys().size(); i++)
     s_settings[settings.allKeys().at(i)] = settings.value
       (settings.allKeys().at(i));
