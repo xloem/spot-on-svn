@@ -1930,14 +1930,19 @@ void spoton::slotRefreshMail(void)
 		     i == 3 || i == 5 || i == 6)
 		    {
 		      if(i == 1 || i == 2 || i == 3 || i == 5)
-			item = new QTableWidgetItem
-			  (QString::
-			   fromUtf8(m_crypt->
-				    decrypted(QByteArray::
-					      fromBase64(query.
-							 value(i).
-							 toByteArray()),
-					      &ok).constData()));
+			{
+			  if(goldbug == "0")
+			    item = new QTableWidgetItem
+			      (QString::
+			       fromUtf8(m_crypt->
+					decrypted(QByteArray::
+						  fromBase64(query.
+							     value(i).
+							     toByteArray()),
+						  &ok).constData()));
+			  else
+			    item = new QTableWidgetItem("#####");
+			}
 		      else
 			{
 			  if(goldbug == "0")
@@ -2072,9 +2077,14 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
 
     if(goldbug == "1")
       {
+	bool ok = true;
+
 	goldbug = QInputDialog::getText
 	  (this, tr("Spot-On: Goldbug"), tr("&Goldbug"),
-	   QLineEdit::Password);
+	   QLineEdit::Password, QString(""), &ok);
+
+	if(!ok)
+	  return;
 
 	int rc = applyGoldbugToInboxLetter(goldbug.toUtf8(), row);
 

@@ -743,43 +743,49 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 
   if(ok)
     {
-      spoton_gcrypt crypt(symmetricKeyAlgorithm,
-			  QString("sha512"),
-			  QByteArray(),
-			  symmetricKey,
-			  0,
-			  0,
-			  QString(""));
+      {
+	/*
+	** We want crypt to be destroyed as soon as possible.
+	*/
 
-      data.append
-	(crypt.encrypted(myPublicKeyHash, &ok).toBase64());
-      data.append("\n");
+	spoton_gcrypt crypt(symmetricKeyAlgorithm,
+			    QString("sha512"),
+			    QByteArray(),
+			    symmetricKey,
+			    0,
+			    0,
+			    QString(""));
 
-      if(ok)
-	{
-	  data.append(crypt.encrypted(name, &ok).toBase64());
-	  data.append("\n");
-	}
+	data.append
+	  (crypt.encrypted(myPublicKeyHash, &ok).toBase64());
+	data.append("\n");
 
-      if(ok)
-	{
-	  data.append(crypt.encrypted(message, &ok).toBase64());
-	  data.append("\n");
-	}
+	if(ok)
+	  {
+	    data.append(crypt.encrypted(name, &ok).toBase64());
+	    data.append("\n");
+	  }
 
-      if(ok)
-	{
-	  QByteArray messageDigest
-	    (crypt.keyedHash(symmetricKey +
-			     symmetricKeyAlgorithm +
-			     myPublicKeyHash +
-			     name +
-			     message,
-			     &ok));
+	if(ok)
+	  {
+	    data.append(crypt.encrypted(message, &ok).toBase64());
+	    data.append("\n");
+	  }
 
-	  if(ok)
-	    data.append(crypt.encrypted(messageDigest, &ok).toBase64());
-	}
+	if(ok)
+	  {
+	    QByteArray messageDigest
+	      (crypt.keyedHash(symmetricKey +
+			       symmetricKeyAlgorithm +
+			       myPublicKeyHash +
+			       name +
+			       message,
+			       &ok));
+	    
+	    if(ok)
+	      data.append(crypt.encrypted(messageDigest, &ok).toBase64());
+	  }
+      }
 
       if(ok)
 	if(!gemini.isEmpty())
@@ -1115,44 +1121,50 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 	      if(ok)
 		{
-		  spoton_gcrypt crypt(symmetricKeyAlgorithm,
-				      QString("sha512"),
-				      QByteArray(),
-				      symmetricKey,
-				      0,
-				      0,
-				      QString(""));
+		  {
+		    /*
+		    ** We want crypt to be destroyed as soon as possible.
+		    */
 
-		  data.append
-		    (crypt.encrypted(myPublicKeyHash, &ok).toBase64());
-		  data.append("\n");
+		    spoton_gcrypt crypt(symmetricKeyAlgorithm,
+					QString("sha512"),
+					QByteArray(),
+					symmetricKey,
+					0,
+					0,
+					QString(""));
 
-		  if(ok)
-		    {
-		      data.append(crypt.encrypted(name, &ok).toBase64());
-		      data.append("\n");
-		    }
+		    data.append
+		      (crypt.encrypted(myPublicKeyHash, &ok).toBase64());
+		    data.append("\n");
 
-		  if(ok)
-		    {
-		      data.append(crypt.encrypted(status, &ok).toBase64());
-		      data.append("\n");
-		    }
+		    if(ok)
+		      {
+			data.append(crypt.encrypted(name, &ok).toBase64());
+			data.append("\n");
+		      }
 
-		  if(ok)
-		    {
-		      QByteArray messageDigest
-			(crypt.keyedHash(symmetricKey +
-					 symmetricKeyAlgorithm +
-					 myPublicKeyHash +
-					 name +
-					 status,
-					 &ok));
+		    if(ok)
+		      {
+			data.append(crypt.encrypted(status, &ok).toBase64());
+			data.append("\n");
+		      }
 
-		      if(ok)
-			data.append
-			  (crypt.encrypted(messageDigest, &ok).toBase64());
-		    }
+		    if(ok)
+		      {
+			QByteArray messageDigest
+			  (crypt.keyedHash(symmetricKey +
+					   symmetricKeyAlgorithm +
+					   myPublicKeyHash +
+					   name +
+					   status,
+					   &ok));
+
+			if(ok)
+			  data.append
+			    (crypt.encrypted(messageDigest, &ok).toBase64());
+		      }
+		  }
 
 		  if(ok)
 		    if(!gemini.isEmpty())
