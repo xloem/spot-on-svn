@@ -292,7 +292,8 @@ QByteArray spoton_send::message0030(const QByteArray &message)
 }
 
 QByteArray spoton_send::message0030(const QHostAddress &address,
-				    const quint16 port)
+				    const quint16 port,
+				    const char ttl)
 {
   QByteArray content;
   QByteArray results;
@@ -304,6 +305,7 @@ QByteArray spoton_send::message0030(const QHostAddress &address,
      "\r\n"
      "type=0030&content=%2\r\n"
      "\r\n\r\n");
+  content.append(ttl);
   content.append(address.toString().toLatin1().toBase64());
   content.append("\n");
   content.append(QString::number(port).toLatin1().toBase64());

@@ -63,9 +63,7 @@ class spoton_listener_tcp_server: public QTcpServer
   void incomingConnection(int socketDescriptor)
 #endif
   {
-    int m = findChildren<spoton_neighbor *> ().size();
-
-    if(m >= maxPendingConnections())
+    if(findChildren<spoton_neighbor *> ().size() >= maxPendingConnections())
       {
 	QTcpSocket socket;
 
@@ -106,7 +104,6 @@ class spoton_listener: public spoton_listener_tcp_server
   QNetworkInterface *m_networkInterface;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_timer;
-  int m_connections;
   qint64 m_id;
   quint16 m_externalPort;
   quint16 m_port;

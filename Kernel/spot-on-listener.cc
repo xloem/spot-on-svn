@@ -48,7 +48,6 @@ spoton_listener::spoton_listener(const QString &ipAddress,
   s_dbId += 1;
   m_address = QHostAddress(ipAddress);
   m_address.setScopeId(scopeId);
-  m_connections = 0;
   m_externalAddress = new spoton_external_address(this);
   m_id = id;
   m_networkInterface = 0;
@@ -176,7 +175,6 @@ void spoton_listener::slotTimeout(void)
 		else if(status == "offline")
 		  {
 		    close();
-		    m_connections = 0;
 
 		    foreach(spoton_neighbor *socket,
 			    findChildren<spoton_neighbor *> ())
@@ -259,7 +257,8 @@ void spoton_listener::saveStatus(QSqlDatabase &db)
 
   query.prepare("UPDATE listeners SET connections = ?, status = ? "
 		"WHERE OID = ? AND status <> ?");
-  query.bindValue(0, QString::number(m_connections));
+  query.bindValue
+    (0, QString::number(findChildren<spoton_neighbor *> ().size()));
 
   if(isListening())
     status = "online";
@@ -568,7 +567,6 @@ void spoton_listener::slotNewConnection(void)
 
   if(created && id != -1)
     {
-      m_connections += 1;
       updateConnectionCount();
       connect(neighbor,
 	      SIGNAL(disconnected(void)),
@@ -596,7 +594,8 @@ void spoton_listener::updateConnectionCount(void)
 
 	query.prepare("UPDATE listeners SET connections = ? "
 		      "WHERE OID = ?");
-	query.bindValue(0, QString::number(m_connections));
+	query.bindValue
+	  (0, QString::number(findChildren<spoton_neighbor *> ().size()));
 	query.bindValue(1, m_id);
 	query.exec();
       }
@@ -612,12 +611,7 @@ void spoton_listener::slotNeighborDisconnected(void)
   spoton_neighbor *socket = qobject_cast<spoton_neighbor *> (sender());
 
   if(socket)
-    {
-      if(m_connections > 0)
-	m_connections -= 1;
-
-      socket->deleteLater();
-    }
+    socket->deleteLater();
 
   updateConnectionCount();
 }

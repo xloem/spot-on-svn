@@ -2420,7 +2420,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("Delete &All"),
 		     this, SLOT(slotDeleteAllListeners(void)));
       menu.addSeparator();
-      menu.addAction(tr("&Publicize Information (Plaintext)"),
+      menu.addAction(tr("&Publish Information (Plaintext)"),
 		     this, SLOT(slotPublicizeListenerPlaintext(void)));
       menu.exec(m_ui.neighbors->mapToGlobal(point));
     }

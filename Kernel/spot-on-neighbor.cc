@@ -1778,7 +1778,15 @@ void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
       data = QByteArray::fromBase64(data);
 
       if(data == "0")
-	m_lastReadTime = QDateTime::currentDateTime();
+	{
+	  m_lastReadTime = QDateTime::currentDateTime();
+	  spoton_misc::logError("spoton_neighbor::process0015(): received "
+				"keep-alive. Resetting timer.");
+	}
+      else
+	spoton_misc::logError
+	  ("spoton_neighbor::process0015(): received unknown keep-alive "
+	   "instruction.");
     }
   else
     spoton_misc::logError
@@ -2409,7 +2417,13 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
 {
   if(state() == QAbstractSocket::ConnectedState)
     {
-      QByteArray message(spoton_send::message0030(address, port));
+      char c = 0;
+      short ttl = spoton_kernel::s_settings.value
+	("kernel/ttl_0030", 16).toInt();
+
+      memcpy(&c, static_cast<void *> (&ttl), 1);
+
+      QByteArray message(spoton_send::message0030(address, port, c));
 
       if(write(message.constData(), message.length()) != message.length())
 	spoton_misc::logError

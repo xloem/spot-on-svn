@@ -58,7 +58,8 @@ class spoton_send
   static QByteArray message0015(void);
   static QByteArray message0030(const QByteArray &message);
   static QByteArray message0030(const QHostAddress &address,
-				const quint16 port);
+				const quint16 port,
+				const char ttl);
 
  private:
   spoton_send(void);
