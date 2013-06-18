@@ -160,7 +160,7 @@ void spoton_misc::prepareDatabases(void)
 
 	query.exec("CREATE TABLE IF NOT EXISTS friends_public_keys ("
 		   "gemini TEXT, "
-		   "key_type_hash TEXT NOT NULL, "
+		   "key_type TEXT NOT NULL DEFAULT 'messaging', "
 		   "name TEXT NOT NULL DEFAULT 'unknown', "
 		   "public_key TEXT NOT NULL, "
 		   "public_key_hash TEXT PRIMARY KEY NOT NULL, " /*
@@ -197,7 +197,7 @@ void spoton_misc::prepareDatabases(void)
 	QSqlQuery query(db);
 
 	query.exec("CREATE TABLE IF NOT EXISTS idiotes ("
-		   "id_hash TEXT PRIMARY KEY NOT NULL, "
+		   "id TEXT PRIMARY KEY NOT NULL, "
 		   "public_key BLOB NOT NULL, "
 		   "private_key BLOB NOT NULL)");
       }

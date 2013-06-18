@@ -12,8 +12,6 @@ all, save for folder_index, hash, receiver_sender_hash, and recipient_hash
 friends_public_keys.db:
 
 gemini
-name
-public_key
 
 idiotes.db:
 
@@ -40,7 +38,6 @@ proxy_username
 remote_ip_address
 remote_port
 scope_id
-uuid
 
 shared.db:
 
