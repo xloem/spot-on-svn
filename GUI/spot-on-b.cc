@@ -3007,6 +3007,9 @@ void spoton::slotPublicizeListenerPlaintext(void)
 	oid = item->text();
     }
 
+  if(oid.isEmpty())
+    return;
+
   QByteArray message;
 
   message.append("publicizelistenerplaintext_");

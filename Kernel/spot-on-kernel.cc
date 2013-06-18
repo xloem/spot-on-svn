@@ -921,6 +921,12 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  m_guiServer,
 	  SLOT(slotReceivedChatMessage(const QByteArray &)));
   connect(neighbor,
+	  SIGNAL(publicizeListenerPlaintext(const QByteArray &,
+					    const qint64)),
+	  this,
+	  SIGNAL(publicizeListenerPlaintext(const QByteArray &,
+					    const qint64)));
+  connect(neighbor,
 	  SIGNAL(receivedChatMessage(const QByteArray &,
 				     const qint64)),
 	  this,
@@ -952,6 +958,12 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  this,
 	  SIGNAL(retrieveMail(const QByteArray &,
 			      const qint64)));
+  connect(this,
+	  SIGNAL(publicizeListenerPlaintext(const QByteArray &,
+					    const qint64)),
+	  neighbor,
+	  SLOT(slotPublicizeListenerPlaintext(const QByteArray &,
+					      const qint64)));
   connect(this,
 	  SIGNAL(publicizeListenerPlaintext(const QHostAddress &,
 					    const quint16)),

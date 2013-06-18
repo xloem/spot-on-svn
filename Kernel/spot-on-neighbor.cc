@@ -459,6 +459,15 @@ void spoton_neighbor::slotReadyRead(void)
 	    process0014(length, data);
 	  else if(length > 0 && data.contains("type=0015&content="))
 	    process0015(length, data);
+	  else if(length > 0 && data.contains("type=0030&content="))
+	    {
+	      if(!spoton_kernel::s_crypt1)
+		spoton_misc::logError
+		  ("spoton_neighbor::slotReadyRead(): "
+		   "spoton_kernel::s_crypt1 is 0.");
+	      else
+		process0030(length, data);
+	    }
 	  else
 	    {
 	      spoton_misc::logError
@@ -730,9 +739,9 @@ void spoton_neighbor::slotRetrieveMail(const QByteArray &data,
 				       const qint64 id)
 {
   /*
-  ** A neighbor (id) received a message. This neighbor now needs
-  ** to send the message to its peer. Please note that data also contains
-  ** the TTL.
+  ** A neighbor (id) received a request to retrieve mail. This neighbor
+  ** now needs to send the message to its peer. Please note that data
+  ** also contains the TTL.
   */
 
   if(id != m_id)
@@ -1778,6 +1787,78 @@ void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
        arg(length).arg(data.length()));
 }
 
+void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
+{
+  if(!spoton_kernel::s_crypt1)
+    return;
+
+  length -= strlen("type=0013&content=");
+
+  /*
+  ** We may have received a status message.
+  */
+
+  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
+
+  data.remove
+    (0,
+     data.indexOf("type=0030&content=") + strlen("type=0030&content="));
+
+  if(length == data.length())
+    {
+      data = QByteArray::fromBase64(data);
+
+      short ttl = 0;
+
+      if(!data.isEmpty())
+	memcpy(static_cast<void *> (&ttl),
+	       static_cast<const void *> (data.constData()), 1);
+
+      if(ttl > 0)
+	ttl -= 1;
+
+      data.remove(0, 1); // Remove TTL.
+
+      QByteArray originalData(data); /*
+				     ** We may need to echo the
+				     ** message. Don't forget to
+				     ** decrease the TTL!
+				     */
+      QList<QByteArray> list(data.split('\n'));
+
+      for(int i = 0; i < list.size(); i++)
+	list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+      if(list.size() != 3)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::process0000(): "
+		     "received irregular data. Expecting 3 "
+		     "entries, "
+		     "received %1.").arg(list.size()));
+	  return;
+	}
+
+      if(ttl > 0)
+	{
+	  /*
+	  ** Replace TTL.
+	  */
+
+	  char c = 0;
+
+	  memcpy(&c, static_cast<void *> (&ttl), 1);
+	  originalData.prepend(c);
+	  emit publicizeListenerPlaintext(originalData, m_id);
+	}
+    }
+  else
+    spoton_misc::logError
+      (QString("spoton_neighbor::process0013(): 0030 "
+	       "content-length mismatch (advertised: %1, received: %2).").
+       arg(length).arg(data.length()));
+}
+
 void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
 {
   if(state() == QAbstractSocket::ConnectedState)
@@ -2337,4 +2418,26 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
       else
 	flush();
     }
+}
+void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
+						     const qint64 id)
+{
+  /*
+  ** A neighbor (id) received a request to publish listener information.
+  ** This neighbor now needs to send the message to its peer. Please
+  ** note that data also contains the TTL.
+  */
+
+  if(id != m_id)
+    if(state() == QAbstractSocket::ConnectedState)
+      {
+	QByteArray message(spoton_send::message0030(data));
+
+	if(write(message.constData(), message.length()) != message.length())
+	  spoton_misc::logError
+	    ("spoton_neighbor::slotPublicizeListenerPlaintext(): write() "
+	     "error.");
+	else
+	  flush();
+      }
 }

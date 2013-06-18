@@ -88,6 +88,7 @@ class spoton_neighbor: public QTcpSocket
   void process0013(int length, const QByteArray &data);
   void process0014(int length, const QByteArray &data);
   void process0015(int length, const QByteArray &data);
+  void process0030(int length, const QByteArray &data);
   void saveExternalAddress(const QHostAddress &address,
 			   QSqlDatabase &db);
   void saveParticipantStatus(const QByteArray &name,
@@ -119,6 +120,8 @@ class spoton_neighbor: public QTcpSocket
   void slotExternalAddressDiscovered(const QHostAddress &address);
   void slotHostFound(const QHostInfo &hostInfo);
   void slotLifetimeExpired(void);
+  void slotPublicizeListenerPlaintext(const QByteArray &data,
+				      const qint64 id);
   void slotPublicizeListenerPlaintext(const QHostAddress &address,
 				      const quint16 port);
   void slotReadyRead(void);
@@ -137,6 +140,7 @@ class spoton_neighbor: public QTcpSocket
 
  signals:
   void newEMailArrived(void);
+  void publicizeListenerPlaintext(const QByteArray &data, const qint64 id);
   void receivedChatMessage(const QByteArray &data);
   void receivedChatMessage(const QByteArray &data, const qint64 id);
   void receivedMailMessage(const QByteArray &data, const qint64 id);

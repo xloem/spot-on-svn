@@ -98,6 +98,8 @@ class spoton_kernel: public QObject
   void slotStatusTimerExpired(void);
 
  signals:
+  void publicizeListenerPlaintext(const QByteArray &data,
+				  const qint64 id);
   void publicizeListenerPlaintext(const QHostAddress &address,
 				  const quint16 port);
   void receivedChatMessage(const QByteArray &name, const qint64 id);

@@ -1771,6 +1771,9 @@ void spoton::slotDeleteListener(void)
 	oid = item->text();
     }
 
+  if(oid.isEmpty())
+    return;
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
@@ -1815,6 +1818,9 @@ void spoton::slotDeleteNeighbor(void)
       if(item)
 	oid = item->text();
     }
+
+  if(oid.isEmpty())
+    return;
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
@@ -2550,6 +2556,9 @@ void spoton::slotConnectNeighbor(void)
 	oid = item->text();
     }
 
+  if(oid.isEmpty())
+    return;
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
@@ -2587,6 +2596,9 @@ void spoton::slotDisconnectNeighbor(void)
       if(item)
 	oid = item->text();
     }
+
+  if(oid.isEmpty())
+    return;
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
@@ -2628,6 +2640,9 @@ void spoton::slotBlockNeighbor(void)
       if(item)
 	remoteIp = item->text();
     }
+
+  if(remoteIp.isEmpty())
+    return;
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
@@ -2703,6 +2718,9 @@ void spoton::slotUnblockNeighbor(void)
       if(item)
 	remoteIp = item->text();
     }
+
+  if(remoteIp.isEmpty())
+    return;
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
