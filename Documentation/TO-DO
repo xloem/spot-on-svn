@@ -26,12 +26,12 @@ Completed Items
        the Neighbors table.
 15.    Re-encode various databases whenever the passphrase is changed.
 16.    Offline e-mail.
+17.    Qt 4.6.3 support.
 
 Remaining Items
 
 1.     Secure connection between the interface and the kernel.
 2.     Inspect UTF-8 uses.
-3.     Qt 4.6.3 support.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.

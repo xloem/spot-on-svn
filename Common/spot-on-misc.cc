@@ -1223,3 +1223,14 @@ void spoton_misc::prepareUrlDatabases(void)
 	QSqlDatabase::removeDatabase("spoton_misc");
       }
 }
+
+void spoton_misc::saveNeighbor(const QHostAddress &address,
+			       const quint16 port,
+			       spoton_gcrypt *crypt)
+{
+  if(!crypt)
+    return;
+
+  Q_UNUSED(address);
+  Q_UNUSED(port);
+}

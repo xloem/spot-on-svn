@@ -318,7 +318,7 @@ void spoton_neighbor::slotTimeout(void)
 	if(m_networkInterface)
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::slotTimeout(): "
-		     "network interface (%1) is not active. "
+		     "network interface %1 is not active. "
 		     "Aborting socket.").
 	     arg(m_networkInterface->name()));
 	else
@@ -470,12 +470,21 @@ void spoton_neighbor::slotReadyRead(void)
 	    }
 	  else
 	    {
-	      spoton_misc::logError
-		(QString("spoton_neighbor::slotReadyRead(): "
-			 "received irregular data on %1:%2. Setting "
-			 "the read buffer size to 1000 bytes.").
-		 arg(localAddress().toString()).arg(localPort()));
-	      setReadBufferSize(1000);
+	      if(readBufferSize() != 1000)
+		{
+		  spoton_misc::logError
+		    (QString("spoton_neighbor::slotReadyRead(): "
+			     "received irregular data on %1:%2. Setting "
+			     "the read buffer size to 1000 bytes.").
+		     arg(localAddress().toString()).arg(localPort()));
+		  setReadBufferSize(1000);
+		}
+	      else
+		spoton_misc::logError
+		  (QString("spoton_neighbor::slotReadyRead(): "
+			   "received irregular data on %1:%2. The "
+			   "read buffer size remains at 1000 bytes.").
+		   arg(localAddress().toString()).arg(localPort()));
 	    }
 	}
     }
@@ -1846,6 +1855,21 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 		     "received %1.").arg(list.size()));
 	  return;
 	}
+      else
+	{
+	  QHostAddress address;
+
+	  address.setAddress(list.at(0).constData());
+	  address.setScopeId(list.at(2).constData());
+
+	  if(!spoton_misc::isPrivateNetwork(address))
+	    {
+	      quint16 port = list.at(1).toUShort();
+
+	      spoton_misc::saveNeighbor
+		(address, port, spoton_kernel::s_crypt1);
+	    }
+	}
 
       if(ttl > 0)
 	{
@@ -2076,12 +2100,15 @@ void spoton_neighbor::slotSendKeepAlive(void)
     {
       QByteArray message(spoton_send::message0015());
 
-      if(::send(socketDescriptor(),
-		message.constData(),
-		message.length(),
-		MSG_OOB) != message.length())
+      /*
+      ** Sending 0015 should be a priority. Does Qt
+      ** support out-of-band data?
+      */
+
+      if(write(message.constData(),
+	       message.length()) != message.length())
 	spoton_misc::logError
-	  ("spoton_neighbor::slotSendKeepAlive(): send() "
+	  ("spoton_neighbor::slotSendKeepAlive(): write() "
 	   "error.");
       else
 	flush();

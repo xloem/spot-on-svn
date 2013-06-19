@@ -71,6 +71,9 @@ class spoton_misc
 				    QString &neighborOid,
 				    const QString &oid,
 				    spoton_gcrypt *crypt);
+  static void saveNeighbor(const QHostAddress &address,
+			   const quint16 port,
+			   spoton_gcrypt *crypt);
 
  private:
   spoton_misc(void);

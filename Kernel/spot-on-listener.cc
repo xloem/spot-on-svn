@@ -235,7 +235,7 @@ void spoton_listener::slotTimeout(void)
 	if(m_networkInterface)
 	  spoton_misc::logError
 	    (QString("spoton_listener::slotTimeout(): "
-		     "network interface (%1) is not active. "
+		     "network interface %1 is not active. "
 		     "Aborting.").
 	     arg(m_networkInterface->name()));
 	else
