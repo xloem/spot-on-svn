@@ -141,6 +141,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      updateQuery.prepare("UPDATE post_office "
 				  "SET date_received = ?, "
 				  "message_bundle = ?, "
+				  "message_bundle_hash = ?, "
 				  "participant_hash = ? "
 				  "WHERE "
 				  "OID = ?");
@@ -174,10 +175,15 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      if(ok)
 		updateQuery.bindValue
-		  (2, newCrypt->encrypted(participantHash,
+		  (2, newCrypt->keyedHash(messageBundle,
 					  &ok).toBase64());
 
-	      updateQuery.bindValue(3, query.value(3));
+	      if(ok)
+		updateQuery.bindValue
+		  (3, newCrypt->encrypted(participantHash,
+					  &ok).toBase64());
+
+	      updateQuery.bindValue(4, query.value(3));
 
 	      if(ok)
 		updateQuery.exec();

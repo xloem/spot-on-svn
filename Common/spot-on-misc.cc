@@ -136,6 +136,7 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS post_office ("
 		   "date_received TEXT NOT NULL, "
 		   "message_bundle BLOB NOT NULL, "
+		   "message_bundle_hash TEXT PRIMARY KEY NOT NULL, "
 		   "recipient_hash TEXT NOT NULL)"); /*
 						     ** Hash of the
 						     ** recipient's public

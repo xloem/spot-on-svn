@@ -2376,8 +2376,9 @@ void spoton_neighbor::storeLetter(const QList<QByteArray> &list,
 	bool ok = true;
 
 	query.prepare("INSERT INTO post_office "
-		      "(date_received, message_bundle, recipient_hash) "
-		      "VALUES (?, ?, ?)");
+		      "(date_received, message_bundle, "
+		      "message_bundle_hash, recipient_hash) "
+		      "VALUES (?, ?, ?, ?)");
 	query.bindValue
 	  (0, spoton_kernel::s_crypt1->
 	   encrypted(QDateTime::currentDateTime().
@@ -2403,9 +2404,14 @@ void spoton_neighbor::storeLetter(const QList<QByteArray> &list,
 	    data.append(list.value(10).toBase64());
 	    query.bindValue
 	      (1, spoton_kernel::s_crypt1->encrypted(data, &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(2, spoton_kernel::s_crypt1->keyedHash(data, &ok).
+		 toBase64());
 	  }
 
-	query.bindValue(2, recipientHash.toBase64());
+	query.bindValue(3, recipientHash.toBase64());
 
 	if(ok)
 	  query.exec();
