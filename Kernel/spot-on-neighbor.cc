@@ -2076,10 +2076,10 @@ void spoton_neighbor::slotSendKeepAlive(void)
     {
       QByteArray message(spoton_send::message0015());
 
-      if(send(socketDescriptor(),
-	      static_cast<const void *> (message.constData()),
-	      static_cast<size_t> (message.length()),
-	      MSG_OOB) != message.length())
+      if(::send(socketDescriptor(),
+		message.constData(),
+		message.length(),
+		MSG_OOB) != message.length())
 	spoton_misc::logError
 	  ("spoton_neighbor::slotSendKeepAlive(): send() "
 	   "error.");
