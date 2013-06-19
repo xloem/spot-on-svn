@@ -711,8 +711,8 @@ void spoton_misc::populateUrlsDatabase(const QList<QList<QVariant> > &list,
 {
   if(!crypt)
     return;
-
-  prepareUrlDatabases();
+  else if(list.isEmpty())
+    return;
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
