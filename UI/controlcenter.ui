@@ -462,7 +462,7 @@
         <item>
          <widget class="QTabWidget" name="mailTab">
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="tab_4">
            <attribute name="title">
@@ -1807,8 +1807,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1029</width>
-             <height>353</height>
+             <width>993</width>
+             <height>569</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -2214,6 +2214,9 @@
               </property>
               <property name="selectionBehavior">
                <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+              <property name="horizontalScrollMode">
+               <enum>QAbstractItemView::ScrollPerPixel</enum>
               </property>
               <property name="sortingEnabled">
                <bool>true</bool>
