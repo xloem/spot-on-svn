@@ -242,7 +242,7 @@ spoton_neighbor::~spoton_neighbor()
 void spoton_neighbor::slotTimeout(void)
 {
   if(state() == QAbstractSocket::ConnectedState)
-    if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 60)
+    if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 90)
       {
 	spoton_misc::logError("spoton_neighbor::slotTimeout(): "
 			      "aborting because of silent connection.");
@@ -2422,7 +2422,7 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
     {
       char c = 0;
       short ttl = spoton_kernel::s_settings.value
-	("kernel/ttl_0030", 16).toInt();
+	("kernel/ttl_0030", 64).toInt();
 
       memcpy(&c, static_cast<void *> (&ttl), 1);
 

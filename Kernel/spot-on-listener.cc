@@ -279,6 +279,15 @@ void spoton_listener::slotNewConnection(void)
   if(!neighbor)
     return;
 
+  connect(neighbor,
+	  SIGNAL(disconnected(void)),
+	  neighbor,
+	  SLOT(deleteLater(void)));
+  connect(neighbor,
+	  SIGNAL(destroyed(void)),
+	  this,
+	  SLOT(slotNeighborDisconnected(void)));
+
   if(!spoton_kernel::s_crypt1)
     {
       spoton_misc::logError
@@ -568,10 +577,6 @@ void spoton_listener::slotNewConnection(void)
   if(created && id != -1)
     {
       updateConnectionCount();
-      connect(neighbor,
-	      SIGNAL(disconnected(void)),
-	      this,
-	      SLOT(slotNeighborDisconnected(void)));
       neighbor->setId(id);
       emit newNeighbor(neighbor);
     }
@@ -608,11 +613,6 @@ void spoton_listener::updateConnectionCount(void)
 
 void spoton_listener::slotNeighborDisconnected(void)
 {
-  spoton_neighbor *socket = qobject_cast<spoton_neighbor *> (sender());
-
-  if(socket)
-    socket->deleteLater();
-
   updateConnectionCount();
 }
 
