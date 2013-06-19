@@ -1898,6 +1898,16 @@
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_23">
                    <item>
+                    <widget class="QCheckBox" name="congestionControl">
+                     <property name="toolTip">
+                      <string>Enable monitoring of network data. Kernels with sufficient memory pools should enable this option.</string>
+                     </property>
+                     <property name="text">
+                      <string>Enable Con&amp;gestion Control</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QCheckBox" name="scrambler">
                      <property name="text">
                       <string>Enable &amp;Scrambler</string>
@@ -2864,6 +2874,7 @@
   <tabstop>deactivateKernel</tabstop>
   <tabstop>kernelPath</tabstop>
   <tabstop>selectKernelPath</tabstop>
+  <tabstop>congestionControl</tabstop>
   <tabstop>scrambler</tabstop>
   <tabstop>cipherType</tabstop>
   <tabstop>hashType</tabstop>
