@@ -50,7 +50,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_address = peerAddress();
   m_ipAddress = m_address.toString();
   m_externalAddress = new spoton_external_address(this);
-  m_id = std::numeric_limits<qint64>::min();
+  m_id = s_dbId; // This neighbor was created by a listener.
   m_lastReadTime = QDateTime::currentDateTime();
   m_networkInterface = 0;
   m_port = peerPort();
@@ -88,8 +88,8 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotDiscoverExternalAddress(void)));
-  m_externalAddressDiscovererTimer.start(60000);
-  m_keepAliveTimer.start(45000);
+  m_externalAddressDiscovererTimer.start(30000);
+  m_keepAliveTimer.start(30000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
   QTimer::singleShot(15000, this, SLOT(slotSendUuid(void)));
@@ -156,8 +156,8 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotDiscoverExternalAddress(void)));
-  m_externalAddressDiscovererTimer.setInterval(60000);
-  m_keepAliveTimer.setInterval(45000);
+  m_externalAddressDiscovererTimer.setInterval(30000);
+  m_keepAliveTimer.setInterval(30000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
 }
@@ -508,7 +508,9 @@ void spoton_neighbor::slotConnected(void)
 	setLocalAddress(QHostAddress("::1"));
     }
 
-  m_keepAliveTimer.start();
+  if(!m_keepAliveTimer.isActive())
+    m_keepAliveTimer.start();
+
   m_lastReadTime = QDateTime::currentDateTime();
 
   if(spoton_kernel::s_crypt1)

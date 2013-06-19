@@ -187,7 +187,7 @@ void spoton_listener::slotTimeout(void)
 		if(isListening())
 		  {
 		    if(!m_externalAddressDiscovererTimer.isActive())
-		      m_externalAddressDiscovererTimer.start(60000);
+		      m_externalAddressDiscovererTimer.start(30000);
 		  }
 		else
 		  {

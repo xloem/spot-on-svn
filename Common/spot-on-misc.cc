@@ -321,7 +321,7 @@ void spoton_misc::logError(const QString &error)
 {
   QFile file(homePath() + QDir::separator() + "error_log.dat");
 
-  if(file.size() >= 5 * 1024)
+  if(file.size() >= 25 * 1024)
     /*
     ** Too large!
     */
@@ -1231,6 +1231,8 @@ void spoton_misc::saveNeighbor(const QHostAddress &address,
   if(!crypt)
     return;
 
-  Q_UNUSED(address);
+  if(address.isNull())
+    return;
+
   Q_UNUSED(port);
 }

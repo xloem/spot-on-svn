@@ -660,6 +660,8 @@ spoton::spoton(void):QMainWindow()
     (0, Qt::AscendingOrder);
   m_ui.postoffice->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
+  m_ui.urlParticipants->horizontalHeader()->setSortIndicator
+    (0, Qt::AscendingOrder);
   m_ui.listenersHorizontalSplitter->setStretchFactor(0, 1);
   m_ui.listenersHorizontalSplitter->setStretchFactor(1, 0);
   m_ui.neighborsVerticalSplitter->setStretchFactor(0, 1);
