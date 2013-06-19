@@ -63,6 +63,7 @@ class spoton_misc
   static void populateUrlsDatabase(const QList<QList<QVariant> > &list,
 				   spoton_gcrypt *gcrypt);
   static void prepareDatabases(void);
+  static void prepareUrlDatabases(void);
   static void retrieveSymmetricData(QByteArray &gemini,
 				    QByteArray &publicKey,
 				    QByteArray &symmetricKey,

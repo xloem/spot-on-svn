@@ -312,32 +312,9 @@ void spoton_misc::prepareDatabases(void)
 
   QSqlDatabase::removeDatabase("spoton_misc");
 
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "urls.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.exec("CREATE TABLE IF NOT EXISTS keywords ("
-		   "keyword TEXT NOT NULL, "
-		   "url_hash TEXT NOT NULL, "
-		   "PRIMARY KEY (keyword, url_hash))");
-	query.exec("CREATE TABLE IF NOT EXISTS urls ("
-		   "date_time_inserted TEXT NOT NULL, "
-		   "description BLOB, "
-		   "url_hash TEXT PRIMARY KEY NOT NULL, "
-		   "title BLOB NOT NULL, "
-		   "url BLOB NOT NULL)");
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase("spoton_misc");
+  /*
+  ** We shall prepare the URL databases somewhere else.
+  */
 }
 
 void spoton_misc::logError(const QString &error)
@@ -735,13 +712,14 @@ void spoton_misc::populateUrlsDatabase(const QList<QList<QVariant> > &list,
   if(!crypt)
     return;
 
-  prepareDatabases();
+  prepareUrlDatabases();
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() + "urls.db");
+    /*
+    ** Determine the correct URL database file.
+    */
 
     if(db.open())
       {
@@ -1203,4 +1181,45 @@ QByteArray spoton_misc::publicKeyFromHash(const QByteArray &publicKeyHash)
 
   QSqlDatabase::removeDatabase("spoton_misc");
   return publicKey;
+}
+
+void spoton_misc::prepareUrlDatabases(void)
+{
+  QDir().mkdir(spoton_misc::homePath() + QDir::separator() + "URLs");
+
+  for(int i = 0; i < 26; i++)
+    for(int j = 0; j < 26; j++)
+      {
+	{
+	  QSqlDatabase db = QSqlDatabase::addDatabase
+	    ("QSQLITE", "spoton_misc");
+
+	  db.setDatabaseName
+	    (spoton_misc::homePath() + QDir::separator() +
+	     "URLs" + QDir::separator() +
+	     QString("urls_%1%2.db").
+	     arg(static_cast<char> (i + 97)).
+	     arg(static_cast<char> (j + 97)));
+
+	  if(db.open())
+	    {
+	      QSqlQuery query(db);
+
+	      query.exec("CREATE TABLE IF NOT EXISTS keywords ("
+			 "keyword TEXT NOT NULL, "
+			 "url_hash TEXT NOT NULL, "
+			 "PRIMARY KEY (keyword, url_hash))");
+	      query.exec("CREATE TABLE IF NOT EXISTS urls ("
+			 "date_time_inserted TEXT NOT NULL, "
+			 "description BLOB, "
+			 "url_hash TEXT PRIMARY KEY NOT NULL, "
+			 "title BLOB NOT NULL, "
+			 "url BLOB NOT NULL)");
+	    }
+
+	  db.close();
+	}
+
+	QSqlDatabase::removeDatabase("spoton_misc");
+      }
 }

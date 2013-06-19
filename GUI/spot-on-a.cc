@@ -664,7 +664,6 @@ spoton::spoton(void):QMainWindow()
   m_ui.urlsVerticalSplitter->setStretchFactor(0, 1);
   m_ui.urlsVerticalSplitter->setStretchFactor(1, 0);
   prepareListenerIPCombo();
-  spoton_misc::prepareDatabases();
 
   /*
   ** Not wise! We may find things we're not prepared for.
@@ -675,6 +674,13 @@ spoton::spoton(void):QMainWindow()
     button->setToolTip(tr("Broadcast"));
 
   show();
+  QApplication::processEvents();
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+  m_sb.status->setText(tr("Preparing databases. Please be patient."));
+  QApplication::processEvents();
+  spoton_misc::prepareDatabases();
+  m_sb.status->clear();
+  QApplication::restoreOverrideCursor();
 }
 
 void spoton::slotQuit(void)

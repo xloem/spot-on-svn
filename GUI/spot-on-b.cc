@@ -1420,12 +1420,30 @@ void spoton::slotResetAll(void)
        << "kernel.db"
        << "listeners.db"
        << "neighbors.db"
-       << "shared.db"
-       << "urls.db";
+       << "shared.db";
 
   while(!list.isEmpty())
     QFile::remove
       (spoton_misc::homePath() + QDir::separator() + list.takeFirst());
+
+  /*
+  ** Remove the URL databases.
+  */
+
+  for(int i = 0; i < 26; i++)
+    for(int j = 0; j < 26; j++)
+      list.append(QString("urls_%1%2.db").
+		  arg(static_cast<char> (i + 97)).
+		  arg(static_cast<char> (j + 97)));
+
+  while(!list.isEmpty())
+    QFile::remove
+      (spoton_misc::homePath() + QDir::separator() +
+       "URLs" + QDir::separator() + list.takeFirst());
+
+  QDir dir(spoton_misc::homePath());
+
+  dir.rmdir("URLs");
 
   QSettings settings;
 
