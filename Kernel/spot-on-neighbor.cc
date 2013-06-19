@@ -1857,7 +1857,8 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 		     "received %1.").arg(list.size()));
 	  return;
 	}
-      else
+      else if(spoton_kernel::s_settings.
+	      value("gui/acceptPublicizedListeners", false).toBool())
 	{
 	  QHostAddress address;
 

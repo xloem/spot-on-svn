@@ -29,6 +29,7 @@
 #include <QDir>
 #include <QFile>
 #include <QLocale>
+#include <QNetworkProxy>
 #include <QSettings>
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -76,7 +77,7 @@ void spoton_misc::prepareDatabases(void)
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+    db.setDatabaseName(homePath() + QDir::separator() +
 		       "country_inclusion.db");
 
     if(db.open())
@@ -97,8 +98,7 @@ void spoton_misc::prepareDatabases(void)
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "email.db");
+    db.setDatabaseName(homePath() + QDir::separator() + "email.db");
 
     if(db.open())
       {
@@ -153,7 +153,7 @@ void spoton_misc::prepareDatabases(void)
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+    db.setDatabaseName(homePath() + QDir::separator() +
 		       "friends_public_keys.db");
 
     if(db.open())
@@ -191,8 +191,7 @@ void spoton_misc::prepareDatabases(void)
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "idiotes.db");
+    db.setDatabaseName(homePath() + QDir::separator() + "idiotes.db");
 
     if(db.open())
       {
@@ -212,8 +211,7 @@ void spoton_misc::prepareDatabases(void)
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "kernel.db");
+    db.setDatabaseName(homePath() + QDir::separator() + "kernel.db");
 
     if(db.open())
       {
@@ -236,8 +234,7 @@ void spoton_misc::prepareDatabases(void)
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "listeners.db");
+    db.setDatabaseName(homePath() + QDir::separator() + "listeners.db");
 
     if(db.open())
       {
@@ -270,8 +267,7 @@ void spoton_misc::prepareDatabases(void)
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "neighbors.db");
+    db.setDatabaseName(homePath() + QDir::separator() + "neighbors.db");
 
     if(db.open())
       {
@@ -427,7 +423,7 @@ void spoton_misc::populateCountryDatabase(spoton_gcrypt *crypt)
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+    db.setDatabaseName(homePath() + QDir::separator() +
 		       "country_inclusion.db");
 
     if(db.open())
@@ -677,7 +673,7 @@ bool spoton_misc::countryAllowedToConnect(const QString &country,
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+    db.setDatabaseName(homePath() + QDir::separator() +
 		       "country_inclusion.db");
 
     if(db.open())
@@ -818,7 +814,7 @@ void spoton_misc::retrieveSymmetricData(QByteArray &gemini,
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+    db.setDatabaseName(homePath() + QDir::separator() +
 		       "friends_public_keys.db");
 
     if(db.open())
@@ -874,7 +870,7 @@ bool spoton_misc::isAcceptedParticipant(const QByteArray &publicKeyHash)
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+    db.setDatabaseName(homePath() + QDir::separator() +
 		       "friends_public_keys.db");
 
     if(db.open())
@@ -946,7 +942,7 @@ QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
 	QSqlDatabase db = QSqlDatabase::addDatabase
 	  ("QSQLITE", "spoton_misc");
 
-	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+	db.setDatabaseName(homePath() + QDir::separator() +
 			   "friends_public_keys.db");
 
 	if(db.open())
@@ -1008,8 +1004,7 @@ void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "email.db");
+    db.setDatabaseName(homePath() + QDir::separator() + "email.db");
 
     if(db.open())
       {
@@ -1051,7 +1046,7 @@ void spoton_misc::cleanupDatabases(void)
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+    db.setDatabaseName(homePath() + QDir::separator() +
 		       "friends_public_keys.db");
 
     if(db.open())
@@ -1076,8 +1071,7 @@ void spoton_misc::cleanupDatabases(void)
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "kernel.db");
+    db.setDatabaseName(homePath() + QDir::separator() + "kernel.db");
 
     if(db.open())
       {
@@ -1094,8 +1088,7 @@ void spoton_misc::cleanupDatabases(void)
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "listeners.db");
+    db.setDatabaseName(homePath() + QDir::separator() + "listeners.db");
 
     if(db.open())
       {
@@ -1117,8 +1110,7 @@ void spoton_misc::cleanupDatabases(void)
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "neighbors.db");
+    db.setDatabaseName(homePath() + QDir::separator() + "neighbors.db");
 
     if(db.open())
       {
@@ -1162,7 +1154,7 @@ QByteArray spoton_misc::publicKeyFromHash(const QByteArray &publicKeyHash)
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+    db.setDatabaseName(homePath() + QDir::separator() +
 		       "friends_public_keys.db");
 
     if(db.open())
@@ -1187,7 +1179,7 @@ QByteArray spoton_misc::publicKeyFromHash(const QByteArray &publicKeyHash)
 
 void spoton_misc::prepareUrlDatabases(void)
 {
-  QDir().mkdir(spoton_misc::homePath() + QDir::separator() + "URLs");
+  QDir().mkdir(homePath() + QDir::separator() + "URLs");
 
   for(int i = 0; i < 26; i++)
     for(int j = 0; j < 26; j++)
@@ -1197,8 +1189,7 @@ void spoton_misc::prepareUrlDatabases(void)
 	    ("QSQLITE", "spoton_misc");
 
 	  db.setDatabaseName
-	    (spoton_misc::homePath() + QDir::separator() +
-	     "URLs" + QDir::separator() +
+	    (homePath() + QDir::separator() + "URLs" + QDir::separator() +
 	     QString("urls_%1%2.db").
 	     arg(static_cast<char> (i + 97)).
 	     arg(static_cast<char> (j + 97)));
@@ -1236,5 +1227,131 @@ void spoton_misc::saveNeighbor(const QHostAddress &address,
   if(address.isNull())
     return;
 
-  Q_UNUSED(port);
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+
+    db.setDatabaseName
+      (homePath() + QDir::separator() + "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	QString country
+	  (countryNameFromIPAddress(address.toString()));
+
+	query.exec("INSERT INTO neighbors "
+		   "(local_ip_address, "
+		   "local_port, "
+		   "protocol, "
+		   "remote_ip_address, "
+		   "remote_port, "
+		   "scope_id, "
+		   "status_control, "
+		   "hash, "
+		   "sticky, "
+		   "country, "
+		   "remote_ip_address_hash, "
+		   "qt_country_hash, "
+		   "user_defined, "
+		   "proxy_hostname, "
+		   "proxy_password, "
+		   "proxy_port, "
+		   "proxy_type, "
+		   "proxy_username) "
+		   "VALUES (?, ?, ?, ?, ?, ?, ?, "
+		   "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	query.bindValue(0, QVariant(QVariant::String));
+	query.bindValue(1, QVariant(QVariant::String));
+
+	if(address.protocol() == QAbstractSocket::IPv4Protocol)
+	  query.bindValue(2, "IPv4");
+	else
+	  query.bindValue(2, "IPv6");
+
+	bool ok = true;
+
+	query.bindValue
+	  (3,
+	   crypt->encrypted(address.toString().toLatin1(),
+			    &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (4,
+	     crypt->
+	     encrypted(QString::number(port).toLatin1(), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (5,
+	     crypt->encrypted(address.scopeId().toLatin1(),
+			      &ok).toBase64());
+
+	query.bindValue(6, "disconnected");
+
+	if(ok)
+	  query.bindValue
+	    (7,
+	     crypt->keyedHash((address.toString() +
+			       QString::number(port) +
+			       address.scopeId()).toLatin1(), &ok).
+	     toBase64());
+
+	query.bindValue(8, 1);
+
+	if(ok)
+	  query.bindValue
+	    (9, crypt->encrypted(country.toLatin1(), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (10, crypt->keyedHash(address.toString().toLatin1(), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (11, crypt->keyedHash(country.remove(" ").toLatin1(), &ok).
+	     toBase64());
+
+	query.bindValue(12, 1);
+
+	QString proxyHostname("");
+	QString proxyPassword("");
+	QString proxyPort("1");
+	QString proxyType(QString::number(QNetworkProxy::NoProxy));
+	QString proxyUsername("");
+
+	if(ok)
+	  query.bindValue
+	    (13, crypt->encrypted(proxyHostname.toLatin1(), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (14, crypt->encrypted(proxyPassword.toUtf8(), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (15, crypt->encrypted(proxyPort.toLatin1(),
+				  &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (16, crypt->encrypted(proxyType.toLatin1(), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (17, crypt->encrypted(proxyUsername.toUtf8(), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_misc");
 }

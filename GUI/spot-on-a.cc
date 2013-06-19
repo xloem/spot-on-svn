@@ -846,7 +846,7 @@ void spoton::slotAddNeighbor(void)
 	QString protocol("");
 	QString proxyHostname("");
 	QString proxyPassword("");
-	QString proxyPort("");
+	QString proxyPort("1");
 	QString proxyType("");
 	QString proxyUsername("");
 	QString scopeId(m_ui.neighborScopeId->text().trimmed());
@@ -1352,7 +1352,7 @@ void spoton::slotPopulateNeighbors(void)
 
 	QModelIndexList list;
 	QString proxyIp("");
-	QString proxyPort("");
+	QString proxyPort("1");
 	QString remoteIp("");
 	QString remotePort("");
 	QString scopeId("");

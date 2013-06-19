@@ -399,7 +399,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      QString port("");
 	      QString proxyHostname("");
 	      QString proxyPassword("");
-	      QString proxyPort("");
+	      QString proxyPort("1");
 	      QString proxyType("");
 	      QString proxyUsername("");
 	      QString scopeId("");

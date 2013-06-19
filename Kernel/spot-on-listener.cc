@@ -449,6 +449,8 @@ void spoton_listener::slotNewConnection(void)
 			   scopeId().toLatin1(),
 			   &ok).toBase64());
 
+	    query.bindValue(6, "connected");
+
 	    if(ok)
 	      query.bindValue
 		(7,
@@ -458,7 +460,6 @@ void spoton_listener::slotNewConnection(void)
 			    neighbor->peerAddress().scopeId()).
 			   toLatin1(), &ok).toBase64());
 
-	    query.bindValue(6, "connected");
 	    query.bindValue(8, 0);
 
 	    if(ok)
@@ -490,7 +491,7 @@ void spoton_listener::slotNewConnection(void)
 
 	    QString proxyHostname("");
 	    QString proxyPassword("");
-	    QString proxyPort("");
+	    QString proxyPort("1");
 	    QString proxyType(QString::number(QNetworkProxy::NoProxy));
 	    QString proxyUsername("");
 

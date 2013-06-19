@@ -1642,14 +1642,11 @@ void spoton::slotSendMail(void)
   if(!m_crypt)
     return;
 
-  QByteArray message
-    (m_ui.outgoingMessage->toHtml().trimmed().toUtf8());
-
   /*
   ** Why would you send an empty message?
   */
 
-  if(message.isEmpty())
+  if(m_ui.outgoingMessage->toPlainText().trimmed().isEmpty())
     {
       QMessageBox::critical
 	(this, tr("Spot-On: Error"),
@@ -1657,6 +1654,9 @@ void spoton::slotSendMail(void)
       m_ui.outgoingMessage->setFocus();
       return;
     }
+
+  QByteArray message
+    (m_ui.outgoingMessage->toHtml().trimmed().toUtf8());
 
   /*
   ** Bundle the love letter and send it to the email.db file. The
@@ -1765,6 +1765,7 @@ void spoton::slotSendMail(void)
 	      query.exec();
 	  }
 
+	m_ui.participantsCombo->setCurrentIndex(0);
 	m_ui.outgoingMessage->clear();
 	m_ui.outgoingMessage->setCurrentCharFormat(QTextCharFormat());
 	m_ui.outgoingSubject->clear();
