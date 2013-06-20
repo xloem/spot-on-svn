@@ -3108,6 +3108,9 @@ void spoton::slotPopulateParticipants(void)
 
 	      if(hashes.contains(query.value(3).toString()))
 		rows.append(row - 1);
+
+	      if(hashesE.contains(query.value(3).toString()))
+		rowsE.append(rowE - 1);
 	    }
 
 	if(focusWidget)
