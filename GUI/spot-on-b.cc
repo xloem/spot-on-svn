@@ -1380,7 +1380,7 @@ void spoton::slotClearOutgoingMessage(void)
 {
   if(m_ui.mailTab->currentIndex() == 1)
     {
-      m_ui.participantsCombo->setCurrentIndex(0);
+      m_ui.emailParticipants->selectionModel()->clear();
       m_ui.outgoingMessage->clear();
       m_ui.outgoingMessage->setCurrentCharFormat(QTextCharFormat());
       m_ui.outgoingSubject->clear();
@@ -1646,7 +1646,15 @@ void spoton::slotSendMail(void)
   ** Why would you send an empty message?
   */
 
-  if(m_ui.outgoingMessage->toPlainText().trimmed().isEmpty())
+  if(!m_ui.emailParticipants->selectionModel()->hasSelection())
+    {
+      QMessageBox::critical
+	(this, tr("Spot-On: Error"),
+	 tr("Please select at least one participant."));
+      m_ui.emailParticipants->setFocus();
+      return;
+    }
+  else if(m_ui.outgoingMessage->toPlainText().trimmed().isEmpty())
     {
       QMessageBox::critical
 	(this, tr("Spot-On: Error"),
@@ -1673,48 +1681,37 @@ void spoton::slotSendMail(void)
 
     if(db.open())
       {
-	QList<QByteArray> publicKeyHashes;
-	QList<qint64> oids;
+	QModelIndexList list;
 	QStringList names;
+	QStringList oids;
+	QStringList publicKeyHashes;
 
-	if(m_ui.participantsCombo->currentIndex() > 1)
-	  {
-	    int index = m_ui.participantsCombo->currentIndex();
-	    QByteArray publicKeyHash
-	      (m_ui.participantsCombo->itemData(index, Qt::UserRole + 1).
-	       toByteArray());
-	    qint64 oid = m_ui.participantsCombo->
-	      itemData(index, Qt::UserRole).toLongLong();
+	list = m_ui.emailParticipants->selectionModel()->selectedRows(0);
 
-	    names.append(m_ui.participantsCombo->currentText());
-	    oids.append(oid);
-	    publicKeyHashes.append(publicKeyHash);
-	  }
-	else
-	  for(int i = 2; i < m_ui.participantsCombo->count(); i++)
-	    {
-	      QByteArray publicKeyHash
-		(m_ui.participantsCombo->itemData(i, Qt::UserRole + 1).
-		 toByteArray());
-	      qint64 oid = m_ui.participantsCombo->
-		itemData(i, Qt::UserRole).toLongLong();
+	while(!list.isEmpty())
+	  names.append(list.takeFirst().data().toString());
 
-	      names.append(m_ui.participantsCombo->itemText(i));
-	      oids.append(oid);
-	      publicKeyHashes.append(publicKeyHash);
-	    }
+	list = m_ui.emailParticipants->selectionModel()->selectedRows(1);
+
+	while(!list.isEmpty())
+	  oids.append(list.takeFirst().data().toString());
+
+	list = m_ui.emailParticipants->selectionModel()->selectedRows(2);
+
+	while(!list.isEmpty())
+	  publicKeyHashes.append(list.takeFirst().data().toString());
 
 	while(!oids.isEmpty())
 	  {
 	    QByteArray goldbug
 	      (m_ui.goldbug->text().trimmed().toUtf8());
-	    QByteArray publicKeyHash(publicKeyHashes.takeFirst());
+	    QByteArray publicKeyHash(publicKeyHashes.takeFirst().toLatin1());
 	    QByteArray subject
 	      (m_ui.outgoingSubject->text().trimmed().toUtf8());
 	    QDateTime now(QDateTime::currentDateTime());
 	    QSqlQuery query(db);
+	    QString oid(oids.takeFirst());
 	    bool ok = true;
-	    qint64 oid = oids.takeFirst();
 
 	    query.prepare("INSERT INTO folders "
 			  "(date, folder_index, goldbug, hash, "
@@ -1758,14 +1755,14 @@ void spoton::slotSendMail(void)
 
 	    if(ok)
 	      query.bindValue
-		(9, m_crypt->encrypted(QString::number(oid).toLatin1(), &ok).
+		(9, m_crypt->encrypted(oid.toLatin1(), &ok).
 		 toBase64());
 
 	    if(ok)
 	      query.exec();
 	  }
 
-	m_ui.participantsCombo->setCurrentIndex(0);
+	m_ui.emailParticipants->selectionModel()->clear();
 	m_ui.outgoingMessage->clear();
 	m_ui.outgoingMessage->setCurrentCharFormat(QTextCharFormat());
 	m_ui.outgoingSubject->clear();
@@ -2657,8 +2654,6 @@ void spoton::slotSetIcons(void)
 
   // Email
 
-  m_ui.participantsCombo->setItemIcon
-    (0, QIcon(QString(":/%1/heart.png").arg(iconSet)));
   m_ui.pushButtonClearMail->setIcon
     (QIcon(QString(":/%1/clear.png").arg(iconSet)));
   m_ui.refreshMail->setIcon(QIcon(QString(":/%1/refresh.png").arg(iconSet)));
@@ -3004,15 +2999,20 @@ void spoton::slotReply(void)
   ** The original author may have vanished.
   */
 
-  m_ui.participantsCombo->setCurrentIndex(0);
+  m_ui.emailParticipants->selectionModel()->clear();
 
-  for(int i = 2; i < m_ui.participantsCombo->count(); i++)
-    if(m_ui.participantsCombo->
-       itemData(i, Qt::UserRole + 1).toString() == receiverSenderHash)
-      {
-	m_ui.participantsCombo->setCurrentIndex(i);
-	break;
-      }
+  for(int i = 0; i < m_ui.emailParticipants->rowCount(); i++)
+    {
+      QTableWidgetItem *item = m_ui.emailParticipants->
+	item(i, 2); // public_key_hash
+
+      if(item)
+	if(item->text() == receiverSenderHash)
+	  {
+	    m_ui.emailParticipants->selectRow(i);
+	    break;
+	  }
+    }
 
   m_ui.outgoingMessage->moveCursor(QTextCursor::Start);
   m_ui.outgoingMessage->setFocus();

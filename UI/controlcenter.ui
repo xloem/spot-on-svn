@@ -598,58 +598,150 @@
            <attribute name="title">
             <string>&amp;Write</string>
            </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_27">
-            <item>
-             <layout class="QGridLayout" name="gridLayout_4">
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_10">
+           <layout class="QGridLayout" name="gridLayout_4">
+            <item row="2" column="1">
+             <widget class="QTextEdit" name="outgoingMessage">
+              <property name="tabChangesFocus">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_25">
+              <property name="text">
+               <string>&amp;Subject</string>
+              </property>
+              <property name="buddy">
+               <cstring>outgoingSubject</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>&amp;To</string>
+              </property>
+              <property name="buddy">
+               <cstring>emailParticipants</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="outgoingSubject"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>&amp;Optional</string>
+              </property>
+              <property name="buddy">
+               <cstring>goldbug</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_31">
+              <item>
+               <widget class="QLineEdit" name="goldbug"/>
+              </item>
+              <item>
+               <widget class="QPushButton" name="generateGoldBug">
+                <property name="toolTip">
+                 <string>Bundle the e-mail with an additional layer of encryption. Do remember to notify all recipients of the key.</string>
+                </property>
+                <property name="text">
+                 <string>Gold Bug</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_33">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="sendMail">
+                <property name="text">
+                 <string>Send</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_26">
+              <property name="text">
+               <string>&amp;Message</string>
+              </property>
+              <property name="buddy">
+               <cstring>outgoingMessage</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_33">
+              <item>
+               <widget class="QTableWidget" name="emailParticipants">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-                <property name="minimumSize">
+                <property name="maximumSize">
                  <size>
-                  <width>75</width>
-                  <height>0</height>
+                  <width>16777215</width>
+                  <height>150</height>
                  </size>
                 </property>
-                <property name="text">
-                 <string>&amp;To</string>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarAlwaysOn</enum>
                 </property>
-                <property name="buddy">
-                 <cstring>participantsCombo</cstring>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
                 </property>
+                <property name="selectionBehavior">
+                 <enum>QAbstractItemView::SelectRows</enum>
+                </property>
+                <property name="horizontalScrollMode">
+                 <enum>QAbstractItemView::ScrollPerPixel</enum>
+                </property>
+                <property name="sortingEnabled">
+                 <bool>true</bool>
+                </property>
+                <attribute name="horizontalHeaderDefaultSectionSize">
+                 <number>150</number>
+                </attribute>
+                <attribute name="horizontalHeaderStretchLastSection">
+                 <bool>true</bool>
+                </attribute>
+                <column>
+                 <property name="text">
+                  <string>Participant</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>OID</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>public_key_hash</string>
+                 </property>
+                </column>
                </widget>
               </item>
-              <item row="1" column="1">
-               <layout class="QHBoxLayout" name="horizontalLayout_33">
-                <item>
-                 <widget class="QComboBox" name="participantsCombo">
-                  <property name="sizeAdjustPolicy">
-                   <enum>QComboBox::AdjustToContents</enum>
-                  </property>
-                  <item>
-                   <property name="text">
-                    <string>All Participants</string>
-                   </property>
-                  </item>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_28">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_9">
                 <item>
                  <widget class="QCheckBox" name="saveCopy">
                   <property name="text">
@@ -661,107 +753,6 @@
                  </widget>
                 </item>
                </layout>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_25">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>75</width>
-                  <height>32</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>&amp;Subject</string>
-                </property>
-                <property name="buddy">
-                 <cstring>outgoingSubject</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="outgoingSubject"/>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_26">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>75</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>&amp;Message</string>
-                </property>
-                <property name="buddy">
-                 <cstring>outgoingMessage</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QTextEdit" name="outgoingMessage">
-                <property name="tabChangesFocus">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <layout class="QHBoxLayout" name="horizontalLayout_31">
-                <item>
-                 <widget class="QLineEdit" name="goldbug"/>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="generateGoldBug">
-                  <property name="toolTip">
-                   <string>Bundle the e-mail with an additional layer of encryption. Do remember to notify all recipients of the key.</string>
-                  </property>
-                  <property name="text">
-                   <string>Gold Bug</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_33">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="sendMail">
-                  <property name="text">
-                   <string>Send</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_6">
-                <property name="text">
-                 <string>&amp;Optional</string>
-                </property>
-                <property name="buddy">
-                 <cstring>goldbug</cstring>
-                </property>
-               </widget>
               </item>
              </layout>
             </item>
@@ -2844,7 +2835,7 @@
   <tabstop>reply</tabstop>
   <tabstop>mail</tabstop>
   <tabstop>mailMessage</tabstop>
-  <tabstop>participantsCombo</tabstop>
+  <tabstop>emailParticipants</tabstop>
   <tabstop>saveCopy</tabstop>
   <tabstop>outgoingSubject</tabstop>
   <tabstop>outgoingMessage</tabstop>

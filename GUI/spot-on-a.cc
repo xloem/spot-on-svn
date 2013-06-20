@@ -411,8 +411,10 @@ spoton::spoton(void):QMainWindow()
   m_ui.neighborIP->setInputMask("000.000.000.000; ");
   m_ui.neighborScopeId->setEnabled(false);
   m_ui.neighborScopeIdLabel->setEnabled(false);
+  m_ui.emailParticipants->setStyleSheet
+    ("QTableWidget {selection-background-color: lightgreen}");
   m_ui.participants->setStyleSheet
-    ("QTableView {selection-background-color: lightgreen}");
+    ("QTableWidget {selection-background-color: lightgreen}");
 
   QSettings settings;
 
@@ -647,6 +649,8 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,
 	  SLOT(slotShowContextMenu(const QPoint &)));
+  m_ui.emailParticipants->setColumnHidden(1, true); // OID
+  m_ui.emailParticipants->setColumnHidden(2, true); // public_key_hash
   m_ui.mail->setColumnHidden(4, true); // goldbug
   m_ui.mail->setColumnHidden(5, true); // message
   m_ui.mail->setColumnHidden(6, true); // message_digest
@@ -666,6 +670,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.urlParticipants->setColumnHidden(3, true); // public_key_hash
   m_ui.urlParticipants->setColumnHidden(4, true); // ignored
   m_ui.urlParticipants->setColumnHidden(5, true); // ignored
+  m_ui.emailParticipants->horizontalHeader()->setSortIndicator
+    (0, Qt::AscendingOrder);
   m_ui.mail->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   m_ui.listeners->horizontalHeader()->setSortIndicator
@@ -691,6 +697,10 @@ spoton::spoton(void):QMainWindow()
   /*
   ** Not wise! We may find things we're not prepared for.
   */
+
+  foreach(QAbstractButton *button,
+	  m_ui.emailParticipants->findChildren<QAbstractButton *> ())
+    button->setToolTip(tr("Broadcast"));
 
   foreach(QAbstractButton *button,
 	  m_ui.participants->findChildren<QAbstractButton *> ())
@@ -2895,13 +2905,19 @@ void spoton::slotPopulateParticipants(void)
 	updateParticipantsTable(db);
 
 	QList<int> rows;
+	QList<int> rowsE;
 	QModelIndexList list
 	  (m_ui.participants->selectionModel()->selectedRows(3));
-	QString participant(m_ui.participantsCombo->currentText());
+	QModelIndexList listE
+	  (m_ui.emailParticipants->selectionModel()->selectedRows(2));
 	QStringList hashes;
+	QStringList hashesE;
 	int hval = m_ui.participants->horizontalScrollBar()->value();
+	int hvalE = m_ui.emailParticipants->horizontalScrollBar()->value();
 	int row = 0;
+	int rowE = 0;
 	int vval = m_ui.participants->verticalScrollBar()->value();
+	int vvalE = m_ui.emailParticipants->verticalScrollBar()->value();
 
 	while(!list.isEmpty())
 	  {
@@ -2911,14 +2927,21 @@ void spoton::slotPopulateParticipants(void)
 	      hashes.append(data.toString());
 	  }
 
+	while(!listE.isEmpty())
+	  {
+	    QVariant data(listE.takeFirst().data());
+
+	    if(!data.isNull() && data.isValid())
+	      hashesE.append(data.toString());
+	  }
+
+	m_ui.emailParticipants->setSortingEnabled(false);
+	m_ui.emailParticipants->clearContents();
+	m_ui.emailParticipants->setRowCount(0);
 	m_ui.participants->setSortingEnabled(false);
 	m_ui.participants->clearContents();
 	m_ui.participants->setRowCount(0);
 
-	for(int i = m_ui.participantsCombo->count() - 1; i >= 1; i--)
-	  m_ui.participantsCombo->removeItem(i);
-
-	QMap<QString, QPair<QByteArray, qint64> > participants;
 	QSqlQuery query(db);
 	QWidget *focusWidget = QApplication::focusWidget();
 
@@ -2948,6 +2971,12 @@ void spoton::slotPopulateParticipants(void)
 		    {
 		      row += 1;
 		      m_ui.participants->setRowCount(row);
+
+		      if(!temporary)
+			{
+			  rowE += 1;
+			  m_ui.emailParticipants->setRowCount(rowE);
+			}
 		    }
 
 		  if(i == 0)
@@ -2993,13 +3022,8 @@ void spoton::slotPopulateParticipants(void)
 		  if(i == 0)
 		    {
 		      if(!temporary)
-			{
-			  QPair<QByteArray, qint64> pair;
-
-			  pair.first = query.value(3).toByteArray();
-			  pair.second = query.value(1).toLongLong();
-			  participants.insert(item->text(), pair);
-			}
+			m_ui.emailParticipants->setItem
+			  (rowE - 1, i, item->clone());
 
 		      if(!temporary)
 			{
@@ -3061,6 +3085,18 @@ void spoton::slotPopulateParticipants(void)
 			     arg(item->text()));
 			}
 		    }
+		  else if(i == 1)
+		    {
+		      if(!temporary)
+			m_ui.emailParticipants->setItem
+			  (rowE - 1, i, item->clone());
+		    }
+		  else if(i == 3)
+		    {
+		      if(!temporary)
+			m_ui.emailParticipants->setItem
+			  (rowE - 1, i - 1, item->clone());
+		    }
 		  else if(i == 5)
 		    item->setFlags(item->flags() | Qt::ItemIsEditable);
 
@@ -3077,36 +3113,24 @@ void spoton::slotPopulateParticipants(void)
 	if(focusWidget)
 	  focusWidget->setFocus();
 
-	if(!participants.isEmpty())
-	  {
-	    m_ui.participantsCombo->insertSeparator(1);
-
-	    for(int i = 0; i < participants.keys().size(); i++)
-	      m_ui.participantsCombo->addItem
-		(participants.keys().at(i));
-
-	    for(int i = 0; i < participants.size(); i++)
-	      {
-		QPair<QByteArray, qint64> pair
-		  (participants[participants.keys().at(i)]);
-
-		m_ui.participantsCombo->setItemData
-		  (i + 2, pair.second, Qt::UserRole);
-		m_ui.participantsCombo->setItemData
-		  (i + 2, pair.first, Qt::UserRole + 1);
-	      }
-
-	    int index = -1;
-
-	    if((index = m_ui.participantsCombo->findText(participant)) > -1)
-	      m_ui.participantsCombo->setCurrentIndex(index);
-	  }
-
+	m_ui.emailParticipants->setSelectionMode
+	  (QAbstractItemView::MultiSelection);
 	m_ui.participants->setSelectionMode(QAbstractItemView::MultiSelection);
 
 	while(!rows.isEmpty())
 	  m_ui.participants->selectRow(rows.takeFirst());
 
+	while(!rowsE.isEmpty())
+	  m_ui.emailParticipants->selectRow(rowsE.takeFirst());
+
+	m_ui.emailParticipants->setSelectionMode
+	  (QAbstractItemView::ExtendedSelection);
+	m_ui.emailParticipants->setSortingEnabled(true);
+	m_ui.emailParticipants->resizeColumnsToContents();
+	m_ui.emailParticipants->horizontalHeader()->
+	  setStretchLastSection(true);
+	m_ui.emailParticipants->horizontalScrollBar()->setValue(hvalE);
+	m_ui.emailParticipants->verticalScrollBar()->setValue(vvalE);
 	m_ui.participants->setSelectionMode
 	  (QAbstractItemView::ExtendedSelection);
 	m_ui.participants->setSortingEnabled(true);
