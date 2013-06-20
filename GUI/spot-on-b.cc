@@ -3042,3 +3042,12 @@ void spoton::slotPublicizeListenerPlaintext(void)
   else
     m_kernelSocket.flush();
 }
+
+void spoton::slotCongestionControl(bool state)
+{
+  m_settings["gui/enableCongestionControl"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/enableCongestionControl", state);
+}

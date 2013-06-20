@@ -339,6 +339,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotReply(void)));
+  connect(m_ui.congestionControl,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotCongestionControl(bool)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
