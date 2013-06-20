@@ -68,6 +68,7 @@ extern "C"
 #include "spot-on-neighbor.h"
 #include "spot-on-shared-reader.h"
 
+QCache<QByteArray, int> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 spoton_gcrypt *spoton_kernel::s_crypt1 = 0;
 spoton_gcrypt *spoton_kernel::s_crypt2 = 0;
@@ -899,6 +900,11 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
   for(int i = 0; i < settings.allKeys().size(); i++)
     s_settings[settings.allKeys().at(i)] = settings.value
       (settings.allKeys().at(i));
+
+  if(!s_settings.value("gui/enableCongestionControl", false).toBool())
+    s_messagingCache.clear();
+  else
+    s_messagingCache.setMaxCost(10000);
 
   if(!s_settings.value("gui/scramblerEnabled", false).toBool())
     m_scramblerTimer.stop();

@@ -78,6 +78,7 @@ class spoton_neighbor: public QTcpSocket
   qint64 m_id;
   quint16 m_port;
   spoton_external_address *m_externalAddress;
+  bool isDuplicateMessage(const QByteArray &data);
   void prepareNetworkInterface(void);
   void process0000(int length, const QByteArray &data);
   void process0001a(int length, const QByteArray &data);
@@ -89,6 +90,7 @@ class spoton_neighbor: public QTcpSocket
   void process0014(int length, const QByteArray &data);
   void process0015(int length, const QByteArray &data);
   void process0030(int length, const QByteArray &data);
+  void recordMessageHash(const QByteArray &data);
   void saveExternalAddress(const QHostAddress &address,
 			   QSqlDatabase &db);
   void saveParticipantStatus(const QByteArray &name,

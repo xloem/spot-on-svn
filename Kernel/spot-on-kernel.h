@@ -28,6 +28,7 @@
 #ifndef _spoton_kernel_h_
 #define _spoton_kernel_h_
 
+#include <QCache>
 #include <QFileSystemWatcher>
 #include <QHash>
 #include <QHostAddress>
@@ -49,6 +50,7 @@ class spoton_kernel: public QObject
  public:
   spoton_kernel(void);
   ~spoton_kernel();
+  static QCache<QByteArray, int> s_messagingCache;
   static QHash<QString, QVariant> s_settings;
   static spoton_gcrypt *s_crypt1; // private
   static spoton_gcrypt *s_crypt2; // url

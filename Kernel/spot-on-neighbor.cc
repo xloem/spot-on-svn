@@ -1025,6 +1025,11 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	}
       else if(ttl > 0)
 	{
+	  if(isDuplicateMessage(originalData))
+	    return;
+
+	  recordMessageHash(originalData);
+
 	  /*
 	  ** Replace TTL.
 	  */
@@ -1167,6 +1172,11 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	}
       else if(ttl > 0)
 	{
+	  if(isDuplicateMessage(originalData))
+	    return;
+
+	  recordMessageHash(originalData);
+
 	  /*
 	  ** Replace TTL.
 	  */
@@ -1270,6 +1280,11 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 		    "0001b");
       else if(ttl > 0)
 	{
+	  if(isDuplicateMessage(originalData))
+	    return;
+
+	  recordMessageHash(originalData);
+
 	  /*
 	  ** Replace TTL.
 	  */
@@ -1418,6 +1433,11 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 	}
       else if(ttl > 0)
 	{
+	  if(isDuplicateMessage(originalData))
+	    return;
+
+	  recordMessageHash(originalData);
+
 	  /*
 	  ** Replace TTL.
 	  */
@@ -1697,6 +1717,11 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	}
       else if(ttl > 0)
 	{
+	  if(isDuplicateMessage(originalData))
+	    return;
+
+	  recordMessageHash(originalData);
+
 	  /*
 	  ** Replace TTL.
 	  */
@@ -1791,8 +1816,10 @@ void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
       if(data == "0")
 	{
 	  m_lastReadTime = QDateTime::currentDateTime();
-	  spoton_misc::logError("spoton_neighbor::process0015(): received "
-				"keep-alive. Resetting timer.");
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::process0015(): received "
+		     "keep-alive on %1:%2. Resetting time object.").
+	     arg(localAddress().toString()).arg(localPort()));
 	}
       else
 	spoton_misc::logError
@@ -1876,6 +1903,11 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 
       if(ttl > 0)
 	{
+	  if(isDuplicateMessage(originalData))
+	    return;
+
+	  recordMessageHash(originalData);
+
 	  /*
 	  ** Replace TTL.
 	  */
@@ -2473,6 +2505,7 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
 	flush();
     }
 }
+
 void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 						     const qint64 id)
 {
@@ -2494,4 +2527,69 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 	else
 	  flush();
       }
+}
+
+void spoton_neighbor::recordMessageHash(const QByteArray &data)
+{
+  if(!spoton_kernel::s_crypt1)
+    return;
+  else if(!spoton_kernel::s_settings.value("gui/enableCongestionControl",
+					   false).toBool())
+    return;
+
+  QByteArray hash;
+  bool ok = true;
+
+  hash = spoton_kernel::s_crypt1->keyedHash(data, &ok);
+
+  if(!ok)
+    return;
+
+  if(spoton_kernel::s_messagingCache.contains(hash))
+    {
+      int *count = spoton_kernel::s_messagingCache.object(hash);
+      int *value = new int;
+
+      if(count)
+	*value = *count + 1;
+      else
+	*value = 1;
+
+      spoton_kernel::s_messagingCache.remove(hash);
+      spoton_kernel::s_messagingCache.insert(hash, value);
+    }
+  else
+    {
+      int *count = new int;
+
+      *count = 1;
+      spoton_kernel::s_messagingCache.insert(hash, count);
+    }
+}
+
+bool spoton_neighbor::isDuplicateMessage(const QByteArray &data)
+{
+  if(!spoton_kernel::s_crypt1)
+    return false;
+
+  QByteArray hash;
+  bool ok = true;
+
+  hash = spoton_kernel::s_crypt1->keyedHash(data, &ok);
+
+  if(!ok)
+    return false;
+
+  if(spoton_kernel::s_messagingCache.contains(hash))
+    {
+      int *count = spoton_kernel::s_messagingCache.object(hash);
+
+      if(count)
+	if(*count > 3)
+	  return true;
+
+      return false;
+    }
+  else
+    return false;
 }
