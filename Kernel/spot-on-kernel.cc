@@ -496,7 +496,7 @@ void spoton_kernel::prepareListeners(void)
 		   "listener %1 "
 		   " may have been deleted from the listeners table by an"
 		   " external event. Purging listener from the listeners "
-		   "hash.").
+		   "container.").
 	   arg(m_listeners.keys().at(i)));
 	m_listeners.remove(m_listeners.keys().at(i));
       }
@@ -628,17 +628,29 @@ void spoton_kernel::prepareNeighbors(void)
 
   QSqlDatabase::removeDatabase("spoton_kernel");
 
+  int disconnected = 0;
+
   for(int i = m_neighbors.keys().size() - 1; i >= 0; i--)
-    if(!m_neighbors.value(m_neighbors.keys().at(i)))
-      {
-	spoton_misc::logError
-	  (QString("spoton_kernel::prepareNeighbors(): "
-		   "neighbor %1 "
-		   " may have been deleted from the neighbors table by an"
-		   " external event. Purging neighbor from the neighbors "
-		   "hash.").arg(m_neighbors.keys().at(i)));
-	m_neighbors.remove(m_neighbors.keys().at(i));
-      }
+    {
+      QPointer<spoton_neighbor> neighbor =
+	m_neighbors.value(m_neighbors.keys().at(i));
+
+      if(!neighbor)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_kernel::prepareNeighbors(): "
+		     "neighbor %1 "
+		     " may have been deleted from the neighbors table by an"
+		     " external event. Purging neighbor from the neighbors "
+		     "container.").arg(m_neighbors.keys().at(i)));
+	  m_neighbors.remove(m_neighbors.keys().at(i));
+	}
+      else if(neighbor->state() == QAbstractSocket::UnconnectedState)
+	disconnected += 1;
+    }
+
+  if(disconnected == m_neighbors.count())
+    s_messagingCache.clear();
 }
 
 void spoton_kernel::checkForTermination(void)
