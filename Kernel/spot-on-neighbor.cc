@@ -2036,10 +2036,11 @@ void spoton_neighbor::saveExternalAddress(const QHostAddress &address,
   if(!db.isOpen())
     return;
 
+  QAbstractSocket::SocketState state = this->state();
   QSqlQuery query(db);
   bool ok = true;
 
-  if(state() == QAbstractSocket::ConnectedState)
+  if(state == QAbstractSocket::ConnectedState)
     {
       if(address.isNull())
 	{
@@ -2060,7 +2061,7 @@ void spoton_neighbor::saveExternalAddress(const QHostAddress &address,
 	  query.bindValue(1, m_id);
 	}
     }
-  else
+  else if(state == QAbstractSocket::UnconnectedState)
     {
       query.prepare("UPDATE neighbors SET external_ip_address = NULL "
 		    "WHERE OID = ? AND external_ip_address IS NOT NULL");

@@ -97,9 +97,7 @@ class spoton: public QMainWindow
   QByteArray m_kernelSocketData;
   QCache<QByteArray, char *> m_messagingCache; /*
 					       ** Prevent duplicate
-					       ** messages that are
-					       ** caused by wonderful
-					       ** echoes.
+					       ** echoed messages.
 					       */
   QDateTime m_countriesLastModificationTime;
   QDateTime m_listenersLastModificationTime;

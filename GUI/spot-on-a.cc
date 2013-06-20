@@ -1570,6 +1570,7 @@ void spoton::slotPopulateNeighbors(void)
     }
   else
     {
+      m_messagingCache.clear();
       m_sb.neighbors->setIcon
 	(QIcon(QString(":/%1/status-offline.png").
 	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
@@ -2505,7 +2506,9 @@ void spoton::slotShowContextMenu(const QPoint &point)
 
 void spoton::slotKernelSocketState(void)
 {
-  if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
+  QAbstractSocket::SocketState state = m_kernelSocket.state();
+
+  if(state == QAbstractSocket::ConnectedState)
     {
       sendKeysToKernel();
       m_sb.kernelstatus->setIcon
@@ -2517,8 +2520,9 @@ void spoton::slotKernelSocketState(void)
 	 arg(m_kernelSocket.peerPort()).
 	 arg(m_kernelSocket.localPort()));
     }
-  else
+  else if(state == QAbstractSocket::UnconnectedState)
     {
+      m_messagingCache.clear();
       m_sb.kernelstatus->setIcon
 	(QIcon(QString(":/%1/deactivate.png").
 	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
