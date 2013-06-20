@@ -144,6 +144,7 @@ class spoton: public QMainWindow
   void slotCopyFriendshipBundle(void);
   void slotCopyMyPublicKey(void);
   void slotCopyMyURLPublicKey(void);
+  void slotCostChanged(int value);
   void slotCountryChanged(QListWidgetItem *item);
   void slotDaysChanged(int value);
   void slotDeactivateKernel(void);

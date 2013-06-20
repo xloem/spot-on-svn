@@ -73,7 +73,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>973</width>
-                <height>573</height>
+                <height>574</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1808,7 +1808,7 @@
              <x>0</x>
              <y>0</y>
              <width>973</width>
-             <height>573</height>
+             <height>574</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -1904,6 +1904,29 @@
                      </property>
                      <property name="text">
                       <string>Enable Con&amp;gestion Control</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSpinBox" name="cost">
+                     <property name="toolTip">
+                      <string>Cost</string>
+                     </property>
+                     <property name="minimum">
+                      <number>1000</number>
+                     </property>
+                     <property name="maximum">
+                      <number>65535</number>
+                     </property>
+                     <property name="value">
+                      <number>10000</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="Line" name="line_2">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
                      </property>
                     </widget>
                    </item>
@@ -2722,7 +2745,7 @@
      <x>0</x>
      <y>0</y>
      <width>995</width>
-     <height>25</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2875,6 +2898,7 @@
   <tabstop>kernelPath</tabstop>
   <tabstop>selectKernelPath</tabstop>
   <tabstop>congestionControl</tabstop>
+  <tabstop>cost</tabstop>
   <tabstop>scrambler</tabstop>
   <tabstop>cipherType</tabstop>
   <tabstop>hashType</tabstop>

@@ -331,6 +331,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.rsaKeySize,
 	  SLOT(setEnabled(bool)));
+  connect(m_ui.cost,
+	  SIGNAL(valueChanged(int)),
+	  this,
+	  SLOT(slotCostChanged(int)));
   connect(m_ui.days,
 	  SIGNAL(valueChanged(int)),
 	  this,
@@ -343,6 +347,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotCongestionControl(bool)));
+  connect(m_ui.congestionControl,
+	  SIGNAL(toggled(bool)),
+	  m_ui.cost,
+	  SLOT(setEnabled(bool)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -502,9 +510,13 @@ spoton::spoton(void):QMainWindow()
     (spoton_gcrypt::cipherKeyLength("aes256"));
   m_ui.cipherType->clear();
   m_ui.cipherType->addItems(spoton_gcrypt::cipherTypes());
+  m_ui.cost->setValue(m_settings.value("gui/congestionCost", 10000).toInt());
   m_ui.days->setValue(m_settings.value("gui/postofficeDays", 1).toInt());
   m_ui.acceptPublicizedListeners->setChecked
     (m_settings.value("gui/acceptPublicizedListeners", false).toBool());
+  m_ui.congestionControl->setChecked
+    (m_settings.value("gui/enableCongestionControl", false).toBool());
+  m_ui.cost->setEnabled(m_ui.congestionControl->isChecked());
   m_ui.keepOnlyUserDefinedNeighbors->setChecked
     (m_settings.value("gui/keepOnlyUserDefinedNeighbors", false).toBool());
   m_ui.postofficeCheckBox->setChecked

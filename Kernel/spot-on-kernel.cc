@@ -233,6 +233,9 @@ spoton_kernel::spoton_kernel(void):QObject(0)
     s_settings[settings.allKeys().at(i)] = settings.value
       (settings.allKeys().at(i));
 
+  s_messagingCache.setMaxCost
+    (s_settings.value("gui/congestionCost", 10000).toInt());
+
   QStringList arguments(QCoreApplication::arguments());
 
   for(int i = 0; i < arguments.size(); i++)
@@ -915,8 +918,10 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
 
   if(!s_settings.value("gui/enableCongestionControl", false).toBool())
     s_messagingCache.clear();
-  else
-    s_messagingCache.setMaxCost(10000);
+  else if(s_messagingCache.maxCost() !=
+	  s_settings.value("gui/congestionCost", 10000).toInt())
+    s_messagingCache.setMaxCost
+      (s_settings.value("gui/congestionCost", 10000).toInt());
 
   if(!s_settings.value("gui/scramblerEnabled", false).toBool())
     m_scramblerTimer.stop();

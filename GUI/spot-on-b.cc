@@ -2937,6 +2937,15 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
   return rc;
 }
 
+void spoton::slotCostChanged(int value)
+{
+  m_settings["gui/congestionCost"] = value;
+
+  QSettings settings;
+
+  settings.setValue("gui/congestionCost", value);
+}
+
 void spoton::slotDaysChanged(int value)
 {
   m_settings["gui/postofficeDays"] = value;
