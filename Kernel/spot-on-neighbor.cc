@@ -474,17 +474,17 @@ void spoton_neighbor::slotReadyRead(void)
 		{
 		  spoton_misc::logError
 		    (QString("spoton_neighbor::slotReadyRead(): "
-			     "received irregular data on %1:%2. Setting "
+			     "received irregular data from %1:%2. Setting "
 			     "the read buffer size to 1000 bytes.").
-		     arg(localAddress().toString()).arg(localPort()));
+		     arg(peerAddress().toString()).arg(peerPort()));
 		  setReadBufferSize(1000);
 		}
 	      else
 		spoton_misc::logError
 		  (QString("spoton_neighbor::slotReadyRead(): "
-			   "received irregular data on %1:%2. The "
+			   "received irregular data from %1:%2. The "
 			   "read buffer size remains at 1000 bytes.").
-		   arg(localAddress().toString()).arg(localPort()));
+		   arg(peerAddress().toString()).arg(peerPort()));
 	    }
 	}
     }
@@ -1818,8 +1818,8 @@ void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
 	  m_lastReadTime = QDateTime::currentDateTime();
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0015(): received "
-		     "keep-alive on %1:%2. Resetting time object.").
-	     arg(localAddress().toString()).arg(localPort()));
+		     "keep-alive from %1:%2. Resetting time object.").
+	     arg(peerAddress().toString()).arg(peerPort()));
 	}
       else
 	spoton_misc::logError
