@@ -34,6 +34,7 @@
 
 #include <limits>
 
+#include "Common/spot-on-external-address.h"
 #include "Common/spot-on-gcrypt.h"
 #include "Common/spot-on-misc.h"
 #include "Common/spot-on-send.h"

@@ -28,9 +28,9 @@
 #ifndef _spoton_reencode_h_
 #define _spoton_reencode_h_
 
-#include "Common/spot-on-gcrypt.h"
-#include "spot-on.h"
 #include "ui_statusbar.h"
+
+class spoton_gcrypt;
 
 class spoton_reencode
 {

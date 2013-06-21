@@ -30,6 +30,7 @@
 #include <QSqlQuery>
 #include <QSqlDatabase>
 
+#include "Common/spot-on-external-address.h"
 #include "Common/spot-on-gcrypt.h"
 #include "Common/spot-on-misc.h"
 #include "spot-on-kernel.h"

@@ -29,9 +29,10 @@
 #define _spoton_docviewer_h_
 
 #include <QMainWindow>
-#include <QWidget>
 
 #include "ui_docviewer.h"
+
+class QWidget;
 
 class spoton_docviewer: public QMainWindow
 {

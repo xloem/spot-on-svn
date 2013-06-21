@@ -28,8 +28,9 @@
 #ifndef _spoton_tabwidget_h_
 #define _spoton_tabwidget_h_
 
-#include <QTabBar>
 #include <QTabWidget>
+
+class QTabBar;
 
 class spoton_tabwidget: public QTabWidget
 {

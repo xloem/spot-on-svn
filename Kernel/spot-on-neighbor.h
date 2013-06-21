@@ -37,9 +37,9 @@
 #include <QTimer>
 #include <QUuid>
 
-#include "Common/spot-on-external-address.h"
-
 class QNetworkInterface;
+
+class spoton_external_address;
 
 class spoton_neighbor: public QTcpSocket
 {

@@ -28,7 +28,6 @@
 #ifndef _spoton_gui_server_h_
 #define _spoton_gui_server_h_
 
-#include <QHostAddress>
 #include <QTcpServer>
 #include <QTimer>
 

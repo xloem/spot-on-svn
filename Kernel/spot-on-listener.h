@@ -34,11 +34,11 @@
 #include <QTcpServer>
 #include <QTimer>
 
-#include "Common/spot-on-external-address.h"
-#include "Common/spot-on-misc.h"
 #include "spot-on-neighbor.h"
 
 class QNetworkInterface;
+
+class spoton_external_address;
 
 class spoton_listener_tcp_server: public QTcpServer
 {
