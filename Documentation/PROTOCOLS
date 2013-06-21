@@ -77,7 +77,7 @@ EOL
 EOL
 2 - Requester's Sha-512 Hash (Base-64) (Ciphertext, PK)
 EOL
-3 - Requester's Signature (Base-64) (Ciphertext, SK)
+3 - Requester's Message Digest Signature (Base-64) (Ciphertext, SK)
 EOL
 4 - Keyed Sha-512 Message Digest (Base-64) (Ciphertext, SK)
 

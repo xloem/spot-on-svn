@@ -884,101 +884,115 @@
             <string>Listening Services</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_6">
-            <property name="topMargin">
-             <number>6</number>
-            </property>
-            <property name="bottomMargin">
-             <number>6</number>
-            </property>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout">
+             <layout class="QHBoxLayout" name="horizontalLayout_10">
               <item>
-               <widget class="QTableWidget" name="listeners">
-                <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarAlwaysOn</enum>
+               <widget class="QCheckBox" name="publishPeriodically">
+                <property name="text">
+                 <string>Publish listener information periodically.</string>
                 </property>
-                <property name="alternatingRowColors">
-                 <bool>true</bool>
-                </property>
-                <property name="selectionMode">
-                 <enum>QAbstractItemView::SingleSelection</enum>
-                </property>
-                <property name="selectionBehavior">
-                 <enum>QAbstractItemView::SelectRows</enum>
-                </property>
-                <property name="horizontalScrollMode">
-                 <enum>QAbstractItemView::ScrollPerPixel</enum>
-                </property>
-                <property name="sortingEnabled">
-                 <bool>true</bool>
-                </property>
-                <attribute name="horizontalHeaderDefaultSectionSize">
-                 <number>200</number>
-                </attribute>
-                <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-                 <bool>true</bool>
-                </attribute>
-                <attribute name="horizontalHeaderStretchLastSection">
-                 <bool>true</bool>
-                </attribute>
-                <column>
-                 <property name="text">
-                  <string>Activate</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Status</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Local IP</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Local Port</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Scope ID</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Protocol</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>External IP</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>External Port</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Connections</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Max. Conn.</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>OID</string>
-                 </property>
-                </column>
                </widget>
               </item>
+              <item>
+               <spacer name="horizontalSpacer_20">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
              </layout>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="listeners">
+              <property name="verticalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOn</enum>
+              </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+              <property name="horizontalScrollMode">
+               <enum>QAbstractItemView::ScrollPerPixel</enum>
+              </property>
+              <property name="sortingEnabled">
+               <bool>true</bool>
+              </property>
+              <attribute name="horizontalHeaderDefaultSectionSize">
+               <number>200</number>
+              </attribute>
+              <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+               <bool>true</bool>
+              </attribute>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+              <column>
+               <property name="text">
+                <string>Activate</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Status</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Local IP</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Local Port</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Scope ID</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Protocol</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>External IP</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>External Port</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Connections</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Max. Conn.</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>OID</string>
+               </property>
+              </column>
+             </widget>
             </item>
             <item>
              <widget class="QGroupBox" name="groupBox_7">
@@ -2837,6 +2851,7 @@
   <tabstop>postofficeCheckBox</tabstop>
   <tabstop>postoffice</tabstop>
   <tabstop>days</tabstop>
+  <tabstop>publishPeriodically</tabstop>
   <tabstop>listeners</tabstop>
   <tabstop>listenerIPCombo</tabstop>
   <tabstop>listenerIP</tabstop>
