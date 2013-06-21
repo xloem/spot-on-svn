@@ -2462,6 +2462,8 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addSeparator();
       menu.addAction(tr("&Publish Information (Plaintext)"),
 		     this, SLOT(slotPublicizeListenerPlaintext(void)));
+      menu.addAction(tr("Publish &All (Plaintext)"),
+		     this, SLOT(slotPublicizeAllListenersPlaintext(void)));
       menu.exec(m_ui.neighbors->mapToGlobal(point));
     }
   else if(m_ui.neighbors == sender())

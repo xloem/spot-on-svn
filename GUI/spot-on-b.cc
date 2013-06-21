@@ -3018,6 +3018,23 @@ void spoton::slotReply(void)
   m_ui.outgoingMessage->setFocus();
 }
 
+void spoton::slotPublicizeAllListenersPlaintext(void)
+{
+  if(!isKernelActive())
+    return;
+
+  QByteArray message;
+
+  message.append("publicizealllistenersplaintext\n");
+
+  if(m_kernelSocket.write(message.constData(), message.length()) !=
+     message.length())
+    spoton_misc::logError
+      ("spoton::slotPublicizeAllListenersPlaintext(): write() failure.");
+  else
+    m_kernelSocket.flush();
+}
+
 void spoton::slotPublicizeListenerPlaintext(void)
 {
   if(!isKernelActive())

@@ -324,6 +324,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 				      const QByteArray &,
 				      const QString &)));
   connect(m_guiServer,
+	  SIGNAL(publicizeAllListenersPlaintext(void)),
+	  this,
+	  SLOT(slotPublicizeAllListenersPlaintext(void)));
+  connect(m_guiServer,
 	  SIGNAL(publicizeListenerPlaintext(const qint64)),
 	  this,
 	  SLOT(slotPublicizeListenerPlaintext(const qint64)));
@@ -1836,6 +1840,22 @@ void spoton_kernel::cleanupNeighborsDatabase(QSqlDatabase &db)
 
   query.exec("DELETE FROM neighbors WHERE "
 	     "status_control = 'deleted'");
+}
+
+void spoton_kernel::slotPublicizeAllListenersPlaintext(void)
+{
+  QHashIterator<qint64, QPointer<spoton_listener> > i(m_listeners);
+
+  while(i.hasNext())
+    {
+      i.next();
+
+      QPointer<spoton_listener> listener = i.value();
+
+      if(listener)
+	emit publicizeListenerPlaintext(listener->externalAddress(),
+					listener->externalPort());
+    }
 }
 
 void spoton_kernel::slotPublicizeListenerPlaintext(const qint64 oid)

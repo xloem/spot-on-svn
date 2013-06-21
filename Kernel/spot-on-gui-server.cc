@@ -197,6 +197,8 @@ void spoton_gui_server::slotReadyRead(void)
 		       QByteArray::fromBase64(list.at(1)),
 		       QByteArray::fromBase64(list.at(2)));
 		}
+	      else if(message.startsWith("publicizealllistenersplaintext"))
+		emit publicizeAllListenersPlaintext();
 	      else if(message.startsWith("publicizelistenerplaintext"))
 		{
 		  message.remove(0, strlen("publicizelistenerplaintext_"));
