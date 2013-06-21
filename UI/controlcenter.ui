@@ -599,11 +599,66 @@
             <string>&amp;Write</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_4">
-            <item row="2" column="1">
-             <widget class="QTextEdit" name="outgoingMessage">
-              <property name="tabChangesFocus">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>&amp;To</string>
+              </property>
+              <property name="buddy">
+               <cstring>emailParticipants</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QTableWidget" name="emailParticipants">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>150</height>
+               </size>
+              </property>
+              <property name="verticalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOn</enum>
+              </property>
+              <property name="alternatingRowColors">
                <bool>true</bool>
               </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+              <property name="horizontalScrollMode">
+               <enum>QAbstractItemView::ScrollPerPixel</enum>
+              </property>
+              <property name="sortingEnabled">
+               <bool>true</bool>
+              </property>
+              <attribute name="horizontalHeaderDefaultSectionSize">
+               <number>150</number>
+              </attribute>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+              <column>
+               <property name="text">
+                <string>Participant</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>OID</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>public_key_hash</string>
+               </property>
+              </column>
              </widget>
             </item>
             <item row="1" column="0">
@@ -616,18 +671,25 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_10">
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="outgoingSubject"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_26">
               <property name="text">
-               <string>&amp;To</string>
+               <string>&amp;Message</string>
               </property>
               <property name="buddy">
-               <cstring>emailParticipants</cstring>
+               <cstring>outgoingMessage</cstring>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="outgoingSubject"/>
+            <item row="2" column="1">
+             <widget class="QTextEdit" name="outgoingMessage">
+              <property name="tabChangesFocus">
+               <bool>true</bool>
+              </property>
+             </widget>
             </item>
             <item row="3" column="0">
              <widget class="QLabel" name="label_6">
@@ -668,91 +730,21 @@
                </spacer>
               </item>
               <item>
+               <widget class="QCheckBox" name="saveCopy">
+                <property name="text">
+                 <string>&amp;Save Copy</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QPushButton" name="sendMail">
                 <property name="text">
                  <string>Send</string>
                 </property>
                </widget>
-              </item>
-             </layout>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_26">
-              <property name="text">
-               <string>&amp;Message</string>
-              </property>
-              <property name="buddy">
-               <cstring>outgoingMessage</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <layout class="QHBoxLayout" name="horizontalLayout_33">
-              <item>
-               <widget class="QTableWidget" name="emailParticipants">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>150</height>
-                 </size>
-                </property>
-                <property name="verticalScrollBarPolicy">
-                 <enum>Qt::ScrollBarAlwaysOn</enum>
-                </property>
-                <property name="alternatingRowColors">
-                 <bool>true</bool>
-                </property>
-                <property name="selectionBehavior">
-                 <enum>QAbstractItemView::SelectRows</enum>
-                </property>
-                <property name="horizontalScrollMode">
-                 <enum>QAbstractItemView::ScrollPerPixel</enum>
-                </property>
-                <property name="sortingEnabled">
-                 <bool>true</bool>
-                </property>
-                <attribute name="horizontalHeaderDefaultSectionSize">
-                 <number>150</number>
-                </attribute>
-                <attribute name="horizontalHeaderStretchLastSection">
-                 <bool>true</bool>
-                </attribute>
-                <column>
-                 <property name="text">
-                  <string>Participant</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>OID</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>public_key_hash</string>
-                 </property>
-                </column>
-               </widget>
-              </item>
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_9">
-                <item>
-                 <widget class="QCheckBox" name="saveCopy">
-                  <property name="text">
-                   <string>&amp;Save Copy</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
               </item>
              </layout>
             </item>
@@ -2836,11 +2828,11 @@
   <tabstop>mail</tabstop>
   <tabstop>mailMessage</tabstop>
   <tabstop>emailParticipants</tabstop>
-  <tabstop>saveCopy</tabstop>
   <tabstop>outgoingSubject</tabstop>
   <tabstop>outgoingMessage</tabstop>
   <tabstop>goldbug</tabstop>
   <tabstop>generateGoldBug</tabstop>
+  <tabstop>saveCopy</tabstop>
   <tabstop>sendMail</tabstop>
   <tabstop>postofficeCheckBox</tabstop>
   <tabstop>postoffice</tabstop>
