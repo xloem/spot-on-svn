@@ -1242,7 +1242,7 @@ QByteArray spoton_misc::publicKeyFromSignaturePublicKeyHash
       }
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");qDebug()<<publicKey.toBase64();
+  QSqlDatabase::removeDatabase("spoton_misc");
   return publicKey;
 }
 
