@@ -86,6 +86,8 @@ class spoton_kernel: public QObject
 				   const QByteArray &name,
 				   const QByteArray &publicKey,
 				   const QByteArray &signature,
+				   const QByteArray &sPublicKey,
+				   const QByteArray &sSignature,
 				   const QString &messageType);
   void slotPublicizeAllListenersPlaintext(void);
   void slotPublicizeListenerPlaintext(const qint64 oid);

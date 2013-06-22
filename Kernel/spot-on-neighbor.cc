@@ -569,6 +569,8 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 				    const QByteArray &name,
 				    const QByteArray &publicKey,
 				    const QByteArray &signature,
+				    const QByteArray &sPublicKey,
+				    const QByteArray &sSignature,
 				    const qint64 neighborOid)
 {
   /*
@@ -576,6 +578,9 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
   */
 
   if(!spoton_gcrypt::isValidSignature(publicKey, publicKey, signature))
+    return;
+
+  if(!spoton_gcrypt::isValidSignature(sPublicKey, sPublicKey, sSignature))
     return;
 
   /*
@@ -617,16 +622,26 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 		  share = true;
 
 	    if(!share)
-	      /*
-	      ** An error occurred or we do not have the public key.
-	      */
+	      {
+		/*
+		** An error occurred or we do not have the public key.
+		*/
 
-	      spoton_misc::saveFriendshipBundle
-		(keyType, name, publicKey, neighborOid, db);
+		spoton_misc::saveFriendshipBundle
+		  (keyType, name, publicKey, sPublicKey,
+		   neighborOid, db);
+		spoton_misc::saveFriendshipBundle
+		  ("signature", name, sPublicKey, QByteArray(),
+		   neighborOid, db);
+	      }
 	  }
 	else
-	  spoton_misc::saveFriendshipBundle
-	    (keyType, name, publicKey, -1, db);
+	  {
+	    spoton_misc::saveFriendshipBundle
+	      (keyType, name, publicKey, sPublicKey, -1, db);
+	    spoton_misc::saveFriendshipBundle
+	      ("signature", name, sPublicKey, QByteArray(), -1, db);
+	  }
       }
 
     db.close();
@@ -643,6 +658,8 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 	   toByteArray().trimmed());
 	QByteArray myPublicKey;
 	QByteArray mySignature;
+	QByteArray mySPublicKey;
+	QByteArray mySSignature;
 	bool ok = true;
 
 	myPublicKey = spoton_kernel::s_crypt1->publicKey(&ok);
@@ -652,7 +669,16 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 	    (myPublicKey, &ok);
 
 	if(ok)
-	  sharePublicKey(keyType, myName, myPublicKey, mySignature);
+	  mySPublicKey = spoton_kernel::s_crypt2->publicKey(&ok);
+
+	if(ok)
+	  mySSignature = spoton_kernel::s_crypt2->digitalSignature
+	    (mySPublicKey, &ok);
+
+	if(ok)
+	  sharePublicKey(keyType, myName,
+			 myPublicKey, mySignature,
+			 mySPublicKey, mySSignature);
       }
 }
 
@@ -780,7 +806,9 @@ void spoton_neighbor::slotLifetimeExpired(void)
 void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
 				     const QByteArray &name,
 				     const QByteArray &publicKey,
-				     const QByteArray &signature)
+				     const QByteArray &signature,
+				     const QByteArray &sPublicKey,
+				     const QByteArray &sSignature)
 {
   if(state() != QAbstractSocket::ConnectedState)
     return;
@@ -794,6 +822,10 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
   message.append(publicKey.toBase64());
   message.append("\n");
   message.append(signature.toBase64());
+  message.append("\n");
+  message.append(sPublicKey.toBase64());
+  message.append("\n");
+  message.append(sSignature.toBase64());
   message = spoton_send::message0012(message);
 
   if(write(message.constData(), message.length()) != message.length())
@@ -1053,6 +1085,8 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 {
   if(!spoton_kernel::s_crypt1)
     return;
+  else if(!spoton_kernel::s_crypt2)
+    return;
 
   length -= strlen("type=0001a&content=");
 
@@ -1169,6 +1203,10 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 					     false).toBool())
 	    if(spoton_misc::isAcceptedParticipant(recipientHash))
 	      if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
+		/*
+		** Store the letter in the post office!
+		*/
+
 		storeLetter(list, recipientHash);
 	}
       else if(ttl > 0)
@@ -1477,11 +1515,11 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 
       QList<QByteArray> list(data.split('\n'));
 
-      if(list.size() != 4)
+      if(list.size() != 6)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0011(): "
-		     "received irregular data. Expecting 4 entries, "
+		     "received irregular data. Expecting 6 entries, "
 		     "received %1.").arg(list.size()));
 	  return;
 	}
@@ -1489,7 +1527,9 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      savePublicKey(list.at(0), list.at(1), list.at(2), list.at(3), m_id);
+      savePublicKey
+	(list.at(0), list.at(1), list.at(2), list.at(3), list.at(4),
+	 list.at(5), m_id);
     }
   else
     spoton_misc::logError
@@ -1518,11 +1558,11 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
 
       QList<QByteArray> list(data.split('\n'));
 
-      if(list.size() != 4)
+      if(list.size() != 6)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0012(): "
-		     "received irregular data. Expecting 4 entries, "
+		     "received irregular data. Expecting 6 entries, "
 		     "received %1.").arg(list.size()));
 	  return;
 	}
@@ -1530,7 +1570,9 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      savePublicKey(list.at(0), list.at(1), list.at(2), list.at(3), -1);
+      savePublicKey
+	(list.at(0), list.at(1), list.at(2), list.at(3), list.at(4),
+	 list.at(5), -1);
     }
   else
     spoton_misc::logError

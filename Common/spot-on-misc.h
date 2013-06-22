@@ -41,6 +41,8 @@ class spoton_misc
   static QByteArray findGeminiInCosmos(const QByteArray &data,
 				       spoton_gcrypt *crypt);
   static QByteArray publicKeyFromHash(const QByteArray &publicKeyHash);
+  static QByteArray publicKeyFromSignaturePublicKeyHash
+    (const QByteArray &signaturePublicKeyHash);
   static QString countryCodeFromIPAddress(const QString &ipAddress);
   static QString countryCodeFromName(const QString &country);
   static QString countryNameFromIPAddress(const QString &ipAddress);
@@ -53,6 +55,7 @@ class spoton_misc
   static bool saveFriendshipBundle(const QByteArray &keyType,
 				   const QByteArray &name,
 				   const QByteArray &publicKey,
+				   const QByteArray &sPublicKey,
 				   const int neighborOid,
 				   QSqlDatabase &db);
   static void cleanupDatabases(void);

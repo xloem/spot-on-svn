@@ -60,6 +60,8 @@ class spoton_gui_server: public QTcpServer
 			       const QByteArray &name,
 			       const QByteArray &publicKey,
 			       const QByteArray &signature,
+			       const QByteArray &sPublicKey,
+			       const QByteArray &sSignature,
 			       const QString &messageType);
   void publicizeAllListenersPlaintext(void);
   void publicizeListenerPlaintext(const qint64 oid);

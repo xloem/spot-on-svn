@@ -51,7 +51,9 @@ class spoton_send
   static QByteArray message0011(const QByteArray &keyType,
 				const QByteArray &name,
 				const QByteArray &publicKey,
-				const QByteArray &signature);
+				const QByteArray &signature,
+				const QByteArray &sPublicKey,
+				const QByteArray &sSignature);
   static QByteArray message0012(const QByteArray &message);
   static QByteArray message0013(const QByteArray &message);
   static QByteArray message0014(const QByteArray &uuid);

@@ -142,6 +142,7 @@ void spoton_mailer::slotTimeout(void)
 
 	      if(ok)
 		{
+		  QByteArray publicKeyHash;
 		  QSqlQuery query(db2);
 
 		  query.setForwardOnly(true);
@@ -203,7 +204,8 @@ void spoton_mailer::slotRetrieveMail(const QByteArray &data,
 {
   /*
   ** We must locate the public key that's associated with the provided
-  ** public key hash.
+  ** public key hash. Remember publicKeyHash is the hash of the signature
+  ** public key.
   */
 
   QByteArray publicKey(spoton_misc::publicKeyFromHash(publicKeyHash));
@@ -219,8 +221,22 @@ void spoton_mailer::slotRetrieveMail(const QByteArray &data,
 						signature))
     return;
 
-  if(!m_publicKeyHashes.contains(publicKeyHash))
-    m_publicKeyHashes.append(publicKeyHash);
+  publicKey = spoton_misc::publicKeyFromSignaturePublicKeyHash
+    (publicKeyHash);
+
+  if(publicKey.isEmpty())
+    return;
+
+  QByteArray hash;
+  bool ok = true;
+
+  hash = spoton_gcrypt::sha512Hash(publicKey, &ok);
+
+  if(!ok)
+    return;
+
+  if(!m_publicKeyHashes.contains(hash))
+    m_publicKeyHashes.append(hash);
 
   if(!m_retrieveMailTimer.isActive())
     m_retrieveMailTimer.start();

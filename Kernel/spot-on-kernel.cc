@@ -313,9 +313,13 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 				    const QByteArray &,
 				    const QByteArray &,
 				    const QByteArray &,
+				    const QByteArray &,
+				    const QByteArray &,
 				    const QString &)),
      this,
      SLOT(slotPublicKeyReceivedFromUI(const qint64,
+				      const QByteArray &,
+				      const QByteArray &,
 				      const QByteArray &,
 				      const QByteArray &,
 				      const QByteArray &,
@@ -861,12 +865,16 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
 						const QByteArray &name,
 						const QByteArray &publicKey,
 						const QByteArray &signature,
+						const QByteArray &sPublicKey,
+						const QByteArray &sSignature,
 						const QString &messageType)
 {
   if(messageType == "0011")
     {
       QByteArray data
-	(spoton_send::message0011(keyType, name, publicKey, signature));
+	(spoton_send::message0011(keyType, name,
+				  publicKey, signature,
+				  sPublicKey, sSignature));
 
       if(m_neighbors.contains(oid))
 	{
@@ -887,7 +895,7 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
     {
       if(m_neighbors.contains(oid))
 	m_neighbors[oid]->sharePublicKey
-	  (keyType, name, publicKey, signature);
+	  (keyType, name, publicKey, signature, sPublicKey, sSignature);
       else
 	spoton_misc::logError
 	  (QString("spoton_kernel::slotPublicKeyReceivedFromUI(): "
@@ -1099,7 +1107,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 	if(query.exec("SELECT gemini, public_key "
 		      "FROM friends_public_keys WHERE "
-		      "neighbor_oid = -1"))
+		      "key_type = 'messaging' AND neighbor_oid = -1"))
 	  while(query.next())
 	    {
 	      QByteArray data;
@@ -1319,13 +1327,15 @@ void spoton_kernel::slotScramble(void)
 
 void spoton_kernel::slotRetrieveMail(void)
 {
-  if(!s_crypt1)
+  if(!s_crypt2)
     return;
 
   QByteArray publicKey;
   bool ok = true;
 
-  publicKey = s_crypt1->publicKey(&ok);
+  publicKey = s_crypt2->publicKey(&ok); /*
+					** Signature public key.
+					*/
 
   if(!ok)
     return;
@@ -1351,6 +1361,7 @@ void spoton_kernel::slotRetrieveMail(void)
 
 	if(query.exec("SELECT public_key "
 		      "FROM friends_public_keys WHERE "
+		      "key_type = 'messaging' AND "
 		      "neighbor_oid = -1"))
 	  while(query.next())
 	    {
@@ -1423,7 +1434,7 @@ void spoton_kernel::slotRetrieveMail(void)
 		     &ok);
 
 		  if(ok)
-		    signature = s_crypt1->digitalSignature
+		    signature = s_crypt2->digitalSignature
 		      (messageDigest, &ok);
 
 		  if(ok)
@@ -1524,7 +1535,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	if(query.exec("SELECT public_key "
 		      "FROM friends_public_keys WHERE "
-		      "neighbor_oid = -1"))
+		      "key_type = 'messaging' AND neighbor_oid = -1"))
 	  while(query.next())
 	    {
 	      QByteArray data;
@@ -1787,20 +1798,16 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 	      }
 
 	    if(!s_crypt2)
-	      {
-		s_crypt2 = new spoton_gcrypt
-		  (s_settings.value("gui/cipherType",
-				    "aes256").toString().trimmed(),
-		   s_settings.value("gui/hashType",
-				    "sha512").toString().trimmed(),
-		   passphrase.toUtf8(),
-		   key,
-		   s_settings.value("gui/saltLength", 256).toInt(),
-		   s_settings.value("gui/iterationCount", 10000).toInt(),
-		   "signature");
-		spoton_misc::populateCountryDatabase
-		  (spoton_kernel::s_crypt1);
-	      }
+	      s_crypt2 = new spoton_gcrypt
+		(s_settings.value("gui/cipherType",
+				  "aes256").toString().trimmed(),
+		 s_settings.value("gui/hashType",
+				  "sha512").toString().trimmed(),
+		 passphrase.toUtf8(),
+		 key,
+		 s_settings.value("gui/saltLength", 256).toInt(),
+		 s_settings.value("gui/iterationCount", 10000).toInt(),
+		 "signature");
 
 	    if(!s_crypt3)
 	      s_crypt3 = new spoton_gcrypt

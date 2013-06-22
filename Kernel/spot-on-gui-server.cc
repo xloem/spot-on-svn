@@ -131,13 +131,15 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  QList<QByteArray> list(message.split('_'));
 
-		  if(list.size() == 5)
+		  if(list.size() == 7)
 		    emit publicKeyReceivedFromUI
 		      (list.at(0).toLongLong(),
 		       QByteArray::fromBase64(list.at(1)),
 		       QByteArray::fromBase64(list.at(2)),
 		       QByteArray::fromBase64(list.at(3)),
 		       QByteArray::fromBase64(list.at(4)),
+		       QByteArray::fromBase64(list.at(5)),
+		       QByteArray::fromBase64(list.at(6)),
 		       "0012");
 		}
 	      else if(message.startsWith("keys_"))
@@ -233,13 +235,15 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  QList<QByteArray> list(message.split('_'));
 
-		  if(list.size() == 5)
+		  if(list.size() == 7)
 		    emit publicKeyReceivedFromUI
 		      (list.at(0).toLongLong(),
 		       QByteArray::fromBase64(list.at(1)),
 		       QByteArray::fromBase64(list.at(2)),
 		       QByteArray::fromBase64(list.at(3)),
 		       QByteArray::fromBase64(list.at(4)),
+		       QByteArray::fromBase64(list.at(5)),
+		       QByteArray::fromBase64(list.at(6)),
 		       "0011");
 		}
 	    }

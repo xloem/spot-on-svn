@@ -414,7 +414,6 @@ void spoton_gcrypt::reencodeRSAKeys(const QString &newCipher,
 
       if((err = gcry_cipher_open(&cipherHandle, algorithm,
 				 GCRY_CIPHER_MODE_CBC,
-				 GCRY_CIPHER_SECURE |
 				 GCRY_CIPHER_CBC_CTS)) != 0 || !cipherHandle)
 	{
 	  if(err != 0)
@@ -1587,10 +1586,6 @@ QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 	       static_cast<const void *> (keyData.constData()),
 	       m_privateKeyLength);
     }
-
-  /*
-  ** Now let's see if we have a somewhat valid private key.
-  */
 
   if((err = gcry_sexp_new(&key_t,
 			  static_cast<const void *> (m_privateKey),

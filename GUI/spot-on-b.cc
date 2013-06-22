@@ -195,12 +195,22 @@ void spoton::slotSharePublicKey(void)
 
   QByteArray publicKey;
   QByteArray signature;
+
   bool ok = true;
 
   publicKey = m_crypt->publicKey(&ok);
 
   if(ok)
     signature = m_crypt->digitalSignature(publicKey, &ok);
+
+  QByteArray sPublicKey;
+  QByteArray sSignature;
+
+  if(ok)
+    sPublicKey = m_signatureCrypt->publicKey(&ok);
+
+  if(ok)
+    sSignature = m_signatureCrypt->digitalSignature(sPublicKey, &ok);
 
   if(ok)
     {
@@ -221,6 +231,10 @@ void spoton::slotSharePublicKey(void)
       message.append(publicKey.toBase64());
       message.append("_");
       message.append(signature.toBase64());
+      message.append("_");
+      message.append(sPublicKey.toBase64());
+      message.append("_");
+      message.append(sSignature.toBase64());
       message.append('\n');
 
       if(m_kernelSocket.write(message.constData(), message.length()) !=
@@ -450,6 +464,15 @@ void spoton::slotSharePublicKeyWithParticipant(void)
   if(ok)
     signature = m_crypt->digitalSignature(publicKey, &ok);
 
+  QByteArray sPublicKey;
+  QByteArray sSignature;
+
+  if(ok)
+    sPublicKey = m_signatureCrypt->publicKey(&ok);
+
+  if(ok)
+    sSignature = m_signatureCrypt->digitalSignature(sPublicKey, &ok);
+
   if(ok)
     {
       QByteArray message;
@@ -469,6 +492,10 @@ void spoton::slotSharePublicKeyWithParticipant(void)
       message.append(publicKey.toBase64());
       message.append("_");
       message.append(signature.toBase64());
+      message.append("_");
+      message.append(sPublicKey.toBase64());
+      message.append("_");
+      message.append(sSignature.toBase64());
       message.append('\n');
 
       if(m_kernelSocket.write(message.constData(), message.length()) !=
@@ -1230,11 +1257,13 @@ void spoton::slotAddFriendsKey(void)
 	    if(spoton_misc::saveFriendshipBundle("messaging",
 						 name,
 						 mPublicKey,
+						 sPublicKey,
 						 -1,
 						 db))
 	      if(spoton_misc::saveFriendshipBundle("signature",
 						   name,
 						   sPublicKey,
+						   QByteArray(),
 						   -1,
 						   db))
 		m_ui.friendInformation->selectAll();
@@ -1400,9 +1429,16 @@ void spoton::slotAddFriendsKey(void)
 		if(spoton_misc::saveFriendshipBundle(keyType,
 						     name,
 						     publicKey,
+						     sPublicKey,
 						     -1,
 						     db))
-		  m_ui.friendInformation->selectAll();
+		  if(spoton_misc::saveFriendshipBundle("signature",
+						       name,
+						       sPublicKey,
+						       QByteArray(),
+						       -1,
+						       db))
+		    m_ui.friendInformation->selectAll();
 	      }
 
 	    db.close();

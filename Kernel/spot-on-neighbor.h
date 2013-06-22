@@ -62,7 +62,9 @@ class spoton_neighbor: public QTcpSocket
   void sharePublicKey(const QByteArray &keyType,
 		      const QByteArray &name,
 		      const QByteArray &publicKey,
-		      const QByteArray &signature);
+		      const QByteArray &signature,
+		      const QByteArray &sPublicKey,
+		      const QByteArray &sSignature);
 
  private:
   QByteArray m_data;
@@ -102,6 +104,8 @@ class spoton_neighbor: public QTcpSocket
 		     const QByteArray &name,
 		     const QByteArray &publicKey,
 		     const QByteArray &signature,
+		     const QByteArray &sPublicKey,
+		     const QByteArray &sSignature,
 		     const qint64 neighborOid);
   void saveStatus(QSqlDatabase &db, const QString &status);
   void storeLetter(QByteArray &symmetricKey,

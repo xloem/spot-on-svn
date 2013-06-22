@@ -40,7 +40,7 @@ EOL
 EOL
 5 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
 EOL
-6 - Sender's Sha-512 Hash (Base-64) (Ciphertext, PK)
+6 - Sender's Signature Sha-512 Hash (Base-64) (Ciphertext, PK)
 EOL
 7 - Sender's Name (Base-64) (Ciphertext, SK)
 EOL
@@ -92,7 +92,11 @@ EOL
 EOL
 2 - Sender's Public Key (Base-64) (Plaintext)
 EOL
-3 - Signature (Base-64) (Plaintext)
+3 - Sender's Public Key Signature (Base-64) (Plaintext)
+EOL
+4 - Sender's Signature Public Key (Base-64) (Public)
+EOL
+5 - Sender's Signature Public Key Signature (Base-64) (Plaintext)
 
 Status
 Echoed? Yes

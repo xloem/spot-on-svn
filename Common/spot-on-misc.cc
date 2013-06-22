@@ -181,6 +181,17 @@ void spoton_misc::prepareDatabases(void)
 		   "neighbor_oid INTEGER NOT NULL DEFAULT -1, "
 		   "status TEXT NOT NULL DEFAULT 'offline', "
 		   "last_status_update TEXT NOT NULL DEFAULT 'now')");
+	query.exec("CREATE TABLE IF NOT EXISTS relationships_to_signatures ("
+		   "public_key_hash TEXT PRIMARY KEY NOT NULL, " /*
+								 ** Sha-512
+								 ** hash of
+								 ** the public
+								 ** key.
+								 */
+		   "signature_public_key_hash TEXT NOT NULL, "
+		   "FOREIGN KEY(public_key_hash) REFERENCES "
+		   "friends_public_keys(public_key_hash) "
+		   "ON DELETE CASCADE)");
       }
 
     db.close();
@@ -774,6 +785,7 @@ void spoton_misc::populateUrlsDatabase(const QList<QList<QVariant> > &list,
 bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 				       const QByteArray &name,
 				       const QByteArray &publicKey,
+				       const QByteArray &sPublicKey,
 				       const int neighborOid,
 				       QSqlDatabase &db)
 {
@@ -796,6 +808,30 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 
   if(ok)
     ok = query.exec();
+
+  if(ok)
+    if(!sPublicKey.isEmpty())
+      {
+	/*
+	** Record the relationship between the public key and the
+	** signature public key.
+	*/
+
+	QSqlQuery query(db);
+
+	query.prepare("INSERT OR REPLACE INTO relationships_to_signatures "
+		      "(public_key_hash, signature_public_key_hash) "
+		      "VALUES (?, ?)");
+	query.bindValue
+	  (0, spoton_gcrypt::sha512Hash(publicKey, &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	  (1, spoton_gcrypt::sha512Hash(sPublicKey, &ok).toBase64());
+
+	if(ok)
+	  ok = query.exec();
+      }
 
   return ok;
 }
@@ -952,7 +988,7 @@ QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
 	    query.setForwardOnly(true);
 
 	    if(query.exec("SELECT gemini FROM friends_public_keys WHERE "
-			  "gemini IS NOT NULL"))
+			  "gemini IS NOT NULL AND key_type = 'messaging'"))
 	      while(query.next())
 		{
 		  bool ok = true;
@@ -1174,6 +1210,39 @@ QByteArray spoton_misc::publicKeyFromHash(const QByteArray &publicKeyHash)
   }
 
   QSqlDatabase::removeDatabase("spoton_misc");
+  return publicKey;
+}
+
+QByteArray spoton_misc::publicKeyFromSignaturePublicKeyHash
+(const QByteArray &signaturePublicKeyHash)
+{
+  QByteArray publicKey;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+
+    db.setDatabaseName(homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT public_key "
+		      "FROM friends_public_keys WHERE "
+		      "public_key_hash = (SELECT public_key_hash FROM "
+		      "relationships_to_signatures WHERE "
+		      "signature_public_key_hash = ?)");
+	query.bindValue(0, signaturePublicKeyHash.toBase64());
+
+	if(query.exec())
+	  if(query.next())
+	    publicKey = query.value(0).toByteArray();
+      }
+  }
+
+  QSqlDatabase::removeDatabase("spoton_misc");qDebug()<<publicKey.toBase64();
   return publicKey;
 }
 
