@@ -358,6 +358,15 @@ void spoton::slotKeepOnlyUserDefinedNeighbors(bool state)
     m_neighborsLastModificationTime = QDateTime();
 }
 
+void spoton::slotPublishPeriodicallyToggled(bool state)
+{
+  m_settings["gui/publishPeriodically"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/publishPeriodically", state);
+}
+
 void spoton::prepareListenerIPCombo(void)
 {
   m_ui.listenerIPCombo->clear();

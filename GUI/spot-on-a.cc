@@ -352,6 +352,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.cost,
 	  SLOT(setEnabled(bool)));
+  connect(m_ui.publishPeriodically,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotPublishPeriodicallyToggled(bool)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -524,6 +528,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/keepOnlyUserDefinedNeighbors", false).toBool());
   m_ui.postofficeCheckBox->setChecked
     (m_settings.value("gui/postoffice_enabled", false).toBool());
+  m_ui.publishPeriodically->setChecked
+    (m_settings.value("gui/publishPeriodically", false).toBool());
   m_ui.saveCopy->setChecked
     (m_settings.value("gui/saveCopy", true).toBool());
   m_ui.scrambler->setChecked

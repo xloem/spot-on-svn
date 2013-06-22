@@ -289,11 +289,16 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotPollDatabase(void)));
+  connect(&m_publishAllListenersPlaintextTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotPublicizeAllListenersPlaintext(void)));
   connect(&m_statusTimer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotStatusTimerExpired(void)));
   m_controlDatabaseTimer.start(2500);
+  m_publishAllListenersPlaintextTimer.setInterval(10 * 60 * 1000);
   m_statusTimer.start(15000);
   m_guiServer = new spoton_gui_server(this);
   m_mailer = new spoton_mailer(this);
@@ -905,6 +910,10 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
 
 void spoton_kernel::slotSettingsChanged(const QString &path)
 {
+  /*
+  ** Method may be issued several timer per each change.
+  */
+
   Q_UNUSED(path);
   s_settings.clear();
 
@@ -924,6 +933,14 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
 	  s_settings.value("gui/congestionCost", 10000).toInt())
     s_messagingCache.setMaxCost
       (s_settings.value("gui/congestionCost", 10000).toInt());
+
+  if(s_settings.value("gui/publishPeriodically", false).toBool())
+    {
+      if(!m_publishAllListenersPlaintextTimer.isActive())
+	m_publishAllListenersPlaintextTimer.start();
+    }
+  else
+    m_publishAllListenersPlaintextTimer.stop();
 }
 
 void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)

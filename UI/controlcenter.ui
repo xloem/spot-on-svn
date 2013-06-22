@@ -889,7 +889,7 @@
               <item>
                <widget class="QCheckBox" name="publishPeriodically">
                 <property name="text">
-                 <string>Periodically publish information.</string>
+                 <string>Periodically publish plaintext information.</string>
                 </property>
                </widget>
               </item>
