@@ -188,10 +188,23 @@ void spoton_misc::prepareDatabases(void)
 								 ** the public
 								 ** key.
 								 */
-		   "signature_public_key_hash TEXT NOT NULL, "
-		   "FOREIGN KEY(public_key_hash) REFERENCES "
-		   "friends_public_keys(public_key_hash) "
-		   "ON DELETE CASCADE)");
+		   "signature_public_key_hash TEXT NOT NULL)"); /*
+								** Sha-512
+								** hash of
+								** the sign.
+								** public
+								** key.
+								*/
+
+	/*
+	** Foreign key support would have been excellent.
+	*/
+
+	/*
+	** "FOREIGN KEY(public_key_hash) REFERENCES "
+	** "friends_public_keys(public_key_hash) "
+	** "ON DELETE CASCADE)");
+	*/
       }
 
     db.close();
@@ -1092,11 +1105,19 @@ void spoton_misc::cleanupDatabases(void)
 	query.exec("UPDATE friends_public_keys SET status = 'offline'");
 
 	/*
-	** Delete symmetric keys that were not completely shared.
+	** Delete asymmetric keys that were not completely shared.
 	*/
 
 	query.exec("DELETE FROM friends_public_keys WHERE "
 		   "neighbor_oid <> -1");
+	query.exec("DELETE FROM relationships_to_signatures WHERE "
+		   "public_key_hash NOT IN "
+		   "(SELECT public_key_hash FROM friends_public_keys WHERE "
+		   "key_type <> 'signature')");
+	query.exec("DELETE FROM friends_public_keys WHERE "
+		   "key_type = 'signature' AND public_key_hash NOT IN "
+		   "(SELECT signature_public_key_hash FROM "
+		   "relationships_to_signatures)");
       }
 
     db.close();

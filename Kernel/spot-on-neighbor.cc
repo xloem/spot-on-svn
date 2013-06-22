@@ -190,6 +190,14 @@ spoton_neighbor::~spoton_neighbor()
 		      "neighbor_oid = ?");
 	query.bindValue(0, m_id);
 	query.exec();
+	query.exec("DELETE FROM relationships_to_signatures WHERE "
+		   "public_key_hash NOT IN "
+		   "(SELECT public_key_hash FROM friends_public_keys WHERE "
+		   "key_type <> 'signature')");
+	query.exec("DELETE FROM friends_public_keys WHERE "
+		   "key_type = 'signature' AND public_key_hash NOT IN "
+		   "(SELECT signature_public_key_hash FROM "
+		   "relationships_to_signatures)");
       }
 
     db.close();

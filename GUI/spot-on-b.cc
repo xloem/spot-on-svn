@@ -285,8 +285,20 @@ void spoton::slotRemoveParticipants(void)
 	    QVariant data(list.takeFirst().data());
 
 	    if(!data.isNull() && data.isValid())
-	      query.exec(QString("DELETE FROM friends_public_keys WHERE "
-				 "OID = %1").arg(data.toString()));
+	      {
+		query.exec(QString("DELETE FROM friends_public_keys WHERE "
+				   "OID = %1").arg(data.toString()));
+		query.exec("DELETE FROM relationships_to_signatures WHERE "
+			   "public_key_hash NOT IN "
+			   "(SELECT public_key_hash FROM "
+			   "friends_public_keys WHERE "
+			   "key_type <> 'signature')");
+		query.exec("DELETE FROM friends_public_keys WHERE "
+			   "key_type = 'signature' AND public_key_hash "
+			   "NOT IN "
+			   "(SELECT signature_public_key_hash FROM "
+			   "relationships_to_signatures)");
+	      }
 	  }
       }
 

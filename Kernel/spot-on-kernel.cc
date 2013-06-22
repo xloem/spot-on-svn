@@ -858,6 +858,13 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 					NORMAL_POST));
 	}
     }
+
+  /*
+  ** Send a scrambled message in proximity of the user's message.
+  */
+
+  if(s_settings.value("gui/scramblerEnabled", false).toBool())
+    QTimer::singleShot(qrand() % 5000 + 1000, this, SLOT(slotScramble(void)));
 }
 
 void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
