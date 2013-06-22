@@ -1833,7 +1833,7 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
   return ok;
 }
 
-void spoton_kernel::cleanupListenersDatabase(QSqlDatabase &db)
+void spoton_kernel::cleanupListenersDatabase(const QSqlDatabase &db)
 {
   if(!db.isOpen())
     return;
@@ -1844,7 +1844,7 @@ void spoton_kernel::cleanupListenersDatabase(QSqlDatabase &db)
 	     "status_control = 'deleted'");
 }
 
-void spoton_kernel::cleanupNeighborsDatabase(QSqlDatabase &db)
+void spoton_kernel::cleanupNeighborsDatabase(const QSqlDatabase &db)
 {
   if(!db.isOpen())
     return;

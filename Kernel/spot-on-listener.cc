@@ -248,7 +248,7 @@ void spoton_listener::slotTimeout(void)
       }
 }
 
-void spoton_listener::saveStatus(QSqlDatabase &db)
+void spoton_listener::saveStatus(const QSqlDatabase &db)
 {
   if(!db.isOpen())
     return;
@@ -650,7 +650,7 @@ void spoton_listener::prepareNetworkInterface(void)
 }
 
 void spoton_listener::saveExternalAddress(const QHostAddress &address,
-					  QSqlDatabase &db)
+					  const QSqlDatabase &db)
 {
   if(!db.isOpen())
     return;

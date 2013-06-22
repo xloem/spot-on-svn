@@ -126,9 +126,9 @@ class spoton: public QMainWindow
   void saveKernelPath(const QString &path);
   void saveSettings(void);
   void sendKeysToKernel(void);
-  void updateListenersTable(QSqlDatabase &db);
-  void updateNeighborsTable(QSqlDatabase &db);
-  void updateParticipantsTable(QSqlDatabase &db);
+  void updateListenersTable(const QSqlDatabase &db);
+  void updateNeighborsTable(const QSqlDatabase &db);
+  void updateParticipantsTable(const QSqlDatabase &db);
 
  private slots:
   void slotAcceptPublicizedListeners(bool state);

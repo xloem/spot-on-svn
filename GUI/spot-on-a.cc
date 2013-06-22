@@ -1929,7 +1929,7 @@ void spoton::slotListenerCheckChange(int state)
     }
 }
 
-void spoton::updateListenersTable(QSqlDatabase &db)
+void spoton::updateListenersTable(const QSqlDatabase &db)
 {
   if(!isKernelActive())
     if(db.isOpen())
@@ -1953,7 +1953,7 @@ void spoton::updateListenersTable(QSqlDatabase &db)
       }
 }
 
-void spoton::updateNeighborsTable(QSqlDatabase &db)
+void spoton::updateNeighborsTable(const QSqlDatabase &db)
 {
   if(m_ui.keepOnlyUserDefinedNeighbors->isChecked())
     if(db.isOpen())
@@ -1994,7 +1994,7 @@ void spoton::updateNeighborsTable(QSqlDatabase &db)
       }
 }
 
-void spoton::updateParticipantsTable(QSqlDatabase &db)
+void spoton::updateParticipantsTable(const QSqlDatabase &db)
 {
   if(!isKernelActive())
     if(db.isOpen())

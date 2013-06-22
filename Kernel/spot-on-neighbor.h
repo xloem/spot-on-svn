@@ -94,7 +94,7 @@ class spoton_neighbor: public QTcpSocket
   void process0030(int length, const QByteArray &data);
   void recordMessageHash(const QByteArray &data);
   void saveExternalAddress(const QHostAddress &address,
-			   QSqlDatabase &db);
+			   const QSqlDatabase &db);
   void saveParticipantStatus(const QByteArray &name,
 			     const QByteArray &publicKeyHash);
   void saveParticipantStatus(const QByteArray &name,
@@ -107,7 +107,7 @@ class spoton_neighbor: public QTcpSocket
 		     const QByteArray &sPublicKey,
 		     const QByteArray &sSignature,
 		     const qint64 neighborOid);
-  void saveStatus(QSqlDatabase &db, const QString &status);
+  void saveStatus(const QSqlDatabase &db, const QString &status);
   void storeLetter(QByteArray &symmetricKey,
 		   QByteArray &symmetricKeyAlgorithm,
 		   QByteArray &senderPublicKeyHash,

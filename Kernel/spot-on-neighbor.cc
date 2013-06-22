@@ -190,14 +190,7 @@ spoton_neighbor::~spoton_neighbor()
 		      "neighbor_oid = ?");
 	query.bindValue(0, m_id);
 	query.exec();
-	query.exec("DELETE FROM relationships_to_signatures WHERE "
-		   "public_key_hash NOT IN "
-		   "(SELECT public_key_hash FROM friends_public_keys WHERE "
-		   "key_type <> 'signature')");
-	query.exec("DELETE FROM friends_public_keys WHERE "
-		   "key_type = 'signature' AND public_key_hash NOT IN "
-		   "(SELECT signature_public_key_hash FROM "
-		   "relationships_to_signatures)");
+	spoton_misc::purgeSignatureRelationships(db);
       }
 
     db.close();
@@ -339,7 +332,8 @@ void spoton_neighbor::slotTimeout(void)
       }
 }
 
-void spoton_neighbor::saveStatus(QSqlDatabase &db, const QString &status)
+void spoton_neighbor::saveStatus(const QSqlDatabase &db,
+				 const QString &status)
 {
   QSqlQuery query(db);
 
@@ -2114,7 +2108,7 @@ void spoton_neighbor::slotSendUuid(void)
 }
 
 void spoton_neighbor::saveExternalAddress(const QHostAddress &address,
-					  QSqlDatabase &db)
+					  const QSqlDatabase &db)
 {
   if(!db.isOpen())
     return;

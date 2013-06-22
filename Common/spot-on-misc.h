@@ -57,7 +57,7 @@ class spoton_misc
 				   const QByteArray &publicKey,
 				   const QByteArray &sPublicKey,
 				   const int neighborOid,
-				   QSqlDatabase &db);
+				   const QSqlDatabase &db);
   static void cleanupDatabases(void);
   static void logError(const QString &error);
   static void moveSentMailToSentFolder(const QList<qint64> &oids,
@@ -67,6 +67,7 @@ class spoton_misc
 				   spoton_gcrypt *gcrypt);
   static void prepareDatabases(void);
   static void prepareUrlDatabases(void);
+  static void purgeSignatureRelationships(const QSqlDatabase &db);
   static void retrieveSymmetricData(QByteArray &gemini,
 				    QByteArray &publicKey,
 				    QByteArray &symmetricKey,

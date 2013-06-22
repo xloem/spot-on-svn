@@ -181,30 +181,18 @@ void spoton_misc::prepareDatabases(void)
 		   "neighbor_oid INTEGER NOT NULL DEFAULT -1, "
 		   "status TEXT NOT NULL DEFAULT 'offline', "
 		   "last_status_update TEXT NOT NULL DEFAULT 'now')");
-	query.exec("CREATE TABLE IF NOT EXISTS relationships_to_signatures ("
+	query.exec("CREATE TABLE IF NOT EXISTS relationships_with_signatures ("
 		   "public_key_hash TEXT PRIMARY KEY NOT NULL, " /*
 								 ** Sha-512
 								 ** hash of
 								 ** the public
 								 ** key.
 								 */
-		   "signature_public_key_hash TEXT NOT NULL)"); /*
-								** Sha-512
-								** hash of
-								** the sign.
-								** public
-								** key.
-								*/
-
-	/*
-	** Foreign key support would have been excellent.
-	*/
-
-	/*
-	** "FOREIGN KEY(public_key_hash) REFERENCES "
-	** "friends_public_keys(public_key_hash) "
-	** "ON DELETE CASCADE)");
-	*/
+		   "signature_public_key_hash "
+		   "TEXT NOT NULL)"); /*
+				      ** Sha-512 ** hash of the signature
+				      ** public key.
+				      */
       }
 
     db.close();
@@ -800,7 +788,7 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 				       const QByteArray &publicKey,
 				       const QByteArray &sPublicKey,
 				       const int neighborOid,
-				       QSqlDatabase &db)
+				       const QSqlDatabase &db)
 {
   if(!db.isOpen())
     return false;
@@ -832,7 +820,7 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 
 	QSqlQuery query(db);
 
-	query.prepare("INSERT OR REPLACE INTO relationships_to_signatures "
+	query.prepare("INSERT OR REPLACE INTO relationships_with_signatures "
 		      "(public_key_hash, signature_public_key_hash) "
 		      "VALUES (?, ?)");
 	query.bindValue
@@ -1110,14 +1098,7 @@ void spoton_misc::cleanupDatabases(void)
 
 	query.exec("DELETE FROM friends_public_keys WHERE "
 		   "neighbor_oid <> -1");
-	query.exec("DELETE FROM relationships_to_signatures WHERE "
-		   "public_key_hash NOT IN "
-		   "(SELECT public_key_hash FROM friends_public_keys WHERE "
-		   "key_type <> 'signature')");
-	query.exec("DELETE FROM friends_public_keys WHERE "
-		   "key_type = 'signature' AND public_key_hash NOT IN "
-		   "(SELECT signature_public_key_hash FROM "
-		   "relationships_to_signatures)");
+	purgeSignatureRelationships(db);
       }
 
     db.close();
@@ -1253,7 +1234,7 @@ QByteArray spoton_misc::publicKeyFromSignaturePublicKeyHash
 	query.prepare("SELECT public_key "
 		      "FROM friends_public_keys WHERE "
 		      "public_key_hash = (SELECT public_key_hash FROM "
-		      "relationships_to_signatures WHERE "
+		      "relationships_with_signatures WHERE "
 		      "signature_public_key_hash = ?)");
 	query.bindValue(0, signaturePublicKeyHash.toBase64());
 
@@ -1444,4 +1425,21 @@ void spoton_misc::saveNeighbor(const QHostAddress &address,
   }
 
   QSqlDatabase::removeDatabase("spoton_misc");
+}
+
+void spoton_misc::purgeSignatureRelationships(const QSqlDatabase &db)
+{
+  if(!db.isOpen())
+    return;
+
+  QSqlQuery query(db);
+
+  query.exec("DELETE FROM relationships_with_signatures WHERE "
+	     "public_key_hash NOT IN "
+	     "(SELECT public_key_hash FROM friends_public_keys WHERE "
+	     "key_type <> 'signature')");
+  query.exec("DELETE FROM friends_public_keys WHERE "
+	     "key_type = 'signature' AND public_key_hash NOT IN "
+	     "(SELECT signature_public_key_hash FROM "
+	     "relationships_with_signatures)");
 }

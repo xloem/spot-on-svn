@@ -111,8 +111,8 @@ class spoton_listener: public spoton_listener_tcp_server
   qint64 id(void) const;
   void prepareNetworkInterface(void);
   void saveExternalAddress(const QHostAddress &address,
-			   QSqlDatabase &db);
-  void saveStatus(QSqlDatabase &db);
+			   const QSqlDatabase &db);
+  void saveStatus(const QSqlDatabase &db);
   void updateConnectionCount(void);
 
  private slots:
