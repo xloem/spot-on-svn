@@ -32,6 +32,7 @@ Remaining Items
 
 1.     Secure connection between the interface and the kernel.
 2.     Inspect UTF-8 uses.
+3.     Use QSslSockets?
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.

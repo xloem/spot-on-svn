@@ -69,6 +69,7 @@ spoton::spoton(void):QMainWindow()
   qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
   m_crypt = 0;
+  m_signatureCrypt = 0;
   m_countriesLastModificationTime = QDateTime();
   m_listenersLastModificationTime = QDateTime();
   m_neighborsLastModificationTime = QDateTime();
@@ -2103,7 +2104,7 @@ void spoton::slotSetPassphrase(void)
       if(!m_ui.newRSAKeys->isChecked() && reencode)
 	{
 	  m_sb.status->setText
-	    (tr("Re-encoding RSA key pair 1 of 2. Please be patient."));
+	    (tr("Re-encoding RSA key pair 1 of 3. Please be patient."));
 	  m_sb.status->repaint();
 	  spoton_gcrypt::reencodeRSAKeys
 	    (m_ui.cipherType->currentText(),
@@ -2118,7 +2119,23 @@ void spoton::slotSetPassphrase(void)
 	  if(error2.isEmpty())
 	    {
 	      m_sb.status->setText
-		(tr("Re-encoding RSA key pair 2 of 2. Please be patient."));
+		(tr("Re-encoding RSA key pair 2 of 3. Please be patient."));
+	      m_sb.status->repaint();
+	      spoton_gcrypt::reencodeRSAKeys
+		(m_ui.cipherType->currentText(),
+		 derivedKey,
+		 m_settings.value("gui/cipherType", "aes256").
+		 toString().trimmed(),
+		 m_crypt->symmetricKey(),
+		 "signature",
+		 error2);
+	      m_sb.status->clear();
+	    }
+
+	  if(error2.isEmpty())
+	    {
+	      m_sb.status->setText
+		(tr("Re-encoding RSA key pair 3 of 3. Please be patient."));
 	      m_sb.status->repaint();
 	      spoton_gcrypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
@@ -2136,6 +2153,7 @@ void spoton::slotSetPassphrase(void)
 	  QStringList list;
 
 	  list << "messaging"
+	       << "signature"
 	       << "url";
 
 	  for(int i = 0; i < list.size(); i++)
@@ -2219,6 +2237,15 @@ void spoton::slotSetPassphrase(void)
 	     m_ui.saltLength->value(),
 	     m_ui.iterationCount->value(),
 	     "messaging");
+	  delete m_signatureCrypt;
+	  m_signatureCrypt = new spoton_gcrypt
+	    (m_ui.cipherType->currentText(),
+	     m_ui.hashType->currentText(),
+	     str1.toUtf8(),
+	     derivedKey,
+	     m_ui.saltLength->value(),
+	     m_ui.iterationCount->value(),
+	     "signature");
 
 	  if(!reencode)
 	    {
@@ -2335,6 +2362,15 @@ void spoton::slotValidatePassphrase(void)
 	       m_ui.saltLength->value(),
 	       m_ui.iterationCount->value(),
 	       "messaging");
+	    delete m_signatureCrypt;
+	    m_signatureCrypt = new spoton_gcrypt
+	      (m_ui.cipherType->currentText(),
+	       m_ui.hashType->currentText(),
+	       m_ui.passphrase->text().toUtf8(),
+	       key,
+	       m_ui.saltLength->value(),
+	       m_ui.iterationCount->value(),
+	       "signature");
 	    m_sb.status->setText
 	      (tr("Initializing country_inclusion.db."));
 	    m_sb.status->repaint();

@@ -2546,26 +2546,8 @@ void spoton_neighbor::recordMessageHash(const QByteArray &data)
   if(!ok)
     return;
 
-  if(spoton_kernel::s_messagingCache.contains(hash))
-    {
-      int *count = spoton_kernel::s_messagingCache.object(hash);
-      int *value = new int;
-
-      if(count)
-	*value = *count + 1;
-      else
-	*value = 1;
-
-      spoton_kernel::s_messagingCache.remove(hash);
-      spoton_kernel::s_messagingCache.insert(hash, value);
-    }
-  else
-    {
-      int *count = new int;
-
-      *count = 1;
-      spoton_kernel::s_messagingCache.insert(hash, count);
-    }
+  if(!spoton_kernel::s_messagingCache.contains(hash))
+    spoton_kernel::s_messagingCache.insert(hash, 0);
 }
 
 bool spoton_neighbor::isDuplicateMessage(const QByteArray &data)
@@ -2581,16 +2563,5 @@ bool spoton_neighbor::isDuplicateMessage(const QByteArray &data)
   if(!ok)
     return false;
 
-  if(spoton_kernel::s_messagingCache.contains(hash))
-    {
-      int *count = spoton_kernel::s_messagingCache.object(hash);
-
-      if(count)
-	if(*count > 3)
-	  return true;
-
-      return false;
-    }
-  else
-    return false;
+  return spoton_kernel::s_messagingCache.contains(hash);
 }

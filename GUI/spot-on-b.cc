@@ -523,22 +523,31 @@ void spoton::slotCopyMyPublicKey(void)
     return;
 
   QByteArray name;
-  QByteArray publicKey;
-  QByteArray signature;
+  QByteArray mPublicKey;
+  QByteArray mSignature;
+  QByteArray sPublicKey;
+  QByteArray sSignature;
   bool ok = true;
 
   name = m_settings.value("gui/nodeName", "unknown").toByteArray().
     trimmed();
-  publicKey = m_crypt->publicKey(&ok);
+  mPublicKey = m_crypt->publicKey(&ok);
 
   if(ok)
-    signature = m_crypt->digitalSignature(publicKey, &ok);
+    mSignature = m_crypt->digitalSignature(mPublicKey, &ok);
+
+  if(ok)
+    sPublicKey = m_signatureCrypt->publicKey(&ok);
+
+  if(ok)
+    sSignature = m_signatureCrypt->digitalSignature(sPublicKey, &ok);
 
   if(ok)
     clipboard->setText
       ("K" + QByteArray("messaging").toBase64() + "@" +
-       name.toBase64() + "@" + publicKey.toBase64() + "@" +
-       signature.toBase64());
+       name.toBase64() + "@" +
+       mPublicKey.toBase64() + "@" + mSignature.toBase64() + "@" +
+       sPublicKey.toBase64() + "@" + sSignature.toBase64());
   else
     clipboard->clear();
 }
@@ -1153,11 +1162,11 @@ void spoton::slotAddFriendsKey(void)
 
       QList<QByteArray> list(key.toLatin1().split('@'));
 
-      if(list.size() != 4)
+      if(list.size() != 6)
 	{
 	  spoton_misc::logError
 	    (QString("spoton::slotAddFriendsKey(): "
-		     "received irregular data. Expecting 4 entries, "
+		     "received irregular data. Expecting 6 entries, "
 		     "received %1.").arg(list.size()));
 	  return;
 	}
@@ -1174,18 +1183,33 @@ void spoton::slotAddFriendsKey(void)
 	  return;
 	}
 
-      QByteArray publicKey(list.at(2));
-      QByteArray signature(list.at(3));
+      QByteArray mPublicKey(list.at(2));
+      QByteArray mSignature(list.at(3));
 
-      publicKey = QByteArray::fromBase64(publicKey);
-      signature = QByteArray::fromBase64(signature);
+      mPublicKey = QByteArray::fromBase64(mPublicKey);
+      mSignature = QByteArray::fromBase64(mSignature);
 
-      if(!spoton_gcrypt::isValidSignature(publicKey, publicKey,
-					  signature))
+      if(!spoton_gcrypt::isValidSignature(mPublicKey, mPublicKey,
+					  mSignature))
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("Invalid signature."));
+	     tr("Invalid messaging public key signature."));
+	  return;
+	}
+
+      QByteArray sPublicKey(list.at(4));
+      QByteArray sSignature(list.at(5));
+
+      sPublicKey = QByteArray::fromBase64(sPublicKey);
+      sSignature = QByteArray::fromBase64(sSignature);
+
+      if(!spoton_gcrypt::isValidSignature(sPublicKey, sPublicKey,
+					  sSignature))
+	{
+	  QMessageBox::critical
+	    (this, tr("Spot-On: Error"),
+	     tr("Invalid signature public key signature."));
 	  return;
 	}
 
@@ -1203,12 +1227,17 @@ void spoton::slotAddFriendsKey(void)
 
 	    name = QByteArray::fromBase64(name);
 
-	    if(spoton_misc::saveFriendshipBundle(keyType,
+	    if(spoton_misc::saveFriendshipBundle("messaging",
 						 name,
-						 publicKey,
+						 mPublicKey,
 						 -1,
 						 db))
-	      m_ui.friendInformation->selectAll();
+	      if(spoton_misc::saveFriendshipBundle("signature",
+						   name,
+						   sPublicKey,
+						   -1,
+						   db))
+		m_ui.friendInformation->selectAll();
 	  }
 
 	db.close();
@@ -1244,11 +1273,11 @@ void spoton::slotAddFriendsKey(void)
 
       QList<QByteArray> list(repleo.split('@'));
 
-      if(list.size() != 7)
+      if(list.size() != 9)
 	{
 	  spoton_misc::logError
 	    (QString("spoton::slotAddFriendsKey(): "
-		     "received irregular data. Expecting 7 entries, "
+		     "received irregular data. Expecting 9 entries, "
 		     "received %1.").arg(list.size()));
 	  return;
 	}
@@ -1323,7 +1352,21 @@ void spoton::slotAddFriendsKey(void)
 	  return;
 	}
 
-      hash = crypt.decrypted(list.value(6), &ok);
+      QByteArray sPublicKey(list.at(6));
+
+      sPublicKey = crypt.decrypted(sPublicKey, &ok);
+
+      if(!ok)
+	return;
+
+      QByteArray sSignature(list.at(7));
+
+      sSignature = crypt.decrypted(sSignature, &ok);
+
+      if(!ok)
+	return;
+
+      hash = crypt.decrypted(list.value(8), &ok);
 
       if(!ok)
 	return;
@@ -1333,7 +1376,9 @@ void spoton::slotAddFriendsKey(void)
 			 symmetricKeyAlgorithm +
 			 name +
 			 publicKey +
-			 signature, &ok));
+			 signature +
+			 sPublicKey +
+			 sSignature, &ok));
 
       if(!ok)
 	return;
@@ -1490,8 +1535,8 @@ void spoton::slotCopyFriendshipBundle(void)
   /*
   ** 1. Generate some symmetric information, S.
   ** 2. Encrypt S with the participant's public key.
-  ** 3. Encrypt our information (name, public key, signature) with the
-  **    symmetric key. Call our plaintext information T.
+  ** 3. Encrypt our information (name, public keys, signatures) with the
+  **    symmetric key. Call our information T.
   ** 4. Compute a keyed hash of S and T using the symmetric key.
   ** 5. Encrypt the keyed hash with the symmetric key.
   */
@@ -1609,11 +1654,48 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
+  QByteArray mySPublicKey(m_signatureCrypt->publicKey(&ok));
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  data.append(crypt.encrypted(mySPublicKey, &ok).toBase64());
+  data.append("@");
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QByteArray mySSignature
+    (m_signatureCrypt->digitalSignature(mySPublicKey, &ok));
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  data.append(crypt.encrypted(mySSignature, &ok).toBase64());
+  data.append("@");
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
   QByteArray hash(crypt.keyedHash(symmetricKey +
 				  symmetricKeyAlgorithm +
 				  myName +
 				  myPublicKey +
-				  mySignature, &ok));
+				  mySignature +
+				  mySPublicKey +
+				  mySSignature, &ok));
 
   if(!ok)
     {

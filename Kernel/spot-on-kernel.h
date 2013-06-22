@@ -53,14 +53,14 @@ class spoton_kernel: public QObject
   static QCache<QByteArray, int> s_messagingCache;
   static QHash<QString, QVariant> s_settings;
   static spoton_gcrypt *s_crypt1; // private
-  static spoton_gcrypt *s_crypt2; // url
+  static spoton_gcrypt *s_crypt2; // signature
+  static spoton_gcrypt *s_crypt3; // url
 
  private:
   QFileSystemWatcher m_settingsWatcher;
   QHash<qint64, QPointer<spoton_listener> > m_listeners;
   QHash<qint64, QPointer<spoton_neighbor> > m_neighbors;
   QTimer m_controlDatabaseTimer;
-  QTimer m_scramblerTimer;
   QTimer m_statusTimer;
   spoton_gui_server *m_guiServer;
   spoton_mailer *m_mailer;

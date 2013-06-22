@@ -72,6 +72,7 @@ QCache<QByteArray, int> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 spoton_gcrypt *spoton_kernel::s_crypt1 = 0;
 spoton_gcrypt *spoton_kernel::s_crypt2 = 0;
+spoton_gcrypt *spoton_kernel::s_crypt3 = 0;
 
 static void sig_handler(int signum)
 {
@@ -197,6 +198,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_sharedReader = 0;
   s_crypt1 = 0;
   s_crypt2 = 0;
+  s_crypt3 = 0;
   qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
   spoton_misc::cleanupDatabases();
@@ -287,10 +289,6 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotPollDatabase(void)));
-  connect(&m_scramblerTimer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotScramble(void)));
   connect(&m_statusTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -354,16 +352,6 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(fileChanged(const QString &)),
 	  this,
 	  SLOT(slotSettingsChanged(const QString &)));
-
-  /*
-  ** The scrambler implements a very simple idea. If enabled, neighbors will
-  ** randomly secrete randomly-encrypted data.
-  */
-
-  m_scramblerTimer.setInterval(qrand() % 20000 + 40000);
-
-  if(s_settings.value("gui/scramblerEnabled", false).toBool())
-    m_scramblerTimer.start();
 }
 
 spoton_kernel::~spoton_kernel()
@@ -374,6 +362,8 @@ spoton_kernel::~spoton_kernel()
   s_crypt1 = 0;
   delete s_crypt2;
   s_crypt2 = 0;
+  delete s_crypt3;
+  s_crypt3 = 0;
   spoton_misc::logError
     (QString("Kernel %1 about to exit.").
      arg(QCoreApplication::applicationPid()));
@@ -926,11 +916,6 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
 	  s_settings.value("gui/congestionCost", 10000).toInt())
     s_messagingCache.setMaxCost
       (s_settings.value("gui/congestionCost", 10000).toInt());
-
-  if(!s_settings.value("gui/scramblerEnabled", false).toBool())
-    m_scramblerTimer.stop();
-  else
-    m_scramblerTimer.start();
 }
 
 void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
@@ -1330,8 +1315,6 @@ void spoton_kernel::slotScramble(void)
 				    spoton_send::
 				    NORMAL_POST));
     }
-
-  m_scramblerTimer.start(qrand() % 20000 + 40000);
 }
 
 void spoton_kernel::slotRetrieveMail(void)
@@ -1750,7 +1733,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 {
-  if(s_crypt1 && s_crypt2)
+  if(s_crypt1 && s_crypt2 && s_crypt3)
     return true;
 
   QByteArray salt;
@@ -1804,7 +1787,23 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 	      }
 
 	    if(!s_crypt2)
-	      s_crypt1 = new spoton_gcrypt
+	      {
+		s_crypt2 = new spoton_gcrypt
+		  (s_settings.value("gui/cipherType",
+				    "aes256").toString().trimmed(),
+		   s_settings.value("gui/hashType",
+				    "sha512").toString().trimmed(),
+		   passphrase.toUtf8(),
+		   key,
+		   s_settings.value("gui/saltLength", 256).toInt(),
+		   s_settings.value("gui/iterationCount", 10000).toInt(),
+		   "signature");
+		spoton_misc::populateCountryDatabase
+		  (spoton_kernel::s_crypt1);
+	      }
+
+	    if(!s_crypt3)
+	      s_crypt3 = new spoton_gcrypt
 		(s_settings.value("gui/cipherType",
 				  "aes256").toString().trimmed(),
 		 s_settings.value("gui/hashType",

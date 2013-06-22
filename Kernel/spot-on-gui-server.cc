@@ -183,6 +183,22 @@ void spoton_gui_server::slotReadyRead(void)
 						       256).toInt(),
 		       spoton_kernel::s_settings.value("gui/iterationCount",
 						       10000).toInt(),
+		       "signature");
+
+		  if(!spoton_kernel::s_crypt3)
+		    spoton_kernel::s_crypt3 = new spoton_gcrypt
+		      (spoton_kernel::s_settings.value("gui/cipherType",
+						       "aes256").
+		       toString().trimmed(),
+		       spoton_kernel::s_settings.value("gui/hashType",
+						       "sha512").
+		       toString().trimmed(),
+		       QByteArray::fromBase64(list.value(0)),
+		       QByteArray::fromBase64(list.value(1)),
+		       spoton_kernel::s_settings.value("gui/saltLength",
+						       256).toInt(),
+		       spoton_kernel::s_settings.value("gui/iterationCount",
+						       10000).toInt(),
 		       "url");
 		}
 	      else if(message.startsWith("message_"))

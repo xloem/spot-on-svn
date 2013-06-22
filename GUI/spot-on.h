@@ -111,6 +111,7 @@ class spoton: public QMainWindow
   Ui_statusbar m_sb;
   Ui_spoton_mainwindow m_ui;
   spoton_gcrypt *m_crypt;
+  spoton_gcrypt *m_signatureCrypt;
   spoton_docviewer m_docViewer;
   spoton_logviewer m_logViewer;
   QIcon iconForCountry(const QString &country);
