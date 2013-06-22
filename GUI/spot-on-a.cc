@@ -691,8 +691,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.neighborsVerticalSplitter->setStretchFactor(1, 0);
   m_ui.readVerticalSplitter->setStretchFactor(0, 1);
   m_ui.readVerticalSplitter->setStretchFactor(1, 0);
-  m_ui.urlsVerticalSplitter->setStretchFactor(0, 1);
-  m_ui.urlsVerticalSplitter->setStretchFactor(1, 0);
+  m_ui.urlsVerticalSplitter->setStretchFactor(0, 0);
+  m_ui.urlsVerticalSplitter->setStretchFactor(1, 1);
   prepareListenerIPCombo();
 
   /*

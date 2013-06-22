@@ -858,13 +858,6 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 					NORMAL_POST));
 	}
     }
-
-  /*
-  ** Send a scrambled message in proximity of the user's message.
-  */
-
-  if(s_settings.value("gui/scramblerEnabled", false).toBool())
-    QTimer::singleShot(qrand() % 5000 + 1000, this, SLOT(slotScramble(void)));
 }
 
 void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
@@ -962,6 +955,11 @@ void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
 	  this,
 	  SIGNAL(receivedChatMessage(const QByteArray &,
 				     const qint64)));
+  connect(neighbor,
+	  SIGNAL(receivedChatMessage(const QByteArray &,
+				     const qint64)),
+	  this,
+	  SLOT(slotReceivedChatMessage(void)));
   connect(neighbor,
 	  SIGNAL(receivedMailMessage(const QByteArray &,
 				     const qint64)),
@@ -1878,4 +1876,14 @@ void spoton_kernel::slotPublicizeListenerPlaintext(const qint64 oid)
   if(listener)
     emit publicizeListenerPlaintext(listener->externalAddress(),
 				    listener->externalPort());
+}
+
+void spoton_kernel::slotReceivedChatMessage(void)
+{
+  /*
+  ** Send a scrambled message in proximity of a received message.
+  */
+
+  if(s_settings.value("gui/scramblerEnabled", false).toBool())
+    QTimer::singleShot(qrand() % 5000 + 2500, this, SLOT(slotScramble(void)));
 }
