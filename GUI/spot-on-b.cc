@@ -2617,7 +2617,7 @@ void spoton::slotRetrieveMail(void)
 	  m_kernelSocket.flush();
 	  m_ui.retrieveMail->setEnabled(false);
 	  QTimer::singleShot
-	    (1000, this, SLOT(slotEnableRetrieveMail(void)));
+	    (5000, this, SLOT(slotEnableRetrieveMail(void)));
 	}
     }
 }
