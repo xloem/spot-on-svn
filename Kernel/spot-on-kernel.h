@@ -62,6 +62,7 @@ class spoton_kernel: public QObject
   QHash<qint64, QPointer<spoton_neighbor> > m_neighbors;
   QTimer m_controlDatabaseTimer;
   QTimer m_publishAllListenersPlaintextTimer;
+  QTimer m_scramblerTimer;
   QTimer m_statusTimer;
   spoton_gui_server *m_guiServer;
   spoton_mailer *m_mailer;

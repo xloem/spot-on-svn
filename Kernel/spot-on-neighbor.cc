@@ -93,7 +93,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_keepAliveTimer.start(30000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
-  QTimer::singleShot(15000, this, SLOT(slotSendUuid(void)));
+  QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 }
 
 spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
@@ -557,7 +557,7 @@ void spoton_neighbor::slotConnected(void)
 	("spoton_neighbor_" + QString::number(s_dbId));
     }
 
-  QTimer::singleShot(15000, this, SLOT(slotSendUuid(void)));
+  QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 
   /*
   ** Initial discovery of the external IP address.

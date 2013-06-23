@@ -293,6 +293,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotPublicizeAllListenersPlaintext(void)));
+  connect(&m_scramblerTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotScramble(void)));
   connect(&m_statusTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -1902,5 +1906,10 @@ void spoton_kernel::slotReceivedChatMessage(void)
   */
 
   if(s_settings.value("gui/scramblerEnabled", false).toBool())
-    QTimer::singleShot(qrand() % 5000 + 2500, this, SLOT(slotScramble(void)));
+    {
+      if(!m_scramblerTimer.isActive())
+	m_scramblerTimer.start(qrand() % 5000 + 2500);
+    }
+  else
+    m_scramblerTimer.stop();
 }
