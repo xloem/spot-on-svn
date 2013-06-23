@@ -1342,7 +1342,7 @@
                <item>
                 <widget class="QLabel" name="label_23">
                  <property name="text">
-                  <string>The uniqueness of a neighbor is defined by the proxy hostname, proxy port, remote IP, the remote port, and the scope ID.</string>
+                  <string>The uniqueness of a neighbor is defined by the proxy hostname, the proxy port, the remote IP, the remote port, and the scope ID.</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
@@ -1824,8 +1824,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>993</width>
-             <height>569</height>
+             <width>1029</width>
+             <height>358</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
