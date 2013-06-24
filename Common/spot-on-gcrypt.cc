@@ -1585,6 +1585,9 @@ void spoton_gcrypt::initializePrivateKeyContainer(bool *ok)
 	   static_cast<const void *> (keyData.constData()),
 	   m_privateKeyLength);
 
+  if(ok)
+    *ok = true;
+
  done_label:
   return;
 }
@@ -2495,6 +2498,8 @@ QByteArray spoton_gcrypt::privateKeyInDER(bool *ok)
       goto done_label;
     }
 
+  exponent1 = privateExponent % (prime1 - 1);
+  exponent2 = privateExponent % (prime2 - 1);
   format = QString("RSAPrivateKey ::= SEQUENCE {\n"
 		   "version           0, \n" // Version
 		   "modulus           %1,  -- n \n"
@@ -2515,6 +2520,9 @@ QByteArray spoton_gcrypt::privateKeyInDER(bool *ok)
     arg(exponent1).
     arg(exponent2).
     arg(coefficient);
+
+  if(ok)
+    *ok = true;
 
  done_label:
   return format.toLatin1();
