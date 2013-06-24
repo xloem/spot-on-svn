@@ -1922,8 +1922,16 @@ void spoton_gcrypt::generatePrivatePublicKeys(const int rsaKeySize,
 
 	  if(buffer)
 	    {
-	      gcry_sexp_sprint
-		(key_t, GCRYSEXP_FMT_ADVANCED, buffer, length);
+	      if(gcry_sexp_sprint(key_t, GCRYSEXP_FMT_ADVANCED,
+				  buffer, length) == 0)
+		{
+		  error = QObject::tr("gcry_sexp_sprint() failure");
+		  spoton_misc::logError
+		    ("spoton_gcrypt::generatePrivatePublicKeys(): "
+		     "gcry_sexp_sprint() "
+		     "failure.");
+		  goto done_label;
+		}
 
 	      if(i == 1)
 		privateKey = QByteArray(buffer, length);
@@ -2480,15 +2488,8 @@ QByteArray spoton_gcrypt::privateKeyInDER(bool *ok)
     initializePrivateKeyContainer(&ok);
   }
 
-  QString format;
-  int coefficient = 0;
-  int exponent1 = 0;
-  int exponent2 = 0;
-  int modulus = 0;
-  int publicExponent = 0;
-  int prime1 = 0;
-  int prime2 = 0;
-  int privateExponent = 0;
+  gcry_error_t err = 0;
+  gcry_sexp_t key_t = 0;
 
   if(!m_privateKey)
     {
@@ -2498,32 +2499,28 @@ QByteArray spoton_gcrypt::privateKeyInDER(bool *ok)
       goto done_label;
     }
 
-  exponent1 = privateExponent % (prime1 - 1);
-  exponent2 = privateExponent % (prime2 - 1);
-  format = QString("RSAPrivateKey ::= SEQUENCE {\n"
-		   "version           0, \n" // Version
-		   "modulus           %1,  -- n \n"
-		   "publicExponent    %2,  -- e \n"
-		   "privateExponent   %3,  -- d \n"
-		   "prime1            %4,  -- p \n"
-		   "prime2            %5,  -- q \n"
-		   "exponent1         %6,  -- d mod (p-1) \n"
-		   "exponent2         %7,  -- d mod (q-1) \n"
-		   "coefficient       %8,  -- (inverse of q) mod p \n"
-		   "otherPrimeInfos   OtherPrimeInfos OPTIONAL \n"
-		   "}").
-    arg(modulus).
-    arg(publicExponent).
-    arg(privateExponent).
-    arg(prime1).
-    arg(prime2).
-    arg(exponent1).
-    arg(exponent2).
-    arg(coefficient);
+  if((err = gcry_sexp_new(&key_t,
+			  static_cast<const void *> (m_privateKey),
+			  m_privateKeyLength, 1)) != 0 || !key_t)
+    {
+      if(ok)
+	*ok = false;
+
+      if(err != 0)
+	spoton_misc::logError
+	  (QString("spoton_gcrypt::privateKeyInDER(): gcry_sexp_new() "
+		   "failure (%1).").arg(gcry_strerror(err)));
+      else
+	spoton_misc::logError
+	  ("spoton_gcrypt::privateKeyInDER(): gcry_sexp_new() failure.");
+
+      goto done_label;
+    }
 
   if(ok)
     *ok = true;
 
  done_label:
-  return format.toLatin1();
+  gcry_sexp_release(key_t);
+  return QByteArray();
 }
