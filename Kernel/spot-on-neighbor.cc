@@ -44,7 +44,7 @@
 qint64 spoton_neighbor::s_dbId = 0;
 
 spoton_neighbor::spoton_neighbor(const int socketDescriptor,
-				 QObject *parent):QTcpSocket(parent)
+				 QObject *parent):QSslSocket(parent)
 {
   s_dbId += 1;
   setSocketDescriptor(socketDescriptor);
@@ -101,7 +101,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const QString &port,
 				 const QString &scopeId,
 				 const qint64 id,
-				 QObject *parent):QTcpSocket(parent)
+				 QObject *parent):QSslSocket(parent)
 {
   s_dbId += 1;
   setProxy(proxy);
@@ -395,82 +395,25 @@ void spoton_neighbor::slotReadyRead(void)
 	       "data does not contain Content-Length.");
 
 	  if(length > 0 && data.contains("type=0000&content="))
-	    {
-	      if(!spoton_kernel::s_crypt1)
-		spoton_misc::logError
-		  ("spoton_neighbor::slotReadyRead(): "
-		   "spoton_kernel::s_crypt1 is 0.");
-	      else
-		process0000(length, data);
-	    }
+	    process0000(length, data);
 	  else if(length > 0 && data.contains("type=0001a&content="))
-	    {
-	      if(!spoton_kernel::s_crypt1)
-		spoton_misc::logError
-		  ("spoton_neighbor::slotReadyRead(): "
-		   "spoton_kernel::s_crypt1 is 0.");
-	      else
-		process0001a(length, data);
-	    }
-	  
+	    process0001a(length, data);	  
 	  else if(length > 0 && data.contains("type=0001b&content="))
-	    {
-	      if(!spoton_kernel::s_crypt1)
-		spoton_misc::logError
-		  ("spoton_neighbor::slotReadyRead(): "
-		   "spoton_kernel::s_crypt1 is 0.");
-	      else
-		process0001b(length, data);
-	    }
+	    process0001b(length, data);
 	  else if(length > 0 && data.contains("type=0002&content="))
-	    {
-	      if(!spoton_kernel::s_crypt1)
-		spoton_misc::logError
-		  ("spoton_neighbor::slotReadyRead(): "
-		   "spoton_kernel::s_crypt1 is 0.");
-	      else
-		process0002(length, data);
-	    }
+	    process0002(length, data);
 	  else if(length > 0 && data.contains("type=0011&content="))
-	    {
-	      if(!spoton_kernel::s_crypt1)
-		spoton_misc::logError
-		  ("spoton_neighbor::slotReadyRead(): "
-		   "spoton_kernel::s_crypt1 is 0.");
-	      else
-		process0011(length, data);
-	    }
+	    process0011(length, data);
 	  else if(length > 0 && data.contains("type=0012&content="))
-	    {
-	      if(!spoton_kernel::s_crypt1)
-		spoton_misc::logError
-		  ("spoton_neighbor::slotReadyRead(): "
-		   "spoton_kernel::s_crypt1 is 0.");
-	      else
-		process0012(length, data);
-	    }
+	    process0012(length, data);
 	  else if(length > 0 && data.contains("type=0013&content="))
-	    {
-	      if(!spoton_kernel::s_crypt1)
-		spoton_misc::logError
-		  ("spoton_neighbor::slotReadyRead(): "
-		   "spoton_kernel::s_crypt1 is 0.");
-	      else
-		process0013(length, data);
-	    }
+	    process0013(length, data);
 	  else if(length > 0 && data.contains("type=0014&content="))
 	    process0014(length, data);
 	  else if(length > 0 && data.contains("type=0015&content="))
 	    process0015(length, data);
 	  else if(length > 0 && data.contains("type=0030&content="))
-	    {
-	      if(!spoton_kernel::s_crypt1)
-		spoton_misc::logError
-		  ("spoton_neighbor::slotReadyRead(): "
-		   "spoton_kernel::s_crypt1 is 0.");
-	      else
-		process0030(length, data);
-	    }
+	    process0030(length, data);
 	  else
 	    {
 	      if(readBufferSize() != 1000)
@@ -516,7 +459,12 @@ void spoton_neighbor::slotConnected(void)
 
   m_lastReadTime = QDateTime::currentDateTime();
 
-  if(spoton_kernel::s_crypt1)
+  spoton_gcrypt *s_crypt = 0;
+
+  if(spoton_kernel::s_crypts.contains("messaging"))
+    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+  if(s_crypt)
     {
       {
 	QSqlDatabase db = QSqlDatabase::addDatabase
@@ -538,13 +486,13 @@ void spoton_neighbor::slotConnected(void)
 			  "local_port = ?, qt_country_hash = ?, "
 			  "status = 'connected' "
 			  "WHERE OID = ?");
-	    query.bindValue(0, spoton_kernel::s_crypt1->
+	    query.bindValue(0, s_crypt->
 			    encrypted(country.toLatin1(), &ok).toBase64());
 	    query.bindValue(1, localAddress().toString());
 	    query.bindValue(2, localPort());
 	    query.bindValue
-	      (3, spoton_kernel::s_crypt1->keyedHash(country.remove(" ").
-						     toLatin1(), &ok).
+	      (3, s_crypt->keyedHash(country.remove(" ").
+				     toLatin1(), &ok).
 	       toBase64());
 	    query.bindValue(4, m_id);
 	    query.exec();
@@ -652,36 +600,47 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
   QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
 
   if(share)
-    if(spoton_kernel::s_crypt1)
-      {
-	QByteArray myName
-	  (spoton_kernel::s_settings.value("gui/nodeName",
-					   "unknown").
-	   toByteArray().trimmed());
-	QByteArray myPublicKey;
-	QByteArray mySignature;
-	QByteArray mySPublicKey;
-	QByteArray mySSignature;
-	bool ok = true;
+    {
+      spoton_gcrypt *s_crypt1 = 0;
+      spoton_gcrypt *s_crypt2 = 0;
 
-	myPublicKey = spoton_kernel::s_crypt1->publicKey(&ok);
+      if(spoton_kernel::s_crypts.contains("messaging"))
+	s_crypt1 = spoton_kernel::s_crypts["messaging"];
 
-	if(ok)
-	  mySignature = spoton_kernel::s_crypt1->digitalSignature
-	    (myPublicKey, &ok);
+      if(spoton_kernel::s_crypts.contains("signature"))
+	s_crypt2 = spoton_kernel::s_crypts["signature"];
 
-	if(ok)
-	  mySPublicKey = spoton_kernel::s_crypt2->publicKey(&ok);
+      if(s_crypt1 && s_crypt2)
+	{
+	  QByteArray myName
+	    (spoton_kernel::s_settings.value("gui/nodeName",
+					     "unknown").
+	     toByteArray().trimmed());
+	  QByteArray myPublicKey;
+	  QByteArray mySignature;
+	  QByteArray mySPublicKey;
+	  QByteArray mySSignature;
+	  bool ok = true;
 
-	if(ok)
-	  mySSignature = spoton_kernel::s_crypt2->digitalSignature
-	    (mySPublicKey, &ok);
+	  myPublicKey = s_crypt1->publicKey(&ok);
 
-	if(ok)
-	  sharePublicKey(keyType, myName,
-			 myPublicKey, mySignature,
-			 mySPublicKey, mySSignature);
-      }
+	  if(ok)
+	    mySignature = s_crypt1->digitalSignature
+	      (myPublicKey, &ok);
+
+	  if(ok)
+	    mySPublicKey = s_crypt2->publicKey(&ok);
+
+	  if(ok)
+	    mySSignature = s_crypt2->digitalSignature
+	      (mySPublicKey, &ok);
+
+	  if(ok)
+	    sharePublicKey(keyType, myName,
+			   myPublicKey, mySignature,
+			   mySPublicKey, mySSignature);
+	}
+    }
 }
 
 qint64 spoton_neighbor::id(void) const
@@ -867,7 +826,12 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
 
 void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 {
-  if(!spoton_kernel::s_crypt1)
+  spoton_gcrypt *s_crypt = 0;
+
+  if(spoton_kernel::s_crypts.contains("messaging"))
+    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+  if(!s_crypt)
     return;
 
   length -= strlen("type=0000&content=");
@@ -916,8 +880,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
 	  QByteArray gemini
-	    (spoton_misc::findGeminiInCosmos(list.at(0),
-					     spoton_kernel::s_crypt1));
+	    (spoton_misc::findGeminiInCosmos(list.at(0), s_crypt));
 
 	  if(!gemini.isEmpty())
 	    {
@@ -984,11 +947,11 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
       QByteArray symmetricKeyAlgorithm(list.value(1));
 
       if(ok)
-	symmetricKey = spoton_kernel::s_crypt1->
+	symmetricKey = s_crypt->
 	  publicKeyDecrypt(symmetricKey, &ok);
 
       if(ok)
-	symmetricKeyAlgorithm = spoton_kernel::s_crypt1->
+	symmetricKeyAlgorithm = s_crypt->
 	  publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
 
       if(ok)
@@ -1037,7 +1000,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 		  if(computedMessageDigest == messageDigest)
 		    {
 		      QByteArray hash
-			(spoton_kernel::s_crypt1->
+			(s_crypt->
 			 keyedHash(originalData, &ok));
 
 		      saveParticipantStatus(name, publicKeyHash);
@@ -1085,9 +1048,18 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 {
-  if(!spoton_kernel::s_crypt1)
+  spoton_gcrypt *s_crypt1 = 0;
+  spoton_gcrypt *s_crypt2 = 0;
+
+  if(spoton_kernel::s_crypts.contains("messaging"))
+    s_crypt1 = spoton_kernel::s_crypts["messaging"];
+
+  if(spoton_kernel::s_crypts.contains("signature"))
+    s_crypt2 = spoton_kernel::s_crypts["signature"];
+
+  if(!s_crypt1)
     return;
-  else if(!spoton_kernel::s_crypt2)
+  else if(!s_crypt2)
     return;
 
   length -= strlen("type=0001a&content=");
@@ -1147,11 +1119,11 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
       QByteArray symmetricKeyAlgorithm2(list.value(5));
 
       if(ok)
-	symmetricKey1 = spoton_kernel::s_crypt1->
+	symmetricKey1 = s_crypt1->
 	  publicKeyDecrypt(symmetricKey1, &ok);
 
       if(ok)
-	symmetricKeyAlgorithm1 = spoton_kernel::s_crypt1->
+	symmetricKeyAlgorithm1 = s_crypt1->
 	  publicKeyDecrypt(symmetricKeyAlgorithm1, &ok);
 
       QByteArray publicKey;
@@ -1170,7 +1142,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	  recipientHash = crypt.decrypted(recipientHash, &ok);
 
 	  if(ok)
-	    publicKey = spoton_kernel::s_crypt1->publicKey(&ok);
+	    publicKey = s_crypt1->publicKey(&ok);
 
 	  if(ok)
 	    publicKeyHash = spoton_gcrypt::sha512Hash(publicKey, &ok);
@@ -1238,7 +1210,12 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 {
-  if(!spoton_kernel::s_crypt1)
+  spoton_gcrypt *s_crypt = 0;
+
+  if(spoton_kernel::s_crypts.contains("messaging"))
+    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+  if(!s_crypt)
     return;
 
   length -= strlen("type=0001b&content=");
@@ -1294,15 +1271,15 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
       QByteArray symmetricKeyAlgorithm(list.value(1));
 
       if(ok)
-	symmetricKey = spoton_kernel::s_crypt1->
+	symmetricKey = s_crypt->
 	  publicKeyDecrypt(symmetricKey, &ok);
 
       if(ok)
-	symmetricKeyAlgorithm = spoton_kernel::s_crypt1->
+	symmetricKeyAlgorithm = s_crypt->
 	  publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
 
       if(ok)
-	publicKeyHash = spoton_kernel::s_crypt1->
+	publicKeyHash = s_crypt->
 	  publicKeyDecrypt(publicKeyHash, &ok);
 
       if(ok)
@@ -1346,7 +1323,12 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 {
-  if(!spoton_kernel::s_crypt1)
+  spoton_gcrypt *s_crypt = 0;
+
+  if(spoton_kernel::s_crypts.contains("messaging"))
+    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+  if(!s_crypt)
     return;
 
   length -= strlen("type=0002&content=");
@@ -1406,15 +1388,15 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
       QByteArray symmetricKeyAlgorithm(list.at(1));
 
       if(ok)
-	symmetricKey = spoton_kernel::s_crypt1->
+	symmetricKey = s_crypt->
 	  publicKeyDecrypt(symmetricKey, &ok);
 
       if(ok)
-	symmetricKeyAlgorithm = spoton_kernel::s_crypt1->
+	symmetricKeyAlgorithm = s_crypt->
 	  publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
 
       if(ok)
-	publicKeyHash = spoton_kernel::s_crypt1->
+	publicKeyHash = s_crypt->
 	  publicKeyDecrypt(publicKeyHash, &ok);
 
       if(ok)
@@ -1585,7 +1567,12 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 {
-  if(!spoton_kernel::s_crypt1)
+  spoton_gcrypt *s_crypt = 0;
+
+  if(spoton_kernel::s_crypts.contains("messaging"))
+    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+  if(!s_crypt)
     return;
 
   length -= strlen("type=0013&content=");
@@ -1633,8 +1620,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
 	  QByteArray gemini
-	    (spoton_misc::findGeminiInCosmos(list.at(0),
-					     spoton_kernel::s_crypt1));
+	    (spoton_misc::findGeminiInCosmos(list.at(0), s_crypt));
 
 	  if(!gemini.isEmpty())
 	    {
@@ -1701,11 +1687,11 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
       QByteArray symmetricKeyAlgorithm(list.value(1));
 
       if(ok)
-	symmetricKey = spoton_kernel::s_crypt1->
+	symmetricKey = s_crypt->
 	  publicKeyDecrypt(symmetricKey, &ok);
 
       if(ok)
-	symmetricKeyAlgorithm = spoton_kernel::s_crypt1->
+	symmetricKeyAlgorithm = s_crypt->
 	  publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
 
       if(ok)
@@ -1880,7 +1866,12 @@ void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 {
-  if(!spoton_kernel::s_crypt1)
+  spoton_gcrypt *s_crypt = 0;
+
+  if(spoton_kernel::s_crypts.contains("messaging"))
+    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+  if(!s_crypt)
     return;
 
   length -= strlen("type=0030&content=");
@@ -1941,8 +1932,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 	    {
 	      quint16 port = list.at(1).toUShort();
 
-	      spoton_misc::saveNeighbor
-		(address, port, spoton_kernel::s_crypt1);
+	      spoton_misc::saveNeighbor(address, port, s_crypt);
 	    }
 	}
 
@@ -2127,15 +2117,23 @@ void spoton_neighbor::saveExternalAddress(const QHostAddress &address,
 			"NOT NULL");
 	  query.bindValue(0, m_id);
 	}
-      else if(spoton_kernel::s_crypt1)
+      else
 	{
-	  query.prepare("UPDATE neighbors SET external_ip_address = ? "
-			"WHERE OID = ?");
-	  query.bindValue
-	    (0, spoton_kernel::s_crypt1->encrypted(address.toString().
-						   toLatin1(), &ok).
-	     toBase64());
-	  query.bindValue(1, m_id);
+	  spoton_gcrypt *s_crypt = 0;
+
+	  if(spoton_kernel::s_crypts.contains("messaging"))
+	    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+	  if(s_crypt)
+	    {
+	      query.prepare("UPDATE neighbors SET external_ip_address = ? "
+			    "WHERE OID = ?");
+	      query.bindValue
+		(0, s_crypt->encrypted(address.toString().
+				       toLatin1(), &ok).
+		 toBase64());
+	      query.bindValue(1, m_id);
+	    }
 	}
     }
   else if(state == QAbstractSocket::UnconnectedState)
@@ -2226,8 +2224,14 @@ void spoton_neighbor::slotSendMail
       }
 
   if(!oids.isEmpty())
-    spoton_misc::moveSentMailToSentFolder
-      (oids, spoton_kernel::s_crypt1);
+    {
+      spoton_gcrypt *s_crypt = 0;
+
+      if(spoton_kernel::s_crypts.contains("messaging"))
+	s_crypt = spoton_kernel::s_crypts["messaging"];
+
+      spoton_misc::moveSentMailToSentFolder(oids, s_crypt);
+    }
 }
 
 void spoton_neighbor::slotSendMailFromPostOffice(const QByteArray &data)
@@ -2254,7 +2258,12 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 				  QByteArray &messageDigest,
 				  const QString &messageType)
 {
-  if(!spoton_kernel::s_crypt1)
+  spoton_gcrypt *s_crypt = 0;
+
+  if(spoton_kernel::s_crypts.contains("messaging"))
+    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+  if(!s_crypt)
     return;
 
   bool ok = true;
@@ -2267,19 +2276,19 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 
   if(messageType == "0001a")
     {
-      symmetricKey = spoton_kernel::s_crypt1->publicKeyDecrypt
+      symmetricKey = s_crypt->publicKeyDecrypt
 	(symmetricKey, &ok);
 
       if(!ok)
 	return;
 
-      symmetricKeyAlgorithm = spoton_kernel::s_crypt1->publicKeyDecrypt
+      symmetricKeyAlgorithm = s_crypt->publicKeyDecrypt
 	(symmetricKeyAlgorithm, &ok);
 
       if(!ok)
 	return;
 
-      senderPublicKeyHash = spoton_kernel::s_crypt1->publicKeyDecrypt
+      senderPublicKeyHash = s_crypt->publicKeyDecrypt
 	(senderPublicKeyHash, &ok);
 
       if(!ok)
@@ -2372,7 +2381,7 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 		      "status, subject, participant_oid) "
 		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue
-	  (0, spoton_kernel::s_crypt1->
+	  (0, s_crypt->
 	   encrypted(QDateTime::currentDateTime().
 		     toString(Qt::ISODate).
 		     toLatin1(), &ok).toBase64());
@@ -2380,30 +2389,30 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 
 	if(ok)
 	  query.bindValue
-	    (2, spoton_kernel::s_crypt1->
+	    (2, s_crypt->
 	     encrypted(QString::number(goldbugSet).toLatin1(), &ok).
 	     toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (3, spoton_kernel::s_crypt1->keyedHash(message + subject, &ok).
+	    (3, s_crypt->keyedHash(message + subject, &ok).
 	     toBase64());
 
 	if(!message.isEmpty())
 	  if(ok)
 	    query.bindValue
-	      (4, spoton_kernel::s_crypt1->encrypted(message, &ok).toBase64());
+	      (4, s_crypt->encrypted(message, &ok).toBase64());
 
 	if(!messageDigest.isEmpty())
 	  if(ok)
 	    query.bindValue
-	      (5, spoton_kernel::s_crypt1->encrypted(messageDigest, &ok).
+	      (5, s_crypt->encrypted(messageDigest, &ok).
 	       toBase64());
 
 	if(!name.isEmpty())
 	  if(ok)
 	    query.bindValue
-	      (6, spoton_kernel::s_crypt1->encrypted(name, &ok).toBase64());
+	      (6, s_crypt->encrypted(name, &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
@@ -2411,17 +2420,17 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 
 	if(ok)
 	  query.bindValue
-	    (8, spoton_kernel::s_crypt1->
+	    (8, s_crypt->
 	     encrypted(tr("Unread").toUtf8(), &ok).toBase64());
  
 	if(!subject.isEmpty())
 	  if(ok)
 	    query.bindValue
-	      (9, spoton_kernel::s_crypt1->encrypted(subject, &ok).toBase64());
+	      (9, s_crypt->encrypted(subject, &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (10, spoton_kernel::s_crypt1->
+	    (10, s_crypt->
 	     encrypted(QString::number(-1).toLatin1(), &ok).
 	     toBase64());
 
@@ -2439,7 +2448,12 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 void spoton_neighbor::storeLetter(const QList<QByteArray> &list,
 				  const QByteArray &recipientHash)
 {
-  if(!spoton_kernel::s_crypt1)
+  spoton_gcrypt *s_crypt = 0;
+
+  if(spoton_kernel::s_crypts.contains("messaging"))
+    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+  if(!s_crypt)
     return;
 
   {
@@ -2459,7 +2473,7 @@ void spoton_neighbor::storeLetter(const QList<QByteArray> &list,
 		      "message_bundle_hash, recipient_hash) "
 		      "VALUES (?, ?, ?, ?)");
 	query.bindValue
-	  (0, spoton_kernel::s_crypt1->
+	  (0, s_crypt->
 	   encrypted(QDateTime::currentDateTime().
 		     toString(Qt::ISODate).
 		     toLatin1(), &ok).toBase64());
@@ -2482,11 +2496,11 @@ void spoton_neighbor::storeLetter(const QList<QByteArray> &list,
 	    data.append("\n");
 	    data.append(list.value(10).toBase64());
 	    query.bindValue
-	      (1, spoton_kernel::s_crypt1->encrypted(data, &ok).toBase64());
+	      (1, s_crypt->encrypted(data, &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(2, spoton_kernel::s_crypt1->keyedHash(data, &ok).
+		(2, s_crypt->keyedHash(data, &ok).
 		 toBase64());
 	  }
 
@@ -2576,7 +2590,12 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 
 void spoton_neighbor::recordMessageHash(const QByteArray &data)
 {
-  if(!spoton_kernel::s_crypt1)
+  spoton_gcrypt *s_crypt = 0;
+
+  if(spoton_kernel::s_crypts.contains("messaging"))
+    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+  if(!s_crypt)
     return;
   else if(!spoton_kernel::s_settings.value("gui/enableCongestionControl",
 					   false).toBool())
@@ -2585,7 +2604,7 @@ void spoton_neighbor::recordMessageHash(const QByteArray &data)
   QByteArray hash;
   bool ok = true;
 
-  hash = spoton_kernel::s_crypt1->keyedHash(data, &ok);
+  hash = s_crypt->keyedHash(data, &ok);
 
   if(!ok)
     return;
@@ -2596,13 +2615,18 @@ void spoton_neighbor::recordMessageHash(const QByteArray &data)
 
 bool spoton_neighbor::isDuplicateMessage(const QByteArray &data)
 {
-  if(!spoton_kernel::s_crypt1)
+  spoton_gcrypt *s_crypt = 0;
+
+  if(spoton_kernel::s_crypts.contains("messaging"))
+    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+  if(!s_crypt)
     return false;
 
   QByteArray hash;
   bool ok = true;
 
-  hash = spoton_kernel::s_crypt1->keyedHash(data, &ok);
+  hash = s_crypt->keyedHash(data, &ok);
 
   if(!ok)
     return false;

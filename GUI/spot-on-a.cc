@@ -2115,7 +2115,7 @@ void spoton::slotSetPassphrase(void)
       if(!m_ui.newRSAKeys->isChecked() && reencode)
 	{
 	  m_sb.status->setText
-	    (tr("Re-encoding RSA key pair 1 of 3. Please be patient."));
+	    (tr("Re-encoding RSA key pair 1 of 4. Please be patient."));
 	  m_sb.status->repaint();
 	  spoton_gcrypt::reencodeRSAKeys
 	    (m_ui.cipherType->currentText(),
@@ -2130,7 +2130,23 @@ void spoton::slotSetPassphrase(void)
 	  if(error2.isEmpty())
 	    {
 	      m_sb.status->setText
-		(tr("Re-encoding RSA key pair 2 of 3. Please be patient."));
+		(tr("Re-encoding RSA key pair 2 of 4. Please be patient."));
+	      m_sb.status->repaint();
+	      spoton_gcrypt::reencodeRSAKeys
+		(m_ui.cipherType->currentText(),
+		 derivedKey,
+		 m_settings.value("gui/cipherType", "aes256").
+		 toString().trimmed(),
+		 m_crypt->symmetricKey(),
+		 "server",
+		 error2);
+	      m_sb.status->clear();
+	    }
+
+	  if(error2.isEmpty())
+	    {
+	      m_sb.status->setText
+		(tr("Re-encoding RSA key pair 3 of 4. Please be patient."));
 	      m_sb.status->repaint();
 	      spoton_gcrypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
@@ -2146,7 +2162,7 @@ void spoton::slotSetPassphrase(void)
 	  if(error2.isEmpty())
 	    {
 	      m_sb.status->setText
-		(tr("Re-encoding RSA key pair 3 of 3. Please be patient."));
+		(tr("Re-encoding RSA key pair 4 of 4. Please be patient."));
 	      m_sb.status->repaint();
 	      spoton_gcrypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
@@ -2164,6 +2180,7 @@ void spoton::slotSetPassphrase(void)
 	  QStringList list;
 
 	  list << "messaging"
+	       << "server"
 	       << "signature"
 	       << "url";
 

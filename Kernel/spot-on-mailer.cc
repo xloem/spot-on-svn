@@ -66,7 +66,12 @@ spoton_mailer::~spoton_mailer()
 
 void spoton_mailer::slotTimeout(void)
 {
-  if(!spoton_kernel::s_crypt1)
+  if(!spoton_kernel::s_crypts.contains("messaging"))
+    return;
+
+  spoton_gcrypt *s_crypt = spoton_kernel::s_crypts["messaging"];
+
+  if(!s_crypt)
     return;
 
   QList<QVector<QVariant> > list;
@@ -104,7 +109,7 @@ void spoton_mailer::slotTimeout(void)
 	      bool ok = true;
 
 	      status = QString::fromUtf8
-		(spoton_kernel::s_crypt1->
+		(s_crypt->
 		 decrypted(QByteArray::fromBase64(query.
 						  value(3).
 						  toByteArray()),
@@ -120,21 +125,21 @@ void spoton_mailer::slotTimeout(void)
 	      qint64 mailOid = query.value(5).toLongLong();
 	      qint64 participantOid = -1;
 
-	      goldbug = spoton_kernel::s_crypt1->
+	      goldbug = s_crypt->
 		decrypted(QByteArray::fromBase64(query.
 						 value(0).
 						 toByteArray()),
 			  &ok);
 
 	      if(ok)
-		message = spoton_kernel::s_crypt1->
+		message = s_crypt->
 		  decrypted(QByteArray::fromBase64(query.
 						   value(1).
 						   toByteArray()),
 			    &ok);
 
 	      if(ok)
-		participantOid = spoton_kernel::s_crypt1->
+		participantOid = s_crypt->
 		  decrypted(QByteArray::fromBase64(query.
 						   value(2).
 						   toByteArray()),
@@ -157,7 +162,7 @@ void spoton_mailer::slotTimeout(void)
 		}
 
 	      if(ok)
-		subject = spoton_kernel::s_crypt1->
+		subject = s_crypt->
 		  decrypted(QByteArray::fromBase64(query.
 						   value(4).
 						   toByteArray()),
@@ -213,12 +218,17 @@ void spoton_mailer::slotRetrieveMail(const QByteArray &data,
   if(publicKey.isEmpty())
     return;
 
-  if(!spoton_kernel::s_crypt1)
+  if(!spoton_kernel::s_crypts.contains("messaging"))
     return;
 
-  if(!spoton_kernel::s_crypt1->isValidSignature(data,
-						publicKey,
-						signature))
+  spoton_gcrypt *s_crypt = spoton_kernel::s_crypts["messaging"];
+
+  if(!s_crypt)
+    return;
+
+  if(!s_crypt->isValidSignature(data,
+				publicKey,
+				signature))
     return;
 
   publicKey = spoton_misc::publicKeyFromSignaturePublicKeyHash
@@ -271,7 +281,12 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 	  {
 	    if(query.next())
 	      {
-		if(spoton_kernel::s_crypt1)
+		spoton_gcrypt *s_crypt = 0;
+
+		if(spoton_kernel::s_crypts.contains("messaging"))
+		  s_crypt = spoton_kernel::s_crypts["messaging"];
+
+		if(s_crypt)
 		  {
 		    /*
 		    ** Is this a letter?
@@ -280,7 +295,7 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 		    QByteArray message;
 		    bool ok = true;
 
-		    message = spoton_kernel::s_crypt1->
+		    message = s_crypt->
 		      decrypted(QByteArray::fromBase64(query.
 						       value(0).
 						       toByteArray()),
@@ -323,7 +338,12 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 
 void spoton_mailer::slotReap(void)
 {
-  if(!spoton_kernel::s_crypt1)
+  if(!spoton_kernel::s_crypts.contains("messaging"))
+    return;
+
+  spoton_gcrypt *s_crypt = spoton_kernel::s_crypts["messaging"];
+
+  if(!s_crypt)
     return;
 
   {
@@ -349,11 +369,11 @@ void spoton_mailer::slotReap(void)
 	      bool ok = true;
 
 	      dateTime = QDateTime::fromString
-		(spoton_kernel::s_crypt1->decrypted(QByteArray::
-						    fromBase64(query.
-							       value(0).
-							       toByteArray()),
-						    &ok).constData(),
+		(s_crypt->decrypted(QByteArray::
+				    fromBase64(query.
+					       value(0).
+					       toByteArray()),
+				    &ok).constData(),
 		 Qt::ISODate);
 
 	      if(dateTime.daysTo(now) > days)

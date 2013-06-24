@@ -289,11 +289,16 @@ void spoton_listener::slotNewConnection(void)
 	  this,
 	  SLOT(slotNeighborDisconnected(void)));
 
-  if(!spoton_kernel::s_crypt1)
+  spoton_gcrypt *s_crypt = 0;
+
+  if(spoton_kernel::s_crypts.contains("messaging"))
+    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+  if(!s_crypt)
     {
       spoton_misc::logError
 	("spoton_listener::slotNewConnection(): "
-	 "spoton_kernel::s_crypt1 is 0.");
+	 "messaging key is missing.");
       neighbor->deleteLater();
       return;
     }
@@ -306,7 +311,7 @@ void spoton_listener::slotNewConnection(void)
   if(!spoton_misc::isPrivateNetwork(neighbor->peerAddress()))
     if(country == "Unknown" ||
        !spoton_misc::countryAllowedToConnect(country.remove(" "),
-					     spoton_kernel::s_crypt1))
+					     s_crypt))
       {
 	if(country == "Unknown")
 	  spoton_misc::logError
@@ -348,7 +353,7 @@ void spoton_listener::slotNewConnection(void)
 		      "remote_ip_address_hash = ? AND "
 		      "status_control = 'blocked'");
 	query.bindValue
-	  (0, spoton_kernel::s_crypt1->
+	  (0, s_crypt->
 	   keyedHash(neighbor->peerAddress().
 		     toString().toLatin1(), &ok).toBase64());
 
@@ -431,61 +436,58 @@ void spoton_listener::slotNewConnection(void)
 
 	    query.bindValue
 	      (3,
-	       spoton_kernel::s_crypt1->encrypted(neighbor->peerAddress().
-						  toString().toLatin1(),
-						  &ok).toBase64());
+	       s_crypt->encrypted(neighbor->peerAddress().
+				  toString().toLatin1(),
+				  &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
 		(4,
-		 spoton_kernel::s_crypt1->
+		 s_crypt->
 		 encrypted(QString::number(neighbor->peerPort()).
 			   toLatin1(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
 		(5,
-		 spoton_kernel::s_crypt1->
-		 encrypted(neighbor->peerAddress().
-			   scopeId().toLatin1(),
-			   &ok).toBase64());
+		 s_crypt->encrypted(neighbor->peerAddress().
+				    scopeId().toLatin1(),
+				    &ok).toBase64());
 
 	    query.bindValue(6, "connected");
 
 	    if(ok)
 	      query.bindValue
 		(7,
-		 spoton_kernel::s_crypt1->
-		 keyedHash((neighbor->peerAddress().toString() +
-			    QString::number(neighbor->peerPort()) +
-			    neighbor->peerAddress().scopeId()).
-			   toLatin1(), &ok).toBase64());
+		 s_crypt->keyedHash((neighbor->peerAddress().toString() +
+				     QString::number(neighbor->peerPort()) +
+				     neighbor->peerAddress().scopeId()).
+				    toLatin1(), &ok).toBase64());
 
 	    query.bindValue(8, 0);
 
 	    if(ok)
 	      query.bindValue
-		(9, spoton_kernel::s_crypt1->
-		 encrypted(country.toLatin1(), &ok).toBase64());
+		(9, s_crypt->encrypted(country.toLatin1(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(10, spoton_kernel::s_crypt1->
+		(10, s_crypt->
 		 keyedHash(neighbor->peerAddress().
 			   toString().toLatin1(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(11, spoton_kernel::s_crypt1->
+		(11, s_crypt->
 		 keyedHash(country.remove(" ").toLatin1(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
 		(12,
-		 spoton_kernel::s_crypt1->encrypted(m_externalAddress->
-						    address().
-						    toString().toLatin1(),
-						    &ok).toBase64());
+		 s_crypt->encrypted(m_externalAddress->
+				    address().
+				    toString().toLatin1(),
+				    &ok).toBase64());
 
 	    query.bindValue(13, neighbor->receivedUuid().toString());
 	    query.bindValue(14, 0);
@@ -498,31 +500,27 @@ void spoton_listener::slotNewConnection(void)
 
 	    if(ok)
 	      query.bindValue
-		(15, spoton_kernel::s_crypt1->
-		 encrypted(proxyHostname.toLatin1(), &ok).
+		(15, s_crypt->encrypted(proxyHostname.toLatin1(), &ok).
 		 toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(16, spoton_kernel::s_crypt1->
-		 encrypted(proxyPassword.toUtf8(), &ok).
+		(16, s_crypt->encrypted(proxyPassword.toUtf8(), &ok).
 		 toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(17, spoton_kernel::s_crypt1->encrypted(proxyPort.toLatin1(),
-							&ok).toBase64());
+		(17, s_crypt->encrypted(proxyPort.toLatin1(),
+					&ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(18, spoton_kernel::s_crypt1->
-		 encrypted(proxyType.toLatin1(), &ok).
+		(18, s_crypt->encrypted(proxyType.toLatin1(), &ok).
 		 toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(19, spoton_kernel::s_crypt1->
-		 encrypted(proxyUsername.toUtf8(), &ok).
+		(19, s_crypt->encrypted(proxyUsername.toUtf8(), &ok).
 		 toBase64());
 
 	    if(ok)
@@ -542,19 +540,19 @@ void spoton_listener::slotNewConnection(void)
 		      QByteArray b2;
 		      QByteArray b3;
 
-		      b1 = spoton_kernel::s_crypt1->decrypted
+		      b1 = s_crypt->decrypted
 			(QByteArray::fromBase64(query.value(1).
 						toByteArray()),
 			 &ok);
 
 		      if(ok)
-			b2 = spoton_kernel::s_crypt1->decrypted
+			b2 = s_crypt->decrypted
 			  (QByteArray::fromBase64(query.value(2).
 						  toByteArray()),
 			   &ok);
 
 		      if(ok)
-			b3 = spoton_kernel::s_crypt1->decrypted
+			b3 = s_crypt->decrypted
 			  (QByteArray::fromBase64(query.value(3).
 						  toByteArray()),
 			   &ok);
@@ -668,15 +666,23 @@ void spoton_listener::saveExternalAddress(const QHostAddress &address,
 			"NOT NULL");
 	  query.bindValue(0, m_id);
 	}
-      else if(spoton_kernel::s_crypt1)
+      else
 	{
-	  query.prepare("UPDATE listeners SET external_ip_address = ? "
-			"WHERE OID = ?");
-	  query.bindValue
-	    (0, spoton_kernel::s_crypt1->encrypted(address.toString().
-						   toLatin1(), &ok).
-	     toBase64());
-	  query.bindValue(1, m_id);
+	  spoton_gcrypt *s_crypt = 0;
+
+	  if(spoton_kernel::s_crypts.contains("messaging"))
+	    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+	  if(s_crypt)
+	    {
+	      query.prepare("UPDATE listeners SET external_ip_address = ? "
+			    "WHERE OID = ?");
+	      query.bindValue
+		(0, s_crypt->encrypted(address.toString().
+				       toLatin1(), &ok).
+		 toBase64());
+	      query.bindValue(1, m_id);
+	    }
 	}
     }
   else

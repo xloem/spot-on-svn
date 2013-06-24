@@ -70,9 +70,7 @@ extern "C"
 
 QCache<QByteArray, int> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
-spoton_gcrypt *spoton_kernel::s_crypt1 = 0;
-spoton_gcrypt *spoton_kernel::s_crypt2 = 0;
-spoton_gcrypt *spoton_kernel::s_crypt3 = 0;
+QHash<QString, spoton_gcrypt *> spoton_kernel::s_crypts;
 
 static void sig_handler(int signum)
 {
@@ -196,9 +194,6 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_guiServer = 0;
   m_mailer = 0;
   m_sharedReader = 0;
-  s_crypt1 = 0;
-  s_crypt2 = 0;
-  s_crypt3 = 0;
   qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
   spoton_misc::cleanupDatabases();
@@ -371,12 +366,16 @@ spoton_kernel::~spoton_kernel()
 {
   cleanup();
   spoton_misc::cleanupDatabases();
-  delete s_crypt1;
-  s_crypt1 = 0;
-  delete s_crypt2;
-  s_crypt2 = 0;
-  delete s_crypt3;
-  s_crypt3 = 0;
+
+  QHashIterator<QString, spoton_gcrypt *> i(s_crypts);
+
+  while (i.hasNext())
+    {
+      i.next();
+      delete i.value();
+    }
+
+  s_crypts.clear();
   spoton_misc::logError
     (QString("Kernel %1 about to exit.").
      arg(QCoreApplication::applicationPid()));
@@ -407,7 +406,12 @@ void spoton_kernel::slotPollDatabase(void)
 
 void spoton_kernel::prepareListeners(void)
 {
-  if(!s_crypt1)
+  if(!s_crypts.contains("messaging"))
+    return;
+
+  spoton_gcrypt *s_crypt = s_crypts["messaging"];
+
+  if(!s_crypt)
     return;
 
   {
@@ -445,7 +449,7 @@ void spoton_kernel::prepareListeners(void)
 			  QByteArray bytes;
 			  bool ok = true;
 
-			  bytes = s_crypt1->
+			  bytes = s_crypt->
 			    decrypted(QByteArray::fromBase64(query.
 							     value(i).
 							     toByteArray()),
@@ -514,7 +518,12 @@ void spoton_kernel::prepareListeners(void)
 
 void spoton_kernel::prepareNeighbors(void)
 {
-  if(!s_crypt1)
+  if(!s_crypts.contains("messaging"))
+    return;
+
+  spoton_gcrypt *s_crypt = s_crypts["messaging"];
+
+  if(!s_crypt)
     return;
 
   {
@@ -552,7 +561,7 @@ void spoton_kernel::prepareNeighbors(void)
 			    QByteArray bytes;
 			    bool ok = true;
 
-			    bytes = s_crypt1->
+			    bytes = s_crypt->
 			      decrypted(QByteArray::fromBase64(query.
 							       value(i).
 							       toByteArray()),
@@ -726,13 +735,18 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 					      const QByteArray &name,
 					      const QByteArray &message)
 {
-  if(!s_crypt1)
+  if(!s_crypts.contains("messaging"))
+    return;
+
+  spoton_gcrypt *s_crypt = s_crypts["messaging"];
+
+  if(!s_crypt)
     return;
 
   QByteArray publicKey;
   bool ok = true;
 
-  publicKey = s_crypt1->publicKey(&ok);
+  publicKey = s_crypt->publicKey(&ok);
 
   if(!ok)
     return;
@@ -756,7 +770,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 				     symmetricKeyAlgorithm,
 				     neighborOid,
 				     QString::number(oid),
-				     s_crypt1);
+				     s_crypt);
 
   data.append
     (spoton_gcrypt::publicKeyEncrypt(symmetricKey,
@@ -1097,14 +1111,19 @@ void spoton_kernel::slotStatusTimerExpired(void)
   if(status == "offline")
     return;
 
-  if(!s_crypt1)
+  if(!s_crypts.contains("messaging"))
+    return;
+
+  spoton_gcrypt *s_crypt = s_crypts["messaging"];
+
+  if(!s_crypt)
     return;
 
   QByteArray publicKey;
   QByteArray myPublicKeyHash;
   bool ok = true;
 
-  publicKey = s_crypt1->publicKey(&ok);
+  publicKey = s_crypt->publicKey(&ok);
 
   if(!ok)
     return;
@@ -1140,7 +1159,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	      QByteArray gemini;
 
 	      if(!query.value(0).isNull())
-		gemini = s_crypt1->decrypted
+		gemini = s_crypt->decrypted
 		  (QByteArray::fromBase64(query.
 					  value(0).
 					  toByteArray()),
@@ -1353,15 +1372,20 @@ void spoton_kernel::slotScramble(void)
 
 void spoton_kernel::slotRetrieveMail(void)
 {
-  if(!s_crypt2)
+  if(!s_crypts.contains("signature"))
+    return;
+
+  spoton_gcrypt *s_crypt = s_crypts["signature"];
+
+  if(!s_crypt)
     return;
 
   QByteArray publicKey;
   bool ok = true;
 
-  publicKey = s_crypt2->publicKey(&ok); /*
-					** Signature public key.
-					*/
+  publicKey = s_crypt->publicKey(&ok); /*
+				       ** Signature public key.
+				       */
 
   if(!ok)
     return;
@@ -1460,7 +1484,7 @@ void spoton_kernel::slotRetrieveMail(void)
 		     &ok);
 
 		  if(ok)
-		    signature = s_crypt2->digitalSignature
+		    signature = s_crypt->digitalSignature
 		      (messageDigest, &ok);
 
 		  if(ok)
@@ -1509,7 +1533,12 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 				 const QByteArray &subject,
 				 const qint64 mailOid)
 {
-  if(!s_crypt1)
+  if(!s_crypts.contains("messaging"))
+    return;
+
+  spoton_gcrypt *s_crypt = s_crypts["messaging"];
+
+  if(!s_crypt)
     return;
 
   /*
@@ -1524,7 +1553,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
   QByteArray myPublicKey;
   bool ok = true;
 
-  myPublicKey = s_crypt1->publicKey(&ok);
+  myPublicKey = s_crypt->publicKey(&ok);
 
   if(!ok)
     return;
@@ -1770,9 +1799,6 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 {
-  if(s_crypt1 && s_crypt2 && s_crypt3)
-    return true;
-
   QByteArray salt;
   QByteArray saltedPassphraseHash;
   QString error("");
@@ -1807,9 +1833,9 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 	  {
 	    ok = true;
 
-	    if(!s_crypt1)
+	    if(!s_crypts.contains("messaging"))
 	      {
-		s_crypt1 = new spoton_gcrypt
+		spoton_gcrypt *crypt = new spoton_gcrypt
 		  (s_settings.value("gui/cipherType",
 				    "aes256").toString().trimmed(),
 		   s_settings.value("gui/hashType",
@@ -1819,33 +1845,54 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 		   s_settings.value("gui/saltLength", 256).toInt(),
 		   s_settings.value("gui/iterationCount", 10000).toInt(),
 		   "messaging");
-		spoton_misc::populateCountryDatabase
-		  (spoton_kernel::s_crypt1);
+		spoton_misc::populateCountryDatabase(crypt);
+		s_crypts.insert("messaging", crypt);
 	      }
 
-	    if(!s_crypt2)
-	      s_crypt2 = new spoton_gcrypt
-		(s_settings.value("gui/cipherType",
-				  "aes256").toString().trimmed(),
-		 s_settings.value("gui/hashType",
-				  "sha512").toString().trimmed(),
-		 passphrase.toUtf8(),
-		 key,
-		 s_settings.value("gui/saltLength", 256).toInt(),
-		 s_settings.value("gui/iterationCount", 10000).toInt(),
-		 "signature");
+	    if(!s_crypts.contains("server"))
+	      {
+		spoton_gcrypt *crypt = new spoton_gcrypt
+		  (s_settings.value("gui/cipherType",
+				    "aes256").toString().trimmed(),
+		   s_settings.value("gui/hashType",
+				    "sha512").toString().trimmed(),
+		   passphrase.toUtf8(),
+		   key,
+		   s_settings.value("gui/saltLength", 256).toInt(),
+		   s_settings.value("gui/iterationCount", 10000).toInt(),
+		   "server");
+		s_crypts.insert("server", crypt);
+	      }
 
-	    if(!s_crypt3)
-	      s_crypt3 = new spoton_gcrypt
-		(s_settings.value("gui/cipherType",
-				  "aes256").toString().trimmed(),
-		 s_settings.value("gui/hashType",
-				  "sha512").toString().trimmed(),
-		 passphrase.toUtf8(),
-		 key,
-		 s_settings.value("gui/saltLength", 256).toInt(),
-		 s_settings.value("gui/iterationCount", 10000).toInt(),
-		 "url");
+	    if(!s_crypts.contains("signature"))
+	      {
+		spoton_gcrypt *crypt = new spoton_gcrypt
+		  (s_settings.value("gui/cipherType",
+				    "aes256").toString().trimmed(),
+		   s_settings.value("gui/hashType",
+				    "sha512").toString().trimmed(),
+		   passphrase.toUtf8(),
+		   key,
+		   s_settings.value("gui/saltLength", 256).toInt(),
+		   s_settings.value("gui/iterationCount", 10000).toInt(),
+		   "signature");
+		s_crypts.insert("signature", crypt);
+	      }
+
+	    if(!s_crypts.contains("url"))
+	      {
+		spoton_gcrypt *crypt = new spoton_gcrypt
+		  (s_settings.value("gui/cipherType",
+				    "aes256").toString().trimmed(),
+		   s_settings.value("gui/hashType",
+				    "sha512").toString().trimmed(),
+		   passphrase.toUtf8(),
+		   key,
+		   s_settings.value("gui/saltLength", 256).toInt(),
+		   s_settings.value("gui/iterationCount", 10000).toInt(),
+		   "url");
+		s_crypts.insert("url", crypt);
+	      }
 	  }
       }
 

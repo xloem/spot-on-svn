@@ -52,9 +52,12 @@ class spoton_kernel: public QObject
   ~spoton_kernel();
   static QCache<QByteArray, int> s_messagingCache;
   static QHash<QString, QVariant> s_settings;
-  static spoton_gcrypt *s_crypt1; // private
-  static spoton_gcrypt *s_crypt2; // signature
-  static spoton_gcrypt *s_crypt3; // url
+  static QHash<QString, spoton_gcrypt *> s_crypts; /*
+						   ** private
+						   ** server
+						   ** signature
+						   ** url
+						   */
 
  private:
   QFileSystemWatcher m_settingsWatcher;

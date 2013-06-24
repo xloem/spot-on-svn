@@ -49,7 +49,7 @@ class spoton_listener_tcp_server: public QTcpServer
   {
   }
 
-  QTcpSocket *nextPendingConnection(void)
+  QSslSocket *nextPendingConnection(void)
   {
     if(m_queue.isEmpty())
       return 0;
@@ -65,7 +65,7 @@ class spoton_listener_tcp_server: public QTcpServer
   {
     if(findChildren<spoton_neighbor *> ().size() >= maxPendingConnections())
       {
-	QTcpSocket socket;
+	QSslSocket socket;
 
 	socket.setSocketDescriptor(socketDescriptor);
 	socket.close();

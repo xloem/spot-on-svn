@@ -83,15 +83,20 @@ void spoton_shared_reader::slotTimeout(void)
 
 	      if(encrypted)
 		{
-		  if(!spoton_kernel::s_crypt1)
+		  spoton_gcrypt *s_crypt = 0;
+
+		  if(spoton_kernel::s_crypts.contains("messaging"))
+		    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+		  if(!s_crypt)
 		    continue;
 
 		  spoton_gcrypt crypt
 		    ("aes256",
 		     QString(""),
 		     QByteArray(),
-		     QByteArray(spoton_kernel::s_crypt1->passphrase(),
-				spoton_kernel::s_crypt1->passphraseLength()),
+		     QByteArray(s_crypt->passphrase(),
+				s_crypt->passphraseLength()),
 		     0,
 		     0,
 		     QString(""));
@@ -134,5 +139,11 @@ void spoton_shared_reader::slotTimeout(void)
   }
 
   QSqlDatabase::removeDatabase("spoton_shared_reader");
-  spoton_misc::populateUrlsDatabase(list, spoton_kernel::s_crypt1);
+
+  spoton_gcrypt *s_crypt = 0;
+
+  if(spoton_kernel::s_crypts.contains("messaging"))
+    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+  spoton_misc::populateUrlsDatabase(list, s_crypt);
 }

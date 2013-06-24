@@ -33,7 +33,7 @@
 #include <QHostInfo>
 #include <QNetworkProxy>
 #include <QSqlDatabase>
-#include <QTcpSocket>
+#include <QSslSocket>
 #include <QTimer>
 #include <QUuid>
 
@@ -41,7 +41,7 @@ class QNetworkInterface;
 
 class spoton_external_address;
 
-class spoton_neighbor: public QTcpSocket
+class spoton_neighbor: public QSslSocket
 {
   Q_OBJECT
 
