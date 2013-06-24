@@ -1495,6 +1495,100 @@ QByteArray spoton_gcrypt::publicKeyEncrypt(const QByteArray &data,
   return encrypted;
 }
 
+void spoton_gcrypt::initializePrivateKeyContainer(bool *ok)
+{
+  if(m_privateKey)
+    {
+      if(ok)
+	*ok = true;
+
+      return;
+    }
+
+  QByteArray keyData;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_gcrypt");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "idiotes.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT private_key FROM idiotes WHERE id = ?");
+	query.bindValue(0, m_id);
+
+	if(query.exec())
+	  if(query.next())
+	    keyData = QByteArray::fromBase64
+	      (query.value(0).toByteArray());
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_gcrypt");
+
+  if(keyData.isEmpty())
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	("spoton_gcrypt::initializePrivateKeyContainer(): "
+	 "empty private key.");
+      goto done_label;
+    }
+
+  {
+    bool ok = true;
+
+    keyData = this->decrypted(keyData, &ok);
+
+    if(!ok)
+      keyData.clear();
+  }
+
+  if(keyData.isEmpty())
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	("spoton_gcrypt::initializePrivateKeyContainer(): "
+	 "decrypted() failure.");
+      goto done_label;
+    }
+
+  m_privateKeyLength = keyData.length();
+
+  if((m_privateKey =
+      static_cast<char *> (gcry_calloc_secure(m_privateKeyLength,
+					      sizeof(char)))) == 0)
+    {
+      if(ok)
+	*ok = false;
+
+      m_privateKeyLength = 0;
+      spoton_misc::logError
+	("spoton_gcrypt::initializePrivateKeyContainer(): "
+	 "gcry_calloc_secure() "
+	 "failure.");
+      goto done_label;
+    }
+  else
+    memcpy(static_cast<void *> (m_privateKey),
+	   static_cast<const void *> (keyData.constData()),
+	   m_privateKeyLength);
+
+ done_label:
+  return;
+}
+
 QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 {
   /*
@@ -1502,7 +1596,6 @@ QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
   */
 
   QByteArray decrypted;
-  QByteArray keyData;
   QByteArray random(64, 0); // Output size of Sha-512 divided by 8.
   const char *buffer = 0;
   gcry_error_t err = 0;
@@ -1512,79 +1605,18 @@ QByteArray spoton_gcrypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
   gcry_sexp_t raw_t = 0;
   size_t length = 0;
 
+  {
+    bool ok = true;
+
+    initializePrivateKeyContainer(&ok);
+  }
+
   if(!m_privateKey)
     {
-      {
-	QSqlDatabase db = QSqlDatabase::addDatabase
-	  ("QSQLITE", "spoton_gcrypt");
+      if(ok)
+	*ok = false;
 
-	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-			   "idiotes.db");
-
-	if(db.open())
-	  {
-	    QSqlQuery query(db);
-
-	    query.setForwardOnly(true);
-	    query.prepare("SELECT private_key FROM idiotes WHERE id = ?");
-	    query.bindValue(0, m_id);
-
-	    if(query.exec())
-	      if(query.next())
-		keyData = QByteArray::fromBase64
-		  (query.value(0).toByteArray());
-	  }
-
-	db.close();
-      }
-
-      QSqlDatabase::removeDatabase("spoton_gcrypt");
-
-      if(keyData.isEmpty())
-	{
-	  if(ok)
-	    *ok = false;
-
-	  spoton_misc::logError
-	    ("spoton_gcrypt::publicKeyDecrypt(): empty private key.");
-	  goto done_label;
-	}
-
-      {
-	bool ok = true;
-
-	keyData = this->decrypted(keyData, &ok);
-
-	if(!ok)
-	  keyData.clear();
-      }
-
-      if(keyData.isEmpty())
-	{
-	  if(ok)
-	    *ok = false;
-
-	  spoton_misc::logError
-	    ("spoton_gcrypt::publicKeyDecrypt(): decrypted() failure.");
-	  goto done_label;
-	}
-
-      m_privateKeyLength = keyData.length();
-
-      if((m_privateKey =
-	  static_cast<char *> (gcry_calloc_secure(m_privateKeyLength,
-						  sizeof(char)))) == 0)
-	{
-	  m_privateKeyLength = 0;
-	  spoton_misc::logError
-	    ("spoton_gcrypt::publicKeyDecrypt(): gcry_calloc_secure() "
-	     "failure.");
-	  goto done_label;
-	}
-      else
-	memcpy(static_cast<void *> (m_privateKey),
-	       static_cast<const void *> (keyData.constData()),
-	       m_privateKeyLength);
+      goto done_label;
     }
 
   if((err = gcry_sexp_new(&key_t,
@@ -2435,4 +2467,55 @@ bool spoton_gcrypt::isValidSignature(const QByteArray &data,
   gcry_sexp_release(key_t);
   gcry_sexp_release(signature_t);
   return ok;
+}
+
+QByteArray spoton_gcrypt::privateKeyInDER(bool *ok)
+{
+  {
+    bool ok = true;
+
+    initializePrivateKeyContainer(&ok);
+  }
+
+  QString format;
+  int coefficient = 0;
+  int exponent1 = 0;
+  int exponent2 = 0;
+  int modulus = 0;
+  int publicExponent = 0;
+  int prime1 = 0;
+  int prime2 = 0;
+  int privateExponent = 0;
+
+  if(!m_privateKey)
+    {
+      if(ok)
+	*ok = false;
+
+      goto done_label;
+    }
+
+  format = QString("RSAPrivateKey ::= SEQUENCE {\n"
+		   "version           0, \n" // Version
+		   "modulus           %1,  -- n \n"
+		   "publicExponent    %2,  -- e \n"
+		   "privateExponent   %3,  -- d \n"
+		   "prime1            %4,  -- p \n"
+		   "prime2            %5,  -- q \n"
+		   "exponent1         %6,  -- d mod (p-1) \n"
+		   "exponent2         %7,  -- d mod (q-1) \n"
+		   "coefficient       %8,  -- (inverse of q) mod p \n"
+		   "otherPrimeInfos   OtherPrimeInfos OPTIONAL \n"
+		   "}").
+    arg(modulus).
+    arg(publicExponent).
+    arg(privateExponent).
+    arg(prime1).
+    arg(prime2).
+    arg(exponent1).
+    arg(exponent2).
+    arg(coefficient);
+
+ done_label:
+  return format.toLatin1();
 }

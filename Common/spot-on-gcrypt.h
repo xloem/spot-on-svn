@@ -97,6 +97,7 @@ class spoton_gcrypt
   QByteArray digitalSignature(const QByteArray &data, bool *ok);
   QByteArray encrypted(const QByteArray &data, bool *ok);
   QByteArray keyedHash(const QByteArray &data, bool *ok);
+  QByteArray privateKeyInDER(bool *ok);
   QByteArray publicKey(bool *ok);
   QByteArray publicKeyDecrypt(const QByteArray &data, bool *ok);
   QByteArray publicKeyHash(bool *ok);
@@ -106,6 +107,7 @@ class spoton_gcrypt
   size_t passphraseLength(void) const;
   size_t symmetricKeyLength(void) const;
   void generatePrivatePublicKeys(const int rsaKeySize, QString &error);
+  void initializePrivateKeyContainer(bool *ok);
 
  private:
   QByteArray m_publicKey;

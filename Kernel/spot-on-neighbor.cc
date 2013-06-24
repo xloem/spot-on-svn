@@ -30,6 +30,7 @@
 #include <QNetworkInterface>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSslKey>
 #include <QtCore/qmath.h>
 
 #include <limits>
@@ -47,7 +48,37 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 QObject *parent):QSslSocket(parent)
 {
   s_dbId += 1;
+  setPeerVerifyMode(QSslSocket::VerifyNone);
+  setProtocol(QSsl::TlsV1);
+
+  spoton_gcrypt *s_crypt = 0;
+
+  if(spoton_kernel::s_crypts.contains("server"))
+    s_crypt = spoton_kernel::s_crypts["server"];
+
+  if(s_crypt)
+    {
+      QByteArray data;
+      bool ok = true;
+
+      data = s_crypt->privateKeyInDER(&ok);
+
+      if(ok)
+	{
+	  QSslKey key(data, QSsl::Rsa, QSsl::Der);
+
+	  setPrivateKey(key);
+	}
+      else
+	spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
+			      "privateKeyInDER() failure!");
+    }
+  else
+    spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
+			  "missing server key!");
+
   setSocketDescriptor(socketDescriptor);
+  startServerEncryption();
   m_address = peerAddress();
   m_ipAddress = m_address.toString();
   m_externalAddress = new spoton_external_address(this);
@@ -104,7 +135,36 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 QObject *parent):QSslSocket(parent)
 {
   s_dbId += 1;
+  setPeerVerifyMode(QSslSocket::VerifyNone);
+  setProtocol(QSsl::TlsV1);
   setProxy(proxy);
+
+  spoton_gcrypt *s_crypt = 0;
+
+  if(spoton_kernel::s_crypts.contains("server"))
+    s_crypt = spoton_kernel::s_crypts["server"];
+
+  if(s_crypt)
+    {
+      QByteArray data;
+      bool ok = true;
+
+      data = s_crypt->privateKeyInDER(&ok);
+
+      if(ok)
+	{
+	  QSslKey key(data, QSsl::Rsa, QSsl::Der);
+
+	  setPrivateKey(key);
+	}
+      else
+	spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
+			      "privateKeyInDER() failure!");
+    }
+  else
+    spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
+			  "missing server key!");
+
   m_address = QHostAddress(ipAddress);
   m_ipAddress = ipAddress;
 
@@ -287,7 +347,7 @@ void spoton_neighbor::slotTimeout(void)
 		if(status == "connected")
 		  {
 		    if(state() == QAbstractSocket::UnconnectedState)
-		      connectToHost(m_address, m_port);
+		      connectToHostEncrypted(m_address.toString(), m_port);
 		  }
 
 		if(status == "blocked" || status == "disconnected")
