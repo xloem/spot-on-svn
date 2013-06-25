@@ -31,7 +31,7 @@ INCLUDEPATH	+= . ..\\. ..\\..\\..\\. ..\\..\\..\\LibSpotOn\\Include.win32 \
 LIBS		+= -L..\\..\\..\\LibSpotOn \
 		   -L..\\..\\..\\LibSpotOn\\Libraries.win32 \
                    -L..\\..\\..\\libGeoIP\\Libraries.win32 \
-		   -lGeoIP-1 -lgcrypt-11 -lpthread -lspoton
+		   -lGeoIP-1 -lcrypto -lgcrypt-11 -lpthread -lspoton
 PRE_TARGETDEPS = libspoton.dll
 
 HEADERS		= ..\\Common\\spot-on-external-address.h \
