@@ -35,7 +35,7 @@ QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../../. GUI ../../libGeoIP/Include.osx64 \
                    /usr/local/include
 ICON		= Icons/Logo/spoton-logo-transparent.icns
-LIBS		+= -L/usr/local/lib -lgcrypt -L../../LibSpotOn -lspoton \
+LIBS		+= -L/usr/local/lib -lcrypto -lgcrypt -L../../LibSpotOn -lspoton \
                    -L../../libGeoIP/Libraries.osx64 -lGeoIP
 PRE_TARGETDEPS = libspoton.dylib
 OBJECTS_DIR = temp/obj
