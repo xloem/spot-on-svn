@@ -161,7 +161,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 {
   s_dbId += 1;
   setPeerVerifyMode(QSslSocket::VerifyNone);
-#if QT_VERSION
+#if QT_VERSION >= 0x050000
   setProtocol(QSsl::TlsV1_0);
 #else
   setProtocol(QSsl::TlsV1);
