@@ -2480,7 +2480,7 @@ bool spoton_gcrypt::isValidSignature(const QByteArray &data,
   return ok;
 }
 
-QByteArray spoton_gcrypt::privateKeyInDER(bool *ok)
+QByteArray spoton_gcrypt::privateKeyInRem(bool *ok)
 {
   {
     bool ok = true;
@@ -2488,8 +2488,13 @@ QByteArray spoton_gcrypt::privateKeyInDER(bool *ok)
     initializePrivateKeyContainer(&ok);
   }
 
+  QByteArray der;
+  QByteArray pem;
+  bool rem = false;
   gcry_error_t err = 0;
   gcry_sexp_t key_t = 0;
+  int lineWidth = 64;
+  int newLines = 0;
 
   if(!m_privateKey)
     {
@@ -2508,19 +2513,34 @@ QByteArray spoton_gcrypt::privateKeyInDER(bool *ok)
 
       if(err != 0)
 	spoton_misc::logError
-	  (QString("spoton_gcrypt::privateKeyInDER(): gcry_sexp_new() "
+	  (QString("spoton_gcrypt::privateKeyInRem(): gcry_sexp_new() "
 		   "failure (%1).").arg(gcry_strerror(err)));
       else
 	spoton_misc::logError
-	  ("spoton_gcrypt::privateKeyInDER(): gcry_sexp_new() failure.");
+	  ("spoton_gcrypt::privateKeyInRem(): gcry_sexp_new() failure.");
 
       goto done_label;
     }
+
+  der = QByteArray(m_privateKey, m_privateKeyLength);
+  pem = der.toBase64();
+  lineWidth = 64;
+  newLines = pem.size() / lineWidth;
+  rem = pem.size() % lineWidth;
+
+  for(int i = 0; i < newLines; ++i)
+    pem.insert((i + 1) * lineWidth + i, '\n');
+
+  if(rem)
+    pem.append('\n');
+
+  pem.prepend("-----BEGIN RSA PRIVATE KEY-----\n");
+  pem.append("-----END RSA PRIVATE KEY-----\n");
 
   if(ok)
     *ok = true;
 
  done_label:
   gcry_sexp_release(key_t);
-  return QByteArray();
+  return pem;
 }
