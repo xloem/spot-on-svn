@@ -122,6 +122,8 @@ void spoton_listener::slotTimeout(void)
   ** If the interface disappears, destroy the listener.
   */
 
+  bool shouldDelete = false;
+
   prepareNetworkInterface();
 
   {
@@ -208,7 +210,7 @@ void spoton_listener::slotTimeout(void)
 		    socket->deleteLater();
 		  }
 
-		deleteLater();
+		shouldDelete = true;
 	      }
 	  }
 	else
@@ -220,7 +222,7 @@ void spoton_listener::slotTimeout(void)
 		socket->deleteLater();
 	      }
 
-	    deleteLater();
+	    shouldDelete = true;
 	  }
       }
 
@@ -228,6 +230,9 @@ void spoton_listener::slotTimeout(void)
   }
 
   QSqlDatabase::removeDatabase("spoton_listener_" + QString::number(s_dbId));
+
+  if(shouldDelete)
+    deleteLater();
 
   if(isListening())
     if(!m_networkInterface || !(m_networkInterface->flags() &

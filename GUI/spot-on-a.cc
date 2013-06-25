@@ -2177,8 +2177,13 @@ void spoton::slotSetPassphrase(void)
 	}
       else
 	{
+	  QList<bool> ssl;
 	  QStringList list;
 
+	  ssl << false
+	      << true
+	      << false
+	      << false;
 	  list << "messaging"
 	       << "server"
 	       << "signature"
@@ -2200,8 +2205,13 @@ void spoton::slotSetPassphrase(void)
 		 m_ui.iterationCount->value(),
 		 list.at(i));
 
-	      crypt.generatePrivatePublicKeys
-		(m_ui.rsaKeySize->currentText().toInt(), error2);
+	      if(ssl.at(i))
+		crypt.generateSslKeys
+		  (m_ui.rsaKeySize->currentText().toInt(), error2);
+	      else
+		crypt.generatePrivatePublicKeys
+		  (m_ui.rsaKeySize->currentText().toInt(), error2);
+
 	      m_sb.status->clear();
 
 	      if(!error2.isEmpty())
@@ -2217,22 +2227,33 @@ void spoton::slotSetPassphrase(void)
   QApplication::restoreOverrideCursor();
 
   if(!error1.isEmpty())
-    QMessageBox::critical(this, tr("Spot-On: Error"),
-			  tr("An error (%1) occurred with spoton_crypt::"
-			     "derivedKey().").arg(error1.remove(".")));
+    {
+      spoton_crypt::purgeDatabases();
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("An error (%1) occurred with spoton_crypt::"
+			       "derivedKey().").arg(error1.remove(".")));
+    }
   else if(!error2.isEmpty())
-    QMessageBox::critical(this, tr("Spot-On: Error"),
-			  tr("An error (%1) occurred with "
-			     "spoton_crypt::"
-			     "generatePrivatePublicKeys() or "
-			     "spoton_crypt::"
-			     "reencodeRSAKeys().").
-			  arg(error2.remove(".")));
+    {
+      spoton_crypt::purgeDatabases();
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("An error (%1) occurred with "
+			       "spoton_crypt::"
+			       "generatePrivatePublicKeys(), "
+			       "spoton_crypt::"
+			       "generateSslKeys(), or "
+			       "spoton_crypt::"
+			       "reencodeRSAKeys().").
+			    arg(error2.remove(".")));
+    }
   else if(!error3.isEmpty())
-    QMessageBox::critical(this, tr("Spot-On: Error"),
-			  tr("An error (%1) occurred with spoton_crypt::"
-			     "saltedPassphraseHash().").
-			  arg(error3.remove(".")));
+    {
+      spoton_crypt::purgeDatabases();
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("An error (%1) occurred with spoton_crypt::"
+			       "saltedPassphraseHash().").
+			    arg(error3.remove(".")));
+    }
   else
     {
       if(!m_crypt || reencode)

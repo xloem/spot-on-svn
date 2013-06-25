@@ -37,6 +37,8 @@ extern "C"
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include <errno.h>
 #include <gcrypt.h>
+#include <openssl/pem.h>
+#include <openssl/rsa.h>
 #include <pthread.h>
 #pragma GCC diagnostic warning "-Wdeprecated-declarations"
 }
@@ -78,6 +80,7 @@ class spoton_crypt
 			       const QByteArray &signature);
   static bool passphraseSet(void);
   static size_t cipherKeyLength(const QByteArray &cipherType);
+  static void purgeDatabases(void);
   static void reencodeRSAKeys(const QString &newCipher,
 			      const QByteArray &newPassphrase,
 			      const QString &oldCipher,
@@ -107,6 +110,7 @@ class spoton_crypt
   size_t passphraseLength(void) const;
   size_t symmetricKeyLength(void) const;
   void generatePrivatePublicKeys(const int rsaKeySize, QString &error);
+  void generateSslKeys(const int rsaKeySize, QString &error);
   void initializePrivateKeyContainer(bool *ok);
 
  private:

@@ -2482,65 +2482,237 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
 
 QByteArray spoton_crypt::privateKeyInRem(bool *ok)
 {
-  {
-    bool ok = true;
+  QByteArray key;
 
-    initializePrivateKeyContainer(&ok);
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_crypt");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "idiotes.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT private_key FROM idiotes WHERE id = ?");
+	query.bindValue(0, m_id);
+
+	if(query.exec())
+	  if(query.next())
+	    key = QByteArray::fromBase64
+	      (query.value(0).toByteArray());
+      }
+
+    db.close();
   }
 
-  QByteArray der;
-  QByteArray pem;
-  bool rem = false;
-  gcry_error_t err = 0;
-  gcry_sexp_t key_t = 0;
-  int lineWidth = 64;
-  int newLines = 0;
+  QSqlDatabase::removeDatabase("spoton_crypt");
 
-  if(!m_privateKey)
+  if(key.isEmpty())
     {
       if(ok)
 	*ok = false;
+    }
+  else
+    {
+      bool ok = true;
 
-      goto done_label;
+      key = decrypted(key, &ok);
     }
 
-  if((err = gcry_sexp_new(&key_t,
-			  static_cast<const void *> (m_privateKey),
-			  m_privateKeyLength, 1)) != 0 || !key_t)
+  if(key.isEmpty())
     {
       if(ok)
 	*ok = false;
+    }
+  else
+    {
+      if(ok)
+	*ok = true;
+    }
 
-      if(err != 0)
-	spoton_misc::logError
-	  (QString("spoton_crypt::privateKeyInRem(): gcry_sexp_new() "
-		   "failure (%1).").arg(gcry_strerror(err)));
-      else
-	spoton_misc::logError
-	  ("spoton_crypt::privateKeyInRem(): gcry_sexp_new() failure.");
+  return key;
+}
 
+void spoton_crypt::generateSslKeys(const int rsaKeySize, QString &error)
+{
+  BIGNUM *f4 = 0;
+  BIO *privateMemory = 0;
+  BIO *publicMemory = 0;
+  BUF_MEM *bptr;
+  QByteArray privateKey;
+  QByteArray publicKey;
+  RSA *rsa = 0;
+  char *privateBuffer = 0;
+  char *publicBuffer = 0;
+
+  if(!(f4 = BN_new()))
+    {
+      error = QObject::tr("BN_new() returned zero");
+      spoton_misc::logError("spoton_crypt::generateSslKeys(): "
+			    "BN_new() failure.");
       goto done_label;
     }
 
-  der = QByteArray(m_privateKey, m_privateKeyLength);
-  pem = der.toBase64();
-  lineWidth = 64;
-  newLines = pem.size() / lineWidth;
-  rem = pem.size() % lineWidth;
+  if(BN_set_word(f4, RSA_F4) != 1)
+    {
+      error = QObject::tr("BN_set_word() returned zero");
+      spoton_misc::logError("spoton_crypt::generateSslKeys(): "
+			    "BN_set_word() failure.");
+      goto done_label;
+    }
 
-  for(int i = 0; i < newLines; ++i)
-    pem.insert((i + 1) * lineWidth + i, '\n');
+  if(!(rsa = RSA_new()))
+    {
+      error = QObject::tr("RSA_new() returned zero");
+      spoton_misc::logError("spoton_crypt::generateSslKeys(): "
+			    "RSA_new() failure.");
+      goto done_label;
+    }
 
-  if(rem)
-    pem.append('\n');
+  if(RSA_generate_key_ex(rsa, rsaKeySize, f4, 0) == -1)
+    {
+      error = QObject::tr("RSA_generate_key() returned negative one");
+      spoton_misc::logError("spoton_crypt::generateSslKeys(): "
+			    "RSA_generate_key() failure.");
+      goto done_label;
+    }
 
-  pem.prepend("-----BEGIN RSA PRIVATE KEY-----\n");
-  pem.append("-----END RSA PRIVATE KEY-----\n");
+  if(!(privateMemory = BIO_new(BIO_s_mem())))
+    {
+      error = QObject::tr("BIO_new() returned zero");
+      spoton_misc::logError("spoton_crypt::generateSslKeys(): "
+			    "BIO_new() failure.");
+      goto done_label;
+    }
 
-  if(ok)
-    *ok = true;
+  if(!(publicMemory = BIO_new(BIO_s_mem())))
+    {
+      error = QObject::tr("BIO_new() returned zero");
+      spoton_misc::logError("spoton_crypt::generateSslKeys(): "
+			    "BIO_new() failure.");
+      goto done_label;
+    }
+
+  if(PEM_write_bio_RSAPrivateKey(privateMemory, rsa, 0, 0, 0, 0, 0) == 0)
+    {
+      error = QObject::tr("PEM_write_bio_RSAPrivateKey() returned zero");
+      spoton_misc::logError("spoton_crypt::generateSslKeys(): "
+			    "PEM_write_bio_RSAPrivateKey() failure.");
+      goto done_label;
+    }
+
+  if(PEM_write_bio_RSAPublicKey(publicMemory, rsa) == 0)
+    {
+      error = QObject::tr("PEM_write_bio_RSAPublicKey() returned zero");
+      spoton_misc::logError("spoton_crypt::generateSslKeys(): "
+			    "PEM_write_bio_RSAPublicKey() failure.");
+      goto done_label;
+    }
+
+  BIO_get_mem_ptr(privateMemory, &bptr);
+
+  if(!(privateBuffer = (char *) malloc(bptr->length + 1)))
+    {
+      error = QObject::tr("malloc() returned zero");
+      spoton_misc::logError("spoton_crypt::generateSslKeys(): "
+			    "malloc() failure.");
+      goto done_label;
+    }
+
+  memcpy(privateBuffer, bptr->data, bptr->length);
+  privateBuffer[bptr->length] = 0;
+  privateKey = privateBuffer;
+  BIO_get_mem_ptr(publicMemory, &bptr);
+
+  if(!(publicBuffer = (char *) malloc(bptr->length + 1)))
+    {
+      error = QObject::tr("malloc() returned zero");
+      spoton_misc::logError("spoton_crypt::generateSslKeys(): "
+			    "malloc() failure.");
+      goto done_label;
+    }
+
+  memcpy(publicBuffer, bptr->data, bptr->length);
+  publicBuffer[bptr->length] = 0;
+  publicKey = publicBuffer;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_crypt");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "idiotes.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare
+	  ("INSERT OR REPLACE INTO idiotes (id, private_key, public_key) "
+	   "VALUES (?, ?, ?)");
+	query.bindValue(0, m_id);
+
+	if(!privateKey.isEmpty())
+	  query.bindValue(1, encrypted(privateKey, &ok).toBase64());
+
+	if(!publicKey.isEmpty())
+	  if(ok)
+	    query.bindValue(2, encrypted(publicKey, &ok).toBase64());
+
+	if(ok)
+	  {
+	    if(!query.exec())
+	      {
+		error = QObject::tr("QSqlQuery::exec() failure");
+		spoton_misc::logError
+		  (QString("spoton_crypt::generateSslKeys(): "
+			   "QSqlQuery::exec() failure (%1).").
+		   arg(query.lastError().text()));
+	      }
+	  }
+	else
+	  {
+	    error = QObject::tr("encrypted() failure");
+	    spoton_misc::logError
+	      ("spoton_crypt::generateSslKeys(): "
+	       "encrypted() failure.");
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_crypt");
 
  done_label:
-  gcry_sexp_release(key_t);
-  return pem;
+  BIO_free(privateMemory);
+  BIO_free(publicMemory);
+  BN_free(f4);
+  RSA_free(rsa);
+  free(privateBuffer);
+  free(publicBuffer);
+}
+
+void spoton_crypt::purgeDatabases(void)
+{
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_crypt");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "idiotes.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("DELETE FROM idiotes");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_crypt");
 }

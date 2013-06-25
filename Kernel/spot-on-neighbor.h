@@ -122,6 +122,7 @@ class spoton_neighbor: public QSslSocket
  private slots:
   void slotConnected(void);
   void slotDiscoverExternalAddress(void);
+  void slotEncrypted(void);
   void slotError(QAbstractSocket::SocketError error);
   void slotExternalAddressDiscovered(const QHostAddress &address);
   void slotHostFound(const QHostInfo &hostInfo);
@@ -142,6 +143,7 @@ class spoton_neighbor: public QSslSocket
   void slotSendMessage(const QByteArray &data);
   void slotSendStatus(const QList<QByteArray> &list);
   void slotSendUuid(void);
+  void slotSslErrors(const QList<QSslError> &errors);
   void slotTimeout(void);
 
  signals:

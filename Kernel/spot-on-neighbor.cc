@@ -48,8 +48,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 QObject *parent):QSslSocket(parent)
 {
   s_dbId += 1;
-  setPeerVerifyMode(QSslSocket::VerifyNone);
-  setProtocol(QSsl::TlsV1);
 
   spoton_crypt *s_crypt = 0;
 
@@ -67,6 +65,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	{
 	  QSslKey key(data, QSsl::Rsa);
 
+	  setLocalCertificate(QSslCertificate(data));
 	  setPrivateKey(key);
 	}
       else
@@ -77,8 +76,9 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
     spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
 			  "missing server key!");
 
+  setPeerVerifyMode(QSslSocket::VerifyNone);
+  setProtocol(QSsl::TlsV1);
   setSocketDescriptor(socketDescriptor);
-  startServerEncryption();
   m_address = peerAddress();
   m_ipAddress = m_address.toString();
   m_externalAddress = new spoton_external_address(this);
@@ -97,9 +97,17 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  this,
 	  SLOT(slotError(QAbstractSocket::SocketError)));
   connect(this,
+	  SIGNAL(encrypted(void)),
+	  this,
+	  SLOT(slotEncrypted(void)));
+  connect(this,
 	  SIGNAL(readyRead(void)),
 	  this,
 	  SLOT(slotReadyRead(void)));
+  connect(this,
+	  SIGNAL(sslErrors(const QList<QSslError> &)),
+	  this,
+	  SLOT(slotSslErrors(const QList<QSslError> &)));
   connect(m_externalAddress,
 	  SIGNAL(ipAddressDiscovered(const QHostAddress &)),
 	  this,
@@ -120,6 +128,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotDiscoverExternalAddress(void)));
+  startServerEncryption();
   m_externalAddressDiscovererTimer.start(30000);
   m_keepAliveTimer.start(30000);
   m_lifetime.start(10 * 60 * 1000);
@@ -190,6 +199,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  this,
 	  SLOT(deleteLater(void)));
   connect(this,
+	  SIGNAL(encrypted(void)),
+	  this,
+	  SLOT(slotEncrypted(void)));
+  connect(this,
 	  SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,
 	  SLOT(slotError(QAbstractSocket::SocketError)));
@@ -197,6 +210,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(readyRead(void)),
 	  this,
 	  SLOT(slotReadyRead(void)));
+  connect(this,
+	  SIGNAL(sslErrors(const QList<QSslError> &)),
+	  this,
+	  SLOT(slotSslErrors(const QList<QSslError> &)));
   connect(m_externalAddress,
 	  SIGNAL(ipAddressDiscovered(const QHostAddress &)),
 	  this,
@@ -322,6 +339,9 @@ void spoton_neighbor::slotTimeout(void)
 
   prepareNetworkInterface();
 
+  QString status("");
+  bool shouldAbort = false;
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
       ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
@@ -342,18 +362,12 @@ void spoton_neighbor::slotTimeout(void)
 	  {
 	    if(query.next())
 	      {
-		QString status(query.value(0).toString());
-
-		if(status == "connected")
-		  {
-		    if(state() == QAbstractSocket::UnconnectedState)
-		      connectToHostEncrypted(m_address.toString(), m_port);
-		  }
+		status = query.value(0).toString();
 
 		if(status == "blocked" || status == "disconnected")
 		  {
 		    saveStatus(db, status);
-		    abort();
+		    shouldAbort = true;
 		  }
 
 		if(query.value(1).toInt() == 1)
@@ -362,16 +376,25 @@ void spoton_neighbor::slotTimeout(void)
 		  m_lifetime.start();
 	      }
 	    else if(m_id != -1)
-	      abort();
+	      shouldAbort = true;
 	  }
 	else if(m_id != -1)
-	  abort();
+	  shouldAbort = true;
       }
 
     db.close();
   }
 
   QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
+
+  if(shouldAbort)
+    abort();
+
+  if(status == "connected")
+    {
+      if(state() == QAbstractSocket::UnconnectedState)
+	connectToHostEncrypted(m_address.toString(), m_port);
+    }
 
   if(state() == QAbstractSocket::ConnectedState)
     if(!m_networkInterface || !(m_networkInterface->flags() &
@@ -514,11 +537,6 @@ void spoton_neighbor::slotConnected(void)
 	setLocalAddress(QHostAddress("::1"));
     }
 
-  if(!m_keepAliveTimer.isActive())
-    m_keepAliveTimer.start();
-
-  m_lastReadTime = QDateTime::currentDateTime();
-
   spoton_crypt *s_crypt = 0;
 
   if(spoton_kernel::s_crypts.contains("messaging"))
@@ -565,14 +583,21 @@ void spoton_neighbor::slotConnected(void)
 	("spoton_neighbor_" + QString::number(s_dbId));
     }
 
-  QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
-
   /*
   ** Initial discovery of the external IP address.
   */
 
   m_externalAddress->discover();
   m_externalAddressDiscovererTimer.start();
+  m_lastReadTime = QDateTime::currentDateTime();
+}
+
+void spoton_neighbor::slotEncrypted(void)
+{
+  if(!m_keepAliveTimer.isActive())
+    m_keepAliveTimer.start();
+
+  QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 }
 
 void spoton_neighbor::savePublicKey(const QByteArray &keyType,
@@ -2692,4 +2717,14 @@ bool spoton_neighbor::isDuplicateMessage(const QByteArray &data)
     return false;
 
   return spoton_kernel::s_messagingCache.contains(hash);
+}
+
+void spoton_neighbor::slotSslErrors(const QList<QSslError> &errors)
+{
+  for(int i = 0; i < errors.size(); i++)
+    spoton_misc::logError(QString("spoton_neighbor::slotSslErrors(): "
+				  "error (%1) occurred from %2:%3.").
+			  arg(errors.at(i).errorString()).
+			  arg(peerAddress().toString()).
+			  arg(peerPort()));
 }
