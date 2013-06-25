@@ -39,6 +39,7 @@ extern "C"
 #include <gcrypt.h>
 #include <openssl/pem.h>
 #include <openssl/rsa.h>
+#include <openssl/x509v3.h>
 #include <pthread.h>
 #pragma GCC diagnostic warning "-Wdeprecated-declarations"
 }
@@ -96,6 +97,7 @@ class spoton_crypt
 		const unsigned long iterationCount,
 		const QString &id);
   ~spoton_crypt();
+  QByteArray certificateInRem(bool *ok);
   QByteArray decrypted(const QByteArray &data, bool *ok);
   QByteArray digitalSignature(const QByteArray &data, bool *ok);
   QByteArray encrypted(const QByteArray &data, bool *ok);
@@ -109,6 +111,7 @@ class spoton_crypt
   char *symmetricKey(void) const;
   size_t passphraseLength(void) const;
   size_t symmetricKeyLength(void) const;
+  void generateCertificate(QString &error);
   void generatePrivatePublicKeys(const int rsaKeySize, QString &error);
   void generateSslKeys(const int rsaKeySize, QString &error);
   void initializePrivateKeyContainer(bool *ok);

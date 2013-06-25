@@ -2574,9 +2574,9 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize, QString &error)
 
   if(RSA_generate_key_ex(rsa, rsaKeySize, f4, 0) == -1)
     {
-      error = QObject::tr("RSA_generate_key() returned negative one");
+      error = QObject::tr("RSA_generate_key_ex() returned negative one");
       spoton_misc::logError("spoton_crypt::generateSslKeys(): "
-			    "RSA_generate_key() failure.");
+			    "RSA_generate_key_ex() failure.");
       goto done_label;
     }
 
@@ -2708,6 +2708,7 @@ void spoton_crypt::purgeDatabases(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("DELETE FROM certificates");
 	query.exec("DELETE FROM idiotes");
       }
 
@@ -2715,4 +2716,275 @@ void spoton_crypt::purgeDatabases(void)
   }
 
   QSqlDatabase::removeDatabase("spoton_crypt");
+}
+
+void spoton_crypt::generateCertificate(QString &error)
+{
+  BIGNUM *f4 = 0;
+  BIO *memory = 0;
+  BUF_MEM *bptr;
+  EVP_PKEY *pk = 0;
+  QByteArray certificate;
+  RSA *rsa = 0;
+  X509 *x509 = 0;
+  X509_NAME *name = 0;
+  char *buffer = 0;
+
+  if(!(f4 = BN_new()))
+    {
+      error = QObject::tr("BN_new() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "BN_new() failure.");
+      goto done_label;
+    }
+
+  if(BN_set_word(f4, RSA_F4) != 1)
+    {
+      error = QObject::tr("BN_set_word() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "BN_set_word() failure.");
+      goto done_label;
+    }
+
+  if(!(pk = EVP_PKEY_new()))
+    {
+      error = QObject::tr("EVP_PKEY_new() failure");
+      spoton_misc::logError
+	("spoton_crypt::generateCertificate(): "
+	 "EVP_PKEY_new() failure.");
+      goto done_label;
+    }
+
+  if(!(rsa = RSA_new()))
+    {
+      error = QObject::tr("RSA_new() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "RSA_new() failure.");
+      goto done_label;
+    }
+
+  if(!(x509 = X509_new()))
+    {
+      error = QObject::tr("X509_new() failure");
+      spoton_misc::logError
+	("spoton_crypt::generateCertificate(): "
+	 "X509_new() failure.");
+      goto done_label;
+    }
+
+  if(RSA_generate_key_ex(rsa, 1024, f4, 0) == -1)
+    {
+      error = QObject::tr("RSA_generate_key_ex() returned negative one");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "RSA_generate_key_ex() failure.");
+      goto done_label;
+    }
+
+  if(EVP_PKEY_assign_RSA(pk, rsa) == 0)
+    {
+      error = QObject::tr("EVP_PKEY_assign_RSA() returned negative one");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "EVP_PKEY_assign_RSA() failure.");
+      goto done_label;
+    }
+
+  /*
+  ** Set some attributes.
+  */
+
+  if(X509_set_version(x509, 3) == 0)
+    {
+      error = QObject::tr("X509_set_version() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "X509_set_version() failure.");
+      goto done_label;
+    }
+
+  if(X509_gmtime_adj(X509_get_notBefore(x509), 0) == 0)
+    {
+      error = QObject::tr("X509_gmtime_adj() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "X509_gmtime_adj() failure.");
+      goto done_label;
+    }
+
+  if(X509_gmtime_adj(X509_get_notAfter(x509),
+		     static_cast<long> (60 * 60 * 24 * 365 * 10)) == 0)
+    {
+      error = QObject::tr("X509_gmtime_adj() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "X509_gmtime_adj() failure.");
+      goto done_label;
+    }
+
+  name = X509_get_subject_name(x509);
+
+  if(X509_set_issuer_name(x509, name) == 0)
+    {
+      error = QObject::tr("X509_set_issuer_name() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "X509_set_issuer_name() failure.");
+      goto done_label;
+    }
+
+  if(X509_set_pubkey(x509, pk) == 0)
+    {
+      error = QObject::tr("X509_set_pubkey() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "X509_set_pubkey() failure.");
+      goto done_label;
+    }
+
+  if(X509_sign(x509, pk, EVP_md5()) == 0)
+    {
+      error = QObject::tr("X509_sign() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "X509_sign() failure.");
+      goto done_label;
+    }
+
+  /*
+  ** Write the certificate to memory.
+  */
+
+  if(!(memory = BIO_new(BIO_s_mem())))
+    {
+      error = QObject::tr("BIO_new() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "BIO_new() failure.");
+      goto done_label;
+    }
+
+  if(PEM_write_bio_X509(memory, x509) == 0)
+    {
+      error = QObject::tr("PEM_write_bio_X509() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "PEM_write_bio_X509() failure.");
+      goto done_label;
+    }
+
+  BIO_get_mem_ptr(memory, &bptr);
+
+  if(!(buffer = (char *) malloc(bptr->length + 1)))
+    {
+      error = QObject::tr("malloc() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "malloc() failure.");
+      goto done_label;
+    }
+
+  memcpy(buffer, bptr->data, bptr->length);
+  buffer[bptr->length] = 0;
+  certificate = buffer;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_crypt");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "idiotes.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare
+	  ("INSERT OR REPLACE INTO certificates (id, certificate) "
+	   "VALUES (?, ?)");
+	query.bindValue(0, m_id);
+
+	if(!certificate.isEmpty())
+	  if(ok)
+	    query.bindValue(1, encrypted(certificate, &ok).toBase64());
+
+	if(ok)
+	  {
+	    if(!query.exec())
+	      {
+		error = QObject::tr("QSqlQuery::exec() failure");
+		spoton_misc::logError
+		  (QString("spoton_crypt::generateCertificate(): "
+			   "QSqlQuery::exec() failure (%1).").
+		   arg(query.lastError().text()));
+	      }
+	  }
+	else
+	  {
+	    error = QObject::tr("encrypted() failure");
+	    spoton_misc::logError
+	      ("spoton_crypt::generateCertificate(): "
+	       "encrypted() failure.");
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_crypt");
+
+ done_label:
+  BIO_free(memory);
+  BN_free(f4);
+  RSA_up_ref(rsa); // Reference counter.
+  EVP_PKEY_free(pk);
+  RSA_free(rsa);
+  X509_free(x509);
+  free(buffer);
+}
+
+QByteArray spoton_crypt::certificateInRem(bool *ok)
+{
+  QByteArray certificate;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_crypt");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "idiotes.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT certificate FROM certificates "
+		      "WHERE id = ?");
+	query.bindValue(0, m_id);
+
+	if(query.exec())
+	  if(query.next())
+	    certificate = QByteArray::fromBase64
+	      (query.value(0).toByteArray());
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_crypt");
+
+  if(certificate.isEmpty())
+    {
+      if(ok)
+	*ok = false;
+    }
+  else
+    {
+      bool ok = true;
+
+      certificate = decrypted(certificate, &ok);
+    }
+
+  if(certificate.isEmpty())
+    {
+      if(ok)
+	*ok = false;
+    }
+  else
+    {
+      if(ok)
+	*ok = true;
+    }
+
+  return certificate;
 }

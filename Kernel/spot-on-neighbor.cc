@@ -59,18 +59,26 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
       QByteArray data;
       bool ok = true;
 
-      data = s_crypt->privateKeyInRem(&ok);
+      data = s_crypt->certificateInRem(&ok);
 
       if(ok)
 	{
-	  QSslKey key(data, QSsl::Rsa);
-
 	  setLocalCertificate(QSslCertificate(data));
-	  setPrivateKey(key);
+	  data = s_crypt->privateKeyInRem(&ok);
+
+	  if(ok)
+	    {
+	      QSslKey key(data, QSsl::Rsa);
+
+	      setPrivateKey(key);
+	    }
+	  else
+	    spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
+				  "privateKeyInRem() failure!");
 	}
       else
 	spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
-			      "privateKeyInRem() failure!");
+			      "certificateInRem() failure!");
     }
   else
     spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
