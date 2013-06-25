@@ -42,8 +42,8 @@ HEADERS		= ..\\Common\\spot-on-external-address.h \
 		  spot-on-neighbor.h \
 		  spot-on-shared-reader.h
 
-SOURCES		= ..\\Common\\spot-on-external-address.cc \
-		  ..\\Common\\spot-on-gcrypt.cc \
+SOURCES		= ..\\Common\\spot-on-crypt.cc \
+		  ..\\Common\\spot-on-external-address.cc \
 		  ..\\Common\\spot-on-misc.cc \
 		  ..\\Common\\spot-on-send.cc \
 		  spot-on-gui-server.cc \

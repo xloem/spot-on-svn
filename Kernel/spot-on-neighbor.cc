@@ -36,7 +36,7 @@
 #include <limits>
 
 #include "Common/spot-on-external-address.h"
-#include "Common/spot-on-gcrypt.h"
+#include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
 #include "Common/spot-on-send.h"
 #include "spot-on-kernel.h"
@@ -51,7 +51,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   setPeerVerifyMode(QSslSocket::VerifyNone);
   setProtocol(QSsl::TlsV1);
 
-  spoton_gcrypt *s_crypt = 0;
+  spoton_crypt *s_crypt = 0;
 
   if(spoton_kernel::s_crypts.contains("server"))
     s_crypt = spoton_kernel::s_crypts["server"];
@@ -139,7 +139,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   setProtocol(QSsl::TlsV1);
   setProxy(proxy);
 
-  spoton_gcrypt *s_crypt = 0;
+  spoton_crypt *s_crypt = 0;
 
   if(spoton_kernel::s_crypts.contains("server"))
     s_crypt = spoton_kernel::s_crypts["server"];
@@ -519,7 +519,7 @@ void spoton_neighbor::slotConnected(void)
 
   m_lastReadTime = QDateTime::currentDateTime();
 
-  spoton_gcrypt *s_crypt = 0;
+  spoton_crypt *s_crypt = 0;
 
   if(spoton_kernel::s_crypts.contains("messaging"))
     s_crypt = spoton_kernel::s_crypts["messaging"];
@@ -587,10 +587,10 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
   ** Save a friendly key.
   */
 
-  if(!spoton_gcrypt::isValidSignature(publicKey, publicKey, signature))
+  if(!spoton_crypt::isValidSignature(publicKey, publicKey, signature))
     return;
 
-  if(!spoton_gcrypt::isValidSignature(sPublicKey, sPublicKey, sSignature))
+  if(!spoton_crypt::isValidSignature(sPublicKey, sPublicKey, sSignature))
     return;
 
   /*
@@ -661,8 +661,8 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 
   if(share)
     {
-      spoton_gcrypt *s_crypt1 = 0;
-      spoton_gcrypt *s_crypt2 = 0;
+      spoton_crypt *s_crypt1 = 0;
+      spoton_crypt *s_crypt2 = 0;
 
       if(spoton_kernel::s_crypts.contains("messaging"))
 	s_crypt1 = spoton_kernel::s_crypts["messaging"];
@@ -886,7 +886,7 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
 
 void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 {
-  spoton_gcrypt *s_crypt = 0;
+  spoton_crypt *s_crypt = 0;
 
   if(spoton_kernel::s_crypts.contains("messaging"))
     s_crypt = spoton_kernel::s_crypts["messaging"];
@@ -947,13 +947,13 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	      QByteArray computedMessageDigest;
 	      QByteArray message(list.at(0));
 	      QByteArray messageDigest(list.at(1));
-	      spoton_gcrypt crypt("aes256",
-				  QString("sha512"),
-				  QByteArray(),
-				  gemini,
-				  0,
-				  0,
-				  QString(""));
+	      spoton_crypt crypt("aes256",
+				 QString("sha512"),
+				 QByteArray(),
+				 gemini,
+				 0,
+				 0,
+				 QString(""));
 
 	      message = crypt.decrypted(message, &ok);
 
@@ -1016,13 +1016,13 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 
       if(ok)
 	{
-	  spoton_gcrypt crypt(symmetricKeyAlgorithm,
-			      QString("sha512"),
-			      QByteArray(),
-			      symmetricKey,
-			      0,
-			      0,
-			      QString(""));
+	  spoton_crypt crypt(symmetricKeyAlgorithm,
+			     QString("sha512"),
+			     QByteArray(),
+			     symmetricKey,
+			     0,
+			     0,
+			     QString(""));
 
 	  message = crypt.decrypted(message, &ok);
 
@@ -1041,14 +1041,14 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	  if(spoton_misc::isAcceptedParticipant(publicKeyHash))
 	    {
 	      QByteArray computedMessageDigest
-		(spoton_gcrypt::keyedHash(symmetricKey +
-					  symmetricKeyAlgorithm +
-					  publicKeyHash +
-					  name +
-					  message,
-					  symmetricKey,
-					  "sha512",
-					  &ok));
+		(spoton_crypt::keyedHash(symmetricKey +
+					 symmetricKeyAlgorithm +
+					 publicKeyHash +
+					 name +
+					 message,
+					 symmetricKey,
+					 "sha512",
+					 &ok));
 
 	      /*
 	      ** Let's not echo messages whose message digests
@@ -1108,8 +1108,8 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 {
-  spoton_gcrypt *s_crypt1 = 0;
-  spoton_gcrypt *s_crypt2 = 0;
+  spoton_crypt *s_crypt1 = 0;
+  spoton_crypt *s_crypt2 = 0;
 
   if(spoton_kernel::s_crypts.contains("messaging"))
     s_crypt1 = spoton_kernel::s_crypts["messaging"];
@@ -1191,13 +1191,13 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 
       if(ok)
 	{
-	  spoton_gcrypt crypt(symmetricKeyAlgorithm1,
-			      QString("sha512"),
-			      QByteArray(),
-			      symmetricKey1,
-			      0,
-			      0,
-			      QString(""));
+	  spoton_crypt crypt(symmetricKeyAlgorithm1,
+			     QString("sha512"),
+			     QByteArray(),
+			     symmetricKey1,
+			     0,
+			     0,
+			     QString(""));
 
 	  recipientHash = crypt.decrypted(recipientHash, &ok);
 
@@ -1205,7 +1205,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	    publicKey = s_crypt1->publicKey(&ok);
 
 	  if(ok)
-	    publicKeyHash = spoton_gcrypt::sha512Hash(publicKey, &ok);
+	    publicKeyHash = spoton_crypt::sha512Hash(publicKey, &ok);
 
 	  if(ok)
 	    senderPublicKeyHash1 = crypt.decrypted
@@ -1270,7 +1270,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 {
-  spoton_gcrypt *s_crypt = 0;
+  spoton_crypt *s_crypt = 0;
 
   if(spoton_kernel::s_crypts.contains("messaging"))
     s_crypt = spoton_kernel::s_crypts["messaging"];
@@ -1383,7 +1383,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 {
-  spoton_gcrypt *s_crypt = 0;
+  spoton_crypt *s_crypt = 0;
 
   if(spoton_kernel::s_crypts.contains("messaging"))
     s_crypt = spoton_kernel::s_crypts["messaging"];
@@ -1461,13 +1461,13 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 
       if(ok)
 	{
-	  spoton_gcrypt crypt(symmetricKeyAlgorithm,
-			      QString("sha512"),
-			      QByteArray(),
-			      symmetricKey,
-			      0,
-			      0,
-			      QString(""));
+	  spoton_crypt crypt(symmetricKeyAlgorithm,
+			     QString("sha512"),
+			     QByteArray(),
+			     symmetricKey,
+			     0,
+			     0,
+			     QString(""));
 
 	  signature = crypt.decrypted(signature, &ok);
 
@@ -1478,13 +1478,13 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
       if(ok)
 	{
 	  QByteArray computedMessageDigest
-	    (spoton_gcrypt::keyedHash(symmetricKey +
-				      symmetricKeyAlgorithm +
-				      publicKeyHash +
-				      signature,
-				      symmetricKey,
-				      "sha512",
-				      &ok));
+	    (spoton_crypt::keyedHash(symmetricKey +
+				     symmetricKeyAlgorithm +
+				     publicKeyHash +
+				     signature,
+				     symmetricKey,
+				     "sha512",
+				     &ok));
 
 	  /*
 	  ** Let's not echo messages whose message digests are
@@ -1496,12 +1496,12 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 	      if(computedMessageDigest == messageDigest)
 		{
 		  QByteArray messageDigest
-		    (spoton_gcrypt::keyedHash(symmetricKey +
-					      symmetricKeyAlgorithm +
-					      publicKeyHash,
-					      symmetricKey,
-					      "sha512",
-					      &ok));
+		    (spoton_crypt::keyedHash(symmetricKey +
+					     symmetricKeyAlgorithm +
+					     publicKeyHash,
+					     symmetricKey,
+					     "sha512",
+					     &ok));
 
 		  if(ok)
 		    emit retrieveMail
@@ -1627,7 +1627,7 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 {
-  spoton_gcrypt *s_crypt = 0;
+  spoton_crypt *s_crypt = 0;
 
   if(spoton_kernel::s_crypts.contains("messaging"))
     s_crypt = spoton_kernel::s_crypts["messaging"];
@@ -1687,13 +1687,13 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	      QByteArray computedMessageDigest;
 	      QByteArray message(list.at(0));
 	      QByteArray messageDigest(list.at(1));
-	      spoton_gcrypt crypt("aes256",
-				  QString("sha512"),
-				  QByteArray(),
-				  gemini,
-				  0,
-				  0,
-				  QString(""));
+	      spoton_crypt crypt("aes256",
+				 QString("sha512"),
+				 QByteArray(),
+				 gemini,
+				 0,
+				 0,
+				 QString(""));
 
 	      message = crypt.decrypted(message, &ok);
 
@@ -1756,13 +1756,13 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 
       if(ok)
 	{
-	  spoton_gcrypt crypt(symmetricKeyAlgorithm,
-			      QString("sha512"),
-			      QByteArray(),
-			      symmetricKey,
-			      0,
-			      0,
-			      QString(""));
+	  spoton_crypt crypt(symmetricKeyAlgorithm,
+			     QString("sha512"),
+			     QByteArray(),
+			     symmetricKey,
+			     0,
+			     0,
+			     QString(""));
 
 	  name = crypt.decrypted(name, &ok);
 
@@ -1779,14 +1779,14 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
       if(ok)
 	{
 	  QByteArray computedMessageDigest
-	    (spoton_gcrypt::keyedHash(symmetricKey +
-				      symmetricKeyAlgorithm +
-				      publicKeyHash +
-				      name +
-				      status,
-				      symmetricKey,
-				      "sha512",
-				      &ok));
+	    (spoton_crypt::keyedHash(symmetricKey +
+				     symmetricKeyAlgorithm +
+				     publicKeyHash +
+				     name +
+				     status,
+				     symmetricKey,
+				     "sha512",
+				     &ok));
 
 	  /*
 	  ** Let's not echo messages whose message digests are
@@ -1926,7 +1926,7 @@ void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 {
-  spoton_gcrypt *s_crypt = 0;
+  spoton_crypt *s_crypt = 0;
 
   if(spoton_kernel::s_crypts.contains("messaging"))
     s_crypt = spoton_kernel::s_crypts["messaging"];
@@ -2179,7 +2179,7 @@ void spoton_neighbor::saveExternalAddress(const QHostAddress &address,
 	}
       else
 	{
-	  spoton_gcrypt *s_crypt = 0;
+	  spoton_crypt *s_crypt = 0;
 
 	  if(spoton_kernel::s_crypts.contains("messaging"))
 	    s_crypt = spoton_kernel::s_crypts["messaging"];
@@ -2285,7 +2285,7 @@ void spoton_neighbor::slotSendMail
 
   if(!oids.isEmpty())
     {
-      spoton_gcrypt *s_crypt = 0;
+      spoton_crypt *s_crypt = 0;
 
       if(spoton_kernel::s_crypts.contains("messaging"))
 	s_crypt = spoton_kernel::s_crypts["messaging"];
@@ -2318,7 +2318,7 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 				  QByteArray &messageDigest,
 				  const QString &messageType)
 {
-  spoton_gcrypt *s_crypt = 0;
+  spoton_crypt *s_crypt = 0;
 
   if(spoton_kernel::s_crypts.contains("messaging"))
     s_crypt = spoton_kernel::s_crypts["messaging"];
@@ -2360,13 +2360,13 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 
   QByteArray bytes;
   bool goldbugSet = false;
-  spoton_gcrypt crypt(symmetricKeyAlgorithm,
-		      QString("sha512"),
-		      QByteArray(),
-		      symmetricKey,
-		      0,
-		      0,
-		      QString(""));
+  spoton_crypt crypt(symmetricKeyAlgorithm,
+		     QString("sha512"),
+		     QByteArray(),
+		     symmetricKey,
+		     0,
+		     0,
+		     QString(""));
 
   bytes = crypt.decrypted(name, &ok);
 
@@ -2508,7 +2508,7 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 void spoton_neighbor::storeLetter(const QList<QByteArray> &list,
 				  const QByteArray &recipientHash)
 {
-  spoton_gcrypt *s_crypt = 0;
+  spoton_crypt *s_crypt = 0;
 
   if(spoton_kernel::s_crypts.contains("messaging"))
     s_crypt = spoton_kernel::s_crypts["messaging"];
@@ -2650,7 +2650,7 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 
 void spoton_neighbor::recordMessageHash(const QByteArray &data)
 {
-  spoton_gcrypt *s_crypt = 0;
+  spoton_crypt *s_crypt = 0;
 
   if(spoton_kernel::s_crypts.contains("messaging"))
     s_crypt = spoton_kernel::s_crypts["messaging"];
@@ -2675,7 +2675,7 @@ void spoton_neighbor::recordMessageHash(const QByteArray &data)
 
 bool spoton_neighbor::isDuplicateMessage(const QByteArray &data)
 {
-  spoton_gcrypt *s_crypt = 0;
+  spoton_crypt *s_crypt = 0;
 
   if(spoton_kernel::s_crypts.contains("messaging"))
     s_crypt = spoton_kernel::s_crypts["messaging"];

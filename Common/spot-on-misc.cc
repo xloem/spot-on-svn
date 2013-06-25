@@ -37,7 +37,7 @@
 
 #include <limits>
 
-#include "spot-on-gcrypt.h"
+#include "spot-on-crypt.h"
 #include "spot-on-misc.h"
 #include "spot-on-send.h"
 
@@ -427,7 +427,7 @@ QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
     return QString(country);
 }
 
-void spoton_misc::populateCountryDatabase(spoton_gcrypt *crypt)
+void spoton_misc::populateCountryDatabase(spoton_crypt *crypt)
 {
   if(!crypt)
     return;
@@ -675,7 +675,7 @@ void spoton_misc::populateCountryDatabase(spoton_gcrypt *crypt)
 }
 
 bool spoton_misc::countryAllowedToConnect(const QString &country,
-					  spoton_gcrypt *crypt)
+					  spoton_crypt *crypt)
 {
   if(!crypt)
     return false;
@@ -717,7 +717,7 @@ bool spoton_misc::countryAllowedToConnect(const QString &country,
 }
 
 void spoton_misc::populateUrlsDatabase(const QList<QList<QVariant> > &list,
-				       spoton_gcrypt *crypt)
+				       spoton_crypt *crypt)
 {
   if(!crypt)
     return;
@@ -804,7 +804,7 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
   query.bindValue(1, name);
   query.bindValue(2, publicKey);
   query.bindValue
-    (3, spoton_gcrypt::sha512Hash(publicKey, &ok).toBase64());
+    (3, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
   query.bindValue(4, neighborOid);
 
   if(ok)
@@ -824,11 +824,11 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 		      "(public_key_hash, signature_public_key_hash) "
 		      "VALUES (?, ?)");
 	query.bindValue
-	  (0, spoton_gcrypt::sha512Hash(publicKey, &ok).toBase64());
+	  (0, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	  (1, spoton_gcrypt::sha512Hash(sPublicKey, &ok).toBase64());
+	  (1, spoton_crypt::sha512Hash(sPublicKey, &ok).toBase64());
 
 	if(ok)
 	  ok = query.exec();
@@ -843,7 +843,7 @@ void spoton_misc::retrieveSymmetricData(QByteArray &gemini,
 					QByteArray &symmetricKeyAlgorithm,
 					QString &neighborOid,
 					const QString &oid,
-					spoton_gcrypt *crypt)
+					spoton_crypt *crypt)
 {
   if(!crypt)
     return;
@@ -865,8 +865,8 @@ void spoton_misc::retrieveSymmetricData(QByteArray &gemini,
 			      "OID = %1").arg(oid)))
 	  if(query.next())
 	    {
-	      QByteArray cipherType(spoton_gcrypt::randomCipherType());
-	      size_t symmetricKeyLength = spoton_gcrypt::cipherKeyLength
+	      QByteArray cipherType(spoton_crypt::randomCipherType());
+	      size_t symmetricKeyLength = spoton_crypt::cipherKeyLength
 		(cipherType);
 
 	      if(symmetricKeyLength > 0)
@@ -883,7 +883,7 @@ void spoton_misc::retrieveSymmetricData(QByteArray &gemini,
 		  neighborOid = query.value(1).toString();
 		  publicKey = query.value(2).toByteArray();
 		  symmetricKey.resize(symmetricKeyLength);
-		  symmetricKey = spoton_gcrypt::strongRandomBytes
+		  symmetricKey = spoton_crypt::strongRandomBytes
 		    (symmetricKey.length());
 		  symmetricKeyAlgorithm = cipherType;
 		}
@@ -969,7 +969,7 @@ bool spoton_misc::isPrivateNetwork(const QHostAddress &address)
 }
 
 QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
-					   spoton_gcrypt *crypt)
+					   spoton_crypt *crypt)
 {
   QByteArray gemini;
 
@@ -1003,13 +1003,13 @@ QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
 		  if(ok)
 		    if(!gemini.isEmpty())
 		      {
-			spoton_gcrypt crypt("aes256",
-					    QString("sha512"),
-					    QByteArray(),
-					    gemini,
-					    0,
-					    0,
-					    QString(""));
+			spoton_crypt crypt("aes256",
+					   QString("sha512"),
+					   QByteArray(),
+					   gemini,
+					   0,
+					   0,
+					   QString(""));
 
 			crypt.decrypted(data, &ok);
 
@@ -1029,7 +1029,7 @@ QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
 }
 
 void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
-					   spoton_gcrypt *crypt)
+					   spoton_crypt *crypt)
 {
   QSettings settings;
   bool keep = settings.value("gui/saveCopy", true).toBool();
@@ -1290,7 +1290,7 @@ void spoton_misc::prepareUrlDatabases(void)
 
 void spoton_misc::saveNeighbor(const QHostAddress &address,
 			       const quint16 port,
-			       spoton_gcrypt *crypt)
+			       spoton_crypt *crypt)
 {
   if(!crypt)
     return;

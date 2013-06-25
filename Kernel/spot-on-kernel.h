@@ -36,7 +36,7 @@
 #include <QSqlDatabase>
 #include <QTimer>
 
-class spoton_gcrypt;
+class spoton_crypt;
 class spoton_gui_server;
 class spoton_listener;
 class spoton_mailer;
@@ -52,12 +52,12 @@ class spoton_kernel: public QObject
   ~spoton_kernel();
   static QCache<QByteArray, int> s_messagingCache;
   static QHash<QString, QVariant> s_settings;
-  static QHash<QString, spoton_gcrypt *> s_crypts; /*
-						   ** private
-						   ** server
-						   ** signature
-						   ** url
-						   */
+  static QHash<QString, spoton_crypt *> s_crypts; /*
+						  ** private
+						  ** server
+						  ** signature
+						  ** url
+						  */
 
  private:
   QFileSystemWatcher m_settingsWatcher;

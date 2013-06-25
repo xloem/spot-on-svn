@@ -33,13 +33,13 @@
 #include <QString>
 #include <QVariant>
 
-class spoton_gcrypt;
+class spoton_crypt;
 
 class spoton_misc
 {
  public:
   static QByteArray findGeminiInCosmos(const QByteArray &data,
-				       spoton_gcrypt *crypt);
+				       spoton_crypt *crypt);
   static QByteArray publicKeyFromHash(const QByteArray &publicKeyHash);
   static QByteArray publicKeyFromSignaturePublicKeyHash
     (const QByteArray &signaturePublicKeyHash);
@@ -48,7 +48,7 @@ class spoton_misc
   static QString countryNameFromIPAddress(const QString &ipAddress);
   static QString homePath(void);
   static bool countryAllowedToConnect(const QString &country,
-				      spoton_gcrypt *crypt);
+				      spoton_crypt *crypt);
   static bool isAcceptedParticipant(const QByteArray &publicKeyHash);
   static bool isGnome(void);
   static bool isPrivateNetwork(const QHostAddress &address);
@@ -61,10 +61,10 @@ class spoton_misc
   static void cleanupDatabases(void);
   static void logError(const QString &error);
   static void moveSentMailToSentFolder(const QList<qint64> &oids,
-				       spoton_gcrypt *crypt);
-  static void populateCountryDatabase(spoton_gcrypt *crypt);
+				       spoton_crypt *crypt);
+  static void populateCountryDatabase(spoton_crypt *crypt);
   static void populateUrlsDatabase(const QList<QList<QVariant> > &list,
-				   spoton_gcrypt *gcrypt);
+				   spoton_crypt *crypt);
   static void prepareDatabases(void);
   static void prepareUrlDatabases(void);
   static void purgeSignatureRelationships(const QSqlDatabase &db);
@@ -74,10 +74,10 @@ class spoton_misc
 				    QByteArray &symmetricKeyAlgorithm,
 				    QString &neighborOid,
 				    const QString &oid,
-				    spoton_gcrypt *crypt);
+				    spoton_crypt *crypt);
   static void saveNeighbor(const QHostAddress &address,
 			   const quint16 port,
-			   spoton_gcrypt *crypt);
+			   spoton_crypt *crypt);
 
  private:
   spoton_misc(void);

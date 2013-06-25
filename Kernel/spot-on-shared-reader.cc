@@ -30,7 +30,7 @@
 #include <QSqlQuery>
 #include <QVariant>
 
-#include "Common/spot-on-gcrypt.h"
+#include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
 #include "spot-on-kernel.h"
 #include "spot-on-shared-reader.h"
@@ -83,7 +83,7 @@ void spoton_shared_reader::slotTimeout(void)
 
 	      if(encrypted)
 		{
-		  spoton_gcrypt *s_crypt = 0;
+		  spoton_crypt *s_crypt = 0;
 
 		  if(spoton_kernel::s_crypts.contains("messaging"))
 		    s_crypt = spoton_kernel::s_crypts["messaging"];
@@ -91,7 +91,7 @@ void spoton_shared_reader::slotTimeout(void)
 		  if(!s_crypt)
 		    continue;
 
-		  spoton_gcrypt crypt
+		  spoton_crypt crypt
 		    ("aes256",
 		     QString(""),
 		     QByteArray(),
@@ -140,7 +140,7 @@ void spoton_shared_reader::slotTimeout(void)
 
   QSqlDatabase::removeDatabase("spoton_shared_reader");
 
-  spoton_gcrypt *s_crypt = 0;
+  spoton_crypt *s_crypt = 0;
 
   if(spoton_kernel::s_crypts.contains("messaging"))
     s_crypt = spoton_kernel::s_crypts["messaging"];

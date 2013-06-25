@@ -31,7 +31,7 @@
 #include <QSqlDatabase>
 
 #include "Common/spot-on-external-address.h"
-#include "Common/spot-on-gcrypt.h"
+#include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
 #include "spot-on-kernel.h"
 #include "spot-on-listener.h"
@@ -289,7 +289,7 @@ void spoton_listener::slotNewConnection(void)
 	  this,
 	  SLOT(slotNeighborDisconnected(void)));
 
-  spoton_gcrypt *s_crypt = 0;
+  spoton_crypt *s_crypt = 0;
 
   if(spoton_kernel::s_crypts.contains("messaging"))
     s_crypt = spoton_kernel::s_crypts["messaging"];
@@ -668,7 +668,7 @@ void spoton_listener::saveExternalAddress(const QHostAddress &address,
 	}
       else
 	{
-	  spoton_gcrypt *s_crypt = 0;
+	  spoton_crypt *s_crypt = 0;
 
 	  if(spoton_kernel::s_crypts.contains("messaging"))
 	    s_crypt = spoton_kernel::s_crypts["messaging"];

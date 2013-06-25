@@ -122,13 +122,13 @@ void spoton::slotReceivedKernelMessage(void)
 		  bool ok = true;
 
 		  if(m_crypt)
-		    hash = spoton_gcrypt::keyedHash
+		    hash = spoton_crypt::keyedHash
 		      (list.at(0),
 		       QByteArray(m_crypt->symmetricKey(),
 				  m_crypt->symmetricKeyLength()),
 		       "sha512", &ok);
 		  else
-		    hash = spoton_gcrypt::sha512Hash(list.at(0), &ok);
+		    hash = spoton_crypt::sha512Hash(list.at(0), &ok);
 
 		  if(m_messagingCache.contains(hash))
 		    duplicate = true;
@@ -1227,8 +1227,8 @@ void spoton::slotAddFriendsKey(void)
       mPublicKey = QByteArray::fromBase64(mPublicKey);
       mSignature = QByteArray::fromBase64(mSignature);
 
-      if(!spoton_gcrypt::isValidSignature(mPublicKey, mPublicKey,
-					  mSignature))
+      if(!spoton_crypt::isValidSignature(mPublicKey, mPublicKey,
+					 mSignature))
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
@@ -1242,8 +1242,8 @@ void spoton::slotAddFriendsKey(void)
       sPublicKey = QByteArray::fromBase64(sPublicKey);
       sSignature = QByteArray::fromBase64(sSignature);
 
-      if(!spoton_gcrypt::isValidSignature(sPublicKey, sPublicKey,
-					  sSignature))
+      if(!spoton_crypt::isValidSignature(sPublicKey, sPublicKey,
+					 sSignature))
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
@@ -1347,13 +1347,13 @@ void spoton::slotAddFriendsKey(void)
       if(!ok)
 	return;
 
-      spoton_gcrypt crypt(symmetricKeyAlgorithm,
-			  QString("sha512"),
-			  QByteArray(),
-			  symmetricKey,
-			  0,
-			  0,
-			  QString(""));
+      spoton_crypt crypt(symmetricKeyAlgorithm,
+			 QString("sha512"),
+			 QByteArray(),
+			 symmetricKey,
+			 0,
+			 0,
+			 QString(""));
 
       keyType = crypt.decrypted(list.value(2), &ok);
 
@@ -1383,8 +1383,8 @@ void spoton::slotAddFriendsKey(void)
       if(!ok)
 	return;
 
-      if(!spoton_gcrypt::isValidSignature(publicKey, publicKey,
-					  signature))
+      if(!spoton_crypt::isValidSignature(publicKey, publicKey,
+					 signature))
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
@@ -1613,7 +1613,7 @@ void spoton::slotCopyFriendshipBundle(void)
   bool ok = true;
 
   data.append
-    (spoton_gcrypt::publicKeyEncrypt(symmetricKey, publicKey, &ok).
+    (spoton_crypt::publicKeyEncrypt(symmetricKey, publicKey, &ok).
      toBase64());
   data.append("@");
 
@@ -1624,7 +1624,7 @@ void spoton::slotCopyFriendshipBundle(void)
     }
 
   data.append
-    (spoton_gcrypt::publicKeyEncrypt(symmetricKeyAlgorithm, publicKey, &ok).
+    (spoton_crypt::publicKeyEncrypt(symmetricKeyAlgorithm, publicKey, &ok).
      toBase64());
   data.append("@");
 
@@ -1635,13 +1635,13 @@ void spoton::slotCopyFriendshipBundle(void)
     }
 
   QByteArray myName;
-  spoton_gcrypt crypt(symmetricKeyAlgorithm,
-		      QString("sha512"),
-		      QByteArray(),
-		      symmetricKey,
-		      0,
-		      0,
-		      QString(""));
+  spoton_crypt crypt(symmetricKeyAlgorithm,
+		     QString("sha512"),
+		     QByteArray(),
+		     symmetricKey,
+		     0,
+		     0,
+		     QString(""));
 
   data.append(crypt.encrypted("messaging", &ok).toBase64());
   data.append("@");
@@ -2486,8 +2486,8 @@ void spoton::slotGenerateGeminiInChat(void)
 	continue;
 
       QByteArray gemini
-	(spoton_gcrypt::
-	 strongRandomBytes(spoton_gcrypt::cipherKeyLength("aes256")));
+	(spoton_crypt::
+	 strongRandomBytes(spoton_crypt::cipherKeyLength("aes256")));
 
       if(saveGemini(gemini.toBase64(), item1->text()))
 	{
@@ -2547,8 +2547,8 @@ bool spoton::saveGemini(const QByteArray &gemini,
 void spoton::slotGenerateGoldBug(void)
 {
   QByteArray goldbug
-    (spoton_gcrypt::
-     strongRandomBytes(spoton_gcrypt::cipherKeyLength("aes256")));
+    (spoton_crypt::
+     strongRandomBytes(spoton_crypt::cipherKeyLength("aes256")));
 
   m_ui.goldbug->setText(goldbug.toBase64());
 }
@@ -2912,13 +2912,13 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 
 	if(ok)
 	  {
-	    spoton_gcrypt crypt("aes256",
-				QString("sha512"),
-				QByteArray(),
-				goldbug,
-				0,
-				0,
-				QString(""));
+	    spoton_crypt crypt("aes256",
+			       QString("sha512"),
+			       QByteArray(),
+			       goldbug,
+			       0,
+			       0,
+			       QString(""));
 
 	    for(int i = 0; i < list.size(); i++)
 	      {

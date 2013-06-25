@@ -30,7 +30,7 @@
 #include <QSqlQuery>
 #include <QTcpSocket>
 
-#include "Common/spot-on-gcrypt.h"
+#include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
 #include "spot-on-gui-server.h"
 #include "spot-on-kernel.h"
@@ -153,7 +153,7 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  if(!spoton_kernel::s_crypts.contains("messaging"))
 		    {
-		      spoton_gcrypt *crypt = new spoton_gcrypt
+		      spoton_crypt *crypt = new spoton_crypt
 			(spoton_kernel::s_settings.value("gui/cipherType",
 							 "aes256").
 			 toString().trimmed(),
@@ -174,7 +174,7 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  if(!spoton_kernel::s_crypts.contains("server"))
 		    {
-		      spoton_gcrypt *crypt = new spoton_gcrypt
+		      spoton_crypt *crypt = new spoton_crypt
 			(spoton_kernel::s_settings.value("gui/cipherType",
 							 "aes256").
 			 toString().trimmed(),
@@ -193,7 +193,7 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  if(!spoton_kernel::s_crypts.contains("signature"))
 		    {
-		      spoton_gcrypt *crypt = new spoton_gcrypt
+		      spoton_crypt *crypt = new spoton_crypt
 			(spoton_kernel::s_settings.value("gui/cipherType",
 							 "aes256").
 			 toString().trimmed(),
@@ -212,7 +212,7 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  if(!spoton_kernel::s_crypts.contains("url"))
 		    {
-		      spoton_gcrypt *crypt = new spoton_gcrypt
+		      spoton_crypt *crypt = new spoton_crypt
 			(spoton_kernel::s_settings.value("gui/cipherType",
 							 "aes256").
 			 toString().trimmed(),

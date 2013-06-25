@@ -30,7 +30,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 
-#include "Common/spot-on-gcrypt.h"
+#include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
 #include "spot-on-kernel.h"
 #include "spot-on-mailer.h"
@@ -69,7 +69,7 @@ void spoton_mailer::slotTimeout(void)
   if(!spoton_kernel::s_crypts.contains("messaging"))
     return;
 
-  spoton_gcrypt *s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts["messaging"];
 
   if(!s_crypt)
     return;
@@ -221,7 +221,7 @@ void spoton_mailer::slotRetrieveMail(const QByteArray &data,
   if(!spoton_kernel::s_crypts.contains("messaging"))
     return;
 
-  spoton_gcrypt *s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts["messaging"];
 
   if(!s_crypt)
     return;
@@ -240,7 +240,7 @@ void spoton_mailer::slotRetrieveMail(const QByteArray &data,
   QByteArray hash;
   bool ok = true;
 
-  hash = spoton_gcrypt::sha512Hash(publicKey, &ok);
+  hash = spoton_crypt::sha512Hash(publicKey, &ok);
 
   if(!ok)
     return;
@@ -281,7 +281,7 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 	  {
 	    if(query.next())
 	      {
-		spoton_gcrypt *s_crypt = 0;
+		spoton_crypt *s_crypt = 0;
 
 		if(spoton_kernel::s_crypts.contains("messaging"))
 		  s_crypt = spoton_kernel::s_crypts["messaging"];
@@ -341,7 +341,7 @@ void spoton_mailer::slotReap(void)
   if(!spoton_kernel::s_crypts.contains("messaging"))
     return;
 
-  spoton_gcrypt *s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts["messaging"];
 
   if(!s_crypt)
     return;

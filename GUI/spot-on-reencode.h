@@ -30,7 +30,7 @@
 
 #include "ui_statusbar.h"
 
-class spoton_gcrypt;
+class spoton_crypt;
 
 class spoton_reencode
 {
@@ -38,7 +38,7 @@ class spoton_reencode
   spoton_reencode(void);
   ~spoton_reencode();
   void reencode(Ui_statusbar sb,
-		spoton_gcrypt *newCrypt, spoton_gcrypt *oldCrypt);
+		spoton_crypt *newCrypt, spoton_crypt *oldCrypt);
 };
 
 #endif

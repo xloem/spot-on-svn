@@ -514,9 +514,9 @@ spoton::spoton(void):QMainWindow()
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
 		       toByteArray()).trimmed());
   m_ui.goldbug->setMaxLength
-    (spoton_gcrypt::cipherKeyLength("aes256"));
+    (spoton_crypt::cipherKeyLength("aes256"));
   m_ui.cipherType->clear();
-  m_ui.cipherType->addItems(spoton_gcrypt::cipherTypes());
+  m_ui.cipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.cost->setValue(m_settings.value("gui/congestionCost", 10000).toInt());
   m_ui.days->setValue(m_settings.value("gui/postofficeDays", 1).toInt());
   m_ui.acceptPublicizedListeners->setChecked
@@ -543,7 +543,7 @@ spoton::spoton(void):QMainWindow()
     m_ui.cipherType->addItem("n/a");
 
   m_ui.hashType->clear();
-  m_ui.hashType->addItems(spoton_gcrypt::hashTypes());
+  m_ui.hashType->addItems(spoton_crypt::hashTypes());
 
   if(m_ui.cipherType->count() == 0)
     m_ui.cipherType->addItem("n/a");
@@ -572,7 +572,7 @@ spoton::spoton(void):QMainWindow()
 
   m_ui.saltLength->setValue(m_settings.value("gui/saltLength", 256).toInt());
 
-  if(spoton_gcrypt::passphraseSet())
+  if(spoton_crypt::passphraseSet())
     {
       m_sb.kernelstatus->setEnabled(false);
       m_sb.listeners->setEnabled(false);
@@ -2046,7 +2046,7 @@ void spoton::slotSetPassphrase(void)
       return;
     }
 
-  if(spoton_gcrypt::passphraseSet())
+  if(spoton_crypt::passphraseSet())
     {
       QMessageBox mb(this);
 
@@ -2094,17 +2094,17 @@ void spoton::slotSetPassphrase(void)
   QString error3("");
 
   salt.resize(m_ui.saltLength->value());
-  salt = spoton_gcrypt::strongRandomBytes(salt.length());
+  salt = spoton_crypt::strongRandomBytes(salt.length());
 
   QByteArray derivedKey
-    (spoton_gcrypt::derivedKey(m_ui.cipherType->currentText(),
-			       m_ui.hashType->currentText(),
-			       static_cast<unsigned long> (m_ui.
-							   iterationCount->
-							   value()),
-			       str1,
-			       salt,
-			       error1));
+    (spoton_crypt::derivedKey(m_ui.cipherType->currentText(),
+			      m_ui.hashType->currentText(),
+			      static_cast<unsigned long> (m_ui.
+							  iterationCount->
+							  value()),
+			      str1,
+			      salt,
+			      error1));
 
   m_sb.status->clear();
 
@@ -2117,7 +2117,7 @@ void spoton::slotSetPassphrase(void)
 	  m_sb.status->setText
 	    (tr("Re-encoding RSA key pair 1 of 4. Please be patient."));
 	  m_sb.status->repaint();
-	  spoton_gcrypt::reencodeRSAKeys
+	  spoton_crypt::reencodeRSAKeys
 	    (m_ui.cipherType->currentText(),
 	     derivedKey,
 	     m_settings.value("gui/cipherType", "aes256").
@@ -2132,7 +2132,7 @@ void spoton::slotSetPassphrase(void)
 	      m_sb.status->setText
 		(tr("Re-encoding RSA key pair 2 of 4. Please be patient."));
 	      m_sb.status->repaint();
-	      spoton_gcrypt::reencodeRSAKeys
+	      spoton_crypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
 		 derivedKey,
 		 m_settings.value("gui/cipherType", "aes256").
@@ -2148,7 +2148,7 @@ void spoton::slotSetPassphrase(void)
 	      m_sb.status->setText
 		(tr("Re-encoding RSA key pair 3 of 4. Please be patient."));
 	      m_sb.status->repaint();
-	      spoton_gcrypt::reencodeRSAKeys
+	      spoton_crypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
 		 derivedKey,
 		 m_settings.value("gui/cipherType", "aes256").
@@ -2164,7 +2164,7 @@ void spoton::slotSetPassphrase(void)
 	      m_sb.status->setText
 		(tr("Re-encoding RSA key pair 4 of 4. Please be patient."));
 	      m_sb.status->repaint();
-	      spoton_gcrypt::reencodeRSAKeys
+	      spoton_crypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
 		 derivedKey,
 		 m_settings.value("gui/cipherType", "aes256").
@@ -2191,7 +2191,7 @@ void spoton::slotSetPassphrase(void)
 		 arg(i + 1).arg(list.size()));
 	      m_sb.status->repaint();
 
-	      spoton_gcrypt crypt
+	      spoton_crypt crypt
 		(m_ui.cipherType->currentText(),
 		 m_ui.hashType->currentText(),
 		 str1.toUtf8(),
@@ -2211,26 +2211,26 @@ void spoton::slotSetPassphrase(void)
     }
 
   if(error1.isEmpty() && error2.isEmpty())
-    saltedPassphraseHash = spoton_gcrypt::saltedPassphraseHash
+    saltedPassphraseHash = spoton_crypt::saltedPassphraseHash
       (m_ui.hashType->currentText(), str1, salt, error3);
 
   QApplication::restoreOverrideCursor();
 
   if(!error1.isEmpty())
     QMessageBox::critical(this, tr("Spot-On: Error"),
-			  tr("An error (%1) occurred with spoton_gcrypt::"
+			  tr("An error (%1) occurred with spoton_crypt::"
 			     "derivedKey().").arg(error1.remove(".")));
   else if(!error2.isEmpty())
     QMessageBox::critical(this, tr("Spot-On: Error"),
 			  tr("An error (%1) occurred with "
-			     "spoton_gcrypt::"
+			     "spoton_crypt::"
 			     "generatePrivatePublicKeys() or "
-			     "spoton_gcrypt::"
+			     "spoton_crypt::"
 			     "reencodeRSAKeys().").
 			  arg(error2.remove(".")));
   else if(!error3.isEmpty())
     QMessageBox::critical(this, tr("Spot-On: Error"),
-			  tr("An error (%1) occurred with spoton_gcrypt::"
+			  tr("An error (%1) occurred with spoton_crypt::"
 			     "saltedPassphraseHash().").
 			  arg(error3.remove(".")));
   else
@@ -2239,7 +2239,7 @@ void spoton::slotSetPassphrase(void)
 	{
 	  if(reencode)
 	    {
-	      spoton_gcrypt *crypt = new spoton_gcrypt
+	      spoton_crypt *crypt = new spoton_crypt
 		(m_ui.cipherType->currentText(),
 		 m_ui.hashType->currentText(),
 		 str1.toUtf8(),
@@ -2257,7 +2257,7 @@ void spoton::slotSetPassphrase(void)
 	    }
 
 	  delete m_crypt;
-	  m_crypt = new spoton_gcrypt
+	  m_crypt = new spoton_crypt
 	    (m_ui.cipherType->currentText(),
 	     m_ui.hashType->currentText(),
 	     str1.toUtf8(),
@@ -2266,7 +2266,7 @@ void spoton::slotSetPassphrase(void)
 	     m_ui.iterationCount->value(),
 	     "messaging");
 	  delete m_signatureCrypt;
-	  m_signatureCrypt = new spoton_gcrypt
+	  m_signatureCrypt = new spoton_crypt
 	    (m_ui.cipherType->currentText(),
 	     m_ui.hashType->currentText(),
 	     str1.toUtf8(),
@@ -2364,25 +2364,25 @@ void spoton::slotValidatePassphrase(void)
     toByteArray();
 
   if(saltedPassphraseHash ==
-     spoton_gcrypt::saltedPassphraseHash(m_ui.hashType->currentText(),
-					 m_ui.passphrase->text(),
-					 salt, error).toHex())
+     spoton_crypt::saltedPassphraseHash(m_ui.hashType->currentText(),
+					m_ui.passphrase->text(),
+					salt, error).toHex())
     if(error.isEmpty())
       {
 	QByteArray key
-	  (spoton_gcrypt::derivedKey(m_ui.cipherType->currentText(),
-				     m_ui.hashType->currentText(),
-				     static_cast
-				     <unsigned long> (m_ui.
-						      iterationCount->value()),
-				     m_ui.passphrase->text(),
-				     salt,
-				     error));
+	  (spoton_crypt::derivedKey(m_ui.cipherType->currentText(),
+				    m_ui.hashType->currentText(),
+				    static_cast
+				    <unsigned long> (m_ui.
+						     iterationCount->value()),
+				    m_ui.passphrase->text(),
+				    salt,
+				    error));
 
 	if(error.isEmpty())
 	  {
 	    delete m_crypt;
-	    m_crypt = new spoton_gcrypt
+	    m_crypt = new spoton_crypt
 	      (m_ui.cipherType->currentText(),
 	       m_ui.hashType->currentText(),
 	       m_ui.passphrase->text().toUtf8(),
@@ -2391,7 +2391,7 @@ void spoton::slotValidatePassphrase(void)
 	       m_ui.iterationCount->value(),
 	       "messaging");
 	    delete m_signatureCrypt;
-	    m_signatureCrypt = new spoton_gcrypt
+	    m_signatureCrypt = new spoton_crypt
 	      (m_ui.cipherType->currentText(),
 	       m_ui.hashType->currentText(),
 	       m_ui.passphrase->text().toUtf8(),

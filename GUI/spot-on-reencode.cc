@@ -33,7 +33,7 @@
 
 #include <limits>
 
-#include "Common/spot-on-gcrypt.h"
+#include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
 #include "spot-on-reencode.h"
 
@@ -46,8 +46,8 @@ spoton_reencode::~spoton_reencode()
 }
 
 void spoton_reencode::reencode(Ui_statusbar sb,
-			       spoton_gcrypt *newCrypt,
-			       spoton_gcrypt *oldCrypt)
+			       spoton_crypt *newCrypt,
+			       spoton_crypt *oldCrypt)
 {
   if(!newCrypt || !oldCrypt)
     return;

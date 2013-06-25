@@ -25,8 +25,8 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _spoton_gcrypt_h_
-#define _spoton_gcrypt_h_
+#ifndef _spoton_crypt_h_
+#define _spoton_crypt_h_
 
 extern "C"
 {
@@ -44,7 +44,7 @@ extern "C"
 #include <QByteArray>
 #include <QStringList>
 
-class spoton_gcrypt
+class spoton_crypt
 {
  public:
   static QByteArray derivedKey(const QString &cipherType,
@@ -84,15 +84,15 @@ class spoton_gcrypt
 			      const char *oldPassphrase,
 			      const QString &id,
 			      QString &error);
-  spoton_gcrypt(const QString &id); // Random object?
-  spoton_gcrypt(const QString &cipherType,
+  spoton_crypt(const QString &id); // Random object?
+  spoton_crypt(const QString &cipherType,
 		const QString &hashType,
 		const QByteArray &passphrase,
 		const QByteArray &symmetricKey,
 		const int saltLength,
 		const unsigned long iterationCount,
 		const QString &id);
-  ~spoton_gcrypt();
+  ~spoton_crypt();
   QByteArray decrypted(const QByteArray &data, bool *ok);
   QByteArray digitalSignature(const QByteArray &data, bool *ok);
   QByteArray encrypted(const QByteArray &data, bool *ok);

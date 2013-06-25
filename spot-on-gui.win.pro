@@ -44,7 +44,7 @@ HEADERS		= GUI\\spot-on.h \
                   GUI\\spot-on-tabwidget.h \
 		  GUI\\spot-on-textedit.h
 
-SOURCES		= Common\\spot-on-gcrypt.cc \
+SOURCES		= Common\\spot-on-crypt.cc \
 		  Common\\spot-on-misc.cc \
                   Common\\spot-on-send.cc \
 		  GUI\\spot-on-a.cc \

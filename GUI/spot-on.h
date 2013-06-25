@@ -72,7 +72,7 @@ extern "C"
 }
  
 #include "Common/spot-on-common.h"
-#include "Common/spot-on-gcrypt.h"
+#include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
 #include "Common/spot-on-send.h"
 #include "spot-on-docviewer.h"
@@ -110,8 +110,8 @@ class spoton: public QMainWindow
   QWidget *m_sbWidget;
   Ui_statusbar m_sb;
   Ui_spoton_mainwindow m_ui;
-  spoton_gcrypt *m_crypt;
-  spoton_gcrypt *m_signatureCrypt;
+  spoton_crypt *m_crypt;
+  spoton_crypt *m_signatureCrypt;
   spoton_docviewer m_docViewer;
   spoton_logviewer m_logViewer;
   QIcon iconForCountry(const QString &country);
