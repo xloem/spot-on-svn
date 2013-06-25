@@ -111,7 +111,7 @@ class spoton_crypt
   char *symmetricKey(void) const;
   size_t passphraseLength(void) const;
   size_t symmetricKeyLength(void) const;
-  void generateCertificate(QString &error);
+  void generateCertificate(RSA *rsa, QString &error);
   void generatePrivatePublicKeys(const int rsaKeySize, QString &error);
   void generateSslKeys(const int rsaKeySize, QString &error);
   void initializePrivateKeyContainer(bool *ok);

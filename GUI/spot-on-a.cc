@@ -2177,14 +2177,9 @@ void spoton::slotSetPassphrase(void)
 	}
       else
 	{
-	  QList<bool> certificate;
 	  QList<bool> ssl;
 	  QStringList list;
 
-	  certificate << false
-		      << true
-		      << false
-		      << false;
 	  ssl << false
 	      << true
 	      << false
@@ -2210,18 +2205,12 @@ void spoton::slotSetPassphrase(void)
 		 m_ui.iterationCount->value(),
 		 list.at(i));
 
-	      if(certificate.at(i))
-		crypt.generateCertificate(error2);
-
-	      if(error2.isEmpty())
-		{
-		  if(ssl.at(i))
-		    crypt.generateSslKeys
-		      (m_ui.rsaKeySize->currentText().toInt(), error2);
-		  else
-		    crypt.generatePrivatePublicKeys
-		      (m_ui.rsaKeySize->currentText().toInt(), error2);
-		}
+	      if(ssl.at(i))
+		crypt.generateSslKeys
+		  (m_ui.rsaKeySize->currentText().toInt(), error2);
+	      else
+		crypt.generatePrivatePublicKeys
+		  (m_ui.rsaKeySize->currentText().toInt(), error2);
 
 	      m_sb.status->clear();
 
@@ -2249,8 +2238,6 @@ void spoton::slotSetPassphrase(void)
       spoton_crypt::purgeDatabases();
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("An error (%1) occurred with "
-			       "spoton_crypt::"
-			       "generateCertificate(), "
 			       "spoton_crypt::"
 			       "generatePrivatePublicKeys(), "
 			       "spoton_crypt::"

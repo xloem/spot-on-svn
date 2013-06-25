@@ -2686,6 +2686,7 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize, QString &error)
   }
 
   QSqlDatabase::removeDatabase("spoton_crypt");
+  generateCertificate(rsa, error);
 
  done_label:
   BIO_free(privateMemory);
@@ -2718,31 +2719,21 @@ void spoton_crypt::purgeDatabases(void)
   QSqlDatabase::removeDatabase("spoton_crypt");
 }
 
-void spoton_crypt::generateCertificate(QString &error)
+void spoton_crypt::generateCertificate(RSA *rsa, QString &error)
 {
-  BIGNUM *f4 = 0;
   BIO *memory = 0;
   BUF_MEM *bptr;
   EVP_PKEY *pk = 0;
   QByteArray certificate;
-  RSA *rsa = 0;
   X509 *x509 = 0;
   X509_NAME *name = 0;
   char *buffer = 0;
 
-  if(!(f4 = BN_new()))
+  if(!rsa)
     {
-      error = QObject::tr("BN_new() returned zero");
+      error = QObject::tr("rsa is zero");
       spoton_misc::logError("spoton_crypt::generateCertificate(): "
-			    "BN_new() failure.");
-      goto done_label;
-    }
-
-  if(BN_set_word(f4, RSA_F4) != 1)
-    {
-      error = QObject::tr("BN_set_word() returned zero");
-      spoton_misc::logError("spoton_crypt::generateCertificate(): "
-			    "BN_set_word() failure.");
+			    "rsa is zero.");
       goto done_label;
     }
 
@@ -2755,28 +2746,12 @@ void spoton_crypt::generateCertificate(QString &error)
       goto done_label;
     }
 
-  if(!(rsa = RSA_new()))
-    {
-      error = QObject::tr("RSA_new() returned zero");
-      spoton_misc::logError("spoton_crypt::generateCertificate(): "
-			    "RSA_new() failure.");
-      goto done_label;
-    }
-
   if(!(x509 = X509_new()))
     {
       error = QObject::tr("X509_new() failure");
       spoton_misc::logError
 	("spoton_crypt::generateCertificate(): "
 	 "X509_new() failure.");
-      goto done_label;
-    }
-
-  if(RSA_generate_key_ex(rsa, 1024, f4, 0) == -1)
-    {
-      error = QObject::tr("RSA_generate_key_ex() returned negative one");
-      spoton_misc::logError("spoton_crypt::generateCertificate(): "
-			    "RSA_generate_key_ex() failure.");
       goto done_label;
     }
 
@@ -2924,10 +2899,8 @@ void spoton_crypt::generateCertificate(QString &error)
 
  done_label:
   BIO_free(memory);
-  BN_free(f4);
   RSA_up_ref(rsa); // Reference counter.
   EVP_PKEY_free(pk);
-  RSA_free(rsa);
   X509_free(x509);
   free(buffer);
 }

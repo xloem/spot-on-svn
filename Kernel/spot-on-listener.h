@@ -76,11 +76,15 @@ class spoton_listener_tcp_server: public QTcpServer
 	  (socketDescriptor, this);
 
 	m_queue.enqueue(neighbor);
+	emit encrypted();
       }
   }
 
  private:
   QQueue<QPointer<spoton_neighbor> > m_queue;
+
+ signals:
+  void encrypted(void);
 };
 
 class spoton_listener: public spoton_listener_tcp_server
@@ -117,9 +121,9 @@ class spoton_listener: public spoton_listener_tcp_server
 
  private slots:
   void slotDiscoverExternalAddress(void);
+  void slotEncrypted(void);
   void slotExternalAddressDiscovered(const QHostAddress &address);
   void slotNeighborDisconnected(void);
-  void slotNewConnection(void);
   void slotTimeout(void);
 
  signals:

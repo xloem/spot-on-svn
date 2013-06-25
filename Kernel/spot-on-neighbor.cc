@@ -85,7 +85,11 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 			  "missing server key!");
 
   setPeerVerifyMode(QSslSocket::VerifyNone);
+#if QT_VERSION >= 0x050000
+  setProtocol(QSsl::TlsV1_0);
+#else
   setProtocol(QSsl::TlsV1);
+#endif
   setSocketDescriptor(socketDescriptor);
   m_address = peerAddress();
   m_ipAddress = m_address.toString();
@@ -108,6 +112,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(encrypted(void)),
 	  this,
 	  SLOT(slotEncrypted(void)));
+  connect(this,
+	  SIGNAL(modeChanged(QSslSocket::SslMode)),
+	  this,
+	  SLOT(slotModeChanged(QSslSocket::SslMode)));
   connect(this,
 	  SIGNAL(readyRead(void)),
 	  this,
@@ -153,7 +161,11 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 {
   s_dbId += 1;
   setPeerVerifyMode(QSslSocket::VerifyNone);
+#if QT_VERSION
+  setProtocol(QSsl::TlsV1_0);
+#else
   setProtocol(QSsl::TlsV1);
+#endif
   setProxy(proxy);
 
   spoton_crypt *s_crypt = 0;
@@ -199,10 +211,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   setReadBufferSize(8192);
   setSocketOption(QAbstractSocket::KeepAliveOption, 1);
   connect(this,
-	  SIGNAL(connected(void)),
-	  this,
-	  SLOT(slotConnected(void)));
-  connect(this,
 	  SIGNAL(disconnected(void)),
 	  this,
 	  SLOT(deleteLater(void)));
@@ -214,6 +222,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,
 	  SLOT(slotError(QAbstractSocket::SocketError)));
+  connect(this,
+	  SIGNAL(modeChanged(QSslSocket::SslMode)),
+	  this,
+	  SLOT(slotModeChanged(QSslSocket::SslMode)));
   connect(this,
 	  SIGNAL(readyRead(void)),
 	  this,
@@ -329,12 +341,13 @@ spoton_neighbor::~spoton_neighbor()
 void spoton_neighbor::slotTimeout(void)
 {
   if(state() == QAbstractSocket::ConnectedState)
-    if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 90)
-      {
-	spoton_misc::logError("spoton_neighbor::slotTimeout(): "
-			      "aborting because of silent connection.");
-	abort();
-      }
+    if(isEncrypted())
+      if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 90)
+	{
+	  spoton_misc::logError("spoton_neighbor::slotTimeout(): "
+				"aborting because of silent connection.");
+	  abort();
+	}
 
   /*
   ** We'll change states here.
@@ -527,7 +540,7 @@ void spoton_neighbor::slotReadyRead(void)
     }
 }
 
-void spoton_neighbor::slotConnected(void)
+void spoton_neighbor::slotEncrypted(void)
 {
   if(proxy().type() != QNetworkProxy::NoProxy)
     {
@@ -598,10 +611,7 @@ void spoton_neighbor::slotConnected(void)
   m_externalAddress->discover();
   m_externalAddressDiscovererTimer.start();
   m_lastReadTime = QDateTime::currentDateTime();
-}
 
-void spoton_neighbor::slotEncrypted(void)
-{
   if(!m_keepAliveTimer.isActive())
     m_keepAliveTimer.start();
 
@@ -749,13 +759,14 @@ void spoton_neighbor::setId(const qint64 id)
 void spoton_neighbor::slotSendMessage(const QByteArray &message)
 {
   if(state() == QAbstractSocket::ConnectedState)
-    {
-      if(write(message.constData(), message.length()) != message.length())
-	spoton_misc::logError
-	  ("spoton_neighbor::slotSendMessage(): write() error.");
-      else
-	flush();
-    }
+    if(isEncrypted())
+      {
+	if(write(message.constData(), message.length()) != message.length())
+	  spoton_misc::logError
+	    ("spoton_neighbor::slotSendMessage(): write() error.");
+	else
+	  flush();
+      }
 }
 
 void spoton_neighbor::slotReceivedChatMessage(const QByteArray &data,
@@ -769,16 +780,17 @@ void spoton_neighbor::slotReceivedChatMessage(const QByteArray &data,
 
   if(id != m_id)
     if(state() == QAbstractSocket::ConnectedState)
-      {
-	QByteArray message(spoton_send::message0000(data));
+      if(isEncrypted())
+	{
+	  QByteArray message(spoton_send::message0000(data));
 
-	if(write(message.constData(), message.length()) != message.length())
-	  spoton_misc::logError
-	    ("spoton_neighbor::slotReceivedChatMessage(): write() "
-	     "error.");
-	else
-	  flush();
-      }
+	  if(write(message.constData(), message.length()) != message.length())
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotReceivedChatMessage(): write() "
+	       "error.");
+	  else
+	    flush();
+	}
 }
 
 void spoton_neighbor::slotReceivedMailMessage(const QByteArray &data,
@@ -792,16 +804,17 @@ void spoton_neighbor::slotReceivedMailMessage(const QByteArray &data,
 
   if(id != m_id)
     if(state() == QAbstractSocket::ConnectedState)
-      {
-	QByteArray message(spoton_send::message0001a(data));
+      if(isEncrypted())
+	{
+	  QByteArray message(spoton_send::message0001a(data));
 
-	if(write(message.constData(), message.length()) != message.length())
-	  spoton_misc::logError
-	    ("spoton_neighbor::slotReceivedMailMessage(): write() "
-	     "error.");
-	else
-	  flush();
-      }
+	  if(write(message.constData(), message.length()) != message.length())
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotReceivedMailMessage(): write() "
+	       "error.");
+	  else
+	    flush();
+	}
 }
 
 void spoton_neighbor::slotReceivedStatusMessage(const QByteArray &data,
@@ -815,16 +828,17 @@ void spoton_neighbor::slotReceivedStatusMessage(const QByteArray &data,
 
   if(id != m_id)
     if(state() == QAbstractSocket::ConnectedState)
-      {
-	QByteArray message(spoton_send::message0013(data));
+      if(isEncrypted())
+	{
+	  QByteArray message(spoton_send::message0013(data));
 
-	if(write(message.constData(), message.length()) != message.length())
-	  spoton_misc::logError
-	    ("spoton_neighbor::slotReceivedStatusMessage(): write() "
-	     "error.");
-	else
-	  flush();
-      }
+	  if(write(message.constData(), message.length()) != message.length())
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotReceivedStatusMessage(): write() "
+	       "error.");
+	  else
+	    flush();
+	}
 }
 
 void spoton_neighbor::slotRetrieveMail(const QByteArray &data,
@@ -838,16 +852,17 @@ void spoton_neighbor::slotRetrieveMail(const QByteArray &data,
 
   if(id != m_id)
     if(state() == QAbstractSocket::ConnectedState)
-      {
-	QByteArray message(spoton_send::message0002(data));
+      if(isEncrypted())
+	{
+	  QByteArray message(spoton_send::message0002(data));
 
-	if(write(message.constData(), message.length()) != message.length())
-	  spoton_misc::logError
-	    ("spoton_neighbor::slotRetrieveMail(): write() "
-	     "error.");
-	else
-	  flush();
-      }
+	  if(write(message.constData(), message.length()) != message.length())
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotRetrieveMail(): write() "
+	       "error.");
+	  else
+	    flush();
+	}
 }
 
 void spoton_neighbor::slotLifetimeExpired(void)
@@ -865,6 +880,8 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
 				     const QByteArray &sSignature)
 {
   if(state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!isEncrypted())
     return;
 
   QByteArray message;
@@ -2057,17 +2074,18 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
 {
   if(state() == QAbstractSocket::ConnectedState)
-    for(int i = 0; i < list.size(); i++)
-      {
-	QByteArray message(spoton_send::message0013(list.at(i)));
+    if(isEncrypted())
+      for(int i = 0; i < list.size(); i++)
+	{
+	  QByteArray message(spoton_send::message0013(list.at(i)));
 
-	if(write(message.constData(), message.length()) != message.length())
-	  spoton_misc::logError
-	    ("spoton_neighbor::slotSendStatus(): write() "
-	     "error.");
-	else
-	  flush();
-      }
+	  if(write(message.constData(), message.length()) != message.length())
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotSendStatus(): write() "
+	       "error.");
+	  else
+	    flush();
+	}
 }
 
 void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
@@ -2170,6 +2188,8 @@ void spoton_neighbor::slotSendUuid(void)
 {
   if(state() != QAbstractSocket::ConnectedState)
     return;
+  else if(!isEncrypted())
+    return;
 
   QByteArray message;
   QUuid uuid(spoton_kernel::s_settings.value("gui/uuid").toString());
@@ -2269,22 +2289,23 @@ void spoton_neighbor::slotDiscoverExternalAddress(void)
 void spoton_neighbor::slotSendKeepAlive(void)
 {
   if(state() == QAbstractSocket::ConnectedState)
-    {
-      QByteArray message(spoton_send::message0015());
+    if(isEncrypted())
+      {
+	QByteArray message(spoton_send::message0015());
 
-      /*
-      ** Sending 0015 should be a priority. Does Qt
-      ** support out-of-band data?
-      */
+	/*
+	** Sending 0015 should be a priority. Does Qt
+	** support out-of-band data?
+	*/
 
-      if(write(message.constData(),
-	       message.length()) != message.length())
-	spoton_misc::logError
-	  ("spoton_neighbor::slotSendKeepAlive(): write() "
-	   "error.");
-      else
-	flush();
-    }
+	if(write(message.constData(),
+		 message.length()) != message.length())
+	  spoton_misc::logError
+	    ("spoton_neighbor::slotSendKeepAlive(): write() "
+	     "error.");
+	else
+	  flush();
+      }
 }
 
 QUuid spoton_neighbor::receivedUuid(void) const
@@ -2298,23 +2319,24 @@ void spoton_neighbor::slotSendMail
   QList<qint64> oids;
 
   if(state() == QAbstractSocket::ConnectedState)
-    for(int i = 0; i < list.size(); i++)
-      {
-	QByteArray message;
-	QPair<QByteArray, qint64> pair(list.at(i));
+    if(isEncrypted())
+      for(int i = 0; i < list.size(); i++)
+	{
+	  QByteArray message;
+	  QPair<QByteArray, qint64> pair(list.at(i));
 
-	message = spoton_send::message0001a(pair.first);
+	  message = spoton_send::message0001a(pair.first);
 
-	if(write(message.constData(), message.length()) != message.length())
-	  spoton_misc::logError
-	    ("spoton_neighbor::slotSendMail(): write() "
-	     "error.");
-	else
-	  {
-	    flush();
-	    oids.append(pair.second);
-	  }
-      }
+	  if(write(message.constData(), message.length()) != message.length())
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotSendMail(): write() "
+	       "error.");
+	  else
+	    {
+	      flush();
+	      oids.append(pair.second);
+	    }
+	}
 
   if(!oids.isEmpty())
     {
@@ -2330,16 +2352,17 @@ void spoton_neighbor::slotSendMail
 void spoton_neighbor::slotSendMailFromPostOffice(const QByteArray &data)
 {
   if(state() == QAbstractSocket::ConnectedState)
-    {
-      QByteArray message(spoton_send::message0001b(data));
+    if(isEncrypted())
+      {
+	QByteArray message(spoton_send::message0001b(data));
 
-      if(write(message.constData(), message.length()) != message.length())
-	spoton_misc::logError
-	  ("spoton_neighbor::slotSendMailFromPostOffice(): write() "
-	   "error.");
-      else
-	flush();
-    }
+	if(write(message.constData(), message.length()) != message.length())
+	  spoton_misc::logError
+	    ("spoton_neighbor::slotSendMailFromPostOffice(): write() "
+	     "error.");
+	else
+	  flush();
+      }
 }
 
 void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
@@ -2612,17 +2635,18 @@ void spoton_neighbor::storeLetter(const QList<QByteArray> &list,
 void spoton_neighbor::slotRetrieveMail(const QList<QByteArray> &list)
 {
   if(state() == QAbstractSocket::ConnectedState)
-    for(int i = 0; i < list.size(); i++)
-      {
-	QByteArray message(spoton_send::message0002(list.at(i)));
+    if(isEncrypted())
+      for(int i = 0; i < list.size(); i++)
+	{
+	  QByteArray message(spoton_send::message0002(list.at(i)));
 
-	if(write(message.constData(), message.length()) != message.length())
-	  spoton_misc::logError
-	    ("spoton_neighbor::slotRetrieveMail(): write() "
-	     "error.");
-	else
-	  flush();
-      }
+	  if(write(message.constData(), message.length()) != message.length())
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotRetrieveMail(): write() "
+	       "error.");
+	  else
+	    flush();
+	}
 }
 
 void spoton_neighbor::slotHostFound(const QHostInfo &hostInfo)
@@ -2640,22 +2664,23 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
 (const QHostAddress &address, const quint16 port)
 {
   if(state() == QAbstractSocket::ConnectedState)
-    {
-      char c = 0;
-      short ttl = spoton_kernel::s_settings.value
-	("kernel/ttl_0030", 64).toInt();
+    if(isEncrypted())
+      {
+	char c = 0;
+	short ttl = spoton_kernel::s_settings.value
+	  ("kernel/ttl_0030", 64).toInt();
 
-      memcpy(&c, static_cast<void *> (&ttl), 1);
+	memcpy(&c, static_cast<void *> (&ttl), 1);
 
-      QByteArray message(spoton_send::message0030(address, port, c));
+	QByteArray message(spoton_send::message0030(address, port, c));
 
-      if(write(message.constData(), message.length()) != message.length())
-	spoton_misc::logError
-	  ("spoton_neighbor::slotPublicizeListenerPlaintext(): write() "
-	   "error.");
-      else
-	flush();
-    }
+	if(write(message.constData(), message.length()) != message.length())
+	  spoton_misc::logError
+	    ("spoton_neighbor::slotPublicizeListenerPlaintext(): write() "
+	     "error.");
+	else
+	  flush();
+      }
 }
 
 void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
@@ -2669,16 +2694,17 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 
   if(id != m_id)
     if(state() == QAbstractSocket::ConnectedState)
-      {
-	QByteArray message(spoton_send::message0030(data));
+      if(isEncrypted())
+	{
+	  QByteArray message(spoton_send::message0030(data));
 
-	if(write(message.constData(), message.length()) != message.length())
-	  spoton_misc::logError
-	    ("spoton_neighbor::slotPublicizeListenerPlaintext(): write() "
-	     "error.");
-	else
-	  flush();
-      }
+	  if(write(message.constData(), message.length()) != message.length())
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotPublicizeListenerPlaintext(): write() "
+	       "error.");
+	  else
+	    flush();
+	}
 }
 
 void spoton_neighbor::recordMessageHash(const QByteArray &data)
@@ -2735,4 +2761,11 @@ void spoton_neighbor::slotSslErrors(const QList<QSslError> &errors)
 			  arg(errors.at(i).errorString()).
 			  arg(peerAddress().toString()).
 			  arg(peerPort()));
+}
+
+void spoton_neighbor::slotModeChanged(QSslSocket::SslMode mode)
+{
+  spoton_misc::logError(QString("spoton_neighbor::slotModeChanged(): "
+				"the connection mode has changed to %1.").
+			arg(mode));
 }
