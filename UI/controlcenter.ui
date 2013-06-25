@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>965</width>
-                <height>584</height>
+                <width>973</width>
+                <height>574</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1824,8 +1824,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1029</width>
-             <height>358</height>
+             <width>973</width>
+             <height>574</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -2057,6 +2057,11 @@
                      <property name="currentIndex">
                       <number>0</number>
                      </property>
+                     <item>
+                      <property name="text">
+                       <string>2048</string>
+                      </property>
+                     </item>
                      <item>
                       <property name="text">
                        <string>3072</string>
@@ -2761,7 +2766,7 @@
      <x>0</x>
      <y>0</y>
      <width>995</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
