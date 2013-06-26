@@ -28,11 +28,11 @@ QMAKE_CXXFLAGS_RELEASE += -mtune=generic -O3 \
 QMAKE_EXTRA_TARGETS = libspoton purge
 INCLUDEPATH	+= . ..\\. ..\\..\\..\\. ..\\..\\..\\LibSpotOn\\Include.win32 \
                    ..\\..\\..\\libGeoIP\\Include.win32 \
-			 ..\\..\\..\\libSsl\\Include.win32
+		   ..\\..\\..\\libSsl\\Include.win32
 LIBS		+= -L..\\..\\..\\LibSpotOn \
 		   -L..\\..\\..\\LibSpotOn\\Libraries.win32 \
                    -L..\\..\\..\\libGeoIP\\Libraries.win32 \
-			 -L..\\..\\..\\libSsl\\Libraries.win32 \
+		   -L..\\..\\..\\libSsl\\Libraries.win32 \
 		   -lGeoIP-1 -leay32 -lgcrypt-11 -lpthread -lspoton -lssl32
 PRE_TARGETDEPS = libspoton.dll
 
