@@ -23,15 +23,17 @@ QMAKE_CLEAN     += ..\\..\\release\\Spot-On-Kernel \
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -mtune=generic -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
-			  -Werror -Wextra \
+			  -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith
 QMAKE_EXTRA_TARGETS = libspoton purge
 INCLUDEPATH	+= . ..\\. ..\\..\\..\\. ..\\..\\..\\LibSpotOn\\Include.win32 \
-                   ..\\..\\..\\libGeoIP\\Include.win32
+                   ..\\..\\..\\libGeoIP\\Include.win32 \
+			 ..\\..\\..\\libSsl\\Include.win32
 LIBS		+= -L..\\..\\..\\LibSpotOn \
 		   -L..\\..\\..\\LibSpotOn\\Libraries.win32 \
                    -L..\\..\\..\\libGeoIP\\Libraries.win32 \
-		   -lGeoIP-1 -lcrypto -lgcrypt-11 -lpthread -lspoton
+			 -L..\\..\\..\\libSsl\\Libraries.win32 \
+		   -lGeoIP-1 -leay32 -lgcrypt-11 -lpthread -lspoton -lssl32
 PRE_TARGETDEPS = libspoton.dll
 
 HEADERS		= ..\\Common\\spot-on-external-address.h \

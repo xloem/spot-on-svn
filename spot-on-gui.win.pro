@@ -30,7 +30,7 @@ INCLUDEPATH	+= . ..\\..\\. GUI ..\\..\\LibSpotOn\\Include.win32 \
 LIBS		+= -L..\\..\\LibSpotOn -L..\\..\\LibSpotOn\\Libraries.win32 \
 		   -L..\\..\\libGeoIP\\Libraries.win32 \
 		   -L..\\..\\libSsl\\Libraries.win32 \
-		   -lGeoIP-1 -lcrypto -lgcrypt-11 -lpthread -lspoton
+		   -lGeoIP-1 -leay32 -lgcrypt-11 -lpthread -lspoton -lssl32
 PRE_TARGETDEPS = libspoton.dll
 
 FORMS           = UI\\controlcenter.ui \
