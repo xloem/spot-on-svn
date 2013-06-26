@@ -44,7 +44,16 @@
         <string>&amp;Chat</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_18">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item>
@@ -56,7 +65,16 @@
            </sizepolicy>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -73,7 +91,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>973</width>
-                <height>574</height>
+                <height>573</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -830,6 +848,12 @@
               </item>
               <item>
                <widget class="QSpinBox" name="days">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="minimum">
                  <number>1</number>
                 </property>
@@ -1058,6 +1082,12 @@
                  </item>
                  <item row="0" column="4">
                   <widget class="QSpinBox" name="listenerPort">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="minimum">
                     <number>1</number>
                    </property>
@@ -1375,6 +1405,12 @@
                  </item>
                  <item row="0" column="3">
                   <widget class="QSpinBox" name="neighborPort">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="minimum">
                     <number>1</number>
                    </property>
@@ -1808,7 +1844,16 @@
         <string>S&amp;ettings</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_15">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item>
@@ -1825,7 +1870,7 @@
              <x>0</x>
              <y>0</y>
              <width>973</width>
-             <height>574</height>
+             <height>573</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -1925,6 +1970,12 @@
                    </item>
                    <item>
                     <widget class="QSpinBox" name="cost">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="toolTip">
                       <string>Cost</string>
                      </property>
@@ -2031,6 +2082,12 @@
                    </item>
                    <item>
                     <widget class="QSpinBox" name="iterationCount">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="minimum">
                       <number>1000</number>
                      </property>
@@ -2096,6 +2153,12 @@
                    </item>
                    <item>
                     <widget class="QSpinBox" name="saltLength">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="minimum">
                       <number>256</number>
                      </property>
@@ -2766,7 +2829,7 @@
      <x>0</x>
      <y>0</y>
      <width>995</width>
-     <height>24</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
