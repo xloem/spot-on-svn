@@ -41,7 +41,7 @@ extern "C"
   GCRY_THREAD_OPTION_PTHREAD_IMPL;
 #endif
 
-#include "LibSpotOn/libspoton.h"
+#include "libSpotOn/libspoton.h"
 }
 
 #if !(defined(PTHREAD_H) || defined(_PTHREAD_H) || defined(_PTHREAD_H_))

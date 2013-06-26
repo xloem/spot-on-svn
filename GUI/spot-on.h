@@ -68,7 +68,7 @@
 
 extern "C"
 {
-#include "LibSpotOn/libspoton.h"
+#include "libSpotOn/libspoton.h"
 }
  
 #include "Common/spot-on-common.h"

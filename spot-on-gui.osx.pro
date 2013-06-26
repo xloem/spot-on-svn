@@ -1,5 +1,5 @@
 libspoton.target = libspoton.dylib
-libspoton.commands = $(MAKE) -C ../../LibSpotOn
+libspoton.commands = $(MAKE) -C ../../libSpotOn
 libspoton.depends =
 
 TEMPLATE	= app
@@ -14,10 +14,10 @@ DEFINES += SPOTON_GEOIP_DATA_FILE="'\"/Applications/Spot-On.d/Data/GeoIP.dat\"'"
 	   SPOTON_LINKED_WITH_LIBGEOIP
 
 # Unfortunately, the clean target assumes too much knowledge
-# about the internals of LibSpotOn.
+# about the internals of libSpotOn.
 
-QMAKE_CLEAN     += Spot-On ../../LibSpotOn/*.dylib ../../LibSpotOn/*.o \
-		   ../../LibSpotOn/test
+QMAKE_CLEAN     += Spot-On ../../libSpotOn/*.dylib ../../libSpotOn/*.o \
+		   ../../libSpotOn/test
 QMAKE_DISTCLEAN += -r temp
 QMAKE_CXXFLAGS_DEBUG -= -O2
 QMAKE_CXXFLAGS_DEBUG += -mtune=generic -Os \
@@ -35,7 +35,7 @@ QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../../. GUI ../../libGeoIP/Include.osx64 \
                    /usr/local/include
 ICON		= Icons/Logo/spoton-logo-transparent.icns
-LIBS		+= -L/usr/local/lib -lcrypto -lgcrypt -L../../LibSpotOn -lspoton \
+LIBS		+= -L/usr/local/lib -lcrypto -lgcrypt -L../../libSpotOn -lspoton \
                    -L../../libGeoIP/Libraries.osx64 -lGeoIP
 PRE_TARGETDEPS = libspoton.dylib
 OBJECTS_DIR = temp/obj
@@ -154,7 +154,7 @@ icons.files		= Icons
 libgeoip_install.path   = .
 libgeoip_install.extra  = cp ../../libGeoIP/Libraries.osx64/libGeoIP.1.dylib ./Spot-On.app/Contents/Frameworks/libGeoIP.1.dylib && install_name_tool -change ../../libGeoIP/Libraries.osx64/libGeoIP.1.dylib @executable_path/../Frameworks/libGeoIP.1.dylib ./Spot-On.app/Contents/MacOS/Spot-On
 libspoton_install.path  = .
-libspoton_install.extra = cp ../../LibSpotOn/libspoton.dylib ./Spot-On.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change /usr/local/lib/libgcrypt.11.dylib @loader_path/libgcrypt.11.dylib ./Spot-On.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change ../../LibSpotOn/libspoton.dylib @executable_path/../Frameworks/libspoton.dylib ./Spot-On.app/Contents/MacOS/Spot-On
+libspoton_install.extra = cp ../../libSpotOn/libspoton.dylib ./Spot-On.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change /usr/local/lib/libgcrypt.11.dylib @loader_path/libgcrypt.11.dylib ./Spot-On.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change ../../libSpotOn/libspoton.dylib @executable_path/../Frameworks/libspoton.dylib ./Spot-On.app/Contents/MacOS/Spot-On
 lrelease.extra          = $$[QT_INSTALL_BINS]/lrelease spot-on-gui.osx.pro
 lrelease.path           = .
 lupdate.extra           = $$[QT_INSTALL_BINS]/lupdate spot-on-gui.osx.pro

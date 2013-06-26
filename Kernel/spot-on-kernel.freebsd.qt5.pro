@@ -1,5 +1,5 @@
 libspoton.target = libspoton.so
-libspoton.commands = gmake -C ../../../LibSpotOn
+libspoton.commands = gmake -C ../../../libSpotOn
 libspoton.depends =
 purge.commands = rm -f *~
 
@@ -16,10 +16,10 @@ DEFINES += SPOTON_GEOIP_DATA_FILE="'\"/usr/local/share/GeoIP/GeoIP.dat\"'" \
 	   SPOTON_LINKED_WITH_LIBGEOIP
 
 # Unfortunately, the clean target assumes too much knowledge
-# about the internals of LibSpotOn.
+# about the internals of libSpotOn.
 
-QMAKE_CLEAN     += ../Spot-On-Kernel ../../../LibSpotOn/*.o \
-		   ../../../LibSpotOn/*.so ../../../LibSpotOn/test
+QMAKE_CLEAN     += ../Spot-On-Kernel ../../../libSpotOn/*.o \
+		   ../../../libSpotOn/*.so ../../../libSpotOn/test
 QMAKE_DISTCLEAN += -r temp
 QMAKE_CXXFLAGS_DEBUG -= -O2
 QMAKE_CXXFLAGS_DEBUG += -mtune=generic -Os \
@@ -35,7 +35,7 @@ QMAKE_LFLAGS_RELEASE += -Wl,-rpath,/usr/local/spot-on/Lib
 QMAKE_EXTRA_TARGETS = libspoton purge
 QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../. ../../../.
-LIBS		+= -L../../../LibSpotOn -L/usr/local/lib -lGeoIP \
+LIBS		+= -L../../../libSpotOn -L/usr/local/lib -lGeoIP \
                    -lcrypto -lgcrypt -lspoton
 PRE_TARGETDEPS = libspoton.so
 OBJECTS_DIR = temp/obj

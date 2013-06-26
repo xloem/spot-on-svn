@@ -1,5 +1,5 @@
 libspoton.target = libspoton.dll
-libspoton.commands = $(MAKE) -C ..\\..\\..\\LibSpotOn
+libspoton.commands = $(MAKE) -C ..\\..\\..\\libSpotOn
 libspoton.depends =
 purge.commands = del /F *~
 
@@ -15,22 +15,22 @@ CONFIG		+= qt release warn_on
 DEFINES         += SPOTON_LINKED_WITH_LIBGEOIP
 
 # Unfortunately, the clean target assumes too much knowledge
-# about the internals of LibSpotOn.
+# about the internals of libSpotOn.
 
 QMAKE_CLEAN     += ..\\..\\release\\Spot-On-Kernel \
-		   ..\\..\\..\\LibSpotOn\\libspoton.dll \
-		   ..\\..\\..\\LibSpotOn\\*.o ..\\..\\..\\LibSpotOn\\test.exe
+		   ..\\..\\..\\libSpotOn\\libspoton.dll \
+		   ..\\..\\..\\libSpotOn\\*.o ..\\..\\..\\libSpotOn\\test.exe
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -mtune=generic -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
 			  -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith
 QMAKE_EXTRA_TARGETS = libspoton purge
-INCLUDEPATH	+= . ..\\. ..\\..\\..\\. ..\\..\\..\\LibSpotOn\\Include.win32 \
+INCLUDEPATH	+= . ..\\. ..\\..\\..\\. ..\\..\\..\\libSpotOn\\Include.win32 \
                    ..\\..\\..\\libGeoIP\\Include.win32 \
 		   ..\\..\\..\\libOpenSsl\\Include.win32
-LIBS		+= -L..\\..\\..\\LibSpotOn \
-		   -L..\\..\\..\\LibSpotOn\\Libraries.win32 \
+LIBS		+= -L..\\..\\..\\libSpotOn \
+		   -L..\\..\\..\\libSpotOn\\Libraries.win32 \
                    -L..\\..\\..\\libGeoIP\\Libraries.win32 \
 		   -L..\\..\\..\\libOpenSsl\\Libraries.win32 \
 		   -lGeoIP-1 -leay32 -lgcrypt-11 -lpthread -lspoton -lssl32
@@ -65,7 +65,7 @@ spoton_kernel.files	= Spot-On-Kernel.exe
 libgeoip_install.path   = ..\\release
 libgeoip_install.files  = ..\\..\\..\\libGeoIP\\Libraries.win32\\libGeoIP-1.dll
 libspoton_install.path  = ..\\release
-libspoton_install.files = ..\\..\\..\\LibSpotOn\\libspoton.dll ..\\..\\..\\LibSpotOn\\Libraries.win32\\*.def ..\\..\\..\\LibSpotOn\\Libraries.win32\\*.dll
+libspoton_install.files = ..\\..\\..\\libSpotOn\\libspoton.dll ..\\..\\..\\libSpotOn\\Libraries.win32\\*.def ..\\..\\..\\libSpotOn\\Libraries.win32\\*.dll
 
 INSTALLS	= libgeoip_install \
                   libspoton_install \

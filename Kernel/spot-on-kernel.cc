@@ -36,7 +36,7 @@
 
 extern "C"
 {
-#include "LibSpotOn/libspoton.h"
+#include "libSpotOn/libspoton.h"
 }
 
 extern "C"
