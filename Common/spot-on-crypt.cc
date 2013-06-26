@@ -2731,9 +2731,9 @@ void spoton_crypt::generateCertificate(RSA *rsa, QString &error)
 
   if(!rsa)
     {
-      error = QObject::tr("rsa is zero");
+      error = QObject::tr("rsa container is zero");
       spoton_misc::logError("spoton_crypt::generateCertificate(): "
-			    "rsa is zero.");
+			    "rsa container is zero.");
       goto done_label;
     }
 
@@ -2757,7 +2757,7 @@ void spoton_crypt::generateCertificate(RSA *rsa, QString &error)
 
   if(EVP_PKEY_assign_RSA(pk, rsa) == 0)
     {
-      error = QObject::tr("EVP_PKEY_assign_RSA() returned negative one");
+      error = QObject::tr("EVP_PKEY_assign_RSA() returned zero");
       spoton_misc::logError("spoton_crypt::generateCertificate(): "
 			    "EVP_PKEY_assign_RSA() failure.");
       goto done_label;
@@ -2782,6 +2782,10 @@ void spoton_crypt::generateCertificate(RSA *rsa, QString &error)
 			    "X509_gmtime_adj() failure.");
       goto done_label;
     }
+
+  /*
+  ** Ten years?
+  */
 
   if(X509_gmtime_adj(X509_get_notAfter(x509),
 		     static_cast<long> (60 * 60 * 24 * 365 * 10)) == 0)
