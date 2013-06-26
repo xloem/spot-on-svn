@@ -1543,9 +1543,28 @@ void spoton::slotResetAll(void)
     settings.remove(settings.allKeys().at(i));
 
   QApplication::instance()->exit(0);
+
+#ifdef Q_OS_WIN32
+  QString program(QCoreApplication::applicationDirPath() +
+		  QDir::separator() +
+		  QCoreApplication::applicationName());
+
+  int rc = (int)
+    (::ShellExecuteA(0, "open", program.toUtf8().constData(),
+		     0, 0, SW_SHOWNORMAL));
+
+  if(rc == SE_ERR_ACCESSDENIED)
+    /*
+    ** Elevated?
+    */
+
+    ::ShellExecuteA(0, "runas", program.toUtf8().constData(),
+		    0, 0, SW_SHOWNORMAL);
+#else
   QProcess::startDetached(QCoreApplication::applicationDirPath() +
 			  QDir::separator() +
 			  QCoreApplication::applicationName());
+#endif
 }
 
 void spoton::slotCopyFriendshipBundle(void)
