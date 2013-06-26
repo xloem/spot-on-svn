@@ -1627,16 +1627,17 @@ void spoton::slotActivateKernel(void)
   else
     QProcess::startDetached(program);
 #elif defined(Q_OS_WIN32)
-  int rc = (int) ::ShellExecuteA
-    (0, "open", program.toUtf8().constData(), 0, 0, SW_SHOWNORMAL);
+  int rc = static_cast<int>
+    (::ShellExecuteA(0, "open", program.toUtf8().constData(),
+		     0, 0, SW_SHOWNORMAL));
 
   if(rc == SE_ERR_ACCESSDENIED)
     /*
     ** Elevated?
     */
 
-    result = (int) ::ShellExecuteA
-      (0, "runas", program.toUtf8().constData(), 0, 0, SW_SHOWNORMAL);
+    ::ShellExecuteA(0, "runas", program.toUtf8().constData(),
+		    0, 0, SW_SHOWNORMAL);
 #else
   QProcess::startDetached(program);
 #endif
