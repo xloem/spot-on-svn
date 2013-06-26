@@ -1627,7 +1627,7 @@ void spoton::slotActivateKernel(void)
   else
     QProcess::startDetached(program);
 #elif defined(Q_OS_WIN32)
-  int rc = static_cast<int>
+  int rc = (int)
     (::ShellExecuteA(0, "open", program.toUtf8().constData(),
 		     0, 0, SW_SHOWNORMAL));
 
