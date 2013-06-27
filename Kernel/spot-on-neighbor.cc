@@ -262,8 +262,13 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 
 spoton_neighbor::~spoton_neighbor()
 {
+  char a[32];
+
+  snprintf(a, sizeof(a), "%p", this);
   spoton_misc::logError
-    (QString("Neighbor %1:%2 deallocated.").arg(m_address.toString()).
+    (QString("Neighbor (%1) %2:%3 deallocated.").
+     arg(a).
+     arg(m_address.toString()).
      arg(m_port));
   m_timer.stop();
 
@@ -361,7 +366,7 @@ void spoton_neighbor::slotTimeout(void)
   prepareNetworkInterface();
 
   QString status("");
-  bool shouldAbort = false;
+  bool shouldDelete = false;
 
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
@@ -388,7 +393,7 @@ void spoton_neighbor::slotTimeout(void)
 		if(status == "blocked" || status == "disconnected")
 		  {
 		    saveStatus(db, status);
-		    shouldAbort = true;
+		    shouldDelete = true;
 		  }
 
 		if(query.value(1).toInt() == 1)
@@ -397,10 +402,10 @@ void spoton_neighbor::slotTimeout(void)
 		  m_lifetime.start();
 	      }
 	    else if(m_id != -1)
-	      shouldAbort = true;
+	      shouldDelete = true;
 	  }
 	else if(m_id != -1)
-	  shouldAbort = true;
+	  shouldDelete = true;
       }
 
     db.close();
@@ -408,8 +413,8 @@ void spoton_neighbor::slotTimeout(void)
 
   QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
 
-  if(shouldAbort)
-    abort();
+  if(shouldDelete)
+    deleteLater();
 
   if(status == "connected")
     {
@@ -869,7 +874,7 @@ void spoton_neighbor::slotLifetimeExpired(void)
 {
   spoton_misc::logError("spoton_neighbor::slotLifetimeExpired(): "
 			"expiration time reached. Aborting socket.");
-  abort();
+  deleteLater();
 }
 
 void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
@@ -2155,7 +2160,7 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
       (QString("spoton_neighbor::slotError(): socket error %1. "
 	       "Aborting socket.").arg(error));
 
-  abort();
+  deleteLater();
 }
 
 void spoton_neighbor::prepareNetworkInterface(void)
@@ -2768,4 +2773,11 @@ void spoton_neighbor::slotModeChanged(QSslSocket::SslMode mode)
   spoton_misc::logError(QString("spoton_neighbor::slotModeChanged(): "
 				"the connection mode has changed to %1.").
 			arg(mode));
+
+  if(mode == QSslSocket::UnencryptedMode)
+    {
+      spoton_misc::logError("spoton_neighbor::slotModeChanged(): "
+			    "unencrypted connection mode. Aborting.");
+      deleteLater();
+    }
 }

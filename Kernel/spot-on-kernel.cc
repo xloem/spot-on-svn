@@ -961,7 +961,8 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
     m_publishAllListenersPlaintextTimer.stop();
 }
 
-void spoton_kernel::connectSignalsToNeighbor(spoton_neighbor *neighbor)
+void spoton_kernel::connectSignalsToNeighbor
+(QPointer<spoton_neighbor> neighbor)
 {
   if(!neighbor)
     return;

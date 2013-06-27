@@ -75,8 +75,13 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 
 spoton_listener::~spoton_listener()
 {
+  char a[32];
+
+  snprintf(a, sizeof(a), "%p", this);
   spoton_misc::logError
-    (QString("Listener %1:%2 deallocated.").arg(m_address.toString()).
+    (QString("Listener (%1) %2:%3 deallocated.").
+     arg(a).
+     arg(m_address.toString()).
      arg(m_port));
   m_timer.stop();
 
