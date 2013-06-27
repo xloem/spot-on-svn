@@ -39,6 +39,16 @@ int main(int argc, char *argv[])
 
   QApplication qapplication(argc, argv);
 
+#ifdef Q_OS_MAC
+#if QT_VERSION >= 0x050000
+  /*
+  ** Eliminate pool errors on OS X.
+  */
+
+  CocoaInitializer ci;
+#endif
+#endif
+
   /*
   ** Configure translations.
   */

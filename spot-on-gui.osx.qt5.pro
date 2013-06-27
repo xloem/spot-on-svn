@@ -35,8 +35,9 @@ QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../../. GUI ../../libGeoIP/Include.osx64 \
                    /usr/local/include
 ICON		= Icons/Logo/spoton-logo-transparent.icns
-LIBS		+= -L/usr/local/lib -lcrypto -lgcrypt -L../../libSpotOn -lspoton \
-                   -L../../libGeoIP/Libraries.osx64 -lGeoIP
+LIBS		+= -L/usr/local/lib -lcrypto -lgcrypt -L../../libSpotOn \
+                   -lspoton -L../../libGeoIP/Libraries.osx64 -lGeoIP \
+                   -framework AppKit -framework Cocoa
 PRE_TARGETDEPS = libspoton.dylib
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui
@@ -65,6 +66,9 @@ SOURCES		= Common/spot-on-crypt.cc \
 		  GUI/spot-on-reencode.cc \
 		  GUI/spot-on-tabwidget.cc \
 		  GUI/spot-on-textedit.cc
+
+OBJECTIVE_HEADERS += GUI/Cocoainitializer.h
+OBJECTIVE_SOURCES += GUI/Cocoainitializer.mm
 
 TRANSLATIONS    = Translations/spot-on_af.ts \
                   Translations/spot-on_al.ts \

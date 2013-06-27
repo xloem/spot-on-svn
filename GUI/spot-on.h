@@ -70,7 +70,13 @@ extern "C"
 {
 #include "libSpotOn/libspoton.h"
 }
- 
+
+#ifdef Q_OS_MAC
+#if QT_VERSION >= 0x050000
+#include "CocoaInitializer.h"
+#endif
+#endif
+
 #include "Common/spot-on-common.h"
 #include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
