@@ -1544,17 +1544,28 @@ void spoton::slotPopulateNeighbors(void)
 		if(item1)
 		  {
 		    QIcon icon;
+		    QPixmap pixmap;
+		    QString str("");
 		    QTableWidgetItem *item2 = m_ui.neighbors->item
 		      (row, columnREMOTE_IP);
 
 		    if(item2)
-		      icon =
-			QIcon(QString(":/Flags/%1.png").
-			      arg(spoton_misc::
-				  countryCodeFromIPAddress(item2->text()).
-				  toLower()));
+		      str = QString(":/Flags/%1.png").
+			arg(spoton_misc::
+			    countryCodeFromIPAddress(item2->text()).
+			    toLower());
 		    else
-		      icon = QIcon(":/Flags/unknown.png");
+		      str = ":/Flags/unknown.png";
+
+		    pixmap = QPixmap(str);
+
+		    if(!pixmap.isNull())
+		      pixmap = pixmap.scaled(QSize(16, 16),
+					     Qt::KeepAspectRatio,
+					     Qt::SmoothTransformation);
+
+		    if(!pixmap.isNull())
+		      icon = QIcon(pixmap);
 
 		    if(!icon.isNull())
 		      item1->setIcon(icon);

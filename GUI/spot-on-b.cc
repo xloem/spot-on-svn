@@ -684,13 +684,17 @@ void spoton::slotPopulateCountries(void)
 		else
 		  item->setCheckState(Qt::Unchecked);
 
-		QIcon icon(iconForCountry(item->text()));
+		QPixmap pixmap(pixmapForCountry(item->text()));
 
-		if(icon.isNull())
-		  icon = QIcon(":/Flags/unknown.png");
+		if(pixmap.isNull())
+		  pixmap = QPixmap(":/Flags/unknown.png");
 
-		if(!icon.isNull())
-		  item->setIcon(icon);
+		if(!pixmap.isNull())
+		  pixmap = pixmap.scaled(QSize(16, 16), Qt::KeepAspectRatio,
+					 Qt::SmoothTransformation);
+
+		if(!pixmap.isNull())
+		  item->setIcon(QIcon(pixmap));
 
 		m_ui.countries->addItem(item);
 
@@ -788,382 +792,382 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
     }
 }
 
-QIcon spoton::iconForCountry(const QString &country)
+QPixmap spoton::pixmapForCountry(const QString &country)
 {
   if(country == "Afghanistan")
-    return QIcon(":/Flags/af.png");
+    return QPixmap(":/Flags/af.png");
   else if(country == "Albania")
-    return QIcon(":/Flags/al.png");
+    return QPixmap(":/Flags/al.png");
   else if(country == "Algeria")
-    return QIcon(":/Flags/dz.png");
+    return QPixmap(":/Flags/dz.png");
   else if(country == "AmericanSamoa")
-    return QIcon(":/Flags/as.png");
+    return QPixmap(":/Flags/as.png");
   else if(country == "Angola")
-    return QIcon(":/Flags/ao.png");
+    return QPixmap(":/Flags/ao.png");
   else if(country == "Argentina")
-    return QIcon(":/Flags/ar.png");
+    return QPixmap(":/Flags/ar.png");
   else if(country == "Armenia")
-    return QIcon(":/Flags/am.png");
+    return QPixmap(":/Flags/am.png");
   else if(country == "Aruba")
-    return QIcon(":/Flags/aw.png");
+    return QPixmap(":/Flags/aw.png");
   else if(country == "Algeria")
-    return QIcon(":/Flags/dz.png");
+    return QPixmap(":/Flags/dz.png");
   else if(country == "Australia")
-    return QIcon(":/Flags/au.png");
+    return QPixmap(":/Flags/au.png");
   else if(country == "Austria")
-    return QIcon(":/Flags/at.png");
+    return QPixmap(":/Flags/at.png");
   else if(country == "Azerbaijan")
-    return QIcon(":/Flags/az.png");
+    return QPixmap(":/Flags/az.png");
   else if(country == "Bahrain")
-    return QIcon(":/Flags/bh.png");
+    return QPixmap(":/Flags/bh.png");
   else if(country == "Bangladesh")
-    return QIcon(":/Flags/bd.png");
+    return QPixmap(":/Flags/bd.png");
   else if(country == "Barbados")
-    return QIcon(":/Flags/bb.png");
+    return QPixmap(":/Flags/bb.png");
   else if(country == "Belarus")
-    return QIcon(":/Flags/by.png");
+    return QPixmap(":/Flags/by.png");
   else if(country == "Belgium")
-    return QIcon(":/Flags/be.png");
+    return QPixmap(":/Flags/be.png");
   else if(country == "Belize")
-    return QIcon(":/Flags/bz.png");
+    return QPixmap(":/Flags/bz.png");
   else if(country == "Benin")
-    return QIcon(":/Flags/bj.png");
+    return QPixmap(":/Flags/bj.png");
   else if(country == "Bermuda")
-    return QIcon(":/Flags/bm.png");
+    return QPixmap(":/Flags/bm.png");
   else if(country == "Bhutan")
-    return QIcon(":/Flags/bt.png");
+    return QPixmap(":/Flags/bt.png");
   else if(country == "Bolivia")
-    return QIcon(":/Flags/bo.png");
+    return QPixmap(":/Flags/bo.png");
   else if(country == "BosniaAndHerzegowina")
-    return QIcon(":/Flags/ba.png");
+    return QPixmap(":/Flags/ba.png");
   else if(country == "Botswana")
-    return QIcon(":/Flags/bw.png");
+    return QPixmap(":/Flags/bw.png");
   else if(country == "Brazil")
-    return QIcon(":/Flags/br.png");
+    return QPixmap(":/Flags/br.png");
   else if(country == "BruneiDarussalam")
-    return QIcon(":/Flags/bn.png");
+    return QPixmap(":/Flags/bn.png");
   else if(country == "Bulgaria")
-    return QIcon(":/Flags/bg.png");
+    return QPixmap(":/Flags/bg.png");
   else if(country == "BurkinaFaso")
-    return QIcon(":/Flags/bf.png");
+    return QPixmap(":/Flags/bf.png");
   else if(country == "Burundi")
-    return QIcon(":/Flags/bi.png");
+    return QPixmap(":/Flags/bi.png");
   else if(country == "Cambodia")
-    return QIcon(":/Flags/kh.png");
+    return QPixmap(":/Flags/kh.png");
   else if(country == "Cameroon")
-    return QIcon(":/Flags/cm.png");
+    return QPixmap(":/Flags/cm.png");
   else if(country == "Canada")
-    return QIcon(":/Flags/ca.png");
+    return QPixmap(":/Flags/ca.png");
   else if(country == "CapeVerde")
-    return QIcon(":/Flags/cv.png");
+    return QPixmap(":/Flags/cv.png");
   else if(country == "CentralAfricanRepublic")
-    return QIcon(":/Flags/cf.png");
+    return QPixmap(":/Flags/cf.png");
   else if(country == "Chad")
-    return QIcon(":/Flags/td.png");
+    return QPixmap(":/Flags/td.png");
   else if(country == "Chile")
-    return QIcon(":/Flags/cl.png");
+    return QPixmap(":/Flags/cl.png");
   else if(country == "China")
-    return QIcon(":/Flags/cn.png");
+    return QPixmap(":/Flags/cn.png");
   else if(country == "Colombia")
-    return QIcon(":/Flags/co.png");
+    return QPixmap(":/Flags/co.png");
   else if(country == "Comoros")
-    return QIcon(":/Flags/km.png");
+    return QPixmap(":/Flags/km.png");
   else if(country == "CostaRica")
-    return QIcon(":/Flags/cr.png");
+    return QPixmap(":/Flags/cr.png");
   else if(country == "Croatia")
-    return QIcon(":/Flags/hr.png");
+    return QPixmap(":/Flags/hr.png");
   else if(country == "Cyprus")
-    return QIcon(":/Flags/cy.png");
+    return QPixmap(":/Flags/cy.png");
   else if(country == "CzechRepublic")
-    return QIcon(":/Flags/cz.png");
+    return QPixmap(":/Flags/cz.png");
   else if(country == "Default")
-    return QIcon(":/Flags/us.png");
+    return QPixmap(":/Flags/us.png");
   else if(country == "DemocraticRepublicOfCongo")
-    return QIcon(":/Flags/cd.png");
+    return QPixmap(":/Flags/cd.png");
   else if(country == "Denmark")
-    return QIcon(":/Flags/dk.png");
+    return QPixmap(":/Flags/dk.png");
   else if(country == "Djibouti")
-    return QIcon(":/Flags/dj.png");
+    return QPixmap(":/Flags/dj.png");
   else if(country == "DominicanRepublic")
-    return QIcon(":/Flags/do.png");
+    return QPixmap(":/Flags/do.png");
   else if(country == "Ecuador")
-    return QIcon(":/Flags/ec.png");
+    return QPixmap(":/Flags/ec.png");
   else if(country == "Egypt")
-    return QIcon(":/Flags/eg.png");
+    return QPixmap(":/Flags/eg.png");
   else if(country == "ElSalvador")
-    return QIcon(":/Flags/sv.png");
+    return QPixmap(":/Flags/sv.png");
   else if(country == "EquatorialGuinea")
-    return QIcon(":/Flags/gq.png");
+    return QPixmap(":/Flags/gq.png");
   else if(country == "Eritrea")
-    return QIcon(":/Flags/er.png");
+    return QPixmap(":/Flags/er.png");
   else if(country == "Estonia")
-    return QIcon(":/Flags/ee.png");
+    return QPixmap(":/Flags/ee.png");
   else if(country == "Ethiopia")
-    return QIcon(":/Flags/et.png");
+    return QPixmap(":/Flags/et.png");
   else if(country == "FaroeIslands")
-    return QIcon(":/Flags/fo.png");
+    return QPixmap(":/Flags/fo.png");
   else if(country == "Finland")
-    return QIcon(":/Flags/fi.png");
+    return QPixmap(":/Flags/fi.png");
   else if(country == "France")
-    return QIcon(":/Flags/fr.png");
+    return QPixmap(":/Flags/fr.png");
   else if(country == "FrenchGuiana")
-    return QIcon(":/Flags/gy.png");
+    return QPixmap(":/Flags/gy.png");
   else if(country == "Gabon")
-    return QIcon(":/Flags/ga.png");
+    return QPixmap(":/Flags/ga.png");
   else if(country == "Georgia")
-    return QIcon(":/Flags/ge.png");
+    return QPixmap(":/Flags/ge.png");
   else if(country == "Germany")
-    return QIcon(":/Flags/de.png");
+    return QPixmap(":/Flags/de.png");
   else if(country == "Ghana")
-    return QIcon(":/Flags/gh.png");
+    return QPixmap(":/Flags/gh.png");
   else if(country == "Greece")
-    return QIcon(":/Flags/gr.png");
+    return QPixmap(":/Flags/gr.png");
   else if(country == "Greenland")
-    return QIcon(":/Flags/gl.png");
+    return QPixmap(":/Flags/gl.png");
   else if(country == "Guadeloupe")
-    return QIcon(":/Flags/fr.png");
+    return QPixmap(":/Flags/fr.png");
   else if(country == "Guam")
-    return QIcon(":/Flags/gu.png");
+    return QPixmap(":/Flags/gu.png");
   else if(country == "Guatemala")
-    return QIcon(":/Flags/gt.png");
+    return QPixmap(":/Flags/gt.png");
   else if(country == "Guinea")
-    return QIcon(":/Flags/gn.png");
+    return QPixmap(":/Flags/gn.png");
   else if(country == "GuineaBissau")
-    return QIcon(":/Flags/gw.png");
+    return QPixmap(":/Flags/gw.png");
   else if(country == "Guyana")
-    return QIcon(":/Flags/gy.png");
+    return QPixmap(":/Flags/gy.png");
   else if(country == "Honduras")
-    return QIcon(":/Flags/hn.png");
+    return QPixmap(":/Flags/hn.png");
   else if(country == "HongKong")
-    return QIcon(":/Flags/hk.png");
+    return QPixmap(":/Flags/hk.png");
   else if(country == "Hungary")
-    return QIcon(":/Flags/hu.png");
+    return QPixmap(":/Flags/hu.png");
   else if(country == "Iceland")
-    return QIcon(":/Flags/is.png");
+    return QPixmap(":/Flags/is.png");
   else if(country == "India")
-    return QIcon(":/Flags/in.png");
+    return QPixmap(":/Flags/in.png");
   else if(country == "Indonesia")
-    return QIcon(":/Flags/id.png");
+    return QPixmap(":/Flags/id.png");
   else if(country == "Iran")
-    return QIcon(":/Flags/ir.png");
+    return QPixmap(":/Flags/ir.png");
   else if(country == "Iraq")
-    return QIcon(":/Flags/iq.png");
+    return QPixmap(":/Flags/iq.png");
   else if(country == "Ireland")
-    return QIcon(":/Flags/ie.png");
+    return QPixmap(":/Flags/ie.png");
   else if(country == "Israel")
-    return QIcon(":/Flags/il.png");
+    return QPixmap(":/Flags/il.png");
   else if(country == "Italy")
-    return QIcon(":/Flags/it.png");
+    return QPixmap(":/Flags/it.png");
   else if(country == "IvoryCoast")
-    return QIcon(":/Flags/ci.png");
+    return QPixmap(":/Flags/ci.png");
   else if(country == "Jamaica")
-    return QIcon(":/Flags/jm.png");
+    return QPixmap(":/Flags/jm.png");
   else if(country == "Japan")
-    return QIcon(":/Flags/jp.png");
+    return QPixmap(":/Flags/jp.png");
   else if(country == "Jordan")
-    return QIcon(":/Flags/jo.png");
+    return QPixmap(":/Flags/jo.png");
   else if(country == "Kazakhstan")
-    return QIcon(":/Flags/kz.png");
+    return QPixmap(":/Flags/kz.png");
   else if(country == "Kenya")
-    return QIcon(":/Flags/ke.png");
+    return QPixmap(":/Flags/ke.png");
   else if(country == "Kuwait")
-    return QIcon(":/Flags/kw.png");
+    return QPixmap(":/Flags/kw.png");
   else if(country == "Kyrgyzstan")
-    return QIcon(":/Flags/kg.png");
+    return QPixmap(":/Flags/kg.png");
   else if(country == "Lao")
-    return QIcon(":/Flags/la.png");
+    return QPixmap(":/Flags/la.png");
   else if(country == "LatinAmericaAndTheCaribbean")
-    return QIcon(":/Flags/mx.png");
+    return QPixmap(":/Flags/mx.png");
   else if(country == "Latvia")
-    return QIcon(":/Flags/lv.png");
+    return QPixmap(":/Flags/lv.png");
   else if(country == "Lebanon")
-    return QIcon(":/Flags/lb.png");
+    return QPixmap(":/Flags/lb.png");
   else if(country == "Lesotho")
-    return QIcon(":/Flags/ls.png");
+    return QPixmap(":/Flags/ls.png");
   else if(country == "Liberia")
-    return QIcon(":/Flags/lr.png");
+    return QPixmap(":/Flags/lr.png");
   else if(country == "LibyanArabJamahiriya")
-    return QIcon(":/Flags/ly.png");
+    return QPixmap(":/Flags/ly.png");
   else if(country == "Liechtenstein")
-    return QIcon(":/Flags/li.png");
+    return QPixmap(":/Flags/li.png");
   else if(country == "Lithuania")
-    return QIcon(":/Flags/lt.png");
+    return QPixmap(":/Flags/lt.png");
   else if(country == "Luxembourg")
-    return QIcon(":/Flags/lu.png");
+    return QPixmap(":/Flags/lu.png");
   else if(country == "Macau")
-    return QIcon(":/Flags/mo.png");
+    return QPixmap(":/Flags/mo.png");
   else if(country == "Macedonia")
-    return QIcon(":/Flags/mk.png");
+    return QPixmap(":/Flags/mk.png");
   else if(country == "Madagascar")
-    return QIcon(":/Flags/mg.png");
+    return QPixmap(":/Flags/mg.png");
   else if(country == "Malaysia")
-    return QIcon(":/Flags/my.png");
+    return QPixmap(":/Flags/my.png");
   else if(country == "Mali")
-    return QIcon(":/Flags/ml.png");
+    return QPixmap(":/Flags/ml.png");
   else if(country == "Malta")
-    return QIcon(":/Flags/mt.png");
+    return QPixmap(":/Flags/mt.png");
   else if(country == "MarshallIslands")
-    return QIcon(":/Flags/mh.png");
+    return QPixmap(":/Flags/mh.png");
   else if(country == "Martinique")
-    return QIcon(":/Flags/fr.png");
+    return QPixmap(":/Flags/fr.png");
   else if(country == "Mauritius")
-    return QIcon(":/Flags/mu.png");
+    return QPixmap(":/Flags/mu.png");
   else if(country == "Mayotte")
-    return QIcon(":/Flags/yt.png");
+    return QPixmap(":/Flags/yt.png");
   else if(country == "Mexico")
-    return QIcon(":/Flags/mx.png");
+    return QPixmap(":/Flags/mx.png");
   else if(country == "Moldova")
-    return QIcon(":/Flags/md.png");
+    return QPixmap(":/Flags/md.png");
   else if(country == "Monaco")
-    return QIcon(":/Flags/mc.png");
+    return QPixmap(":/Flags/mc.png");
   else if(country == "Mongolia")
-    return QIcon(":/Flags/mn.png");
+    return QPixmap(":/Flags/mn.png");
   else if(country == "Montenegro")
-    return QIcon(":/Flags/me.png");
+    return QPixmap(":/Flags/me.png");
   else if(country == "Morocco")
-    return QIcon(":/Flags/ma.png");
+    return QPixmap(":/Flags/ma.png");
   else if(country == "Mozambique")
-    return QIcon(":/Flags/mz.png");
+    return QPixmap(":/Flags/mz.png");
   else if(country == "Myanmar")
-    return QIcon(":/Flags/mm.png");
+    return QPixmap(":/Flags/mm.png");
   else if(country == "Namibia")
-    return QIcon(":/Flags/na.png");
+    return QPixmap(":/Flags/na.png");
   else if(country == "Nepal")
-    return QIcon(":/Flags/np.png");
+    return QPixmap(":/Flags/np.png");
   else if(country == "Netherlands")
-    return QIcon(":/Flags/nl.png");
+    return QPixmap(":/Flags/nl.png");
   else if(country == "NewZealand")
-    return QIcon(":/Flags/nz.png");
+    return QPixmap(":/Flags/nz.png");
   else if(country == "Nicaragua")
-    return QIcon(":/Flags/ni.png");
+    return QPixmap(":/Flags/ni.png");
   else if(country == "Niger")
-    return QIcon(":/Flags/ne.png");
+    return QPixmap(":/Flags/ne.png");
   else if(country == "Nigeria")
-    return QIcon(":/Flags/ng.png");
+    return QPixmap(":/Flags/ng.png");
   else if(country == "NorthernMarianaIslands")
-    return QIcon(":/Flags/mp.png");
+    return QPixmap(":/Flags/mp.png");
   else if(country == "Norway")
-    return QIcon(":/Flags/no.png");
+    return QPixmap(":/Flags/no.png");
   else if(country == "Oman")
-    return QIcon(":/Flags/om.png");
+    return QPixmap(":/Flags/om.png");
   else if(country == "Pakistan")
-    return QIcon(":/Flags/pk.png");
+    return QPixmap(":/Flags/pk.png");
   else if(country == "Panama")
-    return QIcon(":/Flags/pa.png");
+    return QPixmap(":/Flags/pa.png");
   else if(country == "Paraguay")
-    return QIcon(":/Flags/py.png");
+    return QPixmap(":/Flags/py.png");
   else if(country == "PeoplesRepublicOfCongo")
-    return QIcon(":/Flags/cg.png");
+    return QPixmap(":/Flags/cg.png");
   else if(country == "Peru")
-    return QIcon(":/Flags/pe.png");
+    return QPixmap(":/Flags/pe.png");
   else if(country == "Philippines")
-    return QIcon(":/Flags/ph.png");
+    return QPixmap(":/Flags/ph.png");
   else if(country == "Poland")
-    return QIcon(":/Flags/pl.png");
+    return QPixmap(":/Flags/pl.png");
   else if(country == "Portugal")
-    return QIcon(":/Flags/pt.png");
+    return QPixmap(":/Flags/pt.png");
   else if(country == "PuertoRico")
-    return QIcon(":/Flags/pr.png");
+    return QPixmap(":/Flags/pr.png");
   else if(country == "Qatar")
-    return QIcon(":/Flags/qa.png");
+    return QPixmap(":/Flags/qa.png");
   else if(country == "RepublicOfKorea")
-    return QIcon(":/Flags/kr.png");
+    return QPixmap(":/Flags/kr.png");
   else if(country == "Reunion")
-    return QIcon(":/Flags/fr.png");
+    return QPixmap(":/Flags/fr.png");
   else if(country == "Romania")
-    return QIcon(":/Flags/ro.png");
+    return QPixmap(":/Flags/ro.png");
   else if(country == "RussianFederation")
-    return QIcon(":/Flags/ru.png");
+    return QPixmap(":/Flags/ru.png");
   else if(country == "Rwanda")
-    return QIcon(":/Flags/rw.png");
+    return QPixmap(":/Flags/rw.png");
   else if(country == "Saint Barthelemy")
-    return QIcon(":/Flags/bl.png");
+    return QPixmap(":/Flags/bl.png");
   else if(country == "Saint Martin")
-    return QIcon(":/Flags/fr.png");
+    return QPixmap(":/Flags/fr.png");
   else if(country == "SaoTomeAndPrincipe")
-    return QIcon(":/Flags/st.png");
+    return QPixmap(":/Flags/st.png");
   else if(country == "SaudiArabia")
-    return QIcon(":/Flags/sa.png");
+    return QPixmap(":/Flags/sa.png");
   else if(country == "Senegal")
-    return QIcon(":/Flags/sn.png");
+    return QPixmap(":/Flags/sn.png");
   else if(country == "Serbia")
-    return QIcon(":/Flags/rs.png");
+    return QPixmap(":/Flags/rs.png");
   else if(country == "SerbiaAndMontenegro")
-    return QIcon(":/Flags/rs.png");
+    return QPixmap(":/Flags/rs.png");
   else if(country == "Singapore")
-    return QIcon(":/Flags/sg.png");
+    return QPixmap(":/Flags/sg.png");
   else if(country == "Slovakia")
-    return QIcon(":/Flags/sk.png");
+    return QPixmap(":/Flags/sk.png");
   else if(country == "Slovenia")
-    return QIcon(":/Flags/si.png");
+    return QPixmap(":/Flags/si.png");
   else if(country == "Somalia")
-    return QIcon(":/Flags/so.png");
+    return QPixmap(":/Flags/so.png");
   else if(country == "SouthAfrica")
-    return QIcon(":/Flags/za.png");
+    return QPixmap(":/Flags/za.png");
   else if(country == "Spain")
-    return QIcon(":/Flags/es.png");
+    return QPixmap(":/Flags/es.png");
   else if(country == "SriLanka")
-    return QIcon(":/Flags/lk.png");
+    return QPixmap(":/Flags/lk.png");
   else if(country == "Sudan")
-    return QIcon(":/Flags/sd.png");
+    return QPixmap(":/Flags/sd.png");
   else if(country == "Swaziland")
-    return QIcon(":/Flags/sz.png");
+    return QPixmap(":/Flags/sz.png");
   else if(country == "Sweden")
-    return QIcon(":/Flags/se.png");
+    return QPixmap(":/Flags/se.png");
   else if(country == "Switzerland")
-    return QIcon(":/Flags/ch.png");
+    return QPixmap(":/Flags/ch.png");
   else if(country == "SyrianArabRepublic")
-    return QIcon(":/Flags/sy.png");
+    return QPixmap(":/Flags/sy.png");
   else if(country == "Taiwan")
-    return QIcon(":/Flags/tw.png");
+    return QPixmap(":/Flags/tw.png");
   else if(country == "Tajikistan")
-    return QIcon(":/Flags/tj.png");
+    return QPixmap(":/Flags/tj.png");
   else if(country == "Tanzania")
-    return QIcon(":/Flags/tz.png");
+    return QPixmap(":/Flags/tz.png");
   else if(country == "Thailand")
-    return QIcon(":/Flags/th.png");
+    return QPixmap(":/Flags/th.png");
   else if(country == "Togo")
-    return QIcon(":/Flags/tg.png");
+    return QPixmap(":/Flags/tg.png");
   else if(country == "Tonga")
-    return QIcon(":/Flags/to.png");
+    return QPixmap(":/Flags/to.png");
   else if(country == "TrinidadAndTobago")
-    return QIcon(":/Flags/tt.png");
+    return QPixmap(":/Flags/tt.png");
   else if(country == "Tunisia")
-    return QIcon(":/Flags/tn.png");
+    return QPixmap(":/Flags/tn.png");
   else if(country == "Turkey")
-    return QIcon(":/Flags/tr.png");
+    return QPixmap(":/Flags/tr.png");
   else if(country == "USVirginIslands")
-    return QIcon(":/Flags/vi.png");
+    return QPixmap(":/Flags/vi.png");
   else if(country == "Uganda")
-    return QIcon(":/Flags/ug.png");
+    return QPixmap(":/Flags/ug.png");
   else if(country == "Ukraine")
-    return QIcon(":/Flags/ua.png");
+    return QPixmap(":/Flags/ua.png");
   else if(country == "UnitedArabEmirates")
-    return QIcon(":/Flags/ae.png");
+    return QPixmap(":/Flags/ae.png");
   else if(country == "UnitedKingdom")
-    return QIcon(":/Flags/gb.png");
+    return QPixmap(":/Flags/gb.png");
   else if(country == "UnitedStates")
-    return QIcon(":/Flags/us.png");
+    return QPixmap(":/Flags/us.png");
   else if(country == "UnitedStatesMinorOutlyingIslands")
-    return QIcon(":/Flags/us.png");
+    return QPixmap(":/Flags/us.png");
   else if(country == "Uruguay")
-    return QIcon(":/Flags/uy.png");
+    return QPixmap(":/Flags/uy.png");
   else if(country == "Uzbekistan")
-    return QIcon(":/Flags/uz.png");
+    return QPixmap(":/Flags/uz.png");
   else if(country == "Venezuela")
-    return QIcon(":/Flags/ve.png");
+    return QPixmap(":/Flags/ve.png");
   else if(country == "VietNam")
-    return QIcon(":/Flags/vn.png");
+    return QPixmap(":/Flags/vn.png");
   else if(country == "Yemen")
-    return QIcon(":/Flags/ye.png");
+    return QPixmap(":/Flags/ye.png");
   else if(country == "Yugoslavia")
-    return QIcon(":/Flags/yu.png");
+    return QPixmap(":/Flags/yu.png");
   else if(country == "Zambia")
-    return QIcon(":/Flags/zm.png");
+    return QPixmap(":/Flags/zm.png");
   else if(country == "Zimbabwe")
-    return QIcon(":/Flags/zw.png");
+    return QPixmap(":/Flags/zw.png");
   else
-    return QIcon(":/Flags/unknown.png");
+    return QPixmap(":/Flags/unknown.png");
 }
 
 void spoton::slotAddBootstrapper(void)

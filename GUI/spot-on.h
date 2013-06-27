@@ -120,7 +120,7 @@ class spoton: public QMainWindow
   spoton_crypt *m_signatureCrypt;
   spoton_docviewer m_docViewer;
   spoton_logviewer m_logViewer;
-  QIcon iconForCountry(const QString &country);
+  QPixmap pixmapForCountry(const QString &country);
   bool isKernelActive(void) const;
   bool saveGemini(const QByteArray &gemini, const QString &oid);
   bool updateMailStatus(const QString &oid, const QString &status);
