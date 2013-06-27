@@ -36,7 +36,7 @@ QMAKE_EXTRA_TARGETS = libspoton purge
 QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../. ../../../.
 LIBS		+= -L../../../libSpotOn -L/usr/local/lib -lGeoIP \
-                   -lgcrypt -lspoton
+                   -lcrypto -lgcrypt -lspoton
 PRE_TARGETDEPS = libspoton.so
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui
