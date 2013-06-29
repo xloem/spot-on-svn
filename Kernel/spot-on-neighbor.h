@@ -132,8 +132,7 @@ class spoton_neighbor: public QSslSocket
   void slotPublicizeListenerPlaintext(const QByteArray &data,
 				      const qint64 id);
   void slotPublicizeListenerPlaintext(const QHostAddress &address,
-				      const quint16 port,
-				      const bool useSsl);
+				      const quint16 port);
   void slotReadyRead(void);
   void slotReceivedChatMessage(const QByteArray &data, const qint64 id);
   void slotReceivedMailMessage(const QByteArray &data, const qint64 id);

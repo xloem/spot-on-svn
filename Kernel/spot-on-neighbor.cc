@@ -2677,7 +2677,7 @@ void spoton_neighbor::slotHostFound(const QHostInfo &hostInfo)
 }
 
 void spoton_neighbor::slotPublicizeListenerPlaintext
-(const QHostAddress &address, const quint16 port, const bool useSsl)
+(const QHostAddress &address, const quint16 port)
 {
   if(state() == QAbstractSocket::ConnectedState)
     if((isEncrypted() && m_useSsl) || !m_useSsl)
@@ -2689,7 +2689,7 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
 	memcpy(&c, static_cast<void *> (&ttl), 1);
 
 	QByteArray message
-	  (spoton_send::message0030(address, port, useSsl, c));
+	  (spoton_send::message0030(address, port, c));
 
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
