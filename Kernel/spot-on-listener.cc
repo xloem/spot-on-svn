@@ -750,8 +750,3 @@ quint16 spoton_listener::externalPort(void) const
 
   return m_externalPort;
 }
-
-bool spoton_listener::useSsl(void) const
-{
-  return m_useSsl;
-}

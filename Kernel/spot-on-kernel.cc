@@ -1032,12 +1032,10 @@ void spoton_kernel::connectSignalsToNeighbor
 					      const qint64)));
   connect(this,
 	  SIGNAL(publicizeListenerPlaintext(const QHostAddress &,
-					    const quint16,
-					    const bool)),
+					    const quint16)),
 	  neighbor,
 	  SLOT(slotPublicizeListenerPlaintext(const QHostAddress &,
-					      const quint16,
-					      const bool)));
+					      const quint16)));
   connect(this,
 	  SIGNAL(receivedChatMessage(const QByteArray &,
 				     const qint64)),
@@ -1938,8 +1936,7 @@ void spoton_kernel::slotPublicizeAllListenersPlaintext(void)
 
       if(listener)
 	emit publicizeListenerPlaintext(listener->externalAddress(),
-					listener->externalPort(),
-					listener->useSsl());
+					listener->externalPort());
     }
 }
 
@@ -1949,8 +1946,7 @@ void spoton_kernel::slotPublicizeListenerPlaintext(const qint64 oid)
 
   if(listener)
     emit publicizeListenerPlaintext(listener->externalAddress(),
-				    listener->externalPort(),
-				    listener->useSsl());
+				    listener->externalPort());
 }
 
 void spoton_kernel::slotReceivedChatMessage(void)

@@ -105,7 +105,6 @@ class spoton_listener: public spoton_listener_tcp_server
 		  QObject *parent);
   ~spoton_listener();
   QHostAddress externalAddress(void) const;
-  bool useSsl(void) const;
   quint16 externalPort(void) const;
 
  private:
