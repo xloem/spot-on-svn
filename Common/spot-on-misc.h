@@ -77,7 +77,6 @@ class spoton_misc
 				    spoton_crypt *crypt);
   static void saveNeighbor(const QHostAddress &address,
 			   const quint16 port,
-			   const bool useSsl,
 			   spoton_crypt *crypt);
 
  private:

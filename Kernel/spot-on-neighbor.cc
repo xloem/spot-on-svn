@@ -162,10 +162,9 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const QString &port,
 				 const QString &scopeId,
 				 const qint64 id,
-				 const bool useSsl,
 				 QObject *parent):QSslSocket(parent)
 {
-  m_useSsl = useSsl;
+  m_useSsl = true;
   s_dbId += 1;
   setPeerVerifyMode(QSslSocket::VerifyNone);
 #if QT_VERSION >= 0x050000
@@ -2038,11 +2037,11 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      if(list.size() != 4)
+      if(list.size() != 3)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0030(): "
-		     "received irregular data. Expecting 4 "
+		     "received irregular data. Expecting 3 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
 	  return;
@@ -2057,10 +2056,9 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 
 	  if(!spoton_misc::isPrivateNetwork(address))
 	    {
-	      bool useSsl = list.at(3).toInt();
 	      quint16 port = list.at(1).toUShort();
 
-	      spoton_misc::saveNeighbor(address, port, useSsl, s_crypt);
+	      spoton_misc::saveNeighbor(address, port, s_crypt);
 	    }
 	}
 

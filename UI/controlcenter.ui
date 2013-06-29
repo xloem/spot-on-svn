@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>973</width>
-                <height>573</height>
+                <width>965</width>
+                <height>584</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1470,16 +1470,6 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="6">
-                  <widget class="QCheckBox" name="sslNeighbor">
-                   <property name="text">
-                    <string>&amp;SSL</string>
-                   </property>
-                   <property name="checked">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
                 </layout>
                </item>
                <item>
@@ -1853,8 +1843,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>973</width>
-             <height>573</height>
+             <width>1029</width>
+             <height>358</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -2795,7 +2785,7 @@
      <x>0</x>
      <y>0</y>
      <width>995</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2924,7 +2914,6 @@
   <tabstop>neighborPort</tabstop>
   <tabstop>dynamicdns</tabstop>
   <tabstop>ipv4Neighbor</tabstop>
-  <tabstop>sslNeighbor</tabstop>
   <tabstop>neighborScopeId</tabstop>
   <tabstop>ipv6Neighbor</tabstop>
   <tabstop>proxy</tabstop>
