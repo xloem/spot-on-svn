@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>973</width>
-                <height>573</height>
+                <width>965</width>
+                <height>584</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -117,6 +117,9 @@
                       <widget class="QTextBrowser" name="messages">
                        <property name="tabChangesFocus">
                         <bool>true</bool>
+                       </property>
+                       <property name="textInteractionFlags">
+                        <set>Qt::TextSelectableByMouse</set>
                        </property>
                       </widget>
                      </item>
@@ -589,6 +592,9 @@
                <property name="tabChangesFocus">
                 <bool>true</bool>
                </property>
+               <property name="textInteractionFlags">
+                <set>Qt::TextSelectableByMouse</set>
+               </property>
               </widget>
              </widget>
             </item>
@@ -688,6 +694,9 @@
              <widget class="QTextEdit" name="outgoingMessage">
               <property name="tabChangesFocus">
                <bool>true</bool>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::TextEditable</set>
               </property>
              </widget>
             </item>
@@ -1824,8 +1833,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>973</width>
-             <height>573</height>
+             <width>1029</width>
+             <height>358</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -2766,7 +2775,7 @@
      <x>0</x>
      <y>0</y>
      <width>995</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
