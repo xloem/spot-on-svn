@@ -52,8 +52,10 @@ class spoton_neighbor: public QSslSocket
 		  const QString &port,
 		  const QString &scopeId,
 		  const qint64 id,
+		  const bool useSsl,
 		  QObject *parent);
   spoton_neighbor(const int socketDescriptor,
+		  const bool useSsl,
 		  QObject *parent);
   ~spoton_neighbor();
   QUuid receivedUuid(void) const;
@@ -77,6 +79,7 @@ class spoton_neighbor: public QSslSocket
   QTimer m_lifetime;
   QTimer m_timer;
   QUuid m_receivedUuid;
+  bool m_useSsl;
   qint64 m_id;
   quint16 m_port;
   spoton_external_address *m_externalAddress;
@@ -130,7 +133,8 @@ class spoton_neighbor: public QSslSocket
   void slotPublicizeListenerPlaintext(const QByteArray &data,
 				      const qint64 id);
   void slotPublicizeListenerPlaintext(const QHostAddress &address,
-				      const quint16 port);
+				      const quint16 port,
+				      const bool useSsl);
   void slotReadyRead(void);
   void slotReceivedChatMessage(const QByteArray &data, const qint64 id);
   void slotReceivedMailMessage(const QByteArray &data, const qint64 id);

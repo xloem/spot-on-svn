@@ -45,8 +45,10 @@
 qint64 spoton_neighbor::s_dbId = 0;
 
 spoton_neighbor::spoton_neighbor(const int socketDescriptor,
+				 const bool useSsl,
 				 QObject *parent):QSslSocket(parent)
 {
+  m_useSsl = useSsl;
   s_dbId += 1;
 
   spoton_crypt *s_crypt = 0;
@@ -144,7 +146,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotDiscoverExternalAddress(void)));
-  startServerEncryption();
+
+  if(m_useSsl)
+    startServerEncryption();
+
   m_externalAddressDiscovererTimer.start(30000);
   m_keepAliveTimer.start(30000);
   m_lifetime.start(10 * 60 * 1000);
@@ -157,8 +162,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const QString &port,
 				 const QString &scopeId,
 				 const qint64 id,
+				 const bool useSsl,
 				 QObject *parent):QSslSocket(parent)
 {
+  m_useSsl = useSsl;
   s_dbId += 1;
   setPeerVerifyMode(QSslSocket::VerifyNone);
 #if QT_VERSION >= 0x050000
@@ -346,7 +353,7 @@ spoton_neighbor::~spoton_neighbor()
 void spoton_neighbor::slotTimeout(void)
 {
   if(state() == QAbstractSocket::ConnectedState)
-    if(isEncrypted())
+    if((isEncrypted() && m_useSsl) || !m_useSsl)
       if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 90)
 	{
 	  spoton_misc::logError("spoton_neighbor::slotTimeout(): "
@@ -419,7 +426,12 @@ void spoton_neighbor::slotTimeout(void)
   if(status == "connected")
     {
       if(state() == QAbstractSocket::UnconnectedState)
-	connectToHostEncrypted(m_address.toString(), m_port);
+	{
+	  if(m_useSsl)
+	    connectToHostEncrypted(m_address.toString(), m_port);
+	  else
+	    connectToHost(m_address, m_port);
+	}
     }
 
   if(state() == QAbstractSocket::ConnectedState)
@@ -506,7 +518,7 @@ void spoton_neighbor::slotReadyRead(void)
 	  if(length > 0 && data.contains("type=0000&content="))
 	    process0000(length, data);
 	  else if(length > 0 && data.contains("type=0001a&content="))
-	    process0001a(length, data);	  
+	    process0001a(length, data);
 	  else if(length > 0 && data.contains("type=0001b&content="))
 	    process0001b(length, data);
 	  else if(length > 0 && data.contains("type=0002&content="))
@@ -764,7 +776,7 @@ void spoton_neighbor::setId(const qint64 id)
 void spoton_neighbor::slotSendMessage(const QByteArray &message)
 {
   if(state() == QAbstractSocket::ConnectedState)
-    if(isEncrypted())
+    if((isEncrypted() && m_useSsl) || !m_useSsl)
       {
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
@@ -785,7 +797,7 @@ void spoton_neighbor::slotReceivedChatMessage(const QByteArray &data,
 
   if(id != m_id)
     if(state() == QAbstractSocket::ConnectedState)
-      if(isEncrypted())
+      if((isEncrypted() && m_useSsl) || !m_useSsl)
 	{
 	  QByteArray message(spoton_send::message0000(data));
 
@@ -809,7 +821,7 @@ void spoton_neighbor::slotReceivedMailMessage(const QByteArray &data,
 
   if(id != m_id)
     if(state() == QAbstractSocket::ConnectedState)
-      if(isEncrypted())
+      if((isEncrypted() && m_useSsl) || !m_useSsl)
 	{
 	  QByteArray message(spoton_send::message0001a(data));
 
@@ -833,7 +845,7 @@ void spoton_neighbor::slotReceivedStatusMessage(const QByteArray &data,
 
   if(id != m_id)
     if(state() == QAbstractSocket::ConnectedState)
-      if(isEncrypted())
+      if((isEncrypted() && m_useSsl) || !m_useSsl)
 	{
 	  QByteArray message(spoton_send::message0013(data));
 
@@ -857,7 +869,7 @@ void spoton_neighbor::slotRetrieveMail(const QByteArray &data,
 
   if(id != m_id)
     if(state() == QAbstractSocket::ConnectedState)
-      if(isEncrypted())
+      if((isEncrypted() && m_useSsl) || !m_useSsl)
 	{
 	  QByteArray message(spoton_send::message0002(data));
 
@@ -886,7 +898,7 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
 {
   if(state() != QAbstractSocket::ConnectedState)
     return;
-  else if(!isEncrypted())
+  else if(!isEncrypted() && m_useSsl)
     return;
 
   QByteArray message;
@@ -2026,11 +2038,11 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      if(list.size() != 3)
+      if(list.size() != 4)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0030(): "
-		     "received irregular data. Expecting 3 "
+		     "received irregular data. Expecting 4 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
 	  return;
@@ -2045,9 +2057,10 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 
 	  if(!spoton_misc::isPrivateNetwork(address))
 	    {
+	      bool useSsl = list.at(3).toInt();
 	      quint16 port = list.at(1).toUShort();
 
-	      spoton_misc::saveNeighbor(address, port, s_crypt);
+	      spoton_misc::saveNeighbor(address, port, useSsl, s_crypt);
 	    }
 	}
 
@@ -2079,7 +2092,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
 {
   if(state() == QAbstractSocket::ConnectedState)
-    if(isEncrypted())
+    if((isEncrypted() && m_useSsl) || !m_useSsl)
       for(int i = 0; i < list.size(); i++)
 	{
 	  QByteArray message(spoton_send::message0013(list.at(i)));
@@ -2193,7 +2206,7 @@ void spoton_neighbor::slotSendUuid(void)
 {
   if(state() != QAbstractSocket::ConnectedState)
     return;
-  else if(!isEncrypted())
+  else if(!isEncrypted() && m_useSsl)
     return;
 
   QByteArray message;
@@ -2294,7 +2307,7 @@ void spoton_neighbor::slotDiscoverExternalAddress(void)
 void spoton_neighbor::slotSendKeepAlive(void)
 {
   if(state() == QAbstractSocket::ConnectedState)
-    if(isEncrypted())
+    if((isEncrypted() && m_useSsl) || !m_useSsl)
       {
 	QByteArray message(spoton_send::message0015());
 
@@ -2324,7 +2337,7 @@ void spoton_neighbor::slotSendMail
   QList<qint64> oids;
 
   if(state() == QAbstractSocket::ConnectedState)
-    if(isEncrypted())
+    if((isEncrypted() && m_useSsl) || !m_useSsl)
       for(int i = 0; i < list.size(); i++)
 	{
 	  QByteArray message;
@@ -2357,7 +2370,7 @@ void spoton_neighbor::slotSendMail
 void spoton_neighbor::slotSendMailFromPostOffice(const QByteArray &data)
 {
   if(state() == QAbstractSocket::ConnectedState)
-    if(isEncrypted())
+    if((isEncrypted() && m_useSsl) || !m_useSsl)
       {
 	QByteArray message(spoton_send::message0001b(data));
 
@@ -2543,7 +2556,7 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 	  query.bindValue
 	    (8, s_crypt->
 	     encrypted(tr("Unread").toUtf8(), &ok).toBase64());
- 
+
 	if(!subject.isEmpty())
 	  if(ok)
 	    query.bindValue
@@ -2640,7 +2653,7 @@ void spoton_neighbor::storeLetter(const QList<QByteArray> &list,
 void spoton_neighbor::slotRetrieveMail(const QList<QByteArray> &list)
 {
   if(state() == QAbstractSocket::ConnectedState)
-    if(isEncrypted())
+    if((isEncrypted() && m_useSsl) || !m_useSsl)
       for(int i = 0; i < list.size(); i++)
 	{
 	  QByteArray message(spoton_send::message0002(list.at(i)));
@@ -2666,10 +2679,10 @@ void spoton_neighbor::slotHostFound(const QHostInfo &hostInfo)
 }
 
 void spoton_neighbor::slotPublicizeListenerPlaintext
-(const QHostAddress &address, const quint16 port)
+(const QHostAddress &address, const quint16 port, const bool useSsl)
 {
   if(state() == QAbstractSocket::ConnectedState)
-    if(isEncrypted())
+    if((isEncrypted() && m_useSsl) || !m_useSsl)
       {
 	char c = 0;
 	short ttl = spoton_kernel::s_settings.value
@@ -2677,7 +2690,8 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
 
 	memcpy(&c, static_cast<void *> (&ttl), 1);
 
-	QByteArray message(spoton_send::message0030(address, port, c));
+	QByteArray message
+	  (spoton_send::message0030(address, port, useSsl, c));
 
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
@@ -2699,7 +2713,7 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 
   if(id != m_id)
     if(state() == QAbstractSocket::ConnectedState)
-      if(isEncrypted())
+      if((isEncrypted() && m_useSsl) || !m_useSsl)
 	{
 	  QByteArray message(spoton_send::message0030(data));
 
@@ -2774,10 +2788,11 @@ void spoton_neighbor::slotModeChanged(QSslSocket::SslMode mode)
 				"the connection mode has changed to %1.").
 			arg(mode));
 
-  if(mode == QSslSocket::UnencryptedMode)
-    {
-      spoton_misc::logError("spoton_neighbor::slotModeChanged(): "
-			    "unencrypted connection mode. Aborting.");
-      deleteLater();
-    }
+  if(m_useSsl)
+    if(mode == QSslSocket::UnencryptedMode)
+      {
+	spoton_misc::logError("spoton_neighbor::slotModeChanged(): "
+			      "unencrypted connection mode. Aborting.");
+	deleteLater();
+      }
 }

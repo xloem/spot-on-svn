@@ -266,12 +266,13 @@ void spoton_misc::prepareDatabases(void)
 		   "maximum_clients INTEGER NOT NULL DEFAULT 5, "
 		   "external_ip_address TEXT, "
 		   "external_port TEXT, "
-		   "hash TEXT PRIMARY KEY NOT NULL)"); /*
-						       ** The hash of the
-						       ** IP address,
-						       ** the port, and
-						       ** the scope.
-						       */
+		   "hash TEXT PRIMARY KEY NOT NULL, " /*
+						      ** The hash of the
+						      ** IP address,
+						      ** the port, and
+						      ** the scope.
+						      */
+		   "use_ssl INTEGER NOT NULL DEFAULT 1)");
       }
 
     db.close();
@@ -317,7 +318,8 @@ void spoton_misc::prepareDatabases(void)
 	   "proxy_password TEXT NOT NULL, "
 	   "proxy_port TEXT NOT NULL, "
 	   "proxy_type TEXT NOT NULL, "
-	   "proxy_username TEXT NOT NULL)");
+	   "proxy_username TEXT NOT NULL, "
+	   "use_ssl INTEGER NOT NULL DEFAULT 1)");
       }
 
     db.close();
@@ -1293,6 +1295,7 @@ void spoton_misc::prepareUrlDatabases(void)
 
 void spoton_misc::saveNeighbor(const QHostAddress &address,
 			       const quint16 port,
+			       const bool useSsl,
 			       spoton_crypt *crypt)
 {
   if(!crypt)
@@ -1331,9 +1334,10 @@ void spoton_misc::saveNeighbor(const QHostAddress &address,
 		   "proxy_password, "
 		   "proxy_port, "
 		   "proxy_type, "
-		   "proxy_username) "
+		   "proxy_username, "
+		   "use_ssl) "
 		   "VALUES (?, ?, ?, ?, ?, ?, ?, "
-		   "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		   "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
 
@@ -1419,6 +1423,8 @@ void spoton_misc::saveNeighbor(const QHostAddress &address,
 	  query.bindValue
 	    (17, crypt->encrypted(proxyUsername.toUtf8(), &ok).
 	     toBase64());
+
+	query.bindValue(18, useSsl);
 
 	if(ok)
 	  query.exec();

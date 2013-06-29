@@ -328,7 +328,7 @@ void spoton::highlightKernelPath(void)
   if(fileInfo.isReadable() && fileInfo.size() > 0)
 #else
   if(fileInfo.isExecutable() && fileInfo.size() > 0)
-#endif    
+#endif
     color = QColor(144, 238, 144);
   else
     color = QColor(240, 128, 128); // Light coral!
@@ -3028,7 +3028,7 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 	      if(ok)
 		query.bindValue
 		  (4, m_crypt->encrypted(list.value(3), &ok).toBase64());
- 
+
 	    if(!list.value(5).isEmpty())
 	      if(ok)
 		query.bindValue

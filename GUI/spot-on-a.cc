@@ -779,9 +779,10 @@ void spoton::slotAddListener(void)
 		      "protocol, "
 		      "scope_id, "
 		      "status_control, "
-		      "hash) "
+		      "hash, "
+		      "use_ssl) "
 		      "VALUES "
-		      "(?, ?, ?, ?, ?, ?)");
+		      "(?, ?, ?, ?, ?, ?, ?)");
 
 	if(ip.isEmpty())
 	  query.bindValue
@@ -854,6 +855,8 @@ void spoton::slotAddListener(void)
 	    (5, m_crypt->keyedHash((ip + port + scopeId).toLatin1(), &ok).
 	     toBase64());
 
+	query.bindValue(6, m_ui.sslListener->isChecked() ? 1 : 0);
+
 	if(ok)
 	  ok = query.exec();
       }
@@ -920,9 +923,11 @@ void spoton::slotAddNeighbor(void)
 		      "proxy_password, "
 		      "proxy_port, "
 		      "proxy_type, "
-		      "proxy_username) "
+		      "proxy_username, "
+		      "use_ssl) "
 		      "VALUES "
-		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+		      "?, ?, ?, ?)");
 
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
@@ -1058,6 +1063,8 @@ void spoton::slotAddNeighbor(void)
 	  query.bindValue
 	    (16, m_crypt->encrypted(proxyUsername.toUtf8(), &ok).
 	     toBase64());
+
+	query.bindValue(17, m_ui.sslNeighbor->isChecked() ? 1 : 0);
 
 	if(ok)
 	  ok = query.exec();

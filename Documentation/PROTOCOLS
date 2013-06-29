@@ -160,3 +160,5 @@ EOL
 1 - Port (Base-64) (Plaintext)
 EOL
 2 - Scope ID (Base-64) (Plaintext)
+EOL
+3 - SSL? (Base-64) (Plaintext)

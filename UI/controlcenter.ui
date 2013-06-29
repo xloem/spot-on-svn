@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>965</width>
-                <height>584</height>
+                <width>973</width>
+                <height>573</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1121,6 +1121,16 @@
                    </property>
                   </widget>
                  </item>
+                 <item row="0" column="6">
+                  <widget class="QCheckBox" name="sslListener">
+                   <property name="text">
+                    <string>&amp;SSL</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </item>
               </layout>
@@ -1457,6 +1467,16 @@
                    </property>
                    <property name="text">
                     <string>&amp;DDNS</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="6">
+                  <widget class="QCheckBox" name="sslNeighbor">
+                   <property name="text">
+                    <string>&amp;SSL</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
@@ -1833,8 +1853,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1029</width>
-             <height>358</height>
+             <width>973</width>
+             <height>573</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -2775,7 +2795,7 @@
      <x>0</x>
      <y>0</y>
      <width>995</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -2890,6 +2910,7 @@
   <tabstop>listenerIP</tabstop>
   <tabstop>listenerPort</tabstop>
   <tabstop>ipv4Listener</tabstop>
+  <tabstop>sslListener</tabstop>
   <tabstop>listenerScopeId</tabstop>
   <tabstop>ipv6Listener</tabstop>
   <tabstop>addListener</tabstop>
@@ -2903,6 +2924,7 @@
   <tabstop>neighborPort</tabstop>
   <tabstop>dynamicdns</tabstop>
   <tabstop>ipv4Neighbor</tabstop>
+  <tabstop>sslNeighbor</tabstop>
   <tabstop>neighborScopeId</tabstop>
   <tabstop>ipv6Neighbor</tabstop>
   <tabstop>proxy</tabstop>

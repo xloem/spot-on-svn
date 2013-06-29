@@ -112,7 +112,8 @@ class spoton_kernel: public QObject
   void publicizeListenerPlaintext(const QByteArray &data,
 				  const qint64 id);
   void publicizeListenerPlaintext(const QHostAddress &address,
-				  const quint16 port);
+				  const quint16 port,
+				  const bool useSsl);
   void receivedChatMessage(const QByteArray &name, const qint64 id);
   void receivedMailMessage(const QByteArray &name, const qint64 id);
   void receivedStatusMessage(const QByteArray &data,

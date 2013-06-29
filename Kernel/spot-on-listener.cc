@@ -43,8 +43,9 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 				 const QString &scopeId,
 				 const int maximumClients,
 				 const qint64 id,
+				 const bool useSsl,
 				 QObject *parent):
-  spoton_listener_tcp_server(parent)
+  spoton_listener_tcp_server(useSsl, parent)
 {
   s_dbId += 1;
   m_address = QHostAddress(ipAddress);
@@ -53,6 +54,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
   m_id = id;
   m_networkInterface = 0;
   m_port = m_externalPort = quint16(port.toInt());
+  m_useSsl = useSsl;
   connect(this,
 	  SIGNAL(encrypted(void)),
 	  this,
@@ -747,4 +749,9 @@ quint16 spoton_listener::externalPort(void) const
   */
 
   return m_externalPort;
+}
+
+bool spoton_listener::useSsl(void) const
+{
+  return m_useSsl;
 }

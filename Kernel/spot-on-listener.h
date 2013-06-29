@@ -45,8 +45,10 @@ class spoton_listener_tcp_server: public QTcpServer
   Q_OBJECT
 
  public:
-  spoton_listener_tcp_server(QObject *parent):QTcpServer(parent)
+  spoton_listener_tcp_server(const bool useSsl,
+			     QObject *parent):QTcpServer(parent)
   {
+    m_useSsl = useSsl;
   }
 
   QSslSocket *nextPendingConnection(void)
@@ -73,7 +75,7 @@ class spoton_listener_tcp_server: public QTcpServer
     else
       {
 	QPointer<spoton_neighbor> neighbor = new spoton_neighbor
-	  (socketDescriptor, this);
+	  (socketDescriptor, m_useSsl, this);
 
 	m_queue.enqueue(neighbor);
 	emit encrypted();
@@ -82,6 +84,7 @@ class spoton_listener_tcp_server: public QTcpServer
 
  private:
   QQueue<QPointer<spoton_neighbor> > m_queue;
+  bool m_useSsl;
 
  signals:
   void encrypted(void);
@@ -98,9 +101,11 @@ class spoton_listener: public spoton_listener_tcp_server
 		  const QString &scopeId,
 		  const int maximumClients,
 		  const qint64 id,
+		  const bool useSsl,
 		  QObject *parent);
   ~spoton_listener();
   QHostAddress externalAddress(void) const;
+  bool useSsl(void) const;
   quint16 externalPort(void) const;
 
  private:
@@ -108,6 +113,7 @@ class spoton_listener: public spoton_listener_tcp_server
   QNetworkInterface *m_networkInterface;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_timer;
+  bool m_useSsl;
   qint64 m_id;
   quint16 m_externalPort;
   quint16 m_port;
