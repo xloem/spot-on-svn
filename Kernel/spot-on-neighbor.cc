@@ -103,17 +103,13 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   setReadBufferSize(8192);
   setSocketOption(QAbstractSocket::KeepAliveOption, 1);
   connect(this,
-	  SIGNAL(disconnected(void)),
-	  this,
-	  SLOT(deleteLater(void)));
-  connect(this,
 	  SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,
 	  SLOT(slotError(QAbstractSocket::SocketError)));
   connect(this,
-	  SIGNAL(encrypted(void)),
+	  SIGNAL(connected(void)),
 	  this,
-	  SLOT(slotEncrypted(void)));
+	  SLOT(slotConnected(void)));
   connect(this,
 	  SIGNAL(modeChanged(QSslSocket::SslMode)),
 	  this,
@@ -217,13 +213,9 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   setReadBufferSize(8192);
   setSocketOption(QAbstractSocket::KeepAliveOption, 1);
   connect(this,
-	  SIGNAL(disconnected(void)),
+	  SIGNAL(connected(void)),
 	  this,
-	  SLOT(deleteLater(void)));
-  connect(this,
-	  SIGNAL(encrypted(void)),
-	  this,
-	  SLOT(slotEncrypted(void)));
+	  SLOT(slotConnected(void)));
   connect(this,
 	  SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,
@@ -357,19 +349,12 @@ void spoton_neighbor::slotTimeout(void)
 	{
 	  spoton_misc::logError("spoton_neighbor::slotTimeout(): "
 				"aborting because of silent connection.");
-	  abort();
+	  deleteLater();
 	}
 
   /*
   ** We'll change states here.
   */
-
-  /*
-  ** Retrieve the interface that this neighbor is using.
-  ** If the interface disappears, destroy the neighbor.
-  */
-
-  prepareNetworkInterface();
 
   QString status("");
   bool shouldDelete = false;
@@ -420,18 +405,37 @@ void spoton_neighbor::slotTimeout(void)
   QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
 
   if(shouldDelete)
-    deleteLater();
+    {
+      spoton_misc::logError("spoton_neighbor::slotTimeout(): instructed "
+			    "to delete neighbor.");
+      deleteLater();
+    }
 
   if(status == "connected")
     {
       if(state() == QAbstractSocket::UnconnectedState)
 	{
 	  if(m_useSsl)
-	    connectToHostEncrypted(m_address.toString(), m_port);
+	    {
+	      connectToHostEncrypted(m_address.toString(), m_port);
+
+	      if(!waitForEncrypted(10000))
+		{
+		  m_useSsl = false;
+		  abort();
+		}
+	    }
 	  else
 	    connectToHost(m_address, m_port);
 	}
     }
+
+  /*
+  ** Retrieve the interface that this neighbor is using.
+  ** If the interface disappears, destroy the neighbor.
+  */
+
+  prepareNetworkInterface();
 
   if(state() == QAbstractSocket::ConnectedState)
     if(!m_networkInterface || !(m_networkInterface->flags() &
@@ -448,7 +452,7 @@ void spoton_neighbor::slotTimeout(void)
 				"undefined network interface. "
 				"Aborting socket.");
 
-	abort();
+	deleteLater();
       }
 }
 
@@ -556,7 +560,7 @@ void spoton_neighbor::slotReadyRead(void)
     }
 }
 
-void spoton_neighbor::slotEncrypted(void)
+void spoton_neighbor::slotConnected(void)
 {
   if(proxy().type() != QNetworkProxy::NoProxy)
     {
@@ -2166,11 +2170,16 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 
 void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
 {
-  if(error != QAbstractSocket::ConnectionRefusedError)
-    spoton_misc::logError
-      (QString("spoton_neighbor::slotError(): socket error %1. "
-	       "Aborting socket.").arg(error));
+  if(error == QAbstractSocket::SslHandshakeFailedError)
+    /*
+    ** Do not use SSL.
+    */
 
+    return;
+
+  spoton_misc::logError
+    (QString("spoton_neighbor::slotError(): socket error %1. "
+	     "Aborting socket.").arg(error));
   deleteLater();
 }
 
