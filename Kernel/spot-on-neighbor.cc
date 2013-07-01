@@ -2212,7 +2212,10 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
       */
 
       if(m_isUserDefined)
-	return;
+	{
+	  m_useSsl = false;
+	  return;
+	}
     }
   else if(error == QAbstractSocket::SslHandshakeFailedError)
     /*
