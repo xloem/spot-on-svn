@@ -677,6 +677,8 @@ spoton::spoton(void):QMainWindow()
 				  true); // OID
   m_ui.neighbors->setColumnHidden
     (m_ui.neighbors->columnCount() - 1, true); // OID
+  m_ui.neighbors->setColumnHidden
+    (m_ui.neighbors->columnCount() - 2, true); // is_encrypted
   m_ui.participants->setColumnHidden(1, true); // OID
   m_ui.participants->setColumnHidden(2, true); // neighbor_oid
   m_ui.participants->setColumnHidden(3, true); // public_key_hash

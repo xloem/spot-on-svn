@@ -32,6 +32,7 @@
 #include <QSettings>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include <QtCore/qmath.h>
 
 extern "C"
@@ -543,17 +544,19 @@ void spoton_kernel::prepareNeighbors(void)
 	if(query.exec("SELECT remote_ip_address, remote_port, scope_id, "
 		      "status_control, proxy_hostname, proxy_password, "
 		      "proxy_port, proxy_type, proxy_username, "
-		      "OID FROM neighbors"))
+		      "user_defined, OID FROM neighbors"))
 	  while(query.next())
 	    {
 	      QPointer<spoton_neighbor> neighbor = 0;
-	      qint64 id = query.value(9).toLongLong();
+	      qint64 id = query.value(10).toLongLong();
 
 	      if(query.value(3).toString() == "connected")
 		{
 		  if(!m_neighbors.contains(id))
 		    {
 		      QList<QByteArray> list;
+		      bool userDefined = query.value
+			(query.record().indexOf("user_defined")).toBool();
 
 		      for(int i = 0; i < 9; i++)
 			if(i == 3) // Status Control
@@ -616,6 +619,7 @@ void spoton_kernel::prepareNeighbors(void)
 			     list.at(1).constData(),
 			     list.at(2).constData(),
 			     id,
+			     userDefined,
 			     this);
 			}
 

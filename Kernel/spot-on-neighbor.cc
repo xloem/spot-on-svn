@@ -48,6 +48,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 const bool useSsl,
 				 QObject *parent):QSslSocket(parent)
 {
+  m_isUserDefined = false;
   m_useSsl = useSsl;
   s_dbId += 1;
 
@@ -158,8 +159,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const QString &port,
 				 const QString &scopeId,
 				 const qint64 id,
+				 const bool userDefined,
 				 QObject *parent):QSslSocket(parent)
 {
+  m_isUserDefined = userDefined;
   m_useSsl = true;
   s_dbId += 1;
   setPeerVerifyMode(QSslSocket::VerifyNone);
@@ -412,27 +415,22 @@ void spoton_neighbor::slotTimeout(void)
       deleteLater();
     }
 
-  if(status == "connected")
-    {
-      if(state() == QAbstractSocket::UnconnectedState)
-	{
-	  if(m_useSsl)
-	    {
-	      connectToHostEncrypted(m_address.toString(), m_port);
+  if(m_isUserDefined)
+    if(status == "connected")
+      {
+	if(state() == QAbstractSocket::UnconnectedState)
+	  {
+	    if(m_useSsl)
+	      {
+		connectToHostEncrypted(m_address.toString(), m_port);
 
-	      if(!waitForEncrypted(10000))
-		{
+		if(!waitForEncrypted())
 		  m_useSsl = false;
-		  abort();
-		}
-
-	      if(!m_useSsl)
-		connectToHost(m_address, m_port);
-	    }
-	  else
-	    connectToHost(m_address, m_port);
-	}
-    }
+	      }
+	    else
+	      connectToHost(m_address, m_port);
+	  }
+      }
 
   /*
   ** Retrieve the interface that this neighbor is using.
@@ -2207,7 +2205,16 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 
 void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
 {
-  if(error == QAbstractSocket::SslHandshakeFailedError)
+  if(error == QAbstractSocket::ConnectionRefusedError)
+    {
+      /*
+      ** Why was the connection refused?
+      */
+
+      if(m_isUserDefined)
+	return;
+    }
+  else if(error == QAbstractSocket::SslHandshakeFailedError)
     /*
     ** Do not use SSL.
     */

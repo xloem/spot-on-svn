@@ -52,6 +52,7 @@ class spoton_neighbor: public QSslSocket
 		  const QString &port,
 		  const QString &scopeId,
 		  const qint64 id,
+		  const bool userDefined,
 		  QObject *parent);
   spoton_neighbor(const int socketDescriptor,
 		  const bool useSsl,
@@ -78,6 +79,7 @@ class spoton_neighbor: public QSslSocket
   QTimer m_lifetime;
   QTimer m_timer;
   QUuid m_receivedUuid;
+  bool m_isUserDefined;
   bool m_useSsl;
   qint64 m_id;
   quint16 m_port;
