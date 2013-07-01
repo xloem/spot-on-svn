@@ -48,6 +48,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 const bool useSsl,
 				 QObject *parent):QSslSocket(parent)
 {
+  m_connectionAttempts = 0;
   m_isUserDefined = false;
   m_useSsl = useSsl;
   s_dbId += 1;
@@ -162,6 +163,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const bool userDefined,
 				 QObject *parent):QSslSocket(parent)
 {
+  m_connectionAttempts = 0;
   m_isUserDefined = userDefined;
   m_useSsl = true;
   s_dbId += 1;
@@ -2207,22 +2209,30 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
 {
   if(error == QAbstractSocket::ConnectionRefusedError)
     {
-      /*
-      ** Why was the connection refused?
-      */
-
       if(m_isUserDefined)
 	{
-	  m_useSsl = false;
-	  return;
+	  if(m_connectionAttempts < 5)
+	    {
+	      m_connectionAttempts += 1;
+	      spoton_misc::logError
+		(QString("spoton_neighbor::slotError(): socket error %1. "
+			 "Retrying, attempt %2 of %3.").arg(error).
+		 arg(m_connectionAttempts).arg(5));
+	      return;
+	    }
 	}
     }
   else if(error == QAbstractSocket::SslHandshakeFailedError)
-    /*
-    ** Do not use SSL.
-    */
+    {
+      /*
+      ** Do not use SSL.
+      */
 
-    return;
+      spoton_misc::logError
+	(QString("spoton_neighbor::slotError(): socket error %1. "
+		 "Ignoring error.").arg(error));
+      return;
+    }
 
   spoton_misc::logError
     (QString("spoton_neighbor::slotError(): socket error %1. "
