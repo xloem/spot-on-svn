@@ -105,13 +105,17 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   setReadBufferSize(8192);
   setSocketOption(QAbstractSocket::KeepAliveOption, 1);
   connect(this,
-	  SIGNAL(error(QAbstractSocket::SocketError)),
-	  this,
-	  SLOT(slotError(QAbstractSocket::SocketError)));
-  connect(this,
 	  SIGNAL(connected(void)),
 	  this,
 	  SLOT(slotConnected(void)));
+  connect(this,
+	  SIGNAL(disconnected(void)),
+	  this,
+	  SLOT(deleteLater(void)));
+  connect(this,
+	  SIGNAL(error(QAbstractSocket::SocketError)),
+	  this,
+	  SLOT(slotError(QAbstractSocket::SocketError)));
   connect(this,
 	  SIGNAL(modeChanged(QSslSocket::SslMode)),
 	  this,
