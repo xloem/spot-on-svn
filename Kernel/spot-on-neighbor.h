@@ -95,6 +95,7 @@ class spoton_neighbor: public QSslSocket
   void process0015(int length, const QByteArray &data);
   void process0030(int length, const QByteArray &data);
   void recordMessageHash(const QByteArray &data);
+  void saveEncryptedStatus(void);
   void saveExternalAddress(const QHostAddress &address,
 			   const QSqlDatabase &db);
   void saveParticipantStatus(const QByteArray &name,

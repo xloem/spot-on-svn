@@ -1463,7 +1463,7 @@ void spoton::slotPopulateNeighbors(void)
 		      "country, "
 		      "remote_ip_address, "
 		      "remote_port, scope_id, protocol, "
-		      "proxy_hostname, proxy_port, OID "
+		      "proxy_hostname, proxy_port, is_encrypted, OID "
 		      "FROM neighbors"))
 	  {
 	    QString localIp("");
@@ -1498,6 +1498,9 @@ void spoton::slotPopulateNeighbors(void)
 			this,
 			SLOT(slotNeighborCheckChange(int)));
 		m_ui.neighbors->setCellWidget(row, 0, check);
+
+		bool isEncrypted = query.value
+		  (query.record().indexOf("is_encrypted")).toBool();
 
 		for(int i = 1; i < query.record().count(); i++)
 		  {
@@ -1537,6 +1540,18 @@ void spoton::slotPopulateNeighbors(void)
 			  item->setBackground(QBrush(QColor("lightgreen")));
 			else
 			  item->setBackground(QBrush());
+
+			if(isEncrypted)
+			  {
+			    item->setIcon
+			      (QIcon(QString(":/%1/lock.png").
+				     arg(m_settings.
+					 value("gui/iconSet",
+					       "nouve").toString())));
+			    item->setToolTip(tr("Connection is secure."));
+			  }
+			else
+			  item->setToolTip(tr("Connection is insecure."));
 		      }
 
 		    m_ui.neighbors->setItem(row, i, item);
@@ -2018,6 +2033,7 @@ void spoton::updateNeighborsTable(const QSqlDatabase &db)
 	query.exec("DELETE FROM neighbors WHERE "
 		   "status_control = 'deleted'");
 	query.exec("UPDATE neighbors SET external_ip_address = NULL, "
+		   "is_encrypted = 0, "
 		   "local_ip_address = NULL, "
 		   "local_port = NULL, status = 'disconnected' WHERE "
 		   "(local_ip_address IS NOT NULL OR local_port IS NOT NULL "

@@ -318,7 +318,8 @@ void spoton_misc::prepareDatabases(void)
 	   "proxy_password TEXT NOT NULL, "
 	   "proxy_port TEXT NOT NULL, "
 	   "proxy_type TEXT NOT NULL, "
-	   "proxy_username TEXT NOT NULL)");
+	   "proxy_username TEXT NOT NULL, "
+	   "is_encrypted INTEGER NOT NULL DEFAULT 0)");
       }
 
     db.close();
@@ -1168,6 +1169,7 @@ void spoton_misc::cleanupDatabases(void)
 		     "status_control <> 'blocked' AND user_defined = 0");
 
 	query.exec("UPDATE neighbors SET external_ip_address = NULL, "
+		   "is_encrypted = 0, "
 		   "local_ip_address = NULL, local_port = NULL, "
 		   "status = 'disconnected' WHERE "
 		   "status = 'connected' AND status_control <> 'deleted'");

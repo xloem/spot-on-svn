@@ -325,6 +325,7 @@ spoton_neighbor::~spoton_neighbor()
 	  }
 
 	query.prepare("UPDATE neighbors SET external_ip_address = NULL, "
+		      "is_encrypted = 0, "
 		      "local_ip_address = NULL, "
 		      "local_port = NULL, status = 'disconnected' "
 		      "WHERE OID = ?");
@@ -424,6 +425,9 @@ void spoton_neighbor::slotTimeout(void)
 		  m_useSsl = false;
 		  abort();
 		}
+
+	      if(!m_useSsl)
+		connectToHost(m_address, m_port);
 	    }
 	  else
 	    connectToHost(m_address, m_port);
@@ -454,6 +458,36 @@ void spoton_neighbor::slotTimeout(void)
 
 	deleteLater();
       }
+
+  saveEncryptedStatus();
+}
+
+void spoton_neighbor::saveEncryptedStatus(void)
+{
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase
+      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare("UPDATE neighbors SET is_encrypted = ? "
+		      "WHERE OID = ? AND is_encrypted <> ?");
+	query.bindValue(0, isEncrypted() ? 1 : 0);
+	query.bindValue(1, m_id);
+	query.bindValue(2, isEncrypted() ? 1 : 0);
+	query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase
+    ("spoton_neighbor_" + QString::number(s_dbId));
 }
 
 void spoton_neighbor::saveStatus(const QSqlDatabase &db,
@@ -461,10 +495,11 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 {
   QSqlQuery query(db);
 
-  query.prepare("UPDATE neighbors SET status = ? "
+  query.prepare("UPDATE neighbors SET is_encrypted = ?, status = ? "
 		"WHERE OID = ? AND status <> 'deleted'");
-  query.bindValue(0, status);
-  query.bindValue(1, m_id);
+  query.bindValue(0, isEncrypted() ? 1 : 0);
+  query.bindValue(1, status);
+  query.bindValue(2, m_id);
   query.exec();
 }
 
@@ -601,19 +636,21 @@ void spoton_neighbor::slotConnected(void)
 	    bool ok = true;
 
 	    query.prepare("UPDATE neighbors SET country = ?, "
+			  "is_encrypted = ?, "
 			  "local_ip_address = ?, "
 			  "local_port = ?, qt_country_hash = ?, "
 			  "status = 'connected' "
 			  "WHERE OID = ?");
 	    query.bindValue(0, s_crypt->
 			    encrypted(country.toLatin1(), &ok).toBase64());
-	    query.bindValue(1, localAddress().toString());
-	    query.bindValue(2, localPort());
+	    query.bindValue(1, isEncrypted() ? 1 : 0);
+	    query.bindValue(2, localAddress().toString());
+	    query.bindValue(3, localPort());
 	    query.bindValue
-	      (3, s_crypt->keyedHash(country.remove(" ").
+	      (4, s_crypt->keyedHash(country.remove(" ").
 				     toLatin1(), &ok).
 	       toBase64());
-	    query.bindValue(4, m_id);
+	    query.bindValue(5, m_id);
 	    query.exec();
 	  }
 
