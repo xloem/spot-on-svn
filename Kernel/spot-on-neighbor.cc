@@ -63,12 +63,9 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
       QByteArray data;
       bool ok = true;
 
-      data = s_crypt->certificateInRem(&ok);
-
       if(ok)
 	{
 	  setLocalCertificate(QSslCertificate(data));
-	  data = s_crypt->privateKeyInRem(&ok);
 
 	  if(ok)
 	    {
@@ -78,7 +75,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	    }
 	  else
 	    spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
-				  "privateKeyInRem() failure!");
+				  "privateKey() failure!");
 	}
       else
 	spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
@@ -221,8 +218,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
       QByteArray data;
       bool ok = true;
 
-      data = s_crypt->privateKeyInRem(&ok);
-
       if(ok)
 	{
 	  QSslKey key(data, QSsl::Rsa);
@@ -231,7 +226,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	}
       else
 	spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
-			      "privateKeyInRem() failure!");
+			      "privateKey() failure!");
     }
   else
     spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "

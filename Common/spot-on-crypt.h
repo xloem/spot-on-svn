@@ -104,12 +104,10 @@ class spoton_crypt
 		const unsigned long iterationCount,
 		const QString &id);
   ~spoton_crypt();
-  QByteArray certificateInRem(bool *ok);
   QByteArray decrypted(const QByteArray &data, bool *ok);
   QByteArray digitalSignature(const QByteArray &data, bool *ok);
   QByteArray encrypted(const QByteArray &data, bool *ok);
   QByteArray keyedHash(const QByteArray &data, bool *ok);
-  QByteArray privateKeyInRem(bool *ok);
   QByteArray publicKey(bool *ok);
   QByteArray publicKeyDecrypt(const QByteArray &data, bool *ok);
   QByteArray publicKeyHash(bool *ok);
@@ -121,7 +119,6 @@ class spoton_crypt
   void generatePrivatePublicKeys(const int rsaKeySize, QString &error);
   void generateSslKeys(const int rsaKeySize, QString &error);
   void initializePrivateKeyContainer(bool *ok);
-  void saveCertificate(const QByteArray &certificate, QString &error);
 
  private:
   QByteArray m_publicKey;

@@ -2480,62 +2480,6 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
   return ok;
 }
 
-QByteArray spoton_crypt::privateKeyInRem(bool *ok)
-{
-  QByteArray key;
-
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_crypt");
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "idiotes.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.setForwardOnly(true);
-	query.prepare("SELECT private_key FROM idiotes WHERE id = ?");
-	query.bindValue(0, m_id);
-
-	if(query.exec())
-	  if(query.next())
-	    key = QByteArray::fromBase64
-	      (query.value(0).toByteArray());
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase("spoton_crypt");
-
-  if(key.isEmpty())
-    {
-      if(ok)
-	*ok = false;
-    }
-  else
-    {
-      bool ok = true;
-
-      key = decrypted(key, &ok);
-    }
-
-  if(key.isEmpty())
-    {
-      if(ok)
-	*ok = false;
-    }
-  else
-    {
-      if(ok)
-	*ok = true;
-    }
-
-  return key;
-}
-
 void spoton_crypt::generateSslKeys(const int rsaKeySize,
 				   QByteArray &certificate,
 				   QByteArray &privateKey,
@@ -2709,7 +2653,6 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize, QString &error)
       }
 
       QSqlDatabase::removeDatabase("spoton_crypt");
-      saveCertificate(certificate, error);
     }
 }
 
@@ -2725,7 +2668,6 @@ void spoton_crypt::purgeDatabases(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("DELETE FROM certificates");
 	query.exec("DELETE FROM idiotes");
       }
 
@@ -2882,116 +2824,6 @@ void spoton_crypt::generateCertificate(RSA *rsa,
   EVP_PKEY_free(pk);
   X509_free(x509);
   free(buffer);
-}
-
-void spoton_crypt::saveCertificate
-(const QByteArray &certificate, QString &error)
-{
-  if(error.isEmpty())
-    {
-      {
-	QSqlDatabase db = QSqlDatabase::addDatabase
-	  ("QSQLITE", "spoton_crypt");
-
-	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-			   "idiotes.db");
-
-	if(db.open())
-	  {
-	    QSqlQuery query(db);
-	    bool ok = true;
-
-	    query.prepare
-	      ("INSERT OR REPLACE INTO certificates (id, certificate) "
-	       "VALUES (?, ?)");
-	    query.bindValue(0, m_id);
-
-	    if(!certificate.isEmpty())
-	      if(ok)
-		query.bindValue(1, encrypted(certificate, &ok).toBase64());
-
-	    if(ok)
-	      {
-		if(!query.exec())
-		  {
-		    error = QObject::tr("QSqlQuery::exec() failure");
-		    spoton_misc::logError
-		      (QString("spoton_crypt::saveCertificate(): "
-			       "QSqlQuery::exec() failure (%1).").
-		       arg(query.lastError().text()));
-		  }
-	      }
-	    else
-	      {
-		error = QObject::tr("encrypted() failure");
-		spoton_misc::logError
-		  ("spoton_crypt::saveCertificate(): "
-		   "encrypted() failure.");
-	      }
-	  }
-
-	db.close();
-      }
-
-      QSqlDatabase::removeDatabase("spoton_crypt");
-    }
-}
-
-QByteArray spoton_crypt::certificateInRem(bool *ok)
-{
-  QByteArray certificate;
-
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_crypt");
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "idiotes.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.setForwardOnly(true);
-	query.prepare("SELECT certificate FROM certificates "
-		      "WHERE id = ?");
-	query.bindValue(0, m_id);
-
-	if(query.exec())
-	  if(query.next())
-	    certificate = QByteArray::fromBase64
-	      (query.value(0).toByteArray());
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase("spoton_crypt");
-
-  if(certificate.isEmpty())
-    {
-      if(ok)
-	*ok = false;
-    }
-  else
-    {
-      bool ok = true;
-
-      certificate = decrypted(certificate, &ok);
-    }
-
-  if(certificate.isEmpty())
-    {
-      if(ok)
-	*ok = false;
-    }
-  else
-    {
-      if(ok)
-	*ok = true;
-    }
-
-  return certificate;
 }
 
 QList<QSslCipher> spoton_crypt::defaultSslCiphers(void)
