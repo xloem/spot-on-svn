@@ -282,10 +282,18 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotGenerateGoldBug(void)));
-  connect(m_ui.acceptPublicizedListeners,
-	  SIGNAL(toggled(bool)),
+  connect(m_ui.acceptPublishedConnected,
+	  SIGNAL(pressed(void)),
 	  this,
-	  SLOT(slotAcceptPublicizedListeners(bool)));
+	  SLOT(slotAcceptPublicizedListeners(void)));
+  connect(m_ui.acceptPublishedDisconnected,
+	  SIGNAL(pressed(void)),
+	  this,
+	  SLOT(slotAcceptPublicizedListeners(void)));
+  connect(m_ui.ignorePublished,
+	  SIGNAL(pressed(void)),
+	  this,
+	  SLOT(slotAcceptPublicizedListeners(void)));
   connect(m_ui.keepOnlyUserDefinedNeighbors,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -533,8 +541,19 @@ spoton::spoton(void):QMainWindow()
   m_ui.cipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.cost->setValue(m_settings.value("gui/congestionCost", 10000).toInt());
   m_ui.days->setValue(m_settings.value("gui/postofficeDays", 1).toInt());
-  m_ui.acceptPublicizedListeners->setChecked
-    (m_settings.value("gui/acceptPublicizedListeners", false).toBool());
+
+  QString statusControl
+    (m_settings.
+     value("gui/acceptPublicizedListeners",
+	   "ignored").toString().toLower().trimmed());
+
+  if(statusControl == "connected")
+    m_ui.acceptPublishedConnected->setChecked(true);
+  else if(statusControl == "disconnected")
+    m_ui.acceptPublishedDisconnected->setChecked(true);
+  else
+    m_ui.ignorePublished->setChecked(true);
+
   m_ui.congestionControl->setChecked
     (m_settings.value("gui/enableCongestionControl", false).toBool());
   m_ui.cost->setEnabled(m_ui.congestionControl->isChecked());

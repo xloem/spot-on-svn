@@ -2090,19 +2090,27 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 		     "received %1.").arg(list.size()));
 	  return;
 	}
-      else if(spoton_kernel::s_settings.
-	      value("gui/acceptPublicizedListeners", false).toBool())
+      else
 	{
-	  QHostAddress address;
+	  QString statusControl
+	    (spoton_kernel::s_settings.
+	     value("gui/acceptPublicizedListeners", "ignored").toString().
+	     toLower().trimmed());
 
-	  address.setAddress(list.at(0).constData());
-	  address.setScopeId(list.at(2).constData());
-
-	  if(!spoton_misc::isPrivateNetwork(address))
+	  if(statusControl == "connected" || statusControl == "disconnected")
 	    {
-	      quint16 port = list.at(1).toUShort();
+	      QHostAddress address;
 
-	      spoton_misc::saveNeighbor(address, port, s_crypt);
+	      address.setAddress(list.at(0).constData());
+	      address.setScopeId(list.at(2).constData());
+
+	      if(!spoton_misc::isPrivateNetwork(address))
+		{
+		  quint16 port = list.at(1).toUShort();
+
+		  spoton_misc::savePublishedNeighbor
+		    (address, port, statusControl,s_crypt);
+		}
 	    }
 	}
 

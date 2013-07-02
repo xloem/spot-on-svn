@@ -337,13 +337,24 @@ void spoton::highlightKernelPath(void)
   m_ui.kernelPath->setPalette(palette);
 }
 
-void spoton::slotAcceptPublicizedListeners(bool state)
+void spoton::slotAcceptPublicizedListeners(void)
 {
-  m_settings["gui/acceptPublicizedListeners"] = state;
+  QRadioButton *radioButton = qobject_cast<QRadioButton *> (sender());
+
+  if(!radioButton)
+    return;
+
+  if(m_ui.acceptPublishedConnected == radioButton)
+    m_settings["gui/acceptPublicizedListeners"] = "connected";
+  else if(m_ui.acceptPublishedDisconnected == radioButton)
+    m_settings["gui/acceptPublicizedListeners"] = "disconnected";
+  else
+    m_settings["gui/acceptPublicizedListeners"] = "ignored";
 
   QSettings settings;
 
-  settings.setValue("gui/acceptPublicizedListeners", state);
+  settings.setValue("gui/acceptPublicizedListeners",
+		    m_settings["gui/acceptPublicizedListeners"]);
 }
 
 void spoton::slotKeepOnlyUserDefinedNeighbors(bool state)

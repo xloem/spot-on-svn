@@ -137,7 +137,7 @@ class spoton: public QMainWindow
   void updateParticipantsTable(const QSqlDatabase &db);
 
  private slots:
-  void slotAcceptPublicizedListeners(bool state);
+  void slotAcceptPublicizedListeners(void);
   void slotActivateKernel(void);
   void slotAddBootstrapper(void);
   void slotAddListener(void);

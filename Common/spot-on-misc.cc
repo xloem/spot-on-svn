@@ -1294,14 +1294,18 @@ void spoton_misc::prepareUrlDatabases(void)
       }
 }
 
-void spoton_misc::saveNeighbor(const QHostAddress &address,
-			       const quint16 port,
-			       spoton_crypt *crypt)
+void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
+					const quint16 port,
+					const QString &statusControl,
+					spoton_crypt *crypt)
 {
   if(!crypt)
     return;
 
   if(address.isNull())
+    return;
+
+  if(!(statusControl == "connected" || statusControl == "disconnected"))
     return;
 
   {
@@ -1364,7 +1368,7 @@ void spoton_misc::saveNeighbor(const QHostAddress &address,
 	     crypt->encrypted(address.scopeId().toLatin1(),
 			      &ok).toBase64());
 
-	query.bindValue(6, "disconnected");
+	query.bindValue(6, statusControl);
 
 	if(ok)
 	  query.bindValue

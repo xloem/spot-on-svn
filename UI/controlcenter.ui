@@ -1186,6 +1186,55 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_34">
         <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_26">
+          <item>
+           <widget class="QToolButton" name="toolButtonCopytoClipboard">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy my name and specified public key to the clipboard buffer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="text">
+             <string>Copy Public Key</string>
+            </property>
+            <property name="popupMode">
+             <enum>QToolButton::InstantPopup</enum>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="toolButtonMakeFriends">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Share my specified public key with the selected neighbor.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="text">
+             <string>Share Public Key</string>
+            </property>
+            <property name="popupMode">
+             <enum>QToolButton::InstantPopup</enum>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_22">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
          <widget class="QSplitter" name="neighborsVerticalSplitter">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -1195,12 +1244,59 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_24">
               <item>
-               <widget class="QCheckBox" name="acceptPublicizedListeners">
-                <property name="text">
-                 <string>&amp;Accept Published Listeners</string>
-                </property>
-               </widget>
+               <layout class="QHBoxLayout" name="horizontalLayout_4">
+                <item>
+                 <widget class="QRadioButton" name="acceptPublishedConnected">
+                  <property name="toolTip">
+                   <string>Select this option if you would like to accept and connect to published listeners.</string>
+                  </property>
+                  <property name="text">
+                   <string>&amp;Accept Published Listeners (Connected)</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="acceptPublishedDisconnected">
+                  <property name="toolTip">
+                   <string>Selection this option if you would like to accept published listeners.</string>
+                  </property>
+                  <property name="text">
+                   <string>&amp;Accept Published Listeners (Disconnected)</string>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="ignorePublished">
+                  <property name="text">
+                   <string>&amp;Ignore Published Listeners</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
+              <item>
+               <spacer name="horizontalSpacer_24">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_28">
               <item>
                <widget class="QCheckBox" name="keepOnlyUserDefinedNeighbors">
                 <property name="text">
@@ -1209,39 +1305,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QToolButton" name="toolButtonCopytoClipboard">
-                <property name="toolTip">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy my name and specified public key to the clipboard buffer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-                <property name="text">
-                 <string>Copy Public Key</string>
-                </property>
-                <property name="popupMode">
-                 <enum>QToolButton::InstantPopup</enum>
-                </property>
-                <property name="toolButtonStyle">
-                 <enum>Qt::ToolButtonTextBesideIcon</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QToolButton" name="toolButtonMakeFriends">
-                <property name="toolTip">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Share my specified public key with the selected neighbor.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-                <property name="text">
-                 <string>Share Public Key</string>
-                </property>
-                <property name="popupMode">
-                 <enum>QToolButton::InstantPopup</enum>
-                </property>
-                <property name="toolButtonStyle">
-                 <enum>Qt::ToolButtonTextBesideIcon</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_24">
+               <spacer name="horizontalSpacer_25">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -2932,10 +2996,12 @@
   <tabstop>ipv6Listener</tabstop>
   <tabstop>addListener</tabstop>
   <tabstop>countries</tabstop>
-  <tabstop>acceptPublicizedListeners</tabstop>
-  <tabstop>keepOnlyUserDefinedNeighbors</tabstop>
   <tabstop>toolButtonCopytoClipboard</tabstop>
   <tabstop>toolButtonMakeFriends</tabstop>
+  <tabstop>acceptPublishedConnected</tabstop>
+  <tabstop>acceptPublishedDisconnected</tabstop>
+  <tabstop>ignorePublished</tabstop>
+  <tabstop>keepOnlyUserDefinedNeighbors</tabstop>
   <tabstop>neighbors</tabstop>
   <tabstop>neighborIP</tabstop>
   <tabstop>neighborPort</tabstop>
