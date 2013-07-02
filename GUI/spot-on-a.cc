@@ -370,6 +370,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.cost,
 	  SLOT(setEnabled(bool)));
+  connect(m_ui.sslListener,
+	  SIGNAL(toggled(bool)),
+	  m_ui.listenerKeySize,
+	  SLOT(setEnabled(bool)));
   connect(m_ui.publishPeriodically,
 	  SIGNAL(toggled(bool)),
 	  this,
