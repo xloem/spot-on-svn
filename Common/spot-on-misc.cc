@@ -272,7 +272,9 @@ void spoton_misc::prepareDatabases(void)
 						      ** the port, and
 						      ** the scope.
 						      */
-		   "use_ssl INTEGER NOT NULL DEFAULT 1)");
+		   "certificate BLOB, "
+		   "private_key BLOB, "
+		   "public_key BLOB)");
       }
 
     db.close();
