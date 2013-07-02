@@ -1146,14 +1146,37 @@
                   </widget>
                  </item>
                  <item row="0" column="6">
-                  <widget class="QCheckBox" name="sslListener">
-                   <property name="text">
-                    <string>&amp;SSL</string>
-                   </property>
-                   <property name="checked">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
+                  <layout class="QHBoxLayout" name="horizontalLayout_33">
+                   <item>
+                    <widget class="QCheckBox" name="sslListener">
+                     <property name="text">
+                      <string>&amp;SSL Key Size</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="listenerKeySize">
+                     <item>
+                      <property name="text">
+                       <string>2048</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>3072</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>4096</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                 </layout>
                </item>
@@ -2992,6 +3015,7 @@
   <tabstop>listenerPort</tabstop>
   <tabstop>ipv4Listener</tabstop>
   <tabstop>sslListener</tabstop>
+  <tabstop>listenerKeySize</tabstop>
   <tabstop>listenerScopeId</tabstop>
   <tabstop>ipv6Listener</tabstop>
   <tabstop>addListener</tabstop>
