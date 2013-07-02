@@ -30,6 +30,7 @@
 #include <QNetworkInterface>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSslCipher>
 #include <QSslKey>
 #include <QtCore/qmath.h>
 
@@ -87,6 +88,17 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
     spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
 			  "missing server key!");
 
+  QSslCipher cipher("ECDHE-RSA-AES256-SHA",
+#if QT_VERSION >= 0x050000
+		    QSsl::TlsV1_0
+#else
+		    QSsl::TlsV1
+#endif
+		    );
+
+  if(!cipher.isNull())
+    setCiphers(QList<QSslCipher> () << cipher);
+
   setPeerVerifyMode(QSslSocket::VerifyNone);
 #if QT_VERSION >= 0x050000
   setProtocol(QSsl::TlsV1_0);
@@ -110,7 +122,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   connect(this,
 	  SIGNAL(disconnected(void)),
 	  this,
-	  SLOT(deleteLater(void)));
+	  SLOT(slotDisconnected(void)));
   connect(this,
 	  SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,
@@ -169,6 +181,18 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_isUserDefined = userDefined;
   m_useSsl = true;
   s_dbId += 1;
+
+  QSslCipher cipher("ECDHE-RSA-AES256-SHA",
+#if QT_VERSION >= 0x050000
+		    QSsl::TlsV1_0
+#else
+		    QSsl::TlsV1
+#endif
+		    );
+
+  if(!cipher.isNull())
+    setCiphers(QList<QSslCipher> () << cipher);
+
   setPeerVerifyMode(QSslSocket::VerifyNone);
 #if QT_VERSION >= 0x050000
   setProtocol(QSsl::TlsV1_0);
@@ -226,7 +250,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   connect(this,
 	  SIGNAL(disconnected(void)),
 	  this,
-	  SLOT(deleteLater(void)));
+	  SLOT(slotDisconnected(void)));
   connect(this,
 	  SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,
@@ -355,8 +379,6 @@ spoton_neighbor::~spoton_neighbor()
 
 void spoton_neighbor::slotTimeout(void)
 {
-  m_useSsl = isEncrypted();
-
   if(state() == QAbstractSocket::ConnectedState)
     if((isEncrypted() && m_useSsl) || !m_useSsl)
       if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 90)
@@ -2224,9 +2246,10 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
       ** Do not use SSL.
       */
 
+      m_useSsl = false;
       spoton_misc::logError
 	(QString("spoton_neighbor::slotError(): socket error %1. "
-		 "Ignoring error.").arg(error));
+		 "Disabling SSL.").arg(error));
       return;
     }
 
@@ -2855,4 +2878,21 @@ void spoton_neighbor::slotModeChanged(QSslSocket::SslMode mode)
 			      "unencrypted connection mode. Aborting.");
 	deleteLater();
       }
+}
+
+void spoton_neighbor::slotDisconnected(void)
+{
+  int attempts = property("connection-attempts").toInt();
+
+  if(attempts < 2)
+    {
+      setProperty("connection-attempts", attempts + 1);
+      spoton_misc::logError("spoton_neighbor::slotDisconnected(): "
+			    "retrying.");
+      return;
+    }
+
+  spoton_misc::logError("spoton_neighbor::slotDisconnected(): "
+			"aborting socket!");
+  deleteLater();
 }
