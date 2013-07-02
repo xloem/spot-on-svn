@@ -366,6 +366,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotPublishPeriodicallyToggled(bool)));
+  connect(m_ui.hideOfflineParticipants,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotHideOfflineParticipants(bool)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -534,6 +538,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.congestionControl->setChecked
     (m_settings.value("gui/enableCongestionControl", false).toBool());
   m_ui.cost->setEnabled(m_ui.congestionControl->isChecked());
+  m_ui.hideOfflineParticipants->setChecked
+    (m_settings.value("gui/hideOfflineParticipants", false).toBool());
   m_ui.keepOnlyUserDefinedNeighbors->setChecked
     (m_settings.value("gui/keepOnlyUserDefinedNeighbors", false).toBool());
   m_ui.postofficeCheckBox->setChecked
@@ -1076,6 +1082,16 @@ void spoton::slotAddNeighbor(void)
 
   if(ok)
     m_ui.neighborIP->selectAll();
+}
+
+void spoton::slotHideOfflineParticipants(bool state)
+{
+  m_settings["gui/hideOfflineParticipants"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/hideOfflineParticipants", state);
+  m_participantsLastModificationTime = QDateTime();
 }
 
 void spoton::slotProtocolRadioToggled(bool state)
@@ -3077,9 +3093,13 @@ void spoton::slotPopulateParticipants(void)
 	** We only wish to display other public keys.
 	*/
 
-	if(query.exec("SELECT name, OID, neighbor_oid, public_key_hash, "
-		      "status, gemini FROM friends_public_keys WHERE "
-		      "key_type = 'messaging'"))
+	if(query.exec(QString("SELECT name, OID, neighbor_oid, "
+			      "public_key_hash, "
+			      "status, gemini FROM friends_public_keys "
+			      "WHERE "
+			      "key_type = 'messaging' %1").
+		      arg(m_ui.hideOfflineParticipants->isChecked() ?
+			  "AND status <> 'offline'" : "")))
 	  while(query.next())
 	    {
 	      QString status(query.value(4).toString());

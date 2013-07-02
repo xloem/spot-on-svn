@@ -81,7 +81,6 @@ class spoton_neighbor: public QSslSocket
   QUuid m_receivedUuid;
   bool m_isUserDefined;
   bool m_useSsl;
-  int m_connectionAttempts;
   qint64 m_id;
   quint16 m_port;
   spoton_external_address *m_externalAddress;

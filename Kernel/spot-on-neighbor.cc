@@ -48,7 +48,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 const bool useSsl,
 				 QObject *parent):QSslSocket(parent)
 {
-  m_connectionAttempts = 0;
   m_isUserDefined = false;
   m_useSsl = useSsl;
   s_dbId += 1;
@@ -167,7 +166,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const bool userDefined,
 				 QObject *parent):QSslSocket(parent)
 {
-  m_connectionAttempts = 0;
   m_isUserDefined = userDefined;
   m_useSsl = true;
   s_dbId += 1;
@@ -225,6 +223,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(connected(void)),
 	  this,
 	  SLOT(slotConnected(void)));
+  connect(this,
+	  SIGNAL(disconnected(void)),
+	  this,
+	  SLOT(deleteLater(void)));
   connect(this,
 	  SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,
@@ -353,6 +355,8 @@ spoton_neighbor::~spoton_neighbor()
 
 void spoton_neighbor::slotTimeout(void)
 {
+  m_useSsl = isEncrypted();
+
   if(state() == QAbstractSocket::ConnectedState)
     if((isEncrypted() && m_useSsl) || !m_useSsl)
       if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 90)
@@ -427,12 +431,7 @@ void spoton_neighbor::slotTimeout(void)
 	if(state() == QAbstractSocket::UnconnectedState)
 	  {
 	    if(m_useSsl)
-	      {
-		connectToHostEncrypted(m_address.toString(), m_port);
-
-		if(!waitForEncrypted())
-		  m_useSsl = false;
-	      }
+	      connectToHostEncrypted(m_address.toString(), m_port);
 	    else
 	      connectToHost(m_address, m_port);
 	  }
@@ -2211,22 +2210,7 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 
 void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
 {
-  if(error == QAbstractSocket::ConnectionRefusedError)
-    {
-      if(m_isUserDefined)
-	{
-	  if(m_connectionAttempts < 5)
-	    {
-	      m_connectionAttempts += 1;
-	      spoton_misc::logError
-		(QString("spoton_neighbor::slotError(): socket error %1. "
-			 "Retrying, attempt %2 of %3.").arg(error).
-		 arg(m_connectionAttempts).arg(5));
-	      return;
-	    }
-	}
-    }
-  else if(error == QAbstractSocket::SslHandshakeFailedError)
+  if(error == QAbstractSocket::SslHandshakeFailedError)
     {
       /*
       ** Do not use SSL.

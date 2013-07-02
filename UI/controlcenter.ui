@@ -248,6 +248,30 @@
                        </column>
                       </widget>
                      </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout">
+                       <item>
+                        <widget class="QCheckBox" name="hideOfflineParticipants">
+                         <property name="text">
+                          <string>&amp;Hide Offline Participants</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <spacer name="horizontalSpacer_21">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                      </layout>
+                     </item>
                     </layout>
                    </widget>
                   </widget>
@@ -1347,9 +1371,6 @@
               </column>
              </widget>
             </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_4"/>
-            </item>
            </layout>
           </widget>
           <widget class="QWidget" name="layoutWidget">
@@ -1848,8 +1869,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>949</width>
-             <height>296</height>
+             <width>973</width>
+             <height>574</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -2877,6 +2898,7 @@
   <tabstop>saveNodeName</tabstop>
   <tabstop>status</tabstop>
   <tabstop>participants</tabstop>
+  <tabstop>hideOfflineParticipants</tabstop>
   <tabstop>chatSendMethod</tabstop>
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>

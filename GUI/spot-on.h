@@ -178,6 +178,7 @@ class spoton: public QMainWindow
   void slotKeepOnlyUserDefinedNeighbors(bool state);
   void slotKernelSocketState(void);
   void slotKernelStatus(void);
+  void slotHideOfflineParticipants(bool state);
   void slotListenerCheckChange(int state);
   void slotListenerIPComboChanged(int index);
   void slotMailSelected(QTableWidgetItem *item);
