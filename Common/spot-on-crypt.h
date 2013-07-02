@@ -45,6 +45,7 @@ extern "C"
 }
 
 #include <QByteArray>
+#include <QSslCipher>
 #include <QStringList>
 
 class spoton_crypt
@@ -74,6 +75,7 @@ class spoton_crypt
 			     const QByteArray &data, bool *ok);
   static QByteArray strongRandomBytes(const size_t size);
   static QByteArray weakRandomBytes(const size_t size);
+  static QList<QSslCipher> defaultSslCiphers(void);
   static QStringList cipherTypes(void);
   static QStringList hashTypes(void);
   static bool isValidSignature(const QByteArray &data,

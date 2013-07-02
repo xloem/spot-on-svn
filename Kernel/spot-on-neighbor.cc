@@ -97,7 +97,12 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 		    );
 
   if(!cipher.isNull())
-    setCiphers(QList<QSslCipher> () << cipher);
+    {
+      QList<QSslCipher> ciphers(this->ciphers());
+
+      ciphers.prepend(cipher);
+      setCiphers(ciphers);
+    }
 
   setPeerVerifyMode(QSslSocket::VerifyNone);
 #if QT_VERSION >= 0x050000
@@ -191,7 +196,12 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 		    );
 
   if(!cipher.isNull())
-    setCiphers(QList<QSslCipher> () << cipher);
+    {
+      QList<QSslCipher> ciphers(this->ciphers());
+
+      ciphers.prepend(cipher);
+      setCiphers(ciphers);
+    }
 
   setPeerVerifyMode(QSslSocket::VerifyNone);
 #if QT_VERSION >= 0x050000

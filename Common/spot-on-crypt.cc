@@ -2965,3 +2965,13 @@ QByteArray spoton_crypt::certificateInRem(bool *ok)
 
   return certificate;
 }
+
+QList<QSslCipher> spoton_crypt::defaultSslCiphers(void)
+{
+  /*
+  ** Retrieve OpenSSL ciphers:
+  ** "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH"
+  */
+
+  return QList<QSslCipher> ();
+}
