@@ -339,6 +339,16 @@ void spoton_misc::prepareDatabases(void)
 
 void spoton_misc::logError(const QString &error)
 {
+  if(error.trimmed().isEmpty())
+    return;
+
+  static QString s_lastError("");
+
+  if(error.trimmed() == s_lastError)
+    return;
+  else
+    s_lastError = error.trimmed();
+
   QFile file(homePath() + QDir::separator() + "error_log.dat");
 
   if(file.size() >= 25 * 1024)
@@ -359,7 +369,7 @@ void spoton_misc::logError(const QString &error)
 
       file.write(now.toString().toLatin1());
       file.write(eol.toLatin1());
-      file.write(error.toLatin1());
+      file.write(s_lastError.toLatin1());
       file.write(eol.toLatin1());
       file.write(eol.toLatin1());
       file.flush();

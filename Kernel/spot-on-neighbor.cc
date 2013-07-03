@@ -68,13 +68,8 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
       setPrivateKey(key);
     }
 
-  QSslCipher cipher("ECDHE-RSA-AES256-SHA",
-#if QT_VERSION >= 0x050000
-		    QSsl::TlsV1_0
-#else
-		    QSsl::TlsV1
-#endif
-		    );
+  QSslCipher cipher("ECDHE-RSA-AES256-SHA", // Where's 384?
+		    QSsl::SslV3);
 
   if(!cipher.isNull())
     {
@@ -82,6 +77,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 
       ciphers.prepend(cipher);
       setCiphers(ciphers);
+
+      if(this->ciphers().contains(cipher))
+	spoton_misc::logError(QString("spoton_neighbor::spoton_neighbor(): cipher %1 added.").
+			      arg(cipher.name()));
     }
 
   setPeerVerifyMode(QSslSocket::VerifyNone);
@@ -167,13 +166,8 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_useSsl = true;
   s_dbId += 1;
 
-  QSslCipher cipher("ECDHE-RSA-AES256-SHA",
-#if QT_VERSION >= 0x050000
-		    QSsl::TlsV1_0
-#else
-		    QSsl::TlsV1
-#endif
-		    );
+  QSslCipher cipher("ECDHE-RSA-AES256-SHA", // Where's 384?
+		    QSsl::SslV3);
 
   if(!cipher.isNull())
     {
@@ -181,6 +175,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 
       ciphers.prepend(cipher);
       setCiphers(ciphers);
+
+      if(this->ciphers().contains(cipher))
+	spoton_misc::logError(QString("spoton_neighbor::spoton_neighbor(): cipher %1 added.").
+			      arg(cipher.name()));
     }
 
   setPeerVerifyMode(QSslSocket::VerifyNone);
