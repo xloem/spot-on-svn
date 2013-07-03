@@ -28,11 +28,9 @@
 #ifndef _spoton_listener_h_
 #define _spoton_listener_h_
 
-#include <QDir>
 #include <QPointer>
 #include <QQueue>
 #include <QSqlDatabase>
-#include <QSqlQuery>
 #include <QTcpServer>
 #include <QTimer>
 

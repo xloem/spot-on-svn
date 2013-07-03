@@ -25,8 +25,10 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QDir>
 #include <QNetworkInterface>
 #include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include "Common/spot-on-external-address.h"
 #include "Common/spot-on-crypt.h"
