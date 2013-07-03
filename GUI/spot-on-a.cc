@@ -1631,10 +1631,12 @@ void spoton::slotPopulateNeighbors(void)
 				     arg(m_settings.
 					 value("gui/iconSet",
 					       "nouve").toString())));
-			    item->setToolTip(tr("Connection is secure."));
+			    item->setToolTip
+			      (tr("Connection is encrypted."));
 			  }
 			else
-			  item->setToolTip(tr("Connection is insecure."));
+			  item->setToolTip
+			    (tr("Connection is not encrypted."));
 		      }
 
 		    m_ui.neighbors->setItem(row, i, item);
@@ -2277,6 +2279,10 @@ void spoton::slotSetPassphrase(void)
 		 "url",
 		 error2);
 	      m_sb.status->clear();
+	    }
+
+	  if(error2.isEmpty())
+	    {
 	    }
 	}
       else
