@@ -2238,14 +2238,14 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
 
       m_useSsl = false;
       spoton_misc::logError
-	(QString("spoton_neighbor::slotError(): socket error %1. "
-		 "Disabling SSL.").arg(error));
+	(QString("spoton_neighbor::slotError(): socket error (%1). "
+		 "Disabling SSL.").arg(errorString()));
       return;
     }
 
   spoton_misc::logError
-    (QString("spoton_neighbor::slotError(): socket error %1. "
-	     "Aborting socket.").arg(error));
+    (QString("spoton_neighbor::slotError(): socket error (%1). "
+	     "Aborting socket.").arg(errorString()));
   deleteLater();
 }
 
