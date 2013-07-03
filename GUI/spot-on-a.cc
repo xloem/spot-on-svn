@@ -779,7 +779,7 @@ void spoton::slotAddListener(void)
       QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
       m_sb.status->setText
 	(tr("Generating SSL data. Please be patient."));
-      m_sb.status->repaint();
+      QApplication::processEvents();
     }
 
   QByteArray certificate;
@@ -935,7 +935,7 @@ void spoton::slotAddListener(void)
   if(m_ui.sslListener->isChecked())
     {
       m_sb.status->clear();
-      m_sb.status->repaint();
+      QApplication::processEvents();
       QApplication::restoreOverrideCursor();
     }
 
@@ -2202,7 +2202,7 @@ void spoton::slotSetPassphrase(void)
 
   m_sb.status->setText
     (tr("Generating a derived key. Please be patient."));
-  m_sb.status->repaint();
+  QApplication::processEvents();
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   /*
@@ -2238,7 +2238,7 @@ void spoton::slotSetPassphrase(void)
 	{
 	  m_sb.status->setText
 	    (tr("Re-encoding RSA key pair 1 of 3. Please be patient."));
-	  m_sb.status->repaint();
+	  QApplication::processEvents();
 	  spoton_crypt::reencodeRSAKeys
 	    (m_ui.cipherType->currentText(),
 	     derivedKey,
@@ -2253,7 +2253,7 @@ void spoton::slotSetPassphrase(void)
 	    {
 	      m_sb.status->setText
 		(tr("Re-encoding RSA key pair 2 of 3. Please be patient."));
-	      m_sb.status->repaint();
+	      QApplication::processEvents();
 	      spoton_crypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
 		 derivedKey,
@@ -2269,7 +2269,7 @@ void spoton::slotSetPassphrase(void)
 	    {
 	      m_sb.status->setText
 		(tr("Re-encoding RSA key pair 3 of 3. Please be patient."));
-	      m_sb.status->repaint();
+	      QApplication::processEvents();
 	      spoton_crypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
 		 derivedKey,
@@ -2279,10 +2279,6 @@ void spoton::slotSetPassphrase(void)
 		 "url",
 		 error2);
 	      m_sb.status->clear();
-	    }
-
-	  if(error2.isEmpty())
-	    {
 	    }
 	}
       else
@@ -2304,7 +2300,7 @@ void spoton::slotSetPassphrase(void)
 	      m_sb.status->setText
 		(tr("Generating RSA key pair %1 of %2. Please be patient.").
 		 arg(i + 1).arg(list.size()));
-	      m_sb.status->repaint();
+	      QApplication::processEvents();
 
 	      spoton_crypt crypt
 		(m_ui.cipherType->currentText(),
@@ -2410,7 +2406,7 @@ void spoton::slotSetPassphrase(void)
 	    {
 	      m_sb.status->setText
 		(tr("Initializing country_inclusion.db."));
-	      m_sb.status->repaint();
+	      QApplication::processEvents();
 	      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	      spoton_misc::populateCountryDatabase(m_crypt);
 	      QApplication::restoreOverrideCursor();
@@ -2532,7 +2528,7 @@ void spoton::slotValidatePassphrase(void)
 	       "signature");
 	    m_sb.status->setText
 	      (tr("Initializing country_inclusion.db."));
-	    m_sb.status->repaint();
+	    QApplication::processEvents();
 	    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	    spoton_misc::populateCountryDatabase(m_crypt);
 	    QApplication::restoreOverrideCursor();

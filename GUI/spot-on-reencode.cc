@@ -55,7 +55,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   sb.status->setText
     (QObject::tr("Re-encoding email.db."));
-  sb.status->repaint();
+  QApplication::processEvents();
   spoton_misc::prepareDatabases();
 
   {
@@ -198,7 +198,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   QSqlDatabase::removeDatabase("spoton_reencode");
   sb.status->setText
     (QObject::tr("Re-encoding country_inclusion.db."));
-  sb.status->repaint();
+  QApplication::processEvents();
   spoton_misc::prepareDatabases();
 
   {
@@ -271,8 +271,86 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
   QSqlDatabase::removeDatabase("spoton_reencode");
   sb.status->setText
+    (QObject::tr("Re-encoding portions of idiotes.db."));
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_reencode");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "idiotes.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT certificate FROM certificates WHERE id = 'neighbor'"))
+	  if(query.next())
+	    {
+	      QByteArray certificate;
+	      QSqlQuery updateQuery(db);
+
+	      certificate = QByteArray::fromBase64(query.value(0).
+						   toByteArray());
+
+	      if(ok)
+		certificate = oldCrypt->decrypted(certificate, &ok);
+
+	      updateQuery.prepare("UPDATE certificates SET "
+				  "certificate = ? "
+				  "WHERE id = 'neighbor'");
+
+	      if(ok)
+		updateQuery.bindValue(0, newCrypt->encrypted(certificate, &ok).toBase64());
+
+	      if(ok)
+		updateQuery.exec();
+	    }
+
+	if(query.exec("SELECT private_key, public_key "
+		      "FROM idiotes WHERE id = 'neighbor'"))
+	  if(query.next())
+	    {
+	      QByteArray privateKey;
+	      QByteArray publicKey;
+	      QSqlQuery updateQuery(db);
+
+	      privateKey = QByteArray::fromBase64(query.value(0).
+						  toByteArray());
+	      publicKey = QByteArray::fromBase64(query.value(1).
+						 toByteArray());
+
+	      if(ok)
+		privateKey = oldCrypt->decrypted(privateKey, &ok);
+
+	      if(ok)
+		publicKey = oldCrypt->decrypted(publicKey, &ok);
+
+	      updateQuery.prepare("UPDATE idiotes SET "
+				  "private_key = ?, "
+				  "public_key = ? "
+				  "WHERE id = 'neighbor'");
+
+	      if(ok)
+		updateQuery.bindValue(0, newCrypt->encrypted(privateKey, &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue(1, newCrypt->encrypted(publicKey, &ok).toBase64());
+
+	      if(ok)
+		updateQuery.exec();
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton_reencode");
+  sb.status->setText
     (QObject::tr("Re-encoding listeners.db."));
-  sb.status->repaint();
+  QApplication::processEvents();
   spoton_misc::prepareDatabases();
 
   {
@@ -407,7 +485,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   QSqlDatabase::removeDatabase("spoton_reencode");
   sb.status->setText
     (QObject::tr("Re-encoding neighbors.db."));
-  sb.status->repaint();
+  QApplication::processEvents();
   spoton_misc::prepareDatabases();
 
   {
