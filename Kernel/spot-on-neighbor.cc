@@ -2879,6 +2879,6 @@ void spoton_neighbor::slotEncrypted(void)
 				"using session cipher %1-%2-%3-%4.").
 			arg(sessionCipher().authenticationMethod()).
 			arg(sessionCipher().encryptionMethod()).
-			arg(sessionCipher().name()).
+			arg(sessionCipher().keyExchangeMethod()).
 			arg(sessionCipher().usedBits()));
 }
