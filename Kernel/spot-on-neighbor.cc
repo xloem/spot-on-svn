@@ -2874,7 +2874,7 @@ void spoton_neighbor::slotDisconnected(void)
 {
   int attempts = property("connection-attempts").toInt();
 
-  if(attempts < 2)
+  if(attempts < 5)
     {
       setProperty("connection-attempts", attempts + 1);
       spoton_misc::logError("spoton_neighbor::slotDisconnected(): "
