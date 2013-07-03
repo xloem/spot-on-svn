@@ -20,10 +20,13 @@ public_key
 
 listeners.db:
 
+certificate
 external_ip_address
 ip_address
 port
+private_key
 protocol
+public_key
 scope_id
 
 neighbors.db:

@@ -71,7 +71,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT date, goldbug, message, participant_oid, "
+	if(query.exec("SELECT date, goldbug, message, message_digest, "
+		      "participant_oid, "
 		      "receiver_sender, status, subject, OID FROM folders"))
 	  while(query.next())
 	    {
@@ -79,7 +80,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      bool ok = true;
 
 	      for(int i = 0; i < query.record().count(); i++)
-		if(i >= 0 && i <= 6)
+		if(i >= 0 && i <= 7)
 		  {
 		    QByteArray bytes
 		      (oldCrypt->decrypted(QByteArray::
@@ -99,7 +100,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 		    updateQuery.prepare("UPDATE folders SET "
 					"date = ?, goldbug = ?, "
-					"message = ?, participant_oid = ?, "
+					"message = ?, message_digest = ?, "
+					"participant_oid = ?, "
 					"receiver_sender = ?, "
 					"status = ?, "
 					"subject = ?, hash = ? "
@@ -115,13 +117,13 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 		    if(ok)
 		      updateQuery.bindValue
-			(7, newCrypt->keyedHash(list.value(2) +
-						list.value(6), &ok).
+			(8, newCrypt->keyedHash(list.value(2) +
+						list.value(7), &ok).
 			 toBase64());
 
 		    if(ok)
 		      {
-			updateQuery.bindValue(8, query.value(7));
+			updateQuery.bindValue(9, query.value(8));
 			updateQuery.exec();
 		      }
 		  }

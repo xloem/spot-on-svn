@@ -1878,9 +1878,10 @@ void spoton::slotSendMail(void)
 
 	    query.prepare("INSERT INTO folders "
 			  "(date, folder_index, goldbug, hash, "
-			  "message, receiver_sender, receiver_sender_hash, "
+			  "message, message_digest, "
+			  "receiver_sender, receiver_sender_hash, "
 			  "status, subject, participant_oid) "
-			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue
 	      (0, m_crypt->encrypted(now.toString(Qt::ISODate).
 				     toLatin1(), &ok).toBase64());
@@ -1900,25 +1901,29 @@ void spoton::slotSendMail(void)
 
 	    if(ok)
 	      query.bindValue
-		(5, m_crypt->encrypted(names.takeFirst().toUtf8(), &ok).
+		(5, m_crypt->encrypted(QByteArray(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(6, m_crypt->encrypted(names.takeFirst().toUtf8(), &ok).
 		 toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(6, publicKeyHash.toBase64());
+		(7, publicKeyHash.toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(7, m_crypt->encrypted(tr("Queued").toUtf8(),
+		(8, m_crypt->encrypted(tr("Queued").toUtf8(),
 				       &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(8, m_crypt->encrypted(subject, &ok).toBase64());
+		(9, m_crypt->encrypted(subject, &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(9, m_crypt->encrypted(oid.toLatin1(), &ok).
+		(10, m_crypt->encrypted(oid.toLatin1(), &ok).
 		 toBase64());
 
 	    if(ok)

@@ -910,26 +910,17 @@ void spoton::slotAddListener(void)
 		(5, m_crypt->keyedHash((ip + port + scopeId).toLatin1(), &ok).
 		 toBase64());
 
-	    if(m_ui.sslListener->isChecked())
-	      {
-		if(ok)
-		  query.bindValue
-		    (6, m_crypt->encrypted(certificate, &ok).toBase64());
+	    if(ok)
+	      query.bindValue
+		(6, m_crypt->encrypted(certificate, &ok).toBase64());
 
-		if(ok)
-		  query.bindValue
-		    (7, m_crypt->encrypted(privateKey, &ok).toBase64());
+	    if(ok)
+	      query.bindValue
+		(7, m_crypt->encrypted(privateKey, &ok).toBase64());
 
-		if(ok)
-		  query.bindValue
-		    (8, m_crypt->encrypted(publicKey, &ok).toBase64());
-	      }
-	    else
-	      {
-		query.bindValue(6, QVariant(QVariant::ByteArray));
-		query.bindValue(7, QVariant(QVariant::ByteArray));
-		query.bindValue(8, QVariant(QVariant::ByteArray));
-	      }
+	    if(ok)
+	      query.bindValue
+		(8, m_crypt->encrypted(publicKey, &ok).toBase64());
 
 	    if(ok)
 	      ok = query.exec();

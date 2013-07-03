@@ -116,10 +116,11 @@ void spoton_misc::prepareDatabases(void)
 					  ** the subject.
 					  */
 		   "message BLOB NOT NULL, "
-		   "message_digest BLOB, " /*
-					   ** Should only be used when
-					   ** a goldbug is provided.
-					   */
+		   "message_digest TEXT NOT NULL, " /*
+						    ** Should only be used
+						    ** when a goldbug is
+						    ** provided.
+						    */
 		   "participant_oid TEXT NOT NULL, "
 		   "receiver_sender TEXT NOT NULL, "
 		   "receiver_sender_hash TEXT NOT NULL, " /*
@@ -160,39 +161,41 @@ void spoton_misc::prepareDatabases(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("CREATE TABLE IF NOT EXISTS friends_public_keys ("
-		   "gemini TEXT, "
-		   "key_type TEXT NOT NULL DEFAULT 'messaging', "
-		   "name TEXT NOT NULL DEFAULT 'unknown', "
-		   "public_key TEXT NOT NULL, "
-		   "public_key_hash TEXT PRIMARY KEY NOT NULL, " /*
-								 ** Sha-512
-								 ** hash of
-								 ** the public
-								 ** key.
-								 */
-		   /*
-		   ** Why do we need the neighbor's OID?
-		   ** When a neighbor shares a public key, we need
-		   ** to be able to remove the key if the socket connection
-		   ** is lost before we complete the exchange. The field
-		   ** provides us with some safety.
-		   */
-		   "neighbor_oid INTEGER NOT NULL DEFAULT -1, "
-		   "status TEXT NOT NULL DEFAULT 'offline', "
-		   "last_status_update TEXT NOT NULL DEFAULT 'now')");
-	query.exec("CREATE TABLE IF NOT EXISTS relationships_with_signatures ("
-		   "public_key_hash TEXT PRIMARY KEY NOT NULL, " /*
-								 ** Sha-512
-								 ** hash of
-								 ** the public
-								 ** key.
-								 */
-		   "signature_public_key_hash "
-		   "TEXT NOT NULL)"); /*
-				      ** Sha-512 ** hash of the signature
-				      ** public key.
-				      */
+	query.exec
+	  ("CREATE TABLE IF NOT EXISTS friends_public_keys ("
+	   "gemini TEXT, "
+	   "key_type TEXT NOT NULL DEFAULT 'messaging', "
+	   "name TEXT NOT NULL DEFAULT 'unknown', "
+	   "public_key TEXT NOT NULL, "
+	   "public_key_hash TEXT PRIMARY KEY NOT NULL, " /*
+							 ** Sha-512
+							 ** hash of
+							 ** the public
+							 ** key.
+							 */
+	   /*
+	   ** Why do we need the neighbor's OID?
+	   ** When a neighbor shares a public key, we need
+	   ** to be able to remove the key if the socket connection
+	   ** is lost before we complete the exchange. The field
+	   ** provides us with some safety.
+	   */
+	   "neighbor_oid INTEGER NOT NULL DEFAULT -1, "
+	   "status TEXT NOT NULL DEFAULT 'offline', "
+	   "last_status_update TEXT NOT NULL DEFAULT 'now')");
+	query.exec
+	  ("CREATE TABLE IF NOT EXISTS relationships_with_signatures ("
+	   "public_key_hash TEXT PRIMARY KEY NOT NULL, " /*
+							 ** Sha-512
+							 ** hash of
+							 ** the public
+							 ** key.
+							 */
+	   "signature_public_key_hash "
+	   "TEXT NOT NULL)"); /*
+			      ** Sha-512 ** hash of the signature
+			      ** public key.
+			      */
       }
 
     db.close();
@@ -272,9 +275,9 @@ void spoton_misc::prepareDatabases(void)
 						      ** the port, and
 						      ** the scope.
 						      */
-		   "certificate BLOB, "
-		   "private_key BLOB, "
-		   "public_key BLOB)");
+		   "certificate BLOB NOT NULL, "
+		   "private_key BLOB NOT NULL, "
+		   "public_key BLOB NOT NULL)");
       }
 
     db.close();
