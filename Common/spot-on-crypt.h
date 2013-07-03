@@ -108,6 +108,7 @@ class spoton_crypt
   QByteArray digitalSignature(const QByteArray &data, bool *ok);
   QByteArray encrypted(const QByteArray &data, bool *ok);
   QByteArray keyedHash(const QByteArray &data, bool *ok);
+  QByteArray privateKeyInRem(bool *ok);
   QByteArray publicKey(bool *ok);
   QByteArray publicKeyDecrypt(const QByteArray &data, bool *ok);
   QByteArray publicKeyHash(bool *ok);

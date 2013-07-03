@@ -55,7 +55,8 @@ class spoton_neighbor: public QSslSocket
 		  const bool userDefined,
 		  QObject *parent);
   spoton_neighbor(const int socketDescriptor,
-		  const bool useSsl,
+		  const QByteArray &certificate,
+		  const QByteArray &privateKey,
 		  QObject *parent);
   ~spoton_neighbor();
   QUuid receivedUuid(void) const;

@@ -774,128 +774,179 @@ void spoton::slotAddListener(void)
   if(!m_crypt)
     return;
 
+  if(m_ui.sslListener->isChecked())
+    {
+      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+      m_sb.status->setText
+	(tr("Generating SSL data. Please be patient."));
+      m_sb.status->repaint();
+    }
+
+  QByteArray certificate;
+  QByteArray privateKey;
+  QByteArray publicKey;
+  QString error("");
   bool ok = true;
 
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+  if(m_ui.sslListener->isChecked())
+    spoton_crypt::generateSslKeys
+      (m_ui.listenerKeySize->currentText().toInt(),
+       certificate,
+       privateKey,
+       publicKey,
+       error);
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "listeners.db");
-
-    if(db.open())
+  if(error.isEmpty())
+    {
       {
-	spoton_misc::prepareDatabases();
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
-	QString ip("");
+	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			   "listeners.db");
 
-	if(m_ui.listenerIPCombo->currentIndex() == 0)
-	  ip = m_ui.listenerIP->text().trimmed();
-	else
-	  ip = m_ui.listenerIPCombo->currentText();
-
-	QString port(QString::number(m_ui.listenerPort->value()));
-	QString protocol("");
-	QString scopeId(m_ui.listenerScopeId->text().trimmed());
-	QString status("online");
-	QSqlQuery query(db);
-
-	if(m_ui.ipv4Listener->isChecked())
-	  protocol = "IPv4";
-	else
-	  protocol = "IPv6";
-
-	query.prepare("INSERT INTO listeners "
-		      "(ip_address, "
-		      "port, "
-		      "protocol, "
-		      "scope_id, "
-		      "status_control, "
-		      "hash, "
-		      "use_ssl) "
-		      "VALUES "
-		      "(?, ?, ?, ?, ?, ?, ?)");
-
-	if(ip.isEmpty())
-	  query.bindValue
-	    (0, m_crypt->encrypted(QByteArray(), &ok).toBase64());
-	else
+	if(db.open())
 	  {
-	    QList<int> numbers;
-	    QStringList list;
+	    spoton_misc::prepareDatabases();
 
-	    if(protocol == "IPv4")
-	      list = ip.split(".", QString::KeepEmptyParts);
+	    QString ip("");
+
+	    if(m_ui.listenerIPCombo->currentIndex() == 0)
+	      ip = m_ui.listenerIP->text().trimmed();
 	    else
-	      list = ip.split(":", QString::KeepEmptyParts);
+	      ip = m_ui.listenerIPCombo->currentText();
 
-	    for(int i = 0; i < list.size(); i++)
-	      numbers.append(list.at(i).toInt());
+	    QString port(QString::number(m_ui.listenerPort->value()));
+	    QString protocol("");
+	    QString scopeId(m_ui.listenerScopeId->text().trimmed());
+	    QString status("online");
+	    QSqlQuery query(db);
 
-	    if(protocol == "IPv4")
-	      {
-		ip = QString::number(numbers.value(0)) + "." +
-		  QString::number(numbers.value(1)) + "." +
-		  QString::number(numbers.value(2)) + "." +
-		  QString::number(numbers.value(3));
-		ip.remove("...");
-	      }
+	    if(m_ui.ipv4Listener->isChecked())
+	      protocol = "IPv4";
+	    else
+	      protocol = "IPv6";
+
+	    query.prepare("INSERT INTO listeners "
+			  "(ip_address, "
+			  "port, "
+			  "protocol, "
+			  "scope_id, "
+			  "status_control, "
+			  "hash, "
+			  "certificate, "
+			  "private_key, "
+			  "public_key) "
+			  "VALUES "
+			  "(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+	    if(ip.isEmpty())
+	      query.bindValue
+		(0, m_crypt->encrypted(QByteArray(), &ok).toBase64());
 	    else
 	      {
-		if(m_ui.listenerIPCombo->currentIndex() == 0)
+		QList<int> numbers;
+		QStringList list;
+
+		if(protocol == "IPv4")
+		  list = ip.split(".", QString::KeepEmptyParts);
+		else
+		  list = ip.split(":", QString::KeepEmptyParts);
+
+		for(int i = 0; i < list.size(); i++)
+		  numbers.append(list.at(i).toInt());
+
+		if(protocol == "IPv4")
 		  {
-		    ip = QString::number(numbers.value(0)) + ":" +
-		      QString::number(numbers.value(1)) + ":" +
-		      QString::number(numbers.value(2)) + ":" +
-		      QString::number(numbers.value(3)) + ":" +
-		      QString::number(numbers.value(4)) + ":" +
-		      QString::number(numbers.value(5)) + ":" +
-		      QString::number(numbers.value(6)) + ":" +
-		      QString::number(numbers.value(7));
-		    ip.remove(":::::::");
-
-		    /*
-		    ** Special exception.
-		    */
-
-		    if(ip == "0:0:0:0:0:0:0:0")
-		      ip = "::";
+		    ip = QString::number(numbers.value(0)) + "." +
+		      QString::number(numbers.value(1)) + "." +
+		      QString::number(numbers.value(2)) + "." +
+		      QString::number(numbers.value(3));
+		    ip.remove("...");
 		  }
+		else
+		  {
+		    if(m_ui.listenerIPCombo->currentIndex() == 0)
+		      {
+			ip = QString::number(numbers.value(0)) + ":" +
+			  QString::number(numbers.value(1)) + ":" +
+			  QString::number(numbers.value(2)) + ":" +
+			  QString::number(numbers.value(3)) + ":" +
+			  QString::number(numbers.value(4)) + ":" +
+			  QString::number(numbers.value(5)) + ":" +
+			  QString::number(numbers.value(6)) + ":" +
+			  QString::number(numbers.value(7));
+			ip.remove(":::::::");
+
+			/*
+			** Special exception.
+			*/
+
+			if(ip == "0:0:0:0:0:0:0:0")
+			  ip = "::";
+		      }
+		  }
+
+		if(ok)
+		  query.bindValue
+		    (0, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
 	      }
 
 	    if(ok)
 	      query.bindValue
-		(0, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
+		(1, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(2, m_crypt->encrypted(protocol.toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(3, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
+
+	    query.bindValue(4, status);
+
+	    if(ok)
+	      query.bindValue
+		(5, m_crypt->keyedHash((ip + port + scopeId).toLatin1(), &ok).
+		 toBase64());
+
+	    if(m_ui.sslListener->isChecked())
+	      {
+		if(ok)
+		  query.bindValue
+		    (6, m_crypt->encrypted(certificate, &ok).toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (7, m_crypt->encrypted(privateKey, &ok).toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (8, m_crypt->encrypted(publicKey, &ok).toBase64());
+	      }
+	    else
+	      {
+		query.bindValue(6, QVariant(QVariant::ByteArray));
+		query.bindValue(7, QVariant(QVariant::ByteArray));
+		query.bindValue(8, QVariant(QVariant::ByteArray));
+	      }
+
+	    if(ok)
+	      ok = query.exec();
 	  }
 
-	if(ok)
-	  query.bindValue
-	    (1, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
-
-	if(ok)
-	  query.bindValue
-	    (2, m_crypt->encrypted(protocol.toLatin1(), &ok).toBase64());
-
-	if(ok)
-	  query.bindValue
-	    (3, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
-
-	query.bindValue(4, status);
-
-	if(ok)
-	  query.bindValue
-	    (5, m_crypt->keyedHash((ip + port + scopeId).toLatin1(), &ok).
-	     toBase64());
-
-	query.bindValue(6, m_ui.sslListener->isChecked() ? 1 : 0);
-
-	if(ok)
-	  ok = query.exec();
+	db.close();
       }
 
-    db.close();
-  }
+      QSqlDatabase::removeDatabase("spoton");
+    }
 
-  QSqlDatabase::removeDatabase("spoton");
+  if(m_ui.sslListener->isChecked())
+    {
+      m_sb.status->clear();
+      m_sb.status->repaint();
+      QApplication::restoreOverrideCursor();
+    }
 
   if(ok)
     m_ui.listenerIP->selectAll();
@@ -1919,7 +1970,7 @@ void spoton::slotDeleteListener(void)
 	else
 	  query.prepare("UPDATE listeners SET status_control = 'deleted' "
 			"WHERE "
-			"OID = ?");
+			"OID = ? AND status_control <> 'deleted'");
 
 	query.bindValue(0, oid);
 	query.exec();
@@ -1966,7 +2017,7 @@ void spoton::slotDeleteNeighbor(void)
 			"OID = ?");
 	else
 	  query.prepare("UPDATE neighbors SET status_control = 'deleted' "
-			"WHERE OID = ?");
+			"WHERE OID = ? AND status_control <> 'deleted'");
 
 	query.bindValue(0, oid);
 	query.exec();
@@ -2095,7 +2146,7 @@ void spoton::updateParticipantsTable(const QSqlDatabase &db)
 	*/
 
 	query.exec("PRAGMA synchronous = OFF");
-	query.exec("UPDATE symmetric_keys SET status = 'offline' WHERE "
+	query.exec("UPDATE friends_public_keys SET status = 'offline' WHERE "
 		   "status <> 'offline'");
       }
 }
@@ -2158,7 +2209,7 @@ void spoton::slotSetPassphrase(void)
 
   m_sb.status->setText
     (tr("Generating a derived key. Please be patient."));
-  QApplication::processEvents();
+  m_sb.status->repaint();
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   /*
@@ -2193,7 +2244,7 @@ void spoton::slotSetPassphrase(void)
       if(!m_ui.newRSAKeys->isChecked() && reencode)
 	{
 	  m_sb.status->setText
-	    (tr("Re-encoding RSA key pair 1 of 4. Please be patient."));
+	    (tr("Re-encoding RSA key pair 1 of 3. Please be patient."));
 	  m_sb.status->repaint();
 	  spoton_crypt::reencodeRSAKeys
 	    (m_ui.cipherType->currentText(),
@@ -2208,23 +2259,7 @@ void spoton::slotSetPassphrase(void)
 	  if(error2.isEmpty())
 	    {
 	      m_sb.status->setText
-		(tr("Re-encoding RSA key pair 2 of 4. Please be patient."));
-	      m_sb.status->repaint();
-	      spoton_crypt::reencodeRSAKeys
-		(m_ui.cipherType->currentText(),
-		 derivedKey,
-		 m_settings.value("gui/cipherType", "aes256").
-		 toString().trimmed(),
-		 m_crypt->symmetricKey(),
-		 "server",
-		 error2);
-	      m_sb.status->clear();
-	    }
-
-	  if(error2.isEmpty())
-	    {
-	      m_sb.status->setText
-		(tr("Re-encoding RSA key pair 3 of 4. Please be patient."));
+		(tr("Re-encoding RSA key pair 2 of 3. Please be patient."));
 	      m_sb.status->repaint();
 	      spoton_crypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
@@ -2240,7 +2275,7 @@ void spoton::slotSetPassphrase(void)
 	  if(error2.isEmpty())
 	    {
 	      m_sb.status->setText
-		(tr("Re-encoding RSA key pair 4 of 4. Please be patient."));
+		(tr("Re-encoding RSA key pair 3 of 3. Please be patient."));
 	      m_sb.status->repaint();
 	      spoton_crypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
@@ -2263,7 +2298,7 @@ void spoton::slotSetPassphrase(void)
 	      << false
 	      << false;
 	  list << "messaging"
-	       << "server"
+	       << "neighbor"
 	       << "signature"
 	       << "url";
 
@@ -3002,7 +3037,8 @@ void spoton::slotDeleteAllListeners(void)
 	  query.exec("DELETE FROM listeners");
 	else
 	  query.exec("UPDATE listeners SET "
-		     "status_control = 'deleted'");
+		     "status_control = 'deleted' WHERE "
+		     "status_control <> 'deleted'");
       }
 
     db.close();
@@ -3030,7 +3066,8 @@ void spoton::slotDeleteAllNeighbors(void)
 	  query.exec("DELETE FROM neighbors");
 	else
 	  query.exec("UPDATE neighbors SET "
-		     "status_control = 'deleted'");
+		     "status_control = 'deleted' WHERE "
+		     "status_control <> 'deleted'");
       }
 
     db.close();

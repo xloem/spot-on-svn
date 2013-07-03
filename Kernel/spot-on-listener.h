@@ -28,12 +28,15 @@
 #ifndef _spoton_listener_h_
 #define _spoton_listener_h_
 
+#include <QDir>
 #include <QPointer>
-#include <QSqlDatabase>
 #include <QQueue>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 #include <QTcpServer>
 #include <QTimer>
 
+#include "Common/spot-on-misc.h"
 #include "spot-on-neighbor.h"
 
 class QNetworkInterface;
@@ -45,10 +48,10 @@ class spoton_listener_tcp_server: public QTcpServer
   Q_OBJECT
 
  public:
-  spoton_listener_tcp_server(const bool useSsl,
-			     QObject *parent):QTcpServer(parent)
+  spoton_listener_tcp_server(const qint64 id, QObject *parent):
+    QTcpServer(parent)
   {
-    m_useSsl = useSsl;
+    m_id = id;
   }
 
   QSslSocket *nextPendingConnection(void)
@@ -60,31 +63,14 @@ class spoton_listener_tcp_server: public QTcpServer
   }
 
 #if QT_VERSION >= 0x050000
-  void incomingConnection(qintptr socketDescriptor)
+  void incomingConnection(qintptr socketDescriptor);
 #else
-  void incomingConnection(int socketDescriptor)
+  void incomingConnection(int socketDescriptor);
 #endif
-  {
-    if(findChildren<spoton_neighbor *> ().size() >= maxPendingConnections())
-      {
-	QSslSocket socket;
-
-	socket.setSocketDescriptor(socketDescriptor);
-	socket.close();
-      }
-    else
-      {
-	QPointer<spoton_neighbor> neighbor = new spoton_neighbor
-	  (socketDescriptor, m_useSsl, this);
-
-	m_queue.enqueue(neighbor);
-	emit encrypted();
-      }
-  }
 
  private:
   QQueue<QPointer<spoton_neighbor> > m_queue;
-  bool m_useSsl;
+  qint64 m_id;
 
  signals:
   void encrypted(void);
@@ -101,7 +87,6 @@ class spoton_listener: public spoton_listener_tcp_server
 		  const QString &scopeId,
 		  const int maximumClients,
 		  const qint64 id,
-		  const bool useSsl,
 		  QObject *parent);
   ~spoton_listener();
   QHostAddress externalAddress(void) const;
@@ -112,7 +97,6 @@ class spoton_listener: public spoton_listener_tcp_server
   QNetworkInterface *m_networkInterface;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_timer;
-  bool m_useSsl;
   qint64 m_id;
   quint16 m_externalPort;
   quint16 m_port;

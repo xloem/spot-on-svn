@@ -46,44 +46,27 @@
 qint64 spoton_neighbor::s_dbId = 0;
 
 spoton_neighbor::spoton_neighbor(const int socketDescriptor,
-				 const bool useSsl,
+				 const QByteArray &certificate,
+				 const QByteArray &privateKey,
 				 QObject *parent):QSslSocket(parent)
 {
   m_isUserDefined = false;
-  m_useSsl = useSsl;
+
+  if(certificate.isEmpty() || privateKey.isEmpty())
+    m_useSsl = false;
+  else
+    m_useSsl = true;
+
   s_dbId += 1;
 
-  spoton_crypt *s_crypt = 0;
-
-  if(spoton_kernel::s_crypts.contains("server"))
-    s_crypt = spoton_kernel::s_crypts["server"];
-
-  if(s_crypt)
+  if(m_useSsl)
     {
-      QByteArray data;
-      bool ok = true;
+      setLocalCertificate(QSslCertificate(certificate));
 
-      if(ok)
-	{
-	  setLocalCertificate(QSslCertificate(data));
+      QSslKey key(privateKey, QSsl::Rsa);
 
-	  if(ok)
-	    {
-	      QSslKey key(data, QSsl::Rsa);
-
-	      setPrivateKey(key);
-	    }
-	  else
-	    spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
-				  "privateKey() failure!");
-	}
-      else
-	spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
-			      "certificateInRem() failure!");
+      setPrivateKey(key);
     }
-  else
-    spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
-			  "missing server key!");
 
   QSslCipher cipher("ECDHE-RSA-AES256-SHA",
 #if QT_VERSION >= 0x050000
@@ -210,13 +193,15 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 
   spoton_crypt *s_crypt = 0;
 
-  if(spoton_kernel::s_crypts.contains("server"))
-    s_crypt = spoton_kernel::s_crypts["server"];
+  if(spoton_kernel::s_crypts.contains("neighbor"))
+    s_crypt = spoton_kernel::s_crypts["neighbor"];
 
   if(s_crypt)
     {
       QByteArray data;
       bool ok = true;
+
+      data = s_crypt->privateKeyInRem(&ok);
 
       if(ok)
 	{
@@ -226,11 +211,11 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	}
       else
 	spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
-			      "privateKey() failure!");
+			      "privateKeyInRem() failure!");
     }
   else
     spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
-			  "missing server key!");
+			  "missing neighbor key!");
 
   m_address = QHostAddress(ipAddress);
   m_ipAddress = ipAddress;

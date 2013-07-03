@@ -172,7 +172,7 @@ void spoton_gui_server::slotReadyRead(void)
 		      spoton_kernel::s_crypts.insert("messaging", crypt);
 		    }
 
-		  if(!spoton_kernel::s_crypts.contains("server"))
+		  if(!spoton_kernel::s_crypts.contains("neighbor"))
 		    {
 		      spoton_crypt *crypt = new spoton_crypt
 			(spoton_kernel::s_settings.value("gui/cipherType",
@@ -187,8 +187,8 @@ void spoton_gui_server::slotReadyRead(void)
 							 256).toInt(),
 			 spoton_kernel::s_settings.value("gui/iterationCount",
 							 10000).toInt(),
-			 "server");
-		      spoton_kernel::s_crypts.insert("server", crypt);
+			 "neighbor");
+		      spoton_kernel::s_crypts.insert("neighbor", crypt);
 		    }
 
 		  if(!spoton_kernel::s_crypts.contains("signature"))

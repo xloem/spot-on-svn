@@ -25,27 +25,99 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QDir>
 #include <QNetworkInterface>
-#include <QSqlQuery>
 #include <QSqlDatabase>
 
 #include "Common/spot-on-external-address.h"
 #include "Common/spot-on-crypt.h"
-#include "Common/spot-on-misc.h"
 #include "spot-on-kernel.h"
 #include "spot-on-listener.h"
 
 qint64 spoton_listener::s_dbId = 0;
+
+#if QT_VERSION >= 0x050000
+void spoton_listener_tcp_server::incomingConnection(qintptr socketDescriptor)
+#else
+void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
+#endif
+{
+  if(findChildren<spoton_neighbor *> ().size() >= maxPendingConnections())
+    {
+      QSslSocket socket;
+
+      socket.setSocketDescriptor(socketDescriptor);
+      socket.close();
+    }
+  else
+    {
+      QByteArray certificate;
+      QByteArray privateKey;
+      spoton_crypt *s_crypt = 0;
+
+      if(spoton_kernel::s_crypts.contains("messaging"))
+	s_crypt = spoton_kernel::s_crypts["messaging"];
+
+      if(s_crypt)
+	{
+	  {
+	    QSqlDatabase db = QSqlDatabase::addDatabase
+	      ("QSQLITE", "spoton_listener_" +
+	       QString::number(spoton_listener::s_dbId));
+
+	    db.setDatabaseName
+	      (spoton_misc::homePath() + QDir::separator() + "listeners.db");
+
+	    if(db.open())
+	      {
+		QSqlQuery query(db);
+
+		query.setForwardOnly(true);
+		query.prepare("SELECT certificate, private_key "
+			      "FROM listeners WHERE OID = ?");
+		query.bindValue(0, m_id);
+
+		if(query.exec())
+		  if(query.next())
+		    {
+		      bool ok = true;
+
+		      certificate = s_crypt->decrypted
+			(QByteArray::fromBase64(query.
+						value(0).
+						toByteArray()),
+			 &ok);
+
+		      if(ok)
+			privateKey = s_crypt->decrypted
+			  (QByteArray::fromBase64(query.
+						  value(1).
+						  toByteArray()),
+			   &ok);
+		    }
+	      }
+
+	    db.close();
+	  }
+
+	  QSqlDatabase::removeDatabase
+	    ("spoton_listener_" + QString::number(spoton_listener::s_dbId));
+	}
+
+      QPointer<spoton_neighbor> neighbor = new spoton_neighbor
+	(socketDescriptor, certificate, privateKey, this);
+
+      m_queue.enqueue(neighbor);
+      emit encrypted();
+    }
+}
 
 spoton_listener::spoton_listener(const QString &ipAddress,
 				 const QString &port,
 				 const QString &scopeId,
 				 const int maximumClients,
 				 const qint64 id,
-				 const bool useSsl,
 				 QObject *parent):
-  spoton_listener_tcp_server(useSsl, parent)
+  spoton_listener_tcp_server(id, parent)
 {
   s_dbId += 1;
   m_address = QHostAddress(ipAddress);
@@ -54,7 +126,6 @@ spoton_listener::spoton_listener(const QString &ipAddress,
   m_id = id;
   m_networkInterface = 0;
   m_port = m_externalPort = quint16(port.toInt());
-  m_useSsl = useSsl;
   connect(this,
 	  SIGNAL(encrypted(void)),
 	  this,

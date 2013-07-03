@@ -428,11 +428,11 @@ void spoton_kernel::prepareListeners(void)
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT ip_address, port, scope_id, status_control, "
-		      "maximum_clients, use_ssl, OID FROM listeners"))
+		      "maximum_clients, OID FROM listeners"))
 	  while(query.next())
 	    {
 	      QPointer<spoton_listener> listener = 0;
-	      qint64 id = query.value(6).toLongLong();
+	      qint64 id = query.value(5).toLongLong();
 
 	      /*
 	      ** We're only interested in creating objects for
@@ -444,7 +444,6 @@ void spoton_kernel::prepareListeners(void)
 		  if(!m_listeners.contains(id))
 		    {
 		      QList<QByteArray> list;
-		      bool useSsl = query.value(5).toInt();
 
 		      for(int i = 0; i < 3; i++)
 			{
@@ -470,7 +469,6 @@ void spoton_kernel::prepareListeners(void)
 			   list.at(2).constData(),
 			   query.value(4).toInt(),
 			   id,
-			   useSsl,
 			   this);
 
 		      if(listener)
@@ -1854,7 +1852,7 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 		s_crypts.insert("messaging", crypt);
 	      }
 
-	    if(!s_crypts.contains("server"))
+	    if(!s_crypts.contains("neighbor"))
 	      {
 		spoton_crypt *crypt = new spoton_crypt
 		  (s_settings.value("gui/cipherType",
@@ -1865,8 +1863,8 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 		   key,
 		   s_settings.value("gui/saltLength", 256).toInt(),
 		   s_settings.value("gui/iterationCount", 10000).toInt(),
-		   "server");
-		s_crypts.insert("server", crypt);
+		   "neighbor");
+		s_crypts.insert("neighbor", crypt);
 	      }
 
 	    if(!s_crypts.contains("signature"))

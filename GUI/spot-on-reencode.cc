@@ -287,9 +287,13 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT ip_address, port, scope_id, "
-		      "protocol, hash FROM listeners"))
+		      "protocol, certificate, "
+		      "private_key, public_key, hash FROM listeners"))
 	  while(query.next())
 	    {
+	      QByteArray certificate;
+	      QByteArray privateKey;
+	      QByteArray publicKey;
 	      QSqlQuery updateQuery(db);
 	      QString ipAddress("");
 	      QString port("");
@@ -302,7 +306,10 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "port = ?, "
 				  "scope_id = ?, "
 				  "protocol = ?, "
-				  "hash = ? "
+				  "hash = ?, "
+				  "certificate = ?, "
+				  "private_key = ?, "
+				  "public_key = ? "
 				  "WHERE hash = ?");
 	      ipAddress = oldCrypt->decrypted(QByteArray::
 					      fromBase64(query.
@@ -332,6 +339,21 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 					       &ok).constData();
 
 	      if(ok)
+		certificate = oldCrypt->decrypted
+		  (QByteArray::fromBase64(query.value(4).toByteArray()),
+		   &ok);
+
+	      if(ok)
+		privateKey = oldCrypt->decrypted
+		  (QByteArray::fromBase64(query.value(5).toByteArray()),
+		   &ok);
+
+	      if(ok)
+		publicKey = oldCrypt->decrypted
+		  (QByteArray::fromBase64(query.value(6).toByteArray()),
+		   &ok);
+
+	      if(ok)
 		updateQuery.bindValue
 		  (0, newCrypt->encrypted(ipAddress.
 					  toLatin1(), &ok).toBase64());
@@ -358,7 +380,19 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      if(ok)
 		updateQuery.bindValue
-		  (5, query.value(4));
+		  (5, newCrypt->encrypted(certificate, &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (6, newCrypt->encrypted(privateKey, &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (7, newCrypt->encrypted(publicKey, &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (8, query.value(7));
 
 	      if(ok)
 		updateQuery.exec();
