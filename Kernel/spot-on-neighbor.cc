@@ -68,20 +68,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
       setPrivateKey(key);
     }
 
-  QSslCipher cipher("ECDHE-RSA-AES256-SHA", // Where's 384?
-		    QSsl::SslV3);
+  QList<QSslCipher> ciphers(spoton_crypt::defaultSslCiphers());
 
-  if(!cipher.isNull())
-    {
-      QList<QSslCipher> ciphers(this->ciphers());
-
-      ciphers.prepend(cipher);
-      setCiphers(ciphers);
-
-      if(this->ciphers().contains(cipher))
-	spoton_misc::logError(QString("spoton_neighbor::spoton_neighbor(): cipher %1 added.").
-			      arg(cipher.name()));
-    }
+  if(!ciphers.isEmpty())
+    setCiphers(ciphers + this->ciphers());
 
   setPeerVerifyMode(QSslSocket::VerifyNone);
 #if QT_VERSION >= 0x050000
@@ -107,6 +97,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(disconnected(void)),
 	  this,
 	  SLOT(slotDisconnected(void)));
+  connect(this,
+	  SIGNAL(encrypted(void)),
+	  this,
+	  SLOT(slotEncrypted(void)));
   connect(this,
 	  SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,
@@ -166,20 +160,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_useSsl = true;
   s_dbId += 1;
 
-  QSslCipher cipher("ECDHE-RSA-AES256-SHA", // Where's 384?
-		    QSsl::SslV3);
+  QList<QSslCipher> ciphers(spoton_crypt::defaultSslCiphers());
 
-  if(!cipher.isNull())
-    {
-      QList<QSslCipher> ciphers(this->ciphers());
-
-      ciphers.prepend(cipher);
-      setCiphers(ciphers);
-
-      if(this->ciphers().contains(cipher))
-	spoton_misc::logError(QString("spoton_neighbor::spoton_neighbor(): cipher %1 added.").
-			      arg(cipher.name()));
-    }
+  if(!ciphers.isEmpty())
+    setCiphers(ciphers + this->ciphers());
 
   setPeerVerifyMode(QSslSocket::VerifyNone);
 #if QT_VERSION >= 0x050000
@@ -239,6 +223,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(disconnected(void)),
 	  this,
 	  SLOT(slotDisconnected(void)));
+  connect(this,
+	  SIGNAL(encrypted(void)),
+	  this,
+	  SLOT(slotEncrypted(void)));
   connect(this,
 	  SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,
@@ -2883,4 +2871,14 @@ void spoton_neighbor::slotDisconnected(void)
   spoton_misc::logError("spoton_neighbor::slotDisconnected(): "
 			"aborting socket!");
   deleteLater();
+}
+
+void spoton_neighbor::slotEncrypted(void)
+{
+  spoton_misc::logError(QString("spoton_neighbor::slotEncrypted(): "
+				"using session cipher %1-%2-%3-%4.").
+			arg(sessionCipher().authenticationMethod()).
+			arg(sessionCipher().encryptionMethod()).
+			arg(sessionCipher().name()).
+			arg(sessionCipher().usedBits()));
 }

@@ -2889,5 +2889,16 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(void)
   ** "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH"
   */
 
-  return QList<QSslCipher> ();
+  QList<QSslCipher> list;
+
+#if QT_VERSION >= 0x050000
+  QSslCipher cipher("ECDHE-RSA-AES256-SHA384", QSsl::TlsV1_2);
+
+  list.append(cipher);
+#else
+  QSslCipher cipher("ECDHE-RSA-AES256-SHA", QSsl::SslV3);
+
+  list.append(cipher);
+#endif
+  return list;
 }
