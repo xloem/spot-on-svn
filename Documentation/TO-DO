@@ -27,12 +27,12 @@ Completed Items
 15.    Re-encode various databases whenever the passphrase is changed.
 16.    Offline e-mail.
 17.    Qt 4.6.3 support.
+18.    Use QSslSockets.
 
 Remaining Items
 
-1.     Secure connection between the interface and the kernel.
+1.     Secure connections between the interfaces and the kernel.
 2.     Inspect UTF-8 uses.
-3.     Use QSslSockets?
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.
