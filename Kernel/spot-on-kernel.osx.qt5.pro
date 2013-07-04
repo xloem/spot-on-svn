@@ -1,3 +1,4 @@
+cache()
 libspoton.target = libspoton.dylib
 libspoton.commands = $(MAKE) -C ../../../libSpotOn
 libspoton.depends =

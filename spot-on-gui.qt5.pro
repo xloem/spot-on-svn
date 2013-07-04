@@ -1,3 +1,4 @@
+cache()
 libspoton.target = libspoton.so
 libspoton.commands = $(MAKE) -C ../../libSpotOn
 libspoton.depends =

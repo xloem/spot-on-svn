@@ -1,3 +1,4 @@
+cache()
 libspoton.target = libspoton.so
 libspoton.commands = gmake -C ../../../libSpotOn
 libspoton.depends =

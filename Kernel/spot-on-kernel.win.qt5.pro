@@ -1,3 +1,4 @@
+cache()
 libspoton.target = libspoton.dll
 libspoton.commands = $(MAKE) -C ..\\..\\..\\libSpotOn
 libspoton.depends =

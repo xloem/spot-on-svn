@@ -1,3 +1,4 @@
+cache()
 purge.commands = rm -f */*~ *~
 
 QMAKE_EXTRA_TARGETS = purge

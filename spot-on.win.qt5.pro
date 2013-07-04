@@ -1,3 +1,4 @@
+cache()
 purge.commands = del /F *\\*~ && del /F *~
 
 QMAKE_EXTRA_TARGETS = purge
