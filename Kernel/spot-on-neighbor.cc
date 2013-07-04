@@ -145,7 +145,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_keepAliveTimer.start(30000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
-  QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 }
 
 spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
@@ -672,8 +671,6 @@ void spoton_neighbor::slotConnected(void)
 
   if(!m_keepAliveTimer.isActive())
     m_keepAliveTimer.start();
-
-  QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 }
 
 void spoton_neighbor::savePublicKey(const QByteArray &keyType,
@@ -2222,6 +2219,11 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
       ** Do not use SSL.
       */
 
+      QTimer::singleShot(5000, this, SLOT(slotSendUuid(void))); /*
+								** We should
+								** be
+								** connected.
+								*/
       m_useSsl = false;
       spoton_misc::logError
 	(QString("spoton_neighbor::slotError(): socket error (%1). "
@@ -2875,6 +2877,7 @@ void spoton_neighbor::slotDisconnected(void)
 
 void spoton_neighbor::slotEncrypted(void)
 {
+  QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
   spoton_misc::logError(QString("spoton_neighbor::slotEncrypted(): "
 				"using session cipher %1-%2-%3-%4.").
 			arg(sessionCipher().authenticationMethod()).
