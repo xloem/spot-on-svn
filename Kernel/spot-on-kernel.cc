@@ -608,6 +608,20 @@ void spoton_kernel::prepareNeighbors(void)
 
 			      proxy.setUser(list.at(7));
 			    }
+			  else if(list.at(6) == "System")
+			    {
+			      QNetworkProxyQuery proxyQuery;
+
+			      proxyQuery.setQueryType
+				(QNetworkProxyQuery::TcpSocket);
+
+			      QList<QNetworkProxy> list
+				(QNetworkProxyFactory::
+				 systemProxyForQuery(proxyQuery));
+
+			      if(!list.isEmpty())
+				proxy = list.at(0);
+			    }
 			  else
 			    proxy.setType(QNetworkProxy::NoProxy);
 

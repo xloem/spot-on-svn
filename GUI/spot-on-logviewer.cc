@@ -77,21 +77,25 @@ void spoton_logviewer::slotClear(void)
 
 void spoton_logviewer::show(QWidget *parent)
 {
-  QPoint p(parent->pos());
-  int X = 0;
-  int Y = 0;
+  if(parent)
+    {
+      QPoint p(parent->pos());
+      int X = 0;
+      int Y = 0;
 
-  if(parent->width() >= width())
-    X = p.x() + (parent->width() - width()) / 2;
-  else
-    X = p.x() - (width() - parent->width()) / 2;
+      if(parent->width() >= width())
+	X = p.x() + (parent->width() - width()) / 2;
+      else
+	X = p.x() - (width() - parent->width()) / 2;
 
-  if(parent->height() >= height())
-    Y = p.y() + (parent->height() - height()) / 2;
-  else
-    Y = p.y() - (height() - parent->height()) / 2;
+      if(parent->height() >= height())
+	Y = p.y() + (parent->height() - height()) / 2;
+      else
+	Y = p.y() - (height() - parent->height()) / 2;
 
-  move(X, Y);
+      move(X, Y);
+    }
+
   QMainWindow::show();
   raise();
 }
@@ -148,3 +152,25 @@ void spoton_logviewer::slotSetIcons(void)
 
   ui.clear->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
 }
+
+#ifdef Q_OS_MAC
+#if QT_VERSION >= 0x050000
+bool spoton_logviewer::event(QEvent *event)
+{
+  if(event)
+    if(event->type() == QEvent::WindowStateChange)
+      if(windowState() == Qt::WindowNoState)
+	{
+	  /*
+	  ** Minimizing the window on OS 10.6.8 and Qt 5.x will cause
+	  ** the window to become stale once it has resurfaced.
+	  */
+
+	  hide();
+	  show(0);
+	}
+
+  return QMainWindow::event(event);
+}
+#endif
+#endif

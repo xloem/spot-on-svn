@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>973</width>
-                <height>574</height>
+                <width>965</width>
+                <height>584</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1622,6 +1622,11 @@
                       <string>Socks5</string>
                      </property>
                     </item>
+                    <item>
+                     <property name="text">
+                      <string>System</string>
+                     </property>
+                    </item>
                    </widget>
                   </item>
                   <item row="1" column="0">
@@ -1956,8 +1961,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>973</width>
-             <height>574</height>
+             <width>1029</width>
+             <height>569</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -2898,7 +2903,7 @@
      <x>0</x>
      <y>0</y>
      <width>995</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

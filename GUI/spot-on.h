@@ -121,6 +121,11 @@ class spoton: public QMainWindow
   spoton_docviewer m_docViewer;
   spoton_logviewer m_logViewer;
   QPixmap pixmapForCountry(const QString &country);
+#ifdef Q_OS_MAC
+#if QT_VERSION >= 0x050000
+  bool event(QEvent *event);
+#endif
+#endif
   bool isKernelActive(void) const;
   bool saveGemini(const QByteArray &gemini, const QString &oid);
   bool updateMailStatus(const QString &oid, const QString &status);

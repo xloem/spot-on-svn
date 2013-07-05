@@ -47,6 +47,11 @@ class spoton_logviewer: public QMainWindow
   QTimer m_timer;
   Ui_spoton_logviewer ui;
   qint64 m_position;
+#ifdef Q_OS_MAC
+#if QT_VERSION >= 0x050000
+  bool event(QEvent *event);
+#endif
+#endif
   void keyPressEvent(QKeyEvent *event);
 
  private slots:
