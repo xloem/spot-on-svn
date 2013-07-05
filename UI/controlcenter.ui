@@ -1029,6 +1029,9 @@
             </item>
             <item>
              <widget class="QGroupBox" name="groupBox_7">
+              <property name="title">
+               <string>Add Listener</string>
+              </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
                <item>
                 <widget class="QLabel" name="label_21">
@@ -1128,13 +1131,6 @@
                  <item row="1" column="2">
                   <widget class="QLineEdit" name="listenerScopeId"/>
                  </item>
-                 <item row="1" column="6">
-                  <widget class="QPushButton" name="addListener">
-                   <property name="text">
-                    <string>Add</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="1" column="5">
                   <widget class="QRadioButton" name="ipv6Listener">
                    <property name="layoutDirection">
@@ -1177,6 +1173,30 @@
                     </widget>
                    </item>
                   </layout>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_36">
+                 <item>
+                  <spacer name="horizontalSpacer_27">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="addListener">
+                   <property name="text">
+                    <string>Add</string>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -1961,7 +1981,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1029</width>
+             <width>993</width>
              <height>569</height>
             </rect>
            </property>

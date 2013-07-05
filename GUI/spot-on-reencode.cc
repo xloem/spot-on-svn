@@ -286,7 +286,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT certificate FROM certificates WHERE id = 'neighbor'"))
+	if(query.exec("SELECT certificate FROM certificates "
+		      "WHERE id = 'neighbor'"))
 	  if(query.next())
 	    {
 	      QByteArray certificate;
@@ -303,23 +304,24 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "WHERE id = 'neighbor'");
 
 	      if(ok)
-		updateQuery.bindValue(0, newCrypt->encrypted(certificate, &ok).toBase64());
+		updateQuery.bindValue
+		  (0, newCrypt->encrypted(certificate, &ok).toBase64());
 
 	      if(ok)
 		updateQuery.exec();
 	    }
 
-	if(query.exec("SELECT private_key, public_key "
-		      "FROM idiotes WHERE id = 'neighbor'"))
-	  if(query.next())
+	if(query.exec("SELECT id, private_key, public_key "
+		      "FROM idiotes WHERE id IN ('kernel', 'neighbor')"))
+	  while(query.next())
 	    {
 	      QByteArray privateKey;
 	      QByteArray publicKey;
 	      QSqlQuery updateQuery(db);
 
-	      privateKey = QByteArray::fromBase64(query.value(0).
+	      privateKey = QByteArray::fromBase64(query.value(1).
 						  toByteArray());
-	      publicKey = QByteArray::fromBase64(query.value(1).
+	      publicKey = QByteArray::fromBase64(query.value(2).
 						 toByteArray());
 
 	      if(ok)
@@ -331,13 +333,17 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      updateQuery.prepare("UPDATE idiotes SET "
 				  "private_key = ?, "
 				  "public_key = ? "
-				  "WHERE id = 'neighbor'");
+				  "WHERE id = ?");
 
 	      if(ok)
-		updateQuery.bindValue(0, newCrypt->encrypted(privateKey, &ok).toBase64());
+		updateQuery.bindValue
+		  (0, newCrypt->encrypted(privateKey, &ok).toBase64());
 
 	      if(ok)
-		updateQuery.bindValue(1, newCrypt->encrypted(publicKey, &ok).toBase64());
+		updateQuery.bindValue
+		  (1, newCrypt->encrypted(publicKey, &ok).toBase64());
+
+	      updateQuery.bindValue(2, query.value(0));
 
 	      if(ok)
 		updateQuery.exec();

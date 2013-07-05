@@ -37,7 +37,7 @@
 
 spoton_gui_server::spoton_gui_server(QObject *parent):QTcpServer(parent)
 {
-  listen();
+  listen(QHostAddress("127.0.0.1"));
   connect(this,
 	  SIGNAL(newConnection(void)),
 	  this,
