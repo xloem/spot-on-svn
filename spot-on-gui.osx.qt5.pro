@@ -19,7 +19,7 @@ DEFINES += SPOTON_GEOIP_DATA_FILE="'\"/Applications/Spot-On.d/Data/GeoIP.dat\"'"
 
 QMAKE_CLEAN     += Spot-On ../../libSpotOn/*.dylib ../../libSpotOn/*.o \
 		   ../../libSpotOn/test
-QMAKE_DISTCLEAN += -r temp
+QMAKE_DISTCLEAN += -r temp .qmake.cache
 QMAKE_CXXFLAGS_DEBUG -= -O2
 QMAKE_CXXFLAGS_DEBUG += -mtune=generic -Os \
 			-Wall -Wcast-align -Wcast-qual \
