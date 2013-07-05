@@ -15,6 +15,7 @@ gemini
 
 idiotes.db:
 
+certificate
 private_key
 public_key
 
