@@ -1459,10 +1459,21 @@ void spoton_misc::purgeSignatureRelationships(const QSqlDatabase &db)
 
   QSqlQuery query(db);
 
+  /*
+  ** Delete relationships that do not have corresponding entries
+  ** in the friends_public_keys table.
+  */
+
   query.exec("DELETE FROM relationships_with_signatures WHERE "
 	     "public_key_hash NOT IN "
 	     "(SELECT public_key_hash FROM friends_public_keys WHERE "
 	     "key_type <> 'signature')");
+
+  /*
+  ** Delete signature public keys from friends_public_keys that
+  ** do not have relationships.
+  */
+
   query.exec("DELETE FROM friends_public_keys WHERE "
 	     "key_type = 'signature' AND public_key_hash NOT IN "
 	     "(SELECT signature_public_key_hash FROM "

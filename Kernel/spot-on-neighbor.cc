@@ -31,6 +31,7 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QSslCipher>
+#include <QSslConfiguration>
 #include <QSslKey>
 #include <QtCore/qmath.h>
 
@@ -58,28 +59,46 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
     m_useSsl = true;
 
   s_dbId += 1;
+  setReadBufferSize(8192);
+  setSocketDescriptor(socketDescriptor);
+  setSocketOption(QAbstractSocket::KeepAliveOption, 1);
 
   if(m_useSsl)
     {
-      setLocalCertificate(QSslCertificate(certificate));
+      QSslConfiguration configuration;
 
-      QSslKey key(privateKey, QSsl::Rsa);
+      configuration.setSslOption
+	(QSsl::SslOptionDisableCompression, true);
+      configuration.setSslOption
+	(QSsl::SslOptionDisableEmptyFragments, true);
+      configuration.setSslOption
+	(QSsl::SslOptionDisableLegacyRenegotiation, true);
 
-      setPrivateKey(key);
+      if(m_useSsl)
+	{
+	  configuration.setLocalCertificate(QSslCertificate(certificate));
+
+	  QSslKey key(privateKey, QSsl::Rsa);
+
+	  configuration.setPrivateKey(key);
+	}
+
+      QList<QSslCipher> ciphers(spoton_crypt::defaultSslCiphers());
+
+      if(!ciphers.isEmpty())
+	configuration.setCiphers(ciphers + defaultCiphers());
+      else
+	configuration.setCiphers(defaultCiphers());
+
+      configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
+#if QT_VERSION >= 0x050000
+      configuration.setProtocol(QSsl::TlsV1_0);
+#else
+      configuration.setProtocol(QSsl::TlsV1);
+#endif
+      setSslConfiguration(configuration);
     }
 
-  QList<QSslCipher> ciphers(spoton_crypt::defaultSslCiphers());
-
-  if(!ciphers.isEmpty())
-    setCiphers(ciphers + this->ciphers());
-
-  setPeerVerifyMode(QSslSocket::VerifyNone);
-#if QT_VERSION >= 0x050000
-  setProtocol(QSsl::TlsV1_0);
-#else
-  setProtocol(QSsl::TlsV1);
-#endif
-  setSocketDescriptor(socketDescriptor);
   m_address = peerAddress();
   m_ipAddress = m_address.toString();
   m_externalAddress = new spoton_external_address(this);
@@ -87,8 +106,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_lastReadTime = QDateTime::currentDateTime();
   m_networkInterface = 0;
   m_port = peerPort();
-  setReadBufferSize(8192);
-  setSocketOption(QAbstractSocket::KeepAliveOption, 1);
   connect(this,
 	  SIGNAL(connected(void)),
 	  this,
@@ -158,19 +175,29 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_isUserDefined = userDefined;
   m_useSsl = true;
   s_dbId += 1;
+  setProxy(proxy);
+  setReadBufferSize(8192);
+  setSocketOption(QAbstractSocket::KeepAliveOption, 1);
+
+  QSslConfiguration configuration;
+
+  configuration.setSslOption(QSsl::SslOptionDisableCompression, true);
+  configuration.setSslOption(QSsl::SslOptionDisableEmptyFragments, true);
+  configuration.setSslOption(QSsl::SslOptionDisableLegacyRenegotiation, true);
 
   QList<QSslCipher> ciphers(spoton_crypt::defaultSslCiphers());
 
   if(!ciphers.isEmpty())
-    setCiphers(ciphers + this->ciphers());
+    configuration.setCiphers(ciphers + defaultCiphers());
+  else
+    configuration.setCiphers(defaultCiphers());
 
-  setPeerVerifyMode(QSslSocket::VerifyNone);
+  configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
 #if QT_VERSION >= 0x050000
-  setProtocol(QSsl::TlsV1_0);
+  configuration.setProtocol(QSsl::TlsV1_0);
 #else
-  setProtocol(QSsl::TlsV1);
+  configuration.setProtocol(QSsl::TlsV1);
 #endif
-  setProxy(proxy);
 
   spoton_crypt *s_crypt = 0;
 
@@ -188,7 +215,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	{
 	  QSslKey key(data, QSsl::Rsa);
 
-	  setPrivateKey(key);
+	  configuration.setPrivateKey(key);
 	}
       else
 	spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
@@ -198,6 +225,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
     spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
 			  "missing neighbor key!");
 
+  setSslConfiguration(configuration);
   m_address = QHostAddress(ipAddress);
   m_ipAddress = ipAddress;
 
@@ -212,8 +240,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_lastReadTime = QDateTime::currentDateTime();
   m_networkInterface = 0;
   m_port = quint16(port.toInt());
-  setReadBufferSize(8192);
-  setSocketOption(QAbstractSocket::KeepAliveOption, 1);
   connect(this,
 	  SIGNAL(connected(void)),
 	  this,
