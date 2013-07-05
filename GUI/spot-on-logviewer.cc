@@ -168,6 +168,7 @@ bool spoton_logviewer::event(QEvent *event)
 
 	  hide();
 	  show(0);
+	  update();
 	}
 
   return QMainWindow::event(event);

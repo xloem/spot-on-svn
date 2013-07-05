@@ -3261,6 +3261,7 @@ bool spoton::event(QEvent *event)
 
 	  hide();
 	  show();
+	  update();
 	}
 
   return QMainWindow::event(event);

@@ -382,6 +382,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotHideOfflineParticipants(bool)));
+  connect(m_ui.proxyType,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotProxyTypeChanged(int)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -1070,10 +1074,11 @@ void spoton::slotAddNeighbor(void)
 	    (6, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
 
 	if(m_ui.proxy->isChecked())
-	  {
-	    proxyHostname = m_ui.proxyHostname->text().trimmed();
-	    proxyPort = QString::number(m_ui.proxyPort->value());
-	  }
+	  if(m_ui.proxyType->currentIndex() != 2) // Ignore system proxies.
+	    {
+	      proxyHostname = m_ui.proxyHostname->text().trimmed();
+	      proxyPort = QString::number(m_ui.proxyPort->value());
+	    }
 
 	if(ok)
 	  query.bindValue
@@ -1101,15 +1106,28 @@ void spoton::slotAddNeighbor(void)
 	     toBase64());
 
 	if(m_ui.proxy->isChecked())
-	  proxyPassword = m_ui.proxyPassword->text();
+	  if(m_ui.proxyType->currentIndex() != 2) // Ignore system proxies.
+	    proxyPassword = m_ui.proxyPassword->text();
 
 	if(m_ui.proxy->isChecked())
-	  proxyType = m_ui.proxyType->currentText();
+	  {
+	    /*
+	    ** Avoid translation mishaps.
+	    */
+
+	    if(m_ui.proxyType->currentIndex() == 0)
+	      proxyType = "HTTP";
+	    else if(m_ui.proxyType->currentIndex() == 1)
+	      proxyType = "Socks5";
+	    else
+	      proxyType = "System";
+	  }
 	else
 	  proxyType = "NoProxy";
 
 	if(m_ui.proxy->isChecked())
-	  proxyUsername = m_ui.proxyUsername->text();
+	  if(m_ui.proxyType->currentIndex() != 2) // Ignore system proxies.
+	    proxyUsername = m_ui.proxyUsername->text();
 
 	if(ok)
 	  query.bindValue
@@ -3346,4 +3364,16 @@ void spoton::slotPopulateParticipants(void)
   }
 
   QSqlDatabase::removeDatabase("spoton");
+}
+
+void spoton::slotProxyTypeChanged(int index)
+{
+  /*
+  ** Disable some options for system proxies.
+  */
+
+  m_ui.proxyHostname->setEnabled(index != 2);
+  m_ui.proxyPassword->setEnabled(index != 2);
+  m_ui.proxyPort->setEnabled(index != 2);
+  m_ui.proxyUsername->setEnabled(index != 2);
 }

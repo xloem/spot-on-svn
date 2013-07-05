@@ -102,6 +102,7 @@ bool spoton_docviewer::event(QEvent *event)
 
 	  hide();
 	  show(0);
+	  update();
 	}
 
   return QMainWindow::event(event);
