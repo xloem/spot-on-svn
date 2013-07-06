@@ -1846,6 +1846,7 @@ void spoton_crypt::generatePrivatePublicKeys(const int rsaKeySize,
 {
   QByteArray privateKey;
   QByteArray publicKey;
+  QString genkey("");
   char *buffer = 0;
   gcry_error_t err = 0;
   gcry_sexp_t key_t = 0;
@@ -1853,9 +1854,13 @@ void spoton_crypt::generatePrivatePublicKeys(const int rsaKeySize,
   gcry_sexp_t parameters_t = 0;
   size_t length = 0;
 
+  genkey = QString("(genkey (rsa (nbits %1:%2)))").
+    arg(qFloor(log10(rsaKeySize)) + 1).
+    arg(rsaKeySize);
+
   if((err = gcry_sexp_build(&parameters_t, 0,
-			    "(genkey (rsa (nbits %d)))",
-			    rsaKeySize)) != 0 || !parameters_t)
+			    genkey.toLatin1().constData()) != 0) ||
+     !parameters_t)
     {
       error = QObject::tr("gcry_sexp_build() failure");
 
