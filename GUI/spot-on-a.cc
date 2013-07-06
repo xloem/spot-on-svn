@@ -3164,13 +3164,10 @@ void spoton::slotPopulateParticipants(void)
 	** We only wish to display other public keys.
 	*/
 
-	if(query.exec(QString("SELECT name, OID, neighbor_oid, "
-			      "public_key_hash, "
-			      "status, gemini FROM friends_public_keys "
-			      "WHERE "
-			      "key_type = 'messaging' %1").
-		      arg(m_ui.hideOfflineParticipants->isChecked() ?
-			  "AND status <> 'offline'" : "")))
+	if(query.exec("SELECT name, OID, neighbor_oid, "
+		      "public_key_hash, "
+		      "status, gemini FROM friends_public_keys "
+		      "WHERE key_type = 'messaging'"))
 	  while(query.next())
 	    {
 	      QString status(query.value(4).toString());
@@ -3186,8 +3183,18 @@ void spoton::slotPopulateParticipants(void)
 
 		  if(i == 0)
 		    {
-		      row += 1;
-		      m_ui.participants->setRowCount(row);
+		      /*
+		      ** Do not increase the table's row count
+		      ** if the participant is offline and the
+		      ** user wishes to hide offline participants.
+		      */
+
+		      if(!(m_ui.hideOfflineParticipants->isChecked() &&
+			   status == "offline"))
+			{
+			  row += 1;
+			  m_ui.participants->setRowCount(row);
+			}
 
 		      if(!temporary)
 			{
@@ -3318,9 +3325,23 @@ void spoton::slotPopulateParticipants(void)
 		    item->setFlags(item->flags() | Qt::ItemIsEditable);
 
 		  item->setData(Qt::UserRole, temporary);
-		  m_ui.participants->blockSignals(true);
-		  m_ui.participants->setItem(row - 1, i, item);
-		  m_ui.participants->blockSignals(false);
+
+		  /*
+		  ** Delete the item if the participant is offline
+		  ** and the user wishes to hide offline participants.
+		  ** Please note that the e-mail participants are cloned
+		  ** and are not subjected to this restriction.
+		  */
+
+		  if(m_ui.hideOfflineParticipants->isChecked() &&
+		     status == "offline")
+		    delete item;
+		  else
+		    {
+		      m_ui.participants->blockSignals(true);
+		      m_ui.participants->setItem(row - 1, i, item);
+		      m_ui.participants->blockSignals(false);
+		    }
 		}
 
 	      if(hashes.contains(query.value(3).toString()))
