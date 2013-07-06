@@ -86,7 +86,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
       QList<QSslCipher> ciphers(spoton_crypt::defaultSslCiphers());
 
       if(!ciphers.isEmpty())
-	configuration.setCiphers(ciphers + defaultCiphers());
+	configuration.setCiphers(ciphers + supportedCiphers());
       else
 	configuration.setCiphers(defaultCiphers());
 
@@ -188,7 +188,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   QList<QSslCipher> ciphers(spoton_crypt::defaultSslCiphers());
 
   if(!ciphers.isEmpty())
-    configuration.setCiphers(ciphers + defaultCiphers());
+    configuration.setCiphers(ciphers + supportedCiphers());
   else
     configuration.setCiphers(defaultCiphers());
 
