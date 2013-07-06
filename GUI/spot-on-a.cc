@@ -3134,10 +3134,27 @@ void spoton::slotPopulateParticipants(void)
 
 	while(!list.isEmpty())
 	  {
-	    QVariant data(list.takeFirst().data());
+	    QModelIndex index(list.takeFirst());
+	    QVariant data(index.data());
+
+	    /*
+	    ** Do not select participants that are offline if
+	    ** the user does not wish to list them.
+	    */
 
 	    if(!data.isNull() && data.isValid())
-	      hashes.append(data.toString());
+	      {
+		if(m_ui.hideOfflineParticipants->isChecked())
+		  {
+		    QTableWidgetItem *item = m_ui.participants->
+		      item(index.row(), 4);
+
+		    if(item && item->text() != tr("Offline"))
+		      hashes.append(data.toString());
+		  }
+		else
+		  hashes.append(data.toString());
+	      }
 	  }
 
 	while(!listE.isEmpty())
