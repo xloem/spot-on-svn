@@ -522,9 +522,9 @@ spoton::spoton(void):QMainWindow()
 
   if(m_settings.value("gui/chatSendMethod", "Artificial_GET").
      toString() == "Artificial_GET")
-    m_ui.chatSendMethod->setCurrentIndex(0);
-  else
     m_ui.chatSendMethod->setCurrentIndex(1);
+  else
+    m_ui.chatSendMethod->setCurrentIndex(0);
 
   QByteArray status
     (m_settings.value("gui/my_status", "Online").toByteArray());
