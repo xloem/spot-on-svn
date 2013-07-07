@@ -51,10 +51,6 @@ extern "C"
 class spoton_crypt
 {
  public:
-  static QByteArray cbcMac(const QByteArray &data,
-			   const QByteArray &symmetricKey,
-			   const QString &cipherType,
-			   bool *ok);
   static QByteArray derivedKey(const QString &cipherType,
 			       const QString &hashType,
 			       const unsigned long iterationCount,
