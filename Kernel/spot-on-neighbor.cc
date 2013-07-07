@@ -73,7 +73,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 #if QT_VERSION >= 0x050000
       configuration.setProtocol(QSsl::TlsV1_2);
 #else
-      configuration.setProtocol(QSsl::TlsV1);
+      configuration.setProtocol(QSsl::SecureProtocols);
 #endif
       configuration.setSslOption
 	(QSsl::SslOptionDisableCompression, true);
@@ -171,7 +171,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 #if QT_VERSION >= 0x050000
   configuration.setProtocol(QSsl::TlsV1_2);
 #else
-  configuration.setProtocol(QSsl::TlsV1);
+  configuration.setProtocol(QSsl::SecureProtocols);
 #endif
   configuration.setSslOption(QSsl::SslOptionDisableCompression, true);
   configuration.setSslOption(QSsl::SslOptionDisableEmptyFragments, true);
