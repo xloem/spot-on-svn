@@ -2907,3 +2907,118 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(void)
 #endif
   return list;
 }
+
+QByteArray spoton_crypt::cbcMac(const QByteArray &data,
+				const QByteArray &symmetricKey,
+				const QString &cipherType,
+				bool *ok)
+{
+  QByteArray mac;
+  gcry_error_t err = 0;
+  gcry_cipher_hd_t hd;
+  char *key = 0;
+  int algorithm = gcry_cipher_map_name(cipherType.toLatin1().constData());
+  size_t blockLength = 0;
+  size_t ivLength = 0;
+  size_t keyLength = 0;
+
+  Q_UNUSED(data);
+  Q_UNUSED(ivLength);
+
+  if(algorithm == 0)
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	(QString("spoton_crypt::cbcMac(): "
+		 "gcry_cipher_map_name() "
+		 "failure (%1).").arg(gcry_strerror(err)));
+      goto done_label;
+    }
+
+  if((err = gcry_cipher_open(&hd, algorithm,
+                             GCRY_CIPHER_MODE_CBC,
+                             GCRY_CIPHER_CBC_MAC)) != 0 || !hd)
+    {
+      if(ok)
+        *ok = false;
+
+      if(err != 0)
+        spoton_misc::logError
+          (QString("spoton_crypt::cbcMac(): "
+                   "gcry_cipher_open() failure (%1).").
+           arg(gcry_strerror(err)));
+      else
+        spoton_misc::logError
+          ("spoton_crypt::cbcMac(): gcry_cipher_open() failure.");
+
+      goto done_label;
+    }
+
+  if((blockLength = gcry_cipher_get_algo_blklen(algorithm)) == 0)
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	("spoton_crypt::cbcMac(): "
+	 "gcry_cipher_get_algo_blklen() "
+	 "failure.");
+      goto done_label;
+    }
+      
+  if((keyLength = gcry_cipher_get_algo_keylen(algorithm)) == 0)
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	("spoton_crypt::cbcMac(): "
+	 "gcry_cipher_get_algo_keylen() "
+	 "failure.");
+      goto done_label;
+    }
+
+  key = static_cast<char *>
+    (gcry_calloc(keyLength, sizeof(char))); // Not secure.
+
+  if(!key)
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError("spoton_crypt::cbcMac(): "
+			    "gcry_calloc failure.");
+      goto done_label;
+    }
+
+  memcpy(static_cast<void *> (key),
+	 static_cast<const void *> (symmetricKey.constData()),
+	 qMin(keyLength,
+	      static_cast<size_t> (symmetricKey.length())));
+
+  if((err =
+      gcry_cipher_setkey(hd,
+			 static_cast<const void *> (key),
+			 keyLength)) != 0)
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	(QString("spoton_crypt::cbcMac(): "
+		 "gcry_cipher_setkey() "
+		 "failure (%1).").
+	 arg(gcry_strerror(err)));
+      goto done_label;
+    }
+
+  if(ok)
+    *ok = true;
+
+ done_label:
+  gcry_cipher_close(hd);
+  gcry_free(key);
+  return mac;
+}
