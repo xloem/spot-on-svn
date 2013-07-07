@@ -34,6 +34,7 @@ Remaining Items
 1.     Secure connections between the interfaces and the kernel.
 2.     Inspect UTF-8 uses.
 3.     Introduce DSA and ElGamal?
+4.     Echo proxy?
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.
