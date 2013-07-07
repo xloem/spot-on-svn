@@ -159,7 +159,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
     startServerEncryption();
 
   m_externalAddressDiscovererTimer.start(30000);
-  m_keepAliveTimer.start(30000);
+  m_keepAliveTimer.start(45000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
 }
@@ -289,7 +289,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  this,
 	  SLOT(slotDiscoverExternalAddress(void)));
   m_externalAddressDiscovererTimer.setInterval(30000);
-  m_keepAliveTimer.setInterval(30000);
+  m_keepAliveTimer.setInterval(45000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
 }
@@ -1212,23 +1212,26 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 		}
 	    }
 	}
-      else if(ttl > 0)
-	{
-	  if(isDuplicateMessage(originalData))
-	    return;
 
-	  recordMessageHash(originalData);
+      if(ttl > 0)
+	if(!ok ||
+	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
+	  {
+	    if(isDuplicateMessage(originalData))
+	      return;
 
-	  /*
-	  ** Replace TTL.
-	  */
+	    recordMessageHash(originalData);
 
-	  char c = 0;
+	    /*
+	    ** Replace TTL.
+	    */
 
-	  memcpy(&c, static_cast<void *> (&ttl), 1);
-	  originalData.prepend(c);
-	  emit receivedChatMessage(originalData, m_id);
-	}
+	    char c = 0;
+
+	    memcpy(&c, static_cast<void *> (&ttl), 1);
+	    originalData.prepend(c);
+	    emit receivedChatMessage(originalData, m_id);
+	  }
     }
   else
     spoton_misc::logError
@@ -1374,23 +1377,26 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 
 		storeLetter(list, recipientHash);
 	}
-      else if(ttl > 0)
-	{
-	  if(isDuplicateMessage(originalData))
-	    return;
 
-	  recordMessageHash(originalData);
+      if(ttl > 0)
+	if(!ok ||
+	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
+	  {
+	    if(isDuplicateMessage(originalData))
+	      return;
 
-	  /*
-	  ** Replace TTL.
-	  */
+	    recordMessageHash(originalData);
 
-	  char c = 0;
+	    /*
+	    ** Replace TTL.
+	    */
 
-	  memcpy(&c, static_cast<void *> (&ttl), 1);
-	  originalData.prepend(c);
-	  emit receivedMailMessage(originalData, m_id);
-	}
+	    char c = 0;
+
+	    memcpy(&c, static_cast<void *> (&ttl), 1);
+	    originalData.prepend(c);
+	    emit receivedMailMessage(originalData, m_id);
+	  }
     }
   else
     spoton_misc::logError
@@ -1487,23 +1493,26 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 		    message,
 		    messageDigest,
 		    "0001b");
-      else if(ttl > 0)
-	{
-	  if(isDuplicateMessage(originalData))
-	    return;
 
-	  recordMessageHash(originalData);
+      if(ttl > 0)
+	if(!ok ||
+	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
+	  {
+	    if(isDuplicateMessage(originalData))
+	      return;
 
-	  /*
-	  ** Replace TTL.
-	  */
+	    recordMessageHash(originalData);
 
-	  char c = 0;
+	    /*
+	    ** Replace TTL.
+	    */
 
-	  memcpy(&c, static_cast<void *> (&ttl), 1);
-	  originalData.prepend(c);
-	  emit receivedMailMessage(originalData, m_id);
-	}
+	    char c = 0;
+
+	    memcpy(&c, static_cast<void *> (&ttl), 1);
+	    originalData.prepend(c);
+	    emit receivedMailMessage(originalData, m_id);
+	  }
     }
   else
     spoton_misc::logError
@@ -1645,23 +1654,26 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 				      "not match provided digest.");
 	    }
 	}
-      else if(ttl > 0)
-	{
-	  if(isDuplicateMessage(originalData))
-	    return;
 
-	  recordMessageHash(originalData);
+      if(ttl > 0)
+	if(!ok ||
+	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
+	  {
+	    if(isDuplicateMessage(originalData))
+	      return;
 
-	  /*
-	  ** Replace TTL.
-	  */
+	    recordMessageHash(originalData);
 
-	  char c = 0;
+	    /*
+	    ** Replace TTL.
+	    */
 
-	  memcpy(&c, static_cast<void *> (&ttl), 1);
-	  originalData.prepend(c);
-	  emit retrieveMail(originalData, m_id);
-	}
+	    char c = 0;
+
+	    memcpy(&c, static_cast<void *> (&ttl), 1);
+	    originalData.prepend(c);
+	    emit retrieveMail(originalData, m_id);
+	  }
     }
   else
     spoton_misc::logError
@@ -1937,23 +1949,26 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 				      "not match provided digest.");
 	    }
 	}
-      else if(ttl > 0)
-	{
-	  if(isDuplicateMessage(originalData))
-	    return;
 
-	  recordMessageHash(originalData);
+      if(ttl > 0)
+	if(!ok ||
+	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
+	  {
+	    if(isDuplicateMessage(originalData))
+	      return;
 
-	  /*
-	  ** Replace TTL.
-	  */
+	    recordMessageHash(originalData);
 
-	  char c = 0;
+	    /*
+	    ** Replace TTL.
+	    */
 
-	  memcpy(&c, static_cast<void *> (&ttl), 1);
-	  originalData.prepend(c);
-	  emit receivedStatusMessage(originalData, m_id);
-	}
+	    char c = 0;
+
+	    memcpy(&c, static_cast<void *> (&ttl), 1);
+	    originalData.prepend(c);
+	    emit receivedStatusMessage(originalData, m_id);
+	  }
     }
   else
     spoton_misc::logError
@@ -2840,6 +2855,10 @@ void spoton_neighbor::recordMessageHash(const QByteArray &data)
 
 bool spoton_neighbor::isDuplicateMessage(const QByteArray &data)
 {
+  if(!spoton_kernel::s_settings.value("gui/enableCongestionControl",
+				      false).toBool())
+    return false;
+
   spoton_crypt *s_crypt = 0;
 
   if(spoton_kernel::s_crypts.contains("messaging"))

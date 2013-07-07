@@ -221,6 +221,7 @@ class spoton: public QMainWindow
   void slotShowContextMenu(const QPoint &point);
   void slotStatusButtonClicked(void);
   void slotStatusChanged(int index);
+  void slotSuperEcho(bool state);
   void slotTabChanged(int index);
   void slotUnblockNeighbor(void);
   void slotValidatePassphrase(void);

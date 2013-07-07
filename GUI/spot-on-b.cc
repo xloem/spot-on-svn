@@ -3268,3 +3268,12 @@ bool spoton::event(QEvent *event)
 }
 #endif
 #endif
+
+void spoton::slotSuperEcho(bool state)
+{
+  m_settings["gui/superEcho"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/superEcho", state);
+}

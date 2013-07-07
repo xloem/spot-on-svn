@@ -386,6 +386,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotProxyTypeChanged(int)));
+  connect(m_ui.superEcho,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotSuperEcho(bool)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -577,6 +581,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/saveCopy", true).toBool());
   m_ui.scrambler->setChecked
     (m_settings.value("gui/scramblerEnabled", false).toBool());
+  m_ui.superEcho->setChecked
+    (m_settings.value("gui/superEcho", false).toBool());
 
   /*
   ** Please don't translate n/a.
@@ -2223,10 +2229,6 @@ void spoton::slotSetPassphrase(void)
   QApplication::processEvents();
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-  /*
-  ** Generate a key and use the key to encrypt the private RSA key.
-  */
-
   QByteArray salt;
   QByteArray saltedPassphraseHash;
   QString error1("");
@@ -2255,7 +2257,7 @@ void spoton::slotSetPassphrase(void)
       if(!m_ui.newRSAKeys->isChecked() && reencode)
 	{
 	  m_sb.status->setText
-	    (tr("Re-encoding RSA key pair 1 of 3. Please be patient."));
+	    (tr("Re-encoding public key pair 1 of 3. Please be patient."));
 	  QApplication::processEvents();
 	  spoton_crypt::reencodeRSAKeys
 	    (m_ui.cipherType->currentText(),
@@ -2270,7 +2272,8 @@ void spoton::slotSetPassphrase(void)
 	  if(error2.isEmpty())
 	    {
 	      m_sb.status->setText
-		(tr("Re-encoding RSA key pair 2 of 3. Please be patient."));
+		(tr("Re-encoding public key pair 2 of 3. "
+		    "Please be patient."));
 	      QApplication::processEvents();
 	      spoton_crypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
@@ -2286,7 +2289,8 @@ void spoton::slotSetPassphrase(void)
 	  if(error2.isEmpty())
 	    {
 	      m_sb.status->setText
-		(tr("Re-encoding RSA key pair 3 of 3. Please be patient."));
+		(tr("Re-encoding public key pair 3 of 3. "
+		    "Please be patient."));
 	      QApplication::processEvents();
 	      spoton_crypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
@@ -2316,7 +2320,8 @@ void spoton::slotSetPassphrase(void)
 	  for(int i = 0; i < list.size(); i++)
 	    {
 	      m_sb.status->setText
-		(tr("Generating RSA key pair %1 of %2. Please be patient.").
+		(tr("Generating public key pair %1 of %2. "
+		    "Please be patient.").
 		 arg(i + 1).arg(list.size()));
 	      QApplication::processEvents();
 
@@ -2477,7 +2482,7 @@ void spoton::slotSetPassphrase(void)
 
       QMessageBox::information
 	(this, tr("Spot-On: Information"),
-	 tr("Your RSA keys and the passphrase have been recorded. "
+	 tr("Your passphrase and public key pairs have been recorded. "
 	    "You are now ready to use the full power of Spot-On. Enjoy!"));
 
       QMessageBox mb(this);
