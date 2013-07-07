@@ -141,11 +141,13 @@ class spoton_crypt
   size_t m_privateKeyLength;
   size_t m_symmetricKeyLength;
   unsigned long m_iterationCount;
+  static bool setInitializationVector(QByteArray &iv,
+				      const int algorithm,
+				      gcry_cipher_hd_t cipherHandle);
   static void generateCertificate(RSA *rsa,
 				  QByteArray &certificate,
 				  QString &error);
   static void init(void);
-  bool setInitializationVector(QByteArray &iv);
 };
 
 #endif
