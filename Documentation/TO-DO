@@ -39,14 +39,13 @@ Ideas
        Add a database for the temporary chat keys of connected neighbors.
 
        Settings tab needs a side splitter for more settings such as: deny-get,
-       deny-put. These functions do not exist.
+       deny-put.
 
-       Fetching of new neighbors needs to be automated. Fetching is undefined.
+       Fetching of new neighbors needs to be automated.
 
-       Automatic fetching needs a checkbox. Fetching is undefined.
+       Automatic fetching needs a checkbox.
 
-       Add one listener before the kernel can be activated? No,
-       a kernel's importance is not defined by listeners.
+       Add one listener before the kernel can be activated?
 
        When listeners are only used as servers, add the name of the IRC
        channel. Listeners are always servers.
@@ -68,7 +67,7 @@ Ideas
 
        Provide a means of filtering messages in chat.
 
-       Spot-On as a plugin. No.
+       Spot-On as a plugin.
 
        Do not hide the OID column? The OID is always available. It is
        an internal database field.
