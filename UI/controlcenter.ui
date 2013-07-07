@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>965</width>
-                <height>584</height>
+                <width>973</width>
+                <height>573</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -464,7 +464,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Request undelivered e-mail from other participants.</string>
+             <string>Request e-mail from other participants.</string>
             </property>
             <property name="text">
              <string>Retrieve</string>
@@ -742,7 +742,7 @@
               <item>
                <widget class="QPushButton" name="generateGoldBug">
                 <property name="toolTip">
-                 <string>Bundle the e-mail with an additional layer of encryption. Do remember to notify all recipients of the key.</string>
+                 <string>Bundle the e-mail with an additional layer of AES-256 encryption. Do remember to notify all recipients of the key.</string>
                 </property>
                 <property name="text">
                  <string>Gold Bug</string>
@@ -1233,7 +1233,7 @@
           <item>
            <widget class="QToolButton" name="toolButtonCopytoClipboard">
             <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy my name and specified public key to the clipboard buffer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>Copy my name and specified public key to the clipboard buffer.</string>
             </property>
             <property name="text">
              <string>Copy Public Key</string>
@@ -1249,7 +1249,7 @@
           <item>
            <widget class="QToolButton" name="toolButtonMakeFriends">
             <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Share my specified public key with the selected neighbor.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>Share my specified public key with the selected neighbor.</string>
             </property>
             <property name="text">
              <string>Share Public Key</string>
@@ -1301,7 +1301,7 @@
                 <item>
                  <widget class="QRadioButton" name="acceptPublishedDisconnected">
                   <property name="toolTip">
-                   <string>Selection this option if you would like to accept published listeners.</string>
+                   <string>Select this option if you would like to accept published listeners.</string>
                   </property>
                   <property name="text">
                    <string>&amp;Accept Published Listeners (Disconnected)</string>
@@ -1981,8 +1981,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>993</width>
-             <height>569</height>
+             <width>973</width>
+             <height>573</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -2097,16 +2097,19 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="Line" name="line_2">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
+                    <widget class="QCheckBox" name="scrambler">
+                     <property name="text">
+                      <string>Enable &amp;Scrambler</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QCheckBox" name="scrambler">
+                    <widget class="QCheckBox" name="superEcho">
+                     <property name="toolTip">
+                      <string>If enabled, messages that are deciphered correctly will be forwarded.</string>
+                     </property>
                      <property name="text">
-                      <string>Enable &amp;Scrambler</string>
+                      <string>Enable S&amp;uper Echo</string>
                      </property>
                     </widget>
                    </item>
@@ -2923,7 +2926,7 @@
      <x>0</x>
      <y>0</y>
      <width>995</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -3084,6 +3087,7 @@
   <tabstop>congestionControl</tabstop>
   <tabstop>cost</tabstop>
   <tabstop>scrambler</tabstop>
+  <tabstop>superEcho</tabstop>
   <tabstop>cipherType</tabstop>
   <tabstop>hashType</tabstop>
   <tabstop>iterationCount</tabstop>
