@@ -35,6 +35,7 @@ Remaining Items
 2.     Inspect UTF-8 uses.
 3.     Introduce DSA and ElGamal?
 4.     Echo proxy?
+5.     Prioritize keep-alive messages.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.
