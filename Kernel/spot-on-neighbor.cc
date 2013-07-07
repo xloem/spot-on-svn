@@ -67,35 +67,21 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
     {
       QSslConfiguration configuration;
 
+      configuration.setLocalCertificate(QSslCertificate(certificate));
+      configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
+      configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
+#if QT_VERSION >= 0x050000
+      configuration.setProtocol(QSsl::TlsV1_2);
+#else
+      configuration.setProtocol(QSsl::TlsV1);
+#endif
       configuration.setSslOption
 	(QSsl::SslOptionDisableCompression, true);
       configuration.setSslOption
 	(QSsl::SslOptionDisableEmptyFragments, true);
       configuration.setSslOption
 	(QSsl::SslOptionDisableLegacyRenegotiation, true);
-
-      if(m_useSsl)
-	{
-	  configuration.setLocalCertificate(QSslCertificate(certificate));
-
-	  QSslKey key(privateKey, QSsl::Rsa);
-
-	  configuration.setPrivateKey(key);
-	}
-
-      QList<QSslCipher> ciphers(spoton_crypt::defaultSslCiphers());
-
-      if(!ciphers.isEmpty())
-	configuration.setCiphers(ciphers + supportedCiphers());
-      else
-	configuration.setCiphers(defaultCiphers());
-
-      configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
-#if QT_VERSION >= 0x050000
-      configuration.setProtocol(QSsl::TlsV1_0);
-#else
-      configuration.setProtocol(QSsl::TlsV1);
-#endif
+      spoton_crypt::setSslCiphers(supportedCiphers(), configuration);
       setSslConfiguration(configuration);
     }
 
@@ -181,23 +167,15 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 
   QSslConfiguration configuration;
 
-  configuration.setSslOption(QSsl::SslOptionDisableCompression, true);
-  configuration.setSslOption(QSsl::SslOptionDisableEmptyFragments, true);
-  configuration.setSslOption(QSsl::SslOptionDisableLegacyRenegotiation, true);
-
-  QList<QSslCipher> ciphers(spoton_crypt::defaultSslCiphers());
-
-  if(!ciphers.isEmpty())
-    configuration.setCiphers(ciphers + supportedCiphers());
-  else
-    configuration.setCiphers(defaultCiphers());
-
   configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
 #if QT_VERSION >= 0x050000
-  configuration.setProtocol(QSsl::TlsV1_0);
+  configuration.setProtocol(QSsl::TlsV1_2);
 #else
   configuration.setProtocol(QSsl::TlsV1);
 #endif
+  configuration.setSslOption(QSsl::SslOptionDisableCompression, true);
+  configuration.setSslOption(QSsl::SslOptionDisableEmptyFragments, true);
+  configuration.setSslOption(QSsl::SslOptionDisableLegacyRenegotiation, true);
 
   spoton_crypt *s_crypt = 0;
 
@@ -212,19 +190,16 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
       data = s_crypt->privateKeyInRem(&ok);
 
       if(ok)
-	{
-	  QSslKey key(data, QSsl::Rsa);
-
-	  configuration.setPrivateKey(key);
-	}
+	configuration.setPrivateKey(QSslKey(data, QSsl::Rsa));
       else
 	spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
 			      "privateKeyInRem() failure!");
     }
   else
     spoton_misc::logError("spoton_neighbor::spoton_neighbor(): "
-			  "missing neighbor key!");
+			  "missing neighbor spoton_crypt object!");
 
+  spoton_crypt::setSslCiphers(supportedCiphers(), configuration);
   setSslConfiguration(configuration);
   m_address = QHostAddress(ipAddress);
   m_ipAddress = ipAddress;
@@ -2925,10 +2900,16 @@ void spoton_neighbor::slotDisconnected(void)
 void spoton_neighbor::slotEncrypted(void)
 {
   QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
-  spoton_misc::logError(QString("spoton_neighbor::slotEncrypted(): "
-				"using session cipher %1-%2-%3-%4.").
-			arg(sessionCipher().authenticationMethod()).
-			arg(sessionCipher().encryptionMethod()).
-			arg(sessionCipher().keyExchangeMethod()).
-			arg(sessionCipher().usedBits()));
+
+  QSslCipher cipher(sessionCipher());
+
+  spoton_misc::logError
+    (QString("spoton_neighbor::slotEncrypted(): "
+	     "using session cipher %1-%2-%3-%4-%5-%6.").
+     arg(cipher.authenticationMethod()).
+     arg(cipher.encryptionMethod()).
+     arg(cipher.keyExchangeMethod()).
+     arg(cipher.protocolString()).
+     arg(cipher.supportedBits()).
+     arg(cipher.usedBits()));
 }

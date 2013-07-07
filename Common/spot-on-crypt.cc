@@ -2903,11 +2903,28 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(void)
 #if QT_VERSION >= 0x050000
   QSslCipher cipher("ECDHE-RSA-AES256-SHA384", QSsl::TlsV1_2);
 
-  list.append(cipher);
+  if(!cipher.isNull())
+    list.append(cipher);
 #else
   QSslCipher cipher("ECDHE-RSA-AES256-SHA", QSsl::SslV3);
 
-  list.append(cipher);
+  if(!cipher.isNull())
+    list.append(cipher);
 #endif
   return list;
+}
+
+void spoton_crypt::setSslCiphers(const QList<QSslCipher> &ciphers,
+				 QSslConfiguration &configuration)
+{
+  QList<QSslCipher> preferred(defaultSslCiphers());
+
+  for(int i = preferred.size() - 1; i >= 0; i--)
+    if(!ciphers.contains(preferred.at(i)))
+      preferred.removeAt(i);
+
+  if(preferred.isEmpty())
+    configuration.setCiphers(ciphers);
+  else
+    configuration.setCiphers(preferred + ciphers);
 }

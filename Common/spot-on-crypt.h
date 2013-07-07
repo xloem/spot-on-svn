@@ -46,6 +46,7 @@ extern "C"
 
 #include <QByteArray>
 #include <QSslCipher>
+#include <QSslConfiguration>
 #include <QStringList>
 
 class spoton_crypt
@@ -95,6 +96,8 @@ class spoton_crypt
 			      const char *oldPassphrase,
 			      const QString &id,
 			      QString &error);
+  static void setSslCiphers(const QList<QSslCipher> &ciphers,
+			    QSslConfiguration &configuration);
   spoton_crypt(const QString &id); // Random object?
   spoton_crypt(const QString &cipherType,
 		const QString &hashType,
