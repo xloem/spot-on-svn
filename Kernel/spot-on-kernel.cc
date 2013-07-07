@@ -1949,8 +1949,9 @@ void spoton_kernel::slotPublicizeAllListenersPlaintext(void)
       QPointer<spoton_listener> listener = i.value();
 
       if(listener)
-	emit publicizeListenerPlaintext(listener->externalAddress(),
-					listener->externalPort());
+	if(!listener->externalAddress().isNull())
+	  emit publicizeListenerPlaintext(listener->externalAddress(),
+					  listener->externalPort());
     }
 }
 
@@ -1959,8 +1960,9 @@ void spoton_kernel::slotPublicizeListenerPlaintext(const qint64 oid)
   QPointer<spoton_listener> listener = m_listeners.value(oid);
 
   if(listener)
-    emit publicizeListenerPlaintext(listener->externalAddress(),
-				    listener->externalPort());
+    if(!listener->externalAddress().isNull())
+      emit publicizeListenerPlaintext(listener->externalAddress(),
+				      listener->externalPort());
 }
 
 void spoton_kernel::slotReceivedChatMessage(void)

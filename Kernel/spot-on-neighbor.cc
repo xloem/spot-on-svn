@@ -2785,23 +2785,25 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
 {
   if(state() == QAbstractSocket::ConnectedState)
     if((isEncrypted() && m_useSsl) || !m_useSsl)
-      {
-	char c = 0;
-	short ttl = spoton_kernel::s_settings.value
-	  ("kernel/ttl_0030", 64).toInt();
+      if(!address.isNull())
+	{
+	  char c = 0;
+	  short ttl = spoton_kernel::s_settings.value
+	    ("kernel/ttl_0030", 64).toInt();
 
-	memcpy(&c, static_cast<void *> (&ttl), 1);
+	  memcpy(&c, static_cast<void *> (&ttl), 1);
 
-	QByteArray message
-	  (spoton_send::message0030(address, port, c));
+	  QByteArray message
+	    (spoton_send::message0030(address, port, c));
 
-	if(write(message.constData(), message.length()) != message.length())
-	  spoton_misc::logError
-	    ("spoton_neighbor::slotPublicizeListenerPlaintext(): write() "
-	     "error.");
-	else
-	  flush();
-      }
+	  if(write(message.constData(), message.length()) !=
+	     message.length())
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotPublicizeListenerPlaintext(): write() "
+	       "error.");
+	  else
+	    flush();
+	}
 }
 
 void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
