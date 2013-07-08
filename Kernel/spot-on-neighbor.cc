@@ -582,7 +582,8 @@ void spoton_neighbor::slotReadyRead(void)
 		    (QString("spoton_neighbor::slotReadyRead(): "
 			     "received irregular data from %1:%2. Setting "
 			     "the read buffer size to 1000 bytes.").
-		     arg(peerAddress().toString()).arg(peerPort()));
+		     arg(peerAddress().isNull() ? peerName() :
+			 peerAddress().toString()).arg(peerPort()));
 		  setReadBufferSize(1000);
 		}
 	      else
@@ -590,7 +591,8 @@ void spoton_neighbor::slotReadyRead(void)
 		  (QString("spoton_neighbor::slotReadyRead(): "
 			   "received irregular data from %1:%2. The "
 			   "read buffer size remains at 1000 bytes.").
-		   arg(peerAddress().toString()).arg(peerPort()));
+		   arg(peerAddress().isNull() ? peerName() :
+		       peerAddress().toString()).arg(peerPort()));
 	    }
 	}
     }
@@ -632,8 +634,10 @@ void spoton_neighbor::slotConnected(void)
 	  {
 	    QSqlQuery query(db);
 	    QString country
-	      (spoton_misc::countryNameFromIPAddress(peerAddress().
-						     toString()));
+	      (spoton_misc::
+	       countryNameFromIPAddress(peerAddress().isNull() ?
+					peerName() :
+					peerAddress().toString()));
 	    bool ok = true;
 
 	    query.prepare("UPDATE neighbors SET country = ?, "
@@ -2031,7 +2035,8 @@ void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0015(): received "
 		     "keep-alive from %1:%2. Resetting time object.").
-	     arg(peerAddress().toString()).arg(peerPort()));
+	     arg(peerAddress().isNull() ? peerName() :
+		 peerAddress().toString()).arg(peerPort()));
 	}
       else
 	spoton_misc::logError
@@ -2861,7 +2866,8 @@ void spoton_neighbor::slotSslErrors(const QList<QSslError> &errors)
     spoton_misc::logError(QString("spoton_neighbor::slotSslErrors(): "
 				  "error (%1) occurred from %2:%3.").
 			  arg(errors.at(i).errorString()).
-			  arg(peerAddress().toString()).
+			  arg(peerAddress().isNull() ? peerName() :
+			      peerAddress().toString()).
 			  arg(peerPort()));
 }
 
