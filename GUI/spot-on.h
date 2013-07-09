@@ -195,6 +195,7 @@ class spoton: public QMainWindow
   void slotPopulateNeighbors(void);
   void slotPopulateParticipants(void);
   void slotProtocolRadioToggled(bool state);
+  void slotProxyChecked(bool state);
   void slotProxyTypeChanged(int index);
   void slotPublishPeriodicallyToggled(bool sate);
   void slotPublicizeAllListenersPlaintext(void);

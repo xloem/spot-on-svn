@@ -25,6 +25,7 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QAuthenticator>
 #include <QDateTime>
 #include <QDir>
 #include <QNetworkInterface>
@@ -235,6 +236,12 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(modeChanged(QSslSocket::SslMode)),
 	  this,
 	  SLOT(slotModeChanged(QSslSocket::SslMode)));
+  connect(this,
+	  SIGNAL(proxyAuthenticationRequired(const QNetworkProxy &,
+					     QAuthenticator *)),
+	  this,
+	  SLOT(slotProxyAuthenticationRequired(const QNetworkProxy &,
+					       QAuthenticator *)));
   connect(this,
 	  SIGNAL(readyRead(void)),
 	  this,
@@ -2918,4 +2925,17 @@ void spoton_neighbor::slotEncrypted(void)
      arg(cipher.protocolString()).
      arg(cipher.supportedBits()).
      arg(cipher.usedBits()));
+}
+
+void spoton_neighbor::slotProxyAuthenticationRequired
+(const QNetworkProxy &proxy,
+ QAuthenticator *authenticator)
+{
+  Q_UNUSED(proxy);
+
+  if(authenticator)
+    {
+      authenticator->setPassword(this->proxy().password());
+      authenticator->setUser(this->proxy().user());
+    }
 }
