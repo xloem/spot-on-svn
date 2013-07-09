@@ -767,7 +767,6 @@ spoton_crypt::spoton_crypt(const QString &id)
 	{
 	  if((err = gcry_cipher_open(&m_cipherHandle, m_cipherAlgorithm,
 				     GCRY_CIPHER_MODE_CBC,
-				     GCRY_CIPHER_SECURE |
 				     GCRY_CIPHER_CBC_CTS))
 	     != 0 || !m_cipherAlgorithm)
 	    {
@@ -882,7 +881,6 @@ spoton_crypt::spoton_crypt(const QString &cipherType,
 	{
 	  if((err = gcry_cipher_open(&m_cipherHandle, m_cipherAlgorithm,
 				     GCRY_CIPHER_MODE_CBC,
-				     GCRY_CIPHER_SECURE |
 				     GCRY_CIPHER_CBC_CTS))
 	     != 0 || !m_cipherAlgorithm)
 	    {
