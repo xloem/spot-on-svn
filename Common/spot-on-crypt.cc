@@ -488,10 +488,17 @@ void spoton_crypt::reencodeRSAKeys(const QString &newCipher,
 				    static_cast<size_t> (0))) == 0)
 	{
 	  int s = 0;
-	  QByteArray originalLength(d.mid(d.length() - 4, 4));
-	  QDataStream in(&originalLength, QIODevice::ReadOnly);
+	  QByteArray originalLength;
 
-	  in >> s;
+	  if(d.length() >= 4)
+	    originalLength = d.mid(d.length() - 4, 4);
+
+	  if(!originalLength.isEmpty())
+	    {
+	      QDataStream in(&originalLength, QIODevice::ReadOnly);
+
+	      in >> s;
+	    }
 
 	  if(s >= 0 && s <= d.length())
 	    d = d.mid(0, s);
@@ -644,14 +651,12 @@ void spoton_crypt::reencodeRSAKeys(const QString &newCipher,
 
       if(eData.isEmpty())
 	eData = eData.leftJustified(blockLength, 0);
-      else
+      else if(static_cast<size_t> (eData.size()) < blockLength)
 	eData = eData.leftJustified
 	  (blockLength * qCeil(static_cast<qreal> (eData.length()) /
 			       static_cast<qreal> (blockLength)), 0);
 
       out << eData.length();
-      eData.append(QByteArray(blockLength, 0));
-      eData.remove(eData.length() - 4, 4);
       eData.append(originalLength);
 
       if((err = gcry_cipher_encrypt(cipherHandle,
@@ -986,7 +991,7 @@ QByteArray spoton_crypt::decrypted(const QByteArray &data, bool *ok)
 
 	  if(decrypted.isEmpty())
 	    decrypted = decrypted.leftJustified(blockLength, 0);
-	  else
+	  else if(static_cast<size_t> (decrypted.size()) < blockLength)
 	    decrypted = decrypted.leftJustified
 	      (blockLength *
 	       qCeil((qreal) decrypted.length() / (qreal) blockLength), 0);
@@ -1002,11 +1007,17 @@ QByteArray spoton_crypt::decrypted(const QByteArray &data, bool *ok)
 				  static_cast<size_t> (0))) == 0)
 	    {
 	      int s = 0;
-	      QByteArray originalLength
-		(decrypted.mid(decrypted.length() - 4, 4));
-	      QDataStream in(&originalLength, QIODevice::ReadOnly);
+	      QByteArray originalLength;
 
-	      in >> s;
+	      if(decrypted.length() >= 4)
+		originalLength = decrypted.mid(decrypted.length() - 4, 4);
+
+	      if(!originalLength.isEmpty())
+		{
+		  QDataStream in(&originalLength, QIODevice::ReadOnly);
+
+		  in >> s;
+		}
 
 	      if(s >= 0 && s <= decrypted.length())
 		{
@@ -1093,18 +1104,15 @@ QByteArray spoton_crypt::encrypted(const QByteArray &data, bool *ok)
 	{
 	  if(encrypted.isEmpty())
 	    encrypted = encrypted.leftJustified(blockLength, 0);
-	  else
+	  else if(static_cast<size_t> (encrypted.size()) < blockLength)
 	    encrypted = encrypted.leftJustified
 	      (blockLength *
 	       qCeil((qreal) encrypted.length() / (qreal) blockLength), 0);
-
-	  encrypted.append(QByteArray(2 * blockLength, 0));
 
 	  QByteArray originalLength;
 	  QDataStream out(&originalLength, QIODevice::WriteOnly);
 
 	  out << data.length();
-	  encrypted.remove(encrypted.length() - 4, 4);
 	  encrypted.append(originalLength);
 
 	  gcry_error_t err = 0;
