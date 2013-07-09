@@ -620,7 +620,11 @@ void spoton_kernel::prepareNeighbors(void)
 				 systemProxyForQuery(proxyQuery));
 
 			      if(!list.isEmpty())
-				proxy = list.at(0);
+				{
+				  proxy = list.at(0);
+				  proxy.setPassword(list.at(4));
+				  proxy.setUser(list.at(7));
+				}
 			    }
 			  else
 			    proxy.setType(QNetworkProxy::NoProxy);
