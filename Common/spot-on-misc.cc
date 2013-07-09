@@ -324,7 +324,9 @@ void spoton_misc::prepareDatabases(void)
 	   "proxy_port TEXT NOT NULL, "
 	   "proxy_type TEXT NOT NULL, "
 	   "proxy_username TEXT NOT NULL, "
-	   "is_encrypted INTEGER NOT NULL DEFAULT 0)");
+	   "is_encrypted INTEGER NOT NULL DEFAULT 0, "
+	   "private_key BLOB NOT NULL, "
+	   "public_key BLOB NOT NULL)");
       }
 
     db.close();
@@ -1353,8 +1355,10 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 		   "proxy_password, "
 		   "proxy_port, "
 		   "proxy_type, "
-		   "proxy_username) "
-		   "VALUES (?, ?, ?, ?, ?, ?, "
+		   "proxy_username, "
+		   "private_key, "
+		   "public_key) "
+		   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, "
 		   "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
@@ -1441,6 +1445,35 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	  query.bindValue
 	    (17, crypt->encrypted(proxyUsername.toUtf8(), &ok).
 	     toBase64());
+
+	if(ok)
+	  {
+	    QByteArray certificate;
+	    QByteArray privateKey;
+	    QByteArray publicKey;
+	    QSettings settings;
+	    QString error("");
+
+	    spoton_crypt::generateSslKeys
+	      (settings.value("gui/publishedKeySize", "2048").toInt(),
+	       certificate,
+	       privateKey,
+	       publicKey,
+	       error);
+
+	    if(!error.isEmpty())
+	      ok = false;
+
+	    if(ok)
+	      query.bindValue
+		(18, crypt->encrypted(privateKey, &ok).
+		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(19, crypt->encrypted(publicKey, &ok).
+		 toBase64());
+	  }
 
 	if(ok)
 	  query.exec();

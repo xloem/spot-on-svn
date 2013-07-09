@@ -53,6 +53,7 @@ class spoton_neighbor: public QSslSocket
 		  const QString &scopeId,
 		  const qint64 id,
 		  const bool userDefined,
+		  const QByteArray &privateKey,
 		  QObject *parent);
   spoton_neighbor(const int socketDescriptor,
 		  const QByteArray &certificate,
@@ -86,6 +87,7 @@ class spoton_neighbor: public QSslSocket
   quint16 m_port;
   spoton_external_address *m_externalAddress;
   bool isDuplicateMessage(const QByteArray &data);
+  bool readyToWrite(void);
   void prepareNetworkInterface(void);
   void process0000(int length, const QByteArray &data);
   void process0001a(int length, const QByteArray &data);

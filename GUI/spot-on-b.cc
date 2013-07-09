@@ -345,11 +345,20 @@ void spoton::slotAcceptPublicizedListeners(void)
     return;
 
   if(m_ui.acceptPublishedConnected == radioButton)
-    m_settings["gui/acceptPublicizedListeners"] = "connected";
+    {
+      m_settings["gui/acceptPublicizedListeners"] = "connected";
+      m_ui.publishedKeySize->setEnabled(true);
+    }
   else if(m_ui.acceptPublishedDisconnected == radioButton)
-    m_settings["gui/acceptPublicizedListeners"] = "disconnected";
+    {
+      m_settings["gui/acceptPublicizedListeners"] = "disconnected";
+      m_ui.publishedKeySize->setEnabled(true);
+    }
   else
-    m_settings["gui/acceptPublicizedListeners"] = "ignored";
+    {
+      m_settings["gui/acceptPublicizedListeners"] = "ignored";
+      m_ui.publishedKeySize->setEnabled(false);
+    }
 
   QSettings settings;
 
@@ -3276,4 +3285,15 @@ void spoton::slotSuperEcho(bool state)
   QSettings settings;
 
   settings.setValue("gui/superEcho", state);
+}
+
+void spoton::slotPublishedKeySizeChanged(const QString &text)
+{
+  m_settings["gui/publishedKeySize"] = text.toInt();
+
+  QSettings settings;
+
+  settings.setValue
+    ("gui/publishedKeySize",
+     m_settings.value("gui/publishedKeySize").toInt());
 }

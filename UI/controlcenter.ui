@@ -72,8 +72,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>965</width>
-                <height>584</height>
+                <width>973</width>
+                <height>574</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1324,6 +1324,41 @@
                </layout>
               </item>
               <item>
+               <widget class="QLabel" name="label_30">
+                <property name="text">
+                 <string>&amp;SSL Key Size</string>
+                </property>
+                <property name="buddy">
+                 <cstring>neighborKeySize</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="publishedKeySize">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="sizeAdjustPolicy">
+                 <enum>QComboBox::AdjustToContents</enum>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>2048</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>3072</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>4096</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
                <spacer name="horizontalSpacer_24">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -1602,6 +1637,42 @@
                     <string>&amp;DDNS</string>
                    </property>
                   </widget>
+                 </item>
+                 <item row="0" column="6">
+                  <layout class="QHBoxLayout" name="horizontalLayout_35">
+                   <item>
+                    <widget class="QLabel" name="label_29">
+                     <property name="text">
+                      <string>&amp;SSL Key Size</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>neighborKeySize</cstring>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="neighborKeySize">
+                     <property name="sizeAdjustPolicy">
+                      <enum>QComboBox::AdjustToContents</enum>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>2048</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>3072</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>4096</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                 </layout>
                </item>
@@ -1981,8 +2052,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1029</width>
-             <height>569</height>
+             <width>973</width>
+             <height>574</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -2926,7 +2997,7 @@
      <x>0</x>
      <y>0</y>
      <width>995</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -3053,12 +3124,14 @@
   <tabstop>acceptPublishedConnected</tabstop>
   <tabstop>acceptPublishedDisconnected</tabstop>
   <tabstop>ignorePublished</tabstop>
+  <tabstop>publishedKeySize</tabstop>
   <tabstop>keepOnlyUserDefinedNeighbors</tabstop>
   <tabstop>neighbors</tabstop>
   <tabstop>neighborIP</tabstop>
   <tabstop>neighborPort</tabstop>
   <tabstop>dynamicdns</tabstop>
   <tabstop>ipv4Neighbor</tabstop>
+  <tabstop>neighborKeySize</tabstop>
   <tabstop>neighborScopeId</tabstop>
   <tabstop>ipv6Neighbor</tabstop>
   <tabstop>proxy</tabstop>

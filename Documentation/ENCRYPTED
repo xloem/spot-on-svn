@@ -34,11 +34,13 @@ neighbors.db:
 
 country
 external_ip_address
+private_key
 proxy_hostname
 proxy_password
 proxy_port
 proxy_type
 proxy_username
+public_key
 remote_ip_address
 remote_port
 scope_id

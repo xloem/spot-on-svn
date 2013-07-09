@@ -312,7 +312,11 @@ void spoton_listener::slotTimeout(void)
   QSqlDatabase::removeDatabase("spoton_listener_" + QString::number(s_dbId));
 
   if(shouldDelete)
-    deleteLater();
+    {
+      spoton_misc::logError("spoton_listener_::slotTimeout(): instructed "
+			    "to delete listener.");
+      deleteLater();
+    }
 
   if(isListening())
     if(!m_networkInterface || !(m_networkInterface->flags() &
@@ -506,8 +510,10 @@ void spoton_listener::slotEncrypted(void)
 		       "proxy_password, "
 		       "proxy_port, "
 		       "proxy_type, "
-		       "proxy_username) "
-		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, "
+		       "proxy_username, "
+		       "private_key, "
+		       "public_key) "
+		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
 		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
 	    query.bindValue(1, m_port);
@@ -609,6 +615,16 @@ void spoton_listener::slotEncrypted(void)
 		 toBase64());
 
 	    if(ok)
+	      query.bindValue
+		(20, s_crypt->encrypted(QByteArray(), &ok).
+		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(21, s_crypt->encrypted(QByteArray(), &ok).
+		 toBase64());
+
+	    if(ok)
 	      created = query.exec();
 
 	    if(ok)
@@ -666,7 +682,12 @@ void spoton_listener::slotEncrypted(void)
       emit newNeighbor(neighbor);
     }
   else
-    neighbor->deleteLater();
+    {
+      spoton_misc::logError("spoton_listener::slotEncrypted(): "
+			    "severe error(s). Purging neighbor "
+			    "object.");
+      neighbor->deleteLater();
+    }
 }
 
 void spoton_listener::updateConnectionCount(void)

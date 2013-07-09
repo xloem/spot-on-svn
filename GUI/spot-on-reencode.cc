@@ -257,9 +257,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		   newCrypt->keyedHash(country.toLatin1(),
 				       &ok).toBase64());
 
-	      if(ok)
-		updateQuery.bindValue
-		  (3, query.value(2));
+	      updateQuery.bindValue
+		(3, query.value(2));
 
 	      if(ok)
 		updateQuery.exec();
@@ -476,9 +475,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		updateQuery.bindValue
 		  (7, newCrypt->encrypted(publicKey, &ok).toBase64());
 
-	      if(ok)
-		updateQuery.bindValue
-		  (8, query.value(7));
+	      updateQuery.bindValue
+		(8, query.value(7));
 
 	      if(ok)
 		updateQuery.exec();
@@ -510,9 +508,12 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	if(query.exec("SELECT remote_ip_address, remote_port, "
 		      "scope_id, country, hash, proxy_hostname, "
 		      "proxy_password, proxy_port, proxy_type, "
-		      "proxy_username FROM neighbors"))
+		      "proxy_username, private_key, public_key "
+		      "FROM neighbors"))
 	  while(query.next())
 	    {
+	      QByteArray privateKey;
+	      QByteArray publicKey;
 	      QSqlQuery updateQuery(db);
 	      QString country("");
 	      QString ipAddress("");
@@ -537,7 +538,9 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "proxy_password = ?, "
 				  "proxy_port = ?, "
 				  "proxy_type = ?, "
-				  "proxy_username = ? "
+				  "proxy_username = ?, "
+				  "private_key = ?, "
+				  "public_key = ? "
 				  "WHERE hash = ?");
 	      ipAddress = oldCrypt->decrypted(QByteArray::
 					      fromBase64(query.
@@ -602,6 +605,20 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 						    &ok).constData();
 
 	      if(ok)
+		privateKey = oldCrypt->decrypted(QByteArray::
+						 fromBase64(query.
+							    value(10).
+							    toByteArray()),
+						 &ok);
+
+	      if(ok)
+		publicKey = oldCrypt->decrypted(QByteArray::
+						fromBase64(query.
+							   value(11).
+							   toByteArray()),
+						&ok);
+
+	      if(ok)
 		updateQuery.bindValue
 		  (0, newCrypt->encrypted(ipAddress.
 					  toLatin1(), &ok).toBase64());
@@ -663,7 +680,16 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      if(ok)
 		updateQuery.bindValue
-		  (12, query.value(4));
+		  (12, newCrypt->encrypted(privateKey, &ok).
+		   toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (13, newCrypt->encrypted(publicKey, &ok).
+		   toBase64());
+
+	      updateQuery.bindValue
+		(14, query.value(4));
 
 	      if(ok)
 		updateQuery.exec();

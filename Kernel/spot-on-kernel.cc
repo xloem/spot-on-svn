@@ -542,11 +542,12 @@ void spoton_kernel::prepareNeighbors(void)
 	if(query.exec("SELECT remote_ip_address, remote_port, scope_id, "
 		      "status_control, proxy_hostname, proxy_password, "
 		      "proxy_port, proxy_type, proxy_username, "
-		      "user_defined, OID FROM neighbors"))
+		      "user_defined, private_key, OID FROM neighbors"))
 	  while(query.next())
 	    {
 	      QPointer<spoton_neighbor> neighbor = 0;
-	      qint64 id = query.value(10).toLongLong();
+	      qint64 id = query.value(query.record().count() - 1).
+		toLongLong();
 
 	      if(query.value(3).toString() == "connected")
 		{
@@ -556,9 +557,12 @@ void spoton_kernel::prepareNeighbors(void)
 		      bool userDefined = query.value
 			(query.record().indexOf("user_defined")).toBool();
 
-		      for(int i = 0; i < 9; i++)
+		      for(int i = 0; i < query.record().count() - 1; i++)
 			if(i == 3) // Status Control
-			  continue;
+			  list.append("connected");
+			else if(i == 9)
+			  list.append
+			    (QString::number(userDefined).toLatin1());
 			else
 			  {
 			    QByteArray bytes;
@@ -576,7 +580,7 @@ void spoton_kernel::prepareNeighbors(void)
 			      break;
 			  }
 
-		      if(list.size() == 8)
+		      if(list.size() == query.record().count() - 1)
 			{
 			  QNetworkProxy proxy;
 
@@ -584,31 +588,31 @@ void spoton_kernel::prepareNeighbors(void)
 			  ** The indices of the list do not correspond
 			  ** with the indices of the query container.
 			  **
-			  ** list[3] - Proxy Hostname
-			  ** list[4] - Proxy Password
-			  ** list[5] - Proxy Port
-			  ** list[6] - Proxy Type
-			  ** list[7] - Proxy Username
+			  ** list[4] - Proxy Hostname
+			  ** list[5] - Proxy Password
+			  ** list[6] - Proxy Port
+			  ** list[7] - Proxy Type
+			  ** list[8] - Proxy Username
 			  */
 
-			  if(list.at(6) == "HTTP" ||
-			     list.at(6) == "Socks5")
+			  if(list.at(7) == "HTTP" ||
+			     list.at(7) == "Socks5")
 			    {
 			      proxy.setCapabilities
 				(QNetworkProxy::HostNameLookupCapability |
 				 QNetworkProxy::TunnelingCapability);
-			      proxy.setHostName(list.at(3));
-			      proxy.setPassword(list.at(4));
-			      proxy.setPort(list.at(5).toUShort());
+			      proxy.setHostName(list.at(4));
+			      proxy.setPassword(list.at(5));
+			      proxy.setPort(list.at(6).toUShort());
 
-			      if(list.at(6) == "HTTP")
+			      if(list.at(7) == "HTTP")
 				proxy.setType(QNetworkProxy::HttpProxy);
 			      else
 				proxy.setType(QNetworkProxy::Socks5Proxy);
 
-			      proxy.setUser(list.at(7));
+			      proxy.setUser(list.at(8));
 			    }
-			  else if(list.at(6) == "System")
+			  else if(list.at(7) == "System")
 			    {
 			      QNetworkProxyQuery proxyQuery;
 
@@ -622,8 +626,8 @@ void spoton_kernel::prepareNeighbors(void)
 			      if(!proxies.isEmpty())
 				{
 				  proxy = proxies.at(0);
-				  proxy.setPassword(list.at(4));
-				  proxy.setUser(list.at(7));
+				  proxy.setPassword(list.at(5));
+				  proxy.setUser(list.at(8));
 				}
 			    }
 			  else
@@ -636,6 +640,7 @@ void spoton_kernel::prepareNeighbors(void)
 			     list.at(2).constData(),
 			     id,
 			     userDefined,
+			     list.at(10),
 			     this);
 			}
 
@@ -1868,21 +1873,6 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 		   "messaging");
 		spoton_misc::populateCountryDatabase(crypt);
 		s_crypts.insert("messaging", crypt);
-	      }
-
-	    if(!s_crypts.contains("neighbor"))
-	      {
-		spoton_crypt *crypt = new spoton_crypt
-		  (s_settings.value("gui/cipherType",
-				    "aes256").toString().trimmed(),
-		   s_settings.value("gui/hashType",
-				    "sha512").toString().trimmed(),
-		   passphrase.toUtf8(),
-		   key,
-		   s_settings.value("gui/saltLength", 256).toInt(),
-		   s_settings.value("gui/iterationCount", 10000).toInt(),
-		   "neighbor");
-		s_crypts.insert("neighbor", crypt);
 	      }
 
 	    if(!s_crypts.contains("signature"))

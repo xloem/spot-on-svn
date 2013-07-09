@@ -197,9 +197,10 @@ class spoton: public QMainWindow
   void slotProtocolRadioToggled(bool state);
   void slotProxyChecked(bool state);
   void slotProxyTypeChanged(int index);
-  void slotPublishPeriodicallyToggled(bool sate);
   void slotPublicizeAllListenersPlaintext(void);
   void slotPublicizeListenerPlaintext(void);
+  void slotPublishPeriodicallyToggled(bool sate);
+  void slotPublishedKeySizeChanged(const QString &text);
   void slotQuit(void);
   void slotReceivedKernelMessage(void);
   void slotRefreshMail(void);
