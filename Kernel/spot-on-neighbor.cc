@@ -2247,11 +2247,9 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
       ** Do not use SSL.
       */
 
-      QTimer::singleShot(5000, this, SLOT(slotSendUuid(void))); /*
-								** We should
-								** be
-								** connected.
-								*/
+      if(state() == QAbstractSocket::ConnectedState)
+	QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
+
       m_useSsl = false;
       spoton_misc::logError
 	(QString("spoton_neighbor::slotError(): socket error (%1). "
@@ -2897,11 +2895,13 @@ void spoton_neighbor::slotDisconnected(void)
 {
   int attempts = property("connection-attempts").toInt();
 
-  if(attempts < 5)
+  if(attempts <= 5)
     {
-      setProperty("connection-attempts", attempts + 1);
-      spoton_misc::logError("spoton_neighbor::slotDisconnected(): "
-			    "retrying.");
+      attempts += 1;
+      setProperty("connection-attempts", attempts);
+      spoton_misc::logError
+	(QString("spoton_neighbor::slotDisconnected(): "
+		 "retrying %1 of %2.").arg(attempts).arg(5));
       return;
     }
 
