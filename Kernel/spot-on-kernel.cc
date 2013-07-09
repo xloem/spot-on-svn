@@ -615,13 +615,13 @@ void spoton_kernel::prepareNeighbors(void)
 			      proxyQuery.setQueryType
 				(QNetworkProxyQuery::TcpSocket);
 
-			      QList<QNetworkProxy> list
+			      QList<QNetworkProxy> proxies
 				(QNetworkProxyFactory::
 				 systemProxyForQuery(proxyQuery));
 
-			      if(!list.isEmpty())
+			      if(!proxies.isEmpty())
 				{
-				  proxy = list.at(0);
+				  proxy = proxies.at(0);
 				  proxy.setPassword(list.at(4));
 				  proxy.setUser(list.at(7));
 				}
