@@ -216,6 +216,7 @@
 	<file>nouve/add-url.png</file>
     	<file>nouve/away.png</file>
 	<file>nouve/busy.png</file>
+	<file>nouve/buzz.png</file>
 	<file>nouve/chat.png</file>
     	<file>nouve/clear.png</file>
 	<file>nouve/copy.png</file>
@@ -253,6 +254,7 @@
 	<file>nuvola/add-url.png</file>
     	<file>nuvola/away.png</file>
 	<file>nuvola/busy.png</file>
+	<file>nuvola/buzz.png</file>
 	<file>nuvola/chat.png</file>
     	<file>nuvola/clear.png</file>
 	<file>nuvola/copy.png</file>
