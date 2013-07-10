@@ -161,7 +161,7 @@ void spoton::slotReceivedKernelMessage(void)
 		  m_ui.messages->verticalScrollBar()->setValue
 		    (m_ui.messages->verticalScrollBar()->maximum());
 
-		  if(m_ui.tab->currentIndex() != 0)
+		  if(m_ui.tab->currentIndex() != 1)
 		    m_sb.chat->setVisible(true);
 		}
 	    }
@@ -2703,20 +2703,20 @@ void spoton::slotStatusButtonClicked(void)
   if(toolButton == m_sb.chat)
     {
       m_sb.chat->setVisible(false);
-      m_ui.tab->setCurrentIndex(0);
+      m_ui.tab->setCurrentIndex(1);
     }
   else if(toolButton == m_sb.email)
     {
       m_sb.email->setVisible(false);
       m_ui.folder->setCurrentIndex(0);
       m_ui.mailTab->setCurrentIndex(0);
-      m_ui.tab->setCurrentIndex(1);
+      m_ui.tab->setCurrentIndex(2);
       slotRefreshMail();
     }
   else if(toolButton == m_sb.listeners)
-    m_ui.tab->setCurrentIndex(2);
-  else if(toolButton == m_sb.neighbors)
     m_ui.tab->setCurrentIndex(3);
+  else if(toolButton == m_sb.neighbors)
+    m_ui.tab->setCurrentIndex(4);
 }
 
 bool spoton::updateMailStatus(const QString &oid, const QString &status)
@@ -2804,7 +2804,7 @@ void spoton::slotSetIcons(void)
 
   // Tab Icons
 
-  list << "chat.png" << "email.png" << "add-listener.png"
+  list << "buzz.png" << "chat.png" << "email.png" << "add-listener.png"
        << "neighbors.png" << "search.png" << "settings.png" << "urls.png";
 
   for(int i = 0; i < list.size(); i++)
@@ -2816,6 +2816,8 @@ void spoton::slotSetIcons(void)
   m_sb.chat->setIcon(QIcon(QString(":/%1/chat.png").arg(iconSet)));
   m_sb.email->setIcon(QIcon(QString(":/%1/email.png").arg(iconSet)));
   m_sb.errorlog->setIcon(QIcon(QString(":/%1/information.png").arg(iconSet)));
+
+  // Buzz
 
   // Chat
 

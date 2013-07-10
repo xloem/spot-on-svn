@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>995</width>
+    <width>1046</width>
     <height>677</height>
    </rect>
   </property>
@@ -39,6 +39,11 @@
         <height>32</height>
        </size>
       </property>
+      <widget class="QWidget" name="tab_8">
+       <attribute name="title">
+        <string>&amp;Buzz</string>
+       </attribute>
+      </widget>
       <widget class="QWidget" name="tab_chat">
        <attribute name="title">
         <string>&amp;Chat</string>
@@ -72,8 +77,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>973</width>
-                <height>574</height>
+                <width>1024</width>
+                <height>573</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2052,8 +2057,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>973</width>
-             <height>574</height>
+             <width>1024</width>
+             <height>573</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -2996,8 +3001,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>995</width>
-     <height>24</height>
+     <width>1046</width>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

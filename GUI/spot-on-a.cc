@@ -683,7 +683,7 @@ spoton::spoton(void):QMainWindow()
       m_ui.listenersBox->setEnabled(false);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
-	if(i == 5) // Settings
+	if(i == 6) // Settings
 	  {
 	    m_ui.tab->blockSignals(true);
 	    m_ui.tab->setCurrentIndex(i);
