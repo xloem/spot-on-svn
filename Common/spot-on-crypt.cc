@@ -2133,7 +2133,10 @@ QByteArray spoton_crypt::randomCipherType(void)
 
   QStringList types(cipherTypes());
 
-  return types.value(qrand() % types.size()).toLatin1();
+  if(!types.isEmpty())
+    return types.value(qrand() % types.size()).toLatin1();
+  else
+    return QByteArray();
 }
 
 QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
