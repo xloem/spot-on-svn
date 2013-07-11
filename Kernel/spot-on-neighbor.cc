@@ -45,6 +45,8 @@
 #include "spot-on-kernel.h"
 #include "spot-on-neighbor.h"
 
+int spoton_neighbor::s_maximumBufferedData = 4194304; // 2 ^ 22
+int spoton_neighbor::s_maximumContentLength = 4194304; // 2 ^ 22
 qint64 spoton_neighbor::s_dbId = 0;
 
 spoton_neighbor::spoton_neighbor(const int socketDescriptor,
@@ -520,8 +522,12 @@ void spoton_neighbor::slotReadyRead(void)
 	}
 
       if(list.isEmpty())
-	spoton_misc::logError("spoton_neighbor::slotReadyRead(): "
-			      "list is empty.");
+	{
+	  spoton_misc::logError
+	    ("spoton_neighbor::slotReadyRead(): "
+	     "list is empty. Purging contents of m_data.");
+	  m_data.clear();
+	}
 
       while(!list.isEmpty())
 	{
@@ -544,7 +550,16 @@ void spoton_neighbor::slotReadyRead(void)
 	      ("spoton_neighbor::slotReadyRead() "
 	       "data does not contain Content-Length.");
 
-	  if(length > 0 && data.contains("type=0000&content="))
+	  if(length >= s_maximumContentLength)
+	    spoton_misc::logError
+	      (QString("spoton_neighbor::slotReadyRead(): "
+		       "the Content-Length header from node %1:%2 "
+		       "contains a lot of data (%3). Ignoring. ").
+	       arg(peerAddress().isNull() ? peerName() :
+		   peerAddress().toString()).
+	       arg(peerPort()).
+	       arg(length));
+	  else if(length > 0 && data.contains("type=0000&content="))
 	    process0000(length, data);
 	  else if(length > 0 && data.contains("type=0001a&content="))
 	    process0001a(length, data);
@@ -585,6 +600,15 @@ void spoton_neighbor::slotReadyRead(void)
 		       peerAddress().toString()).arg(peerPort()));
 	    }
 	}
+    }
+  else if(m_data.length() > s_maximumBufferedData)
+    {
+      spoton_misc::logError
+	(QString("spoton_neighbor::slotReadyRead(): "
+		 "the m_data container contains too much "
+		 "data (%1) that hasn't been processed. Purging.").
+	 arg(m_data.length()));
+      m_data.clear();
     }
 }
 
