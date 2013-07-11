@@ -38,6 +38,7 @@ Remaining Items
 5.     Prioritize keep-alive messages.
 6.     Use super-secure memory?
 7.     Allow for other ciphers besides AES for e-mail.
+8.     Can we establish session keys on the Echo?
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.

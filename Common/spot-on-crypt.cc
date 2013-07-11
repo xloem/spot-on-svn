@@ -1989,8 +1989,8 @@ void spoton_crypt::generatePrivatePublicKeys(const int rsaKeySize,
 	if(!privateKey.isEmpty())
 	  query.bindValue(1, encrypted(privateKey, &ok).toBase64());
 
-	if(!publicKey.isEmpty())
-	  if(ok)
+	if(ok)
+	  if(!publicKey.isEmpty())
 	    query.bindValue(2, encrypted(publicKey, &ok).toBase64());
 
 	if(ok)
@@ -2643,8 +2643,8 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize, QString &error)
 	    if(!privateKey.isEmpty())
 	      query.bindValue(1, encrypted(privateKey, &ok).toBase64());
 
-	    if(!publicKey.isEmpty())
-	      if(ok)
+	    if(ok)
+	      if(!publicKey.isEmpty())
 		query.bindValue(2, encrypted(publicKey, &ok).toBase64());
 
 	    if(ok)
