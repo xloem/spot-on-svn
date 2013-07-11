@@ -327,8 +327,8 @@ void spoton_misc::prepareDatabases(void)
 	   "is_encrypted INTEGER NOT NULL DEFAULT 0, "
 	   "private_key BLOB NOT NULL, "
 	   "public_key BLOB NOT NULL, "
-	   "maximum_buffer_size INTEGER NOT NULL DEFAULT 4194304, "
-	   "maximum_content_length INTEGER NOT NULL DEFAULT 4194304)");
+	   "maximum_buffer_size INTEGER NOT NULL DEFAULT 131072, "
+	   "maximum_content_length INTEGER NOT NULL DEFAULT 65536)");
       }
 
     db.close();

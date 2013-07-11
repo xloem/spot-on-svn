@@ -1638,7 +1638,10 @@ void spoton::slotPopulateNeighbors(void)
 		      "country, "
 		      "remote_ip_address, "
 		      "remote_port, scope_id, protocol, "
-		      "proxy_hostname, proxy_port, is_encrypted, OID "
+		      "proxy_hostname, proxy_port, "
+		      "maximum_buffer_size, "
+		      "maximum_content_length, "
+		      "is_encrypted, OID "
 		      "FROM neighbors"))
 	  {
 	    QString localIp("");

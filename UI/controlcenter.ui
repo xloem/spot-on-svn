@@ -78,7 +78,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1024</width>
-                <height>573</height>
+                <height>574</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1508,6 +1508,16 @@
               </column>
               <column>
                <property name="text">
+                <string>Max. Buffer Size</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Max. Content Length</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
                 <string>is_encrypted</string>
                </property>
               </column>
@@ -1703,28 +1713,6 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="1">
-                   <widget class="QComboBox" name="proxyType">
-                    <property name="sizeAdjustPolicy">
-                     <enum>QComboBox::AdjustToContents</enum>
-                    </property>
-                    <item>
-                     <property name="text">
-                      <string>HTTP</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>Socks5</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>System</string>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
                   <item row="1" column="0">
                    <widget class="QLabel" name="label_7">
                     <property name="text">
@@ -1745,16 +1733,6 @@
                     </property>
                     <property name="buddy">
                      <cstring>proxyPort</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="3">
-                   <widget class="QSpinBox" name="proxyPort">
-                    <property name="minimum">
-                     <number>1</number>
-                    </property>
-                    <property name="maximum">
-                     <number>65535</number>
                     </property>
                    </widget>
                   </item>
@@ -1790,6 +1768,72 @@
                      <enum>QLineEdit::Password</enum>
                     </property>
                    </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <layout class="QHBoxLayout" name="horizontalLayout_29">
+                    <item>
+                     <widget class="QComboBox" name="proxyType">
+                      <property name="sizeAdjustPolicy">
+                       <enum>QComboBox::AdjustToContents</enum>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>HTTP</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Socks5</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>System</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_28">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="1" column="3">
+                   <layout class="QHBoxLayout" name="horizontalLayout_39">
+                    <item>
+                     <widget class="QSpinBox" name="proxyPort">
+                      <property name="minimum">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <number>65535</number>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_29">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </widget>
@@ -2058,7 +2102,7 @@
              <x>0</x>
              <y>0</y>
              <width>1024</width>
-             <height>573</height>
+             <height>574</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3002,7 +3046,7 @@
      <x>0</x>
      <y>0</y>
      <width>1046</width>
-     <height>25</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
