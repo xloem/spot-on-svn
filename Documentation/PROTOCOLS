@@ -5,15 +5,15 @@ Echoed? Yes
 
 Message Type ("0000") (Plaintext)
 TTL (Plaintext)
-0 - Message (Base-64) (Gemini)
+0 - Message (Base-64) (Ciphertext, Gemini)
 EOL
-1 - Keyed Sha-512 Message Digest (Base-64) (Gemini)
+1 - Keyed Sha-512 Message Digest (Base-64) (Ciphertext, Gemini)
 
 Message Type ("0000") (Plaintext)
 TTL (Plaintext)
-0 - Symmetric Key (Base-64) (Ciphertext, PK, SK)
+0 - Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
-1 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK, SK)
+1 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
 EOL
 2 - Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
 EOL
@@ -103,15 +103,15 @@ Echoed? Yes
 
 Message Type ("0013") (Plaintext)
 TTL (Plaintext)
-0 - Message (Base-64) (Gemini)
+0 - Message (Base-64) (Ciphertext, Gemini)
 EOL
-1 - Keyed Sha-512 Message Digest (Base-64) (Gemini)
+1 - Keyed Sha-512 Message Digest (Base-64) (Ciphertext, Gemini)
 
 Message Type ("0013") (Plaintext)
 TTL (Plaintext)
-0 - Symmetric Key (Base-64) (Ciphertext, PK, SK)
+0 - Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
-1 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK, SK)
+1 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
 EOL
 2 - Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
 EOL
@@ -138,9 +138,9 @@ Echoed? Yes
 
 Message Type ("0020") (Plaintext)
 TTL (Plaintext)
-0 - Symmetric Key (Base-64) (Ciphertext, PK, SK)
+0 - Symmetric Key (Base-64) (Ciphertext, PK)
 EOL
-1 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK, SK)
+1 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
 EOL
 2 - URL-1 (Base-64) (Ciphertext, SK)
 EOL

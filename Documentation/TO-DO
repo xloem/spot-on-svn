@@ -37,6 +37,7 @@ Remaining Items
 4.     Echo proxy?
 5.     Prioritize keep-alive messages.
 6.     Use super-secure memory?
+7.     Allow for other ciphers besides AES for e-mail.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.
