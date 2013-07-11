@@ -414,7 +414,9 @@ void spoton_crypt::reencodeRSAKeys(const QString &newCipher,
 
       if((err = gcry_cipher_open(&cipherHandle, algorithm,
 				 GCRY_CIPHER_MODE_CBC,
-				 GCRY_CIPHER_CBC_CTS)) != 0 || !cipherHandle)
+				 GCRY_CIPHER_CBC_CTS |
+				 GCRY_CIPHER_SECURE)) != 0 ||
+	 !cipherHandle)
 	{
 	  if(err != 0)
 	    {
@@ -767,8 +769,9 @@ spoton_crypt::spoton_crypt(const QString &id)
 	{
 	  if((err = gcry_cipher_open(&m_cipherHandle, m_cipherAlgorithm,
 				     GCRY_CIPHER_MODE_CBC,
-				     GCRY_CIPHER_CBC_CTS))
-	     != 0 || !m_cipherAlgorithm)
+				     GCRY_CIPHER_CBC_CTS |
+				     GCRY_CIPHER_SECURE)) != 0 ||
+	     !m_cipherAlgorithm)
 	    {
 	      if(err != 0)
 		spoton_misc::logError
@@ -881,8 +884,9 @@ spoton_crypt::spoton_crypt(const QString &cipherType,
 	{
 	  if((err = gcry_cipher_open(&m_cipherHandle, m_cipherAlgorithm,
 				     GCRY_CIPHER_MODE_CBC,
-				     GCRY_CIPHER_CBC_CTS))
-	     != 0 || !m_cipherAlgorithm)
+				     GCRY_CIPHER_CBC_CTS |
+				     GCRY_CIPHER_SECURE)) != 0 ||
+	     !m_cipherAlgorithm)
 	    {
 	      if(err != 0)
 		spoton_misc::logError
