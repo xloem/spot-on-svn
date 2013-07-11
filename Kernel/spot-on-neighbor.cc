@@ -53,8 +53,8 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 QObject *parent):QSslSocket(parent)
 {
   m_isUserDefined = false;
-  m_maximumBufferSize = 4194304; // 2 ^ 22
-  m_maximumContentLength = 4194304; // 2 ^ 22
+  m_maximumBufferSize = 131072; // 2 ^ 17
+  m_maximumContentLength = 65536; // 2 ^ 16
 
   if(certificate.isEmpty() || privateKey.isEmpty())
     m_useSsl = false;
