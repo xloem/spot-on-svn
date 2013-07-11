@@ -45,8 +45,6 @@
 #include "spot-on-kernel.h"
 #include "spot-on-neighbor.h"
 
-int spoton_neighbor::s_maximumBufferedData = 4194304; // 2 ^ 22
-int spoton_neighbor::s_maximumContentLength = 4194304; // 2 ^ 22
 qint64 spoton_neighbor::s_dbId = 0;
 
 spoton_neighbor::spoton_neighbor(const int socketDescriptor,
@@ -55,6 +53,8 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 QObject *parent):QSslSocket(parent)
 {
   m_isUserDefined = false;
+  m_maximumBufferSize = 4194304; // 2 ^ 22
+  m_maximumContentLength = 4194304; // 2 ^ 22
 
   if(certificate.isEmpty() || privateKey.isEmpty())
     m_useSsl = false;
@@ -91,7 +91,11 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_address = peerAddress();
   m_ipAddress = m_address.toString();
   m_externalAddress = new spoton_external_address(this);
-  m_id = s_dbId; // This neighbor was created by a listener.
+  m_id = -1; /*
+	     ** This neighbor was created by a listener. We must
+	     ** have a valid id at some point (setId()). If not,
+	     ** we're deep in the hole.
+	     */
   m_lastReadTime = QDateTime::currentDateTime();
   m_networkInterface = 0;
   m_port = peerPort();
@@ -158,9 +162,13 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const qint64 id,
 				 const bool userDefined,
 				 const QByteArray &privateKey,
+				 const int maximumBufferSize,
+				 const int maximumContentLength,
 				 QObject *parent):QSslSocket(parent)
 {
   m_isUserDefined = userDefined;
+  m_maximumBufferSize = maximumBufferSize;
+  m_maximumContentLength = maximumContentLength;
   m_useSsl = true;
   s_dbId += 1;
   setProxy(proxy);
@@ -274,73 +282,82 @@ spoton_neighbor::~spoton_neighbor()
      arg(m_port));
   m_timer.stop();
 
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
+  if(m_id != -1)
+    {
+      /*
+      ** We must not delete accepted participants (neighbor_oid = -1).
+      */
 
-    db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() +
-       "friends_public_keys.db");
-
-    if(db.open())
       {
-	/*
-	** Remove symmetric keys that were not completely shared.
-	*/
+	QSqlDatabase db = QSqlDatabase::addDatabase
+	  ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
 
-	QSqlQuery query(db);
+	db.setDatabaseName
+	  (spoton_misc::homePath() + QDir::separator() +
+	   "friends_public_keys.db");
 
-	query.prepare("DELETE FROM friends_public_keys WHERE "
-		      "neighbor_oid = ?");
-	query.bindValue(0, m_id);
-	query.exec();
-	spoton_misc::purgeSignatureRelationships(db);
+	if(db.open())
+	  {
+	    /*
+	    ** Remove symmetric keys that were not completely shared.
+	    */
+
+	    QSqlQuery query(db);
+
+	    query.prepare("DELETE FROM friends_public_keys WHERE "
+			  "neighbor_oid = ?");
+	    query.bindValue(0, m_id);
+	    query.exec();
+	    spoton_misc::purgeSignatureRelationships(db);
+	  }
+
+	db.close();
       }
 
-    db.close();
-  }
+      QSqlDatabase::removeDatabase
+	("spoton_neighbor_" + QString::number(s_dbId));
 
-  QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
-
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
-
-    db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
-
-    if(db.open())
       {
-	QSqlQuery query(db);
+	QSqlDatabase db = QSqlDatabase::addDatabase
+	  ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
 
-	query.prepare("DELETE FROM neighbors WHERE "
-		      "OID = ? AND status_control = 'deleted'");
-	query.bindValue(0, m_id);
-	query.exec();
+	db.setDatabaseName
+	  (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
 
-	if(spoton_kernel::s_settings.
-	   value("gui/keepOnlyUserDefinedNeighbors", false).toBool())
+	if(db.open())
 	  {
+	    QSqlQuery query(db);
+
 	    query.prepare("DELETE FROM neighbors WHERE "
-			  "OID = ? AND status_control <> 'blocked' AND "
-			  "user_defined = 0");
+			  "OID = ? AND status_control = 'deleted'");
+	    query.bindValue(0, m_id);
+	    query.exec();
+
+	    if(spoton_kernel::s_settings.
+	       value("gui/keepOnlyUserDefinedNeighbors", false).toBool())
+	      {
+		query.prepare("DELETE FROM neighbors WHERE "
+			      "OID = ? AND status_control <> 'blocked' AND "
+			      "user_defined = 0");
+		query.bindValue(0, m_id);
+		query.exec();
+	      }
+
+	    query.prepare("UPDATE neighbors SET external_ip_address = NULL, "
+			  "is_encrypted = 0, "
+			  "local_ip_address = NULL, "
+			  "local_port = NULL, status = 'disconnected' "
+			  "WHERE OID = ?");
 	    query.bindValue(0, m_id);
 	    query.exec();
 	  }
 
-	query.prepare("UPDATE neighbors SET external_ip_address = NULL, "
-		      "is_encrypted = 0, "
-		      "local_ip_address = NULL, "
-		      "local_port = NULL, status = 'disconnected' "
-		      "WHERE OID = ?");
-	query.bindValue(0, m_id);
-	query.exec();
+	db.close();
       }
 
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase("spoton_neighbor_" + QString::number(s_dbId));
+      QSqlDatabase::removeDatabase
+	("spoton_neighbor_" + QString::number(s_dbId));
+    }
 
   if(m_networkInterface)
     delete m_networkInterface;
@@ -457,6 +474,9 @@ void spoton_neighbor::slotTimeout(void)
 
 void spoton_neighbor::saveEncryptedStatus(void)
 {
+  if(m_id == -1)
+    return;
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
       ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
@@ -486,6 +506,9 @@ void spoton_neighbor::saveEncryptedStatus(void)
 void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 				 const QString &status)
 {
+  if(m_id == -1)
+    return;
+
   QSqlQuery query(db);
 
   query.prepare("UPDATE neighbors SET is_encrypted = ?, status = ? "
@@ -550,7 +573,7 @@ void spoton_neighbor::slotReadyRead(void)
 	      ("spoton_neighbor::slotReadyRead() "
 	       "data does not contain Content-Length.");
 
-	  if(length >= s_maximumContentLength)
+	  if(length >= m_maximumContentLength)
 	    spoton_misc::logError
 	      (QString("spoton_neighbor::slotReadyRead(): "
 		       "the Content-Length header from node %1:%2 "
@@ -601,7 +624,7 @@ void spoton_neighbor::slotReadyRead(void)
 	    }
 	}
     }
-  else if(m_data.length() > s_maximumBufferedData)
+  else if(m_data.length() > m_maximumBufferSize)
     {
       spoton_misc::logError
 	(QString("spoton_neighbor::slotReadyRead(): "
@@ -630,54 +653,58 @@ void spoton_neighbor::slotConnected(void)
 	setLocalAddress(QHostAddress("::1"));
     }
 
-  spoton_crypt *s_crypt = 0;
-
-  if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt = spoton_kernel::s_crypts["messaging"];
-
-  if(s_crypt)
+  if(m_id != -1)
     {
-      {
-	QSqlDatabase db = QSqlDatabase::addDatabase
-	  ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
+      spoton_crypt *s_crypt = 0;
 
-	db.setDatabaseName
-	  (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
+      if(spoton_kernel::s_crypts.contains("messaging"))
+	s_crypt = spoton_kernel::s_crypts["messaging"];
 
-	if(db.open())
+      if(s_crypt)
+	{
 	  {
-	    QSqlQuery query(db);
-	    QString country
-	      (spoton_misc::
-	       countryNameFromIPAddress(peerAddress().isNull() ?
-					peerName() :
-					peerAddress().toString()));
-	    bool ok = true;
+	    QSqlDatabase db = QSqlDatabase::addDatabase
+	      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
 
-	    query.prepare("UPDATE neighbors SET country = ?, "
-			  "is_encrypted = ?, "
-			  "local_ip_address = ?, "
-			  "local_port = ?, qt_country_hash = ?, "
-			  "status = 'connected' "
-			  "WHERE OID = ?");
-	    query.bindValue(0, s_crypt->
-			    encrypted(country.toLatin1(), &ok).toBase64());
-	    query.bindValue(1, isEncrypted() ? 1 : 0);
-	    query.bindValue(2, localAddress().toString());
-	    query.bindValue(3, localPort());
-	    query.bindValue
-	      (4, s_crypt->keyedHash(country.remove(" ").
-				     toLatin1(), &ok).
-	       toBase64());
-	    query.bindValue(5, m_id);
-	    query.exec();
+	    db.setDatabaseName
+	      (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
+
+	    if(db.open())
+	      {
+		QSqlQuery query(db);
+		QString country
+		  (spoton_misc::
+		   countryNameFromIPAddress(peerAddress().isNull() ?
+					    peerName() :
+					    peerAddress().toString()));
+		bool ok = true;
+
+		query.prepare("UPDATE neighbors SET country = ?, "
+			      "is_encrypted = ?, "
+			      "local_ip_address = ?, "
+			      "local_port = ?, qt_country_hash = ?, "
+			      "status = 'connected' "
+			      "WHERE OID = ?");
+		query.bindValue
+		  (0, s_crypt->
+		   encrypted(country.toLatin1(), &ok).toBase64());
+		query.bindValue(1, isEncrypted() ? 1 : 0);
+		query.bindValue(2, localAddress().toString());
+		query.bindValue(3, localPort());
+		query.bindValue
+		  (4, s_crypt->keyedHash(country.remove(" ").
+					 toLatin1(), &ok).
+		   toBase64());
+		query.bindValue(5, m_id);
+		query.exec();
+	      }
+
+	    db.close();
 	  }
 
-	db.close();
-      }
-
-      QSqlDatabase::removeDatabase
-	("spoton_neighbor_" + QString::number(s_dbId));
+	  QSqlDatabase::removeDatabase
+	    ("spoton_neighbor_" + QString::number(s_dbId));
+	}
     }
 
   /*
@@ -948,7 +975,9 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
 				     const QByteArray &sPublicKey,
 				     const QByteArray &sSignature)
 {
-  if(readyToWrite())
+  if(m_id == -1)
+    return;
+  else if(!readyToWrite())
     return;
 
   QByteArray message;
@@ -1700,9 +1729,15 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      savePublicKey
-	(list.at(0), list.at(1), list.at(2), list.at(3), list.at(4),
-	 list.at(5), m_id);
+      if(m_id != -1)
+	savePublicKey
+	  (list.at(0), list.at(1), list.at(2), list.at(3), list.at(4),
+	   list.at(5), m_id);
+      else
+	spoton_misc::logError("spoton_neighbor::process0011(): "
+			      "m_id equals negative one. "
+			      "Calling savePublicKey() would be "
+			      "problematic. Ignoring request.");
     }
   else
     spoton_misc::logError
@@ -1965,6 +2000,9 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
 {
+  if(m_id == -1)
+    return;
+
   length -= strlen("type=0014&content=");
 
   /*
@@ -2316,6 +2354,8 @@ void spoton_neighbor::saveExternalAddress(const QHostAddress &address,
 					  const QSqlDatabase &db)
 {
   if(!db.isOpen())
+    return;
+  else if(m_id == -1)
     return;
 
   QAbstractSocket::SocketState state = this->state();

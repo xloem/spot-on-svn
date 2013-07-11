@@ -542,7 +542,9 @@ void spoton_kernel::prepareNeighbors(void)
 	if(query.exec("SELECT remote_ip_address, remote_port, scope_id, "
 		      "status_control, proxy_hostname, proxy_password, "
 		      "proxy_port, proxy_type, proxy_username, "
-		      "user_defined, private_key, OID FROM neighbors"))
+		      "user_defined, private_key, "
+		      "maximum_buffer_size, maximum_content_length, "
+		      "OID FROM neighbors"))
 	  while(query.next())
 	    {
 	      QPointer<spoton_neighbor> neighbor = 0;
@@ -553,16 +555,19 @@ void spoton_kernel::prepareNeighbors(void)
 		{
 		  if(!m_neighbors.contains(id))
 		    {
-		      QList<QByteArray> list;
+		      QList<QVariant> list;
 		      bool userDefined = query.value
 			(query.record().indexOf("user_defined")).toBool();
 
 		      for(int i = 0; i < query.record().count() - 1; i++)
 			if(i == 3) // Status Control
 			  list.append("connected");
-			else if(i == 9)
+			else if(i == 9) // User Defined?
+			  list.append(userDefined);
+			else if(i == 11 || // Maximum Buffer Size
+				i == 12)   // Maximum Content Length)
 			  list.append
-			    (QString::number(userDefined).toLatin1());
+			    (query.value(i).toInt());
 			else
 			  {
 			    QByteArray bytes;
@@ -601,16 +606,20 @@ void spoton_kernel::prepareNeighbors(void)
 			      proxy.setCapabilities
 				(QNetworkProxy::HostNameLookupCapability |
 				 QNetworkProxy::TunnelingCapability);
-			      proxy.setHostName(list.at(4));
-			      proxy.setPassword(list.at(5));
-			      proxy.setPort(list.at(6).toUShort());
+			      proxy.setHostName(list.at(4).toByteArray().
+						constData());
+			      proxy.setPassword(list.at(5).toByteArray().
+						constData());
+			      proxy.setPort(list.at(6).toByteArray().
+					    toUShort());
 
 			      if(list.at(7) == "HTTP")
 				proxy.setType(QNetworkProxy::HttpProxy);
 			      else
 				proxy.setType(QNetworkProxy::Socks5Proxy);
 
-			      proxy.setUser(list.at(8));
+			      proxy.setUser(list.at(8).toByteArray().
+					    constData());
 			    }
 			  else if(list.at(7) == "System")
 			    {
@@ -626,8 +635,10 @@ void spoton_kernel::prepareNeighbors(void)
 			      if(!proxies.isEmpty())
 				{
 				  proxy = proxies.at(0);
-				  proxy.setPassword(list.at(5));
-				  proxy.setUser(list.at(8));
+				  proxy.setPassword(list.at(5).toByteArray().
+						    constData());
+				  proxy.setUser(list.at(8).toByteArray().
+						constData());
 				}
 			    }
 			  else
@@ -635,12 +646,14 @@ void spoton_kernel::prepareNeighbors(void)
 
 			  neighbor = new spoton_neighbor
 			    (proxy,
-			     list.at(0).constData(),
-			     list.at(1).constData(),
-			     list.at(2).constData(),
+			     list.at(0).toByteArray().constData(),
+			     list.at(1).toByteArray().constData(),
+			     list.at(2).toByteArray().constData(),
 			     id,
 			     userDefined,
-			     list.at(10),
+			     list.at(10).toByteArray(),
+			     list.at(11).toInt(),
+			     list.at(12).toInt(),
 			     this);
 			}
 

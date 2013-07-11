@@ -46,8 +46,6 @@ class spoton_neighbor: public QSslSocket
   Q_OBJECT
 
  public:
-  static int s_maximumBufferedData;
-  static int s_maximumContentLength;
   static qint64 s_dbId;
   spoton_neighbor(const QNetworkProxy &proxy,
 		  const QString &ipAddress,
@@ -56,6 +54,8 @@ class spoton_neighbor: public QSslSocket
 		  const qint64 id,
 		  const bool userDefined,
 		  const QByteArray &privateKey,
+		  const int maximumBufferSize,
+		  const int maximumContentLength,
 		  QObject *parent);
   spoton_neighbor(const int socketDescriptor,
 		  const QByteArray &certificate,
@@ -85,6 +85,8 @@ class spoton_neighbor: public QSslSocket
   QUuid m_receivedUuid;
   bool m_isUserDefined;
   bool m_useSsl;
+  int m_maximumBufferSize;
+  int m_maximumContentLength;
   qint64 m_id;
   quint16 m_port;
   spoton_external_address *m_externalAddress;
