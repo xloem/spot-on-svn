@@ -860,7 +860,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 
 	if(ok)
 	  {
-	    QByteArray messageDigest
+	    QByteArray messageCode
 	      (crypt.keyedHash(symmetricKey +
 			       symmetricKeyAlgorithm +
 			       myPublicKeyHash +
@@ -869,14 +869,14 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 			       &ok));
 
 	    if(ok)
-	      data.append(crypt.encrypted(messageDigest, &ok).toBase64());
+	      data.append(crypt.encrypted(messageCode, &ok).toBase64());
 	  }
       }
 
       if(ok)
 	if(!gemini.isEmpty())
 	  {
-	    QByteArray messageDigest;
+	    QByteArray messageCode;
 	    spoton_crypt crypt("aes256",
 			       QString("sha512"),
 			       QByteArray(),
@@ -885,7 +885,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 			       0,
 			       QString(""));
 
-	    messageDigest = crypt.keyedHash(data, &ok);
+	    messageCode = crypt.keyedHash(data, &ok);
 
 	    if(ok)
 	      {
@@ -894,7 +894,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 	      }
 
 	    if(ok)
-	      data.append(crypt.encrypted(messageDigest, &ok).
+	      data.append(crypt.encrypted(messageCode, &ok).
 			  toBase64());
 	  }
 
@@ -1283,7 +1283,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 		    if(ok)
 		      {
-			QByteArray messageDigest
+			QByteArray messageCode
 			  (crypt.keyedHash(symmetricKey +
 					   symmetricKeyAlgorithm +
 					   myPublicKeyHash +
@@ -1293,14 +1293,14 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 			if(ok)
 			  data.append
-			    (crypt.encrypted(messageDigest, &ok).toBase64());
+			    (crypt.encrypted(messageCode, &ok).toBase64());
 		      }
 		  }
 
 		  if(ok)
 		    if(!gemini.isEmpty())
 		      {
-			QByteArray messageDigest;
+			QByteArray messageCode;
 			spoton_crypt crypt("aes256",
 					   QString("sha512"),
 					   QByteArray(),
@@ -1309,7 +1309,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 					   0,
 					   QString(""));
 
-			messageDigest = crypt.keyedHash(data, &ok);
+			messageCode = crypt.keyedHash(data, &ok);
 
 			if(ok)
 			  {
@@ -1318,7 +1318,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 			  }
 
 			if(ok)
-			  data.append(crypt.encrypted(messageDigest, &ok).
+			  data.append(crypt.encrypted(messageCode, &ok).
 				      toBase64());
 		      }
 
@@ -1347,7 +1347,7 @@ void spoton_kernel::slotScramble(void)
 {
   QByteArray data;
   QByteArray message(qrand() % 1024 + 512, 0);
-  QByteArray messageDigest;
+  QByteArray messageCode;
   QByteArray symmetricKey;
   QByteArray symmetricKeyAlgorithm(spoton_crypt::randomCipherType());
   bool ok = true;
@@ -1373,7 +1373,7 @@ void spoton_kernel::slotScramble(void)
 			 0,
 			 QString(""));
 
-      messageDigest = crypt.keyedHash(message, &ok);
+      messageCode = crypt.keyedHash(message, &ok);
 
       if(ok)
 	{
@@ -1382,7 +1382,7 @@ void spoton_kernel::slotScramble(void)
 	}
 
       if(ok)
-	data.append(crypt.encrypted(messageDigest, &ok).toBase64());
+	data.append(crypt.encrypted(messageCode, &ok).toBase64());
     }
 
   if(ok)
@@ -1507,7 +1507,7 @@ void spoton_kernel::slotRetrieveMail(void)
 
 	      if(ok)
 		{
-		  QByteArray messageDigest;
+		  QByteArray messageCode;
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
 				     QString("sha512"),
 				     QByteArray(),
@@ -1516,7 +1516,7 @@ void spoton_kernel::slotRetrieveMail(void)
 				     0,
 				     QString(""));
 
-		  messageDigest = crypt.keyedHash
+		  messageCode = crypt.keyedHash
 		    (symmetricKey +
 		     symmetricKeyAlgorithm +
 		     myPublicKeyHash,
@@ -1524,7 +1524,7 @@ void spoton_kernel::slotRetrieveMail(void)
 
 		  if(ok)
 		    signature = s_crypt->digitalSignature
-		      (messageDigest, &ok);
+		      (messageCode, &ok);
 
 		  if(ok)
 		    {
@@ -1534,14 +1534,14 @@ void spoton_kernel::slotRetrieveMail(void)
 		    }
 
 		  if(ok)
-		    messageDigest = crypt.keyedHash
+		    messageCode = crypt.keyedHash
 		      (symmetricKey +
 		       symmetricKeyAlgorithm +
 		       myPublicKeyHash +
 		       signature, &ok);
 
 		  if(ok)
-		    data.append(crypt.encrypted(messageDigest, &ok).
+		    data.append(crypt.encrypted(messageCode, &ok).
 				toBase64());
 		}
 
@@ -1744,7 +1744,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	      if(ok)
 		{
-		  QByteArray messageDigest;
+		  QByteArray messageCode;
 		  spoton_crypt *crypt = 0;
 
 		  /*
@@ -1788,7 +1788,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		  if(ok)
 		    {
 		      if(goldbug.isEmpty())
-			messageDigest = crypt->keyedHash
+			messageCode = crypt->keyedHash
 			  (symmetricKey +
 			   symmetricKeyAlgorithm +
 			   myPublicKeyHash +
@@ -1796,7 +1796,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 			   subject +
 			   message, &ok);
 		      else
-			messageDigest = crypt->keyedHash
+			messageCode = crypt->keyedHash
 			  (goldbug +
 			   "aes256" +
 			   myPublicKeyHash +
@@ -1806,7 +1806,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		    }
 
 		  if(ok)
-		    data.append(crypt->encrypted(messageDigest, &ok).
+		    data.append(crypt->encrypted(messageCode, &ok).
 				toBase64());
 
 		  delete crypt;

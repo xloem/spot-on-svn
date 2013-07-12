@@ -116,11 +116,11 @@ void spoton_misc::prepareDatabases(void)
 					  ** the subject.
 					  */
 		   "message BLOB NOT NULL, "
-		   "message_digest TEXT NOT NULL, " /*
-						    ** Should only be used
-						    ** when a goldbug is
-						    ** provided.
-						    */
+		   "message_code TEXT NOT NULL, " /*
+						  ** Should only be used
+						  ** when a goldbug is
+						  ** provided.
+						  */
 		   "participant_oid TEXT NOT NULL, "
 		   "receiver_sender TEXT NOT NULL, "
 		   "receiver_sender_hash TEXT NOT NULL, " /*

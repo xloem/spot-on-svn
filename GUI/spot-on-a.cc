@@ -735,7 +735,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.emailParticipants->setColumnHidden(2, true); // public_key_hash
   m_ui.mail->setColumnHidden(4, true); // goldbug
   m_ui.mail->setColumnHidden(5, true); // message
-  m_ui.mail->setColumnHidden(6, true); // message_digest
+  m_ui.mail->setColumnHidden(6, true); // message_code
   m_ui.mail->setColumnHidden(7, true); // receiver_sender_hash
   m_ui.mail->setColumnHidden(8, true); // OID
   m_ui.listeners->setColumnHidden(m_ui.listeners->columnCount() - 1,

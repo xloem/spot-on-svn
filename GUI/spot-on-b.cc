@@ -1887,7 +1887,7 @@ void spoton::slotSendMail(void)
 
 	    query.prepare("INSERT INTO folders "
 			  "(date, folder_index, goldbug, hash, "
-			  "message, message_digest, "
+			  "message, message_code, "
 			  "receiver_sender, receiver_sender_hash, "
 			  "status, subject, participant_oid) "
 			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -2096,7 +2096,7 @@ void spoton::slotRefreshMail(void)
 
 	if(query.exec(QString("SELECT date, receiver_sender, status, "
 			      "subject, goldbug, "
-			      "message, message_digest, "
+			      "message, message_code, "
 			      "receiver_sender_hash, "
 			      "OID FROM folders WHERE "
 			      "folder_index = %1").
@@ -2289,10 +2289,10 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
 
 	int rc = applyGoldbugToInboxLetter(goldbug.toUtf8(), row);
 
-	if(rc == APPLY_GOLDBUG_TO_INBOX_ERROR_CORRUPT_MESSAGE_DIGEST)
+	if(rc == APPLY_GOLDBUG_TO_INBOX_ERROR_CORRUPT_MESSAGE_CODE)
 	  {
 	    QMessageBox::critical(this, tr("Spot-On: Error"),
-				  tr("The message's digest is incorrect."));
+				  tr("The message's code is incorrect."));
 	    return;
 	  }
 	else if(rc == APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL)
@@ -2934,7 +2934,7 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 	QList<QByteArray> list;
 	QSqlQuery query(db);
 
-	query.prepare("SELECT date, message, message_digest, "
+	query.prepare("SELECT date, message, message_code, "
 		      "receiver_sender, receiver_sender_hash, "
 		      "subject FROM folders "
 		      "WHERE OID = ?");
@@ -2987,9 +2987,9 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 
 	    if(ok)
 	      {
-		QByteArray computedMessageDigest;
+		QByteArray computedMessageCode;
 
-		computedMessageDigest =
+		computedMessageCode =
 		  crypt.keyedHash(goldbug +
 				  "aes256" +
 				  list.value(4) + // receiver_sender_hash
@@ -2998,13 +2998,13 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 				  list.value(1),  // message
 				  &ok);
 
-		if(computedMessageDigest != list.value(2))
+		if(computedMessageCode != list.value(2))
 		  {
-		    rc = APPLY_GOLDBUG_TO_INBOX_ERROR_CORRUPT_MESSAGE_DIGEST;
+		    rc = APPLY_GOLDBUG_TO_INBOX_ERROR_CORRUPT_MESSAGE_CODE;
 		    spoton_misc::logError
 		      ("spoton::applyGoldbugToInboxLetter(): "
-		       "computed message digest does "
-		       "not match provided digest.");
+		       "computed message code does "
+		       "not match provided code.");
 		    ok = false;
 		  }
 	      }
@@ -3015,7 +3015,7 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 	    /*
 	    ** list[0]: date
 	    ** list[1]: message
-	    ** list[2]: message_digest
+	    ** list[2]: message_code
 	    ** list[3]: receiver_sender
 	    ** list[4]: receiver_sender_hash
 	    ** list[5]: subject
@@ -3025,7 +3025,7 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 			  "goldbug = ?, "
 			  "hash = ?, "
 			  "message = ?, "
-			  "message_digest = ?, "
+			  "message_code = ?, "
 			  "receiver_sender = ?, "
 			  "subject = ? "
 			  "WHERE OID = ?");

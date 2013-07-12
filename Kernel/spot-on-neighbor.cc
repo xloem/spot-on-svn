@@ -1090,9 +1090,9 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 
 	  if(!gemini.isEmpty())
 	    {
-	      QByteArray computedMessageDigest;
+	      QByteArray computedMessageCode;
 	      QByteArray message(list.at(0));
-	      QByteArray messageDigest(list.at(1));
+	      QByteArray messageCode(list.at(1));
 	      spoton_crypt crypt("aes256",
 				 QString("sha512"),
 				 QByteArray(),
@@ -1104,14 +1104,14 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	      message = crypt.decrypted(message, &ok);
 
 	      if(ok)
-		messageDigest = crypt.decrypted(messageDigest, &ok);
+		messageCode = crypt.decrypted(messageCode, &ok);
 
 	      if(ok)
-		computedMessageDigest = crypt.keyedHash(message, &ok);
+		computedMessageCode = crypt.keyedHash(message, &ok);
 
 	      if(ok)
 		{
-		  if(computedMessageDigest == messageDigest)
+		  if(computedMessageCode == messageCode)
 		    {
 		      list = message.split('\n');
 
@@ -1127,8 +1127,8 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 		    }
 		  else
 		    spoton_misc::logError("spoton_neighbor::process0000(): "
-					  "computed message digest does "
-					  "not match provided digest.");
+					  "computed message code does "
+					  "not match provided code.");
 		}
 	    }
 	}
@@ -1146,7 +1146,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
       QByteArray message(list.value(4));
-      QByteArray messageDigest(list.value(5));
+      QByteArray messageCode(list.value(5));
       QByteArray name(list.value(3));
       QByteArray publicKeyHash(list.value(2));
       QByteArray symmetricKey(list.value(0));
@@ -1179,14 +1179,14 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	    publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
 
 	  if(ok)
-	    messageDigest = crypt.decrypted(messageDigest, &ok);
+	    messageCode = crypt.decrypted(messageCode, &ok);
 	}
 
       if(ok)
 	{
 	  if(spoton_misc::isAcceptedParticipant(publicKeyHash))
 	    {
-	      QByteArray computedMessageDigest
+	      QByteArray computedMessageCode
 		(spoton_crypt::keyedHash(symmetricKey +
 					 symmetricKeyAlgorithm +
 					 publicKeyHash +
@@ -1197,13 +1197,13 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 					 &ok));
 
 	      /*
-	      ** Let's not echo messages whose message digests
+	      ** Let's not echo messages whose message codes
 	      ** are incompatible.
 	      */
 
 	      if(ok)
 		{
-		  if(computedMessageDigest == messageDigest)
+		  if(computedMessageCode == messageCode)
 		    {
 		      QByteArray hash
 			(s_crypt->
@@ -1222,8 +1222,8 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 		    }
 		  else
 		    spoton_misc::logError("spoton_neighbor::process0000(): "
-					  "computed message digest does "
-					  "not match provided digest.");
+					  "computed message code does "
+					  "not match provided code.");
 		}
 	    }
 	}
@@ -1316,7 +1316,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
       QByteArray message(list.value(9));
-      QByteArray messageDigest(list.value(10));
+      QByteArray messageCode(list.value(10));
       QByteArray name(list.value(7));
       QByteArray recipientHash(list.value(3));
       QByteArray senderPublicKeyHash1(list.value(2));
@@ -1375,7 +1375,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 			name,
 			subject,
 			message,
-			messageDigest,
+			messageCode,
 			"0001a");
 	    return;
 	  }
@@ -1475,7 +1475,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
       QByteArray message(list.value(5));
-      QByteArray messageDigest(list.value(6));
+      QByteArray messageCode(list.value(6));
       QByteArray name(list.value(3));
       QByteArray publicKeyHash(list.value(2));
       QByteArray subject(list.value(4));
@@ -1506,7 +1506,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 		    name,
 		    subject,
 		    message,
-		    messageDigest,
+		    messageCode,
 		    "0001b");
 
       if(ttl > 0)
@@ -1596,7 +1596,7 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
       ** we retrieve the letters in a timely, yet functional, manner?
       */
 
-      QByteArray messageDigest(list.at(4));
+      QByteArray messageCode(list.at(4));
       QByteArray publicKeyHash(list.at(2));
       QByteArray signature(list.at(3));
       QByteArray symmetricKey(list.at(0));
@@ -1627,12 +1627,12 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 	  signature = crypt.decrypted(signature, &ok);
 
 	  if(ok)
-	    messageDigest = crypt.decrypted(messageDigest, &ok);
+	    messageCode = crypt.decrypted(messageCode, &ok);
 	}
 
       if(ok)
 	{
-	  QByteArray computedMessageDigest
+	  QByteArray computedMessageCode
 	    (spoton_crypt::keyedHash(symmetricKey +
 				     symmetricKeyAlgorithm +
 				     publicKeyHash +
@@ -1642,15 +1642,15 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 				     &ok));
 
 	  /*
-	  ** Let's not echo messages whose message digests are
+	  ** Let's not echo messages whose message codes are
 	  ** incompatible.
 	  */
 
 	  if(ok)
 	    {
-	      if(computedMessageDigest == messageDigest)
+	      if(computedMessageCode == messageCode)
 		{
-		  QByteArray messageDigest
+		  QByteArray messageCode
 		    (spoton_crypt::keyedHash(symmetricKey +
 					     symmetricKeyAlgorithm +
 					     publicKeyHash,
@@ -1660,13 +1660,13 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 
 		  if(ok)
 		    emit retrieveMail
-		      (messageDigest,
+		      (messageCode,
 		       publicKeyHash, signature);
 		}
 	      else
 		spoton_misc::logError("spoton_neighbor::process0002(): "
-				      "computed message digest does "
-				      "not match provided digest.");
+				      "computed message code does "
+				      "not match provided code.");
 	    }
 	}
 
@@ -1848,9 +1848,9 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 
 	  if(!gemini.isEmpty())
 	    {
-	      QByteArray computedMessageDigest;
+	      QByteArray computedMessageCode;
 	      QByteArray message(list.at(0));
-	      QByteArray messageDigest(list.at(1));
+	      QByteArray messageCode(list.at(1));
 	      spoton_crypt crypt("aes256",
 				 QString("sha512"),
 				 QByteArray(),
@@ -1862,14 +1862,14 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	      message = crypt.decrypted(message, &ok);
 
 	      if(ok)
-		messageDigest = crypt.decrypted(messageDigest, &ok);
+		messageCode = crypt.decrypted(messageCode, &ok);
 
 	      if(ok)
-		computedMessageDigest = crypt.keyedHash(message, &ok);
+		computedMessageCode = crypt.keyedHash(message, &ok);
 
 	      if(ok)
 		{
-		  if(computedMessageDigest == messageDigest)
+		  if(computedMessageCode == messageCode)
 		    {
 		      list = message.split('\n');
 
@@ -1885,8 +1885,8 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 		    }
 		  else
 		    spoton_misc::logError("spoton_neighbor::process0013(): "
-					  "computed message digest does "
-					  "not match provided digest.");
+					  "computed message code does "
+					  "not match provided code.");
 		}
 	    }
 	}
@@ -1903,7 +1903,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      QByteArray messageDigest(list.value(5));
+      QByteArray messageCode(list.value(5));
       QByteArray name(list.value(3));
       QByteArray publicKeyHash(list.value(2));
       QByteArray status(list.value(4));
@@ -1937,12 +1937,12 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	    status = crypt.decrypted(status, &ok);
 
 	  if(ok)
-	    messageDigest = crypt.decrypted(messageDigest, &ok);
+	    messageCode = crypt.decrypted(messageCode, &ok);
 	}
 
       if(ok)
 	{
-	  QByteArray computedMessageDigest
+	  QByteArray computedMessageCode
 	    (spoton_crypt::keyedHash(symmetricKey +
 				     symmetricKeyAlgorithm +
 				     publicKeyHash +
@@ -1953,21 +1953,21 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 				     &ok));
 
 	  /*
-	  ** Let's not echo messages whose message digests are
+	  ** Let's not echo messages whose message codes are
 	  ** incompatible.
 	  */
 
 	  if(ok)
 	    {
-	      if(computedMessageDigest == messageDigest)
+	      if(computedMessageCode == messageCode)
 		{
 		  if(spoton_misc::isAcceptedParticipant(publicKeyHash))
 		    saveParticipantStatus(name, publicKeyHash, status);
 		}
 	      else
 		spoton_misc::logError("spoton_neighbor::process0013(): "
-				      "computed message digest does "
-				      "not match provided digest.");
+				      "computed message code does "
+				      "not match provided code.");
 	    }
 	}
 
@@ -2510,7 +2510,7 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 				  QByteArray &name,
 				  QByteArray &subject,
 				  QByteArray &message,
-				  QByteArray &messageDigest,
+				  QByteArray &messageCode,
 				  const QString &messageType)
 {
   spoton_crypt *s_crypt = 0;
@@ -2583,14 +2583,14 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
       if(!ok)
 	return;
 
-      messageDigest = crypt.decrypted(messageDigest, &ok);
+      messageCode = crypt.decrypted(messageCode, &ok);
 
       if(!ok)
 	return;
 
-      QByteArray computedMessageDigest;
+      QByteArray computedMessageCode;
 
-      computedMessageDigest = crypt.keyedHash(symmetricKey +
+      computedMessageCode = crypt.keyedHash(symmetricKey +
 					      symmetricKeyAlgorithm +
 					      senderPublicKeyHash +
 					      name +
@@ -2600,11 +2600,11 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
       if(!ok)
 	return;
 
-      if(computedMessageDigest != messageDigest)
+      if(computedMessageCode != messageCode)
 	{
 	  spoton_misc::logError("spoton_neighbor::storeLetter(): "
-				"computed message digest does "
-				"not match provided digest.");
+				"computed message code does "
+				"not match provided code.");
 	  return;
 	}
     }
@@ -2631,7 +2631,7 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 
 	query.prepare("INSERT INTO folders "
 		      "(date, folder_index, goldbug, hash, "
-		      "message, message_digest, "
+		      "message, message_code, "
 		      "receiver_sender, receiver_sender_hash, "
 		      "status, subject, participant_oid) "
 		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -2658,10 +2658,10 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 	    query.bindValue
 	      (4, s_crypt->encrypted(message, &ok).toBase64());
 
-	if(!messageDigest.isEmpty())
+	if(!messageCode.isEmpty())
 	  if(ok)
 	    query.bindValue
-	      (5, s_crypt->encrypted(messageDigest, &ok).
+	      (5, s_crypt->encrypted(messageCode, &ok).
 	       toBase64());
 
 	if(!name.isEmpty())

@@ -126,7 +126,7 @@ class spoton_neighbor: public QSslSocket
 		   QByteArray &name,
 		   QByteArray &subject,
 		   QByteArray &message,
-		   QByteArray &messageDigest,
+		   QByteArray &messageCode,
 		   const QString &messageType);
   void storeLetter(const QList<QByteArray> &list,
 		   const QByteArray &recipientHash);

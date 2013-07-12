@@ -71,7 +71,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT date, goldbug, message, message_digest, "
+	if(query.exec("SELECT date, goldbug, message, message_code, "
 		      "participant_oid, "
 		      "receiver_sender, status, subject, OID FROM folders"))
 	  while(query.next())
@@ -100,7 +100,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 		    updateQuery.prepare("UPDATE folders SET "
 					"date = ?, goldbug = ?, "
-					"message = ?, message_digest = ?, "
+					"message = ?, message_code = ?, "
 					"participant_oid = ?, "
 					"receiver_sender = ?, "
 					"status = ?, "
