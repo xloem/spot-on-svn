@@ -35,7 +35,8 @@ LIBS		+= -L..\\..\\libSpotOn -L..\\..\\libSpotOn\\Libraries.win32 \
 		   -lGeoIP-1 -leay32 -lgcrypt-11 -lpthread -lspoton -lssl32
 PRE_TARGETDEPS = libspoton.dll
 
-FORMS           = UI\\controlcenter.ui \
+FORMS           = UI\\buzzpage.ui \
+		  UI\\controlcenter.ui \
                   UI\\docviewer.ui \
                   UI\\logviewer.ui \
 		  UI\\statusbar.ui

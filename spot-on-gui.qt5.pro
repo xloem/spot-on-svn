@@ -41,7 +41,8 @@ UI_DIR = temp/ui
 MOC_DIR = temp/moc
 RCC_DIR = temp/rcc
 
-FORMS           = UI/controlcenter.ui \
+FORMS           = UI/buzzpage.ui \
+		  UI/controlcenter.ui \
                   UI/docviewer.ui \
                   UI/logviewer.ui \
 		  UI/statusbar.ui
