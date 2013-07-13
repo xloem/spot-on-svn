@@ -41,6 +41,7 @@ Remaining Items
 8.     Can we establish session keys on the Echo?
 9.     E-mail retrieval may fail if a node is disconnected because of
        a lifetime expiration.
+10.    Inspect toInt() results.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.
