@@ -39,6 +39,8 @@ Remaining Items
 6.     Use super-secure memory?
 7.     Allow for other ciphers besides AES for e-mail.
 8.     Can we establish session keys on the Echo?
+9.     E-mail retrieval may fail if a node is disconnected because of
+       a lifetime expiration.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.
