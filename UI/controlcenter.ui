@@ -43,6 +43,47 @@
        <attribute name="title">
         <string>&amp;Buzz</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_9">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_40">
+          <item>
+           <widget class="QLabel" name="label_32">
+            <property name="text">
+             <string>&amp;Name</string>
+            </property>
+            <property name="buddy">
+             <cstring>nodeName</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="buzzName"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="saveBuzzName">
+            <property name="toolTip">
+             <string>Save my name.</string>
+            </property>
+            <property name="text">
+             <string>Save</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTabWidget" name="buzzTab">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="tab_9">
+           <attribute name="title">
+            <string>Tab 1</string>
+           </attribute>
+          </widget>
+         </widget>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="tab_chat">
        <attribute name="title">
@@ -77,8 +118,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>419</width>
-                <height>413</height>
+                <width>1016</width>
+                <height>584</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2101,8 +2142,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>982</width>
-             <height>323</height>
+             <width>1016</width>
+             <height>584</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3046,7 +3087,7 @@
      <x>0</x>
      <y>0</y>
      <width>1046</width>
-     <height>29</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -3126,6 +3167,9 @@
  </customwidgets>
  <tabstops>
   <tabstop>tab</tabstop>
+  <tabstop>buzzName</tabstop>
+  <tabstop>saveBuzzName</tabstop>
+  <tabstop>buzzTab</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>clearMessages</tabstop>
   <tabstop>messages</tabstop>
