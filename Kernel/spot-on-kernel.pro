@@ -7,7 +7,7 @@ TEMPLATE	= app
 LANGUAGE	= C++
 QT		+= network sql
 QT		-= gui
-CONFIG		+= qt release warn_on
+CONFIG		+= qt debug warn_on
 
 # The function gcry_kdf_derive() is available in version
 # 1.5.0 of the gcrypt library.

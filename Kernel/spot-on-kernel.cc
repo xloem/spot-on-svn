@@ -718,14 +718,25 @@ void spoton_kernel::checkForTermination(void)
 		     "shared.db");
   bool registered = false;
   libspoton_error_t err = LIBSPOTON_ERROR_NONE;
-  libspoton_handle_t libspotonHandle;
 
-  if((err = libspoton_init(sharedPath.toStdString().c_str(),
-			   &libspotonHandle)) == LIBSPOTON_ERROR_NONE)
-    registered = QCoreApplication::applicationPid() ==
-      libspoton_registered_kernel_pid(&libspotonHandle);
+  if(QFileInfo(sharedPath).exists())
+    {
+      libspoton_handle_t libspotonHandle;
 
-  libspoton_close(&libspotonHandle);
+      if((err = libspoton_init(sharedPath.toStdString().c_str(),
+			       &libspotonHandle)) == LIBSPOTON_ERROR_NONE)
+	registered = QCoreApplication::applicationPid() ==
+	  libspoton_registered_kernel_pid(&libspotonHandle, &err);
+
+      libspoton_close(&libspotonHandle);
+
+      if(err == LIBSPOTON_ERROR_SQLITE_DATABASE_LOCKED)
+	/*
+	** Let's try next time.
+	*/
+
+	registered = true;
+    }
 
   if(!registered)
     {
@@ -752,6 +763,12 @@ void spoton_kernel::checkForTermination(void)
 	      neighbor->deleteLater();
 	    }
 	}
+
+      if(err != LIBSPOTON_ERROR_NONE)
+	spoton_misc::logError
+	  (QString("spoton_kernel::checkForTermination(): "
+		   "an error occurred (%1) with libspoton.").
+	   arg(err));
 
       deleteLater();
     }

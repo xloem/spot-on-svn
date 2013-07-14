@@ -1862,7 +1862,8 @@ void spoton::slotDeactivateKernel(void)
   if(libspoton_init(sharedPath.toStdString().c_str(),
 		    &libspotonHandle) == LIBSPOTON_ERROR_NONE)
     libspoton_deregister_kernel
-      (libspoton_registered_kernel_pid(&libspotonHandle), &libspotonHandle);
+      (libspoton_registered_kernel_pid(&libspotonHandle, 0),
+       &libspotonHandle);
 
   libspoton_close(&libspotonHandle);
   m_kernelSocket.close();
@@ -1883,8 +1884,19 @@ void spoton::slotGeneralTimerTimeout(void)
   if(libspoton_init(sharedPath.toStdString().c_str(),
 		    &libspotonHandle) == LIBSPOTON_ERROR_NONE)
     {
-      m_ui.pid->setText
-	(QString::number(libspoton_registered_kernel_pid(&libspotonHandle)));
+      libspoton_error_t err = LIBSPOTON_ERROR_NONE;
+      pid_t pid = 0;
+
+      pid = libspoton_registered_kernel_pid(&libspotonHandle, &err);
+
+      if(err == LIBSPOTON_ERROR_SQLITE_DATABASE_LOCKED)
+	{
+	  /*
+	  ** Try next time.
+	  */
+	}
+      else
+	m_ui.pid->setText(QString::number(pid));
 
       if(isKernelActive())
 	{
