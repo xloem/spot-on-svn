@@ -160,3 +160,12 @@ EOL
 1 - Port (Base-64) (Plaintext)
 EOL
 2 - Scope ID (Base-64) (Plaintext)
+
+Echo Buzz
+Echoed? Yes
+
+Message Type ("0040") (Plaintext)
+TTL (Plaintext)
+0 - Name (Base-64) (Ciphertext, SK)
+EOL
+1 - Message (Base-64) (Ciphertext, SK)
