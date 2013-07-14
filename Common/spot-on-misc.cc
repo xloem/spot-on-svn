@@ -1525,5 +1525,5 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   if(!ok)
     integer = 10000;
 
-  settings["gui/iterationCount"] = 10000;
+  settings["gui/iterationCount"] = integer;
 }
