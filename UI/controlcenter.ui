@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1046</width>
+    <width>1219</width>
     <height>677</height>
    </rect>
   </property>
@@ -118,8 +118,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>412</width>
-                <height>437</height>
+                <width>1197</width>
+                <height>569</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -685,58 +685,6 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <widget class="QTableWidget" name="emailParticipants">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>150</height>
-               </size>
-              </property>
-              <property name="verticalScrollBarPolicy">
-               <enum>Qt::ScrollBarAlwaysOn</enum>
-              </property>
-              <property name="alternatingRowColors">
-               <bool>true</bool>
-              </property>
-              <property name="selectionBehavior">
-               <enum>QAbstractItemView::SelectRows</enum>
-              </property>
-              <property name="horizontalScrollMode">
-               <enum>QAbstractItemView::ScrollPerPixel</enum>
-              </property>
-              <property name="sortingEnabled">
-               <bool>true</bool>
-              </property>
-              <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>150</number>
-              </attribute>
-              <attribute name="horizontalHeaderStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-              <column>
-               <property name="text">
-                <string>Participant</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>OID</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>public_key_hash</string>
-               </property>
-              </column>
-             </widget>
-            </item>
             <item row="1" column="0">
              <widget class="QLabel" name="label_25">
               <property name="text">
@@ -824,6 +772,75 @@
                  <string>Send</string>
                 </property>
                </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_42">
+              <item>
+               <widget class="QTableWidget" name="emailParticipants">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>150</height>
+                 </size>
+                </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarAlwaysOn</enum>
+                </property>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
+                <property name="selectionBehavior">
+                 <enum>QAbstractItemView::SelectRows</enum>
+                </property>
+                <property name="horizontalScrollMode">
+                 <enum>QAbstractItemView::ScrollPerPixel</enum>
+                </property>
+                <property name="sortingEnabled">
+                 <bool>true</bool>
+                </property>
+                <attribute name="horizontalHeaderDefaultSectionSize">
+                 <number>150</number>
+                </attribute>
+                <attribute name="horizontalHeaderStretchLastSection">
+                 <bool>true</bool>
+                </attribute>
+                <column>
+                 <property name="text">
+                  <string>Participant</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>OID</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>public_key_hash</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_36">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
              </layout>
             </item>
@@ -2142,8 +2159,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1029</width>
-             <height>353</height>
+             <width>1197</width>
+             <height>569</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3086,8 +3103,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1046</width>
-     <height>22</height>
+     <width>1219</width>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
