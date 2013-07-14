@@ -78,7 +78,7 @@
           </property>
           <widget class="QWidget" name="tab_9">
            <attribute name="title">
-            <string>Tab 1</string>
+            <string>Spot-On</string>
            </attribute>
           </widget>
          </widget>
@@ -118,8 +118,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1016</width>
-                <height>584</height>
+                <width>412</width>
+                <height>437</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2142,8 +2142,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1016</width>
-             <height>584</height>
+             <width>1029</width>
+             <height>353</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
