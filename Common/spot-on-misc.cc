@@ -1514,3 +1514,16 @@ void spoton_misc::purgeSignatureRelationships(const QSqlDatabase &db)
 	     "(SELECT signature_public_key_hash FROM "
 	     "relationships_with_signatures)");
 }
+
+void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
+{
+  bool ok = true;
+  int integer = 0;
+
+  integer = qAbs(settings.value("gui/iterationCount", 10000).toInt(&ok));
+
+  if(!ok)
+    integer = 10000;
+
+  settings["gui/iterationCount"] = 10000;
+}
