@@ -231,6 +231,8 @@ spoton_kernel::spoton_kernel(void):QObject(0)
     s_settings[settings.allKeys().at(i)] = settings.value
       (settings.allKeys().at(i));
 
+  spoton_misc::correctSettingsContainer(s_settings);
+
   s_messagingCache.setMaxCost
     (s_settings.value("gui/congestionCost", 10000).toInt());
 
@@ -992,10 +994,6 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
 
   QSettings settings;
 
-  if(!settings.contains("kernel/maximum_number_of_bytes_buffered_by_neighbor"))
-    settings.setValue("kernel/maximum_number_of_bytes_buffered_by_neighbor",
-		      100000);
-
   for(int i = 0; i < settings.allKeys().size(); i++)
     s_settings[settings.allKeys().at(i)] = settings.value
       (settings.allKeys().at(i));
@@ -1006,6 +1004,8 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
 	  s_settings.value("gui/congestionCost", 10000).toInt())
     s_messagingCache.setMaxCost
       (s_settings.value("gui/congestionCost", 10000).toInt());
+
+  spoton_misc::correctSettingsContainer(s_settings);
 
   if(s_settings.value("gui/publishPeriodically", false).toBool())
     {

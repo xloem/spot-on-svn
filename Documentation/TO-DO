@@ -28,6 +28,7 @@ Completed Items
 16.    Offline e-mail.
 17.    Qt 4.6.3 support.
 18.    Use QSslSockets.
+19.    Inspect toInt() results.
 
 Remaining Items
 
@@ -41,7 +42,6 @@ Remaining Items
 8.     Can we establish session keys on the Echo?
 9.     E-mail retrieval may fail if a node is disconnected because of
        a lifetime expiration.
-10.    Inspect toInt() results.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.

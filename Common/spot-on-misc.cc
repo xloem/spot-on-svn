@@ -1517,13 +1517,46 @@ void spoton_misc::purgeSignatureRelationships(const QSqlDatabase &db)
 
 void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 {
+  /*
+  ** Attempt to correct flawed configuration settings.
+  */
+
   bool ok = true;
   int integer = 0;
 
+  integer = qAbs(settings.value("gui/congestionCost", 10000).toInt(&ok));
+
+  if(!ok)
+    integer = 1000;
+
+  settings["gui/congestionCost"] = integer;
   integer = qAbs(settings.value("gui/iterationCount", 10000).toInt(&ok));
 
   if(!ok)
     integer = 10000;
 
   settings["gui/iterationCount"] = integer;
+  integer = qAbs(settings.value("gui/rsaKeySize", 3072).toInt(&ok));
+
+  if(!ok)
+    integer = 3072;
+  else if(!(integer == 2048 || integer == 3072 ||
+	    integer == 4096 || integer == 7680 ||
+	    integer == 15360))
+    integer = 3072;
+
+  settings["gui/rsaKeySize"] = integer;
+  integer = qAbs(settings.value("gui/saltLength", 256).toInt(&ok));
+
+  if(!ok)
+    integer = 256;
+
+  settings["gui/saltLength"] = integer;
+  settings["kernel/ttl_0000"] = 16;
+  settings["kernel/ttl_0001a"] = 16;
+  settings["kernel/ttl_0001b"] = 16;
+  settings["kernel/ttl_0002"] = 16;
+  settings["kernel/ttl_0010"] = 16;
+  settings["kernel/ttl_0013"] = 16;
+  settings["kernel/ttl_0030"] = 64;
 }

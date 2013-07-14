@@ -479,6 +479,8 @@ spoton::spoton(void):QMainWindow()
     m_settings[settings.allKeys().at(i)] = settings.value
       (settings.allKeys().at(i));
 
+  spoton_misc::correctSettingsContainer(m_settings);
+
   if(m_settings.value("gui/iconSet", "nouve").toString() == "nouve")
     {
       m_ui.menu_Icons->actions().at(0)->setChecked(true);

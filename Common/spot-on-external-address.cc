@@ -42,7 +42,6 @@ void spoton_external_address::discover(void)
   QNetworkRequest request;
 
   request.setUrl(QUrl::fromUserInput("http://checkip.dyndns.org"));
-
   reply = get(request);
   connect(reply,
 	  SIGNAL(error(QNetworkReply::NetworkError)),
