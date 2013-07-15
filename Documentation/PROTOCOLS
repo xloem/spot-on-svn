@@ -164,7 +164,11 @@ EOL
 Echo Buzz
 Echoed? Yes
 
-Message Type ("0040") (Plaintext)
+Message Type ("0040a") (Plaintext)
+TTL (Plaintext)
+0 - ID (Base-64) (Plaintext)
+
+Message Type ("0040b") (Plaintext)
 TTL (Plaintext)
 0 - Name (Base-64) (Ciphertext, SK)
 EOL
