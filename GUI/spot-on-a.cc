@@ -218,10 +218,18 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  m_ui.messages,
 	  SLOT(clear(void)));
+  connect(m_ui.saveBuzzName,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSaveBuzzName(void)));
   connect(m_ui.saveNodeName,
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSaveNodeName(void)));
+  connect(m_ui.buzzName,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSaveBuzzName(void)));
   connect(m_ui.nodeName,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -398,6 +406,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotProxyChecked(bool)));
+  connect(m_ui.join,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotJoinBuzzChannel(void)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -562,6 +574,12 @@ spoton::spoton(void):QMainWindow()
     m_ui.status->setCurrentIndex(3);
 
   m_ui.kernelPath->setToolTip(m_ui.kernelPath->text());
+  m_ui.buzzName->setMaxLength(NAME_MAXIMUM_LENGTH);
+  m_ui.buzzName->setText
+    (QString::fromUtf8(m_settings.value("gui/buzzName", "unknown").
+		       toByteArray()).trimmed());
+  m_ui.channel->setMaxLength
+    (spoton_crypt::cipherKeyLength("aes256"));
   m_ui.nodeName->setMaxLength(NAME_MAXIMUM_LENGTH);
   m_ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").

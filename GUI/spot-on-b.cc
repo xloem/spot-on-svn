@@ -26,6 +26,7 @@
 */
 
 #include "spot-on.h"
+#include "spot-on-buzzpage.h"
 
 void spoton::slotSendMessage(void)
 {
@@ -296,6 +297,24 @@ void spoton::slotRemoveParticipants(void)
   }
 
   QSqlDatabase::removeDatabase("spoton");
+}
+
+void spoton::slotSaveBuzzName(void)
+{
+  QString str(m_ui.buzzName->text().trimmed());
+
+  if(str.isEmpty())
+    {
+      str = "unknown";
+      m_ui.buzzName->setText(str);
+    }
+
+  m_settings["gui/buzzName"] = str.toUtf8();
+
+  QSettings settings;
+
+  settings.setValue("gui/buzzName", str.toUtf8());
+  m_ui.buzzName->selectAll();
 }
 
 void spoton::slotSaveNodeName(void)
@@ -2819,6 +2838,9 @@ void spoton::slotSetIcons(void)
 
   // Buzz
 
+  m_ui.join->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
+  m_ui.saveBuzzName->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
+
   // Chat
 
   m_ui.clearMessages->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
@@ -3298,4 +3320,32 @@ void spoton::slotPublishedKeySizeChanged(const QString &text)
   settings.setValue
     ("gui/publishedKeySize",
      m_settings.value("gui/publishedKeySize").toInt());
+}
+
+void spoton::slotJoinBuzzChannel(void)
+{
+  QString channel(m_ui.channel->text().trimmed());
+
+  if(channel.isEmpty())
+    return;
+
+  bool found = false;
+
+  for(int i = 0; i < m_ui.buzzTab->count(); i++)
+    if(channel == m_ui.buzzTab->tabText(i))
+      {
+	found = true;
+	m_ui.buzzTab->setCurrentIndex(i);
+	break;
+      }
+
+  if(found)
+    return;
+
+  m_ui.channel->clear();
+
+  spoton_buzzpage *page = new spoton_buzzpage(this);
+
+  m_ui.buzzTab->addTab(page, channel);
+  m_ui.buzzTab->setCurrentIndex(m_ui.buzzTab->count() - 1);
 }

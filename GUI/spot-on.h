@@ -184,6 +184,7 @@ class spoton: public QMainWindow
   void slotKernelSocketState(void);
   void slotKernelStatus(void);
   void slotHideOfflineParticipants(bool state);
+  void slotJoinBuzzChannel(void);
   void slotListenerCheckChange(int state);
   void slotListenerIPComboChanged(int index);
   void slotMailSelected(QTableWidgetItem *item);
@@ -209,6 +210,7 @@ class spoton: public QMainWindow
   void slotReply(void);
   void slotResetAll(void);
   void slotRetrieveMail(void);
+  void slotSaveBuzzName(void);
   void slotSaveKernelPath(void);
   void slotSaveNodeName(void);
   void slotScramble(bool state);

@@ -759,7 +759,13 @@ spoton_crypt::spoton_crypt(const QString &id)
 	     m_symmetricKeyLength,
 	     GCRY_STRONG_RANDOM);
 	}
+      else
+	spoton_misc::logError("spoton_crypt::spoton_crypt(): "
+			      "gcry_calloc_secure() failure.");
     }
+  else
+    spoton_misc::logError("spoton_crypt::spoton_crypt(): "
+			  "gcry_cipher_get_algo_keylen() returned zero.");
 
   if(m_symmetricKey)
     {
@@ -858,6 +864,9 @@ spoton_crypt::spoton_crypt(const QString &cipherType,
   if(m_symmetricKeyLength)
     m_symmetricKey = static_cast<char *>
       (gcry_calloc_secure(m_symmetricKeyLength, sizeof(char)));
+  else
+    spoton_misc::logError("spoton_crypt::spoton_crypt(): "
+			  "gcry_cipher_get_algo_keylen() returned zero.");
 
   if(m_passphrase)
     memcpy(static_cast<void *> (m_passphrase),
@@ -2384,7 +2393,12 @@ size_t spoton_crypt::cipherKeyLength(const QByteArray &cipherType)
   size_t keyLength = 0;
 
   if(cipherAlgorithm)
-    keyLength = gcry_cipher_get_algo_keylen(cipherAlgorithm);
+    {
+      if((keyLength = gcry_cipher_get_algo_keylen(cipherAlgorithm)) == 0)
+	spoton_misc::logError("spoton_crypt::cipherKeyLength(): "
+			      "gcry_cipher_get_algo_keylen() returned "
+			      "zero.");
+    }
   else
     spoton_misc::logError("spoton_crypt::cipherKeyLength(): "
 			  "gcry_cipher_map_name() failure.");

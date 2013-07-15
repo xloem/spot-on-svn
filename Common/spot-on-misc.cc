@@ -1536,6 +1536,14 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 10000;
 
   settings["gui/iterationCount"] = integer;
+  integer = qAbs(settings.value("gui/publishedKeySize", 2048).toInt(&ok));
+
+  if(!ok)
+    integer = 2048;
+  else if(!(integer == 2048 || integer == 3072 || integer == 4096))
+    integer = 2048;
+
+  settings["gui/publishedKeySize"] = integer;
   integer = qAbs(settings.value("gui/rsaKeySize", 3072).toInt(&ok));
 
   if(!ok)

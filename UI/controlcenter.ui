@@ -69,18 +69,33 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QLabel" name="label_33">
+            <property name="text">
+             <string>&amp;Channel</string>
+            </property>
+            <property name="buddy">
+             <cstring>channel</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="channel"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="join">
+            <property name="text">
+             <string>Join</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>
          <widget class="QTabWidget" name="buzzTab">
           <property name="currentIndex">
-           <number>0</number>
+           <number>-1</number>
           </property>
-          <widget class="QWidget" name="tab_9">
-           <attribute name="title">
-            <string>Spot-On</string>
-           </attribute>
-          </widget>
          </widget>
         </item>
        </layout>
@@ -119,7 +134,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1197</width>
-                <height>569</height>
+                <height>574</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2160,7 +2175,7 @@
              <x>0</x>
              <y>0</y>
              <width>1197</width>
-             <height>569</height>
+             <height>574</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3104,7 +3119,7 @@
      <x>0</x>
      <y>0</y>
      <width>1219</width>
-     <height>27</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -3186,6 +3201,8 @@
   <tabstop>tab</tabstop>
   <tabstop>buzzName</tabstop>
   <tabstop>saveBuzzName</tabstop>
+  <tabstop>channel</tabstop>
+  <tabstop>join</tabstop>
   <tabstop>buzzTab</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>clearMessages</tabstop>
