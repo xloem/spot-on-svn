@@ -40,12 +40,13 @@ class spoton_buzzpage: public QWidget
 
  public:
   spoton_buzzpage(QWidget *parent);
+  ~spoton_buzzpage();
 
  private:
   Ui_buzzPage ui;
 
  private slots:
-  void slotClose(void);
+  void slotSetIcons(void);
 };
 
 #endif

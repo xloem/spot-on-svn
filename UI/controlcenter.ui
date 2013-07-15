@@ -96,6 +96,9 @@
           <property name="currentIndex">
            <number>-1</number>
           </property>
+          <property name="tabsClosable">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
        </layout>
@@ -133,8 +136,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1197</width>
-                <height>574</height>
+                <width>425</width>
+                <height>404</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2174,8 +2177,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1197</width>
-             <height>574</height>
+             <width>949</width>
+             <height>296</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3186,15 +3189,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>spoton_textedit</class>
+   <extends>QTextEdit</extends>
+   <header>GUI/spot-on-textedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>spoton_tabwidget</class>
    <extends>QTabWidget</extends>
    <header>GUI/spot-on-tabwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>spoton_textedit</class>
-   <extends>QTextEdit</extends>
-   <header>GUI/spot-on-textedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

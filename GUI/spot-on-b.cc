@@ -3346,6 +3346,19 @@ void spoton::slotJoinBuzzChannel(void)
 
   spoton_buzzpage *page = new spoton_buzzpage(this);
 
+  connect(this,
+	  SIGNAL(iconsChanged(void)),
+	  page,
+	  SLOT(slotSetIcons(void)));
   m_ui.buzzTab->addTab(page, channel);
   m_ui.buzzTab->setCurrentIndex(m_ui.buzzTab->count() - 1);
+}
+
+void spoton::slotCloseBuzzTab(int index)
+{
+  spoton_buzzpage *page = qobject_cast<spoton_buzzpage *>
+    (m_ui.buzzTab->widget(index));
+
+  if(page)
+    page->deleteLater();
 }

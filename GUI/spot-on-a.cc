@@ -410,6 +410,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotJoinBuzzChannel(void)));
+  connect(m_ui.buzzTab,
+	  SIGNAL(tabCloseRequested(int)),
+	  this,
+	  SLOT(slotCloseBuzzTab(int)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,

@@ -25,14 +25,33 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QSettings>
+
 #include "Common/spot-on-misc.h"
 #include "spot-on-buzzpage.h"
 
 spoton_buzzpage::spoton_buzzpage(QWidget *parent):QWidget(parent)
 {
   ui.setupUi(this);
+  connect(ui.clearMessages,
+	  SIGNAL(clicked(void)),
+	  ui.messages,
+	  SLOT(clear(void)));
+  ui.clients->setColumnHidden(1, true); // ID
+  ui.splitter->setStretchFactor(0, 1);
+  ui.splitter->setStretchFactor(1, 0);
+  slotSetIcons();
 }
 
-void spoton_buzzpage::slotClose(void)
+spoton_buzzpage::~spoton_buzzpage()
 {
+}
+
+void spoton_buzzpage::slotSetIcons(void)
+{
+  QSettings settings;
+  QString iconSet(settings.value("gui/iconSet", "nouve").toString());
+
+  ui.clearMessages->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
+  ui.sendMessage->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
 }
