@@ -28,24 +28,29 @@
 #ifndef _spoton_buzzpage_h_
 #define _spoton_buzzpage_h_
 
+#include <QPointer>
+#include <QTcpSocket>
 #include <QWidget>
 
 #include "ui_buzzpage.h"
-
-class QWidget;
 
 class spoton_buzzpage: public QWidget
 {
   Q_OBJECT
 
  public:
-  spoton_buzzpage(QWidget *parent);
+  spoton_buzzpage(QTcpSocket *kernelSocket,
+		  const QByteArray &id,
+		  QWidget *parent);
   ~spoton_buzzpage();
 
  private:
+  QByteArray m_id;
+  QPointer<QTcpSocket> m_kernelSocket;
   Ui_buzzPage ui;
 
  private slots:
+  void slotSendMessage(void);
   void slotSetIcons(void);
 };
 

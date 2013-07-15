@@ -3344,7 +3344,8 @@ void spoton::slotJoinBuzzChannel(void)
 
   m_ui.channel->clear();
 
-  spoton_buzzpage *page = new spoton_buzzpage(this);
+  spoton_buzzpage *page = new spoton_buzzpage
+    (&m_kernelSocket, m_buzzId, this);
 
   connect(this,
 	  SIGNAL(iconsChanged(void)),

@@ -127,12 +127,12 @@
           <string>&amp;Preferred Method</string>
          </property>
          <property name="buddy">
-          <cstring>chatSendMethod</cstring>
+          <cstring>sendMethod</cstring>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="chatSendMethod">
+        <widget class="QComboBox" name="sendMethod">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -213,7 +213,7 @@
  <tabstops>
   <tabstop>messages</tabstop>
   <tabstop>clearMessages</tabstop>
-  <tabstop>chatSendMethod</tabstop>
+  <tabstop>sendMethod</tabstop>
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
   <tabstop>clients</tabstop>

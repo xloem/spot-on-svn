@@ -406,6 +406,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotProxyChecked(bool)));
+  connect(m_ui.channel,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotJoinBuzzChannel(void)));
   connect(m_ui.join,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -801,6 +805,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.urlsVerticalSplitter->setStretchFactor(0, 0);
   m_ui.urlsVerticalSplitter->setStretchFactor(1, 1);
   prepareListenerIPCombo();
+  m_buzzId.append(QUuid::createUuid().toString());
+  m_buzzId.append(spoton_crypt::strongRandomBytes(64)); // Do we need more?
 
   /*
   ** Not wise! We may find things we're not prepared for.

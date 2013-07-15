@@ -25,18 +25,32 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QDateTime>
+#include <QScrollBar>
 #include <QSettings>
 
 #include "Common/spot-on-misc.h"
 #include "spot-on-buzzpage.h"
 
-spoton_buzzpage::spoton_buzzpage(QWidget *parent):QWidget(parent)
+spoton_buzzpage::spoton_buzzpage(QTcpSocket *kernelSocket,
+				 const QByteArray &id,
+				 QWidget *parent):QWidget(parent)
 {
+  m_id = id;
+  m_kernelSocket = kernelSocket;
   ui.setupUi(this);
   connect(ui.clearMessages,
 	  SIGNAL(clicked(void)),
 	  ui.messages,
 	  SLOT(clear(void)));
+  connect(ui.sendMessage,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSendMessage(void)));
+  connect(ui.message,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSendMessage(void)));
   ui.clients->setColumnHidden(1, true); // ID
   ui.splitter->setStretchFactor(0, 1);
   ui.splitter->setStretchFactor(1, 0);
@@ -54,4 +68,59 @@ void spoton_buzzpage::slotSetIcons(void)
 
   ui.clearMessages->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
   ui.sendMessage->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
+}
+
+void spoton_buzzpage::slotSendMessage(void)
+{
+  if(!m_kernelSocket)
+    return;
+  else if(m_kernelSocket->state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(ui.message->toPlainText().trimmed().isEmpty())
+    return;
+
+  QByteArray name;
+  QByteArray message;
+  QByteArray sendMethod;
+  QSettings settings;
+
+  message.append
+    (QDateTime::currentDateTime().
+     toString("[hh:mm<font color=grey>:ss</font>] "));
+  message.append(tr("<b>me:</b> "));
+  message.append(ui.message->toPlainText().trimmed());
+  ui.messages->append(message);
+  ui.messages->verticalScrollBar()->setValue
+    (ui.messages->verticalScrollBar()->maximum());
+
+  if(ui.sendMethod->currentIndex() == 0)
+    sendMethod = "Normal_POST";
+  else
+    sendMethod = "Artificial_GET";
+
+  name = settings.value("gui/buzzName", "unknown").toByteArray().trimmed();
+
+  if(name.isEmpty())
+    name = "unknown";
+
+  message.clear();
+  message.append("buzz_");
+  message.append(name.toBase64());
+  message.append("_");
+  message.append(m_id.toBase64());
+  message.append("_");
+  message.append(ui.message->toPlainText().trimmed().toUtf8().
+		 toBase64());
+  message.append("_");
+  message.append(sendMethod.toBase64());
+  message.append('\n');
+
+  if(m_kernelSocket->write(message.constData(),
+			   message.length()) != message.length())
+    spoton_misc::logError
+      ("spoton_buzzpage::slotSendMessage(): write() failure.");
+  else
+    m_kernelSocket->flush();
+
+  ui.message->clear();
 }
