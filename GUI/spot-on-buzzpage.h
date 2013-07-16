@@ -60,6 +60,7 @@ class spoton_buzzpage: public QWidget
 
  private slots:
   void slotSendMessage(void);
+  void slotSendStatus(void);
   void slotSetIcons(void);
 };
 

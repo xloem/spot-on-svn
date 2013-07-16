@@ -111,6 +111,7 @@ class spoton: public QMainWindow
   QDateTime m_participantsLastModificationTime;
   QHash<QString, QVariant> m_settings;
   QTcpSocket m_kernelSocket;
+  QTimer m_buzzStatusTimer;
   QTimer m_generalTimer;
   QTimer m_tableTimer;
   QWidget *m_sbWidget;

@@ -165,3 +165,7 @@ void spoton_buzzpage::appendMessage(const QByteArray &hash,
   ui.messages->verticalScrollBar()->setValue
     (ui.messages->verticalScrollBar()->maximum());
 }
+
+void spoton_buzzpage::slotSendStatus(void)
+{
+}

@@ -179,6 +179,9 @@ void spoton::slotReceivedKernelMessage(void)
 		    hash = spoton_crypt::sha512Hash(hash, &ok);
 
 		  page->appendMessage(hash, list);
+
+		  if(m_ui.tab->currentIndex() != 0)
+		    m_sb.buzz->setVisible(true);
 		}
 	    }
 	  else if(data.startsWith("message_"))
@@ -2942,6 +2945,7 @@ void spoton::slotSetIcons(void)
 
   // Status
 
+  m_sb.buzz->setIcon(QIcon(QString(":/%1/buzz.png").arg(iconSet)));
   m_sb.chat->setIcon(QIcon(QString(":/%1/chat.png").arg(iconSet)));
   m_sb.email->setIcon(QIcon(QString(":/%1/email.png").arg(iconSet)));
   m_sb.errorlog->setIcon(QIcon(QString(":/%1/information.png").arg(iconSet)));
@@ -3464,19 +3468,35 @@ void spoton::slotJoinBuzzChannel(void)
 						     ** UTF-8?
 						     */
 
+  connect(&m_buzzStatusTimer,
+	  SIGNAL(timeout(void)),
+	  page,
+	  SLOT(slotSendStatus(void)));
   connect(this,
 	  SIGNAL(iconsChanged(void)),
 	  page,
 	  SLOT(slotSetIcons(void)));
   m_ui.buzzTab->addTab(page, channel);
   m_ui.buzzTab->setCurrentIndex(m_ui.buzzTab->count() - 1);
+
+  if(!m_buzzStatusTimer.isActive())
+    m_buzzStatusTimer.start();
 }
 
 void spoton::slotCloseBuzzTab(int index)
 {
+  int count = 0;
   spoton_buzzpage *page = qobject_cast<spoton_buzzpage *>
     (m_ui.buzzTab->widget(index));
 
+  count = m_ui.buzzTab->count();
+
   if(page)
-    page->deleteLater();
+    {
+      count -= 1;
+      page->deleteLater();
+    }
+
+  if(!count)
+    m_buzzStatusTimer.stop();
 }

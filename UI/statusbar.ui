@@ -65,6 +65,19 @@
     </spacer>
    </item>
    <item>
+    <widget class="QToolButton" name="buzz">
+     <property name="iconSize">
+      <size>
+       <width>16</width>
+       <height>16</height>
+      </size>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QToolButton" name="chat">
      <property name="toolTip">
       <string>You have received a new message.</string>
@@ -169,10 +182,13 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>buzz</tabstop>
   <tabstop>chat</tabstop>
   <tabstop>email</tabstop>
   <tabstop>kernelstatus</tabstop>
   <tabstop>errorlog</tabstop>
+  <tabstop>listeners</tabstop>
+  <tabstop>neighbors</tabstop>
  </tabstops>
  <resources/>
  <connections/>
