@@ -1882,9 +1882,6 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	      message = crypt.decrypted(message, &ok);
 
 	      if(ok)
-		messageCode = crypt.decrypted(messageCode, &ok);
-
-	      if(ok)
 		computedMessageCode = crypt.keyedHash(message, &ok);
 
 	      if(ok)
@@ -1955,19 +1952,14 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 
 	  if(ok)
 	    status = crypt.decrypted(status, &ok);
-
-	  if(ok)
-	    messageCode = crypt.decrypted(messageCode, &ok);
 	}
 
       if(ok)
 	{
 	  QByteArray computedMessageCode
-	    (spoton_crypt::keyedHash(symmetricKey +
-				     symmetricKeyAlgorithm +
-				     publicKeyHash +
-				     name +
-				     status,
+	    (spoton_crypt::keyedHash(list.value(2) +
+				     list.value(3) +
+				     list.value(4),
 				     symmetricKey,
 				     "sha512",
 				     &ok));

@@ -1324,6 +1324,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		    ** We want crypt to be destroyed as soon as possible.
 		    */
 
+		    QList<QByteArray> list;
 		    spoton_crypt crypt(symmetricKeyAlgorithm,
 				       QString("sha512"),
 				       QByteArray(),
@@ -1332,35 +1333,46 @@ void spoton_kernel::slotStatusTimerExpired(void)
 				       0,
 				       QString(""));
 
-		    data.append
-		      (crypt.encrypted(myPublicKeyHash, &ok).toBase64());
-		    data.append("\n");
+		    list.append(crypt.encrypted(myPublicKeyHash, &ok));
 
 		    if(ok)
 		      {
-			data.append(crypt.encrypted(name, &ok).toBase64());
+			data.append(list.at(0).toBase64());
 			data.append("\n");
 		      }
 
 		    if(ok)
 		      {
-			data.append(crypt.encrypted(status, &ok).toBase64());
-			data.append("\n");
+			list.append(crypt.encrypted(name, &ok));
+
+			if(ok)
+			  {
+			    data.append(list.at(1).toBase64());
+			    data.append("\n");
+			  }
+		      }
+
+		    if(ok)
+		      {
+			list.append(crypt.encrypted(status, &ok));
+
+			if(ok)
+			  {
+			    data.append(list.at(2).toBase64());
+			    data.append("\n");
+			  }
 		      }
 
 		    if(ok)
 		      {
 			QByteArray messageCode
-			  (crypt.keyedHash(symmetricKey +
-					   symmetricKeyAlgorithm +
-					   myPublicKeyHash +
-					   name +
-					   status,
+			  (crypt.keyedHash(list.at(0) +
+					   list.at(1) +
+					   list.at(2),
 					   &ok));
 
 			if(ok)
-			  data.append
-			    (crypt.encrypted(messageCode, &ok).toBase64());
+			  data.append(messageCode.toBase64());
 		      }
 		  }
 
@@ -1385,8 +1397,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 			  }
 
 			if(ok)
-			  data.append(crypt.encrypted(messageCode, &ok).
-				      toBase64());
+			  data.append(messageCode.toBase64());
 		      }
 
 		  if(ok)

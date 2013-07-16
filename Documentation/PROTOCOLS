@@ -105,7 +105,7 @@ Message Type ("0013") (Plaintext)
 TTL (Plaintext)
 0 - Message (Base-64) (Ciphertext, Gemini)
 EOL
-1 - Keyed Sha-512 Message Code (Base-64) (Ciphertext, Gemini)
+1 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
 
 Message Type ("0013") (Plaintext)
 TTL (Plaintext)
@@ -119,7 +119,7 @@ EOL
 EOL
 4 - Status (Base-64) (Ciphertext, SK)
 EOL
-5 - Keyed Sha-512 Message Code (Base-64) (Ciphertext, SK)
+5 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
 
 UUID Exchange
 Echoed? No
