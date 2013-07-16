@@ -124,6 +124,7 @@ void spoton::slotReceivedKernelMessage(void)
 
 	      for(int i = 0; i < m_ui.buzzTab->count(); i++)
 		{
+		  QList<QByteArray> a(list);
 		  bool ok = true;
 		  spoton_crypt crypt("aes256",
 				     QString(""),
@@ -133,9 +134,9 @@ void spoton::slotReceivedKernelMessage(void)
 				     0,
 				     QString(""));
 
-		  list.replace
+		  a.replace
 		    (0,
-		     crypt.decrypted(list.at(0), &ok)); /*
+		     crypt.decrypted(a.at(0), &ok)); /*
 							** Let's hope that
 							** we have a short
 							** name.
@@ -143,18 +144,21 @@ void spoton::slotReceivedKernelMessage(void)
 
 		  if(ok)
 		    {
-		      list.replace
+		      a.replace
 			(1,
-			 crypt.decrypted(list.at(1), &ok));
+			 crypt.decrypted(a.at(1), &ok));
 
 		      if(ok)
-			list.replace
+			a.replace
 			  (2,
-			   crypt.decrypted(list.at(2), &ok));
+			   crypt.decrypted(a.at(2), &ok));
 
 		      if(ok)
-			page = qobject_cast<spoton_buzzpage *>
-			  (m_ui.buzzTab->widget(i));
+			{
+			  list = a;
+			  page = qobject_cast<spoton_buzzpage *>
+			    (m_ui.buzzTab->widget(i));
+			}
 
 		      break;
 		    }
