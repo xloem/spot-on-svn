@@ -161,7 +161,21 @@ void spoton::slotReceivedKernelMessage(void)
 		}
 
 	      if(page)
-		page->appendMessage(list);
+		{
+		  QByteArray hash;
+		  bool ok = true;
+
+		  if(m_crypt)
+		    hash = spoton_crypt::keyedHash
+		      (data,
+		       QByteArray(m_crypt->symmetricKey(),
+				  m_crypt->symmetricKeyLength()),
+		       "sha512", &ok);
+		  else
+		    hash = spoton_crypt::sha512Hash(hash, &ok);
+
+		  page->appendMessage(hash, list);
+		}
 	    }
 	  else if(data.startsWith("message_"))
 	    {

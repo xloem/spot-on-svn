@@ -61,6 +61,7 @@ spoton_buzzpage::spoton_buzzpage(QTcpSocket *kernelSocket,
 
 spoton_buzzpage::~spoton_buzzpage()
 {
+  m_messagingCache.clear();
 }
 
 void spoton_buzzpage::slotSetIcons(void)
@@ -129,8 +130,14 @@ void spoton_buzzpage::slotSendMessage(void)
   ui.message->clear();
 }
 
-void spoton_buzzpage::appendMessage(const QList<QByteArray> &list)
+void spoton_buzzpage::appendMessage(const QByteArray &hash,
+				    const QList<QByteArray> &list)
 {
+  if(m_messagingCache.contains(hash))
+    return;
+  else
+    m_messagingCache.insert(hash, 0);
+
   if(list.size() != 3)
     return;
 
