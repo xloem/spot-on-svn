@@ -166,7 +166,9 @@ Echoed? Yes
 
 Message Type ("0040a") (Plaintext)
 TTL (Plaintext)
-0 - ID (Base-64) (Ciphertext, SK)
+0 - Name (Base-64) (Ciphertext, SK)
+EOL
+1 - ID (Base-64) (Ciphertext, SK)
 
 Message Type ("0040b") (Plaintext)
 TTL (Plaintext)
