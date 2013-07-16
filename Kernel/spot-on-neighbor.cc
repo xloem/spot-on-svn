@@ -1889,16 +1889,16 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 				 0,
 				 QString(""));
 
-	      message = crypt.decrypted(message, &ok);
-
-	      if(ok)
-		computedMessageCode = crypt.keyedHash(message, &ok);
+	      computedMessageCode = crypt.keyedHash(message, &ok);
 
 	      if(ok)
 		{
 		  if(computedMessageCode == messageCode)
 		    {
-		      list = message.split('\n');
+		      message = crypt.decrypted(message, &ok);
+
+		      if(ok)
+			list = message.split('\n');
 
 		      if(list.size() != 6)
 			{
@@ -1955,13 +1955,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 			     0,
 			     QString(""));
 
-	  name = crypt.decrypted(name, &ok);
-
-	  if(ok)
-	    publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
-
-	  if(ok)
-	    status = crypt.decrypted(status, &ok);
+	  publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
 	}
 
       if(ok)
@@ -1984,7 +1978,23 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	      if(computedMessageCode == messageCode)
 		{
 		  if(spoton_misc::isAcceptedParticipant(publicKeyHash))
-		    saveParticipantStatus(name, publicKeyHash, status);
+		    {
+		      spoton_crypt crypt(symmetricKeyAlgorithm,
+					 QString("sha512"),
+					 QByteArray(),
+					 symmetricKey,
+					 0,
+					 0,
+					 QString(""));
+
+		      name = crypt.decrypted(name, &ok);
+
+		      if(ok)
+			status = crypt.decrypted(status, &ok);
+
+		      if(ok)
+			saveParticipantStatus(name, publicKeyHash, status);
+		    }
 		}
 	      else
 		spoton_misc::logError("spoton_neighbor::process0013(): "
