@@ -1131,9 +1131,6 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	      message = crypt.decrypted(message, &ok);
 
 	      if(ok)
-		messageCode = crypt.decrypted(messageCode, &ok);
-
-	      if(ok)
 		computedMessageCode = crypt.keyedHash(message, &ok);
 
 	      if(ok)
@@ -1204,9 +1201,6 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 
 	  if(ok)
 	    publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
-
-	  if(ok)
-	    messageCode = crypt.decrypted(messageCode, &ok);
 	}
 
       if(ok)
@@ -1214,14 +1208,13 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	  if(spoton_misc::isAcceptedParticipant(publicKeyHash))
 	    {
 	      QByteArray computedMessageCode
-		(spoton_crypt::keyedHash(symmetricKey +
-					 symmetricKeyAlgorithm +
-					 publicKeyHash +
-					 name +
-					 message,
-					 symmetricKey,
-					 "sha512",
-					 &ok));
+		(spoton_crypt::
+		 keyedHash(list.value(2) + // Sender's Sha-512 Hash
+			   list.value(3) + // Name
+			   list.value(4),  // Message
+			   symmetricKey,
+			   "sha512",
+			   &ok));
 
 	      /*
 	      ** Let's not echo messages whose message codes
