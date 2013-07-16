@@ -33,9 +33,11 @@
 #include "spot-on-buzzpage.h"
 
 spoton_buzzpage::spoton_buzzpage(QTcpSocket *kernelSocket,
+				 const QByteArray &channel,
 				 const QByteArray &id,
 				 QWidget *parent):QWidget(parent)
 {
+  m_channel = channel;
   m_id = id;
   m_kernelSocket = kernelSocket;
   ui.setupUi(this);
@@ -105,6 +107,8 @@ void spoton_buzzpage::slotSendMessage(void)
 
   message.clear();
   message.append("buzz_");
+  message.append(m_channel.toBase64());
+  message.append("_");
   message.append(name.toBase64());
   message.append("_");
   message.append(m_id.toBase64());

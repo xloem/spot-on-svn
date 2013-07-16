@@ -103,6 +103,7 @@ class spoton_neighbor: public QSslSocket
   void process0014(int length, const QByteArray &data);
   void process0015(int length, const QByteArray &data);
   void process0030(int length, const QByteArray &data);
+  void process0040b(int length, const QByteArray &data);
   void recordMessageHash(const QByteArray &data);
   void saveEncryptedStatus(void);
   void saveExternalAddress(const QHostAddress &address,
@@ -148,11 +149,13 @@ class spoton_neighbor: public QSslSocket
   void slotPublicizeListenerPlaintext(const QHostAddress &address,
 				      const quint16 port);
   void slotReadyRead(void);
+  void slotReceivedBuzzMessage(const QByteArray &data, const qint64 id);
   void slotReceivedChatMessage(const QByteArray &data, const qint64 id);
   void slotReceivedMailMessage(const QByteArray &data, const qint64 id);
   void slotReceivedStatusMessage(const QByteArray &data, const qint64 id);
   void slotRetrieveMail(const QByteArray &data, const qint64 id);
   void slotRetrieveMail(const QList<QByteArray> &list);
+  void slotSendBuzz(const QByteArray &data);
   void slotSendKeepAlive(void);
   void slotSendMail(const QList<QPair<QByteArray, qint64> > &list);
   void slotSendMailFromPostOffice(const QByteArray &data);
@@ -165,6 +168,8 @@ class spoton_neighbor: public QSslSocket
  signals:
   void newEMailArrived(void);
   void publicizeListenerPlaintext(const QByteArray &data, const qint64 id);
+  void receivedBuzzMessage(const QByteArray &data, const qint64 id);
+  void receivedBuzzMessage(const QList<QByteArray> &list);
   void receivedChatMessage(const QByteArray &data);
   void receivedChatMessage(const QByteArray &data, const qint64 id);
   void receivedMailMessage(const QByteArray &data, const qint64 id);

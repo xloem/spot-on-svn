@@ -40,11 +40,13 @@ class spoton_buzzpage: public QWidget
 
  public:
   spoton_buzzpage(QTcpSocket *kernelSocket,
+		  const QByteArray &channel,
 		  const QByteArray &id,
 		  QWidget *parent);
   ~spoton_buzzpage();
 
  private:
+  QByteArray m_channel;
   QByteArray m_id;
   QPointer<QTcpSocket> m_kernelSocket;
   Ui_buzzPage ui;

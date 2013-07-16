@@ -81,6 +81,11 @@ class spoton_kernel: public QObject
   void prepareNeighbors(void);
 
  private slots:
+  void slotBuzzReceivedFromUI(const QByteArray &channel,
+			      const QByteArray &name,
+			      const QByteArray &id,
+			      const QByteArray &message,
+			      const QByteArray &sendMethod);
   void slotMessageReceivedFromUI(const qint64 oid,
 				 const QByteArray &name,
 				 const QByteArray &message);
@@ -113,12 +118,14 @@ class spoton_kernel: public QObject
 				  const qint64 id);
   void publicizeListenerPlaintext(const QHostAddress &address,
 				  const quint16 port);
-  void receivedChatMessage(const QByteArray &name, const qint64 id);
-  void receivedMailMessage(const QByteArray &name, const qint64 id);
+  void receivedBuzzMessage(const QByteArray &data, const qint64 id);
+  void receivedChatMessage(const QByteArray &data, const qint64 id);
+  void receivedMailMessage(const QByteArray &data, const qint64 id);
   void receivedStatusMessage(const QByteArray &data,
 			     const qint64 id);
   void retrieveMail(const QByteArray &data, const qint64 id);
   void retrieveMail(const QList<QByteArray> &list);
+  void sendBuzz(const QByteArray &buzz);
   void sendMessage(const QByteArray &message);
   void sendMail(const QList<QPair<QByteArray, qint64> > &mail);
   void sendStatus(const QList<QByteArray> &status);

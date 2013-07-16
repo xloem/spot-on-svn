@@ -1573,4 +1573,6 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   settings["kernel/ttl_0010"] = 16;
   settings["kernel/ttl_0013"] = 16;
   settings["kernel/ttl_0030"] = 64;
+  settings["kernel/ttl_0040a"] = 16;
+  settings["kernel/ttl_0040b"] = 16;
 }

@@ -3379,7 +3379,12 @@ void spoton::slotJoinBuzzChannel(void)
   m_ui.channel->clear();
 
   spoton_buzzpage *page = new spoton_buzzpage
-    (&m_kernelSocket, m_buzzId, this);
+    (&m_kernelSocket, channel.toLatin1(), m_buzzId, this); /*
+							   ** Should channel
+							   ** names be
+							   ** converted to
+							   ** UTF-8?
+							   */
 
   connect(this,
 	  SIGNAL(iconsChanged(void)),

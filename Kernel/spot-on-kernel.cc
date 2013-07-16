@@ -227,6 +227,12 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   if(!settings.contains("kernel/ttl_0030"))
     settings.setValue("kernel/ttl_0030", 64);
 
+  if(!settings.contains("kernel/ttl_0040a"))
+    settings.setValue("kernel/ttl_0040a", 16);
+
+  if(!settings.contains("kernel/ttl_0040b"))
+    settings.setValue("kernel/ttl_0040b", 16);
+
   for(int i = 0; i < settings.allKeys().size(); i++)
     s_settings[settings.allKeys().at(i)] = settings.value
       (settings.allKeys().at(i));
@@ -305,6 +311,18 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_guiServer = new spoton_gui_server(this);
   m_mailer = new spoton_mailer(this);
   m_sharedReader = new spoton_shared_reader(this);
+  connect(m_guiServer,
+	  SIGNAL(buzzReceivedFromUI(const QByteArray &,
+				    const QByteArray &,
+				    const QByteArray &,
+				    const QByteArray &,
+				    const QByteArray &)),
+	  this,
+	  SLOT(slotBuzzReceivedFromUI(const QByteArray &,
+				      const QByteArray &,
+				      const QByteArray &,
+				      const QByteArray &,
+				      const QByteArray &)));
   connect(m_guiServer,
 	  SIGNAL(messageReceivedFromUI(const qint64,
 				       const QByteArray &,
@@ -1031,6 +1049,16 @@ void spoton_kernel::connectSignalsToNeighbor
 	  m_guiServer,
 	  SLOT(slotNewEMailArrived(void)));
   connect(neighbor,
+	  SIGNAL(receivedBuzzMessage(const QByteArray &,
+				     const qint64)),
+	  this,
+	  SIGNAL(receivedBuzzMessage(const QByteArray &,
+				     const qint64)));
+  connect(neighbor,
+	  SIGNAL(receivedBuzzMessage(const QList<QByteArray> &)),
+	  m_guiServer,
+	  SLOT(slotReceivedBuzzMessage(const QList<QByteArray> &)));
+  connect(neighbor,
 	  SIGNAL(receivedChatMessage(const QByteArray &)),
 	  m_guiServer,
 	  SLOT(slotReceivedChatMessage(const QByteArray &)));
@@ -1090,6 +1118,12 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SLOT(slotPublicizeListenerPlaintext(const QHostAddress &,
 					      const quint16)));
   connect(this,
+	  SIGNAL(receivedBuzzMessage(const QByteArray &,
+				     const qint64)),
+	  neighbor,
+	  SIGNAL(slotReceivedBuzzMessage(const QByteArray &,
+					 const qint64)));
+  connect(this,
 	  SIGNAL(receivedChatMessage(const QByteArray &,
 				     const qint64)),
 	  neighbor,
@@ -1117,6 +1151,10 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SIGNAL(retrieveMail(const QList<QByteArray> &)),
 	  neighbor,
 	  SLOT(slotRetrieveMail(const QList<QByteArray> &)));
+  connect(this,
+	  SIGNAL(sendBuzz(const QByteArray &)),
+	  neighbor,
+	  SLOT(slotSendBuzz(const QByteArray &)));
   connect(this,
 	  SIGNAL(sendMail(const QList<QPair<QByteArray, qint64> > &)),
 	  neighbor,
@@ -2002,4 +2040,53 @@ void spoton_kernel::slotReceivedChatMessage(void)
     }
   else
     m_scramblerTimer.stop();
+}
+
+void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &channel,
+					   const QByteArray &name,
+					   const QByteArray &id,
+					   const QByteArray &message,
+					   const QByteArray &sendMethod)
+{
+  QList<QByteArray> list;
+  bool ok = true;
+  spoton_crypt crypt("aes256",
+		     QString(""),
+		     QByteArray(),
+		     channel,
+		     0,
+		     0,
+		     QString(""));
+
+  list.append(crypt.encrypted(name, &ok));
+
+  if(ok)
+    list.append(crypt.encrypted(id, &ok));
+
+  if(ok)
+    list.append(crypt.encrypted(message, &ok));
+
+  if(ok)
+    {
+      char c = 0;
+      short ttl = s_settings.value
+	("kernel/ttl_0040b", 16).toInt();
+
+      memcpy(&c, static_cast<void *> (&ttl), 1);
+
+      if(sendMethod == "Artificial_GET")
+	emit sendBuzz
+	  (spoton_send::message0040b(list.value(0),
+				     list.value(1),
+				     list.value(2),
+				     c,
+				     spoton_send::ARTIFICIAL_GET));
+      else
+	emit sendBuzz
+	  (spoton_send::message0040b(list.value(0),
+				     list.value(1),
+				     list.value(2),
+				     c,
+				     spoton_send::NORMAL_POST));
+    }
 }

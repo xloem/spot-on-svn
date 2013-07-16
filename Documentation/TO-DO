@@ -43,8 +43,9 @@ Remaining Items
 8.     Can we establish session keys on the Echo?
 9.     E-mail retrieval may fail if a node is disconnected because of
        a lifetime expiration.
-10.    The re-encoding phase may produce errors. Delete entries as
-       necessary.
+10.    The re-encoding phase may produce errors. Delete entries.
+11.    Some messages are echoed. The transfer method (get, post) of the
+       original message should be respected.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.

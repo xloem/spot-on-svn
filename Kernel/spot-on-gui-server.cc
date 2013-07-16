@@ -142,6 +142,20 @@ void spoton_gui_server::slotReadyRead(void)
 		       QByteArray::fromBase64(list.at(6)),
 		       "0012");
 		}
+	      else if(message.startsWith("buzz_"))
+		{
+		  message.remove(0, strlen("buzz_"));
+
+		  QList<QByteArray> list(message.split('_'));
+
+		  if(list.size() == 5)
+		    emit buzzReceivedFromUI
+		      (QByteArray::fromBase64(list.at(0)),
+		       QByteArray::fromBase64(list.at(1)),
+		       QByteArray::fromBase64(list.at(2)),
+		       QByteArray::fromBase64(list.at(3)),
+		       QByteArray::fromBase64(list.at(4)));
+		}
 	      else if(message.startsWith("keys_"))
 		{
 		  message.remove(0, strlen("keys_"));
@@ -282,6 +296,26 @@ void spoton_gui_server::slotTimeout(void)
   }
 
   QSqlDatabase::removeDatabase("spoton_gui_server");
+}
+
+void spoton_gui_server::slotReceivedBuzzMessage
+(const QList<QByteArray> &list)
+{
+  QByteArray message;
+
+  message.append(list.value(0).toBase64());
+  message.append("_");
+  message.append(list.value(1).toBase64());
+  message.append("_");
+  message.append(list.value(2).toBase64());
+
+  foreach(QTcpSocket *socket, findChildren<QTcpSocket *> ())
+    if(socket->write(message.constData(),
+		     message.length()) != message.length())
+      spoton_misc::logError("spoton_gui_server::slotReceivedBuzzMessage(): "
+			    "write() failure.");
+    else
+      socket->flush();
 }
 
 void spoton_gui_server::slotReceivedChatMessage(const QByteArray &message)

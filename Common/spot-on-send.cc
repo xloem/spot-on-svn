@@ -327,3 +327,63 @@ QByteArray spoton_send::message0030(const QHostAddress &address,
     ("%2", content.toBase64());
   return results;
 }
+
+QByteArray spoton_send::message0040b(const QByteArray &message)
+{
+  QByteArray results;
+
+  results.append
+    ("POST /echo/ HTTP/1.1\r\n"
+     "Content-Type: application/x-www-form-urlencoded\r\n"
+     "Content-Length: %1\r\n"
+     "\r\n"
+     "type=0040b&content=%2\r\n"
+     "\r\n\r\n");
+  results.replace
+    ("%1",
+     QString::number(message.toBase64().length() +
+		     QString("type=0040b&content=\r\n\r\n\r\n").length()).
+     toLatin1());
+  results.replace
+    ("%2", message.toBase64());
+  return results;
+}
+
+
+QByteArray spoton_send::message0040b
+(const QByteArray &name,
+ const QByteArray &id,
+ const QByteArray &message,
+ const char ttl,
+ const spoton_send_method sendMethod)
+{
+  QByteArray content;
+  QByteArray results;
+
+  if(sendMethod == ARTIFICIAL_GET)
+    results.append("HTTP/1.1 200 OK\r\n");
+  else
+    results.append("POST /echo/ HTTP/1.1\r\n");
+
+  results.append
+    ("Content-Type: application/x-www-form-urlencoded\r\n"
+     "Content-Length: %1\r\n"
+     "\r\n"
+     "type=0040b&content=%2\r\n"
+     "\r\n\r\n");
+  content.append(ttl);
+  content.append(name.toBase64());
+  content.append("\n");
+  content.append(id.toBase64());
+  content.append("\n");
+  content.append(message.toBase64());
+  results.replace
+    ("%1",
+     QString::number(content.toBase64().length() +
+		     QString("type=0040b&content=\r\n\r\n\r\n").
+		     length()).
+     toLatin1());
+  results.replace
+    ("%2", content.toBase64());
+  return results;
+}
