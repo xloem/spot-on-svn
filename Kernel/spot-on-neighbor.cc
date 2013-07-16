@@ -1128,16 +1128,16 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 				 0,
 				 QString(""));
 
-	      message = crypt.decrypted(message, &ok);
-
-	      if(ok)
-		computedMessageCode = crypt.keyedHash(message, &ok);
+	      computedMessageCode = crypt.keyedHash(message, &ok);
 
 	      if(ok)
 		{
 		  if(computedMessageCode == messageCode)
 		    {
-		      list = message.split('\n');
+		      message = crypt.decrypted(message, &ok);
+
+		      if(ok)
+			list = message.split('\n');
 
 		      if(list.size() != 6)
 			{
@@ -1194,13 +1194,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 			     0,
 			     QString(""));
 
-	  message = crypt.decrypted(message, &ok);
-
-	  if(ok)
-	    name = crypt.decrypted(name, &ok);
-
-	  if(ok)
-	    publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
+	  publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
 	}
 
       if(ok)
@@ -1225,20 +1219,36 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 		{
 		  if(computedMessageCode == messageCode)
 		    {
-		      QByteArray hash
-			(s_crypt->
-			 keyedHash(originalData, &ok));
+		      spoton_crypt crypt(symmetricKeyAlgorithm,
+			     QString("sha512"),
+			     QByteArray(),
+			     symmetricKey,
+			     0,
+			     0,
+			     QString(""));
 
-		      saveParticipantStatus(name, publicKeyHash);
+		      message = crypt.decrypted(message, &ok);
 
-                      if(!hash.isEmpty() &&
-			 !message.isEmpty() &&
-			 !name.isEmpty())
-			emit receivedChatMessage
-			  ("message_" +
-			   hash.toBase64() + "_" +
-			   name.toBase64() + "_" +
-			   message.toBase64().append('\n'));
+		      if(ok)
+			name = crypt.decrypted(name, &ok);
+
+		      if(ok)
+			{
+			  QByteArray hash
+			    (s_crypt->
+			     keyedHash(originalData, &ok));
+
+			  saveParticipantStatus(name, publicKeyHash);
+
+			  if(!hash.isEmpty() &&
+			     !message.isEmpty() &&
+			     !name.isEmpty())
+			    emit receivedChatMessage
+			      ("message_" +
+			       hash.toBase64() + "_" +
+			       name.toBase64() + "_" +
+			       message.toBase64().append('\n'));
+			}
 		    }
 		  else
 		    spoton_misc::logError("spoton_neighbor::process0000(): "

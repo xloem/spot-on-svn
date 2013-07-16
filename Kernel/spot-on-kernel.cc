@@ -935,16 +935,17 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 			       0,
 			       QString(""));
 
-	    messageCode = crypt.keyedHash(data, &ok);
+	    data = crypt.encrypted(data, &ok);
+
+	    if(ok)
+	      messageCode = crypt.keyedHash(data, &ok);
 
 	    if(ok)
 	      {
-		data = crypt.encrypted(data, &ok).toBase64();
+		data = data.toBase64();
 		data.append("\n");
+		data.append(messageCode.toBase64());
 	      }
-
-	    if(ok)
-	      data.append(messageCode.toBase64());
 	  }
 
       if(ok)
