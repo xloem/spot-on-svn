@@ -128,3 +128,33 @@ void spoton_buzzpage::slotSendMessage(void)
 
   ui.message->clear();
 }
+
+void spoton_buzzpage::appendMessage(const QList<QByteArray> &list)
+{
+  if(list.size() != 3)
+    return;
+
+  QByteArray id(list.at(1));
+  QByteArray name(list.at(0));
+  QByteArray message(list.at(2));
+  QString msg("");
+
+  if(name.isEmpty())
+    name = "unknown";
+
+  if(message.isEmpty())
+    message = "unknown";
+
+  msg.append
+    (QDateTime::currentDateTime().
+     toString("[hh:mm<font color=grey>:ss</font>] "));
+  msg.append
+    (QString("<font color=blue>%1: </font>").
+     arg(QString::fromUtf8(name.constData(),
+			   name.length())));
+  msg.append(QString::fromUtf8(message.constData(),
+			       message.length()));
+  ui.messages->append(msg);
+  ui.messages->verticalScrollBar()->setValue
+    (ui.messages->verticalScrollBar()->maximum());
+}

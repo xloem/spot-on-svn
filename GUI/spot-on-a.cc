@@ -805,7 +805,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.urlsVerticalSplitter->setStretchFactor(0, 0);
   m_ui.urlsVerticalSplitter->setStretchFactor(1, 1);
   prepareListenerIPCombo();
-  m_buzzId.append(spoton_crypt::strongRandomBytes(128)); // Do we need more?
+  m_buzzId = spoton_crypt::strongRandomBytes(128).toBase64(); // More?
 
   /*
   ** Not wise! We may find things we're not prepared for.

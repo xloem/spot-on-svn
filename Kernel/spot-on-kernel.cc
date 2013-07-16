@@ -1121,8 +1121,8 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SIGNAL(receivedBuzzMessage(const QByteArray &,
 				     const qint64)),
 	  neighbor,
-	  SIGNAL(slotReceivedBuzzMessage(const QByteArray &,
-					 const qint64)));
+	  SLOT(slotReceivedBuzzMessage(const QByteArray &,
+				       const qint64)));
   connect(this,
 	  SIGNAL(receivedChatMessage(const QByteArray &,
 				     const qint64)),

@@ -104,7 +104,66 @@ void spoton::slotReceivedKernelMessage(void)
 	{
 	  QByteArray data(list.takeFirst());
 
-	  if(data.startsWith("message_"))
+	  if(data.startsWith("buzz_"))
+	    {
+	      data.remove(0, strlen("buzz_"));
+
+	      QList<QByteArray> list(data.split('_'));
+
+	      if(list.size() != 3)
+		continue;
+
+	      for(int i = 0; i < list.size(); i++)
+		list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+	      /*
+	      ** Find the channel!
+	      */
+
+	      spoton_buzzpage *page = 0;
+
+	      for(int i = 0; i < m_ui.buzzTab->count(); i++)
+		{
+		  bool ok = true;
+		  spoton_crypt crypt("aes256",
+				     QString(""),
+				     QByteArray(),
+				     m_ui.buzzTab->tabText(i).toLatin1(),
+				     0,
+				     0,
+				     QString(""));
+
+		  list.replace
+		    (0,
+		     crypt.decrypted(list.at(0), &ok)); /*
+							** Let's hope that
+							** we have a short
+							** name.
+							*/
+
+		  if(ok)
+		    {
+		      list.replace
+			(1,
+			 crypt.decrypted(list.at(1), &ok));
+
+		      if(ok)
+			list.replace
+			  (2,
+			   crypt.decrypted(list.at(2), &ok));
+
+		      if(ok)
+			page = qobject_cast<spoton_buzzpage *>
+			  (m_ui.buzzTab->widget(i));
+
+		      break;
+		    }
+		}
+
+	      if(page)
+		page->appendMessage(list);
+	    }
+	  else if(data.startsWith("message_"))
 	    {
 	      data.remove(0, strlen("message_"));
 
@@ -169,6 +228,13 @@ void spoton::slotReceivedKernelMessage(void)
 	  else if(data == "newmail")
 	    m_sb.email->setVisible(true);
 	}
+    }
+  else if(m_kernelSocketData.length() > 50000)
+    {
+      m_kernelSocketData.clear();
+      spoton_misc::logError("spoton::slotReceivedKernelMessage(): "
+			    "unable to detect an EOL in m_kernelSocketData. "
+			    "The container is bloated! Purging.");
     }
 }
 

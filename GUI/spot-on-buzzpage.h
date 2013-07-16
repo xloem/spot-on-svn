@@ -28,6 +28,7 @@
 #ifndef _spoton_buzzpage_h_
 #define _spoton_buzzpage_h_
 
+#include <QCache>
 #include <QPointer>
 #include <QTcpSocket>
 #include <QWidget>
@@ -44,10 +45,15 @@ class spoton_buzzpage: public QWidget
 		  const QByteArray &id,
 		  QWidget *parent);
   ~spoton_buzzpage();
+  void appendMessage(const QList<QByteArray> &list);
 
  private:
   QByteArray m_channel;
   QByteArray m_id;
+  QCache<QByteArray, char *> m_messagingCache; /*
+					       ** Prevent duplicate
+					       ** echoed messages.
+					       */
   QPointer<QTcpSocket> m_kernelSocket;
   Ui_buzzPage ui;
 

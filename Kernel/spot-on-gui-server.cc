@@ -303,11 +303,13 @@ void spoton_gui_server::slotReceivedBuzzMessage
 {
   QByteArray message;
 
+  message.append("buzz_");
   message.append(list.value(0).toBase64());
   message.append("_");
   message.append(list.value(1).toBase64());
   message.append("_");
   message.append(list.value(2).toBase64());
+  message.append("\n");
 
   foreach(QTcpSocket *socket, findChildren<QTcpSocket *> ())
     if(socket->write(message.constData(),
