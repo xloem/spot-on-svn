@@ -1533,19 +1533,14 @@ void spoton::slotAddFriendsKey(void)
       if(!ok)
 	return;
 
-      hash = crypt.decrypted(list.value(8), &ok);
-
-      if(!ok)
-	return;
+      hash = list.value(8);
 
       QByteArray computedHash
-	(crypt.keyedHash(symmetricKey +
-			 symmetricKeyAlgorithm +
-			 name +
-			 publicKey +
-			 signature +
-			 sPublicKey +
-			 sSignature, &ok));
+	(crypt.keyedHash(list.value(3) +
+			 list.value(4) +
+			 list.value(5) +
+			 list.value(6) +
+			 list.value(7), &ok));
 
       if(!ok)
 	return;
@@ -1781,6 +1776,7 @@ void spoton::slotCopyFriendshipBundle(void)
     }
 
   QByteArray myName;
+  QList<QByteArray> list;
   spoton_crypt crypt(symmetricKeyAlgorithm,
 		     QString("sha512"),
 		     QByteArray(),
@@ -1804,7 +1800,8 @@ void spoton::slotCopyFriendshipBundle(void)
   if(myName.isEmpty())
     myName = "unknown";
 
-  data.append(crypt.encrypted(myName, &ok).toBase64());
+  list.append(crypt.encrypted(myName, &ok));
+  data.append(list.at(0).toBase64());
   data.append("@");
 
   if(!ok)
@@ -1821,7 +1818,8 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  data.append(crypt.encrypted(myPublicKey, &ok).toBase64());
+  list.append(crypt.encrypted(myPublicKey, &ok));
+  data.append(list.at(1).toBase64());
   data.append("@");
 
   if(!ok)
@@ -1838,7 +1836,8 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  data.append(crypt.encrypted(mySignature, &ok).toBase64());
+  list.append(crypt.encrypted(mySignature, &ok));
+  data.append(list.at(2).toBase64());
   data.append("@");
 
   if(!ok)
@@ -1855,7 +1854,8 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  data.append(crypt.encrypted(mySPublicKey, &ok).toBase64());
+  list.append(crypt.encrypted(mySPublicKey, &ok));
+  data.append(list.at(3).toBase64());
   data.append("@");
 
   if(!ok)
@@ -1873,7 +1873,8 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  data.append(crypt.encrypted(mySSignature, &ok).toBase64());
+  list.append(crypt.encrypted(mySSignature, &ok));
+  data.append(list.at(4).toBase64());
   data.append("@");
 
   if(!ok)
@@ -1882,13 +1883,11 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  QByteArray hash(crypt.keyedHash(symmetricKey +
-				  symmetricKeyAlgorithm +
-				  myName +
-				  myPublicKey +
-				  mySignature +
-				  mySPublicKey +
-				  mySSignature, &ok));
+  QByteArray hash(crypt.keyedHash(list.at(0) +
+				  list.at(1) +
+				  list.at(2) +
+				  list.at(3) +
+				  list.at(4), &ok));
 
   if(!ok)
     {
@@ -1896,14 +1895,7 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  data.append(crypt.encrypted(hash, &ok).toBase64());
-
-  if(!ok)
-    {
-      clipboard->clear();
-      return;
-    }
-
+  data.append(hash.toBase64());
   clipboard->setText("R" + data);
 }
 
