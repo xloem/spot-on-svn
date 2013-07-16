@@ -55,6 +55,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_isUserDefined = false;
   m_maximumBufferSize = 131072; // 2 ^ 17
   m_maximumContentLength = 65536; // 2 ^ 16
+  m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
 
   if(certificate.isEmpty() || privateKey.isEmpty())
     m_useSsl = false;
@@ -169,6 +170,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_isUserDefined = userDefined;
   m_maximumBufferSize = maximumBufferSize;
   m_maximumContentLength = maximumContentLength;
+  m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
   m_useSsl = true;
   s_dbId += 1;
   setProxy(proxy);
@@ -2028,29 +2030,46 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
 	{
 	  m_receivedUuid = uuid;
 
-	  {
-	    QSqlDatabase db = QSqlDatabase::addDatabase
-	      ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
+	  if(m_receivedUuid.isNull())
+	    m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
 
-	    db.setDatabaseName
-	      (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
+	  spoton_crypt *s_crypt = 0;
 
-	    if(db.open())
+	  if(spoton_kernel::s_crypts.contains("messaging"))
+	    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+	  if(s_crypt)
+	    {
 	      {
-		QSqlQuery query(db);
+		QSqlDatabase db = QSqlDatabase::addDatabase
+		  ("QSQLITE", "spoton_neighbor_" + QString::number(s_dbId));
 
-		query.prepare("UPDATE neighbors SET uuid = ? "
-			      "WHERE OID = ?");
-		query.bindValue(0, uuid.toString());
-		query.bindValue(1, m_id);
-		query.exec();
+		db.setDatabaseName
+		  (spoton_misc::homePath() + QDir::separator() +
+		   "neighbors.db");
+
+		if(db.open())
+		  {
+		    QSqlQuery query(db);
+		    bool ok = true;
+
+		    query.prepare("UPDATE neighbors SET uuid = ? "
+				  "WHERE OID = ?");
+		    query.bindValue
+		      (0, s_crypt->encrypted(uuid.toString().toLatin1(),
+					     &ok).toBase64());
+		    query.bindValue(1, m_id);
+
+		    if(ok)
+		      query.exec();
+		  }
+
+		db.close();
 	      }
 
-	    db.close();
-	  }
-
-	  QSqlDatabase::removeDatabase
-	    ("spoton_neighbor_" + QString::number(s_dbId));
+	      QSqlDatabase::removeDatabase
+		("spoton_neighbor_" + QString::number(s_dbId));
+	    }
 	}
     }
   else

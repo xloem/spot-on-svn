@@ -1087,10 +1087,11 @@ void spoton::slotAddNeighbor(void)
 			  "proxy_type, "
 			  "proxy_username, "
 			  "private_key, "
-			  "public_key) "
+			  "public_key, "
+			  "uuid) "
 			  "VALUES "
 			  "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-			  "?, ?, ?, ?, ?)");
+			  "?, ?, ?, ?, ?, ?)");
 
 	    query.bindValue(0, QVariant(QVariant::String));
 	    query.bindValue(1, QVariant(QVariant::String));
@@ -1245,6 +1246,12 @@ void spoton::slotAddNeighbor(void)
 	    if(ok)
 	      query.bindValue
 		(18, m_crypt->encrypted(publicKey, &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(19, m_crypt->
+		 encrypted(QByteArray("{00000000-0000-0000-0000-"
+				      "000000000000}"), &ok).toBase64());
 
 	    if(ok)
 	      ok = query.exec();
@@ -1660,7 +1667,7 @@ void spoton::slotPopulateNeighbors(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT sticky, UPPER(uuid), status, "
+	if(query.exec("SELECT sticky, uuid, status, "
 		      "status_control, "
 		      "local_ip_address, local_port, "
 		      "external_ip_address, external_port, "
@@ -1719,20 +1726,29 @@ void spoton::slotPopulateNeighbors(void)
 			  active += 1;
 		      }
 
-		    if(i == 6 || (i >= 8 && i <= 11) || (i >= 13 && i <= 14))
+		    if(i == 1 ||
+		       i == 6 || (i >= 8 && i <= 11) || (i >= 13 && i <= 14))
 		      {
 			if(query.value(i).isNull())
 			  item = new QTableWidgetItem();
 			else
 			  {
+			    QByteArray bytes;
 			    bool ok = true;
 
-			    item = new QTableWidgetItem
-			      (m_crypt->decrypted(QByteArray::
-						  fromBase64(query.
-							     value(i).
-							     toByteArray()),
-						  &ok).constData());
+			    bytes = m_crypt->decrypted
+			      (QByteArray::
+			       fromBase64(query.
+					  value(i).
+					  toByteArray()),
+			       &ok);
+
+			    if(i == 1) // UUID
+			      if(bytes.isEmpty())
+				bytes =
+				  "{00000000-0000-0000-0000-000000000000}";
+
+			    item = new QTableWidgetItem(bytes.constData());
 			  }
 		      }
 		    else

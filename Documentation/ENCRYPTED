@@ -44,6 +44,7 @@ public_key
 remote_ip_address
 remote_port
 scope_id
+uuid
 
 shared.db:
 

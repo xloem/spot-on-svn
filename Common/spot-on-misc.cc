@@ -307,8 +307,7 @@ void spoton_misc::prepareDatabases(void)
 	   "sticky INTEGER NOT NULL DEFAULT 1, "
 	   "external_ip_address TEXT, "
 	   "external_port TEXT, "
-	   "uuid TEXT NOT NULL DEFAULT "
-	   "'{00000000-0000-0000-0000-000000000000}', "
+	   "uuid TEXT NOT NULL, "
 	   "country TEXT, "
 	   "hash TEXT PRIMARY KEY NOT NULL, " /*
 					      ** Hash of the proxy IP address,
@@ -1359,8 +1358,9 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 		   "proxy_type, "
 		   "proxy_username, "
 		   "private_key, "
-		   "public_key) "
-		   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, "
+		   "public_key, "
+		   "uuid) "
+		   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, "
 		   "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
@@ -1476,6 +1476,12 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 		(19, crypt->encrypted(publicKey, &ok).
 		 toBase64());
 	  }
+
+	if(ok)
+	  query.bindValue
+	    (20, crypt->
+	     encrypted(QByteArray("{00000000-0000-0000-0000-000000000000}"),
+		       &ok).toBase64());
 
 	if(ok)
 	  query.exec();

@@ -580,7 +580,12 @@ void spoton_listener::slotEncrypted(void)
 				    toString().toLatin1(),
 				    &ok).toBase64());
 
-	    query.bindValue(13, neighbor->receivedUuid().toString());
+	    if(ok)
+	      query.bindValue
+		(13,
+		 s_crypt->encrypted(neighbor->receivedUuid().toString().
+				    toLatin1(), &ok).toBase64());
+
 	    query.bindValue(14, 0);
 
 	    QString proxyHostname("");

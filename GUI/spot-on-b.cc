@@ -2046,10 +2046,14 @@ void spoton::slotShareURLPublicKey(void)
 
 void spoton::slotDeleteAllUuids(void)
 {
+   if(!m_crypt)
+    return;
+
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   /*
   ** Delete all non-unique uuids.
+  ** Do remember that uuid contains encrypted data.
   */
 
   {
@@ -2060,10 +2064,40 @@ void spoton::slotDeleteAllUuids(void)
 
     if(db.open())
       {
+	QMultiHash<QByteArray, qint64> hash;
 	QSqlQuery query(db);
 
-	query.exec("DELETE FROM neighbors WHERE OID NOT IN ("
-		   "SELECT OID FROM neighbors GROUP BY uuid)");
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT uuid, OID FROM neighbors ORDER BY OID"))
+	  while(query.next())
+	    {
+	      QByteArray uuid;
+	      bool ok = true;
+
+	      uuid =
+		m_crypt->decrypted(QByteArray::fromBase64(query.value(0).
+							  toByteArray()),
+				   &ok);
+
+	      if(ok)
+		hash.insert(uuid, query.value(1).toLongLong());
+	    }
+
+	query.prepare("DELETE FROM neighbors WHERE OID = ?");
+
+	for(int i = 0; i < hash.keys().size(); i++)
+	  {
+	    QList<qint64> list(hash.values(hash.keys().at(i)));
+
+	    qSort(list);
+
+	    for(int j = 1; j < list.size(); j++) // Delete all but one.
+	      {
+		query.bindValue(0, list.at(j));
+		query.exec();
+	      }
+	  }
       }
 
     db.close();
