@@ -85,7 +85,8 @@ class spoton_kernel: public QObject
 			      const QByteArray &name,
 			      const QByteArray &id,
 			      const QByteArray &message,
-			      const QByteArray &sendMethod);
+			      const QByteArray &sendMethod,
+			      const QString &messageType);
   void slotMessageReceivedFromUI(const qint64 oid,
 				 const QByteArray &name,
 				 const QByteArray &message);

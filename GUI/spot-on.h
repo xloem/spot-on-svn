@@ -100,7 +100,6 @@ class spoton: public QMainWindow
   static const int APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL = 2;
   static const int APPLY_GOLDBUG_TO_INBOX_ERROR_MEMORY = 3;
   static const int NAME_MAXIMUM_LENGTH = 64;
-  QByteArray m_buzzId;
   QByteArray m_kernelSocketData;
   QCache<QByteArray, char *> m_messagingCache; /*
 					       ** Prevent duplicate

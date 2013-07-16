@@ -316,13 +316,15 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 				    const QByteArray &,
 				    const QByteArray &,
 				    const QByteArray &,
-				    const QByteArray &)),
+				    const QByteArray &,
+				    const QString &)),
 	  this,
 	  SLOT(slotBuzzReceivedFromUI(const QByteArray &,
 				      const QByteArray &,
 				      const QByteArray &,
 				      const QByteArray &,
-				      const QByteArray &)));
+				      const QByteArray &,
+				      const QString &)));
   connect(m_guiServer,
 	  SIGNAL(messageReceivedFromUI(const qint64,
 				       const QByteArray &,
@@ -2046,7 +2048,8 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &channel,
 					   const QByteArray &name,
 					   const QByteArray &id,
 					   const QByteArray &message,
-					   const QByteArray &sendMethod)
+					   const QByteArray &sendMethod,
+					   const QString &messageType)
 {
   QList<QByteArray> list;
   bool ok = true;
@@ -2063,30 +2066,45 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &channel,
   if(ok)
     list.append(crypt.encrypted(id, &ok));
 
-  if(ok)
-    list.append(crypt.encrypted(message, &ok));
+  if(messageType == "0040b")
+    if(ok)
+      list.append(crypt.encrypted(message, &ok));
 
   if(ok)
     {
       char c = 0;
-      short ttl = s_settings.value
-	("kernel/ttl_0040b", 16).toInt();
+      short ttl = 0;
+
+      if(messageType == "0040a")
+	ttl = s_settings.value
+	  ("kernel/ttl_0040a", 16).toInt();
+      else
+	ttl = s_settings.value
+	  ("kernel/ttl_0040b", 16).toInt();
 
       memcpy(&c, static_cast<void *> (&ttl), 1);
 
-      if(sendMethod == "Artificial_GET")
+      if(messageType == "0040a")
 	emit sendBuzz
-	  (spoton_send::message0040b(list.value(0),
+	  (spoton_send::message0040a(list.value(0),
 				     list.value(1),
-				     list.value(2),
-				     c,
-				     spoton_send::ARTIFICIAL_GET));
+				     c));
       else
-	emit sendBuzz
-	  (spoton_send::message0040b(list.value(0),
-				     list.value(1),
-				     list.value(2),
-				     c,
-				     spoton_send::NORMAL_POST));
+	{
+	  if(sendMethod == "Artificial_GET")
+	    emit sendBuzz
+	      (spoton_send::message0040b(list.value(0),
+					 list.value(1),
+					 list.value(2),
+					 c,
+					 spoton_send::ARTIFICIAL_GET));
+	  else
+	    emit sendBuzz
+	      (spoton_send::message0040b(list.value(0),
+					 list.value(1),
+					 list.value(2),
+					 c,
+					 spoton_send::NORMAL_POST));
+	}
     }
 }

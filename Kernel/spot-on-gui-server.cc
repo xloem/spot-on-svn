@@ -148,13 +148,22 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  QList<QByteArray> list(message.split('_'));
 
-		  if(list.size() == 5)
+		  if(list.size() == 3)
+		    emit buzzReceivedFromUI
+		      (QByteArray::fromBase64(list.at(0)),
+		       QByteArray::fromBase64(list.at(1)),
+		       QByteArray::fromBase64(list.at(2)),
+		       QByteArray(),
+		       QByteArray(),
+		       "0040a");
+		  else if(list.size() == 5)
 		    emit buzzReceivedFromUI
 		      (QByteArray::fromBase64(list.at(0)),
 		       QByteArray::fromBase64(list.at(1)),
 		       QByteArray::fromBase64(list.at(2)),
 		       QByteArray::fromBase64(list.at(3)),
-		       QByteArray::fromBase64(list.at(4)));
+		       QByteArray::fromBase64(list.at(4)),
+		       "0040b");
 		}
 	      else if(message.startsWith("keys_"))
 		{
