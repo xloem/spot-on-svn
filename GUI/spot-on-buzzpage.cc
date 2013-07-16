@@ -133,13 +133,13 @@ void spoton_buzzpage::slotSendMessage(void)
 void spoton_buzzpage::appendMessage(const QByteArray &hash,
 				    const QList<QByteArray> &list)
 {
+  if(list.size() != 3)
+    return;
+
   if(m_messagingCache.contains(hash))
     return;
   else
     m_messagingCache.insert(hash, 0);
-
-  if(list.size() != 3)
-    return;
 
   QByteArray id(list.at(1));
   QByteArray name(list.at(0));
