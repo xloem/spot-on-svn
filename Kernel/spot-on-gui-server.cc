@@ -133,13 +133,13 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  if(list.size() == 7)
 		    emit publicKeyReceivedFromUI
-		      (list.at(0).toLongLong(),
-		       QByteArray::fromBase64(list.at(1)),
-		       QByteArray::fromBase64(list.at(2)),
-		       QByteArray::fromBase64(list.at(3)),
-		       QByteArray::fromBase64(list.at(4)),
-		       QByteArray::fromBase64(list.at(5)),
-		       QByteArray::fromBase64(list.at(6)),
+		      (list.value(0).toLongLong(),
+		       QByteArray::fromBase64(list.value(1)),
+		       QByteArray::fromBase64(list.value(2)),
+		       QByteArray::fromBase64(list.value(3)),
+		       QByteArray::fromBase64(list.value(4)),
+		       QByteArray::fromBase64(list.value(5)),
+		       QByteArray::fromBase64(list.value(6)),
 		       "0012");
 		}
 	      else if(message.startsWith("buzz_"))
@@ -150,19 +150,19 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  if(list.size() == 3)
 		    emit buzzReceivedFromUI
-		      (QByteArray::fromBase64(list.at(0)),
-		       QByteArray::fromBase64(list.at(1)),
-		       QByteArray::fromBase64(list.at(2)),
+		      (QByteArray::fromBase64(list.value(0)),
+		       QByteArray::fromBase64(list.value(1)),
+		       QByteArray::fromBase64(list.value(2)),
 		       QByteArray(),
 		       QByteArray(),
 		       "0040a");
 		  else if(list.size() == 5)
 		    emit buzzReceivedFromUI
-		      (QByteArray::fromBase64(list.at(0)),
-		       QByteArray::fromBase64(list.at(1)),
-		       QByteArray::fromBase64(list.at(2)),
-		       QByteArray::fromBase64(list.at(3)),
-		       QByteArray::fromBase64(list.at(4)),
+		      (QByteArray::fromBase64(list.value(0)),
+		       QByteArray::fromBase64(list.value(1)),
+		       QByteArray::fromBase64(list.value(2)),
+		       QByteArray::fromBase64(list.value(3)),
+		       QByteArray::fromBase64(list.value(4)),
 		       "0040b");
 		}
 	      else if(message.startsWith("keys_"))
@@ -183,8 +183,8 @@ void spoton_gui_server::slotReadyRead(void)
 			 spoton_kernel::s_settings.value("gui/hashType",
 							 "sha512").
 			 toString().trimmed(),
-			 QByteArray::fromBase64(list.at(0)),
-			 QByteArray::fromBase64(list.at(1)),
+			 QByteArray::fromBase64(list.value(0)),
+			 QByteArray::fromBase64(list.value(1)),
 			 spoton_kernel::s_settings.value("gui/saltLength",
 							 256).toInt(),
 			 spoton_kernel::s_settings.value("gui/iterationCount",
@@ -241,9 +241,9 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  if(list.size() == 3)
 		    emit messageReceivedFromUI
-		      (list.at(0).toLongLong(),
-		       QByteArray::fromBase64(list.at(1)),
-		       QByteArray::fromBase64(list.at(2)));
+		      (list.value(0).toLongLong(),
+		       QByteArray::fromBase64(list.value(1)),
+		       QByteArray::fromBase64(list.value(2)));
 		}
 	      else if(message.startsWith("publicizealllistenersplaintext"))
 		emit publicizeAllListenersPlaintext();
@@ -255,7 +255,7 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  if(list.size() == 1)
 		    emit publicizeListenerPlaintext
-		      (list.at(0).toLongLong());
+		      (list.value(0).toLongLong());
 		}
 	      else if(message.startsWith("retrievemail"))
 		emit retrieveMail();
@@ -267,13 +267,13 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  if(list.size() == 7)
 		    emit publicKeyReceivedFromUI
-		      (list.at(0).toLongLong(),
-		       QByteArray::fromBase64(list.at(1)),
-		       QByteArray::fromBase64(list.at(2)),
-		       QByteArray::fromBase64(list.at(3)),
-		       QByteArray::fromBase64(list.at(4)),
-		       QByteArray::fromBase64(list.at(5)),
-		       QByteArray::fromBase64(list.at(6)),
+		      (list.value(0).toLongLong(),
+		       QByteArray::fromBase64(list.value(1)),
+		       QByteArray::fromBase64(list.value(2)),
+		       QByteArray::fromBase64(list.value(3)),
+		       QByteArray::fromBase64(list.value(4)),
+		       QByteArray::fromBase64(list.value(5)),
+		       QByteArray::fromBase64(list.value(6)),
 		       "0011");
 		}
 	    }

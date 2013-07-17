@@ -148,8 +148,8 @@ void spoton::slotReceivedKernelMessage(void)
 			(1,
 			 crypt.decrypted(a.at(1), &ok));
 
-		      if(list.size() == 3)
-			if(ok)
+		      if(ok)
+			if(a.size() == 3)
 			  a.replace
 			    (2,
 			     crypt.decrypted(a.at(2), &ok));

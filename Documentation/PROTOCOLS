@@ -48,7 +48,7 @@ EOL
 EOL
 9 - Message (Base-64) (Ciphertext, SK)
 EOL
-10 - Keyed Sha-512 Message Code (Base-64) (Ciphertext, SK)
+10 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
 
 Message Type ("0001b") (Plaintext)
 TTL (Plaintext)
@@ -64,7 +64,7 @@ EOL
 EOL
 5 - Message (Base-64) (Ciphertext, SK)
 EOL
-6 - Keyed Sha-512 Message Code (Base-64) (Ciphertext, SK)
+6 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
 
 Retrieve Mail
 Echoed? Yes
@@ -79,7 +79,7 @@ EOL
 EOL
 3 - Requester's Message Code Signature (Base-64) (Ciphertext, SK)
 EOL
-4 - Keyed Sha-512 Message Code (Base-64) (Ciphertext, SK)
+4 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
 
 Key Exchange
 Echoed? No

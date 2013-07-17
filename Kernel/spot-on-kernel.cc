@@ -486,9 +486,9 @@ void spoton_kernel::prepareListeners(void)
 
 		      if(list.size() == 3)
 			listener = new spoton_listener
-			  (list.at(0).constData(),
-			   list.at(1).constData(),
-			   list.at(2).constData(),
+			  (list.value(0).constData(),
+			   list.value(1).constData(),
+			   list.value(2).constData(),
 			   query.value(4).toInt(),
 			   id,
 			   this);
@@ -622,28 +622,28 @@ void spoton_kernel::prepareNeighbors(void)
 			  ** list[8] - Proxy Username
 			  */
 
-			  if(list.at(7) == "HTTP" ||
-			     list.at(7) == "Socks5")
+			  if(list.value(7) == "HTTP" ||
+			     list.value(7) == "Socks5")
 			    {
 			      proxy.setCapabilities
 				(QNetworkProxy::HostNameLookupCapability |
 				 QNetworkProxy::TunnelingCapability);
-			      proxy.setHostName(list.at(4).toByteArray().
+			      proxy.setHostName(list.value(4).toByteArray().
 						constData());
-			      proxy.setPassword(list.at(5).toByteArray().
+			      proxy.setPassword(list.value(5).toByteArray().
 						constData());
-			      proxy.setPort(list.at(6).toByteArray().
+			      proxy.setPort(list.value(6).toByteArray().
 					    toUShort());
 
-			      if(list.at(7) == "HTTP")
+			      if(list.value(7) == "HTTP")
 				proxy.setType(QNetworkProxy::HttpProxy);
 			      else
 				proxy.setType(QNetworkProxy::Socks5Proxy);
 
-			      proxy.setUser(list.at(8).toByteArray().
+			      proxy.setUser(list.value(8).toByteArray().
 					    constData());
 			    }
-			  else if(list.at(7) == "System")
+			  else if(list.value(7) == "System")
 			    {
 			      QNetworkProxyQuery proxyQuery;
 
@@ -657,9 +657,10 @@ void spoton_kernel::prepareNeighbors(void)
 			      if(!proxies.isEmpty())
 				{
 				  proxy = proxies.at(0);
-				  proxy.setPassword(list.at(5).toByteArray().
-						    constData());
-				  proxy.setUser(list.at(8).toByteArray().
+				  proxy.setPassword
+				    (list.value(5).toByteArray().
+				     constData());
+				  proxy.setUser(list.value(8).toByteArray().
 						constData());
 				}
 			    }
@@ -668,14 +669,14 @@ void spoton_kernel::prepareNeighbors(void)
 
 			  neighbor = new spoton_neighbor
 			    (proxy,
-			     list.at(0).toByteArray().constData(),
-			     list.at(1).toByteArray().constData(),
-			     list.at(2).toByteArray().constData(),
+			     list.value(0).toByteArray().constData(),
+			     list.value(1).toByteArray().constData(),
+			     list.value(2).toByteArray().constData(),
 			     id,
 			     userDefined,
-			     list.at(10).toByteArray(),
-			     list.at(11).toInt(),
-			     list.at(12).toInt(),
+			     list.value(10).toByteArray(),
+			     list.value(11).toInt(),
+			     list.value(12).toInt(),
 			     this);
 			}
 
@@ -914,9 +915,9 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 
 	if(ok)
 	  {
-	    QByteArray messageCode(crypt.keyedHash(list.at(0) +
-						   list.at(1) +
-						   list.at(2), &ok));
+	    QByteArray messageCode(crypt.keyedHash(list.value(0) +
+						   list.value(1) +
+						   list.value(2), &ok));
 
 	    if(ok)
 	      data.append(messageCode.toBase64());
@@ -1373,9 +1374,9 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		    if(ok)
 		      {
 			QByteArray messageCode
-			  (crypt.keyedHash(list.at(0) +
-					   list.at(1) +
-					   list.at(2),
+			  (crypt.keyedHash(list.value(0) +
+					   list.value(1) +
+					   list.value(2),
 					   &ok));
 
 			if(ok)
@@ -1459,16 +1460,17 @@ void spoton_kernel::slotScramble(void)
 			 0,
 			 QString(""));
 
-      messageCode = crypt.keyedHash(message, &ok);
+      data = crypt.encrypted(message, &ok);
+
+      if(ok)
+	messageCode = crypt.keyedHash(data, &ok);
 
       if(ok)
 	{
-	  data.append(crypt.encrypted(message, &ok).toBase64());
+	  data = data.toBase64();
 	  data.append("\n");
+	  data.append(messageCode.toBase64());
 	}
-
-      if(ok)
-	data.append(crypt.encrypted(messageCode, &ok).toBase64());
     }
 
   if(ok)
@@ -1594,6 +1596,7 @@ void spoton_kernel::slotRetrieveMail(void)
 	      if(ok)
 		{
 		  QByteArray messageCode;
+		  QList<QByteArray> list;
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
 				     QString("sha512"),
 				     QByteArray(),
@@ -1612,23 +1615,29 @@ void spoton_kernel::slotRetrieveMail(void)
 		    signature = s_crypt->digitalSignature
 		      (messageCode, &ok);
 
+		  list.append(myPublicKeyHash); /*
+						** The myPublicKeyHash
+						** is not encrypted.
+						*/
+
 		  if(ok)
 		    {
-		      data.append(crypt.encrypted(signature, &ok).
-				  toBase64());
-		      data.append("\n");
+		      list.append(crypt.encrypted(signature, &ok));
+
+		      if(ok)
+			{
+			  data.append(list.at(1).toBase64());
+			  data.append("\n");
+			}
 		    }
 
 		  if(ok)
 		    messageCode = crypt.keyedHash
-		      (symmetricKey +
-		       symmetricKeyAlgorithm +
-		       myPublicKeyHash +
-		       signature, &ok);
+		      (list.at(0) +
+		       list.at(1), &ok);
 
 		  if(ok)
-		    data.append(crypt.encrypted(messageCode, &ok).
-				toBase64());
+		    data.append(messageCode.toBase64());
 		}
 
 	      if(ok)
@@ -1831,6 +1840,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	      if(ok)
 		{
 		  QByteArray messageCode;
+		  QList<QByteArray> list;
 		  spoton_crypt *crypt = 0;
 
 		  /*
@@ -1856,44 +1866,45 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 					     0,
 					     QString(""));
 
-		  data.append(crypt->encrypted(name, &ok).toBase64());
-		  data.append("\n");
+		  list.append(crypt->encrypted(name, &ok));
 
 		  if(ok)
 		    {
-		      data.append(crypt->encrypted(subject, &ok).toBase64());
+		      data.append(list.at(0).toBase64());
 		      data.append("\n");
 		    }
 
 		  if(ok)
 		    {
-		      data.append(crypt->encrypted(message, &ok).toBase64());
-		      data.append("\n");
+		      list.append(crypt->encrypted(subject, &ok));
+
+		      if(ok)
+			{
+			  data.append(list.at(1).toBase64());
+			  data.append("\n");
+			}
 		    }
 
 		  if(ok)
 		    {
-		      if(goldbug.isEmpty())
-			messageCode = crypt->keyedHash
-			  (symmetricKey +
-			   symmetricKeyAlgorithm +
-			   myPublicKeyHash +
-			   name +
-			   subject +
-			   message, &ok);
-		      else
-			messageCode = crypt->keyedHash
-			  (goldbug +
-			   "aes256" +
-			   myPublicKeyHash +
-			   name +
-			   subject +
-			   message, &ok);
+		      list.append(crypt->encrypted(message, &ok));
+
+		      if(ok)
+			{
+			  data.append(list.at(2).toBase64());
+			  data.append("\n");
+			}
 		    }
 
 		  if(ok)
-		    data.append(crypt->encrypted(messageCode, &ok).
-				toBase64());
+		    messageCode = crypt->keyedHash
+		      (list.value(0) +
+		       list.value(1) +
+		       list.value(2),
+		       &ok);
+
+		  if(ok)
+		    data.append(messageCode.toBase64());
 
 		  delete crypt;
 		}

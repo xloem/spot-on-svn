@@ -1121,13 +1121,13 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
 	  QByteArray gemini
-	    (spoton_misc::findGeminiInCosmos(list.at(0), s_crypt));
+	    (spoton_misc::findGeminiInCosmos(list.value(0), s_crypt));
 
 	  if(!gemini.isEmpty())
 	    {
 	      QByteArray computedMessageCode;
-	      QByteArray message(list.at(0));
-	      QByteArray messageCode(list.at(1));
+	      QByteArray message(list.value(0));
+	      QByteArray messageCode(list.value(1));
 	      spoton_crypt crypt("aes256",
 				 QString("sha512"),
 				 QByteArray(),
@@ -1634,11 +1634,11 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
       ** we retrieve the letters in a timely, yet functional, manner?
       */
 
-      QByteArray messageCode(list.at(4));
-      QByteArray publicKeyHash(list.at(2));
-      QByteArray signature(list.at(3));
-      QByteArray symmetricKey(list.at(0));
-      QByteArray symmetricKeyAlgorithm(list.at(1));
+      QByteArray messageCode(list.value(4));
+      QByteArray publicKeyHash(list.value(2));
+      QByteArray signature(list.value(3));
+      QByteArray symmetricKey(list.value(0));
+      QByteArray symmetricKeyAlgorithm(list.value(1));
 
       if(ok)
 	symmetricKey = s_crypt->
@@ -1663,18 +1663,13 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 			     QString(""));
 
 	  signature = crypt.decrypted(signature, &ok);
-
-	  if(ok)
-	    messageCode = crypt.decrypted(messageCode, &ok);
 	}
 
       if(ok)
 	{
 	  QByteArray computedMessageCode
-	    (spoton_crypt::keyedHash(symmetricKey +
-				     symmetricKeyAlgorithm +
-				     publicKeyHash +
-				     signature,
+	    (spoton_crypt::keyedHash(publicKeyHash +
+				     list.value(3),
 				     symmetricKey,
 				     "sha512",
 				     &ok));
@@ -1769,8 +1764,8 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 
       if(m_id != -1)
 	savePublicKey
-	  (list.at(0), list.at(1), list.at(2), list.at(3), list.at(4),
-	   list.at(5), m_id);
+	  (list.value(0), list.value(1), list.value(2), list.value(3),
+	   list.value(4), list.value(5), m_id);
       else
 	spoton_misc::logError("spoton_neighbor::process0011(): "
 			      "m_id equals negative one. "
@@ -1817,8 +1812,8 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
       savePublicKey
-	(list.at(0), list.at(1), list.at(2), list.at(3), list.at(4),
-	 list.at(5), -1);
+	(list.value(0), list.value(1), list.value(2), list.value(3),
+	 list.value(4), list.value(5), -1);
     }
   else
     spoton_misc::logError
@@ -1882,13 +1877,13 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
 	  QByteArray gemini
-	    (spoton_misc::findGeminiInCosmos(list.at(0), s_crypt));
+	    (spoton_misc::findGeminiInCosmos(list.value(0), s_crypt));
 
 	  if(!gemini.isEmpty())
 	    {
 	      QByteArray computedMessageCode;
-	      QByteArray message(list.at(0));
-	      QByteArray messageCode(list.at(1));
+	      QByteArray message(list.value(0));
+	      QByteArray messageCode(list.value(1));
 	      spoton_crypt crypt("aes256",
 				 QString("sha512"),
 				 QByteArray(),
@@ -2219,12 +2214,12 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 	    {
 	      QHostAddress address;
 
-	      address.setAddress(list.at(0).constData());
-	      address.setScopeId(list.at(2).constData());
+	      address.setAddress(list.value(0).constData());
+	      address.setScopeId(list.value(2).constData());
 
 	      if(!spoton_misc::isPrivateNetwork(address))
 		{
-		  quint16 port = list.at(1).toUShort();
+		  quint16 port = list.value(1).toUShort();
 
 		  spoton_misc::savePublishedNeighbor
 		    (address, port, statusControl,s_crypt);
@@ -2792,6 +2787,16 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
 
   if(ok)
     {
+      QList<QByteArray> list;
+
+      /*
+      ** Encrypted entries.
+      */
+
+      list.append(name);
+      list.append(subject);
+      list.append(message);
+
       /*
       ** OK, we were able to decipher the name.
       ** We'll assume that a goldbug was not applied.
@@ -2808,19 +2813,11 @@ void spoton_neighbor::storeLetter(QByteArray &symmetricKey,
       if(!ok)
 	return;
 
-      messageCode = crypt.decrypted(messageCode, &ok);
-
-      if(!ok)
-	return;
-
       QByteArray computedMessageCode;
 
-      computedMessageCode = crypt.keyedHash(symmetricKey +
-					      symmetricKeyAlgorithm +
-					      senderPublicKeyHash +
-					      name +
-					      subject +
-					      message, &ok);
+      computedMessageCode = crypt.keyedHash(list.value(0) +
+					    list.value(1) +
+					    list.value(2), &ok);
 
       if(!ok)
 	return;
