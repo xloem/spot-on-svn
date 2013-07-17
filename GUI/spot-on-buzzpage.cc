@@ -259,23 +259,35 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
       QTableWidgetItem *item = ui.clients->item(items.value(0)->row(), 0);
 
       if(item)
-	if(item->text() != list.value(0).constData())
-	  {
-	    changed = true;
+	{
+	  if(item->text() != list.value(0).constData())
+	    {
+	      changed = true;
 
-	    QString msg("");
+	      QString msg("");
 
-	    msg.append
-	      (QDateTime::currentDateTime().
-	       toString("[hh:mm<font color=grey>:ss</font>] "));
-	    msg.append(tr("<i>%1 is now known as %2.</i>").
-		       arg(item->text()).
-		       arg(list.value(0).constData()));
-	    ui.messages->append(msg);
-	    ui.messages->verticalScrollBar()->setValue
-	      (ui.messages->verticalScrollBar()->maximum());
-	    item->setText(list.value(0).constData());
-	  }
+	      msg.append
+		(QDateTime::currentDateTime().
+		 toString("[hh:mm<font color=grey>:ss</font>] "));
+	      msg.append(tr("<i>%1 is now known as %2.</i>").
+			 arg(item->text()).
+			 arg(list.value(0).constData()));
+	      ui.messages->append(msg);
+	      ui.messages->verticalScrollBar()->setValue
+		(ui.messages->verticalScrollBar()->maximum());
+	      item->setText(list.value(0).constData());
+	    }
+
+	  /*
+	  ** Update the client's time.
+	  */
+
+	  item = ui.clients->item(items.value(0)->row(), 2);
+
+	  if(item) // Not a critical change. Do not notify the UI.
+	    item->setText
+	      (QDateTime::currentDateTime().toString(Qt::ISODate));
+	}
     }
 
   ui.clients->setSortingEnabled(true);
