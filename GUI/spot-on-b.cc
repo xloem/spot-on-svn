@@ -3257,7 +3257,8 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
   QSqlDatabase::removeDatabase("spoton");
 
   if(!ok)
-    rc = APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL;
+    if(rc == 0)
+      rc = APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL;
 
   return rc;
 }

@@ -49,7 +49,7 @@ spoton_buzzpage::spoton_buzzpage(QTcpSocket *kernelSocket,
     m_id = spoton_crypt::strongRandomBytes(128).toBase64();
 
   m_kernelSocket = kernelSocket;
-  m_statusTimer.start(45000);
+  m_statusTimer.start(30000);
   ui.setupUi(this);
   connect(&m_statusTimer,
 	  SIGNAL(timeout(void)),
