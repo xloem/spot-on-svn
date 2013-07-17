@@ -48,7 +48,8 @@ class spoton_gui_server: public QTcpServer
   void slotClientDisconnected(void);
   void slotNewEMailArrived(void);
   void slotReadyRead(void);
-  void slotReceivedBuzzMessage(const QList<QByteArray> &list);
+  void slotReceivedBuzzMessage(const QList<QByteArray> &list,
+			       const QString &messageType);
   void slotReceivedChatMessage(const QByteArray &message);
   void slotTimeout(void);
 

@@ -604,6 +604,8 @@ void spoton_neighbor::slotReadyRead(void)
 	    process0015(length, data);
 	  else if(length > 0 && data.contains("type=0030&content="))
 	    process0030(length, data);
+	  else if(length > 0 && data.contains("type=0040a&content="))
+	    process0040a(length, data);
 	  else if(length > 0 && data.contains("type=0040b&content="))
 	    process0040b(length, data);
 	  else
@@ -874,6 +876,7 @@ void spoton_neighbor::slotSendMessage(const QByteArray &data)
 }
 
 void spoton_neighbor::slotReceivedBuzzMessage(const QByteArray &data,
+					      const QString &messageType,
 					      const qint64 id)
 {
   /*
@@ -885,7 +888,12 @@ void spoton_neighbor::slotReceivedBuzzMessage(const QByteArray &data,
   if(id != m_id)
     if(readyToWrite())
       {
-	QByteArray message(spoton_send::message0040b(data));
+	QByteArray message;
+
+	if(messageType == "0040a")
+	  message = spoton_send::message0040a(data);
+	else
+	  message = spoton_send::message0040b(data);
 
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
@@ -2249,6 +2257,90 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
        arg(length).arg(data.length()));
 }
 
+void spoton_neighbor::process0040a(int length, const QByteArray &dataIn)
+{
+  spoton_crypt *s_crypt = 0;
+
+  if(spoton_kernel::s_crypts.contains("messaging"))
+    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+  if(!s_crypt)
+    return;
+
+  length -= strlen("type=0040a&content=");
+
+  /*
+  ** We may have received a buzz.
+  */
+
+  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
+
+  data.remove
+    (0,
+     data.indexOf("type=0040a&content=") + strlen("type=0040a&content="));
+
+  if(length == data.length())
+    {
+      data = QByteArray::fromBase64(data);
+
+      short ttl = 0;
+
+      if(!data.isEmpty())
+	memcpy(static_cast<void *> (&ttl),
+	       static_cast<const void *> (data.constData()), 1);
+
+      if(ttl > 0)
+	ttl -= 1;
+
+      data.remove(0, 1); // Remove TTL.
+
+      QByteArray originalData(data); /*
+				     ** We may need to echo the
+				     ** message. Don't forget to
+				     ** decrease the TTL!
+				     */
+      QList<QByteArray> list(data.split('\n'));
+
+      for(int i = 0; i < list.size(); i++)
+	list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+      if(list.size() != 2)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::process0040a(): "
+		     "received irregular data. Expecting 2 "
+		     "entries, "
+		     "received %1.").arg(list.size()));
+	  return;
+	}
+      else
+	emit receivedBuzzMessage(list, "0040a");
+
+      if(ttl > 0)
+	{
+	  if(isDuplicateMessage(originalData))
+	    return;
+
+	  recordMessageHash(originalData);
+
+	  /*
+	  ** Replace TTL.
+	  */
+
+	  char c = 0;
+
+	  memcpy(&c, static_cast<void *> (&ttl), 1);
+	  originalData.prepend(c);
+	  emit receivedBuzzMessage(originalData, "0040a", m_id);
+	}
+    }
+  else
+    spoton_misc::logError
+      (QString("spoton_neighbor::process0030(): 0040a "
+	       "content-length mismatch (advertised: %1, received: %2).").
+       arg(length).arg(data.length()));
+}
+
 void spoton_neighbor::process0040b(int length, const QByteArray &dataIn)
 {
   spoton_crypt *s_crypt = 0;
@@ -2306,7 +2398,7 @@ void spoton_neighbor::process0040b(int length, const QByteArray &dataIn)
 	  return;
 	}
       else
-	emit receivedBuzzMessage(list);
+	emit receivedBuzzMessage(list, "0040b");
 
       if(ttl > 0)
 	{
@@ -2323,7 +2415,7 @@ void spoton_neighbor::process0040b(int length, const QByteArray &dataIn)
 
 	  memcpy(&c, static_cast<void *> (&ttl), 1);
 	  originalData.prepend(c);
-	  emit receivedBuzzMessage(originalData, m_id);
+	  emit receivedBuzzMessage(originalData, "0040b", m_id);
 	}
     }
   else

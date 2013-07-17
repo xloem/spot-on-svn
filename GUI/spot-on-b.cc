@@ -110,7 +110,7 @@ void spoton::slotReceivedKernelMessage(void)
 
 	      QList<QByteArray> list(data.split('_'));
 
-	      if(list.size() != 3)
+	      if(!(list.size() == 2 || list.size() == 3))
 		continue;
 
 	      for(int i = 0; i < list.size(); i++)
@@ -148,10 +148,11 @@ void spoton::slotReceivedKernelMessage(void)
 			(1,
 			 crypt.decrypted(a.at(1), &ok));
 
-		      if(ok)
-			a.replace
-			  (2,
-			   crypt.decrypted(a.at(2), &ok));
+		      if(list.size() == 3)
+			if(ok)
+			  a.replace
+			    (2,
+			     crypt.decrypted(a.at(2), &ok));
 
 		      if(ok)
 			{
@@ -166,22 +167,31 @@ void spoton::slotReceivedKernelMessage(void)
 
 	      if(page)
 		{
-		  QByteArray hash;
-		  bool ok = true;
-
-		  if(m_crypt)
-		    hash = spoton_crypt::keyedHash
-		      (data,
-		       QByteArray(m_crypt->symmetricKey(),
-				  m_crypt->symmetricKeyLength()),
-		       "sha512", &ok);
+		  if(list.size() == 2)
+		    {
+		      if(page->userStatus(list))
+			if(m_ui.tab->currentIndex() != 0)
+			  m_sb.buzz->setVisible(true);
+		    }
 		  else
-		    hash = spoton_crypt::sha512Hash(hash, &ok);
+		    {
+		      QByteArray hash;
+		      bool ok = true;
 
-		  page->appendMessage(hash, list);
+		      if(m_crypt)
+			hash = spoton_crypt::keyedHash
+			  (data,
+			   QByteArray(m_crypt->symmetricKey(),
+				      m_crypt->symmetricKeyLength()),
+			   "sha512", &ok);
+		      else
+			hash = spoton_crypt::sha512Hash(hash, &ok);
 
-		  if(m_ui.tab->currentIndex() != 0)
-		    m_sb.buzz->setVisible(true);
+		      page->appendMessage(hash, list);
+
+		      if(m_ui.tab->currentIndex() != 0)
+			m_sb.buzz->setVisible(true);
+		    }
 		}
 	    }
 	  else if(data.startsWith("message_"))
@@ -2832,7 +2842,12 @@ void spoton::slotStatusButtonClicked(void)
 {
   QToolButton *toolButton = qobject_cast<QToolButton *> (sender());
 
-  if(toolButton == m_sb.chat)
+  if(toolButton == m_sb.buzz)
+    {
+      m_sb.buzz->setVisible(false);
+      m_ui.tab->setCurrentIndex(0);
+    }
+  else if(toolButton == m_sb.chat)
     {
       m_sb.chat->setVisible(false);
       m_ui.tab->setCurrentIndex(1);

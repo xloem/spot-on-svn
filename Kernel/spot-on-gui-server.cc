@@ -308,17 +308,29 @@ void spoton_gui_server::slotTimeout(void)
 }
 
 void spoton_gui_server::slotReceivedBuzzMessage
-(const QList<QByteArray> &list)
+(const QList<QByteArray> &list,
+ const QString &messageType)
 {
   QByteArray message;
 
-  message.append("buzz_");
-  message.append(list.value(0).toBase64());
-  message.append("_");
-  message.append(list.value(1).toBase64());
-  message.append("_");
-  message.append(list.value(2).toBase64());
-  message.append("\n");
+  if(messageType == "0040a")
+    {
+      message.append("buzz_");
+      message.append(list.value(0).toBase64());
+      message.append("_");
+      message.append(list.value(1).toBase64());
+      message.append("\n");
+    }
+  else
+    {
+      message.append("buzz_");
+      message.append(list.value(0).toBase64());
+      message.append("_");
+      message.append(list.value(1).toBase64());
+      message.append("_");
+      message.append(list.value(2).toBase64());
+      message.append("\n");
+    }
 
   foreach(QTcpSocket *socket, findChildren<QTcpSocket *> ())
     if(socket->write(message.constData(),

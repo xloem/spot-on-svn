@@ -31,6 +31,7 @@
 #include <QCache>
 #include <QPointer>
 #include <QTcpSocket>
+#include <QTimer>
 #include <QWidget>
 
 #include "ui_buzzpage.h"
@@ -45,6 +46,7 @@ class spoton_buzzpage: public QWidget
 		  const QByteArray &id,
 		  QWidget *parent);
   ~spoton_buzzpage();
+  bool userStatus(const QList<QByteArray> &list);
   void appendMessage(const QByteArray &hash,
 		     const QList<QByteArray> &list);
 
@@ -56,12 +58,14 @@ class spoton_buzzpage: public QWidget
 					       ** echoed messages.
 					       */
   QPointer<QTcpSocket> m_kernelSocket;
+  QTimer m_statusTimer;
   Ui_buzzPage ui;
 
  private slots:
   void slotSendMessage(void);
   void slotSendStatus(void);
   void slotSetIcons(void);
+  void slotStatusTimeout(void);
 };
 
 #endif

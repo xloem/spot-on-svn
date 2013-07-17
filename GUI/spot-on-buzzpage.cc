@@ -40,7 +40,12 @@ spoton_buzzpage::spoton_buzzpage(QTcpSocket *kernelSocket,
   m_channel = channel;
   m_id = id;
   m_kernelSocket = kernelSocket;
+  m_statusTimer.start(45000);
   ui.setupUi(this);
+  connect(&m_statusTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotStatusTimeout(void)));
   connect(ui.clearMessages,
 	  SIGNAL(clicked(void)),
 	  ui.messages,
@@ -54,6 +59,8 @@ spoton_buzzpage::spoton_buzzpage(QTcpSocket *kernelSocket,
 	  this,
 	  SLOT(slotSendMessage(void)));
   ui.clients->setColumnHidden(1, true); // ID
+  ui.clients->setColumnHidden(2, true); // Time
+  ui.clients->horizontalHeader()->setSortIndicator(0, Qt::AscendingOrder);
   ui.splitter->setStretchFactor(0, 1);
   ui.splitter->setStretchFactor(1, 0);
   slotSetIcons();
@@ -168,4 +175,140 @@ void spoton_buzzpage::appendMessage(const QByteArray &hash,
 
 void spoton_buzzpage::slotSendStatus(void)
 {
+  if(!m_kernelSocket)
+    return;
+  else if(m_kernelSocket->state() != QAbstractSocket::ConnectedState)
+    return;
+
+  QByteArray name;
+  QByteArray message;
+  QSettings settings;
+
+  name = settings.value("gui/buzzName", "unknown").toByteArray().trimmed();
+
+  if(name.isEmpty())
+    name = "unknown";
+
+  message.clear();
+  message.append("buzz_");
+  message.append(m_channel.toBase64());
+  message.append("_");
+  message.append(name.toBase64());
+  message.append("_");
+  message.append(m_id.toBase64());
+  message.append('\n');
+
+  if(m_kernelSocket->write(message.constData(),
+			   message.length()) != message.length())
+    spoton_misc::logError
+      ("spoton_buzzpage::slotSendStatus(): write() failure.");
+  else
+    m_kernelSocket->flush();
+}
+
+bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
+{
+  if(list.size() != 2)
+    return false;
+
+  bool changed = false;
+
+  QList<QTableWidgetItem *> items
+    (ui.clients->findItems(list.at(1), Qt::MatchExactly));
+
+  ui.clients->setSortingEnabled(false);
+
+  if(items.isEmpty())
+    {
+      changed = true;
+      ui.clients->setRowCount(ui.clients->rowCount() + 1);
+
+      QTableWidgetItem *item = 0;
+
+      item = new QTableWidgetItem(list.at(0).constData());
+      ui.clients->setItem(ui.clients->rowCount() - 1, 0, item);
+      item = new QTableWidgetItem(list.at(1).constData());
+      ui.clients->setItem(ui.clients->rowCount() - 1, 1, item);
+      item = new QTableWidgetItem
+	(QDateTime::currentDateTime().toString(Qt::ISODate));
+      ui.clients->setItem(ui.clients->rowCount() - 1, 2, item);
+
+      QString msg("");
+
+      msg.append
+	(QDateTime::currentDateTime().
+	 toString("[hh:mm<font color=grey>:ss</font>] "));
+      msg.append(tr("<i>User %1 has joined %2.</i>").
+		 arg(list.at(0).constData()).
+		 arg(m_channel.constData()));
+      ui.messages->append(msg);
+      ui.messages->verticalScrollBar()->setValue
+	(ui.messages->verticalScrollBar()->maximum());
+    }
+  else
+    {
+      QTableWidgetItem *item = ui.clients->item(items.at(0)->row(), 0);
+
+      if(item)
+	if(item->text() != list.at(0).constData())
+	  {
+	    changed = true;
+
+	    QString msg("");
+
+	    msg.append
+	      (QDateTime::currentDateTime().
+	       toString("[hh:mm<font color=grey>:ss</font>] "));
+	    msg.append(tr("<i>%1 is now known as %2.</i>").
+		       arg(item->text()).
+		       arg(list.at(0).constData()));
+	    ui.messages->append(msg);
+	    ui.messages->verticalScrollBar()->setValue
+	      (ui.messages->verticalScrollBar()->maximum());
+	    item->setText(list.at(0).constData());
+	  }
+    }
+
+  ui.clients->setSortingEnabled(true);
+  ui.clients->resizeColumnToContents(0);
+  ui.clients->horizontalHeader()->setStretchLastSection(true);
+  return changed;
+}
+
+void spoton_buzzpage::slotStatusTimeout(void)
+{
+  QDateTime now(QDateTime::currentDateTime());
+
+  for(int i = ui.clients->rowCount() - 1; i >= 0; i--)
+    {
+      QTableWidgetItem *item = ui.clients->item(i, 2);
+
+      if(item)
+	{
+	  QDateTime dateTime
+	    (QDateTime::fromString(item->text(), Qt::ISODate));
+
+	  if(dateTime.secsTo(now) >= 30)
+	    {
+	      QTableWidgetItem *item = ui.clients->item(i, 0);
+
+	      if(item)
+		{
+		  QString msg("");
+
+		  msg.append
+		    (QDateTime::currentDateTime().
+		     toString("[hh:mm<font color=grey>:ss</font>] "));
+		  msg.append(tr("<i>%1 has parted %2.</i>").
+			     arg(item->text()).
+			     arg(m_channel.constData()));
+		  ui.messages->append(msg);
+		  ui.messages->verticalScrollBar()->setValue
+		    (ui.messages->verticalScrollBar()->maximum());
+		}
+
+	      ui.clients->removeRow(i);
+	    }
+	}
+    }
 }
