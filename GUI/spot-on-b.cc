@@ -3113,6 +3113,7 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 
 	if(ok)
 	  {
+	    QList<QByteArray> eList;
 	    spoton_crypt crypt("aes256",
 			       QString("sha512"),
 			       QByteArray(),
@@ -3121,11 +3122,16 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 			       0,
 			       QString(""));
 
+	    eList.append(list.value(3)); // receiver_sender
+	    eList.append(list.value(5)); // subject
+	    eList.append(list.value(1)); // message
+
 	    for(int i = 0; i < list.size(); i++)
 	      {
-		if(i == 0 || i == 4)
+		if(i == 0 || i == 2 || i == 4)
 		  /*
-		  ** Ignore the date and receiver_sender_hash columns.
+		  ** Ignore the date, message_code, and
+		  ** receiver_sender_hash columns.
 		  */
 
 		  continue;
@@ -3141,12 +3147,9 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 		QByteArray computedMessageCode;
 
 		computedMessageCode =
-		  crypt.keyedHash(goldbug +
-				  "aes256" +
-				  list.value(4) + // receiver_sender_hash
-				  list.value(3) + // receiver_sender
-				  list.value(5) + // subject
-				  list.value(1),  // message
+		  crypt.keyedHash(eList.value(0) + // receiver_sender
+				  eList.value(1) + // subject
+				  eList.value(2),  // message
 				  &ok);
 
 		if(computedMessageCode != list.value(2))
