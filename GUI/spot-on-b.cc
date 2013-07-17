@@ -187,6 +187,14 @@ void spoton::slotReceivedKernelMessage(void)
 		      else
 			hash = spoton_crypt::sha512Hash(hash, &ok);
 
+		      if(!ok)
+			{
+			  hash = spoton_crypt::weakRandomBytes(64);
+			  spoton_misc::logError
+			    ("spoton::slotReceivedKernelMessage(): "
+			     "hash failure. Using random bytes.");
+			}
+
 		      page->appendMessage(hash, list);
 
 		      if(m_ui.tab->currentIndex() != 0)
@@ -220,6 +228,14 @@ void spoton::slotReceivedKernelMessage(void)
 		       "sha512", &ok);
 		  else
 		    hash = spoton_crypt::sha512Hash(list.at(0), &ok);
+
+		  if(!ok)
+		    {
+		      hash = spoton_crypt::weakRandomBytes(64);
+		      spoton_misc::logError
+			("spoton::slotReceivedKernelMessage(): "
+			 "hash failure. Using random bytes.");
+		    }
 
 		  if(m_messagingCache.contains(hash))
 		    duplicate = true;
