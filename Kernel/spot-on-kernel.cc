@@ -1082,6 +1082,10 @@ void spoton_kernel::connectSignalsToNeighbor
 	  m_guiServer,
 	  SLOT(slotReceivedChatMessage(const QByteArray &)));
   connect(neighbor,
+	  SIGNAL(receivedChatMessage(const QByteArray &)),
+	  this,
+	  SLOT(slotReceivedChatMessage(void)));
+  connect(neighbor,
 	  SIGNAL(publicizeListenerPlaintext(const QByteArray &,
 					    const qint64)),
 	  this,
