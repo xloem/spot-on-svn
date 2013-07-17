@@ -95,7 +95,8 @@ class spoton_neighbor: public QSslSocket
   bool isDuplicateMessage(const QByteArray &data);
   bool readyToWrite(void);
   void prepareNetworkInterface(void);
-  void process0000(int length, const QByteArray &data);
+  void process0000(int length, const QByteArray &data,
+		   const spoton_send::spoton_send_method sendMethod);
   void process0001a(int length, const QByteArray &data);
   void process0001b(int length, const QByteArray &data);
   void process0002(int length, const QByteArray &data);
@@ -157,7 +158,9 @@ class spoton_neighbor: public QSslSocket
   void slotReceivedBuzzMessage
     (const QByteArray &data, const QString &messageType, const qint64 id,
      const spoton_send::spoton_send_method sendMethod);
-  void slotReceivedChatMessage(const QByteArray &data, const qint64 id);
+  void slotReceivedChatMessage
+    (const QByteArray &data, const qint64 id,
+     const spoton_send::spoton_send_method sendMethod);
   void slotReceivedMailMessage(const QByteArray &data, const qint64 id);
   void slotReceivedStatusMessage(const QByteArray &data, const qint64 id);
   void slotRetrieveMail(const QByteArray &data, const qint64 id);
@@ -181,7 +184,8 @@ class spoton_neighbor: public QSslSocket
   void receivedBuzzMessage(const QList<QByteArray> &list,
 			   const QString &messageType);
   void receivedChatMessage(const QByteArray &data);
-  void receivedChatMessage(const QByteArray &data, const qint64 id);
+  void receivedChatMessage(const QByteArray &data, const qint64 id,
+			   const spoton_send::spoton_send_method sendMethod);
   void receivedMailMessage(const QByteArray &data, const qint64 id);
   void receivedPublicKey(const QByteArray &name, const QByteArray publicKey);
   void receivedStatusMessage(const QByteArray &data, const qint64 id);

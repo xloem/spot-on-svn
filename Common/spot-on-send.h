@@ -43,7 +43,7 @@ class spoton_send
   static QByteArray EOM;
   static QByteArray message0000
     (const QByteArray &message,
-     const spoton_send_method sendMethod = NORMAL_POST);
+     const spoton_send_method sendMethod);
   static QByteArray message0001a(const QByteArray &message);
   static QByteArray message0001b(const QByteArray &message);
   static QByteArray message0002(const QByteArray &message);
@@ -75,7 +75,7 @@ class spoton_send
      const QByteArray &id,
      const QByteArray &message,
      const char ttl,
-     const spoton_send_method sendMethod = NORMAL_POST);
+     const spoton_send_method sendMethod);
 
  private:
   spoton_send(void);

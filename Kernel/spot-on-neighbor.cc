@@ -589,7 +589,7 @@ void spoton_neighbor::slotReadyRead(void)
 	       arg(peerPort()).
 	       arg(length));
 	  else if(length > 0 && data.contains("type=0000&content="))
-	    process0000(length, data);
+	    process0000(length, data, sendMethod);
 	  else if(length > 0 && data.contains("type=0001a&content="))
 	    process0001a(length, data);
 	  else if(length > 0 && data.contains("type=0001b&content="))
@@ -910,8 +910,10 @@ void spoton_neighbor::slotReceivedBuzzMessage
       }
 }
 
-void spoton_neighbor::slotReceivedChatMessage(const QByteArray &data,
-					      const qint64 id)
+void spoton_neighbor::slotReceivedChatMessage
+(const QByteArray &data,
+ const qint64 id,
+ const spoton_send::spoton_send_method sendMethod)
 {
   /*
   ** A neighbor (id) received a message. This neighbor now needs
@@ -922,7 +924,7 @@ void spoton_neighbor::slotReceivedChatMessage(const QByteArray &data,
   if(id != m_id)
     if(readyToWrite())
       {
-	QByteArray message(spoton_send::message0000(data));
+	QByteArray message(spoton_send::message0000(data, sendMethod));
 
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
@@ -1071,7 +1073,9 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
     }
 }
 
-void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
+void spoton_neighbor::process0000
+(int length, const QByteArray &dataIn,
+ const spoton_send::spoton_send_method sendMethod)
 {
   spoton_crypt *s_crypt = 0;
 
@@ -1289,7 +1293,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 
 	    memcpy(&c, static_cast<void *> (&ttl), 1);
 	    originalData.prepend(c);
-	    emit receivedChatMessage(originalData, m_id);
+	    emit receivedChatMessage(originalData, m_id, sendMethod);
 	  }
     }
   else
