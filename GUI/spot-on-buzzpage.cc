@@ -320,7 +320,7 @@ void spoton_buzzpage::slotStatusTimeout(void)
 		  msg.append
 		    (QDateTime::currentDateTime().
 		     toString("[hh:mm<font color=grey>:ss</font>] "));
-		  msg.append(tr("<i>%1 has parted %2.</i>").
+		  msg.append(tr("<i>%1 has left %2.</i>").
 			     arg(item->text()).
 			     arg(m_channel.constData()));
 		  ui.messages->append(msg);
