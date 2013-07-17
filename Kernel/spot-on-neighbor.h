@@ -37,6 +37,8 @@
 #include <QTimer>
 #include <QUuid>
 
+#include "Common/spot-on-send.h"
+
 class QNetworkInterface;
 
 class spoton_external_address;
@@ -103,8 +105,10 @@ class spoton_neighbor: public QSslSocket
   void process0014(int length, const QByteArray &data);
   void process0015(int length, const QByteArray &data);
   void process0030(int length, const QByteArray &data);
-  void process0040a(int length, const QByteArray &data);
-  void process0040b(int length, const QByteArray &data);
+  void process0040a(int length, const QByteArray &data,
+		    const spoton_send::spoton_send_method sendMethod);
+  void process0040b(int length, const QByteArray &data,
+		    const spoton_send::spoton_send_method sendMethod);
   void recordMessageHash(const QByteArray &data);
   void saveEncryptedStatus(void);
   void saveExternalAddress(const QHostAddress &address,
@@ -151,7 +155,8 @@ class spoton_neighbor: public QSslSocket
 				      const quint16 port);
   void slotReadyRead(void);
   void slotReceivedBuzzMessage
-    (const QByteArray &data, const QString &messageType, const qint64 id);
+    (const QByteArray &data, const QString &messageType, const qint64 id,
+     const spoton_send::spoton_send_method sendMethod);
   void slotReceivedChatMessage(const QByteArray &data, const qint64 id);
   void slotReceivedMailMessage(const QByteArray &data, const qint64 id);
   void slotReceivedStatusMessage(const QByteArray &data, const qint64 id);
@@ -171,7 +176,8 @@ class spoton_neighbor: public QSslSocket
   void newEMailArrived(void);
   void publicizeListenerPlaintext(const QByteArray &data, const qint64 id);
   void receivedBuzzMessage
-    (const QByteArray &data, const QString &messageType, const qint64 id);
+    (const QByteArray &data, const QString &messageType, const qint64 id,
+     const spoton_send::spoton_send_method sendMethod);
   void receivedBuzzMessage(const QList<QByteArray> &list,
 			   const QString &messageType);
   void receivedChatMessage(const QByteArray &data);

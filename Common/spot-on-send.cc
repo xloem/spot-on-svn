@@ -328,13 +328,18 @@ QByteArray spoton_send::message0030(const QHostAddress &address,
   return results;
 }
 
-QByteArray spoton_send::message0040a(const QByteArray &message)
+QByteArray spoton_send::message0040a(const QByteArray &message,
+				     const spoton_send_method sendMethod)
 {
   QByteArray results;
 
+  if(sendMethod == ARTIFICIAL_GET)
+    results.append("HTTP/1.1 200 OK\r\n");
+  else
+    results.append("POST /echo/ HTTP/1.1\r\n");
+
   results.append
-    ("POST /echo/ HTTP/1.1\r\n"
-     "Content-Type: application/x-www-form-urlencoded\r\n"
+    ("Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
      "type=0040a&content=%2\r\n"
@@ -379,13 +384,18 @@ QByteArray spoton_send::message0040a
   return results;
 }
 
-QByteArray spoton_send::message0040b(const QByteArray &message)
+QByteArray spoton_send::message0040b(const QByteArray &message,
+				     const spoton_send_method sendMethod)
 {
   QByteArray results;
 
+  if(sendMethod == ARTIFICIAL_GET)
+    results.append("HTTP/1.1 200 OK\r\n");
+  else
+    results.append("POST /echo/ HTTP/1.1\r\n");
+
   results.append
-    ("POST /echo/ HTTP/1.1\r\n"
-     "Content-Type: application/x-www-form-urlencoded\r\n"
+    ("Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
      "type=0040b&content=%2\r\n"

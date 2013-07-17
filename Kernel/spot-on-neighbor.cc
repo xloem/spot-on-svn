@@ -41,7 +41,6 @@
 #include "Common/spot-on-external-address.h"
 #include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
-#include "Common/spot-on-send.h"
 #include "spot-on-kernel.h"
 #include "spot-on-neighbor.h"
 
@@ -558,6 +557,11 @@ void spoton_neighbor::slotReadyRead(void)
 	{
 	  QByteArray data(list.takeFirst());
 	  int length = 0;
+	  spoton_send::spoton_send_method sendMethod =
+	    spoton_send::ARTIFICIAL_GET;
+
+	  if(data.startsWith("POST"))
+	    sendMethod = spoton_send::NORMAL_POST;
 
 	  if(data.contains("Content-Length: "))
 	    {
@@ -605,9 +609,9 @@ void spoton_neighbor::slotReadyRead(void)
 	  else if(length > 0 && data.contains("type=0030&content="))
 	    process0030(length, data);
 	  else if(length > 0 && data.contains("type=0040a&content="))
-	    process0040a(length, data);
+	    process0040a(length, data, sendMethod);
 	  else if(length > 0 && data.contains("type=0040b&content="))
-	    process0040b(length, data);
+	    process0040b(length, data, sendMethod);
 	  else
 	    {
 	      if(readBufferSize() != 1000)
@@ -875,9 +879,11 @@ void spoton_neighbor::slotSendMessage(const QByteArray &data)
     }
 }
 
-void spoton_neighbor::slotReceivedBuzzMessage(const QByteArray &data,
-					      const QString &messageType,
-					      const qint64 id)
+void spoton_neighbor::slotReceivedBuzzMessage
+(const QByteArray &data,
+ const QString &messageType,
+ const qint64 id,
+ const spoton_send::spoton_send_method sendMethod)
 {
   /*
   ** A neighbor (id) received a buzz message. This neighbor now needs
@@ -891,9 +897,9 @@ void spoton_neighbor::slotReceivedBuzzMessage(const QByteArray &data,
 	QByteArray message;
 
 	if(messageType == "0040a")
-	  message = spoton_send::message0040a(data);
+	  message = spoton_send::message0040a(data, sendMethod);
 	else
-	  message = spoton_send::message0040b(data);
+	  message = spoton_send::message0040b(data, sendMethod);
 
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
@@ -2252,7 +2258,9 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
        arg(length).arg(data.length()));
 }
 
-void spoton_neighbor::process0040a(int length, const QByteArray &dataIn)
+void spoton_neighbor::process0040a
+(int length, const QByteArray &dataIn,
+ const spoton_send::spoton_send_method sendMethod)
 {
   spoton_crypt *s_crypt = 0;
 
@@ -2326,7 +2334,7 @@ void spoton_neighbor::process0040a(int length, const QByteArray &dataIn)
 
 	  memcpy(&c, static_cast<void *> (&ttl), 1);
 	  originalData.prepend(c);
-	  emit receivedBuzzMessage(originalData, "0040a", m_id);
+	  emit receivedBuzzMessage(originalData, "0040a", m_id, sendMethod);
 	}
     }
   else
@@ -2336,7 +2344,9 @@ void spoton_neighbor::process0040a(int length, const QByteArray &dataIn)
        arg(length).arg(data.length()));
 }
 
-void spoton_neighbor::process0040b(int length, const QByteArray &dataIn)
+void spoton_neighbor::process0040b
+(int length, const QByteArray &dataIn,
+ const spoton_send::spoton_send_method sendMethod)
 {
   spoton_crypt *s_crypt = 0;
 
@@ -2410,7 +2420,7 @@ void spoton_neighbor::process0040b(int length, const QByteArray &dataIn)
 
 	  memcpy(&c, static_cast<void *> (&ttl), 1);
 	  originalData.prepend(c);
-	  emit receivedBuzzMessage(originalData, "0040b", m_id);
+	  emit receivedBuzzMessage(originalData, "0040b", m_id, sendMethod);
 	}
     }
   else

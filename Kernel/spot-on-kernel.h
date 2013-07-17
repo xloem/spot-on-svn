@@ -36,6 +36,8 @@
 #include <QSqlDatabase>
 #include <QTimer>
 
+#include "Common/spot-on-send.h"
+
 class spoton_crypt;
 class spoton_gui_server;
 class spoton_listener;
@@ -120,7 +122,8 @@ class spoton_kernel: public QObject
   void publicizeListenerPlaintext(const QHostAddress &address,
 				  const quint16 port);
   void receivedBuzzMessage
-    (const QByteArray &data, const QString &messageType, const qint64 id);
+    (const QByteArray &data, const QString &messageType, const qint64 id,
+     const spoton_send::spoton_send_method sendMethod);
   void receivedChatMessage(const QByteArray &data, const qint64 id);
   void receivedMailMessage(const QByteArray &data, const qint64 id);
   void receivedStatusMessage(const QByteArray &data,

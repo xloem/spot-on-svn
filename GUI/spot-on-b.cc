@@ -3113,7 +3113,7 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 
 	if(ok)
 	  {
-	    QList<QByteArray> eList;
+	    QByteArray computedMessageCode;
 	    spoton_crypt crypt("aes256",
 			       QString("sha512"),
 			       QByteArray(),
@@ -3122,46 +3122,38 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 			       0,
 			       QString(""));
 
-	    eList.append(list.value(3)); // receiver_sender
-	    eList.append(list.value(5)); // subject
-	    eList.append(list.value(1)); // message
+	    computedMessageCode =
+	      crypt.keyedHash(list.value(3) + // receiver_sender
+			      list.value(5) + // subject
+			      list.value(1),  // message
+			      &ok);
 
-	    for(int i = 0; i < list.size(); i++)
+	    if(computedMessageCode != list.value(2))
 	      {
-		if(i == 0 || i == 2 || i == 4)
-		  /*
-		  ** Ignore the date, message_code, and
-		  ** receiver_sender_hash columns.
-		  */
-
-		  continue;
-
-		list.replace(i, crypt.decrypted(list.at(i), &ok));
-
-		if(!ok)
-		  break;
+		rc = APPLY_GOLDBUG_TO_INBOX_ERROR_CORRUPT_MESSAGE_CODE;
+		spoton_misc::logError
+		  ("spoton::applyGoldbugToInboxLetter(): "
+		   "computed message code does "
+		   "not match provided code.");
+		ok = false;
 	      }
 
 	    if(ok)
-	      {
-		QByteArray computedMessageCode;
+	      for(int i = 0; i < list.size(); i++)
+		{
+		  if(i == 0 || i == 2 || i == 4)
+		    /*
+		    ** Ignore the date, message_code, and
+		    ** receiver_sender_hash columns.
+		    */
 
-		computedMessageCode =
-		  crypt.keyedHash(eList.value(0) + // receiver_sender
-				  eList.value(1) + // subject
-				  eList.value(2),  // message
-				  &ok);
+		    continue;
 
-		if(computedMessageCode != list.value(2))
-		  {
-		    rc = APPLY_GOLDBUG_TO_INBOX_ERROR_CORRUPT_MESSAGE_CODE;
-		    spoton_misc::logError
-		      ("spoton::applyGoldbugToInboxLetter(): "
-		       "computed message code does "
-		       "not match provided code.");
-		    ok = false;
-		  }
-	      }
+		  list.replace(i, crypt.decrypted(list.at(i), &ok));
+
+		  if(!ok)
+		    break;
+		}
 	  }
 
 	if(ok)

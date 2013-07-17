@@ -61,7 +61,6 @@ extern "C"
 #include "Common/spot-on-common.h"
 #include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
-#include "Common/spot-on-send.h"
 #include "spot-on-gui-server.h"
 #include "spot-on-kernel.h"
 #include "spot-on-listener.h"
@@ -1065,11 +1064,13 @@ void spoton_kernel::connectSignalsToNeighbor
   connect(neighbor,
 	  SIGNAL(receivedBuzzMessage(const QByteArray &,
 				     const QString &,
-				     const qint64)),
+				     const qint64,
+				     const spoton_send::spoton_send_method)),
 	  this,
 	  SIGNAL(receivedBuzzMessage(const QByteArray &,
 				     const QString &,
-				     const qint64)));
+				     const qint64,
+				     const spoton_send::spoton_send_method)));
   connect(neighbor,
 	  SIGNAL(receivedBuzzMessage(const QList<QByteArray> &,
 				     const QString &)),
@@ -1135,14 +1136,17 @@ void spoton_kernel::connectSignalsToNeighbor
 	  neighbor,
 	  SLOT(slotPublicizeListenerPlaintext(const QHostAddress &,
 					      const quint16)));
-  connect(this,
-	  SIGNAL(receivedBuzzMessage(const QByteArray &,
-				     const QString &,
-				     const qint64)),
-	  neighbor,
-	  SLOT(slotReceivedBuzzMessage(const QByteArray &,
-				       const QString &,
-				       const qint64)));
+  connect
+    (this,
+     SIGNAL(receivedBuzzMessage(const QByteArray &,
+				const QString &,
+				const qint64,
+				const spoton_send::spoton_send_method)),
+     neighbor,
+     SLOT(slotReceivedBuzzMessage(const QByteArray &,
+				  const QString &,
+				  const qint64,
+				  const spoton_send::spoton_send_method)));
   connect(this,
 	  SIGNAL(receivedChatMessage(const QByteArray &,
 				     const qint64)),

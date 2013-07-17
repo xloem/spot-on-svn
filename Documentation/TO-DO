@@ -32,6 +32,8 @@ Completed Items
 20.    Encrypt the uuid field in the neighbors.db database.
 21.    Encrypt-then-MAC.
        (http://cseweb.ucsd.edu/~mihir/papers/oem.html)
+22.    Some messages are echoed. The transfer method (get, post) of the
+       original message should be respected.
 
 Remaining Items
 
@@ -46,9 +48,7 @@ Remaining Items
 9.     E-mail retrieval may fail if a node is disconnected because of
        a lifetime expiration.
 10.    The re-encoding phase may produce errors. Delete entries.
-11.    Some messages are echoed. The transfer method (get, post) of the
-       original message should be respected.
-12.    Inspect spoton_crypt's hash failures?
+11.    Inspect spoton_crypt's hash failures?
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.
