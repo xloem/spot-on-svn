@@ -29,6 +29,7 @@
 #include <QScrollBar>
 #include <QSettings>
 
+#include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
 #include "spot-on-buzzpage.h"
 
@@ -37,8 +38,16 @@ spoton_buzzpage::spoton_buzzpage(QTcpSocket *kernelSocket,
 				 const QByteArray &id,
 				 QWidget *parent):QWidget(parent)
 {
-  m_channel = channel;
-  m_id = id;
+  m_channel = channel.trimmed();
+
+  if(m_channel.isEmpty())
+    m_channel = "unknown";
+
+  m_id = id.trimmed();
+
+  if(m_id.isEmpty())
+    m_id = spoton_crypt::strongRandomBytes(128).toBase64();
+
   m_kernelSocket = kernelSocket;
   m_statusTimer.start(45000);
   ui.setupUi(this);
