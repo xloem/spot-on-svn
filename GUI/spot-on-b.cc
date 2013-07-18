@@ -25,12 +25,16 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QSslKey>
+
 #include "spot-on.h"
 #include "spot-on-buzzpage.h"
 
 void spoton::slotSendMessage(void)
 {
   if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!m_kernelSocket.isEncrypted())
     return;
   else if(m_ui.message->toPlainText().trimmed().isEmpty())
     return;
@@ -290,6 +294,8 @@ void spoton::slotSharePublicKey(void)
   if(!m_crypt)
     return;
   else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!m_kernelSocket.isEncrypted())
     return;
 
   QString oid("");
@@ -601,6 +607,8 @@ void spoton::slotSharePublicKeyWithParticipant(void)
   if(!m_crypt)
     return;
   else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!m_kernelSocket.isEncrypted())
     return;
 
   QString oid("");
@@ -2811,21 +2819,22 @@ void spoton::slotEnableRetrieveMail(void)
 void spoton::slotRetrieveMail(void)
 {
   if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
-    {
-      QByteArray message("retrievemail\n");
+    if(m_kernelSocket.isEncrypted())
+      {
+	QByteArray message("retrievemail\n");
 
-      if(m_kernelSocket.write(message.constData(), message.length()) !=
-	 message.length())
-	spoton_misc::logError
-	  ("spoton::slotRetrieveMail(): write() failure.");
-      else
-	{
-	  m_kernelSocket.flush();
-	  m_ui.retrieveMail->setEnabled(false);
-	  QTimer::singleShot
-	    (5000, this, SLOT(slotEnableRetrieveMail(void)));
-	}
-    }
+	if(m_kernelSocket.write(message.constData(), message.length()) !=
+	   message.length())
+	  spoton_misc::logError
+	    ("spoton::slotRetrieveMail(): write() failure.");
+	else
+	  {
+	    m_kernelSocket.flush();
+	    m_ui.retrieveMail->setEnabled(false);
+	    QTimer::singleShot
+	      (5000, this, SLOT(slotEnableRetrieveMail(void)));
+	  }
+      }
 }
 
 void spoton::slotKernelStatus(void)
@@ -3362,7 +3371,9 @@ void spoton::slotReply(void)
 
 void spoton::slotPublicizeAllListenersPlaintext(void)
 {
-  if(!isKernelActive())
+  if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!m_kernelSocket.isEncrypted())
     return;
 
   QByteArray message;
@@ -3379,7 +3390,9 @@ void spoton::slotPublicizeAllListenersPlaintext(void)
 
 void spoton::slotPublicizeListenerPlaintext(void)
 {
-  if(!isKernelActive())
+  if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!m_kernelSocket.isEncrypted())
     return;
 
   QString oid("");
@@ -3485,7 +3498,8 @@ void spoton::slotJoinBuzzChannel(void)
 
   QByteArray id
     (spoton_crypt::
-     strongRandomBytes(spoton_common::BUZZ_MAXIMUM_ID_LENGTH).toBase64());
+     strongRandomBytes(spoton_common::BUZZ_MAXIMUM_ID_LENGTH / 2).toHex().
+     toBase64());
 
   m_ui.channel->clear();
 
@@ -3525,4 +3539,44 @@ void spoton::slotCloseBuzzTab(int index)
 
   if(!count)
     m_buzzStatusTimer.stop();
+}
+
+void spoton::initializeKernelSocket(void)
+{
+  QByteArray certificate;
+  QByteArray privateKey;
+  QByteArray publicKey;
+  QString error("");
+
+  spoton_crypt::generateSslKeys
+    (spoton_common::KERNEL_SSL_KEY_SIZE,
+     certificate,
+     privateKey,
+     publicKey,
+     error);
+
+  if(error.isEmpty())
+    {
+      QSslConfiguration configuration;
+
+      configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
+      configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
+#if QT_VERSION >= 0x050000
+      configuration.setProtocol(QSsl::TlsV1_2);
+#else
+      configuration.setProtocol(QSsl::SecureProtocols);
+#endif
+      configuration.setSslOption
+	(QSsl::SslOptionDisableCompression, true);
+      configuration.setSslOption
+	(QSsl::SslOptionDisableEmptyFragments, true);
+      configuration.setSslOption
+	(QSsl::SslOptionDisableLegacyRenegotiation, true);
+      m_kernelSocket.setSslConfiguration(configuration);
+    }
+  else
+    spoton_misc::logError
+      (QString("spoton::"
+	       "initializeKernelSocket(): "
+	       "generateSslKeys() failure (%1).").arg(error.remove(".")));
 }

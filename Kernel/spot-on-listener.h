@@ -52,6 +52,11 @@ class spoton_listener_tcp_server: public QTcpServer
     m_id = id;
   }
 
+  ~spoton_listener_tcp_server()
+  {
+    m_queue.clear();
+  }
+
   QSslSocket *nextPendingConnection(void)
   {
     if(m_queue.isEmpty())
@@ -71,7 +76,7 @@ class spoton_listener_tcp_server: public QTcpServer
   qint64 m_id;
 
  signals:
-  void encrypted(void);
+  void newConnection(void);
 };
 
 class spoton_listener: public spoton_listener_tcp_server
@@ -108,9 +113,9 @@ class spoton_listener: public spoton_listener_tcp_server
 
  private slots:
   void slotDiscoverExternalAddress(void);
-  void slotEncrypted(void);
   void slotExternalAddressDiscovered(const QHostAddress &address);
   void slotNeighborDisconnected(void);
+  void slotNewConnection(void);
   void slotTimeout(void);
 
  signals:

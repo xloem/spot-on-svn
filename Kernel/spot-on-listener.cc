@@ -109,7 +109,7 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 	(socketDescriptor, certificate, privateKey, this);
 
       m_queue.enqueue(neighbor);
-      emit encrypted();
+      emit newConnection();
     }
 }
 
@@ -129,9 +129,9 @@ spoton_listener::spoton_listener(const QString &ipAddress,
   m_networkInterface = 0;
   m_port = m_externalPort = quint16(port.toInt());
   connect(this,
-	  SIGNAL(encrypted(void)),
+	  SIGNAL(newConnection(void)),
 	  this,
-	  SLOT(slotEncrypted(void)));
+	  SLOT(slotNewConnection(void)));
   connect(m_externalAddress,
 	  SIGNAL(ipAddressDiscovered(const QHostAddress &)),
 	  this,
@@ -361,7 +361,7 @@ void spoton_listener::saveStatus(const QSqlDatabase &db)
   query.exec();
 }
 
-void spoton_listener::slotEncrypted(void)
+void spoton_listener::slotNewConnection(void)
 {
   spoton_neighbor *neighbor = qobject_cast<spoton_neighbor *>
     (nextPendingConnection());

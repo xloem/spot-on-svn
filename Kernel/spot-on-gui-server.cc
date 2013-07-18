@@ -28,14 +28,69 @@
 #include <QDir>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#include <QTcpSocket>
+#include <QSslKey>
+#include <QSslSocket>
 
+#include "Common/spot-on-common.h"
 #include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
 #include "spot-on-gui-server.h"
 #include "spot-on-kernel.h"
 
-spoton_gui_server::spoton_gui_server(QObject *parent):QTcpServer(parent)
+#if QT_VERSION >= 0x050000
+void spoton_gui_server_tcp_server::incomingConnection(qintptr socketDescriptor)
+#else
+void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
+#endif
+{
+  QByteArray certificate;
+  QByteArray privateKey;
+  QByteArray publicKey;
+  QString error("");
+
+  spoton_crypt::generateSslKeys
+    (spoton_common::KERNEL_SSL_KEY_SIZE,
+     certificate,
+     privateKey,
+     publicKey,
+     error);
+
+  if(error.isEmpty())
+    {
+      QSslSocket *socket = new QSslSocket(this);
+
+      socket->setSocketDescriptor(socketDescriptor);
+
+      QSslConfiguration configuration;
+
+      configuration.setLocalCertificate(QSslCertificate(certificate));
+      configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
+      configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
+#if QT_VERSION >= 0x050000
+      configuration.setProtocol(QSsl::TlsV1_2);
+#else
+      configuration.setProtocol(QSsl::SecureProtocols);
+#endif
+      configuration.setSslOption
+	(QSsl::SslOptionDisableCompression, true);
+      configuration.setSslOption
+	(QSsl::SslOptionDisableEmptyFragments, true);
+      configuration.setSslOption
+	(QSsl::SslOptionDisableLegacyRenegotiation, true);
+      socket->setSslConfiguration(configuration);
+      socket->startServerEncryption();
+      m_queue.enqueue(socket);
+      emit newConnection();
+    }
+  else
+    spoton_misc::logError
+      (QString("spoton_gui_server_tcp_server::"
+	       "spoton_gui_server_tcp_server(): "
+	       "generateSslKeys() failure (%1).").arg(error.remove(".")));
+}
+
+spoton_gui_server::spoton_gui_server(QObject *parent):
+  spoton_gui_server_tcp_server(parent)
 {
   listen(QHostAddress("127.0.0.1"));
   connect(this,
@@ -51,6 +106,8 @@ spoton_gui_server::spoton_gui_server(QObject *parent):QTcpServer(parent)
 
 spoton_gui_server::~spoton_gui_server()
 {
+  m_guiSocketData.clear();
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase
       ("QSQLITE", "spoton_gui_server");
@@ -73,7 +130,7 @@ spoton_gui_server::~spoton_gui_server()
 
 void spoton_gui_server::slotClientConnected(void)
 {
-  QTcpSocket *socket = nextPendingConnection();
+  QSslSocket *socket = qobject_cast<QSslSocket *> (nextPendingConnection());
 
   if(socket)
     {
@@ -90,7 +147,7 @@ void spoton_gui_server::slotClientConnected(void)
 
 void spoton_gui_server::slotClientDisconnected(void)
 {
-  QTcpSocket *socket = qobject_cast<QTcpSocket *> (sender());
+  QSslSocket *socket = qobject_cast<QSslSocket *> (sender());
 
   if(socket)
     {
@@ -101,181 +158,191 @@ void spoton_gui_server::slotClientDisconnected(void)
 
 void spoton_gui_server::slotReadyRead(void)
 {
-  QTcpSocket *socket = qobject_cast<QTcpSocket *> (sender());
+  QSslSocket *socket = qobject_cast<QSslSocket *> (sender());
 
-  if(socket)
+  if(!socket)
+    return;
+
+  if(!socket->isEncrypted())
     {
-      m_guiSocketData[socket->socketDescriptor()].append
-	(socket->readAll());
+      socket->readAll();
+      spoton_misc::logError
+	(QString("spoton_gui_server::slotReadyRead(): "
+		 "port %1 not encrypted. Discarding data.").
+	 arg(socket->localPort()));
+      return;
+    }
 
-      if(m_guiSocketData[socket->socketDescriptor()].endsWith('\n'))
+  m_guiSocketData[socket->socketDescriptor()].append
+    (socket->readAll());
+
+  if(m_guiSocketData[socket->socketDescriptor()].endsWith('\n'))
+    {
+      QByteArray data(m_guiSocketData[socket->socketDescriptor()]);
+      QList<QByteArray> list(data.mid(0, data.lastIndexOf('\n')).
+			     split('\n'));
+
+      data.remove(0, data.lastIndexOf('\n'));
+
+      if(data.isEmpty())
+	m_guiSocketData.remove(socket->socketDescriptor());
+      else
+	m_guiSocketData[socket->socketDescriptor()] = data;
+
+      while(!list.isEmpty())
 	{
-	  QByteArray data(m_guiSocketData[socket->socketDescriptor()]);
-	  QList<QByteArray> list(data.mid(0, data.lastIndexOf('\n')).
-				 split('\n'));
+	  QByteArray message(list.takeFirst());
 
-	  data.remove(0, data.lastIndexOf('\n'));
-
-	  if(data.isEmpty())
-	    m_guiSocketData.remove(socket->socketDescriptor());
-	  else
-	    m_guiSocketData[socket->socketDescriptor()] = data;
-
-	  while(!list.isEmpty())
+	  if(message.startsWith("befriendparticipant_"))
 	    {
-	      QByteArray message(list.takeFirst());
+	      message.remove(0, strlen("befriendparticipant_"));
 
-	      if(message.startsWith("befriendparticipant_"))
+	      QList<QByteArray> list(message.split('_'));
+
+	      if(list.size() == 7)
+		emit publicKeyReceivedFromUI
+		  (list.value(0).toLongLong(),
+		   QByteArray::fromBase64(list.value(1)),
+		   QByteArray::fromBase64(list.value(2)),
+		   QByteArray::fromBase64(list.value(3)),
+		   QByteArray::fromBase64(list.value(4)),
+		   QByteArray::fromBase64(list.value(5)),
+		   QByteArray::fromBase64(list.value(6)),
+		   "0012");
+	    }
+	  else if(message.startsWith("buzz_"))
+	    {
+	      message.remove(0, strlen("buzz_"));
+
+	      QList<QByteArray> list(message.split('_'));
+
+	      if(list.size() == 3)
+		emit buzzReceivedFromUI
+		  (QByteArray::fromBase64(list.value(0)),
+		   QByteArray::fromBase64(list.value(1)),
+		   QByteArray::fromBase64(list.value(2)),
+		   QByteArray(),
+		   QByteArray(),
+		   "0040a");
+	      else if(list.size() == 5)
+		emit buzzReceivedFromUI
+		  (QByteArray::fromBase64(list.value(0)),
+		   QByteArray::fromBase64(list.value(1)),
+		   QByteArray::fromBase64(list.value(2)),
+		   QByteArray::fromBase64(list.value(3)),
+		   QByteArray::fromBase64(list.value(4)),
+		   "0040b");
+	    }
+	  else if(message.startsWith("keys_"))
+	    {
+	      message.remove(0, strlen("keys_"));
+
+	      QList<QByteArray> list(message.split('_'));
+
+	      if(list.size() != 2)
+		continue;
+
+	      if(!spoton_kernel::s_crypts.contains("messaging"))
 		{
-		  message.remove(0, strlen("befriendparticipant_"));
-
-		  QList<QByteArray> list(message.split('_'));
-
-		  if(list.size() == 7)
-		    emit publicKeyReceivedFromUI
-		      (list.value(0).toLongLong(),
-		       QByteArray::fromBase64(list.value(1)),
-		       QByteArray::fromBase64(list.value(2)),
-		       QByteArray::fromBase64(list.value(3)),
-		       QByteArray::fromBase64(list.value(4)),
-		       QByteArray::fromBase64(list.value(5)),
-		       QByteArray::fromBase64(list.value(6)),
-		       "0012");
+		  spoton_crypt *crypt = new spoton_crypt
+		    (spoton_kernel::s_settings.value("gui/cipherType",
+						     "aes256").
+		     toString().trimmed(),
+		     spoton_kernel::s_settings.value("gui/hashType",
+						     "sha512").
+		     toString().trimmed(),
+		     QByteArray::fromBase64(list.value(0)),
+		     QByteArray::fromBase64(list.value(1)),
+		     spoton_kernel::s_settings.value("gui/saltLength",
+						     256).toInt(),
+		     spoton_kernel::s_settings.value("gui/iterationCount",
+						     10000).toInt(),
+		     "messaging");
+		  spoton_misc::populateCountryDatabase
+		    (crypt);
+		  spoton_kernel::s_crypts.insert("messaging", crypt);
 		}
-	      else if(message.startsWith("buzz_"))
+
+	      if(!spoton_kernel::s_crypts.contains("signature"))
 		{
-		  message.remove(0, strlen("buzz_"));
-
-		  QList<QByteArray> list(message.split('_'));
-
-		  if(list.size() == 3)
-		    emit buzzReceivedFromUI
-		      (QByteArray::fromBase64(list.value(0)),
-		       QByteArray::fromBase64(list.value(1)),
-		       QByteArray::fromBase64(list.value(2)),
-		       QByteArray(),
-		       QByteArray(),
-		       "0040a");
-		  else if(list.size() == 5)
-		    emit buzzReceivedFromUI
-		      (QByteArray::fromBase64(list.value(0)),
-		       QByteArray::fromBase64(list.value(1)),
-		       QByteArray::fromBase64(list.value(2)),
-		       QByteArray::fromBase64(list.value(3)),
-		       QByteArray::fromBase64(list.value(4)),
-		       "0040b");
+		  spoton_crypt *crypt = new spoton_crypt
+		    (spoton_kernel::s_settings.value("gui/cipherType",
+						     "aes256").
+		     toString().trimmed(),
+		     spoton_kernel::s_settings.value("gui/hashType",
+						     "sha512").
+		     toString().trimmed(),
+		     QByteArray::fromBase64(list.value(0)),
+		     QByteArray::fromBase64(list.value(1)),
+		     spoton_kernel::s_settings.value("gui/saltLength",
+						     256).toInt(),
+		     spoton_kernel::s_settings.value("gui/iterationCount",
+						     10000).toInt(),
+		     "signature");
+		  spoton_kernel::s_crypts.insert("signature", crypt);
 		}
-	      else if(message.startsWith("keys_"))
+
+	      if(!spoton_kernel::s_crypts.contains("url"))
 		{
-		  message.remove(0, strlen("keys_"));
-
-		  QList<QByteArray> list(message.split('_'));
-
-		  if(list.size() != 2)
-		    continue;
-
-		  if(!spoton_kernel::s_crypts.contains("messaging"))
-		    {
-		      spoton_crypt *crypt = new spoton_crypt
-			(spoton_kernel::s_settings.value("gui/cipherType",
-							 "aes256").
-			 toString().trimmed(),
-			 spoton_kernel::s_settings.value("gui/hashType",
-							 "sha512").
-			 toString().trimmed(),
-			 QByteArray::fromBase64(list.value(0)),
-			 QByteArray::fromBase64(list.value(1)),
-			 spoton_kernel::s_settings.value("gui/saltLength",
-							 256).toInt(),
-			 spoton_kernel::s_settings.value("gui/iterationCount",
-							 10000).toInt(),
-			 "messaging");
-		      spoton_misc::populateCountryDatabase
-			(crypt);
-		      spoton_kernel::s_crypts.insert("messaging", crypt);
-		    }
-
-		  if(!spoton_kernel::s_crypts.contains("signature"))
-		    {
-		      spoton_crypt *crypt = new spoton_crypt
-			(spoton_kernel::s_settings.value("gui/cipherType",
-							 "aes256").
-			 toString().trimmed(),
-			 spoton_kernel::s_settings.value("gui/hashType",
-							 "sha512").
-			 toString().trimmed(),
-			 QByteArray::fromBase64(list.value(0)),
-			 QByteArray::fromBase64(list.value(1)),
-			 spoton_kernel::s_settings.value("gui/saltLength",
-							 256).toInt(),
-			 spoton_kernel::s_settings.value("gui/iterationCount",
-							 10000).toInt(),
-			 "signature");
-		      spoton_kernel::s_crypts.insert("signature", crypt);
-		    }
-
-		  if(!spoton_kernel::s_crypts.contains("url"))
-		    {
-		      spoton_crypt *crypt = new spoton_crypt
-			(spoton_kernel::s_settings.value("gui/cipherType",
-							 "aes256").
-			 toString().trimmed(),
-			 spoton_kernel::s_settings.value("gui/hashType",
-							 "sha512").
-			 toString().trimmed(),
-			 QByteArray::fromBase64(list.value(0)),
-			 QByteArray::fromBase64(list.value(1)),
-			 spoton_kernel::s_settings.value("gui/saltLength",
-							 256).toInt(),
-			 spoton_kernel::s_settings.value("gui/iterationCount",
-							 10000).toInt(),
-			 "url");
-		      spoton_kernel::s_crypts.insert("url", crypt);
-		    }
+		  spoton_crypt *crypt = new spoton_crypt
+		    (spoton_kernel::s_settings.value("gui/cipherType",
+						     "aes256").
+		     toString().trimmed(),
+		     spoton_kernel::s_settings.value("gui/hashType",
+						     "sha512").
+		     toString().trimmed(),
+		     QByteArray::fromBase64(list.value(0)),
+		     QByteArray::fromBase64(list.value(1)),
+		     spoton_kernel::s_settings.value("gui/saltLength",
+						     256).toInt(),
+		     spoton_kernel::s_settings.value("gui/iterationCount",
+						     10000).toInt(),
+		     "url");
+		  spoton_kernel::s_crypts.insert("url", crypt);
 		}
-	      else if(message.startsWith("message_"))
-		{
-		  message.remove(0, strlen("message_"));
+	    }
+	  else if(message.startsWith("message_"))
+	    {
+	      message.remove(0, strlen("message_"));
 
-		  QList<QByteArray> list(message.split('_'));
+	      QList<QByteArray> list(message.split('_'));
 
-		  if(list.size() == 3)
-		    emit messageReceivedFromUI
-		      (list.value(0).toLongLong(),
-		       QByteArray::fromBase64(list.value(1)),
-		       QByteArray::fromBase64(list.value(2)));
-		}
-	      else if(message.startsWith("publicizealllistenersplaintext"))
-		emit publicizeAllListenersPlaintext();
-	      else if(message.startsWith("publicizelistenerplaintext"))
-		{
-		  message.remove(0, strlen("publicizelistenerplaintext_"));
+	      if(list.size() == 3)
+		emit messageReceivedFromUI
+		  (list.value(0).toLongLong(),
+		   QByteArray::fromBase64(list.value(1)),
+		   QByteArray::fromBase64(list.value(2)));
+	    }
+	  else if(message.startsWith("publicizealllistenersplaintext"))
+	    emit publicizeAllListenersPlaintext();
+	  else if(message.startsWith("publicizelistenerplaintext"))
+	    {
+	      message.remove(0, strlen("publicizelistenerplaintext_"));
 
-		  QList<QByteArray> list(message.split('_'));
+	      QList<QByteArray> list(message.split('_'));
 
-		  if(list.size() == 1)
-		    emit publicizeListenerPlaintext
-		      (list.value(0).toLongLong());
-		}
-	      else if(message.startsWith("retrievemail"))
-		emit retrieveMail();
-	      else if(message.startsWith("sharepublickey_"))
-		{
-		  message.remove(0, strlen("sharepublickey_"));
+	      if(list.size() == 1)
+		emit publicizeListenerPlaintext
+		  (list.value(0).toLongLong());
+	    }
+	  else if(message.startsWith("retrievemail"))
+	    emit retrieveMail();
+	  else if(message.startsWith("sharepublickey_"))
+	    {
+	      message.remove(0, strlen("sharepublickey_"));
 
-		  QList<QByteArray> list(message.split('_'));
+	      QList<QByteArray> list(message.split('_'));
 
-		  if(list.size() == 7)
-		    emit publicKeyReceivedFromUI
-		      (list.value(0).toLongLong(),
-		       QByteArray::fromBase64(list.value(1)),
-		       QByteArray::fromBase64(list.value(2)),
-		       QByteArray::fromBase64(list.value(3)),
-		       QByteArray::fromBase64(list.value(4)),
-		       QByteArray::fromBase64(list.value(5)),
-		       QByteArray::fromBase64(list.value(6)),
-		       "0011");
-		}
+	      if(list.size() == 7)
+		emit publicKeyReceivedFromUI
+		  (list.value(0).toLongLong(),
+		   QByteArray::fromBase64(list.value(1)),
+		   QByteArray::fromBase64(list.value(2)),
+		   QByteArray::fromBase64(list.value(3)),
+		   QByteArray::fromBase64(list.value(4)),
+		   QByteArray::fromBase64(list.value(5)),
+		   QByteArray::fromBase64(list.value(6)),
+		   "0011");
 	    }
 	}
     }
@@ -332,35 +399,60 @@ void spoton_gui_server::slotReceivedBuzzMessage
       message.append("\n");
     }
 
-  foreach(QTcpSocket *socket, findChildren<QTcpSocket *> ())
-    if(socket->write(message.constData(),
-		     message.length()) != message.length())
-      spoton_misc::logError("spoton_gui_server::slotReceivedBuzzMessage(): "
-			    "write() failure.");
+  foreach(QSslSocket *socket, findChildren<QSslSocket *> ())
+    if(socket->isEncrypted())
+      {
+	if(socket->write(message.constData(),
+			 message.length()) != message.length())
+	  spoton_misc::logError
+	    ("spoton_gui_server::slotReceivedBuzzMessage(): "
+	     "write() failure.");
+	else
+	  socket->flush();
+      }
     else
-      socket->flush();
+      spoton_misc::logError
+	(QString("spoton_gui_server::slotReceivedBuzzMessage(): "
+		 "port %1 not encrypted. Ignoring write() request.").
+	 arg(socket->localPort()));
 }
 
 void spoton_gui_server::slotReceivedChatMessage(const QByteArray &message)
 {
-  foreach(QTcpSocket *socket, findChildren<QTcpSocket *> ())
-    if(socket->write(message.constData(),
-		     message.length()) != message.length())
-      spoton_misc::logError("spoton_gui_server::slotReceivedChatMessage(): "
-			    "write() failure.");
+  foreach(QSslSocket *socket, findChildren<QSslSocket *> ())
+    if(socket->isEncrypted())
+      {
+	if(socket->write(message.constData(),
+			 message.length()) != message.length())
+	  spoton_misc::logError("spoton_gui_server::slotReceivedChatMessage(): "
+				"write() failure.");
+	else
+	  socket->flush();
+      }
     else
-      socket->flush();
+      spoton_misc::logError
+	(QString("spoton_gui_server::slotReceivedChatMessage(): "
+		 "port %1 not encrypted. Ignoring write() request.").
+	 arg(socket->localPort()));
 }
 
 void spoton_gui_server::slotNewEMailArrived(void)
 {
   QByteArray message("newmail\n");
 
-  foreach(QTcpSocket *socket, findChildren<QTcpSocket *> ())
-    if(socket->write(message.constData(),
-		     message.length()) != message.length())
-      spoton_misc::logError("spoton_gui_server::slotNewEMailArrived() "
-			    "write() failure.");
+  foreach(QSslSocket *socket, findChildren<QSslSocket *> ())
+    if(socket->isEncrypted())
+      {
+	if(socket->write(message.constData(),
+			 message.length()) != message.length())
+	  spoton_misc::logError("spoton_gui_server::slotNewEMailArrived() "
+				"write() failure.");
+	else
+	  socket->flush();
+      }
     else
-      socket->flush();
+      spoton_misc::logError
+	(QString("spoton_gui_server::slotNewEMailArrived(): "
+		 "port %1 not encrypted. Ignoring write() request.").
+	 arg(socket->localPort()));
 }

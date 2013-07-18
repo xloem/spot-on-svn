@@ -28,10 +28,47 @@
 #ifndef _spoton_gui_server_h_
 #define _spoton_gui_server_h_
 
+#include <QQueue>
+#include <QSslSocket>
 #include <QTcpServer>
 #include <QTimer>
 
-class spoton_gui_server: public QTcpServer
+class spoton_gui_server_tcp_server: public QTcpServer
+{
+  Q_OBJECT
+
+ public:
+  spoton_gui_server_tcp_server(QObject *parent):QTcpServer(parent)
+  {
+  }
+
+  ~spoton_gui_server_tcp_server()
+  {
+    m_queue.clear();
+  }
+
+  QSslSocket *nextPendingConnection(void)
+  {
+    if(m_queue.isEmpty())
+      return 0;
+    else
+      return m_queue.dequeue();
+  }
+
+#if QT_VERSION >= 0x050000
+  void incomingConnection(qintptr socketDescriptor);
+#else
+  void incomingConnection(int socketDescriptor);
+#endif
+
+ private:
+  QQueue<QSslSocket *> m_queue;
+
+ signals:
+  void newConnection(void);
+};
+
+class spoton_gui_server: public spoton_gui_server_tcp_server
 {
   Q_OBJECT
 

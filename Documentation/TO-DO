@@ -35,23 +35,25 @@ Completed Items
 22.    Some messages are echoed. The transfer method (get, post) of the
        original message should be respected.
 23.    Inspect spoton_crypt's hash failures.
+24.    Secure connections between the interfaces and the kernel.
 
 Remaining Items
 
-1.     Secure connections between the interfaces and the kernel.
-2.     Inspect UTF-8 uses.
-3.     Introduce DSA and ElGamal?
-4.     Echo proxy?
-5.     Prioritize keep-alive messages.
-6.     Use super-secure memory?
-7.     Allow for other ciphers besides AES for e-mail.
-8.     Can we establish session keys on the Echo?
-9.     E-mail retrieval may fail if a node is disconnected because of
+1.     Inspect UTF-8 uses.
+2.     Introduce DSA and ElGamal?
+3.     Echo proxy?
+4.     Prioritize keep-alive messages.
+5.     Use super-secure memory?
+6.     Allow for other ciphers besides AES for e-mail.
+7.     Can we establish session keys on the Echo?
+8.     E-mail retrieval may fail if a node is disconnected because of
        a lifetime expiration.
-10.    The re-encoding phase may produce errors. Delete corrupt entries.
-11.    Country flags and names for hostnames.
-12.    Dedicated lines. Such lines, if enabled by both parties, do
+9.     The re-encoding phase may produce errors. Delete corrupt entries.
+10.    Country flags and names for hostnames.
+11.    Dedicated lines. Such lines, if enabled by both parties, do
        not allow echoed data.
+12.    Monitor kernel health from the UI.
+       See spoton::slotGeneralTimerTimeout().
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.
@@ -89,8 +91,6 @@ Ideas
 
        Do not hide the OID column? The OID is always available. It is
        an internal database field.
-
-       TTLs for channels.
 
        The kernel's server port is not standard. It's fine.
 

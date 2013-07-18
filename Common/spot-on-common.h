@@ -32,7 +32,16 @@
 
 namespace spoton_common
 {
-  static const int BUZZ_MAXIMUM_ID_LENGTH = 128;
+  static const int BUZZ_MAXIMUM_ID_LENGTH = 256; /*
+						 ** Please use a number
+						 ** that's divisible by two.
+						 ** The number of random bytes
+						 ** to be used is half of this
+						 ** number. The actual ID
+						 ** will be represented in
+						 ** base sixteen.
+						 */
+  static const int KERNEL_SSL_KEY_SIZE = 3072;
   static const int NAME_MAXIMUM_LENGTH = 64;
 }
 

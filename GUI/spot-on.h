@@ -57,8 +57,8 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QSqlRecord>
+#include <QSslSocket>
 #include <QStyle>
-#include <QTcpSocket>
 #include <QTimer>
 #include <QTranslator>
 #include <QUuid>
@@ -109,7 +109,7 @@ class spoton: public QMainWindow
   QDateTime m_neighborsLastModificationTime;
   QDateTime m_participantsLastModificationTime;
   QHash<QString, QVariant> m_settings;
-  QTcpSocket m_kernelSocket;
+  QSslSocket m_kernelSocket;
   QTimer m_buzzStatusTimer;
   QTimer m_generalTimer;
   QTimer m_tableTimer;
@@ -133,6 +133,7 @@ class spoton: public QMainWindow
 				const int row);
   void closeEvent(QCloseEvent *event);
   void highlightKernelPath(void);
+  void initializeKernelSocket(void);
   void prepareListenerIPCombo(void);
   void saveKernelPath(const QString &path);
   void saveSettings(void);
@@ -182,6 +183,8 @@ class spoton: public QMainWindow
   void slotGenerateGeminiInChat(void);
   void slotKeepCopy(bool state);
   void slotKeepOnlyUserDefinedNeighbors(bool state);
+  void slotKernelSocketError(QAbstractSocket::SocketError error);
+  void slotKernelSocketSslErrors(const QList<QSslError> &errors);
   void slotKernelSocketState(void);
   void slotKernelStatus(void);
   void slotHideOfflineParticipants(bool state);

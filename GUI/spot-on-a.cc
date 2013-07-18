@@ -453,9 +453,17 @@ spoton::spoton(void):QMainWindow()
 	  this,
 	  SLOT(slotKernelSocketState(void)));
   connect(&m_kernelSocket,
+	  SIGNAL(error(QAbstractSocket::SocketError)),
+	  this,
+	  SLOT(slotKernelSocketError(QAbstractSocket::SocketError)));
+  connect(&m_kernelSocket,
 	  SIGNAL(readyRead(void)),
 	  this,
 	  SLOT(slotReceivedKernelMessage(void)));
+  connect(&m_kernelSocket,
+	  SIGNAL(sslErrors(const QList<QSslError> &)),
+	  this,
+	  SLOT(slotKernelSocketSslErrors(const QList<QSslError> &)));
   m_sb.kernelstatus->setToolTip
     (tr("Not connected to the kernel. Is the kernel "
 	"active?"));
@@ -1891,18 +1899,19 @@ void spoton::slotPopulateNeighbors(void)
 
 void spoton::slotActivateKernel(void)
 {
+  QProcess process;
   QString program(m_ui.kernelPath->text());
 
 #ifdef Q_OS_MAC
   if(QFileInfo(program).isBundle())
-    QProcess::startDetached
+    process.startDetached
       ("open", QStringList("-a") << program);
   else
-    QProcess::startDetached(program);
+    process.startDetached(program);
 #elif defined(Q_OS_WIN32)
-  QProcess::startDetached(QString("\"%1\"").arg(program));
+  process.startDetached(QString("\"%1\"").arg(program));
 #else
-  QProcess::startDetached(program);
+  process.startDetached(program);
 #endif
 }
 
@@ -1976,7 +1985,7 @@ void spoton::slotGeneralTimerTimeout(void)
       m_participantsLastModificationTime = QDateTime();
     }
 
-  if(text != "0")
+  if(isKernelActive())
     if(m_kernelSocket.state() == QAbstractSocket::UnconnectedState)
       {
 	{
@@ -1990,19 +1999,14 @@ void spoton::slotGeneralTimerTimeout(void)
 	      QSqlQuery query(db);
 
 	      query.setForwardOnly(true);
-
+	      
 	      if(query.exec("SELECT port FROM kernel_gui_server"))
 		if(query.next())
 		  {
-		    m_kernelSocket.connectToHost("127.0.0.1",
-						 query.value(0).toInt());
-
-		    /*
-		    ** If the kernel is not responsive, terminate it.
-		    */
-
-		    if(!m_kernelSocket.waitForConnected(10000))
-		      slotDeactivateKernel();
+		    initializeKernelSocket();
+		    m_kernelSocket.connectToHostEncrypted
+		      ("127.0.0.1",
+		       query.value(0).toInt());
 		  }
 	    }
 
@@ -2891,15 +2895,25 @@ void spoton::slotKernelSocketState(void)
 
   if(state == QAbstractSocket::ConnectedState)
     {
-      sendKeysToKernel();
+      if(m_kernelSocket.isEncrypted())
+	{
+	  sendKeysToKernel();
+	  m_sb.kernelstatus->setToolTip
+	    (tr("Connected securely to the kernel on port %1 "
+		"from local port %2.").
+	     arg(m_kernelSocket.peerPort()).
+	     arg(m_kernelSocket.localPort()));
+	}
+      else
+	m_sb.kernelstatus->setToolTip
+	  (tr("Connected insecurely to the kernel on port %1 "
+	      "from local port %2.").
+	   arg(m_kernelSocket.peerPort()).
+	   arg(m_kernelSocket.localPort()));
+
       m_sb.kernelstatus->setIcon
 	(QIcon(QString(":/%1/activate.png").
 	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
-      m_sb.kernelstatus->setToolTip
-	(tr("Connected to the kernel on port %1 "
-	    "from local port %2.").
-	 arg(m_kernelSocket.peerPort()).
-	 arg(m_kernelSocket.localPort()));
     }
   else if(state == QAbstractSocket::UnconnectedState)
     {
@@ -2917,27 +2931,28 @@ void spoton::sendKeysToKernel(void)
 {
   if(m_crypt)
     if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
-      {
-	QByteArray keys("keys_");
-	QByteArray passphrase
-	  (m_crypt->passphrase(), m_crypt->passphraseLength());
-	QByteArray symmetricKey
-	  (m_crypt->symmetricKey(), m_crypt->symmetricKeyLength());
+      if(m_kernelSocket.isEncrypted())
+	{
+	  QByteArray keys("keys_");
+	  QByteArray passphrase
+	    (m_crypt->passphrase(), m_crypt->passphraseLength());
+	  QByteArray symmetricKey
+	    (m_crypt->symmetricKey(), m_crypt->symmetricKeyLength());
 
-	passphrase = passphrase.toBase64();
-	symmetricKey = symmetricKey.toBase64();
-	keys.append(passphrase);
-	keys.append("_");
-	keys.append(symmetricKey);
-	keys.append('\n');
+	  passphrase = passphrase.toBase64();
+	  symmetricKey = symmetricKey.toBase64();
+	  keys.append(passphrase);
+	  keys.append("_");
+	  keys.append(symmetricKey);
+	  keys.append('\n');
 
-	if(m_kernelSocket.write(keys.constData(), keys.length()) !=
-	   keys.length())
-	  spoton_misc::logError
-	    ("spoton::sendKeysToKernel(): write() failure.");
-	else
-	  m_kernelSocket.flush();
-      }
+	  if(m_kernelSocket.write(keys.constData(), keys.length()) !=
+	     keys.length())
+	    spoton_misc::logError
+	      ("spoton::sendKeysToKernel(): write() failure.");
+	  else
+	    m_kernelSocket.flush();
+	}
 }
 
 void spoton::slotConnectNeighbor(void)
@@ -3566,4 +3581,26 @@ void spoton::slotProxyChecked(bool state)
   m_ui.proxyPort->setValue(m_ui.proxyPort->minimum());
   m_ui.proxyType->setCurrentIndex(0);
   m_ui.proxyUsername->clear();
+}
+
+void spoton::slotKernelSocketError(QAbstractSocket::SocketError error)
+{
+  Q_UNUSED(error);
+  spoton_misc::logError
+    (QString("spoton::slotError(): socket error (%1).").
+     arg(m_kernelSocket.errorString()));
+}
+
+void spoton::slotKernelSocketSslErrors(const QList<QSslError> &errors)
+{
+  m_kernelSocket.ignoreSslErrors();
+
+  for(int i = 0; i < errors.size(); i++)
+    spoton_misc::logError
+      (QString("spoton::slotSslErrors(): "
+	       "error (%1) occurred from %2:%3.").
+       arg(errors.at(i).errorString()).
+       arg(m_kernelSocket.peerAddress().isNull() ? m_kernelSocket.peerName() :
+	   m_kernelSocket.peerAddress().toString()).
+       arg(m_kernelSocket.peerPort()));
 }

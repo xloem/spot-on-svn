@@ -30,7 +30,7 @@
 
 #include <QCache>
 #include <QPointer>
-#include <QTcpSocket>
+#include <QSslSocket>
 #include <QTimer>
 #include <QWidget>
 
@@ -41,7 +41,7 @@ class spoton_buzzpage: public QWidget
   Q_OBJECT
 
  public:
-  spoton_buzzpage(QTcpSocket *kernelSocket,
+  spoton_buzzpage(QSslSocket *kernelSocket,
 		  const QByteArray &channel,
 		  const QByteArray &id,
 		  QWidget *parent);
@@ -57,7 +57,7 @@ class spoton_buzzpage: public QWidget
 					       ** Prevent duplicate
 					       ** echoed messages.
 					       */
-  QPointer<QTcpSocket> m_kernelSocket;
+  QPointer<QSslSocket> m_kernelSocket;
   QTimer m_statusTimer;
   Ui_buzzPage ui;
 

@@ -34,7 +34,7 @@
 #include "Common/spot-on-misc.h"
 #include "spot-on-buzzpage.h"
 
-spoton_buzzpage::spoton_buzzpage(QTcpSocket *kernelSocket,
+spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 				 const QByteArray &channel,
 				 const QByteArray &id,
 				 QWidget *parent):QWidget(parent)
@@ -48,7 +48,7 @@ spoton_buzzpage::spoton_buzzpage(QTcpSocket *kernelSocket,
 
   if(m_id.isEmpty())
     m_id = spoton_crypt::strongRandomBytes
-      (spoton_common::BUZZ_MAXIMUM_ID_LENGTH).toBase64();
+      (spoton_common::BUZZ_MAXIMUM_ID_LENGTH / 2).toHex().toBase64();
 
   m_kernelSocket = kernelSocket;
   m_statusTimer.start(30000);
@@ -96,6 +96,8 @@ void spoton_buzzpage::slotSendMessage(void)
   if(!m_kernelSocket)
     return;
   else if(m_kernelSocket->state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!m_kernelSocket->isEncrypted())
     return;
   else if(ui.message->toPlainText().trimmed().isEmpty())
     return;
@@ -192,6 +194,8 @@ void spoton_buzzpage::slotSendStatus(void)
     return;
   else if(m_kernelSocket->state() != QAbstractSocket::ConnectedState)
     return;
+  else if(!m_kernelSocket->isEncrypted())
+    return;
 
   QByteArray name;
   QByteArray message;
@@ -231,7 +235,7 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
   QByteArray name
     (list.at(0).mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
   QList<QTableWidgetItem *> items
-    (ui.clients->findItems(list.value(1), Qt::MatchExactly));
+    (ui.clients->findItems(id, Qt::MatchExactly));
 
   ui.clients->setSortingEnabled(false);
 
