@@ -38,6 +38,7 @@
 
 #include <limits>
 
+#include "Common/spot-on-common.h"
 #include "Common/spot-on-external-address.h"
 #include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
@@ -2481,7 +2482,9 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 			  "last_status_update = ? "
 			  "WHERE neighbor_oid = -1 AND "
 			  "public_key_hash = ?");
-	    query.bindValue(0, name);
+	    query.bindValue
+	      (0,
+	       name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
 	    query.bindValue
 	      (1, QDateTime::currentDateTime().toString(Qt::ISODate));
 	    query.bindValue(2, publicKeyHash.toBase64());
@@ -2494,7 +2497,9 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 			  "last_status_update = ? "
 			  "WHERE neighbor_oid = -1 AND "
 			  "public_key_hash = ?");
-	    query.bindValue(0, name);
+	    query.bindValue
+	      (0,
+	       name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
 	    query.bindValue(1, status);
 	    query.bindValue
 	      (2, QDateTime::currentDateTime().toString(Qt::ISODate));

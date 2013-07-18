@@ -591,13 +591,13 @@ spoton::spoton(void):QMainWindow()
     m_ui.status->setCurrentIndex(3);
 
   m_ui.kernelPath->setToolTip(m_ui.kernelPath->text());
-  m_ui.buzzName->setMaxLength(NAME_MAXIMUM_LENGTH);
+  m_ui.buzzName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
   m_ui.buzzName->setText
     (QString::fromUtf8(m_settings.value("gui/buzzName", "unknown").
 		       toByteArray()).trimmed());
   m_ui.channel->setMaxLength
     (spoton_crypt::cipherKeyLength("aes256"));
-  m_ui.nodeName->setMaxLength(NAME_MAXIMUM_LENGTH);
+  m_ui.nodeName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
   m_ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
 		       toByteArray()).trimmed());

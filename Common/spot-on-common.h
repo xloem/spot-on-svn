@@ -30,4 +30,10 @@
 
 #define SPOTON_VERSION_STR "0.01"
 
+namespace spoton_common
+{
+  static const int BUZZ_MAXIMUM_ID_LENGTH = 128;
+  static const int NAME_MAXIMUM_LENGTH = 64;
+}
+
 #endif

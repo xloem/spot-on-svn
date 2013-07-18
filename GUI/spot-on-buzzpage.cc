@@ -29,9 +29,9 @@
 #include <QScrollBar>
 #include <QSettings>
 
+#include "Common/spot-on-common.h"
 #include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
-#include "spot-on.h"
 #include "spot-on-buzzpage.h"
 
 spoton_buzzpage::spoton_buzzpage(QTcpSocket *kernelSocket,
@@ -47,7 +47,8 @@ spoton_buzzpage::spoton_buzzpage(QTcpSocket *kernelSocket,
   m_id = id.trimmed();
 
   if(m_id.isEmpty())
-    m_id = spoton_crypt::strongRandomBytes(128).toBase64();
+    m_id = spoton_crypt::strongRandomBytes
+      (spoton_common::BUZZ_MAXIMUM_ID_LENGTH).toBase64();
 
   m_kernelSocket = kernelSocket;
   m_statusTimer.start(30000);
@@ -158,9 +159,10 @@ void spoton_buzzpage::appendMessage(const QByteArray &hash,
   else
     m_messagingCache.insert(hash, 0);
 
-  QByteArray id(list.value(1).mid(0, 128).trimmed());
+  QByteArray id
+    (list.value(1).mid(0, spoton_common::BUZZ_MAXIMUM_ID_LENGTH).trimmed());
   QByteArray name
-    (list.value(0).mid(0, spoton::NAME_MAXIMUM_LENGTH).trimmed());
+    (list.value(0).mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
   QByteArray message(list.value(2));
   QString msg("");
 
@@ -224,8 +226,10 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 
   bool changed = false;
 
-  QByteArray id(list.at(1).mid(0, 128).trimmed());
-  QByteArray name(list.at(0).mid(0, spoton::NAME_MAXIMUM_LENGTH).trimmed());
+  QByteArray id
+    (list.at(1).mid(0, spoton_common::BUZZ_MAXIMUM_ID_LENGTH).trimmed());
+  QByteArray name
+    (list.at(0).mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
   QList<QTableWidgetItem *> items
     (ui.clients->findItems(list.value(1), Qt::MatchExactly));
 

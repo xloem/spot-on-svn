@@ -92,7 +92,6 @@ class spoton: public QMainWindow
   Q_OBJECT
 
  public:
-  static const int NAME_MAXIMUM_LENGTH = 64;
   spoton(void);
   Ui_spoton_mainwindow ui(void) const;
 

@@ -3483,7 +3483,9 @@ void spoton::slotJoinBuzzChannel(void)
   if(found)
     return;
 
-  QByteArray id(spoton_crypt::strongRandomBytes(128).toBase64());
+  QByteArray id
+    (spoton_crypt::
+     strongRandomBytes(spoton_common::BUZZ_MAXIMUM_ID_LENGTH).toBase64());
 
   m_ui.channel->clear();
 
