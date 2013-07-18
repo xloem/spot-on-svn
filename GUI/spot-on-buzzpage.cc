@@ -31,6 +31,7 @@
 
 #include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
+#include "spot-on.h"
 #include "spot-on-buzzpage.h"
 
 spoton_buzzpage::spoton_buzzpage(QTcpSocket *kernelSocket,
@@ -157,8 +158,9 @@ void spoton_buzzpage::appendMessage(const QByteArray &hash,
   else
     m_messagingCache.insert(hash, 0);
 
-  QByteArray id(list.value(1));
-  QByteArray name(list.value(0));
+  QByteArray id(list.value(1).mid(0, 128).trimmed());
+  QByteArray name
+    (list.value(0).mid(0, spoton::NAME_MAXIMUM_LENGTH).trimmed());
   QByteArray message(list.value(2));
   QString msg("");
 
@@ -222,6 +224,8 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 
   bool changed = false;
 
+  QByteArray id(list.at(1).mid(0, 128).trimmed());
+  QByteArray name(list.at(0).mid(0, spoton::NAME_MAXIMUM_LENGTH).trimmed());
   QList<QTableWidgetItem *> items
     (ui.clients->findItems(list.value(1), Qt::MatchExactly));
 
@@ -234,9 +238,9 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 
       QTableWidgetItem *item = 0;
 
-      item = new QTableWidgetItem(list.value(0).constData());
+      item = new QTableWidgetItem(name.constData());
       ui.clients->setItem(ui.clients->rowCount() - 1, 0, item);
-      item = new QTableWidgetItem(list.value(1).constData());
+      item = new QTableWidgetItem(id.constData());
       ui.clients->setItem(ui.clients->rowCount() - 1, 1, item);
       item = new QTableWidgetItem
 	(QDateTime::currentDateTime().toString(Qt::ISODate));
@@ -247,8 +251,8 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
       msg.append
 	(QDateTime::currentDateTime().
 	 toString("[hh:mm<font color=grey>:ss</font>] "));
-      msg.append(tr("<i>User %1 has joined %2.</i>").
-		 arg(list.value(0).constData()).
+      msg.append(tr("<i>%1 has joined %2.</i>").
+		 arg(name.constData()).
 		 arg(m_channel.constData()));
       ui.messages->append(msg);
       ui.messages->verticalScrollBar()->setValue
@@ -260,7 +264,7 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 
       if(item)
 	{
-	  if(item->text() != list.value(0).constData())
+	  if(item->text() != name.constData())
 	    {
 	      changed = true;
 
@@ -271,11 +275,11 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 		 toString("[hh:mm<font color=grey>:ss</font>] "));
 	      msg.append(tr("<i>%1 is now known as %2.</i>").
 			 arg(item->text()).
-			 arg(list.value(0).constData()));
+			 arg(name.constData()));
 	      ui.messages->append(msg);
 	      ui.messages->verticalScrollBar()->setValue
 		(ui.messages->verticalScrollBar()->maximum());
-	      item->setText(list.value(0).constData());
+	      item->setText(name.constData());
 	    }
 
 	  /*

@@ -2013,6 +2013,19 @@ void spoton::slotGeneralTimerTimeout(void)
       }
 
   slotKernelSocketState();
+
+  if(isKernelActive())
+    {
+      if(m_ui.buzzTab->count() > 0)
+	{
+	  if(!m_buzzStatusTimer.isActive())
+	    m_buzzStatusTimer.start();
+	}
+      else
+	m_buzzStatusTimer.stop();
+    }
+  else
+    m_buzzStatusTimer.stop();
 }
 
 void spoton::slotSelectKernelPath(void)

@@ -92,6 +92,7 @@ class spoton: public QMainWindow
   Q_OBJECT
 
  public:
+  static const int NAME_MAXIMUM_LENGTH = 64;
   spoton(void);
   Ui_spoton_mainwindow ui(void) const;
 
@@ -99,7 +100,6 @@ class spoton: public QMainWindow
   static const int APPLY_GOLDBUG_TO_INBOX_ERROR_CORRUPT_MESSAGE_CODE = 1;
   static const int APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL = 2;
   static const int APPLY_GOLDBUG_TO_INBOX_ERROR_MEMORY = 3;
-  static const int NAME_MAXIMUM_LENGTH = 64;
   QByteArray m_kernelSocketData;
   QCache<QByteArray, char *> m_messagingCache; /*
 					       ** Prevent duplicate

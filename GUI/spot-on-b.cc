@@ -3505,9 +3505,6 @@ void spoton::slotJoinBuzzChannel(void)
 	  SLOT(slotSetIcons(void)));
   m_ui.buzzTab->addTab(page, channel);
   m_ui.buzzTab->setCurrentIndex(m_ui.buzzTab->count() - 1);
-
-  if(!m_buzzStatusTimer.isActive())
-    m_buzzStatusTimer.start();
 }
 
 void spoton::slotCloseBuzzTab(int index)

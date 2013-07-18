@@ -49,6 +49,9 @@ Remaining Items
 9.     E-mail retrieval may fail if a node is disconnected because of
        a lifetime expiration.
 10.    The re-encoding phase may produce errors. Delete corrupt entries.
+11.    Country flags and names for hostnames.
+12.    Dedicated lines. Such lines, if enabled by both parties, do
+       not allow echoed data.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.
