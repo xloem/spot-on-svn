@@ -41,7 +41,6 @@ namespace spoton_common
 						 ** will be represented in
 						 ** base sixteen.
 						 */
-  static const int KERNEL_SSL_KEY_SIZE = 3072;
   static const int NAME_MAXIMUM_LENGTH = 64;
 }
 

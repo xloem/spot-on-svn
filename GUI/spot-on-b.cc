@@ -3465,6 +3465,17 @@ void spoton::slotSuperEcho(bool state)
   settings.setValue("gui/superEcho", state);
 }
 
+void spoton::slotKernelKeySizeChanged(const QString &text)
+{
+  m_settings["gui/kernelKeySize"] = text.toInt();
+
+  QSettings settings;
+
+  settings.setValue
+    ("gui/kernelKeySize",
+     m_settings.value("gui/kernelKeySize").toInt());
+}
+
 void spoton::slotPublishedKeySizeChanged(const QString &text)
 {
   m_settings["gui/publishedKeySize"] = text.toInt();
@@ -3543,17 +3554,25 @@ void spoton::slotCloseBuzzTab(int index)
 
 void spoton::initializeKernelSocket(void)
 {
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+  m_sb.status->setText
+    (tr("Generating SSL data for kernel socket. Please be patient."));
+  QApplication::processEvents();
+
   QByteArray certificate;
   QByteArray privateKey;
   QByteArray publicKey;
   QString error("");
 
   spoton_crypt::generateSslKeys
-    (spoton_common::KERNEL_SSL_KEY_SIZE,
+    (m_ui.kernelKeySize->currentText().toInt(),
      certificate,
      privateKey,
      publicKey,
      error);
+  QApplication::restoreOverrideCursor();
+  m_sb.status->clear();
+  QApplication::processEvents();
 
   if(error.isEmpty())
     {

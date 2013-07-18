@@ -404,6 +404,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(const QString &)),
 	  this,
 	  SLOT(slotPublishedKeySizeChanged(const QString &)));
+  connect(m_ui.kernelKeySize,
+	  SIGNAL(currentIndexChanged(const QString &)),
+	  this,
+	  SLOT(slotKernelKeySizeChanged(const QString &)));
   connect(m_ui.superEcho,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -578,7 +582,15 @@ spoton::spoton(void):QMainWindow()
     m_ui.chatSendMethod->setCurrentIndex(0);
 
   QString keySize
-    (m_settings.value("gui/publishedKeySize", "2048").toString());
+    (m_settings.value("gui/kernelKeySize", "2048").toString());
+
+  if(m_ui.kernelKeySize->findText(keySize) > -1)
+    m_ui.kernelKeySize->setCurrentIndex
+      (m_ui.kernelKeySize->findText(keySize));
+  else
+    m_ui.kernelKeySize->setCurrentIndex(0);
+
+  keySize = m_settings.value("gui/publishedKeySize", "2048").toString();
 
   if(m_ui.publishedKeySize->findText(keySize) > -1)
     m_ui.publishedKeySize->setCurrentIndex

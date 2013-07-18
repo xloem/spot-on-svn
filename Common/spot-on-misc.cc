@@ -1538,6 +1538,14 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 1000;
 
   settings["gui/congestionCost"] = integer;
+  integer = qAbs(settings.value("gui/kernelKeySize", 2048).toInt(&ok));
+
+  if(!ok)
+    integer = 2048;
+  else if(!(integer == 2048 || integer == 3072 || integer == 4096))
+    integer = 2048;
+
+  settings["gui/kernelKeySize"] = integer;
   integer = qAbs(settings.value("gui/iterationCount", 10000).toInt(&ok));
 
   if(!ok)

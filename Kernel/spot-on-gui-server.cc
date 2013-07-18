@@ -49,7 +49,7 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
   QString error("");
 
   spoton_crypt::generateSslKeys
-    (spoton_common::KERNEL_SSL_KEY_SIZE,
+    (spoton_kernel::s_settings.value("gui/kernelKeySize", 2048).toInt(),
      certificate,
      privateKey,
      publicKey,
