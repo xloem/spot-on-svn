@@ -1529,6 +1529,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   ** Attempt to correct flawed configuration settings.
   */
 
+  QString str("");
   bool ok = true;
   int integer = 0;
 
@@ -1538,6 +1539,12 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 1000;
 
   settings["gui/congestionCost"] = integer;
+  str = settings.value("gui/iconSet", "nouve").toString().trimmed();
+
+  if(!(str == "nouve" || str == "nuvola"))
+    str = "nouve";
+
+  settings["gui/iconSet"] = str;
   integer = qAbs(settings.value("gui/kernelKeySize", 2048).toInt(&ok));
 
   if(!ok)
