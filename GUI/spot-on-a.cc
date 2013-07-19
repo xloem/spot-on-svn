@@ -1791,9 +1791,9 @@ void spoton::slotPopulateNeighbors(void)
 			    else if(i == 17) // dedicated_line
 			      {
 				if(bytes.toInt() == 0)
-				  bytes = "False";
+				  bytes = "Full";
 				else
-				  bytes = "True";
+				  bytes = "Half";
 			      }
 
 			    item = new QTableWidgetItem(bytes.constData());
@@ -2890,10 +2890,10 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("U&nblock"),
 		     this, SLOT(slotUnblockNeighbor(void)));
       menu.addSeparator();
-      menu.addAction(tr("Dedicated Lin&e"),
-		     this, SLOT(slotDedicatedLine(void)));
-      menu.addAction(tr("&Shared Line"),
+      menu.addAction(tr("&Full Echo"),
 		     this, SLOT(slotSharedLine(void)));
+      menu.addAction(tr("&Half Echo"),
+		     this, SLOT(slotDedicatedLine(void)));
       menu.exec(m_ui.neighbors->mapToGlobal(point));
     }
   else

@@ -136,8 +136,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1197</width>
-                <height>569</height>
+                <width>452</width>
+                <height>409</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1499,7 +1499,7 @@
                <bool>true</bool>
               </property>
               <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>180</number>
+               <number>200</number>
               </attribute>
               <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
                <bool>true</bool>
@@ -1594,7 +1594,7 @@
               </column>
               <column>
                <property name="text">
-                <string>Dedicated Line</string>
+                <string>Echo Mode</string>
                </property>
               </column>
               <column>
@@ -2189,8 +2189,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1197</width>
-             <height>569</height>
+             <width>1105</width>
+             <height>311</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
