@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+	<file>receive.wav</file>
+	<file>send.wav</file>
+    </qresource>
+</RCC>
