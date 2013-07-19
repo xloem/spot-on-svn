@@ -105,7 +105,6 @@ void spoton::slotSendMessage(void)
       if(mediaObject)
 	{
 	  mediaObject->play();
-	  mediaObject->stop();
 	  mediaObject->clear();
 	  delete mediaObject;
 	}
@@ -325,7 +324,6 @@ void spoton::slotReceivedKernelMessage(void)
 	    if(mediaObject)
 	      {
 		mediaObject->play();
-		mediaObject->stop();
 		mediaObject->clear();
 		delete mediaObject;
 	      }
@@ -342,7 +340,6 @@ void spoton::slotReceivedKernelMessage(void)
 	    if(mediaObject)
 	      {
 		mediaObject->play();
-		mediaObject->stop();
 		mediaObject->clear();
 		delete mediaObject;
 	      }
