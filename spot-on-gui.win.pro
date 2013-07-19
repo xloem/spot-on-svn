@@ -10,7 +10,8 @@ CONFIG		+= qt release warn_on
 # The function gcry_kdf_derive() is available in version
 # 1.5.0 of the gcrypt library.
 
-DEFINES         += SPOTON_LINKED_WITH_LIBGEOIP
+DEFINES         += SPOTON_LINKED_WITH_LIBGEOIP \
+		   SPOTON_LINKED_WITH_LIBPHONON
 
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of libSpotOn.
@@ -30,7 +31,8 @@ INCLUDEPATH	+= . ..\\..\\. GUI ..\\..\\libSpotOn\\Include.win32 \
 LIBS		+= -L..\\..\\libSpotOn -L..\\..\\libSpotOn\\Libraries.win32 \
 		   -L..\\..\\libGeoIP\\Libraries.win32 \
 		   -L..\\..\\libOpenSsl\\Libraries.win32 \
-		   -lGeoIP-1 -leay32 -lgcrypt-11 -lpthread -lspoton -lssl32
+		   -lGeoIP-1 -leay32 -lgcrypt-11 -lphonon \
+		   -lpthread -lspoton -lssl32
 PRE_TARGETDEPS = libspoton.dll
 
 FORMS           = UI\\buzzpage.ui \

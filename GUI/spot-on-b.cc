@@ -25,6 +25,10 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifdef SPOTON_LINKED_WITH_LIBPHONON
+#include <phonon/AudioOutput>
+#include <phonon/MediaObject>
+#endif
 #include <QSslKey>
 
 #include "spot-on.h"
@@ -90,6 +94,23 @@ void spoton::slotSendMessage(void)
     }
 
   m_ui.message->clear();
+
+#ifdef SPOTON_LINKED_WITH_LIBPHONON
+  if(m_ui.chatSound->isChecked())
+    {
+      Phonon::MediaObject *mediaObject =
+	Phonon::createPlayer(Phonon::NoCategory,
+			     Phonon::MediaSource(":/Sounds/send.wav"));
+
+      if(mediaObject)
+	{
+	  mediaObject->play();
+	  mediaObject->stop();
+	  mediaObject->clear();
+	  delete mediaObject;
+	}
+    }
+#endif
 }
 
 void spoton::slotReceivedKernelMessage(void)
@@ -101,6 +122,10 @@ void spoton::slotReceivedKernelMessage(void)
       QList<QByteArray> list
 	(m_kernelSocketData.mid(0, m_kernelSocketData.lastIndexOf('\n')).
 	 split('\n'));
+#ifdef SPOTON_LINKED_WITH_LIBPHONON
+      bool receivedBuzz = false;
+      bool receivedChat = false;
+#endif
 
       m_kernelSocketData.remove(0, m_kernelSocketData.lastIndexOf('\n'));
 
@@ -203,6 +228,10 @@ void spoton::slotReceivedKernelMessage(void)
 
 		      if(m_ui.tab->currentIndex() != 0)
 			m_sb.buzz->setVisible(true);
+
+#ifdef SPOTON_LINKED_WITH_LIBPHONON
+		      receivedBuzz = true;
+#endif
 		    }
 		}
 	    }
@@ -274,11 +303,51 @@ void spoton::slotReceivedKernelMessage(void)
 
 		  if(m_ui.tab->currentIndex() != 1)
 		    m_sb.chat->setVisible(true);
+
+#ifdef SPOTON_LINKED_WITH_LIBPHONON
+		  receivedChat = true;
+#endif
 		}
 	    }
 	  else if(data == "newmail")
 	    m_sb.email->setVisible(true);
 	}
+
+#ifdef SPOTON_LINKED_WITH_LIBPHONON
+      if(receivedBuzz)
+	if(m_ui.buzzSound->isChecked())
+	  {
+	    Phonon::MediaObject *mediaObject =
+	      Phonon::createPlayer
+	      (Phonon::NoCategory,
+	       Phonon::MediaSource(":/Sounds/buzz.wav"));
+
+	    if(mediaObject)
+	      {
+		mediaObject->play();
+		mediaObject->stop();
+		mediaObject->clear();
+		delete mediaObject;
+	      }
+	  }
+
+      if(receivedChat)
+	if(m_ui.chatSound->isChecked())
+	  {
+	    Phonon::MediaObject *mediaObject =
+	      Phonon::createPlayer
+	      (Phonon::NoCategory,
+	       Phonon::MediaSource(":/Sounds/receive.wav"));
+
+	    if(mediaObject)
+	      {
+		mediaObject->play();
+		mediaObject->stop();
+		mediaObject->clear();
+		delete mediaObject;
+	      }
+	  }
+#endif
     }
   else if(m_kernelSocketData.length() > 50000)
     {
