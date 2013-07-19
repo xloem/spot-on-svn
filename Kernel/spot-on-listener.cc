@@ -512,8 +512,9 @@ void spoton_listener::slotNewConnection(void)
 		       "proxy_type, "
 		       "proxy_username, "
 		       "private_key, "
-		       "public_key) "
-		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+		       "public_key, "
+		       "dedicated_line) "
+		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
 		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
 	    query.bindValue(1, m_port);
@@ -628,6 +629,11 @@ void spoton_listener::slotNewConnection(void)
 	      query.bindValue
 		(21, s_crypt->encrypted(QByteArray(), &ok).
 		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(22, s_crypt->encrypted(QString::number(0).toLatin1(),
+					&ok).toBase64());
 
 	    if(ok)
 	      created = query.exec();

@@ -565,6 +565,7 @@ void spoton_kernel::prepareNeighbors(void)
 		      "proxy_port, proxy_type, proxy_username, "
 		      "user_defined, private_key, "
 		      "maximum_buffer_size, maximum_content_length, "
+		      "dedicated_line, "
 		      "OID FROM neighbors"))
 	  while(query.next())
 	    {
@@ -581,12 +582,12 @@ void spoton_kernel::prepareNeighbors(void)
 			(query.record().indexOf("user_defined")).toBool();
 
 		      for(int i = 0; i < query.record().count() - 1; i++)
-			if(i == 3) // Status Control
+			if(i == 3) // status_control
 			  list.append("connected");
-			else if(i == 9) // User Defined?
+			else if(i == 9) // user_defined
 			  list.append(userDefined);
-			else if(i == 11 || // Maximum Buffer Size
-				i == 12)   // Maximum Content Length)
+			else if(i == 11 || // maximum_buffer_size
+				i == 12)   // maximum_content_length
 			  list.append
 			    (query.value(i).toInt());
 			else
@@ -676,6 +677,7 @@ void spoton_kernel::prepareNeighbors(void)
 			     list.value(10).toByteArray(),
 			     list.value(11).toInt(),
 			     list.value(12).toInt(),
+			     list.value(13).toInt(),
 			     this);
 			}
 

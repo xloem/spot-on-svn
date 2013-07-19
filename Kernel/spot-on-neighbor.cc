@@ -52,6 +52,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 const QByteArray &privateKey,
 				 QObject *parent):QSslSocket(parent)
 {
+  m_isDedicatedLine = false;
   m_isUserDefined = false;
   m_maximumBufferSize = 131072; // 2 ^ 17
   m_maximumContentLength = 65536; // 2 ^ 16
@@ -165,8 +166,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const QByteArray &privateKey,
 				 const int maximumBufferSize,
 				 const int maximumContentLength,
+				 const bool isDedicatedLine,
 				 QObject *parent):QSslSocket(parent)
 {
+  m_isDedicatedLine = isDedicatedLine;
   m_isUserDefined = userDefined;
   m_maximumBufferSize = maximumBufferSize;
   m_maximumContentLength = maximumContentLength;
@@ -394,7 +397,7 @@ void spoton_neighbor::slotTimeout(void)
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT status_control, sticky "
+	query.prepare("SELECT status_control, sticky, dedicated_line "
 		      "FROM neighbors WHERE OID = ?");
 	query.bindValue(0, m_id);
 
@@ -408,6 +411,23 @@ void spoton_neighbor::slotTimeout(void)
 		  {
 		    saveStatus(db, status);
 		    shouldDelete = true;
+		  }
+		else
+		  {
+		    spoton_crypt *s_crypt = 0;
+
+		    if(spoton_kernel::s_crypts.contains("messaging"))
+		      s_crypt = spoton_kernel::s_crypts["messaging"];
+
+		    if(s_crypt)
+		      {
+			bool ok = true;
+
+			m_isDedicatedLine = s_crypt->decrypted
+			  (QByteArray::fromBase64(query.value(2).
+						  toByteArray()),
+			   &ok).toInt();
+		      }
 		  }
 
 		if(query.value(1).toInt() == 1)
@@ -889,26 +909,27 @@ void spoton_neighbor::slotReceivedBuzzMessage
   /*
   ** A neighbor (id) received a buzz message. This neighbor now needs
   ** to send the message to its peer. Please note that data also contains
-  ** the TTL.
+  ** the TTL. We do not echo messages on lines that are dedicated.
   */
 
-  if(id != m_id)
-    if(readyToWrite())
-      {
-	QByteArray message;
+  if(!m_isDedicatedLine)
+    if(id != m_id)
+      if(readyToWrite())
+	{
+	  QByteArray message;
 
-	if(messageType == "0040a")
-	  message = spoton_send::message0040a(data, sendMethod);
-	else
-	  message = spoton_send::message0040b(data, sendMethod);
+	  if(messageType == "0040a")
+	    message = spoton_send::message0040a(data, sendMethod);
+	  else
+	    message = spoton_send::message0040b(data, sendMethod);
 
-	if(write(message.constData(), message.length()) != message.length())
-	  spoton_misc::logError
-	    ("spoton_neighbor::slotReceivedBuzzMessage(): write() "
-	     "error.");
-	else
-	  flush();
-      }
+	  if(write(message.constData(), message.length()) != message.length())
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotReceivedBuzzMessage(): write() "
+	       "error.");
+	  else
+	    flush();
+	}
 }
 
 void spoton_neighbor::slotReceivedChatMessage
@@ -919,21 +940,22 @@ void spoton_neighbor::slotReceivedChatMessage
   /*
   ** A neighbor (id) received a message. This neighbor now needs
   ** to send the message to its peer. Please note that data also contains
-  ** the TTL.
+  ** the TTL. We do not echo messages on lines that are dedicated.
   */
 
-  if(id != m_id)
-    if(readyToWrite())
-      {
-	QByteArray message(spoton_send::message0000(data, sendMethod));
+  if(!m_isDedicatedLine)
+    if(id != m_id)
+      if(readyToWrite())
+	{
+	  QByteArray message(spoton_send::message0000(data, sendMethod));
 
-	if(write(message.constData(), message.length()) != message.length())
-	  spoton_misc::logError
-	    ("spoton_neighbor::slotReceivedChatMessage(): write() "
-	     "error.");
-	else
-	  flush();
-      }
+	  if(write(message.constData(), message.length()) != message.length())
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotReceivedChatMessage(): write() "
+	       "error.");
+	  else
+	    flush();
+	}
 }
 
 void spoton_neighbor::slotReceivedMailMessage(const QByteArray &data,
@@ -942,21 +964,22 @@ void spoton_neighbor::slotReceivedMailMessage(const QByteArray &data,
   /*
   ** A neighbor (id) received a letter. This neighbor now needs
   ** to send the letter to its peer. Please note that data also contains
-  ** the TTL.
+  ** the TTL. We do not echo messages on lines that are dedicated.
   */
 
-  if(id != m_id)
-    if(readyToWrite())
-      {
-	QByteArray message(spoton_send::message0001a(data));
+  if(!m_isDedicatedLine)
+    if(id != m_id)
+      if(readyToWrite())
+	{
+	  QByteArray message(spoton_send::message0001a(data));
 
-	if(write(message.constData(), message.length()) != message.length())
-	  spoton_misc::logError
-	    ("spoton_neighbor::slotReceivedMailMessage(): write() "
-	     "error.");
-	else
-	  flush();
-      }
+	  if(write(message.constData(), message.length()) != message.length())
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotReceivedMailMessage(): write() "
+	       "error.");
+	  else
+	    flush();
+	}
 }
 
 void spoton_neighbor::slotReceivedStatusMessage(const QByteArray &data,
@@ -965,21 +988,22 @@ void spoton_neighbor::slotReceivedStatusMessage(const QByteArray &data,
   /*
   ** A neighbor (id) received a status message. This neighbor now needs
   ** to send the message to its peer. Please note that data also contains
-  ** the TTL.
+  ** the TTL. We do not echo messages on lines that are dedicated.
   */
 
-  if(id != m_id)
-    if(readyToWrite())
-      {
-	QByteArray message(spoton_send::message0013(data));
+  if(!m_isDedicatedLine)
+    if(id != m_id)
+      if(readyToWrite())
+	{
+	  QByteArray message(spoton_send::message0013(data));
 
-	if(write(message.constData(), message.length()) != message.length())
-	  spoton_misc::logError
-	    ("spoton_neighbor::slotReceivedStatusMessage(): write() "
-	     "error.");
-	else
-	  flush();
-      }
+	  if(write(message.constData(), message.length()) != message.length())
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotReceivedStatusMessage(): write() "
+	       "error.");
+	  else
+	    flush();
+	}
 }
 
 void spoton_neighbor::slotRetrieveMail(const QByteArray &data,
@@ -988,21 +1012,23 @@ void spoton_neighbor::slotRetrieveMail(const QByteArray &data,
   /*
   ** A neighbor (id) received a request to retrieve mail. This neighbor
   ** now needs to send the message to its peer. Please note that data
-  ** also contains the TTL.
+  ** also contains the TTL. We do not echo messages on lines that are
+  ** dedicated.
   */
 
-  if(id != m_id)
-    if(readyToWrite())
-      {
-	QByteArray message(spoton_send::message0002(data));
+  if(!m_isDedicatedLine)
+    if(id != m_id)
+      if(readyToWrite())
+	{
+	  QByteArray message(spoton_send::message0002(data));
 
-	if(write(message.constData(), message.length()) != message.length())
-	  spoton_misc::logError
-	    ("spoton_neighbor::slotRetrieveMail(): write() "
-	     "error.");
-	else
-	  flush();
-      }
+	  if(write(message.constData(), message.length()) != message.length())
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotRetrieveMail(): write() "
+	       "error.");
+	  else
+	    flush();
+	}
 }
 
 void spoton_neighbor::slotLifetimeExpired(void)
@@ -3069,21 +3095,23 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
   /*
   ** A neighbor (id) received a request to publish listener information.
   ** This neighbor now needs to send the message to its peer. Please
-  ** note that data also contains the TTL.
+  ** note that data also contains the TTL. We do not echo messages
+  ** on lines that are dedicated.
   */
 
-  if(id != m_id)
-    if(readyToWrite())
-      {
-	QByteArray message(spoton_send::message0030(data));
+  if(!m_isDedicatedLine)
+    if(id != m_id)
+      if(readyToWrite())
+	{
+	  QByteArray message(spoton_send::message0030(data));
 
-	if(write(message.constData(), message.length()) != message.length())
-	  spoton_misc::logError
-	    ("spoton_neighbor::slotPublicizeListenerPlaintext(): write() "
-	     "error.");
-	else
-	  flush();
-      }
+	  if(write(message.constData(), message.length()) != message.length())
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotPublicizeListenerPlaintext(): write() "
+	       "error.");
+	  else
+	    flush();
+	}
 }
 
 void spoton_neighbor::recordMessageHash(const QByteArray &data)

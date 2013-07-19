@@ -55,9 +55,9 @@ spoton_mailer::spoton_mailer(QObject *parent):QObject(parent)
 			      */
   m_retrieveMailTimer.setInterval(5000); /*
 					 ** Harvest a letter from our post
-					 ** office every 5 seconds.
+					 ** office every five seconds.
 					 */
-  m_timer.start(15000); // Send queued mail every 15 seconds.
+  m_timer.start(15000); // Send queued mail every fifteen seconds.
 }
 
 spoton_mailer::~spoton_mailer()

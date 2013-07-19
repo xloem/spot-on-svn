@@ -328,7 +328,8 @@ void spoton_misc::prepareDatabases(void)
 	   "private_key BLOB NOT NULL, "
 	   "public_key BLOB NOT NULL, "
 	   "maximum_buffer_size INTEGER NOT NULL DEFAULT 131072, "
-	   "maximum_content_length INTEGER NOT NULL DEFAULT 65536)");
+	   "maximum_content_length INTEGER NOT NULL DEFAULT 65536, "
+	   "dedicated_line TEXT NOT NULL)");
       }
 
     db.close();
@@ -1361,8 +1362,9 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 		   "proxy_username, "
 		   "private_key, "
 		   "public_key, "
-		   "uuid) "
-		   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, "
+		   "uuid, "
+		   "dedicated_line) "
+		   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
 		   "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
@@ -1484,6 +1486,11 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	    (20, crypt->
 	     encrypted(QByteArray("{00000000-0000-0000-0000-000000000000}"),
 		       &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (21, crypt->encrypted(QString::number(0).toLatin1(), &ok).
+	     toBase64());
 
 	if(ok)
 	  query.exec();

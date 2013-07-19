@@ -424,7 +424,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	if(query.exec("SELECT remote_ip_address, remote_port, "
 		      "scope_id, country, hash, proxy_hostname, "
 		      "proxy_password, proxy_port, proxy_type, "
-		      "proxy_username, private_key, public_key, uuid "
+		      "proxy_username, private_key, public_key, uuid, "
+		      "dedicated_line "
 		      "FROM neighbors"))
 	  while(query.next())
 	    {
@@ -442,6 +443,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      QString proxyUsername("");
 	      QString scopeId("");
 	      bool ok = true;
+	      int dedicatedLine = 0;
 
 	      updateQuery.prepare("UPDATE neighbors "
 				  "SET remote_ip_address = ?, "
@@ -458,7 +460,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "proxy_username = ?, "
 				  "private_key = ?, "
 				  "public_key = ?, "
-				  "uuid = ? "
+				  "uuid = ?, "
+				  "dedicated_line = ? "
 				  "WHERE hash = ?");
 	      ipAddress = oldCrypt->decrypted(QByteArray::
 					      fromBase64(query.
@@ -544,6 +547,11 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 					   &ok);
 
 	      if(ok)
+		dedicatedLine = oldCrypt->decrypted
+		  (QByteArray::fromBase64(query.value(13).toByteArray()),
+		   &ok).toInt();
+
+	      if(ok)
 		updateQuery.bindValue
 		  (0, newCrypt->encrypted(ipAddress.
 					  toLatin1(), &ok).toBase64());
@@ -617,8 +625,13 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		updateQuery.bindValue
 		  (14, newCrypt->encrypted(uuid, &ok).toBase64());
 
+	      if(ok)
+		updateQuery.bindValue
+		  (15, newCrypt->encrypted(QString::number(dedicatedLine).
+					   toLatin1(), &ok).toBase64());
+
 	      updateQuery.bindValue
-		(15, query.value(4));
+		(16, query.value(4));
 
 	      if(ok)
 		updateQuery.exec();

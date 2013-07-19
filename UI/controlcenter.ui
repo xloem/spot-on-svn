@@ -137,7 +137,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1197</width>
-                <height>574</height>
+                <height>569</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1499,7 +1499,7 @@
                <bool>true</bool>
               </property>
               <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>175</number>
+               <number>180</number>
               </attribute>
               <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
                <bool>true</bool>
@@ -1590,6 +1590,11 @@
               <column>
                <property name="text">
                 <string>Max. Content Length</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Dedicated Line</string>
                </property>
               </column>
               <column>
@@ -1729,7 +1734,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="6">
+                 <item row="1" column="6">
                   <layout class="QHBoxLayout" name="horizontalLayout_35">
                    <item>
                     <widget class="QLabel" name="label_29">
@@ -1764,6 +1769,13 @@
                     </widget>
                    </item>
                   </layout>
+                 </item>
+                 <item row="0" column="6">
+                  <widget class="QCheckBox" name="dedicatedLine">
+                   <property name="text">
+                    <string>&amp;Dedicated Line</string>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -2178,7 +2190,7 @@
              <x>0</x>
              <y>0</y>
              <width>1197</width>
-             <height>574</height>
+             <height>569</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3154,7 +3166,7 @@
      <x>0</x>
      <y>0</y>
      <width>1219</width>
-     <height>24</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -3293,6 +3305,7 @@
   <tabstop>neighborPort</tabstop>
   <tabstop>dynamicdns</tabstop>
   <tabstop>ipv4Neighbor</tabstop>
+  <tabstop>dedicatedLine</tabstop>
   <tabstop>neighborKeySize</tabstop>
   <tabstop>neighborScopeId</tabstop>
   <tabstop>ipv6Neighbor</tabstop>

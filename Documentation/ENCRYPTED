@@ -33,6 +33,7 @@ scope_id
 neighbors.db:
 
 country
+dedicated_line
 external_ip_address
 private_key
 proxy_hostname

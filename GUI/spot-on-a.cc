@@ -1116,10 +1116,11 @@ void spoton::slotAddNeighbor(void)
 			  "proxy_username, "
 			  "private_key, "
 			  "public_key, "
-			  "uuid) "
+			  "uuid, "
+			  "dedicated_line) "
 			  "VALUES "
 			  "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-			  "?, ?, ?, ?, ?, ?)");
+			  "?, ?, ?, ?, ?, ?, ?)");
 
 	    query.bindValue(0, QVariant(QVariant::String));
 	    query.bindValue(1, QVariant(QVariant::String));
@@ -1280,6 +1281,13 @@ void spoton::slotAddNeighbor(void)
 		(19, m_crypt->
 		 encrypted(QByteArray("{00000000-0000-0000-0000-"
 				      "000000000000}"), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(20, m_crypt->
+		 encrypted(QString::number(m_ui.dedicatedLine->
+					   isChecked()).toLatin1(), &ok).
+		 toBase64());
 
 	    if(ok)
 	      ok = query.exec();
@@ -1705,6 +1713,7 @@ void spoton::slotPopulateNeighbors(void)
 		      "proxy_hostname, proxy_port, "
 		      "maximum_buffer_size, "
 		      "maximum_content_length, "
+		      "dedicated_line, "
 		      "is_encrypted, OID "
 		      "FROM neighbors"))
 	  {
@@ -1755,7 +1764,9 @@ void spoton::slotPopulateNeighbors(void)
 		      }
 
 		    if(i == 1 ||
-		       i == 6 || (i >= 8 && i <= 11) || (i >= 13 && i <= 14))
+		       i == 6 || (i >= 8 && i <= 11) || (i >= 13 &&
+							 i <= 14) ||
+		       i == 17)
 		      {
 			if(query.value(i).isNull())
 			  item = new QTableWidgetItem();
@@ -1771,10 +1782,19 @@ void spoton::slotPopulateNeighbors(void)
 					  toByteArray()),
 			       &ok);
 
-			    if(i == 1) // UUID
-			      if(bytes.isEmpty())
-				bytes =
-				  "{00000000-0000-0000-0000-000000000000}";
+			    if(i == 1) // uuid
+			      {
+				if(bytes.isEmpty())
+				  bytes =
+				    "{00000000-0000-0000-0000-000000000000}";
+			      }
+			    else if(i == 17) // dedicated_line
+			      {
+				if(bytes.toInt() == 0)
+				  bytes = "False";
+				else
+				  bytes = "True";
+			      }
 
 			    item = new QTableWidgetItem(bytes.constData());
 			  }
@@ -2869,6 +2889,11 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotBlockNeighbor(void)));
       menu.addAction(tr("U&nblock"),
 		     this, SLOT(slotUnblockNeighbor(void)));
+      menu.addSeparator();
+      menu.addAction(tr("Dedicated Lin&e"),
+		     this, SLOT(slotDedicatedLine(void)));
+      menu.addAction(tr("&Shared Line"),
+		     this, SLOT(slotSharedLine(void)));
       menu.exec(m_ui.neighbors->mapToGlobal(point));
     }
   else
@@ -3615,4 +3640,104 @@ void spoton::slotKernelSocketSslErrors(const QList<QSslError> &errors)
        arg(m_kernelSocket.peerAddress().isNull() ? m_kernelSocket.peerName() :
 	   m_kernelSocket.peerAddress().toString()).
        arg(m_kernelSocket.peerPort()));
+}
+
+void spoton::slotDedicatedLine(void)
+{
+  if(!m_crypt)
+    return;
+
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.neighbors->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.neighbors->item
+	(row, m_ui.neighbors->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("UPDATE neighbors SET "
+		      "dedicated_line = ? "
+		      "WHERE OID = ?");
+	query.bindValue
+	  (0, m_crypt->encrypted(QString::number(1).toLatin1(), &ok).
+	   toBase64());
+	query.bindValue(1, oid);
+
+	if(ok)
+	  query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton");
+  m_neighborsLastModificationTime = QDateTime();
+}
+
+void spoton::slotSharedLine(void)
+{
+  if(!m_crypt)
+    return;
+
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.neighbors->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.neighbors->item
+	(row, m_ui.neighbors->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("UPDATE neighbors SET "
+		      "dedicated_line = ? "
+		      "WHERE OID = ?");
+	query.bindValue
+	  (0, m_crypt->encrypted(QString::number(0).toLatin1(), &ok).
+	   toBase64());
+	query.bindValue(1, oid);
+
+	if(ok)
+	  query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton");
+  m_neighborsLastModificationTime = QDateTime();
 }

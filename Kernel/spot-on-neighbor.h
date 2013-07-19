@@ -58,6 +58,7 @@ class spoton_neighbor: public QSslSocket
 		  const QByteArray &privateKey,
 		  const int maximumBufferSize,
 		  const int maximumContentLength,
+		  const bool isDedicatedLine,
 		  QObject *parent);
   spoton_neighbor(const int socketDescriptor,
 		  const QByteArray &certificate,
@@ -85,6 +86,7 @@ class spoton_neighbor: public QSslSocket
   QTimer m_lifetime;
   QTimer m_timer;
   QUuid m_receivedUuid;
+  bool m_isDedicatedLine;
   bool m_isUserDefined;
   bool m_useSsl;
   int m_maximumBufferSize;
