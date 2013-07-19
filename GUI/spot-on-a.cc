@@ -98,6 +98,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.chatSound->setEnabled(false);
   m_ui.chatSound->setToolTip(tr("Spot-On was configured without "
 				"libphoton."));
+#else
+  m_mediaObject = new Phonon::MediaObject(this);
 #endif
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000

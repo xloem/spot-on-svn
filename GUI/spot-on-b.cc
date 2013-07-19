@@ -25,10 +25,6 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifdef SPOTON_LINKED_WITH_LIBPHONON
-#include <phonon/AudioOutput>
-#include <phonon/MediaObject>
-#endif
 #include <QSslKey>
 
 #include "spot-on.h"
@@ -97,18 +93,12 @@ void spoton::slotSendMessage(void)
 
 #ifdef SPOTON_LINKED_WITH_LIBPHONON
   if(m_ui.chatSound->isChecked())
-    {
-      Phonon::MediaObject *mediaObject =
-	Phonon::createPlayer(Phonon::NoCategory,
-			     Phonon::MediaSource(":/Sounds/send.wav"));
-
-      if(mediaObject)
-	{
-	  mediaObject->play();
-	  mediaObject->clear();
-	  delete mediaObject;
-	}
-    }
+    if(m_mediaObject)
+      {
+	m_mediaObject->setCurrentSource
+	  (Phonon::MediaSource(":/Sounds/buzz.wav"));
+	m_mediaObject->play();
+      }
 #endif
 }
 
@@ -315,35 +305,21 @@ void spoton::slotReceivedKernelMessage(void)
 #ifdef SPOTON_LINKED_WITH_LIBPHONON
       if(receivedBuzz)
 	if(m_ui.buzzSound->isChecked())
-	  {
-	    Phonon::MediaObject *mediaObject =
-	      Phonon::createPlayer
-	      (Phonon::NoCategory,
-	       Phonon::MediaSource(":/Sounds/buzz.wav"));
-
-	    if(mediaObject)
-	      {
-		mediaObject->play();
-		mediaObject->clear();
-		delete mediaObject;
-	      }
-	  }
+	  if(m_mediaObject)
+	    {
+	      m_mediaObject->setCurrentSource
+		(Phonon::MediaSource(":/Sounds/buzz.wav"));
+	      m_mediaObject->play();
+	    }
 
       if(receivedChat)
 	if(m_ui.chatSound->isChecked())
-	  {
-	    Phonon::MediaObject *mediaObject =
-	      Phonon::createPlayer
-	      (Phonon::NoCategory,
-	       Phonon::MediaSource(":/Sounds/receive.wav"));
-
-	    if(mediaObject)
-	      {
-		mediaObject->play();
-		mediaObject->clear();
-		delete mediaObject;
-	      }
-	  }
+	  if(m_mediaObject)
+	    {
+	      m_mediaObject->setCurrentSource
+		(Phonon::MediaSource(":/Sounds/receive.wav"));
+	      m_mediaObject->play();
+	    }
 #endif
     }
   else if(m_kernelSocketData.length() > 50000)

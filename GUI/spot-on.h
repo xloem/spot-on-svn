@@ -63,6 +63,10 @@
 #include <QTranslator>
 #include <QUuid>
 #include <QtDebug>
+#ifdef SPOTON_LINKED_WITH_LIBPHONON
+#include <phonon/AudioOutput>
+#include <phonon/MediaObject>
+#endif
 
 #include <limits>
 
@@ -109,6 +113,9 @@ class spoton: public QMainWindow
   QDateTime m_neighborsLastModificationTime;
   QDateTime m_participantsLastModificationTime;
   QHash<QString, QVariant> m_settings;
+#ifdef SPOTON_LINKED_WITH_LIBPHONON
+  Phonon::MediaObject *m_mediaObject;
+#endif
   QSslSocket m_kernelSocket;
   QTimer m_buzzStatusTimer;
   QTimer m_generalTimer;
