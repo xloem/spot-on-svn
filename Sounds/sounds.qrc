@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+	<file>buzz.wav</file>
 	<file>receive.wav</file>
 	<file>send.wav</file>
     </qresource>
