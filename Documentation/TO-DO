@@ -55,6 +55,7 @@ Remaining Items
 11.    Monitor kernel health from the UI.
        See spoton::slotGeneralTimerTimeout().
 12.    Favorite channels.
+13.    Complete max. Neighbors fields.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.
