@@ -304,6 +304,11 @@ void spoton::slotReceivedKernelMessage(void)
 	    m_sb.email->setVisible(true);
 	}
 
+      Phonon::MediaObject *mediaObject = Phonon::createPlayer
+	(Phonon::NoCategory,
+	 Phonon::MediaSource(":/Sounds/send.wav"));
+      mediaObject->play();
+
 #ifdef SPOTON_LINKED_WITH_LIBPHONON
       if(receivedBuzz)
 	if(m_ui.buzzSound->isChecked())
