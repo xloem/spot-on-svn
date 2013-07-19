@@ -95,8 +95,10 @@ void spoton::slotSendMessage(void)
   if(m_ui.chatSound->isChecked())
     if(m_mediaObject)
       {
-	m_mediaObject->setCurrentSource
-	  (Phonon::MediaSource(":/Sounds/buzz.wav"));
+      	Phonon::MediaSource source(":/Sounds/send.wav");
+
+	source.setAutoDelete(true);
+	m_mediaObject->setCurrentSource(source);
 	m_mediaObject->play();
       }
 #endif
@@ -307,8 +309,10 @@ void spoton::slotReceivedKernelMessage(void)
 	if(m_ui.buzzSound->isChecked())
 	  if(m_mediaObject)
 	    {
-	      m_mediaObject->setCurrentSource
-		(Phonon::MediaSource(":/Sounds/buzz.wav"));
+	      Phonon::MediaSource source(":/Sounds/buzz.wav");
+
+	      source.setAutoDelete(true);
+	      m_mediaObject->setCurrentSource(source);
 	      m_mediaObject->play();
 	    }
 
@@ -316,8 +320,10 @@ void spoton::slotReceivedKernelMessage(void)
 	if(m_ui.chatSound->isChecked())
 	  if(m_mediaObject)
 	    {
-	      m_mediaObject->setCurrentSource
-		(Phonon::MediaSource(":/Sounds/receive.wav"));
+	      Phonon::MediaSource source(":/Sounds/receive.wav");
+
+	      source.setAutoDelete(true);
+	      m_mediaObject->setCurrentSource(source);
 	      m_mediaObject->play();
 	    }
 #endif
