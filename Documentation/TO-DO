@@ -36,6 +36,8 @@ Completed Items
        original message should be respected.
 23.    Inspect spoton_crypt's hash failures.
 24.    Secure connections between the interfaces and the kernel.
+25.    Dedicated lines. Such lines, if enabled by both parties, do
+       not allow echoed data.
 
 Remaining Items
 
@@ -50,9 +52,7 @@ Remaining Items
        a lifetime expiration.
 9.     The re-encoding phase may produce errors. Delete corrupt entries.
 10.    Country flags and names for hostnames.
-11.    Dedicated lines. Such lines, if enabled by both parties, do
-       not allow echoed data.
-12.    Monitor kernel health from the UI.
+11.    Monitor kernel health from the UI.
        See spoton::slotGeneralTimerTimeout().
 
 Ideas
