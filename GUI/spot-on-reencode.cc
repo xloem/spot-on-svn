@@ -126,6 +126,15 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 			updateQuery.bindValue(9, query.value(8));
 			updateQuery.exec();
 		      }
+		    else
+		      {
+			QSqlQuery deleteQuery(db);
+
+			deleteQuery.prepare("DELETE FROM folders WHERE "
+					    "OID = ?");
+			deleteQuery.bindValue(0, query.value(8));
+			deleteQuery.exec();
+		      }
 		  }
 	    }
 
@@ -189,6 +198,15 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      if(ok)
 		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare("DELETE FROM post_office WHERE "
+				      "OID = ?");
+		  deleteQuery.bindValue(0, query.value(3));
+		  deleteQuery.exec();
+		}
 	    }
       }
 
@@ -262,6 +280,15 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      if(ok)
 		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare("DELETE FROM country_inclusion WHERE "
+				      "country_hash = ?");
+		  deleteQuery.bindValue(0, query.value(2));
+		  deleteQuery.exec();
+		}
 	    }
       }
 
@@ -396,6 +423,15 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      if(ok)
 		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare("DELETE FROM listeners WHERE "
+				      "hash = ?");
+		  deleteQuery.bindValue(0, query.value(7));
+		  deleteQuery.exec();
+		}
 	    }
       }
 
@@ -635,6 +671,15 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      if(ok)
 		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare("DELETE FROM neighbors WHERE "
+				      "hash = ?");
+		  deleteQuery.bindValue(0, query.value(4));
+		  deleteQuery.exec();
+		}
 	    }
       }
 
