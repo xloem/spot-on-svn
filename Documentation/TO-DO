@@ -56,6 +56,8 @@ Remaining Items
        See spoton::slotGeneralTimerTimeout().
 12.    Favorite channels.
 13.    Complete max. Neighbors fields.
+14.    CGI for listeners.
+15.    Auto-clear textedit widgets that contain too much data.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.
