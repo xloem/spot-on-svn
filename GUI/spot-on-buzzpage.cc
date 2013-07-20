@@ -156,14 +156,20 @@ void spoton_buzzpage::appendMessage(const QByteArray &hash,
   if(list.size() != 3)
     return;
 
+  QByteArray id
+    (list.value(1).mid(0, spoton_common::BUZZ_MAXIMUM_ID_LENGTH).trimmed());
+
+  if(id == m_id)
+    /*
+    ** Ignore myself.
+    */
+
+    return;
+
   if(m_messagingCache.contains(hash))
     return;
   else
-    m_messagingCache.insert(hash, 0);
-
-  QByteArray id
-    (list.value(1).mid(0, spoton_common::BUZZ_MAXIMUM_ID_LENGTH).trimmed());
-  QByteArray name
+    m_messagingCache.insert(hash, 0);  QByteArray name
     (list.value(0).mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
   QByteArray message(list.value(2));
   QString msg("");
@@ -228,14 +234,17 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
   if(list.size() != 2)
     return false;
 
-  bool changed = false;
-
   QByteArray id
     (list.at(1).mid(0, spoton_common::BUZZ_MAXIMUM_ID_LENGTH).trimmed());
+
+  if(id == m_id)
+    return false;
+
   QByteArray name
     (list.at(0).mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
   QList<QTableWidgetItem *> items
     (ui.clients->findItems(id, Qt::MatchExactly));
+  bool changed = false;
 
   ui.clients->setSortingEnabled(false);
 
