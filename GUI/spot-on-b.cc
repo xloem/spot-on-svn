@@ -3509,8 +3509,7 @@ void spoton::slotJoinBuzzChannel(void)
 
   QByteArray id
     (spoton_crypt::
-     strongRandomBytes(spoton_common::BUZZ_MAXIMUM_ID_LENGTH / 2).toHex().
-     toBase64());
+     strongRandomBytes(spoton_common::BUZZ_MAXIMUM_ID_LENGTH / 2).toHex());
 
   m_ui.channel->clear();
 
