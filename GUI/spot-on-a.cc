@@ -2514,6 +2514,9 @@ void spoton::slotSetPassphrase(void)
 	       << "signature"
 	       << "url";
 
+	  m_sb.status->setText(tr("Generating public key pairs."));
+	  QApplication::processEvents();
+
 	  for(int i = 0; i < list.size(); i++)
 	    {
 	      m_sb.status->setText
