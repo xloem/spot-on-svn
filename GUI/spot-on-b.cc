@@ -99,7 +99,6 @@ void spoton::slotSendMessage(void)
 
 	source.setAutoDelete(true);
 	m_mediaObject->enqueue(source);
-	m_mediaObject->play();
       }
 #endif
 }
@@ -304,11 +303,6 @@ void spoton::slotReceivedKernelMessage(void)
 	    m_sb.email->setVisible(true);
 	}
 
-      Phonon::MediaObject *mediaObject = Phonon::createPlayer
-	(Phonon::NoCategory,
-	 Phonon::MediaSource(":/Sounds/send.wav"));
-      mediaObject->play();
-
 #ifdef SPOTON_LINKED_WITH_LIBPHONON
       if(receivedBuzz)
 	if(m_ui.buzzSound->isChecked())
@@ -318,7 +312,6 @@ void spoton::slotReceivedKernelMessage(void)
 
 	      source.setAutoDelete(true);
 	      m_mediaObject->enqueue(source);
-	      m_mediaObject->play();
 	    }
 
       if(receivedChat)
@@ -329,7 +322,6 @@ void spoton::slotReceivedKernelMessage(void)
 
 	      source.setAutoDelete(true);
 	      m_mediaObject->enqueue(source);
-	      m_mediaObject->play();
 	    }
 #endif
     }

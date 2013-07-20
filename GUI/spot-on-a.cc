@@ -100,6 +100,10 @@ spoton::spoton(void):QMainWindow()
 				"libphoton."));
 #else
   m_mediaObject = new Phonon::MediaObject(this);
+  connect(m_mediaObject,
+	  SIGNAL(currentSourceChanged(const Phonon::MediaSource &)),
+	  m_mediaObject,
+	  SLOT(play(void)));
 #endif
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
