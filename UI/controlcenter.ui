@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1033</width>
+    <width>1219</width>
     <height>661</height>
    </rect>
   </property>
@@ -136,8 +136,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>412</width>
-                <height>437</height>
+                <width>1197</width>
+                <height>553</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1292,6 +1292,49 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_25">
             <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_41">
+              <item>
+               <spacer name="horizontalSpacer_37">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QToolButton" name="countriesToggle">
+                <property name="text">
+                 <string>Toggle All</string>
+                </property>
+                <property name="popupMode">
+                 <enum>QToolButton::InstantPopup</enum>
+                </property>
+                <property name="toolButtonStyle">
+                 <enum>Qt::ToolButtonTextBesideIcon</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_38">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
              <widget class="QListWidget" name="countries">
               <property name="alternatingRowColors">
                <bool>true</bool>
@@ -2189,8 +2232,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1029</width>
-             <height>353</height>
+             <width>1197</width>
+             <height>553</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3186,8 +3229,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1033</width>
-     <height>22</height>
+     <width>1219</width>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -3313,6 +3356,7 @@
   <tabstop>listenerScopeId</tabstop>
   <tabstop>ipv6Listener</tabstop>
   <tabstop>addListener</tabstop>
+  <tabstop>countriesToggle</tabstop>
   <tabstop>countries</tabstop>
   <tabstop>toolButtonCopytoClipboard</tabstop>
   <tabstop>toolButtonMakeFriends</tabstop>

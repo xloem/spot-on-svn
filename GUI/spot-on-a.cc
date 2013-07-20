@@ -501,6 +501,12 @@ spoton::spoton(void):QMainWindow()
   connect(menu->addAction(tr("Share &URL Public Key")),
 	  SIGNAL(triggered(void)), this, SLOT(slotShareURLPublicKey(void)));
   m_ui.toolButtonMakeFriends->setMenu(menu);
+  menu = new QMenu(this);
+  connect(menu->addAction(tr("&Off")),
+	  SIGNAL(triggered(void)), this, SLOT(slotCountriesToggleOff(void)));
+  connect(menu->addAction(tr("&On")),
+	  SIGNAL(triggered(void)), this, SLOT(slotCountriesToggleOn(void)));
+  m_ui.countriesToggle->setMenu(menu);
   m_generalTimer.start(2500);
   m_tableTimer.setInterval(2500);
   m_ui.ipv4Listener->setChecked(true);
@@ -3748,4 +3754,117 @@ void spoton::slotSharedLine(void)
 
   QSqlDatabase::removeDatabase("spoton");
   m_neighborsLastModificationTime = QDateTime();
+}
+
+void spoton::slotCountriesToggleOff(void)
+{
+  countriesToggle(false);
+}
+
+void spoton::slotCountriesToggleOn(void)
+{
+  countriesToggle(true);
+}
+
+void spoton::countriesToggle(const bool state)
+{
+  if(!m_crypt)
+    return;
+
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+  QApplication::processEvents();
+
+  {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "country_inclusion.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	m_ui.countries->blockSignals(true);
+
+	for(int i = 0; i < m_ui.countries->count(); i++)
+	  {
+	    QListWidgetItem *item = m_ui.countries->item(i);
+
+	    if(!item)
+	      continue;
+
+	    bool ok = true;
+
+	    query.prepare("UPDATE country_inclusion SET accepted = ? "
+			  "WHERE country_hash = ?");
+	    query.bindValue
+	      (0, m_crypt->encrypted(QString::number(state).
+				     toLatin1(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(1, m_crypt->keyedHash(item->text().toLatin1(), &ok).
+		 toBase64());
+
+	    if(ok)
+	      ok = query.exec();
+
+	    if(ok)
+	      {
+		if(state)
+		  item->setCheckState(Qt::Checked);
+		else
+		  item->setCheckState(Qt::Unchecked);
+	      }
+	  }
+
+	m_ui.countries->blockSignals(false);
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase("spoton");
+
+  if(!state)
+    {
+      {
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+
+	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			   "neighbors.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+
+	    for(int i = 0; i < m_ui.countries->count(); i++)
+	      {
+		QListWidgetItem *item = m_ui.countries->item(i);
+
+		if(!item)
+		  continue;
+
+		bool ok = true;
+
+		query.prepare("UPDATE neighbors SET "
+			      "status_control = 'disconnected' "
+			      "WHERE qt_country_hash = ?");
+		query.bindValue
+		  (0,
+		   m_crypt->keyedHash(item->text().toLatin1(), &ok).
+		   toBase64());
+
+		if(ok)
+		  query.exec();
+	      }
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase("spoton");
+    }
+
+  QApplication::restoreOverrideCursor();
 }

@@ -58,6 +58,8 @@ Remaining Items
 13.    Complete max. Neighbors fields.
 14.    CGI for listeners.
 15.    Auto-clear textedit widgets that contain too much data.
+16.    Hard kernel termination. Session separation.
+17.    Rich HTTP headers.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.

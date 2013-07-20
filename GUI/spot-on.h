@@ -143,6 +143,7 @@ class spoton: public QMainWindow
   int applyGoldbugToInboxLetter(const QByteArray &goldbug,
 				const int row);
   void closeEvent(QCloseEvent *event);
+  void countriesToggle(const bool state);
   void highlightKernelPath(void);
   void initializeKernelSocket(void);
   void prepareListenerIPCombo(void);
@@ -170,6 +171,8 @@ class spoton: public QMainWindow
   void slotCopyMyPublicKey(void);
   void slotCopyMyURLPublicKey(void);
   void slotCostChanged(int value);
+  void slotCountriesToggleOff(void);
+  void slotCountriesToggleOn(void);
   void slotCountryChanged(QListWidgetItem *item);
   void slotDaysChanged(int value);
   void slotDeactivateKernel(void);
