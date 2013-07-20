@@ -89,20 +89,6 @@
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="Line" name="line_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="buzzSound">
-            <property name="text">
-             <string>&amp;Sound</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </item>
         <item>
@@ -186,20 +172,6 @@
                         <widget class="QPushButton" name="clearMessages">
                          <property name="text">
                           <string>Clear</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="Line" name="line_6">
-                         <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QCheckBox" name="chatSound">
-                         <property name="text">
-                          <string>&amp;Sound</string>
                          </property>
                         </widget>
                        </item>
@@ -2217,8 +2189,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1197</width>
-             <height>569</height>
+             <width>1105</width>
+             <height>311</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3299,11 +3271,9 @@
   <tabstop>saveBuzzName</tabstop>
   <tabstop>channel</tabstop>
   <tabstop>join</tabstop>
-  <tabstop>buzzSound</tabstop>
   <tabstop>buzzTab</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>clearMessages</tabstop>
-  <tabstop>chatSound</tabstop>
   <tabstop>messages</tabstop>
   <tabstop>nodeName</tabstop>
   <tabstop>saveNodeName</tabstop>

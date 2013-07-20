@@ -92,18 +92,18 @@ spoton::spoton(void):QMainWindow()
 				"libGeoIP."));
 #endif
 #ifndef SPOTON_LINKED_WITH_LIBPHONON
+#if 0
   m_ui.buzzSound->setEnabled(false);
   m_ui.buzzSound->setToolTip(tr("Spot-On was configured without "
 				"libphoton."));
   m_ui.chatSound->setEnabled(false);
   m_ui.chatSound->setToolTip(tr("Spot-On was configured without "
 				"libphoton."));
+#endif
 #else
+#if 0
   m_mediaObject = new Phonon::MediaObject(this);
-  connect(m_mediaObject,
-	  SIGNAL(currentSourceChanged(const Phonon::MediaSource &)),
-	  m_mediaObject,
-	  SLOT(play(void)));
+#endif
 #endif
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
