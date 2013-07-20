@@ -3572,7 +3572,6 @@ void spoton::initializeKernelSocket(void)
      error);
   QApplication::restoreOverrideCursor();
   m_sb.status->clear();
-  QApplication::processEvents();
 
   if(error.isEmpty())
     {

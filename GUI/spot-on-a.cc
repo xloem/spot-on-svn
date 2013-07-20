@@ -1044,7 +1044,6 @@ void spoton::slotAddListener(void)
   if(m_ui.sslListener->isChecked())
     {
       m_sb.status->clear();
-      QApplication::processEvents();
       QApplication::restoreOverrideCursor();
     }
 
@@ -1316,7 +1315,6 @@ void spoton::slotAddNeighbor(void)
     ok = false;
 
   m_sb.status->clear();
-  QApplication::processEvents();
   QApplication::restoreOverrideCursor();
 
   if(ok)
@@ -2617,9 +2615,7 @@ void spoton::slotSetPassphrase(void)
 	      m_sb.status->setText
 		(tr("Initializing country_inclusion.db."));
 	      QApplication::processEvents();
-	      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	      spoton_misc::populateCountryDatabase(m_crypt);
-	      QApplication::restoreOverrideCursor();
 	      m_sb.status->clear();
 	    }
 
@@ -2740,10 +2736,8 @@ void spoton::slotValidatePassphrase(void)
 	      (tr("Initializing country_inclusion.db."));
 	    QApplication::processEvents();
 	    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-	    spoton_misc::populateCountryDatabase(m_crypt);
-	    QApplication::restoreOverrideCursor();
-	    spoton_misc::populateCountryDatabase(m_crypt);
 	    m_sb.status->clear();
+	    QApplication::restoreOverrideCursor();
 
 	    if(!m_tableTimer.isActive())
 	      m_tableTimer.start();
