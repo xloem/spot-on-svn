@@ -3507,9 +3507,16 @@ void spoton::slotJoinBuzzChannel(void)
   if(found)
     return;
 
-  QByteArray id
-    (spoton_crypt::
-     strongRandomBytes(spoton_common::BUZZ_MAXIMUM_ID_LENGTH / 2).toHex());
+  QByteArray id;
+
+  if(m_buzzIds.contains(channel.toLatin1()))
+    id = m_buzzIds[channel.toLatin1()];
+  else
+    {
+      id = spoton_crypt::
+	strongRandomBytes(spoton_common::BUZZ_MAXIMUM_ID_LENGTH / 2).toHex();
+      m_buzzIds[channel.toLatin1()] = id;
+    }
 
   m_ui.channel->clear();
 

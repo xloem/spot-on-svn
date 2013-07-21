@@ -114,6 +114,7 @@ class spoton: public QMainWindow
   QDateTime m_listenersLastModificationTime;
   QDateTime m_neighborsLastModificationTime;
   QDateTime m_participantsLastModificationTime;
+  QHash<QString, QByteArray> m_buzzIds;
   QHash<QString, QVariant> m_settings;
 #ifdef SPOTON_LINKED_WITH_LIBPHONON
 #if 0
