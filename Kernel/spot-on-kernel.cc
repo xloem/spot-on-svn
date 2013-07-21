@@ -1109,9 +1109,11 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SLOT(slotReceivedChatMessage(void)));
   connect(neighbor,
 	  SIGNAL(receivedMailMessage(const QByteArray &,
+				     const QString &,
 				     const qint64)),
 	  this,
 	  SIGNAL(receivedMailMessage(const QByteArray &,
+				     const QString &,
 				     const qint64)));
   connect(neighbor,
 	  SIGNAL(receivedStatusMessage(const QByteArray &,
@@ -1167,9 +1169,11 @@ void spoton_kernel::connectSignalsToNeighbor
 				  const spoton_send::spoton_send_method)));
   connect(this,
 	  SIGNAL(receivedMailMessage(const QByteArray &,
+				     const QString &,
 				     const qint64)),
 	  neighbor,
 	  SLOT(slotReceivedMailMessage(const QByteArray &,
+				       const QString &,
 				       const qint64)));
   connect(this,
 	  SIGNAL(receivedStatusMessage(const QByteArray &,

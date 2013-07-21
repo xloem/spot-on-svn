@@ -959,6 +959,7 @@ void spoton_neighbor::slotReceivedChatMessage
 }
 
 void spoton_neighbor::slotReceivedMailMessage(const QByteArray &data,
+					      const QString &messageType,
 					      const qint64 id)
 {
   /*
@@ -971,7 +972,12 @@ void spoton_neighbor::slotReceivedMailMessage(const QByteArray &data,
     if(id != m_id)
       if(readyToWrite())
 	{
-	  QByteArray message(spoton_send::message0001a(data));
+	  QByteArray message;
+
+	  if(messageType == "0001a")
+	    message = spoton_send::message0001a(data);
+	  else
+	    message = spoton_send::message0001b(data);
 
 	  if(write(message.constData(), message.length()) != message.length())
 	    spoton_misc::logError
@@ -1485,7 +1491,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 
 	    memcpy(&c, static_cast<void *> (&ttl), 1);
 	    originalData.prepend(c);
-	    emit receivedMailMessage(originalData, m_id);
+	    emit receivedMailMessage(originalData, "0001a", m_id);
 	  }
     }
   else
@@ -1601,7 +1607,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 
 	    memcpy(&c, static_cast<void *> (&ttl), 1);
 	    originalData.prepend(c);
-	    emit receivedMailMessage(originalData, m_id);
+	    emit receivedMailMessage(originalData, "0001b", m_id);
 	  }
     }
   else
