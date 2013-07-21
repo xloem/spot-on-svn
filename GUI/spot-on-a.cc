@@ -911,6 +911,8 @@ void spoton::slotAddListener(void)
 
   if(error.isEmpty())
     {
+      spoton_misc::prepareDatabases();
+
       {
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
@@ -919,8 +921,6 @@ void spoton::slotAddListener(void)
 
 	if(db.open())
 	  {
-	    spoton_misc::prepareDatabases();
-
 	    QString ip("");
 
 	    if(m_ui.listenerIPCombo->currentIndex() == 0)
@@ -1086,6 +1086,8 @@ void spoton::slotAddNeighbor(void)
 
   if(error.isEmpty())
     {
+      spoton_misc::prepareDatabases();
+
       {
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
@@ -1094,8 +1096,6 @@ void spoton::slotAddNeighbor(void)
 
 	if(db.open())
 	  {
-	    spoton_misc::prepareDatabases();
-
 	    QString ip(m_ui.neighborIP->text().trimmed());
 	    QString port(QString::number(m_ui.neighborPort->value()));
 	    QString protocol("");
@@ -2038,6 +2038,8 @@ void spoton::slotGeneralTimerTimeout(void)
   if(isKernelActive())
     if(m_kernelSocket.state() == QAbstractSocket::UnconnectedState)
       {
+	quint16 port = 0;
+
 	{
 	  QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
@@ -2052,18 +2054,20 @@ void spoton::slotGeneralTimerTimeout(void)
 	      
 	      if(query.exec("SELECT port FROM kernel_gui_server"))
 		if(query.next())
-		  {
-		    initializeKernelSocket();
-		    m_kernelSocket.connectToHostEncrypted
-		      ("127.0.0.1",
-		       query.value(0).toInt());
-		  }
+		  port = query.value(0).toInt();
 	    }
 
 	  db.close();
 	}
 
 	QSqlDatabase::removeDatabase("spoton");
+
+	if(port > 0)
+	  {
+	    initializeKernelSocket();
+	    m_kernelSocket.connectToHostEncrypted
+	      ("127.0.0.1", port);
+	  }
       }
 
   slotKernelSocketState();
@@ -3111,6 +3115,8 @@ void spoton::slotBlockNeighbor(void)
   if(remoteIp.isEmpty())
     return;
 
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
@@ -3129,7 +3135,6 @@ void spoton::slotBlockNeighbor(void)
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
-	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	if(query.exec("SELECT remote_ip_address, OID "
 		      "FROM neighbors WHERE status_control <> 'blocked' "
@@ -3159,14 +3164,13 @@ void spoton::slotBlockNeighbor(void)
 		    updateQuery.exec();
 		  }
 	    }
-
-	QApplication::restoreOverrideCursor();
       }
 
     db.close();
   }
 
   QSqlDatabase::removeDatabase("spoton");
+  QApplication::restoreOverrideCursor();
 }
 
 void spoton::slotUnblockNeighbor(void)
@@ -3189,6 +3193,8 @@ void spoton::slotUnblockNeighbor(void)
   if(remoteIp.isEmpty())
     return;
 
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
   {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
 
@@ -3206,7 +3212,6 @@ void spoton::slotUnblockNeighbor(void)
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
-	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	if(query.exec("SELECT remote_ip_address, OID "
 		      "FROM neighbors WHERE status_control = 'blocked'"))
@@ -3235,14 +3240,13 @@ void spoton::slotUnblockNeighbor(void)
 		    updateQuery.exec();
 		  }
 	    }
-
-	QApplication::restoreOverrideCursor();
       }
 
     db.close();
   }
 
   QSqlDatabase::removeDatabase("spoton");
+  QApplication::restoreOverrideCursor();
 }
 
 void spoton::slotDeleteAllListeners(void)
