@@ -61,6 +61,7 @@ Remaining Items
 15.    Hard kernel termination. Session separation.
 16.    Colorful HTTP headers.
 17.    Depict listeners that support SSL.
+18.    All database names should be unique.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.
