@@ -1475,7 +1475,7 @@ void spoton::slotPopulateListeners(void)
 		      "ip_address, port, scope_id, protocol, "
 		      "external_ip_address, external_port, "
 		      "connections, maximum_clients, OID "
-		      "FROM listeners"))
+		      "FROM listeners WHERE status_control <> 'deleted'"))
 	  {
 	    row = 0;
 
@@ -1733,7 +1733,7 @@ void spoton::slotPopulateNeighbors(void)
 		      "maximum_content_length, "
 		      "dedicated_line, "
 		      "is_encrypted, OID "
-		      "FROM neighbors"))
+		      "FROM neighbors WHERE status_control <> 'deleted'"))
 	  {
 	    QString localIp("");
 	    QString localPort("");
