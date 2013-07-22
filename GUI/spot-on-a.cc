@@ -1488,14 +1488,14 @@ void spoton::slotPopulateListeners(void)
 
 	    while(query.next())
 	      {
-		QCheckBox *check = 0;
-		QComboBox *box = 0;
-		QTableWidgetItem *item = 0;
-
 		m_ui.listeners->setRowCount(row + 1);
 
 		for(int i = 0; i < query.record().count(); i++)
 		  {
+		    QCheckBox *check = 0;
+		    QComboBox *box = 0;
+		    QTableWidgetItem *item = 0;
+
 		    if(i == 0)
 		      {
 			check = new QCheckBox();
@@ -1513,6 +1513,17 @@ void spoton::slotPopulateListeners(void)
 				this,
 				SLOT(slotListenerCheckChange(int)));
 			m_ui.listeners->setCellWidget(row, i, check);
+		      }
+		    else if(i == 2)
+		      {
+			int keySize = listenerSslKeySize
+			  (query.value(11).toString(), db);
+
+			if(keySize == -1)
+			  item = new QTableWidgetItem("0");
+			else
+			  item = new QTableWidgetItem
+			    (QString::number(keySize));
 		      }
 		    else if(i == 10)
 		      {
@@ -1549,15 +1560,7 @@ void spoton::slotPopulateListeners(void)
 		      }
 		    else
 		      {
-			if(i == 2)
-			  {
-			    if(listenerSupportsSsl(query.value(11).
-						   toString(), db))
-			      item = new QTableWidgetItem(tr("Yes"));
-			    else
-			      item = new QTableWidgetItem(tr("No"));
-			  }
-			else if(i >= 3 && i <= 7)
+			if(i >= 3 && i <= 7)
 			  {
 			    bool ok = true;
 
@@ -1575,7 +1578,10 @@ void spoton::slotPopulateListeners(void)
 			else
 			  item = new QTableWidgetItem
 			    (query.value(i).toString());
+		      }
 
+		    if(item)
+		      {
 			item->setFlags
 			  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			m_ui.listeners->setItem(row, i, item);
@@ -3935,16 +3941,16 @@ void spoton::countriesToggle(const bool state)
   QApplication::restoreOverrideCursor();
 }
 
-bool spoton::listenerSupportsSsl(const QString &oid,
-				 const QSqlDatabase &db)
+int spoton::listenerSslKeySize(const QString &oid,
+			       const QSqlDatabase &db)
 {
   if(!db.isOpen())
-    return false;
+    return -1;
   else if(!m_crypt)
-    return false;
+    return -1;
 
   QSqlQuery query(db);
-  bool supports = false;
+  QSslKey key;
 
   if(query.exec(QString("SELECT certificate, private_key "
 			"FROM listeners WHERE OID = %1").arg(oid)))
@@ -3952,8 +3958,7 @@ bool spoton::listenerSupportsSsl(const QString &oid,
       {
 	QByteArray certificate;
 	QByteArray privateKey;
-	QSslKey key;
-	QSslConfiguration configuration;
+	QSslCertificate localCertificate;
 	bool ok = true;
 
 	certificate = m_crypt->
@@ -3969,11 +3974,15 @@ bool spoton::listenerSupportsSsl(const QString &oid,
 				    toByteArray()),
 	     &ok);
 
-	key = QSslKey(privateKey, QSsl::Rsa);
-	configuration.setLocalCertificate(certificate);
-	configuration.setPrivateKey(key);
-	supports = !configuration.isNull() && !key.isNull();
+	if(ok)
+	  {
+	    key = QSslKey(privateKey, QSsl::Rsa);
+	    localCertificate = QSslCertificate(certificate);
+
+	    if(!localCertificate.isValid())
+	      key = QSslKey();
+	  }
       }
 
-  return supports;
+  return key.length();
 }

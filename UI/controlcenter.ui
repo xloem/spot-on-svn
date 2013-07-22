@@ -1063,7 +1063,7 @@
               </column>
               <column>
                <property name="text">
-                <string>Supports SSL</string>
+                <string>SSL Key Size</string>
                </property>
               </column>
               <column>

@@ -70,21 +70,43 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
       QSslConfiguration configuration;
 
       configuration.setLocalCertificate(QSslCertificate(certificate));
-      configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
-      configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
+
+      if(configuration.localCertificate().isValid())
+	{
+	  configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
+	  configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
+
+	  if(!configuration.privateKey().isNull())
+	    {
 #if QT_VERSION >= 0x050000
-      configuration.setProtocol(QSsl::TlsV1_2);
+	      configuration.setProtocol(QSsl::TlsV1_2);
 #else
-      configuration.setProtocol(QSsl::SecureProtocols);
+	      configuration.setProtocol(QSsl::SecureProtocols);
 #endif
-      configuration.setSslOption
-	(QSsl::SslOptionDisableCompression, true);
-      configuration.setSslOption
-	(QSsl::SslOptionDisableEmptyFragments, true);
-      configuration.setSslOption
-	(QSsl::SslOptionDisableLegacyRenegotiation, true);
-      spoton_crypt::setSslCiphers(supportedCiphers(), configuration);
-      setSslConfiguration(configuration);
+	      configuration.setSslOption
+		(QSsl::SslOptionDisableCompression, true);
+	      configuration.setSslOption
+		(QSsl::SslOptionDisableEmptyFragments, true);
+	      configuration.setSslOption
+		(QSsl::SslOptionDisableLegacyRenegotiation, true);
+	      spoton_crypt::setSslCiphers(supportedCiphers(), configuration);
+	      setSslConfiguration(configuration);
+	    }
+	  else
+	    {
+	      m_useSsl = false;
+	       spoton_misc::logError
+		 ("spoton_neighbor::spoton_neighbor(): "
+		  "empty private key. SSL disabled.");
+	    }
+	}
+      else
+	{
+	  m_useSsl = false;
+	  spoton_misc::logError
+	    ("spoton_neighbor::spoton_neighbor(): "
+	     "invalid local certificate. SSL disabled.");
+	}
     }
 
   m_address = peerAddress();
@@ -182,19 +204,30 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 
       configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
       configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
+
+      if(!configuration.privateKey().isNull())
+	{
 #if QT_VERSION >= 0x050000
-      configuration.setProtocol(QSsl::TlsV1_2);
+	  configuration.setProtocol(QSsl::TlsV1_2);
 #else
-      configuration.setProtocol(QSsl::SecureProtocols);
+	  configuration.setProtocol(QSsl::SecureProtocols);
 #endif
-      configuration.setSslOption
-	(QSsl::SslOptionDisableCompression, true);
-      configuration.setSslOption
-	(QSsl::SslOptionDisableEmptyFragments, true);
-      configuration.setSslOption
-	(QSsl::SslOptionDisableLegacyRenegotiation, true);
-      spoton_crypt::setSslCiphers(supportedCiphers(), configuration);
-      setSslConfiguration(configuration);
+	  configuration.setSslOption
+	    (QSsl::SslOptionDisableCompression, true);
+	  configuration.setSslOption
+	    (QSsl::SslOptionDisableEmptyFragments, true);
+	  configuration.setSslOption
+	    (QSsl::SslOptionDisableLegacyRenegotiation, true);
+	  spoton_crypt::setSslCiphers(supportedCiphers(), configuration);
+	  setSslConfiguration(configuration);
+	}
+      else
+	{
+	  m_useSsl = false;
+	  spoton_misc::logError
+	    ("spoton_neighbor::spoton_neighbor(): "
+	     "empty private key. SSL disabled.");
+	}
     }
 
   m_address = QHostAddress(ipAddress);
