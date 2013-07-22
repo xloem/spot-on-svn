@@ -62,6 +62,7 @@ Remaining Items
 14.    Auto-clear textedit widgets that contain too much data.
 15.    Hard kernel termination. Session separation.
 16.    Colorful HTTP headers.
+17.    Echo modes for listeners.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.
