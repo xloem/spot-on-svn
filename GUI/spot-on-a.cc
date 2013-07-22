@@ -25,6 +25,8 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QSslKey>
+
 #include "spot-on.h"
 
 int main(int argc, char *argv[])
@@ -836,7 +838,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.mail->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   m_ui.listeners->horizontalHeader()->setSortIndicator
-    (2, Qt::AscendingOrder);
+    (3, Qt::AscendingOrder);
   m_ui.neighbors->horizontalHeader()->setSortIndicator
     (1, Qt::AscendingOrder);
   m_ui.participants->horizontalHeader()->setSortIndicator
@@ -1442,9 +1444,9 @@ void spoton::slotPopulateListeners(void)
 	QString ip("");
 	QString port("");
 	QString scopeId("");
-	int columnIP = 2;
-	int columnPORT = 3;
-	int columnSCOPE_ID = 4;
+	int columnIP = 3;
+	int columnPORT = 4;
+	int columnSCOPE_ID = 5;
 	int hval = m_ui.listeners->horizontalScrollBar()->value();
 	int row = -1;
 	int vval = m_ui.listeners->verticalScrollBar()->value();
@@ -1476,7 +1478,7 @@ void spoton::slotPopulateListeners(void)
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT "
-		      "status_control, status, "
+		      "status_control, status, 0, "
 		      "ip_address, port, scope_id, protocol, "
 		      "external_ip_address, external_port, "
 		      "connections, maximum_clients, OID "
@@ -1504,7 +1506,7 @@ void spoton::slotPopulateListeners(void)
 			if(query.value(1) == "online")
 			  active += 1;
 
-			check->setProperty("oid", query.value(10));
+			check->setProperty("oid", query.value(11));
 			check->setProperty("table_row", row);
 			connect(check,
 				SIGNAL(stateChanged(int)),
@@ -1512,10 +1514,10 @@ void spoton::slotPopulateListeners(void)
 				SLOT(slotListenerCheckChange(int)));
 			m_ui.listeners->setCellWidget(row, i, check);
 		      }
-		    else if(i == 9)
+		    else if(i == 10)
 		      {
 			box = new QComboBox();
-			box->setProperty("oid", query.value(10));
+			box->setProperty("oid", query.value(11));
 			box->setProperty("table_row", row);
 			box->addItem("1");
 
@@ -1547,10 +1549,18 @@ void spoton::slotPopulateListeners(void)
 		      }
 		    else
 		      {
-			bool ok = true;
-
-			if(i >= 2 && i <= 6)
+			if(i == 2)
 			  {
+			    if(listenerSupportsSsl(query.value(11).
+						   toString(), db))
+			      item = new QTableWidgetItem(tr("Yes"));
+			    else
+			      item = new QTableWidgetItem(tr("No"));
+			  }
+			else if(i >= 3 && i <= 7)
+			  {
+			    bool ok = true;
+
 			    if(query.isNull(i))
 			      item = new QTableWidgetItem();
 			    else
@@ -1563,8 +1573,8 @@ void spoton::slotPopulateListeners(void)
 				 constData());
 			  }
 			else
-			  item = new QTableWidgetItem(query.
-						      value(i).toString());
+			  item = new QTableWidgetItem
+			    (query.value(i).toString());
 
 			item->setFlags
 			  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -1588,13 +1598,13 @@ void spoton::slotPopulateListeners(void)
 		bool ok = true;
 
 		bytes1 = m_crypt->decrypted
-		  (QByteArray::fromBase64(query.value(2).toByteArray()),
-		   &ok);
-		bytes2 = m_crypt->decrypted
 		  (QByteArray::fromBase64(query.value(3).toByteArray()),
 		   &ok);
-		bytes3 = m_crypt->decrypted
+		bytes2 = m_crypt->decrypted
 		  (QByteArray::fromBase64(query.value(4).toByteArray()),
+		   &ok);
+		bytes3 = m_crypt->decrypted
+		  (QByteArray::fromBase64(query.value(5).toByteArray()),
 		   &ok);
 
 		if(ip == bytes1 && port == bytes2 && scopeId == bytes3)
@@ -3419,6 +3429,10 @@ void spoton::slotPopulateParticipants(void)
 	m_ui.participants->setSortingEnabled(false);
 	m_ui.participants->clearContents();
 	m_ui.participants->setRowCount(0);
+	disconnect(m_ui.participants,
+		   SIGNAL(itemChanged(QTableWidgetItem *)),
+		   this,
+		   SLOT(slotGeminiChanged(QTableWidgetItem *)));
 
 	QSqlQuery query(db);
 	QWidget *focusWidget = QApplication::focusWidget();
@@ -3602,11 +3616,7 @@ void spoton::slotPopulateParticipants(void)
 		     status == "offline")
 		    delete item;
 		  else
-		    {
-		      m_ui.participants->blockSignals(true);
-		      m_ui.participants->setItem(row - 1, i, item);
-		      m_ui.participants->blockSignals(false);
-		    }
+		    m_ui.participants->setItem(row - 1, i, item);
 		}
 
 	      if(hashes.contains(query.value(3).toString()))
@@ -3619,6 +3629,10 @@ void spoton::slotPopulateParticipants(void)
 	if(focusWidget)
 	  focusWidget->setFocus();
 
+	connect(m_ui.participants,
+		SIGNAL(itemChanged(QTableWidgetItem *)),
+		this,
+		SLOT(slotGeminiChanged(QTableWidgetItem *)));
 	m_ui.emailParticipants->setSelectionMode
 	  (QAbstractItemView::MultiSelection);
 	m_ui.participants->setSelectionMode(QAbstractItemView::MultiSelection);
@@ -3826,9 +3840,12 @@ void spoton::countriesToggle(const bool state)
 
     if(db.open())
       {
-	QSqlQuery query(db);
+	disconnect(m_ui.countries,
+		   SIGNAL(itemChanged(QListWidgetItem *)),
+		   this,
+		   SLOT(slotCountryChanged(QListWidgetItem *)));
 
-	m_ui.countries->blockSignals(true);
+	QSqlQuery query(db);
 
 	for(int i = 0; i < m_ui.countries->count(); i++)
 	  {
@@ -3862,7 +3879,10 @@ void spoton::countriesToggle(const bool state)
 	      }
 	  }
 
-	m_ui.countries->blockSignals(false);
+	connect(m_ui.countries,
+		SIGNAL(itemChanged(QListWidgetItem *)),
+		this,
+		SLOT(slotCountryChanged(QListWidgetItem *)));
       }
 
     db.close();
@@ -3913,4 +3933,47 @@ void spoton::countriesToggle(const bool state)
     }
 
   QApplication::restoreOverrideCursor();
+}
+
+bool spoton::listenerSupportsSsl(const QString &oid,
+				 const QSqlDatabase &db)
+{
+  if(!db.isOpen())
+    return false;
+  else if(!m_crypt)
+    return false;
+
+  QSqlQuery query(db);
+  bool supports = false;
+
+  if(query.exec(QString("SELECT certificate, private_key "
+			"FROM listeners WHERE OID = %1").arg(oid)))
+    if(query.next())
+      {
+	QByteArray certificate;
+	QByteArray privateKey;
+	QSslKey key;
+	QSslConfiguration configuration;
+	bool ok = true;
+
+	certificate = m_crypt->
+	  decrypted(QByteArray::fromBase64(query.
+					   value(0).
+					   toByteArray()),
+		    &ok);
+
+	if(ok)
+	  privateKey = m_crypt->decrypted
+	    (QByteArray::fromBase64(query.
+				    value(1).
+				    toByteArray()),
+	     &ok);
+
+	key = QSslKey(privateKey, QSsl::Rsa);
+	configuration.setLocalCertificate(certificate);
+	configuration.setPrivateKey(key);
+	supports = !configuration.isNull() && !key.isNull();
+      }
+
+  return supports;
 }

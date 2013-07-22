@@ -2725,9 +2725,15 @@ void spoton::slotGenerateGeminiInChat(void)
 
       if(saveGemini(gemini.toBase64(), item1->text()))
 	{
-	  m_ui.participants->blockSignals(true);
+	  disconnect(m_ui.participants,
+		     SIGNAL(itemChanged(QTableWidgetItem *)),
+		     this,
+		     SLOT(slotGeminiChanged(QTableWidgetItem *)));
 	  item2->setText(gemini.toBase64());
-	  m_ui.participants->blockSignals(false);
+	  connect(m_ui.participants,
+		  SIGNAL(itemChanged(QTableWidgetItem *)),
+		  this,
+		  SLOT(slotGeminiChanged(QTableWidgetItem *)));
 	}
     }
 }

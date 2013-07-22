@@ -136,8 +136,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1197</width>
-                <height>553</height>
+                <width>425</width>
+                <height>404</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1059,6 +1059,11 @@
               <column>
                <property name="text">
                 <string>Status</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Supports SSL</string>
                </property>
               </column>
               <column>
@@ -2232,8 +2237,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1197</width>
-             <height>553</height>
+             <width>949</width>
+             <height>296</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3230,7 +3235,7 @@
      <x>0</x>
      <y>0</y>
      <width>1219</width>
-     <height>27</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

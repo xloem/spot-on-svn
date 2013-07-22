@@ -139,6 +139,7 @@ class spoton: public QMainWindow
 #endif
 #endif
   bool isKernelActive(void) const;
+  bool listenerSupportsSsl(const QString &oid, const QSqlDatabase &db);
   bool saveGemini(const QByteArray &gemini, const QString &oid);
   bool updateMailStatus(const QString &oid, const QString &status);
   int applyGoldbugToInboxLetter(const QByteArray &goldbug,

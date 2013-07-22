@@ -40,6 +40,7 @@ Completed Items
        not allow echoed data.
 26.    The re-encoding phase may produce errors. Delete corrupt entries.
 27.    All database names should be unique.
+28.    Depict listeners that support SSL.
 
 Remaining Items
 
@@ -61,7 +62,6 @@ Remaining Items
 14.    Auto-clear textedit widgets that contain too much data.
 15.    Hard kernel termination. Session separation.
 16.    Colorful HTTP headers.
-17.    Depict listeners that support SSL.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.
