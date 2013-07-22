@@ -48,7 +48,6 @@ class spoton_neighbor: public QSslSocket
   Q_OBJECT
 
  public:
-  static qint64 s_dbId;
   spoton_neighbor(const QNetworkProxy &proxy,
 		  const QString &ipAddress,
 		  const QString &port,

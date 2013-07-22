@@ -52,6 +52,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   if(!newCrypt || !oldCrypt)
     return;
 
+  QString connectionName("");
+
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   sb.status->setText
     (QObject::tr("Re-encoding email.db."));
@@ -59,8 +61,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   spoton_misc::prepareDatabases();
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_reencode");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "email.db");
@@ -213,15 +214,14 @@ void spoton_reencode::reencode(Ui_statusbar sb,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_reencode");
+  QSqlDatabase::removeDatabase(connectionName);
   sb.status->setText
     (QObject::tr("Re-encoding country_inclusion.db."));
   QApplication::processEvents();
   spoton_misc::prepareDatabases();
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_reencode");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "country_inclusion.db");
@@ -295,15 +295,14 @@ void spoton_reencode::reencode(Ui_statusbar sb,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_reencode");
+  QSqlDatabase::removeDatabase(connectionName);
   sb.status->setText
     (QObject::tr("Re-encoding listeners.db."));
   QApplication::processEvents();
   spoton_misc::prepareDatabases();
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_reencode");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "listeners.db");
@@ -438,15 +437,14 @@ void spoton_reencode::reencode(Ui_statusbar sb,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_reencode");
+  QSqlDatabase::removeDatabase(connectionName);
   sb.status->setText
     (QObject::tr("Re-encoding neighbors.db."));
   QApplication::processEvents();
   spoton_misc::prepareDatabases();
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_reencode");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "neighbors.db");
@@ -686,7 +684,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_reencode");
+  QSqlDatabase::removeDatabase(connectionName);
   QApplication::restoreOverrideCursor();
   sb.status->clear();
 }

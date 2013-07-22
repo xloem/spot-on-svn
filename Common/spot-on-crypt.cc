@@ -343,10 +343,10 @@ void spoton_crypt::reencodeRSAKeys(const QString &newCipher,
     }
 
   QList<QByteArray> data;
+  QString connectionName("");
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_crypt");
-
+    QSqlDatabase db = spoton_misc::database(connectionName);
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "idiotes.db");
 
@@ -372,7 +372,7 @@ void spoton_crypt::reencodeRSAKeys(const QString &newCipher,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_crypt");
+  QSqlDatabase::removeDatabase(connectionName);
 
   if(data.isEmpty())
     {
@@ -687,8 +687,7 @@ void spoton_crypt::reencodeRSAKeys(const QString &newCipher,
     }
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_crypt");
-
+    QSqlDatabase db = spoton_misc::database(connectionName);
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "idiotes.db");
 
@@ -717,7 +716,7 @@ void spoton_crypt::reencodeRSAKeys(const QString &newCipher,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_crypt");
+  QSqlDatabase::removeDatabase(connectionName);
 
  done_label:
   gcry_free(iv);
@@ -1529,11 +1528,10 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
     }
 
   QByteArray keyData;
+  QString connectionName("");
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_crypt");
-
+    QSqlDatabase db = spoton_misc::database(connectionName);
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "idiotes.db");
 
@@ -1554,7 +1552,7 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_crypt");
+  QSqlDatabase::removeDatabase(connectionName);
 
   if(keyData.isEmpty())
     {
@@ -1784,9 +1782,10 @@ QByteArray spoton_crypt::publicKey(bool *ok)
   ** Returns the correct public key from idiotes.db.
   */
 
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_crypt");
+  QString connectionName("");
 
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "idiotes.db");
 
@@ -1807,7 +1806,7 @@ QByteArray spoton_crypt::publicKey(bool *ok)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_crypt");
+  QSqlDatabase::removeDatabase(connectionName);
 
   {
     bool ok = true;
@@ -1869,6 +1868,7 @@ void spoton_crypt::generatePrivatePublicKeys(const int rsaKeySize,
 {
   QByteArray privateKey;
   QByteArray publicKey;
+  QString connectionName("");
   QString genkey("");
   char *buffer = 0;
   gcry_error_t err = 0;
@@ -1984,8 +1984,7 @@ void spoton_crypt::generatePrivatePublicKeys(const int rsaKeySize,
     }
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_crypt");
-
+    QSqlDatabase db = spoton_misc::database(connectionName);
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "idiotes.db");
 
@@ -2029,7 +2028,7 @@ void spoton_crypt::generatePrivatePublicKeys(const int rsaKeySize,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_crypt");
+  QSqlDatabase::removeDatabase(connectionName);
 
  done_label:
   free(buffer);
@@ -2162,14 +2161,14 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
   QByteArray keyData;
   QByteArray random(20, 0);
   QByteArray signature;
+  QString connectionName("");
   gcry_error_t err = 0;
   gcry_sexp_t data_t = 0;
   gcry_sexp_t key_t = 0;
   gcry_sexp_t signature_t = 0;
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_crypt");
-
+    QSqlDatabase db = spoton_misc::database(connectionName);
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "idiotes.db");
 
@@ -2190,7 +2189,7 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_crypt");
+  QSqlDatabase::removeDatabase(connectionName);
 
   if(keyData.isEmpty())
     {
@@ -2641,10 +2640,10 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize, QString &error)
 
   if(error.isEmpty())
     {
-      {
-	QSqlDatabase db = QSqlDatabase::addDatabase
-	  ("QSQLITE", "spoton_crypt");
+      QString connectionName("");
 
+      {
+	QSqlDatabase db = spoton_misc::database(connectionName);
 	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 			   "idiotes.db");
 
@@ -2688,15 +2687,16 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize, QString &error)
 	db.close();
       }
 
-      QSqlDatabase::removeDatabase("spoton_crypt");
+      QSqlDatabase::removeDatabase(connectionName);
     }
 }
 
 void spoton_crypt::purgeDatabases(void)
 {
-  {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_crypt");
+  QString connectionName("");
 
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "idiotes.db");
 
@@ -2710,7 +2710,7 @@ void spoton_crypt::purgeDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_crypt");
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton_crypt::generateCertificate(RSA *rsa,
@@ -2865,11 +2865,10 @@ void spoton_crypt::generateCertificate(RSA *rsa,
 QByteArray spoton_crypt::privateKeyInRem(bool *ok)
 {
   QByteArray key;
+  QString connectionName("");
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_crypt");
-
+    QSqlDatabase db = spoton_misc::database(connectionName);
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "idiotes.db");
 
@@ -2890,7 +2889,7 @@ QByteArray spoton_crypt::privateKeyInRem(bool *ok)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_crypt");
+  QSqlDatabase::removeDatabase(connectionName);
 
   if(key.isEmpty())
     {

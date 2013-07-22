@@ -35,8 +35,6 @@
 #include "spot-on-kernel.h"
 #include "spot-on-listener.h"
 
-qint64 spoton_listener::s_dbId = 0;
-
 #if QT_VERSION >= 0x050000
 void spoton_listener_tcp_server::incomingConnection(qintptr socketDescriptor)
 #else
@@ -54,6 +52,7 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
     {
       QByteArray certificate;
       QByteArray privateKey;
+      QString connectionName("");
       spoton_crypt *s_crypt = 0;
 
       if(spoton_kernel::s_crypts.contains("messaging"))
@@ -62,9 +61,7 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
       if(s_crypt)
 	{
 	  {
-	    QSqlDatabase db = QSqlDatabase::addDatabase
-	      ("QSQLITE", "spoton_listener_" +
-	       QString::number(spoton_listener::s_dbId));
+	    QSqlDatabase db = spoton_misc::database(connectionName);
 
 	    db.setDatabaseName
 	      (spoton_misc::homePath() + QDir::separator() + "listeners.db");
@@ -101,8 +98,7 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 	    db.close();
 	  }
 
-	  QSqlDatabase::removeDatabase
-	    ("spoton_listener_" + QString::number(spoton_listener::s_dbId));
+	  QSqlDatabase::removeDatabase(connectionName);
 	}
 
       QPointer<spoton_neighbor> neighbor = new spoton_neighbor
@@ -121,7 +117,6 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 				 QObject *parent):
   spoton_listener_tcp_server(id, parent)
 {
-  s_dbId += 1;
   m_address = QHostAddress(ipAddress);
   m_address.setScopeId(scopeId);
   m_externalAddress = new spoton_external_address(this);
@@ -160,9 +155,10 @@ spoton_listener::~spoton_listener()
      arg(m_port));
   m_timer.stop();
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_listener_" + QString::number(s_dbId));
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "listeners.db");
@@ -185,7 +181,7 @@ spoton_listener::~spoton_listener()
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_listener_" + QString::number(s_dbId));
+  QSqlDatabase::removeDatabase(connectionName);
 
   if(m_networkInterface)
     delete m_networkInterface;
@@ -202,13 +198,13 @@ void spoton_listener::slotTimeout(void)
   ** If the interface disappears, destroy the listener.
   */
 
+  QString connectionName("");
   bool shouldDelete = false;
 
   prepareNetworkInterface();
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_listener_" + QString::number(s_dbId));
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "listeners.db");
@@ -312,7 +308,7 @@ void spoton_listener::slotTimeout(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_listener_" + QString::number(s_dbId));
+  QSqlDatabase::removeDatabase(connectionName);
 
   if(shouldDelete)
     {
@@ -426,11 +422,11 @@ void spoton_listener::slotNewConnection(void)
       }
 #endif
 
+  QString connectionName("");
   int count = -1;
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_listener_" + QString::number(s_dbId));
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
@@ -457,7 +453,7 @@ void spoton_listener::slotNewConnection(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_listener_" + QString::number(s_dbId));
+  QSqlDatabase::removeDatabase(connectionName);
 
   if(count == -1)
     spoton_misc::logError(QString("spoton_listener::slotNewConnection(): "
@@ -481,8 +477,7 @@ void spoton_listener::slotNewConnection(void)
   qint64 id = -1;
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_listener_" + QString::number(s_dbId));
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
@@ -687,7 +682,7 @@ void spoton_listener::slotNewConnection(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_listener_" + QString::number(s_dbId));
+  QSqlDatabase::removeDatabase(connectionName);
 
   if(created && id != -1)
     {
@@ -706,9 +701,10 @@ void spoton_listener::slotNewConnection(void)
 
 void spoton_listener::updateConnectionCount(void)
 {
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_listener_" + QString::number(s_dbId));
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "listeners.db");
@@ -728,7 +724,7 @@ void spoton_listener::updateConnectionCount(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_listener_" + QString::number(s_dbId));
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton_listener::slotNeighborDisconnected(void)
@@ -819,9 +815,10 @@ void spoton_listener::saveExternalAddress(const QHostAddress &address,
 void spoton_listener::slotExternalAddressDiscovered
 (const QHostAddress &address)
 {
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_listener_" + QString::number(s_dbId));
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "listeners.db");
@@ -832,8 +829,7 @@ void spoton_listener::slotExternalAddressDiscovered
     db.close();
   }
 
-  QSqlDatabase::removeDatabase
-    ("spoton_listener_" + QString::number(s_dbId));
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton_listener::slotDiscoverExternalAddress(void)

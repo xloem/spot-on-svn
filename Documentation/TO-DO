@@ -39,6 +39,7 @@ Completed Items
 25.    Dedicated lines. Such lines, if enabled by both parties, do
        not allow echoed data.
 26.    The re-encoding phase may produce errors. Delete corrupt entries.
+27.    All database names should be unique.
 
 Remaining Items
 
@@ -61,7 +62,6 @@ Remaining Items
 15.    Hard kernel termination. Session separation.
 16.    Colorful HTTP headers.
 17.    Depict listeners that support SSL.
-18.    All database names should be unique.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.

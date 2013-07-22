@@ -43,6 +43,7 @@ class spoton_misc
   static QByteArray publicKeyFromHash(const QByteArray &publicKeyHash);
   static QByteArray publicKeyFromSignaturePublicKeyHash
     (const QByteArray &signaturePublicKeyHash);
+  static QSqlDatabase database(QString &connectionName);
   static QString countryCodeFromIPAddress(const QString &ipAddress);
   static QString countryCodeFromName(const QString &country);
   static QString countryNameFromIPAddress(const QString &ipAddress);
@@ -82,6 +83,7 @@ class spoton_misc
 				    spoton_crypt *crypt);
 
  private:
+  static qint64 s_dbId;
   spoton_misc(void);
 };
 

@@ -51,10 +51,10 @@ spoton_shared_reader::~spoton_shared_reader()
 void spoton_shared_reader::slotTimeout(void)
 {
   QList<QList<QVariant> > list;
+  QString connectionName("");
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_shared_reader");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "shared.db");
@@ -138,7 +138,7 @@ void spoton_shared_reader::slotTimeout(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_shared_reader");
+  QSqlDatabase::removeDatabase(connectionName);
 
   spoton_crypt *s_crypt = 0;
 

@@ -388,8 +388,10 @@ void spoton::slotRemoveParticipants(void)
   if(mb.exec() != QMessageBox::Yes)
     return;
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "friends_public_keys.db");
@@ -415,7 +417,7 @@ void spoton::slotRemoveParticipants(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton");
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton::slotSaveBuzzName(void)
@@ -768,8 +770,10 @@ void spoton::slotPopulateCountries(void)
   else
     m_countriesLastModificationTime = QDateTime();
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(fileInfo.absoluteFilePath());
 
@@ -881,7 +885,7 @@ void spoton::slotPopulateCountries(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton");
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton::slotCountryChanged(QListWidgetItem *item)
@@ -891,10 +895,11 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
   else if(!m_crypt)
     return;
 
+  QString connectionName("");
   bool ok = true;
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "country_inclusion.db");
@@ -920,12 +925,12 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton");
+  QSqlDatabase::removeDatabase(connectionName);
 
   if(ok)
     {
       {
-	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+	QSqlDatabase db = spoton_misc::database(connectionName);
 
 	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 			   "neighbors.db");
@@ -948,7 +953,7 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
 	db.close();
       }
 
-      QSqlDatabase::removeDatabase("spoton");
+      QSqlDatabase::removeDatabase(connectionName);
     }
 }
 
@@ -1415,8 +1420,10 @@ void spoton::slotAddFriendsKey(void)
 	  return;
 	}
 
+      QString connectionName("");
+
       {
-	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+	QSqlDatabase db = spoton_misc::database(connectionName);
 
 	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 			   "friends_public_keys.db");
@@ -1447,7 +1454,7 @@ void spoton::slotAddFriendsKey(void)
 	db.close();
       }
 
-      QSqlDatabase::removeDatabase("spoton");
+      QSqlDatabase::removeDatabase(connectionName);
     }
   else
     {
@@ -1584,9 +1591,10 @@ void spoton::slotAddFriendsKey(void)
 
       if(computedHash == hash)
 	{
+	  QString connectionName("");
+
 	  {
-	    QSqlDatabase db = QSqlDatabase::addDatabase
-	      ("QSQLITE", "spoton");
+	    QSqlDatabase db = spoton_misc::database(connectionName);
 
 	    db.setDatabaseName
 	      (spoton_misc::homePath() + QDir::separator() +
@@ -1614,7 +1622,7 @@ void spoton::slotAddFriendsKey(void)
 	    db.close();
 	  }
 
-	  QSqlDatabase::removeDatabase("spoton");
+	  QSqlDatabase::removeDatabase(connectionName);
 	}
     }
 }
@@ -1977,8 +1985,10 @@ void spoton::slotSendMail(void)
 
   spoton_misc::prepareDatabases();
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "email.db");
@@ -2081,7 +2091,7 @@ void spoton::slotSendMail(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton");
+  QSqlDatabase::removeDatabase(connectionName);
   m_ui.outgoingSubject->setFocus();
 }
 
@@ -2097,8 +2107,10 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
   ** Do remember that remote_ip_address contains encrypted data.
   */
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "neighbors.db");
@@ -2145,7 +2157,7 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton");
+  QSqlDatabase::removeDatabase(connectionName);
   QApplication::restoreOverrideCursor();
 }
 
@@ -2169,8 +2181,10 @@ void spoton::slotDeleteAllUuids(void)
   ** Do remember that uuid contains encrypted data.
   */
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "neighbors.db");
@@ -2216,7 +2230,7 @@ void spoton::slotDeleteAllUuids(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton");
+  QSqlDatabase::removeDatabase(connectionName);
   QApplication::restoreOverrideCursor();
 }
 
@@ -2242,8 +2256,10 @@ void spoton::slotRefreshMail(void)
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "email.db");
@@ -2340,7 +2356,7 @@ void spoton::slotRefreshMail(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton");
+  QSqlDatabase::removeDatabase(connectionName);
   QApplication::restoreOverrideCursor();
 }
 
@@ -2353,8 +2369,10 @@ void spoton::slotRefreshPostOffice(void)
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "email.db");
@@ -2418,7 +2436,7 @@ void spoton::slotRefreshPostOffice(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton");
+  QSqlDatabase::removeDatabase(connectionName);
   QApplication::restoreOverrideCursor();
 }
 
@@ -2602,8 +2620,10 @@ void spoton::slotDeleteMail(void)
   if(list.isEmpty())
     return;
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "email.db");
@@ -2662,7 +2682,7 @@ void spoton::slotDeleteMail(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton");
+  QSqlDatabase::removeDatabase(connectionName);
   slotRefreshMail();
 }
 
@@ -2715,15 +2735,11 @@ void spoton::slotGenerateGeminiInChat(void)
 bool spoton::saveGemini(const QByteArray &gemini,
 			const QString &oid)
 {
+  QString connectionName("");
   bool ok = true;
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_save_gemini"); /*
-					 ** We need a special database
-					 ** name. Please see itemChanged()
-					 ** documentation.
-					 */
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "friends_public_keys.db");
@@ -2754,7 +2770,7 @@ bool spoton::saveGemini(const QByteArray &gemini,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_save_gemini");
+  QSqlDatabase::removeDatabase(connectionName);
   return ok;
 }
 
@@ -2785,8 +2801,10 @@ void spoton::slotEmptyTrash(void)
   if(mb.exec() != QMessageBox::Yes)
     return;
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "email.db");
@@ -2801,7 +2819,7 @@ void spoton::slotEmptyTrash(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton");
+  QSqlDatabase::removeDatabase(connectionName);
 
   if(m_ui.folder->currentIndex() == 2)
     {
@@ -2896,10 +2914,11 @@ bool spoton::updateMailStatus(const QString &oid, const QString &status)
   if(!m_crypt)
     return false;
 
+  QString connectionName("");
   bool ok = true;
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "email.db");
@@ -2921,7 +2940,7 @@ bool spoton::updateMailStatus(const QString &oid, const QString &status)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton");
+  QSqlDatabase::removeDatabase(connectionName);
   return ok;
 }
 
@@ -3095,12 +3114,13 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
   if(!item)
     return APPLY_GOLDBUG_TO_INBOX_ERROR_MEMORY;
 
+  QString connectionName("");
   QString oid(item->text());
   bool ok = true;
   int rc = 0;
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "email.db");
@@ -3274,7 +3294,7 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton");
+  QSqlDatabase::removeDatabase(connectionName);
 
   if(!ok)
     if(rc == 0)

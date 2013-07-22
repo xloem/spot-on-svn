@@ -75,12 +75,12 @@ void spoton_mailer::slotTimeout(void)
     return;
 
   QList<QVector<QVariant> > list;
+  QString connectionName1("");
+  QString connectionName2("");
 
   {
-    QSqlDatabase db1 = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_mailer1");
-    QSqlDatabase db2 = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_mailer2");
+    QSqlDatabase db1 = spoton_misc::database(connectionName1);
+    QSqlDatabase db2 = spoton_misc::database(connectionName2);
 
     db1.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "email.db");
@@ -187,8 +187,8 @@ void spoton_mailer::slotTimeout(void)
     db2.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_mailer1");
-  QSqlDatabase::removeDatabase("spoton_mailer2");
+  QSqlDatabase::removeDatabase(connectionName1);
+  QSqlDatabase::removeDatabase(connectionName2);
 
   for(int i = 0; i < list.size(); i++)
     {
@@ -260,9 +260,10 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
   ** of digital signatures is correct.
   */
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_mailer");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "email.db");
@@ -330,7 +331,7 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_mailer");
+  QSqlDatabase::removeDatabase(connectionName);
 
   if(m_publicKeyHashes.isEmpty())
     m_retrieveMailTimer.stop();
@@ -346,9 +347,10 @@ void spoton_mailer::slotReap(void)
   if(!s_crypt)
     return;
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_mailer");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "email.db");
@@ -391,5 +393,5 @@ void spoton_mailer::slotReap(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_mailer");
+  QSqlDatabase::removeDatabase(connectionName);
 }

@@ -49,6 +49,8 @@ extern "C"
 }
 #endif
 
+qint64 spoton_misc::s_dbId = 0;
+
 QString spoton_misc::homePath(void)
 {
   QString homepath(qgetenv("SPOTON_HOME").trimmed());
@@ -75,8 +77,10 @@ bool spoton_misc::isGnome(void)
 
 void spoton_misc::prepareDatabases(void)
 {
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() +
 		       "country_inclusion.db");
@@ -94,10 +98,10 @@ void spoton_misc::prepareDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() + "email.db");
 
@@ -150,10 +154,10 @@ void spoton_misc::prepareDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() +
 		       "friends_public_keys.db");
@@ -202,10 +206,10 @@ void spoton_misc::prepareDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() + "idiotes.db");
 
@@ -225,10 +229,10 @@ void spoton_misc::prepareDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() + "kernel.db");
 
@@ -248,10 +252,10 @@ void spoton_misc::prepareDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() + "listeners.db");
 
@@ -284,10 +288,10 @@ void spoton_misc::prepareDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() + "neighbors.db");
 
@@ -335,7 +339,7 @@ void spoton_misc::prepareDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
 
   /*
   ** We shall prepare the URL databases somewhere else.
@@ -457,8 +461,10 @@ void spoton_misc::populateCountryDatabase(spoton_crypt *crypt)
   if(!crypt)
     return;
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() +
 		       "country_inclusion.db");
@@ -696,7 +702,7 @@ void spoton_misc::populateCountryDatabase(spoton_crypt *crypt)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 bool spoton_misc::countryAllowedToConnect(const QString &country,
@@ -705,10 +711,11 @@ bool spoton_misc::countryAllowedToConnect(const QString &country,
   if(!crypt)
     return false;
 
+  QString connectionName("");
   bool allowed = false;
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() +
 		       "country_inclusion.db");
@@ -737,7 +744,7 @@ bool spoton_misc::countryAllowedToConnect(const QString &country,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
   return allowed;
 }
 
@@ -749,8 +756,10 @@ void spoton_misc::populateUrlsDatabase(const QList<QList<QVariant> > &list,
   else if(list.isEmpty())
     return;
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     /*
     ** Determine the correct URL database file.
@@ -805,7 +814,7 @@ void spoton_misc::populateUrlsDatabase(const QList<QList<QVariant> > &list,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
@@ -874,8 +883,10 @@ void spoton_misc::retrieveSymmetricData(QByteArray &gemini,
   if(!crypt)
     return;
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() +
 		       "friends_public_keys.db");
@@ -923,15 +934,16 @@ void spoton_misc::retrieveSymmetricData(QByteArray &gemini,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 bool spoton_misc::isAcceptedParticipant(const QByteArray &publicKeyHash)
 {
+  QString connectionName("");
   int count = 0;
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() +
 		       "friends_public_keys.db");
@@ -953,7 +965,7 @@ bool spoton_misc::isAcceptedParticipant(const QByteArray &publicKeyHash)
       }
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
   return count > 0;
 }
 
@@ -998,12 +1010,11 @@ QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
 					   spoton_crypt *crypt)
 {
   QByteArray gemini;
-
+  QString connectionName("");
   if(crypt)
     {
       {
-	QSqlDatabase db = QSqlDatabase::addDatabase
-	  ("QSQLITE", "spoton_misc");
+	QSqlDatabase db = database(connectionName);
 
 	db.setDatabaseName(homePath() + QDir::separator() +
 			   "friends_public_keys.db");
@@ -1048,7 +1059,7 @@ QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
 	db.close();
       }
 
-      QSqlDatabase::removeDatabase("spoton_misc");
+      QSqlDatabase::removeDatabase(connectionName);
     }
 
   return gemini;
@@ -1064,8 +1075,10 @@ void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
     if(!crypt)
       return;
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() + "email.db");
 
@@ -1101,13 +1114,15 @@ void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton_misc::cleanupDatabases(void)
 {
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() +
 		       "friends_public_keys.db");
@@ -1130,10 +1145,10 @@ void spoton_misc::cleanupDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() + "kernel.db");
 
@@ -1147,10 +1162,10 @@ void spoton_misc::cleanupDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() + "listeners.db");
 
@@ -1169,10 +1184,10 @@ void spoton_misc::cleanupDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() + "neighbors.db");
 
@@ -1199,7 +1214,7 @@ void spoton_misc::cleanupDatabases(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 QString spoton_misc::countryCodeFromName(const QString &country)
@@ -1215,9 +1230,10 @@ QString spoton_misc::countryCodeFromName(const QString &country)
 QByteArray spoton_misc::publicKeyFromHash(const QByteArray &publicKeyHash)
 {
   QByteArray publicKey;
+  QString connectionName("");
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() +
 		       "friends_public_keys.db");
@@ -1238,7 +1254,7 @@ QByteArray spoton_misc::publicKeyFromHash(const QByteArray &publicKeyHash)
       }
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
   return publicKey;
 }
 
@@ -1246,9 +1262,10 @@ QByteArray spoton_misc::publicKeyFromSignaturePublicKeyHash
 (const QByteArray &signaturePublicKeyHash)
 {
   QByteArray publicKey;
+  QString connectionName("");
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() +
 		       "friends_public_keys.db");
@@ -1271,7 +1288,7 @@ QByteArray spoton_misc::publicKeyFromSignaturePublicKeyHash
       }
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
   return publicKey;
 }
 
@@ -1282,9 +1299,10 @@ void spoton_misc::prepareUrlDatabases(void)
   for(int i = 0; i < 26; i++)
     for(int j = 0; j < 26; j++)
       {
+	QString connectionName("");
+
 	{
-	  QSqlDatabase db = QSqlDatabase::addDatabase
-	    ("QSQLITE", "spoton_misc");
+	  QSqlDatabase db = database(connectionName);
 
 	  db.setDatabaseName
 	    (homePath() + QDir::separator() + "URLs" + QDir::separator() +
@@ -1311,7 +1329,7 @@ void spoton_misc::prepareUrlDatabases(void)
 	  db.close();
 	}
 
-	QSqlDatabase::removeDatabase("spoton_misc");
+	QSqlDatabase::removeDatabase(connectionName);
       }
 }
 
@@ -1329,8 +1347,10 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
   if(!(statusControl == "connected" || statusControl == "disconnected"))
     return;
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_misc");
+    QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName
       (homePath() + QDir::separator() + "neighbors.db");
@@ -1499,7 +1519,7 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_misc");
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton_misc::purgeSignatureRelationships(const QSqlDatabase &db)
@@ -1599,4 +1619,15 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   settings["kernel/ttl_0030"] = 64;
   settings["kernel/ttl_0040a"] = 16;
   settings["kernel/ttl_0040b"] = 16;
+}
+
+QSqlDatabase spoton_misc::database(QString &connectionName)
+{
+  QSqlDatabase db;
+
+  s_dbId += 1;
+  db = QSqlDatabase::addDatabase
+    ("QSQLITE", QString("spoton_database_%1").arg(s_dbId));
+  connectionName = db.connectionName();
+  return db;
 }

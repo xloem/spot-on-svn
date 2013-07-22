@@ -436,8 +436,10 @@ void spoton_kernel::prepareListeners(void)
   if(!s_crypt)
     return;
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "listeners.db");
@@ -522,7 +524,7 @@ void spoton_kernel::prepareListeners(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_kernel");
+  QSqlDatabase::removeDatabase(connectionName);
 
   for(int i = m_listeners.keys().size() - 1; i >= 0; i--)
     if(!m_listeners.value(m_listeners.keys().at(i)))
@@ -548,8 +550,10 @@ void spoton_kernel::prepareNeighbors(void)
   if(!s_crypt)
     return;
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "neighbors.db");
@@ -709,7 +713,7 @@ void spoton_kernel::prepareNeighbors(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_kernel");
+  QSqlDatabase::removeDatabase(connectionName);
 
   int disconnected = 0;
 
@@ -1211,8 +1215,10 @@ void spoton_kernel::connectSignalsToNeighbor
 
 void spoton_kernel::slotStatusTimerExpired(void)
 {
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "friends_public_keys.db");
@@ -1237,7 +1243,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_kernel");
+  QSqlDatabase::removeDatabase(connectionName);
 
   QByteArray status(s_settings.value("gui/my_status", "Online").
 		    toByteArray().toLower());
@@ -1273,7 +1279,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
   QList<QByteArray> list;
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "friends_public_keys.db");
@@ -1446,7 +1452,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_kernel");
+  QSqlDatabase::removeDatabase(connectionName);
   emit sendStatus(list);
 }
 
@@ -1543,9 +1549,10 @@ void spoton_kernel::slotRetrieveMail(void)
     return;
 
   QList<QByteArray> list;
+  QString connectionName("");
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "friends_public_keys.db");
@@ -1676,7 +1683,7 @@ void spoton_kernel::slotRetrieveMail(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_kernel");
+  QSqlDatabase::removeDatabase(connectionName);
   emit retrieveMail(list);
 }
 
@@ -1725,9 +1732,10 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
     return;
 
   QList<QPair<QByteArray, qint64> > list;
+  QString connectionName("");
 
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "spoton_kernel");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "friends_public_keys.db");
@@ -1949,7 +1957,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_kernel");
+  QSqlDatabase::removeDatabase(connectionName);
   emit sendMail(list);
 }
 

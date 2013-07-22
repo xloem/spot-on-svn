@@ -108,9 +108,10 @@ spoton_gui_server::~spoton_gui_server()
 {
   m_guiSocketData.clear();
 
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_gui_server");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "kernel.db");
@@ -125,7 +126,7 @@ spoton_gui_server::~spoton_gui_server()
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_gui_server");
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton_gui_server::slotClientConnected(void)
@@ -350,9 +351,10 @@ void spoton_gui_server::slotReadyRead(void)
 
 void spoton_gui_server::slotTimeout(void)
 {
+  QString connectionName("");
+
   {
-    QSqlDatabase db = QSqlDatabase::addDatabase
-      ("QSQLITE", "spoton_gui_server");
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "kernel.db");
@@ -371,7 +373,7 @@ void spoton_gui_server::slotTimeout(void)
     db.close();
   }
 
-  QSqlDatabase::removeDatabase("spoton_gui_server");
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton_gui_server::slotReceivedBuzzMessage
