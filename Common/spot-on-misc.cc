@@ -282,7 +282,8 @@ void spoton_misc::prepareDatabases(void)
 						      */
 		   "certificate BLOB NOT NULL, "
 		   "private_key BLOB NOT NULL, "
-		   "public_key BLOB NOT NULL)");
+		   "public_key BLOB NOT NULL, "
+		   "echo_mode TEXT NOT NULL)");
       }
 
     db.close();
@@ -333,7 +334,7 @@ void spoton_misc::prepareDatabases(void)
 	   "public_key BLOB NOT NULL, "
 	   "maximum_buffer_size INTEGER NOT NULL DEFAULT 131072, "
 	   "maximum_content_length INTEGER NOT NULL DEFAULT 65536, "
-	   "dedicated_line TEXT NOT NULL)");
+	   "echo_mode TEXT NOT NULL)");
       }
 
     db.close();
@@ -1383,7 +1384,7 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 		   "private_key, "
 		   "public_key, "
 		   "uuid, "
-		   "dedicated_line) "
+		   "echo_mode) "
 		   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
 		   "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue(0, QVariant(QVariant::String));
@@ -1509,7 +1510,7 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 
 	if(ok)
 	  query.bindValue
-	    (21, crypt->encrypted(QString::number(0).toLatin1(), &ok).
+	    (21, crypt->encrypted(QByteArray("full"), &ok).
 	     toBase64());
 
 	if(ok)

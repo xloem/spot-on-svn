@@ -46,9 +46,11 @@ class spoton_listener_tcp_server: public QTcpServer
   Q_OBJECT
 
  public:
-  spoton_listener_tcp_server(const qint64 id, QObject *parent):
+  spoton_listener_tcp_server(const qint64 id, const QString &echoMode,
+			     QObject *parent):
     QTcpServer(parent)
   {
+    m_echoMode = echoMode;
     m_id = id;
   }
 
@@ -73,6 +75,7 @@ class spoton_listener_tcp_server: public QTcpServer
 
  private:
   QQueue<QPointer<spoton_neighbor> > m_queue;
+  QString m_echoMode;
   qint64 m_id;
 
  signals:
@@ -89,6 +92,7 @@ class spoton_listener: public spoton_listener_tcp_server
 		  const QString &scopeId,
 		  const int maximumClients,
 		  const qint64 id,
+		  const QString &echoMode,
 		  QObject *parent);
   ~spoton_listener();
   QHostAddress externalAddress(void) const;
@@ -97,6 +101,7 @@ class spoton_listener: public spoton_listener_tcp_server
  private:
   QHostAddress m_address;
   QNetworkInterface *m_networkInterface;
+  QString m_echoMode;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_timer;
   qint64 m_id;

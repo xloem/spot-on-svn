@@ -946,9 +946,10 @@ void spoton::slotAddListener(void)
 			  "hash, "
 			  "certificate, "
 			  "private_key, "
-			  "public_key) "
+			  "public_key, "
+			  "echo_mode) "
 			  "VALUES "
-			  "(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			  "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	    if(ip.isEmpty())
 	      query.bindValue
@@ -1032,6 +1033,18 @@ void spoton::slotAddListener(void)
 	    if(ok)
 	      query.bindValue
 		(8, m_crypt->encrypted(publicKey, &ok).toBase64());
+
+	    if(ok)
+	      {
+		if(m_ui.listenersEchoMode->currentIndex() == 0)
+		  query.bindValue
+		    (9, m_crypt->encrypted(QByteArray("full"),
+					   &ok).toBase64());
+		else
+		  query.bindValue
+		    (9, m_crypt->encrypted(QByteArray("half"),
+					   &ok).toBase64());
+	      }
 
 	    if(ok)
 	      ok = query.exec();
@@ -1136,7 +1149,7 @@ void spoton::slotAddNeighbor(void)
 			  "private_key, "
 			  "public_key, "
 			  "uuid, "
-			  "dedicated_line) "
+			  "echo_mode) "
 			  "VALUES "
 			  "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
 			  "?, ?, ?, ?, ?, ?, ?)");
@@ -1302,11 +1315,16 @@ void spoton::slotAddNeighbor(void)
 				      "000000000000}"), &ok).toBase64());
 
 	    if(ok)
-	      query.bindValue
-		(20, m_crypt->
-		 encrypted(QString::number(m_ui.dedicatedLine->
-					   isChecked()).toLatin1(), &ok).
-		 toBase64());
+	      {
+		if(m_ui.neighborsEchoMode->currentIndex() == 0)
+		  query.bindValue
+		    (20, m_crypt->
+		     encrypted(QByteArray("full"), &ok).toBase64());
+		else
+		  query.bindValue
+		    (20, m_crypt->
+		     encrypted(QByteArray("half"), &ok).toBase64());
+	      }
 
 	    if(ok)
 	      ok = query.exec();
@@ -1475,7 +1493,7 @@ void spoton::slotPopulateListeners(void)
 		      "status_control, status, 0, "
 		      "ip_address, port, scope_id, protocol, "
 		      "external_ip_address, external_port, "
-		      "connections, maximum_clients, OID "
+		      "connections, maximum_clients, echo_mode, OID "
 		      "FROM listeners WHERE status_control <> 'deleted'"))
 	  {
 	    row = 0;
@@ -1500,7 +1518,7 @@ void spoton::slotPopulateListeners(void)
 			if(query.value(1) == "online")
 			  active += 1;
 
-			check->setProperty("oid", query.value(11));
+			check->setProperty("oid", query.value(12));
 			check->setProperty("table_row", row);
 			connect(check,
 				SIGNAL(stateChanged(int)),
@@ -1522,7 +1540,7 @@ void spoton::slotPopulateListeners(void)
 		    else if(i == 10)
 		      {
 			box = new QComboBox();
-			box->setProperty("oid", query.value(11));
+			box->setProperty("oid", query.value(12));
 			box->setProperty("table_row", row);
 			box->addItem("1");
 
@@ -1554,7 +1572,7 @@ void spoton::slotPopulateListeners(void)
 		      }
 		    else
 		      {
-			if(i >= 3 && i <= 7)
+			if((i >= 3 && i <= 7) || i == 11)
 			  {
 			    bool ok = true;
 
@@ -1747,7 +1765,7 @@ void spoton::slotPopulateNeighbors(void)
 		      "proxy_hostname, proxy_port, "
 		      "maximum_buffer_size, "
 		      "maximum_content_length, "
-		      "dedicated_line, "
+		      "echo_mode, "
 		      "is_encrypted, OID "
 		      "FROM neighbors WHERE status_control <> 'deleted'"))
 	  {
@@ -1821,13 +1839,6 @@ void spoton::slotPopulateNeighbors(void)
 				if(bytes.isEmpty())
 				  bytes =
 				    "{00000000-0000-0000-0000-000000000000}";
-			      }
-			    else if(i == 17) // dedicated_line
-			      {
-				if(bytes.toInt() == 0)
-				  bytes = "Full";
-				else
-				  bytes = "Half";
 			      }
 
 			    item = new QTableWidgetItem(bytes.constData());
@@ -2945,9 +2956,9 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotUnblockNeighbor(void)));
       menu.addSeparator();
       menu.addAction(tr("&Full Echo"),
-		     this, SLOT(slotSharedLine(void)));
+		     this, SLOT(slotFullEcho(void)));
       menu.addAction(tr("&Half Echo"),
-		     this, SLOT(slotDedicatedLine(void)));
+		     this, SLOT(slotHalfEcho(void)));
       menu.exec(m_ui.neighbors->mapToGlobal(point));
     }
   else
@@ -3714,7 +3725,7 @@ void spoton::slotKernelSocketSslErrors(const QList<QSslError> &errors)
        arg(m_kernelSocket.peerPort()));
 }
 
-void spoton::slotDedicatedLine(void)
+void spoton::slotHalfEcho(void)
 {
   if(!m_crypt)
     return;
@@ -3748,10 +3759,10 @@ void spoton::slotDedicatedLine(void)
 	bool ok = true;
 
 	query.prepare("UPDATE neighbors SET "
-		      "dedicated_line = ? "
+		      "echo_mode = ? "
 		      "WHERE OID = ?");
 	query.bindValue
-	  (0, m_crypt->encrypted(QString::number(1).toLatin1(), &ok).
+	  (0, m_crypt->encrypted(QByteArray("half"), &ok).
 	   toBase64());
 	query.bindValue(1, oid);
 
@@ -3766,7 +3777,7 @@ void spoton::slotDedicatedLine(void)
   m_neighborsLastModificationTime = QDateTime();
 }
 
-void spoton::slotSharedLine(void)
+void spoton::slotFullEcho(void)
 {
   if(!m_crypt)
     return;
@@ -3800,10 +3811,10 @@ void spoton::slotSharedLine(void)
 	bool ok = true;
 
 	query.prepare("UPDATE neighbors SET "
-		      "dedicated_line = ? "
+		      "echo_mode = ? "
 		      "WHERE OID = ?");
 	query.bindValue
-	  (0, m_crypt->encrypted(QString::number(0).toLatin1(), &ok).
+	  (0, m_crypt->encrypted(QByteArray("full"), &ok).
 	   toBase64());
 	query.bindValue(1, oid);
 

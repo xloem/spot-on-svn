@@ -57,11 +57,12 @@ class spoton_neighbor: public QSslSocket
 		  const QByteArray &privateKey,
 		  const int maximumBufferSize,
 		  const int maximumContentLength,
-		  const bool isDedicatedLine,
+		  const QString &echoMode,
 		  QObject *parent);
   spoton_neighbor(const int socketDescriptor,
 		  const QByteArray &certificate,
 		  const QByteArray &privateKey,
+		  const QString &echoMode,
 		  QObject *parent);
   ~spoton_neighbor();
   QUuid receivedUuid(void) const;
@@ -79,13 +80,13 @@ class spoton_neighbor: public QSslSocket
   QDateTime m_lastReadTime;
   QHostAddress m_address;
   QNetworkInterface *m_networkInterface;
+  QString m_echoMode;
   QString m_ipAddress;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_keepAliveTimer;
   QTimer m_lifetime;
   QTimer m_timer;
   QUuid m_receivedUuid;
-  bool m_isDedicatedLine;
   bool m_isUserDefined;
   bool m_useSsl;
   int m_maximumBufferSize;

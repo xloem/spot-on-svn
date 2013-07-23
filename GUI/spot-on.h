@@ -178,7 +178,6 @@ class spoton: public QMainWindow
   void slotCountryChanged(QListWidgetItem *item);
   void slotDaysChanged(int value);
   void slotDeactivateKernel(void);
-  void slotDedicatedLine(void);
   void slotDeleteAllBlockedNeighbors(void);
   void slotDeleteAllListeners(void);
   void slotDeleteAllNeighbors(void);
@@ -194,10 +193,12 @@ class spoton: public QMainWindow
   void slotEnabledPostOffice(bool state);
   void slotFetchMoreAlgo(void);
   void slotFetchMoreButton(void);
+  void slotFullEcho(void);
   void slotGeminiChanged(QTableWidgetItem *item);
   void slotGeneralTimerTimeout(void);
   void slotGenerateGoldBug(void);
   void slotGenerateGeminiInChat(void);
+  void slotHalfEcho(void);
   void slotKeepCopy(bool state);
   void slotKeepOnlyUserDefinedNeighbors(bool state);
   void slotKernelKeySizeChanged(const QString &text);
@@ -244,7 +245,6 @@ class spoton: public QMainWindow
   void slotSharePublicKey(void);
   void slotSharePublicKeyWithParticipant(void);
   void slotShareURLPublicKey(void);
-  void slotSharedLine(void);
   void slotShowContextMenu(const QPoint &point);
   void slotStatusButtonClicked(void);
   void slotStatusChanged(int index);

@@ -48,9 +48,10 @@
 spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 const QByteArray &certificate,
 				 const QByteArray &privateKey,
+				 const QString &echoMode,
 				 QObject *parent):QSslSocket(parent)
 {
-  m_isDedicatedLine = false;
+  m_echoMode = echoMode;
   m_isUserDefined = false;
   m_maximumBufferSize = 131072; // 2 ^ 17
   m_maximumContentLength = 65536; // 2 ^ 16
@@ -185,10 +186,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const QByteArray &privateKey,
 				 const int maximumBufferSize,
 				 const int maximumContentLength,
-				 const bool isDedicatedLine,
+				 const QString &echoMode,
 				 QObject *parent):QSslSocket(parent)
 {
-  m_isDedicatedLine = isDedicatedLine;
+  m_echoMode = echoMode;
   m_isUserDefined = userDefined;
   m_maximumBufferSize = maximumBufferSize;
   m_maximumContentLength = maximumContentLength;
@@ -424,7 +425,7 @@ void spoton_neighbor::slotTimeout(void)
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT status_control, sticky, dedicated_line "
+	query.prepare("SELECT status_control, sticky, echo_mode "
 		      "FROM neighbors WHERE OID = ?");
 	query.bindValue(0, m_id);
 
@@ -450,10 +451,10 @@ void spoton_neighbor::slotTimeout(void)
 		      {
 			bool ok = true;
 
-			m_isDedicatedLine = s_crypt->decrypted
+			m_echoMode = s_crypt->decrypted
 			  (QByteArray::fromBase64(query.value(2).
 						  toByteArray()),
-			   &ok).toInt();
+			   &ok).constData();
 		      }
 		  }
 
@@ -936,10 +937,10 @@ void spoton_neighbor::slotReceivedBuzzMessage
   /*
   ** A neighbor (id) received a buzz message. This neighbor now needs
   ** to send the message to its peer. Please note that data also contains
-  ** the TTL. We do not echo messages on lines that are dedicated.
+  ** the TTL.
   */
 
-  if(!m_isDedicatedLine)
+  if(m_echoMode == "full")
     if(id != m_id)
       if(readyToWrite())
 	{
@@ -967,10 +968,10 @@ void spoton_neighbor::slotReceivedChatMessage
   /*
   ** A neighbor (id) received a message. This neighbor now needs
   ** to send the message to its peer. Please note that data also contains
-  ** the TTL. We do not echo messages on lines that are dedicated.
+  ** the TTL.
   */
 
-  if(!m_isDedicatedLine)
+  if(m_echoMode == "full")
     if(id != m_id)
       if(readyToWrite())
 	{
@@ -992,10 +993,10 @@ void spoton_neighbor::slotReceivedMailMessage(const QByteArray &data,
   /*
   ** A neighbor (id) received a letter. This neighbor now needs
   ** to send the letter to its peer. Please note that data also contains
-  ** the TTL. We do not echo messages on lines that are dedicated.
+  ** the TTL.
   */
 
-  if(!m_isDedicatedLine)
+  if(m_echoMode == "full")
     if(id != m_id)
       if(readyToWrite())
 	{
@@ -1021,10 +1022,10 @@ void spoton_neighbor::slotReceivedStatusMessage(const QByteArray &data,
   /*
   ** A neighbor (id) received a status message. This neighbor now needs
   ** to send the message to its peer. Please note that data also contains
-  ** the TTL. We do not echo messages on lines that are dedicated.
+  ** the TTL.
   */
 
-  if(!m_isDedicatedLine)
+  if(m_echoMode == "full")
     if(id != m_id)
       if(readyToWrite())
 	{
@@ -1045,11 +1046,10 @@ void spoton_neighbor::slotRetrieveMail(const QByteArray &data,
   /*
   ** A neighbor (id) received a request to retrieve mail. This neighbor
   ** now needs to send the message to its peer. Please note that data
-  ** also contains the TTL. We do not echo messages on lines that are
-  ** dedicated.
+  ** also contains the TTL.
   */
 
-  if(!m_isDedicatedLine)
+  if(m_echoMode == "full")
     if(id != m_id)
       if(readyToWrite())
 	{
@@ -3131,11 +3131,10 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
   /*
   ** A neighbor (id) received a request to publish listener information.
   ** This neighbor now needs to send the message to its peer. Please
-  ** note that data also contains the TTL. We do not echo messages
-  ** on lines that are dedicated.
+  ** note that data also contains the TTL.
   */
 
-  if(!m_isDedicatedLine)
+  if(m_echoMode == "full")
     if(id != m_id)
       if(readyToWrite())
 	{

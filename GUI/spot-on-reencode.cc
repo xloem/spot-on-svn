@@ -315,13 +315,15 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	if(query.exec("SELECT ip_address, port, scope_id, "
 		      "protocol, certificate, "
-		      "private_key, public_key, hash FROM listeners"))
+		      "private_key, public_key, echo_mode, "
+		      "hash FROM listeners"))
 	  while(query.next())
 	    {
 	      QByteArray certificate;
 	      QByteArray privateKey;
 	      QByteArray publicKey;
 	      QSqlQuery updateQuery(db);
+	      QString echoMode("");
 	      QString ipAddress("");
 	      QString port("");
 	      QString protocol("");
@@ -336,7 +338,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "hash = ?, "
 				  "certificate = ?, "
 				  "private_key = ?, "
-				  "public_key = ? "
+				  "public_key = ?, "
+				  "echo_mode = ? "
 				  "WHERE hash = ?");
 	      ipAddress = oldCrypt->decrypted(QByteArray::
 					      fromBase64(query.
@@ -381,6 +384,13 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		   &ok);
 
 	      if(ok)
+		echoMode = oldCrypt->decrypted(QByteArray::
+					       fromBase64(query.
+							  value(7).
+							  toByteArray()),
+					       &ok).constData();
+
+	      if(ok)
 		updateQuery.bindValue
 		  (0, newCrypt->encrypted(ipAddress.
 					  toLatin1(), &ok).toBase64());
@@ -417,8 +427,13 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		updateQuery.bindValue
 		  (7, newCrypt->encrypted(publicKey, &ok).toBase64());
 
+	      if(ok)
+		updateQuery.bindValue
+		  (8, newCrypt->
+		   encrypted(echoMode.toLatin1(), &ok).toBase64());
+
 	      updateQuery.bindValue
-		(8, query.value(7));
+		(9, query.value(8));
 
 	      if(ok)
 		updateQuery.exec();
@@ -428,7 +443,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 		  deleteQuery.prepare("DELETE FROM listeners WHERE "
 				      "hash = ?");
-		  deleteQuery.bindValue(0, query.value(7));
+		  deleteQuery.bindValue(0, query.value(8));
 		  deleteQuery.exec();
 		}
 	    }
@@ -459,7 +474,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		      "scope_id, country, hash, proxy_hostname, "
 		      "proxy_password, proxy_port, proxy_type, "
 		      "proxy_username, private_key, public_key, uuid, "
-		      "dedicated_line "
+		      "echo_mode "
 		      "FROM neighbors"))
 	  while(query.next())
 	    {
@@ -468,6 +483,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      QByteArray uuid;
 	      QSqlQuery updateQuery(db);
 	      QString country("");
+	      QString echoMode("");
 	      QString ipAddress("");
 	      QString port("");
 	      QString proxyHostname("");
@@ -477,7 +493,6 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      QString proxyUsername("");
 	      QString scopeId("");
 	      bool ok = true;
-	      int dedicatedLine = 0;
 
 	      updateQuery.prepare("UPDATE neighbors "
 				  "SET remote_ip_address = ?, "
@@ -495,7 +510,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "private_key = ?, "
 				  "public_key = ?, "
 				  "uuid = ?, "
-				  "dedicated_line = ? "
+				  "echo_mode = ? "
 				  "WHERE hash = ?");
 	      ipAddress = oldCrypt->decrypted(QByteArray::
 					      fromBase64(query.
@@ -581,9 +596,9 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 					   &ok);
 
 	      if(ok)
-		dedicatedLine = oldCrypt->decrypted
+		echoMode = oldCrypt->decrypted
 		  (QByteArray::fromBase64(query.value(13).toByteArray()),
-		   &ok).toInt();
+		   &ok).constData();
 
 	      if(ok)
 		updateQuery.bindValue
@@ -661,8 +676,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      if(ok)
 		updateQuery.bindValue
-		  (15, newCrypt->encrypted(QString::number(dedicatedLine).
-					   toLatin1(), &ok).toBase64());
+		  (15, newCrypt->encrypted(echoMode.toLatin1(),
+					   &ok).toBase64());
 
 	      updateQuery.bindValue
 		(16, query.value(4));

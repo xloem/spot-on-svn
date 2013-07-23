@@ -102,7 +102,7 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 	}
 
       QPointer<spoton_neighbor> neighbor = new spoton_neighbor
-	(socketDescriptor, certificate, privateKey, this);
+	(socketDescriptor, certificate, privateKey, m_echoMode, this);
 
       m_queue.enqueue(neighbor);
       emit newConnection();
@@ -114,11 +114,13 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 				 const QString &scopeId,
 				 const int maximumClients,
 				 const qint64 id,
+				 const QString &echoMode,
 				 QObject *parent):
-  spoton_listener_tcp_server(id, parent)
+  spoton_listener_tcp_server(id, echoMode, parent)
 {
   m_address = QHostAddress(ipAddress);
   m_address.setScopeId(scopeId);
+  m_echoMode = echoMode;
   m_externalAddress = new spoton_external_address(this);
   m_id = id;
   m_networkInterface = 0;
@@ -511,7 +513,7 @@ void spoton_listener::slotNewConnection(void)
 		       "proxy_username, "
 		       "private_key, "
 		       "public_key, "
-		       "dedicated_line) "
+		       "echo_mode) "
 		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
 		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
@@ -630,7 +632,7 @@ void spoton_listener::slotNewConnection(void)
 
 	    if(ok)
 	      query.bindValue
-		(22, s_crypt->encrypted(QString::number(0).toLatin1(),
+		(22, s_crypt->encrypted(m_echoMode.toLatin1(),
 					&ok).toBase64());
 
 	    if(ok)
