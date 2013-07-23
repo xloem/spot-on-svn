@@ -753,7 +753,6 @@ spoton::spoton(void):QMainWindow()
       m_ui.passphraseButton->setEnabled(false);
       m_ui.passphraseLabel->setEnabled(false);
       m_ui.kernelBox->setEnabled(false);
-      m_ui.listenersBox->setEnabled(false);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
 	if(i == 6) // Settings
@@ -2682,7 +2681,6 @@ void spoton::slotSetPassphrase(void)
       m_sb.listeners->setEnabled(true);
       m_sb.neighbors->setEnabled(true);
       m_ui.kernelBox->setEnabled(true);
-      m_ui.listenersBox->setEnabled(true);
       m_ui.newRSAKeys->setChecked(false);
       m_ui.newRSAKeys->setEnabled(true);
       m_ui.passphrase1->setText("0000000000");
@@ -2800,7 +2798,6 @@ void spoton::slotValidatePassphrase(void)
 	    m_sb.listeners->setEnabled(true);
 	    m_sb.neighbors->setEnabled(true);
 	    m_ui.kernelBox->setEnabled(true);
-	    m_ui.listenersBox->setEnabled(true);
 	    m_ui.newRSAKeys->setEnabled(true);
 	    m_ui.passphrase->clear();
 	    m_ui.passphrase->setEnabled(false);
