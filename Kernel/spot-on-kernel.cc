@@ -284,6 +284,11 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	    qDebug() << "Invalid passphrase?";
 	    deleteLater();
 	  }
+	else
+	  {
+	    qDebug();
+	    qDebug() << "Passphrase accepted.";
+	  }
 
 	break;
       }

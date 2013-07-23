@@ -577,24 +577,18 @@ spoton::spoton(void):QMainWindow()
 			   trimmed());
   else
     {
+#ifndef Q_OS_MAC
       QString path(QCoreApplication::applicationDirPath() +
 		   QDir::separator() +
-#ifdef Q_OS_MAC
-		   "Spot-On-Kernel.app"
-#elif defined(Q_OS_WIN32)
+#if defined(Q_OS_WIN32)
 		   "Spot-On-Kernel.exe"
 #else
 		   "Spot-On-Kernel"
 #endif
 		   );
 
-#ifdef Q_OS_MAC
-      if(!QFileInfo(path).exists())
-	path = QCoreApplication::applicationDirPath() +
-	  QDir::separator() + "Spot-On-Kernel";
-#endif
-
       m_ui.kernelPath->setText(path);
+#endif
     }
 
   if(m_settings.value("gui/chatSendMethod", "Artificial_GET").
@@ -1976,8 +1970,14 @@ void spoton::slotActivateKernel(void)
 
 #ifdef Q_OS_MAC
   if(QFileInfo(program).isBundle())
-    process.startDetached
-      ("open", QStringList("-a") << program);
+    {
+      QStringList list;
+
+      list << "-a"
+	   << program
+	   << "-g";
+      process.startDetached("open", list);
+    }
   else
     process.startDetached(program);
 #elif defined(Q_OS_WIN32)

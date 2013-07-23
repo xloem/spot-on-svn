@@ -75,6 +75,8 @@ QMAKE_STRIP	= echo
 
 spoton.path		= /Applications/Spot-On.d/Spot-On-Kernel.app
 spoton.files		= ../Spot-On-Kernel.app/*
+libgeoip_data_install.path = /Applications/Spot-On.d/Data
+libgeoip_data_install.files = ../../../GeoIP-1.5.1/data/GeoIP.dat
 libgeoip_install.path  = .
 libgeoip_install.extra = cp ../../../libGeoIP/Libraries.osx64/libGeoIP.1.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libGeoIP.1.dylib && install_name_tool -change ../../../libGeoIP/Libraries.osx64/libGeoIP.1.dylib @executable_path/../Frameworks/libGeoIP.1.dylib ../Spot-On-Kernel.app/Contents/MacOS/Spot-On-Kernel
 libspoton_install.path  = .
@@ -88,6 +90,7 @@ postinstall.extra	= find /Applications/Spot-On.d -name .svn -exec rm -rf {} \\; 
 
 QMAKE_STRIP	= echo
 INSTALLS	= macdeployqt \
+                  libgeoip_data_install \
                   libgeoip_install \
                   libspoton_install \
                   spoton \

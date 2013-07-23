@@ -158,8 +158,8 @@ QMAKE_STRIP	= echo
 
 spoton.path		= /Applications/Spot-On.d/Spot-On.app
 spoton.files		= Spot-On.app/*
-icons.path		= /Applications/Spot-On.d
-icons.files		= Icons
+libgeoip_data_install.path = /Applications/Spot-On.d/Data
+libgeoip_data_install.files = ../../GeoIP-1.5.1/data/GeoIP.dat
 libgeoip_install.path   = .
 libgeoip_install.extra  = cp ../../libGeoIP/Libraries.osx64/libGeoIP.1.dylib ./Spot-On.app/Contents/Frameworks/libGeoIP.1.dylib && install_name_tool -change ../../libGeoIP/Libraries.osx64/libGeoIP.1.dylib @executable_path/../Frameworks/libGeoIP.1.dylib ./Spot-On.app/Contents/MacOS/Spot-On
 libspoton_install.path  = .
@@ -179,9 +179,9 @@ translations.files	= Translations/*.qm
 
 QMAKE_STRIP	= echo
 INSTALLS	= macdeployqt \
+                  libgeoip_data_install \
                   libgeoip_install \
                   libspoton_install \
-                  icons \
                   lupdate \
                   lrelease \
                   translations \
