@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1219</width>
-    <height>661</height>
+    <width>1050</width>
+    <height>650</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -136,8 +136,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1197</width>
-                <height>558</height>
+                <width>1028</width>
+                <height>547</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -987,16 +987,13 @@
        <attribute name="title">
         <string>&amp;Listeners</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_33">
+       <layout class="QVBoxLayout" name="verticalLayout_27">
         <item>
          <widget class="QSplitter" name="listenersHorizontalSplitter">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <widget class="QGroupBox" name="listenersBox">
-           <property name="title">
-            <string>Listening Services</string>
-           </property>
+          <widget class="QWidget" name="layoutWidget">
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_10">
@@ -1262,6 +1259,19 @@
                       </property>
                      </item>
                     </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_41">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
                    </item>
                   </layout>
                  </item>
@@ -1855,6 +1865,19 @@
                      </item>
                     </widget>
                    </item>
+                   <item>
+                    <spacer name="horizontalSpacer_42">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
                   </layout>
                  </item>
                  <item row="0" column="6">
@@ -2303,8 +2326,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1197</width>
-             <height>558</height>
+             <width>1028</width>
+             <height>547</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3300,7 +3323,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1219</width>
+     <width>1050</width>
      <height>24</height>
     </rect>
    </property>
