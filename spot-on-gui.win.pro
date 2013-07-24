@@ -19,10 +19,11 @@ QMAKE_CLEAN     += Spot-On ..\\..\\libSpotOn\\libspoton.dll \
 		   ..\\..\\libSpotOn\\*.o \
 		   ..\\..\\libSpotOn\\test.exe
 QMAKE_CXXFLAGS_RELEASE -= -O2
-QMAKE_CXXFLAGS_RELEASE += -mtune=generic -O3 \
+QMAKE_CXXFLAGS_RELEASE += -fstack-protector-all -mtune=generic -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
 			  -Werror -Wextra \
-			  -Woverloaded-virtual -Wpointer-arith
+			  -Woverloaded-virtual -Wpointer-arith \
+			  -Wstack-protector
 QMAKE_EXTRA_TARGETS = libspoton purge
 INCLUDEPATH	+= . ..\\..\\. GUI ..\\..\\libSpotOn\\Include.win32 \
 		   ..\\..\\libGeoIP\\Include.win32 \
