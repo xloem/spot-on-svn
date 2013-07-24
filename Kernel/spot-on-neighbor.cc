@@ -64,7 +64,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 
   setReadBufferSize(8192);
   setSocketDescriptor(socketDescriptor);
-  setSocketOption(QAbstractSocket::KeepAliveOption, 1);
+  setSocketOption(QAbstractSocket::KeepAliveOption, 0); /*
+							** We have our
+							** own mechanism.
+							*/
 
   if(m_useSsl)
     {
@@ -197,7 +200,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_useSsl = true;
   setProxy(proxy);
   setReadBufferSize(8192);
-  setSocketOption(QAbstractSocket::KeepAliveOption, 1);
+  setSocketOption(QAbstractSocket::KeepAliveOption, 0); /*
+							** We have our
+							** own mechanism.
+							*/
 
   if(!privateKey.isEmpty())
     {
@@ -1356,6 +1362,8 @@ void spoton_neighbor::process0000
 	    originalData.prepend(c);
 	    emit receivedChatMessage(originalData, m_id, sendMethod);
 	  }
+
+      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -1521,6 +1529,8 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	    originalData.prepend(c);
 	    emit receivedMailMessage(originalData, "0001a", m_id);
 	  }
+
+      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -1637,6 +1647,8 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 	    originalData.prepend(c);
 	    emit receivedMailMessage(originalData, "0001b", m_id);
 	  }
+
+      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -1793,6 +1805,8 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 	    originalData.prepend(c);
 	    emit retrieveMail(originalData, m_id);
 	  }
+
+      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -1842,6 +1856,8 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 			      "m_id equals negative one. "
 			      "Calling savePublicKey() would be "
 			      "problematic. Ignoring request.");
+
+      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -1885,6 +1901,7 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
       savePublicKey
 	(list.value(0), list.value(1), list.value(2), list.value(3),
 	 list.value(4), list.value(5), -1);
+      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -2096,6 +2113,8 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	    originalData.prepend(c);
 	    emit receivedStatusMessage(originalData, m_id);
 	  }
+
+      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -2175,6 +2194,8 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
 	      QSqlDatabase::removeDatabase(connectionName);
 	    }
 	}
+
+      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -2199,12 +2220,12 @@ void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
 
       if(data == "0")
 	{
-	  m_lastReadTime = QDateTime::currentDateTime();
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0015(): received "
 		     "keep-alive from %1:%2. Resetting time object.").
 	     arg(peerAddress().isNull() ? peerName() :
 		 peerAddress().toString()).arg(peerPort()));
+	  resetKeepAlive();
 	}
       else
 	spoton_misc::logError
@@ -2315,6 +2336,8 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 	  originalData.prepend(c);
 	  emit publicizeListenerPlaintext(originalData, m_id);
 	}
+
+      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -2401,6 +2424,8 @@ void spoton_neighbor::process0040a
 	  originalData.prepend(c);
 	  emit receivedBuzzMessage(originalData, "0040a", m_id, sendMethod);
 	}
+
+      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -2487,6 +2512,8 @@ void spoton_neighbor::process0040b
 	  originalData.prepend(c);
 	  emit receivedBuzzMessage(originalData, "0040b", m_id, sendMethod);
 	}
+
+      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -3297,4 +3324,10 @@ void spoton_neighbor::slotSendBuzz(const QByteArray &data)
       else
 	flush();
     }
+}
+
+void spoton_neighbor::resetKeepAlive(void)
+{
+  m_keepAliveTimer.start();
+  m_lastReadTime = QDateTime::currentDateTime();
 }

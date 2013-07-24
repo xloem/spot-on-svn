@@ -113,6 +113,7 @@ class spoton_neighbor: public QSslSocket
   void process0040b(int length, const QByteArray &data,
 		    const spoton_send::spoton_send_method sendMethod);
   void recordMessageHash(const QByteArray &data);
+  void resetKeepAlive(void);
   void saveEncryptedStatus(void);
   void saveExternalAddress(const QHostAddress &address,
 			   const QSqlDatabase &db);
