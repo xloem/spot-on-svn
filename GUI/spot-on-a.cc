@@ -1528,7 +1528,7 @@ void spoton::slotPopulateListeners(void)
 		    else if(i == 2)
 		      {
 			int keySize = listenerSslKeySize
-			  (query.value(11).toString(), db);
+			  (query.value(12).toString(), db);
 
 			if(keySize == -1)
 			  item = new QTableWidgetItem("0");
