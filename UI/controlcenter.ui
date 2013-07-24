@@ -1708,7 +1708,7 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="layoutWidget">
+          <widget class="QWidget" name="layoutWidget1b">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
              <widget class="QGroupBox" name="groupBox_addip_2">
