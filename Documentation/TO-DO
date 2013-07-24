@@ -64,6 +64,8 @@ Remaining Items
 15.    Hard kernel termination. Session separation.
 16.    Colorful HTTP headers.
 17.    Custom protocol messages for rapid redeployment.
+18.    Calling feature to limit PKI.
+19.    Reset keep-alive timers if valid data has been processed.
 
 Ideas
        Add a database for the temporary chat keys of connected neighbors.
