@@ -174,6 +174,10 @@ void spoton_gui_server::slotReadyRead(void)
       return;
     }
 
+  /*
+  ** What if socketDescriptor() equals negative one?
+  */
+
   m_guiSocketData[socket->socketDescriptor()].append
     (socket->readAll());
 

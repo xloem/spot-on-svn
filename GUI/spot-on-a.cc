@@ -3503,7 +3503,13 @@ void spoton::slotPopulateParticipants(void)
 		    {
 		      QString status(query.value(i).toString());
 
-		      status[0] = status.toUpper()[0];
+		      if(!status.isEmpty())
+			{
+			  if(status.at(0).isLetter())
+			    status[0] = status.toUpper()[0];
+			}
+		      else
+			status = "Offline";
 
 		      if(status == "Away")
 			item = new QTableWidgetItem(tr("Away"));

@@ -2595,11 +2595,11 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
 
   BIO_get_mem_ptr(privateMemory, &bptr);
 
-  if(!(privateBuffer = (char *) malloc(bptr->length + 1)))
+  if(!(privateBuffer = (char *) calloc(bptr->length + 1, sizeof(char))))
     {
-      error = QObject::tr("malloc() returned zero");
+      error = QObject::tr("calloc() returned zero");
       spoton_misc::logError("spoton_crypt::generateSslKeys(): "
-			    "malloc() failure.");
+			    "calloc() failure.");
       goto done_label;
     }
 
@@ -2608,11 +2608,11 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
   privateKey = privateBuffer;
   BIO_get_mem_ptr(publicMemory, &bptr);
 
-  if(!(publicBuffer = (char *) malloc(bptr->length + 1)))
+  if(!(publicBuffer = (char *) calloc(bptr->length + 1, sizeof(char))))
     {
-      error = QObject::tr("malloc() returned zero");
+      error = QObject::tr("calloc() returned zero");
       spoton_misc::logError("spoton_crypt::generateSslKeys(): "
-			    "malloc() failure.");
+			    "calloc() failure.");
       goto done_label;
     }
 
@@ -2842,11 +2842,11 @@ void spoton_crypt::generateCertificate(RSA *rsa,
 
   BIO_get_mem_ptr(memory, &bptr);
 
-  if(!(buffer = (char *) malloc(bptr->length + 1)))
+  if(!(buffer = (char *) calloc(bptr->length + 1, sizeof(char))))
     {
-      error = QObject::tr("malloc() returned zero");
+      error = QObject::tr("calloc() returned zero");
       spoton_misc::logError("spoton_crypt::generateCertificate(): "
-			    "malloc() failure.");
+			    "calloc() failure.");
       goto done_label;
     }
 
