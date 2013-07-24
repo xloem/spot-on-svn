@@ -22,15 +22,17 @@ QMAKE_CLEAN     += ../Spot-On-Kernel ../../../libSpotOn/*.o \
 		   ../../../libSpotOn/*.so ../../../libSpotOn/test
 QMAKE_DISTCLEAN += -r temp
 QMAKE_CXXFLAGS_DEBUG -= -O2
-QMAKE_CXXFLAGS_DEBUG += -mtune=generic -Os \
+QMAKE_CXXFLAGS_DEBUG += -fstack-protector-all -mtune=generic -Os \
                         -Wall -Wcast-align -Wcast-qual \
 			-Werror -Wextra \
-                        -Woverloaded-virtual -Wpointer-arith
+                        -Woverloaded-virtual -Wpointer-arith \
+                        -Wstack-protector
 QMAKE_CXXFLAGS_RELEASE -= -O2
-QMAKE_CXXFLAGS_RELEASE += -mtune=generic -O3 \
+QMAKE_CXXFLAGS_RELEASE += -fstack-protector-all -mtune=generic -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
 			  -Werror -Wextra \
-			  -Woverloaded-virtual -Wpointer-arith
+			  -Woverloaded-virtual -Wpointer-arith \
+                          -Wstack-protector
 QMAKE_LFLAGS_RELEASE += -Wl,-rpath,/usr/local/spot-on/Lib
 QMAKE_EXTRA_TARGETS = libspoton purge
 QMAKE_LFLAGS_RPATH =
