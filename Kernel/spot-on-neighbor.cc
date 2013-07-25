@@ -1187,57 +1187,61 @@ void spoton_neighbor::process0000
 				     ** decrease the TTL!
 				     */
       QList<QByteArray> list(data.split('\n'));
+      int count = spoton_misc::participantCount();
 
       if(list.size() == 2)
 	{
-	  /*
-	  ** Gemini?
-	  */
-
-	  for(int i = 0; i < list.size(); i++)
-	    list.replace(i, QByteArray::fromBase64(list.at(i)));
-
-	  QByteArray gemini
-	    (spoton_misc::findGeminiInCosmos(list.value(0), s_crypt));
-
-	  if(!gemini.isEmpty())
+	  if(count > 0)
 	    {
-	      QByteArray computedMessageCode;
-	      QByteArray message(list.value(0));
-	      QByteArray messageCode(list.value(1));
-	      spoton_crypt crypt("aes256",
-				 QString("sha512"),
-				 QByteArray(),
-				 gemini,
-				 0,
-				 0,
-				 QString(""));
+	      /*
+	      ** Gemini?
+	      */
 
-	      computedMessageCode = crypt.keyedHash(message, &ok);
+	      for(int i = 0; i < list.size(); i++)
+		list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-	      if(ok)
+	      QByteArray gemini
+		(spoton_misc::findGeminiInCosmos(list.value(0), s_crypt));
+
+	      if(!gemini.isEmpty())
 		{
-		  if(computedMessageCode == messageCode)
+		  QByteArray computedMessageCode;
+		  QByteArray message(list.value(0));
+		  QByteArray messageCode(list.value(1));
+		  spoton_crypt crypt("aes256",
+				     QString("sha512"),
+				     QByteArray(),
+				     gemini,
+				     0,
+				     0,
+				     QString(""));
+
+		  computedMessageCode = crypt.keyedHash(message, &ok);
+
+		  if(ok)
 		    {
-		      message = crypt.decrypted(message, &ok);
-
-		      if(ok)
-			list = message.split('\n');
-
-		      if(list.size() != 6)
+		      if(computedMessageCode == messageCode)
 			{
-			  spoton_misc::logError
-			    (QString("spoton_neighbor::process0000(): "
-				     "received irregular data. Expecting 6 "
-				     "entries, "
-				     "received %1.").arg(list.size()));
-			  return;
+			  message = crypt.decrypted(message, &ok);
+
+			  if(ok)
+			    list = message.split('\n');
+
+			  if(list.size() != 6)
+			    {
+			      spoton_misc::logError
+				(QString("spoton_neighbor::process0000(): "
+					 "received irregular data. Expecting 6 "
+					 "entries, "
+					 "received %1.").arg(list.size()));
+			      return;
+			    }
 			}
+		      else
+			spoton_misc::logError("spoton_neighbor::process0000(): "
+					      "computed message code does "
+					      "not match provided code.");
 		    }
-		  else
-		    spoton_misc::logError("spoton_neighbor::process0000(): "
-					  "computed message code does "
-					  "not match provided code.");
 		}
 	    }
 	}
@@ -1251,94 +1255,97 @@ void spoton_neighbor::process0000
 	  return;
 	}
 
-      for(int i = 0; i < list.size(); i++)
-	list.replace(i, QByteArray::fromBase64(list.at(i)));
-
-      QByteArray message(list.value(4));
-      QByteArray messageCode(list.value(5));
-      QByteArray name(list.value(3));
-      QByteArray publicKeyHash(list.value(2));
-      QByteArray symmetricKey(list.value(0));
-      QByteArray symmetricKeyAlgorithm(list.value(1));
-
-      if(ok)
-	symmetricKey = s_crypt->
-	  publicKeyDecrypt(symmetricKey, &ok);
-
-      if(ok)
-	symmetricKeyAlgorithm = s_crypt->
-	  publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
-
-      if(ok)
+      if(count > 0)
 	{
-	  spoton_crypt crypt(symmetricKeyAlgorithm,
-			     QString("sha512"),
-			     QByteArray(),
-			     symmetricKey,
-			     0,
-			     0,
-			     QString(""));
+	  for(int i = 0; i < list.size(); i++)
+	    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-	  publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
-	}
+	  QByteArray message(list.value(4));
+	  QByteArray messageCode(list.value(5));
+	  QByteArray name(list.value(3));
+	  QByteArray publicKeyHash(list.value(2));
+	  QByteArray symmetricKey(list.value(0));
+	  QByteArray symmetricKeyAlgorithm(list.value(1));
 
-      if(ok)
-	{
-	  if(spoton_misc::isAcceptedParticipant(publicKeyHash))
+	  if(ok)
+	    symmetricKey = s_crypt->
+	      publicKeyDecrypt(symmetricKey, &ok);
+
+	  if(ok)
+	    symmetricKeyAlgorithm = s_crypt->
+	      publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
+
+	  if(ok)
 	    {
-	      QByteArray computedMessageCode
-		(spoton_crypt::
-		 keyedHash(list.value(2) + // Sender's Sha-512 Hash
-			   list.value(3) + // Name
-			   list.value(4),  // Message
-			   symmetricKey,
-			   "sha512",
-			   &ok));
+	      spoton_crypt crypt(symmetricKeyAlgorithm,
+				 QString("sha512"),
+				 QByteArray(),
+				 symmetricKey,
+				 0,
+				 0,
+				 QString(""));
 
-	      /*
-	      ** Let's not echo messages whose message codes
-	      ** are incompatible.
-	      */
+	      publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
+	    }
 
-	      if(ok)
+	  if(ok)
+	    {
+	      if(spoton_misc::isAcceptedParticipant(publicKeyHash))
 		{
-		  if(computedMessageCode == messageCode)
+		  QByteArray computedMessageCode
+		    (spoton_crypt::
+		     keyedHash(list.value(2) + // Sender's Sha-512 Hash
+			       list.value(3) + // Name
+			       list.value(4),  // Message
+			       symmetricKey,
+			       "sha512",
+			       &ok));
+
+		  /*
+		  ** Let's not echo messages whose message codes
+		  ** are incompatible.
+		  */
+
+		  if(ok)
 		    {
-		      spoton_crypt crypt(symmetricKeyAlgorithm,
-			     QString("sha512"),
-			     QByteArray(),
-			     symmetricKey,
-			     0,
-			     0,
-			     QString(""));
-
-		      message = crypt.decrypted(message, &ok);
-
-		      if(ok)
-			name = crypt.decrypted(name, &ok);
-
-		      if(ok)
+		      if(computedMessageCode == messageCode)
 			{
-			  QByteArray hash
-			    (s_crypt->
-			     keyedHash(originalData, &ok));
+			  spoton_crypt crypt(symmetricKeyAlgorithm,
+					     QString("sha512"),
+					     QByteArray(),
+					     symmetricKey,
+					     0,
+					     0,
+					     QString(""));
 
-			  saveParticipantStatus(name, publicKeyHash);
+			  message = crypt.decrypted(message, &ok);
 
-			  if(!hash.isEmpty() &&
-			     !message.isEmpty() &&
-			     !name.isEmpty())
-			    emit receivedChatMessage
-			      ("message_" +
-			       hash.toBase64() + "_" +
-			       name.toBase64() + "_" +
-			       message.toBase64().append('\n'));
+			  if(ok)
+			    name = crypt.decrypted(name, &ok);
+
+			  if(ok)
+			    {
+			      QByteArray hash
+				(s_crypt->
+				 keyedHash(originalData, &ok));
+
+			      saveParticipantStatus(name, publicKeyHash);
+
+			      if(!hash.isEmpty() &&
+				 !message.isEmpty() &&
+				 !name.isEmpty())
+				emit receivedChatMessage
+				  ("message_" +
+				   hash.toBase64() + "_" +
+				   name.toBase64() + "_" +
+				   message.toBase64().append('\n'));
+			    }
 			}
+		      else
+			spoton_misc::logError("spoton_neighbor::process0000(): "
+					      "computed message code does "
+					      "not match provided code.");
 		    }
-		  else
-		    spoton_misc::logError("spoton_neighbor::process0000(): "
-					  "computed message code does "
-					  "not match provided code.");
 		}
 	    }
 	}
@@ -1429,85 +1436,90 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	  return;
 	}
 
-      for(int i = 0; i < list.size(); i++)
-	list.replace(i, QByteArray::fromBase64(list.at(i)));
+      int count = spoton_misc::participantCount();
 
-      QByteArray message(list.value(9));
-      QByteArray messageCode(list.value(10));
-      QByteArray name(list.value(7));
-      QByteArray recipientHash(list.value(3));
-      QByteArray senderPublicKeyHash1(list.value(2));
-      QByteArray senderPublicKeyHash2(list.value(6));
-      QByteArray subject(list.value(8));
-      QByteArray symmetricKey1(list.value(0));
-      QByteArray symmetricKey2(list.value(4));
-      QByteArray symmetricKeyAlgorithm1(list.value(1));
-      QByteArray symmetricKeyAlgorithm2(list.value(5));
-
-      if(ok)
-	symmetricKey1 = s_crypt1->
-	  publicKeyDecrypt(symmetricKey1, &ok);
-
-      if(ok)
-	symmetricKeyAlgorithm1 = s_crypt1->
-	  publicKeyDecrypt(symmetricKeyAlgorithm1, &ok);
-
-      QByteArray publicKey;
-      QByteArray publicKeyHash;
-
-      if(ok)
+      if(count > 0)
 	{
-	  spoton_crypt crypt(symmetricKeyAlgorithm1,
-			     QString("sha512"),
-			     QByteArray(),
-			     symmetricKey1,
-			     0,
-			     0,
-			     QString(""));
+	  for(int i = 0; i < list.size(); i++)
+	    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-	  recipientHash = crypt.decrypted(recipientHash, &ok);
+	  QByteArray message(list.value(9));
+	  QByteArray messageCode(list.value(10));
+	  QByteArray name(list.value(7));
+	  QByteArray recipientHash(list.value(3));
+	  QByteArray senderPublicKeyHash1(list.value(2));
+	  QByteArray senderPublicKeyHash2(list.value(6));
+	  QByteArray subject(list.value(8));
+	  QByteArray symmetricKey1(list.value(0));
+	  QByteArray symmetricKey2(list.value(4));
+	  QByteArray symmetricKeyAlgorithm1(list.value(1));
+	  QByteArray symmetricKeyAlgorithm2(list.value(5));
 
 	  if(ok)
-	    publicKey = s_crypt1->publicKey(&ok);
+	    symmetricKey1 = s_crypt1->
+	      publicKeyDecrypt(symmetricKey1, &ok);
 
 	  if(ok)
-	    publicKeyHash = spoton_crypt::sha512Hash(publicKey, &ok);
+	    symmetricKeyAlgorithm1 = s_crypt1->
+	      publicKeyDecrypt(symmetricKeyAlgorithm1, &ok);
+
+	  QByteArray publicKey;
+	  QByteArray publicKeyHash;
 
 	  if(ok)
-	    senderPublicKeyHash1 = crypt.decrypted
-	      (senderPublicKeyHash1, &ok);
-	}
+	    {
+	      spoton_crypt crypt(symmetricKeyAlgorithm1,
+				 QString("sha512"),
+				 QByteArray(),
+				 symmetricKey1,
+				 0,
+				 0,
+				 QString(""));
 
-      if(ok)
-	if(publicKeyHash == recipientHash)
-	  {
-	    /*
-	    ** This is our letter! Please remember that the message
-	    ** may have been encrypted via a goldbug.
-	    */
+	      recipientHash = crypt.decrypted(recipientHash, &ok);
 
-	    storeLetter(symmetricKey2,
-			symmetricKeyAlgorithm2,
-			senderPublicKeyHash2,
-			name,
-			subject,
-			message,
-			messageCode,
-			"0001a");
-	    return;
-	  }
+	      if(ok)
+		publicKey = s_crypt1->publicKey(&ok);
 
-      if(ok)
-	{
-	  if(spoton_kernel::s_settings.value("gui/postoffice_enabled",
-					     false).toBool())
-	    if(spoton_misc::isAcceptedParticipant(recipientHash))
-	      if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
+	      if(ok)
+		publicKeyHash = spoton_crypt::sha512Hash(publicKey, &ok);
+
+	      if(ok)
+		senderPublicKeyHash1 = crypt.decrypted
+		  (senderPublicKeyHash1, &ok);
+	    }
+
+	  if(ok)
+	    if(publicKeyHash == recipientHash)
+	      {
 		/*
-		** Store the letter in the post office!
+		** This is our letter! Please remember that the message
+		** may have been encrypted via a goldbug.
 		*/
 
-		storeLetter(list, recipientHash);
+		storeLetter(symmetricKey2,
+			    symmetricKeyAlgorithm2,
+			    senderPublicKeyHash2,
+			    name,
+			    subject,
+			    message,
+			    messageCode,
+			    "0001a");
+		return;
+	      }
+
+	  if(ok)
+	    {
+	      if(spoton_kernel::s_settings.value("gui/postoffice_enabled",
+						 false).toBool())
+		if(spoton_misc::isAcceptedParticipant(recipientHash))
+		  if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
+		    /*
+		    ** Store the letter in the post office!
+		    */
+
+		    storeLetter(list, recipientHash);
+	    }
 	}
 
       if(ttl > 0)
@@ -1590,43 +1602,48 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 	  return;
 	}
 
-      for(int i = 0; i < list.size(); i++)
-	list.replace(i, QByteArray::fromBase64(list.at(i)));
+      int count = spoton_misc::participantCount();
 
-      QByteArray message(list.value(5));
-      QByteArray messageCode(list.value(6));
-      QByteArray name(list.value(3));
-      QByteArray publicKeyHash(list.value(2));
-      QByteArray subject(list.value(4));
-      QByteArray symmetricKey(list.value(0));
-      QByteArray symmetricKeyAlgorithm(list.value(1));
+      if(count > 0)
+	{
+	  for(int i = 0; i < list.size(); i++)
+	    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      if(ok)
-	symmetricKey = s_crypt->
-	  publicKeyDecrypt(symmetricKey, &ok);
+	  QByteArray message(list.value(5));
+	  QByteArray messageCode(list.value(6));
+	  QByteArray name(list.value(3));
+	  QByteArray publicKeyHash(list.value(2));
+	  QByteArray subject(list.value(4));
+	  QByteArray symmetricKey(list.value(0));
+	  QByteArray symmetricKeyAlgorithm(list.value(1));
 
-      if(ok)
-	symmetricKeyAlgorithm = s_crypt->
-	  publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
+	  if(ok)
+	    symmetricKey = s_crypt->
+	      publicKeyDecrypt(symmetricKey, &ok);
 
-      if(ok)
-	publicKeyHash = s_crypt->
-	  publicKeyDecrypt(publicKeyHash, &ok);
+	  if(ok)
+	    symmetricKeyAlgorithm = s_crypt->
+	      publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
 
-      if(ok)
-	/*
-	** This may be our letter! Please remember that the message
-	** may have been encrypted via a goldbug.
-	*/
+	  if(ok)
+	    publicKeyHash = s_crypt->
+	      publicKeyDecrypt(publicKeyHash, &ok);
 
-	storeLetter(symmetricKey,
-		    symmetricKeyAlgorithm,
-		    publicKeyHash,
-		    name,
-		    subject,
-		    message,
-		    messageCode,
-		    "0001b");
+	  if(ok)
+	    /*
+	    ** This may be our letter! Please remember that the message
+	    ** may have been encrypted via a goldbug.
+	    */
+
+	    storeLetter(symmetricKey,
+			symmetricKeyAlgorithm,
+			publicKeyHash,
+			name,
+			subject,
+			message,
+			messageCode,
+			"0001b");
+	}
 
       if(ttl > 0)
 	if(!ok ||
@@ -1707,82 +1724,87 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 	  return;
 	}
 
-      for(int i = 0; i < list.size(); i++)
-	list.replace(i, QByteArray::fromBase64(list.at(i)));
+      int count = spoton_misc::participantCount();
 
-      /*
-      ** We must do some sort of thinking.
-      ** Remember, we may receive multiple mail requests. And we may
-      ** have many letters for the requesting parties. How should
-      ** we retrieve the letters in a timely, yet functional, manner?
-      */
-
-      QByteArray messageCode(list.value(4));
-      QByteArray publicKeyHash(list.value(2));
-      QByteArray signature(list.value(3));
-      QByteArray symmetricKey(list.value(0));
-      QByteArray symmetricKeyAlgorithm(list.value(1));
-
-      if(ok)
-	symmetricKey = s_crypt->
-	  publicKeyDecrypt(symmetricKey, &ok);
-
-      if(ok)
-	symmetricKeyAlgorithm = s_crypt->
-	  publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
-
-      if(ok)
-	publicKeyHash = s_crypt->
-	  publicKeyDecrypt(publicKeyHash, &ok);
-
-      if(ok)
+      if(count > 0)
 	{
-	  spoton_crypt crypt(symmetricKeyAlgorithm,
-			     QString("sha512"),
-			     QByteArray(),
-			     symmetricKey,
-			     0,
-			     0,
-			     QString(""));
-
-	  signature = crypt.decrypted(signature, &ok);
-	}
-
-      if(ok)
-	{
-	  QByteArray computedMessageCode
-	    (spoton_crypt::keyedHash(publicKeyHash +
-				     list.value(3),
-				     symmetricKey,
-				     "sha512",
-				     &ok));
+	  for(int i = 0; i < list.size(); i++)
+	    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
 	  /*
-	  ** Let's not echo messages whose message codes are
-	  ** incompatible.
+	  ** We must do some sort of thinking.
+	  ** Remember, we may receive multiple mail requests. And we may
+	  ** have many letters for the requesting parties. How should
+	  ** we retrieve the letters in a timely, yet functional, manner?
 	  */
+
+	  QByteArray messageCode(list.value(4));
+	  QByteArray publicKeyHash(list.value(2));
+	  QByteArray signature(list.value(3));
+	  QByteArray symmetricKey(list.value(0));
+	  QByteArray symmetricKeyAlgorithm(list.value(1));
+
+	  if(ok)
+	    symmetricKey = s_crypt->
+	      publicKeyDecrypt(symmetricKey, &ok);
+
+	  if(ok)
+	    symmetricKeyAlgorithm = s_crypt->
+	      publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
+
+	  if(ok)
+	    publicKeyHash = s_crypt->
+	      publicKeyDecrypt(publicKeyHash, &ok);
 
 	  if(ok)
 	    {
-	      if(computedMessageCode == messageCode)
-		{
-		  QByteArray messageCode
-		    (spoton_crypt::keyedHash(symmetricKey +
-					     symmetricKeyAlgorithm +
-					     publicKeyHash,
-					     symmetricKey,
-					     "sha512",
-					     &ok));
+	      spoton_crypt crypt(symmetricKeyAlgorithm,
+				 QString("sha512"),
+				 QByteArray(),
+				 symmetricKey,
+				 0,
+				 0,
+				 QString(""));
 
-		  if(ok)
-		    emit retrieveMail
-		      (messageCode,
-		       publicKeyHash, signature);
+	      signature = crypt.decrypted(signature, &ok);
+	    }
+
+	  if(ok)
+	    {
+	      QByteArray computedMessageCode
+		(spoton_crypt::keyedHash(publicKeyHash +
+					 list.value(3),
+					 symmetricKey,
+					 "sha512",
+					 &ok));
+
+	      /*
+	      ** Let's not echo messages whose message codes are
+	      ** incompatible.
+	      */
+
+	      if(ok)
+		{
+		  if(computedMessageCode == messageCode)
+		    {
+		      QByteArray messageCode
+			(spoton_crypt::keyedHash(symmetricKey +
+						 symmetricKeyAlgorithm +
+						 publicKeyHash,
+						 symmetricKey,
+						 "sha512",
+						 &ok));
+
+		      if(ok)
+			emit retrieveMail
+			  (messageCode,
+			   publicKeyHash, signature);
+		    }
+		  else
+		    spoton_misc::logError("spoton_neighbor::process0002(): "
+					  "computed message code does "
+					  "not match provided code.");
 		}
-	      else
-		spoton_misc::logError("spoton_neighbor::process0002(): "
-				      "computed message code does "
-				      "not match provided code.");
 	    }
 	}
 
@@ -1954,57 +1976,61 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 				     ** decrease the TTL!
 				     */
       QList<QByteArray> list(data.split('\n'));
+      int count = spoton_misc::participantCount();
 
-      if(list.size() == 2)
+      if(count > 0)
 	{
-	  /*
-	  ** Gemini?
-	  */
-
-	  for(int i = 0; i < list.size(); i++)
-	    list.replace(i, QByteArray::fromBase64(list.at(i)));
-
-	  QByteArray gemini
-	    (spoton_misc::findGeminiInCosmos(list.value(0), s_crypt));
-
-	  if(!gemini.isEmpty())
+	  if(list.size() == 2)
 	    {
-	      QByteArray computedMessageCode;
-	      QByteArray message(list.value(0));
-	      QByteArray messageCode(list.value(1));
-	      spoton_crypt crypt("aes256",
-				 QString("sha512"),
-				 QByteArray(),
-				 gemini,
-				 0,
-				 0,
-				 QString(""));
+	      /*
+	      ** Gemini?
+	      */
 
-	      computedMessageCode = crypt.keyedHash(message, &ok);
+	      for(int i = 0; i < list.size(); i++)
+		list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-	      if(ok)
+	      QByteArray gemini
+		(spoton_misc::findGeminiInCosmos(list.value(0), s_crypt));
+
+	      if(!gemini.isEmpty())
 		{
-		  if(computedMessageCode == messageCode)
+		  QByteArray computedMessageCode;
+		  QByteArray message(list.value(0));
+		  QByteArray messageCode(list.value(1));
+		  spoton_crypt crypt("aes256",
+				     QString("sha512"),
+				     QByteArray(),
+				     gemini,
+				     0,
+				     0,
+				     QString(""));
+
+		  computedMessageCode = crypt.keyedHash(message, &ok);
+
+		  if(ok)
 		    {
-		      message = crypt.decrypted(message, &ok);
-
-		      if(ok)
-			list = message.split('\n');
-
-		      if(list.size() != 6)
+		      if(computedMessageCode == messageCode)
 			{
-			  spoton_misc::logError
-			    (QString("spoton_neighbor::process0013(): "
-				     "received irregular data. Expecting 6 "
-				     "entries, "
-				     "received %1.").arg(list.size()));
-			  return;
+			  message = crypt.decrypted(message, &ok);
+
+			  if(ok)
+			    list = message.split('\n');
+
+			  if(list.size() != 6)
+			    {
+			      spoton_misc::logError
+				(QString("spoton_neighbor::process0013(): "
+					 "received irregular data. Expecting 6 "
+					 "entries, "
+					 "received %1.").arg(list.size()));
+			      return;
+			    }
 			}
+		      else
+			spoton_misc::logError("spoton_neighbor::process0013(): "
+					      "computed message code does "
+					      "not match provided code.");
 		    }
-		  else
-		    spoton_misc::logError("spoton_neighbor::process0013(): "
-					  "computed message code does "
-					  "not match provided code.");
 		}
 	    }
 	}
@@ -2018,79 +2044,82 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	  return;
 	}
 
-      for(int i = 0; i < list.size(); i++)
-	list.replace(i, QByteArray::fromBase64(list.at(i)));
-
-      QByteArray messageCode(list.value(5));
-      QByteArray name(list.value(3));
-      QByteArray publicKeyHash(list.value(2));
-      QByteArray status(list.value(4));
-      QByteArray symmetricKey(list.value(0));
-      QByteArray symmetricKeyAlgorithm(list.value(1));
-
-      if(ok)
-	symmetricKey = s_crypt->
-	  publicKeyDecrypt(symmetricKey, &ok);
-
-      if(ok)
-	symmetricKeyAlgorithm = s_crypt->
-	  publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
-
-      if(ok)
+      if(count > 0)
 	{
-	  spoton_crypt crypt(symmetricKeyAlgorithm,
-			     QString("sha512"),
-			     QByteArray(),
-			     symmetricKey,
-			     0,
-			     0,
-			     QString(""));
+	  for(int i = 0; i < list.size(); i++)
+	    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-	  publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
-	}
+	  QByteArray messageCode(list.value(5));
+	  QByteArray name(list.value(3));
+	  QByteArray publicKeyHash(list.value(2));
+	  QByteArray status(list.value(4));
+	  QByteArray symmetricKey(list.value(0));
+	  QByteArray symmetricKeyAlgorithm(list.value(1));
 
-      if(ok)
-	{
-	  QByteArray computedMessageCode
-	    (spoton_crypt::keyedHash(list.value(2) +
-				     list.value(3) +
-				     list.value(4),
-				     symmetricKey,
-				     "sha512",
-				     &ok));
+	  if(ok)
+	    symmetricKey = s_crypt->
+	      publicKeyDecrypt(symmetricKey, &ok);
 
-	  /*
-	  ** Let's not echo messages whose message codes are
-	  ** incompatible.
-	  */
+	  if(ok)
+	    symmetricKeyAlgorithm = s_crypt->
+	      publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
 
 	  if(ok)
 	    {
-	      if(computedMessageCode == messageCode)
-		{
-		  if(spoton_misc::isAcceptedParticipant(publicKeyHash))
-		    {
-		      spoton_crypt crypt(symmetricKeyAlgorithm,
-					 QString("sha512"),
-					 QByteArray(),
+	      spoton_crypt crypt(symmetricKeyAlgorithm,
+				 QString("sha512"),
+				 QByteArray(),
+				 symmetricKey,
+				 0,
+				 0,
+				 QString(""));
+
+	      publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
+	    }
+
+	  if(ok)
+	    {
+	      QByteArray computedMessageCode
+		(spoton_crypt::keyedHash(list.value(2) +
+					 list.value(3) +
+					 list.value(4),
 					 symmetricKey,
-					 0,
-					 0,
-					 QString(""));
+					 "sha512",
+					 &ok));
 
-		      name = crypt.decrypted(name, &ok);
+	      /*
+	      ** Let's not echo messages whose message codes are
+	      ** incompatible.
+	      */
 
-		      if(ok)
-			status = crypt.decrypted(status, &ok);
+	      if(ok)
+		{
+		  if(computedMessageCode == messageCode)
+		    {
+		      if(spoton_misc::isAcceptedParticipant(publicKeyHash))
+			{
+			  spoton_crypt crypt(symmetricKeyAlgorithm,
+					     QString("sha512"),
+					     QByteArray(),
+					     symmetricKey,
+					     0,
+					     0,
+					     QString(""));
 
-		      if(ok)
-			saveParticipantStatus(name, publicKeyHash, status);
+			  name = crypt.decrypted(name, &ok);
+
+			  if(ok)
+			    status = crypt.decrypted(status, &ok);
+
+			  if(ok)
+			    saveParticipantStatus(name, publicKeyHash, status);
+			}
 		    }
+		  else
+		    spoton_misc::logError("spoton_neighbor::process0013(): "
+					  "computed message code does "
+					  "not match provided code.");
 		}
-	      else
-		spoton_misc::logError("spoton_neighbor::process0013(): "
-				      "computed message code does "
-				      "not match provided code.");
 	    }
 	}
 

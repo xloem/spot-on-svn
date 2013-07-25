@@ -43,6 +43,9 @@ Completed Items
 28.    Depict listeners that support SSL.
 29.    Echo mode for listeners.
 30.    Reset keep-alive timers if valid data has been processed.
+31.    The kernel should behave as a pass-through device if
+       participants are not defined. However, it should emit
+       scrambled messages if necessary.
 
 Remaining Items
 

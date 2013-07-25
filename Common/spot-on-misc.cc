@@ -1654,3 +1654,31 @@ void spoton_misc::enableLog(const bool state)
 {
   s_enableLog = state;
 }
+
+int spoton_misc::participantCount(void)
+{
+  QString connectionName("");
+  int count = 0;
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName(homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	if(query.exec("SELECT COUNT(*) FROM "
+		      "friends_public_keys"))
+	  if(query.next())
+	    count = query.value(0).toInt();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  return count;
+}
