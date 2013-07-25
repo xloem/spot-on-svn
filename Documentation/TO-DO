@@ -52,7 +52,8 @@ Remaining Items
 4.     Prioritize keep-alive messages.
 5.     Use super-secure memory?
 6.     Allow for other ciphers besides AES for e-mail.
-7.     Can we establish session keys on the Echo?
+7.     Can we establish session keys on the Echo? Calling feature to
+       limit PKI.
 8.     E-mail retrieval may fail if a node is disconnected because of
        a lifetime expiration.
 9.     Country flags and names for hostnames.
@@ -62,64 +63,8 @@ Remaining Items
 12.    Complete max. Neighbors fields.
 13.    CGI for listeners.
 14.    Auto-clear textedit widgets that contain too much data.
-15.    Hard kernel termination. Session separation.
+15.    Hard kernel termination. Control session separation.
 16.    Colorful HTTP headers.
 17.    Custom protocol messages for rapid redeployment.
-18.    Calling feature to limit PKI.
-19.    Customize expiration timers.
-
-Ideas
-       Add a database for the temporary chat keys of connected neighbors.
-
-       Settings tab needs a side splitter for more settings such as: deny-get,
-       deny-put.
-
-       Fetching of new neighbors needs to be automated.
-
-       Automatic fetching needs a checkbox.
-
-       Add one listener before the kernel can be activated?
-
-       When listeners are only used as servers, add the name of the IRC
-       channel. Listeners are always servers.
-
-       Messages from channel nodes need to mirror all incoming messages to all
-       connected neighbors with an UUID for that channel.
-
-       Neighbors need names.
-
-       Be sure that the sticky of a neighbor is not the IP but the
-       UUID. DHT.
-
-       Search requires three radio buttons for file, hash, and URL.
-
-       Provide a means of filtering messages for the channel concept.
-
-       The Participants table needs to contain friends and connected
-       neighbors.
-
-       Provide a means of filtering messages in chat.
-
-       Spot-On as a plugin.
-
-       Do not hide the OID column? The OID is always available. It is
-       an internal database field.
-
-       The kernel's server port is not standard. It's fine.
-
-       Adding new neighbors creates new local ports. As defined.
-
-       May need GET and PUT messages and denial of those.
-
-       WebKit to retrieve a Web site, convert it to ascii and post as
-       e-mail.
-
-       Micro blog with f2f turtle hopping with new UUID.
-
-       Check box column in the Participants table to broadcast
-       own IP information to friends.
-
-       Check box in Neighbors tab to connect only to friends.
-       Other: hybrid f2f and p2p.
-
-       Settings tab: option to override my external IP and port?
+18.    Customize expiration timers.
+19.    Improve kernel congestion cache.
