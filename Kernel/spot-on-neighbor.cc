@@ -1351,7 +1351,7 @@ void spoton_neighbor::process0000
 	}
 
       if(ttl > 0)
-	if(!ok ||
+	if(count == 0 || !ok ||
 	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
 	  {
 	    if(isDuplicateMessage(originalData))
@@ -1523,7 +1523,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	}
 
       if(ttl > 0)
-	if(!ok ||
+	if(count == 0 || !ok ||
 	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
 	  {
 	    if(isDuplicateMessage(originalData))
@@ -1646,7 +1646,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 	}
 
       if(ttl > 0)
-	if(!ok ||
+	if(count == 0 || !ok ||
 	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
 	  {
 	    if(isDuplicateMessage(originalData))
@@ -1809,7 +1809,7 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 	}
 
       if(ttl > 0)
-	if(!ok ||
+	if(count == 0 || !ok ||
 	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
 	  {
 	    if(isDuplicateMessage(originalData))
@@ -2124,7 +2124,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	}
 
       if(ttl > 0)
-	if(!ok ||
+	if(count == 0 || !ok ||
 	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
 	  {
 	    if(isDuplicateMessage(originalData))
