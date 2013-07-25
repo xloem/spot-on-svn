@@ -1121,9 +1121,9 @@ void spoton_kernel::connectSignalsToNeighbor
 	  m_guiServer,
 	  SLOT(slotReceivedChatMessage(const QByteArray &)));
   connect(neighbor,
-	  SIGNAL(receivedChatMessage(const QByteArray &)),
+	  SIGNAL(scrambleRequest(void)),
 	  this,
-	  SLOT(slotReceivedChatMessage(void)));
+	  SLOT(slotRequestScramble(void)));
   connect(neighbor,
 	  SIGNAL(publicizeListenerPlaintext(const QByteArray &,
 					    const qint64)),
@@ -1138,12 +1138,6 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SIGNAL(receivedChatMessage(const QByteArray &,
 				     const qint64,
 				     const spoton_send::spoton_send_method)));
-  connect(neighbor,
-	  SIGNAL(receivedChatMessage(const QByteArray &,
-				     const qint64,
-				     const spoton_send::spoton_send_method)),
-	  this,
-	  SLOT(slotReceivedChatMessage(void)));
   connect(neighbor,
 	  SIGNAL(receivedMailMessage(const QByteArray &,
 				     const QString &,
@@ -2130,7 +2124,7 @@ void spoton_kernel::slotPublicizeListenerPlaintext(const qint64 oid)
 				      listener->externalPort());
 }
 
-void spoton_kernel::slotReceivedChatMessage(void)
+void spoton_kernel::slotRequestScramble(void)
 {
   /*
   ** Send a scrambled message in proximity of a received message.

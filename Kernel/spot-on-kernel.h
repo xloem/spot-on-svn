@@ -104,7 +104,7 @@ class spoton_kernel: public QObject
 				   const QString &messageType);
   void slotPublicizeAllListenersPlaintext(void);
   void slotPublicizeListenerPlaintext(const qint64 oid);
-  void slotReceivedChatMessage(void);
+  void slotRequestScramble(void);
   void slotRetrieveMail(void);
   void slotScramble(void);
   void slotSendMail(const QByteArray &goldbug,

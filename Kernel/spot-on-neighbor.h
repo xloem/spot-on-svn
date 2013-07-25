@@ -199,6 +199,7 @@ class spoton_neighbor: public QSslSocket
 		    const QByteArray &publicKeyHash,
 		    const QByteArray &signature);
   void retrieveMail(const QByteArray &data, const qint64 id);
+  void scrambleRequest(void);
 };
 
 #endif
