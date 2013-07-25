@@ -61,6 +61,7 @@ class spoton_misc
 				   const QSqlDatabase &db);
   static void cleanupDatabases(void);
   static void correctSettingsContainer(QHash<QString, QVariant> settings);
+  static void enableLog(const bool state);
   static void logError(const QString &error);
   static void moveSentMailToSentFolder(const QList<qint64> &oids,
 				       spoton_crypt *crypt);
@@ -83,6 +84,7 @@ class spoton_misc
 				    spoton_crypt *crypt);
 
  private:
+  static bool s_enableLog;
   static qint64 s_dbId;
   spoton_misc(void);
 };

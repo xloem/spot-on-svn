@@ -49,6 +49,7 @@ extern "C"
 }
 #endif
 
+bool spoton_misc::s_enableLog = false;
 qint64 spoton_misc::s_dbId = 0;
 
 QString spoton_misc::homePath(void)
@@ -349,6 +350,9 @@ void spoton_misc::prepareDatabases(void)
 
 void spoton_misc::logError(const QString &error)
 {
+  if(!s_enableLog)
+    return;
+
   if(error.trimmed().isEmpty())
     return;
 
@@ -1631,4 +1635,9 @@ QSqlDatabase spoton_misc::database(QString &connectionName)
     ("QSQLITE", QString("spoton_database_%1").arg(s_dbId));
   connectionName = db.connectionName();
   return db;
+}
+
+void spoton_misc::enableLog(const bool state)
+{
+  s_enableLog = state;
 }

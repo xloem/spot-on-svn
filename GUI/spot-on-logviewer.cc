@@ -54,10 +54,19 @@ spoton_logviewer::spoton_logviewer(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotClear(void)));
+  connect(ui.actionEnable_Log,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotEnableLog(bool)));
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTimeout(void)));
+
+  QSettings settings;
+
+  ui.actionEnable_Log->setChecked(settings.value("gui/guiLogEvents",
+						 false).toBool());
   m_timer.start(2500);
   slotSetIcons();
 }
@@ -175,3 +184,12 @@ bool spoton_logviewer::event(QEvent *event)
 }
 #endif
 #endif
+
+void spoton_logviewer::slotEnableLog(bool state)
+{
+  spoton_misc::enableLog(state);
+
+  QSettings settings;
+
+  settings.setValue("gui/guiLogEvents", state);
+}

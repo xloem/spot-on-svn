@@ -57,6 +57,7 @@ class spoton_logviewer: public QMainWindow
  private slots:
   void slotClear(void);
   void slotClose(void);
+  void slotEnableLog(bool state);
   void slotSetIcons(void);
   void slotTimeout(void);
 };

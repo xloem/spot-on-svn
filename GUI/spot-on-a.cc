@@ -428,6 +428,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotSuperEcho(bool)));
+  connect(m_ui.kernelLogEvents,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotKernelLogEvents(bool)));
   connect(m_ui.proxy,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -672,6 +676,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/hideOfflineParticipants", false).toBool());
   m_ui.keepOnlyUserDefinedNeighbors->setChecked
     (m_settings.value("gui/keepOnlyUserDefinedNeighbors", false).toBool());
+  m_ui.kernelLogEvents->setChecked
+    (m_settings.value("gui/kernelLogEvents", false).toBool());
   m_ui.postofficeCheckBox->setChecked
     (m_settings.value("gui/postoffice_enabled", false).toBool());
   m_ui.publishPeriodically->setChecked
@@ -4024,4 +4030,13 @@ int spoton::listenerSslKeySize(const QString &oid,
       }
 
   return key.length();
+}
+
+void spoton::slotKernelLogEvents(bool state)
+{
+  m_settings["gui/kernelLogEvents"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/kernelLogEvents", state);
 }

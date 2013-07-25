@@ -136,8 +136,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1197</width>
-                <height>542</height>
+                <width>452</width>
+                <height>409</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2485,6 +2485,20 @@
                     </widget>
                    </item>
                    <item>
+                    <widget class="QCheckBox" name="kernelLogEvents">
+                     <property name="text">
+                      <string>&amp;Log Events</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="Line" name="line_2">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QLabel" name="label_34">
                      <property name="text">
                       <string>&amp;SSL Key Size</string>
@@ -3501,6 +3515,7 @@
   <tabstop>cost</tabstop>
   <tabstop>scrambler</tabstop>
   <tabstop>superEcho</tabstop>
+  <tabstop>kernelLogEvents</tabstop>
   <tabstop>kernelKeySize</tabstop>
   <tabstop>cipherType</tabstop>
   <tabstop>hashType</tabstop>

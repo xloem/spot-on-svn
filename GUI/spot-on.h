@@ -202,6 +202,7 @@ class spoton: public QMainWindow
   void slotKeepCopy(bool state);
   void slotKeepOnlyUserDefinedNeighbors(bool state);
   void slotKernelKeySizeChanged(const QString &text);
+  void slotKernelLogEvents(bool state);
   void slotKernelSocketError(QAbstractSocket::SocketError error);
   void slotKernelSocketSslErrors(const QList<QSslError> &errors);
   void slotKernelSocketState(void);

@@ -1050,6 +1050,8 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
       (s_settings.value("gui/congestionCost", 10000).toInt());
 
   spoton_misc::correctSettingsContainer(s_settings);
+  spoton_misc::enableLog
+    (s_settings.value("gui/kernelLogEvents", false).toBool());
 
   if(s_settings.value("gui/publishPeriodically", false).toBool())
     {
