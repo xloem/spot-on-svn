@@ -628,7 +628,7 @@ void spoton_neighbor::slotReadyRead(void)
 		 contentLength.indexOf("Content-Length: ") +
 		 strlen("Content-Length: "));
 	      length = contentLength.mid(0, contentLength.indexOf("\r\n")).
-		toInt();
+		toInt(); // toInt() failure returns zero.
 	    }
 	  else
 	    spoton_misc::logError

@@ -251,7 +251,18 @@ void spoton_listener::slotTimeout(void)
 		    if(isListening())
 		      {
 			if(query.value(1).toInt() != maxPendingConnections())
-			  setMaxPendingConnections(query.value(1).toInt());
+			  {
+			    int maximumPendingConnections = query.value(1).
+			      toInt();
+
+			    if(!maximumPendingConnections)
+			      maximumPendingConnections = 1;
+			    else if(maximumPendingConnections % 5 != 0)
+			      maximumPendingConnections = 1;
+
+			    setMaxPendingConnections
+			      (maximumPendingConnections);
+			  }
 		      }
 		  }
 		else if(status == "offline")

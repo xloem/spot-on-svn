@@ -815,7 +815,12 @@ void spoton::slotPopulateCountries(void)
 						fromBase64(query.
 							   value(1).
 							   toByteArray()),
-						&ok).toInt();
+						&ok).toInt(); /*
+							      ** toInt()
+							      ** failure
+							      ** returns
+							      ** zero.
+							      */
 
 		if(ok)
 		  {

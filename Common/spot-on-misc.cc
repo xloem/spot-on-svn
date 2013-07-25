@@ -743,7 +743,10 @@ bool spoton_misc::countryAllowedToConnect(const QString &country,
 					 fromBase64(query.
 						    value(0).
 						    toByteArray()),
-					 &ok).toInt();
+					 &ok).toInt(); /*
+						       ** toInt() failure
+						       ** returns zero.
+						       */
       }
 
     db.close();
@@ -1484,9 +1487,19 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	    QByteArray publicKey;
 	    QSettings settings;
 	    QString error("");
+	    int keySize = 2048;
 
+	    keySize = settings.value
+	      ("gui/publishedKeySize", "2048").toInt(&ok);
+
+	    if(!ok)
+	      keySize = 2048;
+	    else if(!(keySize == 2048 || keySize == 3072 || keySize == 4096))
+	      keySize = 2048;
+
+	    ok = true;
 	    spoton_crypt::generateSslKeys
-	      (settings.value("gui/publishedKeySize", "2048").toInt(),
+	      (keySize,
 	       certificate,
 	       privateKey,
 	       publicKey,

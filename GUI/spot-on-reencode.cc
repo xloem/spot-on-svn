@@ -257,7 +257,12 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 					       fromBase64(query.
 							  value(1).
 							  toByteArray()),
-					       &ok).toInt();
+					       &ok).toInt(); /*
+							     ** toInt()
+							     ** failure
+							     ** returns
+							     ** zero.
+							     */
 
 	      if(ok)
 		updateQuery.bindValue

@@ -35,6 +35,8 @@
 #include <QSqlRecord>
 #include <QtCore/qmath.h>
 
+#include <limits>
+
 extern "C"
 {
 #include "libSpotOn/libspoton.h"
@@ -492,14 +494,27 @@ void spoton_kernel::prepareListeners(void)
 			}
 
 		      if(list.size() == 4)
-			listener = new spoton_listener
-			  (list.value(0).constData(),
-			   list.value(1).constData(),
-			   list.value(2).constData(),
-			   query.value(5).toInt(),
-			   id,
-			   list.value(3).constData(),
-			   this);
+			{
+			  int maximumClients = query.value(5).toInt();
+
+			  if(!maximumClients)
+			    maximumClients = 1;
+			  else if(maximumClients !=
+				  std::numeric_limits<int>::max())
+			    {
+			      if(maximumClients % 5 != 0)
+				maximumClients = 1;
+			    }
+
+			  listener = new spoton_listener
+			    (list.value(0).constData(),
+			     list.value(1).constData(),
+			     list.value(2).constData(),
+			     maximumClients,
+			     id,
+			     list.value(3).constData(),
+			     this);
+			}
 
 		      if(listener)
 			{
@@ -599,8 +614,12 @@ void spoton_kernel::prepareNeighbors(void)
 			  list.append(userDefined);
 			else if(i == 11 || // maximum_buffer_size
 				i == 12)   // maximum_content_length
-			  list.append
-			    (query.value(i).toInt());
+			  {
+			    if(i == 1)
+			      list.append(131072);
+			    else
+			      list.append(65536);
+			  }
 			else
 			  {
 			    QByteArray bytes;
@@ -1042,16 +1061,16 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
     s_settings[settings.allKeys().at(i)] = settings.value
       (settings.allKeys().at(i));
 
+  spoton_misc::correctSettingsContainer(s_settings);
+  spoton_misc::enableLog
+    (s_settings.value("gui/kernelLogEvents", false).toBool());
+
   if(!s_settings.value("gui/enableCongestionControl", false).toBool())
     s_messagingCache.clear();
   else if(s_messagingCache.maxCost() !=
 	  s_settings.value("gui/congestionCost", 10000).toInt())
     s_messagingCache.setMaxCost
       (s_settings.value("gui/congestionCost", 10000).toInt());
-
-  spoton_misc::correctSettingsContainer(s_settings);
-  spoton_misc::enableLog
-    (s_settings.value("gui/kernelLogEvents", false).toBool());
 
   if(s_settings.value("gui/publishPeriodically", false).toBool())
     {
