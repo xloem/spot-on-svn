@@ -239,7 +239,8 @@ spoton_kernel::spoton_kernel(void):QObject(0)
       (settings.allKeys().at(i));
 
   spoton_misc::correctSettingsContainer(s_settings);
-
+  spoton_misc::enableLog
+    (s_settings.value("gui/kernelLogEvents", false).toBool());
   s_messagingCache.setMaxCost
     (s_settings.value("gui/congestionCost", 10000).toInt());
 

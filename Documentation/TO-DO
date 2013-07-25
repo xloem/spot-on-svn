@@ -55,7 +55,7 @@ Remaining Items
 7.     Can we establish session keys on the Echo? Calling feature to
        limit PKI.
 8.     E-mail retrieval may fail if a node is disconnected because of
-       a lifetime expiration.
+       a lifetime expiration. Other communications may fail too.
 9.     Country flags and names for hostnames.
 10.    Monitor kernel health from the UI.
        See spoton::slotGeneralTimerTimeout().
@@ -68,3 +68,5 @@ Remaining Items
 17.    Custom protocol messages for rapid redeployment.
 18.    Customize expiration timers.
 19.    Improve kernel congestion cache.
+20.    Include external IP addresses in listener certificates.
+21.    Provide a total silent mode.

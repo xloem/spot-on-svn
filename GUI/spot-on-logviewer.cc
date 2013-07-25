@@ -67,6 +67,7 @@ spoton_logviewer::spoton_logviewer(void):QMainWindow()
 
   ui.actionEnable_Log->setChecked(settings.value("gui/guiLogEvents",
 						 false).toBool());
+  spoton_misc::enableLog(ui.actionEnable_Log->isChecked());
   m_timer.start(2500);
   slotSetIcons();
 }
