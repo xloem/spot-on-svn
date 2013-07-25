@@ -1531,10 +1531,17 @@ void spoton::slotPopulateListeners(void)
 			  (query.value(12).toString(), db);
 
 			if(keySize == -1)
-			  item = new QTableWidgetItem("0");
+			  {
+			    item = new QTableWidgetItem("0");
+			    item->setBackground
+			      (QBrush(QColor("red")));
+			  }
 			else
-			  item = new QTableWidgetItem
-			    (QString::number(keySize));
+			  {
+			    item = new QTableWidgetItem
+			      (QString::number(keySize));
+			    item->setBackground(QBrush());
+			  }
 		      }
 		    else if(i == 10)
 		      {
@@ -1706,12 +1713,12 @@ void spoton::slotPopulateNeighbors(void)
 	QString remoteIp("");
 	QString remotePort("");
 	QString scopeId("");
-	int columnCOUNTRY = 8;
-	int columnPROXY_IP = 13;
-	int columnPROXY_PORT = 14;
-	int columnREMOTE_IP = 9;
-	int columnREMOTE_PORT = 10;
-	int columnSCOPE_ID = 11;
+	int columnCOUNTRY = 9;
+	int columnPROXY_IP = 14;
+	int columnPROXY_PORT = 15;
+	int columnREMOTE_IP = 10;
+	int columnREMOTE_PORT = 11;
+	int columnSCOPE_ID = 12;
 	int hval = m_ui.neighbors->horizontalScrollBar()->value();
 	int row = -1;
 	int vval = m_ui.neighbors->verticalScrollBar()->value();
@@ -1754,7 +1761,7 @@ void spoton::slotPopulateNeighbors(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT sticky, uuid, status, "
+	if(query.exec("SELECT sticky, uuid, status, private_key, "
 		      "status_control, "
 		      "local_ip_address, local_port, "
 		      "external_ip_address, external_port, "
@@ -1814,10 +1821,10 @@ void spoton::slotPopulateNeighbors(void)
 			  active += 1;
 		      }
 
-		    if(i == 1 ||
-		       i == 6 || (i >= 8 && i <= 11) || (i >= 13 &&
-							 i <= 14) ||
-		       i == 17)
+		    if(i == 1 || i == 3 ||
+		       i == 7 || (i >= 9 && i <= 12) || (i >= 14 &&
+							 i <= 15) ||
+		       i == 18)
 		      {
 			if(query.value(i).isNull())
 			  item = new QTableWidgetItem();
@@ -1839,8 +1846,26 @@ void spoton::slotPopulateNeighbors(void)
 				  bytes =
 				    "{00000000-0000-0000-0000-000000000000}";
 			      }
+			    else if(i == 3) // SSL Key Size
+			      {
+				QSslKey key(bytes, QSsl::Rsa);
 
-			    item = new QTableWidgetItem(bytes.constData());
+				if(key.length() == -1)
+				  {
+				    item = new QTableWidgetItem("0");
+				    item->setBackground
+				      (QBrush(QColor("red")));
+				  }
+				else
+				  {
+				    item = new QTableWidgetItem
+				      (QString::number(key.length()));
+				    item->setBackground(QBrush());
+				  }
+			      }
+
+			    if(i != 3) // SSL Key Size
+			      item = new QTableWidgetItem(bytes.constData());
 			  }
 		      }
 		    else
@@ -3151,7 +3176,7 @@ void spoton::slotBlockNeighbor(void)
   if((row = m_ui.neighbors->currentRow()) >= 0)
     {
       QTableWidgetItem *item = m_ui.neighbors->item
-	(row, 9); // Remote IP Address
+	(row, 10); // Remote IP Address
 
       if(item)
 	remoteIp = item->text();
@@ -3231,7 +3256,7 @@ void spoton::slotUnblockNeighbor(void)
   if((row = m_ui.neighbors->currentRow()) >= 0)
     {
       QTableWidgetItem *item = m_ui.neighbors->item
-	(row, 9); // Remote IP Address
+	(row, 10); // Remote IP Address
 
       if(item)
 	remoteIp = item->text();
