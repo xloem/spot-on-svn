@@ -2311,7 +2311,11 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 
 	      if(!spoton_misc::isPrivateNetwork(address))
 		{
-		  quint16 port = list.value(1).toUShort();
+		  quint16 port = list.value(1).toUShort(); /*
+							   ** toUShort()
+							   ** returns zero
+							   ** on failure.
+							   */
 
 		  spoton_misc::savePublishedNeighbor
 		    (address, port, statusControl,s_crypt);

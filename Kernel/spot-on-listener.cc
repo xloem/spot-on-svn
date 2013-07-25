@@ -683,7 +683,12 @@ void spoton_listener::slotNewConnection(void)
 
 		      if(b1 == neighbor->peerAddress().toString() &&
 			 b2.toUShort() == neighbor->peerPort() &&
-			 b3 == neighbor->peerAddress().scopeId())
+			 b3 == neighbor->peerAddress().scopeId()) /*
+								  ** toUShort()
+								  ** returns
+								  ** zero on
+								  ** failure.
+								  */
 			{
 			  id = query.value(0).toLongLong();
 			  break;

@@ -663,7 +663,11 @@ void spoton_kernel::prepareNeighbors(void)
 			      proxy.setPassword(list.value(5).toByteArray().
 						constData());
 			      proxy.setPort(list.value(6).toByteArray().
-					    toUShort());
+					    toUShort()); /*
+							 ** toUShort()
+							 ** returns zero
+							 ** on failure.
+							 */
 
 			      if(list.value(7) == "HTTP")
 				proxy.setType(QNetworkProxy::HttpProxy);
