@@ -1276,101 +1276,102 @@ void spoton_neighbor::process0000
 	  return;
 	}
 
-      if(count > 0)
-	{
-	  for(int i = 0; i < list.size(); i++)
-	    list.replace(i, QByteArray::fromBase64(list.at(i)));
+      if(list.size() == 6)
+	if(count > 0)
+	  {
+	    for(int i = 0; i < list.size(); i++)
+	      list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-	  QByteArray message(list.value(4));
-	  QByteArray messageCode(list.value(5));
-	  QByteArray name(list.value(3));
-	  QByteArray publicKeyHash(list.value(2));
-	  QByteArray symmetricKey(list.value(0));
-	  QByteArray symmetricKeyAlgorithm(list.value(1));
+	    QByteArray message(list.value(4));
+	    QByteArray messageCode(list.value(5));
+	    QByteArray name(list.value(3));
+	    QByteArray publicKeyHash(list.value(2));
+	    QByteArray symmetricKey(list.value(0));
+	    QByteArray symmetricKeyAlgorithm(list.value(1));
 
-	  if(ok)
-	    symmetricKey = s_crypt->
-	      publicKeyDecrypt(symmetricKey, &ok);
+	    if(ok)
+	      symmetricKey = s_crypt->
+		publicKeyDecrypt(symmetricKey, &ok);
 
-	  if(ok)
-	    symmetricKeyAlgorithm = s_crypt->
-	      publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
+	    if(ok)
+	      symmetricKeyAlgorithm = s_crypt->
+		publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
 
-	  if(ok)
-	    {
-	      spoton_crypt crypt(symmetricKeyAlgorithm,
-				 QString("sha512"),
-				 QByteArray(),
+	    if(ok)
+	      {
+		spoton_crypt crypt(symmetricKeyAlgorithm,
+				   QString("sha512"),
+				   QByteArray(),
+				   symmetricKey,
+				   0,
+				   0,
+				   QString(""));
+
+		publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
+	      }
+
+	    if(ok)
+	      {
+		if(spoton_misc::isAcceptedParticipant(publicKeyHash))
+		  {
+		    QByteArray computedMessageCode
+		      (spoton_crypt::
+		       keyedHash(list.value(2) + // Sender's Sha-512 Hash
+				 list.value(3) + // Name
+				 list.value(4),  // Message
 				 symmetricKey,
-				 0,
-				 0,
-				 QString(""));
+				 "sha512",
+				 &ok));
 
-	      publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
-	    }
+		    /*
+		    ** Let's not echo messages whose message codes
+		    ** are incompatible.
+		    */
 
-	  if(ok)
-	    {
-	      if(spoton_misc::isAcceptedParticipant(publicKeyHash))
-		{
-		  QByteArray computedMessageCode
-		    (spoton_crypt::
-		     keyedHash(list.value(2) + // Sender's Sha-512 Hash
-			       list.value(3) + // Name
-			       list.value(4),  // Message
-			       symmetricKey,
-			       "sha512",
-			       &ok));
+		    if(ok)
+		      {
+			if(computedMessageCode == messageCode)
+			  {
+			    spoton_crypt crypt(symmetricKeyAlgorithm,
+					       QString("sha512"),
+					       QByteArray(),
+					       symmetricKey,
+					       0,
+					       0,
+					       QString(""));
 
-		  /*
-		  ** Let's not echo messages whose message codes
-		  ** are incompatible.
-		  */
+			    message = crypt.decrypted(message, &ok);
 
-		  if(ok)
-		    {
-		      if(computedMessageCode == messageCode)
-			{
-			  spoton_crypt crypt(symmetricKeyAlgorithm,
-					     QString("sha512"),
-					     QByteArray(),
-					     symmetricKey,
-					     0,
-					     0,
-					     QString(""));
+			    if(ok)
+			      name = crypt.decrypted(name, &ok);
 
-			  message = crypt.decrypted(message, &ok);
+			    if(ok)
+			      {
+				QByteArray hash
+				  (s_crypt->
+				   keyedHash(originalData, &ok));
 
-			  if(ok)
-			    name = crypt.decrypted(name, &ok);
+				saveParticipantStatus(name, publicKeyHash);
 
-			  if(ok)
-			    {
-			      QByteArray hash
-				(s_crypt->
-				 keyedHash(originalData, &ok));
-
-			      saveParticipantStatus(name, publicKeyHash);
-
-			      if(!hash.isEmpty() &&
-				 !message.isEmpty() &&
-				 !name.isEmpty())
-				emit receivedChatMessage
-				  ("message_" +
-				   hash.toBase64() + "_" +
-				   name.toBase64() + "_" +
-				   message.toBase64().append('\n'));
-			    }
-			}
-		      else
-			spoton_misc::logError("spoton_neighbor::"
-					      "process0000(): "
-					      "computed message code does "
-					      "not match provided code.");
-		    }
-		}
-	    }
-	}
+				if(!hash.isEmpty() &&
+				   !message.isEmpty() &&
+				   !name.isEmpty())
+				  emit receivedChatMessage
+				    ("message_" +
+				     hash.toBase64() + "_" +
+				     name.toBase64() + "_" +
+				     message.toBase64().append('\n'));
+			      }
+			  }
+			else
+			  spoton_misc::logError("spoton_neighbor::"
+						"process0000(): "
+						"computed message code does "
+						"not match provided code.");
+		      }
+		  }
+	      }
+	  }
 
       resetKeepAlive();
 
@@ -2012,9 +2013,9 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
       QList<QByteArray> list(data.split('\n'));
       int count = spoton_misc::participantCount();
 
-      if(count > 0)
+      if(list.size() == 2)
 	{
-	  if(list.size() == 2)
+	  if(count > 0)
 	    {
 	      /*
 	      ** Gemini?
@@ -2080,84 +2081,81 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	  return;
 	}
 
-      if(count > 0)
-	{
-	  for(int i = 0; i < list.size(); i++)
-	    list.replace(i, QByteArray::fromBase64(list.at(i)));
+      if(list.size() == 6)
+	if(count > 0)
+	  {
+	    for(int i = 0; i < list.size(); i++)
+	      list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-	  QByteArray messageCode(list.value(5));
-	  QByteArray name(list.value(3));
-	  QByteArray publicKeyHash(list.value(2));
-	  QByteArray status(list.value(4));
-	  QByteArray symmetricKey(list.value(0));
-	  QByteArray symmetricKeyAlgorithm(list.value(1));
+	    QByteArray messageCode(list.value(5));
+	    QByteArray name(list.value(3));
+	    QByteArray publicKeyHash(list.value(2));
+	    QByteArray status(list.value(4));
+	    QByteArray symmetricKey(list.value(0));
+	    QByteArray symmetricKeyAlgorithm(list.value(1));
 
-	  if(ok)
-	    symmetricKey = s_crypt->
-	      publicKeyDecrypt(symmetricKey, &ok);
+	    if(ok)
+	      symmetricKey = s_crypt->
+		publicKeyDecrypt(symmetricKey, &ok);
 
-	  if(ok)
-	    symmetricKeyAlgorithm = s_crypt->
-	      publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
+	    if(ok)
+	      symmetricKeyAlgorithm = s_crypt->
+		publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
 
-	  if(ok)
-	    {
-	      spoton_crypt crypt(symmetricKeyAlgorithm,
-				 QString("sha512"),
-				 QByteArray(),
-				 symmetricKey,
-				 0,
-				 0,
-				 QString(""));
+	    if(ok)
+	      {
+		spoton_crypt crypt(symmetricKeyAlgorithm,
+				   QString("sha512"),
+				   QByteArray(),
+				   symmetricKey,
+				   0,
+				   0,
+				   QString(""));
 
-	      publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
-	    }
+		publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
+	      }
 
-	  if(ok)
-	    {
-	      QByteArray computedMessageCode
-		(spoton_crypt::keyedHash(list.value(2) +
-					 list.value(3) +
-					 list.value(4),
-					 symmetricKey,
-					 "sha512",
-					 &ok));
+	    if(ok)
+	      {
+		QByteArray computedMessageCode
+		  (spoton_crypt::keyedHash(list.value(2) +
+					   list.value(3) +
+					   list.value(4),
+					   symmetricKey,
+					   "sha512",
+					   &ok));
 
-	      /*
-	      ** Let's not echo messages whose message codes are
-	      ** incompatible.
-	      */
+		if(ok)
+		  {
+		    if(computedMessageCode == messageCode)
+		      {
+			if(spoton_misc::isAcceptedParticipant(publicKeyHash))
+			  {
+			    spoton_crypt crypt(symmetricKeyAlgorithm,
+					       QString("sha512"),
+					       QByteArray(),
+					       symmetricKey,
+					       0,
+					       0,
+					       QString(""));
 
-	      if(ok)
-		{
-		  if(computedMessageCode == messageCode)
-		    {
-		      if(spoton_misc::isAcceptedParticipant(publicKeyHash))
-			{
-			  spoton_crypt crypt(symmetricKeyAlgorithm,
-					     QString("sha512"),
-					     QByteArray(),
-					     symmetricKey,
-					     0,
-					     0,
-					     QString(""));
+			    name = crypt.decrypted(name, &ok);
 
-			  name = crypt.decrypted(name, &ok);
+			    if(ok)
+			      status = crypt.decrypted(status, &ok);
 
-			  if(ok)
-			    status = crypt.decrypted(status, &ok);
-
-			  if(ok)
-			    saveParticipantStatus(name, publicKeyHash, status);
-			}
-		    }
-		  else
-		    spoton_misc::logError("spoton_neighbor::process0013(): "
-					  "computed message code does "
-					  "not match provided code.");
-		}
-	    }
-	}
+			    if(ok)
+			      saveParticipantStatus
+				(name, publicKeyHash, status);
+			  }
+		      }
+		    else
+		      spoton_misc::logError("spoton_neighbor::process0013(): "
+					    "computed message code does "
+					    "not match provided code.");
+		  }
+	      }
+	  }
 
       resetKeepAlive();
 
