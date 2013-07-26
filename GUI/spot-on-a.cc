@@ -4030,8 +4030,13 @@ int spoton::listenerSslKeySize(const QString &oid,
 	    key = QSslKey(privateKey, QSsl::Rsa);
 	    localCertificate = QSslCertificate(certificate);
 
+#if QT_VERSION < 0x050000
 	    if(!localCertificate.isValid())
 	      key = QSslKey();
+#else
+	    if(localCertificate.isNull())
+	      key = QSslKey();
+#endif
 	  }
       }
 

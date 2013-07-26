@@ -75,7 +75,13 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 
       configuration.setLocalCertificate(QSslCertificate(certificate));
 
-      if(configuration.localCertificate().isValid())
+      if(
+#if QT_VERSION < 0x050000
+	 configuration.localCertificate().isValid()
+#else
+	 !configuration.localCertificate().isNull()
+#endif
+	 )
 	{
 	  configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
 	  configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
