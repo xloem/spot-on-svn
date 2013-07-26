@@ -79,7 +79,7 @@ class spoton_listener_tcp_server: public QTcpServer
   qint64 m_id;
 
  signals:
-  void newConnection(void);
+  void newConnection(const QByteArray &privateKey);
 };
 
 class spoton_listener: public spoton_listener_tcp_server
@@ -119,7 +119,7 @@ class spoton_listener: public spoton_listener_tcp_server
   void slotDiscoverExternalAddress(void);
   void slotExternalAddressDiscovered(const QHostAddress &address);
   void slotNeighborDisconnected(void);
-  void slotNewConnection(void);
+  void slotNewConnection(const QByteArray &privateKey);
   void slotTimeout(void);
 
  signals:
