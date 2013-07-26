@@ -931,7 +931,10 @@ void spoton_neighbor::slotSendMessage(const QByteArray &data)
 	spoton_misc::logError
 	  ("spoton_neighbor::slotSendMessage(): write() error.");
       else
-	flush();
+	{
+	  flush();
+	  resetKeepAlive();
+	}
     }
 }
 
@@ -963,7 +966,10 @@ void spoton_neighbor::slotReceivedBuzzMessage
 	      ("spoton_neighbor::slotReceivedBuzzMessage(): write() "
 	       "error.");
 	  else
-	    flush();
+	    {
+	      flush();
+	      resetKeepAlive();
+	    }
 	}
 }
 
@@ -989,7 +995,10 @@ void spoton_neighbor::slotReceivedChatMessage
 	      ("spoton_neighbor::slotReceivedChatMessage(): write() "
 	       "error.");
 	  else
-	    flush();
+	    {
+	      flush();
+	      resetKeepAlive();
+	    }
 	}
 }
 
@@ -1019,7 +1028,10 @@ void spoton_neighbor::slotReceivedMailMessage(const QByteArray &data,
 	      ("spoton_neighbor::slotReceivedMailMessage(): write() "
 	       "error.");
 	  else
-	    flush();
+	    {
+	      flush();
+	      resetKeepAlive();
+	    }
 	}
 }
 
@@ -1043,7 +1055,10 @@ void spoton_neighbor::slotReceivedStatusMessage(const QByteArray &data,
 	      ("spoton_neighbor::slotReceivedStatusMessage(): write() "
 	       "error.");
 	  else
-	    flush();
+	    {
+	      flush();
+	      resetKeepAlive();
+	    }
 	}
 }
 
@@ -1067,7 +1082,10 @@ void spoton_neighbor::slotRetrieveMail(const QByteArray &data,
 	      ("spoton_neighbor::slotRetrieveMail(): write() "
 	       "error.");
 	  else
-	    flush();
+	    {
+	      flush();
+	      resetKeepAlive();
+	    }
 	}
 }
 
@@ -1112,6 +1130,7 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
   else
     {
       flush();
+      resetKeepAlive();
 
       QString connectionName("");
 
@@ -1231,14 +1250,16 @@ void spoton_neighbor::process0000
 			    {
 			      spoton_misc::logError
 				(QString("spoton_neighbor::process0000(): "
-					 "received irregular data. Expecting 6 "
+					 "received irregular data. "
+					 "Expecting 6 "
 					 "entries, "
 					 "received %1.").arg(list.size()));
 			      return;
 			    }
 			}
 		      else
-			spoton_misc::logError("spoton_neighbor::process0000(): "
+			spoton_misc::logError("spoton_neighbor::"
+					      "process0000(): "
 					      "computed message code does "
 					      "not match provided code.");
 		    }
@@ -1342,13 +1363,16 @@ void spoton_neighbor::process0000
 			    }
 			}
 		      else
-			spoton_misc::logError("spoton_neighbor::process0000(): "
+			spoton_misc::logError("spoton_neighbor::"
+					      "process0000(): "
 					      "computed message code does "
 					      "not match provided code.");
 		    }
 		}
 	    }
 	}
+
+      resetKeepAlive();
 
       if(spoton_kernel::s_settings.value("gui/scramblerEnabled",
 					 false).toBool())
@@ -1375,8 +1399,6 @@ void spoton_neighbor::process0000
 	    originalData.prepend(c);
 	    emit receivedChatMessage(originalData, m_id, sendMethod);
 	  }
-
-      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -1528,6 +1550,8 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	    }
 	}
 
+      resetKeepAlive();
+
       if(ttl > 0)
 	if(count == 0 || !ok ||
 	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
@@ -1549,8 +1573,6 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	    originalData.prepend(c);
 	    emit receivedMailMessage(originalData, "0001a", m_id);
 	  }
-
-      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -1653,6 +1675,8 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 			"0001b");
 	}
 
+      resetKeepAlive();
+
       if(ttl > 0)
 	if(count == 0 || !ok ||
 	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
@@ -1674,8 +1698,6 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 	    originalData.prepend(c);
 	    emit receivedMailMessage(originalData, "0001b", m_id);
 	  }
-
-      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -1818,6 +1840,8 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 	    }
 	}
 
+      resetKeepAlive();
+
       if(ttl > 0)
 	if(count == 0 || !ok ||
 	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
@@ -1839,8 +1863,6 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 	    originalData.prepend(c);
 	    emit retrieveMail(originalData, m_id);
 	  }
-
-      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -2032,14 +2054,16 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 			    {
 			      spoton_misc::logError
 				(QString("spoton_neighbor::process0013(): "
-					 "received irregular data. Expecting 6 "
+					 "received irregular data. "
+					 "Expecting 6 "
 					 "entries, "
 					 "received %1.").arg(list.size()));
 			      return;
 			    }
 			}
 		      else
-			spoton_misc::logError("spoton_neighbor::process0013(): "
+			spoton_misc::logError("spoton_neighbor::"
+					      "process0013(): "
 					      "computed message code does "
 					      "not match provided code.");
 		    }
@@ -2135,6 +2159,8 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	    }
 	}
 
+      resetKeepAlive();
+
       if(ttl > 0)
 	if(count == 0 || !ok ||
 	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
@@ -2156,8 +2182,6 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	    originalData.prepend(c);
 	    emit receivedStatusMessage(originalData, m_id);
 	  }
-
-      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -2263,12 +2287,12 @@ void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
 
       if(data == "0")
 	{
+	  m_lastReadTime = QDateTime::currentDateTime();
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0015(): received "
 		     "keep-alive from %1:%2. Resetting time object.").
 	     arg(peerAddress().isNull() ? peerName() :
 		 peerAddress().toString()).arg(peerPort()));
-	  resetKeepAlive();
 	}
       else
 	spoton_misc::logError
@@ -2366,6 +2390,8 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 	    }
 	}
 
+      resetKeepAlive();
+
       if(ttl > 0)
 	{
 	  if(isDuplicateMessage(originalData))
@@ -2383,8 +2409,6 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 	  originalData.prepend(c);
 	  emit publicizeListenerPlaintext(originalData, m_id);
 	}
-
-      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -2454,6 +2478,8 @@ void spoton_neighbor::process0040a
       else
 	emit receivedBuzzMessage(list, "0040a");
 
+      resetKeepAlive();
+
       if(ttl > 0)
 	{
 	  if(isDuplicateMessage(originalData))
@@ -2471,8 +2497,6 @@ void spoton_neighbor::process0040a
 	  originalData.prepend(c);
 	  emit receivedBuzzMessage(originalData, "0040a", m_id, sendMethod);
 	}
-
-      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -2542,6 +2566,8 @@ void spoton_neighbor::process0040b
       else
 	emit receivedBuzzMessage(list, "0040b");
 
+      resetKeepAlive();
+
       if(ttl > 0)
 	{
 	  if(isDuplicateMessage(originalData))
@@ -2559,8 +2585,6 @@ void spoton_neighbor::process0040b
 	  originalData.prepend(c);
 	  emit receivedBuzzMessage(originalData, "0040b", m_id, sendMethod);
 	}
-
-      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -2581,7 +2605,10 @@ void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
 	    ("spoton_neighbor::slotSendStatus(): write() "
 	     "error.");
 	else
-	  flush();
+	  {
+	    flush();
+	    resetKeepAlive();
+	  }
       }
 }
 
@@ -2717,7 +2744,10 @@ void spoton_neighbor::slotSendUuid(void)
 	spoton_misc::logError
 	  ("spoton_neighbor::slotSendUuid(): write() error.");
       else
-	flush();
+	{
+	  flush();
+	  resetKeepAlive();
+	}
     }
   else
     spoton_misc::logError("spoton_neighbor::slotSendUuid(): "
@@ -2819,7 +2849,10 @@ void spoton_neighbor::slotSendKeepAlive(void)
 	  ("spoton_neighbor::slotSendKeepAlive(): write() "
 	   "error.");
       else
-	flush();
+	{
+	  flush();
+	  resetKeepAlive();
+	}
     }
 }
 
@@ -2849,6 +2882,7 @@ void spoton_neighbor::slotSendMail
 	  {
 	    flush();
 	    oids.append(pair.second);
+	    resetKeepAlive();
 	  }
       }
 
@@ -2874,7 +2908,10 @@ void spoton_neighbor::slotSendMailFromPostOffice(const QByteArray &data)
 	  ("spoton_neighbor::slotSendMailFromPostOffice(): write() "
 	   "error.");
       else
-	flush();
+	{
+	  flush();
+	  resetKeepAlive();
+	}
     }
 }
 
@@ -3160,7 +3197,10 @@ void spoton_neighbor::slotRetrieveMail(const QList<QByteArray> &list)
 	    ("spoton_neighbor::slotRetrieveMail(): write() "
 	     "error.");
 	else
-	  flush();
+	  {
+	    flush();
+	    resetKeepAlive();
+	  }
       }
 }
 
@@ -3196,7 +3236,10 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
 	    ("spoton_neighbor::slotPublicizeListenerPlaintext(): write() "
 	     "error.");
 	else
-	  flush();
+	  {
+	    flush();
+	    resetKeepAlive();
+	  }
       }
 }
 
@@ -3220,7 +3263,10 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 	      ("spoton_neighbor::slotPublicizeListenerPlaintext(): write() "
 	       "error.");
 	  else
-	    flush();
+	    {
+	      flush();
+	      resetKeepAlive();
+	    }
 	}
 }
 
@@ -3369,7 +3415,10 @@ void spoton_neighbor::slotSendBuzz(const QByteArray &data)
 	spoton_misc::logError
 	  ("spoton_neighbor::slotSendBuzz(): write() error.");
       else
-	flush();
+	{
+	  flush();
+	  resetKeepAlive();
+	}
     }
 }
 
