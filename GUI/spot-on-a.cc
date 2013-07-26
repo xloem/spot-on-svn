@@ -110,6 +110,9 @@ spoton::spoton(void):QMainWindow()
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
   setAttribute(Qt::WA_MacMetalStyle, true);
+#else
+  m_ui.passphrase1->setEchoMode(QLineEdit::NoEcho);
+  m_ui.passphrase2->setEchoMode(QLineEdit::NoEcho);
 #endif
 #endif
   m_sbWidget = new QWidget(this);
@@ -3652,7 +3655,10 @@ void spoton::slotPopulateParticipants(void)
 			  (rowE - 1, i - 1, item->clone());
 		    }
 		  else if(i == 5)
-		    item->setFlags(item->flags() | Qt::ItemIsEditable);
+		    {
+		      if(!temporary)
+			item->setFlags(item->flags() | Qt::ItemIsEditable);
+		    }
 
 		  item->setData(Qt::UserRole, temporary);
 
