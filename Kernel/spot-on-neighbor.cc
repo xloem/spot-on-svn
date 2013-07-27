@@ -1270,6 +1270,8 @@ void spoton_neighbor::process0000
 					      "not match provided code.");
 		    }
 		}
+	      else
+		ok = false; // A gemini was not discovered. We need to echo.
 	    }
 	}
       else if(list.size() != 6)
@@ -2075,6 +2077,8 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 					      "not match provided code.");
 		    }
 		}
+	      else
+		ok = false; // A gemini was not discovered. We need to echo.
 	    }
 	}
       else if(list.size() != 6)
