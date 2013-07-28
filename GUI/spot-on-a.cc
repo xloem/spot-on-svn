@@ -4061,4 +4061,11 @@ void spoton::slotModeChanged(QSslSocket::SslMode mode)
   spoton_misc::logError(QString("spoton::slotModeChanged(): "
 				"the connection mode has changed to %1.").
 			arg(mode));
+
+  if(mode == QSslSocket::UnencryptedMode)
+    {
+      spoton_misc::logError("spoton::slotModeChanged(): "
+			    "plaintext mode. Disconnecting kernel socket.");
+      m_kernelSocket.abort();
+    }
 }
