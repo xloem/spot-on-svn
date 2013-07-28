@@ -248,10 +248,9 @@ void spoton::slotReceivedKernelMessage(void)
 		  m_messagingCacheMutex.lock();
 
 		  if(m_messagingCache.contains(hash))
-		    {
-		      m_messagingCache[hash] = QDateTime::currentDateTime();
-		      duplicate = true;
-		    }
+		    duplicate = true;
+		  else
+		    m_messagingCache[hash] = QDateTime::currentDateTime();
 
 		  m_messagingCacheMutex.unlock();
 
