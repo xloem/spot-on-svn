@@ -2,7 +2,8 @@
 
 1.   Listen for SSL mode changes on kernel sockets.
 2.   Abort plaintext kernel sockets.
-3.   Increased messaging cache costs of the UI to 10000.
+3.   Replaced messaging caches with hashes. Messages older than two
+     minutes shall be purged.
 
 0.01
 

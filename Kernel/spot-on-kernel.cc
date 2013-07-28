@@ -26,13 +26,17 @@
 */
 
 #include <QCoreApplication>
-#include <QDateTime>
 #include <QDir>
+#include <QMutexLocker>
 #include <QNetworkProxy>
 #include <QSettings>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlRecord>
+#if QT_VERSION >= 0x050000
+#include <QtConcurrent>
+#endif
+#include <QtCore>
 #include <QtCore/qmath.h>
 
 #include <limits>
@@ -70,9 +74,10 @@ extern "C"
 #include "spot-on-neighbor.h"
 #include "spot-on-shared-reader.h"
 
-QCache<QByteArray, int> spoton_kernel::s_messagingCache;
+QHash<QByteArray, QDateTime> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
+QMutex spoton_kernel::s_messagingCacheMutex;
 
 static void sig_handler(int signum)
 {
@@ -241,8 +246,6 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   spoton_misc::correctSettingsContainer(s_settings);
   spoton_misc::enableLog
     (s_settings.value("gui/kernelLogEvents", false).toBool());
-  s_messagingCache.setMaxCost
-    (s_settings.value("gui/congestionCost", 10000).toInt());
 
   QStringList arguments(QCoreApplication::arguments());
 
@@ -300,6 +303,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotPollDatabase(void)));
+  connect(&m_messagingCachePurgeTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotMessagingCachePurge(void)));
   connect(&m_publishAllListenersPlaintextTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -313,6 +320,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  this,
 	  SLOT(slotStatusTimerExpired(void)));
   m_controlDatabaseTimer.start(2500);
+  m_messagingCachePurgeTimer.setInterval(120000);
   m_publishAllListenersPlaintextTimer.setInterval(10 * 60 * 1000);
   m_statusTimer.start(15000);
   m_guiServer = new spoton_gui_server(this);
@@ -390,6 +398,13 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(fileChanged(const QString &)),
 	  this,
 	  SLOT(slotSettingsChanged(const QString &)));
+
+  if(s_settings.value("gui/enableCongestionControl", false).toBool())
+    {
+      s_messagingCache.reserve
+	(s_settings.value("gui/congestionCost", 10000).toInt());
+      m_messagingCachePurgeTimer.start();
+    }
 }
 
 spoton_kernel::~spoton_kernel()
@@ -768,7 +783,11 @@ void spoton_kernel::prepareNeighbors(void)
     }
 
   if(disconnected == m_neighbors.count())
-    s_messagingCache.clear();
+    {
+      s_messagingCacheMutex.lock();
+      s_messagingCache.clear();
+      s_messagingCacheMutex.unlock();
+    }
 }
 
 void spoton_kernel::checkForTermination(void)
@@ -1069,13 +1088,22 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
   spoton_misc::correctSettingsContainer(s_settings);
   spoton_misc::enableLog
     (s_settings.value("gui/kernelLogEvents", false).toBool());
+  s_messagingCacheMutex.lock();
 
   if(!s_settings.value("gui/enableCongestionControl", false).toBool())
-    s_messagingCache.clear();
-  else if(s_messagingCache.maxCost() !=
-	  s_settings.value("gui/congestionCost", 10000).toInt())
-    s_messagingCache.setMaxCost
+    {
+      m_messagingCachePurgeTimer.stop();
+      s_messagingCache.clear();
+    }
+  else
+    m_messagingCachePurgeTimer.start();
+
+  if(s_messagingCache.capacity() !=
+     s_settings.value("gui/congestionCost", 10000).toInt())
+    s_messagingCache.reserve
       (s_settings.value("gui/congestionCost", 10000).toInt());
+
+  s_messagingCacheMutex.unlock();
 
   if(s_settings.value("gui/publishPeriodically", false).toBool())
     {
@@ -2202,4 +2230,52 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &channel,
 					 spoton_send::NORMAL_POST));
 	}
     }
+}
+
+void spoton_kernel::slotMessagingCachePurge(void)
+{
+  if(m_future.isFinished())
+    m_future = QtConcurrent::run(this, &spoton_kernel::purgeMessagingCache);
+}
+
+void spoton_kernel::purgeMessagingCache(void)
+{
+  QDateTime now(QDateTime::currentDateTime());
+  int size = 0;
+
+  s_messagingCacheMutex.lock();
+  size = s_messagingCache.size();
+  s_messagingCacheMutex.unlock();
+
+  for(int i = size - 1; i >= 0; i--)
+    {
+      s_messagingCacheMutex.lock();
+
+      QDateTime value(s_messagingCache.value(s_messagingCache.keys().at(i)));
+
+      s_messagingCacheMutex.unlock();
+
+      if(value.secsTo(now) >= 120)
+	{
+	  size -= 1;
+	  s_messagingCacheMutex.lock();
+	  s_messagingCache.remove(s_messagingCache.keys().at(i));
+	  s_messagingCacheMutex.unlock();
+	}
+    }
+}
+
+bool spoton_kernel::messagingCacheContains(const QByteArray &hash)
+{
+  QMutexLocker locker(&s_messagingCacheMutex);
+
+  return s_messagingCache.contains(hash);
+}
+
+void spoton_kernel::messagingCacheAdd(const QByteArray &hash)
+{
+  QMutexLocker locker(&s_messagingCacheMutex);
+
+  if(!s_messagingCache.contains(hash))
+    s_messagingCache[hash] = QDateTime::currentDateTime();
 }

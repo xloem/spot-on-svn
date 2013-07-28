@@ -29,13 +29,14 @@
 #define _spoton_h_
 
 #include <QApplication>
-#include <QCache>
 #include <QCheckBox>
 #include <QClipboard>
 #include <QDateTime>
 #include <QDesktopServices>
 #include <QDir>
 #include <QFileDialog>
+#include <QFuture>
+#include <QHash>
 #include <QInputDialog>
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
@@ -44,6 +45,7 @@
 #endif
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QMutex>
 #ifdef Q_OS_WIN32
 #include <qt_windows.h>
 #include <QtNetwork>
@@ -106,16 +108,18 @@ class spoton: public QMainWindow
   static const int APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL = 2;
   static const int APPLY_GOLDBUG_TO_INBOX_ERROR_MEMORY = 3;
   QByteArray m_kernelSocketData;
-  QCache<QByteArray, char *> m_messagingCache; /*
-					       ** Prevent duplicate
-					       ** echoed messages.
-					       */
   QDateTime m_countriesLastModificationTime;
   QDateTime m_listenersLastModificationTime;
   QDateTime m_neighborsLastModificationTime;
   QDateTime m_participantsLastModificationTime;
+  QFuture<void> m_future;
+  QHash<QByteArray, QDateTime> m_messagingCache; /*
+						 ** Prevent duplicate
+						 ** echoed messages.
+						 */
   QHash<QString, QByteArray> m_buzzIds;
   QHash<QString, QVariant> m_settings;
+  QMutex m_messagingCacheMutex;
 #ifdef SPOTON_LINKED_WITH_LIBPHONON
 #if 0
   Phonon::MediaObject *m_mediaObject;
@@ -124,6 +128,7 @@ class spoton: public QMainWindow
   QSslSocket m_kernelSocket;
   QTimer m_buzzStatusTimer;
   QTimer m_generalTimer;
+  QTimer m_messagingCachePurgeTimer;
   QTimer m_tableTimer;
   QWidget *m_sbWidget;
   Ui_statusbar m_sb;
@@ -149,6 +154,7 @@ class spoton: public QMainWindow
   void highlightKernelPath(void);
   void initializeKernelSocket(void);
   void prepareListenerIPCombo(void);
+  void purgeMessagingCache(void);
   void saveKernelPath(const QString &path);
   void saveSettings(void);
   void sendKeysToKernel(void);
@@ -214,6 +220,7 @@ class spoton: public QMainWindow
   void slotMailSelected(QTableWidgetItem *item);
   void slotMailTabChanged(int index);
   void slotMaximumClientsChanged(int index);
+  void slotMessagingCachePurge(void);
   void slotModeChanged(QSslSocket::SslMode mode);
   void slotNeighborCheckChange(int state);
   void slotPopulateCountries(void);

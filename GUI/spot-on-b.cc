@@ -26,6 +26,10 @@
 */
 
 #include <QSslKey>
+#if QT_VERSION >= 0x050000
+#include <QtConcurrent>
+#endif
+#include <QtCore>
 
 #include "spot-on.h"
 #include "spot-on-buzzpage.h"
@@ -241,10 +245,15 @@ void spoton::slotReceivedKernelMessage(void)
 			 "hash failure. Using random bytes.");
 		    }
 
+		  m_messagingCacheMutex.lock();
+
 		  if(m_messagingCache.contains(hash))
-		    duplicate = true;
-		  else
-		    m_messagingCache.insert(hash, 0);
+		    {
+		      m_messagingCache[hash] = QDateTime::currentDateTime();
+		      duplicate = true;
+		    }
+
+		  m_messagingCacheMutex.unlock();
 
 		  if(duplicate)
 		    continue;
@@ -3634,4 +3643,37 @@ void spoton::initializeKernelSocket(void)
       (QString("spoton::"
 	       "initializeKernelSocket(): "
 	       "generateSslKeys() failure (%1).").arg(error.remove(".")));
+}
+
+void spoton::slotMessagingCachePurge(void)
+{
+  if(m_future.isFinished())
+    m_future = QtConcurrent::run(this, &spoton::purgeMessagingCache);
+}
+
+void spoton::purgeMessagingCache(void)
+{
+  QDateTime now(QDateTime::currentDateTime());
+  int size = 0;
+
+  m_messagingCacheMutex.lock();
+  size = m_messagingCache.size();
+  m_messagingCacheMutex.unlock();
+
+  for(int i = size - 1; i >= 0; i--)
+    {
+      m_messagingCacheMutex.lock();
+
+      QDateTime value(m_messagingCache.value(m_messagingCache.keys().at(i)));
+
+      m_messagingCacheMutex.unlock();
+
+      if(value.secsTo(now) >= 120)
+	{
+	  size -= 1;
+	  m_messagingCacheMutex.lock();
+	  m_messagingCache.remove(m_messagingCache.keys().at(i));
+	  m_messagingCacheMutex.unlock();
+	}
+    }
 }

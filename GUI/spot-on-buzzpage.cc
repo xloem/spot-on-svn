@@ -51,7 +51,6 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
       (spoton_common::BUZZ_MAXIMUM_ID_LENGTH / 2).toHex();
 
   m_kernelSocket = kernelSocket;
-  m_messagingCache.setMaxCost(10000);
   m_statusTimer.start(30000);
   ui.setupUi(this);
   connect(&m_statusTimer,
@@ -168,9 +167,12 @@ void spoton_buzzpage::appendMessage(const QByteArray &hash,
     return;
 
   if(m_messagingCache.contains(hash))
-    return;
+    {
+      m_messagingCache[hash] = QDateTime::currentDateTime();
+      return;
+    }
   else
-    m_messagingCache.insert(hash, 0);
+    m_messagingCache[hash] = QDateTime::currentDateTime();
 
   QByteArray name
     (list.value(0).mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());

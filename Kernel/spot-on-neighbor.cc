@@ -3299,8 +3299,7 @@ void spoton_neighbor::recordMessageHash(const QByteArray &data)
   if(!ok)
     return;
 
-  if(!spoton_kernel::s_messagingCache.contains(hash))
-    spoton_kernel::s_messagingCache.insert(hash, 0);
+  spoton_kernel::messagingCacheAdd(hash);
 }
 
 bool spoton_neighbor::isDuplicateMessage(const QByteArray &data)
@@ -3325,7 +3324,7 @@ bool spoton_neighbor::isDuplicateMessage(const QByteArray &data)
   if(!ok)
     return false;
 
-  return spoton_kernel::s_messagingCache.contains(hash);
+  return spoton_kernel::messagingCacheContains(hash);
 }
 
 void spoton_neighbor::slotSslErrors(const QList<QSslError> &errors)

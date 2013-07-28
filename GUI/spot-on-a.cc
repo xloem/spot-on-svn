@@ -81,7 +81,6 @@ spoton::spoton(void):QMainWindow()
   qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
   m_buzzStatusTimer.setInterval(15000);
-  m_messagingCache.setMaxCost(10000);
   m_crypt = 0;
   m_signatureCrypt = 0;
   m_countriesLastModificationTime = QDateTime();
@@ -456,6 +455,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotGeneralTimerTimeout(void)));
+  connect(&m_messagingCachePurgeTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotMessagingCachePurge(void)));
   connect(&m_tableTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -522,6 +525,7 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)), this, SLOT(slotCountriesToggleOn(void)));
   m_ui.countriesToggle->setMenu(menu);
   m_generalTimer.start(2500);
+  m_messagingCachePurgeTimer.start(120000);
   m_tableTimer.setInterval(2500);
   m_ui.ipv4Listener->setChecked(true);
   m_ui.listenerIP->setInputMask("000.000.000.000; ");
@@ -2004,7 +2008,9 @@ void spoton::slotPopulateNeighbors(void)
     }
   else
     {
+      m_messagingCacheMutex.lock();
       m_messagingCache.clear();
+      m_messagingCacheMutex.unlock();
       m_sb.neighbors->setIcon
 	(QIcon(QString(":/%1/status-offline.png").
 	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
@@ -2050,7 +2056,9 @@ void spoton::slotDeactivateKernel(void)
 
   libspoton_close(&libspotonHandle);
   m_kernelSocket.close();
+  m_messagingCacheMutex.lock();
   m_messagingCache.clear();
+  m_messagingCacheMutex.unlock();
 }
 
 void spoton::slotGeneralTimerTimeout(void)
@@ -3055,7 +3063,9 @@ void spoton::slotKernelSocketState(void)
     }
   else if(state == QAbstractSocket::UnconnectedState)
     {
+      m_messagingCacheMutex.lock();
       m_messagingCache.clear();
+      m_messagingCacheMutex.unlock();
       m_sb.kernelstatus->setIcon
 	(QIcon(QString(":/%1/deactivate.png").
 	       arg(m_settings.value("gui/iconSet", "nouve").toString())));

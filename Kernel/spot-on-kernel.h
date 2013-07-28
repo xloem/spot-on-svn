@@ -28,10 +28,11 @@
 #ifndef _spoton_kernel_h_
 #define _spoton_kernel_h_
 
-#include <QCache>
 #include <QFileSystemWatcher>
+#include <QFuture>
 #include <QHash>
 #include <QHostAddress>
+#include <QMutex>
 #include <QPointer>
 #include <QSqlDatabase>
 #include <QTimer>
@@ -52,7 +53,6 @@ class spoton_kernel: public QObject
  public:
   spoton_kernel(void);
   ~spoton_kernel();
-  static QCache<QByteArray, int> s_messagingCache;
   static QHash<QString, QVariant> s_settings;
   static QHash<QString, spoton_crypt *> s_crypts; /*
 						  ** private
@@ -60,18 +60,24 @@ class spoton_kernel: public QObject
 						  ** signature
 						  ** url
 						  */
+  static bool messagingCacheContains(const QByteArray &hash);
+  static void messagingCacheAdd(const QByteArray &hash);
 
  private:
   QFileSystemWatcher m_settingsWatcher;
+  QFuture<void> m_future;
   QHash<qint64, QPointer<spoton_listener> > m_listeners;
   QHash<qint64, QPointer<spoton_neighbor> > m_neighbors;
   QTimer m_controlDatabaseTimer;
+  QTimer m_messagingCachePurgeTimer;
   QTimer m_publishAllListenersPlaintextTimer;
   QTimer m_scramblerTimer;
   QTimer m_statusTimer;
   spoton_gui_server *m_guiServer;
   spoton_mailer *m_mailer;
   spoton_shared_reader *m_sharedReader;
+  static QHash<QByteArray, QDateTime> s_messagingCache;
+  static QMutex s_messagingCacheMutex;
   bool initializeSecurityContainers(const QString &passphrase);
   void checkForTermination(void);
   void cleanup(void);
@@ -81,6 +87,7 @@ class spoton_kernel: public QObject
   void connectSignalsToNeighbor(QPointer<spoton_neighbor> neighbor);
   void prepareListeners(void);
   void prepareNeighbors(void);
+  void purgeMessagingCache(void);
 
  private slots:
   void slotBuzzReceivedFromUI(const QByteArray &channel,
@@ -89,6 +96,7 @@ class spoton_kernel: public QObject
 			      const QByteArray &message,
 			      const QByteArray &sendMethod,
 			      const QString &messageType);
+  void slotMessagingCachePurge(void);
   void slotMessageReceivedFromUI(const qint64 oid,
 				 const QByteArray &name,
 				 const QByteArray &message);
