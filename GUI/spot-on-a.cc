@@ -484,6 +484,10 @@ spoton::spoton(void):QMainWindow()
 	  this,
 	  SLOT(slotKernelSocketError(QAbstractSocket::SocketError)));
   connect(&m_kernelSocket,
+	  SIGNAL(modeChanged(QSslSocket::SslMode)),
+	  this,
+	  SLOT(slotModeChanged(QSslSocket::SslMode)));
+  connect(&m_kernelSocket,
 	  SIGNAL(readyRead(void)),
 	  this,
 	  SLOT(slotReceivedKernelMessage(void)));
@@ -4050,4 +4054,11 @@ void spoton::slotKernelLogEvents(bool state)
   QSettings settings;
 
   settings.setValue("gui/kernelLogEvents", state);
+}
+
+void spoton::slotModeChanged(QSslSocket::SslMode mode)
+{
+  spoton_misc::logError(QString("spoton::slotModeChanged(): "
+				"the connection mode has changed to %1.").
+			arg(mode));
 }

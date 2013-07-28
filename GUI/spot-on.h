@@ -214,6 +214,7 @@ class spoton: public QMainWindow
   void slotMailSelected(QTableWidgetItem *item);
   void slotMailTabChanged(int index);
   void slotMaximumClientsChanged(int index);
+  void slotModeChanged(QSslSocket::SslMode mode);
   void slotNeighborCheckChange(int state);
   void slotPopulateCountries(void);
   void slotPopulateListeners(void);

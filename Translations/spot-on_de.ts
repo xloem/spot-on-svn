@@ -2153,32 +2153,37 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3357"/>
+        <location filename="../UI/controlcenter.ui" line="3321"/>
+        <source>Version 0.02</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/controlcenter.ui" line="3367"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3361"/>
+        <location filename="../UI/controlcenter.ui" line="3371"/>
         <source>&amp;Icons</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3383"/>
+        <location filename="../UI/controlcenter.ui" line="3393"/>
         <source>&amp;Documentation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3391"/>
+        <location filename="../UI/controlcenter.ui" line="3401"/>
         <source>Nuvola</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3399"/>
+        <location filename="../UI/controlcenter.ui" line="3409"/>
         <source>Nouve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3407"/>
+        <location filename="../UI/controlcenter.ui" line="3417"/>
         <source>Ctrl+L</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2266,7 +2271,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Spot-On Graphisches Benutzer Interface 1.00</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3404"/>
+        <location filename="../UI/controlcenter.ui" line="3414"/>
         <source>&amp;Log Viewer</source>
         <translation>Logbuch Ansicht</translation>
     </message>
@@ -2456,7 +2461,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Spot-On Graphical User Interface Version 1.00 - http://spot-on.sf.net</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3351"/>
+        <location filename="../UI/controlcenter.ui" line="3361"/>
         <source>&amp;File</source>
         <translation>Datei</translation>
     </message>
@@ -2465,12 +2470,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Bearbeiten</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3375"/>
+        <location filename="../UI/controlcenter.ui" line="3385"/>
         <source>&amp;Quit</source>
         <translation>Beenden</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3378"/>
+        <location filename="../UI/controlcenter.ui" line="3388"/>
         <source>Ctrl+Q</source>
         <translation></translation>
     </message>

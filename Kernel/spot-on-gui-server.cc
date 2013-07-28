@@ -60,6 +60,10 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
       QSslSocket *socket = new QSslSocket(this);
 
       socket->setSocketDescriptor(socketDescriptor);
+      connect(socket,
+	      SIGNAL(modeChanged(QSslSocket::SslMode)),
+	      this,
+	      SIGNAL(modeChanged(QSslSocket::SslMode)));
 
       QSslConfiguration configuration;
 
@@ -93,6 +97,10 @@ spoton_gui_server::spoton_gui_server(QObject *parent):
   spoton_gui_server_tcp_server(parent)
 {
   listen(QHostAddress("127.0.0.1"));
+  connect(this,
+	  SIGNAL(modeChanged(QSslSocket::SslMode)),
+	  this,
+	  SLOT(slotModeChanged(QSslSocket::SslMode)));
   connect(this,
 	  SIGNAL(newConnection(void)),
 	  this,
@@ -139,6 +147,10 @@ void spoton_gui_server::slotClientConnected(void)
 	      SIGNAL(disconnected(void)),
 	      this,
 	      SLOT(slotClientDisconnected(void)));
+      connect(socket,
+	      SIGNAL(modeChanged(QSslSocket::SslMode)),
+	      this,
+	      SLOT(slotModeChanged(QSslSocket::SslMode)));
       connect(socket,
 	      SIGNAL(readyRead(void)),
 	      this,
@@ -461,4 +473,11 @@ void spoton_gui_server::slotNewEMailArrived(void)
 	(QString("spoton_gui_server::slotNewEMailArrived(): "
 		 "port %1 not encrypted. Ignoring write() request.").
 	 arg(socket->localPort()));
+}
+
+void spoton_gui_server::slotModeChanged(QSslSocket::SslMode mode)
+{
+  spoton_misc::logError(QString("spoton_gui_server::slotModeChanged(): "
+				"the connection mode has changed to %1.").
+			arg(mode));
 }

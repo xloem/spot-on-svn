@@ -65,6 +65,7 @@ class spoton_gui_server_tcp_server: public QTcpServer
   QQueue<QSslSocket *> m_queue;
 
  signals:
+  void modeChanged(QSslSocket::SslMode mode);
   void newConnection(void);
 };
 
@@ -83,6 +84,7 @@ class spoton_gui_server: public spoton_gui_server_tcp_server
  private slots:
   void slotClientConnected(void);
   void slotClientDisconnected(void);
+  void slotModeChanged(QSslSocket::SslMode mode);
   void slotNewEMailArrived(void);
   void slotReadyRead(void);
   void slotReceivedBuzzMessage(const QList<QByteArray> &list,
