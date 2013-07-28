@@ -4,7 +4,7 @@
 2.   Abort plaintext kernel sockets.
 3.   Replaced messaging caches with hashes. Messages older than two
      minutes shall be purged.
-4.   Corrected compilation for Qt 4.6.3. Tested with Qt 4.6.4.
+4.   Removed support for Qt 4.6.x and older.
 
 0.01
 
