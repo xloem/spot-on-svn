@@ -1014,7 +1014,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 	  short ttl = s_settings.value
 	    ("kernel/ttl_0000", 16).toInt();
 
-	  memcpy(&c, static_cast<void *> (&ttl), 1);
+	  memcpy(&c, static_cast<const void *> (&ttl), 1);
 	  data.prepend(c);
 
 	  if(s_settings.value("gui/chatSendMethod",
@@ -1500,7 +1500,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		      short ttl = s_settings.value
 			("kernel/ttl_0013", 16).toInt();
 
-		      memcpy(&c, static_cast<void *> (&ttl), 1);
+		      memcpy(&c, static_cast<const void *> (&ttl), 1);
 		      data.prepend(c);
 		      list.append(data);
 		    }
@@ -1564,7 +1564,7 @@ void spoton_kernel::slotScramble(void)
       short ttl = s_settings.value
 	("kernel/ttl_0000", 16).toInt();
 
-      memcpy(&c, static_cast<void *> (&ttl), 1);
+      memcpy(&c, static_cast<const void *> (&ttl), 1);
       data.prepend(c);
 
       if(s_settings.value("gui/chatSendMethod",
@@ -1732,7 +1732,7 @@ void spoton_kernel::slotRetrieveMail(void)
 		  short ttl = s_settings.value
 		    ("kernel/ttl_0002", 16).toInt();
 
-		  memcpy(&c, static_cast<void *> (&ttl), 1);
+		  memcpy(&c, static_cast<const void *> (&ttl), 1);
 		  data.prepend(c);
 		  list.append(data);
 		}
@@ -2002,7 +2002,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		  short ttl = s_settings.value
 		    ("kernel/ttl_0001a", 16).toInt();
 
-		  memcpy(&c, static_cast<void *> (&ttl), 1);
+		  memcpy(&c, static_cast<const void *> (&ttl), 1);
 		  data.prepend(c);
 
 		  QPair<QByteArray, qint64> pair
@@ -2209,7 +2209,7 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &channel,
 	ttl = s_settings.value
 	  ("kernel/ttl_0040b", 16).toInt();
 
-      memcpy(&c, static_cast<void *> (&ttl), 1);
+      memcpy(&c, static_cast<const void *> (&ttl), 1);
 
       if(messageType == "0040a")
 	emit sendBuzz

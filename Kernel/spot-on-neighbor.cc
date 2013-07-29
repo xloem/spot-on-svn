@@ -34,6 +34,10 @@
 #include <QSslCipher>
 #include <QSslConfiguration>
 #include <QSslKey>
+#if QT_VERSION >= 0x050000
+#include <QtConcurrent>
+#endif
+#include <QtCore>
 #include <QtCore/qmath.h>
 
 #include <limits>
@@ -1292,136 +1296,179 @@ void spoton_neighbor::process0000
 	  return;
 	}
 
-      if(list.size() == 6)
-	if(count > 0)
-	  {
-	    for(int i = 0; i < list.size(); i++)
-	      list.replace(i, QByteArray::fromBase64(list.at(i)));
-
-	    QByteArray message(list.value(4));
-	    QByteArray messageCode(list.value(5));
-	    QByteArray name(list.value(3));
-	    QByteArray publicKeyHash(list.value(2));
-	    QByteArray symmetricKey(list.value(0));
-	    QByteArray symmetricKeyAlgorithm(list.value(1));
-
-	    if(ok)
-	      symmetricKey = s_crypt->
-		publicKeyDecrypt(symmetricKey, &ok);
-
-	    if(ok)
-	      symmetricKeyAlgorithm = s_crypt->
-		publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
-
-	    if(ok)
-	      {
-		spoton_crypt crypt(symmetricKeyAlgorithm,
-				   QString("sha512"),
-				   QByteArray(),
-				   symmetricKey,
-				   0,
-				   0,
-				   QString(""));
-
-		publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
-	      }
-
-	    if(ok)
-	      {
-		if(spoton_misc::isAcceptedParticipant(publicKeyHash))
-		  {
-		    QByteArray computedMessageCode
-		      (spoton_crypt::
-		       keyedHash(list.value(2) + // Sender's Sha-512 Hash
-				 list.value(3) + // Name
-				 list.value(4),  // Message
-				 symmetricKey,
-				 "sha512",
-				 &ok));
-
-		    /*
-		    ** Let's not echo messages whose message codes
-		    ** are incompatible.
-		    */
-
-		    if(ok)
-		      {
-			if(computedMessageCode == messageCode)
-			  {
-			    spoton_crypt crypt(symmetricKeyAlgorithm,
-					       QString("sha512"),
-					       QByteArray(),
-					       symmetricKey,
-					       0,
-					       0,
-					       QString(""));
-
-			    message = crypt.decrypted(message, &ok);
-
-			    if(ok)
-			      name = crypt.decrypted(name, &ok);
-
-			    if(ok)
-			      {
-				QByteArray hash
-				  (s_crypt->
-				   keyedHash(originalData, &ok));
-
-				saveParticipantStatus(name, publicKeyHash);
-
-				if(!hash.isEmpty() &&
-				   !message.isEmpty() &&
-				   !name.isEmpty())
-				  emit receivedChatMessage
-				    ("message_" +
-				     hash.toBase64() + "_" +
-				     name.toBase64() + "_" +
-				     message.toBase64().append('\n'));
-			      }
-			  }
-			else
-			  spoton_misc::logError("spoton_neighbor::"
-						"process0000(): "
-						"computed message code does "
-						"not match provided code.");
-		      }
-		  }
-	      }
-	  }
-
       resetKeepAlive();
 
       if(spoton_kernel::s_settings.value("gui/scramblerEnabled",
 					 false).toBool())
 	emit scrambleRequest();
 
-      if(ttl > 0)
-	if(count == 0 || !ok ||
-	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
-	  {
-	    if(!spoton_kernel::s_settings.value("gui/superEcho",
-						false).toBool())
-	      if(isDuplicateMessage(originalData))
-		return;
+      QList<QVariant> variants;
 
-	    recordMessageHash(originalData);
-
-	    /*
-	    ** Replace TTL.
-	    */
-
-	    char c = 0;
-
-	    memcpy(&c, static_cast<void *> (&ttl), 1);
-	    originalData.prepend(c);
-	    emit receivedChatMessage(originalData, m_id, sendMethod);
-	  }
+      variants << spoton_kernel::s_settings.value
+	("gui/superEcho", false).toBool();
+      variants << count;
+      variants << ttl;
+      variants << int(sendMethod);
+      QtConcurrent::run
+	(this,
+	 &spoton_neighbor::process0000t,
+	 originalData,
+	 list,
+	 variants);
     }
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0000(): 0000 "
 	       "content-length mismatch (advertised: %1, received: %2).").
        arg(length).arg(data.length()));
+}
+
+void spoton_neighbor::process0000t
+(QByteArray &originalData,
+ QList<QByteArray> &list,
+ const QList<QVariant> &variants)
+{
+  spoton_crypt *s_crypt = new spoton_crypt
+    (spoton_kernel::s_settings.value("gui/cipherType",
+				     "aes256").
+     toString().trimmed(),
+     spoton_kernel::s_settings.value("gui/hashType",
+				     "sha512").
+     toString().trimmed(),
+     QByteArray::fromBase64(list.value(0)),
+     QByteArray::fromBase64(list.value(1)),
+     spoton_kernel::s_settings.value("gui/saltLength",
+				     256).toInt(),
+     spoton_kernel::s_settings.value("gui/iterationCount",
+				     10000).toInt(),
+     "messaging");
+
+  bool ok = true;
+  bool superEchoEnabled = variants.value(0).toBool();
+  int count = variants.value(1).toInt();
+  int sendMethod = variants.value(3).toInt();
+  short ttl = variants.value(2).toInt();
+
+  if(list.size() == 6)
+    if(count > 0)
+      {
+	for(int i = 0; i < list.size(); i++)
+	  list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+	QByteArray message(list.value(4));
+	QByteArray messageCode(list.value(5));
+	QByteArray name(list.value(3));
+	QByteArray publicKeyHash(list.value(2));
+	QByteArray symmetricKey(list.value(0));
+	QByteArray symmetricKeyAlgorithm(list.value(1));
+
+	if(ok)
+	  symmetricKey = s_crypt->
+	    publicKeyDecrypt(symmetricKey, &ok);
+
+	if(ok)
+	  symmetricKeyAlgorithm = s_crypt->
+	    publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
+
+	if(ok)
+	  {
+	    spoton_crypt crypt(symmetricKeyAlgorithm,
+			       QString("sha512"),
+			       QByteArray(),
+			       symmetricKey,
+			       0,
+			       0,
+			       QString(""));
+
+	    publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
+	  }
+
+	if(ok)
+	  {
+	    if(spoton_misc::isAcceptedParticipant(publicKeyHash))
+	      {
+		QByteArray computedMessageCode
+		  (spoton_crypt::
+		   keyedHash(list.value(2) + // Sender's Sha-512 Hash
+			     list.value(3) + // Name
+			     list.value(4),  // Message
+			     symmetricKey,
+			     "sha512",
+			     &ok));
+
+		/*
+		** Let's not echo messages whose message codes
+		** are incompatible.
+		*/
+
+		if(ok)
+		  {
+		    if(computedMessageCode == messageCode)
+		      {
+			spoton_crypt crypt(symmetricKeyAlgorithm,
+					   QString("sha512"),
+					   QByteArray(),
+					   symmetricKey,
+					   0,
+					   0,
+					   QString(""));
+
+			message = crypt.decrypted(message, &ok);
+
+			if(ok)
+			  name = crypt.decrypted(name, &ok);
+
+			if(ok)
+			  {
+			    QByteArray hash
+			      (s_crypt->
+			       keyedHash(originalData, &ok));
+
+			    saveParticipantStatus(name, publicKeyHash);
+
+			    if(!hash.isEmpty() &&
+			       !message.isEmpty() &&
+			       !name.isEmpty())
+			      emit receivedChatMessage
+				("message_" +
+				 hash.toBase64() + "_" +
+				 name.toBase64() + "_" +
+				 message.toBase64().append('\n'));
+			  }
+		      }
+		    else
+		      spoton_misc::logError("spoton_neighbor::"
+					    "process0000(): "
+					    "computed message code does "
+					    "not match provided code.");
+		  }
+	      }
+	  }
+      }
+
+  if(ttl > 0)
+    if(count == 0 || !ok || superEchoEnabled)
+      {
+	if(!superEchoEnabled)
+	  if(isDuplicateMessage(originalData))
+	    goto done_label;
+
+	recordMessageHash(originalData);
+
+	/*
+	** Replace TTL.
+	*/
+
+	char c = 0;
+
+	memcpy(&c, static_cast<const void *> (&ttl), 1);
+	originalData.prepend(c);
+	emit receivedChatMessage
+	  (originalData, m_id, spoton_send::spoton_send_method(sendMethod));
+      }
+
+ done_label:
+  delete s_crypt;
 }
 
 void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
@@ -1586,7 +1633,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 
 	    char c = 0;
 
-	    memcpy(&c, static_cast<void *> (&ttl), 1);
+	    memcpy(&c, static_cast<const void *> (&ttl), 1);
 	    originalData.prepend(c);
 	    emit receivedMailMessage(originalData, "0001a", m_id);
 	  }
@@ -1711,7 +1758,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 
 	    char c = 0;
 
-	    memcpy(&c, static_cast<void *> (&ttl), 1);
+	    memcpy(&c, static_cast<const void *> (&ttl), 1);
 	    originalData.prepend(c);
 	    emit receivedMailMessage(originalData, "0001b", m_id);
 	  }
@@ -1876,7 +1923,7 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 
 	    char c = 0;
 
-	    memcpy(&c, static_cast<void *> (&ttl), 1);
+	    memcpy(&c, static_cast<const void *> (&ttl), 1);
 	    originalData.prepend(c);
 	    emit retrieveMail(originalData, m_id);
 	  }
@@ -2194,7 +2241,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 
 	    char c = 0;
 
-	    memcpy(&c, static_cast<void *> (&ttl), 1);
+	    memcpy(&c, static_cast<const void *> (&ttl), 1);
 	    originalData.prepend(c);
 	    emit receivedStatusMessage(originalData, m_id);
 	  }
@@ -2421,7 +2468,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 
 	  char c = 0;
 
-	  memcpy(&c, static_cast<void *> (&ttl), 1);
+	  memcpy(&c, static_cast<const void *> (&ttl), 1);
 	  originalData.prepend(c);
 	  emit publicizeListenerPlaintext(originalData, m_id);
 	}
@@ -2509,7 +2556,7 @@ void spoton_neighbor::process0040a
 
 	  char c = 0;
 
-	  memcpy(&c, static_cast<void *> (&ttl), 1);
+	  memcpy(&c, static_cast<const void *> (&ttl), 1);
 	  originalData.prepend(c);
 	  emit receivedBuzzMessage(originalData, "0040a", m_id, sendMethod);
 	}
@@ -2597,7 +2644,7 @@ void spoton_neighbor::process0040b
 
 	  char c = 0;
 
-	  memcpy(&c, static_cast<void *> (&ttl), 1);
+	  memcpy(&c, static_cast<const void *> (&ttl), 1);
 	  originalData.prepend(c);
 	  emit receivedBuzzMessage(originalData, "0040b", m_id, sendMethod);
 	}
@@ -3241,7 +3288,7 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
 	short ttl = spoton_kernel::s_settings.value
 	  ("kernel/ttl_0030", 64).toInt();
 
-	memcpy(&c, static_cast<void *> (&ttl), 1);
+	memcpy(&c, static_cast<const void *> (&ttl), 1);
 
 	QByteArray message
 	  (spoton_send::message0030(address, port, c));
