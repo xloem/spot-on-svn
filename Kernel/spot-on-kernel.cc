@@ -2269,16 +2269,54 @@ void spoton_kernel::purgeMessagingCache(void)
     }
 }
 
-bool spoton_kernel::messagingCacheContains(const QByteArray &hash)
+bool spoton_kernel::messagingCacheContains(const QByteArray &data)
 {
   QMutexLocker locker(&s_messagingCacheMutex);
+
+  if(!s_settings.value("gui/enableCongestionControl", false).toBool())
+    return false;
+
+  spoton_crypt *s_crypt = 0;
+
+  if(s_crypts.contains("messaging"))
+    s_crypt = s_crypts["messaging"];
+
+  if(!s_crypt)
+    return false;
+
+  QByteArray hash;
+  bool ok = true;
+
+  hash = s_crypt->keyedHash(data, &ok);
+
+  if(!ok)
+    return false;
 
   return s_messagingCache.contains(hash);
 }
 
-void spoton_kernel::messagingCacheAdd(const QByteArray &hash)
+void spoton_kernel::messagingCacheAdd(const QByteArray &data)
 {
   QMutexLocker locker(&s_messagingCacheMutex);
+
+  if(!s_settings.value("gui/enableCongestionControl", false).toBool())
+    return;
+
+  spoton_crypt *s_crypt = 0;
+
+  if(s_crypts.contains("messaging"))
+    s_crypt = s_crypts["messaging"];
+
+  if(!s_crypt)
+    return;
+
+  QByteArray hash;
+  bool ok = true;
+
+  hash = s_crypt->keyedHash(data, &ok);
+
+  if(!ok)
+    return;
 
   if(!s_messagingCache.contains(hash))
     s_messagingCache[hash] = QDateTime::currentDateTime();

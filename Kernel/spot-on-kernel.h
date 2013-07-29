@@ -60,8 +60,8 @@ class spoton_kernel: public QObject
 						  ** signature
 						  ** url
 						  */
-  static bool messagingCacheContains(const QByteArray &hash);
-  static void messagingCacheAdd(const QByteArray &hash);
+  static bool messagingCacheContains(const QByteArray &data);
+  static void messagingCacheAdd(const QByteArray &data);
 
  private:
   QFileSystemWatcher m_settingsWatcher;

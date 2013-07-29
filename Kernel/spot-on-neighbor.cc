@@ -1309,12 +1309,16 @@ void spoton_neighbor::process0000
       variants << count;
       variants << ttl;
       variants << int(sendMethod);
+
+      spoton_crypt *crypt = 0;
+
       QtConcurrent::run
 	(this,
 	 &spoton_neighbor::process0000t,
 	 originalData,
 	 list,
-	 variants);
+	 variants,
+	 crypt);
     }
   else
     spoton_misc::logError
@@ -1326,22 +1330,11 @@ void spoton_neighbor::process0000
 void spoton_neighbor::process0000t
 (QByteArray &originalData,
  QList<QByteArray> &list,
- const QList<QVariant> &variants)
+ const QList<QVariant> &variants,
+ spoton_crypt *s_crypt)
 {
-  spoton_crypt *s_crypt = new spoton_crypt
-    (spoton_kernel::s_settings.value("gui/cipherType",
-				     "aes256").
-     toString().trimmed(),
-     spoton_kernel::s_settings.value("gui/hashType",
-				     "sha512").
-     toString().trimmed(),
-     QByteArray::fromBase64(list.value(0)),
-     QByteArray::fromBase64(list.value(1)),
-     spoton_kernel::s_settings.value("gui/saltLength",
-				     256).toInt(),
-     spoton_kernel::s_settings.value("gui/iterationCount",
-				     10000).toInt(),
-     "messaging");
+  if(!s_crypt)
+    return;
 
   bool ok = true;
   bool superEchoEnabled = variants.value(0).toBool();
@@ -3335,51 +3328,12 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 
 void spoton_neighbor::recordMessageHash(const QByteArray &data)
 {
-  spoton_crypt *s_crypt = 0;
-
-  if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt = spoton_kernel::s_crypts["messaging"];
-
-  if(!s_crypt)
-    return;
-  else if(!spoton_kernel::s_settings.value("gui/enableCongestionControl",
-					   false).toBool())
-    return;
-
-  QByteArray hash;
-  bool ok = true;
-
-  hash = s_crypt->keyedHash(data, &ok);
-
-  if(!ok)
-    return;
-
-  spoton_kernel::messagingCacheAdd(hash);
+  spoton_kernel::messagingCacheAdd(data);
 }
 
 bool spoton_neighbor::isDuplicateMessage(const QByteArray &data)
 {
-  if(!spoton_kernel::s_settings.value("gui/enableCongestionControl",
-				      false).toBool())
-    return false;
-
-  spoton_crypt *s_crypt = 0;
-
-  if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt = spoton_kernel::s_crypts["messaging"];
-
-  if(!s_crypt)
-    return false;
-
-  QByteArray hash;
-  bool ok = true;
-
-  hash = s_crypt->keyedHash(data, &ok);
-
-  if(!ok)
-    return false;
-
-  return spoton_kernel::messagingCacheContains(hash);
+  return spoton_kernel::messagingCacheContains(data);
 }
 
 void spoton_neighbor::slotSslErrors(const QList<QSslError> &errors)

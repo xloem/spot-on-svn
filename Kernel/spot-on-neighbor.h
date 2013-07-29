@@ -102,7 +102,8 @@ class spoton_neighbor: public QSslSocket
 		   const spoton_send::spoton_send_method sendMethod);
   void process0000t(QByteArray &originalData,
 		    QList<QByteArray> &list,
-		    const QList<QVariant> &variants);
+		    const QList<QVariant> &variants,
+		    spoton_crypt *s_crypt);
   void process0001a(int length, const QByteArray &data);
   void process0001b(int length, const QByteArray &data);
   void process0002(int length, const QByteArray &data);
