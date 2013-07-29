@@ -4,7 +4,8 @@
 2.   Abort plaintext kernel sockets.
 3.   Replaced messaging caches with hashes. Messages older than two
      minutes shall be purged.
-4.   Removed support for Qt 4.6.x and older.
+4.   Corrected Qt 4.6.2 support. The 0.01 branch has been corrected
+     as well. Please use Qt 4.8.5 and newer.
 
 0.01
 

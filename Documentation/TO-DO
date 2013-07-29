@@ -56,8 +56,7 @@ Remaining Items
 4.     Prioritize keep-alive messages.
 5.     Use super-secure memory?
 6.     Allow for other ciphers besides AES for e-mail.
-7.     Can we establish session keys on the Echo? Calling feature to
-       limit PKI.
+7.     Local and long distance calling feature to limit PKI.
 8.     E-mail retrieval may fail if a node is disconnected because of
        a lifetime expiration. Other communications may fail too.
 9.     Country flags and names for hostnames.
@@ -78,3 +77,5 @@ Remaining Items
 23.    Include licenses of other software where applicable.
        Satisfy the license soldiers.
 24.    Entering geminis is difficult.
+25.    Allow bonds across connections.
+26.    Allow pass-through flow of non-Spot-On data.
