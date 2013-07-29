@@ -47,6 +47,7 @@ Completed Items
 31.    The kernel should behave as a pass-through device if
        participants are not defined. However, it should emit
        scrambled messages if necessary.
+32.    Improve kernel congestion cache.
 
 Remaining Items
 
@@ -70,12 +71,11 @@ Remaining Items
 16.    Colorful HTTP headers.
 17.    Custom protocol messages for rapid redeployment.
 18.    Customize expiration timers.
-19.    Improve kernel congestion cache.
-20.    Include external IP addresses in listener certificates.
-21.    Provide a total silent mode.
-22.    Provide complex IP blocking capabilities.
-23.    Include licenses of other software where applicable.
+19.    Include external IP addresses in listener certificates.
+20.    Provide a total silent mode.
+21.    Provide complex IP blocking capabilities.
+22.    Include licenses of other software where applicable.
        Satisfy the license soldiers.
-24.    Entering geminis is difficult.
-25.    Allow bonds across connections.
-26.    Allow pass-through flow of non-Spot-On data.
+23.    Entering geminis is difficult.
+24.    Allow bonds across connections.
+25.    Allow pass-through flow of non-Spot-On data.
