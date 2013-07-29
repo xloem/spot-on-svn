@@ -3626,15 +3626,19 @@ void spoton::initializeKernelSocket(void)
       configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
 #if QT_VERSION >= 0x050000
       configuration.setProtocol(QSsl::TlsV1_2);
-#else
+#elif QT_VERSION >= 0x040800
       configuration.setProtocol(QSsl::SecureProtocols);
+#else
+      configuration.setProtocol(QSsl::TlsV1);
 #endif
+#if QT_VERSION >= 0x040800
       configuration.setSslOption
 	(QSsl::SslOptionDisableCompression, true);
       configuration.setSslOption
 	(QSsl::SslOptionDisableEmptyFragments, true);
       configuration.setSslOption
 	(QSsl::SslOptionDisableLegacyRenegotiation, true);
+#endif
       m_kernelSocket.setSslConfiguration(configuration);
     }
   else
