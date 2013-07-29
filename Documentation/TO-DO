@@ -79,3 +79,5 @@ Remaining Items
 23.    Entering geminis is difficult.
 24.    Allow bonds across connections.
 25.    Allow pass-through flow of non-Spot-On data.
+26.    Inbound data should be time-tagged. Nodes must purge
+       containers of old data.
