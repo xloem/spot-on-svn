@@ -101,6 +101,7 @@ class spoton: public QMainWindow
 
  public:
   spoton(void);
+  ~spoton();
   Ui_spoton_mainwindow ui(void) const;
 
  private:

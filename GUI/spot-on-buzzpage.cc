@@ -28,6 +28,10 @@
 #include <QDateTime>
 #include <QScrollBar>
 #include <QSettings>
+#if QT_VERSION >= 0x050000
+#include <QtConcurrent>
+#endif
+#include <QtCore>
 
 #include "Common/spot-on-common.h"
 #include "Common/spot-on-crypt.h"
@@ -69,17 +73,25 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSendMessage(void)));
+  connect(&m_messagingCachePurgeTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotMessagingCachePurge(void)));
   ui.clients->setColumnHidden(1, true); // ID
   ui.clients->setColumnHidden(2, true); // Time
   ui.clients->horizontalHeader()->setSortIndicator(0, Qt::AscendingOrder);
   ui.splitter->setStretchFactor(0, 1);
   ui.splitter->setStretchFactor(1, 0);
   slotSetIcons();
+  m_messagingCachePurgeTimer.start(60000);
 }
 
 spoton_buzzpage::~spoton_buzzpage()
 {
+  m_messagingCacheMutex.lock();
   m_messagingCache.clear();
+  m_messagingCacheMutex.unlock();
+  m_future.waitForFinished();
 }
 
 void spoton_buzzpage::slotSetIcons(void)
@@ -166,13 +178,17 @@ void spoton_buzzpage::appendMessage(const QByteArray &hash,
 
     return;
 
+  m_messagingCacheMutex.lock();
+
   if(m_messagingCache.contains(hash))
     {
-      m_messagingCache[hash] = QDateTime::currentDateTime();
+      m_messagingCacheMutex.unlock();
       return;
     }
   else
     m_messagingCache[hash] = QDateTime::currentDateTime();
+
+  m_messagingCacheMutex.unlock();
 
   QByteArray name
     (list.value(0).mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
@@ -356,6 +372,40 @@ void spoton_buzzpage::slotStatusTimeout(void)
 
 	      ui.clients->removeRow(i);
 	    }
+	}
+    }
+}
+
+void spoton_buzzpage::slotMessagingCachePurge(void)
+{
+  if(m_future.isFinished())
+    m_future = QtConcurrent::run
+      (this, &spoton_buzzpage::purgeMessagingCache);
+}
+
+void spoton_buzzpage::purgeMessagingCache(void)
+{
+  QDateTime now(QDateTime::currentDateTime());
+  int size = 0;
+
+  m_messagingCacheMutex.lock();
+  size = m_messagingCache.size();
+  m_messagingCacheMutex.unlock();
+
+  for(int i = size - 1; i >= 0; i--)
+    {
+      m_messagingCacheMutex.lock();
+
+      QDateTime value(m_messagingCache.value(m_messagingCache.keys().at(i)));
+
+      m_messagingCacheMutex.unlock();
+
+      if(value.secsTo(now) >= 120)
+	{
+	  size -= 1;
+	  m_messagingCacheMutex.lock();
+	  m_messagingCache.remove(m_messagingCache.keys().at(i));
+	  m_messagingCacheMutex.unlock();
 	}
     }
 }

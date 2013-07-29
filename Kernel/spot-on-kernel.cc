@@ -409,6 +409,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 
 spoton_kernel::~spoton_kernel()
 {
+  s_messagingCacheMutex.lock();
+  s_messagingCache.clear();
+  s_messagingCacheMutex.unlock();
+  m_future.waitForFinished();
   cleanup();
   spoton_misc::cleanupDatabases();
 

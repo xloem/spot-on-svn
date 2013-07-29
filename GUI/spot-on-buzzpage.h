@@ -29,7 +29,9 @@
 #define _spoton_buzzpage_h_
 
 #include <QDateTime>
+#include <QFuture>
 #include <QHash>
+#include <QMutex>
 #include <QPointer>
 #include <QSslSocket>
 #include <QTimer>
@@ -54,15 +56,20 @@ class spoton_buzzpage: public QWidget
  private:
   QByteArray m_channel;
   QByteArray m_id;
+  QFuture<void> m_future;
   QHash<QByteArray, QDateTime> m_messagingCache; /*
 						 ** Prevent duplicate
 						 ** echoed messages.
 						 */
+  QMutex m_messagingCacheMutex;
   QPointer<QSslSocket> m_kernelSocket;
+  QTimer m_messagingCachePurgeTimer;
   QTimer m_statusTimer;
   Ui_buzzPage ui;
+  void purgeMessagingCache(void);
 
  private slots:
+  void slotMessagingCachePurge(void);
   void slotSendMessage(void);
   void slotSendStatus(void);
   void slotSetIcons(void);

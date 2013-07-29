@@ -890,6 +890,14 @@ spoton::spoton(void):QMainWindow()
   QApplication::restoreOverrideCursor();
 }
 
+spoton::~spoton()
+{
+  m_messagingCacheMutex.lock();
+  m_messagingCache.clear();
+  m_messagingCacheMutex.unlock();
+  m_future.waitForFinished();
+}
+
 void spoton::slotQuit(void)
 {
   close();
