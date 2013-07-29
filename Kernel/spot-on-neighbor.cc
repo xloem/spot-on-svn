@@ -90,15 +90,19 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	    {
 #if QT_VERSION >= 0x050000
 	      configuration.setProtocol(QSsl::TlsV1_2);
-#else
+#elif QT_VERSION >= 0x040800
 	      configuration.setProtocol(QSsl::SecureProtocols);
+#else
+	      configuration.setProtocol(QSsl::TlsV1);
 #endif
+#if QT_VERSION >= 0x040800
 	      configuration.setSslOption
 		(QSsl::SslOptionDisableCompression, true);
 	      configuration.setSslOption
 		(QSsl::SslOptionDisableEmptyFragments, true);
 	      configuration.setSslOption
 		(QSsl::SslOptionDisableLegacyRenegotiation, true);
+#endif
 	      spoton_crypt::setSslCiphers(supportedCiphers(), configuration);
 	      setSslConfiguration(configuration);
 	    }
@@ -222,15 +226,19 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	{
 #if QT_VERSION >= 0x050000
 	  configuration.setProtocol(QSsl::TlsV1_2);
-#else
+#elif QT_VERSION >= 0x040800
 	  configuration.setProtocol(QSsl::SecureProtocols);
+#else
+	  configuration.setProtocol(QSsl::TlsV1);
 #endif
+#if QT_VERSION >= 0x040800
 	  configuration.setSslOption
 	    (QSsl::SslOptionDisableCompression, true);
 	  configuration.setSslOption
 	    (QSsl::SslOptionDisableEmptyFragments, true);
 	  configuration.setSslOption
 	    (QSsl::SslOptionDisableLegacyRenegotiation, true);
+#endif
 	  spoton_crypt::setSslCiphers(supportedCiphers(), configuration);
 	  setSslConfiguration(configuration);
 	}
