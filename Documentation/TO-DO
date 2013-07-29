@@ -26,7 +26,8 @@ Completed Items
        the Neighbors table.
 15.    Re-encode various databases whenever the passphrase is changed.
 16.    Offline e-mail.
-17.    Qt 4.6.3 support.
+17.    Qt 4.6.3 support. Please ignore. Qt 4.6.x and older are not
+       supported.
 18.    Use QSslSockets.
 19.    Inspect toInt() results.
 20.    Encrypt the uuid field in the neighbors.db database.
