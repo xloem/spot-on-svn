@@ -106,6 +106,7 @@ class spoton_crypt
 		const int saltLength,
 		const unsigned long iterationCount,
 		const QString &id);
+  spoton_crypt(spoton_crypt *other);
   ~spoton_crypt();
   QByteArray decrypted(const QByteArray &data, bool *ok);
   QByteArray digitalSignature(const QByteArray &data, bool *ok);
@@ -140,6 +141,13 @@ class spoton_crypt
   size_t m_privateKeyLength;
   size_t m_symmetricKeyLength;
   unsigned long m_iterationCount;
+  void init(const QString &cipherType,
+	    const QString &hashType,
+	    const QByteArray &passphrase,
+	    const QByteArray &symmetricKey,
+	    const int saltLength,
+	    const unsigned long iterationCount,
+	    const QString &id);
   static bool setInitializationVector(QByteArray &iv,
 				      const int algorithm,
 				      gcry_cipher_hd_t cipherHandle);

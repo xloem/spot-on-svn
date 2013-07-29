@@ -41,7 +41,6 @@
 
 class QNetworkInterface;
 
-class spoton_crypt;
 class spoton_external_address;
 
 class spoton_neighbor: public QSslSocket
@@ -100,10 +99,6 @@ class spoton_neighbor: public QSslSocket
   void prepareNetworkInterface(void);
   void process0000(int length, const QByteArray &data,
 		   const spoton_send::spoton_send_method sendMethod);
-  void process0000t(QByteArray &originalData,
-		    QList<QByteArray> &list,
-		    const QList<QVariant> &variants,
-		    spoton_crypt *s_crypt);
   void process0001a(int length, const QByteArray &data);
   void process0001b(int length, const QByteArray &data);
   void process0002(int length, const QByteArray &data);
