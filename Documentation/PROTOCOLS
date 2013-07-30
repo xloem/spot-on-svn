@@ -150,13 +150,13 @@ EOL
 EOL
 ...
 EOL
-30 - URL-10 (Base-64) (Ciphertext, SK)
+29 - URL-10 (Base-64) (Ciphertext, SK)
 EOL
-31 - Title (Base-64) (Ciphertext, SK)
+30 - Title (Base-64) (Ciphertext, SK)
 EOL
-32 - Words (Base-64) (Ciphertext, SK)
+31 - Words (Base-64) (Ciphertext, SK)
 EOL
-33 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+32 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
 
 Echo Listener Publication
 Echoed? Yes
