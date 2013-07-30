@@ -320,7 +320,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  this,
 	  SLOT(slotStatusTimerExpired(void)));
   m_controlDatabaseTimer.start(2500);
-  m_messagingCachePurgeTimer.setInterval(120000);
+  m_messagingCachePurgeTimer.setInterval(30000);
   m_publishAllListenersPlaintextTimer.setInterval(10 * 60 * 1000);
   m_statusTimer.start(15000);
   m_guiServer = new spoton_gui_server(this);
