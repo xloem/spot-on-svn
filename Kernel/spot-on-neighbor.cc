@@ -53,8 +53,8 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 {
   m_echoMode = echoMode;
   m_isUserDefined = false;
-  m_maximumBufferSize = 131072; // 2 ^ 17
-  m_maximumContentLength = 65536; // 2 ^ 16
+  m_maximumBufferSize = spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE;
+  m_maximumContentLength = spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH;
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
 
   if(certificate.isEmpty() || privateKey.isEmpty())
@@ -204,8 +204,13 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 {
   m_echoMode = echoMode;
   m_isUserDefined = userDefined;
-  m_maximumBufferSize = maximumBufferSize;
-  m_maximumContentLength = maximumContentLength;
+  m_maximumBufferSize =
+    qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
+	   maximumBufferSize,
+	   spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
+  m_maximumContentLength = 
+    qMax(maximumContentLength,
+	 spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
   m_useSsl = true;
   setProxy(proxy);
@@ -446,7 +451,8 @@ void spoton_neighbor::slotTimeout(void)
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT status_control, sticky, echo_mode "
+	query.prepare("SELECT status_control, sticky, echo_mode, "
+		      "maximum_buffer_size, maximum_content_length "
 		      "FROM neighbors WHERE OID = ?");
 	query.bindValue(0, m_id);
 
@@ -477,6 +483,14 @@ void spoton_neighbor::slotTimeout(void)
 						  toByteArray()),
 			   &ok).constData();
 		      }
+
+		    m_maximumBufferSize =
+		      qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
+			     qAbs(query.value(3).toInt()),
+			     spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
+		    m_maximumContentLength =
+		      qMax(qAbs(query.value(4).toInt()),
+			   spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
 		  }
 
 		if(query.value(1).toInt() == 1)

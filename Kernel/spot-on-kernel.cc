@@ -634,12 +634,7 @@ void spoton_kernel::prepareNeighbors(void)
 			  list.append(userDefined);
 			else if(i == 11 || // maximum_buffer_size
 				i == 12)   // maximum_content_length
-			  {
-			    if(i == 1)
-			      list.append(131072);
-			    else
-			      list.append(65536);
-			  }
+			  list.append(query.value(i).toInt());
 			else
 			  {
 			    QByteArray bytes;

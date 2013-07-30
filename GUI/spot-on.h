@@ -224,6 +224,7 @@ class spoton: public QMainWindow
   void slotMessagingCachePurge(void);
   void slotModeChanged(QSslSocket::SslMode mode);
   void slotNeighborCheckChange(int state);
+  void slotNeighborMaximumChanged(int value);
   void slotPopulateCountries(void);
   void slotPopulateListeners(void);
   void slotPopulateNeighbors(void);

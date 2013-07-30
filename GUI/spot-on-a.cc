@@ -1894,35 +1894,70 @@ void spoton::slotPopulateNeighbors(void)
 			      item = new QTableWidgetItem(bytes.constData());
 			  }
 		      }
+		    else if(i >= 16 && i <= 17)
+		      {
+			// maximum_buffer_size
+			// maximum_content_length
+
+			QSpinBox *box = new QSpinBox();
+
+			if(i == 16)
+			  {
+			    box->setMaximum
+			      (spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
+			    box->setMinimum
+			      (spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
+			  }
+			else
+			  box->setMaximum
+			    (spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
+
+			box->setProperty
+			  ("field_name", query.record().fieldName(i));
+			box->setProperty
+			  ("oid", query.value(query.record().count() - 1));
+			box->setProperty("table_row", row);
+			box->setValue(query.value(i).toInt());
+			connect(box,
+				SIGNAL(valueChanged(int)),
+				this,
+				SLOT(slotNeighborMaximumChanged(int)));
+			m_ui.neighbors->setCellWidget(row, i, box);
+		      }
 		    else
 		      item = new QTableWidgetItem
 			(query.value(i).toString());
 
-		    item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-
-		    if(i == 2)
+		    if(item)
 		      {
-			if(query.value(i).toString() == "connected")
-			  item->setBackground(QBrush(QColor("lightgreen")));
-			else
-			  item->setBackground(QBrush());
+			item->setFlags
+			  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-			if(isEncrypted)
+			if(i == 2)
 			  {
-			    item->setIcon
-			      (QIcon(QString(":/%1/lock.png").
-				     arg(m_settings.
-					 value("gui/iconSet",
-					       "nouve").toString())));
-			    item->setToolTip
-			      (tr("Connection is encrypted."));
-			  }
-			else
-			  item->setToolTip
-			    (tr("Connection is not encrypted."));
-		      }
+			    if(query.value(i).toString() == "connected")
+			      item->setBackground
+				(QBrush(QColor("lightgreen")));
+			    else
+			      item->setBackground(QBrush());
 
-		    m_ui.neighbors->setItem(row, i, item);
+			    if(isEncrypted)
+			      {
+				item->setIcon
+				  (QIcon(QString(":/%1/lock.png").
+					 arg(m_settings.
+					     value("gui/iconSet",
+						   "nouve").toString())));
+				item->setToolTip
+				  (tr("Connection is encrypted."));
+			      }
+			    else
+			      item->setToolTip
+				(tr("Connection is not encrypted."));
+			  }
+
+			m_ui.neighbors->setItem(row, i, item);
+		      }
 		  }
 
 		QTableWidgetItem *item1 = m_ui.neighbors->item
@@ -4087,4 +4122,38 @@ void spoton::slotModeChanged(QSslSocket::SslMode mode)
 			    "plaintext mode. Disconnecting kernel socket.");
       m_kernelSocket.abort();
     }
+}
+
+void spoton::slotNeighborMaximumChanged(int value)
+{
+  QSpinBox *spinBox = qobject_cast<QSpinBox *> (sender());
+
+  if(!spinBox)
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare(QString("UPDATE neighbors SET "
+			      "%1 = ? "
+			      "WHERE OID = ?").
+		      arg(spinBox->property("field_name").toString()));
+	query.bindValue(0, value);
+	query.bindValue(1, spinBox->property("oid"));
+	query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }

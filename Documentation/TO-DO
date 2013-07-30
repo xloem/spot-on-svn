@@ -48,6 +48,7 @@ Completed Items
        participants are not defined. However, it should emit
        scrambled messages if necessary.
 32.    Improve kernel congestion cache.
+33.    Complete max. Neighbors fields.
 
 Remaining Items
 
@@ -64,20 +65,20 @@ Remaining Items
 10.    Monitor kernel health from the UI.
        See spoton::slotGeneralTimerTimeout().
 11.    Favorite channels.
-12.    Complete max. Neighbors fields.
-13.    CGI for listeners.
-14.    Auto-clear textedit widgets that contain too much data.
-15.    Hard kernel termination. Control session separation.
-16.    Colorful HTTP headers.
-17.    Custom protocol messages for rapid redeployment.
-18.    Customize expiration timers.
-19.    Include external IP addresses in listener certificates.
-20.    Provide a total silent mode.
-21.    Provide complex IP blocking capabilities.
-22.    Include licenses of other software where applicable.
+12.    CGI for listeners.
+13.    Auto-clear textedit widgets that contain too much data.
+14.    Hard kernel termination. Control session separation.
+15.    Colorful HTTP headers.
+16.    Custom protocol messages for rapid redeployment.
+17.    Customize expiration timers.
+18.    Include external IP addresses in listener certificates.
+19.    Provide a total silent mode. Cumbersome.
+20.    Provide complex IP blocking capabilities.
+21.    Include licenses of other software where applicable.
        Satisfy the license soldiers.
-23.    Entering geminis is difficult.
-24.    Allow bonds across connections.
-25.    Allow pass-through flow of non-Spot-On data.
-26.    Inbound data should be time-tagged. Nodes must purge
+22.    Entering geminis is difficult.
+23.    Allow bonds across connections.
+24.    Allow pass-through flow of non-Spot-On data.
+25.    Inbound data should be time-tagged. Nodes must purge
        containers of old data.
+26.    The TTL may be used to describe Spot-On graphs. Alternative?

@@ -7,6 +7,8 @@
 4.   Corrected Qt 4.6.2 support. The 0.01 branch has been corrected
      as well. Please use Qt 4.8.5 and newer.
 5.   Corrected memcpy() argument casts.
+6.   Ability to set the Maximum Buffer Size and Maximum Content
+     Length. Please see the Neighbors table.
 
 0.01
 
