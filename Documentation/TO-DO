@@ -83,8 +83,8 @@ Remaining Items
 24.    Allow pass-through flow of non-Spot-On data.
 25.    Inbound data should be time-tagged. Nodes must purge
        containers of old data.
-26.    The TTL may be used to describe Spot-On graphs. Alternative?
+26.    TTLs may be used to describe Spot-On graphs. Alternative?
 27.    The kernel should fetch a node's external IP address.
 28.    Introduce load balancing of echoes. We're not interested in real-time
        responses. Congestion control is helpful, however, short graphs
-       tend be skewed.
+       tend to be skewed.
