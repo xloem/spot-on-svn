@@ -49,6 +49,8 @@ Completed Items
        scrambled messages if necessary.
 32.    Improve kernel congestion cache.
 33.    Complete max. Neighbors fields.
+34.    Do not destroy the children of an inactive listener. Provide a context
+       menu action instead.
 
 Remaining Items
 
@@ -82,5 +84,3 @@ Remaining Items
 25.    Inbound data should be time-tagged. Nodes must purge
        containers of old data.
 26.    The TTL may be used to describe Spot-On graphs. Alternative?
-27.    Do not destroy children of an inactive listener. Provide context
-       menu action instead.

@@ -227,7 +227,9 @@ void spoton_listener::slotTimeout(void)
 	      {
 		QString status(query.value(0).toString());
 
-		if(status == "online")
+		if(status == "offline")
+		  close();
+		else if(status == "online")
 		  {
 		    if(!isListening())
 		      {
@@ -263,18 +265,6 @@ void spoton_listener::slotTimeout(void)
 			    setMaxPendingConnections
 			      (maximumPendingConnections);
 			  }
-		      }
-		  }
-		else if(status == "offline")
-		  {
-		    close();
-
-		    foreach(spoton_neighbor *socket,
-			    findChildren<spoton_neighbor *> ())
-		      {
-			socket->flush();
-			socket->abort();
-			socket->deleteLater();
 		      }
 		  }
 

@@ -9,6 +9,10 @@
 5.   Corrected memcpy() argument casts.
 6.   Ability to set the Maximum Buffer Size and Maximum Content
      Length. Please see the Neighbors table.
+7.   Deactivating a listener will not destroy its children. A new
+     control option is available under the Listeners table's context menu.
+8.   Prevent control updates of listeners and neighbors that have been
+     marked for deletion.
 
 0.01
 

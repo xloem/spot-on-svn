@@ -254,6 +254,13 @@ void spoton_gui_server::slotReadyRead(void)
 		   QByteArray::fromBase64(list.value(4)),
 		   "0040b");
 	    }
+	  else if(message.startsWith("disconnect_listener_neighbors_"))
+	    {
+	      message.remove(0, strlen("disconnect_listener_neighbors_"));
+
+	      if(!message.isEmpty())
+		emit disconnectNeighbors(message.toLongLong());
+	    }
 	  else if(message.startsWith("keys_"))
 	    {
 	      message.remove(0, strlen("keys_"));

@@ -341,6 +341,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 				      const QByteArray &,
 				      const QString &)));
   connect(m_guiServer,
+	  SIGNAL(disconnectNeighbors(const qint64)),
+	  this,
+	  SLOT(slotDisconnectNeighbors(const qint64)));
+  connect(m_guiServer,
 	  SIGNAL(messageReceivedFromUI(const qint64,
 				       const QByteArray &,
 				       const QByteArray &)),
@@ -483,6 +487,7 @@ void spoton_kernel::prepareListeners(void)
 	  while(query.next())
 	    {
 	      QPointer<spoton_listener> listener = 0;
+	      QString status(query.value(4).toString());
 	      qint64 id = query.value(6).toLongLong();
 
 	      /*
@@ -490,7 +495,27 @@ void spoton_kernel::prepareListeners(void)
 	      ** listeners that will listen.
 	      */
 
-	      if(query.value(4).toString() == "online")
+	      if(status == "deleted")
+		{
+		  listener = m_listeners.value(id);
+
+		  if(listener)
+		    {
+		      listener->close();
+		      listener->deleteLater();
+		    }
+
+		  m_listeners.remove(id);
+		  cleanupListenersDatabase(db);
+		}
+	      else if(status == "offline")
+		{
+		  listener = m_listeners.value(id);
+
+		  if(listener)
+		    listener->close();
+		}
+	      else if(status == "online")
 		{
 		  if(!m_listeners.contains(id))
 		    {
@@ -546,19 +571,15 @@ void spoton_kernel::prepareListeners(void)
 			  m_listeners.insert(id, listener);
 			}
 		    }
-		}
-	      else
-		{
-		  listener = m_listeners.value(id);
-
-		  if(listener)
+		  else
 		    {
-		      listener->close();
-		      listener->deleteLater();
-		    }
+		      listener = m_listeners.value(id);
 
-		  m_listeners.remove(id);
-		  cleanupListenersDatabase(db);
+		      if(listener)
+			if(!listener->isListening())
+			  listener->listen(listener->serverAddress(),
+					   listener->serverPort());
+		    }
 		}
 	    }
       }
@@ -2315,4 +2336,21 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data)
 
   if(!s_messagingCache.contains(hash))
     s_messagingCache[hash] = QDateTime::currentDateTime();
+}
+
+void spoton_kernel::slotDisconnectNeighbors(const qint64 listenerOid)
+{
+  QPointer<spoton_listener> listener = 0;
+
+  if(m_listeners.contains(listenerOid))
+    listener = m_listeners.value(listenerOid);
+
+  if(listener)
+    foreach(spoton_neighbor *socket,
+	    listener->findChildren<spoton_neighbor *> ())
+      {
+	socket->flush();
+	socket->abort();
+	socket->deleteLater();
+      }
 }
