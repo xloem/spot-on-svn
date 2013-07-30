@@ -12,7 +12,7 @@ Completed Items
        may cause confusion when a new neighbor is defined if a uniqueness
        error arises. Similar confusion may arise for listeners.
 6.     Improve the IP input masks. Removed the underscores so that the
-       spacebar may be used. Attached returnPressed() signals to
+       space bar may be used. Attached returnPressed() signals to
        listener and neighbor IP widgets.
 7.     When the RSA key generation is finished, a confirmation should
        be displayed.
@@ -63,7 +63,7 @@ Remaining Items
 7.     Local and long distance calling feature to limit PKI.
 8.     E-mail retrieval may fail if a node is disconnected because of
        a lifetime expiration. Other communications may fail too.
-9.     Country flags and names for hostnames.
+9.     Country flags and names for host names.
 10.    Monitor kernel health from the UI.
        See spoton::slotGeneralTimerTimeout().
 11.    Favorite channels.
@@ -88,3 +88,4 @@ Remaining Items
 28.    Introduce load balancing of echoes. We're not interested in real-time
        responses. Congestion control is helpful, however, short graphs
        tend to be skewed.
+29.    Provide kernel and network statistics.
