@@ -1185,8 +1185,7 @@ void spoton_misc::cleanupDatabases(void)
 		   "status_control = 'deleted'");
 	query.exec("UPDATE listeners SET connections = 0, "
 		   "external_ip_address = NULL, "
-		   "status = 'offline' WHERE status = 'online' AND "
-		   "status_control <> 'deleted'");
+		   "status = 'offline'");
       }
 
     db.close();
@@ -1215,8 +1214,7 @@ void spoton_misc::cleanupDatabases(void)
 	query.exec("UPDATE neighbors SET external_ip_address = NULL, "
 		   "is_encrypted = 0, "
 		   "local_ip_address = NULL, local_port = NULL, "
-		   "status = 'disconnected' WHERE "
-		   "status = 'connected' AND status_control <> 'deleted'");
+		   "status = 'disconnected'");
       }
 
     db.close();
