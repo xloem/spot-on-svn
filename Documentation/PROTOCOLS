@@ -144,11 +144,19 @@ EOL
 EOL
 2 - URL-1 (Base-64) (Ciphertext, SK)
 EOL
+3 - Title (Base-64) (Ciphertext, SK)
+EOL
+4 - Words (Base-64) (Ciphertext, SK)
+EOL
 ...
 EOL
-11 - URL-10 (Base-64) (Ciphertext, SK)
+30 - URL-10 (Base-64) (Ciphertext, SK)
 EOL
-12 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+31 - Title (Base-64) (Ciphertext, SK)
+EOL
+32 - Words (Base-64) (Ciphertext, SK)
+EOL
+33 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
 
 Echo Listener Publication
 Echoed? Yes

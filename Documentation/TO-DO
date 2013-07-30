@@ -82,3 +82,5 @@ Remaining Items
 25.    Inbound data should be time-tagged. Nodes must purge
        containers of old data.
 26.    The TTL may be used to describe Spot-On graphs. Alternative?
+27.    Do not destroy children of an inactive listener. Provide context
+       menu action instead.

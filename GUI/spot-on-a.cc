@@ -1912,6 +1912,11 @@ void spoton::slotPopulateNeighbors(void)
 			  box->setMaximum
 			    (spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
 
+			box->setMaximumWidth
+			  (box->fontMetrics().
+			   width(QString::
+				 number(spoton_common::
+					MAXIMUM_NEIGHBOR_BUFFER_SIZE)) + 50);
 			box->setProperty
 			  ("field_name", query.record().fieldName(i));
 			box->setProperty
