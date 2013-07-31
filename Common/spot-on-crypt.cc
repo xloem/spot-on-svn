@@ -610,6 +610,7 @@ void spoton_crypt::reencodeRSAKeys(const QString &newCipher,
 	  goto done_label;
 	}
 
+      gcry_fast_random_poll();
       gcry_create_nonce(iv, ivLength);
 
       if(gcry_cipher_setiv(cipherHandle,
@@ -643,11 +644,6 @@ void spoton_crypt::reencodeRSAKeys(const QString &newCipher,
 		     "failure (%1).").arg(gcry_strerror(err)));
 	  goto done_label;
 	}
-
-      /*
-      ** Block ciphers require the length of the buffers
-      ** to be multiples of the cipher's block size.
-      */
 
       eData.append(d);
 
@@ -1018,11 +1014,6 @@ QByteArray spoton_crypt::decrypted(const QByteArray &data, bool *ok)
 	}
       else
 	{
-	  /*
-	  ** Block ciphers require the length of the buffers
-	  ** to be multiples of the cipher's block size.
-	  */
-
 	  if(decrypted.isEmpty())
 	    decrypted = decrypted.leftJustified(blockLength, 0);
 	  else if(static_cast<size_t> (decrypted.size()) < blockLength)
@@ -1227,6 +1218,7 @@ bool spoton_crypt::setInitializationVector(QByteArray &bytes,
 	{
 	  if(bytes.isEmpty())
 	    {
+	      gcry_fast_random_poll();
 	      gcry_create_nonce(static_cast<void *> (iv), ivLength);
 	      bytes.append(iv, ivLength);
 	    }
