@@ -3614,6 +3614,7 @@ void spoton::initializeKernelSocket(void)
      certificate,
      privateKey,
      publicKey,
+     m_kernelSocket.peerAddress(),
      error);
   QApplication::restoreOverrideCursor();
   m_sb.status->clear();

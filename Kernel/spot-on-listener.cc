@@ -49,44 +49,7 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
       socket.close();
     }
   else
-    {
-      QByteArray certificate;
-      QByteArray privateKey;
-      QString error("");
-
-      if(m_keySize != 0)
-	{
-	  QByteArray publicKey;
-
-	  spoton_crypt::generateSslKeys
-	    (m_keySize,
-	     certificate,
-	     privateKey,
-	     publicKey,
-	     error);
-	}
-
-      if(error.isEmpty())
-	{
-	  QPointer<spoton_neighbor> neighbor = new spoton_neighbor
-	    (socketDescriptor, certificate, privateKey, m_echoMode, this);
-
-	  m_queue.enqueue(neighbor);
-	  emit newConnection(m_keySize);
-	}
-      else
-	{
-	  QTcpSocket socket;
-
-	  socket.setSocketDescriptor(socketDescriptor);
-	  socket.close();
-	  spoton_misc::logError
-	    (QString("spoton_listener_tcp_server::"
-		     "incomingConnection(): "
-		     "generateSslKeys() failure (%1).").
-	     arg(error.remove(".")));
-	}
-    }
+    emit newConnection(socketDescriptor);
 }
 
 spoton_listener::spoton_listener(const QString &ipAddress,
@@ -97,19 +60,32 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 				 const QString &echoMode,
 				 const int keySize,
 				 QObject *parent):
-  spoton_listener_tcp_server(id, echoMode, keySize, parent)
+  spoton_listener_tcp_server(parent)
 {
   m_address = QHostAddress(ipAddress);
   m_address.setScopeId(scopeId);
   m_echoMode = echoMode;
   m_externalAddress = new spoton_external_address(this);
+  m_keySize = qAbs(keySize);
+
+  if(m_keySize != 0)
+    if(!(m_keySize == 2048 || m_keySize == 3072 || m_keySize == 4096))
+      m_keySize = 2048;
+
   m_id = id;
   m_networkInterface = 0;
   m_port = m_externalPort = quint16(port.toInt());
+#if QT_VERSION >= 0x050000
+  connect(this,
+	  SIGNAL(newConnection(const qintptr)),
+	  this,
+	  SLOT(slotNewConnection(const qintptr)));
+#else
   connect(this,
 	  SIGNAL(newConnection(const int)),
 	  this,
 	  SLOT(slotNewConnection(const int)));
+#endif
   connect(m_externalAddress,
 	  SIGNAL(ipAddressDiscovered(const QHostAddress &)),
 	  this,
@@ -345,10 +321,45 @@ void spoton_listener::saveStatus(const QSqlDatabase &db)
   query.exec();
 }
 
-void spoton_listener::slotNewConnection(const int keySize)
+#if QT_VERSION >= 0x050000
+void spoton_listener::slotNewConnection(const qintptr socketDescriptor)
+#else
+void spoton_listener::slotNewConnection(const int socketDescriptor)
+#endif
 {
-  spoton_neighbor *neighbor = qobject_cast<spoton_neighbor *>
-    (nextPendingConnection());
+  QByteArray certificate;
+  QByteArray privateKey;
+  QPointer<spoton_neighbor> neighbor = 0;
+  QString error("");
+
+  if(m_keySize != 0)
+    {
+      QByteArray publicKey;
+
+      spoton_crypt::generateSslKeys
+	(m_keySize,
+	 certificate,
+	 privateKey,
+	 publicKey,
+	 m_externalAddress->address(),
+	 error);
+    }
+
+  if(error.isEmpty())
+    neighbor = new spoton_neighbor
+      (socketDescriptor, certificate, privateKey, m_echoMode, this);
+  else
+    {
+      QTcpSocket socket;
+
+      socket.setSocketDescriptor(socketDescriptor);
+      socket.close();
+      spoton_misc::logError
+	(QString("spoton_listener::"
+		 "slotNewConnection(): "
+		 "generateSslKeys() failure (%1).").
+	 arg(error.remove(".")));
+    }
 
   if(!neighbor)
     return;
@@ -608,7 +619,7 @@ void spoton_listener::slotNewConnection(const int keySize)
 		(20, s_crypt->encrypted(m_echoMode.toLatin1(),
 					&ok).toBase64());
 
-	    query.bindValue(21, keySize);
+	    query.bindValue(21, m_keySize);
 
 	    if(ok)
 	      created = query.exec();

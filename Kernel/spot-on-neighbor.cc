@@ -235,6 +235,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
      certificate,
      privateKey,
      publicKey,
+     QHostAddress(),
      error);
 
   if(!error.isEmpty())

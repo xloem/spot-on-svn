@@ -46,30 +46,12 @@ class spoton_listener_tcp_server: public QTcpServer
   Q_OBJECT
 
  public:
-  spoton_listener_tcp_server(const qint64 id, const QString &echoMode,
-			     const int keySize, QObject *parent):
-    QTcpServer(parent)
+  spoton_listener_tcp_server(QObject *parent):QTcpServer(parent)
   {
-    m_echoMode = echoMode;
-    m_id = id;
-    m_keySize = qAbs(keySize);
-
-    if(m_keySize != 0)
-      if(!(m_keySize == 2048 || m_keySize == 3072 || m_keySize == 4096))
-	m_keySize = 2048;
   }
 
   ~spoton_listener_tcp_server()
   {
-    m_queue.clear();
-  }
-
-  QSslSocket *nextPendingConnection(void)
-  {
-    if(m_queue.isEmpty())
-      return 0;
-    else
-      return m_queue.dequeue();
   }
 
 #if QT_VERSION >= 0x050000
@@ -78,14 +60,12 @@ class spoton_listener_tcp_server: public QTcpServer
   void incomingConnection(int socketDescriptor);
 #endif
 
- private:
-  QQueue<QPointer<spoton_neighbor> > m_queue;
-  QString m_echoMode;
-  int m_keySize;
-  qint64 m_id;
-
  signals:
-  void newConnection(const int keySize);
+#if QT_VERSION >= 0x050000
+  void newConnection(qintptr socketDescriptor);
+#else
+  void newConnection(int socketDescriptor);
+#endif
 };
 
 class spoton_listener: public spoton_listener_tcp_server
@@ -111,6 +91,7 @@ class spoton_listener: public spoton_listener_tcp_server
   QString m_echoMode;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_timer;
+  int m_keySize;
   qint64 m_id;
   quint16 m_externalPort;
   quint16 m_port;

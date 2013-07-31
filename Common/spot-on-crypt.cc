@@ -2535,6 +2535,7 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
 				   QByteArray &certificate,
 				   QByteArray &privateKey,
 				   QByteArray &publicKey,
+				   const QHostAddress &address,
 				   QString &error)
 {
   BIGNUM *f4 = 0;
@@ -2635,7 +2636,7 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
   memcpy(publicBuffer, bptr->data, bptr->length);
   publicBuffer[bptr->length] = 0;
   publicKey = publicBuffer;
-  generateCertificate(rsa, certificate, error);
+  generateCertificate(rsa, certificate, address, error);
 
  done_label:
   BIO_free(privateMemory);
@@ -2644,67 +2645,6 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
   RSA_free(rsa);
   free(privateBuffer);
   free(publicBuffer);
-}
-
-void spoton_crypt::generateSslKeys(const int rsaKeySize, QString &error)
-{
-  QByteArray certificate;
-  QByteArray privateKey;
-  QByteArray publicKey;
-
-  generateSslKeys(rsaKeySize, certificate, privateKey, publicKey, error);
-
-  if(error.isEmpty())
-    {
-      QString connectionName("");
-
-      {
-	QSqlDatabase db = spoton_misc::database(connectionName);
-	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-			   "idiotes.db");
-
-	if(db.open())
-	  {
-	    QSqlQuery query(db);
-	    bool ok = true;
-
-	    query.prepare
-	      ("INSERT OR REPLACE INTO idiotes (id, private_key, public_key) "
-	       "VALUES (?, ?, ?)");
-	    query.bindValue(0, m_id);
-
-	    if(!privateKey.isEmpty())
-	      query.bindValue(1, encrypted(privateKey, &ok).toBase64());
-
-	    if(ok)
-	      if(!publicKey.isEmpty())
-		query.bindValue(2, encrypted(publicKey, &ok).toBase64());
-
-	    if(ok)
-	      {
-		if(!query.exec())
-		  {
-		    error = QObject::tr("QSqlQuery::exec() failure");
-		    spoton_misc::logError
-		      (QString("spoton_crypt::generateSslKeys(): "
-			       "QSqlQuery::exec() failure (%1).").
-		       arg(query.lastError().text()));
-		  }
-	      }
-	    else
-	      {
-		error = QObject::tr("encrypted() failure");
-		spoton_misc::logError
-		  ("spoton_crypt::generateSslKeys(): "
-		   "encrypted() failure.");
-	      }
-	  }
-
-	db.close();
-      }
-
-      QSqlDatabase::removeDatabase(connectionName);
-    }
 }
 
 void spoton_crypt::purgeDatabases(void)
@@ -2731,6 +2671,7 @@ void spoton_crypt::purgeDatabases(void)
 
 void spoton_crypt::generateCertificate(RSA *rsa,
 				       QByteArray &certificate,
+				       const QHostAddress &address,
 				       QString &error)
 {
   BIO *memory = 0;
@@ -2739,6 +2680,8 @@ void spoton_crypt::generateCertificate(RSA *rsa,
   X509 *x509 = 0;
   X509_NAME *name = 0;
   char *buffer = 0;
+
+  Q_UNUSED(address);
 
   if(!error.isEmpty())
     goto done_label;
@@ -2798,11 +2741,11 @@ void spoton_crypt::generateCertificate(RSA *rsa,
     }
 
   /*
-  ** Ten years?
+  ** Seven days.
   */
 
   if(X509_gmtime_adj(X509_get_notAfter(x509),
-		     static_cast<long> (60 * 60 * 24 * 365 * 10)) == 0)
+		     static_cast<long> (60 * 60 * 24 * 7)) == 0)
     {
       error = QObject::tr("X509_gmtime_adj() returned zero");
       spoton_misc::logError("spoton_crypt::generateCertificate(): "

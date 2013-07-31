@@ -45,6 +45,7 @@ extern "C"
 }
 
 #include <QByteArray>
+#include <QHostAddress>
 #include <QSslCipher>
 #include <QSslConfiguration>
 #include <QStringList>
@@ -88,6 +89,7 @@ class spoton_crypt
 			      QByteArray &certificate,
 			      QByteArray &privateKey,
 			      QByteArray &publicKey,
+			      const QHostAddress &address,
 			      QString &error);
   static void purgeDatabases(void);
   static void reencodeRSAKeys(const QString &newCipher,
@@ -122,7 +124,6 @@ class spoton_crypt
   size_t passphraseLength(void) const;
   size_t symmetricKeyLength(void) const;
   void generatePrivatePublicKeys(const int rsaKeySize, QString &error);
-  void generateSslKeys(const int rsaKeySize, QString &error);
   void initializePrivateKeyContainer(bool *ok);
 
  private:
@@ -153,6 +154,7 @@ class spoton_crypt
 				      gcry_cipher_hd_t cipherHandle);
   static void generateCertificate(RSA *rsa,
 				  QByteArray &certificate,
+				  const QHostAddress &address,
 				  QString &error);
   static void init(void);
 };

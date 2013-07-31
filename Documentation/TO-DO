@@ -81,18 +81,18 @@ Remaining Items
 15.    Colorful HTTP headers.
 16.    Custom protocol messages for rapid redeployment.
 17.    Customize expiration timers.
-18.    Include external IP addresses in listener certificates.
-19.    Provide a total silent mode. Cumbersome.
-20.    Provide complex IP blocking capabilities.
-21.    Include licenses of other software where applicable.
+18.    Provide a total silent mode. Cumbersome.
+19.    Provide complex IP blocking capabilities.
+20.    Include licenses of other software where applicable.
        Satisfy the license soldiers.
-22.    Entering geminis is difficult.
-23.    Allow bonds across connections.
-24.    Allow pass-through flow of non-Spot-On data.
-25.    Inbound data should be time-tagged. Nodes must purge
+21.    Entering geminis is difficult.
+22.    Allow bonds across connections.
+23.    Allow pass-through flow of non-Spot-On data.
+24.    Inbound data should be time-tagged. Nodes must purge
        containers of old data.
-26.    TTLs may be used to describe Spot-On graphs. Alternative?
-27.    Introduce load balancing of echoes. We're not interested in real-time
+25.    TTLs may be used to describe Spot-On graphs. Alternative?
+26.    Introduce load balancing of echoes. We're not interested in real-time
        responses. Congestion control is helpful, however, short graphs
        tend to be skewed.
-28.    Provide kernel and network statistics.
+27.    Provide kernel and network statistics.
+28.    Include external IP addresses in listener certificates.
