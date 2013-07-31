@@ -51,7 +51,7 @@ Completed Items
 33.    Complete max. Neighbors fields.
 34.    Do not destroy the children of an inactive listener. Provide a context
        menu action instead.
-35.    Create per-socket SSL certificates and keys.
+35.    Do not store SSL keys in listeners.db and neighbors.db.
 
 Remaining Items
 
