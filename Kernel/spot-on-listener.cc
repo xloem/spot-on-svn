@@ -361,6 +361,7 @@ void spoton_listener::slotNewConnection(const int keySize)
 	  SIGNAL(destroyed(void)),
 	  this,
 	  SLOT(slotNeighborDisconnected(void)));
+  updateConnectionCount();
 
   spoton_crypt *s_crypt = 0;
 
@@ -667,16 +668,15 @@ void spoton_listener::slotNewConnection(const int keySize)
 
   if(created && id != -1)
     {
-      updateConnectionCount();
       neighbor->setId(id);
       emit newNeighbor(neighbor);
     }
   else
     {
+      neighbor->deleteLater();
       spoton_misc::logError("spoton_listener::slotEncrypted(): "
 			    "severe error(s). Purging neighbor "
 			    "object.");
-      neighbor->deleteLater();
     }
 }
 

@@ -2357,8 +2357,7 @@ void spoton::updateListenersTable(const QSqlDatabase &db)
 	query.exec("UPDATE listeners SET connections = 0, "
 		   "external_ip_address = NULL, "
 		   "status = 'offline' WHERE "
-		   "(status = 'online' OR connections > 0) AND "
-		   "status_control <> 'deleted'");
+		   "status = 'online' OR connections > 0");
       }
 }
 
@@ -2398,9 +2397,8 @@ void spoton::updateNeighborsTable(const QSqlDatabase &db)
 		   "is_encrypted = 0, "
 		   "local_ip_address = NULL, "
 		   "local_port = NULL, status = 'disconnected' WHERE "
-		   "(local_ip_address IS NOT NULL OR local_port IS NOT NULL "
-		   "OR status <> 'disconnected') AND "
-		   "status_control <> 'deleted'");
+		   "local_ip_address IS NOT NULL OR local_port IS NOT NULL "
+		   "OR status <> 'disconnected'");
       }
 }
 
