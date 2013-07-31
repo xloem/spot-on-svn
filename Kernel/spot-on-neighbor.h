@@ -54,7 +54,7 @@ class spoton_neighbor: public QSslSocket
 		  const QString &scopeId,
 		  const qint64 id,
 		  const bool userDefined,
-		  const QByteArray &privateKey,
+		  const int keySize,
 		  const int maximumBufferSize,
 		  const int maximumContentLength,
 		  const QString &echoMode,
@@ -89,6 +89,7 @@ class spoton_neighbor: public QSslSocket
   QUuid m_receivedUuid;
   bool m_isUserDefined;
   bool m_useSsl;
+  int m_keySize;
   int m_maximumBufferSize;
   int m_maximumContentLength;
   qint64 m_id;

@@ -149,7 +149,6 @@ class spoton: public QMainWindow
   bool updateMailStatus(const QString &oid, const QString &status);
   int applyGoldbugToInboxLetter(const QByteArray &goldbug,
 				const int row);
-  int listenerSslKeySize(const QString &oid, const QSqlDatabase &db);
   void closeEvent(QCloseEvent *event);
   void countriesToggle(const bool state);
   void highlightKernelPath(void);

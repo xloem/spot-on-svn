@@ -319,14 +319,10 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT ip_address, port, scope_id, "
-		      "protocol, certificate, "
-		      "private_key, public_key, echo_mode, "
+		      "protocol, echo_mode, "
 		      "hash FROM listeners"))
 	  while(query.next())
 	    {
-	      QByteArray certificate;
-	      QByteArray privateKey;
-	      QByteArray publicKey;
 	      QSqlQuery updateQuery(db);
 	      QString echoMode("");
 	      QString ipAddress("");
@@ -341,9 +337,6 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "scope_id = ?, "
 				  "protocol = ?, "
 				  "hash = ?, "
-				  "certificate = ?, "
-				  "private_key = ?, "
-				  "public_key = ?, "
 				  "echo_mode = ? "
 				  "WHERE hash = ?");
 	      ipAddress = oldCrypt->decrypted(QByteArray::
@@ -374,24 +367,9 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 					       &ok).constData();
 
 	      if(ok)
-		certificate = oldCrypt->decrypted
-		  (QByteArray::fromBase64(query.value(4).toByteArray()),
-		   &ok);
-
-	      if(ok)
-		privateKey = oldCrypt->decrypted
-		  (QByteArray::fromBase64(query.value(5).toByteArray()),
-		   &ok);
-
-	      if(ok)
-		publicKey = oldCrypt->decrypted
-		  (QByteArray::fromBase64(query.value(6).toByteArray()),
-		   &ok);
-
-	      if(ok)
 		echoMode = oldCrypt->decrypted(QByteArray::
 					       fromBase64(query.
-							  value(7).
+							  value(4).
 							  toByteArray()),
 					       &ok).constData();
 
@@ -422,23 +400,11 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      if(ok)
 		updateQuery.bindValue
-		  (5, newCrypt->encrypted(certificate, &ok).toBase64());
-
-	      if(ok)
-		updateQuery.bindValue
-		  (6, newCrypt->encrypted(privateKey, &ok).toBase64());
-
-	      if(ok)
-		updateQuery.bindValue
-		  (7, newCrypt->encrypted(publicKey, &ok).toBase64());
-
-	      if(ok)
-		updateQuery.bindValue
-		  (8, newCrypt->
+		  (5, newCrypt->
 		   encrypted(echoMode.toLatin1(), &ok).toBase64());
 
 	      updateQuery.bindValue
-		(9, query.value(8));
+		(6, query.value(5));
 
 	      if(ok)
 		updateQuery.exec();
@@ -448,7 +414,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 		  deleteQuery.prepare("DELETE FROM listeners WHERE "
 				      "hash = ?");
-		  deleteQuery.bindValue(0, query.value(8));
+		  deleteQuery.bindValue(0, query.value(5));
 		  deleteQuery.exec();
 		}
 	    }
@@ -478,13 +444,11 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	if(query.exec("SELECT remote_ip_address, remote_port, "
 		      "scope_id, country, hash, proxy_hostname, "
 		      "proxy_password, proxy_port, proxy_type, "
-		      "proxy_username, private_key, public_key, uuid, "
+		      "proxy_username, uuid, "
 		      "echo_mode "
 		      "FROM neighbors"))
 	  while(query.next())
 	    {
-	      QByteArray privateKey;
-	      QByteArray publicKey;
 	      QByteArray uuid;
 	      QSqlQuery updateQuery(db);
 	      QString country("");
@@ -512,8 +476,6 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "proxy_port = ?, "
 				  "proxy_type = ?, "
 				  "proxy_username = ?, "
-				  "private_key = ?, "
-				  "public_key = ?, "
 				  "uuid = ?, "
 				  "echo_mode = ? "
 				  "WHERE hash = ?");
@@ -580,29 +542,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 						    &ok).constData();
 
 	      if(ok)
-		privateKey = oldCrypt->decrypted(QByteArray::
-						 fromBase64(query.
-							    value(10).
-							    toByteArray()),
-						 &ok);
-
-	      if(ok)
-		publicKey = oldCrypt->decrypted(QByteArray::
-						fromBase64(query.
-							   value(11).
-							   toByteArray()),
-						&ok);
-
-	      if(ok)
-		uuid = oldCrypt->decrypted(QByteArray::
-					   fromBase64(query.
-						      value(12).
-						      toByteArray()),
-					   &ok);
-
-	      if(ok)
 		echoMode = oldCrypt->decrypted
-		  (QByteArray::fromBase64(query.value(13).toByteArray()),
+		  (QByteArray::fromBase64(query.value(10).toByteArray()),
 		   &ok).constData();
 
 	      if(ok)
@@ -667,25 +608,15 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      if(ok)
 		updateQuery.bindValue
-		  (12, newCrypt->encrypted(privateKey, &ok).
-		   toBase64());
+		  (12, newCrypt->encrypted(uuid, &ok).toBase64());
 
 	      if(ok)
 		updateQuery.bindValue
-		  (13, newCrypt->encrypted(publicKey, &ok).
-		   toBase64());
-
-	      if(ok)
-		updateQuery.bindValue
-		  (14, newCrypt->encrypted(uuid, &ok).toBase64());
-
-	      if(ok)
-		updateQuery.bindValue
-		  (15, newCrypt->encrypted(echoMode.toLatin1(),
+		  (13, newCrypt->encrypted(echoMode.toLatin1(),
 					   &ok).toBase64());
 
 	      updateQuery.bindValue
-		(16, query.value(4));
+		(14, query.value(4));
 
 	      if(ok)
 		updateQuery.exec();

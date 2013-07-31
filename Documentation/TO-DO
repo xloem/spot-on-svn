@@ -51,6 +51,7 @@ Completed Items
 33.    Complete max. Neighbors fields.
 34.    Do not destroy the children of an inactive listener. Provide a context
        menu action instead.
+35.    Create per-socket SSL certificates and keys.
 
 Remaining Items
 
@@ -89,3 +90,4 @@ Remaining Items
        responses. Congestion control is helpful, however, short graphs
        tend to be skewed.
 29.    Provide kernel and network statistics.
+30.    The number of connections in the Listeners table may be incorrect.

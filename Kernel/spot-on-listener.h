@@ -47,11 +47,16 @@ class spoton_listener_tcp_server: public QTcpServer
 
  public:
   spoton_listener_tcp_server(const qint64 id, const QString &echoMode,
-			     QObject *parent):
+			     const int keySize, QObject *parent):
     QTcpServer(parent)
   {
     m_echoMode = echoMode;
     m_id = id;
+    m_keySize = qAbs(keySize);
+
+    if(m_keySize != 0)
+      if(!(m_keySize == 2048 || m_keySize == 3072 || m_keySize == 4096))
+	m_keySize = 2048;
   }
 
   ~spoton_listener_tcp_server()
@@ -76,10 +81,11 @@ class spoton_listener_tcp_server: public QTcpServer
  private:
   QQueue<QPointer<spoton_neighbor> > m_queue;
   QString m_echoMode;
+  int m_keySize;
   qint64 m_id;
 
  signals:
-  void newConnection(const QByteArray &privateKey);
+  void newConnection(const int keySize);
 };
 
 class spoton_listener: public spoton_listener_tcp_server
@@ -93,6 +99,7 @@ class spoton_listener: public spoton_listener_tcp_server
 		  const int maximumClients,
 		  const qint64 id,
 		  const QString &echoMode,
+		  const int keySize,
 		  QObject *parent);
   ~spoton_listener();
   QHostAddress externalAddress(void) const;
@@ -119,7 +126,7 @@ class spoton_listener: public spoton_listener_tcp_server
   void slotDiscoverExternalAddress(void);
   void slotExternalAddressDiscovered(const QHostAddress &address);
   void slotNeighborDisconnected(void);
-  void slotNewConnection(const QByteArray &privateKey);
+  void slotNewConnection(const int keySize);
   void slotTimeout(void);
 
  signals:

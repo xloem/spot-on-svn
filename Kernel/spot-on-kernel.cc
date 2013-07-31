@@ -483,12 +483,12 @@ void spoton_kernel::prepareListeners(void)
 
 	if(query.exec("SELECT ip_address, port, scope_id, echo_mode, "
 		      "status_control, "
-		      "maximum_clients, OID FROM listeners"))
+		      "maximum_clients, ssl_key_size, OID FROM listeners"))
 	  while(query.next())
 	    {
 	      QPointer<spoton_listener> listener = 0;
 	      QString status(query.value(4).toString());
-	      qint64 id = query.value(6).toLongLong();
+	      qint64 id = query.value(7).toLongLong();
 
 	      /*
 	      ** We're only interested in creating objects for
@@ -558,6 +558,7 @@ void spoton_kernel::prepareListeners(void)
 			     maximumClients,
 			     id,
 			     list.value(3).constData(),
+			     query.value(6).toInt(),
 			     this);
 			}
 
@@ -630,7 +631,7 @@ void spoton_kernel::prepareNeighbors(void)
 	if(query.exec("SELECT remote_ip_address, remote_port, scope_id, "
 		      "status_control, proxy_hostname, proxy_password, "
 		      "proxy_port, proxy_type, proxy_username, "
-		      "user_defined, private_key, "
+		      "user_defined, ssl_key_size, "
 		      "maximum_buffer_size, maximum_content_length, "
 		      "echo_mode, "
 		      "OID FROM neighbors"))
@@ -653,6 +654,8 @@ void spoton_kernel::prepareNeighbors(void)
 			  list.append("connected");
 			else if(i == 9) // user_defined
 			  list.append(userDefined);
+			else if(i == 10) // ssl_key_size
+			  list.append(query.value(i).toInt());
 			else if(i == 11 || // maximum_buffer_size
 				i == 12)   // maximum_content_length
 			  list.append(query.value(i).toInt());
@@ -744,7 +747,7 @@ void spoton_kernel::prepareNeighbors(void)
 			     list.value(2).toByteArray().constData(),
 			     id,
 			     userDefined,
-			     list.value(10).toByteArray(),
+			     list.value(10).toInt(),
 			     list.value(11).toInt(),
 			     list.value(12).toInt(),
 			     list.value(13).toByteArray().constData(),

@@ -25,8 +25,6 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QSslKey>
-
 #include "spot-on.h"
 
 int main(int argc, char *argv[])
@@ -908,78 +906,222 @@ void spoton::slotAddListener(void)
   if(!m_crypt)
     return;
 
-  if(m_ui.sslListener->isChecked())
-    {
-      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-      m_sb.status->setText
-	(tr("Generating SSL data. Please be patient."));
-      QApplication::processEvents();
-    }
+  spoton_misc::prepareDatabases();
 
-  QByteArray certificate;
-  QByteArray privateKey;
-  QByteArray publicKey;
-  QString error("");
+  QString connectionName("");
   bool ok = true;
 
-  if(m_ui.sslListener->isChecked())
-    spoton_crypt::generateSslKeys
-      (m_ui.listenerKeySize->currentText().toInt(),
-       certificate,
-       privateKey,
-       publicKey,
-       error);
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
-  if(error.isEmpty())
-    {
-      spoton_misc::prepareDatabases();
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "listeners.db");
 
-      QString connectionName("");
-
+    if(db.open())
       {
-	QSqlDatabase db = spoton_misc::database(connectionName);
+	QString ip("");
 
-	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-			   "listeners.db");
+	if(m_ui.listenerIPCombo->currentIndex() == 0)
+	  ip = m_ui.listenerIP->text().trimmed();
+	else
+	  ip = m_ui.listenerIPCombo->currentText();
 
-	if(db.open())
+	QString port(QString::number(m_ui.listenerPort->value()));
+	QString protocol("");
+	QString scopeId(m_ui.listenerScopeId->text().trimmed());
+	QString status("online");
+	QSqlQuery query(db);
+
+	if(m_ui.ipv4Listener->isChecked())
+	  protocol = "IPv4";
+	else
+	  protocol = "IPv6";
+
+	query.prepare("INSERT INTO listeners "
+		      "(ip_address, "
+		      "port, "
+		      "protocol, "
+		      "scope_id, "
+		      "status_control, "
+		      "hash, "
+		      "echo_mode, "
+		      "ssl_key_size) "
+		      "VALUES "
+		      "(?, ?, ?, ?, ?, ?, ?, ?)");
+
+	if(ip.isEmpty())
+	  query.bindValue
+	    (0, m_crypt->encrypted(QByteArray(), &ok).toBase64());
+	else
 	  {
-	    QString ip("");
+	    QStringList digits;
+	    QStringList list;
 
-	    if(m_ui.listenerIPCombo->currentIndex() == 0)
-	      ip = m_ui.listenerIP->text().trimmed();
+	    if(protocol == "IPv4")
+	      list = ip.split(".", QString::KeepEmptyParts);
 	    else
-	      ip = m_ui.listenerIPCombo->currentText();
+	      list = ip.split(":", QString::KeepEmptyParts);
 
-	    QString port(QString::number(m_ui.listenerPort->value()));
-	    QString protocol("");
-	    QString scopeId(m_ui.listenerScopeId->text().trimmed());
-	    QString status("online");
-	    QSqlQuery query(db);
+	    for(int i = 0; i < list.size(); i++)
+	      digits.append(list.at(i));
 
-	    if(m_ui.ipv4Listener->isChecked())
-	      protocol = "IPv4";
+	    if(protocol == "IPv4")
+	      {
+		ip = digits.value(0) + "." +
+		  digits.value(1) + "." +
+		  digits.value(2) + "." +
+		  digits.value(3);
+		ip.remove("...");
+	      }
 	    else
-	      protocol = "IPv6";
+	      {
+		if(m_ui.listenerIPCombo->currentIndex() == 0)
+		  {
+		    ip = digits.value(0) + ":" +
+		      digits.value(1) + ":" +
+		      digits.value(2) + ":" +
+		      digits.value(3) + ":" +
+		      digits.value(4) + ":" +
+		      digits.value(5) + ":" +
+		      digits.value(6) + ":" +
+		      digits.value(7);
+		    ip.remove(":::::::");
 
-	    query.prepare("INSERT INTO listeners "
-			  "(ip_address, "
-			  "port, "
-			  "protocol, "
-			  "scope_id, "
-			  "status_control, "
-			  "hash, "
-			  "certificate, "
-			  "private_key, "
-			  "public_key, "
-			  "echo_mode) "
-			  "VALUES "
-			  "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		    /*
+		    ** Special exception.
+		    */
 
-	    if(ip.isEmpty())
+		    if(ip == "0:0:0:0:0:0:0:0")
+		      ip = "::";
+		  }
+	      }
+
+	    if(ok)
 	      query.bindValue
-		(0, m_crypt->encrypted(QByteArray(), &ok).toBase64());
+		(0, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
+	  }
+
+	if(ok)
+	  query.bindValue
+	    (1, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (2, m_crypt->encrypted(protocol.toLatin1(), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (3, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
+
+	query.bindValue(4, status);
+
+	if(ok)
+	  query.bindValue
+	    (5, m_crypt->keyedHash((ip + port + scopeId).toLatin1(), &ok).
+	     toBase64());
+
+	if(ok)
+	  {
+	    if(m_ui.listenersEchoMode->currentIndex() == 0)
+	      query.bindValue
+		(6, m_crypt->encrypted(QByteArray("full"),
+				       &ok).toBase64());
 	    else
+	      query.bindValue
+		(6, m_crypt->encrypted(QByteArray("half"),
+				       &ok).toBase64());
+	  }
+
+	if(m_ui.sslListener->isChecked())
+	  query.bindValue(7, m_ui.listenerKeySize->currentText().toInt());
+	else
+	  query.bindValue(7, 0);
+
+	if(ok)
+	  ok = query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  if(ok)
+    m_ui.listenerIP->selectAll();
+}
+
+void spoton::slotAddNeighbor(void)
+{
+  if(!m_crypt)
+    return;
+
+  spoton_misc::prepareDatabases();
+
+  QString connectionName("");
+  bool ok = true;
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	QString ip(m_ui.neighborIP->text().trimmed());
+	QString port(QString::number(m_ui.neighborPort->value()));
+	QString protocol("");
+	QString proxyHostname("");
+	QString proxyPassword("");
+	QString proxyPort("1");
+	QString proxyType("");
+	QString proxyUsername("");
+	QString scopeId(m_ui.neighborScopeId->text().trimmed());
+	QString status("connected");
+	QSqlQuery query(db);
+
+	if(m_ui.ipv4Neighbor->isChecked())
+	  protocol = "IPv4";
+	else if(m_ui.ipv6Neighbor->isChecked())
+	  protocol = "IPv6";
+	else
+	  protocol = "Dynamic DNS";
+
+	query.prepare("INSERT INTO neighbors "
+		      "(local_ip_address, "
+		      "local_port, "
+		      "protocol, "
+		      "remote_ip_address, "
+		      "remote_port, "
+		      "sticky, "
+		      "scope_id, "
+		      "hash, "
+		      "status_control, "
+		      "country, "
+		      "remote_ip_address_hash, "
+		      "qt_country_hash, "
+		      "proxy_hostname, "
+		      "proxy_password, "
+		      "proxy_port, "
+		      "proxy_type, "
+		      "proxy_username, "
+		      "uuid, "
+		      "echo_mode, "
+		      "ssl_key_size) "
+		      "VALUES "
+		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+		      "?, ?, ?, ?, ?, ?, ?)");
+
+	query.bindValue(0, QVariant(QVariant::String));
+	query.bindValue(1, QVariant(QVariant::String));
+	query.bindValue(2, protocol);
+
+	if(ip.isEmpty())
+	  query.bindValue
+	    (3, m_crypt->encrypted(QByteArray(), &ok).toBase64());
+	else
+	  {
+	    if(protocol == "IPv4" || protocol == "IPv6")
 	      {
 		QStringList digits;
 		QStringList list;
@@ -992,6 +1134,8 @@ void spoton::slotAddListener(void)
 		for(int i = 0; i < list.size(); i++)
 		  digits.append(list.at(i));
 
+		ip.clear();
+
 		if(protocol == "IPv4")
 		  {
 		    ip = digits.value(0) + "." +
@@ -1002,376 +1146,149 @@ void spoton::slotAddListener(void)
 		  }
 		else
 		  {
-		    if(m_ui.listenerIPCombo->currentIndex() == 0)
-		      {
-			ip = digits.value(0) + ":" +
-			  digits.value(1) + ":" +
-			  digits.value(2) + ":" +
-			  digits.value(3) + ":" +
-			  digits.value(4) + ":" +
-			  digits.value(5) + ":" +
-			  digits.value(6) + ":" +
-			  digits.value(7);
-			ip.remove(":::::::");
+		    ip = digits.value(0) + ":" +
+		      digits.value(1) + ":" +
+		      digits.value(2) + ":" +
+		      digits.value(3) + ":" +
+		      digits.value(4) + ":" +
+		      digits.value(5) + ":" +
+		      digits.value(6) + ":" +
+		      digits.value(7);
+		    ip.remove(":::::::");
 
-			/*
-			** Special exception.
-			*/
+		    /*
+		    ** Special exception.
+		    */
 
-			if(ip == "0:0:0:0:0:0:0:0")
-			  ip = "::";
-		      }
+		    if(ip == "0:0:0:0:0:0:0:0")
+		      ip = "::";
 		  }
-
-		if(ok)
-		  query.bindValue
-		    (0, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
 	      }
 
 	    if(ok)
 	      query.bindValue
-		(1, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(2, m_crypt->encrypted(protocol.toLatin1(), &ok).toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(3, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
-
-	    query.bindValue(4, status);
-
-	    if(ok)
-	      query.bindValue
-		(5, m_crypt->keyedHash((ip + port + scopeId).toLatin1(), &ok).
-		 toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(6, m_crypt->encrypted(certificate, &ok).toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(7, m_crypt->encrypted(privateKey, &ok).toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(8, m_crypt->encrypted(publicKey, &ok).toBase64());
-
-	    if(ok)
-	      {
-		if(m_ui.listenersEchoMode->currentIndex() == 0)
-		  query.bindValue
-		    (9, m_crypt->encrypted(QByteArray("full"),
-					   &ok).toBase64());
-		else
-		  query.bindValue
-		    (9, m_crypt->encrypted(QByteArray("half"),
-					   &ok).toBase64());
-	      }
-
-	    if(ok)
-	      ok = query.exec();
+		(3, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
 	  }
 
-	db.close();
-      }
+	query.bindValue(5, 1); // Sticky.
 
-      QSqlDatabase::removeDatabase(connectionName);
-    }
-  else
-    ok = false;
+	if(ok)
+	  query.bindValue
+	    (4, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
 
-  if(m_ui.sslListener->isChecked())
-    {
-      m_sb.status->clear();
-      QApplication::restoreOverrideCursor();
-    }
+	if(ok)
+	  query.bindValue
+	    (6, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
 
-  if(ok)
-    m_ui.listenerIP->selectAll();
-  else if(!error.remove(".").trimmed().isEmpty())
-    QMessageBox::critical(this, tr("Spot-On: Error"),
-			  tr("An error (%1) occurred with spoton_crypt::"
-			     "generateSslKeys().").arg(error.remove(".")));
-}
-
-void spoton::slotAddNeighbor(void)
-{
-  if(!m_crypt)
-    return;
-
-  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-  m_sb.status->setText
-    (tr("Generating SSL data. Please be patient."));
-  QApplication::processEvents();
-
-  QByteArray certificate;
-  QByteArray privateKey;
-  QByteArray publicKey;
-  QString error("");
-  bool ok = true;
-
-  spoton_crypt::generateSslKeys
-    (m_ui.neighborKeySize->currentText().toInt(),
-     certificate,
-     privateKey,
-     publicKey,
-     error);
-
-  if(error.isEmpty())
-    {
-      spoton_misc::prepareDatabases();
-
-      QString connectionName("");
-
-      {
-	QSqlDatabase db = spoton_misc::database(connectionName);
-
-	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-			   "neighbors.db");
-
-	if(db.open())
+	if(m_ui.proxy->isChecked())
 	  {
-	    QString ip(m_ui.neighborIP->text().trimmed());
-	    QString port(QString::number(m_ui.neighborPort->value()));
-	    QString protocol("");
-	    QString proxyHostname("");
-	    QString proxyPassword("");
-	    QString proxyPort("1");
-	    QString proxyType("");
-	    QString proxyUsername("");
-	    QString scopeId(m_ui.neighborScopeId->text().trimmed());
-	    QString status("connected");
-	    QSqlQuery query(db);
-
-	    if(m_ui.ipv4Neighbor->isChecked())
-	      protocol = "IPv4";
-	    else if(m_ui.ipv6Neighbor->isChecked())
-	      protocol = "IPv6";
-	    else
-	      protocol = "Dynamic DNS";
-
-	    query.prepare("INSERT INTO neighbors "
-			  "(local_ip_address, "
-			  "local_port, "
-			  "protocol, "
-			  "remote_ip_address, "
-			  "remote_port, "
-			  "sticky, "
-			  "scope_id, "
-			  "hash, "
-			  "status_control, "
-			  "country, "
-			  "remote_ip_address_hash, "
-			  "qt_country_hash, "
-			  "proxy_hostname, "
-			  "proxy_password, "
-			  "proxy_port, "
-			  "proxy_type, "
-			  "proxy_username, "
-			  "private_key, "
-			  "public_key, "
-			  "uuid, "
-			  "echo_mode) "
-			  "VALUES "
-			  "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-			  "?, ?, ?, ?, ?, ?, ?)");
-
-	    query.bindValue(0, QVariant(QVariant::String));
-	    query.bindValue(1, QVariant(QVariant::String));
-	    query.bindValue(2, protocol);
-
-	    if(ip.isEmpty())
-	      query.bindValue
-		(3, m_crypt->encrypted(QByteArray(), &ok).toBase64());
-	    else
-	      {
-		if(protocol == "IPv4" || protocol == "IPv6")
-		  {
-		    QStringList digits;
-		    QStringList list;
-
-		    if(protocol == "IPv4")
-		      list = ip.split(".", QString::KeepEmptyParts);
-		    else
-		      list = ip.split(":", QString::KeepEmptyParts);
-
-		    for(int i = 0; i < list.size(); i++)
-		      digits.append(list.at(i));
-
-		    ip.clear();
-
-		    if(protocol == "IPv4")
-		      {
-			ip = digits.value(0) + "." +
-			  digits.value(1) + "." +
-			  digits.value(2) + "." +
-			  digits.value(3);
-			ip.remove("...");
-		      }
-		    else
-		      {
-			ip = digits.value(0) + ":" +
-			  digits.value(1) + ":" +
-			  digits.value(2) + ":" +
-			  digits.value(3) + ":" +
-			  digits.value(4) + ":" +
-			  digits.value(5) + ":" +
-			  digits.value(6) + ":" +
-			  digits.value(7);
-			ip.remove(":::::::");
-
-			/*
-			** Special exception.
-			*/
-
-			if(ip == "0:0:0:0:0:0:0:0")
-			  ip = "::";
-		      }
-		  }
-
-		if(ok)
-		  query.bindValue
-		    (3, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
-	      }
-
-	    query.bindValue(5, 1); // Sticky.
-
-	    if(ok)
-	      query.bindValue
-		(4, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(6, m_crypt->encrypted(scopeId.toLatin1(), &ok).toBase64());
-
-	    if(m_ui.proxy->isChecked())
-	      {
-		proxyHostname = m_ui.proxyHostname->text().trimmed();
-		proxyPort = QString::number(m_ui.proxyPort->value());
-	      }
-
-	    if(ok)
-	      query.bindValue
-		(7, m_crypt->
-		 keyedHash((proxyHostname + proxyPort + ip + port + scopeId).
-			   toLatin1(), &ok).
-		 toBase64());
-
-	    query.bindValue(8, status);
-
-	    QString country(spoton_misc::countryNameFromIPAddress(ip));
-
-	    if(ok)
-	      query.bindValue
-		(9, m_crypt->encrypted(country.toLatin1(), &ok).toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(10, m_crypt->keyedHash(ip.toLatin1(), &ok).
-		 toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(11, m_crypt->keyedHash(country.remove(" ").toLatin1(), &ok).
-		 toBase64());
-
-	    if(m_ui.proxy->isChecked())
-	      proxyPassword = m_ui.proxyPassword->text();
-
-	    if(m_ui.proxy->isChecked())
-	      {
-		/*
-		** Avoid translation mishaps.
-		*/
-
-		if(m_ui.proxyType->currentIndex() == 0)
-		  proxyType = "HTTP";
-		else if(m_ui.proxyType->currentIndex() == 1)
-		  proxyType = "Socks5";
-		else
-		  proxyType = "System";
-	      }
-	    else
-	      proxyType = "NoProxy";
-
-	    if(m_ui.proxy->isChecked())
-	      proxyUsername = m_ui.proxyUsername->text();
-
-	    if(ok)
-	      query.bindValue
-		(12, m_crypt->encrypted(proxyHostname.toLatin1(), &ok).
-		 toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(13, m_crypt->encrypted(proxyPassword.toUtf8(), &ok).
-		 toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(14, m_crypt->encrypted(proxyPort.toLatin1(),
-					&ok).toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(15, m_crypt->encrypted(proxyType.toLatin1(), &ok).
-		 toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(16, m_crypt->encrypted(proxyUsername.toUtf8(), &ok).
-		 toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(17, m_crypt->encrypted(privateKey, &ok).toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(18, m_crypt->encrypted(publicKey, &ok).toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(19, m_crypt->
-		 encrypted(QByteArray("{00000000-0000-0000-0000-"
-				      "000000000000}"), &ok).toBase64());
-
-	    if(ok)
-	      {
-		if(m_ui.neighborsEchoMode->currentIndex() == 0)
-		  query.bindValue
-		    (20, m_crypt->
-		     encrypted(QByteArray("full"), &ok).toBase64());
-		else
-		  query.bindValue
-		    (20, m_crypt->
-		     encrypted(QByteArray("half"), &ok).toBase64());
-	      }
-
-	    if(ok)
-	      ok = query.exec();
+	    proxyHostname = m_ui.proxyHostname->text().trimmed();
+	    proxyPort = QString::number(m_ui.proxyPort->value());
 	  }
 
-	db.close();
+	if(ok)
+	  query.bindValue
+	    (7, m_crypt->
+	     keyedHash((proxyHostname + proxyPort + ip + port + scopeId).
+		       toLatin1(), &ok).
+	     toBase64());
+
+	query.bindValue(8, status);
+
+	QString country(spoton_misc::countryNameFromIPAddress(ip));
+
+	if(ok)
+	  query.bindValue
+	    (9, m_crypt->encrypted(country.toLatin1(), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (10, m_crypt->keyedHash(ip.toLatin1(), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (11, m_crypt->keyedHash(country.remove(" ").toLatin1(), &ok).
+	     toBase64());
+
+	if(m_ui.proxy->isChecked())
+	  proxyPassword = m_ui.proxyPassword->text();
+
+	if(m_ui.proxy->isChecked())
+	  {
+	    /*
+	    ** Avoid translation mishaps.
+	    */
+
+	    if(m_ui.proxyType->currentIndex() == 0)
+	      proxyType = "HTTP";
+	    else if(m_ui.proxyType->currentIndex() == 1)
+	      proxyType = "Socks5";
+	    else
+	      proxyType = "System";
+	  }
+	else
+	  proxyType = "NoProxy";
+
+	if(m_ui.proxy->isChecked())
+	  proxyUsername = m_ui.proxyUsername->text();
+
+	if(ok)
+	  query.bindValue
+	    (12, m_crypt->encrypted(proxyHostname.toLatin1(), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (13, m_crypt->encrypted(proxyPassword.toUtf8(), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (14, m_crypt->encrypted(proxyPort.toLatin1(),
+				    &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (15, m_crypt->encrypted(proxyType.toLatin1(), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (16, m_crypt->encrypted(proxyUsername.toUtf8(), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (17, m_crypt->
+	     encrypted(QByteArray("{00000000-0000-0000-0000-"
+				  "000000000000}"), &ok).toBase64());
+
+	if(ok)
+	  {
+	    if(m_ui.neighborsEchoMode->currentIndex() == 0)
+	      query.bindValue
+		(18, m_crypt->
+		 encrypted(QByteArray("full"), &ok).toBase64());
+	    else
+	      query.bindValue
+		(18, m_crypt->
+		 encrypted(QByteArray("half"), &ok).toBase64());
+	  }
+
+	query.bindValue(19, m_ui.neighborKeySize->currentText().toInt());
+
+	if(ok)
+	  ok = query.exec();
       }
 
-      QSqlDatabase::removeDatabase(connectionName);
-    }
-  else
-    ok = false;
+    db.close();
+  }
 
-  m_sb.status->clear();
-  QApplication::restoreOverrideCursor();
+  QSqlDatabase::removeDatabase(connectionName);
 
   if(ok)
     m_ui.neighborIP->selectAll();
-  else if(!error.remove(".").trimmed().isEmpty())
-    QMessageBox::critical(this, tr("Spot-On: Error"),
-			  tr("An error (%1) occurred with spoton_crypt::"
-			     "generateSslKeys().").arg(error.remove(".")));
 }
 
 void spoton::slotHideOfflineParticipants(bool state)
@@ -1515,7 +1432,7 @@ void spoton::slotPopulateListeners(void)
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT "
-		      "status_control, status, 0, "
+		      "status_control, status, ssl_key_size, "
 		      "ip_address, port, scope_id, protocol, "
 		      "external_ip_address, external_port, "
 		      "connections, maximum_clients, echo_mode, OID "
@@ -1553,10 +1470,7 @@ void spoton::slotPopulateListeners(void)
 		      }
 		    else if(i == 2)
 		      {
-			int keySize = listenerSslKeySize
-			  (query.value(12).toString(), db);
-
-			if(keySize == -1)
+			if(query.value(i).toInt() == 0)
 			  {
 			    item = new QTableWidgetItem("0");
 			    item->setBackground
@@ -1565,7 +1479,7 @@ void spoton::slotPopulateListeners(void)
 			else
 			  {
 			    item = new QTableWidgetItem
-			      (QString::number(keySize));
+			      (query.value(i).toString());
 			    item->setBackground(QBrush());
 			  }
 		      }
@@ -1787,7 +1701,7 @@ void spoton::slotPopulateNeighbors(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT sticky, uuid, status, private_key, "
+	if(query.exec("SELECT sticky, uuid, status, ssl_key_size, "
 		      "status_control, "
 		      "local_ip_address, local_port, "
 		      "external_ip_address, external_port, "
@@ -1874,9 +1788,7 @@ void spoton::slotPopulateNeighbors(void)
 			      }
 			    else if(i == 3) // SSL Key Size
 			      {
-				QSslKey key(bytes, QSsl::Rsa);
-
-				if(key.length() == -1)
+				if(query.value(i).toInt() == 0)
 				  {
 				    item = new QTableWidgetItem("0");
 				    item->setBackground
@@ -1885,7 +1797,7 @@ void spoton::slotPopulateNeighbors(void)
 				else
 				  {
 				    item = new QTableWidgetItem
-				      (QString::number(key.length()));
+				      (query.value(i).toString());
 				    item->setBackground(QBrush());
 				  }
 			      }
@@ -4056,57 +3968,6 @@ void spoton::countriesToggle(const bool state)
     }
 
   QApplication::restoreOverrideCursor();
-}
-
-int spoton::listenerSslKeySize(const QString &oid,
-			       const QSqlDatabase &db)
-{
-  if(!db.isOpen())
-    return -1;
-  else if(!m_crypt)
-    return -1;
-
-  QSqlQuery query(db);
-  QSslKey key;
-
-  if(query.exec(QString("SELECT certificate, private_key "
-			"FROM listeners WHERE OID = %1").arg(oid)))
-    if(query.next())
-      {
-	QByteArray certificate;
-	QByteArray privateKey;
-	QSslCertificate localCertificate;
-	bool ok = true;
-
-	certificate = m_crypt->
-	  decrypted(QByteArray::fromBase64(query.
-					   value(0).
-					   toByteArray()),
-		    &ok);
-
-	if(ok)
-	  privateKey = m_crypt->decrypted
-	    (QByteArray::fromBase64(query.
-				    value(1).
-				    toByteArray()),
-	     &ok);
-
-	if(ok)
-	  {
-	    key = QSslKey(privateKey, QSsl::Rsa);
-	    localCertificate = QSslCertificate(certificate);
-
-#if QT_VERSION < 0x050000
-	    if(!localCertificate.isValid())
-	      key = QSslKey();
-#else
-	    if(localCertificate.isNull())
-	      key = QSslKey();
-#endif
-	  }
-      }
-
-  return key.length();
 }
 
 void spoton::slotKernelLogEvents(bool state)

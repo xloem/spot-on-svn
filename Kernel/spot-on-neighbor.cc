@@ -196,13 +196,18 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const QString &scopeId,
 				 const qint64 id,
 				 const bool userDefined,
-				 const QByteArray &privateKey,
+				 const int keySize,
 				 const int maximumBufferSize,
 				 const int maximumContentLength,
 				 const QString &echoMode,
 				 QObject *parent):QSslSocket(parent)
 {
   m_echoMode = echoMode;
+  m_keySize = qAbs(keySize);
+
+  if(!(m_keySize == 2048 || m_keySize == 3072 || m_keySize == 4096))
+    m_keySize = 2048;
+
   m_isUserDefined = userDefined;
   m_maximumBufferSize =
     qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
@@ -219,6 +224,24 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 							** We have our
 							** own mechanism.
 							*/
+
+  QByteArray certificate;
+  QByteArray privateKey;
+  QByteArray publicKey;
+  QString error("");
+
+  spoton_crypt::generateSslKeys
+    (m_keySize,
+     certificate,
+     privateKey,
+     publicKey,
+     error);
+
+  if(!error.isEmpty())
+    spoton_misc::logError
+      (QString("spoton_neighbor:: "
+	       "spoton_neighbor(): "
+	       "generateSslKeys() failure (%1).").arg(error.remove(".")));
 
   if(!privateKey.isEmpty())
     {

@@ -43,7 +43,7 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 {
   if(findChildren<spoton_neighbor *> ().size() >= maxPendingConnections())
     {
-      QSslSocket socket;
+      QTcpSocket socket;
 
       socket.setSocketDescriptor(socketDescriptor);
       socket.close();
@@ -52,60 +52,40 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
     {
       QByteArray certificate;
       QByteArray privateKey;
-      QString connectionName("");
-      spoton_crypt *s_crypt = 0;
+      QString error("");
 
-      if(spoton_kernel::s_crypts.contains("messaging"))
-	s_crypt = spoton_kernel::s_crypts["messaging"];
-
-      if(s_crypt)
+      if(m_keySize != 0)
 	{
-	  {
-	    QSqlDatabase db = spoton_misc::database(connectionName);
+	  QByteArray publicKey;
 
-	    db.setDatabaseName
-	      (spoton_misc::homePath() + QDir::separator() + "listeners.db");
-
-	    if(db.open())
-	      {
-		QSqlQuery query(db);
-
-		query.setForwardOnly(true);
-		query.prepare("SELECT certificate, private_key "
-			      "FROM listeners WHERE OID = ?");
-		query.bindValue(0, m_id);
-
-		if(query.exec())
-		  if(query.next())
-		    {
-		      bool ok = true;
-
-		      certificate = s_crypt->decrypted
-			(QByteArray::fromBase64(query.
-						value(0).
-						toByteArray()),
-			 &ok);
-
-		      if(ok)
-			privateKey = s_crypt->decrypted
-			  (QByteArray::fromBase64(query.
-						  value(1).
-						  toByteArray()),
-			   &ok);
-		    }
-	      }
-
-	    db.close();
-	  }
-
-	  QSqlDatabase::removeDatabase(connectionName);
+	  spoton_crypt::generateSslKeys
+	    (m_keySize,
+	     certificate,
+	     privateKey,
+	     publicKey,
+	     error);
 	}
 
-      QPointer<spoton_neighbor> neighbor = new spoton_neighbor
-	(socketDescriptor, certificate, privateKey, m_echoMode, this);
+      if(error.isEmpty())
+	{
+	  QPointer<spoton_neighbor> neighbor = new spoton_neighbor
+	    (socketDescriptor, certificate, privateKey, m_echoMode, this);
 
-      m_queue.enqueue(neighbor);
-      emit newConnection(privateKey);
+	  m_queue.enqueue(neighbor);
+	  emit newConnection(m_keySize);
+	}
+      else
+	{
+	  QTcpSocket socket;
+
+	  socket.setSocketDescriptor(socketDescriptor);
+	  socket.close();
+	  spoton_misc::logError
+	    (QString("spoton_listener_tcp_server::"
+		     "incomingConnection(): "
+		     "generateSslKeys() failure (%1).").
+	     arg(error.remove(".")));
+	}
     }
 }
 
@@ -115,8 +95,9 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 				 const int maximumClients,
 				 const qint64 id,
 				 const QString &echoMode,
+				 const int keySize,
 				 QObject *parent):
-  spoton_listener_tcp_server(id, echoMode, parent)
+  spoton_listener_tcp_server(id, echoMode, keySize, parent)
 {
   m_address = QHostAddress(ipAddress);
   m_address.setScopeId(scopeId);
@@ -126,9 +107,9 @@ spoton_listener::spoton_listener(const QString &ipAddress,
   m_networkInterface = 0;
   m_port = m_externalPort = quint16(port.toInt());
   connect(this,
-	  SIGNAL(newConnection(const QByteArray &)),
+	  SIGNAL(newConnection(const int)),
 	  this,
-	  SLOT(slotNewConnection(const QByteArray &)));
+	  SLOT(slotNewConnection(const int)));
   connect(m_externalAddress,
 	  SIGNAL(ipAddressDiscovered(const QHostAddress &)),
 	  this,
@@ -364,7 +345,7 @@ void spoton_listener::saveStatus(const QSqlDatabase &db)
   query.exec();
 }
 
-void spoton_listener::slotNewConnection(const QByteArray &privateKey)
+void spoton_listener::slotNewConnection(const int keySize)
 {
   spoton_neighbor *neighbor = qobject_cast<spoton_neighbor *>
     (nextPendingConnection());
@@ -513,11 +494,10 @@ void spoton_listener::slotNewConnection(const QByteArray &privateKey)
 		       "proxy_port, "
 		       "proxy_type, "
 		       "proxy_username, "
-		       "private_key, "
-		       "public_key, "
-		       "echo_mode) "
+		       "echo_mode, "
+		       "ssl_key_size) "
 		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
 	    query.bindValue(1, m_port);
 
@@ -624,18 +604,10 @@ void spoton_listener::slotNewConnection(const QByteArray &privateKey)
 
 	    if(ok)
 	      query.bindValue
-		(20, s_crypt->encrypted(privateKey, &ok).
-		 toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(21, s_crypt->encrypted(QByteArray(), &ok).
-		 toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(22, s_crypt->encrypted(m_echoMode.toLatin1(),
+		(20, s_crypt->encrypted(m_echoMode.toLatin1(),
 					&ok).toBase64());
+
+	    query.bindValue(21, keySize);
 
 	    if(ok)
 	      created = query.exec();

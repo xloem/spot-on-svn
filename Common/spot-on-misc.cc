@@ -281,9 +281,7 @@ void spoton_misc::prepareDatabases(void)
 						      ** the port, and
 						      ** the scope.
 						      */
-		   "certificate BLOB NOT NULL, "
-		   "private_key BLOB NOT NULL, "
-		   "public_key BLOB NOT NULL, "
+		   "ssl_key_size INTEGER NOT NULL DEFAULT 2048, "
 		   "echo_mode TEXT NOT NULL)");
       }
 
@@ -331,11 +329,10 @@ void spoton_misc::prepareDatabases(void)
 	   "proxy_type TEXT NOT NULL, "
 	   "proxy_username TEXT NOT NULL, "
 	   "is_encrypted INTEGER NOT NULL DEFAULT 0, "
-	   "private_key BLOB NOT NULL, "
-	   "public_key BLOB NOT NULL, "
 	   "maximum_buffer_size INTEGER NOT NULL DEFAULT 131072, "
 	   "maximum_content_length INTEGER NOT NULL DEFAULT 65536, "
-	   "echo_mode TEXT NOT NULL)");
+	   "echo_mode TEXT NOT NULL, "
+	   "ssl_key_size INTEGER NOT NULL DEFAULT 2048)");
       }
 
     db.close();
@@ -1386,11 +1383,10 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 		   "proxy_port, "
 		   "proxy_type, "
 		   "proxy_username, "
-		   "private_key, "
-		   "public_key, "
 		   "uuid, "
-		   "echo_mode) "
-		   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+		   "echo_mode, "
+		   "ssl_key_size) "
+		   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, "
 		   "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
@@ -1479,10 +1475,18 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	     toBase64());
 
 	if(ok)
+	  query.bindValue
+	    (18, crypt->
+	     encrypted(QByteArray("{00000000-0000-0000-0000-000000000000}"),
+		       &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (19, crypt->encrypted(QByteArray("full"), &ok).
+	     toBase64());
+
+	if(ok)
 	  {
-	    QByteArray certificate;
-	    QByteArray privateKey;
-	    QByteArray publicKey;
 	    QSettings settings;
 	    QString error("");
 	    int keySize = 2048;
@@ -1495,38 +1499,8 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	    else if(!(keySize == 2048 || keySize == 3072 || keySize == 4096))
 	      keySize = 2048;
 
-	    ok = true;
-	    spoton_crypt::generateSslKeys
-	      (keySize,
-	       certificate,
-	       privateKey,
-	       publicKey,
-	       error);
-
-	    if(!error.isEmpty())
-	      ok = false;
-
-	    if(ok)
-	      query.bindValue
-		(18, crypt->encrypted(privateKey, &ok).
-		 toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(19, crypt->encrypted(publicKey, &ok).
-		 toBase64());
+	    query.bindValue(20, keySize);
 	  }
-
-	if(ok)
-	  query.bindValue
-	    (20, crypt->
-	     encrypted(QByteArray("{00000000-0000-0000-0000-000000000000}"),
-		       &ok).toBase64());
-
-	if(ok)
-	  query.bindValue
-	    (21, crypt->encrypted(QByteArray("full"), &ok).
-	     toBase64());
 
 	if(ok)
 	  query.exec();
