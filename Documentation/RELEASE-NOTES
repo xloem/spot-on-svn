@@ -21,6 +21,7 @@
 13.  Added external IP addresses to listener certificates.
 14.  Removed spoton_crypt::generateSslKeys(arg1, arg2).
 15.  Certificates expire within seven days.
+16.  Corrected position of the Listeners context menu.
 
 0.01
 

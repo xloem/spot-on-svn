@@ -2263,29 +2263,21 @@ void spoton_kernel::slotMessagingCachePurge(void)
 
 void spoton_kernel::purgeMessagingCache(void)
 {
+  if(!s_messagingCacheMutex.tryLock())
+    return;
+
   QDateTime now(QDateTime::currentDateTime());
-  int size = 0;
+  QMutableHashIterator<QByteArray, QDateTime> i(s_messagingCache);
 
-  s_messagingCacheMutex.lock();
-  size = s_messagingCache.size();
-  s_messagingCacheMutex.unlock();
-
-  for(int i = size - 1; i >= 0; i--)
+  while(i.hasNext())
     {
-      s_messagingCacheMutex.lock();
+      i.next();
 
-      QDateTime value(s_messagingCache.value(s_messagingCache.keys().at(i)));
-
-      s_messagingCacheMutex.unlock();
-
-      if(value.secsTo(now) >= 120)
-	{
-	  size -= 1;
-	  s_messagingCacheMutex.lock();
-	  s_messagingCache.remove(s_messagingCache.keys().at(i));
-	  s_messagingCacheMutex.unlock();
-	}
+     if(i.value().secsTo(now) >= 120)
+       i.remove();
     }
+
+  s_messagingCacheMutex.unlock();
 }
 
 bool spoton_kernel::messagingCacheContains(const QByteArray &data)

@@ -385,27 +385,19 @@ void spoton_buzzpage::slotMessagingCachePurge(void)
 
 void spoton_buzzpage::purgeMessagingCache(void)
 {
+  if(!m_messagingCacheMutex.tryLock())
+    return;
+
   QDateTime now(QDateTime::currentDateTime());
-  int size = 0;
+  QMutableHashIterator<QByteArray, QDateTime> i(m_messagingCache);
 
-  m_messagingCacheMutex.lock();
-  size = m_messagingCache.size();
-  m_messagingCacheMutex.unlock();
-
-  for(int i = size - 1; i >= 0; i--)
+  while(i.hasNext())
     {
-      m_messagingCacheMutex.lock();
+      i.next();
 
-      QDateTime value(m_messagingCache.value(m_messagingCache.keys().at(i)));
-
-      m_messagingCacheMutex.unlock();
-
-      if(value.secsTo(now) >= 120)
-	{
-	  size -= 1;
-	  m_messagingCacheMutex.lock();
-	  m_messagingCache.remove(m_messagingCache.keys().at(i));
-	  m_messagingCacheMutex.unlock();
-	}
+      if(i.value().secsTo(now) >= 120)
+	i.remove();
     }
+
+  m_messagingCacheMutex.unlock();
 }
