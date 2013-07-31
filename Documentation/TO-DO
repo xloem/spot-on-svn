@@ -54,6 +54,12 @@ Completed Items
 35.    Do not store SSL keys in listeners.db and neighbors.db.
 36.    The number of connections in the Listeners table may be incorrect.
 
+Ignored Items
+
+1.     The kernel should fetch a node's external IP address. Not ideal for
+       listeners that are connected on interfaces having different external
+       addresses.
+
 Remaining Items
 
 1.     Inspect UTF-8 uses.
@@ -86,8 +92,7 @@ Remaining Items
 25.    Inbound data should be time-tagged. Nodes must purge
        containers of old data.
 26.    TTLs may be used to describe Spot-On graphs. Alternative?
-27.    The kernel should fetch a node's external IP address.
-28.    Introduce load balancing of echoes. We're not interested in real-time
+27.    Introduce load balancing of echoes. We're not interested in real-time
        responses. Congestion control is helpful, however, short graphs
        tend to be skewed.
-29.    Provide kernel and network statistics.
+28.    Provide kernel and network statistics.

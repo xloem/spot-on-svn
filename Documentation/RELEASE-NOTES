@@ -17,7 +17,7 @@
 10.  Issues gcry_fast_random_poll() before gcry_create_nonce().
 11.  SSL certificates and keys will now be created as new connections are
      established. Please remove the listeners.db and neighbors.db databases.
-12.  Attempted to correct connections count in the Listeners table.
+12.  Attempt to correct connections count in the Listeners table.
 
 0.01
 
