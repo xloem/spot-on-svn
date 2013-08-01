@@ -23,7 +23,7 @@
 15.  Certificates expire within seven days.
 16.  Corrected position of the Listeners context menu.
 17.  Allow changing of echo modes for listeners. Children remain as
-     configured.
+     configured. Eliminated bulky methods.
 
 0.01
 

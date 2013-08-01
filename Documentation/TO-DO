@@ -99,3 +99,6 @@ Remaining Items
 27.    Provide kernel and network statistics.
 28.    Include external IP addresses in listener certificates.
 29.    Remove UTF-8 conversions in spoton_crypt::saltedPassphraseHash().
+30.    A Spot-On node may create a non-specific message having a high TTL
+       with the scope of exploring graphs. The insight would be broken
+       by nodes having congestion controls. TTLs need to be reviewed.
