@@ -102,3 +102,4 @@ Remaining Items
 26.    Provide kernel and network statistics.
 27.    Include external IP addresses in listener certificates.
 28.    Remove UTF-8 conversions in spoton_crypt::saltedPassphraseHash().
+29.    Function to separate children from listeners.
