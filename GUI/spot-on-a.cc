@@ -680,7 +680,7 @@ spoton::spoton(void):QMainWindow()
     }
 
   m_ui.congestionControl->setChecked
-    (m_settings.value("gui/enableCongestionControl", false).toBool());
+    (m_settings.value("gui/enableCongestionControl", true).toBool());
   m_ui.cost->setEnabled(m_ui.congestionControl->isChecked());
   m_ui.hideOfflineParticipants->setChecked
     (m_settings.value("gui/hideOfflineParticipants", false).toBool());

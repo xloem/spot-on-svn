@@ -998,8 +998,7 @@ void spoton_neighbor::slotReceivedBuzzMessage
 {
   /*
   ** A neighbor (id) received a buzz message. This neighbor now needs
-  ** to send the message to its peer. Please note that data also contains
-  ** the TTL.
+  ** to send the message to its peer.
   */
 
   if(m_echoMode == "full")
@@ -1032,8 +1031,7 @@ void spoton_neighbor::slotReceivedChatMessage
 {
   /*
   ** A neighbor (id) received a message. This neighbor now needs
-  ** to send the message to its peer. Please note that data also contains
-  ** the TTL.
+  ** to send the message to its peer.
   */
 
   if(m_echoMode == "full")
@@ -1060,8 +1058,7 @@ void spoton_neighbor::slotReceivedMailMessage(const QByteArray &data,
 {
   /*
   ** A neighbor (id) received a letter. This neighbor now needs
-  ** to send the letter to its peer. Please note that data also contains
-  ** the TTL.
+  ** to send the letter to its peer.
   */
 
   if(m_echoMode == "full")
@@ -1092,8 +1089,7 @@ void spoton_neighbor::slotReceivedStatusMessage(const QByteArray &data,
 {
   /*
   ** A neighbor (id) received a status message. This neighbor now needs
-  ** to send the message to its peer. Please note that data also contains
-  ** the TTL.
+  ** to send the message to its peer.
   */
 
   if(m_echoMode == "full")
@@ -1119,8 +1115,7 @@ void spoton_neighbor::slotRetrieveMail(const QByteArray &data,
 {
   /*
   ** A neighbor (id) received a request to retrieve mail. This neighbor
-  ** now needs to send the message to its peer. Please note that data
-  ** also contains the TTL.
+  ** now needs to send the message to its peer.
   */
 
   if(m_echoMode == "full")
@@ -1240,24 +1235,9 @@ void spoton_neighbor::process0000
     {
       data = QByteArray::fromBase64(data);
 
-      bool ok = true;
-      short ttl = 0;
-
-      if(!data.isEmpty())
-	memcpy(static_cast<void *> (&ttl),
-	       static_cast<const void *> (data.constData()), 1);
-
-      if(ttl > 0)
-	ttl -= 1;
-
-      data.remove(0, 1); // Remove TTL.
-
-      QByteArray originalData(data); /*
-				     ** We may need to echo the
-				     ** message. Don't forget to
-				     ** decrease the TTL!
-				     */
+      QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
+      bool ok = true;
       int count = spoton_misc::participantCount();
 
       if(list.size() == 2)
@@ -1433,27 +1413,17 @@ void spoton_neighbor::process0000
 					 false).toBool())
 	emit scrambleRequest();
 
-      if(ttl > 0)
-	if(count == 0 || !ok ||
-	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
-	  {
-	    if(!spoton_kernel::s_settings.value("gui/superEcho",
-						false).toBool())
-	      if(isDuplicateMessage(originalData))
-		return;
+      if(count == 0 || !ok ||
+	 spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
+	{
+	  if(!spoton_kernel::s_settings.value("gui/superEcho",
+					      false).toBool())
+	    if(isDuplicateMessage(originalData))
+	      return;
 
-	    recordMessageHash(originalData);
-
-	    /*
-	    ** Replace TTL.
-	    */
-
-	    char c = 0;
-
-	    memcpy(&c, static_cast<const void *> (&ttl), 1);
-	    originalData.prepend(c);
-	    emit receivedChatMessage(originalData, m_id, sendMethod);
-	  }
+	  recordMessageHash(originalData);
+	  emit receivedChatMessage(originalData, m_id, sendMethod);
+	}
     }
   else
     spoton_misc::logError
@@ -1490,23 +1460,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
     {
       data = QByteArray::fromBase64(data);
 
-      bool ok = true;
-      short ttl = 0;
-
-      if(!data.isEmpty())
-	memcpy(static_cast<void *> (&ttl),
-	       static_cast<const void *> (data.constData()), 1);
-
-      if(ttl > 0)
-	ttl -= 1;
-
-      data.remove(0, 1); // Remove TTL.
-
-      QByteArray originalData(data); /*
-				     ** We may need to echo the
-				     ** message. Don't forget to
-				     ** decrease the TTL!
-				     */
+      QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
 
       if(list.size() != 11)
@@ -1519,6 +1473,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	  return;
 	}
 
+      bool ok = true;
       int count = spoton_misc::participantCount();
 
       if(count > 0)
@@ -1607,27 +1562,17 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 
       resetKeepAlive();
 
-      if(ttl > 0)
-	if(count == 0 || !ok ||
-	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
-	  {
-	    if(!spoton_kernel::s_settings.value("gui/superEcho",
-						false).toBool())
-	      if(isDuplicateMessage(originalData))
-		return;
+      if(count == 0 || !ok ||
+	 spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
+	{
+	  if(!spoton_kernel::s_settings.value("gui/superEcho",
+					      false).toBool())
+	    if(isDuplicateMessage(originalData))
+	      return;
 
-	    recordMessageHash(originalData);
-
-	    /*
-	    ** Replace TTL.
-	    */
-
-	    char c = 0;
-
-	    memcpy(&c, static_cast<const void *> (&ttl), 1);
-	    originalData.prepend(c);
-	    emit receivedMailMessage(originalData, "0001a", m_id);
-	  }
+	  recordMessageHash(originalData);
+	  emit receivedMailMessage(originalData, "0001a", m_id);
+	}
     }
   else
     spoton_misc::logError
@@ -1658,23 +1603,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
     {
       data = QByteArray::fromBase64(data);
 
-      bool ok = true;
-      short ttl = 0;
-
-      if(!data.isEmpty())
-	memcpy(static_cast<void *> (&ttl),
-	       static_cast<const void *> (data.constData()), 1);
-
-      if(ttl > 0)
-	ttl -= 1;
-
-      data.remove(0, 1); // Remove TTL.
-
-      QByteArray originalData(data); /*
-				     ** We may need to echo the
-				     ** message. Don't forget to
-				     ** decrease the TTL!
-				     */
+      QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
 
       if(list.size() != 7)
@@ -1687,6 +1616,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 	  return;
 	}
 
+      bool ok = true;
       int count = spoton_misc::participantCount();
 
       if(count > 0)
@@ -1732,27 +1662,17 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 
       resetKeepAlive();
 
-      if(ttl > 0)
-	if(count == 0 || !ok ||
-	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
-	  {
-	    if(!spoton_kernel::s_settings.value("gui/superEcho",
-						false).toBool())
-	      if(isDuplicateMessage(originalData))
-		return;
+      if(count == 0 || !ok ||
+	 spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
+	{
+	  if(!spoton_kernel::s_settings.value("gui/superEcho",
+					      false).toBool())
+	    if(isDuplicateMessage(originalData))
+	      return;
 
-	    recordMessageHash(originalData);
-
-	    /*
-	    ** Replace TTL.
-	    */
-
-	    char c = 0;
-
-	    memcpy(&c, static_cast<const void *> (&ttl), 1);
-	    originalData.prepend(c);
-	    emit receivedMailMessage(originalData, "0001b", m_id);
-	  }
+	  recordMessageHash(originalData);
+	  emit receivedMailMessage(originalData, "0001b", m_id);
+	}
     }
   else
     spoton_misc::logError
@@ -1783,23 +1703,7 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
     {
       data = QByteArray::fromBase64(data);
 
-      bool ok = true;
-      short ttl = 0;
-
-      if(!data.isEmpty())
-	memcpy(static_cast<void *> (&ttl),
-	       static_cast<const void *> (data.constData()), 1);
-
-      if(ttl > 0)
-	ttl -= 1;
-
-      data.remove(0, 1); // Remove TTL.
-
-      QByteArray originalData(data); /*
-				     ** We may need to echo the
-				     ** message. Don't forget to
-				     ** decrease the TTL!
-				     */
+      QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
 
       if(list.size() != 5)
@@ -1811,6 +1715,7 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 	  return;
 	}
 
+      bool ok = true;
       int count = spoton_misc::participantCount();
 
       if(count > 0)
@@ -1897,27 +1802,17 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 
       resetKeepAlive();
 
-      if(ttl > 0)
-	if(count == 0 || !ok ||
-	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
-	  {
-	    if(!spoton_kernel::s_settings.value("gui/superEcho",
-						false).toBool())
-	      if(isDuplicateMessage(originalData))
-		return;
+      if(count == 0 || !ok ||
+	 spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
+	{
+	  if(!spoton_kernel::s_settings.value("gui/superEcho",
+					      false).toBool())
+	    if(isDuplicateMessage(originalData))
+	      return;
 
-	    recordMessageHash(originalData);
-
-	    /*
-	    ** Replace TTL.
-	    */
-
-	    char c = 0;
-
-	    memcpy(&c, static_cast<const void *> (&ttl), 1);
-	    originalData.prepend(c);
-	    emit retrieveMail(originalData, m_id);
-	  }
+	  recordMessageHash(originalData);
+	  emit retrieveMail(originalData, m_id);
+	}
     }
   else
     spoton_misc::logError
@@ -2047,24 +1942,9 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
     {
       data = QByteArray::fromBase64(data);
 
-      bool ok = true;
-      short ttl = 0;
-
-      if(!data.isEmpty())
-	memcpy(static_cast<void *> (&ttl),
-	       static_cast<const void *> (data.constData()), 1);
-
-      if(ttl > 0)
-	ttl -= 1;
-
-      data.remove(0, 1); // Remove TTL.
-
-      QByteArray originalData(data); /*
-				     ** We may need to echo the
-				     ** message. Don't forget to
-				     ** decrease the TTL!
-				     */
+      QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
+      bool ok = true;
       int count = spoton_misc::participantCount();
 
       if(list.size() == 2)
@@ -2215,27 +2095,17 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 
       resetKeepAlive();
 
-      if(ttl > 0)
-	if(count == 0 || !ok ||
-	   spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
-	  {
-	    if(!spoton_kernel::s_settings.value("gui/superEcho",
-						false).toBool())
-	      if(isDuplicateMessage(originalData))
-		return;
+      if(count == 0 || !ok ||
+	 spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
+	{
+	  if(!spoton_kernel::s_settings.value("gui/superEcho",
+					      false).toBool())
+	    if(isDuplicateMessage(originalData))
+	      return;
 
-	    recordMessageHash(originalData);
-
-	    /*
-	    ** Replace TTL.
-	    */
-
-	    char c = 0;
-
-	    memcpy(&c, static_cast<const void *> (&ttl), 1);
-	    originalData.prepend(c);
-	    emit receivedStatusMessage(originalData, m_id);
-	  }
+	  recordMessageHash(originalData);
+	  emit receivedStatusMessage(originalData, m_id);
+	}
     }
   else
     spoton_misc::logError
@@ -2386,22 +2256,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
     {
       data = QByteArray::fromBase64(data);
 
-      short ttl = 0;
-
-      if(!data.isEmpty())
-	memcpy(static_cast<void *> (&ttl),
-	       static_cast<const void *> (data.constData()), 1);
-
-      if(ttl > 0)
-	ttl -= 1;
-
-      data.remove(0, 1); // Remove TTL.
-
-      QByteArray originalData(data); /*
-				     ** We may need to echo the
-				     ** message. Don't forget to
-				     ** decrease the TTL!
-				     */
+      QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
 
       for(int i = 0; i < list.size(); i++)
@@ -2439,30 +2294,18 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 							   */
 
 		  spoton_misc::savePublishedNeighbor
-		    (address, port, statusControl,s_crypt);
+		    (address, port, statusControl, s_crypt);
 		}
 	    }
 	}
 
       resetKeepAlive();
 
-      if(ttl > 0)
-	{
-	  if(isDuplicateMessage(originalData))
-	    return;
+      if(isDuplicateMessage(originalData))
+	return;
 
-	  recordMessageHash(originalData);
-
-	  /*
-	  ** Replace TTL.
-	  */
-
-	  char c = 0;
-
-	  memcpy(&c, static_cast<const void *> (&ttl), 1);
-	  originalData.prepend(c);
-	  emit publicizeListenerPlaintext(originalData, m_id);
-	}
+      recordMessageHash(originalData);
+      emit publicizeListenerPlaintext(originalData, m_id);
     }
   else
     spoton_misc::logError
@@ -2499,22 +2342,7 @@ void spoton_neighbor::process0040a
     {
       data = QByteArray::fromBase64(data);
 
-      short ttl = 0;
-
-      if(!data.isEmpty())
-	memcpy(static_cast<void *> (&ttl),
-	       static_cast<const void *> (data.constData()), 1);
-
-      if(ttl > 0)
-	ttl -= 1;
-
-      data.remove(0, 1); // Remove TTL.
-
-      QByteArray originalData(data); /*
-				     ** We may need to echo the
-				     ** message. Don't forget to
-				     ** decrease the TTL!
-				     */
+      QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
 
       for(int i = 0; i < list.size(); i++)
@@ -2534,23 +2362,11 @@ void spoton_neighbor::process0040a
 
       resetKeepAlive();
 
-      if(ttl > 0)
-	{
-	  if(isDuplicateMessage(originalData))
-	    return;
+      if(isDuplicateMessage(originalData))
+	return;
 
-	  recordMessageHash(originalData);
-
-	  /*
-	  ** Replace TTL.
-	  */
-
-	  char c = 0;
-
-	  memcpy(&c, static_cast<const void *> (&ttl), 1);
-	  originalData.prepend(c);
-	  emit receivedBuzzMessage(originalData, "0040a", m_id, sendMethod);
-	}
+      recordMessageHash(originalData);
+      emit receivedBuzzMessage(originalData, "0040a", m_id, sendMethod);
     }
   else
     spoton_misc::logError
@@ -2587,22 +2403,7 @@ void spoton_neighbor::process0040b
     {
       data = QByteArray::fromBase64(data);
 
-      short ttl = 0;
-
-      if(!data.isEmpty())
-	memcpy(static_cast<void *> (&ttl),
-	       static_cast<const void *> (data.constData()), 1);
-
-      if(ttl > 0)
-	ttl -= 1;
-
-      data.remove(0, 1); // Remove TTL.
-
-      QByteArray originalData(data); /*
-				     ** We may need to echo the
-				     ** message. Don't forget to
-				     ** decrease the TTL!
-				     */
+      QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
 
       for(int i = 0; i < list.size(); i++)
@@ -2622,23 +2423,11 @@ void spoton_neighbor::process0040b
 
       resetKeepAlive();
 
-      if(ttl > 0)
-	{
-	  if(isDuplicateMessage(originalData))
-	    return;
+      if(isDuplicateMessage(originalData))
+	return;
 
-	  recordMessageHash(originalData);
-
-	  /*
-	  ** Replace TTL.
-	  */
-
-	  char c = 0;
-
-	  memcpy(&c, static_cast<const void *> (&ttl), 1);
-	  originalData.prepend(c);
-	  emit receivedBuzzMessage(originalData, "0040b", m_id, sendMethod);
-	}
+      recordMessageHash(originalData);
+      emit receivedBuzzMessage(originalData, "0040b", m_id, sendMethod);
     }
   else
     spoton_misc::logError
@@ -3275,14 +3064,8 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
   if(!address.isNull())
     if(readyToWrite())
       {
-	char c = 0;
-	short ttl = spoton_kernel::s_settings.value
-	  ("kernel/ttl_0030", 64).toInt();
-
-	memcpy(&c, static_cast<const void *> (&ttl), 1);
-
 	QByteArray message
-	  (spoton_send::message0030(address, port, c));
+	  (spoton_send::message0030(address, port));
 
 	if(write(message.constData(), message.length()) !=
 	   message.length())
@@ -3302,8 +3085,7 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 {
   /*
   ** A neighbor (id) received a request to publish listener information.
-  ** This neighbor now needs to send the message to its peer. Please
-  ** note that data also contains the TTL.
+  ** This neighbor now needs to send the message to its peer.
   */
 
   if(m_echoMode == "full")

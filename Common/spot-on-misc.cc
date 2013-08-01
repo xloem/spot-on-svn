@@ -1600,15 +1600,6 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 256;
 
   settings["gui/saltLength"] = integer;
-  settings["kernel/ttl_0000"] = 16;
-  settings["kernel/ttl_0001a"] = 16;
-  settings["kernel/ttl_0001b"] = 16;
-  settings["kernel/ttl_0002"] = 16;
-  settings["kernel/ttl_0010"] = 16;
-  settings["kernel/ttl_0013"] = 16;
-  settings["kernel/ttl_0030"] = 64;
-  settings["kernel/ttl_0040a"] = 16;
-  settings["kernel/ttl_0040b"] = 16;
 }
 
 QSqlDatabase spoton_misc::database(QString &connectionName)

@@ -55,6 +55,10 @@ Completed Items
 36.    The number of connections in the Listeners table may be incorrect.
 37.    Full/half-echo listeners context menu option. Children neighbors
        remain as configured.
+38.    TTLs may be used to describe Spot-On graphs. Alternative?
+39.    A Spot-On node may create a non-specific message having a high TTL
+       with the scope of exploring graphs. The insight would be broken
+       by nodes having congestion controls. TTLs need to be reviewed.
 
 Ignored Items
 
@@ -92,13 +96,9 @@ Remaining Items
 23.    Allow pass-through flow of non-Spot-On data.
 24.    Inbound data should be time-tagged. Nodes must purge
        containers of old data.
-25.    TTLs may be used to describe Spot-On graphs. Alternative?
-26.    Introduce load balancing of echoes. We're not interested in real-time
+25.    Introduce load balancing of echoes. We're not interested in real-time
        responses. Congestion control is helpful, however, short graphs
        tend to be skewed.
-27.    Provide kernel and network statistics.
-28.    Include external IP addresses in listener certificates.
-29.    Remove UTF-8 conversions in spoton_crypt::saltedPassphraseHash().
-30.    A Spot-On node may create a non-specific message having a high TTL
-       with the scope of exploring graphs. The insight would be broken
-       by nodes having congestion controls. TTLs need to be reviewed.
+26.    Provide kernel and network statistics.
+27.    Include external IP addresses in listener certificates.
+28.    Remove UTF-8 conversions in spoton_crypt::saltedPassphraseHash().

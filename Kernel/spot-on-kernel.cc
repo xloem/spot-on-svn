@@ -212,32 +212,15 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 
   QSettings settings;
 
-  if(!settings.contains("kernel/ttl_0000"))
-    settings.setValue("kernel/ttl_0000", 16);
-
-  if(!settings.contains("kernel/ttl_0001a"))
-    settings.setValue("kernel/ttl_0001a", 16);
-
-  if(!settings.contains("kernel/ttl_0001b"))
-    settings.setValue("kernel/ttl_0001b", 16);
-
-  if(!settings.contains("kernel/ttl_0002"))
-    settings.setValue("kernel/ttl_0002", 16);
-
-  if(!settings.contains("kernel/ttl_0010"))
-    settings.setValue("kernel/ttl_0010", 16);
-
-  if(!settings.contains("kernel/ttl_0013"))
-    settings.setValue("kernel/ttl_0013", 16);
-
-  if(!settings.contains("kernel/ttl_0030"))
-    settings.setValue("kernel/ttl_0030", 64);
-
-  if(!settings.contains("kernel/ttl_0040a"))
-    settings.setValue("kernel/ttl_0040a", 16);
-
-  if(!settings.contains("kernel/ttl_0040b"))
-    settings.setValue("kernel/ttl_0040b", 16);
+  settings.remove("kernel/ttl_0000");
+  settings.remove("kernel/ttl_0001a");
+  settings.remove("kernel/ttl_0001b");
+  settings.remove("kernel/ttl_0002");
+  settings.remove("kernel/ttl_0010");
+  settings.remove("kernel/ttl_0013");
+  settings.remove("kernel/ttl_0030");
+  settings.remove("kernel/ttl_0040a");
+  settings.remove("kernel/ttl_0040b");
 
   for(int i = 0; i < settings.allKeys().size(); i++)
     s_settings[settings.allKeys().at(i)] = settings.value
@@ -403,7 +386,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  this,
 	  SLOT(slotSettingsChanged(const QString &)));
 
-  if(s_settings.value("gui/enableCongestionControl", false).toBool())
+  if(s_settings.value("gui/enableCongestionControl", true).toBool())
     {
       s_messagingCache.reserve
 	(s_settings.value("gui/congestionCost", 10000).toInt());
@@ -1029,13 +1012,6 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 
       if(ok)
 	{
-	  char c = 0;
-	  short ttl = s_settings.value
-	    ("kernel/ttl_0000", 16).toInt();
-
-	  memcpy(&c, static_cast<const void *> (&ttl), 1);
-	  data.prepend(c);
-
 	  if(s_settings.value("gui/chatSendMethod",
 			      "Artificial_GET").toString().
 	     trimmed() == "Artificial_GET")
@@ -1113,18 +1089,22 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
     (s_settings.value("gui/kernelLogEvents", false).toBool());
   s_messagingCacheMutex.lock();
 
-  if(!s_settings.value("gui/enableCongestionControl", false).toBool())
+  if(!s_settings.value("gui/enableCongestionControl", true).toBool())
     {
       m_messagingCachePurgeTimer.stop();
       s_messagingCache.clear();
+      s_messagingCache.reserve(0);
     }
   else
-    m_messagingCachePurgeTimer.start();
+    {
+      if(s_messagingCache.capacity() !=
+	 s_settings.value("gui/congestionCost", 10000).toInt())
+	s_messagingCache.reserve
+	  (s_settings.value("gui/congestionCost", 10000).toInt());
 
-  if(s_messagingCache.capacity() !=
-     s_settings.value("gui/congestionCost", 10000).toInt())
-    s_messagingCache.reserve
-      (s_settings.value("gui/congestionCost", 10000).toInt());
+      if(!m_messagingCachePurgeTimer.isActive())
+	m_messagingCachePurgeTimer.start();
+    }
 
   s_messagingCacheMutex.unlock();
 
@@ -1514,15 +1494,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		      }
 
 		  if(ok)
-		    {
-		      char c = 0;
-		      short ttl = s_settings.value
-			("kernel/ttl_0013", 16).toInt();
-
-		      memcpy(&c, static_cast<const void *> (&ttl), 1);
-		      data.prepend(c);
-		      list.append(data);
-		    }
+		    list.append(data);
 		}
 	    }
       }
@@ -1579,13 +1551,6 @@ void spoton_kernel::slotScramble(void)
 
   if(ok)
     {
-      char c = 0;
-      short ttl = s_settings.value
-	("kernel/ttl_0000", 16).toInt();
-
-      memcpy(&c, static_cast<const void *> (&ttl), 1);
-      data.prepend(c);
-
       if(s_settings.value("gui/chatSendMethod",
 			  "Artificial_GET").toString().
 	 trimmed() == "Artificial_GET")
@@ -1746,15 +1711,7 @@ void spoton_kernel::slotRetrieveMail(void)
 		}
 
 	      if(ok)
-		{
-		  char c = 0;
-		  short ttl = s_settings.value
-		    ("kernel/ttl_0002", 16).toInt();
-
-		  memcpy(&c, static_cast<const void *> (&ttl), 1);
-		  data.prepend(c);
-		  list.append(data);
-		}
+		list.append(data);
 	    }
       }
 
@@ -2017,13 +1974,6 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	      if(ok)
 		{
-		  char c = 0;
-		  short ttl = s_settings.value
-		    ("kernel/ttl_0001a", 16).toInt();
-
-		  memcpy(&c, static_cast<const void *> (&ttl), 1);
-		  data.prepend(c);
-
 		  QPair<QByteArray, qint64> pair
 		    (data, mailOid);
 
@@ -2218,23 +2168,10 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &channel,
 
   if(ok)
     {
-      char c = 0;
-      short ttl = 0;
-
-      if(messageType == "0040a")
-	ttl = s_settings.value
-	  ("kernel/ttl_0040a", 16).toInt();
-      else
-	ttl = s_settings.value
-	  ("kernel/ttl_0040b", 16).toInt();
-
-      memcpy(&c, static_cast<const void *> (&ttl), 1);
-
       if(messageType == "0040a")
 	emit sendBuzz
 	  (spoton_send::message0040a(list.value(0),
-				     list.value(1),
-				     c));
+				     list.value(1)));
       else
 	{
 	  if(sendMethod == "Artificial_GET")
@@ -2242,14 +2179,12 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &channel,
 	      (spoton_send::message0040b(list.value(0),
 					 list.value(1),
 					 list.value(2),
-					 c,
 					 spoton_send::ARTIFICIAL_GET));
 	  else
 	    emit sendBuzz
 	      (spoton_send::message0040b(list.value(0),
 					 list.value(1),
 					 list.value(2),
-					 c,
 					 spoton_send::NORMAL_POST));
 	}
     }

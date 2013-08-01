@@ -304,12 +304,6 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 
 		    if(ok)
 		      {
-			char c = 0;
-			short ttl = spoton_kernel::s_settings.value
-			  ("kernel/ttl_0001b", 16).toInt();
-
-			memcpy(&c, static_cast<void *> (&ttl), 1);
-			message.prepend(c);
 			emit sendMailFromPostOffice(message);
 			
 			QSqlQuery deleteQuery(db);
