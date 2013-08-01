@@ -103,3 +103,4 @@ Remaining Items
 27.    Include external IP addresses in listener certificates.
 28.    Remove UTF-8 conversions in spoton_crypt::saltedPassphraseHash().
 29.    Function to separate children from listeners.
+30.    Simplify messages. Less tokens. Hide header information?
