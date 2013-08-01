@@ -178,17 +178,26 @@ void spoton_buzzpage::appendMessage(const QByteArray &hash,
 
     return;
 
+  m_purgeMutex.lock();
+  m_purge = false;
+  m_purgeMutex.unlock();
   m_messagingCacheMutex.lock();
 
   if(m_messagingCache.contains(hash))
     {
       m_messagingCacheMutex.unlock();
+      m_purgeMutex.lock();
+      m_purge = true;
+      m_purgeMutex.unlock();
       return;
     }
   else
     m_messagingCache[hash] = QDateTime::currentDateTime();
 
   m_messagingCacheMutex.unlock();
+  m_purgeMutex.lock();
+  m_purge = true;
+  m_purgeMutex.unlock();
 
   QByteArray name
     (list.value(0).mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
@@ -379,8 +388,9 @@ void spoton_buzzpage::slotStatusTimeout(void)
 void spoton_buzzpage::slotMessagingCachePurge(void)
 {
   if(m_future.isFinished())
-    m_future = QtConcurrent::run
-      (this, &spoton_buzzpage::purgeMessagingCache);
+    if(!m_messagingCache.isEmpty())
+      m_future = QtConcurrent::run
+	(this, &spoton_buzzpage::purgeMessagingCache);
 }
 
 void spoton_buzzpage::purgeMessagingCache(void)
@@ -393,6 +403,15 @@ void spoton_buzzpage::purgeMessagingCache(void)
 
   while(i.hasNext())
     {
+      m_purgeMutex.lock();
+
+      if(!m_purge)
+	{
+	  m_purgeMutex.unlock();
+	  break;
+	}
+
+      m_purgeMutex.unlock();
       i.next();
 
       if(i.value().secsTo(now) >= 120)

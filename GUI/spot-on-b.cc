@@ -245,6 +245,9 @@ void spoton::slotReceivedKernelMessage(void)
 			 "hash failure. Using random bytes.");
 		    }
 
+		  m_purgeMutex.lock();
+		  m_purge = false;
+		  m_purgeMutex.unlock();
 		  m_messagingCacheMutex.lock();
 
 		  if(m_messagingCache.contains(hash))
@@ -253,6 +256,9 @@ void spoton::slotReceivedKernelMessage(void)
 		    m_messagingCache[hash] = QDateTime::currentDateTime();
 
 		  m_messagingCacheMutex.unlock();
+		  m_purgeMutex.lock();
+		  m_purge = true;
+		  m_purgeMutex.unlock();
 
 		  if(duplicate)
 		    continue;
@@ -3652,7 +3658,8 @@ void spoton::initializeKernelSocket(void)
 void spoton::slotMessagingCachePurge(void)
 {
   if(m_future.isFinished())
-    m_future = QtConcurrent::run(this, &spoton::purgeMessagingCache);
+    if(!m_messagingCache.isEmpty())
+      m_future = QtConcurrent::run(this, &spoton::purgeMessagingCache);
 }
 
 void spoton::purgeMessagingCache(void)
@@ -3661,14 +3668,23 @@ void spoton::purgeMessagingCache(void)
     return;
 
   QDateTime now(QDateTime::currentDateTime());
-  QMutableHashIterator<QByteArray, QDateTime> i(m_messagingCache);
+  QMutableHashIterator<QByteArray, QDateTime> it(m_messagingCache);
 
-  while(i.hasNext())
+  while(it.hasNext())
     {
-      i.next();
+      m_purgeMutex.lock();
 
-      if(i.value().secsTo(now) >= 120)
-	i.remove();
+      if(!m_purge)
+	{
+	  m_purgeMutex.unlock();
+	  break;
+	}
+
+      m_purgeMutex.unlock();
+      it.next();
+
+      if(it.value().secsTo(now) >= 120)
+	it.remove();
     }
 
   m_messagingCacheMutex.unlock();

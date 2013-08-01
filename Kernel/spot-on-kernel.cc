@@ -2258,7 +2258,8 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &channel,
 void spoton_kernel::slotMessagingCachePurge(void)
 {
   if(m_future.isFinished())
-    m_future = QtConcurrent::run(this, &spoton_kernel::purgeMessagingCache);
+    if(!s_messagingCache.isEmpty())
+      m_future = QtConcurrent::run(this, &spoton_kernel::purgeMessagingCache);
 }
 
 void spoton_kernel::purgeMessagingCache(void)
@@ -2267,14 +2268,20 @@ void spoton_kernel::purgeMessagingCache(void)
     return;
 
   QDateTime now(QDateTime::currentDateTime());
-  QMutableHashIterator<QByteArray, QDateTime> i(s_messagingCache);
+  QMutableHashIterator<QByteArray, QDateTime> it(s_messagingCache);
+  int i = 0;
 
-  while(i.hasNext())
+  while(it.hasNext())
     {
-      i.next();
+      i += 1;
 
-     if(i.value().secsTo(now) >= 120)
-       i.remove();
+      if(i >= 100)
+	break;
+
+      it.next();
+
+      if(it.value().secsTo(now) >= 120)
+	it.remove();
     }
 
   s_messagingCacheMutex.unlock();

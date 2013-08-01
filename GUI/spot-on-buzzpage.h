@@ -62,10 +62,12 @@ class spoton_buzzpage: public QWidget
 						 ** echoed messages.
 						 */
   QMutex m_messagingCacheMutex;
+  QMutex m_purgeMutex;
   QPointer<QSslSocket> m_kernelSocket;
   QTimer m_messagingCachePurgeTimer;
   QTimer m_statusTimer;
   Ui_buzzPage ui;
+  bool m_purge;
   void purgeMessagingCache(void);
 
  private slots:

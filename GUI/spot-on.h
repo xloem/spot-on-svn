@@ -121,6 +121,7 @@ class spoton: public QMainWindow
   QHash<QString, QByteArray> m_buzzIds;
   QHash<QString, QVariant> m_settings;
   QMutex m_messagingCacheMutex;
+  QMutex m_purgeMutex;
 #ifdef SPOTON_LINKED_WITH_LIBPHONON
 #if 0
   Phonon::MediaObject *m_mediaObject;
@@ -134,6 +135,7 @@ class spoton: public QMainWindow
   QWidget *m_sbWidget;
   Ui_statusbar m_sb;
   Ui_spoton_mainwindow m_ui;
+  bool m_purge;
   spoton_crypt *m_crypt;
   spoton_crypt *m_signatureCrypt;
   spoton_docviewer m_docViewer;
