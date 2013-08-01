@@ -151,6 +151,7 @@ class spoton: public QMainWindow
   bool updateMailStatus(const QString &oid, const QString &status);
   int applyGoldbugToInboxLetter(const QByteArray &goldbug,
 				const int row);
+  void changeEchoMode(const QString &mode, QTableWidget *tableWidget);
   void closeEvent(QCloseEvent *event);
   void countriesToggle(const bool state);
   void highlightKernelPath(void);
@@ -202,12 +203,10 @@ class spoton: public QMainWindow
   void slotEnabledPostOffice(bool state);
   void slotFetchMoreAlgo(void);
   void slotFetchMoreButton(void);
-  void slotFullEcho(void);
   void slotGeminiChanged(QTableWidgetItem *item);
   void slotGeneralTimerTimeout(void);
   void slotGenerateGoldBug(void);
   void slotGenerateGeminiInChat(void);
-  void slotHalfEcho(void);
   void slotKeepCopy(bool state);
   void slotKeepOnlyUserDefinedNeighbors(bool state);
   void slotKernelKeySizeChanged(const QString &text);
@@ -219,6 +218,8 @@ class spoton: public QMainWindow
   void slotHideOfflineParticipants(bool state);
   void slotJoinBuzzChannel(void);
   void slotListenerCheckChange(int state);
+  void slotListenerFullEcho(void);
+  void slotListenerHalfEcho(void);
   void slotListenerIPComboChanged(int index);
   void slotMailSelected(QTableWidgetItem *item);
   void slotMailTabChanged(int index);
@@ -226,6 +227,8 @@ class spoton: public QMainWindow
   void slotMessagingCachePurge(void);
   void slotModeChanged(QSslSocket::SslMode mode);
   void slotNeighborCheckChange(int state);
+  void slotNeighborFullEcho(void);
+  void slotNeighborHalfEcho(void);
   void slotNeighborMaximumChanged(int value);
   void slotPopulateCountries(void);
   void slotPopulateListeners(void);

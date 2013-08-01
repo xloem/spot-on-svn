@@ -2923,6 +2923,11 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotPublicizeListenerPlaintext(void)));
       menu.addAction(tr("Publish &All (Plaintext)"),
 		     this, SLOT(slotPublicizeAllListenersPlaintext(void)));
+      menu.addSeparator();
+      menu.addAction(tr("&Full Echo"),
+		     this, SLOT(slotListenerFullEcho(void)));
+      menu.addAction(tr("&Half Echo"),
+		     this, SLOT(slotListenerHalfEcho(void)));
       menu.exec(m_ui.listeners->mapToGlobal(point));
     }
   else if(m_ui.neighbors == sender())
@@ -2961,9 +2966,9 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotUnblockNeighbor(void)));
       menu.addSeparator();
       menu.addAction(tr("&Full Echo"),
-		     this, SLOT(slotFullEcho(void)));
+		     this, SLOT(slotNeighborFullEcho(void)));
       menu.addAction(tr("&Half Echo"),
-		     this, SLOT(slotHalfEcho(void)));
+		     this, SLOT(slotNeighborHalfEcho(void)));
       menu.exec(m_ui.neighbors->mapToGlobal(point));
     }
   else
@@ -3741,18 +3746,27 @@ void spoton::slotKernelSocketSslErrors(const QList<QSslError> &errors)
        arg(m_kernelSocket.peerPort()));
 }
 
-void spoton::slotHalfEcho(void)
+void spoton::changeEchoMode(const QString &mode, QTableWidget *tableWidget)
 {
   if(!m_crypt)
     return;
+  else if(!tableWidget)
+    return;
+
+  QString table("");
+
+  if(m_ui.listeners == tableWidget)
+    table = "listeners";
+  else
+    table = "neighbors";
 
   QString oid("");
   int row = -1;
 
-  if((row = m_ui.neighbors->currentRow()) >= 0)
+  if((row = tableWidget->currentRow()) >= 0)
     {
-      QTableWidgetItem *item = m_ui.neighbors->item
-	(row, m_ui.neighbors->columnCount() - 1); // OID
+      QTableWidgetItem *item = tableWidget->item
+	(row, tableWidget->columnCount() - 1); // OID
 
       if(item)
 	oid = item->text();
@@ -3767,18 +3781,18 @@ void spoton::slotHalfEcho(void)
     QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "neighbors.db");
+		       QString("%1.db").arg(table));
 
     if(db.open())
       {
 	QSqlQuery query(db);
 	bool ok = true;
 
-	query.prepare("UPDATE neighbors SET "
-		      "echo_mode = ? "
-		      "WHERE OID = ?");
+	query.prepare(QString("UPDATE %1 SET "
+			      "echo_mode = ? "
+			      "WHERE OID = ?").arg(table));
 	query.bindValue
-	  (0, m_crypt->encrypted(QByteArray("half"), &ok).
+	  (0, m_crypt->encrypted(mode.toLatin1(), &ok).
 	   toBase64());
 	query.bindValue(1, oid);
 
@@ -3790,59 +3804,31 @@ void spoton::slotHalfEcho(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-  m_neighborsLastModificationTime = QDateTime();
+
+  if(m_ui.listeners == tableWidget)
+    m_listenersLastModificationTime = QDateTime();
+  else
+    m_neighborsLastModificationTime = QDateTime();
 }
 
-void spoton::slotFullEcho(void)
+void spoton::slotListenerFullEcho(void)
 {
-  if(!m_crypt)
-    return;
+  changeEchoMode("full", m_ui.listeners);
+}
 
-  QString oid("");
-  int row = -1;
+void spoton::slotListenerHalfEcho(void)
+{
+  changeEchoMode("half", m_ui.listeners);
+}
 
-  if((row = m_ui.neighbors->currentRow()) >= 0)
-    {
-      QTableWidgetItem *item = m_ui.neighbors->item
-	(row, m_ui.neighbors->columnCount() - 1); // OID
+void spoton::slotNeighborFullEcho(void)
+{
+  changeEchoMode("full", m_ui.neighbors);
+}
 
-      if(item)
-	oid = item->text();
-    }
-
-  if(oid.isEmpty())
-    return;
-
-  QString connectionName("");
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "neighbors.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-	bool ok = true;
-
-	query.prepare("UPDATE neighbors SET "
-		      "echo_mode = ? "
-		      "WHERE OID = ?");
-	query.bindValue
-	  (0, m_crypt->encrypted(QByteArray("full"), &ok).
-	   toBase64());
-	query.bindValue(1, oid);
-
-	if(ok)
-	  query.exec();
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-  m_neighborsLastModificationTime = QDateTime();
+void spoton::slotNeighborHalfEcho(void)
+{
+  changeEchoMode("half", m_ui.neighbors);
 }
 
 void spoton::slotCountriesToggleOff(void)
