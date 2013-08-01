@@ -136,8 +136,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1189</width>
-                <height>569</height>
+                <width>425</width>
+                <height>404</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2331,8 +2331,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1189</width>
-             <height>569</height>
+             <width>1197</width>
+             <height>559</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -2422,11 +2422,11 @@
                   <layout class="QHBoxLayout" name="horizontalLayout_23">
                    <item>
                     <widget class="QCheckBox" name="congestionControl">
-                     <property name="toolTip">
-                      <string>Enable monitoring of network data. Kernels with sufficient memory pools should enable this option.</string>
-                     </property>
                      <property name="text">
                       <string>Enable Con&amp;gestion Control</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -3353,7 +3353,7 @@
      <x>0</x>
      <y>0</y>
      <width>1219</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
