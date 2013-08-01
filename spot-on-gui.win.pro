@@ -127,7 +127,6 @@ TRANSLATIONS    = Translations\\spot-on_af.ts \
                   Translations\\spot-on_tr.ts \
                   Translations\\spot-on_vn.ts \
                   Translations\\spot-on_zh.ts \
-                  Translations\\spot-on_zh_CN.ts \
                   Translations\\spot-on_zh_TW.ts \
                   Translations\\spot-on_zh_HK.ts
 
