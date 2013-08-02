@@ -4,22 +4,35 @@ Echo Chat
 Echoed? Yes
 
 Message Type ("0000") (Plaintext)
-0 - Message (Base-64) (Ciphertext, Gemini)
+Symmetric Key (Base-64) (Gemini)
+{
+0 - Message
+}
 EOL
-1 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+{
+0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+}
 
 Message Type ("0000") (Plaintext)
-0 - Symmetric Key (Base-64) (Ciphertext, PK)
+Public Key
+{
+0 - Symmetric Key (Base-64)
 EOL
-1 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
+1 - Symmetric Key Algorithm (Base-64)
+}
 EOL
-2 - Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
+Symmetric Key
+{
+0 - Sender's Sha-512 Hash (Base-64)
 EOL
-3 - Name (Ciphertext, SK)
+1 - Name (Base-64)
 EOL
-4 - Message (Ciphertext, SK)
+2 - Message (Base-64)
+}
 EOL
-5 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+{
+0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+}
 
 Echo Mail
 Echoed? Yes

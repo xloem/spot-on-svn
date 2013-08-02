@@ -901,6 +901,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 
   QByteArray data;
   QByteArray gemini;
+  QByteArray keyInformation;
   QByteArray symmetricKey;
   QByteArray symmetricKeyAlgorithm;
   QString neighborOid("");
@@ -913,20 +914,11 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 				     QString::number(oid),
 				     s_crypt);
 
-  data.append
-    (spoton_crypt::publicKeyEncrypt(symmetricKey,
-				    publicKey, &ok).
-     toBase64());
-  data.append("\n");
-
-  if(ok)
-    {
-      data.append
-	(spoton_crypt::publicKeyEncrypt(symmetricKeyAlgorithm,
-					publicKey, &ok).
-	 toBase64());
-      data.append("\n");
-    }
+  keyInformation = spoton_crypt::publicKeyEncrypt
+    (symmetricKey.toBase64() +
+     "\n" +
+     symmetricKeyAlgorithm.toBase64(),
+     publicKey, &ok);
 
   if(ok)
     {
@@ -935,7 +927,6 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 	** We want crypt to be destroyed as soon as possible.
 	*/
 
-	QList<QByteArray> list;
 	spoton_crypt crypt(symmetricKeyAlgorithm,
 			   QString("sha512"),
 			   QByteArray(),
@@ -944,44 +935,22 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 			   0,
 			   QString(""));
 
-	list.append(crypt.encrypted(myPublicKeyHash, &ok));
+	data = crypt.encrypted(myPublicKeyHash.toBase64() +
+			       "\n" +
+			       name.toBase64() +
+			       "\n" +
+			       message.toBase64(), &ok);
 
 	if(ok)
 	  {
-	    data.append(list.at(0).toBase64());
-	    data.append("\n");
-	  }
-
-	if(ok)
-	  {
-	    list.append(crypt.encrypted(name, &ok));
+	    QByteArray messageCode(crypt.keyedHash(data, &ok));
 
 	    if(ok)
-	      {
-		data.append(list.at(1).toBase64());
-		data.append("\n");
-	      }
-	  }
-
-	if(ok)
-	  {
-	    list.append(crypt.encrypted(message, &ok));
-
-	    if(ok)
-	      {
-		data.append(list.at(2).toBase64());
-		data.append("\n");
-	      }
-	  }
-
-	if(ok)
-	  {
-	    QByteArray messageCode(crypt.keyedHash(list.value(0) +
-						   list.value(1) +
-						   list.value(2), &ok));
-
-	    if(ok)
-	      data.append(messageCode.toBase64());
+	      data = keyInformation.toBase64() +
+		"\n" +
+		data.toBase64() +
+		"\n" +
+		messageCode.toBase64();
 	  }
       }
 
