@@ -573,18 +573,25 @@ void spoton_kernel::prepareListeners(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 
-  for(int i = m_listeners.keys().size() - 1; i >= 0; i--)
-    if(!m_listeners.value(m_listeners.keys().at(i)))
-      {
-	spoton_misc::logError
-	  (QString("spoton_kernel::prepareListeners(): "
-		   "listener %1 "
-		   " may have been deleted from the listeners table by an"
-		   " external event. Purging listener from the listeners "
-		   "container.").
-	   arg(m_listeners.keys().at(i)));
-	m_listeners.remove(m_listeners.keys().at(i));
-      }
+  QMutableHashIterator<qint64, QPointer<spoton_listener> > it
+    (m_listeners);
+
+  while(it.hasNext())
+    {
+      it.next();
+
+      if(!it.value())
+	{
+	  spoton_misc::logError
+	    (QString("spoton_kernel::prepareListeners(): "
+		     "listener %1 "
+		     " may have been deleted from the listeners table by an"
+		     " external event. Purging listener from the listeners "
+		     "container.").
+	     arg(it.key()));
+	  it.remove();
+	}
+    }
 }
 
 void spoton_kernel::prepareNeighbors(void)
@@ -767,24 +774,25 @@ void spoton_kernel::prepareNeighbors(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 
+  QMutableHashIterator<qint64, QPointer<spoton_neighbor> > it
+    (m_neighbors);
   int disconnected = 0;
 
-  for(int i = m_neighbors.keys().size() - 1; i >= 0; i--)
+  while(it.hasNext())
     {
-      QPointer<spoton_neighbor> neighbor =
-	m_neighbors.value(m_neighbors.keys().at(i));
+      it.next();
 
-      if(!neighbor)
+      if(!it.value())
 	{
 	  spoton_misc::logError
 	    (QString("spoton_kernel::prepareNeighbors(): "
 		     "neighbor %1 "
 		     " may have been deleted from the neighbors table by an"
 		     " external event. Purging neighbor from the neighbors "
-		     "container.").arg(m_neighbors.keys().at(i)));
-	  m_neighbors.remove(m_neighbors.keys().at(i));
+		     "container.").arg(it.key()));
+	  it.remove();
 	}
-      else if(neighbor->state() == QAbstractSocket::UnconnectedState)
+      else if(it.value()->state() == QAbstractSocket::UnconnectedState)
 	disconnected += 1;
     }
 
@@ -1398,7 +1406,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 		    if(ok)
 		      {
-			data.append(list.at(0).toBase64());
+			data.append(list.value(0).toBase64());
 			data.append("\n");
 		      }
 
@@ -1408,7 +1416,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 			if(ok)
 			  {
-			    data.append(list.at(1).toBase64());
+			    data.append(list.value(1).toBase64());
 			    data.append("\n");
 			  }
 		      }
@@ -1419,7 +1427,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 			if(ok)
 			  {
-			    data.append(list.at(2).toBase64());
+			    data.append(list.value(2).toBase64());
 			    data.append("\n");
 			  }
 		      }
@@ -1665,15 +1673,15 @@ void spoton_kernel::slotRetrieveMail(void)
 
 		      if(ok)
 			{
-			  data.append(list.at(1).toBase64());
+			  data.append(list.value(1).toBase64());
 			  data.append("\n");
 			}
 		    }
 
 		  if(ok)
 		    messageCode = crypt.keyedHash
-		      (list.at(0) +
-		       list.at(1), &ok);
+		      (list.value(0) +
+		       list.value(1), &ok);
 
 		  if(ok)
 		    data.append(messageCode.toBase64());
@@ -1902,7 +1910,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 		  if(ok)
 		    {
-		      data.append(list.at(0).toBase64());
+		      data.append(list.value(0).toBase64());
 		      data.append("\n");
 		    }
 
@@ -1912,7 +1920,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 		      if(ok)
 			{
-			  data.append(list.at(1).toBase64());
+			  data.append(list.value(1).toBase64());
 			  data.append("\n");
 			}
 		    }
@@ -1923,7 +1931,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 		      if(ok)
 			{
-			  data.append(list.at(2).toBase64());
+			  data.append(list.value(2).toBase64());
 			  data.append("\n");
 			}
 		    }
@@ -2116,44 +2124,53 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &channel,
 					   const QByteArray &sendMethod,
 					   const QString &messageType)
 {
-  QList<QByteArray> list;
+  QByteArray data;
+  QByteArray messageCode;
   bool ok = true;
   spoton_crypt crypt("aes256",
-		     QString(""),
+		     QString("sha512"),
 		     QByteArray(),
 		     channel,
 		     0,
 		     0,
 		     QString(""));
 
-  list.append(crypt.encrypted(name, &ok));
+  if(messageType == "0040a")
+    {
+      data.append(name.toBase64());
+      data.append("\n");
+      data.append(id.toBase64());
+    }
+  else
+    {
+      data.append(name.toBase64());
+      data.append("\n");
+      data.append(id.toBase64());
+      data.append("\n");
+      data.append(message.toBase64());
+    }
+
+  data = crypt.encrypted(data, &ok);
 
   if(ok)
-    list.append(crypt.encrypted(id, &ok));
+    messageCode = crypt.keyedHash(data, &ok);
 
-  if(messageType == "0040b")
-    if(ok)
-      list.append(crypt.encrypted(message, &ok));
+  if(ok)
+    data = data.toBase64() + "\n" + messageCode.toBase64();
 
   if(ok)
     {
       if(messageType == "0040a")
-	emit sendBuzz
-	  (spoton_send::message0040a(list.value(0),
-				     list.value(1)));
+	emit sendBuzz(spoton_send::message0040a(data));
       else
 	{
 	  if(sendMethod == "Artificial_GET")
 	    emit sendBuzz
-	      (spoton_send::message0040b(list.value(0),
-					 list.value(1),
-					 list.value(2),
+	      (spoton_send::message0040b(data,
 					 spoton_send::ARTIFICIAL_GET));
 	  else
 	    emit sendBuzz
-	      (spoton_send::message0040b(list.value(0),
-					 list.value(1),
-					 list.value(2),
+	      (spoton_send::message0040b(data,
 					 spoton_send::NORMAL_POST));
 	}
     }

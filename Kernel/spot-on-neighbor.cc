@@ -1010,7 +1010,7 @@ void spoton_neighbor::slotReceivedBuzzMessage
 	  QByteArray message;
 
 	  if(messageType == "0040a")
-	    message = spoton_send::message0040a(data, sendMethod);
+	    message = spoton_send::message0040a(data);
 	  else
 	    message = spoton_send::message0040b(data, sendMethod);
 
@@ -2402,11 +2402,11 @@ void spoton_neighbor::process0040b
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      if(list.size() != 3)
+      if(list.size() != 2)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0040b(): "
-		     "received irregular data. Expecting 3 "
+		     "received irregular data. Expecting 2 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
 	  return;

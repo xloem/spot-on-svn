@@ -326,37 +326,8 @@ QByteArray spoton_send::message0030(const QHostAddress &address,
   return results;
 }
 
-QByteArray spoton_send::message0040a(const QByteArray &message,
-				     const spoton_send_method sendMethod)
+QByteArray spoton_send::message0040a(const QByteArray &message)
 {
-  QByteArray results;
-
-  if(sendMethod == ARTIFICIAL_GET)
-    results.append("HTTP/1.1 200 OK\r\n");
-  else
-    results.append("POST /echo/ HTTP/1.1\r\n");
-
-  results.append
-    ("Content-Type: application/x-www-form-urlencoded\r\n"
-     "Content-Length: %1\r\n"
-     "\r\n"
-     "type=0040a&content=%2\r\n"
-     "\r\n\r\n");
-  results.replace
-    ("%1",
-     QString::number(message.toBase64().length() +
-		     QString("type=0040a&content=\r\n\r\n\r\n").length()).
-     toLatin1());
-  results.replace
-    ("%2", message.toBase64());
-  return results;
-}
-
-QByteArray spoton_send::message0040a
-(const QByteArray &name,
- const QByteArray &id)
-{
-  QByteArray content;
   QByteArray results;
 
   results.append
@@ -366,17 +337,14 @@ QByteArray spoton_send::message0040a
      "\r\n"
      "type=0040a&content=%2\r\n"
      "\r\n\r\n");
-  content.append(name.toBase64());
-  content.append("\n");
-  content.append(id.toBase64());
   results.replace
     ("%1",
-     QString::number(content.toBase64().length() +
+     QString::number(message.toBase64().length() +
 		     QString("type=0040a&content=\r\n\r\n\r\n").
 		     length()).
      toLatin1());
   results.replace
-    ("%2", content.toBase64());
+    ("%2", message.toBase64());
   return results;
 }
 
@@ -403,41 +371,5 @@ QByteArray spoton_send::message0040b(const QByteArray &message,
      toLatin1());
   results.replace
     ("%2", message.toBase64());
-  return results;
-}
-
-QByteArray spoton_send::message0040b
-(const QByteArray &name,
- const QByteArray &id,
- const QByteArray &message,
- const spoton_send_method sendMethod)
-{
-  QByteArray content;
-  QByteArray results;
-
-  if(sendMethod == ARTIFICIAL_GET)
-    results.append("HTTP/1.1 200 OK\r\n");
-  else
-    results.append("POST /echo/ HTTP/1.1\r\n");
-
-  results.append
-    ("Content-Type: application/x-www-form-urlencoded\r\n"
-     "Content-Length: %1\r\n"
-     "\r\n"
-     "type=0040b&content=%2\r\n"
-     "\r\n\r\n");
-  content.append(name.toBase64());
-  content.append("\n");
-  content.append(id.toBase64());
-  content.append("\n");
-  content.append(message.toBase64());
-  results.replace
-    ("%1",
-     QString::number(content.toBase64().length() +
-		     QString("type=0040b&content=\r\n\r\n\r\n").
-		     length()).
-     toLatin1());
-  results.replace
-    ("%2", content.toBase64());
   return results;
 }

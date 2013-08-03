@@ -410,24 +410,13 @@ void spoton_gui_server::slotReceivedBuzzMessage
 {
   QByteArray message;
 
-  if(messageType == "0040a")
-    {
-      message.append("buzz_");
-      message.append(list.value(0).toBase64());
-      message.append("_");
-      message.append(list.value(1).toBase64());
-      message.append("\n");
-    }
-  else
-    {
-      message.append("buzz_");
-      message.append(list.value(0).toBase64());
-      message.append("_");
-      message.append(list.value(1).toBase64());
-      message.append("_");
-      message.append(list.value(2).toBase64());
-      message.append("\n");
-    }
+  message.append("buzz_");
+  message.append(list.value(0).toBase64());
+  message.append("_");
+  message.append(list.value(1).toBase64());
+  message.append("_");
+  message.append(messageType.toLatin1().toBase64());
+  message.append("\n");
 
   foreach(QSslSocket *socket, findChildren<QSslSocket *> ())
     if(socket->isEncrypted())

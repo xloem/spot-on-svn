@@ -265,13 +265,13 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
     return false;
 
   QByteArray id
-    (list.at(1).mid(0, spoton_common::BUZZ_MAXIMUM_ID_LENGTH).trimmed());
+    (list.value(1).mid(0, spoton_common::BUZZ_MAXIMUM_ID_LENGTH).trimmed());
 
   if(id == m_id)
     return false;
 
   QByteArray name
-    (list.at(0).mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
+    (list.value(0).mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
   QList<QTableWidgetItem *> items
     (ui.clients->findItems(id, Qt::MatchExactly));
   bool changed = false;
