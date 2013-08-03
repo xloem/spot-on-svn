@@ -1332,6 +1332,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	    {
 	      QByteArray data;
 	      QByteArray gemini;
+	      bool ok = true;
 
 	      if(!query.value(0).isNull())
 		gemini = s_crypt->decrypted
