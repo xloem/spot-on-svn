@@ -4,9 +4,9 @@ Echo Chat
 Echoed? Yes
 
 Message Type ("0000") (Plaintext)
-Symmetric Key (Base-64) (Gemini)
+Symmetric Key (Gemini)
 {
-0 - Message
+0 - Message (Base-64)
 }
 EOL
 {
@@ -109,22 +109,33 @@ Status
 Echoed? Yes
 
 Message Type ("0013") (Plaintext)
-0 - Message (Base-64) (Ciphertext, Gemini)
+Symmetric Key (Gemini)
+{
+0 - Message (Base-64)
+}
 EOL
-1 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+{
+0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+}
 
 Message Type ("0013") (Plaintext)
-0 - Symmetric Key (Base-64) (Ciphertext, PK)
+Public Key
+{
+0 - Symmetric Key (Base-64)
 EOL
-1 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
+1 - Symmetric Key Algorithm (Base-64)
+}
 EOL
-2 - Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
+Symmetric Key
+{
+0 - Sender's Sha-512 Hash (Base-64)
 EOL
-3 - Name (Base-64) (Ciphertext, SK)
+1 - Name (Base-64)
 EOL
-4 - Status (Base-64) (Ciphertext, SK)
+2 - Status (Base-64)
+}
 EOL
-5 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
 
 UUID Exchange
 Echoed? No
@@ -137,30 +148,6 @@ Echoed? No
 
 Message Type ("0015")
 0 (Plaintext)
-
-Echo URL
-Echoed? Yes
-
-Message Type ("0020") (Plaintext)
-0 - Symmetric Key (Base-64) (Ciphertext, PK)
-EOL
-1 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
-EOL
-2 - URL-1 (Base-64) (Ciphertext, SK)
-EOL
-3 - Title (Base-64) (Ciphertext, SK)
-EOL
-4 - Words (Base-64) (Ciphertext, SK)
-EOL
-...
-EOL
-29 - URL-10 (Base-64) (Ciphertext, SK)
-EOL
-30 - Title (Base-64) (Ciphertext, SK)
-EOL
-31 - Words (Base-64) (Ciphertext, SK)
-EOL
-32 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
 
 Echo Listener Publication
 Echoed? Yes
