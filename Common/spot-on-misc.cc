@@ -218,9 +218,7 @@ void spoton_misc::prepareDatabases(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("CREATE TABLE IF NOT EXISTS certificates ("
-		   "id TEXT PRIMARY KEY NOT NULL, "
-		   "certificate BLOB NOT NULL)");
+	query.exec("DROP TABLE IF EXISTS certificates");
 	query.exec("CREATE TABLE IF NOT EXISTS idiotes ("
 		   "id TEXT PRIMARY KEY NOT NULL, "
 		   "public_key BLOB NOT NULL, "

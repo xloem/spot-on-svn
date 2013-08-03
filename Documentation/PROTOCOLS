@@ -135,7 +135,9 @@ EOL
 2 - Status (Base-64)
 }
 EOL
+{
 0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+}
 
 UUID Exchange
 Echoed? No
