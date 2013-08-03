@@ -2508,7 +2508,12 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 		(0,
 		 name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
 
-	    query.bindValue(1, status);
+	    if(status == "away" || status == "busy" ||
+	       status == "offline" || status == "online")
+	      query.bindValue(1, status);
+	    else
+	      query.bindValue(1, "offline");
+
 	    query.bindValue
 	      (2, QDateTime::currentDateTime().toString(Qt::ISODate));
 	    query.bindValue(3, publicKeyHash.toBase64());
