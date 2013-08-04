@@ -1341,6 +1341,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 					  toByteArray()),
 		   &ok);
 
+	      QByteArray keyInformation;
 	      QByteArray name(s_settings.value("gui/nodeName", "unknown").
 			      toByteArray().trimmed());
 	      QByteArray publicKey(query.value(1).toByteArray());
@@ -1371,20 +1372,11 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 	      if(ok)
 		{
-		  data.append
-		    (spoton_crypt::publicKeyEncrypt(symmetricKey,
-						    publicKey, &ok).
-		     toBase64());
-		  data.append("\n");
-		}
-
-	      if(ok)
-		{
-		  data.append
-		    (spoton_crypt::publicKeyEncrypt(symmetricKeyAlgorithm,
-						    publicKey, &ok).
-		     toBase64());
-		  data.append("\n");
+		  keyInformation = spoton_crypt::publicKeyEncrypt
+		    (symmetricKey.toBase64() +
+		     "\n" +
+		     symmetricKeyAlgorithm.toBase64(),
+		     publicKey, &ok);
 		}
 
 	      if(ok)
@@ -1394,7 +1386,6 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		    ** We want crypt to be destroyed as soon as possible.
 		    */
 
-		    QList<QByteArray> list;
 		    spoton_crypt crypt(symmetricKeyAlgorithm,
 				       QString("sha512"),
 				       QByteArray(),
@@ -1403,46 +1394,20 @@ void spoton_kernel::slotStatusTimerExpired(void)
 				       0,
 				       QString(""));
 
-		    list.append(crypt.encrypted(myPublicKeyHash, &ok));
-
-		    if(ok)
-		      {
-			data.append(list.value(0).toBase64());
-			data.append("\n");
-		      }
-
-		    if(ok)
-		      {
-			list.append(crypt.encrypted(name, &ok));
-
-			if(ok)
-			  {
-			    data.append(list.value(1).toBase64());
-			    data.append("\n");
-			  }
-		      }
-
-		    if(ok)
-		      {
-			list.append(crypt.encrypted(status, &ok));
-
-			if(ok)
-			  {
-			    data.append(list.value(2).toBase64());
-			    data.append("\n");
-			  }
-		      }
+		    data = crypt.encrypted
+		      (myPublicKeyHash.toBase64() + "\n" +
+		       name.toBase64() + "\n" +
+		       status.toBase64(), &ok);
 
 		    if(ok)
 		      {
 			QByteArray messageCode
-			  (crypt.keyedHash(list.value(0) +
-					   list.value(1) +
-					   list.value(2),
-					   &ok));
+			  (crypt.keyedHash(data, &ok));
 
 			if(ok)
-			  data.append(messageCode.toBase64());
+			  data = keyInformation.toBase64() + "\n" +
+			    data.toBase64() + "\n" +
+			    messageCode.toBase64();
 		      }
 		  }
 

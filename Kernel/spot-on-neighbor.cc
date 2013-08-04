@@ -1371,21 +1371,26 @@ void spoton_neighbor::process0000
 				  list.replace
 				    (i, QByteArray::fromBase64(list.at(i)));
 
-				QByteArray hash
-				  (s_crypt->
-				   keyedHash(originalData, &ok));
+				if(spoton_misc::
+				   isAcceptedParticipant(list.value(0)))
+				  {
+				    QByteArray hash
+				      (s_crypt->
+				       keyedHash(originalData, &ok));
 
-				saveParticipantStatus
-				  (list.value(1), list.value(0));
+				    saveParticipantStatus
+				      (list.value(1), list.value(0));
 
-				if(!hash.isEmpty() &&
-				   !list.value(1).isEmpty() &&
-				   !list.value(2).isEmpty())
-				  emit receivedChatMessage
-				    ("message_" +
-				     hash.toBase64() + "_" +
-				     list.value(1).toBase64() + "_" +
-				     list.value(2).toBase64().append('\n'));
+				    if(!hash.isEmpty() &&
+				       !list.value(1).isEmpty() &&
+				       !list.value(2).isEmpty())
+				      emit receivedChatMessage
+					("message_" +
+					 hash.toBase64() + "_" +
+					 list.value(1).toBase64() + "_" +
+					 list.value(2).toBase64().
+					 append('\n'));
+				  }
 			      }
 			    else
 			      ok = false;
@@ -1978,12 +1983,12 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 			  if(ok)
 			    list = message.split('\n');
 
-			  if(list.size() != 6)
+			  if(list.size() != 3)
 			    {
 			      spoton_misc::logError
 				(QString("spoton_neighbor::process0013(): "
 					 "received irregular data. "
-					 "Expecting 6 "
+					 "Expecting 3 "
 					 "entries, "
 					 "received %1.").arg(list.size()));
 			      return;
@@ -2000,36 +2005,42 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 		ok = false; // A gemini was not discovered. We need to echo.
 	    }
 	}
-      else if(list.size() != 6)
+      else if(list.size() != 3)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0013(): "
-		     "received irregular data. Expecting 6 "
+		     "received irregular data. Expecting 3 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
 	  return;
 	}
 
-      if(list.size() == 6)
+      if(list.size() == 3)
 	if(count > 0)
 	  {
 	    for(int i = 0; i < list.size(); i++)
 	      list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-	    QByteArray messageCode(list.value(5));
-	    QByteArray name(list.value(3));
-	    QByteArray publicKeyHash(list.value(2));
-	    QByteArray status(list.value(4));
-	    QByteArray symmetricKey(list.value(0));
-	    QByteArray symmetricKeyAlgorithm(list.value(1));
+	    QByteArray keyInformation(list.value(0));
+	    QByteArray symmetricKey;
+	    QByteArray symmetricKeyAlgorithm;
+
+	    keyInformation = s_crypt->
+	      publicKeyDecrypt(keyInformation, &ok);
 
 	    if(ok)
-	      symmetricKey = s_crypt->
-		publicKeyDecrypt(symmetricKey, &ok);
+	      {
+		QList<QByteArray> list(keyInformation.split('\n'));
 
-	    if(ok)
-	      symmetricKeyAlgorithm = s_crypt->
-		publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
+		if(list.size() == 2)
+		  {
+		    symmetricKey = QByteArray::fromBase64(list.value(0));
+		    symmetricKeyAlgorithm = QByteArray::fromBase64
+		      (list.value(1));
+		  }
+		else
+		  ok = false;
+	      }
 
 	    if(ok)
 	      {
@@ -2041,41 +2052,37 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 				   0,
 				   QString(""));
 
-		publicKeyHash = crypt.decrypted(publicKeyHash, &ok);
-	      }
+		QByteArray data(list.value(1));
+		QByteArray computedMessageCode;
+		QByteArray messageCode(list.value(2));
 
-	    if(ok)
-	      {
-		QByteArray computedMessageCode
-		  (spoton_crypt::keyedHash(list.value(2) +
-					   list.value(3) +
-					   list.value(4),
-					   symmetricKey,
-					   "sha512",
-					   &ok));
+		computedMessageCode = crypt.keyedHash(data, &ok);
 
 		if(ok)
 		  {
 		    if(computedMessageCode == messageCode)
 		      {
-			if(spoton_misc::isAcceptedParticipant(publicKeyHash))
+			data = crypt.decrypted(data, &ok);
+
+			if(ok)
 			  {
-			    spoton_crypt crypt(symmetricKeyAlgorithm,
-					       QString("sha512"),
-					       QByteArray(),
-					       symmetricKey,
-					       0,
-					       0,
-					       QString(""));
+			    QList<QByteArray> list(data.split('\n'));
 
-			    name = crypt.decrypted(name, &ok);
+			    if(list.size() == 3)
+			      {
+				for(int i = 0; i < list.size(); i++)
+				  list.replace
+				    (i, QByteArray::fromBase64(list.at(i)));
 
-			    if(ok)
-			      status = crypt.decrypted(status, &ok);
-
-			    if(ok)
-			      saveParticipantStatus
-				(name, publicKeyHash, status);
+				if(spoton_misc::
+				   isAcceptedParticipant(list.value(0)))
+				  saveParticipantStatus
+				    (list.value(1),
+				     list.value(0),
+				     list.value(2));
+			      }
+			    else
+			      ok = false;
 			  }
 		      }
 		    else

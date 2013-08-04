@@ -26,7 +26,8 @@
 17.  Removed TTLs. Values can be used to explore Spot-On graphs.
 18.  Congestion control is now enabled by default.
 19.  Removed the certificates table from idiotes.db.
-20.  Changed message protocols. Functionality with 0.01 is lost.
+20.  Changed message protocols. Functionality with 0.01 is absent.
+21.  Added message codes to Buzz messages.
 
 0.01
 
