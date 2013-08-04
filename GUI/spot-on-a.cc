@@ -2040,28 +2040,34 @@ void spoton::slotGeneralTimerTimeout(void)
 
       pid = libspoton_registered_kernel_pid(&libspotonHandle, &err);
 
-      if(err == LIBSPOTON_ERROR_SQLITE_DATABASE_LOCKED)
+      if(err == LIBSPOTON_ERROR_SQLITE_DATABASE_LOCKED || pid == 0)
 	{
 	  /*
 	  ** Try next time.
 	  */
+
+	  m_ui.pid->setPalette(pidPalette);
+
+	  if(pid == 0)
+	    m_ui.pid->setText("0");
+	  else
+	    m_ui.pid->setText("-1");
 	}
       else
-	m_ui.pid->setText(QString::number(pid));
-
-      if(isKernelActive())
 	{
 	  QColor color(144, 238, 144); // Light green!
 	  QPalette palette(m_ui.pid->palette());
 
 	  palette.setColor(m_ui.pid->backgroundRole(), color);
 	  m_ui.pid->setPalette(palette);
+	  m_ui.pid->setText(QString::number(pid));
 	}
-      else
-	m_ui.pid->setPalette(pidPalette);
     }
   else
-    m_ui.pid->setPalette(pidPalette);
+    {
+      m_ui.pid->setPalette(pidPalette);
+      m_ui.pid->setText("-1");
+    }
 
   libspoton_close(&libspotonHandle);
   highlightKernelPath();

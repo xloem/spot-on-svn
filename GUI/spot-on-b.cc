@@ -739,7 +739,7 @@ void spoton::slotStatusChanged(int index)
 
 bool spoton::isKernelActive(void) const
 {
-  return m_ui.pid->text() != "0";
+  return m_ui.pid->text().toInt() > 0;
 }
 
 void spoton::slotCopyMyPublicKey(void)
