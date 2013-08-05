@@ -1547,10 +1547,10 @@ void spoton::slotAddFriendsKey(void)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
       QByteArray computedMessageCode;
-      spoton_crypt crypt(list.value(1),
+      spoton_crypt crypt(list.value(1), // Cipher Type
 			 QString("sha512"),
 			 QByteArray(),
-			 list.value(0),
+			 list.value(0), // Symmetric Key
 			 0,
 			 0,
 			 QString(""));
@@ -1586,9 +1586,9 @@ void spoton::slotAddFriendsKey(void)
 	  return;
 	}
 
-      if(!spoton_crypt::isValidSignature(list.value(2),
-					 list.value(2),
-					 list.value(3)))
+      if(!spoton_crypt::isValidSignature(list.value(2),  // Data
+					 list.value(2),  // Public Key
+					 list.value(3))) // Signature
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
@@ -1609,18 +1609,20 @@ void spoton::slotAddFriendsKey(void)
 	  {
 	    spoton_misc::prepareDatabases();
 
-	    if(spoton_misc::saveFriendshipBundle(list.value(0),
-						 list.value(1),
-						 list.value(2),
-						 list.value(4),
-						 -1,
+	    if(spoton_misc::saveFriendshipBundle(list.value(0), // Key Type
+						 list.value(1), // Name
+						 list.value(2), // Public Key
+						 list.value(4), // Signature
+                                                                // Public Key
+						 -1,            // Neighbor OID
 						 db))
-	      if(spoton_misc::saveFriendshipBundle("signature",
-						   list.value(1),
-						   list.value(4),
-						   QByteArray(),
-						   -1,
-						   db))
+	      if(spoton_misc::
+		 saveFriendshipBundle("signature",
+				      list.value(1), // Name
+				      list.value(4), // Signature Public Key
+				      QByteArray(),  // Signature Public Key
+				      -1,            // Neighbor OID
+				      db))
 		m_ui.friendInformation->selectAll();
 	  }
 
@@ -1774,8 +1776,7 @@ void spoton::slotCopyFriendshipBundle(void)
   ** 2. Encrypt S with the participant's public key.
   ** 3. Encrypt our information (name, public keys, signatures) with the
   **    symmetric key. Call our information T.
-  ** 4. Compute a keyed hash of S and T using the symmetric key.
-  ** 5. Encrypt the keyed hash with the symmetric key.
+  ** 4. Compute a keyed hash of T using the symmetric key.
   */
 
   QString neighborOid("");
