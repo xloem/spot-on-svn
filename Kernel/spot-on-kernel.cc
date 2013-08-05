@@ -1556,6 +1556,8 @@ void spoton_kernel::slotRetrieveMail(void)
 	  while(query.next())
 	    {
 	      QByteArray data;
+	      QByteArray keyInformation;
+	      QByteArray message(spoton_crypt::strongRandomBytes(256));
 	      QByteArray publicKey
 		(query.value(0).toByteArray());
 	      QByteArray signature;
@@ -1580,22 +1582,10 @@ void spoton_kernel::slotRetrieveMail(void)
 		  continue;
 		}
 
-	      data.append
-		(spoton_crypt::publicKeyEncrypt(symmetricKey,
-						publicKey,
-						&ok).
-		 toBase64());
-	      data.append("\n");
-
-	      if(ok)
-		{
-		  data.append
-		    (spoton_crypt::publicKeyEncrypt(symmetricKeyAlgorithm,
-						    publicKey,
-						    &ok).
-		     toBase64());
-		  data.append("\n");
-		}
+	      keyInformation = spoton_crypt::publicKeyEncrypt
+		(symmetricKey.toBase64() + "\n" +
+		 symmetricKeyAlgorithm.toBase64(),
+		 publicKey, &ok);
 
 	      if(ok)
 		{
@@ -1607,9 +1597,10 @@ void spoton_kernel::slotRetrieveMail(void)
 		}
 
 	      if(ok)
+		signature = s_crypt->digitalSignature(message, &ok);
+
+	      if(ok)
 		{
-		  QByteArray messageCode;
-		  QList<QByteArray> list;
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
 				     QString("sha512"),
 				     QByteArray(),
@@ -1618,39 +1609,19 @@ void spoton_kernel::slotRetrieveMail(void)
 				     0,
 				     QString(""));
 
-		  messageCode = crypt.keyedHash
-		    (symmetricKey +
-		     symmetricKeyAlgorithm +
-		     myPublicKeyHash,
-		     &ok);
-
-		  if(ok)
-		    signature = s_crypt->digitalSignature
-		      (messageCode, &ok);
-
-		  list.append(myPublicKeyHash); /*
-						** The myPublicKeyHash
-						** is not encrypted.
-						*/
+		  data = crypt.encrypted(myPublicKeyHash.toBase64() + "\n" +
+					 message.toBase64() + "\n" +
+					 signature.toBase64(), &ok);
 
 		  if(ok)
 		    {
-		      list.append(crypt.encrypted(signature, &ok));
+		      QByteArray messageCode(crypt.keyedHash(data, &ok));
 
 		      if(ok)
-			{
-			  data.append(list.value(1).toBase64());
-			  data.append("\n");
-			}
+			data = keyInformation.toBase64() + "\n" +
+			  data.toBase64() + "\n" +
+			  messageCode.toBase64();
 		    }
-
-		  if(ok)
-		    messageCode = crypt.keyedHash
-		      (list.value(0) +
-		       list.value(1), &ok);
-
-		  if(ok)
-		    data.append(messageCode.toBase64());
 		}
 
 	      if(ok)

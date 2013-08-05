@@ -1335,8 +1335,6 @@ void spoton_neighbor::process0000
 		    symmetricKeyAlgorithm = QByteArray::fromBase64
 		      (list.value(1));
 		  }
-		else
-		  ok = false;
 	      }
 
 	    if(ok)
@@ -1392,8 +1390,6 @@ void spoton_neighbor::process0000
 					 append('\n'));
 				  }
 			      }
-			    else
-			      ok = false;
 			  }
 		      }
 		    else
@@ -1704,11 +1700,11 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
       QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
 
-      if(list.size() != 5)
+      if(list.size() != 3)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0002(): "
-		     "received irregular data. Expecting 5 entries, "
+		     "received irregular data. Expecting 3 entries, "
 		     "received %1.").arg(list.size()));
 	  return;
 	}
@@ -1728,23 +1724,24 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 	  ** we retrieve the letters in a timely, yet functional, manner?
 	  */
 
-	  QByteArray messageCode(list.value(4));
-	  QByteArray publicKeyHash(list.value(2));
-	  QByteArray signature(list.value(3));
-	  QByteArray symmetricKey(list.value(0));
-	  QByteArray symmetricKeyAlgorithm(list.value(1));
+	  QByteArray keyInformation(list.value(0));
+	  QByteArray symmetricKey;
+	  QByteArray symmetricKeyAlgorithm;
+
+	  keyInformation = s_crypt->
+	    publicKeyDecrypt(keyInformation, &ok);
 
 	  if(ok)
-	    symmetricKey = s_crypt->
-	      publicKeyDecrypt(symmetricKey, &ok);
+	    {
+	      QList<QByteArray> list(keyInformation.split('\n'));
 
-	  if(ok)
-	    symmetricKeyAlgorithm = s_crypt->
-	      publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
-
-	  if(ok)
-	    publicKeyHash = s_crypt->
-	      publicKeyDecrypt(publicKeyHash, &ok);
+	      if(list.size() == 2)
+		{
+		  symmetricKey = QByteArray::fromBase64(list.value(0));
+		  symmetricKeyAlgorithm = QByteArray::fromBase64
+		    (list.value(1));
+		}
+	    }
 
 	  if(ok)
 	    {
@@ -1756,17 +1753,11 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 				 0,
 				 QString(""));
 
-	      signature = crypt.decrypted(signature, &ok);
-	    }
+	      QByteArray data(list.value(1));
+	      QByteArray computedMessageCode;
+	      QByteArray messageCode(list.value(2));
 
-	  if(ok)
-	    {
-	      QByteArray computedMessageCode
-		(spoton_crypt::keyedHash(publicKeyHash +
-					 list.value(3),
-					 symmetricKey,
-					 "sha512",
-					 &ok));
+	      computedMessageCode = crypt.keyedHash(data, &ok);
 
 	      /*
 	      ** Let's not echo messages whose message codes are
@@ -1777,18 +1768,23 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 		{
 		  if(computedMessageCode == messageCode)
 		    {
-		      QByteArray messageCode
-			(spoton_crypt::keyedHash(symmetricKey +
-						 symmetricKeyAlgorithm +
-						 publicKeyHash,
-						 symmetricKey,
-						 "sha512",
-						 &ok));
+		      data = crypt.decrypted(data, &ok);
 
 		      if(ok)
-			emit retrieveMail
-			  (messageCode,
-			   publicKeyHash, signature);
+			{
+			  QList<QByteArray> list(data.split('\n'));
+
+			  if(list.size() == 3)
+			    {
+			      for(int i = 0; i < list.size(); i++)
+				list.replace
+				  (i, QByteArray::fromBase64(list.at(i)));
+
+			      emit retrieveMail
+				(list.value(1),
+				 list.value(0), list.value(2));
+			    }
+			}
 		    }
 		  else
 		    spoton_misc::logError("spoton_neighbor::process0002(): "
@@ -2038,8 +2034,6 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 		    symmetricKeyAlgorithm = QByteArray::fromBase64
 		      (list.value(1));
 		  }
-		else
-		  ok = false;
 	      }
 
 	    if(ok)
@@ -2081,8 +2075,6 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 				     list.value(0),
 				     list.value(2));
 			      }
-			    else
-			      ok = false;
 			  }
 		      }
 		    else
