@@ -734,14 +734,19 @@ bool spoton_misc::countryAllowedToConnect(const QString &country,
 	if(ok)
 	  if(query.exec())
 	    if(query.next())
-	      allowed = crypt->decrypted(QByteArray::
-					 fromBase64(query.
-						    value(0).
-						    toByteArray()),
-					 &ok).toInt(); /*
-						       ** toInt() failure
-						       ** returns zero.
-						       */
+	      {
+		allowed = crypt->decrypted(QByteArray::
+					   fromBase64(query.
+						      value(0).
+						      toByteArray()),
+					   &ok).toInt(); /*
+							 ** toInt() failure
+							 ** returns zero.
+							 */
+
+		if(!ok)
+		  allowed = false;
+	      }
       }
 
     db.close();
@@ -1014,6 +1019,7 @@ QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
 {
   QByteArray gemini;
   QString connectionName("");
+
   if(crypt)
     {
       {

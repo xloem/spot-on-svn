@@ -28,6 +28,9 @@
 19.  Removed the certificates table from idiotes.db.
 20.  Changed message protocols. Functionality with 0.01 is absent.
 21.  Added message codes to Buzz messages.
+22.  Modified most of spot-on-crypt.cc so that functions that return
+     values return empty values on failures.
+23.  Removed senseless resizing in spoton_crypt::decrypted().
 
 0.01
 

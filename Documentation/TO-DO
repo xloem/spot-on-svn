@@ -66,6 +66,7 @@ Ignored Items
 1.     The kernel should fetch a node's external IP address. Not ideal for
        listeners that are connected on interfaces having different external
        addresses.
+2.     Remove UTF-8 conversions in spoton_crypt::saltedPassphraseHash().
 
 Remaining Items
 
@@ -102,6 +103,5 @@ Remaining Items
        tend to be skewed.
 26.    Provide kernel and network statistics.
 27.    Include external IP addresses in listener certificates.
-28.    Remove UTF-8 conversions in spoton_crypt::saltedPassphraseHash().
-29.    Function to separate children from listeners.
-30.    Simplify messages. Less tokens. Hide header information?
+28.    Function to separate children from listeners.
+29.    Simplify messages. Less tokens. Hide header information?
