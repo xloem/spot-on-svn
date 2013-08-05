@@ -1519,11 +1519,11 @@ void spoton::slotAddFriendsKey(void)
 
       QList<QByteArray> list(repleo.split('@'));
 
-      if(list.size() != 9)
+      if(list.size() != 3)
 	{
 	  spoton_misc::logError
 	    (QString("spoton::slotAddFriendsKey(): "
-		     "received irregular data. Expecting 9 entries, "
+		     "received irregular data. Expecting 3 entries, "
 		     "received %1.").arg(list.size()));
 	  return;
 	}
@@ -1531,42 +1531,54 @@ void spoton::slotAddFriendsKey(void)
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      QByteArray hash;
-      QByteArray keyType;
-      QByteArray name;
-      QByteArray publicKey;
-      QByteArray signature;
-      QByteArray symmetricKey;
-      QByteArray symmetricKeyAlgorithm;
+      QByteArray data(list.value(1));
+      QByteArray hash(list.value(2));
+      QByteArray keyInformation(list.value(0));
       bool ok = true;
 
-      symmetricKey = list.value(0);
-      symmetricKey = m_crypt->publicKeyDecrypt(symmetricKey, &ok);
+      keyInformation = m_crypt->publicKeyDecrypt(keyInformation, &ok);
 
       if(!ok)
 	return;
 
-      symmetricKeyAlgorithm = list.value(1);
-      symmetricKeyAlgorithm = m_crypt->publicKeyDecrypt
-	(symmetricKeyAlgorithm, &ok);
+      list = keyInformation.split('@');
 
-      if(!ok)
-	return;
+      for(int i = 0; i < list.size(); i++)
+	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      spoton_crypt crypt(symmetricKeyAlgorithm,
+      QByteArray computedMessageCode;
+      spoton_crypt crypt(list.value(1),
 			 QString("sha512"),
 			 QByteArray(),
-			 symmetricKey,
+			 list.value(0),
 			 0,
 			 0,
 			 QString(""));
 
-      keyType = crypt.decrypted(list.value(2), &ok);
+      computedMessageCode = crypt.keyedHash(data, &ok);
 
       if(!ok)
 	return;
 
-      if(!(keyType == "messaging" || keyType == "url"))
+      if(computedMessageCode != hash)
+	{
+	  spoton_misc::logError("spoton::slotAddFriendsKey(): "
+				"computed message code does not match "
+				"provided code.");
+	  return;
+	}
+
+      data = crypt.decrypted(data, &ok);
+
+      if(!ok)
+	return;
+
+      list = data.split('@');
+
+      for(int i = 0; i < list.size(); i++)
+	list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+      if(!(list.value(0) == "messaging" || list.value(0) == "url"))
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
@@ -1574,23 +1586,9 @@ void spoton::slotAddFriendsKey(void)
 	  return;
 	}
 
-      name = crypt.decrypted(list.value(3), &ok);
-
-      if(!ok)
-	return;
-
-      publicKey = crypt.decrypted(list.value(4), &ok);
-
-      if(!ok)
-	return;
-
-      signature = crypt.decrypted(list.value(5), &ok);
-
-      if(!ok)
-	return;
-
-      if(!spoton_crypt::isValidSignature(publicKey, publicKey,
-					 signature))
+      if(!spoton_crypt::isValidSignature(list.value(2),
+					 list.value(2),
+					 list.value(3)))
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
@@ -1598,67 +1596,38 @@ void spoton::slotAddFriendsKey(void)
 	  return;
 	}
 
-      QByteArray sPublicKey(list.value(6));
+      QString connectionName("");
 
-      sPublicKey = crypt.decrypted(sPublicKey, &ok);
+      {
+	QSqlDatabase db = spoton_misc::database(connectionName);
 
-      if(!ok)
-	return;
+	db.setDatabaseName
+	  (spoton_misc::homePath() + QDir::separator() +
+	   "friends_public_keys.db");
 
-      QByteArray sSignature(list.value(7));
-
-      sSignature = crypt.decrypted(sSignature, &ok);
-
-      if(!ok)
-	return;
-
-      hash = list.value(8);
-
-      QByteArray computedMessageCode
-	(crypt.keyedHash(list.value(3) +
-			 list.value(4) +
-			 list.value(5) +
-			 list.value(6) +
-			 list.value(7), &ok));
-
-      if(!ok)
-	return;
-
-      if(computedMessageCode == hash)
-	{
-	  QString connectionName("");
-
+	if(db.open())
 	  {
-	    QSqlDatabase db = spoton_misc::database(connectionName);
+	    spoton_misc::prepareDatabases();
 
-	    db.setDatabaseName
-	      (spoton_misc::homePath() + QDir::separator() +
-	       "friends_public_keys.db");
-
-	    if(db.open())
-	      {
-		spoton_misc::prepareDatabases();
-
-		if(spoton_misc::saveFriendshipBundle(keyType,
-						     name,
-						     publicKey,
-						     sPublicKey,
-						     -1,
-						     db))
-		  if(spoton_misc::saveFriendshipBundle("signature",
-						       name,
-						       sPublicKey,
-						       QByteArray(),
-						       -1,
-						       db))
-		    m_ui.friendInformation->selectAll();
-	      }
-
-	    db.close();
+	    if(spoton_misc::saveFriendshipBundle(list.value(0),
+						 list.value(1),
+						 list.value(2),
+						 list.value(4),
+						 -1,
+						 db))
+	      if(spoton_misc::saveFriendshipBundle("signature",
+						   list.value(1),
+						   list.value(4),
+						   QByteArray(),
+						   -1,
+						   db))
+		m_ui.friendInformation->selectAll();
 	  }
 
-	  QSqlDatabase::removeDatabase(connectionName);
-	}
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase(connectionName);
     }
 }
 
@@ -1811,6 +1780,7 @@ void spoton::slotCopyFriendshipBundle(void)
 
   QString neighborOid("");
   QByteArray gemini;
+  QByteArray keyInformation;
   QByteArray publicKey;
   QByteArray symmetricKey;
   QByteArray symmetricKeyAlgorithm;
@@ -1830,95 +1800,11 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  QByteArray data;
   bool ok = true;
 
-  data.append
-    (spoton_crypt::publicKeyEncrypt(symmetricKey, publicKey, &ok).
-     toBase64());
-  data.append("@");
-
-  if(!ok)
-    {
-      clipboard->clear();
-      return;
-    }
-
-  data.append
-    (spoton_crypt::publicKeyEncrypt(symmetricKeyAlgorithm, publicKey, &ok).
-     toBase64());
-  data.append("@");
-
-  if(!ok)
-    {
-      clipboard->clear();
-      return;
-    }
-
-  QByteArray myName;
-  QList<QByteArray> list;
-  spoton_crypt crypt(symmetricKeyAlgorithm,
-		     QString("sha512"),
-		     QByteArray(),
-		     symmetricKey,
-		     0,
-		     0,
-		     QString(""));
-
-  data.append(crypt.encrypted("messaging", &ok).toBase64());
-  data.append("@");
-
-  if(!ok)
-    {
-      clipboard->clear();
-      return;
-    }
-
-  myName = m_settings.value("gui/nodeName", "unknown").toByteArray().
-    trimmed();
-
-  if(myName.isEmpty())
-    myName = "unknown";
-
-  list.append(crypt.encrypted(myName, &ok));
-  data.append(list.value(0).toBase64());
-  data.append("@");
-
-  if(!ok)
-    {
-      clipboard->clear();
-      return;
-    }
-
-  QByteArray myPublicKey(m_crypt->publicKey(&ok));
-
-  if(!ok)
-    {
-      clipboard->clear();
-      return;
-    }
-
-  list.append(crypt.encrypted(myPublicKey, &ok));
-  data.append(list.value(1).toBase64());
-  data.append("@");
-
-  if(!ok)
-    {
-      clipboard->clear();
-      return;
-    }
-
-  QByteArray mySignature(m_crypt->digitalSignature(myPublicKey, &ok));
-
-  if(!ok)
-    {
-      clipboard->clear();
-      return;
-    }
-
-  list.append(crypt.encrypted(mySignature, &ok));
-  data.append(list.value(2).toBase64());
-  data.append("@");
+  keyInformation = spoton_crypt::publicKeyEncrypt
+    (symmetricKey.toBase64() + "@" + symmetricKeyAlgorithm.toBase64(),
+     publicKey, &ok);
 
   if(!ok)
     {
@@ -1927,16 +1813,6 @@ void spoton::slotCopyFriendshipBundle(void)
     }
 
   QByteArray mySPublicKey(m_signatureCrypt->publicKey(&ok));
-
-  if(!ok)
-    {
-      clipboard->clear();
-      return;
-    }
-
-  list.append(crypt.encrypted(mySPublicKey, &ok));
-  data.append(list.value(3).toBase64());
-  data.append("@");
 
   if(!ok)
     {
@@ -1953,9 +1829,7 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  list.append(crypt.encrypted(mySSignature, &ok));
-  data.append(list.value(4).toBase64());
-  data.append("@");
+  QByteArray myPublicKey(m_crypt->publicKey(&ok));
 
   if(!ok)
     {
@@ -1963,11 +1837,7 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  QByteArray hash(crypt.keyedHash(list.value(0) +
-				  list.value(1) +
-				  list.value(2) +
-				  list.value(3) +
-				  list.value(4), &ok));
+  QByteArray mySignature(m_crypt->digitalSignature(myPublicKey, &ok));
 
   if(!ok)
     {
@@ -1975,8 +1845,47 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  data.append(hash.toBase64());
-  clipboard->setText("R" + data);
+  QByteArray myName
+    (m_settings.value("gui/nodeName", "unknown").toByteArray().
+     trimmed());
+
+  if(myName.isEmpty())
+    myName = "unknown";
+
+  QByteArray data;
+  spoton_crypt crypt(symmetricKeyAlgorithm,
+		     QString("sha512"),
+		     QByteArray(),
+		     symmetricKey,
+		     0,
+		     0,
+		     QString(""));
+
+  data = crypt.encrypted(QByteArray("messaging").toBase64() + "@" +
+			 myName.toBase64() + "@" +
+			 myPublicKey.toBase64() + "@" +
+			 mySignature.toBase64() + "@" +
+			 mySPublicKey.toBase64() + "@" +
+			 mySSignature.toBase64(), &ok);
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QByteArray hash(crypt.keyedHash(data, &ok));
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  clipboard->setText("R" +
+		     keyInformation.toBase64() + "@" +
+		     data.toBase64() + "@" +
+		     hash.toBase64());
 }
 
 Ui_spoton_mainwindow spoton::ui(void) const
