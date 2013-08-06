@@ -50,7 +50,7 @@ EOL
 EOL
 5 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
 EOL
-6 - Sender's Signature Sha-512 Hash (Base-64) (Ciphertext, PK)
+6 - Sender's Sha-512 Hash (Base-64) (Ciphertext, PK)
 EOL
 7 - Sender's Name (Base-64) (Ciphertext, SK)
 EOL

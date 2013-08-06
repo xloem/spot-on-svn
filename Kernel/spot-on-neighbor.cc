@@ -1448,18 +1448,12 @@ void spoton_neighbor::process0000
 
 void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 {
-  spoton_crypt *s_crypt1 = 0;
-  spoton_crypt *s_crypt2 = 0;
+  spoton_crypt *s_crypt = 0;
 
   if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt1 = spoton_kernel::s_crypts["messaging"];
+    s_crypt = spoton_kernel::s_crypts["messaging"];
 
-  if(spoton_kernel::s_crypts.contains("signature"))
-    s_crypt2 = spoton_kernel::s_crypts["signature"];
-
-  if(!s_crypt1)
-    return;
-  else if(!s_crypt2)
+  if(!s_crypt)
     return;
 
   length -= strlen("type=0001a&content=");
@@ -1508,11 +1502,11 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	  QByteArray symmetricKeyAlgorithm2(list.value(5));
 
 	  if(ok)
-	    symmetricKey1 = s_crypt1->
+	    symmetricKey1 = s_crypt->
 	      publicKeyDecrypt(symmetricKey1, &ok);
 
 	  if(ok)
-	    symmetricKeyAlgorithm1 = s_crypt1->
+	    symmetricKeyAlgorithm1 = s_crypt->
 	      publicKeyDecrypt(symmetricKeyAlgorithm1, &ok);
 
 	  QByteArray publicKey;
@@ -1531,7 +1525,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	      recipientHash = crypt.decrypted(recipientHash, &ok);
 
 	      if(ok)
-		publicKey = s_crypt1->publicKey(&ok);
+		publicKey = s_crypt->publicKey(&ok);
 
 	      if(ok)
 		publicKeyHash = spoton_crypt::sha512Hash(publicKey, &ok);
