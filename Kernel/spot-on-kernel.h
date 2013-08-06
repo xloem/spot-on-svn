@@ -61,7 +61,10 @@ class spoton_kernel: public QObject
 						  ** url
 						  */
   static bool messagingCacheContains(const QByteArray &data);
+  static void addBuzzChannel(const QByteArray &channel,
+			     const QByteArray &channelType);
   static void messagingCacheAdd(const QByteArray &data);
+  static void removeBuzzChannel(const QByteArray &data);
 
  private:
   QFileSystemWatcher m_settingsWatcher;
@@ -76,6 +79,7 @@ class spoton_kernel: public QObject
   spoton_gui_server *m_guiServer;
   spoton_mailer *m_mailer;
   spoton_shared_reader *m_sharedReader;
+  static QHash<QByteArray, QByteArray> s_buzzChannels;
   static QHash<QByteArray, QDateTime> s_messagingCache;
   static QMutex s_messagingCacheMutex;
   bool initializeSecurityContainers(const QString &passphrase);

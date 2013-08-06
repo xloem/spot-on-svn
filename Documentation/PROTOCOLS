@@ -174,26 +174,28 @@ EOL
 Echo Buzz
 Echoed? Yes
 
-Message Type ("0040a") (Plaintext)
 Symmetric Key
 {
-0 - Name (Base-64)
+0 - 0040a (Base-64)
 EOL
-1 - ID (Base-64)
+1 - Name (Base-64)
+EOL
+2 - ID (Base-64)
 }
 EOL
 {
 0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
 }
 
-Message Type ("0040b") (Plaintext)
 Symmetric Key
 {
-0 - Name (Base-64)
+0 - 0040b (Base-64)
 EOL
-1 - ID (Base-64)
+1 - Name (Base-64)
 EOL
-2 - Message (Base-64)
+2 - ID (Base-64)
+EOL
+3 - Message (Base-64)
 }
 EOL
 {

@@ -215,7 +215,18 @@ void spoton_gui_server::slotReadyRead(void)
 	{
 	  QByteArray message(list.takeFirst());
 
-	  if(message.startsWith("befriendparticipant_"))
+	  if(message.startsWith("addbuzz_"))
+	    {
+	      message.remove(0, strlen("addbuzz_"));
+
+	      QList<QByteArray> list(message.split('_'));
+
+	      if(list.size() == 2)
+		spoton_kernel::addBuzzChannel
+		  (QByteArray::fromBase64(list.value(0)),
+		   QByteArray::fromBase64(list.value(1)));
+	    }
+	  else if(message.startsWith("befriendparticipant_"))
 	    {
 	      message.remove(0, strlen("befriendparticipant_"));
 
@@ -353,6 +364,12 @@ void spoton_gui_server::slotReadyRead(void)
 	      if(list.size() == 1)
 		emit publicizeListenerPlaintext
 		  (list.value(0).toLongLong());
+	    }
+	  else if(message.startsWith("removebuzzchannel_"))
+	    {
+	      message.remove(0, strlen("removebuzzchannel_"));
+	      spoton_kernel::removeBuzzChannel
+		(QByteArray::fromBase64(message));
 	    }
 	  else if(message.startsWith("retrievemail"))
 	    emit retrieveMail();

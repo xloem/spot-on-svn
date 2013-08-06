@@ -74,6 +74,7 @@ extern "C"
 #include "spot-on-neighbor.h"
 #include "spot-on-shared-reader.h"
 
+QHash<QByteArray, QByteArray> spoton_kernel::s_buzzChannels;
 QHash<QByteArray, QDateTime> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
@@ -2213,4 +2214,18 @@ void spoton_kernel::slotDisconnectNeighbors(const qint64 listenerOid)
 	socket->abort();
 	socket->deleteLater();
       }
+}
+
+void spoton_kernel::addBuzzChannel(const QByteArray &channel,
+				   const QByteArray &channelType)
+{
+  if(channel.isEmpty() || channelType.isEmpty())
+    return;
+
+  s_buzzChannels[channel] = channelType;
+}
+
+void spoton_kernel::removeBuzzChannel(const QByteArray &channel)
+{
+  s_buzzChannels.remove(channel);
 }
