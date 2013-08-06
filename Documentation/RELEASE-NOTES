@@ -34,6 +34,7 @@
 25.  The digital signature that's created during e-mail retrieval has
      been modified so that the signature is generated from a random
      message.
+26.  Inspect the signature public key's signature during repleo processing.
 
 0.01
 

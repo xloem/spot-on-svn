@@ -197,7 +197,7 @@ void spoton::slotReceivedKernelMessage(void)
 			if(m_ui.tab->currentIndex() != 0)
 			  m_sb.buzz->setVisible(true);
 		    }
-		  else
+		  else if(list.size() == 3)
 		    {
 		      QByteArray hash;
 		      bool ok = true;
@@ -1543,6 +1543,13 @@ void spoton::slotAddFriendsKey(void)
 
       list = keyInformation.split('@');
 
+      if(list.size() != 2)
+	{
+	  spoton_misc::logError("spoton::slotAddFriendsKey(): "
+				"list.size() != 2.");
+	  return;
+	}
+
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
@@ -1575,6 +1582,13 @@ void spoton::slotAddFriendsKey(void)
 
       list = data.split('@');
 
+      if(list.size() != 6)
+	{
+	  spoton_misc::logError("spoton::slotAddFriendsKey(): "
+				"list.size() != 6.");
+	  return;
+	}
+
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
@@ -1592,7 +1606,18 @@ void spoton::slotAddFriendsKey(void)
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("Invalid signature."));
+	     tr("Invalid public key signature."));
+	  return;
+	}
+
+      if(!spoton_crypt::
+	 isValidSignature(list.value(4),  // Data
+			  list.value(4),  // Signature Public Key
+			  list.value(5))) // Signature
+	{
+	  QMessageBox::critical
+	    (this, tr("Spot-On: Error"),
+	     tr("Invalid signature public key signature."));
 	  return;
 	}
 

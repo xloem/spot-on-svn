@@ -1335,6 +1335,16 @@ void spoton_neighbor::process0000
 		    symmetricKeyAlgorithm = QByteArray::fromBase64
 		      (list.value(1));
 		  }
+		else
+		  {
+		    spoton_misc::logError
+		      (QString("spoton_neighbor::process0000(): "
+			       "received irregular data. "
+			       "Expecting 2 "
+			       "entries, "
+			       "received %1.").arg(list.size()));
+		    return;
+		  }
 	      }
 
 	    if(ok)
@@ -1389,6 +1399,16 @@ void spoton_neighbor::process0000
 					 list.value(2).toBase64().
 					 append('\n'));
 				  }
+			      }
+			    else
+			      {
+				spoton_misc::logError
+				  (QString("spoton_neighbor::process0000(): "
+					   "received irregular data. "
+					   "Expecting 3 "
+					   "entries, "
+					   "received %1.").arg(list.size()));
+				return;
 			      }
 			  }
 		      }
@@ -1741,6 +1761,16 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 		  symmetricKeyAlgorithm = QByteArray::fromBase64
 		    (list.value(1));
 		}
+	      else
+		{
+		  spoton_misc::logError
+		    (QString("spoton_neighbor::process0002(): "
+			     "received irregular data. "
+			     "Expecting 2 "
+			     "entries, "
+			     "received %1.").arg(list.size()));
+		  return;
+		}
 	    }
 
 	  if(ok)
@@ -1783,6 +1813,16 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 			      emit retrieveMail
 				(list.value(1),
 				 list.value(0), list.value(2));
+			    }
+			  else
+			    {
+			      spoton_misc::logError
+				(QString("spoton_neighbor::process0002(): "
+					 "received irregular data. "
+					 "Expecting 3 "
+					 "entries, "
+					 "received %1.").arg(list.size()));
+			      return;
 			    }
 			}
 		    }
@@ -2034,6 +2074,16 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 		    symmetricKeyAlgorithm = QByteArray::fromBase64
 		      (list.value(1));
 		  }
+		else
+		  {
+		    spoton_misc::logError
+		      (QString("spoton_neighbor::process0013(): "
+			       "received irregular data. "
+			       "Expecting 2 "
+			       "entries, "
+			       "received %1.").arg(list.size()));
+		    return;
+		  }
 	      }
 
 	    if(ok)
@@ -2074,6 +2124,15 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 				    (list.value(1),
 				     list.value(0),
 				     list.value(2));
+			      }
+			    else
+			      {
+				spoton_misc::logError
+				  (QString("spoton_neighbor::process0013(): "
+					   "received irregular data. "
+					   "Expecting 3 "
+					   "entries, "
+					   "received %1.").arg(list.size()));
 			      }
 			  }
 		      }
