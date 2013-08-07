@@ -36,6 +36,15 @@
      message.
 26.  Inspect the signature public key's signature during repleo processing.
 27.  Corrected log entries.
+28.  Added Buzz channel types.
+29.  The Hash Type combination box was incorrectly populated if libgcrypt
+     failed to be initialized properly.
+30.  Migrating message types from plaintext to ciphertext, where applicable.
+     Task is slow. Please note that although the types are hidden, it
+     is possible to guess message types based on the number of tokens.
+     Problem will be addressed. Please also note that one may be able
+     to distinguish ciphertexts produced from asymmetric ciphers and
+     symmetric ciphers.
 
 0.01
 

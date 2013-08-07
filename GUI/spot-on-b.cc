@@ -134,16 +134,23 @@ void spoton::slotReceivedKernelMessage(void)
 
 	      for(int i = 0; i < m_ui.buzzTab->count(); i++)
 		{
+		  page = qobject_cast<spoton_buzzpage *>
+		    (m_ui.buzzTab->widget(i));
+
+		  if(!page)
+		    continue;
+
 		  QList<QByteArray> a(list);
 		  bool ok = true;
-		  spoton_crypt crypt("aes256",
+		  spoton_crypt crypt(page->channelType(),
 				     QString("sha512"),
 				     QByteArray(),
-				     m_ui.buzzTab->tabText(i).toLatin1(),
+				     page->channel(),
 				     0,
 				     0,
 				     QString(""));
 
+		  page = 0;
 		  a.replace // Data.
 		    (0,
 		     crypt.decrypted(a.value(0), &ok)); /*
@@ -3491,13 +3498,15 @@ void spoton::slotJoinBuzzChannel(void)
   if(channel.isEmpty())
     return;
 
+  QString channelType(m_ui.channelType->currentText());
   bool found = false;
 
-  for(int i = 0; i < m_ui.buzzTab->count(); i++)
-    if(channel == m_ui.buzzTab->tabText(i))
+  foreach(spoton_buzzpage *page,
+	  m_ui.buzzTab->findChildren<spoton_buzzpage *> ())
+    if(channel == page->channel() && channelType == page->channelType())
       {
 	found = true;
-	m_ui.buzzTab->setCurrentIndex(i);
+	m_ui.buzzTab->setCurrentWidget(page);
 	break;
       }
 
@@ -3518,12 +3527,13 @@ void spoton::slotJoinBuzzChannel(void)
   m_ui.channel->clear();
 
   spoton_buzzpage *page = new spoton_buzzpage
-    (&m_kernelSocket, channel.toLatin1(), id, this); /*
-						     ** Should channel
-						     ** names be
-						     ** converted to
-						     ** UTF-8?
-						     */
+    (&m_kernelSocket, channel.toLatin1(), channelType.toLatin1(),
+     id, this); /*
+		** Should channel
+		** names be
+		** converted to
+		** UTF-8?
+		*/
 
   connect(&m_buzzStatusTimer,
 	  SIGNAL(timeout(void)),
@@ -3535,6 +3545,7 @@ void spoton::slotJoinBuzzChannel(void)
 	  SLOT(slotSetIcons(void)));
   m_ui.buzzTab->addTab(page, channel);
   m_ui.buzzTab->setCurrentIndex(m_ui.buzzTab->count() - 1);
+  m_ui.channelType->setCurrentIndex(0);
 
   if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
     if(m_kernelSocket.isEncrypted())
@@ -3543,7 +3554,7 @@ void spoton::slotJoinBuzzChannel(void)
 
 	message.append(channel.toLatin1().toBase64());
 	message.append("_");
-	message.append(QByteArray("aes256").toBase64());
+	message.append(channelType.toLatin1().toBase64());
 	message.append("\n");
 
 	if(m_kernelSocket.write(message.constData(), message.length()) !=

@@ -98,6 +98,7 @@ class spoton_kernel: public QObject
 
  private slots:
   void slotBuzzReceivedFromUI(const QByteArray &channel,
+			      const QByteArray &channelType,
 			      const QByteArray &name,
 			      const QByteArray &id,
 			      const QByteArray &message,
@@ -145,6 +146,7 @@ class spoton_kernel: public QObject
   void receivedMailMessage
     (const QByteArray &data, const QString &messageType,
      const qint64 id);
+  void receivedMessage(const QByteArray &data, const qint64 id);
   void receivedStatusMessage(const QByteArray &data,
 			     const qint64 id);
   void retrieveMail(const QByteArray &data, const qint64 id);

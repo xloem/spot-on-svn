@@ -316,9 +316,11 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 				    const QByteArray &,
 				    const QByteArray &,
 				    const QByteArray &,
+				    const QByteArray &,
 				    const QString &)),
 	  this,
 	  SLOT(slotBuzzReceivedFromUI(const QByteArray &,
+				      const QByteArray &,
 				      const QByteArray &,
 				      const QByteArray &,
 				      const QByteArray &,
@@ -924,8 +926,8 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 				     s_crypt);
 
   keyInformation = spoton_crypt::publicKeyEncrypt
-    (symmetricKey.toBase64() +
-     "\n" +
+    (QByteArray("0000").toBase64() + "\n" +
+     symmetricKey.toBase64() + "\n" +
      symmetricKeyAlgorithm.toBase64(),
      publicKey, &ok);
 
@@ -975,7 +977,8 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 			       0,
 			       QString(""));
 
-	    data = crypt.encrypted(data, &ok);
+	    data = crypt.encrypted
+	      (QByteArray("0000").toBase64() + "\n" + data, &ok);
 
 	    if(ok)
 	      messageCode = crypt.keyedHash(data, &ok);
@@ -1156,6 +1159,12 @@ void spoton_kernel::connectSignalsToNeighbor
 				     const QString &,
 				     const qint64)));
   connect(neighbor,
+	  SIGNAL(receivedMessage(const QByteArray &,
+				 const qint64)),
+	  this,
+	  SIGNAL(receivedMessage(const QByteArray &,
+				 const qint64)));
+  connect(neighbor,
 	  SIGNAL(receivedStatusMessage(const QByteArray &,
 				       const qint64)),
 	  this,
@@ -1215,6 +1224,12 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SLOT(slotReceivedMailMessage(const QByteArray &,
 				       const QString &,
 				       const qint64)));
+  connect(this,
+	  SIGNAL(receivedMessage(const QByteArray &,
+				 const qint64)),
+	  neighbor,
+	  SLOT(slotReceivedMessage(const QByteArray &,
+				   const qint64)));
   connect(this,
 	  SIGNAL(receivedStatusMessage(const QByteArray &,
 				       const qint64)),
@@ -1374,8 +1389,8 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	      if(ok)
 		{
 		  keyInformation = spoton_crypt::publicKeyEncrypt
-		    (symmetricKey.toBase64() +
-		     "\n" +
+		    (QByteArray("0013").toBase64() + "\n" +
+		     symmetricKey.toBase64() + "\n" +
 		     symmetricKeyAlgorithm.toBase64(),
 		     publicKey, &ok);
 		}
@@ -1424,7 +1439,8 @@ void spoton_kernel::slotStatusTimerExpired(void)
 					   0,
 					   QString(""));
 
-			data = crypt.encrypted(data, &ok);
+			data = crypt.encrypted
+			  (QByteArray("0013").toBase64() + "\n" + data, &ok);
 
 			if(ok)
 			  messageCode = crypt.keyedHash(data, &ok);
@@ -2056,6 +2072,7 @@ void spoton_kernel::slotRequestScramble(void)
 }
 
 void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &channel,
+					   const QByteArray &channelType,
 					   const QByteArray &name,
 					   const QByteArray &id,
 					   const QByteArray &message,
@@ -2065,7 +2082,7 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &channel,
   QByteArray data;
   QByteArray messageCode;
   bool ok = true;
-  spoton_crypt crypt("aes256",
+  spoton_crypt crypt(channelType,
 		     QString("sha512"),
 		     QByteArray(),
 		     channel,

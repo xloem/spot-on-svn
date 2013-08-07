@@ -666,6 +666,7 @@ void spoton_neighbor::slotReadyRead(void)
       while(!list.isEmpty())
 	{
 	  QByteArray data(list.takeFirst());
+	  QByteArray originalData(data);
 	  int length = 0;
 	  spoton_send::spoton_send_method sendMethod =
 	    spoton_send::ARTIFICIAL_GET;
@@ -698,8 +699,6 @@ void spoton_neighbor::slotReadyRead(void)
 		   peerAddress().toString()).
 	       arg(peerPort()).
 	       arg(length));
-	  else if(length > 0 && data.contains("type=0000&content="))
-	    process0000(length, data, sendMethod);
 	  else if(length > 0 && data.contains("type=0001a&content="))
 	    process0001a(length, data);
 	  else if(length > 0 && data.contains("type=0001b&content="))
@@ -710,8 +709,6 @@ void spoton_neighbor::slotReadyRead(void)
 	    process0011(length, data);
 	  else if(length > 0 && data.contains("type=0012&content="))
 	    process0012(length, data);
-	  else if(length > 0 && data.contains("type=0013&content="))
-	    process0013(length, data);
 	  else if(length > 0 && data.contains("type=0014&content="))
 	    process0014(length, data);
 	  else if(length > 0 && data.contains("type=0015&content="))
@@ -728,10 +725,16 @@ void spoton_neighbor::slotReadyRead(void)
 
 	      QString messageType(findMessageType(data));
 
+	      if(messageType == "0000")
+		process0000(length, data, sendMethod);
+	      if(messageType == "0013")
+		process0013(length, data);
 	      if(messageType == "0040a")
 		process0040a(length, data, sendMethod);
 	      else if(messageType == "0040b")
 		process0040b(length, data, sendMethod);
+	      else
+		emit receivedMessage(originalData, m_id);
 	    }
 	  else
 	    {
@@ -1097,6 +1100,31 @@ void spoton_neighbor::slotReceivedMailMessage(const QByteArray &data,
 	}
 }
 
+void spoton_neighbor::slotReceivedMessage
+(const QByteArray &data,
+ const qint64 id)
+{
+  /*
+  ** A neighbor (id) received a message. This neighbor now needs
+  ** to send the message to its peer.
+  */
+
+  if(m_echoMode == "full")
+    if(id != m_id)
+      if(readyToWrite())
+	{
+	  if(write(data.constData(), data.length()) != data.length())
+	    spoton_misc::logError
+	      ("spoton_neighbor::slotReceivedMessage(): write() "
+	       "error.");
+	  else
+	    {
+	      flush();
+	      resetKeepAlive();
+	    }
+	}
+}
+
 void spoton_neighbor::slotReceivedStatusMessage(const QByteArray &data,
 						const qint64 id)
 {
@@ -1231,18 +1259,7 @@ void spoton_neighbor::process0000
   if(!s_crypt)
     return;
 
-  length -= strlen("type=0000&content=");
-
-  /*
-  ** We may have received a chat message. Let's see if the message
-  ** is intended for us.
-  */
-
-  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
-
-  data.remove
-    (0,
-     data.indexOf("type=0000&content=") + strlen("type=0000&content="));
+  QByteArray data(dataIn);
 
   if(length == data.length())
     {
@@ -1290,6 +1307,8 @@ void spoton_neighbor::process0000
 
 			  if(ok)
 			    list = message.split('\n');
+
+			  list.removeAt(0); // Message Type
 
 			  if(list.size() != 3)
 			    {
@@ -1339,6 +1358,8 @@ void spoton_neighbor::process0000
 	    if(ok)
 	      {
 		QList<QByteArray> list(keyInformation.split('\n'));
+
+		list.removeAt(0); // Message Type
 
 		if(list.size() == 2)
 		  {
@@ -1965,17 +1986,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
   if(!s_crypt)
     return;
 
-  length -= strlen("type=0013&content=");
-
-  /*
-  ** We may have received a status message.
-  */
-
-  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
-
-  data.remove
-    (0,
-     data.indexOf("type=0013&content=") + strlen("type=0013&content="));
+  QByteArray data(dataIn);
 
   if(length == data.length())
     {
@@ -2023,6 +2034,8 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 
 			  if(ok)
 			    list = message.split('\n');
+
+			  list.removeAt(0); // Message Type
 
 			  if(list.size() != 3)
 			    {
@@ -2072,6 +2085,8 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	    if(ok)
 	      {
 		QList<QByteArray> list(keyInformation.split('\n'));
+
+		list.removeAt(0); // Message Type
 
 		if(list.size() == 2)
 		  {
@@ -3275,16 +3290,19 @@ void spoton_neighbor::resetKeepAlive(void)
   m_lastReadTime = QDateTime::currentDateTime();
 }
 
-QString spoton_neighbor::findMessageType(const QByteArray &dataIn)
+QString spoton_neighbor::findMessageType(const QByteArray &data)
 {
-  QByteArray data(QByteArray::fromBase64(dataIn));
-  QList<QByteArray> list(data.split('\n'));
+  QByteArray gemini;
+  QList<QByteArray> list(QByteArray::fromBase64(data).split('\n'));
   QPair<QByteArray, QByteArray> pair
     (spoton_kernel::findBuzzChannel(QByteArray::fromBase64(list.value(0))));
   QString messageType("");
+  int count = 0;
+  spoton_crypt *s_crypt = 0;
 
   if(!pair.first.isEmpty() && !pair.second.isEmpty())
     {
+      QByteArray data;
       bool ok = true;
       spoton_crypt crypt(pair.second,
 			 QString("sha512"),
@@ -3294,15 +3312,67 @@ QString spoton_neighbor::findMessageType(const QByteArray &dataIn)
 			 0,
 			 QString(""));
 
-      data = crypt.decrypted(QByteArray::fromBase64(list.value(0)),
-			     &ok);
+      data = crypt.decrypted(QByteArray::fromBase64(list.value(0)), &ok);
 
       if(ok)
+	messageType = QByteArray::fromBase64(data.split('\n').value(0));
+
+      if(!messageType.isEmpty())
+	goto done_label;
+    }
+
+  if(spoton_kernel::s_crypts.contains("messaging"))
+    s_crypt = spoton_kernel::s_crypts["messaging"];
+
+  if(s_crypt)
+    gemini = spoton_misc::findGeminiInCosmos
+      (QByteArray::fromBase64(list.value(0)), s_crypt);
+
+  if(!gemini.isEmpty())
+    {
+      QByteArray data;
+      bool ok = true;
+      spoton_crypt crypt("aes256",
+			 QString("sha512"),
+			 QByteArray(),
+			 gemini,
+			 0,
+			 0,
+			 QString(""));
+
+      data = crypt.decrypted(QByteArray::fromBase64(list.value(0)), &ok);
+
+      if(ok)
+	messageType = QByteArray::fromBase64(data.split('\n').value(0));
+
+      if(!messageType.isEmpty())
+	goto done_label;
+    }
+
+  /*
+  ** Finally, attempt to decipher the message via our private key.
+  */
+
+  if(s_crypt)
+    {
+      count = spoton_misc::participantCount();
+
+      if(count > 0)
 	{
-	  list = data.split('\n');
-	  messageType = QByteArray::fromBase64(list.value(0));
+	  QByteArray data;
+	  bool ok = true;
+
+	  data = s_crypt->publicKeyDecrypt
+	    (QByteArray::fromBase64(list.value(0)), &ok);
+
+	  if(ok)
+	    messageType = QByteArray::fromBase64(data.split('\n').value(0));
+
+	  if(!messageType.isEmpty())
+	    goto done_label;
 	}
     }
 
+ done_label:
   return messageType;
 }

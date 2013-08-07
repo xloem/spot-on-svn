@@ -40,6 +40,7 @@
 
 spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 				 const QByteArray &channel,
+				 const QByteArray &channelType,
 				 const QByteArray &id,
 				 QWidget *parent):QWidget(parent)
 {
@@ -47,6 +48,11 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 
   if(m_channel.isEmpty())
     m_channel = "unknown";
+
+  m_channelType = channelType.trimmed();
+
+  if(m_channelType.isEmpty())
+    m_channelType = "aes256";
 
   m_id = id.trimmed();
 
@@ -141,6 +147,8 @@ void spoton_buzzpage::slotSendMessage(void)
   message.clear();
   message.append("buzz_");
   message.append(m_channel.toBase64());
+  message.append("_");
+  message.append(m_channelType.toBase64());
   message.append("_");
   message.append(name.toBase64());
   message.append("_");
@@ -245,6 +253,8 @@ void spoton_buzzpage::slotSendStatus(void)
   message.clear();
   message.append("buzz_");
   message.append(m_channel.toBase64());
+  message.append("_");
+  message.append(m_channelType.toBase64());
   message.append("_");
   message.append(name.toBase64());
   message.append("_");
@@ -424,4 +434,9 @@ void spoton_buzzpage::purgeMessagingCache(void)
 QByteArray spoton_buzzpage::channel(void) const
 {
   return m_channel;
+}
+
+QByteArray spoton_buzzpage::channelType(void) const
+{
+  return m_channelType;
 }

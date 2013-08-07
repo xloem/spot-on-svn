@@ -252,21 +252,23 @@ void spoton_gui_server::slotReadyRead(void)
 
 	      QList<QByteArray> list(message.split('_'));
 
-	      if(list.size() == 3)
+	      if(list.size() == 4)
 		emit buzzReceivedFromUI
 		  (QByteArray::fromBase64(list.value(0)),
 		   QByteArray::fromBase64(list.value(1)),
 		   QByteArray::fromBase64(list.value(2)),
+		   QByteArray::fromBase64(list.value(3)),
 		   QByteArray(),
 		   QByteArray(),
 		   "0040a");
-	      else if(list.size() == 5)
+	      else if(list.size() == 6)
 		emit buzzReceivedFromUI
 		  (QByteArray::fromBase64(list.value(0)),
 		   QByteArray::fromBase64(list.value(1)),
 		   QByteArray::fromBase64(list.value(2)),
 		   QByteArray::fromBase64(list.value(3)),
 		   QByteArray::fromBase64(list.value(4)),
+		   QByteArray::fromBase64(list.value(5)),
 		   "0040b");
 	    }
 	  else if(message.startsWith("disconnect_listener_neighbors_"))

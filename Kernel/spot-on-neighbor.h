@@ -168,6 +168,7 @@ class spoton_neighbor: public QSslSocket
      const spoton_send::spoton_send_method sendMethod);
   void slotReceivedMailMessage
     (const QByteArray &data, const QString &messageType, const qint64 id);
+  void slotReceivedMessage(const QByteArray &data, const qint64 id);
   void slotReceivedStatusMessage(const QByteArray &data, const qint64 id);
   void slotRetrieveMail(const QByteArray &data, const qint64 id);
   void slotRetrieveMail(const QList<QByteArray> &list);
@@ -195,6 +196,7 @@ class spoton_neighbor: public QSslSocket
   void receivedMailMessage
     (const QByteArray &data, const QString &messageType,
      const qint64 id);
+  void receivedMessage(const QByteArray &data, const qint64 id);
   void receivedPublicKey(const QByteArray &name, const QByteArray publicKey);
   void receivedStatusMessage(const QByteArray &data, const qint64 id);
   void retrieveMail(const QByteArray &data,

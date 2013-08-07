@@ -94,6 +94,7 @@ class spoton_gui_server: public spoton_gui_server_tcp_server
 
  signals:
   void buzzReceivedFromUI(const QByteArray &channel,
+			  const QByteArray &channelType,
 			  const QByteArray &name,
 			  const QByteArray &id,
 			  const QByteArray &message,

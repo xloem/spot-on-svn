@@ -654,6 +654,8 @@ spoton::spoton(void):QMainWindow()
 		       toByteArray()).trimmed());
   m_ui.goldbug->setMaxLength
     (spoton_crypt::cipherKeyLength("aes256"));
+  m_ui.channelType->clear();
+  m_ui.channelType->addItems(spoton_crypt::cipherTypes());
   m_ui.cipherType->clear();
   m_ui.cipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.cost->setValue(m_settings.value("gui/congestionCost", 10000).toInt());
@@ -704,14 +706,17 @@ spoton::spoton(void):QMainWindow()
   ** Please don't translate n/a.
   */
 
+  if(m_ui.channelType->count() == 0)
+    m_ui.channelType->addItem("n/a");
+
   if(m_ui.cipherType->count() == 0)
     m_ui.cipherType->addItem("n/a");
 
   m_ui.hashType->clear();
   m_ui.hashType->addItems(spoton_crypt::hashTypes());
 
-  if(m_ui.cipherType->count() == 0)
-    m_ui.cipherType->addItem("n/a");
+  if(m_ui.hashType->count() == 0)
+    m_ui.hashType->addItem("n/a");
 
   QString str("");
 
@@ -3063,7 +3068,7 @@ void spoton::sendBuzzChannelsToKernel(void)
 	  message.append("addbuzz_");
 	  message.append(page->channel().toBase64());
 	  message.append("_");
-	  message.append(QByteArray("aes256").toBase64());
+	  message.append(page->channelType().toBase64());
 	  message.append("\n");
 
 	  if(m_kernelSocket.write(message.constData(), message.length()) !=
