@@ -589,7 +589,7 @@ spoton::spoton(void):QMainWindow()
      QFileInfo(m_settings.value("gui/kernelPath").toString().trimmed()).
      isExecutable())
     m_ui.kernelPath->setText(m_settings.value("gui/kernelPath").toString().
-			   trimmed());
+			     trimmed());
   else
     {
 #ifndef Q_OS_MAC
