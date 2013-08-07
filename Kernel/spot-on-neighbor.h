@@ -95,6 +95,7 @@ class spoton_neighbor: public QSslSocket
   qint64 m_id;
   quint16 m_port;
   spoton_external_address *m_externalAddress;
+  QString findMessageType(const QByteArray &data);
   bool isDuplicateMessage(const QByteArray &data);
   bool readyToWrite(void);
   void prepareNetworkInterface(void);

@@ -172,6 +172,9 @@ void spoton_gui_server::slotClientDisconnected(void)
       m_guiSocketData.remove(socket->socketDescriptor());
       socket->deleteLater();
     }
+
+  if(m_guiSocketData.isEmpty())
+    spoton_kernel::clearBuzzChannelsContainer();
 }
 
 void spoton_gui_server::slotReadyRead(void)
@@ -365,9 +368,9 @@ void spoton_gui_server::slotReadyRead(void)
 		emit publicizeListenerPlaintext
 		  (list.value(0).toLongLong());
 	    }
-	  else if(message.startsWith("removebuzzchannel_"))
+	  else if(message.startsWith("removebuzz_"))
 	    {
-	      message.remove(0, strlen("removebuzzchannel_"));
+	      message.remove(0, strlen("removebuzz_"));
 	      spoton_kernel::removeBuzzChannel
 		(QByteArray::fromBase64(message));
 	    }
@@ -428,9 +431,9 @@ void spoton_gui_server::slotReceivedBuzzMessage
   QByteArray message;
 
   message.append("buzz_");
-  message.append(list.value(0).toBase64());
+  message.append(list.value(0).toBase64()); // Message
   message.append("_");
-  message.append(list.value(1).toBase64());
+  message.append(list.value(1).toBase64()); // Message Code
   message.append("_");
   message.append(messageType.toLatin1().toBase64());
   message.append("\n");

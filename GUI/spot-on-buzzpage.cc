@@ -420,3 +420,8 @@ void spoton_buzzpage::purgeMessagingCache(void)
 
   m_messagingCacheMutex.unlock();
 }
+
+QByteArray spoton_buzzpage::channel(void) const
+{
+  return m_channel;
+}

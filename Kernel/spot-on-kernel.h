@@ -60,9 +60,12 @@ class spoton_kernel: public QObject
 						  ** signature
 						  ** url
 						  */
+  static QPair<QByteArray, QByteArray> findBuzzChannel
+    (const QByteArray &data);
   static bool messagingCacheContains(const QByteArray &data);
   static void addBuzzChannel(const QByteArray &channel,
 			     const QByteArray &channelType);
+  static void clearBuzzChannelsContainer(void);
   static void messagingCacheAdd(const QByteArray &data);
   static void removeBuzzChannel(const QByteArray &data);
 

@@ -26,6 +26,7 @@
 */
 
 #include "spot-on.h"
+#include "spot-on-buzzpage.h"
 
 int main(int argc, char *argv[])
 {
@@ -2685,6 +2686,7 @@ void spoton::slotSetPassphrase(void)
 	  if(!m_tableTimer.isActive())
 	    m_tableTimer.start();
 
+	  sendBuzzChannelsToKernel();
 	  sendKeysToKernel();
 	}
 
@@ -2804,6 +2806,7 @@ void spoton::slotValidatePassphrase(void)
 	    if(!m_tableTimer.isActive())
 	      m_tableTimer.start();
 
+	    sendBuzzChannelsToKernel();
 	    sendKeysToKernel();
 	    m_sb.kernelstatus->setEnabled(true);
 	    m_sb.listeners->setEnabled(true);
@@ -3015,6 +3018,7 @@ void spoton::slotKernelSocketState(void)
     {
       if(m_kernelSocket.isEncrypted())
 	{
+	  sendBuzzChannelsToKernel();
 	  sendKeysToKernel();
 	  m_sb.kernelstatus->setToolTip
 	    (tr("Connected securely to the kernel on port %1 "
@@ -3045,6 +3049,30 @@ void spoton::slotKernelSocketState(void)
 	(tr("Not connected to the kernel. Is the kernel "
 	    "active?"));
     }
+}
+
+void spoton::sendBuzzChannelsToKernel(void)
+{
+  if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
+    if(m_kernelSocket.isEncrypted())
+      foreach(spoton_buzzpage *page,
+	      m_ui.tab->findChildren<spoton_buzzpage *> ())
+	{
+	  QByteArray message;
+
+	  message.append("addbuzz_");
+	  message.append(page->channel().toBase64());
+	  message.append("_");
+	  message.append(QByteArray("aes256").toBase64());
+	  message.append("\n");
+
+	  if(m_kernelSocket.write(message.constData(), message.length()) !=
+	     message.length())
+	    spoton_misc::logError
+	      ("spoton::sendBuzzChannelsToKernel(): write() failure.");
+	  else
+	    m_kernelSocket.flush();
+	}
 }
 
 void spoton::sendKeysToKernel(void)

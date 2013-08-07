@@ -2073,6 +2073,9 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &channel,
 		     0,
 		     QString(""));
 
+  data.append(messageType.toLatin1().toBase64());
+  data.append("\n");
+
   if(messageType == "0040a")
     {
       data.append(name.toBase64());
@@ -2228,4 +2231,41 @@ void spoton_kernel::addBuzzChannel(const QByteArray &channel,
 void spoton_kernel::removeBuzzChannel(const QByteArray &channel)
 {
   s_buzzChannels.remove(channel);
+}
+
+QPair<QByteArray, QByteArray> spoton_kernel::findBuzzChannel
+(const QByteArray &data)
+{
+  QHashIterator<QByteArray, QByteArray> it(s_buzzChannels);
+  QPair<QByteArray, QByteArray> pair;
+
+  while(it.hasNext())
+    {
+      it.next();
+
+      bool ok = true;
+      spoton_crypt crypt(it.value(),
+			 QString("sha512"),
+			 QByteArray(),
+			 it.key(),
+			 0,
+			 0,
+			 QString(""));
+
+      crypt.decrypted(data, &ok);
+
+      if(ok)
+	{
+	  pair.first = it.key();
+	  pair.second = it.value();
+	  break;
+	}
+    }
+
+  return pair;
+}
+
+void spoton_kernel::clearBuzzChannelsContainer(void)
+{
+  s_buzzChannels.clear();
 }

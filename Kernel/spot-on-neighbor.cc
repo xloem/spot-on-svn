@@ -718,10 +718,21 @@ void spoton_neighbor::slotReadyRead(void)
 	    process0015(length, data);
 	  else if(length > 0 && data.contains("type=0030&content="))
 	    process0030(length, data);
-	  else if(length > 0 && data.contains("type=0040a&content="))
-	    process0040a(length, data, sendMethod);
-	  else if(length > 0 && data.contains("type=0040b&content="))
-	    process0040b(length, data, sendMethod);
+	  else if(length > 0 && data.contains("content="))
+	    {
+	      length -= strlen("content=");
+	      data = data.mid(0, data.lastIndexOf("\r\n") + 2);
+	      data.remove
+		(0,
+		 data.indexOf("content=") + strlen("content="));
+
+	      QString messageType(findMessageType(data));
+
+	      if(messageType == "0040a")
+		process0040a(length, data, sendMethod);
+	      else if(messageType == "0040b")
+		process0040b(length, data, sendMethod);
+	    }
 	  else
 	    {
 	      if(readBufferSize() != 1000)
@@ -2371,17 +2382,7 @@ void spoton_neighbor::process0040a
   if(!s_crypt)
     return;
 
-  length -= strlen("type=0040a&content=");
-
-  /*
-  ** We may have received a buzz.
-  */
-
-  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
-
-  data.remove
-    (0,
-     data.indexOf("type=0040a&content=") + strlen("type=0040a&content="));
+  QByteArray data(dataIn);
 
   if(length == data.length())
     {
@@ -2415,7 +2416,7 @@ void spoton_neighbor::process0040a
     }
   else
     spoton_misc::logError
-      (QString("spoton_neighbor::process0030(): 0040a "
+      (QString("spoton_neighbor::process0040a(): 0040a "
 	       "content-length mismatch (advertised: %1, received: %2).").
        arg(length).arg(data.length()));
 }
@@ -2432,17 +2433,7 @@ void spoton_neighbor::process0040b
   if(!s_crypt)
     return;
 
-  length -= strlen("type=0040b&content=");
-
-  /*
-  ** We may have received a buzz.
-  */
-
-  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
-
-  data.remove
-    (0,
-     data.indexOf("type=0040b&content=") + strlen("type=0040b&content="));
+  QByteArray data(dataIn);
 
   if(length == data.length())
     {
@@ -2476,7 +2467,7 @@ void spoton_neighbor::process0040b
     }
   else
     spoton_misc::logError
-      (QString("spoton_neighbor::process0030(): 0040b "
+      (QString("spoton_neighbor::process0040b(): 0040b "
 	       "content-length mismatch (advertised: %1, received: %2).").
        arg(length).arg(data.length()));
 }
@@ -3282,4 +3273,36 @@ void spoton_neighbor::resetKeepAlive(void)
 {
   m_keepAliveTimer.start();
   m_lastReadTime = QDateTime::currentDateTime();
+}
+
+QString spoton_neighbor::findMessageType(const QByteArray &dataIn)
+{
+  QByteArray data(QByteArray::fromBase64(dataIn));
+  QList<QByteArray> list(data.split('\n'));
+  QPair<QByteArray, QByteArray> pair
+    (spoton_kernel::findBuzzChannel(QByteArray::fromBase64(list.value(0))));
+  QString messageType("");
+
+  if(!pair.first.isEmpty() && !pair.second.isEmpty())
+    {
+      bool ok = true;
+      spoton_crypt crypt(pair.second,
+			 QString("sha512"),
+			 QByteArray(),
+			 pair.first,
+			 0,
+			 0,
+			 QString(""));
+
+      data = crypt.decrypted(QByteArray::fromBase64(list.value(0)),
+			     &ok);
+
+      if(ok)
+	{
+	  list = data.split('\n');
+	  messageType = QByteArray::fromBase64(list.value(0));
+	}
+    }
+
+  return messageType;
 }

@@ -335,12 +335,12 @@ QByteArray spoton_send::message0040a(const QByteArray &message)
      "Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
-     "type=0040a&content=%2\r\n"
+     "content=%2\r\n"
      "\r\n\r\n");
   results.replace
     ("%1",
      QString::number(message.toBase64().length() +
-		     QString("type=0040a&content=\r\n\r\n\r\n").
+		     QString("content=\r\n\r\n\r\n").
 		     length()).
      toLatin1());
   results.replace
@@ -362,12 +362,12 @@ QByteArray spoton_send::message0040b(const QByteArray &message,
     ("Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
-     "type=0040b&content=%2\r\n"
+     "content=%2\r\n"
      "\r\n\r\n");
   results.replace
     ("%1",
      QString::number(message.toBase64().length() +
-		     QString("type=0040b&content=\r\n\r\n\r\n").length()).
+		     QString("content=\r\n\r\n\r\n").length()).
      toLatin1());
   results.replace
     ("%2", message.toBase64());

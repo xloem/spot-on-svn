@@ -49,6 +49,7 @@ class spoton_buzzpage: public QWidget
 		  const QByteArray &id,
 		  QWidget *parent);
   ~spoton_buzzpage();
+  QByteArray channel(void) const;
   bool userStatus(const QList<QByteArray> &list);
   void appendMessage(const QByteArray &hash,
 		     const QList<QByteArray> &list);

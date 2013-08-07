@@ -164,6 +164,7 @@ void spoton::slotReceivedKernelMessage(void)
 			  if(a.value(1) == computedMessageCode)
 			    {
 			      a = a.value(0).split('\n');
+			      a.removeAt(0); // Message Type
 
 			      for(int i = 0; i < a.size(); i++)
 				a.replace(i, QByteArray::fromBase64(a.at(i)));
@@ -3534,10 +3535,29 @@ void spoton::slotJoinBuzzChannel(void)
 	  SLOT(slotSetIcons(void)));
   m_ui.buzzTab->addTab(page, channel);
   m_ui.buzzTab->setCurrentIndex(m_ui.buzzTab->count() - 1);
+
+  if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
+    if(m_kernelSocket.isEncrypted())
+      {
+	QByteArray message("addbuzz_");
+
+	message.append(channel.toLatin1().toBase64());
+	message.append("_");
+	message.append(QByteArray("aes256").toBase64());
+	message.append("\n");
+
+	if(m_kernelSocket.write(message.constData(), message.length()) !=
+	   message.length())
+	  spoton_misc::logError
+	    ("spoton::slotJoinBuzzChannel(): write() failure.");
+	else
+	  m_kernelSocket.flush();
+      }
 }
 
 void spoton::slotCloseBuzzTab(int index)
 {
+  QByteArray channel;
   int count = 0;
   spoton_buzzpage *page = qobject_cast<spoton_buzzpage *>
     (m_ui.buzzTab->widget(index));
@@ -3546,12 +3566,29 @@ void spoton::slotCloseBuzzTab(int index)
 
   if(page)
     {
+      channel = page->channel();
       count -= 1;
       page->deleteLater();
     }
 
   if(!count)
     m_buzzStatusTimer.stop();
+
+  if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
+    if(m_kernelSocket.isEncrypted())
+      {
+	QByteArray message("removebuzz_");
+
+	message.append(channel.toBase64());
+	message.append("\n");
+
+	if(m_kernelSocket.write(message.constData(), message.length()) !=
+	   message.length())
+	  spoton_misc::logError
+	    ("spoton::slotCloseBuzzTab(): write() failure.");
+	else
+	  m_kernelSocket.flush();
+      }
 }
 
 void spoton::initializeKernelSocket(void)
