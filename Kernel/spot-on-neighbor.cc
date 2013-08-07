@@ -666,13 +666,15 @@ void spoton_neighbor::slotReadyRead(void)
       while(!list.isEmpty())
 	{
 	  QByteArray data(list.takeFirst());
+
+	  if(!spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
+	    if(isDuplicateMessage(data))
+	      continue;
+
+	  recordMessageHash(data);
+
 	  QByteArray originalData(data);
 	  int length = 0;
-	  spoton_send::spoton_send_method sendMethod =
-	    spoton_send::ARTIFICIAL_GET;
-
-	  if(data.startsWith("POST"))
-	    sendMethod = spoton_send::NORMAL_POST;
 
 	  if(data.contains("Content-Length: "))
 	    {
@@ -726,15 +728,23 @@ void spoton_neighbor::slotReadyRead(void)
 	      QString messageType(findMessageType(data));
 
 	      if(messageType == "0000")
-		process0000(length, data, sendMethod);
+		process0000(length, data);
 	      if(messageType == "0013")
 		process0013(length, data);
 	      if(messageType == "0040a")
-		process0040a(length, data, sendMethod);
+		process0040a(length, data);
 	      else if(messageType == "0040b")
-		process0040b(length, data, sendMethod);
+		process0040b(length, data);
 	      else
-		emit receivedMessage(originalData, m_id);
+		{
+		  resetKeepAlive();
+
+		  if(spoton_kernel::s_settings.value("gui/scramblerEnabled",
+						     false).toBool())
+		    emit scrambleRequest();
+
+		  emit receivedMessage(originalData, m_id);
+		}
 	    }
 	  else
 	    {
@@ -1006,68 +1016,6 @@ void spoton_neighbor::slotSendMessage(const QByteArray &data)
     }
 }
 
-void spoton_neighbor::slotReceivedBuzzMessage
-(const QByteArray &data,
- const QString &messageType,
- const qint64 id,
- const spoton_send::spoton_send_method sendMethod)
-{
-  /*
-  ** A neighbor (id) received a buzz message. This neighbor now needs
-  ** to send the message to its peer.
-  */
-
-  if(m_echoMode == "full")
-    if(id != m_id)
-      if(readyToWrite())
-	{
-	  QByteArray message;
-
-	  if(messageType == "0040a")
-	    message = spoton_send::message0040a(data);
-	  else
-	    message = spoton_send::message0040b(data, sendMethod);
-
-	  if(write(message.constData(), message.length()) != message.length())
-	    spoton_misc::logError
-	      ("spoton_neighbor::slotReceivedBuzzMessage(): write() "
-	       "error.");
-	  else
-	    {
-	      flush();
-	      resetKeepAlive();
-	    }
-	}
-}
-
-void spoton_neighbor::slotReceivedChatMessage
-(const QByteArray &data,
- const qint64 id,
- const spoton_send::spoton_send_method sendMethod)
-{
-  /*
-  ** A neighbor (id) received a message. This neighbor now needs
-  ** to send the message to its peer.
-  */
-
-  if(m_echoMode == "full")
-    if(id != m_id)
-      if(readyToWrite())
-	{
-	  QByteArray message(spoton_send::message0000(data, sendMethod));
-
-	  if(write(message.constData(), message.length()) != message.length())
-	    spoton_misc::logError
-	      ("spoton_neighbor::slotReceivedChatMessage(): write() "
-	       "error.");
-	  else
-	    {
-	      flush();
-	      resetKeepAlive();
-	    }
-	}
-}
-
 void spoton_neighbor::slotReceivedMailMessage(const QByteArray &data,
 					      const QString &messageType,
 					      const qint64 id)
@@ -1247,9 +1195,7 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
     }
 }
 
-void spoton_neighbor::process0000
-(int length, const QByteArray &dataIn,
- const spoton_send::spoton_send_method sendMethod)
+void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 {
   spoton_crypt *s_crypt = 0;
 
@@ -1458,18 +1404,6 @@ void spoton_neighbor::process0000
       if(spoton_kernel::s_settings.value("gui/scramblerEnabled",
 					 false).toBool())
 	emit scrambleRequest();
-
-      if(count == 0 || !ok ||
-	 spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
-	{
-	  if(!spoton_kernel::s_settings.value("gui/superEcho",
-					      false).toBool())
-	    if(isDuplicateMessage(originalData))
-	      return;
-
-	  recordMessageHash(originalData);
-	  emit receivedChatMessage(originalData, m_id, sendMethod);
-	}
     }
   else
     spoton_misc::logError
@@ -2165,18 +2099,6 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	  }
 
       resetKeepAlive();
-
-      if(count == 0 || !ok ||
-	 spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
-	{
-	  if(!spoton_kernel::s_settings.value("gui/superEcho",
-					      false).toBool())
-	    if(isDuplicateMessage(originalData))
-	      return;
-
-	  recordMessageHash(originalData);
-	  emit receivedStatusMessage(originalData, m_id);
-	}
     }
   else
     spoton_misc::logError
@@ -2386,8 +2308,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 }
 
 void spoton_neighbor::process0040a
-(int length, const QByteArray &dataIn,
- const spoton_send::spoton_send_method sendMethod)
+(int length, const QByteArray &dataIn)
 {
   spoton_crypt *s_crypt = 0;
 
@@ -2422,12 +2343,6 @@ void spoton_neighbor::process0040a
 	emit receivedBuzzMessage(list, "0040a");
 
       resetKeepAlive();
-
-      if(isDuplicateMessage(originalData))
-	return;
-
-      recordMessageHash(originalData);
-      emit receivedBuzzMessage(originalData, "0040a", m_id, sendMethod);
     }
   else
     spoton_misc::logError
@@ -2437,8 +2352,7 @@ void spoton_neighbor::process0040a
 }
 
 void spoton_neighbor::process0040b
-(int length, const QByteArray &dataIn,
- const spoton_send::spoton_send_method sendMethod)
+(int length, const QByteArray &dataIn)
 {
   spoton_crypt *s_crypt = 0;
 
@@ -2473,12 +2387,6 @@ void spoton_neighbor::process0040b
 	emit receivedBuzzMessage(list, "0040b");
 
       resetKeepAlive();
-
-      if(isDuplicateMessage(originalData))
-	return;
-
-      recordMessageHash(originalData);
-      emit receivedBuzzMessage(originalData, "0040b", m_id, sendMethod);
     }
   else
     spoton_misc::logError

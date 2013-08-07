@@ -99,8 +99,7 @@ class spoton_neighbor: public QSslSocket
   bool isDuplicateMessage(const QByteArray &data);
   bool readyToWrite(void);
   void prepareNetworkInterface(void);
-  void process0000(int length, const QByteArray &data,
-		   const spoton_send::spoton_send_method sendMethod);
+  void process0000(int length, const QByteArray &data);
   void process0001a(int length, const QByteArray &data);
   void process0001b(int length, const QByteArray &data);
   void process0002(int length, const QByteArray &data);
@@ -110,10 +109,8 @@ class spoton_neighbor: public QSslSocket
   void process0014(int length, const QByteArray &data);
   void process0015(int length, const QByteArray &data);
   void process0030(int length, const QByteArray &data);
-  void process0040a(int length, const QByteArray &data,
-		    const spoton_send::spoton_send_method sendMethod);
-  void process0040b(int length, const QByteArray &data,
-		    const spoton_send::spoton_send_method sendMethod);
+  void process0040a(int length, const QByteArray &data);
+  void process0040b(int length, const QByteArray &data);
   void recordMessageHash(const QByteArray &data);
   void resetKeepAlive(void);
   void saveEncryptedStatus(void);
@@ -160,12 +157,6 @@ class spoton_neighbor: public QSslSocket
   void slotPublicizeListenerPlaintext(const QHostAddress &address,
 				      const quint16 port);
   void slotReadyRead(void);
-  void slotReceivedBuzzMessage
-    (const QByteArray &data, const QString &messageType, const qint64 id,
-     const spoton_send::spoton_send_method sendMethod);
-  void slotReceivedChatMessage
-    (const QByteArray &data, const qint64 id,
-     const spoton_send::spoton_send_method sendMethod);
   void slotReceivedMailMessage
     (const QByteArray &data, const QString &messageType, const qint64 id);
   void slotReceivedMessage(const QByteArray &data, const qint64 id);
@@ -185,14 +176,9 @@ class spoton_neighbor: public QSslSocket
  signals:
   void newEMailArrived(void);
   void publicizeListenerPlaintext(const QByteArray &data, const qint64 id);
-  void receivedBuzzMessage
-    (const QByteArray &data, const QString &messageType, const qint64 id,
-     const spoton_send::spoton_send_method sendMethod);
   void receivedBuzzMessage(const QList<QByteArray> &list,
 			   const QString &messageType);
   void receivedChatMessage(const QByteArray &data);
-  void receivedChatMessage(const QByteArray &data, const qint64 id,
-			   const spoton_send::spoton_send_method sendMethod);
   void receivedMailMessage
     (const QByteArray &data, const QString &messageType,
      const qint64 id);

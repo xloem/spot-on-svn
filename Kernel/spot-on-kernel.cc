@@ -1113,16 +1113,6 @@ void spoton_kernel::connectSignalsToNeighbor
 	  m_guiServer,
 	  SLOT(slotNewEMailArrived(void)));
   connect(neighbor,
-	  SIGNAL(receivedBuzzMessage(const QByteArray &,
-				     const QString &,
-				     const qint64,
-				     const spoton_send::spoton_send_method)),
-	  this,
-	  SIGNAL(receivedBuzzMessage(const QByteArray &,
-				     const QString &,
-				     const qint64,
-				     const spoton_send::spoton_send_method)));
-  connect(neighbor,
 	  SIGNAL(receivedBuzzMessage(const QList<QByteArray> &,
 				     const QString &)),
 	  m_guiServer,
@@ -1142,14 +1132,6 @@ void spoton_kernel::connectSignalsToNeighbor
 	  this,
 	  SIGNAL(publicizeListenerPlaintext(const QByteArray &,
 					    const qint64)));
-  connect(neighbor,
-	  SIGNAL(receivedChatMessage(const QByteArray &,
-				     const qint64,
-				     const spoton_send::spoton_send_method)),
-	  this,
-	  SIGNAL(receivedChatMessage(const QByteArray &,
-				     const qint64,
-				     const spoton_send::spoton_send_method)));
   connect(neighbor,
 	  SIGNAL(receivedMailMessage(const QByteArray &,
 				     const QString &,
@@ -1196,26 +1178,6 @@ void spoton_kernel::connectSignalsToNeighbor
 	  neighbor,
 	  SLOT(slotPublicizeListenerPlaintext(const QHostAddress &,
 					      const quint16)));
-  connect
-    (this,
-     SIGNAL(receivedBuzzMessage(const QByteArray &,
-				const QString &,
-				const qint64,
-				const spoton_send::spoton_send_method)),
-     neighbor,
-     SLOT(slotReceivedBuzzMessage(const QByteArray &,
-				  const QString &,
-				  const qint64,
-				  const spoton_send::spoton_send_method)));
-  connect
-    (this,
-     SIGNAL(receivedChatMessage(const QByteArray &,
-				const qint64,
-				const spoton_send::spoton_send_method)),
-     neighbor,
-     SLOT(slotReceivedChatMessage(const QByteArray &,
-				  const qint64,
-				  const spoton_send::spoton_send_method)));
   connect(this,
 	  SIGNAL(receivedMailMessage(const QByteArray &,
 				     const QString &,

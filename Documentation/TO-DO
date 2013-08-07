@@ -107,3 +107,5 @@ Remaining Items
 28.    Simplify messages. Less tokens. Hide header information?
 29.    Limit sending of information to the kernel. See
        spoton::slotKernelSocketState().
+30.    QFSFileEngine::open: No file name specified: created from
+       e-mail.

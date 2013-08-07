@@ -138,11 +138,6 @@ class spoton_kernel: public QObject
 				  const qint64 id);
   void publicizeListenerPlaintext(const QHostAddress &address,
 				  const quint16 port);
-  void receivedBuzzMessage
-    (const QByteArray &data, const QString &messageType, const qint64 id,
-     const spoton_send::spoton_send_method sendMethod);
-  void receivedChatMessage(const QByteArray &data, const qint64 id,
-			   const spoton_send::spoton_send_method sendMethod);
   void receivedMailMessage
     (const QByteArray &data, const QString &messageType,
      const qint64 id);
