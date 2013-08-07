@@ -705,8 +705,6 @@ void spoton_neighbor::slotReadyRead(void)
 	    process0001a(length, data);
 	  else if(length > 0 && data.contains("type=0001b&content="))
 	    process0001b(length, data);
-	  else if(length > 0 && data.contains("type=0002&content="))
-	    process0002(length, data);
 	  else if(length > 0 && data.contains("type=0011&content="))
 	    process0011(length, data);
 	  else if(length > 0 && data.contains("type=0012&content="))
@@ -729,9 +727,11 @@ void spoton_neighbor::slotReadyRead(void)
 
 	      if(messageType == "0000")
 		process0000(length, data);
-	      if(messageType == "0013")
+	      else if(messageType == "0002")
+		process0002(length, data);
+	      else if(messageType == "0013")
 		process0013(length, data);
-	      if(messageType == "0040a")
+	      else if(messageType == "0040a")
 		process0040a(length, data);
 	      else if(messageType == "0040b")
 		process0040b(length, data);
@@ -1090,32 +1090,6 @@ void spoton_neighbor::slotReceivedStatusMessage(const QByteArray &data,
 	  if(write(message.constData(), message.length()) != message.length())
 	    spoton_misc::logError
 	      ("spoton_neighbor::slotReceivedStatusMessage(): write() "
-	       "error.");
-	  else
-	    {
-	      flush();
-	      resetKeepAlive();
-	    }
-	}
-}
-
-void spoton_neighbor::slotRetrieveMail(const QByteArray &data,
-				       const qint64 id)
-{
-  /*
-  ** A neighbor (id) received a request to retrieve mail. This neighbor
-  ** now needs to send the message to its peer.
-  */
-
-  if(m_echoMode == "full")
-    if(id != m_id)
-      if(readyToWrite())
-	{
-	  QByteArray message(spoton_send::message0002(data));
-
-	  if(write(message.constData(), message.length()) != message.length())
-	    spoton_misc::logError
-	      ("spoton_neighbor::slotRetrieveMail(): write() "
 	       "error.");
 	  else
 	    {
@@ -1665,13 +1639,7 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
   if(!s_crypt)
     return;
 
-  length -= strlen("type=0002&content=");
-
-  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
-
-  data.remove
-    (0,
-     data.indexOf("type=0002&content=") + strlen("type=0002&content="));
+  QByteArray data(dataIn);
 
   if(length == data.length())
     {
@@ -1714,6 +1682,8 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 	  if(ok)
 	    {
 	      QList<QByteArray> list(keyInformation.split('\n'));
+
+	      list.removeAt(0); // Message Type
 
 	      if(list.size() == 2)
 		{
@@ -1795,18 +1765,6 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 	}
 
       resetKeepAlive();
-
-      if(count == 0 || !ok ||
-	 spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
-	{
-	  if(!spoton_kernel::s_settings.value("gui/superEcho",
-					      false).toBool())
-	    if(isDuplicateMessage(originalData))
-	      return;
-
-	  recordMessageHash(originalData);
-	  emit retrieveMail(originalData, m_id);
-	}
     }
   else
     spoton_misc::logError

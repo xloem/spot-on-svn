@@ -1160,12 +1160,6 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SLOT(slotRetrieveMail(const QByteArray &,
 				const QByteArray &,
 				const QByteArray &)));
-  connect(neighbor,
-	  SIGNAL(retrieveMail(const QByteArray &,
-			      const qint64)),
-	  this,
-	  SIGNAL(retrieveMail(const QByteArray &,
-			      const qint64)));
   connect(this,
 	  SIGNAL(publicizeListenerPlaintext(const QByteArray &,
 					    const qint64)),
@@ -1198,12 +1192,6 @@ void spoton_kernel::connectSignalsToNeighbor
 	  neighbor,
 	  SLOT(slotReceivedStatusMessage(const QByteArray &,
 					 const qint64)));
-  connect(this,
-	  SIGNAL(retrieveMail(const QByteArray &,
-			      const qint64)),
-	  neighbor,
-	  SLOT(slotRetrieveMail(const QByteArray &,
-				const qint64)));
   connect(this,
 	  SIGNAL(retrieveMail(const QList<QByteArray> &)),
 	  neighbor,
@@ -1562,7 +1550,8 @@ void spoton_kernel::slotRetrieveMail(void)
 		}
 
 	      keyInformation = spoton_crypt::publicKeyEncrypt
-		(symmetricKey.toBase64() + "\n" +
+		(QByteArray("0002").toBase64() + "\n" +
+		 symmetricKey.toBase64() + "\n" +
 		 symmetricKeyAlgorithm.toBase64(),
 		 publicKey, &ok);
 
