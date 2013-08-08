@@ -48,6 +48,8 @@
 31.  Generate scrambled messages for an assortment of message types.
 32.  Allow neighbors to be detached from listener parents. Please
      see the Listeners table's context menu.
+33.  The interface had a habit of periodically sending repetitive information
+     to the kernel. Corrected.
 
 0.01
 

@@ -120,6 +120,7 @@ class spoton: public QMainWindow
 						 */
   QHash<QString, QByteArray> m_buzzIds;
   QHash<QString, QVariant> m_settings;
+  QHash<QString, bool> m_booleans;
   QMutex m_messagingCacheMutex;
   QMutex m_purgeMutex;
 #ifdef SPOTON_LINKED_WITH_LIBPHONON

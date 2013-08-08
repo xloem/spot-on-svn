@@ -79,6 +79,8 @@ spoton::spoton(void):QMainWindow()
 {
   qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
+  m_booleans["buzz_channels_sent_to_kernel"] = false;
+  m_booleans["keys_sent_to_kernel"] = false;
   m_buzzStatusTimer.setInterval(15000);
   m_crypt = 0;
   m_signatureCrypt = 0;
@@ -3046,6 +3048,8 @@ void spoton::slotKernelSocketState(void)
     }
   else if(state == QAbstractSocket::UnconnectedState)
     {
+      m_booleans["buzz_channels_sent_to_kernel"] = false;
+      m_booleans["keys_sent_to_kernel"] = false;
       m_messagingCacheMutex.lock();
       m_messagingCache.clear();
       m_messagingCacheMutex.unlock();
@@ -3060,8 +3064,13 @@ void spoton::slotKernelSocketState(void)
 
 void spoton::sendBuzzChannelsToKernel(void)
 {
-  if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
-    if(m_kernelSocket.isEncrypted())
+  if(m_booleans.value("buzz_channels_sent_to_kernel", false))
+    return;
+
+  bool sent = true;
+
+  if((sent = (m_kernelSocket.state() == QAbstractSocket::ConnectedState)))
+    if((sent = m_kernelSocket.isEncrypted()))
       foreach(spoton_buzzpage *page,
 	      m_ui.tab->findChildren<spoton_buzzpage *> ())
 	{
@@ -3075,15 +3084,23 @@ void spoton::sendBuzzChannelsToKernel(void)
 
 	  if(m_kernelSocket.write(message.constData(), message.length()) !=
 	     message.length())
-	    spoton_misc::logError
-	      ("spoton::sendBuzzChannelsToKernel(): write() failure.");
+	    {
+	      sent = false;
+	      spoton_misc::logError
+		("spoton::sendBuzzChannelsToKernel(): write() failure.");
+	    }
 	  else
 	    m_kernelSocket.flush();
 	}
+
+  m_booleans["buzz_channels_sent_to_kernel"] = sent;
 }
 
 void spoton::sendKeysToKernel(void)
 {
+  if(m_booleans.value("keys_sent_to_kernel", false))
+    return;
+
   if(m_crypt)
     if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
       if(m_kernelSocket.isEncrypted())
@@ -3106,7 +3123,10 @@ void spoton::sendKeysToKernel(void)
 	    spoton_misc::logError
 	      ("spoton::sendKeysToKernel(): write() failure.");
 	  else
-	    m_kernelSocket.flush();
+	    {
+	      m_booleans["keys_sent_to_kernel"] = true;
+	      m_kernelSocket.flush();
+	    }
 	}
 }
 
