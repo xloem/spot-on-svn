@@ -666,14 +666,8 @@ void spoton_neighbor::slotReadyRead(void)
       while(!list.isEmpty())
 	{
 	  QByteArray data(list.takeFirst());
-
-	  if(!spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
-	    if(isDuplicateMessage(data))
-	      continue;
-
-	  recordMessageHash(data);
-
 	  QByteArray originalData(data);
+	  bool downgrade = false;
 	  int length = 0;
 
 	  if(data.contains("Content-Length: "))
@@ -688,20 +682,30 @@ void spoton_neighbor::slotReadyRead(void)
 		toInt(); // toInt() failure returns zero.
 	    }
 	  else
-	    spoton_misc::logError
-	      ("spoton_neighbor::slotReadyRead() "
-	       "data does not contain Content-Length.");
+	    {
+	      downgrade = true;
+	      spoton_misc::logError
+		("spoton_neighbor::slotReadyRead() "
+		 "data does not contain Content-Length.");
+	    }
 
 	  if(length >= m_maximumContentLength)
-	    spoton_misc::logError
-	      (QString("spoton_neighbor::slotReadyRead(): "
-		       "the Content-Length header from node %1:%2 "
-		       "contains a lot of data (%3). Ignoring. ").
-	       arg(peerAddress().isNull() ? peerName() :
-		   peerAddress().toString()).
-	       arg(peerPort()).
-	       arg(length));
-	  else if(length > 0 && data.contains("type=0001a&content="))
+	    {
+	      downgrade = true;
+	      spoton_misc::logError
+		(QString("spoton_neighbor::slotReadyRead(): "
+			 "the Content-Length header from node %1:%2 "
+			 "contains a lot of data (%3). Ignoring. ").
+		 arg(peerAddress().isNull() ? peerName() :
+		     peerAddress().toString()).
+		 arg(peerPort()).
+		 arg(length));
+	    }
+
+	  if(downgrade)
+	    goto done_label;
+
+	  if(length > 0 && data.contains("type=0001a&content="))
 	    process0001a(length, data);
 	  else if(length > 0 && data.contains("type=0001b&content="))
 	    process0001b(length, data);
@@ -717,6 +721,17 @@ void spoton_neighbor::slotReadyRead(void)
 	    process0030(length, data);
 	  else if(length > 0 && data.contains("content="))
 	    {
+	      if(!spoton_kernel::s_settings.value("gui/superEcho",
+						  false).toBool())
+		if(isDuplicateMessage(originalData))
+		  continue;
+
+	      recordMessageHash(originalData);
+
+	      /*
+	      ** Remove some header data.
+	      */
+
 	      length -= strlen("content=");
 	      data = data.mid(0, data.lastIndexOf("\r\n") + 2);
 	      data.remove
@@ -736,27 +751,33 @@ void spoton_neighbor::slotReadyRead(void)
 	      else if(messageType == "0040b")
 		process0040b(length, data);
 	      else
-		{
-		  resetKeepAlive();
+		messageType.clear();
 
-		  if(spoton_kernel::s_settings.value("gui/scramblerEnabled",
-						     false).toBool())
-		    emit scrambleRequest();
+	      resetKeepAlive();
 
-		  emit receivedMessage(originalData, m_id);
-		}
+	      if(spoton_kernel::s_settings.value("gui/scramblerEnabled",
+						 false).toBool())
+		emit scrambleRequest();
+
+	      if(messageType.isEmpty() ||
+		 spoton_kernel::s_settings.value("gui/superEcho",
+						 false).toBool())
+		emit receivedMessage(originalData, m_id);
 	    }
-	  else
+
+	done_label:
+
+	  if(downgrade)
 	    {
 	      if(readBufferSize() != 1000)
 		{
+		  setReadBufferSize(1000);
 		  spoton_misc::logError
 		    (QString("spoton_neighbor::slotReadyRead(): "
 			     "received irregular data from %1:%2. Setting "
 			     "the read buffer size to 1000 bytes.").
 		     arg(peerAddress().isNull() ? peerName() :
 			 peerAddress().toString()).arg(peerPort()));
-		  setReadBufferSize(1000);
 		}
 	      else
 		spoton_misc::logError
@@ -770,6 +791,24 @@ void spoton_neighbor::slotReadyRead(void)
     }
   else if(m_data.length() > m_maximumBufferSize)
     {
+      if(readBufferSize() != 1000)
+	{
+	  setReadBufferSize(1000);
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::slotReadyRead(): "
+		     "received irregular data from %1:%2. Setting "
+		     "the read buffer size to 1000 bytes.").
+	     arg(peerAddress().isNull() ? peerName() :
+		 peerAddress().toString()).arg(peerPort()));
+	}
+      else
+	spoton_misc::logError
+	  (QString("spoton_neighbor::slotReadyRead(): "
+		   "received irregular data from %1:%2. The "
+		   "read buffer size remains at 1000 bytes.").
+	   arg(peerAddress().isNull() ? peerName() :
+	       peerAddress().toString()).arg(peerPort()));
+
       spoton_misc::logError
 	(QString("spoton_neighbor::slotReadyRead(): "
 		 "the m_data container contains too much "
@@ -1372,12 +1411,6 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 		  }
 	      }
 	  }
-
-      resetKeepAlive();
-
-      if(spoton_kernel::s_settings.value("gui/scramblerEnabled",
-					 false).toBool())
-	emit scrambleRequest();
     }
   else
     spoton_misc::logError
@@ -1763,8 +1796,6 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 		}
 	    }
 	}
-
-      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -2055,8 +2086,6 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 		  }
 	      }
 	  }
-
-      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -2299,8 +2328,6 @@ void spoton_neighbor::process0040a
 	}
       else
 	emit receivedBuzzMessage(list, "0040a");
-
-      resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -2343,8 +2370,6 @@ void spoton_neighbor::process0040b
 	}
       else
 	emit receivedBuzzMessage(list, "0040b");
-
-      resetKeepAlive();
     }
   else
     spoton_misc::logError
