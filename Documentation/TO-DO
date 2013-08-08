@@ -60,6 +60,7 @@ Completed Items
        with the scope of exploring graphs. The insight would be broken
        by nodes having congestion controls. TTLs need to be reviewed.
 40.    Review SQL update statements.
+41.    Function to separate children from listeners.
 
 Ignored Items
 
@@ -103,9 +104,8 @@ Remaining Items
        tend to be skewed.
 25.    Provide kernel and network statistics.
 26.    Include external IP addresses in listener certificates.
-27.    Function to separate children from listeners.
-28.    Simplify messages. Less tokens. Hide header information?
-29.    Limit sending of information to the kernel. See
+27.    Simplify messages. Uniform tokens. Hide header information?
+28.    Limit sending of information to the kernel. See
        spoton::slotKernelSocketState().
-30.    QFSFileEngine::open: No file name specified: created from
+29.    QFSFileEngine::open: No file name specified: created from
        e-mail.

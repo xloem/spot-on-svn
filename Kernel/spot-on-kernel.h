@@ -104,6 +104,7 @@ class spoton_kernel: public QObject
 			      const QByteArray &message,
 			      const QByteArray &sendMethod,
 			      const QString &messageType);
+  void slotDetachNeighbors(const qint64 listenerOid);
   void slotDisconnectNeighbors(const qint64 listenerOid);
   void slotMessagingCachePurge(void);
   void slotMessageReceivedFromUI(const qint64 oid,

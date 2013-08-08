@@ -2930,8 +2930,10 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("Delete &All"),
 		     this, SLOT(slotDeleteAllListeners(void)));
       menu.addSeparator();
+      menu.addAction(tr("Detach &Neighbors"),
+		     this, SLOT(slotDetachListenerNeighbors(void)));
       menu.addAction(tr("Disconnect &Neighbors"),
-		     this, SLOT(slotDisconnectListenerNeighbors(void)));
+		     this, SLOT(slotDisconnectListenerNeighbors(void)));;
       menu.addSeparator();
       menu.addAction(tr("&Publish Information (Plaintext)"),
 		     this, SLOT(slotPublicizeListenerPlaintext(void)));
@@ -4048,6 +4050,41 @@ void spoton::slotNeighborMaximumChanged(int value)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton::slotDetachListenerNeighbors(void)
+{
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.listeners->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.listeners->item
+	(row, m_ui.listeners->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
+    if(m_kernelSocket.isEncrypted())
+      {
+	QByteArray message;
+
+	message.append("detach_listener_neighbors_");
+	message.append(oid);
+	message.append("\n");
+
+	if(m_kernelSocket.write(message.constData(), message.length()) !=
+	   message.length())
+	  spoton_misc::logError
+	    ("spoton::slotDetachListenerNeighbors(): write() failure.");
+	else
+	  m_kernelSocket.flush();
+      }
 }
 
 void spoton::slotDisconnectListenerNeighbors(void)

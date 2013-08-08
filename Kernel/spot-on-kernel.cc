@@ -327,6 +327,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 				      const QByteArray &,
 				      const QString &)));
   connect(m_guiServer,
+	  SIGNAL(detachNeighbors(const qint64)),
+	  this,
+	  SLOT(slotDetachNeighbors(const qint64)));
+  connect(m_guiServer,
 	  SIGNAL(disconnectNeighbors(const qint64)),
 	  this,
 	  SLOT(slotDisconnectNeighbors(const qint64)));
@@ -2168,6 +2172,19 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data)
 
   if(!s_messagingCache.contains(hash))
     s_messagingCache[hash] = QDateTime::currentDateTime();
+}
+
+void spoton_kernel::slotDetachNeighbors(const qint64 listenerOid)
+{
+  QPointer<spoton_listener> listener = 0;
+
+  if(m_listeners.contains(listenerOid))
+    listener = m_listeners.value(listenerOid);
+
+  if(listener)
+    foreach(spoton_neighbor *socket,
+	    listener->findChildren<spoton_neighbor *> ())
+      socket->setParent(this);
 }
 
 void spoton_kernel::slotDisconnectNeighbors(const qint64 listenerOid)

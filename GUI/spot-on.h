@@ -195,6 +195,7 @@ class spoton: public QMainWindow
   void slotDeleteListener(void);
   void slotDeleteMail(void);
   void slotDeleteNeighbor(void);
+  void slotDetachListenerNeighbors(void);
   void slotDisconnectListenerNeighbors(void);
   void slotDisconnectNeighbor(void);
   void slotDisplayLocalSearchResults(void);
