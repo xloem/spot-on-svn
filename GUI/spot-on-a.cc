@@ -2693,7 +2693,7 @@ void spoton::slotSetPassphrase(void)
 	  if(!m_tableTimer.isActive())
 	    m_tableTimer.start();
 
-	  sendBuzzChannelsToKernel();
+	  sendBuzzKeysToKernel();
 	  sendKeysToKernel();
 	}
 
@@ -2813,7 +2813,7 @@ void spoton::slotValidatePassphrase(void)
 	    if(!m_tableTimer.isActive())
 	      m_tableTimer.start();
 
-	    sendBuzzChannelsToKernel();
+	    sendBuzzKeysToKernel();
 	    sendKeysToKernel();
 	    m_sb.kernelstatus->setEnabled(true);
 	    m_sb.listeners->setEnabled(true);
@@ -3027,7 +3027,7 @@ void spoton::slotKernelSocketState(void)
     {
       if(m_kernelSocket.isEncrypted())
 	{
-	  sendBuzzChannelsToKernel();
+	  sendBuzzKeysToKernel();
 	  sendKeysToKernel();
 	  m_sb.kernelstatus->setToolTip
 	    (tr("Connected securely to the kernel on port %1 "
@@ -3062,7 +3062,7 @@ void spoton::slotKernelSocketState(void)
     }
 }
 
-void spoton::sendBuzzChannelsToKernel(void)
+void spoton::sendBuzzKeysToKernel(void)
 {
   if(m_booleans.value("buzz_channels_sent_to_kernel", false))
     return;
@@ -3077,7 +3077,7 @@ void spoton::sendBuzzChannelsToKernel(void)
 	  QByteArray message;
 
 	  message.append("addbuzz_");
-	  message.append(page->channel().toBase64());
+	  message.append(page->key().toBase64());
 	  message.append("_");
 	  message.append(page->channelType().toBase64());
 	  message.append("\n");
@@ -3087,7 +3087,7 @@ void spoton::sendBuzzChannelsToKernel(void)
 	    {
 	      sent = false;
 	      spoton_misc::logError
-		("spoton::sendBuzzChannelsToKernel(): write() failure.");
+		("spoton::sendBuzzKeysToKernel(): write() failure.");
 	    }
 	  else
 	    m_kernelSocket.flush();

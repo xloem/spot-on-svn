@@ -174,7 +174,7 @@ void spoton_gui_server::slotClientDisconnected(void)
     }
 
   if(m_guiSocketData.isEmpty())
-    spoton_kernel::clearBuzzChannelsContainer();
+    spoton_kernel::clearBuzzKeysContainer();
 }
 
 void spoton_gui_server::slotReadyRead(void)
@@ -225,7 +225,7 @@ void spoton_gui_server::slotReadyRead(void)
 	      QList<QByteArray> list(message.split('_'));
 
 	      if(list.size() == 2)
-		spoton_kernel::addBuzzChannel
+		spoton_kernel::addBuzzKey
 		  (QByteArray::fromBase64(list.value(0)),
 		   QByteArray::fromBase64(list.value(1)));
 	    }
@@ -380,8 +380,7 @@ void spoton_gui_server::slotReadyRead(void)
 	  else if(message.startsWith("removebuzz_"))
 	    {
 	      message.remove(0, strlen("removebuzz_"));
-	      spoton_kernel::removeBuzzChannel
-		(QByteArray::fromBase64(message));
+	      spoton_kernel::removeBuzzKey(QByteArray::fromBase64(message));
 	    }
 	  else if(message.startsWith("retrievemail"))
 	    emit retrieveMail();

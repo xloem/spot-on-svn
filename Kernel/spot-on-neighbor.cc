@@ -3186,7 +3186,7 @@ QString spoton_neighbor::findMessageType(const QByteArray &data)
   QByteArray gemini;
   QList<QByteArray> list(QByteArray::fromBase64(data).split('\n'));
   QPair<QByteArray, QByteArray> pair
-    (spoton_kernel::findBuzzChannel(QByteArray::fromBase64(list.value(0))));
+    (spoton_kernel::findBuzzKey(QByteArray::fromBase64(list.value(0))));
   QString messageType("");
   int count = 0;
   spoton_crypt *s_crypt = 0;

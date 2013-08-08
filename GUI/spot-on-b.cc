@@ -145,7 +145,7 @@ void spoton::slotReceivedKernelMessage(void)
 		  spoton_crypt crypt(page->channelType(),
 				     QString("sha512"),
 				     QByteArray(),
-				     page->channel(),
+				     page->key(),
 				     0,
 				     0,
 				     QString(""));
@@ -3568,7 +3568,7 @@ void spoton::slotJoinBuzzChannel(void)
 
 void spoton::slotCloseBuzzTab(int index)
 {
-  QByteArray channel;
+  QByteArray key;
   int count = 0;
   spoton_buzzpage *page = qobject_cast<spoton_buzzpage *>
     (m_ui.buzzTab->widget(index));
@@ -3577,7 +3577,7 @@ void spoton::slotCloseBuzzTab(int index)
 
   if(page)
     {
-      channel = page->channel();
+      key = page->channel();
       count -= 1;
       page->deleteLater();
     }
@@ -3590,7 +3590,7 @@ void spoton::slotCloseBuzzTab(int index)
       {
 	QByteArray message("removebuzz_");
 
-	message.append(channel.toBase64());
+	message.append(key.toBase64());
 	message.append("\n");
 
 	if(m_kernelSocket.write(message.constData(), message.length()) !=

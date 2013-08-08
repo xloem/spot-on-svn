@@ -60,14 +60,14 @@ class spoton_kernel: public QObject
 						  ** signature
 						  ** url
 						  */
-  static QPair<QByteArray, QByteArray> findBuzzChannel
+  static QPair<QByteArray, QByteArray> findBuzzKey
     (const QByteArray &data);
   static bool messagingCacheContains(const QByteArray &data);
-  static void addBuzzChannel(const QByteArray &channel,
-			     const QByteArray &channelType);
-  static void clearBuzzChannelsContainer(void);
+  static void addBuzzKey(const QByteArray &key,
+			 const QByteArray &channelType);
+  static void clearBuzzKeysContainer(void);
   static void messagingCacheAdd(const QByteArray &data);
-  static void removeBuzzChannel(const QByteArray &data);
+  static void removeBuzzKey(const QByteArray &data);
 
  private:
   QFileSystemWatcher m_settingsWatcher;
@@ -82,7 +82,7 @@ class spoton_kernel: public QObject
   spoton_gui_server *m_guiServer;
   spoton_mailer *m_mailer;
   spoton_shared_reader *m_sharedReader;
-  static QHash<QByteArray, QByteArray> s_buzzChannels;
+  static QHash<QByteArray, QByteArray> s_buzzKeys;
   static QHash<QByteArray, QDateTime> s_messagingCache;
   static QMutex s_messagingCacheMutex;
   bool initializeSecurityContainers(const QString &passphrase);
@@ -97,7 +97,7 @@ class spoton_kernel: public QObject
   void purgeMessagingCache(void);
 
  private slots:
-  void slotBuzzReceivedFromUI(const QByteArray &channel,
+  void slotBuzzReceivedFromUI(const QByteArray &key,
 			      const QByteArray &channelType,
 			      const QByteArray &name,
 			      const QByteArray &id,

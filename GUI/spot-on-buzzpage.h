@@ -52,6 +52,7 @@ class spoton_buzzpage: public QWidget
   ~spoton_buzzpage();
   QByteArray channel(void) const;
   QByteArray channelType(void) const;
+  QByteArray key(void) const;
   bool userStatus(const QList<QByteArray> &list);
   void appendMessage(const QByteArray &hash,
 		     const QList<QByteArray> &list);
@@ -60,6 +61,7 @@ class spoton_buzzpage: public QWidget
   QByteArray m_channel;
   QByteArray m_channelType;
   QByteArray m_id;
+  QByteArray m_key;
   QFuture<void> m_future;
   QHash<QByteArray, QDateTime> m_messagingCache; /*
 						 ** Prevent duplicate

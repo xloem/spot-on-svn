@@ -161,7 +161,7 @@ class spoton: public QMainWindow
   void purgeMessagingCache(void);
   void saveKernelPath(const QString &path);
   void saveSettings(void);
-  void sendBuzzChannelsToKernel(void);
+  void sendBuzzKeysToKernel(void);
   void sendKeysToKernel(void);
   void updateListenersTable(const QSqlDatabase &db);
   void updateNeighborsTable(const QSqlDatabase &db);

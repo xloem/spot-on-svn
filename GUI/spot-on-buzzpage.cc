@@ -60,6 +60,45 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
     m_id = spoton_crypt::strongRandomBytes
       (spoton_common::BUZZ_MAXIMUM_ID_LENGTH / 2).toHex();
 
+  /*
+  ** Generate some awful key.
+  */
+
+  size_t keyLength = spoton_crypt::cipherKeyLength(channelType);
+
+  if(keyLength > 0)
+    {
+      m_key.resize(keyLength);
+
+      QByteArray salt;
+      bool ok = true;
+
+      salt = spoton_crypt::keyedHash(m_channel + m_channelType,
+				     m_channel,
+				     "sha512",
+				     &ok);
+
+      if(!ok)
+	/*
+	** We're doomed!
+	*/
+
+	salt = m_channel + m_channelType;
+
+      if(gcry_kdf_derive(static_cast<const void *> (m_channel.constData()),
+			 static_cast<size_t> (m_channel.length()),
+			 GCRY_KDF_PBKDF2,
+			 GCRY_MD_SHA512,
+			 static_cast<const void *> (salt.constData()),
+			 static_cast<size_t> (salt.length()),
+			 1000,
+			 keyLength,
+			 static_cast<void *> (m_key.data())) != 0)
+	m_key = m_channel;
+    }
+  else
+    m_key = m_channel;
+
   m_kernelSocket = kernelSocket;
   m_statusTimer.start(30000);
   ui.setupUi(this);
@@ -146,7 +185,7 @@ void spoton_buzzpage::slotSendMessage(void)
 
   message.clear();
   message.append("buzz_");
-  message.append(m_channel.toBase64());
+  message.append(m_key.toBase64());
   message.append("_");
   message.append(m_channelType.toBase64());
   message.append("_");
@@ -252,7 +291,7 @@ void spoton_buzzpage::slotSendStatus(void)
 
   message.clear();
   message.append("buzz_");
-  message.append(m_channel.toBase64());
+  message.append(m_key.toBase64());
   message.append("_");
   message.append(m_channelType.toBase64());
   message.append("_");
@@ -439,4 +478,9 @@ QByteArray spoton_buzzpage::channel(void) const
 QByteArray spoton_buzzpage::channelType(void) const
 {
   return m_channelType;
+}
+
+QByteArray spoton_buzzpage::key(void) const
+{
+  return m_key;
 }

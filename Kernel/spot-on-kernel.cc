@@ -74,7 +74,7 @@ extern "C"
 #include "spot-on-neighbor.h"
 #include "spot-on-shared-reader.h"
 
-QHash<QByteArray, QByteArray> spoton_kernel::s_buzzChannels;
+QHash<QByteArray, QByteArray> spoton_kernel::s_buzzKeys;
 QHash<QByteArray, QDateTime> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
@@ -2026,7 +2026,7 @@ void spoton_kernel::slotRequestScramble(void)
     m_scramblerTimer.stop();
 }
 
-void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &channel,
+void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &key,
 					   const QByteArray &channelType,
 					   const QByteArray &name,
 					   const QByteArray &id,
@@ -2040,7 +2040,7 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &channel,
   spoton_crypt crypt(channelType,
 		     QString("sha512"),
 		     QByteArray(),
-		     channel,
+		     key,
 		     0,
 		     0,
 		     QString(""));
@@ -2204,24 +2204,24 @@ void spoton_kernel::slotDisconnectNeighbors(const qint64 listenerOid)
       }
 }
 
-void spoton_kernel::addBuzzChannel(const QByteArray &channel,
-				   const QByteArray &channelType)
+void spoton_kernel::addBuzzKey(const QByteArray &key,
+			       const QByteArray &channelType)
 {
-  if(channel.isEmpty() || channelType.isEmpty())
+  if(key.isEmpty() || channelType.isEmpty())
     return;
 
-  s_buzzChannels[channel] = channelType;
+  s_buzzKeys[key] = channelType;
 }
 
-void spoton_kernel::removeBuzzChannel(const QByteArray &channel)
+void spoton_kernel::removeBuzzKey(const QByteArray &key)
 {
-  s_buzzChannels.remove(channel);
+  s_buzzKeys.remove(key);
 }
 
-QPair<QByteArray, QByteArray> spoton_kernel::findBuzzChannel
+QPair<QByteArray, QByteArray> spoton_kernel::findBuzzKey
 (const QByteArray &data)
 {
-  QHashIterator<QByteArray, QByteArray> it(s_buzzChannels);
+  QHashIterator<QByteArray, QByteArray> it(s_buzzKeys);
   QPair<QByteArray, QByteArray> pair;
 
   while(it.hasNext())
@@ -2250,7 +2250,7 @@ QPair<QByteArray, QByteArray> spoton_kernel::findBuzzChannel
   return pair;
 }
 
-void spoton_kernel::clearBuzzChannelsContainer(void)
+void spoton_kernel::clearBuzzKeysContainer(void)
 {
-  s_buzzChannels.clear();
+  s_buzzKeys.clear();
 }
