@@ -78,8 +78,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 	  bool ok = true;
 
 	  salt = spoton_crypt::keyedHash(m_channel + m_channelType,
-					 m_channel,
-					 "sha512", &ok);
+					 m_channel, "sha512", &ok);
 
 	  if(!ok)
 	    /*
@@ -90,6 +89,8 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 
 	  m_channelSalt = salt.toBase64();
 	}
+      else
+	ui.salt->setText(m_channelSalt);
 
       if(gcry_kdf_derive(static_cast<const void *> (m_channel.constData()),
 			 static_cast<size_t> (m_channel.length()),
@@ -133,7 +134,6 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
   ui.clients->horizontalHeader()->setSortIndicator(0, Qt::AscendingOrder);
   ui.splitter->setStretchFactor(0, 1);
   ui.splitter->setStretchFactor(1, 0);
-  ui.salt->setText(m_channelSalt);
   ui.type->setText(m_channelType);
   slotSetIcons();
   m_messagingCachePurgeTimer.start(60000);
