@@ -2935,7 +2935,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("Detach &Neighbors"),
 		     this, SLOT(slotDetachListenerNeighbors(void)));
       menu.addAction(tr("Disconnect &Neighbors"),
-		     this, SLOT(slotDisconnectListenerNeighbors(void)));;
+		     this, SLOT(slotDisconnectListenerNeighbors(void)));
       menu.addSeparator();
       menu.addAction(tr("&Publish Information (Plaintext)"),
 		     this, SLOT(slotPublicizeListenerPlaintext(void)));
