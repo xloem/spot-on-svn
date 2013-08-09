@@ -40,6 +40,7 @@
 
 spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 				 const QByteArray &channel,
+				 const QByteArray &channelSalt,
 				 const QByteArray &channelType,
 				 const QByteArray &id,
 				 QWidget *parent):QWidget(parent)
@@ -49,6 +50,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
   if(m_channel.isEmpty())
     m_channel = "unknown";
 
+  m_channelSalt = channelSalt.trimmed();
   m_channelType = channelType.trimmed();
 
   if(m_channelType.isEmpty())
@@ -70,28 +72,32 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
     {
       m_key.resize(keyLength);
 
-      QByteArray salt;
-      bool ok = true;
+      if(m_channelSalt.isEmpty())
+	{
+	  QByteArray salt;
+	  bool ok = true;
 
-      salt = spoton_crypt::keyedHash(m_channel + m_channelType,
-				     m_channel,
-				     "sha512",
-				     &ok);
+	  salt = spoton_crypt::keyedHash(m_channel + m_channelType,
+					 m_channel,
+					 "sha512", &ok);
 
-      if(!ok)
-	/*
-	** We're doomed!
-	*/
+	  if(!ok)
+	    /*
+	    ** We're doomed!
+	    */
 
-	salt = m_channel + m_channelType;
+	    salt = m_channel + m_channelType;
+
+	  m_channelSalt = salt.toBase64();
+	}
 
       if(gcry_kdf_derive(static_cast<const void *> (m_channel.constData()),
 			 static_cast<size_t> (m_channel.length()),
 			 GCRY_KDF_PBKDF2,
 			 GCRY_MD_SHA512,
-			 static_cast<const void *> (salt.constData()),
-			 static_cast<size_t> (salt.length()),
-			 1000,
+			 static_cast<const void *> (m_channelSalt.constData()),
+			 static_cast<size_t> (m_channelSalt.length()),
+			 5000,
 			 keyLength,
 			 static_cast<void *> (m_key.data())) != 0)
 	m_key = m_channel;
@@ -127,6 +133,8 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
   ui.clients->horizontalHeader()->setSortIndicator(0, Qt::AscendingOrder);
   ui.splitter->setStretchFactor(0, 1);
   ui.splitter->setStretchFactor(1, 0);
+  ui.salt->setText(m_channelSalt);
+  ui.type->setText(m_channelType);
   slotSetIcons();
   m_messagingCachePurgeTimer.start(60000);
 }

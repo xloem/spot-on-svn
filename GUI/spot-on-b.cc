@@ -3498,6 +3498,7 @@ void spoton::slotJoinBuzzChannel(void)
   if(channel.isEmpty())
     return;
 
+  QString channelSalt(m_ui.channelSalt->text().trimmed());
   QString channelType(m_ui.channelType->currentText());
   bool found = false;
 
@@ -3525,15 +3526,17 @@ void spoton::slotJoinBuzzChannel(void)
     }
 
   m_ui.channel->clear();
+  m_ui.channelSalt->clear();
+  m_ui.channelType->setCurrentIndex(0);
 
   spoton_buzzpage *page = new spoton_buzzpage
-    (&m_kernelSocket, channel.toLatin1(), channelType.toLatin1(),
-     id, this); /*
-		** Should channel
-		** names be
-		** converted to
-		** UTF-8?
-		*/
+    (&m_kernelSocket, channel.toLatin1(), channelSalt.toLatin1(),
+     channelType.toLatin1(), id, this); /*
+					** Should channel
+					** names be
+					** converted to
+					** UTF-8?
+					*/
 
   connect(&m_buzzStatusTimer,
 	  SIGNAL(timeout(void)),
@@ -3545,7 +3548,6 @@ void spoton::slotJoinBuzzChannel(void)
 	  SLOT(slotSetIcons(void)));
   m_ui.buzzTab->addTab(page, channel);
   m_ui.buzzTab->setCurrentIndex(m_ui.buzzTab->count() - 1);
-  m_ui.channelType->setCurrentIndex(0);
 
   if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
     if(m_kernelSocket.isEncrypted())

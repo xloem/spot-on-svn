@@ -83,6 +83,19 @@
            <widget class="QLineEdit" name="channel"/>
           </item>
           <item>
+           <widget class="QLabel" name="label_37">
+            <property name="text">
+             <string>&amp;Salt (Optional)</string>
+            </property>
+            <property name="buddy">
+             <cstring>channelSalt</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="channelSalt"/>
+          </item>
+          <item>
            <widget class="QLabel" name="label_36">
             <property name="text">
              <string>Type</string>
@@ -150,8 +163,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1197</width>
-                <height>554</height>
+                <width>1189</width>
+                <height>569</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2345,8 +2358,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1197</width>
-             <height>554</height>
+             <width>1189</width>
+             <height>569</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3367,7 +3380,7 @@
      <x>0</x>
      <y>0</y>
      <width>1219</width>
-     <height>27</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -3450,6 +3463,7 @@
   <tabstop>buzzName</tabstop>
   <tabstop>saveBuzzName</tabstop>
   <tabstop>channel</tabstop>
+  <tabstop>channelSalt</tabstop>
   <tabstop>channelType</tabstop>
   <tabstop>join</tabstop>
   <tabstop>buzzTab</tabstop>

@@ -46,11 +46,13 @@ class spoton_buzzpage: public QWidget
  public:
   spoton_buzzpage(QSslSocket *kernelSocket,
 		  const QByteArray &channel,
+		  const QByteArray &channelSalt,
 		  const QByteArray &channelType,
 		  const QByteArray &id,
 		  QWidget *parent);
   ~spoton_buzzpage();
   QByteArray channel(void) const;
+  QByteArray channelSalt(void) const;
   QByteArray channelType(void) const;
   QByteArray key(void) const;
   bool userStatus(const QList<QByteArray> &list);
@@ -59,6 +61,7 @@ class spoton_buzzpage: public QWidget
 
  private:
   QByteArray m_channel;
+  QByteArray m_channelSalt;
   QByteArray m_channelType;
   QByteArray m_id;
   QByteArray m_key;
