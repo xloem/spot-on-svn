@@ -3493,13 +3493,13 @@ void spoton::slotPublishedKeySizeChanged(const QString &text)
 
 void spoton::slotJoinBuzzChannel(void)
 {
-  QString channel(m_ui.channel->text().trimmed());
+  QByteArray channel(m_ui.channel->text().trimmed().toLatin1());
 
   if(channel.isEmpty())
     return;
 
-  QString channelSalt(m_ui.channelSalt->text().trimmed());
-  QString channelType(m_ui.channelType->currentText());
+  QByteArray channelSalt(m_ui.channelSalt->text().trimmed().toLatin1());
+  QByteArray channelType(m_ui.channelType->currentText().toLatin1());
   bool found = false;
 
   foreach(spoton_buzzpage *page,
@@ -3516,13 +3516,13 @@ void spoton::slotJoinBuzzChannel(void)
 
   QByteArray id;
 
-  if(m_buzzIds.contains(channel.toLatin1()))
-    id = m_buzzIds[channel.toLatin1()];
+  if(m_buzzIds.contains(channel))
+    id = m_buzzIds[channel];
   else
     {
       id = spoton_crypt::
 	strongRandomBytes(spoton_common::BUZZ_MAXIMUM_ID_LENGTH / 2).toHex();
-      m_buzzIds[channel.toLatin1()] = id;
+      m_buzzIds[channel] = id;
     }
 
   m_ui.channel->clear();
@@ -3530,13 +3530,13 @@ void spoton::slotJoinBuzzChannel(void)
   m_ui.channelType->setCurrentIndex(0);
 
   spoton_buzzpage *page = new spoton_buzzpage
-    (&m_kernelSocket, channel.toLatin1(), channelSalt.toLatin1(),
-     channelType.toLatin1(), id, this); /*
-					** Should channel
-					** names be
-					** converted to
-					** UTF-8?
-					*/
+    (&m_kernelSocket, channel, channelSalt, channelType,
+     id, this); /*
+		** Should channel
+		** names be
+		** converted to
+		** UTF-8?
+		*/
 
   connect(&m_buzzStatusTimer,
 	  SIGNAL(timeout(void)),
@@ -3554,9 +3554,9 @@ void spoton::slotJoinBuzzChannel(void)
       {
 	QByteArray message("addbuzz_");
 
-	message.append(channel.toLatin1().toBase64());
+	message.append(page->key().toBase64());
 	message.append("_");
-	message.append(channelType.toLatin1().toBase64());
+	message.append(page->channelType().toBase64());
 	message.append("\n");
 
 	if(m_kernelSocket.write(message.constData(), message.length()) !=
