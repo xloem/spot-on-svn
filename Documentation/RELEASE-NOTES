@@ -53,8 +53,8 @@
 34.  Modified Buzz channel keys. Instead of using the channel name as the key,
      gcry_kdf_derive() is used to generate a key. Unfortunately, the
      salt cannot be random and is based on the channel name and channel
-     type. If possible, please improve the mechanism without introducing
-     a distribution puzzle.
+     type. An optional salt may be provided. If possible, please improve
+     the mechanism without introducing a distribution puzzle.
 
 0.01
 
