@@ -3,6 +3,7 @@ Messages
 Echo Chat
 Echoed? Yes
 
+Groups: 2
 Symmetric Key (Gemini)
 {
 0 - 0000 (Base-64)
@@ -14,6 +15,7 @@ EOL
 0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
 }
 
+Groups: 2
 Public Key
 {
 0 - 0000 (Base-64)
@@ -80,6 +82,7 @@ EOL
 Retrieve Mail
 Echoed? Yes
 
+Groups: 3
 Public Key
 {
 0 - 0002 (Base-64)
@@ -121,6 +124,7 @@ EOL
 Status
 Echoed? Yes
 
+Groups: 2
 Symmetric Key (Gemini)
 {
 0 - 0013 (Base-64)
@@ -132,6 +136,7 @@ EOL
 0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
 }
 
+Groups: 3
 Public Key
 {
 0 - 0013 (Base-64)
@@ -179,6 +184,7 @@ EOL
 Echo Buzz
 Echoed? Yes
 
+Groups: 2
 Symmetric Key
 {
 0 - 0040a (Base-64)
@@ -192,6 +198,7 @@ EOL
 0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
 }
 
+Groups: 2
 Symmetric Key
 {
 0 - 0040b (Base-64)

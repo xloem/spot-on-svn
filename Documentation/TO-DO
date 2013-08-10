@@ -106,6 +106,6 @@ Remaining Items
        tend to be skewed.
 25.    Provide kernel and network statistics.
 26.    Include external IP addresses in listener certificates.
-27.    Simplify messages. Uniform tokens. Hide header information?
+27.    Simplify messages. Uniform number of groups. Hide header information?
 28.    QFSFileEngine::open: No file name specified: created from
        e-mail.
