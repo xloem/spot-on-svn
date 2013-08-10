@@ -15,7 +15,7 @@ EOL
 0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
 }
 
-Groups: 2
+Groups: 3
 Public Key
 {
 0 - 0000 (Base-64)
