@@ -2451,13 +2451,7 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
 
 	int rc = applyGoldbugToInboxLetter(goldbug.toUtf8(), row);
 
-	if(rc == APPLY_GOLDBUG_TO_INBOX_ERROR_CORRUPT_MESSAGE_CODE)
-	  {
-	    QMessageBox::critical(this, tr("Spot-On: Error"),
-				  tr("The message's code is incorrect."));
-	    return;
-	  }
-	else if(rc == APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL)
+	if(rc == APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL)
 	  {
 	    QMessageBox::critical(this, tr("Spot-On: Error"),
 				  tr("The provided goldbug may be "
@@ -3124,7 +3118,7 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 	  if((ok = query.next()))
 	    for(int i = 0; i < query.record().count(); i++)
 	      {
-		if(i == 4)
+		if(i == 2 || i == 4)
 		  list.append
 		    (QByteArray::fromBase64(query.value(i).
 					    toByteArray()));
@@ -3142,7 +3136,6 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 
 	if(ok)
 	  {
-	    QByteArray computedMessageCode;
 	    spoton_crypt crypt("aes256",
 			       QString("sha512"),
 			       QByteArray(),
@@ -3151,38 +3144,21 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 			       0,
 			       QString(""));
 
-	    computedMessageCode =
-	      crypt.keyedHash(list.value(3) + // receiver_sender
-			      list.value(5) + // subject
-			      list.value(1),  // message
-			      &ok);
-
-	    if(computedMessageCode != list.value(2))
+	    for(int i = 0; i < list.size(); i++)
 	      {
-		rc = APPLY_GOLDBUG_TO_INBOX_ERROR_CORRUPT_MESSAGE_CODE;
-		spoton_misc::logError
-		  ("spoton::applyGoldbugToInboxLetter(): "
-		   "computed message code does "
-		   "not match provided code.");
-		ok = false;
+		if(i == 0 || i == 2 || i == 4)
+		  /*
+		  ** Ignore the date, message_code, and
+		  ** receiver_sender_hash columns.
+		  */
+
+		  continue;
+
+		list.replace(i, crypt.decrypted(list.at(i), &ok));
+
+		if(!ok)
+		  break;
 	      }
-
-	    if(ok)
-	      for(int i = 0; i < list.size(); i++)
-		{
-		  if(i == 0 || i == 2 || i == 4)
-		    /*
-		    ** Ignore the date, message_code, and
-		    ** receiver_sender_hash columns.
-		    */
-
-		    continue;
-
-		  list.replace(i, crypt.decrypted(list.at(i), &ok));
-
-		  if(!ok)
-		    break;
-		}
 	  }
 
 	if(ok)
@@ -3224,7 +3200,7 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 	    if(!list.value(2).isEmpty())
 	      if(ok)
 		query.bindValue
-		  (3, m_crypt->encrypted(list.value(2), &ok).toBase64());
+		  (3, m_crypt->encrypted(QByteArray(), &ok).toBase64());
 
 	    if(!list.value(3).isEmpty())
 	      if(ok)

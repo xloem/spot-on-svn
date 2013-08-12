@@ -123,9 +123,7 @@ void spoton_misc::prepareDatabases(void)
 					  */
 		   "message BLOB NOT NULL, "
 		   "message_code TEXT NOT NULL, " /*
-						  ** Should only be used
-						  ** when a goldbug is
-						  ** provided.
+						  ** Not used.
 						  */
 		   "participant_oid TEXT NOT NULL, "
 		   "receiver_sender TEXT NOT NULL, "

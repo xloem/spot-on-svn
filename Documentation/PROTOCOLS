@@ -67,41 +67,18 @@ EOL
 EOL
 Symmetric Key
 {
-0 - Sender's Sha-512 Hash (Base-64) (Gold Bug Optional)
+0 - Sender's Sha-512 Hash (Base-64)
 EOL
-1 - Sender's Name (Base-64) (Gold Bug Optional)
+1 - Sender's Name (Base-64) (Optional Gold Bug)
 EOL
-2 - Subject (Base-64) (Gold Bug Optional)
+2 - Subject (Base-64) (Optional Gold Bug)
 EOL
-3 - Message (Base-64) (Gold Bug Optional)
+3 - Message (Base-64) (Optional Gold Bug)
 }
 EOL
 {
 0 - Keyed Sha-512 Message Code (Base-64)
 }
-
-Message Type ("0001a") (Plaintext)
-0 - Symmetric Key (Base-64) (Ciphertext, PK)
-EOL
-1 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
-EOL
-2 - Sender's Sha-512 Hash (Base-64) (Ciphertext, SK)
-EOL
-3 - Recipient's Sha-512 Hash (Base-64) (Ciphertext, SK)
-EOL
-4 - Symmetric Key (Base-64) (Ciphertext, PK)
-EOL
-5 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
-EOL
-6 - Sender's Sha-512 Hash (Base-64) (Ciphertext, PK)
-EOL
-7 - Sender's Name (Base-64) (Ciphertext, SK)
-EOL
-8 - Subject (Base-64) (Ciphertext, SK)
-EOL
-9 - Message (Base-64) (Ciphertext, SK)
-EOL
-10 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
 
 Message Type ("0001b") (Plaintext)
 0 - Symmetric Key (Base-64) (Ciphertext, PK)

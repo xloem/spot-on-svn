@@ -129,14 +129,12 @@ class spoton_neighbor: public QSslSocket
 		     const QByteArray &sSignature,
 		     const qint64 neighborOid);
   void saveStatus(const QSqlDatabase &db, const QString &status);
-  void storeLetter(QByteArray &symmetricKey,
-		   QByteArray &symmetricKeyAlgorithm,
-		   QByteArray &senderPublicKeyHash,
-		   QByteArray &name,
-		   QByteArray &subject,
-		   QByteArray &message,
-		   QByteArray &messageCode,
-		   const QString &messageType);
+  void storeLetter(const QByteArray &symmetricKey,
+		   const QByteArray &symmetricKeyAlgorithm,
+		   const QByteArray &senderPublicKeyHash,
+		   const QByteArray &name,
+		   const QByteArray &subject,
+		   const QByteArray &message);
   void storeLetter(const QList<QByteArray> &list,
 		   const QByteArray &recipientHash);
 

@@ -105,9 +105,8 @@ class spoton: public QMainWindow
   Ui_spoton_mainwindow ui(void) const;
 
  private:
-  static const int APPLY_GOLDBUG_TO_INBOX_ERROR_CORRUPT_MESSAGE_CODE = 1;
-  static const int APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL = 2;
-  static const int APPLY_GOLDBUG_TO_INBOX_ERROR_MEMORY = 3;
+  static const int APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL = 1;
+  static const int APPLY_GOLDBUG_TO_INBOX_ERROR_MEMORY = 2;
   QByteArray m_kernelSocketData;
   QDateTime m_countriesLastModificationTime;
   QDateTime m_listenersLastModificationTime;

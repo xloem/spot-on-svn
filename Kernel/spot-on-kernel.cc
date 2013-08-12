@@ -1677,6 +1677,11 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	  while(query.next())
 	    {
 	      QByteArray data;
+	      QByteArray data1;
+	      QByteArray data2;
+	      QByteArray keyInformation1;
+	      QByteArray keyInformation2;
+	      QByteArray messageCode;
 	      QByteArray participantPublicKey
 		(query.value(0).toByteArray());
 	      QByteArray symmetricKey;
@@ -1700,22 +1705,11 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		  continue;
 		}
 
-	      data.append
-		(spoton_crypt::publicKeyEncrypt(symmetricKey,
-						participantPublicKey,
-						&ok).
-		 toBase64());
-	      data.append("\n");
-
-	      if(ok)
-		{
-		  data.append
-		    (spoton_crypt::publicKeyEncrypt(symmetricKeyAlgorithm,
-						    participantPublicKey,
-						    &ok).
-		     toBase64());
-		  data.append("\n");
-		}
+	      keyInformation1 = spoton_crypt::publicKeyEncrypt
+		(QByteArray("0001a").toBase64() + "\n" +
+		 symmetricKey.toBase64() + "\n" +
+		 symmetricKeyAlgorithm.toBase64(),
+		 participantPublicKey, &ok);
 
 	      if(ok)
 		{
@@ -1727,17 +1721,13 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 				     0,
 				     QString(""));
 
-		  data.append(crypt.encrypted(myPublicKeyHash, &ok).
-			      toBase64());
-		  data.append("\n");
-
-		  if(ok)
-		    {
-		      data.append(crypt.encrypted(recipientHash, &ok).
-				  toBase64());
-		      data.append("\n");
-		    }
+		  data1 = crypt.encrypted
+		    (myPublicKeyHash.toBase64() + "\n" +
+		     recipientHash.toBase64(), &ok);
 		}
+
+	      if(!ok)
+		continue;
 
 	      symmetricKeyAlgorithm = spoton_crypt::randomCipherType();
 	      symmetricKeyLength = spoton_crypt::cipherKeyLength
@@ -1757,111 +1747,67 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		  continue;
 		}
 
-	      if(ok)
-		{
-		  data.append
-		    (spoton_crypt::publicKeyEncrypt(symmetricKey,
-						    publicKey,
-						    &ok).
-		     toBase64());
-		  data.append("\n");
-		}
+	      keyInformation2 = spoton_crypt::publicKeyEncrypt
+		(symmetricKey.toBase64() + "\n" +
+		 symmetricKeyAlgorithm.toBase64(),
+		 publicKey, &ok);
+
+	      QList<QByteArray> items;
 
 	      if(ok)
-		{
-		  data.append
-		    (spoton_crypt::publicKeyEncrypt(symmetricKeyAlgorithm,
-						    publicKey,
-						    &ok).
-		     toBase64());
-		  data.append("\n");
-		}
+		items << name
+		      << subject
+		      << message;
 
 	      if(ok)
-		{
-		  data.append
-		    (spoton_crypt::publicKeyEncrypt(myPublicKeyHash,
-						    publicKey, &ok).
-		     toBase64());
-		  data.append("\n");
-		}
+		if(!goldbug.isEmpty())
+		  {
+		    spoton_crypt crypt("aes256",
+				       QString("sha512"),
+				       QByteArray(),
+				       goldbug,
+				       0,
+				       0,
+				       QString(""));
 
-	      if(ok)
-		{
-		  QByteArray messageCode;
-		  QList<QByteArray> list;
-		  spoton_crypt *crypt = 0;
-
-		  /*
-		  ** If we have a goldbug, encrypt several parts of
-		  ** the message with it. The symmetric key that
-		  ** we established above will be ignored.
-		  */
-
-		  if(goldbug.isEmpty())
-		    crypt = new spoton_crypt(symmetricKeyAlgorithm,
-					     QString("sha512"),
-					     QByteArray(),
-					     symmetricKey,
-					     0,
-					     0,
-					     QString(""));
-		  else
-		    crypt = new spoton_crypt("aes256",
-					     QString("sha512"),
-					     QByteArray(),
-					     goldbug,
-					     0,
-					     0,
-					     QString(""));
-
-		  list.append(crypt->encrypted(name, &ok));
-
-		  if(ok)
-		    {
-		      data.append(list.value(0).toBase64());
-		      data.append("\n");
-		    }
-
-		  if(ok)
-		    {
-		      list.append(crypt->encrypted(subject, &ok));
-
+		    for(int i = 0; i < items.size(); i++)
 		      if(ok)
-			{
-			  data.append(list.value(1).toBase64());
-			  data.append("\n");
-			}
-		    }
+			items.replace
+			  (i, crypt.encrypted(items.at(i), &ok));
+		      else
+			break;
+		  }
+
+	      if(ok)
+		{
+		  spoton_crypt crypt(symmetricKeyAlgorithm,
+				     QString("sha512"),
+				     QByteArray(),
+				     symmetricKey,
+				     0,
+				     0,
+				     QString(""));
+
+		  data2 = crypt.encrypted
+		    (myPublicKeyHash.toBase64() + "\n" +
+		     items.value(0).toBase64() + "\n" +
+		     items.value(1).toBase64() + "\n" +
+		     items.value(2).toBase64(), &ok);
 
 		  if(ok)
-		    {
-		      list.append(crypt->encrypted(message, &ok));
-
-		      if(ok)
-			{
-			  data.append(list.value(2).toBase64());
-			  data.append("\n");
-			}
-		    }
-
-		  if(ok)
-		    messageCode = crypt->keyedHash
-		      (list.value(0) +
-		       list.value(1) +
-		       list.value(2),
-		       &ok);
-
-		  if(ok)
-		    data.append(messageCode.toBase64());
-
-		  delete crypt;
+		    messageCode = crypt.keyedHash
+		      (data2, &ok);
 		}
 
 	      if(ok)
 		{
-		  QPair<QByteArray, qint64> pair
-		    (data, mailOid);
+		  data = keyInformation1.toBase64() + "\n" +
+		    data1.toBase64() + "\n" +
+		    keyInformation2.toBase64() + "\n" +
+		    data2.toBase64() + "\n" +
+		    messageCode.toBase64();
+
+		  QPair<QByteArray, qint64> pair(data, mailOid);
 
 		  list.append(pair);
 		}
