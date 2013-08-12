@@ -1061,38 +1061,6 @@ void spoton_neighbor::slotSendMessage(const QByteArray &data)
     }
 }
 
-void spoton_neighbor::slotReceivedMailMessage(const QByteArray &data,
-					      const QString &messageType,
-					      const qint64 id)
-{
-  /*
-  ** A neighbor (id) received a letter. This neighbor now needs
-  ** to send the letter to its peer.
-  */
-
-  if(m_echoMode == "full")
-    if(id != m_id)
-      if(readyToWrite())
-	{
-	  QByteArray message;
-
-	  if(messageType == "0001a")
-	    message = spoton_send::message0001a(data);
-	  else
-	    message = spoton_send::message0001b(data);
-
-	  if(write(message.constData(), message.length()) != message.length())
-	    spoton_misc::logError
-	      ("spoton_neighbor::slotReceivedMailMessage(): write() "
-	       "error.");
-	  else
-	    {
-	      flush();
-	      resetKeepAlive();
-	    }
-	}
-}
-
 void spoton_neighbor::slotReceivedMessage
 (const QByteArray &data,
  const qint64 id)
@@ -1684,60 +1652,102 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 	  return;
 	}
 
+      for(int i = 0; i < list.size(); i++)
+	list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+      QByteArray keyInformation(list.value(0));
+      QByteArray symmetricKey;
+      QByteArray symmetricKeyAlgorithm;
       bool ok = true;
-      int count = spoton_misc::participantCount();
 
-      if(count > 0)
+      keyInformation = s_crypt->
+	publicKeyDecrypt(keyInformation, &ok);
+
+      if(ok)
 	{
-	  for(int i = 0; i < list.size(); i++)
-	    list.replace(i, QByteArray::fromBase64(list.at(i)));
+	  QList<QByteArray> list(keyInformation.split('\n'));
 
-	  QByteArray message(list.value(5));
-	  QByteArray messageCode(list.value(6));
-	  QByteArray name(list.value(3));
-	  QByteArray publicKeyHash(list.value(2));
-	  QByteArray subject(list.value(4));
-	  QByteArray symmetricKey(list.value(0));
-	  QByteArray symmetricKeyAlgorithm(list.value(1));
+	  list.removeAt(0); // Message Type
 
-	  if(ok)
-	    symmetricKey = s_crypt->
-	      publicKeyDecrypt(symmetricKey, &ok);
-
-	  if(ok)
-	    symmetricKeyAlgorithm = s_crypt->
-	      publicKeyDecrypt(symmetricKeyAlgorithm, &ok);
-
-	  if(ok)
-	    publicKeyHash = s_crypt->
-	      publicKeyDecrypt(publicKeyHash, &ok);
-
-	  if(ok)
-	    /*
-	    ** This may be our letter! Please remember that the message
-	    ** may have been encrypted via a goldbug.
-	    */
-
-	    storeLetter(symmetricKey,
-			symmetricKeyAlgorithm,
-			publicKeyHash,
-			name,
-			subject,
-			message);
+	  if(list.size() == 2)
+	    {
+	      symmetricKey = QByteArray::fromBase64(list.value(0));
+	      symmetricKeyAlgorithm = QByteArray::fromBase64
+		(list.value(1));
+	    }
+	  else
+	    {
+	      spoton_misc::logError
+		(QString("spoton_neighbor::0001b(): "
+			 "received irregular data. "
+			 "Expecting 2 "
+			 "entries, "
+			 "received %1.").arg(list.size()));
+	      return;
+	    }
 	}
 
-      resetKeepAlive();
-
-      if(count == 0 || !ok ||
-	 spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
+      if(ok)
 	{
-	  if(!spoton_kernel::s_settings.value("gui/superEcho",
-					      false).toBool())
-	    if(isDuplicateMessage(originalData))
-	      return;
+	  spoton_crypt crypt(symmetricKeyAlgorithm,
+			     QString("sha512"),
+			     QByteArray(),
+			     symmetricKey,
+			     0,
+			     0,
+			     QString(""));
 
-	  recordMessageHash(originalData);
-	  emit receivedMailMessage(originalData, "0001b", m_id);
+	  QByteArray data(list.value(1));
+	  QByteArray computedMessageCode;
+	  QByteArray messageCode(list.value(2));
+
+	  computedMessageCode = crypt.keyedHash(data, &ok);
+
+	  /*
+	  ** Let's not echo messages whose message codes are
+	  ** incompatible.
+	  */
+
+	  if(ok)
+	    {
+	      if(computedMessageCode == messageCode)
+		{
+		  data = crypt.decrypted(data, &ok);
+
+		  if(ok)
+		    {
+		      QList<QByteArray> list(data.split('\n'));
+
+		      if(list.size() == 4)
+			{
+			  for(int i = 0; i < list.size(); i++)
+			    list.replace
+			      (i, QByteArray::fromBase64(list.at(i)));
+
+			  storeLetter(symmetricKey,
+				      symmetricKeyAlgorithm,
+				      list.value(0),
+				      list.value(1),
+				      list.value(2),
+				      list.value(3));
+			}
+		      else
+			{
+			  spoton_misc::logError
+			    (QString("spoton_neighbor::process0001b(): "
+				     "received irregular data. "
+				     "Expecting 4 "
+				     "entries, "
+				     "received %1.").arg(list.size()));
+			  return;
+			}
+		    }
+		}
+	      else
+		spoton_misc::logError("spoton_neighbor::process0001b(): "
+				      "computed message code does "
+				      "not match provided code.");
+	    }
 	}
     }
   else

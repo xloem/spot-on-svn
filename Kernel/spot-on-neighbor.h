@@ -155,8 +155,6 @@ class spoton_neighbor: public QSslSocket
   void slotPublicizeListenerPlaintext(const QHostAddress &address,
 				      const quint16 port);
   void slotReadyRead(void);
-  void slotReceivedMailMessage
-    (const QByteArray &data, const QString &messageType, const qint64 id);
   void slotReceivedMessage(const QByteArray &data, const qint64 id);
   void slotReceivedStatusMessage(const QByteArray &data, const qint64 id);
   void slotRetrieveMail(const QList<QByteArray> &list);
@@ -176,9 +174,6 @@ class spoton_neighbor: public QSslSocket
   void receivedBuzzMessage(const QList<QByteArray> &list,
 			   const QString &messageType);
   void receivedChatMessage(const QByteArray &data);
-  void receivedMailMessage
-    (const QByteArray &data, const QString &messageType,
-     const qint64 id);
   void receivedMessage(const QByteArray &data, const qint64 id);
   void receivedPublicKey(const QByteArray &name, const QByteArray publicKey);
   void receivedStatusMessage(const QByteArray &data, const qint64 id);

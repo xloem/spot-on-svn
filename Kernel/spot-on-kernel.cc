@@ -1137,14 +1137,6 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SIGNAL(publicizeListenerPlaintext(const QByteArray &,
 					    const qint64)));
   connect(neighbor,
-	  SIGNAL(receivedMailMessage(const QByteArray &,
-				     const QString &,
-				     const qint64)),
-	  this,
-	  SIGNAL(receivedMailMessage(const QByteArray &,
-				     const QString &,
-				     const qint64)));
-  connect(neighbor,
 	  SIGNAL(receivedMessage(const QByteArray &,
 				 const qint64)),
 	  this,
@@ -1176,14 +1168,6 @@ void spoton_kernel::connectSignalsToNeighbor
 	  neighbor,
 	  SLOT(slotPublicizeListenerPlaintext(const QHostAddress &,
 					      const quint16)));
-  connect(this,
-	  SIGNAL(receivedMailMessage(const QByteArray &,
-				     const QString &,
-				     const qint64)),
-	  neighbor,
-	  SLOT(slotReceivedMailMessage(const QByteArray &,
-				       const QString &,
-				       const qint64)));
   connect(this,
 	  SIGNAL(receivedMessage(const QByteArray &,
 				 const qint64)),
