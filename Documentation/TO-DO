@@ -63,6 +63,7 @@ Completed Items
 41.    Function to separate children from listeners.
 42.    Limit sending of information to the kernel. See
        spoton::slotKernelSocketState().
+43.    Simplify messages. Hide header information.
 
 Ignored Items
 
@@ -106,7 +107,6 @@ Remaining Items
        tend to be skewed.
 25.    Provide kernel and network statistics.
 26.    Include external IP addresses in listener certificates.
-27.    Simplify messages. Uniform number of groups. Hide header information?
-28.    QFSFileEngine::open: No file name specified: created from
+27.    QFSFileEngine::open: No file name specified: created from
        e-mail.
-29.    Support ECC.
+28.    Support ECC.
