@@ -109,3 +109,4 @@ Remaining Items
 27.    Simplify messages. Uniform number of groups. Hide header information?
 28.    QFSFileEngine::open: No file name specified: created from
        e-mail.
+29.    Support ECC.
