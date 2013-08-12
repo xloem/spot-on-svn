@@ -60,9 +60,11 @@ EOL
 EOL
 Public Key
 {
-0 - Symmetric Key (Base-64)
+0 - 0001b (Base-64)
 EOL
-1 - Symmetric Key Algorithm (Base-64)
+1 - Symmetric Key (Base-64)
+EOL
+2 - Symmetric Key Algorithm (Base-64)
 }
 EOL
 Symmetric Key
@@ -80,20 +82,29 @@ EOL
 0 - Keyed Sha-512 Message Code (Base-64)
 }
 
-Message Type ("0001b") (Plaintext)
-0 - Symmetric Key (Base-64) (Ciphertext, PK)
+Public Key
+{
+0 - 0001b (Base-64)
 EOL
-1 - Symmetric Key Algorithm (Base-64) (Ciphertext, PK)
+1 - Symmetric Key (Base-64)
 EOL
-2 - Sender's Sha-512 Hash (Base-64) (Ciphertext, PK)
+2 - Symmetric Key Algorithm (Base-64)
+}
 EOL
-3 - Sender's Name (Base-64) (Ciphertext, SK)
+Symmetric Key
+{
+0 - Sender's Sha-512 Hash (Base-64)
 EOL
-4 - Subject (Base-64) (Ciphertext, SK)
+1 - Sender's Name (Base-64)
 EOL
-5 - Message (Base-64) (Ciphertext, SK)
+2 - Subject (Base-64)
 EOL
-6 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+3 - Message (Base-64)
+}
+EOL
+{
+0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+}
 
 Retrieve Mail
 Echoed? Yes

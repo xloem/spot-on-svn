@@ -705,9 +705,7 @@ void spoton_neighbor::slotReadyRead(void)
 	  if(downgrade)
 	    goto done_label;
 
-	  if(length > 0 && data.contains("type=0001b&content="))
-	    process0001b(length, data);
-	  else if(length > 0 && data.contains("type=0011&content="))
+	  if(length > 0 && data.contains("type=0011&content="))
 	    process0011(length, data);
 	  else if(length > 0 && data.contains("type=0012&content="))
 	    process0012(length, data);
@@ -748,6 +746,8 @@ void spoton_neighbor::slotReadyRead(void)
 		process0000(length, data);
 	      else if(messageType == "0001a")
 		process0001a(length, data);
+	      else if(messageType == "0001b")
+		process0001b(length, data);
 	      else if(messageType == "0002")
 		process0002(length, data);
 	      else if(messageType == "0013")
@@ -1458,6 +1458,8 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
       QByteArray keyInformation1(list.value(0));
       QByteArray keyInformation2(list.value(2));
       QByteArray messageCode(list.value(4));
+      QByteArray recipientHash;
+      QByteArray senderPublicKeyHash1;
       QByteArray symmetricKey;
       QByteArray symmetricKeyAlgorithm;
 
@@ -1488,8 +1490,6 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	    }
 
 	  QByteArray data;
-	  QByteArray recipientHash;
-	  QByteArray senderPublicKeyHash1;
 	  QByteArray senderPublicKeyHash2;
 	  spoton_crypt crypt(symmetricKeyAlgorithm,
 			     QString("sha512"),
@@ -1539,6 +1539,8 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 		  if(ok)
 		    {
 		      QList<QByteArray> list(keyInformation2.split('\n'));
+
+		      list.removeAt(0); // Message Type
 
 		      if(list.size() == 2)
 			{
@@ -1631,19 +1633,19 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 		    }
 		}
 	    }
+	}
 
-	  if(ok)
-	    {
-	      if(spoton_kernel::s_settings.value("gui/postoffice_enabled",
-						 false).toBool())
-		if(spoton_misc::isAcceptedParticipant(recipientHash))
-		  if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
-		    /*
-		    ** Store the letter in the post office!
-		    */
+      if(ok)
+	{
+	  if(spoton_kernel::s_settings.value("gui/postoffice_enabled",
+					     false).toBool())
+	    if(spoton_misc::isAcceptedParticipant(recipientHash))
+	      if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
+		/*
+		** Store the letter in the post office!
+		*/
 
-		    storeLetter(list, recipientHash);
-	    }
+		storeLetter(list, recipientHash);
 	}
     }
   else
@@ -1663,13 +1665,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
   if(!s_crypt)
     return;
 
-  length -= strlen("type=0001b&content=");
-
-  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
-
-  data.remove
-    (0,
-     data.indexOf("type=0001b&content=") + strlen("type=0001b&content="));
+  QByteArray data(dataIn);
 
   if(length == data.length())
     {
@@ -1678,11 +1674,11 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
       QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
 
-      if(list.size() != 7)
+      if(list.size() != 3)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0001b(): "
-		     "received irregular data. Expecting 7 "
+		     "received irregular data. Expecting 3 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
 	  return;
@@ -2960,19 +2956,10 @@ void spoton_neighbor::storeLetter(const QList<QByteArray> &list,
 	  {
 	    QByteArray data;
 
-	    data.append(list.value(4).toBase64());
-	    data.append("\n");
-	    data.append(list.value(5).toBase64());
-	    data.append("\n");
-	    data.append(list.value(6).toBase64());
-	    data.append("\n");
-	    data.append(list.value(7).toBase64());
-	    data.append("\n");
-	    data.append(list.value(8).toBase64());
-	    data.append("\n");
-	    data.append(list.value(9).toBase64());
-	    data.append("\n");
-	    data.append(list.value(10).toBase64());
+	    data =
+	      list.value(2).toBase64() + "\n" + // 2nd Symmetric Key Bundle
+	      list.value(3).toBase64() + "\n" + // Data
+	      list.value(4).toBase64();         // Message Code
 	    query.bindValue
 	      (1, s_crypt->encrypted(data, &ok).toBase64());
 

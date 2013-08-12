@@ -42,7 +42,7 @@
 30.  Migrating message types from plaintext to ciphertext, where applicable.
      Task is slow. Please note that although the types are hidden, it
      is possible to guess message types based on the number of groups.
-     Problem will be addressed. Please also note that one may be able
+     Problem may be addressed. Please also note that one may be able
      to distinguish ciphertexts produced from asymmetric ciphers and
      symmetric ciphers.
 31.  Generate scrambled messages for an assortment of message types.

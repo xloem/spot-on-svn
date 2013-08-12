@@ -91,13 +91,13 @@ QByteArray spoton_send::message0001b(const QByteArray &message)
      "Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
-     "type=0001b&content=%2\r\n"
+     "content=%2\r\n"
      "\r\n\r\n");
   content.append(message);
   results.replace
     ("%1",
      QString::number(content.toBase64().length() +
-		     QString("type=0001b&content=\r\n\r\n\r\n").
+		     QString("content=\r\n\r\n\r\n").
 		     length()).
      toLatin1());
   results.replace

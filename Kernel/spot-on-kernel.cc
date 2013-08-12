@@ -1748,7 +1748,13 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		}
 
 	      keyInformation2 = spoton_crypt::publicKeyEncrypt
-		(symmetricKey.toBase64() + "\n" +
+		/*
+		** We need to store the message type 0001b here as
+		** the data may be stored in a post office.
+		*/
+
+		(QByteArray("0001b").toBase64() + "\n" +
+		 symmetricKey.toBase64() + "\n" +
 		 symmetricKeyAlgorithm.toBase64(),
 		 publicKey, &ok);
 
