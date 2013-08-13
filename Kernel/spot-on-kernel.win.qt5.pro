@@ -6,7 +6,7 @@ purge.commands = del /F *~
 
 TEMPLATE	= app
 LANGUAGE	= C++
-QT		+= network sql
+QT		+= concurrent network sql
 QT		-= gui
 CONFIG		+= qt release warn_on
 

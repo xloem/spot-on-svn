@@ -107,7 +107,11 @@ class spoton_listener: public spoton_listener_tcp_server
   void slotDiscoverExternalAddress(void);
   void slotExternalAddressDiscovered(const QHostAddress &address);
   void slotNeighborDisconnected(void);
-  void slotNewConnection(const int keySize);
+#if QT_VERSION >= 0x050000
+  void slotNewConnection(const qintptr socketDescriptor);
+#else
+  void slotNewConnection(const int socketDescriptor);
+#endif
   void slotTimeout(void);
 
  signals:
