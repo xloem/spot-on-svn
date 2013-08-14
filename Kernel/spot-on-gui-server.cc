@@ -432,18 +432,44 @@ void spoton_gui_server::slotTimeout(void)
   QSqlDatabase::removeDatabase(connectionName);
 }
 
-void spoton_gui_server::slotReceivedBuzzMessage
-(const QList<QByteArray> &list,
- const QString &messageType)
+void spoton_gui_server::slotReceivedBuzzMessage(const QList<QByteArray> &list)
 {
+  QByteArray computedMessageCode;
+  QByteArray data;
   QByteArray message;
+  QPair<QByteArray, QByteArray>
+    pair(spoton_kernel::findBuzzKey(list.value(0)));
+  bool ok = true;
+  spoton_crypt crypt(pair.second,
+		     QString("sha512"),
+		     QByteArray(),
+		     pair.first,
+		     0,
+		     0,
+		     QString(""));
+
+  computedMessageCode = crypt.keyedHash(list.value(0), &ok);
+
+  if(!ok)
+    return;
+
+  if(computedMessageCode != list.value(1))
+    {
+      spoton_misc::logError("spoton_gui_server::slotReceivedBuzzMessage(): "
+			    "computed message code does not match "
+			    "provided code.");
+      return;
+    }
+
+  data = crypt.decrypted(list.value(0), &ok);
+
+  if(!ok)
+    return;
 
   message.append("buzz_");
-  message.append(list.value(0).toBase64()); // Message
+  message.append(data.toBase64()); // Message
   message.append("_");
-  message.append(list.value(1).toBase64()); // Message Code
-  message.append("_");
-  message.append(messageType.toLatin1().toBase64());
+  message.append(pair.first.toBase64()); // Key
   message.append("\n");
 
   foreach(QSslSocket *socket, findChildren<QSslSocket *> ())

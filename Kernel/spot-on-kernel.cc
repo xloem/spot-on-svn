@@ -79,6 +79,7 @@ QHash<QByteArray, QDateTime> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
 QMutex spoton_kernel::s_messagingCacheMutex;
+static spoton_kernel *s_kernel = 0;
 
 static void sig_handler(int signum)
 {
@@ -115,6 +116,8 @@ static void sig_handler(int signum)
 #endif
 
   libspoton_close(&libspotonHandle);
+  delete s_kernel;
+  s_kernel = 0;
 
   /*
   ** _Exit() and _exit() may be safely called from signal handlers.
@@ -190,8 +193,10 @@ int main(int argc, char *argv[])
       QSettings::setPath(QSettings::IniFormat, QSettings::UserScope,
 			 spoton_misc::homePath());
       QSettings::setDefaultFormat(QSettings::IniFormat);
-      Q_UNUSED(new spoton_kernel());
-      return qapplication.exec();
+      s_kernel = new spoton_kernel();
+      qapplication.exec();
+      delete s_kernel;
+      s_kernel = 0;
     }
   else
     return EXIT_FAILURE;
@@ -419,9 +424,8 @@ spoton_kernel::~spoton_kernel()
     }
 
   s_crypts.clear();
-  spoton_misc::logError
-    (QString("Kernel %1 about to exit.").
-     arg(QCoreApplication::applicationPid()));
+  spoton_misc::logError(QString("Kernel %1 about to exit.").
+			arg(QCoreApplication::applicationPid()));
   QCoreApplication::instance()->quit();
 }
 
@@ -1117,11 +1121,9 @@ void spoton_kernel::connectSignalsToNeighbor
 	  m_guiServer,
 	  SLOT(slotNewEMailArrived(void)));
   connect(neighbor,
-	  SIGNAL(receivedBuzzMessage(const QList<QByteArray> &,
-				     const QString &)),
+	  SIGNAL(receivedBuzzMessage(const QList<QByteArray> &)),
 	  m_guiServer,
-	  SLOT(slotReceivedBuzzMessage(const QList<QByteArray> &,
-				       const QString &)));
+	  SLOT(slotReceivedBuzzMessage(const QList<QByteArray> &)));
   connect(neighbor,
 	  SIGNAL(receivedChatMessage(const QByteArray &)),
 	  m_guiServer,
@@ -1262,7 +1264,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
   if(!ok)
     return;
 
-  if(m_guiServer->findChildren<QTcpSocket *> ().isEmpty())
+  if(m_guiServer->findChildren<QSslSocket *> ().isEmpty())
     status = "offline";
 
   QList<QByteArray> list;
@@ -2189,4 +2191,12 @@ QPair<QByteArray, QByteArray> spoton_kernel::findBuzzKey
 void spoton_kernel::clearBuzzKeysContainer(void)
 {
   s_buzzKeys.clear();
+}
+
+int spoton_kernel::interfaces(void)
+{
+  if(s_kernel)
+    return s_kernel->m_guiServer->findChildren<QTcpSocket *> ().size();
+  else
+    return 0;
 }

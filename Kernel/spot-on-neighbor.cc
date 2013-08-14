@@ -2413,7 +2413,7 @@ void spoton_neighbor::process0040a
 	  return;
 	}
       else
-	emit receivedBuzzMessage(list, "0040a");
+	emit receivedBuzzMessage(list);
     }
   else
     spoton_misc::logError
@@ -2455,7 +2455,7 @@ void spoton_neighbor::process0040b
 	  return;
 	}
       else
-	emit receivedBuzzMessage(list, "0040b");
+	emit receivedBuzzMessage(list);
     }
   else
     spoton_misc::logError
@@ -3189,87 +3189,106 @@ void spoton_neighbor::resetKeepAlive(void)
 
 QString spoton_neighbor::findMessageType(const QByteArray &data)
 {
-  QByteArray gemini;
   QList<QByteArray> list(QByteArray::fromBase64(data).split('\n'));
-  QPair<QByteArray, QByteArray> pair
-    (spoton_kernel::findBuzzKey(QByteArray::fromBase64(list.value(0))));
-  QString messageType("");
-  int count = 0;
-  spoton_crypt *s_crypt = 0;
-
-  if(!pair.first.isEmpty() && !pair.second.isEmpty())
-    {
-      QByteArray data;
-      bool ok = true;
-      spoton_crypt crypt(pair.second,
-			 QString("sha512"),
-			 QByteArray(),
-			 pair.first,
-			 0,
-			 0,
-			 QString(""));
-
-      data = crypt.decrypted(QByteArray::fromBase64(list.value(0)), &ok);
-
-      if(ok)
-	messageType = QByteArray::fromBase64(data.split('\n').value(0));
-
-      if(!messageType.isEmpty())
-	goto done_label;
-    }
-
-  if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt = spoton_kernel::s_crypts["messaging"];
-
-  if(s_crypt)
-    gemini = spoton_misc::findGeminiInCosmos
-      (QByteArray::fromBase64(list.value(0)), s_crypt);
-
-  if(!gemini.isEmpty())
-    {
-      QByteArray data;
-      bool ok = true;
-      spoton_crypt crypt("aes256",
-			 QString("sha512"),
-			 QByteArray(),
-			 gemini,
-			 0,
-			 0,
-			 QString(""));
-
-      data = crypt.decrypted(QByteArray::fromBase64(list.value(0)), &ok);
-
-      if(ok)
-	messageType = QByteArray::fromBase64(data.split('\n').value(0));
-
-      if(!messageType.isEmpty())
-	goto done_label;
-    }
+  QString type("");
+  int interfaces = spoton_kernel::interfaces();
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("messaging", 0);
 
   /*
-  ** Finally, attempt to decipher the message via our private key.
+  ** Do not attempt to locate a Buzz key if an interface is not
+  ** attached to the kernel.
   */
 
-  if(s_crypt)
+  if(interfaces > 0)
     {
-      count = spoton_misc::participantCount();
+      QPair<QByteArray, QByteArray> pair
+	(spoton_kernel::findBuzzKey(QByteArray::fromBase64(list.value(0))));
 
-      if(count > 0)
+      if(!pair.first.isEmpty() && !pair.second.isEmpty())
 	{
 	  QByteArray data;
 	  bool ok = true;
+	  spoton_crypt crypt(pair.second,
+			     QString("sha512"),
+			     QByteArray(),
+			     pair.first,
+			     0,
+			     0,
+			     QString(""));
 
-	  data = s_crypt->publicKeyDecrypt
-	    (QByteArray::fromBase64(list.value(0)), &ok);
+	  data = crypt.decrypted(QByteArray::fromBase64(list.value(0)), &ok);
 
 	  if(ok)
-	    messageType = QByteArray::fromBase64(data.split('\n').value(0));
+	    type = QByteArray::fromBase64(data.split('\n').value(0));
 
-	  if(!messageType.isEmpty())
+	  if(!type.isEmpty())
 	    goto done_label;
 	}
     }
 
+  /*
+  ** Do not attempt to locate a gemini if an interface is not
+  ** attached to the kernel.
+  */
+
+  if(interfaces > 0)
+    {
+      QByteArray gemini;
+
+      if(s_crypt)
+	gemini = spoton_misc::findGeminiInCosmos
+	  (QByteArray::fromBase64(list.value(0)), s_crypt);
+
+      if(!gemini.isEmpty())
+	{
+	  QByteArray data;
+	  bool ok = true;
+	  spoton_crypt crypt("aes256",
+			     QString("sha512"),
+			     QByteArray(),
+			     gemini,
+			     0,
+			     0,
+			     QString(""));
+
+	  data = crypt.decrypted(QByteArray::fromBase64(list.value(0)), &ok);
+
+	  if(ok)
+	    type = QByteArray::fromBase64(data.split('\n').value(0));
+
+	  if(!type.isEmpty())
+	    goto done_label;
+	}
+    }
+
+  /*
+  ** Finally, attempt to decipher the message via our private key.
+  ** We would like to determine the message type only if we have at least
+  ** one interface attached to the kernel or if we're processing
+  ** a letter.
+  */
+
+  if(interfaces > 0 || list.size() == 5)
+    if(s_crypt)
+      {
+	int count = spoton_misc::participantCount();
+
+	if(count > 0)
+	  {
+	    QByteArray data;
+	    bool ok = true;
+
+	    data = s_crypt->publicKeyDecrypt
+	      (QByteArray::fromBase64(list.value(0)), &ok);
+
+	    if(ok)
+	      type = QByteArray::fromBase64(data.split('\n').value(0));
+
+	    if(!type.isEmpty())
+	      goto done_label;
+	  }
+      }
+
  done_label:
-  return messageType;
+  return type;
 }

@@ -57,6 +57,9 @@
      the mechanism without introducing a distribution puzzle.
 35.  Added support for Linux on the PowerPC architecture.
 36.  The message_code field in email.db has been deprecated.
+37.  Decipher Buzz messages in the kernel.
+38.  Do not attempt to decipher messages in the kernel that require
+     an interface instance.
 
 0.01
 

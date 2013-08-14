@@ -118,13 +118,13 @@ void spoton::slotReceivedKernelMessage(void)
 
 	      QList<QByteArray> list(data.split('_'));
 
-	      if(list.size() != 3)
+	      if(list.size() != 2)
 		continue;
 
 	      for(int i = 0; i < list.size(); i++)
 		list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-	      QByteArray messageType(list.value(2));
+	      QByteArray key(list.value(1));
 
 	      /*
 	      ** Find the channel!
@@ -140,65 +140,18 @@ void spoton::slotReceivedKernelMessage(void)
 		  if(!page)
 		    continue;
 
-		  QList<QByteArray> a(list);
-		  bool ok = true;
-		  spoton_crypt crypt(page->channelType(),
-				     QString("sha512"),
-				     QByteArray(),
-				     page->key(),
-				     0,
-				     0,
-				     QString(""));
-
-		  page = 0;
-		  a.replace // Data.
-		    (0,
-		     crypt.decrypted(a.value(0), &ok)); /*
-							** Let's hope that
-							** we have a short
-							** name.
-							*/
-
-		  if(ok)
-		    {
-		      QByteArray computedMessageCode;
-
-		      computedMessageCode = crypt.keyedHash
-			(list.value(0), &ok);
-
-		      if(ok)
-			{
-			  if(a.value(1) == computedMessageCode)
-			    {
-			      a = a.value(0).split('\n');
-			      a.removeAt(0); // Message Type
-
-			      for(int i = 0; i < a.size(); i++)
-				a.replace(i, QByteArray::fromBase64(a.at(i)));
-			    }
-			  else
-			    {
-			      ok = false;
-			      spoton_misc::logError
-				("spoton::slotReceivedKernelMessage(): "
-				 "computed message code does "
-				 "not match provided code.");
-			    }
-			}
-
-		      if(ok)
-			{
-			  list = a;
-			  page = qobject_cast<spoton_buzzpage *>
-			    (m_ui.buzzTab->widget(i));
-			}
-
-		      break;
-		    }
+		  if(key == page->key())
+		    break;
 		}
 
 	      if(page)
 		{
+		  list = list.value(0).split('\n');
+		  list.removeAt(0); // Message Type
+
+		  for(int i = 0; i < list.size(); i++)
+		    list.replace(i, QByteArray::fromBase64(list.at(i)));
+
 		  if(list.size() == 2)
 		    {
 		      if(page->userStatus(list))

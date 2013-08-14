@@ -171,8 +171,7 @@ class spoton_neighbor: public QSslSocket
  signals:
   void newEMailArrived(void);
   void publicizeListenerPlaintext(const QByteArray &data, const qint64 id);
-  void receivedBuzzMessage(const QList<QByteArray> &list,
-			   const QString &messageType);
+  void receivedBuzzMessage(const QList<QByteArray> &list);
   void receivedChatMessage(const QByteArray &data);
   void receivedMessage(const QByteArray &data, const qint64 id);
   void receivedPublicKey(const QByteArray &name, const QByteArray publicKey);

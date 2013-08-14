@@ -82,6 +82,7 @@ EOL
 0 - Keyed Sha-512 Message Code (Base-64)
 }
 
+Groups: 3
 Public Key
 {
 0 - 0001b (Base-64)

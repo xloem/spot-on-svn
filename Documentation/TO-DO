@@ -110,5 +110,5 @@ Remaining Items
 27.    QFSFileEngine::open: No file name specified: created from
        e-mail.
 28.    Support ECC.
-29.    Double encryption. Verify that the user's key is independent of the random
-       key. Separate cipher algorithms?
+29.    Double encryption. Verify that the user's key is independent of
+       the random key. Separate cipher algorithms?
