@@ -3003,7 +3003,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
       else
 	action->setEnabled(false);
 
-      menu.addAction(tr("&Call participant"),
+      menu.addAction(tr("&Call participant."),
 		     this, SLOT(slotCallParticipant(void)));
       menu.addAction(QIcon(QString(":/%1/copy.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
