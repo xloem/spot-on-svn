@@ -79,7 +79,7 @@ QHash<QByteArray, QDateTime> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
 QMutex spoton_kernel::s_messagingCacheMutex;
-static spoton_kernel *s_kernel = 0;
+static QPointer<spoton_kernel> s_kernel = 0;
 
 static void sig_handler(int signum)
 {
@@ -116,8 +116,6 @@ static void sig_handler(int signum)
 #endif
 
   libspoton_close(&libspotonHandle);
-  delete s_kernel;
-  s_kernel = 0;
 
   /*
   ** _Exit() and _exit() may be safely called from signal handlers.
@@ -194,9 +192,7 @@ int main(int argc, char *argv[])
 			 spoton_misc::homePath());
       QSettings::setDefaultFormat(QSettings::IniFormat);
       s_kernel = new spoton_kernel();
-      qapplication.exec();
-      delete s_kernel;
-      s_kernel = 0;
+      return qapplication.exec();
     }
   else
     return EXIT_FAILURE;
@@ -2239,7 +2235,6 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 	if(query.exec())
 	  if(query.next())
 	    {
-	      QByteArray data;
 	      QByteArray gemini;
 
 	      if(!query.value(0).isNull())
