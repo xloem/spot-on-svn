@@ -332,6 +332,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 				      const QByteArray &,
 				      const QString &)));
   connect(m_guiServer,
+	  SIGNAL(callParticipant(const qint64)),
+	  this,
+	  SLOT(slotCallParticipant(const qint64)));
+  connect(m_guiServer,
 	  SIGNAL(detachNeighbors(const qint64)),
 	  this,
 	  SLOT(slotDetachNeighbors(const qint64)));
@@ -1145,12 +1149,6 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SIGNAL(receivedMessage(const QByteArray &,
 				 const qint64)));
   connect(neighbor,
-	  SIGNAL(receivedStatusMessage(const QByteArray &,
-				       const qint64)),
-	  this,
-	  SIGNAL(receivedStatusMessage(const QByteArray &,
-				       const qint64)));
-  connect(neighbor,
 	  SIGNAL(retrieveMail(const QByteArray &,
 			      const QByteArray &,
 			      const QByteArray &)),
@@ -1158,6 +1156,10 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SLOT(slotRetrieveMail(const QByteArray &,
 				const QByteArray &,
 				const QByteArray &)));
+  connect(this,
+	  SIGNAL(callParticipant(const QByteArray &)),
+	  neighbor,
+	  SLOT(slotCallParticipant(const QByteArray &)));
   connect(this,
 	  SIGNAL(publicizeListenerPlaintext(const QByteArray &,
 					    const qint64)),
@@ -1176,12 +1178,6 @@ void spoton_kernel::connectSignalsToNeighbor
 	  neighbor,
 	  SLOT(slotReceivedMessage(const QByteArray &,
 				   const qint64)));
-  connect(this,
-	  SIGNAL(receivedStatusMessage(const QByteArray &,
-				       const qint64)),
-	  neighbor,
-	  SLOT(slotReceivedStatusMessage(const QByteArray &,
-					 const qint64)));
   connect(this,
 	  SIGNAL(retrieveMail(const QList<QByteArray> &)),
 	  neighbor,
@@ -1315,7 +1311,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		  ** Status messages lack sensitive data.
 		  */
 
-		  symmetricKey = spoton_crypt::weakRandomBytes
+		  symmetricKey = spoton_crypt::strongRandomBytes
 		    (symmetricKey.length());
 		}
 	      else
@@ -1327,13 +1323,11 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		}
 
 	      if(ok)
-		{
-		  keyInformation = spoton_crypt::publicKeyEncrypt
-		    (QByteArray("0013").toBase64() + "\n" +
-		     symmetricKey.toBase64() + "\n" +
-		     symmetricKeyAlgorithm.toBase64(),
-		     publicKey, &ok);
-		}
+		keyInformation = spoton_crypt::publicKeyEncrypt
+		  (QByteArray("0013").toBase64() + "\n" +
+		   symmetricKey.toBase64() + "\n" +
+		   symmetricKeyAlgorithm.toBase64(),
+		   publicKey, &ok);
 
 	      if(ok)
 		{
@@ -2199,4 +2193,136 @@ int spoton_kernel::interfaces(void)
     return s_kernel->m_guiServer->findChildren<QTcpSocket *> ().size();
   else
     return 0;
+}
+
+void spoton_kernel::slotCallParticipant(const qint64 oid)
+{
+  spoton_crypt *s_crypt = s_crypts.value("messaging", 0);
+
+  if(!s_crypt)
+    return;
+
+  QByteArray publicKey;
+  QByteArray myPublicKeyHash;
+  bool ok = true;
+
+  publicKey = s_crypt->publicKey(&ok);
+
+  if(!ok)
+    return;
+
+  myPublicKeyHash = spoton_crypt::sha512Hash(publicKey, &ok);
+
+  if(!ok)
+    return;
+
+  QByteArray data;
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT gemini, public_key "
+		      "FROM friends_public_keys WHERE "
+		      "key_type = 'messaging' AND neighbor_oid = -1 AND "
+		      "OID = ?");
+	query.bindValue(0, oid);
+
+	if(query.exec())
+	  if(query.next())
+	    {
+	      QByteArray data;
+	      QByteArray gemini;
+
+	      if(!query.value(0).isNull())
+		gemini = s_crypt->decrypted
+		  (QByteArray::fromBase64(query.
+					  value(0).
+					  toByteArray()),
+		   &ok);
+	      else
+		ok = false;
+
+	      QByteArray keyInformation;
+	      QByteArray publicKey(query.value(1).toByteArray());
+	      QByteArray symmetricKey;
+	      QByteArray symmetricKeyAlgorithm("aes256");
+	      size_t symmetricKeyLength = 0;
+
+	      if(ok)
+		{
+		  symmetricKeyLength = spoton_crypt::cipherKeyLength
+		    (symmetricKeyAlgorithm);
+
+		  if(symmetricKeyLength > 0)
+		    {
+		      symmetricKey.resize(symmetricKeyLength);
+		      symmetricKey = spoton_crypt::strongRandomBytes
+			(symmetricKey.length());
+		    }
+		  else
+		    {
+		      ok = false;
+		      spoton_misc::logError
+			("spoton_kernel::slotCallParticipant(): "
+			 "cipherKeyLength() failure.");
+		    }
+		}
+
+	      if(ok)
+		keyInformation = spoton_crypt::publicKeyEncrypt
+		  (QByteArray("0000a").toBase64() + "\n" +
+		   symmetricKey.toBase64() + "\n" +
+		   symmetricKeyAlgorithm.toBase64(),
+		   publicKey, &ok);
+
+	      if(ok)
+		{
+		  {
+		    /*
+		    ** We want crypt to be destroyed as soon as possible.
+		    */
+
+		    spoton_crypt crypt(symmetricKeyAlgorithm,
+				       QString("sha512"),
+				       QByteArray(),
+				       symmetricKey,
+				       0,
+				       0,
+				       QString(""));
+
+		    data = crypt.encrypted
+		      (myPublicKeyHash.toBase64() + "\n" +
+		       gemini.toBase64(), &ok);
+
+		    if(ok)
+		      {
+			QByteArray messageCode
+			  (crypt.keyedHash(data, &ok));
+
+			if(ok)
+			  data = keyInformation.toBase64() + "\n" +
+			    data.toBase64() + "\n" +
+			    messageCode.toBase64();
+		      }
+		  }
+		}
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  if(ok)
+    emit callParticipant(data);
 }

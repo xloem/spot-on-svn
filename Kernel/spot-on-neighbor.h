@@ -100,6 +100,7 @@ class spoton_neighbor: public QSslSocket
   bool readyToWrite(void);
   void prepareNetworkInterface(void);
   void process0000(int length, const QByteArray &data);
+  void process0000a(int length, const QByteArray &data);
   void process0001a(int length, const QByteArray &data);
   void process0001b(int length, const QByteArray &data);
   void process0002(int length, const QByteArray &data);
@@ -116,6 +117,8 @@ class spoton_neighbor: public QSslSocket
   void saveEncryptedStatus(void);
   void saveExternalAddress(const QHostAddress &address,
 			   const QSqlDatabase &db);
+  void saveGemini(const QByteArray &publicKeyHash,
+		  const QByteArray &gemini);
   void saveParticipantStatus(const QByteArray &name,
 			     const QByteArray &publicKeyHash);
   void saveParticipantStatus(const QByteArray &name,
@@ -139,6 +142,7 @@ class spoton_neighbor: public QSslSocket
 		   const QByteArray &recipientHash);
 
  private slots:
+  void slotCallParticipant(const QByteArray &data);
   void slotConnected(void);
   void slotDisconnected(void);
   void slotDiscoverExternalAddress(void);
@@ -156,7 +160,6 @@ class spoton_neighbor: public QSslSocket
 				      const quint16 port);
   void slotReadyRead(void);
   void slotReceivedMessage(const QByteArray &data, const qint64 id);
-  void slotReceivedStatusMessage(const QByteArray &data, const qint64 id);
   void slotRetrieveMail(const QList<QByteArray> &list);
   void slotSendBuzz(const QByteArray &data);
   void slotSendKeepAlive(void);
@@ -175,7 +178,6 @@ class spoton_neighbor: public QSslSocket
   void receivedChatMessage(const QByteArray &data);
   void receivedMessage(const QByteArray &data, const qint64 id);
   void receivedPublicKey(const QByteArray &name, const QByteArray publicKey);
-  void receivedStatusMessage(const QByteArray &data, const qint64 id);
   void retrieveMail(const QByteArray &data,
 		    const QByteArray &publicKeyHash,
 		    const QByteArray &signature);

@@ -4,7 +4,7 @@
 **
 ** Redistribution and use in source and binary forms, with or without
 ** modification, are permitted provided that the following conditions
-** are met:
+** are met
 ** 1. Redistributions of source code must retain the above copyright
 **    notice, this list of conditions and the following disclaimer.
 ** 2. Redistributions in binary form must reproduce the above copyright
@@ -3003,6 +3003,8 @@ void spoton::slotShowContextMenu(const QPoint &point)
       else
 	action->setEnabled(false);
 
+      menu.addAction(tr("&Call participant"),
+		     this, SLOT(slotCallParticipant(void)));
       menu.addAction(QIcon(QString(":/%1/copy.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
@@ -4140,4 +4142,44 @@ void spoton::slotDisconnectListenerNeighbors(void)
 	else
 	  m_kernelSocket.flush();
       }
+}
+
+void spoton::slotCallParticipant(void)
+{
+  if(!m_crypt)
+    return;
+  else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!m_kernelSocket.isEncrypted())
+    return;
+
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.participants->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.participants->item
+	(row, 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  slotGenerateGeminiInChat();
+
+  QByteArray message;
+
+  message.append("call_participant_");
+  message.append(oid);
+  message.append("\n");
+
+  if(m_kernelSocket.write(message.constData(), message.length()) !=
+     message.length())
+    spoton_misc::logError
+      ("spoton::slotCallParticipant(): write() failure.");
+  else
+    m_kernelSocket.flush();
 }

@@ -64,6 +64,7 @@ Completed Items
 42.    Limit sending of information to the kernel. See
        spoton::slotKernelSocketState().
 43.    Simplify messages. Hide header information.
+44.    Local and long distance calling feature to limit PKI.
 
 Ignored Items
 
@@ -80,7 +81,8 @@ Remaining Items
 3.     Echo proxy?
 4.     Prioritize keep-alive messages.
 5.     Allow for other ciphers besides AES for e-mail.
-6.     Local and long distance calling feature to limit PKI.
+6.     Double encryption. Verify that the user's key is independent of
+       the random key. Separate cipher algorithms?
 7.     E-mail retrieval may fail if a node is disconnected because of
        a lifetime expiration. Other communications may fail too.
 8.     Country flags and names for host names.
@@ -110,5 +112,3 @@ Remaining Items
 27.    QFSFileEngine::open: No file name specified: created from
        e-mail.
 28.    Support ECC.
-29.    Double encryption. Verify that the user's key is independent of
-       the random key. Separate cipher algorithms?

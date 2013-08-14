@@ -60,6 +60,11 @@
 37.  Decipher Buzz messages in the kernel.
 38.  Do not attempt to decipher messages in the kernel that require
      an interface instance.
+39.  Long distance calling. Please see the Participant table's context
+     menu.
+40.  Use strong random bytes for status message keys.
+41.  Use QVariant(QVariant::ByteArray), or equivalent, when attempting
+     to store null database entries.
 
 0.01
 

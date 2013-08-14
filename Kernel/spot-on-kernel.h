@@ -105,6 +105,7 @@ class spoton_kernel: public QObject
 			      const QByteArray &message,
 			      const QByteArray &sendMethod,
 			      const QString &messageType);
+  void slotCallParticipant(const qint64 oid);
   void slotDetachNeighbors(const qint64 listenerOid);
   void slotDisconnectNeighbors(const qint64 listenerOid);
   void slotMessagingCachePurge(void);
@@ -136,13 +137,12 @@ class spoton_kernel: public QObject
   void slotStatusTimerExpired(void);
 
  signals:
+  void callParticipant(const QByteArray &data);
   void publicizeListenerPlaintext(const QByteArray &data,
 				  const qint64 id);
   void publicizeListenerPlaintext(const QHostAddress &address,
 				  const quint16 port);
   void receivedMessage(const QByteArray &data, const qint64 id);
-  void receivedStatusMessage(const QByteArray &data,
-			     const qint64 id);
   void retrieveMail(const QList<QByteArray> &list);
   void sendBuzz(const QByteArray &buzz);
   void sendMessage(const QByteArray &message);

@@ -174,6 +174,7 @@ class spoton: public QMainWindow
   void slotAddFriendsKey(void);
   void slotAddNeighbor(void);
   void slotBlockNeighbor(void);
+  void slotCallParticipant(void);
   void slotChatSendMethodChanged(int index);
   void slotClearOutgoingMessage(void);
   void slotCloseBuzzTab(int index);

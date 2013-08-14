@@ -56,6 +56,31 @@ QByteArray spoton_send::message0000(const QByteArray &message,
     ("%2", message.toBase64());
   return results;
 }
+QByteArray spoton_send::message0000a(const QByteArray &message,
+				     const spoton_send_method sendMethod)
+{
+  QByteArray results;
+
+  if(sendMethod == ARTIFICIAL_GET)
+    results.append("HTTP/1.1 200 OK\r\n");
+  else
+    results.append("POST /echo/ HTTP/1.1\r\n");
+
+  results.append
+    ("Content-Type: application/x-www-form-urlencoded\r\n"
+     "Content-Length: %1\r\n"
+     "\r\n"
+     "content=%2\r\n"
+     "\r\n\r\n");
+  results.replace
+    ("%1",
+     QString::number(message.toBase64().length() +
+		     QString("content=\r\n\r\n\r\n").length()).
+     toLatin1());
+  results.replace
+    ("%2", message.toBase64());
+  return results;
+}
 
 QByteArray spoton_send::message0001a(const QByteArray &message)
 {
