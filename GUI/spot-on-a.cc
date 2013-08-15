@@ -3003,15 +3003,27 @@ void spoton::slotShowContextMenu(const QPoint &point)
       else
 	action->setEnabled(false);
 
-      menu.addAction(tr("&Call participant."),
-		     this, SLOT(slotCallParticipant(void)));
+      action = menu.addAction(tr("&Call participant."),
+			      this, SLOT(slotCallParticipant(void)));
+
+      if(item && item->data(Qt::UserRole).toBool()) // Temporary friend?
+	action->setEnabled(false);
+      else
+	action->setEnabled(true);
+
       menu.addAction(QIcon(QString(":/%1/copy.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
 		     tr("&Copy Repleo to the clipboard buffer."),
 		     this, SLOT(slotCopyFriendshipBundle(void)));
-      menu.addAction(tr("&Generate random Gemini (AES-256)."),
-		     this, SLOT(slotGenerateGeminiInChat(void)));
+      action = menu.addAction(tr("&Generate random Gemini (AES-256)."),
+			      this, SLOT(slotGenerateGeminiInChat(void)));
+
+      if(item && item->data(Qt::UserRole).toBool()) // Temporary friend?
+	action->setEnabled(false);
+      else
+	action->setEnabled(true);
+
       menu.addAction(QIcon(QString(":/%1/clear.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
