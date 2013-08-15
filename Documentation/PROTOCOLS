@@ -32,6 +32,8 @@ EOL
 1 - Name (Base-64)
 EOL
 2 - Message (Base-64)
+EOL
+3 - Signature (Base-64)
 }
 EOL
 {
@@ -56,6 +58,8 @@ Symmetric Key
 0 - Sender's Sha-512 Hash (Base-64)
 EOL
 1 - Gemini (Base-64)
+EOL
+2 - Signature (Base-64)
 }
 EOL
 {
@@ -80,6 +84,8 @@ Symmetric Key
 0 - Sender's Sha-512 Hash (Base-64)
 EOL
 1 - Recipient's Sha-512 Hash (Base-64)
+EOL
+2 - Signature (Base-64)
 }
 EOL
 Public Key
@@ -100,6 +106,8 @@ EOL
 2 - Subject (Base-64) (Optional Gold Bug)
 EOL
 3 - Message (Base-64) (Optional Gold Bug)
+EOL
+4 - Signature (Base-64) (Optional Gold Bug)
 }
 EOL
 {
@@ -125,6 +133,8 @@ EOL
 2 - Subject (Base-64)
 EOL
 3 - Message (Base-64)
+EOL
+4 - Signature (Base-64)
 }
 EOL
 {
@@ -151,6 +161,8 @@ EOL
 1 - Message (Base-64)
 EOL
 2 - Requester's Message Code Signature (Base-64)
+EOL
+3 - Signature (Base-64)
 }
 EOL
 {
@@ -205,6 +217,8 @@ EOL
 1 - Name (Base-64)
 EOL
 2 - Status (Base-64)
+EOL
+3 - Signature (Base-64)
 }
 EOL
 {
