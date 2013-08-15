@@ -171,6 +171,43 @@
                <item>
                 <layout class="QVBoxLayout" name="verticalLayout_24">
                  <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_45">
+                   <item>
+                    <widget class="QCheckBox" name="chatAcceptSigned">
+                     <property name="text">
+                      <string>&amp;Accept only signed messages.</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="chatSignMessages">
+                     <property name="text">
+                      <string>&amp;Sign messages.</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_43">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
                   <widget class="QSplitter" name="chatHorizontalSplitter">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
@@ -344,7 +381,7 @@
                        <item>
                         <widget class="QCheckBox" name="hideOfflineParticipants">
                          <property name="text">
-                          <string>&amp;Hide Offline Participants</string>
+                          <string>&amp;Hide offline participants.</string>
                          </property>
                         </widget>
                        </item>
@@ -625,6 +662,16 @@
                </spacer>
               </item>
               <item>
+               <widget class="QCheckBox" name="emailAcceptSigned">
+                <property name="text">
+                 <string>&amp;Accept only signed messages.</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QPushButton" name="reply">
                 <property name="text">
                  <string>Reply</string>
@@ -804,7 +851,17 @@
               <item>
                <widget class="QCheckBox" name="saveCopy">
                 <property name="text">
-                 <string>&amp;Save Copy</string>
+                 <string>&amp;Save copies.</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="emailSignMessages">
+                <property name="text">
+                 <string>Sign messages.</string>
                 </property>
                 <property name="checked">
                  <bool>true</bool>
@@ -901,7 +958,17 @@
               <item>
                <widget class="QCheckBox" name="postofficeCheckBox">
                 <property name="text">
-                 <string>&amp;Enable</string>
+                 <string>&amp;Enable C/O service.</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="coAcceptSigned">
+                <property name="text">
+                 <string>&amp;Reject messages without signatures.</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -1499,7 +1566,7 @@
                    <string>Select this option if you would like to accept and connect to published listeners.</string>
                   </property>
                   <property name="text">
-                   <string>&amp;Accept Published Listeners (Connected)</string>
+                   <string>&amp;Accept published listeners (connected).</string>
                   </property>
                  </widget>
                 </item>
@@ -1509,7 +1576,7 @@
                    <string>Select this option if you would like to accept published listeners.</string>
                   </property>
                   <property name="text">
-                   <string>&amp;Accept Published Listeners (Disconnected)</string>
+                   <string>&amp;Accept published listeners (disconnected).</string>
                   </property>
                   <property name="checked">
                    <bool>false</bool>
@@ -1519,7 +1586,7 @@
                 <item>
                  <widget class="QRadioButton" name="ignorePublished">
                   <property name="text">
-                   <string>&amp;Ignore Published Listeners</string>
+                   <string>&amp;Ignore published listeners.</string>
                   </property>
                   <property name="checked">
                    <bool>true</bool>
@@ -1583,7 +1650,7 @@
               <item>
                <widget class="QCheckBox" name="keepOnlyUserDefinedNeighbors">
                 <property name="text">
-                 <string>&amp;Keep Only User-Defined Neighbors</string>
+                 <string>&amp;Keep only user-defined neighbors.</string>
                 </property>
                </widget>
               </item>
@@ -2450,7 +2517,7 @@
                    <item>
                     <widget class="QCheckBox" name="congestionControl">
                      <property name="text">
-                      <string>Enable Con&amp;gestion Control</string>
+                      <string>&amp;Enable congestion control.</string>
                      </property>
                      <property name="checked">
                       <bool>true</bool>
@@ -2514,7 +2581,7 @@
                    <item>
                     <widget class="QCheckBox" name="kernelLogEvents">
                      <property name="text">
-                      <string>&amp;Log Events</string>
+                      <string>&amp;Log events.</string>
                      </property>
                     </widget>
                    </item>
@@ -3474,8 +3541,10 @@
   <tabstop>join</tabstop>
   <tabstop>buzzTab</tabstop>
   <tabstop>scrollArea_2</tabstop>
-  <tabstop>clearMessages</tabstop>
+  <tabstop>chatAcceptSigned</tabstop>
+  <tabstop>chatSignMessages</tabstop>
   <tabstop>messages</tabstop>
+  <tabstop>clearMessages</tabstop>
   <tabstop>nodeName</tabstop>
   <tabstop>saveNodeName</tabstop>
   <tabstop>status</tabstop>
@@ -3490,6 +3559,7 @@
   <tabstop>retrieveMail</tabstop>
   <tabstop>mailTab</tabstop>
   <tabstop>folder</tabstop>
+  <tabstop>emailAcceptSigned</tabstop>
   <tabstop>reply</tabstop>
   <tabstop>mail</tabstop>
   <tabstop>mailMessage</tabstop>
@@ -3499,8 +3569,10 @@
   <tabstop>goldbug</tabstop>
   <tabstop>generateGoldBug</tabstop>
   <tabstop>saveCopy</tabstop>
+  <tabstop>emailSignMessages</tabstop>
   <tabstop>sendMail</tabstop>
   <tabstop>postofficeCheckBox</tabstop>
+  <tabstop>coAcceptSigned</tabstop>
   <tabstop>postoffice</tabstop>
   <tabstop>days</tabstop>
   <tabstop>publishPeriodically</tabstop>
