@@ -740,10 +740,11 @@ void spoton_neighbor::slotReadyRead(void)
 	      ** that would do not.
 	      */
 
-	      QString messageType(findMessageType(data));
+	      QPair<QByteArray, QByteArray> symmetricKey;
+	      QString messageType(findMessageType(data, symmetricKey));
 
 	      if(messageType == "0000")
-		process0000(length, data);
+		process0000(length, data, symmetricKey);
 	      else if(messageType == "0000a")
 		process0000a(length, data);
 	      else if(messageType == "0001a")
@@ -753,11 +754,11 @@ void spoton_neighbor::slotReadyRead(void)
 	      else if(messageType == "0002")
 		process0002(length, data);
 	      else if(messageType == "0013")
-		process0013(length, data);
+		process0013(length, data, symmetricKey);
 	      else if(messageType == "0040a")
-		process0040a(length, data);
+		process0040a(length, data, symmetricKey);
 	      else if(messageType == "0040b")
-		process0040b(length, data);
+		process0040b(length, data, symmetricKey);
 	      else
 		messageType.clear();
 
@@ -1157,7 +1158,8 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
     }
 }
 
-void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
+void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
+				  const QPair<QByteArray, QByteArray> &pair)
 {
   spoton_crypt *s_crypt = 0;
 
@@ -1186,8 +1188,12 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn)
 	  for(int i = 0; i < list.size(); i++)
 	    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-	  QByteArray gemini
-	    (spoton_misc::findGeminiInCosmos(list.value(0), s_crypt));
+	  QByteArray gemini;
+
+	  if(pair.first.isEmpty())
+	    gemini = spoton_misc::findGeminiInCosmos(list.value(0), s_crypt);
+	  else
+	    gemini = pair.first;
 
 	  if(!gemini.isEmpty())
 	    {
@@ -2092,7 +2098,8 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
        arg(length).arg(data.length()));
 }
 
-void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
+void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
+				  const QPair<QByteArray, QByteArray> &pair)
 {
   spoton_crypt *s_crypt = 0;
 
@@ -2121,8 +2128,12 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn)
 	  for(int i = 0; i < list.size(); i++)
 	    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-	  QByteArray gemini
-	    (spoton_misc::findGeminiInCosmos(list.value(0), s_crypt));
+	  QByteArray gemini;
+
+	  if(pair.first.isEmpty())
+	    gemini = spoton_misc::findGeminiInCosmos(list.value(0), s_crypt);
+	  else
+	    gemini = pair.first;
 
 	  if(!gemini.isEmpty())
 	    {
@@ -2483,8 +2494,8 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
        arg(length).arg(data.length()));
 }
 
-void spoton_neighbor::process0040a
-(int length, const QByteArray &dataIn)
+void spoton_neighbor::process0040a(int length, const QByteArray &dataIn,
+				   const QPair<QByteArray, QByteArray> &pair)
 {
   spoton_crypt *s_crypt = 0;
 
@@ -2516,7 +2527,7 @@ void spoton_neighbor::process0040a
 	  return;
 	}
       else
-	emit receivedBuzzMessage(list);
+	emit receivedBuzzMessage(list, pair);
     }
   else
     spoton_misc::logError
@@ -2525,8 +2536,8 @@ void spoton_neighbor::process0040a
        arg(length).arg(data.length()));
 }
 
-void spoton_neighbor::process0040b
-(int length, const QByteArray &dataIn)
+void spoton_neighbor::process0040b(int length, const QByteArray &dataIn,
+				   const QPair<QByteArray, QByteArray> &pair)
 {
   spoton_crypt *s_crypt = 0;
 
@@ -2558,7 +2569,7 @@ void spoton_neighbor::process0040b
 	  return;
 	}
       else
-	emit receivedBuzzMessage(list);
+	emit receivedBuzzMessage(list, pair);
     }
   else
     spoton_misc::logError
@@ -3289,7 +3300,9 @@ void spoton_neighbor::resetKeepAlive(void)
   m_lastReadTime = QDateTime::currentDateTime();
 }
 
-QString spoton_neighbor::findMessageType(const QByteArray &data)
+QString spoton_neighbor::findMessageType
+(const QByteArray &data,
+ QPair<QByteArray, QByteArray> &symmetricKey)
 {
   QList<QByteArray> list(QByteArray::fromBase64(data).split('\n'));
   QString type("");
@@ -3303,17 +3316,17 @@ QString spoton_neighbor::findMessageType(const QByteArray &data)
 
   if(interfaces > 0)
     {
-      QPair<QByteArray, QByteArray> pair
-	(spoton_kernel::findBuzzKey(QByteArray::fromBase64(list.value(0))));
+      symmetricKey = spoton_kernel::findBuzzKey
+	(QByteArray::fromBase64(list.value(0)));
 
-      if(!pair.first.isEmpty() && !pair.second.isEmpty())
+      if(!symmetricKey.first.isEmpty() && !symmetricKey.second.isEmpty())
 	{
 	  QByteArray data;
 	  bool ok = true;
-	  spoton_crypt crypt(pair.second,
+	  spoton_crypt crypt(symmetricKey.second,
 			     QString("sha512"),
 			     QByteArray(),
-			     pair.first,
+			     symmetricKey.first,
 			     0,
 			     0,
 			     QString(""));
@@ -3325,6 +3338,16 @@ QString spoton_neighbor::findMessageType(const QByteArray &data)
 
 	  if(!type.isEmpty())
 	    goto done_label;
+	  else
+	    {
+	      symmetricKey.first.clear();
+	      symmetricKey.second.clear();
+	    }
+	}
+      else
+	{
+	  symmetricKey.first.clear();
+	  symmetricKey.second.clear();
 	}
     }
 
@@ -3359,7 +3382,21 @@ QString spoton_neighbor::findMessageType(const QByteArray &data)
 	    type = QByteArray::fromBase64(data.split('\n').value(0));
 
 	  if(!type.isEmpty())
-	    goto done_label;
+	    {
+	      symmetricKey.first = gemini;
+	      symmetricKey.second = "aes256";
+	      goto done_label;
+	    }
+	  else
+	    {
+	      symmetricKey.first.clear();
+	      symmetricKey.second.clear();
+	    }
+	}
+      else
+	{
+	  symmetricKey.first.clear();
+	  symmetricKey.second.clear();
 	}
     }
 

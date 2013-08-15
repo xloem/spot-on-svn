@@ -87,7 +87,8 @@ class spoton_gui_server: public spoton_gui_server_tcp_server
   void slotModeChanged(QSslSocket::SslMode mode);
   void slotNewEMailArrived(void);
   void slotReadyRead(void);
-  void slotReceivedBuzzMessage(const QList<QByteArray> &list);
+  void slotReceivedBuzzMessage(const QList<QByteArray> &list,
+			       const QPair<QByteArray, QByteArray> &pair);
   void slotReceivedChatMessage(const QByteArray &message);
   void slotTimeout(void);
 

@@ -1120,10 +1120,13 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SIGNAL(newEMailArrived(void)),
 	  m_guiServer,
 	  SLOT(slotNewEMailArrived(void)));
-  connect(neighbor,
-	  SIGNAL(receivedBuzzMessage(const QList<QByteArray> &)),
-	  m_guiServer,
-	  SLOT(slotReceivedBuzzMessage(const QList<QByteArray> &)));
+  connect
+    (neighbor,
+     SIGNAL(receivedBuzzMessage(const QList<QByteArray> &,
+				const QPair<QByteArray, QByteArray> &)),
+     m_guiServer,
+     SLOT(slotReceivedBuzzMessage(const QList<QByteArray> &,
+				  const QPair<QByteArray, QByteArray> &)));
   connect(neighbor,
 	  SIGNAL(receivedChatMessage(const QByteArray &)),
 	  m_guiServer,

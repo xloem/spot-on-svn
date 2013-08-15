@@ -439,18 +439,23 @@ void spoton_gui_server::slotTimeout(void)
   QSqlDatabase::removeDatabase(connectionName);
 }
 
-void spoton_gui_server::slotReceivedBuzzMessage(const QList<QByteArray> &list)
+void spoton_gui_server::slotReceivedBuzzMessage
+(const QList<QByteArray> &list,
+ const QPair<QByteArray, QByteArray> &pair)
 {
+  QPair<QByteArray, QByteArray> p(pair);
+
+  if(p.first.isEmpty() || p.second.isEmpty())
+    p = spoton_kernel::findBuzzKey(list.value(0));
+
   QByteArray computedMessageCode;
   QByteArray data;
   QByteArray message;
-  QPair<QByteArray, QByteArray>
-    pair(spoton_kernel::findBuzzKey(list.value(0)));
   bool ok = true;
-  spoton_crypt crypt(pair.second,
+  spoton_crypt crypt(p.second,
 		     QString("sha512"),
 		     QByteArray(),
-		     pair.first,
+		     p.first,
 		     0,
 		     0,
 		     QString(""));
