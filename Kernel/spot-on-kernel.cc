@@ -895,18 +895,20 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 					      const QByteArray &name,
 					      const QByteArray &message)
 {
-  if(!s_crypts.contains("messaging"))
+  spoton_crypt *s_crypt1 = s_crypts.value("messaging", 0);
+
+  if(!s_crypt1)
     return;
 
-  spoton_crypt *s_crypt = s_crypts["messaging"];
+  spoton_crypt *s_crypt2 = s_crypts.value("signature", 0);
 
-  if(!s_crypt)
+  if(!s_crypt2)
     return;
 
   QByteArray publicKey;
   bool ok = true;
 
-  publicKey = s_crypt->publicKey(&ok);
+  publicKey = s_crypt1->publicKey(&ok);
 
   if(!ok)
     return;
@@ -931,7 +933,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 				     symmetricKeyAlgorithm,
 				     neighborOid,
 				     QString::number(oid),
-				     s_crypt);
+				     s_crypt1);
 
   keyInformation = spoton_crypt::publicKeyEncrypt
     (QByteArray("0000").toBase64() + "\n" +
@@ -946,6 +948,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 	** We want crypt to be destroyed as soon as possible.
 	*/
 
+	QByteArray signature;
 	spoton_crypt crypt(symmetricKeyAlgorithm,
 			   QString("sha512"),
 			   QByteArray(),
@@ -954,11 +957,16 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 			   0,
 			   QString(""));
 
-	data = crypt.encrypted(myPublicKeyHash.toBase64() +
-			       "\n" +
-			       name.toBase64() +
-			       "\n" +
-			       message.toBase64(), &ok);
+	if(s_settings.value("gui/chatSignMessages", true).toBool())
+	  signature = s_crypt2->digitalSignature(myPublicKeyHash +
+						 name +
+						 message, &ok);
+
+	if(ok)
+	  data = crypt.encrypted(myPublicKeyHash.toBase64() + "\n" +
+				 name.toBase64() + "\n" +
+				 message.toBase64() + "\n" +
+				 signature.toBase64(), &ok);
 
 	if(ok)
 	  {

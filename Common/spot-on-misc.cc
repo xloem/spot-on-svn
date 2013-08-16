@@ -1297,6 +1297,41 @@ QByteArray spoton_misc::publicKeyFromSignaturePublicKeyHash
   return publicKey;
 }
 
+QByteArray spoton_misc::signaturePublicKeyFromPublicKeyHash
+(const QByteArray &publicKeyHash)
+{
+  QByteArray publicKey;
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName(homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT public_key "
+		      "FROM friends_public_keys WHERE "
+		      "public_key_hash = (SELECT signature_public_key_hash "
+		      "FROM "
+		      "relationships_with_signatures WHERE "
+		      "public_key_hash = ?)");
+	query.bindValue(0, publicKeyHash.toBase64());
+
+	if(query.exec())
+	  if(query.next())
+	    publicKey = query.value(0).toByteArray();
+      }
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  return publicKey;
+}
+
 void spoton_misc::prepareUrlDatabases(void)
 {
   QDir().mkdir(homePath() + QDir::separator() + "URLs");
@@ -1646,4 +1681,22 @@ int spoton_misc::participantCount(void)
 
   QSqlDatabase::removeDatabase(connectionName);
   return count;
+}
+
+bool spoton_misc::isValidSignature(const QByteArray &data,
+				   const QByteArray &publicKeyHash,
+				   const QByteArray &signature)
+{
+  /*
+  ** We must locate the signature public key that's associated with the
+  ** provided public key hash. Remember publicKeyHash is the hash of the
+  ** non-signature public key.
+  */
+
+  QByteArray publicKey(signaturePublicKeyFromPublicKeyHash(publicKeyHash));
+
+  if(publicKey.isEmpty())
+    return false;
+
+  return spoton_crypt::isValidSignature(data, publicKey, signature);
 }

@@ -218,17 +218,9 @@ void spoton_mailer::slotRetrieveMail(const QByteArray &data,
   if(publicKey.isEmpty())
     return;
 
-  if(!spoton_kernel::s_crypts.contains("messaging"))
-    return;
-
-  spoton_crypt *s_crypt = spoton_kernel::s_crypts["messaging"];
-
-  if(!s_crypt)
-    return;
-
-  if(!s_crypt->isValidSignature(data,
-				publicKey,
-				signature))
+  if(!spoton_crypt::isValidSignature(data,
+				     publicKey,
+				     signature))
     return;
 
   publicKey = spoton_misc::publicKeyFromSignaturePublicKeyHash

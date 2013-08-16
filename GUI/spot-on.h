@@ -265,6 +265,7 @@ class spoton: public QMainWindow
   void slotSharePublicKeyWithParticipant(void);
   void slotShareURLPublicKey(void);
   void slotShowContextMenu(const QPoint &point);
+  void slotSignatureCheckBoxToggled(bool state);
   void slotStatusButtonClicked(void);
   void slotStatusChanged(int index);
   void slotSuperEcho(bool state);

@@ -1314,7 +1314,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 			{
 			  QList<QByteArray> list(data.split('\n'));
 
-			  if(list.size() == 3)
+			  if(list.size() == 4)
 			    {
 			      for(int i = 0; i < list.size(); i++)
 				list.replace
@@ -1323,6 +1323,27 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 			      if(spoton_misc::
 				 isAcceptedParticipant(list.value(0)))
 				{
+				  if(spoton_kernel::s_settings.
+				     value("gui/chatAcceptSignedMessagesOnly",
+					   true).toBool())
+				    {
+				      QByteArray signature(list.value(3));
+
+				      if(!spoton_misc::
+					 isValidSignature(list.value(0) +
+							  list.value(1) +
+							  list.value(2),
+							  list.value(0),
+							  list.value(3)))
+					{
+					  spoton_misc::logError
+					    ("spoton_neighbor::"
+					     "process0000(): invalid "
+					     "signature.");
+					  return;
+					}
+				    }
+
 				  QByteArray hash
 				    (s_crypt->
 				     keyedHash(originalData, &ok));
@@ -1346,7 +1367,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 			      spoton_misc::logError
 				(QString("spoton_neighbor::process0000(): "
 					 "received irregular data. "
-					 "Expecting 3 "
+					 "Expecting 4 "
 					 "entries, "
 					 "received %1.").arg(list.size()));
 			      return;

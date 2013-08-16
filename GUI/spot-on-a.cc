@@ -452,6 +452,26 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(tabCloseRequested(int)),
 	  this,
 	  SLOT(slotCloseBuzzTab(int)));
+  connect(m_ui.chatAcceptSigned,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotSignatureCheckBoxToggled(bool)));
+  connect(m_ui.chatSignMessages,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotSignatureCheckBoxToggled(bool)));
+  connect(m_ui.emailAcceptSigned,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotSignatureCheckBoxToggled(bool)));
+  connect(m_ui.emailSignMessages,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotSignatureCheckBoxToggled(bool)));
+  connect(m_ui.coAcceptSigned,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotSignatureCheckBoxToggled(bool)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -703,6 +723,16 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/scramblerEnabled", false).toBool());
   m_ui.superEcho->setChecked
     (m_settings.value("gui/superEcho", false).toBool());
+  m_ui.chatAcceptSigned->setChecked
+    (m_settings.value("gui/chatAcceptSignedMessagesOnly", true).toBool());
+  m_ui.chatSignMessages->setChecked
+    (m_settings.value("gui/chatSignMessages", true).toBool());
+  m_ui.emailAcceptSigned->setChecked
+    (m_settings.value("gui/emailAcceptSignedMessagesOnly", true).toBool());
+  m_ui.emailSignMessages->setChecked
+    (m_settings.value("gui/emailSignMessages", true).toBool());
+  m_ui.coAcceptSigned->setChecked
+    (m_settings.value("gui/coAcceptSignedMessagesOnly", true).toBool());
 
   /*
   ** Please don't translate n/a.
@@ -4194,4 +4224,30 @@ void spoton::slotCallParticipant(void)
       ("spoton::slotCallParticipant(): write() failure.");
   else
     m_kernelSocket.flush();
+}
+
+void spoton::slotSignatureCheckBoxToggled(bool state)
+{
+  QCheckBox *checkBox = qobject_cast<QCheckBox *> (sender());
+  QString str("");
+
+  if(checkBox == m_ui.chatAcceptSigned)
+    str = "chatAcceptSignedMessagesOnly";
+  else if(checkBox == m_ui.chatSignMessages)
+    str = "chatSignMessages";
+  else if(checkBox == m_ui.emailAcceptSigned)
+    str = "emailAcceptSignedMessagesOnly";
+  else if(checkBox == m_ui.emailSignMessages)
+    str = "emailSignMessages";
+  else if(checkBox == m_ui.coAcceptSigned)
+    str = "coAcceptSignedMessagesOnly";
+
+  if(!str.isEmpty())
+    {
+      m_settings[QString("gui/%1").arg(str)] = state;
+
+      QSettings settings;
+
+      settings.setValue(QString("gui/%1").arg(str), state);
+    }
 }

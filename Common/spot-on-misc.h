@@ -43,6 +43,8 @@ class spoton_misc
   static QByteArray publicKeyFromHash(const QByteArray &publicKeyHash);
   static QByteArray publicKeyFromSignaturePublicKeyHash
     (const QByteArray &signaturePublicKeyHash);
+  static QByteArray signaturePublicKeyFromPublicKeyHash
+    (const QByteArray &publicKeyHash);
   static QSqlDatabase database(QString &connectionName);
   static QString countryCodeFromIPAddress(const QString &ipAddress);
   static QString countryCodeFromName(const QString &country);
@@ -53,6 +55,9 @@ class spoton_misc
   static bool isAcceptedParticipant(const QByteArray &publicKeyHash);
   static bool isGnome(void);
   static bool isPrivateNetwork(const QHostAddress &address);
+  static bool isValidSignature(const QByteArray &data,
+			       const QByteArray &publicKeyHash,
+			       const QByteArray &signature);
   static bool saveFriendshipBundle(const QByteArray &keyType,
 				   const QByteArray &name,
 				   const QByteArray &publicKey,

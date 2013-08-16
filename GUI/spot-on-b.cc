@@ -1397,7 +1397,7 @@ void spoton::slotAddFriendsKey(void)
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("Invalid messaging public key signature."));
+	     tr("Invalid messaging or url public key signature."));
 	  return;
 	}
 
@@ -1432,7 +1432,7 @@ void spoton::slotAddFriendsKey(void)
 
 	    name = QByteArray::fromBase64(name);
 
-	    if(spoton_misc::saveFriendshipBundle("messaging",
+	    if(spoton_misc::saveFriendshipBundle(keyType,
 						 name,
 						 mPublicKey,
 						 sPublicKey,
