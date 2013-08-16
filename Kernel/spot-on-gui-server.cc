@@ -440,8 +440,7 @@ void spoton_gui_server::slotTimeout(void)
 }
 
 void spoton_gui_server::slotReceivedBuzzMessage
-(const QList<QByteArray> &list,
- const QPair<QByteArray, QByteArray> &pair)
+(const QList<QByteArray> &list, const QPair<QByteArray, QByteArray> &pair)
 {
   QPair<QByteArray, QByteArray> p(pair);
 

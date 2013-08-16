@@ -160,7 +160,7 @@ Symmetric Key
 EOL
 1 - Message (Base-64)
 EOL
-2 - Requester's Message Code Signature (Base-64)
+2 - Requester's Message Signature (Base-64)
 }
 EOL
 {
