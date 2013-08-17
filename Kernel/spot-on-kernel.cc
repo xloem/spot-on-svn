@@ -2214,16 +2214,21 @@ int spoton_kernel::interfaces(void)
 
 void spoton_kernel::slotCallParticipant(const qint64 oid)
 {
-  spoton_crypt *s_crypt = s_crypts.value("messaging", 0);
+  spoton_crypt *s_crypt1 = s_crypts.value("messaging", 0);
 
-  if(!s_crypt)
+  if(!s_crypt1)
+    return;
+
+  spoton_crypt *s_crypt2 = s_crypts.value("signature", 0);
+
+  if(!s_crypt2)
     return;
 
   QByteArray publicKey;
   QByteArray myPublicKeyHash;
   bool ok = true;
 
-  publicKey = s_crypt->publicKey(&ok);
+  publicKey = s_crypt1->publicKey(&ok);
 
   if(!ok)
     return;
@@ -2259,7 +2264,7 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 	      QByteArray gemini;
 
 	      if(!query.value(0).isNull())
-		gemini = s_crypt->decrypted
+		gemini = s_crypt1->decrypted
 		  (QByteArray::fromBase64(query.
 					  value(0).
 					  toByteArray()),
@@ -2307,6 +2312,7 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 		    ** We want crypt to be destroyed as soon as possible.
 		    */
 
+		    QByteArray signature;
 		    spoton_crypt crypt(symmetricKeyAlgorithm,
 				       QString("sha512"),
 				       QByteArray(),
@@ -2315,9 +2321,15 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 				       0,
 				       QString(""));
 
-		    data = crypt.encrypted
-		      (myPublicKeyHash.toBase64() + "\n" +
-		       gemini.toBase64(), &ok);
+		    if(s_settings.value("gui/chatSignMessages", true).toBool())
+		      signature = s_crypt2->digitalSignature(myPublicKeyHash +
+							     gemini, &ok);
+
+		    if(ok)
+		      data = crypt.encrypted
+			(myPublicKeyHash.toBase64() + "\n" +
+			 gemini.toBase64() + "\n" +
+			 signature.toBase64(), &ok);
 
 		    if(ok)
 		      {

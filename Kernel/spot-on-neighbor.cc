@@ -1481,7 +1481,7 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 		    {
 		      QList<QByteArray> list(data.split('\n'));
 
-		      if(list.size() == 2)
+		      if(list.size() == 3)
 			{
 			  for(int i = 0; i < list.size(); i++)
 			    list.replace
@@ -1489,7 +1489,29 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 
 			  if(spoton_misc::
 			     isAcceptedParticipant(list.value(0)))
-			    saveGemini(list.value(0), list.value(1));
+			    {
+			      if(spoton_kernel::s_settings.
+				 value("gui/chatAcceptSignedMessagesOnly",
+				       true).toBool())
+				{
+				  QByteArray signature(list.value(2));
+
+				  if(!spoton_misc::
+				     isValidSignature(list.value(0) +
+						      list.value(1),
+						      list.value(0),
+						      list.value(2)))
+					{
+					  spoton_misc::logError
+					    ("spoton_neighbor::"
+					     "process0000a(): invalid "
+					     "signature.");
+					  return;
+					}
+				}
+
+			      saveGemini(list.value(0), list.value(1));
+			    }
 			}
 		      else
 			{
