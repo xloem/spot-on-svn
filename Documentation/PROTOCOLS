@@ -158,9 +158,9 @@ Symmetric Key
 {
 0 - Requester's Sha-512 Hash (Base-64)
 EOL
-1 - Message (Base-64)
+1 - Random Message (Base-64)
 EOL
-2 - Requester's Message Signature (Base-64)
+2 - Signature (Base-64)
 }
 EOL
 {
