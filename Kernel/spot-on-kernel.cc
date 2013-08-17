@@ -108,7 +108,12 @@ static void sig_handler(int signum)
   libspoton_handle_t libspotonHandle;
 
   if(libspoton_init(sharedPath.toStdString().c_str(),
-		    &libspotonHandle) == LIBSPOTON_ERROR_NONE)
+		    &libspotonHandle,
+		    65536) == LIBSPOTON_ERROR_NONE) /*
+						    ** We don't need
+						    ** the stored secure
+						    ** memory size here.
+						    */
 #ifdef Q_OS_WIN32
     libspoton_deregister_kernel(_getpid(), &libspotonHandle);
 #else
@@ -166,6 +171,25 @@ int main(int argc, char *argv[])
   act.sa_flags = 0;
   sigaction(SIGPIPE, &act, (struct sigaction *) 0);
 #endif
+  QCoreApplication qapplication(argc, argv);
+
+  QCoreApplication::setApplicationName("Spot-On");
+  QCoreApplication::setOrganizationName("Spot-On");
+  QCoreApplication::setOrganizationDomain("spot-on.sf.net");
+  QCoreApplication::setApplicationVersion(SPOTON_VERSION_STR);
+  QSettings::setPath(QSettings::IniFormat, QSettings::UserScope,
+		     spoton_misc::homePath());
+  QSettings::setDefaultFormat(QSettings::IniFormat);
+
+  QSettings settings;
+
+  if(!settings.contains("kernel/gcryctl_init_secmem"))
+    settings.setValue("kernel/gcryctl_init_secmem", 65536);
+
+  int integer = settings.value("kernel/gcryctl_init_secmem", 65536).toInt();
+
+  if(integer < 65536)
+    integer = 65536;
 
   QString sharedPath(spoton_misc::homePath() + QDir::separator() +
 		     "shared.db");
@@ -173,7 +197,8 @@ int main(int argc, char *argv[])
   libspoton_handle_t libspotonHandle;
 
   if((err = libspoton_init(sharedPath.toStdString().c_str(),
-			   &libspotonHandle)) == LIBSPOTON_ERROR_NONE)
+			   &libspotonHandle,
+			   integer)) == LIBSPOTON_ERROR_NONE)
     err = libspoton_register_kernel(QCoreApplication::applicationPid(),
 				    false, // Do not force registration.
 				    &libspotonHandle);
@@ -182,15 +207,6 @@ int main(int argc, char *argv[])
 
   if(err == LIBSPOTON_ERROR_NONE)
     {
-      QCoreApplication qapplication(argc, argv);
-
-      QCoreApplication::setApplicationName("Spot-On");
-      QCoreApplication::setOrganizationName("Spot-On");
-      QCoreApplication::setOrganizationDomain("spot-on.sf.net");
-      QCoreApplication::setApplicationVersion(SPOTON_VERSION_STR);
-      QSettings::setPath(QSettings::IniFormat, QSettings::UserScope,
-			 spoton_misc::homePath());
-      QSettings::setDefaultFormat(QSettings::IniFormat);
       s_kernel = new spoton_kernel();
       return qapplication.exec();
     }
@@ -436,7 +452,9 @@ void spoton_kernel::cleanup(void)
   libspoton_handle_t libspotonHandle;
 
   if(libspoton_init(sharedPath.toStdString().c_str(),
-		    &libspotonHandle) == LIBSPOTON_ERROR_NONE)
+		    &libspotonHandle,
+		    s_settings.value("kernel/gcryctl_init_secmem",
+				     65536).toInt()) == LIBSPOTON_ERROR_NONE)
     libspoton_deregister_kernel(QCoreApplication::applicationPid(),
 				&libspotonHandle);
 
@@ -827,7 +845,10 @@ void spoton_kernel::checkForTermination(void)
       libspoton_handle_t libspotonHandle;
 
       if((err = libspoton_init(sharedPath.toStdString().c_str(),
-			       &libspotonHandle)) == LIBSPOTON_ERROR_NONE)
+			       &libspotonHandle,
+			       s_settings.value("kernel/gcryctl_init_secmem",
+						65536).toInt())) ==
+	 LIBSPOTON_ERROR_NONE)
 	registered = QCoreApplication::applicationPid() ==
 	  libspoton_registered_kernel_pid(&libspotonHandle, &err);
 

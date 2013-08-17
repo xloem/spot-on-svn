@@ -71,6 +71,12 @@ int main(int argc, char *argv[])
   QSettings::setPath(QSettings::IniFormat, QSettings::UserScope,
                      spoton_misc::homePath());
   QSettings::setDefaultFormat(QSettings::IniFormat);
+
+  QSettings settings;
+
+  if(!settings.contains("gui/gcryctl_init_secmem"))
+    settings.setValue("gui/gcryctl_init_secmem", 65536);
+
   Q_UNUSED(new spoton());
   return qapplication.exec();
 }
@@ -917,10 +923,10 @@ spoton::spoton(void):QMainWindow()
     button->setToolTip(tr("Broadcast"));
 
   show();
-  QApplication::processEvents();
+  update();
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   m_sb.status->setText(tr("Preparing databases. Please be patient."));
-  QApplication::processEvents();
+  update();
   spoton_misc::prepareDatabases();
   m_sb.status->clear();
   QApplication::restoreOverrideCursor();
@@ -2047,7 +2053,9 @@ void spoton::slotDeactivateKernel(void)
   libspoton_handle_t libspotonHandle;
 
   if(libspoton_init(sharedPath.toStdString().c_str(),
-		    &libspotonHandle) == LIBSPOTON_ERROR_NONE)
+		    &libspotonHandle,
+		    m_settings.value("gui/gcryctl_init_secmem",
+				     65536).toInt()) == LIBSPOTON_ERROR_NONE)
     libspoton_deregister_kernel
       (libspoton_registered_kernel_pid(&libspotonHandle, 0),
        &libspotonHandle);
@@ -2071,7 +2079,9 @@ void spoton::slotGeneralTimerTimeout(void)
   pidPalette.setColor(m_ui.pid->backgroundRole(), color);
 
   if(libspoton_init(sharedPath.toStdString().c_str(),
-		    &libspotonHandle) == LIBSPOTON_ERROR_NONE)
+		    &libspotonHandle,
+		    m_settings.value("gui/gcryctl_init_secmem",
+				     65536).toInt()) == LIBSPOTON_ERROR_NONE)
     {
       libspoton_error_t err = LIBSPOTON_ERROR_NONE;
       pid_t pid = 0;
@@ -2521,7 +2531,7 @@ void spoton::slotSetPassphrase(void)
 
   m_sb.status->setText
     (tr("Generating a derived key. Please be patient."));
-  QApplication::processEvents();
+  update();
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   QByteArray salt;
@@ -2553,7 +2563,7 @@ void spoton::slotSetPassphrase(void)
 	{
 	  m_sb.status->setText
 	    (tr("Re-encoding public key pair 1 of 3. Please be patient."));
-	  QApplication::processEvents();
+	  update();
 	  spoton_crypt::reencodeRSAKeys
 	    (m_ui.cipherType->currentText(),
 	     derivedKey,
@@ -2569,7 +2579,7 @@ void spoton::slotSetPassphrase(void)
 	      m_sb.status->setText
 		(tr("Re-encoding public key pair 2 of 3. "
 		    "Please be patient."));
-	      QApplication::processEvents();
+	      update();
 	      spoton_crypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
 		 derivedKey,
@@ -2586,7 +2596,7 @@ void spoton::slotSetPassphrase(void)
 	      m_sb.status->setText
 		(tr("Re-encoding public key pair 3 of 3. "
 		    "Please be patient."));
-	      QApplication::processEvents();
+	      update();
 	      spoton_crypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
 		 derivedKey,
@@ -2607,7 +2617,7 @@ void spoton::slotSetPassphrase(void)
 	       << "url";
 
 	  m_sb.status->setText(tr("Generating public key pairs."));
-	  QApplication::processEvents();
+	  update();
 
 	  for(int i = 0; i < list.size(); i++)
 	    {
@@ -2615,7 +2625,7 @@ void spoton::slotSetPassphrase(void)
 		(tr("Generating public key pair %1 of %2. "
 		    "Please be patient.").
 		 arg(i + 1).arg(list.size()));
-	      QApplication::processEvents();
+	      update();
 
 	      spoton_crypt crypt
 		(m_ui.cipherType->currentText(),
@@ -2715,7 +2725,7 @@ void spoton::slotSetPassphrase(void)
 	    {
 	      m_sb.status->setText
 		(tr("Initializing country_inclusion.db."));
-	      QApplication::processEvents();
+	      update();
 	      spoton_misc::populateCountryDatabase(m_crypt);
 	      m_sb.status->clear();
 	    }
@@ -2835,7 +2845,7 @@ void spoton::slotValidatePassphrase(void)
 	       "signature");
 	    m_sb.status->setText
 	      (tr("Initializing country_inclusion.db."));
-	    QApplication::processEvents();
+	    update();
 	    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	    m_sb.status->clear();
 	    QApplication::restoreOverrideCursor();
@@ -3952,7 +3962,7 @@ void spoton::countriesToggle(const bool state)
     return;
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-  QApplication::processEvents();
+  update();
 
   QString connectionName("");
 

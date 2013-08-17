@@ -65,6 +65,9 @@
 40.  Use strong random bytes for status message keys.
 41.  Use QVariant(QVariant::ByteArray), or equivalent, when attempting
      to store null database entries.
+42.  Removed QApplication::processEvents().
+43.  Added gui/gcryctl_init_secmem and kernel/gcryctl_init_secmem to
+     the INI file.
 
 0.01
 

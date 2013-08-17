@@ -1637,6 +1637,23 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 256;
 
   settings["gui/saltLength"] = integer;
+  integer = qAbs(settings.value("gui/gcryctl_init_secmem", 65536).toInt(&ok));
+
+  if(!ok)
+    integer = 65536;
+  else if(integer < 65536)
+    integer = 65536;
+
+  settings["gui/gcryctl_init_secmem"] = integer;
+  integer = qAbs(settings.value("kernel/gcryctl_init_secmem",
+				65536).toInt(&ok));
+
+  if(!ok)
+    integer = 65536;
+  else if(integer < 65536)
+    integer = 65536;
+
+  settings["kernel/gcryctl_init_secmem"] = integer;
 }
 
 QSqlDatabase spoton_misc::database(QString &connectionName)
