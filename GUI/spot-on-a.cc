@@ -1015,10 +1015,10 @@ void spoton::slotAddListener(void)
 
 	    if(protocol == "IPv4")
 	      {
-		ip = digits.value(0) + "." +
-		  digits.value(1) + "." +
-		  digits.value(2) + "." +
-		  digits.value(3);
+		ip = QString::number(digits.value(0).toInt()) + "." +
+		  QString::number(digits.value(1).toInt()) + "." +
+		  QString::number(digits.value(2).toInt()) + "." +
+		  QString::number(digits.value(3).toInt());
 		ip.remove("...");
 	      }
 	    else
@@ -1186,10 +1186,10 @@ void spoton::slotAddNeighbor(void)
 
 		if(protocol == "IPv4")
 		  {
-		    ip = digits.value(0) + "." +
-		      digits.value(1) + "." +
-		      digits.value(2) + "." +
-		      digits.value(3);
+		    ip = QString::number(digits.value(0).toInt()) + "." +
+		      QString::number(digits.value(1).toInt()) + "." +
+		      QString::number(digits.value(2).toInt()) + "." +
+		      QString::number(digits.value(3).toInt());
 		    ip.remove("...");
 		  }
 		else
