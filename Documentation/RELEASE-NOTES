@@ -68,6 +68,7 @@
 41.  Use QVariant(QVariant::ByteArray), or equivalent, when attempting
      to store null database entries.
 42.  Removed QApplication::processEvents().
+43.  Optional signatures added to various communication protocols.
 
 0.01
 
