@@ -31,6 +31,8 @@
 22.  Modified most of spot-on-crypt.cc so that functions that return
      values return empty values on failures.
 23.  Removed senseless resizing in spoton_crypt::decrypted().
+24.  Added gui/gcryctl_init_secmem and kernel/gcryctl_init_secmem to
+     the INI file.
 25.  The digital signature that's created during e-mail retrieval has
      been modified so that the signature is generated from a random
      message.
@@ -66,8 +68,6 @@
 41.  Use QVariant(QVariant::ByteArray), or equivalent, when attempting
      to store null database entries.
 42.  Removed QApplication::processEvents().
-43.  Added gui/gcryctl_init_secmem and kernel/gcryctl_init_secmem to
-     the INI file.
 
 0.01
 
