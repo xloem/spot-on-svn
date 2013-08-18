@@ -769,6 +769,7 @@ void spoton_neighbor::slotReadyRead(void)
 		emit scrambleRequest();
 
 	      if(messageType.isEmpty() ||
+		 messageType == "0040a" || messageType == "0040b" ||
 		 spoton_kernel::s_settings.value("gui/superEcho",
 						 false).toBool())
 		emit receivedMessage(originalData, m_id);
