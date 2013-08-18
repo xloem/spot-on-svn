@@ -2783,21 +2783,24 @@ void spoton::slotSetPassphrase(void)
 	 tr("Your passphrase and public key pairs have been recorded. "
 	    "You are now ready to use the full power of Spot-On. Enjoy!"));
 
-      QMessageBox mb(this);
+      if(QFileInfo(m_ui.kernelPath->text().trimmed()).isExecutable())
+	{
+	  QMessageBox mb(this);
 
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
-      mb.setAttribute(Qt::WA_MacMetalStyle, true);
+	  mb.setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
 #endif
-      mb.setIcon(QMessageBox::Question);
-      mb.setWindowTitle(tr("Spot-On: Question"));
-      mb.setWindowModality(Qt::WindowModal);
-      mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-      mb.setText(tr("Would you like the kernel to be activated?"));
+	  mb.setIcon(QMessageBox::Question);
+	  mb.setWindowTitle(tr("Spot-On: Question"));
+	  mb.setWindowModality(Qt::WindowModal);
+	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+	  mb.setText(tr("Would you like the kernel to be activated?"));
 
-      if(mb.exec() == QMessageBox::Yes)
-	slotActivateKernel();
+	  if(mb.exec() == QMessageBox::Yes)
+	    slotActivateKernel();
+	}
     }
 }
 
@@ -3047,19 +3050,31 @@ void spoton::slotShowContextMenu(const QPoint &point)
       else
 	action->setEnabled(false);
 
+      menu.addAction(QIcon(QString(":/%1/copy.png").
+			   arg(m_settings.value("gui/iconSet", "nouve").
+			       toString())),
+		     tr("&Copy Repleo to the clipboard buffer."),
+		     this, SLOT(slotCopyFriendshipBundle(void)));
+      menu.addSeparator();
       action = menu.addAction(tr("&Call participant."),
 			      this, SLOT(slotCallParticipant(void)));
+      action->setProperty("type", "calling");
 
       if(item && item->data(Qt::UserRole).toBool()) // Temporary friend?
 	action->setEnabled(false);
       else
 	action->setEnabled(true);
 
-      menu.addAction(QIcon(QString(":/%1/copy.png").
-			   arg(m_settings.value("gui/iconSet", "nouve").
-			       toString())),
-		     tr("&Copy Repleo to the clipboard buffer."),
-		     this, SLOT(slotCopyFriendshipBundle(void)));
+      action = menu.addAction(tr("&Terminate call."),
+			      this, SLOT(slotCallParticipant(void)));
+      action->setProperty("type", "terminating");
+
+      if(item && item->data(Qt::UserRole).toBool()) // Temporary friend?
+	action->setEnabled(false);
+      else
+	action->setEnabled(true);
+
+      menu.addSeparator();
       action = menu.addAction(tr("&Generate random Gemini (AES-256)."),
 			      this, SLOT(slotGenerateGeminiInChat(void)));
 
@@ -3068,6 +3083,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
       else
 	action->setEnabled(true);
 
+      menu.addSeparator();
       menu.addAction(QIcon(QString(":/%1/clear.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
@@ -4209,7 +4225,13 @@ void spoton::slotCallParticipant(void)
   else if(!m_kernelSocket.isEncrypted())
     return;
 
+  QAction *action = qobject_cast<QAction *> (sender());
+
+  if(!action)
+    return;
+
   QString oid("");
+  QString type(action->property("type").toString());
   int row = -1;
 
   if((row = m_ui.participants->currentRow()) >= 0)
@@ -4224,7 +4246,10 @@ void spoton::slotCallParticipant(void)
   if(oid.isEmpty())
     return;
 
-  slotGenerateGeminiInChat();
+  if(type == "calling")
+    slotGenerateGeminiInChat();
+  else
+    saveGemini(QByteArray(), oid);
 
   QByteArray message;
 

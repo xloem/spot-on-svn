@@ -2290,8 +2290,6 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 					  value(0).
 					  toByteArray()),
 		   &ok);
-	      else
-		ok = false;
 
 	      QByteArray keyInformation;
 	      QByteArray publicKey(query.value(1).toByteArray());

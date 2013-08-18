@@ -69,6 +69,8 @@
      to store null database entries.
 42.  Removed QApplication::processEvents().
 43.  Optional signatures added to various communication protocols.
+44.  Do not prompt for kernel activation if the kernel path does not represent
+     an executable.
 
 0.01 (07/27/2013)
 
