@@ -3426,6 +3426,16 @@
            </widget>
           </item>
           <item>
+           <widget class="QLabel" name="buildInformation">
+            <property name="text">
+             <string>Build Information</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="verticalSpacer_2">
             <property name="orientation">
              <enum>Qt::Vertical</enum>

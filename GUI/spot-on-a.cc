@@ -95,6 +95,10 @@ spoton::spoton(void):QMainWindow()
   m_neighborsLastModificationTime = QDateTime();
   m_participantsLastModificationTime = QDateTime();
   m_ui.setupUi(this);
+  m_ui.buildInformation->setText
+    (QString("Qt %1, %2-bit.").
+     arg(QT_VERSION_STR).
+     arg(QT_POINTER_SIZE * 8));
 #ifndef SPOTON_LINKED_WITH_LIBGEOIP
   m_ui.countries->setEnabled(false);
   m_ui.countries->setToolTip(tr("Spot-On was configured without "
