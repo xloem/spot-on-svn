@@ -1644,7 +1644,8 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 		       isValidSignature(senderPublicKeyHash1 +
 					recipientHash,
 					senderPublicKeyHash1,
-					list.value(2)))
+					QByteArray::
+					fromBase64(list.value(2))))
 		      {
 			spoton_misc::logError
 			  ("spoton_neighbor::"

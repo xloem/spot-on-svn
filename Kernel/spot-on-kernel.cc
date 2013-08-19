@@ -1837,7 +1837,8 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		      (myPublicKeyHash.toBase64() + "\n" +
 		       items.value(0).toBase64() + "\n" +
 		       items.value(1).toBase64() + "\n" +
-		       items.value(2).toBase64(), &ok);
+		       items.value(2).toBase64() + "\n" +
+		       signature.toBase64(), &ok);
 
 		  if(ok)
 		    messageCode = crypt.keyedHash
