@@ -186,7 +186,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_externalAddressDiscovererTimer.start(30000);
   m_keepAliveTimer.start(45000);
   m_lifetime.start(10 * 60 * 1000);
-  m_readTimer.setInterval(1500);
+  m_readTimer.start(1500);
   m_timer.start(2500);
   QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 }
@@ -634,11 +634,20 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 
 void spoton_neighbor::slotReadyRead(void)
 {
-  m_data.append(readAll());
+  QByteArray data(readAll());
 
-  if(m_data.isEmpty())
-    spoton_misc::logError
-      ("spoton_neighbor::slotReadyRead(): m_data.isEmpty().");
+  if(m_useSsl)
+    if(!isEncrypted())
+      {
+	data.clear();
+	spoton_misc::logError
+	  ("spoton_neighbor::slotReadyRead(): "
+	   "m_useSsl is true, however, isEncrypted() is false. "
+	   "Purging read data.");
+      }
+
+  if(!data.isEmpty())
+    m_data.append(data);
 
   if(m_data.contains(spoton_send::EOM))
     {
@@ -912,6 +921,9 @@ void spoton_neighbor::slotConnected(void)
 
   if(!m_keepAliveTimer.isActive())
     m_keepAliveTimer.start();
+
+  if(!m_readTimer.isActive())
+    m_readTimer.start();
 }
 
 void spoton_neighbor::savePublicKey(const QByteArray &keyType,
