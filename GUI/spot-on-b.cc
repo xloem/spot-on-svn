@@ -143,6 +143,8 @@ void spoton::slotReceivedKernelMessage(void)
 
 		  if(key == page->key())
 		    break;
+		  else
+		    page = 0;
 		}
 
 	      if(page)
