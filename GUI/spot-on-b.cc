@@ -3422,7 +3422,7 @@ void spoton::slotPublishedKeySizeChanged(const QString &text)
 
 void spoton::slotJoinBuzzChannel(void)
 {
-  QByteArray channel(m_ui.channel->text().trimmed().toLatin1());
+  QByteArray channel(m_ui.channel->text().trimmed().toUtf8());
 
   if(channel.isEmpty())
     return;
@@ -3460,12 +3460,7 @@ void spoton::slotJoinBuzzChannel(void)
 
   spoton_buzzpage *page = new spoton_buzzpage
     (&m_kernelSocket, channel, channelSalt, channelType,
-     id, this); /*
-		** Should channel
-		** names be
-		** converted to
-		** UTF-8?
-		*/
+     id, this);
 
   connect(&m_buzzStatusTimer,
 	  SIGNAL(timeout(void)),
@@ -3475,7 +3470,8 @@ void spoton::slotJoinBuzzChannel(void)
 	  SIGNAL(iconsChanged(void)),
 	  page,
 	  SLOT(slotSetIcons(void)));
-  m_ui.buzzTab->addTab(page, channel);
+  m_ui.buzzTab->addTab(page, QString::fromUtf8(channel.constData(),
+					       channel.length()));
   m_ui.buzzTab->setCurrentIndex(m_ui.buzzTab->count() - 1);
 
   if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)

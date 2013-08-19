@@ -1,4 +1,4 @@
-0.02
+0.02 (08/00/2013)
 
 1.   Listen for SSL mode changes on kernel sockets.
 2.   Abort plaintext kernel sockets.
@@ -71,6 +71,8 @@
 43.  Optional signatures added to various communication protocols.
 44.  Do not prompt for kernel activation if the kernel path does not represent
      an executable.
+45.  Corrected UTF-8 issues in Buzz channels.
+46.  Buzz channels will now accept UTF-8.
 
 0.01 (07/27/2013)
 

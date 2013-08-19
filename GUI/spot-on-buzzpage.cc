@@ -362,7 +362,8 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
       msg.append(tr("<i>%1 has joined %2.</i>").
 		 arg(QString::fromUtf8(name.constData(),
 				       name.length())).
-		 arg(m_channel.constData()));
+		 arg(QString::fromUtf8(m_channel.constData(),
+				       m_channel.length())));
       ui.messages->append(msg);
       ui.messages->verticalScrollBar()->setValue
 	(ui.messages->verticalScrollBar()->maximum());
@@ -437,7 +438,8 @@ void spoton_buzzpage::slotStatusTimeout(void)
 		     toString("[hh:mm<font color=grey>:ss</font>] "));
 		  msg.append(tr("<i>%1 has left %2.</i>").
 			     arg(item->text()).
-			     arg(m_channel.constData()));
+			     arg(QString::fromUtf8(m_channel.constData(),
+						   m_channel.length())));
 		  ui.messages->append(msg);
 		  ui.messages->verticalScrollBar()->setValue
 		    (ui.messages->verticalScrollBar()->maximum());
