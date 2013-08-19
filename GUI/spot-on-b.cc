@@ -154,18 +154,9 @@ void spoton::slotReceivedKernelMessage(void)
 		    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
 		  if(list.size() == 2)
-		    {
-		      if(page->userStatus(list))
-			if(m_ui.tab->currentIndex() != 0)
-			  m_sb.buzz->setVisible(true);
-		    }
+		    page->userStatus(list);
 		  else if(list.size() == 3)
-		    {
-		      page->appendMessage(hash, list);
-
-		      if(m_ui.tab->currentIndex() != 0)
-			m_sb.buzz->setVisible(true);
-		    }
+		    page->appendMessage(hash, list);
 		}
 	    }
 	  else if(data.startsWith("message_"))
@@ -3447,6 +3438,10 @@ void spoton::slotJoinBuzzChannel(void)
 	  SIGNAL(timeout(void)),
 	  page,
 	  SLOT(slotSendStatus(void)));
+  connect(page,
+	  SIGNAL(changed(void)),
+	  this,
+	  SLOT(slotBuzzChanged(void)));
   connect(this,
 	  SIGNAL(iconsChanged(void)),
 	  page,
@@ -3595,4 +3590,10 @@ void spoton::purgeMessagingCache(void)
     }
 
   m_messagingCacheMutex.unlock();
+}
+
+void spoton::slotBuzzChanged(void)
+{
+  if(m_ui.tab->currentIndex() != 0)
+    m_sb.buzz->setVisible(true);
 }

@@ -55,7 +55,7 @@ class spoton_buzzpage: public QWidget
   QByteArray channelSalt(void) const;
   QByteArray channelType(void) const;
   QByteArray key(void) const;
-  bool userStatus(const QList<QByteArray> &list);
+  void userStatus(const QList<QByteArray> &list);
   void appendMessage(const QByteArray &hash,
 		     const QList<QByteArray> &list);
 
@@ -85,6 +85,9 @@ class spoton_buzzpage: public QWidget
   void slotSendStatus(void);
   void slotSetIcons(void);
   void slotStatusTimeout(void);
+
+ signals:
+  void changed(void);
 };
 
 #endif

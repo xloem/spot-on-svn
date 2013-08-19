@@ -280,6 +280,7 @@ void spoton_buzzpage::appendMessage(const QByteArray &hash,
   ui.messages->append(msg);
   ui.messages->verticalScrollBar()->setValue
     (ui.messages->verticalScrollBar()->maximum());
+  emit changed();
 }
 
 void spoton_buzzpage::slotSendStatus(void)
@@ -319,28 +320,26 @@ void spoton_buzzpage::slotSendStatus(void)
     m_kernelSocket->flush();
 }
 
-bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
+void spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 {
   if(list.size() != 2)
-    return false;
+    return;
 
   QByteArray id
     (list.value(1).mid(0, spoton_common::BUZZ_MAXIMUM_ID_LENGTH).trimmed());
 
   if(id == m_id)
-    return false;
+    return;
 
   QByteArray name
     (list.value(0).mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
   QList<QTableWidgetItem *> items
     (ui.clients->findItems(id, Qt::MatchExactly));
-  bool changed = false;
 
   ui.clients->setSortingEnabled(false);
 
   if(items.isEmpty())
     {
-      changed = true;
       ui.clients->setRowCount(ui.clients->rowCount() + 1);
 
       QTableWidgetItem *item = 0;
@@ -367,6 +366,7 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
       ui.messages->append(msg);
       ui.messages->verticalScrollBar()->setValue
 	(ui.messages->verticalScrollBar()->maximum());
+      emit changed();
     }
   else
     {
@@ -376,8 +376,6 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 	{
 	  if(item->text().toUtf8() != name)
 	    {
-	      changed = true;
-
 	      QString msg("");
 
 	      msg.append
@@ -392,6 +390,7 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 		(ui.messages->verticalScrollBar()->maximum());
 	      item->setText(QString::fromUtf8(name.constData(),
 					      name.length()));
+	      emit changed();
 	    }
 
 	  /*
@@ -409,7 +408,6 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
   ui.clients->setSortingEnabled(true);
   ui.clients->resizeColumnToContents(0);
   ui.clients->horizontalHeader()->setStretchLastSection(true);
-  return changed;
 }
 
 void spoton_buzzpage::slotStatusTimeout(void)
@@ -443,6 +441,7 @@ void spoton_buzzpage::slotStatusTimeout(void)
 		  ui.messages->append(msg);
 		  ui.messages->verticalScrollBar()->setValue
 		    (ui.messages->verticalScrollBar()->maximum());
+		  emit changed();
 		}
 
 	      ui.clients->removeRow(i);
