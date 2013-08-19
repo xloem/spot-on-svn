@@ -82,7 +82,7 @@
      if the values are represented as such. For example, 192.168.178.015
      is interpreted as 192.168.178.13. Spot-On shall interpret IPv4 user
      input as is.
-50.  Corrected status notifications of Buzz channels.
+50.  Corrected status notifications of Buzz channel activity.
 
 0.01 (07/27/2013)
 
