@@ -481,6 +481,23 @@ void spoton_gui_server::slotReceivedBuzzMessage
   message.append(data.toBase64()); // Message
   message.append("_");
   message.append(pair.first.toBase64()); // Key
+  message.append("_");
+
+  QByteArray hash;
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("messaging", 0);
+
+  if(s_crypt)
+    hash = spoton_crypt::keyedHash
+      (list.value(0),
+       QByteArray(s_crypt->symmetricKey(),
+		  s_crypt->symmetricKeyLength()), "sha512", &ok);
+  else
+    hash = spoton_crypt::sha512Hash(hash, &ok);
+
+  if(!ok)
+    return;
+
+  message.append(hash.toBase64());
   message.append("\n");
 
   foreach(QSslSocket *socket, findChildren<QSslSocket *> ())

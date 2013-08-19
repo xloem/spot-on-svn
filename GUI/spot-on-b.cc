@@ -118,12 +118,13 @@ void spoton::slotReceivedKernelMessage(void)
 
 	      QList<QByteArray> list(data.split('_'));
 
-	      if(list.size() != 2)
+	      if(list.size() != 3)
 		continue;
 
 	      for(int i = 0; i < list.size(); i++)
 		list.replace(i, QByteArray::fromBase64(list.at(i)));
 
+	      QByteArray hash(list.value(2));
 	      QByteArray key(list.value(1));
 
 	      /*
@@ -160,26 +161,6 @@ void spoton::slotReceivedKernelMessage(void)
 		    }
 		  else if(list.size() == 3)
 		    {
-		      QByteArray hash;
-		      bool ok = true;
-
-		      if(m_crypt)
-			hash = spoton_crypt::keyedHash
-			  (data,
-			   QByteArray(m_crypt->symmetricKey(),
-				      m_crypt->symmetricKeyLength()),
-			   "sha512", &ok);
-		      else
-			hash = spoton_crypt::sha512Hash(hash, &ok);
-
-		      if(!ok)
-			{
-			  hash = spoton_crypt::weakRandomBytes(64);
-			  spoton_misc::logError
-			    ("spoton::slotReceivedKernelMessage(): "
-			     "hash failure. Using random bytes.");
-			}
-
 		      page->appendMessage(hash, list);
 
 		      if(m_ui.tab->currentIndex() != 0)
