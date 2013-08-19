@@ -1341,23 +1341,19 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 				  if(spoton_kernel::s_settings.
 				     value("gui/chatAcceptSignedMessagesOnly",
 					   true).toBool())
-				    {
-				      QByteArray signature(list.value(3));
-
-				      if(!spoton_misc::
-					 isValidSignature(list.value(0) +
-							  list.value(1) +
-							  list.value(2),
-							  list.value(0),
-							  list.value(3)))
-					{
-					  spoton_misc::logError
-					    ("spoton_neighbor::"
-					     "process0000(): invalid "
-					     "signature.");
-					  return;
-					}
-				    }
+				    if(!spoton_misc::
+				       isValidSignature(list.value(0) +
+							list.value(1) +
+							list.value(2),
+							list.value(0),
+							list.value(3)))
+				      {
+					spoton_misc::logError
+					  ("spoton_neighbor::"
+					   "process0000(): invalid "
+					   "signature.");
+					return;
+				      }
 
 				  QByteArray hash
 				    (s_crypt->
@@ -1508,22 +1504,18 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 			      if(spoton_kernel::s_settings.
 				 value("gui/chatAcceptSignedMessagesOnly",
 				       true).toBool())
-				{
-				  QByteArray signature(list.value(2));
-
-				  if(!spoton_misc::
-				     isValidSignature(list.value(0) +
-						      list.value(1),
-						      list.value(0),
-						      list.value(2)))
-					{
-					  spoton_misc::logError
-					    ("spoton_neighbor::"
-					     "process0000a(): invalid "
-					     "signature.");
-					  return;
-					}
-				}
+				if(!spoton_misc::
+				   isValidSignature(list.value(0) +
+						    list.value(1),
+						    list.value(0),
+						    list.value(2)))
+				  {
+				    spoton_misc::logError
+				      ("spoton_neighbor::"
+				       "process0000a(): invalid "
+				       "signature.");
+				    return;
+				  }
 
 			      saveGemini(list.value(0), list.value(1));
 			    }
@@ -1639,18 +1631,34 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	    {
 	      QList<QByteArray> list(data.split('\n'));
 
-	      if(list.size() == 2)
+	      if(list.size() == 3)
 		{
 		  senderPublicKeyHash1 = QByteArray::fromBase64
 		    (list.value(0));
 		  recipientHash = QByteArray::fromBase64(list.value(1));
+
+		  if(spoton_kernel::s_settings.
+		     value("gui/emailAcceptSignedMessagesOnly",
+			   true).toBool())
+		    if(!spoton_misc::
+		       isValidSignature(senderPublicKeyHash1 +
+					recipientHash,
+					senderPublicKeyHash1,
+					list.value(2)))
+		      {
+			spoton_misc::logError
+			  ("spoton_neighbor::"
+			   "process0001a(): invalid "
+			   "signature.");
+			return;
+		      }
 		}
 	      else
 		{
 		  spoton_misc::logError
 		    (QString("spoton_neighbor::process0001a(): "
 			     "received irregular data. "
-			     "Expecting 2 "
+			     "Expecting 3 "
 			     "entries, "
 			     "received %1.").arg(list.size()));
 		  return;
@@ -1697,6 +1705,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 		      QByteArray computedMessageCode;
 		      QByteArray message;
 		      QByteArray name;
+		      QByteArray signature;
 		      QByteArray subject;
 		      spoton_crypt crypt(symmetricKeyAlgorithm,
 					 QString("sha512"),
@@ -1726,7 +1735,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 			{
 			  QList<QByteArray> list(data.split('\n'));
 
-			  if(list.size() == 4)
+			  if(list.size() == 5)
 			    {
 			      senderPublicKeyHash2 =
 				QByteArray::fromBase64(list.value(0));
@@ -1736,13 +1745,15 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 				QByteArray::fromBase64(list.value(2));
 			      message =
 				QByteArray::fromBase64(list.value(3));
+			      signature =
+				QByteArray::fromBase64(list.value(4));
 			    }
 			  else
 			    {
 			      spoton_misc::logError
 				(QString("spoton_neighbor::process0001a(): "
 					 "received irregular data. "
-					 "Expecting 4 "
+					 "Expecting 5 "
 					 "entries, "
 					 "received %1.").arg(list.size()));
 			      return;
@@ -1761,7 +1772,8 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 				      senderPublicKeyHash2,
 				      name,
 				      subject,
-				      message);
+				      message,
+				      signature);
 			  return;
 			}
 		    }
@@ -1884,7 +1896,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 		    {
 		      QList<QByteArray> list(data.split('\n'));
 
-		      if(list.size() == 4)
+		      if(list.size() == 5)
 			{
 			  for(int i = 0; i < list.size(); i++)
 			    list.replace
@@ -1895,14 +1907,15 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 				      list.value(0),
 				      list.value(1),
 				      list.value(2),
-				      list.value(3));
+				      list.value(3),
+				      list.value(4));
 			}
 		      else
 			{
 			  spoton_misc::logError
 			    (QString("spoton_neighbor::process0001b(): "
 				     "received irregular data. "
-				     "Expecting 4 "
+				     "Expecting 5 "
 				     "entries, "
 				     "received %1.").arg(list.size()));
 			  return;
@@ -2324,23 +2337,19 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 				  if(spoton_kernel::s_settings.
 				     value("gui/chatAcceptSignedMessagesOnly",
 					   true).toBool())
-				    {
-				      QByteArray signature(list.value(3));
-
-				      if(!spoton_misc::
-					 isValidSignature(list.value(0) +
-							  list.value(1) +
-							  list.value(2),
-							  list.value(0),
-							  list.value(3)))
-					{
-					  spoton_misc::logError
-					    ("spoton_neighbor::"
-					     "process0013(): invalid "
-					     "signature.");
-					  return;
-					}
-				    }
+				    if(!spoton_misc::
+				       isValidSignature(list.value(0) +
+							list.value(1) +
+							list.value(2),
+							list.value(0),
+							list.value(3)))
+				      {
+					spoton_misc::logError
+					  ("spoton_neighbor::"
+					   "process0013(): invalid "
+					   "signature.");
+					return;
+				      }
 
 				  saveParticipantStatus
 				    (list.value(1),
@@ -3001,15 +3010,30 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 				  const QByteArray &senderPublicKeyHash,
 				  const QByteArray &name,
 				  const QByteArray &subject,
-				  const QByteArray &message)
+				  const QByteArray &message,
+				  const QByteArray &signature)
 {
-  spoton_crypt *s_crypt = 0;
-
-  if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("messaging", 0);
 
   if(!s_crypt)
     return;
+
+  if(spoton_kernel::s_settings.
+     value("gui/emailAcceptSignedMessagesOnly", true).toBool())
+    if(!spoton_misc::
+       isValidSignature(senderPublicKeyHash +
+			name +
+			subject +
+			message,
+			senderPublicKeyHash,
+			signature))
+      {
+	spoton_misc::logError
+	  ("spoton_neighbor::"
+	   "storeLetter: invalid "
+	   "signature.");
+	return;
+      }
 
   /*
   ** We need to remember that the information here may have been
@@ -3019,6 +3043,8 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 
   if(!spoton_misc::isAcceptedParticipant(senderPublicKeyHash))
     return;
+
+  
 
   bool goldbugSet = false;
   bool ok = true;

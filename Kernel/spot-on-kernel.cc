@@ -1376,9 +1376,10 @@ void spoton_kernel::slotStatusTimerExpired(void)
 				       QString(""));
 
 		    if(s_settings.value("gui/chatSignMessages", true).toBool())
-		      signature = s_crypt2->digitalSignature(myPublicKeyHash +
-							     name +
-							     status, &ok);
+		      signature = s_crypt2->digitalSignature
+			(myPublicKeyHash +
+			 name +
+			 status, &ok);
 
 		    if(ok)
 		      data = crypt.encrypted
@@ -1633,12 +1634,14 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 				 const QByteArray &subject,
 				 const qint64 mailOid)
 {
-  if(!s_crypts.contains("messaging"))
+  spoton_crypt *s_crypt1 = s_crypts.value("messaging", 0);
+
+  if(!s_crypt1)
     return;
 
-  spoton_crypt *s_crypt = s_crypts["messaging"];
+  spoton_crypt *s_crypt2 = s_crypts.value("signature", 0);
 
-  if(!s_crypt)
+  if(!s_crypt2)
     return;
 
   /*
@@ -1653,7 +1656,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
   QByteArray myPublicKey;
   bool ok = true;
 
-  myPublicKey = s_crypt->publicKey(&ok);
+  myPublicKey = s_crypt1->publicKey(&ok);
 
   if(!ok)
     return;
@@ -1731,6 +1734,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	      if(ok)
 		{
+		  QByteArray signature;
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
 				     QString("sha512"),
 				     QByteArray(),
@@ -1739,9 +1743,16 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 				     0,
 				     QString(""));
 
-		  data1 = crypt.encrypted
-		    (myPublicKeyHash.toBase64() + "\n" +
-		     recipientHash.toBase64(), &ok);
+		  if(s_settings.value("gui/emailSignMessages",
+				      true).toBool())
+		    signature = s_crypt2->digitalSignature
+		      (myPublicKeyHash + recipientHash, &ok);
+
+		  if(ok)
+		    data1 = crypt.encrypted
+		      (myPublicKeyHash.toBase64() + "\n" +
+		       recipientHash.toBase64() + "\n" +
+		       signature.toBase64(), &ok);
 		}
 
 	      if(!ok)
@@ -1804,6 +1815,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	      if(ok)
 		{
+		  QByteArray signature;
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
 				     QString("sha512"),
 				     QByteArray(),
@@ -1812,11 +1824,20 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 				     0,
 				     QString(""));
 
-		  data2 = crypt.encrypted
-		    (myPublicKeyHash.toBase64() + "\n" +
-		     items.value(0).toBase64() + "\n" +
-		     items.value(1).toBase64() + "\n" +
-		     items.value(2).toBase64(), &ok);
+		  if(s_settings.value("gui/emailSignMessages",
+				      true).toBool())
+		    signature = s_crypt2->digitalSignature
+		      (myPublicKeyHash +
+		       items.value(0) +
+		       items.value(1) +
+		       items.value(2), &ok);
+
+		  if(ok)
+		    data2 = crypt.encrypted
+		      (myPublicKeyHash.toBase64() + "\n" +
+		       items.value(0).toBase64() + "\n" +
+		       items.value(1).toBase64() + "\n" +
+		       items.value(2).toBase64(), &ok);
 
 		  if(ok)
 		    messageCode = crypt.keyedHash
