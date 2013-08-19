@@ -73,8 +73,8 @@
      an executable.
 45.  Corrected UTF-8 issues in Buzz channels.
 46.  Buzz channels will now accept UTF-8.
-47.  The haveged package may increase the entropy on a Linux system. Highly
-     recommended.
+47.  The haveged package may increase the entropy on FreeBSD and Linux
+     systems. Highly recommended.
 
 0.01 (07/27/2013)
 
