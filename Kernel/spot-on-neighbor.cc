@@ -151,10 +151,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  this,
 	  SLOT(slotModeChanged(QSslSocket::SslMode)));
   connect(this,
-	  SIGNAL(readyRead(void)),
-	  this,
-	  SLOT(slotReadyRead(void)));
-  connect(this,
 	  SIGNAL(sslErrors(const QList<QSslError> &)),
 	  this,
 	  SLOT(slotSslErrors(const QList<QSslError> &)));
@@ -162,22 +158,26 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(ipAddressDiscovered(const QHostAddress &)),
 	  this,
 	  SLOT(slotExternalAddressDiscovered(const QHostAddress &)));
-  connect(&m_keepAliveTimer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotSendKeepAlive(void)));
-  connect(&m_timer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotTimeout(void)));
-  connect(&m_lifetime,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotLifetimeExpired(void)));
   connect(&m_externalAddressDiscovererTimer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotDiscoverExternalAddress(void)));
+  connect(&m_keepAliveTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotSendKeepAlive(void)));
+  connect(&m_lifetime,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotLifetimeExpired(void)));
+  connect(&m_readTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotReadyRead(void)));
+  connect(&m_timer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotTimeout(void)));
 
   if(m_useSsl)
     startServerEncryption();
@@ -186,6 +186,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_externalAddressDiscovererTimer.start(30000);
   m_keepAliveTimer.start(45000);
   m_lifetime.start(10 * 60 * 1000);
+  m_readTimer.setInterval(1500);
   m_timer.start(2500);
   QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 }
@@ -321,10 +322,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SLOT(slotProxyAuthenticationRequired(const QNetworkProxy &,
 					       QAuthenticator *)));
   connect(this,
-	  SIGNAL(readyRead(void)),
-	  this,
-	  SLOT(slotReadyRead(void)));
-  connect(this,
 	  SIGNAL(sslErrors(const QList<QSslError> &)),
 	  this,
 	  SLOT(slotSslErrors(const QList<QSslError> &)));
@@ -332,25 +329,30 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(ipAddressDiscovered(const QHostAddress &)),
 	  this,
 	  SLOT(slotExternalAddressDiscovered(const QHostAddress &)));
-  connect(&m_keepAliveTimer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotSendKeepAlive(void)));
-  connect(&m_timer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotTimeout(void)));
-  connect(&m_lifetime,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotLifetimeExpired(void)));
   connect(&m_externalAddressDiscovererTimer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotDiscoverExternalAddress(void)));
+  connect(&m_keepAliveTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotSendKeepAlive(void)));
+  connect(&m_lifetime,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotLifetimeExpired(void)));
+  connect(&m_readTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotReadyRead(void)));
+  connect(&m_timer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotTimeout(void)));
   m_externalAddressDiscovererTimer.setInterval(30000);
   m_keepAliveTimer.setInterval(45000);
   m_lifetime.start(10 * 60 * 1000);
+  m_readTimer.setInterval(1500);
   m_timer.start(2500);
 }
 

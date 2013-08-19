@@ -85,6 +85,7 @@ class spoton_neighbor: public QSslSocket
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_keepAliveTimer;
   QTimer m_lifetime;
+  QTimer m_readTimer;
   QTimer m_timer;
   QUuid m_receivedUuid;
   bool m_isUserDefined;
