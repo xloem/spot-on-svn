@@ -1860,7 +1860,7 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
      spoton_crypt::saltedPassphraseHash(s_settings.value("gui/hashType",
 							 "sha512").toString(),
 					passphrase,
-					salt, error).toHex())
+					salt, error))
     if(error.isEmpty())
       {
 	QByteArray key

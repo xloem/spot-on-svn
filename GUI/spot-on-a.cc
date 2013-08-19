@@ -2762,9 +2762,9 @@ void spoton::slotSetPassphrase(void)
       m_settings["gui/hashType"] = m_ui.hashType->currentText();
       m_settings["gui/iterationCount"] = m_ui.iterationCount->value();
       m_settings["gui/rsaKeySize"] = m_ui.rsaKeySize->currentText().toInt();
-      m_settings["gui/salt"] = salt.toHex();
+      m_settings["gui/salt"] = salt;
       m_settings["gui/saltLength"] = m_ui.saltLength->value();
-      m_settings["gui/saltedPassphraseHash"] = saltedPassphraseHash.toHex();
+      m_settings["gui/saltedPassphraseHash"] = saltedPassphraseHash;
 
       QSettings settings;
 
@@ -2810,14 +2810,14 @@ void spoton::slotValidatePassphrase(void)
   QByteArray saltedPassphraseHash;
   QString error("");
 
-  salt = QByteArray::fromHex(m_settings.value("gui/salt", "").toByteArray());
+  salt = m_settings.value("gui/salt", "").toByteArray();
   saltedPassphraseHash = m_settings.value("gui/saltedPassphraseHash", "").
     toByteArray();
 
   if(saltedPassphraseHash ==
      spoton_crypt::saltedPassphraseHash(m_ui.hashType->currentText(),
 					m_ui.passphrase->text(),
-					salt, error).toHex())
+					salt, error))
     if(error.isEmpty())
       {
 	QByteArray key

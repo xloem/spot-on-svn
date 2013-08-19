@@ -176,7 +176,7 @@ void spoton_buzzpage::slotSendMessage(void)
     (QDateTime::currentDateTime().
      toString("[hh:mm<font color=grey>:ss</font>] "));
   message.append(tr("<b>me:</b> "));
-  message.append(ui.message->toPlainText().trimmed());
+  message.append(ui.message->toPlainText().trimmed().toUtf8());
   ui.messages->append(message);
   ui.messages->verticalScrollBar()->setValue
     (ui.messages->verticalScrollBar()->maximum());
@@ -342,7 +342,8 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 
       QTableWidgetItem *item = 0;
 
-      item = new QTableWidgetItem(name.constData());
+      item = new QTableWidgetItem(QString::fromUtf8(name.constData(),
+						    name.length()));
       ui.clients->setItem(ui.clients->rowCount() - 1, 0, item);
       item = new QTableWidgetItem(id.constData());
       ui.clients->setItem(ui.clients->rowCount() - 1, 1, item);
@@ -356,7 +357,8 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 	(QDateTime::currentDateTime().
 	 toString("[hh:mm<font color=grey>:ss</font>] "));
       msg.append(tr("<i>%1 has joined %2.</i>").
-		 arg(name.constData()).
+		 arg(QString::fromUtf8(name.constData(),
+				       name.length())).
 		 arg(m_channel.constData()));
       ui.messages->append(msg);
       ui.messages->verticalScrollBar()->setValue
@@ -368,7 +370,7 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 
       if(item)
 	{
-	  if(item->text() != name.constData())
+	  if(item->text().toUtf8() != name)
 	    {
 	      changed = true;
 
@@ -379,11 +381,13 @@ bool spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 		 toString("[hh:mm<font color=grey>:ss</font>] "));
 	      msg.append(tr("<i>%1 is now known as %2.</i>").
 			 arg(item->text()).
-			 arg(name.constData()));
+			 arg(QString::fromUtf8(name.constData(),
+					       name.length())));
 	      ui.messages->append(msg);
 	      ui.messages->verticalScrollBar()->setValue
 		(ui.messages->verticalScrollBar()->maximum());
-	      item->setText(name.constData());
+	      item->setText(QString::fromUtf8(name.constData(),
+					      name.length()));
 	    }
 
 	  /*
