@@ -1586,6 +1586,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
       QByteArray messageCode(list.value(4));
       QByteArray recipientHash;
       QByteArray senderPublicKeyHash1;
+      QByteArray signature;
       QByteArray symmetricKey;
       QByteArray symmetricKeyAlgorithm;
 
@@ -1636,6 +1637,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 		  senderPublicKeyHash1 = QByteArray::fromBase64
 		    (list.value(0));
 		  recipientHash = QByteArray::fromBase64(list.value(1));
+		  signature = QByteArray::fromBase64(list.value(2));
 
 		  if(spoton_kernel::s_settings.
 		     value("gui/emailAcceptSignedMessagesOnly",
@@ -1644,8 +1646,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 		       isValidSignature(senderPublicKeyHash1 +
 					recipientHash,
 					senderPublicKeyHash1,
-					QByteArray::
-					fromBase64(list.value(2))))
+					signature))
 		      {
 			spoton_misc::logError
 			  ("spoton_neighbor::"
@@ -1788,11 +1789,29 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 					     false).toBool())
 	    if(spoton_misc::isAcceptedParticipant(recipientHash))
 	      if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
-		/*
-		** Store the letter in the post office!
-		*/
+		{
+		  if(spoton_kernel::s_settings.
+		     value("gui/coAcceptSignedMessagesOnly",
+			   true).toBool())
+		    if(!spoton_misc::
+		       isValidSignature(senderPublicKeyHash1 +
+					recipientHash,
+					senderPublicKeyHash1,
+					signature))
+		      {
+			spoton_misc::logError
+			  ("spoton_neighbor::"
+			   "process0001a(): invalid "
+			   "signature.");
+			return;
+		      }
 
-		storeLetter(list, recipientHash);
+		  /*
+		  ** Store the letter in the post office!
+		  */
+
+		  storeLetter(list, recipientHash);
+		}
 	}
     }
   else
