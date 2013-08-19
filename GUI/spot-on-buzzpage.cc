@@ -168,15 +168,15 @@ void spoton_buzzpage::slotSendMessage(void)
     return;
 
   QByteArray name;
-  QByteArray message;
   QByteArray sendMethod;
+  QString message;
   QSettings settings;
 
   message.append
     (QDateTime::currentDateTime().
      toString("[hh:mm<font color=grey>:ss</font>] "));
   message.append(tr("<b>me:</b> "));
-  message.append(ui.message->toPlainText().trimmed().toUtf8());
+  message.append(ui.message->toPlainText().trimmed());
   ui.messages->append(message);
   ui.messages->verticalScrollBar()->setValue
     (ui.messages->verticalScrollBar()->maximum());
@@ -191,28 +191,31 @@ void spoton_buzzpage::slotSendMessage(void)
   if(name.isEmpty())
     name = "unknown";
 
-  message.clear();
-  message.append("buzz_");
-  message.append(m_key.toBase64());
-  message.append("_");
-  message.append(m_channelType.toBase64());
-  message.append("_");
-  message.append(name.toBase64());
-  message.append("_");
-  message.append(m_id.toBase64());
-  message.append("_");
-  message.append(ui.message->toPlainText().trimmed().toUtf8().
-		 toBase64());
-  message.append("_");
-  message.append(sendMethod.toBase64());
-  message.append('\n');
+  {
+    QByteArray message;
 
-  if(m_kernelSocket->write(message.constData(),
-			   message.length()) != message.length())
-    spoton_misc::logError
-      ("spoton_buzzpage::slotSendMessage(): write() failure.");
-  else
-    m_kernelSocket->flush();
+    message.append("buzz_");
+    message.append(m_key.toBase64());
+    message.append("_");
+    message.append(m_channelType.toBase64());
+    message.append("_");
+    message.append(name.toBase64());
+    message.append("_");
+    message.append(m_id.toBase64());
+    message.append("_");
+    message.append(ui.message->toPlainText().trimmed().toUtf8().
+		   toBase64());
+    message.append("_");
+    message.append(sendMethod.toBase64());
+    message.append('\n');
+
+    if(m_kernelSocket->write(message.constData(),
+			     message.length()) != message.length())
+      spoton_misc::logError
+	("spoton_buzzpage::slotSendMessage(): write() failure.");
+    else
+      m_kernelSocket->flush();
+  }
 
   ui.message->clear();
 }
