@@ -3110,8 +3110,8 @@ void spoton::slotKernelSocketState(void)
       else
 	m_sb.kernelstatus->setToolTip
 	  (tr("Connected insecurely to the kernel on port %1 "
-	      "from local port %2. Connections between the interface and "
-	      "the kernel prohibited.").
+	      "from local port %2. Communications between the interface and "
+	      "the kernel have been disabled.").
 	   arg(m_kernelSocket.peerPort()).
 	   arg(m_kernelSocket.localPort()));
 
