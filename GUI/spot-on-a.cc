@@ -96,9 +96,10 @@ spoton::spoton(void):QMainWindow()
   m_participantsLastModificationTime = QDateTime();
   m_ui.setupUi(this);
   m_ui.buildInformation->setText
-    (QString("Qt %1, %2-bit.").
+    (QString("Qt %1, %2-bit. OpenSSL is%3supported.").
      arg(QT_VERSION_STR).
-     arg(QT_POINTER_SIZE * 8));
+     arg(QT_POINTER_SIZE * 8).
+     arg(QSslSocket::supportsSsl() ? " " : " not "));
 #ifndef SPOTON_LINKED_WITH_LIBGEOIP
   m_ui.countries->setEnabled(false);
   m_ui.countries->setToolTip(tr("Spot-On was configured without "
