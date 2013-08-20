@@ -72,7 +72,7 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
       configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
       configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
 #if QT_VERSION >= 0x050000
-      configuration.setProtocol(QSsl::TlsV1_2);
+      configuration.setProtocol(QSsl::SecureProtocols);
 #elif QT_VERSION >= 0x040800
       configuration.setProtocol(QSsl::SecureProtocols);
 #else
@@ -573,8 +573,9 @@ void spoton_gui_server::slotModeChanged(QSslSocket::SslMode mode)
 			      "empty socket object.");
       else
 	{
-	  spoton_misc::logError("spoton_gui_server::slotModeChanged(): "
-				"plaintext mode. Disconnecting kernel socket.");
+	  spoton_misc::logError
+	    ("spoton_gui_server::slotModeChanged(): "
+	     "plaintext mode. Disconnecting kernel socket.");
 	  socket->abort();
 	}
     }

@@ -84,6 +84,7 @@
      is interpreted as 192.168.178.13. Spot-On shall interpret IPv4 user
      input as is.
 50.  Corrected notifications of Buzz activity.
+51.  Replaced QSsl::TlsV1_2 with QSsl::SecureProtocols for Qt 5.x.
 
 0.01 (07/27/2013)
 

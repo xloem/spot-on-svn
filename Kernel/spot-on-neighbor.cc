@@ -89,7 +89,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  if(!configuration.privateKey().isNull())
 	    {
 #if QT_VERSION >= 0x050000
-	      configuration.setProtocol(QSsl::TlsV1_2);
+	      configuration.setProtocol(QSsl::SecureProtocols);
 #elif QT_VERSION >= 0x040800
 	      configuration.setProtocol(QSsl::SecureProtocols);
 #else
@@ -255,7 +255,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
       if(!configuration.privateKey().isNull())
 	{
 #if QT_VERSION >= 0x050000
-	  configuration.setProtocol(QSsl::TlsV1_2);
+	  configuration.setProtocol(QSsl::SecureProtocols);
 #elif QT_VERSION >= 0x040800
 	  configuration.setProtocol(QSsl::SecureProtocols);
 #else
