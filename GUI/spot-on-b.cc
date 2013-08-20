@@ -3048,14 +3048,14 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 		if(i == 2 || i == 4)
 		  list.append
 		    (QByteArray::fromBase64(query.value(i).
-					    toByteArray()));
+					    toByteArray()).trimmed());
 		else
 		  list.append
 		    (m_crypt->decrypted(QByteArray::
 					fromBase64(query.
 						   value(i).
 						   toByteArray()),
-					&ok));
+					&ok).trimmed());
 
 		if(!ok)
 		  break;
@@ -3419,13 +3419,13 @@ void spoton::slotJoinBuzzChannel(void)
 
   QByteArray id;
 
-  if(m_buzzIds.contains(channel))
-    id = m_buzzIds[channel];
+  if(m_buzzIds.contains(channel + channelType))
+    id = m_buzzIds[channel + channelType];
   else
     {
       id = spoton_crypt::
 	strongRandomBytes(spoton_common::BUZZ_MAXIMUM_ID_LENGTH / 2).toHex();
-      m_buzzIds[channel] = id;
+      m_buzzIds[channel + channelType] = id;
     }
 
   m_ui.channel->clear();

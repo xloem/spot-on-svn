@@ -328,6 +328,10 @@ void spoton_buzzpage::userStatus(const QList<QByteArray> &list)
   QByteArray id
     (list.value(1).mid(0, spoton_common::BUZZ_MAXIMUM_ID_LENGTH).trimmed());
 
+  if(id.isEmpty())
+    id = spoton_crypt::
+      strongRandomBytes(spoton_common::BUZZ_MAXIMUM_ID_LENGTH / 2).toHex();
+
   if(id == m_id)
     return;
 
@@ -335,6 +339,9 @@ void spoton_buzzpage::userStatus(const QList<QByteArray> &list)
     (list.value(0).mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
   QList<QTableWidgetItem *> items
     (ui.clients->findItems(id, Qt::MatchExactly));
+
+  if(name.isEmpty())
+    name = "unknown";
 
   ui.clients->setSortingEnabled(false);
 

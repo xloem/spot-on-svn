@@ -841,8 +841,13 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 		"neighbor_oid) "
 		"VALUES (?, ?, ?, ?, ?)");
   query.bindValue(0, keyType.constData());
-  query.bindValue
-    (1, name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
+
+  if(name.isEmpty())
+    query.bindValue(1, "unknown");
+  else
+    query.bindValue
+      (1, name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
+
   query.bindValue(2, publicKey);
   query.bindValue
     (3, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());

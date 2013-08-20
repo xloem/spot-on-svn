@@ -3121,22 +3121,22 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 
 	if(ok)
 	  query.bindValue
-	    (3, s_crypt->keyedHash(message + subject, &ok).
-	     toBase64());
+	    (3, s_crypt->keyedHash(message.trimmed() + subject.trimmed(),
+				   &ok).toBase64());
 
-	if(!message.isEmpty())
+	if(!message.trimmed().isEmpty())
 	  if(ok)
 	    query.bindValue
-	      (4, s_crypt->encrypted(message, &ok).toBase64());
+	      (4, s_crypt->encrypted(message.trimmed(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
 	    (5, s_crypt->encrypted(QByteArray(), &ok).toBase64());
 
-	if(!name.isEmpty())
+	if(!name.trimmed().isEmpty())
 	  if(ok)
 	    query.bindValue
-	      (6, s_crypt->encrypted(name, &ok).toBase64());
+	      (6, s_crypt->encrypted(name.trimmed(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
