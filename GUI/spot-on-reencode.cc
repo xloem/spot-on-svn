@@ -57,7 +57,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   sb.status->setText
     (QObject::tr("Re-encoding email.db."));
-  sb.status->update();
+  sb.status->repaint();
   spoton_misc::prepareDatabases();
 
   {
@@ -217,7 +217,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   QSqlDatabase::removeDatabase(connectionName);
   sb.status->setText
     (QObject::tr("Re-encoding country_inclusion.db."));
-  sb.status->update();
+  sb.status->repaint();
   spoton_misc::prepareDatabases();
 
   {
@@ -303,7 +303,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   QSqlDatabase::removeDatabase(connectionName);
   sb.status->setText
     (QObject::tr("Re-encoding listeners.db."));
-  sb.status->update();
+  sb.status->repaint();
   spoton_misc::prepareDatabases();
 
   {
@@ -426,7 +426,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   QSqlDatabase::removeDatabase(connectionName);
   sb.status->setText
     (QObject::tr("Re-encoding neighbors.db."));
-  sb.status->update();
+  sb.status->repaint();
   spoton_misc::prepareDatabases();
 
   {

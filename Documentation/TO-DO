@@ -65,6 +65,7 @@ Completed Items
        spoton::slotKernelSocketState().
 43.    Simplify messages. Hide header information.
 44.    Local and long distance calling feature to limit PKI.
+45.    Add optional signatures for inbound and outbound traffic.
 
 Ignored Items
 
@@ -112,5 +113,4 @@ Remaining Items
 27.    QFSFileEngine::open: No file name specified: created from
        e-mail.
 28.    Support ECC.
-29.    Add optional signatures for inbound and outbound traffic.
-30.    Perform caling over geminis.
+29.    Perform calling over geminis.

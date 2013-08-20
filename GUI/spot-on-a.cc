@@ -310,6 +310,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  m_ui.friendInformation,
 	  SLOT(clear(void)));
+  connect(m_ui.action_ResetSpotOn,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotResetAll(void)));
   connect(m_ui.resetSpotOn,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -930,7 +934,7 @@ spoton::spoton(void):QMainWindow()
   update();
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   m_sb.status->setText(tr("Preparing databases. Please be patient."));
-  update();
+  m_sb.status->repaint();
   spoton_misc::prepareDatabases();
   m_sb.status->clear();
   QApplication::restoreOverrideCursor();
@@ -2535,7 +2539,7 @@ void spoton::slotSetPassphrase(void)
 
   m_sb.status->setText
     (tr("Generating a derived key. Please be patient."));
-  update();
+  m_sb.status->repaint();
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   QByteArray salt;
@@ -2567,7 +2571,7 @@ void spoton::slotSetPassphrase(void)
 	{
 	  m_sb.status->setText
 	    (tr("Re-encoding public key pair 1 of 3. Please be patient."));
-	  update();
+	  m_sb.status->repaint();
 	  spoton_crypt::reencodeRSAKeys
 	    (m_ui.cipherType->currentText(),
 	     derivedKey,
@@ -2583,7 +2587,7 @@ void spoton::slotSetPassphrase(void)
 	      m_sb.status->setText
 		(tr("Re-encoding public key pair 2 of 3. "
 		    "Please be patient."));
-	      update();
+	      m_sb.status->repaint();
 	      spoton_crypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
 		 derivedKey,
@@ -2600,7 +2604,7 @@ void spoton::slotSetPassphrase(void)
 	      m_sb.status->setText
 		(tr("Re-encoding public key pair 3 of 3. "
 		    "Please be patient."));
-	      update();
+	      m_sb.status->repaint();
 	      spoton_crypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
 		 derivedKey,
@@ -2621,7 +2625,7 @@ void spoton::slotSetPassphrase(void)
 	       << "url";
 
 	  m_sb.status->setText(tr("Generating public key pairs."));
-	  update();
+	  m_sb.status->repaint();
 
 	  for(int i = 0; i < list.size(); i++)
 	    {
@@ -2629,7 +2633,7 @@ void spoton::slotSetPassphrase(void)
 		(tr("Generating public key pair %1 of %2. "
 		    "Please be patient.").
 		 arg(i + 1).arg(list.size()));
-	      update();
+	      m_sb.status->repaint();
 
 	      spoton_crypt crypt
 		(m_ui.cipherType->currentText(),
@@ -2729,7 +2733,7 @@ void spoton::slotSetPassphrase(void)
 	    {
 	      m_sb.status->setText
 		(tr("Initializing country_inclusion.db."));
-	      update();
+	      m_sb.status->repaint();
 	      spoton_misc::populateCountryDatabase(m_crypt);
 	      m_sb.status->clear();
 	    }
@@ -2852,7 +2856,7 @@ void spoton::slotValidatePassphrase(void)
 	       "signature");
 	    m_sb.status->setText
 	      (tr("Initializing country_inclusion.db."));
-	    update();
+	    m_sb.status->repaint();
 	    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	    m_sb.status->clear();
 	    QApplication::restoreOverrideCursor();

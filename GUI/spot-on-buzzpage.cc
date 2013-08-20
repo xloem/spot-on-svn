@@ -346,6 +346,7 @@ void spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 
       item = new QTableWidgetItem(QString::fromUtf8(name.constData(),
 						    name.length()));
+      item->setToolTip(id.constData());
       ui.clients->setItem(ui.clients->rowCount() - 1, 0, item);
       item = new QTableWidgetItem(id.constData());
       ui.clients->setItem(ui.clients->rowCount() - 1, 1, item);

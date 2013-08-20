@@ -67,7 +67,8 @@
 40.  Use strong random bytes for status message keys.
 41.  Use QVariant(QVariant::ByteArray), or equivalent, when attempting
      to store null database entries.
-42.  Removed QApplication::processEvents().
+42.  Replaced QApplication::processEvents() with repaint(). processEvents()
+     may cause problems on older versions of Qt.
 43.  Optional signatures added to various communication protocols.
 44.  Do not prompt for kernel activation if the kernel path does not represent
      an executable.
