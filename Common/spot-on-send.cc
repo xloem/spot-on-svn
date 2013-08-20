@@ -39,7 +39,7 @@ QByteArray spoton_send::message0000(const QByteArray &message,
   if(sendMethod == ARTIFICIAL_GET)
     results.append("HTTP/1.1 200 OK\r\n");
   else
-    results.append("POST /echo/ HTTP/1.1\r\n");
+    results.append("POST HTTP/1.1\r\n");
 
   results.append
     ("Content-Type: application/x-www-form-urlencoded\r\n"
@@ -64,7 +64,7 @@ QByteArray spoton_send::message0000a(const QByteArray &message,
   if(sendMethod == ARTIFICIAL_GET)
     results.append("HTTP/1.1 200 OK\r\n");
   else
-    results.append("POST /echo/ HTTP/1.1\r\n");
+    results.append("POST HTTP/1.1\r\n");
 
   results.append
     ("Content-Type: application/x-www-form-urlencoded\r\n"
@@ -88,7 +88,7 @@ QByteArray spoton_send::message0001a(const QByteArray &message)
   QByteArray results;
 
   results.append
-    ("POST /echo/ HTTP/1.1\r\n"
+    ("POST HTTP/1.1\r\n"
      "Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
@@ -112,7 +112,7 @@ QByteArray spoton_send::message0001b(const QByteArray &message)
   QByteArray results;
 
   results.append
-    ("POST /echo/ HTTP/1.1\r\n"
+    ("POST HTTP/1.1\r\n"
      "Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
@@ -136,7 +136,7 @@ QByteArray spoton_send::message0002(const QByteArray &message)
   QByteArray results;
 
   results.append
-    ("POST /echo/ HTTP/1.1\r\n"
+    ("POST HTTP/1.1\r\n"
      "Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
@@ -160,7 +160,7 @@ QByteArray spoton_send::message0010(const QByteArray &message)
   QByteArray results;
 
   results.append
-    ("POST /echo/ HTTP/1.1\r\n"
+    ("POST HTTP/1.1\r\n"
      "Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
@@ -189,7 +189,7 @@ QByteArray spoton_send::message0011(const QByteArray &keyType,
   QByteArray results;
 
   results.append
-    ("POST /echo/ HTTP/1.1\r\n"
+    ("POST HTTP/1.1\r\n"
      "Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
@@ -222,7 +222,7 @@ QByteArray spoton_send::message0012(const QByteArray &message)
   QByteArray results;
 
   results.append
-    ("POST /echo/ HTTP/1.1\r\n"
+    ("POST HTTP/1.1\r\n"
      "Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
@@ -243,7 +243,7 @@ QByteArray spoton_send::message0013(const QByteArray &message)
   QByteArray results;
 
   results.append
-    ("POST /echo/ HTTP/1.1\r\n"
+    ("POST HTTP/1.1\r\n"
      "Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
@@ -264,7 +264,7 @@ QByteArray spoton_send::message0014(const QByteArray &uuid)
   QByteArray results;
 
   results.append
-    ("POST /echo/ HTTP/1.1\r\n"
+    ("POST HTTP/1.1\r\n"
      "Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
@@ -285,7 +285,7 @@ QByteArray spoton_send::message0015(void)
   QByteArray results;
 
   results.append
-    ("POST /echo/ HTTP/1.1\r\n"
+    ("POST HTTP/1.1\r\n"
      "Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
@@ -306,7 +306,7 @@ QByteArray spoton_send::message0030(const QByteArray &message)
   QByteArray results;
 
   results.append
-    ("POST /echo/ HTTP/1.1\r\n"
+    ("POST HTTP/1.1\r\n"
      "Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
@@ -329,7 +329,7 @@ QByteArray spoton_send::message0030(const QHostAddress &address,
   QByteArray results;
 
   results.append
-    ("POST /echo/ HTTP/1.1\r\n"
+    ("POST HTTP/1.1\r\n"
      "Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
@@ -356,7 +356,7 @@ QByteArray spoton_send::message0040a(const QByteArray &message)
   QByteArray results;
 
   results.append
-    ("POST /echo/ HTTP/1.1\r\n"
+    ("POST HTTP/1.1\r\n"
      "Content-Type: application/x-www-form-urlencoded\r\n"
      "Content-Length: %1\r\n"
      "\r\n"
@@ -381,7 +381,7 @@ QByteArray spoton_send::message0040b(const QByteArray &message,
   if(sendMethod == ARTIFICIAL_GET)
     results.append("HTTP/1.1 200 OK\r\n");
   else
-    results.append("POST /echo/ HTTP/1.1\r\n");
+    results.append("POST HTTP/1.1\r\n");
 
   results.append
     ("Content-Type: application/x-www-form-urlencoded\r\n"
