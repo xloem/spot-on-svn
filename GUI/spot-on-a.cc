@@ -3085,7 +3085,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(QIcon(QString(":/%1/clear.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
-		     tr("&Remove"),
+		     tr("&Remove participant(s)."),
 		     this, SLOT(slotRemoveParticipants(void)));
       menu.exec(m_ui.participants->mapToGlobal(point));
     }

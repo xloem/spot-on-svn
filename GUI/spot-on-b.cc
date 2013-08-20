@@ -2600,40 +2600,32 @@ void spoton::slotGeminiChanged(QTableWidgetItem *item)
 
 void spoton::slotGenerateGeminiInChat(void)
 {
-  if(!m_crypt)
+  int row = m_ui.participants->currentRow();
+
+  if(row < 0)
     return;
 
-  QModelIndexList list
-    (m_ui.participants->selectionModel()->selectedRows(1));
+  QTableWidgetItem *item1 = m_ui.participants->item(row, 1); // OID
+  QTableWidgetItem *item2 = m_ui.participants->item(row, 5); // Gemini
 
-  while(!list.isEmpty())
+  if(!item1 || !item2)
+    return;
+
+  QByteArray gemini
+    (spoton_crypt::
+     strongRandomBytes(spoton_crypt::cipherKeyLength("aes256")));
+
+  if(saveGemini(gemini.toBase64(), item1->text()))
     {
-      QTableWidgetItem *item1 =
-	m_ui.participants->item(list.first().row(), 1); // OID
-      QTableWidgetItem *item2 =
-	m_ui.participants->item(list.first().row(), 5); // Gemini
-
-      list.takeFirst();
-
-      if(!item1 || !item2)
-	continue;
-
-      QByteArray gemini
-	(spoton_crypt::
-	 strongRandomBytes(spoton_crypt::cipherKeyLength("aes256")));
-
-      if(saveGemini(gemini.toBase64(), item1->text()))
-	{
-	  disconnect(m_ui.participants,
-		     SIGNAL(itemChanged(QTableWidgetItem *)),
-		     this,
-		     SLOT(slotGeminiChanged(QTableWidgetItem *)));
-	  item2->setText(gemini.toBase64());
-	  connect(m_ui.participants,
-		  SIGNAL(itemChanged(QTableWidgetItem *)),
-		  this,
-		  SLOT(slotGeminiChanged(QTableWidgetItem *)));
-	}
+      disconnect(m_ui.participants,
+		 SIGNAL(itemChanged(QTableWidgetItem *)),
+		 this,
+		 SLOT(slotGeminiChanged(QTableWidgetItem *)));
+      item2->setText(gemini.toBase64());
+      connect(m_ui.participants,
+	      SIGNAL(itemChanged(QTableWidgetItem *)),
+	      this,
+	      SLOT(slotGeminiChanged(QTableWidgetItem *)));
     }
 }
 

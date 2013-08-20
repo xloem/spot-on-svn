@@ -85,11 +85,13 @@
      input as is.
 50.  Corrected notifications of Buzz activity.
 51.  Replaced QSsl::TlsV1_2 with QSsl::SecureProtocols for Qt 5.x.
-52.  Removed /echo/ from hypertext.
+52.  Removed /echo/ instances from various hypertexts.
 53.  spoton_listener::prepareNetworkInterface() must be called after
      an attempt of listen() is made. Otherwise, QTcpServer::serverAddress()
      will return an invalid address and cause the listener to exit
      prematurely.
+54.  Gemini creation shall now be applied per participant instead
+     of groups of participants.
 
 0.01 (07/27/2013)
 
