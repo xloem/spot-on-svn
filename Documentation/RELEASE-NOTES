@@ -1,4 +1,4 @@
-0.02 (08/00/2013)
+0.02 (08/22/2013)
 
 1.   Listen for SSL mode changes on kernel sockets.
 2.   Abort plaintext kernel sockets.
