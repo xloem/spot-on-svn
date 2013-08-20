@@ -2854,12 +2854,6 @@ void spoton::slotValidatePassphrase(void)
 	       m_ui.saltLength->value(),
 	       m_ui.iterationCount->value(),
 	       "signature");
-	    m_sb.status->setText
-	      (tr("Initializing country_inclusion.db."));
-	    m_sb.status->repaint();
-	    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-	    m_sb.status->clear();
-	    QApplication::restoreOverrideCursor();
 
 	    if(!m_tableTimer.isActive())
 	      m_tableTimer.start();
@@ -3116,7 +3110,8 @@ void spoton::slotKernelSocketState(void)
       else
 	m_sb.kernelstatus->setToolTip
 	  (tr("Connected insecurely to the kernel on port %1 "
-	      "from local port %2.").
+	      "from local port %2. Connections between the interface and "
+	      "the kernel prohibited.").
 	   arg(m_kernelSocket.peerPort()).
 	   arg(m_kernelSocket.localPort()));
 
@@ -3867,7 +3862,7 @@ void spoton::slotKernelSocketError(QAbstractSocket::SocketError error)
 {
   Q_UNUSED(error);
   spoton_misc::logError
-    (QString("spoton::slotError(): socket error (%1).").
+    (QString("spoton::slotKernelSocketError(): socket error (%1).").
      arg(m_kernelSocket.errorString()));
 }
 
@@ -3877,7 +3872,7 @@ void spoton::slotKernelSocketSslErrors(const QList<QSslError> &errors)
 
   for(int i = 0; i < errors.size(); i++)
     spoton_misc::logError
-      (QString("spoton::slotSslErrors(): "
+      (QString("spoton::slotKernelSocketSslErrors(): "
 	       "error (%1) occurred from %2:%3.").
        arg(errors.at(i).errorString()).
        arg(m_kernelSocket.peerAddress().isNull() ? m_kernelSocket.peerName() :
