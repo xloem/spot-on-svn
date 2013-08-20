@@ -83,7 +83,9 @@ class spoton_listener: public spoton_listener_tcp_server
 		  QObject *parent);
   ~spoton_listener();
   QHostAddress externalAddress(void) const;
+  QHostAddress serverAddress(void) const;
   quint16 externalPort(void) const;
+  quint16 serverPort(void) const;
 
  private:
   QHostAddress m_address;

@@ -588,6 +588,16 @@ void spoton_kernel::prepareListeners(void)
 		    {
 		      listener = m_listeners.value(id);
 
+		      /*
+		      ** Remember, deactivating the listener will not
+		      ** destroy it. We need to be able to listen() again.
+		      ** We must also be careful if we've never listened
+		      ** before because serverAddress() and serverPort()
+		      ** will certainly be undefined. Please notice
+		      ** that both methods return the values that
+		      ** were provided to the listener's constructor.
+		      */
+
 		      if(listener)
 			if(!listener->isListening())
 			  listener->listen(listener->serverAddress(),

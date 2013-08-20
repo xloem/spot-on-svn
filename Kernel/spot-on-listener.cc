@@ -161,8 +161,6 @@ void spoton_listener::slotTimeout(void)
   QString connectionName("");
   bool shouldDelete = false;
 
-  prepareNetworkInterface();
-
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
 
@@ -193,18 +191,15 @@ void spoton_listener::slotTimeout(void)
 			if(!listen(m_address, m_port))
 			  spoton_misc::logError
 			    (QString("spoton_listener::slotTimeout(): "
-				     "%1.").arg(errorString()));
+				     "listen() failure (%1).").
+			     arg(errorString()));
 			else
-			  {
-			    prepareNetworkInterface();
+			  /*
+			  ** Initial discovery of the external
+			  ** IP address.
+			  */
 
-			    /*
-			    ** Initial discovery of the external
-			    ** IP address.
-			    */
-
-			    m_externalAddress->discover();
-			  }
+			  m_externalAddress->discover();
 		      }
 
 		    if(isListening())
@@ -277,6 +272,13 @@ void spoton_listener::slotTimeout(void)
 			    "to delete listener.");
       deleteLater();
     }
+
+  /*
+  ** Retrieve the interface that this listener is using.
+  ** If the interface disappears, destroy the listener.
+  */
+
+  prepareNetworkInterface();
 
   if(isListening())
     if(!m_networkInterface || !(m_networkInterface->flags() &
@@ -744,7 +746,8 @@ void spoton_listener::prepareNetworkInterface(void)
       QList<QNetworkAddressEntry> addresses(list.at(i).addressEntries());
 
       for(int j = 0; j < addresses.size(); j++)
-	if(addresses.at(j).ip() == serverAddress())
+	if(addresses.at(j).ip() ==
+	   spoton_listener_tcp_server::serverAddress())
 	  {
 	    m_networkInterface = new QNetworkInterface(list.at(i));
 	    break;
@@ -845,4 +848,14 @@ quint16 spoton_listener::externalPort(void) const
   */
 
   return m_externalPort;
+}
+
+QHostAddress spoton_listener::serverAddress(void) const
+{
+  return m_address;
+}
+
+quint16 spoton_listener::serverPort(void) const
+{
+  return m_port;
 }
