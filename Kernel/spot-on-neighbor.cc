@@ -1248,10 +1248,13 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 			}
 		    }
 		  else
-		    spoton_misc::logError("spoton_neighbor::"
-					  "process0000(): "
-					  "computed message code does "
-					  "not match provided code.");
+		    {
+		      spoton_misc::logError("spoton_neighbor::"
+					    "process0000(): "
+					    "computed message code does "
+					    "not match provided code.");
+		      return;
+		    }
 		}
 	    }
 	  else
@@ -2264,10 +2267,13 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 			}
 		    }
 		  else
-		    spoton_misc::logError("spoton_neighbor::"
-					  "process0013(): "
-					  "computed message code does "
-					  "not match provided code.");
+		    {
+		      spoton_misc::logError("spoton_neighbor::"
+					    "process0013(): "
+					    "computed message code does "
+					    "not match provided code.");
+		      return;
+		    }
 		}
 	    }
 	  else
