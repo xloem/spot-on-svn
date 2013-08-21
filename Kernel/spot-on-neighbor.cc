@@ -3613,7 +3613,7 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 		      "public_key_hash = ?");
 
 	if(gemini.isNull())
-	  query.bindValue(0, QVariant(QVariant::ByteArray));
+	  query.bindValue(0, QVariant(QVariant::String));
 	else
 	  {
 	    spoton_crypt *s_crypt =
@@ -3622,7 +3622,7 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 	    if(s_crypt)
 	      query.bindValue(0, s_crypt->encrypted(gemini, &ok).toBase64());
 	    else
-	      query.bindValue(0, QVariant(QVariant::ByteArray));
+	      query.bindValue(0, QVariant(QVariant::String));
 	  }
 
 	query.bindValue

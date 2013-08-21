@@ -2649,13 +2649,13 @@ bool spoton::saveGemini(const QByteArray &gemini,
 		      "gemini = ? WHERE OID = ?");
 
 	if(gemini.isNull())
-	  query.bindValue(0, QVariant(QVariant::ByteArray));
+	  query.bindValue(0, QVariant(QVariant::String));
 	else
 	  {
 	    if(m_crypt)
 	      query.bindValue(0, m_crypt->encrypted(gemini, &ok).toBase64());
 	    else
-	      query.bindValue(0, QVariant(QVariant::ByteArray));
+	      query.bindValue(0, QVariant(QVariant::String));
 	  }
 
 	query.bindValue(1, oid);
