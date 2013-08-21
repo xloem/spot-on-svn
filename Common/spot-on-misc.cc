@@ -1467,7 +1467,7 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 			       address.scopeId()).toLatin1(), &ok).
 	     toBase64());
 
-	query.bindValue(8, 1);
+	query.bindValue(8, 1); // Sticky
 
 	if(ok)
 	  query.bindValue

@@ -552,7 +552,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
 				     neighbor->peerAddress().scopeId()).
 				    toLatin1(), &ok).toBase64());
 
-	    query.bindValue(8, 0);
+	    query.bindValue(8, 1); // Sticky
 
 	    if(ok)
 	      query.bindValue

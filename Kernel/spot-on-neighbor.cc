@@ -1355,12 +1355,12 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 					return;
 				      }
 
+				  saveParticipantStatus
+				    (list.value(1), list.value(0));
+
 				  QByteArray hash
 				    (s_crypt->
 				     keyedHash(originalData, &ok));
-
-				  saveParticipantStatus
-				    (list.value(1), list.value(0));
 
 				  if(!hash.isEmpty() &&
 				     !list.value(1).isEmpty() &&
