@@ -167,7 +167,7 @@ void spoton_misc::prepareDatabases(void)
 
 	query.exec
 	  ("CREATE TABLE IF NOT EXISTS friends_public_keys ("
-	   "gemini TEXT, "
+	   "gemini TEXT DEFAULT NULL, "
 	   "key_type TEXT NOT NULL DEFAULT 'messaging', "
 	   "name TEXT NOT NULL DEFAULT 'unknown', "
 	   "public_key TEXT NOT NULL, "
@@ -842,11 +842,16 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 		"VALUES (?, ?, ?, ?, ?)");
   query.bindValue(0, keyType.constData());
 
-  if(name.isEmpty())
+  if(keyType == "messaging" || keyType == "url")
+    {
+      if(name.isEmpty())
+	query.bindValue(1, "unknown");
+      else
+	query.bindValue
+	  (1, name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
+    }
+  else // Signature keys will be labeled as unknown.
     query.bindValue(1, "unknown");
-  else
-    query.bindValue
-      (1, name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
 
   query.bindValue(2, publicKey);
   query.bindValue
