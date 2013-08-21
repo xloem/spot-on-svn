@@ -93,10 +93,10 @@
 54.  Gemini creation shall now be applied per participant instead
      of groups of participants.
 55.  All new connections shall now have the stickies enabled by default.
-56.  The gemini field in the friends_public_keys table will now assume
-     a null value.
-57.  Signature keys in the friends_public_keys will be labeled as unknown
-     (name).
+56.  The gemini field in the friends_public_keys database table will
+     now assume a null value.
+57.  Signature keys in the friends_public_keys database table will be labeled
+     as unknown (name).
 
 0.01 (07/27/2013)
 
