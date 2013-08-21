@@ -114,3 +114,5 @@ Remaining Items
        e-mail.
 28.    Support ECC.
 29.    Perform calling over geminis.
+30.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
+31.    Remote kernel termination.
