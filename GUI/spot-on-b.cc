@@ -3393,7 +3393,7 @@ void spoton::slotJoinBuzzChannel(void)
   if(channel.isEmpty())
     return;
 
-  QByteArray channelSalt(m_ui.channelSalt->text().trimmed().toLatin1());
+  QByteArray channelSalt(m_ui.channelSalt->text().trimmed().toUtf8());
   QByteArray channelType(m_ui.channelType->currentText().toLatin1());
   bool found = false;
 

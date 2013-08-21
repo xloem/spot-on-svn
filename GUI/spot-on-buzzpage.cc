@@ -45,6 +45,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 				 const QByteArray &id,
 				 QWidget *parent):QWidget(parent)
 {
+  ui.setupUi(this);
   m_channel = channel.trimmed();
 
   if(m_channel.isEmpty())
@@ -108,7 +109,6 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 
   m_kernelSocket = kernelSocket;
   m_statusTimer.start(30000);
-  ui.setupUi(this);
   connect(&m_statusTimer,
 	  SIGNAL(timeout(void)),
 	  this,
