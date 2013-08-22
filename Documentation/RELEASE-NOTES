@@ -8,6 +8,8 @@
 4.   Corrected mnemonics.
 5.   New children of listeners must inherit the echo modes of the listeners.
      Corrected.
+6.   Corrected spoton_kernel::initializeSecurityContainers(). The passphrase
+     command-line option relies on the method.
 
 0.02 (08/22/2013)
 

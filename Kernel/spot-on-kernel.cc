@@ -1884,7 +1884,7 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
   QString error("");
   bool ok = false;
 
-  salt = QByteArray::fromHex(s_settings.value("gui/salt", "").toByteArray());
+  salt = s_settings.value("gui/salt", "").toByteArray();
   saltedPassphraseHash = s_settings.value("gui/saltedPassphraseHash", "").
     toByteArray();
 
