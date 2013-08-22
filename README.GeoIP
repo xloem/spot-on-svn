@@ -1,3 +1,3 @@
-The Windows version of Spot-On expects the GeoIP.data file to reside
+The Windows version of Spot-On expects the GeoIP.dat file to reside
 in the GeoIP directory. The GeoIP directory must be reside in the same
 directory as the executables.
