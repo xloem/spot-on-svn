@@ -1,3 +1,7 @@
+0.03
+
+1.   Bundled the Translations directory in the release files.
+
 0.02 (08/22/2013)
 
 1.   Listen for SSL mode changes on kernel sockets.
