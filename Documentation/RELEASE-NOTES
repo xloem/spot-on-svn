@@ -97,6 +97,9 @@
      now assume a null value.
 57.  Signature keys in the friends_public_keys database table will be labeled
      as unknown (name).
+58.  Corrected uses of QSqlQuery::isNull() and QByteArray::isNull().
+     QByteArray::isNull() instances have been replaced by
+     QByteArray::isEmpty().
 
 0.01 (07/27/2013)
 
