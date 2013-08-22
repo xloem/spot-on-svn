@@ -1326,7 +1326,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	      QByteArray gemini;
 	      bool ok = true;
 
-	      if(!query.value(0).isNull())
+	      if(!query.isNull(0))
 		gemini = s_crypt1->decrypted
 		  (QByteArray::fromBase64(query.
 					  value(0).
@@ -2316,7 +2316,7 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 	    {
 	      QByteArray gemini;
 
-	      if(!query.value(0).isNull())
+	      if(!query.isNull(0))
 		gemini = s_crypt1->decrypted
 		  (QByteArray::fromBase64(query.
 					  value(0).

@@ -2648,7 +2648,7 @@ bool spoton::saveGemini(const QByteArray &gemini,
 	query.prepare("UPDATE friends_public_keys SET "
 		      "gemini = ? WHERE OID = ?");
 
-	if(gemini.isNull())
+	if(gemini.isEmpty())
 	  query.bindValue(0, QVariant(QVariant::String));
 	else
 	  {

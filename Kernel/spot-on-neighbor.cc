@@ -2433,53 +2433,47 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
 
       QUuid uuid(data.constData());
 
-      if(uuid.isNull())
-	spoton_misc::logError
-	  ("spoton_neighbor::process0014(): empty UUID.");
-      else
+      m_receivedUuid = uuid;
+
+      if(m_receivedUuid.isNull())
+	m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
+
+      spoton_crypt *s_crypt = 0;
+
+      if(spoton_kernel::s_crypts.contains("messaging"))
+	s_crypt = spoton_kernel::s_crypts["messaging"];
+
+      if(s_crypt)
 	{
-	  m_receivedUuid = uuid;
+	  QString connectionName("");
 
-	  if(m_receivedUuid.isNull())
-	    m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
+	  {
+	    QSqlDatabase db = spoton_misc::database(connectionName);
 
-	  spoton_crypt *s_crypt = 0;
+	    db.setDatabaseName
+	      (spoton_misc::homePath() + QDir::separator() +
+	       "neighbors.db");
 
-	  if(spoton_kernel::s_crypts.contains("messaging"))
-	    s_crypt = spoton_kernel::s_crypts["messaging"];
-
-	  if(s_crypt)
-	    {
-	      QString connectionName("");
-
+	    if(db.open())
 	      {
-		QSqlDatabase db = spoton_misc::database(connectionName);
+		QSqlQuery query(db);
+		bool ok = true;
 
-		db.setDatabaseName
-		  (spoton_misc::homePath() + QDir::separator() +
-		   "neighbors.db");
+		query.prepare("UPDATE neighbors SET uuid = ? "
+			      "WHERE OID = ?");
+		query.bindValue
+		  (0, s_crypt->encrypted(uuid.toString().toLatin1(),
+					 &ok).toBase64());
+		query.bindValue(1, m_id);
 
-		if(db.open())
-		  {
-		    QSqlQuery query(db);
-		    bool ok = true;
-
-		    query.prepare("UPDATE neighbors SET uuid = ? "
-				  "WHERE OID = ?");
-		    query.bindValue
-		      (0, s_crypt->encrypted(uuid.toString().toLatin1(),
-					     &ok).toBase64());
-		    query.bindValue(1, m_id);
-
-		    if(ok)
-		      query.exec();
-		  }
-
-		db.close();
+		if(ok)
+		  query.exec();
 	      }
 
-	      QSqlDatabase::removeDatabase(connectionName);
-	    }
+	    db.close();
+	  }
+
+	  QSqlDatabase::removeDatabase(connectionName);
 	}
 
       resetKeepAlive();
@@ -2851,23 +2845,16 @@ void spoton_neighbor::slotSendUuid(void)
   QByteArray message;
   QUuid uuid(spoton_kernel::s_settings.value("gui/uuid").toString());
 
-  if(!uuid.isNull())
-    {
-      message = spoton_send::message0014(uuid.toString().toLatin1());
+  message = spoton_send::message0014(uuid.toString().toLatin1());
 
-      if(write(message.constData(), message.length()) !=
-	 message.length())
-	spoton_misc::logError
-	  ("spoton_neighbor::slotSendUuid(): write() error.");
-      else
-	{
-	  flush();
-	  resetKeepAlive();
-	}
-    }
+  if(write(message.constData(), message.length()) != message.length())
+    spoton_misc::logError
+      ("spoton_neighbor::slotSendUuid(): write() error.");
   else
-    spoton_misc::logError("spoton_neighbor::slotSendUuid(): "
-			  "empty UUID.");
+    {
+      flush();
+      resetKeepAlive();
+    }
 }
 
 void spoton_neighbor::saveExternalAddress(const QHostAddress &address,
@@ -3618,7 +3605,7 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 		      "WHERE neighbor_oid = -1 AND "
 		      "public_key_hash = ?");
 
-	if(gemini.isNull())
+	if(gemini.isEmpty())
 	  query.bindValue(0, QVariant(QVariant::String));
 	else
 	  {

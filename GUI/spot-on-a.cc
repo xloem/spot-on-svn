@@ -1819,7 +1819,7 @@ void spoton::slotPopulateNeighbors(void)
 							 i <= 15) ||
 		       i == 18)
 		      {
-			if(query.value(i).isNull())
+			if(query.isNull(i))
 			  item = new QTableWidgetItem();
 			else
 			  {
@@ -3676,7 +3676,7 @@ void spoton::slotPopulateParticipants(void)
 		    {
 		      bool ok = true;
 
-		      if(query.value(i).isNull())
+		      if(query.isNull(i))
 			item = new QTableWidgetItem();
 		      else
 			item = new QTableWidgetItem
