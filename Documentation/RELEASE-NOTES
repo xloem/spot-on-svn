@@ -1,6 +1,13 @@
 0.03
 
-1.   Bundled the Translations directory in the release files.
+1.   Bundled the Translations directory in the OS X and Windows release
+     files.
+2.   Added brief tool tips to the Listeners and Neighbors tables.
+3.   Shortened Buzz Client tool tips. The tool tips shall include the
+     first and last sixteen characters of the IDs.
+4.   Corrected mnemonics.
+5.   New children of listeners must inherit the echo modes of the listeners.
+     Corrected.
 
 0.02 (08/22/2013)
 

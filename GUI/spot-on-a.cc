@@ -1497,6 +1497,50 @@ void spoton::slotPopulateListeners(void)
 	      {
 		m_ui.listeners->setRowCount(row + 1);
 
+		QString tooltip("");
+		bool ok = true;
+
+		tooltip = QString
+		  (tr("Status: %1\n"
+		      "SSL Key Size: %2\n"
+		      "Local IP: %3 Local Port: %4 Scope ID: %5\n"
+		      "External IP: %6\n"
+		      "Connections: %7\n"
+		      "Echo Mode: %8")).
+		  arg(query.value(1).toString()).
+		  arg(query.value(2).toString()).
+		  arg(m_crypt->decrypted(QByteArray::
+					 fromBase64(query.
+						    value(3).
+						    toByteArray()),
+					 &ok).
+		      constData()).
+		  arg(m_crypt->decrypted(QByteArray::
+					 fromBase64(query.
+						    value(4).
+						    toByteArray()),
+					 &ok).
+		      constData()).
+		  arg(m_crypt->decrypted(QByteArray::
+					 fromBase64(query.
+						    value(5).
+						    toByteArray()),
+					 &ok).
+		      constData()).
+		  arg(m_crypt->decrypted(QByteArray::
+					 fromBase64(query.
+						    value(7).
+						    toByteArray()),
+					 &ok).
+		      constData()).
+		  arg(query.value(9).toString()).
+		  arg(m_crypt->decrypted(QByteArray::
+					 fromBase64(query.
+						    value(11).
+						    toByteArray()),
+					 &ok).
+		      constData());
+
 		for(int i = 0; i < query.record().count(); i++)
 		  {
 		    QCheckBox *check = 0;
@@ -1515,6 +1559,7 @@ void spoton::slotPopulateListeners(void)
 
 			check->setProperty("oid", query.value(12));
 			check->setProperty("table_row", row);
+			check->setToolTip(tooltip);
 			connect(check,
 				SIGNAL(stateChanged(int)),
 				this,
@@ -1549,6 +1594,7 @@ void spoton::slotPopulateListeners(void)
 			box->addItem(tr("Unlimited"));
 			box->setMaximumWidth
 			  (box->fontMetrics().width(tr("Unlimited")) + 50);
+			box->setToolTip(tooltip);
 			m_ui.listeners->setCellWidget(row, i, box);
 
 			if(std::numeric_limits<int>::max() ==
@@ -1595,6 +1641,7 @@ void spoton::slotPopulateListeners(void)
 		      {
 			item->setFlags
 			  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+			item->setToolTip(tooltip);
 			m_ui.listeners->setItem(row, i, item);
 
 			if(i == 1)
@@ -1612,8 +1659,8 @@ void spoton::slotPopulateListeners(void)
 		QByteArray bytes2;
 		QByteArray bytes3;
 		QWidget *focusWidget = QApplication::focusWidget();
-		bool ok = true;
 
+		ok = true;
 		bytes1 = m_crypt->decrypted
 		  (QByteArray::fromBase64(query.value(3).toByteArray()),
 		   &ok);
@@ -1777,6 +1824,81 @@ void spoton::slotPopulateNeighbors(void)
 	      {
 		m_ui.neighbors->setRowCount(row + 1);
 
+		QString tooltip("");
+		bool ok = true;
+
+		tooltip = QString
+		  (tr("UUID: %1\n"
+		      "Status: %2\n"
+		      "SSL Key Size: %3\n"
+		      "Local IP: %4 Local Port: %5\n"
+		      "External IP: %6\n"
+		      "Country: %7 Remote IP: %8 Remote Port: %9 "
+		      "Scope ID: %10\n"
+		      "Proxy Hostname: %11 Proxy Port: %12\n"
+		      "Echo Mode: %13\n"
+		      "Communications Mode: %14")).
+		  arg(m_crypt->decrypted(QByteArray::
+					 fromBase64(query.
+						    value(1).
+						    toByteArray()),
+					 &ok).
+		      constData()).
+		  arg(query.value(2).toString()).
+		  arg(query.value(3).toString()).
+		  arg(query.value(5).toString()).
+		  arg(query.value(6).toString()).
+		  arg(m_crypt->decrypted(QByteArray::
+					 fromBase64(query.
+						    value(7).
+						    toByteArray()),
+					 &ok).
+		      constData()).
+		  arg(m_crypt->decrypted(QByteArray::
+					 fromBase64(query.
+						    value(9).
+						    toByteArray()),
+					 &ok).
+		      constData()).
+		  arg(m_crypt->decrypted(QByteArray::
+					 fromBase64(query.
+						    value(10).
+						    toByteArray()),
+					 &ok).
+		      constData()).
+		  arg(m_crypt->decrypted(QByteArray::
+					 fromBase64(query.
+						    value(11).
+						    toByteArray()),
+					 &ok).
+		      constData()).
+		  arg(m_crypt->decrypted(QByteArray::
+					 fromBase64(query.
+						    value(12).
+						    toByteArray()),
+					 &ok).
+		      constData()).
+		  arg(m_crypt->decrypted(QByteArray::
+					 fromBase64(query.
+						    value(14).
+						    toByteArray()),
+					 &ok).
+		      constData()).
+		  arg(m_crypt->decrypted(QByteArray::
+					 fromBase64(query.
+						    value(15).
+						    toByteArray()),
+					 &ok).
+		      constData()).
+		  arg(m_crypt->decrypted(QByteArray::
+					 fromBase64(query.
+						    value(18).
+						    toByteArray()),
+					 &ok).
+		      constData()).
+		  arg(query.value(19).toInt() == 1 ?
+		      "Secure" : "Insecure");
+
 		QCheckBox *check = 0;
 
 		check = new QCheckBox();
@@ -1887,6 +2009,7 @@ void spoton::slotPopulateNeighbors(void)
 			box->setProperty
 			  ("oid", query.value(query.record().count() - 1));
 			box->setProperty("table_row", row);
+			box->setToolTip(tooltip);
 			box->setValue(query.value(i).toInt());
 			connect(box,
 				SIGNAL(valueChanged(int)),
@@ -1912,20 +2035,14 @@ void spoton::slotPopulateNeighbors(void)
 			      item->setBackground(QBrush());
 
 			    if(isEncrypted)
-			      {
-				item->setIcon
-				  (QIcon(QString(":/%1/lock.png").
-					 arg(m_settings.
-					     value("gui/iconSet",
-						   "nouve").toString())));
-				item->setToolTip
-				  (tr("Connection is encrypted."));
-			      }
-			    else
-			      item->setToolTip
-				(tr("Connection is not encrypted."));
+			      item->setIcon
+				(QIcon(QString(":/%1/lock.png").
+				       arg(m_settings.
+					   value("gui/iconSet",
+						 "nouve").toString())));
 			  }
 
+			item->setToolTip(tooltip);
 			m_ui.neighbors->setItem(row, i, item);
 		      }
 		  }
@@ -1969,8 +2086,8 @@ void spoton::slotPopulateNeighbors(void)
 		QByteArray bytes4;
 		QByteArray bytes5;
 		QWidget *focusWidget = QApplication::focusWidget();
-		bool ok = true;
 
+		ok = true;
 		bytes1 = m_crypt->decrypted
 		  (QByteArray::fromBase64(query.value(columnREMOTE_IP).
 					  toByteArray()), &ok);

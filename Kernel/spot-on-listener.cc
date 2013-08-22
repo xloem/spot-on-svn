@@ -172,7 +172,8 @@ void spoton_listener::slotTimeout(void)
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT status_control, maximum_clients "
+	query.prepare("SELECT status_control, maximum_clients, "
+		      "echo_mode "
 		      "FROM listeners WHERE OID = ?");
 	query.bindValue(0, m_id);
 
@@ -180,7 +181,26 @@ void spoton_listener::slotTimeout(void)
 	  {
 	    if(query.next())
 	      {
+		QString echoMode("");
 		QString status(query.value(0).toString());
+		bool ok = true;
+		spoton_crypt *s_crypt =
+		  spoton_kernel::s_crypts.value("messaging", 0);
+
+		if(s_crypt)
+		  {
+		    echoMode = s_crypt->decrypted
+		      (QByteArray::
+		       fromBase64(query.
+				  value(2).
+				  toByteArray()),
+		       &ok).
+		      constData();
+
+		    if(ok)
+		      if(echoMode == "full" || echoMode == "half")
+			m_echoMode = echoMode;
+		  }
 
 		if(status == "offline")
 		  close();
