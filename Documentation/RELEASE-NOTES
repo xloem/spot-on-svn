@@ -9,7 +9,8 @@
 5.   New children of listeners must inherit the echo modes of the listeners.
      Corrected.
 6.   Corrected spoton_kernel::initializeSecurityContainers(). The passphrase
-     command-line option relies on the method.
+     command-line option relies on the method. Correction also applied
+     to version 0.02.
 7.   Log listen() errors in the kernel. If the kernel is not listening,
      issue listen() calls periodically.
 8.   Corrected kernel event loop. Correction also applied to version 0.02.
