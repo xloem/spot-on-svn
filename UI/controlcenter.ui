@@ -166,8 +166,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1189</width>
-                <height>569</height>
+                <width>1197</width>
+                <height>554</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -250,7 +250,7 @@
                         <bool>true</bool>
                        </property>
                        <property name="textInteractionFlags">
-                        <set>Qt::TextSelectableByMouse</set>
+                        <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
                        </property>
                       </widget>
                      </item>
@@ -2448,8 +2448,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1189</width>
-             <height>569</height>
+             <width>1105</width>
+             <height>348</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3520,7 +3520,7 @@
      <x>0</x>
      <y>0</y>
      <width>1219</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
