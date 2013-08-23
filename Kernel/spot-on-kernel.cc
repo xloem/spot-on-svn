@@ -171,6 +171,8 @@ int main(int argc, char *argv[])
   act.sa_flags = 0;
   sigaction(SIGPIPE, &act, (struct sigaction *) 0);
 #endif
+  QCoreApplication qapplication(argc, argv);
+
   QCoreApplication::setApplicationName("Spot-On");
   QCoreApplication::setOrganizationName("Spot-On");
   QCoreApplication::setOrganizationDomain("spot-on.sf.net");
@@ -205,8 +207,6 @@ int main(int argc, char *argv[])
 
   if(err == LIBSPOTON_ERROR_NONE)
     {
-      QCoreApplication qapplication(argc, argv);
-
       s_kernel = new spoton_kernel();
       return qapplication.exec();
     }
