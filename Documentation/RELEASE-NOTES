@@ -25,6 +25,7 @@
      contains plaintext data.
 14.  The spoton_crypt::decrypted() method will avoid decrypting empty data.
      The action will be considered successful.
+15.  Disable GeoIP-related widgets if Spot-On is not linked with libGeoIP.
 
 0.02 (08/22/2013)
 

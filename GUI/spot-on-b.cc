@@ -424,17 +424,23 @@ void spoton::slotSaveNodeName(void)
 void spoton::highlightPaths(void)
 {
   QColor color;
-  QFileInfo fileInfo(m_ui.geoipPath->text());
+  QFileInfo fileInfo;
   QPalette palette;
+
+#ifdef SPOTON_LINKED_WITH_LIBGEOIP
+  fileInfo.setFile(m_ui.geoipPath->text());
 
   if(fileInfo.isReadable() && fileInfo.size() > 0)
     color = QColor(144, 238, 144);
   else
     color = QColor(240, 128, 128); // Light coral!
+#else
+  color = QColor(240, 128, 128); // Light coral!
+#endif
 
   palette.setColor(m_ui.geoipPath->backgroundRole(), color);
   m_ui.geoipPath->setPalette(palette);
-  fileInfo = QFileInfo(m_ui.kernelPath->text());
+  fileInfo.setFile(m_ui.kernelPath->text());
 
 #if defined(Q_OS_MAC)
   if((fileInfo.isBundle() || fileInfo.isExecutable()) && fileInfo.size() > 0)

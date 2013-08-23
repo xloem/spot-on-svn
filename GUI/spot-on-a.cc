@@ -104,6 +104,15 @@ spoton::spoton(void):QMainWindow()
   m_ui.countries->setEnabled(false);
   m_ui.countries->setToolTip(tr("Spot-On was configured without "
 				"libGeoIP."));
+  m_ui.countriesToggle->setEnabled(false);
+  m_ui.countriesToggle->setToolTip(tr("Spot-On was configured without "
+				      "libGeoIP."));
+  m_ui.geoipPath->setEnabled(false);
+  m_ui.geoipPath->setToolTip(tr("Spot-On was configured without "
+				"libGeoIP."));
+  m_ui.selectGeoIP->setEnabled(false);
+  m_ui.selectGeoIP->setToolTip(tr("Spot-On was configured without "
+				  "libGeoIP."));
 #endif
 #ifndef SPOTON_LINKED_WITH_LIBPHONON
 #if 0
@@ -630,8 +639,10 @@ spoton::spoton(void):QMainWindow()
   else
     restoreGeometry(m_settings.value("gui/geometry").toByteArray());
 
+#ifdef SPOTON_LINKED_WITH_LIBGEOIP
   m_ui.geoipPath->setText
     (m_settings.value("gui/geoipPath", "").toString().trimmed());
+#endif
 
   if(m_settings.contains("gui/kernelPath") &&
      QFileInfo(m_settings.value("gui/kernelPath").toString().trimmed()).
@@ -689,8 +700,10 @@ spoton::spoton(void):QMainWindow()
   else
     m_ui.status->setCurrentIndex(3);
 
+#ifdef SPOTON_LINKED_WITH_LIBGEOIP
   if(!m_ui.geoipPath->text().isEmpty())
     m_ui.geoipPath->setToolTip(m_ui.geoipPath->text());
+#endif
 
   m_ui.kernelPath->setToolTip(m_ui.kernelPath->text());
   m_ui.buzzName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
