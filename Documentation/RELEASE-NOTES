@@ -10,6 +10,8 @@
      Corrected.
 6.   Corrected spoton_kernel::initializeSecurityContainers(). The passphrase
      command-line option relies on the method.
+7.   Log listen() errors in the kernel. If the kernel is not listening,
+     issue listen() calls periodically.
 
 0.02 (08/22/2013)
 

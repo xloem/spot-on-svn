@@ -101,7 +101,10 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
 spoton_gui_server::spoton_gui_server(QObject *parent):
   spoton_gui_server_tcp_server(parent)
 {
-  listen(QHostAddress("127.0.0.1"));
+  if(!listen(QHostAddress("127.0.0.1")))
+    spoton_misc::logError("spoton_gui_server::spoton_gui_server(): "
+			  "listen() failure. This is a serious problem!");
+
   connect(this,
 	  SIGNAL(modeChanged(QSslSocket::SslMode)),
 	  this,
@@ -414,6 +417,11 @@ void spoton_gui_server::slotReadyRead(void)
 
 void spoton_gui_server::slotTimeout(void)
 {
+  if(!isListening())
+    if(!listen(QHostAddress("127.0.0.1")))
+      spoton_misc::logError("spoton_gui_server::slotTimeout(): "
+			    "listen() failure. This is a serious problem!");
+
   QString connectionName("");
 
   {
