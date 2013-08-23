@@ -12,6 +12,7 @@
      command-line option relies on the method.
 7.   Log listen() errors in the kernel. If the kernel is not listening,
      issue listen() calls periodically.
+8.   Corrected kernel event loop. Correction also applied to version 0.02.
 
 0.02 (08/22/2013)
 
