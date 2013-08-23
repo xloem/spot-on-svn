@@ -11,8 +11,7 @@ CONFIG		+= app_bundle qt debug warn_on
 # The function gcry_kdf_derive() is available in version
 # 1.5.0 of the gcrypt library.
 
-DEFINES += SPOTON_GEOIP_DATA_FILE="'\"/Applications/Spot-On.d/Data/GeoIP.dat\"'" \
-	   SPOTON_LINKED_WITH_LIBGEOIP
+DEFINES += SPOTON_LINKED_WITH_LIBGEOIP
 
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of libSpotOn.
@@ -159,7 +158,7 @@ QMAKE_STRIP	= echo
 
 spoton.path		= /Applications/Spot-On.d/Spot-On.app
 spoton.files		= Spot-On.app/*
-libgeoip_data_install.path = /Applications/Spot-On.d/Data
+libgeoip_data_install.path = /Applications/Spot-On.d/GeoIP
 libgeoip_data_install.files = ../../GeoIP-1.5.1/data/GeoIP.dat
 libgeoip_install.path   = .
 libgeoip_install.extra  = cp ../../libGeoIP/Libraries.osx64/libGeoIP.1.dylib ./Spot-On.app/Contents/Frameworks/libGeoIP.1.dylib && install_name_tool -change ../../libGeoIP/Libraries.osx64/libGeoIP.1.dylib @executable_path/../Frameworks/libGeoIP.1.dylib ./Spot-On.app/Contents/MacOS/Spot-On

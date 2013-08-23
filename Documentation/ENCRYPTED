@@ -22,6 +22,7 @@ public_key
 listeners.db:
 
 certificate
+echo_mode
 external_ip_address
 ip_address
 port
@@ -34,6 +35,7 @@ neighbors.db:
 
 country
 dedicated_line
+echo_mode
 external_ip_address
 private_key
 proxy_hostname

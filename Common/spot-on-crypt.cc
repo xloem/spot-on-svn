@@ -968,6 +968,14 @@ spoton_crypt::~spoton_crypt()
 
 QByteArray spoton_crypt::decrypted(const QByteArray &data, bool *ok)
 {
+  if(data.isEmpty())
+    {
+      if(ok)
+	*ok = true;
+
+      return QByteArray();
+    }
+
   if(m_cipherAlgorithm == 0)
     {
       if(ok)

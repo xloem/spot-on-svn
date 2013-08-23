@@ -1223,11 +1223,11 @@ void spoton::slotAddNeighbor(void)
 		(3, m_crypt->encrypted(ip.toLatin1(), &ok).toBase64());
 	  }
 
-	query.bindValue(5, 1); // Sticky.
-
 	if(ok)
 	  query.bindValue
 	    (4, m_crypt->encrypted(port.toLatin1(), &ok).toBase64());
+
+	query.bindValue(5, 1); // Sticky.
 
 	if(ok)
 	  query.bindValue
@@ -1827,7 +1827,7 @@ void spoton::slotPopulateNeighbors(void)
 		QString tooltip("");
 		bool ok = true;
 
-		tooltip = QString
+		tooltip =
 		  (tr("UUID: %1\n"
 		      "Status: %2\n"
 		      "SSL Key Size: %3\n"
@@ -1948,12 +1948,13 @@ void spoton::slotPopulateNeighbors(void)
 			    QByteArray bytes;
 			    bool ok = true;
 
-			    bytes = m_crypt->decrypted
-			      (QByteArray::
-			       fromBase64(query.
-					  value(i).
-					  toByteArray()),
-			       &ok);
+			    if(i != 3) // SSL Key Size
+			      bytes = m_crypt->decrypted
+				(QByteArray::
+				 fromBase64(query.
+					    value(i).
+					    toByteArray()),
+				 &ok);
 
 			    if(i == 1) // uuid
 			      {
