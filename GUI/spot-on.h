@@ -154,10 +154,11 @@ class spoton: public QMainWindow
   void changeEchoMode(const QString &mode, QTableWidget *tableWidget);
   void closeEvent(QCloseEvent *event);
   void countriesToggle(const bool state);
-  void highlightKernelPath(void);
+  void highlightPaths(void);
   void initializeKernelSocket(void);
   void prepareListenerIPCombo(void);
   void purgeMessagingCache(void);
+  void saveGeoIPPath(const QString &path);
   void saveKernelPath(const QString &path);
   void saveSettings(void);
   void sendBuzzKeysToKernel(void);
@@ -254,9 +255,11 @@ class spoton: public QMainWindow
   void slotResetAll(void);
   void slotRetrieveMail(void);
   void slotSaveBuzzName(void);
+  void slotSaveGeoIPPath(void);
   void slotSaveKernelPath(void);
   void slotSaveNodeName(void);
   void slotScramble(bool state);
+  void slotSelectGeoIPPath(void);
   void slotSelectKernelPath(void);
   void slotSendMail(void);
   void slotSendMessage(void);

@@ -219,6 +219,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotDeactivateKernel(void)));
+  connect(m_ui.selectGeoIP,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSelectGeoIPPath(void)));
   connect(m_ui.selectKernelPath,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -227,6 +231,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSetPassphrase(void)));
+  connect(m_ui.geoipPath,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSaveGeoIPPath(void)));
   connect(m_ui.kernelPath,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -622,6 +630,9 @@ spoton::spoton(void):QMainWindow()
   else
     restoreGeometry(m_settings.value("gui/geometry").toByteArray());
 
+  m_ui.geoipPath->setText
+    (m_settings.value("gui/geoipPath", "").toString().trimmed());
+
   if(m_settings.contains("gui/kernelPath") &&
      QFileInfo(m_settings.value("gui/kernelPath").toString().trimmed()).
      isExecutable())
@@ -677,6 +688,9 @@ spoton::spoton(void):QMainWindow()
     m_ui.status->setCurrentIndex(2);
   else
     m_ui.status->setCurrentIndex(3);
+
+  if(!m_ui.geoipPath->text().isEmpty())
+    m_ui.geoipPath->setToolTip(m_ui.geoipPath->text());
 
   m_ui.kernelPath->setToolTip(m_ui.kernelPath->text());
   m_ui.buzzName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
@@ -2245,7 +2259,7 @@ void spoton::slotGeneralTimerTimeout(void)
     }
 
   libspoton_close(&libspotonHandle);
-  highlightKernelPath();
+  highlightPaths();
 
   if(text != m_ui.pid->text())
     {
@@ -2307,6 +2321,32 @@ void spoton::slotGeneralTimerTimeout(void)
     m_buzzStatusTimer.stop();
 }
 
+void spoton::slotSelectGeoIPPath(void)
+{
+  QFileDialog dialog(this);
+
+  dialog.setFilter(QDir::AllDirs | QDir::Files
+#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+		   | QDir::Readable);
+#else
+                  );
+#endif
+  dialog.setWindowTitle
+    (tr("Spot-On: Select GeoIP Data Path"));
+  dialog.setFileMode(QFileDialog::ExistingFile);
+  dialog.setDirectory(QDir::homePath());
+  dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
+  dialog.setAcceptMode(QFileDialog::AcceptOpen);
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+#endif
+#endif
+
+  if(dialog.exec() == QDialog::Accepted)
+    saveGeoIPPath(dialog.selectedFiles().value(0).trimmed());
+}
+
 void spoton::slotSelectKernelPath(void)
 {
   QFileDialog dialog(this);
@@ -2333,9 +2373,29 @@ void spoton::slotSelectKernelPath(void)
     saveKernelPath(dialog.selectedFiles().value(0).trimmed());
 }
 
+void spoton::slotSaveGeoIPPath(void)
+{
+  saveGeoIPPath(m_ui.geoipPath->text().trimmed());
+}
+
 void spoton::slotSaveKernelPath(void)
 {
   saveKernelPath(m_ui.kernelPath->text().trimmed());
+}
+
+void spoton::saveGeoIPPath(const QString &path)
+{
+  if(!path.isEmpty())
+    {
+      m_settings["gui/geoipPath"] = path;
+
+      QSettings settings;
+      
+      settings.setValue("gui/geoipPath", path);
+      m_ui.geoipPath->setText(path);
+      m_ui.geoipPath->setToolTip(path);
+      m_ui.geoipPath->selectAll();
+    }
 }
 
 void spoton::saveKernelPath(const QString &path)
