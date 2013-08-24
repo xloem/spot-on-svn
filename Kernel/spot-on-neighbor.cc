@@ -1072,10 +1072,7 @@ void spoton_neighbor::slotSendMessage(const QByteArray &data)
 	spoton_misc::logError
 	  ("spoton_neighbor::slotSendMessage(): write() error.");
       else
-	{
-	  flush();
-	  resetKeepAlive();
-	}
+	flush();
     }
 }
 
@@ -1095,11 +1092,7 @@ void spoton_neighbor::slotReceivedMessage(const QByteArray &data,
 	    spoton_misc::logError
 	      ("spoton_neighbor::slotReceivedMessage(): write() "
 	       "error.");
-	  else
-	    {
-	      flush();
-	      resetKeepAlive();
-	    }
+	  flush();
 	}
 }
 
@@ -1144,7 +1137,6 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
   else
     {
       flush();
-      resetKeepAlive();
 
       QString connectionName("");
 
@@ -2700,10 +2692,7 @@ void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
 	    ("spoton_neighbor::slotSendStatus(): write() "
 	     "error.");
 	else
-	  {
-	    flush();
-	    resetKeepAlive();
-	  }
+	  flush();
       }
 }
 
@@ -2851,10 +2840,7 @@ void spoton_neighbor::slotSendUuid(void)
     spoton_misc::logError
       ("spoton_neighbor::slotSendUuid(): write() error.");
   else
-    {
-      flush();
-      resetKeepAlive();
-    }
+    flush();
 }
 
 void spoton_neighbor::saveExternalAddress(const QHostAddress &address,
@@ -2952,10 +2938,7 @@ void spoton_neighbor::slotSendKeepAlive(void)
 	  ("spoton_neighbor::slotSendKeepAlive(): write() "
 	   "error.");
       else
-	{
-	  flush();
-	  resetKeepAlive();
-	}
+	flush();
     }
 }
 
@@ -2985,7 +2968,6 @@ void spoton_neighbor::slotSendMail
 	  {
 	    flush();
 	    oids.append(pair.second);
-	    resetKeepAlive();
 	  }
       }
 
@@ -3011,10 +2993,7 @@ void spoton_neighbor::slotSendMailFromPostOffice(const QByteArray &data)
 	  ("spoton_neighbor::slotSendMailFromPostOffice(): write() "
 	   "error.");
       else
-	{
-	  flush();
-	  resetKeepAlive();
-	}
+	flush();
     }
 }
 
@@ -3236,10 +3215,7 @@ void spoton_neighbor::slotRetrieveMail(const QList<QByteArray> &list)
 	    ("spoton_neighbor::slotRetrieveMail(): write() "
 	     "error.");
 	else
-	  {
-	    flush();
-	    resetKeepAlive();
-	  }
+	  flush();
       }
 }
 
@@ -3269,10 +3245,7 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
 	    ("spoton_neighbor::slotPublicizeListenerPlaintext(): write() "
 	     "error.");
 	else
-	  {
-	    flush();
-	    resetKeepAlive();
-	  }
+	  flush();
       }
 }
 
@@ -3295,10 +3268,7 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 	      ("spoton_neighbor::slotPublicizeListenerPlaintext(): write() "
 	       "error.");
 	  else
-	    {
-	      flush();
-	      resetKeepAlive();
-	    }
+	    flush();
 	}
 }
 
@@ -3407,10 +3377,7 @@ void spoton_neighbor::slotSendBuzz(const QByteArray &data)
 	spoton_misc::logError
 	  ("spoton_neighbor::slotSendBuzz(): write() error.");
       else
-	{
-	  flush();
-	  resetKeepAlive();
-	}
+	flush();
     }
 }
 
@@ -3575,10 +3542,7 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data)
 	  ("spoton_neighbor::slotCallParticipant(): write() "
 	   "error.");
       else
-	{
-	  flush();
-	  resetKeepAlive();
-	}
+	flush();
     }
 }
 
