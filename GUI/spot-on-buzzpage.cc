@@ -145,6 +145,10 @@ spoton_buzzpage::~spoton_buzzpage()
   m_messagingCache.clear();
   m_messagingCacheMutex.unlock();
   m_future.waitForFinished();
+  spoton_misc::logError(QString("spoton_buzzpage::~spoton_buzzpage(): "
+				"channel %1:%2 closed.").
+			arg(m_channel.constData()).
+			arg(m_channelType.constData()));
 }
 
 void spoton_buzzpage::slotSetIcons(void)
