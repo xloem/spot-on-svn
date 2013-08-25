@@ -2727,7 +2727,6 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash)
 		      "last_status_update = ? "
 		      "WHERE neighbor_oid = -1 AND "
 		      "public_key_hash = ?");
-
 	query.bindValue
 	  (0, QDateTime::currentDateTime().toString(Qt::ISODate));
 	query.bindValue(1, publicKeyHash.toBase64());
