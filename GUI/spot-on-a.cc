@@ -641,7 +641,7 @@ spoton::spoton(void):QMainWindow()
 
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
   m_ui.geoipPath->setText
-    (m_settings.value("gui/geoipPath", "").toString().trimmed());
+    (m_settings.value("gui/geoipPath", "GeoIP.dat").toString().trimmed());
 #endif
 
   if(m_settings.contains("gui/kernelPath") &&

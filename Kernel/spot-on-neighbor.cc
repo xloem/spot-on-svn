@@ -1351,7 +1351,8 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 				      }
 
 				  saveParticipantStatus
-				    (list.value(1), list.value(0));
+				    (list.value(1),  // Name
+				     list.value(0)); // Public Key Hash
 
 				  QByteArray hash
 				    (s_crypt->
@@ -1764,6 +1765,8 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 			  ** message may have been encrypted via a goldbug.
 			  */
 
+			  saveParticipantStatus
+			    (name, senderPublicKeyHash2);
 			  storeLetter(symmetricKey,
 				      symmetricKeyAlgorithm,
 				      senderPublicKeyHash2,
@@ -1805,6 +1808,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 		  ** Store the letter in the post office!
 		  */
 
+		  saveParticipantStatus(senderPublicKeyHash1);
 		  storeLetter(list, recipientHash);
 		}
 	}
@@ -1917,13 +1921,17 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 			    list.replace
 			      (i, QByteArray::fromBase64(list.at(i)));
 
-			  storeLetter(symmetricKey,
-				      symmetricKeyAlgorithm,
-				      list.value(0),
-				      list.value(1),
-				      list.value(2),
-				      list.value(3),
-				      list.value(4));
+			  saveParticipantStatus
+			    (list.value(1),  // Name
+			     list.value(0)); // Public Key Hash
+			  storeLetter
+			    (symmetricKey,
+			     symmetricKeyAlgorithm,
+			     list.value(0),  // Public Key Hash
+			     list.value(1),  // Name
+			     list.value(2),  // Subject
+			     list.value(3),  // Message
+			     list.value(4)); // Signature
 			}
 		      else
 			{
@@ -2059,9 +2067,12 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 			    list.replace
 			      (i, QByteArray::fromBase64(list.at(i)));
 
+			  saveParticipantStatus
+			    (list.value(0)); // Public Key Hash
 			  emit retrieveMail
-			    (list.value(1),
-			     list.value(0), list.value(2));
+			    (list.value(1),  // Data
+			     list.value(0),  // Public Key Hash
+			     list.value(2)); // Signature
 			}
 		      else
 			{
@@ -2370,9 +2381,9 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 				      }
 
 				  saveParticipantStatus
-				    (list.value(1),
-				     list.value(0),
-				     list.value(2));
+				    (list.value(1),  // Name
+				     list.value(0),  // Public Key Hash
+				     list.value(2)); // Status
 				}
 			    }
 			  else
@@ -2694,6 +2705,39 @@ void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
 	else
 	  flush();
       }
+}
+
+void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash)
+{
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() +
+       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("PRAGMA synchronous = OFF");
+	query.prepare("UPDATE friends_public_keys SET "
+		      "last_status_update = ? "
+		      "WHERE neighbor_oid = -1 AND "
+		      "public_key_hash = ?");
+
+	query.bindValue
+	  (0, QDateTime::currentDateTime().toString(Qt::ISODate));
+	query.bindValue(1, publicKeyHash.toBase64());
+     	query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton_neighbor::saveParticipantStatus(const QByteArray &name,

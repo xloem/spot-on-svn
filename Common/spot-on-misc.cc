@@ -394,7 +394,7 @@ QString spoton_misc::countryCodeFromIPAddress(const QString &ipAddress)
   QSettings settings;
 
   gi = GeoIP_open
-    (settings.value("gui/geoipPath", "").toByteArray().constData(),
+    (settings.value("gui/geoipPath", "GeoIP.dat").toByteArray().constData(),
      GEOIP_MEMORY_CACHE);
 
   if(gi)
@@ -423,7 +423,7 @@ QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
   QSettings settings;
 
   gi = GeoIP_open
-    (settings.value("gui/geoipPath", "").toByteArray().constData(),
+    (settings.value("gui/geoipPath", "GeoIP.dat").toByteArray().constData(),
      GEOIP_MEMORY_CACHE);
 
   if(gi)

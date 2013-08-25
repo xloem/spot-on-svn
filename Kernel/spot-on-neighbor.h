@@ -125,6 +125,7 @@ class spoton_neighbor: public QSslSocket
 			   const QSqlDatabase &db);
   void saveGemini(const QByteArray &publicKeyHash,
 		  const QByteArray &gemini);
+  void saveParticipantStatus(const QByteArray &publicKeyHash);
   void saveParticipantStatus(const QByteArray &name,
 			     const QByteArray &publicKeyHash);
   void saveParticipantStatus(const QByteArray &name,

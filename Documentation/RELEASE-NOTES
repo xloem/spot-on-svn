@@ -28,6 +28,9 @@
 15.  Disable GeoIP-related widgets if Spot-On is not linked with libGeoIP.
 16.  The QSslSocket::write() method may fail silently.
      We should not reset the keep-alive timer prematurely.
+17.  Update participant status when receiving e-mail and e-mail-retrieval
+     requests.
+18.  Updated user documentation.
 
 0.02 (08/22/2013)
 
