@@ -1,3 +1,14 @@
+0.04 (09/02/2013)
+
+1.   Per an anonymous e-mail passed on via another e-mail, I should
+     perhaps add more keys! Please reset Spot-On. There shall now
+     be a chat pair, an e-mail pair, and a url pair. And! Each pair
+     shall have its own signature. A total of six pairs.
+2.   Label (name) signature keys in the friends_public_keys database
+     table as their types. Only one person reads these release notes.
+3.   Apologies. This time I shall really bundle the Translations directory
+     into the Windows release.
+
 0.03 (08/26/2013)
 
 1.   Bundled the Translations directory in the OS X and Windows release

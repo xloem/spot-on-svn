@@ -185,7 +185,7 @@ void spoton_listener::slotTimeout(void)
 		QString status(query.value(0).toString());
 		bool ok = true;
 		spoton_crypt *s_crypt =
-		  spoton_kernel::s_crypts.value("messaging", 0);
+		  spoton_kernel::s_crypts.value("chat", 0);
 
 		if(s_crypt)
 		  {
@@ -396,16 +396,13 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
 	  SLOT(slotNeighborDisconnected(void)));
   updateConnectionCount();
 
-  spoton_crypt *s_crypt = 0;
-
-  if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   if(!s_crypt)
     {
       spoton_misc::logError
 	("spoton_listener::slotNewConnection(): "
-	 "messaging key is missing.");
+	 "chat key is missing.");
       neighbor->deleteLater();
       return;
     }
@@ -799,10 +796,7 @@ void spoton_listener::saveExternalAddress(const QHostAddress &address,
 	}
       else
 	{
-	  spoton_crypt *s_crypt = 0;
-
-	  if(spoton_kernel::s_crypts.contains("messaging"))
-	    s_crypt = spoton_kernel::s_crypts["messaging"];
+	  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
 	  if(s_crypt)
 	    {

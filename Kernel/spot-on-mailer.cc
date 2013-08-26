@@ -66,10 +66,7 @@ spoton_mailer::~spoton_mailer()
 
 void spoton_mailer::slotTimeout(void)
 {
-  if(!spoton_kernel::s_crypts.contains("messaging"))
-    return;
-
-  spoton_crypt *s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
 
   if(!s_crypt)
     return;
@@ -91,7 +88,7 @@ void spoton_mailer::slotTimeout(void)
     if(db1.open() && db2.open())
       {
 	QByteArray name
-	  (spoton_kernel::s_settings.value("gui/nodeName", "unknown").
+	  (spoton_kernel::s_settings.value("gui/emailName", "unknown").
 	   toByteArray().trimmed());
 	QSqlQuery query(db1);
 
@@ -274,10 +271,8 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 	  {
 	    if(query.next())
 	      {
-		spoton_crypt *s_crypt = 0;
-
-		if(spoton_kernel::s_crypts.contains("messaging"))
-		  s_crypt = spoton_kernel::s_crypts["messaging"];
+		spoton_crypt *s_crypt =
+		  spoton_kernel::s_crypts.value("email", 0);
 
 		if(s_crypt)
 		  {
@@ -325,10 +320,7 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 
 void spoton_mailer::slotReap(void)
 {
-  if(!spoton_kernel::s_crypts.contains("messaging"))
-    return;
-
-  spoton_crypt *s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
 
   if(!s_crypt)
     return;

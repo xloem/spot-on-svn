@@ -254,7 +254,7 @@ void spoton::slotReceivedKernelMessage(void)
     }
 }
 
-void spoton::slotSharePublicKey(void)
+void spoton::slotShareChatPublicKey(void)
 {
   if(!m_crypt)
     return;
@@ -292,10 +292,10 @@ void spoton::slotSharePublicKey(void)
   QByteArray sSignature;
 
   if(ok)
-    sPublicKey = m_signatureCrypt->publicKey(&ok);
+    sPublicKey = m_chatSignatureCrypt->publicKey(&ok);
 
   if(ok)
-    sSignature = m_signatureCrypt->digitalSignature(sPublicKey, &ok);
+    sSignature = m_chatSignatureCrypt->digitalSignature(sPublicKey, &ok);
 
   if(ok)
     {
@@ -309,7 +309,7 @@ void spoton::slotSharePublicKey(void)
       message.append("sharepublickey_");
       message.append(oid);
       message.append("_");
-      message.append(QByteArray("messaging").toBase64());
+      message.append(QByteArray("chat").toBase64());
       message.append("_");
       message.append(name.toBase64());
       message.append("_");
@@ -325,7 +325,84 @@ void spoton::slotSharePublicKey(void)
       if(m_kernelSocket.write(message.constData(), message.length()) !=
 	 message.length())
 	spoton_misc::logError
-	  ("spoton::slotSharePublicKey(): write() failure.");
+	  ("spoton::slotShareChatPublicKey(): write() failure.");
+      else
+	m_kernelSocket.flush();
+    }
+}
+
+void spoton::slotShareEmailPublicKey(void)
+{
+  if(!m_emailCrypt)
+    return;
+  else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!m_kernelSocket.isEncrypted())
+    return;
+
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.neighbors->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.neighbors->item
+	(row, m_ui.neighbors->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  QByteArray publicKey;
+  QByteArray signature;
+
+  bool ok = true;
+
+  publicKey = m_emailCrypt->publicKey(&ok);
+
+  if(ok)
+    signature = m_emailCrypt->digitalSignature(publicKey, &ok);
+
+  QByteArray sPublicKey;
+  QByteArray sSignature;
+
+  if(ok)
+    sPublicKey = m_emailSignatureCrypt->publicKey(&ok);
+
+  if(ok)
+    sSignature = m_emailSignatureCrypt->digitalSignature(sPublicKey, &ok);
+
+  if(ok)
+    {
+      QByteArray message;
+      QByteArray name(m_settings.value("gui/emailName", "unknown").
+		      toByteArray().trimmed());
+
+      if(name.isEmpty())
+	name = "unknown";
+
+      message.append("sharepublickey_");
+      message.append(oid);
+      message.append("_");
+      message.append(QByteArray("email").toBase64());
+      message.append("_");
+      message.append(name.toBase64());
+      message.append("_");
+      message.append(publicKey.toBase64());
+      message.append("_");
+      message.append(signature.toBase64());
+      message.append("_");
+      message.append(sPublicKey.toBase64());
+      message.append("_");
+      message.append(sSignature.toBase64());
+      message.append('\n');
+
+      if(m_kernelSocket.write(message.constData(), message.length()) !=
+	 message.length())
+	spoton_misc::logError
+	  ("spoton::slotShareEmailPublicKey(): write() failure.");
       else
 	m_kernelSocket.flush();
     }
@@ -401,6 +478,24 @@ void spoton::slotSaveBuzzName(void)
 
   settings.setValue("gui/buzzName", str.toUtf8());
   m_ui.buzzName->selectAll();
+}
+
+void spoton::slotSaveEmailName(void)
+{
+  QString str(m_ui.emailName->text().trimmed());
+
+  if(str.isEmpty())
+    {
+      str = "unknown";
+      m_ui.emailName->setText(str);
+    }
+
+  m_settings["gui/emailName"] = str.toUtf8();
+
+  QSettings settings;
+
+  settings.setValue("gui/emailName", str.toUtf8());
+  m_ui.emailName->selectAll();
 }
 
 void spoton::slotSaveNodeName(void)
@@ -584,7 +679,7 @@ void spoton::slotChatSendMethodChanged(int index)
     ("gui/chatSendMethod", m_settings.value("gui/chatSendMethod").toString());
 }
 
-void spoton::slotSharePublicKeyWithParticipant(void)
+void spoton::slotShareChatPublicKeyWithParticipant(void)
 {
   if(!m_crypt)
     return;
@@ -621,10 +716,10 @@ void spoton::slotSharePublicKeyWithParticipant(void)
   QByteArray sSignature;
 
   if(ok)
-    sPublicKey = m_signatureCrypt->publicKey(&ok);
+    sPublicKey = m_chatSignatureCrypt->publicKey(&ok);
 
   if(ok)
-    sSignature = m_signatureCrypt->digitalSignature(sPublicKey, &ok);
+    sSignature = m_chatSignatureCrypt->digitalSignature(sPublicKey, &ok);
 
   if(ok)
     {
@@ -638,7 +733,7 @@ void spoton::slotSharePublicKeyWithParticipant(void)
       message.append("befriendparticipant_");
       message.append(oid);
       message.append("_");
-      message.append(QByteArray("messaging").toBase64());
+      message.append(QByteArray("chat").toBase64());
       message.append("_");
       message.append(name.toBase64());
       message.append("_");
@@ -654,7 +749,85 @@ void spoton::slotSharePublicKeyWithParticipant(void)
       if(m_kernelSocket.write(message.constData(), message.length()) !=
 	 message.length())
 	spoton_misc::logError
-	  ("spoton::slotSharePublicKeyWithParticipant(): write() failure.");
+	  ("spoton::slotShareChatPublicKeyWithParticipant(): "
+	   "write() failure.");
+      else
+	m_kernelSocket.flush();
+    }
+}
+
+void spoton::slotShareEmailPublicKeyWithParticipant(void)
+{
+  if(!m_emailCrypt)
+    return;
+  else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!m_kernelSocket.isEncrypted())
+    return;
+
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.emailParticipants->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.emailParticipants->item
+	(row, 2); // neighbor_oid
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  QByteArray publicKey;
+  QByteArray signature;
+  bool ok = true;
+
+  publicKey = m_emailCrypt->publicKey(&ok);
+
+  if(ok)
+    signature = m_emailCrypt->digitalSignature(publicKey, &ok);
+
+  QByteArray sPublicKey;
+  QByteArray sSignature;
+
+  if(ok)
+    sPublicKey = m_emailSignatureCrypt->publicKey(&ok);
+
+  if(ok)
+    sSignature = m_emailSignatureCrypt->digitalSignature(sPublicKey, &ok);
+
+  if(ok)
+    {
+      QByteArray message;
+      QByteArray name(m_settings.value("gui/emailName", "unknown").
+		      toByteArray().trimmed());
+
+      if(name.isEmpty())
+	name = "unknown";
+
+      message.append("befriendparticipant_");
+      message.append(oid);
+      message.append("_");
+      message.append(QByteArray("email").toBase64());
+      message.append("_");
+      message.append(name.toBase64());
+      message.append("_");
+      message.append(publicKey.toBase64());
+      message.append("_");
+      message.append(signature.toBase64());
+      message.append("_");
+      message.append(sPublicKey.toBase64());
+      message.append("_");
+      message.append(sSignature.toBase64());
+      message.append('\n');
+
+      if(m_kernelSocket.write(message.constData(), message.length()) !=
+	 message.length())
+	spoton_misc::logError
+	  ("spoton::slotShareEmailPublicKeyWithParticipant(): "
+	   "write() failure.");
       else
 	m_kernelSocket.flush();
     }
@@ -692,7 +865,7 @@ bool spoton::isKernelActive(void) const
   return m_ui.pid->text().toInt() > 0;
 }
 
-void spoton::slotCopyMyPublicKey(void)
+void spoton::slotCopyMyChatPublicKey(void)
 {
   if(!m_crypt)
     return;
@@ -717,14 +890,14 @@ void spoton::slotCopyMyPublicKey(void)
     mSignature = m_crypt->digitalSignature(mPublicKey, &ok);
 
   if(ok)
-    sPublicKey = m_signatureCrypt->publicKey(&ok);
+    sPublicKey = m_chatSignatureCrypt->publicKey(&ok);
 
   if(ok)
-    sSignature = m_signatureCrypt->digitalSignature(sPublicKey, &ok);
+    sSignature = m_chatSignatureCrypt->digitalSignature(sPublicKey, &ok);
 
   if(ok)
     clipboard->setText
-      ("K" + QByteArray("messaging").toBase64() + "@" +
+      ("K" + QByteArray("chat").toBase64() + "@" +
        name.toBase64() + "@" +
        mPublicKey.toBase64() + "@" + mSignature.toBase64() + "@" +
        sPublicKey.toBase64() + "@" + sSignature.toBase64());
@@ -1367,11 +1540,11 @@ void spoton::slotAddFriendsKey(void)
 
       keyType = QByteArray::fromBase64(keyType);
 
-      if(!(keyType == "messaging" || keyType == "url"))
+      if(!(keyType == "cat" || keyType == "email" || keyType == "url"))
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("Invalid key type. Expecting 'messaging' or 'url'."));
+	     tr("Invalid key type. Expecting 'chat', 'email', or 'url'."));
 	  return;
 	}
 
@@ -1427,7 +1600,7 @@ void spoton::slotAddFriendsKey(void)
 						 sPublicKey,
 						 -1,
 						 db))
-	      if(spoton_misc::saveFriendshipBundle("signature",
+	      if(spoton_misc::saveFriendshipBundle(keyType + "-signature",
 						   name,
 						   sPublicKey,
 						   QByteArray(),
@@ -1542,11 +1715,13 @@ void spoton::slotAddFriendsKey(void)
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      if(!(list.value(0) == "messaging" || list.value(0) == "url"))
+      if(!(list.value(0) == "chat" ||
+	   list.value(0) == "email" ||
+	   list.value(0) == "url"))
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("Invalid key type. Expecting 'messaging' or 'url'."));
+	     tr("Invalid key type. Expecting 'chat', 'email', or 'url'."));
 	  return;
 	}
 
@@ -1592,7 +1767,7 @@ void spoton::slotAddFriendsKey(void)
 						 -1,            // Neighbor OID
 						 db))
 	      if(spoton_misc::
-		 saveFriendshipBundle("signature",
+		 saveFriendshipBundle(list.value(0) + "-signature",
 				      list.value(1), // Name
 				      list.value(4), // Signature Public Key
 				      QByteArray(),  // Signature Public Key
@@ -1788,7 +1963,7 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  QByteArray mySPublicKey(m_signatureCrypt->publicKey(&ok));
+  QByteArray mySPublicKey(m_chatSignatureCrypt->publicKey(&ok));
 
   if(!ok)
     {
@@ -1797,7 +1972,7 @@ void spoton::slotCopyFriendshipBundle(void)
     }
 
   QByteArray mySSignature
-    (m_signatureCrypt->digitalSignature(mySPublicKey, &ok));
+    (m_chatSignatureCrypt->digitalSignature(mySPublicKey, &ok));
 
   if(!ok)
     {
@@ -1837,7 +2012,7 @@ void spoton::slotCopyFriendshipBundle(void)
 		     0,
 		     QString(""));
 
-  data = crypt.encrypted(QByteArray("messaging").toBase64() + "@" +
+  data = crypt.encrypted(QByteArray("chat").toBase64() + "@" +
 			 myName.toBase64() + "@" +
 			 myPublicKey.toBase64() + "@" +
 			 mySignature.toBase64() + "@" +
@@ -1930,7 +2105,7 @@ void spoton::slotSendMail(void)
 	while(!list.isEmpty())
 	  oids.append(list.takeFirst().data().toString());
 
-	list = m_ui.emailParticipants->selectionModel()->selectedRows(2);
+	list = m_ui.emailParticipants->selectionModel()->selectedRows(3);
 
 	while(!list.isEmpty())
 	  publicKeyHashes.append(list.takeFirst().data().toString());
@@ -2079,6 +2254,46 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
 
   QSqlDatabase::removeDatabase(connectionName);
   QApplication::restoreOverrideCursor();
+}
+
+void spoton::slotCopyMyEmailPublicKey(void)
+{
+  if(!m_emailCrypt)
+    return;
+
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(!clipboard)
+    return;
+
+  QByteArray name;
+  QByteArray mPublicKey;
+  QByteArray mSignature;
+  QByteArray sPublicKey;
+  QByteArray sSignature;
+  bool ok = true;
+
+  name = m_settings.value("gui/nodeName", "unknown").toByteArray().
+    trimmed();
+  mPublicKey = m_emailCrypt->publicKey(&ok);
+
+  if(ok)
+    mSignature = m_emailCrypt->digitalSignature(mPublicKey, &ok);
+
+  if(ok)
+    sPublicKey = m_emailSignatureCrypt->publicKey(&ok);
+
+  if(ok)
+    sSignature = m_emailSignatureCrypt->digitalSignature(sPublicKey, &ok);
+
+  if(ok)
+    clipboard->setText
+      ("K" + QByteArray("email").toBase64() + "@" +
+       name.toBase64() + "@" +
+       mPublicKey.toBase64() + "@" + mSignature.toBase64() + "@" +
+       sPublicKey.toBase64() + "@" + sSignature.toBase64());
+  else
+    clipboard->clear();
 }
 
 void spoton::slotCopyMyURLPublicKey(void)
@@ -2929,6 +3144,7 @@ void spoton::slotSetIcons(void)
   // Chat
 
   m_ui.clearMessages->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
+  m_ui.saveEmailName->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
   m_ui.saveNodeName->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
   m_ui.sendMessage->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
   list.clear();
@@ -3269,7 +3485,7 @@ void spoton::slotReply(void)
   for(int i = 0; i < m_ui.emailParticipants->rowCount(); i++)
     {
       QTableWidgetItem *item = m_ui.emailParticipants->
-	item(i, 2); // public_key_hash
+	item(i, 3); // public_key_hash
 
       if(item)
 	if(item->text() == receiverSenderHash)
@@ -3605,4 +3821,58 @@ void spoton::slotBuzzChanged(void)
 {
   if(m_ui.tab->currentIndex() != 0)
     m_sb.buzz->setVisible(true);
+}
+
+void spoton::slotRemoveEmailParticipants(void)
+{
+  if(!m_ui.emailParticipants->selectionModel()->hasSelection())
+    return;
+
+  QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+  mb.setIcon(QMessageBox::Question);
+  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+  mb.setWindowModality(Qt::WindowModal);
+  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+  mb.setText(tr("Are you sure that you wish to remove the selected "
+		"participant(s)?"));
+
+  if(mb.exec() != QMessageBox::Yes)
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QModelIndexList list
+	  (m_ui.emailParticipants->selectionModel()->selectedRows(1));
+	QSqlQuery query(db);
+
+	while(!list.isEmpty())
+	  {
+	    QVariant data(list.takeFirst().data());
+
+	    if(!data.isNull() && data.isValid())
+	      query.exec(QString("DELETE FROM friends_public_keys WHERE "
+				 "OID = %1").arg(data.toString()));
+	  }
+
+	spoton_misc::purgeSignatureRelationships(db);
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }

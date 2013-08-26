@@ -83,10 +83,8 @@ void spoton_shared_reader::slotTimeout(void)
 
 	      if(encrypted)
 		{
-		  spoton_crypt *s_crypt = 0;
-
-		  if(spoton_kernel::s_crypts.contains("messaging"))
-		    s_crypt = spoton_kernel::s_crypts["messaging"];
+		  spoton_crypt *s_crypt =
+		    spoton_kernel::s_crypts.value("url", 0);
 
 		  if(!s_crypt)
 		    continue;
@@ -140,10 +138,7 @@ void spoton_shared_reader::slotTimeout(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 
-  spoton_crypt *s_crypt = 0;
-
-  if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("url", 0);
 
   spoton_misc::populateUrlsDatabase(list, s_crypt);
 }

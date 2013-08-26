@@ -495,10 +495,8 @@ void spoton_neighbor::slotTimeout(void)
 		  }
 		else
 		  {
-		    spoton_crypt *s_crypt = 0;
-
-		    if(spoton_kernel::s_crypts.contains("messaging"))
-		      s_crypt = spoton_kernel::s_crypts["messaging"];
+		    spoton_crypt *s_crypt =
+		      spoton_kernel::s_crypts.value("chat", 0);
 
 		    if(s_crypt)
 		      {
@@ -859,10 +857,7 @@ void spoton_neighbor::slotConnected(void)
 
   if(m_id != -1)
     {
-      spoton_crypt *s_crypt = 0;
-
-      if(spoton_kernel::s_crypts.contains("messaging"))
-	s_crypt = spoton_kernel::s_crypts["messaging"];
+      spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
       if(s_crypt)
 	{
@@ -992,7 +987,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 		  (keyType, name, publicKey, sPublicKey,
 		   neighborOid, db);
 		spoton_misc::saveFriendshipBundle
-		  ("signature", name, sPublicKey, QByteArray(),
+		  (keyType + "-signature", name, sPublicKey, QByteArray(),
 		   neighborOid, db);
 	      }
 	  }
@@ -1001,7 +996,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 	    spoton_misc::saveFriendshipBundle
 	      (keyType, name, publicKey, sPublicKey, -1, db);
 	    spoton_misc::saveFriendshipBundle
-	      ("signature", name, sPublicKey, QByteArray(), -1, db);
+	      (keyType + "-signature", name, sPublicKey, QByteArray(), -1, db);
 	  }
       }
 
@@ -1015,18 +1010,22 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
       spoton_crypt *s_crypt1 = 0;
       spoton_crypt *s_crypt2 = 0;
 
-      if(spoton_kernel::s_crypts.contains("messaging"))
-	s_crypt1 = spoton_kernel::s_crypts["messaging"];
-
-      if(spoton_kernel::s_crypts.contains("signature"))
-	s_crypt2 = spoton_kernel::s_crypts["signature"];
+      s_crypt1 = spoton_kernel::s_crypts.value(keyType, 0);
+      s_crypt2 = spoton_kernel::s_crypts.value(keyType + "-signature", 0);
 
       if(s_crypt1 && s_crypt2)
 	{
-	  QByteArray myName
-	    (spoton_kernel::s_settings.value("gui/nodeName",
-					     "unknown").
-	     toByteArray().trimmed());
+	  QByteArray myName;
+
+	  if(keyType == "chat")
+	    myName = spoton_kernel::s_settings.value("gui/nodeName",
+						     "unknown").
+	      toByteArray().trimmed();
+	  else
+	    myName = spoton_kernel::s_settings.value("gui/emailName",
+						     "unknown").
+	      toByteArray().trimmed();
+
 	  QByteArray myPublicKey;
 	  QByteArray mySignature;
 	  QByteArray mySPublicKey;
@@ -1168,10 +1167,7 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
 void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 				  const QPair<QByteArray, QByteArray> &pair)
 {
-  spoton_crypt *s_crypt = 0;
-
-  if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   if(!s_crypt)
     return;
@@ -1399,10 +1395,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 
 void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 {
-  spoton_crypt *s_crypt = 0;
-
-  if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   if(!s_crypt)
     return;
@@ -1544,10 +1537,7 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 {
-  spoton_crypt *s_crypt = 0;
-
-  if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
 
   if(!s_crypt)
     return;
@@ -1822,10 +1812,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 {
-  spoton_crypt *s_crypt = 0;
-
-  if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
 
   if(!s_crypt)
     return;
@@ -1961,10 +1948,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 {
-  spoton_crypt *s_crypt = 0;
-
-  if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
 
   if(!s_crypt)
     return;
@@ -2198,10 +2182,7 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
 void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 				  const QPair<QByteArray, QByteArray> &pair)
 {
-  spoton_crypt *s_crypt = 0;
-
-  if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   if(!s_crypt)
     return;
@@ -2441,10 +2422,7 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
       if(m_receivedUuid.isNull())
 	m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
 
-      spoton_crypt *s_crypt = 0;
-
-      if(spoton_kernel::s_crypts.contains("messaging"))
-	s_crypt = spoton_kernel::s_crypts["messaging"];
+      spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
       if(s_crypt)
 	{
@@ -2525,10 +2503,7 @@ void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 {
-  spoton_crypt *s_crypt = 0;
-
-  if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   if(!s_crypt)
     return;
@@ -2610,10 +2585,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 void spoton_neighbor::process0040a(int length, const QByteArray &dataIn,
 				   const QPair<QByteArray, QByteArray> &pair)
 {
-  spoton_crypt *s_crypt = 0;
-
-  if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   if(!s_crypt)
     return;
@@ -2652,10 +2624,7 @@ void spoton_neighbor::process0040a(int length, const QByteArray &dataIn,
 void spoton_neighbor::process0040b(int length, const QByteArray &dataIn,
 				   const QPair<QByteArray, QByteArray> &pair)
 {
-  spoton_crypt *s_crypt = 0;
-
-  if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   if(!s_crypt)
     return;
@@ -2910,10 +2879,8 @@ void spoton_neighbor::saveExternalAddress(const QHostAddress &address,
 	}
       else
 	{
-	  spoton_crypt *s_crypt = 0;
-
-	  if(spoton_kernel::s_crypts.contains("messaging"))
-	    s_crypt = spoton_kernel::s_crypts["messaging"];
+	  spoton_crypt *s_crypt =
+	    spoton_kernel::s_crypts.value("chat", 0);
 
 	  if(s_crypt)
 	    {
@@ -3016,10 +2983,7 @@ void spoton_neighbor::slotSendMail
 
   if(!oids.isEmpty())
     {
-      spoton_crypt *s_crypt = 0;
-
-      if(spoton_kernel::s_crypts.contains("messaging"))
-	s_crypt = spoton_kernel::s_crypts["messaging"];
+      spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
 
       spoton_misc::moveSentMailToSentFolder(oids, s_crypt);
     }
@@ -3048,7 +3012,7 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 				  const QByteArray &message,
 				  const QByteArray &signature)
 {
-  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("messaging", 0);
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
 
   if(!s_crypt)
     return;
@@ -3186,10 +3150,7 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 void spoton_neighbor::storeLetter(const QList<QByteArray> &list,
 				  const QByteArray &recipientHash)
 {
-  spoton_crypt *s_crypt = 0;
-
-  if(spoton_kernel::s_crypts.contains("messaging"))
-    s_crypt = spoton_kernel::s_crypts["messaging"];
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
 
   if(!s_crypt)
     return;
@@ -3437,7 +3398,7 @@ QString spoton_neighbor::findMessageType
   QList<QByteArray> list(QByteArray::fromBase64(data).split('\n'));
   QString type("");
   int interfaces = spoton_kernel::interfaces();
-  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("messaging", 0);
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   /*
   ** Do not attempt to locate a Buzz key if an interface is not
@@ -3555,6 +3516,16 @@ QString spoton_neighbor::findMessageType
 
 	    if(!type.isEmpty())
 	      goto done_label;
+
+	    s_crypt = spoton_kernel::s_crypts.value("email", 0);
+	    data = s_crypt->publicKeyDecrypt
+	      (QByteArray::fromBase64(list.value(0)), &ok);
+
+	    if(ok)
+	      type = QByteArray::fromBase64(data.split('\n').value(0));
+
+	    if(!type.isEmpty())
+	      goto done_label;
 	  }
       }
 
@@ -3617,7 +3588,7 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 	else
 	  {
 	    spoton_crypt *s_crypt =
-	      spoton_kernel::s_crypts.value("messaging", 0);
+	      spoton_kernel::s_crypts.value("chat", 0);
 
 	    if(s_crypt)
 	      query.bindValue(0, s_crypt->encrypted(gemini, &ok).toBase64());

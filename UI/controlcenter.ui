@@ -167,7 +167,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1197</width>
-                <height>554</height>
+                <height>559</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -770,7 +770,7 @@
             <string>&amp;Write</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_4">
-            <item row="0" column="0">
+            <item row="1" column="0">
              <widget class="QLabel" name="label_10">
               <property name="text">
                <string>&amp;To</string>
@@ -780,7 +780,7 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
+            <item row="2" column="0">
              <widget class="QLabel" name="label_25">
               <property name="text">
                <string>&amp;Subject</string>
@@ -790,10 +790,10 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
+            <item row="2" column="1">
              <widget class="QLineEdit" name="outgoingSubject"/>
             </item>
-            <item row="2" column="0">
+            <item row="3" column="0">
              <widget class="QLabel" name="label_26">
               <property name="text">
                <string>&amp;Message</string>
@@ -803,7 +803,7 @@
               </property>
              </widget>
             </item>
-            <item row="2" column="1">
+            <item row="3" column="1">
              <widget class="QTextEdit" name="outgoingMessage">
               <property name="tabChangesFocus">
                <bool>true</bool>
@@ -813,7 +813,7 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
+            <item row="4" column="0">
              <widget class="QLabel" name="label_6">
               <property name="text">
                <string>&amp;Optional</string>
@@ -823,7 +823,7 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
+            <item row="4" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_31">
               <item>
                <widget class="QLineEdit" name="goldbug"/>
@@ -880,7 +880,7 @@
               </item>
              </layout>
             </item>
-            <item row="0" column="1">
+            <item row="1" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_42">
               <item>
                <widget class="QTableWidget" name="emailParticipants">
@@ -929,6 +929,11 @@
                 </column>
                 <column>
                  <property name="text">
+                  <string>neighbor_oid</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
                   <string>public_key_hash</string>
                  </property>
                 </column>
@@ -936,6 +941,43 @@
               </item>
               <item>
                <spacer name="horizontalSpacer_36">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_41">
+              <property name="text">
+               <string>&amp;From</string>
+              </property>
+              <property name="buddy">
+               <cstring>emailName</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_47">
+              <item>
+               <widget class="QLineEdit" name="emailName"/>
+              </item>
+              <item>
+               <widget class="QPushButton" name="saveEmailName">
+                <property name="text">
+                 <string>Save</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_45">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -2448,8 +2490,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1105</width>
-             <height>348</height>
+             <width>949</width>
+             <height>331</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3469,7 +3511,7 @@
           <item>
            <widget class="QLabel" name="label_35">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://sourceforge.net/p/spot-on/code/HEAD/tree/branches/0.03/Documentation/RELEASE-NOTES&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Version 0.03&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://sourceforge.net/p/spot-on/code/HEAD/tree/branches/0.04/Documentation/RELEASE-NOTES&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Version 0.04&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="textFormat">
              <enum>Qt::AutoText</enum>
@@ -3520,7 +3562,7 @@
      <x>0</x>
      <y>0</y>
      <width>1219</width>
-     <height>27</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -3617,8 +3659,8 @@
   <tabstop>scrollArea_2</tabstop>
   <tabstop>chatAcceptSigned</tabstop>
   <tabstop>chatSignMessages</tabstop>
-  <tabstop>messages</tabstop>
   <tabstop>clearMessages</tabstop>
+  <tabstop>messages</tabstop>
   <tabstop>nodeName</tabstop>
   <tabstop>saveNodeName</tabstop>
   <tabstop>status</tabstop>
@@ -3637,6 +3679,8 @@
   <tabstop>reply</tabstop>
   <tabstop>mail</tabstop>
   <tabstop>mailMessage</tabstop>
+  <tabstop>emailName</tabstop>
+  <tabstop>saveEmailName</tabstop>
   <tabstop>emailParticipants</tabstop>
   <tabstop>outgoingSubject</tabstop>
   <tabstop>outgoingMessage</tabstop>

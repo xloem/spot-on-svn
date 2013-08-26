@@ -304,64 +304,36 @@ void spoton_gui_server::slotReadyRead(void)
 	      if(list.size() != 2)
 		continue;
 
-	      if(!spoton_kernel::s_crypts.contains("messaging"))
-		{
-		  spoton_crypt *crypt = new spoton_crypt
-		    (spoton_kernel::s_settings.value("gui/cipherType",
-						     "aes256").
-		     toString().trimmed(),
-		     spoton_kernel::s_settings.value("gui/hashType",
-						     "sha512").
-		     toString().trimmed(),
-		     QByteArray::fromBase64(list.value(0)),
-		     QByteArray::fromBase64(list.value(1)),
-		     spoton_kernel::s_settings.value("gui/saltLength",
-						     256).toInt(),
-		     spoton_kernel::s_settings.value("gui/iterationCount",
-						     10000).toInt(),
-		     "messaging");
-		  spoton_misc::populateCountryDatabase
-		    (crypt);
-		  spoton_kernel::s_crypts.insert("messaging", crypt);
-		}
+	      QStringList names;
 
-	      if(!spoton_kernel::s_crypts.contains("signature"))
-		{
-		  spoton_crypt *crypt = new spoton_crypt
-		    (spoton_kernel::s_settings.value("gui/cipherType",
-						     "aes256").
-		     toString().trimmed(),
-		     spoton_kernel::s_settings.value("gui/hashType",
-						     "sha512").
-		     toString().trimmed(),
-		     QByteArray::fromBase64(list.value(0)),
-		     QByteArray::fromBase64(list.value(1)),
-		     spoton_kernel::s_settings.value("gui/saltLength",
-						     256).toInt(),
-		     spoton_kernel::s_settings.value("gui/iterationCount",
-						     10000).toInt(),
-		     "signature");
-		  spoton_kernel::s_crypts.insert("signature", crypt);
-		}
+	      names << "chat"
+		    << "chat-signature"
+		    << "email"
+		    << "email-signature"
+		    << "url"
+		    << "url-signature";
 
-	      if(!spoton_kernel::s_crypts.contains("url"))
-		{
-		  spoton_crypt *crypt = new spoton_crypt
-		    (spoton_kernel::s_settings.value("gui/cipherType",
-						     "aes256").
-		     toString().trimmed(),
-		     spoton_kernel::s_settings.value("gui/hashType",
-						     "sha512").
-		     toString().trimmed(),
-		     QByteArray::fromBase64(list.value(0)),
-		     QByteArray::fromBase64(list.value(1)),
-		     spoton_kernel::s_settings.value("gui/saltLength",
-						     256).toInt(),
-		     spoton_kernel::s_settings.value("gui/iterationCount",
-						     10000).toInt(),
-		     "url");
-		  spoton_kernel::s_crypts.insert("url", crypt);
-		}
+	      for(int i = 0; i < names.size(); i++)
+		if(!spoton_kernel::s_crypts.contains(names.at(i)))
+		  {
+		    spoton_crypt *crypt = new spoton_crypt
+		      (spoton_kernel::s_settings.value("gui/cipherType",
+						       "aes256").
+		       toString().trimmed(),
+		       spoton_kernel::s_settings.value("gui/hashType",
+						       "sha512").
+		       toString().trimmed(),
+		       QByteArray::fromBase64(list.value(0)),
+		       QByteArray::fromBase64(list.value(1)),
+		       spoton_kernel::s_settings.value("gui/saltLength",
+						       256).toInt(),
+		       spoton_kernel::s_settings.value("gui/iterationCount",
+						       10000).toInt(),
+		       names.at(i));
+		    spoton_misc::populateCountryDatabase
+		      (crypt);
+		    spoton_kernel::s_crypts.insert(names.at(i), crypt);
+		  }
 	    }
 	  else if(message.startsWith("message_"))
 	    {
@@ -492,7 +464,7 @@ void spoton_gui_server::slotReceivedBuzzMessage
   message.append("_");
 
   QByteArray hash;
-  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("messaging", 0);
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   if(s_crypt)
     hash = spoton_crypt::keyedHash

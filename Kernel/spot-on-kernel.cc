@@ -471,10 +471,7 @@ void spoton_kernel::slotPollDatabase(void)
 
 void spoton_kernel::prepareListeners(void)
 {
-  if(!s_crypts.contains("messaging"))
-    return;
-
-  spoton_crypt *s_crypt = s_crypts["messaging"];
+  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
 
   if(!s_crypt)
     return;
@@ -635,10 +632,7 @@ void spoton_kernel::prepareListeners(void)
 
 void spoton_kernel::prepareNeighbors(void)
 {
-  if(!s_crypts.contains("messaging"))
-    return;
-
-  spoton_crypt *s_crypt = s_crypts["messaging"];
+  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
 
   if(!s_crypt)
     return;
@@ -926,12 +920,12 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 					      const QByteArray &name,
 					      const QByteArray &message)
 {
-  spoton_crypt *s_crypt1 = s_crypts.value("messaging", 0);
+  spoton_crypt *s_crypt1 = s_crypts.value("chat", 0);
 
   if(!s_crypt1)
     return;
 
-  spoton_crypt *s_crypt2 = s_crypts.value("signature", 0);
+  spoton_crypt *s_crypt2 = s_crypts.value("chat-signature", 0);
 
   if(!s_crypt2)
     return;
@@ -1276,12 +1270,12 @@ void spoton_kernel::slotStatusTimerExpired(void)
   if(status == "offline")
     return;
 
-  spoton_crypt *s_crypt1 = s_crypts.value("messaging", 0);
+  spoton_crypt *s_crypt1 = s_crypts.value("chat", 0);
 
   if(!s_crypt1)
     return;
 
-  spoton_crypt *s_crypt2 = s_crypts.value("signature", 0);
+  spoton_crypt *s_crypt2 = s_crypts.value("chat-signature", 0);
 
   if(!s_crypt2)
     return;
@@ -1319,7 +1313,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 	if(query.exec("SELECT gemini, public_key "
 		      "FROM friends_public_keys WHERE "
-		      "key_type = 'messaging' AND neighbor_oid = -1"))
+		      "key_type = 'chat' AND neighbor_oid = -1"))
 	  while(query.next())
 	    {
 	      QByteArray data;
@@ -1511,10 +1505,7 @@ void spoton_kernel::slotScramble(void)
 
 void spoton_kernel::slotRetrieveMail(void)
 {
-  if(!s_crypts.contains("signature"))
-    return;
-
-  spoton_crypt *s_crypt = s_crypts["signature"];
+  spoton_crypt *s_crypt = s_crypts.value("email-signature", 0);
 
   if(!s_crypt)
     return;
@@ -1551,7 +1542,7 @@ void spoton_kernel::slotRetrieveMail(void)
 
 	if(query.exec("SELECT public_key "
 		      "FROM friends_public_keys WHERE "
-		      "key_type = 'messaging' AND "
+		      "key_type = '' AND "
 		      "neighbor_oid = -1"))
 	  while(query.next())
 	    {
@@ -1644,12 +1635,12 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 				 const QByteArray &subject,
 				 const qint64 mailOid)
 {
-  spoton_crypt *s_crypt1 = s_crypts.value("messaging", 0);
+  spoton_crypt *s_crypt1 = s_crypts.value("email", 0);
 
   if(!s_crypt1)
     return;
 
-  spoton_crypt *s_crypt2 = s_crypts.value("signature", 0);
+  spoton_crypt *s_crypt2 = s_crypts.value("email-signature", 0);
 
   if(!s_crypt2)
     return;
@@ -1704,7 +1695,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	if(query.exec("SELECT public_key "
 		      "FROM friends_public_keys WHERE "
-		      "key_type = 'messaging' AND neighbor_oid = -1"))
+		      "key_type = 'email' AND neighbor_oid = -1"))
 	  while(query.next())
 	    {
 	      QByteArray data;
@@ -1913,51 +1904,31 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 	  {
 	    ok = true;
 
-	    if(!s_crypts.contains("messaging"))
-	      {
-		spoton_crypt *crypt = new spoton_crypt
-		  (s_settings.value("gui/cipherType",
-				    "aes256").toString().trimmed(),
-		   s_settings.value("gui/hashType",
-				    "sha512").toString().trimmed(),
-		   passphrase.toUtf8(),
-		   key,
-		   s_settings.value("gui/saltLength", 256).toInt(),
-		   s_settings.value("gui/iterationCount", 10000).toInt(),
-		   "messaging");
-		spoton_misc::populateCountryDatabase(crypt);
-		s_crypts.insert("messaging", crypt);
-	      }
+	    QStringList list;
 
-	    if(!s_crypts.contains("signature"))
-	      {
-		spoton_crypt *crypt = new spoton_crypt
-		  (s_settings.value("gui/cipherType",
-				    "aes256").toString().trimmed(),
-		   s_settings.value("gui/hashType",
-				    "sha512").toString().trimmed(),
-		   passphrase.toUtf8(),
-		   key,
-		   s_settings.value("gui/saltLength", 256).toInt(),
-		   s_settings.value("gui/iterationCount", 10000).toInt(),
-		   "signature");
-		s_crypts.insert("signature", crypt);
-	      }
+	    list << "chat"
+		 << "chat-signature"
+		 << "email"
+		 << "email-signature"
+		 << "url"
+		 << "url-signature";
 
-	    if(!s_crypts.contains("url"))
-	      {
-		spoton_crypt *crypt = new spoton_crypt
-		  (s_settings.value("gui/cipherType",
-				    "aes256").toString().trimmed(),
-		   s_settings.value("gui/hashType",
-				    "sha512").toString().trimmed(),
-		   passphrase.toUtf8(),
-		   key,
-		   s_settings.value("gui/saltLength", 256).toInt(),
-		   s_settings.value("gui/iterationCount", 10000).toInt(),
-		   "url");
-		s_crypts.insert("url", crypt);
-	      }
+	    for(int i = 0; i < list.size(); i++)
+	      if(!s_crypts.contains(list.at(i)))
+		{
+		  spoton_crypt *crypt = new spoton_crypt
+		    (s_settings.value("gui/cipherType",
+				      "aes256").toString().trimmed(),
+		     s_settings.value("gui/hashType",
+				      "sha512").toString().trimmed(),
+		     passphrase.toUtf8(),
+		     key,
+		     s_settings.value("gui/saltLength", 256).toInt(),
+		     s_settings.value("gui/iterationCount", 10000).toInt(),
+		     list.at(i));
+		  spoton_misc::populateCountryDatabase(crypt);
+		  s_crypts.insert(list.at(i), crypt);
+		}
 	  }
       }
 
@@ -2130,10 +2101,7 @@ bool spoton_kernel::messagingCacheContains(const QByteArray &data)
   if(!s_settings.value("gui/enableCongestionControl", false).toBool())
     return false;
 
-  spoton_crypt *s_crypt = 0;
-
-  if(s_crypts.contains("messaging"))
-    s_crypt = s_crypts["messaging"];
+  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
 
   if(!s_crypt)
     return false;
@@ -2156,10 +2124,7 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data)
   if(!s_settings.value("gui/enableCongestionControl", false).toBool())
     return;
 
-  spoton_crypt *s_crypt = 0;
-
-  if(s_crypts.contains("messaging"))
-    s_crypt = s_crypts["messaging"];
+  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
 
   if(!s_crypt)
     return;
@@ -2267,12 +2232,12 @@ int spoton_kernel::interfaces(void)
 
 void spoton_kernel::slotCallParticipant(const qint64 oid)
 {
-  spoton_crypt *s_crypt1 = s_crypts.value("messaging", 0);
+  spoton_crypt *s_crypt1 = s_crypts.value("chat", 0);
 
   if(!s_crypt1)
     return;
 
-  spoton_crypt *s_crypt2 = s_crypts.value("signature", 0);
+  spoton_crypt *s_crypt2 = s_crypts.value("chat-signature", 0);
 
   if(!s_crypt2)
     return;
@@ -2307,7 +2272,7 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 	query.setForwardOnly(true);
 	query.prepare("SELECT gemini, public_key "
 		      "FROM friends_public_keys WHERE "
-		      "key_type = 'messaging' AND neighbor_oid = -1 AND "
+		      "key_type = 'chat' AND neighbor_oid = -1 AND "
 		      "OID = ?");
 	query.bindValue(0, oid);
 

@@ -136,8 +136,10 @@ class spoton: public QMainWindow
   Ui_statusbar m_sb;
   Ui_spoton_mainwindow m_ui;
   bool m_purge;
-  spoton_crypt *m_crypt;
-  spoton_crypt *m_signatureCrypt;
+  spoton_crypt *m_chatSignatureCrypt;
+  spoton_crypt *m_crypt; // Chat too!
+  spoton_crypt *m_emailCrypt;
+  spoton_crypt *m_emailSignatureCrypt;
   spoton_docviewer m_docViewer;
   spoton_logviewer m_logViewer;
   QPixmap pixmapForCountry(const QString &country);
@@ -182,8 +184,10 @@ class spoton: public QMainWindow
   void slotCloseBuzzTab(int index);
   void slotCongestionControl(bool state);
   void slotConnectNeighbor(void);
+  void slotCopyEmailFriendshipBundle(void);
   void slotCopyFriendshipBundle(void);
-  void slotCopyMyPublicKey(void);
+  void slotCopyMyChatPublicKey(void);
+  void slotCopyMyEmailPublicKey(void);
   void slotCopyMyURLPublicKey(void);
   void slotCostChanged(int value);
   void slotCountriesToggleOff(void);
@@ -250,11 +254,13 @@ class spoton: public QMainWindow
   void slotReceivedKernelMessage(void);
   void slotRefreshMail(void);
   void slotRefreshPostOffice(void);
+  void slotRemoveEmailParticipants(void);
   void slotRemoveParticipants(void);
   void slotReply(void);
   void slotResetAll(void);
   void slotRetrieveMail(void);
   void slotSaveBuzzName(void);
+  void slotSaveEmailName(void);
   void slotSaveGeoIPPath(void);
   void slotSaveKernelPath(void);
   void slotSaveNodeName(void);
@@ -265,8 +271,10 @@ class spoton: public QMainWindow
   void slotSendMessage(void);
   void slotSetIcons(void);
   void slotSetPassphrase(void);
-  void slotSharePublicKey(void);
-  void slotSharePublicKeyWithParticipant(void);
+  void slotShareChatPublicKey(void);
+  void slotShareChatPublicKeyWithParticipant(void);
+  void slotShareEmailPublicKey(void);
+  void slotShareEmailPublicKeyWithParticipant(void);
   void slotShareURLPublicKey(void);
   void slotShowContextMenu(const QPoint &point);
   void slotSignatureCheckBoxToggled(bool state);

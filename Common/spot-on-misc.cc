@@ -168,7 +168,7 @@ void spoton_misc::prepareDatabases(void)
 	query.exec
 	  ("CREATE TABLE IF NOT EXISTS friends_public_keys ("
 	   "gemini TEXT DEFAULT NULL, "
-	   "key_type TEXT NOT NULL DEFAULT 'messaging', "
+	   "key_type TEXT NOT NULL DEFAULT 'chat', "
 	   "name TEXT NOT NULL DEFAULT 'unknown', "
 	   "public_key TEXT NOT NULL, "
 	   "public_key_hash TEXT PRIMARY KEY NOT NULL, " /*
@@ -831,7 +831,7 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 		"VALUES (?, ?, ?, ?, ?)");
   query.bindValue(0, keyType.constData());
 
-  if(keyType == "messaging" || keyType == "url")
+  if(keyType == "chat" || keyType == "email" || keyType == "url")
     {
       if(name.isEmpty())
 	query.bindValue(1, "unknown");
@@ -839,8 +839,8 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 	query.bindValue
 	  (1, name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
     }
-  else // Signature keys will be labeled as unknown.
-    query.bindValue(1, "unknown");
+  else // Signature keys will be labeled as their type.
+    query.bindValue(1, keyType);
 
   query.bindValue(2, publicKey);
   query.bindValue
@@ -1032,7 +1032,7 @@ QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
 	    query.setForwardOnly(true);
 
 	    if(query.exec("SELECT gemini FROM friends_public_keys WHERE "
-			  "gemini IS NOT NULL AND key_type = 'messaging'"))
+			  "gemini IS NOT NULL AND key_type = 'chat'"))
 	      while(query.next())
 		{
 		  bool ok = true;
@@ -1563,7 +1563,7 @@ void spoton_misc::purgeSignatureRelationships(const QSqlDatabase &db)
   query.exec("DELETE FROM relationships_with_signatures WHERE "
 	     "public_key_hash NOT IN "
 	     "(SELECT public_key_hash FROM friends_public_keys WHERE "
-	     "key_type <> 'signature')");
+	     "key_type NOT LIKE '%signature')");
 
   /*
   ** Delete signature public keys from friends_public_keys that
@@ -1571,7 +1571,7 @@ void spoton_misc::purgeSignatureRelationships(const QSqlDatabase &db)
   */
 
   query.exec("DELETE FROM friends_public_keys WHERE "
-	     "key_type = 'signature' AND public_key_hash NOT IN "
+	     "key_type LIKE '%signature' AND public_key_hash NOT IN "
 	     "(SELECT signature_public_key_hash FROM "
 	     "relationships_with_signatures)");
 }

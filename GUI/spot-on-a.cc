@@ -88,8 +88,10 @@ spoton::spoton(void):QMainWindow()
   m_booleans["buzz_channels_sent_to_kernel"] = false;
   m_booleans["keys_sent_to_kernel"] = false;
   m_buzzStatusTimer.setInterval(15000);
+  m_chatSignatureCrypt = 0;
   m_crypt = 0;
-  m_signatureCrypt = 0;
+  m_emailCrypt = 0;
+  m_emailSignatureCrypt = 0;
   m_countriesLastModificationTime = QDateTime();
   m_listenersLastModificationTime = QDateTime();
   m_neighborsLastModificationTime = QDateTime();
@@ -280,6 +282,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSaveNodeName(void)));
+  connect(m_ui.saveEmailName,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSaveEmailName(void)));
   connect(m_ui.buzzName,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -288,6 +294,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSaveNodeName(void)));
+  connect(m_ui.emailName,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSaveEmailName(void)));
   connect(m_ui.scrambler,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -560,14 +570,21 @@ spoton::spoton(void):QMainWindow()
 
   QMenu *menu = new QMenu(this);
 
-  connect(menu->addAction(tr("Copy &Messaging Public Key")),
-	  SIGNAL(triggered(void)), this, SLOT(slotCopyMyPublicKey(void)));
-  connect(menu->addAction(tr("Copy &URL Public Key")),
-	  SIGNAL(triggered(void)), this, SLOT(slotCopyMyURLPublicKey(void)));
+  connect
+    (menu->addAction(tr("Copy &Chat Public Key")),
+     SIGNAL(triggered(void)), this, SLOT(slotCopyMyChatPublicKey(void)));
+  connect
+    (menu->addAction(tr("Copy &E-Mail Public Key")),
+     SIGNAL(triggered(void)), this, SLOT(slotCopyMyEmailPublicKey(void)));
+  connect
+    (menu->addAction(tr("Copy &URL Public Key")),
+     SIGNAL(triggered(void)), this, SLOT(slotCopyMyURLPublicKey(void)));
   m_ui.toolButtonCopytoClipboard->setMenu(menu);
   menu = new QMenu(this);
-  connect(menu->addAction(tr("Share &Messaging Public Key")),
-	  SIGNAL(triggered(void)), this, SLOT(slotSharePublicKey(void)));
+  connect(menu->addAction(tr("Share &Chat Public Key")),
+	  SIGNAL(triggered(void)), this, SLOT(slotShareChatPublicKey(void)));
+  connect(menu->addAction(tr("Share &E-Mail Public Key")),
+	  SIGNAL(triggered(void)), this, SLOT(slotShareEmailPublicKey(void)));
   connect(menu->addAction(tr("Share &URL Public Key")),
 	  SIGNAL(triggered(void)), this, SLOT(slotShareURLPublicKey(void)));
   m_ui.toolButtonMakeFriends->setMenu(menu);
@@ -712,6 +729,10 @@ spoton::spoton(void):QMainWindow()
 		       toByteArray()).trimmed());
   m_ui.channel->setMaxLength
     (spoton_crypt::cipherKeyLength("aes256"));
+  m_ui.emailName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
+  m_ui.emailName->setText
+    (QString::fromUtf8(m_settings.value("gui/emailName", "unknown").
+		       toByteArray()).trimmed());
   m_ui.nodeName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
   m_ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
@@ -884,9 +905,14 @@ spoton::spoton(void):QMainWindow()
     m_ui.urlsVerticalSplitter->restoreState
       (m_settings.value("gui/urlsVerticalSplitter").toByteArray());
 
+  m_ui.emailParticipants->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.listeners->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.neighbors->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.participants->setContextMenuPolicy(Qt::CustomContextMenu);
+  connect(m_ui.emailParticipants,
+	  SIGNAL(customContextMenuRequested(const QPoint &)),
+	  this,
+	  SLOT(slotShowContextMenu(const QPoint &)));
   connect(m_ui.listeners,
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,
@@ -900,7 +926,8 @@ spoton::spoton(void):QMainWindow()
 	  this,
 	  SLOT(slotShowContextMenu(const QPoint &)));
   m_ui.emailParticipants->setColumnHidden(1, true); // OID
-  m_ui.emailParticipants->setColumnHidden(2, true); // public_key_hash
+  m_ui.emailParticipants->setColumnHidden(2, true); // neighbor_oid
+  m_ui.emailParticipants->setColumnHidden(3, true); // public_key_hash
   m_ui.mail->setColumnHidden(4, true); // goldbug
   m_ui.mail->setColumnHidden(5, true); // message
   m_ui.mail->setColumnHidden(6, true); // message_code
@@ -2761,61 +2788,48 @@ void spoton::slotSetPassphrase(void)
 
       if(!m_ui.newRSAKeys->isChecked() && reencode)
 	{
-	  m_sb.status->setText
-	    (tr("Re-encoding public key pair 1 of 3. Please be patient."));
-	  m_sb.status->repaint();
-	  spoton_crypt::reencodeRSAKeys
-	    (m_ui.cipherType->currentText(),
-	     derivedKey,
-	     m_settings.value("gui/cipherType", "aes256").
-	     toString().trimmed(),
-	     m_crypt->symmetricKey(),
-	     "messaging",
-	     error2);
-	  m_sb.status->clear();
+	  QStringList list;
 
-	  if(error2.isEmpty())
+	  list << "chat"
+	       << "chat-signature"
+	       << "email"
+	       << "email-signature"
+	       << "url"
+	       << "url-signature";
+
+	  for(int i = 0; i < list.size(); i++)
 	    {
 	      m_sb.status->setText
-		(tr("Re-encoding public key pair 2 of 3. "
-		    "Please be patient."));
+		(tr("Re-encoding public key pair 1 of %1. "
+		    "Please be patient.").arg(list.size()));
 	      m_sb.status->repaint();
 	      spoton_crypt::reencodeRSAKeys
 		(m_ui.cipherType->currentText(),
 		 derivedKey,
 		 m_settings.value("gui/cipherType", "aes256").
 		 toString().trimmed(),
-		 m_crypt->symmetricKey(),
-		 "signature",
+		 m_crypt->symmetricKey(), /*
+					  ** All such containers
+					  ** have identical symmetric keys.
+					  */
+		 list.at(i),
 		 error2);
 	      m_sb.status->clear();
-	    }
 
-	  if(error2.isEmpty())
-	    {
-	      m_sb.status->setText
-		(tr("Re-encoding public key pair 3 of 3. "
-		    "Please be patient."));
-	      m_sb.status->repaint();
-	      spoton_crypt::reencodeRSAKeys
-		(m_ui.cipherType->currentText(),
-		 derivedKey,
-		 m_settings.value("gui/cipherType", "aes256").
-		 toString().trimmed(),
-		 m_crypt->symmetricKey(),
-		 "url",
-		 error2);
-	      m_sb.status->clear();
+	      if(!error2.isEmpty())
+		break;
 	    }
 	}
       else
 	{
 	  QStringList list;
 
-	  list << "messaging"
-	       << "signature"
-	       << "url";
-
+	  list << "chat"
+	       << "chat-signature"
+	       << "email"
+	       << "email-signature"
+	       << "url"
+	       << "url-signature";
 	  m_sb.status->setText(tr("Generating public key pairs."));
 	  m_sb.status->repaint();
 
@@ -2892,7 +2906,7 @@ void spoton::slotSetPassphrase(void)
 		 derivedKey,
 		 m_ui.saltLength->value(),
 		 m_ui.iterationCount->value(),
-		 "messaging");
+		 "chat");
 
 	      spoton_reencode reencode;
 
@@ -2910,16 +2924,34 @@ void spoton::slotSetPassphrase(void)
 	     derivedKey,
 	     m_ui.saltLength->value(),
 	     m_ui.iterationCount->value(),
-	     "messaging");
-	  delete m_signatureCrypt;
-	  m_signatureCrypt = new spoton_crypt
+	     "chat");
+	  delete m_chatSignatureCrypt;
+	  m_chatSignatureCrypt = new spoton_crypt
 	    (m_ui.cipherType->currentText(),
 	     m_ui.hashType->currentText(),
 	     str1.toUtf8(),
 	     derivedKey,
 	     m_ui.saltLength->value(),
 	     m_ui.iterationCount->value(),
-	     "signature");
+	     "chat-signature");
+	  delete m_emailCrypt;
+	  m_emailCrypt = new spoton_crypt
+	    (m_ui.cipherType->currentText(),
+	     m_ui.hashType->currentText(),
+	     str1.toUtf8(),
+	     derivedKey,
+	     m_ui.saltLength->value(),
+	     m_ui.iterationCount->value(),
+	     "email");
+	  delete m_emailSignatureCrypt;
+	  m_emailSignatureCrypt = new spoton_crypt
+	    (m_ui.cipherType->currentText(),
+	     m_ui.hashType->currentText(),
+	     str1.toUtf8(),
+	     derivedKey,
+	     m_ui.saltLength->value(),
+	     m_ui.iterationCount->value(),
+	     "email-signature");
 
 	  if(!reencode)
 	    {
@@ -3036,16 +3068,34 @@ void spoton::slotValidatePassphrase(void)
 	       key,
 	       m_ui.saltLength->value(),
 	       m_ui.iterationCount->value(),
-	       "messaging");
-	    delete m_signatureCrypt;
-	    m_signatureCrypt = new spoton_crypt
+	       "chat");
+	    delete m_chatSignatureCrypt;
+	    m_chatSignatureCrypt = new spoton_crypt
 	      (m_ui.cipherType->currentText(),
 	       m_ui.hashType->currentText(),
 	       m_ui.passphrase->text().toUtf8(),
 	       key,
 	       m_ui.saltLength->value(),
 	       m_ui.iterationCount->value(),
-	       "signature");
+	       "chat-signature");
+	    delete m_emailCrypt;
+	    m_emailCrypt = new spoton_crypt
+	      (m_ui.cipherType->currentText(),
+	       m_ui.hashType->currentText(),
+	       m_ui.passphrase->text().toUtf8(),
+	       key,
+	       m_ui.saltLength->value(),
+	       m_ui.iterationCount->value(),
+	       "email");
+	    delete m_emailSignatureCrypt;
+	    m_emailSignatureCrypt = new spoton_crypt
+	      (m_ui.cipherType->currentText(),
+	       m_ui.hashType->currentText(),
+	       m_ui.passphrase->text().toUtf8(),
+	       key,
+	       m_ui.saltLength->value(),
+	       m_ui.iterationCount->value(),
+	       "email-signature");
 
 	    if(!m_tableTimer.isActive())
 	      m_tableTimer.start();
@@ -3159,7 +3209,35 @@ void spoton::slotShowContextMenu(const QPoint &point)
 {
   QMenu menu(this);
 
-  if(m_ui.listeners == sender())
+  if(m_ui.emailParticipants == sender())
+    {
+      QAction *action = menu.addAction
+	(QIcon(QString(":/%1/add.png").
+	       arg(m_settings.value("gui/iconSet", "nouve").toString())),
+	 tr("&Add participant as friend."),
+	 this, SLOT(slotShareEmailPublicKeyWithParticipant(void)));
+      QTableWidgetItem *item = m_ui.emailParticipants->itemAt(point);
+
+      if(item && item->data(Qt::UserRole).toBool()) // Temporary friend?
+	action->setEnabled(true);
+      else
+	action->setEnabled(false);
+
+      menu.addSeparator();
+      menu.addAction(QIcon(QString(":/%1/copy.png").
+			   arg(m_settings.value("gui/iconSet", "nouve").
+			       toString())),
+		     tr("&Copy Repleo to the clipboard buffer."),
+		     this, SLOT(slotCopyEmailFriendshipBundle(void)));
+      menu.addSeparator();
+      menu.addAction(QIcon(QString(":/%1/clear.png").
+			   arg(m_settings.value("gui/iconSet", "nouve").
+			       toString())),
+		     tr("&Remove participant(s)."),
+		     this, SLOT(slotRemoveEmailParticipants(void)));
+      menu.exec(m_ui.emailParticipants->mapToGlobal(point));
+    }
+  else if(m_ui.listeners == sender())
     {
       menu.addAction(QIcon(QString(":/%1/clear.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
@@ -3190,8 +3268,13 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(QIcon(QString(":/%1/share.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
-		     tr("Share &Messaging Public Key"),
-		     this, SLOT(slotSharePublicKey(void)));
+		     tr("Share &Chat Public Key"),
+		     this, SLOT(slotShareChatPublicKey(void)));
+      menu.addAction(QIcon(QString(":/%1/share.png").
+			   arg(m_settings.value("gui/iconSet", "nouve").
+			       toString())),
+		     tr("Share &E-Mail Public Key"),
+		     this, SLOT(slotShareEmailPublicKey(void)));
       menu.addAction(QIcon(QString(":%1//share.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
@@ -3232,7 +3315,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 	(QIcon(QString(":/%1/add.png").
 	       arg(m_settings.value("gui/iconSet", "nouve").toString())),
 	 tr("&Add participant as friend."),
-	 this, SLOT(slotSharePublicKeyWithParticipant(void)));
+	 this, SLOT(slotShareChatPublicKeyWithParticipant(void)));
       QTableWidgetItem *item = m_ui.participants->itemAt(point);
 
       if(item && item->data(Qt::UserRole).toBool()) // Temporary friend?
@@ -3800,10 +3883,11 @@ void spoton::slotPopulateParticipants(void)
 
 	if(query.exec("SELECT name, OID, neighbor_oid, "
 		      "public_key_hash, "
-		      "status, gemini FROM friends_public_keys "
-		      "WHERE key_type = 'messaging'"))
+		      "status, gemini, key_type FROM friends_public_keys "
+		      "WHERE key_type = 'chat' OR key_type = 'email'"))
 	  while(query.next())
 	    {
+	      QString keyType(query.value(6).toString());
 	      QString status(query.value(4).toString());
 	      bool temporary =
 		query.value(2).toInt() == -1 ? false : true;
@@ -3815,172 +3899,192 @@ void spoton::slotPopulateParticipants(void)
 		{
 		  QTableWidgetItem *item = 0;
 
-		  if(i == 0)
+		  if(keyType == "chat")
 		    {
-		      /*
-		      ** Do not increase the table's row count
-		      ** if the participant is offline and the
-		      ** user wishes to hide offline participants.
-		      */
-
-		      if(!(m_ui.hideOfflineParticipants->isChecked() &&
-			   status == "offline"))
+		      if(i == 0)
 			{
-			  row += 1;
-			  m_ui.participants->setRowCount(row);
+			  /*
+			  ** Do not increase the table's row count
+			  ** if the participant is offline and the
+			  ** user wishes to hide offline participants.
+			  */
+
+			  if(!(m_ui.hideOfflineParticipants->isChecked() &&
+			       status == "offline"))
+			    {
+			      row += 1;
+			      m_ui.participants->setRowCount(row);
+			    }
 			}
 
-		      if(!temporary)
-			{
-			  rowE += 1;
-			  m_ui.emailParticipants->setRowCount(rowE);
-			}
-		    }
-
-		  if(i == 0)
-		    item = new QTableWidgetItem
-		      (QString::fromUtf8(query.value(i).toByteArray()));
-		  else if(i == 4)
-		    {
-		      QString status(query.value(i).toString());
-
-		      if(!status.isEmpty())
-			{
-			  if(status.at(0).isLetter())
-			    status[0] = status.toUpper()[0];
-			}
-		      else
-			status = "Offline";
-
-		      if(status == "Away")
-			item = new QTableWidgetItem(tr("Away"));
-		      else if(status == "Busy")
-			item = new QTableWidgetItem(tr("Busy"));
-		      else if(status == "Offline")
-			item = new QTableWidgetItem(tr("Offline"));
-		      else if(status == "Online")
-			item = new QTableWidgetItem(tr("Online"));
-		      else
-			item = new QTableWidgetItem(tr("Friend"));
-		    }
-		  else if(i == 5)
-		    {
-		      bool ok = true;
-
-		      if(query.isNull(i))
-			item = new QTableWidgetItem();
-		      else
+		      if(i == 0)
 			item = new QTableWidgetItem
-			  (m_crypt->decrypted(QByteArray::
-					      fromBase64(query.
-							 value(i).
-							 toByteArray()),
-					      &ok).constData());
-		    }
-		  else
-		    item = new QTableWidgetItem(query.value(i).toString());
-
-		  item->setFlags
-		    (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-
-		  if(i == 0)
-		    {
-		      if(!temporary)
-			m_ui.emailParticipants->setItem
-			  (rowE - 1, i, item->clone());
-
-		      if(!temporary)
+			  (QString::fromUtf8(query.value(i).toByteArray()));
+		      else if(i == 4)
 			{
-			  if(status == "away")
+			  QString status(query.value(i).toString());
+
+			  if(!status.isEmpty())
 			    {
-			      item->setIcon
-				(QIcon(QString(":/%1/away.png").
-				       arg(m_settings.value("gui/iconSet",
-							    "nouve").
-					   toString())));
-			      item->setToolTip(tr("Your friend %1 is away.").
-					       arg(item->text()));
+			      if(status.at(0).isLetter())
+				status[0] = status.toUpper()[0];
 			    }
-			  else if(status == "busy")
+			  else
+			    status = "Offline";
+
+			  if(status == "Away")
+			    item = new QTableWidgetItem(tr("Away"));
+			  else if(status == "Busy")
+			    item = new QTableWidgetItem(tr("Busy"));
+			  else if(status == "Offline")
+			    item = new QTableWidgetItem(tr("Offline"));
+			  else if(status == "Online")
+			    item = new QTableWidgetItem(tr("Online"));
+			  else
+			    item = new QTableWidgetItem(tr("Friend"));
+			}
+		      else if(i == 5)
+			{
+			  bool ok = true;
+
+			  if(query.isNull(i))
+			    item = new QTableWidgetItem();
+			  else
+			    item = new QTableWidgetItem
+			      (m_crypt->decrypted(QByteArray::
+						  fromBase64(query.
+							     value(i).
+							     toByteArray()),
+						  &ok).constData());
+			}
+		      else
+			item = new QTableWidgetItem(query.value(i).toString());
+
+		      item->setFlags
+			(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+		      if(i == 0)
+			{
+			  if(!temporary)
 			    {
-			      item->setIcon
-				(QIcon(QString(":/%1/busy.png").
-				       arg(m_settings.value("gui/iconSet",
-							    "nouve").
-					   toString())));
-			      item->setToolTip(tr("Your friend %1 is busy.").
-					       arg(item->text()));
+			      if(status == "away")
+				{
+				  item->setIcon
+				    (QIcon(QString(":/%1/away.png").
+					   arg(m_settings.value("gui/iconSet",
+								"nouve").
+					       toString())));
+				  item->setToolTip
+				    (tr("Your friend %1 is away.").
+				     arg(item->text()));
+				}
+			      else if(status == "busy")
+				{
+				  item->setIcon
+				    (QIcon(QString(":/%1/busy.png").
+					   arg(m_settings.value("gui/iconSet",
+								"nouve").
+					       toString())));
+				  item->setToolTip
+				    (tr("Your friend %1 is busy.").
+				     arg(item->text()));
+				}
+			      else if(status == "offline")
+				{
+				  item->setIcon
+				    (QIcon(QString(":/%1/offline.png").
+					   arg(m_settings.value("gui/iconSet",
+								"nouve").
+					       toString())));
+				  item->setToolTip
+				    (tr("Your friend %1 is offline.").
+				     arg(item->text()));
+				}
+			      else if(status == "online")
+				{
+				  item->setIcon
+				    (QIcon(QString(":/%1/online.png").
+					   arg(m_settings.value("gui/iconSet",
+								"nouve").
+					       toString())));
+				  item->setToolTip(tr("User %1 is online.").
+						   arg(item->text()));
+				}
+			      else
+				item->setToolTip(tr("User %1 is a "
+						    "permanent friend.").
+						 arg(item->text()));
 			    }
-			  else if(status == "offline")
+			  else
 			    {
 			      item->setIcon
-				(QIcon(QString(":/%1/offline.png").
+				(QIcon(QString(":/%1/add.png").
 				       arg(m_settings.value("gui/iconSet",
 							    "nouve").
 					   toString())));
 			      item->setToolTip
-				(tr("Your friend %1 is offline.").
+				(tr("User %1 requests your friendship.").
 				 arg(item->text()));
 			    }
-			  else if(status == "online")
-			    {
-			      item->setIcon
-				(QIcon(QString(":/%1/online.png").
-				       arg(m_settings.value("gui/iconSet",
-							    "nouve").
-					   toString())));
-			      item->setToolTip(tr("User %1 is online.").
-					       arg(item->text()));
-			    }
-			  else
-			    item->setToolTip(tr("User %1 is a "
-						"permanent friend.").
-					     arg(item->text()));
 			}
-		      else
+		      else if(i == 5)
 			{
-			  item->setIcon
-			    (QIcon(QString(":/%1/add.png").
-				   arg(m_settings.value("gui/iconSet",
-							"nouve").
-				       toString())));
-			  item->setToolTip
-			    (tr("User %1 requests your friendship.").
-			     arg(item->text()));
+			  if(!temporary)
+			    item->setFlags(item->flags() | Qt::ItemIsEditable);
 			}
-		    }
-		  else if(i == 1)
-		    {
-		      if(!temporary)
-			m_ui.emailParticipants->setItem
-			  (rowE - 1, i, item->clone());
-		    }
-		  else if(i == 3)
-		    {
-		      if(!temporary)
-			m_ui.emailParticipants->setItem
-			  (rowE - 1, i - 1, item->clone());
-		    }
-		  else if(i == 5)
-		    {
-		      if(!temporary)
-			item->setFlags(item->flags() | Qt::ItemIsEditable);
-		    }
 
-		  item->setData(Qt::UserRole, temporary);
+		      item->setData(Qt::UserRole, temporary);
 
-		  /*
-		  ** Delete the item if the participant is offline
-		  ** and the user wishes to hide offline participants.
-		  ** Please note that the e-mail participants are cloned
-		  ** and are not subjected to this restriction.
-		  */
+		      /*
+		      ** Delete the item if the participant is offline
+		      ** and the user wishes to hide offline participants.
+		      ** Please note that the e-mail participants are cloned
+		      ** and are not subjected to this restriction.
+		      */
 
-		  if(m_ui.hideOfflineParticipants->isChecked() &&
-		     status == "offline")
-		    delete item;
-		  else
-		    m_ui.participants->setItem(row - 1, i, item);
+		      if(m_ui.hideOfflineParticipants->isChecked() &&
+			 status == "offline")
+			delete item;
+		      else
+			m_ui.participants->setItem(row - 1, i, item);
+		    }
+		  else // E-Mail!
+		    {
+		      if(i == 0)
+			{
+			  rowE += 1;
+			  m_ui.emailParticipants->setRowCount(rowE);
+			}
+
+		      if(i == 0)
+			item = new QTableWidgetItem
+			  (QString::fromUtf8(query.value(i).toByteArray()));
+		      else if(i == 1 || i == 2 || i == 3)
+			item = new QTableWidgetItem(query.value(i).toString());
+
+		      if(i == 0)
+			if(temporary)
+			  {
+			    item->setIcon
+			      (QIcon(QString(":/%1/add.png").
+				     arg(m_settings.value("gui/iconSet",
+							  "nouve").
+					 toString())));
+			    item->setToolTip
+			      (tr("User %1 requests your friendship.").
+			       arg(item->text()));
+			  }
+
+		      if(item)
+			{
+			  item->setData(Qt::UserRole, temporary);
+			  item->setFlags
+			    (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+			}
+
+		      m_ui.emailParticipants->setItem
+			(rowE - 1, i, item);
+		    }
 		}
 
 	      if(hashes.contains(query.value(3).toString()))
@@ -4480,4 +4584,153 @@ void spoton::slotSignatureCheckBoxToggled(bool state)
 
       settings.setValue(QString("gui/%1").arg(str), state);
     }
+}
+
+void spoton::slotCopyEmailFriendshipBundle(void)
+{
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(!clipboard)
+    return;
+
+  if(!m_emailCrypt)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.emailParticipants->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.emailParticipants->item
+	(row, 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    {
+      clipboard->clear();
+      return;
+    }
+
+  /*
+  ** 1. Generate some symmetric information, S.
+  ** 2. Encrypt S with the participant's public key.
+  ** 3. Encrypt our information (name, public keys, signatures) with the
+  **    symmetric key. Call our information T.
+  ** 4. Compute a keyed hash of T using the symmetric key.
+  */
+
+  QString neighborOid("");
+  QByteArray gemini;
+  QByteArray keyInformation;
+  QByteArray publicKey;
+  QByteArray symmetricKey;
+  QByteArray symmetricKeyAlgorithm;
+
+  spoton_misc::retrieveSymmetricData(gemini,
+				     publicKey,
+				     symmetricKey,
+				     symmetricKeyAlgorithm,
+				     neighborOid,
+				     oid,
+				     m_emailCrypt);
+
+  if(publicKey.isEmpty() ||
+     symmetricKey.isEmpty() || symmetricKeyAlgorithm.isEmpty())
+    {
+      clipboard->clear();
+      return;
+    }
+
+  bool ok = true;
+
+  keyInformation = spoton_crypt::publicKeyEncrypt
+    (symmetricKey.toBase64() + "@" + symmetricKeyAlgorithm.toBase64(),
+     publicKey, &ok);
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QByteArray mySPublicKey(m_emailSignatureCrypt->publicKey(&ok));
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QByteArray mySSignature
+    (m_emailSignatureCrypt->digitalSignature(mySPublicKey, &ok));
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QByteArray myPublicKey(m_emailCrypt->publicKey(&ok));
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QByteArray mySignature(m_emailCrypt->digitalSignature(myPublicKey, &ok));
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QByteArray myName
+    (m_settings.value("gui/emailName", "unknown").toByteArray().
+     trimmed());
+
+  if(myName.isEmpty())
+    myName = "unknown";
+
+  QByteArray data;
+  spoton_crypt crypt(symmetricKeyAlgorithm,
+		     QString("sha512"),
+		     QByteArray(),
+		     symmetricKey,
+		     0,
+		     0,
+		     QString(""));
+
+  data = crypt.encrypted(QByteArray("email").toBase64() + "@" +
+			 myName.toBase64() + "@" +
+			 myPublicKey.toBase64() + "@" +
+			 mySignature.toBase64() + "@" +
+			 mySPublicKey.toBase64() + "@" +
+			 mySSignature.toBase64(), &ok);
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QByteArray hash(crypt.keyedHash(data, &ok));
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  clipboard->setText("R" +
+		     keyInformation.toBase64() + "@" +
+		     data.toBase64() + "@" +
+		     hash.toBase64());
 }
