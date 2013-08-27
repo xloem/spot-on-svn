@@ -179,11 +179,13 @@ void spoton::slotReceivedKernelMessage(void)
 		  bool duplicate = false;
 		  bool ok = true;
 
-		  if(m_crypt)
+		  if(m_crypts.value("chat", 0))
 		    hash = spoton_crypt::keyedHash
 		      (list.value(0),
-		       QByteArray(m_crypt->symmetricKey(),
-				  m_crypt->symmetricKeyLength()),
+		       QByteArray(m_crypts.value("chat")->
+				  symmetricKey(),
+				  m_crypts.value("chat")->
+				  symmetricKeyLength()),
 		       "sha512", &ok);
 		  else
 		    hash = spoton_crypt::sha512Hash(list.value(0), &ok);
@@ -256,7 +258,8 @@ void spoton::slotReceivedKernelMessage(void)
 
 void spoton::slotShareChatPublicKey(void)
 {
-  if(!m_crypt)
+  if(!m_crypts.value("chat", 0) ||
+     !m_crypts.value("chat-signature"))
     return;
   else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
     return;
@@ -283,19 +286,20 @@ void spoton::slotShareChatPublicKey(void)
 
   bool ok = true;
 
-  publicKey = m_crypt->publicKey(&ok);
+  publicKey = m_crypts.value("chat")->publicKey(&ok);
 
   if(ok)
-    signature = m_crypt->digitalSignature(publicKey, &ok);
+    signature = m_crypts.value("chat")->digitalSignature(publicKey, &ok);
 
   QByteArray sPublicKey;
   QByteArray sSignature;
 
   if(ok)
-    sPublicKey = m_chatSignatureCrypt->publicKey(&ok);
+    sPublicKey = m_crypts.value("chat-signature")->publicKey(&ok);
 
   if(ok)
-    sSignature = m_chatSignatureCrypt->digitalSignature(sPublicKey, &ok);
+    sSignature = m_crypts.value("chat-signature")->
+      digitalSignature(sPublicKey, &ok);
 
   if(ok)
     {
@@ -333,7 +337,8 @@ void spoton::slotShareChatPublicKey(void)
 
 void spoton::slotShareEmailPublicKey(void)
 {
-  if(!m_emailCrypt)
+  if(!m_crypts.value("email", 0) ||
+     !m_crypts.value("email-signature", 0))
     return;
   else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
     return;
@@ -360,19 +365,20 @@ void spoton::slotShareEmailPublicKey(void)
 
   bool ok = true;
 
-  publicKey = m_emailCrypt->publicKey(&ok);
+  publicKey = m_crypts.value("email")->publicKey(&ok);
 
   if(ok)
-    signature = m_emailCrypt->digitalSignature(publicKey, &ok);
+    signature = m_crypts.value("email")->digitalSignature(publicKey, &ok);
 
   QByteArray sPublicKey;
   QByteArray sSignature;
 
   if(ok)
-    sPublicKey = m_emailSignatureCrypt->publicKey(&ok);
+    sPublicKey = m_crypts.value("email-signature")->publicKey(&ok);
 
   if(ok)
-    sSignature = m_emailSignatureCrypt->digitalSignature(sPublicKey, &ok);
+    sSignature = m_crypts.value("email-signature")->
+      digitalSignature(sPublicKey, &ok);
 
   if(ok)
     {
@@ -681,7 +687,8 @@ void spoton::slotChatSendMethodChanged(int index)
 
 void spoton::slotShareChatPublicKeyWithParticipant(void)
 {
-  if(!m_crypt)
+  if(!m_crypts.value("chat", 0) ||
+     !m_crypts.value("chat-signature", 0))
     return;
   else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
     return;
@@ -707,19 +714,20 @@ void spoton::slotShareChatPublicKeyWithParticipant(void)
   QByteArray signature;
   bool ok = true;
 
-  publicKey = m_crypt->publicKey(&ok);
+  publicKey = m_crypts.value("chat")->publicKey(&ok);
 
   if(ok)
-    signature = m_crypt->digitalSignature(publicKey, &ok);
+    signature = m_crypts.value("chat")->digitalSignature(publicKey, &ok);
 
   QByteArray sPublicKey;
   QByteArray sSignature;
 
   if(ok)
-    sPublicKey = m_chatSignatureCrypt->publicKey(&ok);
+    sPublicKey = m_crypts.value("chat-signature")->publicKey(&ok);
 
   if(ok)
-    sSignature = m_chatSignatureCrypt->digitalSignature(sPublicKey, &ok);
+    sSignature = m_crypts.value("chat-signature")->
+      digitalSignature(sPublicKey, &ok);
 
   if(ok)
     {
@@ -758,7 +766,8 @@ void spoton::slotShareChatPublicKeyWithParticipant(void)
 
 void spoton::slotShareEmailPublicKeyWithParticipant(void)
 {
-  if(!m_emailCrypt)
+  if(!m_crypts.value("email", 0) ||
+     !m_crypts.value("email-signature", 0))
     return;
   else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
     return;
@@ -784,19 +793,20 @@ void spoton::slotShareEmailPublicKeyWithParticipant(void)
   QByteArray signature;
   bool ok = true;
 
-  publicKey = m_emailCrypt->publicKey(&ok);
+  publicKey = m_crypts.value("email")->publicKey(&ok);
 
   if(ok)
-    signature = m_emailCrypt->digitalSignature(publicKey, &ok);
+    signature = m_crypts.value("email")->digitalSignature(publicKey, &ok);
 
   QByteArray sPublicKey;
   QByteArray sSignature;
 
   if(ok)
-    sPublicKey = m_emailSignatureCrypt->publicKey(&ok);
+    sPublicKey = m_crypts.value("email-signature")->publicKey(&ok);
 
   if(ok)
-    sSignature = m_emailSignatureCrypt->digitalSignature(sPublicKey, &ok);
+    sSignature = m_crypts.value("email-signature")->
+      digitalSignature(sPublicKey, &ok);
 
   if(ok)
     {
@@ -867,7 +877,8 @@ bool spoton::isKernelActive(void) const
 
 void spoton::slotCopyMyChatPublicKey(void)
 {
-  if(!m_crypt)
+  if(!m_crypts.value("chat", 0) ||
+     !m_crypts.value("chat-signature", 0))
     return;
 
   QClipboard *clipboard = QApplication::clipboard();
@@ -884,16 +895,17 @@ void spoton::slotCopyMyChatPublicKey(void)
 
   name = m_settings.value("gui/nodeName", "unknown").toByteArray().
     trimmed();
-  mPublicKey = m_crypt->publicKey(&ok);
+  mPublicKey = m_crypts.value("chat")->publicKey(&ok);
 
   if(ok)
-    mSignature = m_crypt->digitalSignature(mPublicKey, &ok);
+    mSignature = m_crypts.value("chat")->digitalSignature(mPublicKey, &ok);
 
   if(ok)
-    sPublicKey = m_chatSignatureCrypt->publicKey(&ok);
+    sPublicKey = m_crypts.value("chat-signature")->publicKey(&ok);
 
   if(ok)
-    sSignature = m_chatSignatureCrypt->digitalSignature(sPublicKey, &ok);
+    sSignature = m_crypts.value("chat-signature")->
+      digitalSignature(sPublicKey, &ok);
 
   if(ok)
     clipboard->setText
@@ -907,7 +919,7 @@ void spoton::slotCopyMyChatPublicKey(void)
 
 void spoton::slotPopulateCountries(void)
 {
-  if(!m_crypt)
+  if(!m_crypts.value("chat", 0))
     return;
 
   QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
@@ -957,23 +969,25 @@ void spoton::slotPopulateCountries(void)
 		bool accepted = true;
 		bool ok = true;
 
-		country = m_crypt->decrypted(QByteArray::
-					     fromBase64(query.
-							value(0).
-							toByteArray()),
-					     &ok).constData();
+		country = m_crypts.value("chat")->
+		  decrypted(QByteArray::
+			    fromBase64(query.
+				       value(0).
+				       toByteArray()),
+			    &ok).constData();
 
 		if(ok)
-		  accepted = m_crypt->decrypted(QByteArray::
-						fromBase64(query.
-							   value(1).
-							   toByteArray()),
-						&ok).toInt(); /*
-							      ** toInt()
-							      ** failure
-							      ** returns
-							      ** zero.
-							      */
+		  accepted = m_crypts.value("chat")->
+		    decrypted(QByteArray::
+			      fromBase64(query.
+					 value(1).
+					 toByteArray()),
+			      &ok).toInt(); /*
+					    ** toInt()
+					    ** failure
+					    ** returns
+					    ** zero.
+					    */
 
 		if(ok)
 		  {
@@ -1050,7 +1064,7 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
 {
   if(!item)
     return;
-  else if(!m_crypt)
+  else if(!m_crypts.value("chat", 0))
     return;
 
   QString connectionName("");
@@ -1069,12 +1083,14 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
 	query.prepare("UPDATE country_inclusion SET accepted = ? "
 		      "WHERE country_hash = ?");
 	query.bindValue
-	  (0, m_crypt->encrypted(QString::number(item->checkState()).
-				 toLatin1(), &ok).toBase64());
+	  (0, m_crypts.value("chat")->
+	   encrypted(QString::number(item->checkState()).
+		     toLatin1(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (1, m_crypt->keyedHash(item->text().toLatin1(), &ok).toBase64());
+	    (1, m_crypts.value("chat")->
+	     keyedHash(item->text().toLatin1(), &ok).toBase64());
 
 	if(ok)
 	  ok = query.exec();
@@ -1102,7 +1118,8 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
 			  "WHERE qt_country_hash = ?");
 	    query.bindValue
 	      (0,
-	       m_crypt->keyedHash(item->text().toLatin1(), &ok).toBase64());
+	       m_crypts.value("chat")->
+	       keyedHash(item->text().toLatin1(), &ok).toBase64());
 
 	    if(ok)
 	      query.exec();
@@ -1540,7 +1557,7 @@ void spoton::slotAddFriendsKey(void)
 
       keyType = QByteArray::fromBase64(keyType);
 
-      if(!(keyType == "cat" || keyType == "email" || keyType == "url"))
+      if(!(keyType == "chat" || keyType == "email" || keyType == "url"))
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
@@ -1621,7 +1638,8 @@ void spoton::slotAddFriendsKey(void)
       ** Have fun!
       */
 
-      if(!m_crypt)
+      if(!m_crypts.value("chat", 0) ||
+	 !m_crypts.value("email", 0))
 	return;
       else if(m_ui.friendInformation->toPlainText().trimmed().isEmpty())
 	return;
@@ -1659,10 +1677,17 @@ void spoton::slotAddFriendsKey(void)
       QByteArray keyInformation(list.value(0));
       bool ok = true;
 
-      keyInformation = m_crypt->publicKeyDecrypt(keyInformation, &ok);
+      keyInformation = m_crypts.value("chat")->
+	publicKeyDecrypt(keyInformation, &ok);
 
       if(!ok)
-	return;
+	{
+	  keyInformation = m_crypts.value("email")->
+	    publicKeyDecrypt(keyInformation, &ok);
+
+	  if(!ok)
+	    return;
+	}
 
       list = keyInformation.split('@');
 
@@ -1897,7 +1922,8 @@ void spoton::slotCopyFriendshipBundle(void)
   if(!clipboard)
     return;
 
-  if(!m_crypt)
+  if(!m_crypts.value("chat", 0) ||
+     !m_crypts.value("chat-signature", 0))
     {
       clipboard->clear();
       return;
@@ -1942,7 +1968,7 @@ void spoton::slotCopyFriendshipBundle(void)
 				     symmetricKeyAlgorithm,
 				     neighborOid,
 				     oid,
-				     m_crypt);
+				     m_crypts.value("chat"));
 
   if(publicKey.isEmpty() ||
      symmetricKey.isEmpty() || symmetricKeyAlgorithm.isEmpty())
@@ -1963,7 +1989,7 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  QByteArray mySPublicKey(m_chatSignatureCrypt->publicKey(&ok));
+  QByteArray mySPublicKey(m_crypts.value("chat-signature")->publicKey(&ok));
 
   if(!ok)
     {
@@ -1972,7 +1998,7 @@ void spoton::slotCopyFriendshipBundle(void)
     }
 
   QByteArray mySSignature
-    (m_chatSignatureCrypt->digitalSignature(mySPublicKey, &ok));
+    (m_crypts.value("chat-signature")->digitalSignature(mySPublicKey, &ok));
 
   if(!ok)
     {
@@ -1980,7 +2006,7 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  QByteArray myPublicKey(m_crypt->publicKey(&ok));
+  QByteArray myPublicKey(m_crypts.value("chat")->publicKey(&ok));
 
   if(!ok)
     {
@@ -1988,7 +2014,8 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  QByteArray mySignature(m_crypt->digitalSignature(myPublicKey, &ok));
+  QByteArray mySignature(m_crypts.value("chat")->
+			 digitalSignature(myPublicKey, &ok));
 
   if(!ok)
     {
@@ -2046,7 +2073,7 @@ Ui_spoton_mainwindow spoton::ui(void) const
 
 void spoton::slotSendMail(void)
 {
-  if(!m_crypt)
+  if(!m_crypts.value("email", 0))
     return;
 
   /*
@@ -2129,29 +2156,35 @@ void spoton::slotSendMail(void)
 			  "status, subject, participant_oid) "
 			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue
-	      (0, m_crypt->encrypted(now.toString(Qt::ISODate).
-				     toLatin1(), &ok).toBase64());
+	      (0, m_crypts.value("email")->
+	       encrypted(now.toString(Qt::ISODate).
+			 toLatin1(), &ok).toBase64());
 	    query.bindValue(1, 1); // Sent Folder
 
 	    if(ok)
 	      query.bindValue
-		(2, m_crypt->encrypted(goldbug, &ok).toBase64());
+		(2, m_crypts.value("email")->
+		 encrypted(goldbug, &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(3, m_crypt->keyedHash(now.toString().toLatin1() +
-				       message + subject, &ok).toBase64());
+		(3, m_crypts.value("email")->
+		 keyedHash(now.toString().toLatin1() +
+			   message + subject, &ok).toBase64());
 
 	    if(ok)
-	      query.bindValue(4, m_crypt->encrypted(message, &ok).toBase64());
+	      query.bindValue(4, m_crypts.value("email")->
+			      encrypted(message, &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(5, m_crypt->encrypted(QByteArray(), &ok).toBase64());
+		(5, m_crypts.value("email")->
+		 encrypted(QByteArray(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(6, m_crypt->encrypted(names.takeFirst().toUtf8(), &ok).
+		(6, m_crypts.value("email")->
+		 encrypted(names.takeFirst().toUtf8(), &ok).
 		 toBase64());
 
 	    if(ok)
@@ -2160,16 +2193,18 @@ void spoton::slotSendMail(void)
 
 	    if(ok)
 	      query.bindValue
-		(8, m_crypt->encrypted(tr("Queued").toUtf8(),
-				       &ok).toBase64());
+		(8, m_crypts.value("email")->
+		 encrypted(tr("Queued").toUtf8(),
+			   &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(9, m_crypt->encrypted(subject, &ok).toBase64());
+		(9, m_crypts.value("email")->
+		 encrypted(subject, &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(10, m_crypt->encrypted(oid.toLatin1(), &ok).
+		(10, m_crypts.value("email")->encrypted(oid.toLatin1(), &ok).
 		 toBase64());
 
 	    if(ok)
@@ -2192,7 +2227,7 @@ void spoton::slotSendMail(void)
 
 void spoton::slotDeleteAllBlockedNeighbors(void)
 {
-  if(!m_crypt)
+  if(!m_crypts.value("chat", 0))
     return;
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -2225,9 +2260,10 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
 	      bool ok = true;
 
 	      ip =
-		m_crypt->decrypted(QByteArray::fromBase64(query.value(0).
-							  toByteArray()),
-				   &ok);
+		m_crypts.value("chat")->
+		decrypted(QByteArray::fromBase64(query.value(0).
+						 toByteArray()),
+			  &ok);
 
 	      if(ok)
 		hash.insert(ip, query.value(1).toLongLong());
@@ -2258,7 +2294,8 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
 
 void spoton::slotCopyMyEmailPublicKey(void)
 {
-  if(!m_emailCrypt)
+  if(!m_crypts.value("email", 0) ||
+     !m_crypts.value("email-signature", 0))
     return;
 
   QClipboard *clipboard = QApplication::clipboard();
@@ -2273,18 +2310,19 @@ void spoton::slotCopyMyEmailPublicKey(void)
   QByteArray sSignature;
   bool ok = true;
 
-  name = m_settings.value("gui/nodeName", "unknown").toByteArray().
+  name = m_settings.value("gui/emailName", "unknown").toByteArray().
     trimmed();
-  mPublicKey = m_emailCrypt->publicKey(&ok);
+  mPublicKey = m_crypts.value("email")->publicKey(&ok);
 
   if(ok)
-    mSignature = m_emailCrypt->digitalSignature(mPublicKey, &ok);
+    mSignature = m_crypts.value("email")->digitalSignature(mPublicKey, &ok);
 
   if(ok)
-    sPublicKey = m_emailSignatureCrypt->publicKey(&ok);
+    sPublicKey = m_crypts.value("email-signature")->publicKey(&ok);
 
   if(ok)
-    sSignature = m_emailSignatureCrypt->digitalSignature(sPublicKey, &ok);
+    sSignature = m_crypts.value("email-signature")->
+      digitalSignature(sPublicKey, &ok);
 
   if(ok)
     clipboard->setText
@@ -2306,7 +2344,7 @@ void spoton::slotShareURLPublicKey(void)
 
 void spoton::slotDeleteAllUuids(void)
 {
-   if(!m_crypt)
+  if(!m_crypts.value("chat", 0))
     return;
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -2338,9 +2376,10 @@ void spoton::slotDeleteAllUuids(void)
 	      bool ok = true;
 
 	      uuid =
-		m_crypt->decrypted(QByteArray::fromBase64(query.value(0).
-							  toByteArray()),
-				   &ok);
+		m_crypts.value("chat")->
+		decrypted(QByteArray::fromBase64(query.value(0).
+						 toByteArray()),
+			  &ok);
 
 	      if(ok)
 		hash.insert(uuid, query.value(1).toLongLong());
@@ -2386,7 +2425,7 @@ void spoton::slotRefreshMail(void)
   else
     m_ui.mail->horizontalHeaderItem(1)->setText(tr("From/To"));
 
-  if(!m_crypt)
+  if(!m_crypts.value("email", 0))
     return;
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -2423,7 +2462,7 @@ void spoton::slotRefreshMail(void)
 	      QString goldbug("");
 	      bool ok = true;
 
-	      goldbug = m_crypt->
+	      goldbug = m_crypts.value("email")->
 		decrypted(QByteArray::
 			  fromBase64(query.
 				     value(4).
@@ -2452,7 +2491,7 @@ void spoton::slotRefreshMail(void)
 			  if(goldbug == "0")
 			    item = new QTableWidgetItem
 			      (QString::
-			       fromUtf8(m_crypt->
+			       fromUtf8(m_crypts.value("email")->
 					decrypted(QByteArray::
 						  fromBase64(query.
 							     value(i).
@@ -2465,11 +2504,12 @@ void spoton::slotRefreshMail(void)
 			{
 			  if(goldbug == "0")
 			    item = new QTableWidgetItem
-			      (m_crypt->decrypted(QByteArray::
-						  fromBase64(query.
-							     value(i).
-							     toByteArray()),
-						  &ok).constData());
+			      (m_crypts.value("email")->
+			       decrypted(QByteArray::
+					 fromBase64(query.
+						    value(i).
+						    toByteArray()),
+					 &ok).constData());
 			  else
 			    item = new QTableWidgetItem("#####");
 			}
@@ -2497,7 +2537,7 @@ void spoton::slotRefreshMail(void)
 
 void spoton::slotRefreshPostOffice(void)
 {
-  if(!m_crypt)
+  if(!m_crypts.value("email", 0))
     return;
   else if(m_ui.mailTab->currentIndex() != 2)
     return;
@@ -2540,19 +2580,21 @@ void spoton::slotRefreshPostOffice(void)
 
 		if(i == 0)
 		  item = new QTableWidgetItem
-		    (m_crypt->decrypted(QByteArray::
-					fromBase64(query.
-						   value(i).
-						   toByteArray()),
-					&ok).constData());
+		    (m_crypts.value("email")->
+		     decrypted(QByteArray::
+			       fromBase64(query.
+					  value(i).
+					  toByteArray()),
+			       &ok).constData());
 		else if(i == 1)
 		  {
 		    QByteArray bytes
-		      (m_crypt->decrypted(QByteArray::
-					  fromBase64(query.
-						     value(i).
-						     toByteArray()),
-					  &ok));
+		      (m_crypts.value("email")->
+		       decrypted(QByteArray::
+				 fromBase64(query.
+					    value(i).
+					    toByteArray()),
+				 &ok));
 
 		    item = new QTableWidgetItem
 		      (QString::number(bytes.size()));
@@ -2777,9 +2819,10 @@ void spoton::slotDeleteMail(void)
 			      "status = ? WHERE "
 			      "OID = ?");
 
-		if(m_crypt)
+		if(m_crypts.value("email", 0))
 		  query.bindValue
-		    (0, m_crypt->encrypted(tr("Deleted").toUtf8(), &ok).
+		    (0, m_crypts.value("email")->
+		     encrypted(tr("Deleted").toUtf8(), &ok).
 		     toBase64());
 		else
 		  ok = false;
@@ -2882,8 +2925,9 @@ bool spoton::saveGemini(const QByteArray &gemini,
 	  query.bindValue(0, QVariant(QVariant::String));
 	else
 	  {
-	    if(m_crypt)
-	      query.bindValue(0, m_crypt->encrypted(gemini, &ok).toBase64());
+	    if(m_crypts.value("chat", 0))
+	      query.bindValue(0, m_crypts.value("chat")->
+			      encrypted(gemini, &ok).toBase64());
 	    else
 	      query.bindValue(0, QVariant(QVariant::String));
 	  }
@@ -3038,7 +3082,7 @@ void spoton::slotStatusButtonClicked(void)
 
 bool spoton::updateMailStatus(const QString &oid, const QString &status)
 {
-  if(!m_crypt)
+  if(!m_crypts.value("email", 0))
     return false;
 
   QString connectionName("");
@@ -3057,7 +3101,8 @@ bool spoton::updateMailStatus(const QString &oid, const QString &status)
 	query.prepare("UPDATE folders SET status = ? WHERE "
 		      "OID = ?");
 	query.bindValue
-	  (0, m_crypt->encrypted(status.toUtf8(), &ok).toBase64());
+	  (0, m_crypts.value("email")->
+	   encrypted(status.toUtf8(), &ok).toBase64());
 	query.bindValue(1, oid);
 
 	if(ok)
@@ -3233,7 +3278,7 @@ void spoton::slotSetIcons(void)
 int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 				      const int row)
 {
-  if(!m_crypt)
+  if(!m_crypts.value("email", 0))
     return APPLY_GOLDBUG_TO_INBOX_ERROR_MEMORY;
 
   QTableWidgetItem *item = m_ui.mail->item
@@ -3274,11 +3319,12 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 					    toByteArray()).trimmed());
 		else
 		  list.append
-		    (m_crypt->decrypted(QByteArray::
-					fromBase64(query.
-						   value(i).
-						   toByteArray()),
-					&ok).trimmed());
+		    (m_crypts.value("email")->
+		     decrypted(QByteArray::
+			       fromBase64(query.
+					  value(i).
+					  toByteArray()),
+			       &ok).trimmed());
 
 		if(!ok)
 		  break;
@@ -3333,34 +3379,39 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 
 	    if(ok)
 	      query.bindValue
-		(0, m_crypt->
+		(0, m_crypts.value("email")->
 		 encrypted(QString::number(0).toLatin1(), &ok).
 		 toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(1, m_crypt->keyedHash(list.value(1) + list.value(4), &ok).
+		(1, m_crypts.value("email")->
+		 keyedHash(list.value(1) + list.value(4), &ok).
 		 toBase64());
 
 	    if(!list.value(1).isEmpty())
 	      if(ok)
 		query.bindValue
-		  (2, m_crypt->encrypted(list.value(1), &ok).toBase64());
+		  (2, m_crypts.value("email")->
+		   encrypted(list.value(1), &ok).toBase64());
 
 	    if(!list.value(2).isEmpty())
 	      if(ok)
 		query.bindValue
-		  (3, m_crypt->encrypted(QByteArray(), &ok).toBase64());
+		  (3, m_crypts.value("email")->
+		   encrypted(QByteArray(), &ok).toBase64());
 
 	    if(!list.value(3).isEmpty())
 	      if(ok)
 		query.bindValue
-		  (4, m_crypt->encrypted(list.value(3), &ok).toBase64());
+		  (4, m_crypts.value("email")->
+		   encrypted(list.value(3), &ok).toBase64());
 
 	    if(!list.value(5).isEmpty())
 	      if(ok)
 		query.bindValue
-		  (5, m_crypt->encrypted(list.value(5), &ok).toBase64());
+		  (5, m_crypts.value("email")->
+		   encrypted(list.value(5), &ok).toBase64());
 
 	    query.bindValue(6, oid);
 

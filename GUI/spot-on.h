@@ -136,10 +136,7 @@ class spoton: public QMainWindow
   Ui_statusbar m_sb;
   Ui_spoton_mainwindow m_ui;
   bool m_purge;
-  spoton_crypt *m_chatSignatureCrypt;
-  spoton_crypt *m_crypt; // Chat too!
-  spoton_crypt *m_emailCrypt;
-  spoton_crypt *m_emailSignatureCrypt;
+  QHash<QString, spoton_crypt *> m_crypts;
   spoton_docviewer m_docViewer;
   spoton_logviewer m_logViewer;
   QPixmap pixmapForCountry(const QString &country);
