@@ -174,7 +174,7 @@ EOL
 Key Exchange
 Echoed? No
 
-Message Type ("0011" or "0012") (Plaintext)
+Message Type ("0011") (Plaintext)
 0 - Key Type (Base-64) (Plaintext)
 EOL
 1 - Sender's Name (Base-64) (Plaintext)
@@ -186,6 +186,28 @@ EOL
 4 - Sender's Signature Public Key (Base-64) (Public)
 EOL
 5 - Sender's Signature Public Key Signature (Base-64) (Plaintext)
+
+Public Key
+{
+0 - 0012 (Base-64)
+EOL
+1 - Symmetric Key (Base-64)
+EOL
+2 - Symmetric Key Algorithm (Base-64)
+}
+EOL
+Symmetric Key
+{
+0 - Sender's Name (Base-64)
+EOL
+1 - Sender's Public Key (Base-64)
+EOL
+2 - Sender's Public Key Signature (Base-64)
+EOL
+3 - Sender's Signature Public Key (Base-64)
+EOL
+4 - Sender's Signature Public Key Signature (Base-64)
+}
 
 Status
 Echoed? Yes
@@ -230,13 +252,13 @@ EOL
 UUID Exchange
 Echoed? No
 
-Message Type ("0014")
+Message Type ("0014") (Plaintext)
 UUID (Base-64) (Plaintext)
 
 Keep Alive
 Echoed? No
 
-Message Type ("0015")
+Message Type ("0015") (Plaintext)
 0 (Plaintext)
 
 Echo Listener Publication
