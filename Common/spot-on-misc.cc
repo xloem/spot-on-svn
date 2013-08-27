@@ -197,7 +197,7 @@ void spoton_misc::prepareDatabases(void)
 							 */
 	   "signature_public_key_hash "
 	   "TEXT NOT NULL)"); /*
-			      ** Sha-512 ** hash of the signature
+			      ** Sha-512 hash of the signature
 			      ** public key.
 			      */
       }
