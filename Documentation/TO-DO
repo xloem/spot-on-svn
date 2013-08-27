@@ -116,3 +116,4 @@ Remaining Items
 29.    Perform calling over geminis.
 30.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
 31.    Remote kernel termination.
+32.    Bulk key copies and exchanges, per the friendly Mr. Smith.
