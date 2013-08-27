@@ -632,7 +632,14 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 
 void spoton_neighbor::slotReadyRead(void)
 {
-  QByteArray data(readAll());
+  QByteArray data(8192, 0);
+
+  if(read(data.data(), data.size()) < 0)
+    {
+      spoton_misc::logError
+	("spoton_neighbor::slotReadyRead(): read() failure.");
+      data.clear();
+    }
 
   if(m_useSsl)
     if(!isEncrypted())
@@ -646,6 +653,34 @@ void spoton_neighbor::slotReadyRead(void)
 
   if(!data.isEmpty())
     m_data.append(data);
+
+  if(m_data.length() > m_maximumBufferSize)
+    {
+      if(readBufferSize() != 1000)
+	{
+	  setReadBufferSize(1000);
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::slotReadyRead(): "
+		     "received irregular data from %1:%2. Setting "
+		     "the read buffer size to 1000 bytes.").
+	     arg(peerAddress().isNull() ? peerName() :
+		 peerAddress().toString()).arg(peerPort()));
+	}
+      else
+	spoton_misc::logError
+	  (QString("spoton_neighbor::slotReadyRead(): "
+		   "received irregular data from %1:%2. The "
+		   "read buffer size remains at 1000 bytes.").
+	   arg(peerAddress().isNull() ? peerName() :
+	       peerAddress().toString()).arg(peerPort()));
+
+      spoton_misc::logError
+	(QString("spoton_neighbor::slotReadyRead(): "
+		 "the m_data container contains too much "
+		 "data (%1) that hasn't been processed. Purging.").
+	 arg(m_data.length()));
+      m_data.clear();
+    }
 
   if(m_data.contains(spoton_send::EOM))
     {
@@ -807,33 +842,6 @@ void spoton_neighbor::slotReadyRead(void)
 		       peerAddress().toString()).arg(peerPort()));
 	    }
 	}
-    }
-  else if(m_data.length() > m_maximumBufferSize)
-    {
-      if(readBufferSize() != 1000)
-	{
-	  setReadBufferSize(1000);
-	  spoton_misc::logError
-	    (QString("spoton_neighbor::slotReadyRead(): "
-		     "received irregular data from %1:%2. Setting "
-		     "the read buffer size to 1000 bytes.").
-	     arg(peerAddress().isNull() ? peerName() :
-		 peerAddress().toString()).arg(peerPort()));
-	}
-      else
-	spoton_misc::logError
-	  (QString("spoton_neighbor::slotReadyRead(): "
-		   "received irregular data from %1:%2. The "
-		   "read buffer size remains at 1000 bytes.").
-	   arg(peerAddress().isNull() ? peerName() :
-	       peerAddress().toString()).arg(peerPort()));
-
-      spoton_misc::logError
-	(QString("spoton_neighbor::slotReadyRead(): "
-		 "the m_data container contains too much "
-		 "data (%1) that hasn't been processed. Purging.").
-	 arg(m_data.length()));
-      m_data.clear();
     }
 }
 

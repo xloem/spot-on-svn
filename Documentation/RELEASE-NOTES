@@ -14,6 +14,7 @@
 6.   The method spoton_neighbor::resetKeepAlive() incorrectly restarted
      the keep-aliver timer. The timer is responsible for sending
      periodic notifications.
+7.   Limit read() to 1024 bytes in spoton_neighbor::slotReadyRead().
 
 0.03 (08/26/2013)
 
