@@ -1695,6 +1695,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 		      QByteArray name;
 		      QByteArray signature;
 		      QByteArray subject;
+		      bool goldbugUsed = false;
 		      spoton_crypt crypt(symmetricKeyAlgorithm,
 					 QString("sha512"),
 					 QByteArray(),
@@ -1723,7 +1724,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 			{
 			  QList<QByteArray> list(data.split('\n'));
 
-			  if(list.size() == 5)
+			  if(list.size() == 6)
 			    {
 			      senderPublicKeyHash2 =
 				QByteArray::fromBase64(list.value(0));
@@ -1735,13 +1736,17 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 				QByteArray::fromBase64(list.value(3));
 			      signature =
 				QByteArray::fromBase64(list.value(4));
+			      goldbugUsed =
+				QVariant
+				(QByteArray::fromBase64(list.value(5))).
+				toBool();
 			    }
 			  else
 			    {
 			      spoton_misc::logError
 				(QString("spoton_neighbor::process0001a(): "
 					 "received irregular data. "
-					 "Expecting 5 "
+					 "Expecting 6 "
 					 "entries, "
 					 "received %1.").arg(list.size()));
 			      return;
@@ -1755,15 +1760,14 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 			  ** message may have been encrypted via a goldbug.
 			  */
 
-			  saveParticipantStatus
-			    (name, senderPublicKeyHash2);
 			  storeLetter(symmetricKey,
 				      symmetricKeyAlgorithm,
 				      senderPublicKeyHash2,
 				      name,
 				      subject,
 				      message,
-				      signature);
+				      signature,
+				      goldbugUsed);
 			  return;
 			}
 		    }
@@ -1902,15 +1906,12 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 		    {
 		      QList<QByteArray> list(data.split('\n'));
 
-		      if(list.size() == 5)
+		      if(list.size() == 6)
 			{
 			  for(int i = 0; i < list.size(); i++)
 			    list.replace
 			      (i, QByteArray::fromBase64(list.at(i)));
 
-			  saveParticipantStatus
-			    (list.value(1),  // Name
-			     list.value(0)); // Public Key Hash
 			  storeLetter
 			    (symmetricKey,
 			     symmetricKeyAlgorithm,
@@ -1918,14 +1919,16 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 			     list.value(1),  // Name
 			     list.value(2),  // Subject
 			     list.value(3),  // Message
-			     list.value(4)); // Signature
+			     list.value(4),  // Signature
+			     QVariant(list.value(5)).
+			     toBool());      // Gold Bug Used?
 			}
 		      else
 			{
 			  spoton_misc::logError
 			    (QString("spoton_neighbor::process0001b(): "
 				     "received irregular data. "
-				     "Expecting 5 "
+				     "Expecting 6 "
 				     "entries, "
 				     "received %1.").arg(list.size()));
 			  return;
@@ -2482,7 +2485,7 @@ void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
 
       if(data == "0")
 	{
-	  m_lastReadTime = QDateTime::currentDateTime();
+	  resetKeepAlive();
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0015(): received "
 		     "keep-alive from %1:%2. Resetting time object.").
@@ -3010,8 +3013,12 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 				  const QByteArray &name,
 				  const QByteArray &subject,
 				  const QByteArray &message,
-				  const QByteArray &signature)
+				  const QByteArray &signature,
+				  const bool goldbugUsed)
 {
+  Q_UNUSED(symmetricKey);
+  Q_UNUSED(symmetricKeyAlgorithm);
+
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
 
   if(!s_crypt)
@@ -3043,29 +3050,10 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
   if(!spoton_misc::isAcceptedParticipant(senderPublicKeyHash))
     return;
 
-  
-
-  bool goldbugSet = false;
-  bool ok = true;
-  spoton_crypt crypt(symmetricKeyAlgorithm,
-		     QString("sha512"),
-		     QByteArray(),
-		     symmetricKey,
-		     0,
-		     0,
-		     QString(""));
-
-  crypt.decrypted(name, &ok);
-
-  if(!ok)
-    {
-      /*
-      ** Is there a goldbug loose?
-      */
-
-      goldbugSet = true;
-      ok = true;
-    }
+  if(goldbugUsed)
+    saveParticipantStatus(senderPublicKeyHash);
+  else
+    saveParticipantStatus(name, senderPublicKeyHash);
 
   QString connectionName("");
 
@@ -3078,6 +3066,7 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool ok = true;
 
 	query.prepare("INSERT INTO folders "
 		      "(date, folder_index, goldbug, hash, "
@@ -3095,7 +3084,7 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 	if(ok)
 	  query.bindValue
 	    (2, s_crypt->
-	     encrypted(QString::number(goldbugSet).toLatin1(), &ok).
+	     encrypted(QString::number(goldbugUsed).toLatin1(), &ok).
 	     toBase64());
 
 	if(ok)
@@ -3387,7 +3376,6 @@ void spoton_neighbor::slotSendBuzz(const QByteArray &data)
 
 void spoton_neighbor::resetKeepAlive(void)
 {
-  m_keepAliveTimer.start();
   m_lastReadTime = QDateTime::currentDateTime();
 }
 
@@ -3501,7 +3489,7 @@ QString spoton_neighbor::findMessageType
   if(interfaces > 0 || list.size() == 5)
     if(s_crypt)
       {
-	int count = spoton_misc::participantCount();
+	int count = spoton_misc::participantCount("chat");
 
 	if(count > 0)
 	  {
@@ -3516,6 +3504,12 @@ QString spoton_neighbor::findMessageType
 
 	    if(!type.isEmpty())
 	      goto done_label;
+	  }
+
+	if((count = spoton_misc::participantCount("email") > 0))
+	  {
+	    QByteArray data;
+	    bool ok = true;
 
 	    s_crypt = spoton_kernel::s_crypts.value("email", 0);
 	    data = s_crypt->publicKeyDecrypt

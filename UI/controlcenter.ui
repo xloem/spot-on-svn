@@ -61,9 +61,6 @@
           </item>
           <item>
            <widget class="QPushButton" name="saveBuzzName">
-            <property name="toolTip">
-             <string>Save my name.</string>
-            </property>
             <property name="text">
              <string>Save</string>
             </property>
@@ -278,9 +275,6 @@
                        </item>
                        <item>
                         <widget class="QPushButton" name="saveNodeName">
-                         <property name="toolTip">
-                          <string>Save my name.</string>
-                         </property>
                          <property name="text">
                           <string>Save</string>
                          </property>
@@ -831,7 +825,7 @@
               <item>
                <widget class="QPushButton" name="generateGoldBug">
                 <property name="toolTip">
-                 <string>Bundle the e-mail with an additional layer of AES-256 encryption. Do remember to notify all recipients of the key.</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bundle the e-mail with an additional layer of AES-256 encryption. Do remember to notify all recipients of the key.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="text">
                  <string>Gold Bug</string>
@@ -863,6 +857,9 @@
               </item>
               <item>
                <widget class="QCheckBox" name="emailSignMessages">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The kernel is responsible for signing messages. Because messages are queued, please avoid toggling this checkbox until queued message have been processed by the kernel.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
                 <property name="text">
                  <string>Sign &amp;messages.</string>
                 </property>
@@ -1560,7 +1557,7 @@
           <item>
            <widget class="QToolButton" name="toolButtonCopytoClipboard">
             <property name="toolTip">
-             <string>Copy my name and specified public key to the clipboard buffer.</string>
+             <string>Copy my name and the specified public key to the clipboard buffer.</string>
             </property>
             <property name="text">
              <string>Copy Public Key</string>
@@ -2490,8 +2487,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>949</width>
-             <height>331</height>
+             <width>1197</width>
+             <height>559</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">

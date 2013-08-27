@@ -108,6 +108,8 @@ EOL
 3 - Message (Base-64) (Optional Gold Bug)
 EOL
 4 - Signature (Base-64) (Optional Gold Bug)
+EOL
+5 - Gold Bug Used? (Base-64)
 }
 EOL
 {
@@ -135,6 +137,8 @@ EOL
 3 - Message (Base-64)
 EOL
 4 - Signature (Base-64)
+EOL
+5 - Gold Bug Used? (Base-64)
 }
 EOL
 {
@@ -227,7 +231,7 @@ UUID Exchange
 Echoed? No
 
 Message Type ("0014")
-UUID (Plaintext)
+UUID (Base-64) (Plaintext)
 
 Keep Alive
 Echoed? No

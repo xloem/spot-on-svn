@@ -5,9 +5,15 @@
      be a chat pair, an e-mail pair, and a url pair. And! Each pair
      shall have its own signature. A total of six pairs.
 2.   Label (name) signature keys in the friends_public_keys database
-     table as their types. Only one person reads these release notes.
-3.   Apologies. This time I shall really bundle the Translations directory
+     table by using their types. Only one person reads these release notes.
+3.   Apologies. This time I will really bundle the Translations directory
      into the Windows release.
+4.   Do not update the participant's name if the sender used a gold bug.
+5.   The simple mechanism that's used to determine if a gold bug
+     is set is deeply flawed. Corrected.
+6.   The method spoton_neighbor::resetKeepAlive() incorrectly restarted
+     the keep-aliver timer. The timer is responsible for sending
+     periodic notifications.
 
 0.03 (08/26/2013)
 

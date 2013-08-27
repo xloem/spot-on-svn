@@ -145,7 +145,8 @@ class spoton_neighbor: public QSslSocket
 		   const QByteArray &name,
 		   const QByteArray &subject,
 		   const QByteArray &message,
-		   const QByteArray &signature);
+		   const QByteArray &signature,
+		   const bool goldbugUsed);
   void storeLetter(const QList<QByteArray> &list,
 		   const QByteArray &recipientHash);
 

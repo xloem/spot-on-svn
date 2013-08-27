@@ -1678,12 +1678,12 @@ void spoton::slotAddFriendsKey(void)
       bool ok = true;
 
       keyInformation = m_crypts.value("chat")->
-	publicKeyDecrypt(keyInformation, &ok);
+	publicKeyDecrypt(list.value(0), &ok);
 
       if(!ok)
 	{
 	  keyInformation = m_crypts.value("email")->
-	    publicKeyDecrypt(keyInformation, &ok);
+	    publicKeyDecrypt(list.value(0), &ok);
 
 	  if(!ok)
 	    return;
