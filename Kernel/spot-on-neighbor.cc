@@ -636,9 +636,9 @@ void spoton_neighbor::slotReadyRead(void)
 
   if(read(data.data(), data.size()) < 0)
     {
+      data.clear();
       spoton_misc::logError
 	("spoton_neighbor::slotReadyRead(): read() failure.");
-      data.clear();
     }
 
   if(m_useSsl)
