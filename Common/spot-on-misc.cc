@@ -915,7 +915,7 @@ void spoton_misc::retrieveSymmetricData(QByteArray &gemini,
 		{
 		  bool ok = true;
 
-		  if(!query.value(0).isNull())
+		  if(!query.isNull(0))
 		    gemini = crypt->decrypted
 		      (QByteArray::fromBase64(query.
 					      value(0).
@@ -1671,7 +1671,7 @@ void spoton_misc::enableLog(const bool state)
   s_enableLog = state;
 }
 
-int spoton_misc::participantCount(void)
+int spoton_misc::participantCount(const QString &keyType)
 {
   QString connectionName("");
   int count = 0;
@@ -1686,8 +1686,11 @@ int spoton_misc::participantCount(void)
       {
 	QSqlQuery query(db);
 
-	if(query.exec("SELECT COUNT(*) FROM "
-		      "friends_public_keys"))
+	query.prepare("SELECT COUNT(*) FROM friends_public_keys "
+		      "WHERE key_type = ?");
+	query.bindValue(0, keyType);
+
+	if(query.exec())
 	  if(query.next())
 	    count = query.value(0).toInt();
       }

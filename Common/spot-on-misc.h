@@ -64,7 +64,7 @@ class spoton_misc
 				   const QByteArray &sPublicKey,
 				   const int neighborOid,
 				   const QSqlDatabase &db);
-  static int participantCount(void);
+  static int participantCount(const QString &keyType);
   static void cleanupDatabases(void);
   static void correctSettingsContainer(QHash<QString, QVariant> settings);
   static void enableLog(const bool state);
