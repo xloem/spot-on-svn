@@ -186,7 +186,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_externalAddressDiscovererTimer.start(30000);
   m_keepAliveTimer.start(45000);
   m_lifetime.start(10 * 60 * 1000);
-  m_readTimer.start(1500);
+  m_readTimer.start(750);
   m_timer.start(2500);
   QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 }
@@ -352,7 +352,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_externalAddressDiscovererTimer.setInterval(30000);
   m_keepAliveTimer.setInterval(45000);
   m_lifetime.start(10 * 60 * 1000);
-  m_readTimer.setInterval(1500);
+  m_readTimer.setInterval(750);
   m_timer.start(2500);
 }
 
