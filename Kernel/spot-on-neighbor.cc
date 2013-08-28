@@ -3498,7 +3498,7 @@ QString spoton_neighbor::findMessageType
   ** a letter.
   */
 
-  if(interfaces > 0 || list.size() == 5)
+  if(interfaces > 0)
     if(s_crypt)
       {
 	int count = spoton_misc::participantCount("chat");
@@ -3517,13 +3517,18 @@ QString spoton_neighbor::findMessageType
 	    if(!type.isEmpty())
 	      goto done_label;
 	  }
+      }
 
-	if((count = spoton_misc::participantCount("email") > 0))
+  if(interfaces > 0 || list.size() == 5)
+    if((s_crypt = spoton_kernel::s_crypts.value("email", 0)))
+      {
+	int count = spoton_misc::participantCount("email");
+
+	if(count > 0)
 	  {
 	    QByteArray data;
 	    bool ok = true;
 
-	    s_crypt = spoton_kernel::s_crypts.value("email", 0);
 	    data = s_crypt->publicKeyDecrypt
 	      (QByteArray::fromBase64(list.value(0)), &ok);
 
