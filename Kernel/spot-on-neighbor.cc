@@ -633,13 +633,15 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 void spoton_neighbor::slotReadyRead(void)
 {
   QByteArray data(8192, 0);
+  qint64 bytesRead = 0;
 
-  if(read(data.data(), data.size()) < 0)
-    {
-      data.clear();
-      spoton_misc::logError
-	("spoton_neighbor::slotReadyRead(): read() failure.");
-    }
+  if(bytesAvailable() > 0)
+    if((bytesRead = read(data.data(), data.size())) < 0)
+      {
+	data.clear();
+	spoton_misc::logError
+	  ("spoton_neighbor::slotReadyRead(): read() failure.");
+      }
 
   if(m_useSsl)
     if(!isEncrypted())
@@ -651,8 +653,8 @@ void spoton_neighbor::slotReadyRead(void)
 	   "Purging read data.");
       }
 
-  if(!data.isEmpty())
-    m_data.append(data);
+  if(bytesRead > 0)
+    m_data.append(data.mid(0, bytesRead));
 
   if(m_data.length() > m_maximumBufferSize)
     {

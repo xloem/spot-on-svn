@@ -505,8 +505,9 @@ void spoton_gui_server::slotReceivedChatMessage(const QByteArray &message)
       {
 	if(socket->write(message.constData(),
 			 message.length()) != message.length())
-	  spoton_misc::logError("spoton_gui_server::slotReceivedChatMessage(): "
-				"write() failure.");
+	  spoton_misc::logError
+	    ("spoton_gui_server::slotReceivedChatMessage(): "
+	     "write() failure.");
 	else
 	  socket->flush();
       }
