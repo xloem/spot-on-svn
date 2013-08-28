@@ -186,7 +186,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_externalAddressDiscovererTimer.start(30000);
   m_keepAliveTimer.start(45000);
   m_lifetime.start(10 * 60 * 1000);
-  m_readTimer.start(750);
+  m_readTimer.start(1500);
   m_timer.start(2500);
   QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 }
@@ -352,7 +352,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_externalAddressDiscovererTimer.setInterval(30000);
   m_keepAliveTimer.setInterval(45000);
   m_lifetime.start(10 * 60 * 1000);
-  m_readTimer.setInterval(750);
+  m_readTimer.setInterval(1500);
   m_timer.start(2500);
 }
 
@@ -632,12 +632,13 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 
 void spoton_neighbor::slotReadyRead(void)
 {
-  QByteArray data(8192, 0);
+  QByteArray data(qMin(qint64(8192), bytesAvailable()), 0);
   qint64 bytesRead = 0;
 
-  if(bytesAvailable() > 0)
+  if(data.size() > 0)
     if((bytesRead = read(data.data(), data.size())) < 0)
       {
+	bytesRead = 0;
 	data.clear();
 	spoton_misc::logError
 	  ("spoton_neighbor::slotReadyRead(): read() failure.");
@@ -646,6 +647,7 @@ void spoton_neighbor::slotReadyRead(void)
   if(m_useSsl)
     if(!isEncrypted())
       {
+	bytesRead = 0;
 	data.clear();
 	spoton_misc::logError
 	  ("spoton_neighbor::slotReadyRead(): "
