@@ -714,33 +714,28 @@ Communications Mode: %14</source>
         <translation>Freund</translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3985"/>
         <source>Your friend %1 is away.</source>
-        <translation>Dein Freund %1 ist abwesend.</translation>
+        <translation type="obsolete">Dein Freund %1 ist abwesend.</translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3996"/>
         <source>Your friend %1 is busy.</source>
-        <translation>Dein Freund %1 ist beschäftigt.</translation>
+        <translation type="obsolete">Dein Freund %1 ist beschäftigt.</translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4007"/>
         <source>Your friend %1 is offline.</source>
-        <translation>Dein Freund %1 ist offline.</translation>
+        <translation type="obsolete">Dein Freund %1 ist offline.</translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4017"/>
         <source>User %1 is online.</source>
-        <translation type="unfinished">Nutzer %1 ist online.</translation>
+        <translation type="obsolete">Nutzer %1 ist online.</translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4021"/>
         <source>User %1 is a permanent friend.</source>
-        <translation type="unfinished">Nutzer %1 ist ein permanenter Freund.</translation>
+        <translation type="obsolete">Nutzer %1 ist ein permanenter Freund.</translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4033"/>
-        <location filename="../GUI/spot-on-a.cc" line="4081"/>
+        <location filename="../GUI/spot-on-a.cc" line="4015"/>
+        <location filename="../GUI/spot-on-a.cc" line="4064"/>
         <source>User %1 requests your friendship.</source>
         <translation>Nutzer %1 fragt Deine Freundschaft an.</translation>
     </message>

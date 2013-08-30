@@ -688,33 +688,8 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3985"/>
-        <source>Your friend %1 is away.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/spot-on-a.cc" line="3996"/>
-        <source>Your friend %1 is busy.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/spot-on-a.cc" line="4007"/>
-        <source>Your friend %1 is offline.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/spot-on-a.cc" line="4017"/>
-        <source>User %1 is online.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/spot-on-a.cc" line="4021"/>
-        <source>User %1 is a permanent friend.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/spot-on-a.cc" line="4033"/>
-        <location filename="../GUI/spot-on-a.cc" line="4081"/>
+        <location filename="../GUI/spot-on-a.cc" line="4015"/>
+        <location filename="../GUI/spot-on-a.cc" line="4064"/>
         <source>User %1 requests your friendship.</source>
         <translation type="unfinished"></translation>
     </message>
