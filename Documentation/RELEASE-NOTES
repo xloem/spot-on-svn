@@ -18,6 +18,7 @@
 8.   Also removed SPOTON_GEOIP_DATA_FILE from all kernel project files.
 9.   Added tool tips of partial public key hashes to the Chat and
      E-Mail table items.
+10.  Corrected X509_sign(x509, pk, EVP_md5()). Use EVP_sha512.
 
 0.03 (08/26/2013)
 

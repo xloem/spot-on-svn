@@ -2764,7 +2764,7 @@ void spoton_crypt::generateCertificate(RSA *rsa,
       goto done_label;
     }
 
-  if(X509_sign(x509, pk, EVP_md5()) == 0)
+  if(X509_sign(x509, pk, EVP_sha512()) == 0)
     {
       error = QObject::tr("X509_sign() returned zero");
       spoton_misc::logError("spoton_crypt::generateCertificate(): "
