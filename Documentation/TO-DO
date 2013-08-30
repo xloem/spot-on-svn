@@ -117,3 +117,5 @@ Remaining Items
 30.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
 31.    Remote kernel termination.
 32.    Bulk key copies and exchanges, per the friendly Mr. Smith.
+33.    Zero-knowledge passphrase authentication.
+34.    Artificial trust. All participants must play nicely. Zero-knowledge?
