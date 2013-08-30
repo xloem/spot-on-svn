@@ -3975,52 +3975,34 @@ void spoton::slotPopulateParticipants(void)
 			  if(!temporary)
 			    {
 			      if(status == "away")
-				{
-				  item->setIcon
-				    (QIcon(QString(":/%1/away.png").
-					   arg(m_settings.value("gui/iconSet",
-								"nouve").
-					       toString())));
-				  item->setToolTip
-				    (tr("Your friend %1 is away.").
-				     arg(item->text()));
-				}
+				item->setIcon
+				  (QIcon(QString(":/%1/away.png").
+					 arg(m_settings.value("gui/iconSet",
+							      "nouve").
+					     toString())));
 			      else if(status == "busy")
-				{
-				  item->setIcon
-				    (QIcon(QString(":/%1/busy.png").
-					   arg(m_settings.value("gui/iconSet",
-								"nouve").
-					       toString())));
-				  item->setToolTip
-				    (tr("Your friend %1 is busy.").
-				     arg(item->text()));
-				}
+				item->setIcon
+				  (QIcon(QString(":/%1/busy.png").
+					 arg(m_settings.value("gui/iconSet",
+							      "nouve").
+					     toString())));
 			      else if(status == "offline")
-				{
-				  item->setIcon
-				    (QIcon(QString(":/%1/offline.png").
-					   arg(m_settings.value("gui/iconSet",
-								"nouve").
-					       toString())));
-				  item->setToolTip
-				    (tr("Your friend %1 is offline.").
-				     arg(item->text()));
-				}
+				item->setIcon
+				  (QIcon(QString(":/%1/offline.png").
+					 arg(m_settings.value("gui/iconSet",
+							      "nouve").
+					     toString())));
 			      else if(status == "online")
-				{
-				  item->setIcon
-				    (QIcon(QString(":/%1/online.png").
-					   arg(m_settings.value("gui/iconSet",
-								"nouve").
-					       toString())));
-				  item->setToolTip(tr("User %1 is online.").
-						   arg(item->text()));
-				}
-			      else
-				item->setToolTip(tr("User %1 is a "
-						    "permanent friend.").
-						 arg(item->text()));
+				item->setIcon
+				  (QIcon(QString(":/%1/online.png").
+					 arg(m_settings.value("gui/iconSet",
+							      "nouve").
+					     toString())));
+
+			      item->setToolTip
+				(query.value(3).toString().mid(0, 16) +
+				 "..." +
+				 query.value(3).toString().right(16));
 			    }
 			  else
 			    {
@@ -4070,17 +4052,24 @@ void spoton::slotPopulateParticipants(void)
 			item = new QTableWidgetItem(query.value(i).toString());
 
 		      if(i == 0)
-			if(temporary)
-			  {
-			    item->setIcon
-			      (QIcon(QString(":/%1/add.png").
-				     arg(m_settings.value("gui/iconSet",
-							  "nouve").
-					 toString())));
+			{
+			  if(temporary)
+			    {
+			      item->setIcon
+				(QIcon(QString(":/%1/add.png").
+				       arg(m_settings.value("gui/iconSet",
+							    "nouve").
+					   toString())));
+			      item->setToolTip
+				(tr("User %1 requests your friendship.").
+				 arg(item->text()));
+			    }
+			  else
 			    item->setToolTip
-			      (tr("User %1 requests your friendship.").
-			       arg(item->text()));
-			  }
+			      (query.value(3).toString().mid(0, 16) +
+			       "..." +
+			       query.value(3).toString().right(16));
+			}
 
 		      if(item)
 			{

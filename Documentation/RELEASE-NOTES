@@ -16,6 +16,8 @@
      periodic notifications.
 7.   Limit read() to 8192 bytes in spoton_neighbor::slotReadyRead().
 8.   Also removed SPOTON_GEOIP_DATA_FILE from all kernel project files.
+9.   Added tool tips of partial public key hashes to the Chat and
+     E-Mail table items.
 
 0.03 (08/26/2013)
 
