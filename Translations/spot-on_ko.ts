@@ -416,7 +416,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <location filename="../GUI/spot-on-b.cc" line="430"/>
         <location filename="../GUI/spot-on-b.cc" line="1842"/>
         <location filename="../GUI/spot-on-b.cc" line="2967"/>
-        <location filename="../GUI/spot-on-b.cc" line="3890"/>
+        <location filename="../GUI/spot-on-b.cc" line="3889"/>
         <source>Spot-On: Confirmation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -759,7 +759,7 @@ Communications Mode: %14</source>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="433"/>
-        <location filename="../GUI/spot-on-b.cc" line="3893"/>
+        <location filename="../GUI/spot-on-b.cc" line="3892"/>
         <source>Are you sure that you wish to remove the selected participant(s)?</source>
         <translation type="unfinished"></translation>
     </message>
