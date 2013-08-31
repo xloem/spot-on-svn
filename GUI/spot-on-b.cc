@@ -3807,7 +3807,6 @@ void spoton::initializeKernelSocket(void)
     {
       QSslConfiguration configuration;
 
-      configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
       configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
 #if QT_VERSION >= 0x050000
       configuration.setProtocol(QSsl::SecureProtocols);

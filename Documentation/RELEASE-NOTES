@@ -19,6 +19,8 @@
 9.   Added tool tips of partial public key hashes to the Chat and
      E-Mail table items.
 10.  Corrected X509_sign(x509, pk, EVP_md5()). Use EVP_sha512.
+11.  Removed all instances of QSslConfiguration::setPeerVerifyMode
+     (QSslSocket::VerifyNone).
 
 0.03 (08/26/2013)
 

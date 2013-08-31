@@ -83,7 +83,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 #endif
 	 )
 	{
-	  configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
 	  configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
 
 	  if(!configuration.privateKey().isNull())
@@ -249,7 +248,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
     {
       QSslConfiguration configuration;
 
-      configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
       configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
 
       if(!configuration.privateKey().isNull())
