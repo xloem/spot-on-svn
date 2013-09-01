@@ -29,6 +29,9 @@
 #include <QNetworkInterface>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#ifdef Q_OS_WIN32
+#include <winsock2.h>
+#endif
 
 #include "Common/spot-on-external-address.h"
 #include "Common/spot-on-crypt.h"
