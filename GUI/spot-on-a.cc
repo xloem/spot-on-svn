@@ -575,6 +575,10 @@ spoton::spoton(void):QMainWindow()
   connect
     (menu->addAction(tr("Copy &URL Public Key")),
      SIGNAL(triggered(void)), this, SLOT(slotCopyMyURLPublicKey(void)));
+  menu->addSeparator();
+  connect
+    (menu->addAction(tr("Copy &All Public Keys")),
+     SIGNAL(triggered(void)), this, SLOT(slotCopyAllMyPublicKeys(void)));
   m_ui.toolButtonCopytoClipboard->setMenu(menu);
   menu = new QMenu(this);
   connect(menu->addAction(tr("Share &Chat Public Key")),
@@ -4734,4 +4738,14 @@ void spoton::slotCopyEmailFriendshipBundle(void)
 		     keyInformation.toBase64() + "@" +
 		     data.toBase64() + "@" +
 		     hash.toBase64());
+}
+
+void spoton::slotCopyAllMyPublicKeys(void)
+{
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(clipboard)
+    clipboard->setText(copyMyChatPublicKey() + "@" +
+		       copyMyEmailPublicKey() + "@" +
+		       copyMyUrlPublicKey());
 }

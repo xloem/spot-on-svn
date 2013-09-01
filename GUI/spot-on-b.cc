@@ -877,14 +877,17 @@ bool spoton::isKernelActive(void) const
 
 void spoton::slotCopyMyChatPublicKey(void)
 {
-  if(!m_crypts.value("chat", 0) ||
-     !m_crypts.value("chat-signature", 0))
-    return;
-
   QClipboard *clipboard = QApplication::clipboard();
 
-  if(!clipboard)
-    return;
+  if(clipboard)
+    clipboard->setText(copyMyChatPublicKey());
+}
+
+QByteArray spoton::copyMyChatPublicKey(void)
+{
+  if(!m_crypts.value("chat", 0) ||
+     !m_crypts.value("chat-signature", 0))
+    return QByteArray();
 
   QByteArray name;
   QByteArray mPublicKey;
@@ -908,13 +911,12 @@ void spoton::slotCopyMyChatPublicKey(void)
       digitalSignature(sPublicKey, &ok);
 
   if(ok)
-    clipboard->setText
-      ("K" + QByteArray("chat").toBase64() + "@" +
-       name.toBase64() + "@" +
-       mPublicKey.toBase64() + "@" + mSignature.toBase64() + "@" +
-       sPublicKey.toBase64() + "@" + sSignature.toBase64());
+    return "K" + QByteArray("chat").toBase64() + "@" +
+      name.toBase64() + "@" +
+      mPublicKey.toBase64() + "@" + mSignature.toBase64() + "@" +
+      sPublicKey.toBase64() + "@" + sSignature.toBase64();
   else
-    clipboard->clear();
+    return QByteArray();
 }
 
 void spoton::slotPopulateCountries(void)
@@ -1524,12 +1526,44 @@ void spoton::slotFetchMoreButton(void)
 
 void spoton::slotAddFriendsKey(void)
 {
+  QByteArray key
+    (m_ui.friendInformation->toPlainText().trimmed().toLatin1());
+
+  if(key.startsWith("K") || key.startsWith("k"))
+    {
+      key.remove(0, 1);
+
+      QList<QByteArray> list(key.split('@'));
+
+      key = list.value(0) + "@" +
+	list.value(1) + "@" +
+	list.value(2) + "@" +
+	list.value(3) + "@" +
+	list.value(4) + "@" +
+	list.value(5);
+      addFriendsKey("K" + key);
+
+      if(list.size() > 6)
+	{
+	  key = list.value(6) + "@" +
+	    list.value(7) + "@" +
+	    list.value(8) + "@" +
+	    list.value(9) + "@" +
+	    list.value(10) + "@" +
+	    list.value(11);
+	  addFriendsKey("K" + key);
+	}
+    }
+  else
+    addFriendsKey(key);
+}
+
+void spoton::addFriendsKey(const QByteArray &key)
+{
   if(m_ui.addFriendPublicKeyRadio->isChecked())
     {
-      if(m_ui.friendInformation->toPlainText().trimmed().isEmpty())
+      if(key.trimmed().isEmpty())
 	return;
-
-      QString key(m_ui.friendInformation->toPlainText().trimmed());
 
       if(!(key.startsWith("K") || key.startsWith("k")))
 	{
@@ -1540,9 +1574,7 @@ void spoton::slotAddFriendsKey(void)
 	  return;
 	}
 
-      key.remove(0, 1);
-
-      QList<QByteArray> list(key.toLatin1().split('@'));
+      QList<QByteArray> list(key.mid(1).split('@'));
 
       if(list.size() != 6)
 	{
@@ -1641,13 +1673,8 @@ void spoton::slotAddFriendsKey(void)
       if(!m_crypts.value("chat", 0) ||
 	 !m_crypts.value("email", 0))
 	return;
-      else if(m_ui.friendInformation->toPlainText().trimmed().isEmpty())
-	return;
 
-      QByteArray repleo(m_ui.friendInformation->toPlainText().trimmed().
-			toLatin1());
-
-      if(!(repleo.startsWith("R") || repleo.startsWith("r")))
+      if(!(key.startsWith("R") || key.startsWith("r")))
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
@@ -1656,9 +1683,7 @@ void spoton::slotAddFriendsKey(void)
 	  return;
 	}
 
-      repleo.remove(0, 1);
-
-      QList<QByteArray> list(repleo.split('@'));
+      QList<QByteArray> list(key.mid(1).split('@'));
 
       if(list.size() != 3)
 	{
@@ -2294,14 +2319,17 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
 
 void spoton::slotCopyMyEmailPublicKey(void)
 {
-  if(!m_crypts.value("email", 0) ||
-     !m_crypts.value("email-signature", 0))
-    return;
-
   QClipboard *clipboard = QApplication::clipboard();
 
-  if(!clipboard)
-    return;
+  if(clipboard)
+    clipboard->setText(copyMyEmailPublicKey());
+}
+
+QByteArray spoton::copyMyEmailPublicKey(void)
+{
+  if(!m_crypts.value("email", 0) ||
+     !m_crypts.value("email-signature", 0))
+    return QByteArray();
 
   QByteArray name;
   QByteArray mPublicKey;
@@ -2325,13 +2353,17 @@ void spoton::slotCopyMyEmailPublicKey(void)
       digitalSignature(sPublicKey, &ok);
 
   if(ok)
-    clipboard->setText
-      ("K" + QByteArray("email").toBase64() + "@" +
-       name.toBase64() + "@" +
-       mPublicKey.toBase64() + "@" + mSignature.toBase64() + "@" +
-       sPublicKey.toBase64() + "@" + sSignature.toBase64());
+    return "K" + QByteArray("email").toBase64() + "@" +
+      name.toBase64() + "@" +
+      mPublicKey.toBase64() + "@" + mSignature.toBase64() + "@" +
+      sPublicKey.toBase64() + "@" + sSignature.toBase64();
   else
-    clipboard->clear();
+    return QByteArray();
+}
+
+QByteArray spoton::copyMyUrlPublicKey(void)
+{
+  return QByteArray();
 }
 
 void spoton::slotCopyMyURLPublicKey(void)

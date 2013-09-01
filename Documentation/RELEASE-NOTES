@@ -23,6 +23,7 @@
      (QSslSocket::VerifyNone).
 12.  Record listener external or local address in the certificate. It's
      possible that an external address is not defined.
+13.  Added bulk key copies.
 
 0.03 (08/26/2013)
 

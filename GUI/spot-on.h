@@ -139,6 +139,9 @@ class spoton: public QMainWindow
   QHash<QString, spoton_crypt *> m_crypts;
   spoton_docviewer m_docViewer;
   spoton_logviewer m_logViewer;
+  QByteArray copyMyChatPublicKey(void);
+  QByteArray copyMyEmailPublicKey(void);
+  QByteArray copyMyUrlPublicKey(void);
   QPixmap pixmapForCountry(const QString &country);
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000
@@ -150,6 +153,7 @@ class spoton: public QMainWindow
   bool updateMailStatus(const QString &oid, const QString &status);
   int applyGoldbugToInboxLetter(const QByteArray &goldbug,
 				const int row);
+  void addFriendsKey(const QByteArray &key);
   void changeEchoMode(const QString &mode, QTableWidget *tableWidget);
   void closeEvent(QCloseEvent *event);
   void countriesToggle(const bool state);
@@ -181,6 +185,7 @@ class spoton: public QMainWindow
   void slotCloseBuzzTab(int index);
   void slotCongestionControl(bool state);
   void slotConnectNeighbor(void);
+  void slotCopyAllMyPublicKeys(void);
   void slotCopyEmailFriendshipBundle(void);
   void slotCopyFriendshipBundle(void);
   void slotCopyMyChatPublicKey(void);
