@@ -1531,11 +1531,9 @@ void spoton::slotAddFriendsKey(void)
 
   if(key.startsWith("K") || key.startsWith("k"))
     {
-      key.remove(0, 1);
-
       QList<QByteArray> list(key.split('@'));
 
-      key = list.value(0) + "@" +
+      key = list.value(0).remove(0, 1) + "@" +
 	list.value(1) + "@" +
 	list.value(2) + "@" +
 	list.value(3) + "@" +
@@ -1545,7 +1543,7 @@ void spoton::slotAddFriendsKey(void)
 
       if(list.size() > 6)
 	{
-	  key = list.value(6) + "@" +
+	  key = list.value(6).remove(0, 1) + "@" +
 	    list.value(7) + "@" +
 	    list.value(8) + "@" +
 	    list.value(9) + "@" +

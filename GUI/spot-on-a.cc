@@ -4746,6 +4746,5 @@ void spoton::slotCopyAllMyPublicKeys(void)
 
   if(clipboard)
     clipboard->setText(copyMyChatPublicKey() + "@" +
-		       copyMyEmailPublicKey() + "@" +
-		       copyMyUrlPublicKey());
+		       copyMyEmailPublicKey());
 }
