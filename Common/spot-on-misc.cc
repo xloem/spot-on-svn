@@ -826,26 +826,28 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
   bool ok = true;
 
   query.prepare("INSERT OR REPLACE INTO friends_public_keys "
-		"(key_type, name, public_key, public_key_hash, "
+		"(gemini, key_type, name, public_key, public_key_hash, "
 		"neighbor_oid) "
-		"VALUES (?, ?, ?, ?, ?)");
-  query.bindValue(0, keyType.constData());
+		"VALUES ((SELECT gemini FROM friends_public_keys WHERE "
+		"public_key_hash = ?), ?, ?, ?, ?, ?)");
+  query.bindValue(0, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
+  query.bindValue(1, keyType.constData());
 
   if(keyType == "chat" || keyType == "email" || keyType == "url")
     {
       if(name.isEmpty())
-	query.bindValue(1, "unknown");
+	query.bindValue(2, "unknown");
       else
 	query.bindValue
-	  (1, name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
+	  (2, name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
     }
   else // Signature keys will be labeled as their type.
-    query.bindValue(1, keyType);
+    query.bindValue(2, keyType);
 
-  query.bindValue(2, publicKey);
+  query.bindValue(3, publicKey);
   query.bindValue
-    (3, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
-  query.bindValue(4, neighborOid);
+    (4, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
+  query.bindValue(5, neighborOid);
 
   if(ok)
     ok = query.exec();
