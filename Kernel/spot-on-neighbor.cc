@@ -235,7 +235,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
      certificate,
      privateKey,
      publicKey,
-     QHostAddress(),
+     localAddress(),
      error);
 
   if(!error.isEmpty())
@@ -267,6 +267,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  configuration.setSslOption
 	    (QSsl::SslOptionDisableLegacyRenegotiation, true);
 #endif
+	  configuration.setPeerVerifyMode(QSslSocket::QueryPeer);
 	  spoton_crypt::setSslCiphers(supportedCiphers(), configuration);
 	  setSslConfiguration(configuration);
 	}

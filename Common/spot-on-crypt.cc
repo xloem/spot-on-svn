@@ -2613,7 +2613,8 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
       goto done_label;
     }
 
-  memcpy(privateBuffer, bptr->data, bptr->length);
+  memcpy(static_cast<void *> (privateBuffer),
+	 static_cast<const void *> (bptr->data), bptr->length);
   privateBuffer[bptr->length] = 0;
   privateKey = privateBuffer;
   BIO_get_mem_ptr(publicMemory, &bptr);
@@ -2626,7 +2627,8 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
       goto done_label;
     }
 
-  memcpy(publicBuffer, bptr->data, bptr->length);
+  memcpy(static_cast<void *> (publicBuffer),
+	 static_cast<const void *> (bptr->data), bptr->length);
   publicBuffer[bptr->length] = 0;
   publicKey = publicBuffer;
   generateCertificate(rsa, certificate, address, error);
@@ -2672,9 +2674,11 @@ void spoton_crypt::generateCertificate(RSA *rsa,
   EVP_PKEY *pk = 0;
   X509 *x509 = 0;
   X509_NAME *name = 0;
+  X509_NAME *subject = 0;
+  X509_NAME_ENTRY *commonNameEntry = 0;
   char *buffer = 0;
-
-  Q_UNUSED(address);
+  int length = 0;
+  unsigned char *commonName = 0;
 
   if(!error.isEmpty())
     goto done_label;
@@ -2746,6 +2750,62 @@ void spoton_crypt::generateCertificate(RSA *rsa,
       goto done_label;
     }
 
+  commonName = (unsigned char *)
+    calloc(address.toString().size() + 1,
+	   sizeof(unsigned char));
+
+  if(!commonName)
+    {
+      error = QObject::tr("calloc() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "calloc() failure.");
+      goto done_label;
+    }
+
+  length = address.toString().length();
+  memcpy(static_cast<void *> (commonName),
+	 static_cast<const void *> (address.toString().toLatin1().
+				    constData()),
+	 length);
+  commonNameEntry = X509_NAME_ENTRY_create_by_NID
+    (0,
+     NID_commonName, V_ASN1_PRINTABLESTRING,
+     commonName, length);
+
+  if(!commonNameEntry)
+    {
+      error = QObject::tr("X509_NAME_ENTRY_create_by_NID() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "X509_NAME_ENTRY_create_by_NID() failure.");
+      goto done_label;
+    }
+
+  subject = X509_NAME_new();
+
+  if(!subject)
+    {
+      error = QObject::tr("X509_NAME_new() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "X509_NAME_new() failure.");
+      goto done_label;
+    }
+
+  if(X509_NAME_add_entry(subject, commonNameEntry, -1, 0) != 1)
+    {
+      error = QObject::tr("X509_NAME_add_entry() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "X509_NAME_add_entry() failure.");
+      goto done_label;
+    }
+
+  if(X509_set_subject_name(x509, subject) != 1)
+    {
+      error = QObject::tr("X509_set_subject_name() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "X509_set_subject_name() failure.");
+      goto done_label;
+    }
+
   name = X509_get_subject_name(x509);
 
   if(X509_set_issuer_name(x509, name) == 0)
@@ -2810,8 +2870,11 @@ void spoton_crypt::generateCertificate(RSA *rsa,
   BIO_free(memory);
   RSA_up_ref(rsa); // Reference counter.
   EVP_PKEY_free(pk);
+  X509_NAME_ENTRY_free(commonNameEntry);
+  X509_NAME_free(subject);
   X509_free(x509);
   free(buffer);
+  free(commonName);
 }
 
 QByteArray spoton_crypt::privateKeyInRem(bool *ok)

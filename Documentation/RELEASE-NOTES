@@ -21,6 +21,8 @@
 10.  Corrected X509_sign(x509, pk, EVP_md5()). Use EVP_sha512.
 11.  Removed all instances of QSslConfiguration::setPeerVerifyMode
      (QSslSocket::VerifyNone).
+12.  Record listener external or local address in the certificate. It's
+     possible that an external address is not defined.
 
 0.03 (08/26/2013)
 

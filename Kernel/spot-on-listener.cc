@@ -357,13 +357,25 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
   if(m_keySize != 0)
     {
       QByteArray publicKey;
+      QHostAddress address;
+      sockaddr nativeAddress;
+      socklen_t length = sizeof(nativeAddress);
+
+      if(getpeername(socketDescriptor, &nativeAddress, &length) != 0)
+	spoton_misc::logError("spoton_listener::slotNewConnection(): "
+			      "getpeername() failure.");
+
+      address = QHostAddress(&nativeAddress);
+
+      if(!spoton_misc::isPrivateNetwork(address))
+	address = m_externalAddress->address();
 
       spoton_crypt::generateSslKeys
 	(m_keySize,
 	 certificate,
 	 privateKey,
 	 publicKey,
-	 m_externalAddress->address(),
+	 address,
 	 error);
     }
 
