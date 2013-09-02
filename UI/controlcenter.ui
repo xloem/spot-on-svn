@@ -163,8 +163,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1189</width>
-                <height>569</height>
+                <width>1197</width>
+                <height>554</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1742,7 +1742,7 @@
                <bool>true</bool>
               </property>
               <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>200</number>
+               <number>240</number>
               </attribute>
               <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
                <bool>true</bool>
@@ -2492,8 +2492,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1189</width>
-             <height>569</height>
+             <width>1197</width>
+             <height>554</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3564,7 +3564,7 @@
      <x>0</x>
      <y>0</y>
      <width>1219</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
