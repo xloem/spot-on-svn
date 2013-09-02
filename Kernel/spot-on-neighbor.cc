@@ -56,6 +56,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_maximumBufferSize = spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE;
   m_maximumContentLength = spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH;
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
+  m_startTime = QDateTime::currentDateTime();
 
   if(certificate.isEmpty() || privateKey.isEmpty())
     m_useSsl = false;
@@ -217,6 +218,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
     qMax(maximumContentLength,
 	 spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
+  m_startTime = QDateTime::currentDateTime();
   m_useSsl = true;
   setProxy(proxy);
   setReadBufferSize(8192);
@@ -431,7 +433,8 @@ spoton_neighbor::~spoton_neighbor()
 	    query.prepare("UPDATE neighbors SET external_ip_address = NULL, "
 			  "is_encrypted = 0, "
 			  "local_ip_address = NULL, "
-			  "local_port = NULL, status = 'disconnected' "
+			  "local_port = NULL, status = 'disconnected', "
+			  "uptime = 0 "
 			  "WHERE OID = ?");
 	    query.bindValue(0, m_id);
 	    query.exec();
@@ -473,6 +476,8 @@ void spoton_neighbor::slotTimeout(void)
 
     if(db.open())
       {
+	saveStatistics(db);
+
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
@@ -611,10 +616,27 @@ void spoton_neighbor::saveEncryptedStatus(void)
   QSqlDatabase::removeDatabase(connectionName);
 }
 
+void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
+{
+  if(!db.isOpen())
+    return;
+  else if(m_id == -1)
+    return;
+
+  QSqlQuery query(db);
+
+  query.prepare("UPDATE neighbors SET uptime = ? WHERE OID = ?");
+  query.bindValue(0, m_startTime.secsTo(QDateTime::currentDateTime()));
+  query.bindValue(1, m_id);
+  query.exec();
+}
+
 void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 				 const QString &status)
 {
-  if(m_id == -1)
+  if(!db.isOpen())
+    return;
+  else if(m_id == -1)
     return;
   else if(status.isEmpty())
     return;

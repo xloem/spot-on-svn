@@ -1885,7 +1885,7 @@ void spoton::slotPopulateNeighbors(void)
 		      "proxy_hostname, proxy_port, "
 		      "maximum_buffer_size, "
 		      "maximum_content_length, "
-		      "echo_mode, "
+		      "echo_mode, uptime, "
 		      "is_encrypted, OID "
 		      "FROM neighbors WHERE status_control <> 'deleted'"))
 	  {
@@ -1911,7 +1911,8 @@ void spoton::slotPopulateNeighbors(void)
 		      "Scope ID: %10\n"
 		      "Proxy Hostname: %11 Proxy Port: %12\n"
 		      "Echo Mode: %13\n"
-		      "Communications Mode: %14")).
+		      "Communications Mode: %14\n"
+		      "Uptime: %15 Minutes")).
 		  arg(m_crypts.value("chat")->
 		      decrypted(QByteArray::
 				fromBase64(query.
@@ -1979,8 +1980,10 @@ void spoton::slotPopulateNeighbors(void)
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(query.value(19).toInt() == 1 ?
-		      "Secure" : "Insecure");
+		  arg(query.value(20).toInt() == 1 ?
+		      "Secure" : "Insecure").
+		  arg(QString::number(query.value(19).toInt() / 60.0,
+				      'f', 1));
 
 		QCheckBox *check = 0;
 
@@ -2706,7 +2709,8 @@ void spoton::updateNeighborsTable(const QSqlDatabase &db)
 	query.exec("UPDATE neighbors SET external_ip_address = NULL, "
 		   "is_encrypted = 0, "
 		   "local_ip_address = NULL, "
-		   "local_port = NULL, status = 'disconnected' WHERE "
+		   "local_port = NULL, status = 'disconnected', "
+		   "uptime = 0 WHERE "
 		   "local_ip_address IS NOT NULL OR local_port IS NOT NULL "
 		   "OR status <> 'disconnected'");
       }

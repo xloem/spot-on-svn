@@ -78,6 +78,7 @@ class spoton_neighbor: public QSslSocket
  private:
   QByteArray m_data;
   QDateTime m_lastReadTime;
+  QDateTime m_startTime;
   QHostAddress m_address;
   QNetworkInterface *m_networkInterface;
   QString m_echoMode;
@@ -138,6 +139,7 @@ class spoton_neighbor: public QSslSocket
 		     const QByteArray &sPublicKey,
 		     const QByteArray &sSignature,
 		     const qint64 neighborOid);
+  void saveStatistics(const QSqlDatabase &db);
   void saveStatus(const QSqlDatabase &db, const QString &status);
   void storeLetter(const QByteArray &symmetricKey,
 		   const QByteArray &symmetricKeyAlgorithm,

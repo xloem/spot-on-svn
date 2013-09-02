@@ -295,6 +295,8 @@ void spoton_misc::prepareDatabases(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("ALTER TABLE neighbors ADD uptime INTEGER NOT NULL "
+		   "DEFAULT 0");
 	query.exec
 	  ("CREATE TABLE IF NOT EXISTS neighbors ("
 	   "local_ip_address TEXT , "
@@ -328,7 +330,8 @@ void spoton_misc::prepareDatabases(void)
 	   "maximum_buffer_size INTEGER NOT NULL DEFAULT 131072, "
 	   "maximum_content_length INTEGER NOT NULL DEFAULT 65536, "
 	   "echo_mode TEXT NOT NULL, "
-	   "ssl_key_size INTEGER NOT NULL DEFAULT 2048)");
+	   "ssl_key_size INTEGER NOT NULL DEFAULT 2048, "
+	   "uptime INTEGER NOT NULL DEFAULT 0)");
       }
 
     db.close();
@@ -1214,7 +1217,7 @@ void spoton_misc::cleanupDatabases(void)
 	query.exec("UPDATE neighbors SET external_ip_address = NULL, "
 		   "is_encrypted = 0, "
 		   "local_ip_address = NULL, local_port = NULL, "
-		   "status = 'disconnected'");
+		   "status = 'disconnected', uptime = 0");
       }
 
     db.close();

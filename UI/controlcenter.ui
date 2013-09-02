@@ -163,8 +163,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1197</width>
-                <height>559</height>
+                <width>1189</width>
+                <height>569</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1832,17 +1832,22 @@
               </column>
               <column>
                <property name="text">
-                <string>Max. Buffer Size</string>
+                <string>Max. Buffer Size (Bytes)</string>
                </property>
               </column>
               <column>
                <property name="text">
-                <string>Max. Content Length</string>
+                <string>Max. Content Length (Bytes)</string>
                </property>
               </column>
               <column>
                <property name="text">
                 <string>Echo Mode</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Uptime (Seconds)</string>
                </property>
               </column>
               <column>
@@ -2487,8 +2492,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1197</width>
-             <height>559</height>
+             <width>1189</width>
+             <height>569</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3559,7 +3564,7 @@
      <x>0</x>
      <y>0</y>
      <width>1219</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
