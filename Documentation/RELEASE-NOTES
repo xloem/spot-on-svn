@@ -25,6 +25,7 @@
      possible that an external address is not defined.
 13.  Added bulk key copies.
 14.  Retain geminis if participants are re-added.
+15.  Renamed Documentation/PROTOCOLS to Documentation/MESSAGES.
 
 0.03 (08/26/2013)
 
