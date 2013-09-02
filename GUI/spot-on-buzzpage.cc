@@ -137,6 +137,20 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
   ui.type->setText(m_channelType);
   slotSetIcons();
   m_messagingCachePurgeTimer.start(60000);
+
+  QByteArray name;
+  QSettings settings;
+
+  name = settings.value("gui/buzzName", "unknown").toByteArray().trimmed();
+
+  if(name.isEmpty())
+    name = "unknown";
+
+  QList<QByteArray> list;
+
+  list << name
+       << m_id;
+  userStatus(list);
 }
 
 spoton_buzzpage::~spoton_buzzpage()
@@ -336,9 +350,6 @@ void spoton_buzzpage::userStatus(const QList<QByteArray> &list)
     id = spoton_crypt::
       strongRandomBytes(spoton_common::BUZZ_MAXIMUM_ID_LENGTH / 2).toHex();
 
-  if(id == m_id)
-    return;
-
   QByteArray name
     (list.value(0).mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
   QList<QTableWidgetItem *> items
@@ -357,6 +368,10 @@ void spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 
       item = new QTableWidgetItem(QString::fromUtf8(name.constData(),
 						    name.length()));
+
+      if(id == m_id)
+	item->setBackground(QBrush(QColor("pink")));
+
       item->setToolTip(id.mid(0, 16) + "..." + id.right(16));
       ui.clients->setItem(ui.clients->rowCount() - 1, 0, item);
       item = new QTableWidgetItem(id.constData());
@@ -428,7 +443,12 @@ void spoton_buzzpage::slotStatusTimeout(void)
 
   for(int i = ui.clients->rowCount() - 1; i >= 0; i--)
     {
-      QTableWidgetItem *item = ui.clients->item(i, 2);
+      QTableWidgetItem *item = ui.clients->item(i, 1);
+
+      if(item && item->text() == m_id)
+	continue;
+
+      item = ui.clients->item(i, 2);
 
       if(item)
 	{
