@@ -404,12 +404,19 @@ void spoton_gui_server::slotTimeout(void)
     if(db.open())
       {
 	QSqlQuery query(db);
+	quint16 port = 0;
 
-	query.exec("PRAGMA synchronous = OFF");
-	query.prepare("INSERT INTO kernel_gui_server (port) "
-		      "VALUES (?)");
-	query.bindValue(0, serverPort());
-	query.exec();
+	if(query.exec("SELECT port FROM kernel_gui_server"))
+	  if(query.next())
+	    port = query.value(0).toInt();
+
+	if(port == 0 || port != serverPort())
+	  {
+	    query.prepare("INSERT INTO kernel_gui_server (port) "
+			  "VALUES (?)");
+	    query.bindValue(0, serverPort());
+	    query.exec();
+	  }
       }
 
     db.close();

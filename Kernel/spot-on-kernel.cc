@@ -1246,7 +1246,6 @@ void spoton_kernel::slotStatusTimerExpired(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE friends_public_keys SET "
 		      "status = 'offline' WHERE "
 		      "neighbor_oid = -1 AND "
@@ -1255,7 +1254,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	query.bindValue
 	  (0, QDateTime::currentDateTime().toString(Qt::ISODate));
 	query.bindValue
-	  (1, 2 * qCeil(m_statusTimer.interval() / 1000.0));
+	  (1, 2.5 * qCeil(m_statusTimer.interval() / 1000.0));
 	query.exec();
       }
 

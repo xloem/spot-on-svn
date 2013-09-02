@@ -624,10 +624,15 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
     return;
 
   QSqlQuery query(db);
+  int seconds = m_startTime.secsTo(QDateTime::currentDateTime());
 
-  query.prepare("UPDATE neighbors SET uptime = ? WHERE OID = ?");
-  query.bindValue(0, m_startTime.secsTo(QDateTime::currentDateTime()));
+  query.prepare("PRAGMA synchronous = OFF");
+  query.prepare("UPDATE neighbors SET uptime = ? WHERE OID = ? AND "
+		"status = 'connected' "
+		"AND ? - uptime >= 10");
+  query.bindValue(0, seconds);
   query.bindValue(1, m_id);
+  query.bindValue(2, seconds);
   query.exec();
 }
 
@@ -2727,7 +2732,6 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash)
       {
 	QSqlQuery query(db);
 
-	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE friends_public_keys SET "
 		      "last_status_update = ? "
 		      "WHERE neighbor_oid = -1 AND "
@@ -2766,8 +2770,6 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
     if(db.open())
       {
 	QSqlQuery query(db);
-
-	query.exec("PRAGMA synchronous = OFF");
 
 	if(status.isEmpty())
 	  {
@@ -3609,7 +3611,6 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 	QSqlQuery query(db);
 	bool ok = true;
 
-	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE friends_public_keys SET "
 		      "gemini = ?, last_status_update = ? "
 		      "WHERE neighbor_oid = -1 AND "

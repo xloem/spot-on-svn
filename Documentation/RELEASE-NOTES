@@ -27,6 +27,7 @@
 14.  Retain geminis if participants are re-added.
 15.  Renamed Documentation/PROTOCOLS to Documentation/MESSAGES.
 16.  Added the Uptime field to the Neighbors table.
+17.  Removed a bunch of "PRAGMA synchronous = OFF" statements.
 
 0.03 (08/26/2013)
 

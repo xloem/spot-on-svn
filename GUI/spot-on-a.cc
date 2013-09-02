@@ -2664,7 +2664,6 @@ void spoton::updateListenersTable(const QSqlDatabase &db)
 	** information.
 	*/
 
-	query.exec("PRAGMA synchronous = OFF");
 	query.exec("DELETE FROM listeners WHERE "
 		   "status_control = 'deleted'");
 	query.exec("UPDATE listeners SET connections = 0, "
@@ -2685,7 +2684,6 @@ void spoton::updateNeighborsTable(const QSqlDatabase &db)
 
 	QSqlQuery query(db);
 
-	query.exec("PRAGMA synchronous = OFF");
 	query.exec("DELETE FROM neighbors WHERE "
 		   "status <> 'connected' AND "
 		   "status_control <> 'blocked' AND "
@@ -2703,7 +2701,6 @@ void spoton::updateNeighborsTable(const QSqlDatabase &db)
 	** and update some of their information.
 	*/
 
-	query.exec("PRAGMA synchronous = OFF");
 	query.exec("DELETE FROM neighbors WHERE "
 		   "status_control = 'deleted'");
 	query.exec("UPDATE neighbors SET external_ip_address = NULL, "
@@ -2727,7 +2724,6 @@ void spoton::updateParticipantsTable(const QSqlDatabase &db)
 	** OK, so the kernel is inactive. All participants are offline.
 	*/
 
-	query.exec("PRAGMA synchronous = OFF");
 	query.exec("UPDATE friends_public_keys SET status = 'offline' WHERE "
 		   "status <> 'offline'");
       }
