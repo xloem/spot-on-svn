@@ -484,6 +484,7 @@ void spoton::slotSaveBuzzName(void)
 
   settings.setValue("gui/buzzName", str.toUtf8());
   m_ui.buzzName->selectAll();
+  emit buzzNameChanged(str.toUtf8());
 }
 
 void spoton::slotSaveEmailName(void)
@@ -3748,6 +3749,10 @@ void spoton::slotJoinBuzzChannel(void)
 	  SIGNAL(changed(void)),
 	  this,
 	  SLOT(slotBuzzChanged(void)));
+  connect(this,
+	  SIGNAL(buzzNameChanged(const QByteArray &)),
+	  page,
+	  SLOT(slotBuzzNameChanged(const QByteArray &)));
   connect(this,
 	  SIGNAL(iconsChanged(void)),
 	  page,

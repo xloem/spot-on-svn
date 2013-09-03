@@ -290,6 +290,7 @@ class spoton: public QMainWindow
   void slotViewLog(void);
 
  signals:
+  void buzzNameChanged(const QByteArray &name);
   void iconsChanged(void);
 };
 

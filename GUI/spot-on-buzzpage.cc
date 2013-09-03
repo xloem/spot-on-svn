@@ -532,3 +532,12 @@ QByteArray spoton_buzzpage::key(void) const
 {
   return m_key;
 }
+
+void spoton_buzzpage::slotBuzzNameChanged(const QByteArray &name)
+{
+  QList<QByteArray> list;
+
+  list << name
+       << m_id;
+  userStatus(list);
+}

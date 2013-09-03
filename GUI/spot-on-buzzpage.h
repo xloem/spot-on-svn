@@ -80,6 +80,7 @@ class spoton_buzzpage: public QWidget
   void purgeMessagingCache(void);
 
  private slots:
+  void slotBuzzNameChanged(const QByteArray &name);
   void slotMessagingCachePurge(void);
   void slotSendMessage(void);
   void slotSendStatus(void);
