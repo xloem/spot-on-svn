@@ -3274,6 +3274,8 @@ void spoton::slotSetIcons(void)
 
   // Listeners
 
+  m_ui.addAcceptedIP->setIcon(QIcon(QString(":/%1/add.png").
+				    arg(iconSet)));
   m_ui.addListener->setIcon(QIcon(QString(":/%1/add-listener.png").
 				  arg(iconSet)));
 
@@ -3960,4 +3962,134 @@ void spoton::slotRemoveEmailParticipants(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton::slotAddAcceptedIP(void)
+{
+  if(!m_crypts.value("chat", 0))
+    return;
+
+  QHostAddress ip(m_ui.acceptedIP->text().trimmed());
+
+  if(ip.isNull())
+    return;
+
+  spoton_misc::prepareDatabases();
+
+  QString connectionName("");
+  bool ok = true;
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "accepted_ips.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare
+	  ("INSERT INTO accepted_ips (ip_address, ip_address_hash) "
+	   "VALUES (?, ?)");
+	query.bindValue
+	  (0, m_crypts.value("chat")->encrypted(ip.toString().toLatin1(),
+						&ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (1, m_crypts.value("chat")->keyedHash(ip.toString().
+						  toLatin1(), &ok).
+	     toBase64());
+
+	if(ok)
+	  ok = query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  if(ok)
+    {
+      QString connectionName("");
+
+      {
+	QSqlDatabase db = spoton_misc::database(connectionName);
+
+	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			   "neighbors.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+	    bool ok = true;
+
+	    query.prepare("UPDATE neighbors SET "
+			  "status_control = 'disconnected' "
+			  "WHERE remote_ip_address_hash = ?");
+	    query.bindValue
+	      (0,
+	       m_crypts.value("chat")->
+	       keyedHash(ip.toString().toLatin1(), &ok).
+	       toBase64());
+
+	    if(ok)
+	      query.exec();
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase(connectionName);
+      m_ui.acceptedIP->selectAll();
+      m_acceptedIPsLastModificationTime = QDateTime();
+    }
+}
+
+void spoton::slotDeleteAccepedIP(void)
+{
+  QString ip("");
+  int row = -1;
+
+  if((row = m_ui.acceptedIPList->currentRow()) >= 0)
+    {
+      QListWidgetItem *item = m_ui.acceptedIPList->item(row);
+
+      if(item)
+	ip = item->text();
+    }
+
+  if(ip.isEmpty())
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "accepted_ips.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("DELETE FROM accepted_ips WHERE "
+		      "ip_address_hash = ?");
+	query.bindValue
+	  (0, m_crypts.value("chat")->keyedHash(ip.toLatin1(),
+						&ok).toBase64());
+	query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  if(row > -1)
+    delete m_ui.acceptedIPList->takeItem(row);
 }

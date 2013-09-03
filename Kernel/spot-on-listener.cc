@@ -422,6 +422,17 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
       return;
     }
 
+  if(!spoton_misc::isAcceptedIP(neighbor->peerAddress(),
+				s_crypt))
+    {
+      spoton_misc::logError
+	(QString("spoton_listener::slotNewConnection(): "
+		 "connection from %1 denied.").
+	 arg(neighbor->peerAddress().toString()));
+      neighbor->deleteLater();
+      return;
+    }
+
   QString country
     (spoton_misc::
      countryNameFromIPAddress(neighbor->peerAddress().toString()));

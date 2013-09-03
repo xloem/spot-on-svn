@@ -88,6 +88,7 @@ spoton::spoton(void):QMainWindow()
   m_booleans["buzz_channels_sent_to_kernel"] = false;
   m_booleans["keys_sent_to_kernel"] = false;
   m_buzzStatusTimer.setInterval(15000);
+  m_acceptedIPsLastModificationTime = QDateTime();
   m_countriesLastModificationTime = QDateTime();
   m_listenersLastModificationTime = QDateTime();
   m_neighborsLastModificationTime = QDateTime();
@@ -422,6 +423,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.rsaKeySize,
 	  SLOT(setEnabled(bool)));
+  connect(m_ui.countriesRadio,
+	  SIGNAL(toggled(bool)),
+	  m_ui.approvedCountries,
+	  SLOT(setEnabled(bool)));
+  connect(m_ui.acceptedIPsRadio,
+	  SIGNAL(toggled(bool)),
+	  m_ui.approvedIPs,
+	  SLOT(setEnabled(bool)));
   connect(m_ui.cost,
 	  SIGNAL(valueChanged(int)),
 	  this,
@@ -482,6 +491,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotJoinBuzzChannel(void)));
+  connect(m_ui.acceptedIP,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotAddAcceptedIP(void)));
   connect(m_ui.join,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -510,6 +523,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotSignatureCheckBoxToggled(bool)));
+  connect(m_ui.acceptedIPsRadio,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotAcceptedIPs(bool)));
+  connect(m_ui.addAcceptedIP,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotAddAcceptedIP(void)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -518,6 +539,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotMessagingCachePurge(void)));
+  connect(&m_tableTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotPopulateAcceptedIPs(void)));
   connect(&m_tableTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -657,9 +682,15 @@ spoton::spoton(void):QMainWindow()
     restoreGeometry(m_settings.value("gui/geometry").toByteArray());
 
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
+  m_ui.acceptedIPsRadio->setChecked
+    (m_settings.value("gui/acceptedIPs", false).toBool());
   m_ui.geoipPath->setText
     (m_settings.value("gui/geoipPath", "GeoIP.dat").toString().trimmed());
+#else
+  m_ui.acceptedIPsRadio->setChecked(false);
 #endif
+  m_ui.approvedCountries->setEnabled(m_ui.countriesRadio->isChecked());
+  m_ui.approvedIPs->setEnabled(m_ui.acceptedIPsRadio->isChecked());
 
   if(m_settings.contains("gui/kernelPath") &&
      QFileInfo(m_settings.value("gui/kernelPath").toString().trimmed()).
@@ -905,10 +936,15 @@ spoton::spoton(void):QMainWindow()
     m_ui.urlsVerticalSplitter->restoreState
       (m_settings.value("gui/urlsVerticalSplitter").toByteArray());
 
+  m_ui.acceptedIPList->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.emailParticipants->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.listeners->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.neighbors->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.participants->setContextMenuPolicy(Qt::CustomContextMenu);
+  connect(m_ui.acceptedIPList,
+	  SIGNAL(customContextMenuRequested(const QPoint &)),
+	  this,
+	  SLOT(slotShowContextMenu(const QPoint &)));
   connect(m_ui.emailParticipants,
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,
@@ -2335,6 +2371,7 @@ void spoton::slotGeneralTimerTimeout(void)
 
   if(text != m_ui.pid->text())
     {
+      m_acceptedIPsLastModificationTime = QDateTime();
       m_countriesLastModificationTime = QDateTime();
       m_listenersLastModificationTime = QDateTime();
       m_neighborsLastModificationTime = QDateTime();
@@ -3217,7 +3254,16 @@ void spoton::slotShowContextMenu(const QPoint &point)
 {
   QMenu menu(this);
 
-  if(m_ui.emailParticipants == sender())
+  if(m_ui.acceptedIPList == sender())
+    {
+      menu.addAction(QIcon(QString(":/%1/clear.png").
+			   arg(m_settings.value("gui/iconSet", "nouve").
+			       toString())),
+		     tr("&Delete IP Address"),
+		     this, SLOT(slotDeleteAccepedIP(void)));
+      menu.exec(m_ui.acceptedIPList->mapToGlobal(point));
+    }
+  else if(m_ui.emailParticipants == sender())
     {
       QAction *action = menu.addAction
 	(QIcon(QString(":/%1/add.png").
@@ -4747,4 +4793,111 @@ void spoton::slotCopyAllMyPublicKeys(void)
   if(clipboard)
     clipboard->setText(copyMyChatPublicKey() + "@" +
 		       copyMyEmailPublicKey());
+}
+
+void spoton::slotAcceptedIPs(bool state)
+{
+  m_settings["gui/acceptedIPs"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/acceptedIPs", state);
+}
+
+void spoton::slotPopulateAcceptedIPs(void)
+{
+  if(!m_crypts.value("chat", 0))
+    return;
+
+  QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
+		     "accepted_ips.db");
+
+  if(fileInfo.exists())
+    {
+      if(fileInfo.lastModified() <= m_acceptedIPsLastModificationTime)
+	return;
+      else
+	m_acceptedIPsLastModificationTime = fileInfo.lastModified();
+    }
+  else
+    m_acceptedIPsLastModificationTime = QDateTime();
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(fileInfo.absoluteFilePath());
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	QWidget *focusWidget = QApplication::focusWidget();
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT ip_address FROM accepted_ips"))
+	  {
+	    QList<QListWidgetItem *> list
+	      (m_ui.acceptedIPList->selectedItems());
+	    QString selectedIP("");
+	    QStringList acceptedIPList;
+	    int hval = m_ui.acceptedIPList->horizontalScrollBar()->value();
+	    int vval = m_ui.acceptedIPList->verticalScrollBar()->value();
+
+	    if(!list.isEmpty())
+	      selectedIP = list.at(0)->text();
+
+	    m_ui.acceptedIPList->clear();
+
+	    while(query.next())
+	      {
+		QString ip("");
+		bool ok = true;
+
+		ip = m_crypts.value("chat")->
+		  decrypted(QByteArray::
+			    fromBase64(query.
+				       value(0).
+				       toByteArray()),
+			    &ok).constData();
+
+		if(!ip.isEmpty())
+		  acceptedIPList.append(ip);
+	      }
+
+	    qSort(acceptedIPList);
+
+	    QListWidgetItem *selected = 0;
+
+	    while(!acceptedIPList.isEmpty())
+	      {
+		QListWidgetItem *item = 0;
+
+		item = new QListWidgetItem(acceptedIPList.takeFirst());
+		item->setFlags
+		  (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+
+		m_ui.acceptedIPList->addItem(item);
+
+		if(!selectedIP.isEmpty())
+		  if(item->text() == selectedIP)
+		    selected = item;
+	      }
+
+	    if(selected)
+	      selected->setSelected(true);
+
+	    m_ui.acceptedIPList->horizontalScrollBar()->setValue(hval);
+	    m_ui.acceptedIPList->verticalScrollBar()->setValue(vval);
+
+	    if(focusWidget)
+	      focusWidget->setFocus();
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }

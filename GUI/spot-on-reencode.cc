@@ -54,7 +54,73 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
   QString connectionName("");
 
-  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+  sb.status->setText
+    (QObject::tr("Re-encoding accepted_ips.db."));
+  sb.status->repaint();
+  spoton_misc::prepareDatabases();
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "accepted_ips.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT ip_address, ip_address_hash FROM "
+		      "accepted_ips"))
+	  while(query.next())
+	    {
+	      QSqlQuery updateQuery(db);
+	      QString ip("");
+	      bool ok = true;
+
+	      updateQuery.prepare("UPDATE accepted_ips "
+				  "SET ip_address = ?, "
+				  "ip_address_hash = ? WHERE "
+				  "ip_address_hash = ?");
+	      ip = oldCrypt->decrypted(QByteArray::
+				       fromBase64(query.
+						  value(0).
+						  toByteArray()),
+				       &ok).constData();
+
+	      if(ok)
+		updateQuery.bindValue
+		  (0, newCrypt->encrypted(ip.toLatin1(),
+					  &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (1,
+		   newCrypt->keyedHash(ip.toLatin1(),
+				       &ok).toBase64());
+
+	      updateQuery.bindValue
+		(2, query.value(1));
+
+	      if(ok)
+		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare("DELETE FROM accepted_ips WHERE "
+				      "ip_address_hash = ?");
+		  deleteQuery.bindValue(0, query.value(1));
+		  deleteQuery.exec();
+		}
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
   sb.status->setText
     (QObject::tr("Re-encoding email.db."));
   sb.status->repaint();
@@ -636,6 +702,5 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-  QApplication::restoreOverrideCursor();
   sb.status->clear();
 }

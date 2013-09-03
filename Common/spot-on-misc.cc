@@ -84,6 +84,26 @@ void spoton_misc::prepareDatabases(void)
     QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() +
+		       "accepted_ips.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("CREATE TABLE IF NOT EXISTS accepted_ips ("
+		   "ip_address TEXT NOT NULL, "
+		   "ip_address_hash TEXT PRIMARY KEY NOT NULL)");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName(homePath() + QDir::separator() +
 		       "country_inclusion.db");
 
     if(db.open())
@@ -1723,4 +1743,47 @@ bool spoton_misc::isValidSignature(const QByteArray &data,
     return false;
 
   return spoton_crypt::isValidSignature(data, publicKey, signature);
+}
+
+bool spoton_misc::isAcceptedIP(const QHostAddress &address,
+			       spoton_crypt *crypt)
+{
+  QSettings settings;
+
+  if(!settings.value("gui/acceptedIPs", false).toBool())
+    return true;
+
+  if(!crypt)
+    return false;
+
+  QString connectionName("");
+  int count = 0;
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName(homePath() + QDir::separator() +
+		       "accepted_ips.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("SELECT COUNT(*) FROM accepted_ips "
+		      "WHERE ip_address_hash = ?");
+	query.bindValue(0, crypt->keyedHash(address.toString().
+					    toLatin1(), &ok).
+			toBase64());
+
+	if(query.exec())
+	  if(query.next())
+	    count = query.value(0).toInt();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  return count > 0;
 }

@@ -164,7 +164,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1197</width>
-                <height>554</height>
+                <height>559</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1123,7 +1123,7 @@
        <attribute name="title">
         <string>&amp;Listeners</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_27">
+       <layout class="QVBoxLayout" name="verticalLayout_33">
         <item>
          <widget class="QSplitter" name="listenersHorizontalSplitter">
           <property name="orientation">
@@ -1486,59 +1486,118 @@
             </item>
            </layout>
           </widget>
-          <widget class="QGroupBox" name="approvedCountries">
-           <property name="title">
-            <string>Accepted Countries</string>
+          <widget class="QFrame" name="frame">
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_25">
+           <layout class="QVBoxLayout" name="verticalLayout_27">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_41">
-              <item>
-               <spacer name="horizontalSpacer_37">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QToolButton" name="countriesToggle">
-                <property name="text">
-                 <string>Toggle All</string>
-                </property>
-                <property name="popupMode">
-                 <enum>QToolButton::InstantPopup</enum>
-                </property>
-                <property name="toolButtonStyle">
-                 <enum>Qt::ToolButtonTextBesideIcon</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_38">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <widget class="QListWidget" name="countries">
-              <property name="alternatingRowColors">
+             <widget class="QRadioButton" name="countriesRadio">
+              <property name="text">
+               <string>&amp;Countries</string>
+              </property>
+              <property name="checked">
                <bool>true</bool>
               </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="acceptedIPsRadio">
+              <property name="text">
+               <string>&amp;IP Addresses</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="approvedCountries">
+              <property name="title">
+               <string>Accepted Countries</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_25">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_41">
+                 <item>
+                  <spacer name="horizontalSpacer_37">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QToolButton" name="countriesToggle">
+                   <property name="text">
+                    <string>Toggle All</string>
+                   </property>
+                   <property name="popupMode">
+                    <enum>QToolButton::InstantPopup</enum>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_38">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QListWidget" name="countries">
+                 <property name="alternatingRowColors">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="approvedIPs">
+              <property name="title">
+               <string>Accepted IP Addresses</string>
+              </property>
+              <property name="checked">
+               <bool>false</bool>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_36">
+               <item>
+                <widget class="QListWidget" name="acceptedIPList">
+                 <property name="alternatingRowColors">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_49">
+                 <item>
+                  <widget class="QLineEdit" name="acceptedIP"/>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="addAcceptedIP">
+                   <property name="text">
+                    <string>Add</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
              </widget>
             </item>
            </layout>
@@ -2493,7 +2552,7 @@
              <x>0</x>
              <y>0</y>
              <width>1197</width>
-             <height>554</height>
+             <height>559</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3513,7 +3572,7 @@
           <item>
            <widget class="QLabel" name="label_35">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://sourceforge.net/p/spot-on/code/HEAD/tree/branches/0.04/Documentation/RELEASE-NOTES&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Version 0.04&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://sourceforge.net/p/spot-on/code/HEAD/tree/branches/0.05/Documentation/RELEASE-NOTES&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Version 0.05&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="textFormat">
              <enum>Qt::AutoText</enum>
@@ -3564,7 +3623,7 @@
      <x>0</x>
      <y>0</y>
      <width>1219</width>
-     <height>27</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -3707,8 +3766,13 @@
   <tabstop>sslListener</tabstop>
   <tabstop>listenerKeySize</tabstop>
   <tabstop>addListener</tabstop>
+  <tabstop>countriesRadio</tabstop>
+  <tabstop>acceptedIPsRadio</tabstop>
   <tabstop>countriesToggle</tabstop>
   <tabstop>countries</tabstop>
+  <tabstop>acceptedIPList</tabstop>
+  <tabstop>acceptedIP</tabstop>
+  <tabstop>addAcceptedIP</tabstop>
   <tabstop>toolButtonCopytoClipboard</tabstop>
   <tabstop>toolButtonMakeFriends</tabstop>
   <tabstop>acceptPublishedConnected</tabstop>

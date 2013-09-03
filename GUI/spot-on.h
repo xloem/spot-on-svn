@@ -108,6 +108,7 @@ class spoton: public QMainWindow
   static const int APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL = 1;
   static const int APPLY_GOLDBUG_TO_INBOX_ERROR_MEMORY = 2;
   QByteArray m_kernelSocketData;
+  QDateTime m_acceptedIPsLastModificationTime;
   QDateTime m_countriesLastModificationTime;
   QDateTime m_listenersLastModificationTime;
   QDateTime m_neighborsLastModificationTime;
@@ -172,7 +173,9 @@ class spoton: public QMainWindow
 
  private slots:
   void slotAcceptPublicizedListeners(void);
+  void slotAcceptedIPs(bool state);
   void slotActivateKernel(void);
+  void slotAddAcceptedIP(void);
   void slotAddBootstrapper(void);
   void slotAddListener(void);
   void slotAddFriendsKey(void);
@@ -197,6 +200,7 @@ class spoton: public QMainWindow
   void slotCountryChanged(QListWidgetItem *item);
   void slotDaysChanged(int value);
   void slotDeactivateKernel(void);
+  void slotDeleteAccepedIP(void);
   void slotDeleteAllBlockedNeighbors(void);
   void slotDeleteAllListeners(void);
   void slotDeleteAllNeighbors(void);
@@ -241,6 +245,7 @@ class spoton: public QMainWindow
   void slotNeighborFullEcho(void);
   void slotNeighborHalfEcho(void);
   void slotNeighborMaximumChanged(int value);
+  void slotPopulateAcceptedIPs(void);
   void slotPopulateCountries(void);
   void slotPopulateListeners(void);
   void slotPopulateNeighbors(void);

@@ -52,6 +52,8 @@ class spoton_misc
   static QString homePath(void);
   static bool countryAllowedToConnect(const QString &country,
 				      spoton_crypt *crypt);
+  static bool isAcceptedIP(const QHostAddress &address,
+			   spoton_crypt *crypt);
   static bool isAcceptedParticipant(const QByteArray &publicKeyHash);
   static bool isGnome(void);
   static bool isPrivateNetwork(const QHostAddress &address);

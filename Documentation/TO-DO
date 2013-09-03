@@ -66,6 +66,9 @@ Completed Items
 43.    Simplify messages. Hide header information.
 44.    Local and long distance calling feature to limit PKI.
 45.    Add optional signatures for inbound and outbound traffic.
+46.    Bulk key copies, per the friendly Mr. Smith.
+47.    Provide IP blocking capabilities.
+48.    Include external IP addresses in listener certificates.
 
 Ignored Items
 
@@ -97,7 +100,7 @@ Remaining Items
 15.    Custom protocol messages for rapid redeployment.
 16.    Customize expiration timers.
 17.    Provide a total silent mode. Cumbersome.
-18.    Provide complex IP blocking capabilities.
+18.    Artificial trust. All participants must play nicely. Zero-knowledge?
 19.    Include licenses of other software where applicable.
        Satisfy the license soldiers.
 20.    Entering geminis is difficult.
@@ -109,14 +112,14 @@ Remaining Items
        responses. Congestion control is helpful, however, short graphs
        tend to be skewed.
 25.    Provide kernel and network statistics.
-26.    Include external IP addresses in listener certificates.
+26.    Optional OTR.
 27.    QFSFileEngine::open: No file name specified: created from
        e-mail.
 28.    Support ECC.
 29.    Perform calling over geminis.
 30.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
 31.    Remote kernel termination.
-32.    Bulk key copies and exchanges, per the friendly Mr. Smith.
-33.    Zero-knowledge passphrase authentication.
-34.    Artificial trust. All participants must play nicely. Zero-knowledge?
-35.    Optional OTR.
+32.    Zero-knowledge passphrase authentication.
+33.    Optional OTR.
+34.    What to do about corrupt database values?
+35.    Review process signals for the kernel.
