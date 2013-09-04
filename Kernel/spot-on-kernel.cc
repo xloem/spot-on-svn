@@ -792,7 +792,7 @@ void spoton_kernel::prepareNeighbors(void)
 
 		  if(neighbor)
 		    {
-		      neighbor->close();
+		      neighbor->abort();
 		      neighbor->deleteLater();
 		    }
 
@@ -887,7 +887,7 @@ void spoton_kernel::checkForTermination(void)
 
 	  if(neighbor)
 	    {
-	      neighbor->close();
+	      neighbor->abort();
 	      neighbor->deleteLater();
 	    }
 	}

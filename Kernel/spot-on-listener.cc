@@ -49,7 +49,7 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
       QTcpSocket socket;
 
       socket.setSocketDescriptor(socketDescriptor);
-      socket.close();
+      socket.abort();
     }
   else
     {
@@ -66,10 +66,17 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
       if(!spoton_misc::isAcceptedIP(address,
 				    spoton_kernel::s_crypts.
 				    value("chat", 0)))
-	spoton_misc::logError
-	  (QString("spoton_listener::incomingConnection(): "
-		   "connection from %1 denied.").
-	   arg(address.toString()));
+	{
+	  spoton_misc::logError
+	    (QString("spoton_listener::incomingConnection(): "
+		     "connection from %1 denied.").
+	     arg(address.toString()));
+
+	  QTcpSocket socket;
+
+	  socket.setSocketDescriptor(socketDescriptor);
+	  socket.abort();
+	}
       else
 	emit newConnection(socketDescriptor);
     }
@@ -410,7 +417,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
       QTcpSocket socket;
 
       socket.setSocketDescriptor(socketDescriptor);
-      socket.close();
+      socket.abort();
       spoton_misc::logError
 	(QString("spoton_listener::"
 		 "slotNewConnection(): "
