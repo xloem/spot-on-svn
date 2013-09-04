@@ -327,6 +327,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotStatusChanged(int)));
+  connect(m_ui.kernelCipherType,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotKernelCipherTypeChanged(int)));
   connect(m_ui.addFriend,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -774,6 +778,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.channelType->addItems(spoton_crypt::cipherTypes());
   m_ui.cipherType->clear();
   m_ui.cipherType->addItems(spoton_crypt::cipherTypes());
+  m_ui.kernelCipherType->insertSeparator(1);
+  m_ui.kernelCipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.cost->setValue(m_settings.value("gui/congestionCost", 10000).toInt());
   m_ui.days->setValue(m_settings.value("gui/postofficeDays", 1).toInt());
 
@@ -838,6 +844,9 @@ spoton::spoton(void):QMainWindow()
   if(m_ui.cipherType->count() == 0)
     m_ui.cipherType->addItem("n/a");
 
+  if(m_ui.kernelCipherType->count() <= 2)
+    m_ui.kernelCipherType->addItem("n/a");
+
   m_ui.hashType->clear();
   m_ui.hashType->addItems(spoton_crypt::hashTypes());
 
@@ -851,6 +860,13 @@ spoton::spoton(void):QMainWindow()
 
   if(m_ui.cipherType->findText(str) > -1)
     m_ui.cipherType->setCurrentIndex(m_ui.cipherType->findText(str));
+
+  str = m_settings.value("gui/kernelCipherType", "aes256").
+    toString().toLower().trimmed();
+
+  if(m_ui.kernelCipherType->findText(str) > -1)
+    m_ui.kernelCipherType->setCurrentIndex
+      (m_ui.kernelCipherType->findText(str));
 
   str = m_settings.value("gui/hashType", "sha512").
     toString().toLower().trimmed();
@@ -3047,6 +3063,8 @@ void spoton::slotSetPassphrase(void)
       m_settings["gui/cipherType"] = m_ui.cipherType->currentText();
       m_settings["gui/hashType"] = m_ui.hashType->currentText();
       m_settings["gui/iterationCount"] = m_ui.iterationCount->value();
+      m_settings["gui/kernelCipherType"] =
+	m_ui.kernelCipherType->currentText();
       m_settings["gui/rsaKeySize"] = m_ui.rsaKeySize->currentText().toInt();
       m_settings["gui/salt"] = salt;
       m_settings["gui/saltLength"] = m_ui.saltLength->value();
@@ -3058,6 +3076,8 @@ void spoton::slotSetPassphrase(void)
       settings.setValue("gui/hashType", m_settings["gui/hashType"]);
       settings.setValue("gui/iterationCount",
 			m_settings["gui/iterationCount"]);
+      settings.setValue("gui/kernelCipherType",
+			m_settings["gui/kernelCipherType"]);
       settings.setValue("gui/rsaKeySize", m_settings["gui/rsaKeySize"]);
       settings.setValue("gui/salt", m_settings["gui/salt"]);
       settings.setValue("gui/saltLength", m_settings["gui/saltLength"]);
@@ -4676,22 +4696,25 @@ void spoton::slotCopyEmailFriendshipBundle(void)
   */
 
   QString neighborOid("");
+  QByteArray cipherType(m_settings.value("gui/kernelCipherType",
+					 "randomized").toByteArray());
   QByteArray gemini;
   QByteArray keyInformation;
   QByteArray publicKey;
   QByteArray symmetricKey;
-  QByteArray symmetricKeyAlgorithm;
+
+  if(cipherType == "randomized")
+    cipherType = spoton_crypt::randomCipherType();
 
   spoton_misc::retrieveSymmetricData(gemini,
 				     publicKey,
 				     symmetricKey,
-				     symmetricKeyAlgorithm,
 				     neighborOid,
+				     cipherType,
 				     oid,
 				     m_crypts.value("email"));
 
-  if(publicKey.isEmpty() ||
-     symmetricKey.isEmpty() || symmetricKeyAlgorithm.isEmpty())
+  if(cipherType.isEmpty() || publicKey.isEmpty() || symmetricKey.isEmpty())
     {
       clipboard->clear();
       return;
@@ -4700,7 +4723,7 @@ void spoton::slotCopyEmailFriendshipBundle(void)
   bool ok = true;
 
   keyInformation = spoton_crypt::publicKeyEncrypt
-    (symmetricKey.toBase64() + "@" + symmetricKeyAlgorithm.toBase64(),
+    (symmetricKey.toBase64() + "@" + cipherType.toBase64(),
      publicKey, &ok);
 
   if(!ok)
@@ -4751,7 +4774,7 @@ void spoton::slotCopyEmailFriendshipBundle(void)
     myName = "unknown";
 
   QByteArray data;
-  spoton_crypt crypt(symmetricKeyAlgorithm,
+  spoton_crypt crypt(cipherType,
 		     QString("sha512"),
 		     QByteArray(),
 		     symmetricKey,

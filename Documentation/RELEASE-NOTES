@@ -5,6 +5,7 @@
 3.   Remove kernel.db in spot-on-kernel.cc's sig_handler() function.
 4.   Use shutdown() instead of creating temporary QTcpSocket objects
      for closing socket descriptors.
+5.   Added kernel cipher type to the Settings page. Default: randomized.
 
 0.04 (09/03/2013)
 

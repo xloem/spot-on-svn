@@ -905,8 +905,8 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 void spoton_misc::retrieveSymmetricData(QByteArray &gemini,
 					QByteArray &publicKey,
 					QByteArray &symmetricKey,
-					QByteArray &symmetricKeyAlgorithm,
 					QString &neighborOid,
+					const QByteArray &cipherType,
 					const QString &oid,
 					spoton_crypt *crypt)
 {
@@ -932,7 +932,6 @@ void spoton_misc::retrieveSymmetricData(QByteArray &gemini,
 			      "OID = %1").arg(oid)))
 	  if(query.next())
 	    {
-	      QByteArray cipherType(spoton_crypt::randomCipherType());
 	      size_t symmetricKeyLength = spoton_crypt::cipherKeyLength
 		(cipherType);
 
@@ -952,7 +951,6 @@ void spoton_misc::retrieveSymmetricData(QByteArray &gemini,
 		  symmetricKey.resize(symmetricKeyLength);
 		  symmetricKey = spoton_crypt::strongRandomBytes
 		    (symmetricKey.length());
-		  symmetricKeyAlgorithm = cipherType;
 		}
 	      else
 		logError
@@ -1614,7 +1612,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   integer = qAbs(settings.value("gui/congestionCost", 10000).toInt(&ok));
 
   if(!ok)
-    integer = 1000;
+    integer = 10000;
 
   settings["gui/congestionCost"] = integer;
   str = settings.value("gui/iconSet", "nouve").toString().trimmed();
@@ -1623,6 +1621,20 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     str = "nouve";
 
   settings["gui/iconSet"] = str;
+  integer = qAbs(settings.value("gui/iterationCount", 10000).toInt(&ok));
+
+  if(!ok)
+    integer = 10000;
+
+  settings["gui/iterationCount"] = integer;
+  str = settings.value("gui/kernelCipherType").toString().trimmed();
+
+  if(!(str == "aes256" || str == "camellia256" ||
+       str == "randomized" ||
+       str == "serpent256" || str == "twofish"))
+    str = "aes256";
+
+  settings["gui/kernelCipherType"] = str;
   integer = qAbs(settings.value("gui/kernelKeySize", 2048).toInt(&ok));
 
   if(!ok)
@@ -1631,12 +1643,6 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 2048;
 
   settings["gui/kernelKeySize"] = integer;
-  integer = qAbs(settings.value("gui/iterationCount", 10000).toInt(&ok));
-
-  if(!ok)
-    integer = 10000;
-
-  settings["gui/iterationCount"] = integer;
   integer = qAbs(settings.value("gui/publishedKeySize", 2048).toInt(&ok));
 
   if(!ok)
@@ -1658,6 +1664,8 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   integer = qAbs(settings.value("gui/saltLength", 256).toInt(&ok));
 
   if(!ok)
+    integer = 256;
+  else if(integer < 256)
     integer = 256;
 
   settings["gui/saltLength"] = integer;

@@ -871,6 +871,21 @@ void spoton::slotStatusChanged(int index)
     ("gui/my_status", m_settings.value("gui/my_status").toString());
 }
 
+void spoton::slotKernelCipherTypeChanged(int index)
+{
+  if(index == 0)
+    m_settings["gui/kernelCipherType"] = "randomized";
+  else
+    m_settings["gui/kernelCipherType"] =
+      m_ui.kernelCipherType->currentText();
+
+  QSettings settings;
+
+  settings.setValue
+    ("gui/kernelCipherType", m_settings.value("gui/kernelCipherType").
+     toString());
+}
+
 bool spoton::isKernelActive(void) const
 {
   return m_ui.pid->text().toInt() > 0;
@@ -1980,22 +1995,25 @@ void spoton::slotCopyFriendshipBundle(void)
   */
 
   QString neighborOid("");
+  QByteArray cipherType(m_settings.value("gui/kernelCipherType",
+					 "randomized").toByteArray());
   QByteArray gemini;
   QByteArray keyInformation;
   QByteArray publicKey;
   QByteArray symmetricKey;
-  QByteArray symmetricKeyAlgorithm;
+
+  if(cipherType == "randomized")
+    cipherType = spoton_crypt::randomCipherType();
 
   spoton_misc::retrieveSymmetricData(gemini,
 				     publicKey,
 				     symmetricKey,
-				     symmetricKeyAlgorithm,
 				     neighborOid,
+				     cipherType,
 				     oid,
 				     m_crypts.value("chat"));
 
-  if(publicKey.isEmpty() ||
-     symmetricKey.isEmpty() || symmetricKeyAlgorithm.isEmpty())
+  if(cipherType.isEmpty() || publicKey.isEmpty() || symmetricKey.isEmpty())
     {
       clipboard->clear();
       return;
@@ -2004,7 +2022,7 @@ void spoton::slotCopyFriendshipBundle(void)
   bool ok = true;
 
   keyInformation = spoton_crypt::publicKeyEncrypt
-    (symmetricKey.toBase64() + "@" + symmetricKeyAlgorithm.toBase64(),
+    (symmetricKey.toBase64() + "@" + cipherType.toBase64(),
      publicKey, &ok);
 
   if(!ok)
@@ -2055,7 +2073,7 @@ void spoton::slotCopyFriendshipBundle(void)
     myName = "unknown";
 
   QByteArray data;
-  spoton_crypt crypt(symmetricKeyAlgorithm,
+  spoton_crypt crypt(cipherType,
 		     QString("sha512"),
 		     QByteArray(),
 		     symmetricKey,
