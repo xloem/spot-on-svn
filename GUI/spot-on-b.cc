@@ -4013,36 +4013,6 @@ void spoton::slotAddAcceptedIP(void)
 
   if(ok)
     {
-      QString connectionName("");
-
-      {
-	QSqlDatabase db = spoton_misc::database(connectionName);
-
-	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-			   "neighbors.db");
-
-	if(db.open())
-	  {
-	    QSqlQuery query(db);
-	    bool ok = true;
-
-	    query.prepare("UPDATE neighbors SET "
-			  "status_control = 'disconnected' "
-			  "WHERE remote_ip_address_hash = ?");
-	    query.bindValue
-	      (0,
-	       m_crypts.value("chat")->
-	       keyedHash(ip.toString().toLatin1(), &ok).
-	       toBase64());
-
-	    if(ok)
-	      query.exec();
-	  }
-
-	db.close();
-      }
-
-      QSqlDatabase::removeDatabase(connectionName);
       m_ui.acceptedIP->selectAll();
       m_acceptedIPsLastModificationTime = QDateTime();
     }
@@ -4050,6 +4020,9 @@ void spoton::slotAddAcceptedIP(void)
 
 void spoton::slotDeleteAccepedIP(void)
 {
+  if(!m_crypts.value("chat", 0))
+    return;
+
   QString ip("");
   int row = -1;
 
@@ -4083,6 +4056,34 @@ void spoton::slotDeleteAccepedIP(void)
 	  (0, m_crypts.value("chat")->keyedHash(ip.toLatin1(),
 						&ok).toBase64());
 	query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("UPDATE neighbors SET "
+		      "status_control = 'disconnected' "
+		      "WHERE remote_ip_address_hash = ?");
+	query.bindValue
+	  (0,
+	   m_crypts.value("chat")->keyedHash(ip.toLatin1(), &ok).
+	   toBase64());
+
+	if(ok)
+	  query.exec();
       }
 
     db.close();
