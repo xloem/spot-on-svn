@@ -861,7 +861,7 @@ spoton::spoton(void):QMainWindow()
   if(m_ui.cipherType->findText(str) > -1)
     m_ui.cipherType->setCurrentIndex(m_ui.cipherType->findText(str));
 
-  str = m_settings.value("gui/kernelCipherType", "aes256").
+  str = m_settings.value("gui/kernelCipherType", "randomized").
     toString().toLower().trimmed();
 
   if(m_ui.kernelCipherType->findText(str) > -1)
