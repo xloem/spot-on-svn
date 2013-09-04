@@ -2,6 +2,7 @@
 
 1.   Simple IP-based firewall.
 2.   Issue abort() instead of close() for drastic situations.
+3.   Remove kernel.db in spot-on-kernel.cc's sig_handler() function.
 
 0.04 (09/03/2013)
 

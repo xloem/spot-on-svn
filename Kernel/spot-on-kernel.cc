@@ -121,6 +121,7 @@ static void sig_handler(int signum)
 #endif
 
   libspoton_close(&libspotonHandle);
+  QFile::remove(spoton_misc::homePath() + QDir::separator() + "kernel.db");
 
   /*
   ** _Exit() and _exit() may be safely called from signal handlers.
