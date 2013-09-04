@@ -370,7 +370,7 @@ void spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 						    name.length()));
 
       if(id == m_id)
-	item->setBackground(QBrush(QColor("pink")));
+	item->setBackground(QBrush(QColor(254, 229, 172)));
 
       item->setToolTip(id.mid(0, 16) + "..." + id.right(16));
       ui.clients->setItem(ui.clients->rowCount() - 1, 0, item);
