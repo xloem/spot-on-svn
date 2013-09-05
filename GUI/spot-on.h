@@ -272,6 +272,7 @@ class spoton: public QMainWindow
   void slotSaveGeoIPPath(void);
   void slotSaveKernelPath(void);
   void slotSaveNodeName(void);
+  void slotSaveSslControlString(void);
   void slotScramble(bool state);
   void slotSelectGeoIPPath(void);
   void slotSelectKernelPath(void);

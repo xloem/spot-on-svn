@@ -2940,6 +2940,8 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(void)
   */
 
   QList<QSslCipher> list;
+  QSettings settings;
+  QString controlString("");
   SSL *ssl = 0;
   SSL_CTX *ctx = 0;
   const char *next = 0;
@@ -2952,9 +2954,12 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(void)
       goto done_label;
     }
 
+  controlString = settings.value
+    ("gui/sslControlString",
+     "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH").toString();
+
   if(SSL_CTX_set_cipher_list(ctx,
-			     "HIGH:!aNULL:!eNULL:!3DES:"
-			     "!EXPORT:@STRENGTH") == 0)
+			     controlString.toLatin1().constData()) == 0)
     {
       spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
 			    "SSL_CTX_set_cipher_list() failure.");

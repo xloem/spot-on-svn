@@ -501,6 +501,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotAddAcceptedIP(void)));
+  connect(m_ui.sslControlString,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSaveSslControlString(void)));
+  connect(m_ui.saveSslControlString,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSaveSslControlString(void)));
   connect(m_ui.join,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -775,6 +783,10 @@ spoton::spoton(void):QMainWindow()
   m_ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
 		       toByteArray()).trimmed());
+  m_ui.sslControlString->setText
+    (m_settings.value("gui/sslControlString",
+		      "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH").
+     toString());
   m_ui.goldbug->setMaxLength
     (spoton_crypt::cipherKeyLength("aes256"));
   m_ui.channelType->clear();
@@ -4926,4 +4938,20 @@ void spoton::slotPopulateAcceptedIPs(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton::slotSaveSslControlString(void)
+{
+  QString str(m_ui.sslControlString->text().trimmed());
+
+  if(str.isEmpty())
+    str = "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH";
+
+  m_ui.sslControlString->setText(str);
+  m_ui.sslControlString->selectAll();
+  m_settings["gui/sslControlString"] = str;
+
+  QSettings settings;
+
+  settings.setValue("gui/sslControlString", str);
 }
