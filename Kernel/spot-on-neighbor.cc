@@ -238,6 +238,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
      privateKey,
      publicKey,
      localAddress(),
+     0, // Days are not used.
      error);
 
   if(!error.isEmpty())

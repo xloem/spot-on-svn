@@ -91,6 +91,7 @@ class spoton_crypt
 			      QByteArray &privateKey,
 			      QByteArray &publicKey,
 			      const QHostAddress &address,
+			      const long days,
 			      QString &error);
   static void purgeDatabases(void);
   static void reencodeRSAKeys(const QString &newCipher,
@@ -156,6 +157,7 @@ class spoton_crypt
   static void generateCertificate(RSA *rsa,
 				  QByteArray &certificate,
 				  const QHostAddress &address,
+				  const long days,
 				  QString &error);
   static void init(void);
 };

@@ -297,7 +297,12 @@ void spoton_misc::prepareDatabases(void)
 						      ** the scope.
 						      */
 		   "ssl_key_size INTEGER NOT NULL DEFAULT 2048, "
-		   "echo_mode TEXT NOT NULL)");
+		   "echo_mode TEXT NOT NULL, "
+		   "certificate BLOB, "
+		   "private_key BLOB, "
+		   "public_key BLOB)");               /*
+						      ** Not used.
+						      */
       }
 
     db.close();
@@ -348,7 +353,8 @@ void spoton_misc::prepareDatabases(void)
 	   "maximum_content_length INTEGER NOT NULL DEFAULT 65536, "
 	   "echo_mode TEXT NOT NULL, "
 	   "ssl_key_size INTEGER NOT NULL DEFAULT 2048, "
-	   "uptime INTEGER NOT NULL DEFAULT 0)");
+	   "uptime INTEGER NOT NULL DEFAULT 0, "
+	   "peer_certificate BLOB)");
       }
 
     db.close();

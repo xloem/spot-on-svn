@@ -163,8 +163,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>425</width>
-                <height>433</height>
+                <width>1197</width>
+                <height>559</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1368,6 +1368,16 @@
                  <item row="1" column="6">
                   <layout class="QHBoxLayout" name="horizontalLayout_33">
                    <item>
+                    <widget class="QCheckBox" name="permanentCertificate">
+                     <property name="text">
+                      <string>&amp;Permanent Certificate</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QCheckBox" name="sslListener">
                      <property name="text">
                       <string>&amp;SSL Key Size</string>
@@ -1379,6 +1389,9 @@
                    </item>
                    <item>
                     <widget class="QComboBox" name="listenerKeySize">
+                     <property name="sizeAdjustPolicy">
+                      <enum>QComboBox::AdjustToContents</enum>
+                     </property>
                      <item>
                       <property name="text">
                        <string>2048</string>
@@ -2779,6 +2792,9 @@
                      <property name="currentIndex">
                       <number>0</number>
                      </property>
+                     <property name="sizeAdjustPolicy">
+                      <enum>QComboBox::AdjustToContents</enum>
+                     </property>
                      <item>
                       <property name="text">
                        <string>2048</string>
@@ -2916,6 +2932,9 @@
                     <widget class="QComboBox" name="rsaKeySize">
                      <property name="currentIndex">
                       <number>0</number>
+                     </property>
+                     <property name="sizeAdjustPolicy">
+                      <enum>QComboBox::AdjustToContents</enum>
                      </property>
                      <item>
                       <property name="text">
@@ -3833,6 +3852,7 @@
   <tabstop>listenersEchoMode</tabstop>
   <tabstop>listenerScopeId</tabstop>
   <tabstop>ipv6Listener</tabstop>
+  <tabstop>permanentCertificate</tabstop>
   <tabstop>sslListener</tabstop>
   <tabstop>listenerKeySize</tabstop>
   <tabstop>addListener</tabstop>

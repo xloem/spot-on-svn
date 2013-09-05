@@ -2529,6 +2529,7 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
 				   QByteArray &privateKey,
 				   QByteArray &publicKey,
 				   const QHostAddress &address,
+				   const long days,
 				   QString &error)
 {
   BIGNUM *f4 = 0;
@@ -2631,7 +2632,7 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
 	 static_cast<const void *> (bptr->data), bptr->length);
   publicBuffer[bptr->length] = 0;
   publicKey = publicBuffer;
-  generateCertificate(rsa, certificate, address, error);
+  generateCertificate(rsa, certificate, address, days, error);
 
  done_label:
   BIO_free(privateMemory);
@@ -2667,6 +2668,7 @@ void spoton_crypt::purgeDatabases(void)
 void spoton_crypt::generateCertificate(RSA *rsa,
 				       QByteArray &certificate,
 				       const QHostAddress &address,
+				       const long days,
 				       QString &error)
 {
   BIO *memory = 0;
@@ -2737,12 +2739,7 @@ void spoton_crypt::generateCertificate(RSA *rsa,
       goto done_label;
     }
 
-  /*
-  ** Seven days.
-  */
-
-  if(X509_gmtime_adj(X509_get_notAfter(x509),
-		     static_cast<long> (60 * 60 * 24 * 7)) == 0)
+  if(X509_gmtime_adj(X509_get_notAfter(x509), days) == 0)
     {
       error = QObject::tr("X509_gmtime_adj() returned zero");
       spoton_misc::logError("spoton_crypt::generateCertificate(): "

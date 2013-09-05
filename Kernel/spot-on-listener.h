@@ -80,6 +80,9 @@ class spoton_listener: public spoton_listener_tcp_server
 		  const qint64 id,
 		  const QString &echoMode,
 		  const int keySize,
+		  const QByteArray &certificate,
+		  const QByteArray &privateKey,
+		  const QByteArray &publicKey,
 		  QObject *parent);
   ~spoton_listener();
   QHostAddress externalAddress(void) const;
@@ -88,6 +91,9 @@ class spoton_listener: public spoton_listener_tcp_server
   quint16 serverPort(void) const;
 
  private:
+  QByteArray m_certificate;
+  QByteArray m_privateKey;
+  QByteArray m_publicKey;
   QHostAddress m_address;
   QNetworkInterface *m_networkInterface;
   QString m_echoMode;

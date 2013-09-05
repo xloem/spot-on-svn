@@ -88,11 +88,15 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 				 const qint64 id,
 				 const QString &echoMode,
 				 const int keySize,
+				 const QByteArray &certificate,
+				 const QByteArray &privateKey,
+				 const QByteArray &publicKey,
 				 QObject *parent):
   spoton_listener_tcp_server(parent)
 {
   m_address = QHostAddress(ipAddress);
   m_address.setScopeId(scopeId);
+  m_certificate = certificate;
   m_echoMode = echoMode;
   m_externalAddress = new spoton_external_address(this);
   m_keySize = qAbs(keySize);
@@ -104,6 +108,8 @@ spoton_listener::spoton_listener(const QString &ipAddress,
   m_id = id;
   m_networkInterface = 0;
   m_port = m_externalPort = quint16(port.toInt());
+  m_privateKey = privateKey;
+  m_publicKey = publicKey;
 #if QT_VERSION >= 0x050000
   connect(this,
 	  SIGNAL(newConnection(const qintptr)),
@@ -378,8 +384,8 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor)
 void spoton_listener::slotNewConnection(const int socketDescriptor)
 #endif
 {
-  QByteArray certificate;
-  QByteArray privateKey;
+  QByteArray certificate(m_certificate);
+  QByteArray privateKey(m_privateKey);
   QPointer<spoton_neighbor> neighbor = 0;
   QString error("");
 
@@ -399,13 +405,15 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
       if(!spoton_misc::isPrivateNetwork(address))
 	address = m_externalAddress->address();
 
-      spoton_crypt::generateSslKeys
-	(m_keySize,
-	 certificate,
-	 privateKey,
-	 publicKey,
-	 address,
-	 error);
+      if(certificate.isEmpty() || privateKey.isEmpty())
+	spoton_crypt::generateSslKeys
+	  (m_keySize,
+	   certificate,
+	   privateKey,
+	   publicKey,
+	   address,
+	   60 * 60 * 24 * 7, // Seven days.
+	   error);
     }
 
   if(error.isEmpty())

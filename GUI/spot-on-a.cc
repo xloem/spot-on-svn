@@ -461,6 +461,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.listenerKeySize,
 	  SLOT(setEnabled(bool)));
+  connect(m_ui.sslListener,
+	  SIGNAL(toggled(bool)),
+	  m_ui.permanentCertificate,
+	  SLOT(setEnabled(bool)));
   connect(m_ui.publishPeriodically,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -1082,8 +1086,37 @@ void spoton::slotAddListener(void)
 
   spoton_misc::prepareDatabases();
 
+  QByteArray certificate;
+  QByteArray privateKey;
+  QByteArray publicKey;
+  QString error("");
+
+  if(m_ui.permanentCertificate->isChecked())
+    {
+      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+      m_sb.status->setText
+	(tr("Generating SSL data for listener. Please be patient."));
+      QApplication::processEvents();
+      spoton_crypt::generateSslKeys
+	(m_ui.kernelKeySize->currentText().toInt(),
+	 certificate,
+	 privateKey,
+	 publicKey,
+	 m_kernelSocket.peerAddress(),
+	 60 * 60 * 24 * 365 * 50, // Fifty years.
+	 error);
+      QApplication::restoreOverrideCursor();
+      m_sb.status->clear();
+    }
+
   QString connectionName("");
   bool ok = true;
+
+  if(!error.isEmpty())
+    {
+      ok = false;
+      goto done_label;
+    }
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -1119,9 +1152,12 @@ void spoton::slotAddListener(void)
 		      "status_control, "
 		      "hash, "
 		      "echo_mode, "
-		      "ssl_key_size) "
+		      "ssl_key_size, "
+		      "certificate, "
+		      "private_key, "
+		      "public_key) "
 		      "VALUES "
-		      "(?, ?, ?, ?, ?, ?, ?, ?)");
+		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	if(ip.isEmpty())
 	  query.bindValue
@@ -1218,6 +1254,36 @@ void spoton::slotAddListener(void)
 	  query.bindValue(7, 0);
 
 	if(ok)
+	  {
+	    if(certificate.isEmpty())
+	      query.bindValue(8, QVariant::ByteArray);
+	    else
+	      query.bindValue
+		(8, m_crypts.value("chat")->encrypted(certificate, &ok).
+		 toBase64());
+	  }
+
+	if(ok)
+	  {
+	    if(privateKey.isEmpty())
+	      query.bindValue(9, QVariant::ByteArray);
+	    else
+	      query.bindValue
+		(9, m_crypts.value("chat")->encrypted(privateKey, &ok).
+		 toBase64());
+	  }
+
+	if(ok)
+	  {
+	    if(publicKey.isEmpty())
+	      query.bindValue(10, QVariant::ByteArray);
+	    else
+	      query.bindValue
+		(10, m_crypts.value("chat")->encrypted(publicKey, &ok).
+		 toBase64());
+	  }
+
+	if(ok)
 	  ok = query.exec();
       }
 
@@ -1225,6 +1291,8 @@ void spoton::slotAddListener(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+
+ done_label:
 
   if(ok)
     m_ui.listenerIP->selectAll();

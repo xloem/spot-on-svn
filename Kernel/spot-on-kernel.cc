@@ -493,12 +493,14 @@ void spoton_kernel::prepareListeners(void)
 
 	if(query.exec("SELECT ip_address, port, scope_id, echo_mode, "
 		      "status_control, "
-		      "maximum_clients, ssl_key_size, OID FROM listeners"))
+		      "maximum_clients, ssl_key_size, "
+		      "certificate, private_key, public_key, "
+		      "OID FROM listeners"))
 	  while(query.next())
 	    {
 	      QPointer<spoton_listener> listener = 0;
 	      QString status(query.value(4).toString());
-	      qint64 id = query.value(7).toLongLong();
+	      qint64 id = query.value(10).toLongLong();
 
 	      /*
 	      ** We're only interested in creating objects for
@@ -529,6 +531,9 @@ void spoton_kernel::prepareListeners(void)
 		{
 		  if(!m_listeners.contains(id))
 		    {
+		      QByteArray certificate;
+		      QByteArray privateKey;
+		      QByteArray publicKey;
 		      QList<QByteArray> list;
 
 		      for(int i = 0; i < 4; i++)
@@ -569,6 +574,9 @@ void spoton_kernel::prepareListeners(void)
 			     id,
 			     list.value(3).constData(),
 			     query.value(6).toInt(),
+			     certificate,
+			     privateKey,
+			     publicKey,
 			     this);
 			}
 

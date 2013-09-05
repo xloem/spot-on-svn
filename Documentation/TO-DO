@@ -72,6 +72,7 @@ Completed Items
 49.    Review process signals for the kernel.
 50.    E-mail retrieval may fail if a node is disconnected because of
        a lifetime expiration. Other communications may fail too.
+51.    Permanent certificates.
 
 Ignored Items
 
@@ -122,5 +123,3 @@ Remaining Items
 27.    Remote kernel termination.
 28.    Zero-knowledge passphrase authentication.
 29.    What to do about corrupt database values?
-30.    Allow users to modify listeners so that their certificates exist
-       for long periods. See SSH.

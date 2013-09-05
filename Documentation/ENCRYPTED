@@ -34,16 +34,14 @@ scope_id
 neighbors.db:
 
 country
-dedicated_line
 echo_mode
 external_ip_address
-private_key
+peer_certificate
 proxy_hostname
 proxy_password
 proxy_port
 proxy_type
 proxy_username
-public_key
 remote_ip_address
 remote_port
 scope_id

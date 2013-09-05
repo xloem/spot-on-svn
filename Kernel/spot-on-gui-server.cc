@@ -54,6 +54,7 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
      privateKey,
      publicKey,
      serverAddress(),
+     60 * 60 * 24 * 7,
      error);
 
   if(error.isEmpty())
