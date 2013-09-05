@@ -2987,6 +2987,10 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(void)
     }
   while(next);
 
+  if(list.isEmpty())
+    spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
+			  "empty cipher list.");
+
  done_label:
   SSL_CTX_free(ctx);
   SSL_free(ssl);
