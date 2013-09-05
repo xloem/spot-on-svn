@@ -9,7 +9,10 @@
 6.   Replaced QT_POINTER_SIZE with sizeof(void *). The macro is not
      widely available.
 7.   Completed spoton_crypt::defaultSslCiphers(). The method retrieves
-     SSLv3 ciphers according to HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH.
+     SSLv2, SSLv3, and TLSv1 ciphers according to
+     HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH. However, the actual
+     ciphers retained are based upon Qt. Qt is instructured to use
+     the so-called secure protocols, namely SSLv3 and TLSv1.
 8.   Modified spoton_crypt::setSslCiphers() so that the method prepares
      the provided QSslConfiguration object with preferred ciphers if the
      preferred ciphers are available.
