@@ -39,6 +39,7 @@ extern "C"
 #include <gcrypt.h>
 #include <openssl/pem.h>
 #include <openssl/rsa.h>
+#include <openssl/ssl.h>
 #include <openssl/x509v3.h>
 #include <pthread.h>
 #pragma GCC diagnostic warning "-Wdeprecated-declarations"

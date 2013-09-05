@@ -2940,18 +2940,51 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(void)
   */
 
   QList<QSslCipher> list;
+  SSL *ssl = 0;
+  SSL_CTX *ctx = 0;
+  const char *next = 0;
+  int index = 0;
 
-#if QT_VERSION >= 0x050000
-  QSslCipher cipher("ECDHE-RSA-AES256-SHA384", QSsl::TlsV1_2);
+  if(!(ctx = SSL_CTX_new(SSLv3_method())))
+    {
+      spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
+			    "SSL_CTX_new() failure.");
+      goto done_label;
+    }
 
-  if(!cipher.isNull())
-    list.append(cipher);
-#else
-  QSslCipher cipher("ECDHE-RSA-AES256-SHA", QSsl::SslV3);
+  if(SSL_CTX_set_cipher_list(ctx,
+			     "HIGH:!aNULL:!eNULL:!3DES:"
+			     "!EXPORT:@STRENGTH") == 0)
+    {
+      spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
+			    "SSL_CTX_set_cipher_list() failure.");
+      goto done_label;
+    }
 
-  if(!cipher.isNull())
-    list.append(cipher);
-#endif
+  if(!(ssl = SSL_new(ctx)))
+    {
+      spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
+			    "SSL_new() failure.");
+      goto done_label;
+    }
+
+  do
+    {
+      if((next = SSL_get_cipher_list(ssl, index)))
+	{
+	  QSslCipher cipher(next, QSsl::SslV3);
+
+	  if(!cipher.isNull())
+	    list.append(cipher);
+	}
+
+      index += 1;
+    }
+  while(next);
+
+ done_label:
+  SSL_CTX_free(ctx);
+  SSL_free(ssl);
   return list;
 }
 
@@ -2967,5 +3000,5 @@ void spoton_crypt::setSslCiphers(const QList<QSslCipher> &ciphers,
   if(preferred.isEmpty())
     configuration.setCiphers(ciphers);
   else
-    configuration.setCiphers(preferred + ciphers);
+    configuration.setCiphers(preferred);
 }

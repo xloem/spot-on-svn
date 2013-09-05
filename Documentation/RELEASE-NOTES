@@ -6,7 +6,13 @@
 4.   Use shutdown() instead of creating temporary QTcpSocket objects
      for closing socket descriptors.
 5.   Added kernel cipher type to the Settings page. Default: randomized.
-6.   Replaced QT_POINTER_SIZE with sizeof(void *).
+6.   Replaced QT_POINTER_SIZE with sizeof(void *). The macro is not
+     widely available.
+7.   Completed spoton_crypt::defaultSslCiphers(). The method retrieves
+     SSLv3 ciphers according to HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH.
+8.   Modified spoton_crypt::setSslCiphers() so that the method prepares
+     the provided QSslConfiguration object with preferred ciphers if the
+     preferred ciphers are available.
 
 0.04 (09/03/2013)
 

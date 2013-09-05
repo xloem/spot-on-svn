@@ -3878,6 +3878,8 @@ void spoton::initializeKernelSocket(void)
       configuration.setSslOption
 	(QSsl::SslOptionDisableLegacyRenegotiation, true);
 #endif
+      spoton_crypt::setSslCiphers(QSslSocket::supportedCiphers(),
+				  configuration);
       m_kernelSocket.setSslConfiguration(configuration);
     }
   else
