@@ -38,7 +38,7 @@ INCLUDEPATH	+= . ../../. GUI ../../libGeoIP/Include.osx64 \
                    /usr/local/include
 ICON		= Icons/Logo/spoton-logo-transparent.icns
 LIBS		+= -L/usr/local/lib -lcrypto -lgcrypt -L../../libSpotOn \
-                   -lspoton -L../../libGeoIP/Libraries.osx64 -lGeoIP \
+                   -lspoton -L../../libGeoIP/Libraries.osx64 -lGeoIP -lssl \
                    -framework AppKit -framework Cocoa
 PRE_TARGETDEPS = libspoton.dylib
 OBJECTS_DIR = temp/obj

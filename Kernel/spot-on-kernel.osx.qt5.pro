@@ -40,7 +40,7 @@ INCLUDEPATH	+= . ../. ../../../. ../../../libGeoIP/Include.osx64 \
                    /usr/local/include
 ICON		=
 LIBS		+= -L../../../libSpotOn -L/usr/local/lib -lcrypto -lgcrypt -lspoton \
-                   -L../../../libGeoIP/Libraries.osx64 -lGeoIP
+                   -L../../../libGeoIP/Libraries.osx64 -lGeoIP -lssl
 PRE_TARGETDEPS = libspoton.dylib
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui
