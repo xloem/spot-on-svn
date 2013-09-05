@@ -70,6 +70,8 @@ Completed Items
 47.    Provide IP blocking capabilities.
 48.    Include external IP addresses in listener certificates.
 49.    Review process signals for the kernel.
+50.    E-mail retrieval may fail if a node is disconnected because of
+       a lifetime expiration. Other communications may fail too.
 
 Ignored Items
 
@@ -78,6 +80,9 @@ Ignored Items
        addresses.
 2.     Remove UTF-8 conversions in spoton_crypt::saltedPassphraseHash().
 3.     Use super-secure memory? Used here and there.
+4.     Favorite channels.
+5.     CGI for listeners.
+6 .    Customize expiration timers.
 
 Remaining Items
 
@@ -88,39 +93,34 @@ Remaining Items
 5.     Allow for other ciphers besides AES for e-mail.
 6.     Double encryption. Verify that the user's key is independent of
        the random key. Separate cipher algorithms?
-7.     E-mail retrieval may fail if a node is disconnected because of
-       a lifetime expiration. Other communications may fail too.
-8.     Country flags and names for host names.
-9.     Monitor kernel health from the UI.
+7.     Country flags and names for host names.
+8.     Monitor kernel health from the UI.
        See spoton::slotGeneralTimerTimeout().
-10.    Favorite channels.
-11.    CGI for listeners.
-12.    Auto-clear textedit widgets that contain too much data.
-13.    Hard kernel termination. Control session separation.
-14.    Colorful HTTP headers.
-15.    Custom protocol messages for rapid redeployment.
-16.    Customize expiration timers.
-17.    Provide a total silent mode. Cumbersome.
-18.    Artificial trust. All participants must play nicely. Zero-knowledge?
-19.    Include licenses of other software where applicable.
+9.     Auto-clear textedit widgets that contain too much data.
+10.    Hard kernel termination. Control session separation.
+11.    Colorful HTTP headers.
+12.    Custom protocol messages for rapid redeployment.
+13.    Provide a total silent mode. Cumbersome.
+14.    Artificial trust. All participants must play nicely. Zero-knowledge?
+15.    Include licenses of other software where applicable.
        Satisfy the license soldiers.
-20.    Entering geminis is difficult.
-21.    Allow bonds across connections.
-22.    Allow pass-through flow of non-Spot-On data.
-23.    Inbound data should be time-tagged. Nodes must purge
+16.    Entering geminis is difficult.
+17.    Allow bonds across connections.
+18.    Allow pass-through flow of non-Spot-On data.
+19.    Inbound data should be time-tagged. Nodes must purge
        containers of old data.
-24.    Introduce load balancing of echoes. We're not interested in real-time
+20.    Introduce load balancing of echoes. We're not interested in real-time
        responses. Congestion control is helpful, however, short graphs
        tend to be skewed.
-25.    Provide kernel and network statistics.
-26.    Optional OTR.
-27.    QFSFileEngine::open: No file name specified: created from
+21.    Provide kernel and network statistics.
+22.    Optional OTR.
+23.    QFSFileEngine::open: No file name specified: created from
        e-mail.
-28.    Support ECC.
-29.    Perform calling over geminis.
-30.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
-31.    Remote kernel termination.
-32.    Zero-knowledge passphrase authentication.
-33.    What to do about corrupt database values?
-34.    Allow users to modify listeners so that their certificates exist
+24.    Support ECC.
+25.    Perform calling over geminis.
+26.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
+27.    Remote kernel termination.
+28.    Zero-knowledge passphrase authentication.
+29.    What to do about corrupt database values?
+30.    Allow users to modify listeners so that their certificates exist
        for long periods. See SSH.
