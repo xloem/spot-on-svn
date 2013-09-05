@@ -97,12 +97,14 @@ spoton::spoton(void):QMainWindow()
   m_ui.buildInformation->setText
     (QString("Qt %1, %2-bit. OpenSSL is%3supported.").
      arg(QT_VERSION_STR).
-     arg(QT_POINTER_SIZE * 8).
+     arg(sizeof(void *) * 8).
      arg(QSslSocket::supportsSsl() ? " " : " not "));
 #ifndef SPOTON_LINKED_WITH_LIBGEOIP
   m_ui.countries->setEnabled(false);
   m_ui.countries->setToolTip(tr("Spot-On was configured without "
 				"libGeoIP."));
+  m_ui.countriesRadio->setToolTip(tr("Spot-On was configured without "
+				     "libGeoIP."));
   m_ui.countriesToggle->setEnabled(false);
   m_ui.countriesToggle->setToolTip(tr("Spot-On was configured without "
 				      "libGeoIP."));
@@ -691,7 +693,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.geoipPath->setText
     (m_settings.value("gui/geoipPath", "GeoIP.dat").toString().trimmed());
 #else
-  m_ui.acceptedIPsRadio->setChecked(false);
+  m_ui.countriesRadio->setEnabled(false);
+  m_ui.acceptedIPsRadio->setChecked(true);
 #endif
   m_ui.approvedCountries->setEnabled(m_ui.countriesRadio->isChecked());
   m_ui.approvedIPs->setEnabled(m_ui.acceptedIPsRadio->isChecked());
