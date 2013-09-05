@@ -121,5 +121,6 @@ Remaining Items
 30.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
 31.    Remote kernel termination.
 32.    Zero-knowledge passphrase authentication.
-33.    Optional OTR.
-34.    What to do about corrupt database values?
+33.    What to do about corrupt database values?
+34.    Allow users to modify listeners so that their certificates exist
+       for long periods. See SSH.

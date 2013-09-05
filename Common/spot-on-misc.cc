@@ -236,7 +236,6 @@ void spoton_misc::prepareDatabases(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("DROP TABLE IF EXISTS certificates");
 	query.exec("CREATE TABLE IF NOT EXISTS idiotes ("
 		   "id TEXT PRIMARY KEY NOT NULL, "
 		   "public_key BLOB NOT NULL, "
@@ -315,8 +314,6 @@ void spoton_misc::prepareDatabases(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("ALTER TABLE neighbors ADD uptime INTEGER NOT NULL "
-		   "DEFAULT 0");
 	query.exec
 	  ("CREATE TABLE IF NOT EXISTS neighbors ("
 	   "local_ip_address TEXT , "
