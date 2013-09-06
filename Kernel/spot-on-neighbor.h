@@ -60,6 +60,7 @@ class spoton_neighbor: public QSslSocket
 		  const QString &echoMode,
 		  const QByteArray &peerCertificate,
 		  const bool allowExceptions,
+		  const QString &protocol,
 		  QObject *parent);
   spoton_neighbor(const int socketDescriptor,
 		  const QByteArray &certificate,
@@ -86,6 +87,7 @@ class spoton_neighbor: public QSslSocket
   QSslCertificate m_peerCertificate;
   QString m_echoMode;
   QString m_ipAddress;
+  QString m_protocol;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_keepAliveTimer;
   QTimer m_lifetime;

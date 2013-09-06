@@ -550,7 +550,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		      "scope_id, country, hash, proxy_hostname, "
 		      "proxy_password, proxy_port, proxy_type, "
 		      "proxy_username, uuid, "
-		      "echo_mode, peer_certificate "
+		      "echo_mode, peer_certificate, protocol "
 		      "FROM neighbors"))
 	  while(query.next())
 	    {
@@ -561,6 +561,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      QString echoMode("");
 	      QString ipAddress("");
 	      QString port("");
+	      QString protocol("");
 	      QString proxyHostname("");
 	      QString proxyPassword("");
 	      QString proxyPort("1");
@@ -584,7 +585,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "proxy_username = ?, "
 				  "uuid = ?, "
 				  "echo_mode = ?, "
-				  "peer_certificate = ? "
+				  "peer_certificate = ?, "
+				  "protocol = ? "
 				  "WHERE hash = ?");
 	      ipAddress = oldCrypt->decrypted(QByteArray::
 					      fromBase64(query.
@@ -670,6 +672,13 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		   &ok);
 
 	      if(ok)
+		protocol = oldCrypt->decrypted(QByteArray::
+					       fromBase64(query.
+							  value(13).
+							  toByteArray()),
+					       &ok).constData();
+
+	      if(ok)
 		updateQuery.bindValue
 		  (0, newCrypt->encrypted(ipAddress.
 					  toLatin1(), &ok).toBase64());
@@ -743,8 +752,13 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  (14, newCrypt->encrypted(peerCertificate, &ok).
 		   toBase64());
 
+	      if(ok)
+		updateQuery.bindValue
+		  (15, newCrypt->encrypted(protocol.toLatin1(), &ok).
+		   toBase64());
+
 	      updateQuery.bindValue
-		(15, query.value(4));
+		(16, query.value(4));
 
 	      if(ok)
 		updateQuery.exec();

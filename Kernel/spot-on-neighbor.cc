@@ -204,6 +204,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const QString &echoMode,
 				 const QByteArray &peerCertificate,
 				 const bool allowExceptions,
+				 const QString &protocol,
 				 QObject *parent):QSslSocket(parent)
 {
   m_allowExceptions = allowExceptions;
@@ -222,6 +223,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
     qMax(maximumContentLength,
 	 spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
   m_peerCertificate = QSslCertificate(peerCertificate);
+  m_protocol = protocol;
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
   m_startTime = QDateTime::currentDateTime();
   m_useSsl = true;
@@ -3412,10 +3414,11 @@ void spoton_neighbor::slotEncrypted(void)
 	{
 	  if(m_peerCertificate != peerCertificate())
 	    {
-	      spoton_misc::logError("spoton_neighbor::slotEncrypted(): "
-				    "the stored certificate does not match "
-				    "the peer's certificate. This is a "
-				    "serious problem! Aborting.");
+	      spoton_misc::logError
+		("spoton_neighbor::slotEncrypted(): "
+		 "the stored certificate does not match "
+		 "the peer's certificate. This is a "
+		 "serious problem! Aborting.");
 	      deleteLater();
 	      return;
 	    }

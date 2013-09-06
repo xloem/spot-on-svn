@@ -689,7 +689,7 @@ void spoton_kernel::prepareNeighbors(void)
 		      "user_defined, ssl_key_size, "
 		      "maximum_buffer_size, maximum_content_length, "
 		      "echo_mode, peer_certificate, "
-		      "trust_peer_identification, "
+		      "allow_exceptions, protocol, "
 		      "OID FROM neighbors"))
 	  while(query.next())
 	    {
@@ -715,7 +715,7 @@ void spoton_kernel::prepareNeighbors(void)
 			else if(i == 11 || // maximum_buffer_size
 				i == 12)   // maximum_content_length
 			  list.append(query.value(i).toInt());
-			else if(i == 15) // trust_peer_identification
+			else if(i == 15) // allow_exceptions
 			  list.append(query.value(i).toInt());
 			else
 			  {
@@ -811,6 +811,7 @@ void spoton_kernel::prepareNeighbors(void)
 			     list.value(13).toByteArray().constData(),
 			     list.value(14).toByteArray(),
 			     list.value(15).toInt(),
+			     list.value(16).toByteArray().constData(),
 			     this);
 			}
 

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1219</width>
+    <width>1240</width>
     <height>663</height>
    </rect>
   </property>
@@ -163,8 +163,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>412</width>
-                <height>474</height>
+                <width>459</width>
+                <height>441</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1367,6 +1367,16 @@
                  </item>
                  <item row="1" column="6">
                   <layout class="QHBoxLayout" name="horizontalLayout_33">
+                   <item>
+                    <widget class="QCheckBox" name="recordIPAddress">
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Record the current external IP address in the listener's certificate. Please do not use this option if you have a dynamic IP address.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="text">
+                      <string>&amp;Ip Address</string>
+                     </property>
+                    </widget>
+                   </item>
                    <item>
                     <widget class="QCheckBox" name="permanentCertificate">
                      <property name="text">
@@ -2588,8 +2598,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1029</width>
-             <height>439</height>
+             <width>1137</width>
+             <height>385</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3735,8 +3745,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1219</width>
-     <height>22</height>
+     <width>1240</width>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -3876,6 +3886,7 @@
   <tabstop>listenersEchoMode</tabstop>
   <tabstop>listenerScopeId</tabstop>
   <tabstop>ipv6Listener</tabstop>
+  <tabstop>recordIPAddress</tabstop>
   <tabstop>permanentCertificate</tabstop>
   <tabstop>sslListener</tabstop>
   <tabstop>listenerKeySize</tabstop>

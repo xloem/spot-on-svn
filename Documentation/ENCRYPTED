@@ -37,6 +37,7 @@ country
 echo_mode
 external_ip_address
 peer_certificate
+protocol
 proxy_hostname
 proxy_password
 proxy_port

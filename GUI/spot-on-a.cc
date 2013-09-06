@@ -1101,6 +1101,11 @@ void spoton::slotAddListener(void)
   if(m_ui.sslListener->isChecked() &&
      m_ui.permanentCertificate->isChecked())
     {
+      QHostAddress address;
+
+      if(m_ui.recordIPAddress->isChecked())
+	address = m_externalAddress->address();
+
       QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
       m_sb.status->setText
 	(tr("Generating SSL data for listener. Please be patient."));
@@ -1110,7 +1115,7 @@ void spoton::slotAddListener(void)
 	 certificate,
 	 privateKey,
 	 publicKey,
-	 m_externalAddress->address(),
+	 address,
 	 60 * 60 * 24 * 365 * 50, // Fifty years.
 	 error);
       QApplication::restoreOverrideCursor();
@@ -1123,6 +1128,10 @@ void spoton::slotAddListener(void)
   if(!error.isEmpty())
     {
       ok = false;
+      spoton_misc::logError
+	(QString("spoton::"
+		 "slotAddListener(): "
+		 "generateSslKeys() failure (%1).").arg(error.remove(".")));
       goto done_label;
     }
 
@@ -1349,7 +1358,7 @@ void spoton::slotAddNeighbor(void)
 		      "uuid, "
 		      "echo_mode, "
 		      "ssl_key_size, "
-		      "trust_peer_identification, "
+		      "allow_exceptions, "
 		      "peer_certificate) "
 		      "VALUES "
 		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
@@ -1357,7 +1366,9 @@ void spoton::slotAddNeighbor(void)
 
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
-	query.bindValue(2, protocol);
+	query.bindValue
+	  (2, m_crypts.value("chat")->
+	   encrypted(protocol.toLatin1(), &ok).toBase64());
 
 	if(ip.isEmpty())
 	  query.bindValue
@@ -2163,7 +2174,7 @@ void spoton::slotPopulateNeighbors(void)
 		      }
 
 		    if(i == 1 || i == 3 ||
-		       i == 7 || (i >= 9 && i <= 12) || (i >= 14 &&
+		       i == 7 || (i >= 9 && i <= 13) || (i >= 14 &&
 							 i <= 15) ||
 		       i == 18)
 		      {

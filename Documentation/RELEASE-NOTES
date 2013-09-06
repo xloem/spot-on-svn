@@ -23,6 +23,9 @@
      remove listeners.db and neighbors.db.
 11.  Corrected re-encoding mechanism with respect to the neighbors.db
      database.
+12.  Encrypted protocol in neighbors database table.
+13.  Optional recording of external IP addresses in certificates
+     when defining listeners.
 
 0.04 (09/03/2013)
 
