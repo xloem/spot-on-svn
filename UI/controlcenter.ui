@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1240</width>
+    <width>1249</width>
     <height>663</height>
    </rect>
   </property>
@@ -163,8 +163,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>459</width>
-                <height>441</height>
+                <width>1227</width>
+                <height>555</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1378,6 +1378,13 @@
                     </widget>
                    </item>
                    <item>
+                    <widget class="Line" name="line_9">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QCheckBox" name="permanentCertificate">
                      <property name="text">
                       <string>&amp;Permanent Certificate</string>
@@ -1831,7 +1838,7 @@
                <bool>true</bool>
               </property>
               <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>240</number>
+               <number>250</number>
               </attribute>
               <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
                <bool>true</bool>
@@ -1937,6 +1944,11 @@
               <column>
                <property name="text">
                 <string>Uptime (Seconds)</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Allow Certificate Exceptions</string>
                </property>
               </column>
               <column>
@@ -2598,8 +2610,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1137</width>
-             <height>385</height>
+             <width>1227</width>
+             <height>555</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3745,7 +3757,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1240</width>
+     <width>1249</width>
      <height>27</height>
     </rect>
    </property>

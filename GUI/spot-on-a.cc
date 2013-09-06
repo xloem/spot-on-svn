@@ -466,6 +466,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.permanentCertificate,
 	  SLOT(setEnabled(bool)));
+  connect(m_ui.sslListener,
+	  SIGNAL(toggled(bool)),
+	  m_ui.recordIPAddress,
+	  SLOT(setEnabled(bool)));
   connect(m_ui.publishPeriodically,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -2036,7 +2040,7 @@ void spoton::slotPopulateNeighbors(void)
 		      "proxy_hostname, proxy_port, "
 		      "maximum_buffer_size, "
 		      "maximum_content_length, "
-		      "echo_mode, uptime, "
+		      "echo_mode, uptime, allow_exceptions, "
 		      "is_encrypted, OID "
 		      "FROM neighbors WHERE status_control <> 'deleted'"))
 	  {
@@ -2063,7 +2067,8 @@ void spoton::slotPopulateNeighbors(void)
 		      "Proxy Hostname: %11 Proxy Port: %12\n"
 		      "Echo Mode: %13\n"
 		      "Communications Mode: %14\n"
-		      "Uptime: %15 Minutes")).
+		      "Uptime: %15 Minutes\n"
+		      "Allow Certificate Exceptions: %16")).
 		  arg(m_crypts.value("chat")->
 		      decrypted(QByteArray::
 				fromBase64(query.
@@ -2131,10 +2136,12 @@ void spoton::slotPopulateNeighbors(void)
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(query.value(20).toInt() == 1 ?
+		  arg(query.value(21).toInt() == 1 ?
 		      "Secure" : "Insecure").
 		  arg(QString::number(query.value(19).toInt() / 60.0,
-				      'f', 1));
+				      'f', 1)).
+		  arg(query.value(20).toInt() == 1 ?
+		      "Yes" : "No");
 
 		QCheckBox *check = 0;
 
