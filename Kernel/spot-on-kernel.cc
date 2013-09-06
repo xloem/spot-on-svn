@@ -984,7 +984,8 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
     return;
 
   QByteArray cipherType(s_settings.value("gui/kernelCipherType",
-					 "randomized").toByteArray());
+					 "randomized").toString().
+			toLatin1());
   QByteArray data;
   QByteArray gemini;
   QByteArray keyInformation;
@@ -1370,7 +1371,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 	      QByteArray cipherType
 		(s_settings.value("gui/kernelCipherType",
-				  "randomized").toByteArray());
+				  "randomized").toString().toLatin1());
 
 	      if(cipherType == "randomized")
 		cipherType = spoton_crypt::randomCipherType();
@@ -1493,7 +1494,8 @@ void spoton_kernel::slotStatusTimerExpired(void)
 void spoton_kernel::slotScramble(void)
 {
   QByteArray cipherType(s_settings.value("gui/kernelCipherType",
-					 "randomized").toByteArray());
+					 "randomized").toString().
+			toLatin1());
 
   if(cipherType == "randomized")
     cipherType = spoton_crypt::randomCipherType();
@@ -1601,7 +1603,7 @@ void spoton_kernel::slotRetrieveMail(void)
 	    {
 	      QByteArray cipherType
 		(s_settings.value("gui/kernelCipherType",
-				  "randomized").toByteArray());
+				  "randomized").toString().toLatin1());
 
 	      if(cipherType == "randomized")
 		cipherType = spoton_crypt::randomCipherType();
@@ -1759,7 +1761,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	    {
 	      QByteArray cipherType
 		(s_settings.value("gui/kernelCipherType",
-				  "randomized").toByteArray());
+				  "randomized").toString().toLatin1());
 
 	      if(cipherType == "randomized")
 		cipherType = spoton_crypt::randomCipherType();
@@ -1826,7 +1828,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	      if(s_settings.value("gui/kernelCipherType",
 				  "randomized").
-		 toByteArray() == "randomized")
+		 toString() == "randomized")
 		symmetricKeyAlgorithm = spoton_crypt::randomCipherType();
 	      else
 		symmetricKeyAlgorithm = cipherType;
