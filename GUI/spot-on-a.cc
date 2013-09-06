@@ -3174,8 +3174,12 @@ void spoton::slotSetPassphrase(void)
       m_settings["gui/cipherType"] = m_ui.cipherType->currentText();
       m_settings["gui/hashType"] = m_ui.hashType->currentText();
       m_settings["gui/iterationCount"] = m_ui.iterationCount->value();
-      m_settings["gui/kernelCipherType"] =
+
+      if(m_ui.kernelCipherType->currentIndex() == 0)
+	m_settings["gui/kernelCipherType"] = "randomized";
+      else
 	m_ui.kernelCipherType->currentText();
+
       m_settings["gui/rsaKeySize"] = m_ui.rsaKeySize->currentText().toInt();
       m_settings["gui/salt"] = salt;
       m_settings["gui/saltLength"] = m_ui.saltLength->value();
