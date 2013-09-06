@@ -63,6 +63,10 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
 
       socket->setSocketDescriptor(socketDescriptor);
       connect(socket,
+	      SIGNAL(encrypted(void)),
+	      this,
+	      SLOT(slotEncrypted(void)));
+      connect(socket,
 	      SIGNAL(modeChanged(QSslSocket::SslMode)),
 	      this,
 	      SIGNAL(modeChanged(QSslSocket::SslMode)));
@@ -71,13 +75,6 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
 
       configuration.setLocalCertificate(QSslCertificate(certificate));
       configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
-#if QT_VERSION >= 0x050000
-      configuration.setProtocol(QSsl::SecureProtocols);
-#elif QT_VERSION >= 0x040800
-      configuration.setProtocol(QSsl::SecureProtocols);
-#else
-      configuration.setProtocol(QSsl::TlsV1);
-#endif
 #if QT_VERSION >= 0x040800
       configuration.setSslOption
 	(QSsl::SslOptionDisableCompression, true);
@@ -567,4 +564,27 @@ void spoton_gui_server::slotModeChanged(QSslSocket::SslMode mode)
 	  socket->abort();
 	}
     }
+}
+
+void spoton_gui_server::slotEncrypted(void)
+{
+  QSslSocket *socket = qobject_cast<QSslSocket *> (sender());
+
+  if(!socket)
+    return;
+
+  QSslCipher cipher(socket->sessionCipher());
+
+  spoton_misc::logError
+    (QString("spoton_gui_server::slotEncrypted(): "
+	     "using session cipher %1-%2-%3-%4-%5-%6-%7 for %8:%9.").
+     arg(cipher.authenticationMethod()).
+     arg(cipher.encryptionMethod()).
+     arg(cipher.keyExchangeMethod()).
+     arg(cipher.name()).
+     arg(cipher.protocolString()).
+     arg(cipher.supportedBits()).
+     arg(cipher.usedBits()).
+     arg(socket->peerAddress().toString()).
+     arg(socket->peerPort()));
 }

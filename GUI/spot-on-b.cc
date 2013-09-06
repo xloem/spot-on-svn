@@ -3871,13 +3871,6 @@ void spoton::initializeKernelSocket(void)
       QSslConfiguration configuration;
 
       configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
-#if QT_VERSION >= 0x050000
-      configuration.setProtocol(QSsl::SecureProtocols);
-#elif QT_VERSION >= 0x040800
-      configuration.setProtocol(QSsl::SecureProtocols);
-#else
-      configuration.setProtocol(QSsl::TlsV1);
-#endif
 #if QT_VERSION >= 0x040800
       configuration.setSslOption
 	(QSsl::SslOptionDisableCompression, true);

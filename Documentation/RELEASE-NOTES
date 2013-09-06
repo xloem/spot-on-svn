@@ -26,6 +26,8 @@
 12.  Encrypted protocol in neighbors database table.
 13.  Optional recording of external IP addresses in certificates
      when defining listeners.
+14.  Removed all instances of QSslConfiguration::setProtocol(). Allow
+     the protocol to be determined by the selected cipher.
 
 0.04 (09/03/2013)
 

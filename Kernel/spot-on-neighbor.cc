@@ -89,13 +89,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 
 	  if(!configuration.privateKey().isNull())
 	    {
-#if QT_VERSION >= 0x050000
-	      configuration.setProtocol(QSsl::SecureProtocols);
-#elif QT_VERSION >= 0x040800
-	      configuration.setProtocol(QSsl::SecureProtocols);
-#else
-	      configuration.setProtocol(QSsl::TlsV1);
-#endif
 #if QT_VERSION >= 0x040800
 	      configuration.setSslOption
 		(QSsl::SslOptionDisableCompression, true);
@@ -262,13 +255,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 
       if(!configuration.privateKey().isNull())
 	{
-#if QT_VERSION >= 0x050000
-	  configuration.setProtocol(QSsl::SecureProtocols);
-#elif QT_VERSION >= 0x040800
-	  configuration.setProtocol(QSsl::SecureProtocols);
-#else
-	  configuration.setProtocol(QSsl::TlsV1);
-#endif
 #if QT_VERSION >= 0x040800
 	  configuration.setSslOption
 	    (QSsl::SslOptionDisableCompression, true);
