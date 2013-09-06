@@ -3438,10 +3438,11 @@ void spoton_neighbor::slotEncrypted(void)
 
   spoton_misc::logError
     (QString("spoton_neighbor::slotEncrypted(): "
-	     "using session cipher %1-%2-%3-%4-%5-%6.").
+	     "using session cipher %1-%2-%3-%4-%5-%6-%7.").
      arg(cipher.authenticationMethod()).
      arg(cipher.encryptionMethod()).
      arg(cipher.keyExchangeMethod()).
+     arg(cipher.name()).
      arg(cipher.protocolString()).
      arg(cipher.supportedBits()).
      arg(cipher.usedBits()));

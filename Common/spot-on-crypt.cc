@@ -2944,53 +2944,84 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(void)
   const char *next = 0;
   int index = 0;
 
-  if(!(ctx = SSL_CTX_new(SSLv3_method())))
-    {
-      spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
-			    "SSL_CTX_new() failure.");
-      goto done_label;
-    }
-
   controlString = settings.value
     ("gui/sslControlString",
      "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH").toString();
 
-  if(SSL_CTX_set_cipher_list(ctx,
-			     controlString.toLatin1().constData()) == 0)
+  for(int i = 0; i < 2; i++)
     {
-      spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
-			    "SSL_CTX_set_cipher_list() failure.");
-      goto done_label;
-    }
+      index = 0;
+      next = 0;
 
-  if(!(ssl = SSL_new(ctx)))
-    {
-      spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
-			    "SSL_new() failure.");
-      goto done_label;
-    }
-
-  do
-    {
-      if((next = SSL_get_cipher_list(ssl, index)))
+      if(i == 0)
 	{
-	  QSslCipher cipher(next, QSsl::SslV3);
-
-	  if(!cipher.isNull())
-	    list.append(cipher);
+	  if(!(ctx = SSL_CTX_new(TLSv1_method())))
+	    {
+	      spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
+				    "SSL_CTX_new() failure.");
+	      goto done_label;
+	    }
+	}
+      else
+	{
+	  if(!(ctx = SSL_CTX_new(SSLv3_method())))
+	    {
+	      spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
+				    "SSL_CTX_new() failure.");
+	      goto done_label;
+	    }
 	}
 
-      index += 1;
+      if(SSL_CTX_set_cipher_list(ctx,
+				 controlString.toLatin1().constData()) == 0)
+	{
+	  spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
+				"SSL_CTX_set_cipher_list() failure.");
+	  goto done_label;
+	}
+
+      if(!(ssl = SSL_new(ctx)))
+	{
+	  spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
+				"SSL_new() failure.");
+	  goto done_label;
+	}
+
+      do
+	{
+	  if((next = SSL_get_cipher_list(ssl, index)))
+	    {
+	      if(i == 0)
+		{
+		  QSslCipher cipher(next, QSsl::UnknownProtocol);
+
+		  if(!cipher.isNull())
+		    list.append(cipher);
+		}
+	      else
+		{
+		  QSslCipher cipher(next, QSsl::SslV3);
+
+		  if(!cipher.isNull())
+		    list.append(cipher);
+		}
+	    }
+
+	  index += 1;
+	}
+      while(next);
+
+    done_label:
+      SSL_CTX_free(ctx);
+      SSL_free(ssl);
+      ctx = 0;
+      ssl = 0;
     }
-  while(next);
 
   if(list.isEmpty())
     spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
 			  "empty cipher list.");
 
- done_label:
-  SSL_CTX_free(ctx);
-  SSL_free(ssl);
   return list;
 }
 
