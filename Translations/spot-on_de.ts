@@ -444,7 +444,7 @@
         <location filename="../GUI/spot-on-b.cc" line="430"/>
         <location filename="../GUI/spot-on-b.cc" line="1881"/>
         <location filename="../GUI/spot-on-b.cc" line="3023"/>
-        <location filename="../GUI/spot-on-b.cc" line="3954"/>
+        <location filename="../GUI/spot-on-b.cc" line="3947"/>
         <source>Spot-On: Confirmation</source>
         <translation>Spot-On: Bestätigung</translation>
     </message>
@@ -885,7 +885,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="433"/>
-        <location filename="../GUI/spot-on-b.cc" line="3957"/>
+        <location filename="../GUI/spot-on-b.cc" line="3950"/>
         <source>Are you sure that you wish to remove the selected participant(s)?</source>
         <translation>Bist Du sicher, dass Du den/die ausgewählten Teilnehmer entfernen willst?</translation>
     </message>

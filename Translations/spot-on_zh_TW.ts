@@ -452,7 +452,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <location filename="../GUI/spot-on-b.cc" line="430"/>
         <location filename="../GUI/spot-on-b.cc" line="1881"/>
         <location filename="../GUI/spot-on-b.cc" line="3023"/>
-        <location filename="../GUI/spot-on-b.cc" line="3954"/>
+        <location filename="../GUI/spot-on-b.cc" line="3947"/>
         <source>Spot-On: Confirmation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -808,7 +808,7 @@ Allow Certificate Exceptions: %16</source>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="433"/>
-        <location filename="../GUI/spot-on-b.cc" line="3957"/>
+        <location filename="../GUI/spot-on-b.cc" line="3950"/>
         <source>Are you sure that you wish to remove the selected participant(s)?</source>
         <translation type="unfinished"></translation>
     </message>
