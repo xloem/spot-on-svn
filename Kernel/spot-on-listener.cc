@@ -326,6 +326,7 @@ void spoton_listener::slotTimeout(void)
       spoton_misc::logError("spoton_listener_::slotTimeout(): instructed "
 			    "to delete listener.");
       deleteLater();
+      return;
     }
 
   /*

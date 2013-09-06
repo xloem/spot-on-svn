@@ -323,10 +323,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  this,
 	  SLOT(slotModeChanged(QSslSocket::SslMode)));
   connect(this,
-	  SIGNAL(peerVerifyError(const QSslError &)),
-	  this,
-	  SLOT(slotPeerVerifyError(const QSslError &)));
-  connect(this,
 	  SIGNAL(proxyAuthenticationRequired(const QNetworkProxy &,
 					     QAuthenticator *)),
 	  this,
@@ -468,6 +464,7 @@ void spoton_neighbor::slotTimeout(void)
 	spoton_misc::logError("spoton_neighbor::slotTimeout(): "
 			      "aborting because of silent connection.");
 	deleteLater();
+	return;
       }
 
   /*
@@ -553,6 +550,7 @@ void spoton_neighbor::slotTimeout(void)
       spoton_misc::logError("spoton_neighbor::slotTimeout(): instructed "
 			    "to delete neighbor.");
       deleteLater();
+      return;
     }
 
   if(m_isUserDefined)
@@ -590,6 +588,7 @@ void spoton_neighbor::slotTimeout(void)
 				"Aborting socket.");
 
 	deleteLater();
+	return;
       }
 
   saveEncryptedStatus();
@@ -3367,6 +3366,68 @@ void spoton_neighbor::slotDisconnected(void)
 
 void spoton_neighbor::slotEncrypted(void)
 {
+  if(m_isUserDefined)
+    {
+      if(m_peerCertificate.isNull() && !peerCertificate().isNull())
+	{
+	  spoton_crypt *s_crypt =
+	    spoton_kernel::s_crypts.value("chat", 0);
+
+	  if(s_crypt)
+	    {
+	      QString connectionName("");
+
+	      {
+		QSqlDatabase db = spoton_misc::database(connectionName);
+
+		db.setDatabaseName
+		  (spoton_misc::homePath() + QDir::separator() +
+		   "neighbors.db");
+
+		if(db.open())
+		  {
+		    QSqlQuery query(db);
+		    bool ok = true;
+
+		    query.prepare
+		      ("UPDATE neighbors SET peer_certificate = ? "
+		       "WHERE OID = ?");
+		    query.bindValue
+		      (0, s_crypt->encrypted(peerCertificate().toPem(),
+					     &ok).toBase64());
+		    query.bindValue(1, m_id);
+
+		    if(ok)
+		      if(query.exec())
+			m_peerCertificate = peerCertificate();
+		  }
+
+		db.close();
+	      }
+
+	      QSqlDatabase::removeDatabase(connectionName);
+	    }
+	}
+      else if(!m_allowExceptions)
+	{
+	  if(m_peerCertificate != peerCertificate())
+	    {
+	      spoton_misc::logError("spoton_neighbor::slotEncrypted(): "
+				    "the stored certificate does not match "
+				    "the peer's certificate. Aborting.");
+	      deleteLater();
+	      return;
+	    }
+	  else if(peerCertificate().isNull())
+	    {
+	      spoton_misc::logError("spoton_neighbor::slotEncrypted(): "
+				    "null peer certificate. Aborting.");
+	      deleteLater();
+	      return;
+	    }
+	}
+    }
+
   QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 
   QSslCipher cipher(sessionCipher());
@@ -3651,63 +3712,4 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-}
-
-void spoton_neighbor::slotPeerVerifyError(const QSslError &error)
-{
-  Q_UNUSED(error);
-
-  if(peerCertificate().isNull())
-    return;
-
-  if(m_peerCertificate.isNull())
-    {
-      spoton_crypt *s_crypt =
-	spoton_kernel::s_crypts.value("chat", 0);
-
-      if(s_crypt)
-	{
-	  QString connectionName("");
-
-	  {
-	    QSqlDatabase db = spoton_misc::database(connectionName);
-
-	    db.setDatabaseName
-	      (spoton_misc::homePath() + QDir::separator() +
-	       "neighbors.db");
-
-	    if(db.open())
-	      {
-		QSqlQuery query(db);
-		bool ok = true;
-
-		query.prepare
-		  ("UPDATE neighbors SET peer_certificate = ? "
-		   "WHERE OID = ?");
-		query.bindValue
-		  (0, s_crypt->encrypted(peerCertificate().toPem(),
-					 &ok).toBase64());
-		query.bindValue(1, m_id);
-
-		if(ok)
-		  if(query.exec())
-		    m_peerCertificate = peerCertificate();
-	      }
-
-	    db.close();
-	  }
-
-	  QSqlDatabase::removeDatabase(connectionName);
-	}
-    }
-  else if(!m_allowExceptions)
-    {
-      if(m_peerCertificate != peerCertificate())
-	{
-	  spoton_misc::logError("spoton_neighbor::slotPeerVerifyError(): "
-				"the stored certificate does not match "
-				"the peer's certificate. Aborting.");
-	  deleteLater();
-	}
-    }
 }
