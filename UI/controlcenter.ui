@@ -163,8 +163,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1189</width>
-                <height>570</height>
+                <width>412</width>
+                <height>474</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2071,7 +2071,7 @@
                    <item>
                     <widget class="QCheckBox" name="addException">
                      <property name="toolTip">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Spot-On will record a peer certificates during initial connections. Subsequent connections will cause Spot-On to inspect peer certificates. If there are discrepancies between recorded certificates and transmitted certificates, Spot-On will abandon the connections. Enable this option if you would like Spot-On to ignore discrepancies.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Spot-On will record peer certificates during initial connections. Subsequent connections will cause Spot-On to inspect peer certificates. If there are discrepancies between recorded certificates and transmitted certificates, Spot-On will abandon the connections. Enable this option if you would like Spot-On to ignore discrepancies. Please note that for neighbors defined by DNS, IP address discrepancies will be tolerated.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="text">
                       <string>&amp;Allow Exceptions</string>
@@ -2588,8 +2588,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1189</width>
-             <height>570</height>
+             <width>1029</width>
+             <height>439</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
