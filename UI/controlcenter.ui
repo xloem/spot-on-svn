@@ -163,8 +163,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>459</width>
-                <height>441</height>
+                <width>1227</width>
+                <height>555</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -896,9 +896,6 @@
                 <property name="verticalScrollBarPolicy">
                  <enum>Qt::ScrollBarAlwaysOn</enum>
                 </property>
-                <property name="alternatingRowColors">
-                 <bool>true</bool>
-                </property>
                 <property name="selectionBehavior">
                  <enum>QAbstractItemView::SelectRows</enum>
                 </property>
@@ -1595,11 +1592,7 @@
                 </layout>
                </item>
                <item>
-                <widget class="QListWidget" name="countries">
-                 <property name="alternatingRowColors">
-                  <bool>true</bool>
-                 </property>
-                </widget>
+                <widget class="QListWidget" name="countries"/>
                </item>
               </layout>
              </widget>
@@ -1614,11 +1607,7 @@
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_36">
                <item>
-                <widget class="QListWidget" name="acceptedIPList">
-                 <property name="alternatingRowColors">
-                  <bool>true</bool>
-                 </property>
-                </widget>
+                <widget class="QListWidget" name="acceptedIPList"/>
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_49">
@@ -2610,8 +2599,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1137</width>
-             <height>385</height>
+             <width>1227</width>
+             <height>555</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">

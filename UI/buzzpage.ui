@@ -108,9 +108,6 @@
          <property name="verticalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOn</enum>
          </property>
-         <property name="alternatingRowColors">
-          <bool>true</bool>
-         </property>
          <property name="selectionMode">
           <enum>QAbstractItemView::NoSelection</enum>
          </property>
