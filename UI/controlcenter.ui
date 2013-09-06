@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1219</width>
-    <height>662</height>
+    <height>663</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -163,8 +163,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1197</width>
-                <height>554</height>
+                <width>1189</width>
+                <height>570</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2071,7 +2071,7 @@
                    <item>
                     <widget class="QCheckBox" name="addException">
                      <property name="toolTip">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Trust the peer's identification for subsequent connections. Initially, the peer's certificate will be recorded and trusted. Only enable this option if you're certain that the peer is trustworthy.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Spot-On will record a peer certificates during initial connections. Subsequent connections will cause Spot-On to inspect peer certificates. If there are discrepancies between recorded certificates and transmitted certificates, Spot-On will abandon the connections. Enable this option if you would like Spot-On to ignore discrepancies.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="text">
                       <string>&amp;Allow Exceptions</string>
@@ -2588,8 +2588,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1197</width>
-             <height>554</height>
+             <width>1189</width>
+             <height>570</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3736,7 +3736,7 @@
      <x>0</x>
      <y>0</y>
      <width>1219</width>
-     <height>27</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
