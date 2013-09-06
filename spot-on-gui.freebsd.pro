@@ -49,7 +49,8 @@ FORMS           = UI/buzzpage.ui \
 
 UI_HEADERS_DIR  = GUI
 
-HEADERS		= GUI/spot-on.h \
+HEADERS		= Common/spot-on-external-address.h \
+		  GUI/spot-on.h \
 		  GUI/spot-on-buzzpage.h \
           	  GUI/spot-on-docviewer.h \
 		  GUI/spot-on-logviewer.h \
@@ -57,6 +58,7 @@ HEADERS		= GUI/spot-on.h \
 		  GUI/spot-on-textedit.h
 
 SOURCES		= Common/spot-on-crypt.cc \
+		  Common/spot-on-external-address.cc \
 		  Common/spot-on-misc.cc \
 		  GUI/spot-on-a.cc \
 		  GUI/spot-on.b.cc \

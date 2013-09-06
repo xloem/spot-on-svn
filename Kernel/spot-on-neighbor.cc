@@ -51,6 +51,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 const QString &echoMode,
 				 QObject *parent):QSslSocket(parent)
 {
+  m_allowExceptions = false;
   m_echoMode = echoMode;
   m_isUserDefined = false;
   m_maximumBufferSize = spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE;
@@ -201,8 +202,11 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const int maximumBufferSize,
 				 const int maximumContentLength,
 				 const QString &echoMode,
+				 const QByteArray &peerCertificate,
+				 const bool allowExceptions,
 				 QObject *parent):QSslSocket(parent)
 {
+  m_allowExceptions = allowExceptions;
   m_echoMode = echoMode;
   m_keySize = qAbs(keySize);
 
@@ -217,6 +221,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_maximumContentLength = 
     qMax(maximumContentLength,
 	 spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
+  m_peerCertificate = QSslCertificate(peerCertificate);
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
   m_startTime = QDateTime::currentDateTime();
   m_useSsl = true;
@@ -317,6 +322,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(modeChanged(QSslSocket::SslMode)),
 	  this,
 	  SLOT(slotModeChanged(QSslSocket::SslMode)));
+  connect(this,
+	  SIGNAL(peerVerifyError(const QSslError &)),
+	  this,
+	  SLOT(slotPeerVerifyError(const QSslError &)));
   connect(this,
 	  SIGNAL(proxyAuthenticationRequired(const QNetworkProxy &,
 					     QAuthenticator *)),
@@ -3642,4 +3651,63 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton_neighbor::slotPeerVerifyError(const QSslError &error)
+{
+  Q_UNUSED(error);
+
+  if(peerCertificate().isNull())
+    return;
+
+  if(m_peerCertificate.isNull())
+    {
+      spoton_crypt *s_crypt =
+	spoton_kernel::s_crypts.value("chat", 0);
+
+      if(s_crypt)
+	{
+	  QString connectionName("");
+
+	  {
+	    QSqlDatabase db = spoton_misc::database(connectionName);
+
+	    db.setDatabaseName
+	      (spoton_misc::homePath() + QDir::separator() +
+	       "neighbors.db");
+
+	    if(db.open())
+	      {
+		QSqlQuery query(db);
+		bool ok = true;
+
+		query.prepare
+		  ("UPDATE neighbors SET peer_certificate = ? "
+		   "WHERE OID = ?");
+		query.bindValue
+		  (0, s_crypt->encrypted(peerCertificate().toPem(),
+					 &ok).toBase64());
+		query.bindValue(1, m_id);
+
+		if(ok)
+		  if(query.exec())
+		    m_peerCertificate = peerCertificate();
+	      }
+
+	    db.close();
+	  }
+
+	  QSqlDatabase::removeDatabase(connectionName);
+	}
+    }
+  else if(!m_allowExceptions)
+    {
+      if(m_peerCertificate != peerCertificate())
+	{
+	  spoton_misc::logError("spoton_neighbor::slotPeerVerifyError(): "
+				"the stored certificate does not match "
+				"the peer's certificate. Aborting.");
+	  deleteLater();
+	}
+    }
 }

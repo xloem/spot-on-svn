@@ -1,4 +1,4 @@
-libspoton.target = libspoton.so
+libspoton.target = libspoton.dll
 libspoton.commands = $(MAKE) -C ../../../libSpotOn
 libspoton.depends =
 purge.commands = rm -f *~
@@ -12,13 +12,13 @@ CONFIG		+= qt release warn_on
 # The function gcry_kdf_derive() is available in version
 # 1.5.0 of the gcrypt library.
 
-DEFINES += SPOTON_LINKED_WITH_LIBGEOIP
+DEFINES -= SPOTON_LINKED_WITH_LIBGEOIP
 
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of libSpotOn.
 
 QMAKE_CLEAN     += ../Spot-On-Kernel ../../../libSpotOn/*.o \
-		   ../../../libSpotOn/*.so ../../../libSpotOn/test
+		   ../../../libSpotOn/*.dll ../../../libSpotOn/test
 QMAKE_DISTCLEAN += -r temp
 QMAKE_CXXFLAGS_DEBUG -= -O2
 QMAKE_CXXFLAGS_DEBUG += -fPIE -fstack-protector-all -mtune=generic -pie -Os \
@@ -32,12 +32,11 @@ QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -mtune=generic -pie -O3 \
 			  -Werror -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith \
                           -Wstack-protector
-QMAKE_LFLAGS_RELEASE += -Wl,-rpath,/usr/local/spot-on/Lib -L/usr/local/lib
 QMAKE_EXTRA_TARGETS = libspoton purge
 QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../. ../../../.
 LIBS		+= -L../../../libSpotOn -lcrypto -lgcrypt -lspoton -lssl
-PRE_TARGETDEPS = libspoton.so
+PRE_TARGETDEPS = libspoton.dll
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui
 MOC_DIR = temp/moc

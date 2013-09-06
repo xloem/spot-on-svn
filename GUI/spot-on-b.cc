@@ -2005,6 +2005,12 @@ void spoton::slotCopyFriendshipBundle(void)
   if(cipherType == "randomized")
     cipherType = spoton_crypt::randomCipherType();
 
+  if(cipherType.isEmpty())
+    {
+      clipboard->clear();
+      return;
+    }
+
   spoton_misc::retrieveSymmetricData(gemini,
 				     publicKey,
 				     symmetricKey,
@@ -2013,7 +2019,7 @@ void spoton::slotCopyFriendshipBundle(void)
 				     oid,
 				     m_crypts.value("chat"));
 
-  if(cipherType.isEmpty() || publicKey.isEmpty() || symmetricKey.isEmpty())
+  if(publicKey.isEmpty() || symmetricKey.isEmpty())
     {
       clipboard->clear();
       return;

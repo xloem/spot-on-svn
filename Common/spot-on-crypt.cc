@@ -2944,7 +2944,7 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(void)
   const char *next = 0;
   int index = 0;
 
-  if(!(ctx = SSL_CTX_new(SSLv23_method())))
+  if(!(ctx = SSL_CTX_new(SSLv3_method())))
     {
       spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
 			    "SSL_CTX_new() failure.");
@@ -2974,7 +2974,7 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(void)
     {
       if((next = SSL_get_cipher_list(ssl, index)))
 	{
-	  QSslCipher cipher(next, QSsl::SecureProtocols);
+	  QSslCipher cipher(next, QSsl::SslV3);
 
 	  if(!cipher.isNull())
 	    list.append(cipher);

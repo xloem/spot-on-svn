@@ -492,8 +492,7 @@ void spoton_kernel::prepareListeners(void)
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT ip_address, port, scope_id, echo_mode, "
-		      "status_control, "
-		      "maximum_clients, ssl_key_size, "
+		      "status_control, maximum_clients, ssl_key_size, "
 		      "certificate, private_key, public_key, "
 		      "OID FROM listeners"))
 	  while(query.next())
@@ -535,11 +534,11 @@ void spoton_kernel::prepareListeners(void)
 		      QByteArray privateKey;
 		      QByteArray publicKey;
 		      QList<QByteArray> list;
+		      bool ok = true;
 
 		      for(int i = 0; i < 4; i++)
 			{
 			  QByteArray bytes;
-			  bool ok = true;
 
 			  bytes = s_crypt->
 			    decrypted(QByteArray::fromBase64(query.
@@ -553,7 +552,31 @@ void spoton_kernel::prepareListeners(void)
 			    break;
 			}
 
-		      if(list.size() == 4)
+		      if(ok)
+			certificate =
+			  s_crypt->decrypted
+			  (QByteArray::fromBase64(query.
+						  value(7).
+						  toByteArray()),
+			   &ok);
+
+		      if(ok)
+			privateKey =
+			  s_crypt->decrypted
+			  (QByteArray::fromBase64(query.
+						  value(8).
+						  toByteArray()),
+			   &ok);
+
+		      if(ok)
+			publicKey =
+			  s_crypt->decrypted
+			  (QByteArray::fromBase64(query.
+						  value(9).
+						  toByteArray()),
+			   &ok);
+
+		      if(ok)
 			{
 			  int maximumClients = query.value(5).toInt();
 
@@ -665,7 +688,8 @@ void spoton_kernel::prepareNeighbors(void)
 		      "proxy_port, proxy_type, proxy_username, "
 		      "user_defined, ssl_key_size, "
 		      "maximum_buffer_size, maximum_content_length, "
-		      "echo_mode, "
+		      "echo_mode, peer_certificate, "
+		      "trust_peer_identification, "
 		      "OID FROM neighbors"))
 	  while(query.next())
 	    {
@@ -690,6 +714,8 @@ void spoton_kernel::prepareNeighbors(void)
 			  list.append(query.value(i).toInt());
 			else if(i == 11 || // maximum_buffer_size
 				i == 12)   // maximum_content_length
+			  list.append(query.value(i).toInt());
+			else if(i == 15) // trust_peer_identification
 			  list.append(query.value(i).toInt());
 			else
 			  {
@@ -783,6 +809,8 @@ void spoton_kernel::prepareNeighbors(void)
 			     list.value(11).toInt(),
 			     list.value(12).toInt(),
 			     list.value(13).toByteArray().constData(),
+			     list.value(14).toByteArray(),
+			     list.value(15).toInt(),
 			     this);
 			}
 
@@ -1339,8 +1367,9 @@ void spoton_kernel::slotStatusTimerExpired(void)
 					  toByteArray()),
 		   &ok);
 
-	      QByteArray cipherType(s_settings.value("gui/kernelCipherType",
-					 "randomized").toByteArray());
+	      QByteArray cipherType
+		(s_settings.value("gui/kernelCipherType",
+				  "randomized").toByteArray());
 
 	      if(cipherType == "randomized")
 		cipherType = spoton_crypt::randomCipherType();
@@ -1569,8 +1598,9 @@ void spoton_kernel::slotRetrieveMail(void)
 		      "neighbor_oid = -1"))
 	  while(query.next())
 	    {
-	      QByteArray cipherType(s_settings.value("gui/kernelCipherType",
-					 "randomized").toByteArray());
+	      QByteArray cipherType
+		(s_settings.value("gui/kernelCipherType",
+				  "randomized").toByteArray());
 
 	      if(cipherType == "randomized")
 		cipherType = spoton_crypt::randomCipherType();
@@ -1726,8 +1756,9 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		      "key_type = 'email' AND neighbor_oid = -1"))
 	  while(query.next())
 	    {
-	      QByteArray cipherType(s_settings.value("gui/kernelCipherType",
-					 "randomized").toByteArray());
+	      QByteArray cipherType
+		(s_settings.value("gui/kernelCipherType",
+				  "randomized").toByteArray());
 
 	      if(cipherType == "randomized")
 		cipherType = spoton_crypt::randomCipherType();

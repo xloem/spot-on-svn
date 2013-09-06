@@ -392,18 +392,6 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
   if(m_keySize != 0)
     {
       QByteArray publicKey;
-      QHostAddress address;
-      sockaddr nativeAddress;
-      socklen_t length = sizeof(nativeAddress);
-
-      if(getpeername(socketDescriptor, &nativeAddress, &length) != 0)
-	spoton_misc::logError("spoton_listener::slotNewConnection(): "
-			      "getpeername() failure.");
-
-      address = QHostAddress(&nativeAddress);
-
-      if(!spoton_misc::isPrivateNetwork(address))
-	address = m_externalAddress->address();
 
       if(certificate.isEmpty() || privateKey.isEmpty())
 	spoton_crypt::generateSslKeys
@@ -411,7 +399,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
 	   certificate,
 	   privateKey,
 	   publicKey,
-	   address,
+	   m_externalAddress->address(),
 	   60 * 60 * 24 * 7, // Seven days.
 	   error);
     }
@@ -577,8 +565,9 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
 		       "proxy_type, "
 		       "proxy_username, "
 		       "echo_mode, "
-		       "ssl_key_size) "
-		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+		       "ssl_key_size, "
+		       "peer_certificate) "
+		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
 		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
 	    query.bindValue(1, m_port);
@@ -690,6 +679,10 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
 					&ok).toBase64());
 
 	    query.bindValue(21, m_keySize);
+
+	    if(ok)
+	      query.bindValue
+		(22, s_crypt->encrypted(QByteArray(), &ok).toBase64());
 
 	    if(ok)
 	      created = query.exec();

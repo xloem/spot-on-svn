@@ -164,7 +164,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1197</width>
-                <height>559</height>
+                <height>554</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1378,6 +1378,13 @@
                     </widget>
                    </item>
                    <item>
+                    <widget class="Line" name="line_8">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QCheckBox" name="sslListener">
                      <property name="text">
                       <string>&amp;SSL Key Size</string>
@@ -2062,6 +2069,23 @@
                  <item row="1" column="6">
                   <layout class="QHBoxLayout" name="horizontalLayout_35">
                    <item>
+                    <widget class="QCheckBox" name="addException">
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Trust the peer's identification for subsequent connections. Initially, the peer's certificate will be recorded and trusted. Only enable this option if you're certain that the peer is trustworthy.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="text">
+                      <string>&amp;Allow Exceptions</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="Line" name="line_7">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QLabel" name="label_29">
                      <property name="text">
                       <string>&amp;SSL Key Size</string>
@@ -2565,7 +2589,7 @@
              <x>0</x>
              <y>0</y>
              <width>1197</width>
-             <height>559</height>
+             <height>554</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3712,7 +3736,7 @@
      <x>0</x>
      <y>0</y>
      <width>1219</width>
-     <height>24</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -3878,6 +3902,7 @@
   <tabstop>neighborsEchoMode</tabstop>
   <tabstop>neighborScopeId</tabstop>
   <tabstop>ipv6Neighbor</tabstop>
+  <tabstop>addException</tabstop>
   <tabstop>neighborKeySize</tabstop>
   <tabstop>proxy</tabstop>
   <tabstop>proxyType</tabstop>

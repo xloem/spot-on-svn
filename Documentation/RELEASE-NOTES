@@ -12,14 +12,16 @@
      SSLv2, SSLv3, and TLSv1 ciphers according to
      HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH. However, the actual
      ciphers retained have more to do with Qt. Qt is instructured to use
-     the so-called secure protocols, namely SSLv3 and TLSv1. The SSL control
-     string may be modified via the UI.
+     the so-called SSLv3 protocol. The SSL control string may be modified
+     via the UI.
 8.   Modified spoton_crypt::setSslCiphers() so that the method prepares
      the provided QSslConfiguration object with preferred ciphers if the
      preferred ciphers are available.
 9.   Corrected Documentation/ENCRYPTED.
 10.  Ability to set permanent certificates for listeners. Peers will
      test certificates and discrepancies shall be logged.
+11.  Corrected re-encoding mechanism with respect to the neighbors.db
+     database.
 
 0.04 (09/03/2013)
 

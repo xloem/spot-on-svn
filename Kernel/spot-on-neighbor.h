@@ -58,6 +58,8 @@ class spoton_neighbor: public QSslSocket
 		  const int maximumBufferSize,
 		  const int maximumContentLength,
 		  const QString &echoMode,
+		  const QByteArray &peerCertificate,
+		  const bool allowExceptions,
 		  QObject *parent);
   spoton_neighbor(const int socketDescriptor,
 		  const QByteArray &certificate,
@@ -81,6 +83,7 @@ class spoton_neighbor: public QSslSocket
   QDateTime m_startTime;
   QHostAddress m_address;
   QNetworkInterface *m_networkInterface;
+  QSslCertificate m_peerCertificate;
   QString m_echoMode;
   QString m_ipAddress;
   QTimer m_externalAddressDiscovererTimer;
@@ -89,6 +92,7 @@ class spoton_neighbor: public QSslSocket
   QTimer m_readTimer;
   QTimer m_timer;
   QUuid m_receivedUuid;
+  bool m_allowExceptions;
   bool m_isUserDefined;
   bool m_useSsl;
   int m_keySize;
@@ -163,6 +167,7 @@ class spoton_neighbor: public QSslSocket
   void slotHostFound(const QHostInfo &hostInfo);
   void slotLifetimeExpired(void);
   void slotModeChanged(QSslSocket::SslMode mode);
+  void slotPeerVerifyError(const QSslError &error);
   void slotProxyAuthenticationRequired(const QNetworkProxy &proxy,
 				       QAuthenticator *authenticator);
   void slotPublicizeListenerPlaintext(const QByteArray &data,

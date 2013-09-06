@@ -88,6 +88,7 @@ spoton::spoton(void):QMainWindow()
   m_booleans["buzz_channels_sent_to_kernel"] = false;
   m_booleans["keys_sent_to_kernel"] = false;
   m_buzzStatusTimer.setInterval(15000);
+  m_externalAddress = new spoton_external_address(this);
   m_acceptedIPsLastModificationTime = QDateTime();
   m_countriesLastModificationTime = QDateTime();
   m_listenersLastModificationTime = QDateTime();
@@ -1056,6 +1057,12 @@ spoton::spoton(void):QMainWindow()
 	  m_ui.participants->findChildren<QAbstractButton *> ())
     button->setToolTip(tr("Broadcast"));
 
+  connect(&m_externalAddressDiscovererTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotDiscoverExternalAddress(void)));
+  m_externalAddress->discover();
+  m_externalAddressDiscovererTimer.start(30000);
   show();
   update();
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -1091,7 +1098,8 @@ void spoton::slotAddListener(void)
   QByteArray publicKey;
   QString error("");
 
-  if(m_ui.permanentCertificate->isChecked())
+  if(m_ui.sslListener->isChecked() &&
+     m_ui.permanentCertificate->isChecked())
     {
       QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
       m_sb.status->setText
@@ -1102,7 +1110,7 @@ void spoton::slotAddListener(void)
 	 certificate,
 	 privateKey,
 	 publicKey,
-	 m_kernelSocket.peerAddress(),
+	 m_externalAddress->address(),
 	 60 * 60 * 24 * 365 * 50, // Fifty years.
 	 error);
       QApplication::restoreOverrideCursor();
@@ -1254,34 +1262,19 @@ void spoton::slotAddListener(void)
 	  query.bindValue(7, 0);
 
 	if(ok)
-	  {
-	    if(certificate.isEmpty())
-	      query.bindValue(8, QVariant::ByteArray);
-	    else
-	      query.bindValue
-		(8, m_crypts.value("chat")->encrypted(certificate, &ok).
-		 toBase64());
-	  }
+	  query.bindValue
+	    (8, m_crypts.value("chat")->encrypted(certificate, &ok).
+	     toBase64());
 
 	if(ok)
-	  {
-	    if(privateKey.isEmpty())
-	      query.bindValue(9, QVariant::ByteArray);
-	    else
-	      query.bindValue
-		(9, m_crypts.value("chat")->encrypted(privateKey, &ok).
-		 toBase64());
-	  }
+	  query.bindValue
+	    (9, m_crypts.value("chat")->encrypted(privateKey, &ok).
+	     toBase64());
 
 	if(ok)
-	  {
-	    if(publicKey.isEmpty())
-	      query.bindValue(10, QVariant::ByteArray);
-	    else
-	      query.bindValue
-		(10, m_crypts.value("chat")->encrypted(publicKey, &ok).
-		 toBase64());
-	  }
+	  query.bindValue
+	    (10, m_crypts.value("chat")->encrypted(publicKey, &ok).
+	     toBase64());
 
 	if(ok)
 	  ok = query.exec();
@@ -1355,10 +1348,12 @@ void spoton::slotAddNeighbor(void)
 		      "proxy_username, "
 		      "uuid, "
 		      "echo_mode, "
-		      "ssl_key_size) "
+		      "ssl_key_size, "
+		      "trust_peer_identification, "
+		      "peer_certificate) "
 		      "VALUES "
-		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-		      "?, ?, ?, ?, ?, ?, ?)");
+		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+		      "?, ?, ?, ?, ?, ?, ?, ?)");
 
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
@@ -1533,6 +1528,16 @@ void spoton::slotAddNeighbor(void)
 	  }
 
 	query.bindValue(19, m_ui.neighborKeySize->currentText().toInt());
+
+	if(m_ui.addException->isChecked())
+	  query.bindValue(20, 1);
+	else
+	  query.bindValue(20, 0);
+
+	if(ok)
+	  query.bindValue
+	    (21, m_crypts.value("chat")->encrypted(QByteArray(),
+						   &ok).toBase64());
 
 	if(ok)
 	  ok = query.exec();
@@ -2527,6 +2532,11 @@ void spoton::slotGeneralTimerTimeout(void)
     }
   else
     m_buzzStatusTimer.stop();
+
+  m_sb.status->setText
+    (tr("External IP: %1.").
+     arg(m_externalAddress->address().isNull() ?
+	 "unknown" : m_externalAddress->address().toString()));
 }
 
 void spoton::slotSelectGeoIPPath(void)
@@ -4789,6 +4799,12 @@ void spoton::slotCopyEmailFriendshipBundle(void)
   if(cipherType == "randomized")
     cipherType = spoton_crypt::randomCipherType();
 
+  if(cipherType.isEmpty())
+    {
+      clipboard->clear();
+      return;
+    }
+
   spoton_misc::retrieveSymmetricData(gemini,
 				     publicKey,
 				     symmetricKey,
@@ -4797,7 +4813,7 @@ void spoton::slotCopyEmailFriendshipBundle(void)
 				     oid,
 				     m_crypts.value("email"));
 
-  if(cipherType.isEmpty() || publicKey.isEmpty() || symmetricKey.isEmpty())
+  if(publicKey.isEmpty() || symmetricKey.isEmpty())
     {
       clipboard->clear();
       return;
@@ -5022,4 +5038,9 @@ void spoton::slotSaveSslControlString(void)
   QSettings settings;
 
   settings.setValue("gui/sslControlString", str);
+}
+
+void spoton::slotDiscoverExternalAddress(void)
+{
+  m_externalAddress->discover();
 }

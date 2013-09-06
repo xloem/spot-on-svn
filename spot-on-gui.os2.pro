@@ -1,4 +1,4 @@
-libspoton.target = libspoton.so
+libspoton.target = libspoton.dll
 libspoton.commands = $(MAKE) -C ../../libSpotOn
 libspoton.depends =
 
@@ -15,7 +15,7 @@ DEFINES	-= SPOTON_LINKED_WITH_LIBGEOIP
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of libSpotOn.
 
-QMAKE_CLEAN     += Spot-On ../../libSpotOn/*.o ../../libSpotOn/*.so \
+QMAKE_CLEAN     += Spot-On ../../libSpotOn/*.o ../../libSpotOn/*.dll \
 		   ../../libSpotOn/test
 QMAKE_DISTCLEAN += -r temp
 QMAKE_CXXFLAGS_DEBUG -= -O2
@@ -30,12 +30,11 @@ QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -mtune=generic -pie -O3 \
 			  -Werror -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith \
                           -Wstack-protector
-QMAKE_LFLAGS_RELEASE += -Wl,-rpath,/usr/local/spot-on/Lib
 QMAKE_EXTRA_TARGETS = libspoton purge
 QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../../. GUI
 LIBS		+= -L../../libSpotOn -lcrypto -lgcrypt -lspoton -lssl
-PRE_TARGETDEPS = libspoton.so
+PRE_TARGETDEPS = libspoton.dll
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui
 MOC_DIR = temp/moc
@@ -49,7 +48,8 @@ FORMS           = UI/buzzpage.ui \
 
 UI_HEADERS_DIR  = GUI
 
-HEADERS		= GUI/spot-on.h \
+HEADERS		= Common/spot-on-external-address.h \
+		  GUI/spot-on.h \
 		  GUI/spot-on-buzzpage.h \
           	  GUI/spot-on-docviewer.h \
 		  GUI/spot-on-logviewer.h \
@@ -57,6 +57,7 @@ HEADERS		= GUI/spot-on.h \
 		  GUI/spot-on-textedit.h
 
 SOURCES		= Common/spot-on-crypt.cc \
+		  Common/spot-on-external-address.cc \
 		  Common/spot-on-misc.cc \
 		  GUI/spot-on-a.cc \
 		  GUI/spot-on-b.cc \

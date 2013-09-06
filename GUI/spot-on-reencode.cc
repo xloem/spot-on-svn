@@ -385,10 +385,13 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT ip_address, port, scope_id, "
-		      "protocol, echo_mode, "
-		      "hash FROM listeners"))
+		      "protocol, echo_mode, certificate, private_key, "
+		      "public_key, hash FROM listeners"))
 	  while(query.next())
 	    {
+	      QByteArray certificate;
+	      QByteArray privateKey;
+	      QByteArray publicKey;
 	      QSqlQuery updateQuery(db);
 	      QString echoMode("");
 	      QString ipAddress("");
@@ -403,7 +406,10 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "scope_id = ?, "
 				  "protocol = ?, "
 				  "hash = ?, "
-				  "echo_mode = ? "
+				  "echo_mode = ?, "
+				  "certificate = ?, "
+				  "private_key = ?, "
+				  "public_key = ? "
 				  "WHERE hash = ?");
 	      ipAddress = oldCrypt->decrypted(QByteArray::
 					      fromBase64(query.
@@ -440,6 +446,27 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 					       &ok).constData();
 
 	      if(ok)
+		certificate = oldCrypt->decrypted(QByteArray::
+						  fromBase64(query.
+							     value(5).
+							     toByteArray()),
+						  &ok);
+
+	      if(ok)
+		privateKey = oldCrypt->decrypted(QByteArray::
+						 fromBase64(query.
+							    value(6).
+							    toByteArray()),
+						 &ok);
+
+	      if(ok)
+		publicKey = oldCrypt->decrypted(QByteArray::
+						fromBase64(query.
+							   value(7).
+							   toByteArray()),
+						&ok);
+
+	      if(ok)
 		updateQuery.bindValue
 		  (0, newCrypt->encrypted(ipAddress.
 					  toLatin1(), &ok).toBase64());
@@ -469,8 +496,20 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  (5, newCrypt->
 		   encrypted(echoMode.toLatin1(), &ok).toBase64());
 
+	      if(ok)
+		updateQuery.bindValue
+		  (6, newCrypt->encrypted(certificate, &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (7, newCrypt->encrypted(privateKey, &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (8, newCrypt->encrypted(publicKey, &ok).toBase64());
+
 	      updateQuery.bindValue
-		(6, query.value(5));
+		(9, query.value(8));
 
 	      if(ok)
 		updateQuery.exec();
@@ -480,7 +519,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 		  deleteQuery.prepare("DELETE FROM listeners WHERE "
 				      "hash = ?");
-		  deleteQuery.bindValue(0, query.value(5));
+		  deleteQuery.bindValue(0, query.value(8));
 		  deleteQuery.exec();
 		}
 	    }
@@ -511,10 +550,11 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		      "scope_id, country, hash, proxy_hostname, "
 		      "proxy_password, proxy_port, proxy_type, "
 		      "proxy_username, uuid, "
-		      "echo_mode "
+		      "echo_mode, peer_certificate "
 		      "FROM neighbors"))
 	  while(query.next())
 	    {
+	      QByteArray peerCertificate;
 	      QByteArray uuid;
 	      QSqlQuery updateQuery(db);
 	      QString country("");
@@ -543,7 +583,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "proxy_type = ?, "
 				  "proxy_username = ?, "
 				  "uuid = ?, "
-				  "echo_mode = ? "
+				  "echo_mode = ?, "
+				  "peer_certificate = ? "
 				  "WHERE hash = ?");
 	      ipAddress = oldCrypt->decrypted(QByteArray::
 					      fromBase64(query.
@@ -608,9 +649,25 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 						    &ok).constData();
 
 	      if(ok)
+		uuid = oldCrypt->decrypted
+		  (QByteArray::
+		   fromBase64(query.
+			      value(10).
+			      toByteArray()),
+		   &ok);
+
+	      if(ok)
 		echoMode = oldCrypt->decrypted
-		  (QByteArray::fromBase64(query.value(10).toByteArray()),
+		  (QByteArray::fromBase64(query.value(11).toByteArray()),
 		   &ok).constData();
+	      
+	      if(ok)
+		peerCertificate = oldCrypt->decrypted
+		  (QByteArray::
+		   fromBase64(query.
+			      value(12).
+			      toByteArray()),
+		   &ok);
 
 	      if(ok)
 		updateQuery.bindValue
@@ -681,8 +738,13 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  (13, newCrypt->encrypted(echoMode.toLatin1(),
 					   &ok).toBase64());
 
+	      if(ok)
+		updateQuery.bindValue
+		  (14, newCrypt->encrypted(peerCertificate, &ok).
+		   toBase64());
+
 	      updateQuery.bindValue
-		(14, query.value(4));
+		(15, query.value(4));
 
 	      if(ok)
 		updateQuery.exec();

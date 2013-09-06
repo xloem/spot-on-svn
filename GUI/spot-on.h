@@ -87,6 +87,7 @@ extern "C"
 
 #include "Common/spot-on-common.h"
 #include "Common/spot-on-crypt.h"
+#include "Common/spot-on-external-address.h"
 #include "Common/spot-on-misc.h"
 #include "Common/spot-on-send.h"
 #include "spot-on-docviewer.h"
@@ -130,6 +131,7 @@ class spoton: public QMainWindow
 #endif
   QSslSocket m_kernelSocket;
   QTimer m_buzzStatusTimer;
+  QTimer m_externalAddressDiscovererTimer;
   QTimer m_generalTimer;
   QTimer m_messagingCachePurgeTimer;
   QTimer m_tableTimer;
@@ -139,6 +141,7 @@ class spoton: public QMainWindow
   bool m_purge;
   QHash<QString, spoton_crypt *> m_crypts;
   spoton_docviewer m_docViewer;
+  spoton_external_address *m_externalAddress;
   spoton_logviewer m_logViewer;
   QByteArray copyMyChatPublicKey(void);
   QByteArray copyMyEmailPublicKey(void);
@@ -211,6 +214,7 @@ class spoton: public QMainWindow
   void slotDetachListenerNeighbors(void);
   void slotDisconnectListenerNeighbors(void);
   void slotDisconnectNeighbor(void);
+  void slotDiscoverExternalAddress(void);
   void slotDisplayLocalSearchResults(void);
   void slotDoSearch(void);
   void slotEmptyTrash(void);
