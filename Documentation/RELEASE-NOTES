@@ -19,7 +19,8 @@
      preferred ciphers are available.
 9.   Corrected Documentation/ENCRYPTED.
 10.  Ability to set permanent certificates for listeners. Peers will
-     test certificates and discrepancies shall be logged.
+     test certificates and discrepancies shall be logged. Please
+     remove listeners.db and neighbors.db.
 11.  Corrected re-encoding mechanism with respect to the neighbors.db
      database.
 
