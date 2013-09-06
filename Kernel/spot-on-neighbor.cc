@@ -3414,7 +3414,8 @@ void spoton_neighbor::slotEncrypted(void)
 	    {
 	      spoton_misc::logError("spoton_neighbor::slotEncrypted(): "
 				    "the stored certificate does not match "
-				    "the peer's certificate. Aborting.");
+				    "the peer's certificate. This is a "
+				    "serious problem! Aborting.");
 	      deleteLater();
 	      return;
 	    }
