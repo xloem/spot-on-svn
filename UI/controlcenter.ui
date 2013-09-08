@@ -163,8 +163,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1227</width>
-                <height>555</height>
+                <width>459</width>
+                <height>441</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1942,6 +1942,11 @@
               </column>
               <column>
                <property name="text">
+                <string>Certificate Digest</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
                 <string>is_encrypted</string>
                </property>
               </column>
@@ -2599,8 +2604,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1227</width>
-             <height>555</height>
+             <width>1137</width>
+             <height>385</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">

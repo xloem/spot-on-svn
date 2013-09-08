@@ -1708,10 +1708,19 @@ void spoton::slotPopulateListeners(void)
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT "
-		      "status_control, status, ssl_key_size, "
-		      "ip_address, port, scope_id, protocol, "
-		      "external_ip_address, external_port, "
-		      "connections, maximum_clients, echo_mode, OID "
+		      "status_control, "
+		      "status, "
+		      "ssl_key_size, "
+		      "ip_address, "
+		      "port, "
+		      "scope_id, "
+		      "protocol, "
+		      "external_ip_address, "
+		      "external_port, "
+		      "connections, "
+		      "maximum_clients, "
+		      "echo_mode, "
+		      "OID "
 		      "FROM listeners WHERE status_control <> 'deleted'"))
 	  {
 	    row = 0;
@@ -2030,18 +2039,30 @@ void spoton::slotPopulateNeighbors(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT sticky, uuid, status, ssl_key_size, "
+	if(query.exec("SELECT sticky, "
+		      "uuid, "
+		      "status, "
+		      "ssl_key_size, "
 		      "status_control, "
-		      "local_ip_address, local_port, "
-		      "external_ip_address, external_port, "
+		      "local_ip_address, "
+		      "local_port, "
+		      "external_ip_address, "
+		      "external_port, "
 		      "country, "
 		      "remote_ip_address, "
-		      "remote_port, scope_id, protocol, "
-		      "proxy_hostname, proxy_port, "
+		      "remote_port, "
+		      "scope_id, "
+		      "protocol, "
+		      "proxy_hostname, "
+		      "proxy_port, "
 		      "maximum_buffer_size, "
 		      "maximum_content_length, "
-		      "echo_mode, uptime, allow_exceptions, "
-		      "is_encrypted, OID "
+		      "echo_mode, "
+		      "uptime, "
+		      "allow_exceptions, "
+		      "peer_certificate, "
+		      "is_encrypted, "
+		      "OID "
 		      "FROM neighbors WHERE status_control <> 'deleted'"))
 	  {
 	    QString localIp("");
@@ -2053,8 +2074,23 @@ void spoton::slotPopulateNeighbors(void)
 	      {
 		m_ui.neighbors->setRowCount(row + 1);
 
+		QByteArray certificateDigest;
 		QString tooltip("");
 		bool ok = true;
+
+		certificateDigest = m_crypts.value("chat")->
+		  decrypted(QByteArray::
+			    fromBase64(query.
+				       value(21).
+				       toByteArray()),
+			    &ok);
+
+		if(ok)
+		  certificateDigest = spoton_crypt::
+		    sha512Hash(certificateDigest, &ok).toHex();
+
+		if(!ok)
+		  certificateDigest = "XYZ";
 
 		tooltip =
 		  (tr("UUID: %1\n"
@@ -2068,7 +2104,8 @@ void spoton::slotPopulateNeighbors(void)
 		      "Echo Mode: %13\n"
 		      "Communications Mode: %14\n"
 		      "Uptime: %15 Minutes\n"
-		      "Allow Certificate Exceptions: %16")).
+		      "Allow Certificate Exceptions: %16\n"
+		      "Certificate Digest: %17")).
 		  arg(m_crypts.value("chat")->
 		      decrypted(QByteArray::
 				fromBase64(query.
@@ -2136,12 +2173,13 @@ void spoton::slotPopulateNeighbors(void)
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(query.value(21).toInt() == 1 ?
+		  arg(query.value(22).toInt() == 1 ?
 		      "Secure" : "Insecure").
 		  arg(QString::number(query.value(19).toInt() / 60.0,
 				      'f', 1)).
-		  arg(query.value(20).toInt() == 1 ?
-		      "Yes" : "No");
+		  arg(query.value(21).toInt() == 1 ?
+		      "Yes" : "No").
+		  arg(certificateDigest.constData());
 
 		QCheckBox *check = 0;
 
@@ -2262,6 +2300,9 @@ void spoton::slotPopulateNeighbors(void)
 				SLOT(slotNeighborMaximumChanged(int)));
 			m_ui.neighbors->setCellWidget(row, i, box);
 		      }
+		    else if(i == 21) // Certificate Digest
+		      item = new QTableWidgetItem
+			(certificateDigest.constData());
 		    else
 		      item = new QTableWidgetItem
 			(query.value(i).toString());
