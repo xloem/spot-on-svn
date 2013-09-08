@@ -104,16 +104,20 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	    {
 	      m_useSsl = false;
 	       spoton_misc::logError
-		 ("spoton_neighbor::spoton_neighbor(): "
-		  "empty private key. SSL disabled.");
+		 (QString("spoton_neighbor::spoton_neighbor(): "
+			  "empty private key for %1:%2. SSL disabled.").
+		  arg(peerAddress().toString()).
+		  arg(peerPort()));
 	    }
 	}
       else
 	{
 	  m_useSsl = false;
 	  spoton_misc::logError
-	    ("spoton_neighbor::spoton_neighbor(): "
-	     "invalid local certificate. SSL disabled.");
+	    (QString("spoton_neighbor::spoton_neighbor(): "
+		     "invalid local certificate for %1:%2. SSL disabled.").
+	     arg(peerAddress().toString()).
+	     arg(peerPort()));
 	}
     }
 
@@ -245,7 +249,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
     spoton_misc::logError
       (QString("spoton_neighbor:: "
 	       "spoton_neighbor(): "
-	       "generateSslKeys() failure (%1).").arg(error.remove(".")));
+	       "generateSslKeys() failure (%1) for %2:%3.").
+       arg(error.remove(".")).
+       arg(ipAddress).
+       arg(port));
 
   if(!privateKey.isEmpty())
     {
@@ -271,8 +278,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	{
 	  m_useSsl = false;
 	  spoton_misc::logError
-	    ("spoton_neighbor::spoton_neighbor(): "
-	     "empty private key. SSL disabled.");
+	    (QString("spoton_neighbor::spoton_neighbor(): "
+		     "empty private key for %1:%2. SSL disabled.").
+	     arg(ipAddress).
+	     arg(port));
 	}
     }
 
