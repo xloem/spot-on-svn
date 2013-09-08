@@ -230,7 +230,10 @@ void spoton_buzzpage::slotSendMessage(void)
     if(m_kernelSocket->write(message.constData(),
 			     message.length()) != message.length())
       spoton_misc::logError
-	("spoton_buzzpage::slotSendMessage(): write() failure.");
+	(QString("spoton_buzzpage::slotSendMessage(): "
+		 "write() failure for %1:%2.").
+	 arg(m_kernelSocket->peerAddress().toString()).
+	 arg(m_kernelSocket->peerPort()));
     else
       m_kernelSocket->flush();
   }
@@ -333,7 +336,10 @@ void spoton_buzzpage::slotSendStatus(void)
   if(m_kernelSocket->write(message.constData(),
 			   message.length()) != message.length())
     spoton_misc::logError
-      ("spoton_buzzpage::slotSendStatus(): write() failure.");
+      (QString("spoton_buzzpage::slotSendStatus(): write() failure "
+	       "for %1:%2.").
+       arg(m_kernelSocket->peerAddress().toString()).
+       arg(m_kernelSocket->peerPort()));
   else
     m_kernelSocket->flush();
 }

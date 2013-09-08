@@ -189,7 +189,8 @@ void spoton_gui_server::slotReadyRead(void)
       socket->readAll();
       spoton_misc::logError
 	(QString("spoton_gui_server::slotReadyRead(): "
-		 "port %1 not encrypted. Discarding data.").
+		 "socket %1:%2 is not encrypted. Discarding data.").
+	 arg(socket->localAddress().toString()).
 	 arg(socket->localPort()));
       return;
     }
@@ -490,16 +491,19 @@ void spoton_gui_server::slotReceivedBuzzMessage
 	if(socket->write(message.constData(),
 			 message.length()) != message.length())
 	  spoton_misc::logError
-	    ("spoton_gui_server::slotReceivedBuzzMessage(): "
-	     "write() failure.");
+	    (QString("spoton_gui_server::slotReceivedBuzzMessage(): "
+		     "write() failure for %1:%2.").
+	     arg(socket->peerAddress().toString()).
+	     arg(socket->peerPort()));
 	else
 	  socket->flush();
       }
     else
       spoton_misc::logError
 	(QString("spoton_gui_server::slotReceivedBuzzMessage(): "
-		 "port %1 not encrypted. Ignoring write() request.").
-	 arg(socket->localPort()));
+		 "socket %1:%2 is not encrypted. Ignoring write() request.").
+	 arg(socket->peerAddress().toString()).
+	 arg(socket->peerPort()));
 }
 
 void spoton_gui_server::slotReceivedChatMessage(const QByteArray &message)
@@ -510,16 +514,19 @@ void spoton_gui_server::slotReceivedChatMessage(const QByteArray &message)
 	if(socket->write(message.constData(),
 			 message.length()) != message.length())
 	  spoton_misc::logError
-	    ("spoton_gui_server::slotReceivedChatMessage(): "
-	     "write() failure.");
+	    (QString("spoton_gui_server::slotReceivedChatMessage(): "
+		     "write() failure for %1:%2.").
+	     arg(socket->peerAddress().toString()).
+	     arg(socket->peerPort()));
 	else
 	  socket->flush();
       }
     else
       spoton_misc::logError
 	(QString("spoton_gui_server::slotReceivedChatMessage(): "
-		 "port %1 not encrypted. Ignoring write() request.").
-	 arg(socket->localPort()));
+		 "socket %1:%2 is not encrypted. Ignoring write() request.").
+	 arg(socket->peerAddress().toString()).
+	 arg(socket->peerPort()));
 }
 
 void spoton_gui_server::slotNewEMailArrived(void)
@@ -531,38 +538,48 @@ void spoton_gui_server::slotNewEMailArrived(void)
       {
 	if(socket->write(message.constData(),
 			 message.length()) != message.length())
-	  spoton_misc::logError("spoton_gui_server::slotNewEMailArrived() "
-				"write() failure.");
+	  spoton_misc::logError
+	    (QString("spoton_gui_server::slotNewEMailArrived(): "
+		     "write() failure for %1:%2.").
+	     arg(socket->peerAddress().toString()).
+	     arg(socket->peerPort()));
 	else
 	  socket->flush();
       }
     else
       spoton_misc::logError
 	(QString("spoton_gui_server::slotNewEMailArrived(): "
-		 "port %1 not encrypted. Ignoring write() request.").
-	 arg(socket->localPort()));
+		 "socket %1:%2 is not encrypted. Ignoring write() request.").
+	 arg(socket->peerAddress().toString()).
+	 arg(socket->peerPort()));
 }
 
 void spoton_gui_server::slotModeChanged(QSslSocket::SslMode mode)
 {
+  QSslSocket *socket = qobject_cast<QSslSocket *> (sender());
+
+  if(!socket)
+    {
+      spoton_misc::logError("spoton_gui_server::slotModeChanged(): "
+			    "empty socket object.");
+      return;
+    }
+
   spoton_misc::logError(QString("spoton_gui_server::slotModeChanged(): "
-				"the connection mode has changed to %1.").
-			arg(mode));
+				"the connection mode has changed to %1 "
+				"for %2:%3.").
+			arg(mode).
+			arg(socket->peerAddress().toString()).
+			arg(socket->peerPort()));
 
   if(mode == QSslSocket::UnencryptedMode)
     {
-      QSslSocket *socket = qobject_cast<QSslSocket *> (sender());
-
-      if(!socket)
-	spoton_misc::logError("spoton_gui_server::slotModeChanged(): "
-			      "empty socket object.");
-      else
-	{
-	  spoton_misc::logError
-	    ("spoton_gui_server::slotModeChanged(): "
-	     "plaintext mode. Disconnecting kernel socket.");
-	  socket->abort();
-	}
+      spoton_misc::logError
+	(QString("spoton_gui_server::slotModeChanged(): "
+		 "plaintext mode. Disconnecting kernel socket %1:%2.").
+	 arg(socket->peerAddress().toString()).
+	 arg(socket->peerPort()));
+      socket->abort();
     }
 }
 

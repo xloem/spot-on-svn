@@ -1124,8 +1124,10 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
 
       if(neighbor->write(data.constData(), data.length()) != data.length())
 	spoton_misc::logError
-	  ("spoton_kernel::slotPublicKeyReceivedFromUI(): "
-	   "write() failure.");
+	  (QString("spoton_kernel::slotPublicKeyReceivedFromUI(): "
+		   "write() failure for %1:%2.").
+	   arg(neighbor->peerAddress().toString()).
+	   arg(neighbor->peerPort()));
       else
 	neighbor->flush();
     }

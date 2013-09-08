@@ -3624,7 +3624,10 @@ void spoton::sendBuzzKeysToKernel(void)
 	    {
 	      sent = false;
 	      spoton_misc::logError
-		("spoton::sendBuzzKeysToKernel(): write() failure.");
+		(QString("spoton::sendBuzzKeysToKernel(): write() failure "
+			 "for %1:%2.").
+		 arg(m_kernelSocket.peerAddress().toString()).
+		 arg(m_kernelSocket.peerPort()));
 	    }
 	  else
 	    m_kernelSocket.flush();
@@ -3660,7 +3663,10 @@ void spoton::sendKeysToKernel(void)
 	  if(m_kernelSocket.write(keys.constData(), keys.length()) !=
 	     keys.length())
 	    spoton_misc::logError
-	      ("spoton::sendKeysToKernel(): write() failure.");
+	      (QString("spoton::sendKeysToKernel(): write() failure "
+		       "for %1:%2.").
+	       arg(m_kernelSocket.peerAddress().toString()).
+	       arg(m_kernelSocket.peerPort()));
 	  else
 	    {
 	      m_booleans["keys_sent_to_kernel"] = true;
@@ -4350,7 +4356,7 @@ void spoton::slotKernelSocketSslErrors(const QList<QSslError> &errors)
   for(int i = 0; i < errors.size(); i++)
     spoton_misc::logError
       (QString("spoton::slotKernelSocketSslErrors(): "
-	       "error (%1) occurred from %2:%3.").
+	       "error (%1) occurred for %2:%3.").
        arg(errors.at(i).errorString()).
        arg(m_kernelSocket.peerAddress().isNull() ? m_kernelSocket.peerName() :
 	   m_kernelSocket.peerAddress().toString()).
@@ -4580,13 +4586,20 @@ void spoton::slotKernelLogEvents(bool state)
 void spoton::slotModeChanged(QSslSocket::SslMode mode)
 {
   spoton_misc::logError(QString("spoton::slotModeChanged(): "
-				"the connection mode has changed to %1.").
-			arg(mode));
+				"the connection mode has changed to %1 "
+				"for %2:%3.").
+			arg(mode).
+			arg(m_kernelSocket.peerAddress().toString()).
+			arg(m_kernelSocket.peerPort()));
 
   if(mode == QSslSocket::UnencryptedMode)
     {
-      spoton_misc::logError("spoton::slotModeChanged(): "
-			    "plaintext mode. Disconnecting kernel socket.");
+      spoton_misc::logError
+	(QString("spoton::slotModeChanged(): "
+		 "plaintext mode. Disconnecting kernel socket for "
+		 "%1:%2.").
+	 arg(m_kernelSocket.peerAddress().toString()).
+	 arg(m_kernelSocket.peerPort()));
       m_kernelSocket.abort();
     }
 }
@@ -4654,7 +4667,10 @@ void spoton::slotDetachListenerNeighbors(void)
 	if(m_kernelSocket.write(message.constData(), message.length()) !=
 	   message.length())
 	  spoton_misc::logError
-	    ("spoton::slotDetachListenerNeighbors(): write() failure.");
+	    (QString("spoton::slotDetachListenerNeighbors(): write() "
+		     "failure for %1:%2.").
+	     arg(m_kernelSocket.peerAddress().toString()).
+	     arg(m_kernelSocket.peerPort()));
 	else
 	  m_kernelSocket.flush();
       }
@@ -4689,7 +4705,10 @@ void spoton::slotDisconnectListenerNeighbors(void)
 	if(m_kernelSocket.write(message.constData(), message.length()) !=
 	   message.length())
 	  spoton_misc::logError
-	    ("spoton::slotDisconnectListenerNeighbors(): write() failure.");
+	    (QString("spoton::slotDisconnectListenerNeighbors(): "
+		     "write() failure for %1:%2.").
+	     arg(m_kernelSocket.peerAddress().toString()).
+	     arg(m_kernelSocket.peerPort()));
 	else
 	  m_kernelSocket.flush();
       }
@@ -4739,7 +4758,9 @@ void spoton::slotCallParticipant(void)
   if(m_kernelSocket.write(message.constData(), message.length()) !=
      message.length())
     spoton_misc::logError
-      ("spoton::slotCallParticipant(): write() failure.");
+      (QString("spoton::slotCallParticipant(): write() failure for %1:%2.").
+       arg(m_kernelSocket.peerAddress().toString()).
+       arg(m_kernelSocket.peerPort()));
   else
     m_kernelSocket.flush();
 }

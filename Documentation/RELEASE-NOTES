@@ -23,11 +23,13 @@
      remove listeners.db and neighbors.db.
 11.  Corrected re-encoding mechanism with respect to the neighbors.db
      database.
-12.  Encrypted protocol in neighbors database table.
+12.  Encrypt the protocol in the neighbors database table.
 13.  Optional recording of external IP addresses in certificates
      when defining listeners.
 14.  Removed all instances of QSslConfiguration::setProtocol(). Allow
      the protocol to be determined by the selected cipher.
+15.  Include IP addresses and ports in important log entries.
+16.  Corrected FreeBSD project files. Corrected previous branches too.
 
 0.04 (09/03/2013)
 

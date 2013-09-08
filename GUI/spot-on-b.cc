@@ -87,7 +87,10 @@ void spoton::slotSendMessage(void)
 	  if(m_kernelSocket.write(message.constData(), message.length()) !=
 	     message.length())
 	    spoton_misc::logError
-	      ("spoton::slotSendMessage(): write() failure.");
+	      (QString("spoton::slotSendMessage(): write() failure for "
+		       "%1:%2.").
+	       arg(m_kernelSocket.peerAddress().toString()).
+	       arg(m_kernelSocket.peerPort()));
 	  else
 	    m_kernelSocket.flush();
 	}
@@ -250,9 +253,12 @@ void spoton::slotReceivedKernelMessage(void)
   else if(m_kernelSocketData.length() > 50000)
     {
       m_kernelSocketData.clear();
-      spoton_misc::logError("spoton::slotReceivedKernelMessage(): "
-			    "unable to detect an EOL in m_kernelSocketData. "
-			    "The container is bloated! Purging.");
+      spoton_misc::logError
+	(QString("spoton::slotReceivedKernelMessage(): "
+		 "unable to detect an EOL in m_kernelSocketData for %1:%2. "
+		 "The container is bloated! Purging.").
+	 arg(m_kernelSocket.peerAddress().toString()).
+	 arg(m_kernelSocket.peerPort()));
     }
 }
 
@@ -329,7 +335,10 @@ void spoton::slotShareChatPublicKey(void)
       if(m_kernelSocket.write(message.constData(), message.length()) !=
 	 message.length())
 	spoton_misc::logError
-	  ("spoton::slotShareChatPublicKey(): write() failure.");
+	  (QString("spoton::slotShareChatPublicKey(): write() failure "
+		   "for %1:%2.").
+	   arg(m_kernelSocket.peerAddress().toString()).
+	   arg(m_kernelSocket.peerPort()));
       else
 	m_kernelSocket.flush();
     }
@@ -408,7 +417,10 @@ void spoton::slotShareEmailPublicKey(void)
       if(m_kernelSocket.write(message.constData(), message.length()) !=
 	 message.length())
 	spoton_misc::logError
-	  ("spoton::slotShareEmailPublicKey(): write() failure.");
+	  (QString("spoton::slotShareEmailPublicKey(): write() failure "
+		   "for %1:%2.").
+	   arg(m_kernelSocket.peerAddress().toString()).
+	   arg(m_kernelSocket.peerPort()));
       else
 	m_kernelSocket.flush();
     }
@@ -758,8 +770,10 @@ void spoton::slotShareChatPublicKeyWithParticipant(void)
       if(m_kernelSocket.write(message.constData(), message.length()) !=
 	 message.length())
 	spoton_misc::logError
-	  ("spoton::slotShareChatPublicKeyWithParticipant(): "
-	   "write() failure.");
+	  (QString("spoton::slotShareChatPublicKeyWithParticipant(): "
+		   "write() failure for %1:%2.").
+	   arg(m_kernelSocket.peerAddress().toString()).
+	   arg(m_kernelSocket.peerPort()));
       else
 	m_kernelSocket.flush();
     }
@@ -837,8 +851,10 @@ void spoton::slotShareEmailPublicKeyWithParticipant(void)
       if(m_kernelSocket.write(message.constData(), message.length()) !=
 	 message.length())
 	spoton_misc::logError
-	  ("spoton::slotShareEmailPublicKeyWithParticipant(): "
-	   "write() failure.");
+	  (QString("spoton::slotShareEmailPublicKeyWithParticipant(): "
+		   "write() failure for %1:%2.").
+	   arg(m_kernelSocket.peerAddress().toString()).
+	   arg(m_kernelSocket.peerPort()));
       else
 	m_kernelSocket.flush();
     }
@@ -3071,7 +3087,10 @@ void spoton::slotRetrieveMail(void)
 	if(m_kernelSocket.write(message.constData(), message.length()) !=
 	   message.length())
 	  spoton_misc::logError
-	    ("spoton::slotRetrieveMail(): write() failure.");
+	    (QString("spoton::slotRetrieveMail(): write() failure "
+		     "for %1:%2.").
+	     arg(m_kernelSocket.peerAddress().toString()).
+	     arg(m_kernelSocket.peerPort()));
 	else
 	  {
 	    m_kernelSocket.flush();
@@ -3622,7 +3641,10 @@ void spoton::slotPublicizeAllListenersPlaintext(void)
   if(m_kernelSocket.write(message.constData(), message.length()) !=
      message.length())
     spoton_misc::logError
-      ("spoton::slotPublicizeAllListenersPlaintext(): write() failure.");
+      (QString("spoton::slotPublicizeAllListenersPlaintext(): "
+	       "write() failure for %1:%2.").
+       arg(m_kernelSocket.peerAddress().toString()).
+       arg(m_kernelSocket.peerPort()));
   else
     m_kernelSocket.flush();
 }
@@ -3658,7 +3680,10 @@ void spoton::slotPublicizeListenerPlaintext(void)
   if(m_kernelSocket.write(message.constData(), message.length()) !=
      message.length())
     spoton_misc::logError
-      ("spoton::slotPublicizeListenerPlaintext(): write() failure.");
+      (QString("spoton::slotPublicizeListenerPlaintext(): "
+	       "write() failure for %1:%2.").
+       arg(m_kernelSocket.peerAddress().toString()).
+       arg(m_kernelSocket.peerPort()));
   else
     m_kernelSocket.flush();
 }
@@ -3801,7 +3826,10 @@ void spoton::slotJoinBuzzChannel(void)
 	if(m_kernelSocket.write(message.constData(), message.length()) !=
 	   message.length())
 	  spoton_misc::logError
-	    ("spoton::slotJoinBuzzChannel(): write() failure.");
+	    (QString("spoton::slotJoinBuzzChannel(): "
+		     "write() failure for %1:%2.").
+	     arg(m_kernelSocket.peerAddress().toString()).
+	     arg(m_kernelSocket.peerPort()));
 	else
 	  m_kernelSocket.flush();
       }
@@ -3837,7 +3865,10 @@ void spoton::slotCloseBuzzTab(int index)
 	if(m_kernelSocket.write(message.constData(), message.length()) !=
 	   message.length())
 	  spoton_misc::logError
-	    ("spoton::slotCloseBuzzTab(): write() failure.");
+	    (QString("spoton::slotCloseBuzzTab(): write() failure "
+		     "for %1:%2.").
+	     arg(m_kernelSocket.peerAddress().toString()).
+	     arg(m_kernelSocket.peerPort()));
 	else
 	  m_kernelSocket.flush();
       }

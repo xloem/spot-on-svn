@@ -57,8 +57,11 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
       socklen_t length = sizeof(nativeAddress);
 
       if(getpeername(socketDescriptor, &nativeAddress, &length) != 0)
-	spoton_misc::logError("spoton_listener::incomingConnection: "
-			      "getpeername() failure.");
+	spoton_misc::logError
+	  (QString("spoton_listener_tcp_server::incomingConnection: "
+		   "getpeername() failure for %1:%2.").
+	   arg(serverAddress().toString()).
+	   arg(serverPort()));
 
       address = QHostAddress(&nativeAddress);
 
@@ -72,9 +75,11 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 	  shutdown(socketDescriptor, SHUT_RDWR);
 #endif
 	  spoton_misc::logError
-	    (QString("spoton_listener::incomingConnection(): "
-		     "connection from %1 denied.").
-	     arg(address.toString()));
+	    (QString("spoton_listener_tcp_server::incomingConnection(): "
+		     "connection from %1 denied for %2:%3").
+	     arg(address.toString()).
+	     arg(serverAddress().toString()).
+	     arg(serverPort()));
 	}
       else
 	emit newConnection(socketDescriptor);
@@ -246,8 +251,10 @@ void spoton_listener::slotTimeout(void)
 			if(!listen(m_address, m_port))
 			  spoton_misc::logError
 			    (QString("spoton_listener::slotTimeout(): "
-				     "listen() failure (%1).").
-			     arg(errorString()));
+				     "listen() failure (%1) for %2:%3.").
+			     arg(errorString()).
+			     arg(m_address.toString()).
+			     arg(m_port));
 			else
 			  /*
 			  ** Initial discovery of the external
@@ -323,8 +330,11 @@ void spoton_listener::slotTimeout(void)
 
   if(shouldDelete)
     {
-      spoton_misc::logError("spoton_listener_::slotTimeout(): instructed "
-			    "to delete listener.");
+      spoton_misc::logError
+	(QString("spoton_listener_::slotTimeout(): instructed "
+		 "to delete listener.").
+	 arg(m_address.toString()).
+	 arg(m_port));
       deleteLater();
       return;
     }
@@ -343,13 +353,18 @@ void spoton_listener::slotTimeout(void)
 	if(m_networkInterface)
 	  spoton_misc::logError
 	    (QString("spoton_listener::slotTimeout(): "
-		     "network interface %1 is not active. "
+		     "network interface %1 for %2:%3 is not active. "
 		     "Aborting.").
-	     arg(m_networkInterface->name()));
+	     arg(m_networkInterface->name()).
+	     arg(m_address.toString()).
+	     arg(m_port));
 	else
-	  spoton_misc::logError("spoton_listener::slotTimeout(): "
-				"undefined network interface. "
-				"Aborting.");
+	  spoton_misc::logError
+	    (QString("spoton_listener::slotTimeout(): "
+		     "undefined network interface for %1:%2. "
+		     "Aborting.").
+	     arg(m_address.toString()).
+	     arg(m_port));
 
 	deleteLater();
       }
@@ -418,8 +433,10 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
       spoton_misc::logError
 	(QString("spoton_listener::"
 		 "slotNewConnection(): "
-		 "generateSslKeys() failure (%1).").
-	 arg(error.remove(".")));
+		 "generateSslKeys() failure (%1) for %2:%3.").
+	 arg(error.remove(".")).
+	 arg(m_address.toString()).
+	 arg(m_port));
     }
 
   if(!neighbor)
@@ -439,8 +456,9 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
   if(!s_crypt)
     {
       spoton_misc::logError
-	("spoton_listener::slotNewConnection(): "
-	 "chat key is missing.");
+	(QString("spoton_listener::slotNewConnection(): "
+		 "chat key is missing for %1:%2.").
+	 arg(m_address.toString()).arg(m_port));
       neighbor->deleteLater();
       return;
     }
@@ -749,9 +767,12 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
   else
     {
       neighbor->deleteLater();
-      spoton_misc::logError("spoton_listener::slotEncrypted(): "
-			    "severe error(s). Purging neighbor "
-			    "object.");
+      spoton_misc::logError
+	(QString("spoton_listener::slotEncrypted(): "
+		 "severe error(s). Purging neighbor "
+		 "object for %1:%2.").
+	 arg(m_address.toString()).
+	 arg(m_port));
     }
 }
 
