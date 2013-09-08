@@ -31,6 +31,8 @@
 #include <QSqlQuery>
 #ifdef Q_OS_WIN32
 #include <winsock2.h>
+#else
+#include <unistd.h>
 #endif
 
 #include "Common/spot-on-external-address.h"
@@ -45,11 +47,15 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 #endif
 {
   if(findChildren<spoton_neighbor *> ().size() >= maxPendingConnections())
+    {
 #ifdef Q_OS_WIN32
-    shutdown(socketDescriptor, SD_BOTH);
+      shutdown(socketDescriptor, SD_BOTH);
+      closesocket(socketDescriptor);
 #else
-    shutdown(socketDescriptor, SHUT_RDWR);
+      shutdown(socketDescriptor, SHUT_RDWR);
+      ::close(socketDescriptor);
 #endif
+    }
   else
     {
       QHostAddress address;
@@ -71,8 +77,10 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 	{
 #ifdef Q_OS_WIN32
 	  shutdown(socketDescriptor, SD_BOTH);
+	  closesocket(socketDescriptor);
 #else
 	  shutdown(socketDescriptor, SHUT_RDWR);
+	  ::close(socketDescriptor);
 #endif
 	  spoton_misc::logError
 	    (QString("spoton_listener_tcp_server::incomingConnection(): "
@@ -427,8 +435,10 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
     {
 #ifdef Q_OS_WIN32
       shutdown(socketDescriptor, SD_BOTH);
+      closesocket(socketDescriptor);
 #else
       shutdown(socketDescriptor, SHUT_RDWR);
+      ::close(socketDescriptor);
 #endif
       spoton_misc::logError
 	(QString("spoton_listener::"
