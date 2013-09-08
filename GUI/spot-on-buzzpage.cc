@@ -361,8 +361,8 @@ void spoton_buzzpage::userStatus(const QList<QByteArray> &list)
   QList<QTableWidgetItem *> items
     (ui.clients->findItems(id, Qt::MatchExactly));
 
-  if(name.isEmpty())
-    name = "unknown";
+  if(name.isEmpty() || name == "unknown")
+    name = id.mid(0, 16) + "-unknown";
 
   ui.clients->setSortingEnabled(false);
 
