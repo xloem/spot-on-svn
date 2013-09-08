@@ -374,6 +374,7 @@ void spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 
       item = new QTableWidgetItem(QString::fromUtf8(name.constData(),
 						    name.length()));
+      item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
       if(id == m_id)
 	item->setBackground(QBrush(QColor(254, 229, 172)));
@@ -381,9 +382,13 @@ void spoton_buzzpage::userStatus(const QList<QByteArray> &list)
       item->setToolTip(id.mid(0, 16) + "..." + id.right(16));
       ui.clients->setItem(ui.clients->rowCount() - 1, 0, item);
       item = new QTableWidgetItem(id.constData());
+      item->setFlags
+	(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
       ui.clients->setItem(ui.clients->rowCount() - 1, 1, item);
       item = new QTableWidgetItem
 	(QDateTime::currentDateTime().toString(Qt::ISODate));
+      item->setFlags
+	(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
       ui.clients->setItem(ui.clients->rowCount() - 1, 2, item);
 
       QString msg("");

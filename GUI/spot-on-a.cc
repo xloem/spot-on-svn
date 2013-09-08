@@ -4210,7 +4210,8 @@ void spoton::slotPopulateParticipants(void)
 		      else if(i == 5)
 			{
 			  if(!temporary)
-			    item->setFlags(item->flags() | Qt::ItemIsEditable);
+			    item->setFlags
+			      (item->flags() | Qt::ItemIsEditable);
 			}
 
 		      item->setData(Qt::UserRole, temporary);
