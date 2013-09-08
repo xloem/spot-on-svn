@@ -1594,6 +1594,9 @@ void spoton::addFriendsKey(const QByteArray &key)
     {
       if(key.trimmed().isEmpty())
 	return;
+      else if(!m_crypts.value("chat", 0) ||
+	      !m_crypts.value("email", 0))
+	return;
 
       if(!(key.startsWith("K") || key.startsWith("k")))
 	{
@@ -1629,8 +1632,38 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       QByteArray mPublicKey(list.value(2));
       QByteArray mSignature(list.value(3));
+      QByteArray myPublicKey;
+      bool ok = true;
 
       mPublicKey = QByteArray::fromBase64(mPublicKey);
+      myPublicKey = m_crypts.value("chat")->publicKey(&ok);
+
+      if(!ok)
+	return;
+
+      if(mPublicKey == myPublicKey)
+	{
+	  QMessageBox::critical
+	    (this, tr("Spot-On: Error"),
+	     tr("You're attempting to add your own 'chat' keys. "
+		"Please do not do this."));
+	  return;
+	}
+
+      myPublicKey = m_crypts.value("email")->publicKey(&ok);
+
+      if(!ok)
+	return;
+
+      if(mPublicKey == myPublicKey)
+	{
+	  QMessageBox::critical
+	    (this, tr("Spot-On: Error"),
+	     tr("You're attempting to add your own 'email' keys. "
+		"Please do not do this."));
+	  return;
+	}
+
       mSignature = QByteArray::fromBase64(mSignature);
 
       if(!spoton_crypt::isValidSignature(mPublicKey, mPublicKey,
@@ -1700,8 +1733,10 @@ void spoton::addFriendsKey(const QByteArray &key)
       ** Have fun!
       */
 
-      if(!m_crypts.value("chat", 0) ||
-	 !m_crypts.value("email", 0))
+      if(key.trimmed().isEmpty())
+	return;
+      else if(!m_crypts.value("chat", 0) ||
+	      !m_crypts.value("email", 0))
 	return;
 
       if(!(key.startsWith("R") || key.startsWith("r")))
