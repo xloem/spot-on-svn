@@ -283,8 +283,8 @@ void spoton_buzzpage::appendMessage(const QByteArray &hash,
   QByteArray message(list.value(2));
   QString msg("");
 
-  if(name.isEmpty())
-    name = "unknown";
+  if(name.isEmpty() || name == "unknown")
+    name = id.mid(0, 16) + "-unknown";
 
   if(message.isEmpty())
     message = "unknown";
