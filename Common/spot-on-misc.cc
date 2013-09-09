@@ -355,7 +355,9 @@ void spoton_misc::prepareDatabases(void)
 	   "ssl_key_size INTEGER NOT NULL DEFAULT 2048, "
 	   "uptime INTEGER NOT NULL DEFAULT 0, "
 	   "peer_certificate BLOB NOT NULL, "
-	   "allow_exceptions INTEGER NOT NULL DEFAULT 0)");
+	   "allow_exceptions INTEGER NOT NULL DEFAULT 0, "
+	   "bytes_read INTEGER NOT NULL DEFAULT 0, "
+	   "bytes_written INTEGER NOT NULL DEFAULT 0)");
       }
 
     db.close();
