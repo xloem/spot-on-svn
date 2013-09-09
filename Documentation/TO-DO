@@ -84,6 +84,8 @@ Ignored Items
 4.     Favorite channels.
 5.     CGI for listeners.
 6.     Customize expiration timers.
+7.     Include licenses of other software where applicable.
+       Satisfy the license soldiers.
 
 Remaining Items
 
@@ -103,8 +105,7 @@ Remaining Items
 12.    Custom protocol messages for rapid redeployment.
 13.    Provide a total silent mode. Cumbersome.
 14.    Artificial trust. All participants must play nicely. Zero-knowledge?
-15.    Include licenses of other software where applicable.
-       Satisfy the license soldiers.
+15.    What to do about corrupt database values?
 16.    Entering geminis is difficult.
 17.    Allow bonds across connections.
 18.    Allow pass-through flow of non-Spot-On data.

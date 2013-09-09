@@ -1,5 +1,9 @@
 Some tables contain encrypted data.
 
+accepted_ips.db
+
+ip_address
+
 country_inclusion.db:
 
 country
