@@ -328,8 +328,8 @@ void spoton_listener::slotTimeout(void)
   if(shouldDelete)
     {
       spoton_misc::logError
-	(QString("spoton_listener_::slotTimeout(): instructed "
-		 "to delete listener.").
+	(QString("spoton_listener:slotTimeout(): instructed "
+		 "to delete listener %1:%2.").
 	 arg(m_address.toString()).
 	 arg(m_port));
       deleteLater();
