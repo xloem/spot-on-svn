@@ -30,7 +30,7 @@
 15.  Include IP addresses and ports in important log entries.
 16.  Corrected FreeBSD project files. Corrected previous branches too.
 17.  The Buzz client tables should not contain editable fields. Corrected.
-18.  Display certificate SHA-512 digests in the Neighbors table. Tool tips
+18.  Display certificate Sha-512 digests in the Neighbors table. Tool tips
      also.
 
 0.04 (09/03/2013)

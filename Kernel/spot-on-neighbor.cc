@@ -51,11 +51,14 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 const QString &echoMode,
 				 QObject *parent):QSslSocket(parent)
 {
+  m_address = peerAddress();
   m_allowExceptions = false;
   m_echoMode = echoMode;
+  m_ipAddress = m_address.toString();
   m_isUserDefined = false;
   m_maximumBufferSize = spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE;
   m_maximumContentLength = spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH;
+  m_port = peerPort();
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
   m_startTime = QDateTime::currentDateTime();
 
@@ -106,8 +109,8 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	       spoton_misc::logError
 		 (QString("spoton_neighbor::spoton_neighbor(): "
 			  "empty private key for %1:%2. SSL disabled.").
-		  arg(peerAddress().toString()).
-		  arg(peerPort()));
+		  arg(m_address.toString()).
+		  arg(m_port));
 	    }
 	}
       else
@@ -116,13 +119,11 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::spoton_neighbor(): "
 		     "invalid local certificate for %1:%2. SSL disabled.").
-	     arg(peerAddress().toString()).
-	     arg(peerPort()));
+	     arg(m_address.toString()).
+	     arg(m_port));
 	}
     }
 
-  m_address = peerAddress();
-  m_ipAddress = m_address.toString();
   m_externalAddress = new spoton_external_address(this);
   m_id = -1; /*
 	     ** This neighbor was created by a listener. We must
@@ -131,7 +132,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	     */
   m_lastReadTime = QDateTime::currentDateTime();
   m_networkInterface = 0;
-  m_port = peerPort();
   connect(this,
 	  SIGNAL(disconnected(void)),
 	  this,
@@ -458,8 +458,11 @@ void spoton_neighbor::slotTimeout(void)
   if(state() == QAbstractSocket::ConnectedState)
     if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 90)
       {
-	spoton_misc::logError("spoton_neighbor::slotTimeout(): "
-			      "aborting because of silent connection.");
+	spoton_misc::logError
+	  (QString("spoton_neighbor::slotTimeout(): "
+		   "aborting because of silent connection for %1:%2.").
+	   arg(m_address.toString()).
+	   arg(m_port));
 	deleteLater();
 	return;
       }
@@ -544,8 +547,11 @@ void spoton_neighbor::slotTimeout(void)
 
   if(shouldDelete)
     {
-      spoton_misc::logError("spoton_neighbor::slotTimeout(): instructed "
-			    "to delete neighbor.");
+      spoton_misc::logError
+	(QString("spoton_neighbor::slotTimeout(): instructed "
+		 "to delete neighbor for %1:%2").
+	 arg(m_address.toString()).
+	 arg(m_port));
       deleteLater();
       return;
     }
@@ -576,13 +582,18 @@ void spoton_neighbor::slotTimeout(void)
 	if(m_networkInterface)
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::slotTimeout(): "
-		     "network interface %1 is not active. "
+		     "network interface %1 is not active for %2:%3. "
 		     "Aborting socket.").
-	     arg(m_networkInterface->name()));
+	     arg(m_networkInterface->name()).
+	     arg(m_address.toString()).
+	     arg(m_port));
 	else
-	  spoton_misc::logError("spoton_neighbor::slotTimeout(): "
-				"undefined network interface. "
-				"Aborting socket.");
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::slotTimeout(): "
+		     "undefined network interface for %1:%2. "
+		     "Aborting socket.").
+	     arg(m_address.toString()).
+	     arg(m_port));
 
 	deleteLater();
 	return;
@@ -673,7 +684,9 @@ void spoton_neighbor::slotReadyRead(void)
 	bytesRead = 0;
 	data.clear();
 	spoton_misc::logError
-	  ("spoton_neighbor::slotReadyRead(): read() failure.");
+	  (QString("spoton_neighbor::slotReadyRead(): read() failure "
+		   "for %1:%2.").arg(m_address.toString()).
+	   arg(m_port));
       }
 
   if(m_useSsl)
@@ -682,9 +695,12 @@ void spoton_neighbor::slotReadyRead(void)
 	bytesRead = 0;
 	data.clear();
 	spoton_misc::logError
-	  ("spoton_neighbor::slotReadyRead(): "
-	   "m_useSsl is true, however, isEncrypted() is false. "
-	   "Purging read data.");
+	  (QString("spoton_neighbor::slotReadyRead(): "
+		   "m_useSsl is true, however, isEncrypted() is false "
+		   "for %1:%2. "
+		   "Purging read data.").
+	   arg(m_address.toString()).
+	   arg(m_port));
       }
 
   if(bytesRead > 0)
@@ -699,22 +715,24 @@ void spoton_neighbor::slotReadyRead(void)
 	    (QString("spoton_neighbor::slotReadyRead(): "
 		     "received irregular data from %1:%2. Setting "
 		     "the read buffer size to 1000 bytes.").
-	     arg(peerAddress().isNull() ? peerName() :
-		 peerAddress().toString()).arg(peerPort()));
+	     arg(m_address.toString()).
+	     arg(m_port));
 	}
       else
 	spoton_misc::logError
 	  (QString("spoton_neighbor::slotReadyRead(): "
 		   "received irregular data from %1:%2. The "
 		   "read buffer size remains at 1000 bytes.").
-	   arg(peerAddress().isNull() ? peerName() :
-	       peerAddress().toString()).arg(peerPort()));
+	   arg(m_address.toString()).
+	   arg(m_port));
 
       spoton_misc::logError
 	(QString("spoton_neighbor::slotReadyRead(): "
 		 "the m_data container contains too much "
-		 "data (%1) that hasn't been processed. Purging.").
-	 arg(m_data.length()));
+		 "data (%1) that hasn't been processed for %2:%3. Purging.").
+	 arg(m_data.length()).
+	 arg(m_address.toString()).
+	 arg(m_port));
       m_data.clear();
     }
 
@@ -738,8 +756,10 @@ void spoton_neighbor::slotReadyRead(void)
       if(list.isEmpty())
 	{
 	  spoton_misc::logError
-	    ("spoton_neighbor::slotReadyRead(): "
-	     "list is empty. Purging contents of m_data.");
+	    (QString("spoton_neighbor::slotReadyRead(): "
+		     "list is empty for %1:%2. Purging contents of m_data.").
+	     arg(m_address.toString()).
+	     arg(m_port));
 	  m_data.clear();
 	}
 
@@ -765,8 +785,11 @@ void spoton_neighbor::slotReadyRead(void)
 	    {
 	      downgrade = true;
 	      spoton_misc::logError
-		("spoton_neighbor::slotReadyRead() "
-		 "data does not contain Content-Length.");
+		(QString("spoton_neighbor::slotReadyRead() "
+			 "data does not contain Content-Length "
+			 "for %1:%2.").
+		 arg(m_address.toString()).
+		 arg(m_port));
 	    }
 
 	  if(length >= m_maximumContentLength)
@@ -776,9 +799,8 @@ void spoton_neighbor::slotReadyRead(void)
 		(QString("spoton_neighbor::slotReadyRead(): "
 			 "the Content-Length header from node %1:%2 "
 			 "contains a lot of data (%3). Ignoring. ").
-		 arg(peerAddress().isNull() ? peerName() :
-		     peerAddress().toString()).
-		 arg(peerPort()).
+		 arg(m_address.toString()).
+		 arg(m_port).
 		 arg(length));
 	    }
 
@@ -866,16 +888,16 @@ void spoton_neighbor::slotReadyRead(void)
 		    (QString("spoton_neighbor::slotReadyRead(): "
 			     "received irregular data from %1:%2. Setting "
 			     "the read buffer size to 1000 bytes.").
-		     arg(peerAddress().isNull() ? peerName() :
-			 peerAddress().toString()).arg(peerPort()));
+		     arg(m_address.toString()).
+		     arg(m_port));
 		}
 	      else
 		spoton_misc::logError
 		  (QString("spoton_neighbor::slotReadyRead(): "
 			   "received irregular data from %1:%2. The "
 			   "read buffer size remains at 1000 bytes.").
-		   arg(peerAddress().isNull() ? peerName() :
-		       peerAddress().toString()).arg(peerPort()));
+		   arg(m_address.toString()).
+		   arg(m_port));
 	    }
 	}
     }
@@ -1113,7 +1135,10 @@ void spoton_neighbor::slotSendMessage(const QByteArray &data)
     {
       if(write(data.constData(), data.length()) != data.length())
 	spoton_misc::logError
-	  ("spoton_neighbor::slotSendMessage(): write() error.");
+	  (QString("spoton_neighbor::slotSendMessage(): write() error "
+		   "for %1:%2.").
+	   arg(m_address.toString()).
+	   arg(m_port));
       else
 	flush();
     }
@@ -1133,16 +1158,22 @@ void spoton_neighbor::slotReceivedMessage(const QByteArray &data,
 	{
 	  if(write(data.constData(), data.length()) != data.length())
 	    spoton_misc::logError
-	      ("spoton_neighbor::slotReceivedMessage(): write() "
-	       "error.");
-	  flush();
+	      (QString("spoton_neighbor::slotReceivedMessage(): write() "
+		       "error for %1:%2.").
+	       arg(m_address.toString()).
+	       arg(m_port));
+	  else
+	    flush();
 	}
 }
 
 void spoton_neighbor::slotLifetimeExpired(void)
 {
-  spoton_misc::logError("spoton_neighbor::slotLifetimeExpired(): "
-			"expiration time reached. Aborting socket.");
+  spoton_misc::logError
+    (QString("spoton_neighbor::slotLifetimeExpired(): "
+	     "expiration time reached for %1:%2. Aborting socket.").
+     arg(m_address.toString()).
+     arg(m_port));
   deleteLater();
 }
 
@@ -1175,8 +1206,10 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
 
   if(write(message.constData(), message.length()) != message.length())
     spoton_misc::logError
-      ("spoton_neighbor::sharePublicKey(): "
-       "write() failure.");
+      (QString("spoton_neighbor::sharePublicKey(): "
+	       "write() failure for %1:%2.").
+       arg(m_address.toString()).
+       arg(m_port));
   else
     {
       flush();
@@ -1433,8 +1466,11 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0000(): 0000 "
-	       "content-length mismatch (advertised: %1, received: %2).").
-       arg(length).arg(data.length()));
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
 }
 
 void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
@@ -1575,8 +1611,11 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0000a(): 0000a "
-	       "content-length mismatch (advertised: %1, received: %2).").
-       arg(length).arg(data.length()));
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
 }
 
 void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
@@ -1854,8 +1893,11 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0001a(): 0001a "
-	       "content-length mismatch (advertised: %1, received: %2).").
-       arg(length).arg(data.length()));
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
 }
 
 void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
@@ -1989,8 +2031,11 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0001b(): 0001b "
-	       "content-length mismatch (advertised: %1, received: %2).").
-       arg(length).arg(data.length()));
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
 }
 
 void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
@@ -2127,8 +2172,11 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0002(): 0002 "
-	       "content-length mismatch (advertised: %1, received: %2).").
-       arg(length).arg(data.length()));
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
 }
 
 void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
@@ -2178,8 +2226,11 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0011(): 0011 "
-	       "content-length mismatch (advertised: %1, received: %2).").
-       arg(length).arg(data.length()));
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
 }
 
 void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
@@ -2222,8 +2273,11 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0012(): 0012 "
-	       "content-length mismatch (advertised: %1, received: %2).").
-       arg(length).arg(data.length()));
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
 }
 
 void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
@@ -2437,8 +2491,11 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0013(): 0013 "
-	       "content-length mismatch (advertised: %1, received: %2).").
-       arg(length).arg(data.length()));
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
 }
 
 void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
@@ -2509,8 +2566,11 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0014(): 0014 "
-	       "content-length mismatch (advertised: %1, received: %2).").
-       arg(length).arg(data.length()));
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
 }
 
 void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
@@ -2533,8 +2593,8 @@ void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0015(): received "
 		     "keep-alive from %1:%2. Resetting time object.").
-	     arg(peerAddress().isNull() ? peerName() :
-		 peerAddress().toString()).arg(peerPort()));
+	     arg(m_address.isNull()).
+	     arg(m_port));
 	}
       else
 	spoton_misc::logError
@@ -2544,8 +2604,11 @@ void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0015(): 0015 "
-	       "content-length mismatch (advertised: %1, received: %2).").
-       arg(length).arg(data.length()));
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
 }
 
 void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
@@ -2625,8 +2688,11 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0030(): 0030 "
-	       "content-length mismatch (advertised: %1, received: %2).").
-       arg(length).arg(data.length()));
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
 }
 
 void spoton_neighbor::process0040a(int length, const QByteArray &dataIn,
@@ -2664,8 +2730,11 @@ void spoton_neighbor::process0040a(int length, const QByteArray &dataIn,
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0040a(): 0040a "
-	       "content-length mismatch (advertised: %1, received: %2).").
-       arg(length).arg(data.length()));
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
 }
 
 void spoton_neighbor::process0040b(int length, const QByteArray &dataIn,
@@ -2703,8 +2772,11 @@ void spoton_neighbor::process0040b(int length, const QByteArray &dataIn,
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0040b(): 0040b "
-	       "content-length mismatch (advertised: %1, received: %2).").
-       arg(length).arg(data.length()));
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
 }
 
 void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
@@ -2716,8 +2788,10 @@ void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
 
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
-	    ("spoton_neighbor::slotSendStatus(): write() "
-	     "error.");
+	    (QString("spoton_neighbor::slotSendStatus(): write() "
+		     "error for %1:%2.").
+	     arg(m_address.toString()).
+	     arg(m_port));
 	else
 	  flush();
       }
@@ -2845,14 +2919,18 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
 
       m_useSsl = false;
       spoton_misc::logError
-	(QString("spoton_neighbor::slotError(): socket error (%1). "
-		 "Disabling SSL.").arg(errorString()));
+	(QString("spoton_neighbor::slotError(): socket error (%1) for "
+		 "%2:%3. "
+		 "Disabling SSL.").arg(errorString()).
+	 arg(m_address.toString()).arg(m_port));
       return;
     }
 
   spoton_misc::logError
-    (QString("spoton_neighbor::slotError(): socket error (%1). "
-	     "Aborting socket.").arg(errorString()));
+    (QString("spoton_neighbor::slotError(): socket error (%1) for %2:%3. "
+	     "Aborting socket.").arg(errorString()).
+     arg(m_address.toString()).
+     arg(m_port));
   deleteLater();
 }
 
@@ -2894,7 +2972,9 @@ void spoton_neighbor::slotSendUuid(void)
 
   if(write(message.constData(), message.length()) != message.length())
     spoton_misc::logError
-      ("spoton_neighbor::slotSendUuid(): write() error.");
+      (QString("spoton_neighbor::slotSendUuid(): write() error for %1:%2.").
+       arg(m_address.toString()).
+       arg(m_port));
   else
     flush();
 }
@@ -2989,8 +3069,10 @@ void spoton_neighbor::slotSendKeepAlive(void)
       if(write(message.constData(),
 	       message.length()) != message.length())
 	spoton_misc::logError
-	  ("spoton_neighbor::slotSendKeepAlive(): write() "
-	   "error.");
+	  (QString("spoton_neighbor::slotSendKeepAlive(): write() "
+		   "error for %1:%2.").
+	   arg(m_address.toString()).
+	   arg(m_port));
       else
 	flush();
     }
@@ -3016,8 +3098,10 @@ void spoton_neighbor::slotSendMail
 
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
-	    ("spoton_neighbor::slotSendMail(): write() "
-	     "error.");
+	    (QString("spoton_neighbor::slotSendMail(): write() "
+		     "error for %1:%2.").
+	     arg(m_address.toString()).
+	     arg(m_port));
 	else
 	  {
 	    flush();
@@ -3041,8 +3125,10 @@ void spoton_neighbor::slotSendMailFromPostOffice(const QByteArray &data)
 
       if(write(message.constData(), message.length()) != message.length())
 	spoton_misc::logError
-	  ("spoton_neighbor::slotSendMailFromPostOffice(): write() "
-	   "error.");
+	  (QString("spoton_neighbor::slotSendMailFromPostOffice(): write() "
+		   "error for %1:%2.").
+	   arg(m_address.toString()).
+	   arg(m_port));
       else
 	flush();
     }
@@ -3246,8 +3332,10 @@ void spoton_neighbor::slotRetrieveMail(const QList<QByteArray> &list)
 
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
-	    ("spoton_neighbor::slotRetrieveMail(): write() "
-	     "error.");
+	    (QString("spoton_neighbor::slotRetrieveMail(): write() "
+		     "error for %1:%2.").
+	     arg(m_address.toString()).
+	     arg(m_port));
 	else
 	  flush();
       }
@@ -3276,8 +3364,11 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
 	if(write(message.constData(), message.length()) !=
 	   message.length())
 	  spoton_misc::logError
-	    ("spoton_neighbor::slotPublicizeListenerPlaintext(): write() "
-	     "error.");
+	    (QString("spoton_neighbor::slotPublicizeListenerPlaintext(): "
+		     "write() "
+		     "error for %1:%2.").
+	     arg(m_address.toString()).
+	     arg(m_port));
 	else
 	  flush();
       }
@@ -3299,8 +3390,11 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 
 	  if(write(message.constData(), message.length()) != message.length())
 	    spoton_misc::logError
-	      ("spoton_neighbor::slotPublicizeListenerPlaintext(): write() "
-	       "error.");
+	      (QString("spoton_neighbor::slotPublicizeListenerPlaintext(): "
+		       "write() "
+		       "error for %1:%2.").
+	       arg(m_address.toString()).
+	       arg(m_port));
 	  else
 	    flush();
 	}
@@ -3322,22 +3416,27 @@ void spoton_neighbor::slotSslErrors(const QList<QSslError> &errors)
     spoton_misc::logError(QString("spoton_neighbor::slotSslErrors(): "
 				  "error (%1) occurred from %2:%3.").
 			  arg(errors.at(i).errorString()).
-			  arg(peerAddress().isNull() ? peerName() :
-			      peerAddress().toString()).
-			  arg(peerPort()));
+			  arg(m_address.toString()).
+			  arg(m_port));
 }
 
 void spoton_neighbor::slotModeChanged(QSslSocket::SslMode mode)
 {
-  spoton_misc::logError(QString("spoton_neighbor::slotModeChanged(): "
-				"the connection mode has changed to %1.").
-			arg(mode));
+  spoton_misc::logError
+    (QString("spoton_neighbor::slotModeChanged(): "
+	     "the connection mode has changed to %1 for %2:%3.").
+     arg(mode).
+     arg(m_address.toString()).
+     arg(m_port));
 
   if(m_useSsl)
     if(mode == QSslSocket::UnencryptedMode)
       {
-	spoton_misc::logError("spoton_neighbor::slotModeChanged(): "
-			      "unencrypted connection mode. Aborting.");
+	spoton_misc::logError
+	  (QString("spoton_neighbor::slotModeChanged(): "
+		   "unencrypted connection mode for %1:%2. Aborting.").
+	   arg(m_address.toString()).
+	   arg(m_port));
 	deleteLater();
       }
 }
@@ -3352,12 +3451,17 @@ void spoton_neighbor::slotDisconnected(void)
       setProperty("connection-attempts", attempts);
       spoton_misc::logError
 	(QString("spoton_neighbor::slotDisconnected(): "
-		 "retrying %1 of %2.").arg(attempts).arg(5));
+		 "retrying %1 of %2 for %3:%4.").arg(attempts).arg(5).
+	 arg(m_address.toString()).
+	 arg(m_port));
       return;
     }
 
-  spoton_misc::logError("spoton_neighbor::slotDisconnected(): "
-			"aborting socket!");
+  spoton_misc::logError
+    (QString("spoton_neighbor::slotDisconnected(): "
+	     "aborting socket for %1:%2!").
+     arg(m_address.toString()).
+     arg(m_port));
   deleteLater();
 }
 
@@ -3410,17 +3514,22 @@ void spoton_neighbor::slotEncrypted(void)
 	  if(m_peerCertificate != peerCertificate())
 	    {
 	      spoton_misc::logError
-		("spoton_neighbor::slotEncrypted(): "
-		 "the stored certificate does not match "
-		 "the peer's certificate. This is a "
-		 "serious problem! Aborting.");
+		(QString("spoton_neighbor::slotEncrypted(): "
+			 "the stored certificate does not match "
+			 "the peer's certificate for %1:%2. This is a "
+			 "serious problem! Aborting.").
+		 arg(m_address.toString()).
+		 arg(m_port));
 	      deleteLater();
 	      return;
 	    }
 	  else if(peerCertificate().isNull())
 	    {
-	      spoton_misc::logError("spoton_neighbor::slotEncrypted(): "
-				    "null peer certificate. Aborting.");
+	      spoton_misc::logError
+		(QString("spoton_neighbor::slotEncrypted(): "
+			 "null peer certificate for %1:%2. Aborting.").
+		 arg(m_address.toString()).
+		 arg(m_port));
 	      deleteLater();
 	      return;
 	    }
@@ -3433,14 +3542,16 @@ void spoton_neighbor::slotEncrypted(void)
 
   spoton_misc::logError
     (QString("spoton_neighbor::slotEncrypted(): "
-	     "using session cipher %1-%2-%3-%4-%5-%6-%7.").
+	     "using session cipher %1-%2-%3-%4-%5-%6-%7 for %8:%9.").
      arg(cipher.authenticationMethod()).
      arg(cipher.encryptionMethod()).
      arg(cipher.keyExchangeMethod()).
      arg(cipher.name()).
      arg(cipher.protocolString()).
      arg(cipher.supportedBits()).
-     arg(cipher.usedBits()));
+     arg(cipher.usedBits()).
+     arg(m_address.toString()).
+     arg(m_port));
 }
 
 void spoton_neighbor::slotProxyAuthenticationRequired
@@ -3474,7 +3585,10 @@ void spoton_neighbor::slotSendBuzz(const QByteArray &data)
     {
       if(write(data.constData(), data.length()) != data.length())
 	spoton_misc::logError
-	  ("spoton_neighbor::slotSendBuzz(): write() error.");
+	  (QString("spoton_neighbor::slotSendBuzz(): write() error for "
+		   "%1:%2.").
+	   arg(m_address.toString()).
+	   arg(m_port));
       else
 	flush();
     }
@@ -3658,8 +3772,10 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data)
       if(write(message.constData(),
 	       message.length()) != message.length())
 	spoton_misc::logError
-	  ("spoton_neighbor::slotCallParticipant(): write() "
-	   "error.");
+	  (QString("spoton_neighbor::slotCallParticipant(): write() "
+		   "error for %1:%2.").
+	   arg(m_address.toString()).
+	   arg(m_port));
       else
 	flush();
     }
