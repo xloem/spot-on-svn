@@ -1599,7 +1599,7 @@ void spoton_kernel::slotRetrieveMail(void)
 
 	if(query.exec("SELECT public_key "
 		      "FROM friends_public_keys WHERE "
-		      "key_type = '' AND "
+		      "key_type = 'email' AND "
 		      "neighbor_oid = -1"))
 	  while(query.next())
 	    {

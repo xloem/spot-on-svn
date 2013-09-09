@@ -35,6 +35,8 @@
 19.  Increased scrambler timer interval to qrand() % 5000 + 10000.
 20.  Added Bytes Read and Bytes Written columns to the Neighbors table.
      Please remove neighbors.db.
+21.  Corrected SQL query in spoton_kernel::slotRetrieveMail(). The
+     where-clause should have included key_type = 'email'.
 
 0.04 (09/03/2013)
 
