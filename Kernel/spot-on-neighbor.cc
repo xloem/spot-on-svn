@@ -53,6 +53,8 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 {
   m_address = peerAddress();
   m_allowExceptions = false;
+  m_bytesRead = 0;
+  m_bytesWritten = 0;
   m_echoMode = echoMode;
   m_ipAddress = m_address.toString();
   m_isUserDefined = false;
@@ -205,6 +207,8 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 QObject *parent):QSslSocket(parent)
 {
   m_allowExceptions = allowExceptions;
+  m_bytesRead = 0;
+  m_bytesWritten = 0;
   m_echoMode = echoMode;
   m_keySize = qAbs(keySize);
 
@@ -433,7 +437,10 @@ spoton_neighbor::~spoton_neighbor()
 		query.exec();
 	      }
 
-	    query.prepare("UPDATE neighbors SET external_ip_address = NULL, "
+	    query.prepare("UPDATE neighbors SET "
+			  "bytes_read = 0, "
+			  "bytes_written = 0, "
+			  "external_ip_address = NULL, "
 			  "is_encrypted = 0, "
 			  "local_ip_address = NULL, "
 			  "local_port = NULL, status = 'disconnected', "
@@ -644,12 +651,18 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
   int seconds = m_startTime.secsTo(QDateTime::currentDateTime());
 
   query.prepare("PRAGMA synchronous = OFF");
-  query.prepare("UPDATE neighbors SET uptime = ? WHERE OID = ? AND "
+  query.prepare("UPDATE neighbors SET "
+		"bytes_read = ?, "
+		"bytes_written = ?, "
+		"uptime = ? "
+		"WHERE OID = ? AND "
 		"status = 'connected' "
 		"AND ? - uptime >= 10");
-  query.bindValue(0, seconds);
-  query.bindValue(1, m_id);
+  query.bindValue(0, m_bytesRead);
+  query.bindValue(1, m_bytesWritten);
   query.bindValue(2, seconds);
+  query.bindValue(3, m_id);
+  query.bindValue(4, seconds);
   query.exec();
 }
 
@@ -688,6 +701,8 @@ void spoton_neighbor::slotReadyRead(void)
 		   "for %1:%2.").arg(m_address.toString()).
 	   arg(m_port));
       }
+
+  m_bytesRead += bytesRead;
 
   if(m_useSsl)
     if(!isEncrypted())
@@ -1140,7 +1155,10 @@ void spoton_neighbor::slotSendMessage(const QByteArray &data)
 	   arg(m_address.toString()).
 	   arg(m_port));
       else
-	flush();
+	{
+	  flush();
+	  m_bytesWritten += data.length();
+	}
     }
 }
 
@@ -1163,7 +1181,10 @@ void spoton_neighbor::slotReceivedMessage(const QByteArray &data,
 	       arg(m_address.toString()).
 	       arg(m_port));
 	  else
-	    flush();
+	    {
+	      flush();
+	      m_bytesWritten += data.length();
+	    }
 	}
 }
 
@@ -1213,6 +1234,7 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
   else
     {
       flush();
+      m_bytesWritten += message.length();
 
       QString connectionName("");
 
@@ -2793,7 +2815,10 @@ void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
 	     arg(m_address.toString()).
 	     arg(m_port));
 	else
-	  flush();
+	  {
+	    flush();
+	    m_bytesWritten += message.length();
+	  }
       }
 }
 
@@ -2976,7 +3001,10 @@ void spoton_neighbor::slotSendUuid(void)
        arg(m_address.toString()).
        arg(m_port));
   else
-    flush();
+    {
+      flush();
+      m_bytesWritten += message.length();
+    }
 }
 
 void spoton_neighbor::saveExternalAddress(const QHostAddress &address,
@@ -3074,7 +3102,10 @@ void spoton_neighbor::slotSendKeepAlive(void)
 	   arg(m_address.toString()).
 	   arg(m_port));
       else
-	flush();
+	{
+	  flush();
+	  m_bytesWritten += message.length();
+	}
     }
 }
 
@@ -3105,6 +3136,7 @@ void spoton_neighbor::slotSendMail
 	else
 	  {
 	    flush();
+	    m_bytesWritten += message.length();
 	    oids.append(pair.second);
 	  }
       }
@@ -3130,7 +3162,10 @@ void spoton_neighbor::slotSendMailFromPostOffice(const QByteArray &data)
 	   arg(m_address.toString()).
 	   arg(m_port));
       else
-	flush();
+	{
+	  flush();
+	  m_bytesWritten += message.length();
+	}
     }
 }
 
@@ -3337,7 +3372,10 @@ void spoton_neighbor::slotRetrieveMail(const QList<QByteArray> &list)
 	     arg(m_address.toString()).
 	     arg(m_port));
 	else
-	  flush();
+	  {
+	    flush();
+	    m_bytesWritten += message.length();
+	  }
       }
 }
 
@@ -3370,7 +3408,10 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
 	     arg(m_address.toString()).
 	     arg(m_port));
 	else
-	  flush();
+	  {
+	    flush();
+	    m_bytesWritten += message.length();
+	  }
       }
 }
 
@@ -3396,7 +3437,10 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 	       arg(m_address.toString()).
 	       arg(m_port));
 	  else
-	    flush();
+	    {
+	      flush();
+	      m_bytesWritten += message.length();
+	    }
 	}
 }
 
@@ -3590,7 +3634,10 @@ void spoton_neighbor::slotSendBuzz(const QByteArray &data)
 	   arg(m_address.toString()).
 	   arg(m_port));
       else
-	flush();
+	{
+	  flush();
+	  m_bytesWritten += data.length();
+	}
     }
 }
 
@@ -3777,7 +3824,10 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data)
 	   arg(m_address.toString()).
 	   arg(m_port));
       else
-	flush();
+	{
+	  flush();
+	  m_bytesWritten += message.length();
+	}
     }
 }
 

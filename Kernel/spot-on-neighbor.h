@@ -102,6 +102,8 @@ class spoton_neighbor: public QSslSocket
   int m_maximumContentLength;
   qint64 m_id;
   quint16 m_port;
+  quint64 m_bytesRead;
+  quint64 m_bytesWritten;
   spoton_external_address *m_externalAddress;
   QString findMessageType(const QByteArray &data,
 			  QPair<QByteArray, QByteArray> &symmetricKey);

@@ -32,6 +32,9 @@
 17.  The Buzz client tables should not contain editable fields. Corrected.
 18.  Display certificate Sha-512 digests in the Neighbors table. Tool tips
      also.
+19.  Increased scrambler timer interval to qrand() % 5000 + 10000.
+20.  Added Bytes Read and Bytes Written columns to the Neighbors table.
+     Please remove neighbors.db.
 
 0.04 (09/03/2013)
 

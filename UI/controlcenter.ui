@@ -163,8 +163,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>459</width>
-                <height>441</height>
+                <width>425</width>
+                <height>433</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1947,6 +1947,16 @@
               </column>
               <column>
                <property name="text">
+                <string>Bytes Read</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Bytes Written</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
                 <string>is_encrypted</string>
                </property>
               </column>
@@ -2604,8 +2614,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1137</width>
-             <height>385</height>
+             <width>981</width>
+             <height>366</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3752,7 +3762,7 @@
      <x>0</x>
      <y>0</y>
      <width>1249</width>
-     <height>27</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

@@ -2061,6 +2061,8 @@ void spoton::slotPopulateNeighbors(void)
 		      "uptime, "
 		      "allow_exceptions, "
 		      "peer_certificate, "
+		      "bytes_read, "
+		      "bytes_written, "
 		      "is_encrypted, "
 		      "OID "
 		      "FROM neighbors WHERE status_control <> 'deleted'"))
@@ -2105,7 +2107,9 @@ void spoton::slotPopulateNeighbors(void)
 		      "Communications Mode: %14\n"
 		      "Uptime: %15 Minutes\n"
 		      "Allow Certificate Exceptions: %16\n"
-		      "Certificate Digest: %17")).
+		      "Certificate Digest: %17\n"
+		      "Bytes Read: %18\n"
+		      "Bytes Written: %19")).
 		  arg(m_crypts.value("chat")->
 		      decrypted(QByteArray::
 				fromBase64(query.
@@ -2173,13 +2177,15 @@ void spoton::slotPopulateNeighbors(void)
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(query.value(22).toInt() == 1 ?
+		  arg(query.value(24).toInt() == 1 ?
 		      "Secure" : "Insecure").
 		  arg(QString::number(query.value(19).toInt() / 60.0,
 				      'f', 1)).
 		  arg(query.value(21).toInt() == 1 ?
 		      "Yes" : "No").
-		  arg(certificateDigest.constData());
+		  arg(certificateDigest.constData()).
+		  arg(query.value(22).toULongLong()).
+		  arg(query.value(23).toULongLong());
 
 		QCheckBox *check = 0;
 
@@ -2908,7 +2914,10 @@ void spoton::updateNeighborsTable(const QSqlDatabase &db)
 
 	query.exec("DELETE FROM neighbors WHERE "
 		   "status_control = 'deleted'");
-	query.exec("UPDATE neighbors SET external_ip_address = NULL, "
+	query.exec("UPDATE neighbors SET "
+		   "bytes_read = 0, "
+		   "bytes_written = 0, "
+		   "external_ip_address = NULL, "
 		   "is_encrypted = 0, "
 		   "local_ip_address = NULL, "
 		   "local_port = NULL, status = 'disconnected', "

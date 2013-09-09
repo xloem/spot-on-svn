@@ -2070,7 +2070,7 @@ void spoton_kernel::slotRequestScramble(void)
   if(s_settings.value("gui/scramblerEnabled", false).toBool())
     {
       if(!m_scramblerTimer.isActive())
-	m_scramblerTimer.start(qrand() % 5000 + 2500);
+	m_scramblerTimer.start(qrand() % 5000 + 10000);
     }
   else
     m_scramblerTimer.stop();
