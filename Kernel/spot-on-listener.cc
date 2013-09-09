@@ -29,11 +29,6 @@
 #include <QNetworkInterface>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#ifdef Q_OS_WIN32
-#include <winsock2.h>
-#else
-#include <unistd.h>
-#endif
 
 #include "Common/spot-on-external-address.h"
 #include "Common/spot-on-crypt.h"
@@ -48,13 +43,10 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 {
   if(findChildren<spoton_neighbor *> ().size() >= maxPendingConnections())
     {
-#ifdef Q_OS_WIN32
-      shutdown(socketDescriptor, SD_BOTH);
-      closesocket(socketDescriptor);
-#else
-      shutdown(socketDescriptor, SHUT_RDWR);
-      ::close(socketDescriptor);
-#endif
+      QTcpSocket socket;
+
+      socket.setSocketDescriptor(socketDescriptor);
+      socket.abort();
     }
   else
     {
@@ -75,13 +67,10 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 				    spoton_kernel::s_crypts.
 				    value("chat", 0)))
 	{
-#ifdef Q_OS_WIN32
-	  shutdown(socketDescriptor, SD_BOTH);
-	  closesocket(socketDescriptor);
-#else
-	  shutdown(socketDescriptor, SHUT_RDWR);
-	  ::close(socketDescriptor);
-#endif
+	  QTcpSocket socket;
+
+	  socket.setSocketDescriptor(socketDescriptor);
+	  socket.abort();
 	  spoton_misc::logError
 	    (QString("spoton_listener_tcp_server::incomingConnection(): "
 		     "connection from %1 denied for %2:%3").
@@ -433,13 +422,10 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
       (socketDescriptor, certificate, privateKey, m_echoMode, this);
   else
     {
-#ifdef Q_OS_WIN32
-      shutdown(socketDescriptor, SD_BOTH);
-      closesocket(socketDescriptor);
-#else
-      shutdown(socketDescriptor, SHUT_RDWR);
-      ::close(socketDescriptor);
-#endif
+      QTcpSocket socket;
+
+      socket.setSocketDescriptor(socketDescriptor);
+      socket.abort();
       spoton_misc::logError
 	(QString("spoton_listener::"
 		 "slotNewConnection(): "

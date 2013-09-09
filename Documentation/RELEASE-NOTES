@@ -3,8 +3,7 @@
 1.   Simple IP-based firewall.
 2.   Issue abort() instead of close() for drastic situations.
 3.   Remove kernel.db in spot-on-kernel.cc's sig_handler() function.
-4.   Use close() and shutdown() instead of creating temporary
-     QTcpSocket objects for closing socket descriptors.
+4.   Do not allow users to add their own keys.
 5.   Added kernel cipher type to the Settings page. Default: randomized.
 6.   Replaced QT_POINTER_SIZE with sizeof(void *). The macro is not
      widely available.
@@ -33,7 +32,6 @@
 17.  The Buzz client tables should not contain editable fields. Corrected.
 18.  Display certificate SHA-512 digests in the Neighbors table. Tool tips
      also.
-19.  Do not allow users to add their own keys.
 
 0.04 (09/03/2013)
 
