@@ -170,8 +170,8 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotLifetimeExpired(void)));
-  connect(&m_readTimer,
-	  SIGNAL(timeout(void)),
+  connect(this,
+	  SIGNAL(readyRead(void)),
 	  this,
 	  SLOT(slotReadyRead(void)));
   connect(&m_timer,
@@ -186,7 +186,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_externalAddressDiscovererTimer.start(30000);
   m_keepAliveTimer.start(45000);
   m_lifetime.start(10 * 60 * 1000);
-  m_readTimer.start(1500);
   m_timer.start(2500);
   QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 }
@@ -349,8 +348,8 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotLifetimeExpired(void)));
-  connect(&m_readTimer,
-	  SIGNAL(timeout(void)),
+  connect(this,
+	  SIGNAL(readyRead(void)),
 	  this,
 	  SLOT(slotReadyRead(void)));
   connect(&m_timer,
@@ -360,7 +359,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_externalAddressDiscovererTimer.setInterval(30000);
   m_keepAliveTimer.setInterval(45000);
   m_lifetime.start(10 * 60 * 1000);
-  m_readTimer.setInterval(1500);
   m_timer.start(2500);
 }
 
@@ -688,38 +686,26 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 
 void spoton_neighbor::slotReadyRead(void)
 {
-  QByteArray data(qMin(qint64(8192), bytesAvailable()), 0);
-  qint64 bytesRead = 0;
+  QByteArray data(readAll());
 
-  if(data.size() > 0)
-    if((bytesRead = read(data.data(), data.size())) < 0)
-      {
-	bytesRead = 0;
-	data.clear();
-	spoton_misc::logError
-	  (QString("spoton_neighbor::slotReadyRead(): read() failure "
-		   "for %1:%2.").arg(m_address.toString()).
-	   arg(m_port));
-      }
-
-  m_bytesRead += bytesRead;
+  m_bytesRead += data.size();
 
   if(m_useSsl)
-    if(!isEncrypted())
-      {
-	bytesRead = 0;
-	data.clear();
-	spoton_misc::logError
-	  (QString("spoton_neighbor::slotReadyRead(): "
-		   "m_useSsl is true, however, isEncrypted() is false "
-		   "for %1:%2. "
-		   "Purging read data.").
-	   arg(m_address.toString()).
-	   arg(m_port));
-      }
+    if(!data.isEmpty())
+      if(!isEncrypted())
+	{
+	  data.clear();
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::slotReadyRead(): "
+		     "m_useSsl is true, however, isEncrypted() is false "
+		     "for %1:%2. "
+		     "Purging read data.").
+	     arg(m_address.toString()).
+	     arg(m_port));
+	}
 
-  if(bytesRead > 0)
-    m_data.append(data.mid(0, bytesRead));
+  if(!data.isEmpty())
+    m_data.append(data);
 
   if(m_data.length() > m_maximumBufferSize)
     {
@@ -733,13 +719,6 @@ void spoton_neighbor::slotReadyRead(void)
 	     arg(m_address.toString()).
 	     arg(m_port));
 	}
-      else
-	spoton_misc::logError
-	  (QString("spoton_neighbor::slotReadyRead(): "
-		   "received irregular data from %1:%2. The "
-		   "read buffer size remains at 1000 bytes.").
-	   arg(m_address.toString()).
-	   arg(m_port));
 
       spoton_misc::logError
 	(QString("spoton_neighbor::slotReadyRead(): "
@@ -805,6 +784,7 @@ void spoton_neighbor::slotReadyRead(void)
 			 "for %1:%2.").
 		 arg(m_address.toString()).
 		 arg(m_port));
+	      goto done_label;
 	    }
 
 	  if(length >= m_maximumContentLength)
@@ -906,13 +886,6 @@ void spoton_neighbor::slotReadyRead(void)
 		     arg(m_address.toString()).
 		     arg(m_port));
 		}
-	      else
-		spoton_misc::logError
-		  (QString("spoton_neighbor::slotReadyRead(): "
-			   "received irregular data from %1:%2. The "
-			   "read buffer size remains at 1000 bytes.").
-		   arg(m_address.toString()).
-		   arg(m_port));
 	    }
 	}
     }
@@ -997,9 +970,6 @@ void spoton_neighbor::slotConnected(void)
 
   if(!m_keepAliveTimer.isActive())
     m_keepAliveTimer.start();
-
-  if(!m_readTimer.isActive())
-    m_readTimer.start();
 }
 
 void spoton_neighbor::savePublicKey(const QByteArray &keyType,
