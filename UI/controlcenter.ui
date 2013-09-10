@@ -14,7 +14,7 @@
    <string>Spot-On</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../Icons/icons.qrc">
+   <iconset>
     <normaloff>:/Logo/spoton-button-32.png</normaloff>:/Logo/spoton-button-32.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -163,8 +163,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>425</width>
-                <height>433</height>
+                <width>1227</width>
+                <height>560</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2614,8 +2614,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>981</width>
-             <height>366</height>
+             <width>1227</width>
+             <height>560</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3521,7 +3521,7 @@
       </widget>
       <widget class="QWidget" name="tab_login">
        <attribute name="icon">
-        <iconset resource="../Icons/icons.qrc">
+        <iconset>
          <normaloff>:/Logo/spoton-button-32.png</normaloff>:/Logo/spoton-button-32.png</iconset>
        </attribute>
        <attribute name="title">
@@ -3567,7 +3567,7 @@
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="../Icons/icons.qrc">:/Logo/spoton-dalmatinerlogo.png</pixmap>
+               <pixmap>:/Logo/spoton-dalmatinerlogo.png</pixmap>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -3683,7 +3683,7 @@
                <string>Spot-On Graphical User Interface</string>
               </property>
               <property name="pixmap">
-               <pixmap resource="../Icons/icons.qrc">:/Logo/spoton-logo-transparent.png</pixmap>
+               <pixmap>:/Logo/spoton-logo-transparent.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -3992,8 +3992,6 @@
   <tabstop>passphrase</tabstop>
   <tabstop>passphraseButton</tabstop>
  </tabstops>
- <resources>
-  <include location="../Icons/icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
