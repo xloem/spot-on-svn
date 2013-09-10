@@ -37,6 +37,7 @@
      Please remove neighbors.db.
 21.  Corrected SQL query in spoton_kernel::slotRetrieveMail(). The
      where-clause should have included key_type = 'email'.
+22.  Eliminated socket read timers from neighbors.
 
 0.04 (09/03/2013)
 
