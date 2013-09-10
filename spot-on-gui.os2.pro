@@ -1,5 +1,5 @@
 libspoton.target = libspoton.dll
-libspoton.commands = $(MAKE) -C ../../libSpotOn
+libspoton.commands = $(MAKE) -C ..\..\\libSpotOn
 libspoton.depends =
 
 TEMPLATE	= app
@@ -10,35 +10,28 @@ CONFIG		+= qt release warn_on
 # The function gcry_kdf_derive() is available in version
 # 1.5.0 of the gcrypt library.
 
-DEFINES	-= SPOTON_LINKED_WITH_LIBGEOIP
+DEFINES         += SPOTON_LINKED_WITH_LIBGEOIP
 
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of libSpotOn.
 
-QMAKE_CLEAN     += Spot-On ../../libSpotOn/*.o ../../libSpotOn/*.dll \
-		   ../../libSpotOn/test
-QMAKE_DISTCLEAN += -r temp
-QMAKE_CXXFLAGS_DEBUG -= -O2
-QMAKE_CXXFLAGS_DEBUG += -fPIE -fstack-protector-all -mtune=generic -pie -Os \
-                        -Wall -Wcast-align -Wcast-qual \
-			-Werror -Wextra \
-                        -Woverloaded-virtual -Wpointer-arith \
-                        -Wstack-protector
+QMAKE_CLEAN     += Spot-On ../../libSpotOn/libspoton.dll \
+		   ../../libSpotOn/*.o \
+		   ../../libSpotOn/test.exe
 QMAKE_CXXFLAGS_RELEASE -= -O2
-QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -mtune=generic -pie -O3 \
+QMAKE_CXXFLAGS_RELEASE += -mtune=generic -pie -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
 			  -Werror -Wextra \
-			  -Woverloaded-virtual -Wpointer-arith \
-                          -Wstack-protector
+			  -Woverloaded-virtual -Wpointer-arith
 QMAKE_EXTRA_TARGETS = libspoton purge
-QMAKE_LFLAGS_RPATH =
-INCLUDEPATH	+= . ../../. GUI
-LIBS		+= -L../../libSpotOn -lcrypto -lgcrypt -lspoton -lssl
+INCLUDEPATH	+= . ../../. GUI ../../libSpotOn/Include.win32 \
+		   ../../libGeoIP/Include.win32 \
+		   ../../libOpenSsl/Include.win32
+LIBS		+= -L../../libSpotOn -L../../libSpotOn/Libraries.win32 \
+		   -L../../libGeoIP/Libraries.win32 \
+		   -L../../libOpenSsl/Libraries.win32 \
+		   -lGeoIP-1 -leay32 -lgcrypt-11 -lpthread -lspoton -lssl32
 PRE_TARGETDEPS = libspoton.dll
-OBJECTS_DIR = temp/obj
-UI_DIR = temp/ui
-MOC_DIR = temp/moc
-RCC_DIR = temp/rcc
 
 FORMS           = UI/buzzpage.ui \
 		  UI/controlcenter.ui \
@@ -51,18 +44,19 @@ UI_HEADERS_DIR  = GUI
 HEADERS		= Common/spot-on-external-address.h \
 		  GUI/spot-on.h \
 		  GUI/spot-on-buzzpage.h \
-          	  GUI/spot-on-docviewer.h \
+                  GUI/spot-on-docviewer.h \
 		  GUI/spot-on-logviewer.h \
-		  GUI/spot-on-tabwidget.h \
+                  GUI/spot-on-tabwidget.h \
 		  GUI/spot-on-textedit.h
 
 SOURCES		= Common/spot-on-crypt.cc \
 		  Common/spot-on-external-address.cc \
 		  Common/spot-on-misc.cc \
+                  Common/spot-on-send.cc \
 		  GUI/spot-on-a.cc \
 		  GUI/spot-on-b.cc \
 		  GUI/spot-on-buzzpage.cc \
-		  GUI/spot-on-docviewer.cc \
+                  GUI/spot-on-docviewer.cc \
 		  GUI/spot-on-logviewer.cc \
 		  GUI/spot-on-reencode.cc \
 		  GUI/spot-on-tabwidget.cc \
@@ -139,11 +133,35 @@ TRANSLATIONS    = Translations/spot-on_af.ts \
                   Translations/spot-on_zh_HK.ts
 
 RESOURCES	= Icons/icons.qrc \
-		  Translations/translations.qrc
+                  Translations/translations.qrc
+
+RC_FILE		= Icons/Resources/spot-on.rc
 
 TARGET		= Spot-On
 PROJECTNAME	= Spot-On
 
-# Prevent qmake from stripping everything.
+geoip_data_install.path	= release/GeoIP
+geoip_data_install.files= ../../GeoIP-1.5.0/data/GeoIP.dat
+icons.path		= release
+icons.files		= Icons
+libgeoip_install.path   = release
+libgeoip_install.files  = ../../libGeoIP/Libraries.win32/libGeoIP-1.dll
+libspoton_install.path  = release
+libspoton_install.files = ../../libSpotOn/libspoton.dll ../../libSpotOn/Libraries.win32/*.def ../../libSpotOn/Libraries.win32/*.dll
+lrelease.extra          = $$[QT_INSTALL_BINS]/lrelease spot-on-gui.win.pro
+lrelease.path           = .
+lupdate.extra           = $$[QT_INSTALL_BINS]/lupdate spot-on-gui.win.pro
+lupdate.path            = .
+spoton.path		= release
+spoton.files		= Spot-On.exe
+translations.path 	= release/Translations
+translations.files	= Translations/*.qm
 
-QMAKE_STRIP	= echo
+INSTALLS	= geoip_data_install \
+		  libgeoip_install \
+                  libspoton_install \
+                  icons \
+                  lupdate \
+                  lrelease \
+		  spoton \
+                  translations
