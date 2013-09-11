@@ -4090,7 +4090,7 @@ void spoton::slotPopulateParticipants(void)
 		if(m_ui.hideOfflineParticipants->isChecked())
 		  {
 		    QTableWidgetItem *item = m_ui.participants->
-		      item(index.row(), 4);
+		      item(index.row(), 4); // Status
 
 		    if(item && item->text() != tr("Offline"))
 		      hashes.append(data.toString());
@@ -4128,13 +4128,20 @@ void spoton::slotPopulateParticipants(void)
 	** We only wish to display other public keys.
 	*/
 
-	if(query.exec("SELECT name, OID, neighbor_oid, "
+	if(query.exec("SELECT "
+		      "name, "
+		      "OID, "
+		      "neighbor_oid, "
 		      "public_key_hash, "
-		      "status, gemini, key_type FROM friends_public_keys "
+		      "status, "
+		      "gemini, "
+		      "last_status_update, "
+		      "key_type "
+		      "FROM friends_public_keys "
 		      "WHERE key_type = 'chat' OR key_type = 'email'"))
 	  while(query.next())
 	    {
-	      QString keyType(query.value(6).toString());
+	      QString keyType(query.value(7).toString());
 	      QString status(query.value(4).toString());
 	      bool temporary =
 		query.value(2).toInt() == -1 ? false : true;
@@ -4206,7 +4213,8 @@ void spoton::slotPopulateParticipants(void)
 					 &ok).constData());
 			}
 		      else
-			item = new QTableWidgetItem(query.value(i).toString());
+			item = new QTableWidgetItem
+			  (query.value(i).toString());
 
 		      item->setFlags
 			(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -4360,7 +4368,9 @@ void spoton::slotPopulateParticipants(void)
 	m_ui.participants->setSelectionMode
 	  (QAbstractItemView::ExtendedSelection);
 	m_ui.participants->setSortingEnabled(true);
-	m_ui.participants->resizeColumnsToContents();
+	m_ui.participants->resizeColumnToContents(0); // Name
+	m_ui.participants->resizeColumnToContents(1); // Status
+	m_ui.participants->resizeColumnToContents(3); // Last Status Change
 	m_ui.participants->horizontalHeader()->setStretchLastSection(true);
 	m_ui.participants->horizontalScrollBar()->setValue(hval);
 	m_ui.participants->verticalScrollBar()->setValue(vval);

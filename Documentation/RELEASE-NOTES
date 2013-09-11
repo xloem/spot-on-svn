@@ -42,6 +42,7 @@
      enabled should not pass received data to other nodes unless the
      Super Echo is enabled. Also, nodes that received messages from
      other nodes must echo the messages if the Super Echo is enabled.
+24.  Display last status changes of participants in the Chat panel.
 
 0.04 (09/03/2013)
 

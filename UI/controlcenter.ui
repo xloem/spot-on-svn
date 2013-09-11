@@ -164,7 +164,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1227</width>
-                <height>560</height>
+                <height>555</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -369,6 +369,11 @@
                        <column>
                         <property name="text">
                          <string>Gemini</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Last Status Change</string>
                         </property>
                        </column>
                       </widget>
@@ -2614,8 +2619,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1227</width>
-             <height>560</height>
+             <width>1137</width>
+             <height>385</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3762,7 +3767,7 @@
      <x>0</x>
      <y>0</y>
      <width>1249</width>
-     <height>24</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
