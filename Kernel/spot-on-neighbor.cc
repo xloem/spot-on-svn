@@ -865,11 +865,13 @@ void spoton_neighbor::slotReadyRead(void)
 						 false).toBool())
 		emit scrambleRequest();
 
-	      if(messageType.isEmpty() ||
-		 messageType == "0040a" || messageType == "0040b" ||
-		 spoton_kernel::s_settings.value("gui/superEcho",
+	      if(spoton_kernel::s_settings.value("gui/superEcho",
 						 false).toBool())
 		emit receivedMessage(originalData, m_id);
+	      else if(m_echoMode == "full")
+		if(messageType.isEmpty() ||
+		   messageType == "0040a" || messageType == "0040b")
+		  emit receivedMessage(originalData, m_id);
 	    }
 
 	done_label:
@@ -1140,7 +1142,8 @@ void spoton_neighbor::slotReceivedMessage(const QByteArray &data,
   ** to send the message to its peer.
   */
 
-  if(m_echoMode == "full")
+  if(m_echoMode == "full" ||
+     spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
     if(id != m_id)
       if(readyToWrite())
 	{
@@ -3393,7 +3396,8 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
   ** This neighbor now needs to send the message to its peer.
   */
 
-  if(m_echoMode == "full")
+  if(m_echoMode == "full" ||
+     spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
     if(id != m_id)
       if(readyToWrite())
 	{
