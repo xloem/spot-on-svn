@@ -1,7 +1,7 @@
 libspoton.target = libspoton.dll
 libspoton.commands = $(MAKE) -C ../../../libSpotOn
 libspoton.depends =
-purge.commands = rm -f *~
+purge.commands = del /F *~
 
 TEMPLATE	= app
 LANGUAGE	= C++
@@ -12,35 +12,30 @@ CONFIG		+= qt release warn_on
 # The function gcry_kdf_derive() is available in version
 # 1.5.0 of the gcrypt library.
 
-DEFINES -= SPOTON_LINKED_WITH_LIBGEOIP
+DEFINES         += SPOTON_LINKED_WITH_LIBGEOIP
 
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of libSpotOn.
 
-QMAKE_CLEAN     += ../Spot-On-Kernel ../../../libSpotOn/*.o \
-		   ../../../libSpotOn/*.dll ../../../libSpotOn/test
-QMAKE_DISTCLEAN += -r temp
-QMAKE_CXXFLAGS_DEBUG -= -O2
-QMAKE_CXXFLAGS_DEBUG += -fPIE -fstack-protector-all -mtune=generic -pie -Os \
-                        -Wall -Wcast-align -Wcast-qual \
-			-Werror -Wextra \
-                        -Woverloaded-virtual -Wpointer-arith \
-                        -Wstack-protector
+QMAKE_CLEAN     += ../../release/Spot-On-Kernel \
+		   ../../../libSpotOn/libspoton.dll \
+		   ../../../libSpotOn/*.o ../../../libSpotOn/test.exe
 QMAKE_CXXFLAGS_RELEASE -= -O2
-QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -mtune=generic -pie -O3 \
+QMAKE_CXXFLAGS_RELEASE += -mtune=generic -pie -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
 			  -Werror -Wextra \
-			  -Woverloaded-virtual -Wpointer-arith \
-                          -Wstack-protector
+			  -Woverloaded-virtual -Wpointer-arith
 QMAKE_EXTRA_TARGETS = libspoton purge
-QMAKE_LFLAGS_RPATH =
-INCLUDEPATH	+= . ../. ../../../.
-LIBS		+= -L../../../libSpotOn -lcrypto -lgcrypt -lspoton -lssl
+INCLUDEPATH	+= . ../. ../../../. ../../../libSpotOn/Include.win32 \
+                   ../../../libGeoIP/Include.win32 \
+		   ../../../libOpenSsl/Include.win32
+LIBS		+= -L../../../libSpotOn \
+		   -L../../../libSpotOn/Libraries.win32 \
+                   -L../../../libGeoIP/Libraries.win32 \
+		   -L../../../libOpenSsl/Libraries.win32 \
+		   -lGeoIP-1 -leay32 -lgcrypt-11 -lpthread -lspoton -lssl32 \
+		   -lws2_32
 PRE_TARGETDEPS = libspoton.dll
-OBJECTS_DIR = temp/obj
-UI_DIR = temp/ui
-MOC_DIR = temp/moc
-RCC_DIR = temp/rcc
 
 HEADERS		= ../Common/spot-on-external-address.h \
 		  spot-on-gui-server.h \
@@ -63,9 +58,5 @@ SOURCES		= ../Common/spot-on-crypt.cc \
 
 TRANSLATIONS    =
 
-TARGET		= ../Spot-On-Kernel
+TARGET		= ../../release/Spot-On-Kernel
 PROJECTNAME	= Spot-On-Kernel
-
-# Prevent qmake from stripping everything.
-
-QMAKE_STRIP	= echo
