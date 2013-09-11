@@ -3415,6 +3415,7 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 	QList<QByteArray> list;
 	QSqlQuery query(db);
 
+	query.setForwardOnly(true);
 	query.prepare("SELECT date, message, message_code, "
 		      "receiver_sender, receiver_sender_hash, "
 		      "subject FROM folders "
@@ -3480,55 +3481,57 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 	    ** list[5]: subject
 	    */
 
-	    query.prepare("UPDATE folders SET "
-			  "goldbug = ?, "
-			  "hash = ?, "
-			  "message = ?, "
-			  "message_code = ?, "
-			  "receiver_sender = ?, "
-			  "subject = ? "
-			  "WHERE OID = ?");
+	    QSqlQuery updateQuery(db);
+
+	    updateQuery.prepare("UPDATE folders SET "
+				"goldbug = ?, "
+				"hash = ?, "
+				"message = ?, "
+				"message_code = ?, "
+				"receiver_sender = ?, "
+				"subject = ? "
+				"WHERE OID = ?");
 
 	    if(ok)
-	      query.bindValue
+	      updateQuery.bindValue
 		(0, m_crypts.value("email")->
 		 encrypted(QString::number(0).toLatin1(), &ok).
 		 toBase64());
 
 	    if(ok)
-	      query.bindValue
+	      updateQuery.bindValue
 		(1, m_crypts.value("email")->
 		 keyedHash(list.value(1) + list.value(4), &ok).
 		 toBase64());
 
 	    if(!list.value(1).isEmpty())
 	      if(ok)
-		query.bindValue
+		updateQuery.bindValue
 		  (2, m_crypts.value("email")->
 		   encrypted(list.value(1), &ok).toBase64());
 
 	    if(!list.value(2).isEmpty())
 	      if(ok)
-		query.bindValue
+		updateQuery.bindValue
 		  (3, m_crypts.value("email")->
 		   encrypted(QByteArray(), &ok).toBase64());
 
 	    if(!list.value(3).isEmpty())
 	      if(ok)
-		query.bindValue
+		updateQuery.bindValue
 		  (4, m_crypts.value("email")->
 		   encrypted(list.value(3), &ok).toBase64());
 
 	    if(!list.value(5).isEmpty())
 	      if(ok)
-		query.bindValue
+		updateQuery.bindValue
 		  (5, m_crypts.value("email")->
 		   encrypted(list.value(5), &ok).toBase64());
 
-	    query.bindValue(6, oid);
+	    updateQuery.bindValue(6, oid);
 
 	    if(ok)
-	      ok = query.exec();
+	      ok = updateQuery.exec();
 	  }
 
 	if(ok)

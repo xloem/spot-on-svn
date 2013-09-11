@@ -405,16 +405,20 @@ void spoton_gui_server::slotTimeout(void)
 	QSqlQuery query(db);
 	quint16 port = 0;
 
+	query.setForwardOnly(true);
+
 	if(query.exec("SELECT port FROM kernel_gui_server"))
 	  if(query.next())
 	    port = query.value(0).toInt();
 
 	if(port == 0 || port != serverPort())
 	  {
-	    query.prepare("INSERT INTO kernel_gui_server (port) "
-			  "VALUES (?)");
-	    query.bindValue(0, serverPort());
-	    query.exec();
+	    QSqlQuery updateQuery(db);
+
+	    updateQuery.prepare("INSERT INTO kernel_gui_server (port) "
+				"VALUES (?)");
+	    updateQuery.bindValue(0, serverPort());
+	    updateQuery.exec();
 	  }
       }
 

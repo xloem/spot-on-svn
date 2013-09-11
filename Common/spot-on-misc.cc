@@ -1730,6 +1730,7 @@ int spoton_misc::participantCount(const QString &keyType)
       {
 	QSqlQuery query(db);
 
+	query.setForwardOnly(true);
 	query.prepare("SELECT COUNT(*) FROM friends_public_keys "
 		      "WHERE key_type = ?");
 	query.bindValue(0, keyType);
@@ -1789,6 +1790,7 @@ bool spoton_misc::isAcceptedIP(const QHostAddress &address,
 	QSqlQuery query(db);
 	bool ok = true;
 
+	query.setForwardOnly(true);
 	query.prepare("SELECT COUNT(*) FROM accepted_ips "
 		      "WHERE ip_address_hash = ?");
 	query.bindValue(0, crypt->keyedHash(address.toString().

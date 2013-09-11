@@ -2441,6 +2441,15 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
   gcry_sexp_t key_t = 0;
   gcry_sexp_t signature_t = 0;
 
+  if(data.isEmpty() || publicKey.isEmpty() || signature.isEmpty())
+    {
+      ok = false;
+      spoton_misc::logError
+	("spoton_crypt::isValidSignature(): data, publicKey, or "
+	 "signature is empty.");
+      goto done_label;
+    }
+
   if((err = gcry_sexp_new(&key_t,
 			  static_cast<const void *> (publicKey.constData()),
 			  static_cast<size_t> (publicKey.length()),
