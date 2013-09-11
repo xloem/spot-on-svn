@@ -1,4 +1,4 @@
-libspoton.target = libspoton.dll
+libspoton.target = libspotn.dll
 libspoton.commands = $(MAKE) -C ../../libSpotOn
 libspoton.depends =
 
@@ -15,23 +15,23 @@ DEFINES         += SPOTON_LINKED_WITH_LIBGEOIP
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of libSpotOn.
 
-QMAKE_CLEAN     += Spot-On ../../libSpotOn/libspoton.dll \
+QMAKE_CLEAN     += Spot-On ../../libSpotOn/libspotn.dll \
 		   ../../libSpotOn/*.o \
 		   ../../libSpotOn/test.exe
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -mtune=generic -pie -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
-			  -Werror -Wextra \
+			  -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith
 QMAKE_EXTRA_TARGETS = libspoton purge
 INCLUDEPATH	+= . ../../. GUI ../../libSpotOn/Include.win32 \
 		   ../../libGeoIP/Include.win32 \
-		   ../../libOpenSsl/Include.win32
+		   u:/usr/local473/include
 LIBS		+= -L../../libSpotOn -L../../libSpotOn/Libraries.win32 \
 		   -L../../libGeoIP/Libraries.win32 \
-		   -L../../libOpenSsl/Libraries.win32 \
-		   -lGeoIP-1 -leay32 -lgcrypt-11 -lpthread -lspoton -lssl32
-PRE_TARGETDEPS = libspoton.dll
+		   -Lu:/usr/local473/lib \
+		   -lGeoIP -lgcrypt -lpthread -lspoton -lssl32
+PRE_TARGETDEPS = libspotn.dll
 
 FORMS           = UI/buzzpage.ui \
 		  UI/controlcenter.ui \
@@ -135,7 +135,7 @@ TRANSLATIONS    = Translations/spot-on_af.ts \
 RESOURCES	= Icons/icons.qrc \
                   Translations/translations.qrc
 
-RC_FILE		= Icons/Resources/spot-on.rc
+win32:RC_FILE	= Icons/Resources/spot-on.rc
 
 TARGET		= Spot-On
 PROJECTNAME	= Spot-On

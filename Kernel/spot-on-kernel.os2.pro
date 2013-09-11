@@ -1,4 +1,4 @@
-libspoton.target = libspoton.dll
+libspoton.target = libspotn.dll
 libspoton.commands = $(MAKE) -C ../../../libSpotOn
 libspoton.depends =
 purge.commands = del /F *~
@@ -18,24 +18,24 @@ DEFINES         += SPOTON_LINKED_WITH_LIBGEOIP
 # about the internals of libSpotOn.
 
 QMAKE_CLEAN     += ../../release/Spot-On-Kernel \
-		   ../../../libSpotOn/libspoton.dll \
+		   ../../../libSpotOn/libspotn.dll \
 		   ../../../libSpotOn/*.o ../../../libSpotOn/test.exe
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -mtune=generic -pie -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
-			  -Werror -Wextra \
+			  -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith
 QMAKE_EXTRA_TARGETS = libspoton purge
 INCLUDEPATH	+= . ../. ../../../. ../../../libSpotOn/Include.win32 \
                    ../../../libGeoIP/Include.win32 \
-		   ../../../libOpenSsl/Include.win32
+		   u:/usr/local473/include
 LIBS		+= -L../../../libSpotOn \
 		   -L../../../libSpotOn/Libraries.win32 \
                    -L../../../libGeoIP/Libraries.win32 \
-		   -L../../../libOpenSsl/Libraries.win32 \
-		   -lGeoIP-1 -leay32 -lgcrypt-11 -lpthread -lspoton -lssl32 \
-		   -lws2_32
-PRE_TARGETDEPS = libspoton.dll
+		   -Lu:/usr/local473/lib \
+		   -lGeoIP -lgcrypt -lpthread -lspoton -lmmap \
+		   -lssp_s -lcrypto -lssl -lgpg-error
+PRE_TARGETDEPS = libspotn.dll
 
 HEADERS		= ../Common/spot-on-external-address.h \
 		  spot-on-gui-server.h \
@@ -58,5 +58,5 @@ SOURCES		= ../Common/spot-on-crypt.cc \
 
 TRANSLATIONS    =
 
-TARGET		= ../../release/Spot-On-Kernel
+TARGET		= Spot-On-Kernel
 PROJECTNAME	= Spot-On-Kernel
