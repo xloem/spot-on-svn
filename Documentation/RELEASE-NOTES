@@ -43,6 +43,7 @@
      Super Echo is enabled. Also, nodes that received messages from
      other nodes must echo the messages if the Super Echo is enabled.
 24.  Display last status changes of participants in the Chat panel.
+25.  Added OS/2 project files. Files provided by Elbert.
 
 0.04 (09/03/2013)
 
