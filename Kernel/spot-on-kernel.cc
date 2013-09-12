@@ -53,7 +53,8 @@ extern "C"
 #include <process.h>
 #endif
 #include <signal.h>
-#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_OS2 || \
+  defined Q_OS_UNIX
 #include <termios.h>
 #include <unistd.h>
 #else

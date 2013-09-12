@@ -54,7 +54,11 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 	{
 	  QHostAddress address;
 	  sockaddr nativeAddress;
+#ifdef Q_OS_OS2
+	  size_t length = sizeof(nativeAddress);
+#else
 	  socklen_t length = sizeof(nativeAddress);
+#endif
 
 	  if(getpeername(socketDescriptor, &nativeAddress, &length) != 0)
 	    spoton_misc::logError
