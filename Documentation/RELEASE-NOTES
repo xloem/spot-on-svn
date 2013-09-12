@@ -1,4 +1,4 @@
-0.05 (09/12/2013)
+0.05 (09/16/2013)
 
 1.   Simple IP-based firewall.
 2.   Issue abort() instead of close() for drastic situations.
