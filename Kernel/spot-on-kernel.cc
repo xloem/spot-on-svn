@@ -1129,7 +1129,40 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
 	   arg(neighbor->peerAddress().toString()).
 	   arg(neighbor->peerPort()));
       else
-	neighbor->flush();
+	{
+	  neighbor->flush();
+	  neighbor->addToBytesWritten(data.length());
+
+	  /*
+	  ** Now let's update friends_public_keys if the peer also
+	  ** shared their key.
+	  */
+
+	  QString connectionName("");
+
+	  {
+	    QSqlDatabase db = spoton_misc::database(connectionName);
+
+	    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			       "friends_public_keys.db");
+
+	    if(db.open())
+	      {
+		QSqlQuery query(db);
+
+		query.prepare("UPDATE friends_public_keys SET "
+			      "neighbor_oid = -1 "
+			      "WHERE neighbor_oid = ? AND "
+			      "public_key IS NOT NULL ");
+		query.bindValue(0, oid);
+		query.exec();
+	      }
+
+	    db.close();
+	  }
+
+	  QSqlDatabase::removeDatabase(connectionName);
+	}
     }
   else
     neighbor->sharePublicKey

@@ -4134,8 +4134,8 @@ void spoton::slotPopulateParticipants(void)
 		      "neighbor_oid, "
 		      "public_key_hash, "
 		      "status, "
-		      "gemini, "
 		      "last_status_update, "
+		      "gemini, "
 		      "key_type "
 		      "FROM friends_public_keys "
 		      "WHERE key_type = 'chat' OR key_type = 'email'"))
@@ -4171,10 +4171,10 @@ void spoton::slotPopulateParticipants(void)
 			    }
 			}
 
-		      if(i == 0)
+		      if(i == 0) // Name
 			item = new QTableWidgetItem
 			  (QString::fromUtf8(query.value(i).toByteArray()));
-		      else if(i == 4)
+		      else if(i == 4) // Status
 			{
 			  QString status(query.value(i).toString());
 
@@ -4197,7 +4197,7 @@ void spoton::slotPopulateParticipants(void)
 			  else
 			    item = new QTableWidgetItem(tr("Friend"));
 			}
-		      else if(i == 5)
+		      else if(i == 6) // Gemini
 			{
 			  bool ok = true;
 
@@ -4219,7 +4219,7 @@ void spoton::slotPopulateParticipants(void)
 		      item->setFlags
 			(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-		      if(i == 0)
+		      if(i == 0) // Name
 			{
 			  if(!temporary)
 			    {
@@ -4265,7 +4265,7 @@ void spoton::slotPopulateParticipants(void)
 				 arg(item->text()));
 			    }
 			}
-		      else if(i == 5)
+		      else if(i == 6) // Gemini
 			{
 			  if(!temporary)
 			    item->setFlags
@@ -4368,9 +4368,7 @@ void spoton::slotPopulateParticipants(void)
 	m_ui.participants->setSelectionMode
 	  (QAbstractItemView::ExtendedSelection);
 	m_ui.participants->setSortingEnabled(true);
-	m_ui.participants->resizeColumnToContents(0); // Name
-	m_ui.participants->resizeColumnToContents(1); // Status
-	m_ui.participants->resizeColumnToContents(3); // Last Status Change
+	m_ui.participants->resizeColumnsToContents();
 	m_ui.participants->horizontalHeader()->setStretchLastSection(true);
 	m_ui.participants->horizontalScrollBar()->setValue(hval);
 	m_ui.participants->verticalScrollBar()->setValue(vval);

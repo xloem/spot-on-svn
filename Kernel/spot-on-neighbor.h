@@ -70,6 +70,7 @@ class spoton_neighbor: public QSslSocket
   ~spoton_neighbor();
   QUuid receivedUuid(void) const;
   qint64 id(void) const;
+  void addToBytesWritten(const int bytesWritten);
   void setId(const qint64 id);
   void sharePublicKey(const QByteArray &keyType,
 		      const QByteArray &name,

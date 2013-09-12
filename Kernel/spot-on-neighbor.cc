@@ -3853,3 +3853,8 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 
   QSqlDatabase::removeDatabase(connectionName);
 }
+
+void spoton_neighbor::addToBytesWritten(const int bytesWritten)
+{
+  m_bytesWritten += qAbs(bytesWritten);
+}
