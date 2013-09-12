@@ -50,33 +50,38 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
     }
   else
     {
-      QHostAddress address;
-      sockaddr nativeAddress;
-      socklen_t length = sizeof(nativeAddress);
-
-      if(getpeername(socketDescriptor, &nativeAddress, &length) != 0)
-	spoton_misc::logError
-	  (QString("spoton_listener_tcp_server::incomingConnection: "
-		   "getpeername() failure for %1:%2.").
-	   arg(serverAddress().toString()).
-	   arg(serverPort()));
-
-      address = QHostAddress(&nativeAddress);
-
-      if(!spoton_misc::isAcceptedIP(address,
-				    spoton_kernel::s_crypts.
-				    value("chat", 0)))
+      if(spoton_kernel::s_settings.value("gui/acceptedIPs", false).toBool())
 	{
-	  QTcpSocket socket;
+	  QHostAddress address;
+	  sockaddr nativeAddress;
+	  socklen_t length = sizeof(nativeAddress);
 
-	  socket.setSocketDescriptor(socketDescriptor);
-	  socket.abort();
-	  spoton_misc::logError
-	    (QString("spoton_listener_tcp_server::incomingConnection(): "
-		     "connection from %1 denied for %2:%3").
-	     arg(address.toString()).
-	     arg(serverAddress().toString()).
-	     arg(serverPort()));
+	  if(getpeername(socketDescriptor, &nativeAddress, &length) != 0)
+	    spoton_misc::logError
+	      (QString("spoton_listener_tcp_server::incomingConnection: "
+		       "getpeername() failure for %1:%2.").
+	       arg(serverAddress().toString()).
+	       arg(serverPort()));
+
+	  address = QHostAddress(&nativeAddress);
+
+	  if(!spoton_misc::isAcceptedIP(address,
+					spoton_kernel::s_crypts.
+					value("chat", 0)))
+	    {
+	      QTcpSocket socket;
+
+	      socket.setSocketDescriptor(socketDescriptor);
+	      socket.abort();
+	      spoton_misc::logError
+		(QString("spoton_listener_tcp_server::incomingConnection(): "
+			 "connection from %1 denied for %2:%3").
+		 arg(address.toString()).
+		 arg(serverAddress().toString()).
+		 arg(serverPort()));
+	    }
+	  else
+	    emit newConnection(socketDescriptor);
 	}
       else
 	emit newConnection(socketDescriptor);
@@ -466,30 +471,31 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
      countryNameFromIPAddress(neighbor->peerAddress().toString()));
 
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
-  if(!spoton_misc::isPrivateNetwork(neighbor->peerAddress()))
-    if(country == "Unknown" ||
-       !spoton_misc::countryAllowedToConnect(country.remove(" "),
-					     s_crypt))
-      {
-	if(country == "Unknown")
-	  spoton_misc::logError
-	    (QString("spoton_listener::slotNewConnection(): "
-		     "unknown country. Terminating connection from "
-		     "%1:%2.").
-	     arg(neighbor->peerAddress().toString()).
-	     arg(neighbor->peerPort()));
-	else
-	  spoton_misc::logError
-	    (QString("spoton_listener::slotNewConnection(): "
-		     "country %1 is blocked. Terminating "
-		     "connection from %2:%3.").
-	     arg(country).
-	     arg(neighbor->peerAddress().toString()).
-	     arg(neighbor->peerPort()));
+  if(!spoton_kernel::s_settings.value("gui/acceptedIPs", false).toBool())
+    if(!spoton_misc::isPrivateNetwork(neighbor->peerAddress()))
+      if(country == "Unknown" ||
+	 !spoton_misc::countryAllowedToConnect(country.remove(" "),
+					       s_crypt))
+	{
+	  if(country == "Unknown")
+	    spoton_misc::logError
+	      (QString("spoton_listener::slotNewConnection(): "
+		       "unknown country. Terminating connection from "
+		       "%1:%2.").
+	       arg(neighbor->peerAddress().toString()).
+	       arg(neighbor->peerPort()));
+	  else
+	    spoton_misc::logError
+	      (QString("spoton_listener::slotNewConnection(): "
+		       "country %1 is blocked. Terminating "
+		       "connection from %2:%3.").
+	       arg(country).
+	       arg(neighbor->peerAddress().toString()).
+	       arg(neighbor->peerPort()));
 
-	neighbor->deleteLater();
-	return;
-      }
+	  neighbor->deleteLater();
+	  return;
+	}
 #endif
 
   QString connectionName("");
