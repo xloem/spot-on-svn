@@ -30,7 +30,8 @@ INCLUDEPATH	+= . ../../. GUI ../../libSpotOn/Include.win32 \
 LIBS		+= -L../../libSpotOn -L../../libSpotOn/Libraries.win32 \
 		   -L../../libGeoIP/Libraries.win32 \
 		   -Lu:/usr/local473/lib \
-		   -lGeoIP -lgcrypt -lpthread -lspoton -lssl32
+		   -lGeoIP -lgcrypt -lpthread -lspoton -lmmap \
+		   -lssp_s -lcrypto -lssl -lgpg-error
 PRE_TARGETDEPS = libspotn.dll
 
 FORMS           = UI/buzzpage.ui \
