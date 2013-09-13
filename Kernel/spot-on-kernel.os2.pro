@@ -12,7 +12,7 @@ CONFIG		+= qt release warn_on
 # The function gcry_kdf_derive() is available in version
 # 1.5.0 of the gcrypt library.
 
-DEFINES         += SPOTON_LINKED_WITH_LIBGEOIP
+DEFINES         -= SPOTON_LINKED_WITH_LIBGEOIP
 
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of libSpotOn.
@@ -27,14 +27,12 @@ QMAKE_CXXFLAGS_RELEASE += -mtune=generic -pie -O3 \
 			  -Woverloaded-virtual -Wpointer-arith
 QMAKE_EXTRA_TARGETS = libspoton purge
 INCLUDEPATH	+= . ../. ../../../. ../../../libSpotOn/Include.win32 \
-                   ../../../libGeoIP/Include.win32 \
 		   u:/usr/local473/include
 LIBS		+= -L../../../libSpotOn \
 		   -L../../../libSpotOn/Libraries.win32 \
-                   -L../../../libGeoIP/Libraries.win32 \
 		   -Lu:/usr/local473/lib \
-		   -lGeoIP -lgcrypt -lpthread -lspoton -lmmap \
-		   -lssp_s -lcrypto -lssl -lgpg-error
+		   -lcrypto -lgcrypt -lgpg-error -lmmap -lpthread -lspoton \
+		   -lssl -lssp_s
 PRE_TARGETDEPS = libspotn.dll
 
 HEADERS		= ../Common/spot-on-external-address.h \
