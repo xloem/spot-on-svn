@@ -297,41 +297,39 @@ void spoton_gui_server::slotReadyRead(void)
 	    {
 	      message.remove(0, strlen("keys_"));
 
-	      QList<QByteArray> list(message.split('_'));
+	      if(!message.isEmpty())
+		{
+		  QStringList names;
 
-	      if(list.size() != 2)
-		continue;
+		  names << "chat"
+			<< "chat-signature"
+			<< "email"
+			<< "email-signature"
+			<< "url"
+			<< "url-signature";
 
-	      QStringList names;
-
-	      names << "chat"
-		    << "chat-signature"
-		    << "email"
-		    << "email-signature"
-		    << "url"
-		    << "url-signature";
-
-	      for(int i = 0; i < names.size(); i++)
-		if(!spoton_kernel::s_crypts.contains(names.at(i)))
-		  {
-		    spoton_crypt *crypt = new spoton_crypt
-		      (spoton_kernel::s_settings.value("gui/cipherType",
-						       "aes256").
-		       toString().trimmed(),
-		       spoton_kernel::s_settings.value("gui/hashType",
-						       "sha512").
-		       toString().trimmed(),
-		       QByteArray::fromBase64(list.value(0)),
-		       QByteArray::fromBase64(list.value(1)),
-		       spoton_kernel::s_settings.value("gui/saltLength",
-						       256).toInt(),
-		       spoton_kernel::s_settings.value("gui/iterationCount",
-						       10000).toInt(),
-		       names.at(i));
-		    spoton_misc::populateCountryDatabase
-		      (crypt);
-		    spoton_kernel::s_crypts.insert(names.at(i), crypt);
-		  }
+		  for(int i = 0; i < names.size(); i++)
+		    if(!spoton_kernel::s_crypts.contains(names.at(i)))
+		      {
+			spoton_crypt *crypt = new spoton_crypt
+			  (spoton_kernel::s_settings.value("gui/cipherType",
+							   "aes256").
+			   toString().trimmed(),
+			   spoton_kernel::s_settings.value("gui/hashType",
+							   "sha512").
+			   toString().trimmed(),
+			   QByteArray(),
+			   QByteArray::fromBase64(message),
+			   spoton_kernel::s_settings.value("gui/saltLength",
+							   256).toInt(),
+			   spoton_kernel::s_settings.value("gui/iterationCount",
+							   10000).toInt(),
+			   names.at(i));
+			spoton_misc::populateCountryDatabase
+			  (crypt);
+			spoton_kernel::s_crypts.insert(names.at(i), crypt);
+		      }
+		}
 	    }
 	  else if(message.startsWith("message_"))
 	    {

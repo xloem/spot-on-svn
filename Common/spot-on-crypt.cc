@@ -731,8 +731,6 @@ spoton_crypt::spoton_crypt(const QString &id)
   m_hashType = "sha512";
   m_id = id;
   m_iterationCount = 0; // We're not deriving keys.
-  m_passphrase = 0;
-  m_passphraseLength = 0;
   m_privateKey = 0;
   m_symmetricKey = 0;
 
@@ -821,7 +819,6 @@ spoton_crypt::spoton_crypt(spoton_crypt *other)
   if(other)
     init(other->m_cipherType,
 	 other->m_hashType,
-	 other->m_passphrase,
 	 other->m_symmetricKey,
 	 other->m_saltLength,
 	 other->m_iterationCount,
@@ -836,13 +833,13 @@ spoton_crypt::spoton_crypt(const QString &cipherType,
 			   const unsigned long iterationCount,
 			   const QString &id)
 {
-  init(cipherType, hashType, passphrase,
+  Q_UNUSED(passphrase);
+  init(cipherType, hashType,
        symmetricKey, saltLength, iterationCount, id);
 }
 
 void spoton_crypt::init(const QString &cipherType,
 			const QString &hashType,
-			const QByteArray &passphrase,
 			const QByteArray &symmetricKey,
 			const int saltLength,
 			const unsigned long iterationCount,
@@ -857,8 +854,6 @@ void spoton_crypt::init(const QString &cipherType,
   m_hashType = hashType;
   m_id = id;
   m_iterationCount = iterationCount;
-  m_passphrase = 0;
-  m_passphraseLength = passphrase.length();
   m_privateKey = 0;
   m_symmetricKey = 0;
 
@@ -877,32 +872,12 @@ void spoton_crypt::init(const QString &cipherType,
   ** with SSL.
   */
 
-#if 0
-  if(m_passphraseLength)
-    m_passphrase = static_cast<char *>
-      (gcry_calloc_secure(m_passphraseLength, sizeof(char)));
-#endif
-
   if(m_symmetricKeyLength)
     m_symmetricKey = static_cast<char *>
       (gcry_calloc_secure(m_symmetricKeyLength, sizeof(char)));
   else
     spoton_misc::logError("spoton_crypt::spoton_crypt(): "
 			  "gcry_cipher_get_algo_keylen() returned zero.");
-
-#if 0
-  if(m_passphrase)
-    memcpy(static_cast<void *> (m_passphrase),
-	   static_cast<const void *> (passphrase.constData()),
-	   qMin(m_passphraseLength,
-		static_cast<size_t> (passphrase.length())));
-  else if(m_passphraseLength > 0)
-    {
-      m_passphraseLength = 0;
-      spoton_misc::logError("spoton_crypt::spoton_crypt(): "
-			    "gcry_calloc_secure() returned 0.");
-    }
-#endif
 
   if(m_symmetricKey)
     {
@@ -966,7 +941,6 @@ void spoton_crypt::init(const QString &cipherType,
 spoton_crypt::~spoton_crypt()
 {
   gcry_cipher_close(m_cipherHandle);
-  gcry_free(m_passphrase);
   gcry_free(m_privateKey);
   gcry_free(m_symmetricKey);
 }
@@ -2136,16 +2110,6 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data,
 
   gcry_md_close(hd);
   return hash;
-}
-
-char *spoton_crypt::passphrase(void) const
-{
-  return m_passphrase;
-}
-
-size_t spoton_crypt::passphraseLength(void) const
-{
-  return m_passphraseLength;
 }
 
 QByteArray spoton_crypt::randomCipherType(void)

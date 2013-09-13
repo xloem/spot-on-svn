@@ -3149,7 +3149,7 @@ void spoton::slotSetPassphrase(void)
 	      spoton_crypt *crypt = new spoton_crypt
 		(m_ui.cipherType->currentText(),
 		 m_ui.hashType->currentText(),
-		 str1.toUtf8(),
+		 QByteArray(),
 		 derivedKey,
 		 m_ui.saltLength->value(),
 		 m_ui.iterationCount->value(),
@@ -3181,7 +3181,7 @@ void spoton::slotSetPassphrase(void)
 	      (list.at(i),
 	       new spoton_crypt(m_ui.cipherType->currentText(),
 				m_ui.hashType->currentText(),
-				str1.toUtf8(),
+				QByteArray(),
 				derivedKey,
 				m_ui.saltLength->value(),
 				m_ui.iterationCount->value(),
@@ -3321,7 +3321,7 @@ void spoton::slotValidatePassphrase(void)
 		(list.at(i),
 		 new spoton_crypt(m_ui.cipherType->currentText(),
 				  m_ui.hashType->currentText(),
-				  m_ui.passphrase->text().toUtf8(),
+				  QByteArray(),
 				  key,
 				  m_ui.saltLength->value(),
 				  m_ui.iterationCount->value(),
@@ -3696,17 +3696,11 @@ void spoton::sendKeysToKernel(void)
       if(m_kernelSocket.isEncrypted())
 	{
 	  QByteArray keys("keys_");
-	  QByteArray passphrase
-	    (m_crypts.value("chat")->
-	     passphrase(), m_crypts.value("chat")->passphraseLength());
 	  QByteArray symmetricKey
 	    (m_crypts.value("chat")->
 	     symmetricKey(), m_crypts.value("chat")->symmetricKeyLength());
 
-	  passphrase = passphrase.toBase64();
 	  symmetricKey = symmetricKey.toBase64();
-	  keys.append(passphrase);
-	  keys.append("_");
 	  keys.append(symmetricKey);
 	  keys.append('\n');
 

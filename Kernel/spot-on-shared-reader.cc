@@ -89,12 +89,16 @@ void spoton_shared_reader::slotTimeout(void)
 		  if(!s_crypt)
 		    continue;
 
+		  /*
+		  ** We need to determine the encryption key that was
+		  ** used to encrypt the URLs shared by another application.
+		  */
+
 		  spoton_crypt crypt
 		    ("aes256",
 		     QString(""),
 		     QByteArray(),
-		     QByteArray(s_crypt->passphrase(),
-				s_crypt->passphraseLength()),
+		     QByteArray(),
 		     0,
 		     0,
 		     QString(""));

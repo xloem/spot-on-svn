@@ -121,9 +121,7 @@ class spoton_crypt
   QByteArray publicKeyDecrypt(const QByteArray &data, bool *ok);
   QByteArray publicKeyHash(bool *ok);
   QString cipherType(void) const;
-  char *passphrase(void) const;
   char *symmetricKey(void) const;
-  size_t passphraseLength(void) const;
   size_t symmetricKeyLength(void) const;
   void generatePrivatePublicKeys(const int rsaKeySize, QString &error);
   void initializePrivateKeyContainer(bool *ok);
@@ -133,20 +131,17 @@ class spoton_crypt
   QString m_cipherType;
   QString m_hashType;
   QString m_id;
-  char *m_passphrase;
   char *m_privateKey;
   char *m_symmetricKey;
   gcry_cipher_hd_t m_cipherHandle;
   int m_cipherAlgorithm;
   int m_hashAlgorithm;
   int m_saltLength;
-  size_t m_passphraseLength;
   size_t m_privateKeyLength;
   size_t m_symmetricKeyLength;
   unsigned long m_iterationCount;
   void init(const QString &cipherType,
 	    const QString &hashType,
-	    const QByteArray &passphrase,
 	    const QByteArray &symmetricKey,
 	    const int saltLength,
 	    const unsigned long iterationCount,

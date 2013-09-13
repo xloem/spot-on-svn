@@ -2032,7 +2032,7 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 				      "aes256").toString().trimmed(),
 		     s_settings.value("gui/hashType",
 				      "sha512").toString().trimmed(),
-		     passphrase.toUtf8(),
+		     QByteArray(),
 		     key,
 		     s_settings.value("gui/saltLength", 256).toInt(),
 		     s_settings.value("gui/iterationCount", 10000).toInt(),
