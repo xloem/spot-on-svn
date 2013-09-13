@@ -620,9 +620,11 @@ spoton::spoton(void):QMainWindow()
   connect
     (menu->addAction(tr("Copy &E-Mail Public Key")),
      SIGNAL(triggered(void)), this, SLOT(slotCopyMyEmailPublicKey(void)));
+#if 0
   connect
     (menu->addAction(tr("Copy &URL Public Key")),
      SIGNAL(triggered(void)), this, SLOT(slotCopyMyURLPublicKey(void)));
+#endif
   menu->addSeparator();
   connect
     (menu->addAction(tr("Copy &All Public Keys")),
@@ -633,8 +635,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)), this, SLOT(slotShareChatPublicKey(void)));
   connect(menu->addAction(tr("Share &E-Mail Public Key")),
 	  SIGNAL(triggered(void)), this, SLOT(slotShareEmailPublicKey(void)));
+#if 0
   connect(menu->addAction(tr("Share &URL Public Key")),
 	  SIGNAL(triggered(void)), this, SLOT(slotShareURLPublicKey(void)));
+#endif
   m_ui.toolButtonMakeFriends->setMenu(menu);
   menu = new QMenu(this);
   connect(menu->addAction(tr("&Off")),
@@ -907,6 +911,8 @@ spoton::spoton(void):QMainWindow()
     m_ui.rsaKeySize->setCurrentIndex(m_ui.rsaKeySize->findText(str));
 
   m_ui.saltLength->setValue(m_settings.value("gui/saltLength", 256).toInt());
+  m_ui.tab->removeTab(5);
+  m_ui.tab->removeTab(6);
 
   if(spoton_crypt::passphraseSet())
     {
@@ -943,7 +949,7 @@ spoton::spoton(void):QMainWindow()
       m_ui.kernelBox->setEnabled(false);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
-	if(i == 6) // Settings
+	if(i == 5) // Settings
 	  {
 	    m_ui.tab->blockSignals(true);
 	    m_ui.tab->setCurrentIndex(i);
@@ -2981,9 +2987,13 @@ void spoton::slotSetPassphrase(void)
       mb.setWindowModality(Qt::WindowModal);
       mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
       mb.setText(tr("Are you sure that you wish to replace the "
+		    "existing passphrase?"));
+#if 0
+      mb.setText(tr("Are you sure that you wish to replace the "
 		    "existing passphrase? Please note that URL data must "
 		    "be re-encoded via a separate tool. Please see "
 		    "the Tools folder."));
+#endif
 
       if(mb.exec() != QMessageBox::Yes)
 	{
@@ -3038,9 +3048,11 @@ void spoton::slotSetPassphrase(void)
 	      list << "chat"
 		   << "chat-signature"
 		   << "email"
-		   << "email-signature"
-		   << "url"
+		   << "email-signature";
+#if 0
+	           << "url"
 		   << "url-signature";
+#endif
 
 	      for(int i = 0; i < list.size(); i++)
 		{
@@ -3074,9 +3086,11 @@ void spoton::slotSetPassphrase(void)
 	  list << "chat"
 	       << "chat-signature"
 	       << "email"
-	       << "email-signature"
+	       << "email-signature";
+#if 0
 	       << "url"
 	       << "url-signature";
+#endif
 	  m_sb.status->setText(tr("Generating public key pairs."));
 	  m_sb.status->repaint();
 
@@ -3514,11 +3528,13 @@ void spoton::slotShowContextMenu(const QPoint &point)
 			       toString())),
 		     tr("Share &E-Mail Public Key"),
 		     this, SLOT(slotShareEmailPublicKey(void)));
+#if 0
       menu.addAction(QIcon(QString(":%1//share.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
 		     tr("Share &URL Public Key"),
 		     this, SLOT(slotShareURLPublicKey(void)));
+#endif
       menu.addSeparator();
       menu.addAction(tr("&Connect"),
 		     this, SLOT(slotConnectNeighbor(void)));

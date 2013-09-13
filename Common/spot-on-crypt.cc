@@ -845,6 +845,26 @@ void spoton_crypt::init(const QString &cipherType,
 			const unsigned long iterationCount,
 			const QString &id)
 {
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "idiotes.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("DELETE FROM idiotes WHERE "
+		   "id IN ('url', 'url-signature')");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
   init();
   m_cipherAlgorithm = gcry_cipher_map_name(cipherType.toLatin1().
 					   constData());
