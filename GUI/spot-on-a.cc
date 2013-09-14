@@ -398,6 +398,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(itemClicked(QTableWidgetItem *)),
 	  this,
 	  SLOT(slotMailSelected(QTableWidgetItem *)));
+  connect(m_ui.neighbors,
+	  SIGNAL(itemClicked(QTableWidgetItem *)),
+	  this,
+	  SLOT(slotNeighborSelected(QTableWidgetItem *)));
   connect(m_ui.emptyTrash,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -2113,9 +2117,8 @@ void spoton::slotPopulateNeighbors(void)
 		      "Communications Mode: %14\n"
 		      "Uptime: %15 Minutes\n"
 		      "Allow Certificate Exceptions: %16\n"
-		      "Certificate Digest: %17\n"
-		      "Bytes Read: %18\n"
-		      "Bytes Written: %19")).
+		      "Bytes Read: %17\n"
+		      "Bytes Written: %18")).
 		  arg(m_crypts.value("chat")->
 		      decrypted(QByteArray::
 				fromBase64(query.
@@ -2189,7 +2192,6 @@ void spoton::slotPopulateNeighbors(void)
 				      'f', 1)).
 		  arg(query.value(21).toInt() == 1 ?
 		      "Yes" : "No").
-		  arg(certificateDigest.constData()).
 		  arg(query.value(22).toULongLong()).
 		  arg(query.value(23).toULongLong());
 
@@ -2405,7 +2407,10 @@ void spoton::slotPopulateNeighbors(void)
 		if(remoteIp == bytes1 && remotePort == bytes2 &&
 		   scopeId == bytes3 && proxyIp == bytes4 &&
 		   proxyPort == bytes5)
-		  m_ui.neighbors->selectRow(row);
+		  {
+		    m_ui.neighbors->selectRow(row);
+		    slotNeighborSelected(m_ui.neighbors->item(row, 1));
+		  }
 
 		if(focusWidget)
 		  focusWidget->setFocus();
@@ -5156,4 +5161,58 @@ void spoton::slotSaveSslControlString(void)
 void spoton::slotDiscoverExternalAddress(void)
 {
   m_externalAddress->discover();
+}
+
+void spoton::slotNeighborSelected(QTableWidgetItem *item)
+{
+  if(!item)
+    m_ui.neighborSummary->clear();
+  else
+    {
+      QString label("");
+      QStringList list;
+      int row = item->row();
+
+      for(int i = 0; i < m_ui.neighbors->columnCount() - 2; i++)
+	{
+	  QTableWidgetItem *item = m_ui.neighbors->item(row, i);
+
+	  if(item)
+	    {
+	      label += m_ui.neighbors->horizontalHeaderItem(i)->text() +
+		": %" + QString::number(i) + "\n";
+	      list << item->text();
+	    }
+	}
+
+      QString str
+	(label.
+	 arg(list.value(0)).
+	 arg(list.value(1)).
+	 arg(list.value(2)).
+	 arg(list.value(3)).
+	 arg(list.value(4)).
+	 arg(list.value(5)).
+	 arg(list.value(6)).
+	 arg(list.value(7)).
+	 arg(list.value(8)).
+	 arg(list.value(9)).
+	 arg(list.value(10)).
+	 arg(list.value(11)).
+	 arg(list.value(12)).
+	 arg(list.value(13)).
+	 arg(list.value(14)).
+	 arg(list.value(15)).
+	 arg(list.value(16)).
+	 arg(list.value(17)).
+	 arg(list.value(18)).
+	 arg(list.value(19)).
+	 arg(list.value(20)));
+      int h = m_ui.neighborSummary->horizontalScrollBar()->value();
+      int v = m_ui.neighborSummary->verticalScrollBar()->value();
+
+      m_ui.neighborSummary->setText(str);
+      m_ui.neighborSummary->horizontalScrollBar()->setValue(h);
+      m_ui.neighborSummary->verticalScrollBar()->setValue(v);
+    }
 }
