@@ -430,6 +430,18 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotSetIcons(void)));
+  connect(m_ui.action_East,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotChangeTabPosition(void)));
+  connect(m_ui.action_North,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotChangeTabPosition(void)));
+  connect(m_ui.action_West,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotChangeTabPosition(void)));
   connect(m_ui.newRSAKeys,
 	  SIGNAL(toggled(bool)),
 	  m_ui.rsaKeySize,
@@ -697,6 +709,24 @@ spoton::spoton(void):QMainWindow()
 	}
     }
 
+  QString str(m_settings.value("gui/tabPosition", "north").toString());
+
+  if(str == "east")
+    {
+      m_ui.action_East->setChecked(true);
+      m_ui.action_East->trigger();
+    }
+  else if(str == "west")
+    {
+      m_ui.action_West->setChecked(true);
+      m_ui.action_West->trigger();
+    }
+  else
+    {
+      m_ui.action_North->setChecked(true);
+      m_ui.action_North->trigger();
+    }
+
   m_sb.kernelstatus->setIcon
     (QIcon(QString(":/%1/deactivate.png").
 	   arg(m_settings.value("gui/iconSet", "nouve").toString())));
@@ -884,8 +914,6 @@ spoton::spoton(void):QMainWindow()
 
   if(m_ui.hashType->count() == 0)
     m_ui.hashType->addItem("n/a");
-
-  QString str("");
 
   str = m_settings.value("gui/cipherType", "aes256").
     toString().toLower().trimmed();
@@ -5215,4 +5243,42 @@ void spoton::slotNeighborSelected(QTableWidgetItem *item)
       m_ui.neighborSummary->horizontalScrollBar()->setValue(h);
       m_ui.neighborSummary->verticalScrollBar()->setValue(v);
     }
+}
+
+void spoton::slotChangeTabPosition(void)
+{
+  QAction *action = qobject_cast<QAction *> (sender());
+
+  if(action)
+    {
+      action->setChecked(true); /*
+				** Do not allow the user to uncheck
+				** the checked action.
+				*/
+
+      for(int i = 0; i < m_ui.menu_Tab_Position->actions().size(); i++)
+	if(action != m_ui.menu_Tab_Position->actions().at(i))
+	  m_ui.menu_Tab_Position->actions().at(i)->setChecked(false);
+    }
+
+  if(action == m_ui.action_East)
+    {
+      m_settings["gui/tabPosition"] = "east";
+      m_ui.tab->setTabPosition(QTabWidget::East);
+    }
+  else if(action == m_ui.action_West)
+    {
+      m_settings["gui/tabPosition"] = "west";
+      m_ui.tab->setTabPosition(QTabWidget::West);
+    }
+  else
+    {
+      m_settings["gui/tabPosition"] = "north";
+      m_ui.tab->setTabPosition(QTabWidget::North);
+    }
+
+  QSettings settings;
+
+  settings.setValue("gui/tabPosition", m_settings.value("gui/tabPosition",
+							"north"));
 }

@@ -169,8 +169,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1282</width>
-                <height>588</height>
+                <width>1278</width>
+                <height>585</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2639,8 +2639,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1282</width>
-             <height>588</height>
+             <width>1278</width>
+             <height>585</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3809,9 +3809,18 @@
      <addaction name="actionNouve"/>
      <addaction name="actionNuvola"/>
     </widget>
+    <widget class="QMenu" name="menu_Tab_Position">
+     <property name="title">
+      <string>&amp;Tab Position</string>
+     </property>
+     <addaction name="action_East"/>
+     <addaction name="action_North"/>
+     <addaction name="action_West"/>
+    </widget>
     <addaction name="action_Documentation"/>
     <addaction name="menu_Icons"/>
     <addaction name="action_Log_Viewer"/>
+    <addaction name="menu_Tab_Position"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_View"/>
@@ -3856,6 +3865,33 @@
   <action name="action_ResetSpotOn">
    <property name="text">
     <string>&amp;Reset Spot-On</string>
+   </property>
+  </action>
+  <action name="action_East">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;East</string>
+   </property>
+  </action>
+  <action name="action_North">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;North</string>
+   </property>
+  </action>
+  <action name="action_West">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;West</string>
    </property>
   </action>
  </widget>
