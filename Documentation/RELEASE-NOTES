@@ -46,6 +46,8 @@
 25.  Added OS/2 project files. Files provided by Elbert.
 26.  If two peers share keys, the peer having the other peer's key will
      automatically accept that peer.
+27.  Configurable tab position.
+28.  Neighbor summary.
 
 0.04 (09/03/2013)
 
