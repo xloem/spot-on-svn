@@ -631,13 +631,18 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
   query.bindValue(0, m_bytesRead);
   query.bindValue(1, m_bytesWritten);
   query.bindValue(2, isEncrypted() ? 1 : 0);
-  query.bindValue(3, QString("%1-%2-%3-%4-%5-%6").
-		  arg(cipher.authenticationMethod()).
-		  arg(cipher.encryptionMethod()).
-		  arg(cipher.keyExchangeMethod()).
-		  arg(cipher.protocolString()).
-		  arg(cipher.supportedBits()).
-		  arg(cipher.usedBits()));
+
+  if(cipher.isNull())
+    query.bindValue(3, QVariant::String);
+  else
+    query.bindValue(3, QString("%1-%2-%3-%4-%5-%6").
+		    arg(cipher.authenticationMethod()).
+		    arg(cipher.encryptionMethod()).
+		    arg(cipher.keyExchangeMethod()).
+		    arg(cipher.protocolString()).
+		    arg(cipher.supportedBits()).
+		    arg(cipher.usedBits()));
+
   query.bindValue(4, seconds);
   query.bindValue(5, m_id);
   query.bindValue(6, seconds);
