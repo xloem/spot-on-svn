@@ -50,7 +50,7 @@
 28.  Neighbor summary.
 29.  Increased Buzz iteration count from 5000 to 15000.
 30.  Added ssl_session_cipher to the neighbors database table. Please
-     remove neighbors.db.
+     remove neighbors.db. Field contains encrypted data.
 
 0.04 (09/03/2013)
 
