@@ -2101,6 +2101,7 @@ void spoton::slotPopulateNeighbors(void)
 		      "peer_certificate, "
 		      "bytes_read, "
 		      "bytes_written, "
+		      "ssl_session_cipher, "
 		      "is_encrypted, "
 		      "OID "
 		      "FROM neighbors WHERE status_control <> 'deleted'"))
@@ -2146,7 +2147,8 @@ void spoton::slotPopulateNeighbors(void)
 		      "Uptime: %15 Minutes\n"
 		      "Allow Certificate Exceptions: %16\n"
 		      "Bytes Read: %17\n"
-		      "Bytes Written: %18")).
+		      "Bytes Written: %18\n"
+		      "SSL Session Cipher: %19")).
 		  arg(m_crypts.value("chat")->
 		      decrypted(QByteArray::
 				fromBase64(query.
@@ -2214,14 +2216,15 @@ void spoton::slotPopulateNeighbors(void)
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(query.value(24).toInt() == 1 ?
+		  arg(query.value(25).toInt() == 1 ?
 		      "Secure" : "Insecure").
 		  arg(QString::number(query.value(19).toInt() / 60.0,
 				      'f', 1)).
 		  arg(query.value(21).toInt() == 1 ?
 		      "Yes" : "No").
 		  arg(query.value(22).toULongLong()).
-		  arg(query.value(23).toULongLong());
+		  arg(query.value(23).toULongLong()).
+		  arg(query.value(24).toString());
 
 		QCheckBox *check = 0;
 
@@ -2959,7 +2962,9 @@ void spoton::updateNeighborsTable(const QSqlDatabase &db)
 		   "external_ip_address = NULL, "
 		   "is_encrypted = 0, "
 		   "local_ip_address = NULL, "
-		   "local_port = NULL, status = 'disconnected', "
+		   "local_port = NULL, "
+		   "ssl_session_cipher = NULL, "
+		   "status = 'disconnected', "
 		   "uptime = 0 WHERE "
 		   "local_ip_address IS NOT NULL OR local_port IS NOT NULL "
 		   "OR status <> 'disconnected'");
@@ -5235,7 +5240,8 @@ void spoton::slotNeighborSelected(QTableWidgetItem *item)
 	 arg(list.value(17)).
 	 arg(list.value(18)).
 	 arg(list.value(19)).
-	 arg(list.value(20)));
+	 arg(list.value(20)).
+	 arg(list.value(21)));
       int h = m_ui.neighborSummary->horizontalScrollBar()->value();
       int v = m_ui.neighborSummary->verticalScrollBar()->value();
 

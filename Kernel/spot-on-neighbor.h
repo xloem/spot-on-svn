@@ -129,7 +129,6 @@ class spoton_neighbor: public QSslSocket
 		    const QPair<QByteArray, QByteArray> &pair);
   void recordMessageHash(const QByteArray &data);
   void resetKeepAlive(void);
-  void saveEncryptedStatus(void);
   void saveExternalAddress(const QHostAddress &address,
 			   const QSqlDatabase &db);
   void saveGemini(const QByteArray &publicKeyHash,

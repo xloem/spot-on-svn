@@ -357,7 +357,8 @@ void spoton_misc::prepareDatabases(void)
 	   "peer_certificate BLOB NOT NULL, "
 	   "allow_exceptions INTEGER NOT NULL DEFAULT 0, "
 	   "bytes_read INTEGER NOT NULL DEFAULT 0, "
-	   "bytes_written INTEGER NOT NULL DEFAULT 0)");
+	   "bytes_written INTEGER NOT NULL DEFAULT 0, "
+	   "ssl_session_cipher TEXT)");
       }
 
     db.close();
@@ -1241,6 +1242,7 @@ void spoton_misc::cleanupDatabases(void)
 	query.exec("UPDATE neighbors SET external_ip_address = NULL, "
 		   "is_encrypted = 0, "
 		   "local_ip_address = NULL, local_port = NULL, "
+		   "ssl_session_cipher = NULL, "
 		   "status = 'disconnected', uptime = 0");
       }
 

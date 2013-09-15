@@ -169,8 +169,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1278</width>
-                <height>585</height>
+                <width>459</width>
+                <height>441</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1970,6 +1970,11 @@
                 </column>
                 <column>
                  <property name="text">
+                  <string>SSL Session Cipher</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
                   <string>is_encrypted</string>
                  </property>
                 </column>
@@ -2639,8 +2644,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1278</width>
-             <height>585</height>
+             <width>1137</width>
+             <height>385</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">

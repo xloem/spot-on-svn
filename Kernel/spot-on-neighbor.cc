@@ -441,7 +441,9 @@ spoton_neighbor::~spoton_neighbor()
 			  "external_ip_address = NULL, "
 			  "is_encrypted = 0, "
 			  "local_ip_address = NULL, "
-			  "local_port = NULL, status = 'disconnected', "
+			  "local_port = NULL, "
+			  "ssl_session_cipher = NULL, "
+			  "status = 'disconnected', "
 			  "uptime = 0 "
 			  "WHERE OID = ?");
 	    query.bindValue(0, m_id);
@@ -603,39 +605,6 @@ void spoton_neighbor::slotTimeout(void)
 	deleteLater();
 	return;
       }
-
-  saveEncryptedStatus();
-}
-
-void spoton_neighbor::saveEncryptedStatus(void)
-{
-  if(m_id == -1)
-    return;
-
-  QString connectionName("");
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-
-    db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.prepare("UPDATE neighbors SET is_encrypted = ? "
-		      "WHERE OID = ? AND is_encrypted <> ?");
-	query.bindValue(0, isEncrypted() ? 1 : 0);
-	query.bindValue(1, m_id);
-	query.bindValue(2, isEncrypted() ? 1 : 0);
-	query.exec();
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
@@ -646,21 +615,32 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
     return;
 
   QSqlQuery query(db);
+  QSslCipher cipher(sessionCipher());
   int seconds = m_startTime.secsTo(QDateTime::currentDateTime());
 
   query.prepare("PRAGMA synchronous = OFF");
   query.prepare("UPDATE neighbors SET "
 		"bytes_read = ?, "
 		"bytes_written = ?, "
+		"is_encrypted = ?, "
+		"ssl_session_cipher = ?, "
 		"uptime = ? "
 		"WHERE OID = ? AND "
 		"status = 'connected' "
 		"AND ? - uptime >= 10");
   query.bindValue(0, m_bytesRead);
   query.bindValue(1, m_bytesWritten);
-  query.bindValue(2, seconds);
-  query.bindValue(3, m_id);
+  query.bindValue(2, isEncrypted() ? 1 : 0);
+  query.bindValue(3, QString("%1-%2-%3-%4-%5-%6").
+		  arg(cipher.authenticationMethod()).
+		  arg(cipher.encryptionMethod()).
+		  arg(cipher.keyExchangeMethod()).
+		  arg(cipher.protocolString()).
+		  arg(cipher.supportedBits()).
+		  arg(cipher.usedBits()));
   query.bindValue(4, seconds);
+  query.bindValue(5, m_id);
+  query.bindValue(6, seconds);
   query.exec();
 }
 
