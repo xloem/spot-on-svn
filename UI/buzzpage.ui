@@ -17,6 +17,20 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Iteration Count</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="iterationCount">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="label">
        <property name="text">
         <string>Salt</string>
@@ -254,14 +268,15 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>iterationCount</tabstop>
   <tabstop>salt</tabstop>
   <tabstop>type</tabstop>
   <tabstop>messages</tabstop>
   <tabstop>clearMessages</tabstop>
-  <tabstop>clients</tabstop>
   <tabstop>sendMethod</tabstop>
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
+  <tabstop>clients</tabstop>
  </tabstops>
  <resources/>
  <connections/>

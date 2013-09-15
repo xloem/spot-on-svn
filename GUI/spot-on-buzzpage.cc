@@ -32,6 +32,7 @@
 #include <QtConcurrent>
 #endif
 #include <QtCore>
+#include <QtCore/qmath.h>
 
 #include "Common/spot-on-common.h"
 #include "Common/spot-on-crypt.h"
@@ -43,6 +44,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 				 const QByteArray &channelSalt,
 				 const QByteArray &channelType,
 				 const QByteArray &id,
+				 const unsigned long iterationCount,
 				 QWidget *parent):QWidget(parent)
 {
   ui.setupUi(this);
@@ -58,6 +60,8 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
     m_channelType = "aes256";
 
   m_id = id.trimmed();
+  m_iterationCount = qMax(static_cast<unsigned long> (10000),
+			  iterationCount);
 
   if(m_id.isEmpty())
     m_id = spoton_crypt::strongRandomBytes
@@ -99,7 +103,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 			 GCRY_MD_SHA512,
 			 static_cast<const void *> (m_channelSalt.constData()),
 			 static_cast<size_t> (m_channelSalt.length()),
-			 15000,
+			 m_iterationCount,
 			 keyLength,
 			 static_cast<void *> (m_key.data())) != 0)
 	m_key = m_channel;
@@ -132,6 +136,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
   ui.clients->setColumnHidden(1, true); // ID
   ui.clients->setColumnHidden(2, true); // Time
   ui.clients->horizontalHeader()->setSortIndicator(0, Qt::AscendingOrder);
+  ui.iterationCount->setText(QString::number(m_iterationCount));
   ui.splitter->setStretchFactor(0, 1);
   ui.splitter->setStretchFactor(1, 0);
   ui.type->setText(m_channelType);

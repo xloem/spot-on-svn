@@ -3075,9 +3075,7 @@ void spoton::slotSetPassphrase(void)
   QByteArray derivedKey
     (spoton_crypt::derivedKey(m_ui.cipherType->currentText(),
 			      m_ui.hashType->currentText(),
-			      static_cast<unsigned long> (m_ui.
-							  iterationCount->
-							  value()),
+			      m_ui.iterationCount->value(),
 			      str1,
 			      salt,
 			      error1));
@@ -3357,9 +3355,7 @@ void spoton::slotValidatePassphrase(void)
 	QByteArray key
 	  (spoton_crypt::derivedKey(m_ui.cipherType->currentText(),
 				    m_ui.hashType->currentText(),
-				    static_cast
-				    <unsigned long> (m_ui.
-						     iterationCount->value()),
+				    m_ui.iterationCount->value(),
 				    m_ui.passphrase->text(),
 				    salt,
 				    error));

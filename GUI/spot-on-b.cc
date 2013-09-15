@@ -3796,13 +3796,35 @@ void spoton::slotJoinBuzzChannel(void)
   if(channel.isEmpty())
     return;
 
-  QByteArray channelSalt(m_ui.channelSalt->text().trimmed().toUtf8());
+  QByteArray channelSalt;
   QByteArray channelType(m_ui.channelType->currentText().toLatin1());
+  QByteArray key;
+  QString error;
   bool found = false;
+  bool ok = true;
+
+  if(channelSalt.isEmpty())
+    channelSalt = spoton_crypt::keyedHash(channel + channelType,
+					  channel, "sha512", &ok);
+
+  if(!ok)
+    return;
+
+  key = spoton_crypt::derivedKey(m_ui.channelType->currentText(),
+				 "sha512",
+				 m_ui.buzzIterationCount->value(),
+				 m_ui.channel->text().trimmed(),
+				 channelSalt,
+				 error);
+
+  if(!error.isEmpty())
+    return;
+
+  channelSalt = m_ui.channelSalt->text().trimmed().toUtf8();
 
   foreach(spoton_buzzpage *page,
 	  m_ui.buzzTab->findChildren<spoton_buzzpage *> ())
-    if(channel == page->channel() && channelType == page->channelType())
+    if(key == page->key())
       {
 	found = true;
 	m_ui.buzzTab->setCurrentWidget(page);
@@ -3814,13 +3836,13 @@ void spoton::slotJoinBuzzChannel(void)
 
   QByteArray id;
 
-  if(m_buzzIds.contains(channel + channelType))
-    id = m_buzzIds[channel + channelType];
+  if(m_buzzIds.contains(key))
+    id = m_buzzIds[key];
   else
     {
       id = spoton_crypt::
 	strongRandomBytes(spoton_common::BUZZ_MAXIMUM_ID_LENGTH / 2).toHex();
-      m_buzzIds[channel + channelType] = id;
+      m_buzzIds[key] = id;
     }
 
   m_ui.channel->clear();
@@ -3829,7 +3851,7 @@ void spoton::slotJoinBuzzChannel(void)
 
   spoton_buzzpage *page = new spoton_buzzpage
     (&m_kernelSocket, channel, channelSalt, channelType,
-     id, this);
+     id, m_ui.buzzIterationCount->value(), this);
 
   connect(&m_buzzStatusTimer,
 	  SIGNAL(timeout(void)),

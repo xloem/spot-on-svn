@@ -49,6 +49,7 @@ class spoton_buzzpage: public QWidget
 		  const QByteArray &channelSalt,
 		  const QByteArray &channelType,
 		  const QByteArray &id,
+		  const unsigned long iterationCount,
 		  QWidget *parent);
   ~spoton_buzzpage();
   QByteArray channel(void) const;
@@ -77,6 +78,7 @@ class spoton_buzzpage: public QWidget
   QTimer m_statusTimer;
   Ui_buzzPage ui;
   bool m_purge;
+  unsigned long m_iterationCount;
   void purgeMessagingCache(void);
 
  private slots:

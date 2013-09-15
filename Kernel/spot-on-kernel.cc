@@ -2002,11 +2002,9 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 						     "aes256").toString(),
 				    s_settings.value("gui/hashType",
 						     "sha512").toString(),
-				    static_cast
-				    <unsigned long> (s_settings.
-						     value("gui/"
-							   "iterationCount",
-							   10000).toInt()),
+				    s_settings.
+				    value("gui/""iterationCount",
+					  10000).toInt(),
 				    passphrase,
 				    salt,
 				    error));

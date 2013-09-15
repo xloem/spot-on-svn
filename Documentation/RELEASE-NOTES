@@ -48,7 +48,7 @@
      automatically accept that peer.
 27.  Configurable tab position.
 28.  Neighbor summary.
-29.  Increased Buzz iteration count from 5000 to 15000.
+29.  Added iteration counts to Buzz channels.
 30.  Added ssl_session_cipher to the neighbors database table. Please
      remove neighbors.db. Field contains encrypted data.
 
