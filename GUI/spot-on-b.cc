@@ -3848,6 +3848,7 @@ void spoton::slotJoinBuzzChannel(void)
   m_ui.channel->clear();
   m_ui.channelSalt->clear();
   m_ui.channelType->setCurrentIndex(0);
+  m_ui.buzzIterationCount->setValue(m_ui.buzzIterationCount->minimum());
 
   spoton_buzzpage *page = new spoton_buzzpage
     (&m_kernelSocket, channel, channelSalt, channelType,
