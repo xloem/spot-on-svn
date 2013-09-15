@@ -4118,9 +4118,11 @@ void spoton::slotPopulateParticipants(void)
 	QList<int> rows;
 	QList<int> rowsE;
 	QModelIndexList list
-	  (m_ui.participants->selectionModel()->selectedRows(3));
+	  (m_ui.participants->selectionModel()->
+	   selectedRows(3)); // public_key_hash
 	QModelIndexList listE
-	  (m_ui.emailParticipants->selectionModel()->selectedRows(3));
+	  (m_ui.emailParticipants->selectionModel()->
+	   selectedRows(3)); // public_key_hash
 	QStringList hashes;
 	QStringList hashesE;
 	int hval = m_ui.participants->horizontalScrollBar()->value();

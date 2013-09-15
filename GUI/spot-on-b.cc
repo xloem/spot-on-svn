@@ -50,7 +50,8 @@ void spoton::slotSendMessage(void)
 
     return;
 
-  QModelIndexList list(m_ui.participants->selectionModel()->selectedRows(1));
+  QModelIndexList list(m_ui.participants->selectionModel()->
+		       selectedRows(1)); // OID
   QString message("");
 
   message.append
@@ -459,7 +460,7 @@ void spoton::slotRemoveParticipants(void)
     if(db.open())
       {
 	QModelIndexList list
-	  (m_ui.participants->selectionModel()->selectedRows(1));
+	  (m_ui.participants->selectionModel()->selectedRows(1)); // OID
 	QSqlQuery query(db);
 
 	while(!list.isEmpty())
@@ -2222,17 +2223,20 @@ void spoton::slotSendMail(void)
 	QStringList oids;
 	QStringList publicKeyHashes;
 
-	list = m_ui.emailParticipants->selectionModel()->selectedRows(0);
+	list = m_ui.emailParticipants->selectionModel()->
+	  selectedRows(0); // Participant
 
 	while(!list.isEmpty())
 	  names.append(list.takeFirst().data().toString());
 
-	list = m_ui.emailParticipants->selectionModel()->selectedRows(1);
+	list = m_ui.emailParticipants->selectionModel()->
+	  selectedRows(1); // OID
 
 	while(!list.isEmpty())
 	  oids.append(list.takeFirst().data().toString());
 
-	list = m_ui.emailParticipants->selectionModel()->selectedRows(3);
+	list = m_ui.emailParticipants->selectionModel()->
+	  selectedRows(3); // public_key_hash
 
 	while(!list.isEmpty())
 	  publicKeyHashes.append(list.takeFirst().data().toString());
@@ -2969,9 +2973,9 @@ void spoton::slotGeminiChanged(QTableWidgetItem *item)
 {
   if(!item)
     return;
-  else if(item->column() != 5) // Gemini
+  else if(item->column() != 6) // Gemini
     return;
-  else if(!m_ui.participants->item(item->row(), 1))
+  else if(!m_ui.participants->item(item->row(), 1)) // OID
     return;
 
   saveGemini(item->text().toUtf8(), // Gemini
@@ -2986,7 +2990,7 @@ void spoton::slotGenerateGeminiInChat(void)
     return;
 
   QTableWidgetItem *item1 = m_ui.participants->item(row, 1); // OID
-  QTableWidgetItem *item2 = m_ui.participants->item(row, 5); // Gemini
+  QTableWidgetItem *item2 = m_ui.participants->item(row, 6); // Gemini
 
   if(!item1 || !item2)
     return;
@@ -4057,7 +4061,8 @@ void spoton::slotRemoveEmailParticipants(void)
     if(db.open())
       {
 	QModelIndexList list
-	  (m_ui.emailParticipants->selectionModel()->selectedRows(1));
+	  (m_ui.emailParticipants->selectionModel()->
+	   selectedRows(1)); // OID
 	QSqlQuery query(db);
 
 	while(!list.isEmpty())
