@@ -597,7 +597,7 @@ void spoton::slotAcceptPublicizedListeners(void)
   QSettings settings;
 
   settings.setValue("gui/acceptPublicizedListeners",
-		    m_settings["gui/acceptPublicizedListeners"]);
+		    m_settings.value("gui/acceptPublicizedListeners"));
 }
 
 void spoton::slotKeepOnlyUserDefinedNeighbors(bool state)
@@ -695,7 +695,8 @@ void spoton::slotChatSendMethodChanged(int index)
   QSettings settings;
 
   settings.setValue
-    ("gui/chatSendMethod", m_settings.value("gui/chatSendMethod").toString());
+    ("gui/chatSendMethod",
+     m_settings.value("gui/chatSendMethod").toString());
 }
 
 void spoton::slotShareChatPublicKeyWithParticipant(void)
@@ -884,7 +885,7 @@ void spoton::slotStatusChanged(int index)
   QSettings settings;
 
   settings.setValue
-    ("gui/my_status", m_settings.value("gui/my_status").toString());
+    ("gui/my_status", m_settings.value("gui/my_status"));
 }
 
 void spoton::slotKernelCipherTypeChanged(int index)
@@ -898,8 +899,7 @@ void spoton::slotKernelCipherTypeChanged(int index)
   QSettings settings;
 
   settings.setValue
-    ("gui/kernelCipherType", m_settings.value("gui/kernelCipherType").
-     toString());
+    ("gui/kernelCipherType", m_settings.value("gui/kernelCipherType"));
 }
 
 bool spoton::isKernelActive(void) const
@@ -3775,7 +3775,7 @@ void spoton::slotKernelKeySizeChanged(const QString &text)
 
   settings.setValue
     ("gui/kernelKeySize",
-     m_settings.value("gui/kernelKeySize").toInt());
+     m_settings.value("gui/kernelKeySize"));
 }
 
 void spoton::slotPublishedKeySizeChanged(const QString &text)
@@ -3786,7 +3786,7 @@ void spoton::slotPublishedKeySizeChanged(const QString &text)
 
   settings.setValue
     ("gui/publishedKeySize",
-     m_settings.value("gui/publishedKeySize").toInt());
+     m_settings.value("gui/publishedKeySize"));
 }
 
 void spoton::slotJoinBuzzChannel(void)

@@ -5279,6 +5279,5 @@ void spoton::slotChangeTabPosition(void)
 
   QSettings settings;
 
-  settings.setValue("gui/tabPosition", m_settings.value("gui/tabPosition",
-							"north"));
+  settings.setValue("gui/tabPosition", m_settings.value("gui/tabPosition"));
 }
