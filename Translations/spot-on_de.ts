@@ -451,7 +451,7 @@
         <location filename="../GUI/spot-on-b.cc" line="442"/>
         <location filename="../GUI/spot-on-b.cc" line="1932"/>
         <location filename="../GUI/spot-on-b.cc" line="3074"/>
-        <location filename="../GUI/spot-on-b.cc" line="4039"/>
+        <location filename="../GUI/spot-on-b.cc" line="4040"/>
         <source>Spot-On: Confirmation</source>
         <translation>Spot-On: Bestätigung</translation>
     </message>
@@ -896,7 +896,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="445"/>
-        <location filename="../GUI/spot-on-b.cc" line="4042"/>
+        <location filename="../GUI/spot-on-b.cc" line="4043"/>
         <source>Are you sure that you wish to remove the selected participant(s)?</source>
         <translation>Bist Du sicher, dass Du den/die ausgewählten Teilnehmer entfernen willst?</translation>
     </message>
@@ -1064,7 +1064,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="3942"/>
+        <location filename="../GUI/spot-on-b.cc" line="3943"/>
         <source>Generating SSL data for kernel socket. Please be patient.</source>
         <translation type="unfinished"></translation>
     </message>

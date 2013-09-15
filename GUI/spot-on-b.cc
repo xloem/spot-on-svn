@@ -3802,6 +3802,7 @@ void spoton::slotJoinBuzzChannel(void)
   QString error;
   bool found = false;
   bool ok = true;
+  unsigned long iterationCount = m_ui.buzzIterationCount->value();
 
   if(channelSalt.isEmpty())
     channelSalt = spoton_crypt::keyedHash(channel + channelType,
@@ -3812,7 +3813,7 @@ void spoton::slotJoinBuzzChannel(void)
 
   key = spoton_crypt::derivedKey(m_ui.channelType->currentText(),
 				 "sha512",
-				 m_ui.buzzIterationCount->value(),
+				 iterationCount,
 				 m_ui.channel->text().trimmed(),
 				 channelSalt,
 				 error);
@@ -3852,7 +3853,7 @@ void spoton::slotJoinBuzzChannel(void)
 
   spoton_buzzpage *page = new spoton_buzzpage
     (&m_kernelSocket, channel, channelSalt, channelType,
-     id, m_ui.buzzIterationCount->value(), this);
+     id, iterationCount, this);
 
   connect(&m_buzzStatusTimer,
 	  SIGNAL(timeout(void)),
