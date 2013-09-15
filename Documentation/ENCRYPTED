@@ -50,6 +50,7 @@ proxy_username
 remote_ip_address
 remote_port
 scope_id
+ssl_session_cipher
 uuid
 
 shared.db:

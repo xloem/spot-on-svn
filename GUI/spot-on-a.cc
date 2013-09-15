@@ -2116,6 +2116,7 @@ void spoton::slotPopulateNeighbors(void)
 		m_ui.neighbors->setRowCount(row + 1);
 
 		QByteArray certificateDigest;
+		QByteArray sslSessionCipher;
 		QString tooltip("");
 		bool ok = true;
 
@@ -2132,6 +2133,13 @@ void spoton::slotPopulateNeighbors(void)
 
 		if(!ok)
 		  certificateDigest = "XYZ";
+
+		sslSessionCipher = m_crypts.value("chat")->
+		  decrypted(QByteArray::
+			    fromBase64(query.
+				       value(24).
+				       toByteArray()),
+			    &ok);
 
 		tooltip =
 		  (tr("UUID: %1\n"
@@ -2224,7 +2232,7 @@ void spoton::slotPopulateNeighbors(void)
 		      "Yes" : "No").
 		  arg(query.value(22).toULongLong()).
 		  arg(query.value(23).toULongLong()).
-		  arg(query.value(24).toString());
+		  arg(sslSessionCipher.constData());
 
 		QCheckBox *check = 0;
 
@@ -2348,6 +2356,9 @@ void spoton::slotPopulateNeighbors(void)
 		    else if(i == 21) // Certificate Digest
 		      item = new QTableWidgetItem
 			(certificateDigest.constData());
+		    else if(i == 24) // SSL Session Cipher
+		      item = new QTableWidgetItem
+			(sslSessionCipher.constData());
 		    else
 		      item = new QTableWidgetItem
 			(query.value(i).toString());

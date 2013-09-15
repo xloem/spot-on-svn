@@ -632,16 +632,25 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
   query.bindValue(1, m_bytesWritten);
   query.bindValue(2, isEncrypted() ? 1 : 0);
 
-  if(cipher.isNull())
+  if(cipher.isNull() || !spoton_kernel::s_crypts.value("chat", 0))
     query.bindValue(3, QVariant::String);
   else
-    query.bindValue(3, QString("%1-%2-%3-%4-%5-%6").
-		    arg(cipher.authenticationMethod()).
-		    arg(cipher.encryptionMethod()).
-		    arg(cipher.keyExchangeMethod()).
-		    arg(cipher.protocolString()).
-		    arg(cipher.supportedBits()).
-		    arg(cipher.usedBits()));
+    {
+      bool ok = true;
+
+      query.bindValue
+	(3, spoton_kernel::s_crypts.value("chat")->
+	 encrypted(QString("%1-%2-%3-%4-%5-%6").
+		   arg(cipher.authenticationMethod()).
+		   arg(cipher.encryptionMethod()).
+		   arg(cipher.keyExchangeMethod()).
+		   arg(cipher.protocolString()).
+		   arg(cipher.supportedBits()).
+		   arg(cipher.usedBits()).toUtf8(), &ok).toBase64());
+
+      if(!ok)
+	query.bindValue(3, QVariant::String);
+    }
 
   query.bindValue(4, seconds);
   query.bindValue(5, m_id);
@@ -3540,21 +3549,6 @@ void spoton_neighbor::slotEncrypted(void)
     }
 
   QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
-
-  QSslCipher cipher(sessionCipher());
-
-  spoton_misc::logError
-    (QString("spoton_neighbor::slotEncrypted(): "
-	     "using session cipher %1-%2-%3-%4-%5-%6-%7 for %8:%9.").
-     arg(cipher.authenticationMethod()).
-     arg(cipher.encryptionMethod()).
-     arg(cipher.keyExchangeMethod()).
-     arg(cipher.name()).
-     arg(cipher.protocolString()).
-     arg(cipher.supportedBits()).
-     arg(cipher.usedBits()).
-     arg(m_address.toString()).
-     arg(m_port));
 }
 
 void spoton_neighbor::slotProxyAuthenticationRequired
