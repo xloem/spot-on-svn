@@ -99,7 +99,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 			 GCRY_MD_SHA512,
 			 static_cast<const void *> (m_channelSalt.constData()),
 			 static_cast<size_t> (m_channelSalt.length()),
-			 5000,
+			 15000,
 			 keyLength,
 			 static_cast<void *> (m_key.data())) != 0)
 	m_key = m_channel;
