@@ -73,6 +73,7 @@ Completed Items
 50.    E-mail retrieval may fail if a node is disconnected because of
        a lifetime expiration. Other communications may fail too.
 51.    Permanent certificates.
+52.    Statistics.
 
 Ignored Items
 
@@ -114,13 +115,11 @@ Remaining Items
 20.    Introduce load balancing of echoes. We're not interested in real-time
        responses. Congestion control is helpful, however, short graphs
        tend to be skewed.
-21.    Provide kernel and network statistics.
-22.    Optional OTR.
-23.    QFSFileEngine::open: No file name specified: created from
+21.    Optional OTR.
+22.    QFSFileEngine::open: No file name specified: created from
        e-mail.
-24.    Support ECC.
-25.    Perform calling over geminis.
-26.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
-27.    Remote kernel termination.
-28.    Zero-knowledge passphrase authentication.
-29.    What to do about corrupt database values?
+23.    Support ECC.
+24.    Perform calling over geminis.
+25.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
+26.    Remote kernel termination.
+27.    Zero-knowledge passphrase authentication.
