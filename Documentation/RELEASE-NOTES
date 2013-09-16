@@ -1,3 +1,8 @@
+0.06 (09/30/2013)
+
+1.   Allow users of the libspoton library to store enough information
+     so that the correct key can be generated.
+
 0.05 (09/16/2013)
 
 1.   Simple IP-based firewall.
