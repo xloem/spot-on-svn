@@ -2582,7 +2582,7 @@ void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0015(): received "
 		     "keep-alive from %1:%2. Resetting time object.").
-	     arg(m_address.isNull()).
+	     arg(m_address.toString()).
 	     arg(m_port));
 	}
       else
