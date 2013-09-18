@@ -316,7 +316,7 @@
     </message>
     <message>
         <location filename="../UI/buzzpage.ui" line="22"/>
-        <source>Iteration Count</source>
+        <source>Frequency</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1039,7 +1039,7 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Buzz&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Buzz provides a simple interface for public communications. Spot-On uses the channel name to derive an encryption key. The channel type describes the cipher algorithm that&apos;s to be used. An optional salt may be specified. Please note that the provided salt must be known by other parties in order for the derived key to be common.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Buzz provides a simple interface for public communications. Spot-On uses the channel name to derive an encryption key. The channel type describes the cipher algorithm that&apos;s to be used. An optional frequency and salt may be specified. Please note that the provided frequency and salt must be known by other parties in order for the derived key to be common.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;User names are not necessarily unique, however, each client on a particular channel attempts a unique ID. The ID exists for the duration of a UI session.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Lucida Grande&apos;; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
@@ -1047,7 +1047,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Lucida Grande&apos;;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Lucida Grande&apos;;&quot;&gt;The Chat page allows known participants to communicate via a hybrid system. Here, one may accept a participant that has shared a public key. To accept a participant, highlight the intended participant and activate a context menu via the left or right mouse button. Once a participant is accepted, your name, public key, and signature key shall be transferred to the participant. Accepting and sharing public keys require direct connections. If a connection is severed before a participant has been accepted, the participant will be removed.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Lucida Grande&apos;;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Lucida Grande&apos;;&quot;&gt;AES-256 keys may be set via the Gemini input field. Geminis provide another layer of encryption. Interested parties must agree on common geminis. Randomly-generated geminis may be transferred automatically via the calling feature.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Lucida Grande&apos;;&quot;&gt;AES-256 keys may be set via the Gemini input field. Geminis provide another layer of encryption. Interested parties must agree on common geminis. Randomly-generated geminis may be transferred automatically via the calling mechanism.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Lucida Grande&apos;;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Lucida Grande&apos;;&quot;&gt;All data transferred over Spot-On sockets are encoded to appear as hypertext. Future revisions may expand or replace this format.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Lucida Grande&apos;;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
@@ -1320,11 +1320,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../UI/controlcenter.ui" line="292"/>
         <location filename="../UI/controlcenter.ui" line="3262"/>
         <source>&amp;Name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../UI/controlcenter.ui" line="78"/>
-        <source>&amp;Iteration Count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1701,6 +1696,11 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../UI/controlcenter.ui" line="3764"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://sourceforge.net/p/spot-on/code/HEAD/tree/branches/0.06/Documentation/RELEASE-NOTES&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Version 0.06&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../UI/controlcenter.ui" line="3900"/>
         <source>&amp;East</source>
         <translation type="unfinished"></translation>
@@ -1829,11 +1829,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../UI/controlcenter.ui" line="3106"/>
         <source>P&amp;assphrase Confirmation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../UI/controlcenter.ui" line="3764"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://sourceforge.net/p/spot-on/code/HEAD/tree/branches/0.05/Documentation/RELEASE-NOTES&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Version 0.05&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2042,6 +2037,11 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../UI/controlcenter.ui" line="161"/>
         <source>&amp;Chat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/controlcenter.ui" line="78"/>
+        <source>&amp;Frequency</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2277,22 +2277,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>statusbar</name>
     <message>
-        <location filename="../UI/statusbar.ui" line="70"/>
+        <location filename="../UI/statusbar.ui" line="64"/>
         <source>Buzz activity!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/statusbar.ui" line="86"/>
+        <location filename="../UI/statusbar.ui" line="77"/>
         <source>You have received a new message.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/statusbar.ui" line="105"/>
+        <location filename="../UI/statusbar.ui" line="93"/>
         <source>New e-mail has arrived!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/statusbar.ui" line="140"/>
+        <location filename="../UI/statusbar.ui" line="122"/>
         <source>Log Viewer</source>
         <translation type="unfinished"></translation>
     </message>
