@@ -34,12 +34,6 @@
    </property>
    <item>
     <widget class="QLabel" name="status">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="minimumSize">
       <size>
        <width>400</width>
@@ -75,9 +69,6 @@
        <height>16</height>
       </size>
      </property>
-     <property name="autoRaise">
-      <bool>true</bool>
-     </property>
     </widget>
    </item>
    <item>
@@ -93,9 +84,6 @@
        <width>16</width>
        <height>16</height>
       </size>
-     </property>
-     <property name="autoRaise">
-      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -113,9 +101,6 @@
        <height>16</height>
       </size>
      </property>
-     <property name="autoRaise">
-      <bool>true</bool>
-     </property>
     </widget>
    </item>
    <item>
@@ -128,9 +113,6 @@
        <width>16</width>
        <height>16</height>
       </size>
-     </property>
-     <property name="autoRaise">
-      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -148,9 +130,6 @@
        <height>16</height>
       </size>
      </property>
-     <property name="autoRaise">
-      <bool>true</bool>
-     </property>
     </widget>
    </item>
    <item>
@@ -161,9 +140,6 @@
        <height>16</height>
       </size>
      </property>
-     <property name="autoRaise">
-      <bool>true</bool>
-     </property>
     </widget>
    </item>
    <item>
@@ -173,12 +149,6 @@
        <width>16</width>
        <height>16</height>
       </size>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextBesideIcon</enum>
-     </property>
-     <property name="autoRaise">
-      <bool>true</bool>
      </property>
     </widget>
    </item>
