@@ -24,7 +24,7 @@ QMAKE_CXXFLAGS_RELEASE += -mtune=generic -pie -O3 \
 			  -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith
 QMAKE_EXTRA_TARGETS = libspoton purge
-INCLUDEPATH	+= . ../../. GUI ../../libSpotOn/Include.win32
+INCLUDEPATH	+= . ../../. GUI ../../libSpotOn/Include.win32 \
 		   u:/usr/local473/include
 LIBS		+= -L../../libSpotOn -L../../libSpotOn/Libraries.win32 \
 		   -Lu:/usr/local473/lib \
