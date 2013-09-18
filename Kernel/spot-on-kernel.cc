@@ -1391,7 +1391,8 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 	if(query.exec("SELECT gemini, public_key "
 		      "FROM friends_public_keys WHERE "
-		      "key_type = 'chat' AND neighbor_oid = -1"))
+		      "key_type = 'chat' AND neighbor_oid = -1 AND "
+		      "status <> 'offline'"))
 	  while(query.next())
 	    {
 	      QByteArray data;
