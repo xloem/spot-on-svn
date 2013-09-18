@@ -3,6 +3,8 @@
 1.   Allow users of the libspoton library to store enough information
      so that the correct key can be generated.
 2.   Corrected log messages.
+3.   Corrected OS2 UI project file. Correction also applied to 0.05 branch.
+     Thanks Elbert.
 
 0.05 (09/16/2013)
 
