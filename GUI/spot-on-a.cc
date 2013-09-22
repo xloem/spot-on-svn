@@ -2524,6 +2524,13 @@ void spoton::slotDeactivateKernel(void)
   libspoton_handle_t libspotonHandle;
 
   if(libspoton_init(sharedPath.toStdString().c_str(),
+		    0,
+		    0,
+		    0,
+		    0,
+		    0,
+		    0,
+		    0,
 		    &libspotonHandle,
 		    m_settings.value("gui/gcryctl_init_secmem",
 				     65536).toInt()) == LIBSPOTON_ERROR_NONE)
@@ -2550,6 +2557,13 @@ void spoton::slotGeneralTimerTimeout(void)
   pidPalette.setColor(m_ui.pid->backgroundRole(), color);
 
   if(libspoton_init(sharedPath.toStdString().c_str(),
+		    0,
+		    0,
+		    0,
+		    0,
+		    0,
+		    0,
+		    0,
 		    &libspotonHandle,
 		    m_settings.value("gui/gcryctl_init_secmem",
 				     65536).toInt()) == LIBSPOTON_ERROR_NONE)

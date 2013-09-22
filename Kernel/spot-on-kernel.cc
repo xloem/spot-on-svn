@@ -109,6 +109,13 @@ static void sig_handler(int signum)
   libspoton_handle_t libspotonHandle;
 
   if(libspoton_init(sharedPath.toStdString().c_str(),
+		    0,
+		    0,
+		    0,
+		    0,
+		    0,
+		    0,
+		    0,
 		    &libspotonHandle,
 		    65536) == LIBSPOTON_ERROR_NONE) /*
 						    ** We don't need
@@ -199,6 +206,13 @@ int main(int argc, char *argv[])
   libspoton_handle_t libspotonHandle;
 
   if((err = libspoton_init(sharedPath.toStdString().c_str(),
+			   0,
+			   0,
+			   0,
+			   0,
+			   0,
+			   0,
+			   0,
 			   &libspotonHandle,
 			   integer)) == LIBSPOTON_ERROR_NONE)
     err = libspoton_register_kernel(QCoreApplication::applicationPid(),
@@ -454,6 +468,13 @@ void spoton_kernel::cleanup(void)
   libspoton_handle_t libspotonHandle;
 
   if(libspoton_init(sharedPath.toStdString().c_str(),
+		    0,
+		    0,
+		    0,
+		    0,
+		    0,
+		    0,
+		    0,
 		    &libspotonHandle,
 		    s_settings.value("kernel/gcryctl_init_secmem",
 				     65536).toInt()) == LIBSPOTON_ERROR_NONE)
@@ -888,6 +909,13 @@ void spoton_kernel::checkForTermination(void)
       libspoton_handle_t libspotonHandle;
 
       if((err = libspoton_init(sharedPath.toStdString().c_str(),
+			       0,
+			       0,
+			       0,
+			       0,
+			       0,
+			       0,
+			       0,
 			       &libspotonHandle,
 			       s_settings.value("kernel/gcryctl_init_secmem",
 						65536).toInt())) ==
