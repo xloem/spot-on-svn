@@ -2523,17 +2523,17 @@ void spoton::slotDeactivateKernel(void)
 		     "shared.db");
   libspoton_handle_t libspotonHandle;
 
-  if(libspoton_init(sharedPath.toStdString().c_str(),
-		    0,
-		    0,
-		    0,
-		    0,
-		    0,
-		    0,
-		    0,
-		    &libspotonHandle,
-		    m_settings.value("gui/gcryctl_init_secmem",
-				     65536).toInt()) == LIBSPOTON_ERROR_NONE)
+  if(libspoton_init_b(sharedPath.toStdString().c_str(),
+		      0,
+		      0,
+		      0,
+		      0,
+		      0,
+		      0,
+		      0,
+		      &libspotonHandle,
+		      m_settings.value("gui/gcryctl_init_secmem",
+				       65536).toInt()) == LIBSPOTON_ERROR_NONE)
     libspoton_deregister_kernel
       (libspoton_registered_kernel_pid(&libspotonHandle, 0),
        &libspotonHandle);
@@ -2556,17 +2556,18 @@ void spoton::slotGeneralTimerTimeout(void)
 
   pidPalette.setColor(m_ui.pid->backgroundRole(), color);
 
-  if(libspoton_init(sharedPath.toStdString().c_str(),
-		    0,
-		    0,
-		    0,
-		    0,
-		    0,
-		    0,
-		    0,
-		    &libspotonHandle,
-		    m_settings.value("gui/gcryctl_init_secmem",
-				     65536).toInt()) == LIBSPOTON_ERROR_NONE)
+  if(libspoton_init_b(sharedPath.toStdString().c_str(),
+		      0,
+		      0,
+		      0,
+		      0,
+		      0,
+		      0,
+		      0,
+		      &libspotonHandle,
+		      m_settings.value("gui/gcryctl_init_secmem",
+				       65536).
+		      toInt()) == LIBSPOTON_ERROR_NONE)
     {
       libspoton_error_t err = LIBSPOTON_ERROR_NONE;
       pid_t pid = 0;

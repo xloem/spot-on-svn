@@ -108,20 +108,20 @@ static void sig_handler(int signum)
 		     "shared.db");
   libspoton_handle_t libspotonHandle;
 
-  if(libspoton_init(sharedPath.toStdString().c_str(),
-		    0,
-		    0,
-		    0,
-		    0,
-		    0,
-		    0,
-		    0,
-		    &libspotonHandle,
-		    65536) == LIBSPOTON_ERROR_NONE) /*
-						    ** We don't need
-						    ** the stored secure
-						    ** memory size here.
-						    */
+  if(libspoton_init_b(sharedPath.toStdString().c_str(),
+		      0,
+		      0,
+		      0,
+		      0,
+		      0,
+		      0,
+		      0,
+		      &libspotonHandle,
+		      65536) == LIBSPOTON_ERROR_NONE) /*
+						      ** We don't need
+						      ** the stored secure
+						      ** memory size here.
+						      */
 #ifdef Q_OS_WIN32
     libspoton_deregister_kernel(_getpid(), &libspotonHandle);
 #else
@@ -205,16 +205,16 @@ int main(int argc, char *argv[])
   libspoton_error_t err = LIBSPOTON_ERROR_NONE;
   libspoton_handle_t libspotonHandle;
 
-  if((err = libspoton_init(sharedPath.toStdString().c_str(),
-			   0,
-			   0,
-			   0,
-			   0,
-			   0,
-			   0,
-			   0,
-			   &libspotonHandle,
-			   integer)) == LIBSPOTON_ERROR_NONE)
+  if((err = libspoton_init_b(sharedPath.toStdString().c_str(),
+			     0,
+			     0,
+			     0,
+			     0,
+			     0,
+			     0,
+			     0,
+			     &libspotonHandle,
+			     integer)) == LIBSPOTON_ERROR_NONE)
     err = libspoton_register_kernel(QCoreApplication::applicationPid(),
 				    false, // Do not force registration.
 				    &libspotonHandle);
@@ -467,17 +467,18 @@ void spoton_kernel::cleanup(void)
 		     "shared.db");
   libspoton_handle_t libspotonHandle;
 
-  if(libspoton_init(sharedPath.toStdString().c_str(),
-		    0,
-		    0,
-		    0,
-		    0,
-		    0,
-		    0,
-		    0,
-		    &libspotonHandle,
-		    s_settings.value("kernel/gcryctl_init_secmem",
-				     65536).toInt()) == LIBSPOTON_ERROR_NONE)
+  if(libspoton_init_b(sharedPath.toStdString().c_str(),
+		      0,
+		      0,
+		      0,
+		      0,
+		      0,
+		      0,
+		      0,
+		      &libspotonHandle,
+		      s_settings.value("kernel/gcryctl_init_secmem",
+				       65536).
+		      toInt()) == LIBSPOTON_ERROR_NONE)
     libspoton_deregister_kernel(QCoreApplication::applicationPid(),
 				&libspotonHandle);
 
@@ -908,17 +909,18 @@ void spoton_kernel::checkForTermination(void)
     {
       libspoton_handle_t libspotonHandle;
 
-      if((err = libspoton_init(sharedPath.toStdString().c_str(),
-			       0,
-			       0,
-			       0,
-			       0,
-			       0,
-			       0,
-			       0,
-			       &libspotonHandle,
-			       s_settings.value("kernel/gcryctl_init_secmem",
-						65536).toInt())) ==
+      if((err = libspoton_init_b(sharedPath.toStdString().c_str(),
+				 0,
+				 0,
+				 0,
+				 0,
+				 0,
+				 0,
+				 0,
+				 &libspotonHandle,
+				 s_settings.
+				 value("kernel/gcryctl_init_secmem",
+				       65536).toInt())) ==
 	 LIBSPOTON_ERROR_NONE)
 	registered = QCoreApplication::applicationPid() ==
 	  libspoton_registered_kernel_pid(&libspotonHandle, &err);
