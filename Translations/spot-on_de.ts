@@ -1652,6 +1652,11 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../UI/controlcenter.ui" line="2150"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Spot-On will record peer certificates during initial connections. Subsequent connections will cause Spot-On to inspect peer certificates. If there are discrepancies between recorded certificates and transmitted certificates, Spot-On will sever the connections. Enable this option if you would like Spot-On to ignore discrepancies.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../UI/controlcenter.ui" line="2282"/>
         <source>&amp;Hostname</source>
         <translation type="unfinished"></translation>
@@ -1687,7 +1692,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2769"/>
+        <location filename="../UI/controlcenter.ui" line="2810"/>
         <source>Spot-On-Kernel &amp;Executable</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1702,22 +1707,22 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2832"/>
+        <location filename="../UI/controlcenter.ui" line="2873"/>
         <source>Cost</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2925"/>
+        <location filename="../UI/controlcenter.ui" line="2966"/>
         <source>If enabled, messages that are deciphered correctly will be forwarded.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3024"/>
+        <location filename="../UI/controlcenter.ui" line="3065"/>
         <source>If checked, new RSA key pairs will be generated whenever the passphrase is updated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3133"/>
+        <location filename="../UI/controlcenter.ui" line="3188"/>
         <source>Set Passphrase</source>
         <translation type="unfinished">Setze Passphrase</translation>
     </message>
@@ -1818,7 +1823,7 @@ p, li { white-space: pre-wrap; }
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2711"/>
+        <location filename="../UI/controlcenter.ui" line="2752"/>
         <source>Kernel</source>
         <translation>Kernel</translation>
     </message>
@@ -1827,12 +1832,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&amp;Aktiviere</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2732"/>
+        <location filename="../UI/controlcenter.ui" line="2773"/>
         <source>PID</source>
         <translation>PID</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2745"/>
+        <location filename="../UI/controlcenter.ui" line="2786"/>
         <source>0</source>
         <translation>0</translation>
     </message>
@@ -1854,7 +1859,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="1217"/>
-        <location filename="../UI/controlcenter.ui" line="2719"/>
+        <location filename="../UI/controlcenter.ui" line="2760"/>
         <source>Activate</source>
         <translation>Aktiviere</translation>
     </message>
@@ -1889,7 +1894,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../UI/controlcenter.ui" line="71"/>
         <location filename="../UI/controlcenter.ui" line="305"/>
         <location filename="../UI/controlcenter.ui" line="1000"/>
-        <location filename="../UI/controlcenter.ui" line="3178"/>
+        <location filename="../UI/controlcenter.ui" line="2728"/>
         <location filename="../UI/controlcenter.ui" line="3275"/>
         <source>Save</source>
         <translation>Speichern</translation>
@@ -2205,7 +2210,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../UI/controlcenter.ui" line="1435"/>
         <location filename="../UI/controlcenter.ui" line="1769"/>
         <location filename="../UI/controlcenter.ui" line="2167"/>
-        <location filename="../UI/controlcenter.ui" line="2883"/>
+        <location filename="../UI/controlcenter.ui" line="2924"/>
         <source>&amp;SSL Key Size</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2213,8 +2218,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../UI/controlcenter.ui" line="1449"/>
         <location filename="../UI/controlcenter.ui" line="1786"/>
         <location filename="../UI/controlcenter.ui" line="2181"/>
-        <location filename="../UI/controlcenter.ui" line="2900"/>
-        <location filename="../UI/controlcenter.ui" line="3041"/>
+        <location filename="../UI/controlcenter.ui" line="2941"/>
+        <location filename="../UI/controlcenter.ui" line="3082"/>
         <source>2048</source>
         <translation type="unfinished">2048</translation>
     </message>
@@ -2222,8 +2227,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../UI/controlcenter.ui" line="1459"/>
         <location filename="../UI/controlcenter.ui" line="1796"/>
         <location filename="../UI/controlcenter.ui" line="2191"/>
-        <location filename="../UI/controlcenter.ui" line="2910"/>
-        <location filename="../UI/controlcenter.ui" line="3051"/>
+        <location filename="../UI/controlcenter.ui" line="2951"/>
+        <location filename="../UI/controlcenter.ui" line="3092"/>
         <source>4096</source>
         <translation type="unfinished">4096</translation>
     </message>
@@ -2346,11 +2351,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2150"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Spot-On will record peer certificates during initial connections. Subsequent connections will cause Spot-On to inspect peer certificates. If there are discrepancies between recorded certificates and transmitted certificates, Spot-On will abandon the connections. Enable this option if you would like Spot-On to ignore discrepancies.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../UI/controlcenter.ui" line="2153"/>
         <source>&amp;Allow Exceptions</source>
         <translation type="unfinished"></translation>
@@ -2366,12 +2366,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3161"/>
+        <location filename="../UI/controlcenter.ui" line="2711"/>
         <source>&amp;SSL Control String</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3171"/>
+        <location filename="../UI/controlcenter.ui" line="2721"/>
         <source>HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2477,23 +2477,23 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Verneinen</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3001"/>
+        <location filename="../UI/controlcenter.ui" line="3042"/>
         <source>Iteration &amp;Count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3069"/>
+        <location filename="../UI/controlcenter.ui" line="3110"/>
         <source>Salt &amp;Length</source>
         <translation>Salz-Länge</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3123"/>
+        <location filename="../UI/controlcenter.ui" line="3147"/>
         <location filename="../UI/controlcenter.ui" line="3660"/>
         <source>P&amp;assphrase</source>
         <translation>Passphrase</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3106"/>
+        <location filename="../UI/controlcenter.ui" line="3164"/>
         <source>P&amp;assphrase Confirmation</source>
         <translation>Bestätigung Passphrase</translation>
     </message>
@@ -2557,13 +2557,13 @@ p, li { white-space: pre-wrap; }
         <translation>Bearbeiten</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2755"/>
+        <location filename="../UI/controlcenter.ui" line="2796"/>
         <source>Deactivate</source>
         <translation>Deaktivieren</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="2687"/>
-        <location filename="../UI/controlcenter.ui" line="2782"/>
+        <location filename="../UI/controlcenter.ui" line="2823"/>
         <source>Select</source>
         <translation>Auswählen</translation>
     </message>
@@ -2576,7 +2576,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Lösche alle</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2953"/>
+        <location filename="../UI/controlcenter.ui" line="2994"/>
         <source>Passphrase</source>
         <translation>Passphrase</translation>
     </message>
@@ -2588,43 +2588,43 @@ p, li { white-space: pre-wrap; }
         <location filename="../UI/controlcenter.ui" line="1454"/>
         <location filename="../UI/controlcenter.ui" line="1791"/>
         <location filename="../UI/controlcenter.ui" line="2186"/>
-        <location filename="../UI/controlcenter.ui" line="2905"/>
-        <location filename="../UI/controlcenter.ui" line="3046"/>
+        <location filename="../UI/controlcenter.ui" line="2946"/>
+        <location filename="../UI/controlcenter.ui" line="3087"/>
         <source>3072</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2807"/>
+        <location filename="../UI/controlcenter.ui" line="2848"/>
         <source>Randomized</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2822"/>
+        <location filename="../UI/controlcenter.ui" line="2863"/>
         <source>&amp;Congestion Control</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2855"/>
+        <location filename="../UI/controlcenter.ui" line="2896"/>
         <source>&amp;Log Events</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2869"/>
+        <location filename="../UI/controlcenter.ui" line="2910"/>
         <source>&amp;Scrambler</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2928"/>
+        <location filename="../UI/controlcenter.ui" line="2969"/>
         <source>S&amp;uper Echo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3056"/>
+        <location filename="../UI/controlcenter.ui" line="3097"/>
         <source>7680</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3061"/>
+        <location filename="../UI/controlcenter.ui" line="3102"/>
         <source>15360</source>
         <translation></translation>
     </message>
@@ -2633,7 +2633,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Salz-Länge</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3116"/>
+        <location filename="../UI/controlcenter.ui" line="3174"/>
         <source>Minimum of 16 characters.</source>
         <translation>Minimum von 16 Zeichen.</translation>
     </message>
@@ -2704,18 +2704,18 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&amp;Passphrase</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2793"/>
-        <location filename="../UI/controlcenter.ui" line="2967"/>
+        <location filename="../UI/controlcenter.ui" line="2834"/>
+        <location filename="../UI/controlcenter.ui" line="3008"/>
         <source>&amp;Cipher</source>
         <translation>Ziffer</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2984"/>
+        <location filename="../UI/controlcenter.ui" line="3025"/>
         <source>&amp;Hash</source>
         <translation>Hash</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="3027"/>
+        <location filename="../UI/controlcenter.ui" line="3068"/>
         <source>&amp;RSA Key Size</source>
         <translation>RSA Schlüsselgröße</translation>
     </message>
