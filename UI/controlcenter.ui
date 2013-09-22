@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1300</width>
+    <width>1249</width>
     <height>693</height>
    </rect>
   </property>
@@ -189,8 +189,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>459</width>
-                <height>441</height>
+                <width>1227</width>
+                <height>585</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2147,7 +2147,7 @@
                    <item>
                     <widget class="QCheckBox" name="addException">
                      <property name="toolTip">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Spot-On will record peer certificates during initial connections. Subsequent connections will cause Spot-On to inspect peer certificates. If there are discrepancies between recorded certificates and transmitted certificates, Spot-On will abandon the connections. Enable this option if you would like Spot-On to ignore discrepancies.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Spot-On will record peer certificates during initial connections. Subsequent connections will cause Spot-On to inspect peer certificates. If there are discrepancies between recorded certificates and transmitted certificates, Spot-On will sever the connections. Enable this option if you would like Spot-On to ignore discrepancies.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="text">
                       <string>&amp;Allow Exceptions</string>
@@ -2664,8 +2664,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1137</width>
-             <height>385</height>
+             <width>1227</width>
+             <height>585</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -2690,6 +2690,47 @@
               </item>
               <item>
                <spacer name="horizontalSpacer_44">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_50">
+              <item>
+               <widget class="QLabel" name="label_43">
+                <property name="text">
+                 <string>&amp;SSL Control String</string>
+                </property>
+                <property name="buddy">
+                 <cstring>sslControlString</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="sslControlString">
+                <property name="text">
+                 <string>HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="saveSslControlString">
+                <property name="text">
+                 <string>Save</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_46">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -3100,6 +3141,23 @@
                  </item>
                  <item>
                   <layout class="QGridLayout" name="gridLayout">
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="label_55">
+                     <property name="text">
+                      <string>P&amp;assphrase</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>passphrase1</cstring>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QLineEdit" name="passphrase1">
+                     <property name="echoMode">
+                      <enum>QLineEdit::Password</enum>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="3" column="0">
                     <widget class="QLabel" name="label_56">
                      <property name="text">
@@ -3117,13 +3175,10 @@
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="0">
-                    <widget class="QLabel" name="label_55">
-                     <property name="text">
-                      <string>P&amp;assphrase</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>passphrase1</cstring>
+                   <item row="3" column="1">
+                    <widget class="QLineEdit" name="passphrase2">
+                     <property name="echoMode">
+                      <enum>QLineEdit::Password</enum>
                      </property>
                     </widget>
                    </item>
@@ -3134,65 +3189,10 @@
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="1">
-                    <widget class="QLineEdit" name="passphrase1">
-                     <property name="echoMode">
-                      <enum>QLineEdit::Password</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="3" column="1">
-                    <widget class="QLineEdit" name="passphrase2">
-                     <property name="echoMode">
-                      <enum>QLineEdit::Password</enum>
-                     </property>
-                    </widget>
-                   </item>
                   </layout>
                  </item>
                 </layout>
                </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_50">
-                <item>
-                 <widget class="QLabel" name="label_43">
-                  <property name="text">
-                   <string>&amp;SSL Control String</string>
-                  </property>
-                  <property name="buddy">
-                   <cstring>sslControlString</cstring>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="sslControlString">
-                  <property name="text">
-                   <string>HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="saveSslControlString">
-                  <property name="text">
-                   <string>Save</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_46">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
               </item>
               <item>
                <spacer name="verticalSpacer_10">
@@ -3811,7 +3811,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1300</width>
+     <width>1249</width>
      <height>27</height>
     </rect>
    </property>
@@ -4039,6 +4039,8 @@
   <tabstop>scrollArea</tabstop>
   <tabstop>geoipPath</tabstop>
   <tabstop>selectGeoIP</tabstop>
+  <tabstop>sslControlString</tabstop>
+  <tabstop>saveSslControlString</tabstop>
   <tabstop>activateKernel</tabstop>
   <tabstop>pid</tabstop>
   <tabstop>deactivateKernel</tabstop>
@@ -4060,8 +4062,6 @@
   <tabstop>passphrase1</tabstop>
   <tabstop>passphrase2</tabstop>
   <tabstop>setPassphrase</tabstop>
-  <tabstop>sslControlString</tabstop>
-  <tabstop>saveSslControlString</tabstop>
   <tabstop>resetSpotOn</tabstop>
   <tabstop>urlNodeName</tabstop>
   <tabstop>pushButton</tabstop>
