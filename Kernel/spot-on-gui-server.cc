@@ -110,15 +110,25 @@ spoton_gui_server::spoton_gui_server(QObject *parent):
 	  SIGNAL(newConnection(void)),
 	  this,
 	  SLOT(slotClientConnected(void)));
+  connect(&m_fileSystemWatcher,
+	  SIGNAL(fileChanged(const QString &)),
+	  this,
+	  SLOT(slotFileChanged(const QString &)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTimeout(void)));
   m_generalTimer.start(2500);
+  m_fileSystemWatcher.addPath
+    (spoton_misc::homePath() + QDir::separator() +
+     "kernel.db");
 }
 
 spoton_gui_server::~spoton_gui_server()
 {
+  m_fileSystemWatcher.removePath
+    (spoton_misc::homePath() + QDir::separator() +
+     "kernel.db");
   m_guiSocketData.clear();
 
   QString connectionName("");
@@ -416,8 +426,12 @@ void spoton_gui_server::slotTimeout(void)
 	    updateQuery.prepare("INSERT INTO kernel_gui_server (port) "
 				"VALUES (?)");
 	    updateQuery.bindValue(0, serverPort());
-	    updateQuery.exec();
+
+	    if(updateQuery.exec())
+	      m_generalTimer.stop();
 	  }
+	else if(port == serverPort())
+	  m_generalTimer.stop();
       }
 
     db.close();
@@ -606,4 +620,12 @@ void spoton_gui_server::slotEncrypted(void)
      arg(cipher.usedBits()).
      arg(socket->peerAddress().toString()).
      arg(socket->peerPort()));
+}
+
+void spoton_gui_server::slotFileChanged(const QString &path)
+{
+  Q_UNUSED(path);
+
+  if(!m_generalTimer.isActive())
+    m_generalTimer.start();
 }

@@ -28,6 +28,7 @@
 #ifndef _spoton_gui_server_h_
 #define _spoton_gui_server_h_
 
+#include <QFileSystemWatcher>
 #include <QQueue>
 #include <QSslSocket>
 #include <QTcpServer>
@@ -78,6 +79,7 @@ class spoton_gui_server: public spoton_gui_server_tcp_server
   ~spoton_gui_server();
 
  private:
+  QFileSystemWatcher m_fileSystemWatcher;
   QHash<int, QByteArray> m_guiSocketData;
   QTimer m_generalTimer;
 
@@ -85,6 +87,7 @@ class spoton_gui_server: public spoton_gui_server_tcp_server
   void slotClientConnected(void);
   void slotClientDisconnected(void);
   void slotEncrypted(void);
+  void slotFileChanged(const QString &path);
   void slotModeChanged(QSslSocket::SslMode mode);
   void slotNewEMailArrived(void);
   void slotReadyRead(void);
