@@ -1,5 +1,5 @@
 libspoton.target = libspoton.dylib
-libspoton.commands = $(MAKE) -C ../../libSpotOn
+libspoton.commands = $(MAKE) -C ../../libSpotOn library
 libspoton.depends =
 
 TEMPLATE	= app

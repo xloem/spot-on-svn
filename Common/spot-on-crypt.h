@@ -94,12 +94,12 @@ class spoton_crypt
 			      const long days,
 			      QString &error);
   static void purgeDatabases(void);
-  static void reencodeRSAKeys(const QString &newCipher,
-			      const QByteArray &newPassphrase,
-			      const QString &oldCipher,
-			      const char *oldPassphrase,
-			      const QString &id,
-			      QString &error);
+  static void reencodeKeys(const QString &newCipher,
+			   const QByteArray &newPassphrase,
+			   const QString &oldCipher,
+			   const char *oldPassphrase,
+			   const QString &id,
+			   QString &error);
   static void setSslCiphers(const QList<QSslCipher> &ciphers,
 			    QSslConfiguration &configuration);
   spoton_crypt(const QString &id); // Random object?
@@ -123,7 +123,9 @@ class spoton_crypt
   QString cipherType(void) const;
   char *symmetricKey(void) const;
   size_t symmetricKeyLength(void) const;
-  void generatePrivatePublicKeys(const int rsaKeySize, QString &error);
+  void generatePrivatePublicKeys(const int keySize,
+				 const QString &keyType,
+				 QString &error);
   void initializePrivateKeyContainer(bool *ok);
 
  private:

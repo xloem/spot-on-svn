@@ -1,5 +1,5 @@
 libspoton.target = libspoton.so
-libspoton.commands = gmake -C ../../libSpotOn
+libspoton.commands = gmake -C ../../libSpotOn library
 libspoton.depends =
 
 TEMPLATE	= app

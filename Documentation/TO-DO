@@ -74,6 +74,7 @@ Completed Items
        a lifetime expiration. Other communications may fail too.
 51.    Permanent certificates.
 52.    Statistics.
+53.    Introduce DSA and ElGamal.
 
 Ignored Items
 
@@ -91,7 +92,7 @@ Ignored Items
 Remaining Items
 
 1.     Inspect UTF-8 uses.
-2.     Introduce DSA and ElGamal?
+2.     Zero-knowledge passphrase authentication.
 3.     Echo proxy?
 4.     Prioritize keep-alive messages.
 5.     Allow for other ciphers besides AES for e-mail.
@@ -122,4 +123,3 @@ Remaining Items
 24.    Perform calling over geminis.
 25.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
 26.    Remote kernel termination.
-27.    Zero-knowledge passphrase authentication.

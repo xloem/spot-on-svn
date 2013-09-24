@@ -8,6 +8,11 @@
 4.   Archived branches 0.01 through 0.04.
 5.   Limit timer cycles in the kernel via file system watchers.
 6.   The scrambler timer should be a single-shot timer.
+7.   Corrected dialog information.
+8.   ElGamal encryption key pairs. DSA and RSA signature key pairs.
+9.   Clear the neighbor summary correctly.
+10.  Corrected recording of the kernel cipher type after a new
+     installation.
 
 0.05 (09/16/2013)
 

@@ -379,13 +379,6 @@ void spoton_misc::logError(const QString &error)
   if(error.trimmed().isEmpty())
     return;
 
-  static QString s_lastError("");
-
-  if(error.trimmed() == s_lastError)
-    return;
-  else
-    s_lastError = error.trimmed();
-
   QFile file(homePath() + QDir::separator() + "error_log.dat");
 
   if(file.size() >= 25 * 1000 * 1024)
@@ -394,6 +387,16 @@ void spoton_misc::logError(const QString &error)
     */
 
     file.remove();
+
+  static QString s_lastError("");
+
+  if(error.trimmed() == s_lastError)
+    {
+      if(!file.size() == 0)
+	return;
+    }
+  else
+    s_lastError = error.trimmed();
 
   if(file.open(QIODevice::Append | QIODevice::WriteOnly))
     {
@@ -1658,15 +1661,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 2048;
 
   settings["gui/kernelKeySize"] = integer;
-  integer = qAbs(settings.value("gui/publishedKeySize", 2048).toInt(&ok));
-
-  if(!ok)
-    integer = 2048;
-  else if(!(integer == 2048 || integer == 3072 || integer == 4096))
-    integer = 2048;
-
-  settings["gui/publishedKeySize"] = integer;
-  integer = qAbs(settings.value("gui/rsaKeySize", 3072).toInt(&ok));
+  integer = qAbs(settings.value("gui/keySize", 3072).toInt(&ok));
 
   if(!ok)
     integer = 3072;
@@ -1675,7 +1670,15 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 	    integer == 15360))
     integer = 3072;
 
-  settings["gui/rsaKeySize"] = integer;
+  settings["gui/keySize"] = integer;
+  integer = qAbs(settings.value("gui/publishedKeySize", 2048).toInt(&ok));
+
+  if(!ok)
+    integer = 2048;
+  else if(!(integer == 2048 || integer == 3072 || integer == 4096))
+    integer = 2048;
+
+  settings["gui/publishedKeySize"] = integer;
   integer = qAbs(settings.value("gui/saltLength", 256).toInt(&ok));
 
   if(!ok)

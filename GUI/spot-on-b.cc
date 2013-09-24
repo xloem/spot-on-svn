@@ -1627,7 +1627,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("Invalid key type. Expecting 'chat', 'email', or 'url'."));
+	     tr("Invalid key type. Expecting 'chat', 'e-mail', or 'url'."));
 	  return;
 	}
 
@@ -1660,7 +1660,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("You're attempting to add your own 'email' keys. "
+	     tr("You're attempting to add your own 'e-mail' keys. "
 		"Please do not do this."));
 	  return;
 	}
@@ -1672,7 +1672,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("Invalid messaging or url public key signature."));
+	     tr("Invalid chat, e-mail, or url public key signature."));
 	  return;
 	}
 
@@ -1837,7 +1837,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("Invalid key type. Expecting 'chat', 'email', or 'url'."));
+	     tr("Invalid key type. Expecting 'chat', 'e-mail', or 'url'."));
 	  return;
 	}
 

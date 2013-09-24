@@ -1,6 +1,6 @@
 cache()
 libspoton.target = libspoton.so
-libspoton.commands = $(MAKE) -C ../../../libSpotOn
+libspoton.commands = $(MAKE) -C ../../../libSpotOn library
 libspoton.depends =
 purge.commands = rm -f *~
 

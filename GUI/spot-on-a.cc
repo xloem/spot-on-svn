@@ -442,9 +442,17 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotChangeTabPosition(void)));
-  connect(m_ui.newRSAKeys,
+  connect(m_ui.newKeys,
 	  SIGNAL(toggled(bool)),
-	  m_ui.rsaKeySize,
+	  m_ui.keySize,
+	  SLOT(setEnabled(bool)));
+  connect(m_ui.newKeys,
+	  SIGNAL(toggled(bool)),
+	  m_ui.encryptionKeyType,
+	  SLOT(setEnabled(bool)));
+  connect(m_ui.newKeys,
+	  SIGNAL(toggled(bool)),
+	  m_ui.signatureKeyType,
 	  SLOT(setEnabled(bool)));
   connect(m_ui.countriesRadio,
 	  SIGNAL(toggled(bool)),
@@ -679,6 +687,13 @@ spoton::spoton(void):QMainWindow()
 
   QSettings settings;
 
+  if(settings.contains("gui/rsaKeySize"))
+    {
+      settings.setValue("gui/keySize",
+			settings.value("gui/rsaKeySize"));
+      settings.remove("gui/rsaKeySize");
+    }
+
   if(!settings.contains("gui/saveCopy"))
     settings.setValue("gui/saveCopy", true);
 
@@ -780,6 +795,16 @@ spoton::spoton(void):QMainWindow()
     m_ui.chatSendMethod->setCurrentIndex(1);
   else
     m_ui.chatSendMethod->setCurrentIndex(0);
+
+  if(m_settings.value("gui/encryptionKey", "elg").toString() == "elg")
+    m_ui.encryptionKeyType->setCurrentIndex(0);
+  else
+    m_ui.encryptionKeyType->setCurrentIndex(1);
+
+  if(m_settings.value("gui/signatureKey", "dsa").toString() == "dsa")
+    m_ui.signatureKeyType->setCurrentIndex(0);
+  else
+    m_ui.signatureKeyType->setCurrentIndex(1);
 
   QString keySize
     (m_settings.value("gui/kernelKeySize", "2048").toString());
@@ -936,11 +961,11 @@ spoton::spoton(void):QMainWindow()
 
   m_ui.iterationCount->setValue(m_settings.value("gui/iterationCount",
 						 10000).toInt());
-  str = m_settings.value("gui/rsaKeySize", "3072").
+  str = m_settings.value("gui/keySize", "3072").
     toString().toLower().trimmed();
 
-  if(m_ui.rsaKeySize->findText(str) > -1)
-    m_ui.rsaKeySize->setCurrentIndex(m_ui.rsaKeySize->findText(str));
+  if(m_ui.keySize->findText(str) > -1)
+    m_ui.keySize->setCurrentIndex(m_ui.keySize->findText(str));
 
   m_ui.saltLength->setValue(m_settings.value("gui/saltLength", 256).toInt());
   m_ui.tab->removeTab(5);
@@ -951,9 +976,11 @@ spoton::spoton(void):QMainWindow()
       m_sb.kernelstatus->setEnabled(false);
       m_sb.listeners->setEnabled(false);
       m_sb.neighbors->setEnabled(false);
+      m_ui.encryptionKeyType->setEnabled(false);
       m_ui.passphrase1->setText("0000000000");
       m_ui.passphrase2->setText("0000000000");
-      m_ui.rsaKeySize->setEnabled(false);
+      m_ui.keySize->setEnabled(false);
+      m_ui.signatureKeyType->setEnabled(false);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
 	if(i == m_ui.tab->count() - 1)
@@ -973,11 +1000,13 @@ spoton::spoton(void):QMainWindow()
       m_sb.kernelstatus->setEnabled(false);
       m_sb.listeners->setEnabled(false);
       m_sb.neighbors->setEnabled(false);
-      m_ui.newRSAKeys->setChecked(true);
-      m_ui.newRSAKeys->setEnabled(false);
+      m_ui.encryptionKeyType->setEnabled(false);
+      m_ui.newKeys->setEnabled(false);
       m_ui.passphrase->setEnabled(false);
       m_ui.passphraseButton->setEnabled(false);
       m_ui.passphraseLabel->setEnabled(false);
+      m_ui.signatureKeyType->setEnabled(false);
+      m_ui.newKeys->setChecked(true);
       m_ui.kernelBox->setEnabled(false);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
@@ -2453,13 +2482,20 @@ void spoton::slotPopulateNeighbors(void)
 		    m_ui.neighbors->selectRow(row);
 		    slotNeighborSelected(m_ui.neighbors->item(row, 1));
 		  }
+		else
+		  slotNeighborSelected(0);
 
 		if(focusWidget)
 		  focusWidget->setFocus();
 
 		row += 1;
 	      }
+
+	    if(row == 0)
+	      slotNeighborSelected(0);
 	  }
+	else
+	  slotNeighborSelected(0);
 
 	m_ui.neighbors->setSortingEnabled(true);
 	m_ui.neighbors->horizontalHeader()->setStretchLastSection(true);
@@ -2889,7 +2925,10 @@ void spoton::slotDeleteNeighbor(void)
   QSqlDatabase::removeDatabase(connectionName);
 
   if(row > -1)
-    m_ui.neighbors->removeRow(row);
+    {
+      slotNeighborSelected(0);
+      m_ui.neighbors->removeRow(row);
+    }
 }
 
 void spoton::slotListenerCheckChange(int state)
@@ -3101,7 +3140,7 @@ void spoton::slotSetPassphrase(void)
     {
       slotDeactivateKernel();
 
-      if(!m_ui.newRSAKeys->isChecked() && reencode)
+      if(!m_ui.newKeys->isChecked() && reencode)
 	{
 	  if(m_crypts.value("chat", 0))
 	    {
@@ -3122,7 +3161,7 @@ void spoton::slotSetPassphrase(void)
 		    (tr("Re-encoding public key pair 1 of %1. "
 			"Please be patient.").arg(list.size()));
 		  m_sb.status->repaint();
-		  spoton_crypt::reencodeRSAKeys
+		  spoton_crypt::reencodeKeys
 		    (m_ui.cipherType->currentText(),
 		     derivedKey,
 		     m_settings.value("gui/cipherType", "aes256").
@@ -3143,7 +3182,19 @@ void spoton::slotSetPassphrase(void)
 	}
       else
 	{
+	  QString encryptionKeyType("");
+	  QString signatureKeyType("");
 	  QStringList list;
+
+	  if(m_ui.encryptionKeyType->currentIndex() == 0)
+	    encryptionKeyType = "elg";
+	  else
+	    encryptionKeyType = "rsa";
+
+	  if(m_ui.signatureKeyType->currentIndex() == 0)
+	    signatureKeyType = "dsa";
+	  else
+	    signatureKeyType = "rsa";
 
 	  list << "chat"
 	       << "chat-signature"
@@ -3173,8 +3224,17 @@ void spoton::slotSetPassphrase(void)
 		 m_ui.iterationCount->value(),
 		 list.at(i));
 
-	      crypt.generatePrivatePublicKeys
-		(m_ui.rsaKeySize->currentText().toInt(), error2);
+	      if(!list.at(i).contains("signature"))
+		crypt.generatePrivatePublicKeys
+		  (m_ui.keySize->currentText().toInt(),
+		   encryptionKeyType,
+		   error2);
+	      else
+		crypt.generatePrivatePublicKeys
+		  (m_ui.keySize->currentText().toInt(),
+		   signatureKeyType,
+		   error2);
+
 	      m_sb.status->clear();
 
 	      if(!error2.isEmpty())
@@ -3205,7 +3265,7 @@ void spoton::slotSetPassphrase(void)
 			       "spoton_crypt::"
 			       "generatePrivatePublicKeys() or "
 			       "spoton_crypt::"
-			       "reencodeRSAKeys().").
+			       "reencodeKeys().").
 			    arg(error2.remove(".").trimmed()));
     }
   else if(!error3.remove(".").trimmed().isEmpty())
@@ -3283,12 +3343,14 @@ void spoton::slotSetPassphrase(void)
       m_sb.kernelstatus->setEnabled(true);
       m_sb.listeners->setEnabled(true);
       m_sb.neighbors->setEnabled(true);
+      m_ui.encryptionKeyType->setEnabled(false);
       m_ui.kernelBox->setEnabled(true);
-      m_ui.newRSAKeys->setChecked(false);
-      m_ui.newRSAKeys->setEnabled(true);
+      m_ui.keySize->setEnabled(false);
+      m_ui.newKeys->setEnabled(true);
       m_ui.passphrase1->setText("0000000000");
       m_ui.passphrase2->setText("0000000000");
-      m_ui.rsaKeySize->setEnabled(false);
+      m_ui.signatureKeyType->setEnabled(false);
+      m_ui.newKeys->setChecked(false);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
 	m_ui.tab->setTabEnabled(i, true);
@@ -3298,32 +3360,47 @@ void spoton::slotSetPassphrase(void)
       */
 
       m_settings["gui/cipherType"] = m_ui.cipherType->currentText();
+
+      if(m_ui.encryptionKeyType->currentIndex() == 0)
+	m_settings["gui/encryptionKey"] = "elg";
+      else
+	m_settings["gui/encryptionKey"] = "rsa";
+
       m_settings["gui/hashType"] = m_ui.hashType->currentText();
       m_settings["gui/iterationCount"] = m_ui.iterationCount->value();
 
       if(m_ui.kernelCipherType->currentIndex() == 0)
 	m_settings["gui/kernelCipherType"] = "randomized";
       else
-	m_ui.kernelCipherType->currentText();
+	m_settings["gui/kernelCipherType"] =
+	  m_ui.kernelCipherType->currentText();
 
-      m_settings["gui/rsaKeySize"] = m_ui.rsaKeySize->currentText().toInt();
+      m_settings["gui/keySize"] = m_ui.keySize->currentText().toInt();
       m_settings["gui/salt"] = salt;
       m_settings["gui/saltLength"] = m_ui.saltLength->value();
       m_settings["gui/saltedPassphraseHash"] = saltedPassphraseHash;
 
+      if(m_ui.signatureKeyType->currentText() == 0)
+	m_settings["gui/signatureKey"] = "dsa";
+      else
+	m_settings["gui/signatureKey"] = "rsa";
+
       QSettings settings;
 
       settings.setValue("gui/cipherType", m_settings["gui/cipherType"]);
+      settings.setValue("gui/encryptionKey", m_settings["gui/encryptionKey"]);
       settings.setValue("gui/hashType", m_settings["gui/hashType"]);
       settings.setValue("gui/iterationCount",
 			m_settings["gui/iterationCount"]);
       settings.setValue("gui/kernelCipherType",
 			m_settings["gui/kernelCipherType"]);
-      settings.setValue("gui/rsaKeySize", m_settings["gui/rsaKeySize"]);
+      settings.setValue("gui/keySize", m_settings["gui/keySize"]);
       settings.setValue("gui/salt", m_settings["gui/salt"]);
       settings.setValue("gui/saltLength", m_settings["gui/saltLength"]);
       settings.setValue
 	("gui/saltedPassphraseHash", m_settings["gui/saltedPassphraseHash"]);
+      settings.setValue
+	("gui/signatureKey", m_settings["gui/signatureKey"]);
 
       QMessageBox::information
 	(this, tr("Spot-On: Information"),
@@ -3409,13 +3486,15 @@ void spoton::slotValidatePassphrase(void)
 	    m_sb.kernelstatus->setEnabled(true);
 	    m_sb.listeners->setEnabled(true);
 	    m_sb.neighbors->setEnabled(true);
+	    m_ui.encryptionKeyType->setEnabled(false);
 	    m_ui.kernelBox->setEnabled(true);
-	    m_ui.newRSAKeys->setEnabled(true);
+	    m_ui.keySize->setEnabled(false);
+	    m_ui.newKeys->setEnabled(true);
 	    m_ui.passphrase->clear();
 	    m_ui.passphrase->setEnabled(false);
 	    m_ui.passphraseButton->setEnabled(false);
 	    m_ui.passphraseLabel->setEnabled(false);
-	    m_ui.rsaKeySize->setEnabled(false);
+	    m_ui.signatureKeyType->setEnabled(false);
 
 	    for(int i = 0; i < m_ui.tab->count(); i++)
 	      m_ui.tab->setTabEnabled(i, true);
@@ -4099,6 +4178,8 @@ void spoton::slotDeleteAllNeighbors(void)
 
   while(m_ui.neighbors->rowCount() > 0)
     m_ui.neighbors->removeRow(0);
+
+  slotNeighborSelected(0);
 }
 
 void spoton::slotPopulateParticipants(void)
