@@ -3380,7 +3380,7 @@ void spoton::slotSetPassphrase(void)
       m_settings["gui/saltLength"] = m_ui.saltLength->value();
       m_settings["gui/saltedPassphraseHash"] = saltedPassphraseHash;
 
-      if(m_ui.signatureKeyType->currentText() == 0)
+      if(m_ui.signatureKeyType->currentIndex() == 0)
 	m_settings["gui/signatureKey"] = "dsa";
       else
 	m_settings["gui/signatureKey"] = "rsa";
