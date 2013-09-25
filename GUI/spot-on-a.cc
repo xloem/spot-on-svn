@@ -2104,6 +2104,7 @@ void spoton::slotPopulateNeighbors(void)
 	m_ui.neighbors->setSortingEnabled(false);
 	m_ui.neighbors->clearContents();
 	m_ui.neighbors->setRowCount(0);
+	m_ui.neighborSummary->clear();
 
 	QSqlQuery query(db);
 
@@ -2920,6 +2921,9 @@ void spoton::slotDeleteNeighbor(void)
 
   if(row > -1)
     m_ui.neighbors->removeRow(row);
+
+  if(m_ui.neighbors->rowCount() == 0)
+    m_ui.neighborSummary->clear();
 }
 
 void spoton::slotListenerCheckChange(int state)
@@ -4169,6 +4173,8 @@ void spoton::slotDeleteAllNeighbors(void)
 
   while(m_ui.neighbors->rowCount() > 0)
     m_ui.neighbors->removeRow(0);
+
+  m_ui.neighborSummary->clear();
 }
 
 void spoton::slotPopulateParticipants(void)
@@ -5294,9 +5300,7 @@ void spoton::slotNeighborSelected(void)
 {
   QTableWidgetItem *item = m_ui.neighbors->selectedItems().value(0);
 
-  if(!item)
-    m_ui.neighborSummary->clear();
-  else
+  if(item)
     {
       QString label("");
       QStringList list;
