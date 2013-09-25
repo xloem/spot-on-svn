@@ -358,7 +358,8 @@ void spoton_misc::prepareDatabases(void)
 	   "allow_exceptions INTEGER NOT NULL DEFAULT 0, "
 	   "bytes_read INTEGER NOT NULL DEFAULT 0, "
 	   "bytes_written INTEGER NOT NULL DEFAULT 0, "
-	   "ssl_session_cipher TEXT)");
+	   "ssl_session_cipher TEXT, "
+	   "ssl_required INTEGER NOT NULL DEFAULT 1)");
       }
 
     db.close();

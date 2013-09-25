@@ -62,6 +62,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_maximumContentLength = spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH;
   m_port = peerPort();
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
+  m_requireSsl = true;
   m_startTime = QDateTime::currentDateTime();
 
   if(certificate.isEmpty() || privateKey.isEmpty())
@@ -203,6 +204,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const QByteArray &peerCertificate,
 				 const bool allowExceptions,
 				 const QString &protocol,
+				 const bool requireSsl,
 				 QObject *parent):QSslSocket(parent)
 {
   m_allowExceptions = allowExceptions;
@@ -225,6 +227,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_peerCertificate = QSslCertificate(peerCertificate);
   m_protocol = protocol;
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
+  m_requireSsl = requireSsl;
   m_startTime = QDateTime::currentDateTime();
   m_useSsl = true;
   setProxy(proxy);
@@ -279,10 +282,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	}
       else
 	{
-	  m_useSsl = false;
+	  m_useSsl = m_requireSsl;
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::spoton_neighbor(): "
-		     "empty private key for %1:%2. SSL disabled.").
+		     "empty private key for %1:%2.").
 	     arg(ipAddress).
 	     arg(port));
 	}
@@ -2906,16 +2909,19 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
       ** Do not use SSL.
       */
 
-      if(state() == QAbstractSocket::ConnectedState)
-	QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
+      if(!m_requireSsl)
+	{
+	  if(state() == QAbstractSocket::ConnectedState)
+	    QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 
-      m_useSsl = false;
-      spoton_misc::logError
-	(QString("spoton_neighbor::slotError(): socket error (%1) for "
-		 "%2:%3. "
-		 "Disabling SSL.").arg(errorString()).
-	 arg(m_address.toString()).arg(m_port));
-      return;
+	  m_useSsl = false;
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::slotError(): socket error (%1) for "
+		     "%2:%3. "
+		     "Disabling SSL.").arg(errorString()).
+	     arg(m_address.toString()).arg(m_port));
+	  return;
+	}
     }
 
   spoton_misc::logError

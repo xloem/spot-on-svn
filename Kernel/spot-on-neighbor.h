@@ -61,6 +61,7 @@ class spoton_neighbor: public QSslSocket
 		  const QByteArray &peerCertificate,
 		  const bool allowExceptions,
 		  const QString &protocol,
+		  const bool requireSsl,
 		  QObject *parent);
   spoton_neighbor(const int socketDescriptor,
 		  const QByteArray &certificate,
@@ -96,6 +97,7 @@ class spoton_neighbor: public QSslSocket
   QUuid m_receivedUuid;
   bool m_allowExceptions;
   bool m_isUserDefined;
+  bool m_requireSsl;
   bool m_useSsl;
   int m_keySize;
   int m_maximumBufferSize;

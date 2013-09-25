@@ -707,13 +707,24 @@ void spoton_kernel::prepareNeighbors(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT remote_ip_address, remote_port, scope_id, "
-		      "status_control, proxy_hostname, proxy_password, "
-		      "proxy_port, proxy_type, proxy_username, "
-		      "user_defined, ssl_key_size, "
-		      "maximum_buffer_size, maximum_content_length, "
-		      "echo_mode, peer_certificate, "
-		      "allow_exceptions, protocol, "
+	if(query.exec("SELECT remote_ip_address, "
+		      "remote_port, "
+		      "scope_id, "
+		      "status_control, "
+		      "proxy_hostname, "
+		      "proxy_password, "
+		      "proxy_port, "
+		      "proxy_type, "
+		      "proxy_username, "
+		      "user_defined, "
+		      "ssl_key_size, "
+		      "maximum_buffer_size, "
+		      "maximum_content_length, "
+		      "echo_mode, "
+		      "peer_certificate, "
+		      "allow_exceptions, "
+		      "protocol, "
+		      "ssl_required, "
 		      "OID FROM neighbors"))
 	  while(query.next())
 	    {
@@ -740,6 +751,8 @@ void spoton_kernel::prepareNeighbors(void)
 				i == 12)   // maximum_content_length
 			  list.append(query.value(i).toInt());
 			else if(i == 15) // allow_exceptions
+			  list.append(query.value(i).toInt());
+			else if(i == 17) // ssl_required
 			  list.append(query.value(i).toInt());
 			else
 			  {
@@ -834,8 +847,9 @@ void spoton_kernel::prepareNeighbors(void)
 			     list.value(12).toInt(),
 			     list.value(13).toByteArray().constData(),
 			     list.value(14).toByteArray(),
-			     list.value(15).toInt(),
+			     list.value(15).toBool(),
 			     list.value(16).toByteArray().constData(),
+			     list.value(17).toBool(),
 			     this);
 			}
 

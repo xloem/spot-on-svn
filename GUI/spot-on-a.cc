@@ -399,9 +399,9 @@ spoton::spoton(void):QMainWindow()
 	  this,
 	  SLOT(slotMailSelected(QTableWidgetItem *)));
   connect(m_ui.neighbors,
-	  SIGNAL(itemClicked(QTableWidgetItem *)),
+	  SIGNAL(itemSelectionChanged(void)),
 	  this,
-	  SLOT(slotNeighborSelected(QTableWidgetItem *)));
+	  SLOT(slotNeighborSelected(void)));
   connect(m_ui.emptyTrash,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -796,12 +796,12 @@ spoton::spoton(void):QMainWindow()
   else
     m_ui.chatSendMethod->setCurrentIndex(0);
 
-  if(m_settings.value("gui/encryptionKey", "elg").toString() == "elg")
+  if(m_settings.value("gui/encryptionKey", "rsa").toString() == "elg")
     m_ui.encryptionKeyType->setCurrentIndex(0);
   else
     m_ui.encryptionKeyType->setCurrentIndex(1);
 
-  if(m_settings.value("gui/signatureKey", "dsa").toString() == "dsa")
+  if(m_settings.value("gui/signatureKey", "rsa").toString() == "dsa")
     m_ui.signatureKeyType->setCurrentIndex(0);
   else
     m_ui.signatureKeyType->setCurrentIndex(1);
@@ -1430,10 +1430,11 @@ void spoton::slotAddNeighbor(void)
 		      "echo_mode, "
 		      "ssl_key_size, "
 		      "allow_exceptions, "
-		      "peer_certificate) "
+		      "peer_certificate, "
+		      "ssl_required) "
 		      "VALUES "
 		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-		      "?, ?, ?, ?, ?, ?, ?, ?)");
+		      "?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
@@ -1620,6 +1621,8 @@ void spoton::slotAddNeighbor(void)
 	  query.bindValue
 	    (21, m_crypts.value("chat")->encrypted(QByteArray(),
 						   &ok).toBase64());
+
+	query.bindValue(22, m_ui.requireSsl->isChecked() ? 1 : 0);
 
 	if(ok)
 	  ok = query.exec();
@@ -2478,12 +2481,7 @@ void spoton::slotPopulateNeighbors(void)
 		if(remoteIp == bytes1 && remotePort == bytes2 &&
 		   scopeId == bytes3 && proxyIp == bytes4 &&
 		   proxyPort == bytes5)
-		  {
-		    m_ui.neighbors->selectRow(row);
-		    slotNeighborSelected(m_ui.neighbors->item(row, 1));
-		  }
-		else
-		  slotNeighborSelected(0);
+		  m_ui.neighbors->selectRow(row);
 
 		if(focusWidget)
 		  focusWidget->setFocus();
@@ -2491,11 +2489,7 @@ void spoton::slotPopulateNeighbors(void)
 		row += 1;
 	      }
 
-	    if(row == 0)
-	      slotNeighborSelected(0);
 	  }
-	else
-	  slotNeighborSelected(0);
 
 	m_ui.neighbors->setSortingEnabled(true);
 	m_ui.neighbors->horizontalHeader()->setStretchLastSection(true);
@@ -2925,10 +2919,7 @@ void spoton::slotDeleteNeighbor(void)
   QSqlDatabase::removeDatabase(connectionName);
 
   if(row > -1)
-    {
-      slotNeighborSelected(0);
-      m_ui.neighbors->removeRow(row);
-    }
+    m_ui.neighbors->removeRow(row);
 }
 
 void spoton::slotListenerCheckChange(int state)
@@ -4178,8 +4169,6 @@ void spoton::slotDeleteAllNeighbors(void)
 
   while(m_ui.neighbors->rowCount() > 0)
     m_ui.neighbors->removeRow(0);
-
-  slotNeighborSelected(0);
 }
 
 void spoton::slotPopulateParticipants(void)
@@ -5301,8 +5290,10 @@ void spoton::slotDiscoverExternalAddress(void)
   m_externalAddress->discover();
 }
 
-void spoton::slotNeighborSelected(QTableWidgetItem *item)
+void spoton::slotNeighborSelected(void)
 {
+  QTableWidgetItem *item = m_ui.neighbors->selectedItems().value(0);
+
   if(!item)
     m_ui.neighborSummary->clear();
   else

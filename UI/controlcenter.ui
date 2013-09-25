@@ -189,8 +189,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>425</width>
-                <height>433</height>
+                <width>459</width>
+                <height>441</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2155,6 +2155,26 @@
                     </widget>
                    </item>
                    <item>
+                    <widget class="Line" name="line_10">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QCheckBox" name="requireSsl">
+                     <property name="toolTip">
+                      <string>Require secure connections.</string>
+                     </property>
+                     <property name="text">
+                      <string>&amp;Require SSL</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="Line" name="line_7">
                      <property name="orientation">
                       <enum>Qt::Vertical</enum>
@@ -2665,7 +2685,7 @@
              <x>0</x>
              <y>0</y>
              <width>1227</width>
-             <height>590</height>
+             <height>585</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3063,7 +3083,7 @@
                    <item>
                     <widget class="QComboBox" name="encryptionKeyType">
                      <property name="currentIndex">
-                      <number>0</number>
+                      <number>1</number>
                      </property>
                      <property name="sizeAdjustPolicy">
                       <enum>QComboBox::AdjustToContents</enum>
@@ -3093,7 +3113,7 @@
                    <item>
                     <widget class="QComboBox" name="signatureKeyType">
                      <property name="currentIndex">
-                      <number>0</number>
+                      <number>1</number>
                      </property>
                      <property name="sizeAdjustPolicy">
                       <enum>QComboBox::AdjustToContents</enum>
@@ -3892,7 +3912,7 @@
      <x>0</x>
      <y>0</y>
      <width>1249</width>
-     <height>24</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -4098,6 +4118,7 @@
   <tabstop>neighborScopeId</tabstop>
   <tabstop>ipv6Neighbor</tabstop>
   <tabstop>addException</tabstop>
+  <tabstop>requireSsl</tabstop>
   <tabstop>neighborKeySize</tabstop>
   <tabstop>proxy</tabstop>
   <tabstop>proxyType</tabstop>

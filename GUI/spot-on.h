@@ -251,7 +251,7 @@ class spoton: public QMainWindow
   void slotNeighborFullEcho(void);
   void slotNeighborHalfEcho(void);
   void slotNeighborMaximumChanged(int value);
-  void slotNeighborSelected(QTableWidgetItem *item);
+  void slotNeighborSelected(void);
   void slotPopulateAcceptedIPs(void);
   void slotPopulateCountries(void);
   void slotPopulateListeners(void);
