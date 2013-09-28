@@ -578,6 +578,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotAddAcceptedIP(void)));
+  connect(m_ui.testSslControlString,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotTestSslControlString(void)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,

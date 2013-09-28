@@ -4213,3 +4213,27 @@ void spoton::slotDeleteAccepedIP(void)
   if(row > -1)
     delete m_ui.acceptedIPList->takeItem(row);
 }
+
+void spoton::slotTestSslControlString(void)
+{
+  QList<QSslCipher> ciphers(spoton_crypt::defaultSslCiphers());
+  QMessageBox mb(this);
+  QString str("");
+
+  for(int i = 0; i < ciphers.size(); i++)
+    str += ciphers.at(i).name() + "\n";
+
+  if(!str.isEmpty())
+    {
+      mb.setDetailedText(str);
+      mb.setText(tr("The following ciphers were discovered. Please "
+		    "note that Spot-On may override discovered ciphers "
+		    "if the ciphers are not supported by Qt."));
+    }
+  else
+    mb.setText(tr("Empty cipher list."));
+
+  mb.setStandardButtons(QMessageBox::Ok);
+  mb.setWindowTitle(tr("Spot-On: Information"));
+  mb.exec();
+}

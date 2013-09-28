@@ -297,6 +297,7 @@ class spoton: public QMainWindow
   void slotStatusChanged(int index);
   void slotSuperEcho(bool state);
   void slotTabChanged(int index);
+  void slotTestSslControlString(void);
   void slotUnblockNeighbor(void);
   void slotValidatePassphrase(void);
   void slotViewDocumentation(void);

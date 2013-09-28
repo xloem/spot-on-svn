@@ -189,8 +189,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>459</width>
-                <height>441</height>
+                <width>1219</width>
+                <height>600</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2684,8 +2684,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1227</width>
-             <height>585</height>
+             <width>1219</width>
+             <height>600</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -2749,6 +2749,16 @@
                <widget class="QPushButton" name="saveSslControlString">
                 <property name="text">
                  <string>Save</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="testSslControlString">
+                <property name="toolTip">
+                 <string>Display a list of ciphers produced by the provided SSL Control String.</string>
+                </property>
+                <property name="text">
+                 <string>Test</string>
                 </property>
                </widget>
               </item>
@@ -3912,7 +3922,7 @@
      <x>0</x>
      <y>0</y>
      <width>1249</width>
-     <height>27</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -4142,6 +4152,7 @@
   <tabstop>selectGeoIP</tabstop>
   <tabstop>sslControlString</tabstop>
   <tabstop>saveSslControlString</tabstop>
+  <tabstop>testSslControlString</tabstop>
   <tabstop>activateKernel</tabstop>
   <tabstop>pid</tabstop>
   <tabstop>deactivateKernel</tabstop>

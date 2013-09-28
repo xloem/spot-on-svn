@@ -15,6 +15,7 @@
      installation.
 11.  Allow neighbors to be defined such that plaintext connections
      are prohibited. Default: enabled. Please remove neighbors.db.
+12.  Added a simple feature to test the SSL Control String.
 
 0.05 (09/16/2013)
 
