@@ -3081,7 +3081,7 @@ QByteArray spoton_crypt::privateKeyInRem(bool *ok)
   return key;
 }
 
-QList<QSslCipher> spoton_crypt::defaultSslCiphers(void)
+QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 {
   /*
   ** Retrieve OpenSSL ciphers:
@@ -3090,15 +3090,16 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(void)
 
   QList<QSslCipher> list;
   QSettings settings;
-  QString controlString("");
+  QString controlString(scs);
   SSL *ssl = 0;
   SSL_CTX *ctx = 0;
   const char *next = 0;
   int index = 0;
 
-  controlString = settings.value
-    ("gui/sslControlString",
-     "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH").toString();
+  if(controlString.isEmpty())
+    controlString = settings.value
+      ("gui/sslControlString",
+       "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH").toString();
 
   for(int i = 0; i < 2; i++)
     {

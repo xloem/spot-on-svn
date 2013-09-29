@@ -4216,7 +4216,8 @@ void spoton::slotDeleteAccepedIP(void)
 
 void spoton::slotTestSslControlString(void)
 {
-  QList<QSslCipher> ciphers(spoton_crypt::defaultSslCiphers());
+  QList<QSslCipher> ciphers
+    (spoton_crypt::defaultSslCiphers(m_ui.sslControlString->text()));
   QMessageBox mb(this);
   QString str("");
 
