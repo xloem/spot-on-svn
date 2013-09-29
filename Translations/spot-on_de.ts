@@ -837,7 +837,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="3405"/>
-        <location filename="../GUI/spot-on-b.cc" line="4237"/>
+        <location filename="../GUI/spot-on-b.cc" line="4238"/>
         <source>Spot-On: Information</source>
         <translation>Spot-On: Information</translation>
     </message>
@@ -985,12 +985,12 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4229"/>
+        <location filename="../GUI/spot-on-b.cc" line="4230"/>
         <source>The following ciphers were discovered. Please note that Spot-On may override discovered ciphers if the ciphers are not supported by Qt.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4234"/>
+        <location filename="../GUI/spot-on-b.cc" line="4235"/>
         <source>Empty cipher list.</source>
         <translation type="unfinished"></translation>
     </message>
