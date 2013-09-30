@@ -4238,3 +4238,11 @@ void spoton::slotTestSslControlString(void)
   mb.setWindowTitle(tr("Spot-On: Information"));
   mb.exec();
 }
+
+void spoton::slotKeyOriginChanged(int index)
+{
+  m_ui.encryptionKeyType->setEnabled(index == 0);
+  m_ui.keySize->setEnabled(index == 0);
+  m_ui.newKeys->setEnabled(index == 0);
+  m_ui.signatureKeyType->setEnabled(index == 0);
+}

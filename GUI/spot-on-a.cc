@@ -514,6 +514,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(const QString &)),
 	  this,
 	  SLOT(slotKernelKeySizeChanged(const QString &)));
+  connect(m_ui.keyOrigin,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotKeyOriginChanged(int)));
   connect(m_ui.superEcho,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -3179,7 +3183,7 @@ void spoton::slotSetPassphrase(void)
 		}
 	    }
 	}
-      else
+      else if(m_ui.keyOrigin->currentIndex() == 0) // Local
 	{
 	  QString encryptionKeyType("");
 	  QString signatureKeyType("");
