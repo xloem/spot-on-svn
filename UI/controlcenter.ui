@@ -189,8 +189,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1219</width>
-                <height>600</height>
+                <width>1227</width>
+                <height>585</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2684,8 +2684,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1219</width>
-             <height>600</height>
+             <width>1227</width>
+             <height>585</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3948,7 +3948,7 @@
      <x>0</x>
      <y>0</y>
      <width>1249</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -4191,11 +4191,6 @@
   <tabstop>scrambler</tabstop>
   <tabstop>kernelKeySize</tabstop>
   <tabstop>superEcho</tabstop>
-  <tabstop>keyOrigin</tabstop>
-  <tabstop>newKeys</tabstop>
-  <tabstop>keySize</tabstop>
-  <tabstop>encryptionKeyType</tabstop>
-  <tabstop>signatureKeyType</tabstop>
   <tabstop>cipherType</tabstop>
   <tabstop>hashType</tabstop>
   <tabstop>iterationCount</tabstop>
@@ -4203,6 +4198,11 @@
   <tabstop>passphrase1</tabstop>
   <tabstop>passphrase2</tabstop>
   <tabstop>setPassphrase</tabstop>
+  <tabstop>keyOrigin</tabstop>
+  <tabstop>newKeys</tabstop>
+  <tabstop>keySize</tabstop>
+  <tabstop>encryptionKeyType</tabstop>
+  <tabstop>signatureKeyType</tabstop>
   <tabstop>resetSpotOn</tabstop>
   <tabstop>urlNodeName</tabstop>
   <tabstop>pushButton</tabstop>
