@@ -16,8 +16,7 @@
 11.  Allow neighbors to be defined such that plaintext connections
      are prohibited. Default: enabled. Please remove neighbors.db.
 12.  Added a simple feature for testing the SSL Control String.
-13.  Papyrus key libraries.
-14.  More corrections to Documentation/ENCRYPTED.
+13.  More corrections to Documentation/ENCRYPTED.
 
 0.05 (09/16/2013)
 
