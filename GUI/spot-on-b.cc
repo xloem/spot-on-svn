@@ -3282,8 +3282,7 @@ void spoton::slotSetIcons(void)
   // Tab Icons
 
   list << "buzz.png" << "chat.png" << "email.png" << "add-listener.png"
-       << "neighbors.png" << "buzz.png"
-       << "search.png" << "settings.png" << "urls.png";
+       << "neighbors.png" << "search.png" << "settings.png" << "urls.png";
 
   for(int i = 0; i < list.size(); i++)
     m_ui.tab->setTabIcon
@@ -3349,13 +3348,6 @@ void spoton::slotSetIcons(void)
   m_ui.addNeighbor->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
   m_ui.addFriend->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
   m_ui.clearFriend->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
-
-  // Papyrus
-
-  m_ui.deletePapyrus->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
-  m_ui.publishPapyrus->setIcon(QIcon(QString(":/%1/up.png").arg(iconSet)));
-  m_ui.refreshPapyrus->setIcon
-    (QIcon(QString(":/%1/refresh.png").arg(iconSet)));
 
   // Search
 

@@ -972,7 +972,6 @@ spoton::spoton(void):QMainWindow()
     m_ui.keySize->setCurrentIndex(m_ui.keySize->findText(str));
 
   m_ui.saltLength->setValue(m_settings.value("gui/saltLength", 256).toInt());
-  m_ui.tab->removeTab(5); // Papyrus
   m_ui.tab->removeTab(5); // Search
   m_ui.tab->removeTab(6); // URLs
 
