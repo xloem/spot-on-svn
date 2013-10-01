@@ -4255,5 +4255,6 @@ void spoton::slotKeyOriginChanged(int index)
 
 void spoton::slotChatInactivityTimeout(void)
 {
-  m_ui.status->setCurrentIndex(0); // Away
+  if(m_ui.status->currentIndex() != 2) // Offline
+    m_ui.status->setCurrentIndex(0); // Away
 }
