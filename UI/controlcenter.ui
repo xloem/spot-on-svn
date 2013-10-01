@@ -189,8 +189,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1227</width>
-                <height>590</height>
+                <width>425</width>
+                <height>433</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -3353,30 +3353,6 @@
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_51">
                  <item>
-                  <widget class="QLabel" name="label_47">
-                   <property name="text">
-                    <string>Origin</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="keyOrigin">
-                   <property name="sizeAdjustPolicy">
-                    <enum>QComboBox::AdjustToContents</enum>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string>Local</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Papyrus Server</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item>
                   <widget class="QCheckBox" name="newKeys">
                    <property name="toolTip">
                     <string>If checked, new RSA key pairs will be generated whenever the passphrase is updated.</string>
@@ -4373,7 +4349,6 @@
   <tabstop>passphrase1</tabstop>
   <tabstop>passphrase2</tabstop>
   <tabstop>setPassphrase</tabstop>
-  <tabstop>keyOrigin</tabstop>
   <tabstop>newKeys</tabstop>
   <tabstop>keySize</tabstop>
   <tabstop>encryptionKeyType</tabstop>
