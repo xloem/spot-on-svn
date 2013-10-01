@@ -94,7 +94,9 @@ void spoton::slotSendMessage(void)
 	       arg(m_kernelSocket.peerPort()));
 	  else
 	    {
-	      m_ui.status->setCurrentIndex(3); // Online
+	      if(m_ui.status->currentIndex() != 2) // Offline
+		m_ui.status->setCurrentIndex(3); // Online
+
 	      m_chatInactivityTimer.start();
 	      m_kernelSocket.flush();
 	    }
