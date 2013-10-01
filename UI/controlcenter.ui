@@ -189,8 +189,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1227</width>
-                <height>590</height>
+                <width>425</width>
+                <height>433</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2593,23 +2593,6 @@
             </widget>
            </item>
            <item>
-            <widget class="Line" name="line_11">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_2">
-             <property name="toolTip">
-              <string>Select a PostgreSQL script and prepare the database schema for Spot-On.</string>
-             </property>
-             <property name="text">
-              <string>Prepare</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <spacer name="horizontalSpacer_50">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -2959,8 +2942,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1227</width>
-             <height>590</height>
+             <width>981</width>
+             <height>434</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4445,7 +4428,6 @@
   <tabstop>clearFriend</tabstop>
   <tabstop>postgresqlHostname</tabstop>
   <tabstop>postgresqlPort</tabstop>
-  <tabstop>pushButton_2</tabstop>
   <tabstop>acceptPapyrus</tabstop>
   <tabstop>papyrus</tabstop>
   <tabstop>deletePapyrus</tabstop>
