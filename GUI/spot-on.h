@@ -131,6 +131,7 @@ class spoton: public QMainWindow
 #endif
   QSslSocket m_kernelSocket;
   QTimer m_buzzStatusTimer;
+  QTimer m_chatInactivityTimer;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_generalTimer;
   QTimer m_messagingCachePurgeTimer;
@@ -187,6 +188,7 @@ class spoton: public QMainWindow
   void slotBuzzChanged(void);
   void slotCallParticipant(void);
   void slotChangeTabPosition(void);
+  void slotChatInactivityTimeout(void);
   void slotChatSendMethodChanged(int index);
   void slotClearOutgoingMessage(void);
   void slotCloseBuzzTab(int index);

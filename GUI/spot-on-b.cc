@@ -93,7 +93,11 @@ void spoton::slotSendMessage(void)
 	       arg(m_kernelSocket.peerAddress().toString()).
 	       arg(m_kernelSocket.peerPort()));
 	  else
-	    m_kernelSocket.flush();
+	    {
+	      m_ui.status->setCurrentIndex(3); // Online
+	      m_chatInactivityTimer.start();
+	      m_kernelSocket.flush();
+	    }
 	}
     }
 
@@ -4245,4 +4249,9 @@ void spoton::slotKeyOriginChanged(int index)
   m_ui.keySize->setEnabled(index == 0);
   m_ui.newKeys->setEnabled(index == 0);
   m_ui.signatureKeyType->setEnabled(index == 0);
+}
+
+void spoton::slotChatInactivityTimeout(void)
+{
+  m_ui.status->setCurrentIndex(0); // Away
 }

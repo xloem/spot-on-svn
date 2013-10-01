@@ -582,6 +582,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotTestSslControlString(void)));
+  connect(&m_chatInactivityTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotChatInactivityTimeout(void)));
   connect(&m_generalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -676,6 +680,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.countriesToggle->setMenu(menu);
   m_generalTimer.start(2500);
   m_messagingCachePurgeTimer.start(120000);
+  m_chatInactivityTimer.start(120000);
   m_tableTimer.setInterval(2500);
   m_ui.ipv4Listener->setChecked(true);
   m_ui.listenerIP->setInputMask("000.000.000.000; ");
