@@ -17,6 +17,7 @@
      are prohibited. Default: enabled. Please remove neighbors.db.
 12.  Added a simple feature for testing the SSL Control String.
 13.  External and internal key server via PostgreSQL.
+14.  More corrections to Documentation/ENCRYPTED.
 
 0.05 (09/16/2013)
 
