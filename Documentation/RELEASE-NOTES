@@ -3,13 +3,14 @@
 1.   Allow users of the libspoton library to store enough information
      so that the correct key can be generated. Future support.
 2.   Corrected log messages.
-3.   Corrected OS2 UI project file. Correction also applied to 0.05 branch.
+3.   Corrected OS/2 UI project file. Corrections also applied to 0.05 branch.
      Thanks Elbert.
 4.   Archived branches 0.01 through 0.04.
 5.   Limit timer cycles in the kernel via file system watchers.
 6.   The scrambler timer should be a single-shot timer.
 7.   Corrected dialog information.
 8.   ElGamal encryption key pairs. DSA and RSA signature key pairs.
+     Please note that padding is not provided for ElGamal.
 9.   Clear the neighbor summary correctly.
 10.  Corrected recording of the kernel cipher type after a new
      installation.
@@ -17,7 +18,8 @@
      are prohibited. Default: enabled. Please remove neighbors.db.
 12.  Added a simple feature for testing the SSL Control String.
 13.  More corrections to Documentation/ENCRYPTED.
-14.  Updated OpenSSL libraries to version 1.0.1e on OS X.
+14.  Updated OpenSSL libraries to version 1.0.1e on OS X. Libraries
+     are generated from source.
 
 0.05 (09/16/2013)
 
@@ -244,3 +246,7 @@
 0.01 (07/27/2013)
 
 1.   Version 0.01 of Spot-On is now available.
+
+0.00 (08/08/2011)
+
+1.   Spot-On registered at SourceForge.
