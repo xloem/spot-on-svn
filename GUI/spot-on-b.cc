@@ -3365,8 +3365,12 @@ void spoton::slotSetIcons(void)
 
   m_ui.addAcceptedIP->setIcon(QIcon(QString(":/%1/add.png").
 				    arg(iconSet)));
+  m_ui.addAccount->setIcon(QIcon(QString(":/%1/add.png").
+				 arg(iconSet)));
   m_ui.addListener->setIcon(QIcon(QString(":/%1/add-listener.png").
 				  arg(iconSet)));
+  m_ui.deleteAccount->setIcon(QIcon(QString(":/%1/clear.png").
+				    arg(iconSet)));
 
   // Settings
 
@@ -4257,4 +4261,216 @@ void spoton::slotChatInactivityTimeout(void)
 {
   if(m_ui.status->currentIndex() != 2) // Offline
     m_ui.status->setCurrentIndex(0); // Away
+}
+
+void spoton::slotAddAccount(void)
+{
+  QString oid("");
+  int row = -1;
+  int sslKeySize = 0;
+
+  if((row = m_ui.listeners->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.listeners->item
+	(row, m_ui.listeners->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+
+      item = m_ui.listeners->item(row, 2); // SSL Key Size
+
+      if(item)
+	sslKeySize = item->text().toInt();
+    }
+
+  if(oid.isEmpty())
+    return;
+  else if(sslKeySize <= 0)
+    return;
+
+  QString name(m_ui.accountName->text().trimmed());
+  QString password(m_ui.accountPassword->text());
+
+  if(name.isEmpty() || password.isEmpty())
+    return;
+  else if(password.length() < 16)
+    return;
+
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QByteArray salt;
+  QByteArray saltedPassphraseHash;
+  QString error("");
+
+  salt.resize(256);
+  salt = spoton_crypt::strongRandomBytes(salt.length());
+  saltedPassphraseHash = spoton_crypt::saltedPassphraseHash
+    ("sha512", password, salt, error);
+
+  if(!error.isEmpty())
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "listeners.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("INSERT INTO listeners_accounts "
+		      "(account_name, "
+		      "account_name_hash, "
+		      "account_salt, "
+		      "account_salted_password, "
+		      "listener_oid) "
+		      "VALUES (?, ?, ?, ?, ?)");
+	query.bindValue
+	  (0, s_crypt->encrypted(name.toLatin1(), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (1, s_crypt->keyedHash(name.toLatin1(),
+				   &ok).toBase64());
+
+	query.bindValue(2, salt.toBase64());
+	query.bindValue(3, saltedPassphraseHash.toBase64());
+	query.bindValue(4, oid);
+
+	if(ok)
+	  query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  m_ui.accountName->clear();
+  m_ui.accountPassword->clear();
+  populateAccounts(oid);
+}
+
+void spoton::slotDeleteAccount(void)
+{
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.listeners->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.listeners->item
+	(row, m_ui.listeners->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QList<QListWidgetItem *> list(m_ui.accounts->selectedItems());
+
+  if(list.isEmpty())
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "listeners.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("DELETE FROM listeners_accounts WHERE "
+		      "account_name_hash = ? AND listener_oid = ?");
+	query.bindValue
+	  (0, s_crypt->keyedHash(list.at(0)->text().toLatin1(), &ok).
+	   toBase64());
+	query.bindValue(1, oid);
+
+	if(ok)
+	  query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  populateAccounts(oid);
+}
+
+void spoton::populateAccounts(const QString &listenerOid)
+{
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "listeners.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec(QString("SELECT account_name FROM listeners_accounts "
+			      "WHERE listener_oid = %1").arg(listenerOid)))
+	  {
+	    QStringList names;
+
+	    m_ui.accounts->clear();
+
+	    while(query.next())
+	      {
+		QString name("");
+		bool ok = true;
+
+		name = s_crypt->
+		  decrypted(QByteArray::
+			    fromBase64(query.
+				       value(0).
+				       toByteArray()),
+			    &ok).constData();
+
+		if(!name.isEmpty())
+		  names.append(name);
+	      }
+
+	    qSort(names);
+	    m_ui.accounts->addItems(names);
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton::slotListenerSelected(void)
+{
 }

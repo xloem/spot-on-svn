@@ -1562,13 +1562,17 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_27">
             <item>
-             <widget class="QGroupBox" name="groupBox_4">
+             <widget class="QGroupBox" name="accountsGB">
               <property name="title">
                <string>Accounts</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_37">
                <item>
-                <widget class="QListView" name="accounts"/>
+                <widget class="QListWidget" name="accounts">
+                 <property name="selectionBehavior">
+                  <enum>QAbstractItemView::SelectRows</enum>
+                 </property>
+                </widget>
                </item>
                <item>
                 <layout class="QGridLayout" name="gridLayout_6">
@@ -1597,6 +1601,9 @@
                  </item>
                  <item row="1" column="1">
                   <widget class="QLineEdit" name="accountPassword">
+                   <property name="toolTip">
+                    <string>Please provide a password having sixteen or more characters.</string>
+                   </property>
                    <property name="echoMode">
                     <enum>QLineEdit::Password</enum>
                    </property>

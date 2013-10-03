@@ -408,6 +408,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(itemSelectionChanged(void)),
 	  this,
 	  SLOT(slotNeighborSelected(void)));
+  connect(m_ui.listeners,
+	  SIGNAL(itemSelectionChanged(void)),
+	  this,
+	  SLOT(slotListenerSelected(void)));
   connect(m_ui.emptyTrash,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -588,6 +592,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotTestSslControlString(void)));
+  connect(m_ui.addAccount,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotAddAccount(void)));
+  connect(m_ui.deleteAccount,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotDeleteAccount(void)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -2911,6 +2923,8 @@ void spoton::slotDeleteListener(void)
 
   if(row > -1)
     m_ui.listeners->removeRow(row);
+
+  m_ui.accounts->clear();
 }
 
 void spoton::slotDeleteNeighbor(void)
@@ -3751,6 +3765,11 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotConnectNeighbor(void)));
       menu.addAction(tr("&Disconnect"),
 		     this, SLOT(slotDisconnectNeighbor(void)));
+      menu.addSeparator();
+      menu.addAction
+	(tr("&Authenticate"),
+	 this,
+	 SLOT(slotAuthenticate(void)));
       menu.addSeparator();
       menu.addAction(QIcon(QString(":/%1/clear.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
@@ -5463,4 +5482,8 @@ void spoton::slotChangeTabPosition(void)
   QSettings settings;
 
   settings.setValue("gui/tabPosition", m_settings.value("gui/tabPosition"));
+}
+
+void spoton::slotAuthenticate(void)
+{
 }

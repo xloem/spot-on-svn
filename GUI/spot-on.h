@@ -165,6 +165,7 @@ class spoton: public QMainWindow
   void highlightPaths(void);
   void initializeKernelSocket(void);
   void prepareListenerIPCombo(void);
+  void populateAccounts(const QString &listenerOid);
   void purgeMessagingCache(void);
   void saveGeoIPPath(const QString &path);
   void saveKernelPath(const QString &path);
@@ -180,10 +181,12 @@ class spoton: public QMainWindow
   void slotAcceptedIPs(bool state);
   void slotActivateKernel(void);
   void slotAddAcceptedIP(void);
+  void slotAddAccount(void);
   void slotAddBootstrapper(void);
   void slotAddListener(void);
   void slotAddFriendsKey(void);
   void slotAddNeighbor(void);
+  void slotAuthenticate(void);
   void slotBlockNeighbor(void);
   void slotBuzzChanged(void);
   void slotCallParticipant(void);
@@ -207,6 +210,7 @@ class spoton: public QMainWindow
   void slotDaysChanged(int value);
   void slotDeactivateKernel(void);
   void slotDeleteAccepedIP(void);
+  void slotDeleteAccount(void);
   void slotDeleteAllBlockedNeighbors(void);
   void slotDeleteAllListeners(void);
   void slotDeleteAllNeighbors(void);
@@ -245,6 +249,7 @@ class spoton: public QMainWindow
   void slotListenerFullEcho(void);
   void slotListenerHalfEcho(void);
   void slotListenerIPComboChanged(int index);
+  void slotListenerSelected(void);
   void slotListenerUseAccounts(int state);
   void slotMailSelected(QTableWidgetItem *item);
   void slotMailTabChanged(int index);
