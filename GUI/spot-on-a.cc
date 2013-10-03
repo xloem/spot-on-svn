@@ -99,12 +99,13 @@ spoton::spoton(void):QMainWindow()
   bool sslSupported = QSslSocket::supportsSsl();
 
   m_ui.buildInformation->setText
-    (QString("Qt %1, %2-bit. OpenSSL is%3supported%4.").
-     arg(QT_VERSION_STR).
-     arg(sizeof(void *) * 8).
-     arg(sslSupported ? " " : " not ").
-     arg(sslSupported ? QString(", %1").
-	 arg(SSLeay_version(SSLEAY_VERSION)) : ""));
+    (QString("%1.\n"
+	     "Qt %2, %3-bit.\n"
+	     "gcrypt %4.").
+     arg(sslSupported ?
+	 SSLeay_version(SSLEAY_VERSION) : "OpenSSL is not supported").
+     arg(QT_VERSION_STR).arg(sizeof(void *) * 8).
+     arg(GCRYPT_VERSION));
 #ifndef SPOTON_LINKED_WITH_LIBGEOIP
   m_ui.countries->setEnabled(false);
   m_ui.countries->setToolTip(tr("Spot-On was configured without "
