@@ -44,6 +44,8 @@ extern "C"
 #include "libSpotOn/libspoton.h"
 }
 
+static bool s_sslInitialized = false;
+
 #if !(defined(PTHREAD_H) || defined(_PTHREAD_H) || defined(_PTHREAD_H_))
 #include <QMutex>
 extern "C"
@@ -140,6 +142,12 @@ void spoton_crypt::init(void)
     }
   else
     {
+    }
+
+  if(!s_sslInitialized)
+    {
+      s_sslInitialized = true;
+      SSL_library_init();
     }
 }
 
@@ -2684,6 +2692,8 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
 				   const long days,
 				   QString &error)
 {
+  init();
+
   BIGNUM *f4 = 0;
   BIO *privateMemory = 0;
   BIO *publicMemory = 0;
@@ -2823,6 +2833,8 @@ void spoton_crypt::generateCertificate(RSA *rsa,
 				       const long days,
 				       QString &error)
 {
+  init();
+
   BIO *memory = 0;
   BUF_MEM *bptr;
   EVP_PKEY *pk = 0;
@@ -3083,6 +3095,8 @@ QByteArray spoton_crypt::privateKeyInRem(bool *ok)
 
 QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 {
+  init();
+
   /*
   ** Retrieve OpenSSL ciphers:
   ** "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH"

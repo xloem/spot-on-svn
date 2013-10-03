@@ -20,6 +20,7 @@
 13.  More corrections to Documentation/ENCRYPTED.
 14.  Updated OpenSSL libraries to version 1.0.1e on OS X. Libraries
      are generated from source.
+15.  Added SSL_library_init() to spoton_crypt::init().
 
 0.05 (09/16/2013)
 
