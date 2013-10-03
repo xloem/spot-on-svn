@@ -515,15 +515,25 @@ void spoton_kernel::prepareListeners(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT ip_address, port, scope_id, echo_mode, "
-		      "status_control, maximum_clients, ssl_key_size, "
-		      "certificate, private_key, public_key, "
-		      "OID FROM listeners"))
+	if(query.exec("SELECT "
+		      "ip_address, "
+		      "port, "
+		      "scope_id, "
+		      "echo_mode, "
+		      "status_control, "
+		      "maximum_clients, "
+		      "ssl_key_size, "
+		      "certificate, "
+		      "private_key, "
+		      "public_key, "
+		      "use_accounts, "
+		      "OID "
+		      "FROM listeners"))
 	  while(query.next())
 	    {
 	      QPointer<spoton_listener> listener = 0;
 	      QString status(query.value(4).toString());
-	      qint64 id = query.value(10).toLongLong();
+	      qint64 id = query.value(11).toLongLong();
 
 	      /*
 	      ** We're only interested in creating objects for
@@ -624,6 +634,7 @@ void spoton_kernel::prepareListeners(void)
 			     certificate,
 			     privateKey,
 			     publicKey,
+			     query.value(10).toInt(),
 			     this);
 			}
 

@@ -300,9 +300,17 @@ void spoton_misc::prepareDatabases(void)
 		   "echo_mode TEXT NOT NULL, "
 		   "certificate BLOB NOT NULL, "
 		   "private_key BLOB NOT NULL, "
-		   "public_key BLOB NOT NULL)");      /*
-						      ** Not used.
-						      */
+		   "public_key BLOB NOT NULL, "       // Not used.
+		   "use_accounts INTEGER NOT NULL DEFAULT 0)");
+	query.exec("CREATE TABLE IF NOT EXISTS listeners_accounts ("
+		   "account_name TEXT NOT NULL, "
+		   "account_name_hash TEXT NOT NULL, "
+		   "account_salt TEXT NOT NULL, "
+		   "account_salted_password TEXT NOT NULL, "
+		   "listener_oid INTEGER NOT NULL, "
+		   "PRIMARY KEY (listener_oid, account_name_hash), "
+		   "FOREIGN KEY (listener_oid) REFERENCES "
+		   "listeners (OID))");
       }
 
     db.close();

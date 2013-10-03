@@ -83,6 +83,7 @@ class spoton_listener: public spoton_listener_tcp_server
 		  const QByteArray &certificate,
 		  const QByteArray &privateKey,
 		  const QByteArray &publicKey,
+		  const bool useAccounts,
 		  QObject *parent);
   ~spoton_listener();
   QHostAddress externalAddress(void) const;
@@ -99,6 +100,7 @@ class spoton_listener: public spoton_listener_tcp_server
   QString m_echoMode;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_timer;
+  bool m_useAccounts;
   int m_keySize;
   qint64 m_id;
   quint16 m_externalPort;

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1249</width>
-    <height>693</height>
+    <height>734</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -189,8 +189,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1219</width>
-                <height>600</height>
+                <width>1227</width>
+                <height>631</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1274,6 +1274,11 @@
               </column>
               <column>
                <property name="text">
+                <string>Use Accounts</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
                 <string>OID</string>
                </property>
               </column>
@@ -1556,6 +1561,83 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_27">
+            <item>
+             <widget class="QGroupBox" name="groupBox_4">
+              <property name="title">
+               <string>Accounts</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_37">
+               <item>
+                <widget class="QListView" name="accounts"/>
+               </item>
+               <item>
+                <layout class="QGridLayout" name="gridLayout_6">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_47">
+                   <property name="text">
+                    <string>&amp;Name</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>accountName</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_48">
+                   <property name="text">
+                    <string>&amp;Password</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>accountPassword</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QLineEdit" name="accountName"/>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLineEdit" name="accountPassword">
+                   <property name="echoMode">
+                    <enum>QLineEdit::Password</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_52">
+                 <item>
+                  <spacer name="horizontalSpacer_48">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="addAccount">
+                   <property name="text">
+                    <string>Add</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="deleteAccount">
+                   <property name="text">
+                    <string>Delete</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
             <item>
              <widget class="QRadioButton" name="countriesRadio">
               <property name="text">
@@ -2684,8 +2766,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1016</width>
-             <height>507</height>
+             <width>1227</width>
+             <height>631</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3927,7 +4009,7 @@
      <x>0</x>
      <y>0</y>
      <width>1249</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -4109,6 +4191,11 @@
   <tabstop>sslListener</tabstop>
   <tabstop>listenerKeySize</tabstop>
   <tabstop>addListener</tabstop>
+  <tabstop>accounts</tabstop>
+  <tabstop>accountName</tabstop>
+  <tabstop>accountPassword</tabstop>
+  <tabstop>addAccount</tabstop>
+  <tabstop>deleteAccount</tabstop>
   <tabstop>countriesRadio</tabstop>
   <tabstop>acceptedIPsRadio</tabstop>
   <tabstop>countriesToggle</tabstop>

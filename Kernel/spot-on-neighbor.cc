@@ -49,9 +49,11 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 const QByteArray &certificate,
 				 const QByteArray &privateKey,
 				 const QString &echoMode,
+				 const bool useAccounts,
 				 QObject *parent):QSslSocket(parent)
 {
   m_address = peerAddress();
+  m_accountAuthenticated = false;
   m_allowExceptions = false;
   m_bytesRead = 0;
   m_bytesWritten = 0;
@@ -64,6 +66,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
   m_requireSsl = true;
   m_startTime = QDateTime::currentDateTime();
+  m_useAccounts = useAccounts;
 
   if(certificate.isEmpty() || privateKey.isEmpty())
     m_useSsl = false;
@@ -207,6 +210,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const bool requireSsl,
 				 QObject *parent):QSslSocket(parent)
 {
+  m_accountAuthenticated = false;
   m_allowExceptions = allowExceptions;
   m_bytesRead = 0;
   m_bytesWritten = 0;
@@ -229,6 +233,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
   m_requireSsl = requireSsl;
   m_startTime = QDateTime::currentDateTime();
+  m_useAccounts = false;
   m_useSsl = true;
   setProxy(proxy);
   setReadBufferSize(8192);

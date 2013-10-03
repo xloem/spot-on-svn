@@ -281,3 +281,11 @@ EOL
 {
 0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
 }
+
+Account Authentication
+Echoed? No
+
+Message Type ("0050") (Plaintext)
+0 - Account Name (Base-64) (Plaintext)
+EOL
+1 - Account Password (Base-64) (Plaintext)

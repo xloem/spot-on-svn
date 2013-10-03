@@ -245,6 +245,7 @@ class spoton: public QMainWindow
   void slotListenerFullEcho(void);
   void slotListenerHalfEcho(void);
   void slotListenerIPComboChanged(int index);
+  void slotListenerUseAccounts(int state);
   void slotMailSelected(QTableWidgetItem *item);
   void slotMailTabChanged(int index);
   void slotMaximumClientsChanged(int index);

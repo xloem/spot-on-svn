@@ -67,6 +67,7 @@ class spoton_neighbor: public QSslSocket
 		  const QByteArray &certificate,
 		  const QByteArray &privateKey,
 		  const QString &echoMode,
+		  const bool useAccounts,
 		  QObject *parent);
   ~spoton_neighbor();
   QUuid receivedUuid(void) const;
@@ -95,9 +96,11 @@ class spoton_neighbor: public QSslSocket
   QTimer m_lifetime;
   QTimer m_timer;
   QUuid m_receivedUuid;
+  bool m_accountAuthenticated;
   bool m_allowExceptions;
   bool m_isUserDefined;
   bool m_requireSsl;
+  bool m_useAccounts;
   bool m_useSsl;
   int m_keySize;
   int m_maximumBufferSize;

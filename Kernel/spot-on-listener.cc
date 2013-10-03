@@ -102,6 +102,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 				 const QByteArray &certificate,
 				 const QByteArray &privateKey,
 				 const QByteArray &publicKey,
+				 const bool useAccounts,
 				 QObject *parent):
   spoton_listener_tcp_server(parent)
 {
@@ -121,6 +122,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
   m_port = m_externalPort = quint16(port.toInt());
   m_privateKey = privateKey;
   m_publicKey = publicKey;
+  m_useAccounts = useAccounts;
 #if QT_VERSION >= 0x050000
   connect(this,
 	  SIGNAL(newConnection(const qintptr)),
@@ -219,7 +221,7 @@ void spoton_listener::slotTimeout(void)
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT status_control, maximum_clients, "
-		      "echo_mode "
+		      "echo_mode, use_accounts "
 		      "FROM listeners WHERE OID = ?");
 	query.bindValue(0, m_id);
 
@@ -232,6 +234,8 @@ void spoton_listener::slotTimeout(void)
 		bool ok = true;
 		spoton_crypt *s_crypt =
 		  spoton_kernel::s_crypts.value("chat", 0);
+
+		m_useAccounts = query.value(3).toInt();
 
 		if(s_crypt)
 		  {
@@ -428,7 +432,8 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
 
   if(error.isEmpty())
     neighbor = new spoton_neighbor
-      (socketDescriptor, certificate, privateKey, m_echoMode, this);
+      (socketDescriptor, certificate, privateKey, m_echoMode, m_useAccounts,
+       this);
   else
     {
       QTcpSocket socket;

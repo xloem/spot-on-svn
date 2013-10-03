@@ -1805,6 +1805,7 @@ void spoton::slotPopulateListeners(void)
 		      "connections, "
 		      "maximum_clients, "
 		      "echo_mode, "
+		      "use_accounts, "
 		      "OID "
 		      "FROM listeners WHERE status_control <> 'deleted'"))
 	  {
@@ -1823,9 +1824,10 @@ void spoton::slotPopulateListeners(void)
 		      "Local IP: %3 Local Port: %4 Scope ID: %5\n"
 		      "External IP: %6\n"
 		      "Connections: %7\n"
-		      "Echo Mode: %8")).
+		      "Echo Mode: %8\n"
+		      "Use Accounts?: %9")).
 		  arg(query.value(1).toString()).
-		  arg(query.value(2).toString()).
+		  arg(query.value(2).toInt()).
 		  arg(m_crypts.value("chat")->
 		      decrypted(QByteArray::
 				fromBase64(query.
@@ -1861,7 +1863,8 @@ void spoton::slotPopulateListeners(void)
 					   value(11).
 					   toByteArray()),
 				&ok).
-		      constData());
+		      constData()).
+		  arg(query.value(12).toInt());
 
 		for(int i = 0; i < query.record().count(); i++)
 		  {
@@ -1869,23 +1872,44 @@ void spoton::slotPopulateListeners(void)
 		    QComboBox *box = 0;
 		    QTableWidgetItem *item = 0;
 
-		    if(i == 0)
+		    if(i == 0 || i == 12)
 		      {
 			check = new QCheckBox();
 
-			if(query.value(0) == "online")
-			  check->setChecked(true);
+			if(i == 0)
+			  {
+			    if(query.value(0).toString() == "online")
+			      check->setChecked(true);
 
-			if(query.value(1) == "online")
-			  active += 1;
+			    if(query.value(1).toString() == "online")
+			      active += 1;
+			  }
+			else
+			  {
+			    if(query.value(2).toInt() > 0)
+			      {
+				if(query.value(i).toInt() == 1)
+				  check->setChecked(true);
+			      }
+			    else
+			      check->setEnabled(false);
+			  }
 
-			check->setProperty("oid", query.value(12));
+			check->setProperty("oid", query.value(13));
 			check->setProperty("table_row", row);
 			check->setToolTip(tooltip);
-			connect(check,
-				SIGNAL(stateChanged(int)),
-				this,
-				SLOT(slotListenerCheckChange(int)));
+
+			if(i == 0)
+			  connect(check,
+				  SIGNAL(stateChanged(int)),
+				  this,
+				  SLOT(slotListenerCheckChange(int)));
+			else
+			  connect(check,
+				  SIGNAL(stateChanged(int)),
+				  this,
+				  SLOT(slotListenerUseAccounts(int)));
+
 			m_ui.listeners->setCellWidget(row, i, check);
 		      }
 		    else if(i == 2)
@@ -1906,7 +1930,7 @@ void spoton::slotPopulateListeners(void)
 		    else if(i == 10)
 		      {
 			box = new QComboBox();
-			box->setProperty("oid", query.value(12));
+			box->setProperty("oid", query.value(13));
 			box->setProperty("table_row", row);
 			box->addItem("1");
 
@@ -2213,7 +2237,7 @@ void spoton::slotPopulateNeighbors(void)
 				&ok).
 		      constData()).
 		  arg(query.value(2).toString()).
-		  arg(query.value(3).toString()).
+		  arg(query.value(3).toInt()).
 		  arg(query.value(5).toString()).
 		  arg(query.value(6).toString()).
 		  arg(m_crypts.value("chat")->
@@ -2967,6 +2991,44 @@ void spoton::slotListenerCheckChange(int state)
 	      query.bindValue(0, "online");
 	    else
 	      query.bindValue(0, "offline");
+
+	    query.bindValue(1, checkBox->property("oid"));
+	    query.exec();
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase(connectionName);
+    }
+}
+
+void spoton::slotListenerUseAccounts(int state)
+{
+  QCheckBox *checkBox = qobject_cast<QCheckBox *> (sender());
+
+  if(checkBox)
+    {
+      QString connectionName("");
+
+      {
+	QSqlDatabase db = spoton_misc::database(connectionName);
+
+	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			   "listeners.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+
+	    query.prepare("UPDATE listeners SET "
+			  "use_accounts = ? "
+			  "WHERE OID = ? AND ssl_key_size > 0");
+
+	    if(state)
+	      query.bindValue(0, 1);
+	    else
+	      query.bindValue(0, 0);
 
 	    query.bindValue(1, checkBox->property("oid"));
 	    query.exec();
