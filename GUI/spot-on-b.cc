@@ -4473,4 +4473,17 @@ void spoton::populateAccounts(const QString &listenerOid)
 
 void spoton::slotListenerSelected(void)
 {
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.listeners->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.listeners->item
+	(row, m_ui.listeners->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  populateAccounts(oid);
 }
