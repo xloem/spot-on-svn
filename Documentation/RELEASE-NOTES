@@ -22,6 +22,7 @@
      are generated from source.
 15.  Added SSL_library_init() to spoton_crypt::init().
 16.  Per-listener accounts. Please remove listeners.db.
+17.  Improved error reporting between the user and the UI.
 
 0.05 (09/16/2013)
 

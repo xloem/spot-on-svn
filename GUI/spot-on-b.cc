@@ -36,23 +36,36 @@
 
 void spoton::slotSendMessage(void)
 {
-  if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
-    return;
-  else if(!m_kernelSocket.isEncrypted())
-    return;
-  else if(m_ui.message->toPlainText().trimmed().isEmpty())
-    return;
-
-  if(!m_ui.participants->selectionModel()->hasSelection())
-    /*
-    ** We need at least one participant.
-    */
-
-    return;
-
   QModelIndexList list(m_ui.participants->selectionModel()->
 		       selectedRows(1)); // OID
+  QString error("");
   QString message("");
+
+  if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    {
+      error = tr("Not connected to the kernel.");
+      goto done_label;
+    }
+  else if(!m_kernelSocket.isEncrypted())
+    {
+      error = tr("Connection to the kernel is not encrypted.");
+      goto done_label;
+    }
+  else if(m_ui.message->toPlainText().trimmed().isEmpty())
+    {
+      error = tr("Please provide a message.");
+      goto done_label;
+    }
+
+  if(!m_ui.participants->selectionModel()->hasSelection())
+    {
+      /*
+      ** We need at least one participant.
+      */
+
+      error = tr("Please select at least one participant.");
+      goto done_label;
+    }
 
   message.append
     (QDateTime::currentDateTime().
@@ -104,6 +117,11 @@ void spoton::slotSendMessage(void)
     }
 
   m_ui.message->clear();
+
+ done_label:
+
+  if(!error.isEmpty())
+    QMessageBox::critical(this, tr("Spot-On: Error"), error);
 }
 
 void spoton::slotReceivedKernelMessage(void)
@@ -1600,10 +1618,18 @@ void spoton::addFriendsKey(const QByteArray &key)
   if(m_ui.addFriendPublicKeyRadio->isChecked())
     {
       if(key.trimmed().isEmpty())
-	return;
+	{
+	  QMessageBox::critical(this, tr("Spot-On: Error"),
+				tr("Empty key."));
+	  return;
+	}
       else if(!m_crypts.value("chat", 0) ||
 	      !m_crypts.value("email", 0))
-	return;
+	{
+	  QMessageBox::critical(this, tr("Spot-On: Error"),
+				tr("Invalid spoton_crypt object."));
+	  return;
+	}
 
       if(!(key.startsWith("K") || key.startsWith("k")))
 	{
@@ -1618,10 +1644,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       if(list.size() != 6)
 	{
-	  spoton_misc::logError
-	    (QString("spoton::slotAddFriendsKey(): "
-		     "received irregular data. Expecting 6 entries, "
-		     "received %1.").arg(list.size()));
+	  QMessageBox::critical(this, tr("Spot-On: Error"),
+				tr("Irregular data."));
 	  return;
 	}
 
@@ -1633,7 +1657,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("Invalid key type. Expecting 'chat', 'e-mail', or 'url'."));
+	     tr("Invalid key type. Expecting 'chat', 'email', or 'url'."));
 	  return;
 	}
 
@@ -1646,7 +1670,11 @@ void spoton::addFriendsKey(const QByteArray &key)
       myPublicKey = m_crypts.value("chat")->publicKey(&ok);
 
       if(!ok)
-	return;
+	{
+	  QMessageBox::critical(this, tr("Spot-On: Error"),
+				tr("Unable to retrieve your public key."));
+	  return;
+	}
 
       if(mPublicKey == myPublicKey)
 	{
@@ -1660,13 +1688,17 @@ void spoton::addFriendsKey(const QByteArray &key)
       myPublicKey = m_crypts.value("email")->publicKey(&ok);
 
       if(!ok)
-	return;
+	{
+	  QMessageBox::critical(this, tr("Spot-On: Error"),
+				tr("Unable to retrieve your public key."));
+	  return;
+	}
 
       if(mPublicKey == myPublicKey)
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("You're attempting to add your own 'e-mail' keys. "
+	     tr("You're attempting to add your own 'email' keys. "
 		"Please do not do this."));
 	  return;
 	}
@@ -1678,7 +1710,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("Invalid chat, e-mail, or url public key signature."));
+	     tr("Invalid 'chat', 'email', or 'url' public key signature."));
 	  return;
 	}
 
@@ -1741,10 +1773,18 @@ void spoton::addFriendsKey(const QByteArray &key)
       */
 
       if(key.trimmed().isEmpty())
-	return;
+	{
+	  QMessageBox::critical(this, tr("Spot-On: Error"),
+				tr("Empty key."));
+	  return;
+	}
       else if(!m_crypts.value("chat", 0) ||
 	      !m_crypts.value("email", 0))
-	return;
+	{
+	  QMessageBox::critical(this, tr("Spot-On: Error"),
+				tr("Invalid spoton_crypt object."));
+	  return;
+	}
 
       if(!(key.startsWith("R") || key.startsWith("r")))
 	{
@@ -1759,10 +1799,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       if(list.size() != 3)
 	{
-	  spoton_misc::logError
-	    (QString("spoton::slotAddFriendsKey(): "
-		     "received irregular data. Expecting 3 entries, "
-		     "received %1.").arg(list.size()));
+	  QMessageBox::critical(this, tr("Spot-On: Error"),
+				tr("Irregular data."));
 	  return;
 	}
 
@@ -1783,15 +1821,19 @@ void spoton::addFriendsKey(const QByteArray &key)
 	    publicKeyDecrypt(list.value(0), &ok);
 
 	  if(!ok)
-	    return;
+	    {
+	      QMessageBox::critical(this, tr("Spot-On: Error"),
+				tr("Asymmetric decryption failure."));
+	      return;
+	    }
 	}
 
       list = keyInformation.split('@');
 
       if(list.size() != 2)
 	{
-	  spoton_misc::logError("spoton::slotAddFriendsKey(): "
-				"list.size() != 2.");
+	  QMessageBox::critical(this, tr("Spot-On: Error"),
+				tr("Irregular data."));
 	  return;
 	}
 
@@ -1810,27 +1852,35 @@ void spoton::addFriendsKey(const QByteArray &key)
       computedMessageCode = crypt.keyedHash(data, &ok);
 
       if(!ok)
-	return;
+	{
+	  QMessageBox::critical(this, tr("Spot-On: Error"),
+				tr("Unable to compute a keyed hash."));
+	  return;
+	}
 
       if(computedMessageCode != hash)
 	{
-	  spoton_misc::logError("spoton::slotAddFriendsKey(): "
-				"computed message code does not match "
-				"provided code.");
+	  QMessageBox::critical(this, tr("Spot-On: Error"),
+				tr("The computed hash does not match "
+				   "the provided hash."));
 	  return;
 	}
 
       data = crypt.decrypted(data, &ok);
 
       if(!ok)
-	return;
+	{
+	  QMessageBox::critical(this, tr("Spot-On: Error"),
+				tr("Symmetric decryption failure."));
+	  return;
+	}
 
       list = data.split('@');
 
       if(list.size() != 6)
 	{
-	  spoton_misc::logError("spoton::slotAddFriendsKey(): "
-				"list.size() != 6.");
+	  QMessageBox::critical(this, tr("Spot-On: Error"),
+				tr("Irregular data."));
 	  return;
 	}
 
@@ -1843,7 +1893,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("Invalid key type. Expecting 'chat', 'e-mail', or 'url'."));
+	     tr("Invalid key type. Expecting 'chat', 'email', or 'url'."));
 	  return;
 	}
 
@@ -3124,26 +3174,37 @@ void spoton::slotEnableRetrieveMail(void)
 
 void spoton::slotRetrieveMail(void)
 {
-  if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
-    if(m_kernelSocket.isEncrypted())
-      {
-	QByteArray message("retrievemail\n");
+  QString error("");
 
-	if(m_kernelSocket.write(message.constData(), message.length()) !=
-	   message.length())
-	  spoton_misc::logError
-	    (QString("spoton::slotRetrieveMail(): write() failure "
-		     "for %1:%2.").
-	     arg(m_kernelSocket.peerAddress().toString()).
-	     arg(m_kernelSocket.peerPort()));
-	else
-	  {
-	    m_kernelSocket.flush();
-	    m_ui.retrieveMail->setEnabled(false);
-	    QTimer::singleShot
-	      (5000, this, SLOT(slotEnableRetrieveMail(void)));
-	  }
-      }
+  if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
+    {
+      if(m_kernelSocket.isEncrypted())
+	{
+	  QByteArray message("retrievemail\n");
+
+	  if(m_kernelSocket.write(message.constData(), message.length()) !=
+	     message.length())
+	    spoton_misc::logError
+	      (QString("spoton::slotRetrieveMail(): write() failure "
+		       "for %1:%2.").
+	       arg(m_kernelSocket.peerAddress().toString()).
+	       arg(m_kernelSocket.peerPort()));
+	  else
+	    {
+	      m_kernelSocket.flush();
+	      m_ui.retrieveMail->setEnabled(false);
+	      QTimer::singleShot
+		(5000, this, SLOT(slotEnableRetrieveMail(void)));
+	    }
+	}
+      else
+	error = tr("Connection to the kernel is not encrypted.");
+    }
+  else
+    error = tr("Not connected to the kernel.");
+
+  if(!error.isEmpty())
+    QMessageBox::critical(this, tr("Spot-On: Error"), error);
 }
 
 void spoton::slotKernelStatus(void)
@@ -3806,24 +3867,31 @@ void spoton::slotPublishedKeySizeChanged(const QString &text)
 void spoton::slotJoinBuzzChannel(void)
 {
   QByteArray channel(m_ui.channel->text().trimmed().toUtf8());
-
-  if(channel.isEmpty())
-    return;
-
   QByteArray channelSalt;
   QByteArray channelType(m_ui.channelType->currentText().toLatin1());
+  QByteArray id;
   QByteArray key;
-  QString error;
+  QString error("");
   bool found = false;
   bool ok = true;
+  spoton_buzzpage *page = 0;
   unsigned long iterationCount = m_ui.buzzIterationCount->value();
+
+  if(channel.isEmpty())
+    {
+      error = tr("Please provide a channel name.");
+      goto done_label;
+    }
 
   if(channelSalt.isEmpty())
     channelSalt = spoton_crypt::keyedHash(channel + channelType,
 					  channel, "sha512", &ok);
 
   if(!ok)
-    return;
+    {
+      error = tr("Unable to compute a keyed hash.");
+      goto done_label;
+    }
 
   key = spoton_crypt::derivedKey(m_ui.channelType->currentText(),
 				 "sha512",
@@ -3833,7 +3901,7 @@ void spoton::slotJoinBuzzChannel(void)
 				 error);
 
   if(!error.isEmpty())
-    return;
+    goto done_label;
 
   channelSalt = m_ui.channelSalt->text().trimmed().toUtf8();
 
@@ -3847,9 +3915,7 @@ void spoton::slotJoinBuzzChannel(void)
       }
 
   if(found)
-    return;
-
-  QByteArray id;
+    goto done_label;
 
   if(m_buzzIds.contains(key))
     id = m_buzzIds[key];
@@ -3864,11 +3930,9 @@ void spoton::slotJoinBuzzChannel(void)
   m_ui.channelSalt->clear();
   m_ui.channelType->setCurrentIndex(0);
   m_ui.buzzIterationCount->setValue(m_ui.buzzIterationCount->minimum());
-
-  spoton_buzzpage *page = new spoton_buzzpage
+  page = new spoton_buzzpage
     (&m_kernelSocket, channel, channelSalt, channelType,
      id, iterationCount, this);
-
   connect(&m_buzzStatusTimer,
 	  SIGNAL(timeout(void)),
 	  page,
@@ -3909,6 +3973,11 @@ void spoton::slotJoinBuzzChannel(void)
 	else
 	  m_kernelSocket.flush();
       }
+
+ done_label:
+
+  if(!error.isEmpty())
+    QMessageBox::critical(this, tr("Spot-On: Error"), error);
 }
 
 void spoton::slotCloseBuzzTab(int index)
@@ -4096,12 +4165,20 @@ void spoton::slotRemoveEmailParticipants(void)
 void spoton::slotAddAcceptedIP(void)
 {
   if(!m_crypts.value("chat", 0))
-    return;
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object."));
+      return;
+    }
 
   QHostAddress ip(m_ui.acceptedIP->text().trimmed());
 
   if(ip.isNull())
-    return;
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Please provide an IP address."));
+      return;
+    }
 
   spoton_misc::prepareDatabases();
 
@@ -4145,6 +4222,9 @@ void spoton::slotAddAcceptedIP(void)
       m_ui.acceptedIP->selectAll();
       m_acceptedIPsLastModificationTime = QDateTime();
     }
+  else
+    QMessageBox::critical(this, tr("Spot-On: Error"),
+			  tr("Unable to store the IP address securely."));
 }
 
 void spoton::slotDeleteAccepedIP(void)
@@ -4265,9 +4345,16 @@ void spoton::slotChatInactivityTimeout(void)
 
 void spoton::slotAddAccount(void)
 {
+  QByteArray salt;
+  QByteArray saltedPassphraseHash;
+  QString connectionName("");
+  QString error("");
+  QString name(m_ui.accountName->text().trimmed());
   QString oid("");
+  QString password(m_ui.accountPassword->text());
   int row = -1;
   int sslKeySize = 0;
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
 
   if((row = m_ui.listeners->currentRow()) >= 0)
     {
@@ -4284,26 +4371,33 @@ void spoton::slotAddAccount(void)
     }
 
   if(oid.isEmpty())
-    return;
+    {
+      error = tr("Invalid listener OID.");
+      goto done_label;
+    }
   else if(sslKeySize <= 0)
-    return;
-
-  QString name(m_ui.accountName->text().trimmed());
-  QString password(m_ui.accountPassword->text());
+    {
+      error = tr("The selected listener does not support SSL.");
+      goto done_label;
+    }
 
   if(name.isEmpty() || password.isEmpty())
-    return;
+    {
+      error = tr("Please provide an account name and a password.");
+      goto done_label;
+    }
   else if(password.length() < 16)
-    return;
-
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+    {
+      error = tr("Please provide a password having at least sixteen "
+		 "characters.");
+      goto done_label;
+    }
 
   if(!s_crypt)
-    return;
-
-  QByteArray salt;
-  QByteArray saltedPassphraseHash;
-  QString error("");
+    {
+      error = tr("Invalid spoton_crypt object.");
+      goto done_label;
+    }
 
   salt.resize(256);
   salt = spoton_crypt::strongRandomBytes(salt.length());
@@ -4311,9 +4405,7 @@ void spoton::slotAddAccount(void)
     ("sha512", password, salt, error);
 
   if(!error.isEmpty())
-    return;
-
-  QString connectionName("");
+    goto done_label;
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -4353,9 +4445,17 @@ void spoton::slotAddAccount(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-  m_ui.accountName->clear();
-  m_ui.accountPassword->clear();
-  populateAccounts(oid);
+
+ done_label:
+
+  if(!error.isEmpty())
+    QMessageBox::critical(this, tr("Spot-On: Error"), error);
+  else
+    {
+      m_ui.accountName->clear();
+      m_ui.accountPassword->clear();
+      populateAccounts(oid);
+    }
 }
 
 void spoton::slotDeleteAccount(void)
@@ -4373,17 +4473,29 @@ void spoton::slotDeleteAccount(void)
     }
 
   if(oid.isEmpty())
-    return;
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid listener OID."));
+      return;
+    }
 
   spoton_crypt *s_crypt = m_crypts.value("chat", 0);
 
   if(!s_crypt)
-    return;
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object."));
+      return;
+    }
 
   QList<QListWidgetItem *> list(m_ui.accounts->selectedItems());
 
   if(list.isEmpty())
-    return;
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Please select an account to delete."));
+      return;
+    }
 
   QString connectionName("");
 

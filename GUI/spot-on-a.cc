@@ -1187,7 +1187,11 @@ void spoton::slotQuit(void)
 void spoton::slotAddListener(void)
 {
   if(!m_crypts.value("chat", 0))
-    return;
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object."));
+      return;
+    }
 
   spoton_misc::prepareDatabases();
 
@@ -1396,12 +1400,21 @@ void spoton::slotAddListener(void)
 
   if(ok)
     m_ui.listenerIP->selectAll();
+  else
+    QMessageBox::critical(this, tr("Spot-On: Error"),
+			  tr("Unable to add the specified listener. "
+			     "Please enable logging via the Log Viewer "
+			     "and try again."));
 }
 
 void spoton::slotAddNeighbor(void)
 {
   if(!m_crypts.value("chat", 0))
-    return;
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object."));
+      return;
+    }
 
   spoton_misc::prepareDatabases();
 
@@ -1674,6 +1687,11 @@ void spoton::slotAddNeighbor(void)
 
   if(ok)
     m_ui.neighborIP->selectAll();
+  else
+    QMessageBox::critical(this, tr("Spot-On: Error"),
+			  tr("Unable to add the specified neighbor. "
+			     "Please enable logging via the Log Viewer "
+			     "and try again."));
 }
 
 void spoton::slotHideOfflineParticipants(bool state)
@@ -3168,7 +3186,7 @@ void spoton::slotSetPassphrase(void)
   else if(str1 != str2)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("The passphrases are not equal."));
+			    tr("The passphrases are not identical."));
       m_ui.passphrase1->selectAll();
       m_ui.passphrase1->setFocus();
       return;
@@ -3502,7 +3520,7 @@ void spoton::slotSetPassphrase(void)
 
       QMessageBox::information
 	(this, tr("Spot-On: Information"),
-	 tr("Your passphrase and public key pairs have been recorded. "
+	 tr("Your critical information has been recorded. "
 	    "You are now ready to use the full power of Spot-On. Enjoy!"));
 
       if(QFileInfo(m_ui.kernelPath->text().trimmed()).isExecutable())
