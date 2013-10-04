@@ -70,6 +70,7 @@ class spoton_neighbor: public QSslSocket
 		  const QByteArray &privateKey,
 		  const QString &echoMode,
 		  const bool useAccounts,
+		  const qint64 listenerOid,
 		  QObject *parent);
   ~spoton_neighbor();
   QUuid receivedUuid(void) const;
@@ -110,6 +111,7 @@ class spoton_neighbor: public QSslSocket
   int m_maximumBufferSize;
   int m_maximumContentLength;
   qint64 m_id;
+  qint64 m_listenerOid;
   quint16 m_port;
   quint64 m_bytesRead;
   quint64 m_bytesWritten;

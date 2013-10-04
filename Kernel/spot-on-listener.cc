@@ -433,7 +433,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
   if(error.isEmpty())
     neighbor = new spoton_neighbor
       (socketDescriptor, certificate, privateKey, m_echoMode, m_useAccounts,
-       this);
+       m_id, this);
   else
     {
       QTcpSocket socket;

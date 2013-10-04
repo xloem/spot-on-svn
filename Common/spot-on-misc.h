@@ -50,6 +50,9 @@ class spoton_misc
   static QString countryCodeFromName(const QString &country);
   static QString countryNameFromIPAddress(const QString &ipAddress);
   static QString homePath(void);
+  static bool authenticateAccount(const qint64 listenerOid,
+				  const QByteArray &name,
+				  const QByteArray &password);
   static bool countryAllowedToConnect(const QString &country,
 				      spoton_crypt *crypt);
   static bool isAcceptedIP(const QHostAddress &address,
@@ -64,7 +67,7 @@ class spoton_misc
 				   const QByteArray &name,
 				   const QByteArray &publicKey,
 				   const QByteArray &sPublicKey,
-				   const int neighborOid,
+				   const qint64 neighborOid,
 				   const QSqlDatabase &db);
   static int participantCount(const QString &keyType);
   static void cleanupDatabases(void);

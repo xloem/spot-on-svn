@@ -50,6 +50,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 const QByteArray &privateKey,
 				 const QString &echoMode,
 				 const bool useAccounts,
+				 const qint64 listenerOid,
 				 QObject *parent):QSslSocket(parent)
 {
   m_address = peerAddress();
@@ -60,6 +61,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_echoMode = echoMode;
   m_ipAddress = m_address.toString();
   m_isUserDefined = false;
+  m_listenerOid = listenerOid;
   m_maximumBufferSize = spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE;
   m_maximumContentLength = spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH;
   m_port = peerPort();
@@ -225,6 +227,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
     m_keySize = 2048;
 
   m_isUserDefined = userDefined;
+  m_listenerOid = -1;
   m_maximumBufferSize =
     qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
 	   maximumBufferSize,
@@ -2820,7 +2823,8 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      if(list.at(0) == m_accountName && list.at(1) == m_accountPassword)
+      if(spoton_misc::authenticateAccount(m_listenerOid,
+					  list.at(0), list.at(1)))
 	m_accountAuthenticated = true;
 
       resetKeepAlive();

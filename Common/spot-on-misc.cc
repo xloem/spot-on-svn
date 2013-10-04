@@ -860,7 +860,7 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 				       const QByteArray &name,
 				       const QByteArray &publicKey,
 				       const QByteArray &sPublicKey,
-				       const int neighborOid,
+				       const qint64 neighborOid,
 				       const QSqlDatabase &db)
 {
   if(!db.isOpen())
@@ -1835,4 +1835,14 @@ bool spoton_misc::isAcceptedIP(const QHostAddress &address,
 
   QSqlDatabase::removeDatabase(connectionName);
   return count > 0;
+}
+
+bool spoton_misc::authenticateAccount(const qint64 listenerOid,
+				      const QByteArray &name,
+				      const QByteArray &password)
+{
+  Q_UNUSED(listenerOid);
+  Q_UNUSED(name);
+  Q_UNUSED(password);
+  return true;
 }
