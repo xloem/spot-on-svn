@@ -67,6 +67,8 @@ class spoton_send
   static QByteArray message0040a(const QByteArray &message);
   static QByteArray message0040b(const QByteArray &message,
 				 const spoton_send_method sendMethod);
+  static QByteArray message0050(const QString &accountName,
+				const QString &accountPassword);
 
  private:
   spoton_send(void);

@@ -736,6 +736,8 @@ void spoton_kernel::prepareNeighbors(void)
 		      "allow_exceptions, "
 		      "protocol, "
 		      "ssl_required, "
+		      "account_name, "
+		      "account_password, "
 		      "OID FROM neighbors"))
 	  while(query.next())
 	    {
@@ -861,6 +863,8 @@ void spoton_kernel::prepareNeighbors(void)
 			     list.value(15).toBool(),
 			     list.value(16).toByteArray().constData(),
 			     list.value(17).toBool(),
+			     list.value(18).toString(),
+			     list.value(19).toString(),
 			     this);
 			}
 

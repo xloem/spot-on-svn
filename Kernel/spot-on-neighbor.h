@@ -62,6 +62,8 @@ class spoton_neighbor: public QSslSocket
 		  const bool allowExceptions,
 		  const QString &protocol,
 		  const bool requireSsl,
+		  const QString &accountName,
+		  const QString &accountPassword,
 		  QObject *parent);
   spoton_neighbor(const int socketDescriptor,
 		  const QByteArray &certificate,
@@ -88,6 +90,8 @@ class spoton_neighbor: public QSslSocket
   QHostAddress m_address;
   QNetworkInterface *m_networkInterface;
   QSslCertificate m_peerCertificate;
+  QString m_accountName;
+  QString m_accountPassword;
   QString m_echoMode;
   QString m_ipAddress;
   QString m_protocol;
@@ -132,6 +136,7 @@ class spoton_neighbor: public QSslSocket
 		    const QPair<QByteArray, QByteArray> &pair);
   void process0040b(int length, const QByteArray &data,
 		    const QPair<QByteArray, QByteArray> &pair);
+  void process0050(int length, const QByteArray &data);
   void recordMessageHash(const QByteArray &data);
   void resetKeepAlive(void);
   void saveExternalAddress(const QHostAddress &address,

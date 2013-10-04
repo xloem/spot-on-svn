@@ -367,7 +367,9 @@ void spoton_misc::prepareDatabases(void)
 	   "bytes_read INTEGER NOT NULL DEFAULT 0, "
 	   "bytes_written INTEGER NOT NULL DEFAULT 0, "
 	   "ssl_session_cipher TEXT, "
-	   "ssl_required INTEGER NOT NULL DEFAULT 1)");
+	   "ssl_required INTEGER NOT NULL DEFAULT 1, "
+	   "account_name TEXT NOT NULL, "
+	   "account_password TEXT NOT NULL)");
       }
 
     db.close();
@@ -1467,9 +1469,11 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 		   "uuid, "
 		   "echo_mode, "
 		   "ssl_key_size, "
-		   "peer_certificate) "
+		   "peer_certificate, "
+		   "account_name, "
+		   "account_password) "
 		   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-		   "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		   "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
 
@@ -1587,6 +1591,14 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	if(ok)
 	  query.bindValue
 	    (21, crypt->encrypted(QByteArray(), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (22, crypt->encrypted(QByteArray(), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (23, crypt->encrypted(QByteArray(), &ok).toBase64());
 
 	if(ok)
 	  query.exec();

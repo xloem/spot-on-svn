@@ -596,9 +596,11 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
 		       "proxy_username, "
 		       "echo_mode, "
 		       "ssl_key_size, "
-		       "peer_certificate) "
+		       "peer_certificate, "
+		       "account_name, "
+		       "account_password) "
 		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
 	    query.bindValue(1, m_port);
 
@@ -713,6 +715,14 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
 	    if(ok)
 	      query.bindValue
 		(22, s_crypt->encrypted(QByteArray(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(23, s_crypt->encrypted(QByteArray(), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(24, s_crypt->encrypted(QByteArray(), &ok).toBase64());
 
 	    if(ok)
 	      created = query.exec();

@@ -1458,10 +1458,12 @@ void spoton::slotAddNeighbor(void)
 		      "ssl_key_size, "
 		      "allow_exceptions, "
 		      "peer_certificate, "
-		      "ssl_required) "
+		      "ssl_required, "
+		      "account_name, "
+		      "account_password) "
 		      "VALUES "
 		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-		      "?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		      "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
@@ -1650,6 +1652,16 @@ void spoton::slotAddNeighbor(void)
 						   &ok).toBase64());
 
 	query.bindValue(22, m_ui.requireSsl->isChecked() ? 1 : 0);
+
+	if(ok)
+	  query.bindValue
+	    (23, m_crypts.value("chat")->encrypted(QByteArray(),
+						   &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (24, m_crypts.value("chat")->encrypted(QByteArray(),
+						   &ok).toBase64());
 
 	if(ok)
 	  ok = query.exec();

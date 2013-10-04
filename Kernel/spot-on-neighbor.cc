@@ -208,9 +208,13 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const bool allowExceptions,
 				 const QString &protocol,
 				 const bool requireSsl,
+				 const QString &accountName,
+				 const QString &accountPassword,
 				 QObject *parent):QSslSocket(parent)
 {
   m_accountAuthenticated = false;
+  m_accountName = accountName;
+  m_accountPassword = accountPassword;
   m_allowExceptions = allowExceptions;
   m_bytesRead = 0;
   m_bytesWritten = 0;
@@ -803,6 +807,14 @@ void spoton_neighbor::slotReadyRead(void)
 
 	  if(downgrade)
 	    goto done_label;
+
+	  if(m_useAccounts && !m_accountAuthenticated)
+	    {
+	      if(length > 0 && data.contains("type=0050&content="))
+		process0050(length, data);
+
+	      goto done_label;
+	    }
 
 	  if(length > 0 && data.contains("type=0011&content="))
 	    process0011(length, data);
@@ -2776,6 +2788,53 @@ void spoton_neighbor::process0040b(int length, const QByteArray &dataIn,
        arg(m_port));
 }
 
+void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
+{
+  length -= strlen("type=0050&content=");
+
+  /*
+  ** We may have received a name and a password.
+  */
+
+  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
+
+  data.remove
+    (0,
+     data.indexOf("type=0050&content=") + strlen("type=0050&content="));
+
+  if(length == data.length())
+    {
+      data = QByteArray::fromBase64(data);
+
+      QList<QByteArray> list(data.split('\n'));
+
+      if(list.size() != 2)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::process0050(): "
+		     "received irregular data. Expecting 2 entries, "
+		     "received %1.").arg(list.size()));
+	  return;
+	}
+
+      for(int i = 0; i < list.size(); i++)
+	list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+      if(list.at(0) == m_accountName && list.at(1) == m_accountPassword)
+	m_accountAuthenticated = true;
+
+      resetKeepAlive();
+    }
+  else
+    spoton_misc::logError
+      (QString("spoton_neighbor::process0050(): 0050 "
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
+}
+
 void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
 {
   if(readyToWrite())
@@ -3580,7 +3639,12 @@ bool spoton_neighbor::readyToWrite(void)
   if(state() != QAbstractSocket::ConnectedState)
     return false;
   else if(isEncrypted() && m_useSsl)
-    return true;
+    {
+      if(m_useAccounts && !m_accountAuthenticated)
+	return false;
+      else
+	return true;
+    }
   else if(!isEncrypted() && !m_useSsl)
     return true;
   else
