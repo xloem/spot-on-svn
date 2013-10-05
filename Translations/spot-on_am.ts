@@ -665,6 +665,11 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../GUI/spot-on-a.cc" line="3530"/>
+        <source>Your confidential information has been recorded. You are now ready to use the full power of Spot-On. Enjoy!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../GUI/spot-on-a.cc" line="5544"/>
         <source>Invalid neighbors OID.</source>
         <translation type="unfinished"></translation>
@@ -807,11 +812,6 @@ Account Name: %20</source>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="3387"/>
         <source>An error (%1) occurred with spoton_crypt::generatePrivatePublicKeys() or spoton_crypt::reencodeKeys().</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/spot-on-a.cc" line="3530"/>
-        <source>Your critical information has been recorded. You are now ready to use the full power of Spot-On. Enjoy!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
