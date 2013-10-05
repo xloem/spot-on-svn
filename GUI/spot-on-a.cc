@@ -5521,7 +5521,11 @@ void spoton::slotAuthenticate(void)
   spoton_crypt *s_crypt = m_crypts.value("chat", 0);
 
   if(!s_crypt)
-    return;
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object."));
+      return;
+    }
 
   QModelIndexList list;
 
@@ -5529,7 +5533,11 @@ void spoton::slotAuthenticate(void)
     (m_ui.neighbors->columnCount() - 1); // OID
 
   if(list.isEmpty())
-    return;
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid neighbors OID."));
+      return;
+    }
 
   QDialog dialog(this);
   Ui_passwordprompt ui;
@@ -5585,5 +5593,10 @@ void spoton::slotAuthenticate(void)
 
 	  QSqlDatabase::removeDatabase(connectionName);
 	}
+      else
+	QMessageBox::critical(this, tr("Spot-On: Error"),
+			      tr("The account name must be non-empty "
+				 "and the account password must contain "
+				 "at least sixteen characters."));
     }
 }

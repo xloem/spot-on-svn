@@ -35,6 +35,7 @@ public_key
 scope_id
 
 account_name
+account_password
 
 neighbors.db:
 

@@ -305,11 +305,7 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_accounts ("
 		   "account_name TEXT NOT NULL, "
 		   "account_name_hash TEXT NOT NULL, "
-		   "account_salt TEXT NOT NULL, "
-		   "account_salted_password TEXT NOT NULL, " /*
-							     ** Sha-512 of
-							     ** the password.
-							     */
+		   "account_password TEXT NOT NULL, "
 		   "listener_oid INTEGER NOT NULL, "
 		   "PRIMARY KEY (listener_oid, account_name_hash), "
 		   "FOREIGN KEY (listener_oid) REFERENCES "
@@ -1863,28 +1859,26 @@ bool spoton_misc::authenticateAccount(const qint64 listenerOid,
 	bool ok = true;
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT account_salt, account_salted_password "
+	query.prepare("SELECT account_password "
 		      "FROM listeners_accounts WHERE "
-		      "account_name_hash = ? AND "
-		      "listener_oid = ?");
+		      "account_name_hash = ? AND listener_oid = ?");
 	query.bindValue
 	  (0, crypt->keyedHash(name, &ok).toBase64());
 	query.bindValue(1, listenerOid);
 
 	if(ok)
 	  if(query.exec())
-	    {
-	      QByteArray saltedPassphraseHash;
-	      QString error("");
+	    if(query.next())
+	      {
+		QByteArray bytes
+		  (crypt->decrypted(QByteArray::fromBase64(query.value(0).
+							   toByteArray()),
+				    &ok));
 
-	      saltedPassphraseHash = spoton_crypt::saltedPassphraseHash
-		("sha512", password,
-		 QByteArray::fromBase64(query.value(0).toByteArray()),
-		 error);
-
-	      if(query.value(1) == saltedPassphraseHash.toBase64())
-		found = true;
-	    }
+		if(ok)
+		  if(bytes == password)
+		    found = true;
+	      }
       }
 
     db.close();

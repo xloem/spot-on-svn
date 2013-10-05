@@ -550,13 +550,16 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		      "scope_id, country, hash, proxy_hostname, "
 		      "proxy_password, proxy_port, proxy_type, "
 		      "proxy_username, uuid, "
-		      "echo_mode, peer_certificate, protocol "
+		      "echo_mode, peer_certificate, protocol, "
+		      "account_name, account_password "
 		      "FROM neighbors"))
 	  while(query.next())
 	    {
 	      QByteArray peerCertificate;
 	      QByteArray uuid;
 	      QSqlQuery updateQuery(db);
+	      QString accountName("");
+	      QString accountPassword("");
 	      QString country("");
 	      QString echoMode("");
 	      QString ipAddress("");
@@ -587,7 +590,9 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "echo_mode = ?, "
 				  "peer_certificate = ?, "
 				  "protocol = ?, "
-				  "ssl_session_cipher = NULL "
+				  "ssl_session_cipher = NULL, "
+				  "account_name = ?, "
+				  "account_password = ? "
 				  "WHERE hash = ?");
 	      ipAddress = oldCrypt->decrypted(QByteArray::
 					      fromBase64(query.
@@ -680,6 +685,21 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 					       &ok).constData();
 
 	      if(ok)
+		accountName = oldCrypt->decrypted(QByteArray::
+						  fromBase64(query.
+							     value(14).
+							     toByteArray()),
+						  &ok).constData();
+
+	      if(ok)
+		accountPassword = oldCrypt->decrypted
+		  (QByteArray::
+		   fromBase64(query.
+			      value(15).
+			      toByteArray()),
+		   &ok).constData();
+
+	      if(ok)
 		updateQuery.bindValue
 		  (0, newCrypt->encrypted(ipAddress.
 					  toLatin1(), &ok).toBase64());
@@ -760,6 +780,16 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      updateQuery.bindValue
 		(16, query.value(4));
+
+	      if(ok)
+		updateQuery.bindValue
+		  (17, newCrypt->encrypted(accountName.toLatin1(), &ok).
+		   toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (18, newCrypt->encrypted(accountPassword.toLatin1(),
+					   &ok).toBase64());
 
 	      if(ok)
 		updateQuery.exec();

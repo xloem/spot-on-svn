@@ -141,6 +141,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_lastReadTime = QDateTime::currentDateTime();
   m_networkInterface = 0;
   connect(this,
+	  SIGNAL(accountAuthenticated(void)),
+	  this,
+	  SLOT(slotAccountAuthenticated(void)));
+  connect(this,
 	  SIGNAL(disconnected(void)),
 	  this,
 	  SLOT(slotDisconnected(void)));
@@ -193,7 +197,9 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_keepAliveTimer.start(45000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
-  QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
+
+  if(!m_useAccounts)
+    QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 }
 
 spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
@@ -351,6 +357,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(ipAddressDiscovered(const QHostAddress &)),
 	  this,
 	  SLOT(slotExternalAddressDiscovered(const QHostAddress &)));
+  connect(&m_accountTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotSendAccountInformation(void)));
   connect(&m_externalAddressDiscovererTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -371,6 +381,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTimeout(void)));
+  m_accountTimer.setInterval(2500);
   m_externalAddressDiscovererTimer.setInterval(30000);
   m_keepAliveTimer.setInterval(45000);
   m_lifetime.start(10 * 60 * 1000);
@@ -511,7 +522,8 @@ void spoton_neighbor::slotTimeout(void)
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT status_control, sticky, echo_mode, "
-		      "maximum_buffer_size, maximum_content_length "
+		      "maximum_buffer_size, maximum_content_length, "
+		      "account_name, account_password "
 		      "FROM neighbors WHERE OID = ?");
 	query.bindValue(0, m_id);
 
@@ -534,11 +546,29 @@ void spoton_neighbor::slotTimeout(void)
 		    if(s_crypt)
 		      {
 			bool ok = true;
+			QByteArray name;
+			QByteArray password;
 
 			m_echoMode = s_crypt->decrypted
 			  (QByteArray::fromBase64(query.value(2).
 						  toByteArray()),
 			   &ok).constData();
+			name = s_crypt->decrypted
+			  (QByteArray::fromBase64(query.value(5).
+						  toByteArray()),
+			   &ok).constData();
+			password = s_crypt->decrypted
+			  (QByteArray::fromBase64(query.value(6).
+						  toByteArray()),
+			   &ok).constData();
+
+			if(name != m_accountName ||
+			   password != m_accountPassword)
+			  {
+			    m_accountName = name;
+			    m_accountPassword = password;
+			    m_accountTimer.start();
+			  }
 		      }
 
 		    m_maximumBufferSize =
@@ -2827,7 +2857,10 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 					  list.at(0), list.at(1),
 					  spoton_kernel::s_crypts.
 					  value("chat", 0)))
-	m_accountAuthenticated = true;
+	{
+	  m_accountAuthenticated = true;
+	  emit accountAuthenticated();
+	}
 
       resetKeepAlive();
     }
@@ -3622,9 +3655,10 @@ void spoton_neighbor::slotEncrypted(void)
 	      return;
 	    }
 	}
-    }
 
-  QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
+      m_accountTimer.start();
+      QTimer::singleShot(10000, this, SLOT(slotSendUuid(void)));
+    }
 }
 
 void spoton_neighbor::slotProxyAuthenticationRequired
@@ -3906,6 +3940,7 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 
 	if(ok)
 	  query.exec();
+
       }
 
     db.close();
@@ -3917,4 +3952,32 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 void spoton_neighbor::addToBytesWritten(const int bytesWritten)
 {
   m_bytesWritten += qAbs(bytesWritten);
+}
+
+void spoton_neighbor::slotSendAccountInformation(void)
+{
+  if(!readyToWrite())
+    return;
+
+  QByteArray message
+    (spoton_send::message0050(m_accountName.toLatin1(),
+			      m_accountPassword.toLatin1()));
+
+  if(write(message.constData(), message.length()) != message.length())
+    spoton_misc::logError
+      (QString("spoton_neighbor::sendAccountInformation(): "
+	       "write() error for %1:%2.").
+       arg(m_address.toString()).
+       arg(m_port));
+  else
+    {
+      flush();
+      m_accountTimer.stop();
+      m_bytesWritten += message.length();
+    }
+}
+
+void spoton_neighbor::slotAccountAuthenticated(void)
+{
+  QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 }

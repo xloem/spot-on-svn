@@ -19,9 +19,10 @@
 12.  Added a simple feature for testing the SSL Control String.
 13.  More corrections to Documentation/ENCRYPTED.
 14.  Updated OpenSSL libraries to version 1.0.1e on OS X. Libraries
-     are generated from source.
+     were generated from source.
 15.  Added SSL_library_init() to spoton_crypt::init().
-16.  Per-listener accounts. Please remove listeners.db.
+16.  Per-listener accounts. Please remove listeners.db. Please note
+     that listeners will not respond when a peer has been authenticated.
 17.  Improved error reporting between the user and the UI.
 
 0.05 (09/16/2013)

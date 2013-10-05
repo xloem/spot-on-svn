@@ -4345,8 +4345,6 @@ void spoton::slotChatInactivityTimeout(void)
 
 void spoton::slotAddAccount(void)
 {
-  QByteArray salt;
-  QByteArray saltedPassphraseHash;
   QString connectionName("");
   QString error("");
   QString name(m_ui.accountName->text().trimmed());
@@ -4399,14 +4397,6 @@ void spoton::slotAddAccount(void)
       goto done_label;
     }
 
-  salt.resize(256);
-  salt = spoton_crypt::strongRandomBytes(salt.length());
-  saltedPassphraseHash = spoton_crypt::saltedPassphraseHash
-    ("sha512", password, salt, error);
-
-  if(!error.isEmpty())
-    goto done_label;
-
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
 
@@ -4421,10 +4411,9 @@ void spoton::slotAddAccount(void)
 	query.prepare("INSERT INTO listeners_accounts "
 		      "(account_name, "
 		      "account_name_hash, "
-		      "account_salt, "
-		      "account_salted_password, "
+		      "account_password, "
 		      "listener_oid) "
-		      "VALUES (?, ?, ?, ?, ?)");
+		      "VALUES (?, ?, ?, ?)");
 	query.bindValue
 	  (0, s_crypt->encrypted(name.toLatin1(), &ok).toBase64());
 
@@ -4433,9 +4422,11 @@ void spoton::slotAddAccount(void)
 	    (1, s_crypt->keyedHash(name.toLatin1(),
 				   &ok).toBase64());
 
-	query.bindValue(2, salt.toBase64());
-	query.bindValue(3, saltedPassphraseHash.toBase64());
-	query.bindValue(4, oid);
+	if(ok)
+	  query.bindValue
+	    (2, s_crypt->encrypted(password.toLatin1(), &ok).toBase64());
+
+	query.bindValue(3, oid);
 
 	if(ok)
 	  query.exec();
