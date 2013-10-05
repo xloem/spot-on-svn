@@ -1398,137 +1398,89 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="6">
-                  <layout class="QHBoxLayout" name="horizontalLayout_33">
-                   <item>
-                    <widget class="QCheckBox" name="recordIPAddress">
-                     <property name="toolTip">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Record the current external IP address in the listener's certificate. Please do not use this option if you have a dynamic IP address.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                     <property name="text">
-                      <string>&amp;Ip Address</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="Line" name="line_9">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="permanentCertificate">
-                     <property name="text">
-                      <string>&amp;Permanent Certificate</string>
-                     </property>
-                     <property name="checked">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="Line" name="line_8">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="sslListener">
-                     <property name="text">
-                      <string>&amp;SSL Key Size</string>
-                     </property>
-                     <property name="checked">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="listenerKeySize">
-                     <property name="sizeAdjustPolicy">
-                      <enum>QComboBox::AdjustToContents</enum>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>2048</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>3072</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>4096</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_41">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="0" column="6">
-                  <layout class="QHBoxLayout" name="horizontalLayout_43">
-                   <item>
-                    <widget class="QLabel" name="label_38">
-                     <property name="text">
-                      <string>&amp;Echo Mode</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>listenersEchoMode</cstring>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="listenersEchoMode">
-                     <property name="sizeAdjustPolicy">
-                      <enum>QComboBox::AdjustToContents</enum>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Full Echo</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Half Echo</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_39">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
                 </layout>
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_36">
+                 <item>
+                  <widget class="QLabel" name="label_38">
+                   <property name="text">
+                    <string>&amp;Echo Mode</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>listenersEchoMode</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="listenersEchoMode">
+                   <property name="sizeAdjustPolicy">
+                    <enum>QComboBox::AdjustToContents</enum>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Full Echo</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Half Echo</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="recordIPAddress">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Record the current external IP address in the listener's certificate. Please do not use this option if you have a dynamic IP address.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="text">
+                    <string>&amp;Ip Address</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="permanentCertificate">
+                   <property name="text">
+                    <string>&amp;Permanent Certificate</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="sslListener">
+                   <property name="text">
+                    <string>&amp;SSL Key Size</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="listenerKeySize">
+                   <property name="sizeAdjustPolicy">
+                    <enum>QComboBox::AdjustToContents</enum>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>2048</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>3072</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>4096</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
                  <item>
                   <spacer name="horizontalSpacer_27">
                    <property name="orientation">
@@ -1574,7 +1526,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>236</width>
+                 <width>253</width>
                  <height>625</height>
                 </rect>
                </property>
@@ -2258,135 +2210,91 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="6">
-                  <layout class="QHBoxLayout" name="horizontalLayout_35">
-                   <item>
-                    <widget class="QCheckBox" name="addException">
-                     <property name="toolTip">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Spot-On will record peer certificates during initial connections. Subsequent connections will cause Spot-On to inspect peer certificates. If there are discrepancies between recorded certificates and transmitted certificates, Spot-On will sever the connections. Enable this option if you would like Spot-On to ignore discrepancies.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                     <property name="text">
-                      <string>&amp;Allow Exceptions</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="Line" name="line_10">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QCheckBox" name="requireSsl">
-                     <property name="toolTip">
-                      <string>Require secure connections.</string>
-                     </property>
-                     <property name="text">
-                      <string>&amp;Require SSL</string>
-                     </property>
-                     <property name="checked">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="Line" name="line_7">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLabel" name="label_29">
-                     <property name="text">
-                      <string>&amp;SSL Key Size</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>neighborKeySize</cstring>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="neighborKeySize">
-                     <property name="sizeAdjustPolicy">
-                      <enum>QComboBox::AdjustToContents</enum>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>2048</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>3072</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>4096</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_42">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_35">
+                 <item>
+                  <widget class="QLabel" name="label_39">
+                   <property name="text">
+                    <string>&amp;Echo Mode</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>neighborsEchoMode</cstring>
+                   </property>
+                  </widget>
                  </item>
-                 <item row="0" column="6">
-                  <layout class="QHBoxLayout" name="horizontalLayout_44">
+                 <item>
+                  <widget class="QComboBox" name="neighborsEchoMode">
+                   <property name="sizeAdjustPolicy">
+                    <enum>QComboBox::AdjustToContents</enum>
+                   </property>
                    <item>
-                    <widget class="QLabel" name="label_39">
-                     <property name="text">
-                      <string>&amp;Echo Mode</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>neighborsEchoMode</cstring>
-                     </property>
-                    </widget>
+                    <property name="text">
+                     <string>Full Echo</string>
+                    </property>
                    </item>
                    <item>
-                    <widget class="QComboBox" name="neighborsEchoMode">
-                     <property name="sizeAdjustPolicy">
-                      <enum>QComboBox::AdjustToContents</enum>
-                     </property>
-                     <item>
-                      <property name="text">
-                       <string>Full Echo</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text">
-                       <string>Half Echo</string>
-                      </property>
-                     </item>
-                    </widget>
+                    <property name="text">
+                     <string>Half Echo</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="addException">
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Spot-On will record peer certificates during initial connections. Subsequent connections will cause Spot-On to inspect peer certificates. If there are discrepancies between recorded certificates and transmitted certificates, Spot-On will sever the connections. Enable this option if you would like Spot-On to ignore discrepancies.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="text">
+                    <string>&amp;Allow Exceptions</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="requireSsl">
+                   <property name="toolTip">
+                    <string>Require secure connections.</string>
+                   </property>
+                   <property name="text">
+                    <string>&amp;Require SSL</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_29">
+                   <property name="text">
+                    <string>&amp;SSL Key Size</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>neighborKeySize</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="neighborKeySize">
+                   <property name="sizeAdjustPolicy">
+                    <enum>QComboBox::AdjustToContents</enum>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>2048</string>
+                    </property>
                    </item>
                    <item>
-                    <spacer name="horizontalSpacer_40">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
+                    <property name="text">
+                     <string>3072</string>
+                    </property>
                    </item>
-                  </layout>
+                   <item>
+                    <property name="text">
+                     <string>4096</string>
+                    </property>
+                   </item>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -2947,13 +2855,6 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="Line" name="line">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
                     <widget class="QLabel" name="label_18">
                      <property name="text">
                       <string>Spot-On-Kernel &amp;Executable</string>
@@ -3000,13 +2901,6 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="Line" name="line_6">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
                     <widget class="QCheckBox" name="congestionControl">
                      <property name="text">
                       <string>&amp;Congestion Control</string>
@@ -3033,13 +2927,6 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="Line" name="line_4">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
                     <widget class="QCheckBox" name="kernelLogEvents">
                      <property name="text">
                       <string>&amp;Log Events</string>
@@ -3047,23 +2934,9 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="Line" name="line_3">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
                     <widget class="QCheckBox" name="scrambler">
                      <property name="text">
                       <string>&amp;Scrambler</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="Line" name="line_2">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
                      </property>
                     </widget>
                    </item>
@@ -3100,13 +2973,6 @@
                        <string>4096</string>
                       </property>
                      </item>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="Line" name="line_5">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
                     </widget>
                    </item>
                    <item>
@@ -4217,9 +4083,9 @@
   <tabstop>listenerIP</tabstop>
   <tabstop>listenerPort</tabstop>
   <tabstop>ipv4Listener</tabstop>
-  <tabstop>listenersEchoMode</tabstop>
   <tabstop>listenerScopeId</tabstop>
   <tabstop>ipv6Listener</tabstop>
+  <tabstop>listenersEchoMode</tabstop>
   <tabstop>recordIPAddress</tabstop>
   <tabstop>permanentCertificate</tabstop>
   <tabstop>sslListener</tabstop>
@@ -4251,9 +4117,9 @@
   <tabstop>neighborPort</tabstop>
   <tabstop>dynamicdns</tabstop>
   <tabstop>ipv4Neighbor</tabstop>
-  <tabstop>neighborsEchoMode</tabstop>
   <tabstop>neighborScopeId</tabstop>
   <tabstop>ipv6Neighbor</tabstop>
+  <tabstop>neighborsEchoMode</tabstop>
   <tabstop>addException</tabstop>
   <tabstop>requireSsl</tabstop>
   <tabstop>neighborKeySize</tabstop>
