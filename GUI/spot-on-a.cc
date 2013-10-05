@@ -3527,7 +3527,7 @@ void spoton::slotSetPassphrase(void)
 
       QMessageBox::information
 	(this, tr("Spot-On: Information"),
-	 tr("Your critical information has been recorded. "
+	 tr("Your confidential information has been recorded. "
 	    "You are now ready to use the full power of Spot-On. Enjoy!"));
 
       if(QFileInfo(m_ui.kernelPath->text().trimmed()).isExecutable())
