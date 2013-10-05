@@ -189,8 +189,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>412</width>
-                <height>474</height>
+                <width>1219</width>
+                <height>651</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1562,188 +1562,210 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_27">
             <item>
-             <widget class="QGroupBox" name="accountsGB">
-              <property name="title">
-               <string>Accounts</string>
+             <widget class="QScrollArea" name="scrollArea_3">
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_37">
-               <item>
-                <widget class="QListWidget" name="accounts">
-                 <property name="selectionBehavior">
-                  <enum>QAbstractItemView::SelectRows</enum>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <layout class="QGridLayout" name="gridLayout_6">
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_47">
-                   <property name="text">
-                    <string>&amp;Name</string>
-                   </property>
-                   <property name="buddy">
-                    <cstring>accountName</cstring>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_48">
-                   <property name="text">
-                    <string>&amp;Password</string>
-                   </property>
-                   <property name="buddy">
-                    <cstring>accountPassword</cstring>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QLineEdit" name="accountName"/>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QLineEdit" name="accountPassword">
-                   <property name="toolTip">
-                    <string>Please provide a password having sixteen or more characters.</string>
-                   </property>
-                   <property name="echoMode">
-                    <enum>QLineEdit::Password</enum>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_52">
-                 <item>
-                  <spacer name="horizontalSpacer_48">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="addAccount">
-                   <property name="text">
-                    <string>Add</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="deleteAccount">
-                   <property name="text">
-                    <string>Delete</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="countriesRadio">
-              <property name="text">
-               <string>&amp;Countries</string>
-              </property>
-              <property name="checked">
+              <property name="widgetResizable">
                <bool>true</bool>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="acceptedIPsRadio">
-              <property name="text">
-               <string>&amp;IP Addresses</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QGroupBox" name="approvedCountries">
-              <property name="title">
-               <string>Accepted Countries</string>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_25">
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_41">
-                 <item>
-                  <spacer name="horizontalSpacer_37">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item>
-                  <widget class="QToolButton" name="countriesToggle">
-                   <property name="text">
-                    <string>Toggle All</string>
-                   </property>
-                   <property name="popupMode">
-                    <enum>QToolButton::InstantPopup</enum>
-                   </property>
-                   <property name="toolButtonStyle">
-                    <enum>Qt::ToolButtonTextBesideIcon</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_38">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <widget class="QListWidget" name="countries"/>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QGroupBox" name="approvedIPs">
-              <property name="title">
-               <string>Accepted IP Addresses</string>
-              </property>
-              <property name="checked">
-               <bool>false</bool>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_36">
-               <item>
-                <widget class="QListWidget" name="acceptedIPList"/>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_49">
-                 <item>
-                  <widget class="QLineEdit" name="acceptedIP"/>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="addAcceptedIP">
-                   <property name="text">
-                    <string>Add</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
+              <widget class="QWidget" name="scrollAreaWidgetContents_3">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>236</width>
+                 <height>625</height>
+                </rect>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_38">
+                <item>
+                 <widget class="QGroupBox" name="accountsGB">
+                  <property name="title">
+                   <string>Accounts</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_37">
+                   <item>
+                    <widget class="QListWidget" name="accounts">
+                     <property name="selectionBehavior">
+                      <enum>QAbstractItemView::SelectRows</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QGridLayout" name="gridLayout_6">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_47">
+                       <property name="text">
+                        <string>&amp;Name</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>accountName</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_48">
+                       <property name="text">
+                        <string>&amp;Password</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>accountPassword</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLineEdit" name="accountName"/>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLineEdit" name="accountPassword">
+                       <property name="toolTip">
+                        <string>Please provide a password having sixteen or more characters.</string>
+                       </property>
+                       <property name="echoMode">
+                        <enum>QLineEdit::Password</enum>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_52">
+                     <item>
+                      <spacer name="horizontalSpacer_48">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="addAccount">
+                       <property name="text">
+                        <string>Add</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="deleteAccount">
+                       <property name="text">
+                        <string>Delete</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="countriesRadio">
+                  <property name="text">
+                   <string>&amp;Countries</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="acceptedIPsRadio">
+                  <property name="text">
+                   <string>&amp;IP Addresses</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="approvedCountries">
+                  <property name="title">
+                   <string>Accepted Countries</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_25">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_41">
+                     <item>
+                      <spacer name="horizontalSpacer_37">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item>
+                      <widget class="QToolButton" name="countriesToggle">
+                       <property name="text">
+                        <string>Toggle All</string>
+                       </property>
+                       <property name="popupMode">
+                        <enum>QToolButton::InstantPopup</enum>
+                       </property>
+                       <property name="toolButtonStyle">
+                        <enum>Qt::ToolButtonTextBesideIcon</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_38">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <widget class="QListWidget" name="countries"/>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="approvedIPs">
+                  <property name="title">
+                   <string>Accepted IP Addresses</string>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_36">
+                   <item>
+                    <widget class="QListWidget" name="acceptedIPList"/>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_49">
+                     <item>
+                      <widget class="QLineEdit" name="acceptedIP"/>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="addAcceptedIP">
+                       <property name="text">
+                        <string>Add</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
              </widget>
             </item>
            </layout>
@@ -2080,6 +2102,11 @@
                 <column>
                  <property name="text">
                   <string>SSL Session Cipher</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Account Name</string>
                  </property>
                 </column>
                 <column>
@@ -2773,8 +2800,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1016</width>
-             <height>507</height>
+             <width>1219</width>
+             <height>651</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4198,6 +4225,7 @@
   <tabstop>sslListener</tabstop>
   <tabstop>listenerKeySize</tabstop>
   <tabstop>addListener</tabstop>
+  <tabstop>scrollArea_3</tabstop>
   <tabstop>accounts</tabstop>
   <tabstop>accountName</tabstop>
   <tabstop>accountPassword</tabstop>

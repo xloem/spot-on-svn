@@ -24,6 +24,7 @@
 16.  Per-listener accounts. Please remove listeners.db. Please note
      that listeners will not respond when a peer has been authenticated.
 17.  Improved error reporting between the user and the UI.
+18.  Removed OS X and Qt 5.x workaround with respect to password widgets.
 
 0.05 (09/16/2013)
 

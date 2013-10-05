@@ -140,10 +140,6 @@ spoton::spoton(void):QMainWindow()
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
   setAttribute(Qt::WA_MacMetalStyle, true);
-#else
-  m_ui.passphrase1->setEchoMode(QLineEdit::NoEcho);
-  m_ui.passphrase2->setEchoMode(QLineEdit::NoEcho);
-  m_ui.accountPassword->setEchoMode(QLineEdit::NoEcho);
 #endif
 #endif
   m_sbWidget = new QWidget(this);
@@ -2218,6 +2214,7 @@ void spoton::slotPopulateNeighbors(void)
 		      "bytes_read, "
 		      "bytes_written, "
 		      "ssl_session_cipher, "
+		      "account_name, "
 		      "is_encrypted, "
 		      "OID "
 		      "FROM neighbors WHERE status_control <> 'deleted'"))
@@ -2272,7 +2269,8 @@ void spoton::slotPopulateNeighbors(void)
 		      "Allow Certificate Exceptions: %16\n"
 		      "Bytes Read: %17\n"
 		      "Bytes Written: %18\n"
-		      "SSL Session Cipher: %19")).
+		      "SSL Session Cipher: %19\n"
+		      "Account Name: %20")).
 		  arg(m_crypts.value("chat")->
 		      decrypted(QByteArray::
 				fromBase64(query.
@@ -2348,7 +2346,14 @@ void spoton::slotPopulateNeighbors(void)
 		      "Yes" : "No").
 		  arg(query.value(22).toULongLong()).
 		  arg(query.value(23).toULongLong()).
-		  arg(sslSessionCipher.constData());
+		  arg(sslSessionCipher.constData()).
+		  arg(m_crypts.value("chat")->
+		      decrypted(QByteArray::
+				fromBase64(query.
+					   value(25).
+					   toByteArray()),
+				&ok).
+		      constData());
 
 		QCheckBox *check = 0;
 
@@ -2390,7 +2395,7 @@ void spoton::slotPopulateNeighbors(void)
 		    if(i == 1 || i == 3 ||
 		       i == 7 || (i >= 9 && i <= 13) || (i >= 14 &&
 							 i <= 15) ||
-		       i == 18)
+		       i == 18 || i == 25)
 		      {
 			if(query.isNull(i))
 			  item = new QTableWidgetItem();
@@ -5469,7 +5474,8 @@ void spoton::slotNeighborSelected(void)
 	 arg(list.value(18)).
 	 arg(list.value(19)).
 	 arg(list.value(20)).
-	 arg(list.value(21)));
+	 arg(list.value(21)).
+	 arg(list.value(22)));
       int h = m_ui.neighborSummary->horizontalScrollBar()->value();
       int v = m_ui.neighborSummary->verticalScrollBar()->value();
 
@@ -5545,9 +5551,6 @@ void spoton::slotAuthenticate(void)
   ui.setupUi(&dialog);
 #ifdef Q_OS_MAC
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
-#if QT_VERSION >= 0x050000
-  ui.password->setEchoMode(QLineEdit::NoEcho);
-#endif
 #endif
 
   if(dialog.exec() == QDialog::Accepted)
@@ -5573,7 +5576,7 @@ void spoton::slotAuthenticate(void)
 		query.prepare("UPDATE neighbors SET "
 			      "account_name = ?, "
 			      "account_password = ? "
-			      "WHERE OID = ?");
+			      "WHERE OID = ? and user_defined = 1");
 		query.bindValue
 		  (0, s_crypt->encrypted(name.toLatin1(), &ok).toBase64());
 
