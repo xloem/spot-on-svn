@@ -148,9 +148,9 @@ void spoton_misc::prepareDatabases(void)
 		   "participant_oid TEXT NOT NULL, "
 		   "receiver_sender TEXT NOT NULL, "
 		   "receiver_sender_hash TEXT NOT NULL, " /*
-							  ** Hash of the
-							  ** receiver's or
-							  ** the sender's
+							  ** Sha-512 hash of
+							  ** the receiver's
+							  ** or the sender's
 							  ** public key.
 							  */
 		   "status TEXT NOT NULL, " /*
