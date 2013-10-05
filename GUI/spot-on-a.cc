@@ -5546,7 +5546,7 @@ void spoton::slotAuthenticate(void)
 #ifdef Q_OS_MAC
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #if QT_VERSION >= 0x050000
-  ui.passphraseLineEdit->setEchoMode(QLineEdit::NoEcho);
+  ui.password->setEchoMode(QLineEdit::NoEcho);
 #endif
 #endif
 
