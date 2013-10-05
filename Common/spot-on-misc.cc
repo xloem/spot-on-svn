@@ -163,7 +163,7 @@ void spoton_misc::prepareDatabases(void)
 		   "message_bundle BLOB NOT NULL, "
 		   "message_bundle_hash TEXT NOT NULL, "
 		   "recipient_hash TEXT NOT NULL, " /*
-						    ** Hash of the
+						    ** Sha-512 hash of the
 						    ** recipient's public
 						    ** key.
 						    */
