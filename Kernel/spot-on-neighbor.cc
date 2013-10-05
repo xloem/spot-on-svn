@@ -2824,7 +2824,9 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
       if(spoton_misc::authenticateAccount(m_listenerOid,
-					  list.at(0), list.at(1)))
+					  list.at(0), list.at(1),
+					  spoton_kernel::s_crypts.
+					  value("chat", 0)))
 	m_accountAuthenticated = true;
 
       resetKeepAlive();
@@ -3644,8 +3646,8 @@ bool spoton_neighbor::readyToWrite(void)
     return false;
   else if(isEncrypted() && m_useSsl)
     {
-      if(m_useAccounts && !m_accountAuthenticated)
-	return false;
+      if(m_useAccounts)
+	return m_accountAuthenticated;
       else
 	return true;
     }

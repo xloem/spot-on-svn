@@ -306,7 +306,10 @@ void spoton_misc::prepareDatabases(void)
 		   "account_name TEXT NOT NULL, "
 		   "account_name_hash TEXT NOT NULL, "
 		   "account_salt TEXT NOT NULL, "
-		   "account_salted_password TEXT NOT NULL, "
+		   "account_salted_password TEXT NOT NULL, " /*
+							     ** Sha-512 of
+							     ** the password.
+							     */
 		   "listener_oid INTEGER NOT NULL, "
 		   "PRIMARY KEY (listener_oid, account_name_hash), "
 		   "FOREIGN KEY (listener_oid) REFERENCES "
@@ -1839,10 +1842,54 @@ bool spoton_misc::isAcceptedIP(const QHostAddress &address,
 
 bool spoton_misc::authenticateAccount(const qint64 listenerOid,
 				      const QByteArray &name,
-				      const QByteArray &password)
+				      const QByteArray &password,
+				      spoton_crypt *crypt)
 {
-  Q_UNUSED(listenerOid);
-  Q_UNUSED(name);
-  Q_UNUSED(password);
-  return true;
+  if(!crypt)
+    return false;
+
+  QString connectionName("");
+  bool found = false;
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName(homePath() + QDir::separator() +
+		       "listeners.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT account_salt, account_salted_password "
+		      "FROM listeners_accounts WHERE "
+		      "account_name_hash = ? AND "
+		      "listener_oid = ?");
+	query.bindValue
+	  (0, crypt->keyedHash(name, &ok).toBase64());
+	query.bindValue(1, listenerOid);
+
+	if(ok)
+	  if(query.exec())
+	    {
+	      QByteArray saltedPassphraseHash;
+	      QString error("");
+
+	      saltedPassphraseHash = spoton_crypt::saltedPassphraseHash
+		("sha512", password,
+		 QByteArray::fromBase64(query.value(0).toByteArray()),
+		 error);
+
+	      if(query.value(1) == saltedPassphraseHash.toBase64())
+		found = true;
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  return found;
 }

@@ -27,6 +27,7 @@
 
 #include "spot-on.h"
 #include "spot-on-buzzpage.h"
+#include "ui_passwordprompt.h"
 
 int main(int argc, char *argv[])
 {
@@ -142,6 +143,7 @@ spoton::spoton(void):QMainWindow()
 #else
   m_ui.passphrase1->setEchoMode(QLineEdit::NoEcho);
   m_ui.passphrase2->setEchoMode(QLineEdit::NoEcho);
+  m_ui.accountPassword->setEchoMode(QLineEdit::NoEcho);
 #endif
 #endif
   m_sbWidget = new QWidget(this);
@@ -5516,4 +5518,72 @@ void spoton::slotChangeTabPosition(void)
 
 void spoton::slotAuthenticate(void)
 {
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QModelIndexList list;
+
+  list = m_ui.neighbors->selectionModel()->selectedRows
+    (m_ui.neighbors->columnCount() - 1); // OID
+
+  if(list.isEmpty())
+    return;
+
+  QDialog dialog(this);
+  Ui_passwordprompt ui;
+
+  ui.setupUi(&dialog);
+#ifdef Q_OS_MAC
+  dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+#if QT_VERSION >= 0x050000
+  ui.passphraseLineEdit->setEchoMode(QLineEdit::NoEcho);
+#endif
+#endif
+
+  if(dialog.exec() == QDialog::Accepted)
+    {
+      QString name(ui.name->text().trimmed());
+      QString password(ui.password->text());
+
+      if(!name.isEmpty() && password.length() >= 16)
+	{
+	  QString connectionName("");
+
+	  {
+	    QSqlDatabase db = spoton_misc::database(connectionName);
+
+	    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			       "neighbors.db");
+
+	    if(db.open())
+	      {
+		QSqlQuery query(db);
+		bool ok = true;
+
+		query.prepare("UPDATE neighbors SET "
+			      "account_name = ?, "
+			      "account_password = ? "
+			      "WHERE OID = ?");
+		query.bindValue
+		  (0, s_crypt->encrypted(name.toLatin1(), &ok).toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (1, s_crypt->encrypted(password.toLatin1(),
+					   &ok).toBase64());
+
+		query.bindValue(2, list.at(0).data());
+
+		if(ok)
+		  query.exec();
+	      }
+
+	    db.close();
+	  }
+
+	  QSqlDatabase::removeDatabase(connectionName);
+	}
+    }
 }
