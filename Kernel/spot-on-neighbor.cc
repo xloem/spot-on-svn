@@ -3959,21 +3959,24 @@ void spoton_neighbor::slotSendAccountInformation(void)
   if(!readyToWrite())
     return;
 
-  QByteArray message
-    (spoton_send::message0050(m_accountName.toLatin1(),
-			      m_accountPassword.toLatin1()));
-
-  if(write(message.constData(), message.length()) != message.length())
-    spoton_misc::logError
-      (QString("spoton_neighbor::sendAccountInformation(): "
-	       "write() error for %1:%2.").
-       arg(m_address.toString()).
-       arg(m_port));
-  else
+  if(isEncrypted()) // Must be true!
     {
-      flush();
-      m_accountTimer.stop();
-      m_bytesWritten += message.length();
+      QByteArray message
+	(spoton_send::message0050(m_accountName.toLatin1(),
+				  m_accountPassword.toLatin1()));
+
+      if(write(message.constData(), message.length()) != message.length())
+	spoton_misc::logError
+	  (QString("spoton_neighbor::sendAccountInformation(): "
+		   "write() error for %1:%2.").
+	   arg(m_address.toString()).
+	   arg(m_port));
+      else
+	{
+	  flush();
+	  m_accountTimer.stop();
+	  m_bytesWritten += message.length();
+	}
     }
 }
 
