@@ -368,7 +368,8 @@ void spoton_misc::prepareDatabases(void)
 	   "ssl_session_cipher TEXT, "
 	   "ssl_required INTEGER NOT NULL DEFAULT 1, "
 	   "account_name TEXT NOT NULL, "
-	   "account_password TEXT NOT NULL)");
+	   "account_password TEXT NOT NULL, "
+	   "account_authenticated INTEGER NOT NULL DEFAULT 0)");
       }
 
     db.close();
@@ -1254,11 +1255,17 @@ void spoton_misc::cleanupDatabases(void)
 	  query.exec("DELETE FROM neighbors WHERE "
 		     "status_control <> 'blocked' AND user_defined = 0");
 
-	query.exec("UPDATE neighbors SET external_ip_address = NULL, "
+	query.exec("UPDATE neighbors SET "
+		   "account_authenticated = 0, "
+		   "bytes_read = 0, "
+		   "bytes_written = 0, "
+		   "external_ip_address = NULL, "
 		   "is_encrypted = 0, "
-		   "local_ip_address = NULL, local_port = NULL, "
+		   "local_ip_address = NULL, "
+		   "local_port = NULL, "
 		   "ssl_session_cipher = NULL, "
-		   "status = 'disconnected', uptime = 0");
+		   "status = 'disconnected', "
+		   "uptime = 0");
       }
 
     db.close();

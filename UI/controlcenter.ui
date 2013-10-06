@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1249</width>
-    <height>744</height>
+    <width>1035</width>
+    <height>699</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1526,7 +1526,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>253</width>
+                 <width>309</width>
                  <height>625</height>
                 </rect>
                </property>
@@ -1878,6 +1878,13 @@
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_28">
+              <item>
+               <widget class="QPushButton" name="authenticate">
+                <property name="text">
+                 <string>Authenticate</string>
+                </property>
+               </widget>
+              </item>
               <item>
                <widget class="QCheckBox" name="keepOnlyUserDefinedNeighbors">
                 <property name="text">
@@ -3908,7 +3915,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1249</width>
+     <width>1035</width>
      <height>22</height>
     </rect>
    </property>
@@ -4110,6 +4117,7 @@
   <tabstop>acceptPublishedDisconnected</tabstop>
   <tabstop>ignorePublished</tabstop>
   <tabstop>publishedKeySize</tabstop>
+  <tabstop>authenticate</tabstop>
   <tabstop>keepOnlyUserDefinedNeighbors</tabstop>
   <tabstop>neighbors</tabstop>
   <tabstop>neighborSummary</tabstop>

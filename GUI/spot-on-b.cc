@@ -4370,7 +4370,7 @@ void spoton::slotAddAccount(void)
 
   if(oid.isEmpty())
     {
-      error = tr("Invalid listener OID.");
+      error = tr("Invalid listener OID. Please select a listener.");
       goto done_label;
     }
   else if(sslKeySize <= 0)
@@ -4466,7 +4466,8 @@ void spoton::slotDeleteAccount(void)
   if(oid.isEmpty())
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Invalid listener OID."));
+			    tr("Invalid listener OID. "
+			       "Please select a listener."));
       return;
     }
 

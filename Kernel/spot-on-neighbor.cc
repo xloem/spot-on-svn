@@ -462,6 +462,7 @@ spoton_neighbor::~spoton_neighbor()
 	      }
 
 	    query.prepare("UPDATE neighbors SET "
+			  "account_authenticated = 0, "
 			  "bytes_read = 0, "
 			  "bytes_written = 0, "
 			  "external_ip_address = NULL, "

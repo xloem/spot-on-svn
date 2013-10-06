@@ -1,14 +1,15 @@
-0.06 (10/07/2013)
+0.06 (10/08/2013)
 
 1.   Allow users of the libspoton library to store enough information
-     so that the correct key can be generated. Future support.
+     so that the correct key can be generated. The changes will support
+     future features.
 2.   Corrected log messages.
 3.   Corrected OS/2 UI project file. Corrections also applied to 0.05 branch.
      Thanks Elbert.
 4.   Archived branches 0.01 through 0.04.
 5.   Limit timer cycles in the kernel via file system watchers.
 6.   The scrambler timer should be a single-shot timer.
-7.   Corrected dialog information.
+7.   Corrected UI dialog information.
 8.   ElGamal encryption key pairs. DSA and RSA signature key pairs.
      Please note that padding is not provided for ElGamal.
 9.   Clear the neighbor summary correctly.
@@ -21,10 +22,10 @@
 14.  Updated OpenSSL libraries to version 1.0.1e on OS X. Libraries
      were generated from source.
 15.  Added SSL_library_init() to spoton_crypt::init().
-16.  Per-listener accounts. Please remove listeners.db. Please note
-     that listeners will not respond when a peer has been authenticated.
+16.  Per-listener accounts. Please remove listeners.db.
 17.  Improved error reporting between the user and the UI.
 18.  Removed OS X and Qt 5.x workaround with respect to password widgets.
+19.  Properly reset neighbors.db data in spoton_misc::cleanupDatabases().
 
 0.05 (09/16/2013)
 

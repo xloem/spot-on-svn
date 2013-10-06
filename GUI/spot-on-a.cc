@@ -598,6 +598,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotDeleteAccount(void)));
+  connect(m_ui.authenticate,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotAuthenticate(void)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -3148,6 +3152,7 @@ void spoton::updateNeighborsTable(const QSqlDatabase &db)
 	query.exec("DELETE FROM neighbors WHERE "
 		   "status_control = 'deleted'");
 	query.exec("UPDATE neighbors SET "
+		   "account_authenticated = 0, "
 		   "bytes_read = 0, "
 		   "bytes_written = 0, "
 		   "external_ip_address = NULL, "
@@ -5548,7 +5553,8 @@ void spoton::slotAuthenticate(void)
   if(list.isEmpty())
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Invalid neighbors OID."));
+			    tr("Invalid neighbors OID. "
+			       "Please select a neighbor."));
       return;
     }
 
