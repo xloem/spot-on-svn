@@ -2576,6 +2576,9 @@ void spoton::slotPopulateNeighbors(void)
 
 		row += 1;
 	      }
+
+	    if(row == 0)
+	      m_ui.neighborSummary->clear();
 	  }
 	else
 	  m_ui.neighborSummary->clear();
