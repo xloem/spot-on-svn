@@ -216,8 +216,8 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const bool allowExceptions,
 				 const QString &protocol,
 				 const bool requireSsl,
-				 const QString &accountName,
-				 const QString &accountPassword,
+				 const QByteArray &accountName,
+				 const QByteArray &accountPassword,
 				 QObject *parent):QSslSocket(parent)
 {
   m_accountAuthenticated = false;
@@ -553,14 +553,10 @@ void spoton_neighbor::slotTimeout(void)
 			  (QByteArray::fromBase64(query.value(2).
 						  toByteArray()),
 			   &ok).constData();
-			name = s_crypt->decrypted
-			  (QByteArray::fromBase64(query.value(5).
-						  toByteArray()),
-			   &ok).constData();
-			password = s_crypt->decrypted
-			  (QByteArray::fromBase64(query.value(6).
-						  toByteArray()),
-			   &ok).constData();
+			name = QByteArray::fromBase64(query.value(5).
+						      toByteArray());
+			password = QByteArray::fromBase64(query.value(6).
+							  toByteArray());
 
 			if(name != m_accountName ||
 			   password != m_accountPassword)
@@ -841,12 +837,13 @@ void spoton_neighbor::slotReadyRead(void)
 	  if(downgrade)
 	    goto done_label;
 
-	  if(m_useAccounts && !m_accountAuthenticated)
+	  if(m_useAccounts)
 	    {
 	      if(length > 0 && data.contains("type=0050&content="))
 		process0050(length, data);
 
-	      goto done_label;
+	      if(!m_accountAuthenticated)
+		goto done_label;
 	    }
 
 	  if(length > 0 && data.contains("type=0011&content="))
@@ -2853,16 +2850,57 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
+      QByteArray name;
+
       if(spoton_misc::authenticateAccount(m_listenerOid,
 					  list.at(0), list.at(1),
 					  spoton_kernel::s_crypts.
 					  value("chat", 0)))
 	{
 	  m_accountAuthenticated = true;
+	  name = list.at(0);
 	  emit accountAuthenticated();
 	}
+      else
+	m_accountAuthenticated = false;
 
       resetKeepAlive();
+
+      spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
+
+      if(s_crypt)
+	{
+	  QString connectionName("");
+
+	  {
+	    QSqlDatabase db = spoton_misc::database(connectionName);
+
+	    db.setDatabaseName
+	      (spoton_misc::homePath() + QDir::separator() +
+	       "neighbors.db");
+
+	    if(db.open())
+	      {
+		QSqlQuery query(db);
+		bool ok = true;
+
+		query.prepare("UPDATE neighbors SET "
+			      "account_name = ? "
+			      "WHERE OID = ? AND "
+			      "user_defined = 0");
+		query.bindValue
+		  (0, s_crypt->encrypted(name, &ok).toBase64());
+		query.bindValue(1, m_id);
+
+		if(ok)
+		  query.exec();
+	      }
+
+	    db.close();
+	  }
+
+	  QSqlDatabase::removeDatabase(connectionName);
+	}
     }
   else
     spoton_misc::logError
@@ -3961,21 +3999,38 @@ void spoton_neighbor::slotSendAccountInformation(void)
 
   if(isEncrypted()) // Must be true!
     {
-      QByteArray message
-	(spoton_send::message0050(m_accountName.toLatin1(),
-				  m_accountPassword.toLatin1()));
+      spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
-      if(write(message.constData(), message.length()) != message.length())
-	spoton_misc::logError
-	  (QString("spoton_neighbor::sendAccountInformation(): "
-		   "write() error for %1:%2.").
-	   arg(m_address.toString()).
-	   arg(m_port));
-      else
+      if(s_crypt)
 	{
-	  flush();
-	  m_accountTimer.stop();
-	  m_bytesWritten += message.length();
+	  QByteArray name(m_accountName);
+	  QByteArray password(m_accountPassword);
+	  bool ok = true;
+
+	  name = s_crypt->decrypted(name, &ok);
+
+	  if(ok)
+	    password = s_crypt->decrypted(password, &ok);
+
+	  if(ok)
+	    {
+	      QByteArray message
+		(spoton_send::message0050(name, password));
+
+	      if(write(message.constData(), message.length()) !=
+		 message.length())
+		spoton_misc::logError
+		  (QString("spoton_neighbor::sendAccountInformation(): "
+			   "write() error for %1:%2.").
+		   arg(m_address.toString()).
+		   arg(m_port));
+	      else
+		{
+		  flush();
+		  m_accountTimer.stop();
+		  m_bytesWritten += message.length();
+		}
+	    }
 	}
     }
 }

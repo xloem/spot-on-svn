@@ -62,8 +62,8 @@ class spoton_neighbor: public QSslSocket
 		  const bool allowExceptions,
 		  const QString &protocol,
 		  const bool requireSsl,
-		  const QString &accountName,
-		  const QString &accountPassword,
+		  const QByteArray &accountName,
+		  const QByteArray &accountPassword,
 		  QObject *parent);
   spoton_neighbor(const int socketDescriptor,
 		  const QByteArray &certificate,
@@ -85,14 +85,14 @@ class spoton_neighbor: public QSslSocket
 		      const QByteArray &sSignature);
 
  private:
+  QByteArray m_accountName;
+  QByteArray m_accountPassword;
   QByteArray m_data;
   QDateTime m_lastReadTime;
   QDateTime m_startTime;
   QHostAddress m_address;
   QNetworkInterface *m_networkInterface;
   QSslCertificate m_peerCertificate;
-  QString m_accountName;
-  QString m_accountPassword;
   QString m_echoMode;
   QString m_ipAddress;
   QString m_protocol;

@@ -767,6 +767,12 @@ void spoton_kernel::prepareNeighbors(void)
 			  list.append(query.value(i).toInt());
 			else if(i == 17) // ssl_required
 			  list.append(query.value(i).toInt());
+			else if(i == 18) // account_name
+			  list.append(QByteArray::fromBase64(query.value(i).
+							     toByteArray()));
+			else if(i == 19) // account_password
+			  list.append(QByteArray::fromBase64(query.value(i).
+							     toByteArray()));
 			else
 			  {
 			    QByteArray bytes;
@@ -863,8 +869,8 @@ void spoton_kernel::prepareNeighbors(void)
 			     list.value(15).toBool(),
 			     list.value(16).toByteArray().constData(),
 			     list.value(17).toBool(),
-			     list.value(18).toString(),
-			     list.value(19).toString(),
+			     list.value(18).toByteArray(),
+			     list.value(19).toByteArray(),
 			     this);
 			}
 
