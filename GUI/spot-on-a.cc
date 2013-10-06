@@ -2183,7 +2183,6 @@ void spoton::slotPopulateNeighbors(void)
 	m_ui.neighbors->setSortingEnabled(false);
 	m_ui.neighbors->clearContents();
 	m_ui.neighbors->setRowCount(0);
-	m_ui.neighborSummary->clear();
 
 	QSqlQuery query(db);
 
@@ -2577,8 +2576,9 @@ void spoton::slotPopulateNeighbors(void)
 
 		row += 1;
 	      }
-
 	  }
+	else
+	  m_ui.neighborSummary->clear();
 
 	m_ui.neighbors->setSortingEnabled(true);
 	m_ui.neighbors->horizontalHeader()->setStretchLastSection(true);
