@@ -4275,6 +4275,10 @@ void spoton::slotDeleteAllListeners(void)
 
   while(m_ui.listeners->rowCount() > 0)
     m_ui.listeners->removeRow(0);
+
+  m_ui.accounts->clear();
+  m_ui.accountName->clear();
+  m_ui.accountPassword->clear();
 }
 
 void spoton::slotDeleteAllNeighbors(void)
