@@ -681,7 +681,8 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
 
       query.bindValue
 	(3, spoton_kernel::s_crypts.value("chat")->
-	 encrypted(QString("%1-%2-%3-%4-%5-%6").
+	 encrypted(QString("%1-%2-%3-%4-%5-%6-%7").
+		   arg(cipher.name()).
 		   arg(cipher.authenticationMethod()).
 		   arg(cipher.encryptionMethod()).
 		   arg(cipher.keyExchangeMethod()).
