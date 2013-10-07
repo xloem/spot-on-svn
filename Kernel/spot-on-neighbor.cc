@@ -857,6 +857,8 @@ void spoton_neighbor::slotReadyRead(void)
 
 	      if(!m_accountAuthenticated)
 		goto done_label;
+	      else
+		QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 	    }
 
 	  if(length > 0 && data.contains("type=0011&content="))
