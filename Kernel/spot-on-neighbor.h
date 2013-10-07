@@ -140,6 +140,7 @@ class spoton_neighbor: public QSslSocket
   void process0040b(int length, const QByteArray &data,
 		    const QPair<QByteArray, QByteArray> &pair);
   void process0050(int length, const QByteArray &data);
+  void process0051(int length, const QByteArray &data);
   void recordMessageHash(const QByteArray &data);
   void resetKeepAlive(void);
   void saveExternalAddress(const QHostAddress &address,

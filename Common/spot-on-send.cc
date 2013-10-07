@@ -425,3 +425,27 @@ QByteArray spoton_send::message0050(const QString &accountName,
     ("%2", content.toBase64());
   return results;
 }
+
+QByteArray spoton_send::message0051(const QByteArray &result)
+{
+  QByteArray content;
+  QByteArray results;
+
+  results.append
+    ("POST HTTP/1.1\r\n"
+     "Content-Type: application/x-www-form-urlencoded\r\n"
+     "Content-Length: %1\r\n"
+     "\r\n"
+     "type=0051&content=%2\r\n"
+     "\r\n\r\n");
+  content.append(result.toBase64());
+  results.replace
+    ("%1",
+     QString::number(content.toBase64().length() +
+		     QString("type=0051&content=\r\n\r\n\r\n").
+		     length()).
+     toLatin1());
+  results.replace
+    ("%2", content.toBase64());
+  return results;
+}

@@ -839,10 +839,21 @@ void spoton_neighbor::slotReadyRead(void)
 	  if(downgrade)
 	    goto done_label;
 
-	  if(m_useAccounts)
+	  if(!m_isUserDefined)
 	    {
-	      if(length > 0 && data.contains("type=0050&content="))
-		process0050(length, data);
+	      if(m_useAccounts)
+		{
+		  if(length > 0 && data.contains("type=0050&content="))
+		    process0050(length, data);
+
+		  if(!m_accountAuthenticated)
+		    goto done_label;
+		}
+	    }
+	  else
+	    {
+	      if(length > 0 && data.contains("type=0051&content="))
+		process0051(length, data);
 
 	      if(!m_accountAuthenticated)
 		goto done_label;
@@ -2887,12 +2898,15 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 		bool ok = true;
 
 		query.prepare("UPDATE neighbors SET "
+			      "account_authenticated = ?, "
 			      "account_name = ? "
 			      "WHERE OID = ? AND "
 			      "user_defined = 0");
 		query.bindValue
-		  (0, s_crypt->encrypted(name, &ok).toBase64());
-		query.bindValue(1, m_id);
+		  (0, m_accountAuthenticated ? 1 : 0);
+		query.bindValue
+		  (1, s_crypt->encrypted(name, &ok).toBase64());
+		query.bindValue(2, m_id);
 
 		if(ok)
 		  query.exec();
@@ -2907,6 +2921,91 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0050(): 0050 "
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
+}
+
+void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
+{
+  length -= strlen("type=0051&content=");
+
+  /*
+  ** We may have received a name and a password.
+  */
+
+  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
+
+  data.remove
+    (0,
+     data.indexOf("type=0051&content=") + strlen("type=0051&content="));
+
+  if(length == data.length())
+    {
+      data = QByteArray::fromBase64(data);
+
+      QList<QByteArray> list(data.split('\n'));
+
+      if(list.size() != 1)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::process0051(): "
+		     "received irregular data. Expecting 1 entry, "
+		     "received %1.").arg(list.size()));
+	  return;
+	}
+
+      for(int i = 0; i < list.size(); i++)
+	list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+      if(list.at(0) == "1")
+	m_accountAuthenticated = true;
+      else
+	m_accountAuthenticated = false;
+
+      resetKeepAlive();
+
+      spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
+
+      if(s_crypt)
+	{
+	  QString connectionName("");
+
+	  {
+	    QSqlDatabase db = spoton_misc::database(connectionName);
+
+	    db.setDatabaseName
+	      (spoton_misc::homePath() + QDir::separator() +
+	       "neighbors.db");
+
+	    if(db.open())
+	      {
+		QSqlQuery query(db);
+		bool ok = true;
+
+		query.prepare("UPDATE neighbors SET "
+			      "account_authenticated = ? "
+			      "WHERE OID = ? AND "
+			      "user_defined = 1");
+		query.bindValue
+		  (0, m_accountAuthenticated ? 1 : 0);
+		query.bindValue(1, m_id);
+
+		if(ok)
+		  query.exec();
+	      }
+
+	    db.close();
+	  }
+
+	  QSqlDatabase::removeDatabase(connectionName);
+	}
+    }
+  else
+    spoton_misc::logError
+      (QString("spoton_neighbor::process0051(): 0051 "
 	       "content-length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
@@ -4015,24 +4114,25 @@ void spoton_neighbor::slotSendAccountInformation(void)
 	    password = s_crypt->decrypted(password, &ok);
 
 	  if(ok)
-	    {
-	      QByteArray message
-		(spoton_send::message0050(name, password));
+	    if(!name.isEmpty() && password.length() >= 16)
+	      {
+		QByteArray message
+		  (spoton_send::message0050(name, password));
 
-	      if(write(message.constData(), message.length()) !=
-		 message.length())
-		spoton_misc::logError
-		  (QString("spoton_neighbor::sendAccountInformation(): "
-			   "write() error for %1:%2.").
-		   arg(m_address.toString()).
-		   arg(m_port));
-	      else
-		{
-		  flush();
-		  m_accountTimer.stop();
-		  m_bytesWritten += message.length();
-		}
-	    }
+		if(write(message.constData(), message.length()) !=
+		   message.length())
+		  spoton_misc::logError
+		    (QString("spoton_neighbor::sendAccountInformation(): "
+			     "write() error for %1:%2.").
+		     arg(m_address.toString()).
+		     arg(m_port));
+		else
+		  {
+		    flush();
+		    m_accountTimer.stop();
+		    m_bytesWritten += message.length();
+		  }
+	      }
 	}
     }
 }
@@ -4040,4 +4140,24 @@ void spoton_neighbor::slotSendAccountInformation(void)
 void spoton_neighbor::slotAccountAuthenticated(void)
 {
   QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
+
+  if(readyToWrite())
+    if(isEncrypted())
+      {
+	QByteArray message
+	  (spoton_send::message0051("1"));
+
+	if(write(message.constData(), message.length()) !=
+	   message.length())
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::slotAccountAuthenticated(): "
+		     "write() error for %1:%2.").
+	     arg(m_address.toString()).
+	     arg(m_port));
+	else
+	  {
+	    flush();
+	    m_bytesWritten += message.length();
+	  }
+      }
 }

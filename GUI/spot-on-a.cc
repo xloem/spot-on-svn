@@ -1871,7 +1871,7 @@ void spoton::slotPopulateListeners(void)
 		      "Echo Mode: %8\n"
 		      "Use Accounts?: %9")).
 		  arg(query.value(1).toString()).
-		  arg(query.value(2).toInt()).
+		  arg(query.value(2).toString()).
 		  arg(m_crypts.value("chat")->
 		      decrypted(QByteArray::
 				fromBase64(query.
@@ -1908,7 +1908,7 @@ void spoton::slotPopulateListeners(void)
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(query.value(12).toInt());
+		  arg(query.value(12).toString());
 
 		for(int i = 0; i < query.record().count(); i++)
 		  {
@@ -1962,7 +1962,7 @@ void spoton::slotPopulateListeners(void)
 			  {
 			    item = new QTableWidgetItem("0");
 			    item->setBackground
-			      (QBrush(QColor("red")));
+			      (QBrush(QColor(240, 128, 128)));
 			  }
 			else
 			  {
@@ -2218,6 +2218,7 @@ void spoton::slotPopulateNeighbors(void)
 		      "bytes_written, "
 		      "ssl_session_cipher, "
 		      "account_name, "
+		      "account_authenticated, "
 		      "is_encrypted, "
 		      "OID "
 		      "FROM neighbors WHERE status_control <> 'deleted'"))
@@ -2273,7 +2274,8 @@ void spoton::slotPopulateNeighbors(void)
 		      "Bytes Read: %17\n"
 		      "Bytes Written: %18\n"
 		      "SSL Session Cipher: %19\n"
-		      "Account Name: %20")).
+		      "Account Name: %20\n"
+		      "Account Authenticated: %21\n")).
 		  arg(m_crypts.value("chat")->
 		      decrypted(QByteArray::
 				fromBase64(query.
@@ -2282,7 +2284,7 @@ void spoton::slotPopulateNeighbors(void)
 				&ok).
 		      constData()).
 		  arg(query.value(2).toString()).
-		  arg(query.value(3).toInt()).
+		  arg(query.value(3).toString()).
 		  arg(query.value(5).toString()).
 		  arg(query.value(6).toString()).
 		  arg(m_crypts.value("chat")->
@@ -2356,7 +2358,9 @@ void spoton::slotPopulateNeighbors(void)
 					   value(25).
 					   toByteArray()),
 				&ok).
-		      constData());
+		      constData()).
+		  arg(query.value(26).toInt() == 1 ?
+		      "Yes": "No");
 
 		QCheckBox *check = 0;
 
@@ -2427,7 +2431,7 @@ void spoton::slotPopulateNeighbors(void)
 				  {
 				    item = new QTableWidgetItem("0");
 				    item->setBackground
-				      (QBrush(QColor("red")));
+				      (QBrush(QColor(240, 128, 128)));
 				  }
 				else
 				  {
@@ -2483,6 +2487,18 @@ void spoton::slotPopulateNeighbors(void)
 		    else if(i == 24) // SSL Session Cipher
 		      item = new QTableWidgetItem
 			(sslSessionCipher.constData());
+		    else if(i == 26) // Account Authenticated
+		      {
+			item = new QTableWidgetItem
+			  (query.value(i).toString());
+
+			if(item->text() == "0")
+			  item->setBackground
+			    (QBrush(QColor(240, 128, 128)));
+			else
+			  item->setBackground
+			    (QBrush(QColor("lightgreen")));
+		      }
 		    else
 		      item = new QTableWidgetItem
 			(query.value(i).toString());
@@ -5487,7 +5503,8 @@ void spoton::slotNeighborSelected(void)
 	 arg(list.value(19)).
 	 arg(list.value(20)).
 	 arg(list.value(21)).
-	 arg(list.value(22)));
+	 arg(list.value(22)).
+	 arg(list.value(23)));
       int h = m_ui.neighborSummary->horizontalScrollBar()->value();
       int v = m_ui.neighborSummary->verticalScrollBar()->value();
 
@@ -5553,7 +5570,7 @@ void spoton::slotAuthenticate(void)
   if(list.isEmpty())
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Invalid neighbors OID. "
+			    tr("Invalid neighbor OID. "
 			       "Please select a neighbor."));
       return;
     }
@@ -5587,6 +5604,7 @@ void spoton::slotAuthenticate(void)
 		bool ok = true;
 
 		query.prepare("UPDATE neighbors SET "
+			      "account_authenticated = 0, "
 			      "account_name = ?, "
 			      "account_password = ? "
 			      "WHERE OID = ? and user_defined = 1");

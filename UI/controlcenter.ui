@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1035</width>
-    <height>699</height>
+    <width>1083</width>
+    <height>755</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -189,8 +189,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1219</width>
-                <height>651</height>
+                <width>425</width>
+                <height>433</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1526,8 +1526,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>309</width>
-                 <height>625</height>
+                 <width>228</width>
+                 <height>612</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -1571,9 +1571,6 @@
                      </item>
                      <item row="1" column="1">
                       <widget class="QLineEdit" name="accountPassword">
-                       <property name="toolTip">
-                        <string>Please provide a password having sixteen or more characters.</string>
-                       </property>
                        <property name="echoMode">
                         <enum>QLineEdit::Password</enum>
                        </property>
@@ -2066,6 +2063,11 @@
                 <column>
                  <property name="text">
                   <string>Account Name</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Account Authenticated</string>
                  </property>
                 </column>
                 <column>
@@ -2715,8 +2717,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1219</width>
-             <height>651</height>
+             <width>936</width>
+             <height>434</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3915,8 +3917,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1035</width>
-     <height>22</height>
+     <width>1083</width>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
