@@ -3798,7 +3798,6 @@ void spoton_neighbor::slotEncrypted(void)
 	}
 
       m_accountTimer.start();
-      QTimer::singleShot(10000, this, SLOT(slotSendUuid(void)));
     }
 }
 
