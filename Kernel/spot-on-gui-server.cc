@@ -62,6 +62,12 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
       QSslSocket *socket = new QSslSocket(this);
 
       socket->setSocketDescriptor(socketDescriptor);
+      socket->setSocketOption
+	(QAbstractSocket::LowDelayOption,
+	 spoton_kernel::s_settings.value("kernel/tcp_nodelay", 1).
+	 toInt()); /*
+		   ** Disable Nagle?
+		   */
       connect(socket,
 	      SIGNAL(encrypted(void)),
 	      this,
@@ -196,6 +202,7 @@ void spoton_gui_server::slotReadyRead(void)
 
   if(!socket->isEncrypted())
     {
+      socket->flush();
       socket->readAll();
       spoton_misc::logError
 	(QString("spoton_gui_server::slotReadyRead(): "
@@ -209,6 +216,7 @@ void spoton_gui_server::slotReadyRead(void)
   ** What if socketDescriptor() equals negative one?
   */
 
+  socket->flush();
   m_guiSocketData[socket->socketDescriptor()].append
     (socket->readAll());
 

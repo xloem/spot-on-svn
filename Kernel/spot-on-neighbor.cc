@@ -59,6 +59,12 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 							** We have our
 							** own mechanism.
 							*/
+  setSocketOption
+    (QAbstractSocket::LowDelayOption,
+     spoton_kernel::s_settings.value("kernel/tcp_nodelay", 1).
+     toInt()); /*
+	       ** Disable Nagle?
+	       */
   m_address = peerAddress();
   m_accountAuthenticated = false;
   m_allowExceptions = false;
@@ -259,6 +265,12 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 							** We have our
 							** own mechanism.
 							*/
+  setSocketOption
+    (QAbstractSocket::LowDelayOption,
+     spoton_kernel::s_settings.value("kernel/tcp_nodelay", 1).
+     toInt()); /*
+	       ** Disable Nagle?
+	       */
 
   QByteArray certificate;
   QByteArray privateKey;
@@ -726,6 +738,8 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 
 void spoton_neighbor::slotReadyRead(void)
 {
+  flush();
+
   QByteArray data(readAll());
 
   m_bytesRead += data.size();

@@ -126,6 +126,7 @@ void spoton::slotSendMessage(void)
 
 void spoton::slotReceivedKernelMessage(void)
 {
+  m_kernelSocket.flush();
   m_kernelSocketData.append(m_kernelSocket.readAll());
 
   if(m_kernelSocketData.endsWith('\n'))

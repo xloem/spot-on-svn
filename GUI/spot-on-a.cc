@@ -78,6 +78,9 @@ int main(int argc, char *argv[])
   if(!settings.contains("gui/gcryctl_init_secmem"))
     settings.setValue("gui/gcryctl_init_secmem", 65536);
 
+  if(!settings.contains("gui/tcp_nodelay"))
+    settings.setValue("gui/tcp_nodelay", 1);
+
   Q_UNUSED(new spoton());
   return qapplication.exec();
 }
@@ -3918,6 +3921,11 @@ void spoton::slotKernelSocketState(void)
 
   if(state == QAbstractSocket::ConnectedState)
     {
+      m_kernelSocket.setSocketOption
+	(QAbstractSocket::LowDelayOption,
+	 m_settings.value("gui/tcp_nodelay", 1).toInt());; /*
+							   ** Disable Nagle?
+							   */
       if(m_kernelSocket.isEncrypted())
 	{
 	  sendBuzzKeysToKernel();
