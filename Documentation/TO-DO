@@ -88,6 +88,7 @@ Ignored Items
 6.     Customize expiration timers.
 7.     Include licenses of other software where applicable.
        Satisfy the license soldiers.
+8.     Provide a total silent mode. Cumbersome.
 
 Remaining Items
 
@@ -105,7 +106,7 @@ Remaining Items
 10.    Hard kernel termination. Control session separation.
 11.    Colorful HTTP headers.
 12.    Custom protocol messages for rapid redeployment.
-13.    Provide a total silent mode. Cumbersome.
+13.    Remote kernel termination.
 14.    Artificial trust. All participants must play nicely. Zero-knowledge?
 15.    What to do about corrupt database values?
 16.    Entering geminis is difficult.
@@ -122,4 +123,4 @@ Remaining Items
 23.    Support ECC.
 24.    Perform calling over geminis.
 25.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
-26.    Remote kernel termination.
+26.    Replace gcrypt with crypto++.
