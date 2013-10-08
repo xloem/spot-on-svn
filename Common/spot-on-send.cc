@@ -399,8 +399,8 @@ QByteArray spoton_send::message0040b(const QByteArray &message,
   return results;
 }
 
-QByteArray spoton_send::message0050(const QString &accountName,
-				    const QString &accountPassword)
+QByteArray spoton_send::message0050(const QByteArray &saltedCredentials,
+				    const QByteArray &salt)
 {
   QByteArray content;
   QByteArray results;
@@ -412,9 +412,9 @@ QByteArray spoton_send::message0050(const QString &accountName,
      "\r\n"
      "type=0050&content=%2\r\n"
      "\r\n\r\n");
-  content.append(accountName.toLatin1().toBase64());
+  content.append(saltedCredentials.toBase64());
   content.append("\n");
-  content.append(accountPassword.toLatin1().toBase64());
+  content.append(salt.toBase64());
   results.replace
     ("%1",
      QString::number(content.toBase64().length() +

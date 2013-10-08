@@ -1843,9 +1843,10 @@ bool spoton_misc::isAcceptedIP(const QHostAddress &address,
   return count > 0;
 }
 
-bool spoton_misc::authenticateAccount(const qint64 listenerOid,
-				      const QByteArray &name,
-				      const QByteArray &password,
+bool spoton_misc::authenticateAccount(QByteArray &name,
+				      const qint64 listenerOid,
+				      const QByteArray &saltedCredentials,
+				      const QByteArray &salt,
 				      spoton_crypt *crypt)
 {
   if(!crypt)
@@ -1863,34 +1864,51 @@ bool spoton_misc::authenticateAccount(const qint64 listenerOid,
     if(db.open())
       {
 	QSqlQuery query(db);
-	bool ok = true;
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT account_password "
+	query.prepare("SELECT account_name, account_password "
 		      "FROM listeners_accounts WHERE "
-		      "account_name_hash = ? AND listener_oid = ?");
-	query.bindValue
-	  (0, crypt->keyedHash(name, &ok).toBase64());
-	query.bindValue(1, listenerOid);
+		      "listener_oid = ?");
+	query.bindValue(0, listenerOid);
 
-	if(ok)
-	  if(query.exec())
-	    if(query.next())
-	      {
-		QByteArray bytes
-		  (crypt->decrypted(QByteArray::fromBase64(query.value(0).
-							   toByteArray()),
-				    &ok));
+	if(query.exec())
+	  while(query.next())
+	    {
+	      QByteArray password;
+	      QByteArray salted;
+	      bool ok = true;
 
-		if(ok)
-		  if(bytes == password)
+	      name = crypt->decrypted
+		(QByteArray::fromBase64(query.value(0).
+					toByteArray()),
+		 &ok);
+
+	      if(ok)
+		password = crypt->decrypted
+		  (QByteArray::fromBase64(query.value(1).
+					  toByteArray()),
+		   &ok);
+
+	      if(ok)
+		salted = spoton_crypt::saltedValue
+		  ("sha512", name + password, salt, &ok);
+
+	      if(ok)
+		if(salted == saltedCredentials)
+		  {
 		    found = true;
-	      }
+		    break;
+		  }
+	    }
       }
 
     db.close();
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+
+  if(!found)
+    name.clear();
+
   return found;
 }

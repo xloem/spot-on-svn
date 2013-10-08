@@ -53,17 +53,30 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 const qint64 listenerOid,
 				 QObject *parent):QSslSocket(parent)
 {
+  setReadBufferSize(8192);
+  setSocketDescriptor(socketDescriptor);
+  setSocketOption(QAbstractSocket::KeepAliveOption, 0); /*
+							** We have our
+							** own mechanism.
+							*/
   m_address = peerAddress();
   m_accountAuthenticated = false;
   m_allowExceptions = false;
   m_bytesRead = 0;
   m_bytesWritten = 0;
   m_echoMode = echoMode;
+  m_externalAddress = new spoton_external_address(this);
+  m_id = -1; /*
+	     ** This neighbor was created by a listener. We must
+	     ** obtain a valid id at some point (setId())!
+	     */
   m_ipAddress = m_address.toString();
   m_isUserDefined = false;
+  m_lastReadTime = QDateTime::currentDateTime();
   m_listenerOid = listenerOid;
   m_maximumBufferSize = spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE;
   m_maximumContentLength = spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH;
+  m_networkInterface = 0;
   m_port = peerPort();
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
   m_requireSsl = true;
@@ -74,13 +87,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
     m_useSsl = false;
   else
     m_useSsl = true;
-
-  setReadBufferSize(8192);
-  setSocketDescriptor(socketDescriptor);
-  setSocketOption(QAbstractSocket::KeepAliveOption, 0); /*
-							** We have our
-							** own mechanism.
-							*/
 
   if(m_useSsl)
     {
@@ -132,14 +138,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	}
     }
 
-  m_externalAddress = new spoton_external_address(this);
-  m_id = -1; /*
-	     ** This neighbor was created by a listener. We must
-	     ** have a valid id at some point (setId()). If not,
-	     ** we're deep in the hole.
-	     */
-  m_lastReadTime = QDateTime::currentDateTime();
-  m_networkInterface = 0;
   connect(this,
 	  SIGNAL(accountAuthenticated(void)),
 	  this,
@@ -224,15 +222,20 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_accountName = accountName;
   m_accountPassword = accountPassword;
   m_allowExceptions = allowExceptions;
+  m_address = QHostAddress(ipAddress);
   m_bytesRead = 0;
   m_bytesWritten = 0;
   m_echoMode = echoMode;
+  m_externalAddress = new spoton_external_address(this);
+  m_id = id;
+  m_ipAddress = ipAddress;
+  m_isUserDefined = userDefined;
   m_keySize = qAbs(keySize);
 
   if(!(m_keySize == 2048 || m_keySize == 3072 || m_keySize == 4096))
     m_keySize = 2048;
 
-  m_isUserDefined = userDefined;
+  m_lastReadTime = QDateTime::currentDateTime();
   m_listenerOid = -1;
   m_maximumBufferSize =
     qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
@@ -241,7 +244,9 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_maximumContentLength = 
     qMax(maximumContentLength,
 	 spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
+  m_networkInterface = 0;
   m_peerCertificate = QSslCertificate(peerCertificate);
+  m_port = quint16(port.toInt());
   m_protocol = protocol;
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
   m_requireSsl = requireSsl;
@@ -309,20 +314,12 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	}
     }
 
-  m_address = QHostAddress(ipAddress);
-  m_ipAddress = ipAddress;
-
   if(m_address.isNull())
     if(!m_ipAddress.isEmpty())
       QHostInfo::lookupHost(m_ipAddress,
 			    this, SLOT(slotHostFound(const QHostInfo &)));
 
   m_address.setScopeId(scopeId);
-  m_externalAddress = new spoton_external_address(this);
-  m_id = id;
-  m_lastReadTime = QDateTime::currentDateTime();
-  m_networkInterface = 0;
-  m_port = quint16(port.toInt());
   connect(this,
 	  SIGNAL(connected(void)),
 	  this,
@@ -547,26 +544,28 @@ void spoton_neighbor::slotTimeout(void)
 		    if(s_crypt)
 		      {
 			bool ok = true;
-			QByteArray name;
-			QByteArray password;
 
 			m_echoMode = s_crypt->decrypted
 			  (QByteArray::fromBase64(query.value(2).
 						  toByteArray()),
 			   &ok).constData();
-			name = QByteArray::fromBase64(query.value(5).
-						      toByteArray());
-			password = QByteArray::fromBase64(query.value(6).
-							  toByteArray());
 
-			if(name != m_accountName ||
-			   password != m_accountPassword)
+			if(m_isUserDefined)
 			  {
-			    m_accountName = name;
-			    m_accountPassword = password;
+			    QByteArray name
+			      (QByteArray::fromBase64(query.value(5).
+						      toByteArray()));
+			    QByteArray password
+			      (QByteArray::fromBase64(query.value(6).
+						      toByteArray()));
 
-			    if(m_isUserDefined)
-			      m_accountTimer.start();
+			    if(name != m_accountName ||
+			       password != m_accountPassword)
+			      {
+				m_accountName = name;
+				m_accountPassword = password;
+				m_accountTimer.start();
+			      }
 			  }
 		      }
 
@@ -2880,13 +2879,13 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 
       QByteArray name;
 
-      if(spoton_misc::authenticateAccount(m_listenerOid,
+      if(spoton_misc::authenticateAccount(name,
+					  m_listenerOid,
 					  list.at(0), list.at(1),
 					  spoton_kernel::s_crypts.
 					  value("chat", 0)))
 	{
 	  m_accountAuthenticated = true;
-	  name = list.at(0);
 	  emit accountAuthenticated();
 	}
       else
@@ -4131,22 +4130,36 @@ void spoton_neighbor::slotSendAccountInformation(void)
 	  if(ok)
 	    if(!name.isEmpty() && password.length() >= 16)
 	      {
-		QByteArray message
-		  (spoton_send::message0050(name, password));
+		QByteArray message;
+		QByteArray salt
+		  (spoton_crypt::strongRandomBytes(256));
+		QByteArray saltedCredentials
+		  (spoton_crypt::saltedValue("sha512",
+					     name + password,
+					     salt, &ok));
 
-		if(write(message.constData(), message.length()) !=
-		   message.length())
-		  spoton_misc::logError
-		    (QString("spoton_neighbor::sendAccountInformation(): "
-			     "write() error for %1:%2.").
-		     arg(m_address.toString()).
-		     arg(m_port));
-		else
+
+		if(ok)
+		  message = spoton_send::message0050(saltedCredentials,
+						     salt);
+
+		if(ok)
 		  {
-		    flush();
-		    m_accountTimer.stop();
-		    m_authenticationSentTime = QDateTime::currentDateTime();
-		    m_bytesWritten += message.length();
+		    if(write(message.constData(), message.length()) !=
+		       message.length())
+		      spoton_misc::logError
+			(QString("spoton_neighbor::sendAccountInformation(): "
+				 "write() error for %1:%2.").
+			 arg(m_address.toString()).
+			 arg(m_port));
+		    else
+		      {
+			flush();
+			m_accountTimer.stop();
+			m_authenticationSentTime =
+			  QDateTime::currentDateTime();
+			m_bytesWritten += message.length();
+		      }
 		  }
 	      }
 	}
@@ -4158,7 +4171,7 @@ void spoton_neighbor::slotAccountAuthenticated(void)
   QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 
   if(readyToWrite())
-    if(isEncrypted())
+    if(isEncrypted()) // Must be true!
       {
 	QByteArray message(spoton_send::message0051("1"));
 

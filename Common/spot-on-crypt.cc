@@ -235,6 +235,56 @@ QByteArray spoton_crypt::derivedKey(const QString &cipherType,
   return derivedKey;
 }
 
+QByteArray spoton_crypt::saltedValue(const QString &hashType,
+				     const QByteArray &data,
+				     const QByteArray &salt,
+				     bool *ok)
+{
+  init();
+
+  QByteArray salted;
+  int hashAlgorithm = gcry_md_map_name(hashType.toLatin1().constData());
+  unsigned int length = 0;
+
+  if(hashAlgorithm == 0)
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	(QString("spoton_crypt::saltedValue(): "
+		 "gcry_md_map_name() "
+		 "returned zero for %1.").arg(hashType));
+      goto done_label;
+    }
+
+  length = gcry_md_get_algo_dlen(hashAlgorithm);
+
+  if(length == 0)
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	(QString("spoton_crypt::saltedValue(): "
+		 "gcry_md_get_algo_dlen() "
+		 "returned zero for %1.").arg(hashType));
+      goto done_label;
+    }
+
+  if(ok)
+    *ok = true;
+
+  salted.append(data).append(salt);
+  salted.resize(length);
+  gcry_md_hash_buffer(hashAlgorithm,
+		      static_cast<void *> (salted.data()),
+		      static_cast<const void *> (salted.constData()),
+		      static_cast<size_t> (salted.length()));
+ done_label:
+  return salted;
+}
+
 QByteArray spoton_crypt::saltedPassphraseHash(const QString &hashType,
 					      const QString &passphrase,
 					      const QByteArray &salt,

@@ -50,9 +50,10 @@ class spoton_misc
   static QString countryCodeFromName(const QString &country);
   static QString countryNameFromIPAddress(const QString &ipAddress);
   static QString homePath(void);
-  static bool authenticateAccount(const qint64 listenerOid,
-				  const QByteArray &name,
-				  const QByteArray &password,
+  static bool authenticateAccount(QByteArray &name,
+				  const qint64 listenerOid,
+				  const QByteArray &saltedCredentials,
+				  const QByteArray &salt,
 				  spoton_crypt *crypt);
   static bool countryAllowedToConnect(const QString &country,
 				      spoton_crypt *crypt);
