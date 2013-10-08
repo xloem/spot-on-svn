@@ -564,7 +564,9 @@ void spoton_neighbor::slotTimeout(void)
 			      {
 				m_accountName = name;
 				m_accountPassword = password;
-				m_accountTimer.start();
+
+				if(isEncrypted())
+				  m_accountTimer.start();
 			      }
 			  }
 		      }
