@@ -564,7 +564,9 @@ void spoton_neighbor::slotTimeout(void)
 			  {
 			    m_accountName = name;
 			    m_accountPassword = password;
-			    m_accountTimer.start();
+
+			    if(m_isUserDefined)
+			      m_accountTimer.start();
 			  }
 		      }
 
@@ -782,6 +784,12 @@ void spoton_neighbor::slotReadyRead(void)
 
 	  if(!data.isEmpty())
 	    list.append(data);
+	  else
+	    /*
+	    ** Empty data? Abort!
+	    */
+
+	    break;
 	}
 
       if(list.isEmpty())
@@ -850,15 +858,20 @@ void spoton_neighbor::slotReadyRead(void)
 		    goto done_label;
 		}
 	    }
-	  else
+	  else if(length > 0 && data.contains("type=0051&content="))
 	    {
-	      if(length > 0 && data.contains("type=0051&content="))
-		process0051(length, data);
+	      if(m_authenticationSentTime.
+		 msecsTo(QDateTime::currentDateTime()) <= 2500)
+		{
+		  process0051(length, data);
 
-	      if(!m_accountAuthenticated)
-		goto done_label;
+		  if(!m_accountAuthenticated)
+		    goto done_label;
+		  else
+		    QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
+		}
 	      else
-		QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
+		m_accountAuthenticated = false;
 	    }
 
 	  if(length > 0 && data.contains("type=0011&content="))
@@ -3798,6 +3811,7 @@ void spoton_neighbor::slotEncrypted(void)
 	}
 
       m_accountTimer.start();
+      QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
     }
 }
 
@@ -4131,6 +4145,7 @@ void spoton_neighbor::slotSendAccountInformation(void)
 		  {
 		    flush();
 		    m_accountTimer.stop();
+		    m_authenticationSentTime = QDateTime::currentDateTime();
 		    m_bytesWritten += message.length();
 		  }
 	      }
@@ -4145,11 +4160,9 @@ void spoton_neighbor::slotAccountAuthenticated(void)
   if(readyToWrite())
     if(isEncrypted())
       {
-	QByteArray message
-	  (spoton_send::message0051("1"));
+	QByteArray message(spoton_send::message0051("1"));
 
-	if(write(message.constData(), message.length()) !=
-	   message.length())
+	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::slotAccountAuthenticated(): "
 		     "write() error for %1:%2.").
