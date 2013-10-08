@@ -122,6 +122,92 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
   QSqlDatabase::removeDatabase(connectionName);
   sb.status->setText
+    (QObject::tr("Re-encoding country_inclusion.db."));
+  sb.status->repaint();
+  spoton_misc::prepareDatabases();
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "country_inclusion.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT country, accepted, country_hash FROM "
+		      "country_inclusion"))
+	  while(query.next())
+	    {
+	      QSqlQuery updateQuery(db);
+	      QString country("");
+	      bool accepted = true;
+	      bool ok = true;
+
+	      updateQuery.prepare("UPDATE country_inclusion "
+				  "SET country = ?, "
+				  "accepted = ?, "
+				  "country_hash = ? WHERE "
+				  "country_hash = ?");
+	      country = oldCrypt->decrypted(QByteArray::
+					    fromBase64(query.
+						       value(0).
+						       toByteArray()),
+					    &ok).constData();
+
+	      if(ok)
+		accepted = oldCrypt->decrypted(QByteArray::
+					       fromBase64(query.
+							  value(1).
+							  toByteArray()),
+					       &ok).toInt(); /*
+							     ** toInt()
+							     ** failure
+							     ** returns
+							     ** zero.
+							     */
+
+	      if(ok)
+		updateQuery.bindValue
+		  (0, newCrypt->encrypted(country.toLatin1(),
+					  &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (1, newCrypt->encrypted(QString::number(accepted).
+					  toLatin1(), &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (2,
+		   newCrypt->keyedHash(country.toLatin1(),
+				       &ok).toBase64());
+
+	      updateQuery.bindValue
+		(3, query.value(2));
+
+	      if(ok)
+		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare("DELETE FROM country_inclusion WHERE "
+				      "country_hash = ?");
+		  deleteQuery.bindValue(0, query.value(2));
+		  deleteQuery.exec();
+		}
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  sb.status->setText
     (QObject::tr("Re-encoding email.db."));
   sb.status->repaint();
   spoton_misc::prepareDatabases();
@@ -272,92 +358,6 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  deleteQuery.prepare("DELETE FROM post_office WHERE "
 				      "OID = ?");
 		  deleteQuery.bindValue(0, query.value(3));
-		  deleteQuery.exec();
-		}
-	    }
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-  sb.status->setText
-    (QObject::tr("Re-encoding country_inclusion.db."));
-  sb.status->repaint();
-  spoton_misc::prepareDatabases();
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "country_inclusion.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.setForwardOnly(true);
-
-	if(query.exec("SELECT country, accepted, country_hash FROM "
-		      "country_inclusion"))
-	  while(query.next())
-	    {
-	      QSqlQuery updateQuery(db);
-	      QString country("");
-	      bool accepted = true;
-	      bool ok = true;
-
-	      updateQuery.prepare("UPDATE country_inclusion "
-				  "SET country = ?, "
-				  "accepted = ?, "
-				  "country_hash = ? WHERE "
-				  "country_hash = ?");
-	      country = oldCrypt->decrypted(QByteArray::
-					    fromBase64(query.
-						       value(0).
-						       toByteArray()),
-					    &ok).constData();
-
-	      if(ok)
-		accepted = oldCrypt->decrypted(QByteArray::
-					       fromBase64(query.
-							  value(1).
-							  toByteArray()),
-					       &ok).toInt(); /*
-							     ** toInt()
-							     ** failure
-							     ** returns
-							     ** zero.
-							     */
-
-	      if(ok)
-		updateQuery.bindValue
-		  (0, newCrypt->encrypted(country.toLatin1(),
-					  &ok).toBase64());
-
-	      if(ok)
-		updateQuery.bindValue
-		  (1, newCrypt->encrypted(QString::number(accepted).
-					  toLatin1(), &ok).toBase64());
-
-	      if(ok)
-		updateQuery.bindValue
-		  (2,
-		   newCrypt->keyedHash(country.toLatin1(),
-				       &ok).toBase64());
-
-	      updateQuery.bindValue
-		(3, query.value(2));
-
-	      if(ok)
-		updateQuery.exec();
-	      else
-		{
-		  QSqlQuery deleteQuery(db);
-
-		  deleteQuery.prepare("DELETE FROM country_inclusion WHERE "
-				      "country_hash = ?");
-		  deleteQuery.bindValue(0, query.value(2));
 		  deleteQuery.exec();
 		}
 	    }
@@ -520,6 +520,60 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  deleteQuery.prepare("DELETE FROM listeners WHERE "
 				      "hash = ?");
 		  deleteQuery.bindValue(0, query.value(8));
+		  deleteQuery.exec();
+		}
+	    }
+
+	if(query.exec("SELECT account_name, account_name_hash, "
+		      "account_password FROM listeners_accounts"))
+	  while(query.next())
+	    {
+	      QByteArray name;
+	      QByteArray password;
+	      QSqlQuery updateQuery(db);
+	      bool ok = true;
+
+	      updateQuery.prepare("UPDATE listeners_accounts "
+				  "SET account_name = ?, "
+				  "account_name_hash = ?, "
+				  "account_password = ? "
+				  "WHERE account_name_hash = ?");
+	      name = oldCrypt->decrypted(QByteArray::
+					 fromBase64(query.
+						    value(0).
+						    toByteArray()),
+					 &ok);
+
+	      if(ok)
+		password = oldCrypt->decrypted(QByteArray::
+					       fromBase64(query.
+							  value(2).
+							  toByteArray()),
+					       &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (0, newCrypt->encrypted(name, &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (1, newCrypt->keyedHash(name, &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (2, newCrypt->encrypted(password, &ok).toBase64());
+
+	      updateQuery.bindValue(3, query.value(1));
+
+	      if(ok)
+		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare("DELETE FROM listeners_accounts WHERE "
+				      "account_name_hash = ?");
+		  deleteQuery.bindValue(0, query.value(1));
 		  deleteQuery.exec();
 		}
 	    }
