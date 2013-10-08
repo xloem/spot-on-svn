@@ -291,4 +291,6 @@ EOL
 1 - Salt (Base-64) (Plaintext)
 
 Message Type ("0051") (Plaintext)
-0 - Authentication Result (Base-64) (Plaintext)
+0 - Sha-512 Account Credentials (Base-64) (Plaintext)
+EOL
+1 - Salt (Base-64) (Plaintext)
