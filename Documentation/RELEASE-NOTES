@@ -23,12 +23,13 @@
      were generated from source.
 15.  Added SSL_library_init() to spoton_crypt::init().
 16.  Per-listener accounts. Please remove listeners.db. Accounts require
-     SSL connections.
+     SSL connections. May provide SRP support in the near future.
 17.  Improved error reporting between the user and the UI.
 18.  Removed OS X and Qt 5.x workaround with respect to password widgets.
 19.  Properly reset neighbors.db data in spoton_misc::cleanupDatabases().
 20.  Disable Nagle's algorithm on all TCP sockets. The algorithm may
      be enabled via the INI file.
+21.  Individual chat windows.
 
 0.05 (09/16/2013)
 
