@@ -25,21 +25,38 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QDateTime>
+#include <QMessageBox>
+#include <QScrollBar>
 #include <QSettings>
 
+#include "Common/spot-on-misc.h"
 #include "spot-on-chatwindow.h"
 
-spoton_chatwindow::spoton_chatwindow(const QString &participant,
-				     const QString &publicKeyHash,
+spoton_chatwindow::spoton_chatwindow(const QIcon &icon,
+				     const QString &id,
+				     const QString &participant,
+				     QSslSocket *kernelSocket,
 				     QWidget *parent):QMainWindow(parent)
 {
-  m_id = publicKeyHash;
+  m_id = id;
+  m_kernelSocket = kernelSocket;
   ui.setupUi(this);
   connect(ui.clearMessages,
 	  SIGNAL(clicked(void)),
 	  ui.messages,
 	  SLOT(clear(void)));
+  connect(ui.message,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSendMessage(void)));
+  connect(ui.sendMessage,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSendMessage(void)));
   setWindowTitle(tr("Spot-On: %1").arg(participant));
+  ui.icon->setPixmap(icon.pixmap(QSize(16, 16)));
+  ui.name->setText(participant);
   slotSetIcons();
 }
 
@@ -64,7 +81,6 @@ QString spoton_chatwindow::id(void) const
 void spoton_chatwindow::closeEvent(QCloseEvent *event)
 {
   QMainWindow::closeEvent(event);
-  deleteLater();
 }
 
 void spoton_chatwindow::center(void)
@@ -84,4 +100,88 @@ void spoton_chatwindow::center(void)
     Y = p.y() - (height() - parentWidget()->height()) / 2;
 
   move(X, Y);
+}
+
+void spoton_chatwindow::slotSendMessage(void)
+{
+  QByteArray message;
+  QByteArray name;
+  QSettings settings;
+  QString error("");
+
+  if(m_kernelSocket->state() != QAbstractSocket::ConnectedState)
+    {
+      error = tr("Not connected to the kernel.");
+      goto done_label;
+    }
+  else if(!m_kernelSocket->isEncrypted())
+    {
+      error = tr("Connection to the kernel is not encrypted.");
+      goto done_label;
+    }
+  else if(ui.message->toPlainText().trimmed().isEmpty())
+    {
+      error = tr("Please provide a message.");
+      goto done_label;
+    }
+
+  name = settings.value("gui/nodeName", "unknown").toByteArray().trimmed();
+  message.append
+    (QDateTime::currentDateTime().
+     toString("[hh:mm<font color=grey>:ss</font>] "));
+  message.append(tr("<b>me:</b> "));
+  message.append(ui.message->toPlainText().trimmed());
+  ui.messages->append(message);
+  ui.messages->verticalScrollBar()->setValue
+    (ui.messages->verticalScrollBar()->maximum());
+  message.clear();
+
+  if(name.isEmpty())
+    name = "unknown";
+
+  message.append("message_");
+  message.append(QString("%1_").arg(m_id));
+  message.append(name.toBase64());
+  message.append("_");
+  message.append(ui.message->toPlainText().trimmed().toUtf8().
+		 toBase64());
+  message.append('\n');
+
+  if(m_kernelSocket->write(message.constData(), message.length()) !=
+     message.length())
+    spoton_misc::logError
+      (QString("spoton_chatwindow::slotSendMessage(): write() failure for "
+	       "%1:%2.").
+       arg(m_kernelSocket->peerAddress().toString()).
+       arg(m_kernelSocket->peerPort()));
+  else
+    {
+      m_kernelSocket->flush();
+      emit messageSent();
+    }
+
+  ui.message->clear();
+
+ done_label:
+
+  if(!error.isEmpty())
+    QMessageBox::critical(this, tr("Spot-On: Error"), error);
+}
+
+void spoton_chatwindow::append(const QString &text)
+{
+  ui.messages->append(text);
+  ui.messages->verticalScrollBar()->setValue
+    (ui.messages->verticalScrollBar()->maximum());
+}
+
+void spoton_chatwindow::slotSetStatus(const QIcon &icon,
+				      const QString &name,
+				      const QString &id)
+{
+  if(id == m_id)
+    {
+      ui.icon->setPixmap(icon.pixmap(QSize(16, 16)));
+      ui.name->setText(name);
+    }
 }

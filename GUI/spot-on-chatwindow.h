@@ -28,6 +28,10 @@
 #ifndef _spoton_chatwindow_h_
 #define _spoton_chatwindow_h_
 
+#include <QIcon>
+#include <QPointer>
+#include <QSslSocket>
+
 #include "ui_chatwindow.h"
 
 class spoton_chatwindow: public QMainWindow
@@ -35,19 +39,30 @@ class spoton_chatwindow: public QMainWindow
   Q_OBJECT
 
  public:
-  spoton_chatwindow(const QString &participant, const QString &publicKeyHash,
+  spoton_chatwindow(const QIcon &icon,
+		    const QString &id,
+		    const QString &participant,
+		    QSslSocket *kernelSocket,
 		    QWidget *parent);
   ~spoton_chatwindow();
   QString id(void) const;
+  void append(const QString &text);
   void center(void);
 
  private:
+  QPointer<QSslSocket> m_kernelSocket;
   QString m_id;
   Ui_chatwindow ui;
   void closeEvent(QCloseEvent *event);
 
  private slots:
+  void slotSendMessage(void);
   void slotSetIcons(void);
+  void slotSetStatus(const QIcon &icon, const QString &name,
+		     const QString &id);
+
+ signals:
+  void messageSent(void);
 };
 
 #endif

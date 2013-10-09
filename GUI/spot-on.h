@@ -197,6 +197,7 @@ class spoton: public QMainWindow
   void slotChatInactivityTimeout(void);
   void slotChatSendMethodChanged(int index);
   void slotChatWindowDestroyed(void);
+  void slotChatWindowMessageSent(void);
   void slotClearOutgoingMessage(void);
   void slotCloseBuzzTab(int index);
   void slotCongestionControl(bool state);
@@ -320,6 +321,9 @@ class spoton: public QMainWindow
  signals:
   void buzzNameChanged(const QByteArray &name);
   void iconsChanged(void);
+  void statusChanged(const QIcon &icon,
+		     const QString &name,
+		     const QString &id);
 };
 
 #endif

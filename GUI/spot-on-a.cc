@@ -4462,7 +4462,10 @@ void spoton::slotPopulateParticipants(void)
 		      "WHERE key_type = 'chat' OR key_type = 'email'"))
 	  while(query.next())
 	    {
+	      QIcon icon;
 	      QString keyType(query.value(7).toString());
+	      QString name("");
+	      QString oid("");
 	      QString status(query.value(4).toString());
 	      bool temporary =
 		query.value(2).toInt() == -1 ? false : true;
@@ -4493,8 +4496,11 @@ void spoton::slotPopulateParticipants(void)
 			}
 
 		      if(i == 0) // Name
-			item = new QTableWidgetItem
-			  (QString::fromUtf8(query.value(i).toByteArray()));
+			{
+			  item = new QTableWidgetItem
+			    (QString::fromUtf8(query.value(i).toByteArray()));
+			  name = item->text();
+			}
 		      else if(i == 4) // Status
 			{
 			  QString status(query.value(i).toString());
@@ -4534,8 +4540,13 @@ void spoton::slotPopulateParticipants(void)
 					 &ok).constData());
 			}
 		      else
-			item = new QTableWidgetItem
-			  (query.value(i).toString());
+			{
+			  item = new QTableWidgetItem
+			    (query.value(i).toString());
+
+			  if(i == 1) // OID
+			    oid = item->text();
+			}
 
 		      item->setFlags
 			(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -4585,6 +4596,8 @@ void spoton::slotPopulateParticipants(void)
 				(tr("User %1 requests your friendship.").
 				 arg(item->text()));
 			    }
+
+			  icon = item->icon();
 			}
 		      else if(i == 6) // Gemini
 			{
@@ -4653,6 +4666,9 @@ void spoton::slotPopulateParticipants(void)
 			(rowE - 1, i, item);
 		    }
 		}
+
+	      if(keyType == "chat")
+		emit statusChanged(icon, name, oid);
 
 	      if(hashes.contains(query.value(3).toString()))
 		rows.append(row - 1);

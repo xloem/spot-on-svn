@@ -18,9 +18,16 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_27">
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="name">
         <property name="text">
-         <string>Messages</string>
+         <string>Name</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="icon">
+        <property name="text">
+         <string>Icon</string>
         </property>
        </widget>
       </item>

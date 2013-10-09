@@ -26,6 +26,7 @@
 */
 
 #include <QDateTime>
+#include <QMessageBox>
 #include <QScrollBar>
 #include <QSettings>
 #if QT_VERSION >= 0x050000
@@ -181,19 +182,32 @@ void spoton_buzzpage::slotSetIcons(void)
 
 void spoton_buzzpage::slotSendMessage(void)
 {
-  if(!m_kernelSocket)
-    return;
-  else if(m_kernelSocket->state() != QAbstractSocket::ConnectedState)
-    return;
-  else if(!m_kernelSocket->isEncrypted())
-    return;
-  else if(ui.message->toPlainText().trimmed().isEmpty())
-    return;
-
   QByteArray name;
   QByteArray sendMethod;
-  QString message;
   QSettings settings;
+  QString error("");
+  QString message("");
+
+  if(!m_kernelSocket)
+    {
+      error = tr("Empty kernel socket.");
+      goto done_label;
+    }
+  else if(m_kernelSocket->state() != QAbstractSocket::ConnectedState)
+    {
+      error = tr("Not connected to the kernel.");
+      goto done_label;
+    }
+  else if(!m_kernelSocket->isEncrypted())
+    {
+      error = tr("Connection to the kernel is not encrypted.");
+      goto done_label;
+    }
+  else if(ui.message->toPlainText().trimmed().isEmpty())
+    {
+      error = tr("Please provide a message.");
+      goto done_label;
+    }
 
   message.append
     (QDateTime::currentDateTime().
@@ -244,6 +258,11 @@ void spoton_buzzpage::slotSendMessage(void)
   }
 
   ui.message->clear();
+
+ done_label:
+  
+  if(!error.isEmpty())
+    QMessageBox::critical(this, tr("Spot-On: Error"), error);
 }
 
 void spoton_buzzpage::appendMessage(const QByteArray &hash,

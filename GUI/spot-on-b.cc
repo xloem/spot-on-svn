@@ -198,7 +198,7 @@ void spoton::slotReceivedKernelMessage(void)
 		{
 		  QList<QByteArray> list(data.split('_'));
 
-		  if(list.size() != 3)
+		  if(list.size() != 4)
 		    continue;
 
 		  for(int i = 0; i < list.size(); i++)
@@ -245,9 +245,10 @@ void spoton::slotReceivedKernelMessage(void)
 		  if(duplicate)
 		    continue;
 
-		  QByteArray name(list.value(1));
-		  QByteArray message(list.value(2));
+		  QByteArray name(list.value(2));
+		  QByteArray message(list.value(3));
 		  QString msg("");
+		  bool found = true;
 
 		  if(name.isEmpty())
 		    name = "unknown";
@@ -264,12 +265,34 @@ void spoton::slotReceivedKernelMessage(void)
 					   name.length())));
 		  msg.append(QString::fromUtf8(message.constData(),
 					       message.length()));
-		  m_ui.messages->append(msg);
-		  m_ui.messages->verticalScrollBar()->setValue
-		    (m_ui.messages->verticalScrollBar()->maximum());
 
-		  if(m_ui.tab->currentIndex() != 1)
-		    m_sb.chat->setVisible(true);
+		  if(m_chatWindows.contains(list.value(1).toBase64()))
+		    {
+		      QPointer<spoton_chatwindow> chat =
+			m_chatWindows.value(list.value(1).toBase64());
+
+		      if(chat)
+			{
+			  chat->append(msg);
+
+			  if(!chat->isVisible())
+			    found = false;
+			}
+		      else
+			found = false;
+		    }
+		  else
+		    found = false;
+
+		  if(!found)
+		    {
+		      m_ui.messages->append(msg);
+		      m_ui.messages->verticalScrollBar()->setValue
+			(m_ui.messages->verticalScrollBar()->maximum());
+
+		      if(m_ui.tab->currentIndex() != 1)
+			m_sb.chat->setVisible(true);
+		    }
 		}
 	    }
 	  else if(data == "newmail")
@@ -4614,6 +4637,11 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
   if(!item)
     return;
 
+  if(item->data(Qt::UserRole).toBool()) // Temporary friend?
+    return;
+
+  QIcon icon;
+  QString oid("");
   QString participant("");
   QString publicKeyHash("");
   int row = item->row();
@@ -4623,7 +4651,14 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
   if(!item)
     return;
 
+  icon = item->icon();
   participant = item->text();
+  item = m_ui.participants->item(row, 1); // OID
+
+  if(!item)
+    return;
+
+  oid = item->text();
   item = m_ui.participants->item(row, 3); // public_key_hash
 
   if(!item)
@@ -4645,17 +4680,29 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
     }
 
   QPointer<spoton_chatwindow> chat = new spoton_chatwindow
-    (participant, publicKeyHash, this);
+    (icon, oid, participant, &m_kernelSocket, this);
 
   connect(chat,
 	  SIGNAL(destroyed(void)),
 	  this,
 	  SLOT(slotChatWindowDestroyed(void)));
+  connect(chat,
+	  SIGNAL(messageSent(void)),
+	  this,
+	  SLOT(slotChatWindowMessageSent(void)));
   connect(this,
 	  SIGNAL(iconsChanged(void)),
 	  chat,
 	  SLOT(slotSetIcons(void)));
-  m_chatWindows[item->text()] = chat;
+  connect(this,
+	  SIGNAL(statusChanged(const QIcon &,
+			       const QString &,
+			       const QString &)),
+	  chat,
+	  SLOT(slotSetStatus(const QIcon &,
+			     const QString &,
+			     const QString &)));
+  m_chatWindows[publicKeyHash] = chat;
   chat->center();
   chat->show();
 }
@@ -4672,4 +4719,12 @@ void spoton::slotChatWindowDestroyed(void)
       if(!it.value())
 	it.remove();
     }
+}
+
+void spoton::slotChatWindowMessageSent(void)
+{
+  if(m_ui.status->currentIndex() != 2) // Offline
+    m_ui.status->setCurrentIndex(3); // Online
+
+  m_chatInactivityTimer.start();
 }

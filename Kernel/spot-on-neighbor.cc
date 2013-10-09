@@ -1514,11 +1514,13 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 				     keyedHash(originalData, &ok));
 
 				  if(!hash.isEmpty() &&
+				     !list.value(0).isEmpty() &&
 				     !list.value(1).isEmpty() &&
 				     !list.value(2).isEmpty())
 				    emit receivedChatMessage
 				      ("message_" +
 				       hash.toBase64() + "_" +
+				       list.value(0).toBase64() + "_" +
 				       list.value(1).toBase64() + "_" +
 				       list.value(2).toBase64().
 				       append('\n'));
