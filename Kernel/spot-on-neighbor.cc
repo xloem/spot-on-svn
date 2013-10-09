@@ -3903,12 +3903,7 @@ bool spoton_neighbor::readyToWrite(void)
 	return true;
     }
   else if(!isEncrypted() && !m_useSsl)
-    {
-      if(m_useAccounts)
-	return m_accountAuthenticated;
-      else
-	return true;
-    }
+    return true;
   else
     return false;
 }
@@ -4180,54 +4175,55 @@ void spoton_neighbor::slotSendAccountInformation(void)
 {
   if(!readyToWrite())
     return;
+  else if(!isEncrypted())
+    return;
 
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
-  if(s_crypt)
-    {
-      QByteArray name(m_accountName);
-      QByteArray password(m_accountPassword);
-      bool ok = true;
+  if(!s_crypt)
+    return;
 
-      name = s_crypt->decrypted(name, &ok);
+  QByteArray name(m_accountName);
+  QByteArray password(m_accountPassword);
+  bool ok = true;
 
-      if(ok)
-	password = s_crypt->decrypted(password, &ok);
+  name = s_crypt->decrypted(name, &ok);
 
-      if(ok)
-	if(!name.isEmpty() && password.length() >= 16)
+  if(ok)
+    password = s_crypt->decrypted(password, &ok);
+
+  if(ok)
+    if(!name.isEmpty() && password.length() >= 16)
+      {
+	QByteArray message;
+	QByteArray salt(spoton_crypt::strongRandomBytes(256));
+	QByteArray saltedCredentials
+	  (spoton_crypt::saltedValue("sha512",
+				     name + password,
+				     salt, &ok));
+
+	if(ok)
+	  message = spoton_send::message0050(saltedCredentials, salt);
+
+	if(ok)
 	  {
-	    QByteArray message;
-	    QByteArray salt
-	      (spoton_crypt::strongRandomBytes(256));
-	    QByteArray saltedCredentials
-	      (spoton_crypt::saltedValue("sha512",
-					 name + password,
-					 salt, &ok));
-
-	    if(ok)
-	      message = spoton_send::message0050(saltedCredentials, salt);
-
-	    if(ok)
+	    if(write(message.constData(), message.length()) !=
+	       message.length())
+	      spoton_misc::logError
+		(QString("spoton_neighbor::sendAccountInformation(): "
+			 "write() error for %1:%2.").
+		 arg(m_address.toString()).
+		 arg(m_port));
+	    else
 	      {
-		if(write(message.constData(), message.length()) !=
-		   message.length())
-		  spoton_misc::logError
-		    (QString("spoton_neighbor::sendAccountInformation(): "
-			     "write() error for %1:%2.").
-		     arg(m_address.toString()).
-		     arg(m_port));
-		else
-		  {
-		    flush();
-		    m_accountTimer.stop();
-		    m_accountSalt = salt;
-		    m_authenticationSentTime = QDateTime::currentDateTime();
-		    m_bytesWritten += message.length();
-		  }
+		flush();
+		m_accountTimer.stop();
+		m_accountSalt = salt;
+		m_authenticationSentTime = QDateTime::currentDateTime();
+		m_bytesWritten += message.length();
 	      }
 	  }
-    }
+      }
 }
 
 void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
@@ -4235,41 +4231,42 @@ void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
 {
   QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 
-  if(readyToWrite())
+  if(!readyToWrite())
+    return;
+  else if(!isEncrypted())
+    return;
+
+  QByteArray message;
+  QByteArray salt(spoton_crypt::strongRandomBytes(256));
+  QByteArray saltedCredentials;
+  bool ok = true;
+
+  /*
+  ** The server authenticated the client's credentials. We'll
+  ** now create a similar response so that the client can
+  ** verify the server.
+  */
+
+  saltedCredentials = spoton_crypt::saltedValue("sha512",
+						name + password,
+						salt,
+						&ok);
+
+  if(ok)
+    message = spoton_send::message0051(saltedCredentials, salt);
+
+  if(ok)
     {
-      QByteArray message;
-      QByteArray salt
-	(spoton_crypt::strongRandomBytes(256));
-      QByteArray saltedCredentials;
-      bool ok = true;
-
-      /*
-      ** The server authenticated the client's credentials. We'll
-      ** now create a similar response so that the client can
-      ** verify the server.
-      */
-
-      saltedCredentials = spoton_crypt::saltedValue("sha512",
-						    name + password,
-						    salt,
-						    &ok);
-
-      if(ok)
-	message = spoton_send::message0051(saltedCredentials, salt);
-
-      if(ok)
+      if(write(message.constData(), message.length()) != message.length())
+	spoton_misc::logError
+	  (QString("spoton_neighbor::slotAccountAuthenticated(): "
+		   "write() error for %1:%2.").
+	   arg(m_address.toString()).
+	   arg(m_port));
+      else
 	{
-	  if(write(message.constData(), message.length()) != message.length())
-	    spoton_misc::logError
-	      (QString("spoton_neighbor::slotAccountAuthenticated(): "
-		       "write() error for %1:%2.").
-	       arg(m_address.toString()).
-	       arg(m_port));
-	  else
-	    {
-	      flush();
-	      m_bytesWritten += message.length();
-	    }
+	  flush();
+	  m_bytesWritten += message.length();
 	}
     }
 }

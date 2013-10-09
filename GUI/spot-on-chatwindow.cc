@@ -29,11 +29,17 @@
 
 #include "spot-on-chatwindow.h"
 
-spoton_chatwindow::spoton_chatwindow(const QString &id,
+spoton_chatwindow::spoton_chatwindow(const QString &participant,
+				     const QString &publicKeyHash,
 				     QWidget *parent):QMainWindow(parent)
 {
-  m_id = id;
+  m_id = publicKeyHash;
   ui.setupUi(this);
+  connect(ui.clearMessages,
+	  SIGNAL(clicked(void)),
+	  ui.messages,
+	  SLOT(clear(void)));
+  setWindowTitle(tr("Spot-On: %1").arg(participant));
   slotSetIcons();
 }
 
@@ -59,4 +65,23 @@ void spoton_chatwindow::closeEvent(QCloseEvent *event)
 {
   QMainWindow::closeEvent(event);
   deleteLater();
+}
+
+void spoton_chatwindow::center(void)
+{
+  QPoint p(parentWidget()->pos());
+  int X = 0;
+  int Y = 0;
+
+  if(parentWidget()->width() >= width())
+    X = p.x() + (parentWidget()->width() - width()) / 2;
+  else
+    X = p.x() - (width() - parentWidget()->width()) / 2;
+
+  if(parentWidget()->height() >= height())
+    Y = p.y() + (parentWidget()->height() - height()) / 2;
+  else
+    Y = p.y() - (height() - parentWidget()->height()) / 2;
+
+  move(X, Y);
 }

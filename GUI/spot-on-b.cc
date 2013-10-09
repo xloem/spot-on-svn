@@ -4614,15 +4614,26 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
   if(!item)
     return;
 
-  item = m_ui.participants->item(item->row(), 3);
+  QString participant("");
+  QString publicKeyHash("");
+  int row = item->row();
+
+  item = m_ui.participants->item(row, 0); // Participant
 
   if(!item)
     return;
 
-  if(m_chatWindows.contains(item->text()))
+  participant = item->text();
+  item = m_ui.participants->item(row, 3); // public_key_hash
+
+  if(!item)
+    return;
+
+  publicKeyHash = item->text();
+
+  if(m_chatWindows.contains(publicKeyHash))
     {
-      QPointer<spoton_chatwindow> chat =
-	m_chatWindows.value(item->text());
+      QPointer<spoton_chatwindow> chat = m_chatWindows.value(publicKeyHash);
 
       if(chat)
 	{
@@ -4634,7 +4645,7 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
     }
 
   QPointer<spoton_chatwindow> chat = new spoton_chatwindow
-    (item->text(), this);
+    (participant, publicKeyHash, this);
 
   connect(chat,
 	  SIGNAL(destroyed(void)),
@@ -4645,6 +4656,7 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
 	  chat,
 	  SLOT(slotSetIcons(void)));
   m_chatWindows[item->text()] = chat;
+  chat->center();
   chat->show();
 }
 

@@ -35,9 +35,11 @@ class spoton_chatwindow: public QMainWindow
   Q_OBJECT
 
  public:
-  spoton_chatwindow(const QString &id, QWidget *parent);
+  spoton_chatwindow(const QString &participant, const QString &publicKeyHash,
+		    QWidget *parent);
   ~spoton_chatwindow();
   QString id(void) const;
+  void center(void);
 
  private:
   QString m_id;

@@ -124,5 +124,4 @@ Remaining Items
 24.    Perform calling over geminis.
 25.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
 26.    Replace gcrypt with crypto++.
-27.    An authenticated account receives a response of one. Is this sufficient?
-       Should the neighbor expect other data?
+27.    Add SRP for accounts verification.
