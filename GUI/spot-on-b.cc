@@ -38,8 +38,10 @@ void spoton::slotSendMessage(void)
 {
   QModelIndexList list(m_ui.participants->selectionModel()->
 		       selectedRows(1)); // OID
+  QModelIndexList publicKeyHashes(m_ui.participants->selectionModel()->
+				  selectedRows(3)); // public_key_hash
   QString error("");
-  QString message("");
+  QString msg("");
 
   if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
     {
@@ -67,18 +69,19 @@ void spoton::slotSendMessage(void)
       goto done_label;
     }
 
-  message.append
+  msg.append
     (QDateTime::currentDateTime().
      toString("[hh:mm<font color=grey>:ss</font>] "));
-  message.append(tr("<b>me:</b> "));
-  message.append(m_ui.message->toPlainText().trimmed());
-  m_ui.messages->append(message);
+  msg.append(tr("<b>me:</b> "));
+  msg.append(m_ui.message->toPlainText().trimmed());
+  m_ui.messages->append(msg);
   m_ui.messages->verticalScrollBar()->setValue
     (m_ui.messages->verticalScrollBar()->maximum());
 
   while(!list.isEmpty())
     {
       QModelIndex index(list.takeFirst());
+      QString publicKeyHash(publicKeyHashes.takeFirst().data().toString());
       QVariant data(index.data());
 
       if(!data.isNull() && data.isValid())
@@ -97,6 +100,13 @@ void spoton::slotSendMessage(void)
 	  message.append(m_ui.message->toPlainText().trimmed().toUtf8().
 			 toBase64());
 	  message.append('\n');
+
+	  QPointer<spoton_chatwindow> chat = m_chatWindows.value
+	    (publicKeyHash);
+
+	  if(chat)
+	    if(!chat->isVisible())
+	      chat->append(msg);
 
 	  if(m_kernelSocket.write(message.constData(), message.length()) !=
 	     message.length())
