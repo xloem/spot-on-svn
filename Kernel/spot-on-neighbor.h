@@ -87,6 +87,7 @@ class spoton_neighbor: public QSslSocket
  private:
   QByteArray m_accountName;
   QByteArray m_accountPassword;
+  QByteArray m_accountSalt;
   QByteArray m_data;
   QDateTime m_authenticationSentTime;
   QDateTime m_lastReadTime;
@@ -175,7 +176,8 @@ class spoton_neighbor: public QSslSocket
 		   const QByteArray &recipientHash);
 
  private slots:
-  void slotAccountAuthenticated(void);
+  void slotAccountAuthenticated(const QByteArray &name,
+				const QByteArray &password);
   void slotCallParticipant(const QByteArray &data);
   void slotConnected(void);
   void slotDisconnected(void);
@@ -207,7 +209,8 @@ class spoton_neighbor: public QSslSocket
   void slotTimeout(void);
 
  signals:
-  void accountAuthenticated(void);
+  void accountAuthenticated(const QByteArray &name,
+			    const QByteArray &password);
   void newEMailArrived(void);
   void publicizeListenerPlaintext(const QByteArray &data, const qint64 id);
   void receivedBuzzMessage(const QList<QByteArray> &list,

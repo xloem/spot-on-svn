@@ -1844,6 +1844,7 @@ bool spoton_misc::isAcceptedIP(const QHostAddress &address,
 }
 
 bool spoton_misc::authenticateAccount(QByteArray &name,
+				      QByteArray &password,
 				      const qint64 listenerOid,
 				      const QByteArray &saltedCredentials,
 				      const QByteArray &salt,
@@ -1874,7 +1875,6 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 	if(query.exec())
 	  while(query.next())
 	    {
-	      QByteArray password;
 	      QByteArray salted;
 	      bool ok = true;
 
@@ -1908,7 +1908,10 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
   QSqlDatabase::removeDatabase(connectionName);
 
   if(!found)
-    name.clear();
+    {
+      name.clear();
+      password.clear();
+    }
 
   return found;
 }
