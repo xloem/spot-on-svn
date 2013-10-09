@@ -49,6 +49,7 @@ MOC_DIR = temp/moc
 RCC_DIR = temp/rcc
 
 FORMS           = UI/buzzpage.ui \
+		  UI/chatwindow.ui \
 		  UI/controlcenter.ui \
 		  UI/docviewer.ui \
                   UI/logviewer.ui \
