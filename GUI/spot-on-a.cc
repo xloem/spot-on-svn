@@ -365,6 +365,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(itemChanged(QTableWidgetItem *)),
 	  this,
 	  SLOT(slotGeminiChanged(QTableWidgetItem *)));
+  connect(m_ui.participants,
+	  SIGNAL(itemDoubleClicked(QTableWidgetItem *)),
+	  this,
+	  SLOT(slotParticipantDoubleClicked(QTableWidgetItem *)));
   connect(m_ui.generateGoldBug,
 	  SIGNAL(clicked(void)),
 	  this,

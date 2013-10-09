@@ -486,15 +486,30 @@ void spoton::slotRemoveParticipants(void)
       {
 	QModelIndexList list
 	  (m_ui.participants->selectionModel()->selectedRows(1)); // OID
+	QModelIndexList listHashes
+	  (m_ui.participants->selectionModel()->
+	   selectedRows(3)); // public_key_hash
 	QSqlQuery query(db);
 
 	while(!list.isEmpty())
 	  {
 	    QVariant data(list.takeFirst().data());
+	    QVariant hash(listHashes.takeFirst().data());
 
 	    if(!data.isNull() && data.isValid())
 	      query.exec(QString("DELETE FROM friends_public_keys WHERE "
 				 "OID = %1").arg(data.toString()));
+
+	    if(m_chatWindows.contains(hash.toString()))
+	      {
+		QPointer<spoton_chatwindow> chat =
+		  m_chatWindows.value(hash.toString());
+
+		m_chatWindows.remove(hash.toString());
+
+		if(chat)
+		  chat->deleteLater();
+	      }
 	  }
 
 	spoton_misc::purgeSignatureRelationships(db);
@@ -4592,4 +4607,57 @@ void spoton::slotListenerSelected(void)
     }
 
   populateAccounts(oid);
+}
+
+void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
+{
+  if(!item)
+    return;
+
+  item = m_ui.participants->item(item->row(), 3);
+
+  if(!item)
+    return;
+
+  if(m_chatWindows.contains(item->text()))
+    {
+      QPointer<spoton_chatwindow> chat =
+	m_chatWindows.value(item->text());
+
+      if(chat)
+	{
+	  chat->showNormal();
+	  chat->raise();
+	}
+
+      return;
+    }
+
+  QPointer<spoton_chatwindow> chat = new spoton_chatwindow
+    (item->text(), this);
+
+  connect(chat,
+	  SIGNAL(destroyed(void)),
+	  this,
+	  SLOT(slotChatWindowDestroyed(void)));
+  connect(this,
+	  SIGNAL(iconsChanged(void)),
+	  chat,
+	  SLOT(slotSetIcons(void)));
+  m_chatWindows[item->text()] = chat;
+  chat->show();
+}
+
+void spoton::slotChatWindowDestroyed(void)
+{
+  QMutableHashIterator<QString, QPointer<spoton_chatwindow> > it
+    (m_chatWindows);
+
+  while(it.hasNext())
+    {
+      it.next();
+
+      if(!it.value())
+	it.remove();
+    }
 }

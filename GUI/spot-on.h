@@ -52,6 +52,7 @@
 #else
 #include <QNetworkInterface>
 #endif
+#include <QPointer>
 #include <QProcess>
 #include <QScrollBar>
 #include <QSettings>
@@ -90,6 +91,7 @@ extern "C"
 #include "Common/spot-on-external-address.h"
 #include "Common/spot-on-misc.h"
 #include "Common/spot-on-send.h"
+#include "spot-on-chatwindow.h"
 #include "spot-on-docviewer.h"
 #include "spot-on-logviewer.h"
 #include "spot-on-reencode.h"
@@ -120,6 +122,7 @@ class spoton: public QMainWindow
 						 ** echoed messages.
 						 */
   QHash<QString, QByteArray> m_buzzIds;
+  QHash<QString, QPointer<spoton_chatwindow> > m_chatWindows;
   QHash<QString, QVariant> m_settings;
   QHash<QString, bool> m_booleans;
   QMutex m_messagingCacheMutex;
@@ -193,6 +196,7 @@ class spoton: public QMainWindow
   void slotChangeTabPosition(void);
   void slotChatInactivityTimeout(void);
   void slotChatSendMethodChanged(int index);
+  void slotChatWindowDestroyed(void);
   void slotClearOutgoingMessage(void);
   void slotCloseBuzzTab(int index);
   void slotCongestionControl(bool state);
@@ -261,6 +265,7 @@ class spoton: public QMainWindow
   void slotNeighborHalfEcho(void);
   void slotNeighborMaximumChanged(int value);
   void slotNeighborSelected(void);
+  void slotParticipantDoubleClicked(QTableWidgetItem *item);
   void slotPopulateAcceptedIPs(void);
   void slotPopulateCountries(void);
   void slotPopulateListeners(void);

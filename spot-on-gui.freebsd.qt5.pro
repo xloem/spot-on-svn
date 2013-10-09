@@ -55,6 +55,7 @@ UI_HEADERS_DIR  = GUI
 HEADERS		= Common/spot-on-external-address.h \
 		  GUI/spot-on.h \
 		  GUI/spot-on-buzzpage.h \
+		  GUI/spot-on-chatwindow.h \
           	  GUI/spot-on-docviewer.h \
 		  GUI/spot-on-logviewer.h \
 		  GUI/spot-on-tabwidget.h \
@@ -66,6 +67,7 @@ SOURCES		= Common/spot-on-crypt.cc \
 		  GUI/spot-on-a.cc \
 		  GUI/spot-on-b.cc \
 		  GUI/spot-on-buzzpage.cc \
+		  GUI/spot-on-chatwindow.cc \
 	          GUI/spot-on-docviewer.cc \
 		  GUI/spot-on-logviewer.cc \
 		  GUI/spot-on-reencode.cc \
