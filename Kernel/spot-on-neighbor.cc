@@ -3026,8 +3026,8 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 		      m_accountAuthenticated = false;
 		      spoton_misc::logError
 			("spoton_neighbor::process0051(): "
-			 "the provided salted credentials appear "
-			 "incorrect. The server may be devious.");
+			 "the provided salted credentials appear to be "
+			 "invalid. The server may be devious.");
 		    }
 		}
 	      else
