@@ -1876,7 +1876,7 @@ void spoton::slotPopulateListeners(void)
 		      "External IP: %6\n"
 		      "Connections: %7\n"
 		      "Echo Mode: %8\n"
-		      "Use Accounts?: %9")).
+		      "Use Accounts: %9")).
 		  arg(query.value(1).toString()).
 		  arg(query.value(2).toString()).
 		  arg(m_crypts.value("chat")->
@@ -1915,7 +1915,7 @@ void spoton::slotPopulateListeners(void)
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(query.value(12).toString());
+		  arg(query.value(12).toInt() == 1 ? "Yes" : "No");
 
 		for(int i = 0; i < query.record().count(); i++)
 		  {
@@ -2350,7 +2350,7 @@ void spoton::slotPopulateNeighbors(void)
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(query.value(25).toInt() == 1 ?
+		  arg(query.value(27).toInt() == 1 ?
 		      "Secure" : "Insecure").
 		  arg(QString::number(query.value(19).toInt() / 60.0,
 				      'f', 1)).
