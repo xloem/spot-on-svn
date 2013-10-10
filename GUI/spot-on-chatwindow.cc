@@ -102,15 +102,15 @@ void spoton_chatwindow::center(QWidget *parent)
   int X = 0;
   int Y = 0;
 
-  if(parentWidget()->width() >= width())
-    X = p.x() + (parentWidget()->width() - width()) / 2;
+  if(parent->width() >= width())
+    X = p.x() + (parent->width() - width()) / 2;
   else
-    X = p.x() - (width() - parentWidget()->width()) / 2;
+    X = p.x() - (width() - parent->width()) / 2;
 
-  if(parentWidget()->height() >= height())
-    Y = p.y() + (parentWidget()->height() - height()) / 2;
+  if(parent->height() >= height())
+    Y = p.y() + (parent->height() - height()) / 2;
   else
-    Y = p.y() - (height() - parentWidget()->height()) / 2;
+    Y = p.y() - (height() - parent->height()) / 2;
 
   move(X, Y);
 }
