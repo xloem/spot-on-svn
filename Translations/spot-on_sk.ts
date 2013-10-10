@@ -1297,27 +1297,27 @@ Account Authenticated: %21
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-chatwindow.cc" line="124"/>
+        <location filename="../GUI/spot-on-chatwindow.cc" line="127"/>
         <source>Not connected to the kernel.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-chatwindow.cc" line="129"/>
+        <location filename="../GUI/spot-on-chatwindow.cc" line="132"/>
         <source>Connection to the kernel is not encrypted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-chatwindow.cc" line="134"/>
+        <location filename="../GUI/spot-on-chatwindow.cc" line="137"/>
         <source>Please provide a message.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-chatwindow.cc" line="142"/>
+        <location filename="../GUI/spot-on-chatwindow.cc" line="145"/>
         <source>&lt;b&gt;me:&lt;/b&gt; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-chatwindow.cc" line="178"/>
+        <location filename="../GUI/spot-on-chatwindow.cc" line="181"/>
         <source>Spot-On: Error</source>
         <translation type="unfinished"></translation>
     </message>

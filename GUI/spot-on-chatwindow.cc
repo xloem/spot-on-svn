@@ -93,9 +93,12 @@ void spoton_chatwindow::closeEvent(QCloseEvent *event)
   QMainWindow::closeEvent(event);
 }
 
-void spoton_chatwindow::center(void)
+void spoton_chatwindow::center(QWidget *parent)
 {
-  QPoint p(parentWidget()->pos());
+  if(!parent)
+    return;
+
+  QPoint p(parent->pos());
   int X = 0;
   int Y = 0;
 

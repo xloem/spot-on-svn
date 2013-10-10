@@ -47,7 +47,7 @@ class spoton_chatwindow: public QMainWindow
   ~spoton_chatwindow();
   QString id(void) const;
   void append(const QString &text);
-  void center(void);
+  void center(QWidget *parent);
 
  private:
   QPointer<QSslSocket> m_kernelSocket;

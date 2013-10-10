@@ -4713,7 +4713,7 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
 			     const QString &,
 			     const QString &)));
   m_chatWindows[publicKeyHash] = chat;
-  chat->center();
+  chat->center(this);
   chat->show();
 }
 
