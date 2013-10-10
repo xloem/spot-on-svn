@@ -2904,7 +2904,7 @@
                      </property>
                      <item>
                       <property name="text">
-                       <string>Randomized</string>
+                       <string>randomized</string>
                       </property>
                      </item>
                     </widget>
