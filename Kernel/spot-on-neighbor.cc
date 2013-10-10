@@ -2907,9 +2907,14 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 	{
 	  m_accountAuthenticated = true;
 	  emit accountAuthenticated(name, password);
+	  QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 	}
       else
-	m_accountAuthenticated = false;
+	{
+	  m_accountAuthenticated = false;
+	  emit accountAuthenticated(spoton_crypt::weakRandomBytes(32),
+				    spoton_crypt::weakRandomBytes(32));
+	}
 
       resetKeepAlive();
 
@@ -4231,8 +4236,6 @@ void spoton_neighbor::slotSendAccountInformation(void)
 void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
 					       const QByteArray &password)
 {
-  QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
-
   if(!readyToWrite())
     return;
   else if(!isEncrypted())
