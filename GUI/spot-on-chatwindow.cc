@@ -42,6 +42,7 @@ spoton_chatwindow::spoton_chatwindow(const QIcon &icon,
   m_id = id;
   m_kernelSocket = kernelSocket;
   ui.setupUi(this);
+  setWindowIcon(QIcon(":/Logo/spoton-button-32.png"));
   connect(ui.clearMessages,
 	  SIGNAL(clicked(void)),
 	  ui.messages,
