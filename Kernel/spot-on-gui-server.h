@@ -34,8 +34,6 @@
 #include <QTcpServer>
 #include <QTimer>
 
-#include "spot-on-kernel.h"
-
 class spoton_gui_server_tcp_server: public QTcpServer
 {
   Q_OBJECT
@@ -93,8 +91,8 @@ class spoton_gui_server: public spoton_gui_server_tcp_server
   void slotModeChanged(QSslSocket::SslMode mode);
   void slotNewEMailArrived(void);
   void slotReadyRead(void);
-  void slotReceivedBuzzMessage(const QByteArrayList &list,
-			       const QPairQByteArrayQByteArray &pair);
+  void slotReceivedBuzzMessage(const QList<QByteArray> &list,
+			       const QPair<QByteArray, QByteArray> &pair);
   void slotReceivedChatMessage(const QByteArray &message);
   void slotTimeout(void);
 

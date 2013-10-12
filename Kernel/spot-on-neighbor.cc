@@ -34,10 +34,6 @@
 #include <QSslCipher>
 #include <QSslConfiguration>
 #include <QSslKey>
-#if QT_VERSION >= 0x050000
-#include <QtConcurrent>
-#endif
-#include <QtCore>
 #include <QtCore/qmath.h>
 
 #include <limits>
@@ -893,8 +889,77 @@ void spoton_neighbor::slotReadyRead(void)
 		m_accountAuthenticated = false;
 	    }
 
-	  QtConcurrent::run(this, &spoton_neighbor::process,
-			    length, data, originalData);
+	  if(length > 0 && data.contains("type=0011&content="))
+	    process0011(length, data);
+	  else if(length > 0 && data.contains("type=0012&content="))
+	    process0012(length, data);
+	  else if(length > 0 && data.contains("type=0014&content="))
+	    process0014(length, data);
+	  else if(length > 0 && data.contains("type=0015&content="))
+	    process0015(length, data);
+	  else if(length > 0 && data.contains("type=0030&content="))
+	    process0030(length, data);
+	  else if(length > 0 && data.contains("content="))
+	    {
+	      if(!spoton_kernel::s_settings.value("gui/superEcho",
+						  false).toBool())
+		if(isDuplicateMessage(originalData))
+		  continue;
+
+	      recordMessageHash(originalData);
+
+	      /*
+	      ** Remove some header data.
+	      */
+
+	      length -= strlen("content=");
+	      data = data.mid(0, data.lastIndexOf("\r\n") + 2);
+	      data.remove
+		(0,
+		 data.indexOf("content=") + strlen("content="));
+
+	      /*
+	      ** Please note that findMessageType() calls
+	      ** participantCount(). Therefore, the process() methods
+	      ** that would do not.
+	      */
+
+	      QPair<QByteArray, QByteArray> symmetricKey;
+	      QString messageType(findMessageType(data, symmetricKey));
+
+	      if(messageType == "0000")
+		process0000(length, data, symmetricKey);
+	      else if(messageType == "0000a")
+		process0000a(length, data);
+	      else if(messageType == "0001a")
+		process0001a(length, data);
+	      else if(messageType == "0001b")
+		process0001b(length, data);
+	      else if(messageType == "0002")
+		process0002(length, data);
+	      else if(messageType == "0013")
+		process0013(length, data, symmetricKey);
+	      else if(messageType == "0040a")
+		process0040a(length, data, symmetricKey);
+	      else if(messageType == "0040b")
+		process0040b(length, data, symmetricKey);
+	      else
+		messageType.clear();
+
+	      resetKeepAlive();
+
+	      if(spoton_kernel::s_settings.value("gui/scramblerEnabled",
+						 false).toBool())
+		emit scrambleRequest();
+
+	      if(spoton_kernel::s_settings.value("gui/superEcho",
+						 false).toBool())
+		emit receivedMessage(originalData, m_id);
+	      else if(m_echoMode == "full")
+		if(messageType.isEmpty() ||
+		   messageType == "0040a" || messageType == "0040b")
+		  emit receivedMessage(originalData, m_id);
+	    }
 
 	done_label:
 
@@ -912,82 +977,6 @@ void spoton_neighbor::slotReadyRead(void)
 		}
 	    }
 	}
-    }
-}
-
-void spoton_neighbor::process(int length, QByteArray &data,
-			      const QByteArray &originalData)
-{
-  if(length > 0 && data.contains("type=0011&content="))
-    process0011(length, data);
-  else if(length > 0 && data.contains("type=0012&content="))
-    process0012(length, data);
-  else if(length > 0 && data.contains("type=0014&content="))
-    process0014(length, data);
-  else if(length > 0 && data.contains("type=0015&content="))
-    process0015(length, data);
-  else if(length > 0 && data.contains("type=0030&content="))
-    process0030(length, data);
-  else if(length > 0 && data.contains("content="))
-    {
-      if(!spoton_kernel::s_settings.value("gui/superEcho",
-					  false).toBool())
-	if(isDuplicateMessage(originalData))
-	  return;
-
-      recordMessageHash(originalData);
-
-      /*
-      ** Remove some header data.
-      */
-
-      length -= strlen("content=");
-      data = data.mid(0, data.lastIndexOf("\r\n") + 2);
-      data.remove
-	(0,
-	 data.indexOf("content=") + strlen("content="));
-
-      /*
-      ** Please note that findMessageType() calls
-      ** participantCount(). Therefore, the process() methods
-      ** that would do not.
-      */
-
-      QPair<QByteArray, QByteArray> symmetricKey;
-      QString messageType(findMessageType(data, symmetricKey));
-
-      if(messageType == "0000")
-	process0000(length, data, symmetricKey);
-      else if(messageType == "0000a")
-	process0000a(length, data);
-      else if(messageType == "0001a")
-	process0001a(length, data);
-      else if(messageType == "0001b")
-	process0001b(length, data);
-      else if(messageType == "0002")
-	process0002(length, data);
-      else if(messageType == "0013")
-	process0013(length, data, symmetricKey);
-      else if(messageType == "0040a")
-	process0040a(length, data, symmetricKey);
-      else if(messageType == "0040b")
-	process0040b(length, data, symmetricKey);
-      else
-	messageType.clear();
-
-      resetKeepAlive();
-
-      if(spoton_kernel::s_settings.value("gui/scramblerEnabled",
-					 false).toBool())
-	emit scrambleRequest();
-
-      if(spoton_kernel::s_settings.value("gui/superEcho",
-					 false).toBool())
-	emit receivedMessage(originalData, m_id);
-      else if(m_echoMode == "full")
-	if(messageType.isEmpty() ||
-	   messageType == "0040a" || messageType == "0040b")
-	  emit receivedMessage(originalData, m_id);
     }
 }
 

@@ -39,9 +39,6 @@
 
 #include "Common/spot-on-send.h"
 
-typedef QList<QByteArray> QByteArrayList;
-typedef QPair<QByteArray, QByteArray> QPairQByteArrayQByteArray;
-
 class spoton_crypt;
 class spoton_gui_server;
 class spoton_listener;

@@ -38,7 +38,6 @@
 #include <QUuid>
 
 #include "Common/spot-on-send.h"
-#include "spot-on-kernel.h"
 
 class QNetworkInterface;
 
@@ -125,8 +124,6 @@ class spoton_neighbor: public QSslSocket
   bool isDuplicateMessage(const QByteArray &data);
   bool readyToWrite(void);
   void prepareNetworkInterface(void);
-  void process(int length, QByteArray &data,
-	       const QByteArray &originalData);
   void process0000(int length, const QByteArray &data,
 		   const QPair<QByteArray, QByteArray> &pair);
   void process0000a(int length, const QByteArray &data);
@@ -216,8 +213,8 @@ class spoton_neighbor: public QSslSocket
 			    const QByteArray &password);
   void newEMailArrived(void);
   void publicizeListenerPlaintext(const QByteArray &data, const qint64 id);
-  void receivedBuzzMessage(const QByteArrayList &list,
-			   const QPairQByteArrayQByteArray &pair);
+  void receivedBuzzMessage(const QList<QByteArray> &list,
+			   const QPair<QByteArray, QByteArray> &pair);
   void receivedChatMessage(const QByteArray &data);
   void receivedMessage(const QByteArray &data, const qint64 id);
   void receivedPublicKey(const QByteArray &name, const QByteArray publicKey);

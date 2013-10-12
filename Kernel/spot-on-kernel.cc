@@ -235,8 +235,6 @@ int main(int argc, char *argv[])
 
 spoton_kernel::spoton_kernel(void):QObject(0)
 {
-  qRegisterMetaType<QByteArrayList> ("QByteArrayList");
-  qRegisterMetaType<QPairQByteArrayQByteArray> ("QPairQByteArrayQByteArray");
   m_guiServer = 0;
   m_mailer = 0;
   m_sharedReader = 0;
@@ -1305,11 +1303,11 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SLOT(slotNewEMailArrived(void)));
   connect
     (neighbor,
-     SIGNAL(receivedBuzzMessage(const QByteArrayList &,
-				const QPairQByteArrayQByteArray &)),
+     SIGNAL(receivedBuzzMessage(const QList<QByteArray> &,
+				const QPair<QByteArray, QByteArray> &)),
      m_guiServer,
-     SLOT(slotReceivedBuzzMessage(const QByteArrayList &,
-				  const QPairQByteArrayQByteArray &)));
+     SLOT(slotReceivedBuzzMessage(const QList<QByteArray> &,
+				  const QPair<QByteArray, QByteArray> &)));
   connect(neighbor,
 	  SIGNAL(receivedChatMessage(const QByteArray &)),
 	  m_guiServer,
