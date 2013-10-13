@@ -92,7 +92,6 @@ extern "C"
 #include "Common/spot-on-misc.h"
 #include "Common/spot-on-send.h"
 #include "spot-on-chatwindow.h"
-#include "spot-on-docviewer.h"
 #include "spot-on-logviewer.h"
 #include "spot-on-reencode.h"
 #include "ui_controlcenter.h"
@@ -144,7 +143,6 @@ class spoton: public QMainWindow
   Ui_spoton_mainwindow m_ui;
   bool m_purge;
   QHash<QString, spoton_crypt *> m_crypts;
-  spoton_docviewer m_docViewer;
   spoton_external_address *m_externalAddress;
   spoton_logviewer m_logViewer;
   QByteArray copyMyChatPublicKey(void);
@@ -315,7 +313,6 @@ class spoton: public QMainWindow
   void slotTestSslControlString(void);
   void slotUnblockNeighbor(void);
   void slotValidatePassphrase(void);
-  void slotViewDocumentation(void);
   void slotViewLog(void);
 
  signals:

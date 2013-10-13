@@ -309,10 +309,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotScramble(bool)));
-  connect(m_ui.action_Documentation,
-	  SIGNAL(triggered(void)),
-	  this,
-	  SLOT(slotViewDocumentation(void)));
   connect(m_ui.listenerIP,
 	  SIGNAL(returnPressed(void)),
 	  this,

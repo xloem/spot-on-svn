@@ -935,11 +935,6 @@ void spoton::slotShareEmailPublicKeyWithParticipant(void)
     }
 }
 
-void spoton::slotViewDocumentation(void)
-{
-  m_docViewer.show(this);
-}
-
 void spoton::slotViewLog(void)
 {
   m_logViewer.show(this);
@@ -3388,8 +3383,6 @@ void spoton::slotSetIcons(void)
 
   // Generic
 
-  m_ui.action_Documentation->setIcon
-    (QIcon(QString(":/%1/documentation.png").arg(iconSet)));
   m_ui.action_Log_Viewer->setIcon
     (QIcon(QString(":/%1/information.png").arg(iconSet)));
 
