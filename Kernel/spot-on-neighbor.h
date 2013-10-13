@@ -98,7 +98,6 @@ class spoton_neighbor: public QSslSocket
   QString m_echoMode;
   QString m_ipAddress;
   QString m_protocol;
-  QTimer m_accountTimer;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_keepAliveTimer;
   QTimer m_lifetime;
@@ -197,7 +196,6 @@ class spoton_neighbor: public QSslSocket
   void slotReadyRead(void);
   void slotReceivedMessage(const QByteArray &data, const qint64 id);
   void slotRetrieveMail(const QList<QByteArray> &list);
-  void slotSendAccountInformation(void);
   void slotSendBuzz(const QByteArray &data);
   void slotSendKeepAlive(void);
   void slotSendMail(const QList<QPair<QByteArray, qint64> > &list);
