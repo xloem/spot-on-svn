@@ -189,8 +189,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1195</width>
-                <height>647</height>
+                <width>412</width>
+                <height>474</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1526,8 +1526,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>267</width>
-                 <height>631</height>
+                 <width>216</width>
+                 <height>625</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2717,8 +2717,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1195</width>
-             <height>647</height>
+             <width>946</width>
+             <height>507</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3918,7 +3918,7 @@
      <x>0</x>
      <y>0</y>
      <width>1217</width>
-     <height>27</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -3948,7 +3948,6 @@
      <addaction name="action_North"/>
      <addaction name="action_West"/>
     </widget>
-    <addaction name="action_Documentation"/>
     <addaction name="menu_Icons"/>
     <addaction name="action_Log_Viewer"/>
     <addaction name="menu_Tab_Position"/>
@@ -3962,11 +3961,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
-   </property>
-  </action>
-  <action name="action_Documentation">
-   <property name="text">
-    <string>&amp;Documentation</string>
    </property>
   </action>
   <action name="actionNuvola">

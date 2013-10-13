@@ -32,6 +32,8 @@
 21.  Individual chat windows.
 22.  The kernel shall now purge messages that are older than 60 seconds. Also
      decreased the purge timer from 30 seconds to 15 seconds.
+23.  Removed the documentation browser. The information is incomplete and will
+     be provided online instead.
 
 0.05 (09/16/2013)
 
