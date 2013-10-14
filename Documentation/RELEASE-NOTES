@@ -24,7 +24,8 @@
 15.  Added SSL_library_init() to spoton_crypt::init().
 16.  Per-listener accounts. Please remove listeners.db. Accounts require
      SSL connections. May provide SRP support in the near future as current
-     implementation is susceptible to at least replay attack.
+     implementation is susceptible to at least replay attack. Do note
+     that authentication occurs within SSL.
 17.  Improved error reporting between the user and the UI.
 18.  Removed OS X and Qt 5.x workaround with respect to password widgets.
 19.  Properly reset neighbors.db data in spoton_misc::cleanupDatabases().
@@ -35,6 +36,7 @@
      decreased the purge timer from 30 seconds to 15 seconds.
 23.  Removed the documentation browser. The information is incomplete and will
      be provided online instead.
+24.  Spelling corrections to this file.
 
 0.05 (09/16/2013)
 
@@ -48,7 +50,7 @@
 7.   Completed spoton_crypt::defaultSslCiphers(). The method retrieves
      SSLv3 and TLSv1 ciphers according to
      HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH. However, the actual
-     ciphers retained are also influenced by Qt. Qt is instructured to use
+     ciphers retained are also influenced by Qt. Qt is instructed to use
      the SSLv3 and TLSv1 protocols. The SSL control string may be modified
      via the UI.
 8.   Modified spoton_crypt::setSslCiphers() so that the method prepares
@@ -104,7 +106,7 @@
 5.   The simple mechanism that's used to determine if a gold bug
      is set is deeply flawed. Corrected.
 6.   The method spoton_neighbor::resetKeepAlive() incorrectly restarted
-     the keep-aliver timer. The timer is responsible for sending
+     the keep-alive timer. The timer is responsible for sending
      periodic notifications.
 7.   Limit read() to 8192 bytes in spoton_neighbor::slotReadyRead().
 8.   Also removed SPOTON_GEOIP_DATA_FILE from all kernel project files.
