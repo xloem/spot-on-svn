@@ -368,6 +368,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(ipAddressDiscovered(const QHostAddress &)),
 	  this,
 	  SLOT(slotExternalAddressDiscovered(const QHostAddress &)));
+  connect(&m_accountTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotSendAccountInformation(void)));
   connect(&m_externalAddressDiscovererTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -388,6 +392,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTimeout(void)));
+  m_accountTimer.setInterval(2500);
   m_externalAddressDiscovererTimer.setInterval(30000);
   m_keepAliveTimer.setInterval(45000);
   m_lifetime.start(10 * 60 * 1000);
@@ -573,6 +578,7 @@ void spoton_neighbor::slotTimeout(void)
 			      {
 				m_accountName = name;
 				m_accountPassword = password;
+				m_accountTimer.start();
 			      }
 			  }
 		      }
@@ -858,33 +864,14 @@ void spoton_neighbor::slotReadyRead(void)
 
 	  if(!m_isUserDefined)
 	    {
-	      /*
-	      ** Server.
-	      */
-
 	      if(m_useAccounts)
-		if(isEncrypted() && !m_accountAuthenticated)
-		  {
-		    QByteArray message;
+		{
+		  if(length > 0 && data.contains("type=0050&content="))
+		    process0050(length, data);
 
-		    m_accountSalt = spoton_crypt::strongRandomBytes(256);
-		    message = spoton_send::message0050(m_accountSalt);
-
-		    if(write(message.constData(), message.length()) !=
-		       message.length())
-		      spoton_misc::logError
-			(QString("spoton_neighbor::slotReadyRead(): "
-				 "write() error for %1:%2.").
-			 arg(m_address.toString()).
-			 arg(m_port));
-		    else
-		      {
-			flush();
-			m_bytesWritten += message.length();
-		      }
-
+		  if(!m_accountAuthenticated)
 		    goto done_label;
-		  }
+		}
 	    }
 	  else if(length > 0 && data.contains("type=0051&content="))
 	    {
@@ -3892,6 +3879,7 @@ void spoton_neighbor::slotEncrypted(void)
 	    }
 	}
 
+      m_accountTimer.start();
       QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
     }
 }
@@ -4187,6 +4175,61 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 void spoton_neighbor::addToBytesWritten(const int bytesWritten)
 {
   m_bytesWritten += qAbs(bytesWritten);
+}
+
+void spoton_neighbor::slotSendAccountInformation(void)
+{
+  if(!readyToWrite())
+    return;
+  else if(!isEncrypted())
+    return;
+
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QByteArray name(m_accountName);
+  QByteArray password(m_accountPassword);
+  bool ok = true;
+
+  name = s_crypt->decrypted(name, &ok);
+
+  if(ok)
+    password = s_crypt->decrypted(password, &ok);
+
+  if(ok)
+    if(!name.isEmpty() && password.length() >= 16)
+      {
+	QByteArray message;
+	QByteArray salt(spoton_crypt::strongRandomBytes(256));
+	QByteArray saltedCredentials
+	  (spoton_crypt::saltedValue("sha512",
+				     name + password,
+				     salt, &ok));
+
+	if(ok)
+	  message = spoton_send::message0050(saltedCredentials, salt);
+
+	if(ok)
+	  {
+	    if(write(message.constData(), message.length()) !=
+	       message.length())
+	      spoton_misc::logError
+		(QString("spoton_neighbor::sendAccountInformation(): "
+			 "write() error for %1:%2.").
+		 arg(m_address.toString()).
+		 arg(m_port));
+	    else
+	      {
+		flush();
+		m_accountTimer.stop();
+		m_accountSalt = salt;
+		m_authenticationSentTime = QDateTime::currentDateTime();
+		m_bytesWritten += message.length();
+	      }
+	  }
+      }
 }
 
 void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,

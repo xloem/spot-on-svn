@@ -399,25 +399,30 @@ QByteArray spoton_send::message0040b(const QByteArray &message,
   return results;
 }
 
-QByteArray spoton_send::message0050(const QByteArray &salt)
+QByteArray spoton_send::message0050(const QByteArray &saltedCredentials,
+				    const QByteArray &salt)
 {
+  QByteArray content;
   QByteArray results;
 
   results.append
-    ("HTTP/1.1 401 Authorization Required\r\n"
-     "WWW-Authenticate: Digest realm=\"unauthorized\"\r\n"
-     "nonce=\"%1\"\r\n"
-     "Content-Type: text/html\r\n"
-     "Content-Length: %2\r\n"
+    ("POST HTTP/1.1\r\n"
+     "Content-Type: application/x-www-form-urlencoded\r\n"
+     "Content-Length: %1\r\n"
      "\r\n"
-     "type=0050&content=0\r\n"
+     "type=0050&content=%2\r\n"
      "\r\n\r\n");
-  results.replace("%1", salt.toBase64());
+  content.append(saltedCredentials.toBase64());
+  content.append("\n");
+  content.append(salt.toBase64());
   results.replace
-    ("%2",
-     QString::number(QString("type=0050&content=0\r\n\r\n\r\n").
+    ("%1",
+     QString::number(content.toBase64().length() +
+		     QString("type=0050&content=\r\n\r\n\r\n").
 		     length()).
      toLatin1());
+  results.replace
+    ("%2", content.toBase64());
   return results;
 }
 
