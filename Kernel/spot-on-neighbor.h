@@ -87,7 +87,6 @@ class spoton_neighbor: public QSslSocket
  private:
   QByteArray m_accountName;
   QByteArray m_accountPassword;
-  QByteArray m_accountSalt;
   QByteArray m_data;
   QDateTime m_authenticationSentTime;
   QDateTime m_lastReadTime;

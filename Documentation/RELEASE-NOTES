@@ -23,7 +23,8 @@
      were generated from source.
 15.  Added SSL_library_init() to spoton_crypt::init().
 16.  Per-listener accounts. Please remove listeners.db. Accounts require
-     SSL connections. May provide SRP support in the near future.
+     SSL connections. May provide SRP support in the near future as current
+     implementation is susceptible to at least replay attack.
 17.  Improved error reporting between the user and the UI.
 18.  Removed OS X and Qt 5.x workaround with respect to password widgets.
 19.  Properly reset neighbors.db data in spoton_misc::cleanupDatabases().

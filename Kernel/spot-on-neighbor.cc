@@ -3000,44 +3000,39 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 
       spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
-      if(list.at(1) != m_accountSalt)
+      if(s_crypt)
 	{
-	  if(s_crypt)
+	  QByteArray name(m_accountName);
+	  QByteArray password(m_accountPassword);
+	  QByteArray newSaltedCredentials;
+	  QByteArray salt(list.at(1));
+	  QByteArray saltedCredentials(list.at(0));
+	  bool ok = true;
+
+	  name = s_crypt->decrypted(name, &ok);
+
+	  if(ok)
+	    password = s_crypt->decrypted(password, &ok);
+
+	  if(ok)
+	    newSaltedCredentials = spoton_crypt::saltedValue
+	      ("sha512",
+	       name + password,
+	       salt,
+	       &ok);
+
+	  if(ok)
 	    {
-	      QByteArray name(m_accountName);
-	      QByteArray password(m_accountPassword);
-	      QByteArray newSaltedCredentials;
-	      QByteArray salt(list.at(1));
-	      QByteArray saltedCredentials(list.at(0));
-	      bool ok = true;
-
-	      name = s_crypt->decrypted(name, &ok);
-
-	      if(ok)
-		password = s_crypt->decrypted(password, &ok);
-
-	      if(ok)
-		newSaltedCredentials = spoton_crypt::saltedValue
-		  ("sha512",
-		   name + password,
-		   salt,
-		   &ok);
-
-	      if(ok)
-		{
-		  if(newSaltedCredentials == saltedCredentials)
-		    m_accountAuthenticated = true;
-		  else
-		    {
-		      m_accountAuthenticated = false;
-		      spoton_misc::logError
-			("spoton_neighbor::process0051(): "
-			 "the provided salted credentials appear to be "
-			 "invalid. The server may be devious.");
-		    }
-		}
+	      if(newSaltedCredentials == saltedCredentials)
+		m_accountAuthenticated = true;
 	      else
-		m_accountAuthenticated = false;
+		{
+		  m_accountAuthenticated = false;
+		  spoton_misc::logError
+		    ("spoton_neighbor::process0051(): "
+		     "the provided salted credentials appear to be "
+		     "invalid. The server may be devious.");
+		}
 	    }
 	  else
 	    m_accountAuthenticated = false;
@@ -4224,7 +4219,6 @@ void spoton_neighbor::slotSendAccountInformation(void)
 	      {
 		flush();
 		m_accountTimer.stop();
-		m_accountSalt = salt;
 		m_authenticationSentTime = QDateTime::currentDateTime();
 		m_bytesWritten += message.length();
 	      }
