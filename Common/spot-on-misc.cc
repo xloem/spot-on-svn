@@ -452,7 +452,7 @@ QString spoton_misc::countryCodeFromIPAddress(const QString &ipAddress)
   Q_UNUSED(ipAddress);
 #endif
 
-  if(!code || strlen(code) == 0)
+  if(!code || qstrnlen(code, 2) == 0)
     return QString("Unknown");
   else
     return QString(code);
@@ -481,7 +481,7 @@ QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
   Q_UNUSED(ipAddress);
 #endif
 
-  if(!country || strlen(country) == 0)
+  if(!country || qstrnlen(country, 256) == 0)
     return QString("Unknown");
   else
     return QString(country);
