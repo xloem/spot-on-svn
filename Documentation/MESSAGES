@@ -294,3 +294,6 @@ Message Type ("0051") (Plaintext)
 0 - Sha-512 Digest (Base-64) (Plaintext)
 EOL
 1 - Random Data (Base-64) (Plaintext)
+
+Message Type ("0052") (Plaintext)
+0 (Plaintext)

@@ -75,6 +75,7 @@ class spoton_neighbor: public QSslSocket
   ~spoton_neighbor();
   QUuid receivedUuid(void) const;
   qint64 id(void) const;
+  qint64 write(const char *data, qint64 size);
   void addToBytesWritten(const int bytesWritten);
   void setId(const qint64 id);
   void sharePublicKey(const QByteArray &keyType,
@@ -163,6 +164,7 @@ class spoton_neighbor: public QSslSocket
 		     const qint64 neighborOid);
   void saveStatistics(const QSqlDatabase &db);
   void saveStatus(const QSqlDatabase &db, const QString &status);
+  void sendAuthenticationRequest(void);
   void storeLetter(const QByteArray &symmetricKey,
 		   const QByteArray &symmetricKeyAlgorithm,
 		   const QByteArray &senderPublicKeyHash,

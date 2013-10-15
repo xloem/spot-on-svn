@@ -870,7 +870,10 @@ void spoton_neighbor::slotReadyRead(void)
 		    process0050(length, data);
 
 		  if(!m_accountAuthenticated)
-		    goto done_label;
+		    {
+		      sendAuthenticationRequest();
+		      goto done_label;
+		    }
 		}
 	    }
 	  else if(length > 0 && data.contains("type=0051&content="))
@@ -4229,7 +4232,7 @@ void spoton_neighbor::slotSendAccountInformation(void)
 void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
 					       const QByteArray &password)
 {
-  if(!isEncrypted())
+  if(!isEncrypted() || !readyToWrite())
     return;
 
   QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
@@ -4267,4 +4270,43 @@ void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
 	  m_bytesWritten += message.length();
 	}
     }
+}
+
+void spoton_neighbor::sendAuthenticationRequest(void)
+{
+  if(!isEncrypted() || !readyToWrite())
+    return;
+
+  QByteArray message(spoton_send::message0052());
+
+  if(write(message.constData(), message.length()) != message.length())
+    spoton_misc::logError
+      (QString("spoton_neighbor::sendAuthenticationRequest(): "
+	       "write() error for %1:%2.").
+       arg(m_address.toString()).
+       arg(m_port));
+  else
+    {
+      flush();
+      m_bytesWritten += message.length();
+    }
+}
+
+qint64 spoton_neighbor::write(const char *data, const qint64 size)
+{
+  qint64 remaining = size;
+  qint64 sent = 0;
+
+  while(remaining > 0)
+    {
+      sent = QSslSocket::write(data, remaining);
+
+      if(sent <= 0)
+	break;
+
+      data += sent;
+      remaining -= sent;
+    }
+
+  return size - remaining;
 }

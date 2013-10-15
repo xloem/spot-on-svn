@@ -71,6 +71,7 @@ class spoton_send
 				const QByteArray &salt);
   static QByteArray message0051(const QByteArray &saltedCredentials,
 				const QByteArray &salt);
+  static QByteArray message0052(void);
 
  private:
   spoton_send(void);

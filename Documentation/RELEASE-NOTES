@@ -37,6 +37,9 @@
 23.  Removed the documentation browser. The information is incomplete and will
      be provided online instead.
 24.  Spelling corrections to this file.
+25.  Re-implemented QIODevice::write() so that the entire provided
+     buffer is written in the spoton_neighbor class. A critical error
+     shall prevent such a guarantee.
 
 0.05 (09/16/2013)
 
