@@ -604,7 +604,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		      "scope_id, country, hash, proxy_hostname, "
 		      "proxy_password, proxy_port, proxy_type, "
 		      "proxy_username, uuid, "
-		      "echo_mode, peer_certificate, protocol, "
+		      "echo_mode, certificate, protocol, "
 		      "account_name, account_password "
 		      "FROM neighbors"))
 	  while(query.next())
@@ -642,7 +642,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "proxy_username = ?, "
 				  "uuid = ?, "
 				  "echo_mode = ?, "
-				  "peer_certificate = ?, "
+				  "certificate = ?, "
 				  "protocol = ?, "
 				  "ssl_session_cipher = NULL, "
 				  "account_name = ?, "

@@ -3821,47 +3821,15 @@ void spoton_neighbor::slotDisconnected(void)
 
 void spoton_neighbor::slotEncrypted(void)
 {
+  QSslCertificate certificate;
+  bool save = false;
+
   if(m_isUserDefined)
     {
       if(m_peerCertificate.isNull() && !peerCertificate().isNull())
 	{
-	  spoton_crypt *s_crypt =
-	    spoton_kernel::s_crypts.value("chat", 0);
-
-	  if(s_crypt)
-	    {
-	      QString connectionName("");
-
-	      {
-		QSqlDatabase db = spoton_misc::database(connectionName);
-
-		db.setDatabaseName
-		  (spoton_misc::homePath() + QDir::separator() +
-		   "neighbors.db");
-
-		if(db.open())
-		  {
-		    QSqlQuery query(db);
-		    bool ok = true;
-
-		    query.prepare
-		      ("UPDATE neighbors SET peer_certificate = ? "
-		       "WHERE OID = ?");
-		    query.bindValue
-		      (0, s_crypt->encrypted(peerCertificate().toPem(),
-					     &ok).toBase64());
-		    query.bindValue(1, m_id);
-
-		    if(ok)
-		      if(query.exec())
-			m_peerCertificate = peerCertificate();
-		  }
-
-		db.close();
-	      }
-
-	      QSqlDatabase::removeDatabase(connectionName);
-	    }
+	  certificate = m_peerCertificate = peerCertificate();
+	  save = true;
 	}
       else if(!m_allowExceptions)
 	{
@@ -3894,44 +3862,45 @@ void spoton_neighbor::slotEncrypted(void)
     }
   else
     {
-      spoton_crypt *s_crypt =
-	spoton_kernel::s_crypts.value("chat", 0);
-
-      if(s_crypt)
-	{
-	  QString connectionName("");
-
-	  {
-	    QSqlDatabase db = spoton_misc::database(connectionName);
-
-	    db.setDatabaseName
-	      (spoton_misc::homePath() + QDir::separator() +
-	       "neighbors.db");
-
-	    if(db.open())
-	      {
-		QSqlQuery query(db);
-		bool ok = true;
-
-		query.prepare
-		  ("UPDATE neighbors SET peer_certificate = ? "
-		   "WHERE OID = ?");
-		query.bindValue
-		  (0, s_crypt->encrypted(sslConfiguration().
-					 localCertificate().toPem(),
-					 &ok).toBase64());
-		query.bindValue(1, m_id);
-
-		if(ok)
-		  query.exec();
-	      }
-
-	    db.close();
-	  }
-
-	  QSqlDatabase::removeDatabase(connectionName);
-	}
+      certificate = sslConfiguration().localCertificate();
+      save = true;
     }
+
+  if(!save)
+    return;
+
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare
+	  ("UPDATE neighbors SET certificate = ? WHERE OID = ?");
+	query.bindValue
+	  (0, s_crypt->encrypted(certificate.toPem(), &ok).toBase64());
+	query.bindValue(1, m_id);
+
+	if(ok)
+	  query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton_neighbor::slotProxyAuthenticationRequired

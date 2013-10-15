@@ -596,7 +596,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
 		       "proxy_username, "
 		       "echo_mode, "
 		       "ssl_key_size, "
-		       "peer_certificate, "
+		       "certificate, "
 		       "account_name, "
 		       "account_password) "
 		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "

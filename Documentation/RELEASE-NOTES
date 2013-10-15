@@ -43,6 +43,8 @@
 26.  Replaced strlen() with qstrlen() and qstrnlen().
 27.  The SQL query in spoton_misc::participantCount() should include
      the neighbor_oid field as part of the where-clause.
+28.  Corrected recording of certificates. Please remove the neighbors.db
+     database as the peer_certificate field has been renamed to certificate.
 
 0.05 (09/16/2013)
 

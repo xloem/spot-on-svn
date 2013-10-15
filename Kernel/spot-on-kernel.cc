@@ -735,7 +735,7 @@ void spoton_kernel::prepareNeighbors(void)
 		      "maximum_buffer_size, "
 		      "maximum_content_length, "
 		      "echo_mode, "
-		      "peer_certificate, "
+		      "certificate, "
 		      "allow_exceptions, "
 		      "protocol, "
 		      "ssl_required, "
