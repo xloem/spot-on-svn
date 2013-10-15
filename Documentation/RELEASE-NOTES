@@ -41,6 +41,8 @@
      buffer is written in the spoton_neighbor class. A critical error
      shall prevent such a guarantee.
 26.  Replaced strlen() with qstrlen() and qstrnlen().
+27.  The SQL query in spoton_misc::participantCount() should include
+     the neighbor_oid field as part of the where-clause.
 
 0.05 (09/16/2013)
 

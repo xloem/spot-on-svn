@@ -1078,7 +1078,8 @@ QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
 	    query.setForwardOnly(true);
 
 	    if(query.exec("SELECT gemini FROM friends_public_keys WHERE "
-			  "gemini IS NOT NULL AND key_type = 'chat'"))
+			  "gemini IS NOT NULL AND key_type = 'chat' AND "
+			  "neighbor_oid = -1"))
 	      while(query.next())
 		{
 		  bool ok = true;
@@ -1766,7 +1767,7 @@ int spoton_misc::participantCount(const QString &keyType)
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT COUNT(*) FROM friends_public_keys "
-		      "WHERE key_type = ?");
+		      "WHERE key_type = ? AND neighbor_oid = -1");
 	query.bindValue(0, keyType);
 
 	if(query.exec())

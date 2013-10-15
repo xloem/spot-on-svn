@@ -4441,10 +4441,6 @@ void spoton::slotPopulateParticipants(void)
 
 	query.setForwardOnly(true);
 
-	/*
-	** We only wish to display other public keys.
-	*/
-
 	if(query.exec("SELECT "
 		      "name, "
 		      "OID, "
