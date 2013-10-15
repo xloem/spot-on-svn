@@ -831,7 +831,7 @@ void spoton_neighbor::slotReadyRead(void)
 	      contentLength.remove
 		(0,
 		 contentLength.indexOf("Content-Length: ") +
-		 strlen("Content-Length: "));
+		 qstrlen("Content-Length: "));
 	      length = contentLength.mid(0, contentLength.indexOf("\r\n")).
 		toInt(); // toInt() failure returns zero.
 	    }
@@ -891,6 +891,18 @@ void spoton_neighbor::slotReadyRead(void)
 	      else
 		m_accountAuthenticated = false;
 	    }
+	  else if(length > 0 && data.contains("type=0052&content="))
+	    {
+	      if(m_isUserDefined)
+		if(!m_accountAuthenticated)
+		  {
+		    emit authenticationRequested
+		      (QString("%1:%2").
+		       arg(peerAddress().toString()).
+		       arg(peerPort()));
+		    goto done_label;
+		  }
+	    }
 
 	  if(length > 0 && data.contains("type=0011&content="))
 	    process0011(length, data);
@@ -915,11 +927,11 @@ void spoton_neighbor::slotReadyRead(void)
 	      ** Remove some header data.
 	      */
 
-	      length -= strlen("content=");
+	      length -= qstrlen("content=");
 	      data = data.mid(0, data.lastIndexOf("\r\n") + 2);
 	      data.remove
 		(0,
-		 data.indexOf("content=") + strlen("content="));
+		 data.indexOf("content=") + qstrlen("content="));
 
 	      /*
 	      ** Please note that findMessageType() calls
@@ -2268,7 +2280,7 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 {
-  length -= strlen("type=0011&content=");
+  length -= qstrlen("type=0011&content=");
 
   /*
   ** We may have received a name and a public key.
@@ -2278,7 +2290,7 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 
   data.remove
     (0,
-     data.indexOf("type=0011&content=") + strlen("type=0011&content="));
+     data.indexOf("type=0011&content=") + qstrlen("type=0011&content="));
 
   if(length == data.length())
     {
@@ -2322,7 +2334,7 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
 {
-  length -= strlen("type=0012&content=");
+  length -= qstrlen("type=0012&content=");
 
   /*
   ** We may have received a name and a public key.
@@ -2332,7 +2344,7 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
 
   data.remove
     (0,
-     data.indexOf("type=0012&content=") + strlen("type=0012&content="));
+     data.indexOf("type=0012&content=") + qstrlen("type=0012&content="));
 
   if(length == data.length())
     {
@@ -2590,7 +2602,7 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
   if(m_id == -1)
     return;
 
-  length -= strlen("type=0014&content=");
+  length -= qstrlen("type=0014&content=");
 
   /*
   ** We may have received a status message.
@@ -2600,7 +2612,7 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
 
   data.remove
     (0,
-     data.indexOf("type=0014&content=") + strlen("type=0014&content="));
+     data.indexOf("type=0014&content=") + qstrlen("type=0014&content="));
 
   if(length == data.length())
     {
@@ -2662,13 +2674,13 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
 {
-  length -= strlen("type=0015&content=");
+  length -= qstrlen("type=0015&content=");
 
   QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
 
   data.remove
     (0,
-     data.indexOf("type=0015&content=") + strlen("type=0015&content="));
+     data.indexOf("type=0015&content=") + qstrlen("type=0015&content="));
 
   if(length == data.length())
     {
@@ -2705,7 +2717,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
   if(!s_crypt)
     return;
 
-  length -= strlen("type=0030&content=");
+  length -= qstrlen("type=0030&content=");
 
   /*
   ** We may have received a status message.
@@ -2715,7 +2727,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 
   data.remove
     (0,
-     data.indexOf("type=0030&content=") + strlen("type=0030&content="));
+     data.indexOf("type=0030&content=") + qstrlen("type=0030&content="));
 
   if(length == data.length())
     {
@@ -2868,7 +2880,7 @@ void spoton_neighbor::process0040b(int length, const QByteArray &dataIn,
 
 void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 {
-  length -= strlen("type=0050&content=");
+  length -= qstrlen("type=0050&content=");
 
   /*
   ** We may have received a name and a password.
@@ -2878,7 +2890,7 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 
   data.remove
     (0,
-     data.indexOf("type=0050&content=") + strlen("type=0050&content="));
+     data.indexOf("type=0050&content=") + qstrlen("type=0050&content="));
 
   if(length == data.length())
     {
@@ -2971,7 +2983,7 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 {
-  length -= strlen("type=0051&content=");
+  length -= qstrlen("type=0051&content=");
 
   /*
   ** We may have received a name and a password.
@@ -2981,7 +2993,7 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 
   data.remove
     (0,
-     data.indexOf("type=0051&content=") + strlen("type=0051&content="));
+     data.indexOf("type=0051&content=") + qstrlen("type=0051&content="));
 
   if(length == data.length())
     {
@@ -4274,7 +4286,9 @@ void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
 
 void spoton_neighbor::sendAuthenticationRequest(void)
 {
-  if(!isEncrypted() || !readyToWrite())
+  if(!isEncrypted())
+    return;
+  else if(state() != QAbstractSocket::ConnectedState)
     return;
 
   QByteArray message(spoton_send::message0052());

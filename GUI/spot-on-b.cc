@@ -151,9 +151,16 @@ void spoton::slotReceivedKernelMessage(void)
 	{
 	  QByteArray data(list.takeFirst());
 
-	  if(data.startsWith("buzz_"))
+	  if(data.startsWith("authentication_requested_"))
 	    {
-	      data.remove(0, strlen("buzz_"));
+	      data.remove(0, qstrlen("authentication_requested_"));
+
+	      if(!data.isEmpty())
+		authenticationRequested(data);
+	    }
+	  else if(data.startsWith("buzz_"))
+	    {
+	      data.remove(0, qstrlen("buzz_"));
 
 	      QList<QByteArray> list(data.split('_'));
 
@@ -202,7 +209,7 @@ void spoton::slotReceivedKernelMessage(void)
 	    }
 	  else if(data.startsWith("message_"))
 	    {
-	      data.remove(0, strlen("message_"));
+	      data.remove(0, qstrlen("message_"));
 
 	      if(!data.isEmpty())
 		{
@@ -4730,4 +4737,16 @@ void spoton::slotChatWindowMessageSent(void)
     m_ui.status->setCurrentIndex(3); // Online
 
   m_chatInactivityTimer.start();
+}
+
+void spoton::authenticationRequested(const QByteArray &data)
+{
+  if(!data.isEmpty())
+    {
+      m_sb.authentication_request->setText
+	(tr("The peer %1 is requesting authentication "
+	    "credentials.").arg(data.constData()));
+      QTimer::singleShot(7500, m_sb.authentication_request,
+			 SLOT(clear(void)));
+    }
 }

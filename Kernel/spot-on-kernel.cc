@@ -1298,6 +1298,10 @@ void spoton_kernel::connectSignalsToNeighbor
 	  neighbor,
 	  SLOT(slotSendMailFromPostOffice(const QByteArray &)));
   connect(neighbor,
+	  SIGNAL(authenticationRequested(const QString &)),
+	  m_guiServer,
+	  SLOT(slotAuthenticationRequested(const QString &)));
+  connect(neighbor,
 	  SIGNAL(newEMailArrived(void)),
 	  m_guiServer,
 	  SLOT(slotNewEMailArrived(void)));

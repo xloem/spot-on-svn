@@ -160,6 +160,7 @@ class spoton: public QMainWindow
   int applyGoldbugToInboxLetter(const QByteArray &goldbug,
 				const int row);
   void addFriendsKey(const QByteArray &key);
+  void authenticationRequested(const QByteArray &data);
   void changeEchoMode(const QString &mode, QTableWidget *tableWidget);
   void closeEvent(QCloseEvent *event);
   void countriesToggle(const bool state);

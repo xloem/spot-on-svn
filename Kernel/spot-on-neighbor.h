@@ -212,6 +212,7 @@ class spoton_neighbor: public QSslSocket
  signals:
   void accountAuthenticated(const QByteArray &name,
 			    const QByteArray &password);
+  void authenticationRequested(const QString &peerInformation);
   void newEMailArrived(void);
   void publicizeListenerPlaintext(const QByteArray &data, const qint64 id);
   void receivedBuzzMessage(const QList<QByteArray> &list,

@@ -40,6 +40,7 @@
 25.  Re-implemented QIODevice::write() so that the entire provided
      buffer is written in the spoton_neighbor class. A critical error
      shall prevent such a guarantee.
+26.  Replaced strlen() with qstrlen() and qstrnlen().
 
 0.05 (09/16/2013)
 

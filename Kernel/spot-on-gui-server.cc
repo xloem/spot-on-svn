@@ -239,7 +239,7 @@ void spoton_gui_server::slotReadyRead(void)
 
 	  if(message.startsWith("addbuzz_"))
 	    {
-	      message.remove(0, strlen("addbuzz_"));
+	      message.remove(0, qstrlen("addbuzz_"));
 
 	      QList<QByteArray> list(message.split('_'));
 
@@ -250,7 +250,7 @@ void spoton_gui_server::slotReadyRead(void)
 	    }
 	  else if(message.startsWith("befriendparticipant_"))
 	    {
-	      message.remove(0, strlen("befriendparticipant_"));
+	      message.remove(0, qstrlen("befriendparticipant_"));
 
 	      QList<QByteArray> list(message.split('_'));
 
@@ -267,7 +267,7 @@ void spoton_gui_server::slotReadyRead(void)
 	    }
 	  else if(message.startsWith("buzz_"))
 	    {
-	      message.remove(0, strlen("buzz_"));
+	      message.remove(0, qstrlen("buzz_"));
 
 	      QList<QByteArray> list(message.split('_'));
 
@@ -292,28 +292,28 @@ void spoton_gui_server::slotReadyRead(void)
 	    }
 	  else if(message.startsWith("call_participant_"))
 	    {
-	      message.remove(0, strlen("call_participant_"));
+	      message.remove(0, qstrlen("call_participant_"));
 
 	      if(!message.isEmpty())
 		emit callParticipant(message.toLongLong());
 	    }
 	  else if(message.startsWith("detach_listener_neighbors_"))
 	    {
-	      message.remove(0, strlen("detach_listener_neighbors_"));
+	      message.remove(0, qstrlen("detach_listener_neighbors_"));
 
 	      if(!message.isEmpty())
 		emit detachNeighbors(message.toLongLong());
 	    }
 	  else if(message.startsWith("disconnect_listener_neighbors_"))
 	    {
-	      message.remove(0, strlen("disconnect_listener_neighbors_"));
+	      message.remove(0, qstrlen("disconnect_listener_neighbors_"));
 
 	      if(!message.isEmpty())
 		emit disconnectNeighbors(message.toLongLong());
 	    }
 	  else if(message.startsWith("keys_"))
 	    {
-	      message.remove(0, strlen("keys_"));
+	      message.remove(0, qstrlen("keys_"));
 
 	      if(!message.isEmpty())
 		{
@@ -351,7 +351,7 @@ void spoton_gui_server::slotReadyRead(void)
 	    }
 	  else if(message.startsWith("message_"))
 	    {
-	      message.remove(0, strlen("message_"));
+	      message.remove(0, qstrlen("message_"));
 
 	      QList<QByteArray> list(message.split('_'));
 
@@ -365,7 +365,7 @@ void spoton_gui_server::slotReadyRead(void)
 	    emit publicizeAllListenersPlaintext();
 	  else if(message.startsWith("publicizelistenerplaintext"))
 	    {
-	      message.remove(0, strlen("publicizelistenerplaintext_"));
+	      message.remove(0, qstrlen("publicizelistenerplaintext_"));
 
 	      QList<QByteArray> list(message.split('_'));
 
@@ -375,14 +375,14 @@ void spoton_gui_server::slotReadyRead(void)
 	    }
 	  else if(message.startsWith("removebuzz_"))
 	    {
-	      message.remove(0, strlen("removebuzz_"));
+	      message.remove(0, qstrlen("removebuzz_"));
 	      spoton_kernel::removeBuzzKey(QByteArray::fromBase64(message));
 	    }
 	  else if(message.startsWith("retrievemail"))
 	    emit retrieveMail();
 	  else if(message.startsWith("sharepublickey_"))
 	    {
-	      message.remove(0, strlen("sharepublickey_"));
+	      message.remove(0, qstrlen("sharepublickey_"));
 
 	      QList<QByteArray> list(message.split('_'));
 
@@ -641,4 +641,34 @@ void spoton_gui_server::slotFileChanged(const QString &path)
 
   if(!m_generalTimer.isActive())
     m_generalTimer.start();
+}
+
+void spoton_gui_server::slotAuthenticationRequested
+(const QString &peerInformation)
+{
+  foreach(QSslSocket *socket, findChildren<QSslSocket *> ())
+    if(socket->isEncrypted())
+      {
+	QByteArray message;
+
+	message.append("authentication_requested_");
+	message.append(peerInformation);
+	message.append("\n");
+
+	if(socket->write(message.constData(),
+			 message.length()) != message.length())
+	  spoton_misc::logError
+	    (QString("spoton_gui_server::slotAuthenticationRequested(): "
+		     "write() failure for %1:%2.").
+	     arg(socket->peerAddress().toString()).
+	     arg(socket->peerPort()));
+	else
+	  socket->flush();
+      }
+    else
+      spoton_misc::logError
+	(QString("spoton_gui_server::slotAuthenticationRequested(): "
+		 "socket %1:%2 is not encrypted. Ignoring write() request.").
+	 arg(socket->peerAddress().toString()).
+	 arg(socket->peerPort()));
 }
