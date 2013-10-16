@@ -147,6 +147,7 @@ spoton::spoton(void):QMainWindow()
 #endif
   m_sbWidget = new QWidget(this);
   m_sb.setupUi(m_sbWidget);
+  m_sb.authentication_request->setVisible(false);
   m_sb.buzz->setVisible(false);
   m_sb.chat->setVisible(false);
   m_sb.email->setVisible(false);
@@ -160,6 +161,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(iconsChanged(void)),
 	  &m_logViewer,
 	  SLOT(slotSetIcons(void)));
+  connect(m_sb.authentication_request,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotStatusButtonClicked(void)));
   connect(m_sb.buzz,
 	  SIGNAL(clicked(void)),
 	  this,

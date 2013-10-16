@@ -3288,7 +3288,12 @@ void spoton::slotStatusButtonClicked(void)
 {
   QToolButton *toolButton = qobject_cast<QToolButton *> (sender());
 
-  if(toolButton == m_sb.buzz)
+  if(toolButton == m_sb.authentication_request)
+    {
+      m_sb.authentication_request->setVisible(false);
+      m_ui.tab->setCurrentIndex(4);
+    }
+  else if(toolButton == m_sb.buzz)
     {
       m_sb.buzz->setVisible(false);
       m_ui.tab->setCurrentIndex(0);
@@ -3406,6 +3411,8 @@ void spoton::slotSetIcons(void)
 
   // Status
 
+  m_sb.authentication_request->setIcon
+    (QIcon(QString(":/%1/lock.png").arg(iconSet)));
   m_sb.buzz->setIcon(QIcon(QString(":/%1/buzz.png").arg(iconSet)));
   m_sb.chat->setIcon(QIcon(QString(":/%1/chat.png").arg(iconSet)));
   m_sb.email->setIcon(QIcon(QString(":/%1/email.png").arg(iconSet)));
@@ -4746,11 +4753,14 @@ void spoton::authenticationRequested(const QByteArray &data)
       QString str(tr("Peer %1 is requesting authentication "
 		     "credentials.").arg(data.constData()));
 
-      if(m_sb.authentication_request->text() != str)
+      if(m_sb.authentication_request->toolTip() != str)
 	{
-	  m_sb.authentication_request->setText(str);
+	  m_sb.authentication_request->setToolTip(str);
+	  m_sb.authentication_request->setVisible(true);
 	  QTimer::singleShot(7500, m_sb.authentication_request,
-			     SLOT(clear(void)));
+			     SLOT(hide(void)));
 	}
+      else
+	m_sb.authentication_request->setVisible(true);
     }
 }
