@@ -125,3 +125,4 @@ Remaining Items
 25.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
 26.    Replace gcrypt with crypto++.
 27.    Add SRP for accounts verification.
+28.    Provide a means of exporting and importing keys.
