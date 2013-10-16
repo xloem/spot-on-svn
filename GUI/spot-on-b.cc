@@ -4749,18 +4749,13 @@ void spoton::slotChatWindowMessageSent(void)
 void spoton::authenticationRequested(const QByteArray &data)
 {
   if(!data.isEmpty())
-    {
-      QString str(tr("Peer %1 is requesting authentication "
-		     "credentials.").arg(data.constData()));
-
-      if(m_sb.authentication_request->toolTip() != str)
-	{
-	  m_sb.authentication_request->setToolTip(str);
-	  m_sb.authentication_request->setVisible(true);
-	  QTimer::singleShot(7500, m_sb.authentication_request,
-			     SLOT(hide(void)));
-	}
-      else
+    if(!m_sb.authentication_request->isVisible())
+      {
+	m_sb.authentication_request->
+	  setToolTip(tr("Peer %1 is requesting authentication "
+			"credentials.").arg(data.constData()));
 	m_sb.authentication_request->setVisible(true);
-    }
+	QTimer::singleShot(7500, m_sb.authentication_request,
+			   SLOT(hide(void)));
+      }
 }
