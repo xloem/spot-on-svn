@@ -4743,10 +4743,14 @@ void spoton::authenticationRequested(const QByteArray &data)
 {
   if(!data.isEmpty())
     {
-      m_sb.authentication_request->setText
-	(tr("The peer %1 is requesting authentication "
-	    "credentials.").arg(data.constData()));
-      QTimer::singleShot(7500, m_sb.authentication_request,
-			 SLOT(clear(void)));
+      QString str(tr("Peer %1 is requesting authentication "
+		     "credentials.").arg(data.constData()));
+
+      if(m_sb.authentication_request->text() != str)
+	{
+	  m_sb.authentication_request->setText(str);
+	  QTimer::singleShot(7500, m_sb.authentication_request,
+			     SLOT(clear(void)));
+	}
     }
 }
