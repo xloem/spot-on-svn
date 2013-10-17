@@ -45,6 +45,10 @@
      the neighbor_oid field as part of the where-clause.
 28.  Corrected recording of certificates. Please remove the neighbors.db
      database as the peer_certificate field has been renamed to certificate.
+29.  Removed most instances of init() from spoton_crypt.cc. The gcrypt
+     library should be initialized but once per process.
+30.  Replaced gcry_strerror() with gpg_strerror_r() as gcry_strerror() is
+     not thread-safe.
 
 0.05 (09/16/2013)
 

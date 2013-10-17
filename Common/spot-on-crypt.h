@@ -98,6 +98,7 @@ class spoton_crypt
 			      const QHostAddress &address,
 			      const long days,
 			      QString &error);
+  static void init(void);
   static void purgeDatabases(void);
   static void reencodeKeys(const QString &newCipher,
 			   const QByteArray &newPassphrase,
@@ -161,7 +162,6 @@ class spoton_crypt
 				  const QHostAddress &address,
 				  const long days,
 				  QString &error);
-  static void init(void);
 };
 
 #endif
