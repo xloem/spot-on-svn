@@ -40,7 +40,8 @@ INCLUDEPATH	+= . ../. ../../../. ../../../libGeoIP/Include.osx64 \
                    /usr/local/include \
                    /usr/local/ssl/include
 ICON		=
-LIBS		+= -L../../../libSpotOn -L/usr/local/lib -lgcrypt -lspoton \
+LIBS		+= -L../../../libSpotOn -L/usr/local/lib \
+		   -lgcrypt -lgpg-error -lspoton \
                    -L../../../libGeoIP/Libraries.osx64 -lGeoIP \
                    -L/usr/local/ssl/lib -lcrypto -lssl
 PRE_TARGETDEPS = libspoton.dylib
