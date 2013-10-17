@@ -1,4 +1,4 @@
-0.06 (10/17/2013)
+0.06 (10/21/2013)
 
 1.   Allow users of the libspoton library to store enough information
      so that the correct key can be generated. The changes will support
