@@ -29,6 +29,7 @@
 #define _spoton_misc_h_
 
 #include <QHostAddress>
+#include <QMutex>
 #include <QSqlDatabase>
 #include <QString>
 #include <QVariant>
@@ -98,6 +99,7 @@ class spoton_misc
 				    spoton_crypt *crypt);
 
  private:
+  static QMutex s_dbMutex;
   static bool s_enableLog;
   static qint64 s_dbId;
   spoton_misc(void);

@@ -51,21 +51,22 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 const QString &echoMode,
 				 const bool useAccounts,
 				 const qint64 listenerOid,
-				 QObject *parent):QSslSocket(parent)
+				 QObject *parent):QThread(parent)
 {
-  setReadBufferSize(8192);
-  setSocketDescriptor(socketDescriptor);
-  setSocketOption(QAbstractSocket::KeepAliveOption, 0); /*
-							** We have our
-							** own mechanism.
-							*/
-  setSocketOption
+  m_socket.setReadBufferSize(8192);
+  m_socket.setSocketDescriptor(socketDescriptor);
+  m_socket.setSocketOption
+    (QAbstractSocket::KeepAliveOption, 0); /*
+					   ** We have our
+					   ** own mechanism.
+					   */
+  m_socket.setSocketOption
     (QAbstractSocket::LowDelayOption,
      spoton_kernel::s_settings.value("kernel/tcp_nodelay", 1).
      toInt()); /*
 	       ** Disable Nagle?
 	       */
-  m_address = peerAddress();
+  m_address = m_socket.peerAddress();
   m_accountAuthenticated = false;
   m_allowExceptions = false;
   m_bytesRead = 0;
@@ -83,7 +84,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_maximumBufferSize = spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE;
   m_maximumContentLength = spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH;
   m_networkInterface = 0;
-  m_port = peerPort();
+  m_port = m_socket.peerPort();
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
   m_requireSsl = true;
   m_startTime = QDateTime::currentDateTime();
@@ -120,8 +121,9 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	      configuration.setSslOption
 		(QSsl::SslOptionDisableLegacyRenegotiation, true);
 #endif
-	      spoton_crypt::setSslCiphers(supportedCiphers(), configuration);
-	      setSslConfiguration(configuration);
+	      spoton_crypt::setSslCiphers
+		(m_socket.supportedCiphers(), configuration);
+	      m_socket.setSslConfiguration(configuration);
 	    }
 	  else
 	    {
@@ -150,23 +152,27 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  this,
 	  SLOT(slotAccountAuthenticated(const QByteArray &,
 					const QByteArray &)));
-  connect(this,
+  connect(&m_socket,
+	  SIGNAL(disconnected(void)),
+	  this,
+	  SIGNAL(disconnected(void)));
+  connect(&m_socket,
 	  SIGNAL(disconnected(void)),
 	  this,
 	  SLOT(slotDisconnected(void)));
-  connect(this,
+  connect(&m_socket,
 	  SIGNAL(encrypted(void)),
 	  this,
 	  SLOT(slotEncrypted(void)));
-  connect(this,
+  connect(&m_socket,
 	  SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,
 	  SLOT(slotError(QAbstractSocket::SocketError)));
-  connect(this,
+  connect(&m_socket,
 	  SIGNAL(modeChanged(QSslSocket::SslMode)),
 	  this,
 	  SLOT(slotModeChanged(QSslSocket::SslMode)));
-  connect(this,
+  connect(&m_socket,
 	  SIGNAL(sslErrors(const QList<QSslError> &)),
 	  this,
 	  SLOT(slotSslErrors(const QList<QSslError> &)));
@@ -186,17 +192,13 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotLifetimeExpired(void)));
-  connect(this,
-	  SIGNAL(readyRead(void)),
-	  this,
-	  SLOT(slotReadyRead(void)));
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTimeout(void)));
 
   if(m_useSsl)
-    startServerEncryption();
+    m_socket.startServerEncryption();
 
   m_externalAddress->discover();
   m_externalAddressDiscovererTimer.start(30000);
@@ -206,6 +208,8 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 
   if(!m_useAccounts)
     QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
+
+  start();
 }
 
 spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
@@ -224,7 +228,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const bool requireSsl,
 				 const QByteArray &accountName,
 				 const QByteArray &accountPassword,
-				 QObject *parent):QSslSocket(parent)
+				 QObject *parent):QThread(parent)
 {
   m_accountAuthenticated = false;
   m_accountName = accountName;
@@ -261,13 +265,14 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_startTime = QDateTime::currentDateTime();
   m_useAccounts = false;
   m_useSsl = true;
-  setProxy(proxy);
-  setReadBufferSize(8192);
-  setSocketOption(QAbstractSocket::KeepAliveOption, 0); /*
-							** We have our
-							** own mechanism.
-							*/
-  setSocketOption
+  m_socket.setProxy(proxy);
+  m_socket.setReadBufferSize(8192);
+  m_socket.setSocketOption
+    (QAbstractSocket::KeepAliveOption, 0); /*
+					   ** We have our
+					   ** own mechanism.
+					   */
+  m_socket.setSocketOption
     (QAbstractSocket::LowDelayOption,
      spoton_kernel::s_settings.value("kernel/tcp_nodelay", 1).
      toInt()); /*
@@ -314,8 +319,9 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	    (QSsl::SslOptionDisableLegacyRenegotiation, true);
 #endif
 	  configuration.setPeerVerifyMode(QSslSocket::QueryPeer);
-	  spoton_crypt::setSslCiphers(supportedCiphers(), configuration);
-	  setSslConfiguration(configuration);
+	  spoton_crypt::setSslCiphers
+	    (m_socket.supportedCiphers(), configuration);
+	  m_socket.setSslConfiguration(configuration);
 	}
       else
 	{
@@ -334,33 +340,37 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 			    this, SLOT(slotHostFound(const QHostInfo &)));
 
   m_address.setScopeId(scopeId);
-  connect(this,
+  connect(&m_socket,
 	  SIGNAL(connected(void)),
 	  this,
 	  SLOT(slotConnected(void)));
-  connect(this,
+  connect(&m_socket,
+	  SIGNAL(disconnected(void)),
+	  this,
+	  SIGNAL(disconnected(void)));
+  connect(&m_socket,
 	  SIGNAL(disconnected(void)),
 	  this,
 	  SLOT(slotDisconnected(void)));
-  connect(this,
+  connect(&m_socket,
 	  SIGNAL(encrypted(void)),
 	  this,
 	  SLOT(slotEncrypted(void)));
-  connect(this,
+  connect(&m_socket,
 	  SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,
 	  SLOT(slotError(QAbstractSocket::SocketError)));
-  connect(this,
+  connect(&m_socket,
 	  SIGNAL(modeChanged(QSslSocket::SslMode)),
 	  this,
 	  SLOT(slotModeChanged(QSslSocket::SslMode)));
-  connect(this,
+  connect(&m_socket,
 	  SIGNAL(proxyAuthenticationRequired(const QNetworkProxy &,
 					     QAuthenticator *)),
 	  this,
 	  SLOT(slotProxyAuthenticationRequired(const QNetworkProxy &,
 					       QAuthenticator *)));
-  connect(this,
+  connect(&m_socket,
 	  SIGNAL(sslErrors(const QList<QSslError> &)),
 	  this,
 	  SLOT(slotSslErrors(const QList<QSslError> &)));
@@ -384,10 +394,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotLifetimeExpired(void)));
-  connect(this,
-	  SIGNAL(readyRead(void)),
-	  this,
-	  SLOT(slotReadyRead(void)));
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -397,6 +403,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_keepAliveTimer.setInterval(45000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
+  start();
 }
 
 spoton_neighbor::~spoton_neighbor()
@@ -410,6 +417,7 @@ spoton_neighbor::~spoton_neighbor()
      arg(m_address.toString()).
      arg(m_port));
   delete []a;
+  m_socket.abort();
   m_timer.stop();
 
   if(m_id != -1)
@@ -496,11 +504,14 @@ spoton_neighbor::~spoton_neighbor()
 
   if(m_networkInterface)
     delete m_networkInterface;
+
+  quit();
+  wait(30000);
 }
 
 void spoton_neighbor::slotTimeout(void)
 {
-  if(state() == QAbstractSocket::ConnectedState)
+  if(m_socket.state() == QAbstractSocket::ConnectedState)
     if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 90)
       {
 	spoton_misc::logError
@@ -513,7 +524,7 @@ void spoton_neighbor::slotTimeout(void)
       }
 
   /*
-  ** We'll change states here.
+  ** We'll change socket states here.
   */
 
   QString connectionName("");
@@ -623,12 +634,12 @@ void spoton_neighbor::slotTimeout(void)
   if(m_isUserDefined)
     if(status == "connected")
       {
-	if(state() == QAbstractSocket::UnconnectedState)
+	if(m_socket.state() == QAbstractSocket::UnconnectedState)
 	  {
 	    if(m_useSsl)
-	      connectToHostEncrypted(m_address.toString(), m_port);
+	      m_socket.connectToHostEncrypted(m_address.toString(), m_port);
 	    else
-	      connectToHost(m_address, m_port);
+	      m_socket.connectToHost(m_address, m_port);
 	  }
       }
 
@@ -639,7 +650,7 @@ void spoton_neighbor::slotTimeout(void)
 
   prepareNetworkInterface();
 
-  if(state() == QAbstractSocket::ConnectedState)
+  if(m_socket.state() == QAbstractSocket::ConnectedState)
     if(!m_networkInterface || !(m_networkInterface->flags() &
 				QNetworkInterface::IsUp))
       {
@@ -672,7 +683,7 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
     return;
 
   QSqlQuery query(db);
-  QSslCipher cipher(sessionCipher());
+  QSslCipher cipher(m_socket.sessionCipher());
   int seconds = m_startTime.secsTo(QDateTime::currentDateTime());
 
   query.prepare("PRAGMA synchronous = OFF");
@@ -687,7 +698,7 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
 		"AND ? - uptime >= 10");
   query.bindValue(0, m_bytesRead);
   query.bindValue(1, m_bytesWritten);
-  query.bindValue(2, isEncrypted() ? 1 : 0);
+  query.bindValue(2, m_socket.isEncrypted() ? 1 : 0);
 
   if(cipher.isNull() || !spoton_kernel::s_crypts.value("chat", 0))
     query.bindValue(3, QVariant::String);
@@ -730,28 +741,39 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 
   query.prepare("UPDATE neighbors SET is_encrypted = ?, status = ? "
 		"WHERE OID = ? AND status <> 'deleted'");
-  query.bindValue(0, isEncrypted() ? 1 : 0);
+  query.bindValue(0, m_socket.isEncrypted() ? 1 : 0);
   query.bindValue(1, status);
   query.bindValue(2, m_id);
   query.exec();
+}
+
+void spoton_neighbor::run(void)
+{
+  connect(&m_socket,
+	  SIGNAL(readyRead(void)),
+	  this,
+	  SLOT(slotReadyRead(void)),
+	  Qt::DirectConnection);
+  exec();
 }
 
 void spoton_neighbor::slotReadyRead(void)
 {
   flush();
 
-  QByteArray data(readAll());
+  QByteArray data(m_socket.readAll());
 
   m_bytesRead += data.size();
 
   if(m_useSsl)
     if(!data.isEmpty())
-      if(!isEncrypted())
+      if(!m_socket.isEncrypted())
 	{
 	  data.clear();
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::slotReadyRead(): "
-		     "m_useSsl is true, however, isEncrypted() is false "
+		     "m_useSsl is true, however, m_socket.isEncrypted() "
+		     "is false "
 		     "for %1:%2. "
 		     "Purging read data.").
 	     arg(m_address.toString()).
@@ -763,9 +785,9 @@ void spoton_neighbor::slotReadyRead(void)
 
   if(m_data.length() > m_maximumBufferSize)
     {
-      if(readBufferSize() != 1000)
+      if(m_socket.readBufferSize() != 1000)
 	{
-	  setReadBufferSize(1000);
+	  m_socket.setReadBufferSize(1000);
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::slotReadyRead(): "
 		     "received irregular data from %1:%2. Setting "
@@ -897,8 +919,8 @@ void spoton_neighbor::slotReadyRead(void)
 		{
 		  emit authenticationRequested
 		    (QString("%1:%2").
-		     arg(peerAddress().toString()).
-		     arg(peerPort()));
+		     arg(m_socket.peerAddress().toString()).
+		     arg(m_socket.peerPort()));
 		  goto done_label;
 		}
 	    }
@@ -979,9 +1001,9 @@ void spoton_neighbor::slotReadyRead(void)
 
 	  if(downgrade)
 	    {
-	      if(readBufferSize() != 1000)
+	      if(m_socket.readBufferSize() != 1000)
 		{
-		  setReadBufferSize(1000);
+		  m_socket.setReadBufferSize(1000);
 		  spoton_misc::logError
 		    (QString("spoton_neighbor::slotReadyRead(): "
 			     "received irregular data from %1:%2. Setting "
@@ -996,7 +1018,7 @@ void spoton_neighbor::slotReadyRead(void)
 
 void spoton_neighbor::slotConnected(void)
 {
-  if(proxy().type() != QNetworkProxy::NoProxy)
+  if(m_socket.proxy().type() != QNetworkProxy::NoProxy)
     {
       /*
       ** The local address is the address of the proxy. Unfortunately,
@@ -1006,10 +1028,12 @@ void spoton_neighbor::slotConnected(void)
 
       QHostAddress address(m_ipAddress);
 
+#if 0
       if(address.protocol() == QAbstractSocket::IPv4Protocol)
-	setLocalAddress(QHostAddress("127.0.0.1"));
+	m_socket.setLocalAddress(QHostAddress("127.0.0.1"));
       else
-	setLocalAddress(QHostAddress("::1"));
+	m_socket.setLocalAddress(QHostAddress("::1"));
+#endif
     }
 
   if(m_id != -1)
@@ -1031,9 +1055,10 @@ void spoton_neighbor::slotConnected(void)
 		QSqlQuery query(db);
 		QString country
 		  (spoton_misc::
-		   countryNameFromIPAddress(peerAddress().isNull() ?
-					    peerName() :
-					    peerAddress().toString()));
+		   countryNameFromIPAddress(m_socket.peerAddress().isNull() ?
+					    m_socket.peerName() :
+					    m_socket.peerAddress().
+					    toString()));
 		bool ok = true;
 
 		query.prepare("UPDATE neighbors SET country = ?, "
@@ -1045,9 +1070,9 @@ void spoton_neighbor::slotConnected(void)
 		query.bindValue
 		  (0, s_crypt->
 		   encrypted(country.toLatin1(), &ok).toBase64());
-		query.bindValue(1, isEncrypted() ? 1 : 0);
-		query.bindValue(2, localAddress().toString());
-		query.bindValue(3, localPort());
+		query.bindValue(1, m_socket.isEncrypted() ? 1 : 0);
+		query.bindValue(2, m_socket.localAddress().toString());
+		query.bindValue(3, m_socket.localPort());
 		query.bindValue
 		  (4, s_crypt->keyedHash(country.remove(" ").
 					 toLatin1(), &ok).
@@ -1150,7 +1175,8 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 	    spoton_misc::saveFriendshipBundle
 	      (keyType, name, publicKey, sPublicKey, -1, db);
 	    spoton_misc::saveFriendshipBundle
-	      (keyType + "-signature", name, sPublicKey, QByteArray(), -1, db);
+	      (keyType + "-signature", name, sPublicKey, QByteArray(), -1,
+	       db);
 	  }
       }
 
@@ -3246,14 +3272,14 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
 
       if(!m_requireSsl)
 	{
-	  if(state() == QAbstractSocket::ConnectedState)
+	  if(m_socket.state() == QAbstractSocket::ConnectedState)
 	    QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 
 	  m_useSsl = false;
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::slotError(): socket error (%1) for "
 		     "%2:%3. "
-		     "Disabling SSL.").arg(errorString()).
+		     "Disabling SSL.").arg(m_socket.errorString()).
 	     arg(m_address.toString()).arg(m_port));
 	  return;
 	}
@@ -3261,7 +3287,7 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
 
   spoton_misc::logError
     (QString("spoton_neighbor::slotError(): socket error (%1) for %2:%3. "
-	     "Aborting socket.").arg(errorString()).
+	     "Aborting socket.").arg(m_socket.errorString()).
      arg(m_address.toString()).
      arg(m_port));
   deleteLater();
@@ -3282,7 +3308,7 @@ void spoton_neighbor::prepareNetworkInterface(void)
       QList<QNetworkAddressEntry> addresses(list.at(i).addressEntries());
 
       for(int j = 0; j < addresses.size(); j++)
-	if(addresses.at(j).ip() == localAddress())
+	if(addresses.at(j).ip() == m_socket.localAddress())
 	  {
 	    m_networkInterface = new QNetworkInterface(list.at(i));
 	    break;
@@ -3323,7 +3349,7 @@ void spoton_neighbor::saveExternalAddress(const QHostAddress &address,
   else if(m_id == -1)
     return;
 
-  QAbstractSocket::SocketState state = this->state();
+  QAbstractSocket::SocketState state = m_socket.state();
   QSqlQuery query(db);
   bool ok = true;
 
@@ -3387,7 +3413,7 @@ void spoton_neighbor::slotExternalAddressDiscovered
 
 void spoton_neighbor::slotDiscoverExternalAddress(void)
 {
-  if(state() == QAbstractSocket::ConnectedState)
+  if(m_socket.state() == QAbstractSocket::ConnectedState)
     m_externalAddress->discover();
 }
 
@@ -3825,14 +3851,14 @@ void spoton_neighbor::slotEncrypted(void)
 
   if(m_isUserDefined)
     {
-      if(m_peerCertificate.isNull() && !peerCertificate().isNull())
+      if(m_peerCertificate.isNull() && !m_socket.peerCertificate().isNull())
 	{
-	  certificate = m_peerCertificate = peerCertificate();
+	  certificate = m_peerCertificate = m_socket.peerCertificate();
 	  save = true;
 	}
       else if(!m_allowExceptions)
 	{
-	  if(m_peerCertificate != peerCertificate())
+	  if(m_peerCertificate != m_socket.peerCertificate())
 	    {
 	      spoton_misc::logError
 		(QString("spoton_neighbor::slotEncrypted(): "
@@ -3844,7 +3870,7 @@ void spoton_neighbor::slotEncrypted(void)
 	      deleteLater();
 	      return;
 	    }
-	  else if(peerCertificate().isNull())
+	  else if(m_socket.peerCertificate().isNull())
 	    {
 	      spoton_misc::logError
 		(QString("spoton_neighbor::slotEncrypted(): "
@@ -3861,7 +3887,7 @@ void spoton_neighbor::slotEncrypted(void)
     }
   else
     {
-      certificate = sslConfiguration().localCertificate();
+      certificate = m_socket.sslConfiguration().localCertificate();
       save = true;
     }
 
@@ -3910,23 +3936,23 @@ void spoton_neighbor::slotProxyAuthenticationRequired
 
   if(authenticator)
     {
-      authenticator->setPassword(this->proxy().password());
-      authenticator->setUser(this->proxy().user());
+      authenticator->setPassword(m_socket.proxy().password());
+      authenticator->setUser(m_socket.proxy().user());
     }
 }
 
 bool spoton_neighbor::readyToWrite(void)
 {
-  if(state() != QAbstractSocket::ConnectedState)
+  if(m_socket.state() != QAbstractSocket::ConnectedState)
     return false;
-  else if(isEncrypted() && m_useSsl)
+  else if(m_socket.isEncrypted() && m_useSsl)
     {
       if(m_useAccounts)
 	return m_accountAuthenticated;
       else
 	return true;
     }
-  else if(!isEncrypted() && !m_useSsl)
+  else if(!m_socket.isEncrypted() && !m_useSsl)
     return true;
   else
     return false;
@@ -4199,7 +4225,7 @@ void spoton_neighbor::slotSendAccountInformation(void)
 {
   if(!readyToWrite())
     return;
-  else if(!isEncrypted())
+  else if(!m_socket.isEncrypted())
     return;
 
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
@@ -4252,7 +4278,7 @@ void spoton_neighbor::slotSendAccountInformation(void)
 void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
 					       const QByteArray &password)
 {
-  if(!isEncrypted() || !readyToWrite())
+  if(!m_socket.isEncrypted() || !readyToWrite())
     return;
 
   QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
@@ -4294,9 +4320,9 @@ void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
 
 void spoton_neighbor::sendAuthenticationRequest(void)
 {
-  if(!isEncrypted())
+  if(!m_socket.isEncrypted())
     return;
-  else if(state() != QAbstractSocket::ConnectedState)
+  else if(m_socket.state() != QAbstractSocket::ConnectedState)
     return;
 
   QByteArray message(spoton_send::message0052());
@@ -4321,7 +4347,7 @@ qint64 spoton_neighbor::write(const char *data, const qint64 size)
 
   while(remaining > 0)
     {
-      sent = QSslSocket::write(data, remaining);
+      sent = m_socket.write(data, remaining);
 
       if(sent <= 0)
 	break;
@@ -4331,4 +4357,29 @@ qint64 spoton_neighbor::write(const char *data, const qint64 size)
     }
 
   return size - remaining;
+}
+
+QAbstractSocket::SocketState spoton_neighbor::state(void) const
+{
+  return m_socket.state();
+}
+
+void spoton_neighbor::abort(void)
+{
+  m_socket.abort();
+}
+
+QHostAddress spoton_neighbor::peerAddress(void) const
+{
+  return m_socket.peerAddress();
+}
+
+quint16 spoton_neighbor::peerPort(void) const
+{
+  return m_socket.peerPort();
+}
+
+void spoton_neighbor::flush(void)
+{
+  m_socket.flush();
 }

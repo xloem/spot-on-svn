@@ -49,6 +49,7 @@ extern "C"
 }
 #endif
 
+QMutex spoton_misc::s_dbMutex;
 bool spoton_misc::s_enableLog = false;
 qint64 spoton_misc::s_dbId = 0;
 
@@ -1736,6 +1737,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
 QSqlDatabase spoton_misc::database(QString &connectionName)
 {
+  QMutexLocker locker(&s_dbMutex);
   QSqlDatabase db;
 
   s_dbId += 1;

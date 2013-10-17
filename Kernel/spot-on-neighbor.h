@@ -34,6 +34,7 @@
 #include <QNetworkProxy>
 #include <QSqlDatabase>
 #include <QSslSocket>
+#include <QThread>
 #include <QTimer>
 #include <QUuid>
 
@@ -43,7 +44,7 @@ class QNetworkInterface;
 
 class spoton_external_address;
 
-class spoton_neighbor: public QSslSocket
+class spoton_neighbor: public QThread
 {
   Q_OBJECT
 
@@ -73,10 +74,15 @@ class spoton_neighbor: public QSslSocket
 		  const qint64 listenerOid,
 		  QObject *parent);
   ~spoton_neighbor();
+  QAbstractSocket::SocketState state(void) const;
+  QHostAddress peerAddress(void) const;
   QUuid receivedUuid(void) const;
   qint64 id(void) const;
   qint64 write(const char *data, qint64 size);
+  quint16 peerPort(void) const;
+  void abort(void);
   void addToBytesWritten(const int bytesWritten);
+  void flush(void);
   void setId(const qint64 id);
   void sharePublicKey(const QByteArray &keyType,
 		      const QByteArray &name,
@@ -95,6 +101,7 @@ class spoton_neighbor: public QSslSocket
   QHostAddress m_address;
   QNetworkInterface *m_networkInterface;
   QSslCertificate m_peerCertificate;
+  QSslSocket m_socket;
   QString m_echoMode;
   QString m_ipAddress;
   QString m_protocol;
@@ -145,6 +152,7 @@ class spoton_neighbor: public QSslSocket
   void process0051(int length, const QByteArray &data);
   void recordMessageHash(const QByteArray &data);
   void resetKeepAlive(void);
+  void run(void);
   void saveExternalAddress(const QHostAddress &address,
 			   const QSqlDatabase &db);
   void saveGemini(const QByteArray &publicKeyHash,
@@ -213,6 +221,7 @@ class spoton_neighbor: public QSslSocket
   void accountAuthenticated(const QByteArray &name,
 			    const QByteArray &password);
   void authenticationRequested(const QString &peerInformation);
+  void disconnected(void);
   void newEMailArrived(void);
   void publicizeListenerPlaintext(const QByteArray &data, const qint64 id);
   void receivedBuzzMessage(const QList<QByteArray> &list,
