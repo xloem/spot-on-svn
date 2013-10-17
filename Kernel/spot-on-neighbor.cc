@@ -878,8 +878,8 @@ void spoton_neighbor::slotReadyRead(void)
 	    }
 	  else if(length > 0 && data.contains("type=0051&content="))
 	    {
-	      if(m_authenticationSentTime. msecsTo(QDateTime::
-						   currentDateTime()) <= 30000)
+	      if(m_authenticationSentTime.
+		 msecsTo(QDateTime::currentDateTime()) <= 15000)
 		{
 		  process0051(length, data);
 
@@ -893,15 +893,14 @@ void spoton_neighbor::slotReadyRead(void)
 	    }
 	  else if(length > 0 && data.contains("type=0052&content="))
 	    {
-	      if(m_isUserDefined)
-		if(!m_accountAuthenticated)
-		  {
-		    emit authenticationRequested
-		      (QString("%1:%2").
-		       arg(peerAddress().toString()).
-		       arg(peerPort()));
-		    goto done_label;
-		  }
+	      if(!m_accountAuthenticated)
+		{
+		  emit authenticationRequested
+		    (QString("%1:%2").
+		     arg(peerAddress().toString()).
+		     arg(peerPort()));
+		  goto done_label;
+		}
 	    }
 
 	  if(length > 0 && data.contains("type=0011&content="))
