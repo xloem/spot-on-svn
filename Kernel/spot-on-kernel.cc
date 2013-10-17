@@ -140,6 +140,8 @@ static void sig_handler(int signum)
 
 int main(int argc, char *argv[])
 {
+  spoton_crypt::init();
+
   QList<int> list;
 #if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
   struct sigaction act;

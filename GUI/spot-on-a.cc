@@ -31,6 +31,7 @@
 
 int main(int argc, char *argv[])
 {
+  spoton_crypt::init();
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
   QApplication::setStyle(new QMacStyle());
