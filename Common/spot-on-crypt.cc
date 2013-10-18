@@ -1179,10 +1179,6 @@ QByteArray spoton_crypt::decrypted(const QByteArray &data, bool *ok)
 		*ok = false;
 
 	      decrypted.clear();
-	      spoton_misc::logError
-		(QString("spoton_crypt::decrypted(): The length (%1) "
-			 "of the "
-			 "decrypted data is irregular.").arg(s));
 	    }
 	}
       else
@@ -1975,25 +1971,11 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
       goto done_label;
     }
 
-  if((err = gcry_pk_decrypt(&decrypted_t, data_t,
-			    key_t)) != 0 || !decrypted_t)
+  if((err = gcry_pk_decrypt(&decrypted_t,
+			    data_t, key_t)) != 0 || !decrypted_t)
     {
       if(ok)
 	*ok = false;
-
-      if(err != 0)
-	{
-	  QByteArray buffer(1024, '0');
-
-	  gpg_strerror_r(err, buffer.data(), buffer.size());
-	  spoton_misc::logError
-	    (QString("spoton_crypt::publicKeyDecrypt(): "
-		     "gcry_pk_decrypt() failure (%1).").
-	     arg(buffer.constData()));
-	}
-      else
-	spoton_misc::logError
-	  ("spoton_crypt::publicKeyDecrypt(): gcry_pk_decrypt() failure.");
 
       goto done_label;
     }
