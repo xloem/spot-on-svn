@@ -884,6 +884,11 @@ void spoton_neighbor::slotReadyRead(void)
 	  if(downgrade)
 	    goto done_label;
 
+	  if(isDuplicateMessage(originalData))
+	    continue;
+
+	  recordMessageHash(originalData);
+
 	  if(!m_isUserDefined)
 	    {
 	      if(m_useAccounts)
@@ -934,7 +939,21 @@ void spoton_neighbor::slotReadyRead(void)
 	  else if(length > 0 && data.contains("type=0015&content="))
 	    process0015(length, data);
 	  else if(length > 0 && data.contains("type=0030&content="))
-	    process0030(length, data);
+	    {
+	      if(isDuplicateMessage(originalData))
+		{
+		  resetKeepAlive();
+		  continue;
+		}
+
+	      recordMessageHash(originalData);
+
+	      /*
+	      ** Process the peer's information.
+	      */
+
+	      process0030(length, data);
+	    }
 	  else if(length > 0 && data.contains("content="))
 	    {
 	      if(isDuplicateMessage(originalData))

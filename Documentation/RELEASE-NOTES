@@ -55,6 +55,7 @@
 33.  Purged flawed logic in spoton_misc::logError().
 34.  Corrected a super echo flaw. Duplicate data should not be echoed.
 35.  Reset the peer's keep-alive timer if duplicate data has arrived.
+36.  Published listener information must be subjected to congestion control.
 
 0.05 (09/16/2013)
 
