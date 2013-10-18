@@ -127,3 +127,4 @@ Remaining Items
 27.    Add SRP for accounts verification.
 28.    Provide a means of exporting and importing keys.
 29.    Add log filters.
+30.    SQL injection.
