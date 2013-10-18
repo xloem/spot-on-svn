@@ -32,7 +32,8 @@ INCLUDEPATH	+= . ..\\..\\. GUI ..\\..\\libSpotOn\\Include.win32 \
 LIBS		+= -L..\\..\\libSpotOn -L..\\..\\libSpotOn\\Libraries.win32 \
 		   -L..\\..\\libGeoIP\\Libraries.win32 \
 		   -L..\\..\\libOpenSsl\\Libraries.win32 \
-		   -lGeoIP-1 -leay32 -lgcrypt-11 -lpthread -lspoton -lssl32
+		   -lGeoIP-1 -leay32 -lgcrypt-11 -lgpg-error-0 \
+		   -lpthread -lspoton -lssl32
 PRE_TARGETDEPS = libspoton.dll
 
 FORMS           = UI\\buzzpage.ui \
