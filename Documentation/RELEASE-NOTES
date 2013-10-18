@@ -53,6 +53,7 @@
      access to critical data.
 32.  Removed local static variables.
 33.  Purged flawed logic in spoton_misc::logError().
+34.  Corrected a super echo flaw. Duplicate data should not be echoed.
 
 0.05 (09/16/2013)
 

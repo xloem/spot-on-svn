@@ -937,10 +937,8 @@ void spoton_neighbor::slotReadyRead(void)
 	    process0030(length, data);
 	  else if(length > 0 && data.contains("content="))
 	    {
-	      if(!spoton_kernel::setting("gui/superEcho",
-					 false).toBool())
-		if(isDuplicateMessage(originalData))
-		  continue;
+	      if(isDuplicateMessage(originalData))
+		continue;
 
 	      recordMessageHash(originalData);
 
