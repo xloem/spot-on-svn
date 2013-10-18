@@ -53,15 +53,17 @@ class spoton_kernel: public QObject
  public:
   spoton_kernel(void);
   ~spoton_kernel();
-  static QHash<QString, QVariant> s_settings;
   static QHash<QString, spoton_crypt *> s_crypts; /*
 						  ** private
 						  ** server
 						  ** signature
 						  ** url
 						  */
+  
   static QPair<QByteArray, QByteArray> findBuzzKey
     (const QByteArray &data);
+  static QVariant setting(const QString &name,
+			  const QVariant &defaultValue);
   static bool messagingCacheContains(const QByteArray &data);
   static int interfaces(void);
   static void addBuzzKey(const QByteArray &key,
@@ -71,6 +73,9 @@ class spoton_kernel: public QObject
   static void removeBuzzKey(const QByteArray &data);
 
  private:
+  static QHash<QString, QVariant> s_settings;
+  static QMutex s_buzzKeysMutex;
+  static QMutex s_settingsMutex;
   QFileSystemWatcher m_settingsWatcher;
   QFuture<void> m_future;
   QHash<qint64, QPointer<spoton_listener> > m_listeners;

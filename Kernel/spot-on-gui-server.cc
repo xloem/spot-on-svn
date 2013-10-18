@@ -49,7 +49,7 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
   QString error("");
 
   spoton_crypt::generateSslKeys
-    (spoton_kernel::s_settings.value("gui/kernelKeySize", 2048).toInt(),
+    (spoton_kernel::setting("gui/kernelKeySize", 2048).toInt(),
      certificate,
      privateKey,
      publicKey,
@@ -64,7 +64,7 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
       socket->setSocketDescriptor(socketDescriptor);
       socket->setSocketOption
 	(QAbstractSocket::LowDelayOption,
-	 spoton_kernel::s_settings.value("kernel/tcp_nodelay", 1).
+	 spoton_kernel::setting("kernel/tcp_nodelay", 1).
 	 toInt()); /*
 		   ** Disable Nagle?
 		   */
@@ -330,18 +330,18 @@ void spoton_gui_server::slotReadyRead(void)
 		    if(!spoton_kernel::s_crypts.contains(names.at(i)))
 		      {
 			spoton_crypt *crypt = new spoton_crypt
-			  (spoton_kernel::s_settings.value("gui/cipherType",
-							   "aes256").
+			  (spoton_kernel::setting("gui/cipherType",
+						  "aes256").
 			   toString().trimmed(),
-			   spoton_kernel::s_settings.value("gui/hashType",
-							   "sha512").
+			   spoton_kernel::setting("gui/hashType",
+						  "sha512").
 			   toString().trimmed(),
 			   QByteArray(),
 			   QByteArray::fromBase64(message),
-			   spoton_kernel::s_settings.value("gui/saltLength",
-							   256).toInt(),
-			   spoton_kernel::s_settings.value("gui/iterationCount",
-							   10000).toInt(),
+			   spoton_kernel::setting("gui/saltLength",
+						  256).toInt(),
+			   spoton_kernel::setting("gui/iterationCount",
+						  10000).toInt(),
 			   names.at(i));
 			spoton_misc::populateCountryDatabase
 			  (crypt);

@@ -50,7 +50,7 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
     }
   else
     {
-      if(spoton_kernel::s_settings.value("gui/acceptedIPs", false).toBool())
+      if(spoton_kernel::setting("gui/acceptedIPs", false).toBool())
 	{
 	  QHostAddress address;
 	  sockaddr nativeAddress;
@@ -480,7 +480,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
      countryNameFromIPAddress(neighbor->peerAddress().toString()));
 
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
-  if(!spoton_kernel::s_settings.value("gui/acceptedIPs", false).toBool())
+  if(!spoton_kernel::setting("gui/acceptedIPs", false).toBool())
     if(!spoton_misc::isPrivateNetwork(neighbor->peerAddress()))
       if(country == "Unknown" ||
 	 !spoton_misc::countryAllowedToConnect(country.remove(" "),

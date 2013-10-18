@@ -79,7 +79,9 @@ QHash<QByteArray, QByteArray> spoton_kernel::s_buzzKeys;
 QHash<QByteArray, QDateTime> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
+QMutex spoton_kernel::s_buzzKeysMutex;
 QMutex spoton_kernel::s_messagingCacheMutex;
+QMutex spoton_kernel::s_settingsMutex;
 static QPointer<spoton_kernel> s_kernel = 0;
 
 static void sig_handler(int signum)
@@ -267,7 +269,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 
   spoton_misc::correctSettingsContainer(s_settings);
   spoton_misc::enableLog
-    (s_settings.value("gui/kernelLogEvents", false).toBool());
+    (setting("gui/kernelLogEvents", false).toBool());
 
   QStringList arguments(QCoreApplication::arguments());
 
@@ -436,10 +438,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  this,
 	  SLOT(slotSettingsChanged(const QString &)));
 
-  if(s_settings.value("gui/enableCongestionControl", true).toBool())
+  if(setting("gui/enableCongestionControl", true).toBool())
     {
       s_messagingCache.reserve
-	(s_settings.value("gui/congestionCost", 10000).toInt());
+	(setting("gui/congestionCost", 10000).toInt());
       m_messagingCachePurgeTimer.start();
     }
 }
@@ -482,8 +484,7 @@ void spoton_kernel::cleanup(void)
 		      0,
 		      0,
 		      &libspotonHandle,
-		      s_settings.value("kernel/gcryctl_init_secmem",
-				       65536).
+		      setting("kernel/gcryctl_init_secmem", 65536).
 		      toInt()) == LIBSPOTON_ERROR_NONE)
     libspoton_deregister_kernel(QCoreApplication::applicationPid(),
 				&libspotonHandle);
@@ -959,9 +960,8 @@ void spoton_kernel::checkForTermination(void)
 				 0,
 				 0,
 				 &libspotonHandle,
-				 s_settings.
-				 value("kernel/gcryctl_init_secmem",
-				       65536).toInt())) ==
+				 setting("kernel/gcryctl_init_secmem",
+					 65536).toInt())) ==
 	 LIBSPOTON_ERROR_NONE)
 	registered = QCoreApplication::applicationPid() ==
 	  libspoton_registered_kernel_pid(&libspotonHandle, &err);
@@ -1055,8 +1055,8 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
   if(!ok)
     return;
 
-  QByteArray cipherType(s_settings.value("gui/kernelCipherType",
-					 "randomized").toString().
+  QByteArray cipherType(setting("gui/kernelCipherType",
+				"randomized").toString().
 			toLatin1());
   QByteArray data;
   QByteArray gemini;
@@ -1097,7 +1097,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 			   0,
 			   QString(""));
 
-	if(s_settings.value("gui/chatSignMessages", true).toBool())
+	if(setting("gui/chatSignMessages", true).toBool())
 	  signature = s_crypt2->digitalSignature(myPublicKeyHash +
 						 name +
 						 message, &ok);
@@ -1149,8 +1149,8 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 
       if(ok)
 	{
-	  if(s_settings.value("gui/chatSendMethod",
-			      "Artificial_GET").toString().
+	  if(setting("gui/chatSendMethod",
+		     "Artificial_GET").toString().
 	     trimmed() == "Artificial_GET")
 	    emit sendMessage
 	      (spoton_send::message0000(data,
@@ -1248,6 +1248,7 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
   */
 
   Q_UNUSED(path);
+  s_settingsMutex.lock();
   s_settings.clear();
 
   QSettings settings;
@@ -1257,30 +1258,34 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
       (settings.allKeys().at(i));
 
   spoton_misc::correctSettingsContainer(s_settings);
+  s_settingsMutex.unlock();
   spoton_misc::enableLog
-    (s_settings.value("gui/kernelLogEvents", false).toBool());
-  s_messagingCacheMutex.lock();
+    (setting("gui/kernelLogEvents", false).toBool());
 
-  if(!s_settings.value("gui/enableCongestionControl", true).toBool())
+  if(!setting("gui/enableCongestionControl", true).toBool())
     {
       m_messagingCachePurgeTimer.stop();
+      s_messagingCacheMutex.lock();
       s_messagingCache.clear();
       s_messagingCache.reserve(0);
+      s_messagingCacheMutex.unlock();
     }
   else
     {
-      if(s_messagingCache.capacity() !=
-	 s_settings.value("gui/congestionCost", 10000).toInt())
-	s_messagingCache.reserve
-	  (s_settings.value("gui/congestionCost", 10000).toInt());
+      int cost = setting("gui/congestionCost", 10000).toInt();
+
+      s_messagingCacheMutex.lock();
+
+      if(s_messagingCache.capacity() != cost)
+	s_messagingCache.reserve(cost);
+
+      s_messagingCacheMutex.unlock();
 
       if(!m_messagingCachePurgeTimer.isActive())
 	m_messagingCachePurgeTimer.start();
     }
 
-  s_messagingCacheMutex.unlock();
-
-  if(s_settings.value("gui/publishPeriodically", false).toBool())
+  if(setting("gui/publishPeriodically", false).toBool())
     {
       if(!m_publishAllListenersPlaintextTimer.isActive())
 	m_publishAllListenersPlaintextTimer.start();
@@ -1417,7 +1422,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 
-  QByteArray status(s_settings.value("gui/my_status", "Online").
+  QByteArray status(setting("gui/my_status", "Online").
 		    toByteArray().toLower());
 
   if(status == "offline")
@@ -1481,14 +1486,14 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		   &ok);
 
 	      QByteArray cipherType
-		(s_settings.value("gui/kernelCipherType",
-				  "randomized").toString().toLatin1());
+		(setting("gui/kernelCipherType",
+			 "randomized").toString().toLatin1());
 
 	      if(cipherType == "randomized")
 		cipherType = spoton_crypt::randomCipherType();
 
 	      QByteArray keyInformation;
-	      QByteArray name(s_settings.value("gui/nodeName", "unknown").
+	      QByteArray name(setting("gui/nodeName", "unknown").
 			      toByteArray().trimmed());
 	      QByteArray publicKey(query.value(1).toByteArray());
 	      QByteArray symmetricKey;
@@ -1538,7 +1543,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 				       0,
 				       QString(""));
 
-		    if(s_settings.value("gui/chatSignMessages", true).toBool())
+		    if(setting("gui/chatSignMessages", true).toBool())
 		      signature = s_crypt2->digitalSignature
 			(myPublicKeyHash +
 			 name +
@@ -1604,8 +1609,8 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 void spoton_kernel::slotScramble(void)
 {
-  QByteArray cipherType(s_settings.value("gui/kernelCipherType",
-					 "randomized").toString().
+  QByteArray cipherType(setting("gui/kernelCipherType",
+				"randomized").toString().
 			toLatin1());
 
   if(cipherType == "randomized")
@@ -1654,8 +1659,8 @@ void spoton_kernel::slotScramble(void)
 
   if(ok)
     {
-      if(s_settings.value("gui/chatSendMethod",
-			  "Artificial_GET").toString().
+      if(setting("gui/chatSendMethod",
+		 "Artificial_GET").toString().
 	 trimmed() == "Artificial_GET")
 	emit sendMessage
 	  (spoton_send::message0000(data,
@@ -1712,8 +1717,8 @@ void spoton_kernel::slotRetrieveMail(void)
 	  while(query.next())
 	    {
 	      QByteArray cipherType
-		(s_settings.value("gui/kernelCipherType",
-				  "randomized").toString().toLatin1());
+		(setting("gui/kernelCipherType",
+			 "randomized").toString().toLatin1());
 
 	      if(cipherType == "randomized")
 		cipherType = spoton_crypt::randomCipherType();
@@ -1870,8 +1875,8 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	  while(query.next())
 	    {
 	      QByteArray cipherType
-		(s_settings.value("gui/kernelCipherType",
-				  "randomized").toString().toLatin1());
+		(setting("gui/kernelCipherType",
+			 "randomized").toString().toLatin1());
 
 	      if(cipherType == "randomized")
 		cipherType = spoton_crypt::randomCipherType();
@@ -1921,8 +1926,8 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 				     0,
 				     QString(""));
 
-		  if(s_settings.value("gui/emailSignMessages",
-				      true).toBool())
+		  if(setting("gui/emailSignMessages",
+			     true).toBool())
 		    signature = s_crypt2->digitalSignature
 		      (myPublicKeyHash + recipientHash, &ok);
 
@@ -1936,8 +1941,8 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	      if(!ok)
 		continue;
 
-	      if(s_settings.value("gui/kernelCipherType",
-				  "randomized").
+	      if(setting("gui/kernelCipherType",
+			 "randomized").
 		 toString() == "randomized")
 		symmetricKeyAlgorithm = spoton_crypt::randomCipherType();
 	      else
@@ -2008,8 +2013,8 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 				     0,
 				     QString(""));
 
-		  if(s_settings.value("gui/emailSignMessages",
-				      true).toBool())
+		  if(setting("gui/emailSignMessages",
+			     true).toBool())
 		    signature = s_crypt2->digitalSignature
 		      (myPublicKeyHash +
 		       items.value(0) +
@@ -2060,25 +2065,24 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
   QString error("");
   bool ok = false;
 
-  salt = s_settings.value("gui/salt", "").toByteArray();
-  saltedPassphraseHash = s_settings.value("gui/saltedPassphraseHash", "").
+  salt = setting("gui/salt", "").toByteArray();
+  saltedPassphraseHash = setting("gui/saltedPassphraseHash", "").
     toByteArray();
 
   if(saltedPassphraseHash ==
-     spoton_crypt::saltedPassphraseHash(s_settings.value("gui/hashType",
-							 "sha512").toString(),
+     spoton_crypt::saltedPassphraseHash(setting("gui/hashType",
+						"sha512").toString(),
 					passphrase,
 					salt, error))
     if(error.isEmpty())
       {
 	QByteArray key
-	  (spoton_crypt::derivedKey(s_settings.value("gui/cipherType",
-						     "aes256").toString(),
-				    s_settings.value("gui/hashType",
-						     "sha512").toString(),
-				    s_settings.
-				    value("gui/""iterationCount",
-					  10000).toInt(),
+	  (spoton_crypt::derivedKey(setting("gui/cipherType",
+					    "aes256").toString(),
+				    setting("gui/hashType",
+					    "sha512").toString(),
+				    setting("gui/""iterationCount",
+					    10000).toInt(),
 				    passphrase,
 				    salt,
 				    error));
@@ -2100,14 +2104,14 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 	      if(!s_crypts.contains(list.at(i)))
 		{
 		  spoton_crypt *crypt = new spoton_crypt
-		    (s_settings.value("gui/cipherType",
-				      "aes256").toString().trimmed(),
-		     s_settings.value("gui/hashType",
-				      "sha512").toString().trimmed(),
+		    (setting("gui/cipherType",
+			     "aes256").toString().trimmed(),
+		     setting("gui/hashType",
+			     "sha512").toString().trimmed(),
 		     QByteArray(),
 		     key,
-		     s_settings.value("gui/saltLength", 256).toInt(),
-		     s_settings.value("gui/iterationCount", 10000).toInt(),
+		     setting("gui/saltLength", 256).toInt(),
+		     setting("gui/iterationCount", 10000).toInt(),
 		     list.at(i));
 		  spoton_misc::populateCountryDatabase(crypt);
 		  s_crypts.insert(list.at(i), crypt);
@@ -2173,7 +2177,7 @@ void spoton_kernel::slotRequestScramble(void)
   ** Send a scrambled message in proximity of a received message.
   */
 
-  if(s_settings.value("gui/scramblerEnabled", false).toBool())
+  if(setting("gui/scramblerEnabled", false).toBool())
     {
       if(!m_scramblerTimer.isActive())
 	m_scramblerTimer.start(qrand() % 5000 + 10000);
@@ -2279,9 +2283,7 @@ void spoton_kernel::purgeMessagingCache(void)
 
 bool spoton_kernel::messagingCacheContains(const QByteArray &data)
 {
-  QMutexLocker locker(&s_messagingCacheMutex);
-
-  if(!s_settings.value("gui/enableCongestionControl", false).toBool())
+  if(!setting("gui/enableCongestionControl", false).toBool())
     return false;
 
   spoton_crypt *s_crypt = s_crypts.value("chat", 0);
@@ -2296,15 +2298,15 @@ bool spoton_kernel::messagingCacheContains(const QByteArray &data)
 
   if(!ok)
     return false;
+
+  QMutexLocker locker(&s_messagingCacheMutex);
 
   return s_messagingCache.contains(hash);
 }
 
 void spoton_kernel::messagingCacheAdd(const QByteArray &data)
 {
-  QMutexLocker locker(&s_messagingCacheMutex);
-
-  if(!s_settings.value("gui/enableCongestionControl", false).toBool())
+  if(!setting("gui/enableCongestionControl", false).toBool())
     return;
 
   spoton_crypt *s_crypt = s_crypts.value("chat", 0);
@@ -2320,8 +2322,12 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data)
   if(!ok)
     return;
 
+  s_messagingCacheMutex.lock();
+
   if(!s_messagingCache.contains(hash))
     s_messagingCache[hash] = QDateTime::currentDateTime();
+
+  s_messagingCacheMutex.unlock();
 }
 
 void spoton_kernel::slotDetachNeighbors(const qint64 listenerOid)
@@ -2360,17 +2366,23 @@ void spoton_kernel::addBuzzKey(const QByteArray &key,
   if(key.isEmpty() || channelType.isEmpty())
     return;
 
+  s_buzzKeysMutex.lock();
   s_buzzKeys[key] = channelType;
+  s_buzzKeysMutex.unlock();
 }
 
 void spoton_kernel::removeBuzzKey(const QByteArray &key)
 {
+  s_buzzKeysMutex.lock();
   s_buzzKeys.remove(key);
+  s_buzzKeysMutex.unlock();
 }
 
 QPair<QByteArray, QByteArray> spoton_kernel::findBuzzKey
 (const QByteArray &data)
 {
+  s_buzzKeysMutex.lock();
+
   QHashIterator<QByteArray, QByteArray> it(s_buzzKeys);
   QPair<QByteArray, QByteArray> pair;
 
@@ -2397,12 +2409,15 @@ QPair<QByteArray, QByteArray> spoton_kernel::findBuzzKey
 	}
     }
 
+  s_buzzKeysMutex.unlock();
   return pair;
 }
 
 void spoton_kernel::clearBuzzKeysContainer(void)
 {
+  s_buzzKeysMutex.lock();
   s_buzzKeys.clear();
+  s_buzzKeysMutex.unlock();
 }
 
 int spoton_kernel::interfaces(void)
@@ -2520,9 +2535,9 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 				       0,
 				       QString(""));
 
-		    if(s_settings.value("gui/chatSignMessages", true).toBool())
-		      signature = s_crypt2->digitalSignature(myPublicKeyHash +
-							     gemini, &ok);
+		    if(setting("gui/chatSignMessages", true).toBool())
+		      signature = s_crypt2->digitalSignature
+			(myPublicKeyHash + gemini, &ok);
 
 		    if(ok)
 		      data = crypt.encrypted
@@ -2552,4 +2567,12 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 
   if(ok)
     emit callParticipant(data);
+}
+
+QVariant spoton_kernel::setting(const QString &name,
+				const QVariant &defaultValue)
+{
+  QMutexLocker locker(&s_settingsMutex);
+
+  return s_settings.value(name, defaultValue);
 }

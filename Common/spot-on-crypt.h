@@ -47,6 +47,7 @@ extern "C"
 
 #include <QByteArray>
 #include <QHostAddress>
+#include <QMutex>
 #include <QSslCipher>
 #include <QSslConfiguration>
 #include <QStringList>
@@ -136,6 +137,7 @@ class spoton_crypt
 
  private:
   QByteArray m_publicKey;
+  QMutex m_cipherMutex;
   QString m_cipherType;
   QString m_hashType;
   QString m_id;

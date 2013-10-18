@@ -50,7 +50,7 @@ extern "C"
 #endif
 
 QMutex spoton_misc::s_dbMutex;
-bool spoton_misc::s_enableLog = false;
+bool spoton_misc::s_enableLog = false; // Not protected by a mutex.
 qint64 spoton_misc::s_dbId = 0;
 
 QString spoton_misc::homePath(void)
@@ -400,16 +400,6 @@ void spoton_misc::logError(const QString &error)
 
     file.remove();
 
-  static QString s_lastError("");
-
-  if(error.trimmed() == s_lastError)
-    {
-      if(!file.size() == 0)
-	return;
-    }
-  else
-    s_lastError = error.trimmed();
-
   if(file.open(QIODevice::Append | QIODevice::WriteOnly))
     {
       QDateTime now(QDateTime::currentDateTime());
@@ -421,7 +411,7 @@ void spoton_misc::logError(const QString &error)
 
       file.write(now.toString().toLatin1());
       file.write(eol.toLatin1());
-      file.write(s_lastError.toLatin1());
+      file.write(error.toLatin1());
       file.write(eol.toLatin1());
       file.write(eol.toLatin1());
       file.flush();

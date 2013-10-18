@@ -2684,7 +2684,8 @@ void spoton::slotDeactivateKernel(void)
 		      0,
 		      &libspotonHandle,
 		      m_settings.value("gui/gcryctl_init_secmem",
-				       65536).toInt()) == LIBSPOTON_ERROR_NONE)
+				       65536).
+		      toInt()) == LIBSPOTON_ERROR_NONE)
     libspoton_deregister_kernel
       (libspoton_registered_kernel_pid(&libspotonHandle, 0),
        &libspotonHandle);

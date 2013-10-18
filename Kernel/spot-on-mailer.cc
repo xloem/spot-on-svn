@@ -88,7 +88,7 @@ void spoton_mailer::slotTimeout(void)
     if(db1.open() && db2.open())
       {
 	QByteArray name
-	  (spoton_kernel::s_settings.value("gui/emailName", "unknown").
+	  (spoton_kernel::setting("gui/emailName", "unknown").
 	   toByteArray().trimmed());
 	QSqlQuery query(db1);
 
@@ -337,7 +337,7 @@ void spoton_mailer::slotReap(void)
       {
 	QDateTime now(QDateTime::currentDateTime());
 	QSqlQuery query(db);
-	int days = spoton_kernel::s_settings.value
+	int days = spoton_kernel::setting
 	  ("gui/postofficeDays", 1).toInt();
 
 	query.setForwardOnly(true);

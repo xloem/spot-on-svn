@@ -1127,6 +1127,7 @@ QByteArray spoton_crypt::decrypted(const QByteArray &data, bool *ok)
     }
 
   QByteArray decrypted(data);
+  QMutexLocker locker(&m_cipherMutex);
 
   if(!setInitializationVector(decrypted, m_cipherAlgorithm, m_cipherHandle))
     {
@@ -1225,6 +1226,7 @@ QByteArray spoton_crypt::encrypted(const QByteArray &data, bool *ok)
 
   QByteArray encrypted(data);
   QByteArray iv;
+  QMutexLocker locker(&m_cipherMutex);
 
   if(!setInitializationVector(iv, m_cipherAlgorithm, m_cipherHandle))
     {

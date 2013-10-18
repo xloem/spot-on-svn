@@ -62,7 +62,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 					   */
   m_socket.setSocketOption
     (QAbstractSocket::LowDelayOption,
-     spoton_kernel::s_settings.value("kernel/tcp_nodelay", 1).
+     spoton_kernel::setting("kernel/tcp_nodelay", 1).
      toInt()); /*
 	       ** Disable Nagle?
 	       */
@@ -274,7 +274,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 					   */
   m_socket.setSocketOption
     (QAbstractSocket::LowDelayOption,
-     spoton_kernel::s_settings.value("kernel/tcp_nodelay", 1).
+     spoton_kernel::setting("kernel/tcp_nodelay", 1).
      toInt()); /*
 	       ** Disable Nagle?
 	       */
@@ -470,8 +470,8 @@ spoton_neighbor::~spoton_neighbor()
 	    query.bindValue(0, m_id);
 	    query.exec();
 
-	    if(spoton_kernel::s_settings.
-	       value("gui/keepOnlyUserDefinedNeighbors", false).toBool())
+	    if(spoton_kernel::setting("gui/keepOnlyUserDefinedNeighbors",
+				      false).toBool())
 	      {
 		query.prepare("DELETE FROM neighbors WHERE "
 			      "OID = ? AND status_control <> 'blocked' AND "
@@ -937,8 +937,8 @@ void spoton_neighbor::slotReadyRead(void)
 	    process0030(length, data);
 	  else if(length > 0 && data.contains("content="))
 	    {
-	      if(!spoton_kernel::s_settings.value("gui/superEcho",
-						  false).toBool())
+	      if(!spoton_kernel::setting("gui/superEcho",
+					 false).toBool())
 		if(isDuplicateMessage(originalData))
 		  continue;
 
@@ -984,12 +984,12 @@ void spoton_neighbor::slotReadyRead(void)
 
 	      resetKeepAlive();
 
-	      if(spoton_kernel::s_settings.value("gui/scramblerEnabled",
-						 false).toBool())
+	      if(spoton_kernel::setting("gui/scramblerEnabled",
+					false).toBool())
 		emit scrambleRequest();
 
-	      if(spoton_kernel::s_settings.value("gui/superEcho",
-						 false).toBool())
+	      if(spoton_kernel::setting("gui/superEcho",
+					false).toBool())
 		emit receivedMessage(originalData, m_id);
 	      else if(m_echoMode == "full")
 		if(messageType.isEmpty() ||
@@ -1198,12 +1198,12 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 	  QByteArray myName;
 
 	  if(keyType == "chat")
-	    myName = spoton_kernel::s_settings.value("gui/nodeName",
-						     "unknown").
+	    myName = spoton_kernel::setting("gui/nodeName",
+					    "unknown").
 	      toByteArray().trimmed();
 	  else
-	    myName = spoton_kernel::s_settings.value("gui/emailName",
-						     "unknown").
+	    myName = spoton_kernel::setting("gui/emailName",
+					    "unknown").
 	      toByteArray().trimmed();
 
 	  QByteArray myPublicKey;
@@ -1270,7 +1270,7 @@ void spoton_neighbor::slotReceivedMessage(const QByteArray &data,
   */
 
   if(m_echoMode == "full" ||
-     spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
+     spoton_kernel::setting("gui/superEcho", false).toBool())
     if(id != m_id)
       if(readyToWrite())
 	{
@@ -1528,9 +1528,10 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 			      if(spoton_misc::
 				 isAcceptedParticipant(list.value(0)))
 				{
-				  if(spoton_kernel::s_settings.
-				     value("gui/chatAcceptSignedMessagesOnly",
-					   true).toBool())
+				  if(spoton_kernel::setting("gui/chatAccept"
+							    "SignedMessages"
+							    "Only",
+							    true).toBool())
 				    if(!spoton_misc::
 				       isValidSignature(list.value(0) +
 							list.value(1) +
@@ -1694,9 +1695,9 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 			  if(spoton_misc::
 			     isAcceptedParticipant(list.value(0)))
 			    {
-			      if(spoton_kernel::s_settings.
-				 value("gui/chatAcceptSignedMessagesOnly",
-				       true).toBool())
+			      if(spoton_kernel::setting("gui/chatAccept"
+							"SignedMessagesOnly",
+							true).toBool())
 				if(!spoton_misc::
 				   isValidSignature(list.value(0) +
 						    list.value(1),
@@ -1832,9 +1833,9 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 		  recipientHash = QByteArray::fromBase64(list.value(1));
 		  signature = QByteArray::fromBase64(list.value(2));
 
-		  if(spoton_kernel::s_settings.
-		     value("gui/emailAcceptSignedMessagesOnly",
-			   true).toBool())
+		  if(spoton_kernel::setting("gui/emailAcceptSigned"
+					    "MessagesOnly",
+					    true).toBool())
 		    if(!spoton_misc::
 		       isValidSignature(senderPublicKeyHash1 +
 					recipientHash,
@@ -1984,14 +1985,13 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 
       if(ok)
 	{
-	  if(spoton_kernel::s_settings.value("gui/postoffice_enabled",
-					     false).toBool())
+	  if(spoton_kernel::setting("gui/postoffice_enabled",
+				    false).toBool())
 	    if(spoton_misc::isAcceptedParticipant(recipientHash))
 	      if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
 		{
-		  if(spoton_kernel::s_settings.
-		     value("gui/coAcceptSignedMessagesOnly",
-			   true).toBool())
+		  if(spoton_kernel::setting("gui/coAcceptSignedMessagesOnly",
+					    true).toBool())
 		    if(!spoton_misc::
 		       isValidSignature(senderPublicKeyHash1 +
 					recipientHash,
@@ -2569,9 +2569,10 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 			      if(spoton_misc::
 				 isAcceptedParticipant(list.value(0)))
 				{
-				  if(spoton_kernel::s_settings.
-				     value("gui/chatAcceptSignedMessagesOnly",
-					   true).toBool())
+				  if(spoton_kernel::setting("gui/chatAccept"
+							    "SignedMessages"
+							    "Only",
+							    true).toBool())
 				    if(!spoton_misc::
 				       isValidSignature(list.value(0) +
 							list.value(1) +
@@ -2776,8 +2777,8 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
       else
 	{
 	  QString statusControl
-	    (spoton_kernel::s_settings.
-	     value("gui/acceptPublicizedListeners", "ignored").toString().
+	    (spoton_kernel::setting("gui/acceptPublicizedListeners",
+				    "ignored").toString().
 	     toLower().trimmed());
 
 	  if(statusControl == "connected" || statusControl == "disconnected")
@@ -3325,7 +3326,9 @@ void spoton_neighbor::slotSendUuid(void)
     return;
 
   QByteArray message;
-  QUuid uuid(spoton_kernel::s_settings.value("gui/uuid").toString());
+  QUuid uuid(spoton_kernel::
+	     setting("gui/uuid",
+		     "{00000000-0000-0000-0000-000000000000}").toString());
 
   message = spoton_send::message0014(uuid.toString().toLatin1());
 
@@ -3520,8 +3523,8 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
   if(!s_crypt)
     return;
 
-  if(spoton_kernel::s_settings.
-     value("gui/emailAcceptSignedMessagesOnly", true).toBool())
+  if(spoton_kernel::setting("gui/emailAcceptSignedMessagesOnly",
+			    true).toBool())
     if(!spoton_misc::
        isValidSignature(senderPublicKeyHash +
 			name +
@@ -3758,7 +3761,7 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
   */
 
   if(m_echoMode == "full" ||
-     spoton_kernel::s_settings.value("gui/superEcho", false).toBool())
+     spoton_kernel::setting("gui/superEcho", false).toBool())
     if(id != m_id)
       if(readyToWrite())
 	{
@@ -4140,8 +4143,8 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data)
     {
       QByteArray message;
 
-      if(spoton_kernel::s_settings.value("gui/chatSendMethod",
-					 "Artificial_GET").toString().
+      if(spoton_kernel::setting("gui/chatSendMethod",
+				"Artificial_GET").toString().
 	 trimmed() == "Artificial_GET")
 	message = spoton_send::message0000a(data,
 					    spoton_send::
