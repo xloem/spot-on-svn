@@ -125,8 +125,11 @@ void spoton_crypt::init(void)
 
 	  gcry_control(GCRYCTL_ENABLE_M_GUARD);
 	  gcry_control(GCRYCTL_SUSPEND_SECMEM_WARN);
-
+#ifdef Q_OS_FREEBSD
+	  gcry_control(GCRYCTL_INIT_SECMEM, 65536, 0);
+#else
 	  if((err = gcry_control(GCRYCTL_INIT_SECMEM, 65536, 0)) != 0)
+#endif
 	    {
 	      QByteArray buffer(1024, '0');
 
