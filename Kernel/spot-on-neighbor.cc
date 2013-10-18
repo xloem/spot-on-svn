@@ -938,7 +938,10 @@ void spoton_neighbor::slotReadyRead(void)
 	  else if(length > 0 && data.contains("content="))
 	    {
 	      if(isDuplicateMessage(originalData))
-		continue;
+		{
+		  resetKeepAlive();
+		  continue;
+		}
 
 	      recordMessageHash(originalData);
 
