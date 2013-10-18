@@ -1370,9 +1370,18 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
 	    QSqlQuery query(db);
 
 	    query.prepare("UPDATE friends_public_keys SET "
-			  "neighbor_oid = -1 WHERE neighbor_oid = "
-			  "?");
-	    query.bindValue(0, m_id);
+			  "neighbor_oid = -1 WHERE "
+			  "key_type = ? AND "
+			  "neighbor_oid = ?");
+	    query.bindValue(0, keyType);
+	    query.bindValue(1, m_id);
+	    query.exec();
+	    query.prepare("UPDATE friends_public_keys SET "
+			  "neighbor_oid = -1 WHERE "
+			  "key_type = ? AND "
+			  "neighbor_oid = ?");
+	    query.bindValue(0, keyType + "-signature");
+	    query.bindValue(1, m_id);
 	    query.exec();
 	  }
 

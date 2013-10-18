@@ -58,6 +58,8 @@
 36.  Published listener information must be subjected to congestion control.
 37.  Removed affluent log entries from spoton_crypt::decrypted() and
      spoton_crypt::publicKeyDecrypt().
+38.  Corrected acceptance of participants. Accepting one key type caused
+     the additional acceptance of another key type.
 
 0.05 (09/16/2013)
 

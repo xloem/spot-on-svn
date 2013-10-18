@@ -1187,14 +1187,6 @@ QByteArray spoton_crypt::decrypted(const QByteArray &data, bool *ok)
 	    *ok = false;
 
 	  decrypted.clear();
-
-	  QByteArray buffer(1024, '0');
-
-	  gpg_strerror_r(err, buffer.data(), buffer.size());
-	  spoton_misc::logError
-	    (QString("spoton_crypt::decrypted(): "
-		     "gcry_cipher_decrypt() failure (%1).").
-	     arg(buffer.constData()));
 	}
     }
 
@@ -1883,19 +1875,6 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
       if(ok)
 	*ok = false;
 
-      if(err != 0)
-	{
-	  QByteArray buffer(1024, '0');
-
-	  gpg_strerror_r(err, buffer.data(), buffer.size());
-	  spoton_misc::logError
-	    (QString("spoton_crypt::publicKeyDecrypt(): gcry_sexp_new() "
-		     "failure (%1).").arg(buffer.constData()));
-	}
-      else
-	spoton_misc::logError
-	  ("spoton_crypt::publicKeyDecrypt(): gcry_sexp_new() failure.");
-
       goto done_label;
     }
 
@@ -1916,9 +1895,6 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
       if(ok)
 	*ok = false;
 
-      spoton_misc::logError
-	("spoton_crypt::publicKeyDecrypt(): gcry_sexp_find_token() "
-	 "failure.");
       goto done_label;
     }
 
@@ -1932,9 +1908,6 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
       if(ok)
 	*ok = false;
 
-      spoton_misc::logError
-	("spoton_crypt::publicKeyDecrypt(): gcry_sexp_find_token() "
-	 "failure.");
       goto done_label;
     }
 
@@ -1955,19 +1928,6 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
       if(ok)
 	*ok = false;
 
-      if(err != 0)
-	{
-	  QByteArray buffer(1024, '0');
-
-	  gpg_strerror_r(err, buffer.data(), buffer.size());
-	  spoton_misc::logError
-	    (QString("spoton_crypt::publicKeyDecrypt(): gcry_sexp_build() "
-		     "failure (%1).").arg(buffer.constData()));
-	}
-      else
-	spoton_misc::logError
-	  ("spoton_crypt::publicKeyDecrypt(): gcry_sexp_build() failure.");
-
       goto done_label;
     }
 
@@ -1987,9 +1947,6 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
       if(ok)
 	*ok = false;
 
-      spoton_misc::logError
-	("spoton_crypt::publicKeyDecrypt(): gcry_sexp_nth_data() "
-	 "failure.");
       goto done_label;
     }
 
