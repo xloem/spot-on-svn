@@ -2272,12 +2272,13 @@ void spoton_kernel::purgeMessagingCache(void)
   QDateTime now(QDateTime::currentDateTime());
   QMutableHashIterator<QByteArray, QDateTime> it(s_messagingCache);
   int i = 0;
+  int percentage = qMax(250, qCeil(0.15 * s_messagingCache.capacity()));
 
   while(it.hasNext())
     {
       i += 1;
 
-      if(i >= 100)
+      if(i >= percentage)
 	break;
 
       it.next();

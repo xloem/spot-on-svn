@@ -33,7 +33,8 @@
      be enabled via the INI file.
 21.  Individual chat windows.
 22.  The kernel shall now purge messages that are older than 60 seconds. Also
-     decreased the purge timer from 30 seconds to 15 seconds.
+     decreased the purge timer from 30 seconds to 15 seconds. Please also
+     see item #40.
 23.  Removed the documentation browser. The information is incomplete and will
      be provided online instead.
 24.  Spelling corrections to this file.
@@ -63,6 +64,11 @@
 39.  Modified some SQL queries where SQL injections were potentially
      possible. Parameterized statements are now used where applicable.
      Reviewed all DELETE, INSERT, SELECT, and UPDATE statements.
+40.  Modified the mechanism that's responsible for purging the congestion
+     control cache to remove at least 15% of the cache's capacity during
+     a purge event. Please also see item #22.
+41.  Corrected spoton_misc::correctSettingsContainer() with respect
+     to the congestion control and iteration count variables.
 
 0.05 (09/16/2013)
 

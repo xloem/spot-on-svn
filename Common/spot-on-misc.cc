@@ -1652,6 +1652,8 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
   if(!ok)
     integer = 10000;
+  else if(integer < 10000)
+    integer = 10000;
 
   settings["gui/congestionCost"] = integer;
   str = settings.value("gui/iconSet", "nouve").toString().trimmed();
@@ -1663,6 +1665,8 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   integer = qAbs(settings.value("gui/iterationCount", 10000).toInt(&ok));
 
   if(!ok)
+    integer = 10000;
+  else if(integer < 10000)
     integer = 10000;
 
   settings["gui/iterationCount"] = integer;

@@ -922,10 +922,18 @@ void spoton_neighbor::slotReadyRead(void)
 	    {
 	      if(!m_accountAuthenticated)
 		{
-		  emit authenticationRequested
-		    (QString("%1:%2").
-		     arg(m_socket.peerAddress().toString()).
-		     arg(m_socket.peerPort()));
+		  if(m_socket.peerAddress().scopeId().trimmed().isEmpty())
+		    emit authenticationRequested
+		      (QString("%1:%2").
+		       arg(m_socket.peerAddress().toString()).
+		       arg(m_socket.peerPort()));
+		  else
+		    emit authenticationRequested
+		      (QString("%1:%2:%3").
+		       arg(m_socket.peerAddress().toString()).
+		       arg(m_socket.peerPort()).
+		       arg(m_socket.peerAddress().scopeId()));
+
 		  goto done_label;
 		}
 	    }
