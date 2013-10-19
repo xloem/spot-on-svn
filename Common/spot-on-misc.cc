@@ -877,7 +877,7 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 	  (2, name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
     }
   else // Signature keys will be labeled as their type.
-    query.bindValue(2, keyType);
+    query.bindValue(2, keyType.constData());
 
   query.bindValue(3, publicKey);
   query.bindValue
@@ -940,10 +940,12 @@ void spoton_misc::retrieveSymmetricData(QByteArray &gemini,
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
+	query.prepare("SELECT gemini, neighbor_oid, public_key "
+		      "FROM friends_public_keys WHERE "
+		      "OID = ?");
+	query.bindValue(0, oid);
 
-	if(query.exec(QString("SELECT gemini, neighbor_oid, public_key "
-			      "FROM friends_public_keys WHERE "
-			      "OID = %1").arg(oid)))
+	if(query.exec())
 	  if(query.next())
 	    {
 	      size_t symmetricKeyLength = spoton_crypt::cipherKeyLength

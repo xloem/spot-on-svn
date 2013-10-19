@@ -537,8 +537,12 @@ void spoton::slotRemoveParticipants(void)
 	    QVariant hash(listHashes.takeFirst().data());
 
 	    if(!data.isNull() && data.isValid())
-	      query.exec(QString("DELETE FROM friends_public_keys WHERE "
-				 "OID = %1").arg(data.toString()));
+	      {
+		query.prepare("DELETE FROM friends_public_keys WHERE "
+			      "OID = ?");
+		query.bindValue(0, data.toString());
+		query.exec();
+	      }
 
 	    if(m_chatWindows.contains(hash.toString()))
 	      {
@@ -4205,8 +4209,12 @@ void spoton::slotRemoveEmailParticipants(void)
 	    QVariant data(list.takeFirst().data());
 
 	    if(!data.isNull() && data.isValid())
-	      query.exec(QString("DELETE FROM friends_public_keys WHERE "
-				 "OID = %1").arg(data.toString()));
+	      {
+		query.prepare("DELETE FROM friends_public_keys WHERE "
+			      "OID = ?");
+		query.bindValue(0, data.toString());
+		query.exec();
+	      }
 	  }
 
 	spoton_misc::purgeSignatureRelationships(db);
@@ -4597,9 +4605,11 @@ void spoton::populateAccounts(const QString &listenerOid)
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
+	query.prepare("SELECT account_name FROM listeners_accounts "
+		      "WHERE listener_oid = ?");
+	query.bindValue(0, listenerOid);
 
-	if(query.exec(QString("SELECT account_name FROM listeners_accounts "
-			      "WHERE listener_oid = %1").arg(listenerOid)))
+	if(query.exec())
 	  {
 	    QStringList names;
 

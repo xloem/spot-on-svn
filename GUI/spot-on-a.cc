@@ -4800,9 +4800,15 @@ void spoton::changeEchoMode(const QString &mode, QTableWidget *tableWidget)
 	QSqlQuery query(db);
 	bool ok = true;
 
-	query.prepare(QString("UPDATE %1 SET "
-			      "echo_mode = ? "
-			      "WHERE OID = ?").arg(table));
+	if(table == "listeners")
+	  query.prepare("UPDATE listeners SET "
+			"echo_mode = ? "
+			"WHERE OID = ?");
+	else
+	  query.prepare("UPDATE neighbors SET "
+			"echo_mode = ? "
+			"WHERE OID = ?");
+
 	query.bindValue
 	  (0, m_crypts.value("chat")->encrypted(mode.toLatin1(), &ok).
 	   toBase64());
@@ -5017,11 +5023,17 @@ void spoton::slotNeighborMaximumChanged(int value)
     if(db.open())
       {
 	QSqlQuery query(db);
+	QString name(spinBox->property("field_name").toString());
 
-	query.prepare(QString("UPDATE neighbors SET "
-			      "%1 = ? "
-			      "WHERE OID = ?").
-		      arg(spinBox->property("field_name").toString()));
+	if(name == "maximum_buffer_size")
+	  query.prepare("UPDATE neighbors SET "
+			"maximum_buffer_size = ? "
+			"WHERE OID = ?");
+	else
+	  query.prepare("UPDATE neighbors SET "
+			"maximum_content_length = ? "
+			"WHERE OID = ?");
+
 	query.bindValue(0, value);
 	query.bindValue(1, spinBox->property("oid"));
 	query.exec();

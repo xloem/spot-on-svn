@@ -60,6 +60,9 @@
      spoton_crypt::publicKeyDecrypt().
 38.  Corrected acceptance of participants. Accepting one key type caused
      the additional acceptance of another key type.
+39.  Modified some SQL queries where SQL injections were potentially
+     possible. Parameterized statements are now used where applicable.
+     Reviewed all DELETE, INSERT, SELECT, and UPDATE statements.
 
 0.05 (09/16/2013)
 
