@@ -1226,14 +1226,14 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
 			      "neighbor_oid = -1 "
 			      "WHERE key_type = ? AND "
 			      "neighbor_oid = ?");
-		query.bindValue(0, keyType);
+		query.bindValue(0, keyType.constData());
 		query.bindValue(1, oid);
 		query.exec();
 		query.prepare("UPDATE friends_public_keys SET "
 			      "neighbor_oid = -1 "
 			      "WHERE key_type = ? AND "
 			      "neighbor_oid = ?");
-		query.bindValue(0, keyType + "-signature");
+		query.bindValue(0, (keyType + "-signature").constData());
 		query.bindValue(1, oid);
 		query.exec();
 	      }

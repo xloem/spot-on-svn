@@ -1373,14 +1373,14 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
 			  "neighbor_oid = -1 WHERE "
 			  "key_type = ? AND "
 			  "neighbor_oid = ?");
-	    query.bindValue(0, keyType);
+	    query.bindValue(0, keyType.constData());
 	    query.bindValue(1, m_id);
 	    query.exec();
 	    query.prepare("UPDATE friends_public_keys SET "
 			  "neighbor_oid = -1 WHERE "
 			  "key_type = ? AND "
 			  "neighbor_oid = ?");
-	    query.bindValue(0, keyType + "-signature");
+	    query.bindValue(0, (keyType + "-signature").constData());
 	    query.bindValue(1, m_id);
 	    query.exec();
 	  }
