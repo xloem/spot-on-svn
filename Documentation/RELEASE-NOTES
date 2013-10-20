@@ -1,4 +1,4 @@
-0.06 (10/21/2013)
+0.06 (10/24/2013)
 
 1.   Allow users of the libspoton library to store enough information
      so that the correct key can be generated. The changes will support
@@ -73,6 +73,7 @@
      in the spoton_neighbor class. These changes should prevent
      heavy disk access whenever traffic is dense. However, data integrity
      may be slightly affected.
+43.  Added support for favorite Buzz channels.
 
 0.05 (09/16/2013)
 

@@ -15,6 +15,37 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="favorite">
+       <property name="text">
+        <string>Favorite</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="remove">
+       <property name="text">
+        <string>Remove</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="label_3">
@@ -268,11 +299,13 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>favorite</tabstop>
+  <tabstop>remove</tabstop>
   <tabstop>iterationCount</tabstop>
   <tabstop>salt</tabstop>
   <tabstop>type</tabstop>
-  <tabstop>messages</tabstop>
   <tabstop>clearMessages</tabstop>
+  <tabstop>messages</tabstop>
   <tabstop>sendMethod</tabstop>
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
