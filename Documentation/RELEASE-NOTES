@@ -69,6 +69,10 @@
      a purge event. Please also see item #22.
 41.  Corrected spoton_misc::correctSettingsContainer() with respect
      to the congestion control and iteration count variables.
+42.  Added PRAGMA synchronous = OFF statements to several UPDATE queries
+     in the spoton_neighbor class. These changes should prevent
+     heavy disk access whenever traffic is dense. However, data integrity
+     may be slightly affected.
 
 0.05 (09/16/2013)
 

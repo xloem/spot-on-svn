@@ -4759,7 +4759,7 @@ void spoton::authenticationRequested(const QByteArray &data)
 	m_sb.authentication_request->setProperty
 	  ("data", data);
 	m_sb.authentication_request->
-	  setToolTip(tr("Peer %1 is requesting authentication "
+	  setToolTip(tr("Remote user %1 is requesting authentication "
 			"credentials.").arg(data.constData()));
 	m_sb.authentication_request->setVisible(true);
 	QTimer::singleShot(7500, m_sb.authentication_request,
@@ -4774,16 +4774,9 @@ void spoton::slotAuthenticationRequestButtonClicked(void)
 
   if(m_neighborToOidMap.contains(m_sb.authentication_request->
 				 property("data").toByteArray()))
-    {
-      spoton_crypt *s_crypt = m_crypts.value("chat", 0);
-
-      if(!s_crypt)
-	return;
-
-      authenticate(s_crypt,
-		   m_neighborToOidMap.
-		   value(m_sb.authentication_request->
-			 property("data").toByteArray()),
-		   m_sb.authentication_request->toolTip());
-    }
+    authenticate(m_crypts.value("chat", 0),
+		 m_neighborToOidMap.
+		 value(m_sb.authentication_request->
+		       property("data").toByteArray()),
+		 m_sb.authentication_request->toolTip());
 }

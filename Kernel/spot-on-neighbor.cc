@@ -398,7 +398,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTimeout(void)));
-  m_accountTimer.setInterval(2500);
+  m_accountTimer.setInterval(15000);
   m_externalAddressDiscovererTimer.setInterval(30000);
   m_keepAliveTimer.setInterval(45000);
   m_lifetime.start(10 * 60 * 1000);
@@ -884,39 +884,49 @@ void spoton_neighbor::slotReadyRead(void)
 	  if(downgrade)
 	    goto done_label;
 
-	  if(isDuplicateMessage(originalData))
-	    continue;
-
-	  recordMessageHash(originalData);
-
 	  if(!m_isUserDefined)
 	    {
+	      /*
+	      ** We're a server!
+	      */
+
 	      if(m_useAccounts)
 		{
 		  if(length > 0 && data.contains("type=0050&content="))
 		    process0050(length, data);
 
 		  if(!m_accountAuthenticated)
-		    {
-		      sendAuthenticationRequest();
-		      goto done_label;
-		    }
+		    if(m_authenticationSentTime.
+		       msecsTo(QDateTime::currentDateTime()) > 15000)
+		      sendAuthenticationRequest(); // Message type 0052.
+
+		  if(!m_accountAuthenticated)
+		    goto done_label;
 		}
+	      else if(length > 0 && (data.contains("type=0050&content=") ||
+				     data.contains("type=0051&content=") ||
+				     data.contains("type=0052&content=")))
+		goto done_label;
 	    }
 	  else if(length > 0 && data.contains("type=0051&content="))
 	    {
+	      /*
+	      ** The server responded. Let's verify that the server's
+	      ** response is valid.
+	      */
+
 	      if(m_authenticationSentTime.
 		 msecsTo(QDateTime::currentDateTime()) <= 15000)
 		{
 		  process0051(length, data);
 
-		  if(!m_accountAuthenticated)
-		    goto done_label;
-		  else
+		  if(m_accountAuthenticated)
 		    QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
 		}
 	      else
 		m_accountAuthenticated = false;
+
+	      goto done_label;
 	    }
 	  else if(length > 0 && data.contains("type=0052&content="))
 	    {
@@ -933,9 +943,9 @@ void spoton_neighbor::slotReadyRead(void)
 		       arg(m_socket.peerAddress().toString()).
 		       arg(m_socket.peerPort()).
 		       arg(m_socket.peerAddress().scopeId()));
-
-		  goto done_label;
 		}
+
+	      goto done_label;
 	    }
 
 	  if(length > 0 && data.contains("type=0011&content="))
@@ -951,7 +961,7 @@ void spoton_neighbor::slotReadyRead(void)
 	      if(isDuplicateMessage(originalData))
 		{
 		  resetKeepAlive();
-		  continue;
+		  goto done_label;
 		}
 
 	      recordMessageHash(originalData);
@@ -962,12 +972,16 @@ void spoton_neighbor::slotReadyRead(void)
 
 	      process0030(length, data);
 	    }
+	  else if(length > 0 && (data.contains("type=0050&content=") ||
+				 data.contains("type=0051&content=") ||
+				 data.contains("type=0052&content=")))
+	    goto done_label;
 	  else if(length > 0 && data.contains("content="))
 	    {
 	      if(isDuplicateMessage(originalData))
 		{
 		  resetKeepAlive();
-		  continue;
+		  goto done_label;
 		}
 
 	      recordMessageHash(originalData);
@@ -2706,6 +2720,7 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
 		QSqlQuery query(db);
 		bool ok = true;
 
+		query.prepare("PRAGMA synchronous = OFF");
 		query.prepare("UPDATE neighbors SET uuid = ? "
 			      "WHERE OID = ?");
 		query.bindValue
@@ -3013,6 +3028,7 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 		QSqlQuery query(db);
 		bool ok = true;
 
+		query.prepare("PRAGMA synchronous = OFF");
 		query.prepare("UPDATE neighbors SET "
 			      "account_authenticated = ?, "
 			      "account_name = ? "
@@ -3142,6 +3158,7 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 		QSqlQuery query(db);
 		bool ok = true;
 
+		query.prepare("PRAGMA synchronous = OFF");
 		query.prepare("UPDATE neighbors SET "
 			      "account_authenticated = ? "
 			      "WHERE OID = ? AND "
@@ -3206,6 +3223,7 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash)
       {
 	QSqlQuery query(db);
 
+	query.prepare("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE friends_public_keys SET "
 		      "last_status_update = ? "
 		      "WHERE neighbor_oid = -1 AND "
@@ -3247,6 +3265,7 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 
 	if(status.isEmpty())
 	  {
+	    query.prepare("PRAGMA synchronous = OFF");
 	    query.prepare("UPDATE friends_public_keys SET "
 			  "name = ?, "
 			  "last_status_update = ? "
@@ -3266,6 +3285,7 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 	  }
 	else
 	  {
+	    query.prepare("PRAGMA synchronous = OFF");
 	    query.prepare("UPDATE friends_public_keys SET "
 			  "name = ?, "
 			  "status = ?, "
@@ -4223,6 +4243,7 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 	QSqlQuery query(db);
 	bool ok = true;
 
+	query.prepare("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE friends_public_keys SET "
 		      "gemini = ?, last_status_update = ? "
 		      "WHERE neighbor_oid = -1 AND "
@@ -4376,6 +4397,7 @@ void spoton_neighbor::sendAuthenticationRequest(void)
   else
     {
       flush();
+      m_authenticationSentTime = QDateTime::currentDateTime();
       m_bytesWritten += message.length();
     }
 }

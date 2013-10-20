@@ -521,6 +521,9 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				      "hash = ?");
 		  deleteQuery.bindValue(0, query.value(8));
 		  deleteQuery.exec();
+		  deleteQuery.exec("DELETE FROM listeners_accounts "
+				   "WHERE listener_oid NOT IN "
+				   "(SELECT OID FROM listeners)");
 		}
 	    }
 

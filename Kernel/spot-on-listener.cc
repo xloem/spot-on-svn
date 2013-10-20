@@ -179,6 +179,9 @@ spoton_listener::~spoton_listener()
 		      "status_control = 'deleted'");
 	query.bindValue(0, m_id);
 	query.exec();
+	query.exec("DELETE FROM listeners_accounts WHERE "
+		   "listener_oid NOT IN "
+		   "(SELECT OID FROM listeners)");
 	query.prepare("UPDATE listeners SET connections = 0, "
 		      "external_ip_address = NULL, "
 		      "status = 'offline' WHERE OID = ?");

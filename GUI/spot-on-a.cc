@@ -2983,10 +2983,14 @@ void spoton::slotDeleteListener(void)
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool deleteListener = false;
 
 	if(!isKernelActive())
-	  query.prepare("DELETE FROM listeners WHERE "
-			"OID = ?");
+	  {
+	    deleteListener = true;
+	    query.prepare("DELETE FROM listeners WHERE "
+			  "OID = ?");
+	  }
 	else
 	  query.prepare("UPDATE listeners SET status_control = 'deleted' "
 			"WHERE "
@@ -2994,6 +2998,14 @@ void spoton::slotDeleteListener(void)
 
 	query.bindValue(0, oid);
 	query.exec();
+
+	if(deleteListener)
+	  {
+	    query.prepare("DELETE FROM listeners_accounts WHERE "
+			  "listener_oid = ?");
+	    query.bindValue(0, oid);
+	    query.exec();
+	  }
       }
 
     db.close();
@@ -3150,6 +3162,9 @@ void spoton::updateListenersTable(const QSqlDatabase &db)
 
 	query.exec("DELETE FROM listeners WHERE "
 		   "status_control = 'deleted'");
+	query.exec("DELETE FROM listeners_accounts WHERE "
+		   "listener_oid NOT IN "
+		   "(SELECT OID FROM listeners)");
 	query.exec("UPDATE listeners SET connections = 0, "
 		   "external_ip_address = NULL, "
 		   "status = 'offline' WHERE "
@@ -4310,7 +4325,10 @@ void spoton::slotDeleteAllListeners(void)
 	QSqlQuery query(db);
 
 	if(!isKernelActive())
-	  query.exec("DELETE FROM listeners");
+	  {
+	    query.exec("DELETE FROM listeners");
+	    query.exec("DELETE FROM listeners_accounts");
+	  }
 	else
 	  query.exec("UPDATE listeners SET "
 		     "status_control = 'deleted' WHERE "

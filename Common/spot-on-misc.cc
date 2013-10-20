@@ -310,7 +310,10 @@ void spoton_misc::prepareDatabases(void)
 		   "listener_oid INTEGER NOT NULL, "
 		   "PRIMARY KEY (listener_oid, account_name_hash), "
 		   "FOREIGN KEY (listener_oid) REFERENCES "
-		   "listeners (OID))");
+		   "listeners (OID))"); /*
+					** The foreign key constraint
+					** is flawed.
+					*/
       }
 
     db.close();
@@ -1221,6 +1224,9 @@ void spoton_misc::cleanupDatabases(void)
 
 	query.exec("DELETE FROM listeners WHERE "
 		   "status_control = 'deleted'");
+	query.exec("DELETE FROM listeners_accounts WHERE "
+		   "listener_oid NOT IN "
+		   "(SELECT OID FROM listeners)");
 	query.exec("UPDATE listeners SET connections = 0, "
 		   "external_ip_address = NULL, "
 		   "status = 'offline'");

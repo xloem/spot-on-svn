@@ -2139,6 +2139,9 @@ void spoton_kernel::cleanupListenersDatabase(const QSqlDatabase &db)
 
   query.exec("DELETE FROM listeners WHERE "
 	     "status_control = 'deleted'");
+  query.exec("DELETE FROM listeners_accounts WHERE "
+	     "listener_oid NOT IN "
+	     "(SELECT OID FROM listeners)");
 }
 
 void spoton_kernel::cleanupNeighborsDatabase(const QSqlDatabase &db)
