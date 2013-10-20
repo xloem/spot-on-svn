@@ -120,6 +120,7 @@ class spoton: public QMainWindow
 						 ** Prevent duplicate
 						 ** echoed messages.
 						 */
+  QHash<QByteArray, QString> m_neighborToOidMap;
   QHash<QString, QByteArray> m_buzzIds;
   QHash<QString, QPointer<spoton_chatwindow> > m_chatWindows;
   QHash<QString, QVariant> m_settings;
@@ -160,6 +161,8 @@ class spoton: public QMainWindow
   int applyGoldbugToInboxLetter(const QByteArray &goldbug,
 				const int row);
   void addFriendsKey(const QByteArray &key);
+  void authenticate(spoton_crypt *crypt, const QString &oid,
+		    const QString &message = QString(""));
   void authenticationRequested(const QByteArray &data);
   void changeEchoMode(const QString &mode, QTableWidget *tableWidget);
   void closeEvent(QCloseEvent *event);
@@ -189,6 +192,7 @@ class spoton: public QMainWindow
   void slotAddFriendsKey(void);
   void slotAddNeighbor(void);
   void slotAuthenticate(void);
+  void slotAuthenticationRequestButtonClicked(void);
   void slotBlockNeighbor(void);
   void slotBuzzChanged(void);
   void slotCallParticipant(void);

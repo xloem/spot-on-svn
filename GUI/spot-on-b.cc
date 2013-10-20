@@ -3292,12 +3292,7 @@ void spoton::slotStatusButtonClicked(void)
 {
   QToolButton *toolButton = qobject_cast<QToolButton *> (sender());
 
-  if(toolButton == m_sb.authentication_request)
-    {
-      m_sb.authentication_request->setVisible(false);
-      m_ui.tab->setCurrentIndex(4);
-    }
-  else if(toolButton == m_sb.buzz)
+  if(toolButton == m_sb.buzz)
     {
       m_sb.buzz->setVisible(false);
       m_ui.tab->setCurrentIndex(0);
@@ -4761,6 +4756,8 @@ void spoton::authenticationRequested(const QByteArray &data)
   if(!data.isEmpty())
     if(!m_sb.authentication_request->isVisible())
       {
+	m_sb.authentication_request->setProperty
+	  ("data", data);
 	m_sb.authentication_request->
 	  setToolTip(tr("Peer %1 is requesting authentication "
 			"credentials.").arg(data.constData()));
@@ -4768,4 +4765,25 @@ void spoton::authenticationRequested(const QByteArray &data)
 	QTimer::singleShot(7500, m_sb.authentication_request,
 			   SLOT(hide(void)));
       }
+}
+
+void spoton::slotAuthenticationRequestButtonClicked(void)
+{
+  m_sb.authentication_request->setVisible(false);
+  m_ui.tab->setCurrentIndex(4);
+
+  if(m_neighborToOidMap.contains(m_sb.authentication_request->
+				 property("data").toByteArray()))
+    {
+      spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+      if(!s_crypt)
+	return;
+
+      authenticate(s_crypt,
+		   m_neighborToOidMap.
+		   value(m_sb.authentication_request->
+			 property("data").toByteArray()),
+		   m_sb.authentication_request->toolTip());
+    }
 }

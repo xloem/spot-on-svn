@@ -165,7 +165,7 @@ spoton::spoton(void):QMainWindow()
   connect(m_sb.authentication_request,
 	  SIGNAL(clicked(void)),
 	  this,
-	  SLOT(slotStatusButtonClicked(void)));
+	  SLOT(slotAuthenticationRequestButtonClicked(void)));
   connect(m_sb.buzz,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -2193,6 +2193,7 @@ void spoton::slotPopulateNeighbors(void)
 	if(!list.isEmpty())
 	  scopeId = list.at(0).data().toString();
 
+	m_neighborToOidMap.clear();
 	m_ui.neighbors->setSortingEnabled(false);
 	m_ui.neighbors->clearContents();
 	m_ui.neighbors->setRowCount(0);
@@ -2602,6 +2603,15 @@ void spoton::slotPopulateNeighbors(void)
 
 		if(focusWidget)
 		  focusWidget->setFocus();
+
+		if(bytes3.isEmpty())
+		  m_neighborToOidMap.insert
+		    (bytes1 + ":" + bytes2,
+		     query.value(query.record().count() - 1).toString());
+		else
+		  m_neighborToOidMap.insert
+		    (bytes1 + ":" + bytes2 + ":" + bytes3,
+		     query.value(query.record().count() - 1).toString());
 
 		row += 1;
 	      }
@@ -5614,6 +5624,17 @@ void spoton::slotAuthenticate(void)
       return;
     }
 
+  authenticate(s_crypt, list.at(0).data().toString());
+}
+
+void spoton::authenticate(spoton_crypt *crypt, const QString &oid,
+			  const QString &message)
+{
+  if(!crypt)
+    return;
+  else if(oid.isEmpty())
+    return;
+
   QDialog dialog(this);
   Ui_passwordprompt ui;
 
@@ -5621,6 +5642,9 @@ void spoton::slotAuthenticate(void)
 #ifdef Q_OS_MAC
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #endif
+
+  if(!message.isEmpty())
+    ui.message->setText(message);
 
   if(dialog.exec() == QDialog::Accepted)
     {
@@ -5648,14 +5672,14 @@ void spoton::slotAuthenticate(void)
 			      "account_password = ? "
 			      "WHERE OID = ? and user_defined = 1");
 		query.bindValue
-		  (0, s_crypt->encrypted(name.toLatin1(), &ok).toBase64());
+		  (0, crypt->encrypted(name.toLatin1(), &ok).toBase64());
 
 		if(ok)
 		  query.bindValue
-		    (1, s_crypt->encrypted(password.toLatin1(),
-					   &ok).toBase64());
+		    (1, crypt->encrypted(password.toLatin1(),
+					 &ok).toBase64());
 
-		query.bindValue(2, list.at(0).data());
+		query.bindValue(2, oid);
 
 		if(ok)
 		  query.exec();
