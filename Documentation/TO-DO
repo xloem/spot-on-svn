@@ -131,3 +131,4 @@ Remaining Items
 30.    Correct implementation of the Encrypt-then-MAC usage. One key
        should be used for encryption and a separate key for generating
        the MAC.
+31.    Record sent data as it may be returned via an echo.
