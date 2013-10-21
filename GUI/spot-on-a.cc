@@ -706,6 +706,8 @@ spoton::spoton(void):QMainWindow()
 #endif
   m_ui.toolButtonMakeFriends->setMenu(menu);
   menu = new QMenu(this);
+  connect(menu->addAction(tr("&Copy")),
+	  SIGNAL(triggered(void)), this, SLOT(slotCopyBuzz(void)));
   connect(menu->addAction(tr("&Remove")),
 	  SIGNAL(triggered(void)), this, SLOT(slotRemoveFavorite(void)));
   connect(menu->addAction(tr("Remove &All")),
@@ -5938,4 +5940,28 @@ void spoton::slotRemoveFavorite(void)
     QMessageBox::critical(this, tr("Spot-On: Error"), error);
   else
     slotPopulateBuzzFavorites();
+}
+
+void spoton::slotCopyBuzz(void)
+{
+  if(m_ui.favorites->currentText() == tr("Empty"))
+    return;
+
+  QClipboard *clipboard = QApplication::clipboard();
+  QString error("");
+
+  if(!clipboard)
+    {
+      error = tr("Invalid clipboard object.");
+      goto done_label;
+    }
+
+  clipboard->setText
+    (QString("MAGNET://%1").
+     arg(m_ui.favorites->currentText()).toUtf8());
+
+ done_label:
+
+  if(!error.isEmpty())
+    QMessageBox::critical(this, tr("Spot-On: Error"), error);
 }

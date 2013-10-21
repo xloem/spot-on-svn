@@ -24,8 +24,8 @@
 15.  Added SSL_library_init() to spoton_crypt::init().
 16.  Per-listener accounts. Please remove listeners.db. Accounts require
      SSL connections. May provide SRP support in the near future as current
-     implementation is susceptible to at least replay attack. Do note
-     that authentication occurs within SSL.
+     implementation is susceptible to at least a replay attack. Also, the
+     server can falsify an authentication.
 17.  Improved error reporting between the user and the UI.
 18.  Removed OS X and Qt 5.x workaround with respect to password widgets.
 19.  Properly reset neighbors.db data in spoton_misc::cleanupDatabases().
@@ -74,6 +74,10 @@
      heavy disk access whenever traffic is dense. However, data integrity
      may be slightly affected.
 43.  Added support for favorite Buzz channels.
+44.  Corrected a flaw which allowed duplicate Buzz channels. Also,
+     the generated salt in spoton_buzzpage::spoton_buzzpage() should not
+     be interpreted as Base-64.
+45.  The total reset mechanism neglected to remove accepted_ips.db.
 
 0.05 (09/16/2013)
 
