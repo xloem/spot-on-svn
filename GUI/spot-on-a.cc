@@ -706,8 +706,9 @@ spoton::spoton(void):QMainWindow()
 #endif
   m_ui.toolButtonMakeFriends->setMenu(menu);
   menu = new QMenu(this);
-  connect(menu->addAction(tr("&Copy")),
+  connect(menu->addAction(tr("&Magnetize")),
 	  SIGNAL(triggered(void)), this, SLOT(slotCopyBuzz(void)));
+  menu->addSeparator();
   connect(menu->addAction(tr("&Remove")),
 	  SIGNAL(triggered(void)), this, SLOT(slotRemoveFavorite(void)));
   connect(menu->addAction(tr("Remove &All")),
@@ -5947,6 +5948,8 @@ void spoton::slotCopyBuzz(void)
   if(m_ui.favorites->currentText() == tr("Empty"))
     return;
 
+  QByteArray data;
+  QList<QByteArray> list;
   QClipboard *clipboard = QApplication::clipboard();
   QString error("");
 
@@ -5956,9 +5959,18 @@ void spoton::slotCopyBuzz(void)
       goto done_label;
     }
 
-  clipboard->setText
-    (QString("MAGNET://%1").
-     arg(m_ui.favorites->currentText()).toUtf8());
+  list = m_ui.favorites->itemData
+    (m_ui.favorites->currentIndex()).toByteArray().split('\n');
+
+  for(int i = 0; i < list.size(); i++)
+    list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+  data.append("magnet:?");
+  data.append(QString("dn=%1&").arg(list.value(0).constData()));
+  data.append(QString("xf=%1&").arg(list.value(1).constData()));
+  data.append(QString("xs=%1&").arg(list.value(2).toBase64().constData()));
+  data.append(QString("ct=%1").arg(list.value(3).toBase64().constData()));
+  clipboard->setText(data);
 
  done_label:
 
