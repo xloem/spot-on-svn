@@ -5968,8 +5968,8 @@ void spoton::slotCopyBuzz(void)
   data.append("magnet:?");
   data.append(QString("dn=%1&").arg(list.value(0).constData()));
   data.append(QString("xf=%1&").arg(list.value(1).constData()));
-  data.append(QString("xs=%1&").arg(list.value(2).toBase64().constData()));
-  data.append(QString("ct=%1").arg(list.value(3).toBase64().constData()));
+  data.append(QString("xs=%1&").arg(list.value(2).constData()));
+  data.append(QString("ct=%1").arg(list.value(3).constData()));
   clipboard->setText(data);
 
  done_label:

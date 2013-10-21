@@ -77,7 +77,7 @@
           <item>
            <widget class="QToolButton" name="removeFavoriteBuzz">
             <property name="text">
-             <string>Remove</string>
+             <string>Tools</string>
             </property>
             <property name="popupMode">
              <enum>QToolButton::InstantPopup</enum>
