@@ -105,6 +105,26 @@ void spoton_misc::prepareDatabases(void)
     QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() +
+		       "buzz_channels.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("CREATE TABLE IF NOT EXISTS buzz_channels ("
+		   "data BLOB NOT NULL, "
+		   "data_hash TEXT PRIMARY KEY NOT NULL)");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName(homePath() + QDir::separator() +
 		       "country_inclusion.db");
 
     if(db.open())
