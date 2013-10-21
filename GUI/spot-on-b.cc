@@ -224,13 +224,14 @@ void spoton::slotReceivedKernelMessage(void)
 		  QByteArray hash;
 		  bool duplicate = false;
 		  bool ok = true;
+		  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
 
-		  if(m_crypts.value("chat", 0))
+		  if(s_crypt)
 		    hash = spoton_crypt::keyedHash
 		      (list.value(0),
-		       QByteArray(m_crypts.value("chat")->
+		       QByteArray(s_crypt->
 				  symmetricKey(),
-				  m_crypts.value("chat")->
+				  s_crypt->
 				  symmetricKeyLength()),
 		       "sha512", &ok);
 		  else
@@ -1033,7 +1034,9 @@ QByteArray spoton::copyMyChatPublicKey(void)
 
 void spoton::slotPopulateCountries(void)
 {
-  if(!m_crypts.value("chat", 0))
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
     return;
 
   QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
@@ -1083,7 +1086,7 @@ void spoton::slotPopulateCountries(void)
 		bool accepted = true;
 		bool ok = true;
 
-		country = m_crypts.value("chat")->
+		country = s_crypt->
 		  decrypted(QByteArray::
 			    fromBase64(query.
 				       value(0).
@@ -1091,7 +1094,7 @@ void spoton::slotPopulateCountries(void)
 			    &ok).constData();
 
 		if(ok)
-		  accepted = m_crypts.value("chat")->
+		  accepted = s_crypt->
 		    decrypted(QByteArray::
 			      fromBase64(query.
 					 value(1).
@@ -1178,7 +1181,10 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
 {
   if(!item)
     return;
-  else if(!m_crypts.value("chat", 0))
+
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
     return;
 
   QString connectionName("");
@@ -1197,13 +1203,13 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
 	query.prepare("UPDATE country_inclusion SET accepted = ? "
 		      "WHERE country_hash = ?");
 	query.bindValue
-	  (0, m_crypts.value("chat")->
+	  (0, s_crypt->
 	   encrypted(QString::number(item->checkState()).
 		     toLatin1(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (1, m_crypts.value("chat")->
+	    (1, s_crypt->
 	     keyedHash(item->text().toLatin1(), &ok).toBase64());
 
 	if(ok)
@@ -1232,7 +1238,7 @@ void spoton::slotCountryChanged(QListWidgetItem *item)
 			  "WHERE qt_country_hash = ?");
 	    query.bindValue
 	      (0,
-	       m_crypts.value("chat")->
+	       s_crypt->
 	       keyedHash(item->text().toLatin1(), &ok).toBase64());
 
 	    if(ok)
@@ -2054,7 +2060,9 @@ void spoton::slotResetAll(void)
 
   QStringList list;
 
-  list << "country_inclusion.db"
+  list << "accepted_ips.db"
+       << "buzz_channels.db"
+       << "country_inclusion.db"
        << "email.db"
        << "error_log.dat"
        << "friends_public_keys.db"
@@ -2442,7 +2450,9 @@ void spoton::slotSendMail(void)
 
 void spoton::slotDeleteAllBlockedNeighbors(void)
 {
-  if(!m_crypts.value("chat", 0))
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
     return;
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -2475,7 +2485,7 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
 	      bool ok = true;
 
 	      ip =
-		m_crypts.value("chat")->
+		s_crypt->
 		decrypted(QByteArray::fromBase64(query.value(0).
 						 toByteArray()),
 			  &ok);
@@ -2566,7 +2576,9 @@ void spoton::slotShareURLPublicKey(void)
 
 void spoton::slotDeleteAllUuids(void)
 {
-  if(!m_crypts.value("chat", 0))
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
     return;
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -2598,7 +2610,7 @@ void spoton::slotDeleteAllUuids(void)
 	      bool ok = true;
 
 	      uuid =
-		m_crypts.value("chat")->
+		s_crypt->
 		decrypted(QByteArray::fromBase64(query.value(0).
 						 toByteArray()),
 			  &ok);
@@ -3930,13 +3942,22 @@ void spoton::slotJoinBuzzChannel(void)
   bool found = false;
   bool ok = true;
   spoton_buzzpage *page = 0;
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
   unsigned long iterationCount = m_ui.buzzIterationCount->value();
+
+  if(!s_crypt)
+    {
+      error = tr("Invalid spoton_crypt object.");
+      goto done_label;
+    }
 
   if(channel.isEmpty())
     {
       error = tr("Please provide a channel name.");
       goto done_label;
     }
+
+  channelSalt = m_ui.channelSalt->text().trimmed().toUtf8();
 
   if(channelSalt.isEmpty())
     channelSalt = spoton_crypt::keyedHash(channel + channelType,
@@ -3957,8 +3978,6 @@ void spoton::slotJoinBuzzChannel(void)
 
   if(!error.isEmpty())
     goto done_label;
-
-  channelSalt = m_ui.channelSalt->text().trimmed().toUtf8();
 
   foreach(spoton_buzzpage *page,
 	  m_ui.buzzTab->findChildren<spoton_buzzpage *> ())
@@ -3981,13 +4000,21 @@ void spoton::slotJoinBuzzChannel(void)
       m_buzzIds[key] = id;
     }
 
+  if(m_ui.channelSalt->text().trimmed().isEmpty())
+    /*
+    ** Reset the channelSalt container. We used it above to avoid
+    ** duplicate Buzz keys.
+    */
+
+    channelSalt.clear();
+
   m_ui.channel->clear();
   m_ui.channelSalt->clear();
   m_ui.channelType->setCurrentIndex(0);
   m_ui.buzzIterationCount->setValue(m_ui.buzzIterationCount->minimum());
   page = new spoton_buzzpage
     (&m_kernelSocket, channel, channelSalt, channelType,
-     id, iterationCount, this);
+     id, iterationCount, s_crypt, this);
   connect(&m_buzzStatusTimer,
 	  SIGNAL(timeout(void)),
 	  page,
@@ -3996,6 +4023,10 @@ void spoton::slotJoinBuzzChannel(void)
 	  SIGNAL(changed(void)),
 	  this,
 	  SLOT(slotBuzzChanged(void)));
+  connect(page,
+	  SIGNAL(channelSaved(void)),
+	  this,
+	  SLOT(slotPopulateBuzzFavorites(void)));
   connect(this,
 	  SIGNAL(buzzNameChanged(const QByteArray &)),
 	  page,
@@ -4223,7 +4254,9 @@ void spoton::slotRemoveEmailParticipants(void)
 
 void spoton::slotAddAcceptedIP(void)
 {
-  if(!m_crypts.value("chat", 0))
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("Invalid spoton_crypt object."));
@@ -4258,13 +4291,13 @@ void spoton::slotAddAcceptedIP(void)
 	  ("INSERT INTO accepted_ips (ip_address, ip_address_hash) "
 	   "VALUES (?, ?)");
 	query.bindValue
-	  (0, m_crypts.value("chat")->encrypted(ip.toString().toLatin1(),
-						&ok).toBase64());
+	  (0, s_crypt->encrypted(ip.toString().toLatin1(),
+				 &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (1, m_crypts.value("chat")->keyedHash(ip.toString().
-						  toLatin1(), &ok).
+	    (1, s_crypt->keyedHash(ip.toString().
+				   toLatin1(), &ok).
 	     toBase64());
 
 	if(ok)
@@ -4288,7 +4321,9 @@ void spoton::slotAddAcceptedIP(void)
 
 void spoton::slotDeleteAccepedIP(void)
 {
-  if(!m_crypts.value("chat", 0))
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
     return;
 
   QString ip("");
@@ -4321,8 +4356,8 @@ void spoton::slotDeleteAccepedIP(void)
 	query.prepare("DELETE FROM accepted_ips WHERE "
 		      "ip_address_hash = ?");
 	query.bindValue
-	  (0, m_crypts.value("chat")->keyedHash(ip.toLatin1(),
-						&ok).toBase64());
+	  (0, s_crypt->keyedHash(ip.toLatin1(),
+				 &ok).toBase64());
 	query.exec();
       }
 
@@ -4347,7 +4382,7 @@ void spoton::slotDeleteAccepedIP(void)
 		      "WHERE remote_ip_address_hash = ?");
 	query.bindValue
 	  (0,
-	   m_crypts.value("chat")->keyedHash(ip.toLatin1(), &ok).
+	   s_crypt->keyedHash(ip.toLatin1(), &ok).
 	   toBase64());
 
 	if(ok)

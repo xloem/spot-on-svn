@@ -122,6 +122,73 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
   QSqlDatabase::removeDatabase(connectionName);
   sb.status->setText
+    (QObject::tr("Re-encoding buzz_channels.db."));
+  sb.status->repaint();
+  spoton_misc::prepareDatabases();
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "buzz_channels.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT data, data_hash FROM "
+		      "buzz_channels"))
+	  while(query.next())
+	    {
+	      QByteArray data;
+	      QSqlQuery updateQuery(db);
+	      bool ok = true;
+
+	      updateQuery.prepare("UPDATE buzz_channels "
+				  "SET data = ?, "
+				  "data_hash = ? WHERE "
+				  "data_hash = ?");
+	      data = oldCrypt->decrypted(QByteArray::
+					 fromBase64(query.
+						    value(0).
+						    toByteArray()),
+					 &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (0, newCrypt->encrypted(data,
+					  &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (1,
+		   newCrypt->keyedHash(data,
+				       &ok).toBase64());
+
+	      updateQuery.bindValue
+		(2, query.value(1));
+
+	      if(ok)
+		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare("DELETE FROM buzz_channels WHERE "
+				      "data_hash = ?");
+		  deleteQuery.bindValue(0, query.value(1));
+		  deleteQuery.exec();
+		}
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  sb.status->setText
     (QObject::tr("Re-encoding country_inclusion.db."));
   sb.status->repaint();
   spoton_misc::prepareDatabases();

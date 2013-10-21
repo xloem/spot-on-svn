@@ -235,6 +235,7 @@ class spoton: public QMainWindow
   void slotEmptyTrash(void);
   void slotEnableRetrieveMail(void);
   void slotEnabledPostOffice(bool state);
+  void slotFavoritesActivated(int index);
   void slotFetchMoreAlgo(void);
   void slotFetchMoreButton(void);
   void slotGeminiChanged(QTableWidgetItem *item);
@@ -271,6 +272,7 @@ class spoton: public QMainWindow
   void slotNeighborSelected(void);
   void slotParticipantDoubleClicked(QTableWidgetItem *item);
   void slotPopulateAcceptedIPs(void);
+  void slotPopulateBuzzFavorites(void);
   void slotPopulateCountries(void);
   void slotPopulateListeners(void);
   void slotPopulateNeighbors(void);
@@ -287,6 +289,7 @@ class spoton: public QMainWindow
   void slotRefreshMail(void);
   void slotRefreshPostOffice(void);
   void slotRemoveEmailParticipants(void);
+  void slotRemoveFavorite(void);
   void slotRemoveParticipants(void);
   void slotReply(void);
   void slotResetAll(void);

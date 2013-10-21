@@ -75,6 +75,19 @@
            </widget>
           </item>
           <item>
+           <widget class="QToolButton" name="removeFavoriteBuzz">
+            <property name="text">
+             <string>Remove</string>
+            </property>
+            <property name="popupMode">
+             <enum>QToolButton::InstantPopup</enum>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="horizontalSpacer_39">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -112,6 +125,19 @@
            </widget>
           </item>
           <item>
+           <widget class="QLabel" name="label_33">
+            <property name="text">
+             <string>&amp;Channel</string>
+            </property>
+            <property name="buddy">
+             <cstring>channel</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="channel"/>
+          </item>
+          <item>
            <widget class="QLabel" name="label_44">
             <property name="text">
              <string>&amp;Frequency</string>
@@ -130,19 +156,6 @@
              <number>999999999</number>
             </property>
            </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_33">
-            <property name="text">
-             <string>&amp;Channel</string>
-            </property>
-            <property name="buddy">
-             <cstring>channel</cstring>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="channel"/>
           </item>
           <item>
            <widget class="QLabel" name="label_37">
@@ -228,8 +241,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1005</width>
-                <height>607</height>
+                <width>1013</width>
+                <height>597</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1565,8 +1578,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>216</width>
-                 <height>625</height>
+                 <width>228</width>
+                 <height>612</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2756,8 +2769,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1005</width>
-             <height>607</height>
+             <width>1013</width>
+             <height>597</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3957,7 +3970,7 @@
      <x>0</x>
      <y>0</y>
      <width>1035</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -4075,10 +4088,11 @@
  <tabstops>
   <tabstop>tab</tabstop>
   <tabstop>favorites</tabstop>
+  <tabstop>removeFavoriteBuzz</tabstop>
   <tabstop>buzzName</tabstop>
   <tabstop>saveBuzzName</tabstop>
-  <tabstop>buzzIterationCount</tabstop>
   <tabstop>channel</tabstop>
+  <tabstop>buzzIterationCount</tabstop>
   <tabstop>channelSalt</tabstop>
   <tabstop>channelType</tabstop>
   <tabstop>join</tabstop>

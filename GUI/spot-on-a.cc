@@ -303,6 +303,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSaveBuzzName(void)));
+  connect(m_ui.favorites,
+	  SIGNAL(activated(int)),
+	  this,
+	  SLOT(slotFavoritesActivated(int)));
   connect(m_ui.nodeName,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -701,6 +705,12 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)), this, SLOT(slotShareURLPublicKey(void)));
 #endif
   m_ui.toolButtonMakeFriends->setMenu(menu);
+  menu = new QMenu(this);
+  connect(menu->addAction(tr("&Remove")),
+	  SIGNAL(triggered(void)), this, SLOT(slotRemoveFavorite(void)));
+  connect(menu->addAction(tr("Remove &All")),
+	  SIGNAL(triggered(void)), this, SLOT(slotRemoveFavorite(void)));
+  m_ui.removeFavoriteBuzz->setMenu(menu);
   menu = new QMenu(this);
   connect(menu->addAction(tr("&Off")),
 	  SIGNAL(triggered(void)), this, SLOT(slotCountriesToggleOff(void)));
@@ -1197,7 +1207,9 @@ void spoton::slotQuit(void)
 
 void spoton::slotAddListener(void)
 {
-  if(!m_crypts.value("chat", 0))
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("Invalid spoton_crypt object."));
@@ -1291,7 +1303,7 @@ void spoton::slotAddListener(void)
 
 	if(ip.isEmpty())
 	  query.bindValue
-	    (0, m_crypts.value("chat")->
+	    (0, s_crypt->
 	     encrypted(QByteArray(), &ok).toBase64());
 	else
 	  {
@@ -1339,30 +1351,30 @@ void spoton::slotAddListener(void)
 
 	    if(ok)
 	      query.bindValue
-		(0, m_crypts.value("chat")->
+		(0, s_crypt->
 		 encrypted(ip.toLatin1(), &ok).toBase64());
 	  }
 
 	if(ok)
 	  query.bindValue
-	    (1, m_crypts.value("chat")->
+	    (1, s_crypt->
 	     encrypted(port.toLatin1(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (2, m_crypts.value("chat")->
+	    (2, s_crypt->
 	     encrypted(protocol.toLatin1(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (3, m_crypts.value("chat")->
+	    (3, s_crypt->
 	     encrypted(scopeId.toLatin1(), &ok).toBase64());
 
 	query.bindValue(4, status);
 
 	if(ok)
 	  query.bindValue
-	    (5, m_crypts.value("chat")->
+	    (5, s_crypt->
 	     keyedHash((ip + port + scopeId).toLatin1(), &ok).
 	     toBase64());
 
@@ -1370,12 +1382,12 @@ void spoton::slotAddListener(void)
 	  {
 	    if(m_ui.listenersEchoMode->currentIndex() == 0)
 	      query.bindValue
-		(6, m_crypts.value("chat")->encrypted(QByteArray("full"),
-						      &ok).toBase64());
+		(6, s_crypt->encrypted(QByteArray("full"),
+				       &ok).toBase64());
 	    else
 	      query.bindValue
-		(6, m_crypts.value("chat")->encrypted(QByteArray("half"),
-						      &ok).toBase64());
+		(6, s_crypt->encrypted(QByteArray("half"),
+				       &ok).toBase64());
 	  }
 
 	if(m_ui.sslListener->isChecked())
@@ -1385,17 +1397,17 @@ void spoton::slotAddListener(void)
 
 	if(ok)
 	  query.bindValue
-	    (8, m_crypts.value("chat")->encrypted(certificate, &ok).
+	    (8, s_crypt->encrypted(certificate, &ok).
 	     toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (9, m_crypts.value("chat")->encrypted(privateKey, &ok).
+	    (9, s_crypt->encrypted(privateKey, &ok).
 	     toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (10, m_crypts.value("chat")->encrypted(publicKey, &ok).
+	    (10, s_crypt->encrypted(publicKey, &ok).
 	     toBase64());
 
 	if(ok)
@@ -1420,7 +1432,9 @@ void spoton::slotAddListener(void)
 
 void spoton::slotAddNeighbor(void)
 {
-  if(!m_crypts.value("chat", 0))
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("Invalid spoton_crypt object."));
@@ -1492,12 +1506,12 @@ void spoton::slotAddNeighbor(void)
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
 	query.bindValue
-	  (2, m_crypts.value("chat")->
+	  (2, s_crypt->
 	   encrypted(protocol.toLatin1(), &ok).toBase64());
 
 	if(ip.isEmpty())
 	  query.bindValue
-	    (3, m_crypts.value("chat")->
+	    (3, s_crypt->
 	     encrypted(QByteArray(), &ok).toBase64());
 	else
 	  {
@@ -1547,20 +1561,20 @@ void spoton::slotAddNeighbor(void)
 
 	    if(ok)
 	      query.bindValue
-		(3, m_crypts.value("chat")->
+		(3, s_crypt->
 		 encrypted(ip.toLatin1(), &ok).toBase64());
 	  }
 
 	if(ok)
 	  query.bindValue
-	    (4, m_crypts.value("chat")->
+	    (4, s_crypt->
 	     encrypted(port.toLatin1(), &ok).toBase64());
 
 	query.bindValue(5, 1); // Sticky.
 
 	if(ok)
 	  query.bindValue
-	    (6, m_crypts.value("chat")->
+	    (6, s_crypt->
 	     encrypted(scopeId.toLatin1(), &ok).toBase64());
 
 	if(m_ui.proxy->isChecked())
@@ -1571,7 +1585,7 @@ void spoton::slotAddNeighbor(void)
 
 	if(ok)
 	  query.bindValue
-	    (7, m_crypts.value("chat")->
+	    (7, s_crypt->
 	     keyedHash((proxyHostname + proxyPort + ip + port + scopeId).
 		       toLatin1(), &ok).
 	     toBase64());
@@ -1582,17 +1596,17 @@ void spoton::slotAddNeighbor(void)
 
 	if(ok)
 	  query.bindValue
-	    (9, m_crypts.value("chat")->
+	    (9, s_crypt->
 	     encrypted(country.toLatin1(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (10, m_crypts.value("chat")->keyedHash(ip.toLatin1(), &ok).
+	    (10, s_crypt->keyedHash(ip.toLatin1(), &ok).
 	     toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (11, m_crypts.value("chat")->
+	    (11, s_crypt->
 	     keyedHash(country.remove(" ").toLatin1(), &ok).
 	     toBase64());
 
@@ -1620,34 +1634,34 @@ void spoton::slotAddNeighbor(void)
 
 	if(ok)
 	  query.bindValue
-	    (12, m_crypts.value("chat")->
+	    (12, s_crypt->
 	     encrypted(proxyHostname.toLatin1(), &ok).
 	     toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (13, m_crypts.value("chat")->
+	    (13, s_crypt->
 	     encrypted(proxyPassword.toUtf8(), &ok).
 	     toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (14, m_crypts.value("chat")->encrypted(proxyPort.toLatin1(),
-						   &ok).toBase64());
+	    (14, s_crypt->encrypted(proxyPort.toLatin1(),
+				    &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (15, m_crypts.value("chat")->encrypted(proxyType.toLatin1(), &ok).
+	    (15, s_crypt->encrypted(proxyType.toLatin1(), &ok).
 	     toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (16, m_crypts.value("chat")->encrypted(proxyUsername.toUtf8(), &ok).
+	    (16, s_crypt->encrypted(proxyUsername.toUtf8(), &ok).
 	     toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (17, m_crypts.value("chat")->
+	    (17, s_crypt->
 	     encrypted(QByteArray("{00000000-0000-0000-0000-"
 				  "000000000000}"), &ok).toBase64());
 
@@ -1655,11 +1669,11 @@ void spoton::slotAddNeighbor(void)
 	  {
 	    if(m_ui.neighborsEchoMode->currentIndex() == 0)
 	      query.bindValue
-		(18, m_crypts.value("chat")->
+		(18, s_crypt->
 		 encrypted(QByteArray("full"), &ok).toBase64());
 	    else
 	      query.bindValue
-		(18, m_crypts.value("chat")->
+		(18, s_crypt->
 		 encrypted(QByteArray("half"), &ok).toBase64());
 	  }
 
@@ -1672,20 +1686,20 @@ void spoton::slotAddNeighbor(void)
 
 	if(ok)
 	  query.bindValue
-	    (21, m_crypts.value("chat")->encrypted(QByteArray(),
-						   &ok).toBase64());
+	    (21, s_crypt->encrypted(QByteArray(),
+				    &ok).toBase64());
 
 	query.bindValue(22, m_ui.requireSsl->isChecked() ? 1 : 0);
 
 	if(ok)
 	  query.bindValue
-	    (23, m_crypts.value("chat")->encrypted(QByteArray(),
-						   &ok).toBase64());
+	    (23, s_crypt->encrypted(QByteArray(),
+				    &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (24, m_crypts.value("chat")->encrypted(QByteArray(),
-						   &ok).toBase64());
+	    (24, s_crypt->encrypted(QByteArray(),
+				    &ok).toBase64());
 
 	if(ok)
 	  ok = query.exec();
@@ -1780,7 +1794,9 @@ void spoton::slotScramble(bool state)
 
 void spoton::slotPopulateListeners(void)
 {
-  if(!m_crypts.value("chat", 0))
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
     return;
 
   QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
@@ -1881,28 +1897,28 @@ void spoton::slotPopulateListeners(void)
 		      "Use Accounts: %9")).
 		  arg(query.value(1).toString()).
 		  arg(query.value(2).toString()).
-		  arg(m_crypts.value("chat")->
+		  arg(s_crypt->
 		      decrypted(QByteArray::
 				fromBase64(query.
 					   value(3).
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(m_crypts.value("chat")->
+		  arg(s_crypt->
 		      decrypted(QByteArray::
 				fromBase64(query.
 					   value(4).
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(m_crypts.value("chat")->
+		  arg(s_crypt->
 		      decrypted(QByteArray::
 				fromBase64(query.
 					   value(5).
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(m_crypts.value("chat")->
+		  arg(s_crypt->
 		      decrypted(QByteArray::
 				fromBase64(query.
 					   value(7).
@@ -1910,7 +1926,7 @@ void spoton::slotPopulateListeners(void)
 				&ok).
 		      constData()).
 		  arg(query.value(9).toString()).
-		  arg(m_crypts.value("chat")->
+		  arg(s_crypt->
 		      decrypted(QByteArray::
 				fromBase64(query.
 					   value(11).
@@ -2024,7 +2040,7 @@ void spoton::slotPopulateListeners(void)
 			      item = new QTableWidgetItem();
 			    else
 			      item = new QTableWidgetItem
-				(m_crypts.value("chat")->
+				(s_crypt->
 				 decrypted(QByteArray::
 					   fromBase64(query.
 						      value(i).
@@ -2061,13 +2077,13 @@ void spoton::slotPopulateListeners(void)
 		QWidget *focusWidget = QApplication::focusWidget();
 
 		ok = true;
-		bytes1 = m_crypts.value("chat")->decrypted
+		bytes1 = s_crypt->decrypted
 		  (QByteArray::fromBase64(query.value(3).toByteArray()),
 		   &ok);
-		bytes2 = m_crypts.value("chat")->decrypted
+		bytes2 = s_crypt->decrypted
 		  (QByteArray::fromBase64(query.value(4).toByteArray()),
 		   &ok);
-		bytes3 = m_crypts.value("chat")->decrypted
+		bytes3 = s_crypt->decrypted
 		  (QByteArray::fromBase64(query.value(5).toByteArray()),
 		   &ok);
 
@@ -2119,7 +2135,9 @@ void spoton::slotPopulateListeners(void)
 
 void spoton::slotPopulateNeighbors(void)
 {
-  if(!m_crypts.value("chat", 0))
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
     return;
 
   QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
@@ -2247,7 +2265,7 @@ void spoton::slotPopulateNeighbors(void)
 		QString tooltip("");
 		bool ok = true;
 
-		certificateDigest = m_crypts.value("chat")->
+		certificateDigest = s_crypt->
 		  decrypted(QByteArray::
 			    fromBase64(query.
 				       value(21).
@@ -2261,7 +2279,7 @@ void spoton::slotPopulateNeighbors(void)
 		if(!ok)
 		  certificateDigest = "XYZ";
 
-		sslSessionCipher = m_crypts.value("chat")->
+		sslSessionCipher = s_crypt->
 		  decrypted(QByteArray::
 			    fromBase64(query.
 				       value(24).
@@ -2286,7 +2304,7 @@ void spoton::slotPopulateNeighbors(void)
 		      "SSL Session Cipher: %19\n"
 		      "Account Name: %20\n"
 		      "Account Authenticated: %21\n")).
-		  arg(m_crypts.value("chat")->
+		  arg(s_crypt->
 		      decrypted(QByteArray::
 				fromBase64(query.
 					   value(1).
@@ -2297,56 +2315,56 @@ void spoton::slotPopulateNeighbors(void)
 		  arg(query.value(3).toString()).
 		  arg(query.value(5).toString()).
 		  arg(query.value(6).toString()).
-		  arg(m_crypts.value("chat")->
+		  arg(s_crypt->
 		      decrypted(QByteArray::
 				fromBase64(query.
 					   value(7).
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(m_crypts.value("chat")->
+		  arg(s_crypt->
 		      decrypted(QByteArray::
 				fromBase64(query.
 					   value(9).
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(m_crypts.value("chat")->
+		  arg(s_crypt->
 		      decrypted(QByteArray::
 				fromBase64(query.
 					   value(10).
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(m_crypts.value("chat")->
+		  arg(s_crypt->
 		      decrypted(QByteArray::
 				fromBase64(query.
 					   value(11).
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(m_crypts.value("chat")->
+		  arg(s_crypt->
 		      decrypted(QByteArray::
 				fromBase64(query.
 					   value(12).
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(m_crypts.value("chat")->
+		  arg(s_crypt->
 		      decrypted(QByteArray::
 				fromBase64(query.
 					   value(14).
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(m_crypts.value("chat")->
+		  arg(s_crypt->
 		      decrypted(QByteArray::
 				fromBase64(query.
 					   value(15).
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(m_crypts.value("chat")->
+		  arg(s_crypt->
 		      decrypted(QByteArray::
 				fromBase64(query.
 					   value(18).
@@ -2362,7 +2380,7 @@ void spoton::slotPopulateNeighbors(void)
 		  arg(query.value(22).toULongLong()).
 		  arg(query.value(23).toULongLong()).
 		  arg(sslSessionCipher.constData()).
-		  arg(m_crypts.value("chat")->
+		  arg(s_crypt->
 		      decrypted(QByteArray::
 				fromBase64(query.
 					   value(25).
@@ -2422,7 +2440,7 @@ void spoton::slotPopulateNeighbors(void)
 			    bool ok = true;
 
 			    if(i != 3) // SSL Key Size
-			      bytes = m_crypts.value("chat")->decrypted
+			      bytes = s_crypt->decrypted
 				(QByteArray::
 				 fromBase64(query.
 					    value(i).
@@ -2580,19 +2598,19 @@ void spoton::slotPopulateNeighbors(void)
 		QWidget *focusWidget = QApplication::focusWidget();
 
 		ok = true;
-		bytes1 = m_crypts.value("chat")->decrypted
+		bytes1 = s_crypt->decrypted
 		  (QByteArray::fromBase64(query.value(columnREMOTE_IP).
 					  toByteArray()), &ok);
-		bytes2 = m_crypts.value("chat")->decrypted
+		bytes2 = s_crypt->decrypted
 		  (QByteArray::fromBase64(query.value(columnREMOTE_PORT).
 					  toByteArray()), &ok);
-		bytes3 = m_crypts.value("chat")->decrypted
+		bytes3 = s_crypt->decrypted
 		  (QByteArray::fromBase64(query.value(columnSCOPE_ID).
 					  toByteArray()), &ok);
-		bytes4 = m_crypts.value("chat")->decrypted
+		bytes4 = s_crypt->decrypted
 		  (QByteArray::fromBase64(query.value(columnPROXY_IP).
 					  toByteArray()), &ok);
-		bytes5 = m_crypts.value("chat")->decrypted
+		bytes5 = s_crypt->decrypted
 		  (QByteArray::fromBase64(query.value(columnPROXY_PORT).
 					  toByteArray()), &ok);
 
@@ -3583,6 +3601,7 @@ void spoton::slotSetPassphrase(void)
 	("gui/saltedPassphraseHash", m_settings["gui/saltedPassphraseHash"]);
       settings.setValue
 	("gui/signatureKey", m_settings["gui/signatureKey"]);
+      slotPopulateBuzzFavorites();
 
       QMessageBox::information
 	(this, tr("Spot-On: Information"),
@@ -3665,6 +3684,7 @@ void spoton::slotValidatePassphrase(void)
 
 	    sendBuzzKeysToKernel();
 	    sendKeysToKernel();
+	    slotPopulateBuzzFavorites();
 	    m_sb.kernelstatus->setEnabled(true);
 	    m_sb.listeners->setEnabled(true);
 	    m_sb.neighbors->setEnabled(true);
@@ -4154,7 +4174,9 @@ void spoton::slotDisconnectNeighbor(void)
 
 void spoton::slotBlockNeighbor(void)
 {
-  if(!m_crypts.value("chat", 0))
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
     return;
 
   QString remoteIp("");
@@ -4204,11 +4226,11 @@ void spoton::slotBlockNeighbor(void)
 	      bool ok = true;
 
 	      ip =
-		m_crypts.value("chat")->decrypted(QByteArray::
-						  fromBase64(query.
-							     value(0).
-							     toByteArray()),
-						  &ok).
+		s_crypt->decrypted(QByteArray::
+				   fromBase64(query.
+					      value(0).
+					      toByteArray()),
+				   &ok).
 		constData();
 
 	      if(ok)
@@ -4234,7 +4256,9 @@ void spoton::slotBlockNeighbor(void)
 
 void spoton::slotUnblockNeighbor(void)
 {
-  if(!m_crypts.value("chat", 0))
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
     return;
 
   QString remoteIp("");
@@ -4281,11 +4305,11 @@ void spoton::slotUnblockNeighbor(void)
 	      bool ok = true;
 
 	      QString ip
-		(m_crypts.value("chat")->decrypted(QByteArray::
-						   fromBase64(query.
-							      value(0).
-							      toByteArray()),
-						   &ok).
+		(s_crypt->decrypted(QByteArray::
+				    fromBase64(query.
+					       value(0).
+					       toByteArray()),
+				    &ok).
 		 constData());
 
 	      if(ok)
@@ -4383,7 +4407,9 @@ void spoton::slotDeleteAllNeighbors(void)
 
 void spoton::slotPopulateParticipants(void)
 {
-  if(!m_crypts.value("chat", 0))
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
     return;
 
   QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
@@ -4559,7 +4585,7 @@ void spoton::slotPopulateParticipants(void)
 			    item = new QTableWidgetItem();
 			  else
 			    item = new QTableWidgetItem
-			      (m_crypts.value("chat")->
+			      (s_crypt->
 			       decrypted(QByteArray::
 					 fromBase64(query.
 						    value(i).
@@ -4788,7 +4814,9 @@ void spoton::slotKernelSocketSslErrors(const QList<QSslError> &errors)
 
 void spoton::changeEchoMode(const QString &mode, QTableWidget *tableWidget)
 {
-  if(!m_crypts.value("chat", 0))
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
     return;
   else if(!tableWidget)
     return;
@@ -4838,7 +4866,7 @@ void spoton::changeEchoMode(const QString &mode, QTableWidget *tableWidget)
 			"WHERE OID = ?");
 
 	query.bindValue
-	  (0, m_crypts.value("chat")->encrypted(mode.toLatin1(), &ok).
+	  (0, s_crypt->encrypted(mode.toLatin1(), &ok).
 	   toBase64());
 	query.bindValue(1, oid);
 
@@ -4889,7 +4917,9 @@ void spoton::slotCountriesToggleOn(void)
 
 void spoton::countriesToggle(const bool state)
 {
-  if(!m_crypts.value("chat", 0))
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
     return;
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -4924,13 +4954,13 @@ void spoton::countriesToggle(const bool state)
 	    query.prepare("UPDATE country_inclusion SET accepted = ? "
 			  "WHERE country_hash = ?");
 	    query.bindValue
-	      (0, m_crypts.value("chat")->
+	      (0, s_crypt->
 	       encrypted(QString::number(state).
 			 toLatin1(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(1, m_crypts.value("chat")->
+		(1, s_crypt->
 		 keyedHash(item->text().toLatin1(), &ok).
 		 toBase64());
 
@@ -4985,7 +5015,7 @@ void spoton::countriesToggle(const bool state)
 			      "WHERE qt_country_hash = ?");
 		query.bindValue
 		  (0,
-		   m_crypts.value("chat")->
+		   s_crypt->
 		   keyedHash(item->text().toLatin1(), &ok).
 		   toBase64());
 
@@ -5407,7 +5437,9 @@ void spoton::slotAcceptedIPs(bool state)
 
 void spoton::slotPopulateAcceptedIPs(void)
 {
-  if(!m_crypts.value("chat", 0))
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
     return;
 
   QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
@@ -5456,7 +5488,7 @@ void spoton::slotPopulateAcceptedIPs(void)
 		QString ip("");
 		bool ok = true;
 
-		ip = m_crypts.value("chat")->
+		ip = s_crypt->
 		  decrypted(QByteArray::
 			    fromBase64(query.
 				       value(0).
@@ -5714,4 +5746,196 @@ void spoton::authenticate(spoton_crypt *crypt, const QString &oid,
 				 "and the account password must contain "
 				 "at least sixteen characters."));
     }
+}
+
+void spoton::slotPopulateBuzzFavorites(void)
+{
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QMap<QByteArray, QByteArray> map;
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "buzz_channels.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT data FROM buzz_channels"))
+	  while(query.next())
+	    {
+	      QByteArray data;
+	      bool ok = true;
+
+	      data = s_crypt->
+		decrypted(QByteArray::
+			  fromBase64(query.
+				     value(0).
+				     toByteArray()),
+			  &ok);
+
+	      if(ok)
+		{
+		  QByteArray channelName;
+		  QByteArray channelSalt;
+		  QByteArray channelType;
+		  QList<QByteArray> list(data.split('\n'));
+		  unsigned long iterationCount = 0;
+
+		  channelName = QByteArray::fromBase64(list.value(0)).
+		    trimmed();
+		  channelType = QByteArray::fromBase64(list.value(3)).
+		    trimmed();
+
+		  if(!channelName.isEmpty() && !channelType.isEmpty())
+		    {
+		      QByteArray label;
+
+		      channelSalt = QByteArray::fromBase64
+			(list.value(2)).trimmed();
+		      iterationCount = qMax
+			(QByteArray::fromBase64(list.value(1)).
+			 toULong(), static_cast<unsigned long> (10000));
+		      label.append(channelName);
+		      label.append(":");
+		      label.append(QString::number(iterationCount));
+		      label.append(":");
+
+		      if(channelSalt.size() > 32)
+			{
+			  label.append(channelSalt.mid(0, 16));
+			  label.append("...");
+			  label.append
+			    (channelSalt.mid(channelSalt.size() - 16));
+			}
+		      else
+			label.append(channelSalt);
+
+		      label.append(":");
+		      label.append(channelType);
+		      map.insert(label, data);
+		    }
+		}
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  if(!map.isEmpty())
+    {
+      m_ui.favorites->clear();
+
+      for(int i = 0; i < map.keys().size(); i++)
+	{
+	  m_ui.favorites->addItem(map.keys().at(i));
+	  m_ui.favorites->setItemData(i, map.value(map.keys().at(i)));
+	}
+    }
+  else
+    {
+      m_ui.favorites->clear();
+      m_ui.favorites->addItem(tr("Empty"));
+    }
+}
+
+void spoton::slotFavoritesActivated(int index)
+{
+  QByteArray data(m_ui.favorites->itemData(index).toByteArray());
+  QList<QByteArray> list(data.split('\n'));
+
+  for(int i = 0; i < list.size(); i++)
+    list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+  m_ui.channel->setText(list.value(0));
+  m_ui.buzzIterationCount->setValue(list.value(1).toULong());
+  m_ui.channelSalt->setText(list.value(2));
+
+  if(m_ui.channelType->findText(list.value(3)) > -1)
+    m_ui.channelType->setCurrentIndex
+      (m_ui.channelType->findText(list.value(3)));
+  else
+    m_ui.channelType->setCurrentIndex(0);
+}
+
+void spoton::slotRemoveFavorite(void)
+{
+  QAction *action = qobject_cast<QAction *> (sender());
+  QString connectionName("");
+  QString error("");
+  bool ok = true;
+  bool removeAll = true;
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!action)
+    {
+      error = tr("Invalid action object.");
+      goto done_label;
+    }
+  else if(!m_ui.removeFavoriteBuzz->menu())
+    {
+      error = tr("Invalid menu object.");
+      goto done_label;
+    }
+  else if(!s_crypt)
+    {
+      error = tr("Invalid spoton_crypt object.");
+      goto done_label;
+    }
+
+  if(action == m_ui.removeFavoriteBuzz->menu()->actions().value(0))
+    removeAll = false;
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "buzz_channels.db");
+
+    if(db.open())
+      {
+	QByteArray data;
+	QSqlQuery query(db);
+
+	if(removeAll)
+	  query.prepare("DELETE FROM buzz_channels");
+	else
+	  {
+	    query.prepare("DELETE FROM buzz_channels WHERE "
+			  "data_hash = ?");
+	    query.bindValue
+	      (0, s_crypt->keyedHash(m_ui.favorites->
+				     itemData(m_ui.favorites->currentIndex()).
+				     toByteArray(), &ok).toBase64());
+	  }
+
+	if(ok)
+	  ok = query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  if(!ok)
+    error = tr("A database error occurred.");
+
+ done_label:
+
+  if(!error.isEmpty())
+    QMessageBox::critical(this, tr("Spot-On: Error"), error);
+  else
+    slotPopulateBuzzFavorites();
 }

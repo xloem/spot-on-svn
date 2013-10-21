@@ -29,6 +29,8 @@
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QSettings>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 #if QT_VERSION >= 0x050000
 #include <QtConcurrent>
 #endif
@@ -46,6 +48,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 				 const QByteArray &channelType,
 				 const QByteArray &id,
 				 const unsigned long iterationCount,
+				 spoton_crypt *crypt,
 				 QWidget *parent):QWidget(parent)
 {
   ui.setupUi(this);
@@ -60,6 +63,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
   if(m_channelType.isEmpty())
     m_channelType = "aes256";
 
+  m_crypt = crypt;
   m_id = id.trimmed();
   m_iterationCount = qMax(static_cast<unsigned long> (10000),
 			  iterationCount);
@@ -93,7 +97,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 
 	    salt = m_channel + m_channelType;
 
-	  m_channelSalt = salt.toBase64();
+	  m_channelSalt = salt;
 	}
       else
 	ui.salt->setText(m_channelSalt);
@@ -122,6 +126,14 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 	  SIGNAL(clicked(void)),
 	  ui.messages,
 	  SLOT(clear(void)));
+  connect(ui.favorite,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSave(void)));
+  connect(ui.remove,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotRemove(void)));
   connect(ui.sendMessage,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -575,4 +587,122 @@ void spoton_buzzpage::slotBuzzNameChanged(const QByteArray &name)
   list << name
        << m_id;
   userStatus(list);
+}
+
+void spoton_buzzpage::slotSave(void)
+{
+  if(!m_crypt)
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object."));
+      return;
+    }
+
+  QString connectionName("");
+  bool ok = true;
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "buzz_channels.db");
+
+    if(db.open())
+      {
+	QByteArray data;
+	QSqlQuery query(db);
+
+	data.append(m_channel.toBase64());
+	data.append("\n");
+	data.append(QString::number(m_iterationCount).toLatin1().toBase64());
+	data.append("\n");
+
+	if(!ui.salt->text().isEmpty())
+	  data.append(m_channelSalt.toBase64());
+	else
+	  data.append(QByteArray().toBase64());
+
+	data.append("\n");
+	data.append(m_channelType.toBase64());
+	query.prepare("INSERT OR REPLACE INTO buzz_channels "
+		      "(data, data_hash) "
+		      "VALUES (?, ?)");
+	query.bindValue(0, m_crypt->encrypted(data, &ok).toBase64());
+
+	if(ok)
+	  query.bindValue(1, m_crypt->keyedHash(data, &ok).toBase64());
+
+	if(ok)
+	  ok = query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  if(!ok)
+    QMessageBox::critical(this, tr("Spot-On: Error"),
+			  tr("An error occurred while attempting to "
+			     "save the channel data. Please enable "
+			     "logging and try again."));
+  else
+    emit channelSaved();
+}
+
+void spoton_buzzpage::slotRemove(void)
+{
+  if(!m_crypt)
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object."));
+      return;
+    }
+
+  QString connectionName("");
+  bool ok = true;
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "buzz_channels.db");
+
+    if(db.open())
+      {
+	QByteArray data;
+	QSqlQuery query(db);
+
+	data.append(m_channel.toBase64());
+	data.append("\n");
+	data.append(QString::number(m_iterationCount).toLatin1().toBase64());
+	data.append("\n");
+
+	if(!ui.salt->text().isEmpty())
+	  data.append(m_channelSalt.toBase64());
+	else
+	  data.append(QByteArray().toBase64());
+
+	data.append("\n");
+	data.append(m_channelType.toBase64());
+	query.prepare("DELETE FROM buzz_channels WHERE "
+		      "data_hash = ?");
+	query.bindValue(0, m_crypt->keyedHash(data, &ok).toBase64());
+
+	if(ok)
+	  ok = query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  if(!ok)
+    QMessageBox::critical(this, tr("Spot-On: Error"),
+			  tr("An error occurred while attempting to "
+			     "remove the channel data. Please enable "
+			     "logging and try again."));
+  else
+    emit channelSaved();
 }

@@ -39,6 +39,8 @@
 
 #include "ui_buzzpage.h"
 
+class spoton_crypt;
+
 class spoton_buzzpage: public QWidget
 {
   Q_OBJECT
@@ -50,6 +52,7 @@ class spoton_buzzpage: public QWidget
 		  const QByteArray &channelType,
 		  const QByteArray &id,
 		  const unsigned long iterationCount,
+		  spoton_crypt *crypt,
 		  QWidget *parent);
   ~spoton_buzzpage();
   QByteArray channel(void) const;
@@ -65,7 +68,7 @@ class spoton_buzzpage: public QWidget
   QByteArray m_channelSalt;
   QByteArray m_channelType;
   QByteArray m_id;
-  QByteArray m_key;
+  QByteArray m_key; // Not stored in secure memory.
   QFuture<void> m_future;
   QHash<QByteArray, QDateTime> m_messagingCache; /*
 						 ** Prevent duplicate
@@ -78,12 +81,15 @@ class spoton_buzzpage: public QWidget
   QTimer m_statusTimer;
   Ui_buzzPage ui;
   bool m_purge;
+  spoton_crypt *m_crypt;
   unsigned long m_iterationCount;
   void purgeMessagingCache(void);
 
  private slots:
   void slotBuzzNameChanged(const QByteArray &name);
   void slotMessagingCachePurge(void);
+  void slotRemove(void);
+  void slotSave(void);
   void slotSendMessage(void);
   void slotSendStatus(void);
   void slotSetIcons(void);
@@ -91,6 +97,7 @@ class spoton_buzzpage: public QWidget
 
  signals:
   void changed(void);
+  void channelSaved(void);
 };
 
 #endif
