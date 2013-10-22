@@ -81,6 +81,9 @@
 45.  The total reset mechanism neglected to remove accepted_ips.db.
 46.  Record generated data as it may be returned via echoes. Disregard
      duplicates.
+47.  Corrected implementation of the Encrypt-then-MAC usage. One key
+     should be used for encryption and a separate key for generating
+     the MAC.
 
 0.05 (09/16/2013)
 

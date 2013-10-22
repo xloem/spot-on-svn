@@ -12,7 +12,7 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+0 - Keyed Sha-512 Message Code (Base-64)
 }
 
 Groups: 3
@@ -37,7 +37,7 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+0 - Keyed Sha-512 Message Code (Base-64)
 }
 
 Echo Call
@@ -63,7 +63,7 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+0 - Keyed Sha-512 Message Code (Base-64)
 }
 
 Echo Mail
@@ -142,7 +142,7 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+0 - Keyed Sha-512 Message Code (Base-64)
 }
 
 Retrieve Mail
@@ -168,24 +168,24 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+0 - Keyed Sha-512 Message Code (Base-64)
 }
 
 Key Exchange
 Echoed? No
 
-Message Type ("0011" or "0012") (Plaintext)
-0 - Key Type (Base-64) (Plaintext)
+Message Type ("0011" or "0012")
+0 - Key Type (Base-64)
 EOL
-1 - Sender's Name (Base-64) (Plaintext)
+1 - Sender's Name (Base-64)
 EOL
-2 - Sender's Public Key (Base-64) (Plaintext)
+2 - Sender's Public Key (Base-64)
 EOL
-3 - Sender's Public Key Signature (Base-64) (Plaintext)
+3 - Sender's Public Key Signature (Base-64)
 EOL
 4 - Sender's Signature Public Key (Base-64) (Public)
 EOL
-5 - Sender's Signature Public Key Signature (Base-64) (Plaintext)
+5 - Sender's Signature Public Key Signature (Base-64)
 
 Status
 Echoed? Yes
@@ -199,7 +199,7 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+0 - Keyed Sha-512 Message Code (Base-64)
 }
 
 Groups: 3
@@ -224,30 +224,30 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+0 - Keyed Sha-512 Message Code (Base-64)
 }
 
 UUID Exchange
 Echoed? No
 
-Message Type ("0014") (Plaintext)
-UUID (Base-64) (Plaintext)
+Message Type ("0014")
+UUID (Base-64)
 
 Keep Alive
 Echoed? No
 
-Message Type ("0015") (Plaintext)
-0 (Plaintext)
+Message Type ("0015")
+0
 
 Echo Listener Publication
 Echoed? Yes
 
-Message Type ("0030") (Plaintext)
-0 - IP Address (Base-64) (Plaintext)
+Message Type ("0030")
+0 - IP Address (Base-64)
 EOL
-1 - Port (Base-64) (Plaintext)
+1 - Port (Base-64)
 EOL
-2 - Scope ID (Base-64) (Plaintext)
+2 - Scope ID (Base-64)
 
 Echo Buzz
 Echoed? Yes
@@ -263,7 +263,7 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+0 - Keyed Sha-512 Message Code (Base-64)
 }
 
 Groups: 2
@@ -279,21 +279,21 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64) (Plaintext)
+0 - Keyed Sha-512 Message Code (Base-64)
 }
 
 Account Authentication
 Echoed? No
 
-Message Type ("0050") (Plaintext)
-0 - Sha-512 Digest (Base-64) (Plaintext)
+Message Type ("0050")
+0 - Sha-512 Digest (Base-64)
 EOL
-1 - Random Data (Base-64) (Plaintext)
+1 - Random Data (Base-64)
 
-Message Type ("0051") (Plaintext)
-0 - Sha-512 Digest (Base-64) (Plaintext)
+Message Type ("0051")
+0 - Sha-512 Digest (Base-64)
 EOL
-1 - Random Data (Base-64) (Plaintext)
+1 - Random Data (Base-64)
 
-Message Type ("0052") (Plaintext)
-0 (Plaintext)
+Message Type ("0052")
+0
