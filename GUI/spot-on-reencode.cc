@@ -902,18 +902,18 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  (15, newCrypt->encrypted(protocol.toLatin1(), &ok).
 		   toBase64());
 
-	      updateQuery.bindValue
-		(16, query.value(4));
-
 	      if(ok)
 		updateQuery.bindValue
-		  (17, newCrypt->encrypted(accountName.toLatin1(), &ok).
+		  (16, newCrypt->encrypted(accountName.toLatin1(), &ok).
 		   toBase64());
 
 	      if(ok)
 		updateQuery.bindValue
-		  (18, newCrypt->encrypted(accountPassword.toLatin1(),
+		  (17, newCrypt->encrypted(accountPassword.toLatin1(),
 					   &ok).toBase64());
+
+	      updateQuery.bindValue
+		(18, query.value(4));
 
 	      if(ok)
 		updateQuery.exec();
