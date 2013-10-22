@@ -5307,9 +5307,11 @@ void spoton::slotCopyEmailFriendshipBundle(void)
 					 "randomized").toString().
 			toLatin1());
   QByteArray gemini;
+  QByteArray hashKey;
   QByteArray keyInformation;
   QByteArray publicKey;
   QByteArray symmetricKey;
+  bool ok = true;
 
   if(cipherType == "randomized")
     cipherType = spoton_crypt::randomCipherType();
@@ -5323,18 +5325,18 @@ void spoton::slotCopyEmailFriendshipBundle(void)
   spoton_misc::retrieveSymmetricData(gemini,
 				     publicKey,
 				     symmetricKey,
+				     hashKey,
 				     neighborOid,
 				     cipherType,
 				     oid,
-				     m_crypts.value("email"));
+				     m_crypts.value("email"),
+				     &ok);
 
-  if(publicKey.isEmpty() || symmetricKey.isEmpty())
+  if(!ok || publicKey.isEmpty() || symmetricKey.isEmpty())
     {
       clipboard->clear();
       return;
     }
-
-  bool ok = true;
 
   keyInformation = spoton_crypt::publicKeyEncrypt
     (symmetricKey.toBase64() + "@" + cipherType.toBase64(),
