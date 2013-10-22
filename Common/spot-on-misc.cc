@@ -32,6 +32,7 @@
 #include <QNetworkProxy>
 #include <QSettings>
 #include <QSqlDatabase>
+#include <QSqlError>
 #include <QSqlQuery>
 #include <QString>
 
@@ -942,13 +943,20 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 void spoton_misc::retrieveSymmetricData(QByteArray &gemini,
 					QByteArray &publicKey,
 					QByteArray &symmetricKey,
+					QByteArray &hashKey,
 					QString &neighborOid,
 					const QByteArray &cipherType,
 					const QString &oid,
-					spoton_crypt *crypt)
+					spoton_crypt *crypt,
+					bool *ok)
 {
   if(!crypt)
-    return;
+    {
+      if(ok)
+	*ok = false;
+
+      return;
+    }
 
   QString connectionName("");
 
@@ -969,34 +977,55 @@ void spoton_misc::retrieveSymmetricData(QByteArray &gemini,
 	query.bindValue(0, oid);
 
 	if(query.exec())
-	  if(query.next())
-	    {
-	      size_t symmetricKeyLength = spoton_crypt::cipherKeyLength
-		(cipherType);
+	  {
+	    if(ok)
+	      *ok = true;
 
-	      if(symmetricKeyLength > 0)
-		{
-		  bool ok = true;
+	    if(query.next())
+	      {
+		size_t symmetricKeyLength = spoton_crypt::cipherKeyLength
+		  (cipherType);
 
-		  if(!query.isNull(0))
-		    gemini = crypt->decrypted
-		      (QByteArray::fromBase64(query.
-					      value(0).
-					      toByteArray()),
-		       &ok);
+		if(symmetricKeyLength > 0)
+		  {
+		    if(!query.isNull(0))
+		      gemini = crypt->decrypted
+			(QByteArray::fromBase64(query.
+						value(0).
+						toByteArray()),
+			 ok);
 
-		  neighborOid = query.value(1).toString();
-		  publicKey = query.value(2).toByteArray();
-		  symmetricKey.resize(symmetricKeyLength);
-		  symmetricKey = spoton_crypt::strongRandomBytes
-		    (symmetricKey.length());
-		}
-	      else
-		logError
-		  ("spoton_misc::retrieveSymmetricData(): "
-		   "cipherKeyLength() failure.");
-	    }
+		    neighborOid = query.value(1).toString();
+		    publicKey = query.value(2).toByteArray();
+		    symmetricKey.resize(symmetricKeyLength);
+		    symmetricKey = spoton_crypt::strongRandomBytes
+		      (symmetricKey.length());
+		    hashKey.resize(symmetricKeyLength);
+		    hashKey = spoton_crypt::strongRandomBytes
+		      (hashKey.length());
+		  }
+		else
+		  {
+		    if(ok)
+		      *ok  = false;
+
+		    logError
+		      ("spoton_misc::retrieveSymmetricData(): "
+		       "cipherKeyLength() failure.");
+		  }
+	      }
+	    else if(ok)
+	      *ok = false;
+	  }
+
+	if(query.lastError().isValid())
+	  {
+	    if(ok)
+	      *ok = false;
+	  }
       }
+    else if(ok)
+      *ok = false;
 
     db.close();
   }

@@ -1064,6 +1064,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 			toLatin1());
   QByteArray data;
   QByteArray gemini;
+  QByteArray hashKey;
   QByteArray keyInformation;
   QByteArray symmetricKey;
   QString neighborOid("");
@@ -1074,10 +1075,15 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
   spoton_misc::retrieveSymmetricData(gemini,
 				     publicKey,
 				     symmetricKey,
+				     hashKey,
 				     neighborOid,
 				     cipherType,
 				     QString::number(oid),
-				     s_crypt1);
+				     s_crypt1,
+				     &ok);
+
+  if(!ok)
+    return;
 
   keyInformation = spoton_crypt::publicKeyEncrypt
     (QByteArray("0000").toBase64() + "\n" +

@@ -89,10 +89,12 @@ class spoton_misc
   static void retrieveSymmetricData(QByteArray &gemini,
 				    QByteArray &publicKey,
 				    QByteArray &symmetricKey,
+				    QByteArray &hashKey,
 				    QString &neighborOid,
 				    const QByteArray &cipherType,
 				    const QString &oid,
-				    spoton_crypt *crypt);
+				    spoton_crypt *crypt,
+				    bool *ok);
   static void savePublishedNeighbor(const QHostAddress &address,
 				    const quint16 port,
 				    const QString &statusControl,
