@@ -915,8 +915,11 @@ void spoton_neighbor::slotReadyRead(void)
 	      ** response is valid.
 	      */
 
-	      if(m_authenticationSentTime.
-		 msecsTo(QDateTime::currentDateTime()) <= 15000)
+	      if(m_authenticationSentTime.msecsTo(QDateTime::
+						  currentDateTime()) <=
+		 spoton_kernel::setting("kernel/"
+					"server_account_verification_"
+					"window_msecs", 15000).toInt())
 		{
 		  process0051(length, data);
 
@@ -3008,7 +3011,8 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 				    spoton_crypt::weakRandomBytes(32));
 	}
 
-      resetKeepAlive();
+      if(m_accountAuthenticated)
+	resetKeepAlive();
 
       spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
@@ -3094,53 +3098,65 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 
       spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
-      if(s_crypt)
+      if(list.at(1) != m_accountClientSentSalt &&
+	 !m_accountClientSentSalt.isEmpty())
 	{
-	  QByteArray name(m_accountName);
-	  QByteArray password(m_accountPassword);
-	  QByteArray newSaltedCredentials;
-	  QByteArray salt(list.at(1));
-	  QByteArray saltedCredentials(list.at(0));
-	  bool ok = true;
-
-	  name = s_crypt->decrypted(name, &ok);
-
-	  if(ok)
-	    password = s_crypt->decrypted(password, &ok);
-
-	  if(ok)
-	    newSaltedCredentials = spoton_crypt::saltedValue
-	      ("sha512",
-	       name + password,
-	       salt,
-	       &ok);
-
-	  if(ok)
+	  if(s_crypt)
 	    {
-	      if(newSaltedCredentials == saltedCredentials)
-		m_accountAuthenticated = true;
-	      else
+	      QByteArray name(m_accountName);
+	      QByteArray password(m_accountPassword);
+	      QByteArray newSaltedCredentials;
+	      QByteArray salt(list.at(1));
+	      QByteArray saltedCredentials(list.at(0));
+	      bool ok = true;
+
+	      name = s_crypt->decrypted(name, &ok);
+
+	      if(ok)
+		password = s_crypt->decrypted(password, &ok);
+
+	      if(ok)
+		newSaltedCredentials = spoton_crypt::saltedValue
+		  ("sha512",
+		   name + password,
+		   salt,
+		   &ok);
+
+	      if(ok)
 		{
-		  m_accountAuthenticated = false;
-		  spoton_misc::logError
-		    ("spoton_neighbor::process0051(): "
-		     "the provided salted credentials appear to be "
-		     "invalid. The server may be devious.");
+		  if(newSaltedCredentials == saltedCredentials)
+		    m_accountAuthenticated = true;
+		  else
+		    {
+		      m_accountAuthenticated = false;
+		      spoton_misc::logError
+			("spoton_neighbor::process0051(): "
+			 "the provided salted credentials appear to be "
+			 "invalid. The server may be devious.");
+		    }
 		}
+	      else
+		m_accountAuthenticated = false;
 	    }
-	  else
-	    m_accountAuthenticated = false;
 	}
       else
 	{
 	  m_accountAuthenticated = false;
-	  spoton_misc::logError
-	    ("spoton_neighbor::process0051(): "
-	     "the provided salt is identical to the generated salt. "
-	     "The server may be devious.");
+
+	  if(m_accountClientSentSalt.isEmpty())
+	    spoton_misc::logError
+	      ("spoton_neighbor::process0051(): "
+	       "the server replied to an authentication message, however, "
+	       "my provided salt is empty.");
+	  else
+	    spoton_misc::logError
+	      ("spoton_neighbor::process0051(): "
+	       "the provided salt is identical to the generated salt. "
+	       "The server may be devious.");
 	}
 
-      resetKeepAlive();
+      if(m_accountAuthenticated)
+	resetKeepAlive();
 
       if(s_crypt)
 	{
@@ -4328,6 +4344,7 @@ void spoton_neighbor::slotSendAccountInformation(void)
 	    else
 	      {
 		flush();
+		m_accountClientSentSalt = salt;
 		m_accountTimer.stop();
 		m_authenticationSentTime = QDateTime::currentDateTime();
 		m_bytesWritten += message.length();

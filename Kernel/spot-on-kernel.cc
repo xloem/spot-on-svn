@@ -199,6 +199,10 @@ int main(int argc, char *argv[])
   if(!settings.contains("kernel/gcryctl_init_secmem"))
     settings.setValue("kernel/gcryctl_init_secmem", 65536);
 
+  if(!settings.contains("kernel/server_account_verification_window_msecs"))
+    settings.setValue("kernel/server_account_verification_window_msecs",
+		      15000);
+
   if(!settings.contains("kernel/tcp_nodelay"))
     settings.setValue("kernel/tcp_nodelay", 1);
 

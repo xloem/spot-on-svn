@@ -1755,6 +1755,14 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 65536;
 
   settings["kernel/gcryctl_init_secmem"] = integer;
+  integer = qAbs
+    (settings.value("kernel/server_account_verification_window_msecs",
+		    15000).toInt(&ok));
+
+  if(!ok)
+    integer = 15000;
+
+  settings["kernel/server_account_verification_window_msecs"] = integer;
 }
 
 QSqlDatabase spoton_misc::database(QString &connectionName)
