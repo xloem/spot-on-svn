@@ -1750,6 +1750,7 @@ void spoton_kernel::slotRetrieveMail(void)
 		cipherType = spoton_crypt::randomCipherType();
 
 	      QByteArray data;
+	      QByteArray hashKey;
 	      QByteArray keyInformation;
 	      QByteArray message(spoton_crypt::strongRandomBytes(256));
 	      QByteArray publicKey
@@ -1763,6 +1764,9 @@ void spoton_kernel::slotRetrieveMail(void)
 
 	      if(symmetricKeyLength > 0)
 		{
+		  hashKey.resize(symmetricKeyLength);
+		  hashKey = spoton_crypt::strongRandomBytes
+		    (hashKey.length());
 		  symmetricKey.resize(symmetricKeyLength);
 		  symmetricKey = spoton_crypt::strongRandomBytes
 		    (symmetricKey.length());
@@ -1778,6 +1782,7 @@ void spoton_kernel::slotRetrieveMail(void)
 	      keyInformation = spoton_crypt::publicKeyEncrypt
 		(QByteArray("0002").toBase64() + "\n" +
 		 symmetricKey.toBase64() + "\n" +
+		 hashKey.toBase64() + "\n" +
 		 symmetricKeyAlgorithm.toBase64(),
 		 publicKey, &ok);
 
@@ -1809,7 +1814,9 @@ void spoton_kernel::slotRetrieveMail(void)
 
 		  if(ok)
 		    {
-		      QByteArray messageCode(crypt.keyedHash(data, &ok));
+		      QByteArray messageCode
+			(spoton_crypt::keyedHash(data, hashKey,
+						 "sha512", &ok));
 
 		      if(ok)
 			data = keyInformation.toBase64() + "\n" +

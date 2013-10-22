@@ -5997,7 +5997,13 @@ void spoton::slotRemoveFavorite(void)
   if(!error.isEmpty())
     QMessageBox::critical(this, tr("Spot-On: Error"), error);
   else
-    slotPopulateBuzzFavorites();
+    {
+      slotPopulateBuzzFavorites();
+      m_ui.channel->clear();
+      m_ui.channelSalt->clear();
+      m_ui.channelType->setCurrentIndex(0);
+      m_ui.buzzIterationCount->setValue(m_ui.buzzIterationCount->minimum());
+    }
 }
 
 void spoton::slotCopyBuzz(void)

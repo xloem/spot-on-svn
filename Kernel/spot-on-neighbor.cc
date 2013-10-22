@@ -2262,6 +2262,7 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
       ** we retrieve the letters in a timely, yet functional, manner?
       */
 
+      QByteArray hashKey;
       QByteArray keyInformation(list.value(0));
       QByteArray symmetricKey;
       QByteArray symmetricKeyAlgorithm;
@@ -2275,18 +2276,19 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 
 	  list.removeAt(0); // Message Type
 
-	  if(list.size() == 2)
+	  if(list.size() == 3)
 	    {
+	      hashKey = QByteArray::fromBase64(list.value(1));
 	      symmetricKey = QByteArray::fromBase64(list.value(0));
 	      symmetricKeyAlgorithm = QByteArray::fromBase64
-		(list.value(1));
+		(list.value(2));
 	    }
 	  else
 	    {
 	      spoton_misc::logError
 		(QString("spoton_neighbor::process0002(): "
 			 "received irregular data. "
-			 "Expecting 2 "
+			 "Expecting 3 "
 			 "entries, "
 			 "received %1.").arg(list.size()));
 	      return;
@@ -2295,19 +2297,12 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 
       if(ok)
 	{
-	  spoton_crypt crypt(symmetricKeyAlgorithm,
-			     QString("sha512"),
-			     QByteArray(),
-			     symmetricKey,
-			     0,
-			     0,
-			     QString(""));
-
 	  QByteArray data(list.value(1));
 	  QByteArray computedMessageCode;
 	  QByteArray messageCode(list.value(2));
 
-	  computedMessageCode = crypt.keyedHash(data, &ok);
+	  computedMessageCode = spoton_crypt::keyedHash
+	    (data, hashKey, "sha512", &ok);
 
 	  /*
 	  ** Let's not echo messages whose message codes are
@@ -2318,6 +2313,14 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 	    {
 	      if(computedMessageCode == messageCode)
 		{
+		  spoton_crypt crypt(symmetricKeyAlgorithm,
+				     QString("sha512"),
+				     QByteArray(),
+				     symmetricKey,
+				     0,
+				     0,
+				     QString(""));
+
 		  data = crypt.decrypted(data, &ok);
 
 		  if(ok)
@@ -2592,7 +2595,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 		  spoton_misc::logError
 		    (QString("spoton_neighbor::process0013(): "
 			     "received irregular data. "
-			     "Expecting 2 "
+			     "Expecting 3 "
 			     "entries, "
 			     "received %1.").arg(list.size()));
 		  return;
