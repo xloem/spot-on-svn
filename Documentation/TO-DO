@@ -76,6 +76,7 @@ Completed Items
 52.    Statistics.
 53.    Introduce DSA and ElGamal.
 54.    SQL injection.
+55.    Record sent data as it may be returned via an echo.
 
 Ignored Items
 
@@ -131,4 +132,3 @@ Remaining Items
 30.    Correct implementation of the Encrypt-then-MAC usage. One key
        should be used for encryption and a separate key for generating
        the MAC.
-31.    Record sent data as it may be returned via an echo.

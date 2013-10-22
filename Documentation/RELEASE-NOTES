@@ -79,6 +79,8 @@
      the generated salt in spoton_buzzpage::spoton_buzzpage() should not
      be interpreted as Base-64.
 45.  The total reset mechanism neglected to remove accepted_ips.db.
+46.  Record generated data as it may be returned via echoes. Disregard
+     duplicates.
 
 0.05 (09/16/2013)
 
