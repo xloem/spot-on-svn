@@ -211,9 +211,11 @@ Public Key
 {
 0 - 0013 (Base-64)
 EOL
-1 - Symmetric Key (Base-64)
+1 - Encryption Symmetric Key (Base-64)
 EOL
-2 - Symmetric Key Algorithm (Base-64)
+2 - MAC Symmetric Key (Base-64)
+EOL
+3 - Symmetric Key Algorithm (Base-64)
 }
 EOL
 Symmetric Key

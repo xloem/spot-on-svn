@@ -1512,6 +1512,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	      if(cipherType == "randomized")
 		cipherType = spoton_crypt::randomCipherType();
 
+	      QByteArray hashKey;
 	      QByteArray keyInformation;
 	      QByteArray name(setting("gui/nodeName", "unknown").
 			      toByteArray().trimmed());
@@ -1523,6 +1524,9 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 	      if(symmetricKeyLength > 0)
 		{
+		  hashKey.resize(symmetricKeyLength);
+		  hashKey = spoton_crypt::strongRandomBytes
+		    (hashKey.length());
 		  symmetricKey.resize(symmetricKeyLength);
 
 		  /*
@@ -1544,6 +1548,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		keyInformation = spoton_crypt::publicKeyEncrypt
 		  (QByteArray("0013").toBase64() + "\n" +
 		   symmetricKey.toBase64() + "\n" +
+		   hashKey.toBase64() + "\n" +
 		   symmetricKeyAlgorithm.toBase64(),
 		   publicKey, &ok);
 
@@ -1579,7 +1584,8 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		    if(ok)
 		      {
 			QByteArray messageCode
-			  (crypt.keyedHash(data, &ok));
+			  (spoton_crypt::keyedHash(data, hashKey,
+						   "sha512", &ok));
 
 			if(ok)
 			  data = keyInformation.toBase64() + "\n" +
