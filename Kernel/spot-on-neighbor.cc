@@ -1302,6 +1302,7 @@ void spoton_neighbor::slotSendMessage(const QByteArray &data)
 	{
 	  flush();
 	  m_bytesWritten += data.length();
+	  recordMessageHash(data);
 	}
     }
 }
@@ -3220,6 +3221,7 @@ void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
 	  {
 	    flush();
 	    m_bytesWritten += message.length();
+	    recordMessageHash(message);
 	  }
       }
 }
@@ -3548,6 +3550,7 @@ void spoton_neighbor::slotSendMail
 	    flush();
 	    m_bytesWritten += message.length();
 	    oids.append(pair.second);
+	    recordMessageHash(message);
 	  }
       }
 
@@ -3575,6 +3578,7 @@ void spoton_neighbor::slotSendMailFromPostOffice(const QByteArray &data)
 	{
 	  flush();
 	  m_bytesWritten += message.length();
+	  recordMessageHash(message);
 	}
     }
 }
@@ -3785,6 +3789,7 @@ void spoton_neighbor::slotRetrieveMail(const QList<QByteArray> &list)
 	  {
 	    flush();
 	    m_bytesWritten += message.length();
+	    recordMessageHash(message);
 	  }
       }
 }
@@ -3821,6 +3826,7 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
 	  {
 	    flush();
 	    m_bytesWritten += message.length();
+	    recordMessageHash(message);
 	  }
       }
 }
@@ -4048,6 +4054,7 @@ void spoton_neighbor::slotSendBuzz(const QByteArray &data)
 	{
 	  flush();
 	  m_bytesWritten += data.length();
+	  recordMessageHash(data);
 	}
     }
 }
@@ -4238,6 +4245,7 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data)
 	{
 	  flush();
 	  m_bytesWritten += message.length();
+	  recordMessageHash(message);
 	}
     }
 }
