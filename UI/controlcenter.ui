@@ -19,8 +19,11 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
-    <property name="bottomMargin">
-     <number>0</number>
+    <property name="spacing">
+     <number>5</number>
+    </property>
+    <property name="margin">
+     <number>5</number>
     </property>
     <item>
      <widget class="spoton_tabwidget" name="tab">
@@ -50,8 +53,17 @@
         <string>&amp;Buzz</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_9">
+        <property name="spacing">
+         <number>5</number>
+        </property>
+        <property name="margin">
+         <number>5</number>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_33">
+          <property name="spacing">
+           <number>5</number>
+          </property>
           <item>
            <widget class="QLabel" name="label_49">
             <property name="text">
@@ -104,6 +116,9 @@
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_40">
+          <property name="spacing">
+           <number>5</number>
+          </property>
           <item>
            <widget class="QLabel" name="label_32">
             <property name="text">
@@ -213,6 +228,9 @@
         <string>&amp;Chat</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_18">
+        <property name="spacing">
+         <number>5</number>
+        </property>
         <property name="margin">
          <number>0</number>
         </property>
@@ -225,6 +243,9 @@
            </sizepolicy>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_20">
+           <property name="spacing">
+            <number>5</number>
+           </property>
            <property name="margin">
             <number>0</number>
            </property>
@@ -241,15 +262,27 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1013</width>
-                <height>597</height>
+                <width>1021</width>
+                <height>596</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
+               <property name="spacing">
+                <number>5</number>
+               </property>
+               <property name="margin">
+                <number>5</number>
+               </property>
                <item>
                 <layout class="QVBoxLayout" name="verticalLayout_24">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_45">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
                    <item>
                     <widget class="QCheckBox" name="chatAcceptSigned">
                      <property name="text">
@@ -295,8 +328,17 @@
                      <string>Messages</string>
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_7">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
+                     <property name="margin">
+                      <number>5</number>
+                     </property>
                      <item>
                       <layout class="QHBoxLayout" name="horizontalLayout_27">
+                       <property name="spacing">
+                        <number>5</number>
+                       </property>
                        <item>
                         <spacer name="horizontalSpacer_23">
                          <property name="orientation">
@@ -336,8 +378,17 @@
                      <string>Participants</string>
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_19">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
+                     <property name="margin">
+                      <number>5</number>
+                     </property>
                      <item>
                       <layout class="QHBoxLayout" name="horizontalLayout_9">
+                       <property name="spacing">
+                        <number>5</number>
+                       </property>
                        <item>
                         <widget class="QLabel" name="label_5">
                          <property name="text">
@@ -458,6 +509,9 @@
                      </item>
                      <item>
                       <layout class="QHBoxLayout" name="horizontalLayout">
+                       <property name="spacing">
+                        <number>5</number>
+                       </property>
                        <item>
                         <widget class="QCheckBox" name="hideOfflineParticipants">
                          <property name="text">
@@ -486,8 +540,14 @@
                  </item>
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_14">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
                    <item>
                     <layout class="QVBoxLayout" name="verticalLayout_12">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
                      <item>
                       <spacer name="verticalSpacer_6">
                        <property name="orientation">
@@ -579,6 +639,9 @@
                    </item>
                    <item>
                     <layout class="QVBoxLayout" name="verticalLayout_23">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
                      <item>
                       <widget class="QPushButton" name="sendMessage">
                        <property name="text">
@@ -606,8 +669,17 @@
         <string>&amp;E-Mail</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_26">
+        <property name="spacing">
+         <number>5</number>
+        </property>
+        <property name="margin">
+         <number>5</number>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <property name="spacing">
+           <number>5</number>
+          </property>
           <item>
            <spacer name="horizontalSpacer_17">
             <property name="orientation">
@@ -697,15 +769,24 @@
         <item>
          <widget class="QTabWidget" name="mailTab">
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="tab_4">
            <attribute name="title">
             <string>&amp;Read</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_29">
+            <property name="spacing">
+             <number>5</number>
+            </property>
+            <property name="margin">
+             <number>5</number>
+            </property>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_38">
+              <property name="spacing">
+               <number>5</number>
+              </property>
               <item>
                <widget class="QComboBox" name="folder">
                 <property name="sizeAdjustPolicy">
@@ -847,6 +928,12 @@
             <string>&amp;Write</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_4">
+            <property name="margin">
+             <number>5</number>
+            </property>
+            <property name="spacing">
+             <number>5</number>
+            </property>
             <item row="1" column="0">
              <widget class="QLabel" name="label_10">
               <property name="text">
@@ -902,6 +989,9 @@
             </item>
             <item row="4" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_31">
+              <property name="spacing">
+               <number>5</number>
+              </property>
               <item>
                <widget class="QLineEdit" name="goldbug"/>
               </item>
@@ -962,6 +1052,9 @@
             </item>
             <item row="1" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_42">
+              <property name="spacing">
+               <number>5</number>
+              </property>
               <item>
                <widget class="QTableWidget" name="emailParticipants">
                 <property name="sizePolicy">
@@ -1043,6 +1136,9 @@
             </item>
             <item row="0" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_47">
+              <property name="spacing">
+               <number>5</number>
+              </property>
               <item>
                <widget class="QLineEdit" name="emailName"/>
               </item>
@@ -1075,8 +1171,17 @@
             <string>&amp;C/O</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_30">
+            <property name="spacing">
+             <number>5</number>
+            </property>
+            <property name="margin">
+             <number>5</number>
+            </property>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_19">
+              <property name="spacing">
+               <number>5</number>
+              </property>
               <item>
                <widget class="QCheckBox" name="postofficeCheckBox">
                 <property name="text">
@@ -1151,6 +1256,9 @@
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_37">
+              <property name="spacing">
+               <number>5</number>
+              </property>
               <item>
                <widget class="QLabel" name="label_27">
                 <property name="text">
@@ -1204,6 +1312,12 @@
         <string>&amp;Listeners</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_33">
+        <property name="spacing">
+         <number>5</number>
+        </property>
+        <property name="margin">
+         <number>5</number>
+        </property>
         <item>
          <widget class="QSplitter" name="listenersHorizontalSplitter">
           <property name="orientation">
@@ -1211,8 +1325,14 @@
           </property>
           <widget class="QWidget" name="layoutWidget">
            <layout class="QVBoxLayout" name="verticalLayout_6">
+            <property name="spacing">
+             <number>5</number>
+            </property>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_10">
+              <property name="spacing">
+               <number>5</number>
+              </property>
               <item>
                <widget class="QCheckBox" name="publishPeriodically">
                 <property name="text">
@@ -1342,6 +1462,12 @@
                <string>Add Listener</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
+               <property name="spacing">
+                <number>5</number>
+               </property>
+               <property name="margin">
+                <number>5</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_21">
                  <property name="text">
@@ -1354,6 +1480,9 @@
                </item>
                <item>
                 <layout class="QGridLayout" name="gridLayout_2">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
                  <item row="1" column="0" colspan="2">
                   <widget class="QLabel" name="listenerScopeIdLabel">
                    <property name="text">
@@ -1454,6 +1583,9 @@
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_36">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
                  <item>
                   <widget class="QLabel" name="label_38">
                    <property name="text">
@@ -1565,6 +1697,12 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_27">
+            <property name="spacing">
+             <number>5</number>
+            </property>
+            <property name="margin">
+             <number>5</number>
+            </property>
             <item>
              <widget class="QScrollArea" name="scrollArea_3">
               <property name="frameShape">
@@ -1578,17 +1716,29 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>228</width>
-                 <height>612</height>
+                 <width>254</width>
+                 <height>576</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
+                <property name="spacing">
+                 <number>5</number>
+                </property>
+                <property name="margin">
+                 <number>5</number>
+                </property>
                 <item>
                  <widget class="QGroupBox" name="accountsGB">
                   <property name="title">
                    <string>Accounts</string>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_37">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <property name="margin">
+                    <number>5</number>
+                   </property>
                    <item>
                     <widget class="QListWidget" name="accounts">
                      <property name="selectionBehavior">
@@ -1598,6 +1748,9 @@
                    </item>
                    <item>
                     <layout class="QGridLayout" name="gridLayout_6">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
                      <item row="0" column="0">
                       <widget class="QLabel" name="label_47">
                        <property name="text">
@@ -1632,6 +1785,9 @@
                    </item>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_52">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
                      <item>
                       <spacer name="horizontalSpacer_48">
                        <property name="orientation">
@@ -1687,8 +1843,17 @@
                    <string>Accepted Countries</string>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_25">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <property name="margin">
+                    <number>5</number>
+                   </property>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_41">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
                      <item>
                       <spacer name="horizontalSpacer_37">
                        <property name="orientation">
@@ -1745,11 +1910,20 @@
                    <bool>false</bool>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_36">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <property name="margin">
+                    <number>5</number>
+                   </property>
                    <item>
                     <widget class="QListWidget" name="acceptedIPList"/>
                    </item>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_49">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
                      <item>
                       <widget class="QLineEdit" name="acceptedIP"/>
                      </item>
@@ -1780,8 +1954,17 @@
         <string>&amp;Neighbors</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_34">
+        <property name="spacing">
+         <number>5</number>
+        </property>
+        <property name="margin">
+         <number>5</number>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_26">
+          <property name="spacing">
+           <number>5</number>
+          </property>
           <item>
            <widget class="QToolButton" name="toolButtonCopytoClipboard">
             <property name="toolTip">
@@ -1836,10 +2019,19 @@
           </property>
           <widget class="QWidget" name="layoutWidget1a">
            <layout class="QVBoxLayout" name="verticalLayout_2">
+            <property name="spacing">
+             <number>5</number>
+            </property>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_24">
+              <property name="spacing">
+               <number>5</number>
+              </property>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_4">
+                <property name="spacing">
+                 <number>5</number>
+                </property>
                 <item>
                  <widget class="QRadioButton" name="acceptPublishedConnected">
                   <property name="toolTip">
@@ -1927,6 +2119,9 @@
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_28">
+              <property name="spacing">
+               <number>5</number>
+              </property>
               <item>
                <widget class="QPushButton" name="authenticate">
                 <property name="text">
@@ -1958,6 +2153,9 @@
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_48">
+              <property name="spacing">
+               <number>5</number>
+              </property>
               <item>
                <widget class="QTableWidget" name="neighbors">
                 <property name="verticalScrollBarPolicy">
@@ -2150,14 +2348,20 @@
           </widget>
           <widget class="QWidget" name="layoutWidget1b">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <property name="spacing">
+             <number>5</number>
+            </property>
             <item>
              <widget class="QGroupBox" name="groupBox_addip_2">
               <property name="title">
                <string>Add Neighbor</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
-               <property name="bottomMargin">
-                <number>11</number>
+               <property name="spacing">
+                <number>5</number>
+               </property>
+               <property name="margin">
+                <number>5</number>
                </property>
                <item>
                 <widget class="QLabel" name="label_23">
@@ -2171,6 +2375,9 @@
                </item>
                <item>
                 <layout class="QGridLayout" name="gridLayout_3">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
                  <item row="0" column="1">
                   <widget class="QLineEdit" name="neighborIP"/>
                  </item>
@@ -2275,6 +2482,9 @@
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_35">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
                  <item>
                   <widget class="QLabel" name="label_39">
                    <property name="text">
@@ -2371,6 +2581,12 @@
                   <bool>false</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_5">
+                  <property name="margin">
+                   <number>5</number>
+                  </property>
+                  <property name="spacing">
+                   <number>5</number>
+                  </property>
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_3">
                     <property name="text">
@@ -2439,6 +2655,9 @@
                   </item>
                   <item row="0" column="1">
                    <layout class="QHBoxLayout" name="horizontalLayout_29">
+                    <property name="spacing">
+                     <number>5</number>
+                    </property>
                     <item>
                      <widget class="QComboBox" name="proxyType">
                       <property name="sizeAdjustPolicy">
@@ -2478,6 +2697,9 @@
                   </item>
                   <item row="1" column="3">
                    <layout class="QHBoxLayout" name="horizontalLayout_39">
+                    <property name="spacing">
+                     <number>5</number>
+                    </property>
                     <item>
                      <widget class="QSpinBox" name="proxyPort">
                       <property name="minimum">
@@ -2508,6 +2730,9 @@
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_6">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
                  <item>
                   <spacer name="horizontalSpacer_10">
                    <property name="orientation">
@@ -2552,8 +2777,17 @@
                <string>Add Participant</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
+               <property name="spacing">
+                <number>5</number>
+               </property>
+               <property name="margin">
+                <number>5</number>
+               </property>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_30">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
                  <item>
                   <widget class="QRadioButton" name="addFriendPublicKeyRadio">
                    <property name="text">
@@ -2582,6 +2816,9 @@
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_21">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
                  <item>
                   <spacer name="horizontalSpacer_8">
                    <property name="orientation">
@@ -2638,8 +2875,17 @@
         <string>&amp;Search</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="spacing">
+         <number>5</number>
+        </property>
+        <property name="margin">
+         <number>5</number>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <property name="spacing">
+           <number>5</number>
+          </property>
           <item>
            <spacer name="horizontalSpacer_4">
             <property name="orientation">
@@ -2694,6 +2940,9 @@
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_16">
+          <property name="spacing">
+           <number>5</number>
+          </property>
           <item>
            <widget class="QPushButton" name="deleteURL">
             <property name="text">
@@ -2753,8 +3002,11 @@
         <string>S&amp;ettings</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_15">
+        <property name="spacing">
+         <number>5</number>
+        </property>
         <property name="margin">
-         <number>0</number>
+         <number>5</number>
         </property>
         <item>
          <widget class="QScrollArea" name="scrollArea">
@@ -2769,13 +3021,22 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1013</width>
-             <height>597</height>
+             <width>1011</width>
+             <height>586</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
+            <property name="spacing">
+             <number>5</number>
+            </property>
+            <property name="margin">
+             <number>5</number>
+            </property>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_46">
+              <property name="spacing">
+               <number>5</number>
+              </property>
               <item>
                <widget class="QLabel" name="label_40">
                 <property name="text">
@@ -2813,6 +3074,9 @@
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_50">
+              <property name="spacing">
+               <number>5</number>
+              </property>
               <item>
                <widget class="QLabel" name="label_43">
                 <property name="text">
@@ -2864,14 +3128,26 @@
             </item>
             <item>
              <layout class="QVBoxLayout" name="verticalLayout_4">
+              <property name="spacing">
+               <number>5</number>
+              </property>
               <item>
                <widget class="QGroupBox" name="kernelBox">
                 <property name="title">
                  <string>Kernel</string>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_28">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <property name="margin">
+                  <number>5</number>
+                 </property>
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_15">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
                    <item>
                     <widget class="QPushButton" name="activateKernel">
                      <property name="text">
@@ -2939,6 +3215,9 @@
                  </item>
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_23">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
                    <item>
                     <widget class="QLabel" name="label_42">
                      <property name="text">
@@ -3070,14 +3349,17 @@
                  <string>Passphrase</string>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_16">
-                 <property name="topMargin">
-                  <number>6</number>
+                 <property name="spacing">
+                  <number>5</number>
                  </property>
-                 <property name="bottomMargin">
-                  <number>11</number>
+                 <property name="margin">
+                  <number>5</number>
                  </property>
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_18">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
                    <item>
                     <widget class="QLabel" name="label">
                      <property name="text">
@@ -3172,6 +3454,9 @@
                  </item>
                  <item>
                   <layout class="QGridLayout" name="gridLayout">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
                    <item row="1" column="0">
                     <widget class="QLabel" name="label_55">
                      <property name="text">
@@ -3231,6 +3516,12 @@
                  <string>Public Keys</string>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_51">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <property name="margin">
+                  <number>5</number>
+                 </property>
                  <item>
                   <widget class="QCheckBox" name="newKeys">
                    <property name="toolTip">
@@ -3367,6 +3658,9 @@
               </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_11">
+                <property name="spacing">
+                 <number>5</number>
+                </property>
                 <item>
                  <widget class="QPushButton" name="resetSpotOn">
                   <property name="text">
@@ -3402,6 +3696,12 @@
         <string>&amp;URLs</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_10">
+        <property name="spacing">
+         <number>5</number>
+        </property>
+        <property name="margin">
+         <number>5</number>
+        </property>
         <item>
          <widget class="QSplitter" name="urlsVerticalSplitter">
           <property name="orientation">
@@ -3412,8 +3712,17 @@
             <string>Participants</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_32">
+            <property name="spacing">
+             <number>5</number>
+            </property>
+            <property name="margin">
+             <number>5</number>
+            </property>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_12">
+              <property name="spacing">
+               <number>5</number>
+              </property>
               <item>
                <widget class="QLabel" name="label_22">
                 <property name="text">
@@ -3498,18 +3807,33 @@
             <string>URL Distillers</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
+            <property name="spacing">
+             <number>5</number>
+            </property>
+            <property name="margin">
+             <number>5</number>
+            </property>
             <item>
              <widget class="QTabWidget" name="urlTab">
               <property name="currentIndex">
-               <number>0</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="tab_2">
                <attribute name="title">
                 <string>&amp;Download</string>
                </attribute>
                <layout class="QVBoxLayout" name="verticalLayout_13">
+                <property name="spacing">
+                 <number>5</number>
+                </property>
+                <property name="margin">
+                 <number>5</number>
+                </property>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_17">
+                  <property name="spacing">
+                   <number>5</number>
+                  </property>
                   <item>
                    <spacer name="horizontalSpacer_15">
                     <property name="orientation">
@@ -3560,8 +3884,14 @@
                 </item>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_5">
+                  <property name="spacing">
+                   <number>5</number>
+                  </property>
                   <item>
                    <layout class="QVBoxLayout" name="verticalLayout_8">
+                    <property name="spacing">
+                     <number>5</number>
+                    </property>
                     <item>
                      <widget class="QPushButton" name="addDLDistiller">
                       <property name="text">
@@ -3616,8 +3946,17 @@
                 <string>&amp;Upload</string>
                </attribute>
                <layout class="QVBoxLayout" name="verticalLayout_17">
+                <property name="spacing">
+                 <number>5</number>
+                </property>
+                <property name="margin">
+                 <number>5</number>
+                </property>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_20">
+                  <property name="spacing">
+                   <number>5</number>
+                  </property>
                   <item>
                    <spacer name="horizontalSpacer_16">
                     <property name="orientation">
@@ -3668,8 +4007,14 @@
                 </item>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_22">
+                  <property name="spacing">
+                   <number>5</number>
+                  </property>
                   <item>
                    <layout class="QVBoxLayout" name="verticalLayout_14">
+                    <property name="spacing">
+                     <number>5</number>
+                    </property>
                     <item>
                      <widget class="QPushButton" name="addULDistiller">
                       <property name="text">
@@ -3736,8 +4081,17 @@
         <string/>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_34">
+        <property name="spacing">
+         <number>5</number>
+        </property>
+        <property name="margin">
+         <number>5</number>
+        </property>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_5">
+          <property name="spacing">
+           <number>5</number>
+          </property>
           <item>
            <spacer name="verticalSpacer_5">
             <property name="orientation">
@@ -3753,6 +4107,9 @@
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_32">
+            <property name="spacing">
+             <number>5</number>
+            </property>
             <item>
              <spacer name="horizontalSpacer_35">
               <property name="orientation">
@@ -3799,6 +4156,9 @@
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_13">
+            <property name="spacing">
+             <number>5</number>
+            </property>
             <item>
              <spacer name="horizontalSpacer_6">
               <property name="orientation">
@@ -3866,6 +4226,9 @@
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <property name="spacing">
+             <number>5</number>
+            </property>
             <item>
              <spacer name="horizontalSpacer">
               <property name="orientation">
