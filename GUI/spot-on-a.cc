@@ -3889,6 +3889,9 @@ void spoton::slotShowContextMenu(const QPoint &point)
 	(tr("&Authenticate"),
 	 this,
 	 SLOT(slotAuthenticate(void)));
+      menu.addAction(tr("&Reset Account Information"),
+		     this,
+		     SLOT(slotResetAccountInformation(void)));
       menu.addSeparator();
       menu.addAction(QIcon(QString(":/%1/clear.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
@@ -5651,6 +5654,58 @@ void spoton::slotChangeTabPosition(void)
   QSettings settings;
 
   settings.setValue("gui/tabPosition", m_settings.value("gui/tabPosition"));
+}
+
+void spoton::slotResetAccountInformation(void)
+{
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QModelIndexList list;
+
+  list = m_ui.neighbors->selectionModel()->selectedRows
+    (m_ui.neighbors->columnCount() - 1); // OID
+
+  if(list.isEmpty())
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("UPDATE neighbors SET "
+		      "account_authenticated = 0, "
+		      "account_name = ?, "
+		      "account_password = ? "
+		      "WHERE OID = ? and user_defined = 1");
+	query.bindValue
+	  (0, s_crypt->encrypted(QByteArray(), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (1, s_crypt->encrypted(QByteArray(), &ok).toBase64());
+
+	query.bindValue(2, list.at(0).data());
+
+	if(ok)
+	  query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton::slotAuthenticate(void)
