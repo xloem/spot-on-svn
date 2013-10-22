@@ -1088,6 +1088,7 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
   keyInformation = spoton_crypt::publicKeyEncrypt
     (QByteArray("0000").toBase64() + "\n" +
      symmetricKey.toBase64() + "\n" +
+     hashKey.toBase64() + "\n" +
      cipherType.toBase64(),
      publicKey, &ok);
 
@@ -1120,7 +1121,8 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 
 	if(ok)
 	  {
-	    QByteArray messageCode(crypt.keyedHash(data, &ok));
+	    QByteArray messageCode
+	      (spoton_crypt::keyedHash(data, hashKey, "sha512", &ok));
 
 	    if(ok)
 	      data = keyInformation.toBase64() +
@@ -2508,6 +2510,7 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 					  toByteArray()),
 		   &ok);
 
+	      QByteArray hashKey;
 	      QByteArray keyInformation;
 	      QByteArray publicKey(query.value(1).toByteArray());
 	      QByteArray symmetricKey;
@@ -2521,6 +2524,9 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 
 		  if(symmetricKeyLength > 0)
 		    {
+		      hashKey.resize(symmetricKeyLength);
+		      hashKey = spoton_crypt::strongRandomBytes
+			(hashKey.length());
 		      symmetricKey.resize(symmetricKeyLength);
 		      symmetricKey = spoton_crypt::strongRandomBytes
 			(symmetricKey.length());
@@ -2538,6 +2544,7 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 		keyInformation = spoton_crypt::publicKeyEncrypt
 		  (QByteArray("0000a").toBase64() + "\n" +
 		   symmetricKey.toBase64() + "\n" +
+		   hashKey.toBase64() + "\n" +
 		   symmetricKeyAlgorithm.toBase64(),
 		   publicKey, &ok);
 
@@ -2570,7 +2577,8 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 		    if(ok)
 		      {
 			QByteArray messageCode
-			  (crypt.keyedHash(data, &ok));
+			  (spoton_crypt::keyedHash(data, hashKey, "sha512",
+						   &ok));
 
 			if(ok)
 			  data = keyInformation.toBase64() + "\n" +
