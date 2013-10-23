@@ -207,7 +207,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_timer.start(2500);
 
   if(!m_useAccounts)
-    QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
+    QTimer::singleShot(10000, this, SLOT(slotSendUuid(void)));
 
   start();
 }
@@ -958,7 +958,7 @@ void spoton_neighbor::slotReadyRead(void)
 		  process0051(length, data);
 
 		  if(m_accountAuthenticated)
-		    QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
+		    QTimer::singleShot(10000, this, SLOT(slotSendUuid(void)));
 		}
 	      else
 		m_accountAuthenticated = false;
@@ -3405,7 +3405,7 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
       if(!m_requireSsl)
 	{
 	  if(m_socket.state() == QAbstractSocket::ConnectedState)
-	    QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
+	    QTimer::singleShot(10000, this, SLOT(slotSendUuid(void)));
 
 	  m_useSsl = false;
 	  spoton_misc::logError
@@ -4021,7 +4021,7 @@ void spoton_neighbor::slotEncrypted(void)
 	}
 
       m_accountTimer.start();
-      QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
+      QTimer::singleShot(10000, this, SLOT(slotSendUuid(void)));
     }
   else
     {
@@ -4423,7 +4423,7 @@ void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
   if(!m_socket.isEncrypted() || !readyToWrite())
     return;
 
-  QTimer::singleShot(5000, this, SLOT(slotSendUuid(void)));
+  QTimer::singleShot(10000, this, SLOT(slotSendUuid(void)));
 
   QByteArray message;
   QByteArray salt(spoton_crypt::strongRandomBytes(256));
