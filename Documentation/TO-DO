@@ -132,4 +132,6 @@ Remaining Items
 27.    Add SRP for accounts verification.
 28.    Provide a means of exporting and importing keys.
 29.    Add log filters.
-
+30.    There may be an issue with the validity of stored e-mail. That is,
+       retrieving e-mail from another node may retrieve compromised content.
+       Inspect it!

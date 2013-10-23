@@ -1082,7 +1082,8 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 				     s_crypt1,
 				     &ok);
 
-  if(!ok)
+  if(!ok || cipherType.isEmpty() || hashKey.isEmpty() ||
+     symmetricKey.isEmpty())
     return;
 
   keyInformation = spoton_crypt::publicKeyEncrypt
