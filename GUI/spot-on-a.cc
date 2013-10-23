@@ -706,6 +706,8 @@ spoton::spoton(void):QMainWindow()
 #endif
   m_ui.toolButtonMakeFriends->setMenu(menu);
   menu = new QMenu(this);
+  connect(menu->addAction(tr("&Demagnetize")),
+	  SIGNAL(triggered(void)), this, SLOT(slotDemagnetize(void)));
   connect(menu->addAction(tr("&Magnetize")),
 	  SIGNAL(triggered(void)), this, SLOT(slotCopyBuzz(void)));
   menu->addSeparator();
@@ -6039,4 +6041,39 @@ void spoton::slotCopyBuzz(void)
 
   if(!error.isEmpty())
     QMessageBox::critical(this, tr("Spot-On: Error"), error);
+}
+
+void spoton::slotDemagnetize(void)
+{
+  QStringList list
+    (m_ui.demagnetize->text().trimmed().remove("magnet:?").split('&'));
+
+  while(!list.isEmpty())
+    {
+      QString str(list.takeFirst());
+
+      if(str.startsWith("dn="))
+	{
+	  str.remove(0, 3);
+	  m_ui.channel->setText(str);
+	}
+      else if(str.startsWith("xf="))
+	{
+	  str.remove(0, 3);
+	  m_ui.buzzIterationCount->setValue(str.toInt());
+	}
+      else if(str.startsWith("xs="))
+	{
+	  str.remove(0, 3);
+	  m_ui.channelSalt->setText(str);
+	}
+      else if(str.startsWith("ct="))
+	{
+	  str.remove(0, 3);
+
+	  if(m_ui.channelType->findText(str) > -1)
+	    m_ui.channelType->setCurrentIndex
+	      (m_ui.channelType->findText(str));
+	}
+    }
 }

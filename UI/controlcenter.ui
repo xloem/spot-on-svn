@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1035</width>
+    <width>1196</width>
     <height>700</height>
    </rect>
   </property>
@@ -84,6 +84,13 @@
               <string>Empty</string>
              </property>
             </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="demagnetize">
+            <property name="toolTip">
+             <string>Demagnetize link.</string>
+            </property>
            </widget>
           </item>
           <item>
@@ -262,8 +269,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1021</width>
-                <height>596</height>
+                <width>1182</width>
+                <height>591</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1716,8 +1723,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>254</width>
-                 <height>576</height>
+                 <width>260</width>
+                 <height>590</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3021,8 +3028,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1011</width>
-             <height>586</height>
+             <width>1172</width>
+             <height>581</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4332,8 +4339,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1035</width>
-     <height>24</height>
+     <width>1196</width>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -4451,6 +4458,7 @@
  <tabstops>
   <tabstop>tab</tabstop>
   <tabstop>favorites</tabstop>
+  <tabstop>demagnetize</tabstop>
   <tabstop>removeFavoriteBuzz</tabstop>
   <tabstop>buzzName</tabstop>
   <tabstop>saveBuzzName</tabstop>
