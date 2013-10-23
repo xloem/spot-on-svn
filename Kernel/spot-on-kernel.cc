@@ -1918,6 +1918,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	      QByteArray data;
 	      QByteArray data1;
 	      QByteArray data2;
+	      QByteArray hashKey;
 	      QByteArray keyInformation1;
 	      QByteArray keyInformation2;
 	      QByteArray messageCode;
@@ -1931,6 +1932,9 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	      if(symmetricKeyLength > 0)
 		{
+		  hashKey.resize(symmetricKeyLength);
+		  hashKey = spoton_crypt::strongRandomBytes
+		    (hashKey.length());
 		  symmetricKey.resize(symmetricKeyLength);
 		  symmetricKey = spoton_crypt::strongRandomBytes
 		    (symmetricKey.length());
@@ -1946,6 +1950,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	      keyInformation1 = spoton_crypt::publicKeyEncrypt
 		(QByteArray("0001a").toBase64() + "\n" +
 		 symmetricKey.toBase64() + "\n" +
+		 hashKey.toBase64() + "\n" +
 		 symmetricKeyAlgorithm.toBase64(),
 		 participantPublicKey, &ok);
 
@@ -2007,6 +2012,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 		(QByteArray("0001b").toBase64() + "\n" +
 		 symmetricKey.toBase64() + "\n" +
+		 hashKey.toBase64() + "\n" +
 		 symmetricKeyAlgorithm.toBase64(),
 		 publicKey, &ok);
 
@@ -2066,8 +2072,8 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		       &ok);
 
 		  if(ok)
-		    messageCode = crypt.keyedHash
-		      (data2, &ok);
+		    messageCode = spoton_crypt::keyedHash
+		      (data2, hashKey, "sha512", &ok);
 		}
 
 	      if(ok)
