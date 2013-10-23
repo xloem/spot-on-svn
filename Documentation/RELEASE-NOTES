@@ -66,8 +66,8 @@
      possible. Parameterized statements are now used where applicable.
      Reviewed all DELETE, INSERT, SELECT, and UPDATE statements.
 40.  Modified the mechanism that's responsible for purging the congestion
-     control cache to remove at least 15% of the cache's capacity during
-     a purge event. Please also see item #22.
+     control cache so that it removes at least 15% of the cache's capacity
+     during a purge event. Please also see item #22.
 41.  Corrected spoton_misc::correctSettingsContainer() with respect
      to the congestion control and iteration count variables.
 42.  Added PRAGMA synchronous = OFF statements to several UPDATE queries
