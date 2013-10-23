@@ -85,7 +85,8 @@
      should be used for encryption and a separate key for generating
      the MAC.
 48.  The method spoton_misc::retrieveSymmetricData() must capture
-     failures. Otherwise, unpleasant assumptions will be made.
+     failures. Otherwise, unpleasant assumptions will be made. For example,
+     generating and sharing empty symmetric keys.
 
 0.05 (09/16/2013)
 
