@@ -165,7 +165,7 @@ void spoton_misc::prepareDatabases(void)
 					  */
 		   "message BLOB NOT NULL, "
 		   "message_code TEXT NOT NULL, " /*
-						  ** Not used.
+						  ** Not yet used.
 						  */
 		   "participant_oid TEXT NOT NULL, "
 		   "receiver_sender TEXT NOT NULL, "
