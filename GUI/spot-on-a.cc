@@ -4224,8 +4224,8 @@ void spoton::slotBlockNeighbor(void)
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT remote_ip_address, OID "
-		      "FROM neighbors WHERE status_control <> 'blocked' "
-		      "AND status_control <> 'deleted'"))
+		      "FROM neighbors WHERE status_control NOT IN "
+		      "('blocked', 'deleted')"))
 	  while(query.next())
 	    {
 	      QString ip("");

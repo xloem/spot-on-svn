@@ -44,6 +44,19 @@ class QNetworkInterface;
 
 class spoton_external_address;
 
+class spoton_neighbor_socket: public QSslSocket
+{
+ public:
+  spoton_neighbor_socket(QObject *parent = 0):QSslSocket(parent)
+  {
+  }
+
+  void setLocalAddress(const QHostAddress &address)
+  {
+    QSslSocket::setLocalAddress(address);
+  }
+};
+
 class spoton_neighbor: public QThread
 {
   Q_OBJECT
@@ -102,7 +115,6 @@ class spoton_neighbor: public QThread
   QHostAddress m_address;
   QNetworkInterface *m_networkInterface;
   QSslCertificate m_peerCertificate;
-  QSslSocket m_socket;
   QString m_echoMode;
   QString m_ipAddress;
   QString m_protocol;
@@ -127,6 +139,7 @@ class spoton_neighbor: public QThread
   quint64 m_bytesRead;
   quint64 m_bytesWritten;
   spoton_external_address *m_externalAddress;
+  spoton_neighbor_socket m_socket;
   QString findMessageType(const QByteArray &data,
 			  QPair<QByteArray, QByteArray> &symmetricKey);
   bool isDuplicateMessage(const QByteArray &data);
@@ -173,6 +186,7 @@ class spoton_neighbor: public QThread
 		     const qint64 neighborOid);
   void saveStatistics(const QSqlDatabase &db);
   void saveStatus(const QSqlDatabase &db, const QString &status);
+  void saveStatus(const QString &status);
   void sendAuthenticationRequest(void);
   void storeLetter(const QByteArray &symmetricKey,
 		   const QByteArray &symmetricKeyAlgorithm,

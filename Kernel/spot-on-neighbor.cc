@@ -636,6 +636,8 @@ void spoton_neighbor::slotTimeout(void)
       {
 	if(m_socket.state() == QAbstractSocket::UnconnectedState)
 	  {
+	    saveStatus("connecting");
+
 	    if(m_useSsl)
 	      m_socket.connectToHostEncrypted(m_address.toString(), m_port);
 	    else
@@ -727,6 +729,38 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
   query.exec();
 }
 
+void spoton_neighbor::saveStatus(const QString &status)
+{
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
+
+    if(db.open())
+      {
+	/*
+	** Remove symmetric keys that were not completely shared.
+	*/
+
+	QSqlQuery query(db);
+
+	query.prepare("UPDATE neighbors SET is_encrypted = ?, status = ? "
+		      "WHERE OID = ? AND status_control <> 'deleted'");
+	query.bindValue(0, m_socket.isEncrypted() ? 1 : 0);
+	query.bindValue(1, status);
+	query.bindValue(2, m_id);
+	query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}
+
 void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 				 const QString &status)
 {
@@ -740,7 +774,7 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
   QSqlQuery query(db);
 
   query.prepare("UPDATE neighbors SET is_encrypted = ?, status = ? "
-		"WHERE OID = ? AND status <> 'deleted'");
+		"WHERE OID = ? AND status_control <> 'deleted'");
   query.bindValue(0, m_socket.isEncrypted() ? 1 : 0);
   query.bindValue(1, status);
   query.bindValue(2, m_id);
@@ -1073,12 +1107,10 @@ void spoton_neighbor::slotConnected(void)
 
       QHostAddress address(m_ipAddress);
 
-#if 0
       if(address.protocol() == QAbstractSocket::IPv4Protocol)
 	m_socket.setLocalAddress(QHostAddress("127.0.0.1"));
       else
 	m_socket.setLocalAddress(QHostAddress("::1"));
-#endif
     }
 
   if(m_id != -1)
