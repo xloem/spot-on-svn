@@ -244,6 +244,7 @@ QByteArray spoton_crypt::saltedValue(const QString &hashType,
 				     const QByteArray &salt,
 				     bool *ok)
 {
+  QByteArray hash;
   QByteArray salted;
   int hashAlgorithm = gcry_md_map_name(hashType.toLatin1().constData());
   unsigned int length = 0;
@@ -295,14 +296,14 @@ QByteArray spoton_crypt::saltedValue(const QString &hashType,
   if(ok)
     *ok = true;
 
+  hash.resize(length);
   salted.append(data).append(salt);
-  salted.resize(length);
   gcry_md_hash_buffer(hashAlgorithm,
-		      static_cast<void *> (salted.data()),
+		      static_cast<void *> (hash.data()),
 		      static_cast<const void *> (salted.constData()),
 		      static_cast<size_t> (salted.length()));
  done_label:
-  return salted;
+  return hash;
 }
 
 QByteArray spoton_crypt::saltedPassphraseHash(const QString &hashType,

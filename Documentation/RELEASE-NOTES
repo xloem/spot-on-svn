@@ -1,3 +1,9 @@
+0.07 (12/01/2013)
+
+1.   Corrected use of gcry_md_hash_buffer() in spoton_crypt::saltedValue().
+     The input buffer was incorrectly resized. The method saltedValue() is currently
+     used for authenticating remote accounts.
+
 0.06 (10/24/2013)
 
 1.   Allow users of the libspoton library to store enough information
