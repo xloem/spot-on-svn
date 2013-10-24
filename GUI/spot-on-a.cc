@@ -6060,7 +6060,7 @@ void spoton::slotDemagnetize(void)
       else if(str.startsWith("xf="))
 	{
 	  str.remove(0, 3);
-	  m_ui.buzzIterationCount->setValue(str.toInt());
+	  m_ui.buzzIterationCount->setValue(qAbs(str.toInt()));
 	}
       else if(str.startsWith("xs="))
 	{
