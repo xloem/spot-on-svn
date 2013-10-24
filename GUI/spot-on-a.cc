@@ -706,7 +706,7 @@ spoton::spoton(void):QMainWindow()
 #endif
   m_ui.toolButtonMakeFriends->setMenu(menu);
   menu = new QMenu(this);
-  connect(menu->addAction(tr("&Demagnetize")),
+  connect(menu->addAction(tr("&Demagnetize && Join")),
 	  SIGNAL(triggered(void)), this, SLOT(slotDemagnetize(void)));
   connect(menu->addAction(tr("&Magnetize")),
 	  SIGNAL(triggered(void)), this, SLOT(slotCopyBuzz(void)));
@@ -6076,4 +6076,6 @@ void spoton::slotDemagnetize(void)
 	      (m_ui.channelType->findText(str));
 	}
     }
+
+  slotJoinBuzzChannel();
 }
