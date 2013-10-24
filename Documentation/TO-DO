@@ -135,3 +135,5 @@ Remaining Items
 30.    There may be an issue with the validity of stored e-mail. That is,
        retrieving e-mail from another node may retrieve compromised content.
        Inspect it!
+31.    There is some redundant deciphering of data: findMessageType()
+       followed by process() routines.

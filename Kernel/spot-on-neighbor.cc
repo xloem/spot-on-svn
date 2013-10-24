@@ -4227,7 +4227,7 @@ QString spoton_neighbor::findMessageType
   ** a letter.
   */
 
-  if(interfaces > 0)
+  if(interfaces > 0 && list.size() == 3)
     if(s_crypt)
       {
 	int count = spoton_misc::participantCount("chat");

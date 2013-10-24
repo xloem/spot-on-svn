@@ -88,6 +88,10 @@
 48.  The method spoton_misc::retrieveSymmetricData() must capture
      failures. Otherwise, unpleasant assumptions will be made. For example,
      generating and sharing empty symmetric keys.
+49.  Inspect group size in spoton_neighbor::findMessageType() so as to avoid
+     unnecessary computations. Please note that there is some computational
+     redundancy with this method and some of the process() methods. Will be
+     looked at in 0.07.
 
 0.05 (09/16/2013)
 
