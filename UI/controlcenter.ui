@@ -269,8 +269,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1182</width>
-                <height>591</height>
+                <width>348</width>
+                <height>426</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1458,6 +1458,16 @@
               </column>
               <column>
                <property name="text">
+                <string>Max. Buffer Size (Bytes)</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Max. Content Length (Bytes)</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
                 <string>OID</string>
                </property>
               </column>
@@ -1723,8 +1733,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>260</width>
-                 <height>590</height>
+                 <width>317</width>
+                 <height>588</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3028,8 +3038,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1172</width>
-             <height>581</height>
+             <width>869</width>
+             <height>411</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4340,7 +4350,7 @@
      <x>0</x>
      <y>0</y>
      <width>1196</width>
-     <height>27</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

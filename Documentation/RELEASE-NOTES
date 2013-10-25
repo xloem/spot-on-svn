@@ -1,8 +1,14 @@
 0.07 (12/01/2013)
 
 1.   Corrected use of gcry_md_hash_buffer() in spoton_crypt::saltedValue().
-     The input buffer was incorrectly resized. The method saltedValue() is currently
-     used for authenticating remote accounts.
+     The input buffer was incorrectly resized. The method saltedValue() is
+     currently used for authenticating remote accounts.
+2.   Archived the 0.05 branch.
+3.   Ability to set the Maximum Buffer Size and Maximum Content
+     Length. Please see the Listeners table. New neighbors will inherit the
+     settings of their parent listeners. Please remove listeners.db.
+4.   Corrected various source comments.
+5.   Corrected the Maximum Content Length lower bound.
 
 0.06 (10/24/2013)
 

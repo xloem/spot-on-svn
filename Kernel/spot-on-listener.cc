@@ -30,8 +30,9 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 
-#include "Common/spot-on-external-address.h"
+#include "Common/spot-on-common.h"
 #include "Common/spot-on-crypt.h"
+#include "Common/spot-on-external-address.h"
 #include "spot-on-kernel.h"
 #include "spot-on-listener.h"
 
@@ -103,6 +104,8 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 				 const QByteArray &privateKey,
 				 const QByteArray &publicKey,
 				 const bool useAccounts,
+				 const int maximumBufferSize,
+				 const int maximumContentLength,
 				 QObject *parent):
   spoton_listener_tcp_server(parent)
 {
@@ -118,6 +121,14 @@ spoton_listener::spoton_listener(const QString &ipAddress,
       m_keySize = 2048;
 
   m_id = id;
+  m_maximumBufferSize =
+    qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
+	   maximumBufferSize,
+	   spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
+  m_maximumContentLength = 
+    qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
+	   maximumContentLength,
+	   spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
   m_networkInterface = 0;
   m_port = m_externalPort = quint16(port.toInt());
   m_privateKey = privateKey;
@@ -224,7 +235,8 @@ void spoton_listener::slotTimeout(void)
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT status_control, maximum_clients, "
-		      "echo_mode, use_accounts "
+		      "echo_mode, use_accounts, maximum_buffer_size, "
+		      "maximum_content_length "
 		      "FROM listeners WHERE OID = ?");
 	query.bindValue(0, m_id);
 
@@ -239,6 +251,14 @@ void spoton_listener::slotTimeout(void)
 		  spoton_kernel::s_crypts.value("chat", 0);
 
 		m_useAccounts = query.value(3).toInt();
+		m_maximumBufferSize =
+		  qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
+			 qAbs(query.value(4).toInt()),
+			 spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
+		m_maximumContentLength =
+		  qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
+			 qAbs(query.value(5).toInt()),
+			 spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
 
 		if(s_crypt)
 		  {
@@ -393,6 +413,12 @@ void spoton_listener::saveStatus(const QSqlDatabase &db)
 
   query.prepare("UPDATE listeners SET connections = ?, status = ? "
 		"WHERE OID = ? AND status <> ?");
+
+  /*
+  ** Please note that findChildren() will not locate neighbors that have
+  ** been detached.
+  */
+
   query.bindValue
     (0, QString::number(findChildren<spoton_neighbor *> ().size()));
 
@@ -436,7 +462,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
   if(error.isEmpty())
     neighbor = new spoton_neighbor
       (socketDescriptor, certificate, privateKey, m_echoMode, m_useAccounts,
-       m_id, this);
+       m_id, m_maximumBufferSize, m_maximumContentLength, this);
   else
     {
       QTcpSocket socket;
@@ -601,8 +627,10 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
 		       "ssl_key_size, "
 		       "certificate, "
 		       "account_name, "
-		       "account_password) "
-		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+		       "account_password, "
+		       "maximum_buffer_size, "
+		       "maximum_content_length) "
+		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
 		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
 	    query.bindValue(1, m_port);
@@ -726,6 +754,9 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
 	    if(ok)
 	      query.bindValue
 		(24, s_crypt->encrypted(QByteArray(), &ok).toBase64());
+
+	    query.bindValue(25, m_maximumBufferSize);
+	    query.bindValue(26, m_maximumContentLength);
 
 	    if(ok)
 	      created = query.exec();

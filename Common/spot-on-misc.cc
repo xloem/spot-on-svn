@@ -323,7 +323,9 @@ void spoton_misc::prepareDatabases(void)
 		   "certificate BLOB NOT NULL, "
 		   "private_key BLOB NOT NULL, "
 		   "public_key BLOB NOT NULL, "       // Not used.
-		   "use_accounts INTEGER NOT NULL DEFAULT 0)");
+		   "use_accounts INTEGER NOT NULL DEFAULT 0, "
+		   "maximum_buffer_size INTEGER NOT NULL DEFAULT 131072, "
+		   "maximum_content_length INTEGER NOT NULL DEFAULT 65536)");
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_accounts ("
 		   "account_name TEXT NOT NULL, "
 		   "account_name_hash TEXT NOT NULL, "

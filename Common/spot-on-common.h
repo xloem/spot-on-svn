@@ -48,6 +48,7 @@ namespace spoton_common
 							  ** length.
 							  */
   static const int MAXIMUM_NEIGHBOR_CONTENT_LENGTH =  65536;
+  static const int MINIMUM_NEIGHBOR_CONTENT_LENGTH = 256;
   static const int NAME_MAXIMUM_LENGTH = 64;
 }
 

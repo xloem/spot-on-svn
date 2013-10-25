@@ -51,6 +51,8 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 const QString &echoMode,
 				 const bool useAccounts,
 				 const qint64 listenerOid,
+				 const int maximumBufferSize,
+				 const int maximumContentLength,
 				 QObject *parent):QThread(parent)
 {
   m_socket.setReadBufferSize(8192);
@@ -81,8 +83,14 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_isUserDefined = false;
   m_lastReadTime = QDateTime::currentDateTime();
   m_listenerOid = listenerOid;
-  m_maximumBufferSize = spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE;
-  m_maximumContentLength = spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH;
+  m_maximumBufferSize =
+    qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
+	   maximumBufferSize,
+	   spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
+  m_maximumContentLength = 
+    qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
+	   maximumContentLength,
+	   spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
   m_networkInterface = 0;
   m_port = m_socket.peerPort();
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
@@ -254,8 +262,9 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	   maximumBufferSize,
 	   spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
   m_maximumContentLength = 
-    qMax(maximumContentLength,
-	 spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
+    qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
+	   maximumContentLength,
+	   spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
   m_networkInterface = 0;
   m_peerCertificate = QSslCertificate(peerCertificate);
   m_port = quint16(port.toInt());
@@ -438,7 +447,7 @@ spoton_neighbor::~spoton_neighbor()
 	if(db.open())
 	  {
 	    /*
-	    ** Remove symmetric keys that were not completely shared.
+	    ** Remove asymmetric keys that were not completely shared.
 	    */
 
 	    QSqlQuery query(db);
@@ -599,8 +608,9 @@ void spoton_neighbor::slotTimeout(void)
 			     qAbs(query.value(3).toInt()),
 			     spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
 		    m_maximumContentLength =
-		      qMax(qAbs(query.value(4).toInt()),
-			   spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
+		      qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
+			     qAbs(query.value(4).toInt()),
+			     spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
 		  }
 
 		if(query.value(1).toInt() == 1)
@@ -741,10 +751,6 @@ void spoton_neighbor::saveStatus(const QString &status)
 
     if(db.open())
       {
-	/*
-	** Remove symmetric keys that were not completely shared.
-	*/
-
 	QSqlQuery query(db);
 
 	query.prepare("UPDATE neighbors SET is_encrypted = ?, status = ? "

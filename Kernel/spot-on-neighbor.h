@@ -85,6 +85,8 @@ class spoton_neighbor: public QThread
 		  const QString &echoMode,
 		  const bool useAccounts,
 		  const qint64 listenerOid,
+		  const int maximumBufferSize,
+		  const int maximumContentLength,
 		  QObject *parent);
   ~spoton_neighbor();
   QAbstractSocket::SocketState state(void) const;

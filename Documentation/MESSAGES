@@ -251,7 +251,7 @@ Keep Alive
 Echoed? No
 
 Message Type ("0015")
-0
+0 (Base-64)
 
 Echo Listener Publication
 Echoed? Yes
@@ -310,4 +310,4 @@ EOL
 1 - Random Data (Base-64)
 
 Message Type ("0052")
-0
+0 (Base-64)

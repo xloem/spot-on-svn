@@ -1880,6 +1880,8 @@ void spoton::slotPopulateListeners(void)
 		      "maximum_clients, "
 		      "echo_mode, "
 		      "use_accounts, "
+		      "maximum_buffer_size, "
+		      "maximum_content_length, "
 		      "OID "
 		      "FROM listeners WHERE status_control <> 'deleted'"))
 	  {
@@ -1969,7 +1971,7 @@ void spoton::slotPopulateListeners(void)
 			      check->setEnabled(false);
 			  }
 
-			check->setProperty("oid", query.value(13));
+			check->setProperty("oid", query.value(15));
 			check->setProperty("table_row", row);
 			check->setToolTip(tooltip);
 
@@ -2004,7 +2006,7 @@ void spoton::slotPopulateListeners(void)
 		    else if(i == 10)
 		      {
 			box = new QComboBox();
-			box->setProperty("oid", query.value(13));
+			box->setProperty("oid", query.value(15));
 			box->setProperty("table_row", row);
 			box->addItem("1");
 
@@ -2034,6 +2036,42 @@ void spoton::slotPopulateListeners(void)
 				SIGNAL(currentIndexChanged(int)),
 				this,
 				SLOT(slotMaximumClientsChanged(int)));
+		      }
+		    else if(i == 13 || i == 14)
+		      {
+			// maximum_buffer_size
+			// maximum_content_length
+
+			QSpinBox *box = new QSpinBox();
+
+			if(i == 13)
+			  {
+			    box->setMaximum
+			      (spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
+			    box->setMinimum
+			      (spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
+			  }
+			else
+			  box->setMaximum
+			    (spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
+
+			box->setMaximumWidth
+			  (box->fontMetrics().
+			   width(QString::
+				 number(spoton_common::
+					MAXIMUM_NEIGHBOR_BUFFER_SIZE)) + 50);
+			box->setProperty
+			  ("field_name", query.record().fieldName(i));
+			box->setProperty
+			  ("oid", query.value(query.record().count() - 1));
+			box->setProperty("table_row", row);
+			box->setToolTip(tooltip);
+			box->setValue(query.value(i).toInt());
+			connect(box,
+				SIGNAL(valueChanged(int)),
+				this,
+				SLOT(slotListenerMaximumChanged(int)));
+			m_ui.listeners->setCellWidget(row, i, box);
 		      }
 		    else
 		      {
@@ -5069,6 +5107,46 @@ void spoton::slotModeChanged(QSslSocket::SslMode mode)
 	 arg(m_kernelSocket.peerPort()));
       m_kernelSocket.abort();
     }
+}
+
+void spoton::slotListenerMaximumChanged(int value)
+{
+  QSpinBox *spinBox = qobject_cast<QSpinBox *> (sender());
+
+  if(!spinBox)
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "listeners.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	QString name(spinBox->property("field_name").toString());
+
+	if(name == "maximum_buffer_size")
+	  query.prepare("UPDATE listeners SET "
+			"maximum_buffer_size = ? "
+			"WHERE OID = ?");
+	else
+	  query.prepare("UPDATE listeners SET "
+			"maximum_content_length = ? "
+			"WHERE OID = ?");
+
+	query.bindValue(0, value);
+	query.bindValue(1, spinBox->property("oid"));
+	query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton::slotNeighborMaximumChanged(int value)
