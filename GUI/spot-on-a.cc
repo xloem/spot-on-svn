@@ -100,6 +100,48 @@ spoton::spoton(void):QMainWindow()
   m_neighborsLastModificationTime = QDateTime();
   m_participantsLastModificationTime = QDateTime();
   m_ui.setupUi(this);
+  m_ui.buzzTools->setStyleSheet
+    ("QToolButton {"
+#ifdef Q_OS_MAC
+     "padding-right: 10px; "
+#else
+     "padding-right: 15px; "
+#endif
+     "}"
+#ifdef Q_OS_MAC
+     "QToolButton::menu-button {border: none;}"
+#else
+     "QToolButton::menu-button {border: none; padding-right: 5px;}"
+#endif
+     );
+  m_ui.toolButtonCopyToClipboard->setStyleSheet
+    ("QToolButton {"
+#ifdef Q_OS_MAC
+     "padding-right: 10px; "
+#else
+     "padding-right: 15px; "
+#endif
+     "}"
+#ifdef Q_OS_MAC
+     "QToolButton::menu-button {border: none;}"
+#else
+     "QToolButton::menu-button {border: none; padding-right: 5px;}"
+#endif
+     );
+  m_ui.toolButtonMakeFriends->setStyleSheet
+    ("QToolButton {"
+#ifdef Q_OS_MAC
+     "padding-right: 10px; "
+#else
+     "padding-right: 15px; "
+#endif
+     "}"
+#ifdef Q_OS_MAC
+     "QToolButton::menu-button {border: none;}"
+#else
+     "QToolButton::menu-button {border: none; padding-right: 5px;}"
+#endif
+     );
 
   bool sslSupported = QSslSocket::supportsSsl();
 
@@ -694,7 +736,7 @@ spoton::spoton(void):QMainWindow()
   connect
     (menu->addAction(tr("Copy &All Public Keys")),
      SIGNAL(triggered(void)), this, SLOT(slotCopyAllMyPublicKeys(void)));
-  m_ui.toolButtonCopytoClipboard->setMenu(menu);
+  m_ui.toolButtonCopyToClipboard->setMenu(menu);
   menu = new QMenu(this);
   connect(menu->addAction(tr("Share &Chat Public Key")),
 	  SIGNAL(triggered(void)), this, SLOT(slotShareChatPublicKey(void)));
@@ -715,7 +757,7 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)), this, SLOT(slotRemoveFavorite(void)));
   connect(menu->addAction(tr("Remove &All")),
 	  SIGNAL(triggered(void)), this, SLOT(slotRemoveFavorite(void)));
-  m_ui.removeFavoriteBuzz->setMenu(menu);
+  m_ui.buzzTools->setMenu(menu);
   menu = new QMenu(this);
   connect(menu->addAction(tr("&Off")),
 	  SIGNAL(triggered(void)), this, SLOT(slotCountriesToggleOff(void)));
@@ -6023,7 +6065,7 @@ void spoton::slotRemoveFavorite(void)
       error = tr("Invalid action object.");
       goto done_label;
     }
-  else if(!m_ui.removeFavoriteBuzz->menu())
+  else if(!m_ui.buzzTools->menu())
     {
       error = tr("Invalid menu object.");
       goto done_label;
@@ -6034,7 +6076,7 @@ void spoton::slotRemoveFavorite(void)
       goto done_label;
     }
 
-  if(action == m_ui.removeFavoriteBuzz->menu()->actions().value(0))
+  if(action == m_ui.buzzTools->menu()->actions().value(0))
     removeAll = false;
 
   {

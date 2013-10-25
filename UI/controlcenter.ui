@@ -94,7 +94,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="removeFavoriteBuzz">
+           <widget class="QToolButton" name="buzzTools">
             <property name="text">
              <string>Tools</string>
             </property>
@@ -269,8 +269,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>348</width>
-                <height>426</height>
+                <width>1180</width>
+                <height>608</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1983,7 +1983,7 @@
            <number>5</number>
           </property>
           <item>
-           <widget class="QToolButton" name="toolButtonCopytoClipboard">
+           <widget class="QToolButton" name="toolButtonCopyToClipboard">
             <property name="toolTip">
              <string>Copy my name and the specified public key to the clipboard buffer.</string>
             </property>
@@ -4469,7 +4469,7 @@
   <tabstop>tab</tabstop>
   <tabstop>favorites</tabstop>
   <tabstop>demagnetize</tabstop>
-  <tabstop>removeFavoriteBuzz</tabstop>
+  <tabstop>buzzTools</tabstop>
   <tabstop>buzzName</tabstop>
   <tabstop>saveBuzzName</tabstop>
   <tabstop>channel</tabstop>
@@ -4542,7 +4542,7 @@
   <tabstop>acceptedIPList</tabstop>
   <tabstop>acceptedIP</tabstop>
   <tabstop>addAcceptedIP</tabstop>
-  <tabstop>toolButtonCopytoClipboard</tabstop>
+  <tabstop>toolButtonCopyToClipboard</tabstop>
   <tabstop>toolButtonMakeFriends</tabstop>
   <tabstop>acceptPublishedConnected</tabstop>
   <tabstop>acceptPublishedDisconnected</tabstop>
