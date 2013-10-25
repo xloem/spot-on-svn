@@ -137,3 +137,6 @@ Remaining Items
        Inspect it!
 31.    There is some redundant deciphering of data: findMessageType()
        followed by process() routines.
+32.    Move the kernel off of the local machine. Review all Common and
+       GUI source for local database access. libspoton may require
+       changes with respect to kernel presence.
