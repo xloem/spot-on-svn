@@ -1045,6 +1045,8 @@ void spoton_neighbor::slotReadyRead(void)
 	      ** that would do not.
 	      */
 
+	      resetKeepAlive();
+
 	      QPair<QByteArray, QByteArray> symmetricKey;
 	      QString messageType(findMessageType(data, symmetricKey));
 
@@ -1066,8 +1068,6 @@ void spoton_neighbor::slotReadyRead(void)
 		process0040b(length, data, symmetricKey);
 	      else
 		messageType.clear();
-
-	      resetKeepAlive();
 
 	      if(spoton_kernel::setting("gui/scramblerEnabled",
 					false).toBool())

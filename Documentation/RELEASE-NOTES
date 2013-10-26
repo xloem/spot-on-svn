@@ -9,6 +9,7 @@
      settings of their parent listeners. Please remove listeners.db.
 4.   Corrected various source comments.
 5.   Corrected the Maximum Content Length lower bound.
+6.   Reset the keep-alive timer before intense processing.
 
 0.06 (10/24/2013)
 

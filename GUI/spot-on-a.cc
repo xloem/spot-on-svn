@@ -114,6 +114,20 @@ spoton::spoton(void):QMainWindow()
      "QToolButton::menu-button {border: none; padding-right: 5px;}"
 #endif
      );
+  m_ui.countriesToggle->setStyleSheet
+    ("QToolButton {"
+#ifdef Q_OS_MAC
+     "padding-right: 10px; "
+#else
+     "padding-right: 15px; "
+#endif
+     "}"
+#ifdef Q_OS_MAC
+     "QToolButton::menu-button {border: none;}"
+#else
+     "QToolButton::menu-button {border: none; padding-right: 5px;}"
+#endif
+     );
   m_ui.toolButtonCopyToClipboard->setStyleSheet
     ("QToolButton {"
 #ifdef Q_OS_MAC
