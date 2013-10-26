@@ -295,6 +295,8 @@ void spoton::slotReceivedKernelMessage(void)
 
 			  if(!chat->isVisible())
 			    found = false;
+			  else
+			    QApplication::setActiveWindow(chat);
 			}
 		      else
 			found = false;
@@ -309,7 +311,10 @@ void spoton::slotReceivedKernelMessage(void)
 			(m_ui.messages->verticalScrollBar()->maximum());
 
 		      if(m_ui.tab->currentIndex() != 1)
-			m_sb.chat->setVisible(true);
+			{
+			  m_sb.chat->setVisible(true);
+			  QApplication::setActiveWindow(this);
+			}
 		    }
 		}
 	    }
