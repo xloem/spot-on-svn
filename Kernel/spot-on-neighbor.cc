@@ -3518,6 +3518,8 @@ void spoton_neighbor::saveExternalAddress(const QHostAddress &address,
 		 toBase64());
 	      query.bindValue(1, m_id);
 	    }
+	  else
+	    ok = false;
 	}
     }
   else if(state == QAbstractSocket::UnconnectedState)

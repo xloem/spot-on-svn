@@ -80,6 +80,7 @@ Completed Items
 30.    Correct implementation of the Encrypt-then-MAC usage. One key
        should be used for encryption and a separate key for generating
        the MAC.
+31.    Favorite channels.
 
 Ignored Items
 
@@ -88,18 +89,17 @@ Ignored Items
        addresses.
 2.     Remove UTF-8 conversions in spoton_crypt::saltedPassphraseHash().
 3.     Use super-secure memory? Used here and there.
-4.     Favorite channels.
-5.     CGI for listeners.
-6.     Customize expiration timers.
-7.     Include licenses of other software where applicable.
+4.     CGI for listeners.
+5.     Customize expiration timers.
+6.     Include licenses of other software where applicable.
        Satisfy the license soldiers.
-8.     Provide a total silent mode. Cumbersome.
+7.     Provide a total silent mode. Cumbersome.
 
 Remaining Items
 
 1.     Inspect UTF-8 uses.
 2.     Zero-knowledge passphrase authentication.
-3.     Echo proxy?
+3.     Cosmic proxy?
 4.     Prioritize keep-alive messages.
 5.     Allow for other ciphers besides AES for e-mail.
 6.     Double encryption. Verify that the user's key is independent of
@@ -140,3 +140,8 @@ Remaining Items
 32.    Move the kernel off of the local machine. Review all Common and
        GUI source for local database access. libspoton may require
        changes with respect to kernel presence.
+33.    The timers that support gathering of external IP addresses burden
+       kernel objects with unnecessary work. If the machine's external IP
+       address changes while connections are already established, the
+       state timers will eventually cause objects to be reset and therefore
+       new attempts will be made to capture the external IP addresses. Review!

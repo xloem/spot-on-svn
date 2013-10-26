@@ -929,6 +929,8 @@ void spoton_listener::saveExternalAddress(const QHostAddress &address,
 		 toBase64());
 	      query.bindValue(1, m_id);
 	    }
+	  else
+	    ok = false;
 	}
     }
   else
