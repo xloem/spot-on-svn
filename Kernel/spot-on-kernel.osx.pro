@@ -12,7 +12,8 @@ CONFIG		+= qt release warn_on app_bundle
 # The function gcry_kdf_derive() is available in version
 # 1.5.0 of the gcrypt library.
 
-DEFINES += SPOTON_LINKED_WITH_LIBGEOIP
+DEFINES += SPOTON_LINKED_WITH_LIBGEOIP \
+	   SPOTON_LINKED_WITH_LIBPTHREAD
 
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of libSpotOn.

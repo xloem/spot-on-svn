@@ -15,8 +15,8 @@
     </message>
     <message>
         <location filename="../Common/spot-on-crypt.cc" line="191"/>
-        <location filename="../Common/spot-on-crypt.cc" line="560"/>
-        <location filename="../Common/spot-on-crypt.cc" line="737"/>
+        <location filename="../Common/spot-on-crypt.cc" line="559"/>
+        <location filename="../Common/spot-on-crypt.cc" line="736"/>
         <source>gcry_cipher_get_algo_keylen() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
@@ -26,263 +26,263 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="226"/>
+        <location filename="../Common/spot-on-crypt.cc" line="225"/>
         <source>gcry_kdf_derive() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="347"/>
+        <location filename="../Common/spot-on-crypt.cc" line="346"/>
         <source>gcry_md_get_algo_dlen() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="424"/>
+        <location filename="../Common/spot-on-crypt.cc" line="423"/>
         <source>oldPassphrase is 0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="508"/>
+        <location filename="../Common/spot-on-crypt.cc" line="507"/>
         <source>gcry_cipher_open() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="520"/>
+        <location filename="../Common/spot-on-crypt.cc" line="519"/>
         <source>gcry_cipher_open() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="531"/>
-        <location filename="../Common/spot-on-crypt.cc" line="696"/>
-        <location filename="../Common/spot-on-crypt.cc" line="706"/>
+        <location filename="../Common/spot-on-crypt.cc" line="530"/>
+        <location filename="../Common/spot-on-crypt.cc" line="695"/>
+        <location filename="../Common/spot-on-crypt.cc" line="705"/>
         <source>gcry_cipher_get_algo_blklen() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="545"/>
-        <location filename="../Common/spot-on-crypt.cc" line="729"/>
+        <location filename="../Common/spot-on-crypt.cc" line="544"/>
+        <location filename="../Common/spot-on-crypt.cc" line="728"/>
         <source>gcry_cipher_setiv() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="572"/>
-        <location filename="../Common/spot-on-crypt.cc" line="750"/>
+        <location filename="../Common/spot-on-crypt.cc" line="571"/>
+        <location filename="../Common/spot-on-crypt.cc" line="749"/>
         <source>gcry_cipher_setkey() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="464"/>
+        <location filename="../Common/spot-on-crypt.cc" line="463"/>
         <source>error retrieving data from the idiotes table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="321"/>
+        <location filename="../Common/spot-on-crypt.cc" line="320"/>
         <source>empty passphrase</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="328"/>
+        <location filename="../Common/spot-on-crypt.cc" line="327"/>
         <source>empty salt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="335"/>
+        <location filename="../Common/spot-on-crypt.cc" line="334"/>
         <source>gcry_md_map_name() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="492"/>
+        <location filename="../Common/spot-on-crypt.cc" line="491"/>
         <source>gcry_cipher_map_name() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="606"/>
+        <location filename="../Common/spot-on-crypt.cc" line="605"/>
         <source>The length of the decrypted data is irregular</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="617"/>
+        <location filename="../Common/spot-on-crypt.cc" line="616"/>
         <source>gcry_cipher_decrypt() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="642"/>
+        <location filename="../Common/spot-on-crypt.cc" line="641"/>
         <source>gcry_sexp_new() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="654"/>
+        <location filename="../Common/spot-on-crypt.cc" line="653"/>
         <source>gcry_sexp_new() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="665"/>
+        <location filename="../Common/spot-on-crypt.cc" line="664"/>
         <source>gcry_pk_testkey() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="686"/>
+        <location filename="../Common/spot-on-crypt.cc" line="685"/>
         <source>gcry_cipher_map_name() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="716"/>
+        <location filename="../Common/spot-on-crypt.cc" line="715"/>
         <source>gcry_calloc() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="779"/>
+        <location filename="../Common/spot-on-crypt.cc" line="778"/>
         <source>gcry_cipher_encrypt() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2090"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2089"/>
         <source>gcry_sexp_build() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2114"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2113"/>
         <source>gcry_pk_genkey() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2142"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2141"/>
         <source>gcry_sexp_find_token() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2153"/>
-        <location filename="../Common/spot-on-crypt.cc" line="2168"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2152"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2167"/>
         <source>gcry_sexp_sprint() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2186"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2185"/>
         <source>malloc() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2224"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2223"/>
         <source>QSqlQuery::exec() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2233"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2232"/>
         <source>encrypted() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2869"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2868"/>
         <source>BN_new() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2877"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2876"/>
         <source>BN_set_word() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2885"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2884"/>
         <source>RSA_new() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2893"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2892"/>
         <source>RSA_generate_key_ex() returned negative one</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2901"/>
-        <location filename="../Common/spot-on-crypt.cc" line="2909"/>
-        <location filename="../Common/spot-on-crypt.cc" line="3162"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2900"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2908"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3161"/>
         <source>BIO_new() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2917"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2916"/>
         <source>PEM_write_bio_RSAPrivateKey() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2925"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2924"/>
         <source>PEM_write_bio_RSAPublicKey() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2935"/>
-        <location filename="../Common/spot-on-crypt.cc" line="2949"/>
-        <location filename="../Common/spot-on-crypt.cc" line="3080"/>
-        <location filename="../Common/spot-on-crypt.cc" line="3180"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2934"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2948"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3079"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3179"/>
         <source>calloc() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3014"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3013"/>
         <source>rsa container is zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3022"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3021"/>
         <source>EVP_PKEY_new() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3031"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3030"/>
         <source>X509_new() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3040"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3039"/>
         <source>EVP_PKEY_assign_RSA() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3052"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3051"/>
         <source>X509_set_version() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3060"/>
-        <location filename="../Common/spot-on-crypt.cc" line="3068"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3059"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3067"/>
         <source>X509_gmtime_adj() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3098"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3097"/>
         <source>X509_NAME_ENTRY_create_by_NID() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3108"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3107"/>
         <source>X509_NAME_new() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3116"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3115"/>
         <source>X509_NAME_add_entry() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3124"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3123"/>
         <source>X509_set_subject_name() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3134"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3133"/>
         <source>X509_set_issuer_name() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3142"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3141"/>
         <source>X509_set_pubkey() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3150"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3149"/>
         <source>X509_sign() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3170"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3169"/>
         <source>PEM_write_bio_X509() returned zero</source>
         <translation type="unfinished"></translation>
     </message>

@@ -41,7 +41,9 @@ extern "C"
 #include <openssl/rsa.h>
 #include <openssl/ssl.h>
 #include <openssl/x509v3.h>
+#ifdef SPOTON_LINKED_WITH_LIBPTHREAD
 #include <pthread.h>
+#endif
 #pragma GCC diagnostic warning "-Wdeprecated-declarations"
 }
 
@@ -141,8 +143,8 @@ class spoton_crypt
   QString m_cipherType;
   QString m_hashType;
   QString m_id;
-  char *m_privateKey;
-  char *m_symmetricKey;
+  char *m_privateKey; // Stored in secure memory.
+  char *m_symmetricKey; // Stored in secure memory.
   gcry_cipher_hd_t m_cipherHandle;
   int m_cipherAlgorithm;
   int m_hashAlgorithm;

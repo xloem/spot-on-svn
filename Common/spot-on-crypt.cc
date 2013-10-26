@@ -37,14 +37,14 @@
 
 extern "C"
 {
-#if defined(PTHREAD_H) || defined(_PTHREAD_H) || defined(_PTHREAD_H_)
+#ifdef SPOTON_LINKED_WITH_LIBPTHREAD
   GCRY_THREAD_OPTION_PTHREAD_IMPL;
 #endif
 
 #include "libSpotOn/libspoton.h"
 }
 
-#if !(defined(PTHREAD_H) || defined(_PTHREAD_H) || defined(_PTHREAD_H_))
+#ifndef SPOTON_LINKED_WITH_LIBPTHREAD
 #include <QMutex>
 extern "C"
 {
@@ -108,7 +108,7 @@ void spoton_crypt::init(void)
 {
   if(!gcry_control(GCRYCTL_INITIALIZATION_FINISHED_P))
     {
-#if defined(PTHREAD_H) || defined(_PTHREAD_H) || defined(_PTHREAD_H_)
+#ifdef SPOTON_LINKED_WITH_LIBPTHREAD
       gcry_control(GCRYCTL_SET_THREAD_CBS, &gcry_threads_pthread, 0);
 #else
       gcry_control(GCRYCTL_SET_THREAD_CBS, &gcry_threads_qt, 0);
@@ -222,7 +222,6 @@ QByteArray spoton_crypt::derivedKey(const QString &cipherType,
     derivedKey.append(key, keyLength);
   else
     {
-      derivedKey.clear();
       error = QObject::tr("gcry_kdf_derive() returned non-zero");
 
       QByteArray buffer(1024, '0');
@@ -249,7 +248,7 @@ QByteArray spoton_crypt::saltedValue(const QString &hashType,
   int hashAlgorithm = gcry_md_map_name(hashType.toLatin1().constData());
   unsigned int length = 0;
 
-  if(data.trimmed().isEmpty())
+  if(data.isEmpty())
     {
       if(ok)
 	*ok = false;
@@ -258,7 +257,7 @@ QByteArray spoton_crypt::saltedValue(const QString &hashType,
 			    "empty data.");
     }
 
-  if(salt.trimmed().isEmpty())
+  if(salt.isEmpty())
     {
       if(ok)
 	*ok = false;
@@ -323,7 +322,7 @@ QByteArray spoton_crypt::saltedPassphraseHash(const QString &hashType,
 			    "empty passphrase.");
     }
 
-  if(salt.trimmed().isEmpty())
+  if(salt.isEmpty())
     {
       error = QObject::tr("empty salt");
       spoton_misc::logError("spoton_crypt::saltedPassphrase(): "

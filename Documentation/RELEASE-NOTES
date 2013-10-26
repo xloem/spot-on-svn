@@ -11,6 +11,10 @@
 5.   Corrected the Maximum Content Length lower bound.
 6.   Reset the keep-alive timer before performing intense processing.
 7.   Minor corrections to saveExternalAddress(): inspect spoton_crypt objects.
+8.   Added SPOTON_LINKED_WITH_LIBPTHREAD macro to the various project files.
+9.   The methods spoton_crypt::saltedValue() and
+     spoton_crypt::saltedPassphraseHash should not trim the provided
+     parameters. The passphrase parameter is trimmed.
 
 0.06 (10/24/2013)
 
