@@ -322,7 +322,7 @@ Symmetric Key
 EOL
 1 - Mosaic (Base-64)
 EOL
-2 - Mosaic Size (Base-64)
+2 - Mosaic Piece Count (Base-64)
 EOL
 3 - Mosaic Piece Number (Base-64)
 EOL
