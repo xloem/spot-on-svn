@@ -1008,14 +1008,6 @@ void spoton_crypt::init(const QString &cipherType,
 
   m_saltLength = saltLength;
 
-  /*
-  ** We need to store the passphrase because URL harvesters will provide
-  ** us with URLs that were encoded with the passphrase. Perhaps
-  ** a researcher will modify Spot-On so that the symmetric key is known
-  ** to both Spot-On and harvesters. Or perhaps we can solve the problem
-  ** with SSL.
-  */
-
   if(m_symmetricKeyLength)
     m_symmetricKey = static_cast<char *>
       (gcry_calloc_secure(m_symmetricKeyLength, sizeof(char)));
