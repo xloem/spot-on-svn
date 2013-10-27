@@ -311,3 +311,26 @@ EOL
 
 Message Type ("0052")
 0 (Base-64)
+
+Echo Transfer
+Echoed? Yes
+
+Groups: 2
+Symmetric Key
+{
+0 - 0060 (Base-64)
+EOL
+1 - Mosaic (Base-64)
+EOL
+2 - Mosaic Size (Base-64)
+EOL
+3 - Mosaic Piece Number (Base-64)
+EOL
+4 - Mosaic Piece Size (Base-64)
+EOL
+5 - Mosaic Piece (Base-64)
+}
+EOL
+{
+0 - Keyed Sha-512 Message Code (Base-64)
+}
