@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1196</width>
+    <width>1200</width>
     <height>700</height>
    </rect>
   </property>
@@ -283,7 +283,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1182</width>
+                <width>1186</width>
                 <height>591</height>
                </rect>
               </property>
@@ -1346,7 +1346,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1164</width>
+             <width>1168</width>
              <height>573</height>
             </rect>
            </property>
@@ -1357,6 +1357,229 @@
             <property name="margin">
              <number>5</number>
             </property>
+            <item>
+             <widget class="QGroupBox" name="groupBox_8">
+              <property name="title">
+               <string>Magnets</string>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_56">
+               <property name="spacing">
+                <number>5</number>
+               </property>
+               <property name="margin">
+                <number>5</number>
+               </property>
+               <item>
+                <widget class="QTableWidget" name="etpKeys">
+                 <property name="alternatingRowColors">
+                  <bool>true</bool>
+                 </property>
+                 <property name="selectionBehavior">
+                  <enum>QAbstractItemView::SelectRows</enum>
+                 </property>
+                 <property name="horizontalScrollMode">
+                  <enum>QAbstractItemView::ScrollPerPixel</enum>
+                 </property>
+                 <property name="sortingEnabled">
+                  <bool>true</bool>
+                 </property>
+                 <attribute name="horizontalHeaderDefaultSectionSize">
+                  <number>200</number>
+                 </attribute>
+                 <attribute name="horizontalHeaderStretchLastSection">
+                  <bool>true</bool>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>Cipher Type</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Encryption Key</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Hash Type</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>MAC Key</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_44">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_42">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_53">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
+                     <item>
+                      <widget class="QComboBox" name="generate">
+                       <property name="sizeAdjustPolicy">
+                        <enum>QComboBox::AdjustToContents</enum>
+                       </property>
+                       <item>
+                        <property name="text">
+                         <string>Generate Pair</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>Generate Encryption Key</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>Generate MAC Key</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_41">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QGridLayout" name="gridLayout_7">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_52">
+                       <property name="text">
+                        <string>&amp;Cipher Type</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>etpCipherType</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QComboBox" name="etpCipherType"/>
+                     </item>
+                     <item row="0" column="2">
+                      <widget class="QLabel" name="label_50">
+                       <property name="text">
+                        <string>&amp;Encryption Key</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>etpEncryptionKey</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="3">
+                      <widget class="QLineEdit" name="etpEncryptionKey"/>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_57">
+                       <property name="text">
+                        <string>&amp;Hash Type</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>etpHashType</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QComboBox" name="etpHashType"/>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QLabel" name="label_51">
+                       <property name="text">
+                        <string>&amp;MAC Key</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>etpMacKey</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="3">
+                      <widget class="QLineEdit" name="etpMacKey"/>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_55">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_59">
+                     <property name="text">
+                      <string>&amp;Magnet</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>etpMagnet</cstring>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="etpMagnet"/>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_57">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <item>
+                    <spacer name="horizontalSpacer_49">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="addMagnet">
+                     <property name="text">
+                      <string>Add</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+              <zorder>etpKeys</zorder>
+              <zorder>groupBox_10</zorder>
+              <zorder></zorder>
+              <zorder></zorder>
+              <zorder></zorder>
+              <zorder>horizontalSpacer_49</zorder>
+              <zorder>horizontalSpacer_41</zorder>
+             </widget>
+            </item>
             <item>
              <widget class="QGroupBox" name="groupBox_6">
               <property name="title">
@@ -1446,110 +1669,6 @@
                  </column>
                 </widget>
                </item>
-               <item>
-                <widget class="QGroupBox" name="groupBox_8">
-                 <property name="title">
-                  <string>Magnets</string>
-                 </property>
-                 <layout class="QHBoxLayout" name="horizontalLayout_56">
-                  <property name="spacing">
-                   <number>5</number>
-                  </property>
-                  <property name="margin">
-                   <number>5</number>
-                  </property>
-                  <item>
-                   <widget class="QTableWidget" name="etpKeys">
-                    <property name="alternatingRowColors">
-                     <bool>true</bool>
-                    </property>
-                    <property name="selectionBehavior">
-                     <enum>QAbstractItemView::SelectRows</enum>
-                    </property>
-                    <property name="horizontalScrollMode">
-                     <enum>QAbstractItemView::ScrollPerPixel</enum>
-                    </property>
-                    <property name="sortingEnabled">
-                     <bool>true</bool>
-                    </property>
-                    <attribute name="horizontalHeaderDefaultSectionSize">
-                     <number>200</number>
-                    </attribute>
-                    <attribute name="horizontalHeaderStretchLastSection">
-                     <bool>true</bool>
-                    </attribute>
-                    <column>
-                     <property name="text">
-                      <string>Cipher Type</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Encryption Key</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Hash Type</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>MAC Key</string>
-                     </property>
-                    </column>
-                   </widget>
-                  </item>
-                  <item>
-                   <layout class="QVBoxLayout" name="verticalLayout_42">
-                    <property name="spacing">
-                     <number>5</number>
-                    </property>
-                    <item>
-                     <layout class="QHBoxLayout" name="horizontalLayout_55">
-                      <property name="spacing">
-                       <number>5</number>
-                      </property>
-                      <item>
-                       <widget class="QLabel" name="label_59">
-                        <property name="text">
-                         <string>&amp;Magnet</string>
-                        </property>
-                        <property name="buddy">
-                         <cstring>etpMagnet</cstring>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QLineEdit" name="etpMagnet"/>
-                      </item>
-                      <item>
-                       <widget class="QPushButton" name="addMagnet">
-                        <property name="text">
-                         <string>Add</string>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
-                    </item>
-                    <item>
-                     <spacer name="verticalSpacer">
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>20</width>
-                        <height>40</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
               </layout>
              </widget>
             </item>
@@ -1565,185 +1684,6 @@
                <property name="margin">
                 <number>5</number>
                </property>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_53">
-                 <property name="spacing">
-                  <number>5</number>
-                 </property>
-                 <item>
-                  <widget class="QComboBox" name="generate">
-                   <property name="sizeAdjustPolicy">
-                    <enum>QComboBox::AdjustToContents</enum>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string>Generate Pair</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Generate Encryption Key</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Generate MAC Key</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_41">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_44">
-                 <item>
-                  <layout class="QGridLayout" name="gridLayout_7">
-                   <property name="horizontalSpacing">
-                    <number>5</number>
-                   </property>
-                   <item row="1" column="0">
-                    <widget class="QLabel" name="label_57">
-                     <property name="text">
-                      <string>&amp;Hash Type</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>etpHashType</cstring>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="1">
-                    <widget class="QComboBox" name="etpHashType"/>
-                   </item>
-                   <item row="1" column="2">
-                    <widget class="QLabel" name="label_51">
-                     <property name="text">
-                      <string>&amp;MAC Key</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>etpMacKey</cstring>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="label_52">
-                     <property name="text">
-                      <string>&amp;Cipher Type</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>etpCipherType</cstring>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="3">
-                    <widget class="QLineEdit" name="etpMacKey"/>
-                   </item>
-                   <item row="0" column="3">
-                    <widget class="QLineEdit" name="etpEncryptionKey"/>
-                   </item>
-                   <item row="0" column="2">
-                    <widget class="QLabel" name="label_50">
-                     <property name="text">
-                      <string>&amp;Encryption Key</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>etpEncryptionKey</cstring>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="1">
-                    <widget class="QComboBox" name="etpCipherType"/>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QGridLayout" name="gridLayout_8">
-                   <property name="horizontalSpacing">
-                    <number>5</number>
-                   </property>
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="label_53">
-                     <property name="text">
-                      <string>&amp;File</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>etpFile</cstring>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="1">
-                    <widget class="QLineEdit" name="etpFile"/>
-                   </item>
-                   <item row="0" column="2">
-                    <widget class="QPushButton" name="etpSelectFile">
-                     <property name="text">
-                      <string>Select</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="0">
-                    <widget class="QLabel" name="label_54">
-                     <property name="text">
-                      <string>&amp;Burst Size</string>
-                     </property>
-                     <property name="buddy">
-                      <cstring>burstSize</cstring>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="1" colspan="2">
-                    <layout class="QHBoxLayout" name="horizontalLayout_43">
-                     <item>
-                      <widget class="QSpinBox" name="burstSize">
-                       <property name="suffix">
-                        <string> Bytes</string>
-                       </property>
-                       <property name="minimum">
-                        <number>1024</number>
-                       </property>
-                       <property name="maximum">
-                        <number>65536</number>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_40">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="etpResonate">
-                       <property name="text">
-                        <string>Resonate</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
                <item>
                 <widget class="QTableWidget" name="resonators">
                  <property name="alternatingRowColors">
@@ -1776,6 +1716,11 @@
                  </column>
                  <column>
                   <property name="text">
+                   <string>Burst Size</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
                    <string>Size</string>
                   </property>
                  </column>
@@ -1785,6 +1730,83 @@
                   </property>
                  </column>
                 </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_44">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <item>
+                  <widget class="QLabel" name="label_53">
+                   <property name="text">
+                    <string>&amp;File</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>etpFile</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="etpFile"/>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="etpSelectFile">
+                   <property name="text">
+                    <string>Select</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_54">
+                   <property name="text">
+                    <string>&amp;Burst Size</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>burstSize</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="burstSize">
+                   <property name="suffix">
+                    <string> Bytes</string>
+                   </property>
+                   <property name="minimum">
+                    <number>1024</number>
+                   </property>
+                   <property name="maximum">
+                    <number>65536</number>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_43">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <item>
+                  <spacer name="horizontalSpacer_40">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="etpResonate">
+                   <property name="text">
+                    <string>Resonate</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
               </layout>
              </widget>
@@ -2214,7 +2236,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>260</width>
+                 <width>261</width>
                  <height>592</height>
                 </rect>
                </property>
@@ -3523,7 +3545,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1172</width>
+             <width>1176</width>
              <height>581</height>
             </rect>
            </property>
@@ -4834,7 +4856,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1196</width>
+     <width>1200</width>
      <height>27</height>
     </rect>
    </property>
@@ -4997,22 +5019,22 @@
   <tabstop>emailSignMessages</tabstop>
   <tabstop>sendMail</tabstop>
   <tabstop>scrollArea_4</tabstop>
-  <tabstop>destination</tabstop>
-  <tabstop>define_2</tabstop>
-  <tabstop>recordings</tabstop>
   <tabstop>etpKeys</tabstop>
-  <tabstop>etpMagnet</tabstop>
-  <tabstop>addMagnet</tabstop>
   <tabstop>generate</tabstop>
   <tabstop>etpCipherType</tabstop>
   <tabstop>etpEncryptionKey</tabstop>
-  <tabstop>etpFile</tabstop>
-  <tabstop>etpSelectFile</tabstop>
   <tabstop>etpHashType</tabstop>
   <tabstop>etpMacKey</tabstop>
+  <tabstop>etpMagnet</tabstop>
+  <tabstop>addMagnet</tabstop>
+  <tabstop>destination</tabstop>
+  <tabstop>define_2</tabstop>
+  <tabstop>recordings</tabstop>
+  <tabstop>resonators</tabstop>
+  <tabstop>etpFile</tabstop>
+  <tabstop>etpSelectFile</tabstop>
   <tabstop>burstSize</tabstop>
   <tabstop>etpResonate</tabstop>
-  <tabstop>resonators</tabstop>
   <tabstop>publishPeriodically</tabstop>
   <tabstop>listeners</tabstop>
   <tabstop>listenerIPCombo</tabstop>
