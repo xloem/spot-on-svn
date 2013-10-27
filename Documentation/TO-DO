@@ -81,19 +81,19 @@ Completed Items
        should be used for encryption and a separate key for generating
        the MAC.
 31.    Favorite channels.
+32.    Remove UTF-8 conversions in spoton_crypt::saltedPassphraseHash().
 
 Ignored Items
 
 1.     The kernel should fetch a node's external IP address. Not ideal for
        listeners that are connected on interfaces having different external
        addresses.
-2.     Remove UTF-8 conversions in spoton_crypt::saltedPassphraseHash().
-3.     Use super-secure memory? Used here and there.
-4.     CGI for listeners.
-5.     Customize expiration timers.
-6.     Include licenses of other software where applicable.
+2.     Use super-secure memory? Used here and there.
+3.     CGI for listeners.
+4.     Customize expiration timers.
+5.     Include licenses of other software where applicable.
        Satisfy the license soldiers.
-7.     Provide a total silent mode. Cumbersome.
+6.     Provide a total silent mode. Cumbersome.
 
 Remaining Items
 
@@ -125,7 +125,7 @@ Remaining Items
 21.    Optional OTR.
 22.    QFSFileEngine::open: No file name specified: created from
        e-mail.
-23.    Support ECC.
+23.    Support ECC, or not.
 24.    Perform calling over geminis.
 25.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
 26.    Replace gcrypt with crypto++.
@@ -145,3 +145,4 @@ Remaining Items
        address changes while connections are already established, the
        state timers will eventually cause objects to be reset and therefore
        new attempts will be made to capture the external IP addresses. Review!
+34.    Anonymous post office boxes.
