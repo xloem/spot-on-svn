@@ -16,6 +16,8 @@
      spoton_crypt::saltedPassphraseHash should not trim the provided
      parameters. The passphrase parameter is trimmed.
 10.  Removed the incomplete method spoton_crypt::privateKeyInRem().
+11.  Corrected tab ordering.
+12.  Allow editing of Gemini cells.
 
 0.06 (10/24/2013)
 

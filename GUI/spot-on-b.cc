@@ -3332,9 +3332,9 @@ void spoton::slotStatusButtonClicked(void)
       slotRefreshMail();
     }
   else if(toolButton == m_sb.listeners)
-    m_ui.tab->setCurrentIndex(3);
-  else if(toolButton == m_sb.neighbors)
     m_ui.tab->setCurrentIndex(4);
+  else if(toolButton == m_sb.neighbors)
+    m_ui.tab->setCurrentIndex(5);
 }
 
 bool spoton::updateMailStatus(const QString &oid, const QString &status)
@@ -3422,8 +3422,9 @@ void spoton::slotSetIcons(void)
 
   // Tab Icons
 
-  list << "buzz.png" << "chat.png" << "email.png" << "add-listener.png"
-       << "neighbors.png" << "search.png" << "settings.png" << "urls.png";
+  list << "buzz.png" << "chat.png" << "email.png" << "share.png"
+       <<"add-listener.png" << "neighbors.png" << "search.png"
+       << "settings.png" << "urls.png";
 
   for(int i = 0; i < list.size(); i++)
     m_ui.tab->setTabIcon
@@ -4707,6 +4708,8 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
 
   if(item->data(Qt::UserRole).toBool()) // Temporary friend?
     return;
+  else if(item->column() == 6) // Gemini?
+    return;
 
   QIcon icon;
   QString oid("");
@@ -4817,7 +4820,7 @@ void spoton::authenticationRequested(const QByteArray &data)
 void spoton::slotAuthenticationRequestButtonClicked(void)
 {
   m_sb.authentication_request->setVisible(false);
-  m_ui.tab->setCurrentIndex(4);
+  m_ui.tab->setCurrentIndex(5);
 
   if(m_neighborToOidMap.contains(m_sb.authentication_request->
 				 property("data").toByteArray()))

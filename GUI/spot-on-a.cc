@@ -100,20 +100,6 @@ spoton::spoton(void):QMainWindow()
   m_neighborsLastModificationTime = QDateTime();
   m_participantsLastModificationTime = QDateTime();
   m_ui.setupUi(this);
-  m_ui.buzzTools->setStyleSheet
-    ("QToolButton {"
-#ifdef Q_OS_MAC
-     "padding-right: 10px; "
-#else
-     "padding-right: 15px; "
-#endif
-     "}"
-#ifdef Q_OS_MAC
-     "QToolButton::menu-button {border: none;}"
-#else
-     "QToolButton::menu-button {border: none; padding-right: 5px;}"
-#endif
-     );
   m_ui.countriesToggle->setStyleSheet
     ("QToolButton {"
 #ifdef Q_OS_MAC
@@ -1077,8 +1063,8 @@ spoton::spoton(void):QMainWindow()
     m_ui.keySize->setCurrentIndex(m_ui.keySize->findText(str));
 
   m_ui.saltLength->setValue(m_settings.value("gui/saltLength", 256).toInt());
-  m_ui.tab->removeTab(5); // Search
-  m_ui.tab->removeTab(6); // URLs
+  m_ui.tab->removeTab(6); // Search
+  m_ui.tab->removeTab(7); // URLs
 
   if(spoton_crypt::passphraseSet())
     {
@@ -1119,7 +1105,7 @@ spoton::spoton(void):QMainWindow()
       m_ui.kernelBox->setEnabled(false);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
-	if(i == 5) // Settings
+	if(i == 6) // Settings
 	  {
 	    m_ui.tab->blockSignals(true);
 	    m_ui.tab->setCurrentIndex(i);
