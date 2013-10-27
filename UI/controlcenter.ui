@@ -2215,7 +2215,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>260</width>
-                 <height>590</height>
+                 <height>592</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2366,16 +2366,20 @@
                       </spacer>
                      </item>
                      <item>
-                      <widget class="QToolButton" name="countriesToggle">
-                       <property name="text">
-                        <string>Toggle All</string>
+                      <widget class="QComboBox" name="countriesToggle">
+                       <property name="sizeAdjustPolicy">
+                        <enum>QComboBox::AdjustToContents</enum>
                        </property>
-                       <property name="popupMode">
-                        <enum>QToolButton::InstantPopup</enum>
-                       </property>
-                       <property name="toolButtonStyle">
-                        <enum>Qt::ToolButtonTextBesideIcon</enum>
-                       </property>
+                       <item>
+                        <property name="text">
+                         <string>Off</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>On</string>
+                        </property>
+                       </item>
                       </widget>
                      </item>
                      <item>

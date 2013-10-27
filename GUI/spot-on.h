@@ -216,8 +216,7 @@ class spoton: public QMainWindow
   void slotCopyMyEmailPublicKey(void);
   void slotCopyMyURLPublicKey(void);
   void slotCostChanged(int value);
-  void slotCountriesToggleOff(void);
-  void slotCountriesToggleOn(void);
+  void slotCountriesToggleActivated(int index);
   void slotCountryChanged(QListWidgetItem *item);
   void slotDaysChanged(int value);
   void slotDeactivateKernel(void);

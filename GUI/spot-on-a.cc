@@ -100,20 +100,6 @@ spoton::spoton(void):QMainWindow()
   m_neighborsLastModificationTime = QDateTime();
   m_participantsLastModificationTime = QDateTime();
   m_ui.setupUi(this);
-  m_ui.countriesToggle->setStyleSheet
-    ("QToolButton {"
-#ifdef Q_OS_MAC
-     "padding-right: 10px; "
-#else
-     "padding-right: 15px; "
-#endif
-     "}"
-#ifdef Q_OS_MAC
-     "QToolButton::menu-button {border: none;}"
-#else
-     "QToolButton::menu-button {border: none; padding-right: 5px;}"
-#endif
-     );
   m_ui.toolButtonCopyToClipboard->setStyleSheet
     ("QToolButton {"
 #ifdef Q_OS_MAC
@@ -661,6 +647,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(activated(int)),
 	  this,
 	  SLOT(slotBuzzTools(int)));
+  connect(m_ui.countriesToggle,
+	  SIGNAL(activated(int)),
+	  this,
+	  SLOT(slotCountriesToggleActivated(int)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -751,12 +741,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)), this, SLOT(slotShareURLPublicKey(void)));
 #endif
   m_ui.toolButtonMakeFriends->setMenu(menu);
-  menu = new QMenu(this);
-  connect(menu->addAction(tr("&Off")),
-	  SIGNAL(triggered(void)), this, SLOT(slotCountriesToggleOff(void)));
-  connect(menu->addAction(tr("&On")),
-	  SIGNAL(triggered(void)), this, SLOT(slotCountriesToggleOn(void)));
-  m_ui.countriesToggle->setMenu(menu);
   m_generalTimer.start(2500);
   m_messagingCachePurgeTimer.start(120000);
   m_chatInactivityTimer.start(120000);
@@ -4986,16 +4970,6 @@ void spoton::slotNeighborHalfEcho(void)
   changeEchoMode("half", m_ui.neighbors);
 }
 
-void spoton::slotCountriesToggleOff(void)
-{
-  countriesToggle(false);
-}
-
-void spoton::slotCountriesToggleOn(void)
-{
-  countriesToggle(true);
-}
-
 void spoton::countriesToggle(const bool state)
 {
   spoton_crypt *s_crypt = m_crypts.value("chat", 0);
@@ -6188,4 +6162,12 @@ void spoton::slotBuzzTools(int index)
     removeFavorite(false);
   else if(index == 3)
     removeFavorite(true);
+}
+
+void spoton::slotCountriesToggleActivated(int index)
+{
+  if(index == 0)
+    countriesToggle(false);
+  else if(index == 1)
+    countriesToggle(true);
 }
