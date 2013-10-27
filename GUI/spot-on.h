@@ -167,11 +167,14 @@ class spoton: public QMainWindow
   void changeEchoMode(const QString &mode, QTableWidget *tableWidget);
   void closeEvent(QCloseEvent *event);
   void countriesToggle(const bool state);
+  void demagnetize(void);
   void highlightPaths(void);
   void initializeKernelSocket(void);
+  void magnetize(void);
   void prepareListenerIPCombo(void);
   void populateAccounts(const QString &listenerOid);
   void purgeMessagingCache(void);
+  void removeFavorite(const bool removeAll);
   void saveGeoIPPath(const QString &path);
   void saveKernelPath(const QString &path);
   void saveSettings(void);
@@ -195,6 +198,7 @@ class spoton: public QMainWindow
   void slotAuthenticationRequestButtonClicked(void);
   void slotBlockNeighbor(void);
   void slotBuzzChanged(void);
+  void slotBuzzTools(int index);
   void slotCallParticipant(void);
   void slotChangeTabPosition(void);
   void slotChatInactivityTimeout(void);
@@ -206,7 +210,6 @@ class spoton: public QMainWindow
   void slotCongestionControl(bool state);
   void slotConnectNeighbor(void);
   void slotCopyAllMyPublicKeys(void);
-  void slotCopyBuzz(void);
   void slotCopyEmailFriendshipBundle(void);
   void slotCopyFriendshipBundle(void);
   void slotCopyMyChatPublicKey(void);
@@ -227,7 +230,6 @@ class spoton: public QMainWindow
   void slotDeleteListener(void);
   void slotDeleteMail(void);
   void slotDeleteNeighbor(void);
-  void slotDemagnetize(void);
   void slotDetachListenerNeighbors(void);
   void slotDisconnectListenerNeighbors(void);
   void slotDisconnectNeighbor(void);
@@ -292,7 +294,6 @@ class spoton: public QMainWindow
   void slotRefreshMail(void);
   void slotRefreshPostOffice(void);
   void slotRemoveEmailParticipants(void);
-  void slotRemoveFavorite(void);
   void slotRemoveParticipants(void);
   void slotReply(void);
   void slotResetAccountInformation(void);

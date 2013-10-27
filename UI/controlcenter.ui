@@ -94,10 +94,30 @@
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="buzzTools">
-            <property name="text">
-             <string>Tools</string>
+           <widget class="QComboBox" name="buzzTools">
+            <property name="sizeAdjustPolicy">
+             <enum>QComboBox::AdjustToContents</enum>
             </property>
+            <item>
+             <property name="text">
+              <string>Demagnetize</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Magnetize</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Remove</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Remove All</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item>
@@ -770,7 +790,7 @@
         <item>
          <widget class="QTabWidget" name="mailTab">
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tab_4">
            <attribute name="title">
@@ -4294,7 +4314,7 @@
             <item>
              <widget class="QTabWidget" name="urlTab">
               <property name="currentIndex">
-               <number>1</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="tab_2">
                <attribute name="title">

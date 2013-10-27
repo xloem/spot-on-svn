@@ -657,6 +657,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotAuthenticate(void)));
+  connect(m_ui.buzzTools,
+	  SIGNAL(activated(int)),
+	  this,
+	  SLOT(slotBuzzTools(int)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -747,17 +751,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)), this, SLOT(slotShareURLPublicKey(void)));
 #endif
   m_ui.toolButtonMakeFriends->setMenu(menu);
-  menu = new QMenu(this);
-  connect(menu->addAction(tr("&Demagnetize && Join")),
-	  SIGNAL(triggered(void)), this, SLOT(slotDemagnetize(void)));
-  connect(menu->addAction(tr("&Magnetize")),
-	  SIGNAL(triggered(void)), this, SLOT(slotCopyBuzz(void)));
-  menu->addSeparator();
-  connect(menu->addAction(tr("&Remove")),
-	  SIGNAL(triggered(void)), this, SLOT(slotRemoveFavorite(void)));
-  connect(menu->addAction(tr("Remove &All")),
-	  SIGNAL(triggered(void)), this, SLOT(slotRemoveFavorite(void)));
-  m_ui.buzzTools->setMenu(menu);
   menu = new QMenu(this);
   connect(menu->addAction(tr("&Off")),
 	  SIGNAL(triggered(void)), this, SLOT(slotCountriesToggleOff(void)));
@@ -6051,33 +6044,18 @@ void spoton::slotFavoritesActivated(int index)
     m_ui.channelType->setCurrentIndex(0);
 }
 
-void spoton::slotRemoveFavorite(void)
+void spoton::removeFavorite(const bool removeAll)
 {
-  QAction *action = qobject_cast<QAction *> (sender());
   QString connectionName("");
   QString error("");
   bool ok = true;
-  bool removeAll = true;
   spoton_crypt *s_crypt = m_crypts.value("chat", 0);
 
-  if(!action)
-    {
-      error = tr("Invalid action object.");
-      goto done_label;
-    }
-  else if(!m_ui.buzzTools->menu())
-    {
-      error = tr("Invalid menu object.");
-      goto done_label;
-    }
-  else if(!s_crypt)
+  if(!s_crypt)
     {
       error = tr("Invalid spoton_crypt object.");
       goto done_label;
     }
-
-  if(action == m_ui.buzzTools->menu()->actions().value(0))
-    removeAll = false;
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -6128,7 +6106,7 @@ void spoton::slotRemoveFavorite(void)
     }
 }
 
-void spoton::slotCopyBuzz(void)
+void spoton::magnetize(void)
 {
   if(m_ui.favorites->currentText() == tr("Empty"))
     return;
@@ -6163,7 +6141,7 @@ void spoton::slotCopyBuzz(void)
     QMessageBox::critical(this, tr("Spot-On: Error"), error);
 }
 
-void spoton::slotDemagnetize(void)
+void spoton::demagnetize(void)
 {
   QStringList list
     (m_ui.demagnetize->text().trimmed().remove("magnet:?").split('&'));
@@ -6198,4 +6176,16 @@ void spoton::slotDemagnetize(void)
     }
 
   slotJoinBuzzChannel();
+}
+
+void spoton::slotBuzzTools(int index)
+{
+  if(index == 0)
+    demagnetize();
+  else if(index == 1)
+    magnetize();
+  else if(index == 2)
+    removeFavorite(false);
+  else if(index == 3)
+    removeFavorite(true);
 }
