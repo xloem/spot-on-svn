@@ -3422,7 +3422,7 @@ void spoton::slotSetIcons(void)
 
   // Tab Icons
 
-  list << "buzz.png" << "chat.png" << "email.png" << "share.png"
+  list << "buzz.png" << "chat.png" << "email.png" << "etp.png"
        <<"add-listener.png" << "neighbors.png" << "search.png"
        << "settings.png" << "urls.png";
 
