@@ -1108,10 +1108,11 @@ QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
 					   spoton_crypt *crypt)
 {
   QByteArray gemini;
-  QString connectionName("");
 
   if(crypt)
     {
+      QString connectionName("");
+
       {
 	QSqlDatabase db = database(connectionName);
 
@@ -1978,4 +1979,35 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
     }
 
   return found;
+}
+
+bool spoton_misc::allParticipantsHaveGeminis(void)
+{
+  QString connectionName("");
+  int count = 0;
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName
+      (homePath() + QDir::separator() + "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT COUNT(*) FROM friends_public_keys WHERE "
+		      "gemini IS NULL AND neighbor_oid = -1"))
+	  if(query.next())
+	    count = query.value(0).toInt();
+
+	db.close();
+      }
+
+    QSqlDatabase::removeDatabase(connectionName);
+  }
+
+  return count == 0;
 }

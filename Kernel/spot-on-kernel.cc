@@ -2432,6 +2432,12 @@ QPair<QByteArray, QByteArray> spoton_kernel::findBuzzKey
 {
   s_buzzKeysMutex.lock();
 
+  if(s_buzzKeys.isEmpty())
+    {
+      s_buzzKeysMutex.unlock();
+      return QPair<QByteArray, QByteArray> ();
+    }
+
   QHashIterator<QByteArray, QByteArray> it(s_buzzKeys);
   QPair<QByteArray, QByteArray> pair;
 

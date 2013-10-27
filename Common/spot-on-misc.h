@@ -51,6 +51,7 @@ class spoton_misc
   static QString countryCodeFromName(const QString &country);
   static QString countryNameFromIPAddress(const QString &ipAddress);
   static QString homePath(void);
+  static bool allParticipantsHaveGeminis(void);
   static bool authenticateAccount(QByteArray &name,
 				  QByteArray &password,
 				  const qint64 listenerOid,
