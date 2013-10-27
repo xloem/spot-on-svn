@@ -3189,61 +3189,6 @@ void spoton_crypt::generateCertificate(RSA *rsa,
   free(commonName);
 }
 
-QByteArray spoton_crypt::privateKeyInRem(bool *ok)
-{
-  QByteArray key;
-  QString connectionName("");
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "idiotes.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.setForwardOnly(true);
-	query.prepare("SELECT private_key FROM idiotes WHERE id = ?");
-	query.bindValue(0, m_id);
-
-	if(query.exec())
-	  if(query.next())
-	    key = QByteArray::fromBase64
-	      (query.value(0).toByteArray());
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-
-  if(key.isEmpty())
-    {
-      if(ok)
-	*ok = false;
-    }
-  else
-    {
-      bool ok = true;
-
-      key = decrypted(key, &ok);
-    }
-
-  if(key.isEmpty())
-    {
-      if(ok)
-	*ok = false;
-    }
-  else
-    {
-      if(ok)
-	*ok = true;
-    }
-
-  return key;
-}
-
 QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 {
   /*

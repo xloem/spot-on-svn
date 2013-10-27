@@ -15,6 +15,7 @@
 9.   The methods spoton_crypt::saltedValue() and
      spoton_crypt::saltedPassphraseHash should not trim the provided
      parameters. The passphrase parameter is trimmed.
+10.  Removed the incomplete method spoton_crypt::privateKeyInRem().
 
 0.06 (10/24/2013)
 
