@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1200</width>
-    <height>700</height>
+    <height>765</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -119,19 +119,6 @@
              </property>
             </item>
            </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_39">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </item>
@@ -284,7 +271,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1186</width>
-                <height>591</height>
+                <height>654</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1347,7 +1334,7 @@
              <x>0</x>
              <y>0</y>
              <width>1168</width>
-             <height>573</height>
+             <height>636</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -1568,16 +1555,24 @@
                    </item>
                   </layout>
                  </item>
+                 <item>
+                  <spacer name="verticalSpacer">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
                 </layout>
                </item>
               </layout>
               <zorder>etpKeys</zorder>
-              <zorder>groupBox_10</zorder>
               <zorder></zorder>
-              <zorder></zorder>
-              <zorder></zorder>
-              <zorder>horizontalSpacer_49</zorder>
-              <zorder>horizontalSpacer_41</zorder>
              </widget>
             </item>
             <item>
@@ -1616,19 +1611,6 @@
                     <string>Select</string>
                    </property>
                   </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_42">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
                  </item>
                 </layout>
                </item>
@@ -2236,8 +2218,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>261</width>
-                 <height>592</height>
+                 <width>279</width>
+                 <height>634</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3546,7 +3528,7 @@
              <x>0</x>
              <y>0</y>
              <width>1176</width>
-             <height>581</height>
+             <height>644</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3580,19 +3562,6 @@
                  <string>Select</string>
                 </property>
                </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_44">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
               </item>
              </layout>
             </item>
@@ -3635,19 +3604,6 @@
                 </property>
                </widget>
               </item>
-              <item>
-               <spacer name="horizontalSpacer_46">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
              </layout>
             </item>
             <item>
@@ -3667,6 +3623,33 @@
                  <property name="margin">
                   <number>5</number>
                  </property>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_58">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_18">
+                     <property name="text">
+                      <string>Spot-On-Kernel &amp;Executable</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>kernelPath</cstring>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="kernelPath"/>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="selectKernelPath">
+                     <property name="text">
+                      <string>Select</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_15">
                    <property name="spacing">
@@ -3716,24 +3699,17 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLabel" name="label_18">
-                     <property name="text">
-                      <string>Spot-On-Kernel &amp;Executable</string>
+                    <spacer name="horizontalSpacer_42">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
                      </property>
-                     <property name="buddy">
-                      <cstring>kernelPath</cstring>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
                      </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLineEdit" name="kernelPath"/>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="selectKernelPath">
-                     <property name="text">
-                      <string>Select</string>
-                     </property>
-                    </widget>
+                    </spacer>
                    </item>
                   </layout>
                  </item>
@@ -4266,6 +4242,19 @@
                  <string>Save</string>
                 </property>
                </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_39">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
              </layout>
             </item>
@@ -5105,11 +5094,11 @@
   <tabstop>sslControlString</tabstop>
   <tabstop>saveSslControlString</tabstop>
   <tabstop>testSslControlString</tabstop>
+  <tabstop>kernelPath</tabstop>
+  <tabstop>selectKernelPath</tabstop>
   <tabstop>activateKernel</tabstop>
   <tabstop>pid</tabstop>
   <tabstop>deactivateKernel</tabstop>
-  <tabstop>kernelPath</tabstop>
-  <tabstop>selectKernelPath</tabstop>
   <tabstop>kernelCipherType</tabstop>
   <tabstop>congestionControl</tabstop>
   <tabstop>cost</tabstop>

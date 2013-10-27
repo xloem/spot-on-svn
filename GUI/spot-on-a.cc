@@ -100,34 +100,6 @@ spoton::spoton(void):QMainWindow()
   m_neighborsLastModificationTime = QDateTime();
   m_participantsLastModificationTime = QDateTime();
   m_ui.setupUi(this);
-  m_ui.toolButtonCopyToClipboard->setStyleSheet
-    ("QToolButton {"
-#ifdef Q_OS_MAC
-     "padding-right: 10px; "
-#else
-     "padding-right: 15px; "
-#endif
-     "}"
-#ifdef Q_OS_MAC
-     "QToolButton::menu-button {border: none;}"
-#else
-     "QToolButton::menu-button {border: none; padding-right: 5px;}"
-#endif
-     );
-  m_ui.toolButtonMakeFriends->setStyleSheet
-    ("QToolButton {"
-#ifdef Q_OS_MAC
-     "padding-right: 10px; "
-#else
-     "padding-right: 15px; "
-#endif
-     "}"
-#ifdef Q_OS_MAC
-     "QToolButton::menu-button {border: none;}"
-#else
-     "QToolButton::menu-button {border: none; padding-right: 5px;}"
-#endif
-     );
 
   bool sslSupported = QSslSocket::supportsSsl();
 
@@ -6162,6 +6134,16 @@ void spoton::slotBuzzTools(int index)
     removeFavorite(false);
   else if(index == 3)
     removeFavorite(true);
+
+  disconnect(m_ui.buzzTools,
+	     SIGNAL(activated(int)),
+	     this,
+	     SLOT(slotFavoritesActivated(int)));
+  m_ui.buzzTools->setCurrentIndex(0);
+  connect(m_ui.buzzTools,
+	  SIGNAL(activated(int)),
+	  this,
+	  SLOT(slotFavoritesActivated(int)));
 }
 
 void spoton::slotCountriesToggleActivated(int index)
@@ -6170,4 +6152,14 @@ void spoton::slotCountriesToggleActivated(int index)
     countriesToggle(false);
   else if(index == 1)
     countriesToggle(true);
+
+  disconnect(m_ui.countriesToggle,
+	     SIGNAL(activated(int)),
+	     this,
+	     SLOT(slotCountriesToggleActivated(int)));
+  m_ui.countriesToggle->setCurrentIndex(0);
+  connect(m_ui.countriesToggle,
+	  SIGNAL(activated(int)),
+	  this,
+	  SLOT(slotCountriesToggleActivated(int)));
 }
