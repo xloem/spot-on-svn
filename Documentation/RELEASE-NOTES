@@ -23,11 +23,13 @@
      function as expected.
 14.  Introduced the Echo Transfer Protocol.
 15.  Added instances of spoton_misc::prepareDatabases() throughout important
-     sections.
+     source logic.
 16.  Implemented spoton_misc::allParticipantsHaveGeminis(). The method
      spoton_neighbor::findMessageType may be exceptionally burdened if
      a node attempts to decipher asymmetric ciphertexts without cause.
      Unfortunately, falsified e-mail content may still weaken the method.
+17.  Capture results of QSqlDatabase::open() wherever user interest
+     is a concern.
 
 0.06 (10/24/2013)
 

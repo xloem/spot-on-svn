@@ -4459,6 +4459,7 @@ void spoton::slotAddAccount(void)
   QString name(m_ui.accountName->text().trimmed());
   QString oid("");
   QString password(m_ui.accountPassword->text());
+  bool ok = true;
   int row = -1;
   int sslKeySize = 0;
   spoton_crypt *s_crypt = m_crypts.value("chat", 0);
@@ -4515,7 +4516,6 @@ void spoton::slotAddAccount(void)
     if(db.open())
       {
 	QSqlQuery query(db);
-	bool ok = true;
 
 	query.prepare("INSERT INTO listeners_accounts "
 		      "(account_name, "
@@ -4540,11 +4540,16 @@ void spoton::slotAddAccount(void)
 	if(ok)
 	  query.exec();
       }
+    else
+      ok = false;
 
     db.close();
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+
+  if(!ok)
+    error = tr("A database error has occurred.");
 
  done_label:
 

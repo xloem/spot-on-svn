@@ -1443,6 +1443,8 @@ void spoton::slotAddListener(void)
 	if(ok)
 	  ok = query.exec();
       }
+    else
+      ok = false;
 
     db.close();
   }
@@ -6065,6 +6067,8 @@ void spoton::removeFavorite(const bool removeAll)
 	if(ok)
 	  ok = query.exec();
       }
+    else
+      ok = false;
 
     db.close();
   }
