@@ -1665,7 +1665,7 @@
                  </attribute>
                  <column>
                   <property name="text">
-                   <string>Percent Assembled</string>
+                   <string>Percent Completed</string>
                   </property>
                  </column>
                  <column>
