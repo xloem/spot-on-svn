@@ -4236,25 +4236,26 @@ QString spoton_neighbor::findMessageType
   */
 
   if(interfaces > 0 && list.size() == 3)
-    if(s_crypt)
-      {
-	int count = spoton_misc::participantCount("chat");
+    if(!spoton_misc::allParticipantsHaveGeminis())
+      if(s_crypt)
+	{
+	  int count = spoton_misc::participantCount("chat");
 
-	if(count > 0)
-	  {
-	    QByteArray data;
-	    bool ok = true;
+	  if(count > 0)
+	    {
+	      QByteArray data;
+	      bool ok = true;
 
-	    data = s_crypt->publicKeyDecrypt
-	      (QByteArray::fromBase64(list.value(0)), &ok);
+	      data = s_crypt->publicKeyDecrypt
+		(QByteArray::fromBase64(list.value(0)), &ok);
 
-	    if(ok)
-	      type = QByteArray::fromBase64(data.split('\n').value(0));
+	      if(ok)
+		type = QByteArray::fromBase64(data.split('\n').value(0));
 
-	    if(!type.isEmpty())
-	      goto done_label;
-	  }
-      }
+	      if(!type.isEmpty())
+		goto done_label;
+	    }
+	}
 
   if(interfaces > 0 || list.size() == 5)
     if((s_crypt = spoton_kernel::s_crypts.value("email", 0)))

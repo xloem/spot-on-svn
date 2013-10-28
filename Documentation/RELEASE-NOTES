@@ -19,8 +19,15 @@
 11.  Corrected tab ordering.
 12.  Allow editing of Gemini cells.
 13.  Replaced QDir::AllDirs with QDir::Dirs per Qt specifications on
-     Linux, OS X, and Unix devices. QFileDialog::setFilter does not
+     Linux, OS X, and Unix devices. QFileDialog::setFilter() does not
      function as expected.
+14.  Introduced the Echo Transfer Protocol.
+15.  Added instances of spoton_misc::prepareDatabases() throughout important
+     sections.
+16.  Implemented spoton_misc::allParticipantsHaveGeminis(). The method
+     spoton_neighbor::findMessageType may be exceptionally burdened if
+     a node attempts to decipher asymmetric ciphertexts without cause.
+     Unfortunately, falsified e-mail content may still weaken the method.
 
 0.06 (10/24/2013)
 

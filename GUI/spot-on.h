@@ -191,6 +191,7 @@ class spoton: public QMainWindow
   void slotAddAcceptedIP(void);
   void slotAddAccount(void);
   void slotAddBootstrapper(void);
+  void slotAddEtpMagnet(void);
   void slotAddListener(void);
   void slotAddFriendsKey(void);
   void slotAddNeighbor(void);
@@ -242,6 +243,7 @@ class spoton: public QMainWindow
   void slotFetchMoreAlgo(void);
   void slotFetchMoreButton(void);
   void slotGeminiChanged(QTableWidgetItem *item);
+  void slotGenerateEtpKeys(int index);
   void slotGeneralTimerTimeout(void);
   void slotGenerateGoldBug(void);
   void slotGenerateGeminiInChat(void);

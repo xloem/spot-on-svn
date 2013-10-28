@@ -623,6 +623,22 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(activated(int)),
 	  this,
 	  SLOT(slotCountriesToggleActivated(int)));
+  connect(m_ui.magnetRadio,
+	  SIGNAL(toggled(bool)),
+	  m_ui.etpMagnet,
+	  SLOT(setEnabled(bool)));
+  connect(m_ui.pairRadio,
+	  SIGNAL(toggled(bool)),
+	  m_ui.pairFrame,
+	  SLOT(setEnabled(bool)));
+  connect(m_ui.generate,
+	  SIGNAL(activated(int)),
+	  this,
+	  SLOT(slotGenerateEtpKeys(int)));
+  connect(m_ui.addMagnet,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotAddEtpMagnet(void)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -812,6 +828,8 @@ spoton::spoton(void):QMainWindow()
 #endif
   m_ui.approvedCountries->setEnabled(m_ui.countriesRadio->isChecked());
   m_ui.approvedIPs->setEnabled(m_ui.acceptedIPsRadio->isChecked());
+  m_ui.magnetRadio->setChecked(true);
+  m_ui.pairFrame->setEnabled(false);
 
   if(m_settings.contains("gui/kernelPath") &&
      QFileInfo(m_settings.value("gui/kernelPath").toString().trimmed()).
@@ -884,6 +902,11 @@ spoton::spoton(void):QMainWindow()
     m_ui.geoipPath->setToolTip(m_ui.geoipPath->text());
 #endif
 
+  /*
+  ** Please note that Spot-On supports only ciphers having 256-bit
+  ** keys.
+  */
+
   m_ui.kernelPath->setToolTip(m_ui.kernelPath->text());
   m_ui.buzzName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
   m_ui.buzzName->setText
@@ -903,6 +926,9 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/sslControlString",
 		      "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH").
      toString());
+  m_ui.etpEncryptionKey->setMaxLength
+    (spoton_crypt::cipherKeyLength("aes256"));
+  m_ui.etpMacKey->setMaxLength(spoton_crypt::cipherKeyLength("aes256"));
   m_ui.goldbug->setMaxLength
     (spoton_crypt::cipherKeyLength("aes256"));
   m_ui.channelType->clear();

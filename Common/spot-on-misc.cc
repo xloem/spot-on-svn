@@ -201,6 +201,26 @@ void spoton_misc::prepareDatabases(void)
     QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() +
+		       "etp_magnets.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("CREATE TABLE IF NOT EXISTS etp_magnets ("
+		   "magnet TEXT NOT NULL, "
+		   "magnet_hash TEXT PRIMARY KEY NOT NULL)");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName(homePath() + QDir::separator() +
 		       "friends_public_keys.db");
 
     if(db.open())
@@ -2005,9 +2025,9 @@ bool spoton_misc::allParticipantsHaveGeminis(void)
 
 	db.close();
       }
-
-    QSqlDatabase::removeDatabase(connectionName);
   }
+
+  QSqlDatabase::removeDatabase(connectionName);
 
   return count == 0;
 }

@@ -4452,6 +4452,8 @@ void spoton::slotChatInactivityTimeout(void)
 
 void spoton::slotAddAccount(void)
 {
+  spoton_misc::prepareDatabases();
+
   QString connectionName("");
   QString error("");
   QString name(m_ui.accountName->text().trimmed());
