@@ -1601,7 +1601,7 @@
             <item>
              <widget class="QGroupBox" name="groupBox_6">
               <property name="title">
-               <string>Satellite Receivers</string>
+               <string>Receivers</string>
               </property>
               <property name="checkable">
                <bool>true</bool>
@@ -1691,7 +1691,7 @@
             <item>
              <widget class="QGroupBox" name="groupBox_4">
               <property name="title">
-               <string>Satellite Transmitters</string>
+               <string>Transmitters</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_40">
                <property name="spacing">
@@ -1731,7 +1731,7 @@
                   </column>
                   <column>
                    <property name="text">
-                    <string>Percent Resonated</string>
+                    <string>Percent Transmitted</string>
                    </property>
                   </column>
                   <column>
@@ -1865,7 +1865,7 @@
                  <item>
                   <widget class="QPushButton" name="etpResonate">
                    <property name="text">
-                    <string>Resonate</string>
+                    <string>Transmit</string>
                    </property>
                   </widget>
                  </item>
