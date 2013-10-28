@@ -1456,7 +1456,7 @@
                            </property>
                            <item>
                             <property name="text">
-                             <string>Generate Pair</string>
+                             <string>Generate Key Pair</string>
                             </property>
                            </item>
                            <item>
@@ -1665,7 +1665,7 @@
                  </attribute>
                  <column>
                   <property name="text">
-                   <string>Percent Recorded</string>
+                   <string>Percent Assembled</string>
                   </property>
                  </column>
                  <column>
