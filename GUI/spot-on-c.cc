@@ -67,6 +67,8 @@ void spoton::slotGenerateEtpKeys(int index)
 
 void spoton::slotAddEtpMagnet(void)
 {
+  spoton_misc::prepareDatabases();
+
   QString connectionName("");
   QString error("");
   QString magnet("");
@@ -139,7 +141,7 @@ void spoton::slotAddEtpMagnet(void)
       {
 	QSqlQuery query(db);
 
-	query.prepare("INSERT OR RPLACE INTO "
+	query.prepare("INSERT OR REPLACE INTO "
 		      "etp_magnets "
 		      "(magnet, magnet_hash) "
 		      "VALUES (?, ?)");

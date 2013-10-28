@@ -2072,6 +2072,7 @@ void spoton::slotResetAll(void)
        << "country_inclusion.db"
        << "email.db"
        << "error_log.dat"
+       << "etp_magnets.db"
        << "friends_public_keys.db"
        << "idiotes.db"
        << "kernel.db"
