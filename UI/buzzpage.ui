@@ -83,7 +83,7 @@
      <item>
       <widget class="QPushButton" name="remove">
        <property name="text">
-        <string>Remove</string>
+        <string>Remove Bookmark</string>
        </property>
       </widget>
      </item>

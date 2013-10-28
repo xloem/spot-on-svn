@@ -2898,12 +2898,13 @@ void spoton::slotSelectGeoIPPath(void)
 {
   QFileDialog dialog(this);
 
-  dialog.setFilter(QDir::AllDirs | QDir::Files
+  dialog.setFilter(QDir::Files
 #if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
-		   | QDir::Readable);
+		   | QDir::Dirs | QDir::Readable
 #else
-                  );
+		   | QDir::AllDirs
 #endif
+		   );
   dialog.setWindowTitle
     (tr("Spot-On: Select GeoIP Data Path"));
   dialog.setFileMode(QFileDialog::ExistingFile);
@@ -2924,12 +2925,13 @@ void spoton::slotSelectKernelPath(void)
 {
   QFileDialog dialog(this);
 
-  dialog.setFilter(QDir::AllDirs | QDir::Files
+  dialog.setFilter(QDir::Files
 #if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
-		   | QDir::Readable | QDir::Executable);
+		   | QDir::Dirs | QDir::Readable | QDir::Executable
 #else
-                  );
+		   | QDir::AllDirs
 #endif
+		   );
   dialog.setWindowTitle
     (tr("Spot-On: Select Kernel Path"));
   dialog.setFileMode(QFileDialog::ExistingFile);

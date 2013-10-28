@@ -18,6 +18,9 @@
 10.  Removed the incomplete method spoton_crypt::privateKeyInRem().
 11.  Corrected tab ordering.
 12.  Allow editing of Gemini cells.
+13.  Replaced QDir::AllDirs with QDir::Dirs per Qt specifications on
+     Linux, OS X, and Unix devices. QFileDialog::setFilter does not
+     function as expected.
 
 0.06 (10/24/2013)
 
