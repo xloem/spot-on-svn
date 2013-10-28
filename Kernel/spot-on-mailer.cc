@@ -102,7 +102,7 @@ void spoton_mailer::slotTimeout(void)
 		      "subject, OID FROM folders WHERE folder_index = 1"))
 	  while(query.next())
 	    {
-	      QString status;
+	      QString status("");
 	      bool ok = true;
 
 	      status = QString::fromUtf8
