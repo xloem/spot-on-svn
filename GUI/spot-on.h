@@ -173,6 +173,7 @@ class spoton: public QMainWindow
   void magnetize(void);
   void prepareListenerIPCombo(void);
   void populateAccounts(const QString &listenerOid);
+  void populateMagnetTables(void);
   void purgeMessagingCache(void);
   void removeFavorite(const bool removeAll);
   void saveGeoIPPath(const QString &path);

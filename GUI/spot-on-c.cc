@@ -165,9 +165,15 @@ void spoton::slotAddEtpMagnet(void)
 
   if(!ok)
     error = tr("A database error occurred.");
+  else
+    populateMagnetTables();
 
  done_label:
 
   if(!error.isEmpty())
     QMessageBox::critical(this, tr("Spot-On: Error"), error);
+}
+
+void spoton::populateMagnetTables(void)
+{
 }
