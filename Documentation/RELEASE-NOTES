@@ -31,6 +31,7 @@
 17.  Capture results of QSqlDatabase::open() whenever user interest
      is a concern.
 18.  Corrected and updated Documentation/ENCRYPTED.
+19.  Abbreviated array parameters of gpg_strerror_r() from 1024 bytes to 64 bytes.
 
 0.06 (10/24/2013)
 
