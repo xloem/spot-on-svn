@@ -1,10 +1,10 @@
 Some tables contain encrypted data.
 
-accepted_ips.db
+accepted_ips.db:
 
 ip_address
 
-buzz_channels.db
+buzz_channels.db:
 
 data
 
@@ -16,6 +16,10 @@ accepted
 email.db:
 
 all, save for folder_index, hash, receiver_sender_hash, and recipient_hash
+
+etp_magnets.db:
+
+magnet
 
 friends_public_keys.db:
 
@@ -45,10 +49,10 @@ neighbors.db:
 
 account_name
 account_password
+certificate
 country
 echo_mode
 external_ip_address
-peer_certificate
 protocol
 proxy_hostname
 proxy_password

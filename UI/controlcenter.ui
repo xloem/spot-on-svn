@@ -1710,7 +1710,7 @@
                 </layout>
                </item>
                <item>
-                <widget class="QTableWidget" name="recordings">
+                <widget class="QTableWidget" name="received">
                  <property name="alternatingRowColors">
                   <bool>true</bool>
                  </property>
@@ -1771,7 +1771,7 @@
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
-                 <widget class="QTableWidget" name="resonators">
+                 <widget class="QTableWidget" name="transmitted">
                   <property name="alternatingRowColors">
                    <bool>true</bool>
                   </property>
@@ -5174,8 +5174,8 @@
   <tabstop>etpSelectDestination</tabstop>
   <tabstop>etpMaxMosaicSize</tabstop>
   <tabstop>etpMaxMosaics</tabstop>
-  <tabstop>recordings</tabstop>
-  <tabstop>resonators</tabstop>
+  <tabstop>received</tabstop>
+  <tabstop>transmitted</tabstop>
   <tabstop>etpTransmittersMagnets</tabstop>
   <tabstop>etpFile</tabstop>
   <tabstop>etpSelectFile</tabstop>

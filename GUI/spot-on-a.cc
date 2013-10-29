@@ -1210,6 +1210,10 @@ spoton::spoton(void):QMainWindow()
   m_ui.participants->setColumnHidden(3, true); // public_key_hash
   m_ui.participants->resizeColumnsToContents();
   m_ui.postoffice->setColumnHidden(2, true); // Recipient Hash
+  m_ui.received->setColumnHidden(m_ui.received->columnCount() - 1,
+				 true); // OID
+  m_ui.transmitted->setColumnHidden(m_ui.transmitted->columnCount() - 1,
+				    true); // OID
   m_ui.urlParticipants->setColumnHidden(1, true); // OID
   m_ui.urlParticipants->setColumnHidden(2, true); // neighbor_oid
   m_ui.urlParticipants->setColumnHidden(3, true); // public_key_hash

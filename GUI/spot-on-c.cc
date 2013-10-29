@@ -353,6 +353,8 @@ void spoton::slotCopyEtpMagnet(void)
 
   if(!clipboard)
     return;
+  else
+    clipboard->clear();
 
   int row = -1;
 
