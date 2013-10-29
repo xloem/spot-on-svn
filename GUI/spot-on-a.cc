@@ -503,6 +503,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(valueChanged(int)),
 	  this,
 	  SLOT(slotDaysChanged(int)));
+  connect(m_ui.etpMaxMosaics,
+	  SIGNAL(valueChanged(int)),
+	  this,
+	  SLOT(slotMaxMosaics(int)));
+  connect(m_ui.etpMaxMosaicSize,
+	  SIGNAL(valueChanged(int)),
+	  this,
+	  SLOT(slotMaxMosaicSize(int)));
   connect(m_ui.reply,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -961,6 +969,9 @@ spoton::spoton(void):QMainWindow()
   m_ui.kernelCipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.cost->setValue(m_settings.value("gui/congestionCost", 10000).toInt());
   m_ui.days->setValue(m_settings.value("gui/postofficeDays", 1).toInt());
+  m_ui.etpMaxMosaics->setValue(m_settings.value("gui/maxMosaics", 5).toInt());
+  m_ui.etpMaxMosaicSize->setValue(m_settings.value("gui/maxMosaicSize",
+						   5).toInt());
 
   QString statusControl
     (m_settings.

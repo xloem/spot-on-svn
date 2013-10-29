@@ -252,7 +252,9 @@ void spoton::slotPopulateEtpMagnets(void)
 	      row += 1;
 	    }
 
+	m_ui.etpMagnets->resizeColumnsToContents();
 	m_ui.etpMagnets->setSortingEnabled(true);
+	m_ui.etpTransmittersMagnets->resizeColumnsToContents();
 	m_ui.etpTransmittersMagnets->setSortingEnabled(true);
       }
 
@@ -417,4 +419,22 @@ void spoton::slotReceiversClicked(bool state)
   QSettings settings;
 
   settings.setValue("gui/etpReceivers", state);
+}
+
+void spoton::slotMaxMosaics(int value)
+{
+  m_settings["gui/maxMosaics"] = value;
+
+  QSettings settings;
+
+  settings.setValue("gui/maxMosaics", value);
+}
+
+void spoton::slotMaxMosaicSize(int value)
+{
+  m_settings["gui/maxMosaicSize"] = value;
+
+  QSettings settings;
+
+  settings.setValue("gui/maxMosaicSize", value);
 }
