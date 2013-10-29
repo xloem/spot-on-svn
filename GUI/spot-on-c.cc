@@ -177,6 +177,7 @@ void spoton::slotAddEtpMagnet(void)
       m_ui.etpEncryptionKey->clear();
       m_ui.etpHashType->setCurrentIndex(0);
       m_ui.etpMacKey->clear();
+      m_ui.etpMagnet->clear();
     }
 
  done_label:
@@ -267,6 +268,9 @@ void spoton::slotShowEtpMagnetsMenu(const QPoint &point)
 
   if(m_ui.etpMagnets == sender())
     {
+      menu.addAction(tr("Copy &Magnet"),
+		     this, SLOT(slotCopyEtpMagnet(void)));
+      menu.addSeparator();
       menu.addAction(QIcon(QString(":/%1/clear.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
@@ -303,4 +307,58 @@ void spoton::slotDeleteEtpAllMagnets(void)
 
 void spoton::slotDeleteEtpMagnet(void)
 {
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.etpMagnets->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.etpMagnets->item
+	(row, m_ui.etpMagnets->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() + "etp_magnets.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare("DELETE FROM etp_magnets WHERE OID = ?");
+	query.bindValue(0, oid);
+	query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton::slotCopyEtpMagnet(void)
+{
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(!clipboard)
+    return;
+
+  int row = -1;
+
+  if((row = m_ui.etpMagnets->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.etpMagnets->item(row, 0); // Magnet
+
+      if(item)
+	clipboard->setText(item->text());
+    }
 }
