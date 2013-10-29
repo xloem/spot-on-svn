@@ -1782,6 +1782,22 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 2048;
 
   settings["gui/publishedKeySize"] = integer;
+  integer = qAbs(settings.value("gui/maxMosaicSize", 5).toInt(&ok));
+
+  if(!ok)
+    integer = 5;
+  else if(integer < 1 || integer > 2500)
+    integer = 5;
+
+  settings["gui/maxMosaicSize"] = integer;
+  integer = qAbs(settings.value("gui/maxMosaics", 5).toInt(&ok));
+
+  if(!ok)
+    integer = 5;
+  else if(integer <= 0 || integer > 250)
+    integer = 5;
+
+  settings["gui/maxMosaics"] = integer;
   integer = qAbs(settings.value("gui/saltLength", 256).toInt(&ok));
 
   if(!ok)
