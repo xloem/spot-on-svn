@@ -28,7 +28,7 @@
      spoton_neighbor::findMessageType may be exceptionally burdened if
      a node attempts to decipher asymmetric ciphertexts without cause.
      Unfortunately, falsified e-mail content may still weaken the method.
-17.  Capture results of QSqlDatabase::open() wherever user interest
+17.  Capture results of QSqlDatabase::open() whenever user interest
      is a concern.
 
 0.06 (10/24/2013)

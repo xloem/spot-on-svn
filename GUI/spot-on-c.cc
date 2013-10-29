@@ -260,3 +260,47 @@ void spoton::slotPopulateEtpMagnets(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 }
+
+void spoton::slotShowEtpMagnetsMenu(const QPoint &point)
+{
+  QMenu menu(this);
+
+  if(m_ui.etpMagnets == sender())
+    {
+      menu.addAction(QIcon(QString(":/%1/clear.png").
+			   arg(m_settings.value("gui/iconSet", "nouve").
+			       toString())),
+		     tr("&Delete"),
+		     this, SLOT(slotDeleteEtpMagnet(void)));
+      menu.addAction(tr("Delete &All"),
+		     this, SLOT(slotDeleteEtpAllMagnets(void)));
+      menu.exec(m_ui.etpMagnets->mapToGlobal(point));
+    }
+}
+
+void spoton::slotDeleteEtpAllMagnets(void)
+{
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "etp_magnets.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("DELETE FROM etp_magnets");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton::slotDeleteEtpMagnet(void)
+{
+}

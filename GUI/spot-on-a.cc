@@ -1128,6 +1128,7 @@ spoton::spoton(void):QMainWindow()
 
   m_ui.acceptedIPList->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.emailParticipants->setContextMenuPolicy(Qt::CustomContextMenu);
+  m_ui.etpMagnets->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.listeners->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.neighbors->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.participants->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -1139,6 +1140,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,
 	  SLOT(slotShowContextMenu(const QPoint &)));
+  connect(m_ui.etpMagnets,
+	  SIGNAL(customContextMenuRequested(const QPoint &)),
+	  this,
+	  SLOT(slotShowEtpMagnetsMenu(const QPoint &)));
   connect(m_ui.listeners,
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,

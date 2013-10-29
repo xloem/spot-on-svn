@@ -228,6 +228,8 @@ class spoton: public QMainWindow
   void slotDeleteAllListeners(void);
   void slotDeleteAllNeighbors(void);
   void slotDeleteAllUuids(void);
+  void slotDeleteEtpAllMagnets(void);
+  void slotDeleteEtpMagnet(void);
   void slotDeleteListener(void);
   void slotDeleteMail(void);
   void slotDeleteNeighbor(void);
@@ -321,6 +323,7 @@ class spoton: public QMainWindow
   void slotShareEmailPublicKeyWithParticipant(void);
   void slotShareURLPublicKey(void);
   void slotShowContextMenu(const QPoint &point);
+  void slotShowEtpMagnetsMenu(const QPoint &point);
   void slotSignatureCheckBoxToggled(bool state);
   void slotStatusButtonClicked(void);
   void slotStatusChanged(int index);
