@@ -103,7 +103,7 @@ void spoton::slotAddEtpMagnet(void)
   ** Validate the magnet.
   */
 
-  list = magnet.remove("magnet:?").split('&');
+  list = QString(magnet).remove("magnet:?").split('&');
 
   while(!list.isEmpty())
     {
