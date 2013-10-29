@@ -76,6 +76,9 @@ int main(int argc, char *argv[])
 
   QSettings settings;
 
+  if(!settings.contains("gui/etpDestinationPath"))
+    settings.setValue("gui/etpDestinationPath", QDir::homePath());
+
   if(!settings.contains("gui/gcryctl_init_secmem"))
     settings.setValue("gui/gcryctl_init_secmem", 65536);
 
@@ -244,6 +247,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotDeactivateKernel(void)));
+  connect(m_ui.etpSelectDestination,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSelectDestination(void)));
   connect(m_ui.selectGeoIP,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -256,6 +263,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSetPassphrase(void)));
+  connect(m_ui.destination,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSaveDestination(void)));
   connect(m_ui.geoipPath,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -640,6 +651,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotAddEtpMagnet(void)));
+  connect(m_ui.receivers,
+	  SIGNAL(clicked(bool)),
+	  this,
+	  SLOT(slotReceiversClicked(bool)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -997,6 +1012,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/emailSignMessages", true).toBool());
   m_ui.coAcceptSigned->setChecked
     (m_settings.value("gui/coAcceptSignedMessagesOnly", true).toBool());
+  m_ui.receivers->setChecked(m_settings.value("gui/etpReceivers",
+					      false).toBool());
 
   /*
   ** Please don't translate n/a.
@@ -1126,6 +1143,9 @@ spoton::spoton(void):QMainWindow()
     m_ui.urlsVerticalSplitter->restoreState
       (m_settings.value("gui/urlsVerticalSplitter").toByteArray());
 
+  m_ui.destination->setText(m_settings.value("gui/etpDestinationPath", "").
+			    toString().trimmed());
+  m_ui.destination->setToolTip(m_ui.destination->text());
   m_ui.acceptedIPList->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.emailParticipants->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.etpMagnets->setContextMenuPolicy(Qt::CustomContextMenu);

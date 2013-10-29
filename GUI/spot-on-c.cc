@@ -362,3 +362,59 @@ void spoton::slotCopyEtpMagnet(void)
 	clipboard->setText(item->text());
     }
 }
+
+void spoton::slotSaveDestination(void)
+{
+  saveDestination(m_ui.destination->text().trimmed());
+}
+
+void spoton::saveDestination(const QString &path)
+{
+  if(!path.isEmpty())
+    {
+      m_settings["gui/etpDestinationPath"] = path;
+
+      QSettings settings;
+      
+      settings.setValue("gui/etpDestinationPath", path);
+      m_ui.destination->setText(path);
+      m_ui.destination->setToolTip(path);
+      m_ui.destination->selectAll();
+    }
+}
+
+void spoton::slotSelectDestination(void)
+{
+  QFileDialog dialog(this);
+
+  dialog.setFilter(
+#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+		   QDir::Dirs | QDir::Readable
+#else
+		   QDir::AllDirs
+#endif
+		   );
+  dialog.setWindowTitle
+    (tr("Spot-On: Select Destination Path"));
+  dialog.setFileMode(QFileDialog::Directory);
+  dialog.setDirectory(QDir::homePath());
+  dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
+  dialog.setAcceptMode(QFileDialog::AcceptOpen);
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+#endif
+#endif
+
+  if(dialog.exec() == QDialog::Accepted)
+    saveDestination(dialog.selectedFiles().value(0).trimmed());
+}
+
+void spoton::slotReceiversClicked(bool state)
+{
+  m_settings["gui/etpReceivers"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/etpReceivers", state);
+}

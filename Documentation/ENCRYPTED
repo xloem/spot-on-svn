@@ -4,6 +4,10 @@ accepted_ips.db
 
 ip_address
 
+buzz_channels.db
+
+data
+
 country_inclusion.db:
 
 country

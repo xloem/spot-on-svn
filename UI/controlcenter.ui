@@ -1602,7 +1602,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QGroupBox" name="groupBox_6">
+             <widget class="QGroupBox" name="receivers">
               <property name="title">
                <string>Receivers</string>
               </property>
@@ -1687,7 +1687,7 @@
                     <string> MB</string>
                    </property>
                    <property name="minimum">
-                    <number>5</number>
+                    <number>1</number>
                    </property>
                    <property name="maximum">
                     <number>2500</number>
@@ -5169,7 +5169,7 @@
   <tabstop>etpHashType</tabstop>
   <tabstop>etpMacKey</tabstop>
   <tabstop>addMagnet</tabstop>
-  <tabstop>groupBox_6</tabstop>
+  <tabstop>receivers</tabstop>
   <tabstop>destination</tabstop>
   <tabstop>etpSelectDestination</tabstop>
   <tabstop>etpMaxMosaicSize</tabstop>

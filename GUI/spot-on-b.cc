@@ -634,6 +634,15 @@ void spoton::highlightPaths(void)
   QFileInfo fileInfo;
   QPalette palette;
 
+  fileInfo.setFile(m_ui.destination->text());
+
+  if(fileInfo.isReadable() && fileInfo.isWritable())
+    color = QColor(144, 238, 144);
+  else
+    color = QColor(240, 128, 128); // Light coral!
+
+  palette.setColor(m_ui.destination->backgroundRole(), color);
+  m_ui.destination->setPalette(palette);
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
   fileInfo.setFile(m_ui.geoipPath->text());
 

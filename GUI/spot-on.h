@@ -176,6 +176,7 @@ class spoton: public QMainWindow
   void populateAccounts(const QString &listenerOid);
   void purgeMessagingCache(void);
   void removeFavorite(const bool removeAll);
+  void saveDestination(const QString &path);
   void saveGeoIPPath(const QString &path);
   void saveKernelPath(const QString &path);
   void saveSettings(void);
@@ -297,6 +298,7 @@ class spoton: public QMainWindow
   void slotPublishedKeySizeChanged(const QString &text);
   void slotQuit(void);
   void slotReceivedKernelMessage(void);
+  void slotReceiversClicked(bool state);
   void slotRefreshMail(void);
   void slotRefreshPostOffice(void);
   void slotRemoveEmailParticipants(void);
@@ -306,12 +308,14 @@ class spoton: public QMainWindow
   void slotResetAll(void);
   void slotRetrieveMail(void);
   void slotSaveBuzzName(void);
+  void slotSaveDestination(void);
   void slotSaveEmailName(void);
   void slotSaveGeoIPPath(void);
   void slotSaveKernelPath(void);
   void slotSaveNodeName(void);
   void slotSaveSslControlString(void);
   void slotScramble(bool state);
+  void slotSelectDestination(void);
   void slotSelectGeoIPPath(void);
   void slotSelectKernelPath(void);
   void slotSendMail(void);
