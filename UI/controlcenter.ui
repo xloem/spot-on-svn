@@ -1357,9 +1357,12 @@
                 <number>5</number>
                </property>
                <item>
-                <widget class="QTableWidget" name="etpKeys">
+                <widget class="QTableWidget" name="etpMagnets">
                  <property name="alternatingRowColors">
                   <bool>true</bool>
+                 </property>
+                 <property name="selectionMode">
+                  <enum>QAbstractItemView::SingleSelection</enum>
                  </property>
                  <property name="selectionBehavior">
                   <enum>QAbstractItemView::SelectRows</enum>
@@ -1594,7 +1597,7 @@
                 </layout>
                </item>
               </layout>
-              <zorder>etpKeys</zorder>
+              <zorder>etpMagnets</zorder>
               <zorder></zorder>
              </widget>
             </item>
@@ -1828,7 +1831,7 @@
                    </property>
                   </column>
                  </widget>
-                 <widget class="QTableWidget" name="selectedResonatorMagnets">
+                 <widget class="QTableWidget" name="etpTransmittersMagnets">
                   <property name="alternatingRowColors">
                    <bool>true</bool>
                   </property>
@@ -5156,7 +5159,7 @@
   <tabstop>postoffice</tabstop>
   <tabstop>days</tabstop>
   <tabstop>scrollArea_4</tabstop>
-  <tabstop>etpKeys</tabstop>
+  <tabstop>etpMagnets</tabstop>
   <tabstop>magnetRadio</tabstop>
   <tabstop>etpMagnet</tabstop>
   <tabstop>pairRadio</tabstop>
@@ -5173,7 +5176,7 @@
   <tabstop>etpMaxMosaics</tabstop>
   <tabstop>recordings</tabstop>
   <tabstop>resonators</tabstop>
-  <tabstop>selectedResonatorMagnets</tabstop>
+  <tabstop>etpTransmittersMagnets</tabstop>
   <tabstop>etpFile</tabstop>
   <tabstop>etpSelectFile</tabstop>
   <tabstop>burstSize</tabstop>

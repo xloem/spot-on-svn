@@ -25,6 +25,9 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QCheckBox>
+#include <QTableWidgetItem>
+
 #include "spot-on.h"
 
 void spoton::slotGenerateEtpKeys(int index)
@@ -129,7 +132,10 @@ void spoton::slotAddEtpMagnet(void)
     }
 
   if(tokens != 4)
-    error = tr("Invalid magnet.");
+    {
+      error = tr("Invalid magnet.");
+      goto done_label;
+    }
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -166,7 +172,12 @@ void spoton::slotAddEtpMagnet(void)
   if(!ok)
     error = tr("A database error occurred.");
   else
-    populateMagnetTables();
+    {
+      m_ui.etpCipherType->setCurrentIndex(0);
+      m_ui.etpEncryptionKey->clear();
+      m_ui.etpHashType->setCurrentIndex(0);
+      m_ui.etpMacKey->clear();
+    }
 
  done_label:
 
@@ -174,6 +185,78 @@ void spoton::slotAddEtpMagnet(void)
     QMessageBox::critical(this, tr("Spot-On: Error"), error);
 }
 
-void spoton::populateMagnetTables(void)
+void spoton::slotPopulateEtpMagnets(void)
 {
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
+		     "etp_magnets.db");
+
+  if(fileInfo.exists())
+    {
+      if(fileInfo.lastModified() <= m_magnetsLastModificationTime)
+	return;
+      else
+	m_magnetsLastModificationTime = fileInfo.lastModified();
+    }
+  else
+    m_magnetsLastModificationTime = QDateTime();
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(fileInfo.absoluteFilePath());
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	int row = 0;
+
+	m_ui.etpMagnets->setSortingEnabled(false);
+	m_ui.etpMagnets->clearContents();
+	m_ui.etpMagnets->setRowCount(0);
+	m_ui.etpTransmittersMagnets->setSortingEnabled(false);
+	m_ui.etpTransmittersMagnets->clearContents();
+	m_ui.etpTransmittersMagnets->setRowCount(0);
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT magnet, OID FROM etp_magnets"))
+	  while(query.next())
+	    {
+	      QByteArray bytes;
+	      bool ok = true;
+
+	      bytes = s_crypt->decrypted
+		(QByteArray::fromBase64(query.value(0).toByteArray()), &ok);
+
+	      QCheckBox *box = new QCheckBox();
+	      QTableWidgetItem *item = new QTableWidgetItem
+		(bytes.constData());
+
+	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	      m_ui.etpMagnets->setRowCount(row + 1);
+	      m_ui.etpMagnets->setItem(row, 0, item);
+	      box->setText(bytes.constData());
+	      m_ui.etpTransmittersMagnets->setRowCount(row + 1);
+	      m_ui.etpTransmittersMagnets->setCellWidget(row, 0, box);
+	      item = new QTableWidgetItem(query.value(1).toString());
+	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	      m_ui.etpMagnets->setItem(row, 1, item);
+	      m_ui.etpTransmittersMagnets->setItem(row, 1, item->clone());
+	      row += 1;
+	    }
+
+	m_ui.etpMagnets->setSortingEnabled(true);
+	m_ui.etpTransmittersMagnets->setSortingEnabled(true);
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }

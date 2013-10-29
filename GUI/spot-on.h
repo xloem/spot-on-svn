@@ -112,6 +112,7 @@ class spoton: public QMainWindow
   QByteArray m_kernelSocketData;
   QDateTime m_acceptedIPsLastModificationTime;
   QDateTime m_countriesLastModificationTime;
+  QDateTime m_magnetsLastModificationTime;
   QDateTime m_listenersLastModificationTime;
   QDateTime m_neighborsLastModificationTime;
   QDateTime m_participantsLastModificationTime;
@@ -173,7 +174,6 @@ class spoton: public QMainWindow
   void magnetize(void);
   void prepareListenerIPCombo(void);
   void populateAccounts(const QString &listenerOid);
-  void populateMagnetTables(void);
   void purgeMessagingCache(void);
   void removeFavorite(const bool removeAll);
   void saveGeoIPPath(const QString &path);
@@ -281,6 +281,7 @@ class spoton: public QMainWindow
   void slotPopulateAcceptedIPs(void);
   void slotPopulateBuzzFavorites(void);
   void slotPopulateCountries(void);
+  void slotPopulateEtpMagnets(void);
   void slotPopulateListeners(void);
   void slotPopulateNeighbors(void);
   void slotPopulateParticipants(void);
