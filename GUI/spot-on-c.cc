@@ -252,7 +252,6 @@ void spoton::slotPopulateEtpMagnets(void)
 	      row += 1;
 	    }
 
-	m_ui.etpMagnets->resizeColumnsToContents();
 	m_ui.etpMagnets->setSortingEnabled(true);
 	m_ui.etpTransmittersMagnets->resizeColumnsToContents();
 	m_ui.etpTransmittersMagnets->setSortingEnabled(true);
