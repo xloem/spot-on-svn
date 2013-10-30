@@ -55,73 +55,6 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   QString connectionName("");
 
   sb.status->setText
-    (QObject::tr("Re-encoding accepted_ips.db."));
-  sb.status->repaint();
-  spoton_misc::prepareDatabases();
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "accepted_ips.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.setForwardOnly(true);
-
-	if(query.exec("SELECT ip_address, ip_address_hash FROM "
-		      "accepted_ips"))
-	  while(query.next())
-	    {
-	      QSqlQuery updateQuery(db);
-	      QString ip("");
-	      bool ok = true;
-
-	      updateQuery.prepare("UPDATE accepted_ips "
-				  "SET ip_address = ?, "
-				  "ip_address_hash = ? WHERE "
-				  "ip_address_hash = ?");
-	      ip = oldCrypt->decrypted(QByteArray::
-				       fromBase64(query.
-						  value(0).
-						  toByteArray()),
-				       &ok).constData();
-
-	      if(ok)
-		updateQuery.bindValue
-		  (0, newCrypt->encrypted(ip.toLatin1(),
-					  &ok).toBase64());
-
-	      if(ok)
-		updateQuery.bindValue
-		  (1,
-		   newCrypt->keyedHash(ip.toLatin1(),
-				       &ok).toBase64());
-
-	      updateQuery.bindValue
-		(2, query.value(1));
-
-	      if(ok)
-		updateQuery.exec();
-	      else
-		{
-		  QSqlQuery deleteQuery(db);
-
-		  deleteQuery.prepare("DELETE FROM accepted_ips WHERE "
-				      "ip_address_hash = ?");
-		  deleteQuery.bindValue(0, query.value(1));
-		  deleteQuery.exec();
-		}
-	    }
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-  sb.status->setText
     (QObject::tr("Re-encoding buzz_channels.db."));
   sb.status->repaint();
   spoton_misc::prepareDatabases();
@@ -179,92 +112,6 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  deleteQuery.prepare("DELETE FROM buzz_channels WHERE "
 				      "data_hash = ?");
 		  deleteQuery.bindValue(0, query.value(1));
-		  deleteQuery.exec();
-		}
-	    }
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-  sb.status->setText
-    (QObject::tr("Re-encoding country_inclusion.db."));
-  sb.status->repaint();
-  spoton_misc::prepareDatabases();
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "country_inclusion.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.setForwardOnly(true);
-
-	if(query.exec("SELECT country, accepted, country_hash FROM "
-		      "country_inclusion"))
-	  while(query.next())
-	    {
-	      QSqlQuery updateQuery(db);
-	      QString country("");
-	      bool accepted = true;
-	      bool ok = true;
-
-	      updateQuery.prepare("UPDATE country_inclusion "
-				  "SET country = ?, "
-				  "accepted = ?, "
-				  "country_hash = ? WHERE "
-				  "country_hash = ?");
-	      country = oldCrypt->decrypted(QByteArray::
-					    fromBase64(query.
-						       value(0).
-						       toByteArray()),
-					    &ok).constData();
-
-	      if(ok)
-		accepted = oldCrypt->decrypted(QByteArray::
-					       fromBase64(query.
-							  value(1).
-							  toByteArray()),
-					       &ok).toInt(); /*
-							     ** toInt()
-							     ** failure
-							     ** returns
-							     ** zero.
-							     */
-
-	      if(ok)
-		updateQuery.bindValue
-		  (0, newCrypt->encrypted(country.toLatin1(),
-					  &ok).toBase64());
-
-	      if(ok)
-		updateQuery.bindValue
-		  (1, newCrypt->encrypted(QString::number(accepted).
-					  toLatin1(), &ok).toBase64());
-
-	      if(ok)
-		updateQuery.bindValue
-		  (2,
-		   newCrypt->keyedHash(country.toLatin1(),
-				       &ok).toBase64());
-
-	      updateQuery.bindValue
-		(3, query.value(2));
-
-	      if(ok)
-		updateQuery.exec();
-	      else
-		{
-		  QSqlQuery deleteQuery(db);
-
-		  deleteQuery.prepare("DELETE FROM country_inclusion WHERE "
-				      "country_hash = ?");
-		  deleteQuery.bindValue(0, query.value(2));
 		  deleteQuery.exec();
 		}
 	    }
@@ -591,6 +438,9 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  deleteQuery.exec("DELETE FROM listeners_accounts "
 				   "WHERE listener_oid NOT IN "
 				   "(SELECT OID FROM listeners)");
+		  deleteQuery.exec("DELETE FROM listeners_allowed_ips "
+				   "WHERE listener_oid NOT IN "
+				   "(SELECT OID FROM listeners)");
 		}
 	    }
 
@@ -644,7 +494,49 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  deleteQuery.prepare("DELETE FROM listeners_accounts WHERE "
 				      "account_name_hash = ?");
 		  deleteQuery.bindValue(0, query.value(1));
-		  deleteQuery.exec();
+		  deleteQuery.exec();		  
+		}
+	    }
+
+	if(query.exec("SELECT ip_address, ip_address_hash "
+		      "FROM listeners_allowed_ips"))
+	  while(query.next())
+	    {
+	      QByteArray ip;
+	      QSqlQuery updateQuery(db);
+	      bool ok = true;
+
+	      updateQuery.prepare("UPDATE listeners_allowed_ips "
+				  "SET ip_address = ?, "
+				  "ip_address_hash = ? "
+				  "WHERE ip_address_hash = ?");
+	      ip = oldCrypt->decrypted(QByteArray::
+				       fromBase64(query.
+						  value(0).
+						  toByteArray()),
+				       &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (0, newCrypt->encrypted(ip, &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (1, newCrypt->keyedHash(ip, &ok).toBase64());
+
+	      updateQuery.bindValue(2, query.value(1));
+
+	      if(ok)
+		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare("DELETE FROM listeners_allowed_ips "
+				      "WHERE "
+				      "ip_address_hash = ?");
+		  deleteQuery.bindValue(0, query.value(1));
+		  deleteQuery.exec();		  
 		}
 	    }
       }

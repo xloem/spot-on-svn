@@ -14,7 +14,7 @@
 8.   Added SPOTON_LINKED_WITH_LIBPTHREAD macro to the various project files.
 9.   The methods spoton_crypt::saltedValue() and
      spoton_crypt::saltedPassphraseHash should not trim the provided
-     parameters. The passphrase parameter is trimmed.
+     parameters. The passphrase parameter is trimmed, however.
 10.  Removed the incomplete method spoton_crypt::privateKeyInRem().
 11.  Corrected tab ordering.
 12.  Allow editing of Gemini cells.
@@ -31,7 +31,12 @@
 17.  Capture results of QSqlDatabase::open() whenever user interest
      is a concern.
 18.  Corrected and updated Documentation/ENCRYPTED.
-19.  Abbreviated array parameters of gpg_strerror_r() from 1024 bytes to 64 bytes.
+19.  Abbreviated array parameters of gpg_strerror_r() from 1024 bytes to
+     64 bytes.
+20.  Removed the country-based firewall. Please remove country_inclusion.db.
+     The IP-based firewall has been modified such that the simple rules are
+     applied per listener. Please remove accepted_ips.db and listeners.db.
+21.  Use INSERT OR REPLACE when adding new listener accounts.
 
 0.06 (10/24/2013)
 

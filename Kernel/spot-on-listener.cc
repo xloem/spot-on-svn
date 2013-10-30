@@ -51,42 +51,38 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
     }
   else
     {
-      if(spoton_kernel::setting("gui/acceptedIPs", false).toBool())
-	{
-	  QHostAddress address;
-	  sockaddr nativeAddress;
+      QHostAddress address;
+      sockaddr nativeAddress;
 #ifdef Q_OS_OS2
-	  int length = sizeof(nativeAddress);
+      int length = sizeof(nativeAddress);
 #else
-	  socklen_t length = sizeof(nativeAddress);
+      socklen_t length = sizeof(nativeAddress);
 #endif
 
-	  if(getpeername(socketDescriptor, &nativeAddress, &length) != 0)
-	    spoton_misc::logError
-	      (QString("spoton_listener_tcp_server::incomingConnection: "
-		       "getpeername() failure for %1:%2.").
-	       arg(serverAddress().toString()).
-	       arg(serverPort()));
+      if(getpeername(socketDescriptor, &nativeAddress, &length) != 0)
+	spoton_misc::logError
+	  (QString("spoton_listener_tcp_server::incomingConnection: "
+		   "getpeername() failure for %1:%2.").
+	   arg(serverAddress().toString()).
+	   arg(serverPort()));
 
-	  address = QHostAddress(&nativeAddress);
+      address = QHostAddress(&nativeAddress);
 
-	  if(!spoton_misc::isAcceptedIP(address,
-					spoton_kernel::s_crypts.
-					value("chat", 0)))
-	    {
-	      QTcpSocket socket;
+      if(!spoton_misc::isAcceptedIP(address,
+				    m_id,
+				    spoton_kernel::s_crypts.
+				    value("chat", 0)))
+	{
+	  QTcpSocket socket;
 
-	      socket.setSocketDescriptor(socketDescriptor);
-	      socket.abort();
-	      spoton_misc::logError
-		(QString("spoton_listener_tcp_server::incomingConnection(): "
-			 "connection from %1 denied for %2:%3").
-		 arg(address.toString()).
-		 arg(serverAddress().toString()).
-		 arg(serverPort()));
-	    }
-	  else
-	    emit newConnection(socketDescriptor);
+	  socket.setSocketDescriptor(socketDescriptor);
+	  socket.abort();
+	  spoton_misc::logError
+	    (QString("spoton_listener_tcp_server::incomingConnection(): "
+		     "connection from %1 denied for %2:%3").
+	     arg(address.toString()).
+	     arg(serverAddress().toString()).
+	     arg(serverPort()));
 	}
       else
 	emit newConnection(socketDescriptor);
@@ -107,7 +103,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 				 const int maximumBufferSize,
 				 const int maximumContentLength,
 				 QObject *parent):
-  spoton_listener_tcp_server(parent)
+  spoton_listener_tcp_server(id, parent)
 {
   m_address = QHostAddress(ipAddress);
   m_address.setScopeId(scopeId);
@@ -191,6 +187,9 @@ spoton_listener::~spoton_listener()
 	query.bindValue(0, m_id);
 	query.exec();
 	query.exec("DELETE FROM listeners_accounts WHERE "
+		   "listener_oid NOT IN "
+		   "(SELECT OID FROM listeners)");
+	query.exec("DELETE FROM listeners_allowed_ips WHERE "
 		   "listener_oid NOT IN "
 		   "(SELECT OID FROM listeners)");
 	query.prepare("UPDATE listeners SET connections = 0, "
@@ -504,39 +503,10 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
 
   updateConnectionCount();
 
+  QString connectionName("");
   QString country
     (spoton_misc::
      countryNameFromIPAddress(neighbor->peerAddress().toString()));
-
-#ifdef SPOTON_LINKED_WITH_LIBGEOIP
-  if(!spoton_kernel::setting("gui/acceptedIPs", false).toBool())
-    if(!spoton_misc::isPrivateNetwork(neighbor->peerAddress()))
-      if(country == "Unknown" ||
-	 !spoton_misc::countryAllowedToConnect(country.remove(" "),
-					       s_crypt))
-	{
-	  if(country == "Unknown")
-	    spoton_misc::logError
-	      (QString("spoton_listener::slotNewConnection(): "
-		       "unknown country. Terminating connection from "
-		       "%1:%2.").
-	       arg(neighbor->peerAddress().toString()).
-	       arg(neighbor->peerPort()));
-	  else
-	    spoton_misc::logError
-	      (QString("spoton_listener::slotNewConnection(): "
-		       "country %1 is blocked. Terminating "
-		       "connection from %2:%3.").
-	       arg(country).
-	       arg(neighbor->peerAddress().toString()).
-	       arg(neighbor->peerPort()));
-
-	  neighbor->deleteLater();
-	  return;
-	}
-#endif
-
-  QString connectionName("");
   int count = -1;
 
   {

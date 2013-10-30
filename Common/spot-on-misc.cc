@@ -86,26 +86,6 @@ void spoton_misc::prepareDatabases(void)
     QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() +
-		       "accepted_ips.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.exec("CREATE TABLE IF NOT EXISTS accepted_ips ("
-		   "ip_address TEXT NOT NULL, "
-		   "ip_address_hash TEXT PRIMARY KEY NOT NULL)");
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-
-  {
-    QSqlDatabase db = database(connectionName);
-
-    db.setDatabaseName(homePath() + QDir::separator() +
 		       "buzz_channels.db");
 
     if(db.open())
@@ -115,27 +95,6 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS buzz_channels ("
 		   "data BLOB NOT NULL, "
 		   "data_hash TEXT PRIMARY KEY NOT NULL)");
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-
-  {
-    QSqlDatabase db = database(connectionName);
-
-    db.setDatabaseName(homePath() + QDir::separator() +
-		       "country_inclusion.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.exec("CREATE TABLE IF NOT EXISTS country_inclusion ("
-		   "country TEXT NOT NULL, "
-		   "accepted TEXT NOT NULL, "
-		   "country_hash TEXT PRIMARY KEY NOT NULL)");
       }
 
     db.close();
@@ -357,6 +316,16 @@ void spoton_misc::prepareDatabases(void)
 					** The foreign key constraint
 					** is flawed.
 					*/
+	query.exec("CREATE TABLE IF NOT EXISTS listeners_allowed_ips ("
+		   "ip_address TEXT NOT NULL, "
+		   "ip_address_hash TEXT NOT NULL, "
+		   "listener_oid INTEGER NOT NULL, "
+		   "PRIMARY KEY (ip_address_hash, listener_oid), "
+		   "FOREIGN KEY (listener_oid) REFERENCES "
+		   "listeners (OID))"); /*
+					** The foreign key constraint
+					** is flawed.
+					*/
       }
 
     db.close();
@@ -522,306 +491,6 @@ QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
     return QString("Unknown");
   else
     return QString(country);
-}
-
-void spoton_misc::populateCountryDatabase(spoton_crypt *crypt)
-{
-  if(!crypt)
-    return;
-
-  QString connectionName("");
-
-  {
-    QSqlDatabase db = database(connectionName);
-
-    db.setDatabaseName(homePath() + QDir::separator() +
-		       "country_inclusion.db");
-
-    if(db.open())
-      {
-#if QT_VERSION >= 0x040800
-	QList<QLocale> allLocales
-	  (QLocale::matchingLocales(QLocale::AnyLanguage, QLocale::AnyScript,
-				    QLocale::AnyCountry));
-#else
-	QStringList allLocales;
-
-	allLocales << "Afghanistan"
-		   << "Albania"
-		   << "Algeria"
-		   << "AmericanSamoa"
-		   << "Angola"
-		   << "Argentina"
-		   << "Armenia"
-		   << "Aruba"
-		   << "Australia"
-		   << "Austria"
-		   << "Azerbaijan"
-		   << "Bahrain"
-		   << "Bangladesh"
-		   << "Barbados"
-		   << "Belarus"
-		   << "Belgium"
-		   << "Belize"
-		   << "Benin"
-		   << "Bermuda"
-		   << "Bhutan"
-		   << "Bolivia"
-		   << "BosniaAndHerzegowina"
-		   << "Botswana"
-		   << "Brazil"
-		   << "BruneiDarussalam"
-		   << "Bulgaria"
-		   << "BurkinaFaso"
-		   << "Burundi"
-		   << "Cambodia"
-		   << "Cameroon"
-		   << "Canada"
-		   << "CapeVerde"
-		   << "CentralAfricanRepublic"
-		   << "Chad"
-		   << "Chile"
-		   << "China"
-		   << "Colombia"
-		   << "Comoros"
-		   << "CostaRica"
-		   << "Croatia"
-		   << "Cyprus"
-		   << "CzechRepublic"
-		   << "Default"
-		   << "DemocraticRepublicOfCongo"
-		   << "Denmark"
-		   << "Djibouti"
-		   << "DominicanRepublic"
-		   << "Ecuador"
-		   << "Egypt"
-		   << "ElSalvador"
-		   << "EquatorialGuinea"
-		   << "Eritrea"
-		   << "Estonia"
-		   << "Ethiopia"
-		   << "FaroeIslands"
-		   << "Finland"
-		   << "France"
-		   << "FrenchGuiana"
-		   << "Gabon"
-		   << "Georgia"
-		   << "Germany"
-		   << "Ghana"
-		   << "Greece"
-		   << "Greenland"
-		   << "Guadeloupe"
-		   << "Guam"
-		   << "Guatemala"
-		   << "Guinea"
-		   << "GuineaBissau"
-		   << "Guyana"
-		   << "Honduras"
-		   << "HongKong"
-		   << "Hungary"
-		   << "Iceland"
-		   << "India"
-		   << "Indonesia"
-		   << "Iran"
-		   << "Iraq"
-		   << "Ireland"
-		   << "Israel"
-		   << "Italy"
-		   << "IvoryCoast"
-		   << "Jamaica"
-		   << "Japan"
-		   << "Jordan"
-		   << "Kazakhstan"
-		   << "Kenya"
-		   << "Kuwait"
-		   << "Kyrgyzstan"
-		   << "Lao"
-		   << "LatinAmericaAndTheCaribbean"
-		   << "Latvia"
-		   << "Lebanon"
-		   << "Lesotho"
-		   << "Liberia"
-		   << "LibyanArabJamahiriya"
-		   << "Liechtenstein"
-		   << "Lithuania"
-		   << "Luxembourg"
-		   << "Macau"
-		   << "Macedonia"
-		   << "Madagascar"
-		   << "Malaysia"
-		   << "Mali"
-		   << "Malta"
-		   << "MarshallIslands"
-		   << "Martinique"
-		   << "Mauritius"
-		   << "Mayotte"
-		   << "Mexico"
-		   << "Moldova"
-		   << "Monaco"
-		   << "Mongolia"
-		   << "Montenegro"
-		   << "Morocco"
-		   << "Mozambique"
-		   << "Myanmar"
-		   << "Namibia"
-		   << "Nepal"
-		   << "Netherlands"
-		   << "NewZealand"
-		   << "Nicaragua"
-		   << "Niger"
-		   << "Nigeria"
-		   << "NorthernMarianaIslands"
-		   << "Norway"
-		   << "Oman"
-		   << "Pakistan"
-		   << "Panama"
-		   << "Paraguay"
-		   << "PeoplesRepublicOfCongo"
-		   << "Peru"
-		   << "Philippines"
-		   << "Poland"
-		   << "Portugal"
-		   << "PuertoRico"
-		   << "Qatar"
-		   << "RepublicOfKorea"
-		   << "Reunion"
-		   << "Romania"
-		   << "RussianFederation"
-		   << "Rwanda"
-		   << "Saint Barthelemy"
-		   << "Saint Martin"
-		   << "SaoTomeAndPrincipe"
-		   << "SaudiArabia"
-		   << "Senegal"
-		   << "Serbia"
-		   << "SerbiaAndMontenegro"
-		   << "Singapore"
-		   << "Slovakia"
-		   << "Slovenia"
-		   << "Somalia"
-		   << "SouthAfrica"
-		   << "Spain"
-		   << "SriLanka"
-		   << "Sudan"
-		   << "Swaziland"
-		   << "Sweden"
-		   << "Switzerland"
-		   << "SyrianArabRepublic"
-		   << "Taiwan"
-		   << "Tajikistan"
-		   << "Tanzania"
-		   << "Thailand"
-		   << "Togo"
-		   << "Tonga"
-		   << "TrinidadAndTobago"
-		   << "Tunisia"
-		   << "Turkey"
-		   << "USVirginIslands"
-		   << "Uganda"
-		   << "Ukraine"
-		   << "UnitedArabEmirates"
-		   << "UnitedKingdom"
-		   << "UnitedStates"
-		   << "UnitedStatesMinorOutlyingIslands"
-		   << "Uruguay"
-		   << "Uzbekistan"
-		   << "Venezuela"
-		   << "VietNam"
-		   << "Yemen"
-		   << "Yugoslavia"
-		   << "Zambia"
-		   << "Zimbabwe";
-#endif
-
-	while(!allLocales.isEmpty())
-	  {
-#if QT_VERSION >= 0x040800
-	    QLocale locale(allLocales.takeFirst());
-	    QString country(QLocale::countryToString(locale.country()));
-#else
-	    QString country(allLocales.takeFirst());
-#endif
-	    QSqlQuery query(db);
-	    bool ok = true;
-
-	    query.prepare("INSERT INTO country_inclusion "
-			  "(country, accepted, country_hash) "
-			  "VALUES (?, ?, ?)");
-
-	    if(!country.isEmpty())
-	      query.bindValue
-		(0, crypt->encrypted(country.toLatin1(), &ok).toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(1, crypt->encrypted(QString::number(1).toLatin1(), &ok).
-		 toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(2,
-		 crypt->keyedHash(country.toLatin1(), &ok).toBase64());
-
-	    if(ok)
-	      query.exec();
-	  }
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-}
-
-bool spoton_misc::countryAllowedToConnect(const QString &country,
-					  spoton_crypt *crypt)
-{
-  if(!crypt)
-    return false;
-
-  QString connectionName("");
-  bool allowed = false;
-
-  {
-    QSqlDatabase db = database(connectionName);
-
-    db.setDatabaseName(homePath() + QDir::separator() +
-		       "country_inclusion.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-	bool ok = true;
-
-	query.setForwardOnly(true);
-	query.prepare("SELECT accepted FROM country_inclusion WHERE "
-		      "country_hash = ?");
-	query.bindValue(0, crypt->keyedHash(country.toLatin1(), &ok).
-			toBase64());
-
-	if(ok)
-	  if(query.exec())
-	    if(query.next())
-	      {
-		allowed = crypt->decrypted(QByteArray::
-					   fromBase64(query.
-						      value(0).
-						      toByteArray()),
-					   &ok).toInt(); /*
-							 ** toInt() failure
-							 ** returns zero.
-							 */
-
-		if(!ok)
-		  allowed = false;
-	      }
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-  return allowed;
 }
 
 void spoton_misc::populateUrlsDatabase(const QList<QList<QVariant> > &list,
@@ -1297,6 +966,9 @@ void spoton_misc::cleanupDatabases(void)
 	query.exec("DELETE FROM listeners WHERE "
 		   "status_control = 'deleted'");
 	query.exec("DELETE FROM listeners_accounts WHERE "
+		   "listener_oid NOT IN "
+		   "(SELECT OID FROM listeners)");
+	query.exec("DELETE FROM listeners_allowed_ips WHERE "
 		   "listener_oid NOT IN "
 		   "(SELECT OID FROM listeners)");
 	query.exec("UPDATE listeners SET connections = 0, "
@@ -1901,13 +1573,9 @@ bool spoton_misc::isValidSignature(const QByteArray &data,
 }
 
 bool spoton_misc::isAcceptedIP(const QHostAddress &address,
+			       const qint64 id,
 			       spoton_crypt *crypt)
 {
-  QSettings settings;
-
-  if(!settings.value("gui/acceptedIPs", false).toBool())
-    return true;
-
   if(!crypt)
     return false;
 
@@ -1918,7 +1586,7 @@ bool spoton_misc::isAcceptedIP(const QHostAddress &address,
     QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() +
-		       "accepted_ips.db");
+		       "listeners.db");
 
     if(db.open())
       {
@@ -1926,11 +1594,19 @@ bool spoton_misc::isAcceptedIP(const QHostAddress &address,
 	bool ok = true;
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT COUNT(*) FROM accepted_ips "
-		      "WHERE ip_address_hash = ?");
+
+	query.prepare("SELECT COUNT(*) FROM listeners_allowed_ips "
+		      "WHERE ip_address_hash IN (?, ?) AND "
+		      "listener_oid = ?");
 	query.bindValue(0, crypt->keyedHash(address.toString().
 					    toLatin1(), &ok).
 			toBase64());
+
+	if(ok)
+	  query.bindValue(1, crypt->keyedHash(QByteArray("Any"), &ok).
+			  toBase64());
+
+	query.bindValue(2, id);
 
 	if(query.exec())
 	  if(query.next())

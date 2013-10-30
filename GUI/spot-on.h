@@ -110,8 +110,6 @@ class spoton: public QMainWindow
   static const int APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL = 1;
   static const int APPLY_GOLDBUG_TO_INBOX_ERROR_MEMORY = 2;
   QByteArray m_kernelSocketData;
-  QDateTime m_acceptedIPsLastModificationTime;
-  QDateTime m_countriesLastModificationTime;
   QDateTime m_magnetsLastModificationTime;
   QDateTime m_listenersLastModificationTime;
   QDateTime m_neighborsLastModificationTime;
@@ -167,13 +165,13 @@ class spoton: public QMainWindow
   void authenticationRequested(const QByteArray &data);
   void changeEchoMode(const QString &mode, QTableWidget *tableWidget);
   void closeEvent(QCloseEvent *event);
-  void countriesToggle(const bool state);
   void demagnetize(void);
   void highlightPaths(void);
   void initializeKernelSocket(void);
   void magnetize(void);
   void prepareListenerIPCombo(void);
   void populateAccounts(const QString &listenerOid);
+  void populateListenerIps(const QString &listenerOid);
   void purgeMessagingCache(void);
   void removeFavorite(const bool removeAll);
   void saveDestination(const QString &path);
@@ -188,7 +186,6 @@ class spoton: public QMainWindow
 
  private slots:
   void slotAcceptPublicizedListeners(void);
-  void slotAcceptedIPs(bool state);
   void slotActivateKernel(void);
   void slotAddAcceptedIP(void);
   void slotAddAccount(void);
@@ -220,8 +217,6 @@ class spoton: public QMainWindow
   void slotCopyMyEmailPublicKey(void);
   void slotCopyMyURLPublicKey(void);
   void slotCostChanged(int value);
-  void slotCountriesToggleActivated(int index);
-  void slotCountryChanged(QListWidgetItem *item);
   void slotDaysChanged(int value);
   void slotDeactivateKernel(void);
   void slotDeleteAccepedIP(void);
@@ -284,9 +279,7 @@ class spoton: public QMainWindow
   void slotNeighborMaximumChanged(int value);
   void slotNeighborSelected(void);
   void slotParticipantDoubleClicked(QTableWidgetItem *item);
-  void slotPopulateAcceptedIPs(void);
   void slotPopulateBuzzFavorites(void);
-  void slotPopulateCountries(void);
   void slotPopulateEtpMagnets(void);
   void slotPopulateListeners(void);
   void slotPopulateNeighbors(void);

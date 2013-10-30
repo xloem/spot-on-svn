@@ -343,8 +343,6 @@ void spoton_gui_server::slotReadyRead(void)
 			   spoton_kernel::setting("gui/iterationCount",
 						  10000).toInt(),
 			   names.at(i));
-			spoton_misc::populateCountryDatabase
-			  (crypt);
 			spoton_kernel::s_crypts.insert(names.at(i), crypt);
 		      }
 		}

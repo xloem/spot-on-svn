@@ -97,8 +97,6 @@ spoton::spoton(void):QMainWindow()
   m_booleans["keys_sent_to_kernel"] = false;
   m_buzzStatusTimer.setInterval(15000);
   m_externalAddress = new spoton_external_address(this);
-  m_acceptedIPsLastModificationTime = QDateTime();
-  m_countriesLastModificationTime = QDateTime();
   m_magnetsLastModificationTime = QDateTime();
   m_listenersLastModificationTime = QDateTime();
   m_neighborsLastModificationTime = QDateTime();
@@ -487,14 +485,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.signatureKeyType,
 	  SLOT(setEnabled(bool)));
-  connect(m_ui.countriesRadio,
-	  SIGNAL(toggled(bool)),
-	  m_ui.approvedCountries,
-	  SLOT(setEnabled(bool)));
-  connect(m_ui.acceptedIPsRadio,
-	  SIGNAL(toggled(bool)),
-	  m_ui.approvedIPs,
-	  SLOT(setEnabled(bool)));
   connect(m_ui.cost,
 	  SIGNAL(valueChanged(int)),
 	  this,
@@ -611,10 +601,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotSignatureCheckBoxToggled(bool)));
-  connect(m_ui.acceptedIPsRadio,
-	  SIGNAL(toggled(bool)),
-	  this,
-	  SLOT(slotAcceptedIPs(bool)));
   connect(m_ui.addAcceptedIP,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -631,6 +617,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotDeleteAccount(void)));
+  connect(m_ui.deleteAcceptedIP,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotDeleteAccepedIP(void)));
   connect(m_ui.authenticate,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -639,10 +629,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(activated(int)),
 	  this,
 	  SLOT(slotBuzzTools(int)));
-  connect(m_ui.countriesToggle,
-	  SIGNAL(activated(int)),
-	  this,
-	  SLOT(slotCountriesToggleActivated(int)));
   connect(m_ui.magnetRadio,
 	  SIGNAL(toggled(bool)),
 	  m_ui.etpMagnet,
@@ -675,14 +661,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotMessagingCachePurge(void)));
-  connect(&m_tableTimer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotPopulateAcceptedIPs(void)));
-  connect(&m_tableTimer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotPopulateCountries(void)));
   connect(&m_tableTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -775,6 +753,8 @@ spoton::spoton(void):QMainWindow()
 
   QSettings settings;
 
+  settings.remove("gui/acceptedIPs");
+
   if(settings.contains("gui/rsaKeySize"))
     {
       settings.setValue("gui/keySize",
@@ -846,16 +826,9 @@ spoton::spoton(void):QMainWindow()
     restoreGeometry(m_settings.value("gui/geometry").toByteArray());
 
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
-  m_ui.acceptedIPsRadio->setChecked
-    (m_settings.value("gui/acceptedIPs", false).toBool());
   m_ui.geoipPath->setText
     (m_settings.value("gui/geoipPath", "GeoIP.dat").toString().trimmed());
-#else
-  m_ui.countriesRadio->setEnabled(false);
-  m_ui.acceptedIPsRadio->setChecked(true);
 #endif
-  m_ui.approvedCountries->setEnabled(m_ui.countriesRadio->isChecked());
-  m_ui.approvedIPs->setEnabled(m_ui.acceptedIPsRadio->isChecked());
   m_ui.magnetRadio->setChecked(true);
   m_ui.pairFrame->setEnabled(false);
 
@@ -1157,16 +1130,11 @@ spoton::spoton(void):QMainWindow()
   m_ui.destination->setText(m_settings.value("gui/etpDestinationPath", "").
 			    toString().trimmed());
   m_ui.destination->setToolTip(m_ui.destination->text());
-  m_ui.acceptedIPList->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.emailParticipants->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.etpMagnets->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.listeners->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.neighbors->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.participants->setContextMenuPolicy(Qt::CustomContextMenu);
-  connect(m_ui.acceptedIPList,
-	  SIGNAL(customContextMenuRequested(const QPoint &)),
-	  this,
-	  SLOT(slotShowContextMenu(const QPoint &)));
   connect(m_ui.emailParticipants,
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,
@@ -2911,8 +2879,6 @@ void spoton::slotGeneralTimerTimeout(void)
 
   if(text != m_ui.pid->text())
     {
-      m_acceptedIPsLastModificationTime = QDateTime();
-      m_countriesLastModificationTime = QDateTime();
       m_listenersLastModificationTime = QDateTime();
       m_neighborsLastModificationTime = QDateTime();
       m_participantsLastModificationTime = QDateTime();
@@ -3148,6 +3114,10 @@ void spoton::slotDeleteListener(void)
 			  "listener_oid = ?");
 	    query.bindValue(0, oid);
 	    query.exec();
+	    query.prepare("DELETE FROM listeners_allowed_ips WHERE "
+			  "listener_oid = ?");
+	    query.bindValue(0, oid);
+	    query.exec();
 	  }
       }
 
@@ -3306,6 +3276,9 @@ void spoton::updateListenersTable(const QSqlDatabase &db)
 	query.exec("DELETE FROM listeners WHERE "
 		   "status_control = 'deleted'");
 	query.exec("DELETE FROM listeners_accounts WHERE "
+		   "listener_oid NOT IN "
+		   "(SELECT OID FROM listeners)");
+	query.exec("DELETE FROM listeners_allowed_ips WHERE "
 		   "listener_oid NOT IN "
 		   "(SELECT OID FROM listeners)");
 	query.exec("UPDATE listeners SET connections = 0, "
@@ -3648,16 +3621,6 @@ void spoton::slotSetPassphrase(void)
 				m_ui.iterationCount->value(),
 				list.at(i)));
 
-	  if(!reencode)
-	    {
-	      m_sb.status->setText
-		(tr("Initializing country_inclusion.db."));
-	      m_sb.status->repaint();
-	      spoton_misc::populateCountryDatabase
-		(m_crypts.value("chat", 0));
-	      m_sb.status->clear();
-	    }
-
 	  if(!m_tableTimer.isActive())
 	    m_tableTimer.start();
 
@@ -3919,16 +3882,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 {
   QMenu menu(this);
 
-  if(m_ui.acceptedIPList == sender())
-    {
-      menu.addAction(QIcon(QString(":/%1/clear.png").
-			   arg(m_settings.value("gui/iconSet", "nouve").
-			       toString())),
-		     tr("&Delete IP Address"),
-		     this, SLOT(slotDeleteAccepedIP(void)));
-      menu.exec(m_ui.acceptedIPList->mapToGlobal(point));
-    }
-  else if(m_ui.emailParticipants == sender())
+  if(m_ui.emailParticipants == sender())
     {
       QAction *action = menu.addAction
 	(QIcon(QString(":/%1/add.png").
@@ -4480,6 +4434,7 @@ void spoton::slotDeleteAllListeners(void)
 	  {
 	    query.exec("DELETE FROM listeners");
 	    query.exec("DELETE FROM listeners_accounts");
+	    query.exec("DELETE FROM listeners_allowed_ips");
 	  }
 	else
 	  query.exec("UPDATE listeners SET "
@@ -5033,124 +4988,6 @@ void spoton::slotNeighborHalfEcho(void)
   changeEchoMode("half", m_ui.neighbors);
 }
 
-void spoton::countriesToggle(const bool state)
-{
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
-
-  if(!s_crypt)
-    return;
-
-  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-  update();
-
-  QString connectionName("");
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "country_inclusion.db");
-
-    if(db.open())
-      {
-	disconnect(m_ui.countries,
-		   SIGNAL(itemChanged(QListWidgetItem *)),
-		   this,
-		   SLOT(slotCountryChanged(QListWidgetItem *)));
-
-	QSqlQuery query(db);
-
-	for(int i = 0; i < m_ui.countries->count(); i++)
-	  {
-	    QListWidgetItem *item = m_ui.countries->item(i);
-
-	    if(!item)
-	      continue;
-
-	    bool ok = true;
-
-	    query.prepare("UPDATE country_inclusion SET accepted = ? "
-			  "WHERE country_hash = ?");
-	    query.bindValue
-	      (0, s_crypt->
-	       encrypted(QString::number(state).
-			 toLatin1(), &ok).toBase64());
-
-	    if(ok)
-	      query.bindValue
-		(1, s_crypt->
-		 keyedHash(item->text().toLatin1(), &ok).
-		 toBase64());
-
-	    if(ok)
-	      ok = query.exec();
-
-	    if(ok)
-	      {
-		if(state)
-		  item->setCheckState(Qt::Checked);
-		else
-		  item->setCheckState(Qt::Unchecked);
-	      }
-	  }
-
-	connect(m_ui.countries,
-		SIGNAL(itemChanged(QListWidgetItem *)),
-		this,
-		SLOT(slotCountryChanged(QListWidgetItem *)));
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-
-  if(!state)
-    {
-      QString connectionName("");
-
-      {
-	QSqlDatabase db = spoton_misc::database(connectionName);
-
-	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-			   "neighbors.db");
-
-	if(db.open())
-	  {
-	    QSqlQuery query(db);
-
-	    for(int i = 0; i < m_ui.countries->count(); i++)
-	      {
-		QListWidgetItem *item = m_ui.countries->item(i);
-
-		if(!item)
-		  continue;
-
-		bool ok = true;
-
-		query.prepare("UPDATE neighbors SET "
-			      "status_control = 'disconnected' "
-			      "WHERE qt_country_hash = ?");
-		query.bindValue
-		  (0,
-		   s_crypt->
-		   keyedHash(item->text().toLatin1(), &ok).
-		   toBase64());
-
-		if(ok)
-		  query.exec();
-	      }
-	  }
-
-	db.close();
-      }
-
-      QSqlDatabase::removeDatabase(connectionName);
-    }
-
-  QApplication::restoreOverrideCursor();
-}
-
 void spoton::slotKernelLogEvents(bool state)
 {
   m_settings["gui/kernelLogEvents"] = state;
@@ -5584,115 +5421,6 @@ void spoton::slotCopyAllMyPublicKeys(void)
   if(clipboard)
     clipboard->setText(copyMyChatPublicKey() + "@" +
 		       copyMyEmailPublicKey());
-}
-
-void spoton::slotAcceptedIPs(bool state)
-{
-  m_settings["gui/acceptedIPs"] = state;
-
-  QSettings settings;
-
-  settings.setValue("gui/acceptedIPs", state);
-}
-
-void spoton::slotPopulateAcceptedIPs(void)
-{
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
-
-  if(!s_crypt)
-    return;
-
-  QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
-		     "accepted_ips.db");
-
-  if(fileInfo.exists())
-    {
-      if(fileInfo.lastModified() <= m_acceptedIPsLastModificationTime)
-	return;
-      else
-	m_acceptedIPsLastModificationTime = fileInfo.lastModified();
-    }
-  else
-    m_acceptedIPsLastModificationTime = QDateTime();
-
-  QString connectionName("");
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-
-    db.setDatabaseName(fileInfo.absoluteFilePath());
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-	QWidget *focusWidget = QApplication::focusWidget();
-
-	query.setForwardOnly(true);
-
-	if(query.exec("SELECT ip_address FROM accepted_ips"))
-	  {
-	    QList<QListWidgetItem *> list
-	      (m_ui.acceptedIPList->selectedItems());
-	    QString selectedIP("");
-	    QStringList acceptedIPList;
-	    int hval = m_ui.acceptedIPList->horizontalScrollBar()->value();
-	    int vval = m_ui.acceptedIPList->verticalScrollBar()->value();
-
-	    if(!list.isEmpty())
-	      selectedIP = list.at(0)->text();
-
-	    m_ui.acceptedIPList->clear();
-
-	    while(query.next())
-	      {
-		QString ip("");
-		bool ok = true;
-
-		ip = s_crypt->
-		  decrypted(QByteArray::
-			    fromBase64(query.
-				       value(0).
-				       toByteArray()),
-			    &ok).constData();
-
-		if(!ip.isEmpty())
-		  acceptedIPList.append(ip);
-	      }
-
-	    qSort(acceptedIPList);
-
-	    QListWidgetItem *selected = 0;
-
-	    while(!acceptedIPList.isEmpty())
-	      {
-		QListWidgetItem *item = 0;
-
-		item = new QListWidgetItem(acceptedIPList.takeFirst());
-		item->setFlags
-		  (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-
-		m_ui.acceptedIPList->addItem(item);
-
-		if(!selectedIP.isEmpty())
-		  if(item->text() == selectedIP)
-		    selected = item;
-	      }
-
-	    if(selected)
-	      selected->setSelected(true);
-
-	    m_ui.acceptedIPList->horizontalScrollBar()->setValue(hval);
-	    m_ui.acceptedIPList->verticalScrollBar()->setValue(vval);
-
-	    if(focusWidget)
-	      focusWidget->setFocus();
-	  }
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton::slotSaveSslControlString(void)
@@ -6237,22 +5965,4 @@ void spoton::slotBuzzTools(int index)
 	  SIGNAL(activated(int)),
 	  this,
 	  SLOT(slotFavoritesActivated(int)));
-}
-
-void spoton::slotCountriesToggleActivated(int index)
-{
-  if(index == 0)
-    countriesToggle(false);
-  else if(index == 1)
-    countriesToggle(true);
-
-  disconnect(m_ui.countriesToggle,
-	     SIGNAL(activated(int)),
-	     this,
-	     SLOT(slotCountriesToggleActivated(int)));
-  m_ui.countriesToggle->setCurrentIndex(0);
-  connect(m_ui.countriesToggle,
-	  SIGNAL(activated(int)),
-	  this,
-	  SLOT(slotCountriesToggleActivated(int)));
 }

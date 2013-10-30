@@ -58,9 +58,8 @@ class spoton_misc
 				  const QByteArray &saltedCredentials,
 				  const QByteArray &salt,
 				  spoton_crypt *crypt);
-  static bool countryAllowedToConnect(const QString &country,
-				      spoton_crypt *crypt);
   static bool isAcceptedIP(const QHostAddress &address,
+			   const qint64 id,
 			   spoton_crypt *crypt);
   static bool isAcceptedParticipant(const QByteArray &publicKeyHash);
   static bool isGnome(void);
@@ -81,7 +80,6 @@ class spoton_misc
   static void logError(const QString &error);
   static void moveSentMailToSentFolder(const QList<qint64> &oids,
 				       spoton_crypt *crypt);
-  static void populateCountryDatabase(spoton_crypt *crypt);
   static void populateUrlsDatabase(const QList<QList<QVariant> > &list,
 				   spoton_crypt *crypt);
   static void prepareDatabases(void);

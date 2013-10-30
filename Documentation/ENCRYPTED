@@ -1,17 +1,8 @@
 Some tables contain encrypted data.
 
-accepted_ips.db:
-
-ip_address
-
 buzz_channels.db:
 
 data
-
-country_inclusion.db:
-
-country
-accepted
 
 email.db:
 
@@ -44,6 +35,8 @@ scope_id
 
 account_name
 account_password
+
+ip_address
 
 neighbors.db:
 

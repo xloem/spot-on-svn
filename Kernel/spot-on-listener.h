@@ -46,8 +46,10 @@ class spoton_listener_tcp_server: public QTcpServer
   Q_OBJECT
 
  public:
-  spoton_listener_tcp_server(QObject *parent):QTcpServer(parent)
+  spoton_listener_tcp_server(const qint64 id,
+			     QObject *parent):QTcpServer(parent)
   {
+    m_id = id;
   }
 
   ~spoton_listener_tcp_server()
@@ -59,6 +61,9 @@ class spoton_listener_tcp_server: public QTcpServer
 #else
   void incomingConnection(int socketDescriptor);
 #endif
+
+ private:
+  qint64 m_id;
 
  signals:
 #if QT_VERSION >= 0x050000

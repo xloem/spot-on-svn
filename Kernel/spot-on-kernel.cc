@@ -2158,7 +2158,6 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 		     setting("gui/saltLength", 256).toInt(),
 		     setting("gui/iterationCount", 10000).toInt(),
 		     list.at(i));
-		  spoton_misc::populateCountryDatabase(crypt);
 		  s_crypts.insert(list.at(i), crypt);
 		}
 	  }
@@ -2177,6 +2176,9 @@ void spoton_kernel::cleanupListenersDatabase(const QSqlDatabase &db)
   query.exec("DELETE FROM listeners WHERE "
 	     "status_control = 'deleted'");
   query.exec("DELETE FROM listeners_accounts WHERE "
+	     "listener_oid NOT IN "
+	     "(SELECT OID FROM listeners)");
+  query.exec("DELETE FROM listeners_allowed_ips WHERE "
 	     "listener_oid NOT IN "
 	     "(SELECT OID FROM listeners)");
 }

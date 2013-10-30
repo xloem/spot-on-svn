@@ -1048,226 +1048,6 @@ QByteArray spoton::copyMyChatPublicKey(void)
     return QByteArray();
 }
 
-void spoton::slotPopulateCountries(void)
-{
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
-
-  if(!s_crypt)
-    return;
-
-  QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
-		     "country_inclusion.db");
-
-  if(fileInfo.exists())
-    {
-      if(fileInfo.lastModified() <= m_countriesLastModificationTime)
-	return;
-      else
-	m_countriesLastModificationTime = fileInfo.lastModified();
-    }
-  else
-    m_countriesLastModificationTime = QDateTime();
-
-  QString connectionName("");
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-
-    db.setDatabaseName(fileInfo.absoluteFilePath());
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-	QWidget *focusWidget = QApplication::focusWidget();
-
-	query.setForwardOnly(true);
-
-	if(query.exec("SELECT country, accepted FROM country_inclusion"))
-	  {
-	    QList<QListWidgetItem *> list(m_ui.countries->selectedItems());
-	    QString selectedCountry("");
-	    int hval = m_ui.countries->horizontalScrollBar()->value();
-	    int vval = m_ui.countries->verticalScrollBar()->value();
-
-	    if(!list.isEmpty())
-	      selectedCountry = list.at(0)->text();
-
-	    m_ui.countries->clear();
-
-	    QList<QPair<QString, bool> > countries;
-
-	    while(query.next())
-	      {
-		QString country("");
-		bool accepted = true;
-		bool ok = true;
-
-		country = s_crypt->
-		  decrypted(QByteArray::
-			    fromBase64(query.
-				       value(0).
-				       toByteArray()),
-			    &ok).constData();
-
-		if(ok)
-		  accepted = s_crypt->
-		    decrypted(QByteArray::
-			      fromBase64(query.
-					 value(1).
-					 toByteArray()),
-			      &ok).toInt(); /*
-					    ** toInt()
-					    ** failure
-					    ** returns
-					    ** zero.
-					    */
-
-		if(ok)
-		  {
-		    QPair<QString, bool> pair(country, accepted);
-
-		    countries.append(pair);
-		  }
-	      }
-
-	    qSort(countries);
-	    disconnect(m_ui.countries,
-		       SIGNAL(itemChanged(QListWidgetItem *)),
-		       this,
-		       SLOT(slotCountryChanged(QListWidgetItem *)));
-
-	    QListWidgetItem *selected = 0;
-
-	    while(!countries.isEmpty())
-	      {
-		QListWidgetItem *item = 0;
-		QPair<QString, bool> pair(countries.takeFirst());
-
-		item = new QListWidgetItem(pair.first);
-		item->setFlags
-		  (Qt::ItemIsEnabled | Qt::ItemIsSelectable |
-		   Qt::ItemIsUserCheckable);
-
-		if(pair.second)
-		  item->setCheckState(Qt::Checked);
-		else
-		  item->setCheckState(Qt::Unchecked);
-
-		QPixmap pixmap(pixmapForCountry(item->text()));
-
-		if(pixmap.isNull())
-		  pixmap = QPixmap(":/Flags/unknown.png");
-
-		if(!pixmap.isNull())
-		  pixmap = pixmap.scaled(QSize(16, 16), Qt::KeepAspectRatio,
-					 Qt::SmoothTransformation);
-
-		if(!pixmap.isNull())
-		  item->setIcon(QIcon(pixmap));
-
-		m_ui.countries->addItem(item);
-
-		if(!selectedCountry.isEmpty())
-		  if(item->text() == selectedCountry)
-		    selected = item;
-	      }
-
-	    if(selected)
-	      selected->setSelected(true);
-
-	    m_ui.countries->horizontalScrollBar()->setValue(hval);
-	    m_ui.countries->verticalScrollBar()->setValue(vval);
-	    connect(m_ui.countries,
-		    SIGNAL(itemChanged(QListWidgetItem *)),
-		    this,
-		    SLOT(slotCountryChanged(QListWidgetItem *)));
-
-	    if(focusWidget)
-	      focusWidget->setFocus();
-	  }
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-}
-
-void spoton::slotCountryChanged(QListWidgetItem *item)
-{
-  if(!item)
-    return;
-
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
-
-  if(!s_crypt)
-    return;
-
-  QString connectionName("");
-  bool ok = true;
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "country_inclusion.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.prepare("UPDATE country_inclusion SET accepted = ? "
-		      "WHERE country_hash = ?");
-	query.bindValue
-	  (0, s_crypt->
-	   encrypted(QString::number(item->checkState()).
-		     toLatin1(), &ok).toBase64());
-
-	if(ok)
-	  query.bindValue
-	    (1, s_crypt->
-	     keyedHash(item->text().toLatin1(), &ok).toBase64());
-
-	if(ok)
-	  ok = query.exec();
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-
-  if(ok)
-    {
-      {
-	QSqlDatabase db = spoton_misc::database(connectionName);
-
-	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-			   "neighbors.db");
-
-	if(db.open())
-	  {
-	    QSqlQuery query(db);
-
-	    query.prepare("UPDATE neighbors SET "
-			  "status_control = 'disconnected' "
-			  "WHERE qt_country_hash = ?");
-	    query.bindValue
-	      (0,
-	       s_crypt->
-	       keyedHash(item->text().toLatin1(), &ok).toBase64());
-
-	    if(ok)
-	      query.exec();
-	  }
-
-	db.close();
-      }
-
-      QSqlDatabase::removeDatabase(connectionName);
-    }
-}
-
 QPixmap spoton::pixmapForCountry(const QString &country)
 {
   if(country == "Afghanistan")
@@ -2076,9 +1856,7 @@ void spoton::slotResetAll(void)
 
   QStringList list;
 
-  list << "accepted_ips.db"
-       << "buzz_channels.db"
-       << "country_inclusion.db"
+  list << "buzz_channels.db"
        << "email.db"
        << "error_log.dat"
        << "etp_magnets.db"
@@ -3420,7 +3198,7 @@ void spoton::slotSetIcons(void)
     }
 
   /*
-  ** Kernel, listeners, and neighbors icons are prepared elsewhere.
+  ** Kernel, listeners, and neighbors status icons are prepared elsewhere.
   */
 
   // Generic
@@ -3519,6 +3297,8 @@ void spoton::slotSetIcons(void)
 				  arg(iconSet)));
   m_ui.deleteAccount->setIcon(QIcon(QString(":/%1/clear.png").
 				    arg(iconSet)));
+  m_ui.deleteAcceptedIP->setIcon(QIcon(QString(":/%1/clear.png").
+				       arg(iconSet)));
 
   // Settings
 
@@ -4276,6 +4056,8 @@ void spoton::slotRemoveEmailParticipants(void)
 
 void spoton::slotAddAcceptedIP(void)
 {
+  spoton_misc::prepareDatabases();
+
   spoton_crypt *s_crypt = m_crypts.value("chat", 0);
 
   if(!s_crypt)
@@ -4285,16 +4067,36 @@ void spoton::slotAddAcceptedIP(void)
       return;
     }
 
-  QHostAddress ip(m_ui.acceptedIP->text().trimmed());
+  QString oid("");
+  int row = -1;
 
-  if(ip.isNull())
+  if((row = m_ui.listeners->currentRow()) >= 0)
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Please provide an IP address."));
+      QTableWidgetItem *item = m_ui.listeners->item
+	(row, m_ui.listeners->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    {
+      QMessageBox::critical
+	(this, tr("Spot-On: Error"),
+	 tr("Invalid listener OID. Please select a listener."));
       return;
     }
 
-  spoton_misc::prepareDatabases();
+  QHostAddress ip(m_ui.acceptedIP->text().trimmed());
+
+  if(m_ui.acceptedIP->text().trimmed() != "Any")
+    if(ip.isNull())
+      {
+	QMessageBox::critical(this, tr("Spot-On: Error"),
+			      tr("Please provide an IP address or "
+				 "the keyword Any."));
+	return;
+      }
 
   QString connectionName("");
   bool ok = true;
@@ -4303,24 +4105,44 @@ void spoton::slotAddAcceptedIP(void)
     QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "accepted_ips.db");
+		       "listeners.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
 	query.prepare
-	  ("INSERT INTO accepted_ips (ip_address, ip_address_hash) "
-	   "VALUES (?, ?)");
-	query.bindValue
-	  (0, s_crypt->encrypted(ip.toString().toLatin1(),
-				 &ok).toBase64());
+	  ("INSERT OR REPLACE INTO listeners_allowed_ips "
+	   "(ip_address, ip_address_hash, "
+	   "listener_oid) "
+	   "VALUES (?, ?, ?)");
 
-	if(ok)
-	  query.bindValue
-	    (1, s_crypt->keyedHash(ip.toString().
-				   toLatin1(), &ok).
-	     toBase64());
+	if(m_ui.acceptedIP->text().trimmed() == "Any")
+	  {
+	    query.bindValue
+	      (0, s_crypt->encrypted(QByteArray("Any"),
+				     &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(1, s_crypt->keyedHash(QByteArray("Any"),
+				       &ok).
+		 toBase64());
+	  }
+	else
+	  {
+	    query.bindValue
+	      (0, s_crypt->encrypted(ip.toString().toLatin1(),
+				     &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(1, s_crypt->keyedHash(ip.toString().
+				       toLatin1(), &ok).
+		 toBase64());
+	  }
+
+	query.bindValue(2, oid);
 
 	if(ok)
 	  ok = query.exec();
@@ -4332,10 +4154,7 @@ void spoton::slotAddAcceptedIP(void)
   QSqlDatabase::removeDatabase(connectionName);
 
   if(ok)
-    {
-      m_ui.acceptedIP->selectAll();
-      m_acceptedIPsLastModificationTime = QDateTime();
-    }
+    m_ui.acceptedIP->clear();
   else
     QMessageBox::critical(this, tr("Spot-On: Error"),
 			  tr("Unable to store the IP address securely."));
@@ -4343,13 +4162,36 @@ void spoton::slotAddAcceptedIP(void)
 
 void spoton::slotDeleteAccepedIP(void)
 {
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.listeners->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.listeners->item
+	(row, m_ui.listeners->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid listener OID. "
+			       "Please select a listener."));
+      return;
+    }
+
   spoton_crypt *s_crypt = m_crypts.value("chat", 0);
 
   if(!s_crypt)
-    return;
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object."));
+      return;
+    }
 
   QString ip("");
-  int row = -1;
 
   if((row = m_ui.acceptedIPList->currentRow()) >= 0)
     {
@@ -4368,14 +4210,14 @@ void spoton::slotDeleteAccepedIP(void)
     QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "accepted_ips.db");
+		       "listeners.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 	bool ok = true;
 
-	query.prepare("DELETE FROM accepted_ips WHERE "
+	query.prepare("DELETE FROM listeners_allowed_ips WHERE "
 		      "ip_address_hash = ?");
 	query.bindValue
 	  (0, s_crypt->keyedHash(ip.toLatin1(),
@@ -4397,18 +4239,25 @@ void spoton::slotDeleteAccepedIP(void)
     if(db.open())
       {
 	QSqlQuery query(db);
-	bool ok = true;
 
-	query.prepare("UPDATE neighbors SET "
-		      "status_control = 'disconnected' "
-		      "WHERE remote_ip_address_hash = ?");
-	query.bindValue
-	  (0,
-	   s_crypt->keyedHash(ip.toLatin1(), &ok).
-	   toBase64());
+	if(ip == "Any")
+	  query.exec
+	    ("UPDATE neighbors SET status_control = 'disconnected'");
+	else
+	  {
+	    bool ok = true;
 
-	if(ok)
-	  query.exec();
+	    query.prepare("UPDATE neighbors SET "
+			  "status_control = 'disconnected' "
+			  "WHERE remote_ip_address_hash = ?");
+	    query.bindValue
+	      (0,
+	       s_crypt->keyedHash(ip.toLatin1(), &ok).
+	       toBase64());
+
+	    if(ok)
+	      query.exec();
+	  }
       }
 
     db.close();
@@ -4527,7 +4376,7 @@ void spoton::slotAddAccount(void)
       {
 	QSqlQuery query(db);
 
-	query.prepare("INSERT INTO listeners_accounts "
+	query.prepare("INSERT OR REPLACE INTO listeners_accounts "
 		      "(account_name, "
 		      "account_name_hash, "
 		      "account_password, "
@@ -4701,6 +4550,64 @@ void spoton::populateAccounts(const QString &listenerOid)
   QSqlDatabase::removeDatabase(connectionName);
 }
 
+void spoton::populateListenerIps(const QString &listenerOid)
+{
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "listeners.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT ip_address FROM listeners_allowed_ips "
+		      "WHERE listener_oid = ?");
+	query.bindValue(0, listenerOid);
+
+	if(query.exec())
+	  {
+	    QStringList ips;
+
+	    m_ui.acceptedIPList->clear();
+
+	    while(query.next())
+	      {
+		QString ip("");
+		bool ok = true;
+
+		ip = s_crypt->
+		  decrypted(QByteArray::
+			    fromBase64(query.
+				       value(0).
+				       toByteArray()),
+			    &ok).constData();
+
+		if(!ip.isEmpty())
+		  ips.append(ip);
+	      }
+
+	    qSort(ips);
+
+	    m_ui.acceptedIPList->addItems(ips);
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}
+
 void spoton::slotListenerSelected(void)
 {
   QString oid("");
@@ -4716,6 +4623,7 @@ void spoton::slotListenerSelected(void)
     }
 
   populateAccounts(oid);
+  populateListenerIps(oid);
 }
 
 void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)

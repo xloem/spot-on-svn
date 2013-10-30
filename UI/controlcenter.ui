@@ -1416,7 +1416,7 @@
                       <item>
                        <widget class="QRadioButton" name="magnetRadio">
                         <property name="text">
-                         <string>&amp;Magnet</string>
+                         <string>&amp;Existing Magnet</string>
                         </property>
                         <property name="checked">
                          <bool>true</bool>
@@ -1431,7 +1431,7 @@
                     <item>
                      <widget class="QRadioButton" name="pairRadio">
                       <property name="text">
-                       <string>&amp;Pair</string>
+                       <string>New &amp;Magnet</string>
                       </property>
                      </widget>
                     </item>
@@ -2483,28 +2483,14 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QRadioButton" name="countriesRadio">
-                  <property name="text">
-                   <string>&amp;Countries</string>
+                 <widget class="QGroupBox" name="approvedIPs">
+                  <property name="title">
+                   <string>Allowed IP Addresses</string>
                   </property>
                   <property name="checked">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QRadioButton" name="acceptedIPsRadio">
-                  <property name="text">
-                   <string>&amp;IP Addresses</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QGroupBox" name="approvedCountries">
-                  <property name="title">
-                   <string>Accepted Countries</string>
-                  </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_25">
+                  <layout class="QVBoxLayout" name="verticalLayout_36">
                    <property name="spacing">
                     <number>5</number>
                    </property>
@@ -2512,7 +2498,17 @@
                     <number>5</number>
                    </property>
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_41">
+                    <widget class="QListWidget" name="acceptedIPList"/>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="acceptedIP">
+                     <property name="toolTip">
+                      <string>Please enter the keyword Any to allow any external IP address.</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_49">
                      <property name="spacing">
                       <number>5</number>
                      </property>
@@ -2530,73 +2526,16 @@
                       </spacer>
                      </item>
                      <item>
-                      <widget class="QComboBox" name="countriesToggle">
-                       <property name="sizeAdjustPolicy">
-                        <enum>QComboBox::AdjustToContents</enum>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Off</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>On</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_38">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <widget class="QListWidget" name="countries"/>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QGroupBox" name="approvedIPs">
-                  <property name="title">
-                   <string>Accepted IP Addresses</string>
-                  </property>
-                  <property name="checked">
-                   <bool>false</bool>
-                  </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_36">
-                   <property name="spacing">
-                    <number>5</number>
-                   </property>
-                   <property name="margin">
-                    <number>5</number>
-                   </property>
-                   <item>
-                    <widget class="QListWidget" name="acceptedIPList"/>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_49">
-                     <property name="spacing">
-                      <number>5</number>
-                     </property>
-                     <item>
-                      <widget class="QLineEdit" name="acceptedIP"/>
-                     </item>
-                     <item>
                       <widget class="QPushButton" name="addAcceptedIP">
                        <property name="text">
                         <string>Add</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="deleteAcceptedIP">
+                       <property name="text">
+                        <string>Delete</string>
                        </property>
                       </widget>
                      </item>
@@ -5214,13 +5153,10 @@
   <tabstop>accountPassword</tabstop>
   <tabstop>addAccount</tabstop>
   <tabstop>deleteAccount</tabstop>
-  <tabstop>countriesRadio</tabstop>
-  <tabstop>acceptedIPsRadio</tabstop>
-  <tabstop>countriesToggle</tabstop>
-  <tabstop>countries</tabstop>
   <tabstop>acceptedIPList</tabstop>
   <tabstop>acceptedIP</tabstop>
   <tabstop>addAcceptedIP</tabstop>
+  <tabstop>deleteAcceptedIP</tabstop>
   <tabstop>toolButtonCopyToClipboard</tabstop>
   <tabstop>toolButtonMakeFriends</tabstop>
   <tabstop>acceptPublishedConnected</tabstop>
