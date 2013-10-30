@@ -242,7 +242,7 @@ void spoton::slotPopulateEtpMagnets(void)
 	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.etpMagnets->setRowCount(row + 1);
 	      m_ui.etpMagnets->setItem(row, 0, item);
-	      box->setText(bytes.constData());
+	      box->setText(bytes.replace("&", "&&").constData());
 	      m_ui.etpTransmittersMagnets->setRowCount(row + 1);
 	      m_ui.etpTransmittersMagnets->setCellWidget(row, 0, box);
 	      item = new QTableWidgetItem(query.value(1).toString());
