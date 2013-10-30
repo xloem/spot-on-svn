@@ -1416,7 +1416,7 @@
                       <item>
                        <widget class="QRadioButton" name="magnetRadio">
                         <property name="text">
-                         <string>&amp;Existing Magnet</string>
+                         <string>&amp;Add</string>
                         </property>
                         <property name="checked">
                          <bool>true</bool>
@@ -1431,7 +1431,7 @@
                     <item>
                      <widget class="QRadioButton" name="pairRadio">
                       <property name="text">
-                       <string>New &amp;Magnet</string>
+                       <string>&amp;Create</string>
                       </property>
                      </widget>
                     </item>

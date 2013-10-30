@@ -942,9 +942,9 @@ spoton::spoton(void):QMainWindow()
   m_ui.kernelCipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.cost->setValue(m_settings.value("gui/congestionCost", 10000).toInt());
   m_ui.days->setValue(m_settings.value("gui/postofficeDays", 1).toInt());
-  m_ui.etpMaxMosaics->setValue(m_settings.value("gui/maxMosaics", 5).toInt());
+  m_ui.etpMaxMosaics->setValue(m_settings.value("gui/maxMosaics", 16).toInt());
   m_ui.etpMaxMosaicSize->setValue(m_settings.value("gui/maxMosaicSize",
-						   5).toInt());
+						   512).toInt());
 
   QString statusControl
     (m_settings.
