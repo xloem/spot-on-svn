@@ -226,7 +226,8 @@ void spoton::slotPopulateEtpMagnets(void)
 	m_ui.etpTransmittersMagnets->setRowCount(0);
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT magnet, OID FROM etp_magnets"))
+	if(query.exec("SELECT magnet, one_time_magnet, "
+		      "OID FROM etp_magnets"))
 	  while(query.next())
 	    {
 	      QByteArray bytes;
@@ -242,12 +243,15 @@ void spoton::slotPopulateEtpMagnets(void)
 	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.etpMagnets->setRowCount(row + 1);
 	      m_ui.etpMagnets->setItem(row, 0, item);
+	      box->setChecked(query.value(1).toInt());
+	      m_ui.etpMagnets->setCellWidget(row, 1, box);
+	      box = new QCheckBox();
 	      box->setText(bytes.replace("&", "&&").constData());
 	      m_ui.etpTransmittersMagnets->setRowCount(row + 1);
 	      m_ui.etpTransmittersMagnets->setCellWidget(row, 0, box);
-	      item = new QTableWidgetItem(query.value(1).toString());
+	      item = new QTableWidgetItem(query.value(2).toString());
 	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	      m_ui.etpMagnets->setItem(row, 1, item);
+	      m_ui.etpMagnets->setItem(row, 2, item);
 	      m_ui.etpTransmittersMagnets->setItem(row, 1, item->clone());
 	      row += 1;
 	    }
