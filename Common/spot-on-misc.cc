@@ -695,12 +695,22 @@ void spoton_misc::retrieveSymmetricData
 						toByteArray()),
 			 ok);
 
-		    if(!query.isNull(3))
-		      gemini.second = crypt->decrypted
-			(QByteArray::fromBase64(query.
-						value(3).
-						toByteArray()),
-			 ok);
+		    if(ok && *ok)
+		      {
+			if(!query.isNull(3))
+			  gemini.second = crypt->decrypted
+			    (QByteArray::fromBase64(query.
+						    value(3).
+						    toByteArray()),
+			     ok);
+		      }
+		    else if(!ok)
+		      if(!query.isNull(3))
+			gemini.second = crypt->decrypted
+			  (QByteArray::fromBase64(query.
+						  value(3).
+						  toByteArray()),
+			   ok);
 
 		    neighborOid = query.value(1).toString();
 		    publicKey = query.value(2).toByteArray();

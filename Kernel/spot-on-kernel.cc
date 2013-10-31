@@ -1515,11 +1515,12 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		   &ok);
 
 	      if(ok)
-		gemini.second = s_crypt1->decrypted
-		  (QByteArray::fromBase64(query.
-					  value(2).
-					  toByteArray()),
-		   &ok);
+		if(!query.isNull(2))
+		  gemini.second = s_crypt1->decrypted
+		    (QByteArray::fromBase64(query.
+					    value(2).
+					    toByteArray()),
+		     &ok);
 
 	      QByteArray cipherType
 		(setting("gui/kernelCipherType",
@@ -2557,11 +2558,12 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 		   &ok);
 
 	      if(ok)
-		gemini.second = s_crypt1->decrypted
-		  (QByteArray::fromBase64(query.
-					  value(2).
-					  toByteArray()),
-		   &ok);
+		if(!query.isNull(2))
+		  gemini.second = s_crypt1->decrypted
+		    (QByteArray::fromBase64(query.
+					    value(2).
+					    toByteArray()),
+		     &ok);
 
 	      QByteArray hashKey;
 	      QByteArray keyInformation;
