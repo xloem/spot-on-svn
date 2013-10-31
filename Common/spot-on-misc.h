@@ -41,7 +41,7 @@ class spoton_misc
 {
  public:
   static QPair<QByteArray, QByteArray> findGeminiInCosmos
-    (const QByteArray &data, spoton_crypt *crypt);
+    (const QByteArray &data, const QByteArray &hash, spoton_crypt *crypt);
   static QByteArray publicKeyFromHash(const QByteArray &publicKeyHash);
   static QByteArray publicKeyFromSignaturePublicKeyHash
     (const QByteArray &signaturePublicKeyHash);

@@ -19,11 +19,23 @@
 11.  Corrected tab ordering.
 12.  Allow editing of Gemini cells.
 13.  Removed all instances of QFileDialog::setFilter().
-14.  Introduced the Echo Transfer Protocol.
+14.  Introduced the Echo Transfer Protocol. The protocol misbehaves as
+     follows:
+          Participants that are willing to export mosaics must create
+          confidential magnets. Once defined, the magnets are then
+          distributed. Once the magnets are recorded by other devices,
+          mosaics may then be exported. Mosaics are partitioned into specific
+          bursts and randomly-selected magnets are applied to
+          individual bursts. Some anonymous data is appended to each payload
+          to avoid certain trends. Partitioning of files occurs such that
+          partitions are also selected randomly. Receivers assemble
+          the mosaic pieces as well as echo received pieces. A replay option
+          will be available for transmitters to replay requested mosaic
+          pieces.
 15.  Added instances of spoton_misc::prepareDatabases() throughout important
      source logic.
 16.  Implemented spoton_misc::allParticipantsHaveGeminis(). The method
-     spoton_neighbor::findMessageType may be exceptionally burdened if
+     spoton_neighbor::findMessageType() may be exceptionally burdened if
      a node attempts to decipher asymmetric ciphertexts without cause.
      Unfortunately, falsified e-mail content may still weaken the method.
 17.  Capture results of QSqlDatabase::open() whenever user interest
@@ -34,10 +46,14 @@
 20.  Removed the country-based firewall. Please remove country_inclusion.db.
      The IP-based firewall has been modified such that the simple rules are
      applied per listener. Please remove accepted_ips.db and listeners.db.
+     The keyword Any may be specified to allow connections from all external
+     devices.
 21.  Use INSERT OR REPLACE when adding new listener accounts.
-22.  Renamed the Buzz magnet parameter dn to rn.
+22.  Renamed the Buzz magnet parameter dn to rn per request.
 23.  Added gemini_mac_key to friends_public_keys.db. Please remove
      the database file. Separate digest keys will now accompany geminis.
+24.  Modified spoton_misc::findGeminiInCosmos() so that the method
+     attempts to discover the gemini pair via hash computations.
 
 0.06 (10/24/2013)
 

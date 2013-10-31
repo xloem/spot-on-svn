@@ -307,7 +307,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-misc.cc" line="932"/>
+        <location filename="../Common/spot-on-misc.cc" line="923"/>
         <source>Sent</source>
         <translation type="unfinished"></translation>
     </message>

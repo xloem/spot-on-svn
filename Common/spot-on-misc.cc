@@ -820,7 +820,7 @@ bool spoton_misc::isPrivateNetwork(const QHostAddress &address)
 }
 
 QPair<QByteArray, QByteArray> spoton_misc::findGeminiInCosmos
-(const QByteArray &data, spoton_crypt *crypt)
+(const QByteArray &data, const QByteArray &hash, spoton_crypt *crypt)
 {
   QPair<QByteArray, QByteArray> gemini;
 
@@ -864,24 +864,15 @@ QPair<QByteArray, QByteArray> spoton_misc::findGeminiInCosmos
 		       &ok);
 
 		  if(ok)
-		    if(!gemini.first.isEmpty())
+		    if(!gemini.first.isEmpty() && !gemini.second.isEmpty())
 		      {
-			/*
-			** Some say that one is faster than the other.
-			*/
-
-			spoton_crypt crypt("aes256",
-					   QString("sha512"),
-					   QByteArray(),
-					   gemini.first,
-					   0,
-					   0,
-					   QString(""));
-
-			crypt.decrypted(data, &ok);
+			QByteArray computedHash
+			  (spoton_crypt::keyedHash(data, gemini.second,
+						   "sha512Hash", &ok));
 
 			if(ok)
-			  break; // We have something!
+			  if(computedHash == hash)
+			    break; // We have something!
 		      }
 		}
 	  }

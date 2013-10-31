@@ -1486,7 +1486,9 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 	  QPair<QByteArray, QByteArray> gemini;
 
 	  if(pair.first.isEmpty() || pair.second.isEmpty())
-	    gemini = spoton_misc::findGeminiInCosmos(list.value(0), s_crypt);
+	    gemini = spoton_misc::findGeminiInCosmos(list.value(0),
+						     list.value(1),
+						     s_crypt);
 	  else
 	    gemini = pair;
 
@@ -2557,7 +2559,8 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 	  QPair<QByteArray, QByteArray> gemini;
 
 	  if(pair.first.isEmpty() || pair.second.isEmpty())
-	    gemini = spoton_misc::findGeminiInCosmos(list.value(0), s_crypt);
+	    gemini = spoton_misc::findGeminiInCosmos
+	      (list.value(0), list.value(1), s_crypt);
 	  else
 	    gemini = pair;
 
@@ -4205,7 +4208,9 @@ QString spoton_neighbor::findMessageType
 
       if(s_crypt)
 	gemini = spoton_misc::findGeminiInCosmos
-	  (QByteArray::fromBase64(list.value(0)), s_crypt);
+	  (QByteArray::fromBase64(list.value(0)),
+	   QByteArray::fromBase64(list.value(1)),
+	   s_crypt);
 
       if(!gemini.first.isEmpty())
 	{
