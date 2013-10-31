@@ -4368,8 +4368,10 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 	      {
 		query.bindValue
 		  (0, s_crypt->encrypted(gemini, &ok).toBase64());
-		query.bindValue
-		  (1, s_crypt->encrypted(geminiMac, &ok).toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (1, s_crypt->encrypted(geminiMac, &ok).toBase64());
 	      }
 	    else
 	      {

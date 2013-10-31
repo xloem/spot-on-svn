@@ -2990,8 +2990,10 @@ bool spoton::saveGemini(const QPair<QByteArray, QByteArray> &gemini,
 	      {
 		query.bindValue(0, m_crypts.value("chat")->
 				encrypted(gemini.first, &ok).toBase64());
-		query.bindValue(1, m_crypts.value("chat")->
-				encrypted(gemini.second, &ok).toBase64());
+
+		if(ok)
+		  query.bindValue(1, m_crypts.value("chat")->
+				  encrypted(gemini.second, &ok).toBase64());
 	      }
 	    else
 	      {
