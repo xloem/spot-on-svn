@@ -12,7 +12,7 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64)
+0 - Keyed (Gemini MAC) Sha-512 Message Code (Base-64)
 }
 
 Groups: 3
@@ -213,7 +213,7 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64)
+0 - Keyed (Gemini MAC) Sha-512 Message Code (Base-64)
 }
 
 Groups: 3
