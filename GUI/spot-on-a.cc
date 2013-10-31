@@ -640,6 +640,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.pairFrame,
 	  SLOT(setEnabled(bool)));
+  connect(m_ui.pairRadio,
+	  SIGNAL(toggled(bool)),
+	  m_ui.generate,
+	  SLOT(setEnabled(bool)));
   connect(m_ui.generate,
 	  SIGNAL(activated(int)),
 	  this,
@@ -833,6 +837,7 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/geoipPath", "GeoIP.dat").toString().trimmed());
 #endif
   m_ui.magnetRadio->setChecked(true);
+  m_ui.generate->setEnabled(false);
   m_ui.pairFrame->setEnabled(false);
 
   if(m_settings.contains("gui/kernelPath") &&

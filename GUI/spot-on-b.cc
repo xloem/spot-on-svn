@@ -4182,15 +4182,6 @@ void spoton::slotDeleteAccepedIP(void)
       return;
     }
 
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
-
-  if(!s_crypt)
-    {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Invalid spoton_crypt object."));
-      return;
-    }
-
   QString ip("");
 
   if((row = m_ui.acceptedIPList->currentRow()) >= 0)
@@ -4202,7 +4193,20 @@ void spoton::slotDeleteAccepedIP(void)
     }
 
   if(ip.isEmpty())
-    return;
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Please select an address to delete."));
+      return;
+    }
+
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object."));
+      return;
+    }
 
   QString connectionName("");
 
@@ -4444,21 +4448,21 @@ void spoton::slotDeleteAccount(void)
       return;
     }
 
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
-
-  if(!s_crypt)
-    {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Invalid spoton_crypt object."));
-      return;
-    }
-
   QList<QListWidgetItem *> list(m_ui.accounts->selectedItems());
 
   if(list.isEmpty())
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("Please select an account to delete."));
+      return;
+    }
+
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object."));
       return;
     }
 

@@ -1433,11 +1433,53 @@
                     </layout>
                    </item>
                    <item>
-                    <widget class="QRadioButton" name="pairRadio">
-                     <property name="text">
-                      <string>&amp;Create</string>
+                    <layout class="QHBoxLayout" name="horizontalLayout_53">
+                     <property name="spacing">
+                      <number>5</number>
                      </property>
-                    </widget>
+                     <item>
+                      <widget class="QRadioButton" name="pairRadio">
+                       <property name="text">
+                        <string>&amp;Create</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="generate">
+                       <property name="sizeAdjustPolicy">
+                        <enum>QComboBox::AdjustToContents</enum>
+                       </property>
+                       <item>
+                        <property name="text">
+                         <string>Generate Key Pair</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>Generate Encryption Key</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>Generate MAC Key</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_41">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
                    </item>
                    <item>
                     <widget class="QFrame" name="pairFrame">
@@ -1445,54 +1487,18 @@
                       <enum>QFrame::NoFrame</enum>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_45">
-                      <property name="spacing">
+                      <property name="leftMargin">
                        <number>0</number>
                       </property>
-                      <property name="margin">
+                      <property name="topMargin">
                        <number>0</number>
                       </property>
-                      <item>
-                       <layout class="QHBoxLayout" name="horizontalLayout_53">
-                        <property name="spacing">
-                         <number>5</number>
-                        </property>
-                        <item>
-                         <widget class="QComboBox" name="generate">
-                          <property name="sizeAdjustPolicy">
-                           <enum>QComboBox::AdjustToContents</enum>
-                          </property>
-                          <item>
-                           <property name="text">
-                            <string>Generate Key Pair</string>
-                           </property>
-                          </item>
-                          <item>
-                           <property name="text">
-                            <string>Generate Encryption Key</string>
-                           </property>
-                          </item>
-                          <item>
-                           <property name="text">
-                            <string>Generate MAC Key</string>
-                           </property>
-                          </item>
-                         </widget>
-                        </item>
-                        <item>
-                         <spacer name="horizontalSpacer_41">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>40</width>
-                            <height>20</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
-                       </layout>
-                      </item>
+                      <property name="rightMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="bottomMargin">
+                       <number>5</number>
+                      </property>
                       <item>
                        <layout class="QGridLayout" name="gridLayout_7">
                         <property name="spacing">
