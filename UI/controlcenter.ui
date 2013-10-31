@@ -271,7 +271,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1186</width>
-                <height>641</height>
+                <height>646</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1340,7 +1340,7 @@
              <x>0</x>
              <y>0</y>
              <width>1176</width>
-             <height>631</height>
+             <height>636</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -1385,12 +1385,12 @@
                   </attribute>
                   <column>
                    <property name="text">
-                    <string>Magnet</string>
+                    <string>One-Time-Magnet</string>
                    </property>
                   </column>
                   <column>
                    <property name="text">
-                    <string>One-Time-Magnet</string>
+                    <string>Magnet</string>
                    </property>
                   </column>
                   <column>
@@ -1728,7 +1728,7 @@
                      </attribute>
                      <column>
                       <property name="text">
-                       <string>Percent Completed</string>
+                       <string>Percent Received</string>
                       </property>
                      </column>
                      <column>
@@ -2383,8 +2383,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>279</width>
-                 <height>621</height>
+                 <width>307</width>
+                 <height>626</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3632,7 +3632,7 @@
              <x>0</x>
              <y>0</y>
              <width>1176</width>
-             <height>631</height>
+             <height>636</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4950,7 +4950,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>27</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

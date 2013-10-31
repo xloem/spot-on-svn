@@ -18,9 +18,7 @@
 10.  Removed the incomplete method spoton_crypt::privateKeyInRem().
 11.  Corrected tab ordering.
 12.  Allow editing of Gemini cells.
-13.  Replaced QDir::AllDirs with QDir::Dirs per Qt specifications on
-     Linux, OS X, and Unix devices. QFileDialog::setFilter() does not
-     function as expected.
+13.  Removed all instances of QFileDialog::setFilter().
 14.  Introduced the Echo Transfer Protocol.
 15.  Added instances of spoton_misc::prepareDatabases() throughout important
      source logic.
@@ -37,6 +35,7 @@
      The IP-based firewall has been modified such that the simple rules are
      applied per listener. Please remove accepted_ips.db and listeners.db.
 21.  Use INSERT OR REPLACE when adding new listener accounts.
+22.  Renamed the Buzz magnet parameter dn to rn.
 
 0.06 (10/24/2013)
 

@@ -242,9 +242,9 @@ void spoton::slotPopulateEtpMagnets(void)
 
 	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.etpMagnets->setRowCount(row + 1);
-	      m_ui.etpMagnets->setItem(row, 0, item);
+	      m_ui.etpMagnets->setItem(row, 1, item);
 	      box->setChecked(query.value(1).toInt());
-	      m_ui.etpMagnets->setCellWidget(row, 1, box);
+	      m_ui.etpMagnets->setCellWidget(row, 0, box);
 	      box = new QCheckBox();
 	      box->setText(bytes.replace("&", "&&").constData());
 	      m_ui.etpTransmittersMagnets->setRowCount(row + 1);
@@ -394,13 +394,6 @@ void spoton::slotSelectDestination(void)
 {
   QFileDialog dialog(this);
 
-  dialog.setFilter(
-#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
-		   QDir::Dirs | QDir::Readable
-#else
-		   QDir::AllDirs
-#endif
-		   );
   dialog.setWindowTitle
     (tr("Spot-On: Select Destination Path"));
   dialog.setFileMode(QFileDialog::Directory);

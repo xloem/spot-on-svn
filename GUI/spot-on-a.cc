@@ -76,8 +76,19 @@ int main(int argc, char *argv[])
 
   QSettings settings;
 
+#ifdef Q_OS_WIN32
+  if(!settings.contains("gui/etpDestinationPath"))
+    {
+      QDir dir(QDir::currentPath());
+
+      dir.mkdir("Mosaics");
+      dir.cd("Mosaics");
+      settings.setValue("gui/etpDestinationPath", dir.absolutePath());
+    }
+#else
   if(!settings.contains("gui/etpDestinationPath"))
     settings.setValue("gui/etpDestinationPath", QDir::homePath());
+#endif
 
   if(!settings.contains("gui/gcryctl_init_secmem"))
     settings.setValue("gui/gcryctl_init_secmem", 65536);
@@ -2937,13 +2948,6 @@ void spoton::slotSelectGeoIPPath(void)
 {
   QFileDialog dialog(this);
 
-  dialog.setFilter(QDir::Files
-#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
-		   | QDir::Dirs | QDir::Readable
-#else
-		   | QDir::AllDirs
-#endif
-		   );
   dialog.setWindowTitle
     (tr("Spot-On: Select GeoIP Data Path"));
   dialog.setFileMode(QFileDialog::ExistingFile);
@@ -2964,13 +2968,6 @@ void spoton::slotSelectKernelPath(void)
 {
   QFileDialog dialog(this);
 
-  dialog.setFilter(QDir::Files
-#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
-		   | QDir::Dirs | QDir::Readable | QDir::Executable
-#else
-		   | QDir::AllDirs
-#endif
-		   );
   dialog.setWindowTitle
     (tr("Spot-On: Select Kernel Path"));
   dialog.setFileMode(QFileDialog::ExistingFile);
@@ -5888,7 +5885,7 @@ void spoton::magnetize(void)
     list.replace(i, QByteArray::fromBase64(list.at(i)));
 
   data.append("magnet:?");
-  data.append(QString("dn=%1&").arg(list.value(0).constData()));
+  data.append(QString("rn=%1&").arg(list.value(0).constData()));
   data.append(QString("xf=%1&").arg(list.value(1).constData()));
   data.append(QString("xs=%1&").arg(list.value(2).constData()));
   data.append(QString("ct=%1").arg(list.value(3).constData()));
@@ -5909,7 +5906,7 @@ void spoton::demagnetize(void)
     {
       QString str(list.takeFirst());
 
-      if(str.startsWith("dn="))
+      if(str.startsWith("rn="))
 	{
 	  str.remove(0, 3);
 	  m_ui.channel->setText(str);
