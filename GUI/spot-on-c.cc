@@ -363,7 +363,7 @@ void spoton::slotCopyEtpMagnet(void)
 
   if((row = m_ui.etpMagnets->currentRow()) >= 0)
     {
-      QTableWidgetItem *item = m_ui.etpMagnets->item(row, 0); // Magnet
+      QTableWidgetItem *item = m_ui.etpMagnets->item(row, 1); // Magnet
 
       if(item)
 	clipboard->setText(item->text());
