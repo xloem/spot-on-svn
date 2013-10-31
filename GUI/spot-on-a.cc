@@ -1202,7 +1202,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.emailParticipants->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   m_ui.etpMagnets->horizontalHeader()->setSortIndicator
-    (0, Qt::AscendingOrder);
+    (1, Qt::AscendingOrder);
   m_ui.etpTransmittersMagnets->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   m_ui.mail->horizontalHeader()->setSortIndicator
