@@ -143,7 +143,7 @@ class spoton_neighbor: public QThread
   spoton_external_address *m_externalAddress;
   spoton_neighbor_socket m_socket;
   QString findMessageType(const QByteArray &data,
-			  QPair<QByteArray, QByteArray> &symmetricKey);
+			  QPair<QByteArray, QByteArray> &symmetricKeys);
   bool isDuplicateMessage(const QByteArray &data);
   bool readyToWrite(void);
   void prepareNetworkInterface(void);
@@ -172,7 +172,8 @@ class spoton_neighbor: public QThread
   void saveExternalAddress(const QHostAddress &address,
 			   const QSqlDatabase &db);
   void saveGemini(const QByteArray &publicKeyHash,
-		  const QByteArray &gemini);
+		  const QByteArray &gemini,
+		  const QByteArray &geminiMac);
   void saveParticipantStatus(const QByteArray &publicKeyHash);
   void saveParticipantStatus(const QByteArray &name,
 			     const QByteArray &publicKeyHash);

@@ -208,7 +208,8 @@ void spoton_misc::prepareDatabases(void)
 	   */
 	   "neighbor_oid INTEGER NOT NULL DEFAULT -1, "
 	   "status TEXT NOT NULL DEFAULT 'offline', "
-	   "last_status_update TEXT NOT NULL DEFAULT 'now')");
+	   "last_status_update TEXT NOT NULL DEFAULT 'now', "
+	   "gemini_mac_key TEXT DEFAULT NULL)");
 	query.exec
 	  ("CREATE TABLE IF NOT EXISTS relationships_with_signatures ("
 	   "public_key_hash TEXT PRIMARY KEY NOT NULL, " /*
@@ -577,30 +578,35 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
   bool ok = true;
 
   query.prepare("INSERT OR REPLACE INTO friends_public_keys "
-		"(gemini, key_type, name, public_key, public_key_hash, "
+		"(gemini, gemini_mac_key, key_type, name, public_key, "
+		"public_key_hash, "
 		"neighbor_oid, last_status_update) "
 		"VALUES ((SELECT gemini FROM friends_public_keys WHERE "
-		"public_key_hash = ?), ?, ?, ?, ?, ?, ?)");
+		"public_key_hash = ?), "
+		"(SELECT gemini_mac_key FROM friends_public_keys WHERE "
+		"public_key_hash = ?), "
+		"?, ?, ?, ?, ?, ?)");
   query.bindValue(0, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
-  query.bindValue(1, keyType.constData());
+  query.bindValue(1, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
+  query.bindValue(2, keyType.constData());
 
   if(keyType == "chat" || keyType == "email" || keyType == "url")
     {
       if(name.isEmpty())
-	query.bindValue(2, "unknown");
+	query.bindValue(3, "unknown");
       else
 	query.bindValue
-	  (2, name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
+	  (3, name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
     }
   else // Signature keys will be labeled as their type.
-    query.bindValue(2, keyType.constData());
+    query.bindValue(3, keyType.constData());
 
-  query.bindValue(3, publicKey);
+  query.bindValue(4, publicKey);
   query.bindValue
-    (4, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
-  query.bindValue(5, neighborOid);
+    (5, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
+  query.bindValue(6, neighborOid);
   query.bindValue
-    (6, QDateTime::currentDateTime().toString(Qt::ISODate));
+    (7, QDateTime::currentDateTime().toString(Qt::ISODate));
 
   if(ok)
     ok = query.exec();
@@ -632,15 +638,16 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
   return ok;
 }
 
-void spoton_misc::retrieveSymmetricData(QByteArray &gemini,
-					QByteArray &publicKey,
-					QByteArray &symmetricKey,
-					QByteArray &hashKey,
-					QString &neighborOid,
-					const QByteArray &cipherType,
-					const QString &oid,
-					spoton_crypt *crypt,
-					bool *ok)
+void spoton_misc::retrieveSymmetricData
+(QPair<QByteArray, QByteArray> &gemini,
+ QByteArray &publicKey,
+ QByteArray &symmetricKey,
+ QByteArray &hashKey,
+ QString &neighborOid,
+ const QByteArray &cipherType,
+ const QString &oid,
+ spoton_crypt *crypt,
+ bool *ok)
 {
   if(!crypt)
     {
@@ -663,7 +670,8 @@ void spoton_misc::retrieveSymmetricData(QByteArray &gemini,
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT gemini, neighbor_oid, public_key "
+	query.prepare("SELECT gemini, neighbor_oid, public_key, "
+		      "gemini_mac_key "
 		      "FROM friends_public_keys WHERE "
 		      "OID = ?");
 	query.bindValue(0, oid);
@@ -681,9 +689,16 @@ void spoton_misc::retrieveSymmetricData(QByteArray &gemini,
 		if(symmetricKeyLength > 0)
 		  {
 		    if(!query.isNull(0))
-		      gemini = crypt->decrypted
+		      gemini.first = crypt->decrypted
 			(QByteArray::fromBase64(query.
 						value(0).
+						toByteArray()),
+			 ok);
+
+		    if(!query.isNull(3))
+		      gemini.second = crypt->decrypted
+			(QByteArray::fromBase64(query.
+						value(3).
 						toByteArray()),
 			 ok);
 
@@ -794,10 +809,10 @@ bool spoton_misc::isPrivateNetwork(const QHostAddress &address)
   return isPrivate;
 }
 
-QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
-					   spoton_crypt *crypt)
+QPair<QByteArray, QByteArray> spoton_misc::findGeminiInCosmos
+(const QByteArray &data, spoton_crypt *crypt)
 {
-  QByteArray gemini;
+  QPair<QByteArray, QByteArray> gemini;
 
   if(crypt)
     {
@@ -815,26 +830,40 @@ QByteArray spoton_misc::findGeminiInCosmos(const QByteArray &data,
 
 	    query.setForwardOnly(true);
 
-	    if(query.exec("SELECT gemini FROM friends_public_keys WHERE "
-			  "gemini IS NOT NULL AND key_type = 'chat' AND "
+	    if(query.exec("SELECT gemini, gemini_mac_key "
+			  "FROM friends_public_keys WHERE "
+			  "gemini IS NOT NULL AND "
+			  "gemini_mac_key IS NOT NULL AND "
+			  "key_type = 'chat' AND "
 			  "neighbor_oid = -1"))
 	      while(query.next())
 		{
 		  bool ok = true;
 
-		  gemini = crypt->decrypted
+		  gemini.first = crypt->decrypted
 		    (QByteArray::fromBase64(query.
 					    value(0).
 					    toByteArray()),
 		     &ok);
 
 		  if(ok)
-		    if(!gemini.isEmpty())
+		    gemini.second = crypt->decrypted
+		      (QByteArray::fromBase64(query.
+					      value(1).
+					      toByteArray()),
+		       &ok);
+
+		  if(ok)
+		    if(!gemini.first.isEmpty())
 		      {
+			/*
+			** Some say that one is faster than the other.
+			*/
+
 			spoton_crypt crypt("aes256",
 					   QString("sha512"),
 					   QByteArray(),
-					   gemini,
+					   gemini.first,
 					   0,
 					   0,
 					   QString(""));
@@ -1712,7 +1741,8 @@ bool spoton_misc::allParticipantsHaveGeminis(void)
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT COUNT(*) FROM friends_public_keys WHERE "
-		      "gemini IS NULL AND neighbor_oid = -1"))
+		      "gemini IS NULL AND gemini_mac_key IS NULL AND "
+		      "neighbor_oid = -1"))
 	  if(query.next())
 	    count = query.value(0).toInt();
 

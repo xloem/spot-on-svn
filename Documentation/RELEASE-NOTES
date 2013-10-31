@@ -36,6 +36,8 @@
      applied per listener. Please remove accepted_ips.db and listeners.db.
 21.  Use INSERT OR REPLACE when adding new listener accounts.
 22.  Renamed the Buzz magnet parameter dn to rn.
+23.  Added gemini_mac_key to friends_public_keys.db. Please remove
+     the database file. Separate digest keys will now accompany geminis.
 
 0.06 (10/24/2013)
 

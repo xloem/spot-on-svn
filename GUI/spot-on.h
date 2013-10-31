@@ -155,7 +155,8 @@ class spoton: public QMainWindow
 #endif
 #endif
   bool isKernelActive(void) const;
-  bool saveGemini(const QByteArray &gemini, const QString &oid);
+  bool saveGemini(const QPair<QByteArray, QByteArray> &gemini,
+		  const QString &oid);
   bool updateMailStatus(const QString &oid, const QString &status);
   int applyGoldbugToInboxLetter(const QByteArray &goldbug,
 				const int row);

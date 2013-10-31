@@ -15,6 +15,7 @@ magnet
 friends_public_keys.db:
 
 gemini
+gemini_mac_key
 
 idiotes.db:
 

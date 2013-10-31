@@ -63,7 +63,9 @@ Symmetric Key
 EOL
 1 - Gemini (Base-64)
 EOL
-2 - Signature (Base-64)
+2 - Gemini MAC (Base-64)
+EOL
+3 - Signature (Base-64)
 }
 EOL
 {

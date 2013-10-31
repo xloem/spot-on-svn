@@ -30,6 +30,7 @@
 
 #include <QHostAddress>
 #include <QMutex>
+#include <QPair>
 #include <QSqlDatabase>
 #include <QString>
 #include <QVariant>
@@ -39,8 +40,8 @@ class spoton_crypt;
 class spoton_misc
 {
  public:
-  static QByteArray findGeminiInCosmos(const QByteArray &data,
-				       spoton_crypt *crypt);
+  static QPair<QByteArray, QByteArray> findGeminiInCosmos
+    (const QByteArray &data, spoton_crypt *crypt);
   static QByteArray publicKeyFromHash(const QByteArray &publicKeyHash);
   static QByteArray publicKeyFromSignaturePublicKeyHash
     (const QByteArray &signaturePublicKeyHash);
@@ -85,7 +86,7 @@ class spoton_misc
   static void prepareDatabases(void);
   static void prepareUrlDatabases(void);
   static void purgeSignatureRelationships(const QSqlDatabase &db);
-  static void retrieveSymmetricData(QByteArray &gemini,
+  static void retrieveSymmetricData(QPair<QByteArray, QByteArray> &gemini,
 				    QByteArray &publicKey,
 				    QByteArray &symmetricKey,
 				    QByteArray &hashKey,

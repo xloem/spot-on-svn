@@ -937,7 +937,7 @@ spoton::spoton(void):QMainWindow()
      toString());
   m_ui.etpEncryptionKey->setMaxLength
     (spoton_crypt::cipherKeyLength("aes256"));
-  m_ui.etpMacKey->setMaxLength(spoton_crypt::cipherKeyLength("aes256"));
+  m_ui.etpMacKey->setMaxLength(256);
   m_ui.goldbug->setMaxLength
     (spoton_crypt::cipherKeyLength("aes256"));
   m_ui.channelType->clear();
@@ -1131,6 +1131,10 @@ spoton::spoton(void):QMainWindow()
     m_ui.readVerticalSplitter->restoreState
       (m_settings.value("gui/readVerticalSplitter").toByteArray());
 
+  if(m_settings.contains("gui/txmSplitter"))
+    m_ui.txmSplitter->restoreState
+      (m_settings.value("gui/txmSplitter").toByteArray());
+
   if(m_settings.contains("gui/urlsVerticalSplitter"))
     m_ui.urlsVerticalSplitter->restoreState
       (m_settings.value("gui/urlsVerticalSplitter").toByteArray());
@@ -1219,6 +1223,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.neighborsVerticalSplitter->setStretchFactor(1, 0);
   m_ui.readVerticalSplitter->setStretchFactor(0, 1);
   m_ui.readVerticalSplitter->setStretchFactor(1, 0);
+  m_ui.txmSplitter->setStretchFactor(0, 1);
+  m_ui.txmSplitter->setStretchFactor(1, 0);
   m_ui.urlsVerticalSplitter->setStretchFactor(0, 0);
   m_ui.urlsVerticalSplitter->setStretchFactor(1, 1);
   prepareListenerIPCombo();
@@ -3047,6 +3053,8 @@ void spoton::saveSettings(void)
 		    m_ui.neighborsVerticalSplitter->saveState());
   settings.setValue("gui/readVerticalSplitter",
 		    m_ui.readVerticalSplitter->saveState());
+  settings.setValue("gui/txmSplitter",
+		    m_ui.txmSplitter->saveState());
   settings.setValue("gui/urlsVerticalSplitter",
 		    m_ui.urlsVerticalSplitter->saveState());
 }
@@ -4025,7 +4033,8 @@ void spoton::slotShowContextMenu(const QPoint &point)
 	action->setEnabled(true);
 
       menu.addSeparator();
-      action = menu.addAction(tr("&Generate random Gemini (AES-256)."),
+      action = menu.addAction(tr("&Generate random Gemini Pair "
+				 "(AES-256, SHA-512)."),
 			      this, SLOT(slotGenerateGeminiInChat(void)));
 
       if(item && item->data(Qt::UserRole).toBool()) // Temporary friend?
@@ -4587,13 +4596,14 @@ void spoton::slotPopulateParticipants(void)
 		      "status, "
 		      "last_status_update, "
 		      "gemini, "
+		      "gemini_mac_key, "
 		      "key_type "
 		      "FROM friends_public_keys "
 		      "WHERE key_type = 'chat' OR key_type = 'email'"))
 	  while(query.next())
 	    {
 	      QIcon icon;
-	      QString keyType(query.value(7).toString());
+	      QString keyType(query.value(8).toString());
 	      QString name("");
 	      QString oid("");
 	      QString status(query.value(4).toString());
@@ -4654,7 +4664,7 @@ void spoton::slotPopulateParticipants(void)
 			  else
 			    item = new QTableWidgetItem(tr("Friend"));
 			}
-		      else if(i == 6) // Gemini
+		      else if(i == 6 || i == 7) // Gemini, Gemini MAC
 			{
 			  bool ok = true;
 
@@ -4667,7 +4677,7 @@ void spoton::slotPopulateParticipants(void)
 					 fromBase64(query.
 						    value(i).
 						    toByteArray()),
-					 &ok).constData());
+					 &ok).toBase64().constData());
 			}
 		      else
 			{
@@ -4729,7 +4739,7 @@ void spoton::slotPopulateParticipants(void)
 
 			  icon = item->icon();
 			}
-		      else if(i == 6) // Gemini
+		      else if(i == 6 || i == 7) // Gemini, Gemini MAC
 			{
 			  if(!temporary)
 			    item->setFlags
@@ -5201,7 +5211,7 @@ void spoton::slotCallParticipant(void)
   if(type == "calling")
     slotGenerateGeminiInChat();
   else
-    saveGemini(QByteArray(), oid);
+    saveGemini(QPair<QByteArray, QByteArray> (), oid);
 
   QByteArray message;
 
@@ -5289,11 +5299,11 @@ void spoton::slotCopyEmailFriendshipBundle(void)
   QByteArray cipherType(m_settings.value("gui/kernelCipherType",
 					 "randomized").toString().
 			toLatin1());
-  QByteArray gemini;
   QByteArray hashKey;
   QByteArray keyInformation;
   QByteArray publicKey;
   QByteArray symmetricKey;
+  QPair<QByteArray, QByteArray> gemini;
   bool ok = true;
 
   if(cipherType == "randomized")

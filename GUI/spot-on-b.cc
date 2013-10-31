@@ -339,7 +339,7 @@ void spoton::slotReceivedKernelMessage(void)
 void spoton::slotShareChatPublicKey(void)
 {
   if(!m_crypts.value("chat", 0) ||
-     !m_crypts.value("chat-signature"))
+     !m_crypts.value("chat-signature", 0))
     return;
   else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
     return;
@@ -1964,11 +1964,11 @@ void spoton::slotCopyFriendshipBundle(void)
   QByteArray cipherType(m_settings.value("gui/kernelCipherType",
 					 "randomized").
 			toString().toLatin1());
-  QByteArray gemini;
   QByteArray hashKey;
   QByteArray keyInformation;
   QByteArray publicKey;
   QByteArray symmetricKey;
+  QPair<QByteArray, QByteArray> gemini;
   bool ok = true;
 
   if(cipherType == "randomized")
@@ -1987,7 +1987,7 @@ void spoton::slotCopyFriendshipBundle(void)
 				     neighborOid,
 				     cipherType,
 				     oid,
-				     m_crypts.value("chat"),
+				     m_crypts.value("chat", 0),
 				     &ok);
 
   if(!ok || publicKey.isEmpty() || symmetricKey.isEmpty())
@@ -2893,12 +2893,34 @@ void spoton::slotGeminiChanged(QTableWidgetItem *item)
 {
   if(!item)
     return;
-  else if(item->column() != 6) // Gemini
+  else if(!(item->column() == 6 ||
+	    item->column() == 7)) // Gemini, Gemini MAC
     return;
   else if(!m_ui.participants->item(item->row(), 1)) // OID
     return;
 
-  saveGemini(item->text().toUtf8(), // Gemini
+  QTableWidgetItem *item1 = 0;
+  QTableWidgetItem *item2 = 0;
+
+  if(item->column() == 6)
+    {
+      item1 = item;
+      item2 = m_ui.participants->item(item->row(), 7);
+    }
+  else
+    {
+      item1 = m_ui.participants->item(item->row(), 6);
+      item2 = item;
+    }
+
+  if(!item1 || !item2)
+    return;
+
+  QPair<QByteArray, QByteArray> gemini;
+
+  gemini.first = item1->text().toUtf8();
+  gemini.second = item2->text().toUtf8();
+  saveGemini(gemini,
 	     m_ui.participants->item(item->row(), 1)->text()); // OID
 }
 
@@ -2911,21 +2933,26 @@ void spoton::slotGenerateGeminiInChat(void)
 
   QTableWidgetItem *item1 = m_ui.participants->item(row, 1); // OID
   QTableWidgetItem *item2 = m_ui.participants->item(row, 6); // Gemini
+  QTableWidgetItem *item3 = m_ui.participants->item(row, 7); // Gemini MAC
 
-  if(!item1 || !item2)
+  if(!item1 || !item2 || !item3)
     return;
 
-  QByteArray gemini
-    (spoton_crypt::
-     strongRandomBytes(spoton_crypt::cipherKeyLength("aes256")));
+  QPair<QByteArray, QByteArray> gemini;
 
-  if(saveGemini(gemini.toBase64(), item1->text()))
+  gemini.first = spoton_crypt::
+    strongRandomBytes(spoton_crypt::cipherKeyLength("aes256"));
+  gemini.second = spoton_crypt::strongRandomBytes
+    (spoton_crypt::cipherKeyLength("aes256"));
+
+  if(saveGemini(gemini, item1->text()))
     {
       disconnect(m_ui.participants,
 		 SIGNAL(itemChanged(QTableWidgetItem *)),
 		 this,
 		 SLOT(slotGeminiChanged(QTableWidgetItem *)));
-      item2->setText(gemini.toBase64());
+      item2->setText(gemini.first.toBase64());
+      item3->setText(gemini.second.toBase64());
       connect(m_ui.participants,
 	      SIGNAL(itemChanged(QTableWidgetItem *)),
 	      this,
@@ -2933,7 +2960,7 @@ void spoton::slotGenerateGeminiInChat(void)
     }
 }
 
-bool spoton::saveGemini(const QByteArray &gemini,
+bool spoton::saveGemini(const QPair<QByteArray, QByteArray> &gemini,
 			const QString &oid)
 {
   QString connectionName("");
@@ -2950,20 +2977,30 @@ bool spoton::saveGemini(const QByteArray &gemini,
 	QSqlQuery query(db);
 
 	query.prepare("UPDATE friends_public_keys SET "
-		      "gemini = ? WHERE OID = ?");
+		      "gemini = ?, gemini_mac_key = ? WHERE OID = ?");
 
-	if(gemini.isEmpty())
-	  query.bindValue(0, QVariant(QVariant::String));
+	if(gemini.first.isEmpty() || gemini.second.isEmpty())
+	  {
+	    query.bindValue(0, QVariant(QVariant::String));
+	    query.bindValue(1, QVariant(QVariant::String));
+	  }
 	else
 	  {
 	    if(m_crypts.value("chat", 0))
-	      query.bindValue(0, m_crypts.value("chat")->
-			      encrypted(gemini, &ok).toBase64());
+	      {
+		query.bindValue(0, m_crypts.value("chat")->
+				encrypted(gemini.first, &ok).toBase64());
+		query.bindValue(1, m_crypts.value("chat")->
+				encrypted(gemini.second, &ok).toBase64());
+	      }
 	    else
-	      query.bindValue(0, QVariant(QVariant::String));
+	      {
+		query.bindValue(0, QVariant(QVariant::String));
+		query.bindValue(1, QVariant(QVariant::String));
+	      }
 	  }
 
-	query.bindValue(1, oid);
+	query.bindValue(2, oid);
 
 	if(ok)
 	  ok = query.exec();
@@ -4637,7 +4674,7 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
 
   if(item->data(Qt::UserRole).toBool()) // Temporary friend?
     return;
-  else if(item->column() == 6) // Gemini?
+  else if(item->column() == 6 || item->column() == 7) // Gemini, Gemini MAC?
     return;
 
   QIcon icon;

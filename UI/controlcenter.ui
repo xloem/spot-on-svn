@@ -513,6 +513,11 @@
                          <string>Gemini</string>
                         </property>
                        </column>
+                       <column>
+                        <property name="text">
+                         <string>Gemini MAC</string>
+                        </property>
+                       </column>
                       </widget>
                      </item>
                      <item>
@@ -1782,7 +1787,7 @@
                     <number>5</number>
                    </property>
                    <item>
-                    <widget class="QSplitter" name="splitter">
+                    <widget class="QSplitter" name="txmSplitter">
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
                      </property>

@@ -1068,10 +1068,10 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 				"randomized").toString().
 			toLatin1());
   QByteArray data;
-  QByteArray gemini;
   QByteArray hashKey;
   QByteArray keyInformation;
   QByteArray symmetricKey;
+  QPair<QByteArray, QByteArray> gemini;
   QString neighborOid("");
 
   if(cipherType == "randomized")
@@ -1140,13 +1140,14 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
       }
 
       if(ok)
-	if(!gemini.isEmpty())
+	if(!gemini.first.isEmpty() &&
+	   !gemini.second.isEmpty())
 	  {
 	    QByteArray messageCode;
 	    spoton_crypt crypt("aes256",
 			       QString("sha512"),
 			       QByteArray(),
-			       gemini,
+			       gemini.first,
 			       0,
 			       0,
 			       QString(""));
@@ -1155,7 +1156,8 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 	      (QByteArray("0000").toBase64() + "\n" + data, &ok);
 
 	    if(ok)
-	      messageCode = crypt.keyedHash(data, &ok);
+	      messageCode = spoton_crypt::keyedHash
+		(data, gemini.second, "sha512", &ok);
 
 	    if(ok)
 	      {
@@ -1495,19 +1497,27 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT gemini, public_key "
+	if(query.exec("SELECT gemini, public_key, "
+		      "gemini_mac_key "
 		      "FROM friends_public_keys WHERE "
 		      "key_type = 'chat' AND neighbor_oid = -1"))
 	  while(query.next())
 	    {
 	      QByteArray data;
-	      QByteArray gemini;
+	      QPair<QByteArray, QByteArray> gemini;
 	      bool ok = true;
 
 	      if(!query.isNull(0))
-		gemini = s_crypt1->decrypted
+		gemini.first = s_crypt1->decrypted
 		  (QByteArray::fromBase64(query.
 					  value(0).
+					  toByteArray()),
+		   &ok);
+
+	      if(ok)
+		gemini.second = s_crypt1->decrypted
+		  (QByteArray::fromBase64(query.
+					  value(2).
 					  toByteArray()),
 		   &ok);
 
@@ -1601,13 +1611,14 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		  }
 
 		  if(ok)
-		    if(!gemini.isEmpty())
+		    if(!gemini.first.isEmpty() &&
+		       !gemini.second.isEmpty())
 		      {
 			QByteArray messageCode;
 			spoton_crypt crypt("aes256",
 					   QString("sha512"),
 					   QByteArray(),
-					   gemini,
+					   gemini.first,
 					   0,
 					   0,
 					   QString(""));
@@ -1616,7 +1627,8 @@ void spoton_kernel::slotStatusTimerExpired(void)
 			  (QByteArray("0013").toBase64() + "\n" + data, &ok);
 
 			if(ok)
-			  messageCode = crypt.keyedHash(data, &ok);
+			  messageCode = spoton_crypt::keyedHash
+			    (data, gemini.second, "sha512", &ok);
 
 			if(ok)
 			  {
@@ -2525,7 +2537,8 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT gemini, public_key "
+	query.prepare("SELECT gemini, public_key, "
+		      "gemini_mac_key "
 		      "FROM friends_public_keys WHERE "
 		      "key_type = 'chat' AND neighbor_oid = -1 AND "
 		      "OID = ?");
@@ -2534,12 +2547,19 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 	if(query.exec())
 	  if(query.next())
 	    {
-	      QByteArray gemini;
+	      QPair<QByteArray, QByteArray> gemini;
 
 	      if(!query.isNull(0))
-		gemini = s_crypt1->decrypted
+		gemini.first = s_crypt1->decrypted
 		  (QByteArray::fromBase64(query.
 					  value(0).
+					  toByteArray()),
+		   &ok);
+
+	      if(ok)
+		gemini.second = s_crypt1->decrypted
+		  (QByteArray::fromBase64(query.
+					  value(2).
 					  toByteArray()),
 		   &ok);
 
@@ -2599,12 +2619,14 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 
 		    if(setting("gui/chatSignMessages", true).toBool())
 		      signature = s_crypt2->digitalSignature
-			(myPublicKeyHash + gemini, &ok);
+			(myPublicKeyHash + gemini.first + gemini.second,
+			 &ok);
 
 		    if(ok)
 		      data = crypt.encrypted
 			(myPublicKeyHash.toBase64() + "\n" +
-			 gemini.toBase64() + "\n" +
+			 gemini.first.toBase64() + "\n" +
+			 gemini.second.toBase64() + "\n" +
 			 signature.toBase64(), &ok);
 
 		    if(ok)

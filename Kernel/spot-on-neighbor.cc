@@ -1483,14 +1483,14 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 	  for(int i = 0; i < list.size(); i++)
 	    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-	  QByteArray gemini;
+	  QPair<QByteArray, QByteArray> gemini;
 
-	  if(pair.first.isEmpty())
+	  if(pair.first.isEmpty() || pair.second.isEmpty())
 	    gemini = spoton_misc::findGeminiInCosmos(list.value(0), s_crypt);
 	  else
-	    gemini = pair.first;
+	    gemini = pair;
 
-	  if(!gemini.isEmpty())
+	  if(!gemini.first.isEmpty() && !gemini.second.isEmpty())
 	    {
 	      QByteArray computedMessageCode;
 	      QByteArray message(list.value(0));
@@ -1498,12 +1498,13 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 	      spoton_crypt crypt("aes256",
 				 QString("sha512"),
 				 QByteArray(),
-				 gemini,
+				 gemini.first,
 				 0,
 				 0,
 				 QString(""));
 
-	      computedMessageCode = crypt.keyedHash(message, &ok);
+	      computedMessageCode = spoton_crypt::keyedHash
+		(message, gemini.second, "sha512", &ok);
 
 	      if(ok)
 		{
@@ -1787,7 +1788,7 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 		    {
 		      QList<QByteArray> list(data.split('\n'));
 
-		      if(list.size() == 3)
+		      if(list.size() == 4)
 			{
 			  for(int i = 0; i < list.size(); i++)
 			    list.replace
@@ -1800,10 +1801,17 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 							"SignedMessagesOnly",
 							true).toBool())
 				if(!spoton_misc::
+				   /*
+				   ** 0 - Sender's Sha-512 Hash
+				   ** 1 - Gemini
+				   ** 2 - Gemini MAC
+				   ** 3 - Signature
+				   */
 				   isValidSignature(list.value(0) +
-						    list.value(1),
+						    list.value(1) +
+						    list.value(2),
 						    list.value(0),
-						    list.value(2)))
+						    list.value(3)))
 				  {
 				    spoton_misc::logError
 				      ("spoton_neighbor::"
@@ -1812,7 +1820,8 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 				    return;
 				  }
 
-			      saveGemini(list.value(0), list.value(1));
+			      saveGemini(list.value(0), list.value(1),
+					 list.value(2));
 			    }
 			}
 		      else
@@ -1820,7 +1829,7 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 			  spoton_misc::logError
 			    (QString("spoton_neighbor::process0000a(): "
 				     "received irregular data. "
-				     "Expecting 3 "
+				     "Expecting 4 "
 				     "entries, "
 				     "received %1.").arg(list.size()));
 			  return;
@@ -2545,14 +2554,14 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 	  for(int i = 0; i < list.size(); i++)
 	    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-	  QByteArray gemini;
+	  QPair<QByteArray, QByteArray> gemini;
 
-	  if(pair.first.isEmpty())
+	  if(pair.first.isEmpty() || pair.second.isEmpty())
 	    gemini = spoton_misc::findGeminiInCosmos(list.value(0), s_crypt);
 	  else
-	    gemini = pair.first;
+	    gemini = pair;
 
-	  if(!gemini.isEmpty())
+	  if(!gemini.first.isEmpty() && !gemini.second.isEmpty())
 	    {
 	      QByteArray computedMessageCode;
 	      QByteArray message(list.value(0));
@@ -2560,12 +2569,13 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 	      spoton_crypt crypt("aes256",
 				 QString("sha512"),
 				 QByteArray(),
-				 gemini,
+				 gemini.first,
 				 0,
 				 0,
 				 QString(""));
 
-	      computedMessageCode = crypt.keyedHash(message, &ok);
+	      computedMessageCode = spoton_crypt::keyedHash
+		(message, gemini.second, "sha512", &ok);
 
 	      if(ok)
 		{
@@ -4130,12 +4140,17 @@ void spoton_neighbor::resetKeepAlive(void)
 
 QString spoton_neighbor::findMessageType
 (const QByteArray &data,
- QPair<QByteArray, QByteArray> &symmetricKey)
+ QPair<QByteArray, QByteArray> &symmetricKeys)
 {
   QList<QByteArray> list(QByteArray::fromBase64(data).split('\n'));
   QString type("");
   int interfaces = spoton_kernel::interfaces();
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
+
+  /*
+  ** symmetricKeys.first is a key.
+  ** symmetricKeys.second may be a Gemini MAC Key or a Buzz Cipher Type.
+  */
 
   /*
   ** Do not attempt to locate a Buzz key if an interface is not
@@ -4144,17 +4159,17 @@ QString spoton_neighbor::findMessageType
 
   if(interfaces > 0)
     {
-      symmetricKey = spoton_kernel::findBuzzKey
+      symmetricKeys = spoton_kernel::findBuzzKey
 	(QByteArray::fromBase64(list.value(0)));
 
-      if(!symmetricKey.first.isEmpty() && !symmetricKey.second.isEmpty())
+      if(!symmetricKeys.first.isEmpty() && !symmetricKeys.second.isEmpty())
 	{
 	  QByteArray data;
 	  bool ok = true;
-	  spoton_crypt crypt(symmetricKey.second,
+	  spoton_crypt crypt(symmetricKeys.second,
 			     QString("sha512"),
 			     QByteArray(),
-			     symmetricKey.first,
+			     symmetricKeys.first,
 			     0,
 			     0,
 			     QString(""));
@@ -4168,14 +4183,14 @@ QString spoton_neighbor::findMessageType
 	    goto done_label;
 	  else
 	    {
-	      symmetricKey.first.clear();
-	      symmetricKey.second.clear();
+	      symmetricKeys.first.clear();
+	      symmetricKeys.second.clear();
 	    }
 	}
       else
 	{
-	  symmetricKey.first.clear();
-	  symmetricKey.second.clear();
+	  symmetricKeys.first.clear();
+	  symmetricKeys.second.clear();
 	}
     }
 
@@ -4186,20 +4201,20 @@ QString spoton_neighbor::findMessageType
 
   if(interfaces > 0)
     {
-      QByteArray gemini;
+      QPair<QByteArray, QByteArray> gemini;
 
       if(s_crypt)
 	gemini = spoton_misc::findGeminiInCosmos
 	  (QByteArray::fromBase64(list.value(0)), s_crypt);
 
-      if(!gemini.isEmpty())
+      if(!gemini.first.isEmpty())
 	{
 	  QByteArray data;
 	  bool ok = true;
 	  spoton_crypt crypt("aes256",
 			     QString("sha512"),
 			     QByteArray(),
-			     gemini,
+			     gemini.first,
 			     0,
 			     0,
 			     QString(""));
@@ -4211,20 +4226,19 @@ QString spoton_neighbor::findMessageType
 
 	  if(!type.isEmpty())
 	    {
-	      symmetricKey.first = gemini;
-	      symmetricKey.second = "aes256";
+	      symmetricKeys = gemini;
 	      goto done_label;
 	    }
 	  else
 	    {
-	      symmetricKey.first.clear();
-	      symmetricKey.second.clear();
+	      symmetricKeys.first.clear();
+	      symmetricKeys.second.clear();
 	    }
 	}
       else
 	{
-	  symmetricKey.first.clear();
-	  symmetricKey.second.clear();
+	  symmetricKeys.first.clear();
+	  symmetricKeys.second.clear();
 	}
     }
 
@@ -4316,7 +4330,8 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data)
 }
 
 void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
-				 const QByteArray &gemini)
+				 const QByteArray &gemini,
+				 const QByteArray &geminiMac)
 {
   QString connectionName("");
 
@@ -4334,26 +4349,38 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 
 	query.prepare("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE friends_public_keys SET "
-		      "gemini = ?, last_status_update = ? "
+		      "gemini = ?, gemini_mac_key = ?, "
+		      "last_status_update = ? "
 		      "WHERE neighbor_oid = -1 AND "
 		      "public_key_hash = ?");
 
-	if(gemini.isEmpty())
-	  query.bindValue(0, QVariant(QVariant::String));
+	if(gemini.isEmpty() || geminiMac.isEmpty())
+	  {
+	    query.bindValue(0, QVariant(QVariant::String));
+	    query.bindValue(1, QVariant(QVariant::String));
+	  }
 	else
 	  {
 	    spoton_crypt *s_crypt =
 	      spoton_kernel::s_crypts.value("chat", 0);
 
 	    if(s_crypt)
-	      query.bindValue(0, s_crypt->encrypted(gemini, &ok).toBase64());
+	      {
+		query.bindValue
+		  (0, s_crypt->encrypted(gemini, &ok).toBase64());
+		query.bindValue
+		  (1, s_crypt->encrypted(geminiMac, &ok).toBase64());
+	      }
 	    else
-	      query.bindValue(0, QVariant(QVariant::String));
+	      {
+		query.bindValue(0, QVariant(QVariant::String));
+		query.bindValue(1, QVariant(QVariant::String));
+	      }
 	  }
 
 	query.bindValue
-	  (1, QDateTime::currentDateTime().toString(Qt::ISODate));
-	query.bindValue(2, publicKeyHash.toBase64());
+	  (2, QDateTime::currentDateTime().toString(Qt::ISODate));
+	query.bindValue(3, publicKeyHash.toBase64());
 
 	if(ok)
 	  query.exec();
