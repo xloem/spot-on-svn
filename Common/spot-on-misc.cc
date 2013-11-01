@@ -160,27 +160,6 @@ void spoton_misc::prepareDatabases(void)
     QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() +
-		       "etp_magnets.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.exec("CREATE TABLE IF NOT EXISTS etp_magnets ("
-		   "magnet TEXT NOT NULL, "
-		   "magnet_hash TEXT PRIMARY KEY NOT NULL, "
-		   "one_time_magnet INTEGER NOT NULL DEFAULT 1)");
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-
-  {
-    QSqlDatabase db = database(connectionName);
-
-    db.setDatabaseName(homePath() + QDir::separator() +
 		       "friends_public_keys.db");
 
     if(db.open())
@@ -328,6 +307,27 @@ void spoton_misc::prepareDatabases(void)
 					** The foreign key constraint
 					** is flawed.
 					*/
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName(homePath() + QDir::separator() +
+		       "magnets.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("CREATE TABLE IF NOT EXISTS magnets ("
+		   "magnet TEXT NOT NULL, "
+		   "magnet_hash TEXT PRIMARY KEY NOT NULL, "
+		   "one_time_magnet INTEGER NOT NULL DEFAULT 1)");
       }
 
     db.close();

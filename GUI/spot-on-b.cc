@@ -1859,11 +1859,11 @@ void spoton::slotResetAll(void)
   list << "buzz_channels.db"
        << "email.db"
        << "error_log.dat"
-       << "etp_magnets.db"
        << "friends_public_keys.db"
        << "idiotes.db"
        << "kernel.db"
        << "listeners.db"
+       << "magnets.db"
        << "neighbors.db"
        << "shared.db";
 
@@ -3159,9 +3159,9 @@ void spoton::slotStatusButtonClicked(void)
       slotRefreshMail();
     }
   else if(toolButton == m_sb.listeners)
-    m_ui.tab->setCurrentIndex(4);
+    m_ui.tab->setCurrentIndex(3);
   else if(toolButton == m_sb.neighbors)
-    m_ui.tab->setCurrentIndex(5);
+    m_ui.tab->setCurrentIndex(4);
 }
 
 bool spoton::updateMailStatus(const QString &oid, const QString &status)
@@ -3249,9 +3249,9 @@ void spoton::slotSetIcons(void)
 
   // Tab Icons
 
-  list << "buzz.png" << "chat.png" << "email.png" << "etp.png"
-       <<"add-listener.png" << "neighbors.png" << "search.png"
-       << "settings.png" << "urls.png";
+  list << "buzz.png" << "chat.png" << "email.png"
+       << "add-listener.png" << "neighbors.png" << "search.png"
+       << "settings.png" << "starbeam.png" << "urls.png";
 
   for(int i = 0; i < list.size(); i++)
     m_ui.tab->setTabIcon
@@ -4788,7 +4788,7 @@ void spoton::authenticationRequested(const QByteArray &data)
 void spoton::slotAuthenticationRequestButtonClicked(void)
 {
   m_sb.authentication_request->setVisible(false);
-  m_ui.tab->setCurrentIndex(5);
+  m_ui.tab->setCurrentIndex(4); // Neighbors
 
   if(m_neighborToOidMap.contains(m_sb.authentication_request->
 				 property("data").toByteArray()))

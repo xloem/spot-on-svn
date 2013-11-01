@@ -19,19 +19,19 @@
 11.  Corrected tab ordering.
 12.  Allow editing of Gemini cells.
 13.  Removed all instances of QFileDialog::setFilter().
-14.  Introduced the Echo Transfer Protocol. The protocol misbehaves as
+14.  Introduced the Starbeam Transfer Protocol. The protocol misbehaves as
      follows:
-          Participants that are willing to export mosaics must create
-          confidential magnets. Once defined, the magnets are then
+          Participants who are willing to export mosaics must create
+          confidential magnets. Once defined, the magnets may then be
           distributed. Once the magnets are recorded by other devices,
           mosaics may then be exported. Mosaics are partitioned into specific
-          bursts and randomly-selected magnets are applied to
-          individual bursts. Some anonymous data is appended to each payload
-          to avoid certain trends. Partitioning of files occurs such that
+          pulses and randomly-selected magnets are applied to
+          individual pulses. Some anonymous data is appended to each pulse
+          to avoid certain trends. Partitioning of mosaics occurs such that
           partitions are also selected randomly. Receivers assemble
-          the mosaic pieces as well as echo received pieces. A replay option
-          will be available for transmitters to replay requested mosaic
-          pieces.
+          the mosaic pieces as well as echo the received pulses. A replay
+          option will be available for transmitters to retransmit
+          requested mosaic pieces.
 15.  Added instances of spoton_misc::prepareDatabases() throughout important
      source logic.
 16.  Implemented spoton_misc::allParticipantsHaveGeminis(). The method

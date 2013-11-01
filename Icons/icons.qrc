@@ -225,7 +225,6 @@
 	<file>nouve/down.png</file>
 	<file>nouve/email.png</file>
 	<file>nouve/empty-trash.png</file>
-	<file>nouve/etp.png</file>
 	<file>nouve/full-trash.png</file>
 	<file>nouve/heart.png</file>
 	<file>nouve/inbox.png</file>
@@ -243,6 +242,7 @@
 	<file>nouve/search.png</file>
 	<file>nouve/settings.png</file>
 	<file>nouve/share.png</file>
+	<file>nouve/starbeam.png</file>
 	<file>nouve/status-offline.png</file>
 	<file>nouve/status-online.png</file>
 	<file>nouve/up.png</file>
@@ -263,7 +263,6 @@
 	<file>nuvola/down.png</file>
 	<file>nuvola/email.png</file>
 	<file>nuvola/empty-trash.png</file>
-	<file>nuvola/etp.png</file>
 	<file>nuvola/full-trash.png</file>
 	<file>nuvola/heart.png</file>
 	<file>nuvola/inbox.png</file>
@@ -281,6 +280,7 @@
 	<file>nuvola/search.png</file>
 	<file>nuvola/settings.png</file>
 	<file>nuvola/share.png</file>
+	<file>nuvola/starbeam.png</file>
 	<file>nuvola/status-offline.png</file>
 	<file>nuvola/status-online.png</file>
 	<file>nuvola/up.png</file>
