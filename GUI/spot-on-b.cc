@@ -2894,7 +2894,7 @@ void spoton::slotGeminiChanged(QTableWidgetItem *item)
   if(!item)
     return;
   else if(!(item->column() == 6 ||
-	    item->column() == 7)) // Gemini, Gemini MAC
+	    item->column() == 7)) // Gemini E. Key, Gemini H. Key
     return;
   else if(!m_ui.participants->item(item->row(), 1)) // OID
     return;
@@ -2918,8 +2918,8 @@ void spoton::slotGeminiChanged(QTableWidgetItem *item)
 
   QPair<QByteArray, QByteArray> gemini;
 
-  gemini.first = item1->text().toUtf8();
-  gemini.second = item2->text().toUtf8();
+  gemini.first = item1->text().trimmed().toLatin1();
+  gemini.second = item2->text().trimmed().toLatin1();
   saveGemini(gemini,
 	     m_ui.participants->item(item->row(), 1)->text()); // OID
 }
@@ -2932,8 +2932,8 @@ void spoton::slotGenerateGeminiInChat(void)
     return;
 
   QTableWidgetItem *item1 = m_ui.participants->item(row, 1); // OID
-  QTableWidgetItem *item2 = m_ui.participants->item(row, 6); // Gemini
-  QTableWidgetItem *item3 = m_ui.participants->item(row, 7); // Gemini MAC
+  QTableWidgetItem *item2 = m_ui.participants->item(row, 6); // Gemini E. Key
+  QTableWidgetItem *item3 = m_ui.participants->item(row, 7); // Gemini H. Key
 
   if(!item1 || !item2 || !item3)
     return;
@@ -2977,7 +2977,7 @@ bool spoton::saveGemini(const QPair<QByteArray, QByteArray> &gemini,
 	QSqlQuery query(db);
 
 	query.prepare("UPDATE friends_public_keys SET "
-		      "gemini = ?, gemini_mac_key = ? WHERE OID = ?");
+		      "gemini = ?, gemini_hash_key = ? WHERE OID = ?");
 
 	if(gemini.first.isEmpty() || gemini.second.isEmpty())
 	  {
@@ -4677,7 +4677,8 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
 
   if(item->data(Qt::UserRole).toBool()) // Temporary friend?
     return;
-  else if(item->column() == 6 || item->column() == 7) // Gemini, Gemini MAC?
+  else if(item->column() == 6 ||
+	  item->column() == 7) // Gemini E. Key, Gemini H. Key?
     return;
 
   QIcon icon;

@@ -4034,7 +4034,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 
       menu.addSeparator();
       action = menu.addAction(tr("&Generate random Gemini Pair "
-				 "(AES-256, SHA-512)."),
+				 "(AES-256 Key, SHA-512 Key)."),
 			      this, SLOT(slotGenerateGeminiInChat(void)));
 
       if(item && item->data(Qt::UserRole).toBool()) // Temporary friend?
@@ -4596,7 +4596,7 @@ void spoton::slotPopulateParticipants(void)
 		      "status, "
 		      "last_status_update, "
 		      "gemini, "
-		      "gemini_mac_key, "
+		      "gemini_hash_key, "
 		      "key_type "
 		      "FROM friends_public_keys "
 		      "WHERE key_type = 'chat' OR key_type = 'email'"))
@@ -4664,7 +4664,8 @@ void spoton::slotPopulateParticipants(void)
 			  else
 			    item = new QTableWidgetItem(tr("Friend"));
 			}
-		      else if(i == 6 || i == 7) // Gemini, Gemini MAC
+		      else if(i == 6 ||
+			      i == 7) // Gemini E. Key, Gemini H. Key
 			{
 			  bool ok = true;
 
@@ -4739,7 +4740,8 @@ void spoton::slotPopulateParticipants(void)
 
 			  icon = item->icon();
 			}
-		      else if(i == 6 || i == 7) // Gemini, Gemini MAC
+		      else if(i == 6 ||
+			      i == 7) // Gemini E. Key, Gemini H. Key
 			{
 			  if(!temporary)
 			    item->setFlags

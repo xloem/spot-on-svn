@@ -270,8 +270,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>449</width>
-                <height>421</height>
+                <width>1180</width>
+                <height>558</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -510,12 +510,12 @@
                        </column>
                        <column>
                         <property name="text">
-                         <string>Gemini</string>
+                         <string>Gemini E. Key</string>
                         </property>
                        </column>
                        <column>
                         <property name="text">
-                         <string>Gemini MAC</string>
+                         <string>Gemini H. Key</string>
                         </property>
                        </column>
                       </widget>
@@ -1739,8 +1739,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>214</width>
-                 <height>415</height>
+                 <width>317</width>
+                 <height>538</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2987,8 +2987,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1063</width>
-             <height>452</height>
+             <width>1170</width>
+             <height>548</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3675,8 +3675,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>590</width>
-             <height>343</height>
+             <width>1170</width>
+             <height>548</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4969,7 +4969,7 @@
      <x>0</x>
      <y>0</y>
      <width>1196</width>
-     <height>27</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

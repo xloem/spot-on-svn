@@ -345,52 +345,62 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/buzzpage.ui" line="99"/>
+        <location filename="../UI/buzzpage.ui" line="97"/>
+        <source>Hash Key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/buzzpage.ui" line="111"/>
+        <source>Hash Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/buzzpage.ui" line="131"/>
         <source>Messages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/buzzpage.ui" line="129"/>
+        <location filename="../UI/buzzpage.ui" line="161"/>
         <source>Clear</source>
         <translation type="unfinished">Borrar</translation>
     </message>
     <message>
-        <location filename="../UI/buzzpage.ui" line="149"/>
+        <location filename="../UI/buzzpage.ui" line="181"/>
         <source>Clients</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/buzzpage.ui" line="174"/>
+        <location filename="../UI/buzzpage.ui" line="206"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/buzzpage.ui" line="179"/>
+        <location filename="../UI/buzzpage.ui" line="211"/>
         <source>ID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/buzzpage.ui" line="184"/>
+        <location filename="../UI/buzzpage.ui" line="216"/>
         <source>Time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/buzzpage.ui" line="228"/>
+        <location filename="../UI/buzzpage.ui" line="260"/>
         <source>&amp;Preferred Method</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/buzzpage.ui" line="248"/>
+        <location filename="../UI/buzzpage.ui" line="280"/>
         <source>Normal POST</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/buzzpage.ui" line="253"/>
+        <location filename="../UI/buzzpage.ui" line="285"/>
         <source>Artificial GET</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/buzzpage.ui" line="300"/>
+        <location filename="../UI/buzzpage.ui" line="332"/>
         <source>Send</source>
         <translation type="unfinished"></translation>
     </message>
@@ -470,11 +480,11 @@
         <location filename="../GUI/spot-on-a.cc" line="3556"/>
         <location filename="../GUI/spot-on-a.cc" line="3563"/>
         <location filename="../GUI/spot-on-a.cc" line="3574"/>
-        <location filename="../GUI/spot-on-a.cc" line="5603"/>
-        <location filename="../GUI/spot-on-a.cc" line="5615"/>
-        <location filename="../GUI/spot-on-a.cc" line="5688"/>
-        <location filename="../GUI/spot-on-a.cc" line="5869"/>
-        <location filename="../GUI/spot-on-a.cc" line="5912"/>
+        <location filename="../GUI/spot-on-a.cc" line="5605"/>
+        <location filename="../GUI/spot-on-a.cc" line="5617"/>
+        <location filename="../GUI/spot-on-a.cc" line="5690"/>
+        <location filename="../GUI/spot-on-a.cc" line="5871"/>
+        <location filename="../GUI/spot-on-a.cc" line="5914"/>
         <location filename="../GUI/spot-on-b.cc" line="134"/>
         <location filename="../GUI/spot-on-b.cc" line="1479"/>
         <location filename="../GUI/spot-on-b.cc" line="1486"/>
@@ -628,8 +638,8 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../GUI/spot-on-a.cc" line="1280"/>
         <location filename="../GUI/spot-on-a.cc" line="1507"/>
-        <location filename="../GUI/spot-on-a.cc" line="5604"/>
-        <location filename="../GUI/spot-on-a.cc" line="5825"/>
+        <location filename="../GUI/spot-on-a.cc" line="5606"/>
+        <location filename="../GUI/spot-on-a.cc" line="5827"/>
         <location filename="../GUI/spot-on-b.cc" line="1487"/>
         <location filename="../GUI/spot-on-b.cc" line="1642"/>
         <location filename="../GUI/spot-on-b.cc" line="3789"/>
@@ -754,34 +764,29 @@ Account Authenticated: %21
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4036"/>
-        <source>&amp;Generate random Gemini Pair (AES-256, SHA-512).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/spot-on-a.cc" line="5616"/>
+        <location filename="../GUI/spot-on-a.cc" line="5618"/>
         <source>Invalid neighbor OID. Please select a neighbor.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="5689"/>
+        <location filename="../GUI/spot-on-a.cc" line="5691"/>
         <source>The account name must be non-empty and the account password must contain at least sixteen characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="5793"/>
-        <location filename="../GUI/spot-on-a.cc" line="5882"/>
+        <location filename="../GUI/spot-on-a.cc" line="5795"/>
+        <location filename="../GUI/spot-on-a.cc" line="5884"/>
         <source>Empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="5864"/>
+        <location filename="../GUI/spot-on-a.cc" line="5866"/>
         <location filename="../GUI/spot-on-c.cc" line="173"/>
         <source>A database error occurred.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="5892"/>
+        <location filename="../GUI/spot-on-a.cc" line="5894"/>
         <source>Invalid clipboard object.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -891,6 +896,11 @@ Account Authenticated: %21
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../GUI/spot-on-a.cc" line="4036"/>
+        <source>&amp;Generate random Gemini Pair (AES-256 Key, SHA-512 Key).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../GUI/spot-on-a.cc" line="4071"/>
         <source>Connected securely to the kernel on port %1 from local port %2.</source>
         <translation type="unfinished"></translation>
@@ -906,8 +916,8 @@ Account Authenticated: %21
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4736"/>
-        <location filename="../GUI/spot-on-a.cc" line="4788"/>
+        <location filename="../GUI/spot-on-a.cc" line="4737"/>
+        <location filename="../GUI/spot-on-a.cc" line="4790"/>
         <source>User %1 requests your friendship.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1270,7 +1280,7 @@ Account Authenticated: %21
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4780"/>
+        <location filename="../GUI/spot-on-b.cc" line="4781"/>
         <source>Remote user %1 is requesting authentication credentials.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1690,16 +1700,6 @@ Account Authenticated: %21
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="513"/>
-        <source>Gemini</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../UI/controlcenter.ui" line="518"/>
-        <source>Gemini MAC</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../UI/controlcenter.ui" line="589"/>
         <source>&amp;Preferred Method</source>
         <translation type="unfinished"></translation>
@@ -2022,6 +2022,16 @@ Account Authenticated: %21
         <location filename="../UI/controlcenter.ui" line="1615"/>
         <location filename="../UI/controlcenter.ui" line="2457"/>
         <source>&amp;Echo Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/controlcenter.ui" line="513"/>
+        <source>Gemini E. Key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/controlcenter.ui" line="518"/>
+        <source>Gemini H. Key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

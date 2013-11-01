@@ -188,7 +188,7 @@ void spoton_misc::prepareDatabases(void)
 	   "neighbor_oid INTEGER NOT NULL DEFAULT -1, "
 	   "status TEXT NOT NULL DEFAULT 'offline', "
 	   "last_status_update TEXT NOT NULL DEFAULT 'now', "
-	   "gemini_mac_key TEXT DEFAULT NULL)");
+	   "gemini_hash_key TEXT DEFAULT NULL)");
 	query.exec
 	  ("CREATE TABLE IF NOT EXISTS relationships_with_signatures ("
 	   "public_key_hash TEXT PRIMARY KEY NOT NULL, " /*
@@ -578,12 +578,12 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
   bool ok = true;
 
   query.prepare("INSERT OR REPLACE INTO friends_public_keys "
-		"(gemini, gemini_mac_key, key_type, name, public_key, "
+		"(gemini, gemini_hash_key, key_type, name, public_key, "
 		"public_key_hash, "
 		"neighbor_oid, last_status_update) "
 		"VALUES ((SELECT gemini FROM friends_public_keys WHERE "
 		"public_key_hash = ?), "
-		"(SELECT gemini_mac_key FROM friends_public_keys WHERE "
+		"(SELECT gemini_hash_key FROM friends_public_keys WHERE "
 		"public_key_hash = ?), "
 		"?, ?, ?, ?, ?, ?)");
   query.bindValue(0, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
@@ -671,7 +671,7 @@ void spoton_misc::retrieveSymmetricData
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT gemini, neighbor_oid, public_key, "
-		      "gemini_mac_key "
+		      "gemini_hash_key "
 		      "FROM friends_public_keys WHERE "
 		      "OID = ?");
 	query.bindValue(0, oid);
@@ -840,10 +840,10 @@ QPair<QByteArray, QByteArray> spoton_misc::findGeminiInCosmos
 
 	    query.setForwardOnly(true);
 
-	    if(query.exec("SELECT gemini, gemini_mac_key "
+	    if(query.exec("SELECT gemini, gemini_hash_key "
 			  "FROM friends_public_keys WHERE "
 			  "gemini IS NOT NULL AND "
-			  "gemini_mac_key IS NOT NULL AND "
+			  "gemini_hash_key IS NOT NULL AND "
 			  "key_type = 'chat' AND "
 			  "neighbor_oid = -1"))
 	      while(query.next())
@@ -868,7 +868,7 @@ QPair<QByteArray, QByteArray> spoton_misc::findGeminiInCosmos
 		      {
 			QByteArray computedHash
 			  (spoton_crypt::keyedHash(data, gemini.second,
-						   "sha512Hash", &ok));
+						   "sha512", &ok));
 
 			if(ok)
 			  if(computedHash == hash)
@@ -1742,7 +1742,7 @@ bool spoton_misc::allParticipantsHaveGeminis(void)
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT COUNT(*) FROM friends_public_keys WHERE "
-		      "gemini IS NULL AND gemini_mac_key IS NULL AND "
+		      "gemini IS NULL AND gemini_hash_key IS NULL AND "
 		      "neighbor_oid = -1"))
 	  if(query.next())
 	    count = query.value(0).toInt();

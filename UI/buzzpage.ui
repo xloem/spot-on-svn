@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>724</width>
-    <height>389</height>
+    <height>397</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -84,6 +84,38 @@
       <widget class="QPushButton" name="remove">
        <property name="text">
         <string>Remove Bookmark</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Hash Key</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="hashKey">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Hash Type</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="hashType">
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -320,12 +352,14 @@
   <tabstop>type</tabstop>
   <tabstop>favorite</tabstop>
   <tabstop>remove</tabstop>
+  <tabstop>hashKey</tabstop>
+  <tabstop>hashType</tabstop>
   <tabstop>clearMessages</tabstop>
   <tabstop>messages</tabstop>
+  <tabstop>clients</tabstop>
   <tabstop>sendMethod</tabstop>
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
-  <tabstop>clients</tabstop>
  </tabstops>
  <resources/>
  <connections/>

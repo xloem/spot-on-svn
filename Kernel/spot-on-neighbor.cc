@@ -1805,8 +1805,8 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 				if(!spoton_misc::
 				   /*
 				   ** 0 - Sender's Sha-512 Hash
-				   ** 1 - Gemini
-				   ** 2 - Gemini MAC
+				   ** 1 - Gemini E. Key
+				   ** 2 - Gemini H. Key
 				   ** 3 - Signature
 				   */
 				   isValidSignature(list.value(0) +
@@ -4151,8 +4151,8 @@ QString spoton_neighbor::findMessageType
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   /*
-  ** symmetricKeys.first is a key.
-  ** symmetricKeys.second may be a Gemini MAC Key or a Buzz Cipher Type.
+  ** symmetricKeys.first is a symmetric key.
+  ** symmetricKeys.second may be a Gemini H. Key or a Buzz Cipher Type.
   */
 
   /*

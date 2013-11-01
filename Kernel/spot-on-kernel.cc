@@ -1498,7 +1498,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT gemini, public_key, "
-		      "gemini_mac_key "
+		      "gemini_hash_key "
 		      "FROM friends_public_keys WHERE "
 		      "key_type = 'chat' AND neighbor_oid = -1"))
 	  while(query.next())
@@ -1521,6 +1521,9 @@ void spoton_kernel::slotStatusTimerExpired(void)
 					    value(2).
 					    toByteArray()),
 		     &ok);
+
+	      if(!ok)
+		continue;
 
 	      QByteArray cipherType
 		(setting("gui/kernelCipherType",
@@ -2539,7 +2542,7 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT gemini, public_key, "
-		      "gemini_mac_key "
+		      "gemini_hash_key "
 		      "FROM friends_public_keys WHERE "
 		      "key_type = 'chat' AND neighbor_oid = -1 AND "
 		      "OID = ?");
