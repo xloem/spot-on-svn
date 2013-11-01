@@ -513,10 +513,10 @@
         <location filename="../GUI/spot-on-b.cc" line="4218"/>
         <location filename="../GUI/spot-on-b.cc" line="4236"/>
         <location filename="../GUI/spot-on-b.cc" line="4245"/>
-        <location filename="../GUI/spot-on-b.cc" line="4459"/>
-        <location filename="../GUI/spot-on-b.cc" line="4484"/>
-        <location filename="../GUI/spot-on-b.cc" line="4494"/>
-        <location filename="../GUI/spot-on-b.cc" line="4503"/>
+        <location filename="../GUI/spot-on-b.cc" line="4460"/>
+        <location filename="../GUI/spot-on-b.cc" line="4485"/>
+        <location filename="../GUI/spot-on-b.cc" line="4495"/>
+        <location filename="../GUI/spot-on-b.cc" line="4504"/>
         <location filename="../GUI/spot-on-c.cc" line="186"/>
         <source>Spot-On: Error</source>
         <translation>Spot-On: Fehler</translation>
@@ -655,8 +655,8 @@
         <location filename="../GUI/spot-on-b.cc" line="3789"/>
         <location filename="../GUI/spot-on-b.cc" line="4105"/>
         <location filename="../GUI/spot-on-b.cc" line="4246"/>
-        <location filename="../GUI/spot-on-b.cc" line="4408"/>
-        <location filename="../GUI/spot-on-b.cc" line="4504"/>
+        <location filename="../GUI/spot-on-b.cc" line="4409"/>
+        <location filename="../GUI/spot-on-b.cc" line="4505"/>
         <location filename="../GUI/spot-on-c.cc" line="85"/>
         <source>Invalid spoton_crypt object.</source>
         <translation type="unfinished"></translation>
@@ -990,7 +990,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="3697"/>
-        <location filename="../GUI/spot-on-b.cc" line="4337"/>
+        <location filename="../GUI/spot-on-b.cc" line="4338"/>
         <source>Spot-On: Information</source>
         <translation>Spot-On: Information</translation>
     </message>
@@ -1130,12 +1130,12 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4329"/>
+        <location filename="../GUI/spot-on-b.cc" line="4330"/>
         <source>The following ciphers were discovered. Please note that Spot-On may override discovered ciphers if the ciphers are not supported by Qt.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4334"/>
+        <location filename="../GUI/spot-on-b.cc" line="4335"/>
         <source>Empty cipher list.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1306,8 +1306,8 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-b.cc" line="4125"/>
         <location filename="../GUI/spot-on-b.cc" line="4219"/>
-        <location filename="../GUI/spot-on-b.cc" line="4385"/>
-        <location filename="../GUI/spot-on-b.cc" line="4485"/>
+        <location filename="../GUI/spot-on-b.cc" line="4386"/>
+        <location filename="../GUI/spot-on-b.cc" line="4486"/>
         <source>Invalid listener OID. Please select a listener.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1322,32 +1322,32 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4390"/>
+        <location filename="../GUI/spot-on-b.cc" line="4391"/>
         <source>The selected listener does not support SSL.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4396"/>
+        <location filename="../GUI/spot-on-b.cc" line="4397"/>
         <source>Please provide an account name and a password.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4401"/>
+        <location filename="../GUI/spot-on-b.cc" line="4402"/>
         <source>Please provide a password having at least sixteen characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4454"/>
+        <location filename="../GUI/spot-on-b.cc" line="4455"/>
         <source>A database error has occurred.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4495"/>
+        <location filename="../GUI/spot-on-b.cc" line="4496"/>
         <source>Please select an account to delete.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4779"/>
+        <location filename="../GUI/spot-on-b.cc" line="4780"/>
         <source>Remote user %1 is requesting authentication credentials.</source>
         <translation type="unfinished"></translation>
     </message>
