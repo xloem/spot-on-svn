@@ -4261,10 +4261,11 @@ void spoton::slotDeleteAccepedIP(void)
 	bool ok = true;
 
 	query.prepare("DELETE FROM listeners_allowed_ips WHERE "
-		      "ip_address_hash = ?");
+		      "ip_address_hash = ? AND listener_oid = ?");
 	query.bindValue
 	  (0, s_crypt->keyedHash(ip.toLatin1(),
 				 &ok).toBase64());
+	query.bindValue(1, oid);
 	query.exec();
       }
 
