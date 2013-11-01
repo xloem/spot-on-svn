@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1196</width>
-    <height>650</height>
+    <width>1000</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -98,6 +98,9 @@
             <property name="sizeAdjustPolicy">
              <enum>QComboBox::AdjustToContents</enum>
             </property>
+            <property name="minimumContentsLength">
+             <number>10</number>
+            </property>
             <item>
              <property name="text">
               <string>Demagnetize</string>
@@ -123,7 +126,7 @@
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_40">
+         <layout class="QHBoxLayout" name="horizontalLayout_41">
           <property name="spacing">
            <number>5</number>
           </property>
@@ -147,6 +150,27 @@
             </property>
            </widget>
           </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_40">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <item>
+           <widget class="QComboBox" name="buzzActions">
+            <item>
+             <property name="text">
+              <string>Clear</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Generate</string>
+             </property>
+            </item>
+           </widget>
+          </item>
           <item>
            <widget class="QLabel" name="label_33">
             <property name="text">
@@ -163,7 +187,7 @@
           <item>
            <widget class="QLabel" name="label_44">
             <property name="text">
-             <string>&amp;Frequency</string>
+             <string>E. &amp;Frequency</string>
             </property>
             <property name="buddy">
              <cstring>buzzIterationCount</cstring>
@@ -183,7 +207,7 @@
           <item>
            <widget class="QLabel" name="label_37">
             <property name="text">
-             <string>&amp;Salt</string>
+             <string>E. &amp;Salt</string>
             </property>
             <property name="buddy">
              <cstring>channelSalt</cstring>
@@ -196,7 +220,7 @@
           <item>
            <widget class="QLabel" name="label_36">
             <property name="text">
-             <string>&amp;Type</string>
+             <string>E. &amp;Type</string>
             </property>
             <property name="buddy">
              <cstring>channelType</cstring>
@@ -205,6 +229,36 @@
           </item>
           <item>
            <widget class="QComboBox" name="channelType">
+            <property name="sizeAdjustPolicy">
+             <enum>QComboBox::AdjustToContents</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_61">
+            <property name="text">
+             <string>H. &amp;Key</string>
+            </property>
+            <property name="buddy">
+             <cstring>buzzHashKey</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="buzzHashKey"/>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_62">
+            <property name="text">
+             <string>H. &amp;Type</string>
+            </property>
+            <property name="buddy">
+             <cstring>buzzHashType</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="buzzHashType">
             <property name="sizeAdjustPolicy">
              <enum>QComboBox::AdjustToContents</enum>
             </property>
@@ -270,8 +324,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1180</width>
-                <height>558</height>
+                <width>984</width>
+                <height>508</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -291,6 +345,16 @@
                    <property name="spacing">
                     <number>5</number>
                    </property>
+                   <item>
+                    <widget class="QCheckBox" name="acceptChatKeys">
+                     <property name="text">
+                      <string>Accept &amp;keys.</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
                    <item>
                     <widget class="QCheckBox" name="chatAcceptSigned">
                      <property name="text">
@@ -693,6 +757,16 @@
           <property name="spacing">
            <number>5</number>
           </property>
+          <item>
+           <widget class="QCheckBox" name="acceptEmailKeys">
+            <property name="text">
+             <string>Accept &amp;keys.</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item>
            <spacer name="horizontalSpacer_17">
             <property name="orientation">
@@ -1739,8 +1813,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>317</width>
-                 <height>538</height>
+                 <width>258</width>
+                 <height>488</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2987,8 +3061,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1170</width>
-             <height>548</height>
+             <width>974</width>
+             <height>498</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3653,7 +3727,7 @@
       </widget>
       <widget class="QWidget" name="tab_9">
        <attribute name="title">
-        <string>S&amp;tarbeam</string>
+        <string>S&amp;tarBeam</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_39">
         <property name="spacing">
@@ -3675,8 +3749,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1170</width>
-             <height>548</height>
+             <width>974</width>
+             <height>498</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -3784,6 +3858,9 @@
                       <widget class="QComboBox" name="generate">
                        <property name="sizeAdjustPolicy">
                         <enum>QComboBox::AdjustToContents</enum>
+                       </property>
+                       <property name="minimumContentsLength">
+                        <number>25</number>
                        </property>
                        <item>
                         <property name="text">
@@ -4968,7 +5045,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1196</width>
+     <width>1000</width>
      <height>22</height>
     </rect>
    </property>
@@ -5089,8 +5166,6 @@
   <tabstop>favorites</tabstop>
   <tabstop>demagnetize</tabstop>
   <tabstop>buzzTools</tabstop>
-  <tabstop>buzzName</tabstop>
-  <tabstop>saveBuzzName</tabstop>
   <tabstop>channel</tabstop>
   <tabstop>buzzIterationCount</tabstop>
   <tabstop>channelSalt</tabstop>
