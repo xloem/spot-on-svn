@@ -186,6 +186,8 @@ class spoton: public QMainWindow
   void updateParticipantsTable(const QSqlDatabase &db);
 
  private slots:
+  void slotAcceptChatKeys(bool state);
+  void slotAcceptEmailKeys(bool state);
   void slotAcceptPublicizedListeners(void);
   void slotActivateKernel(void);
   void slotAddAcceptedIP(void);
@@ -198,6 +200,7 @@ class spoton: public QMainWindow
   void slotAuthenticate(void);
   void slotAuthenticationRequestButtonClicked(void);
   void slotBlockNeighbor(void);
+  void slotBuzzActionsActivated(int index);
   void slotBuzzChanged(void);
   void slotBuzzTools(int index);
   void slotCallParticipant(void);

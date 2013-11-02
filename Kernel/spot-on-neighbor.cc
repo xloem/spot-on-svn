@@ -803,7 +803,7 @@ void spoton_neighbor::slotReadyRead(void)
 
   QByteArray data(m_socket.readAll());
 
-  m_bytesRead += data.size();
+  m_bytesRead += data.length();
 
   if(m_useSsl)
     if(!data.isEmpty())
@@ -1191,6 +1191,22 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 				    const QByteArray &sSignature,
 				    const qint64 neighborOid)
 {
+  if(keyType == "chat")
+    {
+      if(!spoton_kernel::setting("gui/acceptChatKeys", true).toBool())
+	return;
+    }
+  else if(keyType == "email")
+    {
+      if(!spoton_kernel::setting("gui/acceptEmailKeys", true).toBool())
+	return;
+    }
+  else
+    {
+      if(!spoton_kernel::setting("gui/acceptUrlKeys", true).toBool())
+	return;
+    }
+
   /*
   ** Save a friendly key.
   */
@@ -4354,7 +4370,7 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 
 	query.prepare("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE friends_public_keys SET "
-		      "gemini = ?, gemini_mac_key = ?, "
+		      "gemini = ?, gemini_hash_key = ?, "
 		      "last_status_update = ? "
 		      "WHERE neighbor_oid = -1 AND "
 		      "public_key_hash = ?");

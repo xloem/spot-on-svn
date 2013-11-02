@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1000</width>
-    <height>600</height>
+    <width>1196</width>
+    <height>650</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -103,6 +103,11 @@
             </property>
             <item>
              <property name="text">
+              <string>Clear</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
               <string>Demagnetize</string>
              </property>
             </item>
@@ -157,20 +162,6 @@
           <property name="spacing">
            <number>5</number>
           </property>
-          <item>
-           <widget class="QComboBox" name="buzzActions">
-            <item>
-             <property name="text">
-              <string>Clear</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Generate</string>
-             </property>
-            </item>
-           </widget>
-          </item>
           <item>
            <widget class="QLabel" name="label_33">
             <property name="text">
@@ -234,6 +225,13 @@
             </property>
            </widget>
           </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_61">
+          <property name="spacing">
+           <number>5</number>
+          </property>
           <item>
            <widget class="QLabel" name="label_61">
             <property name="text">
@@ -262,6 +260,20 @@
             <property name="sizeAdjustPolicy">
              <enum>QComboBox::AdjustToContents</enum>
             </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="buzzActions">
+            <item>
+             <property name="text">
+              <string>Clear</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Generate</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item>
@@ -324,8 +336,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>984</width>
-                <height>508</height>
+                <width>1182</width>
+                <height>541</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1813,8 +1825,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>258</width>
-                 <height>488</height>
+                 <width>278</width>
+                 <height>521</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3061,8 +3073,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>974</width>
-             <height>498</height>
+             <width>1172</width>
+             <height>531</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3749,8 +3761,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>974</width>
-             <height>498</height>
+             <width>1172</width>
+             <height>531</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4403,6 +4415,36 @@
          <number>5</number>
         </property>
         <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_56">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <item>
+           <widget class="QCheckBox" name="acceptUrlKeys">
+            <property name="text">
+             <string>Accept &amp;keys.</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_38">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
          <widget class="QSplitter" name="urlsVerticalSplitter">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -5045,8 +5087,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1000</width>
-     <height>22</height>
+     <width>1196</width>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -5166,13 +5208,19 @@
   <tabstop>favorites</tabstop>
   <tabstop>demagnetize</tabstop>
   <tabstop>buzzTools</tabstop>
+  <tabstop>buzzName</tabstop>
+  <tabstop>saveBuzzName</tabstop>
   <tabstop>channel</tabstop>
   <tabstop>buzzIterationCount</tabstop>
   <tabstop>channelSalt</tabstop>
   <tabstop>channelType</tabstop>
+  <tabstop>buzzHashKey</tabstop>
+  <tabstop>buzzHashType</tabstop>
+  <tabstop>buzzActions</tabstop>
   <tabstop>join</tabstop>
   <tabstop>buzzTab</tabstop>
   <tabstop>scrollArea_2</tabstop>
+  <tabstop>acceptChatKeys</tabstop>
   <tabstop>chatAcceptSigned</tabstop>
   <tabstop>chatSignMessages</tabstop>
   <tabstop>clearMessages</tabstop>
@@ -5185,6 +5233,7 @@
   <tabstop>chatSendMethod</tabstop>
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
+  <tabstop>acceptEmailKeys</tabstop>
   <tabstop>pushButtonClearMail</tabstop>
   <tabstop>emptyTrash</tabstop>
   <tabstop>refreshMail</tabstop>
@@ -5324,6 +5373,7 @@
   <tabstop>etpSelectFile</tabstop>
   <tabstop>burstSize</tabstop>
   <tabstop>etpResonate</tabstop>
+  <tabstop>acceptUrlKeys</tabstop>
   <tabstop>urlNodeName</tabstop>
   <tabstop>pushButton</tabstop>
   <tabstop>urlParticipants</tabstop>

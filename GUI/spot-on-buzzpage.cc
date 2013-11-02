@@ -48,6 +48,8 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 				 const QByteArray &channelType,
 				 const QByteArray &id,
 				 const unsigned long iterationCount,
+				 const QByteArray &hashKey,
+				 const QByteArray &hashType,
 				 spoton_crypt *crypt,
 				 QWidget *parent):QWidget(parent)
 {
@@ -64,6 +66,8 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
     m_channelType = "aes256";
 
   m_crypt = crypt;
+  m_hashKey = hashKey;
+  m_hashType = hashType;
   m_id = id.trimmed();
   m_iterationCount = qMax(static_cast<unsigned long> (10000),
 			  iterationCount);
@@ -149,6 +153,8 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
   ui.clients->setColumnHidden(1, true); // ID
   ui.clients->setColumnHidden(2, true); // Time
   ui.clients->horizontalHeader()->setSortIndicator(0, Qt::AscendingOrder);
+  ui.hashKey->setText(m_hashKey);
+  ui.hashType->setText(m_hashType);
   ui.iterationCount->setText(QString::number(m_iterationCount));
   ui.splitter->setStretchFactor(0, 1);
   ui.splitter->setStretchFactor(1, 0);
@@ -626,6 +632,10 @@ void spoton_buzzpage::slotSave(void)
 
 	data.append("\n");
 	data.append(m_channelType.toBase64());
+	data.append("\n");
+	data.append(m_hashKey.toBase64());
+	data.append("\n");
+	data.append(m_hashType.toBase64());
 	query.prepare("INSERT OR REPLACE INTO buzz_channels "
 		      "(data, data_hash) "
 		      "VALUES (?, ?)");
@@ -687,6 +697,10 @@ void spoton_buzzpage::slotRemove(void)
 
 	data.append("\n");
 	data.append(m_channelType.toBase64());
+	data.append("\n");
+	data.append(m_hashKey.toBase64());
+	data.append("\n");
+	data.append(m_hashType.toBase64());
 	query.prepare("DELETE FROM buzz_channels WHERE "
 		      "data_hash = ?");
 	query.bindValue(0, m_crypt->keyedHash(data, &ok).toBase64());

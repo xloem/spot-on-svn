@@ -52,6 +52,8 @@ class spoton_buzzpage: public QWidget
 		  const QByteArray &channelType,
 		  const QByteArray &id,
 		  const unsigned long iterationCount,
+		  const QByteArray &hashKey,
+		  const QByteArray &hashType,
 		  spoton_crypt *crypt,
 		  QWidget *parent);
   ~spoton_buzzpage();
@@ -67,6 +69,8 @@ class spoton_buzzpage: public QWidget
   QByteArray m_channel;
   QByteArray m_channelSalt;
   QByteArray m_channelType;
+  QByteArray m_hashKey;
+  QByteArray m_hashType;
   QByteArray m_id;
   QByteArray m_key; // Not stored in secure memory.
   QFuture<void> m_future;

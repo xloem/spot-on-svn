@@ -55,6 +55,8 @@
 24.  Modified spoton_misc::findGeminiInCosmos() so that the method
      attempts to discover the gemini pair via hash computations.
 25.  Removed UTF-8 conversions for Gemini keys.
+26.  Added hash keys and types to Buzz channels. Modified communication
+     protocols as well.
 
 0.06 (10/24/2013)
 

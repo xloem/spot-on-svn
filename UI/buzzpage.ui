@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>724</width>
-    <height>397</height>
+    <width>1000</width>
+    <height>450</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,7 @@
      <item>
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Frequency</string>
+        <string>E. Frequency</string>
        </property>
       </widget>
      </item>
@@ -42,7 +42,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Salt</string>
+        <string>E. Salt</string>
        </property>
       </widget>
      </item>
@@ -56,7 +56,7 @@
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Type</string>
+        <string>E. Type</string>
        </property>
       </widget>
      </item>
@@ -74,27 +74,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="favorite">
-       <property name="text">
-        <string>Bookmark</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="remove">
-       <property name="text">
-        <string>Remove Bookmark</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Hash Key</string>
+        <string>H.Key</string>
        </property>
       </widget>
      </item>
@@ -108,7 +90,7 @@
      <item>
       <widget class="QLabel" name="label_5">
        <property name="text">
-        <string>Hash Type</string>
+        <string>H. Type</string>
        </property>
       </widget>
      </item>
@@ -116,6 +98,40 @@
       <widget class="QLineEdit" name="hashType">
        <property name="readOnly">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>5</number>
+     </property>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="favorite">
+       <property name="text">
+        <string>Bookmark</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="remove">
+       <property name="text">
+        <string>Remove Bookmark</string>
        </property>
       </widget>
      </item>
@@ -350,10 +366,10 @@
   <tabstop>iterationCount</tabstop>
   <tabstop>salt</tabstop>
   <tabstop>type</tabstop>
-  <tabstop>favorite</tabstop>
-  <tabstop>remove</tabstop>
   <tabstop>hashKey</tabstop>
   <tabstop>hashType</tabstop>
+  <tabstop>favorite</tabstop>
+  <tabstop>remove</tabstop>
   <tabstop>clearMessages</tabstop>
   <tabstop>messages</tabstop>
   <tabstop>clients</tabstop>

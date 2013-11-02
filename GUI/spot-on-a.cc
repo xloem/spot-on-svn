@@ -320,6 +320,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(activated(int)),
 	  this,
 	  SLOT(slotFavoritesActivated(int)));
+  connect(m_ui.buzzActions,
+	  SIGNAL(activated(int)),
+	  this,
+	  SLOT(slotBuzzActionsActivated(int)));
   connect(m_ui.nodeName,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -588,6 +592,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotSignatureCheckBoxToggled(bool)));
+  connect(m_ui.acceptChatKeys,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotAcceptChatKeys(bool)));
+   connect(m_ui.acceptEmailKeys,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotAcceptEmailKeys(bool)));
   connect(m_ui.chatSignMessages,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -946,6 +958,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.cipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.etpCipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.etpHashType->addItems(spoton_crypt::hashTypes());
+  m_ui.buzzHashType->addItems(spoton_crypt::hashTypes());
   m_ui.kernelCipherType->insertSeparator(1);
   m_ui.kernelCipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.cost->setValue(m_settings.value("gui/congestionCost", 10000).toInt());
@@ -975,6 +988,10 @@ spoton::spoton(void):QMainWindow()
       m_ui.publishedKeySize->setEnabled(false);
     }
 
+  m_ui.acceptChatKeys->setChecked
+    (m_settings.value("gui/acceptChatKeys", true).toBool());
+  m_ui.acceptEmailKeys->setChecked
+    (m_settings.value("gui/acceptEmailKeys", true).toBool());
   m_ui.congestionControl->setChecked
     (m_settings.value("gui/enableCongestionControl", true).toBool());
   m_ui.cost->setEnabled(m_ui.congestionControl->isChecked());
@@ -1025,6 +1042,9 @@ spoton::spoton(void):QMainWindow()
 
   if(m_ui.kernelCipherType->count() <= 2)
     m_ui.kernelCipherType->addItem("n/a");
+
+  if(m_ui.buzzHashType->count() <= 2)
+    m_ui.buzzHashType->addItem("n/a");
 
   m_ui.hashType->clear();
   m_ui.hashType->addItems(spoton_crypt::hashTypes());
@@ -5734,6 +5754,8 @@ void spoton::slotPopulateBuzzFavorites(void)
 		  QByteArray channelName;
 		  QByteArray channelSalt;
 		  QByteArray channelType;
+		  QByteArray hashKey;
+		  QByteArray hashType;
 		  QList<QByteArray> list(data.split('\n'));
 		  unsigned long iterationCount = 0;
 
@@ -5741,8 +5763,13 @@ void spoton::slotPopulateBuzzFavorites(void)
 		    trimmed();
 		  channelType = QByteArray::fromBase64(list.value(3)).
 		    trimmed();
+		  hashKey = QByteArray::fromBase64(list.value(4)).
+		    trimmed();
+		  hashType = QByteArray::fromBase64(list.value(5)).
+		    trimmed();
 
-		  if(!channelName.isEmpty() && !channelType.isEmpty())
+		  if(!channelName.isEmpty() && !channelType.isEmpty() &&
+		     !hashKey.isEmpty() && !hashType.isEmpty())
 		    {
 		      QByteArray label;
 
@@ -5751,23 +5778,47 @@ void spoton::slotPopulateBuzzFavorites(void)
 		      iterationCount = qMax
 			(QByteArray::fromBase64(list.value(1)).
 			 toULong(), static_cast<unsigned long> (10000));
-		      label.append(channelName);
+
+		      if(channelName.length() > 16)
+			{
+			  label.append(channelName.mid(0, 8));
+			  label.append("...");
+			  label.append
+			    (channelName.mid(channelName.length() - 8));
+			}
+		      else
+			label.append(channelName);
+
 		      label.append(":");
 		      label.append(QString::number(iterationCount));
 		      label.append(":");
 
-		      if(channelSalt.size() > 32)
+		      if(channelSalt.length() > 16)
 			{
-			  label.append(channelSalt.mid(0, 16));
+			  label.append(channelSalt.mid(0, 8));
 			  label.append("...");
 			  label.append
-			    (channelSalt.mid(channelSalt.size() - 16));
+			    (channelSalt.mid(channelSalt.length() - 8));
 			}
 		      else
 			label.append(channelSalt);
 
 		      label.append(":");
 		      label.append(channelType);
+		      label.append(":");
+
+		      if(hashKey.length() > 16)
+			{
+			  label.append(hashKey.mid(0, 8));
+			  label.append("...");
+			  label.append
+			    (hashKey.mid(hashKey.length() - 8));
+			}
+		      else
+			label.append(hashKey);
+
+		      label.append(":");
+		      label.append(hashType);
 		      map.insert(label, data);
 		    }
 		}
@@ -5813,6 +5864,14 @@ void spoton::slotFavoritesActivated(int index)
       (m_ui.channelType->findText(list.value(3)));
   else
     m_ui.channelType->setCurrentIndex(0);
+
+  m_ui.buzzHashKey->setText(list.value(4));
+
+  if(m_ui.buzzHashType->findText(list.value(5)) > -1)
+    m_ui.buzzHashType->setCurrentIndex
+      (m_ui.buzzHashType->findText(list.value(5)));
+  else
+    m_ui.buzzHashType->setCurrentIndex(0);
 }
 
 void spoton::removeFavorite(const bool removeAll)
@@ -5872,10 +5931,12 @@ void spoton::removeFavorite(const bool removeAll)
   else
     {
       slotPopulateBuzzFavorites();
+      m_ui.buzzHashKey->clear();
+      m_ui.buzzHashType->setCurrentIndex(0);
+      m_ui.buzzIterationCount->setValue(m_ui.buzzIterationCount->minimum());
       m_ui.channel->clear();
       m_ui.channelSalt->clear();
       m_ui.channelType->setCurrentIndex(0);
-      m_ui.buzzIterationCount->setValue(m_ui.buzzIterationCount->minimum());
     }
 }
 
@@ -5905,7 +5966,9 @@ void spoton::magnetize(void)
   data.append(QString("rn=%1&").arg(list.value(0).constData()));
   data.append(QString("xf=%1&").arg(list.value(1).constData()));
   data.append(QString("xs=%1&").arg(list.value(2).constData()));
-  data.append(QString("ct=%1").arg(list.value(3).constData()));
+  data.append(QString("ct=%1&").arg(list.value(3).constData()));
+  data.append(QString("hk=%1&").arg(list.value(4).constData()));
+  data.append(QString("ht=%1").arg(list.value(5).constData()));
   clipboard->setText(data);
 
  done_label:
@@ -5946,6 +6009,19 @@ void spoton::demagnetize(void)
 	    m_ui.channelType->setCurrentIndex
 	      (m_ui.channelType->findText(str));
 	}
+      else if(str.startsWith("hk="))
+	{
+	  str.remove(0, 3);
+	  m_ui.buzzHashKey->setText(str);
+	}
+      else if(str.startsWith("kt="))
+	{
+	  str.remove(0, 3);
+
+	  if(m_ui.buzzHashType->findText(str) > -1)
+	    m_ui.buzzHashType->setCurrentIndex
+	      (m_ui.buzzHashType->findText(str));
+	}
     }
 
   slotJoinBuzzChannel();
@@ -5954,12 +6030,14 @@ void spoton::demagnetize(void)
 void spoton::slotBuzzTools(int index)
 {
   if(index == 0)
-    demagnetize();
+    m_ui.demagnetize->clear();
   else if(index == 1)
-    magnetize();
+    demagnetize();
   else if(index == 2)
-    removeFavorite(false);
+    magnetize();
   else if(index == 3)
+    removeFavorite(false);
+  else if(index == 4)
     removeFavorite(true);
 
   disconnect(m_ui.buzzTools,

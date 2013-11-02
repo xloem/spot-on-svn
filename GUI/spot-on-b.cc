@@ -2628,7 +2628,7 @@ void spoton::slotRefreshPostOffice(void)
 				 &ok));
 
 		    item = new QTableWidgetItem
-		      (QString::number(bytes.size()));
+		      (QString::number(bytes.length()));
 		  }
 		else
 		  item = new QTableWidgetItem(query.value(i).toString());
@@ -3775,6 +3775,8 @@ void spoton::slotJoinBuzzChannel(void)
   QByteArray channel(m_ui.channel->text().trimmed().toUtf8());
   QByteArray channelSalt;
   QByteArray channelType(m_ui.channelType->currentText().toLatin1());
+  QByteArray hashKey(m_ui.buzzHashKey->text().trimmed().toUtf8());
+  QByteArray hashType(m_ui.buzzHashType->currentText().toLatin1());
   QByteArray id;
   QByteArray key;
   QString error("");
@@ -3793,6 +3795,12 @@ void spoton::slotJoinBuzzChannel(void)
   if(channel.isEmpty())
     {
       error = tr("Please provide a channel name.");
+      goto done_label;
+    }
+
+  if(hashKey.isEmpty())
+    {
+      error = tr("Please provide a hash key.");
       goto done_label;
     }
 
@@ -3851,9 +3859,11 @@ void spoton::slotJoinBuzzChannel(void)
   m_ui.channelSalt->clear();
   m_ui.channelType->setCurrentIndex(0);
   m_ui.buzzIterationCount->setValue(m_ui.buzzIterationCount->minimum());
+  m_ui.buzzHashKey->clear();
+  m_ui.buzzHashType->setCurrentIndex(0);
   page = new spoton_buzzpage
     (&m_kernelSocket, channel, channelSalt, channelType,
-     id, iterationCount, s_crypt, this);
+     id, iterationCount, hashKey, hashType, s_crypt, this);
   connect(&m_buzzStatusTimer,
 	  SIGNAL(timeout(void)),
 	  page,

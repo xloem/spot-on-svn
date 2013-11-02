@@ -436,3 +436,54 @@ void spoton::slotMaxMosaicSize(int value)
 
   settings.setValue("gui/maxMosaicSize", value);
 }
+
+void spoton::slotBuzzActionsActivated(int index)
+{
+  if(index == 0)
+    {
+      m_ui.channel->clear();
+      m_ui.iterationCount->setValue(10000);
+      m_ui.channelSalt->clear();
+      m_ui.channelType->setCurrentIndex(0);
+      m_ui.buzzHashKey->clear();
+      m_ui.buzzHashType->setCurrentIndex(0);
+    }
+  else if(index == 1)
+    {
+      m_ui.channel->setText
+	(spoton_crypt::strongRandomBytes(m_ui.channel->maxLength()).
+	 toBase64());
+      m_ui.channelSalt->setText
+	(spoton_crypt::strongRandomBytes(256).toBase64());
+      m_ui.buzzHashKey->setText
+	(spoton_crypt::strongRandomBytes(256).toBase64());
+    }
+
+  disconnect(m_ui.buzzActions,
+	     SIGNAL(activated(int)),
+	     this,
+	     SLOT(slotGenerateEtpKeys(int)));
+  m_ui.buzzActions->setCurrentIndex(0);
+  connect(m_ui.buzzActions,
+	  SIGNAL(activated(int)),
+	  this,
+	  SLOT(slotGenerateEtpKeys(int)));
+}
+
+void spoton::slotAcceptChatKeys(bool state)
+{
+  m_settings["gui/acceptChatKeys"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/acceptChatKeys", state);
+}
+
+void spoton::slotAcceptEmailKeys(bool state)
+{
+  m_settings["gui/acceptEmailKeys"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/acceptEmailKeys", state);
+}
