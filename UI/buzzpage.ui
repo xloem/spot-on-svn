@@ -26,100 +26,14 @@
       <number>5</number>
      </property>
      <item>
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Frequency</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="iterationCount">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Salt</string>
+        <string>Magnet</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="salt">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Type</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="type">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="spacing">
-      <number>5</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Hash Key</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="hashKey">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Hash Type</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="hashType">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
+      <widget class="QLineEdit" name="magnet"/>
      </item>
      <item>
       <widget class="QPushButton" name="favorite">
@@ -363,15 +277,9 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>iterationCount</tabstop>
-  <tabstop>salt</tabstop>
-  <tabstop>type</tabstop>
-  <tabstop>hashKey</tabstop>
-  <tabstop>hashType</tabstop>
-  <tabstop>favorite</tabstop>
-  <tabstop>remove</tabstop>
-  <tabstop>clearMessages</tabstop>
+  <tabstop>magnet</tabstop>
   <tabstop>messages</tabstop>
+  <tabstop>clearMessages</tabstop>
   <tabstop>clients</tabstop>
   <tabstop>sendMethod</tabstop>
   <tabstop>message</tabstop>

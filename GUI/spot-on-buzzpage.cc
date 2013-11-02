@@ -103,8 +103,6 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 
 	  m_channelSalt = salt;
 	}
-      else
-	ui.salt->setText(m_channelSalt);
 
       if(gcry_kdf_derive(static_cast<const void *> (m_channel.constData()),
 			 static_cast<size_t> (m_channel.length()),
@@ -153,12 +151,19 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
   ui.clients->setColumnHidden(1, true); // ID
   ui.clients->setColumnHidden(2, true); // Time
   ui.clients->horizontalHeader()->setSortIndicator(0, Qt::AscendingOrder);
-  ui.hashKey->setText(m_hashKey);
-  ui.hashType->setText(m_hashType);
-  ui.iterationCount->setText(QString::number(m_iterationCount));
   ui.splitter->setStretchFactor(0, 1);
   ui.splitter->setStretchFactor(1, 0);
-  ui.type->setText(m_channelType);
+
+  QByteArray data;
+
+  data.append("magnet:1?");
+  data.append(QString("rn=%1&").arg(m_channel.constData()));
+  data.append(QString("xf=%1&").arg(m_iterationCount));
+  data.append(QString("xs=%1&").arg(m_channelSalt.constData()));
+  data.append(QString("ct=%1&").arg(m_channelType.constData()));
+  data.append(QString("hk=%1&").arg(m_hashKey.constData()));
+  data.append(QString("ht=%1").arg(m_hashType.constData()));
+  ui.magnet->setText(data);
   slotSetIcons();
   m_messagingCachePurgeTimer.start(60000);
 
@@ -624,12 +629,7 @@ void spoton_buzzpage::slotSave(void)
 	data.append("\n");
 	data.append(QString::number(m_iterationCount).toLatin1().toBase64());
 	data.append("\n");
-
-	if(!ui.salt->text().isEmpty())
-	  data.append(m_channelSalt.toBase64());
-	else
-	  data.append(QByteArray().toBase64());
-
+	data.append(m_channelSalt.toBase64());
 	data.append("\n");
 	data.append(m_channelType.toBase64());
 	data.append("\n");
@@ -689,12 +689,7 @@ void spoton_buzzpage::slotRemove(void)
 	data.append("\n");
 	data.append(QString::number(m_iterationCount).toLatin1().toBase64());
 	data.append("\n");
-
-	if(!ui.salt->text().isEmpty())
-	  data.append(m_channelSalt.toBase64());
-	else
-	  data.append(QByteArray().toBase64());
-
+	data.append(m_channelSalt.toBase64());
 	data.append("\n");
 	data.append(m_channelType.toBase64());
 	data.append("\n");
