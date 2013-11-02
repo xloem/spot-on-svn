@@ -178,7 +178,7 @@
           <item>
            <widget class="QLabel" name="label_44">
             <property name="text">
-             <string>E. &amp;Frequency</string>
+             <string>&amp;Frequency</string>
             </property>
             <property name="buddy">
              <cstring>buzzIterationCount</cstring>
@@ -198,7 +198,7 @@
           <item>
            <widget class="QLabel" name="label_37">
             <property name="text">
-             <string>E. &amp;Salt</string>
+             <string>&amp;Salt</string>
             </property>
             <property name="buddy">
              <cstring>channelSalt</cstring>
@@ -211,7 +211,7 @@
           <item>
            <widget class="QLabel" name="label_36">
             <property name="text">
-             <string>E. &amp;Type</string>
+             <string>&amp;Type</string>
             </property>
             <property name="buddy">
              <cstring>channelType</cstring>
@@ -235,7 +235,7 @@
           <item>
            <widget class="QLabel" name="label_61">
             <property name="text">
-             <string>H. &amp;Key</string>
+             <string>Hash &amp;Key</string>
             </property>
             <property name="buddy">
              <cstring>buzzHashKey</cstring>
@@ -248,7 +248,7 @@
           <item>
            <widget class="QLabel" name="label_62">
             <property name="text">
-             <string>H. &amp;Type</string>
+             <string>Hash &amp;Type</string>
             </property>
             <property name="buddy">
              <cstring>buzzHashType</cstring>
@@ -336,8 +336,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1182</width>
-                <height>541</height>
+                <width>1180</width>
+                <height>558</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -586,12 +586,12 @@
                        </column>
                        <column>
                         <property name="text">
-                         <string>Gemini E. Key</string>
+                         <string>Gemini Encryption Key</string>
                         </property>
                        </column>
                        <column>
                         <property name="text">
-                         <string>Gemini H. Key</string>
+                         <string>Gemini Hash Key</string>
                         </property>
                        </column>
                       </widget>
@@ -1825,8 +1825,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>278</width>
-                 <height>521</height>
+                 <width>317</width>
+                 <height>538</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3073,8 +3073,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1172</width>
-             <height>531</height>
+             <width>1170</width>
+             <height>548</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3761,8 +3761,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1172</width>
-             <height>531</height>
+             <width>1170</width>
+             <height>548</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5088,7 +5088,7 @@
      <x>0</x>
      <y>0</y>
      <width>1196</width>
-     <height>27</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
