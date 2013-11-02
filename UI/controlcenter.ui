@@ -1950,7 +1950,7 @@
                    <item>
                     <widget class="QLineEdit" name="acceptedIP">
                      <property name="toolTip">
-                      <string>Please enter the keyword Any to allow any external IP address.</string>
+                      <string>The keyword Any is supported.</string>
                      </property>
                     </widget>
                    </item>

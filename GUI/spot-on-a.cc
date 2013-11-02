@@ -1359,6 +1359,7 @@ void spoton::slotAddListener(void)
 
     if(db.open())
       {
+	QByteArray hash;
 	QString ip("");
 
 	if(m_ui.listenerIPCombo->currentIndex() == 0)
@@ -1464,10 +1465,13 @@ void spoton::slotAddListener(void)
 	query.bindValue(4, status);
 
 	if(ok)
-	  query.bindValue
-	    (5, s_crypt->
-	     keyedHash((ip + port + scopeId).toLatin1(), &ok).
-	     toBase64());
+	  {
+	    hash = s_crypt->
+	      keyedHash((ip + port + scopeId).toLatin1(), &ok);
+
+	    if(ok)
+	      query.bindValue(5, hash.toBase64());
+	  }
 
 	if(ok)
 	  {
@@ -1503,6 +1507,34 @@ void spoton::slotAddListener(void)
 
 	if(ok)
 	  ok = query.exec();
+
+	if(ok)
+	  {
+	    /*
+	    ** Add the default Any IP address.
+	    */
+
+	    QSqlQuery query(db);
+
+	    query.prepare("INSERT INTO listeners_allowed_ips "
+			  "(ip_address, ip_address_hash, listener_oid) "
+			  "VALUES (?, ?, (SELECT OID FROM listeners WHERE "
+			  "hash = ?))");
+	    query.bindValue
+	      (0, s_crypt->encrypted(QByteArray("Any"),
+				     &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(1, s_crypt->keyedHash(QByteArray("Any"),
+				       &ok).
+		 toBase64());
+
+	    query.bindValue(2, hash.toBase64());
+
+	    if(ok)
+	      ok = query.exec();
+	  }
       }
     else
       ok = false;
