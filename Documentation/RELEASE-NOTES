@@ -19,7 +19,7 @@
 11.  Corrected tab ordering.
 12.  Allow editing of Gemini cells.
 13.  Removed all instances of QFileDialog::setFilter().
-14.  Introduced the Starbeam Transfer Protocol. The protocol misbehaves as
+14.  Introduced the StarBeam Transfer Protocol. The protocol misbehaves as
      follows:
           Participants who are willing to export mosaics must create
           confidential magnets. Once defined, the magnets may then be
