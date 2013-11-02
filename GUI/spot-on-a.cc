@@ -596,10 +596,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotAcceptChatKeys(bool)));
-   connect(m_ui.acceptEmailKeys,
+  connect(m_ui.acceptEmailKeys,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotAcceptEmailKeys(bool)));
+  connect(m_ui.acceptUrlKeys,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotAcceptUrlKeys(bool)));
   connect(m_ui.chatSignMessages,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -992,6 +996,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/acceptChatKeys", true).toBool());
   m_ui.acceptEmailKeys->setChecked
     (m_settings.value("gui/acceptEmailKeys", true).toBool());
+  m_ui.acceptUrlKeys->setChecked
+    (m_settings.value("gui/acceptUrlKeys", true).toBool());
   m_ui.congestionControl->setChecked
     (m_settings.value("gui/enableCongestionControl", true).toBool());
   m_ui.cost->setEnabled(m_ui.congestionControl->isChecked());

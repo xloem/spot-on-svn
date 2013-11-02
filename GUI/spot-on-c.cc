@@ -487,3 +487,12 @@ void spoton::slotAcceptEmailKeys(bool state)
 
   settings.setValue("gui/acceptEmailKeys", state);
 }
+
+void spoton::slotAcceptUrlKeys(bool state)
+{
+  m_settings["gui/acceptUrlKeys"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/acceptUrlKeys", state);
+}

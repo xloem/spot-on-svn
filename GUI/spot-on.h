@@ -189,6 +189,7 @@ class spoton: public QMainWindow
   void slotAcceptChatKeys(bool state);
   void slotAcceptEmailKeys(bool state);
   void slotAcceptPublicizedListeners(void);
+  void slotAcceptUrlKeys(bool state);
   void slotActivateKernel(void);
   void slotAddAcceptedIP(void);
   void slotAddAccount(void);
