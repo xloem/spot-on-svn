@@ -31,7 +31,7 @@
           partitions are also selected randomly. Receivers assemble
           the mosaic pieces as well as echo the received pulses. A replay
           option will be available for transmitters to retransmit
-          requested mosaic pieces.
+          requested pulses.
 15.  Added instances of spoton_misc::prepareDatabases() throughout important
      source logic.
 16.  Implemented spoton_misc::allParticipantsHaveGeminis(). The method
@@ -57,6 +57,7 @@
 25.  Removed UTF-8 conversions for Gemini keys.
 26.  Added hash keys and types to Buzz channels. Modified communication
      protocols as well.
+27.  Corrected purging of destroyed Buzz data from the kernel.
 
 0.06 (10/24/2013)
 
