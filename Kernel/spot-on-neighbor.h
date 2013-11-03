@@ -143,12 +143,12 @@ class spoton_neighbor: public QThread
   spoton_external_address *m_externalAddress;
   spoton_neighbor_socket m_socket;
   QString findMessageType(const QByteArray &data,
-			  QPair<QByteArray, QByteArray> &symmetricKeys);
+			  QList<QByteArray> &symmetricKeys);
   bool isDuplicateMessage(const QByteArray &data);
   bool readyToWrite(void);
   void prepareNetworkInterface(void);
   void process0000(int length, const QByteArray &data,
-		   const QPair<QByteArray, QByteArray> &pair);
+		   const QList<QByteArray> &symmetricKeys);
   void process0000a(int length, const QByteArray &data);
   void process0001a(int length, const QByteArray &data);
   void process0001b(int length, const QByteArray &data);
@@ -156,14 +156,14 @@ class spoton_neighbor: public QThread
   void process0011(int length, const QByteArray &data);
   void process0012(int length, const QByteArray &data);
   void process0013(int length, const QByteArray &data,
-		   const QPair<QByteArray, QByteArray> &pair);
+		   const QList<QByteArray> &symmetricKeys);
   void process0014(int length, const QByteArray &data);
   void process0015(int length, const QByteArray &data);
   void process0030(int length, const QByteArray &data);
   void process0040a(int length, const QByteArray &data,
-		    const QPair<QByteArray, QByteArray> &pair);
+		    const QList<QByteArray> &symmetricKeys);
   void process0040b(int length, const QByteArray &data,
-		    const QPair<QByteArray, QByteArray> &pair);
+		    const QList<QByteArray> &symmetricKeys);
   void process0050(int length, const QByteArray &data);
   void process0051(int length, const QByteArray &data);
   void recordMessageHash(const QByteArray &data);
@@ -243,7 +243,7 @@ class spoton_neighbor: public QThread
   void newEMailArrived(void);
   void publicizeListenerPlaintext(const QByteArray &data, const qint64 id);
   void receivedBuzzMessage(const QList<QByteArray> &list,
-			   const QPair<QByteArray, QByteArray> &pair);
+			   const QList<QByteArray> &symmetricKeys);
   void receivedChatMessage(const QByteArray &data);
   void receivedMessage(const QByteArray &data, const qint64 id);
   void receivedPublicKey(const QByteArray &name, const QByteArray publicKey);

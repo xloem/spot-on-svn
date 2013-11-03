@@ -1047,11 +1047,11 @@ void spoton_neighbor::slotReadyRead(void)
 
 	      resetKeepAlive();
 
-	      QPair<QByteArray, QByteArray> symmetricKey;
-	      QString messageType(findMessageType(data, symmetricKey));
+	      QList<QByteArray> symmetricKeys;
+	      QString messageType(findMessageType(data, symmetricKeys));
 
 	      if(messageType == "0000")
-		process0000(length, data, symmetricKey);
+		process0000(length, data, symmetricKeys);
 	      else if(messageType == "0000a")
 		process0000a(length, data);
 	      else if(messageType == "0001a")
@@ -1061,11 +1061,11 @@ void spoton_neighbor::slotReadyRead(void)
 	      else if(messageType == "0002")
 		process0002(length, data);
 	      else if(messageType == "0013")
-		process0013(length, data, symmetricKey);
+		process0013(length, data, symmetricKeys);
 	      else if(messageType == "0040a")
-		process0040a(length, data, symmetricKey);
+		process0040a(length, data, symmetricKeys);
 	      else if(messageType == "0040b")
-		process0040b(length, data, symmetricKey);
+		process0040b(length, data, symmetricKeys);
 	      else
 		messageType.clear();
 
@@ -1473,7 +1473,7 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
 }
 
 void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
-				  const QPair<QByteArray, QByteArray> &pair)
+				  const QList<QByteArray> &symmetricKeys)
 {
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
@@ -1501,12 +1501,16 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 
 	  QPair<QByteArray, QByteArray> gemini;
 
-	  if(pair.first.isEmpty() || pair.second.isEmpty())
+	  if(symmetricKeys.value(0).isEmpty() ||
+	     symmetricKeys.value(2).isEmpty())
 	    gemini = spoton_misc::findGeminiInCosmos(list.value(0),
 						     list.value(1),
 						     s_crypt);
 	  else
-	    gemini = pair;
+	    {
+	      gemini.first = symmetricKeys.value(0);
+	      gemini.second = symmetricKeys.value(2);
+	    }
 
 	  if(!gemini.first.isEmpty() && !gemini.second.isEmpty())
 	    {
@@ -2546,7 +2550,7 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
 }
 
 void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
-				  const QPair<QByteArray, QByteArray> &pair)
+				  const QList<QByteArray> &symmetricKeys)
 {
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
@@ -2574,11 +2578,15 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 
 	  QPair<QByteArray, QByteArray> gemini;
 
-	  if(pair.first.isEmpty() || pair.second.isEmpty())
+	  if(symmetricKeys.value(0).isEmpty() ||
+	     symmetricKeys.value(2).isEmpty())
 	    gemini = spoton_misc::findGeminiInCosmos
 	      (list.value(0), list.value(1), s_crypt);
 	  else
-	    gemini = pair;
+	    {
+	      gemini.first = symmetricKeys.value(0);
+	      gemini.second = symmetricKeys.value(2);
+	    }
 
 	  if(!gemini.first.isEmpty() && !gemini.second.isEmpty())
 	    {
@@ -2968,7 +2976,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 }
 
 void spoton_neighbor::process0040a(int length, const QByteArray &dataIn,
-				   const QPair<QByteArray, QByteArray> &pair)
+				   const QList<QByteArray> &symmetricKeys)
 {
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
@@ -2997,7 +3005,7 @@ void spoton_neighbor::process0040a(int length, const QByteArray &dataIn,
 	  return;
 	}
       else
-	emit receivedBuzzMessage(list, pair);
+	emit receivedBuzzMessage(list, symmetricKeys);
     }
   else
     spoton_misc::logError
@@ -3010,7 +3018,7 @@ void spoton_neighbor::process0040a(int length, const QByteArray &dataIn,
 }
 
 void spoton_neighbor::process0040b(int length, const QByteArray &dataIn,
-				   const QPair<QByteArray, QByteArray> &pair)
+				   const QList<QByteArray> &symmetricKeys)
 {
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
@@ -3039,7 +3047,7 @@ void spoton_neighbor::process0040b(int length, const QByteArray &dataIn,
 	  return;
 	}
       else
-	emit receivedBuzzMessage(list, pair);
+	emit receivedBuzzMessage(list, symmetricKeys);
     }
   else
     spoton_misc::logError
@@ -4159,7 +4167,7 @@ void spoton_neighbor::resetKeepAlive(void)
 
 QString spoton_neighbor::findMessageType
 (const QByteArray &data,
- QPair<QByteArray, QByteArray> &symmetricKeys)
+ QList<QByteArray> &symmetricKeys)
 {
   QList<QByteArray> list(QByteArray::fromBase64(data).split('\n'));
   QString type("");
@@ -4167,8 +4175,12 @@ QString spoton_neighbor::findMessageType
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   /*
-  ** symmetricKeys.first is a symmetric key.
-  ** symmetricKeys.second may be a Gemini H. Key or a Buzz Cipher Type.
+  ** list[0]: data
+  ** list[1]: hash
+  ** symmetricKeys[0]: E. Key
+  ** symmetricKeys[1]: E. Type
+  ** symmetricKeys[2]: H. Key
+  ** symmetricKeys[3]: H. Type
   */
 
   /*
@@ -4179,16 +4191,17 @@ QString spoton_neighbor::findMessageType
   if(interfaces > 0)
     {
       symmetricKeys = spoton_kernel::findBuzzKey
-	(QByteArray::fromBase64(list.value(0)));
+	(QByteArray::fromBase64(list.value(0)),
+	 QByteArray::fromBase64(list.value(1)));
 
-      if(!symmetricKeys.first.isEmpty() && !symmetricKeys.second.isEmpty())
+      if(!symmetricKeys.isEmpty())
 	{
 	  QByteArray data;
 	  bool ok = true;
-	  spoton_crypt crypt(symmetricKeys.second,
+	  spoton_crypt crypt(symmetricKeys.value(1),
 			     QString("sha512"),
 			     QByteArray(),
-			     symmetricKeys.first,
+			     symmetricKeys.value(0),
 			     0,
 			     0,
 			     QString(""));
@@ -4201,16 +4214,10 @@ QString spoton_neighbor::findMessageType
 	  if(!type.isEmpty())
 	    goto done_label;
 	  else
-	    {
-	      symmetricKeys.first.clear();
-	      symmetricKeys.second.clear();
-	    }
+	    symmetricKeys.clear();
 	}
       else
-	{
-	  symmetricKeys.first.clear();
-	  symmetricKeys.second.clear();
-	}
+	symmetricKeys.clear();
     }
 
   /*
@@ -4247,20 +4254,17 @@ QString spoton_neighbor::findMessageType
 
 	  if(!type.isEmpty())
 	    {
-	      symmetricKeys = gemini;
+	      symmetricKeys.append(gemini.first);
+	      symmetricKeys.append("aes256");
+	      symmetricKeys.append(gemini.second);
+	      symmetricKeys.append("sha512");
 	      goto done_label;
 	    }
 	  else
-	    {
-	      symmetricKeys.first.clear();
-	      symmetricKeys.second.clear();
-	    }
+	    symmetricKeys.clear();
 	}
       else
-	{
-	  symmetricKeys.first.clear();
-	  symmetricKeys.second.clear();
-	}
+	symmetricKeys.clear();
     }
 
   /*

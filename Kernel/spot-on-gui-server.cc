@@ -223,8 +223,8 @@ void spoton_gui_server::slotReadyRead(void)
   if(m_guiSocketData[socket->socketDescriptor()].endsWith('\n'))
     {
       QByteArray data(m_guiSocketData[socket->socketDescriptor()]);
-      QList<QByteArray> list(data.mid(0, data.lastIndexOf('\n')).
-			     split('\n'));
+      QList<QByteArray> messages(data.mid(0, data.lastIndexOf('\n')).
+				 split('\n'));
 
       data.remove(0, data.lastIndexOf('\n'));
 
@@ -233,9 +233,9 @@ void spoton_gui_server::slotReadyRead(void)
       else
 	m_guiSocketData[socket->socketDescriptor()] = data;
 
-      while(!list.isEmpty())
+      while(!messages.isEmpty())
 	{
-	  QByteArray message(list.takeFirst());
+	  QByteArray message(messages.takeFirst());
 
 	  if(message.startsWith("addbuzz_"))
 	    {
@@ -243,10 +243,12 @@ void spoton_gui_server::slotReadyRead(void)
 
 	      QList<QByteArray> list(message.split('_'));
 
-	      if(list.size() == 2)
-		spoton_kernel::addBuzzKey
-		  (QByteArray::fromBase64(list.value(0)),
-		   QByteArray::fromBase64(list.value(1)));
+	      if(list.size() == 4)
+                spoton_kernel::addBuzzKey
+                 (QByteArray::fromBase64(list.value(0)),
+                  QByteArray::fromBase64(list.value(1)),
+		  QByteArray::fromBase64(list.value(2)),
+		  QByteArray::fromBase64(list.value(3)));
 	    }
 	  else if(message.startsWith("befriendparticipant_"))
 	    {
@@ -271,7 +273,7 @@ void spoton_gui_server::slotReadyRead(void)
 
 	      QList<QByteArray> list(message.split('_'));
 
-	      if(list.size() == 4)
+	      if(list.size() == 6)
 		emit buzzReceivedFromUI
 		  (QByteArray::fromBase64(list.value(0)),
 		   QByteArray::fromBase64(list.value(1)),
@@ -279,8 +281,10 @@ void spoton_gui_server::slotReadyRead(void)
 		   QByteArray::fromBase64(list.value(3)),
 		   QByteArray(),
 		   QByteArray(),
-		   "0040a");
-	      else if(list.size() == 6)
+		   "0040a",
+		   QByteArray::fromBase64(list.value(4)),
+		   QByteArray::fromBase64(list.value(5)));
+	      else if(list.size() == 8)
 		emit buzzReceivedFromUI
 		  (QByteArray::fromBase64(list.value(0)),
 		   QByteArray::fromBase64(list.value(1)),
@@ -288,7 +292,9 @@ void spoton_gui_server::slotReadyRead(void)
 		   QByteArray::fromBase64(list.value(3)),
 		   QByteArray::fromBase64(list.value(4)),
 		   QByteArray::fromBase64(list.value(5)),
-		   "0040b");
+		   "0040b",
+		   QByteArray::fromBase64(list.value(6)),
+		   QByteArray::fromBase64(list.value(7)));
 	    }
 	  else if(message.startsWith("call_participant_"))
 	    {
@@ -447,26 +453,28 @@ void spoton_gui_server::slotTimeout(void)
 }
 
 void spoton_gui_server::slotReceivedBuzzMessage
-(const QList<QByteArray> &list, const QPair<QByteArray, QByteArray> &pair)
+(const QList<QByteArray> &list, const QList<QByteArray> &keys)
 {
-  QPair<QByteArray, QByteArray> p(pair);
+  QList<QByteArray> k(keys);
 
-  if(p.first.isEmpty() || p.second.isEmpty())
-    p = spoton_kernel::findBuzzKey(list.value(0));
+  /*
+  ** keys[0]: E. Key
+  ** keys[1]: E. Type
+  ** keys[2]: H. Key
+  ** keys[3]: H. Type
+  ** list[0]: data
+  ** list[1]: hash
+  */
+
+  if(keys.value(0).isEmpty() || keys.value(1).isEmpty() ||
+     keys.value(2).isEmpty() || keys.value(3).isEmpty())
+    k = spoton_kernel::findBuzzKey(list.value(0), list.value(1));
 
   QByteArray computedMessageCode;
-  QByteArray data;
-  QByteArray message;
   bool ok = true;
-  spoton_crypt crypt(p.second,
-		     QString("sha512"),
-		     QByteArray(),
-		     p.first,
-		     0,
-		     0,
-		     QString(""));
 
-  computedMessageCode = crypt.keyedHash(list.value(0), &ok);
+  computedMessageCode = spoton_crypt::keyedHash
+    (list.value(0), k.value(2), k.value(3), &ok);
 
   if(!ok)
     return;
@@ -479,6 +487,16 @@ void spoton_gui_server::slotReceivedBuzzMessage
       return;
     }
 
+  QByteArray data;
+  QByteArray message;
+  spoton_crypt crypt(k.value(1),
+		     QString("sha512"),
+		     QByteArray(),
+		     k.value(0),
+		     0,
+		     0,
+		     QString(""));
+
   data = crypt.decrypted(list.value(0), &ok);
 
   if(!ok)
@@ -487,7 +505,7 @@ void spoton_gui_server::slotReceivedBuzzMessage
   message.append("buzz_");
   message.append(data.toBase64()); // Message
   message.append("_");
-  message.append(pair.first.toBase64()); // Key
+  message.append(k.value(0).toBase64()); // Key
   message.append("_");
 
   QByteArray hash;

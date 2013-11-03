@@ -75,8 +75,8 @@ extern "C"
 #include "spot-on-neighbor.h"
 #include "spot-on-shared-reader.h"
 
-QHash<QByteArray, QByteArray> spoton_kernel::s_buzzKeys;
 QHash<QByteArray, QDateTime> spoton_kernel::s_messagingCache;
+QHash<QByteArray, QList<QByteArray> > spoton_kernel::s_buzzKeys;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
 QMutex spoton_kernel::s_buzzKeysMutex;
@@ -362,7 +362,9 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 				    const QByteArray &,
 				    const QByteArray &,
 				    const QByteArray &,
-				    const QString &)),
+				    const QString &,
+				    const QByteArray &,
+				    const QByteArray &)),
 	  this,
 	  SLOT(slotBuzzReceivedFromUI(const QByteArray &,
 				      const QByteArray &,
@@ -370,7 +372,9 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 				      const QByteArray &,
 				      const QByteArray &,
 				      const QByteArray &,
-				      const QString &)));
+				      const QString &,
+				      const QByteArray &,
+				      const QByteArray &)));
   connect(m_guiServer,
 	  SIGNAL(callParticipant(const qint64)),
 	  this,
@@ -1343,10 +1347,10 @@ void spoton_kernel::connectSignalsToNeighbor
   connect
     (neighbor,
      SIGNAL(receivedBuzzMessage(const QList<QByteArray> &,
-				const QPair<QByteArray, QByteArray> &)),
+				const QList<QByteArray> &)),
      m_guiServer,
      SLOT(slotReceivedBuzzMessage(const QList<QByteArray> &,
-				  const QPair<QByteArray, QByteArray> &)));
+				  const QList<QByteArray> &)));
   connect(neighbor,
 	  SIGNAL(receivedChatMessage(const QByteArray &)),
 	  m_guiServer,
@@ -2258,7 +2262,9 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &key,
 					   const QByteArray &id,
 					   const QByteArray &message,
 					   const QByteArray &sendMethod,
-					   const QString &messageType)
+					   const QString &messageType,
+					   const QByteArray &hashKey,
+					   const QByteArray &hashType)
 {
   QByteArray data;
   QByteArray messageCode;
@@ -2292,7 +2298,7 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &key,
   data = crypt.encrypted(data, &ok);
 
   if(ok)
-    messageCode = crypt.keyedHash(data, &ok);
+    messageCode = spoton_crypt::keyedHash(data, hashKey, hashType, &ok);
 
   if(ok)
     data = data.toBase64() + "\n" + messageCode.toBase64();
@@ -2428,13 +2434,19 @@ void spoton_kernel::slotDisconnectNeighbors(const qint64 listenerOid)
 }
 
 void spoton_kernel::addBuzzKey(const QByteArray &key,
-			       const QByteArray &channelType)
+			       const QByteArray &channelType,
+			       const QByteArray &hashKey,
+			       const QByteArray &hashType)
 {
-  if(key.isEmpty() || channelType.isEmpty())
+  if(key.isEmpty() || channelType.isEmpty() ||
+     hashKey.isEmpty() || hashType.isEmpty())
     return;
 
+  QList<QByteArray> list;
+
+  list << key << channelType << hashKey << hashType;
   s_buzzKeysMutex.lock();
-  s_buzzKeys[key] = channelType;
+  s_buzzKeys[key] = list;
   s_buzzKeysMutex.unlock();
 }
 
@@ -2445,45 +2457,40 @@ void spoton_kernel::removeBuzzKey(const QByteArray &key)
   s_buzzKeysMutex.unlock();
 }
 
-QPair<QByteArray, QByteArray> spoton_kernel::findBuzzKey
-(const QByteArray &data)
+QList<QByteArray> spoton_kernel::findBuzzKey
+(const QByteArray &data, const QByteArray &hash)
 {
   s_buzzKeysMutex.lock();
 
   if(s_buzzKeys.isEmpty())
     {
       s_buzzKeysMutex.unlock();
-      return QPair<QByteArray, QByteArray> ();
+      return QList<QByteArray> ();
     }
 
-  QHashIterator<QByteArray, QByteArray> it(s_buzzKeys);
-  QPair<QByteArray, QByteArray> pair;
+  QHashIterator<QByteArray, QList<QByteArray> > it(s_buzzKeys);
+  QList<QByteArray> list;
 
   while(it.hasNext())
     {
       it.next();
 
+      QByteArray computedMessageCode;
       bool ok = true;
-      spoton_crypt crypt(it.value(),
-			 QString("sha512"),
-			 QByteArray(),
-			 it.key(),
-			 0,
-			 0,
-			 QString(""));
 
-      crypt.decrypted(data, &ok);
+      computedMessageCode = spoton_crypt::keyedHash
+	(data, it.value().value(2), it.value().value(3), &ok);
 
       if(ok)
-	{
-	  pair.first = it.key();
-	  pair.second = it.value();
-	  break;
-	}
+	if(computedMessageCode == hash)
+	  {
+	    list = it.value();
+	    break;
+	  }
     }
 
   s_buzzKeysMutex.unlock();
-  return pair;
+  return list;
 }
 
 void spoton_kernel::clearBuzzKeysContainer(void)

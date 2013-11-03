@@ -93,7 +93,7 @@ class spoton_gui_server: public spoton_gui_server_tcp_server
   void slotNewEMailArrived(void);
   void slotReadyRead(void);
   void slotReceivedBuzzMessage(const QList<QByteArray> &list,
-			       const QPair<QByteArray, QByteArray> &pair);
+			       const QList<QByteArray> &keys);
   void slotReceivedChatMessage(const QByteArray &message);
   void slotTimeout(void);
 
@@ -104,7 +104,9 @@ class spoton_gui_server: public spoton_gui_server_tcp_server
 			  const QByteArray &id,
 			  const QByteArray &message,
 			  const QByteArray &sendMethod,
-			  const QString &messageType);
+			  const QString &messageType,
+			  const QByteArray &hashKey,
+			  const QByteArray &hashType);
   void callParticipant(const qint64 oid);
   void detachNeighbors(const qint64 oid);
   void disconnectNeighbors(const qint64 oid);

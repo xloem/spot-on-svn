@@ -60,14 +60,16 @@ class spoton_kernel: public QObject
 						  ** url
 						  */
   
-  static QPair<QByteArray, QByteArray> findBuzzKey
-    (const QByteArray &data);
+  static QList<QByteArray> findBuzzKey(const QByteArray &data,
+				       const QByteArray &hash);
   static QVariant setting(const QString &name,
 			  const QVariant &defaultValue);
   static bool messagingCacheContains(const QByteArray &data);
   static int interfaces(void);
   static void addBuzzKey(const QByteArray &key,
-			 const QByteArray &channelType);
+			 const QByteArray &channelType,
+			 const QByteArray &hashKey,
+			 const QByteArray &hashType);
   static void clearBuzzKeysContainer(void);
   static void messagingCacheAdd(const QByteArray &data);
   static void removeBuzzKey(const QByteArray &data);
@@ -88,8 +90,8 @@ class spoton_kernel: public QObject
   spoton_gui_server *m_guiServer;
   spoton_mailer *m_mailer;
   spoton_shared_reader *m_sharedReader;
-  static QHash<QByteArray, QByteArray> s_buzzKeys;
   static QHash<QByteArray, QDateTime> s_messagingCache;
+  static QHash<QByteArray, QList<QByteArray> > s_buzzKeys;
   static QMutex s_messagingCacheMutex;
   bool initializeSecurityContainers(const QString &passphrase);
   void checkForTermination(void);
@@ -109,7 +111,9 @@ class spoton_kernel: public QObject
 			      const QByteArray &id,
 			      const QByteArray &message,
 			      const QByteArray &sendMethod,
-			      const QString &messageType);
+			      const QString &messageType,
+			      const QByteArray &hashKey,
+			      const QByteArray &hashType);
   void slotCallParticipant(const qint64 oid);
   void slotDetachNeighbors(const qint64 listenerOid);
   void slotDisconnectNeighbors(const qint64 listenerOid);
