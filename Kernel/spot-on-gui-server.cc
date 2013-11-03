@@ -345,7 +345,7 @@ void spoton_gui_server::slotReadyRead(void)
 			   QByteArray(),
 			   QByteArray::fromBase64(message),
 			   spoton_kernel::setting("gui/saltLength",
-						  256).toInt(),
+						  512).toInt(),
 			   spoton_kernel::setting("gui/iterationCount",
 						  10000).toInt(),
 			   names.at(i));

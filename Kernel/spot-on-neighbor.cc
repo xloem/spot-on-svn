@@ -4450,7 +4450,7 @@ void spoton_neighbor::slotSendAccountInformation(void)
     if(!name.isEmpty() && password.length() >= 16)
       {
 	QByteArray message;
-	QByteArray salt(spoton_crypt::strongRandomBytes(256));
+	QByteArray salt(spoton_crypt::strongRandomBytes(512));
 	QByteArray saltedCredentials
 	  (spoton_crypt::saltedValue("sha512",
 				     name + password,
@@ -4489,7 +4489,7 @@ void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
   QTimer::singleShot(10000, this, SLOT(slotSendUuid(void)));
 
   QByteArray message;
-  QByteArray salt(spoton_crypt::strongRandomBytes(256));
+  QByteArray salt(spoton_crypt::strongRandomBytes(512));
   QByteArray saltedCredentials;
   bool ok = true;
 

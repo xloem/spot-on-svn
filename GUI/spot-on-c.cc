@@ -461,9 +461,9 @@ void spoton::slotBuzzActionsActivated(int index)
 	(spoton_crypt::strongRandomBytes(m_ui.channel->maxLength()).
 	 toBase64());
       m_ui.channelSalt->setText
-	(spoton_crypt::strongRandomBytes(256).toBase64());
+	(spoton_crypt::strongRandomBytes(512).toBase64());
       m_ui.buzzHashKey->setText
-	(spoton_crypt::strongRandomBytes(256).toBase64());
+	(spoton_crypt::strongRandomBytes(512).toBase64());
     }
 
   disconnect(m_ui.buzzActions,

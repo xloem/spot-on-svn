@@ -60,6 +60,7 @@
      they will assume their channel name counterparts.
 27.  Corrected purging of destroyed Buzz data from the kernel.
 28.  Removed UTF-8 conversions for Buzz channel names and Goldbug keys.
+29.  Increased many default buffer and key size values of 256 to 512.
 
 0.06 (10/24/2013)
 

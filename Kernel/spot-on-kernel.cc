@@ -1778,7 +1778,7 @@ void spoton_kernel::slotRetrieveMail(void)
 	      QByteArray data;
 	      QByteArray hashKey;
 	      QByteArray keyInformation;
-	      QByteArray message(spoton_crypt::strongRandomBytes(256));
+	      QByteArray message(spoton_crypt::strongRandomBytes(512));
 	      QByteArray publicKey
 		(query.value(0).toByteArray());
 	      QByteArray signature;
@@ -2175,7 +2175,7 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 			     "sha512").toString().trimmed(),
 		     QByteArray(),
 		     key,
-		     setting("gui/saltLength", 256).toInt(),
+		     setting("gui/saltLength", 512).toInt(),
 		     setting("gui/iterationCount", 10000).toInt(),
 		     list.at(i));
 		  s_crypts.insert(list.at(i), crypt);

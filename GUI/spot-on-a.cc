@@ -953,7 +953,6 @@ spoton::spoton(void):QMainWindow()
      toString());
   m_ui.etpEncryptionKey->setMaxLength
     (spoton_crypt::cipherKeyLength("aes256"));
-  m_ui.etpMacKey->setMaxLength(256);
   m_ui.goldbug->setMaxLength
     (spoton_crypt::cipherKeyLength("aes256"));
   m_ui.channelType->clear();
@@ -1085,7 +1084,7 @@ spoton::spoton(void):QMainWindow()
   if(m_ui.keySize->findText(str) > -1)
     m_ui.keySize->setCurrentIndex(m_ui.keySize->findText(str));
 
-  m_ui.saltLength->setValue(m_settings.value("gui/saltLength", 256).toInt());
+  m_ui.saltLength->setValue(m_settings.value("gui/saltLength", 512).toInt());
   m_ui.tab->removeTab(5); // Search
   m_ui.tab->removeTab(7); // URLs
 

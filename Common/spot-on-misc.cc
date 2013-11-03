@@ -1501,12 +1501,12 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 16;
 
   settings["gui/maxMosaics"] = integer;
-  integer = qAbs(settings.value("gui/saltLength", 256).toInt(&ok));
+  integer = qAbs(settings.value("gui/saltLength", 512).toInt(&ok));
 
   if(!ok)
-    integer = 256;
-  else if(integer < 256)
-    integer = 256;
+    integer = 512;
+  else if(integer < 512)
+    integer = 512;
 
   settings["gui/saltLength"] = integer;
   integer = qAbs(settings.value("gui/gcryctl_init_secmem", 65536).toInt(&ok));
