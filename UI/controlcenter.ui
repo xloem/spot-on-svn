@@ -336,8 +336,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>583</width>
-                <height>421</height>
+                <width>1182</width>
+                <height>541</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1825,8 +1825,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>214</width>
-                 <height>415</height>
+                 <width>278</width>
+                 <height>521</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3073,8 +3073,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1063</width>
-             <height>452</height>
+             <width>1172</width>
+             <height>531</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3761,8 +3761,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>590</width>
-             <height>343</height>
+             <width>1172</width>
+             <height>531</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4177,7 +4177,7 @@
                      </column>
                      <column>
                       <property name="text">
-                       <string>Size</string>
+                       <string>Total Size</string>
                       </property>
                      </column>
                      <column>
@@ -4255,12 +4255,12 @@
                       </column>
                       <column>
                        <property name="text">
-                        <string>Burst Size</string>
+                        <string>Pulse Size</string>
                        </property>
                       </column>
                       <column>
                        <property name="text">
-                        <string>Size</string>
+                        <string>Total Size</string>
                        </property>
                       </column>
                       <column>
