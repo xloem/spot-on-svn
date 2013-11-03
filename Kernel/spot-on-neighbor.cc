@@ -4175,8 +4175,8 @@ QString spoton_neighbor::findMessageType
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   /*
-  ** list[0]: data
-  ** list[1]: hash
+  ** list[0]: Data
+  ** list[1]: Hash
   ** symmetricKeys[0]: E. Key
   ** symmetricKeys[1]: E. Type
   ** symmetricKeys[2]: H. Key

@@ -462,8 +462,8 @@ void spoton_gui_server::slotReceivedBuzzMessage
   ** keys[1]: E. Type
   ** keys[2]: H. Key
   ** keys[3]: H. Type
-  ** list[0]: data
-  ** list[1]: hash
+  ** list[0]: Data
+  ** list[1]: Hash
   */
 
   if(keys.value(0).isEmpty() || keys.value(1).isEmpty() ||
