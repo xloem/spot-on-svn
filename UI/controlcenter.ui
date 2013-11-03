@@ -67,7 +67,7 @@
           <item>
            <widget class="QLabel" name="label_49">
             <property name="text">
-             <string>&amp;Favorites</string>
+             <string>&amp;Bookmarks</string>
             </property>
             <property name="buddy">
              <cstring>favorites</cstring>
@@ -336,8 +336,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1180</width>
-                <height>558</height>
+                <width>583</width>
+                <height>421</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1825,8 +1825,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>317</width>
-                 <height>538</height>
+                 <width>214</width>
+                 <height>415</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3073,8 +3073,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1170</width>
-             <height>548</height>
+             <width>1063</width>
+             <height>452</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3761,8 +3761,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1170</width>
-             <height>548</height>
+             <width>590</width>
+             <height>343</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -3874,6 +3874,11 @@
                        <property name="minimumContentsLength">
                         <number>25</number>
                        </property>
+                       <item>
+                        <property name="text">
+                         <string>Clear</string>
+                        </property>
+                       </item>
                        <item>
                         <property name="text">
                          <string>Generate Key Pair</string>
@@ -5088,7 +5093,7 @@
      <x>0</x>
      <y>0</y>
      <width>1196</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
