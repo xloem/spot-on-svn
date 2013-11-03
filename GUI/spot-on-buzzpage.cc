@@ -159,7 +159,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
   data.append("magnet:?");
   data.append(QString("rn=%1&").arg(m_channel.constData()));
   data.append(QString("xf=%1&").arg(m_iterationCount));
-  data.append(QString("xs=%1&").arg(m_channelSalt.constData()));
+  data.append(QString("xs=%1&").arg(m_channelSalt.toBase64().constData()));
   data.append(QString("ct=%1&").arg(m_channelType.constData()));
   data.append(QString("hk=%1&").arg(m_hashKey.constData()));
   data.append(QString("ht=%1").arg(m_hashType.constData()));

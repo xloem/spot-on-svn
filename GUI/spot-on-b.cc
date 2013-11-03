@@ -2160,7 +2160,7 @@ void spoton::slotSendMail(void)
 	while(!oids.isEmpty())
 	  {
 	    QByteArray goldbug
-	      (m_ui.goldbug->text().trimmed().toUtf8());
+	      (m_ui.goldbug->text().trimmed().toLatin1());
 	    QByteArray publicKeyHash(publicKeyHashes.takeFirst().toLatin1());
 	    QByteArray subject
 	      (m_ui.outgoingSubject->text().trimmed().toUtf8());
@@ -2674,12 +2674,12 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
 
 	goldbug = QInputDialog::getText
 	  (this, tr("Spot-On: Goldbug"), tr("&Goldbug"),
-	   QLineEdit::Password, QString(""), &ok);
+	   QLineEdit::Password, QString(""), &ok).trimmed();
 
 	if(!ok)
 	  return;
 
-	int rc = applyGoldbugToInboxLetter(goldbug.toUtf8(), row);
+	int rc = applyGoldbugToInboxLetter(goldbug.toLatin1(), row);
 
 	if(rc == APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL)
 	  {
@@ -3772,10 +3772,10 @@ void spoton::slotPublishedKeySizeChanged(const QString &text)
 
 void spoton::slotJoinBuzzChannel(void)
 {
-  QByteArray channel(m_ui.channel->text().trimmed().toUtf8());
+  QByteArray channel(m_ui.channel->text().trimmed().toLatin1());
   QByteArray channelSalt;
   QByteArray channelType(m_ui.channelType->currentText().toLatin1());
-  QByteArray hashKey(m_ui.buzzHashKey->text().trimmed().toUtf8());
+  QByteArray hashKey(m_ui.buzzHashKey->text().trimmed().toLatin1());
   QByteArray hashType(m_ui.buzzHashType->currentText().toLatin1());
   QByteArray id;
   QByteArray key;
@@ -3799,12 +3799,9 @@ void spoton::slotJoinBuzzChannel(void)
     }
 
   if(hashKey.isEmpty())
-    {
-      error = tr("Please provide a hash key.");
-      goto done_label;
-    }
+    hashKey = channel;
 
-  channelSalt = m_ui.channelSalt->text().trimmed().toUtf8();
+  channelSalt = m_ui.channelSalt->text().trimmed().toLatin1();
 
   if(channelSalt.isEmpty())
     channelSalt = spoton_crypt::keyedHash(channel + channelType,

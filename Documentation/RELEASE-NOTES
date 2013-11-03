@@ -56,8 +56,10 @@
      attempts to discover the gemini pair via hash computations.
 25.  Removed UTF-8 conversions for Gemini keys.
 26.  Added hash keys and types to Buzz channels. Modified communication
-     protocols as well.
+     protocols as well. Please note that if hash keys are not provided,
+     they will assume their channel name counterparts.
 27.  Corrected purging of destroyed Buzz data from the kernel.
+28.  Removed UTF-8 conversions for Buzz channel names and Goldbug keys.
 
 0.06 (10/24/2013)
 
