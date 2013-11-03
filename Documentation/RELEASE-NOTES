@@ -57,10 +57,10 @@
 25.  Removed UTF-8 conversions for Gemini keys.
 26.  Added hash keys and types to Buzz channels. Modified communication
      protocols as well. Please note that if hash keys are not provided,
-     they will assume their channel name counterparts.
+     they will assume slight variations of their channel keys counterparts.
 27.  Corrected purging of destroyed Buzz data from the kernel.
 28.  Removed UTF-8 conversions for Buzz channel names and Goldbug keys.
-29.  Increased many default buffer and key size values of 256 to 512.
+29.  Increased many default buffer and key size values from 256 to 512.
 
 0.06 (10/24/2013)
 
