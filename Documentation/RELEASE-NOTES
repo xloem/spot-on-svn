@@ -62,6 +62,8 @@
 28.  Removed UTF-8 conversions for Buzz channel names and Goldbug keys.
 29.  Increased many default buffer and key size values from 256 bytes
      to 512 bytes.
+30.  The method spoton_neighbor::slotDisconnected() should destroy the
+     server-side object.
 
 0.06 (10/24/2013)
 

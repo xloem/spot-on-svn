@@ -4005,18 +4005,21 @@ void spoton_neighbor::slotModeChanged(QSslSocket::SslMode mode)
 
 void spoton_neighbor::slotDisconnected(void)
 {
-  int attempts = property("connection-attempts").toInt();
-
-  if(attempts < 5)
+  if(m_isUserDefined)
     {
-      attempts += 1;
-      setProperty("connection-attempts", attempts);
-      spoton_misc::logError
-	(QString("spoton_neighbor::slotDisconnected(): "
-		 "retrying %1 of %2 for %3:%4.").arg(attempts).arg(5).
-	 arg(m_address.toString()).
-	 arg(m_port));
-      return;
+      int attempts = property("connection-attempts").toInt();
+
+      if(attempts < 5)
+	{
+	  attempts += 1;
+	  setProperty("connection-attempts", attempts);
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::slotDisconnected(): "
+		     "retrying %1 of %2 for %3:%4.").arg(attempts).arg(5).
+	     arg(m_address.toString()).
+	     arg(m_port));
+	  return;
+	}
     }
 
   spoton_misc::logError
