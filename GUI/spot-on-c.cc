@@ -36,6 +36,13 @@ void spoton::slotGenerateEtpKeys(int index)
     {
       if(index == 0)
 	{
+	  m_ui.etpCipherType->setCurrentIndex(0);
+	  m_ui.etpEncryptionKey->clear();
+	  m_ui.etpHashType->setCurrentIndex(0);
+	  m_ui.etpMacKey->clear();
+	}
+      else if(index == 1)
+	{
 	  m_ui.etpEncryptionKey->setText
 	    (spoton_crypt::
 	     strongRandomBytes(m_ui.etpEncryptionKey->maxLength()).
@@ -45,12 +52,12 @@ void spoton::slotGenerateEtpKeys(int index)
 	     strongRandomBytes(m_ui.etpMacKey->maxLength()).
 	     toBase64());
 	}
-      else if(index == 1)
+      else if(index == 2)
 	m_ui.etpEncryptionKey->setText
 	  (spoton_crypt::
 	   strongRandomBytes(m_ui.etpEncryptionKey->maxLength()).
 	   toBase64());
-      else if(index == 2)
+      else if(index == 3)
 	m_ui.etpMacKey->setText
 	  (spoton_crypt::
 	   strongRandomBytes(m_ui.etpMacKey->maxLength()).

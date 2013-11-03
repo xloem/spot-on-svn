@@ -3896,6 +3896,10 @@ void spoton::slotJoinBuzzChannel(void)
 	message.append(page->key().toBase64());
 	message.append("_");
 	message.append(page->channelType().toBase64());
+	message.append("_");
+	message.append(page->hashKey().toBase64());
+	message.append("_");
+	message.append(page->hashType().toBase64());
 	message.append("\n");
 
 	if(m_kernelSocket.write(message.constData(), message.length()) !=
@@ -3926,7 +3930,7 @@ void spoton::slotCloseBuzzTab(int index)
 
   if(page)
     {
-      key = page->channel();
+      key = page->key();
       count -= 1;
       page->deleteLater();
     }

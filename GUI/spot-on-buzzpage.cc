@@ -156,7 +156,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 
   QByteArray data;
 
-  data.append("magnet:1?");
+  data.append("magnet:?");
   data.append(QString("rn=%1&").arg(m_channel.constData()));
   data.append(QString("xf=%1&").arg(m_iterationCount));
   data.append(QString("xs=%1&").arg(m_channelSalt.constData()));
@@ -267,6 +267,10 @@ void spoton_buzzpage::slotSendMessage(void)
 		   toBase64());
     message.append("_");
     message.append(sendMethod.toBase64());
+    message.append("_");
+    message.append(m_hashKey.toBase64());
+    message.append("_");
+    message.append(m_hashType.toBase64());
     message.append('\n');
 
     if(m_kernelSocket->write(message.constData(),
@@ -378,6 +382,10 @@ void spoton_buzzpage::slotSendStatus(void)
   message.append(name.toBase64());
   message.append("_");
   message.append(m_id.toBase64());
+  message.append("_");
+  message.append(m_hashKey.toBase64());
+  message.append("_");
+  message.append(m_hashType.toBase64());
   message.append('\n');
 
   if(m_kernelSocket->write(message.constData(),
@@ -576,16 +584,6 @@ void spoton_buzzpage::purgeMessagingCache(void)
   m_messagingCacheMutex.unlock();
 }
 
-QByteArray spoton_buzzpage::channel(void) const
-{
-  return m_channel;
-}
-
-QByteArray spoton_buzzpage::channelType(void) const
-{
-  return m_channelType;
-}
-
 QByteArray spoton_buzzpage::key(void) const
 {
   return m_key;
@@ -716,4 +714,24 @@ void spoton_buzzpage::slotRemove(void)
 			     "logging and try again."));
   else
     emit channelSaved();
+}
+
+QByteArray spoton_buzzpage::channel(void) const
+{
+  return m_channel;
+}
+
+QByteArray spoton_buzzpage::channelType(void) const
+{
+  return m_channelType;
+}
+
+QByteArray spoton_buzzpage::hashKey(void) const
+{
+  return m_hashKey;
+}
+
+QByteArray spoton_buzzpage::hashType(void) const
+{
+  return m_hashType;
 }
