@@ -67,7 +67,15 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 
   m_crypt = crypt;
   m_hashKey = hashKey;
+
+  if(m_hashKey.isEmpty())
+    m_hashKey = "unknown";
+
   m_hashType = hashType;
+
+  if(m_hashType.isEmpty())
+    m_hashType = "sha512";
+
   m_id = id.trimmed();
   m_iterationCount = qMax(static_cast<unsigned long> (10000),
 			  iterationCount);
@@ -101,7 +109,10 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 
 	    salt = m_channel + m_channelType;
 
-	  m_channelSalt = salt;
+	  m_channelSalt = salt.toBase64(); /*
+					   ** We may need to display
+					   ** the salt to the user.
+					   */
 	}
 
       if(gcry_kdf_derive(static_cast<const void *> (m_channel.constData()),
@@ -159,7 +170,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
   data.append("magnet:?");
   data.append(QString("rn=%1&").arg(m_channel.constData()));
   data.append(QString("xf=%1&").arg(m_iterationCount));
-  data.append(QString("xs=%1&").arg(m_channelSalt.toBase64().constData()));
+  data.append(QString("xs=%1&").arg(m_channelSalt.constData()));
   data.append(QString("ct=%1&").arg(m_channelType.constData()));
   data.append(QString("hk=%1&").arg(m_hashKey.constData()));
   data.append(QString("ht=%1").arg(m_hashType.constData()));

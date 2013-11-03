@@ -3798,9 +3798,6 @@ void spoton::slotJoinBuzzChannel(void)
       goto done_label;
     }
 
-  if(hashKey.isEmpty())
-    hashKey = channel;
-
   channelSalt = m_ui.channelSalt->text().trimmed().toLatin1();
 
   if(channelSalt.isEmpty())
@@ -3834,6 +3831,9 @@ void spoton::slotJoinBuzzChannel(void)
 
   if(found)
     goto done_label;
+
+  if(hashKey.isEmpty())
+    hashKey = key.toBase64();
 
   if(m_buzzIds.contains(key))
     id = m_buzzIds[key];
