@@ -1551,6 +1551,11 @@ void spoton::slotAddListener(void)
 
 	    if(ok)
 	      ok = query.exec();
+
+	    if(query.lastError().isValid())
+	      error = query.lastError().text();
+	    else
+	      error.clear();
 	  }
       }
     else
@@ -1565,11 +1570,17 @@ void spoton::slotAddListener(void)
 
   if(ok)
     m_ui.listenerIP->selectAll();
-  else
+  else if(error.isEmpty())
     QMessageBox::critical(this, tr("Spot-On: Error"),
 			  tr("Unable to add the specified listener. "
 			     "Please enable logging via the Log Viewer "
 			     "and try again."));
+  else
+    QMessageBox::critical(this, tr("Spot-On: Error"),
+			  tr("An error (%1) occurred while attempting "
+			     "to add the specified listener. "
+			     "Please enable logging via the Log Viewer "
+			     "and try again.").arg(error));
 }
 
 void spoton::slotAddNeighbor(void)
@@ -1586,6 +1597,7 @@ void spoton::slotAddNeighbor(void)
   spoton_misc::prepareDatabases();
 
   QString connectionName("");
+  QString error("");
   bool ok = true;
 
   {
@@ -1845,6 +1857,9 @@ void spoton::slotAddNeighbor(void)
 
 	if(ok)
 	  ok = query.exec();
+
+	if(query.lastError().isValid())
+	  error = query.lastError().text();
       }
 
     db.close();
@@ -1854,11 +1869,17 @@ void spoton::slotAddNeighbor(void)
 
   if(ok)
     m_ui.neighborIP->selectAll();
-  else
+  else if(error.isEmpty())
     QMessageBox::critical(this, tr("Spot-On: Error"),
 			  tr("Unable to add the specified neighbor. "
 			     "Please enable logging via the Log Viewer "
 			     "and try again."));
+  else
+    QMessageBox::critical(this, tr("Spot-On: Error"),
+			  tr("An error (%1) occurred while attempting "
+			     "to add the specified neighbor. "
+			     "Please enable logging via the Log Viewer "
+			     "and try again.").arg(error));
 }
 
 void spoton::slotHideOfflineParticipants(bool state)
