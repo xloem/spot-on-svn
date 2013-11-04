@@ -503,3 +503,27 @@ void spoton::slotAcceptUrlKeys(bool state)
 
   settings.setValue("gui/acceptUrlKeys", state);
 }
+
+void spoton::slotAutoRetrieveEmail(bool state)
+{
+  m_settings["gui/automaticallyRetrieveEmail"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/automaticallyRetrieveEmail", state);
+
+  if(state)
+    m_emailRetrievalTimer.start();
+  else
+    m_emailRetrievalTimer.stop();
+}
+
+void spoton::slotMailRetrievalIntervalChanged(int value)
+{
+  m_settings["gui/emailRetrievalInterval"] = value;
+
+  QSettings settings;
+
+  settings.setValue("gui/emailRetrievalInterval", value);
+  m_emailRetrievalTimer.setInterval(60 * 1000 * value);
+}

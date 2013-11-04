@@ -3106,8 +3106,9 @@ void spoton::slotRetrieveMail(void)
   else
     error = tr("Not connected to the kernel.");
 
-  if(!error.isEmpty())
-    QMessageBox::critical(this, tr("Spot-On: Error"), error);
+  if(m_ui.retrieveMail == sender())
+    if(!error.isEmpty())
+      QMessageBox::critical(this, tr("Spot-On: Error"), error);
 }
 
 void spoton::slotKernelStatus(void)

@@ -508,6 +508,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(valueChanged(int)),
 	  this,
 	  SLOT(slotMaxMosaicSize(int)));
+  connect(m_ui.emailRetrievalInterval,
+	  SIGNAL(valueChanged(int)),
+	  this,
+	  SLOT(slotMailRetrievalIntervalChanged(int)));
   connect(m_ui.reply,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -660,6 +664,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.generate,
 	  SLOT(setEnabled(bool)));
+  connect(m_ui.autoEmailRetrieve,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotAutoRetrieveEmail(bool)));
   connect(m_ui.generate,
 	  SIGNAL(activated(int)),
 	  this,
@@ -700,6 +708,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotPopulateParticipants(void)));
+  connect(&m_emailRetrievalTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotRetrieveMail(void)));
   connect(&m_kernelSocket,
 	  SIGNAL(connected(void)),
 	  this,
@@ -762,6 +774,8 @@ spoton::spoton(void):QMainWindow()
   m_messagingCachePurgeTimer.start(120000);
   m_chatInactivityTimer.start(120000);
   m_tableTimer.setInterval(2500);
+  m_emailRetrievalTimer.setInterval
+    (m_settings.value("gui/emailRetrievalInterval", 5 * 60 * 1000).toInt());
   m_ui.ipv4Listener->setChecked(true);
   m_ui.listenerIP->setInputMask("000.000.000.000; ");
   m_ui.listenerScopeId->setEnabled(false);
@@ -969,6 +983,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.etpMaxMosaics->setValue(m_settings.value("gui/maxMosaics", 16).toInt());
   m_ui.etpMaxMosaicSize->setValue(m_settings.value("gui/maxMosaicSize",
 						   512).toInt());
+  m_ui.emailRetrievalInterval->setValue
+    (m_settings.value("gui/emailRetrievalInterval", 5).toInt());
 
   QString statusControl
     (m_settings.
@@ -1028,6 +1044,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/coAcceptSignedMessagesOnly", true).toBool());
   m_ui.receivers->setChecked(m_settings.value("gui/etpReceivers",
 					      false).toBool());
+  m_ui.autoEmailRetrieve->setChecked
+    (m_settings.value("gui/automaticallyRetrieveEmail", false).toBool());
 
   /*
   ** Please don't translate n/a.

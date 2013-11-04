@@ -134,6 +134,7 @@ class spoton: public QMainWindow
   QSslSocket m_kernelSocket;
   QTimer m_buzzStatusTimer;
   QTimer m_chatInactivityTimer;
+  QTimer m_emailRetrievalTimer;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_generalTimer;
   QTimer m_messagingCachePurgeTimer;
@@ -200,6 +201,7 @@ class spoton: public QMainWindow
   void slotAddNeighbor(void);
   void slotAuthenticate(void);
   void slotAuthenticationRequestButtonClicked(void);
+  void slotAutoRetrieveEmail(bool state);
   void slotBlockNeighbor(void);
   void slotBuzzActionsActivated(int index);
   void slotBuzzChanged(void);
@@ -271,6 +273,7 @@ class spoton: public QMainWindow
   void slotListenerMaximumChanged(int value);
   void slotListenerSelected(void);
   void slotListenerUseAccounts(int state);
+  void slotMailRetrievalIntervalChanged(int value);
   void slotMailSelected(QTableWidgetItem *item);
   void slotMailTabChanged(int index);
   void slotMaxMosaicSize(int value);
