@@ -1554,12 +1554,15 @@ void spoton::slotAddListener(void)
 
 	    if(query.lastError().isValid())
 	      error = query.lastError().text();
-	    else
-	      error.clear();
 	  }
       }
     else
-      ok = false;
+      {
+	ok = false;
+
+	if(db.lastError().isValid())
+	  error = db.lastError().text();
+      }
 
     db.close();
   }
@@ -1860,6 +1863,13 @@ void spoton::slotAddNeighbor(void)
 
 	if(query.lastError().isValid())
 	  error = query.lastError().text();
+      }
+    else
+      {
+	ok = false;
+
+	if(db.lastError().isValid())
+	  error = db.lastError().text();
       }
 
     db.close();
