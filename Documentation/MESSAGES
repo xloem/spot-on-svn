@@ -4,7 +4,7 @@ Echo Chat
 Echoed? Yes
 
 Groups: 2
-Symmetric Key (Gemini)
+Symmetric Key (Gemini Encryption Key)
 {
 0 - 0000 (Base-64)
 EOL
@@ -12,7 +12,7 @@ EOL
 }
 EOL
 {
-0 - Keyed (Gemini MAC) Sha-512 Message Code (Base-64)
+0 - Keyed (Gemini Hash Key) Sha-512 Message Code (Base-64)
 }
 
 Groups: 3
@@ -22,7 +22,7 @@ Public Key
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL
-2 - MAC Symmetric Key (Base-64)
+2 - Hash Symmetric Key (Base-64)
 EOL
 3 - Symmetric Key Algorithm (Base-64)
 }
@@ -52,7 +52,7 @@ Public Key
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL
-2 - MAC Symmetric Key (Base-64)
+2 - Hash Symmetric Key (Base-64)
 EOL
 3 - Symmetric Key Algorithm (Base-64)
 }
@@ -61,9 +61,9 @@ Symmetric Key
 {
 0 - Sender's Sha-512 Hash (Base-64)
 EOL
-1 - Gemini (Base-64)
+1 - Gemini Encryption Key (Base-64)
 EOL
-2 - Gemini MAC (Base-64)
+2 - Gemini Hash Key (Base-64)
 EOL
 3 - Signature (Base-64)
 }
@@ -82,7 +82,7 @@ Public Key
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL
-2 - MAC Symmetric Key (Base-64)
+2 - Hash Symmetric Key (Base-64)
 EOL
 3 - Symmetric Key Algorithm (Base64)
 }
@@ -102,7 +102,7 @@ Public Key
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL
-2 - MAC Symmetric Key (Base-64)
+2 - Hash Symmetric Key (Base-64)
 EOL
 3 - Symmetric Key Algorithm (Base-64)
 }
@@ -133,7 +133,7 @@ Public Key
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL
-2 - MAC Symmetric Key (Base-64)
+2 - Hash Symmetric Key (Base-64)
 EOL
 3 - Symmetric Key Algorithm (Base-64)
 }
@@ -167,7 +167,7 @@ Public Key
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL
-2 - MAC Symmetric Key (Base-64)
+2 - Hash Symmetric Key (Base-64)
 EOL
 3 - Symmetric Key Algorithm (Base-64)
 }
@@ -205,7 +205,7 @@ Status
 Echoed? Yes
 
 Groups: 2
-Symmetric Key (Gemini)
+Symmetric Key (Gemini Encryption Key)
 {
 0 - 0013 (Base-64)
 EOL
@@ -213,7 +213,7 @@ EOL
 }
 EOL
 {
-0 - Keyed (Gemini MAC) Sha-512 Message Code (Base-64)
+0 - Keyed (Gemini Hash Key) Sha-512 Message Code (Base-64)
 }
 
 Groups: 3
@@ -223,7 +223,7 @@ Public Key
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL
-2 - MAC Symmetric Key (Base-64)
+2 - Hash Symmetric Key (Base-64)
 EOL
 3 - Symmetric Key Algorithm (Base-64)
 }
