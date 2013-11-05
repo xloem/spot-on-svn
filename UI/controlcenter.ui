@@ -586,12 +586,12 @@
                        </column>
                        <column>
                         <property name="text">
-                         <string>Gemini Encryption Key</string>
+                         <string>Gemini AES-256 Encryption Key</string>
                         </property>
                        </column>
                        <column>
                         <property name="text">
-                         <string>Gemini Hash Key</string>
+                         <string>Gemini SHA-512 Hash Key</string>
                         </property>
                        </column>
                       </widget>
@@ -1395,7 +1395,7 @@
               </column>
               <column>
                <property name="text">
-                <string>Recipient Hash</string>
+                <string>Recipient SHA-512 Hash</string>
                </property>
               </column>
              </widget>
@@ -2391,7 +2391,7 @@
                 </column>
                 <column>
                  <property name="text">
-                  <string>Certificate Digest</string>
+                  <string>Certificate SHA-512 Hash</string>
                  </property>
                 </column>
                 <column>
@@ -4234,7 +4234,7 @@
                      </column>
                      <column>
                       <property name="text">
-                       <string>Hash</string>
+                       <string>SHA-512 Hash</string>
                       </property>
                      </column>
                      <column>
@@ -4327,7 +4327,7 @@
                       </column>
                       <column>
                        <property name="text">
-                        <string>Hash</string>
+                        <string>SHA-512 Hash</string>
                        </property>
                       </column>
                       <column>

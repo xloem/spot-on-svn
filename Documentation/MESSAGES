@@ -12,7 +12,7 @@ EOL
 }
 EOL
 {
-0 - Keyed (Gemini Hash Key) Sha-512 Message Code (Base-64)
+0 - Keyed (Gemini Hash Key) SHA-512 Message Code (Base-64)
 }
 
 Groups: 3
@@ -29,7 +29,7 @@ EOL
 EOL
 Symmetric Key
 {
-0 - Sender's Sha-512 Hash (Base-64)
+0 - Sender's SHA-512 Hash (Base-64)
 EOL
 1 - Name (Base-64)
 EOL
@@ -39,7 +39,7 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64)
+0 - Keyed SHA-512 Message Code (Base-64)
 }
 
 Echo Call
@@ -59,7 +59,7 @@ EOL
 EOL
 Symmetric Key
 {
-0 - Sender's Sha-512 Hash (Base-64)
+0 - Sender's SHA-512 Hash (Base-64)
 EOL
 1 - Gemini Encryption Key (Base-64)
 EOL
@@ -69,7 +69,7 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64)
+0 - Keyed SHA-512 Message Code (Base-64)
 }
 
 Echo Mail
@@ -89,9 +89,9 @@ EOL
 EOL
 Symmetric Key
 {
-0 - Sender's Sha-512 Hash (Base-64)
+0 - Sender's SHA-512 Hash (Base-64)
 EOL
-1 - Recipient's Sha-512 Hash (Base-64)
+1 - Recipient's SHA-512 Hash (Base-64)
 EOL
 2 - Signature (Base-64)
 }
@@ -109,7 +109,7 @@ EOL
 EOL
 Symmetric Key
 {
-0 - Sender's Sha-512 Hash (Base-64)
+0 - Sender's SHA-512 Hash (Base-64)
 EOL
 1 - Sender's Name (Base-64) (Optional Gold Bug)
 EOL
@@ -123,7 +123,7 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64)
+0 - Keyed SHA-512 Message Code (Base-64)
 }
 
 Groups: 3
@@ -140,7 +140,7 @@ EOL
 EOL
 Symmetric Key
 {
-0 - Sender's Sha-512 Hash (Base-64)
+0 - Sender's SHA-512 Hash (Base-64)
 EOL
 1 - Sender's Name (Base-64)
 EOL
@@ -154,7 +154,7 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64)
+0 - Keyed SHA-512 Message Code (Base-64)
 }
 
 Retrieve Mail
@@ -174,7 +174,7 @@ EOL
 EOL
 Symmetric Key
 {
-0 - Requester's Sha-512 Hash (Base-64)
+0 - Requester's SHA-512 Hash (Base-64)
 EOL
 1 - Random Message (Base-64)
 EOL
@@ -182,7 +182,7 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64)
+0 - Keyed SHA-512 Message Code (Base-64)
 }
 
 Key Exchange
@@ -213,7 +213,7 @@ EOL
 }
 EOL
 {
-0 - Keyed (Gemini Hash Key) Sha-512 Message Code (Base-64)
+0 - Keyed (Gemini Hash Key) SHA-512 Message Code (Base-64)
 }
 
 Groups: 3
@@ -230,7 +230,7 @@ EOL
 EOL
 Symmetric Key
 {
-0 - Sender's Sha-512 Hash (Base-64)
+0 - Sender's SHA-512 Hash (Base-64)
 EOL
 1 - Name (Base-64)
 EOL
@@ -240,7 +240,7 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64)
+0 - Keyed SHA-512 Message Code (Base-64)
 }
 
 UUID Exchange
@@ -279,7 +279,7 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64)
+0 - Keyed SHA-512 Message Code (Base-64)
 }
 
 Groups: 2
@@ -295,19 +295,19 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64)
+0 - Keyed SHA-512 Message Code (Base-64)
 }
 
 Account Authentication
 Echoed? No
 
 Message Type ("0050")
-0 - Sha-512 Digest (Base-64)
+0 - SHA-512 Digest (Base-64)
 EOL
 1 - Random Data (Base-64)
 
 Message Type ("0051")
-0 - Sha-512 Digest (Base-64)
+0 - SHA-512 Digest (Base-64)
 EOL
 1 - Random Data (Base-64)
 
@@ -334,5 +334,5 @@ EOL
 }
 EOL
 {
-0 - Keyed Sha-512 Message Code (Base-64)
+0 - Keyed SHA-512 Message Code (Base-64)
 }
