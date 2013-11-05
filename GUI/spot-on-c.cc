@@ -527,3 +527,49 @@ void spoton::slotMailRetrievalIntervalChanged(int value)
   settings.setValue("gui/emailRetrievalInterval", value);
   m_emailRetrievalTimer.setInterval(60 * 1000 * value);
 }
+
+void spoton::slotResetCertificate(void)
+{
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QModelIndexList list;
+
+  list = m_ui.neighbors->selectionModel()->selectedRows
+    (m_ui.neighbors->columnCount() - 1); // OID
+
+  if(list.isEmpty())
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("UPDATE neighbors SET "
+		      "certificate = ? "
+		      "WHERE OID = ? AND status = 'disconnected' AND "
+		      "user_defined = 1");
+	query.bindValue
+	  (0, s_crypt->encrypted(QByteArray(), &ok).toBase64());
+	query.bindValue(1, list.at(0).data());
+
+	if(ok)
+	  query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}

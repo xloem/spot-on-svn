@@ -4077,6 +4077,10 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this,
 		     SLOT(slotResetAccountInformation(void)));
       menu.addSeparator();
+      menu.addAction(tr("&Reset Certificate"),
+		     this,
+		     SLOT(slotResetCertificate(void)));
+      menu.addSeparator();
       menu.addAction(QIcon(QString(":/%1/clear.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
@@ -5686,7 +5690,7 @@ void spoton::slotResetAccountInformation(void)
 		      "account_authenticated = 0, "
 		      "account_name = ?, "
 		      "account_password = ? "
-		      "WHERE OID = ? and user_defined = 1");
+		      "WHERE OID = ? AND user_defined = 1");
 	query.bindValue
 	  (0, s_crypt->encrypted(QByteArray(), &ok).toBase64());
 
@@ -5776,7 +5780,7 @@ void spoton::authenticate(spoton_crypt *crypt, const QString &oid,
 			      "account_authenticated = 0, "
 			      "account_name = ?, "
 			      "account_password = ? "
-			      "WHERE OID = ? and user_defined = 1");
+			      "WHERE OID = ? AND user_defined = 1");
 		query.bindValue
 		  (0, crypt->encrypted(name.toLatin1(), &ok).toBase64());
 

@@ -309,6 +309,7 @@ class spoton: public QMainWindow
   void slotReply(void);
   void slotResetAccountInformation(void);
   void slotResetAll(void);
+  void slotResetCertificate(void);
   void slotRetrieveMail(void);
   void slotSaveBuzzName(void);
   void slotSaveDestination(void);

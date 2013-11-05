@@ -65,6 +65,7 @@
 30.  The method spoton_neighbor::slotDisconnected() should destroy the
      server-side object.
 31.  Ability to retrieve e-mail automatically, per request.
+32.  Ability to reset certificates of disconnected clients.
 
 0.06 (10/24/2013)
 
