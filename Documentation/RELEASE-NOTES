@@ -66,6 +66,7 @@
      server-side object.
 31.  Ability to retrieve e-mail automatically, per request.
 32.  Ability to reset certificates of disconnected clients.
+33.  Random keep-alive timer intervals [30, 45].
 
 0.06 (10/24/2013)
 

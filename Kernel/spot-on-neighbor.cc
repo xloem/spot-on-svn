@@ -3618,6 +3618,7 @@ void spoton_neighbor::slotSendKeepAlive(void)
 	{
 	  flush();
 	  m_bytesWritten += message.length();
+	  m_keepAliveTimer.start(qrand() % 15000 + 30000);
 	}
     }
 }
