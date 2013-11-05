@@ -440,7 +440,7 @@
     <name>spoton</name>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="740"/>
-        <location filename="../GUI/spot-on-a.cc" line="4205"/>
+        <location filename="../GUI/spot-on-a.cc" line="4209"/>
         <source>Not connected to the kernel. Is the kernel active?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -480,11 +480,11 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <location filename="../GUI/spot-on-a.cc" line="3662"/>
         <location filename="../GUI/spot-on-a.cc" line="3669"/>
         <location filename="../GUI/spot-on-a.cc" line="3680"/>
-        <location filename="../GUI/spot-on-a.cc" line="5715"/>
-        <location filename="../GUI/spot-on-a.cc" line="5727"/>
-        <location filename="../GUI/spot-on-a.cc" line="5800"/>
-        <location filename="../GUI/spot-on-a.cc" line="6020"/>
-        <location filename="../GUI/spot-on-a.cc" line="6067"/>
+        <location filename="../GUI/spot-on-a.cc" line="5719"/>
+        <location filename="../GUI/spot-on-a.cc" line="5731"/>
+        <location filename="../GUI/spot-on-a.cc" line="5804"/>
+        <location filename="../GUI/spot-on-a.cc" line="6024"/>
+        <location filename="../GUI/spot-on-a.cc" line="6071"/>
         <location filename="../GUI/spot-on-b.cc" line="134"/>
         <location filename="../GUI/spot-on-b.cc" line="1479"/>
         <location filename="../GUI/spot-on-b.cc" line="1486"/>
@@ -547,28 +547,28 @@ If not checked, the neighbor will be terminated after some internal timer expire
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4017"/>
-        <location filename="../GUI/spot-on-a.cc" line="4155"/>
+        <location filename="../GUI/spot-on-a.cc" line="4159"/>
         <source>&amp;Remove participant(s).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4184"/>
+        <location filename="../GUI/spot-on-a.cc" line="4188"/>
         <source>Connected insecurely to the kernel on port %1 from local port %2. Communications between the interface and the kernel have been disabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4767"/>
+        <location filename="../GUI/spot-on-a.cc" line="4771"/>
         <source>Away</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4769"/>
+        <location filename="../GUI/spot-on-a.cc" line="4773"/>
         <source>Busy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4669"/>
-        <location filename="../GUI/spot-on-a.cc" line="4771"/>
+        <location filename="../GUI/spot-on-a.cc" line="4673"/>
+        <location filename="../GUI/spot-on-a.cc" line="4775"/>
         <source>Offline</source>
         <translation type="unfinished"></translation>
     </message>
@@ -620,8 +620,8 @@ If not checked, the neighbor will be terminated after some internal timer expire
     <message>
         <location filename="../GUI/spot-on-a.cc" line="1323"/>
         <location filename="../GUI/spot-on-a.cc" line="1596"/>
-        <location filename="../GUI/spot-on-a.cc" line="5716"/>
-        <location filename="../GUI/spot-on-a.cc" line="5976"/>
+        <location filename="../GUI/spot-on-a.cc" line="5720"/>
+        <location filename="../GUI/spot-on-a.cc" line="5980"/>
         <location filename="../GUI/spot-on-b.cc" line="1487"/>
         <location filename="../GUI/spot-on-b.cc" line="1642"/>
         <location filename="../GUI/spot-on-b.cc" line="3792"/>
@@ -664,24 +664,29 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="5728"/>
+        <location filename="../GUI/spot-on-a.cc" line="4080"/>
+        <source>&amp;Reset Certificate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/spot-on-a.cc" line="5732"/>
         <source>Invalid neighbor OID. Please select a neighbor.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="5936"/>
-        <location filename="../GUI/spot-on-a.cc" line="6035"/>
+        <location filename="../GUI/spot-on-a.cc" line="5940"/>
+        <location filename="../GUI/spot-on-a.cc" line="6039"/>
         <source>Empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="6015"/>
+        <location filename="../GUI/spot-on-a.cc" line="6019"/>
         <location filename="../GUI/spot-on-c.cc" line="180"/>
         <source>A database error occurred.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="6045"/>
+        <location filename="../GUI/spot-on-a.cc" line="6049"/>
         <source>Invalid clipboard object.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -767,12 +772,12 @@ Account Authenticated: %21
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4142"/>
+        <location filename="../GUI/spot-on-a.cc" line="4146"/>
         <source>&amp;Generate random Gemini Pair (AES-256 Key, SHA-512 Key).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="5801"/>
+        <location filename="../GUI/spot-on-a.cc" line="5805"/>
         <source>The account name must be non-empty and the account password must contain at least sixteen characters.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -813,45 +818,45 @@ Use Accounts: %9</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4087"/>
+        <location filename="../GUI/spot-on-a.cc" line="4091"/>
         <source>Delete All Non-Unique &amp;Blocked Neighbors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4089"/>
+        <location filename="../GUI/spot-on-a.cc" line="4093"/>
         <source>Delete All Non-Unique &amp;UUIDs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4092"/>
+        <location filename="../GUI/spot-on-a.cc" line="4096"/>
         <source>B&amp;lock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4094"/>
+        <location filename="../GUI/spot-on-a.cc" line="4098"/>
         <source>U&amp;nblock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4041"/>
-        <location filename="../GUI/spot-on-a.cc" line="4097"/>
+        <location filename="../GUI/spot-on-a.cc" line="4101"/>
         <source>&amp;Full Echo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4043"/>
-        <location filename="../GUI/spot-on-a.cc" line="4099"/>
+        <location filename="../GUI/spot-on-a.cc" line="4103"/>
         <source>&amp;Half Echo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4123"/>
+        <location filename="../GUI/spot-on-a.cc" line="4127"/>
         <source>&amp;Call participant.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4011"/>
-        <location filename="../GUI/spot-on-a.cc" line="4120"/>
+        <location filename="../GUI/spot-on-a.cc" line="4124"/>
         <source>&amp;Copy Repleo to the clipboard buffer.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -888,28 +893,28 @@ Use Accounts: %9</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4132"/>
+        <location filename="../GUI/spot-on-a.cc" line="4136"/>
         <source>&amp;Terminate call.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4177"/>
+        <location filename="../GUI/spot-on-a.cc" line="4181"/>
         <source>Connected securely to the kernel on port %1 from local port %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4773"/>
+        <location filename="../GUI/spot-on-a.cc" line="4777"/>
         <source>Online</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4775"/>
+        <location filename="../GUI/spot-on-a.cc" line="4779"/>
         <source>Friend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4847"/>
-        <location filename="../GUI/spot-on-a.cc" line="4900"/>
+        <location filename="../GUI/spot-on-a.cc" line="4851"/>
+        <location filename="../GUI/spot-on-a.cc" line="4904"/>
         <source>User %1 requests your friendship.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -952,21 +957,21 @@ Use Accounts: %9</source>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4026"/>
-        <location filename="../GUI/spot-on-a.cc" line="4083"/>
+        <location filename="../GUI/spot-on-a.cc" line="4087"/>
         <location filename="../GUI/spot-on-c.cc" line="289"/>
         <source>&amp;Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4028"/>
-        <location filename="../GUI/spot-on-a.cc" line="4085"/>
+        <location filename="../GUI/spot-on-a.cc" line="4089"/>
         <location filename="../GUI/spot-on-c.cc" line="291"/>
         <source>Delete &amp;All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="3998"/>
-        <location filename="../GUI/spot-on-a.cc" line="4108"/>
+        <location filename="../GUI/spot-on-a.cc" line="4112"/>
         <source>&amp;Add participant as friend.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1676,16 +1681,6 @@ Use Accounts: %9</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="589"/>
-        <source>Gemini Encryption Key</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../UI/controlcenter.ui" line="594"/>
-        <source>Gemini Hash Key</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../UI/controlcenter.ui" line="665"/>
         <source>&amp;Preferred Method</source>
         <translation type="unfinished"></translation>
@@ -1817,11 +1812,6 @@ Use Accounts: %9</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1398"/>
-        <source>Recipient Hash</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../UI/controlcenter.ui" line="1411"/>
         <source>Data that has not been processed in more than</source>
         <translation type="unfinished"></translation>
@@ -1931,12 +1921,6 @@ Use Accounts: %9</source>
     <message>
         <location filename="../UI/controlcenter.ui" line="4295"/>
         <source>Mute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../UI/controlcenter.ui" line="4237"/>
-        <location filename="../UI/controlcenter.ui" line="4330"/>
-        <source>Hash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2104,11 +2088,6 @@ Use Accounts: %9</source>
     <message>
         <location filename="../UI/controlcenter.ui" line="2389"/>
         <source>Allow Certificate Exceptions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../UI/controlcenter.ui" line="2394"/>
-        <source>Certificate Digest</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2639,6 +2618,16 @@ Use Accounts: %9</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../UI/controlcenter.ui" line="589"/>
+        <source>Gemini AES-256 Encryption Key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/controlcenter.ui" line="594"/>
+        <source>Gemini SHA-512 Hash Key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../UI/controlcenter.ui" line="607"/>
         <source>&amp;Hide offline participants.</source>
         <translation type="unfinished"></translation>
@@ -2674,6 +2663,16 @@ Use Accounts: %9</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../UI/controlcenter.ui" line="1398"/>
+        <source>Recipient SHA-512 Hash</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/controlcenter.ui" line="2394"/>
+        <source>Certificate SHA-512 Hash</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../UI/controlcenter.ui" line="3862"/>
         <location filename="../UI/controlcenter.ui" line="4357"/>
         <source>Magnet</source>
@@ -2697,6 +2696,12 @@ Use Accounts: %9</source>
     <message>
         <location filename="../UI/controlcenter.ui" line="4172"/>
         <source> MB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/controlcenter.ui" line="4237"/>
+        <location filename="../UI/controlcenter.ui" line="4330"/>
+        <source>SHA-512 Hash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
