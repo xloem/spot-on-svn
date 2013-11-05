@@ -1824,7 +1824,7 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 							true).toBool())
 				if(!spoton_misc::
 				   /*
-				   ** 0 - Sender's Sha-512 Hash
+				   ** 0 - Sender's SHA-512 Hash
 				   ** 1 - Gemini E. Key
 				   ** 2 - Gemini H. Key
 				   ** 3 - Signature

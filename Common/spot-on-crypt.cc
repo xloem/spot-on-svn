@@ -1560,7 +1560,7 @@ QByteArray spoton_crypt::publicKeyEncrypt(const QByteArray &data,
 			      data.constData());
       else
 	{
-	  QByteArray random(64, 0); // Output size of Sha-512 divided by 8.
+	  QByteArray random(64, 0); // Output size of SHA-512 divided by 8.
 
 	  random = strongRandomBytes(random.length());
 	  err = gcry_sexp_build(&data_t, 0,
@@ -1804,7 +1804,7 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
   */
 
   QByteArray decrypted;
-  QByteArray random(64, 0); // Output size of Sha-512 divided by 8.
+  QByteArray random(64, 0); // Output size of SHA-512 divided by 8.
   QString keyType("");
   const char *buffer = 0;
   gcry_error_t err = 0;
@@ -2356,7 +2356,7 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
   ** We need to decipher the private key.
   */
 
-  QByteArray hash(64, 0); // Output size of Sha-512 divided by 8.
+  QByteArray hash(64, 0); // Output size of SHA-512 divided by 8.
   QByteArray keyData;
   QByteArray random(20, 0);
   QByteArray signature;
@@ -2678,7 +2678,7 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
 				    const QByteArray &publicKey,
 				    const QByteArray &signature)
 {
-  QByteArray hash(64, 0); // Output size of Sha-512 divided by 8.
+  QByteArray hash(64, 0); // Output size of SHA-512 divided by 8.
   QByteArray random(20, 0);
   QString keyType("");
   bool ok = true;

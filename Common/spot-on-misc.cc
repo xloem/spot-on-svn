@@ -129,7 +129,7 @@ void spoton_misc::prepareDatabases(void)
 		   "participant_oid TEXT NOT NULL, "
 		   "receiver_sender TEXT NOT NULL, "
 		   "receiver_sender_hash TEXT NOT NULL, " /*
-							  ** Sha-512 hash of
+							  ** SHA-512 hash of
 							  ** the receiver's
 							  ** or the sender's
 							  ** public key.
@@ -144,7 +144,7 @@ void spoton_misc::prepareDatabases(void)
 		   "message_bundle BLOB NOT NULL, "
 		   "message_bundle_hash TEXT NOT NULL, "
 		   "recipient_hash TEXT NOT NULL, " /*
-						    ** Sha-512 hash of the
+						    ** SHA-512 hash of the
 						    ** recipient's public
 						    ** key.
 						    */
@@ -173,7 +173,7 @@ void spoton_misc::prepareDatabases(void)
 	   "name TEXT NOT NULL DEFAULT 'unknown', "
 	   "public_key TEXT NOT NULL, "
 	   "public_key_hash TEXT PRIMARY KEY NOT NULL, " /*
-							 ** Sha-512
+							 ** SHA-512
 							 ** hash of
 							 ** the public
 							 ** key.
@@ -192,14 +192,14 @@ void spoton_misc::prepareDatabases(void)
 	query.exec
 	  ("CREATE TABLE IF NOT EXISTS relationships_with_signatures ("
 	   "public_key_hash TEXT PRIMARY KEY NOT NULL, " /*
-							 ** Sha-512
+							 ** SHA-512
 							 ** hash of
 							 ** the public
 							 ** key.
 							 */
 	   "signature_public_key_hash "
 	   "TEXT NOT NULL)"); /*
-			      ** Sha-512 hash of the signature
+			      ** SHA-512 hash of the signature
 			      ** public key.
 			      */
       }
