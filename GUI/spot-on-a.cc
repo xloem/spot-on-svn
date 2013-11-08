@@ -2572,8 +2572,9 @@ void spoton::slotPopulateNeighbors(void)
 			    &ok);
 
 		if(ok)
-		  certificateDigest = spoton_crypt::
-		    sha512Hash(certificateDigest, &ok).toHex();
+		  if(!certificateDigest.isEmpty())
+		    certificateDigest = spoton_crypt::
+		      sha512Hash(certificateDigest, &ok).toHex();
 
 		if(!ok)
 		  certificateDigest = "XYZ";
