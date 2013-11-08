@@ -4877,8 +4877,15 @@ qint64 spoton_neighbor::write(const char *data, const qint64 size)
       if(m_socket)
 	sent = m_socket->write(data, remaining);
       else if(m_udpSocket)
-	sent = m_udpSocket->writeDatagram
-	  (data, remaining, m_address, m_port);
+	{
+	  if(m_udpSocket->state() == QAbstractSocket::BoundState)
+	    sent = m_udpSocket->writeDatagram
+	      (data, remaining, m_address, m_port);
+	  else if(m_udpSocket->state() == QAbstractSocket::ConnectedState)
+	    sent = m_udpSocket->write(data, remaining);
+	  else
+	    sent = 0;
+	}
       else
 	sent = 0;
 
