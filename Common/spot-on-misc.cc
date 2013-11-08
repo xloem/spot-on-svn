@@ -287,7 +287,8 @@ void spoton_misc::prepareDatabases(void)
 		   "use_accounts INTEGER NOT NULL DEFAULT 0, "
 		   "maximum_buffer_size INTEGER NOT NULL DEFAULT 131072, "
 		   "maximum_content_length INTEGER NOT NULL DEFAULT 65536, "
-		   "transport TEXT NOT NULL)");
+		   "transport TEXT NOT NULL, "
+		   "share_udp_address INTEGER NOT NULL DEFAULT 0)");
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_accounts ("
 		   "account_name TEXT NOT NULL, "
 		   "account_name_hash TEXT NOT NULL, "

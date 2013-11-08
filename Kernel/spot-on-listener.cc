@@ -126,6 +126,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 				 const int maximumBufferSize,
 				 const int maximumContentLength,
 				 const QString &transport,
+				 const bool shareAddress,
 				 QObject *parent):QObject(parent)
 {
   m_tcpServer = 0;
@@ -160,6 +161,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
   m_port = m_externalPort = quint16(port.toInt());
   m_privateKey = privateKey;
   m_publicKey = publicKey;
+  m_shareAddress = shareAddress;
   m_transport = transport;
   m_useAccounts = useAccounts;
 #if QT_VERSION >= 0x050000
@@ -232,6 +234,11 @@ spoton_listener::~spoton_listener()
      arg(m_port));
   delete []a;
   m_timer.stop();
+
+  if(m_tcpServer)
+    m_tcpServer->close();
+  else if(m_udpServer)
+    m_udpServer->abort();
 
   QString connectionName("");
 
@@ -1112,9 +1119,16 @@ bool spoton_listener::listen(const QHostAddress &address, const quint16 port)
   if(m_tcpServer)
     return m_tcpServer->listen(address, port);
   else if(m_udpServer)
-    return m_udpServer->bind(address, port,
-			     QUdpSocket::ReuseAddressHint |
-			     QUdpSocket::ShareAddress);
+    {
+      if(m_shareAddress)
+	return m_udpServer->bind(address, port,
+				 QUdpSocket::ReuseAddressHint |
+				 QUdpSocket::ShareAddress);
+      else
+	return m_udpServer->bind(address, port,
+				 QUdpSocket::DontShareAddress |
+				 QUdpSocket::ReuseAddressHint);
+    }
   else
     return false;
 }

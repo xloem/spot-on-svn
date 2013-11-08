@@ -68,7 +68,8 @@
 32.  Ability to reset certificates of disconnected clients.
 33.  Random keep-alive timer intervals [30, 45].
 34.  Added support for UDP listeners and neighbors. Please note that
-     SSL is not supported for the UDP transport layer.
+     SSL is not supported for the UDP transport layer. Please remove
+     listeners.db and neighbors.db.
 35.  Modified the accounts mechanism so that it's well-defined over
      plain connections in support of UDP. Please note that SSL is
      required over TCP connections.

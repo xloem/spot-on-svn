@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1196</width>
-    <height>686</height>
+    <width>1000</width>
+    <height>623</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -336,8 +336,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1182</width>
-                <height>577</height>
+                <width>984</width>
+                <height>531</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1612,6 +1612,11 @@
               </column>
               <column>
                <property name="text">
+                <string>Share Address</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
                 <string>OID</string>
                </property>
               </column>
@@ -1767,6 +1772,33 @@
                    </item>
                   </widget>
                  </item>
+                 <item row="2" column="2">
+                  <layout class="QHBoxLayout" name="horizontalLayout_63">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <item>
+                    <widget class="QCheckBox" name="listenerShareAddress">
+                     <property name="text">
+                      <string>&amp;Share Address</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_51">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
                 </layout>
                </item>
                <item>
@@ -1904,8 +1936,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>278</width>
-                 <height>557</height>
+                 <width>258</width>
+                 <height>511</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3204,8 +3236,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1172</width>
-             <height>567</height>
+             <width>974</width>
+             <height>521</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3892,8 +3924,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1172</width>
-             <height>567</height>
+             <width>974</width>
+             <height>521</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5223,8 +5255,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1196</width>
-     <height>27</height>
+     <width>1000</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -5405,6 +5437,7 @@
   <tabstop>listenerScopeId</tabstop>
   <tabstop>ipv6Listener</tabstop>
   <tabstop>listenerTransport</tabstop>
+  <tabstop>listenerShareAddress</tabstop>
   <tabstop>listenersEchoMode</tabstop>
   <tabstop>recordIPAddress</tabstop>
   <tabstop>permanentCertificate</tabstop>

@@ -788,6 +788,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.listenerIP->setInputMask("000.000.000.000; ");
   m_ui.listenerScopeId->setEnabled(false);
   m_ui.listenerScopeIdLabel->setEnabled(false);
+  m_ui.listenerShareAddress->setEnabled(false);
   m_ui.neighborIP->setInputMask("000.000.000.000; ");
   m_ui.neighborScopeId->setEnabled(false);
   m_ui.neighborScopeIdLabel->setEnabled(false);
@@ -1422,9 +1423,10 @@ void spoton::slotAddListener(void)
 		      "certificate, "
 		      "private_key, "
 		      "public_key, "
-		      "transport) "
+		      "transport, "
+		      "share_udp_address) "
 		      "VALUES "
-		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	if(ip.isEmpty())
 	  query.bindValue
@@ -1544,6 +1546,11 @@ void spoton::slotAddListener(void)
 	else
 	  query.bindValue(11, "udp");
 
+	if(m_ui.listenerShareAddress->isChecked())
+	  query.bindValue(12, 1);
+	else
+	  query.bindValue(12, 0);
+
 	if(ok)
 	  ok = query.exec();
 
@@ -1575,7 +1582,7 @@ void spoton::slotAddListener(void)
 	      ok = query.exec();
 
 	    if(query.lastError().isValid())
-	      error = query.lastError().text();
+	      error = query.lastError().text().trimmed();
 	  }
       }
     else
@@ -1903,14 +1910,14 @@ void spoton::slotAddNeighbor(void)
 	  ok = query.exec();
 
 	if(query.lastError().isValid())
-	  error = query.lastError().text();
+	  error = query.lastError().text().trimmed();
       }
     else
       {
 	ok = false;
 
 	if(db.lastError().isValid())
-	  error = db.lastError().text();
+	  error = db.lastError().text().trimmed();
       }
 
     db.close();
@@ -2100,6 +2107,7 @@ void spoton::slotPopulateListeners(void)
 		      "maximum_buffer_size, "
 		      "maximum_content_length, "
 		      "transport, "
+		      "share_udp_address, "
 		      "OID "
 		      "FROM listeners WHERE status_control <> 'deleted'"))
 	  {
@@ -2120,7 +2128,8 @@ void spoton::slotPopulateListeners(void)
 		      "Connections: %7\n"
 		      "Echo Mode: %8\n"
 		      "Use Accounts: %9\n"
-		      "Transport: %10")).
+		      "Transport: %10\n"
+		      "Share Address: %11")).
 		  arg(query.value(1).toString()).
 		  arg(query.value(2).toString()).
 		  arg(s_crypt->
@@ -2160,7 +2169,8 @@ void spoton::slotPopulateListeners(void)
 				&ok).
 		      constData()).
 		  arg(query.value(12).toInt() == 1 ? "Yes" : "No").
-		  arg(query.value(15).toString());
+		  arg(query.value(15).toString().toUpper()).
+		  arg(query.value(16).toInt() == 1 ? "Yes" : "No");
 
 		for(int i = 0; i < query.record().count(); i++)
 		  {
@@ -2199,7 +2209,8 @@ void spoton::slotPopulateListeners(void)
 			      }
 			  }
 
-			check->setProperty("oid", query.value(16));
+			check->setProperty
+			  ("oid", query.value(query.record().count() - 1));
 			check->setProperty("table_row", row);
 			check->setToolTip(tooltip);
 
@@ -2234,7 +2245,8 @@ void spoton::slotPopulateListeners(void)
 		    else if(i == 10)
 		      {
 			box = new QComboBox();
-			box->setProperty("oid", query.value(16));
+			box->setProperty
+			  ("oid", query.value(query.record().count() - 1));
 			box->setProperty("table_row", row);
 			box->addItem("1");
 

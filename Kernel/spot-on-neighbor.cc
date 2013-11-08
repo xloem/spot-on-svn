@@ -104,7 +104,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
       m_udpSocket->setLocalPort(quint16(localPort.toInt()));
       m_udpSocket->setPeerAddress(QHostAddress(ipAddress));
       m_udpSocket->setPeerPort(quint16(port.toInt()));
-      m_udpSocket->setReadBufferSize(8192);
+      m_udpSocket->setReadBufferSize(9000);
     }
 
   if(m_socket)

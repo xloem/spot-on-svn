@@ -582,6 +582,7 @@ void spoton::slotTransportChanged(int index)
       m_ui.permanentCertificate->setEnabled(index == 0);
       m_ui.sslListener->setEnabled(index == 0);
       m_ui.listenerKeySize->setEnabled(index == 0);
+      m_ui.listenerShareAddress->setEnabled(index == 1);
     }
   else if(m_ui.neighborTransport == sender())
     {

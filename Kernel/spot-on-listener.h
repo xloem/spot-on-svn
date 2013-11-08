@@ -133,6 +133,7 @@ class spoton_listener: public QObject
 		  const int maximumBufferSize,
 		  const int maximumContentLength,
 		  const QString &transport,
+		  const bool shareAddress,
 		  QObject *parent);
   ~spoton_listener();
   QHostAddress externalAddress(void) const;
@@ -154,6 +155,7 @@ class spoton_listener: public QObject
   QString m_transport;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_timer;
+  bool m_shareAddress;
   bool m_useAccounts;
   int m_keySize;
   int m_maximumBufferSize;

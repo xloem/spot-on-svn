@@ -544,6 +544,7 @@ void spoton_kernel::prepareListeners(void)
 		      "maximum_buffer_size, "
 		      "maximum_content_length, "
 		      "transport, "
+		      "share_udp_address, "
 		      "OID "
 		      "FROM listeners"))
 	  while(query.next())
@@ -656,6 +657,7 @@ void spoton_kernel::prepareListeners(void)
 			     query.value(11).toInt(),
 			     query.value(12).toInt(),
 			     query.value(13).toString(),
+			     query.value(14).toInt(),
 			     this);
 			}
 
