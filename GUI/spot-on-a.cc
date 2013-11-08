@@ -2689,7 +2689,7 @@ void spoton::slotPopulateNeighbors(void)
 		      constData()).
 		  arg(query.value(26).toInt() == 1 ?
 		      "Yes": "No").
-		  arg(query.value(27).toString());
+		  arg(query.value(27).toString().toUpper());
 
 		QCheckBox *check = 0;
 
