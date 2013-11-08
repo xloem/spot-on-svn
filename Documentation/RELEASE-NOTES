@@ -75,6 +75,7 @@
      required over TCP connections.
 36.  Corrected re-encoding of listeners and neighbors. Scope IDs where
      not included when computing keyed hashes.
+37.  Do not display certificate hashes of empty certificates (Neighbors).
 
 0.06 (10/24/2013)
 
