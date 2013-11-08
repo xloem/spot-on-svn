@@ -4374,6 +4374,7 @@ void spoton::slotAddAccount(void)
   QString name(m_ui.accountName->text().trimmed());
   QString oid("");
   QString password(m_ui.accountPassword->text());
+  QString transport("");
   bool ok = true;
   int row = -1;
   int sslKeySize = 0;
@@ -4387,10 +4388,18 @@ void spoton::slotAddAccount(void)
       if(item)
 	oid = item->text();
 
-      item = m_ui.listeners->item(row, 2); // SSL Key Size
+      item = m_ui.listeners->item(row, 15); // Transport
 
       if(item)
-	sslKeySize = item->text().toInt();
+	transport = item->text();
+
+      if(transport == "tcp")
+	{
+	  item = m_ui.listeners->item(row, 2); // SSL Key Size
+
+	  if(item)
+	    sslKeySize = item->text().toInt();
+	}
     }
 
   if(oid.isEmpty())
@@ -4398,7 +4407,7 @@ void spoton::slotAddAccount(void)
       error = tr("Invalid listener OID. Please select a listener.");
       goto done_label;
     }
-  else if(sslKeySize <= 0)
+  else if(sslKeySize <= 0 && transport == "tcp")
     {
       error = tr("The selected listener does not support SSL.");
       goto done_label;

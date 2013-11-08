@@ -348,6 +348,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotListenerIPComboChanged(int)));
+  connect(m_ui.listenerTransport,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotTransportChanged(int)));
+  connect(m_ui.neighborTransport,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotTransportChanged(int)));
   connect(m_ui.folder,
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
@@ -1331,8 +1339,9 @@ void spoton::slotAddListener(void)
   QByteArray publicKey;
   QString error("");
 
-  if(m_ui.sslListener->isChecked() &&
-     m_ui.permanentCertificate->isChecked())
+  if(m_ui.listenerTransport->currentIndex() == 0 &&
+     m_ui.permanentCertificate->isChecked() &&
+     m_ui.sslListener->isChecked())
     {
       QHostAddress address;
 
@@ -1388,12 +1397,18 @@ void spoton::slotAddListener(void)
 	QString protocol("");
 	QString scopeId(m_ui.listenerScopeId->text().trimmed());
 	QString status("online");
+	QString transport("");
 	QSqlQuery query(db);
 
 	if(m_ui.ipv4Listener->isChecked())
 	  protocol = "IPv4";
 	else
 	  protocol = "IPv6";
+
+	if(m_ui.listenerTransport->currentIndex() == 0)
+	  transport = "tcp";
+	else
+	  transport = "udp";
 
 	query.prepare("INSERT INTO listeners "
 		      "(ip_address, "
@@ -1406,9 +1421,10 @@ void spoton::slotAddListener(void)
 		      "ssl_key_size, "
 		      "certificate, "
 		      "private_key, "
-		      "public_key) "
+		      "public_key, "
+		      "transport) "
 		      "VALUES "
-		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	if(ip.isEmpty())
 	  query.bindValue
@@ -1484,7 +1500,7 @@ void spoton::slotAddListener(void)
 	if(ok)
 	  {
 	    hash = s_crypt->
-	      keyedHash((ip + port + scopeId).toLatin1(), &ok);
+	      keyedHash((ip + port + scopeId + transport).toLatin1(), &ok);
 
 	    if(ok)
 	      query.bindValue(5, hash.toBase64());
@@ -1502,7 +1518,8 @@ void spoton::slotAddListener(void)
 				       &ok).toBase64());
 	  }
 
-	if(m_ui.sslListener->isChecked())
+	if(m_ui.listenerTransport->currentIndex() == 0 &&
+	   m_ui.sslListener->isChecked())
 	  query.bindValue(7, m_ui.listenerKeySize->currentText().toInt());
 	else
 	  query.bindValue(7, 0);
@@ -1521,6 +1538,11 @@ void spoton::slotAddListener(void)
 	  query.bindValue
 	    (10, s_crypt->encrypted(publicKey, &ok).
 	     toBase64());
+
+	if(m_ui.listenerTransport->currentIndex() == 0)
+	  query.bindValue(11, "tcp");
+	else
+	  query.bindValue(11, "udp");
 
 	if(ok)
 	  ok = query.exec();
@@ -1621,6 +1643,7 @@ void spoton::slotAddNeighbor(void)
 	QString proxyUsername("");
 	QString scopeId(m_ui.neighborScopeId->text().trimmed());
 	QString status("connected");
+	QString transport("");
 	QSqlQuery query(db);
 
 	if(m_ui.ipv4Neighbor->isChecked())
@@ -1629,6 +1652,11 @@ void spoton::slotAddNeighbor(void)
 	  protocol = "IPv6";
 	else
 	  protocol = "Dynamic DNS";
+
+	if(m_ui.neighborTransport->currentIndex() == 0)
+	  transport = "tcp";
+	else
+	  transport = "udp";
 
 	query.prepare("INSERT INTO neighbors "
 		      "(local_ip_address, "
@@ -1655,10 +1683,11 @@ void spoton::slotAddNeighbor(void)
 		      "certificate, "
 		      "ssl_required, "
 		      "account_name, "
-		      "account_password) "
+		      "account_password, "
+		      "transport) "
 		      "VALUES "
 		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-		      "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		      "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
@@ -1743,8 +1772,8 @@ void spoton::slotAddNeighbor(void)
 	if(ok)
 	  query.bindValue
 	    (7, s_crypt->
-	     keyedHash((proxyHostname + proxyPort + ip + port + scopeId).
-		       toLatin1(), &ok).
+	     keyedHash((proxyHostname + proxyPort + ip + port + scopeId +
+			transport).toLatin1(), &ok).
 	     toBase64());
 
 	query.bindValue(8, status);
@@ -1834,9 +1863,13 @@ void spoton::slotAddNeighbor(void)
 		 encrypted(QByteArray("half"), &ok).toBase64());
 	  }
 
-	query.bindValue(19, m_ui.neighborKeySize->currentText().toInt());
+	if(m_ui.neighborTransport->currentIndex() == 0)
+	  query.bindValue(19, m_ui.neighborKeySize->currentText().toInt());
+	else
+	  query.bindValue(19, 0);
 
-	if(m_ui.addException->isChecked())
+	if(m_ui.addException->isChecked() &&
+	   m_ui.neighborTransport->currentIndex() == 0)
 	  query.bindValue(20, 1);
 	else
 	  query.bindValue(20, 0);
@@ -1846,7 +1879,10 @@ void spoton::slotAddNeighbor(void)
 	    (21, s_crypt->encrypted(QByteArray(),
 				    &ok).toBase64());
 
-	query.bindValue(22, m_ui.requireSsl->isChecked() ? 1 : 0);
+	if(m_ui.neighborTransport->currentIndex() == 0)
+	  query.bindValue(22, m_ui.requireSsl->isChecked() ? 1 : 0);
+	else
+	  query.bindValue(22, 0);
 
 	if(ok)
 	  query.bindValue
@@ -1857,6 +1893,11 @@ void spoton::slotAddNeighbor(void)
 	  query.bindValue
 	    (24, s_crypt->encrypted(QByteArray(),
 				    &ok).toBase64());
+
+	if(m_ui.neighborTransport->currentIndex() == 0)
+	  query.bindValue(25, "tcp");
+	else
+	  query.bindValue(25, "udp");
 
 	if(ok)
 	  ok = query.exec();
@@ -2001,9 +2042,11 @@ void spoton::slotPopulateListeners(void)
 	QString ip("");
 	QString port("");
 	QString scopeId("");
+	QString transport("");
 	int columnIP = 3;
 	int columnPORT = 4;
 	int columnSCOPE_ID = 5;
+	int columnTRANSPORT = 15;
 	int hval = m_ui.listeners->horizontalScrollBar()->value();
 	int row = -1;
 	int vval = m_ui.listeners->verticalScrollBar()->value();
@@ -2025,6 +2068,12 @@ void spoton::slotPopulateListeners(void)
 
 	if(!list.isEmpty())
 	  scopeId = list.at(0).data().toString();
+
+	list = m_ui.listeners->selectionModel()->selectedRows
+	  (columnTRANSPORT);
+
+	if(!list.isEmpty())
+	  transport = list.at(0).data().toString();
 
 	m_ui.listeners->setSortingEnabled(false);
 	m_ui.listeners->clearContents();
@@ -2050,6 +2099,7 @@ void spoton::slotPopulateListeners(void)
 		      "use_accounts, "
 		      "maximum_buffer_size, "
 		      "maximum_content_length, "
+		      "transport, "
 		      "OID "
 		      "FROM listeners WHERE status_control <> 'deleted'"))
 	  {
@@ -2069,7 +2119,8 @@ void spoton::slotPopulateListeners(void)
 		      "External IP: %6\n"
 		      "Connections: %7\n"
 		      "Echo Mode: %8\n"
-		      "Use Accounts: %9")).
+		      "Use Accounts: %9\n"
+		      "Transport: %10")).
 		  arg(query.value(1).toString()).
 		  arg(query.value(2).toString()).
 		  arg(s_crypt->
@@ -2108,7 +2159,8 @@ void spoton::slotPopulateListeners(void)
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(query.value(12).toInt() == 1 ? "Yes" : "No");
+		  arg(query.value(12).toInt() == 1 ? "Yes" : "No").
+		  arg(query.value(15).toString());
 
 		for(int i = 0; i < query.record().count(); i++)
 		  {
@@ -2130,16 +2182,24 @@ void spoton::slotPopulateListeners(void)
 			  }
 			else
 			  {
-			    if(query.value(2).toInt() > 0)
+			    if(query.value(15).toString() == "tcp")
+			      {
+				if(query.value(2).toInt() > 0)
+				  {
+				    if(query.value(i).toInt() == 1)
+				      check->setChecked(true);
+				  }
+				else
+				  check->setEnabled(false);
+			      }
+			    else
 			      {
 				if(query.value(i).toInt() == 1)
 				  check->setChecked(true);
 			      }
-			    else
-			      check->setEnabled(false);
 			  }
 
-			check->setProperty("oid", query.value(15));
+			check->setProperty("oid", query.value(16));
 			check->setProperty("table_row", row);
 			check->setToolTip(tooltip);
 
@@ -2174,7 +2234,7 @@ void spoton::slotPopulateListeners(void)
 		    else if(i == 10)
 		      {
 			box = new QComboBox();
-			box->setProperty("oid", query.value(15));
+			box->setProperty("oid", query.value(16));
 			box->setProperty("table_row", row);
 			box->addItem("1");
 
@@ -2285,20 +2345,25 @@ void spoton::slotPopulateListeners(void)
 		QByteArray bytes1;
 		QByteArray bytes2;
 		QByteArray bytes3;
+		QString bytes4("");
 		QWidget *focusWidget = QApplication::focusWidget();
 
 		ok = true;
 		bytes1 = s_crypt->decrypted
-		  (QByteArray::fromBase64(query.value(3).toByteArray()),
+		  (QByteArray::fromBase64(query.value(columnIP).toByteArray()),
 		   &ok);
 		bytes2 = s_crypt->decrypted
-		  (QByteArray::fromBase64(query.value(4).toByteArray()),
+		  (QByteArray::fromBase64(query.value(columnPORT).
+					  toByteArray()),
 		   &ok);
 		bytes3 = s_crypt->decrypted
-		  (QByteArray::fromBase64(query.value(5).toByteArray()),
+		  (QByteArray::fromBase64(query.value(columnSCOPE_ID).
+					  toByteArray()),
 		   &ok);
+		bytes4 = query.value(columnTRANSPORT).toString();
 
-		if(ip == bytes1 && port == bytes2 && scopeId == bytes3)
+		if(ip == bytes1 && port == bytes2 && scopeId == bytes3 &&
+		   transport == bytes4)
 		  m_ui.listeners->selectRow(row);
 
 		if(focusWidget)
@@ -2382,12 +2447,14 @@ void spoton::slotPopulateNeighbors(void)
 	QString remoteIp("");
 	QString remotePort("");
 	QString scopeId("");
+	QString transport("");
 	int columnCOUNTRY = 9;
 	int columnPROXY_IP = 14;
 	int columnPROXY_PORT = 15;
 	int columnREMOTE_IP = 10;
 	int columnREMOTE_PORT = 11;
 	int columnSCOPE_ID = 12;
+	int columnTRANSPORT = 27;
 	int hval = m_ui.neighbors->horizontalScrollBar()->value();
 	int row = -1;
 	int vval = m_ui.neighbors->verticalScrollBar()->value();
@@ -2421,6 +2488,12 @@ void spoton::slotPopulateNeighbors(void)
 
 	if(!list.isEmpty())
 	  scopeId = list.at(0).data().toString();
+
+	list = m_ui.neighbors->selectionModel()->selectedRows
+	  (columnTRANSPORT);
+
+	if(!list.isEmpty())
+	  transport = list.at(0).data().toString();
 
 	m_neighborToOidMap.clear();
 	m_ui.neighbors->setSortingEnabled(false);
@@ -2458,6 +2531,7 @@ void spoton::slotPopulateNeighbors(void)
 		      "ssl_session_cipher, "
 		      "account_name, "
 		      "account_authenticated, "
+		      "transport, "
 		      "is_encrypted, "
 		      "OID "
 		      "FROM neighbors WHERE status_control <> 'deleted'"))
@@ -2474,6 +2548,8 @@ void spoton::slotPopulateNeighbors(void)
 		QByteArray certificateDigest;
 		QByteArray sslSessionCipher;
 		QString tooltip("");
+		bool isEncrypted = query.value
+		  (query.record().indexOf("is_encrypted")).toBool();
 		bool ok = true;
 
 		certificateDigest = s_crypt->
@@ -2514,7 +2590,8 @@ void spoton::slotPopulateNeighbors(void)
 		      "Bytes Written: %18\n"
 		      "SSL Session Cipher: %19\n"
 		      "Account Name: %20\n"
-		      "Account Authenticated: %21\n")).
+		      "Account Authenticated: %21\n"
+		      "Transport: %22")).
 		  arg(s_crypt->
 		      decrypted(QByteArray::
 				fromBase64(query.
@@ -2582,8 +2659,7 @@ void spoton::slotPopulateNeighbors(void)
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(query.value(27).toInt() == 1 ?
-		      "Secure" : "Insecure").
+		  arg(isEncrypted ? "Secure" : "Insecure").
 		  arg(QString::number(query.value(19).toInt() / 60.0,
 				      'f', 1)).
 		  arg(query.value(21).toInt() == 1 ?
@@ -2599,7 +2675,8 @@ void spoton::slotPopulateNeighbors(void)
 				&ok).
 		      constData()).
 		  arg(query.value(26).toInt() == 1 ?
-		      "Yes": "No");
+		      "Yes": "No").
+		  arg(query.value(27).toString());
 
 		QCheckBox *check = 0;
 
@@ -2624,9 +2701,6 @@ void spoton::slotPopulateNeighbors(void)
 			this,
 			SLOT(slotNeighborCheckChange(int)));
 		m_ui.neighbors->setCellWidget(row, 0, check);
-
-		bool isEncrypted = query.value
-		  (query.record().indexOf("is_encrypted")).toBool();
 
 		for(int i = 1; i < query.record().count(); i++)
 		  {
@@ -2806,6 +2880,7 @@ void spoton::slotPopulateNeighbors(void)
 		QByteArray bytes3;
 		QByteArray bytes4;
 		QByteArray bytes5;
+		QString bytes6;
 		QWidget *focusWidget = QApplication::focusWidget();
 
 		ok = true;
@@ -2824,10 +2899,11 @@ void spoton::slotPopulateNeighbors(void)
 		bytes5 = s_crypt->decrypted
 		  (QByteArray::fromBase64(query.value(columnPROXY_PORT).
 					  toByteArray()), &ok);
+		bytes6 = query.value(columnTRANSPORT).toString();
 
 		if(remoteIp == bytes1 && remotePort == bytes2 &&
 		   scopeId == bytes3 && proxyIp == bytes4 &&
-		   proxyPort == bytes5)
+		   proxyPort == bytes5 && transport == bytes6)
 		  m_ui.neighbors->selectRow(row);
 
 		if(focusWidget)
@@ -3349,8 +3425,9 @@ void spoton::slotListenerUseAccounts(int state)
 	    QSqlQuery query(db);
 
 	    query.prepare("UPDATE listeners SET "
-			  "use_accounts = ? "
-			  "WHERE OID = ? AND ssl_key_size > 0");
+			  "use_accounts = ? WHERE OID = ? AND "
+			  "(transport = 'udp') OR "
+			  "(transport = 'tcp' AND ssl_key_size > 0))");
 
 	    if(state)
 	      query.bindValue(0, 1);
@@ -5611,7 +5688,8 @@ void spoton::slotNeighborSelected(void)
 	 arg(list.value(20)).
 	 arg(list.value(21)).
 	 arg(list.value(22)).
-	 arg(list.value(23)));
+	 arg(list.value(23)).
+	 arg(list.value(24)));
       int h = m_ui.neighborSummary->horizontalScrollBar()->value();
       int v = m_ui.neighborSummary->verticalScrollBar()->value();
 

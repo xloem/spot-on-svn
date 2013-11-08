@@ -30,6 +30,8 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 
+#include <limits>
+
 #include "Common/spot-on-common.h"
 #include "Common/spot-on-crypt.h"
 #include "Common/spot-on-external-address.h"
@@ -51,7 +53,7 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
     }
   else
     {
-      QHostAddress address;
+      QHostAddress peerAddress;
       sockaddr nativeAddress;
 #ifdef Q_OS_OS2
       int length = sizeof(nativeAddress);
@@ -66,12 +68,10 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 	   arg(serverAddress().toString()).
 	   arg(serverPort()));
 
-      address = QHostAddress(&nativeAddress);
+      peerAddress = QHostAddress(&nativeAddress);
 
-      if(!spoton_misc::isAcceptedIP(address,
-				    m_id,
-				    spoton_kernel::s_crypts.
-				    value("chat", 0)))
+      if(!spoton_misc::isAcceptedIP(peerAddress, m_id,
+				    spoton_kernel::s_crypts.value("chat", 0)))
 	{
 	  QTcpSocket socket;
 
@@ -80,13 +80,36 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 	  spoton_misc::logError
 	    (QString("spoton_listener_tcp_server::incomingConnection(): "
 		     "connection from %1 denied for %2:%3").
-	     arg(address.toString()).
+	     arg(peerAddress.toString()).
 	     arg(serverAddress().toString()).
 	     arg(serverPort()));
 	}
       else
-	emit newConnection(socketDescriptor);
+	emit newConnection(socketDescriptor, QHostAddress(), 0);
     }
+}
+
+void spoton_listener_udp_server::slotReadyRead(void)
+{
+  QByteArray buffer(pendingDatagramSize(), '0');
+  QHostAddress peerAddress;
+  quint16 peerPort = 0;
+
+  readDatagram(buffer.data(), buffer.length(), &peerAddress, &peerPort);
+
+  if(!spoton_misc::isAcceptedIP(peerAddress, m_id,
+				spoton_kernel::s_crypts.value("chat", 0)))
+    spoton_misc::logError
+      (QString("spoton_listener_udp_server::incomingConnection(): "
+	       "connection from %1 denied for %2:%3").
+       arg(peerAddress.toString()).
+       arg(localAddress().toString()).
+       arg(localPort()));
+  else if(!spoton_misc::
+	  neighborExists(peerAddress, peerPort, "udp",
+			 spoton_kernel::s_crypts.value("chat", 0)))
+    emit newConnection
+      (socketDescriptor(), peerAddress, peerPort);
 }
 
 spoton_listener::spoton_listener(const QString &ipAddress,
@@ -102,9 +125,17 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 				 const bool useAccounts,
 				 const int maximumBufferSize,
 				 const int maximumContentLength,
-				 QObject *parent):
-  spoton_listener_tcp_server(id, parent)
+				 const QString &transport,
+				 QObject *parent):QObject(parent)
 {
+  m_tcpServer = 0;
+  m_udpServer = 0;
+
+  if(transport == "tcp")
+    m_tcpServer = new spoton_listener_tcp_server(id, parent);
+  else if(transport == "udp")
+    m_udpServer = new spoton_listener_udp_server(id, parent);
+
   m_address = QHostAddress(ipAddress);
   m_address.setScopeId(scopeId);
   m_certificate = certificate;
@@ -129,23 +160,55 @@ spoton_listener::spoton_listener(const QString &ipAddress,
   m_port = m_externalPort = quint16(port.toInt());
   m_privateKey = privateKey;
   m_publicKey = publicKey;
+  m_transport = transport;
   m_useAccounts = useAccounts;
 #if QT_VERSION >= 0x050000
-  connect(this,
-	  SIGNAL(newConnection(const qintptr)),
-	  this,
-	  SLOT(slotNewConnection(const qintptr)));
+  if(m_tcpServer)
+    connect(m_tcpServer,
+	    SIGNAL(newConnection(const qintptr,
+				 const QHostAddress &,
+				 const quint16)),
+	    this,
+	    SLOT(slotNewConnection(const qintptr,
+				   const QHostAddress &,
+				   const quint16)));
+  else if(m_udpServer)
+    connect(m_udpServer,
+	    SIGNAL(newConnection(const qintptr,
+				 const QHostAddress &,
+				 const quint16)),
+	    this,
+	    SLOT(slotNewConnection(const qintptr,
+				   const QHostAddress &,
+				   const quint16)));
 #else
-  connect(this,
-	  SIGNAL(newConnection(const int)),
-	  this,
-	  SLOT(slotNewConnection(const int)));
+  if(m_tcpServer)
+    connect(m_tcpServer,
+	    SIGNAL(newConnection(const int,
+				 const QHostAddress &,
+				 const quint16)),
+	    this,
+	    SLOT(slotNewConnection(const int,
+				   const QHostAddress &,
+				   const quint16)));
+  else if(m_udpServer)
+    connect(m_udpServer,
+	    SIGNAL(newConnection(const int,
+				 const QHostAddress &,
+				 const quint16)),
+	    this,
+	    SLOT(slotNewConnection(const int,
+				   const QHostAddress &,
+				   const quint16)));
 #endif
   connect(m_externalAddress,
 	  SIGNAL(ipAddressDiscovered(const QHostAddress &)),
 	  this,
 	  SLOT(slotExternalAddressDiscovered(const QHostAddress &)));
-  setMaxPendingConnections(maximumClients);
+
+  if(m_tcpServer)
+    m_tcpServer->setMaxPendingConnections(maximumClients);
+
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -298,19 +361,20 @@ void spoton_listener::slotTimeout(void)
 
 		    if(isListening())
 		      {
-			if(query.value(1).toInt() != maxPendingConnections())
-			  {
-			    int maximumPendingConnections = query.value(1).
-			      toInt();
+			if(m_tcpServer)
+			  if(query.value(1).toInt() != maxPendingConnections())
+			    {
+			      int maximumPendingConnections = query.value(1).
+				toInt();
 
-			    if(!maximumPendingConnections)
-			      maximumPendingConnections = 1;
-			    else if(maximumPendingConnections % 5 != 0)
-			      maximumPendingConnections = 1;
+			      if(!maximumPendingConnections)
+				maximumPendingConnections = 1;
+			      else if(maximumPendingConnections % 5 != 0)
+				maximumPendingConnections = 1;
 
-			    setMaxPendingConnections
-			      (maximumPendingConnections);
-			  }
+			      m_tcpServer->setMaxPendingConnections
+				(maximumPendingConnections);
+			    }
 		      }
 		  }
 
@@ -433,9 +497,13 @@ void spoton_listener::saveStatus(const QSqlDatabase &db)
 }
 
 #if QT_VERSION >= 0x050000
-void spoton_listener::slotNewConnection(const qintptr socketDescriptor)
+void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
+					const QHostAddress &address,
+					const quint16 port)
 #else
-void spoton_listener::slotNewConnection(const int socketDescriptor)
+void spoton_listener::slotNewConnection(const int socketDescriptor,
+					const QHostAddress &address,
+					const quint16 port)
 #endif
 {
   QByteArray certificate(m_certificate);
@@ -459,22 +527,56 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
     }
 
   if(error.isEmpty())
-    neighbor = new spoton_neighbor
-      (socketDescriptor, certificate, privateKey, m_echoMode, m_useAccounts,
-       m_id, m_maximumBufferSize, m_maximumContentLength, this);
+    {
+      if(m_tcpServer)
+	neighbor = new spoton_neighbor
+	  (socketDescriptor, certificate, privateKey,
+	   m_echoMode, m_useAccounts, m_id, m_maximumBufferSize,
+	   m_maximumContentLength, m_transport, address.toString(),
+	   QString::number(port),
+	   m_tcpServer->serverAddress().toString(),
+	   QString::number(m_tcpServer->serverPort()),
+	   this);
+      else if(m_udpServer)
+	neighbor = new spoton_neighbor
+	  (socketDescriptor, certificate, privateKey,
+	   m_echoMode, m_useAccounts, m_id, m_maximumBufferSize,
+	   m_maximumContentLength, m_transport, address.toString(),
+	   QString::number(port),
+	   m_udpServer->localAddress().toString(),
+	   QString::number(m_udpServer->localPort()),
+	   this);
+    }
   else
     {
-      QTcpSocket socket;
+      if(m_transport == "tcp")
+	{
+	  QTcpSocket socket;
 
-      socket.setSocketDescriptor(socketDescriptor);
-      socket.abort();
-      spoton_misc::logError
-	(QString("spoton_listener::"
-		 "slotNewConnection(): "
-		 "generateSslKeys() failure (%1) for %2:%3.").
-	 arg(error.remove(".")).
-	 arg(m_address.toString()).
-	 arg(m_port));
+	  socket.setSocketDescriptor(socketDescriptor);
+	  socket.abort();
+	  spoton_misc::logError
+	    (QString("spoton_listener::"
+		     "slotNewConnection(): "
+		     "generateSslKeys() failure (%1) for %2:%3.").
+	     arg(error.remove(".")).
+	     arg(m_address.toString()).
+	     arg(m_port));
+	}
+      else if(m_transport == "udp")
+	{
+	  QUdpSocket socket;
+
+	  socket.setSocketDescriptor(socketDescriptor);
+	  socket.abort();
+	  spoton_misc::logError
+	    (QString("spoton_listener::"
+		     "slotNewConnection(): "
+		     "generateSslKeys() failure (%1) for %2:%3.").
+	     arg(error.remove(".")).
+	     arg(m_address.toString()).
+	     arg(m_port));
+	}
     }
 
   if(!neighbor)
@@ -599,9 +701,10 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
 		       "account_name, "
 		       "account_password, "
 		       "maximum_buffer_size, "
-		       "maximum_content_length) "
+		       "maximum_content_length, "
+		       "transport) "
 		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
 	    query.bindValue(1, m_port);
 
@@ -639,7 +742,8 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
 		(7,
 		 s_crypt->keyedHash((neighbor->peerAddress().toString() +
 				     QString::number(neighbor->peerPort()) +
-				     neighbor->peerAddress().scopeId()).
+				     neighbor->peerAddress().scopeId() +
+				     m_transport).
 				    toLatin1(), &ok).toBase64());
 
 	    query.bindValue(8, 1); // Sticky
@@ -727,6 +831,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
 
 	    query.bindValue(25, m_maximumBufferSize);
 	    query.bindValue(26, m_maximumContentLength);
+	    query.bindValue(27, m_transport);
 
 	    if(ok)
 	      created = query.exec();
@@ -738,12 +843,14 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
 		query.setForwardOnly(true);
 
 		if(query.exec("SELECT OID, remote_ip_address, "
-			      "remote_port, scope_id FROM neighbors"))
+			      "remote_port, scope_id, transport "
+			      "FROM neighbors"))
 		  while(query.next())
 		    {
 		      QByteArray b1;
 		      QByteArray b2;
 		      QByteArray b3;
+		      QString b4("");
 
 		      b1 = s_crypt->decrypted
 			(QByteArray::fromBase64(query.value(1).
@@ -762,14 +869,17 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
 						  toByteArray()),
 			   &ok);
 
+		      b4 = query.value(4).toString();
+
 		      if(b1 == neighbor->peerAddress().toString() &&
 			 b2.toUShort() == neighbor->peerPort() &&
-			 b3 == neighbor->peerAddress().scopeId()) /*
-								  ** toUShort()
-								  ** returns
-								  ** zero on
-								  ** failure.
-								  */
+			 b3 == neighbor->peerAddress().scopeId() &&
+			 b4 == neighbor->transport()) /*
+						      ** toUShort()
+						      ** returns
+						      ** zero on
+						      ** failure.
+						      */
 			{
 			  id = query.value(0).toLongLong();
 			  break;
@@ -793,7 +903,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor)
     {
       neighbor->deleteLater();
       spoton_misc::logError
-	(QString("spoton_listener::slotEncrypted(): "
+	(QString("spoton_listener::slotNewConnection(): "
 		 "severe error(s). Purging neighbor "
 		 "object for %1:%2.").
 	 arg(m_address.toString()).
@@ -854,12 +964,24 @@ void spoton_listener::prepareNetworkInterface(void)
       QList<QNetworkAddressEntry> addresses(list.at(i).addressEntries());
 
       for(int j = 0; j < addresses.size(); j++)
-	if(addresses.at(j).ip() ==
-	   spoton_listener_tcp_server::serverAddress())
+	if(m_tcpServer)
 	  {
-	    m_networkInterface = new QNetworkInterface(list.at(i));
-	    break;
+	    if(addresses.at(j).ip() == m_tcpServer->serverAddress())
+	      {
+		m_networkInterface = new QNetworkInterface(list.at(i));
+		break;
+	      }
 	  }
+	else if(m_udpServer)
+	  {
+	    if(addresses.at(j).ip() == m_udpServer->localAddress())
+	      {
+		m_networkInterface = new QNetworkInterface(list.at(i));
+		break;
+	      }
+	  }
+	else
+	  break;
 
       if(m_networkInterface)
 	break;
@@ -965,4 +1087,57 @@ QHostAddress spoton_listener::serverAddress(void) const
 quint16 spoton_listener::serverPort(void) const
 {
   return m_port;
+}
+
+void spoton_listener::close(void)
+{
+  if(m_tcpServer)
+    m_tcpServer->close();
+  else if(m_udpServer)
+    m_udpServer->close();
+}
+
+bool spoton_listener::isListening(void) const
+{
+  if(m_tcpServer)
+    return m_tcpServer->isListening();
+  else if(m_udpServer)
+    return m_udpServer->state() == QAbstractSocket::BoundState;
+  else
+    return false;
+}
+
+bool spoton_listener::listen(const QHostAddress &address, const quint16 port)
+{
+  if(m_tcpServer)
+    return m_tcpServer->listen(address, port);
+  else if(m_udpServer)
+    return m_udpServer->bind(address, port,
+			     QUdpSocket::ReuseAddressHint |
+			     QUdpSocket::ShareAddress);
+  else
+    return false;
+}
+
+QString spoton_listener::errorString(void) const
+{
+  if(m_tcpServer)
+    return m_tcpServer->errorString();
+  else if(m_udpServer)
+    return m_udpServer->errorString();
+  else
+    return QString();
+}
+
+int spoton_listener::maxPendingConnections(void) const
+{
+  if(m_tcpServer)
+    return m_tcpServer->maxPendingConnections();
+  else
+    return std::numeric_limits<int>::max();
+}
+
+QString spoton_listener::transport(void) const
+{
+  return m_transport;
 }

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1196</width>
-    <height>650</height>
+    <height>686</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -337,7 +337,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1182</width>
-                <height>546</height>
+                <height>577</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1607,6 +1607,11 @@
               </column>
               <column>
                <property name="text">
+                <string>Transport</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
                 <string>OID</string>
                </property>
               </column>
@@ -1627,7 +1632,7 @@
                <item>
                 <widget class="QLabel" name="label_21">
                  <property name="text">
-                  <string>The uniqueness of a listener is defined by the local IP, the local port, and the scope ID.</string>
+                  <string>The uniqueness of a listener is defined by the local IP, the local port, the scope ID, and the transport.</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
@@ -1733,6 +1738,33 @@
                    <property name="text">
                     <string>IPv&amp;6</string>
                    </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_65">
+                   <property name="text">
+                    <string>&amp;Transport</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>listenerTransport</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QComboBox" name="listenerTransport">
+                   <property name="sizeAdjustPolicy">
+                    <enum>QComboBox::AdjustToContents</enum>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>TCP</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>UDP</string>
+                    </property>
+                   </item>
                   </widget>
                  </item>
                 </layout>
@@ -1872,8 +1904,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>306</width>
-                 <height>526</height>
+                 <width>278</width>
+                 <height>557</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2421,6 +2453,11 @@
                 </column>
                 <column>
                  <property name="text">
+                  <string>Transport</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
                   <string>is_encrypted</string>
                  </property>
                 </column>
@@ -2465,7 +2502,7 @@
                <item>
                 <widget class="QLabel" name="label_23">
                  <property name="text">
-                  <string>The uniqueness of a neighbor is defined by the proxy hostname, the proxy port, the remote IP, the remote port, and the scope ID.</string>
+                  <string>The uniqueness of a neighbor is defined by the proxy hostname, the proxy port, the remote IP, the remote port, the scope ID, and the transport.</string>
                  </property>
                  <property name="wordWrap">
                   <bool>true</bool>
@@ -2577,6 +2614,53 @@
                    </property>
                   </widget>
                  </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_66">
+                   <property name="text">
+                    <string>&amp;Transport</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>neighborTransport</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <layout class="QHBoxLayout" name="horizontalLayout_60">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <item>
+                    <widget class="QComboBox" name="neighborTransport">
+                     <property name="sizeAdjustPolicy">
+                      <enum>QComboBox::AdjustToContents</enum>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>TCP</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>UDP</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_50">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
                 </layout>
                </item>
                <item>
@@ -2635,7 +2719,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="label_29">
+                  <widget class="QLabel" name="sslKeySizeLabel">
                    <property name="text">
                     <string>&amp;SSL Key Size</string>
                    </property>
@@ -3121,7 +3205,7 @@
              <x>0</x>
              <y>0</y>
              <width>1172</width>
-             <height>536</height>
+             <height>567</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3809,7 +3893,7 @@
              <x>0</x>
              <y>0</y>
              <width>1172</width>
-             <height>536</height>
+             <height>567</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5140,7 +5224,7 @@
      <x>0</x>
      <y>0</y>
      <width>1196</width>
-     <height>24</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -5320,6 +5404,7 @@
   <tabstop>ipv4Listener</tabstop>
   <tabstop>listenerScopeId</tabstop>
   <tabstop>ipv6Listener</tabstop>
+  <tabstop>listenerTransport</tabstop>
   <tabstop>listenersEchoMode</tabstop>
   <tabstop>recordIPAddress</tabstop>
   <tabstop>permanentCertificate</tabstop>
@@ -5352,6 +5437,7 @@
   <tabstop>ipv4Neighbor</tabstop>
   <tabstop>neighborScopeId</tabstop>
   <tabstop>ipv6Neighbor</tabstop>
+  <tabstop>neighborTransport</tabstop>
   <tabstop>neighborsEchoMode</tabstop>
   <tabstop>addException</tabstop>
   <tabstop>requireSsl</tabstop>

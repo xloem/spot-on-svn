@@ -573,3 +573,21 @@ void spoton::slotResetCertificate(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 }
+
+void spoton::slotTransportChanged(int index)
+{
+  if(m_ui.listenerTransport == sender())
+    {
+      m_ui.recordIPAddress->setEnabled(index == 0);
+      m_ui.permanentCertificate->setEnabled(index == 0);
+      m_ui.sslListener->setEnabled(index == 0);
+      m_ui.listenerKeySize->setEnabled(index == 0);
+    }
+  else if(m_ui.neighborTransport == sender())
+    {
+      m_ui.addException->setEnabled(index == 0);
+      m_ui.requireSsl->setEnabled(index == 0);
+      m_ui.sslKeySizeLabel->setEnabled(index == 0);
+      m_ui.neighborKeySize->setEnabled(index == 0);
+    }
+}

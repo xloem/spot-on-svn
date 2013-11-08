@@ -67,13 +67,54 @@ class spoton_listener_tcp_server: public QTcpServer
 
  signals:
 #if QT_VERSION >= 0x050000
-  void newConnection(qintptr socketDescriptor);
+  void newConnection(qintptr socketDescriptor,
+		     const QHostAddress &address,
+		     const quint16 port);
 #else
-  void newConnection(int socketDescriptor);
+  void newConnection(int socketDescriptor,
+		     const QHostAddress &address,
+		     const quint16 port);
 #endif
 };
 
-class spoton_listener: public spoton_listener_tcp_server
+class spoton_listener_udp_server: public QUdpSocket
+{
+  Q_OBJECT
+
+ public:
+  spoton_listener_udp_server(const qint64 id,
+			     QObject *parent):QUdpSocket(parent)
+  {
+    m_id = id;
+    connect(this,
+	    SIGNAL(readyRead(void)),
+	    this,
+	    SLOT(slotReadyRead(void)));
+  }
+
+  ~spoton_listener_udp_server()
+  {
+  }
+
+ private:
+  qint64 m_id;
+
+ private slots:
+  void slotReadyRead(void);
+
+ signals:
+#if QT_VERSION >= 0x050000
+  void newConnection(qintptr socketDescriptor,
+		     const QHostAddress &address,
+		     const quint16 port);
+#else
+  void newConnection(int socketDescriptor,
+		     const QHostAddress &address,
+		     const quint16 port);
+#endif
+};
+
+class spoton_listener: public QObject
 {
   Q_OBJECT
 
@@ -91,12 +132,17 @@ class spoton_listener: public spoton_listener_tcp_server
 		  const bool useAccounts,
 		  const int maximumBufferSize,
 		  const int maximumContentLength,
+		  const QString &transport,
 		  QObject *parent);
   ~spoton_listener();
   QHostAddress externalAddress(void) const;
   QHostAddress serverAddress(void) const;
+  QString transport(void) const;
+  bool isListening(void) const;
+  bool listen(const QHostAddress &address, const quint16 port);
   quint16 externalPort(void) const;
   quint16 serverPort(void) const;
+  void close(void);
 
  private:
   QByteArray m_certificate;
@@ -105,6 +151,7 @@ class spoton_listener: public spoton_listener_tcp_server
   QHostAddress m_address;
   QNetworkInterface *m_networkInterface;
   QString m_echoMode;
+  QString m_transport;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_timer;
   bool m_useAccounts;
@@ -115,7 +162,11 @@ class spoton_listener: public spoton_listener_tcp_server
   quint16 m_externalPort;
   quint16 m_port;
   spoton_external_address *m_externalAddress;
+  spoton_listener_tcp_server *m_tcpServer;
+  spoton_listener_udp_server *m_udpServer;
   qint64 id(void) const;
+  QString errorString(void) const;
+  int maxPendingConnections(void) const;
   void prepareNetworkInterface(void);
   void saveExternalAddress(const QHostAddress &address,
 			   const QSqlDatabase &db);
@@ -127,9 +178,13 @@ class spoton_listener: public spoton_listener_tcp_server
   void slotExternalAddressDiscovered(const QHostAddress &address);
   void slotNeighborDisconnected(void);
 #if QT_VERSION >= 0x050000
-  void slotNewConnection(const qintptr socketDescriptor);
+  void slotNewConnection(const qintptr socketDescriptor,
+			 const QHostAddress &address,
+			 const quint16 port);
 #else
-  void slotNewConnection(const int socketDescriptor);
+  void slotNewConnection(const int socketDescriptor,
+			 const QHostAddress &address,
+			 const quint16 port);
 #endif
   void slotTimeout(void);
 

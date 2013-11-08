@@ -36,6 +36,7 @@
 #include <QSslSocket>
 #include <QThread>
 #include <QTimer>
+#include <QUdpSocket>
 #include <QUuid>
 
 #include "Common/spot-on-send.h"
@@ -44,16 +45,53 @@ class QNetworkInterface;
 
 class spoton_external_address;
 
-class spoton_neighbor_socket: public QSslSocket
+class spoton_neighbor_tcp_socket: public QSslSocket
 {
+  Q_OBJECT
+
  public:
-  spoton_neighbor_socket(QObject *parent = 0):QSslSocket(parent)
+  spoton_neighbor_tcp_socket(QObject *parent = 0):QSslSocket(parent)
   {
   }
 
   void setLocalAddress(const QHostAddress &address)
   {
     QSslSocket::setLocalAddress(address);
+  }
+};
+
+class spoton_neighbor_udp_socket: public QUdpSocket
+{
+  Q_OBJECT
+
+ public:
+  spoton_neighbor_udp_socket(QObject *parent = 0):QUdpSocket(parent)
+  {
+  }
+
+  void setLocalAddress(const QHostAddress &address)
+  {
+    QUdpSocket::setLocalAddress(address);
+  }
+
+  void setLocalPort(quint16 port)
+  {
+    QUdpSocket::setLocalPort(port);
+  }
+
+  void setPeerAddress(const QHostAddress &address)
+  {
+    QUdpSocket::setPeerAddress(address);
+  }
+
+  void setPeerPort(quint16 port)
+  {
+    QUdpSocket::setPeerPort(port);
+  }
+
+  void setSocketState(QAbstractSocket::SocketState state)
+  {
+    QUdpSocket::setSocketState(state);
   }
 };
 
@@ -78,6 +116,7 @@ class spoton_neighbor: public QThread
 		  const bool requireSsl,
 		  const QByteArray &accountName,
 		  const QByteArray &accountPassword,
+		  const QString &transport,
 		  QObject *parent);
   spoton_neighbor(const int socketDescriptor,
 		  const QByteArray &certificate,
@@ -87,10 +126,16 @@ class spoton_neighbor: public QThread
 		  const qint64 listenerOid,
 		  const int maximumBufferSize,
 		  const int maximumContentLength,
+		  const QString &transport,
+		  const QString &ipAddress,
+		  const QString &port,
+		  const QString &localIpAddress,
+		  const QString &localPort,
 		  QObject *parent);
   ~spoton_neighbor();
   QAbstractSocket::SocketState state(void) const;
   QHostAddress peerAddress(void) const;
+  QString transport(void) const;
   QUuid receivedUuid(void) const;
   qint64 id(void) const;
   qint64 write(const char *data, qint64 size);
@@ -120,6 +165,7 @@ class spoton_neighbor: public QThread
   QString m_echoMode;
   QString m_ipAddress;
   QString m_protocol;
+  QString m_transport;
   QTimer m_accountTimer;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_keepAliveTimer;
@@ -141,11 +187,14 @@ class spoton_neighbor: public QThread
   quint64 m_bytesRead;
   quint64 m_bytesWritten;
   spoton_external_address *m_externalAddress;
-  spoton_neighbor_socket m_socket;
+  spoton_neighbor_tcp_socket *m_socket;
+  spoton_neighbor_udp_socket *m_udpSocket;
   QString findMessageType(const QByteArray &data,
 			  QList<QByteArray> &symmetricKeys);
   bool isDuplicateMessage(const QByteArray &data);
+  bool isEncrypted(void) const;
   bool readyToWrite(void);
+  qint64 readBufferSize(void) const;
   void prepareNetworkInterface(void);
   void process0000(int length, const QByteArray &data,
 		   const QList<QByteArray> &symmetricKeys);
@@ -191,6 +240,7 @@ class spoton_neighbor: public QThread
   void saveStatus(const QSqlDatabase &db, const QString &status);
   void saveStatus(const QString &status);
   void sendAuthenticationRequest(void);
+  void setReadBufferSize(const qint64 size);
   void storeLetter(const QByteArray &symmetricKey,
 		   const QByteArray &symmetricKeyAlgorithm,
 		   const QByteArray &senderPublicKeyHash,
@@ -220,7 +270,8 @@ class spoton_neighbor: public QThread
   void slotPublicizeListenerPlaintext(const QByteArray &data,
 				      const qint64 id);
   void slotPublicizeListenerPlaintext(const QHostAddress &address,
-				      const quint16 port);
+				      const quint16 port,
+				      const QString &transport);
   void slotReadyRead(void);
   void slotReceivedMessage(const QByteArray &data, const qint64 id);
   void slotRetrieveMail(const QList<QByteArray> &list);

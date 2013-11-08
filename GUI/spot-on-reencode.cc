@@ -300,7 +300,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	if(query.exec("SELECT ip_address, port, scope_id, "
 		      "protocol, echo_mode, certificate, private_key, "
-		      "public_key, hash FROM listeners"))
+		      "public_key, transport, hash FROM listeners"))
 	  while(query.next())
 	    {
 	      QByteArray certificate;
@@ -312,6 +312,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      QString port("");
 	      QString protocol("");
 	      QString scopeId("");
+	      QString transport(query.value(8).toString());
 	      bool ok = true;
 
 	      updateQuery.prepare("UPDATE listeners "
@@ -401,9 +402,9 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      if(ok)
 		updateQuery.bindValue
-		  (4, newCrypt->keyedHash((ipAddress + port).toLatin1(),
-					  &ok).
-		   toBase64());
+		  (4, newCrypt->keyedHash((ipAddress + port + scopeId +
+					   transport).
+					  toLatin1(), &ok).toBase64());
 
 	      if(ok)
 		updateQuery.bindValue
@@ -423,7 +424,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  (8, newCrypt->encrypted(publicKey, &ok).toBase64());
 
 	      updateQuery.bindValue
-		(9, query.value(8));
+		(9, query.value(9));
 
 	      if(ok)
 		updateQuery.exec();
@@ -433,7 +434,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 		  deleteQuery.prepare("DELETE FROM listeners WHERE "
 				      "hash = ?");
-		  deleteQuery.bindValue(0, query.value(8));
+		  deleteQuery.bindValue(0, query.value(9));
 		  deleteQuery.exec();
 		  deleteQuery.exec("DELETE FROM listeners_accounts "
 				   "WHERE listener_oid NOT IN "
@@ -567,7 +568,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		      "proxy_password, proxy_port, proxy_type, "
 		      "proxy_username, uuid, "
 		      "echo_mode, certificate, protocol, "
-		      "account_name, account_password "
+		      "account_name, account_password, transport "
 		      "FROM neighbors"))
 	  while(query.next())
 	    {
@@ -587,6 +588,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      QString proxyType("");
 	      QString proxyUsername("");
 	      QString scopeId("");
+	      QString transport(query.value(16).toString());
 	      bool ok = true;
 
 	      updateQuery.prepare("UPDATE neighbors "
@@ -736,8 +738,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      if(ok)
 		updateQuery.bindValue
-		  (4, newCrypt->keyedHash((ipAddress + port).toLatin1(),
-					  &ok).
+		  (4, newCrypt->keyedHash((ipAddress + port + scopeId +
+					   transport).toLatin1(), &ok).
 		   toBase64());
 
 	      if(ok)

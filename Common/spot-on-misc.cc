@@ -275,8 +275,9 @@ void spoton_misc::prepareDatabases(void)
 		   "hash TEXT PRIMARY KEY NOT NULL, " /*
 						      ** The hash of the
 						      ** IP address,
-						      ** the port, and
-						      ** the scope.
+						      ** the port,
+						      ** the scope id, and
+						      ** the transport.
 						      */
 		   "ssl_key_size INTEGER NOT NULL DEFAULT 2048, "
 		   "echo_mode TEXT NOT NULL, "
@@ -285,7 +286,8 @@ void spoton_misc::prepareDatabases(void)
 		   "public_key BLOB NOT NULL, "       // Not used.
 		   "use_accounts INTEGER NOT NULL DEFAULT 0, "
 		   "maximum_buffer_size INTEGER NOT NULL DEFAULT 131072, "
-		   "maximum_content_length INTEGER NOT NULL DEFAULT 65536)");
+		   "maximum_content_length INTEGER NOT NULL DEFAULT 65536, "
+		   "transport TEXT NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_accounts ("
 		   "account_name TEXT NOT NULL, "
 		   "account_name_hash TEXT NOT NULL, "
@@ -363,7 +365,8 @@ void spoton_misc::prepareDatabases(void)
 					      ** Hash of the proxy IP address,
 					      ** the proxy port, the remote IP
 					      ** address, the remote
-					      ** port, and the scope id.
+					      ** port, the scope id, and
+					      ** the transport.
 					      */
 	   "remote_ip_address_hash TEXT NOT NULL, "
 	   "qt_country_hash TEXT, "
@@ -387,7 +390,8 @@ void spoton_misc::prepareDatabases(void)
 	   "ssl_required INTEGER NOT NULL DEFAULT 1, "
 	   "account_name TEXT NOT NULL, "
 	   "account_password TEXT NOT NULL, "
-	   "account_authenticated INTEGER NOT NULL DEFAULT 0)");
+	   "account_authenticated INTEGER NOT NULL DEFAULT 0, "
+	   "transport TEXT NOT NULL)");
       }
 
     db.close();
@@ -1202,6 +1206,7 @@ void spoton_misc::prepareUrlDatabases(void)
 
 void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 					const quint16 port,
+					const QString &transport,
 					const QString &statusControl,
 					spoton_crypt *crypt)
 {
@@ -1252,9 +1257,10 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 		   "ssl_key_size, "
 		   "certificate, "
 		   "account_name, "
-		   "account_password) "
+		   "account_password, "
+		   "transport) "
 		   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-		   "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		   "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
 
@@ -1289,7 +1295,8 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	    (7,
 	     crypt->keyedHash((address.toString() +
 			       QString::number(port) +
-			       address.scopeId()).toLatin1(), &ok).
+			       address.scopeId() +
+			       transport).toLatin1(), &ok).
 	     toBase64());
 
 	query.bindValue(8, 1); // Sticky
@@ -1354,19 +1361,24 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 
 	if(ok)
 	  {
-	    QSettings settings;
-	    QString error("");
-	    int keySize = 2048;
+	    if(transport == "tcp")
+	      {
+		QSettings settings;
+		QString error("");
+		int keySize = 2048;
 
-	    keySize = settings.value
-	      ("gui/publishedKeySize", "2048").toInt(&ok);
+		keySize = settings.value
+		  ("gui/publishedKeySize", "2048").toInt(&ok);
 
-	    if(!ok)
-	      keySize = 2048;
-	    else if(!(keySize == 2048 || keySize == 3072 || keySize == 4096))
-	      keySize = 2048;
+		if(!ok)
+		  keySize = 2048;
+		else if(!(keySize == 2048 || keySize == 3072 ||keySize == 4096))
+		  keySize = 2048;
 
-	    query.bindValue(20, keySize);
+		query.bindValue(20, keySize);
+	      }
+	    else
+	      query.bindValue(20, 0);
 	  }
 
 	if(ok)
@@ -1380,6 +1392,8 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	if(ok)
 	  query.bindValue
 	    (23, crypt->encrypted(QByteArray(), &ok).toBase64());
+
+	query.bindValue(24, transport);
 
 	if(ok)
 	  query.exec();
@@ -1755,12 +1769,57 @@ bool spoton_misc::allParticipantsHaveGeminis(void)
 		      "neighbor_oid = -1"))
 	  if(query.next())
 	    count = query.value(0).toInt();
-
-	db.close();
       }
+
+    db.close();
   }
 
   QSqlDatabase::removeDatabase(connectionName);
 
   return count == 0;
+}
+
+bool spoton_misc::neighborExists(const QHostAddress &address,
+				 const quint16 port,
+				 const QString &transport,
+				 spoton_crypt *crypt)
+{
+  if(!crypt)
+    return false;
+
+  QString connectionName("");
+  int count = 0;
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName
+      (homePath() + QDir::separator() + "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT COUNT(*) FROM neighbors WHERE "
+		      "remote_ip_address_hash = ?");
+	query.bindValue
+	  (0, crypt->
+	   keyedHash((address.toString() + QString::number(port) +
+		      address.scopeId() + transport).
+		     toLatin1(), &ok).toBase64());
+
+	if(ok)
+	  if(query.exec())
+	    if(query.next())
+	      count = query.value(0).toInt();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  return count > 0;
 }

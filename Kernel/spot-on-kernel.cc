@@ -543,6 +543,7 @@ void spoton_kernel::prepareListeners(void)
 		      "use_accounts, "
 		      "maximum_buffer_size, "
 		      "maximum_content_length, "
+		      "transport, "
 		      "OID "
 		      "FROM listeners"))
 	  while(query.next())
@@ -654,6 +655,7 @@ void spoton_kernel::prepareListeners(void)
 			     query.value(10).toInt(),
 			     query.value(11).toInt(),
 			     query.value(12).toInt(),
+			     query.value(13).toString(),
 			     this);
 			}
 
@@ -757,6 +759,7 @@ void spoton_kernel::prepareNeighbors(void)
 		      "ssl_required, "
 		      "account_name, "
 		      "account_password, "
+		      "transport, "
 		      "OID FROM neighbors"))
 	  while(query.next())
 	    {
@@ -792,6 +795,8 @@ void spoton_kernel::prepareNeighbors(void)
 			else if(i == 19) // account_password
 			  list.append(QByteArray::fromBase64(query.value(i).
 							     toByteArray()));
+			else if(i == 20) // transport
+			  list.append(query.value(i).toString());
 			else
 			  {
 			    QByteArray bytes;
@@ -890,6 +895,7 @@ void spoton_kernel::prepareNeighbors(void)
 			     list.value(17).toBool(),
 			     list.value(18).toByteArray(),
 			     list.value(19).toByteArray(),
+			     list.value(20).toString(),
 			     this);
 			}
 
@@ -1391,10 +1397,12 @@ void spoton_kernel::connectSignalsToNeighbor
 					      const qint64)));
   connect(this,
 	  SIGNAL(publicizeListenerPlaintext(const QHostAddress &,
-					    const quint16)),
+					    const quint16,
+					    const QString &)),
 	  neighbor,
 	  SLOT(slotPublicizeListenerPlaintext(const QHostAddress &,
-					      const quint16)));
+					      const quint16,
+					      const QString &)));
   connect(this,
 	  SIGNAL(receivedMessage(const QByteArray &,
 				 const qint64)),
@@ -2227,7 +2235,8 @@ void spoton_kernel::slotPublicizeAllListenersPlaintext(void)
       if(listener)
 	if(!listener->externalAddress().isNull())
 	  emit publicizeListenerPlaintext(listener->externalAddress(),
-					  listener->externalPort());
+					  listener->externalPort(),
+					  listener->transport());
     }
 }
 
@@ -2238,7 +2247,8 @@ void spoton_kernel::slotPublicizeListenerPlaintext(const qint64 oid)
   if(listener)
     if(!listener->externalAddress().isNull())
       emit publicizeListenerPlaintext(listener->externalAddress(),
-				      listener->externalPort());
+				      listener->externalPort(),
+				      listener->transport());
 }
 
 void spoton_kernel::slotRequestScramble(void)

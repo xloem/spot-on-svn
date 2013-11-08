@@ -264,6 +264,8 @@ EOL
 1 - Port (Base-64)
 EOL
 2 - Scope ID (Base-64)
+EOL
+3 - Transport (Base-64)
 
 Echo Buzz
 Echoed? Yes
