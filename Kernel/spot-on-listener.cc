@@ -91,6 +91,10 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 
 void spoton_listener_udp_server::slotReadyRead(void)
 {
+  /*
+  ** This unfortunately violates our multi-threaded approach.
+  */
+
   QByteArray buffer(pendingDatagramSize(), '0');
   QHostAddress peerAddress;
   quint16 peerPort = 0;

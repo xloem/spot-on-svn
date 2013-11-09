@@ -41,8 +41,6 @@
 
 #include "Common/spot-on-send.h"
 
-class QNetworkInterface;
-
 class spoton_external_address;
 
 class spoton_neighbor_tcp_socket: public QSslSocket
@@ -160,7 +158,6 @@ class spoton_neighbor: public QThread
   QDateTime m_lastReadTime;
   QDateTime m_startTime;
   QHostAddress m_address;
-  QNetworkInterface *m_networkInterface;
   QSslCertificate m_peerCertificate;
   QString m_echoMode;
   QString m_ipAddress;
@@ -195,7 +192,6 @@ class spoton_neighbor: public QThread
   bool isEncrypted(void) const;
   bool readyToWrite(void);
   qint64 readBufferSize(void) const;
-  void prepareNetworkInterface(void);
   void process0000(int length, const QByteArray &data,
 		   const QList<QByteArray> &symmetricKeys);
   void process0000a(int length, const QByteArray &data);

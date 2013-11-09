@@ -66,17 +66,19 @@
      server-side object.
 31.  Ability to retrieve e-mail automatically, per request.
 32.  Ability to reset certificates of disconnected clients.
-33.  Random keep-alive timer intervals [30, 45].
+33.  Random keep-alive timer intervals [30, 45).
 34.  Added support for UDP listeners and neighbors. Please note that
      SSL is not supported for the UDP transport layer. Please remove
      listeners.db and neighbors.db.
 35.  Modified the accounts mechanism so that it's well-defined over
      plain connections in support of UDP. Please note that SSL is
-     required over TCP connections.
+     required for TCP connections with respect to accounts.
 36.  Corrected re-encoding of listeners and neighbors. Scope IDs where
      not included when computing keyed hashes.
 37.  Do not display certificate hashes of empty certificates (Neighbors).
 38.  Added support for TLS 1.1 and TLS 1.2.
+39.  Inspecting network interfaces in neighbor objects is not necessary
+     because the keep-alive timers will sever damaged connections.
 
 0.06 (10/24/2013)
 

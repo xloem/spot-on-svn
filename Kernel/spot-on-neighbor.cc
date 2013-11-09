@@ -28,7 +28,6 @@
 #include <QAuthenticator>
 #include <QDateTime>
 #include <QDir>
-#include <QNetworkInterface>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QSslCipher>
@@ -134,7 +133,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
     qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
 	   maximumContentLength,
 	   spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
-  m_networkInterface = 0;
 
   if(m_socket)
     m_port = m_socket->peerPort();
@@ -247,6 +245,11 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
     }
   else if(m_udpSocket)
     {
+      /*
+      ** UDP sockets are connection-less. However, most of the communications
+      ** logic requires connected sockets.
+      */
+
       m_udpSocket->setSocketState(QAbstractSocket::ConnectedState);
       connect(m_udpSocket,
 	      SIGNAL(disconnected(void)),
@@ -347,7 +350,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
     qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
 	   maximumContentLength,
 	   spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
-  m_networkInterface = 0;
   m_peerCertificate = QSslCertificate(peerCertificate);
   m_port = quint16(port.toInt());
   m_protocol = protocol;
@@ -653,9 +655,6 @@ spoton_neighbor::~spoton_neighbor()
       QSqlDatabase::removeDatabase(connectionName);
     }
 
-  if(m_networkInterface)
-    delete m_networkInterface;
-
   quit();
   wait(30000);
 }
@@ -824,66 +823,6 @@ void spoton_neighbor::slotTimeout(void)
 	      }
 	  }
       }
-
-  /*
-  ** Retrieve the interface that this neighbor is using.
-  ** If the interface disappears, destroy the neighbor.
-  */
-
-  prepareNetworkInterface();
-
-  if(m_socket)
-    {
-      if(m_socket->state() == QAbstractSocket::ConnectedState)
-	if(!m_networkInterface || !(m_networkInterface->flags() &
-				    QNetworkInterface::IsUp))
-	  {
-	    if(m_networkInterface)
-	      spoton_misc::logError
-		(QString("spoton_neighbor::slotTimeout(): "
-			 "network interface %1 is not active for %2:%3. "
-			 "Aborting socket.").
-		 arg(m_networkInterface->name()).
-		 arg(m_address.toString()).
-		 arg(m_port));
-	    else
-	      spoton_misc::logError
-		(QString("spoton_neighbor::slotTimeout(): "
-			 "undefined network interface for %1:%2. "
-			 "Aborting socket.").
-		 arg(m_address.toString()).
-		 arg(m_port));
-
-	    deleteLater();
-	    return;
-	  }
-    }
-  else if(m_udpSocket)
-    {
-      if(m_udpSocket->state() == QAbstractSocket::ConnectedState)
-	if(!m_networkInterface || !(m_networkInterface->flags() &
-				    QNetworkInterface::IsUp))
-	  {
-	    if(m_networkInterface)
-	      spoton_misc::logError
-		(QString("spoton_neighbor::slotTimeout(): "
-			 "network interface %1 is not active for %2:%3. "
-			 "Aborting socket.").
-		 arg(m_networkInterface->name()).
-		 arg(m_address.toString()).
-		 arg(m_port));
-	    else
-	      spoton_misc::logError
-		(QString("spoton_neighbor::slotTimeout(): "
-			 "undefined network interface for %1:%2. "
-			 "Aborting socket.").
-		 arg(m_address.toString()).
-		 arg(m_port));
-
-	    deleteLater();
-	    return;
-	  }
-    }
 }
 
 void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
@@ -1341,7 +1280,8 @@ void spoton_neighbor::slotConnected(void)
   /*
   ** The local address is the address of the proxy. Unfortunately,
   ** we do not have network interfaces that have such an address.
-  ** Hence, m_networkInterface will always be zero.
+  ** Hence, m_networkInterface will always be zero. m_networkInterface
+  ** was removed on 11/08/2013. The following logic remains.
   */
 
   if(m_socket)
@@ -3751,45 +3691,6 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
        arg(m_port));
 
   deleteLater();
-}
-
-void spoton_neighbor::prepareNetworkInterface(void)
-{
-  if(m_networkInterface)
-    {
-      delete m_networkInterface;
-      m_networkInterface = 0;
-    }
-
-  QList<QNetworkInterface> list(QNetworkInterface::allInterfaces());
-
-  for(int i = 0; i < list.size(); i++)
-    {
-      QList<QNetworkAddressEntry> addresses(list.at(i).addressEntries());
-
-      for(int j = 0; j < addresses.size(); j++)
-	if(m_socket)
-	  {
-	    if(addresses.at(j).ip() == m_socket->localAddress())
-	      {
-		m_networkInterface = new QNetworkInterface(list.at(i));
-		break;
-	      }
-	  }
-	else if(m_udpSocket)
-	  {
-	    if(addresses.at(j).ip() == m_udpSocket->localAddress())
-	      {
-		m_networkInterface = new QNetworkInterface(list.at(i));
-		break;
-	      }
-	  }
-	else
-	  break;
-
-      if(m_networkInterface)
-	break;
-    }
 }
 
 void spoton_neighbor::slotSendUuid(void)
