@@ -3209,12 +3209,30 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
       ("gui/sslControlString",
        "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH").toString();
 
-  for(int i = 0; i < 2; i++)
+  for(int i = 1; i <= 4; i++)
     {
       index = 0;
       next = 0;
 
-      if(i == 0)
+      if(i == 1)
+	{
+	  if(!(ctx = SSL_CTX_new(TLSv1_2_method())))
+	    {
+	      spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
+				    "SSL_CTX_new() failure.");
+	      goto done_label;
+	    }
+	}
+      else if(i == 2)
+	{
+	  if(!(ctx = SSL_CTX_new(TLSv1_1_method())))
+	    {
+	      spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
+				    "SSL_CTX_new() failure.");
+	      goto done_label;
+	    }
+	}
+      else if(i == 3)
 	{
 	  if(!(ctx = SSL_CTX_new(TLSv1_method())))
 	    {
@@ -3252,7 +3270,7 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 	{
 	  if((next = SSL_get_cipher_list(ssl, index)))
 	    {
-	      if(i == 0)
+	      if(i <= 3)
 		{
 		  QSslCipher cipher(next, QSsl::UnknownProtocol);
 
