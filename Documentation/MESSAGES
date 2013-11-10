@@ -251,12 +251,6 @@ Echoed? No
 Message Type ("0014")
 UUID (Base-64)
 
-Keep Alive
-Echoed? No
-
-Message Type ("0015")
-0 (Base-64)
-
 Echo Listener Publication
 Echoed? Yes
 

@@ -3714,7 +3714,7 @@ void spoton::slotSetPassphrase(void)
 	      spoton_crypt crypt
 		(m_ui.cipherType->currentText(),
 		 m_ui.hashType->currentText(),
-		 str1.toUtf8(),
+		 str1.toUtf8(), // Passphrase.
 		 derivedKey,
 		 m_ui.saltLength->value(),
 		 m_ui.iterationCount->value(),

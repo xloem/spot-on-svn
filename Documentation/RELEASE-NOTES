@@ -81,6 +81,7 @@
      because the keep-alive timers will sever damaged connections.
 40.  Introduced sequence numbers to Chat protocols in support
      of UDP commmunications.
+41.  Replaced keep-alive messages with UUID transfers.
 
 0.06 (10/24/2013)
 

@@ -276,7 +276,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   connect(&m_keepAliveTimer,
 	  SIGNAL(timeout(void)),
 	  this,
-	  SLOT(slotSendKeepAlive(void)));
+	  SLOT(slotSendUuid(void)));
   connect(&m_lifetime,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -297,10 +297,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_keepAliveTimer.start(45000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
-
-  if(!m_useAccounts)
-    QTimer::singleShot(10000, this, SLOT(slotSendUuid(void)));
-
   start();
 }
 
@@ -536,7 +532,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   connect(&m_keepAliveTimer,
 	  SIGNAL(timeout(void)),
 	  this,
-	  SLOT(slotSendKeepAlive(void)));
+	  SLOT(slotSendUuid(void)));
   connect(&m_lifetime,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -1115,12 +1111,7 @@ void spoton_neighbor::slotReadyRead(void)
 		 spoton_kernel::setting("kernel/"
 					"server_account_verification_"
 					"window_msecs", 15000).toInt())
-		{
-		  process0051(length, data);
-
-		  if(m_accountAuthenticated)
-		    QTimer::singleShot(10000, this, SLOT(slotSendUuid(void)));
-		}
+		process0051(length, data);
 	      else
 		m_accountAuthenticated = false;
 
@@ -1171,8 +1162,6 @@ void spoton_neighbor::slotReadyRead(void)
 	    process0012(length, data);
 	  else if(length > 0 && data.contains("type=0014&content="))
 	    process0014(length, data);
-	  else if(length > 0 && data.contains("type=0015&content="))
-	    process0015(length, data);
 	  else if(length > 0 && data.contains("type=0030&content="))
 	    {
 	      if(isDuplicateMessage(originalData))
@@ -1391,9 +1380,6 @@ void spoton_neighbor::slotConnected(void)
 
   if(!m_keepAliveTimer.isActive())
     m_keepAliveTimer.start();
-
-  if(m_udpSocket)
-    QTimer::singleShot(10000, this, SLOT(slotSendUuid(void)));
 }
 
 void spoton_neighbor::savePublicKey(const QByteArray &keyType,
@@ -3069,44 +3055,6 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
        arg(m_port));
 }
 
-void spoton_neighbor::process0015(int length, const QByteArray &dataIn)
-{
-  length -= qstrlen("type=0015&content=");
-
-  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
-
-  data.remove
-    (0,
-     data.indexOf("type=0015&content=") + qstrlen("type=0015&content="));
-
-  if(length == data.length())
-    {
-      data = QByteArray::fromBase64(data);
-
-      if(data == "0")
-	{
-	  resetKeepAlive();
-	  spoton_misc::logError
-	    (QString("spoton_neighbor::process0015(): received "
-		     "keep-alive from %1:%2. Resetting time object.").
-	     arg(m_address.toString()).
-	     arg(m_port));
-	}
-      else
-	spoton_misc::logError
-	  ("spoton_neighbor::process0015(): received unknown keep-alive "
-	   "instruction.");
-    }
-  else
-    spoton_misc::logError
-      (QString("spoton_neighbor::process0015(): 0015 "
-	       "content-length mismatch (advertised: %1, received: %2) "
-	       "for %3:%4.").
-       arg(length).arg(data.length()).
-       arg(m_address.toString()).
-       arg(m_port));
-}
-
 void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 {
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
@@ -3664,9 +3612,6 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
 
       if(!m_requireSsl)
 	{
-	  if(state() == QAbstractSocket::ConnectedState)
-	    QTimer::singleShot(10000, this, SLOT(slotSendUuid(void)));
-
 	  m_useSsl = false;
 
 	  if(m_socket)
@@ -3796,33 +3741,6 @@ void spoton_neighbor::slotDiscoverExternalAddress(void)
 {
   if(state() == QAbstractSocket::ConnectedState)
     m_externalAddress->discover();
-}
-
-void spoton_neighbor::slotSendKeepAlive(void)
-{
-  if(readyToWrite())
-    {
-      QByteArray message(spoton_send::message0015());
-
-      /*
-      ** Sending 0015 should be a priority. Does Qt
-      ** support out-of-band data?
-      */
-
-      if(write(message.constData(),
-	       message.length()) != message.length())
-	spoton_misc::logError
-	  (QString("spoton_neighbor::slotSendKeepAlive(): write() "
-		   "error for %1:%2.").
-	   arg(m_address.toString()).
-	   arg(m_port));
-      else
-	{
-	  flush();
-	  m_bytesWritten += message.length();
-	  m_keepAliveTimer.start(qrand() % 15000 + 30000);
-	}
-    }
 }
 
 QUuid spoton_neighbor::receivedUuid(void) const
@@ -4276,7 +4194,6 @@ void spoton_neighbor::slotEncrypted(void)
 	}
 
       m_accountTimer.start();
-      QTimer::singleShot(10000, this, SLOT(slotSendUuid(void)));
     }
   else
     {
@@ -4710,8 +4627,6 @@ void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
     return;
   if(!readyToWrite())
     return;
-
-  QTimer::singleShot(10000, this, SLOT(slotSendUuid(void)));
 
   QByteArray message;
   QByteArray salt(spoton_crypt::strongRandomBytes(512));

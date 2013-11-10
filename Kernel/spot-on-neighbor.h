@@ -203,7 +203,6 @@ class spoton_neighbor: public QThread
   void process0013(int length, const QByteArray &data,
 		   const QList<QByteArray> &symmetricKeys);
   void process0014(int length, const QByteArray &data);
-  void process0015(int length, const QByteArray &data);
   void process0030(int length, const QByteArray &data);
   void process0040a(int length, const QByteArray &data,
 		    const QList<QByteArray> &symmetricKeys);
@@ -273,7 +272,6 @@ class spoton_neighbor: public QThread
   void slotRetrieveMail(const QList<QByteArray> &list);
   void slotSendAccountInformation(void);
   void slotSendBuzz(const QByteArray &data);
-  void slotSendKeepAlive(void);
   void slotSendMail(const QList<QPair<QByteArray, qint64> > &list);
   void slotSendMailFromPostOffice(const QByteArray &data);
   void slotSendMessage(const QByteArray &data);

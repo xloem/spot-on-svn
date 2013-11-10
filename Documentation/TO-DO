@@ -83,6 +83,7 @@ Completed Items
 31.    Favorite channels.
 32.    Remove UTF-8 conversions in spoton_crypt::saltedPassphraseHash().
 33.    Use separate hash keys with geminis.
+34.    Inspect UTF-8 uses.
 
 Ignored Items
 
@@ -99,55 +100,54 @@ Ignored Items
        will allow Spot-On to select optimal lengths for digest keys based
        on provided content and public keys. Version 0.06 introduced
        digest keys that are restricted to 32 bytes.
+8.     Prioritize keep-alive messages.
 
 Remaining Items
 
-1.     Inspect UTF-8 uses.
-2.     Zero-knowledge passphrase authentication.
-3.     Cosmic proxy?
-4.     Prioritize keep-alive messages.
-5.     Allow for other ciphers besides AES for e-mail.
-6.     Double encryption. Verify that the user's key is independent of
+1.     Zero-knowledge passphrase authentication.
+2.     Cosmic proxy?
+3.     Allow for other ciphers besides AES for e-mail.
+4.     Sequencial encryption. Verify that the user's key is independent of
        the random key. Separate cipher algorithms?
-7.     Country flags and names for host names.
-8.     Monitor kernel health from the UI.
+5.     Country flags and names for host names.
+6.     Monitor kernel health from the UI.
        See spoton::slotGeneralTimerTimeout().
-9.     Auto-clear textedit widgets that contain too much data.
-10.    Hard kernel termination. Control session separation.
-11.    Colorful HTTP headers.
-12.    Custom protocol messages for rapid redeployment.
-13.    Remote kernel termination.
-14.    Artificial trust. All participants must play nicely. Zero-knowledge?
-15.    What to do about corrupt database values?
-16.    Entering geminis is difficult.
-17.    Allow bonds across connections.
-18.    Allow pass-through flow of non-Spot-On data.
-19.    Inbound data should be time-tagged. Nodes must purge
+7.     Auto-clear textedit widgets that contain too much data.
+8.     Hard kernel termination. Control session separation.
+9.     Colorful HTTP headers.
+10.    Custom protocol messages for rapid redeployment.
+11.    Remote kernel termination.
+12.    Artificial trust. All participants must play nicely. Zero-knowledge?
+13.    What to do about corrupt database values?
+14.    Entering geminis is difficult.
+15.    Allow bonds across connections.
+16.    Allow pass-through flow of non-Spot-On data.
+17.    Inbound data should be time-tagged. Nodes must purge
        containers of old data.
-20.    Introduce load balancing of echoes. We're not interested in real-time
+18.    Introduce load balancing of echoes. We're not interested in real-time
        responses. Congestion control is helpful, however, short graphs
        tend to be skewed.
-21.    Optional OTR.
-22.    QFSFileEngine::open: No file name specified: created from
+19.    Optional OTR.
+20.    QFSFileEngine::open: No file name specified: created from
        e-mail.
-23.    Support ECC, or not.
-24.    Perform calling over geminis.
-25.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
-26.    Replace gcrypt with crypto++.
-27.    Add SRP for accounts verification.
-28.    Provide a means of exporting and importing keys.
-29.    Add log filters.
-30.    There may be an issue with the validity of stored e-mail. That is,
+21.    Support ECC, or not.
+22.    Perform calling over geminis.
+23.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
+24.    Replace gcrypt with crypto++.
+25.    Add SRP for accounts verification.
+26.    Provide a means of exporting and importing keys.
+27.    Add log filters.
+28.    There may be an issue with the validity of stored e-mail. That is,
        retrieving e-mail from another node may retrieve compromised content.
        Inspect it!
-31.    There is some redundant deciphering of data: findMessageType()
+29.    There is some redundant deciphering of data: findMessageType()
        followed by process() routines.
-32.    Move the kernel off of the local machine. Review all Common and
+30.    Move the kernel off of the local machine. Review all Common and
        GUI source for local database access. libspoton may require
        changes with respect to kernel presence.
-33.    The timers that support gathering of external IP addresses burden
+31.    The timers that support gathering of external IP addresses burden
        kernel objects with unnecessary work. If the machine's external IP
        address changes while connections are already established, the
        state timers will eventually cause objects to be reset and therefore
        new attempts will be made to capture the external IP addresses. Review!
-34.    Anonymous post office boxes.
+32.    Anonymous post office boxes.
