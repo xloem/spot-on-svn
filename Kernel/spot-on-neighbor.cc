@@ -1853,7 +1853,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 			{
 			  QList<QByteArray> list(data.split('\n'));
 
-			  if(list.size() == 4)
+			  if(list.size() == 5)
 			    {
 			      for(int i = 0; i < list.size(); i++)
 				list.replace
@@ -1869,9 +1869,10 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 				    if(!spoton_misc::
 				       isValidSignature(list.value(0) +
 							list.value(1) +
-							list.value(2),
+							list.value(2) +
+							list.value(3),
 							list.value(0),
-							list.value(3)))
+							list.value(4)))
 				      {
 					spoton_misc::logError
 					  ("spoton_neighbor::"
@@ -1891,13 +1892,15 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 				  if(!hash.isEmpty() &&
 				     !list.value(0).isEmpty() &&
 				     !list.value(1).isEmpty() &&
-				     !list.value(2).isEmpty())
+				     !list.value(2).isEmpty() &&
+				     !list.value(3).isEmpty())
 				    emit receivedChatMessage
 				      ("message_" +
 				       hash.toBase64() + "_" +
 				       list.value(0).toBase64() + "_" +
 				       list.value(1).toBase64() + "_" +
-				       list.value(2).toBase64().
+				       list.value(2).toBase64() + "_" +
+				       list.value(3).toBase64().
 				       append('\n'));
 				}
 			    }
@@ -1906,7 +1909,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 			      spoton_misc::logError
 				(QString("spoton_neighbor::process0000(): "
 					 "received irregular data. "
-					 "Expecting 4 "
+					 "Expecting 5 "
 					 "entries, "
 					 "received %1.").arg(list.size()));
 			      return;

@@ -359,11 +359,12 @@ void spoton_gui_server::slotReadyRead(void)
 
 	      QList<QByteArray> list(message.split('_'));
 
-	      if(list.size() == 3)
+	      if(list.size() == 4)
 		emit messageReceivedFromUI
 		  (list.value(0).toLongLong(),
 		   QByteArray::fromBase64(list.value(1)),
-		   QByteArray::fromBase64(list.value(2)));
+		   QByteArray::fromBase64(list.value(2)),
+		   QByteArray::fromBase64(list.value(3)));
 	    }
 	  else if(message.startsWith("publicizealllistenersplaintext"))
 	    emit publicizeAllListenersPlaintext();

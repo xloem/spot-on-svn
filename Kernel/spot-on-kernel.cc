@@ -390,9 +390,11 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   connect(m_guiServer,
 	  SIGNAL(messageReceivedFromUI(const qint64,
 				       const QByteArray &,
+				       const QByteArray &,
 				       const QByteArray &)),
 	  this,
 	  SLOT(slotMessageReceivedFromUI(const qint64,
+					 const QByteArray &,
 					 const QByteArray &,
 					 const QByteArray &)));
   connect
@@ -1047,9 +1049,11 @@ void spoton_kernel::slotNewNeighbor(QPointer<spoton_neighbor> neighbor)
     }
 }
 
-void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
-					      const QByteArray &name,
-					      const QByteArray &message)
+void spoton_kernel::slotMessageReceivedFromUI
+(const qint64 oid,
+ const QByteArray &name,
+ const QByteArray &message,
+ const QByteArray &sequenceNumber)
 {
   spoton_crypt *s_crypt1 = s_crypts.value("chat", 0);
 
@@ -1129,12 +1133,14 @@ void spoton_kernel::slotMessageReceivedFromUI(const qint64 oid,
 	if(setting("gui/chatSignMessages", true).toBool())
 	  signature = s_crypt2->digitalSignature(myPublicKeyHash +
 						 name +
-						 message, &ok);
+						 message +
+						 sequenceNumber, &ok);
 
 	if(ok)
 	  data = crypt.encrypted(myPublicKeyHash.toBase64() + "\n" +
 				 name.toBase64() + "\n" +
 				 message.toBase64() + "\n" +
+				 sequenceNumber.toBase64() + "\n" +
 				 signature.toBase64(), &ok);
 
 	if(ok)

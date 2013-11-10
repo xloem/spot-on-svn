@@ -22,7 +22,7 @@ Public Key
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL
-2 - Hash Symmetric Key (Base-64)
+2 - SHA-512 Symmetric Key (Base-64)
 EOL
 3 - Symmetric Key Algorithm (Base-64)
 }
@@ -35,7 +35,9 @@ EOL
 EOL
 2 - Message (Base-64)
 EOL
-3 - Signature (Base-64)
+3 - Sequence Number (Base-64)
+EOL
+4 - Signature (Base-64)
 }
 EOL
 {
@@ -52,7 +54,7 @@ Public Key
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL
-2 - Hash Symmetric Key (Base-64)
+2 - SHA-512 Symmetric Key (Base-64)
 EOL
 3 - Symmetric Key Algorithm (Base-64)
 }
@@ -82,7 +84,7 @@ Public Key
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL
-2 - Hash Symmetric Key (Base-64)
+2 - SHA-512 Symmetric Key (Base-64)
 EOL
 3 - Symmetric Key Algorithm (Base64)
 }
@@ -102,7 +104,7 @@ Public Key
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL
-2 - Hash Symmetric Key (Base-64)
+2 - SHA-512 Symmetric Key (Base-64)
 EOL
 3 - Symmetric Key Algorithm (Base-64)
 }
@@ -133,7 +135,7 @@ Public Key
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL
-2 - Hash Symmetric Key (Base-64)
+2 - SHA-512 Symmetric Key (Base-64)
 EOL
 3 - Symmetric Key Algorithm (Base-64)
 }
@@ -167,7 +169,7 @@ Public Key
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL
-2 - Hash Symmetric Key (Base-64)
+2 - SHA-512 Symmetric Key (Base-64)
 EOL
 3 - Symmetric Key Algorithm (Base-64)
 }
@@ -223,7 +225,7 @@ Public Key
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL
-2 - Hash Symmetric Key (Base-64)
+2 - SHA-512 Symmetric Key (Base-64)
 EOL
 3 - Symmetric Key Algorithm (Base-64)
 }

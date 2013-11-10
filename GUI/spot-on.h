@@ -143,6 +143,7 @@ class spoton: public QMainWindow
   Ui_statusbar m_sb;
   Ui_spoton_mainwindow m_ui;
   bool m_purge;
+  QHash<int, quint64> m_chatSequenceNumbers;
   QHash<QString, spoton_crypt *> m_crypts;
   spoton_external_address *m_externalAddress;
   spoton_logviewer m_logViewer;
