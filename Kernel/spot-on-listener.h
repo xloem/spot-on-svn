@@ -28,6 +28,7 @@
 #ifndef _spoton_listener_h_
 #define _spoton_listener_h_
 
+#include <QHash>
 #include <QPointer>
 #include <QQueue>
 #include <QSqlDatabase>
@@ -96,10 +97,34 @@ class spoton_listener_udp_server: public QUdpSocket
   {
   }
 
+  bool clientExists(const QHostAddress &address, const quint16 port) const
+  {
+    return m_clients.contains(QString("%1:%2:%3").
+			      arg(address.toString()).
+			      arg(address.scopeId()).
+			      arg(port));
+  }
+
+  void addClientAddress(const QString &address)
+  {
+    m_clients[address] = 0;
+  }
+
  private:
+  QHash<QString, char> m_clients;
   qint64 m_id;
 
  private slots:
+  void slotClientDestroyed(QObject *object)
+  {
+    if(!object)
+      return;
+
+    QString client(object->property("address").toString());
+
+    m_clients.remove(client);
+  }
+
   void slotReadyRead(void);
 
  signals:

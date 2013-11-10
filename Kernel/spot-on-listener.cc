@@ -109,9 +109,7 @@ void spoton_listener_udp_server::slotReadyRead(void)
        arg(peerAddress.toString()).
        arg(localAddress().toString()).
        arg(localPort()));
-  else if(!spoton_misc::
-	  neighborExists(peerAddress, peerPort, "udp",
-			 spoton_kernel::s_crypts.value("chat", 0)))
+  else if(!clientExists(peerAddress, peerPort))
     emit newConnection
       (socketDescriptor(), peerAddress, peerPort);
 }
@@ -597,6 +595,22 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 	  SIGNAL(disconnected(void)),
 	  neighbor,
 	  SLOT(deleteLater(void)));
+
+  if(m_udpServer)
+    {
+      QString address(QString("%1:%2:%3").
+		      arg(neighbor->peerAddress().toString()).
+		      arg(neighbor->peerAddress().scopeId()).
+		      arg(neighbor->peerPort()));
+
+      neighbor->setProperty("address", address);
+      m_udpServer->addClientAddress(address);
+      connect(neighbor,
+	      SIGNAL(destroyed(QObject *)),
+	      m_udpServer,
+	      SLOT(slotClientDestroyed(QObject *)));
+    }
+
   connect(neighbor,
 	  SIGNAL(destroyed(void)),
 	  this,

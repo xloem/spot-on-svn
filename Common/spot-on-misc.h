@@ -68,10 +68,6 @@ class spoton_misc
   static bool isValidSignature(const QByteArray &data,
 			       const QByteArray &publicKeyHash,
 			       const QByteArray &signature);
-  static bool neighborExists(const QHostAddress &address,
-			     const quint16 port,
-			     const QString &transport,
-			     spoton_crypt *crypt);
   static bool saveFriendshipBundle(const QByteArray &keyType,
 				   const QByteArray &name,
 				   const QByteArray &publicKey,
