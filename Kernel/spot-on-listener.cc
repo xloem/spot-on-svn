@@ -95,11 +95,10 @@ void spoton_listener_udp_server::slotReadyRead(void)
   ** This unfortunately violates our multi-threaded approach.
   */
 
-  QByteArray buffer(pendingDatagramSize(), '0');
   QHostAddress peerAddress;
   quint16 peerPort = 0;
 
-  readDatagram(buffer.data(), buffer.length(), &peerAddress, &peerPort);
+  readDatagram(0, 0, &peerAddress, &peerPort); // Discard the datagram.
 
   if(!spoton_misc::isAcceptedIP(peerAddress, m_id,
 				spoton_kernel::s_crypts.value("chat", 0)))
