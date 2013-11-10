@@ -960,6 +960,7 @@ void spoton_neighbor::slotReadyRead(void)
     if(!data.isEmpty())
       if(!isEncrypted())
 	{
+	  data.clear();
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::slotReadyRead(): "
 		     "m_useSsl is true, however, isEncrypted() "
