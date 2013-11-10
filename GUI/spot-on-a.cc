@@ -3439,7 +3439,7 @@ void spoton::slotListenerUseAccounts(int state)
 
 	    query.prepare("UPDATE listeners SET "
 			  "use_accounts = ? WHERE OID = ? AND "
-			  "(transport = 'udp') OR "
+			  "((transport = 'udp') OR "
 			  "(transport = 'tcp' AND ssl_key_size > 0))");
 
 	    if(state)

@@ -4665,9 +4665,9 @@ void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
 
 void spoton_neighbor::sendAuthenticationRequest(void)
 {
-  if(!isEncrypted() && m_transport == "udp")
+  if(!isEncrypted() && m_transport == "tcp")
     return;
-  if(state() != QAbstractSocket::ConnectedState)
+  else if(state() != QAbstractSocket::ConnectedState)
     return;
 
   QByteArray message(spoton_send::message0052());
