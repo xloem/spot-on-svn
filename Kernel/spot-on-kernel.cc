@@ -2413,12 +2413,10 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data)
   if(!ok)
     return;
 
-  s_messagingCacheMutex.lock();
+  QMutexLocker locker(&s_messagingCacheMutex);
 
   if(!s_messagingCache.contains(hash))
     s_messagingCache[hash] = QDateTime::currentDateTime();
-
-  s_messagingCacheMutex.unlock();
 }
 
 void spoton_kernel::slotDetachNeighbors(const qint64 listenerOid)

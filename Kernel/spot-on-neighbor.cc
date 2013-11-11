@@ -1001,6 +1001,7 @@ void spoton_neighbor::slotReadyRead(void)
   if(m_data.contains(spoton_send::EOM))
     {
       QList<QByteArray> list;
+      bool rst = false;
 
       while(m_data.contains(spoton_send::EOM))
 	{
@@ -1012,7 +1013,12 @@ void spoton_neighbor::slotReadyRead(void)
 	  m_data.remove(0, data.length());
 
 	  if(!data.isEmpty())
-	    list.append(data);
+	    {
+	      if(spoton_kernel::messagingCacheContains(data))
+		rst = true;
+	      else
+		list.append(data);
+	    }
 	  else
 	    /*
 	    ** Empty data? Abort!
@@ -1020,6 +1026,9 @@ void spoton_neighbor::slotReadyRead(void)
 
 	    break;
 	}
+
+      if(rst)
+	resetKeepAlive();
 
       if(list.isEmpty())
 	{
@@ -1164,34 +1173,14 @@ void spoton_neighbor::slotReadyRead(void)
 	  else if(length > 0 && data.contains("type=0014&content="))
 	    process0014(length, data);
 	  else if(length > 0 && data.contains("type=0030&content="))
-	    {
-	      if(isDuplicateMessage(originalData))
-		{
-		  resetKeepAlive();
-		  goto done_label;
-		}
-
-	      recordMessageHash(originalData);
-
-	      /*
-	      ** Process the peer's information.
-	      */
-
-	      process0030(length, data);
-	    }
+	    process0030(length, data);
 	  else if(length > 0 && (data.contains("type=0050&content=") ||
 				 data.contains("type=0051&content=") ||
 				 data.contains("type=0052&content=")))
 	    goto done_label;
 	  else if(length > 0 && data.contains("content="))
 	    {
-	      if(isDuplicateMessage(originalData))
-		{
-		  resetKeepAlive();
-		  goto done_label;
-		}
-
-	      recordMessageHash(originalData);
+	      spoton_kernel::messagingCacheAdd(data);
 
 	      /*
 	      ** Remove some header data.
@@ -1208,8 +1197,6 @@ void spoton_neighbor::slotReadyRead(void)
 	      ** participantCount(). Therefore, the process() methods
 	      ** that would do not.
 	      */
-
-	      resetKeepAlive();
 
 	      QList<QByteArray> symmetricKeys;
 	      QString messageType(findMessageType(data, symmetricKeys));
@@ -1556,7 +1543,7 @@ void spoton_neighbor::slotSendMessage(const QByteArray &data)
 	{
 	  flush();
 	  m_bytesWritten += data.length();
-	  recordMessageHash(data);
+	  spoton_kernel::messagingCacheAdd(data);
 	}
     }
 }
@@ -3125,10 +3112,10 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 
       resetKeepAlive();
 
-      if(isDuplicateMessage(originalData))
+      if(spoton_kernel::messagingCacheContains(data))
 	return;
 
-      recordMessageHash(originalData);
+      spoton_kernel::messagingCacheAdd(data);
       emit publicizeListenerPlaintext(originalData, m_id);
     }
   else
@@ -3486,7 +3473,7 @@ void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
 	  {
 	    flush();
 	    m_bytesWritten += message.length();
-	    recordMessageHash(message);
+	    spoton_kernel::messagingCacheAdd(message);
 	  }
       }
 }
@@ -3773,7 +3760,7 @@ void spoton_neighbor::slotSendMail
 	    flush();
 	    m_bytesWritten += message.length();
 	    oids.append(pair.second);
-	    recordMessageHash(message);
+	    spoton_kernel::messagingCacheAdd(message);
 	  }
       }
 
@@ -3801,7 +3788,7 @@ void spoton_neighbor::slotSendMailFromPostOffice(const QByteArray &data)
 	{
 	  flush();
 	  m_bytesWritten += message.length();
-	  recordMessageHash(message);
+	  spoton_kernel::messagingCacheAdd(data);
 	}
     }
 }
@@ -4012,7 +3999,7 @@ void spoton_neighbor::slotRetrieveMail(const QList<QByteArray> &list)
 	  {
 	    flush();
 	    m_bytesWritten += message.length();
-	    recordMessageHash(message);
+	    spoton_kernel::messagingCacheAdd(message);
 	  }
       }
 }
@@ -4049,7 +4036,7 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
 	  {
 	    flush();
 	    m_bytesWritten += message.length();
-	    recordMessageHash(message);
+	    spoton_kernel::messagingCacheAdd(message);
 	  }
       }
 }
@@ -4082,16 +4069,6 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 	      m_bytesWritten += message.length();
 	    }
 	}
-}
-
-void spoton_neighbor::recordMessageHash(const QByteArray &data)
-{
-  spoton_kernel::messagingCacheAdd(data);
-}
-
-bool spoton_neighbor::isDuplicateMessage(const QByteArray &data)
-{
-  return spoton_kernel::messagingCacheContains(data);
 }
 
 void spoton_neighbor::slotSslErrors(const QList<QSslError> &errors)
@@ -4298,7 +4275,7 @@ void spoton_neighbor::slotSendBuzz(const QByteArray &data)
 	{
 	  flush();
 	  m_bytesWritten += data.length();
-	  recordMessageHash(data);
+	  spoton_kernel::messagingCacheAdd(data);
 	}
     }
 }
@@ -4492,7 +4469,7 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data)
 	{
 	  flush();
 	  m_bytesWritten += message.length();
-	  recordMessageHash(message);
+	  spoton_kernel::messagingCacheAdd(message);
 	}
     }
 }

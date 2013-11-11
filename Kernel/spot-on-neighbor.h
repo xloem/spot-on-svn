@@ -188,7 +188,6 @@ class spoton_neighbor: public QThread
   spoton_neighbor_udp_socket *m_udpSocket;
   QString findMessageType(const QByteArray &data,
 			  QList<QByteArray> &symmetricKeys);
-  bool isDuplicateMessage(const QByteArray &data);
   bool isEncrypted(void) const;
   bool readyToWrite(void);
   qint64 readBufferSize(void) const;
@@ -210,7 +209,6 @@ class spoton_neighbor: public QThread
 		    const QList<QByteArray> &symmetricKeys);
   void process0050(int length, const QByteArray &data);
   void process0051(int length, const QByteArray &data);
-  void recordMessageHash(const QByteArray &data);
   void resetKeepAlive(void);
   void run(void);
   void saveExternalAddress(const QHostAddress &address,
