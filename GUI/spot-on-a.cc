@@ -2941,6 +2941,14 @@ void spoton::slotPopulateNeighbors(void)
 	  m_ui.neighborSummary->clear();
 
 	m_ui.neighbors->setSortingEnabled(true);
+
+	for(int i = 0; i < m_ui.neighbors->columnCount() - 1; i++)
+	  /*
+	  ** Ignore the OID column.
+	  */
+
+	  m_ui.neighbors->resizeColumnToContents(i);
+
 	m_ui.neighbors->horizontalHeader()->setStretchLastSection(true);
 	m_ui.neighbors->horizontalScrollBar()->setValue(hval);
 	m_ui.neighbors->verticalScrollBar()->setValue(vval);
