@@ -1569,9 +1569,9 @@ void spoton_neighbor::slotReceivedMessage(const QByteArray &data,
   ** to send the message to its peer.
   */
 
-  if(m_echoMode == "full" ||
-     spoton_kernel::setting("gui/superEcho", false).toBool())
-    if(id != m_id)
+  if(id != m_id)
+    if(m_echoMode == "full" ||
+       spoton_kernel::setting("gui/superEcho", false).toBool())
       if(readyToWrite())
 	{
 	  if(write(data.constData(), data.length()) != data.length())
@@ -4062,9 +4062,9 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
   ** This neighbor now needs to send the message to its peer.
   */
 
-  if(m_echoMode == "full" ||
-     spoton_kernel::setting("gui/superEcho", false).toBool())
-    if(id != m_id)
+  if(id != m_id)
+    if(m_echoMode == "full" ||
+       spoton_kernel::setting("gui/superEcho", false).toBool())
       if(readyToWrite())
 	{
 	  QByteArray message(spoton_send::message0030(data));
