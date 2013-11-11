@@ -82,6 +82,7 @@
 40.  Introduced sequence numbers to Chat protocols in support
      of UDP commmunications.
 41.  Replaced keep-alive messages with UUID transfers.
+42.  Improved echo performance.
 
 0.06 (10/24/2013)
 
