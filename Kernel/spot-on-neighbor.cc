@@ -1031,14 +1031,12 @@ void spoton_neighbor::slotReadyRead(void)
 	resetKeepAlive();
 
       if(list.isEmpty())
-	{
-	  spoton_misc::logError
-	    (QString("spoton_neighbor::slotReadyRead(): "
-		     "list is empty for %1:%2. Purging contents of m_data.").
-	     arg(m_address.toString()).
-	     arg(m_port));
-	  m_data.clear();
-	}
+	/*
+	** We're going to clear the m_data container if the list
+	** object is empty.
+	*/
+
+	m_data.clear();
 
       while(!list.isEmpty())
 	{
