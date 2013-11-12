@@ -124,6 +124,8 @@ class spoton: public QMainWindow
   QHash<QString, QPointer<spoton_chatwindow> > m_chatWindows;
   QHash<QString, QVariant> m_settings;
   QHash<QString, bool> m_booleans;
+  QHash<QString, spoton_crypt *> m_crypts;
+  QHash<int, quint64> m_chatSequenceNumbers;
   QMutex m_messagingCacheMutex;
   QMutex m_purgeMutex;
 #ifdef SPOTON_LINKED_WITH_LIBPHONON
@@ -143,8 +145,6 @@ class spoton: public QMainWindow
   Ui_statusbar m_sb;
   Ui_spoton_mainwindow m_ui;
   bool m_purge;
-  QHash<int, quint64> m_chatSequenceNumbers;
-  QHash<QString, spoton_crypt *> m_crypts;
   spoton_external_address *m_externalAddress;
   spoton_logviewer m_logViewer;
   QByteArray copyMyChatPublicKey(void);

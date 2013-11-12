@@ -37,7 +37,9 @@ EOL
 EOL
 3 - Sequence Number (Base-64)
 EOL
-4 - Signature (Base-64)
+4 - UTC Date (Base-64)
+EOL
+5 - Signature (Base-64)
 }
 EOL
 {

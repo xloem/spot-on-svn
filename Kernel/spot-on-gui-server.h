@@ -113,7 +113,8 @@ class spoton_gui_server: public spoton_gui_server_tcp_server
   void messageReceivedFromUI(const qint64 oid,
 			     const QByteArray &name,
 			     const QByteArray &message,
-			     const QByteArray &sequenceNumber);
+			     const QByteArray &sequenceNumber,
+			     const QByteArray &utcDate);
   void publicKeyReceivedFromUI(const qint64 oid,
 			       const QByteArray &keyType,
 			       const QByteArray &name,

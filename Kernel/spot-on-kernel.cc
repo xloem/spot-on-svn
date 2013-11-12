@@ -391,9 +391,11 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(messageReceivedFromUI(const qint64,
 				       const QByteArray &,
 				       const QByteArray &,
+				       const QByteArray &,
 				       const QByteArray &)),
 	  this,
 	  SLOT(slotMessageReceivedFromUI(const qint64,
+					 const QByteArray &,
 					 const QByteArray &,
 					 const QByteArray &,
 					 const QByteArray &)));
@@ -1053,7 +1055,8 @@ void spoton_kernel::slotMessageReceivedFromUI
 (const qint64 oid,
  const QByteArray &name,
  const QByteArray &message,
- const QByteArray &sequenceNumber)
+ const QByteArray &sequenceNumber,
+ const QByteArray &utcDate)
 {
   spoton_crypt *s_crypt1 = s_crypts.value("chat", 0);
 
@@ -1134,13 +1137,15 @@ void spoton_kernel::slotMessageReceivedFromUI
 	  signature = s_crypt2->digitalSignature(myPublicKeyHash +
 						 name +
 						 message +
-						 sequenceNumber, &ok);
+						 sequenceNumber +
+						 utcDate, &ok);
 
 	if(ok)
 	  data = crypt.encrypted(myPublicKeyHash.toBase64() + "\n" +
 				 name.toBase64() + "\n" +
 				 message.toBase64() + "\n" +
 				 sequenceNumber.toBase64() + "\n" +
+				 utcDate.toBase64() + "\n" +
 				 signature.toBase64(), &ok);
 
 	if(ok)

@@ -103,6 +103,9 @@ void spoton::slotSendMessage(void)
 	  message.append("_");
 	  message.append(QString::number(m_chatSequenceNumbers[data.toInt()]).
 			 toLatin1().toBase64());
+	  message.append("_");
+	  message.append(QDateTime::currentDateTimeUtc().toString().
+			 toLatin1().toBase64());
 	  message.append('\n');
 
 	  QPointer<spoton_chatwindow> chat = m_chatWindows.value
@@ -219,7 +222,7 @@ void spoton::slotReceivedKernelMessage(void)
 		{
 		  QList<QByteArray> list(data.split('_'));
 
-		  if(list.size() != 5)
+		  if(list.size() != 6)
 		    continue;
 
 		  for(int i = 0; i < list.size(); i++)
@@ -270,6 +273,9 @@ void spoton::slotReceivedKernelMessage(void)
 		  QByteArray name(list.value(2));
 		  QByteArray message(list.value(3));
 		  QByteArray sequenceNumber(list.value(4));
+		  QByteArray utcDate(list.value(5));
+		  QDateTime dateTime
+		    (QDateTime::fromString(utcDate.constData()));
 		  QString msg("");
 		  bool found = true;
 
@@ -279,11 +285,19 @@ void spoton::slotReceivedKernelMessage(void)
 		  if(message.isEmpty())
 		    message = "unknown";
 
+		  ok = true;
+		  sequenceNumber.toULongLong(&ok);
+
+		  if(!ok)
+		    sequenceNumber = "1";
+
 		  msg.append
 		    (QDateTime::currentDateTime().
 		     toString("[hh:mm<font color=grey>:ss</font>]:"));
-		  msg.append(QString("<font color=green>%1</font>: ").
-			     arg(sequenceNumber.constData()));
+		  msg.append
+		    (dateTime.
+		     toString("[<font color=green>hh:mm:ss</font>]:%1: ").
+		     arg(sequenceNumber.constData()));
 		  msg.append
 		    (QString("<font color=blue>%1: </font>").
 		     arg(QString::fromUtf8(name.constData(),
