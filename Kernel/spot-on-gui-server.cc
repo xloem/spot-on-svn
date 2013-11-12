@@ -457,8 +457,6 @@ void spoton_gui_server::slotTimeout(void)
 void spoton_gui_server::slotReceivedBuzzMessage
 (const QList<QByteArray> &list, const QList<QByteArray> &keys)
 {
-  QList<QByteArray> k(keys);
-
   /*
   ** keys[0]: E. Key
   ** keys[1]: E. Type
@@ -468,33 +466,13 @@ void spoton_gui_server::slotReceivedBuzzMessage
   ** list[1]: Hash
   */
 
-  if(keys.value(0).isEmpty() || keys.value(1).isEmpty() ||
-     keys.value(2).isEmpty() || keys.value(3).isEmpty())
-    k = spoton_kernel::findBuzzKey(list.value(0), list.value(1));
-
-  QByteArray computedMessageCode;
-  bool ok = true;
-
-  computedMessageCode = spoton_crypt::keyedHash
-    (list.value(0), k.value(2), k.value(3), &ok);
-
-  if(!ok)
-    return;
-
-  if(computedMessageCode != list.value(1))
-    {
-      spoton_misc::logError("spoton_gui_server::slotReceivedBuzzMessage(): "
-			    "computed message code does not match "
-			    "provided code.");
-      return;
-    }
-
   QByteArray data;
   QByteArray message;
-  spoton_crypt crypt(k.value(1),
+  bool ok = true;
+  spoton_crypt crypt(keys.value(1),
 		     QString("sha512"),
 		     QByteArray(),
-		     k.value(0),
+		     keys.value(0),
 		     0,
 		     0,
 		     QString(""));
@@ -507,7 +485,7 @@ void spoton_gui_server::slotReceivedBuzzMessage
   message.append("buzz_");
   message.append(data.toBase64()); // Message
   message.append("_");
-  message.append(k.value(0).toBase64()); // Key
+  message.append(keys.value(0).toBase64()); // Key
   message.append("_");
 
   QByteArray hash;

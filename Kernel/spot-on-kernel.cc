@@ -2481,13 +2481,10 @@ void spoton_kernel::removeBuzzKey(const QByteArray &key)
 QList<QByteArray> spoton_kernel::findBuzzKey
 (const QByteArray &data, const QByteArray &hash)
 {
-  s_buzzKeysMutex.lock();
+  QMutexLocker locker(&s_buzzKeysMutex);
 
-  if(s_buzzKeys.isEmpty())
-    {
-      s_buzzKeysMutex.unlock();
-      return QList<QByteArray> ();
-    }
+  if(hash.isEmpty() || s_buzzKeys.isEmpty())
+    return QList<QByteArray> ();
 
   QHashIterator<QByteArray, QList<QByteArray> > it(s_buzzKeys);
   QList<QByteArray> list;
@@ -2496,21 +2493,20 @@ QList<QByteArray> spoton_kernel::findBuzzKey
     {
       it.next();
 
-      QByteArray computedMessageCode;
+      QByteArray computedHash;
       bool ok = true;
 
-      computedMessageCode = spoton_crypt::keyedHash
+      computedHash = spoton_crypt::keyedHash
 	(data, it.value().value(2), it.value().value(3), &ok);
 
       if(ok)
-	if(computedMessageCode == hash)
+	if(computedHash == hash)
 	  {
 	    list = it.value();
 	    break;
 	  }
     }
 
-  s_buzzKeysMutex.unlock();
   return list;
 }
 

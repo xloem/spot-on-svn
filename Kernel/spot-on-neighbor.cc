@@ -1699,7 +1699,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 
 	  if(!gemini.first.isEmpty() && !gemini.second.isEmpty())
 	    {
-	      QByteArray computedMessageCode;
+	      QByteArray computedHash;
 	      QByteArray message(list.value(0));
 	      QByteArray messageCode(list.value(1));
 	      spoton_crypt crypt("aes256",
@@ -1710,12 +1710,12 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 				 0,
 				 QString(""));
 
-	      computedMessageCode = spoton_crypt::keyedHash
+	      computedHash = spoton_crypt::keyedHash
 		(message, gemini.second, "sha512", &ok);
 
 	      if(ok)
 		{
-		  if(computedMessageCode == messageCode)
+		  if(computedHash == messageCode)
 		    {
 		      message = crypt.decrypted(message, &ok);
 
@@ -1799,17 +1799,17 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 	  if(ok)
 	    {
 	      QByteArray data(list.value(1));
-	      QByteArray computedMessageCode;
+	      QByteArray computedHash;
 	      QByteArray messageCode(list.value(2));
 
-	      computedMessageCode = spoton_crypt::keyedHash(data,
+	      computedHash = spoton_crypt::keyedHash(data,
 							    hashKey,
 							    "sha512",
 							    &ok);
 
 	      if(ok)
 		{
-		  if(computedMessageCode == messageCode)
+		  if(computedHash == messageCode)
 		    {
 		      spoton_crypt crypt(symmetricKeyAlgorithm,
 					 QString("sha512"),
@@ -1977,15 +1977,15 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
       if(ok)
 	{
 	  QByteArray data(list.value(1));
-	  QByteArray computedMessageCode;
+	  QByteArray computedHash;
 	  QByteArray messageCode(list.value(2));
 
-	  computedMessageCode = spoton_crypt::keyedHash(data, hashKey,
+	  computedHash = spoton_crypt::keyedHash(data, hashKey,
 							"sha512", &ok);
 
 	  if(ok)
 	    {
-	      if(computedMessageCode == messageCode)
+	      if(computedHash == messageCode)
 		{
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
 				     QString("sha512"),
@@ -2227,7 +2227,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 			  return;
 			}
 
-		      QByteArray computedMessageCode;
+		      QByteArray computedHash;
 		      QByteArray message;
 		      QByteArray name;
 		      QByteArray signature;
@@ -2241,11 +2241,11 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 					 0,
 					 QString(""));
 
-		      computedMessageCode = spoton_crypt::keyedHash
+		      computedHash = spoton_crypt::keyedHash
 			(data2, hashKey, "sha512", &ok);
 
 		      if(ok)
-			if(computedMessageCode != messageCode)
+			if(computedHash != messageCode)
 			  {
 			    spoton_misc::logError
 			      ("spoton_neighbor::"
@@ -2420,10 +2420,10 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
       if(ok)
 	{
 	  QByteArray data(list.value(1));
-	  QByteArray computedMessageCode;
+	  QByteArray computedHash;
 	  QByteArray messageCode(list.value(2));
 
-	  computedMessageCode = spoton_crypt::keyedHash
+	  computedHash = spoton_crypt::keyedHash
 	    (data, hashKey, "sha512", &ok);
 
 	  /*
@@ -2433,7 +2433,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 
 	  if(ok)
 	    {
-	      if(computedMessageCode == messageCode)
+	      if(computedHash == messageCode)
 		{
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
 				     QString("sha512"),
@@ -2568,10 +2568,10 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
       if(ok)
 	{
 	  QByteArray data(list.value(1));
-	  QByteArray computedMessageCode;
+	  QByteArray computedHash;
 	  QByteArray messageCode(list.value(2));
 
-	  computedMessageCode = spoton_crypt::keyedHash
+	  computedHash = spoton_crypt::keyedHash
 	    (data, hashKey, "sha512", &ok);
 
 	  /*
@@ -2581,7 +2581,7 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 
 	  if(ok)
 	    {
-	      if(computedMessageCode == messageCode)
+	      if(computedHash == messageCode)
 		{
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
 				     QString("sha512"),
@@ -2781,7 +2781,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 
 	  if(!gemini.first.isEmpty() && !gemini.second.isEmpty())
 	    {
-	      QByteArray computedMessageCode;
+	      QByteArray computedHash;
 	      QByteArray message(list.value(0));
 	      QByteArray messageCode(list.value(1));
 	      spoton_crypt crypt("aes256",
@@ -2792,12 +2792,12 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 				 0,
 				 QString(""));
 
-	      computedMessageCode = spoton_crypt::keyedHash
+	      computedHash = spoton_crypt::keyedHash
 		(message, gemini.second, "sha512", &ok);
 
 	      if(ok)
 		{
-		  if(computedMessageCode == messageCode)
+		  if(computedHash == messageCode)
 		    {
 		      message = crypt.decrypted(message, &ok);
 
@@ -2881,15 +2881,15 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 	  if(ok)
 	    {
 	      QByteArray data(list.value(1));
-	      QByteArray computedMessageCode;
+	      QByteArray computedHash;
 	      QByteArray messageCode(list.value(2));
 
-	      computedMessageCode = spoton_crypt::keyedHash
+	      computedHash = spoton_crypt::keyedHash
 		(data, hashKey, "sha512", &ok);
 
 	      if(ok)
 		{
-		  if(computedMessageCode == messageCode)
+		  if(computedHash == messageCode)
 		    {
 		      spoton_crypt crypt(symmetricKeyAlgorithm,
 					 QString("sha512"),
@@ -4320,7 +4320,7 @@ QString spoton_neighbor::findMessageType
 	  QByteArray data;
 	  bool ok = true;
 	  spoton_crypt crypt(symmetricKeys.value(1),
-			     QString("sha512"),
+			     QString("sha512"), // Irrelevant.
 			     QByteArray(),
 			     symmetricKeys.value(0),
 			     0,
