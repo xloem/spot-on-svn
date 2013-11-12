@@ -2379,7 +2379,7 @@ void spoton_kernel::purgeMessagingCache(void)
 
 bool spoton_kernel::messagingCacheContains(const QByteArray &data)
 {
-  if(!setting("gui/enableCongestionControl", false).toBool())
+  if(!setting("gui/enableCongestionControl", true).toBool())
     return false;
 
   spoton_crypt *s_crypt = s_crypts.value("chat", 0);
@@ -2402,7 +2402,7 @@ bool spoton_kernel::messagingCacheContains(const QByteArray &data)
 
 void spoton_kernel::messagingCacheAdd(const QByteArray &data)
 {
-  if(!setting("gui/enableCongestionControl", false).toBool())
+  if(!setting("gui/enableCongestionControl", true).toBool())
     return;
 
   spoton_crypt *s_crypt = s_crypts.value("chat", 0);
