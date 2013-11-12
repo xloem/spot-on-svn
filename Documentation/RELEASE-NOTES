@@ -84,7 +84,7 @@
 41.  Replaced keep-alive messages with UUID transfers.
 42.  Improved, perceived, echo performance.
 43.  Must compare personal keys with shared keys.
-44.  Corrected default congestion settings in the kernel.
+44.  Corrected default congestion control settings in the kernel.
 45.  Corrected recording of data with respect to congestion control and
      published listeners.
 
