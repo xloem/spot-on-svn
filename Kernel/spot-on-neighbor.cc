@@ -1178,7 +1178,7 @@ void spoton_neighbor::slotReadyRead(void)
 	    goto done_label;
 	  else if(length > 0 && data.contains("content="))
 	    {
-	      spoton_kernel::messagingCacheAdd(data);
+	      spoton_kernel::messagingCacheAdd(originalData);
 
 	      /*
 	      ** Remove some header data.
@@ -3054,7 +3054,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
   length -= qstrlen("type=0030&content=");
 
   /*
-  ** We may have received a status message.
+  ** We may have received a listener's information.
   */
 
   QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
@@ -3112,11 +3112,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 	}
 
       resetKeepAlive();
-
-      if(spoton_kernel::messagingCacheContains(data))
-	return;
-
-      spoton_kernel::messagingCacheAdd(data);
+      spoton_kernel::messagingCacheAdd(dataIn);
       emit publicizeListenerPlaintext(originalData, m_id);
     }
   else
