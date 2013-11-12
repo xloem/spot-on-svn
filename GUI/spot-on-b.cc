@@ -1801,6 +1801,45 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  return;
 	}
 
+      for(int i = 1; i <= 2; i++)
+	{
+	  QByteArray myPublicKey;
+	  QByteArray mySPublicKey;
+	  bool ok = true;
+
+	  if(i == 1)
+	    {
+	      myPublicKey = m_crypts.value("chat")->publicKey(&ok);
+
+	      if(ok)
+		mySPublicKey = m_crypts.value("chat-signature")->
+		  publicKey(&ok);
+	    }
+	  else if(i == 2)
+	    {
+	      myPublicKey = m_crypts.value("email")->publicKey(&ok);
+
+	      if(ok)
+		mySPublicKey = m_crypts.value("email-signature")->
+		  publicKey(&ok);
+	    }
+
+	  if(ok)
+	    if(list.value(2) == myPublicKey ||
+	       list.value(4) == mySPublicKey)
+	      ok = false;
+
+	  if(!ok)
+	    {
+	      QMessageBox::critical
+		(this, tr("Spot-On: Error"),
+		 tr("You're attempting to add your own keys or "
+		    "Spot-On was not able to retrieve your keys for "
+		    "comparison."));
+	      return;
+	    }
+	}
+
       if(!spoton_crypt::isValidSignature(list.value(2),  // Data
 					 list.value(2),  // Public Key
 					 list.value(3))) // Signature

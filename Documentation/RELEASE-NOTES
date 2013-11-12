@@ -82,7 +82,8 @@
 40.  Introduced sequence numbers and UTC dates to Chat protocols in
      support of UDP commmunications.
 41.  Replaced keep-alive messages with UUID transfers.
-42.  Improved echo performance.
+42.  Improved, perceived, echo performance.
+43.  Must compare personal keys with shared keys.
 
 0.06 (10/24/2013)
 
