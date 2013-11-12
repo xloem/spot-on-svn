@@ -3216,21 +3216,25 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 
       if(i == 1)
 	{
+#ifdef TLS1_2_VERSION
 	  if(!(ctx = SSL_CTX_new(TLSv1_2_method())))
 	    {
 	      spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
 				    "SSL_CTX_new() failure.");
 	      goto done_label;
 	    }
+#endif
 	}
       else if(i == 2)
 	{
+#ifdef TLS1_1_VERSION
 	  if(!(ctx = SSL_CTX_new(TLSv1_1_method())))
 	    {
 	      spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
 				    "SSL_CTX_new() failure.");
 	      goto done_label;
 	    }
+#endif
 	}
       else if(i == 3)
 	{
@@ -3250,6 +3254,9 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 	      goto done_label;
 	    }
 	}
+
+      if(!ctx)
+	continue;
 
       if(SSL_CTX_set_cipher_list(ctx,
 				 controlString.toLatin1().constData()) == 0)
