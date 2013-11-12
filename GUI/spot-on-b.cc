@@ -1545,6 +1545,7 @@ void spoton::addFriendsKey(const QByteArray &key)
       QByteArray mPublicKey(list.value(2));
       QByteArray mSignature(list.value(3));
       QByteArray myPublicKey;
+      QByteArray mySPublicKey;
       bool ok = true;
 
       mPublicKey = QByteArray::fromBase64(mPublicKey);
@@ -1553,11 +1554,22 @@ void spoton::addFriendsKey(const QByteArray &key)
       if(!ok)
 	{
 	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Unable to retrieve your public key."));
+				tr("Unable to retrieve your chat "
+				   "public key."));
 	  return;
 	}
 
-      if(mPublicKey == myPublicKey)
+      mySPublicKey = m_crypts.value("chat-signature")->publicKey(&ok);
+
+      if(!ok)
+	{
+	  QMessageBox::critical(this, tr("Spot-On: Error"),
+				tr("Unable to retrieve your chat signature "
+				   "public key."));
+	  return;
+	}
+
+      if(mPublicKey == myPublicKey || mSignature == mySPublicKey)
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
@@ -1571,11 +1583,22 @@ void spoton::addFriendsKey(const QByteArray &key)
       if(!ok)
 	{
 	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Unable to retrieve your public key."));
+				tr("Unable to retrieve your email "
+				   "public key."));
 	  return;
 	}
 
-      if(mPublicKey == myPublicKey)
+      mySPublicKey = m_crypts.value("email-signature")->publicKey(&ok);
+
+      if(!ok)
+	{
+	  QMessageBox::critical(this, tr("Spot-On: Error"),
+				tr("Unable to retrieve your email "
+				   "signature public key."));
+	  return;
+	}
+
+      if(mPublicKey == myPublicKey || mSignature == mySPublicKey)
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
@@ -1721,7 +1744,7 @@ void spoton::addFriendsKey(const QByteArray &key)
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      QByteArray computedMessageCode;
+      QByteArray computedHash;
       spoton_crypt crypt(list.value(1), // Cipher Type
 			 QString("sha512"),
 			 QByteArray(),
@@ -1730,7 +1753,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 			 0,
 			 QString(""));
 
-      computedMessageCode = crypt.keyedHash(data, &ok);
+      computedHash = crypt.keyedHash(data, &ok);
 
       if(!ok)
 	{
@@ -1739,7 +1762,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  return;
 	}
 
-      if(computedMessageCode != hash)
+      if(computedHash != hash)
 	{
 	  QMessageBox::critical(this, tr("Spot-On: Error"),
 				tr("The computed hash does not match "

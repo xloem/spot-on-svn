@@ -829,7 +829,7 @@ QPair<QByteArray, QByteArray> spoton_misc::findGeminiInCosmos
 {
   QPair<QByteArray, QByteArray> gemini;
 
-  if(crypt)
+  if(crypt && !hash.isEmpty())
     {
       QString connectionName("");
 
