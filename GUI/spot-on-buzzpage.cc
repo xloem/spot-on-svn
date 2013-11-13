@@ -176,7 +176,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
   data.append(QString("ht=%1").arg(m_hashType.constData()));
   ui.magnet->setText(data);
   slotSetIcons();
-  m_messagingCachePurgeTimer.start(60000);
+  m_messagingCachePurgeTimer.start(30000);
 
   QByteArray name;
   QSettings settings;

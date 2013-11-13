@@ -779,7 +779,7 @@ spoton::spoton(void):QMainWindow()
 #endif
   m_ui.toolButtonMakeFriends->setMenu(menu);
   m_generalTimer.start(2500);
-  m_messagingCachePurgeTimer.start(120000);
+  m_messagingCachePurgeTimer.start(30000);
   m_chatInactivityTimer.start(120000);
   m_tableTimer.setInterval(2500);
   m_emailRetrievalTimer.setInterval

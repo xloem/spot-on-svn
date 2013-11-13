@@ -87,6 +87,7 @@
 44.  Corrected default congestion control settings in the kernel.
 45.  Corrected recording of data with respect to congestion control and
      published listeners.
+46.  Decreased cache purge timer intervals for Buzz and Chat to 30 seconds.
 
 0.06 (10/24/2013)
 

@@ -1562,12 +1562,14 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
 QSqlDatabase spoton_misc::database(QString &connectionName)
 {
-  QMutexLocker locker(&s_dbMutex);
   QSqlDatabase db;
+  int dbId = -1;
 
-  s_dbId += 1;
+  s_dbMutex.lock();
+  dbId = s_dbId += 1;
+  s_dbMutex.unlock();
   db = QSqlDatabase::addDatabase
-    ("QSQLITE", QString("spoton_database_%1").arg(s_dbId));
+    ("QSQLITE", QString("spoton_database_%1").arg(dbId));
   connectionName = db.connectionName();
   return db;
 }
