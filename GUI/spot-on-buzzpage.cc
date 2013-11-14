@@ -333,7 +333,7 @@ void spoton_buzzpage::appendMessage(const QByteArray &hash,
       return;
     }
   else
-    m_messagingCache[hash] = QDateTime::currentDateTime();
+    m_messagingCache.insert(hash, QDateTime::currentDateTime());
 
   m_messagingCacheMutex.unlock();
   m_purgeMutex.lock();

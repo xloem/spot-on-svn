@@ -90,8 +90,9 @@ class spoton_kernel: public QObject
   spoton_gui_server *m_guiServer;
   spoton_mailer *m_mailer;
   spoton_shared_reader *m_sharedReader;
-  static QHash<QByteArray, QDateTime> s_messagingCache;
+  static QHash<QByteArray, char> s_messagingCache;
   static QHash<QByteArray, QList<QByteArray> > s_buzzKeys;
+  static QMultiMap<QDateTime, QByteArray> s_messagingCacheMap;
   static QMutex s_messagingCacheMutex;
   bool initializeSecurityContainers(const QString &passphrase);
   void checkForTermination(void);

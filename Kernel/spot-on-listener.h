@@ -107,7 +107,7 @@ class spoton_listener_udp_server: public QUdpSocket
 
   void addClientAddress(const QString &address)
   {
-    m_clients[address] = 0;
+    m_clients.insert(address, 0);
   }
 
  private:

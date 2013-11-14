@@ -328,7 +328,7 @@ void spoton_misc::prepareDatabases(void)
 	QSqlQuery query(db);
 
 	query.exec("CREATE TABLE IF NOT EXISTS magnets ("
-		   "magnet TEXT NOT NULL, "
+		   "magnet BLOB NOT NULL, "
 		   "magnet_hash TEXT PRIMARY KEY NOT NULL, "
 		   "one_time_magnet INTEGER NOT NULL DEFAULT 1)");
       }
@@ -1451,7 +1451,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   else if(integer < 10000)
     integer = 10000;
 
-  settings["gui/congestionCost"] = integer;
+  settings.insert("gui/congestionCost", integer);
   integer = qAbs(settings.value("gui/emailRetrievalInterval",
 				5).toInt(&ok));
 
@@ -1460,13 +1460,13 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   else if(integer > 60)
     integer = 5;
 
-  settings["gui/emailRetrievalInterval"] = integer;
+  settings.insert("gui/emailRetrievalInterval", integer);
   str = settings.value("gui/iconSet", "nouve").toString().trimmed();
 
   if(!(str == "nouve" || str == "nuvola"))
     str = "nouve";
 
-  settings["gui/iconSet"] = str;
+  settings.insert("gui/iconSet", str);
   integer = qAbs(settings.value("gui/iterationCount", 10000).toInt(&ok));
 
   if(!ok)
@@ -1474,7 +1474,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   else if(integer < 10000)
     integer = 10000;
 
-  settings["gui/iterationCount"] = integer;
+  settings.insert("gui/iterationCount", integer);
   str = settings.value("gui/kernelCipherType").toString().trimmed();
 
   if(!(str == "aes256" || str == "camellia256" ||
@@ -1482,7 +1482,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
        str == "serpent256" || str == "twofish"))
     str = "aes256";
 
-  settings["gui/kernelCipherType"] = str;
+  settings.insert("gui/kernelCipherType", str);
   integer = qAbs(settings.value("gui/kernelKeySize", 2048).toInt(&ok));
 
   if(!ok)
@@ -1490,7 +1490,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   else if(!(integer == 2048 || integer == 3072 || integer == 4096))
     integer = 2048;
 
-  settings["gui/kernelKeySize"] = integer;
+  settings.insert("gui/kernelKeySize", integer);
   integer = qAbs(settings.value("gui/keySize", 3072).toInt(&ok));
 
   if(!ok)
@@ -1500,7 +1500,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 	    integer == 15360))
     integer = 3072;
 
-  settings["gui/keySize"] = integer;
+  settings.insert("gui/keySize", integer);
   integer = qAbs(settings.value("gui/publishedKeySize", 2048).toInt(&ok));
 
   if(!ok)
@@ -1508,7 +1508,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   else if(!(integer == 2048 || integer == 3072 || integer == 4096))
     integer = 2048;
 
-  settings["gui/publishedKeySize"] = integer;
+  settings.insert("gui/publishedKeySize", integer);
   integer = qAbs(settings.value("gui/maxMosaicSize", 512).toInt(&ok));
 
   if(!ok)
@@ -1516,7 +1516,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   else if(integer < 1 || integer > 5000)
     integer = 512;
 
-  settings["gui/maxMosaicSize"] = integer;
+  settings.insert("gui/maxMosaicSize", integer);
   integer = qAbs(settings.value("gui/maxMosaics", 16).toInt(&ok));
 
   if(!ok)
@@ -1524,7 +1524,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   else if(integer <= 0 || integer > 250)
     integer = 16;
 
-  settings["gui/maxMosaics"] = integer;
+  settings.insert("gui/maxMosaics", integer);
   integer = qAbs(settings.value("gui/saltLength", 512).toInt(&ok));
 
   if(!ok)
@@ -1532,7 +1532,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   else if(integer < 512)
     integer = 512;
 
-  settings["gui/saltLength"] = integer;
+  settings.insert("gui/saltLength", integer);
   integer = qAbs(settings.value("gui/gcryctl_init_secmem", 65536).toInt(&ok));
 
   if(!ok)
@@ -1540,7 +1540,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   else if(integer < 65536)
     integer = 65536;
 
-  settings["gui/gcryctl_init_secmem"] = integer;
+  settings.insert("gui/gcryctl_init_secmem", integer);
   integer = qAbs(settings.value("kernel/gcryctl_init_secmem",
 				65536).toInt(&ok));
 
@@ -1549,7 +1549,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   else if(integer < 65536)
     integer = 65536;
 
-  settings["kernel/gcryctl_init_secmem"] = integer;
+  settings.insert("kernel/gcryctl_init_secmem", integer);
   integer = qAbs
     (settings.value("kernel/server_account_verification_window_msecs",
 		    15000).toInt(&ok));
@@ -1557,7 +1557,8 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   if(!ok)
     integer = 15000;
 
-  settings["kernel/server_account_verification_window_msecs"] = integer;
+  settings.insert
+    ("kernel/server_account_verification_window_msecs", integer);
 }
 
 QSqlDatabase spoton_misc::database(QString &connectionName)

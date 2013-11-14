@@ -231,7 +231,7 @@ void spoton_gui_server::slotReadyRead(void)
       if(data.isEmpty())
 	m_guiSocketData.remove(socket->socketDescriptor());
       else
-	m_guiSocketData[socket->socketDescriptor()] = data;
+	m_guiSocketData.insert(socket->socketDescriptor(), data);
 
       while(!messages.isEmpty())
 	{

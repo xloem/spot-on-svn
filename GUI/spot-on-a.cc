@@ -966,6 +966,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.emailName->setText
     (QString::fromUtf8(m_settings.value("gui/emailName", "unknown").
 		       toByteArray()).trimmed());
+  m_ui.etpMacKey->setMaxLength(512);
   m_ui.nodeName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
   m_ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
