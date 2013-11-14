@@ -439,139 +439,139 @@
 <context>
     <name>spoton</name>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3186"/>
+        <location filename="../GUI/spot-on-a.cc" line="3187"/>
         <source>Spot-On: Select Kernel Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3169"/>
-        <location filename="../GUI/spot-on-a.cc" line="3189"/>
+        <location filename="../GUI/spot-on-a.cc" line="3170"/>
+        <location filename="../GUI/spot-on-a.cc" line="3190"/>
         <location filename="../GUI/spot-on-c.cc" line="408"/>
         <source>&amp;Select</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="1331"/>
-        <location filename="../GUI/spot-on-a.cc" line="1606"/>
-        <location filename="../GUI/spot-on-a.cc" line="1611"/>
-        <location filename="../GUI/spot-on-a.cc" line="1624"/>
-        <location filename="../GUI/spot-on-a.cc" line="1931"/>
-        <location filename="../GUI/spot-on-a.cc" line="1936"/>
-        <location filename="../GUI/spot-on-a.cc" line="3567"/>
-        <location filename="../GUI/spot-on-a.cc" line="3576"/>
-        <location filename="../GUI/spot-on-a.cc" line="3760"/>
-        <location filename="../GUI/spot-on-a.cc" line="3767"/>
-        <location filename="../GUI/spot-on-a.cc" line="3778"/>
-        <location filename="../GUI/spot-on-a.cc" line="5818"/>
-        <location filename="../GUI/spot-on-a.cc" line="5830"/>
-        <location filename="../GUI/spot-on-a.cc" line="5903"/>
-        <location filename="../GUI/spot-on-a.cc" line="6123"/>
-        <location filename="../GUI/spot-on-a.cc" line="6170"/>
+        <location filename="../GUI/spot-on-a.cc" line="1332"/>
+        <location filename="../GUI/spot-on-a.cc" line="1607"/>
+        <location filename="../GUI/spot-on-a.cc" line="1612"/>
+        <location filename="../GUI/spot-on-a.cc" line="1625"/>
+        <location filename="../GUI/spot-on-a.cc" line="1932"/>
+        <location filename="../GUI/spot-on-a.cc" line="1937"/>
+        <location filename="../GUI/spot-on-a.cc" line="3568"/>
+        <location filename="../GUI/spot-on-a.cc" line="3577"/>
+        <location filename="../GUI/spot-on-a.cc" line="3761"/>
+        <location filename="../GUI/spot-on-a.cc" line="3768"/>
+        <location filename="../GUI/spot-on-a.cc" line="3779"/>
+        <location filename="../GUI/spot-on-a.cc" line="5819"/>
+        <location filename="../GUI/spot-on-a.cc" line="5831"/>
+        <location filename="../GUI/spot-on-a.cc" line="5904"/>
+        <location filename="../GUI/spot-on-a.cc" line="6124"/>
+        <location filename="../GUI/spot-on-a.cc" line="6171"/>
         <location filename="../GUI/spot-on-b.cc" line="141"/>
-        <location filename="../GUI/spot-on-b.cc" line="1503"/>
-        <location filename="../GUI/spot-on-b.cc" line="1510"/>
-        <location filename="../GUI/spot-on-b.cc" line="1518"/>
-        <location filename="../GUI/spot-on-b.cc" line="1528"/>
-        <location filename="../GUI/spot-on-b.cc" line="1540"/>
-        <location filename="../GUI/spot-on-b.cc" line="1556"/>
-        <location filename="../GUI/spot-on-b.cc" line="1566"/>
-        <location filename="../GUI/spot-on-b.cc" line="1575"/>
-        <location filename="../GUI/spot-on-b.cc" line="1585"/>
-        <location filename="../GUI/spot-on-b.cc" line="1595"/>
-        <location filename="../GUI/spot-on-b.cc" line="1604"/>
-        <location filename="../GUI/spot-on-b.cc" line="1616"/>
-        <location filename="../GUI/spot-on-b.cc" line="1631"/>
-        <location filename="../GUI/spot-on-b.cc" line="1681"/>
-        <location filename="../GUI/spot-on-b.cc" line="1688"/>
-        <location filename="../GUI/spot-on-b.cc" line="1696"/>
-        <location filename="../GUI/spot-on-b.cc" line="1706"/>
-        <location filename="../GUI/spot-on-b.cc" line="1729"/>
-        <location filename="../GUI/spot-on-b.cc" line="1739"/>
-        <location filename="../GUI/spot-on-b.cc" line="1760"/>
-        <location filename="../GUI/spot-on-b.cc" line="1767"/>
-        <location filename="../GUI/spot-on-b.cc" line="1777"/>
-        <location filename="../GUI/spot-on-b.cc" line="1786"/>
-        <location filename="../GUI/spot-on-b.cc" line="1799"/>
-        <location filename="../GUI/spot-on-b.cc" line="1835"/>
-        <location filename="../GUI/spot-on-b.cc" line="1848"/>
-        <location filename="../GUI/spot-on-b.cc" line="1859"/>
-        <location filename="../GUI/spot-on-b.cc" line="2189"/>
-        <location filename="../GUI/spot-on-b.cc" line="2197"/>
-        <location filename="../GUI/spot-on-b.cc" line="2772"/>
-        <location filename="../GUI/spot-on-b.cc" line="2779"/>
-        <location filename="../GUI/spot-on-b.cc" line="3197"/>
-        <location filename="../GUI/spot-on-b.cc" line="4003"/>
-        <location filename="../GUI/spot-on-b.cc" line="4202"/>
-        <location filename="../GUI/spot-on-b.cc" line="4222"/>
-        <location filename="../GUI/spot-on-b.cc" line="4232"/>
-        <location filename="../GUI/spot-on-b.cc" line="4296"/>
-        <location filename="../GUI/spot-on-b.cc" line="4316"/>
-        <location filename="../GUI/spot-on-b.cc" line="4334"/>
-        <location filename="../GUI/spot-on-b.cc" line="4343"/>
-        <location filename="../GUI/spot-on-b.cc" line="4567"/>
-        <location filename="../GUI/spot-on-b.cc" line="4592"/>
-        <location filename="../GUI/spot-on-b.cc" line="4602"/>
-        <location filename="../GUI/spot-on-b.cc" line="4611"/>
+        <location filename="../GUI/spot-on-b.cc" line="1504"/>
+        <location filename="../GUI/spot-on-b.cc" line="1511"/>
+        <location filename="../GUI/spot-on-b.cc" line="1519"/>
+        <location filename="../GUI/spot-on-b.cc" line="1529"/>
+        <location filename="../GUI/spot-on-b.cc" line="1541"/>
+        <location filename="../GUI/spot-on-b.cc" line="1557"/>
+        <location filename="../GUI/spot-on-b.cc" line="1567"/>
+        <location filename="../GUI/spot-on-b.cc" line="1576"/>
+        <location filename="../GUI/spot-on-b.cc" line="1586"/>
+        <location filename="../GUI/spot-on-b.cc" line="1596"/>
+        <location filename="../GUI/spot-on-b.cc" line="1605"/>
+        <location filename="../GUI/spot-on-b.cc" line="1617"/>
+        <location filename="../GUI/spot-on-b.cc" line="1632"/>
+        <location filename="../GUI/spot-on-b.cc" line="1682"/>
+        <location filename="../GUI/spot-on-b.cc" line="1689"/>
+        <location filename="../GUI/spot-on-b.cc" line="1697"/>
+        <location filename="../GUI/spot-on-b.cc" line="1707"/>
+        <location filename="../GUI/spot-on-b.cc" line="1730"/>
+        <location filename="../GUI/spot-on-b.cc" line="1740"/>
+        <location filename="../GUI/spot-on-b.cc" line="1761"/>
+        <location filename="../GUI/spot-on-b.cc" line="1768"/>
+        <location filename="../GUI/spot-on-b.cc" line="1778"/>
+        <location filename="../GUI/spot-on-b.cc" line="1787"/>
+        <location filename="../GUI/spot-on-b.cc" line="1800"/>
+        <location filename="../GUI/spot-on-b.cc" line="1836"/>
+        <location filename="../GUI/spot-on-b.cc" line="1849"/>
+        <location filename="../GUI/spot-on-b.cc" line="1860"/>
+        <location filename="../GUI/spot-on-b.cc" line="2190"/>
+        <location filename="../GUI/spot-on-b.cc" line="2198"/>
+        <location filename="../GUI/spot-on-b.cc" line="2773"/>
+        <location filename="../GUI/spot-on-b.cc" line="2780"/>
+        <location filename="../GUI/spot-on-b.cc" line="3198"/>
+        <location filename="../GUI/spot-on-b.cc" line="4004"/>
+        <location filename="../GUI/spot-on-b.cc" line="4203"/>
+        <location filename="../GUI/spot-on-b.cc" line="4223"/>
+        <location filename="../GUI/spot-on-b.cc" line="4233"/>
+        <location filename="../GUI/spot-on-b.cc" line="4297"/>
+        <location filename="../GUI/spot-on-b.cc" line="4317"/>
+        <location filename="../GUI/spot-on-b.cc" line="4335"/>
+        <location filename="../GUI/spot-on-b.cc" line="4344"/>
+        <location filename="../GUI/spot-on-b.cc" line="4568"/>
+        <location filename="../GUI/spot-on-b.cc" line="4593"/>
+        <location filename="../GUI/spot-on-b.cc" line="4603"/>
+        <location filename="../GUI/spot-on-b.cc" line="4612"/>
         <location filename="../GUI/spot-on-c.cc" line="193"/>
         <source>Spot-On: Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="748"/>
-        <location filename="../GUI/spot-on-a.cc" line="4307"/>
+        <location filename="../GUI/spot-on-a.cc" line="4308"/>
         <source>Not connected to the kernel. Is the kernel active?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="2256"/>
-        <location filename="../GUI/spot-on-a.cc" line="2258"/>
+        <location filename="../GUI/spot-on-a.cc" line="2257"/>
+        <location filename="../GUI/spot-on-a.cc" line="2259"/>
         <source>Unlimited</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="2697"/>
+        <location filename="../GUI/spot-on-a.cc" line="2698"/>
         <source>The sticky feature enables an indefinite lifetime for a neighbor.
 If not checked, the neighbor will be terminated after some internal timer expires.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3568"/>
+        <location filename="../GUI/spot-on-a.cc" line="3569"/>
         <source>The passphrases must contain at least sixteen characters each.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3593"/>
-        <location filename="../GUI/spot-on-b.cc" line="537"/>
-        <location filename="../GUI/spot-on-b.cc" line="1932"/>
-        <location filename="../GUI/spot-on-b.cc" line="3123"/>
-        <location filename="../GUI/spot-on-b.cc" line="4148"/>
+        <location filename="../GUI/spot-on-a.cc" line="3594"/>
+        <location filename="../GUI/spot-on-b.cc" line="538"/>
+        <location filename="../GUI/spot-on-b.cc" line="1933"/>
+        <location filename="../GUI/spot-on-b.cc" line="3124"/>
+        <location filename="../GUI/spot-on-b.cc" line="4149"/>
         <source>Spot-On: Confirmation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4115"/>
-        <location filename="../GUI/spot-on-a.cc" line="4257"/>
+        <location filename="../GUI/spot-on-a.cc" line="4116"/>
+        <location filename="../GUI/spot-on-a.cc" line="4258"/>
         <source>&amp;Remove participant(s).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4286"/>
+        <location filename="../GUI/spot-on-a.cc" line="4287"/>
         <source>Connected insecurely to the kernel on port %1 from local port %2. Communications between the interface and the kernel have been disabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4869"/>
+        <location filename="../GUI/spot-on-a.cc" line="4870"/>
         <source>Away</source>
         <translation type="unfinished">далеко</translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4871"/>
+        <location filename="../GUI/spot-on-a.cc" line="4872"/>
         <source>Busy</source>
         <translation type="unfinished">занятый</translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4771"/>
-        <location filename="../GUI/spot-on-a.cc" line="4873"/>
+        <location filename="../GUI/spot-on-a.cc" line="4772"/>
+        <location filename="../GUI/spot-on-a.cc" line="4874"/>
         <source>Offline</source>
         <translation type="unfinished"></translation>
     </message>
@@ -589,13 +589,13 @@ If not checked, the neighbor will be terminated after some internal timer expire
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="750"/>
-        <location filename="../GUI/spot-on-a.cc" line="2420"/>
+        <location filename="../GUI/spot-on-a.cc" line="2421"/>
         <source>Listeners are offline.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="751"/>
-        <location filename="../GUI/spot-on-a.cc" line="2979"/>
+        <location filename="../GUI/spot-on-a.cc" line="2980"/>
         <source>Neighbors are offline.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -611,58 +611,58 @@ If not checked, the neighbor will be terminated after some internal timer expire
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="777"/>
-        <location filename="../GUI/spot-on-a.cc" line="4161"/>
+        <location filename="../GUI/spot-on-a.cc" line="4162"/>
         <source>Share &amp;URL Public Key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="1305"/>
+        <location filename="../GUI/spot-on-a.cc" line="1306"/>
         <source>Preparing databases. Please be patient.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="1332"/>
-        <location filename="../GUI/spot-on-a.cc" line="1625"/>
-        <location filename="../GUI/spot-on-a.cc" line="5819"/>
-        <location filename="../GUI/spot-on-a.cc" line="6079"/>
-        <location filename="../GUI/spot-on-b.cc" line="1511"/>
-        <location filename="../GUI/spot-on-b.cc" line="1689"/>
-        <location filename="../GUI/spot-on-b.cc" line="3878"/>
-        <location filename="../GUI/spot-on-b.cc" line="4203"/>
-        <location filename="../GUI/spot-on-b.cc" line="4344"/>
-        <location filename="../GUI/spot-on-b.cc" line="4516"/>
-        <location filename="../GUI/spot-on-b.cc" line="4612"/>
+        <location filename="../GUI/spot-on-a.cc" line="1333"/>
+        <location filename="../GUI/spot-on-a.cc" line="1626"/>
+        <location filename="../GUI/spot-on-a.cc" line="5820"/>
+        <location filename="../GUI/spot-on-a.cc" line="6080"/>
+        <location filename="../GUI/spot-on-b.cc" line="1512"/>
+        <location filename="../GUI/spot-on-b.cc" line="1690"/>
+        <location filename="../GUI/spot-on-b.cc" line="3879"/>
+        <location filename="../GUI/spot-on-b.cc" line="4204"/>
+        <location filename="../GUI/spot-on-b.cc" line="4345"/>
+        <location filename="../GUI/spot-on-b.cc" line="4517"/>
+        <location filename="../GUI/spot-on-b.cc" line="4613"/>
         <location filename="../GUI/spot-on-c.cc" line="92"/>
         <source>Invalid spoton_crypt object.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="1354"/>
+        <location filename="../GUI/spot-on-a.cc" line="1355"/>
         <source>Generating SSL data for listener. Please be patient.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="1607"/>
+        <location filename="../GUI/spot-on-a.cc" line="1608"/>
         <source>Unable to add the specified listener. Please enable logging via the Log Viewer and try again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="1612"/>
+        <location filename="../GUI/spot-on-a.cc" line="1613"/>
         <source>An error (%1) occurred while attempting to add the specified listener. Please enable logging via the Log Viewer and try again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="1932"/>
+        <location filename="../GUI/spot-on-a.cc" line="1933"/>
         <source>Unable to add the specified neighbor. Please enable logging via the Log Viewer and try again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="1937"/>
+        <location filename="../GUI/spot-on-a.cc" line="1938"/>
         <source>An error (%1) occurred while attempting to add the specified neighbor. Please enable logging via the Log Viewer and try again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="2124"/>
+        <location filename="../GUI/spot-on-a.cc" line="2125"/>
         <source>Status: %1
 SSL Key Size: %2
 Local IP: %3 Local Port: %4 Scope ID: %5
@@ -675,167 +675,167 @@ Share Address: %11</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="2413"/>
+        <location filename="../GUI/spot-on-a.cc" line="2414"/>
         <source>There is (are) %1 active listener(s).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="2968"/>
+        <location filename="../GUI/spot-on-a.cc" line="2969"/>
         <source>There is (are) %1 connected neighbor(s).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3156"/>
+        <location filename="../GUI/spot-on-a.cc" line="3157"/>
         <source>External IP: %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3166"/>
+        <location filename="../GUI/spot-on-a.cc" line="3167"/>
         <source>Spot-On: Select GeoIP Data Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3577"/>
+        <location filename="../GUI/spot-on-a.cc" line="3578"/>
         <source>The passphrases are not identical.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3596"/>
+        <location filename="../GUI/spot-on-a.cc" line="3597"/>
         <source>Are you sure that you wish to replace the existing passphrase?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3620"/>
+        <location filename="../GUI/spot-on-a.cc" line="3621"/>
         <source>Generating a derived key. Please be patient.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3711"/>
+        <location filename="../GUI/spot-on-a.cc" line="3712"/>
         <source>Generating public key pairs.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3717"/>
+        <location filename="../GUI/spot-on-a.cc" line="3718"/>
         <source>Generating public key pair %1 of %2. Please be patient.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3761"/>
+        <location filename="../GUI/spot-on-a.cc" line="3762"/>
         <source>An error (%1) occurred with spoton_crypt::derivedKey().</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3779"/>
+        <location filename="../GUI/spot-on-a.cc" line="3780"/>
         <source>An error (%1) occurred with spoton_crypt::saltedPassphraseHash().</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3902"/>
+        <location filename="../GUI/spot-on-a.cc" line="3903"/>
         <source>Your confidential information has been recorded. You are now ready to use the full power of Spot-On. Enjoy!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4174"/>
+        <location filename="../GUI/spot-on-a.cc" line="4175"/>
         <source>&amp;Reset Account Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4178"/>
+        <location filename="../GUI/spot-on-a.cc" line="4179"/>
         <source>&amp;Reset Certificate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="5831"/>
+        <location filename="../GUI/spot-on-a.cc" line="5832"/>
         <source>Invalid neighbor OID. Please select a neighbor.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="5904"/>
+        <location filename="../GUI/spot-on-a.cc" line="5905"/>
         <source>The account name must be non-empty and the account password must contain at least sixteen characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="6039"/>
-        <location filename="../GUI/spot-on-a.cc" line="6138"/>
+        <location filename="../GUI/spot-on-a.cc" line="6040"/>
+        <location filename="../GUI/spot-on-a.cc" line="6139"/>
         <source>Empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="6118"/>
+        <location filename="../GUI/spot-on-a.cc" line="6119"/>
         <location filename="../GUI/spot-on-c.cc" line="180"/>
         <source>A database error occurred.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="6148"/>
+        <location filename="../GUI/spot-on-a.cc" line="6149"/>
         <source>Invalid clipboard object.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4129"/>
+        <location filename="../GUI/spot-on-a.cc" line="4130"/>
         <source>Detach &amp;Neighbors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4131"/>
+        <location filename="../GUI/spot-on-a.cc" line="4132"/>
         <source>Disconnect &amp;Neighbors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4134"/>
+        <location filename="../GUI/spot-on-a.cc" line="4135"/>
         <source>&amp;Publish Information (Plaintext)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4136"/>
+        <location filename="../GUI/spot-on-a.cc" line="4137"/>
         <source>Publish &amp;All (Plaintext)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4171"/>
+        <location filename="../GUI/spot-on-a.cc" line="4172"/>
         <source>&amp;Authenticate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4189"/>
+        <location filename="../GUI/spot-on-a.cc" line="4190"/>
         <source>Delete All Non-Unique &amp;Blocked Neighbors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4191"/>
+        <location filename="../GUI/spot-on-a.cc" line="4192"/>
         <source>Delete All Non-Unique &amp;UUIDs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4194"/>
+        <location filename="../GUI/spot-on-a.cc" line="4195"/>
         <source>B&amp;lock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4196"/>
+        <location filename="../GUI/spot-on-a.cc" line="4197"/>
         <source>U&amp;nblock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4139"/>
-        <location filename="../GUI/spot-on-a.cc" line="4199"/>
+        <location filename="../GUI/spot-on-a.cc" line="4140"/>
+        <location filename="../GUI/spot-on-a.cc" line="4200"/>
         <source>&amp;Full Echo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4141"/>
-        <location filename="../GUI/spot-on-a.cc" line="4201"/>
+        <location filename="../GUI/spot-on-a.cc" line="4142"/>
+        <location filename="../GUI/spot-on-a.cc" line="4202"/>
         <source>&amp;Half Echo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4225"/>
+        <location filename="../GUI/spot-on-a.cc" line="4226"/>
         <source>&amp;Call participant.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4109"/>
-        <location filename="../GUI/spot-on-a.cc" line="4222"/>
+        <location filename="../GUI/spot-on-a.cc" line="4110"/>
+        <location filename="../GUI/spot-on-a.cc" line="4223"/>
         <source>&amp;Copy Repleo to the clipboard buffer.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -851,18 +851,18 @@ Share Address: %11</source>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="772"/>
-        <location filename="../GUI/spot-on-a.cc" line="4150"/>
+        <location filename="../GUI/spot-on-a.cc" line="4151"/>
         <source>Share &amp;Chat Public Key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="774"/>
-        <location filename="../GUI/spot-on-a.cc" line="4155"/>
+        <location filename="../GUI/spot-on-a.cc" line="4156"/>
         <source>Share &amp;E-Mail Public Key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="2590"/>
+        <location filename="../GUI/spot-on-a.cc" line="2591"/>
         <source>UUID: %1
 Status: %2
 SSL Key Size: %3
@@ -883,100 +883,100 @@ Transport: %22</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3665"/>
+        <location filename="../GUI/spot-on-a.cc" line="3666"/>
         <source>Re-encoding public key pair 1 of %1. Please be patient.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3768"/>
+        <location filename="../GUI/spot-on-a.cc" line="3769"/>
         <source>An error (%1) occurred with spoton_crypt::generatePrivatePublicKeys() or spoton_crypt::reencodeKeys().</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4234"/>
+        <location filename="../GUI/spot-on-a.cc" line="4235"/>
         <source>&amp;Terminate call.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4244"/>
+        <location filename="../GUI/spot-on-a.cc" line="4245"/>
         <source>&amp;Generate random Gemini Pair (AES-256 Key, SHA-512 Key).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4279"/>
+        <location filename="../GUI/spot-on-a.cc" line="4280"/>
         <source>Connected securely to the kernel on port %1 from local port %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4875"/>
+        <location filename="../GUI/spot-on-a.cc" line="4876"/>
         <source>Online</source>
         <translation type="unfinished">онлайн</translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4877"/>
+        <location filename="../GUI/spot-on-a.cc" line="4878"/>
         <source>Friend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4949"/>
-        <location filename="../GUI/spot-on-a.cc" line="5002"/>
+        <location filename="../GUI/spot-on-a.cc" line="4950"/>
+        <location filename="../GUI/spot-on-a.cc" line="5003"/>
         <source>User %1 requests your friendship.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4165"/>
+        <location filename="../GUI/spot-on-a.cc" line="4166"/>
         <source>&amp;Connect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="1290"/>
-        <location filename="../GUI/spot-on-a.cc" line="1294"/>
+        <location filename="../GUI/spot-on-a.cc" line="1291"/>
+        <location filename="../GUI/spot-on-a.cc" line="1295"/>
         <source>Broadcast</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3599"/>
+        <location filename="../GUI/spot-on-a.cc" line="3600"/>
         <source>Are you sure that you wish to replace the existing passphrase? Please note that URL data must be re-encoded via a separate tool. Please see the Tools folder.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3901"/>
-        <location filename="../GUI/spot-on-b.cc" line="4436"/>
+        <location filename="../GUI/spot-on-a.cc" line="3902"/>
+        <location filename="../GUI/spot-on-b.cc" line="4437"/>
         <source>Spot-On: Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3915"/>
+        <location filename="../GUI/spot-on-a.cc" line="3916"/>
         <source>Spot-On: Question</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="3918"/>
+        <location filename="../GUI/spot-on-a.cc" line="3919"/>
         <source>Would you like the kernel to be activated?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4167"/>
+        <location filename="../GUI/spot-on-a.cc" line="4168"/>
         <source>&amp;Disconnect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4124"/>
-        <location filename="../GUI/spot-on-a.cc" line="4185"/>
+        <location filename="../GUI/spot-on-a.cc" line="4125"/>
+        <location filename="../GUI/spot-on-a.cc" line="4186"/>
         <location filename="../GUI/spot-on-c.cc" line="289"/>
         <source>&amp;Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4126"/>
-        <location filename="../GUI/spot-on-a.cc" line="4187"/>
+        <location filename="../GUI/spot-on-a.cc" line="4127"/>
+        <location filename="../GUI/spot-on-a.cc" line="4188"/>
         <location filename="../GUI/spot-on-c.cc" line="291"/>
         <source>Delete &amp;All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="4096"/>
-        <location filename="../GUI/spot-on-a.cc" line="4210"/>
+        <location filename="../GUI/spot-on-a.cc" line="4097"/>
+        <location filename="../GUI/spot-on-a.cc" line="4211"/>
         <source>&amp;Add participant as friend.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -986,128 +986,128 @@ Transport: %22</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="540"/>
-        <location filename="../GUI/spot-on-b.cc" line="4151"/>
+        <location filename="../GUI/spot-on-b.cc" line="541"/>
+        <location filename="../GUI/spot-on-b.cc" line="4152"/>
         <source>Are you sure that you wish to remove the selected participant(s)?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="787"/>
-        <location filename="../GUI/spot-on-b.cc" line="792"/>
+        <location filename="../GUI/spot-on-b.cc" line="788"/>
+        <location filename="../GUI/spot-on-b.cc" line="793"/>
         <source>Custom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1519"/>
+        <location filename="../GUI/spot-on-b.cc" line="1520"/>
         <source>Invalid key. The key must start with either the letter K or the letter k.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1632"/>
-        <location filename="../GUI/spot-on-b.cc" line="1860"/>
+        <location filename="../GUI/spot-on-b.cc" line="1633"/>
+        <location filename="../GUI/spot-on-b.cc" line="1861"/>
         <source>Invalid signature public key signature.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1697"/>
+        <location filename="../GUI/spot-on-b.cc" line="1698"/>
         <source>Invalid repleo. The repleo must start with either the letter R or the letter r.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1849"/>
+        <location filename="../GUI/spot-on-b.cc" line="1850"/>
         <source>Invalid public key signature.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="68"/>
-        <location filename="../GUI/spot-on-b.cc" line="2190"/>
+        <location filename="../GUI/spot-on-b.cc" line="2191"/>
         <source>Please select at least one participant.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1557"/>
+        <location filename="../GUI/spot-on-b.cc" line="1558"/>
         <source>Unable to retrieve your chat public key.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1567"/>
+        <location filename="../GUI/spot-on-b.cc" line="1568"/>
         <source>Unable to retrieve your chat signature public key.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1586"/>
+        <location filename="../GUI/spot-on-b.cc" line="1587"/>
         <source>Unable to retrieve your email public key.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1596"/>
+        <location filename="../GUI/spot-on-b.cc" line="1597"/>
         <source>Unable to retrieve your email signature public key.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2198"/>
+        <location filename="../GUI/spot-on-b.cc" line="2199"/>
         <source>Please compose an actual letter.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2303"/>
+        <location filename="../GUI/spot-on-b.cc" line="2304"/>
         <source>Queued</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2538"/>
+        <location filename="../GUI/spot-on-b.cc" line="2539"/>
         <source>From</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2541"/>
+        <location filename="../GUI/spot-on-b.cc" line="2542"/>
         <source>To</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2543"/>
+        <location filename="../GUI/spot-on-b.cc" line="2544"/>
         <source>From/To</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2762"/>
+        <location filename="../GUI/spot-on-b.cc" line="2763"/>
         <source>Spot-On: Goldbug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2762"/>
+        <location filename="../GUI/spot-on-b.cc" line="2763"/>
         <source>&amp;Goldbug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4297"/>
+        <location filename="../GUI/spot-on-b.cc" line="4298"/>
         <source>Unable to store the IP address securely.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4428"/>
+        <location filename="../GUI/spot-on-b.cc" line="4429"/>
         <source>The following ciphers were discovered. Please note that Spot-On may override discovered ciphers if the ciphers are not supported by Qt.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4433"/>
+        <location filename="../GUI/spot-on-b.cc" line="4434"/>
         <source>Empty cipher list.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1576"/>
+        <location filename="../GUI/spot-on-b.cc" line="1577"/>
         <source>You&apos;re attempting to add your own &apos;chat&apos; keys. Please do not do this.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="48"/>
-        <location filename="../GUI/spot-on-b.cc" line="3193"/>
+        <location filename="../GUI/spot-on-b.cc" line="3194"/>
         <source>Not connected to the kernel.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="53"/>
-        <location filename="../GUI/spot-on-b.cc" line="3190"/>
+        <location filename="../GUI/spot-on-b.cc" line="3191"/>
         <source>Connection to the kernel is not encrypted.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1117,196 +1117,196 @@ Transport: %22</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1504"/>
-        <location filename="../GUI/spot-on-b.cc" line="1682"/>
+        <location filename="../GUI/spot-on-b.cc" line="1505"/>
+        <location filename="../GUI/spot-on-b.cc" line="1683"/>
         <source>Empty key.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1529"/>
-        <location filename="../GUI/spot-on-b.cc" line="1707"/>
-        <location filename="../GUI/spot-on-b.cc" line="1740"/>
-        <location filename="../GUI/spot-on-b.cc" line="1787"/>
+        <location filename="../GUI/spot-on-b.cc" line="1530"/>
+        <location filename="../GUI/spot-on-b.cc" line="1708"/>
+        <location filename="../GUI/spot-on-b.cc" line="1741"/>
+        <location filename="../GUI/spot-on-b.cc" line="1788"/>
         <source>Irregular data.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1541"/>
-        <location filename="../GUI/spot-on-b.cc" line="1800"/>
+        <location filename="../GUI/spot-on-b.cc" line="1542"/>
+        <location filename="../GUI/spot-on-b.cc" line="1801"/>
         <source>Invalid key type. Expecting &apos;chat&apos;, &apos;email&apos;, or &apos;url&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1605"/>
+        <location filename="../GUI/spot-on-b.cc" line="1606"/>
         <source>You&apos;re attempting to add your own &apos;email&apos; keys. Please do not do this.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1617"/>
+        <location filename="../GUI/spot-on-b.cc" line="1618"/>
         <source>Invalid &apos;chat&apos;, &apos;email&apos;, or &apos;url&apos; public key signature.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1730"/>
+        <location filename="../GUI/spot-on-b.cc" line="1731"/>
         <source>Asymmetric decryption failure.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1761"/>
-        <location filename="../GUI/spot-on-b.cc" line="3896"/>
+        <location filename="../GUI/spot-on-b.cc" line="1762"/>
+        <location filename="../GUI/spot-on-b.cc" line="3897"/>
         <source>Unable to compute a keyed hash.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1768"/>
+        <location filename="../GUI/spot-on-b.cc" line="1769"/>
         <source>The computed hash does not match the provided hash.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1778"/>
+        <location filename="../GUI/spot-on-b.cc" line="1779"/>
         <source>Symmetric decryption failure.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1836"/>
+        <location filename="../GUI/spot-on-b.cc" line="1837"/>
         <source>You&apos;re attempting to add your own keys or Spot-On was not able to retrieve your keys for comparison.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2773"/>
+        <location filename="../GUI/spot-on-b.cc" line="2774"/>
         <source>The provided goldbug may be incorrect.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2780"/>
+        <location filename="../GUI/spot-on-b.cc" line="2781"/>
         <source>A severe memory issue occurred.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2824"/>
+        <location filename="../GUI/spot-on-b.cc" line="2825"/>
         <source>&lt;b&gt;From:&lt;/b&gt; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2827"/>
+        <location filename="../GUI/spot-on-b.cc" line="2828"/>
         <source>&lt;b&gt;To:&lt;/b&gt; me</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2829"/>
-        <location filename="../GUI/spot-on-b.cc" line="2857"/>
-        <location filename="../GUI/spot-on-b.cc" line="2873"/>
+        <location filename="../GUI/spot-on-b.cc" line="2830"/>
+        <location filename="../GUI/spot-on-b.cc" line="2858"/>
+        <location filename="../GUI/spot-on-b.cc" line="2874"/>
         <source>&lt;b&gt;Subject:&lt;/b&gt; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2832"/>
-        <location filename="../GUI/spot-on-b.cc" line="2860"/>
-        <location filename="../GUI/spot-on-b.cc" line="2876"/>
+        <location filename="../GUI/spot-on-b.cc" line="2833"/>
+        <location filename="../GUI/spot-on-b.cc" line="2861"/>
+        <location filename="../GUI/spot-on-b.cc" line="2877"/>
         <source>&lt;b&gt;Sent: &lt;/b&gt; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2839"/>
-        <location filename="../GUI/spot-on-b.cc" line="2845"/>
-        <location filename="../GUI/spot-on-b.cc" line="2847"/>
+        <location filename="../GUI/spot-on-b.cc" line="2840"/>
+        <location filename="../GUI/spot-on-b.cc" line="2846"/>
+        <location filename="../GUI/spot-on-b.cc" line="2848"/>
         <source>Read</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2852"/>
+        <location filename="../GUI/spot-on-b.cc" line="2853"/>
         <source>&lt;b&gt;From:&lt;/b&gt; me</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2854"/>
+        <location filename="../GUI/spot-on-b.cc" line="2855"/>
         <source>&lt;b&gt;To:&lt;/b&gt; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2867"/>
-        <location filename="../GUI/spot-on-b.cc" line="2870"/>
+        <location filename="../GUI/spot-on-b.cc" line="2868"/>
+        <location filename="../GUI/spot-on-b.cc" line="2871"/>
         <source>&lt;b&gt;From/To:&lt;/b&gt; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="2881"/>
-        <location filename="../GUI/spot-on-b.cc" line="2887"/>
-        <location filename="../GUI/spot-on-b.cc" line="2889"/>
-        <location filename="../GUI/spot-on-b.cc" line="2942"/>
+        <location filename="../GUI/spot-on-b.cc" line="2882"/>
+        <location filename="../GUI/spot-on-b.cc" line="2888"/>
+        <location filename="../GUI/spot-on-b.cc" line="2890"/>
+        <location filename="../GUI/spot-on-b.cc" line="2943"/>
         <source>Deleted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="3126"/>
+        <location filename="../GUI/spot-on-b.cc" line="3127"/>
         <source>Are you sure that you wish to empty the Trash folder?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="3710"/>
+        <location filename="../GUI/spot-on-b.cc" line="3711"/>
         <source>Re: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="3884"/>
+        <location filename="../GUI/spot-on-b.cc" line="3885"/>
         <source>Please provide a channel name.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4049"/>
+        <location filename="../GUI/spot-on-b.cc" line="4050"/>
         <source>Generating SSL data for kernel socket. Please be patient.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4223"/>
-        <location filename="../GUI/spot-on-b.cc" line="4317"/>
-        <location filename="../GUI/spot-on-b.cc" line="4493"/>
-        <location filename="../GUI/spot-on-b.cc" line="4593"/>
+        <location filename="../GUI/spot-on-b.cc" line="4224"/>
+        <location filename="../GUI/spot-on-b.cc" line="4318"/>
+        <location filename="../GUI/spot-on-b.cc" line="4494"/>
+        <location filename="../GUI/spot-on-b.cc" line="4594"/>
         <source>Invalid listener OID. Please select a listener.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4233"/>
+        <location filename="../GUI/spot-on-b.cc" line="4234"/>
         <source>Please provide an IP address or the keyword Any.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4335"/>
+        <location filename="../GUI/spot-on-b.cc" line="4336"/>
         <source>Please select an address to delete.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4498"/>
+        <location filename="../GUI/spot-on-b.cc" line="4499"/>
         <source>The selected listener does not support SSL.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4504"/>
+        <location filename="../GUI/spot-on-b.cc" line="4505"/>
         <source>Please provide an account name and a password.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4509"/>
+        <location filename="../GUI/spot-on-b.cc" line="4510"/>
         <source>Please provide a password having at least sixteen characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4562"/>
+        <location filename="../GUI/spot-on-b.cc" line="4563"/>
         <source>A database error has occurred.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4603"/>
+        <location filename="../GUI/spot-on-b.cc" line="4604"/>
         <source>Please select an account to delete.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4888"/>
+        <location filename="../GUI/spot-on-b.cc" line="4889"/>
         <source>Remote user %1 is requesting authentication credentials.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="1935"/>
+        <location filename="../GUI/spot-on-b.cc" line="1936"/>
         <source>Are you sure that you wish to reset Spot-On? All data will be lost.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1483,14 +1483,14 @@ Transport: %22</source>
         <location filename="../UI/controlcenter.ui" line="492"/>
         <location filename="../UI/controlcenter.ui" line="1294"/>
         <location filename="../UI/controlcenter.ui" line="3302"/>
-        <location filename="../UI/controlcenter.ui" line="4652"/>
+        <location filename="../UI/controlcenter.ui" line="4657"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="574"/>
         <location filename="../UI/controlcenter.ui" line="1253"/>
-        <location filename="../UI/controlcenter.ui" line="4711"/>
+        <location filename="../UI/controlcenter.ui" line="4716"/>
         <source>public_key_hash</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1517,8 +1517,8 @@ Transport: %22</source>
         <location filename="../UI/controlcenter.ui" line="2034"/>
         <location filename="../UI/controlcenter.ui" line="2096"/>
         <location filename="../UI/controlcenter.ui" line="3164"/>
-        <location filename="../UI/controlcenter.ui" line="4828"/>
-        <location filename="../UI/controlcenter.ui" line="4951"/>
+        <location filename="../UI/controlcenter.ui" line="4833"/>
+        <location filename="../UI/controlcenter.ui" line="4956"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1580,7 +1580,7 @@ Transport: %22</source>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="2291"/>
-        <location filename="../UI/controlcenter.ui" line="5118"/>
+        <location filename="../UI/controlcenter.ui" line="5123"/>
         <source>Authenticate</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1686,7 +1686,7 @@ Transport: %22</source>
         <location filename="../UI/controlcenter.ui" line="141"/>
         <location filename="../UI/controlcenter.ui" line="479"/>
         <location filename="../UI/controlcenter.ui" line="1977"/>
-        <location filename="../UI/controlcenter.ui" line="4639"/>
+        <location filename="../UI/controlcenter.ui" line="4644"/>
         <source>&amp;Name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1718,7 +1718,7 @@ Transport: %22</source>
     <message>
         <location filename="../UI/controlcenter.ui" line="363"/>
         <location filename="../UI/controlcenter.ui" line="866"/>
-        <location filename="../UI/controlcenter.ui" line="4593"/>
+        <location filename="../UI/controlcenter.ui" line="4598"/>
         <source>Accept &amp;keys.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1969,13 +1969,13 @@ Transport: %22</source>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="4343"/>
-        <location filename="../UI/controlcenter.ui" line="4426"/>
+        <location filename="../UI/controlcenter.ui" line="4431"/>
         <source>Total Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="4348"/>
-        <location filename="../UI/controlcenter.ui" line="4441"/>
+        <location filename="../UI/controlcenter.ui" line="4446"/>
         <source>Mosaic</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2010,22 +2010,22 @@ Transport: %22</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4522"/>
+        <location filename="../UI/controlcenter.ui" line="4527"/>
         <source> Bytes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4411"/>
+        <location filename="../UI/controlcenter.ui" line="4416"/>
         <source>Mute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4370"/>
+        <location filename="../UI/controlcenter.ui" line="4375"/>
         <source>&amp;Transmitted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4376"/>
+        <location filename="../UI/controlcenter.ui" line="4381"/>
         <source>Transmitted</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2288,27 +2288,32 @@ Transport: %22</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4421"/>
+        <location filename="../UI/controlcenter.ui" line="4353"/>
+        <source>Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/controlcenter.ui" line="4426"/>
         <source>Pulse Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4512"/>
+        <location filename="../UI/controlcenter.ui" line="4517"/>
         <source>&amp;Pulse Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5338"/>
+        <location filename="../UI/controlcenter.ui" line="5343"/>
         <source>&amp;East</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5349"/>
+        <location filename="../UI/controlcenter.ui" line="5354"/>
         <source>&amp;North</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5357"/>
+        <location filename="../UI/controlcenter.ui" line="5362"/>
         <source>&amp;West</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2440,27 +2445,27 @@ Transport: %22</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5309"/>
+        <location filename="../UI/controlcenter.ui" line="5314"/>
         <source>Nuvola</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5317"/>
+        <location filename="../UI/controlcenter.ui" line="5322"/>
         <source>Nouve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5325"/>
+        <location filename="../UI/controlcenter.ui" line="5330"/>
         <source>Ctrl+L</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5330"/>
+        <location filename="../UI/controlcenter.ui" line="5335"/>
         <source>&amp;Reset Spot-On</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5322"/>
+        <location filename="../UI/controlcenter.ui" line="5327"/>
         <source>&amp;Log Viewer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2475,7 +2480,7 @@ Transport: %22</source>
         <location filename="../UI/controlcenter.ui" line="1026"/>
         <location filename="../UI/controlcenter.ui" line="1540"/>
         <location filename="../UI/controlcenter.ui" line="2363"/>
-        <location filename="../UI/controlcenter.ui" line="4431"/>
+        <location filename="../UI/controlcenter.ui" line="4436"/>
         <source>Status</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2509,14 +2514,14 @@ Transport: %22</source>
     <message>
         <location filename="../UI/controlcenter.ui" line="559"/>
         <location filename="../UI/controlcenter.ui" line="1238"/>
-        <location filename="../UI/controlcenter.ui" line="4696"/>
+        <location filename="../UI/controlcenter.ui" line="4701"/>
         <source>Participant</source>
         <translation type="unfinished">участник</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="569"/>
         <location filename="../UI/controlcenter.ui" line="1248"/>
-        <location filename="../UI/controlcenter.ui" line="4706"/>
+        <location filename="../UI/controlcenter.ui" line="4711"/>
         <source>neighbor_oid</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2541,8 +2546,8 @@ Transport: %22</source>
         <location filename="../UI/controlcenter.ui" line="2967"/>
         <location filename="../UI/controlcenter.ui" line="3053"/>
         <location filename="../UI/controlcenter.ui" line="4189"/>
-        <location filename="../UI/controlcenter.ui" line="4821"/>
-        <location filename="../UI/controlcenter.ui" line="4944"/>
+        <location filename="../UI/controlcenter.ui" line="4826"/>
+        <location filename="../UI/controlcenter.ui" line="4949"/>
         <source>Add</source>
         <translation type="unfinished">добавлять</translation>
     </message>
@@ -2575,7 +2580,7 @@ Transport: %22</source>
         <location filename="../UI/controlcenter.ui" line="3271"/>
         <location filename="../UI/controlcenter.ui" line="3356"/>
         <location filename="../UI/controlcenter.ui" line="4241"/>
-        <location filename="../UI/controlcenter.ui" line="4505"/>
+        <location filename="../UI/controlcenter.ui" line="4510"/>
         <source>Select</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2610,7 +2615,7 @@ Transport: %22</source>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="3672"/>
-        <location filename="../UI/controlcenter.ui" line="5101"/>
+        <location filename="../UI/controlcenter.ui" line="5106"/>
         <source>P&amp;assphrase</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2620,24 +2625,24 @@ Transport: %22</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4746"/>
+        <location filename="../UI/controlcenter.ui" line="4751"/>
         <source>&amp;Download</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4776"/>
-        <location filename="../UI/controlcenter.ui" line="4899"/>
+        <location filename="../UI/controlcenter.ui" line="4781"/>
+        <location filename="../UI/controlcenter.ui" line="4904"/>
         <source>&amp;Accept List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4786"/>
-        <location filename="../UI/controlcenter.ui" line="4909"/>
+        <location filename="../UI/controlcenter.ui" line="4791"/>
+        <location filename="../UI/controlcenter.ui" line="4914"/>
         <source>&amp;Deny List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4869"/>
+        <location filename="../UI/controlcenter.ui" line="4874"/>
         <source>&amp;Upload</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2689,7 +2694,7 @@ Transport: %22</source>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="462"/>
-        <location filename="../UI/controlcenter.ui" line="4622"/>
+        <location filename="../UI/controlcenter.ui" line="4627"/>
         <source>Participants</source>
         <translation type="unfinished">участник</translation>
     </message>
@@ -2700,10 +2705,10 @@ Transport: %22</source>
         <location filename="../UI/controlcenter.ui" line="1620"/>
         <location filename="../UI/controlcenter.ui" line="2498"/>
         <location filename="../UI/controlcenter.ui" line="3983"/>
-        <location filename="../UI/controlcenter.ui" line="4358"/>
-        <location filename="../UI/controlcenter.ui" line="4451"/>
-        <location filename="../UI/controlcenter.ui" line="4478"/>
-        <location filename="../UI/controlcenter.ui" line="4701"/>
+        <location filename="../UI/controlcenter.ui" line="4363"/>
+        <location filename="../UI/controlcenter.ui" line="4456"/>
+        <location filename="../UI/controlcenter.ui" line="4483"/>
+        <location filename="../UI/controlcenter.ui" line="4706"/>
         <source>OID</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2764,7 +2769,7 @@ Transport: %22</source>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="3978"/>
-        <location filename="../UI/controlcenter.ui" line="4473"/>
+        <location filename="../UI/controlcenter.ui" line="4478"/>
         <source>Magnet</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2789,23 +2794,23 @@ Transport: %22</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4353"/>
-        <location filename="../UI/controlcenter.ui" line="4446"/>
+        <location filename="../UI/controlcenter.ui" line="4358"/>
+        <location filename="../UI/controlcenter.ui" line="4451"/>
         <source>SHA-512 Hash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4416"/>
+        <location filename="../UI/controlcenter.ui" line="4421"/>
         <source>Percent Transmitted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4436"/>
+        <location filename="../UI/controlcenter.ui" line="4441"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4555"/>
+        <location filename="../UI/controlcenter.ui" line="4560"/>
         <source>Transmit</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2903,69 +2908,69 @@ Transport: %22</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4576"/>
+        <location filename="../UI/controlcenter.ui" line="4581"/>
         <source>&amp;URLs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4716"/>
         <location filename="../UI/controlcenter.ui" line="4721"/>
+        <location filename="../UI/controlcenter.ui" line="4726"/>
         <source>ignored</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4730"/>
+        <location filename="../UI/controlcenter.ui" line="4735"/>
         <source>URL Distillers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5052"/>
+        <location filename="../UI/controlcenter.ui" line="5057"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;quot;The Dalmatian is a breed of dog, noted for its unique black- or brown-spotted coat. This dog is often used as a rescue dog, guardian, athletic partner, and, especially today, the Dalmatian remains most often an active, well-loved family member.&amp;quot; - Wikipedia.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5177"/>
+        <location filename="../UI/controlcenter.ui" line="5182"/>
         <source>Spot-On Graphical User Interface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5208"/>
+        <location filename="../UI/controlcenter.ui" line="5213"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://sourceforge.net/p/spot-on/code/HEAD/tree/branches/0.07/Documentation/RELEASE-NOTES&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Version 0.07&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5224"/>
+        <location filename="../UI/controlcenter.ui" line="5229"/>
         <source>Build Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4492"/>
-        <location filename="../UI/controlcenter.ui" line="5264"/>
+        <location filename="../UI/controlcenter.ui" line="4497"/>
+        <location filename="../UI/controlcenter.ui" line="5269"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5272"/>
+        <location filename="../UI/controlcenter.ui" line="5277"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5276"/>
+        <location filename="../UI/controlcenter.ui" line="5281"/>
         <source>&amp;Icons</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5283"/>
+        <location filename="../UI/controlcenter.ui" line="5288"/>
         <source>&amp;Tab Position</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5298"/>
+        <location filename="../UI/controlcenter.ui" line="5303"/>
         <source>&amp;Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5301"/>
+        <location filename="../UI/controlcenter.ui" line="5306"/>
         <source>Ctrl+Q</source>
         <translation type="unfinished"></translation>
     </message>
