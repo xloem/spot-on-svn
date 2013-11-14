@@ -8,14 +8,14 @@ email.db:
 
 all, save for folder_index, hash, receiver_sender_hash, and recipient_hash
 
-etp_magnets.db:
+magnets.db:
 
 magnet
 
 friends_public_keys.db:
 
 gemini
-gemini_mac_key
+gemini_hash_key
 
 idiotes.db:
 
