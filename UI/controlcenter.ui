@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1000</width>
-    <height>623</height>
+    <height>647</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -336,8 +336,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>984</width>
-                <height>531</height>
+                <width>986</width>
+                <height>543</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1936,8 +1936,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>258</width>
-                 <height>511</height>
+                 <width>219</width>
+                 <height>523</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3236,8 +3236,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>974</width>
-             <height>521</height>
+             <width>976</width>
+             <height>533</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3924,8 +3924,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>974</width>
-             <height>521</height>
+             <width>976</width>
+             <height>533</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4346,6 +4346,11 @@
                      <column>
                       <property name="text">
                        <string>Mosaic</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Folder</string>
                       </property>
                      </column>
                      <column>
@@ -5256,7 +5261,7 @@
      <x>0</x>
      <y>0</y>
      <width>1000</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
