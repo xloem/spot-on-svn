@@ -1312,6 +1312,9 @@ spoton::spoton(void):QMainWindow()
 
 spoton::~spoton()
 {
+  m_purgeMutex.lock();
+  m_purge = false;
+  m_purgeMutex.unlock();
   m_messagingCacheMutex.lock();
   m_messagingCache.clear();
   m_messagingCacheMutex.unlock();

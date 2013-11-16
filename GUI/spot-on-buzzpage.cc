@@ -195,6 +195,9 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 
 spoton_buzzpage::~spoton_buzzpage()
 {
+  m_purgeMutex.lock();
+  m_purge = false;
+  m_purgeMutex.unlock();
   m_messagingCacheMutex.lock();
   m_messagingCache.clear();
   m_messagingCacheMutex.unlock();
@@ -573,9 +576,9 @@ void spoton_buzzpage::purgeMessagingCache(void)
     return;
 
   QDateTime now(QDateTime::currentDateTime());
-  QMutableHashIterator<QByteArray, QDateTime> i(m_messagingCache);
+  QMutableHashIterator<QByteArray, QDateTime> it(m_messagingCache);
 
-  while(i.hasNext())
+  while(it.hasNext())
     {
       m_purgeMutex.lock();
 
@@ -586,10 +589,10 @@ void spoton_buzzpage::purgeMessagingCache(void)
 	}
 
       m_purgeMutex.unlock();
-      i.next();
+      it.next();
 
-      if(i.value().secsTo(now) >= 120)
-	i.remove();
+      if(it.value().secsTo(now) >= 120)
+	it.remove();
     }
 
   m_messagingCacheMutex.unlock();
