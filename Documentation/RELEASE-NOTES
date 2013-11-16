@@ -92,6 +92,8 @@
      mechanism neglected to remove expired items in a timely manner. The new
      implementation may increase the kernel's memory footprint. Also decreased
      item expiration seconds to 30 seconds.
+48.  Updated libgpg-error to version 1.12 and libgcrypt to version 1.5.3 on
+     OS X 64-bit.
 
 0.06 (10/24/2013)
 
