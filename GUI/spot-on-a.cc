@@ -1319,11 +1319,13 @@ spoton::~spoton()
   m_messagingCache.clear();
   m_messagingCacheMutex.unlock();
   m_future.waitForFinished();
+  QApplication::instance()->quit();
 }
 
 void spoton::slotQuit(void)
 {
   close();
+  deleteLater();
 }
 
 void spoton::slotAddListener(void)
