@@ -267,13 +267,13 @@ class spoton: public QMainWindow
   void slotKeyOriginChanged(int index);
   void slotHideOfflineParticipants(bool state);
   void slotJoinBuzzChannel(void);
-  void slotListenerCheckChange(int state);
+  void slotListenerCheckChange(bool state);
   void slotListenerFullEcho(void);
   void slotListenerHalfEcho(void);
   void slotListenerIPComboChanged(int index);
   void slotListenerMaximumChanged(int value);
   void slotListenerSelected(void);
-  void slotListenerUseAccounts(int state);
+  void slotListenerUseAccounts(bool state);
   void slotMailRetrievalIntervalChanged(int value);
   void slotMailSelected(QTableWidgetItem *item);
   void slotMailTabChanged(int index);
@@ -282,7 +282,7 @@ class spoton: public QMainWindow
   void slotMaximumClientsChanged(int index);
   void slotMessagingCachePurge(void);
   void slotModeChanged(QSslSocket::SslMode mode);
-  void slotNeighborCheckChange(int state);
+  void slotNeighborCheckChange(bool state);
   void slotNeighborFullEcho(void);
   void slotNeighborHalfEcho(void);
   void slotNeighborMaximumChanged(int value);
@@ -335,6 +335,7 @@ class spoton: public QMainWindow
   void slotShowContextMenu(const QPoint &point);
   void slotShowEtpMagnetsMenu(const QPoint &point);
   void slotSignatureCheckBoxToggled(bool state);
+  void slotStarOTMCheckChange(bool state);
   void slotStatusButtonClicked(void);
   void slotStatusChanged(int index);
   void slotSuperEcho(bool state);

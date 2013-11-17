@@ -94,6 +94,7 @@
      item expiration seconds to 30 seconds.
 48.  Updated libgpg-error to version 1.12 and libgcrypt to version 1.5.3 on
      OS X.
+49.  Removed table_row properties from various widgets. Not used.
 
 0.06 (10/24/2013)
 

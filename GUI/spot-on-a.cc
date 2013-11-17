@@ -2217,19 +2217,18 @@ void spoton::slotPopulateListeners(void)
 
 			check->setProperty
 			  ("oid", query.value(query.record().count() - 1));
-			check->setProperty("table_row", row);
 			check->setToolTip(tooltip);
 
 			if(i == 0)
 			  connect(check,
-				  SIGNAL(stateChanged(int)),
+				  SIGNAL(toggled(bool)),
 				  this,
-				  SLOT(slotListenerCheckChange(int)));
+				  SLOT(slotListenerCheckChange(bool)));
 			else
 			  connect(check,
-				  SIGNAL(stateChanged(int)),
+				  SIGNAL(toggled(bool)),
 				  this,
-				  SLOT(slotListenerUseAccounts(int)));
+				  SLOT(slotListenerUseAccounts(bool)));
 
 			m_ui.listeners->setCellWidget(row, i, check);
 		      }
@@ -2253,7 +2252,6 @@ void spoton::slotPopulateListeners(void)
 			box = new QComboBox();
 			box->setProperty
 			  ("oid", query.value(query.record().count() - 1));
-			box->setProperty("table_row", row);
 			box->addItem("1");
 
 			for(int j = 1; j <= 10; j++)
@@ -2310,7 +2308,6 @@ void spoton::slotPopulateListeners(void)
 			  ("field_name", query.record().fieldName(i));
 			box->setProperty
 			  ("oid", query.value(query.record().count() - 1));
-			box->setProperty("table_row", row);
 			box->setToolTip(tooltip);
 			box->setValue(query.value(i).toInt());
 			connect(box,
@@ -2714,11 +2711,10 @@ void spoton::slotPopulateNeighbors(void)
 
 		check->setProperty
 		  ("oid", query.value(query.record().count() - 1));
-		check->setProperty("table_row", row);
 		connect(check,
-			SIGNAL(stateChanged(int)),
+			SIGNAL(toggled(bool)),
 			this,
-			SLOT(slotNeighborCheckChange(int)));
+			SLOT(slotNeighborCheckChange(bool)));
 		m_ui.neighbors->setCellWidget(row, 0, check);
 
 		for(int i = 1; i < query.record().count(); i++)
@@ -2804,7 +2800,6 @@ void spoton::slotPopulateNeighbors(void)
 			  ("field_name", query.record().fieldName(i));
 			box->setProperty
 			  ("oid", query.value(query.record().count() - 1));
-			box->setProperty("table_row", row);
 			box->setToolTip(tooltip);
 			box->setValue(query.value(i).toInt());
 			connect(box,
@@ -3395,7 +3390,7 @@ void spoton::slotDeleteNeighbor(void)
     m_ui.neighborSummary->clear();
 }
 
-void spoton::slotListenerCheckChange(int state)
+void spoton::slotListenerCheckChange(bool state)
 {
   QCheckBox *checkBox = qobject_cast<QCheckBox *> (sender());
 
@@ -3433,7 +3428,7 @@ void spoton::slotListenerCheckChange(int state)
     }
 }
 
-void spoton::slotListenerUseAccounts(int state)
+void spoton::slotListenerUseAccounts(bool state)
 {
   QCheckBox *checkBox = qobject_cast<QCheckBox *> (sender());
 
@@ -4019,7 +4014,7 @@ void spoton::slotTabChanged(int index)
     m_sb.chat->setVisible(false);
 }
 
-void spoton::slotNeighborCheckChange(int state)
+void spoton::slotNeighborCheckChange(bool state)
 {
   QCheckBox *checkBox = qobject_cast<QCheckBox *> (sender());
 
@@ -4040,7 +4035,7 @@ void spoton::slotNeighborCheckChange(int state)
 	    query.prepare("UPDATE neighbors SET "
 			  "sticky = ? "
 			  "WHERE OID = ?");
-	    query.bindValue(0, state > 0 ? 1 : 0);
+	    query.bindValue(0, state ? 1 : 0);
 	    query.bindValue(1, checkBox->property("oid"));
 	    query.exec();
 	  }

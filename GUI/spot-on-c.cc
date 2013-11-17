@@ -148,14 +148,14 @@ void spoton::slotAddEtpMagnet(void)
     QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "magnets.db");
+		       "starbeam_magnets.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
 	query.prepare("INSERT OR REPLACE INTO "
-		      "magnets "
+		      "starbeam_magnets "
 		      "(magnet, magnet_hash) "
 		      "VALUES (?, ?)");
 	query.bindValue(0, s_crypt->encrypted(magnet.toLatin1(),
@@ -201,7 +201,7 @@ void spoton::slotPopulateEtpMagnets(void)
     return;
 
   QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
-		     "magnets.db");
+		     "starbeam_magnets.db");
 
   if(fileInfo.exists())
     {
@@ -234,7 +234,7 @@ void spoton::slotPopulateEtpMagnets(void)
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT magnet, one_time_magnet, "
-		      "OID FROM magnets"))
+		      "OID FROM starbeam_magnets"))
 	  while(query.next())
 	    {
 	      QByteArray bytes;
@@ -243,19 +243,25 @@ void spoton::slotPopulateEtpMagnets(void)
 	      bytes = s_crypt->decrypted
 		(QByteArray::fromBase64(query.value(0).toByteArray()), &ok);
 
-	      QCheckBox *box = new QCheckBox();
+	      QCheckBox *check = new QCheckBox();
 	      QTableWidgetItem *item = new QTableWidgetItem
 		(bytes.constData());
 
 	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.etpMagnets->setRowCount(row + 1);
 	      m_ui.etpMagnets->setItem(row, 1, item);
-	      box->setChecked(query.value(1).toInt());
-	      m_ui.etpMagnets->setCellWidget(row, 0, box);
-	      box = new QCheckBox();
-	      box->setText(bytes.replace("&", "&&").constData());
+	      check->setChecked(query.value(1).toInt());
+	      check->setProperty
+		("oid", query.value(query.record().count() - 1));
+	      connect(check,
+		      SIGNAL(toggled(bool)),
+		      this,
+		      SLOT(slotStarOTMCheckChange(bool)));
+	      m_ui.etpMagnets->setCellWidget(row, 0, check);
 	      m_ui.etpTransmittersMagnets->setRowCount(row + 1);
-	      m_ui.etpTransmittersMagnets->setCellWidget(row, 0, box);
+	      check = new QCheckBox();
+	      check->setText(bytes.replace("&", "&&").constData());
+	      m_ui.etpTransmittersMagnets->setCellWidget(row, 0, check);
 	      item = new QTableWidgetItem(query.value(2).toString());
 	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.etpMagnets->setItem(row, 2, item);
@@ -302,13 +308,13 @@ void spoton::slotDeleteEtpAllMagnets(void)
     QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "magnets.db");
+		       "starbeam_magnets.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
-	query.exec("DELETE FROM magnets");
+	query.exec("DELETE FROM starbeam_magnets");
       }
 
     db.close();
@@ -340,13 +346,13 @@ void spoton::slotDeleteEtpMagnet(void)
     QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() + "magnets.db");
+      (spoton_misc::homePath() + QDir::separator() + "starbeam_magnets.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
-	query.prepare("DELETE FROM magnets WHERE OID = ?");
+	query.prepare("DELETE FROM starbeam_magnets WHERE OID = ?");
 	query.bindValue(0, oid);
 	query.exec();
       }
@@ -590,5 +596,38 @@ void spoton::slotTransportChanged(int index)
       m_ui.requireSsl->setEnabled(index == 0);
       m_ui.sslKeySizeLabel->setEnabled(index == 0);
       m_ui.neighborKeySize->setEnabled(index == 0);
+    }
+}
+
+void spoton::slotStarOTMCheckChange(bool state)
+{
+  QCheckBox *checkBox = qobject_cast<QCheckBox *> (sender());
+
+  if(checkBox)
+    {
+      QString connectionName("");
+
+      {
+	QSqlDatabase db = spoton_misc::database(connectionName);
+
+	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			   "starbeam_magnets.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+
+	    query.prepare("UPDATE starbeam_magnets SET "
+			  "one_time_magnet = ? "
+			  "WHERE OID = ?");
+	    query.bindValue(0, state ? 1 : 0);
+	    query.bindValue(1, checkBox->property("oid"));
+	    query.exec();
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase(connectionName);
     }
 }
