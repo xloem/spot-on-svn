@@ -151,3 +151,6 @@ Remaining Items
        state timers will eventually cause objects to be reset and therefore
        new attempts will be made to capture the external IP addresses. Review!
 32.    Anonymous post office boxes.
+33.    Scramblers are too periodic.
+34.    Participant count may be possible based on asymmetric ciphertexts.
+       Research?
