@@ -733,3 +733,26 @@ void spoton::slotExternalIp(int index)
 	m_externalAddressDiscovererTimer.stop();
     }
 }
+
+void spoton::slotSelectTransmitFile(void)
+{
+  QFileDialog dialog(this);
+
+  dialog.setWindowTitle
+    (tr("Spot-On: Select Transmit File"));
+  dialog.setFileMode(QFileDialog::ExistingFile);
+  dialog.setDirectory(QDir::homePath());
+  dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
+  dialog.setAcceptMode(QFileDialog::AcceptOpen);
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+#endif
+#endif
+
+  if(dialog.exec() == QDialog::Accepted)
+    {
+      m_ui.etpFile->setText(dialog.selectedFiles().value(0).trimmed());
+      m_ui.etpFile->setToolTip(m_ui.etpFile->text());
+    }
+}

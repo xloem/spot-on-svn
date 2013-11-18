@@ -261,6 +261,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSelectKernelPath(void)));
+  connect(m_ui.etpSelectFile,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSelectTransmitFile(void)));
   connect(m_ui.setPassphrase,
 	  SIGNAL(clicked(void)),
 	  this,

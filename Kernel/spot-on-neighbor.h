@@ -171,6 +171,7 @@ class spoton_neighbor: public QThread
   QUuid m_receivedUuid;
   bool m_accountAuthenticated;
   bool m_allowExceptions;
+  bool m_certificateVerified;
   bool m_isUserDefined;
   bool m_requireSsl;
   bool m_useAccounts;
