@@ -469,12 +469,12 @@ spoton_kernel::~spoton_kernel()
   cleanup();
   spoton_misc::cleanupDatabases();
 
-  QHashIterator<QString, spoton_crypt *> i(s_crypts);
+  QHashIterator<QString, spoton_crypt *> it(s_crypts);
 
-  while (i.hasNext())
+  while (it.hasNext())
     {
-      i.next();
-      delete i.value();
+      it.next();
+      delete it.value();
     }
 
   s_crypts.clear();

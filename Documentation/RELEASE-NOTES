@@ -98,6 +98,8 @@
 50.  Corrected spoton_misc::correctSettingsContainer() with respect to the minimum
      congestion size (1000).
 51.  Added kernel statistics to the interface.
+52.  Configurable intervals for fetching external IP addresses. Ability to disable
+     requests also included.
 
 0.06 (10/24/2013)
 

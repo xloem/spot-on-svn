@@ -1465,6 +1465,22 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 5;
 
   settings.insert("gui/emailRetrievalInterval", integer);
+  integer = qAbs(settings.value("gui/gcryctl_init_secmem", 65536).toInt(&ok));
+
+  if(!ok)
+    integer = 65536;
+  else if(integer < 65536)
+    integer = 65536;
+
+  settings.insert("gui/gcryctl_init_secmem", integer);
+  integer = settings.value("gui/guiExternalIpInterval", 30).toInt(&ok);
+
+  if(!ok)
+    integer = 30;
+  else if(!(integer == -1 || integer == 30 || integer == 60))
+    integer = 30;
+
+  settings.insert("gui/guiExternalIpInterval", integer);
   str = settings.value("gui/iconSet", "nouve").toString().trimmed();
 
   if(!(str == "nouve" || str == "nuvola"))
@@ -1487,6 +1503,14 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     str = "aes256";
 
   settings.insert("gui/kernelCipherType", str);
+  integer = settings.value("gui/kernelExternalIpInterval", 30).toInt(&ok);
+
+  if(!ok)
+    integer = 30;
+  else if(!(integer == -1 || integer == 30 || integer == 60))
+    integer = 30;
+
+  settings.insert("gui/kernelExternalIpInterval", integer);
   integer = qAbs(settings.value("gui/kernelKeySize", 2048).toInt(&ok));
 
   if(!ok)
@@ -1537,14 +1561,6 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 512;
 
   settings.insert("gui/saltLength", integer);
-  integer = qAbs(settings.value("gui/gcryctl_init_secmem", 65536).toInt(&ok));
-
-  if(!ok)
-    integer = 65536;
-  else if(integer < 65536)
-    integer = 65536;
-
-  settings.insert("gui/gcryctl_init_secmem", integer);
   integer = qAbs(settings.value("kernel/gcryctl_init_secmem",
 				65536).toInt(&ok));
 

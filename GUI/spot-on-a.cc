@@ -317,6 +317,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSaveBuzzName(void)));
+  connect(m_ui.guiExternalIpFetch,
+	  SIGNAL(activated(int)),
+	  this,
+	  SLOT(slotExternalIp(int)));
+  connect(m_ui.kernelExternalIpFetch,
+	  SIGNAL(activated(int)),
+	  this,
+	  SLOT(slotExternalIp(int)));
   connect(m_ui.favorites,
 	  SIGNAL(activated(int)),
 	  this,
@@ -1117,6 +1125,26 @@ spoton::spoton(void):QMainWindow()
   if(m_ui.keySize->findText(str) > -1)
     m_ui.keySize->setCurrentIndex(m_ui.keySize->findText(str));
 
+  str = m_settings.value("gui/guiExternalIpInterval", "30").
+    toString().toLower().trimmed();
+
+  if(str == "30")
+    m_ui.guiExternalIpFetch->setCurrentIndex(0);
+  else if(str == "60")
+    m_ui.guiExternalIpFetch->setCurrentIndex(1);
+  else
+    m_ui.guiExternalIpFetch->setCurrentIndex(2);
+
+  str = m_settings.value("gui/kernelExternalIpInterval", "30").
+    toString().toLower().trimmed();
+
+  if(str == "30")
+    m_ui.kernelExternalIpFetch->setCurrentIndex(0);
+  else if(str == "60")
+    m_ui.kernelExternalIpFetch->setCurrentIndex(1);
+  else
+    m_ui.kernelExternalIpFetch->setCurrentIndex(2);
+
   m_ui.saltLength->setValue(m_settings.value("gui/saltLength", 512).toInt());
   m_ui.tab->removeTab(5); // Search
   m_ui.tab->removeTab(7); // URLs
@@ -1305,8 +1333,18 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotDiscoverExternalAddress(void)));
-  m_externalAddress->discover();
-  m_externalAddressDiscovererTimer.start(30000);
+
+  if(m_ui.guiExternalIpFetch->currentIndex() !=
+     m_ui.guiExternalIpFetch->count() - 1)
+    {
+      m_externalAddress->discover();
+
+      if(m_ui.guiExternalIpFetch->currentIndex() == 0)
+	m_externalAddressDiscovererTimer.start(30000);
+      else
+	m_externalAddressDiscovererTimer.start(60000);
+    }
+
   show();
   update();
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));

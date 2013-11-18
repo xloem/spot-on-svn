@@ -359,12 +359,19 @@ void spoton_listener::slotTimeout(void)
 			     arg(m_address.toString()).
 			     arg(m_port));
 			else
-			  /*
-			  ** Initial discovery of the external
-			  ** IP address.
-			  */
+			  {
+			    int v =
+			      spoton_kernel::setting
+			      ("gui/kernelExternalIpInterval", 30).toInt();
 
-			  m_externalAddress->discover();
+			    if(v != -1)
+			      /*
+			      ** Initial discovery of the external
+			      ** IP address.
+			      */
+
+			      m_externalAddress->discover();
+			  }
 		      }
 
 		    if(isListening())
@@ -388,8 +395,37 @@ void spoton_listener::slotTimeout(void)
 
 		if(isListening())
 		  {
-		    if(!m_externalAddressDiscovererTimer.isActive())
-		      m_externalAddressDiscovererTimer.start(30000);
+		    int v = 1000 *
+		      spoton_kernel::setting("gui/kernelExternalIpInterval",
+					     30).toInt();
+
+		    if(v == 30000 || v == 60000)
+		      {
+			if(v == 30000)
+			  {
+			    if(m_externalAddressDiscovererTimer.
+			       interval() != v)
+			      m_externalAddressDiscovererTimer.start
+				(30000);
+			    else if(!m_externalAddressDiscovererTimer.
+				    isActive())
+			      m_externalAddressDiscovererTimer.start
+				(30000);
+			  }
+			else
+			  {
+			    if(m_externalAddressDiscovererTimer.
+			       interval() != v)
+			      m_externalAddressDiscovererTimer.start
+				(60000);
+			    else if(!m_externalAddressDiscovererTimer.
+				    isActive())
+			      m_externalAddressDiscovererTimer.start
+				(60000);
+			  }
+		      }
+		    else
+		      m_externalAddressDiscovererTimer.stop();
 		  }
 		else
 		  {

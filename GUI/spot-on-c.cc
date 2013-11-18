@@ -694,3 +694,42 @@ void spoton::slotPopulateKernelStatistics(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 }
+
+void spoton::slotExternalIp(int index)
+{
+  QComboBox *comboBox = qobject_cast<QComboBox *> (sender());
+
+  if(!comboBox)
+    return;
+
+  QString str("");
+  int v = 30;
+
+  if(comboBox == m_ui.guiExternalIpFetch)
+    str = "gui";
+  else
+    str = "kernel";
+
+  if(index == 0)
+    v = 30;
+  else if(index == 1)
+    v = 60;
+  else
+    v = -1;
+
+  m_settings[QString("gui/%1ExternalIpInterval").arg(str)] = v;
+
+  QSettings settings;
+
+  settings.setValue(QString("gui/%1ExternalIpInterval").arg(str), v);
+
+  if(str == "gui")
+    {
+      if(index == 0)
+	m_externalAddressDiscovererTimer.start(30000);
+      else if(index == 1)
+	m_externalAddressDiscovererTimer.start(60000);
+      else
+	m_externalAddressDiscovererTimer.stop();
+    }
+}
