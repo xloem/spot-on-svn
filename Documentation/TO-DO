@@ -155,3 +155,5 @@ Remaining Items
 32.    Participant count may be possible based on asymmetric ciphertexts.
        Research?
 33.    Prevent inserts of own keys in friends_public_keys.db.
+34.    Artificial impersonators.
+
