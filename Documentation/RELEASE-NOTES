@@ -92,9 +92,12 @@
      mechanism neglected to remove expired items in a timely manner. The new
      implementation may increase the kernel's memory footprint. Also decreased
      item expiration seconds to 30 seconds.
-48.  Updated libgpg-error to version 1.12 and libgcrypt to version 1.5.3 on
+48.  Upgraded libgpg-error to version 1.12 and libgcrypt to version 1.5.3 on
      OS X.
 49.  Removed table_row properties from various widgets. Not used.
+50.  Corrected spoton_misc::correctSettingsContainer() with respect to the minimum
+     congestion size (1000).
+51.  Added kernel statistics to the interface.
 
 0.06 (10/24/2013)
 

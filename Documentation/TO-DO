@@ -101,6 +101,9 @@ Ignored Items
        on provided content and public keys. Version 0.06 introduced
        digest keys that are restricted to 32 bytes.
 8.     Prioritize keep-alive messages.
+9.     Auto-clear textedit widgets that contain too much data.
+10.    Monitor kernel health from the UI. See
+       spoton::slotGeneralTimerTimeout().
 
 Remaining Items
 
@@ -110,9 +113,8 @@ Remaining Items
 4.     Sequencial encryption. Verify that the user's key is independent of
        the random key. Separate cipher algorithms?
 5.     Country flags and names for host names.
-6.     Monitor kernel health from the UI.
-       See spoton::slotGeneralTimerTimeout().
-7.     Auto-clear textedit widgets that contain too much data.
+6.     Anonymous post office boxes.
+7.     Scramblers are too periodic.
 8.     Hard kernel termination. Control session separation.
 9.     Colorful HTTP headers.
 10.    Custom protocol messages for rapid redeployment.
@@ -150,7 +152,6 @@ Remaining Items
        address changes while connections are already established, the
        state timers will eventually cause objects to be reset and therefore
        new attempts will be made to capture the external IP addresses. Review!
-32.    Anonymous post office boxes.
-33.    Scramblers are too periodic.
-34.    Participant count may be possible based on asymmetric ciphertexts.
+32.    Participant count may be possible based on asymmetric ciphertexts.
        Research?
+33.    Prevent inserts of own keys in friends_public_keys.db.

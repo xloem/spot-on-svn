@@ -512,6 +512,7 @@ void spoton_kernel::slotPollDatabase(void)
   prepareListeners();
   prepareNeighbors();
   checkForTermination();
+  updateStatistics();
 }
 
 void spoton_kernel::prepareListeners(void)
@@ -2493,9 +2494,12 @@ void spoton_kernel::removeBuzzKey(const QByteArray &key)
 QList<QByteArray> spoton_kernel::findBuzzKey
 (const QByteArray &data, const QByteArray &hash)
 {
+  if(hash.isEmpty())
+    return QList<QByteArray> ();
+
   QMutexLocker locker(&s_buzzKeysMutex);
 
-  if(hash.isEmpty() || s_buzzKeys.isEmpty())
+  if(s_buzzKeys.isEmpty())
     return QList<QByteArray> ();
 
   QHashIterator<QByteArray, QList<QByteArray> > it(s_buzzKeys);
@@ -2701,4 +2705,41 @@ QVariant spoton_kernel::setting(const QString &name,
   QMutexLocker locker(&s_settingsMutex);
 
   return s_settings.value(name, defaultValue);
+}
+
+void spoton_kernel::updateStatistics(void)
+{
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "kernel.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	QVariant v1, v2;
+
+	query.exec("PRAGMA synchronous = OFF");
+	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
+		      "(statistic, value) "
+		      "VALUES ('Congestion Container Percent Used', ?)");
+	s_messagingCacheMutex.lock();
+	v1 = s_messagingCache.size();
+	s_messagingCacheMutex.unlock();
+	v2 = setting("gui/congestionCost", 10000).toInt();
+	query.bindValue
+	  (0,
+	   QString::
+	   number(100 * static_cast<double> (v1.toInt()) /
+		  qMax(1, v2.toInt()), 'f', 2).append("%"));
+	query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }

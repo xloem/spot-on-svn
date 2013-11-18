@@ -631,3 +631,66 @@ void spoton::slotStarOTMCheckChange(bool state)
       QSqlDatabase::removeDatabase(connectionName);
     }
 }
+
+void spoton::slotPopulateKernelStatistics(void)
+{
+  QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
+		     "kernel.db");
+
+  if(fileInfo.exists())
+    {
+      if(fileInfo.lastModified() <= m_kernelStatisticsLastModificationTime)
+	return;
+      else
+	m_kernelStatisticsLastModificationTime = fileInfo.lastModified();
+    }
+  else
+    m_kernelStatisticsLastModificationTime = QDateTime();
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(fileInfo.absoluteFilePath());
+
+    if(db.open())
+      {
+	m_ui.kernelStatistics->setSortingEnabled(false);
+	m_ui.kernelStatistics->clearContents();
+	m_ui.kernelStatistics->setRowCount(0);
+
+	QSqlQuery query(db);
+	int row = 0;
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT statistic, value FROM kernel_statistics "
+		      "ORDER BY statistic"))
+	  while(query.next())
+	    {
+	      QTableWidgetItem *item = new QTableWidgetItem
+		(query.value(0).toString());
+
+	      item->setFlags
+		(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+	      m_ui.kernelStatistics->setRowCount(row + 1);
+	      m_ui.kernelStatistics->setItem(row, 0, item);
+	      item = new QTableWidgetItem(query.value(1).toString());
+	      item->setFlags
+		(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+	      m_ui.kernelStatistics->setItem(row, 1, item);
+	      row += 1;
+	    }
+
+	m_ui.kernelStatistics->setSortingEnabled(true);
+	m_ui.kernelStatistics->resizeColumnsToContents();
+	m_ui.kernelStatistics->horizontalHeader()->
+	  setStretchLastSection(true);
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}

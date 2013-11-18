@@ -108,6 +108,7 @@ spoton::spoton(void):QMainWindow()
   m_booleans["keys_sent_to_kernel"] = false;
   m_buzzStatusTimer.setInterval(15000);
   m_externalAddress = new spoton_external_address(this);
+  m_kernelStatisticsLastModificationTime = QDateTime();
   m_magnetsLastModificationTime = QDateTime();
   m_listenersLastModificationTime = QDateTime();
   m_neighborsLastModificationTime = QDateTime();
@@ -707,6 +708,10 @@ spoton::spoton(void):QMainWindow()
   connect(&m_tableTimer,
 	  SIGNAL(timeout(void)),
 	  this,
+	  SLOT(slotPopulateKernelStatistics(void)));
+  connect(&m_tableTimer,
+	  SIGNAL(timeout(void)),
+	  this,
 	  SLOT(slotPopulateListeners(void)));
   connect(&m_tableTimer,
 	  SIGNAL(timeout(void)),
@@ -1257,6 +1262,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.etpMagnets->horizontalHeader()->setSortIndicator
     (1, Qt::AscendingOrder);
   m_ui.etpTransmittersMagnets->horizontalHeader()->setSortIndicator
+    (0, Qt::AscendingOrder);
+  m_ui.kernelStatistics->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   m_ui.mail->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
@@ -3097,6 +3104,7 @@ void spoton::slotGeneralTimerTimeout(void)
 
   if(text != m_ui.pid->text())
     {
+      m_kernelStatisticsLastModificationTime = QDateTime();
       m_listenersLastModificationTime = QDateTime();
       m_neighborsLastModificationTime = QDateTime();
       m_participantsLastModificationTime = QDateTime();

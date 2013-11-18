@@ -104,6 +104,7 @@ class spoton_kernel: public QObject
   void prepareListeners(void);
   void prepareNeighbors(void);
   void purgeMessagingCache(void);
+  void updateStatistics(void);
 
  private slots:
   void slotBuzzReceivedFromUI(const QByteArray &key,

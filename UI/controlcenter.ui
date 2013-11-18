@@ -336,8 +336,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>986</width>
-                <height>543</height>
+                <width>494</width>
+                <height>413</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1936,8 +1936,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>219</width>
-                 <height>523</height>
+                 <width>210</width>
+                 <height>402</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3236,8 +3236,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>976</width>
-             <height>533</height>
+             <width>958</width>
+             <height>553</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3548,6 +3548,44 @@
                     </spacer>
                    </item>
                   </layout>
+                 </item>
+                 <item>
+                  <widget class="QGroupBox" name="groupBox_6">
+                   <property name="title">
+                    <string>Statistics</string>
+                   </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout_64">
+                    <item>
+                     <widget class="QTableWidget" name="kernelStatistics">
+                      <property name="alternatingRowColors">
+                       <bool>true</bool>
+                      </property>
+                      <property name="selectionMode">
+                       <enum>QAbstractItemView::SingleSelection</enum>
+                      </property>
+                      <property name="selectionBehavior">
+                       <enum>QAbstractItemView::SelectRows</enum>
+                      </property>
+                      <property name="sortingEnabled">
+                       <bool>true</bool>
+                      </property>
+                      <attribute name="horizontalHeaderStretchLastSection">
+                       <bool>true</bool>
+                      </attribute>
+                      <column>
+                       <property name="text">
+                        <string>Statistic</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Value</string>
+                       </property>
+                      </column>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
                  </item>
                 </layout>
                </widget>
@@ -3924,8 +3962,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>976</width>
-             <height>533</height>
+             <width>494</width>
+             <height>326</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5515,6 +5553,7 @@
   <tabstop>scrambler</tabstop>
   <tabstop>kernelKeySize</tabstop>
   <tabstop>superEcho</tabstop>
+  <tabstop>kernelStatistics</tabstop>
   <tabstop>cipherType</tabstop>
   <tabstop>hashType</tabstop>
   <tabstop>iterationCount</tabstop>

@@ -111,6 +111,7 @@ class spoton: public QMainWindow
   static const int APPLY_GOLDBUG_TO_INBOX_ERROR_MEMORY = 2;
   QByteArray m_kernelSocketData;
   QDateTime m_magnetsLastModificationTime;
+  QDateTime m_kernelStatisticsLastModificationTime;
   QDateTime m_listenersLastModificationTime;
   QDateTime m_neighborsLastModificationTime;
   QDateTime m_participantsLastModificationTime;
@@ -290,6 +291,7 @@ class spoton: public QMainWindow
   void slotParticipantDoubleClicked(QTableWidgetItem *item);
   void slotPopulateBuzzFavorites(void);
   void slotPopulateEtpMagnets(void);
+  void slotPopulateKernelStatistics(void);
   void slotPopulateListeners(void);
   void slotPopulateNeighbors(void);
   void slotPopulateParticipants(void);
