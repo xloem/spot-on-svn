@@ -100,10 +100,10 @@
 51.  Added kernel statistics to the interface.
 52.  Configurable intervals for fetching external IP addresses. Ability to
      disable requests also included.
-53.  Corrected an issue with the certificates verification process.
+53.  Corrected an issue with the certificate verification process.
      Certificates must be verified before connections are encrypted. Also,
      sever socket connections whenever peers are about to be destroyed. That
-     is, don't depend on deleteLater(). Thanks to R.
+     is, don't depend on deleteLater(). Thanks R.
 
 0.06 (10/24/2013)
 
