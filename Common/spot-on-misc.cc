@@ -245,6 +245,9 @@ void spoton_misc::prepareDatabases(void)
 		   "BEGIN "
 		   "DELETE FROM kernel_gui_server; "
 		   "END");
+	query.exec("CREATE TABLE IF NOT EXISTS kernel_statistics ("
+		   "statistic TEXT PRIMARY KEY NOT NULL, "
+		   "value TEXT)");
       }
 
     db.close();
@@ -983,6 +986,7 @@ void spoton_misc::cleanupDatabases(void)
 	QSqlQuery query(db);
 
 	query.exec("DELETE FROM kernel_gui_server");
+	query.exec("DELETE FROM kernel_statistics");
       }
 
     db.close();
@@ -1448,7 +1452,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
   if(!ok)
     integer = 10000;
-  else if(integer < 10000)
+  else if(integer < 1000)
     integer = 10000;
 
   settings.insert("gui/congestionCost", integer);
