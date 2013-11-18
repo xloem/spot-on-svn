@@ -171,7 +171,6 @@ class spoton_neighbor: public QThread
   QUuid m_receivedUuid;
   bool m_accountAuthenticated;
   bool m_allowExceptions;
-  bool m_certificateVerified;
   bool m_isUserDefined;
   bool m_requireSsl;
   bool m_useAccounts;
@@ -210,6 +209,7 @@ class spoton_neighbor: public QThread
 		    const QList<QByteArray> &symmetricKeys);
   void process0050(int length, const QByteArray &data);
   void process0051(int length, const QByteArray &data);
+  void recordCertificateOrAbort(void);
   void resetKeepAlive(void);
   void run(void);
   void saveExternalAddress(const QHostAddress &address,
@@ -259,6 +259,7 @@ class spoton_neighbor: public QThread
   void slotHostFound(const QHostInfo &hostInfo);
   void slotLifetimeExpired(void);
   void slotModeChanged(QSslSocket::SslMode mode);
+  void slotPeerVerifyError(const QSslError &error);
   void slotProxyAuthenticationRequired(const QNetworkProxy &proxy,
 				       QAuthenticator *authenticator);
   void slotPublicizeListenerPlaintext(const QByteArray &data,

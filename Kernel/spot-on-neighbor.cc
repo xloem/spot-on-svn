@@ -115,7 +115,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_allowExceptions = false;
   m_bytesRead = 0;
   m_bytesWritten = 0;
-  m_certificateVerified = true;
   m_echoMode = echoMode;
   m_externalAddress = new spoton_external_address(this);
   m_id = -1; /*
@@ -338,7 +337,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_address = QHostAddress(ipAddress);
   m_bytesRead = 0;
   m_bytesWritten = 0;
-  m_certificateVerified = false;
   m_echoMode = echoMode;
   m_externalAddress = new spoton_external_address(this);
   m_id = id;
@@ -493,6 +491,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	      SIGNAL(modeChanged(QSslSocket::SslMode)),
 	      this,
 	      SLOT(slotModeChanged(QSslSocket::SslMode)));
+      connect(m_tcpSocket,
+	      SIGNAL(peerVerifyError(const QSslError &)),
+	      this,
+	      SLOT(slotPeerVerifyError(const QSslError &)));
       connect(m_tcpSocket,
 	      SIGNAL(proxyAuthenticationRequired(const QNetworkProxy &,
 						 QAuthenticator *)),
@@ -687,6 +689,7 @@ void spoton_neighbor::slotTimeout(void)
 		       "aborting because of silent connection for %1:%2.").
 	       arg(m_address.toString()).
 	       arg(m_port));
+	    abort();
 	    deleteLater();
 	    return;
 	  }
@@ -700,6 +703,7 @@ void spoton_neighbor::slotTimeout(void)
 		     "aborting because of silent connection for %1:%2.").
 	     arg(m_address.toString()).
 	     arg(m_port));
+	  abort();
 	  deleteLater();
 	  return;
 	}
@@ -810,6 +814,7 @@ void spoton_neighbor::slotTimeout(void)
 		 "to delete neighbor for %1:%2").
 	 arg(m_address.toString()).
 	 arg(m_port));
+      abort();
       deleteLater();
       return;
     }
@@ -1632,6 +1637,7 @@ void spoton_neighbor::slotLifetimeExpired(void)
 	     "expiration time reached for %1:%2. Aborting socket.").
      arg(m_address.toString()).
      arg(m_port));
+  abort();
   deleteLater();
 }
 
@@ -3675,6 +3681,7 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
        arg(m_address.toString()).
        arg(m_port));
 
+  abort();
   deleteLater();
 }
 
@@ -4122,30 +4129,52 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 
 void spoton_neighbor::slotSslErrors(const QList<QSslError> &errors)
 {
-  bool shouldDelete = false;
-
   for(int i = 0; i < errors.size(); i++)
-    {
-      spoton_misc::logError(QString("spoton_neighbor::slotSslErrors(): "
-				    "error (%1) occurred from %2:%3.").
-			    arg(errors.at(i).errorString()).
-			    arg(m_address.toString()).
-			    arg(m_port));
+    spoton_misc::logError(QString("spoton_neighbor::slotSslErrors(): "
+				  "error (%1) occurred from %2:%3.").
+			  arg(errors.at(i).errorString()).
+			  arg(m_address.toString()).
+			  arg(m_port));
+}
 
-      if(errors.at(i) == QSslError::UnableToGetIssuerCertificate)
-	{
-	  shouldDelete = true;
-	  break;
-	}
-      else if(errors.at(i) == QSslError::UnableToDecryptCertificateSignature)
-	{
-	  shouldDelete = true;
-	  break;
-	}
-    }
+void spoton_neighbor::slotPeerVerifyError(const QSslError &error)
+{
+  bool shouldDelete = true;
+
+  if(error.error() == QSslError::CertificateUntrusted ||
+     error.error() == QSslError::HostNameMismatch ||
+     error.error() == QSslError::SelfSignedCertificate)
+    shouldDelete = false;
 
   if(shouldDelete)
-    deleteLater();
+    {
+      spoton_misc::logError
+	(QString("spoton_neighbor::slotPeerVerifyError(): instructed "
+		 "to delete neighbor for %1:%2").
+	 arg(m_address.toString()).
+	 arg(m_port));
+      abort();
+      deleteLater();
+      return;
+    }
+
+  if(m_tcpSocket)
+    if(m_isUserDefined)
+      if(!m_peerCertificate.isNull() &&
+	 !m_tcpSocket->peerCertificate().isNull())
+	if(!m_allowExceptions)
+	  if(m_peerCertificate != m_tcpSocket->peerCertificate())
+	    {
+	      spoton_misc::logError
+		(QString("spoton_neighbor::slotPeerVerifyError(): "
+			 "the stored certificate does not match "
+			 "the peer's certificate for %1:%2. This is a "
+			 "serious problem! Aborting.").
+		 arg(m_address.toString()).
+		 arg(m_port));
+	      abort();
+	      deleteLater();
+	    }
 }
 
 void spoton_neighbor::slotModeChanged(QSslSocket::SslMode mode)
@@ -4165,6 +4194,7 @@ void spoton_neighbor::slotModeChanged(QSslSocket::SslMode mode)
 		   "unencrypted connection mode for %1:%2. Aborting.").
 	   arg(m_address.toString()).
 	   arg(m_port));
+	abort();
 	deleteLater();
       }
 }
@@ -4193,10 +4223,16 @@ void spoton_neighbor::slotDisconnected(void)
 	     "aborting socket for %1:%2!").
      arg(m_address.toString()).
      arg(m_port));
+  abort();
   deleteLater();
 }
 
 void spoton_neighbor::slotEncrypted(void)
+{
+  recordCertificateOrAbort();
+}
+
+void spoton_neighbor::recordCertificateOrAbort(void)
 {
   QSslCertificate certificate;
   bool save = false;
@@ -4208,8 +4244,7 @@ void spoton_neighbor::slotEncrypted(void)
 	  if(m_peerCertificate.isNull() &&
 	     !m_tcpSocket->peerCertificate().isNull())
 	    {
-	      certificate = m_peerCertificate =
-		m_tcpSocket->peerCertificate();
+	      certificate = m_peerCertificate = m_tcpSocket->peerCertificate();
 	      save = true;
 	    }
 	  else if(!m_allowExceptions)
@@ -4217,22 +4252,24 @@ void spoton_neighbor::slotEncrypted(void)
 	      if(m_peerCertificate != m_tcpSocket->peerCertificate())
 		{
 		  spoton_misc::logError
-		    (QString("spoton_neighbor::slotEncrypted(): "
+		    (QString("spoton_neighbor::recordCertificate(): "
 			     "the stored certificate does not match "
 			     "the peer's certificate for %1:%2. This is a "
 			     "serious problem! Aborting.").
 		     arg(m_address.toString()).
 		     arg(m_port));
+		  abort();
 		  deleteLater();
 		  return;
 		}
 	      else if(m_tcpSocket->peerCertificate().isNull())
 		{
 		  spoton_misc::logError
-		    (QString("spoton_neighbor::slotEncrypted(): "
+		    (QString("spoton_neighbor::recordCertificate(): "
 			     "null peer certificate for %1:%2. Aborting.").
 		     arg(m_address.toString()).
 		     arg(m_port));
+		  abort();
 		  deleteLater();
 		  return;
 		}
@@ -4776,7 +4813,8 @@ void spoton_neighbor::abort(void)
 {
   if(m_tcpSocket)
     m_tcpSocket->abort();
-  else if(m_udpSocket)
+
+  if(m_udpSocket)
     m_udpSocket->abort();
 }
 
