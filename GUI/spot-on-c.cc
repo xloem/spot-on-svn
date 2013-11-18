@@ -148,14 +148,14 @@ void spoton::slotAddEtpMagnet(void)
     QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "starbeam_magnets.db");
+		       "starbeam.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
 	query.prepare("INSERT OR REPLACE INTO "
-		      "starbeam_magnets "
+		      "magnets "
 		      "(magnet, magnet_hash) "
 		      "VALUES (?, ?)");
 	query.bindValue(0, s_crypt->encrypted(magnet.toLatin1(),
@@ -201,7 +201,7 @@ void spoton::slotPopulateEtpMagnets(void)
     return;
 
   QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
-		     "starbeam_magnets.db");
+		     "starbeam.db");
 
   if(fileInfo.exists())
     {
@@ -234,7 +234,7 @@ void spoton::slotPopulateEtpMagnets(void)
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT magnet, one_time_magnet, "
-		      "OID FROM starbeam_magnets"))
+		      "OID FROM magnets"))
 	  while(query.next())
 	    {
 	      QByteArray bytes;
@@ -308,13 +308,13 @@ void spoton::slotDeleteEtpAllMagnets(void)
     QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "starbeam_magnets.db");
+		       "starbeam.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
-	query.exec("DELETE FROM starbeam_magnets");
+	query.exec("DELETE FROM magnets");
       }
 
     db.close();
@@ -346,13 +346,13 @@ void spoton::slotDeleteEtpMagnet(void)
     QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() + "starbeam_magnets.db");
+      (spoton_misc::homePath() + QDir::separator() + "starbeam.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
-	query.prepare("DELETE FROM starbeam_magnets WHERE OID = ?");
+	query.prepare("DELETE FROM magnets WHERE OID = ?");
 	query.bindValue(0, oid);
 	query.exec();
       }
@@ -611,13 +611,13 @@ void spoton::slotStarOTMCheckChange(bool state)
 	QSqlDatabase db = spoton_misc::database(connectionName);
 
 	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-			   "starbeam_magnets.db");
+			   "starbeam.db");
 
 	if(db.open())
 	  {
 	    QSqlQuery query(db);
 
-	    query.prepare("UPDATE starbeam_magnets SET "
+	    query.prepare("UPDATE magnets SET "
 			  "one_time_magnet = ? "
 			  "WHERE OID = ?");
 	    query.bindValue(0, state ? 1 : 0);

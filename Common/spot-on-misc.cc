@@ -383,13 +383,13 @@ void spoton_misc::prepareDatabases(void)
     QSqlDatabase db = database(connectionName);
 
     db.setDatabaseName(homePath() + QDir::separator() +
-		       "starbeam_magnets.db");
+		       "starbeam.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
-	query.exec("CREATE TABLE IF NOT EXISTS starbeam_magnets ("
+	query.exec("CREATE TABLE IF NOT EXISTS magnets ("
 		   "magnet BLOB NOT NULL, "
 		   "magnet_hash TEXT PRIMARY KEY NOT NULL, "
 		   "one_time_magnet INTEGER NOT NULL DEFAULT 1)");
