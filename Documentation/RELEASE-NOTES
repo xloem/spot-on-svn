@@ -108,6 +108,10 @@
      command-line option to 64. Also remove non-printable characters from the input.
 55.  Remove non-printable characters from listener accounts and passphrases. Proxy
      passwords remain as are.
+56.  The method spoton_kernel::slotNewNeighbor() must inspect the quality of a
+     discovered neighbor. If the peer was destroyed by an external event, the
+     method must remove the existing trace. Otherwise, a new peer having the
+     old peer's id will not be inserted properly.
 
 0.06 (10/24/2013)
 

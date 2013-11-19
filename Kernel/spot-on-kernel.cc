@@ -1051,11 +1051,20 @@ void spoton_kernel::slotNewNeighbor(QPointer<spoton_neighbor> neighbor)
     {
       qint64 id = neighbor->id();
 
+      if(m_neighbors.contains(id) && !m_neighbors.value(id))
+	m_neighbors.remove(id);
+
       if(!m_neighbors.contains(id))
 	{
 	  connectSignalsToNeighbor(neighbor);
 	  m_neighbors.insert(id, neighbor);
 	}
+      else
+	spoton_misc::logError
+	  (QString("spoton_kernel::slotNewNeighbor(): "
+		   "neighbor %1 already exists in m_neighbors. This is "
+		   "a serious problem!").
+	   arg(id));
     }
 }
 
