@@ -4506,7 +4506,7 @@ void spoton::slotAddAccount(void)
 
   for(int i = password.length() - 1; i >= 0; i--)
     if(!password.at(i).isPrint())
-      password.remove(i, 1);qDebug()<<password;
+      password.remove(i, 1);
 
   if(name.isEmpty() || password.isEmpty())
     {
