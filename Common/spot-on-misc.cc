@@ -396,6 +396,20 @@ void spoton_misc::prepareDatabases(void)
 		   "magnet BLOB NOT NULL, "
 		   "magnet_hash TEXT PRIMARY KEY NOT NULL, "
 		   "one_time_magnet INTEGER NOT NULL DEFAULT 1)");
+	query.exec("CREATE TABLE IF NOT EXISTS received ("
+		   "folder TEXT NOT NULL, "
+		   "mosaic TEXT PRIMARY KEY NOT NULL, "
+		   "total_size INTEGER NOT NULL)");
+	query.exec("CREATE TABLE IF NOT EXISTS received_pulses ("
+		   "current_index INTEGER NOT NULL, "
+		   "last_index INTEGER NOT NULL, "
+		   "received_oid INTEGER NOT NULL, "
+		   "PRIMARY KEY (current_index, received_oid), "
+		   "FOREIGN KEY (received_oid) REFERENCES "
+		   "received (OID))"); /*
+				       ** The foreign key constraint
+				       ** is flawed.
+				       */
 	query.exec("CREATE TABLE IF NOT EXISTS transmitted ("
 		   "file TEXT NOT NULL, "
 		   "mosaic TEXT PRIMARY KEY NOT NULL, "
