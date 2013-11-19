@@ -308,6 +308,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	cout.flush();
 	input = cin.readLine(64);
 
+	for(int i = input.length() - 1; i >= 0; i--)
+	  if(!input.at(i).isPrint())
+	    input.remove(i, 1);
+
 #ifdef Q_OS_WIN32
 	SetConsoleMode(hStdin, mode);
 #else

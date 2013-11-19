@@ -3613,6 +3613,14 @@ void spoton::slotSetPassphrase(void)
   QString str1(m_ui.passphrase1->text());
   QString str2(m_ui.passphrase2->text());
 
+  for(int i = str1.length() - 1; i >= 0; i--)
+    if(!str1.at(i).isPrint())
+      str1.remove(i, 1);
+
+  for(int i = str2.length() - 1; i >= 0; i--)
+    if(!str2.at(i).isPrint())
+      str2.remove(i, 1);
+
   if(str1.length() < 16 || str2.length() < 16)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),

@@ -4500,6 +4500,14 @@ void spoton::slotAddAccount(void)
       goto done_label;
     }
 
+  for(int i = name.length() - 1; i >= 0; i--)
+    if(!name.at(i).isPrint())
+      name.remove(i, 1);
+
+  for(int i = password.length() - 1; i >= 0; i--)
+    if(!password.at(i).isPrint())
+      password.remove(i, 1);qDebug()<<password;
+
   if(name.isEmpty() || password.isEmpty())
     {
       error = tr("Please provide an account name and a password.");

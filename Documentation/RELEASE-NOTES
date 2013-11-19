@@ -105,7 +105,9 @@
      sever socket connections whenever peers are about to be destroyed. That
      is, don't depend on deleteLater(). Thanks R.
 54.  Limit the maximum number of characters allowed to the passphrase
-     command-line option to 64.
+     command-line option to 64. Also remove non-printable characters from the input.
+55.  Remove non-printable characters from listener accounts and passphrases. Proxy
+     passwords remain as are.
 
 0.06 (10/24/2013)
 
