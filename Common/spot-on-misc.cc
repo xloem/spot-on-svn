@@ -396,6 +396,37 @@ void spoton_misc::prepareDatabases(void)
 		   "magnet BLOB NOT NULL, "
 		   "magnet_hash TEXT PRIMARY KEY NOT NULL, "
 		   "one_time_magnet INTEGER NOT NULL DEFAULT 1)");
+	query.exec("CREATE TABLE IF NOT EXISTS transmitted ("
+		   "file TEXT NOT NULL, "
+		   "hash TEXT NOT NULL, " /*
+					  ** SHA-512 hash of
+					  ** the file.
+					  */
+		   "mosaic TEXT PRIMARY KEY NOT NULL, "
+		   "muted INTEGER NOT NULL DEFAULT 1, "
+		   "pulse_size INTEGER NOT NULL, "
+		   "status TEXT NOT NULL, "
+		   "total_size INTEGER NOT NULL)");
+	query.exec("CREATE TABLE IF NOT EXISTS transmitted_magnets ("
+		   "magnet BLOB NOT NULL, "
+		   "magnet_hash TEXT NOT NULL, "
+		   "transmitted_oid INTEGER NOT NULL, "
+		   "PRIMARY KEY (magnet_hash, transmitted_oid), "
+		   "FOREIGN KEY (transmitted_oid) REFERENCES "
+		   "transmitted (OID))"); /*
+					  ** The foreign key constraint
+					  ** is flawed.
+					  */
+	query.exec("CREATE TABLE IF NOT EXISTS transmitted_pulses ("
+		   "current_index INTEGER NOT NULL, "
+		   "last_index INTEGER NOT NULL, "
+		   "transmitted_oid INTEGER NOT NULL, "
+		   "PRIMARY KEY (current_index, transmitted_oid), "
+		   "FOREIGN KEY (transmitted_oid) REFERENCES "
+		   "transmitted (OID))"); /*
+					  ** The foreign key constraint
+					  ** is flawed.
+					  */
       }
 
     db.close();
