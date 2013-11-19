@@ -8,10 +8,6 @@ email.db:
 
 all, save for folder_index, hash, receiver_sender_hash, and recipient_hash
 
-magnets.db:
-
-magnet
-
 friends_public_keys.db:
 
 gemini
@@ -24,6 +20,8 @@ public_key
 
 listeners.db:
 
+listeners
+
 certificate
 echo_mode
 external_ip_address
@@ -34,8 +32,12 @@ protocol
 public_key
 scope_id
 
+listeners_accounts
+
 account_name
 account_password
+
+listeners_allowed_ips
 
 ip_address
 
@@ -64,3 +66,17 @@ shared.db:
 description
 title
 url
+
+starbeam.db:
+
+magnets
+
+magnet
+
+transmitted
+
+file
+
+transmitted_magnets
+
+magnet

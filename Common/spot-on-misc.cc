@@ -398,10 +398,6 @@ void spoton_misc::prepareDatabases(void)
 		   "one_time_magnet INTEGER NOT NULL DEFAULT 1)");
 	query.exec("CREATE TABLE IF NOT EXISTS transmitted ("
 		   "file TEXT NOT NULL, "
-		   "hash TEXT NOT NULL, " /*
-					  ** SHA-512 hash of
-					  ** the file.
-					  */
 		   "mosaic TEXT PRIMARY KEY NOT NULL, "
 		   "muted INTEGER NOT NULL DEFAULT 1, "
 		   "pulse_size INTEGER NOT NULL, "
