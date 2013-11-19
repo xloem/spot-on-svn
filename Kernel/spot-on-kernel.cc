@@ -306,7 +306,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 
 	cout << "Passphrase: ";
 	cout.flush();
-	input = cin.readLine();
+	input = cin.readLine(64);
 
 #ifdef Q_OS_WIN32
 	SetConsoleMode(hStdin, mode);
