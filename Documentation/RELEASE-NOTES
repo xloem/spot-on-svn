@@ -114,9 +114,9 @@
      method must remove the existing trace. Otherwise, a new peer having the
      old peer's id will not be inserted properly.
 57.  Display listener certificate fingerprints.
-58.  Must update a listeners connection count afters neighbors are detached
-     via the interface. Also corrected placement of updateConnectionCount()
-     in spoton_listener::slotNewConnection().
+58.  Must update a listener's connection count after its neighbors are
+     detached via the interface. Also corrected placement of
+     updateConnectionCount() in spoton_listener::slotNewConnection().
 
 0.06 (10/24/2013)
 
