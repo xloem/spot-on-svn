@@ -2163,6 +2163,7 @@ void spoton::slotPopulateListeners(void)
 		      "maximum_content_length, "
 		      "transport, "
 		      "share_udp_address, "
+		      "certificate, "
 		      "OID "
 		      "FROM listeners WHERE status_control <> 'deleted'"))
 	  {
@@ -2172,8 +2173,26 @@ void spoton::slotPopulateListeners(void)
 	      {
 		m_ui.listeners->setRowCount(row + 1);
 
+		QByteArray certificateDigest;
 		QString tooltip("");
 		bool ok = true;
+
+		certificateDigest = s_crypt->
+		  decrypted(QByteArray::
+			    fromBase64(query.
+				       value(17).
+				       toByteArray()),
+			    &ok);
+
+		if(ok)
+		  if(!certificateDigest.isEmpty())
+		    {
+		      certificateDigest = spoton_crypt::
+			sha512Hash(certificateDigest, &ok).toHex();
+
+		      if(!ok)
+			certificateDigest.clear();
+		    }
 
 		tooltip = QString
 		  (tr("Status: %1\n"
@@ -2365,6 +2384,9 @@ void spoton::slotPopulateListeners(void)
 				SLOT(slotListenerMaximumChanged(int)));
 			m_ui.listeners->setCellWidget(row, i, box);
 		      }
+		    else if(i == 17) // Certificate Digest
+		      item = new QTableWidgetItem
+			(certificateDigest.constData());
 		    else
 		      {
 			if((i >= 3 && i <= 7) || i == 11)
@@ -2625,11 +2647,13 @@ void spoton::slotPopulateNeighbors(void)
 
 		if(ok)
 		  if(!certificateDigest.isEmpty())
-		    certificateDigest = spoton_crypt::
-		      sha512Hash(certificateDigest, &ok).toHex();
+		    {
+		      certificateDigest = spoton_crypt::
+			sha512Hash(certificateDigest, &ok).toHex();
 
-		if(!ok)
-		  certificateDigest = "XYZ";
+		      if(!ok)
+			certificateDigest.clear();
+		    }
 
 		sslSessionCipher = s_crypt->
 		  decrypted(QByteArray::

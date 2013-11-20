@@ -112,6 +112,7 @@
      discovered neighbor. If the peer was destroyed by an external event, the
      method must remove the existing trace. Otherwise, a new peer having the
      old peer's id will not be inserted properly.
+57.  Display listener certificate fingerprints.
 
 0.06 (10/24/2013)
 
