@@ -122,7 +122,7 @@
      and not the hash of the message and the receiver_sender_hash. Also
      corrected an issue with uniqueness constraints. If a folder contains
      duplicate messages that are encrypted, subsequent attempts to decrypt
-     encrypted messages failed because of uniqueness violations.
+     encrypted messages fails because of uniqueness violations.
 
 0.06 (10/24/2013)
 
