@@ -582,13 +582,7 @@ spoton_neighbor::~spoton_neighbor()
      arg(m_address.toString()).
      arg(m_port));
   delete []a;
-
-  if(m_tcpSocket)
-    m_tcpSocket->abort();
-
-  if(m_udpSocket)
-    m_udpSocket->abort();
-
+  abort();
   m_timer.stop();
 
   if(m_id != -1)
@@ -689,7 +683,6 @@ void spoton_neighbor::slotTimeout(void)
 		       "aborting because of silent connection for %1:%2.").
 	       arg(m_address.toString()).
 	       arg(m_port));
-	    abort();
 	    deleteLater();
 	    return;
 	  }
@@ -703,7 +696,6 @@ void spoton_neighbor::slotTimeout(void)
 		     "aborting because of silent connection for %1:%2.").
 	     arg(m_address.toString()).
 	     arg(m_port));
-	  abort();
 	  deleteLater();
 	  return;
 	}
@@ -814,7 +806,6 @@ void spoton_neighbor::slotTimeout(void)
 		 "to delete neighbor for %1:%2").
 	 arg(m_address.toString()).
 	 arg(m_port));
-      abort();
       deleteLater();
       return;
     }
@@ -1637,7 +1628,6 @@ void spoton_neighbor::slotLifetimeExpired(void)
 	     "expiration time reached for %1:%2. Aborting socket.").
      arg(m_address.toString()).
      arg(m_port));
-  abort();
   deleteLater();
 }
 
@@ -3681,7 +3671,6 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
        arg(m_address.toString()).
        arg(m_port));
 
-  abort();
   deleteLater();
 }
 
@@ -4139,6 +4128,10 @@ void spoton_neighbor::slotSslErrors(const QList<QSslError> &errors)
 
 void spoton_neighbor::slotPeerVerifyError(const QSslError &error)
 {
+  /*
+  ** This method may be called several times!
+  */
+
   bool shouldDelete = true;
 
   if(error.error() == QSslError::CertificateUntrusted ||
@@ -4153,7 +4146,6 @@ void spoton_neighbor::slotPeerVerifyError(const QSslError &error)
 		 "to delete neighbor for %1:%2").
 	 arg(m_address.toString()).
 	 arg(m_port));
-      abort();
       deleteLater();
       return;
     }
@@ -4172,7 +4164,6 @@ void spoton_neighbor::slotPeerVerifyError(const QSslError &error)
 			 "serious problem! Aborting.").
 		 arg(m_address.toString()).
 		 arg(m_port));
-	      abort();
 	      deleteLater();
 	    }
 }
@@ -4194,7 +4185,6 @@ void spoton_neighbor::slotModeChanged(QSslSocket::SslMode mode)
 		   "unencrypted connection mode for %1:%2. Aborting.").
 	   arg(m_address.toString()).
 	   arg(m_port));
-	abort();
 	deleteLater();
       }
 }
@@ -4223,7 +4213,6 @@ void spoton_neighbor::slotDisconnected(void)
 	     "aborting socket for %1:%2!").
      arg(m_address.toString()).
      arg(m_port));
-  abort();
   deleteLater();
 }
 
@@ -4258,7 +4247,6 @@ void spoton_neighbor::recordCertificateOrAbort(void)
 			     "serious problem! Aborting.").
 		     arg(m_address.toString()).
 		     arg(m_port));
-		  abort();
 		  deleteLater();
 		  return;
 		}
@@ -4269,7 +4257,6 @@ void spoton_neighbor::recordCertificateOrAbort(void)
 			     "null peer certificate for %1:%2. Aborting.").
 		     arg(m_address.toString()).
 		     arg(m_port));
-		  abort();
 		  deleteLater();
 		  return;
 		}
@@ -4875,4 +4862,10 @@ qint64 spoton_neighbor::readBufferSize(void) const
 QString spoton_neighbor::transport(void) const
 {
   return m_transport;
+}
+
+void spoton_neighbor::deleteLater(void)
+{
+  abort();
+  QThread::deleteLater();
 }

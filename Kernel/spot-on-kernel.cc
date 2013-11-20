@@ -2255,13 +2255,13 @@ void spoton_kernel::cleanupNeighborsDatabase(const QSqlDatabase &db)
 
 void spoton_kernel::slotPublicizeAllListenersPlaintext(void)
 {
-  QHashIterator<qint64, QPointer<spoton_listener> > i(m_listeners);
+  QHashIterator<qint64, QPointer<spoton_listener> > it(m_listeners);
 
-  while(i.hasNext())
+  while(it.hasNext())
     {
-      i.next();
+      it.next();
 
-      QPointer<spoton_listener> listener = i.value();
+      QPointer<spoton_listener> listener = it.value();
 
       if(listener)
 	if(!listener->externalAddress().isNull())
