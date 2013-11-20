@@ -661,8 +661,6 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
       return;
     }
 
-  updateConnectionCount();
-
   QString connectionName("");
   QString country
     (spoton_misc::
@@ -956,6 +954,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
     {
       neighbor->setId(id);
       emit newNeighbor(neighbor);
+      updateConnectionCount();
     }
   else
     {

@@ -105,14 +105,18 @@
      sever socket connections whenever peers are about to be destroyed. That
      is, don't depend on deleteLater(). Thanks R.
 54.  Limit the maximum number of characters allowed to the passphrase
-     command-line option to 64. Also remove non-printable characters from the input.
-55.  Remove non-printable characters from listener accounts and passphrases. Proxy
-     passwords remain as are.
+     command-line option to 64. Also remove non-printable characters from the
+     input.
+55.  Remove non-printable characters from listener accounts and passphrases.
+     Proxy passwords remain as are.
 56.  The method spoton_kernel::slotNewNeighbor() must inspect the quality of a
      discovered neighbor. If the peer was destroyed by an external event, the
      method must remove the existing trace. Otherwise, a new peer having the
      old peer's id will not be inserted properly.
 57.  Display listener certificate fingerprints.
+58.  Must update a listeners connection count afters neighbors are detached
+     via the interface. Also corrected placement of updateConnectionCount()
+     in spoton_listener::slotNewConnection().
 
 0.06 (10/24/2013)
 

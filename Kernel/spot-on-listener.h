@@ -169,6 +169,7 @@ class spoton_listener: public QObject
   quint16 externalPort(void) const;
   quint16 serverPort(void) const;
   void close(void);
+  void updateConnectionCount(void);
 
  private:
   QByteArray m_certificate;
@@ -198,7 +199,6 @@ class spoton_listener: public QObject
   void saveExternalAddress(const QHostAddress &address,
 			   const QSqlDatabase &db);
   void saveStatus(const QSqlDatabase &db);
-  void updateConnectionCount(void);
 
  private slots:
   void slotDiscoverExternalAddress(void);

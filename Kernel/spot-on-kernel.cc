@@ -964,7 +964,7 @@ void spoton_kernel::prepareNeighbors(void)
 	disconnected += 1;
     }
 
-  if(disconnected == m_neighbors.count())
+  if(disconnected == m_neighbors.size())
     {
       s_messagingCacheMutex.lock();
       s_messagingCache.clear();
@@ -2456,11 +2456,19 @@ void spoton_kernel::slotDetachNeighbors(const qint64 listenerOid)
 
   if(m_listeners.contains(listenerOid))
     listener = m_listeners.value(listenerOid);
+  else
+    spoton_misc::logError(QString("spoton_kernel::slotDetachNeighbors(): "
+				  "listener %1 not found.").
+			  arg(listenerOid));
 
   if(listener)
-    foreach(spoton_neighbor *socket,
-	    listener->findChildren<spoton_neighbor *> ())
-      socket->setParent(this);
+    {
+      foreach(spoton_neighbor *socket,
+	      listener->findChildren<spoton_neighbor *> ())
+	socket->setParent(this);
+
+      listener->updateConnectionCount();
+    }
 }
 
 void spoton_kernel::slotDisconnectNeighbors(const qint64 listenerOid)
@@ -2748,6 +2756,16 @@ void spoton_kernel::updateStatistics(void)
 	   QString::
 	   number(100 * static_cast<double> (v1.toInt()) /
 		  qMax(1, v2.toInt()), 'f', 2).append("%"));
+	query.exec();
+	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
+		      "(statistic, value) "
+		      "VALUES ('Listeners', ?)");
+	query.bindValue(0, m_listeners.size());
+	query.exec();
+	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
+		      "(statistic, value) "
+		      "VALUES ('Neighbors', ?)");
+	query.bindValue(0, m_neighbors.size());
 	query.exec();
       }
 
