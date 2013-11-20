@@ -117,6 +117,12 @@
 58.  Must update a listener's connection count after its neighbors are
      detached via the interface. Also corrected placement of
      updateConnectionCount() in spoton_listener::slotNewConnection().
+59.  Corrected an index in spoton::applyGoldbugToInboxLetter(). The hash in
+     the UPDATE statement must be the hash of the message and the subject
+     and not the hash of the message and the receiver_sender_hash. Also
+     corrected an issue with uniqueness constraints. If a folder contains
+     duplicate messages that are encrypted, subsequent attempts to decrypt
+     encrypted messages failed because of uniqueness violations.
 
 0.06 (10/24/2013)
 

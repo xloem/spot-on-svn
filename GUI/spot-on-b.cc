@@ -3570,7 +3570,7 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 	    if(ok)
 	      updateQuery.bindValue
 		(1, m_crypts.value("email")->
-		 keyedHash(list.value(1) + list.value(4), &ok).
+		 keyedHash(list.value(1) + list.value(5), &ok).
 		 toBase64());
 
 	    if(!list.value(1).isEmpty())
@@ -3600,7 +3600,14 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 	    updateQuery.bindValue(6, oid);
 
 	    if(ok)
-	      ok = updateQuery.exec();
+	      {
+		ok = updateQuery.exec();
+
+		if(!ok)
+		  if(updateQuery.lastError().text().
+		     toLower().contains("unique"))
+		    ok = true;
+	      }
 	  }
 
 	if(ok)
