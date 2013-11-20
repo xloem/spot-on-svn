@@ -304,6 +304,8 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
       m_externalAddress->discover();
       m_externalAddressDiscovererTimer.start(60000);
     }
+  else
+    m_externalAddressDiscovererTimer.setInterval(30000);
 
   m_keepAliveTimer.start(45000);
   m_lifetime.start(10 * 60 * 1000);
@@ -564,6 +566,8 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   else if(spoton_kernel::setting("gui/kernelExternalIpInterval", 30).
 	  toInt() == 60)
     m_externalAddressDiscovererTimer.setInterval(60000);
+  else
+    m_externalAddressDiscovererTimer.setInterval(30000);
 
   m_keepAliveTimer.setInterval(45000);
   m_lifetime.start(10 * 60 * 1000);
@@ -836,8 +840,8 @@ void spoton_neighbor::slotTimeout(void)
 	  }
       }
 
-  int v = 
-    spoton_kernel::setting("gui/kernelExternalIpInterval", 30).toInt();
+  int v = spoton_kernel::setting
+    ("gui/kernelExternalIpInterval", 30).toInt();
 
   if(v != -1)
     {
