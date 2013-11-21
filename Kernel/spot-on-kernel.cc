@@ -1962,7 +1962,8 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	QSqlQuery query(db);
 
 	/*
-	** Use all of our participants as mail carriers.
+	** Use all of our participants, including the recipients,
+	** as mail carriers.
 	*/
 
 	query.setForwardOnly(true);
@@ -2121,16 +2122,17 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 			     true).toBool())
 		    signature = s_crypt2->digitalSignature
 		      (myPublicKeyHash +
-		       items.value(0) +
-		       items.value(1) +
-		       items.value(2), &ok);
+		       items.value(0) + // Name
+		       items.value(1) + // Subject
+		       items.value(2),  // Message
+		       &ok);
 
 		  if(ok)
 		    data2 = crypt.encrypted
 		      (myPublicKeyHash.toBase64() + "\n" +
-		       items.value(0).toBase64() + "\n" +
-		       items.value(1).toBase64() + "\n" +
-		       items.value(2).toBase64() + "\n" +
+		       items.value(0).toBase64() + "\n" + // Name
+		       items.value(1).toBase64() + "\n" + // Subject
+		       items.value(2).toBase64() + "\n" + // Message
 		       signature.toBase64() + "\n" +
 		       QVariant(!goldbug.isEmpty()).toByteArray().toBase64(),
 		       &ok);
@@ -2557,7 +2559,7 @@ void spoton_kernel::clearBuzzKeysContainer(void)
 int spoton_kernel::interfaces(void)
 {
   if(s_kernel)
-    return s_kernel->m_guiServer->findChildren<QTcpSocket *> ().size();
+    return s_kernel->m_guiServer->findChildren<QSslSocket *> ().size();
   else
     return 0;
 }
@@ -2744,6 +2746,11 @@ void spoton_kernel::updateStatistics(void)
 	QVariant v1, v2;
 
 	query.exec("PRAGMA synchronous = OFF");
+	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
+		      "(statistic, value) "
+		      "VALUES ('Attached User Interfaces', ?)");
+	query.bindValue(0, interfaces());
+	query.exec();
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
 		      "VALUES ('Congestion Container Percent Used', ?)");

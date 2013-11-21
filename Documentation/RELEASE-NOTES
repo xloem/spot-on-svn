@@ -123,6 +123,8 @@
      corrected an issue with uniqueness constraints. If a folder contains
      duplicate messages that are encrypted, subsequent attempts to decrypt
      encrypted messages fails because of uniqueness violations.
+60.  Corrected spoton_kernel::interfaces(). The method was returning
+     inflated values.
 
 0.06 (10/24/2013)
 

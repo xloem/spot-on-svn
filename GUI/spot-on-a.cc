@@ -3736,11 +3736,9 @@ void spoton::slotSetPassphrase(void)
 	      list << "chat"
 		   << "chat-signature"
 		   << "email"
-		   << "email-signature";
-#if 0
+		   << "email-signature"
 	           << "url"
 		   << "url-signature";
-#endif
 
 	      for(int i = 0; i < list.size(); i++)
 		{
@@ -3786,11 +3784,10 @@ void spoton::slotSetPassphrase(void)
 	  list << "chat"
 	       << "chat-signature"
 	       << "email"
-	       << "email-signature";
-#if 0
+	       << "email-signature"
 	       << "url"
 	       << "url-signature";
-#endif
+
 	  m_sb.status->setText(tr("Generating public key pairs."));
 	  m_sb.status->repaint();
 
