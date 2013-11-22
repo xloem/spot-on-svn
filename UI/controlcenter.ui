@@ -336,8 +336,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1182</width>
-                <height>577</height>
+                <width>583</width>
+                <height>421</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1941,8 +1941,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>278</width>
-                 <height>557</height>
+                 <width>214</width>
+                 <height>415</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3241,7 +3241,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1154</width>
+             <width>1063</width>
              <height>641</height>
             </rect>
            </property>
@@ -4091,7 +4091,7 @@
             <item>
              <widget class="QTabWidget" name="etpTab">
               <property name="currentIndex">
-               <number>0</number>
+               <number>2</number>
               </property>
               <widget class="QWidget" name="tab_10">
                <attribute name="title">
@@ -4708,7 +4708,7 @@
                       </spacer>
                      </item>
                      <item>
-                      <widget class="QPushButton" name="etpResonate">
+                      <widget class="QPushButton" name="transmit">
                        <property name="text">
                         <string>Transmit</string>
                        </property>
@@ -5706,7 +5706,7 @@
   <tabstop>etpFile</tabstop>
   <tabstop>etpSelectFile</tabstop>
   <tabstop>burstSize</tabstop>
-  <tabstop>etpResonate</tabstop>
+  <tabstop>transmit</tabstop>
   <tabstop>acceptUrlKeys</tabstop>
   <tabstop>urlNodeName</tabstop>
   <tabstop>pushButton</tabstop>

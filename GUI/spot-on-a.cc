@@ -361,6 +361,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotListenerIPComboChanged(int)));
+  connect(m_ui.transmit,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotTransmit(void)));
   connect(m_ui.listenerTransport,
 	  SIGNAL(currentIndexChanged(int)),
 	  this,

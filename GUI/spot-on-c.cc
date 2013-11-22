@@ -756,3 +756,7 @@ void spoton::slotSelectTransmitFile(void)
       m_ui.etpFile->setToolTip(m_ui.etpFile->text());
     }
 }
+
+void spoton::slotTransmit(void)
+{
+}
