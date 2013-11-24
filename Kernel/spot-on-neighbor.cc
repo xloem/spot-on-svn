@@ -891,8 +891,12 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
 		"WHERE OID = ? AND "
 		"status = 'connected' "
 		"AND ? - uptime >= 10");
+  m_bytesReadMutex.lock();
   query.bindValue(0, m_bytesRead);
+  m_bytesReadMutex.unlock();
+  m_bytesWrittenMutex.lock();
   query.bindValue(1, m_bytesWritten);
+  m_bytesWrittenMutex.unlock();
   query.bindValue(2, isEncrypted() ? 1 : 0);
 
   if(cipher.isNull() || !spoton_kernel::s_crypts.value("chat", 0))
@@ -999,7 +1003,9 @@ void spoton_neighbor::slotReadyRead(void)
   else if(m_udpSocket)
     data = m_udpSocket->readAll();
 
+  m_bytesReadMutex.lock();
   m_bytesRead += data.length();
+  m_bytesReadMutex.unlock();
 
   if(m_useSsl)
     if(!data.isEmpty())
@@ -1592,7 +1598,7 @@ void spoton_neighbor::slotSendMessage(const QByteArray &data)
       else
 	{
 	  flush();
-	  m_bytesWritten += data.length();
+	  addToBytesWritten(data.length());
 	  spoton_kernel::messagingCacheAdd(data);
 	}
     }
@@ -1620,7 +1626,7 @@ void spoton_neighbor::slotReceivedMessage(const QByteArray &data,
 	  else
 	    {
 	      flush();
-	      m_bytesWritten += data.length();
+	      addToBytesWritten(data.length());
 	    }
 	}
 }
@@ -1671,7 +1677,7 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
   else
     {
       flush();
-      m_bytesWritten += message.length();
+      addToBytesWritten(message.length());
 
       QString connectionName("");
 
@@ -3521,7 +3527,7 @@ void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
 	else
 	  {
 	    flush();
-	    m_bytesWritten += message.length();
+	    addToBytesWritten(message.length());
 	    spoton_kernel::messagingCacheAdd(message);
 	  }
       }
@@ -3698,7 +3704,7 @@ void spoton_neighbor::slotSendUuid(void)
   else
     {
       flush();
-      m_bytesWritten += message.length();
+      addToBytesWritten(message.length());
     }
 }
 
@@ -3807,7 +3813,7 @@ void spoton_neighbor::slotSendMail
 	else
 	  {
 	    flush();
-	    m_bytesWritten += message.length();
+	    addToBytesWritten(message.length());
 	    oids.append(pair.second);
 	    spoton_kernel::messagingCacheAdd(message);
 	  }
@@ -3836,7 +3842,7 @@ void spoton_neighbor::slotSendMailFromPostOffice(const QByteArray &data)
       else
 	{
 	  flush();
-	  m_bytesWritten += message.length();
+	  addToBytesWritten(message.length());
 	  spoton_kernel::messagingCacheAdd(data);
 	}
     }
@@ -4047,7 +4053,7 @@ void spoton_neighbor::slotRetrieveMail(const QList<QByteArray> &list)
 	else
 	  {
 	    flush();
-	    m_bytesWritten += message.length();
+	    addToBytesWritten(message.length());
 	    spoton_kernel::messagingCacheAdd(message);
 	  }
       }
@@ -4084,7 +4090,7 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
 	else
 	  {
 	    flush();
-	    m_bytesWritten += message.length();
+	    addToBytesWritten(message.length());
 	    spoton_kernel::messagingCacheAdd(message);
 	  }
       }
@@ -4115,7 +4121,7 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 	  else
 	    {
 	      flush();
-	      m_bytesWritten += message.length();
+	      addToBytesWritten(message.length());
 	    }
 	}
 }
@@ -4370,7 +4376,7 @@ void spoton_neighbor::slotSendBuzz(const QByteArray &data)
       else
 	{
 	  flush();
-	  m_bytesWritten += data.length();
+	  addToBytesWritten(data.length());
 	  spoton_kernel::messagingCacheAdd(data);
 	}
     }
@@ -4564,7 +4570,7 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data)
       else
 	{
 	  flush();
-	  m_bytesWritten += message.length();
+	  addToBytesWritten(message.length());
 	  spoton_kernel::messagingCacheAdd(message);
 	}
     }
@@ -4638,7 +4644,9 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 
 void spoton_neighbor::addToBytesWritten(const int bytesWritten)
 {
+  m_bytesWrittenMutex.lock();
   m_bytesWritten += qAbs(bytesWritten);
+  m_bytesWrittenMutex.unlock();
 }
 
 void spoton_neighbor::slotSendAccountInformation(void)
@@ -4688,7 +4696,7 @@ void spoton_neighbor::slotSendAccountInformation(void)
 		m_accountClientSentSalt = salt;
 		m_accountTimer.stop();
 		m_authenticationSentTime = QDateTime::currentDateTime();
-		m_bytesWritten += message.length();
+		addToBytesWritten(message.length());
 	      }
 	  }
       }
@@ -4732,7 +4740,7 @@ void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
       else
 	{
 	  flush();
-	  m_bytesWritten += message.length();
+	  addToBytesWritten(message.length());
 	}
     }
 }
@@ -4756,7 +4764,7 @@ void spoton_neighbor::sendAuthenticationRequest(void)
     {
       flush();
       m_authenticationSentTime = QDateTime::currentDateTime();
-      m_bytesWritten += message.length();
+      addToBytesWritten(message.length());
     }
 }
 
