@@ -3334,7 +3334,6 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 		QSqlQuery query(db);
 		bool ok = true;
 
-		query.prepare("PRAGMA synchronous = OFF");
 		query.prepare("UPDATE neighbors SET "
 			      "account_authenticated = ?, "
 			      "account_name = ? "
@@ -4588,7 +4587,6 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 	QSqlQuery query(db);
 	bool ok = true;
 
-	query.prepare("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE friends_public_keys SET "
 		      "gemini = ?, gemini_hash_key = ?, "
 		      "last_status_update = ? "

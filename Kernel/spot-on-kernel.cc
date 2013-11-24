@@ -247,6 +247,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_guiServer = 0;
   m_mailer = 0;
   m_sharedReader = 0;
+  m_uptime = QDateTime::currentDateTime();
   qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
   spoton_misc::cleanupDatabases();
@@ -2773,6 +2774,15 @@ void spoton_kernel::updateStatistics(void)
 		      "(statistic, value) "
 		      "VALUES ('Neighbors', ?)");
 	query.bindValue(0, m_neighbors.size());
+	query.exec();
+	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
+		      "(statistic, value) "
+		      "VALUES ('Uptime', ?)");
+	query.bindValue
+	  (0, QString("%1 Minutes").
+	   arg(QString::number(m_uptime.
+			       secsTo(QDateTime::currentDateTime()) / 60.0,
+			       'f', 1)));
 	query.exec();
       }
 

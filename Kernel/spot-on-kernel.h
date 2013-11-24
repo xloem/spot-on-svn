@@ -28,6 +28,7 @@
 #ifndef _spoton_kernel_h_
 #define _spoton_kernel_h_
 
+#include <QDateTime>
 #include <QFileSystemWatcher>
 #include <QFuture>
 #include <QHash>
@@ -78,6 +79,7 @@ class spoton_kernel: public QObject
   static QHash<QString, QVariant> s_settings;
   static QMutex s_buzzKeysMutex;
   static QMutex s_settingsMutex;
+  QDateTime m_uptime;
   QFileSystemWatcher m_settingsWatcher;
   QFuture<void> m_future;
   QHash<qint64, QPointer<spoton_listener> > m_listeners;
