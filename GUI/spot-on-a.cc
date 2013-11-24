@@ -1159,9 +1159,7 @@ spoton::spoton(void):QMainWindow()
 
   if(spoton_crypt::passphraseSet())
     {
-      m_sb.kernelstatus->setEnabled(false);
-      m_sb.listeners->setEnabled(false);
-      m_sb.neighbors->setEnabled(false);
+      m_sb.frame->setEnabled(false);
       m_ui.encryptionKeyType->setEnabled(false);
       m_ui.passphrase1->setText("0000000000");
       m_ui.passphrase2->setText("0000000000");
@@ -1183,9 +1181,7 @@ spoton::spoton(void):QMainWindow()
     }
   else
     {
-      m_sb.kernelstatus->setEnabled(false);
-      m_sb.listeners->setEnabled(false);
-      m_sb.neighbors->setEnabled(false);
+      m_sb.frame->setEnabled(false);
       m_ui.encryptionKeyType->setEnabled(false);
       m_ui.newKeys->setEnabled(false);
       m_ui.passphrase->setEnabled(false);
@@ -3918,9 +3914,7 @@ void spoton::slotSetPassphrase(void)
 	  sendKeysToKernel();
 	}
 
-      m_sb.kernelstatus->setEnabled(true);
-      m_sb.listeners->setEnabled(true);
-      m_sb.neighbors->setEnabled(true);
+      m_sb.frame->setEnabled(true);
       m_ui.encryptionKeyType->setEnabled(false);
       m_ui.kernelBox->setEnabled(true);
       m_ui.keySize->setEnabled(false);
@@ -4063,9 +4057,7 @@ void spoton::slotValidatePassphrase(void)
 	    sendBuzzKeysToKernel();
 	    sendKeysToKernel();
 	    slotPopulateBuzzFavorites();
-	    m_sb.kernelstatus->setEnabled(true);
-	    m_sb.listeners->setEnabled(true);
-	    m_sb.neighbors->setEnabled(true);
+	    m_sb.frame->setEnabled(true);
 	    m_ui.encryptionKeyType->setEnabled(false);
 	    m_ui.kernelBox->setEnabled(true);
 	    m_ui.keySize->setEnabled(false);
