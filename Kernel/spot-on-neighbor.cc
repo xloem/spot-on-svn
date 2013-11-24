@@ -4774,6 +4774,14 @@ qint64 spoton_neighbor::write(const char *data, const qint64 size)
 	  else
 	    sent = m_udpSocket->writeDatagram
 	      (data, remaining, m_address, m_port);
+
+	  if(sent == -1)
+	    if(m_udpSocket->error() == QAbstractSocket::UnknownSocketError)
+	      /*
+	      ** If the end-point is absent, QIODevice::write() may return -1.
+	      */
+
+	      deleteLater();
 	}
       else
 	sent = 0;
@@ -4802,8 +4810,7 @@ void spoton_neighbor::abort(void)
 {
   if(m_tcpSocket)
     m_tcpSocket->abort();
-
-  if(m_udpSocket)
+  else if(m_udpSocket)
     m_udpSocket->abort();
 }
 
