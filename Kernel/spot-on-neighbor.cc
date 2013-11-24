@@ -891,12 +891,8 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
 		"WHERE OID = ? AND "
 		"status = 'connected' "
 		"AND ? - uptime >= 10");
-  m_bytesReadMutex.lock();
   query.bindValue(0, m_bytesRead);
-  m_bytesReadMutex.unlock();
-  m_bytesWrittenMutex.lock();
   query.bindValue(1, m_bytesWritten);
-  m_bytesWrittenMutex.unlock();
   query.bindValue(2, isEncrypted() ? 1 : 0);
 
   if(cipher.isNull() || !spoton_kernel::s_crypts.value("chat", 0))
@@ -1003,9 +999,7 @@ void spoton_neighbor::slotReadyRead(void)
   else if(m_udpSocket)
     data = m_udpSocket->readAll();
 
-  m_bytesReadMutex.lock();
   m_bytesRead += data.length();
-  m_bytesReadMutex.unlock();
 
   if(m_useSsl)
     if(!data.isEmpty())
@@ -4644,9 +4638,7 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 
 void spoton_neighbor::addToBytesWritten(const int bytesWritten)
 {
-  m_bytesWrittenMutex.lock();
   m_bytesWritten += qAbs(bytesWritten);
-  m_bytesWrittenMutex.unlock();
 }
 
 void spoton_neighbor::slotSendAccountInformation(void)

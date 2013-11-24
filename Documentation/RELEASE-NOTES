@@ -125,8 +125,6 @@
      encrypted messages fails because of uniqueness violations.
 60.  Corrected spoton_kernel::interfaces(). The method was returning
      inflated values.
-61.  Protect members m_bytesRead and m_bytesWritten in spoton_neighbor
-     as multiple threads may access them.
 
 0.06 (10/24/2013)
 

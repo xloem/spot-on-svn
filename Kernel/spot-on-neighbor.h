@@ -31,7 +31,6 @@
 #include <QDateTime>
 #include <QHostAddress>
 #include <QHostInfo>
-#include <QMutex>
 #include <QNetworkProxy>
 #include <QSqlDatabase>
 #include <QSslSocket>
@@ -160,8 +159,6 @@ class spoton_neighbor: public QThread
   QDateTime m_lastReadTime;
   QDateTime m_startTime;
   QHostAddress m_address;
-  QMutex m_bytesReadMutex;
-  QMutex m_bytesWrittenMutex;
   QSslCertificate m_peerCertificate;
   QString m_echoMode;
   QString m_ipAddress;
