@@ -2177,12 +2177,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="toolButtonMakeFriends">
-            <property name="toolTip">
-             <string>Share my specified public key with the selected neighbor.</string>
-            </property>
+           <widget class="QToolButton" name="shareBuzzMagnet">
             <property name="text">
-             <string>Share Public Key</string>
+             <string>Share Buzz Magnet</string>
             </property>
             <property name="popupMode">
              <enum>QToolButton::InstantPopup</enum>
@@ -2193,9 +2190,12 @@
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="shareBuzzMagnet">
+           <widget class="QToolButton" name="toolButtonMakeFriends">
+            <property name="toolTip">
+             <string>Share my specified public key with the selected neighbor.</string>
+            </property>
             <property name="text">
-             <string>Share Buzz Magnet</string>
+             <string>Share Public Key</string>
             </property>
             <property name="popupMode">
              <enum>QToolButton::InstantPopup</enum>
@@ -3281,7 +3281,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>953</width>
+             <width>907</width>
              <height>611</height>
             </rect>
            </property>
@@ -4117,8 +4117,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>971</width>
-             <height>572</height>
+             <width>494</width>
+             <height>326</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5654,8 +5654,8 @@
   <tabstop>addAcceptedIP</tabstop>
   <tabstop>deleteAcceptedIP</tabstop>
   <tabstop>toolButtonCopyToClipboard</tabstop>
-  <tabstop>toolButtonMakeFriends</tabstop>
   <tabstop>shareBuzzMagnet</tabstop>
+  <tabstop>toolButtonMakeFriends</tabstop>
   <tabstop>acceptPublishedConnected</tabstop>
   <tabstop>acceptPublishedDisconnected</tabstop>
   <tabstop>ignorePublished</tabstop>
