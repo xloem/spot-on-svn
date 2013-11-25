@@ -110,6 +110,7 @@ class spoton: public QMainWindow
   static const int APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL = 1;
   static const int APPLY_GOLDBUG_TO_INBOX_ERROR_MEMORY = 2;
   QByteArray m_kernelSocketData;
+  QDateTime m_buzzFavoritesLastModificationTime;
   QDateTime m_magnetsLastModificationTime;
   QDateTime m_kernelStatisticsLastModificationTime;
   QDateTime m_listenersLastModificationTime;
@@ -189,6 +190,7 @@ class spoton: public QMainWindow
   void updateParticipantsTable(const QSqlDatabase &db);
 
  private slots:
+  void slotAcceptBuzzMagnets(bool state);
   void slotAcceptChatKeys(bool state);
   void slotAcceptEmailKeys(bool state);
   void slotAcceptPublicizedListeners(void);
@@ -331,6 +333,7 @@ class spoton: public QMainWindow
   void slotSendMessage(void);
   void slotSetIcons(void);
   void slotSetPassphrase(void);
+  void slotShareBuzzMagnet(void);
   void slotShareChatPublicKey(void);
   void slotShareChatPublicKeyWithParticipant(void);
   void slotShareEmailPublicKey(void);

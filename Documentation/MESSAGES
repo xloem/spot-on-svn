@@ -314,7 +314,7 @@ EOL
 Message Type ("0052")
 0 (Base-64)
 
-Echo Transfer
+StarBeam
 Echoed? Yes
 
 Groups: 2
@@ -336,3 +336,9 @@ EOL
 {
 0 - Keyed SHA-512 Message Code (Base-64)
 }
+
+Buzz Magnet Share
+Echoed? No
+
+Message Type ("0065")
+0 - Buzz Magnet (Base-64)

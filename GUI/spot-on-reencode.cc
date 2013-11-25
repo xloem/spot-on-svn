@@ -57,7 +57,6 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   sb.status->setText
     (QObject::tr("Re-encoding buzz_channels.db."));
   sb.status->repaint();
-  spoton_misc::prepareDatabases();
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -124,7 +123,6 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   sb.status->setText
     (QObject::tr("Re-encoding email.db."));
   sb.status->repaint();
-  spoton_misc::prepareDatabases();
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -284,7 +282,6 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   sb.status->setText
     (QObject::tr("Re-encoding listeners.db."));
   sb.status->repaint();
-  spoton_misc::prepareDatabases();
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -549,7 +546,6 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   sb.status->setText
     (QObject::tr("Re-encoding neighbors.db."));
   sb.status->repaint();
-  spoton_misc::prepareDatabases();
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);

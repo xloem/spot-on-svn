@@ -1221,6 +1221,8 @@ void spoton_neighbor::slotReadyRead(void)
 				 data.contains("type=0051&content=") ||
 				 data.contains("type=0052&content=")))
 	    goto done_label;
+	  else if(length > 0 && data.contains("type=0065&content="))
+	    process0065(length, data);
 	  else if(length > 0 && data.contains("content="))
 	    {
 	      spoton_kernel::messagingCacheAdd(originalData);
@@ -3497,6 +3499,72 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
   else
     spoton_misc::logError
       (QString("spoton_neighbor::process0051(): 0051 "
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
+}
+
+void spoton_neighbor::process0065(int length, const QByteArray &dataIn)
+{
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  length -= qstrlen("type=0065&content=");
+
+  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
+
+  data.remove
+    (0,
+     data.indexOf("type=0065&content=") + qstrlen("type=0065&content="));
+
+  if(length == data.length())
+    {
+      data = QByteArray::fromBase64(data);
+
+      if(spoton_kernel::setting("gui/acceptBuzzMagnets", false).toBool())
+	if(spoton_misc::isValidBuzzMagnetData(data))
+	  {
+	    QString connectionName("");
+	    bool ok = true;
+
+	    {
+	      QSqlDatabase db = spoton_misc::database(connectionName);
+
+	      db.setDatabaseName
+		(spoton_misc::homePath() + QDir::separator() +
+		 "buzz_channels.db");
+
+	      if(db.open())
+		{
+		  QSqlQuery query(db);
+
+		  query.prepare("INSERT OR REPLACE INTO buzz_channels "
+				"(data, data_hash) "
+				"VALUES (?, ?)");
+		  query.bindValue
+		    (0, s_crypt->encrypted(data, &ok).toBase64());
+
+		  if(ok)
+		    query.bindValue
+		      (1, s_crypt->keyedHash(data, &ok).toBase64());
+
+		  if(ok)
+		    ok = query.exec();
+		}
+
+	      db.close();
+	    }
+
+	    QSqlDatabase::removeDatabase(connectionName);
+	  }
+    }
+  else
+    spoton_misc::logError
+      (QString("spoton_neighbor::process0065(): 0065 "
 	       "content-length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).

@@ -109,6 +109,8 @@ class spoton_kernel: public QObject
   void updateStatistics(void);
 
  private slots:
+  void slotBuzzMagnedReceivedFromUI(const qint64 oid,
+				    const QByteArray &magnet);
   void slotBuzzReceivedFromUI(const QByteArray &key,
 			      const QByteArray &channelType,
 			      const QByteArray &name,

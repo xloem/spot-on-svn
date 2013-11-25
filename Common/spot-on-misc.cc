@@ -1843,3 +1843,68 @@ bool spoton_misc::allParticipantsHaveGeminis(void)
 
   return count == 0;
 }
+
+bool spoton_misc::isValidBuzzMagnetData(const QByteArray &data)
+{
+  QList<QByteArray> list(data.trimmed().split('\n'));
+  bool valid = false;
+
+  for(int i = 0; i < 6; i++)
+    {
+      QByteArray str(QByteArray::fromBase64(list.value(i).trimmed()));
+
+      if(i == 0) // Channel
+	{
+	  if(str.isEmpty())
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	}
+      else if(i == 1) // Iteration Count
+	{
+	  if(str.toInt() < 10000)
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	}
+      else if(i == 2) // Channel Salt
+	{
+	  if(str.isEmpty())
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	}
+      else if(i == 3) // Channel Type
+	{
+	  if(!spoton_crypt::cipherTypes().contains(str))
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	}
+      else if(i == 4) // Hash
+	{
+	  if(str.isEmpty())
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	}
+      else if(i == 5) // Hash Type
+	{
+	  if(!spoton_crypt::hashTypes().contains(str))
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	}
+    }
+
+  valid = true;
+
+ done_label:
+  return valid;
+}

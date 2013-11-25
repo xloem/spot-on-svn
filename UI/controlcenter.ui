@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1196</width>
+    <width>995</width>
     <height>686</height>
    </rect>
   </property>
@@ -59,6 +59,60 @@
         <property name="margin">
          <number>5</number>
         </property>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_67">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <item>
+           <widget class="QCheckBox" name="acceptBuzzMagnets">
+            <property name="text">
+             <string>Accept shared &amp;magnets.</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_54">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_41">
+          <property name="spacing">
+           <number>5</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="label_32">
+            <property name="text">
+             <string>&amp;Name</string>
+            </property>
+            <property name="buddy">
+             <cstring>nodeName</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="buzzName"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="saveBuzzName">
+            <property name="text">
+             <string>Save</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_33">
           <property name="spacing">
@@ -126,33 +180,6 @@
               <string>Remove All</string>
              </property>
             </item>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_41">
-          <property name="spacing">
-           <number>5</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="label_32">
-            <property name="text">
-             <string>&amp;Name</string>
-            </property>
-            <property name="buddy">
-             <cstring>nodeName</cstring>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="buzzName"/>
-          </item>
-          <item>
-           <widget class="QPushButton" name="saveBuzzName">
-            <property name="text">
-             <string>Save</string>
-            </property>
            </widget>
           </item>
          </layout>
@@ -336,8 +363,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1180</width>
-                <height>594</height>
+                <width>981</width>
+                <height>582</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -360,7 +387,7 @@
                    <item>
                     <widget class="QCheckBox" name="acceptChatKeys">
                      <property name="text">
-                      <string>Accept &amp;keys.</string>
+                      <string>Accept shared &amp;keys.</string>
                      </property>
                      <property name="checked">
                       <bool>true</bool>
@@ -863,7 +890,7 @@
           <item>
            <widget class="QCheckBox" name="acceptEmailKeys">
             <property name="text">
-             <string>Accept &amp;keys.</string>
+             <string>Accept shared &amp;keys.</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -1941,8 +1968,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>317</width>
-                 <height>574</height>
+                 <width>214</width>
+                 <height>562</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2156,6 +2183,19 @@
             </property>
             <property name="text">
              <string>Share Public Key</string>
+            </property>
+            <property name="popupMode">
+             <enum>QToolButton::InstantPopup</enum>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="shareBuzzMagnet">
+            <property name="text">
+             <string>Share Buzz Magnet</string>
             </property>
             <property name="popupMode">
              <enum>QToolButton::InstantPopup</enum>
@@ -3241,8 +3281,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1155</width>
-             <height>623</height>
+             <width>953</width>
+             <height>611</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4077,8 +4117,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1170</width>
-             <height>584</height>
+             <width>971</width>
+             <height>572</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5413,8 +5453,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1196</width>
-     <height>22</height>
+     <width>995</width>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -5531,11 +5571,12 @@
  </customwidgets>
  <tabstops>
   <tabstop>tab</tabstop>
+  <tabstop>acceptBuzzMagnets</tabstop>
+  <tabstop>buzzName</tabstop>
+  <tabstop>saveBuzzName</tabstop>
   <tabstop>favorites</tabstop>
   <tabstop>demagnetize</tabstop>
   <tabstop>buzzTools</tabstop>
-  <tabstop>buzzName</tabstop>
-  <tabstop>saveBuzzName</tabstop>
   <tabstop>channel</tabstop>
   <tabstop>buzzIterationCount</tabstop>
   <tabstop>channelSalt</tabstop>
@@ -5614,6 +5655,7 @@
   <tabstop>deleteAcceptedIP</tabstop>
   <tabstop>toolButtonCopyToClipboard</tabstop>
   <tabstop>toolButtonMakeFriends</tabstop>
+  <tabstop>shareBuzzMagnet</tabstop>
   <tabstop>acceptPublishedConnected</tabstop>
   <tabstop>acceptPublishedDisconnected</tabstop>
   <tabstop>ignorePublished</tabstop>

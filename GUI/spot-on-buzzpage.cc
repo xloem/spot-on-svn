@@ -621,8 +621,6 @@ void spoton_buzzpage::slotSave(void)
       return;
     }
 
-  spoton_misc::prepareDatabases();
-
   QString connectionName("");
   bool ok = true;
 

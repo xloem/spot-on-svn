@@ -32,8 +32,8 @@
           the mosaic pieces as well as echo the received pulses. A replay
           option will be available for transmitters to retransmit
           requested pulses.
-15.  Added instances of spoton_misc::prepareDatabases() throughout important
-     source logic.
+15.  Removed many instances of spoton_misc::prepareDatabases(). Only
+     a few are necessary.
 16.  Implemented spoton_misc::allParticipantsHaveGeminis(). The method
      spoton_neighbor::findMessageType() may be exceptionally burdened if
      a node attempts to decipher asymmetric ciphertexts without cause.
@@ -125,6 +125,7 @@
      encrypted messages fails because of uniqueness violations.
 60.  Corrected spoton_kernel::interfaces(). The method was returning
      inflated values.
+61.  Allow sharing of Buzz magnets over encrypted sessions.
 
 0.06 (10/24/2013)
 

@@ -362,6 +362,12 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_mailer = new spoton_mailer(this);
   m_sharedReader = new spoton_shared_reader(this);
   connect(m_guiServer,
+	  SIGNAL(buzzMagnetReceivedFromUI(const qint64,
+					  const QByteArray &)),
+	  this,
+	  SLOT(slotBuzzMagnedReceivedFromUI(const qint64,
+					    const QByteArray &)));
+  connect(m_guiServer,
 	  SIGNAL(buzzReceivedFromUI(const QByteArray &,
 				    const QByteArray &,
 				    const QByteArray &,
@@ -1243,8 +1249,8 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
   if(!neighbor)
     {
       spoton_misc::logError
-	  (QString("spoton_kernel::slotPublicKeyReceivedFromUI(): "
-		   "neighbor %1 not found in m_neighbors.").arg(oid));
+	(QString("spoton_kernel::slotPublicKeyReceivedFromUI(): "
+		 "neighbor %1 not found in m_neighbors.").arg(oid));
       return;
     }
 
@@ -2790,4 +2796,42 @@ void spoton_kernel::updateStatistics(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton_kernel::slotBuzzMagnedReceivedFromUI(const qint64 oid,
+						 const QByteArray &magnet)
+{
+  QPointer<spoton_neighbor> neighbor = 0;
+
+  if(m_neighbors.contains(oid))
+    neighbor = m_neighbors[oid];
+
+  if(!neighbor)
+    {
+      spoton_misc::logError
+	(QString("spoton_kernel::slotBuzzMagnedReceivedFromUI(): "
+		 "neighbor %1 not found in m_neighbors.").arg(oid));
+      return;
+    }
+  else if(!neighbor->isEncrypted())
+    {
+      spoton_misc::logError
+	(QString("spoton_kernel::slotBuzzMagnedReceivedFromUI(): "
+		 "neighbor %1 is not encrypted.").arg(oid));
+      return;
+    }
+
+  QByteArray data(spoton_send::message0065(magnet));
+
+  if(neighbor->write(data.constData(), data.length()) != data.length())
+    spoton_misc::logError
+      (QString("spoton_kernel::slotBuzzMagnedReceivedFromUI(): "
+	       "write() failure for %1:%2.").
+       arg(neighbor->peerAddress().toString()).
+       arg(neighbor->peerPort()));
+  else
+    {
+      neighbor->flush();
+      neighbor->addToBytesWritten(data.length());
+    }
 }

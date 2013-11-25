@@ -760,3 +760,59 @@ void spoton::slotSelectTransmitFile(void)
 void spoton::slotTransmit(void)
 {
 }
+
+void spoton::slotAcceptBuzzMagnets(bool state)
+{
+  m_settings["gui/acceptBuzzMagnets"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/acceptBuzzMagnets", state);
+}
+
+void spoton::slotShareBuzzMagnet(void)
+{
+  if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!m_kernelSocket.isEncrypted())
+    return;
+
+  QAction *action = qobject_cast<QAction *> (sender());
+
+  if(!action)
+    return;
+
+  QByteArray data(action->data().toByteArray());
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.neighbors->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.neighbors->item
+	(row, m_ui.neighbors->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  QByteArray message;
+
+  message.append("sharebuzzmagnet_");
+  message.append(oid);
+  message.append("_");
+  message.append(data.toBase64());
+  message.append('\n');
+
+  if(m_kernelSocket.write(message.constData(), message.length()) !=
+     message.length())
+    spoton_misc::logError
+      (QString("spoton::slotShareBuzzMagnet(): write() failure "
+	       "for %1:%2.").
+       arg(m_kernelSocket.peerAddress().toString()).
+       arg(m_kernelSocket.peerPort()));
+  else
+    m_kernelSocket.flush();
+}

@@ -1644,8 +1644,6 @@ void spoton::addFriendsKey(const QByteArray &key)
 
 	if(db.open())
 	  {
-	    spoton_misc::prepareDatabases();
-
 	    QByteArray name(list.value(1));
 
 	    name = QByteArray::fromBase64(name);
@@ -1873,8 +1871,6 @@ void spoton::addFriendsKey(const QByteArray &key)
 
 	if(db.open())
 	  {
-	    spoton_misc::prepareDatabases();
-
 	    if(spoton_misc::saveFriendshipBundle(list.value(0), // Key Type
 						 list.value(1), // Name
 						 list.value(2), // Public Key
@@ -2208,8 +2204,6 @@ void spoton::slotSendMail(void)
   ** Bundle the love letter and send it to the email.db file. The
   ** kernel shall do the rest.
   */
-
-  spoton_misc::prepareDatabases();
 
   QString connectionName("");
 
@@ -3404,6 +3398,8 @@ void spoton::slotSetIcons(void)
     (QIcon(QString(":/%1/copy.png").arg(iconSet)));
   m_ui.toolButtonMakeFriends->setIcon
     (QIcon(QString(":/%1/share.png").arg(iconSet)));
+  m_ui.shareBuzzMagnet->setIcon
+    (QIcon(QString(":/%1/share.png").arg(iconSet)));
   m_ui.addNeighbor->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
   m_ui.addFriend->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
   m_ui.clearFriend->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
@@ -4201,8 +4197,6 @@ void spoton::slotRemoveEmailParticipants(void)
 
 void spoton::slotAddAcceptedIP(void)
 {
-  spoton_misc::prepareDatabases();
-
   spoton_crypt *s_crypt = m_crypts.value("chat", 0);
 
   if(!s_crypt)
@@ -4461,8 +4455,6 @@ void spoton::slotChatInactivityTimeout(void)
 
 void spoton::slotAddAccount(void)
 {
-  spoton_misc::prepareDatabases();
-
   QString connectionName("");
   QString error("");
   QString name(m_ui.accountName->text().trimmed());

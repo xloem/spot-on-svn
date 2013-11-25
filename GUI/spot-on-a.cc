@@ -108,6 +108,7 @@ spoton::spoton(void):QMainWindow()
   m_booleans["keys_sent_to_kernel"] = false;
   m_buzzStatusTimer.setInterval(15000);
   m_externalAddress = new spoton_external_address(this);
+  m_buzzFavoritesLastModificationTime = QDateTime();
   m_kernelStatisticsLastModificationTime = QDateTime();
   m_magnetsLastModificationTime = QDateTime();
   m_listenersLastModificationTime = QDateTime();
@@ -705,6 +706,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(bool)),
 	  this,
 	  SLOT(slotReceiversClicked(bool)));
+  connect(m_ui.acceptBuzzMagnets,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotAcceptBuzzMagnets(bool)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -717,6 +722,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotMessagingCachePurge(void)));
+  connect(&m_tableTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotPopulateBuzzFavorites(void)));
   connect(&m_tableTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -779,11 +788,9 @@ spoton::spoton(void):QMainWindow()
   connect
     (menu->addAction(tr("Copy &E-Mail Public Key")),
      SIGNAL(triggered(void)), this, SLOT(slotCopyMyEmailPublicKey(void)));
-#if 0
   connect
     (menu->addAction(tr("Copy &URL Public Key")),
      SIGNAL(triggered(void)), this, SLOT(slotCopyMyURLPublicKey(void)));
-#endif
   menu->addSeparator();
   connect
     (menu->addAction(tr("Copy &All Public Keys")),
@@ -794,11 +801,11 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)), this, SLOT(slotShareChatPublicKey(void)));
   connect(menu->addAction(tr("Share &E-Mail Public Key")),
 	  SIGNAL(triggered(void)), this, SLOT(slotShareEmailPublicKey(void)));
-#if 0
   connect(menu->addAction(tr("Share &URL Public Key")),
 	  SIGNAL(triggered(void)), this, SLOT(slotShareURLPublicKey(void)));
-#endif
   m_ui.toolButtonMakeFriends->setMenu(menu);
+  menu = new QMenu(this);
+  m_ui.shareBuzzMagnet->setMenu(menu);
   m_generalTimer.start(2500);
   m_messagingCachePurgeTimer.start(30000);
   m_chatInactivityTimer.start(120000);
@@ -1077,6 +1084,8 @@ spoton::spoton(void):QMainWindow()
 					      false).toBool());
   m_ui.autoEmailRetrieve->setChecked
     (m_settings.value("gui/automaticallyRetrieveEmail", false).toBool());
+  m_ui.acceptBuzzMagnets->setChecked
+    (m_settings.value("gui/acceptBuzzMagnets", false).toBool());
 
   /*
   ** Please don't translate n/a.
@@ -1388,8 +1397,6 @@ void spoton::slotAddListener(void)
       return;
     }
 
-  spoton_misc::prepareDatabases();
-
   QByteArray certificate;
   QByteArray privateKey;
   QByteArray publicKey;
@@ -1680,8 +1687,6 @@ void spoton::slotAddNeighbor(void)
 			    tr("Invalid spoton_crypt object."));
       return;
     }
-
-  spoton_misc::prepareDatabases();
 
   QString connectionName("");
   QString error("");
@@ -3109,6 +3114,8 @@ void spoton::slotDeactivateKernel(void)
 
 void spoton::slotGeneralTimerTimeout(void)
 {
+  spoton_misc::prepareDatabases();
+
   QColor color(240, 128, 128); // Light coral!
   QPalette pidPalette(m_ui.pid->palette());
   QString sharedPath(spoton_misc::homePath() + QDir::separator() +
@@ -3170,7 +3177,9 @@ void spoton::slotGeneralTimerTimeout(void)
 
   if(text != m_ui.pid->text())
     {
+      m_buzzFavoritesLastModificationTime = QDateTime();
       m_kernelStatisticsLastModificationTime = QDateTime();
+      m_magnetsLastModificationTime = QDateTime();
       m_listenersLastModificationTime = QDateTime();
       m_neighborsLastModificationTime = QDateTime();
       m_participantsLastModificationTime = QDateTime();
@@ -3677,13 +3686,9 @@ void spoton::slotSetPassphrase(void)
       mb.setWindowModality(Qt::WindowModal);
       mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
       mb.setText(tr("Are you sure that you wish to replace the "
-		    "existing passphrase?"));
-#if 0
-      mb.setText(tr("Are you sure that you wish to replace the "
 		    "existing passphrase? Please note that URL data must "
 		    "be re-encoded via a separate tool. Please see "
-		    "the Tools folder."));
-#endif
+		    "the future Tools folder."));
 
       if(mb.exec() != QMessageBox::Yes)
 	{
@@ -3973,7 +3978,6 @@ void spoton::slotSetPassphrase(void)
 	("gui/saltedPassphraseHash", m_settings["gui/saltedPassphraseHash"]);
       settings.setValue
 	("gui/signatureKey", m_settings["gui/signatureKey"]);
-      slotPopulateBuzzFavorites();
 
       QMessageBox::information
 	(this, tr("Spot-On: Information"),
@@ -4056,7 +4060,6 @@ void spoton::slotValidatePassphrase(void)
 
 	    sendBuzzKeysToKernel();
 	    sendKeysToKernel();
-	    slotPopulateBuzzFavorites();
 	    m_sb.frame->setEnabled(true);
 	    m_ui.encryptionKeyType->setEnabled(false);
 	    m_ui.kernelBox->setEnabled(true);
@@ -4230,13 +4233,11 @@ void spoton::slotShowContextMenu(const QPoint &point)
 			       toString())),
 		     tr("Share &E-Mail Public Key"),
 		     this, SLOT(slotShareEmailPublicKey(void)));
-#if 0
       menu.addAction(QIcon(QString(":%1//share.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
 		     tr("Share &URL Public Key"),
 		     this, SLOT(slotShareURLPublicKey(void)));
-#endif
       menu.addSeparator();
       menu.addAction(tr("&Connect"),
 		     this, SLOT(slotConnectNeighbor(void)));
@@ -5990,14 +5991,26 @@ void spoton::slotPopulateBuzzFavorites(void)
   if(!s_crypt)
     return;
 
+  QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
+		     "buzz_channels.db");
+
+  if(fileInfo.exists())
+    {
+      if(fileInfo.lastModified() <= m_buzzFavoritesLastModificationTime)
+	return;
+      else
+	m_buzzFavoritesLastModificationTime = fileInfo.lastModified();
+    }
+  else
+    m_buzzFavoritesLastModificationTime = QDateTime();
+
   QMap<QByteArray, QByteArray> map;
   QString connectionName("");
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "buzz_channels.db");
+    db.setDatabaseName(fileInfo.absoluteFilePath());
 
     if(db.open())
       {
@@ -6103,16 +6116,42 @@ void spoton::slotPopulateBuzzFavorites(void)
     {
       m_ui.favorites->clear();
 
+      while(!m_ui.shareBuzzMagnet->menu()->actions().isEmpty())
+	{
+	  QAction *action = m_ui.shareBuzzMagnet->menu()->actions().first();
+
+	  m_ui.shareBuzzMagnet->menu()->removeAction(action);
+	  action->deleteLater();
+	}
+
       for(int i = 0; i < map.keys().size(); i++)
 	{
 	  m_ui.favorites->addItem(map.keys().at(i));
 	  m_ui.favorites->setItemData(i, map.value(map.keys().at(i)));
+
+	  QAction *action = new QAction
+	    (map.keys().at(i), this);
+
+	  action->setData(map.value(map.keys().at(i)));
+	  connect(action,
+		  SIGNAL(triggered(void)),
+		  this,
+		  SLOT(slotShareBuzzMagnet(void)));
+	  m_ui.shareBuzzMagnet->menu()->addAction(action);
 	}
     }
   else
     {
       m_ui.favorites->clear();
       m_ui.favorites->addItem(tr("Empty"));
+
+      while(!m_ui.shareBuzzMagnet->menu()->actions().isEmpty())
+	{
+	  QAction *action = m_ui.shareBuzzMagnet->menu()->actions().first();
+
+	  m_ui.shareBuzzMagnet->menu()->removeAction(action);
+	  action->deleteLater();
+	}
     }
 }
 
@@ -6253,7 +6292,7 @@ void spoton::demagnetize(void)
 
   while(!list.isEmpty())
     {
-      QString str(list.takeFirst());
+      QString str(list.takeFirst().trimmed());
 
       if(str.startsWith("rn="))
 	{

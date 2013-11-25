@@ -98,6 +98,8 @@ class spoton_gui_server: public spoton_gui_server_tcp_server
   void slotTimeout(void);
 
  signals:
+  void buzzMagnetReceivedFromUI(const qint64 oid,
+				const QByteArray &magnet);
   void buzzReceivedFromUI(const QByteArray &channel,
 			  const QByteArray &channelType,
 			  const QByteArray &name,
