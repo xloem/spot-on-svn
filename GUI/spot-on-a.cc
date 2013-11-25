@@ -852,20 +852,6 @@ spoton::spoton(void):QMainWindow()
 
   spoton_misc::correctSettingsContainer(m_settings);
 
-  if(m_ui.menu_Icons->actions().size() == 2)
-    {
-      if(m_settings.value("gui/iconSet", "nouve").toString() == "nouve")
-	{
-	  m_ui.menu_Icons->actions().at(0)->setChecked(true);
-	  m_ui.menu_Icons->actions().at(0)->trigger();
-	}
-      else
-	{
-	  m_ui.menu_Icons->actions().at(1)->setChecked(true);
-	  m_ui.menu_Icons->actions().at(1)->trigger();
-	}
-    }
-
   QString str(m_settings.value("gui/tabPosition", "north").toString());
 
   if(str == "east")
@@ -1356,6 +1342,20 @@ spoton::spoton(void):QMainWindow()
 	m_externalAddressDiscovererTimer.start(30000);
       else
 	m_externalAddressDiscovererTimer.start(60000);
+    }
+
+  if(m_ui.menu_Icons->actions().size() == 2)
+    {
+      if(m_settings.value("gui/iconSet", "nouve").toString() == "nouve")
+	{
+	  m_ui.menu_Icons->actions().at(0)->setChecked(true);
+	  m_ui.menu_Icons->actions().at(0)->trigger();
+	}
+      else
+	{
+	  m_ui.menu_Icons->actions().at(1)->setChecked(true);
+	  m_ui.menu_Icons->actions().at(1)->trigger();
+	}
     }
 
   show();

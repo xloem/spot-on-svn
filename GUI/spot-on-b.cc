@@ -3332,8 +3332,8 @@ void spoton::slotSetIcons(void)
   // Tab Icons
 
   list << "buzz.png" << "chat.png" << "email.png"
-       << "add-listener.png" << "neighbors.png" << "search.png"
-       << "settings.png" << "starbeam.png" << "urls.png";
+       << "add-listener.png" << "neighbors.png"
+       << "settings.png" << "starbeam.png";
 
   for(int i = 0; i < list.size(); i++)
     m_ui.tab->setTabIcon
