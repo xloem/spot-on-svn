@@ -1,4 +1,4 @@
-0.07 (12/01/2013)
+0.07 (12/03/2013)
 
 1.   Corrected use of gcry_md_hash_buffer() in spoton_crypt::saltedValue().
      The input buffer was incorrectly resized. The method saltedValue() is
@@ -124,7 +124,7 @@
      duplicate messages that are encrypted, subsequent attempts to decrypt
      encrypted messages fails because of uniqueness violations.
 60.  Corrected spoton_kernel::interfaces(). The method was returning
-     inflated values.
+     inflated data.
 61.  Allow sharing of Buzz magnets over encrypted sessions.
 
 0.06 (10/24/2013)

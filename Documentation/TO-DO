@@ -104,6 +104,7 @@ Ignored Items
 9.     Auto-clear textedit widgets that contain too much data.
 10.    Monitor kernel health from the UI. See
        spoton::slotGeneralTimerTimeout().
+11.    Entering geminis is difficult.
 
 Remaining Items
 
@@ -121,8 +122,8 @@ Remaining Items
 11.    Remote kernel termination.
 12.    Artificial trust. All participants must play nicely. Zero-knowledge?
 13.    What to do about corrupt database values?
-14.    Entering geminis is difficult.
-15.    Allow bonds across connections.
+14.    Add url logic to spoton::addFriendsKey().
+15.    Echo sub-universes.
 16.    Allow pass-through flow of non-Spot-On data.
 17.    Inbound data should be time-tagged. Nodes must purge
        containers of old data.
@@ -156,4 +157,3 @@ Remaining Items
        Research?
 33.    Prevent inserts of own keys in friends_public_keys.db.
 34.    Artificial impersonators.
-35.    Add url logic to spoton::addFriendsKey().
