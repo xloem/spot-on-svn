@@ -1418,7 +1418,9 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 
 		if(!ok)
 		  keySize = 2048;
-		else if(!(keySize == 2048 || keySize == 3072 ||keySize == 4096))
+		else if(!(keySize == 2048 ||
+			  keySize == 3072 ||
+			  keySize == 4096))
 		  keySize = 2048;
 
 		query.bindValue(20, keySize);
