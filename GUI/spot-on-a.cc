@@ -1257,8 +1257,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.emailParticipants->setColumnHidden(3, true); // public_key_hash
   m_ui.etpMagnets->setColumnHidden(m_ui.etpMagnets->columnCount() - 1,
 				   true); // OID
-  m_ui.etpTransmittersMagnets->setColumnHidden
-    (m_ui.etpTransmittersMagnets->columnCount() - 1, true); // OID
+  m_ui.transmittersMagnets->setColumnHidden
+    (m_ui.transmittersMagnets->columnCount() - 1, true); // OID
   m_ui.mail->setColumnHidden(4, true); // goldbug
   m_ui.mail->setColumnHidden(5, true); // message
   m_ui.mail->setColumnHidden(6, true); // message_code
@@ -1288,7 +1288,7 @@ spoton::spoton(void):QMainWindow()
     (0, Qt::AscendingOrder);
   m_ui.etpMagnets->horizontalHeader()->setSortIndicator
     (1, Qt::AscendingOrder);
-  m_ui.etpTransmittersMagnets->horizontalHeader()->setSortIndicator
+  m_ui.transmittersMagnets->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   m_ui.kernelStatistics->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);

@@ -1159,7 +1159,8 @@ void spoton_neighbor::slotReadyRead(void)
 	      ** response is valid.
 	      */
 
-	      if(m_authenticationSentTime.msecsTo(QDateTime::
+	      if(m_accountClientSentSalt.length() > 0 &&
+		 m_authenticationSentTime.msecsTo(QDateTime::
 						  currentDateTime()) <=
 		 spoton_kernel::setting("kernel/"
 					"server_account_verification_"
@@ -3475,6 +3476,8 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 	       "the provided salt is identical to the generated salt. "
 	       "The server may be devious.");
 	}
+
+      m_accountClientSentSalt.clear();
 
       if(m_accountAuthenticated)
 	resetKeepAlive();

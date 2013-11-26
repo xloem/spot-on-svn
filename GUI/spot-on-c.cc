@@ -228,9 +228,9 @@ void spoton::slotPopulateEtpMagnets(void)
 	m_ui.etpMagnets->setSortingEnabled(false);
 	m_ui.etpMagnets->clearContents();
 	m_ui.etpMagnets->setRowCount(0);
-	m_ui.etpTransmittersMagnets->setSortingEnabled(false);
-	m_ui.etpTransmittersMagnets->clearContents();
-	m_ui.etpTransmittersMagnets->setRowCount(0);
+	m_ui.transmittersMagnets->setSortingEnabled(false);
+	m_ui.transmittersMagnets->clearContents();
+	m_ui.transmittersMagnets->setRowCount(0);
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT magnet, one_time_magnet, "
@@ -258,20 +258,20 @@ void spoton::slotPopulateEtpMagnets(void)
 		      this,
 		      SLOT(slotStarOTMCheckChange(bool)));
 	      m_ui.etpMagnets->setCellWidget(row, 0, check);
-	      m_ui.etpTransmittersMagnets->setRowCount(row + 1);
+	      m_ui.transmittersMagnets->setRowCount(row + 1);
 	      check = new QCheckBox();
 	      check->setText(bytes.replace("&", "&&").constData());
-	      m_ui.etpTransmittersMagnets->setCellWidget(row, 0, check);
+	      m_ui.transmittersMagnets->setCellWidget(row, 0, check);
 	      item = new QTableWidgetItem(query.value(2).toString());
 	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.etpMagnets->setItem(row, 2, item);
-	      m_ui.etpTransmittersMagnets->setItem(row, 1, item->clone());
+	      m_ui.transmittersMagnets->setItem(row, 1, item->clone());
 	      row += 1;
 	    }
 
 	m_ui.etpMagnets->setSortingEnabled(true);
-	m_ui.etpTransmittersMagnets->resizeColumnsToContents();
-	m_ui.etpTransmittersMagnets->setSortingEnabled(true);
+	m_ui.transmittersMagnets->resizeColumnsToContents();
+	m_ui.transmittersMagnets->setSortingEnabled(true);
       }
 
     db.close();
@@ -752,13 +752,50 @@ void spoton::slotSelectTransmitFile(void)
 
   if(dialog.exec() == QDialog::Accepted)
     {
-      m_ui.etpFile->setText(dialog.selectedFiles().value(0).trimmed());
-      m_ui.etpFile->setToolTip(m_ui.etpFile->text());
+      m_ui.transmittedFile->setText
+	(dialog.selectedFiles().value(0).trimmed());
+      m_ui.transmittedFile->setToolTip(m_ui.transmittedFile->text());
     }
 }
 
 void spoton::slotTransmit(void)
 {
+  /*
+  ** We must have at least one magnet selected.
+  */
+
+  QString error("");
+  bool zero = true;
+
+  if(m_ui.transmittedFile->text().trimmed().isEmpty())
+    {
+      error = tr("Please select a file to transfer.");
+      goto done_label;
+    }
+
+  for(int i = 0; i < m_ui.transmittersMagnets->rowCount(); i++)
+    {
+      QCheckBox *checkBox = qobject_cast<QCheckBox *>
+	(m_ui.transmittersMagnets->cellWidget(i, 0));
+
+      if(checkBox)
+	if(checkBox->isChecked())
+	  {
+	    zero = false;
+	    break;
+	  }
+    }
+
+  if(zero)
+    {
+      error = tr("Please select at least one magnet.");
+      goto done_label;
+    }
+
+ done_label:
+
+  if(!error.isEmpty())
+    QMessageBox::critical(this, tr("Spot-On: Error"), error);
 }
 
 void spoton::slotAcceptBuzzMagnets(bool state)
