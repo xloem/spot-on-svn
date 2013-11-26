@@ -3892,6 +3892,8 @@ void spoton::slotSetPassphrase(void)
 	  delete m_crypts.value("chat-signature", 0);
 	  delete m_crypts.value("email", 0);
 	  delete m_crypts.value("email-signature", 0);
+	  delete m_crypts.value("url", 0);
+	  delete m_crypts.value("url-signature", 0);
 	  m_crypts.clear();
 
 	  QStringList list;
@@ -3899,7 +3901,9 @@ void spoton::slotSetPassphrase(void)
 	  list << "chat"
 	       << "chat-signature"
 	       << "email"
-	       << "email-signature";
+	       << "email-signature"
+	       << "url"
+	       << "url-signature";
 
 	  for(int i = 0; i < list.size(); i++)
 	    m_crypts.insert
@@ -4035,6 +4039,8 @@ void spoton::slotValidatePassphrase(void)
 	    delete m_crypts.value("chat-signature", 0);
 	    delete m_crypts.value("email", 0);
 	    delete m_crypts.value("email-signature", 0);
+	    delete m_crypts.value("url", 0);
+	    delete m_crypts.value("url-signature", 0);
 	    m_crypts.clear();
 
 	    QStringList list;
@@ -4042,7 +4048,9 @@ void spoton::slotValidatePassphrase(void)
 	    list << "chat"
 		 << "chat-signature"
 		 << "email"
-		 << "email-signature";
+		 << "email-signature"
+		 << "url"
+		 << "url-signature";
 
 	    for(int i = 0; i < list.size(); i++)
 	      m_crypts.insert
