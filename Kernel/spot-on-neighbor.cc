@@ -3421,7 +3421,9 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 	      if(ok)
 		newSaltedCredentials = spoton_crypt::saltedValue
 		  ("sha512",
-		   name + password,
+		   name + password +
+		   QDateTime::currentDateTime().toUTC().
+		   toString("MMddyyyyhhmm").toLatin1(),
 		   salt,
 		   &ok);
 
@@ -3431,12 +3433,28 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 		    m_accountAuthenticated = true;
 		  else
 		    {
-		      m_accountAuthenticated = false;
-		      spoton_misc::logError
-			("spoton_neighbor::process0051(): "
-			 "the provided salted credentials appear to be "
-			 "invalid. The server may be devious.");
+		      newSaltedCredentials = spoton_crypt::saltedValue
+			("sha512",
+			 name + password +
+			 QDateTime::currentDateTime().toUTC().addSecs(60).
+			 toString("MMddyyyyhhmm").toLatin1(),
+			 salt,
+			 &ok);
+
+		      if(ok)
+			if(newSaltedCredentials == saltedCredentials)
+			  m_accountAuthenticated = true;
 		    }
+
+		  if(ok)
+		    if(newSaltedCredentials != saltedCredentials)
+		      {
+			m_accountAuthenticated = false;
+			spoton_misc::logError
+			  ("spoton_neighbor::process0051(): "
+			   "the provided salted credentials appear to be "
+			   "invalid. The server may be devious.");
+		      }
 		}
 	      else
 		m_accountAuthenticated = false;
@@ -4733,7 +4751,9 @@ void spoton_neighbor::slotSendAccountInformation(void)
 	QByteArray salt(spoton_crypt::strongRandomBytes(512));
 	QByteArray saltedCredentials
 	  (spoton_crypt::saltedValue("sha512",
-				     name + password,
+				     name + password +
+				     QDateTime::currentDateTime().toUTC().
+				     toString("MMddyyyyhhmm").toLatin1(),
 				     salt, &ok));
 
 	if(ok)
@@ -4779,10 +4799,12 @@ void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
   ** verify the server.
   */
 
-  saltedCredentials = spoton_crypt::saltedValue("sha512",
-						name + password,
-						salt,
-						&ok);
+  saltedCredentials = spoton_crypt::saltedValue
+    ("sha512",
+     name + password + QDateTime::currentDateTime().toUTC().
+     toString("MMddyyyyhhmm").toLatin1(),
+     salt,
+     &ok);
 
   if(ok)
     message = spoton_send::message0051(saltedCredentials, salt);

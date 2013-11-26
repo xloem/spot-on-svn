@@ -1787,14 +1787,32 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 
 	      if(ok)
 		salted = spoton_crypt::saltedValue
-		  ("sha512", name + password, salt, &ok);
+		  ("sha512", name + password +
+		   QDateTime::currentDateTime().toUTC().
+		   toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
 
 	      if(ok)
-		if(salted == saltedCredentials)
-		  {
-		    found = true;
-		    break;
-		  }
+		{
+		  if(salted == saltedCredentials)
+		    {
+		      found = true;
+		      break;
+		    }
+		  else
+		    {
+		      salted = spoton_crypt::saltedValue
+			("sha512", name + password +
+			 QDateTime::currentDateTime().toUTC().addSecs(60).
+			 toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
+
+		      if(ok)
+			if(salted == saltedCredentials)
+			  {
+			    found = true;
+			    break;
+			  }
+		    }
+		}
 	    }
       }
 

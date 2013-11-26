@@ -126,6 +126,8 @@
 60.  Corrected spoton_kernel::interfaces(). The method was returning
      inflated data.
 61.  Allow sharing of Buzz magnets over encrypted sessions.
+62.  Added UTC timestamps to the account authentication process to avoid
+     replay issues beyond two-minute intervals.
 
 0.06 (10/24/2013)
 
