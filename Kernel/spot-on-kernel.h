@@ -60,7 +60,6 @@ class spoton_kernel: public QObject
 						  ** signature
 						  ** url
 						  */
-  
   static QList<QByteArray> findBuzzKey(const QByteArray &data,
 				       const QByteArray &hash);
   static QVariant setting(const QString &name,

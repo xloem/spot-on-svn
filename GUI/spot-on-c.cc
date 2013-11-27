@@ -100,7 +100,8 @@ void spoton::slotAddEtpMagnet(void)
 		     "ct=%1&"
 		     "ek=%2&"
 		     "ht=%3&"
-		     "mk=%4").
+		     "mk=%4&"
+		     "xt=urn:starbeam").
       arg(m_ui.etpCipherType->currentText()).
       arg(m_ui.etpEncryptionKey->text().trimmed()).
       arg(m_ui.etpHashType->currentText()).
@@ -136,9 +137,14 @@ void spoton::slotAddEtpMagnet(void)
 	  str.remove(0, 3);
 	  tokens += str.trimmed().isEmpty() ? 0 : 1;
 	}
+      else if(str.startsWith("xt="))
+	{
+	  str.remove(0, 3);
+	  tokens += str.trimmed().isEmpty() ? 0 : 1;
+	}
     }
 
-  if(tokens != 4)
+  if(tokens != 5)
     {
       error = tr("Invalid magnet.");
       goto done_label;
@@ -164,7 +170,7 @@ void spoton::slotAddEtpMagnet(void)
 	if(ok)
 	  query.bindValue(1, s_crypt->keyedHash(magnet.toLatin1(),
 						&ok).toBase64());
-    
+
 	if(ok)
 	  ok = query.exec();
       }
@@ -395,7 +401,7 @@ void spoton::saveDestination(const QString &path)
       m_settings["gui/etpDestinationPath"] = path;
 
       QSettings settings;
-      
+
       settings.setValue("gui/etpDestinationPath", path);
       m_ui.destination->setText(path);
       m_ui.destination->setToolTip(path);

@@ -1869,7 +1869,7 @@ bool spoton_misc::isValidBuzzMagnetData(const QByteArray &data)
   QList<QByteArray> list(data.trimmed().split('\n'));
   bool valid = false;
 
-  for(int i = 0; i < 6; i++)
+  for(int i = 0; i < 7; i++)
     {
       QByteArray str(QByteArray::fromBase64(list.value(i).trimmed()));
 
@@ -1916,6 +1916,14 @@ bool spoton_misc::isValidBuzzMagnetData(const QByteArray &data)
       else if(i == 5) // Hash Type
 	{
 	  if(!spoton_crypt::hashTypes().contains(str))
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	}
+      else if(i == 6) // Urn
+	{
+	  if(str != "urn:buzz")
 	    {
 	      valid = false;
 	      goto done_label;

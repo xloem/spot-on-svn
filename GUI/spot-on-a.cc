@@ -6284,7 +6284,8 @@ void spoton::magnetize(void)
   data.append(QString("xs=%1&").arg(list.value(2).constData()));
   data.append(QString("ct=%1&").arg(list.value(3).constData()));
   data.append(QString("hk=%1&").arg(list.value(4).constData()));
-  data.append(QString("ht=%1").arg(list.value(5).constData()));
+  data.append(QString("ht=%1&").arg(list.value(5).constData()));
+  data.append("xt=urn:buzz");
   clipboard->setText(data);
 
  done_label:
@@ -6337,6 +6338,9 @@ void spoton::demagnetize(void)
 	  if(m_ui.buzzHashType->findText(str) > -1)
 	    m_ui.buzzHashType->setCurrentIndex
 	      (m_ui.buzzHashType->findText(str));
+	}
+      else if(str.startsWith("xt="))
+	{
 	}
     }
 

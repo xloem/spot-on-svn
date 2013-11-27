@@ -173,7 +173,8 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
   data.append(QString("xs=%1&").arg(m_channelSalt.constData()));
   data.append(QString("ct=%1&").arg(m_channelType.constData()));
   data.append(QString("hk=%1&").arg(m_hashKey.constData()));
-  data.append(QString("ht=%1").arg(m_hashType.constData()));
+  data.append(QString("ht=%1&").arg(m_hashType.constData()));
+  data.append("xt=urn:buzz");
   ui.magnet->setText(data);
   slotSetIcons();
   m_messagingCachePurgeTimer.start(30000);
@@ -301,7 +302,7 @@ void spoton_buzzpage::slotSendMessage(void)
   ui.message->clear();
 
  done_label:
-  
+
   if(!error.isEmpty())
     QMessageBox::critical(this, tr("Spot-On: Error"), error);
 }
@@ -646,6 +647,8 @@ void spoton_buzzpage::slotSave(void)
 	data.append(m_hashKey.toBase64());
 	data.append("\n");
 	data.append(m_hashType.toBase64());
+	data.append("\n");
+	data.append(QByteArray("urn:buzz").toBase64());
 	query.prepare("INSERT OR REPLACE INTO buzz_channels "
 		      "(data, data_hash) "
 		      "VALUES (?, ?)");

@@ -154,7 +154,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
     qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
 	   maximumBufferSize,
 	   spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
-  m_maximumContentLength = 
+  m_maximumContentLength =
     qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
 	   maximumContentLength,
 	   spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
