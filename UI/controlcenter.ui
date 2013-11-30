@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>995</width>
+    <width>1196</width>
     <height>686</height>
    </rect>
   </property>
@@ -363,8 +363,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>542</width>
-                <height>413</height>
+                <width>1182</width>
+                <height>577</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1968,8 +1968,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>210</width>
-                 <height>402</height>
+                 <width>214</width>
+                 <height>415</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3281,8 +3281,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>907</width>
-             <height>611</height>
+             <width>1063</width>
+             <height>641</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4117,8 +4117,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>971</width>
-             <height>572</height>
+             <width>1172</width>
+             <height>567</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4710,12 +4710,12 @@
                         <string>&amp;Pulse Size</string>
                        </property>
                        <property name="buddy">
-                        <cstring>burstSize</cstring>
+                        <cstring>pulseSize</cstring>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QSpinBox" name="burstSize">
+                      <widget class="QSpinBox" name="pulseSize">
                        <property name="suffix">
                         <string> Bytes</string>
                        </property>
@@ -5453,8 +5453,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>995</width>
-     <height>24</height>
+     <width>1196</width>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -5747,7 +5747,7 @@
   <tabstop>transmittersMagnets</tabstop>
   <tabstop>transmittedFile</tabstop>
   <tabstop>etpSelectFile</tabstop>
-  <tabstop>burstSize</tabstop>
+  <tabstop>pulseSize</tabstop>
   <tabstop>transmit</tabstop>
   <tabstop>acceptUrlKeys</tabstop>
   <tabstop>urlNodeName</tabstop>

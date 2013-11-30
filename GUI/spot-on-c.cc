@@ -161,8 +161,7 @@ void spoton::slotAddEtpMagnet(void)
 	QSqlQuery query(db);
 
 	query.prepare("INSERT OR REPLACE INTO "
-		      "magnets "
-		      "(magnet, magnet_hash) "
+		      "magnets (magnet, magnet_hash) "
 		      "VALUES (?, ?)");
 	query.bindValue(0, s_crypt->encrypted(magnet.toLatin1(),
 					      &ok).toBase64());
@@ -770,8 +769,18 @@ void spoton::slotTransmit(void)
   ** We must have at least one magnet selected.
   */
 
+  QString connectionName("");
   QString error("");
+  QStringList magnets;
   bool zero = true;
+
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    {
+      error = tr("Invalid spoton_crypt object.");
+      goto done_label;
+    }
 
   if(m_ui.transmittedFile->text().trimmed().isEmpty())
     {
@@ -788,7 +797,11 @@ void spoton::slotTransmit(void)
 	if(checkBox->isChecked())
 	  {
 	    zero = false;
-	    break;
+
+	    QTableWidgetItem *item = m_ui.transmittersMagnets->item(i, 1);
+
+	    if(item)
+	      magnets << item->text();
 	  }
     }
 
@@ -798,10 +811,63 @@ void spoton::slotTransmit(void)
       goto done_label;
     }
 
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "starbeam.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("INSERT INTO transmitted "
+		      "(file, mosaic, muted, pulse_size, "
+		      "status, total_size) "
+		      "VALUES (?, ?, ?, ?, ?, ?)");
+	query.bindValue
+	  (0, s_crypt->encrypted(m_ui.transmittedFile->text().toUtf8(),
+				 &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (1, s_crypt->encrypted(spoton_crypt::strongRandomBytes(256),
+				   &ok).toBase64());
+
+	query.bindValue(2, 1);
+
+	if(ok)
+	  query.bindValue
+	    (3, s_crypt->
+	     encrypted(QString::number(m_ui.pulseSize->
+				       value()).toLatin1(), &ok).toBase64());
+
+	query.bindValue(4, tr("Queued"));
+
+	if(ok)
+	  query.bindValue
+	    (5, s_crypt->
+	     encrypted(QString::
+		       number(QFileInfo(m_ui.transmittedFile->
+					text()).size()).toLatin1(),
+		       &ok).toBase64());
+
+	if(ok)
+	  query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
  done_label:
 
   if(!error.isEmpty())
     QMessageBox::critical(this, tr("Spot-On: Error"), error);
+  else
+    m_ui.transmittedFile->clear();
 }
 
 void spoton::slotAcceptBuzzMagnets(bool state)

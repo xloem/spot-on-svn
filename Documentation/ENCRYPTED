@@ -73,9 +73,17 @@ magnets
 
 magnet
 
+received
+
+mosaic
+total_size
+
 transmitted
 
 file
+mosaic
+pulse_size
+total_size
 
 transmitted_magnets
 
