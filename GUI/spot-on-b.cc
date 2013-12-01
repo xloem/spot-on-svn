@@ -276,7 +276,8 @@ void spoton::slotReceivedKernelMessage(void)
 		  QByteArray sequenceNumber(list.value(4));
 		  QByteArray utcDate(list.value(5));
 		  QDateTime dateTime
-		    (QDateTime::fromString(utcDate.constData()));
+		    (QDateTime::fromString(utcDate.constData(),
+					   "hhmmss"));
 		  QString msg("");
 		  bool found = true;
 
