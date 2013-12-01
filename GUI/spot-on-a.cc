@@ -1370,6 +1370,10 @@ spoton::spoton(void):QMainWindow()
 
 spoton::~spoton()
 {
+}
+
+void spoton::slotQuit(void)
+{
   m_purgeMutex.lock();
   m_purge = false;
   m_purgeMutex.unlock();
@@ -1377,13 +1381,17 @@ spoton::~spoton()
   m_messagingCache.clear();
   m_messagingCacheMutex.unlock();
   m_future.waitForFinished();
-  QApplication::instance()->quit();
-}
 
-void spoton::slotQuit(void)
-{
-  close();
-  deleteLater();
+  QHashIterator<QString, spoton_crypt *> it(m_crypts);
+
+  while (it.hasNext())
+    {
+      it.next();
+      delete it.value();
+    }
+
+  m_crypts.clear();
+  QApplication::instance()->quit();
 }
 
 void spoton::slotAddListener(void)

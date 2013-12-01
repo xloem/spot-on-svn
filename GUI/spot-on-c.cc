@@ -769,9 +769,12 @@ void spoton::slotTransmit(void)
   ** We must have at least one magnet selected.
   */
 
+  QByteArray encryptedMosaic;
+  QFileInfo fileInfo;
+  QList<QByteArray> magnets;
   QString connectionName("");
   QString error("");
-  QStringList magnets;
+  bool ok = true;
   bool zero = true;
 
   spoton_crypt *s_crypt = m_crypts.value("chat", 0);
@@ -788,6 +791,14 @@ void spoton::slotTransmit(void)
       goto done_label;
     }
 
+  fileInfo.setFile(m_ui.transmittedFile->text().trimmed());
+
+  if(!fileInfo.exists() || !fileInfo.isReadable())
+    {
+      error = tr("The provided file does not exist.");
+      goto done_label;
+    }
+
   for(int i = 0; i < m_ui.transmittersMagnets->rowCount(); i++)
     {
       QCheckBox *checkBox = qobject_cast<QCheckBox *>
@@ -797,11 +808,7 @@ void spoton::slotTransmit(void)
 	if(checkBox->isChecked())
 	  {
 	    zero = false;
-
-	    QTableWidgetItem *item = m_ui.transmittersMagnets->item(i, 1);
-
-	    if(item)
-	      magnets << item->text();
+	    magnets << checkBox->text().replace("&&", "&").toLatin1();
 	  }
     }
 
@@ -819,8 +826,8 @@ void spoton::slotTransmit(void)
 
     if(db.open())
       {
+	QByteArray mosaic(spoton_crypt::strongRandomBytes(256));
 	QSqlQuery query(db);
-	bool ok = true;
 
 	query.prepare("INSERT INTO transmitted "
 		      "(file, mosaic, muted, pulse_size, "
@@ -831,9 +838,12 @@ void spoton::slotTransmit(void)
 				 &ok).toBase64());
 
 	if(ok)
-	  query.bindValue
-	    (1, s_crypt->encrypted(spoton_crypt::strongRandomBytes(256),
-				   &ok).toBase64());
+	  {
+	    encryptedMosaic = s_crypt->encrypted(mosaic, &ok);
+
+	    if(ok)
+	      query.bindValue(1, encryptedMosaic.toBase64());
+	  }
 
 	query.bindValue(2, 1);
 
@@ -855,7 +865,53 @@ void spoton::slotTransmit(void)
 
 	if(ok)
 	  query.exec();
+
+	for(int i = 0; i < magnets.size(); i++)
+	  {
+	    query.prepare("INSERT INTO transmitted_magnets "
+			  "(magnet, magnet_hash, transmitted_oid) "
+			  "VALUES (?, ?, (SELECT OID FROM transmitted WHERE "
+			  "mosaic = ?))");
+
+	    if(ok)
+	      query.bindValue
+		(0, s_crypt->encrypted(magnets.at(i), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(1, s_crypt->keyedHash(magnets.at(i), &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue(2, encryptedMosaic.toBase64());
+
+	    if(ok)
+	      query.exec();
+	    else
+	      break;
+
+	    if(query.lastError().isValid())
+	      break;
+
+	    query.prepare("DELETE FROM magnets WHERE "
+			  "magnet_hash = ? AND one_time_magnet = 1");
+	    query.bindValue
+	      (0, s_crypt->keyedHash(magnets.at(i), &ok).toBase64());
+
+	    if(ok)
+	      query.exec();
+	    else
+	      break;
+
+	    if(query.lastError().isValid())
+	      break;
+	  }
       }
+
+    if(db.lastError().isValid())
+      error = tr("A database error (%1) occurred.").
+	arg(db.lastError().text());
+    else if(!ok)
+      error = tr("An error occurred within spoton_crypt.");
 
     db.close();
   }
