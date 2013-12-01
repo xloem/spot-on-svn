@@ -291,14 +291,20 @@ void spoton::slotReceivedKernelMessage(void)
 		  sequenceNumber.toULongLong(&ok);
 
 		  if(!ok)
-		    sequenceNumber = "1";
+		    sequenceNumber = "-1";
 
 		  msg.append
 		    (QDateTime::currentDateTime().
 		     toString("[hh:mm<font color=grey>:ss</font>]:"));
-		  msg.append
-		    (dateTime.
-		     toString("[<font color=green>hh:mm:ss</font>]"));
+
+		  if(dateTime.isValid())
+		    msg.append
+		      (dateTime.
+		       toString("[<font color=green>hh:mm:ss</font>]"));
+		  else
+		    msg.append
+		      ("[<font color=red>00:00:00</font>]");
+
 		  msg.append(QString(":%1: ").
 			     arg(sequenceNumber.constData()));
 		  msg.append
