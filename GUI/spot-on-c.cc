@@ -861,9 +861,7 @@ void spoton::slotTransmit(void)
 	     encrypted(QString::number(m_ui.pulseSize->
 				       value()).toLatin1(), &ok).toBase64());
 
-	if(ok)
-	  query.bindValue
-	    (4, s_crypt->encrypted(tr("Queued").toUtf8(), &ok).toBase64());
+	query.bindValue(4, "transmitted");
 
 	if(ok)
 	  query.bindValue
@@ -1175,6 +1173,34 @@ void spoton::slotTransmittedMuted(bool state)
 
 void spoton::slotDeleteAllTransmitted(void)
 {
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "starbeam.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	if(!isKernelActive())
+	  {
+	    query.exec("DELETE FROM transmitted");
+	    query.exec("DELETE FROM transmitted_magnets");
+	    query.exec("DELETE FROM transmitted_pulses");
+	  }
+	else
+	  query.exec("UPDATE transmitted SET "
+		     "status = 'deleted' WHERE "
+		     "status <> 'deleted'");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton::slotDeleteTransmitted(void)

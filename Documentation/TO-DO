@@ -157,3 +157,4 @@ Remaining Items
        Research?
 33.    Prevent inserts of own keys in friends_public_keys.db.
 34.    Artificial impersonators.
+35.    Limit listener authentication replays via digest recording.

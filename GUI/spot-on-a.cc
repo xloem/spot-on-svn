@@ -3436,10 +3436,6 @@ void spoton::slotDeleteListener(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-
-  if(row > -1)
-    m_ui.listeners->removeRow(row);
-
   m_ui.accounts->clear();
 }
 
@@ -3487,12 +3483,7 @@ void spoton::slotDeleteNeighbor(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-
-  if(row > -1)
-    m_ui.neighbors->removeRow(row);
-
-  if(m_ui.neighbors->rowCount() == 0)
-    m_ui.neighborSummary->clear();
+  m_ui.neighborSummary->clear();
 }
 
 void spoton::slotListenerCheckChange(bool state)
@@ -4779,10 +4770,6 @@ void spoton::slotDeleteAllListeners(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-
-  while(m_ui.listeners->rowCount() > 0)
-    m_ui.listeners->removeRow(0);
-
   m_ui.accounts->clear();
   m_ui.accountName->clear();
   m_ui.accountPassword->clear();
@@ -4814,10 +4801,6 @@ void spoton::slotDeleteAllNeighbors(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-
-  while(m_ui.neighbors->rowCount() > 0)
-    m_ui.neighbors->removeRow(0);
-
   m_ui.neighborSummary->clear();
 }
 
