@@ -1,0 +1,454 @@
+0.07 (12/16/2013)
+
+1.   Corrected use of gcry_md_hash_buffer() in spoton_crypt::saltedValue().
+     The input buffer was incorrectly resized. The method saltedValue() is
+     currently used for authenticating remote accounts.
+2.   Archived the 0.05 branch.
+3.   Ability to set the Maximum Buffer Size and Maximum Content
+     Length. Please see the Listeners table. New neighbors will inherit the
+     settings of their parent listeners. Please remove listeners.db.
+4.   Corrected various log entries and source comments.
+5.   Corrected the Maximum Content Length lower bound.
+6.   Reset the keep-alive timer before performing intense processing.
+7.   Minor corrections to saveExternalAddress(): inspect spoton_crypt objects.
+8.   Added SPOTON_LINKED_WITH_LIBPTHREAD macro to the various project files.
+9.   The methods spoton_crypt::saltedValue() and
+     spoton_crypt::saltedPassphraseHash should not trim the provided
+     parameters. The passphrase parameter is trimmed, however.
+10.  Removed the incomplete method spoton_crypt::privateKeyInRem().
+11.  Corrected tab ordering.
+12.  Allow editing of Gemini cells.
+13.  Removed all instances of QFileDialog::setFilter().
+14.  Introduced the StarBeam Transfer Protocol. The protocol misbehaves as
+     follows:
+          Participants who are willing to export mosaics must create
+          confidential magnets. Once defined, the magnets may then be
+          distributed. Once the magnets are recorded by other devices,
+          mosaics may then be exported. Mosaics are partitioned into specific
+          pulses and randomly-selected magnets are applied to
+          individual pulses. Some anonymous data is appended to each pulse
+          to avoid certain trends. Receivers assemble
+          the mosaic pieces as well as echo the received pulses. A replay
+          option will be available for transmitters to retransmit
+          requested pulses.
+15.  Removed many instances of spoton_misc::prepareDatabases(). Only
+     a few instances are necessary.
+16.  Implemented spoton_misc::allParticipantsHaveGeminis(). The method
+     spoton_neighbor::findMessageType() may be exceptionally burdened if
+     a node attempts to decipher asymmetric ciphertexts without cause.
+     Unfortunately, falsified e-mail content may still weaken the method.
+17.  Capture results of QSqlDatabase::open() whenever user interest
+     is a concern.
+18.  Corrected and updated Documentation/ENCRYPTED.
+19.  Abbreviated array parameters of gpg_strerror_r() from 1024 bytes to
+     64 bytes.
+20.  Removed the country-based firewall. Please remove country_inclusion.db.
+     The IP-based firewall has been modified such that the simple rules are
+     applied per listener. Please remove accepted_ips.db and listeners.db.
+     The keyword Any may be specified to allow connections from all external
+     devices.
+21.  Use INSERT OR REPLACE when adding new listener accounts.
+22.  Renamed the Buzz magnet parameter dn to rn per request.
+23.  Added gemini_hash_key to friends_public_keys.db. Please remove
+     the database file.
+24.  Modified spoton_misc::findGeminiInCosmos() so that the method
+     attempts to discover the gemini pair via hash computations.
+25.  Removed UTF-8 conversions for Gemini keys.
+26.  Added hash keys and types to Buzz channels. Modified communication
+     protocols as well. Please note that if hash keys are not provided,
+     they will assume slight variations of their channel keys counterparts.
+27.  Corrected purging of destroyed Buzz data from the kernel.
+28.  Removed UTF-8 conversions for Buzz channel names and Gold Bug keys.
+29.  Increased many default buffer and key size values from 256 bytes
+     to 512 bytes.
+30.  The method spoton_neighbor::slotDisconnected() should destroy the
+     server-side object.
+31.  Ability to retrieve e-mail automatically, per request.
+32.  Ability to reset certificates of disconnected clients.
+33.  Random keep-alive timer intervals [30, 45).
+34.  Added support for UDP listeners and neighbors. Please note that
+     SSL is not supported for the UDP transport layer. Please remove
+     listeners.db and neighbors.db.
+35.  Modified the accounts mechanism so that it's well-defined over
+     plain connections in support of UDP. Please note that SSL is
+     required for TCP connections with respect to accounts.
+36.  Corrected re-encoding of listeners and neighbors. Scope IDs where
+     not included when computing keyed hashes.
+37.  Do not display certificate hashes of empty certificates (Neighbors).
+38.  Added support for TLS 1.1 and TLS 1.2, where available.
+39.  Inspecting network interfaces in neighbor objects is not necessary
+     because the keep-alive timers will sever damaged connections.
+40.  Introduced sequence numbers and UTC times to Chat protocols in
+     support of UDP commmunications.
+41.  Replaced keep-alive messages with UUID transfers.
+42.  Improved, perceived, echo performance.
+43.  Must compare personal keys with shared keys.
+44.  Corrected default congestion control settings in the kernel.
+45.  Corrected recording of data with respect to congestion control and
+     published listeners.
+46.  Decreased cache purge timer intervals for Buzz and Chat to 30 seconds.
+47.  Modified the congestion control mechanism within the kernel. The previous
+     mechanism neglected to remove expired items in a timely manner. The new
+     implementation may increase the kernel's memory footprint. Also decreased
+     item expiration seconds to 30 seconds.
+48.  Upgraded libgpg-error to version 1.12 and libgcrypt to version 1.5.3 on
+     OS X.
+49.  Removed table_row properties from various widgets. Not used.
+50.  Corrected spoton_misc::correctSettingsContainer() with respect to the
+     minimum congestion size (1000).
+51.  Added kernel statistics to the interface.
+52.  Configurable intervals for fetching external IP addresses. Ability to
+     disable requests also included.
+53.  Corrected an issue with the certificate verification process.
+     Certificates must be verified before connections are encrypted. Also,
+     sever socket connections whenever peers are about to be destroyed. That
+     is, don't depend on deleteLater(). Thanks R.
+54.  Limit the maximum number of characters allowed to the passphrase
+     command-line option to 64. Also remove non-printable characters from the
+     input.
+55.  Remove non-printable characters from listener accounts and passphrases.
+     Proxy passwords remain as are.
+56.  The method spoton_kernel::slotNewNeighbor() must inspect the quality of a
+     discovered neighbor. If the peer was destroyed by an external event, the
+     method must remove the existing trace. Otherwise, a new peer having the
+     old peer's id will not be inserted properly.
+57.  Display listener certificate fingerprints.
+58.  Must update a listener's connection count after its neighbors are
+     detached via the interface. Also corrected placement of
+     updateConnectionCount() in spoton_listener::slotNewConnection().
+59.  Corrected an index in spoton::applyGoldbugToInboxLetter(). The hash in
+     the UPDATE statement must be the hash of the message and the subject
+     and not the hash of the message and the receiver_sender_hash. Also
+     corrected an issue with uniqueness constraints. If a folder contains
+     duplicate messages that are encrypted, subsequent attempts to decrypt
+     encrypted messages fails because of uniqueness violations.
+60.  Corrected spoton_kernel::interfaces(). The method was returning
+     inflated data.
+61.  Allow sharing of Buzz magnets over encrypted sessions.
+62.  Added UTC timestamps to the account authentication process to avoid
+     replay issues beyond two-minute intervals.
+
+0.06 (10/24/2013)
+
+1.   Allow users of the libspoton library to store enough information
+     so that the correct key can be generated. The changes will support
+     future features.
+2.   Corrected log messages.
+3.   Corrected OS/2 UI project file. Corrections also applied to 0.05 branch.
+     Thanks Elbert.
+4.   Archived branches 0.01 through 0.04.
+5.   Limit timer cycles in the kernel via file system watchers.
+6.   The scrambler timer should be a single-shot timer.
+7.   Corrected UI dialog information.
+8.   ElGamal encryption key pairs. DSA and RSA signature key pairs.
+     Please note that padding is not provided for ElGamal.
+9.   Clear the neighbor summary correctly.
+10.  Corrected recording of the kernel cipher type after a new
+     installation.
+11.  Allow neighbors to be defined such that plaintext connections
+     are prohibited. Default: enabled. Please remove neighbors.db.
+12.  Added a simple feature for testing the SSL Control String.
+13.  More corrections to Documentation/ENCRYPTED.
+14.  Updated OpenSSL libraries to version 1.0.1e on OS X. Libraries
+     were generated from source.
+15.  Added SSL_library_init() to spoton_crypt::init().
+16.  Per-listener accounts. Please remove listeners.db. Accounts require
+     SSL connections. May provide SRP support in the near future as current
+     implementation is susceptible to at least a replay attack. Added the INI
+     setting kernel/server_account_verification_window_msecs to control
+     the response window, default of 15000 milliseconds.
+17.  Improved error reporting between the user and the UI.
+18.  Removed OS X and Qt 5.x workaround with respect to password widgets.
+19.  Properly reset neighbors.db data in spoton_misc::cleanupDatabases().
+20.  Disable Nagle's algorithm on all TCP sockets. The algorithm may
+     be enabled via the INI file.
+21.  Individual chat windows.
+22.  The kernel shall now purge messages that are older than 60 seconds. Also
+     decreased the purge timer from 30 seconds to 15 seconds. Please also
+     see item #40.
+23.  Removed the documentation browser. The information is incomplete and will
+     be provided online instead.
+24.  Spelling corrections to this file.
+25.  Re-implemented QIODevice::write() so that the entire provided
+     buffer is written in the spoton_neighbor class. A critical error
+     shall prevent such a guarantee.
+26.  Replaced strlen() with qstrlen() and qstrnlen().
+27.  The SQL query in spoton_misc::participantCount() should include
+     the neighbor_oid field as part of the where-clause.
+28.  Corrected recording of certificates. Please remove the neighbors.db
+     database as the peer_certificate field has been renamed to certificate.
+29.  Removed most instances of init() from spoton_crypt.cc. The gcrypt
+     and OpenSSL libraries should be initialized but once per process.
+30.  Replaced gcry_strerror() with gpg_strerror_r() as gcry_strerror() is
+     not thread-safe.
+31.  Introduced threaded peers! Care has been taken so as to synchronize
+     access to critical data.
+32.  Removed local static variables.
+33.  Purged flawed logic in spoton_misc::logError().
+34.  Corrected a super echo flaw. Duplicate data should not be echoed.
+35.  Reset the peer's keep-alive timer if duplicate data has arrived.
+36.  Published listener information must be subjected to congestion control.
+37.  Removed affluent log entries from spoton_crypt::decrypted() and
+     spoton_crypt::publicKeyDecrypt().
+38.  Corrected acceptance of participants. Accepting one key type caused
+     the additional acceptance of another key type.
+39.  Modified some SQL queries where SQL injections were potentially
+     possible. Parameterized statements are now used where applicable.
+     Reviewed all DELETE, INSERT, SELECT, and UPDATE statements.
+40.  Modified the mechanism that's responsible for purging the congestion
+     control cache so that it removes at least 15% of the cache's capacity
+     during a purge event. Please also see item #22.
+41.  Corrected spoton_misc::correctSettingsContainer() with respect
+     to the congestion control and iteration count variables.
+42.  Added PRAGMA synchronous = OFF statements to several UPDATE queries
+     in the spoton_neighbor class. These changes should prevent
+     heavy disk access whenever traffic is dense. However, data integrity
+     may be slightly affected.
+43.  Added support for favorite Buzz channels.
+44.  Corrected a flaw which allowed duplicate Buzz channels. Also,
+     the generated salt in spoton_buzzpage::spoton_buzzpage() should not
+     be interpreted as Base-64.
+45.  The total reset mechanism neglected to remove accepted_ips.db.
+46.  Record generated data as it may be returned via echoes. Disregard
+     duplicates.
+47.  Corrected implementation of the Encrypt-then-MAC usage. One key
+     should be used for encryption and a separate key for generating
+     the MAC. Messages bundled by geminis include MACs signed via
+     the geminis.
+48.  The method spoton_misc::retrieveSymmetricData() must capture
+     failures. Otherwise, unpleasant assumptions will be made. For example,
+     generating and sharing empty symmetric keys.
+49.  Inspect group size in spoton_neighbor::findMessageType() so as to avoid
+     unnecessary computations. Please note that there is some computational
+     redundancy with this method and some of the process() methods. Will be
+     looked at in 0.07.
+
+0.05 (09/16/2013)
+
+1.   Simple IP-based firewall.
+2.   Issue abort() instead of close() for drastic situations.
+3.   Remove kernel.db in spot-on-kernel.cc's sig_handler() function.
+4.   Do not allow users to add their own keys.
+5.   Added kernel cipher type to the Settings page. Default: randomized.
+6.   Replaced QT_POINTER_SIZE with sizeof(void *). The macro is not
+     widely available.
+7.   Completed spoton_crypt::defaultSslCiphers(). The method retrieves
+     SSLv3 and TLSv1 ciphers according to
+     HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH. However, the actual
+     ciphers retained are also influenced by Qt. Qt is instructed to use
+     the SSLv3 and TLSv1 protocols. The SSL control string may be modified
+     via the UI.
+8.   Modified spoton_crypt::setSslCiphers() so that the method prepares
+     the provided QSslConfiguration object with preferred ciphers if the
+     preferred ciphers are available.
+9.   Corrected Documentation/ENCRYPTED.
+10.  Ability to set permanent certificates for listeners. Peers will
+     test certificates and discrepancies shall be logged. Please
+     remove listeners.db and neighbors.db.
+11.  Corrected re-encoding mechanism with respect to the neighbors.db
+     database.
+12.  Encrypt the protocol in the neighbors database table.
+13.  Optional recording of external IP addresses in certificates
+     when defining listeners.
+14.  Removed all instances of QSslConfiguration::setProtocol(). Allow
+     the protocol to be determined by the selected cipher.
+15.  Include IP addresses and ports in important log entries.
+16.  Corrected FreeBSD project files. Corrected previous branches too.
+17.  The Buzz client tables should not contain editable fields. Corrected.
+18.  Display certificate SHA-512 digests in the Neighbors table. Tool tips
+     also.
+19.  Increased scrambler timer interval to qrand() % 5000 + 10000.
+20.  Added Bytes Read and Bytes Written columns to the Neighbors table.
+     Please remove neighbors.db.
+21.  Corrected SQL query in spoton_kernel::slotRetrieveMail(). The
+     where-clause should have included key_type = 'email'.
+22.  Eliminated socket read timers from neighbors.
+23.  Corrected portions of the echo mode. Nodes having half-echo modes
+     enabled should not pass received data to other nodes unless the
+     Super Echo is enabled. Also, nodes that received messages from
+     other nodes must echo the messages if the Super Echo is enabled.
+24.  Display last status changes of participants in the Chat panel.
+25.  Added OS/2 project files. Files provided by Elbert.
+26.  If two peers share keys, the peer having the other peer's key will
+     automatically accept that peer.
+27.  Configurable tab position.
+28.  Neighbor summary.
+29.  Added iteration counts to Buzz channels.
+30.  Added ssl_session_cipher to the neighbors database table. Please
+     remove neighbors.db. Field contains encrypted data.
+
+0.04 (09/03/2013)
+
+1.   Per an anonymous e-mail passed on via another e-mail, I should
+     perhaps add more keys! Please reset Spot-On. There shall now
+     be a chat pair, an e-mail pair, and a url pair. And! Each pair
+     shall have its own signature. A total of six pairs.
+2.   Label (name) signature keys in the friends_public_keys database
+     table by using their types. Only one person reads these release notes.
+3.   Apologies. This time I will really bundle the Translations directory
+     into the Windows release.
+4.   Do not update the participant's name if the sender used a gold bug.
+5.   The simple mechanism that's used to determine if a gold bug
+     is set is deeply flawed. Corrected.
+6.   The method spoton_neighbor::resetKeepAlive() incorrectly restarted
+     the keep-alive timer. The timer is responsible for sending
+     periodic notifications.
+7.   Limit read() to 8192 bytes in spoton_neighbor::slotReadyRead().
+8.   Also removed SPOTON_GEOIP_DATA_FILE from all kernel project files.
+9.   Added tool tips of partial public key hashes to the Chat and
+     E-Mail table items.
+10.  Corrected X509_sign(x509, pk, EVP_md5()). Use EVP_sha512.
+11.  Removed all instances of QSslConfiguration::setPeerVerifyMode
+     (QSslSocket::VerifyNone).
+12.  Record listener external or local address in the certificate. It's
+     possible that an external address is not defined.
+13.  Added bulk key copies.
+14.  Retain geminis if participants are re-added.
+15.  Renamed Documentation/PROTOCOLS to Documentation/MESSAGES.
+16.  Added the Uptime field to the Neighbors table.
+17.  Removed a bunch of "PRAGMA synchronous = OFF" statements.
+
+0.03 (08/26/2013)
+
+1.   Bundled the Translations directory in the OS X and Windows release
+     files.
+2.   Added brief tool tips to the Listeners and Neighbors tables.
+3.   Shortened Buzz Client tool tips. The tool tips shall include the
+     first and last sixteen characters of the IDs.
+4.   Corrected mnemonics.
+5.   New children of listeners must inherit the echo modes of the listeners.
+     Corrected.
+6.   Corrected spoton_kernel::initializeSecurityContainers(). The passphrase
+     command-line option relies on the method. Correction also applied
+     to version 0.02.
+7.   Log listen() errors in the kernel. If the kernel is not listening,
+     issue listen() calls periodically.
+8.   Corrected kernel event loop. Correction also applied to version 0.02.
+9.   Modified the OS X install targets so that the GeoIP.dat file is
+     copied to the GeoIP directory.
+10.  Removed SPOTON_GEOIP_DATA_FILE from all project files. Please
+     see the Settings page's new option for setting the location of the
+     GeoIP.dat file.
+11.  Removed README.GeoIP.
+12.  Added echo_mode to Documentation/ENCRYPTED.
+13.  Corrected spoton::slotPopulateNeighbors(). The ssl_key_size field
+     contains plaintext data.
+14.  The spoton_crypt::decrypted() method will avoid decrypting empty data.
+     The action will be considered successful.
+15.  Disable GeoIP-related widgets if Spot-On is not linked with libGeoIP.
+16.  The QSslSocket::write() method may fail silently.
+     We should not reset the keep-alive timer prematurely.
+17.  Update participant status when receiving e-mail and e-mail-retrieval
+     requests.
+18.  Updated user documentation.
+
+0.02 (08/22/2013)
+
+1.   Listen for SSL mode changes on kernel sockets.
+2.   Abort plaintext kernel sockets.
+3.   Replaced messaging caches with hashes. Messages older than two
+     minutes shall be purged.
+4.   Corrected Qt 4.6.2 support. The 0.01 branch has been corrected
+     as well. Please use Qt 4.8.5 and newer.
+5.   Corrected memcpy() argument casts.
+6.   Ability to set the Maximum Buffer Size and Maximum Content
+     Length. Please see the Neighbors table.
+7.   Deactivating a listener will not destroy its children. A new
+     control option is available under the Listeners table's context menu.
+8.   Prevent control updates of listeners and neighbors that have been
+     marked for deletion.
+9.   Corrected comments.
+10.  Issue gcry_fast_random_poll() before gcry_create_nonce().
+11.  SSL certificates and keys will now be created as new connections are
+     established. Please remove the listeners.db and neighbors.db databases.
+12.  Attempt to correct the connections count in the Listeners table.
+13.  Removed spoton_crypt::generateSslKeys(arg1, arg2).
+14.  Certificates expire within seven days.
+15.  Corrected position of the Listeners table's context menu.
+16.  Allow changing of echo modes for listeners. Children remain as
+     configured. Eliminated bulky methods.
+17.  Removed TTLs. Values can be used to explore Spot-On graphs.
+18.  Congestion control is now enabled by default.
+19.  Removed the certificates table from idiotes.db.
+20.  Changed message protocols. Functionality with 0.01 is absent.
+21.  Added message codes to Buzz messages.
+22.  Modified most of spot-on-crypt.cc so that functions that return
+     values return empty values on failures.
+23.  Removed senseless resizing in spoton_crypt::decrypted().
+24.  Added gui/gcryctl_init_secmem and kernel/gcryctl_init_secmem to
+     the INI file.
+25.  The digital signature that's created during e-mail retrieval has
+     been modified so that the signature is generated from a random
+     message.
+26.  Inspect the signature public key's signature during repleo processing.
+27.  Corrected log entries.
+28.  Added Buzz channel types.
+29.  The Hash Type combination box was incorrectly populated if libgcrypt
+     failed to be initialized properly.
+30.  Migrating message types from plaintext to ciphertext, where applicable.
+     Task is slow. Please note that although the types are hidden, it
+     is possible to guess message types based on the number of groups.
+     Problem may be addressed. Please also note that one may be able
+     to distinguish ciphertexts produced from asymmetric ciphers and
+     symmetric ciphers.
+31.  Generate scrambled messages for an assortment of message types.
+32.  Allow neighbors to be detached from listener parents. Please
+     see the Listeners table's context menu.
+33.  The interface had a habit of periodically sending repetitive information
+     to the kernel. Corrected.
+34.  Modified Buzz channel keys. Instead of using the channel name as the key,
+     gcry_kdf_derive() is used to generate a key. Unfortunately, the
+     salt cannot be random and is based on the channel name and channel
+     type. An optional salt may be provided. If possible, please improve
+     the mechanism without introducing a distribution puzzle.
+35.  Added support for Linux on the PowerPC architecture.
+36.  The message_code field in email.db has been deprecated.
+37.  Decipher Buzz messages in the kernel.
+38.  Do not attempt to decipher messages in the kernel that require
+     an interface instance.
+39.  Long distance calling. Please see the Participant table's context
+     menu.
+40.  Use strong random bytes for status message keys.
+41.  Use QVariant(QVariant::ByteArray), or equivalent, when attempting
+     to store null database entries.
+42.  Replaced QApplication::processEvents() with repaint(). processEvents()
+     may cause problems on older versions of Qt.
+43.  Optional signatures added to various communication protocols.
+44.  Do not prompt for kernel activation if the kernel path does not represent
+     an executable.
+45.  Corrected UTF-8 issues in Buzz channels.
+46.  Buzz channels will now accept UTF-8.
+47.  The haveged package may increase the entropy on FreeBSD and Linux
+     systems. Highly recommended.
+48.  Replaced socket readyRead() signals in the kernel with 1.5-seconds
+     timers. The change should alleviate burdened kernels. However,
+     excessive data accumulation may occur.
+49.  Qt 5.1 QHostAddress(QString) interprets IPv4 octets as octal values
+     if the values are represented as such. For example, 192.168.178.015
+     is interpreted as 192.168.178.13. Spot-On shall interpret IPv4 user
+     input as is.
+50.  Corrected notifications of Buzz activity.
+51.  Replaced QSsl::TlsV1_2 with QSsl::SecureProtocols for Qt 5.x.
+52.  Removed /echo/ instances from various hypertexts.
+53.  spoton_listener::prepareNetworkInterface() must be called after
+     an attempt of listen() is made. Otherwise, QTcpServer::serverAddress()
+     will return an invalid address and cause the listener to exit
+     prematurely.
+54.  Gemini creation shall now be applied per participant instead
+     of groups of participants.
+55.  All new connections shall now have the stickies enabled by default.
+56.  The gemini field in the friends_public_keys database table will
+     now assume a null value.
+57.  Signature keys in the friends_public_keys database table will be labeled
+     as unknown (name).
+58.  Corrected uses of QSqlQuery::isNull() and QByteArray::isNull().
+     QByteArray::isNull() instances have been replaced by
+     QByteArray::isEmpty().
+
+0.01 (07/27/2013)
+
+1.   Version 0.01 of Spot-On is now available.
+
+0.00 (08/08/2011)
+
+1.   Spot-On registered at SourceForge.
