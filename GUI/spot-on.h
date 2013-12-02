@@ -116,6 +116,7 @@ class spoton: public QMainWindow
   QDateTime m_listenersLastModificationTime;
   QDateTime m_neighborsLastModificationTime;
   QDateTime m_participantsLastModificationTime;
+  QDateTime m_starsLastModificationTime;
   QFuture<void> m_future;
   QHash<QByteArray, QDateTime> m_messagingCache; /*
 						 ** Prevent duplicate
@@ -298,6 +299,7 @@ class spoton: public QMainWindow
   void slotPopulateListeners(void);
   void slotPopulateNeighbors(void);
   void slotPopulateParticipants(void);
+  void slotPopulateStars(void);
   void slotProtocolRadioToggled(bool state);
   void slotProxyChecked(bool state);
   void slotProxyTypeChanged(int index);
@@ -349,6 +351,7 @@ class spoton: public QMainWindow
   void slotTabChanged(int index);
   void slotTestSslControlString(void);
   void slotTransmit(void);
+  void slotTransmittedMuted(bool state);
   void slotTransportChanged(int index);
   void slotUnblockNeighbor(void);
   void slotValidatePassphrase(void);

@@ -114,6 +114,7 @@ spoton::spoton(void):QMainWindow()
   m_listenersLastModificationTime = QDateTime();
   m_neighborsLastModificationTime = QDateTime();
   m_participantsLastModificationTime = QDateTime();
+  m_starsLastModificationTime = QDateTime();
   m_ui.setupUi(this);
 
   bool sslSupported = QSslSocket::supportsSsl();
@@ -746,6 +747,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotPopulateParticipants(void)));
+  connect(&m_tableTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotPopulateStars(void)));
   connect(&m_emailRetrievalTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -1302,6 +1307,10 @@ spoton::spoton(void):QMainWindow()
     (0, Qt::AscendingOrder);
   m_ui.postoffice->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
+  m_ui.received->horizontalHeader()->setSortIndicator
+    (2, Qt::AscendingOrder);
+  m_ui.transmitted->horizontalHeader()->setSortIndicator
+    (5, Qt::AscendingOrder);
   m_ui.urlParticipants->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   m_ui.listenersHorizontalSplitter->setStretchFactor(0, 1);
@@ -2118,6 +2127,7 @@ void spoton::slotPopulateListeners(void)
 	QString port("");
 	QString scopeId("");
 	QString transport("");
+	QWidget *focusWidget = QApplication::focusWidget();
 	int columnIP = 3;
 	int columnPORT = 4;
 	int columnSCOPE_ID = 5;
@@ -2445,7 +2455,6 @@ void spoton::slotPopulateListeners(void)
 		QByteArray bytes2;
 		QByteArray bytes3;
 		QString bytes4("");
-		QWidget *focusWidget = QApplication::focusWidget();
 
 		ok = true;
 		bytes1 = s_crypt->decrypted
@@ -2465,9 +2474,6 @@ void spoton::slotPopulateListeners(void)
 		   transport == bytes4)
 		  m_ui.listeners->selectRow(row);
 
-		if(focusWidget)
-		  focusWidget->setFocus();
-
 		row += 1;
 	      }
 	  }
@@ -2484,6 +2490,9 @@ void spoton::slotPopulateListeners(void)
 	m_ui.listeners->horizontalHeader()->setStretchLastSection(true);
 	m_ui.listeners->horizontalScrollBar()->setValue(hval);
 	m_ui.listeners->verticalScrollBar()->setValue(vval);
+
+	if(focusWidget)
+	  focusWidget->setFocus();
       }
 
     db.close();
@@ -2547,6 +2556,7 @@ void spoton::slotPopulateNeighbors(void)
 	QString remotePort("");
 	QString scopeId("");
 	QString transport("");
+	QWidget *focusWidget = QApplication::focusWidget();
 	int columnCOUNTRY = 9;
 	int columnPROXY_IP = 14;
 	int columnPROXY_PORT = 15;
@@ -2981,7 +2991,6 @@ void spoton::slotPopulateNeighbors(void)
 		QByteArray bytes4;
 		QByteArray bytes5;
 		QString bytes6;
-		QWidget *focusWidget = QApplication::focusWidget();
 
 		ok = true;
 		bytes1 = s_crypt->decrypted
@@ -3005,9 +3014,6 @@ void spoton::slotPopulateNeighbors(void)
 		   scopeId == bytes3 && proxyIp == bytes4 &&
 		   proxyPort == bytes5 && transport == bytes6)
 		  m_ui.neighbors->selectRow(row);
-
-		if(focusWidget)
-		  focusWidget->setFocus();
 
 		if(bytes3.isEmpty())
 		  m_neighborToOidMap.insert
@@ -3039,6 +3045,9 @@ void spoton::slotPopulateNeighbors(void)
 	m_ui.neighbors->horizontalHeader()->setStretchLastSection(true);
 	m_ui.neighbors->horizontalScrollBar()->setValue(hval);
 	m_ui.neighbors->verticalScrollBar()->setValue(vval);
+
+	if(focusWidget)
+	  focusWidget->setFocus();
       }
 
     db.close();
@@ -5124,9 +5133,6 @@ void spoton::slotPopulateParticipants(void)
 		rowsE.append(rowE - 1);
 	    }
 
-	if(focusWidget)
-	  focusWidget->setFocus();
-
 	connect(m_ui.participants,
 		SIGNAL(itemChanged(QTableWidgetItem *)),
 		this,
@@ -5156,6 +5162,9 @@ void spoton::slotPopulateParticipants(void)
 	m_ui.participants->horizontalHeader()->setStretchLastSection(true);
 	m_ui.participants->horizontalScrollBar()->setValue(hval);
 	m_ui.participants->verticalScrollBar()->setValue(vval);
+
+	if(focusWidget)
+	  focusWidget->setFocus();
       }
 
     db.close();
@@ -6031,6 +6040,7 @@ void spoton::slotPopulateBuzzFavorites(void)
     if(db.open())
       {
 	QSqlQuery query(db);
+	QWidget *focusWidget = QApplication::focusWidget();
 
 	query.setForwardOnly(true);
 
@@ -6121,6 +6131,9 @@ void spoton::slotPopulateBuzzFavorites(void)
 		    }
 		}
 	    }
+
+	if(focusWidget)
+	  focusWidget->setFocus();
       }
 
     db.close();

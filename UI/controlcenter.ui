@@ -363,8 +363,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1182</width>
-                <height>577</height>
+                <width>643</width>
+                <height>421</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -4548,11 +4548,6 @@
                      </column>
                      <column>
                       <property name="text">
-                       <string>SHA-512 Hash</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
                        <string>OID</string>
                       </property>
                      </column>
@@ -4591,6 +4586,9 @@
                       </property>
                       <property name="selectionMode">
                        <enum>QAbstractItemView::SingleSelection</enum>
+                      </property>
+                      <property name="selectionBehavior">
+                       <enum>QAbstractItemView::SelectRows</enum>
                       </property>
                       <property name="horizontalScrollMode">
                        <enum>QAbstractItemView::ScrollPerPixel</enum>
@@ -4637,11 +4635,6 @@
                       <column>
                        <property name="text">
                         <string>Mosaic</string>
-                       </property>
-                      </column>
-                      <column>
-                       <property name="text">
-                        <string>SHA-512 Hash</string>
                        </property>
                       </column>
                       <column>

@@ -228,6 +228,7 @@ void spoton::slotPopulateEtpMagnets(void)
     if(db.open())
       {
 	QSqlQuery query(db);
+	QWidget *focusWidget = QApplication::focusWidget();
 	int row = 0;
 
 	m_ui.etpMagnets->setSortingEnabled(false);
@@ -248,25 +249,25 @@ void spoton::slotPopulateEtpMagnets(void)
 	      bytes = s_crypt->decrypted
 		(QByteArray::fromBase64(query.value(0).toByteArray()), &ok);
 
-	      QCheckBox *check = new QCheckBox();
+	      QCheckBox *checkBox = new QCheckBox();
 	      QTableWidgetItem *item = new QTableWidgetItem
 		(bytes.constData());
 
 	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.etpMagnets->setRowCount(row + 1);
 	      m_ui.etpMagnets->setItem(row, 1, item);
-	      check->setChecked(query.value(1).toInt());
-	      check->setProperty
+	      checkBox->setChecked(query.value(1).toInt());
+	      checkBox->setProperty
 		("oid", query.value(query.record().count() - 1));
-	      connect(check,
+	      connect(checkBox,
 		      SIGNAL(toggled(bool)),
 		      this,
 		      SLOT(slotStarOTMCheckChange(bool)));
-	      m_ui.etpMagnets->setCellWidget(row, 0, check);
+	      m_ui.etpMagnets->setCellWidget(row, 0, checkBox);
 	      m_ui.transmittersMagnets->setRowCount(row + 1);
-	      check = new QCheckBox();
-	      check->setText(bytes.replace("&", "&&").constData());
-	      m_ui.transmittersMagnets->setCellWidget(row, 0, check);
+	      checkBox = new QCheckBox();
+	      checkBox->setText(bytes.replace("&", "&&").constData());
+	      m_ui.transmittersMagnets->setCellWidget(row, 0, checkBox);
 	      item = new QTableWidgetItem(query.value(2).toString());
 	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.etpMagnets->setItem(row, 2, item);
@@ -277,6 +278,9 @@ void spoton::slotPopulateEtpMagnets(void)
 	m_ui.etpMagnets->setSortingEnabled(true);
 	m_ui.transmittersMagnets->resizeColumnsToContents();
 	m_ui.transmittersMagnets->setSortingEnabled(true);
+
+	if(focusWidget)
+	  focusWidget->setFocus();
       }
 
     db.close();
@@ -666,6 +670,7 @@ void spoton::slotPopulateKernelStatistics(void)
 	m_ui.kernelStatistics->setRowCount(0);
 
 	QSqlQuery query(db);
+	QWidget *focusWidget = QApplication::focusWidget();
 	int row = 0;
 
 	query.setForwardOnly(true);
@@ -692,6 +697,9 @@ void spoton::slotPopulateKernelStatistics(void)
 	m_ui.kernelStatistics->resizeColumnsToContents();
 	m_ui.kernelStatistics->horizontalHeader()->
 	  setStretchLastSection(true);
+
+	if(focusWidget)
+	  focusWidget->setFocus();
       }
 
     db.close();
@@ -826,7 +834,7 @@ void spoton::slotTransmit(void)
 
     if(db.open())
       {
-	QByteArray mosaic(spoton_crypt::strongRandomBytes(256));
+	QByteArray mosaic(spoton_crypt::strongRandomBytes(256).toBase64());
 	QSqlQuery query(db);
 
 	query.prepare("INSERT INTO transmitted "
@@ -853,7 +861,9 @@ void spoton::slotTransmit(void)
 	     encrypted(QString::number(m_ui.pulseSize->
 				       value()).toLatin1(), &ok).toBase64());
 
-	query.bindValue(4, tr("Queued"));
+	if(ok)
+	  query.bindValue
+	    (4, s_crypt->encrypted(tr("Queued").toUtf8(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
@@ -980,4 +990,185 @@ void spoton::slotShareBuzzMagnet(void)
        arg(m_kernelSocket.peerPort()));
   else
     m_kernelSocket.flush();
+}
+
+void spoton::slotPopulateStars(void)
+{
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
+		     "starbeam.db");
+
+  if(fileInfo.exists())
+    {
+      if(fileInfo.lastModified() <= m_starsLastModificationTime)
+	return;
+      else
+	m_starsLastModificationTime = fileInfo.lastModified();
+    }
+  else
+    m_starsLastModificationTime = QDateTime();
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(fileInfo.absoluteFilePath());
+
+    if(db.open())
+      {
+	QModelIndexList list;
+	QString mosaic("");
+	QSqlQuery query(db);
+	QWidget *focusWidget = QApplication::focusWidget();
+	int hval = 0;
+	int row = -1;
+	int vval = 0;
+
+	query.setForwardOnly(true);
+
+	/*
+	** First, retrieved.
+	*/
+
+	/*
+	** Second, transmitted.
+	*/
+
+	list = m_ui.transmitted->selectionModel()->selectedRows
+	  (6); // Mosaic
+
+	if(!list.isEmpty())
+	  mosaic = list.at(0).data().toString();
+
+	hval = m_ui.transmitted->horizontalScrollBar()->value();
+	vval = m_ui.transmitted->verticalScrollBar()->value();
+	m_ui.transmitted->setSortingEnabled(false);
+	m_ui.transmitted->clearContents();
+	m_ui.transmitted->setRowCount(0);
+	row = 0;
+	query.prepare("SELECT muted, 0, pulse_size, total_size, "
+		      "status, file, mosaic, OID "
+		      "FROM transmitted");
+
+	if(query.exec())
+	  while(query.next())
+	    {
+	      m_ui.transmitted->setRowCount(row + 1);
+
+	      QCheckBox *checkBox = new QCheckBox();
+	      bool ok = true;
+
+	      checkBox->setChecked(query.value(0).toInt());
+	      checkBox->setProperty
+		("oid", query.value(query.record().count() - 1));
+	      connect(checkBox,
+		      SIGNAL(toggled(bool)),
+		      this,
+		      SLOT(slotTransmittedMuted(bool)));
+	      m_ui.transmitted->setCellWidget(row, 0, checkBox);
+
+	      for(int i = 0; i < query.record().count(); i++)
+		{
+		  QTableWidgetItem *item = 0;
+
+		  if(i == 0)
+		    {
+		      // Ignore.
+		    }
+		  else if(i == 2 || i == 3 || i == 5 || i == 6)
+		    item = new QTableWidgetItem
+		      (s_crypt->
+		       decrypted(QByteArray::fromBase64(query.value(i).
+							toByteArray()),
+				 &ok).constData());
+		  else if(i == 1)
+		    item = new QTableWidgetItem("0");
+		  else if(i == 4)
+		    item = new QTableWidgetItem
+		      (QString::
+		       fromUtf8(s_crypt->
+				decrypted(QByteArray::
+					  fromBase64(query.value(i).
+						     toByteArray()),
+					  &ok).constData()));
+		  else if(i == 6)
+		    item = new QTableWidgetItem("0");
+		  else if(i == query.record().count() - 1)
+		    item = new QTableWidgetItem
+		      (query.value(i).toString());
+
+		  if(item)
+		    {
+		      item->setFlags(Qt::ItemIsEnabled |
+				     Qt::ItemIsSelectable);
+		      m_ui.transmitted->setItem(row, i, item);
+		    }
+		}
+
+	      if(m_ui.transmitted->item(row, 6) &&
+		 mosaic == m_ui.transmitted->item(row, 6)->text())
+		m_ui.transmitted->selectRow(row);
+
+	      row += 1;
+	    }
+
+	m_ui.transmitted->setSortingEnabled(true);
+
+	for(int i = 0; i < m_ui.transmitted->columnCount() - 1; i++)
+	  /*
+	  ** Ignore the OID column.
+	  */
+
+	  m_ui.transmitted->resizeColumnToContents(i);
+
+	m_ui.transmitted->horizontalHeader()->setStretchLastSection(true);
+	m_ui.transmitted->horizontalScrollBar()->setValue(hval);
+	m_ui.transmitted->verticalScrollBar()->setValue(vval);
+
+	if(focusWidget)
+	  focusWidget->setFocus();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton::slotTransmittedMuted(bool state)
+{
+  QCheckBox *checkBox = qobject_cast<QCheckBox *> (sender());
+
+  if(checkBox)
+    {
+      QString connectionName("");
+
+      {
+	QSqlDatabase db = spoton_misc::database(connectionName);
+
+	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			   "starbeam.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+
+	    query.prepare("UPDATE transmitted SET "
+			  "muted = ? "
+			  "WHERE OID = ?");
+	    query.bindValue(0, state ? 1 : 0);
+	    query.bindValue(1, checkBox->property("oid"));
+	    query.exec();
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase(connectionName);
+    }
 }
