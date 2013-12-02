@@ -1237,6 +1237,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.listeners->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.neighbors->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.participants->setContextMenuPolicy(Qt::CustomContextMenu);
+  m_ui.transmitted->setContextMenuPolicy(Qt::CustomContextMenu);
   connect(m_ui.emailParticipants,
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,
@@ -1254,6 +1255,10 @@ spoton::spoton(void):QMainWindow()
 	  this,
 	  SLOT(slotShowContextMenu(const QPoint &)));
   connect(m_ui.participants,
+	  SIGNAL(customContextMenuRequested(const QPoint &)),
+	  this,
+	  SLOT(slotShowContextMenu(const QPoint &)));
+  connect(m_ui.transmitted,
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,
 	  SLOT(slotShowContextMenu(const QPoint &)));
@@ -4303,6 +4308,17 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("&Half Echo"),
 		     this, SLOT(slotNeighborHalfEcho(void)));
       menu.exec(m_ui.neighbors->mapToGlobal(point));
+    }
+  else if(m_ui.transmitted == sender())
+    {
+      menu.addAction(QIcon(QString(":/%1/clear.png").
+			   arg(m_settings.value("gui/iconSet", "nouve").
+			       toString())),
+		     tr("&Delete"), this,
+		     SLOT(slotDeleteTransmitted(void)));
+      menu.addAction(tr("Delete &All"), this,
+		     SLOT(slotDeleteAllTransmitted(void)));
+      menu.exec(m_ui.transmitted->mapToGlobal(point));
     }
   else
     {

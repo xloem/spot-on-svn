@@ -1172,3 +1172,11 @@ void spoton::slotTransmittedMuted(bool state)
       QSqlDatabase::removeDatabase(connectionName);
     }
 }
+
+void spoton::slotDeleteAllTransmitted(void)
+{
+}
+
+void spoton::slotDeleteTransmitted(void)
+{
+}
