@@ -1,4 +1,4 @@
-0.07 (12/03/2013)
+0.07 (12/16/2013)
 
 1.   Corrected use of gcry_md_hash_buffer() in spoton_crypt::saltedValue().
      The input buffer was incorrectly resized. The method saltedValue() is
@@ -27,13 +27,12 @@
           mosaics may then be exported. Mosaics are partitioned into specific
           pulses and randomly-selected magnets are applied to
           individual pulses. Some anonymous data is appended to each pulse
-          to avoid certain trends. Partitioning of mosaics occurs such that
-          partitions are also selected randomly. Receivers assemble
+          to avoid certain trends. Receivers assemble
           the mosaic pieces as well as echo the received pulses. A replay
           option will be available for transmitters to retransmit
           requested pulses.
 15.  Removed many instances of spoton_misc::prepareDatabases(). Only
-     a few are necessary.
+     a few instances are necessary.
 16.  Implemented spoton_misc::allParticipantsHaveGeminis(). The method
      spoton_neighbor::findMessageType() may be exceptionally burdened if
      a node attempts to decipher asymmetric ciphertexts without cause.
