@@ -1205,4 +1205,57 @@ void spoton::slotDeleteAllTransmitted(void)
 
 void spoton::slotDeleteTransmitted(void)
 {
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.transmitted->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.transmitted->item
+	(row, m_ui.transmitted->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "starbeam.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	if(!isKernelActive())
+	  {
+	    query.prepare("DELETE FROM transmitted WHERE "
+			  "OID = ?");
+	    query.bindValue(0, oid);
+	    query.exec();
+	    query.exec("DELETE FROM transmitted_magnets WHERE "
+		       "transmitted_oid NOT IN "
+		       "(SELECT OID FROM transmitted)");
+	    query.exec("DELETE FROM transmitted_pulses WHERE "
+		       "transmitted_oid NOT IN "
+		       "(SELECT OID FROM transmitted)");
+	  }
+	else
+	  {
+	    query.prepare("UPDATE transmitted SET status = 'deleted' "
+			  "WHERE OID = ? AND status <> 'deleted'");
+	    query.bindValue(0, oid);
+	    query.exec();
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }
