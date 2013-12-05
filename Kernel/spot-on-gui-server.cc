@@ -89,6 +89,8 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
       configuration.setSslOption
 	(QSsl::SslOptionDisableLegacyRenegotiation, true);
 #endif
+      spoton_crypt::setSslCiphers
+	(socket->supportedCiphers(), configuration);
       socket->setSslConfiguration(configuration);
       socket->startServerEncryption();
       m_queue.enqueue(socket);
