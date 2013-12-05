@@ -54,7 +54,7 @@ HEADERS		= ../Common/spot-on-external-address.h \
 		  spot-on-mailer.h \
 		  spot-on-neighbor.h \
 		  spot-on-shared-reader.h \
-		  spot-on-starbeam-writer.h
+		  spot-on-starbeam-reader.h
 
 SOURCES		= ../Common/spot-on-crypt.cc \
 		  ../Common/spot-on-external-address.cc \
@@ -66,7 +66,7 @@ SOURCES		= ../Common/spot-on-crypt.cc \
 		  spot-on-mailer.cc \
 		  spot-on-neighbor.cc \
 		  spot-on-shared-reader.cc \
-		  spot-on-starbeam-writer.cc
+		  spot-on-starbeam-reader.cc
 
 TRANSLATIONS    =
 

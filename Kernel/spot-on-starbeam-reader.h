@@ -25,8 +25,8 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _spoton_starbeam_writer_h_
-#define _spoton_starbeam_writer_h_
+#ifndef _spoton_starbeam_reader_h_
+#define _spoton_starbeam_reader_h_
 
 #include <QHash>
 #include <QObject>
@@ -35,13 +35,13 @@
 
 class spoton_crypt;
 
-class spoton_starbeam_writer: public QObject
+class spoton_starbeam_reader: public QObject
 {
   Q_OBJECT
 
  public:
-  spoton_starbeam_writer(const qint64 id, QObject *parent);
-  ~spoton_starbeam_writer();
+  spoton_starbeam_reader(const qint64 id, QObject *parent);
+  ~spoton_starbeam_reader();
 
  private:
   QHash<QString, QByteArray> elementsFromMagnet(const QByteArray &magnet,

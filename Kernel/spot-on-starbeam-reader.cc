@@ -31,9 +31,9 @@
 #include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
 #include "spot-on-kernel.h"
-#include "spot-on-starbeam-writer.h"
+#include "spot-on-starbeam-reader.h"
 
-spoton_starbeam_writer::spoton_starbeam_writer
+spoton_starbeam_reader::spoton_starbeam_reader
 (const qint64 id, QObject *parent):QObject(parent)
 {
   m_id = id;
@@ -45,7 +45,7 @@ spoton_starbeam_writer::spoton_starbeam_writer
   m_timer.start(5000);
 }
 
-spoton_starbeam_writer::~spoton_starbeam_writer()
+spoton_starbeam_reader::~spoton_starbeam_reader()
 {
   QString connectionName("");
 
@@ -77,7 +77,7 @@ spoton_starbeam_writer::~spoton_starbeam_writer()
   QSqlDatabase::removeDatabase(connectionName);
 }
 
-void spoton_starbeam_writer::slotTimeout(void)
+void spoton_starbeam_reader::slotTimeout(void)
 {
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
@@ -185,14 +185,14 @@ void spoton_starbeam_writer::slotTimeout(void)
   if(shouldDelete)
     {
       spoton_misc::logError
-	(QString("spoton_starbeam_writer:slotTimeout(): instructed "
-		 "to delete starbeam writer %1.").
+	(QString("spoton_starbeam_reader:slotTimeout(): instructed "
+		 "to delete starbeam reader %1.").
 	 arg(m_id));
       deleteLater();
     }
 }
 
-void spoton_starbeam_writer::populateMagnets(const QSqlDatabase &db)
+void spoton_starbeam_reader::populateMagnets(const QSqlDatabase &db)
 {
   if(!db.isOpen())
     return;
@@ -211,7 +211,7 @@ void spoton_starbeam_writer::populateMagnets(const QSqlDatabase &db)
       m_magnets.append(QByteArray::fromBase64(query.value(0).toByteArray()));
 }
 
-QHash<QString, QByteArray> spoton_starbeam_writer::elementsFromMagnet
+QHash<QString, QByteArray> spoton_starbeam_reader::elementsFromMagnet
 (const QByteArray &magnet, spoton_crypt *s_crypt)
 {
   QByteArray data;
@@ -270,7 +270,7 @@ QHash<QString, QByteArray> spoton_starbeam_writer::elementsFromMagnet
   return elements;
 }
 
-void spoton_starbeam_writer::pulsate(const bool compress,
+void spoton_starbeam_reader::pulsate(const bool compress,
 				     const QString &fileName,
 				     const QByteArray &mosaic,
 				     const QString &pulseSize,
