@@ -127,6 +127,8 @@
 61.  Allow sharing of Buzz magnets over encrypted sessions.
 62.  Added UTC timestamps to the account authentication process to avoid
      replay issues beyond two-minute intervals.
+63.  Instruct the kernel's UI server to adhere to the value of the
+     SSL Control String.
 
 0.06 (10/24/2013)
 
