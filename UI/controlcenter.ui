@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1196</width>
+    <width>995</width>
     <height>686</height>
    </rect>
   </property>
@@ -363,8 +363,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1180</width>
-                <height>594</height>
+                <width>542</width>
+                <height>413</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1968,8 +1968,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>317</width>
-                 <height>574</height>
+                 <width>210</width>
+                 <height>402</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3281,8 +3281,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1155</width>
-             <height>623</height>
+             <width>907</width>
+             <height>611</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4117,8 +4117,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1170</width>
-             <height>584</height>
+             <width>1172</width>
+             <height>572</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4694,6 +4694,13 @@
                       <widget class="QPushButton" name="etpSelectFile">
                        <property name="text">
                         <string>Select</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="compress">
+                       <property name="text">
+                        <string>Compress</string>
                        </property>
                       </widget>
                      </item>
@@ -5426,8 +5433,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1196</width>
-     <height>22</height>
+     <width>995</width>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -5720,6 +5727,7 @@
   <tabstop>transmittersMagnets</tabstop>
   <tabstop>transmittedFile</tabstop>
   <tabstop>etpSelectFile</tabstop>
+  <tabstop>compress</tabstop>
   <tabstop>pulseSize</tabstop>
   <tabstop>transmit</tabstop>
   <tabstop>acceptUrlKeys</tabstop>

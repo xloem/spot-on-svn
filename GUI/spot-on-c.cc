@@ -838,34 +838,39 @@ void spoton::slotTransmit(void)
 	QSqlQuery query(db);
 
 	query.prepare("INSERT INTO transmitted "
-		      "(file, mosaic, muted, pulse_size, "
+		      "(compress, file, mosaic, muted, pulse_size, "
 		      "status, total_size) "
-		      "VALUES (?, ?, ?, ?, ?, ?)");
+		      "VALUES (?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue
-	  (0, s_crypt->encrypted(m_ui.transmittedFile->text().toUtf8(),
-				 &ok).toBase64());
+	  (0, s_crypt->encrypted(QString::number(m_ui.compress->isChecked()).
+				 toLatin1(), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (1, s_crypt->encrypted(m_ui.transmittedFile->text().toUtf8(),
+				   &ok).toBase64());
 
 	if(ok)
 	  {
 	    encryptedMosaic = s_crypt->encrypted(mosaic, &ok);
 
 	    if(ok)
-	      query.bindValue(1, encryptedMosaic.toBase64());
+	      query.bindValue(2, encryptedMosaic.toBase64());
 	  }
 
-	query.bindValue(2, 1);
+	query.bindValue(3, 1);
 
 	if(ok)
 	  query.bindValue
-	    (3, s_crypt->
+	    (4, s_crypt->
 	     encrypted(QString::number(m_ui.pulseSize->
 				       value()).toLatin1(), &ok).toBase64());
 
-	query.bindValue(4, "transmitted");
+	query.bindValue(5, "transmitted");
 
 	if(ok)
 	  query.bindValue
-	    (5, s_crypt->
+	    (6, s_crypt->
 	     encrypted(QString::
 		       number(QFileInfo(m_ui.transmittedFile->
 					text()).size()).toLatin1(),
@@ -1087,13 +1092,7 @@ void spoton::slotPopulateStars(void)
 		  else if(i == 1)
 		    item = new QTableWidgetItem("0");
 		  else if(i == 4)
-		    item = new QTableWidgetItem
-		      (QString::
-		       fromUtf8(s_crypt->
-				decrypted(QByteArray::
-					  fromBase64(query.value(i).
-						     toByteArray()),
-					  &ok).constData()));
+		    item = new QTableWidgetItem(query.value(i).toString());
 		  else if(i == 6)
 		    item = new QTableWidgetItem("0");
 		  else if(i == query.record().count() - 1)
