@@ -28,8 +28,12 @@
 #ifndef _spoton_starbeam_writer_h_
 #define _spoton_starbeam_writer_h_
 
+#include <QHash>
 #include <QObject>
+#include <QSqlDatabase>
 #include <QTimer>
+
+class spoton_crypt;
 
 class spoton_starbeam_writer: public QObject
 {
@@ -40,8 +44,20 @@ class spoton_starbeam_writer: public QObject
   ~spoton_starbeam_writer();
 
  private:
+  QHash<QString, QByteArray> elementsFromMagnet(const QByteArray &magnet,
+						spoton_crypt *s_crypt);
+  QList<QByteArray> m_magnets;
   QTimer m_timer;
   qint64 m_id;
+  qint64 m_offset;
+  void populateMagnets(const QSqlDatabase &db);
+  void pulsate(const bool compress,
+	       const QString &fileName,
+	       const QByteArray &mosaic,
+	       const QString &pulseSize,
+	       const QString &fileSize,
+	       const QByteArray &magnet,
+	       spoton_crypt *s_crypt);
 
  private slots:
   void slotTimeout(void);

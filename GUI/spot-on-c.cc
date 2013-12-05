@@ -838,9 +838,9 @@ void spoton::slotTransmit(void)
 	QSqlQuery query(db);
 
 	query.prepare("INSERT INTO transmitted "
-		      "(compress, file, mosaic, muted, pulse_size, "
+		      "(compress, file, mosaic, pulse_size, "
 		      "status, total_size) "
-		      "VALUES (?, ?, ?, ?, ?, ?, ?)");
+		      "VALUES (?, ?, ?, ?, ?, ?)");
 	query.bindValue
 	  (0, s_crypt->encrypted(QString::number(m_ui.compress->isChecked()).
 				 toLatin1(), &ok).toBase64());
@@ -858,19 +858,17 @@ void spoton::slotTransmit(void)
 	      query.bindValue(2, encryptedMosaic.toBase64());
 	  }
 
-	query.bindValue(3, 1);
-
 	if(ok)
 	  query.bindValue
-	    (4, s_crypt->
+	    (3, s_crypt->
 	     encrypted(QString::number(m_ui.pulseSize->
 				       value()).toLatin1(), &ok).toBase64());
 
-	query.bindValue(5, "transmitted");
+	query.bindValue(4, "muted");
 
 	if(ok)
 	  query.bindValue
-	    (6, s_crypt->
+	    (5, s_crypt->
 	     encrypted(QString::
 		       number(QFileInfo(m_ui.transmittedFile->
 					text()).size()).toLatin1(),
@@ -1054,9 +1052,9 @@ void spoton::slotPopulateStars(void)
 	m_ui.transmitted->clearContents();
 	m_ui.transmitted->setRowCount(0);
 	row = 0;
-	query.prepare("SELECT muted, 0, pulse_size, total_size, "
+	query.prepare("SELECT 0, pulse_size, total_size, "
 		      "status, file, mosaic, OID "
-		      "FROM transmitted");
+		      "FROM transmitted WHERE status <> 'deleted'");
 
 	if(query.exec())
 	  while(query.next())
@@ -1066,7 +1064,7 @@ void spoton::slotPopulateStars(void)
 	      QCheckBox *checkBox = new QCheckBox();
 	      bool ok = true;
 
-	      checkBox->setChecked(query.value(0).toInt());
+	      checkBox->setChecked(true);
 	      checkBox->setProperty
 		("oid", query.value(query.record().count() - 1));
 	      connect(checkBox,
@@ -1079,22 +1077,21 @@ void spoton::slotPopulateStars(void)
 		{
 		  QTableWidgetItem *item = 0;
 
-		  if(i == 0)
-		    {
-		      // Ignore.
-		    }
-		  else if(i == 2 || i == 3 || i == 5 || i == 6)
+		  if(i == 1 || i == 2 || i == 4 || i == 5)
 		    item = new QTableWidgetItem
 		      (s_crypt->
 		       decrypted(QByteArray::fromBase64(query.value(i).
 							toByteArray()),
 				 &ok).constData());
-		  else if(i == 1)
+		  else if(i == 0)
 		    item = new QTableWidgetItem("0");
-		  else if(i == 4)
-		    item = new QTableWidgetItem(query.value(i).toString());
-		  else if(i == 6)
-		    item = new QTableWidgetItem("0");
+		  else if(i == 3)
+		    {
+		      item = new QTableWidgetItem(query.value(i).toString());
+
+		      if(item->text() != "muted")
+			checkBox->setChecked(false);
+		    }
 		  else if(i == query.record().count() - 1)
 		    item = new QTableWidgetItem
 		      (query.value(i).toString());
@@ -1107,8 +1104,8 @@ void spoton::slotPopulateStars(void)
 		    }
 		}
 
-	      if(m_ui.transmitted->item(row, 6) &&
-		 mosaic == m_ui.transmitted->item(row, 6)->text())
+	      if(m_ui.transmitted->item(row, 5) &&
+		 mosaic == m_ui.transmitted->item(row, 5)->text())
 		m_ui.transmitted->selectRow(row);
 
 	      row += 1;
@@ -1156,9 +1153,9 @@ void spoton::slotTransmittedMuted(bool state)
 	    QSqlQuery query(db);
 
 	    query.prepare("UPDATE transmitted SET "
-			  "muted = ? "
-			  "WHERE OID = ?");
-	    query.bindValue(0, state ? 1 : 0);
+			  "status = ? "
+			  "WHERE OID = ? AND status <> 'deleted'");
+	    query.bindValue(0, state ? "muted" : "transmitted");
 	    query.bindValue(1, checkBox->property("oid"));
 	    query.exec();
 	  }

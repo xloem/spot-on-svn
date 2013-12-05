@@ -414,8 +414,7 @@ void spoton_misc::prepareDatabases(void)
 		   "compress TEXT NOT NULL, "
 		   "file TEXT NOT NULL, "
 		   "mosaic TEXT PRIMARY KEY NOT NULL, "
-		   "muted INTEGER NOT NULL DEFAULT 1, "
-		   "pulse_size INTEGER NOT NULL, "
+		   "pulse_size TEXT NOT NULL, "
 		   "status TEXT NOT NULL, "
 		   "total_size TEXT NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS transmitted_magnets ("

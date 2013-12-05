@@ -324,13 +324,13 @@ Symmetric Key
 EOL
 1 - Mosaic (Base-64)
 EOL
-2 - Mosaic Piece Count (Base-64)
+2 - Pulse Offset (Base-64)
 EOL
-3 - Mosaic Piece Number (Base-64)
+3 - Pulse Size (Base-64)
 EOL
-4 - Mosaic Piece Size (Base-64)
+4 - Total Size (Base-64)
 EOL
-5 - Mosaic Piece (Base-64)
+5 - Pulse Data (Base-64)
 }
 EOL
 {
