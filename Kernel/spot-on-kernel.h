@@ -46,6 +46,7 @@ class spoton_listener;
 class spoton_mailer;
 class spoton_neighbor;
 class spoton_shared_reader;
+class spoton_starbeam_reader;
 
 class spoton_kernel: public QObject
 {
@@ -83,6 +84,7 @@ class spoton_kernel: public QObject
   QFuture<void> m_future;
   QHash<qint64, QPointer<spoton_listener> > m_listeners;
   QHash<qint64, QPointer<spoton_neighbor> > m_neighbors;
+  QHash<qint64, QPointer<spoton_starbeam_reader> > m_starbeamReaders;
   QTimer m_controlDatabaseTimer;
   QTimer m_messagingCachePurgeTimer;
   QTimer m_publishAllListenersPlaintextTimer;
