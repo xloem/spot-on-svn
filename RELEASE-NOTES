@@ -129,6 +129,7 @@
      replay issues beyond two-minute intervals.
 63.  Instruct the kernel's UI server to adhere to the value of the
      SSL Control String.
+64.  Decreased the keep-alive timer interval to 30 seconds from 45 seconds.
 
 0.06 (10/24/2013)
 
