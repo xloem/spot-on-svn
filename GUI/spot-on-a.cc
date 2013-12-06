@@ -527,10 +527,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(valueChanged(int)),
 	  this,
 	  SLOT(slotDaysChanged(int)));
-  connect(m_ui.etpMaxMosaics,
-	  SIGNAL(valueChanged(int)),
-	  this,
-	  SLOT(slotMaxMosaics(int)));
   connect(m_ui.etpMaxMosaicSize,
 	  SIGNAL(valueChanged(int)),
 	  this,
@@ -1009,7 +1005,6 @@ spoton::spoton(void):QMainWindow()
   m_ui.kernelCipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.cost->setValue(m_settings.value("gui/congestionCost", 10000).toInt());
   m_ui.days->setValue(m_settings.value("gui/postofficeDays", 1).toInt());
-  m_ui.etpMaxMosaics->setValue(m_settings.value("gui/maxMosaics", 16).toInt());
   m_ui.etpMaxMosaicSize->setValue(m_settings.value("gui/maxMosaicSize",
 						   512).toInt());
   m_ui.emailRetrievalInterval->setValue
@@ -1388,6 +1383,7 @@ spoton::~spoton()
 
 void spoton::slotQuit(void)
 {
+  saveSettings();
   m_purgeMutex.lock();
   m_purge = false;
   m_purgeMutex.unlock();
@@ -3370,9 +3366,8 @@ void spoton::saveSettings(void)
 
 void spoton::closeEvent(QCloseEvent *event)
 {
-  saveSettings();
   QMainWindow::closeEvent(event);
-  QApplication::instance()->quit();
+  slotQuit();
 }
 
 void spoton::slotDeleteListener(void)

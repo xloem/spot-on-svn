@@ -415,7 +415,7 @@ void spoton_misc::prepareDatabases(void)
 		   "file TEXT NOT NULL, "
 		   "mosaic TEXT PRIMARY KEY NOT NULL, "
 		   "pulse_size TEXT NOT NULL, "
-		   "status TEXT NOT NULL, "
+		   "status_control TEXT NOT NULL, "
 		   "total_size TEXT NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS transmitted_magnets ("
 		   "magnet BLOB NOT NULL, "
@@ -1097,6 +1097,30 @@ void spoton_misc::cleanupDatabases(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName(homePath() + QDir::separator() + "starbeam.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("DELETE FROM transmitted WHERE "
+		   "status_control = 'deleted'");
+	query.exec("DELETE FROM transmitted_magnets WHERE "
+		   "transmitted_oid NOT IN "
+		   "(SELECT OID FROM transmitted)");
+	query.exec("DELETE FROM transmitted_pulses WHERE "
+		   "transmitted_oid NOT IN "
+		   "(SELECT OID FROM transmitted)");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 QString spoton_misc::countryCodeFromName(const QString &country)
@@ -1588,14 +1612,6 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 512;
 
   settings.insert("gui/maxMosaicSize", integer);
-  integer = qAbs(settings.value("gui/maxMosaics", 16).toInt(&ok));
-
-  if(!ok)
-    integer = 16;
-  else if(integer <= 0 || integer > 250)
-    integer = 16;
-
-  settings.insert("gui/maxMosaics", integer);
   integer = qAbs(settings.value("gui/saltLength", 512).toInt(&ok));
 
   if(!ok)

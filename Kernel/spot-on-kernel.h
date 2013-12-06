@@ -103,9 +103,11 @@ class spoton_kernel: public QObject
   void cleanupDatabases(void);
   void cleanupListenersDatabase(const QSqlDatabase &db);
   void cleanupNeighborsDatabase(const QSqlDatabase &db);
+  void cleanupStarbeamsDatabase(const QSqlDatabase &db);
   void connectSignalsToNeighbor(QPointer<spoton_neighbor> neighbor);
   void prepareListeners(void);
   void prepareNeighbors(void);
+  void prepareStarbeamReaders(void);
   void purgeMessagingCache(void);
   void updateStatistics(void);
 

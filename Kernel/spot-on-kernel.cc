@@ -74,6 +74,7 @@ extern "C"
 #include "spot-on-mailer.h"
 #include "spot-on-neighbor.h"
 #include "spot-on-shared-reader.h"
+#include "spot-on-starbeam-reader.h"
 
 QHash<QByteArray, char> spoton_kernel::s_messagingCache;
 QHash<QByteArray, QList<QByteArray> > spoton_kernel::s_buzzKeys;
@@ -522,6 +523,7 @@ void spoton_kernel::slotPollDatabase(void)
   spoton_misc::prepareDatabases();
   prepareListeners();
   prepareNeighbors();
+  prepareStarbeamReaders();
   checkForTermination();
   updateStatistics();
 }
@@ -729,8 +731,8 @@ void spoton_kernel::prepareListeners(void)
 	  spoton_misc::logError
 	    (QString("spoton_kernel::prepareListeners(): "
 		     "listener %1 "
-		     " may have been deleted from the listeners table by an"
-		     " external event. Purging listener from the listeners "
+		     "may have been deleted from the listeners table by an "
+		     "external event. Purging listener from the listeners "
 		     "container.").
 	     arg(it.key()));
 	  it.remove();
@@ -925,8 +927,6 @@ void spoton_kernel::prepareNeighbors(void)
 			  m_neighbors.insert(id, neighbor);
 			}
 		    }
-		  else
-		    neighbor = m_neighbors.value(id);
 		}
 	      else
 		{
@@ -962,8 +962,8 @@ void spoton_kernel::prepareNeighbors(void)
 	  spoton_misc::logError
 	    (QString("spoton_kernel::prepareNeighbors(): "
 		     "neighbor %1 "
-		     " may have been deleted from the neighbors table by an"
-		     " external event. Purging neighbor from the neighbors "
+		     "may have been deleted from the neighbors table by an "
+		     "external event. Purging neighbor from the neighbors "
 		     "container.").arg(it.key()));
 	  it.remove();
 	}
@@ -977,6 +977,82 @@ void spoton_kernel::prepareNeighbors(void)
       s_messagingCache.clear();
       s_messagingCacheMap.clear();
       s_messagingCacheMutex.unlock();
+    }
+}
+
+void spoton_kernel::prepareStarbeamReaders(void)
+{
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "starbeam.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT "
+		      "status_control, "
+		      "OID "
+		      "FROM transmitted"))
+	  while(query.next())
+	    {
+	      QString status(query.value(0).toString());
+	      QPointer<spoton_starbeam_reader> starbeam = 0;
+	      qint64 id = query.value(query.record().count() - 1).
+		toLongLong();
+
+	      if(status != "deleted")
+		{
+		  QPointer<spoton_starbeam_reader> starbeam = 0;
+
+		  if(!m_starbeamReaders.contains(id))
+		    {
+		      starbeam = new spoton_starbeam_reader(id, this);
+		      m_starbeamReaders.insert(id, starbeam);
+		    }
+		}
+	      else
+		{
+		  starbeam = m_starbeamReaders.value(id);
+
+		  if(starbeam)
+		    starbeam->deleteLater();
+
+		  m_starbeamReaders.remove(id);
+		  cleanupStarbeamsDatabase(db);
+		}
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  QMutableHashIterator<qint64, QPointer<spoton_starbeam_reader> > it
+    (m_starbeamReaders);
+
+  while(it.hasNext())
+    {
+      it.next();
+
+      if(!it.value())
+	{
+	  spoton_misc::logError
+	    (QString("spoton_kernel::prepareStarbeamReaders(): "
+		     "starbeam %1 "
+		     "may have been deleted from the starbeam table by an "
+		     "external event. Purging starbeam reader from the "
+		     "starbeam container.").
+	     arg(it.key()));
+	  it.remove();
+	}
     }
 }
 
@@ -1040,6 +1116,15 @@ void spoton_kernel::checkForTermination(void)
 	      neighbor->abort();
 	      neighbor->deleteLater();
 	    }
+	}
+
+      for(int i = 0; i < m_starbeamReaders.keys().size(); i++)
+	{
+	  QPointer<spoton_starbeam_reader> starbeam =
+	    m_starbeamReaders.take(m_starbeamReaders.keys().at(i));
+
+	  if(starbeam)
+	    starbeam->deleteLater();
 	}
 
       if(err != LIBSPOTON_ERROR_NONE)
@@ -2262,6 +2347,23 @@ void spoton_kernel::cleanupNeighborsDatabase(const QSqlDatabase &db)
 	     "status_control = 'deleted'");
 }
 
+void spoton_kernel::cleanupStarbeamsDatabase(const QSqlDatabase &db)
+{
+  if(!db.isOpen())
+    return;
+
+  QSqlQuery query(db);
+
+  query.exec("DELETE FROM transmitted WHERE "
+	     "status = 'deleted'");
+  query.exec("DELETE FROM transmitted_magnets WHERE "
+	     "transmitted_oid NOT IN "
+	     "(SELECT OID FROM transmitted)");
+  query.exec("DELETE FROM transmitted_pulses WHERE "
+	     "transmitted_oid NOT IN "
+	     "(SELECT OID FROM transmitted)");
+}
+
 void spoton_kernel::slotPublicizeAllListenersPlaintext(void)
 {
   QHashIterator<qint64, QPointer<spoton_listener> > it(m_listeners);
@@ -2780,6 +2882,11 @@ void spoton_kernel::updateStatistics(void)
 		      "(statistic, value) "
 		      "VALUES ('Neighbors', ?)");
 	query.bindValue(0, m_neighbors.size());
+	query.exec();
+	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
+		      "(statistic, value) "
+		      "VALUES ('StarBeam Readers', ?)");
+	query.bindValue(0, m_starbeamReaders.size());
 	query.exec();
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "

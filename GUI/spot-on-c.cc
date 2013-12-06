@@ -441,15 +441,6 @@ void spoton::slotReceiversClicked(bool state)
   settings.setValue("gui/etpReceivers", state);
 }
 
-void spoton::slotMaxMosaics(int value)
-{
-  m_settings["gui/maxMosaics"] = value;
-
-  QSettings settings;
-
-  settings.setValue("gui/maxMosaics", value);
-}
-
 void spoton::slotMaxMosaicSize(int value)
 {
   m_settings["gui/maxMosaicSize"] = value;
@@ -839,7 +830,7 @@ void spoton::slotTransmit(void)
 
 	query.prepare("INSERT INTO transmitted "
 		      "(compress, file, mosaic, pulse_size, "
-		      "status, total_size) "
+		      "status_control, total_size) "
 		      "VALUES (?, ?, ?, ?, ?, ?)");
 	query.bindValue
 	  (0, s_crypt->encrypted(QString::number(m_ui.compress->isChecked()).
@@ -1052,9 +1043,9 @@ void spoton::slotPopulateStars(void)
 	m_ui.transmitted->clearContents();
 	m_ui.transmitted->setRowCount(0);
 	row = 0;
-	query.prepare("SELECT 0, pulse_size, total_size, "
-		      "status, file, mosaic, OID "
-		      "FROM transmitted WHERE status <> 'deleted'");
+	query.prepare("SELECT 0, 0, pulse_size, total_size, "
+		      "status_control, file, mosaic, OID "
+		      "FROM transmitted WHERE status_control <> 'deleted'");
 
 	if(query.exec())
 	  while(query.next())
@@ -1067,25 +1058,31 @@ void spoton::slotPopulateStars(void)
 	      checkBox->setChecked(true);
 	      checkBox->setProperty
 		("oid", query.value(query.record().count() - 1));
-	      connect(checkBox,
-		      SIGNAL(toggled(bool)),
-		      this,
-		      SLOT(slotTransmittedMuted(bool)));
 	      m_ui.transmitted->setCellWidget(row, 0, checkBox);
 
 	      for(int i = 0; i < query.record().count(); i++)
 		{
 		  QTableWidgetItem *item = 0;
 
-		  if(i == 1 || i == 2 || i == 4 || i == 5)
-		    item = new QTableWidgetItem
-		      (s_crypt->
-		       decrypted(QByteArray::fromBase64(query.value(i).
-							toByteArray()),
-				 &ok).constData());
-		  else if(i == 0)
+		  if(i == 0)
+		    {
+		    }
+		  else if(i == 1)
 		    item = new QTableWidgetItem("0");
-		  else if(i == 3)
+		  else if(i == 2 || i == 3 || i == 5 || i == 6)
+		    {
+		      QByteArray bytes
+			(s_crypt->
+			 decrypted(QByteArray::fromBase64(query.value(i).
+							  toByteArray()),
+				   &ok));
+
+		      if(i == 6)
+			bytes = bytes.mid(0, 16) + "..." + bytes.right(16);
+
+		      item = new QTableWidgetItem(bytes.constData());
+		    }
+		  else if(i == 4)
 		    {
 		      item = new QTableWidgetItem(query.value(i).toString());
 
@@ -1104,8 +1101,13 @@ void spoton::slotPopulateStars(void)
 		    }
 		}
 
-	      if(m_ui.transmitted->item(row, 5) &&
-		 mosaic == m_ui.transmitted->item(row, 5)->text())
+	      connect(checkBox,
+		      SIGNAL(toggled(bool)),
+		      this,
+		      SLOT(slotTransmittedMuted(bool)));
+
+	      if(m_ui.transmitted->item(row, 6) &&
+		 mosaic == m_ui.transmitted->item(row, 6)->text())
 		m_ui.transmitted->selectRow(row);
 
 	      row += 1;
@@ -1153,8 +1155,8 @@ void spoton::slotTransmittedMuted(bool state)
 	    QSqlQuery query(db);
 
 	    query.prepare("UPDATE transmitted SET "
-			  "status = ? "
-			  "WHERE OID = ? AND status <> 'deleted'");
+			  "status_control = ? "
+			  "WHERE OID = ? AND status_control <> 'deleted'");
 	    query.bindValue(0, state ? "muted" : "transmitted");
 	    query.bindValue(1, checkBox->property("oid"));
 	    query.exec();
@@ -1189,8 +1191,8 @@ void spoton::slotDeleteAllTransmitted(void)
 	  }
 	else
 	  query.exec("UPDATE transmitted SET "
-		     "status = 'deleted' WHERE "
-		     "status <> 'deleted'");
+		     "status_control = 'deleted' WHERE "
+		     "status_control <> 'deleted'");
       }
 
     db.close();
@@ -1243,8 +1245,9 @@ void spoton::slotDeleteTransmitted(void)
 	  }
 	else
 	  {
-	    query.prepare("UPDATE transmitted SET status = 'deleted' "
-			  "WHERE OID = ? AND status <> 'deleted'");
+	    query.prepare
+	      ("UPDATE transmitted SET status_control = 'deleted' "
+	       "WHERE OID = ? AND status_control <> 'deleted'");
 	    query.bindValue(0, oid);
 	    query.exec();
 	  }

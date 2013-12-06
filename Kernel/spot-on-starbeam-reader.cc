@@ -42,7 +42,7 @@ spoton_starbeam_reader::spoton_starbeam_reader
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTimeout(void)));
-  m_timer.start(5000);
+  m_timer.start(2500);
 }
 
 spoton_starbeam_reader::~spoton_starbeam_reader()
@@ -103,8 +103,8 @@ void spoton_starbeam_reader::slotTimeout(void)
 
 	    query.setForwardOnly(true);
 	    query.prepare("SELECT compress, file, mosaic, "
-			  "pulse_size, status, total_size FROM transmitted "
-			  "WHERE OID = ?");
+			  "pulse_size, status_control, total_size "
+			  "FROM transmitted WHERE OID = ?");
 	    query.bindValue(0, m_id);
 
 	    if(query.exec())
@@ -256,11 +256,13 @@ QHash<QString, QByteArray> spoton_starbeam_reader::elementsFromMagnet
       else if(bytes.startsWith("xt="))
 	{
 	  bytes.remove(0, 3);
-	  elements.insert("xt", bytes);
+
+	  if(bytes == "urn:starbeam")
+	    elements.insert("xt", bytes);
 	}
     }
 
-  if(!elements.contains("url:starbeam"))
+  if(!elements.contains("xt"))
     {
       elements.clear();
       goto done_label;
@@ -287,29 +289,30 @@ void spoton_starbeam_reader::pulsate(const bool compress,
 
   if(file.open(QIODevice::ReadOnly))
     if(file.seek(m_offset))
-      {
-	QByteArray buffer(qAbs(pulseSize.toInt()), 0);
-	qint64 rc = 0;
+      if(!file.atEnd())
+	{
+	  QByteArray buffer(qAbs(pulseSize.toInt()), 0);
+	  qint64 rc = 0;
 
-	if((rc = file.read(buffer.data(), buffer.length())) > 0)
-	  {
-	    QByteArray data(buffer.mid(0, rc));
-	    bool ok = true;
-	    spoton_crypt crypt(elements.value("ct").constData(),
-			       QString(""),
-			       QByteArray(),
-			       elements.value("ek"),
-			       0,
-			       0,
-			       QString(""));
+	  if((rc = file.read(buffer.data(), buffer.length())) > 0)
+	    {
+	      QByteArray data(buffer.mid(0, rc));
+	      bool ok = true;
+	      spoton_crypt crypt(elements.value("ct").constData(),
+				 QString(""),
+				 QByteArray(),
+				 elements.value("ek"),
+				 0,
+				 0,
+				 QString(""));
 
-	    if(compress)
-	      data = qCompress(data, 9);
+	      if(compress)
+		data = qCompress(data, 9);
 
-	    if(ok)
-	      m_offset += rc;
-	  }
-      }
+	      if(ok)
+		m_offset += rc;
+	    }qDebug()<<m_offset;
+	}
 
   file.close();
   Q_UNUSED(mosaic);

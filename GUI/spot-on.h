@@ -285,7 +285,6 @@ class spoton: public QMainWindow
   void slotMailSelected(QTableWidgetItem *item);
   void slotMailTabChanged(int index);
   void slotMaxMosaicSize(int value);
-  void slotMaxMosaics(int value);
   void slotMaximumClientsChanged(int index);
   void slotMessagingCachePurge(void);
   void slotModeChanged(QSslSocket::SslMode mode);
