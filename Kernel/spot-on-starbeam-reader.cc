@@ -311,7 +311,7 @@ void spoton_starbeam_reader::pulsate(const bool compress,
 
 	      if(ok)
 		m_offset += rc;
-	    }qDebug()<<m_offset;
+	    }
 	}
 
   file.close();
