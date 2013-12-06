@@ -4581,7 +4581,7 @@
                       </attribute>
                       <column>
                        <property name="text">
-                        <string>Mute</string>
+                        <string>Paused</string>
                        </property>
                       </column>
                       <column>

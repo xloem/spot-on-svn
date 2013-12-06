@@ -352,7 +352,7 @@ class spoton: public QMainWindow
   void slotTabChanged(int index);
   void slotTestSslControlString(void);
   void slotTransmit(void);
-  void slotTransmittedMuted(bool state);
+  void slotTransmittedPaused(bool state);
   void slotTransportChanged(int index);
   void slotUnblockNeighbor(void);
   void slotValidatePassphrase(void);

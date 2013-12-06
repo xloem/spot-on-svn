@@ -829,9 +829,9 @@ void spoton::slotTransmit(void)
 	QSqlQuery query(db);
 
 	query.prepare("INSERT INTO transmitted "
-		      "(compress, file, mosaic, pulse_size, "
+		      "(compress, file, mosaic, position, pulse_size, "
 		      "status_control, total_size) "
-		      "VALUES (?, ?, ?, ?, ?, ?)");
+		      "VALUES (?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue
 	  (0, s_crypt->encrypted(QString::number(m_ui.compress->isChecked()).
 				 toLatin1(), &ok).toBase64());
@@ -851,15 +851,19 @@ void spoton::slotTransmit(void)
 
 	if(ok)
 	  query.bindValue
-	    (3, s_crypt->
-	     encrypted(QString::number(m_ui.pulseSize->
-				       value()).toLatin1(), &ok).toBase64());
-
-	query.bindValue(4, "muted");
+	    (3, s_crypt->encrypted(QByteArray("0"), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (5, s_crypt->
+	    (4, s_crypt->
+	     encrypted(QString::number(m_ui.pulseSize->
+				       value()).toLatin1(), &ok).toBase64());
+
+	query.bindValue(5, "paused");
+
+	if(ok)
+	  query.bindValue
+	    (6, s_crypt->
 	     encrypted(QString::
 		       number(QFileInfo(m_ui.transmittedFile->
 					text()).size()).toLatin1(),
@@ -1086,7 +1090,7 @@ void spoton::slotPopulateStars(void)
 		    {
 		      item = new QTableWidgetItem(query.value(i).toString());
 
-		      if(item->text() != "muted")
+		      if(item->text() != "paused")
 			checkBox->setChecked(false);
 		    }
 		  else if(i == query.record().count() - 1)
@@ -1104,7 +1108,7 @@ void spoton::slotPopulateStars(void)
 	      connect(checkBox,
 		      SIGNAL(toggled(bool)),
 		      this,
-		      SLOT(slotTransmittedMuted(bool)));
+		      SLOT(slotTransmittedPaused(bool)));
 
 	      if(m_ui.transmitted->item(row, 6) &&
 		 mosaic == m_ui.transmitted->item(row, 6)->text())
@@ -1136,7 +1140,7 @@ void spoton::slotPopulateStars(void)
   QSqlDatabase::removeDatabase(connectionName);
 }
 
-void spoton::slotTransmittedMuted(bool state)
+void spoton::slotTransmittedPaused(bool state)
 {
   QCheckBox *checkBox = qobject_cast<QCheckBox *> (sender());
 
@@ -1157,7 +1161,7 @@ void spoton::slotTransmittedMuted(bool state)
 	    query.prepare("UPDATE transmitted SET "
 			  "status_control = ? "
 			  "WHERE OID = ? AND status_control <> 'deleted'");
-	    query.bindValue(0, state ? "muted" : "transmitted");
+	    query.bindValue(0, state ? "paused" : "transmitted");
 	    query.bindValue(1, checkBox->property("oid"));
 	    query.exec();
 	  }
@@ -1187,7 +1191,7 @@ void spoton::slotDeleteAllTransmitted(void)
 	  {
 	    query.exec("DELETE FROM transmitted");
 	    query.exec("DELETE FROM transmitted_magnets");
-	    query.exec("DELETE FROM transmitted_pulses");
+	    query.exec("DELETE FROM transmitted_scheduled_pulses");
 	  }
 	else
 	  query.exec("UPDATE transmitted SET "
@@ -1239,7 +1243,7 @@ void spoton::slotDeleteTransmitted(void)
 	    query.exec("DELETE FROM transmitted_magnets WHERE "
 		       "transmitted_oid NOT IN "
 		       "(SELECT OID FROM transmitted)");
-	    query.exec("DELETE FROM transmitted_pulses WHERE "
+	    query.exec("DELETE FROM transmitted_scheduled_pulses WHERE "
 		       "transmitted_oid NOT IN "
 		       "(SELECT OID FROM transmitted)");
 	  }

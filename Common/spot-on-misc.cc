@@ -399,12 +399,12 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS received ("
 		   "folder TEXT NOT NULL, "
 		   "mosaic TEXT PRIMARY KEY NOT NULL, "
-		   "total_size INTEGER NOT NULL)");
+		   "total_size TEXT NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS received_pulses ("
-		   "current_index INTEGER NOT NULL, "
-		   "last_index INTEGER NOT NULL, "
+		   "position TEXT NOT NULL, "
+		   "position_hash TEXT NOT NULL, "
 		   "received_oid INTEGER NOT NULL, "
-		   "PRIMARY KEY (current_index, received_oid), "
+		   "PRIMARY KEY (position_hash, received_oid), "
 		   "FOREIGN KEY (received_oid) REFERENCES "
 		   "received (OID))"); /*
 				       ** The foreign key constraint
@@ -414,6 +414,7 @@ void spoton_misc::prepareDatabases(void)
 		   "compress TEXT NOT NULL, "
 		   "file TEXT NOT NULL, "
 		   "mosaic TEXT PRIMARY KEY NOT NULL, "
+		   "position TEXT NOT NULL, "
 		   "pulse_size TEXT NOT NULL, "
 		   "status_control TEXT NOT NULL, "
 		   "total_size TEXT NOT NULL)");
@@ -427,11 +428,11 @@ void spoton_misc::prepareDatabases(void)
 					  ** The foreign key constraint
 					  ** is flawed.
 					  */
-	query.exec("CREATE TABLE IF NOT EXISTS transmitted_pulses ("
-		   "current_index INTEGER NOT NULL, "
-		   "last_index INTEGER NOT NULL, "
+	query.exec("CREATE TABLE IF NOT EXISTS transmitted_scheduled_pulses ("
+		   "position TEXT NOT NULL, "
+		   "position_hash TEXT NOT NULL, "
 		   "transmitted_oid INTEGER NOT NULL, "
-		   "PRIMARY KEY (current_index, transmitted_oid), "
+		   "PRIMARY KEY (position_hash, transmitted_oid), "
 		   "FOREIGN KEY (transmitted_oid) REFERENCES "
 		   "transmitted (OID))"); /*
 					  ** The foreign key constraint
@@ -1112,7 +1113,7 @@ void spoton_misc::cleanupDatabases(void)
 	query.exec("DELETE FROM transmitted_magnets WHERE "
 		   "transmitted_oid NOT IN "
 		   "(SELECT OID FROM transmitted)");
-	query.exec("DELETE FROM transmitted_pulses WHERE "
+	query.exec("DELETE FROM transmitted_scheduled_pulses WHERE "
 		   "transmitted_oid NOT IN "
 		   "(SELECT OID FROM transmitted)");
       }

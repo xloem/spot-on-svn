@@ -2359,7 +2359,7 @@ void spoton_kernel::cleanupStarbeamsDatabase(const QSqlDatabase &db)
   query.exec("DELETE FROM transmitted_magnets WHERE "
 	     "transmitted_oid NOT IN "
 	     "(SELECT OID FROM transmitted)");
-  query.exec("DELETE FROM transmitted_pulses WHERE "
+  query.exec("DELETE FROM transmitted_scheduled_pulses WHERE "
 	     "transmitted_oid NOT IN "
 	     "(SELECT OID FROM transmitted)");
 }

@@ -49,7 +49,7 @@ class spoton_starbeam_reader: public QObject
   QList<QByteArray> m_magnets;
   QTimer m_timer;
   qint64 m_id;
-  qint64 m_offset;
+  qint64 m_position;
   void populateMagnets(const QSqlDatabase &db);
   void pulsate(const bool compress,
 	       const QString &fileName,

@@ -37,7 +37,7 @@ spoton_starbeam_reader::spoton_starbeam_reader
 (const qint64 id, QObject *parent):QObject(parent)
 {
   m_id = id;
-  m_offset = 0;
+  m_position = 0;
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -66,7 +66,7 @@ spoton_starbeam_reader::~spoton_starbeam_reader()
 	query.exec("DELETE FROM transmitted_magnets WHERE "
 		   "transmitted_oid NOT IN "
 		   "(SELECT OID FROM transmitted)");
-	query.exec("DELETE FROM transmitted_pulses WHERE "
+	query.exec("DELETE FROM transmitted_scheduled_pulses WHERE "
 		   "transmitted_oid NOT IN "
 		   "(SELECT OID FROM transmitted)");
       }
@@ -102,7 +102,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 	    QSqlQuery query(db);
 
 	    query.setForwardOnly(true);
-	    query.prepare("SELECT compress, file, mosaic, "
+	    query.prepare("SELECT compress, file, mosaic, position, "
 			  "pulse_size, status_control, total_size "
 			  "FROM transmitted WHERE OID = ?");
 	    query.bindValue(0, m_id);
@@ -110,11 +110,11 @@ void spoton_starbeam_reader::slotTimeout(void)
 	    if(query.exec())
 	      if(query.next())
 		{
-		  QString status(query.value(4).toString());
+		  QString status(query.value(5).toString());
 
 		  if(status == "deleted")
 		    shouldDelete = true;
-		  else if(status == "transmitted")
+		  else if(m_position >= 0 && status == "transmitted")
 		    {
 		      QByteArray mosaic;
 		      QString fileName("");
@@ -150,10 +150,18 @@ void spoton_starbeam_reader::slotTimeout(void)
 				    &ok);
 
 		      if(ok)
-			pulseSize = s_crypt->
+			m_position = s_crypt->
 			  decrypted(QByteArray::
 				    fromBase64(query.
 					       value(3).
+					       toByteArray()),
+				    &ok).toLongLong();
+
+		      if(ok)
+			pulseSize = s_crypt->
+			  decrypted(QByteArray::
+				    fromBase64(query.
+					       value(4).
 					       toByteArray()),
 				    &ok).
 			  constData();
@@ -162,7 +170,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 			fileSize = s_crypt->
 			  decrypted(QByteArray::
 				    fromBase64(query.
-					       value(5).
+					       value(6).
 					       toByteArray()),
 				    &ok).
 			  constData();
@@ -280,6 +288,9 @@ void spoton_starbeam_reader::pulsate(const bool compress,
 				     const QByteArray &magnet,
 				     spoton_crypt *s_crypt)
 {
+  if(m_position < 0)
+    return;
+
   QHash<QString, QByteArray> elements(elementsFromMagnet(magnet, s_crypt));
 
   if(elements.isEmpty())
@@ -288,7 +299,7 @@ void spoton_starbeam_reader::pulsate(const bool compress,
   QFile file(fileName);
 
   if(file.open(QIODevice::ReadOnly))
-    if(file.seek(m_offset))
+    if(file.seek(m_position))
       if(!file.atEnd())
 	{
 	  QByteArray buffer(qAbs(pulseSize.toInt()), 0);
@@ -310,7 +321,7 @@ void spoton_starbeam_reader::pulsate(const bool compress,
 		data = qCompress(data, 9);
 
 	      if(ok)
-		m_offset += rc;
+		m_position += rc;
 	    }
 	}
 
