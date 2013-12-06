@@ -67,6 +67,7 @@ class spoton_kernel: public QObject
 			  const QVariant &defaultValue);
   static bool messagingCacheContains(const QByteArray &data);
   static int interfaces(void);
+  static QPointer<spoton_kernel> s_kernel;
   static void addBuzzKey(const QByteArray &key,
 			 const QByteArray &channelType,
 			 const QByteArray &hashKey,

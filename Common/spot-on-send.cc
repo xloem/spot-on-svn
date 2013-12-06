@@ -49,9 +49,8 @@ QByteArray spoton_send::message0000(const QByteArray &message,
      "\r\n\r\n");
   results.replace
     ("%1",
-     QString::number(message.toBase64().length() +
-		     QString("content=\r\n\r\n\r\n").length()).
-     toLatin1());
+     QByteArray::number(message.toBase64().length() +
+			QString("content=\r\n\r\n\r\n").length()));
   results.replace
     ("%2", message.toBase64());
   return results;
@@ -75,9 +74,8 @@ QByteArray spoton_send::message0000a(const QByteArray &message,
      "\r\n\r\n");
   results.replace
     ("%1",
-     QString::number(message.toBase64().length() +
-		     QString("content=\r\n\r\n\r\n").length()).
-     toLatin1());
+     QByteArray::number(message.toBase64().length() +
+			QString("content=\r\n\r\n\r\n").length()));
   results.replace
     ("%2", message.toBase64());
   return results;
@@ -96,10 +94,9 @@ QByteArray spoton_send::message0001a(const QByteArray &message)
      "\r\n\r\n");
   results.replace
     ("%1",
-     QString::number(message.toBase64().length() +
-		     QString("content=\r\n\r\n\r\n").
-		     length()).
-     toLatin1());
+     QByteArray::number(message.toBase64().length() +
+			QString("content=\r\n\r\n\r\n").
+			length()));
   results.replace
     ("%2", message.toBase64());
   return results;
@@ -118,10 +115,9 @@ QByteArray spoton_send::message0001b(const QByteArray &message)
      "\r\n\r\n");
   results.replace
     ("%1",
-     QString::number(message.toBase64().length() +
-		     QString("content=\r\n\r\n\r\n").
-		     length()).
-     toLatin1());
+     QByteArray::number(message.toBase64().length() +
+			QString("content=\r\n\r\n\r\n").
+			length()));
   results.replace
     ("%2", message.toBase64());
   return results;
@@ -140,10 +136,9 @@ QByteArray spoton_send::message0002(const QByteArray &message)
      "\r\n\r\n");
   results.replace
     ("%1",
-     QString::number(message.toBase64().length() +
-		     QString("content=\r\n\r\n\r\n").
-		     length()).
-     toLatin1());
+     QByteArray::number(message.toBase64().length() +
+			QString("content=\r\n\r\n\r\n").
+			length()));
   results.replace
     ("%2", message.toBase64());
   return results;
@@ -162,10 +157,9 @@ QByteArray spoton_send::message0010(const QByteArray &message)
      "\r\n\r\n");
   results.replace
     ("%1",
-     QString::number(message.toBase64().length() +
-		     QString("type=0010&content=\r\n\r\n\r\n").
-		     length()).
-     toLatin1());
+     QByteArray::number(message.toBase64().length() +
+			QString("type=0010&content=\r\n\r\n\r\n").
+			length()));
   results.replace
     ("%2", message.toBase64());
   return results;
@@ -201,10 +195,9 @@ QByteArray spoton_send::message0011(const QByteArray &keyType,
   content.append(sSignature.toBase64());
   results.replace
     ("%1",
-     QString::number(content.toBase64().length() +
-		     QString("type=0011&content=\r\n\r\n\r\n").
-		     length()).
-     toLatin1());
+     QByteArray::number(content.toBase64().length() +
+			QString("type=0011&content=\r\n\r\n\r\n").
+			length()));
   results.replace
     ("%2", content.toBase64());
   return results;
@@ -223,9 +216,8 @@ QByteArray spoton_send::message0012(const QByteArray &message)
      "\r\n\r\n");
   results.replace
     ("%1",
-     QString::number(message.toBase64().length() +
-		     QString("type=0012&content=\r\n\r\n\r\n").length()).
-     toLatin1());
+     QByteArray::number(message.toBase64().length() +
+			QString("type=0012&content=\r\n\r\n\r\n").length()));
   results.replace
     ("%2", message.toBase64());
   return results;
@@ -244,9 +236,8 @@ QByteArray spoton_send::message0013(const QByteArray &message)
      "\r\n\r\n");
   results.replace
     ("%1",
-     QString::number(message.toBase64().length() +
-		     QString("content=\r\n\r\n\r\n").length()).
-     toLatin1());
+     QByteArray::number(message.toBase64().length() +
+			QString("content=\r\n\r\n\r\n").length()));
   results.replace
     ("%2", message.toBase64());
   return results;
@@ -265,9 +256,8 @@ QByteArray spoton_send::message0014(const QByteArray &uuid)
      "\r\n\r\n");
   results.replace
     ("%1",
-     QString::number(uuid.toBase64().length() +
-		     QString("type=0014&content=\r\n\r\n\r\n").length()).
-     toLatin1());
+     QByteArray::number(uuid.toBase64().length() +
+			QString("type=0014&content=\r\n\r\n\r\n").length()));
   results.replace
     ("%2", uuid.toBase64());
   return results;
@@ -286,9 +276,8 @@ QByteArray spoton_send::message0030(const QByteArray &message)
      "\r\n\r\n");
   results.replace
     ("%1",
-     QString::number(message.toBase64().length() +
-		     QString("type=0030&content=\r\n\r\n\r\n").length()).
-     toLatin1());
+     QByteArray::number(message.toBase64().length() +
+			QString("type=0030&content=\r\n\r\n\r\n").length()));
   results.replace
     ("%2", message.toBase64());
   return results;
@@ -310,17 +299,16 @@ QByteArray spoton_send::message0030(const QHostAddress &address,
      "\r\n\r\n");
   content.append(address.toString().toLatin1().toBase64());
   content.append("\n");
-  content.append(QString::number(port).toLatin1().toBase64());
+  content.append(QByteArray::number(port).toBase64());
   content.append("\n");
   content.append(address.scopeId().toLatin1().toBase64());
   content.append("\n");
   content.append(transport.toLatin1().toBase64());
   results.replace
     ("%1",
-     QString::number(content.toBase64().length() +
-		     QString("type=0030&content=\r\n\r\n\r\n").
-		     length()).
-     toLatin1());
+     QByteArray::number(content.toBase64().length() +
+			QString("type=0030&content=\r\n\r\n\r\n").
+			length()));
   results.replace
     ("%2", content.toBase64());
   return results;
@@ -339,10 +327,9 @@ QByteArray spoton_send::message0040a(const QByteArray &message)
      "\r\n\r\n");
   results.replace
     ("%1",
-     QString::number(message.toBase64().length() +
-		     QString("content=\r\n\r\n\r\n").
-		     length()).
-     toLatin1());
+     QByteArray::number(message.toBase64().length() +
+			QString("content=\r\n\r\n\r\n").
+			length()));
   results.replace
     ("%2", message.toBase64());
   return results;
@@ -366,9 +353,8 @@ QByteArray spoton_send::message0040b(const QByteArray &message,
      "\r\n\r\n");
   results.replace
     ("%1",
-     QString::number(message.toBase64().length() +
-		     QString("content=\r\n\r\n\r\n").length()).
-     toLatin1());
+     QByteArray::number(message.toBase64().length() +
+			QString("content=\r\n\r\n\r\n").length()));
   results.replace
     ("%2", message.toBase64());
   return results;
@@ -392,10 +378,9 @@ QByteArray spoton_send::message0050(const QByteArray &saltedCredentials,
   content.append(salt.toBase64());
   results.replace
     ("%1",
-     QString::number(content.toBase64().length() +
-		     QString("type=0050&content=\r\n\r\n\r\n").
-		     length()).
-     toLatin1());
+     QByteArray::number(content.toBase64().length() +
+			QString("type=0050&content=\r\n\r\n\r\n").
+			length()));
   results.replace
     ("%2", content.toBase64());
   return results;
@@ -419,10 +404,9 @@ QByteArray spoton_send::message0051(const QByteArray &saltedCredentials,
   content.append(salt.toBase64());
   results.replace
     ("%1",
-     QString::number(content.toBase64().length() +
-		     QString("type=0051&content=\r\n\r\n\r\n").
-		     length()).
-     toLatin1());
+     QByteArray::number(content.toBase64().length() +
+			QString("type=0051&content=\r\n\r\n\r\n").
+			length()));
   results.replace
     ("%2", content.toBase64());
   return results;
@@ -441,11 +425,31 @@ QByteArray spoton_send::message0052(void)
      "\r\n\r\n");
   results.replace
     ("%1",
-     QString::number(QByteArray("0").toBase64().length() +
-		     QString("type=0052&content=\r\n\r\n\r\n").length()).
-     toLatin1());
+     QByteArray::number(QByteArray("0").toBase64().length() +
+			QString("type=0052&content=\r\n\r\n\r\n").length()));
   results.replace
     ("%2", QByteArray("0").toBase64());
+  return results;
+}
+
+QByteArray spoton_send::message0060(const QByteArray &message)
+{
+  QByteArray results;
+
+  results.append
+    ("POST HTTP/1.1\r\n"
+     "Content-Type: application/x-www-form-urlencoded\r\n"
+     "Content-Length: %1\r\n"
+     "\r\n"
+     "content=%2\r\n"
+     "\r\n\r\n");
+  results.replace
+    ("%1",
+     QByteArray::number(message.toBase64().length() +
+			QString("content=\r\n\r\n\r\n").
+			length()));
+  results.replace
+    ("%2", message.toBase64());
   return results;
 }
 
@@ -462,10 +466,9 @@ QByteArray spoton_send::message0065(const QByteArray &magnet)
      "\r\n\r\n");
   results.replace
     ("%1",
-     QString::number(magnet.toBase64().length() +
-		     QString("type=0065&content=\r\n\r\n\r\n").
-		     length()).
-     toLatin1());
+     QByteArray::number(magnet.toBase64().length() +
+			QString("type=0065&content=\r\n\r\n\r\n").
+			length()));
   results.replace
     ("%2", magnet.toBase64());
   return results;

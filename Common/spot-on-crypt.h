@@ -65,7 +65,7 @@ class spoton_crypt
 			       QString &error);
   static QByteArray keyedHash(const QByteArray &data,
 			      const QByteArray &key,
-			      const QString &hashType,
+			      const QByteArray &hashType,
 			      bool *ok);
   static QByteArray publicKeyEncrypt(const QByteArray &data,
 				     const QByteArray &publicKey,

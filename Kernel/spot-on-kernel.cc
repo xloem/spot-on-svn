@@ -84,7 +84,7 @@ QMultiMap<QDateTime, QByteArray> spoton_kernel::s_messagingCacheMap;
 QMutex spoton_kernel::s_buzzKeysMutex;
 QMutex spoton_kernel::s_messagingCacheMutex;
 QMutex spoton_kernel::s_settingsMutex;
-static QPointer<spoton_kernel> s_kernel = 0;
+QPointer<spoton_kernel> spoton_kernel::s_kernel = 0;
 
 static void sig_handler(int signum)
 {
@@ -236,7 +236,7 @@ int main(int argc, char *argv[])
 
   if(err == LIBSPOTON_ERROR_NONE)
     {
-      s_kernel = new spoton_kernel();
+      spoton_kernel::s_kernel = new spoton_kernel();
       return qapplication.exec();
     }
   else

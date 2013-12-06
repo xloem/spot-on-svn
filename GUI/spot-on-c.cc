@@ -825,7 +825,7 @@ void spoton::slotTransmit(void)
 
     if(db.open())
       {
-	QByteArray mosaic(spoton_crypt::strongRandomBytes(256).toBase64());
+	QByteArray mosaic(spoton_crypt::strongRandomBytes(64).toBase64());
 	QSqlQuery query(db);
 
 	query.prepare("INSERT INTO transmitted "
@@ -833,8 +833,9 @@ void spoton::slotTransmit(void)
 		      "status_control, total_size) "
 		      "VALUES (?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue
-	  (0, s_crypt->encrypted(QString::number(m_ui.compress->isChecked()).
-				 toLatin1(), &ok).toBase64());
+	  (0, s_crypt->
+	   encrypted(QByteArray::number(m_ui.compress->isChecked()),
+		     &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
@@ -856,8 +857,8 @@ void spoton::slotTransmit(void)
 	if(ok)
 	  query.bindValue
 	    (4, s_crypt->
-	     encrypted(QString::number(m_ui.pulseSize->
-				       value()).toLatin1(), &ok).toBase64());
+	     encrypted(QByteArray::number(m_ui.pulseSize->
+					  value()), &ok).toBase64());
 
 	query.bindValue(5, "paused");
 

@@ -638,7 +638,9 @@ void spoton_buzzpage::slotSave(void)
 
 	data.append(m_channel.toBase64());
 	data.append("\n");
-	data.append(QString::number(m_iterationCount).toLatin1().toBase64());
+	data.append
+	  (QByteArray::number(static_cast<qulonglong> (m_iterationCount)).
+	   toBase64());
 	data.append("\n");
 	data.append(m_channelSalt.toBase64());
 	data.append("\n");
@@ -700,7 +702,9 @@ void spoton_buzzpage::slotRemove(void)
 
 	data.append(m_channel.toBase64());
 	data.append("\n");
-	data.append(QString::number(m_iterationCount).toLatin1().toBase64());
+	data.append
+	  (QByteArray::number(static_cast<qulonglong> (m_iterationCount)).
+	   toBase64());
 	data.append("\n");
 	data.append(m_channelSalt.toBase64());
 	data.append("\n");

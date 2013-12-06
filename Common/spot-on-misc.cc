@@ -1351,7 +1351,7 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	  query.bindValue
 	    (4,
 	     crypt->
-	     encrypted(QString::number(port).toLatin1(), &ok).toBase64());
+	     encrypted(QByteArray::number(port), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue

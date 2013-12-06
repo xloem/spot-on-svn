@@ -308,6 +308,7 @@ void spoton_starbeam_reader::pulsate(const bool compress,
 	  if((rc = file.read(buffer.data(), buffer.length())) > 0)
 	    {
 	      QByteArray data(buffer.mid(0, rc));
+	      QByteArray messageCode;
 	      bool ok = true;
 	      spoton_crypt crypt(elements.value("ct").constData(),
 				 QString(""),
@@ -320,12 +321,29 @@ void spoton_starbeam_reader::pulsate(const bool compress,
 	      if(compress)
 		data = qCompress(data, 9);
 
+	      data = crypt.encrypted
+		(QByteArray("0060").toBase64() + "\n" +
+		 mosaic.toBase64() + "\n" +
+		 QByteArray::number(m_position).toBase64() + "\n" +
+		 pulseSize.toLatin1().toBase64() + "\n" +
+		 fileSize.toLatin1().toBase64() + "\n" +
+		 data.toBase64(), &ok);
+
+	      if(ok)
+		messageCode = spoton_crypt::keyedHash
+		  (data,
+		   elements.value("mk"),
+		   elements.value("ht"),
+		   &ok);
+
+	      if(ok)
+		data = data.toBase64() + "\n" +
+		  messageCode.toBase64();
+
 	      if(ok)
 		m_position += rc;
 	    }
 	}
 
   file.close();
-  Q_UNUSED(mosaic);
-  Q_UNUSED(fileSize);
 }

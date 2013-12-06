@@ -101,8 +101,9 @@ void spoton::slotSendMessage(void)
 	  message.append(m_ui.message->toPlainText().trimmed().toUtf8().
 			 toBase64());
 	  message.append("_");
-	  message.append(QString::number(m_chatSequenceNumbers[data.toInt()]).
-			 toLatin1().toBase64());
+	  message.append
+	    (QByteArray::number(m_chatSequenceNumbers[data.toInt()]).
+	     toBase64());
 	  message.append("_");
 	  message.append(QDateTime::currentDateTime().toUTC().
 			 toString("hhmmss").toLatin1().toBase64());
@@ -3568,7 +3569,7 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 	    if(ok)
 	      updateQuery.bindValue
 		(0, m_crypts.value("email")->
-		 encrypted(QString::number(0).toLatin1(), &ok).
+		 encrypted(QByteArray::number(0), &ok).
 		 toBase64());
 
 	    if(ok)

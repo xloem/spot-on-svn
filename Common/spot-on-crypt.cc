@@ -2242,13 +2242,13 @@ void spoton_crypt::generatePrivatePublicKeys(const int keySize,
 
 QByteArray spoton_crypt::keyedHash(const QByteArray &data,
 				   const QByteArray &key,
-				   const QString &hashType,
+				   const QByteArray &hashType,
 				   bool *ok)
 {
   QByteArray hash;
   gcry_error_t err = 0;
   gcry_md_hd_t hd;
-  int hashAlgorithm = gcry_md_map_name(hashType.toLatin1().constData());
+  int hashAlgorithm = gcry_md_map_name(hashType.constData());
 
   if(hashAlgorithm == 0)
     {
@@ -2322,7 +2322,7 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data,
 		  spoton_misc::logError
 		    (QString("spoton_crypt::keyedHash(): "
 			     "gcry_md_get_algo_dlen() "
-			     "failure for %1.").arg(hashType));
+			     "failure for %1.").arg(hashType.constData()));
 		}
 	    }
 	  else

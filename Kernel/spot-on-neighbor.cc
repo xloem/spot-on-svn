@@ -307,7 +307,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   else
     m_externalAddressDiscovererTimer.setInterval(30000);
 
-  m_keepAliveTimer.start(45000);
+  m_keepAliveTimer.start(30000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
   start();
@@ -569,7 +569,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   else
     m_externalAddressDiscovererTimer.setInterval(30000);
 
-  m_keepAliveTimer.setInterval(45000);
+  m_keepAliveTimer.setInterval(30000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
   start();
@@ -1858,9 +1858,9 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 	      QByteArray messageCode(list.value(2));
 
 	      computedHash = spoton_crypt::keyedHash(data,
-							    hashKey,
-							    "sha512",
-							    &ok);
+						     hashKey,
+						     "sha512",
+						     &ok);
 
 	      if(ok)
 		{
@@ -2036,7 +2036,7 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 	  QByteArray messageCode(list.value(2));
 
 	  computedHash = spoton_crypt::keyedHash(data, hashKey,
-							"sha512", &ok);
+						 "sha512", &ok);
 
 	  if(ok)
 	    {
@@ -4007,7 +4007,7 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 	if(ok)
 	  query.bindValue
 	    (2, s_crypt->
-	     encrypted(QString::number(goldbugUsed).toLatin1(), &ok).
+	     encrypted(QByteArray::number(goldbugUsed), &ok).
 	     toBase64());
 
 	if(ok)
@@ -4045,7 +4045,7 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 	if(ok)
 	  query.bindValue
 	    (10, s_crypt->
-	     encrypted(QString::number(-1).toLatin1(), &ok).
+	     encrypted(QByteArray::number(-1), &ok).
 	     toBase64());
 
 	if(ok)

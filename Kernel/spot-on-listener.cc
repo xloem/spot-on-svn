@@ -781,8 +781,8 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 	      query.bindValue
 		(4,
 		 s_crypt->
-		 encrypted(QString::number(neighbor->peerPort()).
-			   toLatin1(), &ok).toBase64());
+		 encrypted(QByteArray::number(neighbor->peerPort()),
+			   &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue

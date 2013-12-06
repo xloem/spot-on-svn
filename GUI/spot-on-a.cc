@@ -4379,11 +4379,23 @@ void spoton::slotKernelSocketState(void)
 	{
 	  sendBuzzKeysToKernel();
 	  sendKeysToKernel();
+
+	  QSslCipher cipher(m_kernelSocket.sessionCipher());
+	  QString str(QString("%1-%2-%3-%4-%5-%6-%7").
+		      arg(cipher.name()).
+		      arg(cipher.authenticationMethod()).
+		      arg(cipher.encryptionMethod()).
+		      arg(cipher.keyExchangeMethod()).
+		      arg(cipher.protocolString()).
+		      arg(cipher.supportedBits()).
+		      arg(cipher.usedBits()));
+
 	  m_sb.kernelstatus->setToolTip
 	    (tr("Connected securely to the kernel on port %1 "
-		"from local port %2.").
+		"from local port %2 via cipher %3.").
 	     arg(m_kernelSocket.peerPort()).
-	     arg(m_kernelSocket.localPort()));
+	     arg(m_kernelSocket.localPort()).
+	     arg(str));
 	}
       else
 	m_sb.kernelstatus->setToolTip
@@ -6176,6 +6188,9 @@ void spoton::slotPopulateBuzzFavorites(void)
 	  action->deleteLater();
 	}
     }
+
+  m_ui.favorites->setMinimumContentsLength
+    (m_ui.favorites->itemText(0).length());
 }
 
 void spoton::slotFavoritesActivated(int index)
