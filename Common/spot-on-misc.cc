@@ -395,7 +395,8 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS magnets ("
 		   "magnet BLOB NOT NULL, "
 		   "magnet_hash TEXT PRIMARY KEY NOT NULL, "
-		   "one_time_magnet INTEGER NOT NULL DEFAULT 1)");
+		   "one_time_magnet INTEGER NOT NULL DEFAULT 1, "
+		   "used INTEGER NOT NULL DEFAULT 0)");
 	query.exec("CREATE TABLE IF NOT EXISTS received ("
 		   "folder TEXT NOT NULL, "
 		   "mosaic TEXT PRIMARY KEY NOT NULL, "
