@@ -104,15 +104,23 @@ struct gcry_thread_cbs gcry_threads_qt =
   };
 #endif
 
-void spoton_crypt::init(void)
+static bool gcryctl_set_thread_cbs_set = false;
+
+void spoton_crypt::init(const int secureMemorySize)
 {
-  if(!gcry_control(GCRYCTL_INITIALIZATION_FINISHED_P))
+  if(!gcryctl_set_thread_cbs_set)
     {
+      gcryctl_set_thread_cbs_set = true;
 #ifdef SPOTON_LINKED_WITH_LIBPTHREAD
       gcry_control(GCRYCTL_SET_THREAD_CBS, &gcry_threads_pthread, 0);
 #else
       gcry_control(GCRYCTL_SET_THREAD_CBS, &gcry_threads_qt, 0);
 #endif
+    }
+
+  if(!gcry_control(GCRYCTL_INITIALIZATION_FINISHED_P))
+    {
+      gcry_control(GCRYCTL_ENABLE_M_GUARD);
 
       if(!gcry_check_version(GCRYPT_VERSION))
 	spoton_misc::logError
@@ -121,15 +129,14 @@ void spoton_crypt::init(void)
 	   "settings.");
       else
 	{
-	  gcry_error_t err = 0;
-
-	  gcry_control(GCRYCTL_ENABLE_M_GUARD);
 	  gcry_control(GCRYCTL_SUSPEND_SECMEM_WARN);
 #ifdef Q_OS_FREEBSD
-	  gcry_control(GCRYCTL_INIT_SECMEM, 65536, 0);
+	  gcry_control(GCRYCTL_INIT_SECMEM, secureMemorySize, 0);
 #else
-	  if((err = gcry_control(GCRYCTL_INIT_SECMEM, 65536, 0)) != 0)
-#endif
+	  gcry_error_t err = 0;
+
+	  if((err = gcry_control(GCRYCTL_INIT_SECMEM, secureMemorySize,
+				 0)) != 0)
 	    {
 	      QByteArray buffer(64, '0');
 
@@ -139,16 +146,15 @@ void spoton_crypt::init(void)
 			 "secure memory failure (%1).").
 		 arg(buffer.constData()));
 	    }
+#endif
 
 	  gcry_control(GCRYCTL_RESUME_SECMEM_WARN);
-
-	  if(err == 0)
-	    gcry_control(GCRYCTL_INITIALIZATION_FINISHED, 0);
+	  gcry_control(GCRYCTL_INITIALIZATION_FINISHED, 0);
 	}
     }
   else
-    {
-    }
+    spoton_misc::logError
+      ("spoton_crypt::init(): libgcrypt is already initialized.");
 
   SSL_library_init();
 }
@@ -1089,6 +1095,11 @@ spoton_crypt::~spoton_crypt()
   gcry_cipher_close(m_cipherHandle);
   gcry_free(m_privateKey);
   gcry_free(m_symmetricKey);
+}
+
+void spoton_crypt::terminate(void)
+{
+  gcry_control(GCRYCTL_TERM_SECMEM);
 }
 
 QByteArray spoton_crypt::decrypted(const QByteArray &data, bool *ok)

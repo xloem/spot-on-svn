@@ -31,7 +31,6 @@
 
 int main(int argc, char *argv[])
 {
-  spoton_crypt::init();
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
   QApplication::setStyle(new QMacStyle());
@@ -96,6 +95,9 @@ int main(int argc, char *argv[])
   if(!settings.contains("gui/tcp_nodelay"))
     settings.setValue("gui/tcp_nodelay", 1);
 
+  spoton_crypt::init
+    (qMax(qAbs(settings.value("gui/gcryctl_init_secmem", 65536).
+	       toInt()), 65536));
   Q_UNUSED(new spoton());
   return qapplication.exec();
 }
@@ -535,6 +537,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(valueChanged(int)),
 	  this,
 	  SLOT(slotMailRetrievalIntervalChanged(int)));
+  connect(m_ui.guiSecureMemoryPool,
+	  SIGNAL(valueChanged(int)),
+	  this,
+	  SLOT(slotSecureMemoryPoolChanged(int)));
+  connect(m_ui.kernelSecureMemoryPool,
+	  SIGNAL(valueChanged(int)),
+	  this,
+	  SLOT(slotSecureMemoryPoolChanged(int)));
   connect(m_ui.reply,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -1226,6 +1236,10 @@ spoton::spoton(void):QMainWindow()
 
   m_ui.destination->setText(m_settings.value("gui/etpDestinationPath", "").
 			    toString().trimmed());
+  m_ui.guiSecureMemoryPool->setValue
+    (m_settings.value("gui/gcryctl_init_secmem", 65536).toInt());
+  m_ui.kernelSecureMemoryPool->setValue
+    (m_settings.value("kernel/gcryctl_init_secmem", 65536).toInt());
   m_ui.destination->setToolTip(m_ui.destination->text());
   m_ui.emailParticipants->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.etpMagnets->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -1401,6 +1415,7 @@ void spoton::slotQuit(void)
     }
 
   m_crypts.clear();
+  spoton_crypt::terminate();
   QApplication::instance()->quit();
 }
 

@@ -1277,3 +1277,19 @@ void spoton::slotDeleteTransmitted(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 }
+
+void spoton::slotSecureMemoryPoolChanged(int value)
+{
+  QSettings settings;
+
+  if(m_ui.guiSecureMemoryPool == sender())
+    {
+      m_settings["gui/gcryctl_init_secmem"] = value;
+      settings.setValue("gui/gcryctl_init_secmem", value);
+    }
+  else
+    {
+      m_settings["kernel/gcryctl_init_secmem"] = value;
+      settings.setValue("kernel/gcryctl_init_secmem", value);
+    }
+}

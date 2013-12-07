@@ -134,6 +134,7 @@ static void sig_handler(int signum)
 
   libspoton_close(&libspotonHandle);
   QFile::remove(spoton_misc::homePath() + QDir::separator() + "kernel.db");
+  spoton_crypt::terminate();
 
   /*
   ** _Exit() and _exit() may be safely called from signal handlers.
@@ -144,8 +145,6 @@ static void sig_handler(int signum)
 
 int main(int argc, char *argv[])
 {
-  spoton_crypt::init();
-
   QList<int> list;
 #if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
   struct sigaction act;
@@ -208,10 +207,11 @@ int main(int argc, char *argv[])
   if(!settings.contains("kernel/tcp_nodelay"))
     settings.setValue("kernel/tcp_nodelay", 1);
 
-  int integer = settings.value("kernel/gcryctl_init_secmem", 65536).toInt();
+  int integer = qMax
+    (qAbs(settings.value("kernel/gcryctl_init_secmem", 65536).toInt()),
+     65536);
 
-  if(integer < 65536)
-    integer = 65536;
+  spoton_crypt::init(integer);
 
   QString sharedPath(spoton_misc::homePath() + QDir::separator() +
 		     "shared.db");
@@ -492,6 +492,7 @@ spoton_kernel::~spoton_kernel()
   s_crypts.clear();
   spoton_misc::logError(QString("Kernel %1 about to exit.").
 			arg(QCoreApplication::applicationPid()));
+  spoton_crypt::terminate();
   QCoreApplication::instance()->quit();
 }
 

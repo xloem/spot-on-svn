@@ -101,7 +101,7 @@ class spoton_crypt
 			      const QHostAddress &address,
 			      const long days,
 			      QString &error);
-  static void init(void);
+  static void init(const int secureMemorySize);
   static void purgeDatabases(void);
   static void reencodeKeys(const QString &newCipher,
 			   const QByteArray &newPassphrase,
@@ -111,6 +111,7 @@ class spoton_crypt
 			   QString &error);
   static void setSslCiphers(const QList<QSslCipher> &ciphers,
 			    QSslConfiguration &configuration);
+  static void terminate(void);
   spoton_crypt(const QString &id); // Random object?
   spoton_crypt(const QString &cipherType,
 		const QString &hashType,

@@ -363,8 +363,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1182</width>
-                <height>577</height>
+                <width>643</width>
+                <height>421</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1968,8 +1968,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>278</width>
-                 <height>557</height>
+                 <width>214</width>
+                 <height>415</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3280,7 +3280,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-74</y>
+             <y>0</y>
              <width>1154</width>
              <height>641</height>
             </rect>
@@ -3327,6 +3327,26 @@
                   <string>Never</string>
                  </property>
                 </item>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_60">
+                <property name="text">
+                 <string>&amp;Secure Memory Pool</string>
+                </property>
+                <property name="buddy">
+                 <cstring>guiSecureMemoryPool</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="guiSecureMemoryPool">
+                <property name="minimum">
+                 <number>65536</number>
+                </property>
+                <property name="maximum">
+                 <number>999999999</number>
+                </property>
                </widget>
               </item>
               <item>
@@ -3464,6 +3484,26 @@
                        <string>Never</string>
                       </property>
                      </item>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_68">
+                     <property name="text">
+                      <string>&amp;Secure Memory Pool</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>kernelSecureMemoryPool</cstring>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSpinBox" name="kernelSecureMemoryPool">
+                     <property name="minimum">
+                      <number>65536</number>
+                     </property>
+                     <property name="maximum">
+                      <number>999999999</number>
+                     </property>
                     </widget>
                    </item>
                    <item>
@@ -3712,6 +3752,9 @@
                     </property>
                     <item>
                      <widget class="QTableWidget" name="kernelStatistics">
+                      <property name="verticalScrollBarPolicy">
+                       <enum>Qt::ScrollBarAlwaysOn</enum>
+                      </property>
                       <property name="alternatingRowColors">
                        <bool>true</bool>
                       </property>
@@ -4140,6 +4183,9 @@
                <layout class="QVBoxLayout" name="verticalLayout_48">
                 <item>
                  <widget class="QTableWidget" name="etpMagnets">
+                  <property name="verticalScrollBarPolicy">
+                   <enum>Qt::ScrollBarAlwaysOn</enum>
+                  </property>
                   <property name="alternatingRowColors">
                    <bool>true</bool>
                   </property>
@@ -4485,6 +4531,9 @@
                    </item>
                    <item>
                     <widget class="QTableWidget" name="received">
+                     <property name="verticalScrollBarPolicy">
+                      <enum>Qt::ScrollBarAlwaysOn</enum>
+                     </property>
                      <property name="alternatingRowColors">
                       <bool>true</bool>
                      </property>
@@ -4558,6 +4607,9 @@
                       <enum>Qt::Horizontal</enum>
                      </property>
                      <widget class="QTableWidget" name="transmitted">
+                      <property name="verticalScrollBarPolicy">
+                       <enum>Qt::ScrollBarAlwaysOn</enum>
+                      </property>
                       <property name="alternatingRowColors">
                        <bool>true</bool>
                       </property>
@@ -4621,6 +4673,9 @@
                       </column>
                      </widget>
                      <widget class="QTableWidget" name="transmittersMagnets">
+                      <property name="verticalScrollBarPolicy">
+                       <enum>Qt::ScrollBarAlwaysOn</enum>
+                      </property>
                       <property name="alternatingRowColors">
                        <bool>true</bool>
                       </property>
@@ -5651,12 +5706,14 @@
   <tabstop>modifyURL</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>guiExternalIpFetch</tabstop>
+  <tabstop>guiSecureMemoryPool</tabstop>
   <tabstop>geoipPath</tabstop>
   <tabstop>selectGeoIP</tabstop>
   <tabstop>sslControlString</tabstop>
   <tabstop>saveSslControlString</tabstop>
   <tabstop>testSslControlString</tabstop>
   <tabstop>kernelExternalIpFetch</tabstop>
+  <tabstop>kernelSecureMemoryPool</tabstop>
   <tabstop>kernelPath</tabstop>
   <tabstop>selectKernelPath</tabstop>
   <tabstop>activateKernel</tabstop>
