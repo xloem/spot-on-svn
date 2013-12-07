@@ -944,7 +944,10 @@ void spoton::slotTransmit(void)
   if(!error.isEmpty())
     QMessageBox::critical(this, tr("Spot-On: Error"), error);
   else
-    m_ui.transmittedFile->clear();
+    {
+      m_ui.compress->setChecked(false);
+      m_ui.transmittedFile->clear();
+    }
 }
 
 void spoton::slotAcceptBuzzMagnets(bool state)
