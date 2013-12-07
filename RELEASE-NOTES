@@ -130,6 +130,13 @@
 63.  Instruct the kernel's UI server to adhere to the value of the
      SSL Control String.
 64.  Decreased the keep-alive timer interval to 30 seconds from 45 seconds.
+65.  Allow control of the secure memory pool sizes from the interface.
+     Please see the Settings panel.
+66.  Destroy the secure memory handler whenever a process exits.
+67.  gcry_control(GCRYCTL_ENABLE_M_GUARD) may not be issued after
+     gcry_check_version(). Corrected.
+68.  gcry_control(GCRYCTL_SET_THREAD_CBS) must be issued before any other
+     libgcrypt function for multi-threaded applications. Corrected.
 
 0.06 (10/24/2013)
 
