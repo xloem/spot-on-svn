@@ -2943,3 +2943,22 @@ void spoton_kernel::slotBuzzMagnedReceivedFromUI(const qint64 oid,
       neighbor->addToBytesWritten(data.length());
     }
 }
+
+void spoton_kernel::writeToNeighbors(const QByteArray &data, bool *ok)
+{
+  if(*ok)
+    *ok = false;
+
+  QHashIterator<qint64, QPointer<spoton_neighbor> > it(m_neighbors);
+
+  while(it.hasNext())
+    {
+      it.next();
+
+      if(it.value())
+	if(it.value()->
+	   write(data.constData(), data.length()) == data.length())
+	  if(ok)
+	    *ok = true;
+    }
+}

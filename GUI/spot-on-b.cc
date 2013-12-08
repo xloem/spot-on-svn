@@ -4375,7 +4375,9 @@ void spoton::slotDeleteAccepedIP(void)
 	  (0, s_crypt->keyedHash(ip.toLatin1(),
 				 &ok).toBase64());
 	query.bindValue(1, oid);
-	query.exec();
+
+	if(ok)
+	  query.exec();
       }
 
     db.close();

@@ -297,6 +297,7 @@ void spoton_starbeam_reader::pulsate(const bool compress,
     return;
 
   QFile file(fileName);
+  bool ok = false;
 
   if(file.open(QIODevice::ReadOnly))
     if(file.seek(m_position))
@@ -309,7 +310,6 @@ void spoton_starbeam_reader::pulsate(const bool compress,
 	    {
 	      QByteArray data(buffer.mid(0, rc));
 	      QByteArray messageCode;
-	      bool ok = true;
 	      spoton_crypt crypt(elements.value("ct").constData(),
 				 QString(""),
 				 QByteArray(),
@@ -341,9 +341,56 @@ void spoton_starbeam_reader::pulsate(const bool compress,
 		  messageCode.toBase64();
 
 	      if(ok)
+		data = spoton_send::message0060(data);
+
+	      if(ok)
+		spoton_kernel::s_kernel->writeToNeighbors(data, &ok);
+
+	      if(ok)
 		m_position += rc;
 	    }
 	}
 
   file.close();
+
+  if(ok)
+    savePosition();
+}
+
+void spoton_starbeam_reader::savePosition(void)
+{
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "starbeam.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("UPDATE transmitted "
+		      "SET position = ? "
+		      "WHERE OID = ?");
+	query.bindValue
+	  (0, s_crypt->encrypted(QByteArray::number(m_position),
+				 &ok).toBase64());
+	query.bindValue(1, m_id);
+
+	if(ok)
+	  query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }

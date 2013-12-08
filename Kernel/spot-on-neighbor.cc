@@ -875,6 +875,7 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
 
   QSqlQuery query(db);
   QSslCipher cipher;
+  bool ok = true;
 
   if(m_tcpSocket)
     cipher = m_tcpSocket->sessionCipher();
@@ -899,8 +900,6 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
     query.bindValue(3, QVariant::String);
   else
     {
-      bool ok = true;
-
       query.bindValue
 	(3, spoton_kernel::s_crypts.value("chat")->
 	 encrypted(QString("%1-%2-%3-%4-%5-%6-%7").
@@ -919,7 +918,9 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
   query.bindValue(4, seconds);
   query.bindValue(5, m_id);
   query.bindValue(6, seconds);
-  query.exec();
+
+  if(ok)
+    query.exec();
 }
 
 void spoton_neighbor::saveStatus(const QString &status)
@@ -1389,12 +1390,16 @@ void spoton_neighbor::slotConnected(void)
 		    query.bindValue(3, m_udpSocket->localPort());
 		  }
 
-		query.bindValue
-		  (4, s_crypt->keyedHash(country.remove(" ").
-					 toLatin1(), &ok).
-		   toBase64());
+		if(ok)
+		  query.bindValue
+		    (4, s_crypt->keyedHash(country.remove(" ").
+					   toLatin1(), &ok).
+		     toBase64());
+
 		query.bindValue(5, m_id);
-		query.exec();
+
+		if(ok)
+		  query.exec();
 	      }
 
 	    db.close();
@@ -3496,7 +3501,6 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 	    if(db.open())
 	      {
 		QSqlQuery query(db);
-		bool ok = true;
 
 		query.prepare("PRAGMA synchronous = OFF");
 		query.prepare("UPDATE neighbors SET "
@@ -3506,9 +3510,7 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 		query.bindValue
 		  (0, m_accountAuthenticated ? 1 : 0);
 		query.bindValue(1, m_id);
-
-		if(ok)
-		  query.exec();
+		query.exec();
 	      }
 
 	    db.close();
@@ -3550,7 +3552,6 @@ void spoton_neighbor::process0065(int length, const QByteArray &dataIn)
 	if(spoton_misc::isValidBuzzMagnetData(data))
 	  {
 	    QString connectionName("");
-	    bool ok = true;
 
 	    {
 	      QSqlDatabase db = spoton_misc::database(connectionName);
@@ -3562,6 +3563,7 @@ void spoton_neighbor::process0065(int length, const QByteArray &dataIn)
 	      if(db.open())
 		{
 		  QSqlQuery query(db);
+		  bool ok = true;
 
 		  query.prepare("INSERT OR REPLACE INTO buzz_channels "
 				"(data, data_hash) "
@@ -4969,5 +4971,6 @@ QString spoton_neighbor::transport(void) const
 void spoton_neighbor::deleteLater(void)
 {
   abort();
+  quit();
   QThread::deleteLater();
 }

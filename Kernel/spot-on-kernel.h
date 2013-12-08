@@ -75,6 +75,7 @@ class spoton_kernel: public QObject
   static void clearBuzzKeysContainer(void);
   static void messagingCacheAdd(const QByteArray &data);
   static void removeBuzzKey(const QByteArray &data);
+  void writeToNeighbors(const QByteArray &data, bool *ok);
 
  private:
   static QHash<QString, QVariant> s_settings;

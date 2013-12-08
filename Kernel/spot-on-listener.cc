@@ -687,9 +687,10 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 	   keyedHash(neighbor->peerAddress().
 		     toString().toLatin1(), &ok).toBase64());
 
-	if(query.exec())
-	  if(query.next())
-	    count = query.value(0).toInt();
+	if(ok)
+	  if(query.exec())
+	    if(query.next())
+	      count = query.value(0).toInt();
       }
 
     db.close();

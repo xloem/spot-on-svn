@@ -58,6 +58,7 @@ class spoton_starbeam_reader: public QObject
 	       const QString &fileSize,
 	       const QByteArray &magnet,
 	       spoton_crypt *s_crypt);
+  void savePosition(void);
 
  private slots:
   void slotTimeout(void);

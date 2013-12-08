@@ -1747,9 +1747,10 @@ bool spoton_misc::isAcceptedIP(const QHostAddress &address,
 
 	query.bindValue(2, id);
 
-	if(query.exec())
-	  if(query.next())
-	    count = query.value(0).toInt();
+	if(ok)
+	  if(query.exec())
+	    if(query.next())
+	      count = query.value(0).toInt();
       }
 
     db.close();
