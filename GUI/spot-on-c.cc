@@ -289,7 +289,6 @@ void spoton::slotPopulateEtpMagnets(void)
 	    }
 
 	m_ui.etpMagnets->setSortingEnabled(true);
-	m_ui.transmittersMagnets->resizeColumnsToContents();
 	m_ui.transmittersMagnets->setSortingEnabled(true);
 
 	if(focusWidget)
