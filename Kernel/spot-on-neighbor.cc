@@ -1227,6 +1227,7 @@ void spoton_neighbor::slotReadyRead(void)
 	    process0065(length, data);
 	  else if(length > 0 && data.contains("content="))
 	    {
+	      resetKeepAlive();
 	      spoton_kernel::messagingCacheAdd(originalData);
 
 	      /*
@@ -3584,6 +3585,8 @@ void spoton_neighbor::process0065(int length, const QByteArray &dataIn)
 
 	    QSqlDatabase::removeDatabase(connectionName);
 	  }
+
+      resetKeepAlive();
     }
   else
     spoton_misc::logError
