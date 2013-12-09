@@ -697,7 +697,6 @@ void spoton::slotPopulateKernelStatistics(void)
 	    }
 
 	m_ui.kernelStatistics->setSortingEnabled(true);
-	m_ui.kernelStatistics->resizeColumnsToContents();
 	m_ui.kernelStatistics->horizontalHeader()->
 	  setStretchLastSection(true);
 
