@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1196</width>
+    <width>995</width>
     <height>686</height>
    </rect>
   </property>
@@ -363,8 +363,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>643</width>
-                <height>421</height>
+                <width>981</width>
+                <height>582</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1969,7 +1969,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>214</width>
-                 <height>415</height>
+                 <height>562</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2088,7 +2088,11 @@
                     <number>5</number>
                    </property>
                    <item>
-                    <widget class="QListWidget" name="acceptedIPList"/>
+                    <widget class="QListWidget" name="acceptedIPList">
+                     <property name="selectionBehavior">
+                      <enum>QAbstractItemView::SelectRows</enum>
+                     </property>
+                    </widget>
                    </item>
                    <item>
                     <widget class="QLineEdit" name="acceptedIP">
@@ -3281,8 +3285,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1154</width>
-             <height>641</height>
+             <width>953</width>
+             <height>611</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4160,8 +4164,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1172</width>
-             <height>567</height>
+             <width>971</width>
+             <height>572</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4439,6 +4443,71 @@
                </attribute>
                <layout class="QVBoxLayout" name="verticalLayout_46">
                 <item>
+                 <widget class="QGroupBox" name="groupBox_8">
+                  <property name="title">
+                   <string>NOVAs</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_25">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <property name="margin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QListWidget" name="novas">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="selectionBehavior">
+                      <enum>QAbstractItemView::SelectRows</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="receiveNova"/>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_43">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
+                     <item>
+                      <spacer name="horizontalSpacer_40">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="addNova">
+                       <property name="text">
+                        <string>Add</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="deleteNova">
+                       <property name="text">
+                        <string>Delete</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QGroupBox" name="receivers">
                   <property name="title">
                    <string>Received</string>
@@ -4705,6 +4774,23 @@
                     </widget>
                    </item>
                    <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_68">
+                     <item>
+                      <widget class="QLineEdit" name="transmitNova"/>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="generateNova">
+                       <property name="toolTip">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bundle each pulse with an additional layer of AES-256 encryption. Do remember to notify all recipients of the key.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                       <property name="text">
+                        <string>NOVA</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_44">
                      <property name="spacing">
                       <number>5</number>
@@ -4949,7 +5035,7 @@
             <item>
              <widget class="QTabWidget" name="urlTab">
               <property name="currentIndex">
-               <number>0</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="tab_2">
                <attribute name="title">
@@ -5465,8 +5551,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1196</width>
-     <height>27</height>
+     <width>995</width>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -5751,6 +5837,10 @@
   <tabstop>etpHashType</tabstop>
   <tabstop>etpMacKey</tabstop>
   <tabstop>addMagnet</tabstop>
+  <tabstop>novas</tabstop>
+  <tabstop>receiveNova</tabstop>
+  <tabstop>addNova</tabstop>
+  <tabstop>deleteNova</tabstop>
   <tabstop>receivers</tabstop>
   <tabstop>destination</tabstop>
   <tabstop>etpSelectDestination</tabstop>
@@ -5758,6 +5848,8 @@
   <tabstop>received</tabstop>
   <tabstop>transmitted</tabstop>
   <tabstop>transmittersMagnets</tabstop>
+  <tabstop>transmitNova</tabstop>
+  <tabstop>generateNova</tabstop>
   <tabstop>transmittedFile</tabstop>
   <tabstop>etpSelectFile</tabstop>
   <tabstop>pulseSize</tabstop>

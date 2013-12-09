@@ -3441,6 +3441,15 @@ void spoton::slotSetIcons(void)
   m_ui.setPassphrase->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
   m_ui.resetSpotOn->setIcon(QIcon(QString(":/%1/refresh.png").arg(iconSet)));
 
+  // StarBeam
+
+  m_ui.addNova->setIcon(QIcon(QString(":/%1/add.png").
+			      arg(iconSet)));
+  m_ui.deleteNova->setIcon(QIcon(QString(":/%1/clear.png").
+				 arg(iconSet)));
+  m_ui.generateNova->setIcon
+    (QIcon(QString(":/%1/lock.png").arg(iconSet)));
+
   // URLs
 
   m_ui.addDLDistiller->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
@@ -4305,7 +4314,7 @@ void spoton::slotAddAcceptedIP(void)
     m_ui.acceptedIP->clear();
   else
     QMessageBox::critical(this, tr("Spot-On: Error"),
-			  tr("Unable to store the IP address securely."));
+			  tr("Unable to store the IP address."));
 }
 
 void spoton::slotDeleteAccepedIP(void)

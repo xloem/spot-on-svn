@@ -841,9 +841,9 @@ void spoton::slotTransmit(void)
 	QSqlQuery query(db);
 
 	query.prepare("INSERT INTO transmitted "
-		      "(compress, file, mosaic, position, pulse_size, "
+		      "(compress, file, mosaic, nova, position, pulse_size, "
 		      "status_control, total_size) "
-		      "VALUES (?, ?, ?, ?, ?, ?, ?)");
+		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue
 	  (0, s_crypt->
 	   encrypted(QByteArray::number(m_ui.compress->isChecked()),
@@ -864,19 +864,24 @@ void spoton::slotTransmit(void)
 
 	if(ok)
 	  query.bindValue
-	    (3, s_crypt->encrypted(QByteArray("0"), &ok).toBase64());
+	    (3, s_crypt->encrypted(m_ui.transmitNova->text().trimmed().
+				   toLatin1(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (4, s_crypt->
+	    (4, s_crypt->encrypted(QByteArray("0"), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (5, s_crypt->
 	     encrypted(QByteArray::number(m_ui.pulseSize->
 					  value()), &ok).toBase64());
 
-	query.bindValue(5, "paused");
+	query.bindValue(6, "paused");
 
 	if(ok)
 	  query.bindValue
-	    (6, s_crypt->
+	    (7, s_crypt->
 	     encrypted(QString::
 		       number(QFileInfo(m_ui.transmittedFile->
 					text()).size()).toLatin1(),
@@ -909,7 +914,10 @@ void spoton::slotTransmit(void)
 	      break;
 
 	    if(query.lastError().isValid())
-	      break;
+	      {
+		error = query.lastError().text();
+		break;
+	      }
 
 	    query.prepare("UPDATE magnets SET "
 			  "used = 1 WHERE "
@@ -923,13 +931,19 @@ void spoton::slotTransmit(void)
 	      break;
 
 	    if(query.lastError().isValid())
-	      break;
+	      {
+		error = query.lastError().text();
+		break;
+	      }
 	  }
       }
 
     if(db.lastError().isValid())
       error = tr("A database error (%1) occurred.").
 	arg(db.lastError().text());
+    else if(!error.isEmpty())
+      error = tr("A database error (%1) occurred.").
+	arg(error);
     else if(!ok)
       error = tr("An error occurred within spoton_crypt.");
 
@@ -945,6 +959,7 @@ void spoton::slotTransmit(void)
   else
     {
       m_ui.compress->setChecked(false);
+      m_ui.transmitNova->clear();
       m_ui.transmittedFile->clear();
     }
 }
@@ -1294,4 +1309,183 @@ void spoton::slotSecureMemoryPoolChanged(int value)
       m_settings["kernel/gcryctl_init_secmem"] = value;
       settings.setValue("kernel/gcryctl_init_secmem", value);
     }
+}
+
+void spoton::slotAddReceiveNova(void)
+{
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object."));
+      return;
+    }
+
+  QString nova(m_ui.receiveNova->text().trimmed());
+
+  if(nova.isEmpty())
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Please provide a NOVA."));
+      return;
+    }
+
+  QString connectionName("");
+  bool ok = true;
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "starbeam.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare
+	  ("INSERT OR REPLACE INTO received_novas "
+	   "(nova, nova_hash) VALUES (?, ?)");
+
+	query.bindValue
+	  (0, s_crypt->encrypted(nova.toLatin1(),
+				 &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (1, s_crypt->keyedHash(nova.toLatin1(), &ok).
+	     toBase64());
+
+	if(ok)
+	  ok = query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  if(ok)
+    {
+      m_ui.receiveNova->clear();
+      populateNovas();
+    }
+  else
+    QMessageBox::critical(this, tr("Spot-On: Error"),
+			  tr("Unable to store the NOVA."));
+}
+
+void spoton::populateNovas(void)
+{
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "starbeam.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT nova FROM received_novas");
+
+	if(query.exec())
+	  {
+	    QStringList novas;
+
+	    m_ui.novas->clear();
+
+	    while(query.next())
+	      {
+		QString nova("");
+		bool ok = true;
+
+		nova = s_crypt->
+		  decrypted(QByteArray::
+			    fromBase64(query.
+				       value(0).
+				       toByteArray()),
+			    &ok).constData();
+
+		if(!nova.isEmpty())
+		  novas.append(nova);
+	      }
+
+	    qSort(novas);
+	    m_ui.novas->addItems(novas);
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton::slotDeleteNova(void)
+{
+  QList<QListWidgetItem *> list(m_ui.novas->selectedItems());
+
+  if(list.isEmpty())
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Please select a NOVA to delete."));
+      return;
+    }
+
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object."));
+      return;
+    }
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "starbeam.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("DELETE FROM received_novas WHERE "
+		      "nova_hash = ?");
+	query.bindValue
+	  (0, s_crypt->keyedHash(list.at(0)->text().toLatin1(), &ok).
+	   toBase64());
+
+	if(ok)
+	  query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  populateNovas();
+}
+
+void spoton::slotGenerateNova(void)
+{
+  QByteArray nova
+    (spoton_crypt::
+     strongRandomBytes(spoton_crypt::cipherKeyLength("aes256")));
+
+  m_ui.transmitNova->setText(nova.toBase64());
 }

@@ -322,15 +322,18 @@ Symmetric Key
 {
 0 - 0060 (Base-64)
 EOL
-1 - Mosaic (Base-64)
+Optional NOVA
+{
+0 - Mosaic (Base-64)
 EOL
-2 - Pulse Offset (Base-64)
+1 - Pulse Offset (Base-64)
 EOL
-3 - Pulse Size (Base-64)
+2 - Pulse Size (Base-64)
 EOL
-4 - Total Size (Base-64)
+3 - Total Size (Base-64)
 EOL
-5 - Pulse Data (Base-64)
+4 - Pulse Data (Base-64)
+}
 }
 EOL
 {

@@ -613,6 +613,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSaveSslControlString(void)));
+  connect(m_ui.addNova,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotAddReceiveNova(void)));
+  connect(m_ui.receiveNova,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotAddReceiveNova(void)));
   connect(m_ui.saveSslControlString,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -677,6 +685,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotDeleteAccepedIP(void)));
+  connect(m_ui.deleteNova,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotDeleteNova(void)));
   connect(m_ui.authenticate,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -705,6 +717,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(activated(int)),
 	  this,
 	  SLOT(slotGenerateEtpKeys(int)));
+  connect(m_ui.generateNova,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotGenerateNova(void)));
   connect(m_ui.addMagnet,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -996,6 +1012,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
 		       toByteArray()).trimmed());
+  m_ui.receiveNova->setMaxLength
+    (spoton_crypt::cipherKeyLength("aes256"));
   m_ui.sslControlString->setText
     (m_settings.value("gui/sslControlString",
 		      "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH").
@@ -1003,6 +1021,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.etpEncryptionKey->setMaxLength
     (spoton_crypt::cipherKeyLength("aes256"));
   m_ui.goldbug->setMaxLength
+    (spoton_crypt::cipherKeyLength("aes256"));
+  m_ui.transmitNova->setMaxLength
     (spoton_crypt::cipherKeyLength("aes256"));
   m_ui.channelType->clear();
   m_ui.channelType->addItems(spoton_crypt::cipherTypes());
@@ -3942,6 +3962,7 @@ void spoton::slotSetPassphrase(void)
 	  if(!m_tableTimer.isActive())
 	    m_tableTimer.start();
 
+	  populateNovas();
 	  sendBuzzKeysToKernel();
 	  sendKeysToKernel();
 	}
@@ -4089,6 +4110,7 @@ void spoton::slotValidatePassphrase(void)
 	    if(!m_tableTimer.isActive())
 	      m_tableTimer.start();
 
+	    populateNovas();
 	    sendBuzzKeysToKernel();
 	    sendKeysToKernel();
 	    m_sb.frame->setEnabled(true);

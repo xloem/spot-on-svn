@@ -178,6 +178,7 @@ class spoton: public QMainWindow
   void prepareListenerIPCombo(void);
   void populateAccounts(const QString &listenerOid);
   void populateListenerIps(const QString &listenerOid);
+  void populateNovas(void);
   void purgeMessagingCache(void);
   void removeFavorite(const bool removeAll);
   void saveDestination(const QString &path);
@@ -204,6 +205,7 @@ class spoton: public QMainWindow
   void slotAddListener(void);
   void slotAddFriendsKey(void);
   void slotAddNeighbor(void);
+  void slotAddReceiveNova(void);
   void slotAuthenticate(void);
   void slotAuthenticationRequestButtonClicked(void);
   void slotAutoRetrieveEmail(bool state);
@@ -243,6 +245,7 @@ class spoton: public QMainWindow
   void slotDeleteListener(void);
   void slotDeleteMail(void);
   void slotDeleteNeighbor(void);
+  void slotDeleteNova(void);
   void slotDeleteTransmitted(void);
   void slotDetachListenerNeighbors(void);
   void slotDisconnectListenerNeighbors(void);
@@ -262,6 +265,7 @@ class spoton: public QMainWindow
   void slotGeneralTimerTimeout(void);
   void slotGenerateGoldBug(void);
   void slotGenerateGeminiInChat(void);
+  void slotGenerateNova(void);
   void slotKeepCopy(bool state);
   void slotKeepOnlyUserDefinedNeighbors(bool state);
   void slotKernelCipherTypeChanged(int index);

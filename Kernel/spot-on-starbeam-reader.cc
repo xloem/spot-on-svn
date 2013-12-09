@@ -102,7 +102,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 	    QSqlQuery query(db);
 
 	    query.setForwardOnly(true);
-	    query.prepare("SELECT compress, file, mosaic, position, "
+	    query.prepare("SELECT compress, file, mosaic, nova, position, "
 			  "pulse_size, status_control, total_size "
 			  "FROM transmitted WHERE OID = ?");
 	    query.bindValue(0, m_id);
@@ -110,13 +110,14 @@ void spoton_starbeam_reader::slotTimeout(void)
 	    if(query.exec())
 	      if(query.next())
 		{
-		  QString status(query.value(5).toString());
+		  QString status(query.value(6).toString());
 
 		  if(status == "deleted")
 		    shouldDelete = true;
 		  else if(m_position >= 0 && status == "transmitted")
 		    {
 		      QByteArray mosaic;
+		      QByteArray nova;
 		      QString fileName("");
 		      QString fileSize("");
 		      QString pulseSize("");
@@ -150,10 +151,18 @@ void spoton_starbeam_reader::slotTimeout(void)
 				    &ok);
 
 		      if(ok)
-			m_position = s_crypt->
+			nova = s_crypt->
 			  decrypted(QByteArray::
 				    fromBase64(query.
 					       value(3).
+					       toByteArray()),
+				    &ok);
+
+		      if(ok)
+			m_position = s_crypt->
+			  decrypted(QByteArray::
+				    fromBase64(query.
+					       value(4).
 					       toByteArray()),
 				    &ok).toLongLong();
 
@@ -161,7 +170,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 			pulseSize = s_crypt->
 			  decrypted(QByteArray::
 				    fromBase64(query.
-					       value(4).
+					       value(5).
 					       toByteArray()),
 				    &ok).
 			  constData();
@@ -170,7 +179,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 			fileSize = s_crypt->
 			  decrypted(QByteArray::
 				    fromBase64(query.
-					       value(6).
+					       value(7).
 					       toByteArray()),
 				    &ok).
 			  constData();
@@ -179,7 +188,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 			pulsate
 			  (compress, fileName, mosaic, pulseSize, fileSize,
 			   m_magnets.value(qrand() % m_magnets.count()),
-			   s_crypt);
+			   nova, s_crypt);
 		    }
 		}
 	    }
@@ -286,6 +295,7 @@ void spoton_starbeam_reader::pulsate(const bool compress,
 				     const QString &pulseSize,
 				     const QString &fileSize,
 				     const QByteArray &magnet,
+				     const QByteArray &nova,
 				     spoton_crypt *s_crypt)
 {
   if(m_position < 0)
@@ -321,13 +331,38 @@ void spoton_starbeam_reader::pulsate(const bool compress,
 	      if(compress)
 		data = qCompress(data, 9);
 
-	      data = crypt.encrypted
-		(QByteArray("0060").toBase64() + "\n" +
-		 mosaic.toBase64() + "\n" +
-		 QByteArray::number(m_position).toBase64() + "\n" +
-		 pulseSize.toLatin1().toBase64() + "\n" +
-		 fileSize.toLatin1().toBase64() + "\n" +
-		 data.toBase64(), &ok);
+	      if(nova.isEmpty())
+		data = crypt.encrypted
+		  (QByteArray("0060").toBase64() + "\n" +
+		   mosaic.toBase64() + "\n" +
+		   QByteArray::number(m_position).toBase64() + "\n" +
+		   pulseSize.toLatin1().toBase64() + "\n" +
+		   fileSize.toLatin1().toBase64() + "\n" +
+		   data.toBase64(), &ok);
+	      else
+		{
+		  {
+		    spoton_crypt crypt("aes256",
+				       QString(""),
+				       QByteArray(),
+				       nova,
+				       0,
+				       0,
+				       QString(""));
+
+		    data = crypt.encrypted
+		      (mosaic.toBase64() + "\n" +
+		       QByteArray::number(m_position).toBase64() + "\n" +
+		       pulseSize.toLatin1().toBase64() + "\n" +
+		       fileSize.toLatin1().toBase64() + "\n" +
+		       data.toBase64(), &ok);
+		  }
+
+		  if(ok)
+		    data = crypt.encrypted
+		      (QByteArray("0060").toBase64() + "\n" +
+		       data.toBase64(), &ok);
+		}
 
 	      if(ok)
 		messageCode = spoton_crypt::keyedHash
