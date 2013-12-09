@@ -401,6 +401,9 @@ void spoton_misc::prepareDatabases(void)
 		   "folder TEXT NOT NULL, "
 		   "mosaic TEXT PRIMARY KEY NOT NULL, "
 		   "total_size TEXT NOT NULL)");
+	query.exec("CREATE TABLE IF NOT EXISTS received_novas ("
+		   "nova TEXT NOT NULL, "
+		   "nova_hash TEXT PRIMARY KEY NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS received_pulses ("
 		   "position TEXT NOT NULL, "
 		   "position_hash TEXT NOT NULL, "
@@ -415,6 +418,7 @@ void spoton_misc::prepareDatabases(void)
 		   "compress TEXT NOT NULL, "
 		   "file TEXT NOT NULL, "
 		   "mosaic TEXT PRIMARY KEY NOT NULL, "
+		   "nova TEXT NOT NULL, "
 		   "position TEXT NOT NULL, "
 		   "pulse_size TEXT NOT NULL, "
 		   "status_control TEXT NOT NULL, "
