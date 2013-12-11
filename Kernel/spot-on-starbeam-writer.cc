@@ -65,6 +65,18 @@ void spoton_starbeam_writer::run(void)
 
 void spoton_starbeam_writer::slotProcessData(void)
 {
+  QMutexLocker locker(&m_mutex);
+
+  if(m_queue.isEmpty())
+    return;
+
+  QByteArray data(QByteArray::fromBase64(m_queue.dequeue()));
+
+  locker.unlock();
+
+  for(int i = 0; i < m_magnets.size(); i++)
+    {
+    }
 }
 
 void spoton_starbeam_writer::start(void)
