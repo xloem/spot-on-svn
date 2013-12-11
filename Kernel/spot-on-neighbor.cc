@@ -577,15 +577,9 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 
 spoton_neighbor::~spoton_neighbor()
 {
-  char *a = new char[32];
-
-  snprintf(a, 32, "%p", this);
-  spoton_misc::logError
-    (QString("Neighbor (%1) %2:%3 deallocated.").
-     arg(a).
-     arg(m_address.toString()).
-     arg(m_port));
-  delete []a;
+  spoton_misc::logError(QString("Neighbor %1:%2 deallocated.").
+			arg(m_address.toString()).
+			arg(m_port));
   abort();
   m_timer.stop();
 
