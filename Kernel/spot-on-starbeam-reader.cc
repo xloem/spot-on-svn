@@ -331,12 +331,14 @@ void spoton_starbeam_reader::pulsate(const bool compress,
 	      if(compress)
 		data = qCompress(data, 9);
 
+	      data.append(QByteArray(qrand() % 64 + 32, 0));
+
 	      if(nova.isEmpty())
 		data = crypt.encrypted
 		  (QByteArray("0060").toBase64() + "\n" +
 		   mosaic.toBase64() + "\n" +
 		   QByteArray::number(m_position).toBase64() + "\n" +
-		   pulseSize.toLatin1().toBase64() + "\n" +
+		   QByteArray::number(rc).toBase64() + "\n" +
 		   fileSize.toLatin1().toBase64() + "\n" +
 		   data.toBase64(), &ok);
 	      else
@@ -353,7 +355,7 @@ void spoton_starbeam_reader::pulsate(const bool compress,
 		    data = crypt.encrypted
 		      (mosaic.toBase64() + "\n" +
 		       QByteArray::number(m_position).toBase64() + "\n" +
-		       pulseSize.toLatin1().toBase64() + "\n" +
+		       QByteArray::number(rc).toBase64() + "\n" +
 		       fileSize.toLatin1().toBase64() + "\n" +
 		       data.toBase64(), &ok);
 		  }

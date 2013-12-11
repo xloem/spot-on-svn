@@ -47,6 +47,7 @@ class spoton_mailer;
 class spoton_neighbor;
 class spoton_shared_reader;
 class spoton_starbeam_reader;
+class spoton_starbeam_writer;
 
 class spoton_kernel: public QObject
 {
@@ -55,12 +56,7 @@ class spoton_kernel: public QObject
  public:
   spoton_kernel(void);
   ~spoton_kernel();
-  static QHash<QString, spoton_crypt *> s_crypts; /*
-						  ** private
-						  ** server
-						  ** signature
-						  ** url
-						  */
+  static QHash<QString, spoton_crypt *> s_crypts;
   static QList<QByteArray> findBuzzKey(const QByteArray &data,
 				       const QByteArray &hash);
   static QVariant setting(const QString &name,
@@ -95,6 +91,7 @@ class spoton_kernel: public QObject
   spoton_gui_server *m_guiServer;
   spoton_mailer *m_mailer;
   spoton_shared_reader *m_sharedReader;
+  spoton_starbeam_writer *m_starbeamWriter;
   static QHash<QByteArray, char> s_messagingCache;
   static QHash<QByteArray, QList<QByteArray> > s_buzzKeys;
   static QMultiMap<QDateTime, QByteArray> s_messagingCacheMap;

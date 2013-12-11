@@ -75,6 +75,7 @@ extern "C"
 #include "spot-on-neighbor.h"
 #include "spot-on-shared-reader.h"
 #include "spot-on-starbeam-reader.h"
+#include "spot-on-starbeam-writer.h"
 
 QHash<QByteArray, char> spoton_kernel::s_messagingCache;
 QHash<QByteArray, QList<QByteArray> > spoton_kernel::s_buzzKeys;
@@ -362,6 +363,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_guiServer = new spoton_gui_server(this);
   m_mailer = new spoton_mailer(this);
   m_sharedReader = new spoton_shared_reader(this);
+  m_starbeamWriter = new spoton_starbeam_writer(this);
   connect(m_guiServer,
 	  SIGNAL(buzzMagnetReceivedFromUI(const qint64,
 					  const QByteArray &)),
@@ -469,6 +471,9 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	(setting("gui/congestionCost", 10000).toInt());
       m_messagingCachePurgeTimer.start();
     }
+
+  if(setting("gui/etpReceivers", false).toBool())
+    m_starbeamWriter->start();
 }
 
 spoton_kernel::~spoton_kernel()
@@ -1446,6 +1451,11 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
       if(!m_messagingCachePurgeTimer.isActive())
 	m_messagingCachePurgeTimer.start();
     }
+
+  if(setting("gui/etpReceivers", false).toBool())
+    m_starbeamWriter->start();
+  else
+    m_starbeamWriter->stop();
 
   if(setting("gui/publishPeriodically", false).toBool())
     {

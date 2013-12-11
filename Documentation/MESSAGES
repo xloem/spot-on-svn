@@ -328,7 +328,7 @@ Optional NOVA
 EOL
 1 - Pulse Offset (Base-64)
 EOL
-2 - Pulse Size (Base-64)
+2 - Data Size (Base-64)
 EOL
 3 - Total Size (Base-64)
 EOL
