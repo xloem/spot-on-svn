@@ -713,6 +713,8 @@ void spoton_buzzpage::slotRemove(void)
 	data.append(m_hashKey.toBase64());
 	data.append("\n");
 	data.append(m_hashType.toBase64());
+	data.append("\n");
+	data.append(QByteArray("urn:buzz").toBase64());
 	query.prepare("DELETE FROM buzz_channels WHERE "
 		      "data_hash = ?");
 	query.bindValue(0, m_crypt->keyedHash(data, &ok).toBase64());
