@@ -2972,3 +2972,8 @@ void spoton_kernel::writeToNeighbors(const QByteArray &data, bool *ok)
 	    *ok = true;
     }
 }
+
+void spoton_kernel::processPotentialStarBeamData(const QByteArray &data)
+{
+  m_starbeamWriter->enqueue(data);
+}

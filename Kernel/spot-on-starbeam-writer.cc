@@ -180,3 +180,14 @@ void spoton_starbeam_writer::slotReadKeys(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 }
+
+void spoton_starbeam_writer::enqueue(const QByteArray &data)
+{
+  if(!data.isEmpty())
+    if(spoton_kernel::setting("gui/etpReceivers", false).toBool())
+      {
+	m_mutex.lock();
+	m_queue.enqueue(data);
+	m_mutex.unlock();
+      }
+}

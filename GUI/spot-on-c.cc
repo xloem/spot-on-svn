@@ -254,11 +254,8 @@ void spoton::slotPopulateEtpMagnets(void)
 	      QTableWidgetItem *item = new QTableWidgetItem
 		(bytes.constData());
 
-	      if(enabled)
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	      else
-		item->setFlags(Qt::ItemIsSelectable);
-
+	      checkBox->setEnabled(enabled);
+	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.etpMagnets->setRowCount(row + 1);
 	      m_ui.etpMagnets->setItem(row, 1, item);
 	      checkBox->setChecked(query.value(1).toInt());
