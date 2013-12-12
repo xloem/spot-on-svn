@@ -469,6 +469,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(itemSelectionChanged(void)),
 	  this,
 	  SLOT(slotListenerSelected(void)));
+  connect(m_ui.transmitted,
+	  SIGNAL(itemSelectionChanged(void)),
+	  this,
+	  SLOT(slotTransmittedSelected(void)));
   connect(m_ui.emptyTrash,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -1267,6 +1271,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.neighbors->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.participants->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.transmitted->setContextMenuPolicy(Qt::CustomContextMenu);
+  m_ui.transmittedMagnets->setContextMenuPolicy(Qt::CustomContextMenu);
   connect(m_ui.emailParticipants,
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,
@@ -1291,13 +1296,17 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,
 	  SLOT(slotShowContextMenu(const QPoint &)));
+  connect(m_ui.transmittedMagnets,
+	  SIGNAL(customContextMenuRequested(const QPoint &)),
+	  this,
+	  SLOT(slotShowContextMenu(const QPoint &)));
   m_ui.emailParticipants->setColumnHidden(1, true); // OID
   m_ui.emailParticipants->setColumnHidden(2, true); // neighbor_oid
   m_ui.emailParticipants->setColumnHidden(3, true); // public_key_hash
   m_ui.etpMagnets->setColumnHidden(m_ui.etpMagnets->columnCount() - 1,
 				   true); // OID
-  m_ui.transmittersMagnets->setColumnHidden
-    (m_ui.transmittersMagnets->columnCount() - 1, true); // OID
+  m_ui.addTransmittedMagnets->setColumnHidden
+    (m_ui.addTransmittedMagnets->columnCount() - 1, true); // OID
   m_ui.mail->setColumnHidden(4, true); // goldbug
   m_ui.mail->setColumnHidden(5, true); // message
   m_ui.mail->setColumnHidden(6, true); // message_code
@@ -1327,7 +1336,7 @@ spoton::spoton(void):QMainWindow()
     (0, Qt::AscendingOrder);
   m_ui.etpMagnets->horizontalHeader()->setSortIndicator
     (1, Qt::AscendingOrder);
-  m_ui.transmittersMagnets->horizontalHeader()->setSortIndicator
+  m_ui.addTransmittedMagnets->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   m_ui.kernelStatistics->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
@@ -4332,18 +4341,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotNeighborHalfEcho(void)));
       menu.exec(m_ui.neighbors->mapToGlobal(point));
     }
-  else if(m_ui.transmitted == sender())
-    {
-      menu.addAction(QIcon(QString(":/%1/clear.png").
-			   arg(m_settings.value("gui/iconSet", "nouve").
-			       toString())),
-		     tr("&Delete"), this,
-		     SLOT(slotDeleteTransmitted(void)));
-      menu.addAction(tr("Delete &All"), this,
-		     SLOT(slotDeleteAllTransmitted(void)));
-      menu.exec(m_ui.transmitted->mapToGlobal(point));
-    }
-  else
+  else if(m_ui.participants == sender())
     {
       QAction *action = menu.addAction
 	(QIcon(QString(":/%1/add.png").
@@ -4398,6 +4396,23 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     tr("&Remove participant(s)."),
 		     this, SLOT(slotRemoveParticipants(void)));
       menu.exec(m_ui.participants->mapToGlobal(point));
+    }
+  else if(m_ui.transmitted == sender())
+    {
+      menu.addAction(QIcon(QString(":/%1/clear.png").
+			   arg(m_settings.value("gui/iconSet", "nouve").
+			       toString())),
+		     tr("&Delete"), this,
+		     SLOT(slotDeleteTransmitted(void)));
+      menu.addAction(tr("Delete &All"), this,
+		     SLOT(slotDeleteAllTransmitted(void)));
+      menu.exec(m_ui.transmitted->mapToGlobal(point));
+    }
+  else if(m_ui.transmittedMagnets == sender())
+    {
+      menu.addAction(tr("Copy &Magnet"),
+		     this, SLOT(slotCopyTransmittedMagnet(void)));
+      menu.exec(m_ui.transmittedMagnets->mapToGlobal(point));
     }
 }
 

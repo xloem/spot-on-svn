@@ -230,6 +230,7 @@ class spoton: public QMainWindow
   void slotCopyMyChatPublicKey(void);
   void slotCopyMyEmailPublicKey(void);
   void slotCopyMyURLPublicKey(void);
+  void slotCopyTransmittedMagnet(void);
   void slotCostChanged(int value);
   void slotDaysChanged(int value);
   void slotDeactivateKernel(void);
@@ -358,6 +359,7 @@ class spoton: public QMainWindow
   void slotTestSslControlString(void);
   void slotTransmit(void);
   void slotTransmittedPaused(bool state);
+  void slotTransmittedSelected(void);
   void slotTransportChanged(int index);
   void slotUnblockNeighbor(void);
   void slotValidatePassphrase(void);

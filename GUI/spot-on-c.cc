@@ -234,9 +234,9 @@ void spoton::slotPopulateEtpMagnets(void)
 	m_ui.etpMagnets->setSortingEnabled(false);
 	m_ui.etpMagnets->clearContents();
 	m_ui.etpMagnets->setRowCount(0);
-	m_ui.transmittersMagnets->setSortingEnabled(false);
-	m_ui.transmittersMagnets->clearContents();
-	m_ui.transmittersMagnets->setRowCount(0);
+	m_ui.addTransmittedMagnets->setSortingEnabled(false);
+	m_ui.addTransmittedMagnets->clearContents();
+	m_ui.addTransmittedMagnets->setRowCount(0);
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT magnet, one_time_magnet, used, "
@@ -267,11 +267,11 @@ void spoton::slotPopulateEtpMagnets(void)
 		      this,
 		      SLOT(slotStarOTMCheckChange(bool)));
 	      m_ui.etpMagnets->setCellWidget(row, 0, checkBox);
-	      m_ui.transmittersMagnets->setRowCount(row + 1);
+	      m_ui.addTransmittedMagnets->setRowCount(row + 1);
 	      checkBox = new QCheckBox();
 	      checkBox->setEnabled(enabled);
 	      checkBox->setText(bytes.replace("&", "&&").constData());
-	      m_ui.transmittersMagnets->setCellWidget(row, 0, checkBox);
+	      m_ui.addTransmittedMagnets->setCellWidget(row, 0, checkBox);
 	      item = new QTableWidgetItem
 		(query.value(query.record().count() - 1).toString());
 
@@ -281,12 +281,12 @@ void spoton::slotPopulateEtpMagnets(void)
 		item->setFlags(Qt::ItemIsSelectable);
 
 	      m_ui.etpMagnets->setItem(row, 2, item);
-	      m_ui.transmittersMagnets->setItem(row, 1, item->clone());
+	      m_ui.addTransmittedMagnets->setItem(row, 1, item->clone());
 	      row += 1;
 	    }
 
 	m_ui.etpMagnets->setSortingEnabled(true);
-	m_ui.transmittersMagnets->setSortingEnabled(true);
+	m_ui.addTransmittedMagnets->setSortingEnabled(true);
 
 	if(focusWidget)
 	  focusWidget->setFocus();
@@ -806,10 +806,10 @@ void spoton::slotTransmit(void)
       goto done_label;
     }
 
-  for(int i = 0; i < m_ui.transmittersMagnets->rowCount(); i++)
+  for(int i = 0; i < m_ui.addTransmittedMagnets->rowCount(); i++)
     {
       QCheckBox *checkBox = qobject_cast<QCheckBox *>
-	(m_ui.transmittersMagnets->cellWidget(i, 0));
+	(m_ui.addTransmittedMagnets->cellWidget(i, 0));
 
       if(checkBox)
 	if(checkBox->isChecked())
@@ -1484,4 +1484,88 @@ void spoton::slotGenerateNova(void)
      strongRandomBytes(spoton_crypt::cipherKeyLength("aes256")));
 
   m_ui.transmitNova->setText(nova.toBase64());
+}
+
+void spoton::slotTransmittedSelected(void)
+{
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.transmitted->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.transmitted->item
+	(row, m_ui.transmitted->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "starbeam.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT magnet FROM transmitted_magnets "
+		      "WHERE transmitted_oid = ?");
+	query.bindValue(0, oid);
+
+	if(query.exec())
+	  {
+	    QStringList magnets;
+
+	    m_ui.transmittedMagnets->clear();
+
+	    while(query.next())
+	      {
+		QString magnet("");
+		bool ok = true;
+
+		magnet = s_crypt->
+		  decrypted(QByteArray::
+			    fromBase64(query.
+				       value(0).
+				       toByteArray()),
+			    &ok).constData();
+
+		if(!magnet.isEmpty())
+		  magnets.append(magnet);
+	      }
+
+	    qSort(magnets);
+	    m_ui.transmittedMagnets->addItems(magnets);
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton::slotCopyTransmittedMagnet(void)
+{
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(!clipboard)
+    return;
+  else
+    clipboard->clear();
+
+  QListWidgetItem *item = m_ui.transmittedMagnets->currentItem();
+
+  if(item)
+    clipboard->setText(item->text());
 }
