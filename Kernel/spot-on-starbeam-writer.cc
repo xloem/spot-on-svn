@@ -74,9 +74,161 @@ void spoton_starbeam_writer::slotProcessData(void)
 
   locker.unlock();
 
+  QList<QByteArray> list(data.split('\n'));
+
+  if(list.size() != 2)
+    return;
+
+  QByteArray originalData(data);
+
+  for(int i = 0; i < list.size(); i++)
+    list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+  if(m_magnets.isEmpty())
+    slotReadKeys();
+
+  QHash<QString, QByteArray> magnet;
+
   for(int i = 0; i < m_magnets.size(); i++)
     {
+      QByteArray messageCode;
+      bool ok = true;
+
+      messageCode = spoton_crypt::keyedHash
+	(list.value(0),
+	 m_magnets.at(i).value("mk"),
+	 m_magnets.at(i).value("ht"),
+	 &ok);
+
+      if(ok)
+	if(list.value(1) == messageCode)
+	  {
+	    magnet = m_magnets.at(i);
+	    break;
+	  }
     }
+
+  if(magnet.isEmpty())
+    return;
+
+  bool ok = true;
+  spoton_crypt crypt(magnet.value("ct").constData(),
+		     QString(""),
+		     QByteArray(),
+		     magnet.value("ek"),
+		     0,
+		     0,
+		     QString(""));
+
+  data = crypt.decrypted(list.value(0), &ok);
+
+  if(!ok)
+    return;
+
+  if(data.split('\n').size() != 6)
+    {
+      for(int i = 0; i < m_novas.size(); i++)
+	{
+	  QByteArray bytes;
+	  bool ok = true;
+	  spoton_crypt crypt("aes256",
+			     QString(""),
+			     QByteArray(),
+			     m_novas.at(i),
+			     0,
+			     0,
+			     QString(""));
+
+	  bytes = crypt.decrypted(data, &ok);
+
+	  if(ok)
+	    {
+	      list = bytes.split('\n');
+
+	      for(int i = 0; i < list.size(); i++)
+		list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+	      break;
+	    }
+	}
+    }
+  else
+    {
+      list = data.split('\n');
+
+      for(int i = 0; i < list.size(); i++)
+	list.replace(i, QByteArray::fromBase64(list.at(i)));
+    }
+
+  if(list.value(0) != "0060")
+    return;
+  else
+    emit receivedPulse(originalData);
+
+  qint64 totalSize = qAbs(list.value(4).toLongLong());
+  qint64 position = qAbs(list.value(2).toLongLong());
+
+  if(position > totalSize)
+    return;
+  else if(totalSize > 1048576 * spoton_kernel::setting("gui/maxMosaicSize",
+						       512).toLongLong())
+    return;
+
+  QFile file;
+  QString fileName
+    (spoton_kernel::setting("gui/etpDestinationPath", QDir::homePath()).
+     toString() + QDir::separator() + QString::fromUtf8(list.value(1)));
+  qint64 size = qAbs(list.value(3).toLongLong());
+
+  file.setFileName(fileName);
+
+  if(file.open(QIODevice::ReadWrite | QIODevice::Unbuffered))
+    if(file.seek(position))
+      file.write(list.value(5).mid(0, size).constData(), size);
+
+  file.close();
+
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "starbeam.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare
+	  ("INSERT OR REPLACE INTO received "
+	   "(file, file_hash, total_size) VALUES (?, ?, ?)");
+	query.bindValue
+	  (0, s_crypt->encrypted(fileName.toUtf8(),
+				 &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (1, s_crypt->keyedHash(fileName.toUtf8(), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (2, s_crypt->encrypted(QByteArray::number(totalSize), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton_starbeam_writer::start(void)

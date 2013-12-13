@@ -3576,7 +3576,7 @@ void spoton_neighbor::process0065(int length, const QByteArray &dataIn)
 		      (1, s_crypt->keyedHash(data, &ok).toBase64());
 
 		  if(ok)
-		    ok = query.exec();
+		    query.exec();
 		}
 
 	      db.close();

@@ -57,6 +57,9 @@ class spoton_starbeam_writer: public QThread
  private slots:
   void slotProcessData(void);
   void slotReadKeys(void);
+
+ signals:
+  void receivedPulse(const QByteArray &data);
 };
 
 #endif

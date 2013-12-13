@@ -1270,6 +1270,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.listeners->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.neighbors->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.participants->setContextMenuPolicy(Qt::CustomContextMenu);
+  m_ui.received->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.transmitted->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.transmittedMagnets->setContextMenuPolicy(Qt::CustomContextMenu);
   connect(m_ui.emailParticipants,
@@ -1289,6 +1290,10 @@ spoton::spoton(void):QMainWindow()
 	  this,
 	  SLOT(slotShowContextMenu(const QPoint &)));
   connect(m_ui.participants,
+	  SIGNAL(customContextMenuRequested(const QPoint &)),
+	  this,
+	  SLOT(slotShowContextMenu(const QPoint &)));
+  connect(m_ui.received,
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,
 	  SLOT(slotShowContextMenu(const QPoint &)));
@@ -4396,6 +4401,17 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     tr("&Remove participant(s)."),
 		     this, SLOT(slotRemoveParticipants(void)));
       menu.exec(m_ui.participants->mapToGlobal(point));
+    }
+  else if(m_ui.received == sender())
+    {
+      menu.addAction(QIcon(QString(":/%1/clear.png").
+			   arg(m_settings.value("gui/iconSet", "nouve").
+			       toString())),
+		     tr("&Delete"), this,
+		     SLOT(slotDeleteReceived(void)));
+      menu.addAction(tr("Delete &All"), this,
+		     SLOT(slotDeleteAllReceived(void)));
+      menu.exec(m_ui.received->mapToGlobal(point));
     }
   else if(m_ui.transmitted == sender())
     {

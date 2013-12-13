@@ -239,6 +239,7 @@ class spoton: public QMainWindow
   void slotDeleteAllBlockedNeighbors(void);
   void slotDeleteAllListeners(void);
   void slotDeleteAllNeighbors(void);
+  void slotDeleteAllReceived(void);
   void slotDeleteAllTransmitted(void);
   void slotDeleteAllUuids(void);
   void slotDeleteEtpAllMagnets(void);
@@ -247,6 +248,7 @@ class spoton: public QMainWindow
   void slotDeleteMail(void);
   void slotDeleteNeighbor(void);
   void slotDeleteNova(void);
+  void slotDeleteReceived(void);
   void slotDeleteTransmitted(void);
   void slotDetachListenerNeighbors(void);
   void slotDisconnectListenerNeighbors(void);

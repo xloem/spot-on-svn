@@ -42,7 +42,7 @@ spoton_starbeam_reader::spoton_starbeam_reader
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTimeout(void)));
-  m_timer.start(2500);
+  m_timer.start(1500);
 }
 
 spoton_starbeam_reader::~spoton_starbeam_reader()
@@ -102,7 +102,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 	    QSqlQuery query(db);
 
 	    query.setForwardOnly(true);
-	    query.prepare("SELECT compress, file, mosaic, nova, position, "
+	    query.prepare("SELECT file, nova, position, "
 			  "pulse_size, status_control, total_size "
 			  "FROM transmitted WHERE OID = ?");
 	    query.bindValue(0, m_id);
@@ -110,67 +110,48 @@ void spoton_starbeam_reader::slotTimeout(void)
 	    if(query.exec())
 	      if(query.next())
 		{
-		  QString status(query.value(6).toString());
+		  QString status(query.value(4).toString());
 
 		  if(status == "deleted")
 		    shouldDelete = true;
 		  else if(m_position >= 0 && status == "transmitted")
 		    {
-		      QByteArray mosaic;
 		      QByteArray nova;
 		      QString fileName("");
 		      QString fileSize("");
 		      QString pulseSize("");
-		      bool compress = false;
 		      bool ok = true;
 
-		      compress = QVariant
-			(s_crypt->
-			 decrypted(QByteArray::
-				   fromBase64(query.
-					      value(0).
-					      toByteArray()),
-				   &ok).
-			 constData()).toBool();
-
-		      if(ok)
-			fileName = s_crypt->
-			  decrypted(QByteArray::
-				    fromBase64(query.
-					       value(1).
-					       toByteArray()),
-				    &ok).
-			  constData();
-
-		      if(ok)
-			mosaic = s_crypt->
-			  decrypted(QByteArray::
-				    fromBase64(query.
-					       value(2).
-					       toByteArray()),
-				    &ok);
+		      fileName = s_crypt->
+			decrypted(QByteArray::
+				  fromBase64(query.
+					     value(0).
+					     toByteArray()),
+				  &ok).
+			constData();
 
 		      if(ok)
 			nova = s_crypt->
 			  decrypted(QByteArray::
 				    fromBase64(query.
-					       value(3).
+					       value(1).
 					       toByteArray()),
 				    &ok);
 
 		      if(ok)
-			m_position = s_crypt->
-			  decrypted(QByteArray::
-				    fromBase64(query.
-					       value(4).
-					       toByteArray()),
-				    &ok).toLongLong();
+			if(m_position == 0)
+			  m_position = s_crypt->
+			    decrypted(QByteArray::
+				      fromBase64(query.
+						 value(2).
+						 toByteArray()),
+				      &ok).toLongLong();
 
 		      if(ok)
 			pulseSize = s_crypt->
 			  decrypted(QByteArray::
 				    fromBase64(query.
-					       value(5).
+					       value(3).
 					       toByteArray()),
 				    &ok).
 			  constData();
@@ -179,16 +160,16 @@ void spoton_starbeam_reader::slotTimeout(void)
 			fileSize = s_crypt->
 			  decrypted(QByteArray::
 				    fromBase64(query.
-					       value(7).
+					       value(5).
 					       toByteArray()),
 				    &ok).
 			  constData();
 
 		      if(ok)
 			pulsate
-			  (compress, fileName, mosaic, pulseSize, fileSize,
+			  (fileName, pulseSize, fileSize,
 			   m_magnets.value(qrand() % m_magnets.count()),
-			   nova, s_crypt);
+			   nova, db, s_crypt);
 		    }
 		}
 	    }
@@ -289,13 +270,12 @@ QHash<QString, QByteArray> spoton_starbeam_reader::elementsFromMagnet
   return elements;
 }
 
-void spoton_starbeam_reader::pulsate(const bool compress,
-				     const QString &fileName,
-				     const QByteArray &mosaic,
+void spoton_starbeam_reader::pulsate(const QString &fileName,
 				     const QString &pulseSize,
 				     const QString &fileSize,
 				     const QByteArray &magnet,
 				     const QByteArray &nova,
+				     const QSqlDatabase &db,
 				     spoton_crypt *s_crypt)
 {
   if(m_position < 0)
@@ -320,6 +300,7 @@ void spoton_starbeam_reader::pulsate(const bool compress,
 	    {
 	      QByteArray data(buffer.mid(0, rc));
 	      QByteArray messageCode;
+	      int size = data.length();
 	      spoton_crypt crypt(elements.value("ct").constData(),
 				 QString(""),
 				 QByteArray(),
@@ -328,17 +309,15 @@ void spoton_starbeam_reader::pulsate(const bool compress,
 				 0,
 				 QString(""));
 
-	      if(compress)
-		data = qCompress(data, 9);
-
 	      data.append(QByteArray(qrand() % 64 + 32, 0));
 
 	      if(nova.isEmpty())
 		data = crypt.encrypted
 		  (QByteArray("0060").toBase64() + "\n" +
-		   mosaic.toBase64() + "\n" +
+		   QFileInfo(fileName).fileName().toUtf8().
+		   toBase64() + "\n" +
 		   QByteArray::number(m_position).toBase64() + "\n" +
-		   QByteArray::number(rc).toBase64() + "\n" +
+		   QByteArray::number(size).toBase64() + "\n" +
 		   fileSize.toLatin1().toBase64() + "\n" +
 		   data.toBase64(), &ok);
 	      else
@@ -353,17 +332,17 @@ void spoton_starbeam_reader::pulsate(const bool compress,
 				       QString(""));
 
 		    data = crypt.encrypted
-		      (mosaic.toBase64() + "\n" +
+		      (QByteArray("0060").toBase64() + "\n" +
+		       QFileInfo(fileName).fileName().toUtf8().
+		       toBase64() + "\n" +
 		       QByteArray::number(m_position).toBase64() + "\n" +
-		       QByteArray::number(rc).toBase64() + "\n" +
+		       QByteArray::number(size).toBase64() + "\n" +
 		       fileSize.toLatin1().toBase64() + "\n" +
 		       data.toBase64(), &ok);
 		  }
 
 		  if(ok)
-		    data = crypt.encrypted
-		      (QByteArray("0060").toBase64() + "\n" +
-		       data.toBase64(), &ok);
+		    data = crypt.encrypted(data, &ok);
 		}
 
 	      if(ok)
@@ -391,43 +370,30 @@ void spoton_starbeam_reader::pulsate(const bool compress,
   file.close();
 
   if(ok)
-    savePosition();
+    savePosition(db);
 }
 
-void spoton_starbeam_reader::savePosition(void)
+void spoton_starbeam_reader::savePosition(const QSqlDatabase &db)
 {
+  if(!db.isOpen())
+    return;
+
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   if(!s_crypt)
     return;
 
-  QString connectionName("");
+  QSqlQuery query(db);
+  bool ok = true;
 
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
+  query.prepare("UPDATE transmitted "
+		"SET position = ? "
+		"WHERE OID = ?");
+  query.bindValue
+    (0, s_crypt->encrypted(QByteArray::number(m_position),
+			   &ok).toBase64());
+  query.bindValue(1, m_id);
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "starbeam.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-	bool ok = true;
-
-	query.prepare("UPDATE transmitted "
-		      "SET position = ? "
-		      "WHERE OID = ?");
-	query.bindValue
-	  (0, s_crypt->encrypted(QByteArray::number(m_position),
-				 &ok).toBase64());
-	query.bindValue(1, m_id);
-
-	if(ok)
-	  query.exec();
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
+  if(ok)
+    query.exec();
 }

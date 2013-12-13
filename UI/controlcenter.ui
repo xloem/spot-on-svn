@@ -4620,6 +4620,9 @@
                       <property name="selectionMode">
                        <enum>QAbstractItemView::SingleSelection</enum>
                       </property>
+                      <property name="selectionBehavior">
+                       <enum>QAbstractItemView::SelectRows</enum>
+                      </property>
                       <property name="horizontalScrollMode">
                        <enum>QAbstractItemView::ScrollPerPixel</enum>
                       </property>
@@ -4644,12 +4647,7 @@
                       </column>
                       <column>
                        <property name="text">
-                        <string>Mosaic</string>
-                       </property>
-                      </column>
-                      <column>
-                       <property name="text">
-                        <string>Folder</string>
+                        <string>File</string>
                        </property>
                       </column>
                       <column>
@@ -4871,13 +4869,6 @@
                         </property>
                         <property name="maximum">
                          <number>65536</number>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QCheckBox" name="compress">
-                        <property name="text">
-                         <string>Compress</string>
                         </property>
                        </widget>
                       </item>
@@ -5891,7 +5882,6 @@
   <tabstop>transmittedFile</tabstop>
   <tabstop>etpSelectFile</tabstop>
   <tabstop>pulseSize</tabstop>
-  <tabstop>compress</tabstop>
   <tabstop>transmit</tabstop>
   <tabstop>acceptUrlKeys</tabstop>
   <tabstop>urlNodeName</tabstop>

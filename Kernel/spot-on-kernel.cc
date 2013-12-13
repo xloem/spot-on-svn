@@ -1476,6 +1476,10 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SIGNAL(sendMailFromPostOffice(const QByteArray &)),
 	  neighbor,
 	  SLOT(slotSendMailFromPostOffice(const QByteArray &)));
+  connect(m_starbeamWriter,
+	  SIGNAL(receivedPulse(const QByteArray &)),
+	  neighbor,
+	  SLOT(slotSendMessage(const QByteArray &)));
   connect(neighbor,
 	  SIGNAL(authenticationRequested(const QString &)),
 	  m_guiServer,
@@ -2968,8 +2972,12 @@ void spoton_kernel::writeToNeighbors(const QByteArray &data, bool *ok)
       if(it.value())
 	if(it.value()->
 	   write(data.constData(), data.length()) == data.length())
-	  if(ok)
-	    *ok = true;
+	  {
+	    it.value()->flush();
+
+	    if(ok)
+	      *ok = true;
+	  }
     }
 }
 

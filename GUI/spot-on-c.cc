@@ -837,47 +837,41 @@ void spoton::slotTransmit(void)
 	QSqlQuery query(db);
 
 	query.prepare("INSERT INTO transmitted "
-		      "(compress, file, mosaic, nova, position, pulse_size, "
+		      "(file, mosaic, nova, position, pulse_size, "
 		      "status_control, total_size) "
-		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+		      "VALUES (?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue
-	  (0, s_crypt->
-	   encrypted(QByteArray::number(m_ui.compress->isChecked()),
-		     &ok).toBase64());
-
-	if(ok)
-	  query.bindValue
-	    (1, s_crypt->encrypted(m_ui.transmittedFile->text().toUtf8(),
-				   &ok).toBase64());
+	  (0, s_crypt->encrypted(m_ui.transmittedFile->text().toUtf8(),
+				 &ok).toBase64());
 
 	if(ok)
 	  {
 	    encryptedMosaic = s_crypt->encrypted(mosaic, &ok);
 
 	    if(ok)
-	      query.bindValue(2, encryptedMosaic.toBase64());
+	      query.bindValue(1, encryptedMosaic.toBase64());
 	  }
 
 	if(ok)
 	  query.bindValue
-	    (3, s_crypt->encrypted(m_ui.transmitNova->text().trimmed().
+	    (2, s_crypt->encrypted(m_ui.transmitNova->text().trimmed().
 				   toLatin1(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (4, s_crypt->encrypted(QByteArray("0"), &ok).toBase64());
+	    (3, s_crypt->encrypted(QByteArray("0"), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (5, s_crypt->
+	    (4, s_crypt->
 	     encrypted(QByteArray::number(m_ui.pulseSize->
 					  value()), &ok).toBase64());
 
-	query.bindValue(6, "paused");
+	query.bindValue(5, "paused");
 
 	if(ok)
 	  query.bindValue
-	    (7, s_crypt->
+	    (6, s_crypt->
 	     encrypted(QString::
 		       number(QFileInfo(m_ui.transmittedFile->
 					text()).size()).toLatin1(),
@@ -954,7 +948,7 @@ void spoton::slotTransmit(void)
     QMessageBox::critical(this, tr("Spot-On: Error"), error);
   else
     {
-      m_ui.compress->setChecked(false);
+      m_ui.pulseSize->setValue(m_ui.pulseSize->minimum());
       m_ui.transmitNova->clear();
       m_ui.transmittedFile->clear();
     }
@@ -1046,6 +1040,7 @@ void spoton::slotPopulateStars(void)
     if(db.open())
       {
 	QModelIndexList list;
+	QString fileName("");
 	QString mosaic("");
 	QSqlQuery query(db);
 	QWidget *focusWidget = QApplication::focusWidget();
@@ -1056,8 +1051,94 @@ void spoton::slotPopulateStars(void)
 	query.setForwardOnly(true);
 
 	/*
-	** First, retrieved.
+	** First, received.
 	*/
+
+	list = m_ui.received->selectionModel()->selectedRows
+	  (2); // File
+
+	if(!list.isEmpty())
+	  fileName = list.at(0).data().toString();
+
+	hval = m_ui.received->horizontalScrollBar()->value();
+	vval = m_ui.received->verticalScrollBar()->value();
+	m_ui.received->setSortingEnabled(false);
+	m_ui.received->clearContents();
+	m_ui.received->setRowCount(0);
+	row = 0;
+	query.prepare("SELECT total_size, file, OID FROM received");
+
+	if(query.exec())
+	  while(query.next())
+	    {
+	      m_ui.received->setRowCount(row + 1);
+
+	      QTableWidgetItem *item = new QTableWidgetItem("0");
+	      bool ok = true;
+
+	      item->setFlags(Qt::ItemIsEnabled |
+			     Qt::ItemIsSelectable);
+	      m_ui.received->setItem(row, 0, item);
+
+	      for(int i = 0; i < query.record().count(); i++)
+		{
+		  QTableWidgetItem *item = 0;
+
+		  if(i == 0 || i == 1)
+		    {
+		      QByteArray bytes
+			(s_crypt->
+			 decrypted(QByteArray::fromBase64(query.value(i).
+							  toByteArray()),
+				   &ok));
+
+		      item = new QTableWidgetItem(bytes.constData());
+		    }
+		  else if(i == query.record().count() - 1)
+		    item = new QTableWidgetItem
+		      (query.value(i).toString());
+
+		  if(item)
+		    {
+		      item->setFlags(Qt::ItemIsEnabled |
+				     Qt::ItemIsSelectable);
+		      m_ui.received->setItem(row, i + 1, item);
+		    }
+		}
+
+	      QTableWidgetItem *item1 = m_ui.received->item(row, 0);
+	      QTableWidgetItem *item2 = m_ui.received->item(row, 1);
+	      QTableWidgetItem *item3 = m_ui.received->item(row, 2);
+
+	      if(item1 && item2 && item3)
+		{
+		  double percent = 0;
+
+		  percent = 100 * qAbs
+		    (static_cast<double> (QFileInfo(item3->text()).size()) /
+		     qMax(1LL, item2->text().toLongLong()));
+		  item1->setText(QString::number(percent, 'f', 2));
+		}
+
+	      if(m_ui.received->item(row, 2) &&
+		 fileName == m_ui.received->item(row, 2)->text())
+		m_ui.received->selectRow(row);
+
+	      row += 1;
+	    }
+
+	m_ui.received->setSortingEnabled(true);
+
+	for(int i = 0; i < m_ui.received->columnCount() - 1; i++)
+	  /*
+	  ** Ignore the OID column.
+	  */
+
+	  m_ui.received->resizeColumnToContents(i);
+
+	m_ui.received->horizontalHeader()->setStretchLastSection(true);
+	m_ui.received->horizontalScrollBar()->setValue(hval);
+	m_ui.received->verticalScrollBar()->setValue(vval);
 
 	/*
 	** Second, transmitted.
@@ -1075,7 +1156,7 @@ void spoton::slotPopulateStars(void)
 	m_ui.transmitted->clearContents();
 	m_ui.transmitted->setRowCount(0);
 	row = 0;
-	query.prepare("SELECT 0, 0, pulse_size, total_size, "
+	query.prepare("SELECT 0, position, pulse_size, total_size, "
 		      "status_control, file, mosaic, OID "
 		      "FROM transmitted WHERE status_control <> 'deleted'");
 
@@ -1099,9 +1180,7 @@ void spoton::slotPopulateStars(void)
 		  if(i == 0)
 		    {
 		    }
-		  else if(i == 1)
-		    item = new QTableWidgetItem("0");
-		  else if(i == 2 || i == 3 || i == 5 || i == 6)
+		  else if(i == 1 || i == 2 || i == 3 || i == 5 || i == 6)
 		    {
 		      QByteArray bytes
 			(s_crypt->
@@ -1131,6 +1210,19 @@ void spoton::slotPopulateStars(void)
 				     Qt::ItemIsSelectable);
 		      m_ui.transmitted->setItem(row, i, item);
 		    }
+		}
+
+	      QTableWidgetItem *item1 = m_ui.transmitted->item(row, 1);
+	      QTableWidgetItem *item2 = m_ui.transmitted->item(row, 3);
+
+	      if(item1 && item2)
+		{
+		  double percent = 0;
+
+		  percent = 100 * qAbs
+		    (static_cast<double> (item1->text().toLongLong()) /
+		     qMax(1LL, item2->text().toLongLong()));
+		  item1->setText(QString::number(percent, 'f', 2));
 		}
 
 	      connect(checkBox,
@@ -1343,7 +1435,6 @@ void spoton::slotAddReceiveNova(void)
 	query.prepare
 	  ("INSERT OR REPLACE INTO received_novas "
 	   "(nova, nova_hash) VALUES (?, ?)");
-
 	query.bindValue
 	  (0, s_crypt->encrypted(nova.toLatin1(),
 				 &ok).toBase64());
@@ -1389,6 +1480,8 @@ void spoton::populateNovas(void)
 
     if(db.open())
       {
+	m_ui.novas->clear();
+
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
@@ -1397,8 +1490,6 @@ void spoton::populateNovas(void)
 	if(query.exec())
 	  {
 	    QStringList novas;
-
-	    m_ui.novas->clear();
 
 	    while(query.next())
 	      {
@@ -1515,6 +1606,8 @@ void spoton::slotTransmittedSelected(void)
 
     if(db.open())
       {
+	m_ui.transmittedMagnets->clear();
+
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
@@ -1525,8 +1618,6 @@ void spoton::slotTransmittedSelected(void)
 	if(query.exec())
 	  {
 	    QStringList magnets;
-
-	    m_ui.transmittedMagnets->clear();
 
 	    while(query.next())
 	      {
@@ -1568,4 +1659,72 @@ void spoton::slotCopyTransmittedMagnet(void)
 
   if(item)
     clipboard->setText(item->text());
+}
+
+void spoton::slotDeleteAllReceived(void)
+{
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "starbeam.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("DELETE FROM received");
+	query.exec("DELETE FROM received_pulses");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton::slotDeleteReceived(void)
+{
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.received->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.received->item
+	(row, m_ui.received->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "starbeam.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare("DELETE FROM received WHERE "
+		      "OID = ?");
+	query.bindValue(0, oid);
+	query.exec();
+	query.exec("DELETE FROM received_pulses WHERE "
+		   "received_oid NOT IN "
+		   "(SELECT OID FROM received)");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }

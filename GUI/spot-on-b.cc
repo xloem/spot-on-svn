@@ -4689,6 +4689,8 @@ void spoton::populateAccounts(const QString &listenerOid)
 
     if(db.open())
       {
+	m_ui.accounts->clear();
+
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
@@ -4699,8 +4701,6 @@ void spoton::populateAccounts(const QString &listenerOid)
 	if(query.exec())
 	  {
 	    QStringList names;
-
-	    m_ui.accounts->clear();
 
 	    while(query.next())
 	      {
@@ -4746,6 +4746,8 @@ void spoton::populateListenerIps(const QString &listenerOid)
 
     if(db.open())
       {
+	m_ui.acceptedIPList->clear();
+
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
@@ -4756,8 +4758,6 @@ void spoton::populateListenerIps(const QString &listenerOid)
 	if(query.exec())
 	  {
 	    QStringList ips;
-
-	    m_ui.acceptedIPList->clear();
 
 	    while(query.next())
 	      {
