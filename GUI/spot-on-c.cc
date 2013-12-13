@@ -1166,6 +1166,7 @@ void spoton::slotPopulateStars(void)
 	      m_ui.transmitted->setRowCount(row + 1);
 
 	      QCheckBox *checkBox = new QCheckBox();
+	      QString fileName("");
 	      bool ok = true;
 
 	      checkBox->setChecked(true);
@@ -1188,7 +1189,9 @@ void spoton::slotPopulateStars(void)
 							  toByteArray()),
 				   &ok));
 
-		      if(i == 6)
+		      if(i == 5)
+			fileName = bytes.constData();
+		      else if(i == 6)
 			bytes = bytes.mid(0, 16) + "..." + bytes.right(16);
 
 		      item = new QTableWidgetItem(bytes.constData());
@@ -1229,6 +1232,10 @@ void spoton::slotPopulateStars(void)
 		      SIGNAL(toggled(bool)),
 		      this,
 		      SLOT(slotTransmittedPaused(bool)));
+
+	      for(int i = 0; i < m_ui.transmitted->columnCount(); i++)
+		if(m_ui.transmitted->item(row, i))
+		  m_ui.transmitted->item(row, i)->setToolTip(fileName);
 
 	      if(m_ui.transmitted->item(row, 6) &&
 		 mosaic == m_ui.transmitted->item(row, 6)->text())
