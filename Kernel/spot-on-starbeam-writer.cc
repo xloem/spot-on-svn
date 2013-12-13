@@ -165,26 +165,29 @@ void spoton_starbeam_writer::slotProcessData(void)
   else
     emit receivedPulse(originalData);
 
-  qint64 totalSize = qAbs(list.value(4).toLongLong());
+  qint64 maximumSize = 1048576 * spoton_kernel::setting
+    ("gui/maxMosaicSize", 512).toLongLong();
   qint64 position = qAbs(list.value(2).toLongLong());
+  qint64 pulseSize = qAbs(list.value(3).toLongLong());
+  qint64 totalSize = qAbs(list.value(4).toLongLong());
 
-  if(position > totalSize)
+  if(position > totalSize || pulseSize > totalSize)
     return;
-  else if(totalSize > 1048576 * spoton_kernel::setting("gui/maxMosaicSize",
-						       512).toLongLong())
+  else if(maximumSize < pulseSize || maximumSize < totalSize)
+    return;
+  else if(pulseSize > list.value(5).length())
     return;
 
   QFile file;
   QString fileName
     (spoton_kernel::setting("gui/etpDestinationPath", QDir::homePath()).
      toString() + QDir::separator() + QString::fromUtf8(list.value(1)));
-  qint64 size = qAbs(list.value(3).toLongLong());
 
   file.setFileName(fileName);
 
   if(file.open(QIODevice::ReadWrite | QIODevice::Unbuffered))
     if(file.seek(position))
-      file.write(list.value(5).mid(0, size).constData(), size);
+      file.write(list.value(5).mid(0, pulseSize).constData(), pulseSize);
 
   file.close();
 
