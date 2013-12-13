@@ -363,8 +363,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1162</width>
-                <height>557</height>
+                <width>485</width>
+                <height>426</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1968,8 +1968,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>278</width>
-                 <height>557</height>
+                 <width>170</width>
+                 <height>383</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3291,8 +3291,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1154</width>
-             <height>641</height>
+             <width>869</width>
+             <height>631</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4173,8 +4173,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1172</width>
-             <height>567</height>
+             <width>1170</width>
+             <height>584</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4869,6 +4869,9 @@
                         </property>
                         <property name="maximum">
                          <number>65536</number>
+                        </property>
+                        <property name="value">
+                         <number>15000</number>
                         </property>
                        </widget>
                       </item>
@@ -5580,7 +5583,7 @@
      <x>0</x>
      <y>0</y>
      <width>1196</width>
-     <height>27</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

@@ -239,12 +239,11 @@ void spoton::slotPopulateEtpMagnets(void)
 	m_ui.addTransmittedMagnets->setRowCount(0);
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT magnet, one_time_magnet, used, "
+	if(query.exec("SELECT magnet, one_time_magnet, "
 		      "OID FROM magnets"))
 	  while(query.next())
 	    {
 	      QByteArray bytes;
-	      bool enabled = !query.value(2).toBool();
 	      bool ok = true;
 
 	      bytes = s_crypt->decrypted
@@ -254,12 +253,10 @@ void spoton::slotPopulateEtpMagnets(void)
 	      QTableWidgetItem *item = new QTableWidgetItem
 		(bytes.constData());
 
-	      checkBox->setEnabled(enabled);
 	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.etpMagnets->setRowCount(row + 1);
 	      m_ui.etpMagnets->setItem(row, 1, item);
 	      checkBox->setChecked(query.value(1).toInt());
-	      checkBox->setEnabled(enabled);
 	      checkBox->setProperty
 		("oid", query.value(query.record().count() - 1));
 	      connect(checkBox,
@@ -269,17 +266,11 @@ void spoton::slotPopulateEtpMagnets(void)
 	      m_ui.etpMagnets->setCellWidget(row, 0, checkBox);
 	      m_ui.addTransmittedMagnets->setRowCount(row + 1);
 	      checkBox = new QCheckBox();
-	      checkBox->setEnabled(enabled);
 	      checkBox->setText(bytes.replace("&", "&&").constData());
 	      m_ui.addTransmittedMagnets->setCellWidget(row, 0, checkBox);
 	      item = new QTableWidgetItem
 		(query.value(query.record().count() - 1).toString());
-
-	      if(enabled)
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	      else
-		item->setFlags(Qt::ItemIsSelectable);
-
+	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.etpMagnets->setItem(row, 2, item);
 	      m_ui.addTransmittedMagnets->setItem(row, 1, item->clone());
 	      row += 1;
@@ -909,22 +900,13 @@ void spoton::slotTransmit(void)
 		break;
 	      }
 
-	    query.prepare("UPDATE magnets SET "
-			  "used = 1 WHERE "
-			  "magnet_hash = ? AND one_time_magnet = 1");
-	    query.bindValue
-	      (0, s_crypt->keyedHash(magnets.at(i), &ok).toBase64());
+	    query.prepare("DELETE FROM magnets WHERE "
+			  "magnet_hash = ? and one_time_magnet = 1");
+	    query.bindValue(0, s_crypt->keyedHash(magnets.at(i), &ok).
+			    toBase64());
 
 	    if(ok)
 	      query.exec();
-	    else
-	      break;
-
-	    if(query.lastError().isValid())
-	      {
-		error = query.lastError().text();
-		break;
-	      }
 	  }
       }
 
@@ -948,7 +930,7 @@ void spoton::slotTransmit(void)
     QMessageBox::critical(this, tr("Spot-On: Error"), error);
   else
     {
-      m_ui.pulseSize->setValue(m_ui.pulseSize->minimum());
+      m_ui.pulseSize->setValue(15000);
       m_ui.transmitNova->clear();
       m_ui.transmittedFile->clear();
     }
