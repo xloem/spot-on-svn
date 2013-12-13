@@ -26,6 +26,7 @@
 */
 
 #include <QCheckBox>
+#include <QProgressBar>
 #include <QTableWidgetItem>
 
 #include "spot-on.h"
@@ -94,7 +95,7 @@ void spoton::slotAddEtpMagnet(void)
     }
 
   if(m_ui.magnetRadio->isChecked())
-    magnet = m_ui.etpMagnet->text().trimmed();
+    magnet = m_ui.etpMagnet->toPlainText().trimmed();
   else
     magnet = QString("magnet:?"
 		     "ct=%1&"
@@ -1055,12 +1056,10 @@ void spoton::slotPopulateStars(void)
 	    {
 	      m_ui.received->setRowCount(row + 1);
 
-	      QTableWidgetItem *item = new QTableWidgetItem("0");
+	      QProgressBar *progressBar = new QProgressBar();
 	      bool ok = true;
 
-	      item->setFlags(Qt::ItemIsEnabled |
-			     Qt::ItemIsSelectable);
-	      m_ui.received->setItem(row, 0, item);
+	      m_ui.received->setCellWidget(row, 0, progressBar);
 
 	      for(int i = 0; i < query.record().count(); i++)
 		{
@@ -1088,19 +1087,14 @@ void spoton::slotPopulateStars(void)
 		    }
 		}
 
-	      QTableWidgetItem *item1 = m_ui.received->item(row, 0);
-	      QTableWidgetItem *item2 = m_ui.received->item(row, 1);
-	      QTableWidgetItem *item3 = m_ui.received->item(row, 2);
+	      QTableWidgetItem *item1 = m_ui.received->item(row, 1);
+	      QTableWidgetItem *item2 = m_ui.received->item(row, 2);
 
-	      if(item1 && item2 && item3)
-		{
-		  double percent = 0;
-
-		  percent = 100 * qAbs
-		    (static_cast<double> (QFileInfo(item3->text()).size()) /
-		     qMax(1LL, item2->text().toLongLong()));
-		  item1->setText(QString::number(percent, 'f', 2));
-		}
+	      if(item1 && item2 && progressBar)
+		progressBar->setValue
+		  (100 * qAbs(static_cast<double> (QFileInfo(item2->text()).
+						   size()) /
+			      qMax(1LL, item1->text().toLongLong())));
 
 	      if(m_ui.received->item(row, 2) &&
 		 fileName == m_ui.received->item(row, 2)->text())
@@ -1150,6 +1144,7 @@ void spoton::slotPopulateStars(void)
 	      QCheckBox *checkBox = new QCheckBox();
 	      QString fileName("");
 	      bool ok = true;
+	      qint64 position = 0;
 
 	      checkBox->setChecked(true);
 	      checkBox->setProperty
@@ -1163,7 +1158,16 @@ void spoton::slotPopulateStars(void)
 		  if(i == 0)
 		    {
 		    }
-		  else if(i == 1 || i == 2 || i == 3 || i == 5 || i == 6)
+		  else if(i == 1)
+		    {
+		      position = s_crypt->
+			decrypted(QByteArray::fromBase64(query.value(i).
+							 toByteArray()),
+				  &ok).toLongLong();
+		      m_ui.transmitted->setCellWidget
+			(row, i, new QProgressBar());
+		    }
+		  else if(i == 2 || i == 3 || i == 5 || i == 6)
 		    {
 		      QByteArray bytes
 			(s_crypt->
@@ -1197,18 +1201,14 @@ void spoton::slotPopulateStars(void)
 		    }
 		}
 
-	      QTableWidgetItem *item1 = m_ui.transmitted->item(row, 1);
-	      QTableWidgetItem *item2 = m_ui.transmitted->item(row, 3);
+	      QProgressBar *progressBar = qobject_cast<QProgressBar *>
+		(m_ui.transmitted->cellWidget(row, 1));
+	      QTableWidgetItem *item = m_ui.transmitted->item(row, 3);
 
-	      if(item1 && item2)
-		{
-		  double percent = 0;
-
-		  percent = 100 * qAbs
-		    (static_cast<double> (item1->text().toLongLong()) /
-		     qMax(1LL, item2->text().toLongLong()));
-		  item1->setText(QString::number(percent, 'f', 2));
-		}
+	      if(item && progressBar)
+		progressBar->setValue
+		  (100 * qAbs(static_cast<double> (position) /
+			      qMax(1LL, item->text().toLongLong())));
 
 	      connect(checkBox,
 		      SIGNAL(toggled(bool)),

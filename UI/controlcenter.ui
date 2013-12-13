@@ -363,8 +363,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>485</width>
-                <height>426</height>
+                <width>1162</width>
+                <height>557</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1968,8 +1968,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>170</width>
-                 <height>383</height>
+                 <width>214</width>
+                 <height>415</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3291,8 +3291,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>869</width>
-             <height>631</height>
+             <width>1063</width>
+             <height>641</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4173,8 +4173,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1170</width>
-             <height>584</height>
+             <width>1172</width>
+             <height>567</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4271,7 +4271,20 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QLineEdit" name="etpMagnet"/>
+                      <widget class="QTextEdit" name="etpMagnet">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="tabChangesFocus">
+                        <bool>true</bool>
+                       </property>
+                       <property name="acceptRichText">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
                      </item>
                     </layout>
                    </item>
@@ -5583,7 +5596,7 @@
      <x>0</x>
      <y>0</y>
      <width>1196</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
