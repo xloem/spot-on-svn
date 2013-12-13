@@ -363,6 +363,9 @@ void spoton_starbeam_reader::pulsate(const QString &fileName,
 		spoton_kernel::s_kernel->writeToNeighbors(data, &ok);
 
 	      if(ok)
+		spoton_kernel::messagingCacheAdd(data);
+
+	      if(ok)
 		m_position += rc;
 	    }
 	}

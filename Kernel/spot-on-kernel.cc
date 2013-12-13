@@ -2974,6 +2974,7 @@ void spoton_kernel::writeToNeighbors(const QByteArray &data, bool *ok)
 	   write(data.constData(), data.length()) == data.length())
 	  {
 	    it.value()->flush();
+	    it.value()->addToBytesWritten(data.length());
 
 	    if(ok)
 	      *ok = true;
