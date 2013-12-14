@@ -185,9 +185,22 @@ void spoton_starbeam_writer::slotProcessData(void)
 
   file.setFileName(fileName);
 
-  if(file.open(QIODevice::ReadWrite | QIODevice::Unbuffered))
-    if(file.seek(position))
-      file.write(list.value(5).mid(0, pulseSize).constData(), pulseSize);
+  if(file.open(QIODevice::ReadWrite))
+    {
+      if(file.seek(position))
+	{
+	  if(file.write(list.value(5).mid(0, pulseSize).constData(),
+			pulseSize) != pulseSize)
+	    spoton_misc::logError
+	      ("spoton_starbeam_writer::slotProcessData(): "
+	       "write() failure.");
+
+	  file.flush();
+	}
+      else
+	spoton_misc::logError("spoton_starbeam_writer::slotProcessData(): "
+			      "seek() failure.");
+    }
 
   file.close();
 

@@ -1059,6 +1059,7 @@ void spoton::slotPopulateStars(void)
 	      QProgressBar *progressBar = new QProgressBar();
 	      bool ok = true;
 
+	      progressBar->setTextVisible(true);
 	      m_ui.received->setCellWidget(row, 0, progressBar);
 
 	      for(int i = 0; i < query.record().count(); i++)
@@ -1164,8 +1165,12 @@ void spoton::slotPopulateStars(void)
 			decrypted(QByteArray::fromBase64(query.value(i).
 							 toByteArray()),
 				  &ok).toLongLong();
+
+		      QProgressBar *progressBar = new QProgressBar();
+
+		      progressBar->setTextVisible(true);
 		      m_ui.transmitted->setCellWidget
-			(row, i, new QProgressBar());
+			(row, i, progressBar);
 		    }
 		  else if(i == 2 || i == 3 || i == 5 || i == 6)
 		    {
