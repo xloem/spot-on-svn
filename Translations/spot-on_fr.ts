@@ -446,8 +446,8 @@
     <message>
         <location filename="../GUI/spot-on-a.cc" line="3320"/>
         <location filename="../GUI/spot-on-a.cc" line="3340"/>
-        <location filename="../GUI/spot-on-c.cc" line="423"/>
-        <location filename="../GUI/spot-on-c.cc" line="748"/>
+        <location filename="../GUI/spot-on-c.cc" line="424"/>
+        <location filename="../GUI/spot-on-c.cc" line="749"/>
         <source>&amp;Select</source>
         <translation type="unfinished"></translation>
     </message>
@@ -513,13 +513,13 @@
         <location filename="../GUI/spot-on-b.cc" line="4620"/>
         <location filename="../GUI/spot-on-b.cc" line="4630"/>
         <location filename="../GUI/spot-on-b.cc" line="4639"/>
-        <location filename="../GUI/spot-on-c.cc" line="198"/>
-        <location filename="../GUI/spot-on-c.cc" line="930"/>
-        <location filename="../GUI/spot-on-c.cc" line="1397"/>
-        <location filename="../GUI/spot-on-c.cc" line="1406"/>
-        <location filename="../GUI/spot-on-c.cc" line="1451"/>
-        <location filename="../GUI/spot-on-c.cc" line="1516"/>
-        <location filename="../GUI/spot-on-c.cc" line="1525"/>
+        <location filename="../GUI/spot-on-c.cc" line="199"/>
+        <location filename="../GUI/spot-on-c.cc" line="931"/>
+        <location filename="../GUI/spot-on-c.cc" line="1402"/>
+        <location filename="../GUI/spot-on-c.cc" line="1411"/>
+        <location filename="../GUI/spot-on-c.cc" line="1456"/>
+        <location filename="../GUI/spot-on-c.cc" line="1521"/>
+        <location filename="../GUI/spot-on-c.cc" line="1530"/>
         <source>Spot-On: Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -639,10 +639,10 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <location filename="../GUI/spot-on-b.cc" line="4364"/>
         <location filename="../GUI/spot-on-b.cc" line="4544"/>
         <location filename="../GUI/spot-on-b.cc" line="4640"/>
-        <location filename="../GUI/spot-on-c.cc" line="92"/>
-        <location filename="../GUI/spot-on-c.cc" line="782"/>
-        <location filename="../GUI/spot-on-c.cc" line="1398"/>
-        <location filename="../GUI/spot-on-c.cc" line="1526"/>
+        <location filename="../GUI/spot-on-c.cc" line="93"/>
+        <location filename="../GUI/spot-on-c.cc" line="783"/>
+        <location filename="../GUI/spot-on-c.cc" line="1403"/>
+        <location filename="../GUI/spot-on-c.cc" line="1531"/>
         <source>Invalid spoton_crypt object.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -772,7 +772,7 @@ Share Address: %11</source>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="6339"/>
-        <location filename="../GUI/spot-on-c.cc" line="185"/>
+        <location filename="../GUI/spot-on-c.cc" line="186"/>
         <source>A database error occurred.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -970,7 +970,7 @@ Transport: %22</source>
         <location filename="../GUI/spot-on-a.cc" line="4329"/>
         <location filename="../GUI/spot-on-a.cc" line="4410"/>
         <location filename="../GUI/spot-on-a.cc" line="4421"/>
-        <location filename="../GUI/spot-on-c.cc" line="304"/>
+        <location filename="../GUI/spot-on-c.cc" line="305"/>
         <source>&amp;Delete</source>
         <translation type="unfinished"></translation>
     </message>
@@ -979,7 +979,7 @@ Transport: %22</source>
         <location filename="../GUI/spot-on-a.cc" line="4331"/>
         <location filename="../GUI/spot-on-a.cc" line="4412"/>
         <location filename="../GUI/spot-on-a.cc" line="4423"/>
-        <location filename="../GUI/spot-on-c.cc" line="306"/>
+        <location filename="../GUI/spot-on-c.cc" line="307"/>
         <source>Delete &amp;All</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1320,64 +1320,64 @@ Transport: %22</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="149"/>
+        <location filename="../GUI/spot-on-c.cc" line="150"/>
         <source>Invalid magnet.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4429"/>
-        <location filename="../GUI/spot-on-c.cc" line="298"/>
+        <location filename="../GUI/spot-on-c.cc" line="299"/>
         <source>Copy &amp;Magnet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="420"/>
+        <location filename="../GUI/spot-on-c.cc" line="421"/>
         <source>Spot-On: Select Destination Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="745"/>
+        <location filename="../GUI/spot-on-c.cc" line="746"/>
         <source>Spot-On: Select Transmit File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="788"/>
+        <location filename="../GUI/spot-on-c.cc" line="789"/>
         <source>Please select a file to transfer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="796"/>
+        <location filename="../GUI/spot-on-c.cc" line="797"/>
         <source>The provided file does not exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="815"/>
+        <location filename="../GUI/spot-on-c.cc" line="816"/>
         <source>Please select at least one magnet.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="914"/>
-        <location filename="../GUI/spot-on-c.cc" line="917"/>
+        <location filename="../GUI/spot-on-c.cc" line="915"/>
+        <location filename="../GUI/spot-on-c.cc" line="918"/>
         <source>A database error (%1) occurred.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="920"/>
+        <location filename="../GUI/spot-on-c.cc" line="921"/>
         <source>An error occurred within spoton_crypt.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="1407"/>
+        <location filename="../GUI/spot-on-c.cc" line="1412"/>
         <source>Please provide a NOVA.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="1452"/>
+        <location filename="../GUI/spot-on-c.cc" line="1457"/>
         <source>Unable to store the NOVA.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="1517"/>
+        <location filename="../GUI/spot-on-c.cc" line="1522"/>
         <source>Please select a NOVA to delete.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1530,7 +1530,7 @@ Transport: %22</source>
         <location filename="../UI/controlcenter.ui" line="469"/>
         <location filename="../UI/controlcenter.ui" line="824"/>
         <location filename="../UI/controlcenter.ui" line="3115"/>
-        <location filename="../UI/controlcenter.ui" line="4300"/>
+        <location filename="../UI/controlcenter.ui" line="4313"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1539,14 +1539,14 @@ Transport: %22</source>
         <location filename="../UI/controlcenter.ui" line="519"/>
         <location filename="../UI/controlcenter.ui" line="1321"/>
         <location filename="../UI/controlcenter.ui" line="3429"/>
-        <location filename="../UI/controlcenter.ui" line="4979"/>
+        <location filename="../UI/controlcenter.ui" line="4992"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="601"/>
         <location filename="../UI/controlcenter.ui" line="1280"/>
-        <location filename="../UI/controlcenter.ui" line="5038"/>
+        <location filename="../UI/controlcenter.ui" line="5051"/>
         <source>public_key_hash</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1573,9 +1573,9 @@ Transport: %22</source>
         <location filename="../UI/controlcenter.ui" line="2069"/>
         <location filename="../UI/controlcenter.ui" line="2138"/>
         <location filename="../UI/controlcenter.ui" line="3219"/>
-        <location filename="../UI/controlcenter.ui" line="4514"/>
-        <location filename="../UI/controlcenter.ui" line="5155"/>
-        <location filename="../UI/controlcenter.ui" line="5278"/>
+        <location filename="../UI/controlcenter.ui" line="4527"/>
+        <location filename="../UI/controlcenter.ui" line="5168"/>
+        <location filename="../UI/controlcenter.ui" line="5291"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1645,7 +1645,7 @@ Transport: %22</source>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="2346"/>
-        <location filename="../UI/controlcenter.ui" line="5445"/>
+        <location filename="../UI/controlcenter.ui" line="5458"/>
         <source>Authenticate</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1747,7 +1747,7 @@ Transport: %22</source>
         <location filename="../UI/controlcenter.ui" line="97"/>
         <location filename="../UI/controlcenter.ui" line="506"/>
         <location filename="../UI/controlcenter.ui" line="2012"/>
-        <location filename="../UI/controlcenter.ui" line="4966"/>
+        <location filename="../UI/controlcenter.ui" line="4979"/>
         <source>&amp;Name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1777,7 +1777,7 @@ Transport: %22</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4920"/>
+        <location filename="../UI/controlcenter.ui" line="4933"/>
         <source>Accept &amp;keys.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2063,83 +2063,83 @@ Transport: %22</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4286"/>
+        <location filename="../UI/controlcenter.ui" line="4299"/>
         <source>&amp;Create</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4451"/>
+        <location filename="../UI/controlcenter.ui" line="4464"/>
         <source>&amp;Received</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4467"/>
+        <location filename="../UI/controlcenter.ui" line="4480"/>
         <source>NOVAs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4524"/>
+        <location filename="../UI/controlcenter.ui" line="4537"/>
         <source>Received</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4547"/>
+        <location filename="../UI/controlcenter.ui" line="4560"/>
         <source>&amp;Destination Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4640"/>
+        <location filename="../UI/controlcenter.ui" line="4653"/>
         <source>Percent Received</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4645"/>
-        <location filename="../UI/controlcenter.ui" line="4728"/>
+        <location filename="../UI/controlcenter.ui" line="4658"/>
+        <location filename="../UI/controlcenter.ui" line="4741"/>
         <source>Total Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4743"/>
+        <location filename="../UI/controlcenter.ui" line="4756"/>
         <source>Mosaic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4310"/>
+        <location filename="../UI/controlcenter.ui" line="4323"/>
         <source>Generate Encryption Key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4315"/>
+        <location filename="../UI/controlcenter.ui" line="4328"/>
         <source>Generate MAC Key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4385"/>
+        <location filename="../UI/controlcenter.ui" line="4398"/>
         <source>&amp;Hash Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4402"/>
+        <location filename="../UI/controlcenter.ui" line="4415"/>
         <source>&amp;MAC Key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4355"/>
+        <location filename="../UI/controlcenter.ui" line="4368"/>
         <source>&amp;Cipher Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4372"/>
+        <location filename="../UI/controlcenter.ui" line="4385"/>
         <source>&amp;Encryption Key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4865"/>
+        <location filename="../UI/controlcenter.ui" line="4878"/>
         <source> Bytes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4668"/>
+        <location filename="../UI/controlcenter.ui" line="4681"/>
         <source>&amp;Transmitted</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2402,47 +2402,47 @@ Transport: %22</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4713"/>
+        <location filename="../UI/controlcenter.ui" line="4726"/>
         <source>Paused</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4723"/>
+        <location filename="../UI/controlcenter.ui" line="4736"/>
         <source>Pulse Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4818"/>
+        <location filename="../UI/controlcenter.ui" line="4831"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bundle each pulse with an additional layer of AES-256 encryption. Do remember to notify all recipients of the key.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4821"/>
+        <location filename="../UI/controlcenter.ui" line="4834"/>
         <source>NOVA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4855"/>
+        <location filename="../UI/controlcenter.ui" line="4868"/>
         <source>&amp;Pulse Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5535"/>
+        <location filename="../UI/controlcenter.ui" line="5548"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://sourceforge.net/p/spot-on/code/HEAD/tree/branches/Documentation/RELEASE-NOTES&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Version 0.07&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5665"/>
+        <location filename="../UI/controlcenter.ui" line="5678"/>
         <source>&amp;East</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5676"/>
+        <location filename="../UI/controlcenter.ui" line="5689"/>
         <source>&amp;North</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5684"/>
+        <location filename="../UI/controlcenter.ui" line="5697"/>
         <source>&amp;West</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2574,27 +2574,27 @@ Transport: %22</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5636"/>
+        <location filename="../UI/controlcenter.ui" line="5649"/>
         <source>Nuvola</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5644"/>
+        <location filename="../UI/controlcenter.ui" line="5657"/>
         <source>Nouve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5652"/>
+        <location filename="../UI/controlcenter.ui" line="5665"/>
         <source>Ctrl+L</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5657"/>
+        <location filename="../UI/controlcenter.ui" line="5670"/>
         <source>&amp;Reset Spot-On</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5649"/>
+        <location filename="../UI/controlcenter.ui" line="5662"/>
         <source>&amp;Log Viewer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2609,7 +2609,7 @@ Transport: %22</source>
         <location filename="../UI/controlcenter.ui" line="1053"/>
         <location filename="../UI/controlcenter.ui" line="1567"/>
         <location filename="../UI/controlcenter.ui" line="2418"/>
-        <location filename="../UI/controlcenter.ui" line="4733"/>
+        <location filename="../UI/controlcenter.ui" line="4746"/>
         <source>Status</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2643,14 +2643,14 @@ Transport: %22</source>
     <message>
         <location filename="../UI/controlcenter.ui" line="586"/>
         <location filename="../UI/controlcenter.ui" line="1265"/>
-        <location filename="../UI/controlcenter.ui" line="5023"/>
+        <location filename="../UI/controlcenter.ui" line="5036"/>
         <source>Participant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="596"/>
         <location filename="../UI/controlcenter.ui" line="1275"/>
-        <location filename="../UI/controlcenter.ui" line="5033"/>
+        <location filename="../UI/controlcenter.ui" line="5046"/>
         <source>neighbor_oid</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2670,10 +2670,10 @@ Transport: %22</source>
         <location filename="../UI/controlcenter.ui" line="2131"/>
         <location filename="../UI/controlcenter.ui" line="3022"/>
         <location filename="../UI/controlcenter.ui" line="3108"/>
-        <location filename="../UI/controlcenter.ui" line="4441"/>
-        <location filename="../UI/controlcenter.ui" line="4507"/>
-        <location filename="../UI/controlcenter.ui" line="5148"/>
-        <location filename="../UI/controlcenter.ui" line="5271"/>
+        <location filename="../UI/controlcenter.ui" line="4454"/>
+        <location filename="../UI/controlcenter.ui" line="4520"/>
+        <location filename="../UI/controlcenter.ui" line="5161"/>
+        <location filename="../UI/controlcenter.ui" line="5284"/>
         <source>Add</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2705,8 +2705,8 @@ Transport: %22</source>
     <message>
         <location filename="../UI/controlcenter.ui" line="3398"/>
         <location filename="../UI/controlcenter.ui" line="3555"/>
-        <location filename="../UI/controlcenter.ui" line="4560"/>
-        <location filename="../UI/controlcenter.ui" line="4848"/>
+        <location filename="../UI/controlcenter.ui" line="4573"/>
+        <location filename="../UI/controlcenter.ui" line="4861"/>
         <source>Select</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2741,7 +2741,7 @@ Transport: %22</source>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="3921"/>
-        <location filename="../UI/controlcenter.ui" line="5428"/>
+        <location filename="../UI/controlcenter.ui" line="5441"/>
         <source>P&amp;assphrase</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2751,24 +2751,24 @@ Transport: %22</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5073"/>
+        <location filename="../UI/controlcenter.ui" line="5086"/>
         <source>&amp;Download</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5103"/>
-        <location filename="../UI/controlcenter.ui" line="5226"/>
+        <location filename="../UI/controlcenter.ui" line="5116"/>
+        <location filename="../UI/controlcenter.ui" line="5239"/>
         <source>&amp;Accept List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5113"/>
-        <location filename="../UI/controlcenter.ui" line="5236"/>
+        <location filename="../UI/controlcenter.ui" line="5126"/>
+        <location filename="../UI/controlcenter.ui" line="5249"/>
         <source>&amp;Deny List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5196"/>
+        <location filename="../UI/controlcenter.ui" line="5209"/>
         <source>&amp;Upload</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2820,7 +2820,7 @@ Transport: %22</source>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="489"/>
-        <location filename="../UI/controlcenter.ui" line="4949"/>
+        <location filename="../UI/controlcenter.ui" line="4962"/>
         <source>Participants</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2831,10 +2831,10 @@ Transport: %22</source>
         <location filename="../UI/controlcenter.ui" line="1652"/>
         <location filename="../UI/controlcenter.ui" line="2553"/>
         <location filename="../UI/controlcenter.ui" line="4241"/>
-        <location filename="../UI/controlcenter.ui" line="4655"/>
-        <location filename="../UI/controlcenter.ui" line="4748"/>
-        <location filename="../UI/controlcenter.ui" line="4802"/>
-        <location filename="../UI/controlcenter.ui" line="5028"/>
+        <location filename="../UI/controlcenter.ui" line="4668"/>
+        <location filename="../UI/controlcenter.ui" line="4761"/>
+        <location filename="../UI/controlcenter.ui" line="4815"/>
+        <location filename="../UI/controlcenter.ui" line="5041"/>
         <source>OID</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2896,38 +2896,38 @@ Transport: %22</source>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="4236"/>
-        <location filename="../UI/controlcenter.ui" line="4797"/>
+        <location filename="../UI/controlcenter.ui" line="4810"/>
         <source>Magnet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4305"/>
+        <location filename="../UI/controlcenter.ui" line="4318"/>
         <source>Generate Key Pair</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4574"/>
+        <location filename="../UI/controlcenter.ui" line="4587"/>
         <source>&amp;Maximum Mosaic Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4584"/>
+        <location filename="../UI/controlcenter.ui" line="4597"/>
         <source> MB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4718"/>
+        <location filename="../UI/controlcenter.ui" line="4731"/>
         <source>Percent Transmitted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4650"/>
-        <location filename="../UI/controlcenter.ui" line="4738"/>
+        <location filename="../UI/controlcenter.ui" line="4663"/>
+        <location filename="../UI/controlcenter.ui" line="4751"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4881"/>
+        <location filename="../UI/controlcenter.ui" line="4894"/>
         <source>Transmit</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3025,69 +3025,69 @@ Transport: %22</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4766"/>
+        <location filename="../UI/controlcenter.ui" line="4779"/>
         <source>Add Mosaic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4903"/>
+        <location filename="../UI/controlcenter.ui" line="4916"/>
         <source>&amp;URLs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5043"/>
-        <location filename="../UI/controlcenter.ui" line="5048"/>
+        <location filename="../UI/controlcenter.ui" line="5056"/>
+        <location filename="../UI/controlcenter.ui" line="5061"/>
         <source>ignored</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5057"/>
+        <location filename="../UI/controlcenter.ui" line="5070"/>
         <source>URL Distillers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5379"/>
+        <location filename="../UI/controlcenter.ui" line="5392"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;quot;The Dalmatian is a breed of dog, noted for its unique black- or brown-spotted coat. This dog is often used as a rescue dog, guardian, athletic partner, and, especially today, the Dalmatian remains most often an active, well-loved family member.&amp;quot; - Wikipedia.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5504"/>
+        <location filename="../UI/controlcenter.ui" line="5517"/>
         <source>Spot-On Graphical User Interface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5551"/>
+        <location filename="../UI/controlcenter.ui" line="5564"/>
         <source>Build Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4835"/>
-        <location filename="../UI/controlcenter.ui" line="5591"/>
+        <location filename="../UI/controlcenter.ui" line="4848"/>
+        <location filename="../UI/controlcenter.ui" line="5604"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5599"/>
+        <location filename="../UI/controlcenter.ui" line="5612"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5603"/>
+        <location filename="../UI/controlcenter.ui" line="5616"/>
         <source>&amp;Icons</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5610"/>
+        <location filename="../UI/controlcenter.ui" line="5623"/>
         <source>&amp;Tab Position</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5625"/>
+        <location filename="../UI/controlcenter.ui" line="5638"/>
         <source>&amp;Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5628"/>
+        <location filename="../UI/controlcenter.ui" line="5641"/>
         <source>Ctrl+Q</source>
         <translation type="unfinished"></translation>
     </message>
