@@ -137,6 +137,8 @@
      gcry_check_version(). Corrected.
 68.  gcry_control(GCRYCTL_SET_THREAD_CBS) must be issued before any other
      libgcrypt function for multi-threaded applications. Corrected.
+69.  Increased the maximum buffer size to 1048576 bytes and the maximum
+     content length to 524288. Please remove listeners.db and neighbors.db.
 
 0.06 (10/24/2013)
 
