@@ -3976,6 +3976,7 @@ void spoton::slotSetPassphrase(void)
 	  if(!m_tableTimer.isActive())
 	    m_tableTimer.start();
 
+	  askKernelToReadStarBeamKeys();
 	  populateNovas();
 	  sendBuzzKeysToKernel();
 	  sendKeysToKernel();
@@ -4124,6 +4125,7 @@ void spoton::slotValidatePassphrase(void)
 	    if(!m_tableTimer.isActive())
 	      m_tableTimer.start();
 
+	    askKernelToReadStarBeamKeys();
 	    populateNovas();
 	    sendBuzzKeysToKernel();
 	    sendKeysToKernel();
@@ -4445,6 +4447,7 @@ void spoton::slotKernelSocketState(void)
 							   */
       if(m_kernelSocket.isEncrypted())
 	{
+	  askKernelToReadStarBeamKeys();
 	  sendBuzzKeysToKernel();
 	  sendKeysToKernel();
 

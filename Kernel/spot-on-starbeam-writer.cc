@@ -37,14 +37,12 @@
 spoton_starbeam_writer::spoton_starbeam_writer(QObject *parent):
 QThread(parent)
 {
-  m_keyTimer.setInterval(30000);
   m_timer.setInterval(100);
   QThread::start();
 }
 
 spoton_starbeam_writer::~spoton_starbeam_writer()
 {
-  m_keyTimer.stop();
   m_timer.stop();
   quit();
   wait(30000);
@@ -52,10 +50,6 @@ spoton_starbeam_writer::~spoton_starbeam_writer()
 
 void spoton_starbeam_writer::run(void)
 {
-  connect(&m_keyTimer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotReadKeys(void)));
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -84,26 +78,29 @@ void spoton_starbeam_writer::slotProcessData(void)
   for(int i = 0; i < list.size(); i++)
     list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-  if(m_magnets.isEmpty())
-    slotReadKeys();
-
   QHash<QString, QByteArray> magnet;
 
-  for(int i = 0; i < m_magnets.size(); i++)
+  m_keyMutex.lock();
+
+  QList<QHash<QString, QByteArray> > magnets(m_magnets);
+
+  m_keyMutex.unlock();
+
+  for(int i = 0; i < magnets.size(); i++)
     {
       QByteArray messageCode;
       bool ok = true;
 
       messageCode = spoton_crypt::keyedHash
 	(list.value(0),
-	 m_magnets.at(i).value("mk"),
-	 m_magnets.at(i).value("ht"),
+	 magnets.at(i).value("mk"),
+	 magnets.at(i).value("ht"),
 	 &ok);
 
       if(ok)
 	if(list.value(1) == messageCode)
 	  {
-	    magnet = m_magnets.at(i);
+	    magnet = magnets.at(i);
 	    break;
 	  }
     }
@@ -125,16 +122,22 @@ void spoton_starbeam_writer::slotProcessData(void)
   if(!ok)
     return;
 
+  m_keyMutex.lock();
+
+  QList<QByteArray> novas(m_novas);
+
+  m_keyMutex.unlock();
+
   if(data.split('\n').size() != 6)
     {
-      for(int i = 0; i < m_novas.size(); i++)
+      for(int i = 0; i < novas.size(); i++)
 	{
 	  QByteArray bytes;
 	  bool ok = true;
 	  spoton_crypt crypt("aes256",
 			     QString(""),
 			     QByteArray(),
-			     m_novas.at(i),
+			     novas.at(i),
 			     0,
 			     0,
 			     QString(""));
@@ -249,13 +252,12 @@ void spoton_starbeam_writer::slotProcessData(void)
 
 void spoton_starbeam_writer::start(void)
 {
-  m_keyTimer.start();
+  slotReadKeys();
   m_timer.start();
 }
 
 void spoton_starbeam_writer::stop(void)
 {
-  m_keyTimer.stop();
   m_timer.stop();
 }
 
@@ -276,8 +278,10 @@ void spoton_starbeam_writer::slotReadKeys(void)
 
     if(db.open())
       {
+	m_keyMutex.lock();
 	m_magnets.clear();
 	m_novas.clear();
+	m_keyMutex.unlock();
 
 	QSqlQuery query(db);
 
@@ -334,7 +338,11 @@ void spoton_starbeam_writer::slotReadKeys(void)
 		}
 
 	      if(elements.contains("xt"))
-		m_magnets.append(elements);
+		{
+		  m_keyMutex.lock();
+		  m_magnets.append(elements);
+		  m_keyMutex.unlock();
+		}
 	    }
 
 	query.prepare("SELECT nova FROM received_novas");
@@ -351,7 +359,9 @@ void spoton_starbeam_writer::slotReadKeys(void)
 	      if(!ok)
 		continue;
 
+	      m_keyMutex.lock();
 	      m_novas.append(data);
+	      m_keyMutex.unlock();
 	    }
       }
 

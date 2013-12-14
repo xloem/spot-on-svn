@@ -4304,6 +4304,8 @@ void spoton::slotAddAcceptedIP(void)
 	if(ok)
 	  ok = query.exec();
       }
+    else
+      ok = false;
 
     db.close();
   }

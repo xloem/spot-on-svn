@@ -249,6 +249,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_guiServer = 0;
   m_mailer = 0;
   m_sharedReader = 0;
+  m_starbeamWriter = 0;
   m_uptime = QDateTime::currentDateTime();
   qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
@@ -433,6 +434,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 				      const QByteArray &,
 				      const QByteArray &,
 				      const QString &)));
+  connect(m_guiServer,
+	  SIGNAL(populateStarBeamKeys(void)),
+	  m_starbeamWriter,
+	  SLOT(slotReadKeys(void)));
   connect(m_guiServer,
 	  SIGNAL(publicizeAllListenersPlaintext(void)),
 	  this,

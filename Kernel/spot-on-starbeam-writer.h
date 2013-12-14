@@ -48,6 +48,7 @@ class spoton_starbeam_writer: public QThread
  private:
   QList<QHash<QString, QByteArray> > m_magnets;
   QList<QByteArray> m_novas;
+  QMutex m_keyMutex;
   QMutex m_mutex;
   QQueue<QByteArray> m_queue;
   QTimer m_keyTimer;

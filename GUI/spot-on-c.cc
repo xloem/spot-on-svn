@@ -197,6 +197,8 @@ void spoton::slotAddEtpMagnet(void)
 
   if(!error.isEmpty())
     QMessageBox::critical(this, tr("Spot-On: Error"), error);
+  else
+    askKernelToReadStarBeamKeys();
 }
 
 void spoton::slotPopulateEtpMagnets(void)
@@ -331,6 +333,7 @@ void spoton::slotDeleteEtpAllMagnets(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+  askKernelToReadStarBeamKeys();
 }
 
 void spoton::slotDeleteEtpMagnet(void)
@@ -371,6 +374,7 @@ void spoton::slotDeleteEtpMagnet(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+  askKernelToReadStarBeamKeys();
 }
 
 void spoton::slotCopyEtpMagnet(void)
@@ -1422,7 +1426,7 @@ void spoton::slotAddReceiveNova(void)
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "starbeam.db");
 
-    if(db.open())
+    if((ok = db.open()))
       {
 	QSqlQuery query(db);
 
@@ -1441,6 +1445,8 @@ void spoton::slotAddReceiveNova(void)
 	if(ok)
 	  ok = query.exec();
       }
+    else
+      ok = false;
 
     db.close();
   }
@@ -1451,6 +1457,7 @@ void spoton::slotAddReceiveNova(void)
     {
       m_ui.receiveNova->clear();
       populateNovas();
+      askKernelToReadStarBeamKeys();
     }
   else
     QMessageBox::critical(this, tr("Spot-On: Error"),
@@ -1560,6 +1567,7 @@ void spoton::slotDeleteNova(void)
 
   QSqlDatabase::removeDatabase(connectionName);
   populateNovas();
+  askKernelToReadStarBeamKeys();
 }
 
 void spoton::slotGenerateNova(void)
@@ -1721,4 +1729,26 @@ void spoton::slotDeleteReceived(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton::askKernelToReadStarBeamKeys(void)
+{
+  if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!m_kernelSocket.isEncrypted())
+    return;
+
+  QByteArray message;
+
+  message.append("populate_starbeam_keys\n");
+
+  if(m_kernelSocket.write(message.constData(), message.length()) !=
+     message.length())
+    spoton_misc::logError
+      (QString("spoton::askKernelToReadStarBeamKeys(): "
+	       "write() failure for %1:%2.").
+       arg(m_kernelSocket.peerAddress().toString()).
+       arg(m_kernelSocket.peerPort()));
+  else
+    m_kernelSocket.flush();
 }

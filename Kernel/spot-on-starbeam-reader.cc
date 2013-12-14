@@ -42,7 +42,7 @@ spoton_starbeam_reader::spoton_starbeam_reader
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTimeout(void)));
-  m_timer.start(1500);
+  m_timer.start(750);
 }
 
 spoton_starbeam_reader::~spoton_starbeam_reader()

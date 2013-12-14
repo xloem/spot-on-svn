@@ -117,6 +117,7 @@ class spoton_gui_server: public spoton_gui_server_tcp_server
 			     const QByteArray &message,
 			     const QByteArray &sequenceNumber,
 			     const QByteArray &utcDate);
+  void populateStarBeamKeys(void);
   void publicKeyReceivedFromUI(const qint64 oid,
 			       const QByteArray &keyType,
 			       const QByteArray &name,

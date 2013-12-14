@@ -369,6 +369,8 @@ void spoton_gui_server::slotReadyRead(void)
 		   QByteArray::fromBase64(list.value(3)),
 		   QByteArray::fromBase64(list.value(4)));
 	    }
+	  else if(message.startsWith("populate_starbeam_keys"))
+	    emit populateStarBeamKeys();
 	  else if(message.startsWith("publicizealllistenersplaintext"))
 	    emit publicizeAllListenersPlaintext();
 	  else if(message.startsWith("publicizelistenerplaintext"))

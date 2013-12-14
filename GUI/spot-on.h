@@ -168,6 +168,7 @@ class spoton: public QMainWindow
   void addFriendsKey(const QByteArray &key);
   void authenticate(spoton_crypt *crypt, const QString &oid,
 		    const QString &message = QString(""));
+  void askKernelToReadStarBeamKeys(void);
   void authenticationRequested(const QByteArray &data);
   void changeEchoMode(const QString &mode, QTableWidget *tableWidget);
   void closeEvent(QCloseEvent *event);

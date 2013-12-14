@@ -662,6 +662,8 @@ void spoton_buzzpage::slotSave(void)
 	if(ok)
 	  ok = query.exec();
       }
+    else
+      ok = false;
 
     db.close();
   }
@@ -722,6 +724,8 @@ void spoton_buzzpage::slotRemove(void)
 	if(ok)
 	  ok = query.exec();
       }
+    else
+      ok = false;
 
     db.close();
   }
