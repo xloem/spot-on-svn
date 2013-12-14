@@ -288,8 +288,8 @@ void spoton_misc::prepareDatabases(void)
 		   "private_key BLOB NOT NULL, "
 		   "public_key BLOB NOT NULL, "       // Not used.
 		   "use_accounts INTEGER NOT NULL DEFAULT 0, "
-		   "maximum_buffer_size INTEGER NOT NULL DEFAULT 131072, "
-		   "maximum_content_length INTEGER NOT NULL DEFAULT 65536, "
+		   "maximum_buffer_size INTEGER NOT NULL DEFAULT 1048576, "
+		   "maximum_content_length INTEGER NOT NULL DEFAULT 524288, "
 		   "transport TEXT NOT NULL, "
 		   "share_udp_address INTEGER NOT NULL DEFAULT 0)");
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_accounts ("
@@ -360,8 +360,8 @@ void spoton_misc::prepareDatabases(void)
 	   "proxy_type TEXT NOT NULL, "
 	   "proxy_username TEXT NOT NULL, "
 	   "is_encrypted INTEGER NOT NULL DEFAULT 0, "
-	   "maximum_buffer_size INTEGER NOT NULL DEFAULT 131072, "
-	   "maximum_content_length INTEGER NOT NULL DEFAULT 65536, "
+	   "maximum_buffer_size INTEGER NOT NULL DEFAULT 1048576, "
+	   "maximum_content_length INTEGER NOT NULL DEFAULT 524288, "
 	   "echo_mode TEXT NOT NULL, "
 	   "ssl_key_size INTEGER NOT NULL DEFAULT 2048, "
 	   "uptime INTEGER NOT NULL DEFAULT 0, "
