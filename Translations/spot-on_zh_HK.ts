@@ -536,8 +536,8 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <location filename="../GUI/spot-on-c.cc" line="1406"/>
         <location filename="../GUI/spot-on-c.cc" line="1415"/>
         <location filename="../GUI/spot-on-c.cc" line="1463"/>
-        <location filename="../GUI/spot-on-c.cc" line="1528"/>
-        <location filename="../GUI/spot-on-c.cc" line="1537"/>
+        <location filename="../GUI/spot-on-c.cc" line="1530"/>
+        <location filename="../GUI/spot-on-c.cc" line="1539"/>
         <source>Spot-On: Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -642,7 +642,7 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <location filename="../GUI/spot-on-c.cc" line="93"/>
         <location filename="../GUI/spot-on-c.cc" line="787"/>
         <location filename="../GUI/spot-on-c.cc" line="1407"/>
-        <location filename="../GUI/spot-on-c.cc" line="1538"/>
+        <location filename="../GUI/spot-on-c.cc" line="1540"/>
         <source>Invalid spoton_crypt object.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1310,7 +1310,7 @@ Share Address: %11</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-b.cc" line="4918"/>
+        <location filename="../GUI/spot-on-b.cc" line="4927"/>
         <source>Remote user %1 is requesting authentication credentials.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1377,7 +1377,7 @@ Share Address: %11</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="1529"/>
+        <location filename="../GUI/spot-on-c.cc" line="1531"/>
         <source>Please select a NOVA to delete.</source>
         <translation type="unfinished"></translation>
     </message>

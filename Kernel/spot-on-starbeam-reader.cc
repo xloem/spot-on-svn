@@ -287,50 +287,34 @@ void spoton_starbeam_reader::pulsate(const QString &fileName,
     return;
 
   QFile file(fileName);
+  QString status("completed");
   bool ok = false;
 
   if(file.open(QIODevice::ReadOnly))
-    if(file.seek(m_position))
-      if(!file.atEnd())
+    {
+      if(file.seek(m_position))
 	{
-	  QByteArray buffer(qAbs(pulseSize.toInt()), 0);
-	  qint64 rc = 0;
-
-	  if((rc = file.read(buffer.data(), buffer.length())) > 0)
+	  if(!file.atEnd())
 	    {
-	      QByteArray data(buffer.mid(0, rc));
-	      QByteArray messageCode;
-	      int size = data.length();
-	      spoton_crypt crypt(elements.value("ct").constData(),
-				 QString(""),
-				 QByteArray(),
-				 elements.value("ek"),
-				 0,
-				 0,
-				 QString(""));
+	      QByteArray buffer(qAbs(pulseSize.toInt()), 0);
+	      qint64 rc = 0;
 
-	      data.append(QByteArray(qrand() % 1024 + 512, 0));
-
-	      if(nova.isEmpty())
-		data = crypt.encrypted
-		  (QByteArray("0060").toBase64() + "\n" +
-		   QFileInfo(fileName).fileName().toUtf8().
-		   toBase64() + "\n" +
-		   QByteArray::number(m_position).toBase64() + "\n" +
-		   QByteArray::number(size).toBase64() + "\n" +
-		   fileSize.toLatin1().toBase64() + "\n" +
-		   data.toBase64(), &ok);
-	      else
+	      if((rc = file.read(buffer.data(), buffer.length())) > 0)
 		{
-		  {
-		    spoton_crypt crypt("aes256",
-				       QString(""),
-				       QByteArray(),
-				       nova,
-				       0,
-				       0,
-				       QString(""));
+		  QByteArray data(buffer.mid(0, rc));
+		  QByteArray messageCode;
+		  int size = data.length();
+		  spoton_crypt crypt(elements.value("ct").constData(),
+				     QString(""),
+				     QByteArray(),
+				     elements.value("ek"),
+				     0,
+				     0,
+				     QString(""));
 
+		  data.append(QByteArray(qrand() % 1024 + 512, 0));
+
+		  if(nova.isEmpty())
 		    data = crypt.encrypted
 		      (QByteArray("0060").toBase64() + "\n" +
 		       QFileInfo(fileName).fileName().toUtf8().
@@ -339,44 +323,78 @@ void spoton_starbeam_reader::pulsate(const QString &fileName,
 		       QByteArray::number(size).toBase64() + "\n" +
 		       fileSize.toLatin1().toBase64() + "\n" +
 		       data.toBase64(), &ok);
-		  }
+		  else
+		    {
+		      {
+			spoton_crypt crypt("aes256",
+					   QString(""),
+					   QByteArray(),
+					   nova,
+					   0,
+					   0,
+					   QString(""));
+
+			data = crypt.encrypted
+			  (QByteArray("0060").toBase64() + "\n" +
+			   QFileInfo(fileName).fileName().toUtf8().
+			   toBase64() + "\n" +
+			   QByteArray::number(m_position).toBase64() + "\n" +
+			   QByteArray::number(size).toBase64() + "\n" +
+			   fileSize.toLatin1().toBase64() + "\n" +
+			   data.toBase64(), &ok);
+		      }
+
+		      if(ok)
+			data = crypt.encrypted(data, &ok);
+		    }
 
 		  if(ok)
-		    data = crypt.encrypted(data, &ok);
+		    messageCode = spoton_crypt::keyedHash
+		      (data,
+		       elements.value("mk"),
+		       elements.value("ht"),
+		       &ok);
+
+		  if(ok)
+		    data = data.toBase64() + "\n" +
+		      messageCode.toBase64();
+
+		  if(ok)
+		    data = spoton_send::message0060(data);
+
+		  if(ok)
+		    spoton_kernel::s_kernel->writeToNeighbors(data, &ok);
+
+		  if(ok)
+		    spoton_kernel::messagingCacheAdd(data);
+
+		  if(ok)
+		    m_position += rc;
 		}
-
-	      if(ok)
-		messageCode = spoton_crypt::keyedHash
-		  (data,
-		   elements.value("mk"),
-		   elements.value("ht"),
-		   &ok);
-
-	      if(ok)
-		data = data.toBase64() + "\n" +
-		  messageCode.toBase64();
-
-	      if(ok)
-		data = spoton_send::message0060(data);
-
-	      if(ok)
-		spoton_kernel::s_kernel->writeToNeighbors(data, &ok);
-
-	      if(ok)
-		spoton_kernel::messagingCacheAdd(data);
-
-	      if(ok)
-		m_position += rc;
+	      else if(rc < 0)
+		spoton_misc::logError("spoton_starbeam_reader::pulsate(): "
+				      "read() failure.");
 	    }
 	}
+      else
+	spoton_misc::logError("spoton_starbeam_reader::pulsate(): "
+			      "seek() failure.");
+    }
+  else
+    spoton_misc::logError("spoton_starbeam_reader::pulsate(): "
+			  "open() failure.");
+
+  if(m_position < file.size())
+    status = "transmitted";
 
   file.close();
 
   if(ok)
-    savePosition(db);
+    savePositionAndStatus(status, db);
 }
 
-void spoton_starbeam_reader::savePosition(const QSqlDatabase &db)
+void spoton_starbeam_reader::savePositionAndStatus(const QString &status,
+						   const QSqlDatabase &db)
 {
   if(!db.isOpen())
     return;
@@ -390,12 +408,15 @@ void spoton_starbeam_reader::savePosition(const QSqlDatabase &db)
   bool ok = true;
 
   query.prepare("UPDATE transmitted "
-		"SET position = ? "
+		"SET position = ?, "
+		"status_control = CASE WHEN status_control = 'deleted' "
+		"THEN 'deleted' ELSE ? END "
 		"WHERE OID = ?");
   query.bindValue
     (0, s_crypt->encrypted(QByteArray::number(m_position),
 			   &ok).toBase64());
-  query.bindValue(1, m_id);
+  query.bindValue(1, status);
+  query.bindValue(2, m_id);
 
   if(ok)
     query.exec();

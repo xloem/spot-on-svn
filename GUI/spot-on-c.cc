@@ -1509,7 +1509,9 @@ void spoton::populateNovas(void)
 	      }
 
 	    qSort(novas);
-	    m_ui.novas->addItems(novas);
+
+	    if(!novas.isEmpty())
+	      m_ui.novas->addItems(novas);
 	  }
       }
 
@@ -1614,8 +1616,12 @@ void spoton::slotTransmittedSelected(void)
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT magnet FROM transmitted_magnets "
-		      "WHERE transmitted_oid = ?");
+		      "WHERE transmitted_oid = ? "
+		      "AND transmitted_oid IN (SELECT OID FROM "
+		      "transmitted WHERE status_control <> 'deleted' AND "
+		      "OID = ?)");
 	query.bindValue(0, oid);
+	query.bindValue(1, oid);
 
 	if(query.exec())
 	  {
@@ -1638,7 +1644,9 @@ void spoton::slotTransmittedSelected(void)
 	      }
 
 	    qSort(magnets);
-	    m_ui.transmittedMagnets->addItems(magnets);
+
+	    if(!magnets.isEmpty())
+	      m_ui.transmittedMagnets->addItems(magnets);
 	  }
       }
 

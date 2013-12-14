@@ -4697,8 +4697,11 @@ void spoton::populateAccounts(const QString &listenerOid)
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT account_name FROM listeners_accounts "
-		      "WHERE listener_oid = ?");
+		      "WHERE listener_oid = ? AND "
+		      "listener_oid IN (SELECT OID FROM listeners WHERE "
+		      "status_control <> 'deleted' AND OID = ?)");
 	query.bindValue(0, listenerOid);
+	query.bindValue(1, listenerOid);
 
 	if(query.exec())
 	  {
@@ -4721,7 +4724,9 @@ void spoton::populateAccounts(const QString &listenerOid)
 	      }
 
 	    qSort(names);
-	    m_ui.accounts->addItems(names);
+
+	    if(!names.isEmpty())
+	      m_ui.accounts->addItems(names);
 	  }
       }
 
@@ -4754,8 +4759,11 @@ void spoton::populateListenerIps(const QString &listenerOid)
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT ip_address FROM listeners_allowed_ips "
-		      "WHERE listener_oid = ?");
+		      "WHERE listener_oid = ? AND listener_oid IN "
+		      "(SELECT OID FROM listeners WHERE status_control <> "
+		      "'deleted' AND OID = ?)");
 	query.bindValue(0, listenerOid);
+	query.bindValue(1, listenerOid);
 
 	if(query.exec())
 	  {
@@ -4779,7 +4787,8 @@ void spoton::populateListenerIps(const QString &listenerOid)
 
 	    qSort(ips);
 
-	    m_ui.acceptedIPList->addItems(ips);
+	    if(!ips.isEmpty())
+	      m_ui.acceptedIPList->addItems(ips);
 	  }
       }
 
