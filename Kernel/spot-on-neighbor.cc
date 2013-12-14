@@ -1015,29 +1015,6 @@ void spoton_neighbor::slotReadyRead(void)
   if(!data.isEmpty())
     m_data.append(data);
 
-  if(m_data.length() > m_maximumBufferSize)
-    {
-      if(readBufferSize() != 1000)
-	{
-	  setReadBufferSize(1000);
-	  spoton_misc::logError
-	    (QString("spoton_neighbor::slotReadyRead(): "
-		     "received irregular data from %1:%2. Setting "
-		     "the read buffer size to 1000 bytes.").
-	     arg(m_address.toString()).
-	     arg(m_port));
-	}
-
-      spoton_misc::logError
-	(QString("spoton_neighbor::slotReadyRead(): "
-		 "the m_data container contains too much "
-		 "data (%1) that hasn't been processed for %2:%3. Purging.").
-	 arg(m_data.length()).
-	 arg(m_address.toString()).
-	 arg(m_port));
-      m_data.clear();
-    }
-
   if(m_data.contains(spoton_send::EOM))
     {
       QList<QByteArray> list;
@@ -1296,6 +1273,18 @@ void spoton_neighbor::slotReadyRead(void)
 		}
 	    }
 	}
+    }
+
+  if(m_data.length() > m_maximumBufferSize)
+    {
+      spoton_misc::logError
+	(QString("spoton_neighbor::slotReadyRead(): "
+		 "the m_data container contains too much "
+		 "data (%1) that hasn't been processed for %2:%3. Purging.").
+	 arg(m_data.length()).
+	 arg(m_address.toString()).
+	 arg(m_port));
+      m_data.clear();
     }
 }
 
