@@ -70,6 +70,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 {
   m_tcpSocket = 0;
   m_udpSocket = 0;
+  m_maximumBufferSize =
+    qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
+	   maximumBufferSize,
+	   spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
 
   if(transport == "tcp")
     m_tcpSocket = new spoton_neighbor_tcp_socket(this);
@@ -78,7 +82,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 
   if(m_tcpSocket)
     {
-      m_tcpSocket->setReadBufferSize(8192);
+      m_tcpSocket->setReadBufferSize(m_maximumBufferSize);
       m_tcpSocket->setSocketDescriptor(socketDescriptor);
       m_tcpSocket->setSocketOption
 	(QAbstractSocket::KeepAliveOption, 0); /*
@@ -125,10 +129,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_isUserDefined = false;
   m_lastReadTime = QDateTime::currentDateTime();
   m_listenerOid = listenerOid;
-  m_maximumBufferSize =
-    qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
-	   maximumBufferSize,
-	   spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
   m_maximumContentLength =
     qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
 	   maximumContentLength,
@@ -383,7 +383,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   if(m_tcpSocket)
     {
       m_tcpSocket->setProxy(proxy);
-      m_tcpSocket->setReadBufferSize(8192);
+      m_tcpSocket->setReadBufferSize(m_maximumBufferSize);
       m_tcpSocket->setSocketOption
 	(QAbstractSocket::KeepAliveOption, 0); /*
 					       ** We have our
