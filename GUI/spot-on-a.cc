@@ -733,6 +733,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(bool)),
 	  this,
 	  SLOT(slotReceiversClicked(bool)));
+  connect(m_ui.rewind,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotRewindFile(void)));
   connect(m_ui.acceptBuzzMagnets,
 	  SIGNAL(toggled(bool)),
 	  this,

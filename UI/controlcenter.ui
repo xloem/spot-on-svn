@@ -1968,8 +1968,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>214</width>
-                 <height>415</height>
+                 <width>278</width>
+                 <height>557</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3291,7 +3291,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1063</width>
+             <width>1154</width>
              <height>641</height>
             </rect>
            </property>
@@ -4696,71 +4696,107 @@
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
                    </property>
-                   <widget class="QTableWidget" name="transmitted">
-                    <property name="verticalScrollBarPolicy">
-                     <enum>Qt::ScrollBarAlwaysOn</enum>
-                    </property>
-                    <property name="alternatingRowColors">
-                     <bool>true</bool>
-                    </property>
-                    <property name="selectionMode">
-                     <enum>QAbstractItemView::SingleSelection</enum>
-                    </property>
-                    <property name="selectionBehavior">
-                     <enum>QAbstractItemView::SelectRows</enum>
-                    </property>
-                    <property name="horizontalScrollMode">
-                     <enum>QAbstractItemView::ScrollPerPixel</enum>
-                    </property>
-                    <property name="sortingEnabled">
-                     <bool>true</bool>
-                    </property>
-                    <attribute name="horizontalHeaderDefaultSectionSize">
-                     <number>200</number>
-                    </attribute>
-                    <attribute name="horizontalHeaderStretchLastSection">
-                     <bool>true</bool>
-                    </attribute>
-                    <column>
-                     <property name="text">
-                      <string>Paused</string>
+                   <widget class="QWidget" name="verticalLayoutWidget">
+                    <layout class="QVBoxLayout" name="verticalLayout_47">
+                     <property name="spacing">
+                      <number>5</number>
                      </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Percent Transmitted</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Pulse Size</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Total Size</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Status</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>File</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Mosaic</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>OID</string>
-                     </property>
-                    </column>
+                     <item>
+                      <widget class="QTableWidget" name="transmitted">
+                       <property name="verticalScrollBarPolicy">
+                        <enum>Qt::ScrollBarAlwaysOn</enum>
+                       </property>
+                       <property name="alternatingRowColors">
+                        <bool>true</bool>
+                       </property>
+                       <property name="selectionMode">
+                        <enum>QAbstractItemView::SingleSelection</enum>
+                       </property>
+                       <property name="selectionBehavior">
+                        <enum>QAbstractItemView::SelectRows</enum>
+                       </property>
+                       <property name="horizontalScrollMode">
+                        <enum>QAbstractItemView::ScrollPerPixel</enum>
+                       </property>
+                       <property name="sortingEnabled">
+                        <bool>true</bool>
+                       </property>
+                       <attribute name="horizontalHeaderDefaultSectionSize">
+                        <number>200</number>
+                       </attribute>
+                       <attribute name="horizontalHeaderStretchLastSection">
+                        <bool>true</bool>
+                       </attribute>
+                       <column>
+                        <property name="text">
+                         <string>Paused</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Percent Transmitted</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Pulse Size</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Total Size</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Status</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>File</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Mosaic</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>OID</string>
+                        </property>
+                       </column>
+                      </widget>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_69">
+                       <property name="spacing">
+                        <number>5</number>
+                       </property>
+                       <item>
+                        <spacer name="horizontalSpacer_55">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="rewind">
+                         <property name="text">
+                          <string>Rewind</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
                    </widget>
                    <widget class="QListWidget" name="transmittedMagnets">
                     <property name="selectionMode">
@@ -4902,6 +4938,8 @@
                  </widget>
                 </item>
                </layout>
+               <zorder>groupBox_4</zorder>
+               <zorder>txmSplitter</zorder>
               </widget>
              </widget>
             </item>
@@ -5891,6 +5929,7 @@
   <tabstop>etpMaxMosaicSize</tabstop>
   <tabstop>received</tabstop>
   <tabstop>transmitted</tabstop>
+  <tabstop>rewind</tabstop>
   <tabstop>transmittedMagnets</tabstop>
   <tabstop>addTransmittedMagnets</tabstop>
   <tabstop>transmitNova</tabstop>

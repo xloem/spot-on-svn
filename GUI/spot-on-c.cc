@@ -1096,10 +1096,14 @@ void spoton::slotPopulateStars(void)
 	      QTableWidgetItem *item2 = m_ui.received->item(row, 2);
 
 	      if(item1 && item2 && progressBar)
-		progressBar->setValue
-		  (100 * qAbs(static_cast<double> (QFileInfo(item2->text()).
-						   size()) /
-			      qMax(1LL, item1->text().toLongLong())));
+		{
+		  progressBar->setValue
+		    (100 * qAbs(static_cast<double> (QFileInfo(item2->text()).
+						     size()) /
+				qMax(1LL, item1->text().toLongLong())));
+		  progressBar->setToolTip
+		    (QString("%1%").arg(progressBar->value()));
+		}
 
 	      if(m_ui.received->item(row, 2) &&
 		 fileName == m_ui.received->item(row, 2)->text())
@@ -1215,9 +1219,13 @@ void spoton::slotPopulateStars(void)
 	      QTableWidgetItem *item = m_ui.transmitted->item(row, 3);
 
 	      if(item && progressBar)
-		progressBar->setValue
-		  (100 * qAbs(static_cast<double> (position) /
-			      qMax(1LL, item->text().toLongLong())));
+		{
+		  progressBar->setValue
+		    (100 * qAbs(static_cast<double> (position) /
+				qMax(1LL, item->text().toLongLong())));
+		  progressBar->setToolTip
+		    (QString("%1%").arg(progressBar->value()));
+		}
 
 	      connect(checkBox,
 		      SIGNAL(toggled(bool)),
@@ -1759,4 +1767,58 @@ void spoton::askKernelToReadStarBeamKeys(void)
        arg(m_kernelSocket.peerPort()));
   else
     m_kernelSocket.flush();
+}
+
+void spoton::slotRewindFile(void)
+{
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.transmitted->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.transmitted->item
+	(row, m_ui.transmitted->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "starbeam.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare
+	  ("UPDATE transmitted SET position = ?, "
+	   "status_control = 'paused' "
+	   "WHERE OID = ? AND status_control <> 'deleted'");
+	query.bindValue
+	  (0, s_crypt->encrypted(QByteArray::number(0), &ok).
+	   toBase64());
+	query.bindValue(1, oid);
+
+	if(ok)
+	  query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }

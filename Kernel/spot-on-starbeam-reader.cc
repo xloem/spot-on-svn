@@ -139,13 +139,12 @@ void spoton_starbeam_reader::slotTimeout(void)
 				    &ok);
 
 		      if(ok)
-			if(m_position == 0)
-			  m_position = s_crypt->
-			    decrypted(QByteArray::
-				      fromBase64(query.
-						 value(2).
-						 toByteArray()),
-				      &ok).toLongLong();
+			m_position = s_crypt->
+			  decrypted(QByteArray::
+				    fromBase64(query.
+					       value(2).
+					       toByteArray()),
+				    &ok).toLongLong();
 
 		      if(ok)
 			pulseSize = s_crypt->
