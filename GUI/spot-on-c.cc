@@ -231,8 +231,18 @@ void spoton::slotPopulateEtpMagnets(void)
     if(db.open())
       {
 	QSqlQuery query(db);
+	QStringList checked;
 	QWidget *focusWidget = QApplication::focusWidget();
 	int row = 0;
+
+	for(int i = 0; i < m_ui.addTransmittedMagnets->rowCount(); i++)
+	  {
+	    QCheckBox *checkBox = qobject_cast<QCheckBox *>
+	      (m_ui.addTransmittedMagnets->cellWidget(i, 0));
+
+	    if(checkBox && checkBox->isChecked())
+	      checked.append(checkBox->text());
+	  }
 
 	m_ui.etpMagnets->setSortingEnabled(false);
 	m_ui.etpMagnets->clearContents();
@@ -270,6 +280,10 @@ void spoton::slotPopulateEtpMagnets(void)
 	      m_ui.addTransmittedMagnets->setRowCount(row + 1);
 	      checkBox = new QCheckBox();
 	      checkBox->setText(bytes.replace("&", "&&").constData());
+
+	      if(checked.contains(checkBox->text()))
+		checkBox->setChecked(true);
+
 	      m_ui.addTransmittedMagnets->setCellWidget(row, 0, checkBox);
 	      item = new QTableWidgetItem
 		(query.value(query.record().count() - 1).toString());

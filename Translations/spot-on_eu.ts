@@ -446,8 +446,8 @@
     <message>
         <location filename="../GUI/spot-on-a.cc" line="3324"/>
         <location filename="../GUI/spot-on-a.cc" line="3344"/>
-        <location filename="../GUI/spot-on-c.cc" line="428"/>
-        <location filename="../GUI/spot-on-c.cc" line="764"/>
+        <location filename="../GUI/spot-on-c.cc" line="442"/>
+        <location filename="../GUI/spot-on-c.cc" line="778"/>
         <source>&amp;Select</source>
         <translation type="unfinished"></translation>
     </message>
@@ -514,12 +514,12 @@
         <location filename="../GUI/spot-on-b.cc" line="4640"/>
         <location filename="../GUI/spot-on-b.cc" line="4649"/>
         <location filename="../GUI/spot-on-c.cc" line="199"/>
-        <location filename="../GUI/spot-on-c.cc" line="946"/>
-        <location filename="../GUI/spot-on-c.cc" line="1431"/>
-        <location filename="../GUI/spot-on-c.cc" line="1440"/>
-        <location filename="../GUI/spot-on-c.cc" line="1488"/>
-        <location filename="../GUI/spot-on-c.cc" line="1555"/>
-        <location filename="../GUI/spot-on-c.cc" line="1564"/>
+        <location filename="../GUI/spot-on-c.cc" line="960"/>
+        <location filename="../GUI/spot-on-c.cc" line="1453"/>
+        <location filename="../GUI/spot-on-c.cc" line="1462"/>
+        <location filename="../GUI/spot-on-c.cc" line="1510"/>
+        <location filename="../GUI/spot-on-c.cc" line="1577"/>
+        <location filename="../GUI/spot-on-c.cc" line="1586"/>
         <source>Spot-On: Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -640,9 +640,9 @@ If not checked, the neighbor will be terminated after some internal timer expire
         <location filename="../GUI/spot-on-b.cc" line="4554"/>
         <location filename="../GUI/spot-on-b.cc" line="4650"/>
         <location filename="../GUI/spot-on-c.cc" line="93"/>
-        <location filename="../GUI/spot-on-c.cc" line="798"/>
-        <location filename="../GUI/spot-on-c.cc" line="1432"/>
-        <location filename="../GUI/spot-on-c.cc" line="1565"/>
+        <location filename="../GUI/spot-on-c.cc" line="812"/>
+        <location filename="../GUI/spot-on-c.cc" line="1454"/>
+        <location filename="../GUI/spot-on-c.cc" line="1587"/>
         <source>Invalid spoton_crypt object.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -970,7 +970,7 @@ Transport: %22</source>
         <location filename="../GUI/spot-on-a.cc" line="4335"/>
         <location filename="../GUI/spot-on-a.cc" line="4416"/>
         <location filename="../GUI/spot-on-a.cc" line="4427"/>
-        <location filename="../GUI/spot-on-c.cc" line="307"/>
+        <location filename="../GUI/spot-on-c.cc" line="321"/>
         <source>&amp;Delete</source>
         <translation type="unfinished"></translation>
     </message>
@@ -979,7 +979,7 @@ Transport: %22</source>
         <location filename="../GUI/spot-on-a.cc" line="4337"/>
         <location filename="../GUI/spot-on-a.cc" line="4418"/>
         <location filename="../GUI/spot-on-a.cc" line="4429"/>
-        <location filename="../GUI/spot-on-c.cc" line="309"/>
+        <location filename="../GUI/spot-on-c.cc" line="323"/>
         <source>Delete &amp;All</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1326,58 +1326,58 @@ Transport: %22</source>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4435"/>
-        <location filename="../GUI/spot-on-c.cc" line="301"/>
+        <location filename="../GUI/spot-on-c.cc" line="315"/>
         <source>Copy &amp;Magnet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="425"/>
+        <location filename="../GUI/spot-on-c.cc" line="439"/>
         <source>Spot-On: Select Destination Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="761"/>
+        <location filename="../GUI/spot-on-c.cc" line="775"/>
         <source>Spot-On: Select Transmit File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="804"/>
+        <location filename="../GUI/spot-on-c.cc" line="818"/>
         <source>Please select a file to transfer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="812"/>
+        <location filename="../GUI/spot-on-c.cc" line="826"/>
         <source>The provided file does not exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="831"/>
+        <location filename="../GUI/spot-on-c.cc" line="845"/>
         <source>Please select at least one magnet.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="930"/>
-        <location filename="../GUI/spot-on-c.cc" line="933"/>
+        <location filename="../GUI/spot-on-c.cc" line="944"/>
+        <location filename="../GUI/spot-on-c.cc" line="947"/>
         <source>A database error (%1) occurred.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="936"/>
+        <location filename="../GUI/spot-on-c.cc" line="950"/>
         <source>An error occurred within spoton_crypt.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="1441"/>
+        <location filename="../GUI/spot-on-c.cc" line="1463"/>
         <source>Please provide a NOVA.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="1489"/>
+        <location filename="../GUI/spot-on-c.cc" line="1511"/>
         <source>Unable to store the NOVA.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="1556"/>
+        <location filename="../GUI/spot-on-c.cc" line="1578"/>
         <source>Please select a NOVA to delete.</source>
         <translation type="unfinished"></translation>
     </message>
