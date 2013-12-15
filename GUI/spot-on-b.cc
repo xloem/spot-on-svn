@@ -36,6 +36,7 @@
 
 void spoton::slotSendMessage(void)
 {
+  QDateTime now(QDateTime::currentDateTime());
   QModelIndexList list(m_ui.participants->selectionModel()->
 		       selectedRows(1)); // OID
   QModelIndexList publicKeyHashes(m_ui.participants->selectionModel()->
@@ -70,8 +71,10 @@ void spoton::slotSendMessage(void)
     }
 
   msg.append
-    (QDateTime::currentDateTime().
-     toString("[hh:mm<font color=grey>:ss</font>] "));
+    (QString("[%1:%2<font color=grey>:%3</font>] ").
+     arg(now.toString("hh")).
+     arg(now.toString("mm")).
+     arg(now.toString("ss")));
   msg.append(tr("<b>me:</b> "));
   msg.append(m_ui.message->toPlainText().trimmed());
   m_ui.messages->append(msg);
@@ -279,6 +282,7 @@ void spoton::slotReceivedKernelMessage(void)
 		  QDateTime dateTime
 		    (QDateTime::fromString(utcDate.constData(),
 					   "hhmmss"));
+		  QDateTime now(QDateTime::currentDateTime());
 		  QString msg("");
 		  bool found = true;
 
@@ -295,13 +299,17 @@ void spoton::slotReceivedKernelMessage(void)
 		    sequenceNumber = "-1";
 
 		  msg.append
-		    (QDateTime::currentDateTime().
-		     toString("[hh:mm<font color=grey>:ss</font>]:"));
+		    (QString("[%1:%2<font color=grey>:%3</font>]:").
+		     arg(now.toString("hh")).
+		     arg(now.toString("mm")).
+		     arg(now.toString("ss")));
 
 		  if(dateTime.isValid())
 		    msg.append
-		      (dateTime.
-		       toString("[<font color=green>hh:mm:ss</font>]"));
+		      (QString("[<font color=green>%1:%2:%3</font>]").
+		       arg(dateTime.toString("hh")).
+		       arg(dateTime.toString("mm")).
+		       arg(dateTime.toString("ss")));
 		  else
 		    msg.append
 		      ("[<font color=red>00:00:00</font>]");

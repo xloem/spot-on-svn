@@ -222,6 +222,7 @@ void spoton_buzzpage::slotSendMessage(void)
 {
   QByteArray name;
   QByteArray sendMethod;
+  QDateTime now(QDateTime::currentDateTime());
   QSettings settings;
   QString error("");
   QString message("");
@@ -248,8 +249,10 @@ void spoton_buzzpage::slotSendMessage(void)
     }
 
   message.append
-    (QDateTime::currentDateTime().
-     toString("[hh:mm<font color=grey>:ss</font>] "));
+    (QString("[%1:%2<font color=grey>:%3</font>] ").
+     arg(now.toString("hh")).
+     arg(now.toString("mm")).
+     arg(now.toString("ss")));
   message.append(tr("<b>me:</b> "));
   message.append(ui.message->toPlainText().trimmed());
   ui.messages->append(message);
@@ -347,6 +350,7 @@ void spoton_buzzpage::appendMessage(const QByteArray &hash,
   QByteArray name
     (list.value(0).mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
   QByteArray message(list.value(2));
+  QDateTime now(QDateTime::currentDateTime());
   QString msg("");
 
   if(name.isEmpty() || name == "unknown")
@@ -356,8 +360,10 @@ void spoton_buzzpage::appendMessage(const QByteArray &hash,
     message = "unknown";
 
   msg.append
-    (QDateTime::currentDateTime().
-     toString("[hh:mm<font color=grey>:ss</font>] "));
+    (QString("[%1:%2<font color=grey>:%3</font>] ").
+     arg(now.toString("hh")).
+     arg(now.toString("mm")).
+     arg(now.toString("ss")));
   msg.append
     (QString("<font color=blue>%1: </font>").
      arg(QString::fromUtf8(name.constData(),
@@ -461,11 +467,14 @@ void spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 	(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
       ui.clients->setItem(ui.clients->rowCount() - 1, 2, item);
 
+      QDateTime now(QDateTime::currentDateTime());
       QString msg("");
 
       msg.append
-	(QDateTime::currentDateTime().
-	 toString("[hh:mm<font color=grey>:ss</font>] "));
+	(QString("[%1:%2<font color=grey>:%3</font>] ").
+	 arg(now.toString("hh")).
+	 arg(now.toString("mm")).
+	 arg(now.toString("ss")));
       msg.append(tr("<i>%1 has joined %2.</i>").
 		 arg(QString::fromUtf8(name.constData(),
 				       name.length())).
@@ -484,11 +493,14 @@ void spoton_buzzpage::userStatus(const QList<QByteArray> &list)
 	{
 	  if(item->text().toUtf8() != name)
 	    {
+	      QDateTime now(QDateTime::currentDateTime());
 	      QString msg("");
 
 	      msg.append
-		(QDateTime::currentDateTime().
-		 toString("[hh:mm<font color=grey>:ss</font>] "));
+		(QString("[%1:%2<font color=grey>:%3</font>] ").
+		 arg(now.toString("hh")).
+		 arg(now.toString("mm")).
+		 arg(now.toString("ss")));
 	      msg.append(tr("<i>%1 is now known as %2.</i>").
 			 arg(item->text()).
 			 arg(QString::fromUtf8(name.constData(),
@@ -542,11 +554,14 @@ void spoton_buzzpage::slotStatusTimeout(void)
 
 	      if(item)
 		{
+		  QDateTime now(QDateTime::currentDateTime());
 		  QString msg("");
 
 		  msg.append
-		    (QDateTime::currentDateTime().
-		     toString("[hh:mm<font color=grey>:ss</font>] "));
+		    (QString("[%1:%2<font color=grey>:%3</font>] ").
+		     arg(now.toString("hh")).
+		     arg(now.toString("mm")).
+		     arg(now.toString("ss")));
 		  msg.append(tr("<i>%1 has left %2.</i>").
 			     arg(item->text()).
 			     arg(QString::fromUtf8(m_channel.constData(),

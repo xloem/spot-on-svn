@@ -119,6 +119,7 @@ void spoton_chatwindow::slotSendMessage(void)
 {
   QByteArray message;
   QByteArray name;
+  QDateTime now(QDateTime::currentDateTime());
   QSettings settings;
   QString error("");
 
@@ -140,8 +141,10 @@ void spoton_chatwindow::slotSendMessage(void)
 
   name = settings.value("gui/nodeName", "unknown").toByteArray().trimmed();
   message.append
-    (QDateTime::currentDateTime().
-     toString("[hh:mm<font color=grey>:ss</font>] "));
+    (QString("[%1:%2<font color=grey>:%3</font>] ").
+     arg(now.toString("hh")).
+     arg(now.toString("mm")).
+     arg(now.toString("ss")));
   message.append(tr("<b>me:</b> "));
   message.append(ui.message->toPlainText().trimmed());
   ui.messages->append(message);
