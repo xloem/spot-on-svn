@@ -686,6 +686,17 @@ void spoton::slotPopulateKernelStatistics(void)
 	      item->setFlags
 		(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 	      m_ui.kernelStatistics->setItem(row, 1, item);
+
+	      if(query.value(0).toString().toLower().contains("congestion"))
+		{
+		  if(query.value(1).toInt() <= 50)
+		    item->setBackground
+		      (QBrush(QColor("lightgreen")));
+		  else
+		    item->setBackground
+		      (QBrush(QColor(240, 128, 128)));
+		}
+
 	      row += 1;
 	    }
 
