@@ -1212,6 +1212,12 @@ void spoton::slotPopulateStars(void)
 
 		      if(item->text() != "paused")
 			checkBox->setChecked(false);
+
+		      if(item->text() == "transmitted")
+			item->setBackground
+			  (QBrush(QColor("lightgreen")));
+		      else
+			item->setBackground(QBrush());
 		    }
 		  else if(i == query.record().count() - 1)
 		    item = new QTableWidgetItem

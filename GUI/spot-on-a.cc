@@ -4391,7 +4391,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 	action->setEnabled(true);
 
       menu.addSeparator();
-      action = menu.addAction(tr("&Generate random Gemini Pair "
+      action = menu.addAction(tr("&Generate random Gemini pair "
 				 "(AES-256 Key, SHA-512 Key)."),
 			      this, SLOT(slotGenerateGeminiInChat(void)));
 
