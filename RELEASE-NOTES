@@ -140,6 +140,8 @@
 69.  Increased the maximum buffer size to 1048576 bytes and the maximum
      content length to 524288. Please remove listeners.db and neighbors.db.
 70.  Updated TCP read buffer sizes to the maximum buffer size settings.
+71.  Corrected HTML font tags usage within QDateTime objects in support
+     of Qt 5.2.0.
 
 0.06 (10/24/2013)
 
