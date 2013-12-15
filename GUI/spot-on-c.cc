@@ -1131,9 +1131,9 @@ void spoton::slotPopulateStars(void)
 						     size()) /
 				qMax(1LL, item1->text().toLongLong())));
 		  progressBar->setToolTip
-		    (QString("%1%:%2").
+		    (QString("%1% - %2").
 		     arg(progressBar->value()).
-		     arg(fileName));
+		     arg(QFileInfo(fileName).fileName()));
 		}
 
 	      if(m_ui.received->item(row, 2) &&
@@ -1261,9 +1261,9 @@ void spoton::slotPopulateStars(void)
 		    (100 * qAbs(static_cast<double> (position) /
 				qMax(1LL, item->text().toLongLong())));
 		  progressBar->setToolTip
-		    (QString("%1%:%2").
+		    (QString("%1% - %2").
 		     arg(progressBar->value()).
-		     arg(fileName));
+		     arg(QFileInfo(fileName).fileName()));
 		}
 
 	      connect(checkBox,
