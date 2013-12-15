@@ -25,7 +25,7 @@ QMAKE_CXXFLAGS_RELEASE += -mtune=generic -pie -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
 			  -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith
-QMAKE_DISTCLEAN	+= .qmake.cache
+QMAKE_DISTCLEAN	+= .qmake.cache .qmake.stash
 QMAKE_EXTRA_TARGETS = libspoton purge
 INCLUDEPATH	+= . ..\\..\\. GUI ..\\..\\libSpotOn\\Include.win32 \
 		   ..\\..\\libGeoIP\\Include.win32 \
