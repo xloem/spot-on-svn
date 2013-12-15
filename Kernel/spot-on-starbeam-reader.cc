@@ -114,7 +114,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 
 		  if(status == "deleted")
 		    shouldDelete = true;
-		  else if(m_position >= 0 && status == "transmitted")
+		  else if(m_position >= 0 && status == "transmitting")
 		    {
 		      QByteArray nova;
 		      QString fileName("");
@@ -384,7 +384,7 @@ void spoton_starbeam_reader::pulsate(const QString &fileName,
 			  "open() failure.");
 
   if(m_position < file.size())
-    status = "transmitted";
+    status = "transmitting";
 
   file.close();
 

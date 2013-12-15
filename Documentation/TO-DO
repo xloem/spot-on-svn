@@ -163,3 +163,4 @@ Remaining Items
        data that's been transmitted via non-Spot. That is, a feature
        to copy encrypted content and send it via Gmail.
 37.    Wormholes for streamed data.
+38.    Per request, provide an automatic rewind mechanism with a timer.

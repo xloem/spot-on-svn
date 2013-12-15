@@ -1072,6 +1072,7 @@ void spoton::slotPopulateStars(void)
 	      m_ui.received->setRowCount(row + 1);
 
 	      QProgressBar *progressBar = new QProgressBar();
+	      QString fileName("");
 	      bool ok = true;
 
 	      progressBar->setTextVisible(true);
@@ -1090,6 +1091,9 @@ void spoton::slotPopulateStars(void)
 				   &ok));
 
 		      item = new QTableWidgetItem(bytes.constData());
+
+		      if(i == 1)
+			fileName = item->text();
 		    }
 		  else if(i == query.record().count() - 1)
 		    item = new QTableWidgetItem
@@ -1113,7 +1117,9 @@ void spoton::slotPopulateStars(void)
 						     size()) /
 				qMax(1LL, item1->text().toLongLong())));
 		  progressBar->setToolTip
-		    (QString("%1%").arg(progressBar->value()));
+		    (QString("%1%:%2").
+		     arg(progressBar->value()).
+		     arg(fileName));
 		}
 
 	      if(m_ui.received->item(row, 2) &&
@@ -1213,7 +1219,7 @@ void spoton::slotPopulateStars(void)
 		      if(item->text() != "paused")
 			checkBox->setChecked(false);
 
-		      if(item->text() == "transmitted")
+		      if(item->text() == "transmitting")
 			item->setBackground
 			  (QBrush(QColor("lightgreen")));
 		      else
@@ -1241,7 +1247,9 @@ void spoton::slotPopulateStars(void)
 		    (100 * qAbs(static_cast<double> (position) /
 				qMax(1LL, item->text().toLongLong())));
 		  progressBar->setToolTip
-		    (QString("%1%").arg(progressBar->value()));
+		    (QString("%1%:%2").
+		     arg(progressBar->value()).
+		     arg(fileName));
 		}
 
 	      connect(checkBox,
@@ -1304,7 +1312,7 @@ void spoton::slotTransmittedPaused(bool state)
 	    query.prepare("UPDATE transmitted SET "
 			  "status_control = ? "
 			  "WHERE OID = ? AND status_control <> 'deleted'");
-	    query.bindValue(0, state ? "paused" : "transmitted");
+	    query.bindValue(0, state ? "paused" : "transmitting");
 	    query.bindValue(1, checkBox->property("oid"));
 	    query.exec();
 	  }
