@@ -4477,7 +4477,7 @@
                   </property>
                   <widget class="QGroupBox" name="groupBox_8">
                    <property name="title">
-                    <string>NOVAs</string>
+                    <string>Novas</string>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_25">
                     <property name="spacing">
@@ -4867,7 +4867,7 @@
                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bundle each pulse with an additional layer of AES-256 encryption. Do remember to notify all recipients of the key.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                         </property>
                         <property name="text">
-                         <string>NOVA</string>
+                         <string>Nova</string>
                         </property>
                        </widget>
                       </item>

@@ -373,11 +373,23 @@ void spoton_starbeam_writer::slotReadKeys(void)
 
 void spoton_starbeam_writer::enqueue(const QByteArray &data)
 {
-  if(!data.isEmpty())
-    if(spoton_kernel::setting("gui/etpReceivers", false).toBool())
-      {
-	m_mutex.lock();
-	m_queue.enqueue(QByteArray::fromBase64(data));
-	m_mutex.unlock();
-      }
+  if(data.isEmpty())
+    return;
+
+  m_keyMutex.lock();
+
+  if(m_magnets.isEmpty())
+    {
+      m_keyMutex.unlock();
+      return;
+    }
+
+  m_keyMutex.unlock();
+
+  if(spoton_kernel::setting("gui/etpReceivers", false).toBool())
+    {
+      m_mutex.lock();
+      m_queue.enqueue(QByteArray::fromBase64(data));
+      m_mutex.unlock();
+    }
 }

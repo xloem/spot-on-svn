@@ -1482,7 +1482,7 @@ void spoton::slotAddReceiveNova(void)
   if(nova.isEmpty())
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Please provide a NOVA."));
+			    tr("Please provide a Nova."));
       return;
     }
 
@@ -1530,7 +1530,7 @@ void spoton::slotAddReceiveNova(void)
     }
   else
     QMessageBox::critical(this, tr("Spot-On: Error"),
-			  tr("Unable to store the NOVA."));
+			  tr("Unable to store the Nova."));
 }
 
 void spoton::populateNovas(void)
@@ -1597,7 +1597,7 @@ void spoton::slotDeleteNova(void)
   if(list.isEmpty())
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Please select a NOVA to delete."));
+			    tr("Please select a Nova to delete."));
       return;
     }
 

@@ -187,6 +187,8 @@ void spoton_starbeam_reader::slotTimeout(void)
 	 arg(m_id));
       deleteLater();
     }
+
+  m_timer.start(qrand() % 1000 + 500);
 }
 
 void spoton_starbeam_reader::populateMagnets(const QSqlDatabase &db)
