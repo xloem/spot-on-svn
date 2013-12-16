@@ -2379,8 +2379,7 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
 	      QByteArray ip;
 	      bool ok = true;
 
-	      ip =
-		s_crypt->
+	      ip = s_crypt->
 		decrypted(QByteArray::fromBase64(query.value(0).
 						 toByteArray()),
 			  &ok);
@@ -2504,8 +2503,7 @@ void spoton::slotDeleteAllUuids(void)
 	      QByteArray uuid;
 	      bool ok = true;
 
-	      uuid =
-		s_crypt->
+	      uuid = s_crypt->
 		decrypted(QByteArray::fromBase64(query.value(0).
 						 toByteArray()),
 			  &ok);
@@ -2618,27 +2616,37 @@ void spoton::slotRefreshMail(void)
 		      if(i == 1 || i == 2 || i == 3 || i == 5)
 			{
 			  if(goldbug == "0")
-			    item = new QTableWidgetItem
-			      (QString::
-			       fromUtf8(m_crypts.value("email")->
-					decrypted(QByteArray::
-						  fromBase64(query.
-							     value(i).
-							     toByteArray()),
-						  &ok).constData()));
+			    {
+			      item = new QTableWidgetItem
+				(QString::
+				 fromUtf8(m_crypts.value("email")->
+					  decrypted(QByteArray::
+						    fromBase64(query.
+							       value(i).
+							       toByteArray()),
+						    &ok).constData()));
+
+			      if(!ok)
+				item->setText(tr("error"));
+			    }
 			  else
 			    item = new QTableWidgetItem("#####");
 			}
 		      else
 			{
 			  if(goldbug == "0")
-			    item = new QTableWidgetItem
-			      (m_crypts.value("email")->
-			       decrypted(QByteArray::
-					 fromBase64(query.
-						    value(i).
-						    toByteArray()),
-					 &ok).constData());
+			    {
+			      item = new QTableWidgetItem
+				(m_crypts.value("email")->
+				 decrypted(QByteArray::
+					   fromBase64(query.
+						      value(i).
+						      toByteArray()),
+					   &ok).constData());
+
+			      if(!ok)
+				item->setText(tr("error"));
+			    }
 			  else
 			    item = new QTableWidgetItem("#####");
 			}
@@ -2708,13 +2716,18 @@ void spoton::slotRefreshPostOffice(void)
 		  }
 
 		if(i == 0)
-		  item = new QTableWidgetItem
-		    (m_crypts.value("email")->
-		     decrypted(QByteArray::
-			       fromBase64(query.
-					  value(i).
-					  toByteArray()),
-			       &ok).constData());
+		  {
+		    item = new QTableWidgetItem
+		      (m_crypts.value("email")->
+		       decrypted(QByteArray::
+				 fromBase64(query.
+					    value(i).
+					    toByteArray()),
+				 &ok).constData());
+
+		    if(!ok)
+		      item->setText(tr("error"));
+		  }
 		else if(i == 1)
 		  {
 		    QByteArray bytes
@@ -2725,8 +2738,11 @@ void spoton::slotRefreshPostOffice(void)
 					    toByteArray()),
 				 &ok));
 
-		    item = new QTableWidgetItem
-		      (QString::number(bytes.length()));
+		    if(ok)
+		      item = new QTableWidgetItem
+			(QString::number(bytes.length()));
+		    else
+		      item = new QTableWidgetItem(tr("error"));
 		  }
 		else
 		  item = new QTableWidgetItem(query.value(i).toString());
@@ -4720,12 +4736,11 @@ void spoton::populateAccounts(const QString &listenerOid)
 		QString name("");
 		bool ok = true;
 
-		name = s_crypt->
-		  decrypted(QByteArray::
-			    fromBase64(query.
-				       value(0).
-				       toByteArray()),
-			    &ok).constData();
+		name = s_crypt->decrypted(QByteArray::
+					  fromBase64(query.
+						     value(0).
+						     toByteArray()),
+					  &ok).constData();
 
 		if(!name.isEmpty())
 		  names.append(name);
@@ -4782,12 +4797,11 @@ void spoton::populateListenerIps(const QString &listenerOid)
 		QString ip("");
 		bool ok = true;
 
-		ip = s_crypt->
-		  decrypted(QByteArray::
-			    fromBase64(query.
-				       value(0).
-				       toByteArray()),
-			    &ok).constData();
+		ip = s_crypt->decrypted(QByteArray::
+					fromBase64(query.
+						   value(0).
+						   toByteArray()),
+					&ok).constData();
 
 		if(!ip.isEmpty())
 		  ips.append(ip);

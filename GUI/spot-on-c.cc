@@ -263,8 +263,12 @@ void spoton::slotPopulateEtpMagnets(void)
 		(QByteArray::fromBase64(query.value(0).toByteArray()), &ok);
 
 	      QCheckBox *checkBox = new QCheckBox();
-	      QTableWidgetItem *item = new QTableWidgetItem
-		(bytes.constData());
+	      QTableWidgetItem *item = 0;
+
+	      if(ok)
+		item = new QTableWidgetItem(bytes.constData());
+	      else
+		item = new QTableWidgetItem(tr("error"));
 
 	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.etpMagnets->setRowCount(row + 1);
@@ -279,7 +283,11 @@ void spoton::slotPopulateEtpMagnets(void)
 	      m_ui.etpMagnets->setCellWidget(row, 0, checkBox);
 	      m_ui.addTransmittedMagnets->setRowCount(row + 1);
 	      checkBox = new QCheckBox();
-	      checkBox->setText(bytes.replace("&", "&&").constData());
+
+	      if(ok)
+		checkBox->setText(bytes.replace("&", "&&").constData());
+	      else
+		checkBox->setText(tr("error"));
 
 	      if(checked.contains(checkBox->text()))
 		checkBox->setChecked(true);
@@ -1104,7 +1112,10 @@ void spoton::slotPopulateStars(void)
 							  toByteArray()),
 				   &ok));
 
-		      item = new QTableWidgetItem(bytes.constData());
+		      if(ok)
+			item = new QTableWidgetItem(bytes.constData());
+		      else
+			item = new QTableWidgetItem(tr("error"));
 
 		      if(i == 1)
 			fileName = item->text();
@@ -1219,12 +1230,23 @@ void spoton::slotPopulateStars(void)
 							  toByteArray()),
 				   &ok));
 
-		      if(i == 5)
-			fileName = bytes.constData();
-		      else if(i == 6)
-			bytes = bytes.mid(0, 16) + "..." + bytes.right(16);
+		      if(ok)
+			{
+			  if(i == 5)
+			    fileName = bytes.constData();
+			  else if(i == 6)
+			    bytes = bytes.mid(0, 16) + "..." +
+			      bytes.right(16);
 
-		      item = new QTableWidgetItem(bytes.constData());
+			  item = new QTableWidgetItem(bytes.constData());
+			}
+		      else
+			{
+			  if(i == 5)
+			    fileName = tr("error");
+
+			  item = new QTableWidgetItem(tr("error"));
+			}
 		    }
 		  else if(i == 4)
 		    {

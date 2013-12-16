@@ -823,5 +823,292 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+  sb.status->setText
+    (QObject::tr("Re-encoding neighbors.db."));
+  sb.status->repaint();
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "starbeam.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT magnet, magnet_hash FROM magnets"))
+	  while(query.next())
+	    {
+	      QByteArray magnet;
+	      QSqlQuery updateQuery(db);
+	      bool ok = true;
+
+	      updateQuery.prepare("UPDATE magnets "
+				  "SET magnet = ?, "
+				  "magnet_hash = ? "
+				  "WHERE magnet_hash = ?");
+	      magnet = oldCrypt->decrypted(QByteArray::
+					   fromBase64(query.
+						      value(0).
+						      toByteArray()),
+					   &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (0, newCrypt->encrypted(magnet,
+					  &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (1,
+		   newCrypt->keyedHash(magnet,
+				       &ok).toBase64());
+
+	      updateQuery.bindValue
+		(2, query.value(1));
+
+	      if(ok)
+		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare("DELETE FROM magnets WHERE "
+				      "magnet_hash = ?");
+		  deleteQuery.bindValue(0, query.value(1));
+		  deleteQuery.exec();
+		}
+	    }
+
+	if(query.exec("SELECT file, file_hash, total_size FROM "
+		      "received"))
+	  while(query.next())
+	    {
+	      QByteArray bytes;
+	      QSqlQuery updateQuery(db);
+	      bool ok = true;
+
+	      updateQuery.prepare("UPDATE received "
+				  "SET file = ?, "
+				  "file_hash = ?, "
+				  "total_size = ? "
+				  "WHERE file_hash = ?");
+	      bytes = oldCrypt->decrypted(QByteArray::
+					  fromBase64(query.
+						     value(0).
+						     toByteArray()),
+					  &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (0, newCrypt->encrypted(bytes, &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (1, newCrypt->keyedHash(bytes, &ok).toBase64());
+
+	      if(ok)
+		bytes = oldCrypt->decrypted(QByteArray::
+					    fromBase64(query.
+						       value(2).
+						       toByteArray()),
+					    &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (2, newCrypt->encrypted(bytes, &ok).toBase64());
+
+	      updateQuery.bindValue(3, query.value(1));
+
+	      if(ok)
+		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare("DELETE FROM received WHERE "
+				      "file_hash = ?");
+		  deleteQuery.bindValue(0, query.value(1));
+		  deleteQuery.exec();
+		}
+	    }
+
+	if(query.exec("SELECT nova, nova_hash FROM received_novas"))
+	  while(query.next())
+	    {
+	      QByteArray bytes;
+	      QSqlQuery updateQuery(db);
+	      bool ok = true;
+
+	      updateQuery.prepare("UPDATE received_novas "
+				  "SET nova = ?, "
+				  "nova_hash = ? "
+				  "WHERE nova_hash = ?");
+	      bytes = oldCrypt->decrypted(QByteArray::
+					  fromBase64(query.
+						     value(0).
+						     toByteArray()),
+					  &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (0, newCrypt->encrypted(bytes, &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (1, newCrypt->keyedHash(bytes, &ok).toBase64());
+
+	      updateQuery.bindValue(2, query.value(1));
+
+	      if(ok)
+		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare("DELETE FROM received_novas WHERE "
+				      "nova_hash = ?");
+		  deleteQuery.bindValue(0, query.value(1));
+		  deleteQuery.exec();
+		}
+	    }
+
+	if(query.exec("SELECT file, mosaic, nova, position, "
+		      "pulse_size, total_size FROM transmitted"))
+	  while(query.next())
+	    {
+	      QByteArray bytes;
+	      QSqlQuery updateQuery(db);
+	      bool ok = true;
+
+	      updateQuery.prepare("UPDATE transmitted "
+				  "SET file = ?, "
+				  "nova = ?, "
+				  "position = ?, "
+				  "pulse_size = ?, "
+				  "total_size = ? "
+				  "WHERE mosaic = ?");
+	      bytes = oldCrypt->decrypted(QByteArray::
+					  fromBase64(query.
+						     value(0).
+						     toByteArray()),
+					  &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (0, newCrypt->encrypted(bytes, &ok).toBase64());
+
+	      if(ok)
+		bytes = oldCrypt->decrypted(QByteArray::
+					    fromBase64(query.
+						       value(2).
+						       toByteArray()),
+					    &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (1, newCrypt->encrypted(bytes, &ok).toBase64());
+
+	      if(ok)
+		bytes = oldCrypt->decrypted(QByteArray::
+					    fromBase64(query.
+						       value(3).
+						       toByteArray()),
+					    &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (2, newCrypt->encrypted(bytes, &ok).toBase64());
+
+	      if(ok)
+		bytes = oldCrypt->decrypted(QByteArray::
+					    fromBase64(query.
+						       value(4).
+						       toByteArray()),
+					    &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (3, newCrypt->encrypted(bytes, &ok).toBase64());
+
+	      if(ok)
+		bytes = oldCrypt->decrypted(QByteArray::
+					    fromBase64(query.
+						       value(5).
+						       toByteArray()),
+					    &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (4, newCrypt->encrypted(bytes, &ok).toBase64());
+
+	      updateQuery.bindValue(5, query.value(1));
+
+	      if(ok)
+		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare("DELETE FROM transmitted WHERE "
+				      "mosaic = ?");
+		  deleteQuery.bindValue(0, query.value(1));
+		  deleteQuery.exec();
+		}
+	    }
+
+	if(query.exec("SELECT magnet, magnet_hash FROM transmitted_magnets"))
+	  while(query.next())
+	    {
+	      QByteArray magnet;
+	      QSqlQuery updateQuery(db);
+	      bool ok = true;
+
+	      updateQuery.prepare("UPDATE transmitted_magnets "
+				  "SET magnet = ?, "
+				  "magnet_hash = ? "
+				  "WHERE magnet_hash = ?");
+	      magnet = oldCrypt->decrypted(QByteArray::
+					   fromBase64(query.
+						      value(0).
+						      toByteArray()),
+					   &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (0, newCrypt->encrypted(magnet,
+					  &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (1,
+		   newCrypt->keyedHash(magnet,
+				       &ok).toBase64());
+
+	      updateQuery.bindValue
+		(2, query.value(1));
+
+	      if(ok)
+		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare
+		    ("DELETE FROM transmitted_magnets WHERE "
+		     "magnet_hash = ?");
+		  deleteQuery.bindValue(0, query.value(1));
+		  deleteQuery.exec();
+		}
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
   sb.status->clear();
 }

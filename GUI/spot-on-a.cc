@@ -2261,6 +2261,12 @@ void spoton::slotPopulateListeners(void)
 				       toByteArray()),
 			    &ok);
 
+		if(!ok)
+		  {
+		    certificateDigest.clear();
+		    certificateDigest.append(tr("error"));
+		  }
+
 		if(ok)
 		  if(!certificateDigest.isEmpty())
 		    {
@@ -2473,14 +2479,19 @@ void spoton::slotPopulateListeners(void)
 			    if(query.isNull(i))
 			      item = new QTableWidgetItem();
 			    else
-			      item = new QTableWidgetItem
-				(s_crypt->
-				 decrypted(QByteArray::
-					   fromBase64(query.
-						      value(i).
-						      toByteArray()),
-					   &ok).
-				 constData());
+			      {
+				item = new QTableWidgetItem
+				  (s_crypt->
+				   decrypted(QByteArray::
+					     fromBase64(query.
+							value(i).
+							toByteArray()),
+					     &ok).
+				   constData());
+
+				if(!ok)
+				  item->setText(tr("error"));
+			      }
 			  }
 			else
 			  item = new QTableWidgetItem
@@ -2722,6 +2733,12 @@ void spoton::slotPopulateNeighbors(void)
 				       toByteArray()),
 			    &ok);
 
+		if(!ok)
+		  {
+		    certificateDigest.clear();
+		    certificateDigest.append(tr("error"));
+		  }
+
 		if(ok)
 		  if(!certificateDigest.isEmpty())
 		    {
@@ -2738,6 +2755,12 @@ void spoton::slotPopulateNeighbors(void)
 				       value(24).
 				       toByteArray()),
 			    &ok);
+
+		if(!ok)
+		  {
+		    sslSessionCipher.clear();
+		    sslSessionCipher.append(tr("error"));
+		  }
 
 		tooltip =
 		  (tr("UUID: %1\n"
@@ -2890,12 +2913,20 @@ void spoton::slotPopulateNeighbors(void)
 			    bool ok = true;
 
 			    if(i != 3) // SSL Key Size
-			      bytes = s_crypt->decrypted
-				(QByteArray::
-				 fromBase64(query.
-					    value(i).
-					    toByteArray()),
-				 &ok);
+			      {
+				bytes = s_crypt->decrypted
+				  (QByteArray::
+				   fromBase64(query.
+					      value(i).
+					      toByteArray()),
+				   &ok);
+
+				if(!ok)
+				  {
+				    bytes.clear();
+				    bytes.append(tr("error"));
+				  }
+			      }
 
 			    if(i == 1) // uuid
 			      {
@@ -3809,8 +3840,10 @@ void spoton::slotSetPassphrase(void)
 	      for(int i = 0; i < list.size(); i++)
 		{
 		  m_sb.status->setText
-		    (tr("Re-encoding public key pair 1 of %1. "
-			"Please be patient.").arg(list.size()));
+		    (tr("Re-encoding public key pair %1 of %2. "
+			"Please be patient.").
+		     arg(i + 1).
+		     arg(list.size()));
 		  m_sb.status->repaint();
 		  spoton_crypt::reencodeKeys
 		    (m_ui.cipherType->currentText(),
@@ -3860,7 +3893,7 @@ void spoton::slotSetPassphrase(void)
 	  for(int i = 0; i < list.size(); i++)
 	    {
 	      m_sb.status->setText
-		(tr("Generating public key pair %1 of %2. "
+		(tr("Generating public key %1 of %2. "
 		    "Please be patient.").
 		 arg(i + 1).arg(list.size()));
 	      m_sb.status->repaint();
@@ -4713,13 +4746,11 @@ void spoton::slotBlockNeighbor(void)
 	      QString ip("");
 	      bool ok = true;
 
-	      ip =
-		s_crypt->decrypted(QByteArray::
-				   fromBase64(query.
-					      value(0).
-					      toByteArray()),
-				   &ok).
-		constData();
+	      ip = s_crypt->decrypted(QByteArray::
+				      fromBase64(query.
+						 value(0).
+						 toByteArray()),
+				      &ok).constData();
 
 	      if(ok)
 		if(ip == remoteIp)
@@ -4792,13 +4823,12 @@ void spoton::slotUnblockNeighbor(void)
 	    {
 	      bool ok = true;
 
-	      QString ip
-		(s_crypt->decrypted(QByteArray::
-				    fromBase64(query.
-					       value(0).
-					       toByteArray()),
-				    &ok).
-		 constData());
+	      QString ip(s_crypt->decrypted(QByteArray::
+					    fromBase64(query.
+						       value(0).
+						       toByteArray()),
+					    &ok).
+			 constData());
 
 	      if(ok)
 		if(ip == remoteIp)
@@ -5067,13 +5097,18 @@ void spoton::slotPopulateParticipants(void)
 			  if(query.isNull(i))
 			    item = new QTableWidgetItem();
 			  else
-			    item = new QTableWidgetItem
-			      (s_crypt->
-			       decrypted(QByteArray::
-					 fromBase64(query.
-						    value(i).
-						    toByteArray()),
-					 &ok).toBase64().constData());
+			    {
+			      item = new QTableWidgetItem
+				(s_crypt->
+				 decrypted(QByteArray::
+					   fromBase64(query.
+						      value(i).
+						      toByteArray()),
+					   &ok).toBase64().constData());
+
+			      if(!ok)
+				item->setText(tr("error"));
+			    }
 			}
 		      else
 			{
