@@ -144,7 +144,8 @@
      support.
 72.  Corrected an error with the client-side account authentication
      implementation. Clients that have specified account names will now
-     request authentication before transmitting any other data.
+     request authentication before transmitting other data.
+73.  Items in various interface tables will now reflect decryption errors.
 
 0.06 (10/24/2013)
 
