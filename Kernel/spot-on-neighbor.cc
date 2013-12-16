@@ -368,7 +368,22 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_startTime = QDateTime::currentDateTime();
   m_transport = transport;
   m_udpSocket = 0;
-  m_useAccounts = false;
+
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
+
+  if(s_crypt)
+    {
+      QByteArray name(m_accountName);
+      QByteArray password(m_accountPassword);
+      bool ok = true;
+
+      name = s_crypt->decrypted(name, &ok);
+
+      if(ok)
+	password = s_crypt->decrypted(password, &ok);
+
+      m_useAccounts = !name.isEmpty() || !password.isEmpty();
+    }
 
   if(m_transport == "tcp")
     m_useSsl = true;
@@ -1182,6 +1197,13 @@ void spoton_neighbor::slotReadyRead(void)
 	      goto done_label;
 	    }
 
+	  if(m_isUserDefined)
+	    if(m_useAccounts)
+	      {
+		if(!m_accountAuthenticated)
+		  goto done_label;
+	      }
+
 	  if(length > 0 && data.contains("type=0011&content="))
 	    process0011(length, data);
 	  else if(length > 0 && data.contains("type=0012&content="))
@@ -1415,6 +1437,10 @@ void spoton_neighbor::slotConnected(void)
 
   if(!m_keepAliveTimer.isActive())
     m_keepAliveTimer.start();
+
+  if(m_udpSocket)
+    if(m_useAccounts)
+      m_accountTimer.start();
 }
 
 void spoton_neighbor::savePublicKey(const QByteArray &keyType,
@@ -3367,7 +3393,7 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
   length -= qstrlen("type=0051&content=");
 
   /*
-  ** We may have received a name and a password.
+  ** We may have received a name and a password from the server.
   */
 
   QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
@@ -3425,7 +3451,10 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 	      if(ok)
 		{
 		  if(newSaltedCredentials == saltedCredentials)
-		    m_accountAuthenticated = true;
+		    {
+		      m_accountAuthenticated = true;
+		      m_accountTimer.stop();
+		    }
 		  else
 		    {
 		      newSaltedCredentials = spoton_crypt::saltedValue
@@ -3438,7 +3467,10 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 
 		      if(ok)
 			if(newSaltedCredentials == saltedCredentials)
-			  m_accountAuthenticated = true;
+			  {
+			    m_accountAuthenticated = true;
+			    m_accountTimer.stop();
+			  }
 		    }
 
 		  if(ok)
@@ -4416,7 +4448,7 @@ void spoton_neighbor::slotProxyAuthenticationRequired
     }
 }
 
-bool spoton_neighbor::readyToWrite(void)
+bool spoton_neighbor::readyToWrite(void) const
 {
   if(state() != QAbstractSocket::ConnectedState)
     return false;
@@ -4723,8 +4755,13 @@ void spoton_neighbor::addToBytesWritten(const int bytesWritten)
 
 void spoton_neighbor::slotSendAccountInformation(void)
 {
-  if(!readyToWrite())
+  if(state() != QAbstractSocket::ConnectedState)
     return;
+  else if(m_useSsl)
+    {
+      if(!isEncrypted())
+	return;
+    }
 
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
@@ -4768,7 +4805,6 @@ void spoton_neighbor::slotSendAccountInformation(void)
 	      {
 		flush();
 		m_accountClientSentSalt = salt;
-		m_accountTimer.stop();
 		m_authenticationSentTime = QDateTime::currentDateTime();
 		addToBytesWritten(message.length());
 	      }
@@ -4779,10 +4815,13 @@ void spoton_neighbor::slotSendAccountInformation(void)
 void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
 					       const QByteArray &password)
 {
-  if((!isEncrypted() || !readyToWrite()) && m_transport == "tcp")
+  if(state() != QAbstractSocket::ConnectedState)
     return;
-  if(!readyToWrite())
-    return;
+  else if(m_useSsl)
+    {
+      if(!isEncrypted())
+	return;
+    }
 
   QByteArray message;
   QByteArray salt(spoton_crypt::strongRandomBytes(512));

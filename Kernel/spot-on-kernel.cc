@@ -369,7 +369,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(buzzMagnetReceivedFromUI(const qint64,
 					  const QByteArray &)),
 	  this,
-	  SLOT(slotBuzzMagnedReceivedFromUI(const qint64,
+	  SLOT(slotBuzzMagnetReceivedFromUI(const qint64,
 					    const QByteArray &)));
   connect(m_guiServer,
 	  SIGNAL(buzzReceivedFromUI(const QByteArray &,
@@ -2925,7 +2925,7 @@ void spoton_kernel::updateStatistics(void)
   QSqlDatabase::removeDatabase(connectionName);
 }
 
-void spoton_kernel::slotBuzzMagnedReceivedFromUI(const qint64 oid,
+void spoton_kernel::slotBuzzMagnetReceivedFromUI(const qint64 oid,
 						 const QByteArray &magnet)
 {
   QPointer<spoton_neighbor> neighbor = 0;
@@ -2936,14 +2936,14 @@ void spoton_kernel::slotBuzzMagnedReceivedFromUI(const qint64 oid,
   if(!neighbor)
     {
       spoton_misc::logError
-	(QString("spoton_kernel::slotBuzzMagnedReceivedFromUI(): "
+	(QString("spoton_kernel::slotBuzzMagnetReceivedFromUI(): "
 		 "neighbor %1 not found in m_neighbors.").arg(oid));
       return;
     }
   else if(!neighbor->isEncrypted())
     {
       spoton_misc::logError
-	(QString("spoton_kernel::slotBuzzMagnedReceivedFromUI(): "
+	(QString("spoton_kernel::slotBuzzMagnetReceivedFromUI(): "
 		 "neighbor %1 is not encrypted.").arg(oid));
       return;
     }
@@ -2952,7 +2952,7 @@ void spoton_kernel::slotBuzzMagnedReceivedFromUI(const qint64 oid,
 
   if(neighbor->write(data.constData(), data.length()) != data.length())
     spoton_misc::logError
-      (QString("spoton_kernel::slotBuzzMagnedReceivedFromUI(): "
+      (QString("spoton_kernel::slotBuzzMagnetReceivedFromUI(): "
 	       "write() failure for %1:%2.").
        arg(neighbor->peerAddress().toString()).
        arg(neighbor->peerPort()));
@@ -2975,15 +2975,16 @@ void spoton_kernel::writeToNeighbors(const QByteArray &data, bool *ok)
       it.next();
 
       if(it.value())
-	if(it.value()->
-	   write(data.constData(), data.length()) == data.length())
-	  {
-	    it.value()->flush();
-	    it.value()->addToBytesWritten(data.length());
+	if(it.value()->readyToWrite())
+	  if(it.value()->write(data.constData(),
+			       data.length()) == data.length())
+	    {
+	      it.value()->flush();
+	      it.value()->addToBytesWritten(data.length());
 
-	    if(ok)
-	      *ok = true;
-	  }
+	      if(ok)
+		*ok = true;
+	    }
     }
 }
 

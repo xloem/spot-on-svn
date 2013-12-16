@@ -136,6 +136,7 @@ class spoton_neighbor: public QThread
   QString transport(void) const;
   QUuid receivedUuid(void) const;
   bool isEncrypted(void) const;
+  bool readyToWrite(void) const;
   qint64 id(void) const;
   qint64 write(const char *data, qint64 size);
   quint16 peerPort(void) const;
@@ -190,7 +191,6 @@ class spoton_neighbor: public QThread
   spoton_neighbor_udp_socket *m_udpSocket;
   QString findMessageType(const QByteArray &data,
 			  QList<QByteArray> &symmetricKeys);
-  bool readyToWrite(void);
   qint64 readBufferSize(void) const;
   void process0000(int length, const QByteArray &data,
 		   const QList<QByteArray> &symmetricKeys);
