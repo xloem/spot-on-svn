@@ -264,7 +264,8 @@ void spoton_misc::prepareDatabases(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("CREATE TABLE IF NOT EXISTS listeners ("
+	query.exec
+	  (QString("CREATE TABLE IF NOT EXISTS listeners ("
 		   "ip_address TEXT NOT NULL, "
 		   "port TEXT NOT NULL, "
 		   "scope_id TEXT, "
@@ -288,10 +289,12 @@ void spoton_misc::prepareDatabases(void)
 		   "private_key BLOB NOT NULL, "
 		   "public_key BLOB NOT NULL, "       // Not used.
 		   "use_accounts INTEGER NOT NULL DEFAULT 0, "
-		   "maximum_buffer_size INTEGER NOT NULL DEFAULT 1048576, "
-		   "maximum_content_length INTEGER NOT NULL DEFAULT 524288, "
+		   "maximum_buffer_size INTEGER NOT NULL DEFAULT %1, "
+		   "maximum_content_length INTEGER NOT NULL DEFAULT %2, "
 		   "transport TEXT NOT NULL, "
-		   "share_udp_address INTEGER NOT NULL DEFAULT 0)");
+		   "share_udp_address INTEGER NOT NULL DEFAULT 0)").
+	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
+	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_accounts ("
 		   "account_name TEXT NOT NULL, "
 		   "account_name_hash TEXT NOT NULL, "
@@ -330,51 +333,55 @@ void spoton_misc::prepareDatabases(void)
 	QSqlQuery query(db);
 
 	query.exec
-	  ("CREATE TABLE IF NOT EXISTS neighbors ("
-	   "local_ip_address TEXT , "
-	   "local_port TEXT, "
-	   "remote_ip_address TEXT NOT NULL, "
-	   "remote_port TEXT NOT NULL, "
-	   "scope_id TEXT, "
-	   "protocol TEXT NOT NULL, "
-	   "status TEXT NOT NULL DEFAULT 'disconnected', "
-	   "status_control TEXT NOT NULL DEFAULT 'connected', "
-	   "sticky INTEGER NOT NULL DEFAULT 1, "
-	   "external_ip_address TEXT, "
-	   "external_port TEXT, "
-	   "uuid TEXT NOT NULL, "
-	   "country TEXT, "
-	   "hash TEXT PRIMARY KEY NOT NULL, " /*
-					      ** Hash of the proxy IP address,
-					      ** the proxy port, the remote IP
-					      ** address, the remote
-					      ** port, the scope id, and
-					      ** the transport.
-					      */
-	   "remote_ip_address_hash TEXT NOT NULL, "
-	   "qt_country_hash TEXT, "
-	   "user_defined INTEGER NOT NULL DEFAULT 1, "
-	   "proxy_hostname TEXT NOT NULL, "
-	   "proxy_password TEXT NOT NULL, "
-	   "proxy_port TEXT NOT NULL, "
-	   "proxy_type TEXT NOT NULL, "
-	   "proxy_username TEXT NOT NULL, "
-	   "is_encrypted INTEGER NOT NULL DEFAULT 0, "
-	   "maximum_buffer_size INTEGER NOT NULL DEFAULT 1048576, "
-	   "maximum_content_length INTEGER NOT NULL DEFAULT 524288, "
-	   "echo_mode TEXT NOT NULL, "
-	   "ssl_key_size INTEGER NOT NULL DEFAULT 2048, "
-	   "uptime INTEGER NOT NULL DEFAULT 0, "
-	   "certificate BLOB NOT NULL, "
-	   "allow_exceptions INTEGER NOT NULL DEFAULT 0, "
-	   "bytes_read INTEGER NOT NULL DEFAULT 0, "
-	   "bytes_written INTEGER NOT NULL DEFAULT 0, "
-	   "ssl_session_cipher TEXT, "
-	   "ssl_required INTEGER NOT NULL DEFAULT 1, "
-	   "account_name TEXT NOT NULL, "
-	   "account_password TEXT NOT NULL, "
-	   "account_authenticated INTEGER NOT NULL DEFAULT 0, "
-	   "transport TEXT NOT NULL)");
+	  (QString("CREATE TABLE IF NOT EXISTS neighbors ("
+		   "local_ip_address TEXT , "
+		   "local_port TEXT, "
+		   "remote_ip_address TEXT NOT NULL, "
+		   "remote_port TEXT NOT NULL, "
+		   "scope_id TEXT, "
+		   "protocol TEXT NOT NULL, "
+		   "status TEXT NOT NULL DEFAULT 'disconnected', "
+		   "status_control TEXT NOT NULL DEFAULT 'connected', "
+		   "sticky INTEGER NOT NULL DEFAULT 1, "
+		   "external_ip_address TEXT, "
+		   "external_port TEXT, "
+		   "uuid TEXT NOT NULL, "
+		   "country TEXT, "
+		   "hash TEXT PRIMARY KEY NOT NULL, " /*
+						      ** Hash of the proxy
+						      ** IP address,
+						      ** the proxy port,
+						      ** the remote IP
+						      ** address, the remote
+						      ** port, the scope id,
+						      ** and the transport.
+						      */
+		   "remote_ip_address_hash TEXT NOT NULL, "
+		   "qt_country_hash TEXT, "
+		   "user_defined INTEGER NOT NULL DEFAULT 1, "
+		   "proxy_hostname TEXT NOT NULL, "
+		   "proxy_password TEXT NOT NULL, "
+		   "proxy_port TEXT NOT NULL, "
+		   "proxy_type TEXT NOT NULL, "
+		   "proxy_username TEXT NOT NULL, "
+		   "is_encrypted INTEGER NOT NULL DEFAULT 0, "
+		   "maximum_buffer_size INTEGER NOT NULL DEFAULT %1, "
+		   "maximum_content_length INTEGER NOT NULL DEFAULT %2, "
+		   "echo_mode TEXT NOT NULL, "
+		   "ssl_key_size INTEGER NOT NULL DEFAULT 2048, "
+		   "uptime INTEGER NOT NULL DEFAULT 0, "
+		   "certificate BLOB NOT NULL, "
+		   "allow_exceptions INTEGER NOT NULL DEFAULT 0, "
+		   "bytes_read INTEGER NOT NULL DEFAULT 0, "
+		   "bytes_written INTEGER NOT NULL DEFAULT 0, "
+		   "ssl_session_cipher TEXT, "
+		   "ssl_required INTEGER NOT NULL DEFAULT 1, "
+		   "account_name TEXT NOT NULL, "
+		   "account_password TEXT NOT NULL, "
+		   "account_authenticated INTEGER NOT NULL DEFAULT 0, "
+		   "transport TEXT NOT NULL)").
+	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
+	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
       }
 
     db.close();

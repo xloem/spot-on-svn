@@ -301,17 +301,17 @@ EOL
 Account Authentication
 Echoed? No
 
-Message Type ("0050")
+Message Type ("0050") (Client Request)
 0 - SHA-512 Digest (Base-64)
 EOL
 1 - Random Data (Base-64)
 
-Message Type ("0051")
+Message Type ("0051") (Server Response)
 0 - SHA-512 Digest (Base-64)
 EOL
 1 - Random Data (Base-64)
 
-Message Type ("0052")
+Message Type ("0052") (Server Authentication Request)
 0 (Base-64)
 
 StarBeam
