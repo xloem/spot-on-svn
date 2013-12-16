@@ -313,8 +313,6 @@ void spoton_starbeam_reader::pulsate(const QString &fileName,
 				     0,
 				     QString(""));
 
-		  data.append(QByteArray(qrand() % 1024 + 512, 0));
-
 		  if(nova.isEmpty())
 		    data = crypt.encrypted
 		      (QByteArray("0060").toBase64() + "\n" +
