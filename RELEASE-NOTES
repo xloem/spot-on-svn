@@ -26,12 +26,10 @@
           distributed. Once the magnets are recorded by other devices,
           mosaics may then be exported. Mosaics are partitioned into specific
           pulses and randomly-selected magnets are applied to
-          individual pulses. Some anonymous data is appended to each pulse
-          to avoid certain trends. Receivers assemble
-          the mosaic pieces as well as echo the received pulses. A replay
-          option will be available for transmitters to retransmit
-          requested pulses. Pulses are written in the interval
-          [1000, 1500) (milliseconds).
+          individual pulses. Receivers assemble the mosaic pieces as well as
+          echo the received pulses. A replay option will be available for
+          transmitters to retransmit requested pulses. Pulses are written
+          in the interval [1000, 1500) (milliseconds).
 15.  Removed many instances of spoton_misc::prepareDatabases(). Only
      a few instances are necessary.
 16.  Implemented spoton_misc::allParticipantsHaveGeminis(). The method
