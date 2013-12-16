@@ -30,7 +30,8 @@
           to avoid certain trends. Receivers assemble
           the mosaic pieces as well as echo the received pulses. A replay
           option will be available for transmitters to retransmit
-          requested pulses.
+          requested pulses. Pulses are written in the interval
+          [1000, 1500) (milliseconds).
 15.  Removed many instances of spoton_misc::prepareDatabases(). Only
      a few instances are necessary.
 16.  Implemented spoton_misc::allParticipantsHaveGeminis(). The method
@@ -65,7 +66,7 @@
      server-side object.
 31.  Ability to retrieve e-mail automatically, per request.
 32.  Ability to reset certificates of disconnected clients.
-33.  Random keep-alive timer intervals [30, 45).
+33.  Random keep-alive timer intervals [30, 45) (seconds).
 34.  Added support for UDP listeners and neighbors. Please note that
      SSL is not supported for the UDP transport layer. Please remove
      listeners.db and neighbors.db.
