@@ -223,13 +223,15 @@ void spoton_starbeam_writer::slotProcessData(void)
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool ok = true;
 
 	query.prepare
 	  ("INSERT OR REPLACE INTO received "
-	   "(file, file_hash, total_size) VALUES (?, ?, ?)");
-	query.bindValue
-	  (0, s_crypt->encrypted(fileName.toUtf8(),
-				 &ok).toBase64());
+	   "(file, file_hash, hash, total_size) VALUES (?, ?, ?, ?)");
+
+	if(ok)
+	  query.bindValue
+	    (0, s_crypt->encrypted(fileName.toUtf8(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
@@ -237,7 +239,11 @@ void spoton_starbeam_writer::slotProcessData(void)
 
 	if(ok)
 	  query.bindValue
-	    (2, s_crypt->encrypted(QByteArray::number(totalSize), &ok).
+	    (2, s_crypt->encrypted(QByteArray(), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (3, s_crypt->encrypted(QByteArray::number(totalSize), &ok).
 	     toBase64());
 
 	if(ok)

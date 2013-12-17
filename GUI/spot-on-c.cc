@@ -866,41 +866,45 @@ void spoton::slotTransmit(void)
 	QSqlQuery query(db);
 
 	query.prepare("INSERT INTO transmitted "
-		      "(file, mosaic, nova, position, pulse_size, "
+		      "(file, hash, mosaic, nova, position, pulse_size, "
 		      "status_control, total_size) "
-		      "VALUES (?, ?, ?, ?, ?, ?, ?)");
+		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue
 	  (0, s_crypt->encrypted(m_ui.transmittedFile->text().toUtf8(),
 				 &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (1, s_crypt->encrypted(QByteArray(), &ok).toBase64());
 
 	if(ok)
 	  {
 	    encryptedMosaic = s_crypt->encrypted(mosaic, &ok);
 
 	    if(ok)
-	      query.bindValue(1, encryptedMosaic.toBase64());
+	      query.bindValue(2, encryptedMosaic.toBase64());
 	  }
 
 	if(ok)
 	  query.bindValue
-	    (2, s_crypt->encrypted(m_ui.transmitNova->text().trimmed().
+	    (3, s_crypt->encrypted(m_ui.transmitNova->text().trimmed().
 				   toLatin1(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (3, s_crypt->encrypted(QByteArray("0"), &ok).toBase64());
+	    (4, s_crypt->encrypted(QByteArray("0"), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (4, s_crypt->
+	    (5, s_crypt->
 	     encrypted(QByteArray::number(m_ui.pulseSize->
 					  value()), &ok).toBase64());
 
-	query.bindValue(5, "paused");
+	query.bindValue(6, "paused");
 
 	if(ok)
 	  query.bindValue
-	    (6, s_crypt->
+	    (7, s_crypt->
 	     encrypted(QString::
 		       number(QFileInfo(m_ui.transmittedFile->
 					text()).size()).toLatin1(),
@@ -1086,7 +1090,7 @@ void spoton::slotPopulateStars(void)
 	m_ui.received->clearContents();
 	m_ui.received->setRowCount(0);
 	row = 0;
-	query.prepare("SELECT total_size, file, OID FROM received");
+	query.prepare("SELECT total_size, file, hash, OID FROM received");
 
 	if(query.exec())
 	  while(query.next())
@@ -1104,7 +1108,7 @@ void spoton::slotPopulateStars(void)
 		{
 		  QTableWidgetItem *item = 0;
 
-		  if(i == 0 || i == 1)
+		  if(i == 0 || i == 1 || i == 2)
 		    {
 		      QByteArray bytes
 			(s_crypt->
@@ -1184,7 +1188,7 @@ void spoton::slotPopulateStars(void)
 	m_ui.transmitted->setRowCount(0);
 	row = 0;
 	query.prepare("SELECT 0, position, pulse_size, total_size, "
-		      "status_control, file, mosaic, OID "
+		      "status_control, file, mosaic, hash, OID "
 		      "FROM transmitted WHERE status_control <> 'deleted'");
 
 	if(query.exec())
@@ -1222,7 +1226,7 @@ void spoton::slotPopulateStars(void)
 		      m_ui.transmitted->setCellWidget
 			(row, i, progressBar);
 		    }
-		  else if(i == 2 || i == 3 || i == 5 || i == 6)
+		  else if(i == 2 || i == 3 || i == 5 || i == 7)
 		    {
 		      QByteArray bytes
 			(s_crypt->
@@ -1234,9 +1238,6 @@ void spoton::slotPopulateStars(void)
 			{
 			  if(i == 5)
 			    fileName = bytes.constData();
-			  else if(i == 6)
-			    bytes = bytes.mid(0, 16) + "..." +
-			      bytes.right(16);
 
 			  item = new QTableWidgetItem(bytes.constData());
 			}
@@ -1247,6 +1248,13 @@ void spoton::slotPopulateStars(void)
 
 			  item = new QTableWidgetItem(tr("error"));
 			}
+		    }
+		  else if(i == 6)
+		    {
+		      QByteArray bytes(query.value(i).toByteArray());
+
+		      bytes = bytes.mid(0, 16) + "..." + bytes.right(16);
+		      item = new QTableWidgetItem(bytes.constData());
 		    }
 		  else if(i == 4)
 		    {
@@ -1871,6 +1879,108 @@ void spoton::slotRewindFile(void)
 	   "WHERE OID = ? AND status_control <> 'deleted'");
 	query.bindValue
 	  (0, s_crypt->encrypted(QByteArray::number(0), &ok).
+	   toBase64());
+	query.bindValue(1, oid);
+
+	if(ok)
+	  query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton::slotComputeFileHash(void)
+{
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QAction *action = qobject_cast<QAction *> (sender());
+
+  if(!action)
+    return;
+
+  QTableWidget *table = 0;
+
+  if(action->property("widget_of").toString() == "received")
+    table = m_ui.received;
+  else if(action->property("widget_of").toString() == "transmitted")
+    table = m_ui.transmitted;
+
+  if(!table)
+    return;
+
+  QString oid("");
+  int row = -1;
+
+  if((row = table->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = table->item
+	(row, table->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  QTableWidgetItem *item = 0;
+
+  if(m_ui.received == table)
+    item = table->item(table->currentRow(), 2); // File
+  else
+    item = table->item(table->currentRow(), 5); // File
+
+  if(!item)
+    return;
+
+  QFile file;
+  QString fileName(item->text());
+
+  file.setFileName(fileName);
+
+  if(!file.open(QIODevice::ReadOnly))
+    return;
+
+  QByteArray buffer(4096, 0);
+  QCryptographicHash hash(QCryptographicHash::Sha1);
+  qint64 rc = 0;
+
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+  while((rc = file.read(buffer.data(), buffer.length())) > 0)
+    hash.addData(buffer, rc);
+
+  QApplication::restoreOverrideCursor();
+  file.close();
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "starbeam.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	if(m_ui.received == table)
+	  query.prepare
+	    ("UPDATE received SET hash = ? WHERE OID = ?");
+	else
+	  query.prepare
+	    ("UPDATE transmitted SET hash = ? WHERE OID = ?");
+
+	query.bindValue
+	  (0, s_crypt->encrypted(hash.result().toHex(), &ok).
 	   toBase64());
 	query.bindValue(1, oid);
 

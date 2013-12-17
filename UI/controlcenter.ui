@@ -4665,6 +4665,11 @@
                       </column>
                       <column>
                        <property name="text">
+                        <string>SHA-1 Hash</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
                         <string>OID</string>
                        </property>
                       </column>
@@ -4760,6 +4765,11 @@
                        <column>
                         <property name="text">
                          <string>Mosaic</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>SHA-1 Hash</string>
                         </property>
                        </column>
                        <column>

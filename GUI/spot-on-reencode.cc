@@ -883,7 +883,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		}
 	    }
 
-	if(query.exec("SELECT file, file_hash, total_size FROM "
+	if(query.exec("SELECT file, file_hash, hash, total_size FROM "
 		      "received"))
 	  while(query.next())
 	    {
@@ -894,6 +894,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      updateQuery.prepare("UPDATE received "
 				  "SET file = ?, "
 				  "file_hash = ?, "
+				  "hash = ?, "
 				  "total_size = ? "
 				  "WHERE file_hash = ?");
 	      bytes = oldCrypt->decrypted(QByteArray::
@@ -911,17 +912,29 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  (1, newCrypt->keyedHash(bytes, &ok).toBase64());
 
 	      if(ok)
-		bytes = oldCrypt->decrypted(QByteArray::
-					    fromBase64(query.
-						       value(2).
-						       toByteArray()),
-					    &ok);
+		bytes = oldCrypt->decrypted
+		  (QByteArray::
+		   fromBase64(query.
+			      value(2).
+			      toByteArray()),
+		   &ok);
 
 	      if(ok)
 		updateQuery.bindValue
 		  (2, newCrypt->encrypted(bytes, &ok).toBase64());
 
-	      updateQuery.bindValue(3, query.value(1));
+	      if(ok)
+		bytes = oldCrypt->decrypted(QByteArray::
+					    fromBase64(query.
+						       value(3).
+						       toByteArray()),
+					    &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (3, newCrypt->encrypted(bytes, &ok).toBase64());
+
+	      updateQuery.bindValue(4, query.value(1));
 
 	      if(ok)
 		updateQuery.exec();
@@ -976,7 +989,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		}
 	    }
 
-	if(query.exec("SELECT file, mosaic, nova, position, "
+	if(query.exec("SELECT file, hash, mosaic, nova, position, "
 		      "pulse_size, total_size FROM transmitted"))
 	  while(query.next())
 	    {
@@ -986,6 +999,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      updateQuery.prepare("UPDATE transmitted "
 				  "SET file = ?, "
+				  "hash = ?, "
+				  "mosaic = ?, "
 				  "nova = ?, "
 				  "position = ?, "
 				  "pulse_size = ?, "
@@ -1004,13 +1019,15 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      if(ok)
 		bytes = oldCrypt->decrypted(QByteArray::
 					    fromBase64(query.
-						       value(2).
+						       value(1).
 						       toByteArray()),
 					    &ok);
 
 	      if(ok)
 		updateQuery.bindValue
 		  (1, newCrypt->encrypted(bytes, &ok).toBase64());
+
+	      updateQuery.bindValue(2, query.value(2));
 
 	      if(ok)
 		bytes = oldCrypt->decrypted(QByteArray::
@@ -1021,7 +1038,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      if(ok)
 		updateQuery.bindValue
-		  (2, newCrypt->encrypted(bytes, &ok).toBase64());
+		  (3, newCrypt->encrypted(bytes, &ok).toBase64());
 
 	      if(ok)
 		bytes = oldCrypt->decrypted(QByteArray::
@@ -1032,7 +1049,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      if(ok)
 		updateQuery.bindValue
-		  (3, newCrypt->encrypted(bytes, &ok).toBase64());
+		  (4, newCrypt->encrypted(bytes, &ok).toBase64());
 
 	      if(ok)
 		bytes = oldCrypt->decrypted(QByteArray::
@@ -1043,9 +1060,20 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      if(ok)
 		updateQuery.bindValue
-		  (4, newCrypt->encrypted(bytes, &ok).toBase64());
+		  (5, newCrypt->encrypted(bytes, &ok).toBase64());
 
-	      updateQuery.bindValue(5, query.value(1));
+	      if(ok)
+		bytes = oldCrypt->decrypted(QByteArray::
+					    fromBase64(query.
+						       value(6).
+						       toByteArray()),
+					    &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (6, newCrypt->encrypted(bytes, &ok).toBase64());
+
+	      updateQuery.bindValue(7, query.value(2));
 
 	      if(ok)
 		updateQuery.exec();
@@ -1055,7 +1083,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 		  deleteQuery.prepare("DELETE FROM transmitted WHERE "
 				      "mosaic = ?");
-		  deleteQuery.bindValue(0, query.value(1));
+		  deleteQuery.bindValue(0, query.value(2));
 		  deleteQuery.exec();
 		}
 	    }

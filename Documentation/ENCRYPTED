@@ -78,6 +78,7 @@ magnet
 received
 
 file
+hash
 total_size
 
 received_novas
@@ -87,6 +88,7 @@ nova
 transmitted
 
 file
+hash
 nova
 position
 pulse_size
