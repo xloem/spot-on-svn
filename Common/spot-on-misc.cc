@@ -405,7 +405,14 @@ void spoton_misc::prepareDatabases(void)
 		   "one_time_magnet INTEGER NOT NULL DEFAULT 1)");
 	query.exec("CREATE TABLE IF NOT EXISTS received ("
 		   "file TEXT NOT NULL, "
-		   "file_hash TEXT PRIMARY KEY NOT NULL, "
+		   "file_hash TEXT PRIMARY KEY NOT NULL, " /*
+							   ** Hash of the
+							   ** file name.
+							   */
+		   "hash TEXT NOT NULL, "                  /*
+							   ** Hash of the
+							   ** file.
+							   */
 		   "total_size TEXT NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS received_novas ("
 		   "nova TEXT NOT NULL, "
@@ -422,6 +429,9 @@ void spoton_misc::prepareDatabases(void)
 				       */
 	query.exec("CREATE TABLE IF NOT EXISTS transmitted ("
 		   "file TEXT NOT NULL, "
+		   "hash TEXT NOT NULL, " /*
+					  ** Hash of the file.
+					  */
 		   "mosaic TEXT PRIMARY KEY NOT NULL, "
 		   "nova TEXT NOT NULL, "
 		   "position TEXT NOT NULL, "
