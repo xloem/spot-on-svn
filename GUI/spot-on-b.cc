@@ -3362,25 +3362,6 @@ void spoton::slotSetIcons(void)
 
   QStringList list;
 
-  // Tab Icons
-
-  list << "buzz.png" << "chat.png" << "email.png"
-       << "add-listener.png" << "neighbors.png"
-       << "settings.png" << "starbeam.png";
-
-  for(int i = 0; i < list.size(); i++)
-    m_ui.tab->setTabIcon
-      (i, QIcon(QString(":/%1/%2").arg(iconSet).arg(list.at(i))));
-
-  // Status
-
-  m_sb.authentication_request->setIcon
-    (QIcon(QString(":/%1/lock.png").arg(iconSet)));
-  m_sb.buzz->setIcon(QIcon(QString(":/%1/buzz.png").arg(iconSet)));
-  m_sb.chat->setIcon(QIcon(QString(":/%1/chat.png").arg(iconSet)));
-  m_sb.email->setIcon(QIcon(QString(":/%1/email.png").arg(iconSet)));
-  m_sb.errorlog->setIcon(QIcon(QString(":/%1/information.png").arg(iconSet)));
-
   // Buzz
 
   m_ui.join->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
@@ -3425,6 +3406,26 @@ void spoton::slotSetIcons(void)
     m_ui.mailTab->setTabIcon
       (i, QIcon(QString(":/%1/%2").arg(iconSet).arg(list.at(i))));
 
+  // Listeners
+
+  m_ui.addAcceptedIP->setIcon(QIcon(QString(":/%1/add.png").
+				    arg(iconSet)));
+  m_ui.addAccount->setIcon(QIcon(QString(":/%1/add.png").
+				 arg(iconSet)));
+  m_ui.addListener->setIcon(QIcon(QString(":/%1/add-listener.png").
+				  arg(iconSet)));
+  m_ui.deleteAccount->setIcon(QIcon(QString(":/%1/clear.png").
+				    arg(iconSet)));
+  m_ui.deleteAcceptedIP->setIcon(QIcon(QString(":/%1/clear.png").
+				       arg(iconSet)));
+
+  // Login
+
+  m_ui.passphraseButton->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
+  m_listenersLastModificationTime = QDateTime();
+  m_neighborsLastModificationTime = QDateTime();
+  m_participantsLastModificationTime = QDateTime();
+
   // Neighbors
 
   m_ui.toolButtonCopyToClipboard->setIcon
@@ -3443,19 +3444,6 @@ void spoton::slotSetIcons(void)
   m_ui.modifyURL->setIcon(QIcon(QString(":/%1/modify.png").arg(iconSet)));
   m_ui.searchURL->setIcon(QIcon(QString(":/%1/search.png").arg(iconSet)));
 
-  // Listeners
-
-  m_ui.addAcceptedIP->setIcon(QIcon(QString(":/%1/add.png").
-				    arg(iconSet)));
-  m_ui.addAccount->setIcon(QIcon(QString(":/%1/add.png").
-				 arg(iconSet)));
-  m_ui.addListener->setIcon(QIcon(QString(":/%1/add-listener.png").
-				  arg(iconSet)));
-  m_ui.deleteAccount->setIcon(QIcon(QString(":/%1/clear.png").
-				    arg(iconSet)));
-  m_ui.deleteAcceptedIP->setIcon(QIcon(QString(":/%1/clear.png").
-				       arg(iconSet)));
-
   // Settings
 
   m_ui.activateKernel->setIcon
@@ -3467,12 +3455,34 @@ void spoton::slotSetIcons(void)
 
   // StarBeam
 
+  m_ui.addMagnet->setIcon(QIcon(QString(":/%1/add.png").
+				arg(iconSet)));
   m_ui.addNova->setIcon(QIcon(QString(":/%1/add.png").
 			      arg(iconSet)));
   m_ui.deleteNova->setIcon(QIcon(QString(":/%1/clear.png").
 				 arg(iconSet)));
   m_ui.generateNova->setIcon
     (QIcon(QString(":/%1/lock.png").arg(iconSet)));
+
+  // Status
+
+  m_sb.authentication_request->setIcon
+    (QIcon(QString(":/%1/lock.png").arg(iconSet)));
+  m_sb.buzz->setIcon(QIcon(QString(":/%1/buzz.png").arg(iconSet)));
+  m_sb.chat->setIcon(QIcon(QString(":/%1/chat.png").arg(iconSet)));
+  m_sb.email->setIcon(QIcon(QString(":/%1/email.png").arg(iconSet)));
+  m_sb.errorlog->setIcon(QIcon(QString(":/%1/information.png").arg(iconSet)));
+
+  // Tab
+
+  list.clear();
+  list << "buzz.png" << "chat.png" << "email.png"
+       << "add-listener.png" << "neighbors.png"
+       << "settings.png" << "starbeam.png";
+
+  for(int i = 0; i < list.size(); i++)
+    m_ui.tab->setTabIcon
+      (i, QIcon(QString(":/%1/%2").arg(iconSet).arg(list.at(i))));
 
   // URLs
 
@@ -3485,12 +3495,6 @@ void spoton::slotSetIcons(void)
   m_ui.urlTab->setTabIcon
     (1, QIcon(QString(":/%1/up.png").arg(iconSet)));
 
-  // Login
-
-  m_ui.passphraseButton->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
-  m_listenersLastModificationTime = QDateTime();
-  m_neighborsLastModificationTime = QDateTime();
-  m_participantsLastModificationTime = QDateTime();
   emit iconsChanged();
 }
 
