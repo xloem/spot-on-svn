@@ -4456,6 +4456,10 @@ void spoton::slotShowContextMenu(const QPoint &point)
 				       SLOT(slotComputeFileHash(void)));
 
       action->setProperty("widget_of", "received");
+      menu.addSeparator();
+      action = menu.addAction(tr("&Copy File Hash"), this,
+			      SLOT(slotCopyFileHash(void)));
+      action->setProperty("widget_of", "received");
       menu.exec(m_ui.received->mapToGlobal(point));
     }
   else if(m_ui.transmitted == sender())
@@ -4472,6 +4476,10 @@ void spoton::slotShowContextMenu(const QPoint &point)
       QAction *action = menu.addAction(tr("&Compute SHA-1 Hash"), this,
 				       SLOT(slotComputeFileHash(void)));
 
+      action->setProperty("widget_of", "transmitted");
+      menu.addSeparator();
+      action = menu.addAction(tr("&Copy File Hash"), this,
+			      SLOT(slotCopyFileHash(void)));
       action->setProperty("widget_of", "transmitted");
       menu.exec(m_ui.transmitted->mapToGlobal(point));
     }

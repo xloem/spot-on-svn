@@ -2005,3 +2005,65 @@ void spoton::slotComputeFileHash(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 }
+
+void spoton::slotCopyFileHash(void)
+{  
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(!clipboard)
+    return;
+
+  QAction *action = qobject_cast<QAction *> (sender());
+
+  if(!action)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QTableWidget *table = 0;
+
+  if(action->property("widget_of").toString() == "received")
+    table = m_ui.received;
+  else if(action->property("widget_of").toString() == "transmitted")
+    table = m_ui.transmitted;
+
+  if(!table)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QString oid("");
+  int row = -1;
+
+  if((row = table->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = table->item
+	(row, table->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QTableWidgetItem *item = 0;
+
+  if(m_ui.received == table)
+    item = table->item(table->currentRow(), 3); // Hash
+  else
+    item = table->item(table->currentRow(), 7); // Hash
+
+  if(!item)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  clipboard->setText(item->text());
+}
