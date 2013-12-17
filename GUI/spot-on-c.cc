@@ -862,6 +862,8 @@ void spoton::slotTransmit(void)
 
     if(db.open())
       {
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 	QByteArray mosaic(spoton_crypt::strongRandomBytes(64).toBase64());
 	QSqlQuery query(db);
 
@@ -875,7 +877,10 @@ void spoton::slotTransmit(void)
 
 	if(ok)
 	  query.bindValue
-	    (1, s_crypt->encrypted(QByteArray(), &ok).toBase64());
+	    (1, s_crypt->
+	     encrypted(spoton_crypt::
+		       sha1FileHash(m_ui.transmittedFile->text()).toHex(),
+		       &ok).toBase64());
 
 	if(ok)
 	  {
@@ -950,6 +955,8 @@ void spoton::slotTransmit(void)
 	    if(ok)
 	      query.exec();
 	  }
+
+	QApplication::restoreOverrideCursor();
       }
 
     if(db.lastError().isValid())
@@ -1958,17 +1965,11 @@ void spoton::slotComputeFileHash(void)
   if(!file.open(QIODevice::ReadOnly))
     return;
 
-  QByteArray buffer(4096, 0);
-  QCryptographicHash hash(QCryptographicHash::Sha1);
-  qint64 rc = 0;
-
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-  while((rc = file.read(buffer.data(), buffer.length())) > 0)
-    hash.addData(buffer, rc);
+  QByteArray hash(spoton_crypt::sha1FileHash(fileName));
 
   QApplication::restoreOverrideCursor();
-  file.close();
 
   QString connectionName("");
 
@@ -1991,7 +1992,7 @@ void spoton::slotComputeFileHash(void)
 	    ("UPDATE transmitted SET hash = ? WHERE OID = ?");
 
 	query.bindValue
-	  (0, s_crypt->encrypted(hash.result().toHex(), &ok).
+	  (0, s_crypt->encrypted(hash.toHex(), &ok).
 	   toBase64());
 	query.bindValue(1, oid);
 
