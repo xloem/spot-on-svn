@@ -1097,12 +1097,8 @@ void spoton::slotPopulateStars(void)
 	    {
 	      m_ui.received->setRowCount(row + 1);
 
-	      QProgressBar *progressBar = new QProgressBar();
 	      QString fileName("");
 	      bool ok = true;
-
-	      progressBar->setTextVisible(true);
-	      m_ui.received->setCellWidget(row, 0, progressBar);
 
 	      for(int i = 0; i < query.record().count(); i++)
 		{
@@ -1139,16 +1135,28 @@ void spoton::slotPopulateStars(void)
 	      QTableWidgetItem *item1 = m_ui.received->item(row, 1);
 	      QTableWidgetItem *item2 = m_ui.received->item(row, 2);
 
-	      if(item1 && item2 && progressBar)
+	      if(item1 && item2)
 		{
-		  progressBar->setValue
-		    (100 * qAbs(static_cast<double> (QFileInfo(item2->text()).
-						     size()) /
-				qMax(1LL, item1->text().toLongLong())));
-		  progressBar->setToolTip
-		    (QString("%1% - %2").
-		     arg(progressBar->value()).
-		     arg(QFileInfo(fileName).fileName()));
+		  int percent = 100 *
+		    qAbs(static_cast<double> (QFileInfo(item2->text()).
+					      size()) /
+			 qMax(1LL, item1->text().toLongLong()));
+
+		  if(percent < 100)
+		    {
+		      QProgressBar *progressBar = new QProgressBar();
+
+		      progressBar->setValue(percent);
+		      progressBar->setTextVisible(true);
+		      progressBar->setToolTip
+			(QString("%1% - %2").
+			 arg(percent).
+			 arg(QFileInfo(fileName).fileName()));
+		      m_ui.received->setCellWidget(row, 0, progressBar);
+		    }
+		  else
+		    m_ui.received->setItem
+		      (row, 0, new QTableWidgetItem("100%"));
 		}
 
 	      if(m_ui.received->item(row, 2) &&
@@ -1214,18 +1222,10 @@ void spoton::slotPopulateStars(void)
 		    {
 		    }
 		  else if(i == 1)
-		    {
-		      position = s_crypt->
-			decrypted(QByteArray::fromBase64(query.value(i).
-							 toByteArray()),
-				  &ok).toLongLong();
-
-		      QProgressBar *progressBar = new QProgressBar();
-
-		      progressBar->setTextVisible(true);
-		      m_ui.transmitted->setCellWidget
-			(row, i, progressBar);
-		    }
+		    position = s_crypt->
+		      decrypted(QByteArray::fromBase64(query.value(i).
+						       toByteArray()),
+				&ok).toLongLong();
 		  else if(i == 2 || i == 3 || i == 5 || i == 7)
 		    {
 		      QByteArray bytes
@@ -1281,19 +1281,30 @@ void spoton::slotPopulateStars(void)
 		    }
 		}
 
-	      QProgressBar *progressBar = qobject_cast<QProgressBar *>
-		(m_ui.transmitted->cellWidget(row, 1));
 	      QTableWidgetItem *item = m_ui.transmitted->item(row, 3);
 
-	      if(item && progressBar)
+	      if(item)
 		{
-		  progressBar->setValue
-		    (100 * qAbs(static_cast<double> (position) /
-				qMax(1LL, item->text().toLongLong())));
-		  progressBar->setToolTip
-		    (QString("%1% - %2").
-		     arg(progressBar->value()).
-		     arg(QFileInfo(fileName).fileName()));
+		  int percent = 100 *
+		    qAbs(static_cast<double> (position) /
+			 qMax(1LL, item->text().toLongLong()));
+
+		  if(percent < 100)
+		    {
+		      QProgressBar *progressBar = new QProgressBar();
+
+		      progressBar->setValue(percent);
+		      progressBar->setToolTip
+			(QString("%1% - %2").
+			 arg(percent).
+			 arg(QFileInfo(fileName).fileName()));
+		      progressBar->setTextVisible(true);
+		      m_ui.transmitted->setCellWidget
+			(row, 1, progressBar);
+		    }
+		  else
+		    m_ui.transmitted->setItem
+		      (row, 1, new QTableWidgetItem("100%"));
 		}
 
 	      connect(checkBox,
