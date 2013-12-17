@@ -167,6 +167,7 @@ class spoton_neighbor: public QThread
   QString m_protocol;
   QString m_transport;
   QTimer m_accountTimer;
+  QTimer m_dataProcessTimer;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_keepAliveTimer;
   QTimer m_lifetime;
@@ -253,6 +254,7 @@ class spoton_neighbor: public QThread
 				const QByteArray &password);
   void slotCallParticipant(const QByteArray &data);
   void slotConnected(void);
+  void slotDataProcessTimeout(void);
   void slotDisconnected(void);
   void slotDiscoverExternalAddress(void);
   void slotEncrypted(void);

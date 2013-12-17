@@ -307,6 +307,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   else
     m_externalAddressDiscovererTimer.setInterval(30000);
 
+  m_dataProcessTimer.setInterval(100);
   m_keepAliveTimer.start(30000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
@@ -584,6 +585,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   else
     m_externalAddressDiscovererTimer.setInterval(30000);
 
+  m_dataProcessTimer.setInterval(100);
   m_keepAliveTimer.setInterval(30000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
@@ -596,6 +598,7 @@ spoton_neighbor::~spoton_neighbor()
 			arg(m_address.toString()).
 			arg(m_port));
   abort();
+  m_dataProcessTimer.stop();
   m_timer.stop();
 
   if(m_id != -1)
@@ -995,6 +998,11 @@ void spoton_neighbor::run(void)
 	    SLOT(slotReadyRead(void)),
 	    Qt::DirectConnection);
 
+  connect(&m_dataProcessTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotDataProcessTimeout(void)));
+  m_dataProcessTimer.start();
   exec();
 }
 
@@ -1029,7 +1037,10 @@ void spoton_neighbor::slotReadyRead(void)
 
   if(!data.isEmpty())
     m_data.append(data);
+}
 
+void spoton_neighbor::slotDataProcessTimeout(void)
+{
   if(m_data.contains(spoton_send::EOM))
     {
       QList<QByteArray> list;
@@ -1092,7 +1103,7 @@ void spoton_neighbor::slotReadyRead(void)
 	    {
 	      downgrade = true;
 	      spoton_misc::logError
-		(QString("spoton_neighbor::slotReadyRead() "
+		(QString("spoton_neighbor::slotDataProcessTimeout() "
 			 "data does not contain Content-Length "
 			 "for %1:%2.").
 		 arg(m_address.toString()).
@@ -1104,7 +1115,7 @@ void spoton_neighbor::slotReadyRead(void)
 	    {
 	      downgrade = true;
 	      spoton_misc::logError
-		(QString("spoton_neighbor::slotReadyRead(): "
+		(QString("spoton_neighbor::slotDataProcessTimeout(): "
 			 "the Content-Length header from node %1:%2 "
 			 "contains a lot of data (%3). Ignoring. ").
 		 arg(m_address.toString()).
@@ -1287,7 +1298,7 @@ void spoton_neighbor::slotReadyRead(void)
 		{
 		  setReadBufferSize(1000);
 		  spoton_misc::logError
-		    (QString("spoton_neighbor::slotReadyRead(): "
+		    (QString("spoton_neighbor::slotDataProcessTimeout(): "
 			     "received irregular data from %1:%2. Setting "
 			     "the read buffer size to 1000 bytes.").
 		     arg(m_address.toString()).
@@ -1300,7 +1311,7 @@ void spoton_neighbor::slotReadyRead(void)
   if(m_data.length() > m_maximumBufferSize)
     {
       spoton_misc::logError
-	(QString("spoton_neighbor::slotReadyRead(): "
+	(QString("spoton_neighbor::slotDataProcessTimeout(): "
 		 "the m_data container contains too much "
 		 "data (%1) that hasn't been processed for %2:%3. Purging.").
 	 arg(m_data.length()).
