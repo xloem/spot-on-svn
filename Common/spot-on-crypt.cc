@@ -374,6 +374,7 @@ QStringList spoton_crypt::cipherTypes(void)
 
   types << "aes256"
 	<< "camellia256"
+	<< "gost28147"
 	<< "serpent256"
 	<< "twofish";
 
@@ -394,6 +395,7 @@ QStringList spoton_crypt::hashTypes(void)
   QStringList types;
 
   types << "sha512"
+	<< "stribog512"
 	<< "tiger"
 	<< "whirlpool";
 
