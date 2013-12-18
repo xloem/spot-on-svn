@@ -201,7 +201,8 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	      m_useSsl = false;
 	      spoton_misc::logError
 		(QString("spoton_neighbor::spoton_neighbor(): "
-			 "invalid local certificate for %1:%2. SSL disabled.").
+			 "invalid local certificate for %1:%2. "
+			 "SSL disabled.").
 		 arg(m_address.toString()).
 		 arg(m_port));
 	    }
