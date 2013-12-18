@@ -2057,7 +2057,7 @@ void spoton::slotCopyFriendshipBundle(void)
   ** 2. Encrypt S with the participant's public key.
   ** 3. Encrypt our information (name, public keys, signatures) with the
   **    symmetric key. Call our information T.
-  ** 4. Compute a keyed hash of T using the symmetric key.
+  ** 4. Compute a keyed hash of T.
   */
 
   QString neighborOid("");
