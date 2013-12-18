@@ -1664,7 +1664,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 QSqlDatabase spoton_misc::database(QString &connectionName)
 {
   QSqlDatabase db;
-  int dbId = -1;
+  qint64 dbId = -1;
 
   s_dbMutex.lock();
   dbId = s_dbId += 1;

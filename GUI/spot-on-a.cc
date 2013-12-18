@@ -5918,8 +5918,9 @@ void spoton::slotNeighborSelected(void)
 
 	  if(item)
 	    {
-	      label += m_ui.neighbors->horizontalHeaderItem(i)->text() +
-		": %" + QString::number(i) + "\n";
+	      label.append
+		(m_ui.neighbors->horizontalHeaderItem(i)->text() + ": %" +
+		 QString::number(i) + "\n");
 	      list << item->text();
 	    }
 	}

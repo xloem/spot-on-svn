@@ -4488,8 +4488,8 @@ void spoton::slotTestSslControlString(void)
   QString str("");
 
   for(int i = 0; i < ciphers.size(); i++)
-    str += QString("%1-%2").arg(ciphers.at(i).name()).
-      arg(ciphers.at(i).protocolString()) + "\n";
+    str.append(QString("%1-%2").arg(ciphers.at(i).name()).
+	       arg(ciphers.at(i).protocolString()) + "\n");
 
   if(!str.isEmpty())
     {

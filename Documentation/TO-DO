@@ -127,7 +127,7 @@ Remaining Items
 15.    Echo sub-universes.
 16.    Allow pass-through flow of non-Spot-On data.
 17.    Inbound data should be time-tagged. Nodes must purge
-       containers of old data.
+       containers of old data. How?
 18.    Introduce load balancing of echoes. We're not interested in real-time
        responses. Congestion control is helpful, however, short graphs
        tend to be skewed.
@@ -137,7 +137,7 @@ Remaining Items
 21.    Support ECC, or not.
 22.    Perform calling over geminis.
 23.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
-24.    Replace gcrypt with crypto++.
+24.    Add support for crypto++.
 25.    Add SRP for accounts verification.
 26.    Provide a means of exporting and importing keys.
 27.    Add log filters.
@@ -158,9 +158,11 @@ Remaining Items
        Research?
 33.    Prevent inserts of own keys in friends_public_keys.db.
 34.    Artificial impersonators.
-35.    Limit listener authentication replays via digest recording.
+35.    Limit listener authentication replays via digest recording. Or,
+       SRP!
 36.    Create a Tools menu. Provide mechanisms for decrypting and encrypting
        data that's been transmitted via non-Spot. That is, a feature
        to copy encrypted content and send it via Gmail.
 37.    Wormholes for streamed data.
 38.    Per request, provide an automatic rewind mechanism with a timer.
+39.    Integer overflows!
