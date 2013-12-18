@@ -1667,7 +1667,7 @@ QSqlDatabase spoton_misc::database(QString &connectionName)
   qint64 dbId = -1;
 
   s_dbMutex.lock();
-  dbId = s_dbId += 1;
+  dbId = s_dbId = qAbs(s_dbId + 1); // +=
   s_dbMutex.unlock();
   db = QSqlDatabase::addDatabase
     ("QSQLITE", QString("spoton_database_%1").arg(dbId));

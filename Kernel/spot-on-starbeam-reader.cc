@@ -368,7 +368,7 @@ void spoton_starbeam_reader::pulsate(const QString &fileName,
 		    spoton_kernel::messagingCacheAdd(data);
 
 		  if(ok)
-		    m_position += rc;
+		    m_position = qAbs(m_position + rc); // +=
 		}
 	      else if(rc < 0)
 		spoton_misc::logError("spoton_starbeam_reader::pulsate(): "
