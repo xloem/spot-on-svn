@@ -127,7 +127,8 @@ Remaining Items
 15.    Echo sub-universes.
 16.    Allow pass-through flow of non-Spot-On data.
 17.    Inbound data should be time-tagged. Nodes must purge
-       containers of old data. How?
+       containers of old data. Otherwise, one could be inundated with
+       seemingly-qualified data. Nasty!
 18.    Introduce load balancing of echoes. We're not interested in real-time
        responses. Congestion control is helpful, however, short graphs
        tend to be skewed.

@@ -107,7 +107,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
       m_udpSocket->setLocalPort(quint16(localPort.toInt()));
       m_udpSocket->setPeerAddress(QHostAddress(ipAddress));
       m_udpSocket->setPeerPort(quint16(port.toInt()));
-      m_udpSocket->setReadBufferSize(m_maximumBufferSize);
     }
 
   if(m_tcpSocket)
@@ -412,10 +411,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 		   */
     }
   else if(m_udpSocket)
-    {
-      m_udpSocket->setProxy(proxy);
-      m_udpSocket->setReadBufferSize(m_maximumBufferSize);
-    }
+    m_udpSocket->setProxy(proxy);
 
   QByteArray certificate;
   QByteArray privateKey;
@@ -4979,16 +4975,12 @@ void spoton_neighbor::setReadBufferSize(const qint64 size)
 {
   if(m_tcpSocket)
     m_tcpSocket->setReadBufferSize(size);
-  else if(m_udpSocket)
-    m_udpSocket->setReadBufferSize(size);
 }
 
 qint64 spoton_neighbor::readBufferSize(void) const
 {
   if(m_tcpSocket)
     return m_tcpSocket->readBufferSize();
-  else if(m_udpSocket)
-    return m_udpSocket->readBufferSize();
   else
     return -1;
 }
