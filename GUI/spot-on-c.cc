@@ -90,7 +90,7 @@ void spoton::slotAddEtpMagnet(void)
 
   if(!s_crypt)
     {
-      error = tr("Invalid spoton_crypt object.");
+      error = tr("Invalid spoton_crypt object. This is a fatal flaw.");
       goto done_label;
     }
 
@@ -147,7 +147,7 @@ void spoton::slotAddEtpMagnet(void)
 
   if(tokens != 5)
     {
-      error = tr("Invalid magnet.");
+      error = tr("Invalid magnet. Are you missing tokens?");
       goto done_label;
     }
 
@@ -817,7 +817,7 @@ void spoton::slotTransmit(void)
 
   if(!s_crypt)
     {
-      error = tr("Invalid spoton_crypt object.");
+      error = tr("Invalid spoton_crypt object. This is a fatal flaw.");
       goto done_label;
     }
 
@@ -831,7 +831,7 @@ void spoton::slotTransmit(void)
 
   if(!fileInfo.exists() || !fileInfo.isReadable())
     {
-      error = tr("The provided file does not exist.");
+      error = tr("The provided file cannot be accessed.");
       goto done_label;
     }
 
@@ -1499,7 +1499,8 @@ void spoton::slotAddReceiveNova(void)
   if(!s_crypt)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Invalid spoton_crypt object."));
+			    tr("Invalid spoton_crypt object. This is "
+			       "a fatal flaw."));
       return;
     }
 
@@ -1508,7 +1509,8 @@ void spoton::slotAddReceiveNova(void)
   if(nova.isEmpty())
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Please provide a Nova."));
+			    tr("Please provide a Nova. Reach for the "
+			       "stars!"));
       return;
     }
 
@@ -1618,21 +1620,22 @@ void spoton::populateNovas(void)
 
 void spoton::slotDeleteNova(void)
 {
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object. This is "
+			       "a fatal flaw."));
+      return;
+    }
+
   QList<QListWidgetItem *> list(m_ui.novas->selectedItems());
 
   if(list.isEmpty())
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("Please select a Nova to delete."));
-      return;
-    }
-
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
-
-  if(!s_crypt)
-    {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Invalid spoton_crypt object."));
       return;
     }
 

@@ -130,12 +130,12 @@ void spoton_chatwindow::slotSendMessage(void)
     }
   else if(!m_kernelSocket->isEncrypted())
     {
-      error = tr("Connection to the kernel is not encrypted.");
+      error = tr("The connection to the kernel is not encrypted.");
       goto done_label;
     }
   else if(ui.message->toPlainText().trimmed().isEmpty())
     {
-      error = tr("Please provide a message.");
+      error = tr("Please provide a real message.");
       goto done_label;
     }
 

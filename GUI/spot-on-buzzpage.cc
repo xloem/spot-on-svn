@@ -239,12 +239,12 @@ void spoton_buzzpage::slotSendMessage(void)
     }
   else if(!m_kernelSocket->isEncrypted())
     {
-      error = tr("Connection to the kernel is not encrypted.");
+      error = tr("The connection to the kernel is not encrypted.");
       goto done_label;
     }
   else if(ui.message->toPlainText().trimmed().isEmpty())
     {
-      error = tr("Please provide a message.");
+      error = tr("Please provide a real message.");
       goto done_label;
     }
 
@@ -633,7 +633,8 @@ void spoton_buzzpage::slotSave(void)
   if(!m_crypt)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Invalid spoton_crypt object."));
+			    tr("Invalid spoton_crypt object. This is "
+			       "a fatal flaw."));
       return;
     }
 
@@ -689,7 +690,7 @@ void spoton_buzzpage::slotSave(void)
     QMessageBox::critical(this, tr("Spot-On: Error"),
 			  tr("An error occurred while attempting to "
 			     "save the channel data. Please enable "
-			     "logging and try again."));
+			     "logging via the Log Viewer and try again."));
   else
     emit channelSaved();
 }
@@ -699,7 +700,8 @@ void spoton_buzzpage::slotRemove(void)
   if(!m_crypt)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Invalid spoton_crypt object."));
+			    tr("Invalid spoton_crypt object. This is a "
+			       "fatal flaw."));
       return;
     }
 
@@ -751,7 +753,7 @@ void spoton_buzzpage::slotRemove(void)
     QMessageBox::critical(this, tr("Spot-On: Error"),
 			  tr("An error occurred while attempting to "
 			     "remove the channel data. Please enable "
-			     "logging and try again."));
+			     "logging via the Log Viewer and try again."));
   else
     emit channelSaved();
 }

@@ -51,12 +51,12 @@ void spoton::slotSendMessage(void)
     }
   else if(!m_kernelSocket.isEncrypted())
     {
-      error = tr("Connection to the kernel is not encrypted.");
+      error = tr("The connection to the kernel is not encrypted.");
       goto done_label;
     }
   else if(m_ui.message->toPlainText().trimmed().isEmpty())
     {
-      error = tr("Please provide a message.");
+      error = tr("Please provide a real message.");
       goto done_label;
     }
 
@@ -1516,17 +1516,19 @@ void spoton::addFriendsKey(const QByteArray &key)
 {
   if(m_ui.addFriendPublicKeyRadio->isChecked())
     {
-      if(key.trimmed().isEmpty())
+      if(!m_crypts.value("chat", 0) ||
+	 !m_crypts.value("email", 0) ||
+	 !m_crypts.value("url", 0))
 	{
 	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Empty key."));
+				tr("Invalid spoton_crypt object. This is "
+				   "a fatal flaw."));
 	  return;
 	}
-      else if(!m_crypts.value("chat", 0) ||
-	      !m_crypts.value("email", 0))
+      else if(key.trimmed().isEmpty())
 	{
 	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Invalid spoton_crypt object."));
+				tr("Empty key. Really?"));
 	  return;
 	}
 
@@ -1543,8 +1545,10 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       if(list.size() != 6)
 	{
-	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Irregular data."));
+	  QMessageBox::critical
+	    (this, tr("Spot-On: Error"),
+	     tr("Irregular data. Expecting 6 entries, received %1.").
+	     arg(list.size()));
 	  return;
 	}
 
@@ -1592,7 +1596,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
 	     tr("You're attempting to add your own 'chat' keys. "
-		"Please do not do this."));
+		"Please do not do this!"));
 	  return;
 	}
 
@@ -1621,7 +1625,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
 	     tr("You're attempting to add your own 'email' keys. "
-		"Please do not do this."));
+		"Please do not do this!"));
 	  return;
 	}
 
@@ -1692,17 +1696,19 @@ void spoton::addFriendsKey(const QByteArray &key)
       ** Have fun!
       */
 
-      if(key.trimmed().isEmpty())
+      if(!m_crypts.value("chat", 0) ||
+	 !m_crypts.value("email", 0) ||
+	 !m_crypts.value("url", 0))
 	{
 	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Empty key."));
+				tr("Invalid spoton_crypt object. This is "
+				   "a fatal flaw."));
 	  return;
 	}
-      else if(!m_crypts.value("chat", 0) ||
-	      !m_crypts.value("email", 0))
+      else if(key.trimmed().isEmpty())
 	{
 	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Invalid spoton_crypt object."));
+				tr("Empty key. Really?"));
 	  return;
 	}
 
@@ -1719,8 +1725,10 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       if(list.size() != 3)
 	{
-	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Irregular data."));
+	  QMessageBox::critical
+	    (this, tr("Spot-On: Error"),
+	     tr("Irregular data. Expecting 3 entries, received %1.").
+	     arg(list.size()));
 	  return;
 	}
 
@@ -1742,8 +1750,10 @@ void spoton::addFriendsKey(const QByteArray &key)
 
 	  if(!ok)
 	    {
-	      QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Asymmetric decryption failure."));
+	      QMessageBox::critical
+		(this, tr("Spot-On: Error"),
+		 tr("Asymmetric decryption failure. Are you attempting "
+		    "to add a repleo that you gathered?"));
 	      return;
 	    }
 	}
@@ -1752,8 +1762,10 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       if(list.size() != 2)
 	{
-	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Irregular data."));
+	  QMessageBox::critical
+	    (this, tr("Spot-On: Error"),
+	     tr("Irregular data. Expecting 2 entries, received %1.").
+	     arg(list.size()));
 	  return;
 	}
 
@@ -1790,8 +1802,9 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       if(!ok)
 	{
-	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Symmetric decryption failure."));
+	  QMessageBox::critical
+	    (this, tr("Spot-On: Error"),
+	     tr("Symmetric decryption failure. Serious!"));
 	  return;
 	}
 
@@ -1799,8 +1812,10 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       if(list.size() != 6)
 	{
-	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Irregular data."));
+	  QMessageBox::critical
+	    (this, tr("Spot-On: Error"),
+	     tr("Irregular data. Expecting 6 entries, received %1.").
+	     arg(list.size()));
 	  return;
 	}
 
@@ -1947,7 +1962,7 @@ void spoton::slotResetAll(void)
   mb.setWindowModality(Qt::WindowModal);
   mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
   mb.setText(tr("Are you sure that you wish to reset Spot-On? All "
-		"data will be lost."));
+		"data will be lost. Forever."));
 
   if(mb.exec() != QMessageBox::Yes)
     return;
@@ -3215,7 +3230,7 @@ void spoton::slotRetrieveMail(void)
 	    }
 	}
       else
-	error = tr("Connection to the kernel is not encrypted.");
+	error = tr("The connection to the kernel is not encrypted.");
     }
   else
     error = tr("Not connected to the kernel.");
@@ -3925,7 +3940,7 @@ void spoton::slotJoinBuzzChannel(void)
 
   if(!s_crypt)
     {
-      error = tr("Invalid spoton_crypt object.");
+      error = tr("Invalid spoton_crypt object. This is a fatal flaw.");
       goto done_label;
     }
 
@@ -4248,7 +4263,8 @@ void spoton::slotAddAcceptedIP(void)
   if(!s_crypt)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Invalid spoton_crypt object."));
+			    tr("Invalid spoton_crypt object. This is "
+			       "a fatal flaw."));
       return;
     }
 
@@ -4344,11 +4360,21 @@ void spoton::slotAddAcceptedIP(void)
     m_ui.acceptedIP->clear();
   else
     QMessageBox::critical(this, tr("Spot-On: Error"),
-			  tr("Unable to store the IP address."));
+			  tr("Unable to record the IP address."));
 }
 
 void spoton::slotDeleteAccepedIP(void)
 {
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object. This is "
+			       "a fatal flaw."));
+      return;
+    }
+
   QString oid("");
   int row = -1;
 
@@ -4383,15 +4409,6 @@ void spoton::slotDeleteAccepedIP(void)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("Please select an address to delete."));
-      return;
-    }
-
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
-
-  if(!s_crypt)
-    {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Invalid spoton_crypt object."));
       return;
     }
 
@@ -4478,7 +4495,7 @@ void spoton::slotTestSslControlString(void)
     {
       mb.setDetailedText(str);
       mb.setText(tr("The following ciphers were discovered. Please "
-		    "note that Spot-On may override discovered ciphers "
+		    "note that Spot-On may neglect discovered ciphers "
 		    "if the ciphers are not supported by Qt."));
     }
   else
@@ -4515,6 +4532,12 @@ void spoton::slotAddAccount(void)
   int row = -1;
   int sslKeySize = 0;
   spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    {
+      error = tr("Invalid spoton_crypt object. This is a fatal flaw.");
+      goto done_label;
+    }
 
   if((row = m_ui.listeners->currentRow()) >= 0)
     {
@@ -4559,19 +4582,13 @@ void spoton::slotAddAccount(void)
 
   if(name.isEmpty() || password.isEmpty())
     {
-      error = tr("Please provide an account name and a password.");
+      error = tr("Please provide an account name and an account password.");
       goto done_label;
     }
   else if(password.length() < 16)
     {
-      error = tr("Please provide a password having at least sixteen "
-		 "characters.");
-      goto done_label;
-    }
-
-  if(!s_crypt)
-    {
-      error = tr("Invalid spoton_crypt object.");
+      error = tr("Please provide an account password that contains at "
+		 "least sixteen characters.");
       goto done_label;
     }
 
@@ -4633,6 +4650,16 @@ void spoton::slotAddAccount(void)
 
 void spoton::slotDeleteAccount(void)
 {
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object. This is "
+			       "a fatal flaw."));
+      return;
+    }
+
   QString oid("");
   int row = -1;
 
@@ -4659,15 +4686,6 @@ void spoton::slotDeleteAccount(void)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("Please select an account to delete."));
-      return;
-    }
-
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
-
-  if(!s_crypt)
-    {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Invalid spoton_crypt object."));
       return;
     }
 

@@ -1464,7 +1464,8 @@ void spoton::slotAddListener(void)
   if(!s_crypt)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Invalid spoton_crypt object."));
+			    tr("Invalid spoton_crypt object. "
+			       "This is a fatal flaw."));
       return;
     }
 
@@ -1755,7 +1756,8 @@ void spoton::slotAddNeighbor(void)
   if(!s_crypt)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Invalid spoton_crypt object."));
+			    tr("Invalid spoton_crypt object. "
+			       "This is a fatal flaw."));
       return;
     }
 
@@ -6054,7 +6056,8 @@ void spoton::slotAuthenticate(void)
   if(!s_crypt)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Invalid spoton_crypt object."));
+			    tr("Invalid spoton_crypt object. "
+			       "This is a fatal flaw."));
       return;
     }
 
@@ -6359,7 +6362,7 @@ void spoton::removeFavorite(const bool removeAll)
 
   if(!s_crypt)
     {
-      error = tr("Invalid spoton_crypt object.");
+      error = tr("Invalid spoton_crypt object. This is a fatal flaw.");
       goto done_label;
     }
 
@@ -6428,7 +6431,7 @@ void spoton::magnetize(void)
 
   if(!clipboard)
     {
-      error = tr("Invalid clipboard object.");
+      error = tr("Invalid clipboard object. This is a fatal flaw.");
       goto done_label;
     }
 
