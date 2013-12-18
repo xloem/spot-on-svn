@@ -3112,7 +3112,7 @@ void spoton::slotPopulateNeighbors(void)
 		row += 1;
 	      }
 
-	    if(row == 0)
+	    if(m_ui.neighbors->currentRow() == -1 || row == 0)
 	      m_ui.neighborSummary->clear();
 	  }
 	else
