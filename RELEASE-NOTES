@@ -146,6 +146,7 @@
      require authentication before transmitting other data.
 73.  Items in various interface tables will now reflect decryption errors.
 74.  Added support for the gost cipher and the stribog hash algorithm.
+75.  Added fwrapv and Wstrict-overflow=4 to many project files.
 
 0.06 (10/24/2013)
 
