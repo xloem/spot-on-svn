@@ -3483,6 +3483,8 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 	      else
 		m_accountAuthenticated = false;
 	    }
+	  else
+	    m_accountAuthenticated = false;
 	}
       else
 	{
@@ -3493,7 +3495,7 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 	      ("spoton_neighbor::process0051(): "
 	       "the server replied to an authentication message, however, "
 	       "my provided salt is empty.");
-	  else
+	  else if(list.at(1) == m_accountClientSentSalt)
 	    spoton_misc::logError
 	      ("spoton_neighbor::process0051(): "
 	       "the provided salt is identical to the generated salt. "
