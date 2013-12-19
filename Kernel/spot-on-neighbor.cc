@@ -4640,7 +4640,7 @@ QString spoton_neighbor::findMessageType
 	    }
 	}
 
-  if(interfaces > 0 || list.size() == 5)
+  if(interfaces > 0 || list.size() == 3 || list.size() == 5)
     if((s_crypt = spoton_kernel::s_crypts.value("email", 0)))
       {
 	int count = spoton_misc::participantCount("email");
