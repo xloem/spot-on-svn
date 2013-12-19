@@ -147,6 +147,8 @@
 73.  Items in various interface tables will now reflect decryption errors.
 74.  Added support for the gost cipher and the stribog hash algorithm.
 75.  Added fwrapv and Wstrict-overflow=4 to many project files.
+76.  The account_authenticated database field will now contain encrypted
+     data. Please remove neighbors.db.
 
 0.06 (10/24/2013)
 
