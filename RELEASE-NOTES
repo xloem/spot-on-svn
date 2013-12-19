@@ -1,7 +1,9 @@
-0.08 (01/29/2014)
+0.08 (12/23/2013)
 
 1.   Archived the 0.06 branch.
 2.   Added Rosetta. Please see the Tools menu.
+3.   Corrected the e-mail retrieval mechanism. The mechanism malfunctioned
+     if the interface of the c/o node was closed.
 
 0.07 (12/19/2013)
 
