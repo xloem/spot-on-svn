@@ -46,6 +46,7 @@ neighbors.db:
 
 account_name
 account_password
+account_authenticated
 certificate
 country
 echo_mode

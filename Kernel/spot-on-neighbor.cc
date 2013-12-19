@@ -656,7 +656,7 @@ spoton_neighbor::~spoton_neighbor()
 	      }
 
 	    query.prepare("UPDATE neighbors SET "
-			  "account_authenticated = 0, "
+			  "account_authenticated = NULL, "
 			  "bytes_read = 0, "
 			  "bytes_written = 0, "
 			  "external_ip_address = NULL, "
@@ -3360,9 +3360,17 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 			      "WHERE OID = ? AND "
 			      "user_defined = 0");
 		query.bindValue
-		  (0, m_accountAuthenticated ? 1 : 0);
-		query.bindValue
-		  (1, s_crypt->encrypted(name, &ok).toBase64());
+		  (0,
+		   m_accountAuthenticated ?
+		   s_crypt->encrypted(QByteArray::number(1),
+				      &ok).toBase64() :
+		   s_crypt->encrypted(QByteArray::number(0),
+				      &ok).toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (1, s_crypt->encrypted(name, &ok).toBase64());
+
 		query.bindValue(2, m_id);
 
 		if(ok)
@@ -3521,6 +3529,7 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 	    if(db.open())
 	      {
 		QSqlQuery query(db);
+		bool ok = true;
 
 		query.prepare("PRAGMA synchronous = OFF");
 		query.prepare("UPDATE neighbors SET "
@@ -3528,9 +3537,16 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 			      "WHERE OID = ? AND "
 			      "user_defined = 1");
 		query.bindValue
-		  (0, m_accountAuthenticated ? 1 : 0);
+		  (0,
+		   m_accountAuthenticated ?
+		   s_crypt->encrypted(QByteArray::number(1),
+				      &ok).toBase64() :
+		   s_crypt->encrypted(QByteArray::number(0),
+				      &ok).toBase64());
 		query.bindValue(1, m_id);
-		query.exec();
+
+		if(ok)
+		  query.exec();
 	      }
 
 	    db.close();

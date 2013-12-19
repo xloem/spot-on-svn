@@ -378,7 +378,7 @@ void spoton_misc::prepareDatabases(void)
 		   "ssl_required INTEGER NOT NULL DEFAULT 1, "
 		   "account_name TEXT NOT NULL, "
 		   "account_password TEXT NOT NULL, "
-		   "account_authenticated INTEGER NOT NULL DEFAULT 0, "
+		   "account_authenticated TEXT, "
 		   "transport TEXT NOT NULL)").
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
@@ -1102,7 +1102,7 @@ void spoton_misc::cleanupDatabases(void)
 		     "status_control <> 'blocked' AND user_defined = 0");
 
 	query.exec("UPDATE neighbors SET "
-		   "account_authenticated = 0, "
+		   "account_authenticated = NULL, "
 		   "bytes_read = 0, "
 		   "bytes_written = 0, "
 		   "external_ip_address = NULL, "

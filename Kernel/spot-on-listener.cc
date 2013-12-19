@@ -669,8 +669,8 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 
     if(db.open())
       {
-	bool ok = true;
 	QSqlQuery query(db);
+	bool ok = true;
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT COUNT(*) FROM neighbors WHERE "

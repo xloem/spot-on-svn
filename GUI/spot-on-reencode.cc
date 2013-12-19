@@ -606,7 +606,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "protocol = ?, "
 				  "ssl_session_cipher = NULL, "
 				  "account_name = ?, "
-				  "account_password = ? "
+				  "account_password = ?, "
+				  "account_authenticated = NULL "
 				  "WHERE hash = ?");
 	      ipAddress = oldCrypt->decrypted(QByteArray::
 					      fromBase64(query.

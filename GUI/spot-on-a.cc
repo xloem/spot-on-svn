@@ -2476,8 +2476,6 @@ void spoton::slotPopulateListeners(void)
 		      {
 			if((i >= 3 && i <= 7) || i == 11)
 			  {
-			    bool ok = true;
-
 			    if(query.isNull(i))
 			      item = new QTableWidgetItem();
 			    else
@@ -2865,8 +2863,12 @@ void spoton::slotPopulateNeighbors(void)
 					   toByteArray()),
 				&ok).
 		      constData()).
-		  arg(query.value(26).toInt() == 1 ?
-		      "Yes": "No").
+		  arg(s_crypt->
+		      decrypted(QByteArray::
+				fromBase64(query.
+					   value(26).
+					   toByteArray()),
+				&ok).toInt() == 1 ? "Yes": "No").
 		  arg(query.value(27).toString().toUpper());
 
 		QCheckBox *check = 0;
@@ -2912,7 +2914,6 @@ void spoton::slotPopulateNeighbors(void)
 			else
 			  {
 			    QByteArray bytes;
-			    bool ok = true;
 
 			    if(i != 3) // SSL Key Size
 			      {
@@ -2999,15 +3000,37 @@ void spoton::slotPopulateNeighbors(void)
 			(sslSessionCipher.constData());
 		    else if(i == 26) // Account Authenticated
 		      {
-			item = new QTableWidgetItem
-			  (query.value(i).toString());
+			if(!query.isNull(i))
+			  {
+			    item = new QTableWidgetItem
+			      (s_crypt->decrypted(QByteArray::
+						  fromBase64(query.
+							     value(i).
+							     toByteArray()),
+						  &ok).constData());
 
-			if(item->text() == "0")
-			  item->setBackground
-			    (QBrush(QColor(240, 128, 128)));
+			    if(ok)
+			      {
+				if(item->text() != "0")
+				  item->setBackground
+				    (QBrush(QColor("lightgreen")));
+				else
+				  item->setBackground
+				    (QBrush(QColor(240, 128, 128)));
+			      }
+			    else
+			      {
+				item->setText(tr("error"));
+				item->setBackground
+				  (QBrush(QColor(240, 128, 128)));
+			      }
+			  }
 			else
-			  item->setBackground
-			    (QBrush(QColor("lightgreen")));
+			  {
+			    item = new QTableWidgetItem("0");
+			    item->setBackground
+			      (QBrush(QColor(240, 128, 128)));
+			  }
 		      }
 		    else
 		      item = new QTableWidgetItem
@@ -3703,7 +3726,7 @@ void spoton::updateNeighborsTable(const QSqlDatabase &db)
 	query.exec("DELETE FROM neighbors WHERE "
 		   "status_control = 'deleted'");
 	query.exec("UPDATE neighbors SET "
-		   "account_authenticated = 0, "
+		   "account_authenticated = NULL, "
 		   "bytes_read = 0, "
 		   "bytes_written = 0, "
 		   "external_ip_address = NULL, "
@@ -5054,6 +5077,7 @@ void spoton::slotPopulateParticipants(void)
 	      QString name("");
 	      QString oid("");
 	      QString status(query.value(4).toString());
+	      bool ok = true;
 	      bool temporary =
 		query.value(2).toInt() == -1 ? false : true;
 
@@ -5114,8 +5138,6 @@ void spoton::slotPopulateParticipants(void)
 		      else if(i == 6 ||
 			      i == 7) // Gemini E. Key, Gemini H. Key
 			{
-			  bool ok = true;
-
 			  if(query.isNull(i))
 			    item = new QTableWidgetItem();
 			  else
@@ -6027,7 +6049,7 @@ void spoton::slotResetAccountInformation(void)
 	bool ok = true;
 
 	query.prepare("UPDATE neighbors SET "
-		      "account_authenticated = 0, "
+		      "account_authenticated = NULL, "
 		      "account_name = ?, "
 		      "account_password = ? "
 		      "WHERE OID = ? AND user_defined = 1");
@@ -6118,7 +6140,7 @@ void spoton::authenticate(spoton_crypt *crypt, const QString &oid,
 		bool ok = true;
 
 		query.prepare("UPDATE neighbors SET "
-			      "account_authenticated = 0, "
+			      "account_authenticated = NULL, "
 			      "account_name = ?, "
 			      "account_password = ? "
 			      "WHERE OID = ? AND user_defined = 1");

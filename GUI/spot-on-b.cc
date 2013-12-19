@@ -402,7 +402,6 @@ void spoton::slotShareChatPublicKey(void)
 
   QByteArray publicKey;
   QByteArray signature;
-
   bool ok = true;
 
   publicKey = m_crypts.value("chat")->publicKey(&ok);
@@ -484,7 +483,6 @@ void spoton::slotShareEmailPublicKey(void)
 
   QByteArray publicKey;
   QByteArray signature;
-
   bool ok = true;
 
   publicKey = m_crypts.value("email")->publicKey(&ok);
@@ -2616,7 +2614,6 @@ void spoton::slotRefreshMail(void)
 
 	      for(int i = 0; i < query.record().count(); i++)
 		{
-		  bool ok = true;
 		  QTableWidgetItem *item = 0;
 
 		  if(i == 0)
@@ -2721,8 +2718,8 @@ void spoton::slotRefreshPostOffice(void)
 	  while(query.next())
 	    for(int i = 0; i < query.record().count(); i++)
 	      {
-		bool ok = true;
 		QTableWidgetItem *item = 0;
+		bool ok = true;
 
 		if(i == 0)
 		  {
