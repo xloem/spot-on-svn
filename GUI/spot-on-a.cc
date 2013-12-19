@@ -818,25 +818,25 @@ spoton::spoton(void):QMainWindow()
   QMenu *menu = new QMenu(this);
 
   connect
-    (menu->addAction(tr("Copy &Chat Public Key")),
+    (menu->addAction(tr("Copy &Chat Public Keys")),
      SIGNAL(triggered(void)), this, SLOT(slotCopyMyChatPublicKey(void)));
   connect
-    (menu->addAction(tr("Copy &E-Mail Public Key")),
+    (menu->addAction(tr("Copy &E-Mail Public Keys")),
      SIGNAL(triggered(void)), this, SLOT(slotCopyMyEmailPublicKey(void)));
   connect
-    (menu->addAction(tr("Copy &URL Public Key")),
+    (menu->addAction(tr("Copy &URL Public Keys")),
      SIGNAL(triggered(void)), this, SLOT(slotCopyMyURLPublicKey(void)));
   menu->addSeparator();
   connect
-    (menu->addAction(tr("Copy &All Public Keys")),
+    (menu->addAction(tr("Copy &All Public Keyss")),
      SIGNAL(triggered(void)), this, SLOT(slotCopyAllMyPublicKeys(void)));
   m_ui.toolButtonCopyToClipboard->setMenu(menu);
   menu = new QMenu(this);
-  connect(menu->addAction(tr("Share &Chat Public Key")),
+  connect(menu->addAction(tr("Share &Chat Public Keys")),
 	  SIGNAL(triggered(void)), this, SLOT(slotShareChatPublicKey(void)));
-  connect(menu->addAction(tr("Share &E-Mail Public Key")),
+  connect(menu->addAction(tr("Share &E-Mail Public Keys")),
 	  SIGNAL(triggered(void)), this, SLOT(slotShareEmailPublicKey(void)));
-  connect(menu->addAction(tr("Share &URL Public Key")),
+  connect(menu->addAction(tr("Share &URL Public Keys")),
 	  SIGNAL(triggered(void)), this, SLOT(slotShareURLPublicKey(void)));
   m_ui.toolButtonMakeFriends->setMenu(menu);
   menu = new QMenu(this);
@@ -3859,6 +3859,8 @@ void spoton::slotSetPassphrase(void)
 		   << "chat-signature"
 		   << "email"
 		   << "email-signature"
+		   << "rosetta"
+		   << "rosetta-signature"
 	           << "url"
 		   << "url-signature";
 
@@ -3909,6 +3911,8 @@ void spoton::slotSetPassphrase(void)
 	       << "chat-signature"
 	       << "email"
 	       << "email-signature"
+	       << "rosetta"
+	       << "rosetta-signature"
 	       << "url"
 	       << "url-signature";
 
@@ -4011,6 +4015,8 @@ void spoton::slotSetPassphrase(void)
 	  delete m_crypts.value("chat-signature", 0);
 	  delete m_crypts.value("email", 0);
 	  delete m_crypts.value("email-signature", 0);
+	  delete m_crypts.value("rosetta", 0);
+	  delete m_crypts.value("rosetta-signature", 0);
 	  delete m_crypts.value("url", 0);
 	  delete m_crypts.value("url-signature", 0);
 	  m_crypts.clear();
@@ -4021,6 +4027,8 @@ void spoton::slotSetPassphrase(void)
 	       << "chat-signature"
 	       << "email"
 	       << "email-signature"
+	       << "rosetta"
+	       << "rosetta-signature"
 	       << "url"
 	       << "url-signature";
 
@@ -4160,6 +4168,8 @@ void spoton::slotValidatePassphrase(void)
 	    delete m_crypts.value("chat-signature", 0);
 	    delete m_crypts.value("email", 0);
 	    delete m_crypts.value("email-signature", 0);
+	    delete m_crypts.value("rosetta", 0);
+	    delete m_crypts.value("rosetta-signature", 0);
 	    delete m_crypts.value("url", 0);
 	    delete m_crypts.value("url-signature", 0);
 	    m_crypts.clear();
@@ -4170,6 +4180,8 @@ void spoton::slotValidatePassphrase(void)
 		 << "chat-signature"
 		 << "email"
 		 << "email-signature"
+		 << "rosetta"
+		 << "rosetta-signature"
 		 << "url"
 		 << "url-signature";
 
