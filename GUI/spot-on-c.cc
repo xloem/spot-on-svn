@@ -2070,3 +2070,8 @@ void spoton::slotCopyFileHash(void)
 
   clipboard->setText(item->text());
 }
+
+void spoton::slotViewRosetta(void)
+{
+  m_rosetta.show(this);
+}

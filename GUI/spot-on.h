@@ -94,6 +94,7 @@ extern "C"
 #include "spot-on-chatwindow.h"
 #include "spot-on-logviewer.h"
 #include "spot-on-reencode.h"
+#include "spot-on-rosetta.h"
 #include "ui_controlcenter.h"
 #include "ui_statusbar.h"
 
@@ -150,6 +151,7 @@ class spoton: public QMainWindow
   bool m_purge;
   spoton_external_address *m_externalAddress;
   spoton_logviewer m_logViewer;
+  spoton_rosetta m_rosetta;
   QByteArray copyMyChatPublicKey(void);
   QByteArray copyMyEmailPublicKey(void);
   QByteArray copyMyUrlPublicKey(void);
@@ -370,6 +372,7 @@ class spoton: public QMainWindow
   void slotUnblockNeighbor(void);
   void slotValidatePassphrase(void);
   void slotViewLog(void);
+  void slotViewRosetta(void);
 
  signals:
   void buzzNameChanged(const QByteArray &name);

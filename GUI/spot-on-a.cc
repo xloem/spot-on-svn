@@ -217,6 +217,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotViewLog(void)));
+  connect(m_ui.action_Rosetta,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotViewRosetta(void)));
   connect(m_ui.addListener,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -1193,6 +1197,7 @@ spoton::spoton(void):QMainWindow()
   if(spoton_crypt::passphraseSet())
     {
       m_sb.frame->setEnabled(false);
+      m_ui.action_Rosetta->setEnabled(false);
       m_ui.encryptionKeyType->setEnabled(false);
       m_ui.passphrase1->setText("0000000000");
       m_ui.passphrase2->setText("0000000000");
@@ -1215,6 +1220,7 @@ spoton::spoton(void):QMainWindow()
   else
     {
       m_sb.frame->setEnabled(false);
+      m_ui.action_Rosetta->setEnabled(false);
       m_ui.encryptionKeyType->setEnabled(false);
       m_ui.newKeys->setEnabled(false);
       m_ui.passphrase->setEnabled(false);
@@ -4053,6 +4059,7 @@ void spoton::slotSetPassphrase(void)
 	}
 
       m_sb.frame->setEnabled(true);
+      m_ui.action_Rosetta->setEnabled(true);
       m_ui.encryptionKeyType->setEnabled(false);
       m_ui.kernelBox->setEnabled(true);
       m_ui.keySize->setEnabled(false);
@@ -4204,6 +4211,7 @@ void spoton::slotValidatePassphrase(void)
 	    sendBuzzKeysToKernel();
 	    sendKeysToKernel();
 	    m_sb.frame->setEnabled(true);
+	    m_ui.action_Rosetta->setEnabled(true);
 	    m_ui.encryptionKeyType->setEnabled(false);
 	    m_ui.kernelBox->setEnabled(true);
 	    m_ui.keySize->setEnabled(false);
