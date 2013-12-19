@@ -65,6 +65,7 @@ HEADERS		= Common/spot-on-external-address.h \
 		  GUI/spot-on-buzzpage.h \
 		  GUI/spot-on-chatwindow.h \
 		  GUI/spot-on-logviewer.h \
+		  GUI/spot-on-rosetta.h \
 		  GUI/spot-on-tabwidget.h \
 		  GUI/spot-on-textedit.h
 
@@ -78,6 +79,7 @@ SOURCES		= Common/spot-on-crypt.cc \
 		  GUI/spot-on-chatwindow.cc \
 		  GUI/spot-on-logviewer.cc \
 		  GUI/spot-on-reencode.cc \
+		  GUI/spot-on-rosetta.cc \
 		  GUI/spot-on-tabwidget.cc \
 		  GUI/spot-on-textedit.cc
 
