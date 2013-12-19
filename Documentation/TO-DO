@@ -167,3 +167,5 @@ Remaining Items
 37.    Wormholes for streamed data.
 38.    Per request, provide an automatic rewind mechanism with a timer.
 39.    Integer overflows!
+40.    Although account authentication occurs within SSL (TCP connections only),
+       account credentials should not be recorded via reversible encryption.
