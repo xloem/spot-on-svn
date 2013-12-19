@@ -241,6 +241,16 @@
            </widget>
           </item>
           <item>
+           <widget class="QCheckBox" name="sign">
+            <property name="text">
+             <string>&amp;Sign message.</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="horizontalSpacer_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -382,6 +392,7 @@
   <tabstop>clearInput</tabstop>
   <tabstop>cipher</tabstop>
   <tabstop>hash</tabstop>
+  <tabstop>sign</tabstop>
   <tabstop>input</tabstop>
   <tabstop>clearOutput</tabstop>
   <tabstop>output</tabstop>

@@ -2176,7 +2176,7 @@
              <string>Copy my name and the specified public key to the clipboard buffer.</string>
             </property>
             <property name="text">
-             <string>Copy Public Key</string>
+             <string>Copy Public Keys</string>
             </property>
             <property name="popupMode">
              <enum>QToolButton::InstantPopup</enum>
@@ -2205,7 +2205,7 @@
              <string>Share my specified public key with the selected neighbor.</string>
             </property>
             <property name="text">
-             <string>Share Public Key</string>
+             <string>Share Public Keys</string>
             </property>
             <property name="popupMode">
              <enum>QToolButton::InstantPopup</enum>
