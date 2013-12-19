@@ -105,7 +105,7 @@ class spoton_misc
  private:
   static QMutex s_dbMutex;
   static bool s_enableLog;
-  static qint64 s_dbId;
+  static quint64 s_dbId;
   spoton_misc(void);
 };
 

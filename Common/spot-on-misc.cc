@@ -52,7 +52,7 @@ extern "C"
 
 QMutex spoton_misc::s_dbMutex;
 bool spoton_misc::s_enableLog = false; // Not protected by a mutex.
-qint64 spoton_misc::s_dbId = 0;
+quint64 spoton_misc::s_dbId = 0;
 
 QString spoton_misc::homePath(void)
 {
@@ -1664,10 +1664,10 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 QSqlDatabase spoton_misc::database(QString &connectionName)
 {
   QSqlDatabase db;
-  qint64 dbId = -1;
+  quint64 dbId = 0;
 
   s_dbMutex.lock();
-  dbId = s_dbId = qAbs(s_dbId + 1); // +=
+  dbId = s_dbId += 1;
   s_dbMutex.unlock();
   db = QSqlDatabase::addDatabase
     ("QSQLITE", QString("spoton_database_%1").arg(dbId));

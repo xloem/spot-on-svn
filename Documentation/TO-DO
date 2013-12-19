@@ -85,6 +85,7 @@ Completed Items
 59.    Use separate hash keys with geminis.
 60.    Inspect UTF-8 uses.
 61.    Rewind support for transmitted mosaics.
+62.    Integer overflows!
 
 Ignored Items
 
@@ -166,6 +167,7 @@ Remaining Items
        to copy encrypted content and send it via Gmail.
 37.    Wormholes for streamed data.
 38.    Per request, provide an automatic rewind mechanism with a timer.
-39.    Integer overflows!
-40.    Although account authentication occurs within SSL (TCP connections only),
-       account credentials should not be recorded via reversible encryption.
+39.    Gold Bugs and Novas should have separate hash keys.
+40.    Although account authentication occurs within
+       SSL (TCP connections only), account credentials should not be
+       recorded via reversible encryption.
