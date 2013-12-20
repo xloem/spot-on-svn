@@ -4,7 +4,8 @@
 2.   Added the Rosetta converter. Please see the Tools menu.
 3.   Corrected the e-mail retrieval mechanism. The mechanism malfunctioned
      if the interface of the c/o node was closed.
-4.   Completed implementation of spoton::copyMyUrlPublicKey().
+4.   Completed implementation of spoton::copyMyUrlPublicKey(). Various
+     changes in preparation of URL public keys.
 5.   Added verification of URL encryption and signature public keys.
 6.   Method const-correctness.
 
