@@ -152,10 +152,10 @@ class spoton: public QMainWindow
   spoton_external_address *m_externalAddress;
   spoton_logviewer m_logViewer;
   spoton_rosetta m_rosetta;
-  QByteArray copyMyChatPublicKey(void);
-  QByteArray copyMyEmailPublicKey(void);
-  QByteArray copyMyUrlPublicKey(void);
-  QPixmap pixmapForCountry(const QString &country);
+  QByteArray copyMyChatPublicKey(void) const;
+  QByteArray copyMyEmailPublicKey(void) const;
+  QByteArray copyMyUrlPublicKey(void) const;
+  QPixmap pixmapForCountry(const QString &country) const;
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000
   bool event(QEvent *event);

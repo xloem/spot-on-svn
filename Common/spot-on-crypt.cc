@@ -1371,7 +1371,7 @@ bool spoton_crypt::setInitializationVector(QByteArray &bytes,
   return ok;
 }
 
-QByteArray spoton_crypt::keyedHash(const QByteArray &data, bool *ok)
+QByteArray spoton_crypt::keyedHash(const QByteArray &data, bool *ok) const
 {
   if(m_hashAlgorithm == 0)
     {

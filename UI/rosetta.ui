@@ -208,13 +208,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="refresh">
-        <property name="text">
-         <string>Refresh</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -415,7 +408,7 @@
       <item>
        <widget class="QPushButton" name="pushButton">
         <property name="text">
-         <string>Radiate!</string>
+         <string>Convert</string>
         </property>
        </widget>
       </item>
@@ -429,7 +422,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -471,7 +464,6 @@
   <tabstop>decrypt</tabstop>
   <tabstop>contacts</tabstop>
   <tabstop>pushButton_2</tabstop>
-  <tabstop>refresh</tabstop>
   <tabstop>clearInput</tabstop>
   <tabstop>cipher</tabstop>
   <tabstop>hash</tabstop>

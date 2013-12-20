@@ -33,6 +33,7 @@
 #include "ui_rosetta.h"
 
 class QKeyEvent;
+class spoton_crypt;
 
 class spoton_rosetta: public QMainWindow
 {
@@ -40,10 +41,14 @@ class spoton_rosetta: public QMainWindow
 
  public:
   spoton_rosetta(void);
+  void setCryptObjects(spoton_crypt *eCrypt, spoton_crypt *sSrypt);
   void show(QWidget *parent);
 
  private:
   Ui_spoton_rosetta ui;
+  spoton_crypt *m_eCrypt; // Encryption
+  spoton_crypt *m_sCrypt; // Signature
+  QByteArray copyMyRosettaPublicKey(void) const;
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000
   bool event(QEvent *event);
@@ -52,7 +57,10 @@ class spoton_rosetta: public QMainWindow
   void keyPressEvent(QKeyEvent *event);
 
  private slots:
+  void slotClear(void);
   void slotClose(void);
+  void slotCopyMyRosettaPublicKey(void);
+  void slotSaveName(void);
   void slotSetIcons(void);
 };
 

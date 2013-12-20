@@ -25,9 +25,11 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QClipboard>
 #include <QKeyEvent>
 #include <QSettings>
 
+#include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
 #include "spot-on-rosetta.h"
 
@@ -44,7 +46,43 @@ spoton_rosetta::spoton_rosetta(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotClose(void)));
+  connect(ui.clearContact,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotClear(void)));
+  connect(ui.clearContact,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotClear(void)));
+  connect(ui.clearInput,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotClear(void)));
+  connect(ui.clearOutput,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotClear(void)));
+  connect(ui.name,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSaveName(void)));
+  connect(ui.save,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSaveName(void)));
   slotSetIcons();
+  ui.cipher->addItems(spoton_crypt::cipherTypes());
+  ui.hash->addItems(spoton_crypt::hashTypes());
+
+  /*
+  ** Please do not translate n/a.
+  */
+
+  if(ui.cipher->count() == 0)
+    ui.cipher->addItem("n/a");
+
+  if(ui.hash->count() == 0)
+    ui.hash->addItem("n/a");
 }
 
 void spoton_rosetta::slotClose(void)
@@ -73,6 +111,11 @@ void spoton_rosetta::show(QWidget *parent)
       move(X, Y);
     }
 
+  QSettings settings;
+
+  ui.name->setText
+    (QString::fromUtf8(settings.value("gui/rosettaName", "unknown").
+		       toByteArray()).trimmed());
   QMainWindow::show();
   raise();
 }
@@ -94,8 +137,11 @@ void spoton_rosetta::slotSetIcons(void)
   QString iconSet(settings.value("gui/iconSet", "nuove").toString().
 		  trimmed());
 
+  ui.add->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
+  ui.clearContact->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
   ui.clearInput->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
   ui.clearOutput->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
+  ui.save->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
 }
 
 #ifdef Q_OS_MAC
@@ -120,3 +166,79 @@ bool spoton_rosetta::event(QEvent *event)
 }
 #endif
 #endif
+
+void spoton_rosetta::slotClear(void)
+{
+  if(sender() == ui.clearContact)
+    ui.newContact->clear();
+  else if(sender() == ui.clearInput)
+    ui.input->clear();
+  else if(sender() == ui.clearOutput)
+    ui.output->clear();
+}
+
+void spoton_rosetta::slotSaveName(void)
+{
+  QString str(ui.name->text().trimmed());
+
+  if(str.isEmpty())
+    {
+      str = "unknown";
+      ui.name->setText(str);
+    }
+
+  QSettings settings;
+
+  settings.setValue("gui/rosettaName", str.toUtf8());
+  ui.name->selectAll();
+}
+
+void spoton_rosetta::setCryptObjects(spoton_crypt *eCrypt,
+				     spoton_crypt *sCrypt)
+{
+  m_eCrypt = eCrypt;
+  m_sCrypt = sCrypt;
+}
+
+QByteArray spoton_rosetta::copyMyRosettaPublicKey(void) const
+{
+  if(!m_eCrypt || !m_sCrypt)
+    return QByteArray();
+
+  QByteArray name;
+  QByteArray mPublicKey;
+  QByteArray mSignature;
+  QByteArray sPublicKey;
+  QByteArray sSignature;
+  QSettings settings;
+  bool ok = true;
+
+  name = settings.value("gui/rosettaName", "unknown").toByteArray().
+    trimmed();
+  mPublicKey = m_eCrypt->publicKey(&ok);
+
+  if(ok)
+    mSignature = m_eCrypt->digitalSignature(mPublicKey, &ok);
+
+  if(ok)
+    sPublicKey = m_sCrypt->publicKey(&ok);
+
+  if(ok)
+    sSignature = m_sCrypt->digitalSignature(sPublicKey, &ok);
+
+  if(ok)
+    return "K" + QByteArray("chat").toBase64() + "@" +
+      name.toBase64() + "@" +
+      mPublicKey.toBase64() + "@" + mSignature.toBase64() + "@" +
+      sPublicKey.toBase64() + "@" + sSignature.toBase64();
+  else
+    return QByteArray();
+}
+
+void spoton_rosetta::slotCopyMyRosettaPublicKey(void)
+{
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(clipboard)
+    clipboard->setText(copyMyRosettaPublicKey());
+}

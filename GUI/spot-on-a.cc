@@ -4049,6 +4049,9 @@ void spoton::slotSetPassphrase(void)
 				m_ui.iterationCount->value(),
 				list.at(i)));
 
+	  m_rosetta.setCryptObjects(m_crypts.value("rosetta", 0),
+				    m_crypts.value("rosetta-signature", 0));
+
 	  if(!m_tableTimer.isActive())
 	    m_tableTimer.start();
 
@@ -4202,6 +4205,9 @@ void spoton::slotValidatePassphrase(void)
 				  m_ui.saltLength->value(),
 				  m_ui.iterationCount->value(),
 				  list.at(i)));
+
+	    m_rosetta.setCryptObjects(m_crypts.value("rosetta", 0),
+				      m_crypts.value("rosetta-signature", 0));
 
 	    if(!m_tableTimer.isActive())
 	      m_tableTimer.start();

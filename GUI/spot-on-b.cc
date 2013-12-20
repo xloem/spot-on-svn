@@ -1052,7 +1052,7 @@ void spoton::slotCopyMyChatPublicKey(void)
     clipboard->setText(copyMyChatPublicKey());
 }
 
-QByteArray spoton::copyMyChatPublicKey(void)
+QByteArray spoton::copyMyChatPublicKey(void) const
 {
   if(!m_crypts.value("chat", 0) ||
      !m_crypts.value("chat-signature", 0))
@@ -1088,7 +1088,7 @@ QByteArray spoton::copyMyChatPublicKey(void)
     return QByteArray();
 }
 
-QPixmap spoton::pixmapForCountry(const QString &country)
+QPixmap spoton::pixmapForCountry(const QString &country) const
 {
   if(country == "Afghanistan")
     return QPixmap(":/Flags/af.png");
@@ -1569,23 +1569,24 @@ void spoton::addFriendsKey(const QByteArray &key)
       bool ok = true;
 
       mPublicKey = QByteArray::fromBase64(mPublicKey);
-      myPublicKey = m_crypts.value("chat")->publicKey(&ok);
+      myPublicKey = m_crypts.value(keyType)->publicKey(&ok);
 
       if(!ok)
 	{
 	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Unable to retrieve your chat "
-				   "public key."));
+				tr("Unable to retrieve your %1 "
+				   "public key.").arg(keyType.constData()));
 	  return;
 	}
 
-      mySPublicKey = m_crypts.value("chat-signature")->publicKey(&ok);
+      mySPublicKey = m_crypts.value
+	(QString("%1-signature").arg(keyType.constData()))->publicKey(&ok);
 
       if(!ok)
 	{
 	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Unable to retrieve your chat signature "
-				   "public key."));
+				tr("Unable to retrieve your %1 signature "
+				   "public key.").arg(keyType.constData()));
 	  return;
 	}
 
@@ -1593,37 +1594,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("You're attempting to add your own 'chat' keys. "
-		"Please do not do this!"));
-	  return;
-	}
-
-      myPublicKey = m_crypts.value("email")->publicKey(&ok);
-
-      if(!ok)
-	{
-	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Unable to retrieve your email "
-				   "public key."));
-	  return;
-	}
-
-      mySPublicKey = m_crypts.value("email-signature")->publicKey(&ok);
-
-      if(!ok)
-	{
-	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Unable to retrieve your email "
-				   "signature public key."));
-	  return;
-	}
-
-      if(mPublicKey == myPublicKey || mSignature == mySPublicKey)
-	{
-	  QMessageBox::critical
-	    (this, tr("Spot-On: Error"),
-	     tr("You're attempting to add your own 'email' keys. "
-		"Please do not do this!"));
+	     tr("You're attempting to add your own '%1' keys. "
+		"Please do not do this!").arg(keyType.constData()));
 	  return;
 	}
 
@@ -1748,11 +1720,17 @@ void spoton::addFriendsKey(const QByteArray &key)
 
 	  if(!ok)
 	    {
-	      QMessageBox::critical
-		(this, tr("Spot-On: Error"),
-		 tr("Asymmetric decryption failure. Are you attempting "
-		    "to add a repleo that you gathered?"));
-	      return;
+	      keyInformation = m_crypts.value("url")->
+		publicKeyDecrypt(list.value(0), &ok);
+
+	      if(!ok)
+		{
+		  QMessageBox::critical
+		    (this, tr("Spot-On: Error"),
+		     tr("Asymmetric decryption failure. Are you attempting "
+			"to add a repleo that you gathered?"));
+		  return;
+		}
 	    }
 	}
 
@@ -1830,7 +1808,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  return;
 	}
 
-      for(int i = 1; i <= 2; i++)
+      for(int i = 1; i <= 3; i++)
 	{
 	  QByteArray myPublicKey;
 	  QByteArray mySPublicKey;
@@ -1850,6 +1828,14 @@ void spoton::addFriendsKey(const QByteArray &key)
 
 	      if(ok)
 		mySPublicKey = m_crypts.value("email-signature")->
+		  publicKey(&ok);
+	    }
+	  else if(i ==3)
+	    {
+	      myPublicKey = m_crypts.value("url")->publicKey(&ok);
+
+	      if(ok)
+		mySPublicKey = m_crypts.value("url-signature")->
 		  publicKey(&ok);
 	    }
 
@@ -2432,7 +2418,7 @@ void spoton::slotCopyMyEmailPublicKey(void)
     clipboard->setText(copyMyEmailPublicKey());
 }
 
-QByteArray spoton::copyMyEmailPublicKey(void)
+QByteArray spoton::copyMyEmailPublicKey(void) const
 {
   if(!m_crypts.value("email", 0) ||
      !m_crypts.value("email-signature", 0))
@@ -2468,13 +2454,48 @@ QByteArray spoton::copyMyEmailPublicKey(void)
     return QByteArray();
 }
 
-QByteArray spoton::copyMyUrlPublicKey(void)
+QByteArray spoton::copyMyUrlPublicKey(void) const
 {
-  return QByteArray();
+  if(!m_crypts.value("url", 0) ||
+     !m_crypts.value("url-signature", 0))
+    return QByteArray();
+
+  QByteArray name;
+  QByteArray mPublicKey;
+  QByteArray mSignature;
+  QByteArray sPublicKey;
+  QByteArray sSignature;
+  bool ok = true;
+
+  name = m_settings.value("gui/urlName", "unknown").toByteArray().
+    trimmed();
+  mPublicKey = m_crypts.value("url")->publicKey(&ok);
+
+  if(ok)
+    mSignature = m_crypts.value("url")->digitalSignature(mPublicKey, &ok);
+
+  if(ok)
+    sPublicKey = m_crypts.value("url-signature")->publicKey(&ok);
+
+  if(ok)
+    sSignature = m_crypts.value("url-signature")->
+      digitalSignature(sPublicKey, &ok);
+
+  if(ok)
+    return "K" + QByteArray("chat").toBase64() + "@" +
+      name.toBase64() + "@" +
+      mPublicKey.toBase64() + "@" + mSignature.toBase64() + "@" +
+      sPublicKey.toBase64() + "@" + sSignature.toBase64();
+  else
+    return QByteArray();
 }
 
 void spoton::slotCopyMyURLPublicKey(void)
 {
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(clipboard)
+    clipboard->setText(copyMyUrlPublicKey());
 }
 
 void spoton::slotShareURLPublicKey(void)
