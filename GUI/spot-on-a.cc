@@ -832,7 +832,7 @@ spoton::spoton(void):QMainWindow()
      SIGNAL(triggered(void)), this, SLOT(slotCopyMyURLPublicKey(void)));
   menu->addSeparator();
   connect
-    (menu->addAction(tr("Copy &All Public Keyss")),
+    (menu->addAction(tr("Copy &All Public Keys")),
      SIGNAL(triggered(void)), this, SLOT(slotCopyAllMyPublicKeys(void)));
   m_ui.toolButtonCopyToClipboard->setMenu(menu);
   menu = new QMenu(this);
@@ -5926,7 +5926,8 @@ void spoton::slotCopyAllMyPublicKeys(void)
 
   if(clipboard)
     clipboard->setText(copyMyChatPublicKey() + "@" +
-		       copyMyEmailPublicKey());
+		       copyMyEmailPublicKey() + "@" +
+		       copyMyUrlPublicKey());
 }
 
 void spoton::slotSaveSslControlString(void)

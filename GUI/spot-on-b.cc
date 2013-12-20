@@ -1003,6 +1003,87 @@ void spoton::slotShareEmailPublicKeyWithParticipant(void)
     }
 }
 
+void spoton::slotShareUrlPublicKeyWithParticipant(void)
+{
+  if(!m_crypts.value("url", 0) ||
+     !m_crypts.value("url-signature", 0))
+    return;
+  else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!m_kernelSocket.isEncrypted())
+    return;
+
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.participants->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.participants->item
+	(row, 2); // neighbor_oid
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  QByteArray publicKey;
+  QByteArray signature;
+  bool ok = true;
+
+  publicKey = m_crypts.value("url")->publicKey(&ok);
+
+  if(ok)
+    signature = m_crypts.value("url")->digitalSignature(publicKey, &ok);
+
+  QByteArray sPublicKey;
+  QByteArray sSignature;
+
+  if(ok)
+    sPublicKey = m_crypts.value("url-signature")->publicKey(&ok);
+
+  if(ok)
+    sSignature = m_crypts.value("url-signature")->
+      digitalSignature(sPublicKey, &ok);
+
+  if(ok)
+    {
+      QByteArray message;
+      QByteArray name(m_settings.value("gui/urlName", "unknown").
+		      toByteArray().trimmed());
+
+      if(name.isEmpty())
+	name = "unknown";
+
+      message.append("befriendparticipant_");
+      message.append(oid);
+      message.append("_");
+      message.append(QByteArray("url").toBase64());
+      message.append("_");
+      message.append(name.toBase64());
+      message.append("_");
+      message.append(publicKey.toBase64());
+      message.append("_");
+      message.append(signature.toBase64());
+      message.append("_");
+      message.append(sPublicKey.toBase64());
+      message.append("_");
+      message.append(sSignature.toBase64());
+      message.append('\n');
+
+      if(m_kernelSocket.write(message.constData(), message.length()) !=
+	 message.length())
+	spoton_misc::logError
+	  (QString("spoton::slotShareUrlPublicKeyWithParticipant(): "
+		   "write() failure for %1:%2.").
+	   arg(m_kernelSocket.peerAddress().toString()).
+	   arg(m_kernelSocket.peerPort()));
+      else
+	m_kernelSocket.flush();
+    }
+}
+
 void spoton::slotViewLog(void)
 {
   m_logViewer.show(this);
@@ -1503,6 +1584,17 @@ void spoton::slotAddFriendsKey(void)
 	    list.value(9) + "@" +
 	    list.value(10) + "@" +
 	    list.value(11);
+	  addFriendsKey("K" + key);
+	}
+
+      if(list.size() >  12)
+	{
+	  key = list.value(12).remove(0, 1) + "@" +
+	    list.value(13) + "@" +
+	    list.value(14) + "@" +
+	    list.value(15) + "@" +
+	    list.value(16) + "@" +
+	    list.value(17);
 	  addFriendsKey("K" + key);
 	}
     }
@@ -2482,7 +2574,7 @@ QByteArray spoton::copyMyUrlPublicKey(void) const
       digitalSignature(sPublicKey, &ok);
 
   if(ok)
-    return "K" + QByteArray("chat").toBase64() + "@" +
+    return "K" + QByteArray("url").toBase64() + "@" +
       name.toBase64() + "@" +
       mPublicKey.toBase64() + "@" + mSignature.toBase64() + "@" +
       sPublicKey.toBase64() + "@" + sSignature.toBase64();
@@ -2500,6 +2592,83 @@ void spoton::slotCopyMyURLPublicKey(void)
 
 void spoton::slotShareURLPublicKey(void)
 {
+  if(!m_crypts.value("url", 0) ||
+     !m_crypts.value("url-signature", 0))
+    return;
+  else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!m_kernelSocket.isEncrypted())
+    return;
+
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.neighbors->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.neighbors->item
+	(row, m_ui.neighbors->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  QByteArray publicKey;
+  QByteArray signature;
+  bool ok = true;
+
+  publicKey = m_crypts.value("url")->publicKey(&ok);
+
+  if(ok)
+    signature = m_crypts.value("url")->digitalSignature(publicKey, &ok);
+
+  QByteArray sPublicKey;
+  QByteArray sSignature;
+
+  if(ok)
+    sPublicKey = m_crypts.value("url-signature")->publicKey(&ok);
+
+  if(ok)
+    sSignature = m_crypts.value("url-signature")->
+      digitalSignature(sPublicKey, &ok);
+
+  if(ok)
+    {
+      QByteArray message;
+      QByteArray name(m_settings.value("gui/urlName", "unknown").
+		      toByteArray().trimmed());
+
+      if(name.isEmpty())
+	name = "unknown";
+
+      message.append("sharepublickey_");
+      message.append(oid);
+      message.append("_");
+      message.append(QByteArray("url").toBase64());
+      message.append("_");
+      message.append(name.toBase64());
+      message.append("_");
+      message.append(publicKey.toBase64());
+      message.append("_");
+      message.append(signature.toBase64());
+      message.append("_");
+      message.append(sPublicKey.toBase64());
+      message.append("_");
+      message.append(sSignature.toBase64());
+      message.append('\n');
+
+      if(m_kernelSocket.write(message.constData(), message.length()) !=
+	 message.length())
+	spoton_misc::logError
+	  (QString("spoton::slotShareURLPublicKey(): write() failure "
+		   "for %1:%2.").
+	   arg(m_kernelSocket.peerAddress().toString()).
+	   arg(m_kernelSocket.peerPort()));
+      else
+	m_kernelSocket.flush();
+    }
 }
 
 void spoton::slotDeleteAllUuids(void)
