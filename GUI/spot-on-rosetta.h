@@ -57,9 +57,12 @@ class spoton_rosetta: public QMainWindow
   void keyPressEvent(QKeyEvent *event);
 
  private slots:
+  void slotAddContact(void);
   void slotClear(void);
   void slotClose(void);
   void slotCopyMyRosettaPublicKey(void);
+  void slotDecryptToggled(bool state);
+  void slotEncryptToggled(bool state);
   void slotSaveName(void);
   void slotSetIcons(void);
 };

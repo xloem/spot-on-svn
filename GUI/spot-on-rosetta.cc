@@ -26,7 +26,9 @@
 */
 
 #include <QClipboard>
+#include <QDir>
 #include <QKeyEvent>
+#include <QMessageBox>
 #include <QSettings>
 
 #include "Common/spot-on-crypt.h"
@@ -46,6 +48,10 @@ spoton_rosetta::spoton_rosetta(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotClose(void)));
+  connect(ui.add,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotAddContact(void)));
   connect(ui.clearContact,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -62,6 +68,18 @@ spoton_rosetta::spoton_rosetta(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotClear(void)));
+  connect(ui.copy,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotCopyMyRosettaPublicKey(void)));
+  connect(ui.decrypt,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotDecryptToggled(bool)));
+  connect(ui.encrypt,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotEncryptToggled(bool)));
   connect(ui.name,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -141,6 +159,7 @@ void spoton_rosetta::slotSetIcons(void)
   ui.clearContact->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
   ui.clearInput->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
   ui.clearOutput->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
+  ui.copy->setIcon(QIcon(QString(":/%1/copy.png").arg(iconSet)));
   ui.save->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
 }
 
@@ -227,7 +246,7 @@ QByteArray spoton_rosetta::copyMyRosettaPublicKey(void) const
     sSignature = m_sCrypt->digitalSignature(sPublicKey, &ok);
 
   if(ok)
-    return "K" + QByteArray("chat").toBase64() + "@" +
+    return "K" + QByteArray("rosetta").toBase64() + "@" +
       name.toBase64() + "@" +
       mPublicKey.toBase64() + "@" + mSignature.toBase64() + "@" +
       sPublicKey.toBase64() + "@" + sSignature.toBase64();
@@ -241,4 +260,167 @@ void spoton_rosetta::slotCopyMyRosettaPublicKey(void)
 
   if(clipboard)
     clipboard->setText(copyMyRosettaPublicKey());
+}
+
+void spoton_rosetta::slotAddContact(void)
+{
+  if(!m_eCrypt || !m_sCrypt)
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object. This is "
+			       "a fatal flaw."));
+      return;
+    }
+
+  QByteArray key
+    (ui.newContact->toPlainText().trimmed().toLatin1());
+
+  if(key.trimmed().isEmpty())
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Empty key. Really?"));
+      return;
+    }
+
+  if(!(key.startsWith("K") || key.startsWith("k")))
+    {
+      QMessageBox::critical
+	(this, tr("Spot-On: Error"),
+	 tr("Invalid key. The key must start with either the letter "
+	    "K or the letter k."));
+      return;
+    }
+
+  QList<QByteArray> list(key.mid(1).split('@'));
+
+  if(list.size() != 6)
+    {
+      QMessageBox::critical
+	(this, tr("Spot-On: Error"),
+	 tr("Irregular data. Expecting 6 entries, received %1.").
+	 arg(list.size()));
+      return;
+    }
+
+  QByteArray keyType(list.value(0));
+
+  keyType = QByteArray::fromBase64(keyType);
+
+  if(keyType != "rosetta")
+    {
+      QMessageBox::critical
+	(this, tr("Spot-On: Error"),
+	 tr("Invalid key type. Expecting 'rosetta'."));
+      return;
+    }
+
+  QByteArray mPublicKey(list.value(2));
+  QByteArray mSignature(list.value(3));
+  QByteArray myPublicKey;
+  QByteArray mySPublicKey;
+  bool ok = true;
+
+  mPublicKey = QByteArray::fromBase64(mPublicKey);
+  myPublicKey = m_eCrypt->publicKey(&ok);
+
+  if(!ok)
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Unable to retrieve your %1 "
+			       "public key.").arg(keyType.constData()));
+      return;
+    }
+
+  mySPublicKey = m_sCrypt->publicKey(&ok);
+
+  if(!ok)
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Unable to retrieve your %1 signature "
+			       "public key.").arg(keyType.constData()));
+      return;
+    }
+
+  if(mPublicKey == myPublicKey || mSignature == mySPublicKey)
+    {
+      QMessageBox::critical
+	(this, tr("Spot-On: Error"),
+	 tr("You're attempting to add your own '%1' keys. "
+	    "Please do not do this!").arg(keyType.constData()));
+      return;
+    }
+
+  mSignature = QByteArray::fromBase64(mSignature);
+
+  if(!spoton_crypt::isValidSignature(mPublicKey, mPublicKey,
+				     mSignature))
+    {
+      QMessageBox::critical
+	(this, tr("Spot-On: Error"),
+	 tr("Invalid 'rosetta' public key signature."));
+      return;
+    }
+
+  QByteArray sPublicKey(list.value(4));
+  QByteArray sSignature(list.value(5));
+
+  sPublicKey = QByteArray::fromBase64(sPublicKey);
+  sSignature = QByteArray::fromBase64(sSignature);
+
+  if(!spoton_crypt::isValidSignature(sPublicKey, sPublicKey,
+				     sSignature))
+    {
+      QMessageBox::critical
+	(this, tr("Spot-On: Error"),
+	 tr("Invalid signature public key signature."));
+      return;
+    }
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QByteArray name(list.value(1));
+
+	name = QByteArray::fromBase64(name);
+
+	if(spoton_misc::saveFriendshipBundle(keyType,
+					     name,
+					     mPublicKey,
+					     sPublicKey,
+					     -1,
+					     db))
+	  if(spoton_misc::saveFriendshipBundle(keyType + "-signature",
+					       name,
+					       sPublicKey,
+					       QByteArray(),
+					       -1,
+					       db))
+	    ui.newContact->selectAll();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton_rosetta::slotDecryptToggled(bool state)
+{
+  ui.cipher->setEnabled(!state);
+  ui.hash->setEnabled(!state);
+  ui.sign->setEnabled(!state);
+}
+
+void spoton_rosetta::slotEncryptToggled(bool state)
+{
+  ui.cipher->setEnabled(state);
+  ui.hash->setEnabled(state);
+  ui.sign->setEnabled(state);
 }

@@ -86,6 +86,9 @@ Completed Items
 60.    Inspect UTF-8 uses.
 61.    Rewind support for transmitted mosaics.
 62.    Integer overflows!
+63.    Create a Tools menu. Provide mechanisms for decrypting and encrypting
+       data that's been transmitted via non-Spot. That is, a feature
+       to copy encrypted content and send it via other applications.
 
 Ignored Items
 
@@ -162,12 +165,9 @@ Remaining Items
 34.    Artificial impersonators.
 35.    Limit listener authentication replays via digest recording. Or,
        SRP!
-36.    Create a Tools menu. Provide mechanisms for decrypting and encrypting
-       data that's been transmitted via non-Spot. That is, a feature
-       to copy encrypted content and send it via Gmail.
-37.    Wormholes for streamed data.
-38.    Per request, provide an automatic rewind mechanism with a timer.
-39.    Gold Bugs and Novas should have separate hash keys.
-40.    Although account authentication occurs within
+36.    Wormholes for streamed data.
+37.    Per request, provide an automatic rewind mechanism with a timer.
+38.    Gold Bugs and Novas should have separate hash keys.
+39.    Although account authentication occurs within
        SSL (TCP connections only), account credentials should not be
        recorded via reversible encryption.
