@@ -326,6 +326,7 @@ class spoton: public QMainWindow
   void slotReceiversClicked(bool state);
   void slotRefreshMail(void);
   void slotRefreshPostOffice(void);
+  void slotRegenerateKey(void);
   void slotRemoveEmailParticipants(void);
   void slotRemoveParticipants(void);
   void slotReply(void);

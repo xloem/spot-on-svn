@@ -2176,3 +2176,72 @@ void spoton::sharePublicKeyWithParticipant(const QString &keyType)
 	m_kernelSocket.flush();
     }
 }
+
+void spoton::slotRegenerateKey(void)
+{
+  QString keyType("chat");
+
+  if(m_ui.keys->currentText() == tr("Chat"))
+    keyType = "chat";
+  else if(m_ui.keys->currentText() == tr("E-Mail"))
+    keyType = "email";
+  else if(m_ui.keys->currentText() == tr("Rosetta"))
+    keyType = "rosetta";
+  else if(m_ui.keys->currentText() == tr("URL"))
+    keyType = "url";
+
+  QString encryptionKeyType("");
+  QString signatureKeyType("");
+
+  if(m_ui.encryptionKeyType->currentIndex() == 0)
+    encryptionKeyType = "elg";
+  else
+    encryptionKeyType = "rsa";
+
+  if(m_ui.signatureKeyType->currentIndex() == 0)
+    signatureKeyType = "dsa";
+  else
+    signatureKeyType = "rsa";
+
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+  m_sb.status->setText(tr("Generating public key pairs."));
+  m_sb.status->repaint();
+
+  QString error("");
+  spoton_crypt *crypt = m_crypts.value(keyType, 0);
+
+  if(crypt)
+    crypt->generatePrivatePublicKeys
+      (m_ui.keySize->currentText().toInt(),
+       encryptionKeyType,
+       error);
+
+  if(error.isEmpty())
+    {
+      crypt = m_crypts.value(QString("%1-signature").arg(keyType), 0);
+
+      if(crypt)
+	crypt->generatePrivatePublicKeys
+	  (m_ui.keySize->currentText().toInt(),
+	   signatureKeyType,
+	   error);
+    }
+
+  m_sb.status->clear();
+  QApplication::restoreOverrideCursor();
+
+  if(error.isEmpty())
+    {
+      if(m_ui.keys->currentText() == tr("Rosetta"))
+	m_rosetta.setCryptObjects(m_crypts.value("rosetta", 0),
+				  m_crypts.value("rosetta-signature", 0));
+      else
+	sendKeysToKernel();
+    }
+  else
+    QMessageBox::critical(this, tr("Spot-On: Error"),
+			  tr("An error (%1) occurred with "
+			     "spoton_crypt::"
+			     "generatePrivatePublicKeys().").
+			  arg(error.remove(".").trimmed()));
+}

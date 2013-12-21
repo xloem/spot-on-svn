@@ -4086,8 +4086,8 @@ void spoton::initializeKernelSocket(void)
      m_kernelSocket.peerAddress(),
      60 * 60 * 24 * 7, // Seven days.
      error);
-  QApplication::restoreOverrideCursor();
   m_sb.status->clear();
+  QApplication::restoreOverrideCursor();
 
   if(error.isEmpty())
     {

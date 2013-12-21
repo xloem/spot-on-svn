@@ -1315,6 +1315,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,
 	  SLOT(slotShowContextMenu(const QPoint &)));
+  connect(m_ui.regenerate,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotRegenerateKey(void)));
   m_ui.emailParticipants->setColumnHidden(1, true); // OID
   m_ui.emailParticipants->setColumnHidden(2, true); // neighbor_oid
   m_ui.emailParticipants->setColumnHidden(3, true); // public_key_hash
@@ -1501,8 +1505,8 @@ void spoton::slotAddListener(void)
 	 address,
 	 60 * 60 * 24 * 365 * 50, // Fifty years.
 	 error);
-      QApplication::restoreOverrideCursor();
       m_sb.status->clear();
+      QApplication::restoreOverrideCursor();
     }
 
   QString connectionName("");
@@ -3824,13 +3828,13 @@ void spoton::slotSetPassphrase(void)
     }
 
   /*
-  ** Create the RSA public and private keys.
+  ** Create the public and private keys.
   */
 
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   m_sb.status->setText
     (tr("Generating a derived key. Please be patient."));
   m_sb.status->repaint();
-  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   QByteArray salt;
   QByteArray saltedPassphraseHash;
@@ -4017,14 +4021,14 @@ void spoton::slotSetPassphrase(void)
 	      m_tableTimer.start();
 	    }
 
-	  delete m_crypts.value("chat", 0);
-	  delete m_crypts.value("chat-signature", 0);
-	  delete m_crypts.value("email", 0);
-	  delete m_crypts.value("email-signature", 0);
-	  delete m_crypts.value("rosetta", 0);
-	  delete m_crypts.value("rosetta-signature", 0);
-	  delete m_crypts.value("url", 0);
-	  delete m_crypts.value("url-signature", 0);
+	  QHashIterator<QString, spoton_crypt *> it(m_crypts);
+
+	  while (it.hasNext())
+	    {
+	      it.next();
+	      delete it.value();
+	    }
+
 	  m_crypts.clear();
 
 	  QStringList list;
@@ -4174,14 +4178,14 @@ void spoton::slotValidatePassphrase(void)
 
 	if(error.isEmpty())
 	  {
-	    delete m_crypts.value("chat", 0);
-	    delete m_crypts.value("chat-signature", 0);
-	    delete m_crypts.value("email", 0);
-	    delete m_crypts.value("email-signature", 0);
-	    delete m_crypts.value("rosetta", 0);
-	    delete m_crypts.value("rosetta-signature", 0);
-	    delete m_crypts.value("url", 0);
-	    delete m_crypts.value("url-signature", 0);
+	    QHashIterator<QString, spoton_crypt *> it(m_crypts);
+
+	    while (it.hasNext())
+	      {
+		it.next();
+		delete it.value();
+	      }
+
 	    m_crypts.clear();
 
 	    QStringList list;
