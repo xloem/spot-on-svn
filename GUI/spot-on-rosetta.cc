@@ -30,6 +30,7 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QSettings>
+#include <QSqlQuery>
 
 #include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
@@ -68,6 +69,10 @@ spoton_rosetta::spoton_rosetta(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotClear(void)));
+  connect(ui.convert,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotConvert(void)));
   connect(ui.copy,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -101,6 +106,8 @@ spoton_rosetta::spoton_rosetta(void):QMainWindow()
 
   if(ui.hash->count() == 0)
     ui.hash->addItem("n/a");
+
+  populateContacts();
 }
 
 void spoton_rosetta::slotClose(void)
@@ -409,6 +416,7 @@ void spoton_rosetta::slotAddContact(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+  populateContacts();
 }
 
 void spoton_rosetta::slotDecryptToggled(bool state)
@@ -423,4 +431,55 @@ void spoton_rosetta::slotEncryptToggled(bool state)
   ui.cipher->setEnabled(state);
   ui.hash->setEnabled(state);
   ui.sign->setEnabled(state);
+}
+
+void spoton_rosetta::populateContacts(void)
+{
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			"friends_public_keys.db");
+
+    if(db.open())
+      {
+	QMap<QString, QByteArray> names;
+	QSqlQuery query(db);
+
+	ui.contacts->clear();
+
+	if(query.exec("SELECT name, public_key FROM friends_public_keys "
+		      "WHERE key_type = 'rosetta'"))
+	  while(query.next())
+	    names.insert(query.value(0).toString(),
+			 query.value(1).toByteArray());
+
+	QMapIterator<QString, QByteArray> it(names);
+
+	while (it.hasNext())
+	  {
+	    it.next();
+	    ui.contacts->addItem(it.key(), it.value());
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  if(ui.contacts->count() == 0)
+    ui.contacts->addItem(tr("Empty"));
+}
+
+void spoton_rosetta::slotConvert(void)
+{
+  if(ui.encrypt->isChecked())
+    {
+    }
+  else
+    {
+    }
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>758</height>
+    <width>803</width>
+    <height>684</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -406,7 +406,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="convert">
         <property name="text">
          <string>Convert</string>
         </property>
@@ -421,8 +421,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>27</height>
+     <width>803</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -471,7 +471,7 @@
   <tabstop>input</tabstop>
   <tabstop>clearOutput</tabstop>
   <tabstop>output</tabstop>
-  <tabstop>pushButton</tabstop>
+  <tabstop>convert</tabstop>
  </tabstops>
  <resources>
   <include location="../Icons/icons.qrc"/>

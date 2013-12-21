@@ -2179,6 +2179,23 @@ void spoton::sharePublicKeyWithParticipant(const QString &keyType)
 
 void spoton::slotRegenerateKey(void)
 {
+  QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+  mb.setIcon(QMessageBox::Question);
+  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+  mb.setWindowModality(Qt::WindowModal);
+  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+  mb.setText(tr("Are you sure that you wish to regenerate the selected "
+		"key pair?"));
+
+  if(mb.exec() != QMessageBox::Yes)
+    return;
+
   QString keyType("chat");
 
   if(m_ui.keys->currentText() == tr("Chat"))
