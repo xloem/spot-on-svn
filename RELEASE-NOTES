@@ -3,11 +3,13 @@
 1.   Archived the 0.06 branch.
 2.   Added the Rosetta converter. Please see the Tools menu.
 3.   Corrected the e-mail retrieval mechanism. The mechanism malfunctioned
-     if the interface of the c/o node was closed.
+     if the interface of the c/o node was inactive.
 4.   Completed implementation of spoton::copyMyUrlPublicKey(). Various
-     changes in preparation of URL public keys.
+     changes in preparation of URL public keys are also included.
 5.   Added verification of URL encryption and signature public keys.
 6.   Method const-correctness.
+7.   Added a minor feature for regenerating public key pairs. Please see
+     the Settings panel.
 
 0.07 (12/19/2013)
 
