@@ -190,6 +190,7 @@ class spoton: public QMainWindow
   void saveSettings(void);
   void sendBuzzKeysToKernel(void);
   void sendKeysToKernel(void);
+  void sharePublicKeyWithParticipant(const QString &keyType);
   void updateListenersTable(const QSqlDatabase &db);
   void updateNeighborsTable(const QSqlDatabase &db);
   void updateParticipantsTable(const QSqlDatabase &db);

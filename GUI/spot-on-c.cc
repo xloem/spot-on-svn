@@ -2075,3 +2075,104 @@ void spoton::slotViewRosetta(void)
 {
   m_rosetta.show(this);
 }
+
+void spoton::sharePublicKeyWithParticipant(const QString &keyType)
+{
+  if(!m_crypts.value(keyType, 0) ||
+     !m_crypts.value(QString("%1-signature").arg(keyType), 0))
+    return;
+  else if(m_kernelSocket.state() != QAbstractSocket::ConnectedState)
+    return;
+  else if(!m_kernelSocket.isEncrypted())
+    return;
+
+  QString oid("");
+  QTableWidget *table = 0;
+  int row = -1;
+
+  if(keyType == "chat")
+    table = m_ui.participants;
+  else if(keyType == "email")
+    table = m_ui.emailParticipants;
+  else if(keyType == "url")
+    table = m_ui.urlParticipants;
+
+  if(!table)
+    return;
+
+  if((row = table->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = table->item(row, 2); // neighbor_oid
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  QByteArray publicKey;
+  QByteArray signature;
+  bool ok = true;
+
+  publicKey = m_crypts.value(keyType)->publicKey(&ok);
+
+  if(ok)
+    signature = m_crypts.value(keyType)->digitalSignature(publicKey, &ok);
+
+  QByteArray sPublicKey;
+  QByteArray sSignature;
+
+  if(ok)
+    sPublicKey = m_crypts.value(QString("%1-signature").arg(keyType))->
+      publicKey(&ok);
+
+  if(ok)
+    sSignature = m_crypts.value(QString("%1-signature").arg(keyType))->
+      digitalSignature(sPublicKey, &ok);
+
+  if(ok)
+    {
+      QByteArray message;
+      QByteArray name;
+
+      if(keyType == "chat")
+	name = m_settings.value("gui/nodeName", "unknown").
+	  toByteArray().trimmed();
+      else if(keyType == "email")
+	name = m_settings.value("gui/emailName", "unknown").
+	  toByteArray().trimmed();
+      else if(keyType == "url")
+	name = name = m_settings.value("gui/urlName", "unknown").
+	  toByteArray().trimmed();
+
+      if(name.isEmpty())
+	name = "unknown";
+
+      message.append("befriendparticipant_");
+      message.append(oid);
+      message.append("_");
+      message.append(keyType.toLatin1().toBase64());
+      message.append("_");
+      message.append(name.toBase64());
+      message.append("_");
+      message.append(publicKey.toBase64());
+      message.append("_");
+      message.append(signature.toBase64());
+      message.append("_");
+      message.append(sPublicKey.toBase64());
+      message.append("_");
+      message.append(sSignature.toBase64());
+      message.append('\n');
+
+      if(m_kernelSocket.write(message.constData(), message.length()) !=
+	 message.length())
+	spoton_misc::logError
+	  (QString("spoton::sharePublicKeyWithParticipant(): "
+		   "write() failure for %1:%2.").
+	   arg(m_kernelSocket.peerAddress().toString()).
+	   arg(m_kernelSocket.peerPort()));
+      else
+	m_kernelSocket.flush();
+    }
+}
