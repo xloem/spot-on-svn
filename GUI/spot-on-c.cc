@@ -2217,6 +2217,8 @@ void spoton::slotRegenerateKey(void)
 
   if(m_ui.signatureKeyType->currentIndex() == 0)
     signatureKeyType = "dsa";
+  else if(m_ui.signatureKeyType->currentIndex() == 1)
+    signatureKeyType = "elg";
   else
     signatureKeyType = "rsa";
 

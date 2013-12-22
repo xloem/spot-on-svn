@@ -363,8 +363,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>643</width>
-                <height>421</height>
+                <width>1162</width>
+                <height>641</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1968,8 +1968,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>214</width>
-                 <height>415</height>
+                 <width>278</width>
+                 <height>641</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -4073,7 +4073,7 @@
                    <item>
                     <widget class="QComboBox" name="signatureKeyType">
                      <property name="currentIndex">
-                      <number>1</number>
+                      <number>2</number>
                      </property>
                      <property name="sizeAdjustPolicy">
                       <enum>QComboBox::AdjustToContents</enum>
@@ -4081,6 +4081,11 @@
                      <item>
                       <property name="text">
                        <string>DSA</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>ElGamal</string>
                       </property>
                      </item>
                      <item>

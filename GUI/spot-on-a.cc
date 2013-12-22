@@ -967,7 +967,7 @@ spoton::spoton(void):QMainWindow()
   if(m_settings.value("gui/signatureKey", "rsa").toString() == "dsa")
     m_ui.signatureKeyType->setCurrentIndex(0);
   else
-    m_ui.signatureKeyType->setCurrentIndex(1);
+    m_ui.signatureKeyType->setCurrentIndex(2);
 
   QString keySize
     (m_settings.value("gui/kernelKeySize", "2048").toString());
@@ -3918,6 +3918,8 @@ void spoton::slotSetPassphrase(void)
 
 	  if(m_ui.signatureKeyType->currentIndex() == 0)
 	    signatureKeyType = "dsa";
+	  else if(m_ui.signatureKeyType->currentIndex() == 1)
+	    signatureKeyType = "elg";
 	  else
 	    signatureKeyType = "rsa";
 
@@ -4112,6 +4114,8 @@ void spoton::slotSetPassphrase(void)
 
       if(m_ui.signatureKeyType->currentIndex() == 0)
 	m_settings["gui/signatureKey"] = "dsa";
+      else if(m_ui.signatureKeyType->currentIndex() == 1)
+	m_settings["gui/signatureKey"] = "elg";
       else
 	m_settings["gui/signatureKey"] = "rsa";
 
