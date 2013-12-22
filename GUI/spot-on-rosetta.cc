@@ -32,6 +32,7 @@
 #include <QSettings>
 #include <QSqlQuery>
 
+#include "Common/spot-on-common.h"
 #include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
 #include "spot-on-rosetta.h"
@@ -406,7 +407,8 @@ void spoton_rosetta::slotAddContact(void)
       {
 	QByteArray name(list.value(1));
 
-	name = QByteArray::fromBase64(name);
+	name = QByteArray::fromBase64(name).
+	  mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed();
 
 	if(spoton_misc::saveFriendshipBundle(keyType,
 					     name,
@@ -550,7 +552,9 @@ void spoton_rosetta::slotConvert(void)
 	    myPublicKeyHash = spoton_crypt::sha512Hash(myPublicKey, &ok);
 
 	  if(ok)
-	    signature = m_sCrypt->digitalSignature(myPublicKeyHash, &ok);
+	    signature = m_sCrypt->digitalSignature
+	      (myPublicKeyHash + ui.input->toPlainText().trimmed().toUtf8(),
+	       &ok);
 	}
 
       if(ok)
@@ -669,7 +673,7 @@ void spoton_rosetta::slotConvert(void)
       delete crypt;
 
       if(ok)
-	if(!spoton_misc::isValidSignature(publicKeyHash,
+	if(!spoton_misc::isValidSignature(publicKeyHash + data,
 					  publicKeyHash,
 					  signature))
 	  error = tr("Invalid signature.");
