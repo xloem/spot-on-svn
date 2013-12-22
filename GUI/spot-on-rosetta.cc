@@ -169,12 +169,12 @@ void spoton_rosetta::slotSetIcons(void)
   QString iconSet(settings.value("gui/iconSet", "nuove").toString().
 		  trimmed());
 
-  ui.add->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
+  ui.add->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
   ui.clearContact->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
   ui.clearInput->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
   ui.clearOutput->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
   ui.copy->setIcon(QIcon(QString(":/%1/copy.png").arg(iconSet)));
-  ui.save->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
+  ui.save->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
 }
 
 #ifdef Q_OS_MAC
