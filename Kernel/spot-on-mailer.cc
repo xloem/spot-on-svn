@@ -206,7 +206,7 @@ void spoton_mailer::slotRetrieveMail(const QByteArray &data,
 {
   /*
   ** We must locate the public key that's associated with the provided
-  ** public key hash. Remember publicKeyHash is the hash of the signature
+  ** public key hash. Remember, publicKeyHash is the hash of the signature
   ** public key.
   */
 

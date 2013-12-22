@@ -2637,6 +2637,17 @@ QByteArray spoton_crypt::strongRandomBytes(const size_t size)
   return random;
 }
 
+QByteArray spoton_crypt::veryStrongRandomBytes(const size_t size)
+{
+  QByteArray random(size, 0);
+
+  gcry_fast_random_poll();
+  gcry_randomize(static_cast<void *> (random.data()),
+		 static_cast<size_t> (random.length()),
+		 GCRY_VERY_STRONG_RANDOM);
+  return random;
+}
+
 size_t spoton_crypt::cipherKeyLength(const QByteArray &cipherType)
 {
   int cipherAlgorithm = gcry_cipher_map_name(cipherType.constData());

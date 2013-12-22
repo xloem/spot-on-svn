@@ -1719,7 +1719,7 @@ bool spoton_misc::isValidSignature(const QByteArray &data,
 {
   /*
   ** We must locate the signature public key that's associated with the
-  ** provided public key hash. Remember publicKeyHash is the hash of the
+  ** provided public key hash. Remember, publicKeyHash is the hash of the
   ** non-signature public key.
   */
 
