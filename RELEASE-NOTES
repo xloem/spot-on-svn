@@ -10,6 +10,7 @@
 6.   Method const-correctness.
 7.   Added a minor feature for regenerating public key pairs. Please see
      the Settings panel.
+8.   Corrected use of activateWindow().
 
 0.07 (12/19/2013)
 
