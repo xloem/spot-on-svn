@@ -4465,14 +4465,6 @@ void spoton::slotTestSslControlString(void)
   mb.exec();
 }
 
-void spoton::slotKeyOriginChanged(int index)
-{
-  m_ui.encryptionKeyType->setEnabled(index == 0);
-  m_ui.keySize->setEnabled(index == 0);
-  m_ui.newKeys->setEnabled(index == 0);
-  m_ui.signatureKeyType->setEnabled(index == 0);
-}
-
 void spoton::slotChatInactivityTimeout(void)
 {
   if(m_ui.status->currentIndex() != 2) // Offline

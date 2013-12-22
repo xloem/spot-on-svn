@@ -1202,6 +1202,8 @@ spoton::spoton(void):QMainWindow()
       m_ui.passphrase1->setText("0000000000");
       m_ui.passphrase2->setText("0000000000");
       m_ui.keySize->setEnabled(false);
+      m_ui.keys->setEnabled(true);
+      m_ui.regenerate->setEnabled(true);
       m_ui.signatureKeyType->setEnabled(false);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
@@ -1222,10 +1224,12 @@ spoton::spoton(void):QMainWindow()
       m_sb.frame->setEnabled(false);
       m_ui.action_Rosetta->setEnabled(false);
       m_ui.encryptionKeyType->setEnabled(false);
+      m_ui.keys->setEnabled(false);
       m_ui.newKeys->setEnabled(false);
       m_ui.passphrase->setEnabled(false);
       m_ui.passphraseButton->setEnabled(false);
       m_ui.passphraseLabel->setEnabled(false);
+      m_ui.regenerate->setEnabled(false);
       m_ui.signatureKeyType->setEnabled(false);
       m_ui.newKeys->setChecked(true);
       m_ui.kernelBox->setEnabled(false);
@@ -4070,9 +4074,11 @@ void spoton::slotSetPassphrase(void)
       m_ui.encryptionKeyType->setEnabled(false);
       m_ui.kernelBox->setEnabled(true);
       m_ui.keySize->setEnabled(false);
+      m_ui.keys->setEnabled(true);
       m_ui.newKeys->setEnabled(true);
       m_ui.passphrase1->setText("0000000000");
       m_ui.passphrase2->setText("0000000000");
+      m_ui.regenerate->setEnabled(true);
       m_ui.signatureKeyType->setEnabled(false);
       m_ui.newKeys->setChecked(false);
 
@@ -4225,11 +4231,13 @@ void spoton::slotValidatePassphrase(void)
 	    m_ui.encryptionKeyType->setEnabled(false);
 	    m_ui.kernelBox->setEnabled(true);
 	    m_ui.keySize->setEnabled(false);
+	    m_ui.keys->setEnabled(true);
 	    m_ui.newKeys->setEnabled(true);
 	    m_ui.passphrase->clear();
 	    m_ui.passphrase->setEnabled(false);
 	    m_ui.passphraseButton->setEnabled(false);
 	    m_ui.passphraseLabel->setEnabled(false);
+	    m_ui.regenerate->setEnabled(true);
 	    m_ui.signatureKeyType->setEnabled(false);
 
 	    for(int i = 0; i < m_ui.tab->count(); i++)
