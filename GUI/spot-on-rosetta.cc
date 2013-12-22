@@ -673,15 +673,20 @@ void spoton_rosetta::slotConvert(void)
       delete crypt;
 
       if(ok)
-	if(!spoton_misc::isValidSignature(publicKeyHash + data,
-					  publicKeyHash,
-					  signature))
-	  error = tr("Invalid signature.");
+	{
+	  if(signature.isEmpty())
+	    error = tr("The message was not signed.");
+	  else if(!spoton_misc::isValidSignature(publicKeyHash + data,
+						 publicKeyHash,
+						 signature))
+	    error = tr("Invalid signature. Perhaps your contacts are "
+		       "not current.");
+	}
 
       if(!ok)
 	error = tr("A serious cryptographic error occurred.");
       else
-	ui.output->setText(QString::fromUtf8(data.constData()));
+	ui.output->setText(QString::fromUtf8(data.constData()).trimmed());
 
     done_label2:
 
