@@ -81,6 +81,10 @@ spoton_rosetta::spoton_rosetta(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotDecryptToggled(bool)));
+  connect(ui.deleteContact,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotDelete(void)));
   connect(ui.encrypt,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -482,4 +486,54 @@ void spoton_rosetta::slotConvert(void)
   else
     {
     }
+}
+
+void spoton_rosetta::slotDelete(void)
+{
+  if(ui.contacts->itemData(ui.contacts->currentIndex()).isNull())
+    return;
+
+  QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+  mb.setIcon(QMessageBox::Question);
+  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+  mb.setWindowModality(Qt::WindowModal);
+  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+  mb.setText(tr("Are you sure that you wish to remove the selected "
+		"contact?"));
+
+  if(mb.exec() != QMessageBox::Yes)
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QByteArray data(ui.contacts->itemData(ui.contacts->currentIndex()).
+			toByteArray());
+	QSqlQuery query(db);
+
+	query.prepare("DELETE FROM friends_public_keys WHERE "
+		      "public_key = ?");
+	query.bindValue(0, data);
+	query.exec();
+	spoton_misc::purgeSignatureRelationships(db);
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  populateContacts();
 }

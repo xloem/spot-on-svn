@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>803</width>
-    <height>684</height>
+    <height>691</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -201,7 +201,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="deleteContact">
         <property name="text">
          <string>Delete</string>
         </property>
@@ -422,7 +422,7 @@
      <x>0</x>
      <y>0</y>
      <width>803</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -463,7 +463,7 @@
   <tabstop>encrypt</tabstop>
   <tabstop>decrypt</tabstop>
   <tabstop>contacts</tabstop>
-  <tabstop>pushButton_2</tabstop>
+  <tabstop>deleteContact</tabstop>
   <tabstop>clearInput</tabstop>
   <tabstop>cipher</tabstop>
   <tabstop>hash</tabstop>

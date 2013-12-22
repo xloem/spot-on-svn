@@ -660,7 +660,8 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
   query.bindValue(1, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
   query.bindValue(2, keyType.constData());
 
-  if(keyType == "chat" || keyType == "email" || keyType == "url")
+  if(keyType == "chat" || keyType == "email" ||
+     keyType == "rosetta" || keyType == "url")
     {
       if(name.isEmpty())
 	query.bindValue(3, "unknown");
