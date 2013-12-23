@@ -2540,13 +2540,22 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
 	  if(ok)
 	    *ok = false;
 
-	  QByteArray buffer(64, 0);
+	  if(err != 0)
+	    {
+	      QByteArray buffer(64, 0);
 
-	  gpg_strerror_r(err, buffer.data(), buffer.length());
-	  spoton_misc::logError
-	    (QString("spoton_crypt()::digitalSignature(): "
-		     "gcry_sexp_build() "
-		     "failure (%1).").arg(buffer.constData()));
+	      gpg_strerror_r(err, buffer.data(), buffer.length());
+	      spoton_misc::logError
+		(QString("spoton_crypt()::digitalSignature(): "
+			 "gcry_mpi_scan() "
+			 "failure (%1).").arg(buffer.constData()));
+	    }
+	  else
+	    spoton_misc::logError
+	      ("spoton_crypt()::digitalSignature(): "
+	       "gcry_mpi_scan() "
+	       "failure.");
+
 	  goto done_label;
 	}
 
@@ -2864,13 +2873,22 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
 	{
 	  ok = false;
 
-	  QByteArray buffer(64, 0);
+	  if(err != 0)
+	    {
+	      QByteArray buffer(64, 0);
 
-	  gpg_strerror_r(err, buffer.data(), buffer.length());
-	  spoton_misc::logError
-	    (QString("spoton_crypt()::isValidSignature(): "
-		     "gcry_sexp_build() "
-		     "failure (%1).").arg(buffer.constData()));
+	      gpg_strerror_r(err, buffer.data(), buffer.length());
+	      spoton_misc::logError
+		(QString("spoton_crypt()::isValidSignature(): "
+			 "gcry_mpi_scan() "
+			 "failure (%1).").arg(buffer.constData()));
+	    }
+	  else
+	    spoton_misc::logError
+	      ("spoton_crypt()::isValidSignature(): "
+	       "gcry_mpi_scan() "
+	       "failure.");
+
 	  goto done_label;
 	}
 
