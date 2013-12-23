@@ -855,6 +855,7 @@ spoton_crypt::spoton_crypt(const QString &id)
   m_id = id;
   m_iterationCount = 0; // We're not deriving keys.
   m_privateKey = 0;
+  m_privateKeyLength = 0;
   m_symmetricKey = 0;
 
   if(m_cipherAlgorithm)
@@ -987,6 +988,7 @@ void spoton_crypt::init(const QString &cipherType,
   m_id = id;
   m_iterationCount = iterationCount;
   m_privateKey = 0;
+  m_privateKeyLength = 0;
   m_symmetricKey = 0;
 
   if(m_cipherAlgorithm)
@@ -1382,6 +1384,15 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data, bool *ok) const
 	("spoton_crypt::keyedHash(): m_hashAlgorithm is 0.");
       return QByteArray();
     }
+  else if(!m_symmetricKey || m_symmetricKeyLength == 0)
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	("spoton_crypt::keyedHash(): m_symmetricKey is not defined.");
+      return QByteArray();
+    }
 
   QByteArray hash;
   gcry_error_t err = 0;
@@ -1696,7 +1707,7 @@ QByteArray spoton_crypt::publicKeyEncrypt(const QByteArray &data,
 
 void spoton_crypt::initializePrivateKeyContainer(bool *ok)
 {
-  if(m_privateKey)
+  if(m_privateKey || m_privateKeyLength > 0)
     {
       if(ok)
 	*ok = true;
@@ -1813,7 +1824,7 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
     initializePrivateKeyContainer(&ok);
   }
 
-  if(!m_privateKey)
+  if(!m_privateKey || m_privateKeyLength == 0)
     {
       if(ok)
 	*ok = false;
@@ -2054,6 +2065,10 @@ void spoton_crypt::generatePrivatePublicKeys(const int keySize,
   gcry_sexp_t parameters_t = 0;
   size_t length = 0;
 
+  gcry_free(m_privateKey);
+  m_privateKey = 0;
+  m_privateKeyLength = 0;
+
   if(keyType == "dsa")
     genkey = QString("(genkey (dsa (nbits %1:%2)))").
       arg(qFloor(log10(keySize)) + 1).
@@ -2250,6 +2265,13 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data,
 
       return hash;
     }
+  else if(key.isEmpty())
+    {
+      if(ok)
+	*ok = false;
+
+      return hash;
+    }
 
   if((err = gcry_md_open(&hd, hashAlgorithm,
 			 GCRY_MD_FLAG_HMAC)) != 0 || !hd)
@@ -2356,10 +2378,12 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
   QString keyType("");
   QString connectionName("");
   gcry_error_t err = 0;
+  gcry_mpi_t hash_t = 0;
   gcry_sexp_t data_t = 0;
   gcry_sexp_t key_t = 0;
   gcry_sexp_t raw_t = 0;
   gcry_sexp_t signature_t = 0;
+  unsigned char *hash_p = 0;
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -2493,11 +2517,41 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
 
   if(keyType == "dsa" || keyType == "elg")
     {
-      hash.prepend('0');
+      hash_p = (unsigned char *) malloc(hash.length());
+
+      if(!hash_p)
+	{
+	  if(ok)
+	    *ok = false;
+
+	  spoton_misc::logError("spoton_crypt::digitalSignature(): "
+				"malloc() failure.");
+	  goto done_label;
+	}
+      else
+	memcpy(hash_p, (unsigned char *) hash.constData(), hash.length());
+
+      err = gcry_mpi_scan
+	(&hash_t, GCRYMPI_FMT_USG, hash_p, hash.length(), 0);
+
+      if(err != 0 || !hash_t)
+	{
+	  if(ok)
+	    *ok = false;
+
+	  QByteArray buffer(64, 0);
+
+	  gpg_strerror_r(err, buffer.data(), buffer.length());
+	  spoton_misc::logError
+	    (QString("spoton_crypt()::digitalSignature(): "
+		     "gcry_sexp_build() "
+		     "failure (%1).").arg(buffer.constData()));
+	  goto done_label;
+	}
+
       err = gcry_sexp_build(&data_t, 0,
-			    "%b",
-			    hash.length(),
-			    hash.constData());
+			    "(data (flags raw) (value %m))",
+			    hash_t);
     }
   else
     {
@@ -2614,6 +2668,8 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
     }
 
  done_label:
+  free(hash_p);
+  gcry_mpi_release(hash_t);
   gcry_sexp_release(data_t);
   gcry_sexp_release(key_t);
   gcry_sexp_release(raw_t);
@@ -2687,10 +2743,12 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
   QString keyType("");
   bool ok = true;
   gcry_error_t err = 0;
+  gcry_mpi_t hash_t = 0;
   gcry_sexp_t data_t = 0;
   gcry_sexp_t key_t = 0;
   gcry_sexp_t raw_t = 0;
   gcry_sexp_t signature_t = 0;
+  unsigned char *hash_p = 0;
 
   if(data.isEmpty() || publicKey.isEmpty() || signature.isEmpty())
     {
@@ -2785,11 +2843,38 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
 
   if(keyType == "dsa" || keyType == "elg")
     {
-      hash.prepend('0');
+      hash_p = (unsigned char *) malloc(hash.length());
+
+      if(!hash_p)
+	{
+	  ok = false;
+	  spoton_misc::logError("spoton_crypt::isValidSignature(): "
+				"malloc() failure.");
+	  goto done_label;
+	}
+      else
+	memcpy(hash_p, (unsigned char *) hash.constData(), hash.length());
+
+      err = gcry_mpi_scan
+	(&hash_t, GCRYMPI_FMT_USG, hash_p, hash.length(), 0);
+
+      if(err != 0 || !hash_t)
+	{
+	  ok = false;
+
+	  QByteArray buffer(64, 0);
+
+	  gpg_strerror_r(err, buffer.data(), buffer.length());
+	  spoton_misc::logError
+	    (QString("spoton_crypt()::isValidSignature(): "
+		     "gcry_sexp_build() "
+		     "failure (%1).").arg(buffer.constData()));
+	  goto done_label;
+	}
+
       err = gcry_sexp_build(&data_t, 0,
-			    "%b",
-			    hash.length(),
-			    hash.constData());
+			    "(data (flags raw) (value %m))",
+			    hash_t);
     }
   else
     err = gcry_sexp_build(&data_t, 0,
@@ -2836,6 +2921,8 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
     }
 
  done_label:
+  free(hash_p);
+  gcry_mpi_release(hash_t);
   gcry_sexp_release(data_t);
   gcry_sexp_release(key_t);
   gcry_sexp_release(raw_t);
