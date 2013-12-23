@@ -2529,7 +2529,8 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
 	  goto done_label;
 	}
       else
-	memcpy(hash_p, (unsigned char *) hash.constData(), hash.length());
+	memcpy
+	  (hash_p, (const unsigned char *) hash.constData(), hash.length());
 
       err = gcry_mpi_scan
 	(&hash_t, GCRYMPI_FMT_USG, hash_p, hash.length(), 0);
@@ -2853,7 +2854,8 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
 	  goto done_label;
 	}
       else
-	memcpy(hash_p, (unsigned char *) hash.constData(), hash.length());
+	memcpy
+	  (hash_p, (const unsigned char *) hash.constData(), hash.length());
 
       err = gcry_mpi_scan
 	(&hash_t, GCRYMPI_FMT_USG, hash_p, hash.length(), 0);
