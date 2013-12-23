@@ -15,6 +15,9 @@
      befuddle the current window.
 9.   Support for textbook ElGamal signatures. ElGamal encryption is also
      considered textbook.
+10.  The function gcry_md_setkey() accepts empty keys. Spot will
+     consider such cases as errors.
+11.  Corrected digital signatures with respect to DSA and ElGamal.
 
 0.07 (12/19/2013)
 
