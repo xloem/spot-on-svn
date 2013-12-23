@@ -458,7 +458,7 @@ void spoton_rosetta::populateContacts(void)
 
     if(db.open())
       {
-	QMap<QString, QByteArray> names;
+	QMultiMap<QString, QByteArray> names;
 	QSqlQuery query(db);
 
 	ui.contacts->clear();
@@ -508,6 +508,12 @@ void spoton_rosetta::slotConvert(void)
       if(ui.contacts->itemData(ui.contacts->currentIndex()).isNull())
 	{
 	  error = tr("Invalid item data. This is a serious flaw.");
+	  goto done_label1;
+	}
+
+      if(ui.input->toPlainText().trimmed().isEmpty())
+	{
+	  error = tr("Please provide an actual message!");
 	  goto done_label1;
 	}
 
@@ -610,7 +616,7 @@ void spoton_rosetta::slotConvert(void)
 
       if(data.isEmpty())
 	{
-	  error = tr("Empty data.");
+	  error = tr("Empty input data.");
 	  goto done_label2;
 	}
 
