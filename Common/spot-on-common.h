@@ -28,7 +28,7 @@
 #ifndef _spoton_common_h_
 #define _spoton_common_h_
 
-#define SPOTON_VERSION_STR "0.08"
+#define SPOTON_VERSION_STR "0.09"
 
 namespace spoton_common
 {
