@@ -171,3 +171,4 @@ Remaining Items
 39.    Although account authentication occurs within
        SSL (TCP connections only), account credentials should not be
        recorded via reversible encryption.
+40.    Separate keys should be used for storing keyed hashes.
