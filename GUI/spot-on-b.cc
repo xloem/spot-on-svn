@@ -239,12 +239,7 @@ void spoton::slotReceivedKernelMessage(void)
 
 		  if(s_crypt)
 		    hash = spoton_crypt::keyedHash
-		      (list.value(0),
-		       QByteArray(s_crypt->
-				  symmetricKey(),
-				  s_crypt->
-				  symmetricKeyLength()),
-		       "sha512", &ok);
+		      (list.value(0), s_crypt->symmetricKey(), "sha512", &ok);
 		  else
 		    hash = spoton_crypt::sha512Hash(list.value(0), &ok);
 

@@ -64,7 +64,7 @@ void spoton_starbeam_writer::slotProcessData(void)
   if(m_queue.isEmpty())
     return;
 
-  QByteArray data(m_queue.dequeue());
+  QByteArray data(qUncompress(m_queue.dequeue()));
 
   locker.unlock();
 
@@ -395,7 +395,7 @@ void spoton_starbeam_writer::enqueue(const QByteArray &data)
   if(spoton_kernel::setting("gui/etpReceivers", false).toBool())
     {
       m_mutex.lock();
-      m_queue.enqueue(QByteArray::fromBase64(data));
+      m_queue.enqueue(qCompress(QByteArray::fromBase64(data), 9));
       m_mutex.unlock();
     }
 }

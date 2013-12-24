@@ -116,23 +116,23 @@ class spoton_crypt
 			    QSslConfiguration &configuration);
   static void terminate(void);
   spoton_crypt(const QString &cipherType,
-		const QString &hashType,
-		const QByteArray &passphrase,
-		const QByteArray &symmetricKey,
-		const int saltLength,
-		const unsigned long iterationCount,
-		const QString &id);
+	       const QString &hashType,
+	       const QByteArray &passphrase,
+	       const QByteArray &symmetricKey,
+	       const int saltLength,
+	       const unsigned long iterationCount,
+	       const QString &id);
   ~spoton_crypt();
   QByteArray decrypted(const QByteArray &data, bool *ok);
   QByteArray digitalSignature(const QByteArray &data, bool *ok);
   QByteArray encrypted(const QByteArray &data, bool *ok);
+  QByteArray hashKey(void) const;
   QByteArray keyedHash(const QByteArray &data, bool *ok) const;
   QByteArray publicKey(bool *ok);
   QByteArray publicKeyDecrypt(const QByteArray &data, bool *ok);
   QByteArray publicKeyHash(bool *ok);
+  QByteArray symmetricKey(void) const;
   QString cipherType(void) const;
-  char *symmetricKey(void) const;
-  size_t symmetricKeyLength(void) const;
   void generatePrivatePublicKeys(const int keySize,
 				 const QString &keyType,
 				 QString &error);

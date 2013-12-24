@@ -323,7 +323,9 @@ void spoton_gui_server::slotReadyRead(void)
 	    {
 	      message.remove(0, qstrlen("keys_"));
 
-	      if(!message.isEmpty())
+	      QList<QByteArray> list(message.split('_'));
+
+	      if(list.size() == 2)
 		{
 		  QStringList names;
 
@@ -349,12 +351,15 @@ void spoton_gui_server::slotReadyRead(void)
 						  "sha512").
 			   toString().trimmed(),
 			   QByteArray(),
-			   QByteArray::fromBase64(message),
+			   QByteArray::fromBase64(list.value(0)),
 			   spoton_kernel::setting("gui/saltLength",
 						  512).toInt(),
 			   spoton_kernel::setting("gui/iterationCount",
 						  10000).toInt(),
 			   names.at(i));
+
+			crypt->setHashKey
+			  (QByteArray::fromBase64(list.value(1)));
 			spoton_kernel::s_crypts.insert(names.at(i), crypt);
 		      }
 		}
@@ -512,9 +517,7 @@ void spoton_gui_server::slotReceivedBuzzMessage
 
   if(s_crypt)
     hash = spoton_crypt::keyedHash
-      (list.value(0),
-       QByteArray(s_crypt->symmetricKey(),
-		  s_crypt->symmetricKeyLength()), "sha512", &ok);
+      (list.value(0), s_crypt->symmetricKey(), "sha512", &ok);
   else
     hash = spoton_crypt::sha512Hash(hash, &ok);
 

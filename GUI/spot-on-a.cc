@@ -4186,6 +4186,8 @@ void spoton::slotValidatePassphrase(void)
 					salt, error))
     if(error.isEmpty())
       {
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 	QPair<QByteArray, QByteArray> keys
 	  (spoton_crypt::derivedKeys(m_ui.cipherType->currentText(),
 				     m_ui.hashType->currentText(),
@@ -4193,6 +4195,8 @@ void spoton::slotValidatePassphrase(void)
 				     m_ui.passphrase->text(),
 				     salt,
 				     error));
+
+	QApplication::restoreOverrideCursor();
 
 	if(error.isEmpty())
 	  {
@@ -4218,15 +4222,19 @@ void spoton::slotValidatePassphrase(void)
 		 << "url-signature";
 
 	    for(int i = 0; i < list.size(); i++)
-	      m_crypts.insert
-		(list.at(i),
-		 new spoton_crypt(m_ui.cipherType->currentText(),
-				  m_ui.hashType->currentText(),
-				  QByteArray(),
-				  keys.first,
-				  m_ui.saltLength->value(),
-				  m_ui.iterationCount->value(),
-				  list.at(i)));
+	      {
+		spoton_crypt *crypt = new spoton_crypt
+		  (m_ui.cipherType->currentText(),
+		   m_ui.hashType->currentText(),
+		   QByteArray(),
+		   keys.first,
+		   m_ui.saltLength->value(),
+		   m_ui.iterationCount->value(),
+		   list.at(i));
+
+		crypt->setHashKey(keys.second);
+		m_crypts.insert(list.at(i), crypt);
+	      }
 
 	    m_rosetta.setCryptObjects(m_crypts.value("rosetta", 0),
 				      m_crypts.value("rosetta-signature", 0));
@@ -4678,13 +4686,15 @@ void spoton::sendKeysToKernel(void)
     if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
       if(m_kernelSocket.isEncrypted())
 	{
+	  QByteArray hashKey(m_crypts.value("chat")->hashKey());
 	  QByteArray keys("keys_");
-	  QByteArray symmetricKey
-	    (m_crypts.value("chat")->
-	     symmetricKey(), m_crypts.value("chat")->symmetricKeyLength());
+	  QByteArray symmetricKey(m_crypts.value("chat")->symmetricKey());
 
+	  hashKey = hashKey.toBase64();
 	  symmetricKey = symmetricKey.toBase64();
 	  keys.append(symmetricKey);
+	  keys.append("_");
+	  keys.append(hashKey);
 	  keys.append('\n');
 
 	  if(m_kernelSocket.write(keys.constData(), keys.length()) !=

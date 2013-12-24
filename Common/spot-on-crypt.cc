@@ -168,7 +168,7 @@ QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
  QString &error)
 {
   QByteArray key;
-  QPair<QByteArray, QByteArray> derivedKeys;
+  QPair<QByteArray, QByteArray> keys;
   gcry_error_t err = 0;
   int cipherAlgorithm = gcry_cipher_map_name(cipherType.toLatin1().
 					     constData());
@@ -204,8 +204,8 @@ QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
     }
 
   key.resize(cipherKeyLength + 256);
-  derivedKeys.first.resize(cipherKeyLength);
-  derivedKeys.second.resize(key.length() - cipherKeyLength);
+  keys.first.resize(cipherKeyLength);
+  keys.second.resize(key.length() - cipherKeyLength);
 
   for(int i = 1; i <= 3; i++)
     {
@@ -231,8 +231,8 @@ QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
 	   static_cast<const void *> (salt.constData()),
 	   static_cast<size_t> (salt.length()),
 	   iterationCount,
-	   static_cast<size_t> (derivedKeys.first.length()),
-	   static_cast<void *> (derivedKeys.first.data()));
+	   static_cast<size_t> (keys.first.length()),
+	   static_cast<void *> (keys.first.data()));
       else if(i == 3)
 	err = gcry_kdf_derive
 	  (static_cast<const void *> (key.constData()),
@@ -242,8 +242,8 @@ QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
 	   static_cast<const void *> (salt.constData()),
 	   static_cast<size_t> (salt.length()),
 	   iterationCount,
-	   static_cast<size_t> (derivedKeys.second.length()),
-	   static_cast<void *> (derivedKeys.second.data()));
+	   static_cast<size_t> (keys.second.length()),
+	   static_cast<void *> (keys.second.data()));
 
       if(err != 0)
 	{
@@ -263,11 +263,11 @@ QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
 
   if(!error.isEmpty())
     {
-      derivedKeys.first.clear();
-      derivedKeys.second.clear();
+      keys.first.clear();
+      keys.second.clear();
     }
 
-  return derivedKeys;
+  return keys;
 }
 
 QByteArray spoton_crypt::saltedValue(const QString &hashType,
@@ -1197,14 +1197,12 @@ QByteArray spoton_crypt::encrypted(const QByteArray &data, bool *ok)
   return encrypted;
 }
 
-char *spoton_crypt::symmetricKey(void) const
+QByteArray spoton_crypt::symmetricKey(void) const
 {
-  return m_symmetricKey;
-}
-
-size_t spoton_crypt::symmetricKeyLength(void) const
-{
-  return m_symmetricKeyLength;
+  if(m_symmetricKey)
+    return QByteArray(m_symmetricKey, m_symmetricKeyLength);
+  else
+    return QByteArray();
 }
 
 bool spoton_crypt::setInitializationVector(QByteArray &bytes,
@@ -3382,4 +3380,12 @@ void spoton_crypt::setHashKey(const QByteArray &hashKey)
 	   m_hashKeyLength);
   else
     m_hashKeyLength = 0;
+}
+
+QByteArray spoton_crypt::hashKey(void) const
+{
+  if(m_hashKey)
+    return QByteArray(m_hashKey, m_hashKeyLength);
+  else
+    return QByteArray();
 }
