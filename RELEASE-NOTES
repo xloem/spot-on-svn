@@ -12,6 +12,8 @@
      that gost28147 will be excluded if SPOTON_GCRYPT_CIPHER_MODE_GCM is
      provided because gost28147's block size does not meet the published
      requirements of GCM.
+5.   Compress data in spoton_starbeam_writer::enqueue(). Please note that
+     the compression may produce expanded results.
 
 0.08 (12/23/2013)
 
