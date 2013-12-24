@@ -3,8 +3,15 @@
 1.   Use a separate key for computing local keyed hashes. Keyed hashes provide
      uniqueness to database entries. Please reset Spot. Apologies.
 2.   Removed obsolete methods from the spoton_crypt class.
-3.   The mechanisms that are responsible for copying chat and e-mail public key pairs
-     incorrectly used the encryption keys for computing keyed hashes.
+3.   The mechanisms that are responsible for copying chat and e-mail public
+     key pairs incorrectly used the encryption keys for computing keyed
+     hashes.
+4.   Introduced SPOTON_GCRYPT_CIPHER_MODE_GCM in support of the Galois
+     Counter Mode. The mode is available in libgcrypt 1.6. If specified,
+     all symmetric decryption and encryption will occur via GCM. Please note
+     that gost28147 will be excluded if SPOTON_GCRYPT_CIPHER_MODE_GCM is
+     provided because gost28147's block size does not meet the published
+     requirements of GCM.
 
 0.08 (12/23/2013)
 
