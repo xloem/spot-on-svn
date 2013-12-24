@@ -346,7 +346,8 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_isUserDefined = userDefined;
   m_keySize = qAbs(keySize);
 
-  if(!(m_keySize == 2048 || m_keySize == 3072 || m_keySize == 4096))
+  if(!(m_keySize == 2048 || m_keySize == 3072 ||
+       m_keySize == 4096 || m_keySize == 8192))
     m_keySize = 2048;
 
   m_lastReadTime = QDateTime::currentDateTime();

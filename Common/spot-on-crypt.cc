@@ -168,6 +168,7 @@ QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
  QString &error)
 {
   QByteArray key;
+  QByteArray temporaryKey;
   QPair<QByteArray, QByteArray> keys;
   gcry_error_t err = 0;
   int cipherAlgorithm = gcry_cipher_map_name(cipherType.toLatin1().
@@ -206,8 +207,9 @@ QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
   key.resize(cipherKeyLength + 256);
   keys.first.resize(cipherKeyLength);
   keys.second.resize(key.length() - cipherKeyLength);
+  temporaryKey.resize(key.length());
 
-  for(int i = 1; i <= 3; i++)
+  for(int i = 1; i <= 2; i++)
     {
       gcry_fast_random_poll();
 
@@ -220,30 +222,27 @@ QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
 	   static_cast<const void *> (salt.constData()),
 	   static_cast<size_t> (salt.length()),
 	   iterationCount,
-	   static_cast<size_t> (key.length()),
-	   static_cast<void *> (key.data()));
+	   static_cast<size_t> (temporaryKey.length()),
+	   static_cast<void *> (temporaryKey.data()));
       else if(i == 2)
-	err = gcry_kdf_derive
-	  (static_cast<const void *> (key.constData()),
-	   static_cast<size_t> (key.length()),
-	   GCRY_KDF_PBKDF2,
-	   hashAlgorithm,
-	   static_cast<const void *> (salt.constData()),
-	   static_cast<size_t> (salt.length()),
-	   iterationCount,
-	   static_cast<size_t> (keys.first.length()),
-	   static_cast<void *> (keys.first.data()));
-      else if(i == 3)
-	err = gcry_kdf_derive
-	  (static_cast<const void *> (key.constData()),
-	   static_cast<size_t> (key.length()),
-	   GCRY_KDF_PBKDF2,
-	   hashAlgorithm,
-	   static_cast<const void *> (salt.constData()),
-	   static_cast<size_t> (salt.length()),
-	   iterationCount,
-	   static_cast<size_t> (keys.second.length()),
-	   static_cast<void *> (keys.second.data()));
+	{
+	  err = gcry_kdf_derive
+	    (static_cast<const void *> (temporaryKey.constData()),
+	     static_cast<size_t> (temporaryKey.length()),
+	     GCRY_KDF_PBKDF2,
+	     hashAlgorithm,
+	     static_cast<const void *> (salt.constData()),
+	     static_cast<size_t> (salt.length()),
+	     iterationCount,
+	     static_cast<size_t> (key.length()),
+	     static_cast<void *> (key.data()));
+
+	  if(err == 0)
+	    {
+	      keys.first = key.mid(0, keys.first.length());
+	      keys.second = key.mid(keys.first.length());
+	    }
+	}
 
       if(err != 0)
 	{

@@ -94,7 +94,7 @@ void spoton_misc::prepareDatabases(void)
 
 	query.exec("CREATE TABLE IF NOT EXISTS buzz_channels ("
 		   "data BLOB NOT NULL, "
-		   "data_hash TEXT PRIMARY KEY NOT NULL)");
+		   "data_hash TEXT PRIMARY KEY NOT NULL)"); // Keyed hash.
       }
 
     db.close();
@@ -119,7 +119,7 @@ void spoton_misc::prepareDatabases(void)
 					     ** Symmetric key for outbound.
 					     */
 		   "hash TEXT NOT NULL, " /*
-					  ** Hash of the message and
+					  ** Keyed hash of the message and
 					  ** the subject.
 					  */
 		   "message BLOB NOT NULL, "
@@ -142,7 +142,7 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS post_office ("
 		   "date_received TEXT NOT NULL, "
 		   "message_bundle BLOB NOT NULL, "
-		   "message_bundle_hash TEXT NOT NULL, "
+		   "message_bundle_hash TEXT NOT NULL, " // Keyed hash.
 		   "recipient_hash TEXT NOT NULL, " /*
 						    ** SHA-512 hash of the
 						    ** recipient's public
@@ -277,8 +277,8 @@ void spoton_misc::prepareDatabases(void)
 		   "external_ip_address TEXT, "
 		   "external_port TEXT, "
 		   "hash TEXT PRIMARY KEY NOT NULL, " /*
-						      ** The hash of the
-						      ** IP address,
+						      ** The keyed hash of
+						      ** the IP address,
 						      ** the port,
 						      ** the scope id, and
 						      ** the transport.
@@ -297,7 +297,7 @@ void spoton_misc::prepareDatabases(void)
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_accounts ("
 		   "account_name TEXT NOT NULL, "
-		   "account_name_hash TEXT NOT NULL, "
+		   "account_name_hash TEXT NOT NULL, " // Keyed hash.
 		   "account_password TEXT NOT NULL, "
 		   "listener_oid INTEGER NOT NULL, "
 		   "PRIMARY KEY (listener_oid, account_name_hash), "
@@ -308,7 +308,7 @@ void spoton_misc::prepareDatabases(void)
 					*/
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_allowed_ips ("
 		   "ip_address TEXT NOT NULL, "
-		   "ip_address_hash TEXT NOT NULL, "
+		   "ip_address_hash TEXT NOT NULL, " // Keyed hash.
 		   "listener_oid INTEGER NOT NULL, "
 		   "PRIMARY KEY (ip_address_hash, listener_oid), "
 		   "FOREIGN KEY (listener_oid) REFERENCES "
@@ -348,16 +348,16 @@ void spoton_misc::prepareDatabases(void)
 		   "uuid TEXT NOT NULL, "
 		   "country TEXT, "
 		   "hash TEXT PRIMARY KEY NOT NULL, " /*
-						      ** Hash of the proxy
-						      ** IP address,
+						      ** Keyed hash of the
+						      ** proxy IP address,
 						      ** the proxy port,
 						      ** the remote IP
 						      ** address, the remote
 						      ** port, the scope id,
 						      ** and the transport.
 						      */
-		   "remote_ip_address_hash TEXT NOT NULL, "
-		   "qt_country_hash TEXT, "
+		   "remote_ip_address_hash TEXT NOT NULL, " // Keyed hash.
+		   "qt_country_hash TEXT, " // Keyed hash.
 		   "user_defined INTEGER NOT NULL DEFAULT 1, "
 		   "proxy_hostname TEXT NOT NULL, "
 		   "proxy_password TEXT NOT NULL, "
@@ -401,25 +401,25 @@ void spoton_misc::prepareDatabases(void)
 
 	query.exec("CREATE TABLE IF NOT EXISTS magnets ("
 		   "magnet BLOB NOT NULL, "
-		   "magnet_hash TEXT PRIMARY KEY NOT NULL, "
+		   "magnet_hash TEXT PRIMARY KEY NOT NULL, " // Keyed hash.
 		   "one_time_magnet INTEGER NOT NULL DEFAULT 1)");
 	query.exec("CREATE TABLE IF NOT EXISTS received ("
 		   "file TEXT NOT NULL, "
 		   "file_hash TEXT PRIMARY KEY NOT NULL, " /*
-							   ** Hash of the
-							   ** file name.
+							   ** Keyed hash of
+							   ** the file name.
 							   */
 		   "hash TEXT NOT NULL, "                  /*
-							   ** Hash of the
-							   ** file.
+							   ** Keyed hash of
+							   ** the file.
 							   */
 		   "total_size TEXT NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS received_novas ("
 		   "nova TEXT NOT NULL, "
-		   "nova_hash TEXT PRIMARY KEY NOT NULL)");
+		   "nova_hash TEXT PRIMARY KEY NOT NULL)"); // Keyed hash.
 	query.exec("CREATE TABLE IF NOT EXISTS received_pulses ("
 		   "position TEXT NOT NULL, "
-		   "position_hash TEXT NOT NULL, "
+		   "position_hash TEXT NOT NULL, " // Keyed hash.
 		   "received_oid INTEGER NOT NULL, "
 		   "PRIMARY KEY (position_hash, received_oid), "
 		   "FOREIGN KEY (received_oid) REFERENCES "
@@ -430,7 +430,7 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS transmitted ("
 		   "file TEXT NOT NULL, "
 		   "hash TEXT NOT NULL, " /*
-					  ** Hash of the file.
+					  ** Keyed hash of the file.
 					  */
 		   "mosaic TEXT PRIMARY KEY NOT NULL, "
 		   "nova TEXT NOT NULL, "
@@ -440,7 +440,7 @@ void spoton_misc::prepareDatabases(void)
 		   "total_size TEXT NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS transmitted_magnets ("
 		   "magnet BLOB NOT NULL, "
-		   "magnet_hash TEXT NOT NULL, "
+		   "magnet_hash TEXT NOT NULL, " // Keyed hash.
 		   "transmitted_oid INTEGER NOT NULL, "
 		   "PRIMARY KEY (magnet_hash, transmitted_oid), "
 		   "FOREIGN KEY (transmitted_oid) REFERENCES "
@@ -450,7 +450,7 @@ void spoton_misc::prepareDatabases(void)
 					  */
 	query.exec("CREATE TABLE IF NOT EXISTS transmitted_scheduled_pulses ("
 		   "position TEXT NOT NULL, "
-		   "position_hash TEXT NOT NULL, "
+		   "position_hash TEXT NOT NULL, " // Keyed hash.
 		   "transmitted_oid INTEGER NOT NULL, "
 		   "PRIMARY KEY (position_hash, transmitted_oid), "
 		   "FOREIGN KEY (transmitted_oid) REFERENCES "
@@ -1466,7 +1466,8 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 		  keySize = 2048;
 		else if(!(keySize == 2048 ||
 			  keySize == 3072 ||
-			  keySize == 4096))
+			  keySize == 4096 ||
+			  keySize == 8192))
 		  keySize = 2048;
 
 		query.bindValue(20, keySize);
@@ -1604,7 +1605,8 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
   if(!ok)
     integer = 2048;
-  else if(!(integer == 2048 || integer == 3072 || integer == 4096))
+  else if(!(integer == 2048 || integer == 3072 ||
+	    integer == 4096 || integer == 8192))
     integer = 2048;
 
   settings.insert("gui/kernelKeySize", integer);
@@ -1614,7 +1616,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 3072;
   else if(!(integer == 2048 || integer == 3072 ||
 	    integer == 4096 || integer == 7680 ||
-	    integer == 15360))
+	    integer == 8192 || integer == 15360))
     integer = 3072;
 
   settings.insert("gui/keySize", integer);
@@ -1622,7 +1624,8 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
   if(!ok)
     integer = 2048;
-  else if(!(integer == 2048 || integer == 3072 || integer == 4096))
+  else if(!(integer == 2048 || integer == 3072 ||
+	    integer == 4096 || integer == 8192))
     integer = 2048;
 
   settings.insert("gui/publishedKeySize", integer);
