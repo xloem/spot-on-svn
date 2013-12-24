@@ -167,14 +167,13 @@ QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
  const QByteArray &salt,
  QString &error)
 {
+  QByteArray key;
   QPair<QByteArray, QByteArray> derivedKeys;
-  char *key = 0;
   gcry_error_t err = 0;
   int cipherAlgorithm = gcry_cipher_map_name(cipherType.toLatin1().
 					     constData());
   int hashAlgorithm = gcry_md_map_name(hashType.toLatin1().constData());
   size_t cipherKeyLength = 0;
-  size_t keyLength = 0;
 
   if(gcry_cipher_test_algo(cipherAlgorithm) != 0)
     {
@@ -204,52 +203,70 @@ QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
       goto done_label;
     }
 
-  keyLength = cipherKeyLength + 128;
+  key.resize(cipherKeyLength + 256);
+  derivedKeys.first.resize(cipherKeyLength);
+  derivedKeys.second.resize(key.length() - cipherKeyLength);
 
-  if((key = static_cast<char *> (gcry_calloc_secure(keyLength,
-						    sizeof(char)))) == 0)
+  for(int i = 1; i <= 3; i++)
     {
-      error = QObject::tr("gcry_calloc_secure() returned zero");
-      spoton_misc::logError
-	("spoton_crypt::derivedKeys(): gcry_calloc_secure() "
-	 "failure.");
-      goto done_label;
-    }
+      gcry_fast_random_poll();
 
-  gcry_fast_random_poll();
+      if(i == 1)
+	err = gcry_kdf_derive
+	  (static_cast<const void *> (passphrase.toUtf8().constData()),
+	   static_cast<size_t> (passphrase.toUtf8().length()),
+	   GCRY_KDF_PBKDF2,
+	   hashAlgorithm,
+	   static_cast<const void *> (salt.constData()),
+	   static_cast<size_t> (salt.length()),
+	   iterationCount,
+	   static_cast<size_t> (key.length()),
+	   static_cast<void *> (key.data()));
+      else if(i == 2)
+	err = gcry_kdf_derive
+	  (static_cast<const void *> (key.constData()),
+	   static_cast<size_t> (key.length()),
+	   GCRY_KDF_PBKDF2,
+	   hashAlgorithm,
+	   static_cast<const void *> (salt.constData()),
+	   static_cast<size_t> (salt.length()),
+	   iterationCount,
+	   static_cast<size_t> (derivedKeys.first.length()),
+	   static_cast<void *> (derivedKeys.first.data()));
+      else if(i == 3)
+	err = gcry_kdf_derive
+	  (static_cast<const void *> (key.constData()),
+	   static_cast<size_t> (key.length()),
+	   GCRY_KDF_PBKDF2,
+	   hashAlgorithm,
+	   static_cast<const void *> (salt.constData()),
+	   static_cast<size_t> (salt.length()),
+	   iterationCount,
+	   static_cast<size_t> (derivedKeys.second.length()),
+	   static_cast<void *> (derivedKeys.second.data()));
 
-  if((err = gcry_kdf_derive(static_cast<const void *> (passphrase.toUtf8().
-						       constData()),
-			    static_cast<size_t> (passphrase.toUtf8().
-						 length()),
-			    GCRY_KDF_PBKDF2,
-			    hashAlgorithm,
-			    static_cast<const void *> (salt.constData()),
-			    static_cast<size_t> (salt.length()),
-			    iterationCount,
-			    keyLength,
-			    static_cast<void *> (key))) == 0)
-    {
-      derivedKeys.first = QByteArray
-	(key, cipherKeyLength); // Encryption Key
-      derivedKeys.second = QByteArray
-	(key + cipherKeyLength, 128); // Hash Key
-    }
-  else
-    {
-      error = QObject::tr("gcry_kdf_derive() returned non-zero");
+      if(err != 0)
+	{
+	  error = QObject::tr("gcry_kdf_derive() returned non-zero");
 
-      QByteArray buffer(64, 0);
+	  QByteArray buffer(64, 0);
 
-      gpg_strerror_r(err, buffer.data(), buffer.length());
-      spoton_misc::logError
-	(QString("spoton_crypt::derivedKeys(): gcry_kdf_derive() returned "
-		 "non-zero (%1).").arg(buffer.constData()));
-      goto done_label;
+	  gpg_strerror_r(err, buffer.data(), buffer.length());
+	  spoton_misc::logError
+	    (QString("spoton_crypt::derivedKeys(): gcry_kdf_derive() "
+		     "returned non-zero (%1).").arg(buffer.constData()));
+	  break;
+	}
     }
 
  done_label:
-  gcry_free(key);
+
+  if(!error.isEmpty())
+    {
+      derivedKeys.first.clear();
+      derivedKeys.second.clear();
+    }
+
   return derivedKeys;
 }
 
@@ -383,7 +400,9 @@ QStringList spoton_crypt::cipherTypes(void)
 
   types << "aes256"
 	<< "camellia256"
+#ifndef SPOTON_GCRYPT_CIPHER_MODE_GCM
 	<< "gost28147"
+#endif
 	<< "serpent256"
 	<< "twofish";
 
@@ -514,8 +533,13 @@ void spoton_crypt::reencodeKeys(const QString &newCipher,
 	}
 
       if((err = gcry_cipher_open(&cipherHandle, algorithm,
+#ifdef SPOTON_GCRYPT_CIPHER_MODE_GCM
+				 GCRY_CIPHER_MODE_GCM,
+#endif
 				 GCRY_CIPHER_MODE_CBC,
+#ifndef SPOTON_GCRYPT_CIPHER_MODE_GCM
 				 GCRY_CIPHER_CBC_CTS |
+#endif
 				 GCRY_CIPHER_SECURE)) != 0 ||
 	 !cipherHandle)
 	{
@@ -902,8 +926,14 @@ spoton_crypt::spoton_crypt(const QString &cipherType,
       if(m_cipherAlgorithm)
 	{
 	  if((err = gcry_cipher_open(&m_cipherHandle, m_cipherAlgorithm,
+#ifdef SPOTON_GCRYPT_CIPHER_MODE_GCM
+				     GCRY_CIPHER_MODE_GCM,
+#else
 				     GCRY_CIPHER_MODE_CBC,
+#endif
+#ifndef SPOTON_GCRYPT_CIPHER_MODE_GCM
 				     GCRY_CIPHER_CBC_CTS |
+#endif
 				     GCRY_CIPHER_SECURE)) != 0 ||
 	     !m_cipherAlgorithm)
 	    {
