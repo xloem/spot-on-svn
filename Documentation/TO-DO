@@ -89,6 +89,7 @@ Completed Items
 63.    Create a Tools menu. Provide mechanisms for decrypting and encrypting
        data that's been transmitted via non-Spot. That is, a feature
        to copy encrypted content and send it via other applications.
+64.    Separate keys should be used for storing keyed hashes.
 
 Ignored Items
 
@@ -171,4 +172,3 @@ Remaining Items
 39.    Although account authentication occurs within
        SSL (TCP connections only), account credentials should not be
        recorded via reversible encryption.
-40.    Separate keys should be used for storing keyed hashes.

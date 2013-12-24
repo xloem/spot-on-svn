@@ -57,12 +57,13 @@ extern "C"
 class spoton_crypt
 {
  public:
-  static QByteArray derivedKey(const QString &cipherType,
-			       const QString &hashType,
-			       const unsigned long iterationCount,
-			       const QString &passphrase,
-			       const QByteArray &salt,
-			       QString &error);
+  static QPair<QByteArray, QByteArray> derivedKeys
+    (const QString &cipherType,
+     const QString &hashType,
+     const unsigned long iterationCount,
+     const QString &passphrase,
+     const QByteArray &salt,
+     QString &error);
   static QByteArray keyedHash(const QByteArray &data,
 			      const QByteArray &key,
 			      const QByteArray &hashType,
@@ -106,15 +107,14 @@ class spoton_crypt
   static void init(const int secureMemorySize);
   static void purgeDatabases(void);
   static void reencodeKeys(const QString &newCipher,
-			   const QByteArray &newPassphrase,
+			   const QByteArray &newKey,
 			   const QString &oldCipher,
-			   const char *oldPassphrase,
+			   const char *oldKey,
 			   const QString &id,
 			   QString &error);
   static void setSslCiphers(const QList<QSslCipher> &ciphers,
 			    QSslConfiguration &configuration);
   static void terminate(void);
-  spoton_crypt(const QString &id); // Random object?
   spoton_crypt(const QString &cipherType,
 		const QString &hashType,
 		const QByteArray &passphrase,
@@ -122,7 +122,6 @@ class spoton_crypt
 		const int saltLength,
 		const unsigned long iterationCount,
 		const QString &id);
-  spoton_crypt(spoton_crypt *other);
   ~spoton_crypt();
   QByteArray decrypted(const QByteArray &data, bool *ok);
   QByteArray digitalSignature(const QByteArray &data, bool *ok);
@@ -138,6 +137,7 @@ class spoton_crypt
 				 const QString &keyType,
 				 QString &error);
   void initializePrivateKeyContainer(bool *ok);
+  void setHashKey(const QByteArray &hashKey);
 
  private:
   QByteArray m_publicKey;
@@ -145,21 +145,17 @@ class spoton_crypt
   QString m_cipherType;
   QString m_hashType;
   QString m_id;
+  char *m_hashKey; // Stored in secure memory.
   char *m_privateKey; // Stored in secure memory.
   char *m_symmetricKey; // Stored in secure memory.
   gcry_cipher_hd_t m_cipherHandle;
   int m_cipherAlgorithm;
   int m_hashAlgorithm;
   int m_saltLength;
+  size_t m_hashKeyLength;
   size_t m_privateKeyLength;
   size_t m_symmetricKeyLength;
   unsigned long m_iterationCount;
-  void init(const QString &cipherType,
-	    const QString &hashType,
-	    const QByteArray &symmetricKey,
-	    const int saltLength,
-	    const unsigned long iterationCount,
-	    const QString &id);
   static bool setInitializationVector(QByteArray &iv,
 				      const int algorithm,
 				      gcry_cipher_hd_t cipherHandle);

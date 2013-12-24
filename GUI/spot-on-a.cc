@@ -3837,7 +3837,7 @@ void spoton::slotSetPassphrase(void)
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   m_sb.status->setText
-    (tr("Generating a derived key. Please be patient."));
+    (tr("Generating derived keys. Please be patient."));
   m_sb.status->repaint();
 
   QByteArray salt;
@@ -3849,13 +3849,13 @@ void spoton::slotSetPassphrase(void)
   salt.resize(m_ui.saltLength->value());
   salt = spoton_crypt::strongRandomBytes(salt.length());
 
-  QByteArray derivedKey
-    (spoton_crypt::derivedKey(m_ui.cipherType->currentText(),
-			      m_ui.hashType->currentText(),
-			      m_ui.iterationCount->value(),
-			      str1,
-			      salt,
-			      error1));
+  QPair<QByteArray, QByteArray> derivedKeys
+    (spoton_crypt::derivedKeys(m_ui.cipherType->currentText(),
+			       m_ui.hashType->currentText(),
+			       m_ui.iterationCount->value(),
+			       str1,
+			       salt,
+			       error1));
 
   m_sb.status->clear();
 
@@ -3888,7 +3888,7 @@ void spoton::slotSetPassphrase(void)
 		  m_sb.status->repaint();
 		  spoton_crypt::reencodeKeys
 		    (m_ui.cipherType->currentText(),
-		     derivedKey,
+		     derivedKeys.first,
 		     m_settings.value("gui/cipherType", "aes256").
 		     toString().trimmed(),
 		     m_crypts.value("chat")->
@@ -3947,10 +3947,12 @@ void spoton::slotSetPassphrase(void)
 		(m_ui.cipherType->currentText(),
 		 m_ui.hashType->currentText(),
 		 str1.toUtf8(), // Passphrase.
-		 derivedKey,
+		 derivedKeys.first,
 		 m_ui.saltLength->value(),
 		 m_ui.iterationCount->value(),
 		 list.at(i));
+
+	      crypt.setHashKey(derivedKeys.second);
 
 	      if(!list.at(i).contains("signature"))
 		crypt.generatePrivatePublicKeys
@@ -3983,7 +3985,7 @@ void spoton::slotSetPassphrase(void)
       QMessageBox::critical
 	(this, tr("Spot-On: Error"),
 	 tr("An error (%1) occurred with spoton_crypt::"
-	    "derivedKey().").arg(error1.remove(".").trimmed()));
+	    "derivedKeys().").arg(error1.remove(".").trimmed()));
     }
   else if(!error2.remove(".").trimmed().isEmpty())
     {
@@ -4014,10 +4016,12 @@ void spoton::slotSetPassphrase(void)
 		(m_ui.cipherType->currentText(),
 		 m_ui.hashType->currentText(),
 		 QByteArray(),
-		 derivedKey,
+		 derivedKeys.first,
 		 m_ui.saltLength->value(),
 		 m_ui.iterationCount->value(),
 		 "chat");
+
+	      crypt->setHashKey(derivedKeys.second);
 
 	      spoton_reencode reencode;
 
@@ -4049,15 +4053,19 @@ void spoton::slotSetPassphrase(void)
 	       << "url-signature";
 
 	  for(int i = 0; i < list.size(); i++)
-	    m_crypts.insert
-	      (list.at(i),
-	       new spoton_crypt(m_ui.cipherType->currentText(),
-				m_ui.hashType->currentText(),
-				QByteArray(),
-				derivedKey,
-				m_ui.saltLength->value(),
-				m_ui.iterationCount->value(),
-				list.at(i)));
+	    {
+	      spoton_crypt *crypt = new spoton_crypt
+		(m_ui.cipherType->currentText(),
+		 m_ui.hashType->currentText(),
+		 QByteArray(),
+		 derivedKeys.first,
+		 m_ui.saltLength->value(),
+		 m_ui.iterationCount->value(),
+		 list.at(i));
+
+	      crypt->setHashKey(derivedKeys.second);
+	      m_crypts.insert(list.at(i), crypt);
+	    }
 
 	  m_rosetta.setCryptObjects(m_crypts.value("rosetta", 0),
 				    m_crypts.value("rosetta-signature", 0));
@@ -4178,13 +4186,13 @@ void spoton::slotValidatePassphrase(void)
 					salt, error))
     if(error.isEmpty())
       {
-	QByteArray key
-	  (spoton_crypt::derivedKey(m_ui.cipherType->currentText(),
-				    m_ui.hashType->currentText(),
-				    m_ui.iterationCount->value(),
-				    m_ui.passphrase->text(),
-				    salt,
-				    error));
+	QPair<QByteArray, QByteArray> keys
+	  (spoton_crypt::derivedKeys(m_ui.cipherType->currentText(),
+				     m_ui.hashType->currentText(),
+				     m_ui.iterationCount->value(),
+				     m_ui.passphrase->text(),
+				     salt,
+				     error));
 
 	if(error.isEmpty())
 	  {
@@ -4215,7 +4223,7 @@ void spoton::slotValidatePassphrase(void)
 		 new spoton_crypt(m_ui.cipherType->currentText(),
 				  m_ui.hashType->currentText(),
 				  QByteArray(),
-				  key,
+				  keys.first,
 				  m_ui.saltLength->value(),
 				  m_ui.iterationCount->value(),
 				  list.at(i)));
@@ -5850,8 +5858,9 @@ void spoton::slotCopyEmailFriendshipBundle(void)
     }
 
   keyInformation = spoton_crypt::publicKeyEncrypt
-    (symmetricKey.toBase64() + "@" + cipherType.toBase64(),
-     publicKey, &ok);
+    (symmetricKey.toBase64() + "@" +
+     cipherType.toBase64() + "@" +
+     hashKey.toBase64(), publicKey, &ok);
 
   if(!ok)
     {
@@ -5922,7 +5931,7 @@ void spoton::slotCopyEmailFriendshipBundle(void)
       return;
     }
 
-  QByteArray hash(crypt.keyedHash(data, &ok));
+  QByteArray hash(spoton_crypt::keyedHash(data, hashKey, "sha512", &ok));
 
   if(!ok)
     {

@@ -159,26 +159,28 @@ void spoton_crypt::init(const int secureMemorySize)
   SSL_library_init();
 }
 
-QByteArray spoton_crypt::derivedKey(const QString &cipherType,
-				    const QString &hashType,
-				    const unsigned long iterationCount,
-				    const QString &passphrase,
-				    const QByteArray &salt,
-				    QString &error)
+QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
+(const QString &cipherType,
+ const QString &hashType,
+ const unsigned long iterationCount,
+ const QString &passphrase,
+ const QByteArray &salt,
+ QString &error)
 {
-  QByteArray derivedKey;
+  QPair<QByteArray, QByteArray> derivedKeys;
   char *key = 0;
   gcry_error_t err = 0;
   int cipherAlgorithm = gcry_cipher_map_name(cipherType.toLatin1().
 					     constData());
   int hashAlgorithm = gcry_md_map_name(hashType.toLatin1().constData());
+  size_t cipherKeyLength = 0;
   size_t keyLength = 0;
 
   if(gcry_cipher_test_algo(cipherAlgorithm) != 0)
     {
       error = QObject::tr("gcry_cipher_test_algo() returned non-zero");
       spoton_misc::logError
-	(QString("spoton_crypt::derivedKey(): gcry_cipher_test_algo() "
+	(QString("spoton_crypt::derivedKeys(): gcry_cipher_test_algo() "
 		 "failure for %1.").arg(cipherType));
       goto done_label;
     }
@@ -187,27 +189,29 @@ QByteArray spoton_crypt::derivedKey(const QString &cipherType,
     {
       error = QObject::tr("gcry_md_test_algo() returned non-zero");
       spoton_misc::logError
-	(QString("spoton_crypt::derivedKey(): gcry_md_test_algo() "
+	(QString("spoton_crypt::derivedKeys(): gcry_md_test_algo() "
 		 "failure for %1.").arg(hashType));
       goto done_label;
     }
 
-  if((keyLength = gcry_cipher_get_algo_keylen(cipherAlgorithm)) == 0)
+  if((cipherKeyLength = gcry_cipher_get_algo_keylen(cipherAlgorithm)) == 0)
     {
       error = QObject::tr("gcry_cipher_get_algo_keylen() returned zero");
       spoton_misc::logError
-	(QString("spoton_crypt::derivedKey(): "
+	(QString("spoton_crypt::derivedKeys(): "
 		 "gcry_cipher_get_algo_keylen() "
 		 "failure for %1.").arg(cipherType));
       goto done_label;
     }
+
+  keyLength = cipherKeyLength + 128;
 
   if((key = static_cast<char *> (gcry_calloc_secure(keyLength,
 						    sizeof(char)))) == 0)
     {
       error = QObject::tr("gcry_calloc_secure() returned zero");
       spoton_misc::logError
-	("spoton_crypt::derivedKey(): gcry_calloc_secure() "
+	("spoton_crypt::derivedKeys(): gcry_calloc_secure() "
 	 "failure.");
       goto done_label;
     }
@@ -225,7 +229,12 @@ QByteArray spoton_crypt::derivedKey(const QString &cipherType,
 			    iterationCount,
 			    keyLength,
 			    static_cast<void *> (key))) == 0)
-    derivedKey.append(key, keyLength);
+    {
+      derivedKeys.first = QByteArray
+	(key, cipherKeyLength); // Encryption Key
+      derivedKeys.second = QByteArray
+	(key + cipherKeyLength, 128); // Hash Key
+    }
   else
     {
       error = QObject::tr("gcry_kdf_derive() returned non-zero");
@@ -234,14 +243,14 @@ QByteArray spoton_crypt::derivedKey(const QString &cipherType,
 
       gpg_strerror_r(err, buffer.data(), buffer.length());
       spoton_misc::logError
-	(QString("spoton_crypt::derivedKey(): gcry_kdf_derive() returned "
+	(QString("spoton_crypt::derivedKeys(): gcry_kdf_derive() returned "
 		 "non-zero (%1).").arg(buffer.constData()));
       goto done_label;
     }
 
  done_label:
   gcry_free(key);
-  return derivedKey;
+  return derivedKeys;
 }
 
 QByteArray spoton_crypt::saltedValue(const QString &hashType,
@@ -420,17 +429,17 @@ bool spoton_crypt::passphraseSet(void)
 }
 
 void spoton_crypt::reencodeKeys(const QString &newCipher,
-				const QByteArray &newPassphrase,
+				const QByteArray &newKey,
 				const QString &oldCipher,
-				const char *oldPassphrase,
+				const char *oldKey,
 				const QString &id,
 				QString &error)
 {
-  if(!oldPassphrase)
+  if(!oldKey)
     {
-      error = QObject::tr("oldPassphrase is 0");
+      error = QObject::tr("oldKey is 0");
       spoton_misc::logError("spoton_crypt::reencodeKeys(): "
-			    "oldPassphrase is 0.");
+			    "oldKey is 0.");
       return;
     }
 
@@ -573,7 +582,7 @@ void spoton_crypt::reencodeKeys(const QString &newCipher,
 	}
 
       if((err = gcry_cipher_setkey(cipherHandle,
-				   static_cast<const void *> (oldPassphrase),
+				   static_cast<const void *> (oldKey),
 				   keyLength)) != 0)
 	{
 	  error = QObject::tr("gcry_cipher_setkey() returned non-zero");
@@ -750,7 +759,7 @@ void spoton_crypt::reencodeKeys(const QString &newCipher,
 	}
 
       if((err = gcry_cipher_setkey(cipherHandle,
-				   static_cast<const void *> (newPassphrase.
+				   static_cast<const void *> (newKey.
 							      constData()),
 				   keyLength)) != 0)
 	{
@@ -844,121 +853,6 @@ void spoton_crypt::reencodeKeys(const QString &newCipher,
   gcry_sexp_release(key_t);
 }
 
-spoton_crypt::spoton_crypt(const QString &id)
-{
-  m_cipherHandle = 0;
-  m_cipherType = randomCipherType();
-  m_cipherAlgorithm = gcry_cipher_map_name(m_cipherType.toLatin1().
-					   constData());
-  m_hashAlgorithm = gcry_md_map_name("sha512");
-  m_hashType = "sha512";
-  m_id = id;
-  m_iterationCount = 0; // We're not deriving keys.
-  m_privateKey = 0;
-  m_privateKeyLength = 0;
-  m_symmetricKey = 0;
-
-  if(m_cipherAlgorithm)
-    m_symmetricKeyLength = gcry_cipher_get_algo_keylen(m_cipherAlgorithm);
-  else
-    m_symmetricKeyLength = 0;
-
-  if(m_symmetricKeyLength)
-    {
-      m_symmetricKey = static_cast<char *>
-	(gcry_calloc_secure(m_symmetricKeyLength, sizeof(char)));
-
-      if(m_symmetricKey)
-	{
-	  gcry_fast_random_poll();
-	  gcry_randomize
-	    (static_cast<void *> (m_symmetricKey),
-	     m_symmetricKeyLength,
-	     GCRY_STRONG_RANDOM);
-	}
-      else
-	spoton_misc::logError("spoton_crypt::spoton_crypt(): "
-			      "gcry_calloc_secure() failure.");
-    }
-  else
-    spoton_misc::logError("spoton_crypt::spoton_crypt(): "
-			  "gcry_cipher_get_algo_keylen() returned zero.");
-
-  if(m_symmetricKey)
-    {
-      gcry_error_t err = 0;
-
-      if(m_cipherAlgorithm)
-	{
-	  if((err = gcry_cipher_open(&m_cipherHandle, m_cipherAlgorithm,
-				     GCRY_CIPHER_MODE_CBC,
-				     GCRY_CIPHER_CBC_CTS |
-				     GCRY_CIPHER_SECURE)) != 0 ||
-	     !m_cipherAlgorithm)
-	    {
-	      if(err != 0)
-		{
-		  QByteArray buffer(64, 0);
-
-		  gpg_strerror_r(err, buffer.data(), buffer.length());
-		  spoton_misc::logError
-		    (QString("spoton_crypt::spoton_crypt(): "
-			     "gcry_cipher_open() failure (%1).").
-		     arg(buffer.constData()));
-		}
-	      else
-		spoton_misc::logError("spoton_crypt::spoton_crypt(): "
-				      "gcry_cipher_open() failure.");
-	    }
-	}
-      else
-	spoton_misc::logError("spoton_crypt::spoton_crypt(): "
-			      "m_cipherAlgorithm is 0.");
-
-      if(err == 0)
-	{
-	  if(m_cipherHandle)
-	    {
-	      if((err =
-		  gcry_cipher_setkey(m_cipherHandle,
-				     static_cast
-				     <const void *> (m_symmetricKey),
-				     m_symmetricKeyLength)) != 0)
-		{
-		  QByteArray buffer(64, 0);
-
-		  gpg_strerror_r(err, buffer.data(), buffer.length());
-		  spoton_misc::logError
-		    (QString("spoton_crypt::spoton_crypt(): "
-			     "gcry_cipher_setkey() "
-			     "failure (%1).").
-		     arg(buffer.constData()));
-		}
-	    }
-	  else
-	    spoton_misc::logError("spoton_crypt::spoton_crypt(): "
-				  "m_cipherHandle is 0.");
-	}
-    }
-  else if(m_symmetricKeyLength > 0)
-    {
-      m_symmetricKeyLength = 0;
-      spoton_misc::logError("spoton_crypt::spoton_crypt(): "
-			    "gcry_calloc_secure() returned 0.");
-    }
-}
-
-spoton_crypt::spoton_crypt(spoton_crypt *other)
-{
-  if(other)
-    init(other->m_cipherType,
-	 other->m_hashType,
-	 other->m_symmetricKey,
-	 other->m_saltLength,
-	 other->m_iterationCount,
-	 other->m_id);
-}
-
 spoton_crypt::spoton_crypt(const QString &cipherType,
 			   const QString &hashType,
 			   const QByteArray &passphrase,
@@ -968,22 +862,13 @@ spoton_crypt::spoton_crypt(const QString &cipherType,
 			   const QString &id)
 {
   Q_UNUSED(passphrase);
-  init(cipherType, hashType,
-       symmetricKey, saltLength, iterationCount, id);
-}
-
-void spoton_crypt::init(const QString &cipherType,
-			const QString &hashType,
-			const QByteArray &symmetricKey,
-			const int saltLength,
-			const unsigned long iterationCount,
-			const QString &id)
-{
   m_cipherAlgorithm = gcry_cipher_map_name(cipherType.toLatin1().
 					   constData());
   m_cipherHandle = 0;
   m_cipherType = cipherType;
   m_hashAlgorithm = gcry_md_map_name(hashType.toLatin1().constData());
+  m_hashKey = 0;
+  m_hashKeyLength = 0;
   m_hashType = hashType;
   m_id = id;
   m_iterationCount = iterationCount;
@@ -1077,6 +962,7 @@ void spoton_crypt::init(const QString &cipherType,
 spoton_crypt::~spoton_crypt()
 {
   gcry_cipher_close(m_cipherHandle);
+  gcry_free(m_hashKey);
   gcry_free(m_privateKey);
   gcry_free(m_symmetricKey);
 }
@@ -1384,13 +1270,13 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data, bool *ok) const
 	("spoton_crypt::keyedHash(): m_hashAlgorithm is 0.");
       return QByteArray();
     }
-  else if(!m_symmetricKey || m_symmetricKeyLength == 0)
+  else if(!m_hashKey || m_hashKeyLength == 0)
     {
       if(ok)
 	*ok = false;
 
       spoton_misc::logError
-	("spoton_crypt::keyedHash(): m_symmetricKey is not defined.");
+	("spoton_crypt::keyedHash(): m_hashKey is not defined.");
       return QByteArray();
     }
 
@@ -1421,8 +1307,8 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data, bool *ok) const
   else
     {
       if((err = gcry_md_setkey(hd,
-			       static_cast<const void *> (m_symmetricKey),
-			       m_symmetricKeyLength)) != 0)
+			       static_cast<const void *> (m_hashKey),
+			       m_hashKeyLength)) != 0)
 	{
 	  if(ok)
 	    *ok = false;
@@ -3450,4 +3336,20 @@ QByteArray spoton_crypt::sha1FileHash(const QString &fileName)
 
   file.close();
   return hash.result();
+}
+
+void spoton_crypt::setHashKey(const QByteArray &hashKey)
+{
+  gcry_free(m_hashKey);
+  m_hashKey = 0;
+  m_hashKeyLength = hashKey.length();
+
+  if((m_hashKey =
+      static_cast<char *> (gcry_calloc_secure(m_hashKeyLength,
+					      sizeof(char)))) != 0)
+    memcpy(static_cast<void *> (m_hashKey),
+	   static_cast<const void *> (hashKey.constData()),
+	   m_hashKeyLength);
+  else
+    m_hashKeyLength = 0;
 }

@@ -1603,11 +1603,11 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       list = keyInformation.split('@');
 
-      if(list.size() != 2)
+      if(list.size() != 3)
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("Irregular data. Expecting 2 entries, received %1.").
+	     tr("Irregular data. Expecting 3 entries, received %1.").
 	     arg(list.size()));
 	  return;
 	}
@@ -1624,7 +1624,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 			 0,
 			 QString(""));
 
-      computedHash = crypt.keyedHash(data, &ok);
+      computedHash = spoton_crypt::keyedHash
+	(data, list.value(2), "sha512", &ok);
 
       if(!ok)
 	{
@@ -1963,7 +1964,9 @@ void spoton::slotCopyFriendshipBundle(void)
     }
 
   keyInformation = spoton_crypt::publicKeyEncrypt
-    (symmetricKey.toBase64() + "@" + cipherType.toBase64(),
+    (symmetricKey.toBase64() + "@" +
+     cipherType.toBase64() + "@" +
+     hashKey.toBase64(),
      publicKey, &ok);
 
   if(!ok)
@@ -2035,7 +2038,7 @@ void spoton::slotCopyFriendshipBundle(void)
       return;
     }
 
-  QByteArray hash(crypt.keyedHash(data, &ok));
+  QByteArray hash(spoton_crypt::keyedHash(data, hashKey, "sha512", &ok));
 
   if(!ok)
     {
@@ -3892,7 +3895,7 @@ void spoton::slotJoinBuzzChannel(void)
   QByteArray hashKey(m_ui.buzzHashKey->text().trimmed().toLatin1());
   QByteArray hashType(m_ui.buzzHashType->currentText().toLatin1());
   QByteArray id;
-  QByteArray key;
+  QPair<QByteArray, QByteArray> keys;
   QString error("");
   bool found = false;
   bool ok = true;
@@ -3924,19 +3927,19 @@ void spoton::slotJoinBuzzChannel(void)
       goto done_label;
     }
 
-  key = spoton_crypt::derivedKey(m_ui.channelType->currentText(),
-				 "sha512",
-				 iterationCount,
-				 m_ui.channel->text().trimmed(),
-				 channelSalt,
-				 error);
+  keys = spoton_crypt::derivedKeys(m_ui.channelType->currentText(),
+				   "sha512",
+				   iterationCount,
+				   m_ui.channel->text().trimmed(),
+				   channelSalt,
+				   error);
 
   if(!error.isEmpty())
     goto done_label;
 
   foreach(spoton_buzzpage *page,
 	  m_ui.buzzTab->findChildren<spoton_buzzpage *> ())
-    if(key == page->key())
+    if(keys.first == page->key())
       {
 	found = true;
 	m_ui.buzzTab->setCurrentWidget(page);
@@ -3947,15 +3950,15 @@ void spoton::slotJoinBuzzChannel(void)
     goto done_label;
 
   if(hashKey.isEmpty())
-    hashKey = key.toBase64();
+    hashKey = keys.second;
 
-  if(m_buzzIds.contains(key))
-    id = m_buzzIds[key];
+  if(m_buzzIds.contains(keys.first))
+    id = m_buzzIds[keys.first];
   else
     {
       id = spoton_crypt::
 	strongRandomBytes(spoton_common::BUZZ_MAXIMUM_ID_LENGTH / 2).toHex();
-      m_buzzIds[key] = id;
+      m_buzzIds[keys.first] = id;
     }
 
   if(m_ui.channelSalt->text().trimmed().isEmpty())

@@ -1850,7 +1850,8 @@ void spoton_kernel::slotScramble(void)
       data = crypt.encrypted(message, &ok);
 
       if(ok)
-	messageCode = crypt.keyedHash(data, &ok);
+	messageCode = spoton_crypt::keyedHash
+	  (data, spoton_crypt::strongRandomBytes(128), "sha512", &ok);
 
       if(ok)
 	{
@@ -2294,16 +2295,16 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 					salt, error))
     if(error.isEmpty())
       {
-	QByteArray key
-	  (spoton_crypt::derivedKey(setting("gui/cipherType",
-					    "aes256").toString(),
-				    setting("gui/hashType",
-					    "sha512").toString(),
-				    setting("gui/""iterationCount",
-					    10000).toInt(),
-				    passphrase,
-				    salt,
-				    error));
+	QPair<QByteArray, QByteArray> keys
+	  (spoton_crypt::derivedKeys(setting("gui/cipherType",
+					     "aes256").toString(),
+				     setting("gui/hashType",
+					     "sha512").toString(),
+				     setting("gui/""iterationCount",
+					     10000).toInt(),
+				     passphrase,
+				     salt,
+				     error));
 
 	if(error.isEmpty())
 	  {
@@ -2327,10 +2328,12 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 		     setting("gui/hashType",
 			     "sha512").toString().trimmed(),
 		     QByteArray(),
-		     key,
+		     keys.first,
 		     setting("gui/saltLength", 512).toInt(),
 		     setting("gui/iterationCount", 10000).toInt(),
 		     list.at(i));
+
+		  crypt->setHashKey(keys.second);
 		  s_crypts.insert(list.at(i), crypt);
 		}
 	  }
