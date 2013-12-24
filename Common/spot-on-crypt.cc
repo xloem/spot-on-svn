@@ -400,9 +400,7 @@ QStringList spoton_crypt::cipherTypes(void)
 
   types << "aes256"
 	<< "camellia256"
-#ifndef SPOTON_GCRYPT_CIPHER_MODE_GCM
 	<< "gost28147"
-#endif
 	<< "serpent256"
 	<< "twofish";
 
@@ -533,13 +531,8 @@ void spoton_crypt::reencodeKeys(const QString &newCipher,
 	}
 
       if((err = gcry_cipher_open(&cipherHandle, algorithm,
-#ifdef SPOTON_GCRYPT_CIPHER_MODE_GCM
-				 GCRY_CIPHER_MODE_GCM,
-#endif
 				 GCRY_CIPHER_MODE_CBC,
-#ifndef SPOTON_GCRYPT_CIPHER_MODE_GCM
 				 GCRY_CIPHER_CBC_CTS |
-#endif
 				 GCRY_CIPHER_SECURE)) != 0 ||
 	 !cipherHandle)
 	{
@@ -926,14 +919,8 @@ spoton_crypt::spoton_crypt(const QString &cipherType,
       if(m_cipherAlgorithm)
 	{
 	  if((err = gcry_cipher_open(&m_cipherHandle, m_cipherAlgorithm,
-#ifdef SPOTON_GCRYPT_CIPHER_MODE_GCM
-				     GCRY_CIPHER_MODE_GCM,
-#else
 				     GCRY_CIPHER_MODE_CBC,
-#endif
-#ifndef SPOTON_GCRYPT_CIPHER_MODE_GCM
 				     GCRY_CIPHER_CBC_CTS |
-#endif
 				     GCRY_CIPHER_SECURE)) != 0 ||
 	     !m_cipherAlgorithm)
 	    {
