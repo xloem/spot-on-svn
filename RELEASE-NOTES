@@ -1,3 +1,11 @@
+0.09 (03/03/2014)
+
+1.   Use a separate key for computing local keyed hashes. Keyed hashes provide
+     uniqueness to database entries. Please reset Spot. Apologies.
+2.   Removed obsolete methods from the spoton_crypt class.
+3.   The mechanisms that are responsible for copying chat and e-mail public key pairs
+     incorrectly used the encryption keys for computing keyed hashes.
+
 0.08 (12/23/2013)
 
 1.   Archived the 0.06 branch.
@@ -324,7 +332,7 @@
 0.04 (09/03/2013)
 
 1.   Per an anonymous e-mail passed on via another e-mail, I should
-     perhaps add more keys! Please reset Spot-On. There shall now
+     perhaps add more keys! Please reset Spot. There shall now
      be a chat pair, an e-mail pair, and a url pair. And! Each pair
      shall have its own signature. A total of six pairs.
 2.   Label (name) signature keys in the friends_public_keys database
@@ -379,7 +387,7 @@
      contains plaintext data.
 14.  The spoton_crypt::decrypted() method will avoid decrypting empty data.
      The action will be considered successful.
-15.  Disable GeoIP-related widgets if Spot-On is not linked with libGeoIP.
+15.  Disable GeoIP-related widgets if Spot is not linked with libGeoIP.
 16.  The QSslSocket::write() method may fail silently.
      We should not reset the keep-alive timer prematurely.
 17.  Update participant status when receiving e-mail and e-mail-retrieval
@@ -411,7 +419,7 @@
 15.  Corrected position of the Listeners table's context menu.
 16.  Allow changing of echo modes for listeners. Children remain as
      configured. Eliminated bulky methods.
-17.  Removed TTLs. Values can be used to explore Spot-On graphs.
+17.  Removed TTLs. Values can be used to explore Spot graphs.
 18.  Congestion control is now enabled by default.
 19.  Removed the certificates table from idiotes.db.
 20.  Changed message protocols. Functionality with 0.01 is absent.
@@ -469,7 +477,7 @@
      excessive data accumulation may occur.
 49.  Qt 5.1 QHostAddress(QString) interprets IPv4 octets as octal values
      if the values are represented as such. For example, 192.168.178.015
-     is interpreted as 192.168.178.13. Spot-On shall interpret IPv4 user
+     is interpreted as 192.168.178.13. Spot shall interpret IPv4 user
      input as is.
 50.  Corrected notifications of Buzz activity.
 51.  Replaced QSsl::TlsV1_2 with QSsl::SecureProtocols for Qt 5.x.
