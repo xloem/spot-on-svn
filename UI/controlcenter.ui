@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1196</width>
-    <height>686</height>
+    <width>980</width>
+    <height>623</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -363,8 +363,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1162</width>
-                <height>557</height>
+                <width>485</width>
+                <height>426</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1973,8 +1973,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>278</width>
-                 <height>557</height>
+                 <width>170</width>
+                 <height>383</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3305,8 +3305,8 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-76</y>
-             <width>1154</width>
+             <y>0</y>
+             <width>869</width>
              <height>643</height>
             </rect>
            </property>
@@ -4254,8 +4254,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1172</width>
-             <height>567</height>
+             <width>450</width>
+             <height>473</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5722,8 +5722,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1196</width>
-     <height>27</height>
+     <width>980</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
