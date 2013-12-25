@@ -9,6 +9,7 @@
 4.   Compress data in spoton_starbeam_writer::enqueue(). Please note that
      the compression may produce expanded results.
 5.   Set the default intervals of the external IP fetch mechanisms to -1.
+6.   Corrected Documentation/MESSAGES.
 
 0.08 (12/23/2013)
 
