@@ -6013,13 +6013,13 @@ void spoton::slotNeighborSelected(void)
 	  if(item)
 	    {
 	      label.append
-		(m_ui.neighbors->horizontalHeaderItem(i)->text() + ": %" +
-		 QString::number(i) + "\n");
+		("<b>" +
+		 m_ui.neighbors->horizontalHeaderItem(i)->text() +
+		 ":</b> %" +
+		 QString::number(i) + "<br>");
 	      list << item->text();
 	    }
 	}
-
-      label = label.trimmed();
 
       QString str
 	(label.
@@ -6053,23 +6053,22 @@ void spoton::slotNeighborSelected(void)
 
       if(!certificate.isNull())
 	str.append
-	  (tr("\n"
-	      "Cert. Effective Date: %1\n"
-	      "Cert. Expiration Date: %2\n"
-	      "Cert. Issuer Organization: %3\n"
-	      "Cert. Issuer Common Name: %4\n"
-	      "Cert. Issuer Locality Name: %5\n"
-	      "Cert. Issuer Organizational Unit Name: %6\n"
-	      "Cert. Issuer Country Name: %7\n"
-	      "Cert. Issuer State or Province Name: %8\n"
-	      "Cert. Serial Number: %9\n"
-	      "Cert. Subject Organization: %10\n"
-	      "Cert. Subject Common Name: %11\n"
-	      "Cert. Subject Locality Name: %12\n"
-	      "Cert. Subject Organizational Unit Name: %13\n"
-	      "Cert. Subject Country Name: %14\n"
-	      "Cert. Subject State or Province Name: %15\n"
-	      "Cert. Version: %16\n").
+	  (tr("<b>Cert. Effective Date:</b> %1<br>"
+	      "<b>Cert. Expiration Date:</b> %2<br>"
+	      "<b>Cert. Issuer Organization:</b> %3<br>"
+	      "<b>Cert. Issuer Common Name:</b> %4<br>"
+	      "<b>Cert. Issuer Locality Name:</b> %5<br>"
+	      "<b>Cert. Issuer Organizational Unit Name:</b> %6<br>"
+	      "<b>Cert. Issuer Country Name:</b> %7<br>"
+	      "<b>Cert. Issuer State or Province Name:</b> %8<br>"
+	      "<b>Cert. Serial Number:</b> %9<br>"
+	      "<b>Cert. Subject Organization:</b> %10<br>"
+	      "<b>Cert. Subject Common Name:</b> %11<br>"
+	      "<b>Cert. Subject Locality Name:</b> %12<br>"
+	      "<b>Cert. Subject Organizational Unit Name:</b> %13<br>"
+	      "<b>Cert. Subject Country Name:</b> %14<br>"
+	      "<b>Cert. Subject State or Province Name:</b> %15<br>"
+	      "<b>Cert. Version:</b> %16<br>").
 	   arg(certificate.effectiveDate().toString("MM/dd/yyyy")).
 	   arg(certificate.expiryDate().toString("MM/dd/yyyy")).
 	   arg(certificate.issuerInfo(QSslCertificate::Organization)).
