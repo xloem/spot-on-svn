@@ -10,6 +10,7 @@
      the compression may produce expanded results.
 5.   Set the default intervals of the external IP fetch mechanisms to -1.
 6.   Corrected Documentation/MESSAGES.
+7.   Added certificate information to neighbor summaries.
 
 0.08 (12/23/2013)
 
