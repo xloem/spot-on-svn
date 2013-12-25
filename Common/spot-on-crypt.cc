@@ -877,6 +877,32 @@ spoton_crypt::spoton_crypt(const QString &cipherType,
 			   const unsigned long iterationCount,
 			   const QString &id)
 {
+  init(cipherType, hashType, passphrase, symmetricKey, QByteArray(),
+       saltLength, iterationCount, id);
+}
+
+spoton_crypt::spoton_crypt(const QString &cipherType,
+			   const QString &hashType,
+			   const QByteArray &passphrase,
+			   const QByteArray &symmetricKey,
+			   const QByteArray &hashKey,
+			   const int saltLength,
+			   const unsigned long iterationCount,
+			   const QString &id)
+{
+  init(cipherType, hashType, passphrase, symmetricKey, hashKey,
+       saltLength, iterationCount, id);
+}
+
+void spoton_crypt::init(const QString &cipherType,
+			const QString &hashType,
+			const QByteArray &passphrase,
+			const QByteArray &symmetricKey,
+			const QByteArray &hashKey,
+			const int saltLength,
+			const unsigned long iterationCount,
+			const QString &id)
+{
   Q_UNUSED(passphrase);
   m_cipherAlgorithm = gcry_cipher_map_name(cipherType.toLatin1().
 					   constData());
@@ -898,6 +924,7 @@ spoton_crypt::spoton_crypt(const QString &cipherType,
     m_symmetricKeyLength = 0;
 
   m_saltLength = saltLength;
+  setHashKey(hashKey);
 
   if(m_symmetricKeyLength)
     m_symmetricKey = static_cast<char *>

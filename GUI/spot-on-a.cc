@@ -3948,11 +3948,10 @@ void spoton::slotSetPassphrase(void)
 		 m_ui.hashType->currentText(),
 		 str1.toUtf8(), // Passphrase.
 		 derivedKeys.first,
+		 derivedKeys.second,
 		 m_ui.saltLength->value(),
 		 m_ui.iterationCount->value(),
 		 list.at(i));
-
-	      crypt.setHashKey(derivedKeys.second);
 
 	      if(!list.at(i).contains("signature"))
 		crypt.generatePrivatePublicKeys
@@ -4017,11 +4016,10 @@ void spoton::slotSetPassphrase(void)
 		 m_ui.hashType->currentText(),
 		 QByteArray(),
 		 derivedKeys.first,
+		 derivedKeys.second,
 		 m_ui.saltLength->value(),
 		 m_ui.iterationCount->value(),
 		 "chat");
-
-	      crypt->setHashKey(derivedKeys.second);
 
 	      spoton_reencode reencode;
 
@@ -4053,19 +4051,15 @@ void spoton::slotSetPassphrase(void)
 	       << "url-signature";
 
 	  for(int i = 0; i < list.size(); i++)
-	    {
-	      spoton_crypt *crypt = new spoton_crypt
-		(m_ui.cipherType->currentText(),
-		 m_ui.hashType->currentText(),
-		 QByteArray(),
-		 derivedKeys.first,
-		 m_ui.saltLength->value(),
-		 m_ui.iterationCount->value(),
-		 list.at(i));
-
-	      crypt->setHashKey(derivedKeys.second);
-	      m_crypts.insert(list.at(i), crypt);
-	    }
+	    m_crypts.insert
+	      (list.at(i), new spoton_crypt(m_ui.cipherType->currentText(),
+					    m_ui.hashType->currentText(),
+					    QByteArray(),
+					    derivedKeys.first,
+					    derivedKeys.second,
+					    m_ui.saltLength->value(),
+					    m_ui.iterationCount->value(),
+					    list.at(i)));
 
 	  m_rosetta.setCryptObjects(m_crypts.value("rosetta", 0),
 				    m_crypts.value("rosetta-signature", 0));
@@ -4222,19 +4216,15 @@ void spoton::slotValidatePassphrase(void)
 		 << "url-signature";
 
 	    for(int i = 0; i < list.size(); i++)
-	      {
-		spoton_crypt *crypt = new spoton_crypt
-		  (m_ui.cipherType->currentText(),
-		   m_ui.hashType->currentText(),
-		   QByteArray(),
-		   keys.first,
-		   m_ui.saltLength->value(),
-		   m_ui.iterationCount->value(),
-		   list.at(i));
-
-		crypt->setHashKey(keys.second);
-		m_crypts.insert(list.at(i), crypt);
-	      }
+	      m_crypts.insert
+		(list.at(i), new spoton_crypt(m_ui.cipherType->currentText(),
+					      m_ui.hashType->currentText(),
+					      QByteArray(),
+					      keys.first,
+					      keys.second,
+					      m_ui.saltLength->value(),
+					      m_ui.iterationCount->value(),
+					      list.at(i)));
 
 	    m_rosetta.setCryptObjects(m_crypts.value("rosetta", 0),
 				      m_crypts.value("rosetta-signature", 0));

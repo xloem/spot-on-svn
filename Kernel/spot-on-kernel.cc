@@ -2321,21 +2321,19 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 
 	    for(int i = 0; i < list.size(); i++)
 	      if(!s_crypts.contains(list.at(i)))
-		{
-		  spoton_crypt *crypt = new spoton_crypt
-		    (setting("gui/cipherType",
-			     "aes256").toString().trimmed(),
-		     setting("gui/hashType",
-			     "sha512").toString().trimmed(),
-		     QByteArray(),
-		     keys.first,
-		     setting("gui/saltLength", 512).toInt(),
-		     setting("gui/iterationCount", 10000).toInt(),
-		     list.at(i));
-
-		  crypt->setHashKey(keys.second);
-		  s_crypts.insert(list.at(i), crypt);
-		}
+		s_crypts.insert
+		  (list.at(i),
+		   new spoton_crypt(setting("gui/cipherType",
+					    "aes256").toString().trimmed(),
+				    setting("gui/hashType",
+					    "sha512").toString().trimmed(),
+				    QByteArray(),
+				    keys.first,
+				    keys.second,
+				    setting("gui/saltLength", 512).toInt(),
+				    setting("gui/iterationCount",
+					    10000).toInt(),
+				    list.at(i)));
 	  }
       }
 

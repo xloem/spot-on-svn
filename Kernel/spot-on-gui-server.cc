@@ -342,26 +342,28 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  for(int i = 0; i < names.size(); i++)
 		    if(!spoton_kernel::s_crypts.contains(names.at(i)))
-		      {
-			spoton_crypt *crypt = new spoton_crypt
-			  (spoton_kernel::setting("gui/cipherType",
+		      spoton_kernel::s_crypts.insert
+			(names.at(i),
+			 new spoton_crypt(spoton_kernel::
+					  setting("gui/cipherType",
 						  "aes256").
-			   toString().trimmed(),
-			   spoton_kernel::setting("gui/hashType",
+					  toString().trimmed(),
+					  spoton_kernel::
+					  setting("gui/hashType",
 						  "sha512").
-			   toString().trimmed(),
-			   QByteArray(),
-			   QByteArray::fromBase64(list.value(0)),
-			   spoton_kernel::setting("gui/saltLength",
+					  toString().trimmed(),
+					  QByteArray(),
+					  QByteArray::
+					  fromBase64(list.value(0)),
+					  QByteArray::
+					  fromBase64(list.value(1)),
+					  spoton_kernel::
+					  setting("gui/saltLength",
 						  512).toInt(),
-			   spoton_kernel::setting("gui/iterationCount",
+					  spoton_kernel::
+					  setting("gui/iterationCount",
 						  10000).toInt(),
-			   names.at(i));
-
-			crypt->setHashKey
-			  (QByteArray::fromBase64(list.value(1)));
-			spoton_kernel::s_crypts.insert(names.at(i), crypt);
-		      }
+					  names.at(i)));
 		}
 	    }
 	  else if(message.startsWith("message_"))
