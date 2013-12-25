@@ -3922,12 +3922,14 @@ void spoton::slotJoinBuzzChannel(void)
       goto done_label;
     }
 
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   keys = spoton_crypt::derivedKeys(m_ui.channelType->currentText(),
 				   "sha512",
 				   iterationCount,
 				   m_ui.channel->text().trimmed(),
 				   channelSalt,
 				   error);
+  QApplication::restoreOverrideCursor();
 
   if(!error.isEmpty())
     goto done_label;
