@@ -1170,7 +1170,7 @@ spoton::spoton(void):QMainWindow()
   if(m_ui.keySize->findText(str) > -1)
     m_ui.keySize->setCurrentIndex(m_ui.keySize->findText(str));
 
-  str = m_settings.value("gui/guiExternalIpInterval", "30").
+  str = m_settings.value("gui/guiExternalIpInterval", "-1").
     toString().toLower().trimmed();
 
   if(str == "30")
@@ -1180,7 +1180,7 @@ spoton::spoton(void):QMainWindow()
   else
     m_ui.guiExternalIpFetch->setCurrentIndex(2);
 
-  str = m_settings.value("gui/kernelExternalIpInterval", "30").
+  str = m_settings.value("gui/kernelExternalIpInterval", "-1").
     toString().toLower().trimmed();
 
   if(str == "30")

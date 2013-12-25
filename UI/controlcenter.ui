@@ -3334,6 +3334,9 @@
               </item>
               <item>
                <widget class="QComboBox" name="guiExternalIpFetch">
+		<property name="currentIndex">
+                 <number>2</number>
+                </property>
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToContents</enum>
                 </property>
@@ -3491,6 +3494,9 @@
                    </item>
                    <item>
                     <widget class="QComboBox" name="kernelExternalIpFetch">
+		     <property name="currentIndex">
+                      <number>2</number>
+                     </property>
                      <property name="sizeAdjustPolicy">
                       <enum>QComboBox::AdjustToContents</enum>
                      </property>

@@ -292,13 +292,13 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	m_tcpSocket->startServerEncryption();
     }
 
-  if(spoton_kernel::setting("gui/kernelExternalIpInterval", 30).
+  if(spoton_kernel::setting("gui/kernelExternalIpInterval", -1).
      toInt() == 30)
     {
       m_externalAddress->discover();
       m_externalAddressDiscovererTimer.start(30000);
     }
-  else if(spoton_kernel::setting("gui/kernelExternalIpInterval", 30).
+  else if(spoton_kernel::setting("gui/kernelExternalIpInterval", -1).
 	  toInt() == 60)
     {
       m_externalAddress->discover();
@@ -573,10 +573,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SLOT(slotTimeout(void)));
   m_accountTimer.setInterval(15000);
 
-  if(spoton_kernel::setting("gui/kernelExternalIpInterval", 30).
+  if(spoton_kernel::setting("gui/kernelExternalIpInterval", -1).
      toInt() == 30)
     m_externalAddressDiscovererTimer.setInterval(30000);
-  else if(spoton_kernel::setting("gui/kernelExternalIpInterval", 30).
+  else if(spoton_kernel::setting("gui/kernelExternalIpInterval", -1).
 	  toInt() == 60)
     m_externalAddressDiscovererTimer.setInterval(60000);
   else
@@ -848,7 +848,7 @@ void spoton_neighbor::slotTimeout(void)
       }
 
   int v = spoton_kernel::setting
-    ("gui/kernelExternalIpInterval", 30).toInt();
+    ("gui/kernelExternalIpInterval", -1).toInt();
 
   if(v != -1)
     {
@@ -1422,7 +1422,7 @@ void spoton_neighbor::slotConnected(void)
   ** Initial discovery of the external IP address.
   */
 
-  if(spoton_kernel::setting("gui/kernelExternalIpInterval", 30).
+  if(spoton_kernel::setting("gui/kernelExternalIpInterval", -1).
      toInt() != -1)
     {
       m_externalAddress->discover();

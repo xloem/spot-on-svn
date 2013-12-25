@@ -356,7 +356,7 @@ void spoton_listener::slotTimeout(void)
 			else
 			  {
 			    int v = spoton_kernel::setting
-			      ("gui/kernelExternalIpInterval", 30).toInt();
+			      ("gui/kernelExternalIpInterval", -1).toInt();
 
 			    if(v != -1)
 			      /*
@@ -390,7 +390,7 @@ void spoton_listener::slotTimeout(void)
 		if(isListening())
 		  {
 		    int v = 1000 * spoton_kernel::setting
-		      ("gui/kernelExternalIpInterval", 30).toInt();
+		      ("gui/kernelExternalIpInterval", -1).toInt();
 
 		    if(v == 30000 || v == 60000)
 		      {
