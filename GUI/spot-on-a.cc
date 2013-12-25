@@ -1340,7 +1340,9 @@ spoton::spoton(void):QMainWindow()
   m_ui.neighbors->setColumnHidden
     (m_ui.neighbors->columnCount() - 1, true); // OID
   m_ui.neighbors->setColumnHidden
-    (m_ui.neighbors->columnCount() - 2, true); // is_encrypted
+    (m_ui.neighbors->columnCount() - 2, true); // certificate
+  m_ui.neighbors->setColumnHidden
+    (m_ui.neighbors->columnCount() - 3, true); // is_encrypted
   m_ui.participants->setColumnHidden(1, true); // OID
   m_ui.participants->setColumnHidden(2, true); // neighbor_oid
   m_ui.participants->setColumnHidden(3, true); // public_key_hash
@@ -2721,6 +2723,7 @@ void spoton::slotPopulateNeighbors(void)
 		      "account_authenticated, "
 		      "transport, "
 		      "is_encrypted, "
+		      "0, " // Certificate
 		      "OID "
 		      "FROM neighbors WHERE status_control <> 'deleted'"))
 	  {
@@ -2733,6 +2736,7 @@ void spoton::slotPopulateNeighbors(void)
 	      {
 		m_ui.neighbors->setRowCount(row + 1);
 
+		QByteArray certificate;
 		QByteArray certificateDigest;
 		QByteArray sslSessionCipher;
 		QString tooltip("");
@@ -2740,7 +2744,7 @@ void spoton::slotPopulateNeighbors(void)
 		  (query.record().indexOf("is_encrypted")).toBool();
 		bool ok = true;
 
-		certificateDigest = s_crypt->
+		certificate = certificateDigest = s_crypt->
 		  decrypted(QByteArray::
 			    fromBase64(query.
 				       value(21).
@@ -2749,19 +2753,25 @@ void spoton::slotPopulateNeighbors(void)
 
 		if(!ok)
 		  {
+		    certificate.clear();
 		    certificateDigest.clear();
 		    certificateDigest.append(tr("error"));
 		  }
 
 		if(ok)
-		  if(!certificateDigest.isEmpty())
-		    {
-		      certificateDigest = spoton_crypt::
-			sha512Hash(certificateDigest, &ok).toHex();
+		  {
+		    if(!certificate.isEmpty())
+		      certificate = certificate.toBase64();
 
-		      if(!ok)
-			certificateDigest.clear();
-		    }
+		    if(!certificateDigest.isEmpty())
+		      {
+			certificateDigest = spoton_crypt::
+			  sha512Hash(certificateDigest, &ok).toHex();
+			
+			if(!ok)
+			  certificateDigest.clear();
+		      }
+		  }
 
 		sslSessionCipher = s_crypt->
 		  decrypted(QByteArray::
@@ -3046,6 +3056,8 @@ void spoton::slotPopulateNeighbors(void)
 			      (QBrush(QColor(240, 128, 128)));
 			  }
 		      }
+		    else if(i == 29) // Certificate
+		      item = new QTableWidgetItem(certificate.constData());
 		    else
 		      item = new QTableWidgetItem
 			(query.value(i).toString());
@@ -5982,11 +5994,19 @@ void spoton::slotNeighborSelected(void)
 
   if(item)
     {
+      QSslCertificate certificate;
       QString label("");
       QStringList list;
       int row = item->row();
 
-      for(int i = 0; i < m_ui.neighbors->columnCount() - 2; i++)
+      if(m_ui.neighbors->item(row, m_ui.neighbors->columnCount() - 2))
+	certificate = QSslCertificate
+	  (QByteArray::fromBase64(m_ui.neighbors->
+				  item(row,
+				       m_ui.neighbors->columnCount() - 2)->
+				  text().toLatin1()));
+
+      for(int i = 0; i < m_ui.neighbors->columnCount() - 3; i++)
 	{
 	  QTableWidgetItem *item = m_ui.neighbors->item(row, i);
 
@@ -5998,6 +6018,8 @@ void spoton::slotNeighborSelected(void)
 	      list << item->text();
 	    }
 	}
+
+      label = label.trimmed();
 
       QString str
 	(label.
@@ -6028,6 +6050,46 @@ void spoton::slotNeighborSelected(void)
 	 arg(list.value(24)));
       int h = m_ui.neighborSummary->horizontalScrollBar()->value();
       int v = m_ui.neighborSummary->verticalScrollBar()->value();
+
+      if(!certificate.isNull())
+	str.append
+	  (tr("\n"
+	      "Cert. Effective Date: %1\n"
+	      "Cert. Expiration Date: %2\n"
+	      "Cert. Issuer Organization: %3\n"
+	      "Cert. Issuer Common Name: %4\n"
+	      "Cert. Issuer Locality Name: %5\n"
+	      "Cert. Issuer Organizational Unit Name: %6\n"
+	      "Cert. Issuer Country Name: %7\n"
+	      "Cert. Issuer State or Province Name: %8\n"
+	      "Cert. Serial Number: %9\n"
+	      "Cert. Subject Organization: %10\n"
+	      "Cert. Subject Common Name: %11\n"
+	      "Cert. Subject Locality Name: %12\n"
+	      "Cert. Subject Organizational Unit Name: %13\n"
+	      "Cert. Subject Country Name: %14\n"
+	      "Cert. Subject State or Province Name: %15\n"
+	      "Cert. Version: %16\n").
+	   arg(certificate.effectiveDate().toString("MM/dd/yyyy")).
+	   arg(certificate.expiryDate().toString("MM/dd/yyyy")).
+	   arg(certificate.issuerInfo(QSslCertificate::Organization)).
+	   arg(certificate.issuerInfo(QSslCertificate::CommonName)).
+	   arg(certificate.issuerInfo(QSslCertificate::LocalityName)).
+	   arg(certificate.
+	       issuerInfo(QSslCertificate::OrganizationalUnitName)).
+	   arg(certificate.issuerInfo(QSslCertificate::CountryName)).
+	   arg(certificate.
+	       issuerInfo(QSslCertificate::StateOrProvinceName)).
+	   arg(certificate.serialNumber().constData()).
+	   arg(certificate.subjectInfo(QSslCertificate::Organization)).
+	   arg(certificate.subjectInfo(QSslCertificate::CommonName)).
+	   arg(certificate.subjectInfo(QSslCertificate::LocalityName)).
+	   arg(certificate.
+	       subjectInfo(QSslCertificate::OrganizationalUnitName)).
+	   arg(certificate.subjectInfo(QSslCertificate::CountryName)).
+	   arg(certificate.
+	       subjectInfo(QSslCertificate::StateOrProvinceName)).
+	   arg(certificate.version().constData()));
 
       m_ui.neighborSummary->setText(str);
       m_ui.neighborSummary->horizontalScrollBar()->setValue(h);

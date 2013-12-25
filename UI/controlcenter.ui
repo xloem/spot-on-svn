@@ -2560,6 +2560,11 @@
                 </column>
                 <column>
                  <property name="text">
+                  <string>certificate</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
                   <string>OID</string>
                  </property>
                 </column>
@@ -3334,7 +3339,7 @@
               </item>
               <item>
                <widget class="QComboBox" name="guiExternalIpFetch">
-		<property name="currentIndex">
+                <property name="currentIndex">
                  <number>2</number>
                 </property>
                 <property name="sizeAdjustPolicy">
@@ -3494,7 +3499,7 @@
                    </item>
                    <item>
                     <widget class="QComboBox" name="kernelExternalIpFetch">
-		     <property name="currentIndex">
+                     <property name="currentIndex">
                       <number>2</number>
                      </property>
                      <property name="sizeAdjustPolicy">
