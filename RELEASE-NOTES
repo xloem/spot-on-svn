@@ -11,6 +11,7 @@
 5.   Set the default intervals of the external IP fetch mechanisms to -1.
 6.   Corrected Documentation/MESSAGES.
 7.   Added certificate information to neighbor summaries.
+8.   Introduced byte-by-byte hash comparisons to lessen timing analysis.
 
 0.08 (12/23/2013)
 
