@@ -3402,3 +3402,27 @@ QByteArray spoton_crypt::hashKey(void) const
   else
     return QByteArray();
 }
+
+bool spoton_crypt::validateHashes(const QByteArray &hash1,
+				  const QByteArray &hash2)
+{
+  QByteArray a;
+  QByteArray b;
+  int length = qMax(hash1.length(), hash2.length());
+  unsigned char tmp = 0;
+
+  a = hash1.leftJustified(length, 0);
+  b = hash2.leftJustified(length, 0);
+
+  /*
+  ** x ^ y returns zero if x and y are identical.
+  */
+
+  for(int i = 0; i < length; i++)
+    tmp |= a.at(i) ^ b.at(i);
+
+  return tmp == 0; /*
+		   ** Return true if hash1 and hash2 are identical.
+		   ** Perhaps this final comparison can be enhanced.
+		   */
+}

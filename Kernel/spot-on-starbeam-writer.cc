@@ -98,7 +98,7 @@ void spoton_starbeam_writer::slotProcessData(void)
 	 &ok);
 
       if(ok)
-	if(list.value(1) == messageCode)
+	if(spoton_crypt::validateHashes(list.value(1), messageCode))
 	  {
 	    magnet = magnets.at(i);
 	    break;

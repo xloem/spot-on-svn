@@ -2669,7 +2669,7 @@ QList<QByteArray> spoton_kernel::findBuzzKey
 	(data, it.value().value(2), it.value().value(3), &ok);
 
       if(ok)
-	if(computedHash == hash)
+	if(spoton_crypt::validateHashes(computedHash, hash))
 	  {
 	    list = it.value();
 	    break;

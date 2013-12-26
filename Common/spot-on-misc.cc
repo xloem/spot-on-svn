@@ -942,7 +942,7 @@ QPair<QByteArray, QByteArray> spoton_misc::findGeminiInCosmos
 						   "sha512", &ok));
 
 			if(ok)
-			  if(computedHash == hash)
+			  if(spoton_crypt::validateHashes(computedHash, hash))
 			    break; // We have something!
 		      }
 		}

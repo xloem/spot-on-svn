@@ -600,7 +600,7 @@ void spoton_rosetta::slotConvert(void)
   else
     {
       QByteArray cipherType;
-      QByteArray computedMessageCode;
+      QByteArray computedHash;
       QByteArray data(ui.input->toPlainText().trimmed().toLatin1());
       QByteArray encryptionKey;
       QByteArray hashKey;
@@ -640,12 +640,11 @@ void spoton_rosetta::slotConvert(void)
 	}
 
       if(ok)
-	computedMessageCode = spoton_crypt::keyedHash
-	  (data, hashKey, hashType, &ok);
+	computedHash = spoton_crypt::keyedHash(data, hashKey, hashType, &ok);
 
       if(ok)
 	{
-	  if(computedMessageCode != messageCode)
+	  if(!spoton_crypt::validateHashes(computedHash, messageCode))
 	    {
 	      error = tr("The computed hash does not match the provided "
 			 "hash.");

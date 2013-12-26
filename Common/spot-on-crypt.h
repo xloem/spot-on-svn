@@ -96,6 +96,8 @@ class spoton_crypt
 			       const QByteArray &publicKey,
 			       const QByteArray &signature);
   static bool passphraseSet(void);
+  static bool validateHashes
+    (const QByteArray &hash1, const QByteArray &hash2);
   static size_t cipherKeyLength(const QByteArray &cipherType);
   static void generateSslKeys(const int rsaKeySize,
 			      QByteArray &certificate,
