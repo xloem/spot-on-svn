@@ -304,6 +304,16 @@ void spoton_listener::slotTimeout(void)
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
+	query.prepare
+	  ("DELETE FROM listeners_accounts_consumed_authentications "
+	   "WHERE "
+	   "strftime('%s', ?) - "
+	   "strftime('%s', insert_date) > ? AND listener_oid = ?");
+	query.bindValue
+	  (0, QDateTime::currentDateTime().toString(Qt::ISODate));
+	query.bindValue(1, 2);
+	query.bindValue(2, m_id);
+	query.exec();
 	query.prepare("SELECT status_control, maximum_clients, "
 		      "echo_mode, use_accounts, maximum_buffer_size, "
 		      "maximum_content_length "
