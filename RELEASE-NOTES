@@ -10,6 +10,11 @@
 5.   Corrected Documentation/MESSAGES.
 6.   Added certificate information to neighbor summaries.
 7.   Introduced byte-by-byte hash comparisons to lessen timing analysis.
+8.   Added the database table listeners_accounts_consumed_authentications. The
+     contents of the table shall be purged whenever the owning listener
+     is deactivated or deleted. The table shall contain data that has been
+     used for authenticating accounts so as to avoid potential replay attacks.
+9.   Account authentication is now allowed over insecure TCP connections.
 
 0.08 (12/23/2013)
 
