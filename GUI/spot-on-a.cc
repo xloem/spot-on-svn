@@ -6079,6 +6079,7 @@ void spoton::slotNeighborSelected(void)
 	      "<b>Cert. Version:</b> %16<br>").
 	   arg(certificate.effectiveDate().toString("MM/dd/yyyy")).
 	   arg(certificate.expiryDate().toString("MM/dd/yyyy")).
+#if QT_VERSION < 0x050000
 	   arg(certificate.issuerInfo(QSslCertificate::Organization)).
 	   arg(certificate.issuerInfo(QSslCertificate::CommonName)).
 	   arg(certificate.issuerInfo(QSslCertificate::LocalityName)).
@@ -6087,7 +6088,21 @@ void spoton::slotNeighborSelected(void)
 	   arg(certificate.issuerInfo(QSslCertificate::CountryName)).
 	   arg(certificate.
 	       issuerInfo(QSslCertificate::StateOrProvinceName)).
+#else
+	   arg(certificate.issuerInfo(QSslCertificate::Organization).
+	       value(0)).
+	   arg(certificate.issuerInfo(QSslCertificate::CommonName).
+	       value(0)).
+	   arg(certificate.issuerInfo(QSslCertificate::LocalityName).
+	       value(0)).
+	   arg(certificate.
+	       issuerInfo(QSslCertificate::OrganizationalUnitName).value(0)).
+	   arg(certificate.issuerInfo(QSslCertificate::CountryName).value(0)).
+	   arg(certificate.
+	       issuerInfo(QSslCertificate::StateOrProvinceName).value(0)).
+#endif
 	   arg(certificate.serialNumber().constData()).
+#if QT_VERSION < 0x050000
 	   arg(certificate.subjectInfo(QSslCertificate::Organization)).
 	   arg(certificate.subjectInfo(QSslCertificate::CommonName)).
 	   arg(certificate.subjectInfo(QSslCertificate::LocalityName)).
@@ -6096,8 +6111,23 @@ void spoton::slotNeighborSelected(void)
 	   arg(certificate.subjectInfo(QSslCertificate::CountryName)).
 	   arg(certificate.
 	       subjectInfo(QSslCertificate::StateOrProvinceName)).
+#else
+	   arg(certificate.subjectInfo(QSslCertificate::Organization).
+	       value(0)).
+	   arg(certificate.subjectInfo(QSslCertificate::CommonName).
+	       value(0)).
+	   arg(certificate.subjectInfo(QSslCertificate::LocalityName).
+	       value(0)).
+	   arg(certificate.
+	       subjectInfo(QSslCertificate::OrganizationalUnitName).
+	       value(0)).
+	   arg(certificate.subjectInfo(QSslCertificate::CountryName).
+	       value(0)).
+	   arg(certificate.
+	       subjectInfo(QSslCertificate::StateOrProvinceName).
+	       value(0)).
+#endif
 	   arg(certificate.version().constData()));
-
       m_ui.neighborSummary->setText(str);
       m_ui.neighborSummary->horizontalScrollBar()->setValue(h);
       m_ui.neighborSummary->verticalScrollBar()->setValue(v);
