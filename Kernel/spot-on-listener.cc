@@ -311,7 +311,7 @@ void spoton_listener::slotTimeout(void)
 	   "strftime('%s', insert_date) > ? AND listener_oid = ?");
 	query.bindValue
 	  (0, QDateTime::currentDateTime().toString(Qt::ISODate));
-	query.bindValue(1, 2);
+	query.bindValue(1, 120);
 	query.bindValue(2, m_id);
 	query.exec();
 	query.prepare("SELECT status_control, maximum_clients, "

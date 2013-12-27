@@ -459,11 +459,11 @@
         <location filename="../GUI/spot-on-a.cc" line="4003"/>
         <location filename="../GUI/spot-on-a.cc" line="4010"/>
         <location filename="../GUI/spot-on-a.cc" line="4021"/>
-        <location filename="../GUI/spot-on-a.cc" line="6202"/>
-        <location filename="../GUI/spot-on-a.cc" line="6215"/>
-        <location filename="../GUI/spot-on-a.cc" line="6288"/>
-        <location filename="../GUI/spot-on-a.cc" line="6553"/>
-        <location filename="../GUI/spot-on-a.cc" line="6601"/>
+        <location filename="../GUI/spot-on-a.cc" line="6232"/>
+        <location filename="../GUI/spot-on-a.cc" line="6245"/>
+        <location filename="../GUI/spot-on-a.cc" line="6318"/>
+        <location filename="../GUI/spot-on-a.cc" line="6583"/>
+        <location filename="../GUI/spot-on-a.cc" line="6631"/>
         <location filename="../GUI/spot-on-b.cc" line="145"/>
         <location filename="../GUI/spot-on-b.cc" line="1383"/>
         <location filename="../GUI/spot-on-b.cc" line="1390"/>
@@ -797,29 +797,29 @@ Share Address: %11</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="6216"/>
+        <location filename="../GUI/spot-on-a.cc" line="6246"/>
         <source>Invalid neighbor OID. Please select a neighbor.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="6289"/>
+        <location filename="../GUI/spot-on-a.cc" line="6319"/>
         <source>The account name must be non-empty and the account password must contain at least sixteen characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="6458"/>
-        <location filename="../GUI/spot-on-a.cc" line="6568"/>
+        <location filename="../GUI/spot-on-a.cc" line="6488"/>
+        <location filename="../GUI/spot-on-a.cc" line="6598"/>
         <source>Empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="6548"/>
+        <location filename="../GUI/spot-on-a.cc" line="6578"/>
         <location filename="../GUI/spot-on-c.cc" line="186"/>
         <source>A database error occurred.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-a.cc" line="6578"/>
+        <location filename="../GUI/spot-on-a.cc" line="6608"/>
         <source>Invalid clipboard object. This is a fatal flaw.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -904,8 +904,8 @@ Share Address: %11</source>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="1483"/>
         <location filename="../GUI/spot-on-a.cc" line="1775"/>
-        <location filename="../GUI/spot-on-a.cc" line="6203"/>
-        <location filename="../GUI/spot-on-a.cc" line="6509"/>
+        <location filename="../GUI/spot-on-a.cc" line="6233"/>
+        <location filename="../GUI/spot-on-a.cc" line="6539"/>
         <location filename="../GUI/spot-on-b.cc" line="1384"/>
         <location filename="../GUI/spot-on-b.cc" line="1536"/>
         <location filename="../GUI/spot-on-b.cc" line="3903"/>

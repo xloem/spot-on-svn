@@ -1905,9 +1905,12 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 
 		query.prepare("INSERT OR REPLACE INTO "
 			      "listeners_accounts_consumed_authentications "
-			      "(data, listener_oid) VALUES (?, ?)");
+			      "(data, insert_date, listener_oid) "
+			      "VALUES (?, ?, ?)");
 		query.bindValue(0, saltedCredentials.toBase64());
-		query.bindValue(1, listenerOid);
+		query.bindValue
+		  (1, QDateTime::currentDateTime().toString(Qt::ISODate));
+		query.bindValue(2, listenerOid);
 		query.exec();
 	      }
 	  }
