@@ -168,6 +168,5 @@ Remaining Items
 35.    Wormholes for streamed data.
 36.    Per request, provide an automatic rewind mechanism with a timer.
 37.    Gold Bugs and Novas should have separate hash keys.
-38.    Although account authentication occurs within
-       SSL (TCP connections only), account credentials should not be
-       recorded via reversible encryption.
+38.    Account credentials should not be recorded via reversible encryption.
+39.    Accounts and allowed IP addresses suffer selection issues.
