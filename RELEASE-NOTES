@@ -1,7 +1,10 @@
 0.09 (03/03/2014)
 
 1.   Use a separate key for computing local keyed hashes. Keyed hashes provide
-     uniqueness to database entries. Please reset Spot. Apologies.
+     uniqueness to database entries. Please reset Spot. Apologies. Keys
+     are derived as follows:
+          key_temporary = derive(passphrase, cipher_block_length + 256)
+          key_encryption, key_hash = derive(key_temporary)
 2.   Removed obsolete methods from the spoton_crypt class.
 3.   The mechanisms that are responsible for copying chat and e-mail public
      key pairs incorrectly used the encryption keys for computing keyed
@@ -14,6 +17,7 @@
      contents of the table shall be purged whenever the owning listener
      is deactivated or deleted. The table shall contain data that has been
      used for authenticating accounts so as to avoid potential replay attacks.
+     Data older than 2.5 seconds is also purged.
 9.   Account authentication is now allowed over insecure TCP connections.
 
 0.08 (12/23/2013)
