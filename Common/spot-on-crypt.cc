@@ -3403,26 +3403,32 @@ QByteArray spoton_crypt::hashKey(void) const
     return QByteArray();
 }
 
-bool spoton_crypt::validateHashes(const QByteArray &hash1,
-				  const QByteArray &hash2)
+bool spoton_crypt::memcmp(const QByteArray &bytes1,
+			  const QByteArray &bytes2)
 {
   QByteArray a;
   QByteArray b;
-  int length = qMax(hash1.length(), hash2.length());
-  unsigned char tmp = 0;
+  int length = qMax(bytes1.length(), bytes2.length());
+  int rc = 0;
 
-  a = hash1.leftJustified(length, 0);
-  b = hash2.leftJustified(length, 0);
+  a = bytes1.leftJustified(length, 0);
+  b = bytes2.leftJustified(length, 0);
 
   /*
   ** x ^ y returns zero if x and y are identical.
   */
 
   for(int i = 0; i < length; i++)
-    tmp |= a.at(i) ^ b.at(i);
+    rc |= a.at(i) ^ b.at(i);
 
-  return tmp == 0; /*
-		   ** Return true if hash1 and hash2 are identical.
-		   ** Perhaps this final comparison can be enhanced.
-		   */
+  return rc == 0; /*
+		  ** Return true if bytes1 and bytes2 are identical.
+		  ** Perhaps this final comparison can be enhanced.
+		  */
+}
+
+bool spoton_crypt::validateHashes(const QByteArray &hash1,
+				  const QByteArray &hash2)
+{
+  return spoton_crypt::memcmp(hash1, hash2);
 }

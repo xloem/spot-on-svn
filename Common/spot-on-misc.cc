@@ -85,8 +85,7 @@ void spoton_misc::prepareDatabases(void)
   {
     QSqlDatabase db = database(connectionName);
 
-    db.setDatabaseName(homePath() + QDir::separator() +
-		       "buzz_channels.db");
+    db.setDatabaseName(homePath() + QDir::separator() + "buzz_channels.db");
 
     if(db.open())
       {
@@ -301,6 +300,16 @@ void spoton_misc::prepareDatabases(void)
 		   "account_password TEXT NOT NULL, "
 		   "listener_oid INTEGER NOT NULL, "
 		   "PRIMARY KEY (listener_oid, account_name_hash), "
+		   "FOREIGN KEY (listener_oid) REFERENCES "
+		   "listeners (OID))"); /*
+					** The foreign key constraint
+					** is flawed.
+					*/
+	query.exec("CREATE TABLE IF NOT EXISTS "
+		   "listeners_accounts_consumed_authentications ("
+		   "data TEXT NOT NULL, "
+		   "listener_oid INTEGER NOT NULL, "
+		   "PRIMARY KEY (listener_oid, data), "
 		   "FOREIGN KEY (listener_oid) REFERENCES "
 		   "listeners (OID))"); /*
 					** The foreign key constraint
@@ -657,7 +666,10 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 		"public_key_hash = ?), "
 		"?, ?, ?, ?, ?, ?)");
   query.bindValue(0, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
-  query.bindValue(1, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
+
+  if(ok)
+    query.bindValue(1, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
+
   query.bindValue(2, keyType.constData());
 
   if(keyType == "chat" || keyType == "email" ||
@@ -673,8 +685,11 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
     query.bindValue(3, keyType.constData());
 
   query.bindValue(4, publicKey);
-  query.bindValue
-    (5, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
+
+  if(ok)
+    query.bindValue
+      (5, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
+
   query.bindValue(6, neighborOid);
   query.bindValue
     (7, QDateTime::currentDateTime().toString(Qt::ISODate));
@@ -700,7 +715,7 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 
 	if(ok)
 	  query.bindValue
-	  (1, spoton_crypt::sha512Hash(sPublicKey, &ok).toBase64());
+	    (1, spoton_crypt::sha512Hash(sPublicKey, &ok).toBase64());
 
 	if(ok)
 	  ok = query.exec();
@@ -902,8 +917,8 @@ QPair<QByteArray, QByteArray> spoton_misc::findGeminiInCosmos
       {
 	QSqlDatabase db = database(connectionName);
 
-	db.setDatabaseName(homePath() + QDir::separator() +
-			   "friends_public_keys.db");
+	db.setDatabaseName
+	  (homePath() + QDir::separator() + "friends_public_keys.db");
 
 	if(db.open())
 	  {
@@ -1071,6 +1086,7 @@ void spoton_misc::cleanupDatabases(void)
 	query.exec("DELETE FROM listeners_accounts WHERE "
 		   "listener_oid NOT IN "
 		   "(SELECT OID FROM listeners)");
+	query.exec("DELETE FROM listeners_accounts_consumed_authentications");
 	query.exec("DELETE FROM listeners_allowed_ips WHERE "
 		   "listener_oid NOT IN "
 		   "(SELECT OID FROM listeners)");
@@ -1163,8 +1179,8 @@ QByteArray spoton_misc::publicKeyFromHash(const QByteArray &publicKeyHash)
   {
     QSqlDatabase db = database(connectionName);
 
-    db.setDatabaseName(homePath() + QDir::separator() +
-		       "friends_public_keys.db");
+    db.setDatabaseName
+      (homePath() + QDir::separator() + "friends_public_keys.db");
 
     if(db.open())
       {
@@ -1791,7 +1807,11 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 				      spoton_crypt *crypt)
 {
   if(!crypt)
-    return false;
+    {
+      name.clear();
+      password.clear();
+      return false;
+    }
 
   QString connectionName("");
   bool found = false;
@@ -1799,65 +1819,97 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
   {
     QSqlDatabase db = database(connectionName);
 
-    db.setDatabaseName(homePath() + QDir::separator() +
-		       "listeners.db");
+    db.setDatabaseName(homePath() + QDir::separator() + "listeners.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool exists = false;
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT account_name, account_password "
-		      "FROM listeners_accounts WHERE "
-		      "listener_oid = ?");
-	query.bindValue(0, listenerOid);
+	query.prepare("SELECT COUNT(*) FROM "
+		      "listeners_accounts_consumed_authentications "
+		      "WHERE data = ? AND listener_oid = ?");
+	query.bindValue(0, saltedCredentials.toBase64());
+	query.bindValue(1, listenerOid);
 
 	if(query.exec())
-	  while(query.next())
-	    {
-	      QByteArray salted;
-	      bool ok = true;
+	  if(query.next())
+	    exists = query.value(0).toInt() > 0;
 
-	      name = crypt->decrypted
-		(QByteArray::fromBase64(query.value(0).
-					toByteArray()),
-		 &ok);
+	if(!exists)
+	  {
+	    QByteArray salted;
+	    QSqlQuery query(db);
 
-	      if(ok)
-		password = crypt->decrypted
-		  (QByteArray::fromBase64(query.value(1).
-					  toByteArray()),
-		   &ok);
+	    query.setForwardOnly(true);
+	    query.prepare("SELECT account_name, account_password "
+			  "FROM listeners_accounts WHERE "
+			  "listener_oid = ?");
+	    query.bindValue(0, listenerOid);
 
-	      if(ok)
-		salted = spoton_crypt::saltedValue
-		  ("sha512", name + password +
-		   QDateTime::currentDateTime().toUTC().
-		   toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
-
-	      if(ok)
+	    if(query.exec())
+	      while(query.next())
 		{
-		  if(salted == saltedCredentials)
-		    {
-		      found = true;
-		      break;
-		    }
-		  else
-		    {
-		      salted = spoton_crypt::saltedValue
-			("sha512", name + password +
-			 QDateTime::currentDateTime().toUTC().addSecs(60).
-			 toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
+		  bool ok = true;
 
-		      if(ok)
-			if(salted == saltedCredentials)
-			  {
-			    found = true;
-			    break;
-			  }
+		  name = crypt->decrypted
+		    (QByteArray::fromBase64(query.value(0).
+					    toByteArray()),
+		     &ok);
+
+		  if(ok)
+		    password = crypt->decrypted
+		      (QByteArray::fromBase64(query.value(1).
+					      toByteArray()),
+		       &ok);
+
+		  if(ok)
+		    salted = spoton_crypt::saltedValue
+		      ("sha512", name + password +
+		       QDateTime::currentDateTime().toUTC().
+		       toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
+
+		  if(ok)
+		    {
+		      if(spoton_crypt::memcmp(salted, saltedCredentials))
+			{
+			  found = true;
+			  break;
+			}
+		      else
+			{
+			  salted = spoton_crypt::saltedValue
+			    ("sha512", name + password +
+			     QDateTime::currentDateTime().toUTC().addSecs(60).
+			     toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
+
+			  if(ok)
+			    if(spoton_crypt::memcmp(salted, saltedCredentials))
+			      {
+				found = true;
+				break;
+			      }
+			}
 		    }
 		}
-	    }
+
+	    if(found)
+	      {
+		/*
+		** Record the authentication data.
+		*/
+
+		QSqlQuery query(db);
+
+		query.prepare("INSERT OR REPLACE INTO "
+			      "listeners_accounts_consumed_authentications "
+			      "(data, listener_oid) VALUES (?, ?)");
+		query.bindValue(0, saltedCredentials.toBase64());
+		query.bindValue(1, listenerOid);
+		query.exec();
+	      }
+	  }
       }
 
     db.close();

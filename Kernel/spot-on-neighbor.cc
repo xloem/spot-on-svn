@@ -3321,9 +3321,10 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
       if(spoton_misc::authenticateAccount(name,
 					  password,
 					  m_listenerOid,
-					  list.at(0), list.at(1),
-					  spoton_kernel::s_crypts.
-					  value("chat", 0)))
+					  list.at(0),
+					  list.at(1),
+					  spoton_kernel::
+					  s_crypts.value("chat", 0)))
 	{
 	  m_accountAuthenticated = true;
 	  emit accountAuthenticated(name, password);
@@ -3457,7 +3458,8 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 
 	      if(ok)
 		{
-		  if(newSaltedCredentials == saltedCredentials)
+		  if(spoton_crypt::memcmp(newSaltedCredentials,
+					  saltedCredentials))
 		    {
 		      m_accountAuthenticated = true;
 		      m_accountTimer.stop();
@@ -3473,7 +3475,8 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 			 &ok);
 
 		      if(ok)
-			if(newSaltedCredentials == saltedCredentials)
+			if(spoton_crypt::memcmp(newSaltedCredentials,
+						saltedCredentials))
 			  {
 			    m_accountAuthenticated = true;
 			    m_accountTimer.stop();

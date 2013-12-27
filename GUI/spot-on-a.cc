@@ -3555,6 +3555,11 @@ void spoton::slotDeleteListener(void)
 			  "listener_oid = ?");
 	    query.bindValue(0, oid);
 	    query.exec();
+	    query.prepare
+	      ("DELETE FROM listeners_accounts_consumed_authentications WHERE "
+	       "listener_oid = ?");
+	    query.bindValue(0, oid);
+	    query.exec();
 	    query.prepare("DELETE FROM listeners_allowed_ips WHERE "
 			  "listener_oid = ?");
 	    query.bindValue(0, oid);
@@ -3711,6 +3716,7 @@ void spoton::updateListenersTable(const QSqlDatabase &db)
 	query.exec("DELETE FROM listeners_accounts WHERE "
 		   "listener_oid NOT IN "
 		   "(SELECT OID FROM listeners)");
+	query.exec("DELETE FROM listeners_accounts_consumed_authentications");
 	query.exec("DELETE FROM listeners_allowed_ips WHERE "
 		   "listener_oid NOT IN "
 		   "(SELECT OID FROM listeners)");
@@ -4977,6 +4983,8 @@ void spoton::slotDeleteAllListeners(void)
 	  {
 	    query.exec("DELETE FROM listeners");
 	    query.exec("DELETE FROM listeners_accounts");
+	    query.exec
+	      ("DELETE FROM listeners_accounts_consumed_authentications");
 	    query.exec("DELETE FROM listeners_allowed_ips");
 	  }
 	else

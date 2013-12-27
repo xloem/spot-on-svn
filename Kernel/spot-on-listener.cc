@@ -252,6 +252,11 @@ spoton_listener::~spoton_listener()
 		      "status_control = 'deleted'");
 	query.bindValue(0, m_id);
 	query.exec();
+	query.prepare
+	  ("DELETE FROM listeners_accounts_consumed_authentications "
+	   "WHERE OID = ?");
+	query.bindValue(0, m_id);
+	query.exec();
 	query.exec("DELETE FROM listeners_accounts WHERE "
 		   "listener_oid NOT IN "
 		   "(SELECT OID FROM listeners)");

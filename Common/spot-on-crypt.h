@@ -95,6 +95,7 @@ class spoton_crypt
   static bool isValidSignature(const QByteArray &data,
 			       const QByteArray &publicKey,
 			       const QByteArray &signature);
+  static bool memcmp(const QByteArray &bytes1, const QByteArray &bytes);
   static bool passphraseSet(void);
   static bool validateHashes
     (const QByteArray &hash1, const QByteArray &hash2);

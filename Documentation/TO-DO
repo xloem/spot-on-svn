@@ -90,6 +90,7 @@ Completed Items
        data that's been transmitted via non-Spot. That is, a feature
        to copy encrypted content and send it via other applications.
 64.    Separate keys should be used for storing keyed hashes.
+65.    Prevent replay attacks of authenticated sessions.
 
 Ignored Items
 
@@ -164,11 +165,9 @@ Remaining Items
        Research?
 33.    Prevent inserts of own keys in friends_public_keys.db.
 34.    Artificial impersonators.
-35.    Limit listener authentication replays via digest recording. Or,
-       SRP!
-36.    Wormholes for streamed data.
-37.    Per request, provide an automatic rewind mechanism with a timer.
-38.    Gold Bugs and Novas should have separate hash keys.
-39.    Although account authentication occurs within
+35.    Wormholes for streamed data.
+36.    Per request, provide an automatic rewind mechanism with a timer.
+37.    Gold Bugs and Novas should have separate hash keys.
+38.    Although account authentication occurs within
        SSL (TCP connections only), account credentials should not be
        recorded via reversible encryption.
