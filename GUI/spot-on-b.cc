@@ -4692,6 +4692,12 @@ void spoton::populateAccounts(const QString &listenerOid)
 
     if(db.open())
       {
+	QListWidgetItem *item = m_ui.accounts->selectedItems().value(0);
+	QString account("");
+
+	if(item)
+	  account = item->text();
+
 	m_ui.accounts->clear();
 
 	QSqlQuery query(db);
@@ -4728,6 +4734,11 @@ void spoton::populateAccounts(const QString &listenerOid)
 	    if(!names.isEmpty())
 	      m_ui.accounts->addItems(names);
 	  }
+
+	item = m_ui.accounts->findItems(account, Qt::MatchExactly).value(0);
+
+	if(item)
+	  item->setSelected(true);
       }
 
     db.close();
@@ -4753,6 +4764,12 @@ void spoton::populateListenerIps(const QString &listenerOid)
 
     if(db.open())
       {
+	QListWidgetItem *item = m_ui.acceptedIPList->selectedItems().value(0);
+	QString ip("");
+
+	if(item)
+	  ip = item->text();
+
 	m_ui.acceptedIPList->clear();
 
 	QSqlQuery query(db);
@@ -4789,6 +4806,11 @@ void spoton::populateListenerIps(const QString &listenerOid)
 	    if(!ips.isEmpty())
 	      m_ui.acceptedIPList->addItems(ips);
 	  }
+
+	item = m_ui.acceptedIPList->findItems(ip, Qt::MatchExactly).value(0);
+
+	if(item)
+	  item->setSelected(true);
       }
 
     db.close();
