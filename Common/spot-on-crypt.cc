@@ -2004,7 +2004,7 @@ void spoton_crypt::generatePrivatePublicKeys(const int keySize,
     genkey = QString("(genkey (elg (nbits %1:%2)))").
       arg(qFloor(log10(keySize)) + 1).
       arg(keySize);
-  else
+  else if(keyType == "rsa")
     genkey = QString("(genkey (rsa (nbits %1:%2)))").
       arg(qFloor(log10(keySize)) + 1).
       arg(keySize);

@@ -3310,8 +3310,8 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
-             <width>869</width>
+             <y>-122</y>
+             <width>939</width>
              <height>643</height>
             </rect>
            </property>
@@ -4034,6 +4034,11 @@
                      <property name="sizeAdjustPolicy">
                       <enum>QComboBox::AdjustToContents</enum>
                      </property>
+                     <item>
+                      <property name="text">
+                       <string>1024</string>
+                      </property>
+                     </item>
                      <item>
                       <property name="text">
                        <string>2048</string>
