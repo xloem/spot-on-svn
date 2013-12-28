@@ -1,4 +1,4 @@
-0.09 (03/03/2014)
+0.09 (01/27/2014)
 
 1.   Use a separate key for computing local keyed hashes. Keyed hashes provide
      uniqueness to database entries. Please reset Spot. Apologies. Keys
@@ -19,6 +19,8 @@
      used for authenticating accounts so as to avoid potential replay attacks.
      Data older than 120 seconds are also purged.
 9.   Account authentication is now allowed over insecure TCP connections.
+10.  Support of 1024-bit keys.
+11.  Anonymous e-mail containers.
 
 0.08 (12/23/2013)
 
