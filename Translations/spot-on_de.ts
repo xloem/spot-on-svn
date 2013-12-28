@@ -1898,10 +1898,10 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <location filename="../UI/controlcenter.ui" line="2136"/>
         <location filename="../UI/controlcenter.ui" line="3042"/>
         <location filename="../UI/controlcenter.ui" line="3128"/>
-        <location filename="../UI/controlcenter.ui" line="4546"/>
-        <location filename="../UI/controlcenter.ui" line="4612"/>
-        <location filename="../UI/controlcenter.ui" line="5299"/>
-        <location filename="../UI/controlcenter.ui" line="5422"/>
+        <location filename="../UI/controlcenter.ui" line="4551"/>
+        <location filename="../UI/controlcenter.ui" line="4617"/>
+        <location filename="../UI/controlcenter.ui" line="5304"/>
+        <location filename="../UI/controlcenter.ui" line="5427"/>
         <source>Add</source>
         <translation>Hinzufügen</translation>
     </message>
@@ -1993,9 +1993,9 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <location filename="../UI/controlcenter.ui" line="2074"/>
         <location filename="../UI/controlcenter.ui" line="2143"/>
         <location filename="../UI/controlcenter.ui" line="3239"/>
-        <location filename="../UI/controlcenter.ui" line="4619"/>
-        <location filename="../UI/controlcenter.ui" line="5306"/>
-        <location filename="../UI/controlcenter.ui" line="5429"/>
+        <location filename="../UI/controlcenter.ui" line="4624"/>
+        <location filename="../UI/controlcenter.ui" line="5311"/>
+        <location filename="../UI/controlcenter.ui" line="5434"/>
         <source>Delete</source>
         <translation type="unfinished">Löschen</translation>
     </message>
@@ -2158,7 +2158,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4778"/>
+        <location filename="../UI/controlcenter.ui" line="4783"/>
         <source>&amp;Transmitted</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2224,44 +2224,44 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4072"/>
+        <location filename="../UI/controlcenter.ui" line="4077"/>
         <source>&amp;Encryption</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../UI/controlcenter.ui" line="4089"/>
-        <location filename="../UI/controlcenter.ui" line="4124"/>
-        <source>ElGamal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="4094"/>
         <location filename="../UI/controlcenter.ui" line="4129"/>
+        <source>ElGamal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/controlcenter.ui" line="4099"/>
+        <location filename="../UI/controlcenter.ui" line="4134"/>
         <source>RSA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4102"/>
+        <location filename="../UI/controlcenter.ui" line="4107"/>
         <source>&amp;Signature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4119"/>
+        <location filename="../UI/controlcenter.ui" line="4124"/>
         <source>DSA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4917"/>
+        <location filename="../UI/controlcenter.ui" line="4922"/>
         <source>Add Mosaic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4972"/>
+        <location filename="../UI/controlcenter.ui" line="4977"/>
         <source>Nova</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5702"/>
+        <location filename="../UI/controlcenter.ui" line="5707"/>
         <source>Build Information</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2294,34 +2294,34 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="obsolete">Logbuch</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4217"/>
+        <location filename="../UI/controlcenter.ui" line="4222"/>
         <source>Reset Spot-On</source>
         <translation type="unfinished">Reset Spot-On</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5054"/>
+        <location filename="../UI/controlcenter.ui" line="5059"/>
         <source>&amp;URLs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5194"/>
         <location filename="../UI/controlcenter.ui" line="5199"/>
+        <location filename="../UI/controlcenter.ui" line="5204"/>
         <source>ignored</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5208"/>
+        <location filename="../UI/controlcenter.ui" line="5213"/>
         <source>URL Distillers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5530"/>
+        <location filename="../UI/controlcenter.ui" line="5535"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;quot;The Dalmatian is a breed of dog, noted for its unique black- or brown-spotted coat. This dog is often used as a rescue dog, guardian, athletic partner, and, especially today, the Dalmatian remains most often an active, well-loved family member.&amp;quot; - Wikipedia.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="2356"/>
-        <location filename="../UI/controlcenter.ui" line="5596"/>
+        <location filename="../UI/controlcenter.ui" line="5601"/>
         <source>Authenticate</source>
         <translation type="unfinished">Authentifizieren</translation>
     </message>
@@ -2336,12 +2336,12 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="obsolete">DNS D&amp;omain</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4358"/>
+        <location filename="../UI/controlcenter.ui" line="4363"/>
         <source>&amp;Add</source>
         <translation type="unfinished">Hinzufügen</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4151"/>
+        <location filename="../UI/controlcenter.ui" line="4156"/>
         <source>Chat</source>
         <translation type="unfinished">Chat</translation>
     </message>
@@ -2445,13 +2445,13 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <location filename="../UI/controlcenter.ui" line="469"/>
         <location filename="../UI/controlcenter.ui" line="824"/>
         <location filename="../UI/controlcenter.ui" line="3135"/>
-        <location filename="../UI/controlcenter.ui" line="4405"/>
+        <location filename="../UI/controlcenter.ui" line="4410"/>
         <source>Clear</source>
         <translation>Löschen</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="489"/>
-        <location filename="../UI/controlcenter.ui" line="5100"/>
+        <location filename="../UI/controlcenter.ui" line="5105"/>
         <source>Participants</source>
         <translation>Teilnehmer</translation>
     </message>
@@ -2460,7 +2460,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <location filename="../UI/controlcenter.ui" line="519"/>
         <location filename="../UI/controlcenter.ui" line="1321"/>
         <location filename="../UI/controlcenter.ui" line="3452"/>
-        <location filename="../UI/controlcenter.ui" line="5130"/>
+        <location filename="../UI/controlcenter.ui" line="5135"/>
         <source>Save</source>
         <translation>Speichern</translation>
     </message>
@@ -2488,7 +2488,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <location filename="../UI/controlcenter.ui" line="97"/>
         <location filename="../UI/controlcenter.ui" line="506"/>
         <location filename="../UI/controlcenter.ui" line="2017"/>
-        <location filename="../UI/controlcenter.ui" line="5117"/>
+        <location filename="../UI/controlcenter.ui" line="5122"/>
         <source>&amp;Name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2518,7 +2518,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5071"/>
+        <location filename="../UI/controlcenter.ui" line="5076"/>
         <source>Accept &amp;keys.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2567,7 +2567,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../UI/controlcenter.ui" line="586"/>
         <location filename="../UI/controlcenter.ui" line="1265"/>
-        <location filename="../UI/controlcenter.ui" line="5174"/>
+        <location filename="../UI/controlcenter.ui" line="5179"/>
         <source>Participant</source>
         <translation>Teilnehmer</translation>
     </message>
@@ -2577,25 +2577,25 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <location filename="../UI/controlcenter.ui" line="1270"/>
         <location filename="../UI/controlcenter.ui" line="1652"/>
         <location filename="../UI/controlcenter.ui" line="2568"/>
-        <location filename="../UI/controlcenter.ui" line="4333"/>
-        <location filename="../UI/controlcenter.ui" line="4765"/>
-        <location filename="../UI/controlcenter.ui" line="4869"/>
-        <location filename="../UI/controlcenter.ui" line="4953"/>
-        <location filename="../UI/controlcenter.ui" line="5179"/>
+        <location filename="../UI/controlcenter.ui" line="4338"/>
+        <location filename="../UI/controlcenter.ui" line="4770"/>
+        <location filename="../UI/controlcenter.ui" line="4874"/>
+        <location filename="../UI/controlcenter.ui" line="4958"/>
+        <location filename="../UI/controlcenter.ui" line="5184"/>
         <source>OID</source>
         <translation>OID</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="596"/>
         <location filename="../UI/controlcenter.ui" line="1275"/>
-        <location filename="../UI/controlcenter.ui" line="5184"/>
+        <location filename="../UI/controlcenter.ui" line="5189"/>
         <source>neighbor_oid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="601"/>
         <location filename="../UI/controlcenter.ui" line="1280"/>
-        <location filename="../UI/controlcenter.ui" line="5189"/>
+        <location filename="../UI/controlcenter.ui" line="5194"/>
         <source>public_key_hash</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2604,7 +2604,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <location filename="../UI/controlcenter.ui" line="1053"/>
         <location filename="../UI/controlcenter.ui" line="1567"/>
         <location filename="../UI/controlcenter.ui" line="2428"/>
-        <location filename="../UI/controlcenter.ui" line="4849"/>
+        <location filename="../UI/controlcenter.ui" line="4854"/>
         <source>Status</source>
         <translation>Status</translation>
     </message>
@@ -2808,7 +2808,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <location filename="../UI/controlcenter.ui" line="2328"/>
         <location filename="../UI/controlcenter.ui" line="2855"/>
         <location filename="../UI/controlcenter.ui" line="3752"/>
-        <location filename="../UI/controlcenter.ui" line="4059"/>
+        <location filename="../UI/controlcenter.ui" line="4064"/>
         <source>8192</source>
         <translation type="unfinished">8192</translation>
     </message>
@@ -2888,129 +2888,134 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4137"/>
+        <location filename="../UI/controlcenter.ui" line="4039"/>
+        <source>1024</source>
+        <translation type="unfinished">1024</translation>
+    </message>
+    <message>
+        <location filename="../UI/controlcenter.ui" line="4142"/>
         <source>Key &amp;Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4156"/>
+        <location filename="../UI/controlcenter.ui" line="4161"/>
         <source>E-Mail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4161"/>
+        <location filename="../UI/controlcenter.ui" line="4166"/>
         <source>Rosetta</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4166"/>
+        <location filename="../UI/controlcenter.ui" line="4171"/>
         <source>URL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4174"/>
+        <location filename="../UI/controlcenter.ui" line="4179"/>
         <source>Regenerate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4246"/>
+        <location filename="../UI/controlcenter.ui" line="4251"/>
         <source>S&amp;tarBeam</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4286"/>
+        <location filename="../UI/controlcenter.ui" line="4291"/>
         <source>&amp;Magnets</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4323"/>
+        <location filename="../UI/controlcenter.ui" line="4328"/>
         <source>One-Time-Magnet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4391"/>
+        <location filename="../UI/controlcenter.ui" line="4396"/>
         <source>&amp;Create</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4556"/>
+        <location filename="../UI/controlcenter.ui" line="4561"/>
         <source>&amp;Received</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4629"/>
+        <location filename="../UI/controlcenter.ui" line="4634"/>
         <source>Received</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4652"/>
+        <location filename="../UI/controlcenter.ui" line="4657"/>
         <source>&amp;Destination Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4745"/>
+        <location filename="../UI/controlcenter.ui" line="4750"/>
         <source>Percent Received</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4750"/>
-        <location filename="../UI/controlcenter.ui" line="4844"/>
+        <location filename="../UI/controlcenter.ui" line="4755"/>
+        <location filename="../UI/controlcenter.ui" line="4849"/>
         <source>Total Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4760"/>
-        <location filename="../UI/controlcenter.ui" line="4864"/>
+        <location filename="../UI/controlcenter.ui" line="4765"/>
+        <location filename="../UI/controlcenter.ui" line="4869"/>
         <source>SHA-1 Hash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4859"/>
+        <location filename="../UI/controlcenter.ui" line="4864"/>
         <source>Mosaic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5686"/>
+        <location filename="../UI/controlcenter.ui" line="5691"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://sourceforge.net/p/spot-on/code/HEAD/tree/branches/Documentation/RELEASE-NOTES&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Version 0.09&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5847"/>
+        <location filename="../UI/controlcenter.ui" line="5852"/>
         <source>&amp;Rosetta</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4415"/>
+        <location filename="../UI/controlcenter.ui" line="4420"/>
         <source>Generate Encryption Key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4420"/>
+        <location filename="../UI/controlcenter.ui" line="4425"/>
         <source>Generate MAC Key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4490"/>
+        <location filename="../UI/controlcenter.ui" line="4495"/>
         <source>&amp;Hash Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4507"/>
+        <location filename="../UI/controlcenter.ui" line="4512"/>
         <source>&amp;MAC Key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4460"/>
+        <location filename="../UI/controlcenter.ui" line="4465"/>
         <source>&amp;Cipher Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4477"/>
+        <location filename="../UI/controlcenter.ui" line="4482"/>
         <source>&amp;Encryption Key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5016"/>
+        <location filename="../UI/controlcenter.ui" line="5021"/>
         <source> Bytes</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3076,7 +3081,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <location filename="../UI/controlcenter.ui" line="2313"/>
         <location filename="../UI/controlcenter.ui" line="2840"/>
         <location filename="../UI/controlcenter.ui" line="3737"/>
-        <location filename="../UI/controlcenter.ui" line="4039"/>
+        <location filename="../UI/controlcenter.ui" line="4044"/>
         <source>2048</source>
         <translation type="unfinished">2048</translation>
     </message>
@@ -3085,7 +3090,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <location filename="../UI/controlcenter.ui" line="2323"/>
         <location filename="../UI/controlcenter.ui" line="2850"/>
         <location filename="../UI/controlcenter.ui" line="3747"/>
-        <location filename="../UI/controlcenter.ui" line="4049"/>
+        <location filename="../UI/controlcenter.ui" line="4054"/>
         <source>4096</source>
         <translation type="unfinished">4096</translation>
     </message>
@@ -3164,39 +3169,39 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4328"/>
-        <location filename="../UI/controlcenter.ui" line="4948"/>
+        <location filename="../UI/controlcenter.ui" line="4333"/>
+        <location filename="../UI/controlcenter.ui" line="4953"/>
         <source>Magnet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4410"/>
+        <location filename="../UI/controlcenter.ui" line="4415"/>
         <source>Generate Key Pair</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4679"/>
+        <location filename="../UI/controlcenter.ui" line="4684"/>
         <source>&amp;Maximum Mosaic Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4689"/>
+        <location filename="../UI/controlcenter.ui" line="4694"/>
         <source> MB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4834"/>
+        <location filename="../UI/controlcenter.ui" line="4839"/>
         <source>Percent Transmitted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4755"/>
-        <location filename="../UI/controlcenter.ui" line="4854"/>
+        <location filename="../UI/controlcenter.ui" line="4760"/>
+        <location filename="../UI/controlcenter.ui" line="4859"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5032"/>
+        <location filename="../UI/controlcenter.ui" line="5037"/>
         <source>Transmit</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3297,87 +3302,87 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4572"/>
+        <location filename="../UI/controlcenter.ui" line="4577"/>
         <source>Novas</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4829"/>
+        <location filename="../UI/controlcenter.ui" line="4834"/>
         <source>Paused</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4839"/>
+        <location filename="../UI/controlcenter.ui" line="4844"/>
         <source>Pulse Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4895"/>
+        <location filename="../UI/controlcenter.ui" line="4900"/>
         <source>Rewind</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4969"/>
+        <location filename="../UI/controlcenter.ui" line="4974"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bundle each pulse with an additional layer of AES-256 encryption. Do remember to notify all recipients of the key.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5006"/>
+        <location filename="../UI/controlcenter.ui" line="5011"/>
         <source>&amp;Pulse Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5655"/>
+        <location filename="../UI/controlcenter.ui" line="5660"/>
         <source>Spot-On Graphical User Interface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5750"/>
+        <location filename="../UI/controlcenter.ui" line="5755"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5754"/>
+        <location filename="../UI/controlcenter.ui" line="5759"/>
         <source>&amp;Icons</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5761"/>
+        <location filename="../UI/controlcenter.ui" line="5766"/>
         <source>&amp;Tab Position</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5773"/>
+        <location filename="../UI/controlcenter.ui" line="5778"/>
         <source>&amp;Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5794"/>
+        <location filename="../UI/controlcenter.ui" line="5799"/>
         <source>Nuvola</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5802"/>
+        <location filename="../UI/controlcenter.ui" line="5807"/>
         <source>Nouve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5810"/>
+        <location filename="../UI/controlcenter.ui" line="5815"/>
         <source>Ctrl+L</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5823"/>
+        <location filename="../UI/controlcenter.ui" line="5828"/>
         <source>&amp;East</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5834"/>
+        <location filename="../UI/controlcenter.ui" line="5839"/>
         <source>&amp;North</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5842"/>
+        <location filename="../UI/controlcenter.ui" line="5847"/>
         <source>&amp;West</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3439,7 +3444,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="3952"/>
-        <location filename="../UI/controlcenter.ui" line="5579"/>
+        <location filename="../UI/controlcenter.ui" line="5584"/>
         <source>P&amp;assphrase</source>
         <translation>Passphrase</translation>
     </message>
@@ -3457,7 +3462,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="obsolete">Log Einsicht</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5815"/>
+        <location filename="../UI/controlcenter.ui" line="5820"/>
         <source>&amp;Reset Spot-On</source>
         <translation type="unfinished">Reset Spot-On</translation>
     </message>
@@ -3466,7 +3471,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="obsolete">Spot-On Graphisches Benutzer Interface 1.00</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5807"/>
+        <location filename="../UI/controlcenter.ui" line="5812"/>
         <source>&amp;Log Viewer</source>
         <translation>Logbuch Ansicht</translation>
     </message>
@@ -3515,8 +3520,8 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../UI/controlcenter.ui" line="3421"/>
         <location filename="../UI/controlcenter.ui" line="3581"/>
-        <location filename="../UI/controlcenter.ui" line="4665"/>
-        <location filename="../UI/controlcenter.ui" line="4999"/>
+        <location filename="../UI/controlcenter.ui" line="4670"/>
+        <location filename="../UI/controlcenter.ui" line="5004"/>
         <source>Select</source>
         <translation>Auswählen</translation>
     </message>
@@ -3542,7 +3547,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <location filename="../UI/controlcenter.ui" line="2318"/>
         <location filename="../UI/controlcenter.ui" line="2845"/>
         <location filename="../UI/controlcenter.ui" line="3742"/>
-        <location filename="../UI/controlcenter.ui" line="4044"/>
+        <location filename="../UI/controlcenter.ui" line="4049"/>
         <source>3072</source>
         <translation></translation>
     </message>
@@ -3567,12 +3572,12 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4054"/>
+        <location filename="../UI/controlcenter.ui" line="4059"/>
         <source>7680</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4064"/>
+        <location filename="../UI/controlcenter.ui" line="4069"/>
         <source>15360</source>
         <translation></translation>
     </message>
@@ -3602,19 +3607,19 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="obsolete">Destillierer</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5224"/>
+        <location filename="../UI/controlcenter.ui" line="5229"/>
         <source>&amp;Download</source>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5254"/>
-        <location filename="../UI/controlcenter.ui" line="5377"/>
+        <location filename="../UI/controlcenter.ui" line="5259"/>
+        <location filename="../UI/controlcenter.ui" line="5382"/>
         <source>&amp;Accept List</source>
         <translation type="unfinished">Akzeptanzliste</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5264"/>
-        <location filename="../UI/controlcenter.ui" line="5387"/>
+        <location filename="../UI/controlcenter.ui" line="5269"/>
+        <location filename="../UI/controlcenter.ui" line="5392"/>
         <source>&amp;Deny List</source>
         <translation type="unfinished">Verneinungsliste</translation>
     </message>
@@ -3635,7 +3640,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="obsolete">Lösche Destillierer</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5347"/>
+        <location filename="../UI/controlcenter.ui" line="5352"/>
         <source>&amp;Upload</source>
         <translation>&amp;Upload</translation>
     </message>
@@ -3679,8 +3684,8 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="obsolete">Spot-On Graphical User Interface Version 1.00 - http://spot-on.sf.net</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="4986"/>
-        <location filename="../UI/controlcenter.ui" line="5742"/>
+        <location filename="../UI/controlcenter.ui" line="4991"/>
+        <location filename="../UI/controlcenter.ui" line="5747"/>
         <source>&amp;File</source>
         <translation>Datei</translation>
     </message>
@@ -3689,12 +3694,12 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="obsolete">Bearbeiten</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5783"/>
+        <location filename="../UI/controlcenter.ui" line="5788"/>
         <source>&amp;Quit</source>
         <translation>Beenden</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5786"/>
+        <location filename="../UI/controlcenter.ui" line="5791"/>
         <source>Ctrl+Q</source>
         <translation></translation>
     </message>
