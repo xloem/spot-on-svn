@@ -20,8 +20,7 @@
      Data older than 120 seconds are also purged.
 9.   Account authentication is now allowed over insecure TCP connections.
 10.  Support of 1024-bit keys.
-11.  Anonymous e-mail containers.
-12.  Added various widgets as mirrors of context menu actions.
+11.  Added various widgets as mirrors of context menu actions.
 
 0.08 (12/23/2013)
 
