@@ -3405,8 +3405,6 @@ void spoton::slotSetIcons(void)
 
   m_ui.toolButtonCopyToClipboard->setIcon
     (QIcon(QString(":/%1/copy.png").arg(iconSet)));
-  m_ui.toolButtonMakeFriends->setIcon
-    (QIcon(QString(":/%1/share.png").arg(iconSet)));
   m_ui.shareBuzzMagnet->setIcon
     (QIcon(QString(":/%1/share.png").arg(iconSet)));
   m_ui.addNeighbor->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));

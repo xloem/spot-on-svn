@@ -363,8 +363,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>485</width>
-                <height>426</height>
+                <width>944</width>
+                <height>511</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -555,6 +555,33 @@
                           </property>
                          </item>
                         </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_70">
+                       <property name="spacing">
+                        <number>5</number>
+                       </property>
+                       <item>
+                        <widget class="QPushButton" name="chatActionMenu">
+                         <property name="text">
+                          <string>Context Menu Actions</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <spacer name="horizontalSpacer_56">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
                        </item>
                       </layout>
                      </item>
@@ -1973,8 +2000,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>170</width>
-                 <height>383</height>
+                 <width>238</width>
+                 <height>511</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2176,47 +2203,29 @@
            <number>5</number>
           </property>
           <item>
-           <widget class="QToolButton" name="toolButtonCopyToClipboard">
+           <widget class="QPushButton" name="neighborsActionMenu">
+            <property name="toolTip">
+             <string>Share my specified public key with the selected neighbor.</string>
+            </property>
+            <property name="text">
+             <string>Context Menu Actions</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="toolButtonCopyToClipboard">
             <property name="toolTip">
              <string>Copy my name and the specified public key to the clipboard buffer.</string>
             </property>
             <property name="text">
              <string>Copy Public Keys</string>
             </property>
-            <property name="popupMode">
-             <enum>QToolButton::InstantPopup</enum>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextBesideIcon</enum>
-            </property>
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="shareBuzzMagnet">
+           <widget class="QPushButton" name="shareBuzzMagnet">
             <property name="text">
              <string>Share Buzz Magnet</string>
-            </property>
-            <property name="popupMode">
-             <enum>QToolButton::InstantPopup</enum>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextBesideIcon</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="toolButtonMakeFriends">
-            <property name="toolTip">
-             <string>Share my specified public key with the selected neighbor.</string>
-            </property>
-            <property name="text">
-             <string>Share Public Keys</string>
-            </property>
-            <property name="popupMode">
-             <enum>QToolButton::InstantPopup</enum>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextBesideIcon</enum>
             </property>
            </widget>
           </item>
@@ -3310,7 +3319,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-122</y>
+             <y>0</y>
              <width>939</width>
              <height>643</height>
             </rect>
@@ -4270,8 +4279,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>450</width>
-             <height>473</height>
+             <width>954</width>
+             <height>521</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5892,6 +5901,7 @@
   <tabstop>nodeName</tabstop>
   <tabstop>saveNodeName</tabstop>
   <tabstop>status</tabstop>
+  <tabstop>chatActionMenu</tabstop>
   <tabstop>participants</tabstop>
   <tabstop>hideOfflineParticipants</tabstop>
   <tabstop>chatSendMethod</tabstop>
@@ -5950,9 +5960,9 @@
   <tabstop>acceptedIP</tabstop>
   <tabstop>addAcceptedIP</tabstop>
   <tabstop>deleteAcceptedIP</tabstop>
+  <tabstop>neighborsActionMenu</tabstop>
   <tabstop>toolButtonCopyToClipboard</tabstop>
   <tabstop>shareBuzzMagnet</tabstop>
-  <tabstop>toolButtonMakeFriends</tabstop>
   <tabstop>acceptPublishedConnected</tabstop>
   <tabstop>acceptPublishedDisconnected</tabstop>
   <tabstop>ignorePublished</tabstop>

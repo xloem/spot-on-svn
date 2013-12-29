@@ -178,6 +178,7 @@ class spoton: public QMainWindow
   void highlightPaths(void);
   void initializeKernelSocket(void);
   void magnetize(void);
+  void prepareContextMenuMirrors(void);
   void prepareListenerIPCombo(void);
   void populateAccounts(const QString &listenerOid);
   void populateListenerIps(const QString &listenerOid);

@@ -2264,3 +2264,102 @@ void spoton::slotRegenerateKey(void)
 			     "generatePrivatePublicKeys().").
 			  arg(error.remove(".").trimmed()));
 }
+
+void spoton::prepareContextMenuMirrors(void)
+{
+  if(!m_ui.chatActionMenu->menu())
+    {
+      QAction *action = 0;
+      QMenu *menu = new QMenu(this);
+
+      menu->addAction
+	(QIcon(QString(":/%1/add.png").
+	       arg(m_settings.value("gui/iconSet", "nouve").toString())),
+	 tr("&Add participant as friend."),
+	 this, SLOT(slotShareChatPublicKeyWithParticipant(void)));
+      menu->addAction(QIcon(QString(":/%1/copy.png").
+			    arg(m_settings.value("gui/iconSet", "nouve").
+				toString())),
+		      tr("&Copy Repleo to the clipboard buffer."),
+		      this, SLOT(slotCopyFriendshipBundle(void)));
+      menu->addSeparator();
+      action = menu->addAction(tr("&Call participant."),
+			       this, SLOT(slotCallParticipant(void)));
+      action->setProperty("type", "calling");
+      action = menu->addAction(tr("&Terminate call."),
+			       this, SLOT(slotCallParticipant(void)));
+      action->setProperty("type", "terminating");
+      menu->addSeparator();
+      action = menu->addAction(tr("&Generate random Gemini pair "
+				  "(AES-256 Key, SHA-512 Key)."),
+			       this, SLOT(slotGenerateGeminiInChat(void)));
+      menu->addSeparator();
+      menu->addAction(QIcon(QString(":/%1/clear.png").
+			    arg(m_settings.value("gui/iconSet", "nouve").
+				toString())),
+		      tr("&Remove participant(s)."),
+		      this, SLOT(slotRemoveParticipants(void)));
+      m_ui.chatActionMenu->setMenu(menu);
+    }
+
+  if(!m_ui.neighborsActionMenu->menu())
+    {
+      QMenu *menu = new QMenu(this);
+
+      menu->addAction(QIcon(QString(":/%1/share.png").
+			    arg(m_settings.value("gui/iconSet", "nouve").
+				toString())),
+		      tr("Share &Chat Public Key"),
+		      this, SLOT(slotShareChatPublicKey(void)));
+      menu->addAction(QIcon(QString(":/%1/share.png").
+			    arg(m_settings.value("gui/iconSet", "nouve").
+				toString())),
+		      tr("Share &E-Mail Public Key"),
+		      this, SLOT(slotShareEmailPublicKey(void)));
+      menu->addAction(QIcon(QString(":%1//share.png").
+			    arg(m_settings.value("gui/iconSet", "nouve").
+				toString())),
+		      tr("Share &URL Public Key"),
+		      this, SLOT(slotShareURLPublicKey(void)));
+      menu->addSeparator();
+      menu->addAction(tr("&Connect"),
+		      this, SLOT(slotConnectNeighbor(void)));
+      menu->addAction(tr("&Disconnect"),
+		      this, SLOT(slotDisconnectNeighbor(void)));
+      menu->addSeparator();
+      menu->addAction
+	(tr("&Authenticate"),
+	 this,
+	 SLOT(slotAuthenticate(void)));
+      menu->addAction(tr("&Reset Account Information"),
+		      this,
+		      SLOT(slotResetAccountInformation(void)));
+      menu->addSeparator();
+      menu->addAction(tr("&Reset Certificate"),
+		      this,
+		      SLOT(slotResetCertificate(void)));
+      menu->addSeparator();
+      menu->addAction(QIcon(QString(":/%1/clear.png").
+			    arg(m_settings.value("gui/iconSet", "nouve").
+				toString())),
+		      tr("&Delete"),
+		      this, SLOT(slotDeleteNeighbor(void)));
+      menu->addAction(tr("Delete &All"),
+		      this, SLOT(slotDeleteAllNeighbors(void)));
+      menu->addAction(tr("Delete All Non-Unique &Blocked Neighbors"),
+		      this, SLOT(slotDeleteAllBlockedNeighbors(void)));
+      menu->addAction(tr("Delete All Non-Unique &UUIDs"),
+		      this, SLOT(slotDeleteAllUuids(void)));
+      menu->addSeparator();
+      menu->addAction(tr("B&lock"),
+		      this, SLOT(slotBlockNeighbor(void)));
+      menu->addAction(tr("U&nblock"),
+		      this, SLOT(slotUnblockNeighbor(void)));
+      menu->addSeparator();
+      menu->addAction(tr("&Full Echo"),
+		      this, SLOT(slotNeighborFullEcho(void)));
+      menu->addAction(tr("&Half Echo"),
+		      this, SLOT(slotNeighborHalfEcho(void)));
+      m_ui.neighborsActionMenu->setMenu(menu);
+    }
+}

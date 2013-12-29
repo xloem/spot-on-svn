@@ -836,14 +836,6 @@ spoton::spoton(void):QMainWindow()
      SIGNAL(triggered(void)), this, SLOT(slotCopyAllMyPublicKeys(void)));
   m_ui.toolButtonCopyToClipboard->setMenu(menu);
   menu = new QMenu(this);
-  connect(menu->addAction(tr("Share &Chat Public Keys")),
-	  SIGNAL(triggered(void)), this, SLOT(slotShareChatPublicKey(void)));
-  connect(menu->addAction(tr("Share &E-Mail Public Keys")),
-	  SIGNAL(triggered(void)), this, SLOT(slotShareEmailPublicKey(void)));
-  connect(menu->addAction(tr("Share &URL Public Keys")),
-	  SIGNAL(triggered(void)), this, SLOT(slotShareURLPublicKey(void)));
-  m_ui.toolButtonMakeFriends->setMenu(menu);
-  menu = new QMenu(this);
   m_ui.shareBuzzMagnet->setMenu(menu);
   m_generalTimer.start(2500);
   m_messagingCachePurgeTimer.start(30000);
@@ -1435,6 +1427,7 @@ spoton::spoton(void):QMainWindow()
 	}
     }
 
+  prepareContextMenuMirrors();
   show();
   update();
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
