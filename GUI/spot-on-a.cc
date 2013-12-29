@@ -697,10 +697,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotDeleteNova(void)));
-  connect(m_ui.authenticate,
-	  SIGNAL(clicked(void)),
-	  this,
-	  SLOT(slotAuthenticate(void)));
   connect(m_ui.buzzTools,
 	  SIGNAL(activated(int)),
 	  this,
@@ -4359,18 +4355,11 @@ void spoton::slotShowContextMenu(const QPoint &point)
 
   if(m_ui.emailParticipants == sender())
     {
-      QAction *action = menu.addAction
+      menu.addAction
 	(QIcon(QString(":/%1/add.png").
 	       arg(m_settings.value("gui/iconSet", "nouve").toString())),
 	 tr("&Add participant as friend."),
 	 this, SLOT(slotShareEmailPublicKeyWithParticipant(void)));
-      QTableWidgetItem *item = m_ui.emailParticipants->itemAt(point);
-
-      if(item && item->data(Qt::UserRole).toBool()) // Temporary friend?
-	action->setEnabled(true);
-      else
-	action->setEnabled(false);
-
       menu.addSeparator();
       menu.addAction(QIcon(QString(":/%1/copy.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
@@ -4476,12 +4465,6 @@ void spoton::slotShowContextMenu(const QPoint &point)
 	       arg(m_settings.value("gui/iconSet", "nouve").toString())),
 	 tr("&Add participant as friend."),
 	 this, SLOT(slotShareChatPublicKeyWithParticipant(void)));
-      QTableWidgetItem *item = m_ui.participants->itemAt(point);
-
-      if(item && item->data(Qt::UserRole).toBool()) // Temporary friend?
-	action->setEnabled(true);
-      else
-	action->setEnabled(false);
 
       menu.addAction(QIcon(QString(":/%1/copy.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
@@ -4492,31 +4475,13 @@ void spoton::slotShowContextMenu(const QPoint &point)
       action = menu.addAction(tr("&Call participant."),
 			      this, SLOT(slotCallParticipant(void)));
       action->setProperty("type", "calling");
-
-      if(item && item->data(Qt::UserRole).toBool()) // Temporary friend?
-	action->setEnabled(false);
-      else
-	action->setEnabled(true);
-
       action = menu.addAction(tr("&Terminate call."),
 			      this, SLOT(slotCallParticipant(void)));
       action->setProperty("type", "terminating");
-
-      if(item && item->data(Qt::UserRole).toBool()) // Temporary friend?
-	action->setEnabled(false);
-      else
-	action->setEnabled(true);
-
       menu.addSeparator();
       action = menu.addAction(tr("&Generate random Gemini pair "
 				 "(AES-256 Key, SHA-512 Key)."),
 			      this, SLOT(slotGenerateGeminiInChat(void)));
-
-      if(item && item->data(Qt::UserRole).toBool()) // Temporary friend?
-	action->setEnabled(false);
-      else
-	action->setEnabled(true);
-
       menu.addSeparator();
       menu.addAction(QIcon(QString(":/%1/clear.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").

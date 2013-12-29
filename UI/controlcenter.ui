@@ -2360,13 +2360,6 @@
                <number>5</number>
               </property>
               <item>
-               <widget class="QPushButton" name="authenticate">
-                <property name="text">
-                 <string>Authenticate</string>
-                </property>
-               </widget>
-              </item>
-              <item>
                <widget class="QCheckBox" name="keepOnlyUserDefinedNeighbors">
                 <property name="text">
                  <string>&amp;Keep only user-defined neighbors.</string>
@@ -5967,7 +5960,6 @@
   <tabstop>acceptPublishedDisconnected</tabstop>
   <tabstop>ignorePublished</tabstop>
   <tabstop>publishedKeySize</tabstop>
-  <tabstop>authenticate</tabstop>
   <tabstop>keepOnlyUserDefinedNeighbors</tabstop>
   <tabstop>neighbors</tabstop>
   <tabstop>neighborSummary</tabstop>
