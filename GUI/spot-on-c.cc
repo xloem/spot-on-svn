@@ -2302,6 +2302,35 @@ void spoton::prepareContextMenuMirrors(void)
       m_ui.chatActionMenu->setMenu(menu);
     }
 
+  if(!m_ui.listenersActionMenu->menu())
+    {
+      QMenu *menu = new QMenu(this);
+
+      menu->addAction(QIcon(QString(":/%1/clear.png").
+			    arg(m_settings.value("gui/iconSet", "nouve").
+				toString())),
+		      tr("&Delete"),
+		      this, SLOT(slotDeleteListener(void)));
+      menu->addAction(tr("Delete &All"),
+		      this, SLOT(slotDeleteAllListeners(void)));
+      menu->addSeparator();
+      menu->addAction(tr("Detach &Neighbors"),
+		      this, SLOT(slotDetachListenerNeighbors(void)));
+      menu->addAction(tr("Disconnect &Neighbors"),
+		      this, SLOT(slotDisconnectListenerNeighbors(void)));
+      menu->addSeparator();
+      menu->addAction(tr("&Publish Information (Plaintext)"),
+		      this, SLOT(slotPublicizeListenerPlaintext(void)));
+      menu->addAction(tr("Publish &All (Plaintext)"),
+		      this, SLOT(slotPublicizeAllListenersPlaintext(void)));
+      menu->addSeparator();
+      menu->addAction(tr("&Full Echo"),
+		      this, SLOT(slotListenerFullEcho(void)));
+      menu->addAction(tr("&Half Echo"),
+		      this, SLOT(slotListenerHalfEcho(void)));
+      m_ui.listenersActionMenu->setMenu(menu);
+    }
+
   if(!m_ui.neighborsActionMenu->menu())
     {
       QMenu *menu = new QMenu(this);

@@ -566,7 +566,7 @@
                        <item>
                         <widget class="QPushButton" name="chatActionMenu">
                          <property name="text">
-                          <string>Context Menu Actions</string>
+                          <string>Context Menu Reflection</string>
                          </property>
                         </widget>
                        </item>
@@ -1534,6 +1534,13 @@
                <number>5</number>
               </property>
               <item>
+               <widget class="QPushButton" name="listenersActionMenu">
+                <property name="text">
+                 <string>Context Menu Reflection</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QCheckBox" name="publishPeriodically">
                 <property name="text">
                  <string>Periodically p&amp;ublish plaintext information.</string>
@@ -2208,7 +2215,7 @@
              <string>Share my specified public key with the selected neighbor.</string>
             </property>
             <property name="text">
-             <string>Context Menu Actions</string>
+             <string>Context Menu Reflection</string>
             </property>
            </widget>
           </item>
@@ -5927,6 +5934,7 @@
   <tabstop>coAcceptSigned</tabstop>
   <tabstop>postoffice</tabstop>
   <tabstop>days</tabstop>
+  <tabstop>listenersActionMenu</tabstop>
   <tabstop>publishPeriodically</tabstop>
   <tabstop>listeners</tabstop>
   <tabstop>listenerIPCombo</tabstop>
