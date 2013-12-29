@@ -2331,6 +2331,23 @@ void spoton::prepareContextMenuMirrors(void)
       m_ui.listenersActionMenu->setMenu(menu);
     }
 
+  if(!m_ui.magnetsActionMenu->menu())
+    {
+      QMenu *menu = new QMenu(this);
+
+      menu->addAction(tr("Copy &Magnet"),
+		      this, SLOT(slotCopyEtpMagnet(void)));
+      menu->addSeparator();
+      menu->addAction(QIcon(QString(":/%1/clear.png").
+			    arg(m_settings.value("gui/iconSet", "nouve").
+				toString())),
+		      tr("&Delete"),
+		      this, SLOT(slotDeleteEtpMagnet(void)));
+      menu->addAction(tr("Delete &All"),
+		      this, SLOT(slotDeleteEtpAllMagnets(void)));
+      m_ui.magnetsActionMenu->setMenu(menu);
+    }
+
   if(!m_ui.neighborsActionMenu->menu())
     {
       QMenu *menu = new QMenu(this);
@@ -2390,5 +2407,55 @@ void spoton::prepareContextMenuMirrors(void)
       menu->addAction(tr("&Half Echo"),
 		      this, SLOT(slotNeighborHalfEcho(void)));
       m_ui.neighborsActionMenu->setMenu(menu);
+    }
+
+  if(!m_ui.receivedActionMenu->menu())
+    {
+      QMenu *menu = new QMenu(this);
+
+      menu->addAction(QIcon(QString(":/%1/clear.png").
+			    arg(m_settings.value("gui/iconSet", "nouve").
+				toString())),
+		      tr("&Delete"), this,
+		      SLOT(slotDeleteReceived(void)));
+      menu->addAction(tr("Delete &All"), this,
+		      SLOT(slotDeleteAllReceived(void)));
+      menu->addSeparator();
+
+      QAction *action = menu->addAction(tr("&Compute SHA-1 Hash"), this,
+					SLOT(slotComputeFileHash(void)));
+
+      action->setProperty("widget_of", "received");
+      menu->addSeparator();
+      action = menu->addAction(tr("&Copy File Hash"), this,
+			       SLOT(slotCopyFileHash(void)));
+      action->setProperty("widget_of", "received");
+      m_ui.receivedActionMenu->setMenu(menu);
+    }
+
+  if(!m_ui.transmittedActionMenu->menu())
+    {
+      QAction *action = 0;
+      QMenu *menu = new QMenu(this);
+
+      menu->addAction(QIcon(QString(":/%1/clear.png").
+			    arg(m_settings.value("gui/iconSet", "nouve").
+				toString())),
+		      tr("&Delete"), this,
+		      SLOT(slotDeleteTransmitted(void)));
+      menu->addAction(tr("Delete &All"), this,
+		      SLOT(slotDeleteAllTransmitted(void)));
+      menu->addSeparator();
+      action = menu->addAction(tr("&Compute SHA-1 Hash"), this,
+			       SLOT(slotComputeFileHash(void)));
+      action->setProperty("widget_of", "transmitted");
+      menu->addSeparator();
+      action = menu->addAction(tr("&Copy File Hash"), this,
+			       SLOT(slotCopyFileHash(void)));
+      action->setProperty("widget_of", "transmitted");
+      menu->addSeparator();
+      menu->addAction(tr("Copy &Magnet"),
+		      this, SLOT(slotCopyTransmittedMagnet(void)));
+      m_ui.transmittedActionMenu->setMenu(menu);
     }
 }
