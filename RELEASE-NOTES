@@ -19,8 +19,8 @@
      used for authenticating accounts so as to avoid potential replay attacks.
      Data older than 120 seconds are also purged.
 9.   Account authentication is now allowed over insecure TCP connections.
-10.  Support of 1024-bit keys.
-11.  Added various widgets as mirrors of context menu actions.
+10.  Added various reflection widgets.
+11.  Ability to copy e-mail keys of participants.
 
 0.08 (12/23/2013)
 
