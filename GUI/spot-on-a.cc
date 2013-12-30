@@ -3838,10 +3838,6 @@ void spoton::slotSetPassphrase(void)
 	reencode = true;
     }
 
-  /*
-  ** Create the public and private keys.
-  */
-
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   m_sb.status->setText
     (tr("Generating derived keys. Please be patient."));
@@ -3865,6 +3861,7 @@ void spoton::slotSetPassphrase(void)
 			       error1));
 
   m_sb.status->clear();
+  QApplication::restoreOverrideCursor();
 
   if(error1.isEmpty())
     {
@@ -3874,6 +3871,8 @@ void spoton::slotSetPassphrase(void)
 	{
 	  if(m_crypts.value("chat", 0))
 	    {
+	      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 	      QStringList list;
 
 	      list << "chat"
@@ -3910,71 +3909,94 @@ void spoton::slotSetPassphrase(void)
 		  if(!error2.isEmpty())
 		    break;
 		}
+
+	      QApplication::restoreOverrideCursor();
 	    }
 	}
       else
 	{
-	  QString encryptionKeyType("");
-	  QString signatureKeyType("");
-	  QStringList list;
+	  QMessageBox mb(this);
 
-	  if(m_ui.encryptionKeyType->currentIndex() == 0)
-	    encryptionKeyType = "elg";
-	  else
-	    encryptionKeyType = "rsa";
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+	  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+	  mb.setIcon(QMessageBox::Question);
+	  mb.setWindowTitle(tr("Spot-On: Question"));
+	  mb.setWindowModality(Qt::WindowModal);
+	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+	  mb.setText(tr("Would you like to generate public key pairs?"));
 
-	  if(m_ui.signatureKeyType->currentIndex() == 0)
-	    signatureKeyType = "dsa";
-	  else if(m_ui.signatureKeyType->currentIndex() == 1)
-	    signatureKeyType = "elg";
-	  else
-	    signatureKeyType = "rsa";
-
-	  list << "chat"
-	       << "chat-signature"
-	       << "email"
-	       << "email-signature"
-	       << "rosetta"
-	       << "rosetta-signature"
-	       << "url"
-	       << "url-signature";
-
-	  m_sb.status->setText(tr("Generating public key pairs."));
-	  m_sb.status->repaint();
-
-	  for(int i = 0; i < list.size(); i++)
+	  if(mb.exec() == QMessageBox::Yes)
 	    {
+	      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	      QString encryptionKeyType("");
+	      QString signatureKeyType("");
+	      QStringList list;
+
+	      if(m_ui.encryptionKeyType->currentIndex() == 0)
+		encryptionKeyType = "elg";
+	      else
+		encryptionKeyType = "rsa";
+
+	      if(m_ui.signatureKeyType->currentIndex() == 0)
+		signatureKeyType = "dsa";
+	      else if(m_ui.signatureKeyType->currentIndex() == 1)
+		signatureKeyType = "elg";
+	      else
+		signatureKeyType = "rsa";
+
+	      list << "chat"
+		   << "chat-signature"
+		   << "email"
+		   << "email-signature"
+		   << "rosetta"
+		   << "rosetta-signature"
+		   << "url"
+		   << "url-signature";
+
 	      m_sb.status->setText
-		(tr("Generating public key %1 of %2. "
-		    "Please be patient.").
-		 arg(i + 1).arg(list.size()));
+		(tr("Generating public key pairs."));
 	      m_sb.status->repaint();
 
-	      spoton_crypt crypt
-		(m_ui.cipherType->currentText(),
-		 m_ui.hashType->currentText(),
-		 str1.toUtf8(), // Passphrase.
-		 derivedKeys.first,
-		 derivedKeys.second,
-		 m_ui.saltLength->value(),
-		 m_ui.iterationCount->value(),
-		 list.at(i));
+	      for(int i = 0; i < list.size(); i++)
+		{
+		  m_sb.status->setText
+		    (tr("Generating public key %1 of %2. "
+			"Please be patient.").
+		     arg(i + 1).arg(list.size()));
+		  m_sb.status->repaint();
 
-	      if(!list.at(i).contains("signature"))
-		crypt.generatePrivatePublicKeys
-		  (m_ui.keySize->currentText().toInt(),
-		   encryptionKeyType,
-		   error2);
-	      else
-		crypt.generatePrivatePublicKeys
-		  (m_ui.keySize->currentText().toInt(),
-		   signatureKeyType,
-		   error2);
+		  spoton_crypt crypt
+		    (m_ui.cipherType->currentText(),
+		     m_ui.hashType->currentText(),
+		     str1.toUtf8(), // Passphrase.
+		     derivedKeys.first,
+		     derivedKeys.second,
+		     m_ui.saltLength->value(),
+		     m_ui.iterationCount->value(),
+		     list.at(i));
 
-	      m_sb.status->clear();
+		  if(!list.at(i).contains("signature"))
+		    crypt.generatePrivatePublicKeys
+		      (m_ui.keySize->currentText().toInt(),
+		       encryptionKeyType,
+		       error2);
+		  else
+		    crypt.generatePrivatePublicKeys
+		      (m_ui.keySize->currentText().toInt(),
+		       signatureKeyType,
+		       error2);
 
-	      if(!error2.isEmpty())
-		break;
+		  m_sb.status->clear();
+
+		  if(!error2.isEmpty())
+		    break;
+		}
+
+	      QApplication::restoreOverrideCursor();
 	    }
 	}
     }
@@ -3982,8 +4004,6 @@ void spoton::slotSetPassphrase(void)
   if(error1.isEmpty() && error2.isEmpty())
     saltedPassphraseHash = spoton_crypt::saltedPassphraseHash
       (m_ui.hashType->currentText(), str1, salt, error3);
-
-  QApplication::restoreOverrideCursor();
 
   if(!error1.remove(".").trimmed().isEmpty())
     {
