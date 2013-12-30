@@ -2302,6 +2302,30 @@ void spoton::prepareContextMenuMirrors(void)
       m_ui.chatActionMenu->setMenu(menu);
     }
 
+  if(!m_ui.emailWriteActionMenu->menu())
+    {
+      QMenu *menu = new QMenu(this);
+
+      menu->addAction
+	(QIcon(QString(":/%1/add.png").
+	       arg(m_settings.value("gui/iconSet", "nouve").toString())),
+	 tr("&Add participant as friend."),
+	 this, SLOT(slotShareEmailPublicKeyWithParticipant(void)));
+      menu->addSeparator();
+      menu->addAction(QIcon(QString(":/%1/copy.png").
+			    arg(m_settings.value("gui/iconSet", "nouve").
+				toString())),
+		      tr("&Copy Repleo to the clipboard buffer."),
+		      this, SLOT(slotCopyEmailFriendshipBundle(void)));
+      menu->addSeparator();
+      menu->addAction(QIcon(QString(":/%1/clear.png").
+			    arg(m_settings.value("gui/iconSet", "nouve").
+				toString())),
+		      tr("&Remove participant(s)."),
+		      this, SLOT(slotRemoveEmailParticipants(void)));
+      m_ui.emailWriteActionMenu->setMenu(menu);
+    }
+
   if(!m_ui.listenersActionMenu->menu())
     {
       QMenu *menu = new QMenu(this);
