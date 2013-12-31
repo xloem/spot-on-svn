@@ -25,8 +25,15 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifdef SPOTON_USE_HIDDEN_KERNEL_WINDOW
+#include <QApplication>
+#else
 #include <QCoreApplication>
+#endif
 #include <QDir>
+#ifdef SPOTON_USE_HIDDEN_KERNEL_WINDOW
+#include <QMainWindow>
+#endif
 #include <QMutexLocker>
 #include <QNetworkProxy>
 #include <QSettings>
@@ -186,7 +193,11 @@ int main(int argc, char *argv[])
   act.sa_flags = 0;
   sigaction(SIGPIPE, &act, (struct sigaction *) 0);
 #endif
+#ifdef SPOTON_USE_HIDDEN_KERNEL_WINDOW
+  QApplication qapplication(argc, argv);
+#else
   QCoreApplication qapplication(argc, argv);
+#endif
 
   QCoreApplication::setApplicationName("Spot-On");
   QCoreApplication::setOrganizationName("Spot-On");
@@ -238,6 +249,15 @@ int main(int argc, char *argv[])
   if(err == LIBSPOTON_ERROR_NONE)
     {
       spoton_kernel::s_kernel = new spoton_kernel();
+#ifdef SPOTON_USE_HIDDEN_KERNEL_WINDOW
+      QMainWindow window;
+
+      window.showMinimized();
+      QObject::connect(&qapplication,
+		       SIGNAL(lastWindowClosed(void)),
+		       spoton_kernel::s_kernel,
+		       SLOT(deleteLater(void)));
+#endif
       return qapplication.exec();
     }
   else

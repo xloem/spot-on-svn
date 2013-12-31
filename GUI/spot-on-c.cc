@@ -2190,7 +2190,7 @@ void spoton::slotRegenerateKey(void)
   mb.setWindowTitle(tr("Spot-On: Confirmation"));
   mb.setWindowModality(Qt::WindowModal);
   mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-  mb.setText(tr("Are you sure that you wish to regenerate the selected "
+  mb.setText(tr("Are you sure that you wish to generate the selected "
 		"key pair?"));
 
   if(mb.exec() != QMessageBox::Yes)
