@@ -20,7 +20,9 @@
      Data older than 120 seconds are also purged.
 9.   Account authentication is now allowed over insecure TCP connections.
 10.  Added various reflection widgets.
-11.  Ability to copy e-mail keys of participants.
+11.  Ability to copy e-mail key pairs of participants. Please note that copied
+     data does not include signatures. As a result, spoton::addFriendsKey()
+     has been weakened.
 12.  Asymmetric key generation is now optional during Spot initialization.
 13.  Added the macro SPOTON_USE_HIDDEN_KERNEL_WINDOW. If defined, the kernel
      will launch a window object. The gui module should be defined in the respective
