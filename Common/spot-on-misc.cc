@@ -1206,6 +1206,11 @@ QByteArray spoton_misc::publicKeyFromHash(const QByteArray &publicKeyHash)
 QByteArray spoton_misc::publicKeyFromSignaturePublicKeyHash
 (const QByteArray &signaturePublicKeyHash)
 {
+  /*
+  ** Gather the public key that's associated with the provided
+  ** signature public key hash.
+  */
+
   QByteArray publicKey;
   QString connectionName("");
 
@@ -1240,6 +1245,11 @@ QByteArray spoton_misc::publicKeyFromSignaturePublicKeyHash
 QByteArray spoton_misc::signaturePublicKeyFromPublicKeyHash
 (const QByteArray &publicKeyHash)
 {
+  /*
+  ** Gather the signature public key that's associated with the
+  ** provided public key hash.
+  */
+
   QByteArray publicKey;
   QString connectionName("");
 

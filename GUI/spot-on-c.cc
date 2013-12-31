@@ -2491,4 +2491,82 @@ void spoton::prepareContextMenuMirrors(void)
 
 void spoton::slotCopyEmailKeys(void)
 {
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(!clipboard)
+    return;
+
+  QByteArray name;
+  QByteArray publicKeyHash;
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.emailParticipants->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.emailParticipants->
+	item(row, 0); // Name
+
+      if(item)
+	name.append(item->text());
+
+      item = m_ui.emailParticipants->item(row, 1); // OID
+
+      if(item)
+	oid = item->text();
+
+      item = m_ui.emailParticipants->item(row, 3); // public_key_hash
+
+      if(item)
+	publicKeyHash.append(item->text());
+    }
+
+  if(oid.isEmpty() || publicKeyHash.isEmpty())
+    {
+      clipboard->clear();
+      return;
+    }
+
+  if(name.isEmpty())
+    name = "unknown";
+
+  QByteArray publicKey;
+  QByteArray signatureKey;
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT public_key "
+		      "FROM friends_public_keys WHERE "
+		      "OID = ?");
+	query.bindValue(0, oid);
+
+	if(query.exec())
+	  if(query.next())
+	    publicKey = query.value(0).toByteArray();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  signatureKey = spoton_misc::signaturePublicKeyFromPublicKeyHash
+    (QByteArray::fromBase64(publicKeyHash));
+
+  if(!publicKey.isEmpty() && !signatureKey.isEmpty())
+    clipboard->setText
+      ("K" + QByteArray("email").toBase64() + "@" +
+       name.toBase64() + "@" +
+       publicKey.toBase64() + "@" + QByteArray().toBase64() + "@" +
+       signatureKey.toBase64() + "@" + QByteArray().toBase64());
+  else
+    clipboard->clear();
 }
