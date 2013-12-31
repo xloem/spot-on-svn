@@ -25,8 +25,10 @@
      has been weakened.
 12.  Asymmetric key generation is now optional during Spot initialization.
 13.  Added the macro SPOTON_USE_HIDDEN_KERNEL_WINDOW. If defined, the kernel
-     will launch a window object. The gui module should be defined in the respective
-     project file.
+     will launch a window object. The gui module should be defined in the
+     respective project file.
+14.  Added support for single-use accounts. Please remove listeners.db.
+15.  Use INSERT OR REPLACE when inserting listener accounts.
 
 0.08 (12/23/2013)
 
