@@ -1701,7 +1701,7 @@ void spoton::slotAddListener(void)
 
 	    QSqlQuery query(db);
 
-	    query.prepare("INSERT INTO listeners_allowed_ips "
+	    query.prepare("INSERT OR REPLACE INTO listeners_allowed_ips "
 			  "(ip_address, ip_address_hash, listener_oid) "
 			  "VALUES (?, ?, (SELECT OID FROM listeners WHERE "
 			  "hash = ?))");

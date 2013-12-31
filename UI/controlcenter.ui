@@ -2092,6 +2092,13 @@
                        </property>
                       </widget>
                      </item>
+                     <item row="2" column="1">
+                      <widget class="QCheckBox" name="ota">
+                       <property name="text">
+                        <string>&amp;One Time Account</string>
+                       </property>
+                      </widget>
+                     </item>
                     </layout>
                    </item>
                    <item>
@@ -6043,6 +6050,7 @@
   <tabstop>accounts</tabstop>
   <tabstop>accountName</tabstop>
   <tabstop>accountPassword</tabstop>
+  <tabstop>ota</tabstop>
   <tabstop>addAccount</tabstop>
   <tabstop>deleteAccount</tabstop>
   <tabstop>acceptedIPList</tabstop>

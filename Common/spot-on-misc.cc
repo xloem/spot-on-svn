@@ -299,6 +299,7 @@ void spoton_misc::prepareDatabases(void)
 		   "account_name_hash TEXT NOT NULL, " // Keyed hash.
 		   "account_password TEXT NOT NULL, "
 		   "listener_oid INTEGER NOT NULL, "
+		   "one_time_account INTEGER NOT NULL DEFAULT 0, "
 		   "PRIMARY KEY (listener_oid, account_name_hash), "
 		   "FOREIGN KEY (listener_oid) REFERENCES "
 		   "listeners (OID))"); /*
@@ -1912,6 +1913,17 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 		*/
 
 		QSqlQuery query(db);
+		bool ok = true;
+
+		query.prepare("DELETE FROM listeners_accounts "
+			      "WHERE account_name_hash = ? AND "
+			      "listener_oid = ? AND one_time_account = 1");
+		query.bindValue
+		  (0, crypt->keyedHash(name, &ok).toBase64());
+		query.bindValue(1, listenerOid);
+
+		if(ok)
+		  query.exec();
 
 		query.prepare("INSERT OR REPLACE INTO "
 			      "listeners_accounts_consumed_authentications "

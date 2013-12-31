@@ -4583,8 +4583,9 @@ void spoton::slotAddAccount(void)
 		      "(account_name, "
 		      "account_name_hash, "
 		      "account_password, "
-		      "listener_oid) "
-		      "VALUES (?, ?, ?, ?)");
+		      "listener_oid, "
+		      "one_time_account) "
+		      "VALUES (?, ?, ?, ?, ?)");
 	query.bindValue
 	  (0, s_crypt->encrypted(name.toLatin1(), &ok).toBase64());
 
@@ -4598,6 +4599,7 @@ void spoton::slotAddAccount(void)
 	    (2, s_crypt->encrypted(password.toLatin1(), &ok).toBase64());
 
 	query.bindValue(3, oid);
+	query.bindValue(4, m_ui.ota->isChecked() ? 1 : 0);
 
 	if(ok)
 	  query.exec();
@@ -4621,6 +4623,7 @@ void spoton::slotAddAccount(void)
     {
       m_ui.accountName->clear();
       m_ui.accountPassword->clear();
+      m_ui.ota->setChecked(false);
       populateAccounts(oid);
     }
 }
