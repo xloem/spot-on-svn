@@ -170,3 +170,4 @@ Remaining Items
 37.    Gold Bugs and Novas should have separate hash keys.
 38.    Account credentials should not be recorded via reversible encryption.
 39.    Accounts and allowed IP addresses suffer selection issues.
+40.    Database entries containing hashes can be maliciously twisted. Encrypt?
