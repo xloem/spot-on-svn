@@ -1463,16 +1463,13 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       mSignature = QByteArray::fromBase64(mSignature);
 
-      if(!mSignature.isEmpty())
-	if(!spoton_crypt::isValidSignature(mPublicKey, mPublicKey,
-					   mSignature))
-	  {
-	    QMessageBox::critical
-	      (this, tr("Spot-On: Error"),
-	       tr("Invalid 'chat', 'email', or 'url' "
-		  "public key signature."));
-	    return;
-	  }
+      if(!spoton_crypt::isValidSignature(mPublicKey, mPublicKey,
+					 mSignature))
+	QMessageBox::critical
+	  (this, tr("Spot-On: Error"),
+	   tr("Invalid 'chat', 'email', or 'url' "
+	      "public key signature. Please delete the participant if "
+	      "this is an issue. Continuing."));
 
       QByteArray sPublicKey(list.value(4));
       QByteArray sSignature(list.value(5));
@@ -1480,15 +1477,12 @@ void spoton::addFriendsKey(const QByteArray &key)
       sPublicKey = QByteArray::fromBase64(sPublicKey);
       sSignature = QByteArray::fromBase64(sSignature);
 
-      if(!sSignature.isEmpty())
-	if(!spoton_crypt::isValidSignature(sPublicKey, sPublicKey,
-					   sSignature))
-	  {
-	    QMessageBox::critical
-	      (this, tr("Spot-On: Error"),
-	       tr("Invalid signature public key signature."));
-	    return;
-	  }
+      if(!spoton_crypt::isValidSignature(sPublicKey, sPublicKey,
+					 sSignature))
+	QMessageBox::critical
+	  (this, tr("Spot-On: Error"),
+	   tr("Invalid signature public key signature. Please delete "
+	      "the participant if this is an issue. Continuing."));
 
       QString connectionName("");
 
