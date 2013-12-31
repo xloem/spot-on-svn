@@ -1465,11 +1465,24 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       if(!spoton_crypt::isValidSignature(mPublicKey, mPublicKey,
 					 mSignature))
-	QMessageBox::critical
-	  (this, tr("Spot-On: Error"),
-	   tr("Invalid 'chat', 'email', or 'url' "
-	      "public key signature. Please delete the participant if "
-	      "this is an issue. Continuing."));
+	{
+	  QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+	  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+	  mb.setIcon(QMessageBox::Question);
+	  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+	  mb.setWindowModality(Qt::WindowModal);
+	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+	  mb.setText(tr("Invalid 'chat', 'email', or 'url' "
+			"public key signature. Continue?"));
+
+	  if(mb.exec() != QMessageBox::Yes)
+	    return;
+	}
 
       QByteArray sPublicKey(list.value(4));
       QByteArray sSignature(list.value(5));
@@ -1479,10 +1492,24 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       if(!spoton_crypt::isValidSignature(sPublicKey, sPublicKey,
 					 sSignature))
-	QMessageBox::critical
-	  (this, tr("Spot-On: Error"),
-	   tr("Invalid signature public key signature. Please delete "
-	      "the participant if this is an issue. Continuing."));
+	{
+	  QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+	  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+	  mb.setIcon(QMessageBox::Question);
+	  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+	  mb.setWindowModality(Qt::WindowModal);
+	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+	  mb.setText(tr("Invalid signature "
+			"public key signature. Continue?"));
+
+	  if(mb.exec() != QMessageBox::Yes)
+	    return;
+	}
 
       QString connectionName("");
 
