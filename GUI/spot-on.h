@@ -167,6 +167,7 @@ class spoton: public QMainWindow
   bool updateMailStatus(const QString &oid, const QString &status);
   int applyGoldbugToInboxLetter(const QByteArray &goldbug,
 				const int row);
+  void activateWindow(void);
   void addFriendsKey(const QByteArray &key);
   void authenticate(spoton_crypt *crypt, const QString &oid,
 		    const QString &message = QString(""));

@@ -329,8 +329,8 @@ void spoton::slotReceivedKernelMessage(void)
 
 			  if(!chat->isVisible())
 			    found = false;
-			  else if(chat->isActiveWindow())
-			    chat->activateWindow();
+
+			  chat->activateWindow();
 			}
 		      else
 			found = false;
@@ -347,17 +347,14 @@ void spoton::slotReceivedKernelMessage(void)
 		      if(m_ui.tab->currentIndex() != 1)
 			m_sb.chat->setVisible(true);
 
-		      if(isActiveWindow())
-			activateWindow();
+		      activateWindow();
 		    }
 		}
 	    }
 	  else if(data == "newmail")
 	    {
 	      m_sb.email->setVisible(true);
-
-	      if(isActiveWindow())
-		activateWindow();
+	      activateWindow();
 	    }
 	}
     }
@@ -4178,8 +4175,7 @@ void spoton::slotBuzzChanged(void)
   if(m_ui.tab->currentIndex() != 0)
     m_sb.buzz->setVisible(true);
 
-  if(isActiveWindow())
-    activateWindow();
+  activateWindow();
 }
 
 void spoton::slotRemoveEmailParticipants(void)
@@ -4973,10 +4969,7 @@ void spoton::authenticationRequested(const QByteArray &data)
 	  setToolTip(tr("Remote user %1 is requesting authentication "
 			"credentials.").arg(data.constData()));
 	m_sb.authentication_request->setVisible(true);
-
-	if(isMinimized())
-	  activateWindow();
-
+	activateWindow();
 	QTimer::singleShot(7500, m_sb.authentication_request,
 			   SLOT(hide(void)));
       }

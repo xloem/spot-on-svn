@@ -2570,3 +2570,13 @@ void spoton::slotCopyEmailKeys(void)
   else
     clipboard->clear();
 }
+
+void spoton::activateWindow(void)
+{
+  QWidget *widget = QApplication::activeWindow();
+
+  activateWindow();
+
+  if(widget)
+    widget->raise();
+}

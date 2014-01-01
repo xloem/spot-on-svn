@@ -46,6 +46,7 @@ class spoton_chatwindow: public QMainWindow
 		    QWidget *parent);
   ~spoton_chatwindow();
   QString id(void) const;
+  void activateWindow(void);
   void append(const QString &text);
   void center(QWidget *parent);
 
