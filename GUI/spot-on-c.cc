@@ -2575,7 +2575,7 @@ void spoton::activateWindow(void)
 {
   QWidget *widget = QApplication::activeWindow();
 
-  activateWindow();
+  QMainWindow::activateWindow();
 
   if(widget)
     widget->raise();

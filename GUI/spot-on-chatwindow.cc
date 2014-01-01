@@ -209,7 +209,7 @@ void spoton_chatwindow::activateWindow(void)
 {
   QWidget *widget = QApplication::activeWindow();
 
-  activateWindow();
+  QMainWindow::activateWindow();
 
   if(widget)
     widget->raise();
