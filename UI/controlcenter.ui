@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>993</width>
-    <height>644</height>
+    <width>978</width>
+    <height>625</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -363,8 +363,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>583</width>
-                <height>463</height>
+                <width>957</width>
+                <height>532</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -407,7 +407,7 @@
                    <item>
                     <widget class="QCheckBox" name="impersonate">
                      <property name="text">
-                      <string>&amp;Impersonate</string>
+                      <string>&amp;Impersonate me.</string>
                      </property>
                     </widget>
                    </item>
@@ -1203,6 +1203,13 @@
                 </column>
                </widget>
               </item>
+              <item row="0" column="0">
+               <widget class="QPushButton" name="emailWriteActionMenu">
+                <property name="text">
+                 <string>Context Menu Reflection</string>
+                </property>
+               </widget>
+              </item>
               <item row="1" column="1">
                <spacer name="horizontalSpacer_36">
                 <property name="orientation">
@@ -1210,18 +1217,11 @@
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>40</width>
+                  <width>999999999</width>
                   <height>20</height>
                  </size>
                 </property>
                </spacer>
-              </item>
-              <item row="0" column="0">
-               <widget class="QPushButton" name="emailWriteActionMenu">
-                <property name="text">
-                 <string>Context Menu Reflection</string>
-                </property>
-               </widget>
               </item>
              </layout>
             </item>
@@ -2024,8 +2024,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>170</width>
-                 <height>383</height>
+                 <width>251</width>
+                 <height>532</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3336,7 +3336,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-101</y>
+             <y>0</y>
              <width>952</width>
              <height>643</height>
             </rect>
@@ -4291,8 +4291,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>450</width>
-             <height>510</height>
+             <width>967</width>
+             <height>542</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5840,7 +5840,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>993</width>
+     <width>978</width>
      <height>22</height>
     </rect>
    </property>
