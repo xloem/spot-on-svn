@@ -29,6 +29,7 @@
      respective project file.
 14.  Added support for single-use accounts. Please remove listeners.db.
 15.  Use INSERT OR REPLACE when inserting listener accounts.
+16.  Added a basic impersonator. Please see Chat.
 
 0.08 (12/23/2013)
 
