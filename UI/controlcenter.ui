@@ -363,8 +363,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>957</width>
-                <height>532</height>
+                <width>611</width>
+                <height>463</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2024,8 +2024,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>251</width>
-                 <height>532</height>
+                 <width>241</width>
+                 <height>404</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3337,7 +3337,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>952</width>
+             <width>869</width>
              <height>643</height>
             </rect>
            </property>
@@ -4291,8 +4291,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>967</width>
-             <height>542</height>
+             <width>450</width>
+             <height>510</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5881,7 +5881,15 @@
     </property>
     <addaction name="action_Rosetta"/>
    </widget>
+   <widget class="QMenu" name="menu_Edit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="action_Copy"/>
+    <addaction name="action_Paste"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menu_Edit"/>
    <addaction name="menu_Tools"/>
    <addaction name="menu_View"/>
   </widget>
@@ -5952,6 +5960,22 @@
   <action name="action_Rosetta">
    <property name="text">
     <string>&amp;Rosetta</string>
+   </property>
+  </action>
+  <action name="action_Copy">
+   <property name="text">
+    <string>&amp;Copy</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="action_Paste">
+   <property name="text">
+    <string>&amp;Paste</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
    </property>
   </action>
  </widget>

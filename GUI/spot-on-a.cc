@@ -209,6 +209,14 @@ spoton::spoton(void):QMainWindow()
 			     "border: none; "
 			     "}");
   statusBar()->setMaximumHeight(m_sbWidget->height());
+  connect(m_ui.action_Copy,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotCopyOrPaste(void)));
+  connect(m_ui.action_Paste,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotCopyOrPaste(void)));
   connect(m_ui.action_Quit,
 	  SIGNAL(triggered(void)),
 	  this,

@@ -26,6 +26,7 @@
 */
 
 #include <QCheckBox>
+#include <QPlainTextEdit>
 #include <QProgressBar>
 #include <QTableWidgetItem>
 
@@ -2588,4 +2589,46 @@ void spoton::slotImpersonate(bool state)
   QSettings settings;
 
   settings.setValue("gui/impersonate", state);
+}
+
+void spoton::slotCopyOrPaste(void)
+{
+  QAction *action = qobject_cast<QAction *> (sender());
+
+  if(!action)
+    return;
+
+  QWidget *widget = QApplication::focusWidget();
+
+  if(!widget)
+    return;
+
+  QString a("");
+
+  if(action == m_ui.action_Copy)
+    a = "copy";
+  else
+    a = "paste";
+
+  if(qobject_cast<QLineEdit *> (widget))
+    {
+      if(a == "copy")
+	qobject_cast<QLineEdit *> (widget)->copy();
+      else
+	qobject_cast<QLineEdit *> (widget)->paste();
+    }
+  else if(qobject_cast<QPlainTextEdit *> (widget))
+    {
+      if(a == "copy")
+	qobject_cast<QPlainTextEdit *> (widget)->copy();
+      else
+	qobject_cast<QPlainTextEdit *> (widget)->paste();
+    }
+  else if(qobject_cast<QTextEdit *> (widget))
+    {
+      if(a == "copy")
+	qobject_cast<QTextEdit *> (widget)->copy();
+      else
+	qobject_cast<QTextEdit *> (widget)->paste();
+    }
 }
