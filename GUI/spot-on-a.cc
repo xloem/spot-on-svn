@@ -357,6 +357,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotScramble(bool)));
+  connect(m_ui.impersonate,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotImpersonate(bool)));
   connect(m_ui.listenerIP,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -1102,6 +1106,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/automaticallyRetrieveEmail", false).toBool());
   m_ui.acceptBuzzMagnets->setChecked
     (m_settings.value("gui/acceptBuzzMagnets", false).toBool());
+  m_ui.impersonate->setChecked
+    (m_settings.value("gui/impersonate", false).toBool());
 
   /*
   ** Please don't translate n/a.

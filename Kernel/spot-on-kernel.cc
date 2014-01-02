@@ -360,6 +360,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotPollDatabase(void)));
+  connect(&m_impersonateTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotImpersonateTimeout(void)));
   connect(&m_messagingCachePurgeTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -377,6 +381,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  this,
 	  SLOT(slotStatusTimerExpired(void)));
   m_controlDatabaseTimer.start(2500);
+  m_impersonateTimer.setInterval(2500);
   m_messagingCachePurgeTimer.setInterval(15000);
   m_publishAllListenersPlaintextTimer.setInterval(10 * 60 * 1000);
   m_scramblerTimer.setSingleShot(true);
@@ -499,6 +504,9 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 
   if(setting("gui/etpReceivers", false).toBool())
     m_starbeamWriter->start();
+
+  if(setting("gui/impersonate", false).toBool())
+    m_impersonateTimer.start();
 }
 
 spoton_kernel::~spoton_kernel()
@@ -1478,9 +1486,20 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
     }
 
   if(setting("gui/etpReceivers", false).toBool())
-    m_starbeamWriter->start();
+    {
+      if(!m_starbeamWriter->isRunning())
+	m_starbeamWriter->start();
+    }
   else
     m_starbeamWriter->stop();
+
+  if(setting("gui/impersonate", false).toBool())
+    {
+      if(!m_impersonateTimer.isActive())
+	m_impersonateTimer.start();
+    }
+  else
+    m_impersonateTimer.stop();
 
   if(setting("gui/publishPeriodically", false).toBool())
     {
@@ -1884,8 +1903,7 @@ void spoton_kernel::slotScramble(void)
   if(ok)
     {
       if(setting("gui/chatSendMethod",
-		 "Artificial_GET").toString().
-	 trimmed() == "Artificial_GET")
+		 "Artificial_GET").toString().trimmed() == "Artificial_GET")
 	emit sendMessage
 	  (spoton_send::message0000(data,
 				    spoton_send::
@@ -3015,4 +3033,10 @@ void spoton_kernel::writeToNeighbors(const QByteArray &data, bool *ok)
 void spoton_kernel::processPotentialStarBeamData(const QByteArray &data)
 {
   m_starbeamWriter->enqueue(data);
+}
+
+void spoton_kernel::slotImpersonateTimeout(void)
+{
+  slotScramble();
+  m_impersonateTimer.setInterval(qrand() % 30000 + 10);
 }

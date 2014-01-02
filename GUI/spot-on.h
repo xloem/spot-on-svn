@@ -288,6 +288,7 @@ class spoton: public QMainWindow
   void slotKernelSocketState(void);
   void slotKernelStatus(void);
   void slotHideOfflineParticipants(bool state);
+  void slotImpersonate(bool state);
   void slotJoinBuzzChannel(void);
   void slotListenerCheckChange(bool state);
   void slotListenerFullEcho(void);

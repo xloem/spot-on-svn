@@ -2580,3 +2580,12 @@ void spoton::activateWindow(void)
   if(widget)
     widget->raise();
 }
+
+void spoton::slotImpersonate(bool state)
+{
+  m_settings["gui/impersonate"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/impersonate", state);
+}

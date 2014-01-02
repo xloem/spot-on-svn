@@ -85,6 +85,7 @@ class spoton_kernel: public QObject
   QHash<qint64, QPointer<spoton_neighbor> > m_neighbors;
   QHash<qint64, QPointer<spoton_starbeam_reader> > m_starbeamReaders;
   QTimer m_controlDatabaseTimer;
+  QTimer m_impersonateTimer;
   QTimer m_messagingCachePurgeTimer;
   QTimer m_publishAllListenersPlaintextTimer;
   QTimer m_scramblerTimer;
@@ -126,6 +127,7 @@ class spoton_kernel: public QObject
   void slotCallParticipant(const qint64 oid);
   void slotDetachNeighbors(const qint64 listenerOid);
   void slotDisconnectNeighbors(const qint64 listenerOid);
+  void slotImpersonateTimeout(void);
   void slotMessagingCachePurge(void);
   void slotMessageReceivedFromUI(const qint64 oid,
 				 const QByteArray &name,
