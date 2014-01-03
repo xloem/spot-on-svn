@@ -66,6 +66,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 const QString &port,
 				 const QString &localIpAddress,
 				 const QString &localPort,
+				 const QString &orientation,
 				 QObject *parent):QThread(parent)
 {
   m_tcpSocket = 0;
@@ -132,6 +133,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
     qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
 	   maximumContentLength,
 	   spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
+  m_orientation = orientation;
 
   if(m_tcpSocket)
     m_port = m_tcpSocket->peerPort();
@@ -330,6 +332,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const QByteArray &accountName,
 				 const QByteArray &accountPassword,
 				 const QString &transport,
+				 const QString &orientation,
 				 QObject *parent):QThread(parent)
 {
   m_accountAuthenticated = false;
@@ -360,6 +363,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
     qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
 	   maximumContentLength,
 	   spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
+  m_orientation = orientation;
   m_peerCertificate = QSslCertificate(peerCertificate);
   m_port = quint16(port.toInt());
   m_protocol = protocol;
@@ -3147,11 +3151,11 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      if(list.size() != 4)
+      if(list.size() != 5)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0030(): "
-		     "received irregular data. Expecting 4 "
+		     "received irregular data. Expecting 5 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
 	  return;
@@ -3172,6 +3176,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 
 	      if(!spoton_misc::isPrivateNetwork(address))
 		{
+		  QString orientation(list.value(4).constData());
 		  QString transport(list.value(3).constData());
 		  quint16 port = list.value(1).toUShort(); /*
 							   ** toUShort()
@@ -3180,7 +3185,8 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 							   */
 
 		  spoton_misc::savePublishedNeighbor
-		    (address, port, transport, statusControl, s_crypt);
+		    (address, port, transport, statusControl, orientation,
+		     s_crypt);
 		}
 	    }
 	}
@@ -4198,13 +4204,14 @@ void spoton_neighbor::slotHostFound(const QHostInfo &hostInfo)
 }
 
 void spoton_neighbor::slotPublicizeListenerPlaintext
-(const QHostAddress &address, const quint16 port, const QString &transport)
+(const QHostAddress &address, const quint16 port, const QString &transport,
+ const QString &orientation)
 {
   if(!address.isNull())
     if(readyToWrite())
       {
 	QByteArray message
-	  (spoton_send::message0030(address, port, transport));
+	  (spoton_send::message0030(address, port, transport, orientation));
 
 	if(write(message.constData(), message.length()) !=
 	   message.length())

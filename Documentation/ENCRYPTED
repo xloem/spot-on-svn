@@ -31,7 +31,6 @@ private_key
 protocol
 public_key
 scope_id
-transport
 
 listeners_accounts
 
@@ -61,7 +60,6 @@ remote_ip_address
 remote_port
 scope_id
 ssl_session_cipher
-transport
 uuid
 
 shared.db:

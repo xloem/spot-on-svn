@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>978</width>
-    <height>625</height>
+    <width>1194</width>
+    <height>719</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -138,6 +138,16 @@
               <string>Empty</string>
              </property>
             </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_72">
+            <property name="text">
+             <string>&amp;Magnet</string>
+            </property>
+            <property name="buddy">
+             <cstring>demagnetize</cstring>
+            </property>
            </widget>
           </item>
           <item>
@@ -363,8 +373,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>463</height>
+                <width>813</width>
+                <height>457</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1700,6 +1710,11 @@
               </column>
               <column>
                <property name="text">
+                <string>Orientation</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
                 <string>OID</string>
                </property>
               </column>
@@ -1986,6 +2001,50 @@
                    </property>
                   </spacer>
                  </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_73">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <item>
+                  <widget class="QLabel" name="label_71">
+                   <property name="text">
+                    <string>Orientation</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="listenerOrientation">
+                   <property name="sizeAdjustPolicy">
+                    <enum>QComboBox::AdjustToContents</enum>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Packet</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Stream</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_61">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
                  <item>
                   <widget class="QPushButton" name="addListener">
                    <property name="text">
@@ -2024,8 +2083,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>241</width>
-                 <height>404</height>
+                 <width>300</width>
+                 <height>444</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2581,6 +2640,11 @@
                 </column>
                 <column>
                  <property name="text">
+                  <string>Orientation</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
                   <string>is_encrypted</string>
                  </property>
                 </column>
@@ -2882,6 +2946,50 @@
                     </property>
                    </item>
                   </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_42">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <item>
+                  <widget class="QLabel" name="label_70">
+                   <property name="text">
+                    <string>Orientation</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="neighborOrientation">
+                   <property name="sizeAdjustPolicy">
+                    <enum>QComboBox::AdjustToContents</enum>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Packet</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Stream</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_60">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
                  </item>
                 </layout>
                </item>
@@ -3337,7 +3445,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>869</width>
+             <width>1063</width>
              <height>643</height>
             </rect>
            </property>
@@ -4291,8 +4399,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>450</width>
-             <height>510</height>
+             <width>550</width>
+             <height>537</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5840,8 +5948,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>978</width>
-     <height>22</height>
+     <width>1194</width>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -6069,6 +6177,7 @@
   <tabstop>permanentCertificate</tabstop>
   <tabstop>sslListener</tabstop>
   <tabstop>listenerKeySize</tabstop>
+  <tabstop>listenerOrientation</tabstop>
   <tabstop>addListener</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>accounts</tabstop>
@@ -6102,6 +6211,7 @@
   <tabstop>addException</tabstop>
   <tabstop>requireSsl</tabstop>
   <tabstop>neighborKeySize</tabstop>
+  <tabstop>neighborOrientation</tabstop>
   <tabstop>proxy</tabstop>
   <tabstop>proxyType</tabstop>
   <tabstop>proxyHostname</tabstop>

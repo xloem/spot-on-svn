@@ -50,6 +50,10 @@ spoton_starbeam_writer::~spoton_starbeam_writer()
 
 void spoton_starbeam_writer::run(void)
 {
+  disconnect(&m_timer,
+	     SIGNAL(timeout(void)),
+	     this,
+	     SLOT(slotProcessData(void)));
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -258,6 +262,7 @@ void spoton_starbeam_writer::slotProcessData(void)
 
 void spoton_starbeam_writer::start(void)
 {
+  QThread::start();
   slotReadKeys();
   m_timer.start();
 }
@@ -265,6 +270,8 @@ void spoton_starbeam_writer::start(void)
 void spoton_starbeam_writer::stop(void)
 {
   m_timer.stop();
+  quit();
+  wait(30000);
 }
 
 void spoton_starbeam_writer::slotReadKeys(void)

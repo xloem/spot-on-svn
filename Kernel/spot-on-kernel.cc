@@ -604,6 +604,7 @@ void spoton_kernel::prepareListeners(void)
 		      "maximum_content_length, "
 		      "transport, "
 		      "share_udp_address, "
+		      "orientation, "
 		      "OID "
 		      "FROM listeners"))
 	  while(query.next())
@@ -717,6 +718,7 @@ void spoton_kernel::prepareListeners(void)
 			     query.value(12).toInt(),
 			     query.value(13).toString(),
 			     query.value(14).toInt(),
+			     query.value(15).toString(),
 			     this);
 			}
 
@@ -821,6 +823,7 @@ void spoton_kernel::prepareNeighbors(void)
 		      "account_name, "
 		      "account_password, "
 		      "transport, "
+		      "orientation, "
 		      "OID FROM neighbors"))
 	  while(query.next())
 	    {
@@ -957,6 +960,7 @@ void spoton_kernel::prepareNeighbors(void)
 			     list.value(18).toByteArray(),
 			     list.value(19).toByteArray(),
 			     list.value(20).toString(),
+			     list.value(21).toString(),
 			     this);
 			}
 
@@ -1580,10 +1584,12 @@ void spoton_kernel::connectSignalsToNeighbor
   connect(this,
 	  SIGNAL(publicizeListenerPlaintext(const QHostAddress &,
 					    const quint16,
+					    const QString &,
 					    const QString &)),
 	  neighbor,
 	  SLOT(slotPublicizeListenerPlaintext(const QHostAddress &,
 					      const quint16,
+					      const QString &,
 					      const QString &)));
   connect(this,
 	  SIGNAL(receivedMessage(const QByteArray &,
@@ -2440,7 +2446,8 @@ void spoton_kernel::slotPublicizeAllListenersPlaintext(void)
 	if(!listener->externalAddress().isNull())
 	  emit publicizeListenerPlaintext(listener->externalAddress(),
 					  listener->externalPort(),
-					  listener->transport());
+					  listener->transport(),
+					  listener->orientation());
     }
 }
 
@@ -2452,7 +2459,8 @@ void spoton_kernel::slotPublicizeListenerPlaintext(const qint64 oid)
     if(!listener->externalAddress().isNull())
       emit publicizeListenerPlaintext(listener->externalAddress(),
 				      listener->externalPort(),
-				      listener->transport());
+				      listener->transport(),
+				      listener->orientation());
 }
 
 void spoton_kernel::slotRequestScramble(void)

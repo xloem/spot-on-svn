@@ -100,6 +100,7 @@ class spoton_misc
 				    const quint16 port,
 				    const QString &transport,
 				    const QString &statusControl,
+				    const QString &orientation,
 				    spoton_crypt *crypt);
 
  private:

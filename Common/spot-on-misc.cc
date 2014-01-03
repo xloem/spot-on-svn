@@ -125,7 +125,7 @@ void spoton_misc::prepareDatabases(void)
 		   "message_code TEXT NOT NULL, " /*
 						  ** Not yet used.
 						  */
-		   "participant_oid TEXT NOT NULL, "
+		   "participant_oid TEXT NOT NULL, " // Encrypted?
 		   "receiver_sender TEXT NOT NULL, "
 		   "receiver_sender_hash TEXT NOT NULL, " /*
 							  ** SHA-512 hash of
@@ -290,8 +290,9 @@ void spoton_misc::prepareDatabases(void)
 		   "use_accounts INTEGER NOT NULL DEFAULT 0, "
 		   "maximum_buffer_size INTEGER NOT NULL DEFAULT %1, "
 		   "maximum_content_length INTEGER NOT NULL DEFAULT %2, "
-		   "transport TEXT NOT NULL, "
-		   "share_udp_address INTEGER NOT NULL DEFAULT 0)").
+		   "transport TEXT NOT NULL DEFAULT 'tcp', "
+		   "share_udp_address INTEGER NOT NULL DEFAULT 0, "
+		   "orientation TEXT NOT NULL DEFAULT 'packet')").
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_accounts ("
@@ -390,7 +391,8 @@ void spoton_misc::prepareDatabases(void)
 		   "account_name TEXT NOT NULL, "
 		   "account_password TEXT NOT NULL, "
 		   "account_authenticated TEXT, "
-		   "transport TEXT NOT NULL)").
+		   "transport TEXT NOT NULL DEFAULT 'tcp', "
+		   "orientation TEXT NOT NULL DEFAULT 'packet')").
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
       }
@@ -447,7 +449,7 @@ void spoton_misc::prepareDatabases(void)
 		   "nova TEXT NOT NULL, "
 		   "position TEXT NOT NULL, "
 		   "pulse_size TEXT NOT NULL, "
-		   "status_control TEXT NOT NULL, "
+		   "status_control TEXT NOT NULL DEFAULT 'paused', "
 		   "total_size TEXT NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS transmitted_magnets ("
 		   "magnet BLOB NOT NULL, "
@@ -1328,15 +1330,13 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 					const quint16 port,
 					const QString &transport,
 					const QString &statusControl,
+					const QString &orientation,
 					spoton_crypt *crypt)
 {
   if(!crypt)
     return;
 
   if(address.isNull())
-    return;
-
-  if(!(statusControl == "connected" || statusControl == "disconnected"))
     return;
 
   QString connectionName("");
@@ -1378,8 +1378,9 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 		   "certificate, "
 		   "account_name, "
 		   "account_password, "
-		   "transport) "
-		   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+		   "transport, "
+		   "orientation) "
+		   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
 		   "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
@@ -1408,7 +1409,10 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	     crypt->encrypted(address.scopeId().toLatin1(),
 			      &ok).toBase64());
 
-	query.bindValue(6, statusControl);
+	if(statusControl == "connected" || statusControl == "disconnected")
+	  query.bindValue(6, statusControl);
+	else
+	  query.bindValue(6, "disconnected");
 
 	if(ok)
 	  query.bindValue
@@ -1516,7 +1520,15 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	  query.bindValue
 	    (23, crypt->encrypted(QByteArray(), &ok).toBase64());
 
-	query.bindValue(24, transport);
+	if(transport == "tcp" || transport == "udp")
+	  query.bindValue(24, transport);
+	else
+	  query.bindValue(24, "tcp");
+
+	if(orientation == "packet" || orientation == "stream")
+	  query.bindValue(25, orientation);
+	else
+	  query.bindValue(25, "packet");
 
 	if(ok)
 	  query.exec();

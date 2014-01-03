@@ -159,10 +159,12 @@ class spoton_listener: public QObject
 		  const int maximumContentLength,
 		  const QString &transport,
 		  const bool shareAddress,
+		  const QString &orientation,
 		  QObject *parent);
   ~spoton_listener();
   QHostAddress externalAddress(void) const;
   QHostAddress serverAddress(void) const;
+  QString orientation(void) const;
   QString transport(void) const;
   bool isListening(void) const;
   bool listen(const QHostAddress &address, const quint16 port);
@@ -178,6 +180,7 @@ class spoton_listener: public QObject
   QHostAddress m_address;
   QNetworkInterface *m_networkInterface;
   QString m_echoMode;
+  QString m_orientation;
   QString m_transport;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_timer;

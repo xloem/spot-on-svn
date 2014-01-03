@@ -164,7 +164,8 @@ class spoton_kernel: public QObject
 				  const qint64 id);
   void publicizeListenerPlaintext(const QHostAddress &address,
 				  const quint16 port,
-				  const QString &transport);
+				  const QString &transport,
+				  const QString &orientation);
   void receivedMessage(const QByteArray &data, const qint64 id);
   void retrieveMail(const QList<QByteArray> &list);
   void sendBuzz(const QByteArray &buzz);

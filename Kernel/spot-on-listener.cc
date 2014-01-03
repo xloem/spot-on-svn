@@ -128,6 +128,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 				 const int maximumContentLength,
 				 const QString &transport,
 				 const bool shareAddress,
+				 const QString &orientation,
 				 QObject *parent):QObject(parent)
 {
   m_tcpServer = 0;
@@ -160,6 +161,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 	   maximumContentLength,
 	   spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
   m_networkInterface = 0;
+  m_orientation = orientation;
   m_port = m_externalPort = quint16(port.toInt());
   m_privateKey = privateKey;
   m_publicKey = publicKey;
@@ -588,6 +590,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 	   QString::number(port),
 	   m_tcpServer->serverAddress().toString(),
 	   QString::number(m_tcpServer->serverPort()),
+	   m_orientation,
 	   this);
       else if(m_udpServer)
 	neighbor = new spoton_neighbor
@@ -597,6 +600,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 	   QString::number(port),
 	   m_udpServer->localAddress().toString(),
 	   QString::number(m_udpServer->localPort()),
+	   m_orientation,
 	   this);
     }
   else
@@ -769,9 +773,10 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 		       "account_password, "
 		       "maximum_buffer_size, "
 		       "maximum_content_length, "
-		       "transport) "
+		       "transport, "
+		       "orientation) "
 		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
 	    query.bindValue(1, m_port);
 
@@ -899,6 +904,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 	    query.bindValue(25, m_maximumBufferSize);
 	    query.bindValue(26, m_maximumContentLength);
 	    query.bindValue(27, m_transport);
+	    query.bindValue(28, m_orientation);
 
 	    if(ok)
 	      created = query.exec();
@@ -1215,4 +1221,9 @@ int spoton_listener::maxPendingConnections(void) const
 QString spoton_listener::transport(void) const
 {
   return m_transport;
+}
+
+QString spoton_listener::orientation(void) const
+{
+  return m_orientation;
 }

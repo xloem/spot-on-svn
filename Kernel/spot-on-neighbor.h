@@ -115,6 +115,7 @@ class spoton_neighbor: public QThread
 		  const QByteArray &accountName,
 		  const QByteArray &accountPassword,
 		  const QString &transport,
+		  const QString &orientation,
 		  QObject *parent);
   spoton_neighbor(const int socketDescriptor,
 		  const QByteArray &certificate,
@@ -129,6 +130,7 @@ class spoton_neighbor: public QThread
 		  const QString &port,
 		  const QString &localIpAddress,
 		  const QString &localPort,
+		  const QString &orientation,
 		  QObject *parent);
   ~spoton_neighbor();
   QAbstractSocket::SocketState state(void) const;
@@ -164,6 +166,7 @@ class spoton_neighbor: public QThread
   QSslCertificate m_peerCertificate;
   QString m_echoMode;
   QString m_ipAddress;
+  QString m_orientation;
   QString m_protocol;
   QString m_transport;
   QTimer m_accountTimer;
@@ -268,7 +271,8 @@ class spoton_neighbor: public QThread
 				      const qint64 id);
   void slotPublicizeListenerPlaintext(const QHostAddress &address,
 				      const quint16 port,
-				      const QString &transport);
+				      const QString &transport,
+				      const QString &orientation);
   void slotReadyRead(void);
   void slotReceivedMessage(const QByteArray &data, const qint64 id);
   void slotRetrieveMail(const QList<QByteArray> &list);

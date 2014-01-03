@@ -1577,9 +1577,10 @@ void spoton::slotAddListener(void)
 		      "private_key, "
 		      "public_key, "
 		      "transport, "
-		      "share_udp_address) "
+		      "share_udp_address, "
+		      "orientation) "
 		      "VALUES "
-		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	if(ip.isEmpty())
 	  query.bindValue
@@ -1703,6 +1704,11 @@ void spoton::slotAddListener(void)
 	  query.bindValue(12, 1);
 	else
 	  query.bindValue(12, 0);
+
+	if(m_ui.listenerOrientation->currentIndex() == 0)
+	  query.bindValue(13, "packet");
+	else
+	  query.bindValue(13, "stream");
 
 	if(ok)
 	  ok = query.exec();
@@ -1843,10 +1849,11 @@ void spoton::slotAddNeighbor(void)
 		      "ssl_required, "
 		      "account_name, "
 		      "account_password, "
-		      "transport) "
+		      "transport, "
+		      "orientation) "
 		      "VALUES "
 		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-		      "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		      "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
@@ -2058,6 +2065,11 @@ void spoton::slotAddNeighbor(void)
 	else
 	  query.bindValue(25, "udp");
 
+	if(m_ui.neighborOrientation->currentIndex() == 0)
+	  query.bindValue(26, "packet");
+	else
+	  query.bindValue(26, "stream");
+
 	if(ok)
 	  ok = query.exec();
 
@@ -2262,6 +2274,7 @@ void spoton::slotPopulateListeners(void)
 		      "transport, "
 		      "share_udp_address, "
 		      "certificate, "
+		      "orientation, "
 		      "OID "
 		      "FROM listeners WHERE status_control <> 'deleted'"))
 	  {
@@ -2307,7 +2320,8 @@ void spoton::slotPopulateListeners(void)
 		      "Echo Mode: %8\n"
 		      "Use Accounts: %9\n"
 		      "Transport: %10\n"
-		      "Share Address: %11")).
+		      "Share Address: %11\n"
+		      "Orientation: %12")).
 		  arg(query.value(1).toString()).
 		  arg(query.value(2).toString()).
 		  arg(s_crypt->
@@ -2348,7 +2362,8 @@ void spoton::slotPopulateListeners(void)
 		      constData()).
 		  arg(query.value(12).toInt() == 1 ? "Yes" : "No").
 		  arg(query.value(15).toString().toUpper()).
-		  arg(query.value(16).toInt() == 1 ? "Yes" : "No");
+		  arg(query.value(16).toInt() == 1 ? "Yes" : "No").
+		  arg(query.value(18).toString());
 
 		for(int i = 0; i < query.record().count(); i++)
 		  {
@@ -2725,6 +2740,7 @@ void spoton::slotPopulateNeighbors(void)
 		      "account_name, "
 		      "account_authenticated, "
 		      "transport, "
+		      "orientation, "
 		      "is_encrypted, "
 		      "0, " // Certificate
 		      "OID "
@@ -2807,7 +2823,8 @@ void spoton::slotPopulateNeighbors(void)
 		      "SSL Session Cipher: %19\n"
 		      "Account Name: %20\n"
 		      "Account Authenticated: %21\n"
-		      "Transport: %22")).
+		      "Transport: %22\n"
+		      "Orientation: %23\n")).
 		  arg(s_crypt->
 		      decrypted(QByteArray::
 				fromBase64(query.
@@ -2896,7 +2913,8 @@ void spoton::slotPopulateNeighbors(void)
 					   value(26).
 					   toByteArray()),
 				&ok).toInt() == 1 ? "Yes": "No").
-		  arg(query.value(27).toString().toUpper());
+		  arg(query.value(27).toString().toUpper()).
+		  arg(query.value(28).toString());
 
 		QCheckBox *check = 0;
 
@@ -3059,7 +3077,7 @@ void spoton::slotPopulateNeighbors(void)
 			      (QBrush(QColor(240, 128, 128)));
 			  }
 		      }
-		    else if(i == 29) // Certificate
+		    else if(i == 30) // Certificate
 		      item = new QTableWidgetItem(certificate.constData());
 		    else
 		      item = new QTableWidgetItem
@@ -6052,7 +6070,8 @@ void spoton::slotNeighborSelected(void)
 	 arg(list.value(21)).
 	 arg(list.value(22)).
 	 arg(list.value(23)).
-	 arg(list.value(24)));
+	 arg(list.value(24)).
+	 arg(list.value(25)));
       int h = m_ui.neighborSummary->horizontalScrollBar()->value();
       int v = m_ui.neighborSummary->verticalScrollBar()->value();
 
