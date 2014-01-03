@@ -31,6 +31,15 @@
 15.  Use INSERT OR REPLACE when inserting listener accounts.
 16.  Added a basic impersonator. Please see Chat.
 17.  Added the Edit menu.
+18.  Corrected Documentation/ENCRYPTED. Transports are not encrypted.
+19.  Added the orientation field to listeners.db and neighbors.db.
+     Please remove the databases. Current values: packet and stream.
+     Please note that this is a partial implementation.
+20.  The method spoton_misc::savePublishedNeighbor() incorrectly trusted
+     the transport parameter. Adjusted. Also relaxed inspection of the
+     statusControl parameter.
+21.  Corrected a StarBeam issue with respect to the received checkbox. If the
+     kernel was active, enabling receivers did not function properly.
 
 0.08 (12/23/2013)
 
