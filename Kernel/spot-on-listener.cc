@@ -915,10 +915,12 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 		 toBase64());
 
 	    if(ok)
-	      created = query.exec();
+	      {
+		created = query.exec();
 
-	    if(ok)
-	      id = query.lastInsertId().toInt();
+		if(created)
+		  id = query.lastInsertId().toInt();
+	      }
 	  }
       }
 
