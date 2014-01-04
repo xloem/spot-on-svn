@@ -775,8 +775,8 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 		       "maximum_content_length, "
 		       "transport, "
 		       "orientation) "
-		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
 	    query.bindValue(1, m_port);
 
@@ -903,62 +903,22 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 
 	    query.bindValue(25, m_maximumBufferSize);
 	    query.bindValue(26, m_maximumContentLength);
-	    query.bindValue(27, m_transport);
-	    query.bindValue(28, m_orientation);
+
+	    if(ok)
+	      query.bindValue
+		(27, s_crypt->encrypted(m_transport.toLatin1(), &ok).
+		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(28, s_crypt->encrypted(m_orientation.toLatin1(), &ok).
+		 toBase64());
 
 	    if(ok)
 	      created = query.exec();
 
 	    if(ok)
-	      {
-		QSqlQuery query(db);
-
-		query.setForwardOnly(true);
-
-		if(query.exec("SELECT OID, remote_ip_address, "
-			      "remote_port, scope_id, transport "
-			      "FROM neighbors"))
-		  while(query.next())
-		    {
-		      QByteArray b1;
-		      QByteArray b2;
-		      QByteArray b3;
-		      QString b4("");
-
-		      b1 = s_crypt->decrypted
-			(QByteArray::fromBase64(query.value(1).
-						toByteArray()),
-			 &ok);
-
-		      if(ok)
-			b2 = s_crypt->decrypted
-			  (QByteArray::fromBase64(query.value(2).
-						  toByteArray()),
-			   &ok);
-
-		      if(ok)
-			b3 = s_crypt->decrypted
-			  (QByteArray::fromBase64(query.value(3).
-						  toByteArray()),
-			   &ok);
-
-		      b4 = query.value(4).toString();
-
-		      if(b1 == neighbor->peerAddress().toString() &&
-			 b2.toUShort() == neighbor->peerPort() &&
-			 b3 == neighbor->peerAddress().scopeId() &&
-			 b4 == neighbor->transport()) /*
-						      ** toUShort()
-						      ** returns
-						      ** zero on
-						      ** failure.
-						      */
-			{
-			  id = query.value(0).toLongLong();
-			  break;
-			}
-		    }
-	      }
+	      id = query.lastInsertId().toInt();
 	  }
       }
 
@@ -975,6 +935,9 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
     }
   else
     {
+      if(id != -1)
+	neighbor->setId(id);
+
       neighbor->deleteLater();
       spoton_misc::logError
 	(QString("spoton_listener::slotNewConnection(): "

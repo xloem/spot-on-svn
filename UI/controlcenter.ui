@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>978</width>
-    <height>656</height>
+    <width>1194</width>
+    <height>719</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -373,8 +373,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>463</height>
+                <width>1160</width>
+                <height>590</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2064,8 +2064,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>241</width>
-                 <height>404</height>
+                 <width>311</width>
+                 <height>590</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3426,7 +3426,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>869</width>
+             <width>1152</width>
              <height>643</height>
             </rect>
            </property>
@@ -4380,8 +4380,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>450</width>
-             <height>510</height>
+             <width>1170</width>
+             <height>600</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -4842,26 +4842,6 @@
                        </widget>
                       </item>
                       <item>
-                       <spacer name="horizontalSpacer_44">
-                        <property name="orientation">
-                         <enum>Qt::Horizontal</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>40</width>
-                          <height>20</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
-                     </layout>
-                    </item>
-                    <item>
-                     <layout class="QHBoxLayout" name="horizontalLayout_4">
-                      <property name="spacing">
-                       <number>5</number>
-                      </property>
-                      <item>
                        <widget class="QPushButton" name="receivedActionMenu">
                         <property name="text">
                          <string>Context Menu Reflection</string>
@@ -4869,7 +4849,7 @@
                        </widget>
                       </item>
                       <item>
-                       <spacer name="horizontalSpacer_58">
+                       <spacer name="horizontalSpacer_44">
                         <property name="orientation">
                          <enum>Qt::Horizontal</enum>
                         </property>
@@ -5929,8 +5909,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>978</width>
-     <height>22</height>
+     <width>1194</width>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

@@ -290,9 +290,9 @@ void spoton_misc::prepareDatabases(void)
 		   "use_accounts INTEGER NOT NULL DEFAULT 0, "
 		   "maximum_buffer_size INTEGER NOT NULL DEFAULT %1, "
 		   "maximum_content_length INTEGER NOT NULL DEFAULT %2, "
-		   "transport TEXT NOT NULL DEFAULT 'tcp', "
+		   "transport TEXT NOT NULL, "
 		   "share_udp_address INTEGER NOT NULL DEFAULT 0, "
-		   "orientation TEXT NOT NULL DEFAULT 'packet')").
+		   "orientation TEXT NOT NULL)").
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_accounts ("
@@ -391,8 +391,8 @@ void spoton_misc::prepareDatabases(void)
 		   "account_name TEXT NOT NULL, "
 		   "account_password TEXT NOT NULL, "
 		   "account_authenticated TEXT, "
-		   "transport TEXT NOT NULL DEFAULT 'tcp', "
-		   "orientation TEXT NOT NULL DEFAULT 'packet')").
+		   "transport TEXT NOT NULL, "
+		   "orientation TEXT NOT NULL)").
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
       }
@@ -1475,13 +1475,12 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	if(ok)
 	  query.bindValue
 	    (18, crypt->
-	     encrypted(QByteArray("{00000000-0000-0000-0000-000000000000}"),
-		       &ok).toBase64());
+	     encrypted("{00000000-0000-0000-0000-000000000000}", &ok).
+	     toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (19, crypt->encrypted(QByteArray("full"), &ok).
-	     toBase64());
+	    (19, crypt->encrypted("full", &ok).toBase64());
 
 	if(ok)
 	  {
@@ -1521,14 +1520,18 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	    (23, crypt->encrypted(QByteArray(), &ok).toBase64());
 
 	if(transport == "tcp" || transport == "udp")
-	  query.bindValue(24, transport);
+	  query.bindValue
+	    (24, crypt->encrypted(transport.toLatin1(), &ok).toBase64());
 	else
-	  query.bindValue(24, "tcp");
+	  query.bindValue
+	    (24, crypt->encrypted("tcp", &ok).toBase64());
 
 	if(orientation == "packet" || orientation == "stream")
-	  query.bindValue(25, orientation);
+	  query.bindValue
+	    (25, crypt->encrypted(orientation.toLatin1(), &ok).toBase64());
 	else
-	  query.bindValue(25, "packet");
+	  query.bindValue
+	    (25, crypt->encrypted("packet", &ok).toBase64());
 
 	if(ok)
 	  query.exec();
@@ -1805,8 +1808,7 @@ bool spoton_misc::isAcceptedIP(const QHostAddress &address,
 			toBase64());
 
 	if(ok)
-	  query.bindValue(1, crypt->keyedHash(QByteArray("Any"), &ok).
-			  toBase64());
+	  query.bindValue(1, crypt->keyedHash("Any", &ok).toBase64());
 
 	query.bindValue(2, id);
 

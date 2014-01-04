@@ -297,7 +297,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	if(query.exec("SELECT ip_address, port, scope_id, "
 		      "protocol, echo_mode, certificate, private_key, "
-		      "public_key, transport, hash FROM listeners"))
+		      "public_key, transport, orientation, "
+		      "hash FROM listeners"))
 	  while(query.next())
 	    {
 	      QByteArray certificate;
@@ -306,10 +307,11 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      QSqlQuery updateQuery(db);
 	      QString echoMode("");
 	      QString ipAddress("");
+	      QString orientation("");
 	      QString port("");
 	      QString protocol("");
 	      QString scopeId("");
-	      QString transport(query.value(8).toString());
+	      QString transport("");
 	      bool ok = true;
 
 	      updateQuery.prepare("UPDATE listeners "
@@ -321,7 +323,9 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "echo_mode = ?, "
 				  "certificate = ?, "
 				  "private_key = ?, "
-				  "public_key = ? "
+				  "public_key = ?, "
+				  "transport = ?, "
+				  "orientation = ? "
 				  "WHERE hash = ?");
 	      ipAddress = oldCrypt->decrypted(QByteArray::
 					      fromBase64(query.
@@ -379,6 +383,20 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 						&ok);
 
 	      if(ok)
+		transport = oldCrypt->decrypted(QByteArray::
+						fromBase64(query.
+							   value(8).
+							   toByteArray()),
+						&ok).constData();
+
+	      if(ok)
+		orientation = oldCrypt->decrypted(QByteArray::
+						  fromBase64(query.
+							     value(9).
+							     toByteArray()),
+						  &ok).constData();
+
+	      if(ok)
 		updateQuery.bindValue
 		  (0, newCrypt->encrypted(ipAddress.
 					  toLatin1(), &ok).toBase64());
@@ -420,8 +438,18 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		updateQuery.bindValue
 		  (8, newCrypt->encrypted(publicKey, &ok).toBase64());
 
+	      if(ok)
+		updateQuery.bindValue
+		  (9, newCrypt->encrypted(transport.toLatin1(),
+					  &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (10, newCrypt->encrypted(orientation.toLatin1(),
+					   &ok).toBase64());
+
 	      updateQuery.bindValue
-		(9, query.value(9));
+		(11, query.value(10));
 
 	      if(ok)
 		updateQuery.exec();
@@ -431,7 +459,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 		  deleteQuery.prepare("DELETE FROM listeners WHERE "
 				      "hash = ?");
-		  deleteQuery.bindValue(0, query.value(9));
+		  deleteQuery.bindValue(0, query.value(10));
 		  deleteQuery.exec();
 		  deleteQuery.exec("DELETE FROM listeners_accounts "
 				   "WHERE listener_oid NOT IN "
@@ -564,7 +592,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		      "proxy_password, proxy_port, proxy_type, "
 		      "proxy_username, uuid, "
 		      "echo_mode, certificate, protocol, "
-		      "account_name, account_password, transport "
+		      "account_name, account_password, transport, "
+		      "orientation "
 		      "FROM neighbors"))
 	  while(query.next())
 	    {
@@ -576,6 +605,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      QString country("");
 	      QString echoMode("");
 	      QString ipAddress("");
+	      QString orientation("");
 	      QString port("");
 	      QString protocol("");
 	      QString proxyHostname("");
@@ -584,7 +614,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      QString proxyType("");
 	      QString proxyUsername("");
 	      QString scopeId("");
-	      QString transport(query.value(16).toString());
+	      QString transport("");
 	      bool ok = true;
 
 	      updateQuery.prepare("UPDATE neighbors "
@@ -607,7 +637,9 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "ssl_session_cipher = NULL, "
 				  "account_name = ?, "
 				  "account_password = ?, "
-				  "account_authenticated = NULL "
+				  "account_authenticated = NULL, "
+				  "transport = ?, "
+				  "orientation = ? "
 				  "WHERE hash = ?");
 	      ipAddress = oldCrypt->decrypted(QByteArray::
 					      fromBase64(query.
@@ -715,6 +747,22 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		   &ok).constData();
 
 	      if(ok)
+		transport = oldCrypt->decrypted
+		  (QByteArray::
+		   fromBase64(query.
+			      value(16).
+			      toByteArray()),
+		   &ok).constData();
+
+	      if(ok)
+		orientation = oldCrypt->decrypted
+		  (QByteArray::
+		   fromBase64(query.
+			      value(17).
+			      toByteArray()),
+		   &ok).constData();
+
+	      if(ok)
 		updateQuery.bindValue
 		  (0, newCrypt->encrypted(ipAddress.
 					  toLatin1(), &ok).toBase64());
@@ -803,8 +851,18 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  (17, newCrypt->encrypted(accountPassword.toLatin1(),
 					   &ok).toBase64());
 
+	      if(ok)
+		updateQuery.bindValue
+		  (18, newCrypt->encrypted(transport.toLatin1(),
+					   &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (19, newCrypt->encrypted(orientation.toLatin1(), &ok).
+		   toBase64());
+
 	      updateQuery.bindValue
-		(18, query.value(4));
+		(20, query.value(4));
 
 	      if(ok)
 		updateQuery.exec();

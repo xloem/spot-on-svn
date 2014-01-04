@@ -644,8 +644,10 @@ void spoton_kernel::prepareListeners(void)
 		  if(!m_listeners.contains(id))
 		    {
 		      QByteArray certificate;
+		      QByteArray orientation;
 		      QByteArray privateKey;
 		      QByteArray publicKey;
+		      QByteArray transport;
 		      QList<QByteArray> list;
 		      bool ok = true;
 
@@ -666,26 +668,37 @@ void spoton_kernel::prepareListeners(void)
 			}
 
 		      if(ok)
-			certificate =
-			  s_crypt->decrypted
+			certificate = s_crypt->decrypted
 			  (QByteArray::fromBase64(query.
 						  value(7).
 						  toByteArray()),
 			   &ok);
 
 		      if(ok)
-			privateKey =
-			  s_crypt->decrypted
+			privateKey = s_crypt->decrypted
 			  (QByteArray::fromBase64(query.
 						  value(8).
 						  toByteArray()),
 			   &ok);
 
 		      if(ok)
-			publicKey =
-			  s_crypt->decrypted
+			publicKey = s_crypt->decrypted
 			  (QByteArray::fromBase64(query.
 						  value(9).
+						  toByteArray()),
+			   &ok);
+
+		      if(ok)
+			transport =  s_crypt->decrypted
+			  (QByteArray::fromBase64(query.
+						  value(13).
+						  toByteArray()),
+			   &ok);
+
+		      if(ok)
+			orientation =  s_crypt->decrypted
+			  (QByteArray::fromBase64(query.
+						  value(15).
 						  toByteArray()),
 			   &ok);
 
@@ -716,9 +729,9 @@ void spoton_kernel::prepareListeners(void)
 			     query.value(10).toInt(),
 			     query.value(11).toInt(),
 			     query.value(12).toInt(),
-			     query.value(13).toString(),
+			     transport.constData(),
 			     query.value(14).toInt(),
-			     query.value(15).toString(),
+			     orientation.constData(),
 			     this);
 			}
 
@@ -859,8 +872,6 @@ void spoton_kernel::prepareNeighbors(void)
 			else if(i == 19) // account_password
 			  list.append(QByteArray::fromBase64(query.value(i).
 							     toByteArray()));
-			else if(i == 20) // transport
-			  list.append(query.value(i).toString());
 			else
 			  {
 			    QByteArray bytes;

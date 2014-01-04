@@ -26,10 +26,12 @@ certificate
 echo_mode
 external_ip_address
 ip_address
+orientation
 port
 private_key
 protocol
 public_key
+transport
 scope_id
 
 listeners_accounts
@@ -50,6 +52,7 @@ certificate
 country
 echo_mode
 external_ip_address
+orientation
 protocol
 proxy_hostname
 proxy_password
@@ -60,6 +63,7 @@ remote_ip_address
 remote_port
 scope_id
 ssl_session_cipher
+transport
 uuid
 
 shared.db:

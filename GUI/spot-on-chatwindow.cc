@@ -31,6 +31,7 @@
 #include <QSettings>
 
 #include "Common/spot-on-misc.h"
+#include "spot-on.h"
 #include "spot-on-chatwindow.h"
 
 spoton_chatwindow::spoton_chatwindow(const QIcon &icon,
@@ -150,17 +151,28 @@ void spoton_chatwindow::slotSendMessage(void)
   ui.messages->append(message);
   ui.messages->verticalScrollBar()->setValue
     (ui.messages->verticalScrollBar()->maximum());
+  spoton::s_gui->ui().messages->append(message);
+  spoton::s_gui->ui().messages->verticalScrollBar()->setValue
+    (spoton::s_gui->ui().messages->verticalScrollBar()->maximum());
   message.clear();
 
   if(name.isEmpty())
     name = "unknown";
 
+  spoton::s_gui->m_chatSequenceNumbers[m_id.toInt()] += 1;
   message.append("message_");
   message.append(QString("%1_").arg(m_id));
   message.append(name.toBase64());
   message.append("_");
   message.append(ui.message->toPlainText().trimmed().toUtf8().
 		 toBase64());
+  message.append("_");
+  message.append
+    (QByteArray::number(spoton::s_gui->m_chatSequenceNumbers[m_id.toInt()]).
+     toBase64());
+  message.append("_");
+  message.append(QDateTime::currentDateTime().toUTC().
+		 toString("hhmmss").toLatin1().toBase64());
   message.append('\n');
 
   if(m_kernelSocket->write(message.constData(), message.length()) !=

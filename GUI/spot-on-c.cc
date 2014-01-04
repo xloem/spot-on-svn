@@ -898,7 +898,7 @@ void spoton::slotTransmit(void)
 
 	if(ok)
 	  query.bindValue
-	    (4, s_crypt->encrypted(QByteArray("0"), &ok).toBase64());
+	    (4, s_crypt->encrypted("0", &ok).toBase64());
 
 	if(ok)
 	  query.bindValue

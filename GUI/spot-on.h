@@ -105,7 +105,9 @@ class spoton: public QMainWindow
  public:
   spoton(void);
   ~spoton();
+  QHash<int, quint64> m_chatSequenceNumbers;
   Ui_spoton_mainwindow ui(void) const;
+  static QPointer<spoton> s_gui;
 
  private:
   static const int APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL = 1;
@@ -129,7 +131,6 @@ class spoton: public QMainWindow
   QHash<QString, QVariant> m_settings;
   QHash<QString, bool> m_booleans;
   QHash<QString, spoton_crypt *> m_crypts;
-  QHash<int, quint64> m_chatSequenceNumbers;
   QMutex m_messagingCacheMutex;
   QMutex m_purgeMutex;
 #ifdef SPOTON_LINKED_WITH_LIBPHONON

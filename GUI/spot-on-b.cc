@@ -116,8 +116,7 @@ void spoton::slotSendMessage(void)
 	    (publicKeyHash);
 
 	  if(chat)
-	    if(!chat->isVisible())
-	      chat->append(msg);
+	    chat->append(msg);
 
 	  if(m_kernelSocket.write(message.constData(), message.length()) !=
 	     message.length())
@@ -279,7 +278,6 @@ void spoton::slotReceivedKernelMessage(void)
 					   "hhmmss"));
 		  QDateTime now(QDateTime::currentDateTime());
 		  QString msg("");
-		  bool found = true;
 
 		  if(name.isEmpty())
 		    name = "unknown";
@@ -327,28 +325,19 @@ void spoton::slotReceivedKernelMessage(void)
 			{
 			  chat->append(msg);
 
-			  if(!chat->isVisible())
-			    found = false;
-
-			  chat->activateWindow();
+			  if(chat->isVisible())
+			    chat->activateWindow();
 			}
-		      else
-			found = false;
 		    }
-		  else
-		    found = false;
 
-		  if(!found)
-		    {
-		      m_ui.messages->append(msg);
-		      m_ui.messages->verticalScrollBar()->setValue
-			(m_ui.messages->verticalScrollBar()->maximum());
+		  m_ui.messages->append(msg);
+		  m_ui.messages->verticalScrollBar()->setValue
+		    (m_ui.messages->verticalScrollBar()->maximum());
 
-		      if(m_ui.tab->currentIndex() != 1)
-			m_sb.chat->setVisible(true);
+		  if(m_ui.tab->currentIndex() != 1)
+		    m_sb.chat->setVisible(true);
 
-		      activateWindow();
-		    }
+		  activateWindow();
 		}
 	    }
 	  else if(data == "newmail")
@@ -4302,13 +4291,11 @@ void spoton::slotAddAcceptedIP(void)
 	if(m_ui.acceptedIP->text().trimmed() == "Any")
 	  {
 	    query.bindValue
-	      (0, s_crypt->encrypted(QByteArray("Any"),
-				     &ok).toBase64());
+	      (0, s_crypt->encrypted("Any", &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(1, s_crypt->keyedHash(QByteArray("Any"),
-				       &ok).
+		(1, s_crypt->keyedHash("Any", &ok).
 		 toBase64());
 	  }
 	else
@@ -4500,10 +4487,8 @@ void spoton::slotAddAccount(void)
   QString name(m_ui.accountName->text().trimmed());
   QString oid("");
   QString password(m_ui.accountPassword->text());
-  QString transport("");
   bool ok = true;
   int row = -1;
-  int sslKeySize = 0;
   spoton_crypt *s_crypt = m_crypts.value("chat", 0);
 
   if(!s_crypt)
@@ -4519,29 +4504,11 @@ void spoton::slotAddAccount(void)
 
       if(item)
 	oid = item->text();
-
-      item = m_ui.listeners->item(row, 15); // Transport
-
-      if(item)
-	transport = item->text();
-
-      if(transport == "tcp")
-	{
-	  item = m_ui.listeners->item(row, 2); // SSL Key Size
-
-	  if(item)
-	    sslKeySize = item->text().toInt();
-	}
     }
 
   if(oid.isEmpty())
     {
       error = tr("Invalid listener OID. Please select a listener.");
-      goto done_label;
-    }
-  else if(sslKeySize <= 0 && transport == "tcp")
-    {
-      error = tr("The selected listener does not support SSL.");
       goto done_label;
     }
 
@@ -4933,7 +4900,8 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
 			     const QString &)));
   m_chatWindows[publicKeyHash] = chat;
   chat->center(this);
-  chat->show();
+  chat->showNormal();
+  chat->raise();
 }
 
 void spoton::slotChatWindowDestroyed(void)
