@@ -31,7 +31,7 @@
 15.  Use INSERT OR REPLACE when inserting listener accounts.
 16.  Added a basic impersonator. Please see Chat.
 17.  Added the Edit menu.
-18.  Corrected Documentation/ENCRYPTED. Transports are not encrypted.
+18.  Encrypted database transport value.
 19.  Added the orientation field to listeners.db and neighbors.db.
      Please remove the databases. Current values: packet and stream.
      Please note that this is a partial implementation.
@@ -42,6 +42,10 @@
      kernel was active, enabling receivers did not function properly.
 22.  Empty Buzz hash keys caused display issues. Corrected.
 23.  Use clang++ on FreeBSD.
+24.  Use QSqlQuery::lastInsertId() instead of custom queries. SQLite does
+     support the feature.
+25.  Chat popup windows malfunctioned. Corrected. Also improved text
+     reflections.
 
 0.08 (12/23/2013)
 
