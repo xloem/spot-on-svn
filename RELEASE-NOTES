@@ -41,6 +41,7 @@
 21.  Corrected a StarBeam issue with respect to the received checkbox. If the
      kernel was active, enabling receivers did not function properly.
 22.  Empty Buzz hash keys caused display issues. Corrected.
+23.  Use clang++ on FreeBSD.
 
 0.08 (12/23/2013)
 
