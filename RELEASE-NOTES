@@ -24,6 +24,8 @@
      data does not include signatures. As a result, spoton::addFriendsKey()
      has been weakened.
 12.  Asymmetric key generation is now optional during Spot initialization.
+     Modified spoton_crypt::reencodeKeys() so that the method behaves
+     if keys are absent.
 13.  Added the macro SPOTON_USE_HIDDEN_KERNEL_WINDOW. If defined, the kernel
      will launch a window object. The gui module should be defined in the
      respective project file.
@@ -50,6 +52,8 @@
      starbeam.db.
 27.  Corrected a deep flaw with the StarBeam protocol. The protocol
      echoed data on incorrect channels. Echoes should not be reflected.
+28.  Added re-encoding of gemini data.
+29.  Corrected "Error Opening file GeoIP.dat" messages.
 
 0.08 (12/23/2013)
 
