@@ -46,6 +46,10 @@
      support the feature.
 25.  Chat popup windows malfunctioned. Corrected. Also improved text
      reflections.
+26.  Corrected vanishing SHA-1 hashes of received mosaics. Please remove
+     starbeam.db.
+27.  Corrected a deep flaw with the StarBeam protocol. The protocol
+     echoed data on incorrect channels. Echoes should not be reflected.
 
 0.08 (12/23/2013)
 
