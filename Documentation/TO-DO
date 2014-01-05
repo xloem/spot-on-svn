@@ -91,6 +91,7 @@ Completed Items
        to copy encrypted content and send it via other applications.
 64.    Separate keys should be used for storing keyed hashes.
 65.    Prevent replay attacks of authenticated sessions.
+66.    Artificial impersonators.
 
 Ignored Items
 
@@ -164,10 +165,9 @@ Remaining Items
 32.    Participant count may be possible based on asymmetric ciphertexts.
        Research?
 33.    Prevent inserts of own keys in friends_public_keys.db.
-34.    Artificial impersonators.
-35.    Wormholes for streamed data.
-36.    Per request, provide an automatic rewind mechanism with a timer.
-37.    Gold Bugs and Novas should have separate hash keys.
-38.    Account credentials should not be recorded via reversible encryption.
-39.    Accounts and allowed IP addresses suffer selection issues.
-40.    Database entries containing hashes can be maliciously twisted. Encrypt?
+34.    Wormholes for streamed data.
+35.    Per request, provide an automatic rewind mechanism with a timer.
+36.    Gold Bugs and Novas should have separate hash keys.
+37.    Account credentials should not be recorded via reversible encryption.
+38.    Accounts and allowed IP addresses suffer selection issues.
+39.    Database entries containing hashes can be maliciously twisted. Encrypt?
