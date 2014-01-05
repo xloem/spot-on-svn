@@ -68,10 +68,11 @@ void spoton_starbeam_writer::slotProcessData(void)
   if(m_queue.isEmpty())
     return;
 
-  QByteArray data(m_queue.dequeue());
+  QPair<QByteArray, qint64> pair(m_queue.dequeue());
 
   locker.unlock();
 
+  QByteArray data(pair.first);
   QList<QByteArray> list(data.split('\n'));
 
   if(list.size() != 2)
@@ -170,7 +171,7 @@ void spoton_starbeam_writer::slotProcessData(void)
   if(list.value(0) != "0060")
     return;
   else
-    emit receivedPulse(originalData);
+    emit receivedPulse(originalData, pair.second);
 
   qint64 maximumSize = 1048576 * spoton_kernel::setting
     ("gui/maxMosaicSize", 512).toLongLong();
@@ -231,7 +232,9 @@ void spoton_starbeam_writer::slotProcessData(void)
 
 	query.prepare
 	  ("INSERT OR REPLACE INTO received "
-	   "(file, file_hash, hash, total_size) VALUES (?, ?, ?, ?)");
+	   "(file, file_hash, hash, total_size) "
+	   "VALUES (?, ?, (SELECT hash FROM received WHERE file_hash = ?), "
+	   "?)");
 
 	if(ok)
 	  query.bindValue
@@ -243,7 +246,7 @@ void spoton_starbeam_writer::slotProcessData(void)
 
 	if(ok)
 	  query.bindValue
-	    (2, s_crypt->encrypted(QByteArray(), &ok).toBase64());
+	    (2, s_crypt->keyedHash(fileName.toUtf8(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
@@ -384,7 +387,8 @@ void spoton_starbeam_writer::slotReadKeys(void)
   QSqlDatabase::removeDatabase(connectionName);
 }
 
-void spoton_starbeam_writer::enqueue(const QByteArray &data)
+void spoton_starbeam_writer::enqueue(const QByteArray &data,
+				     const qint64 neighborId)
 {
   if(data.isEmpty())
     return;
@@ -401,8 +405,12 @@ void spoton_starbeam_writer::enqueue(const QByteArray &data)
 
   if(spoton_kernel::setting("gui/etpReceivers", false).toBool())
     {
+      QPair<QByteArray, qint64> pair;
+
+      pair.first = QByteArray::fromBase64(data);
+      pair.second = neighborId;
       m_mutex.lock();
-      m_queue.enqueue(QByteArray::fromBase64(data));
+      m_queue.enqueue(pair);
       m_mutex.unlock();
     }
 }

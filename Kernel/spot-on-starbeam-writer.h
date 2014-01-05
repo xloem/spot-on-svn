@@ -41,7 +41,7 @@ class spoton_starbeam_writer: public QThread
  public:
   spoton_starbeam_writer(QObject *parent);
   ~spoton_starbeam_writer();
-  void enqueue(const QByteArray &data);
+  void enqueue(const QByteArray &data, const qint64 neighborId);
   void start(void);
   void stop(void);
 
@@ -50,7 +50,7 @@ class spoton_starbeam_writer: public QThread
   QList<QByteArray> m_novas;
   QMutex m_keyMutex;
   QMutex m_mutex;
-  QQueue<QByteArray> m_queue;
+  QQueue<QPair<QByteArray, qint64> > m_queue;
   QTimer m_keyTimer;
   QTimer m_timer;
   void run(void);
@@ -60,7 +60,7 @@ class spoton_starbeam_writer: public QThread
   void slotReadKeys(void);
 
  signals:
-  void receivedPulse(const QByteArray &data);
+  void receivedPulse(const QByteArray &data, const qint64 neighborId);
 };
 
 #endif

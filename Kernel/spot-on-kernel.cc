@@ -1536,9 +1536,9 @@ void spoton_kernel::connectSignalsToNeighbor
 	  neighbor,
 	  SLOT(slotSendMailFromPostOffice(const QByteArray &)));
   connect(m_starbeamWriter,
-	  SIGNAL(receivedPulse(const QByteArray &)),
+	  SIGNAL(receivedPulse(const QByteArray &, const qint64)),
 	  neighbor,
-	  SLOT(slotSendMessage(const QByteArray &)));
+	  SLOT(slotReceivedMessage(const QByteArray &, const qint64)));
   connect(neighbor,
 	  SIGNAL(authenticationRequested(const QString &)),
 	  m_guiServer,
@@ -2608,7 +2608,7 @@ bool spoton_kernel::messagingCacheContains(const QByteArray &data)
   hash = s_crypt->keyedHash(data, &ok);
 
   if(!ok)
-    return false;
+    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
 
   QMutexLocker locker(&s_messagingCacheMutex);
 
@@ -2631,7 +2631,7 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data)
   hash = s_crypt->keyedHash(data, &ok);
 
   if(!ok)
-    return;
+    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
 
   QMutexLocker locker(&s_messagingCacheMutex);
 
@@ -3049,9 +3049,10 @@ void spoton_kernel::writeToNeighbors(const QByteArray &data, bool *ok)
     }
 }
 
-void spoton_kernel::processPotentialStarBeamData(const QByteArray &data)
+void spoton_kernel::processPotentialStarBeamData(const QByteArray &data,
+						 const qint64 neighborId)
 {
-  m_starbeamWriter->enqueue(data);
+  m_starbeamWriter->enqueue(data, neighborId);
 }
 
 void spoton_kernel::slotImpersonateTimeout(void)

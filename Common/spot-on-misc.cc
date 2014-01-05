@@ -422,8 +422,8 @@ void spoton_misc::prepareDatabases(void)
 							   ** Keyed hash of
 							   ** the file name.
 							   */
-		   "hash TEXT NOT NULL, "                  /*
-							   ** Keyed hash of
+		   "hash TEXT, "                           /*
+							   ** Hash of
 							   ** the file.
 							   */
 		   "total_size TEXT NOT NULL)");

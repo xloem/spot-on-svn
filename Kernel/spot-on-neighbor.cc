@@ -1266,7 +1266,7 @@ void spoton_neighbor::slotReadyRead(void)
 	      if(messageType.isEmpty())
 		if(data.length() == length)
 		  spoton_kernel::s_kernel->processPotentialStarBeamData
-		    (data);
+		    (data, m_id);
 
 	      if(spoton_kernel::setting("gui/scramblerEnabled",
 					false).toBool())
