@@ -1114,11 +1114,13 @@ void spoton::slotPopulateStars(void)
 
 		  if(i == 0 || i == 1 || i == 2)
 		    {
-		      QByteArray bytes
-			(s_crypt->
-			 decrypted(QByteArray::fromBase64(query.value(i).
-							  toByteArray()),
-				   &ok));
+		      QByteArray bytes;
+
+		      if(!query.isNull(i))
+			bytes = s_crypt->
+			  decrypted(QByteArray::fromBase64(query.value(i).
+							   toByteArray()),
+				    &ok);
 
 		      if(ok)
 			item = new QTableWidgetItem(bytes.constData());

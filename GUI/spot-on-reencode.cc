@@ -942,8 +942,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		}
 	    }
 
-	if(query.exec("SELECT file, file_hash, hash, total_size FROM "
-		      "received"))
+	if(query.exec("SELECT file, file_hash, hash, total_size "
+		      "FROM received"))
 	  while(query.next())
 	    {
 	      QByteArray bytes;
@@ -971,16 +971,22 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  (1, newCrypt->keyedHash(bytes, &ok).toBase64());
 
 	      if(ok)
-		bytes = oldCrypt->decrypted
-		  (QByteArray::
-		   fromBase64(query.
-			      value(2).
-			      toByteArray()),
-		   &ok);
+		if(!query.isNull(2))
+		  bytes = oldCrypt->decrypted
+		    (QByteArray::
+		     fromBase64(query.
+				value(2).
+				toByteArray()),
+		     &ok);
 
 	      if(ok)
-		updateQuery.bindValue
-		  (2, newCrypt->encrypted(bytes, &ok).toBase64());
+		{
+		  if(query.isNull(2))
+		    updateQuery.bindValue(2, QVariant::ByteArray);
+		  else
+		    updateQuery.bindValue
+		      (2, newCrypt->encrypted(bytes, &ok).toBase64());
+		}
 
 	      if(ok)
 		bytes = oldCrypt->decrypted(QByteArray::
