@@ -49,7 +49,8 @@
 25.  Chat popup windows malfunctioned. Corrected. Also improved text
      reflections.
 26.  Corrected vanishing SHA-1 hashes of received mosaics. Please remove
-     starbeam.db.
+     starbeam.db. Please note that computing hashes of live mosaics
+     may be produce invalid results.
 27.  Corrected a deep flaw with the StarBeam protocol. The protocol
      echoed data on incorrect channels. Echoes should not be reflected.
 28.  Added re-encoding of gemini data.
