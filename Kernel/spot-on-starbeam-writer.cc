@@ -35,7 +35,7 @@
 #include "spot-on-starbeam-writer.h"
 
 spoton_starbeam_writer::spoton_starbeam_writer(QObject *parent):
-QThread(parent)
+  QThread(parent)
 {
   m_timer.setInterval(100);
   QThread::start();
