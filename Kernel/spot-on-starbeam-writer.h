@@ -30,7 +30,6 @@
 
 #include <QHash>
 #include <QMutex>
-#include <QQueue>
 #include <QThread>
 #include <QTimer>
 
@@ -42,16 +41,16 @@ class spoton_starbeam_writer: public QThread
   spoton_starbeam_writer(QObject *parent);
   ~spoton_starbeam_writer();
   bool isActive(void) const;
-  void enqueue(const QByteArray &data, const qint64 neighborId);
+  void append(const QByteArray &data);
   void start(void);
   void stop(void);
 
  private:
+  QHash<QByteArray, QByteArray> m_data;
   QList<QHash<QString, QByteArray> > m_magnets;
   QList<QByteArray> m_novas;
   QMutex m_keyMutex;
   QMutex m_mutex;
-  QQueue<QPair<QByteArray, qint64> > m_queue;
   QTimer m_keyTimer;
   QTimer m_timer;
   void run(void);
@@ -59,9 +58,6 @@ class spoton_starbeam_writer: public QThread
  private slots:
   void slotProcessData(void);
   void slotReadKeys(void);
-
- signals:
-  void receivedPulse(const QByteArray &data, const qint64 neighborId);
 };
 
 #endif

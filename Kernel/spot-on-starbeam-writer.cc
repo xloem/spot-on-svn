@@ -65,14 +65,13 @@ void spoton_starbeam_writer::slotProcessData(void)
 {
   QMutexLocker locker(&m_mutex);
 
-  if(m_queue.isEmpty())
+  if(m_data.isEmpty())
     return;
 
-  QPair<QByteArray, qint64> pair(m_queue.dequeue());
+  QByteArray data(m_data.take(m_data.keys().value(0)));
 
   locker.unlock();
 
-  QByteArray data(pair.first);
   QList<QByteArray> list(data.split('\n'));
 
   if(list.size() != 2)
@@ -170,8 +169,6 @@ void spoton_starbeam_writer::slotProcessData(void)
 
   if(list.value(0) != "0060")
     return;
-  else
-    emit receivedPulse(originalData, pair.second);
 
   qint64 maximumSize = 1048576 * spoton_kernel::setting
     ("gui/maxMosaicSize", 512).toLongLong();
@@ -273,7 +270,7 @@ void spoton_starbeam_writer::stop(void)
 {
   m_timer.stop();
   m_mutex.lock();
-  m_queue.clear();
+  m_data.clear();
   m_mutex.unlock();
 }
 
@@ -387,9 +384,13 @@ void spoton_starbeam_writer::slotReadKeys(void)
   QSqlDatabase::removeDatabase(connectionName);
 }
 
-void spoton_starbeam_writer::enqueue(const QByteArray &data,
-				     const qint64 neighborId)
+void spoton_starbeam_writer::append(const QByteArray &data)
 {
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
   if(data.isEmpty())
     return;
   else if(!m_timer.isActive())
@@ -407,12 +408,20 @@ void spoton_starbeam_writer::enqueue(const QByteArray &data,
 
   if(spoton_kernel::setting("gui/etpReceivers", false).toBool())
     {
-      QPair<QByteArray, qint64> pair;
+      QByteArray d(QByteArray::fromBase64(data));
+      QByteArray hash;
+      bool ok = true;
 
-      pair.first = QByteArray::fromBase64(data);
-      pair.second = neighborId;
+      hash = s_crypt->keyedHash(d, &ok);
+
+      if(!ok)
+	hash = QCryptographicHash::hash(d, QCryptographicHash::Sha1);
+
       m_mutex.lock();
-      m_queue.enqueue(pair);
+
+      if(!m_data.contains(hash))
+	m_data.insert(hash, d);
+
       m_mutex.unlock();
     }
 }

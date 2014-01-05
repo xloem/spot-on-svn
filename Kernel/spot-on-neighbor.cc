@@ -1265,8 +1265,7 @@ void spoton_neighbor::slotReadyRead(void)
 
 	      if(messageType.isEmpty())
 		if(data.length() == length)
-		  spoton_kernel::s_kernel->processPotentialStarBeamData
-		    (data, m_id);
+		  spoton_kernel::s_kernel->processPotentialStarBeamData(data);
 
 	      if(spoton_kernel::setting("gui/scramblerEnabled",
 					false).toBool())
@@ -1646,6 +1645,7 @@ void spoton_neighbor::slotReceivedMessage(const QByteArray &data,
 	    {
 	      flush();
 	      addToBytesWritten(data.length());
+	      spoton_kernel::messagingCacheAdd(data);
 	    }
 	}
 }
@@ -4256,6 +4256,7 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 	    {
 	      flush();
 	      addToBytesWritten(message.length());
+	      spoton_kernel::messagingCacheAdd(message);
 	    }
 	}
 }

@@ -1543,10 +1543,6 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SIGNAL(sendMailFromPostOffice(const QByteArray &)),
 	  neighbor,
 	  SLOT(slotSendMailFromPostOffice(const QByteArray &)));
-  connect(m_starbeamWriter,
-	  SIGNAL(receivedPulse(const QByteArray &, const qint64)),
-	  neighbor,
-	  SLOT(slotReceivedMessage(const QByteArray &, const qint64)));
   connect(neighbor,
 	  SIGNAL(authenticationRequested(const QString &)),
 	  m_guiServer,
@@ -3057,10 +3053,9 @@ void spoton_kernel::writeToNeighbors(const QByteArray &data, bool *ok)
     }
 }
 
-void spoton_kernel::processPotentialStarBeamData(const QByteArray &data,
-						 const qint64 neighborId)
+void spoton_kernel::processPotentialStarBeamData(const QByteArray &data)
 {
-  m_starbeamWriter->enqueue(data, neighborId);
+  m_starbeamWriter->append(data);
 }
 
 void spoton_kernel::slotImpersonateTimeout(void)
