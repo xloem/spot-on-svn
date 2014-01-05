@@ -54,6 +54,7 @@
      echoed data on incorrect channels. Echoes should not be reflected.
 28.  Added re-encoding of gemini data.
 29.  Corrected "Error Opening file GeoIP.dat" messages.
+30.  Added the version command-line option to the kernel.
 
 0.08 (12/23/2013)
 
