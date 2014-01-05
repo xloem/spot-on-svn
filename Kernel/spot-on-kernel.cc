@@ -153,6 +153,14 @@ static void sig_handler(int signum)
 
 int main(int argc, char *argv[])
 {
+  for(int i = 1; i < argc; i++)
+    if(memcmp(argv[i], "--version", strlen("--version")) == 0)
+      {
+	fprintf(stdout, "Compiled on %s, %s. Version %s.\n",
+		__DATE__, __TIME__, SPOTON_VERSION_STR);
+	exit(EXIT_SUCCESS);
+      }
+
   QList<int> list;
 #if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
   struct sigaction act;

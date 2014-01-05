@@ -124,9 +124,12 @@ spoton::spoton(void):QMainWindow()
   bool sslSupported = QSslSocket::supportsSsl();
 
   m_ui.buildInformation->setText
-    (QString("%1.\n"
-	     "Qt %2, %3-bit.\n"
-	     "gcrypt %4.").
+    (QString("Compiled on %1, %2.\n"
+	     "%3.\n"
+	     "Qt %4, %5-bit.\n"
+	     "gcrypt %6.").
+     arg(__DATE__).
+     arg(__TIME__).
      arg(sslSupported ?
 	 SSLeay_version(SSLEAY_VERSION) : "OpenSSL is not supported").
      arg(QT_VERSION_STR).arg(sizeof(void *) * 8).

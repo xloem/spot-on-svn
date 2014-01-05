@@ -57,13 +57,13 @@ class spoton_kernel: public QObject
   spoton_kernel(void);
   ~spoton_kernel();
   static QHash<QString, spoton_crypt *> s_crypts;
+  static QPointer<spoton_kernel> s_kernel;
   static QList<QByteArray> findBuzzKey(const QByteArray &data,
 				       const QByteArray &hash);
   static QVariant setting(const QString &name,
 			  const QVariant &defaultValue);
   static bool messagingCacheContains(const QByteArray &data);
   static int interfaces(void);
-  static QPointer<spoton_kernel> s_kernel;
   static void addBuzzKey(const QByteArray &key,
 			 const QByteArray &channelType,
 			 const QByteArray &hashKey,
