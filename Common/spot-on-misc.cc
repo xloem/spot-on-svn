@@ -526,11 +526,14 @@ QString spoton_misc::countryCodeFromIPAddress(const QString &ipAddress)
 
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
   GeoIP *gi = 0;
+  QFileInfo fileInfo;
   QSettings settings;
+  QString fileName(settings.value("gui/geoipPath", "GeoIP.dat").toString());
 
-  gi = GeoIP_open
-    (settings.value("gui/geoipPath", "GeoIP.dat").toByteArray().constData(),
-     GEOIP_MEMORY_CACHE);
+  fileInfo.setFile(fileName);
+
+  if(fileInfo.isReadable())
+    gi = GeoIP_open(fileName.toUtf8().constData(), GEOIP_MEMORY_CACHE);
 
   if(gi)
     code = GeoIP_country_code_by_addr
@@ -555,11 +558,14 @@ QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
 
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
   GeoIP *gi = 0;
+  QFileInfo fileInfo;
   QSettings settings;
+  QString fileName(settings.value("gui/geoipPath", "GeoIP.dat").toString());
 
-  gi = GeoIP_open
-    (settings.value("gui/geoipPath", "GeoIP.dat").toByteArray().constData(),
-     GEOIP_MEMORY_CACHE);
+  fileInfo.setFile(fileName);
+
+  if(fileInfo.isReadable())
+    gi = GeoIP_open(fileName.toUtf8().constData(), GEOIP_MEMORY_CACHE);
 
   if(gi)
     country = GeoIP_country_name_by_addr

@@ -265,7 +265,6 @@ void spoton_starbeam_writer::slotProcessData(void)
 
 void spoton_starbeam_writer::start(void)
 {
-  QThread::start();
   slotReadKeys();
   m_timer.start();
 }
@@ -273,8 +272,9 @@ void spoton_starbeam_writer::start(void)
 void spoton_starbeam_writer::stop(void)
 {
   m_timer.stop();
-  quit();
-  wait(30000);
+  m_mutex.lock();
+  m_queue.clear();
+  m_mutex.unlock();
 }
 
 void spoton_starbeam_writer::slotReadKeys(void)
@@ -392,6 +392,8 @@ void spoton_starbeam_writer::enqueue(const QByteArray &data,
 {
   if(data.isEmpty())
     return;
+  else if(!m_timer.isActive())
+    return;
 
   m_keyMutex.lock();
 
@@ -413,4 +415,9 @@ void spoton_starbeam_writer::enqueue(const QByteArray &data,
       m_queue.enqueue(pair);
       m_mutex.unlock();
     }
+}
+
+bool spoton_starbeam_writer::isActive(void) const
+{
+  return m_timer.isActive();
 }

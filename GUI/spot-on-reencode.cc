@@ -279,6 +279,80 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+    sb.status->setText
+    (QObject::tr("Re-encoding friends_public_keys.db."));
+  sb.status->repaint();
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT gemini, gemini_hash_key, public_key_hash FROM "
+		      "friends_public_keys"))
+	  while(query.next())
+	    {
+	      QByteArray gemini;
+	      QByteArray geminiHashKey;
+	      QSqlQuery updateQuery(db);
+	      bool ok = true;
+
+	      updateQuery.prepare("UPDATE friends_public_keys "
+				  "SET gemini = ?, "
+				  "gemini_hash_key = ? WHERE "
+				  "public_key_hash = ?");
+	      gemini = oldCrypt->decrypted(QByteArray::
+					   fromBase64(query.
+						      value(0).
+						      toByteArray()),
+					   &ok);
+
+	      if(ok)
+		geminiHashKey = oldCrypt->decrypted(QByteArray::
+						    fromBase64(query.
+							       value(1).
+							       toByteArray()),
+						    &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (0, newCrypt->encrypted(gemini,
+					  &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (1,
+		   newCrypt->encrypted(geminiHashKey,
+				       &ok).toBase64());
+
+	      updateQuery.bindValue
+		(2, query.value(2));
+
+	      if(ok)
+		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare("DELETE FROM friends_public_keys "
+				      "WHERE public_key_hash = ?");
+		  deleteQuery.bindValue(0, query.value(2));
+		  deleteQuery.exec();
+		}
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
   sb.status->setText
     (QObject::tr("Re-encoding listeners.db."));
   sb.status->repaint();

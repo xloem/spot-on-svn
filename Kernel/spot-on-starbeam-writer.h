@@ -41,6 +41,7 @@ class spoton_starbeam_writer: public QThread
  public:
   spoton_starbeam_writer(QObject *parent);
   ~spoton_starbeam_writer();
+  bool isActive(void) const;
   void enqueue(const QByteArray &data, const qint64 neighborId);
   void start(void);
   void stop(void);

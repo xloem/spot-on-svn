@@ -1502,7 +1502,7 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
 
   if(setting("gui/etpReceivers", false).toBool())
     {
-      if(!m_starbeamWriter->isRunning())
+      if(!m_starbeamWriter->isActive())
 	m_starbeamWriter->start();
     }
   else

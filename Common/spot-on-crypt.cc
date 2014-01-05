@@ -493,11 +493,17 @@ void spoton_crypt::reencodeKeys(const QString &newCipher,
 
   if(data.isEmpty())
     {
-      error = QObject::tr("error retrieving data from the idiotes "
-			  "table");
-      spoton_misc::logError("spoton_crypt::reencodeKeys(): "
-			    "error retrieving data from the idiotes "
-			    "table.");
+      if(!id.isEmpty())
+	spoton_misc::logError
+	  (QString("spoton_crypt::reencodeKeys(): "
+		   "unable to retrieve data from the idiotes "
+		   "table for id %1.").arg(id));
+      else
+	spoton_misc::logError
+	  ("spoton_crypt::reencodeKeys(): "
+	   "unable to retrieve data from the idiotes "
+	   "table.");
+
       return;
     }
 
