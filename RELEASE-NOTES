@@ -5,6 +5,7 @@
      are derived as follows:
           key_temporary = derive(passphrase, cipher_block_length + 256)
           key_encryption, key_hash = derive(key_temporary)
+          (0..cipher_block_length - 1), (cipher_block_length..256)
 2.   Removed obsolete methods from the spoton_crypt class.
 3.   The mechanisms that are responsible for copying chat and e-mail public
      key pairs incorrectly used the encryption keys for computing keyed
@@ -17,7 +18,7 @@
      contents of the table shall be purged whenever the owning listener
      is deactivated or deleted. The table shall contain data that has been
      used for authenticating accounts so as to avoid potential replay attacks.
-     Data older than 120 seconds are also purged.
+     Data older than 120 seconds are also purged. Please also see item #31.
 9.   Account authentication is now allowed over insecure TCP connections.
 10.  Added various reflection widgets.
 11.  Ability to copy e-mail key pairs of participants. Please note that copied
@@ -56,6 +57,9 @@
 28.  Added re-encoding of gemini data.
 29.  Corrected "Error Opening file GeoIP.dat" messages.
 30.  Added the version command-line option to the kernel.
+31.  Removed UTC timestamps from the account authentication process.
+     Introduced authentication timers. Default timeouts set to 15 seconds.
+     Please also see item #8.
 
 0.08 (12/23/2013)
 
