@@ -844,7 +844,7 @@ void spoton_neighbor::slotTimeout(void)
     {
       spoton_misc::logError
 	(QString("spoton_neighbor::slotTimeout(): instructed "
-		 "to delete neighbor for %1:%2").
+		 "to delete neighbor for %1:%2.").
 	 arg(m_address.toString()).
 	 arg(m_port));
       deleteLater();

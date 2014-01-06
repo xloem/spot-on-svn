@@ -79,7 +79,7 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 	  socket.abort();
 	  spoton_misc::logError
 	    (QString("spoton_listener_tcp_server::incomingConnection(): "
-		     "connection from %1 denied for %2:%3").
+		     "connection from %1 denied for %2:%3.").
 	     arg(peerAddress.toString()).
 	     arg(serverAddress().toString()).
 	     arg(serverPort()));
@@ -104,7 +104,7 @@ void spoton_listener_udp_server::slotReadyRead(void)
 				spoton_kernel::s_crypts.value("chat", 0)))
     spoton_misc::logError
       (QString("spoton_listener_udp_server::incomingConnection(): "
-	       "connection from %1 denied for %2:%3").
+	       "connection from %1 denied for %2:%3.").
        arg(peerAddress.toString()).
        arg(localAddress().toString()).
        arg(localPort()));
