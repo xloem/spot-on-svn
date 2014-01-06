@@ -2251,6 +2251,7 @@ void spoton::slotRegenerateKey(void)
 
   m_sb.status->clear();
   QApplication::restoreOverrideCursor();
+  updatePublicKeysLabel();
 
   if(error.isEmpty())
     {
@@ -2633,4 +2634,35 @@ void spoton::slotCopyOrPaste(void)
       else
 	qobject_cast<QTextEdit *> (widget)->paste();
     }
+}
+
+void spoton::updatePublicKeysLabel(void)
+{
+  QString str
+    (tr("<b>Chat Key Pair:</b> %1, <b>Chat Signature Key Pair:</b> %2, "
+	"<b>E-Mail Key Pair:</b> %3, "
+	"<b>E-Mail Signature Key Pair:</b> %4, "
+	"<b>Rosetta Key Pair:</b> %5, "
+	"<b>Rosetta Signature Key Pair:</b> %6, "
+	"<b>URL Key Pair:</b> %7, <b>URL Signature Key Pair:</b> %8."));
+  QStringList list;
+
+  list << "chat"
+       << "chat-signature"
+       << "email"
+       << "email-signature"
+       << "rosetta"
+       << "rosetta-signature"
+       << "url"
+       << "url-signature";
+
+  for(int i = 0; i < list.size(); i++)
+    if(m_crypts.value(list.at(i), 0))
+      str.replace
+	(QString("%%1").arg(i + 1),
+	 QString::number(m_crypts.value(list.at(i))->publicKeyCount()));
+    else
+      str.replace(QString("%%1").arg(i + 1), "0");
+
+  m_ui.publicKeysInformation->setText(str);
 }

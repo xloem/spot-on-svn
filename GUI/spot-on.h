@@ -197,6 +197,7 @@ class spoton: public QMainWindow
   void updateListenersTable(const QSqlDatabase &db);
   void updateNeighborsTable(const QSqlDatabase &db);
   void updateParticipantsTable(const QSqlDatabase &db);
+  void updatePublicKeysLabel(void);
 
  private slots:
   void slotAcceptBuzzMagnets(bool state);

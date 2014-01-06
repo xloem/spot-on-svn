@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>978</width>
-    <height>656</height>
+    <width>993</width>
+    <height>677</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -373,8 +373,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>463</height>
+                <width>686</width>
+                <height>447</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2064,8 +2064,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>241</width>
-                 <height>404</height>
+                 <width>253</width>
+                 <height>428</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3426,8 +3426,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>869</width>
-             <height>643</height>
+             <width>951</width>
+             <height>753</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4127,6 +4127,16 @@
                   <number>5</number>
                  </property>
                  <item>
+                  <widget class="QLabel" name="publicKeysInformation">
+                   <property name="text">
+                    <string>Chat Key Pair: 0, Chat Signature Key Pair: 0, E-Mail Key Pair: 0, E-Mail Signature Key Pair: 0, Rosetta Key Pair: 0, Rosetta Signature Key Pair: 0, URL Key Pair: 0, URL Signature Key Pair: 0.</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_51">
                    <property name="spacing">
                     <number>5</number>
@@ -4309,19 +4319,6 @@
                </widget>
               </item>
               <item>
-               <spacer name="verticalSpacer_10">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
                <layout class="QHBoxLayout" name="horizontalLayout_11">
                 <property name="spacing">
                  <number>5</number>
@@ -4380,8 +4377,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>478</width>
-             <height>510</height>
+             <width>491</width>
+             <height>521</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5909,8 +5906,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>978</width>
-     <height>22</height>
+     <width>993</width>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

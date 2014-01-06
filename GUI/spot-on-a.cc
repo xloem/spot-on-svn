@@ -4065,6 +4065,7 @@ void spoton::slotSetPassphrase(void)
 		}
 
 	      QApplication::restoreOverrideCursor();
+	      updatePublicKeysLabel();
 	    }
 	}
     }
@@ -4356,6 +4357,7 @@ void spoton::slotValidatePassphrase(void)
 
   m_ui.passphrase->clear();
   m_ui.passphrase->setFocus();
+  updatePublicKeysLabel();
 }
 
 void spoton::slotTabChanged(int index)

@@ -3438,3 +3438,34 @@ bool spoton_crypt::validateHashes(const QByteArray &hash1,
 {
   return spoton_crypt::memcmp(hash1, hash2);
 }
+
+int spoton_crypt::publicKeyCount(void) const
+{
+  QString connectionName("");
+  int count = 0;
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "idiotes.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT COUNT(*) "
+		      "FROM idiotes WHERE id = ?");
+	query.bindValue(0, m_id);
+
+	if(query.exec())
+	  if(query.next())
+	    count = query.value(0).toInt();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  return count;
+}

@@ -144,6 +144,7 @@ class spoton_crypt
   QByteArray publicKeyHash(bool *ok);
   QByteArray symmetricKey(void) const;
   QString cipherType(void) const;
+  int publicKeyCount(void) const;
   void generatePrivatePublicKeys(const int keySize,
 				 const QString &keyType,
 				 QString &error);
