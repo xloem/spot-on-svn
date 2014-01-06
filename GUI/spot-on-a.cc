@@ -1253,6 +1253,7 @@ spoton::spoton(void):QMainWindow()
 	  m_ui.tab->setTabEnabled(i, false);
 
       m_ui.passphrase1->setFocus();
+      updatePublicKeysLabel();
     }
 
   if(m_settings.contains("gui/chatHorizontalSplitter"))

@@ -159,7 +159,6 @@ class spoton_neighbor: public QThread
   QByteArray m_accountPassword;
   QByteArray m_accountClientSentSalt;
   QByteArray m_data;
-  QDateTime m_authenticationSentTime;
   QDateTime m_lastReadTime;
   QDateTime m_startTime;
   QHostAddress m_address;
@@ -170,6 +169,7 @@ class spoton_neighbor: public QThread
   QString m_protocol;
   QString m_transport;
   QTimer m_accountTimer;
+  QTimer m_authenticationTimer;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_keepAliveTimer;
   QTimer m_lifetime;
@@ -238,7 +238,6 @@ class spoton_neighbor: public QThread
   void saveStatistics(const QSqlDatabase &db);
   void saveStatus(const QSqlDatabase &db, const QString &status);
   void saveStatus(const QString &status);
-  void sendAuthenticationRequest(void);
   void setReadBufferSize(const qint64 size);
   void storeLetter(const QByteArray &symmetricKey,
 		   const QByteArray &symmetricKeyAlgorithm,
@@ -254,6 +253,7 @@ class spoton_neighbor: public QThread
  private slots:
   void slotAccountAuthenticated(const QByteArray &name,
 				const QByteArray &password);
+  void slotAuthenticationTimerTimeout(void);
   void slotCallParticipant(const QByteArray &data);
   void slotConnected(void);
   void slotDisconnected(void);
@@ -277,6 +277,7 @@ class spoton_neighbor: public QThread
   void slotReceivedMessage(const QByteArray &data, const qint64 id);
   void slotRetrieveMail(const QList<QByteArray> &list);
   void slotSendAccountInformation(void);
+  void slotSendAuthenticationRequest(void);
   void slotSendBuzz(const QByteArray &data);
   void slotSendMail(const QList<QPair<QByteArray, qint64> > &list);
   void slotSendMailFromPostOffice(const QByteArray &data);

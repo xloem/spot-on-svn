@@ -271,10 +271,18 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(ipAddressDiscovered(const QHostAddress &)),
 	  this,
 	  SLOT(slotExternalAddressDiscovered(const QHostAddress &)));
+  connect(&m_accountTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotSendAuthenticationRequest(void)));
   connect(&m_externalAddressDiscovererTimer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotDiscoverExternalAddress(void)));
+  connect(&m_authenticationTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotAuthenticationTimerTimeout(void)));
   connect(&m_keepAliveTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -294,6 +302,11 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	m_tcpSocket->startServerEncryption();
     }
 
+  m_authenticationTimer.setInterval
+    (spoton_kernel::
+     setting("kernel/server_account_verification_window_msecs",
+	     15000).toInt());
+
   if(spoton_kernel::setting("gui/kernelExternalIpInterval", -1).
      toInt() == 30)
     {
@@ -309,6 +322,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   else
     m_externalAddressDiscovererTimer.setInterval(30000);
 
+  m_accountTimer.start(2500);
   m_keepAliveTimer.start(30000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
@@ -559,6 +573,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotSendAccountInformation(void)));
+  connect(&m_authenticationTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotAuthenticationTimerTimeout(void)));
   connect(&m_externalAddressDiscovererTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -575,7 +593,11 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTimeout(void)));
-  m_accountTimer.setInterval(15000);
+  m_accountTimer.setInterval(2500);
+  m_authenticationTimer.setInterval
+    (spoton_kernel::
+     setting("kernel/server_account_verification_window_msecs",
+	     15000).toInt());
 
   if(spoton_kernel::setting("gui/kernelExternalIpInterval", -1).
      toInt() == 30)
@@ -777,8 +799,10 @@ void spoton_neighbor::slotTimeout(void)
 			      (QByteArray::fromBase64(query.value(6).
 						      toByteArray()));
 
-			    if(name != m_accountName ||
-			       password != m_accountPassword)
+			    if(!spoton_crypt::
+			       memcmp(name, m_accountName) ||
+			       !spoton_crypt::
+			       memcmp(password, m_accountPassword))
 			      {
 				m_accountName = name;
 				m_accountPassword = password;
@@ -1129,11 +1153,6 @@ void spoton_neighbor::slotReadyRead(void)
 		    process0050(length, data);
 
 		  if(!m_accountAuthenticated)
-		    if(m_authenticationSentTime.
-		       msecsTo(QDateTime::currentDateTime()) > 15000)
-		      sendAuthenticationRequest(); // Message type 0052.
-
-		  if(!m_accountAuthenticated)
 		    goto done_label;
 		}
 	      else if(length > 0 && (data.contains("type=0050&content=") ||
@@ -1148,12 +1167,7 @@ void spoton_neighbor::slotReadyRead(void)
 	      ** response is valid.
 	      */
 
-	      if(m_accountClientSentSalt.length() > 0 &&
-		 m_authenticationSentTime.msecsTo(QDateTime::
-						  currentDateTime()) <=
-		 spoton_kernel::setting("kernel/"
-					"server_account_verification_"
-					"window_msecs", 15000).toInt())
+	      if(!m_accountClientSentSalt.isEmpty())
 		process0051(length, data);
 	      else
 		m_accountAuthenticated = false;
@@ -1439,9 +1453,13 @@ void spoton_neighbor::slotConnected(void)
   if(!m_keepAliveTimer.isActive())
     m_keepAliveTimer.start();
 
-  if(m_udpSocket)
-    if(m_useAccounts)
+  if(m_useAccounts)
+    {
       m_accountTimer.start();
+
+      if(!m_useSsl)
+	m_authenticationTimer.start();
+    }
 }
 
 void spoton_neighbor::savePublicKey(const QByteArray &keyType,
@@ -3294,7 +3312,7 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
   length -= qstrlen("type=0050&content=");
 
   /*
-  ** We may have received a name and a password.
+  ** We may have received a name and a password from the client.
   */
 
   QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
@@ -3333,6 +3351,8 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 					  s_crypts.value("chat", 0)))
 	{
 	  m_accountAuthenticated = true;
+	  m_accountTimer.stop();
+	  m_authenticationTimer.stop();
 	  emit accountAuthenticated(name, password);
 	}
       else
@@ -3455,12 +3475,7 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 
 	      if(ok)
 		newSaltedCredentials = spoton_crypt::saltedValue
-		  ("sha512",
-		   name + password +
-		   QDateTime::currentDateTime().toUTC().
-		   toString("MMddyyyyhhmm").toLatin1(),
-		   salt,
-		   &ok);
+		  ("sha512", name + password, salt, &ok);
 
 	      if(ok)
 		{
@@ -3469,35 +3484,8 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 		    {
 		      m_accountAuthenticated = true;
 		      m_accountTimer.stop();
+		      m_authenticationTimer.stop();
 		    }
-		  else
-		    {
-		      newSaltedCredentials = spoton_crypt::saltedValue
-			("sha512",
-			 name + password +
-			 QDateTime::currentDateTime().toUTC().addSecs(60).
-			 toString("MMddyyyyhhmm").toLatin1(),
-			 salt,
-			 &ok);
-
-		      if(ok)
-			if(spoton_crypt::memcmp(newSaltedCredentials,
-						saltedCredentials))
-			  {
-			    m_accountAuthenticated = true;
-			    m_accountTimer.stop();
-			  }
-		    }
-
-		  if(ok)
-		    if(newSaltedCredentials != saltedCredentials)
-		      {
-			m_accountAuthenticated = false;
-			spoton_misc::logError
-			  ("spoton_neighbor::process0051(): "
-			   "the provided salted credentials appear to be "
-			   "invalid. The server may be devious.");
-		      }
 		}
 	      else
 		m_accountAuthenticated = false;
@@ -4300,7 +4288,8 @@ void spoton_neighbor::slotPeerVerifyError(const QSslError &error)
       if(!m_peerCertificate.isNull() &&
 	 !m_tcpSocket->peerCertificate().isNull())
 	if(!m_allowExceptions)
-	  if(m_peerCertificate != m_tcpSocket->peerCertificate())
+	  if(!spoton_crypt::memcmp(m_peerCertificate.toPem(),
+				   m_tcpSocket->peerCertificate().toPem()))
 	    {
 	      spoton_misc::logError
 		(QString("spoton_neighbor::slotPeerVerifyError(): "
@@ -4323,15 +4312,21 @@ void spoton_neighbor::slotModeChanged(QSslSocket::SslMode mode)
      arg(m_port));
 
   if(m_useSsl)
-    if(mode == QSslSocket::UnencryptedMode)
-      {
-	spoton_misc::logError
-	  (QString("spoton_neighbor::slotModeChanged(): "
-		   "unencrypted connection mode for %1:%2. Aborting.").
-	   arg(m_address.toString()).
-	   arg(m_port));
-	deleteLater();
-      }
+    {
+      if(mode == QSslSocket::UnencryptedMode)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::slotModeChanged(): "
+		     "unencrypted connection mode for %1:%2. Aborting.").
+	     arg(m_address.toString()).
+	     arg(m_port));
+	  deleteLater();
+	}
+
+      if(m_useAccounts)
+	if(!m_authenticationTimer.isActive())
+	  m_authenticationTimer.start();
+    }
 }
 
 void spoton_neighbor::slotDisconnected(void)
@@ -4383,7 +4378,9 @@ void spoton_neighbor::recordCertificateOrAbort(void)
 	    }
 	  else if(!m_allowExceptions)
 	    {
-	      if(m_peerCertificate != m_tcpSocket->peerCertificate())
+	      if(!spoton_crypt::
+		 memcmp(m_peerCertificate.toPem(),
+			m_tcpSocket->peerCertificate().toPem()))
 		{
 		  spoton_misc::logError
 		    (QString("spoton_neighbor::recordCertificate(): "
@@ -4407,8 +4404,6 @@ void spoton_neighbor::recordCertificateOrAbort(void)
 		}
 	    }
 	}
-
-      m_accountTimer.start();
     }
   else
     {
@@ -4785,11 +4780,6 @@ void spoton_neighbor::slotSendAccountInformation(void)
 {
   if(state() != QAbstractSocket::ConnectedState)
     return;
-  else if(m_useSsl)
-    {
-      if(!isEncrypted())
-	return;
-    }
 
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
@@ -4811,11 +4801,7 @@ void spoton_neighbor::slotSendAccountInformation(void)
 	QByteArray message;
 	QByteArray salt(spoton_crypt::strongRandomBytes(512));
 	QByteArray saltedCredentials
-	  (spoton_crypt::saltedValue("sha512",
-				     name + password +
-				     QDateTime::currentDateTime().toUTC().
-				     toString("MMddyyyyhhmm").toLatin1(),
-				     salt, &ok));
+	  (spoton_crypt::saltedValue("sha512", name + password, salt, &ok));
 
 	if(ok)
 	  message = spoton_send::message0050(saltedCredentials, salt);
@@ -4833,7 +4819,6 @@ void spoton_neighbor::slotSendAccountInformation(void)
 	      {
 		flush();
 		m_accountClientSentSalt = salt;
-		m_authenticationSentTime = QDateTime::currentDateTime();
 		addToBytesWritten(message.length());
 	      }
 	  }
@@ -4845,11 +4830,6 @@ void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
 {
   if(state() != QAbstractSocket::ConnectedState)
     return;
-  else if(m_useSsl)
-    {
-      if(!isEncrypted())
-	return;
-    }
 
   QByteArray message;
   QByteArray salt(spoton_crypt::strongRandomBytes(512));
@@ -4863,11 +4843,7 @@ void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
   */
 
   saltedCredentials = spoton_crypt::saltedValue
-    ("sha512",
-     name + password + QDateTime::currentDateTime().toUTC().
-     toString("MMddyyyyhhmm").toLatin1(),
-     salt,
-     &ok);
+    ("sha512", name + password, salt, &ok);
 
   if(ok)
     message = spoton_send::message0051(saltedCredentials, salt);
@@ -4888,7 +4864,7 @@ void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
     }
 }
 
-void spoton_neighbor::sendAuthenticationRequest(void)
+void spoton_neighbor::slotSendAuthenticationRequest(void)
 {
   if(state() != QAbstractSocket::ConnectedState)
     return;
@@ -4897,14 +4873,13 @@ void spoton_neighbor::sendAuthenticationRequest(void)
 
   if(write(message.constData(), message.length()) != message.length())
     spoton_misc::logError
-      (QString("spoton_neighbor::sendAuthenticationRequest(): "
+      (QString("spoton_neighbor::slotSendAuthenticationRequest(): "
 	       "write() error for %1:%2.").
        arg(m_address.toString()).
        arg(m_port));
   else
     {
       flush();
-      m_authenticationSentTime = QDateTime::currentDateTime();
       addToBytesWritten(message.length());
     }
 }
@@ -5025,4 +5000,14 @@ void spoton_neighbor::deleteLater(void)
   abort();
   quit();
   QThread::deleteLater();
+}
+
+void spoton_neighbor::slotAuthenticationTimerTimeout(void)
+{
+  spoton_misc::logError
+    (QString("spoton_neighbor::slotAuthenticationTimerTimeout(): "
+	     "authentication timer expired for %1:%2. Aborting!").
+     arg(m_address.toString()).
+     arg(m_port));
+  deleteLater();
 }
