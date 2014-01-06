@@ -322,7 +322,9 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   else
     m_externalAddressDiscovererTimer.setInterval(30000);
 
-  m_accountTimer.start(2500);
+  if(m_useAccounts)
+    m_accountTimer.start(2500);
+
   m_keepAliveTimer.start(30000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
