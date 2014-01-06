@@ -1637,7 +1637,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   str = settings.value("gui/kernelCipherType").toString().trimmed();
 
   if(!(str == "aes256" || str == "camellia256" ||
-       str == "randomized" ||
+       str == "gost28147" || str == "randomized" ||
        str == "serpent256" || str == "twofish"))
     str = "aes256";
 
@@ -1898,32 +1898,14 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 
 		  if(ok)
 		    salted = spoton_crypt::saltedValue
-		      ("sha512", name + password +
-		       QDateTime::currentDateTime().toUTC().
-		       toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
+		      ("sha512", name + password, salt, &ok);
 
 		  if(ok)
-		    {
-		      if(spoton_crypt::memcmp(salted, saltedCredentials))
-			{
-			  found = true;
-			  break;
-			}
-		      else
-			{
-			  salted = spoton_crypt::saltedValue
-			    ("sha512", name + password +
-			     QDateTime::currentDateTime().toUTC().addSecs(60).
-			     toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
-
-			  if(ok)
-			    if(spoton_crypt::memcmp(salted, saltedCredentials))
-			      {
-				found = true;
-				break;
-			      }
-			}
-		    }
+		    if(spoton_crypt::memcmp(salted, saltedCredentials))
+		      {
+			found = true;
+			break;
+		      }
 		}
 
 	    if(found)
