@@ -277,13 +277,15 @@ void spoton::slotReceivedKernelMessage(void)
 		    (QDateTime::fromString(utcDate.constData(),
 					   "hhmmss"));
 		  QDateTime now(QDateTime::currentDateTime());
+		  QString content(QString::fromUtf8(message.constData(),
+						    message.length()));
 		  QString msg("");
 
 		  if(name.isEmpty())
 		    name = "unknown";
 
 		  if(message.isEmpty())
-		    message = "unknown";
+		    content = "unknown";
 
 		  ok = true;
 		  sequenceNumber.toULongLong(&ok);
@@ -313,8 +315,32 @@ void spoton::slotReceivedKernelMessage(void)
 		    (QString("<font color=blue>%1: </font>").
 		     arg(QString::fromUtf8(name.constData(),
 					   name.length())));
-		  msg.append(QString::fromUtf8(message.constData(),
-					       message.length()));
+
+		  if(spoton_misc::isValidBuzzMagnetData(content.toLatin1()))
+		    {
+		      QString str("");
+
+		      str.prepend("<a href='");
+		      str.append(content);
+		      str.append("'>");
+		      str.append(content);
+		      str.append("</a>");
+		      content = str;
+		    }
+		  else if(spoton_misc::
+			  isValidStarBeamMagnetData(content.toLatin1()))
+		    {
+		      QString str("");
+
+		      str.prepend("<a href='");
+		      str.append(content);
+		      str.append("'>");
+		      str.append(content);
+		      str.append("</a>");
+		      content = str;
+		    }
+
+		  msg.append(content);
 
 		  if(m_chatWindows.contains(list.value(1).toBase64()))
 		    {
