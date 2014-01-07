@@ -63,6 +63,7 @@
 32.  Introduced export and import of public key pairs. Please see the Tools menu.
 33.  Modified all kernel QMutex objects to be of type QReadWriteLock.
      Let's hope for some additional concurrency.
+34.  The name field in Rosetta lacked a maximum length. Corrected.
 
 0.08 (12/23/2013)
 
