@@ -116,7 +116,7 @@ void spoton::slotAddEtpMagnet(void)
   ** Validate the magnet.
   */
 
-  if(!spoton_misc::isValidStarBeamMagnetData(magnet.toLatin1()))
+  if(!spoton_misc::isValidStarBeamMagnet(magnet.toLatin1()))
     {
       error = tr("Invalid magnet. Are you missing tokens?");
       goto done_label;

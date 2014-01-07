@@ -316,7 +316,7 @@ void spoton::slotReceivedKernelMessage(void)
 		     arg(QString::fromUtf8(name.constData(),
 					   name.length())));
 
-		  if(spoton_misc::isValidBuzzMagnetData(content.toLatin1()))
+		  if(spoton_misc::isValidBuzzMagnet(content.toLatin1()))
 		    {
 		      QString str("");
 
@@ -328,7 +328,7 @@ void spoton::slotReceivedKernelMessage(void)
 		      content = str;
 		    }
 		  else if(spoton_misc::
-			  isValidStarBeamMagnetData(content.toLatin1()))
+			  isValidStarBeamMagnet(content.toLatin1()))
 		    {
 		      QString str("");
 

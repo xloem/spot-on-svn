@@ -65,11 +65,12 @@ class spoton_misc
   static bool isAcceptedParticipant(const QByteArray &publicKeyHash);
   static bool isGnome(void);
   static bool isPrivateNetwork(const QHostAddress &address);
+  static bool isValidBuzzMagnet(const QByteArray &magnet);
   static bool isValidBuzzMagnetData(const QByteArray &data);
   static bool isValidSignature(const QByteArray &data,
 			       const QByteArray &publicKeyHash,
 			       const QByteArray &signature);
-  static bool isValidStarBeamMagnetData(const QByteArray &data);
+  static bool isValidStarBeamMagnet(const QByteArray &magnet);
   static bool saveFriendshipBundle(const QByteArray &keyType,
 				   const QByteArray &name,
 				   const QByteArray &publicKey,
