@@ -2068,3 +2068,91 @@ bool spoton_misc::isValidBuzzMagnetData(const QByteArray &data)
  done_label:
   return valid;
 }
+
+bool spoton_misc::isValidStarBeamMagnetData(const QByteArray &data)
+{
+  QList<QByteArray> list;
+  bool valid = false;
+  int tokens = 0;
+
+  /*
+  ** Validate the magnet.
+  */
+
+  if(data.trimmed().startsWith("magnet:?"))
+    list = data.trimmed().mid(qstrlen("magnet:?")).split('&');
+  else
+    goto done_label;
+
+  while(!list.isEmpty())
+    {
+      QString str(list.takeFirst().trimmed());
+
+      if(str.startsWith("ct="))
+	{
+	  str.remove(0, 3);
+
+	  if(!spoton_crypt::cipherTypes().contains(str))
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	  else
+	    tokens += 1;
+	}
+      else if(str.startsWith("ek="))
+	{
+	  str.remove(0, 3);
+
+	  if(str.isEmpty())
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	  else
+	    tokens += 1;
+	}
+      else if(str.startsWith("ht="))
+	{
+	  str.remove(0, 3);
+
+	  if(!spoton_crypt::hashTypes().contains(str))
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	  else
+	    tokens += 1;
+	}
+      else if(str.startsWith("mk="))
+	{
+	  str.remove(0, 3);
+
+	  if(str.isEmpty())
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	  else
+	    tokens += 1;
+	}
+      else if(str.startsWith("xt="))
+	{
+	  str.remove(0, 3);
+
+	  if(str != "urn:starbeam")
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	  else
+	    tokens += 1;
+	}
+    }
+
+  if(tokens == 5)
+    valid = true;
+
+ done_label:
+  return valid;
+}

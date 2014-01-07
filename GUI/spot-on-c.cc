@@ -26,8 +26,14 @@
 */
 
 #include <QCheckBox>
+#if QT_VERSION < 0x050000
+#include <QDesktopServices>
+#endif
 #include <QPlainTextEdit>
 #include <QProgressBar>
+#if QT_VERSION >= 0x050000
+#include <QStandardPaths>
+#endif
 #include <QTableWidgetItem>
 
 #include "spot-on.h"
@@ -79,14 +85,11 @@ void spoton::slotGenerateEtpKeys(int index)
 
 void spoton::slotAddEtpMagnet(void)
 {
-  spoton_misc::prepareDatabases();
-
   QString connectionName("");
   QString error("");
   QString magnet("");
   QStringList list;
   bool ok = true;
-  int tokens = 0;
   spoton_crypt *s_crypt = m_crypts.value("chat", 0);
 
   if(!s_crypt)
@@ -113,40 +116,7 @@ void spoton::slotAddEtpMagnet(void)
   ** Validate the magnet.
   */
 
-  list = QString(magnet).remove("magnet:?").split('&');
-
-  while(!list.isEmpty())
-    {
-      QString str(list.takeFirst());
-
-      if(str.startsWith("ct="))
-	{
-	  str.remove(0, 3);
-	  tokens += str.trimmed().isEmpty() ? 0 : 1;
-	}
-      else if(str.startsWith("ek="))
-	{
-	  str.remove(0, 3);
-	  tokens += str.trimmed().isEmpty() ? 0 : 1;
-	}
-      else if(str.startsWith("ht="))
-	{
-	  str.remove(0, 3);
-	  tokens += str.trimmed().isEmpty() ? 0 : 1;
-	}
-      else if(str.startsWith("mk="))
-	{
-	  str.remove(0, 3);
-	  tokens += str.trimmed().isEmpty() ? 0 : 1;
-	}
-      else if(str.startsWith("xt="))
-	{
-	  str.remove(0, 3);
-	  tokens += str.trimmed().isEmpty() ? 0 : 1;
-	}
-    }
-
-  if(tokens != 5)
+  if(!spoton_misc::isValidStarBeamMagnetData(magnet.toLatin1()))
     {
       error = tr("Invalid magnet. Are you missing tokens?");
       goto done_label;
@@ -2713,9 +2683,15 @@ void spoton::slotExportPublicKeys(void)
       dialog.setWindowTitle
 	(tr("Spot-On: Select Export File"));
       dialog.setFileMode(QFileDialog::AnyFile);
+#if QT_VERSION < 0x050000
       dialog.setDirectory
 	(QDesktopServices::storageLocation(QDesktopServices::
 					   DesktopLocation));
+#else
+      dialog.setDirectory
+	(QStandardPaths::standardLocations(QStandardPaths::DesktopLocation).
+	 value(0));
+#endif
       dialog.setLabelText(QFileDialog::Accept, tr("&Save"));
       dialog.setAcceptMode(QFileDialog::AcceptSave);
 #ifdef Q_OS_MAC
@@ -2754,9 +2730,15 @@ void spoton::slotImportPublicKeys(void)
   dialog.setWindowTitle
     (tr("Spot-On: Select Import File"));
   dialog.setFileMode(QFileDialog::ExistingFile);
+#if QT_VERSION < 0x050000
   dialog.setDirectory
     (QDesktopServices::storageLocation(QDesktopServices::
 				       DesktopLocation));
+#else
+  dialog.setDirectory
+    (QStandardPaths::standardLocations(QStandardPaths::DesktopLocation).
+     value(0));
+#endif
   dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
   dialog.setAcceptMode(QFileDialog::AcceptOpen);
 #ifdef Q_OS_MAC
