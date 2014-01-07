@@ -63,14 +63,17 @@ void spoton_starbeam_writer::run(void)
 
 void spoton_starbeam_writer::slotProcessData(void)
 {
-  QMutexLocker locker(&m_mutex);
+  m_mutex.lockForWrite();
 
   if(m_data.isEmpty())
-    return;
+    {
+      m_mutex.unlock();
+      return;
+    }
 
   QByteArray data(m_data.take(m_data.keys().value(0)));
 
-  locker.unlock();
+  m_mutex.unlock();
 
   QList<QByteArray> list(data.split('\n'));
 
@@ -84,7 +87,7 @@ void spoton_starbeam_writer::slotProcessData(void)
 
   QHash<QString, QByteArray> magnet;
 
-  m_keyMutex.lock();
+  m_keyMutex.lockForRead();
 
   QList<QHash<QString, QByteArray> > magnets(m_magnets);
 
@@ -126,7 +129,7 @@ void spoton_starbeam_writer::slotProcessData(void)
   if(!ok)
     return;
 
-  m_keyMutex.lock();
+  m_keyMutex.lockForRead();
 
   QList<QByteArray> novas(m_novas);
 
@@ -269,7 +272,7 @@ void spoton_starbeam_writer::start(void)
 void spoton_starbeam_writer::stop(void)
 {
   m_timer.stop();
-  m_mutex.lock();
+  m_mutex.lockForWrite();
   m_data.clear();
   m_mutex.unlock();
 }
@@ -291,7 +294,7 @@ void spoton_starbeam_writer::slotReadKeys(void)
 
     if(db.open())
       {
-	m_keyMutex.lock();
+	m_keyMutex.lockForWrite();
 	m_magnets.clear();
 	m_novas.clear();
 	m_keyMutex.unlock();
@@ -352,7 +355,7 @@ void spoton_starbeam_writer::slotReadKeys(void)
 
 	      if(elements.contains("xt"))
 		{
-		  m_keyMutex.lock();
+		  m_keyMutex.lockForWrite();
 		  m_magnets.append(elements);
 		  m_keyMutex.unlock();
 		}
@@ -372,7 +375,7 @@ void spoton_starbeam_writer::slotReadKeys(void)
 	      if(!ok)
 		continue;
 
-	      m_keyMutex.lock();
+	      m_keyMutex.lockForWrite();
 	      m_novas.append(data);
 	      m_keyMutex.unlock();
 	    }
@@ -396,7 +399,7 @@ void spoton_starbeam_writer::append(const QByteArray &data)
   else if(!m_timer.isActive())
     return;
 
-  m_keyMutex.lock();
+  m_keyMutex.lockForRead();
 
   if(m_magnets.isEmpty())
     {
@@ -417,7 +420,7 @@ void spoton_starbeam_writer::append(const QByteArray &data)
       if(!ok)
 	hash = QCryptographicHash::hash(d, QCryptographicHash::Sha1);
 
-      m_mutex.lock();
+      m_mutex.lockForWrite();
 
       if(!m_data.contains(hash))
 	m_data.insert(hash, d);

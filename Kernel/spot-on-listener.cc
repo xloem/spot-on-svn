@@ -305,6 +305,11 @@ void spoton_listener::slotTimeout(void)
       {
 	QSqlQuery query(db);
 
+	/*
+	** Remove expired entries from
+	** listeners_accounts_consumed_authentications.
+	*/
+
 	query.setForwardOnly(true);
 	query.prepare
 	  ("DELETE FROM listeners_accounts_consumed_authentications "

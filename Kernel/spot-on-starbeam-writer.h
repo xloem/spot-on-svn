@@ -29,7 +29,7 @@
 #define _spoton_starbeam_writer_h_
 
 #include <QHash>
-#include <QMutex>
+#include <QReadWriteLock>
 #include <QThread>
 #include <QTimer>
 
@@ -49,8 +49,8 @@ class spoton_starbeam_writer: public QThread
   QHash<QByteArray, QByteArray> m_data;
   QList<QHash<QString, QByteArray> > m_magnets;
   QList<QByteArray> m_novas;
-  QMutex m_keyMutex;
-  QMutex m_mutex;
+  QReadWriteLock m_keyMutex;
+  QReadWriteLock m_mutex;
   QTimer m_keyTimer;
   QTimer m_timer;
   void run(void);

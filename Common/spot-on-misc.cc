@@ -1927,15 +1927,25 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 		if(ok)
 		  query.exec();
 
-		query.prepare("INSERT OR REPLACE INTO "
-			      "listeners_accounts_consumed_authentications "
-			      "(data, insert_date, listener_oid) "
-			      "VALUES (?, ?, ?)");
-		query.bindValue(0, saltedCredentials.toBase64());
-		query.bindValue
-		  (1, QDateTime::currentDateTime().toString(Qt::ISODate));
-		query.bindValue(2, listenerOid);
-		query.exec();
+		/*
+		** I think we only wish to create an entry in
+		** listeners_accounts_consumed_authentications if
+		** the discovered account is not temporary.
+		*/
+
+		if(!ok || query.numRowsAffected() <= 0)
+		  {
+		    query.prepare
+		      ("INSERT OR REPLACE INTO "
+		       "listeners_accounts_consumed_authentications "
+		       "(data, insert_date, listener_oid) "
+		       "VALUES (?, ?, ?)");
+		    query.bindValue(0, saltedCredentials.toBase64());
+		    query.bindValue
+		      (1, QDateTime::currentDateTime().toString(Qt::ISODate));
+		    query.bindValue(2, listenerOid);
+		    query.exec();
+		  }
 	      }
 	  }
       }

@@ -33,8 +33,8 @@
 #include <QFuture>
 #include <QHash>
 #include <QHostAddress>
-#include <QMutex>
 #include <QPointer>
+#include <QReadWriteLock>
 #include <QSqlDatabase>
 #include <QTimer>
 
@@ -75,9 +75,6 @@ class spoton_kernel: public QObject
   void writeToNeighbors(const QByteArray &data, bool *ok);
 
  private:
-  static QHash<QString, QVariant> s_settings;
-  static QMutex s_buzzKeysMutex;
-  static QMutex s_settingsMutex;
   QDateTime m_uptime;
   QFileSystemWatcher m_settingsWatcher;
   QFuture<void> m_future;
@@ -96,8 +93,11 @@ class spoton_kernel: public QObject
   spoton_starbeam_writer *m_starbeamWriter;
   static QHash<QByteArray, char> s_messagingCache;
   static QHash<QByteArray, QList<QByteArray> > s_buzzKeys;
+  static QHash<QString, QVariant> s_settings;
   static QMultiMap<QDateTime, QByteArray> s_messagingCacheMap;
-  static QMutex s_messagingCacheMutex;
+  static QReadWriteLock s_buzzKeysMutex;
+  static QReadWriteLock s_messagingCacheMutex;
+  static QReadWriteLock s_settingsMutex;
   bool initializeSecurityContainers(const QString &passphrase);
   void checkForTermination(void);
   void cleanup(void);
