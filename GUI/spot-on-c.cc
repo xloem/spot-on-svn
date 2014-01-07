@@ -2666,3 +2666,168 @@ void spoton::updatePublicKeysLabel(void)
 
   m_ui.publicKeysInformation->setText(str);
 }
+
+void spoton::slotExportPublicKeys(void)
+{
+  QByteArray keys(copyMyChatPublicKey() + "@" +
+		  copyMyEmailPublicKey() + "@" +
+		  copyMyRosettaPublicKey() + "@" +
+		  copyMyUrlPublicKey());
+
+  if(keys.count("@") == 3)
+    /*
+    ** Problem!
+    */
+
+    QMessageBox::critical
+      (this, tr("Spot-On: Error"),
+       tr("A deep failure occurred while gathering your public key pairs. "
+	  "Do you have public keys? Please inspect the Settings tab."));
+  else
+    {
+      if(keys.length() >= 30000)
+	{
+	  QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+	  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+	  mb.setIcon(QMessageBox::Question);
+	  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+	  mb.setWindowModality(Qt::WindowModal);
+	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+	  mb.setText
+	    (tr("The gathered public keys contain a lot (%1) of data. "
+		"Are you sure that you wish to export the data?").
+	     arg(keys.length()));
+
+	  if(mb.exec() != QMessageBox::Yes)
+	    return;
+	}
+
+      QFileDialog dialog(this);
+
+      dialog.setConfirmOverwrite(true);
+      dialog.setWindowTitle
+	(tr("Spot-On: Select Export File"));
+      dialog.setFileMode(QFileDialog::AnyFile);
+      dialog.setDirectory
+	(QDesktopServices::storageLocation(QDesktopServices::
+					   DesktopLocation));
+      dialog.setLabelText(QFileDialog::Accept, tr("&Save"));
+      dialog.setAcceptMode(QFileDialog::AcceptSave);
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+      dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+#endif
+#endif
+      dialog.selectFile
+	(QString("spot-on-public-keys-export-%1.txt").
+	 arg(QDateTime::currentDateTime().toString("MM-dd-yyyy-hh-mm-ss")));
+
+      if(dialog.exec() == QDialog::Accepted)
+	{
+	  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+	  QFile file;
+
+	  file.setFileName(dialog.selectedFiles().value(0).trimmed());
+
+	  if(file.open(QIODevice::Truncate | QIODevice::WriteOnly))
+	    {
+	      file.write(keys);
+	      file.flush();
+	    }
+
+	  file.close();
+	  QApplication::restoreOverrideCursor();
+	}
+    }
+}
+
+void spoton::slotImportPublicKeys(void)
+{
+  QFileDialog dialog(this);
+
+  dialog.setWindowTitle
+    (tr("Spot-On: Select Import File"));
+  dialog.setFileMode(QFileDialog::ExistingFile);
+  dialog.setDirectory
+    (QDesktopServices::storageLocation(QDesktopServices::
+				       DesktopLocation));
+  dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
+  dialog.setAcceptMode(QFileDialog::AcceptOpen);
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+#endif
+#endif
+
+  if(dialog.exec() == QDialog::Accepted)
+    {
+      QFileInfo fileInfo;
+
+      fileInfo.setFile(dialog.directory(),
+		       dialog.selectedFiles().value(0).trimmed());
+
+      if(fileInfo.size() >= 30000)
+	{
+	  QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+	  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+	  mb.setIcon(QMessageBox::Question);
+	  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+	  mb.setWindowModality(Qt::WindowModal);
+	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+	  mb.setText
+	    (tr("The import file contains a lot (%1) of data. Are you "
+		"sure that you wish to process it?").
+	     arg(fileInfo.size()));
+
+	  if(mb.exec() != QMessageBox::Yes)
+	    return;
+	}
+
+      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+      QByteArray bytes;
+      QFile file;
+
+      file.setFileName(fileInfo.filePath());
+
+      if(file.open(QIODevice::ReadOnly))
+	bytes = file.readAll();
+
+      file.close();
+      QApplication::restoreOverrideCursor();
+
+      QList<QByteArray> list(bytes.split('@'));
+
+      while(!list.isEmpty())
+	if(list.size() >= 6)
+	  {
+	    QByteArray bytes("K");
+
+	    bytes.append(list.takeFirst().remove(0, 1));
+	    bytes.append("@");
+	    bytes.append(list.takeFirst());
+	    bytes.append("@");
+	    bytes.append(list.takeFirst());
+	    bytes.append("@");
+	    bytes.append(list.takeFirst());
+	    bytes.append("@");
+	    bytes.append(list.takeFirst());
+	    bytes.append("@");
+	    bytes.append(list.takeFirst());
+	    addFriendsKey(bytes);
+	  }
+	else
+	  break;
+    }
+}

@@ -1324,35 +1324,26 @@ void spoton::slotAddFriendsKey(void)
     {
       QList<QByteArray> list(key.split('@'));
 
-      key = list.value(0).remove(0, 1) + "@" +
-	list.value(1) + "@" +
-	list.value(2) + "@" +
-	list.value(3) + "@" +
-	list.value(4) + "@" +
-	list.value(5);
-      addFriendsKey("K" + key);
+      while(!list.isEmpty())
+	if(list.size() >= 6)
+	  {
+	    QByteArray bytes("K");
 
-      if(list.size() > 6)
-	{
-	  key = list.value(6).remove(0, 1) + "@" +
-	    list.value(7) + "@" +
-	    list.value(8) + "@" +
-	    list.value(9) + "@" +
-	    list.value(10) + "@" +
-	    list.value(11);
-	  addFriendsKey("K" + key);
-	}
-
-      if(list.size() >  12)
-	{
-	  key = list.value(12).remove(0, 1) + "@" +
-	    list.value(13) + "@" +
-	    list.value(14) + "@" +
-	    list.value(15) + "@" +
-	    list.value(16) + "@" +
-	    list.value(17);
-	  addFriendsKey("K" + key);
-	}
+	    bytes.append(list.takeFirst().remove(0, 1));
+	    bytes.append("@");
+	    bytes.append(list.takeFirst());
+	    bytes.append("@");
+	    bytes.append(list.takeFirst());
+	    bytes.append("@");
+	    bytes.append(list.takeFirst());
+	    bytes.append("@");
+	    bytes.append(list.takeFirst());
+	    bytes.append("@");
+	    bytes.append(list.takeFirst());
+	    addFriendsKey(bytes);
+	  }
+	else
+	  break;
     }
   else
     addFriendsKey(key);
@@ -1364,6 +1355,7 @@ void spoton::addFriendsKey(const QByteArray &key)
     {
       if(!m_crypts.value("chat", 0) ||
 	 !m_crypts.value("email", 0) ||
+	 !m_crypts.value("rosetta", 0) ||
 	 !m_crypts.value("url", 0))
 	{
 	  QMessageBox::critical(this, tr("Spot-On: Error"),
@@ -1402,11 +1394,13 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       keyType = QByteArray::fromBase64(keyType);
 
-      if(!(keyType == "chat" || keyType == "email" || keyType == "url"))
+      if(!(keyType == "chat" || keyType == "email" ||
+	   keyType == "rosetta" || keyType == "url"))
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("Invalid key type. Expecting 'chat', 'email', or 'url'."));
+	     tr("Invalid key type. Expecting 'chat', 'email', 'rosetta', "
+		"or 'url'."));
 	  return;
 	}
 
@@ -1421,10 +1415,23 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       if(!ok)
 	{
-	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Unable to retrieve your %1 "
-				   "public key.").arg(keyType.constData()));
-	  return;
+	  QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+	  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+	  mb.setIcon(QMessageBox::Question);
+	  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+	  mb.setWindowModality(Qt::WindowModal);
+	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+	  mb.setText(tr("Unable to retrieve your %1 "
+			"public key for comparison. Continue?").
+		     arg(keyType.constData()));
+
+	  if(mb.exec() != QMessageBox::Yes)
+	    return;
 	}
 
       mySPublicKey = m_crypts.value
@@ -1432,10 +1439,23 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       if(!ok)
 	{
-	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Unable to retrieve your %1 signature "
-				   "public key.").arg(keyType.constData()));
-	  return;
+	  QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+	  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+	  mb.setIcon(QMessageBox::Question);
+	  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+	  mb.setWindowModality(Qt::WindowModal);
+	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+	  mb.setText(tr("Unable to retrieve your %1 signature "
+			"public key for comparison. Continue?").
+		     arg(keyType.constData()));
+
+	  if(mb.exec() != QMessageBox::Yes)
+	    return;
 	}
 
       if(mPublicKey == myPublicKey || mSignature == mySPublicKey)
@@ -1463,8 +1483,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  mb.setWindowTitle(tr("Spot-On: Confirmation"));
 	  mb.setWindowModality(Qt::WindowModal);
 	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-	  mb.setText(tr("Invalid 'chat', 'email', or 'url' "
-			"public key signature. Continue?"));
+	  mb.setText(tr("Invalid 'chat', 'email', 'rosetta', or 'url' "
+			"public key signature. Accept?"));
 
 	  if(mb.exec() != QMessageBox::Yes)
 	    return;
@@ -1491,7 +1511,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  mb.setWindowModality(Qt::WindowModal);
 	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
 	  mb.setText(tr("Invalid signature "
-			"public key signature. Continue?"));
+			"public key signature. Accept?"));
 
 	  if(mb.exec() != QMessageBox::Yes)
 	    return;
@@ -1540,6 +1560,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       if(!m_crypts.value("chat", 0) ||
 	 !m_crypts.value("email", 0) ||
+	 !m_crypts.value("rosetta", 0) ||
 	 !m_crypts.value("url", 0))
 	{
 	  QMessageBox::critical(this, tr("Spot-On: Error"),
@@ -1592,16 +1613,23 @@ void spoton::addFriendsKey(const QByteArray &key)
 
 	  if(!ok)
 	    {
-	      keyInformation = m_crypts.value("url")->
+	      keyInformation = m_crypts.value("rosetta")->
 		publicKeyDecrypt(list.value(0), &ok);
 
 	      if(!ok)
 		{
-		  QMessageBox::critical
-		    (this, tr("Spot-On: Error"),
-		     tr("Asymmetric decryption failure. Are you attempting "
-			"to add a repleo that you gathered?"));
-		  return;
+		  keyInformation = m_crypts.value("url")->
+		    publicKeyDecrypt(list.value(0), &ok);
+
+		  if(!ok)
+		    {
+		      QMessageBox::critical
+			(this, tr("Spot-On: Error"),
+			 tr("Asymmetric decryption failure. "
+			    "Are you attempting "
+			    "to add a repleo that you gathered?"));
+		      return;
+		    }
 		}
 	    }
 	}
@@ -1673,15 +1701,17 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       if(!(list.value(0) == "chat" ||
 	   list.value(0) == "email" ||
+	   list.value(0) == "rosetta" ||
 	   list.value(0) == "url"))
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("Invalid key type. Expecting 'chat', 'email', or 'url'."));
+	     tr("Invalid key type. Expecting 'chat', 'email', 'rosetta', "
+		"or 'url'."));
 	  return;
 	}
 
-      for(int i = 1; i <= 3; i++)
+      for(int i = 1; i <= 4; i++)
 	{
 	  QByteArray myPublicKey;
 	  QByteArray mySPublicKey;
@@ -1701,6 +1731,14 @@ void spoton::addFriendsKey(const QByteArray &key)
 
 	      if(ok)
 		mySPublicKey = m_crypts.value("email-signature")->
+		  publicKey(&ok);
+	    }
+	  else if(i == 3)
+	    {
+	      myPublicKey = m_crypts.value("rosetta")->publicKey(&ok);
+
+	      if(ok)
+		mySPublicKey = m_crypts.value("rosetta-signature")->
 		  publicKey(&ok);
 	    }
 	  else if(i ==3)
@@ -2322,6 +2360,42 @@ QByteArray spoton::copyMyEmailPublicKey(void) const
 
   if(ok)
     return "K" + QByteArray("email").toBase64() + "@" +
+      name.toBase64() + "@" +
+      mPublicKey.toBase64() + "@" + mSignature.toBase64() + "@" +
+      sPublicKey.toBase64() + "@" + sSignature.toBase64();
+  else
+    return QByteArray();
+}
+
+QByteArray spoton::copyMyRosettaPublicKey(void) const
+{
+  if(!m_crypts.value("rosetta", 0) ||
+     !m_crypts.value("rosetta-signature", 0))
+    return QByteArray();
+
+  QByteArray name;
+  QByteArray mPublicKey;
+  QByteArray mSignature;
+  QByteArray sPublicKey;
+  QByteArray sSignature;
+  bool ok = true;
+
+  name = m_settings.value("gui/rosettaName", "unknown").toByteArray().
+    trimmed();
+  mPublicKey = m_crypts.value("rosetta")->publicKey(&ok);
+
+  if(ok)
+    mSignature = m_crypts.value("rosetta")->digitalSignature(mPublicKey, &ok);
+
+  if(ok)
+    sPublicKey = m_crypts.value("rosetta-signature")->publicKey(&ok);
+
+  if(ok)
+    sSignature = m_crypts.value("rosetta-signature")->
+      digitalSignature(sPublicKey, &ok);
+
+  if(ok)
+    return "K" + QByteArray("rosetta").toBase64() + "@" +
       name.toBase64() + "@" +
       mPublicKey.toBase64() + "@" + mSignature.toBase64() + "@" +
       sPublicKey.toBase64() + "@" + sSignature.toBase64();

@@ -42,6 +42,7 @@ spoton_rosetta::spoton_rosetta(void):QMainWindow()
   m_eCrypt = 0;
   m_sCrypt = 0;
   ui.setupUi(this);
+  ui.name->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
   setAttribute(Qt::WA_MacMetalStyle, true);
@@ -150,6 +151,7 @@ void spoton_rosetta::show(QWidget *parent)
 		       toByteArray()).trimmed());
   QMainWindow::show();
   raise();
+  populateContacts();
 }
 
 void spoton_rosetta::keyPressEvent(QKeyEvent *event)
@@ -344,20 +346,46 @@ void spoton_rosetta::slotAddContact(void)
 
   if(!ok)
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Unable to retrieve your %1 "
-			       "public key.").arg(keyType.constData()));
-      return;
+      QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+      mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+      mb.setIcon(QMessageBox::Question);
+      mb.setWindowTitle(tr("Spot-On: Confirmation"));
+      mb.setWindowModality(Qt::WindowModal);
+      mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+      mb.setText(tr("Unable to retrieve your %1 "
+		    "public key for comparison. Continue?").
+		 arg(keyType.constData()));
+
+      if(mb.exec() != QMessageBox::Yes)
+	return;
     }
 
   mySPublicKey = m_sCrypt->publicKey(&ok);
 
   if(!ok)
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Unable to retrieve your %1 signature "
-			       "public key.").arg(keyType.constData()));
-      return;
+      QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+      mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+      mb.setIcon(QMessageBox::Question);
+      mb.setWindowTitle(tr("Spot-On: Confirmation"));
+      mb.setWindowModality(Qt::WindowModal);
+      mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+      mb.setText(tr("Unable to retrieve your %1 signature "
+		    "public key for comparison. Continue?").
+		 arg(keyType.constData()));
+
+      if(mb.exec() != QMessageBox::Yes)
+	return;
     }
 
   if(mPublicKey == myPublicKey || mSignature == mySPublicKey)
@@ -407,8 +435,7 @@ void spoton_rosetta::slotAddContact(void)
       {
 	QByteArray name(list.value(1));
 
-	name = QByteArray::fromBase64(name).
-	  mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed();
+	name = QByteArray::fromBase64(name);
 
 	if(spoton_misc::saveFriendshipBundle(keyType,
 					     name,

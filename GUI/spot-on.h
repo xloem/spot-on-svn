@@ -155,6 +155,7 @@ class spoton: public QMainWindow
   spoton_rosetta m_rosetta;
   QByteArray copyMyChatPublicKey(void) const;
   QByteArray copyMyEmailPublicKey(void) const;
+  QByteArray copyMyRosettaPublicKey(void) const;
   QByteArray copyMyUrlPublicKey(void) const;
   QPixmap pixmapForCountry(const QString &country) const;
 #ifdef Q_OS_MAC
@@ -271,6 +272,7 @@ class spoton: public QMainWindow
   void slotEmptyTrash(void);
   void slotEnableRetrieveMail(void);
   void slotEnabledPostOffice(bool state);
+  void slotExportPublicKeys(void);
   void slotExternalIp(int index);
   void slotFavoritesActivated(int index);
   void slotFetchMoreAlgo(void);
@@ -292,6 +294,7 @@ class spoton: public QMainWindow
   void slotKernelStatus(void);
   void slotHideOfflineParticipants(bool state);
   void slotImpersonate(bool state);
+  void slotImportPublicKeys(void);
   void slotJoinBuzzChannel(void);
   void slotListenerCheckChange(bool state);
   void slotListenerFullEcho(void);

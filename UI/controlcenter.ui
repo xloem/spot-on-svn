@@ -397,7 +397,7 @@
                    <item>
                     <widget class="QCheckBox" name="acceptChatKeys">
                      <property name="text">
-                      <string>Accept shared &amp;keys.</string>
+                      <string>Accept shared public &amp;keys.</string>
                      </property>
                      <property name="checked">
                       <bool>true</bool>
@@ -937,7 +937,7 @@
           <item>
            <widget class="QCheckBox" name="acceptEmailKeys">
             <property name="text">
-             <string>Accept shared &amp;keys.</string>
+             <string>Accept shared public &amp;keys.</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -2137,6 +2137,9 @@
                      </item>
                      <item row="2" column="1">
                       <widget class="QCheckBox" name="ota">
+                       <property name="toolTip">
+                        <string>If checked, the account will be removed after a client sucessfully authenticates itself.</string>
+                       </property>
                        <property name="text">
                         <string>&amp;One Time Account</string>
                        </property>
@@ -2289,7 +2292,7 @@
           <item>
            <widget class="QPushButton" name="toolButtonCopyToClipboard">
             <property name="toolTip">
-             <string>Copy my name and the specified public key to the clipboard buffer.</string>
+             <string>Copy your public keys to the clipboard buffer.</string>
             </property>
             <property name="text">
              <string>Copy Public Keys</string>
@@ -5244,7 +5247,7 @@
           <item>
            <widget class="QCheckBox" name="acceptUrlKeys">
             <property name="text">
-             <string>Accept &amp;keys.</string>
+             <string>Accept public &amp;keys.</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -5948,6 +5951,9 @@
     <property name="title">
      <string>&amp;Tools</string>
     </property>
+    <addaction name="action_Export_Public_Keys"/>
+    <addaction name="action_Import_Public_Keys"/>
+    <addaction name="separator"/>
     <addaction name="action_Rosetta"/>
    </widget>
    <widget class="QMenu" name="menu_Edit">
@@ -6045,6 +6051,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="action_Export_Public_Keys">
+   <property name="text">
+    <string>&amp;Export Public Keys</string>
+   </property>
+  </action>
+  <action name="action_Import_Public_Keys">
+   <property name="text">
+    <string>&amp;Import Public Keys</string>
    </property>
   </action>
  </widget>

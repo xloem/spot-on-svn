@@ -534,6 +534,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotChangeTabPosition(void)));
+  connect(m_ui.action_Export_Public_Keys,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotExportPublicKeys(void)));
+  connect(m_ui.action_Import_Public_Keys,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotImportPublicKeys(void)));
   connect(m_ui.newKeys,
 	  SIGNAL(toggled(bool)),
 	  m_ui.keySize,
@@ -1029,6 +1037,10 @@ spoton::spoton(void):QMainWindow()
   m_ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
 		       toByteArray()).trimmed());
+  m_ui.urlNodeName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
+  m_ui.urlNodeName->setText
+    (QString::fromUtf8(m_settings.value("gui/urlName", "unknown").
+		       toByteArray()).trimmed());
   m_ui.receiveNova->setMaxLength
     (spoton_crypt::cipherKeyLength("aes256"));
   m_ui.sslControlString->setText
@@ -1204,6 +1216,8 @@ spoton::spoton(void):QMainWindow()
   if(spoton_crypt::passphraseSet())
     {
       m_sb.frame->setEnabled(false);
+      m_ui.action_Export_Public_Keys->setEnabled(false);
+      m_ui.action_Import_Public_Keys->setEnabled(false);
       m_ui.action_Rosetta->setEnabled(false);
       m_ui.encryptionKeyType->setEnabled(false);
       m_ui.passphrase1->setText("0000000000");
@@ -1229,6 +1243,8 @@ spoton::spoton(void):QMainWindow()
   else
     {
       m_sb.frame->setEnabled(false);
+      m_ui.action_Export_Public_Keys->setEnabled(false);
+      m_ui.action_Import_Public_Keys->setEnabled(false);
       m_ui.action_Rosetta->setEnabled(false);
       m_ui.encryptionKeyType->setEnabled(false);
       m_ui.keys->setEnabled(false);
@@ -4171,6 +4187,8 @@ void spoton::slotSetPassphrase(void)
 	}
 
       m_sb.frame->setEnabled(true);
+      m_ui.action_Export_Public_Keys->setEnabled(true);
+      m_ui.action_Import_Public_Keys->setEnabled(true);
       m_ui.action_Rosetta->setEnabled(true);
       m_ui.encryptionKeyType->setEnabled(false);
       m_ui.kernelBox->setEnabled(true);
@@ -4334,6 +4352,8 @@ void spoton::slotValidatePassphrase(void)
 	    sendBuzzKeysToKernel();
 	    sendKeysToKernel();
 	    m_sb.frame->setEnabled(true);
+	    m_ui.action_Export_Public_Keys->setEnabled(true);
+	    m_ui.action_Import_Public_Keys->setEnabled(true);
 	    m_ui.action_Rosetta->setEnabled(true);
 	    m_ui.encryptionKeyType->setEnabled(false);
 	    m_ui.kernelBox->setEnabled(true);
@@ -6026,6 +6046,7 @@ void spoton::slotCopyAllMyPublicKeys(void)
   if(clipboard)
     clipboard->setText(copyMyChatPublicKey() + "@" +
 		       copyMyEmailPublicKey() + "@" +
+		       copyMyRosettaPublicKey() + "@" +
 		       copyMyUrlPublicKey());
 }
 
