@@ -5024,13 +5024,6 @@ QString spoton_neighbor::transport(void) const
   return m_transport;
 }
 
-void spoton_neighbor::deleteLater(void)
-{
-  abort();
-  quit();
-  QThread::deleteLater();
-}
-
 void spoton_neighbor::slotAuthenticationTimerTimeout(void)
 {
   spoton_misc::logError

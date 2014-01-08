@@ -5158,8 +5158,7 @@ void spoton::slotPopulateParticipants(void)
 
 	while(!list.isEmpty())
 	  {
-	    QModelIndex index(list.takeFirst());
-	    QVariant data(index.data());
+	    QVariant data(list.takeFirst().data());
 
 	    /*
 	    ** Do not select participants that are offline if
@@ -5167,18 +5166,7 @@ void spoton::slotPopulateParticipants(void)
 	    */
 
 	    if(!data.isNull() && data.isValid())
-	      {
-		if(m_ui.hideOfflineParticipants->isChecked())
-		  {
-		    QTableWidgetItem *item = m_ui.participants->
-		      item(index.row(), 4); // Status
-
-		    if(item && item->text() != tr("Offline"))
-		      hashes.append(data.toString());
-		  }
-		else
-		  hashes.append(data.toString());
-	      }
+	      hashes.append(data.toString());
 	  }
 
 	while(!listE.isEmpty())
