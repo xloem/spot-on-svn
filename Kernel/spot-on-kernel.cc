@@ -349,6 +349,8 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 #else
 	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
 #endif
+	qDebug();
+	qDebug() << "Validating... Please remain calm.";
 
 	if(!initializeSecurityContainers(input))
 	  {
