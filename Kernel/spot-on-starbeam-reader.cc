@@ -186,6 +186,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 		 "to delete starbeam reader %1.").
 	 arg(m_id));
       deleteLater();
+      return;
     }
 
   m_timer.start(qrand() % 500 + 1000);

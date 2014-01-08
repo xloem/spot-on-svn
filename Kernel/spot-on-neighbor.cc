@@ -872,7 +872,10 @@ void spoton_neighbor::slotTimeout(void)
 		  timeout = 5000;
 
 		if(!m_tcpSocket->waitForConnected(timeout))
-		  deleteLater();
+		  {
+		    deleteLater();
+		    return;
+		  }
 	      }
 	  }
 	else if(m_udpSocket)
@@ -888,7 +891,10 @@ void spoton_neighbor::slotTimeout(void)
 		  timeout = 5000;
 
 		if(!m_udpSocket->waitForConnected(timeout))
-		  deleteLater();
+		  {
+		    deleteLater();
+		    return;
+		  }
 	      }
 	  }
       }
@@ -4339,6 +4345,7 @@ void spoton_neighbor::slotModeChanged(QSslSocket::SslMode mode)
 	     arg(m_address.toString()).
 	     arg(m_port));
 	  deleteLater();
+	  return;
 	}
 
       if(m_useAccounts)
@@ -4921,11 +4928,15 @@ qint64 spoton_neighbor::write(const char *data, const qint64 size)
 
 	  if(sent == -1)
 	    if(m_udpSocket->error() == QAbstractSocket::UnknownSocketError)
-	      /*
-	      ** If the end-point is absent, QIODevice::write() may return -1.
-	      */
+	      {
+		/*
+		** If the end-point is absent, QIODevice::write() may
+		** return -1.
+		*/
 
-	      deleteLater();
+		deleteLater();
+		break;
+	      }
 	}
       else
 	sent = 0;

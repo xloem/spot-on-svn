@@ -1032,7 +1032,7 @@ void spoton_kernel::prepareNeighbors(void)
 	disconnected += 1;
     }
 
-  if(disconnected == m_neighbors.size())
+  if(disconnected == m_neighbors.size() || m_neighbors.isEmpty())
     {
       s_messagingCacheMutex.lockForWrite();
       s_messagingCache.clear();
