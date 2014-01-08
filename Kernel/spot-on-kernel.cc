@@ -358,10 +358,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	    deleteLater();
 	  }
 	else
-	  {
-	    qDebug();
-	    qDebug() << "Passphrase accepted.";
-	  }
+	  qDebug() << "Passphrase accepted.";
 
 	break;
       }
