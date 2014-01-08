@@ -2225,6 +2225,27 @@ void spoton::slotRegenerateKey(void)
 
   if(error.isEmpty())
     {
+      if(m_ui.encryptionKeyType->currentIndex() == 0)
+	m_settings["gui/encryptionKey"] = "elg";
+      else
+	m_settings["gui/encryptionKey"] = "rsa";
+
+      m_settings["gui/keySize"] = m_ui.keySize->currentText().toInt();
+
+      if(m_ui.signatureKeyType->currentIndex() == 0)
+	m_settings["gui/signatureKey"] = "dsa";
+      else if(m_ui.signatureKeyType->currentIndex() == 1)
+	m_settings["gui/signatureKey"] = "elg";
+      else
+	m_settings["gui/signatureKey"] = "rsa";
+
+      QSettings settings;
+
+      settings.setValue("gui/encryptionKey", m_settings["gui/encryptionKey"]);
+      settings.setValue("gui/keySize", m_settings["gui/keySize"]);
+      settings.setValue
+	("gui/signatureKey", m_settings["gui/signatureKey"]);
+
       if(m_ui.keys->currentText() == tr("Rosetta"))
 	m_rosetta.setCryptObjects(m_crypts.value("rosetta", 0),
 				  m_crypts.value("rosetta-signature", 0));

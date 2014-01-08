@@ -2357,6 +2357,14 @@ void spoton::slotCopyMyEmailPublicKey(void)
     clipboard->setText(copyMyEmailPublicKey());
 }
 
+void spoton::slotCopyMyRosettaPublicKey(void)
+{
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(clipboard)
+    clipboard->setText(copyMyRosettaPublicKey());
+}
+
 QByteArray spoton::copyMyEmailPublicKey(void) const
 {
   if(!m_crypts.value("email", 0) ||

@@ -849,6 +849,9 @@ spoton::spoton(void):QMainWindow()
     (menu->addAction(tr("Copy &E-Mail Public Keys")),
      SIGNAL(triggered(void)), this, SLOT(slotCopyMyEmailPublicKey(void)));
   connect
+    (menu->addAction(tr("Copy &Rosetta Public Keys")),
+     SIGNAL(triggered(void)), this, SLOT(slotCopyMyRosettaPublicKey(void)));
+  connect
     (menu->addAction(tr("Copy &URL Public Keys")),
      SIGNAL(triggered(void)), this, SLOT(slotCopyMyURLPublicKey(void)));
   menu->addSeparator();
