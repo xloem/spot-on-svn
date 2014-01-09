@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>993</width>
-    <height>677</height>
+    <width>978</width>
+    <height>656</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -373,8 +373,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>959</width>
-                <height>553</height>
+                <width>942</width>
+                <height>544</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2070,8 +2070,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>275</width>
-                 <height>553</height>
+                 <width>273</width>
+                 <height>544</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3435,8 +3435,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>951</width>
-             <height>753</height>
+             <width>937</width>
+             <height>789</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4386,8 +4386,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>969</width>
-             <height>563</height>
+             <width>952</width>
+             <height>554</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5915,8 +5915,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>993</width>
-     <height>24</height>
+     <width>978</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -5954,6 +5954,9 @@
     <property name="title">
      <string>&amp;Tools</string>
     </property>
+    <addaction name="action_Export_Listeners"/>
+    <addaction name="action_Import_Listeners"/>
+    <addaction name="separator"/>
     <addaction name="action_Export_Public_Keys"/>
     <addaction name="action_Import_Public_Keys"/>
     <addaction name="separator"/>
@@ -6064,6 +6067,16 @@
   <action name="action_Import_Public_Keys">
    <property name="text">
     <string>&amp;Import Public Keys</string>
+   </property>
+  </action>
+  <action name="action_Export_Listeners">
+   <property name="text">
+    <string>&amp;Export Listeners</string>
+   </property>
+  </action>
+  <action name="action_Import_Listeners">
+   <property name="text">
+    <string>&amp;Import Listeners</string>
    </property>
   </action>
  </widget>
