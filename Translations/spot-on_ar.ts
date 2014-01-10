@@ -2380,43 +2380,53 @@ Orientation: %23
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5964"/>
+        <location filename="../UI/controlcenter.ui" line="5967"/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6040"/>
+        <location filename="../UI/controlcenter.ui" line="6043"/>
         <source>&amp;Rosetta</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6045"/>
+        <location filename="../UI/controlcenter.ui" line="6048"/>
         <source>&amp;Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6048"/>
+        <location filename="../UI/controlcenter.ui" line="6051"/>
         <source>Ctrl+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6053"/>
+        <location filename="../UI/controlcenter.ui" line="6056"/>
         <source>&amp;Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6056"/>
+        <location filename="../UI/controlcenter.ui" line="6059"/>
         <source>Ctrl+V</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6061"/>
+        <location filename="../UI/controlcenter.ui" line="6064"/>
         <source>&amp;Export Public Keys</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6066"/>
+        <location filename="../UI/controlcenter.ui" line="6069"/>
         <source>&amp;Import Public Keys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/controlcenter.ui" line="6074"/>
+        <source>&amp;Export Listeners</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/controlcenter.ui" line="6079"/>
+        <source>&amp;Import Listeners</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2739,17 +2749,17 @@ Orientation: %23
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6016"/>
+        <location filename="../UI/controlcenter.ui" line="6019"/>
         <source>&amp;East</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6027"/>
+        <location filename="../UI/controlcenter.ui" line="6030"/>
         <source>&amp;North</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6035"/>
+        <location filename="../UI/controlcenter.ui" line="6038"/>
         <source>&amp;West</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2881,27 +2891,27 @@ Orientation: %23
         <translation type="unfinished">عبارة المرور تأكيد</translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5987"/>
+        <location filename="../UI/controlcenter.ui" line="5990"/>
         <source>Nuvola</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5995"/>
+        <location filename="../UI/controlcenter.ui" line="5998"/>
         <source>Nouve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6003"/>
+        <location filename="../UI/controlcenter.ui" line="6006"/>
         <source>Ctrl+L</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6008"/>
+        <location filename="../UI/controlcenter.ui" line="6011"/>
         <source>&amp;Reset Spot-On</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="6000"/>
+        <location filename="../UI/controlcenter.ui" line="6003"/>
         <source>&amp;Log Viewer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3398,12 +3408,12 @@ Orientation: %23
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5976"/>
+        <location filename="../UI/controlcenter.ui" line="5979"/>
         <source>&amp;Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="5979"/>
+        <location filename="../UI/controlcenter.ui" line="5982"/>
         <source>Ctrl+Q</source>
         <translation type="unfinished"></translation>
     </message>

@@ -3736,49 +3736,76 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 	if(status.isEmpty())
 	  {
 	    query.prepare("PRAGMA synchronous = OFF");
-	    query.prepare("UPDATE friends_public_keys SET "
-			  "name = ?, "
-			  "last_status_update = ? "
-			  "WHERE neighbor_oid = -1 AND "
-			  "public_key_hash = ?");
 
 	    if(name.isEmpty())
-	      query.bindValue(0, "unknown");
+	      {
+		query.prepare("UPDATE friends_public_keys SET "
+			      "last_status_update = ? "
+			      "WHERE neighbor_oid = -1 AND "
+			      "public_key_hash = ?");
+		query.bindValue
+		  (0, QDateTime::currentDateTime().toString(Qt::ISODate));
+		query.bindValue(1, publicKeyHash.toBase64());
+	      }
 	    else
-	      query.bindValue
-		(0,
-		 name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
-
-	    query.bindValue
-	      (1, QDateTime::currentDateTime().toString(Qt::ISODate));
-	    query.bindValue(2, publicKeyHash.toBase64());
+	      {
+		query.prepare("UPDATE friends_public_keys SET "
+			      "name = ?, "
+			      "last_status_update = ? "
+			      "WHERE neighbor_oid = -1 AND "
+			      "public_key_hash = ?");
+		query.bindValue
+		  (0,
+		   name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
+		query.bindValue
+		  (1, QDateTime::currentDateTime().toString(Qt::ISODate));
+		query.bindValue(2, publicKeyHash.toBase64());
+	      }
 	  }
 	else
 	  {
 	    query.prepare("PRAGMA synchronous = OFF");
-	    query.prepare("UPDATE friends_public_keys SET "
-			  "name = ?, "
-			  "status = ?, "
-			  "last_status_update = ? "
-			  "WHERE neighbor_oid = -1 AND "
-			  "public_key_hash = ?");
 
 	    if(name.isEmpty())
-	      query.bindValue(0, "unknown");
-	    else
-	      query.bindValue
-		(0,
-		 name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
+	      {
+		query.prepare("UPDATE friends_public_keys SET "
+			      "status = ?, "
+			      "last_status_update = ? "
+			      "WHERE neighbor_oid = -1 AND "
+			      "public_key_hash = ?");
 
-	    if(status == "away" || status == "busy" ||
-	       status == "offline" || status == "online")
-	      query.bindValue(1, status);
-	    else
-	      query.bindValue(1, "offline");
+		if(status == "away" || status == "busy" ||
+		   status == "offline" || status == "online")
+		  query.bindValue(0, status);
+		else
+		  query.bindValue(0, "offline");
 
-	    query.bindValue
-	      (2, QDateTime::currentDateTime().toString(Qt::ISODate));
-	    query.bindValue(3, publicKeyHash.toBase64());
+		query.bindValue
+		  (1, QDateTime::currentDateTime().toString(Qt::ISODate));
+		query.bindValue(2, publicKeyHash.toBase64());
+	      }
+	    else
+	      {
+		query.prepare("UPDATE friends_public_keys SET "
+			      "name = ?, "
+			      "status = ?, "
+			      "last_status_update = ? "
+			      "WHERE neighbor_oid = -1 AND "
+			      "public_key_hash = ?");
+		query.bindValue
+		  (0,
+		   name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
+
+		if(status == "away" || status == "busy" ||
+		   status == "offline" || status == "online")
+		  query.bindValue(1, status);
+		else
+		  query.bindValue(1, "offline");
+
+		query.bindValue
+		  (2, QDateTime::currentDateTime().toString(Qt::ISODate));
+		query.bindValue(3, publicKeyHash.toBase64());
+	      }
 	  }
 
 	query.exec();
