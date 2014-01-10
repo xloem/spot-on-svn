@@ -1983,7 +1983,7 @@ void spoton::slotComputeFileHash(void)
 }
 
 void spoton::slotCopyFileHash(void)
-{  
+{
   QClipboard *clipboard = QApplication::clipboard();
 
   if(!clipboard)
