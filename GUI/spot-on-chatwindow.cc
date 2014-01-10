@@ -121,7 +121,6 @@ void spoton_chatwindow::slotSendMessage(void)
   QByteArray message;
   QByteArray name;
   QDateTime now(QDateTime::currentDateTime());
-  QSettings settings;
   QString error("");
 
   if(m_kernelSocket->state() != QAbstractSocket::ConnectedState)
@@ -140,7 +139,8 @@ void spoton_chatwindow::slotSendMessage(void)
       goto done_label;
     }
 
-  name = settings.value("gui/nodeName", "unknown").toByteArray().trimmed();
+  name = spoton::s_gui->m_settings.
+    value("gui/nodeName", "unknown").toByteArray().trimmed();
   message.append
     (QString("[%1:%2<font color=grey>:%3</font>] ").
      arg(now.toString("hh")).
