@@ -1720,17 +1720,17 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-chatwindow.cc" line="129"/>
+        <location filename="../GUI/spot-on-chatwindow.cc" line="128"/>
         <source>Not connected to the kernel.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-chatwindow.cc" line="134"/>
+        <location filename="../GUI/spot-on-chatwindow.cc" line="133"/>
         <source>The connection to the kernel is not encrypted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-chatwindow.cc" line="139"/>
+        <location filename="../GUI/spot-on-chatwindow.cc" line="138"/>
         <source>Please provide a real message.</source>
         <translation type="unfinished"></translation>
     </message>
