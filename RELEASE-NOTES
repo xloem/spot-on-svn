@@ -71,6 +71,8 @@
      fails.
 37.  Removed duplicate 'if(country == "Algeria")' in
      spoton::pixmapForCountry().
+38.  Congestion control is now mandatory. Removed congestion control
+     mechanisms from the UI.
 
 0.08 (12/23/2013)
 
