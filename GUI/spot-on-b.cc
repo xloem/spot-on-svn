@@ -323,7 +323,12 @@ void spoton::slotReceivedKernelMessage(void)
 			m_chatWindows.value(list.value(1).toBase64());
 
 		      if(chat)
-			chat->append(msg);
+			{
+			  chat->append(msg);
+
+			  if(chat->isVisible())
+			    chat->activateWindow();
+			}
 		    }
 
 		  m_ui.messages->append(msg);
