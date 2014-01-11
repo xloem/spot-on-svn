@@ -3375,11 +3375,14 @@ QByteArray spoton_crypt::sha1FileHash(const QString &fileName)
   QByteArray buffer(4096, 0);
   QCryptographicHash hash(QCryptographicHash::Sha1);
   QFile file(fileName);
-  qint64 rc = 0;
 
   if(file.open(QIODevice::ReadOnly))
-    while((rc = file.read(buffer.data(), buffer.length())) > 0)
-      hash.addData(buffer, rc);
+    {
+      qint64 rc = 0;
+
+      while((rc = file.read(buffer.data(), buffer.length())) > 0)
+	hash.addData(buffer, rc);
+    }
 
   file.close();
   return hash.result();

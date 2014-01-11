@@ -969,8 +969,6 @@ QPixmap spoton::pixmapForCountry(const QString &country) const
     return QPixmap(":/Flags/am.png");
   else if(country == "Aruba")
     return QPixmap(":/Flags/aw.png");
-  else if(country == "Algeria")
-    return QPixmap(":/Flags/dz.png");
   else if(country == "Australia")
     return QPixmap(":/Flags/au.png");
   else if(country == "Austria")
@@ -1767,7 +1765,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 		mySPublicKey = m_crypts.value("rosetta-signature")->
 		  publicKey(&ok);
 	    }
-	  else if(i ==3)
+	  else if(i == 4)
 	    {
 	      myPublicKey = m_crypts.value("url")->publicKey(&ok);
 
@@ -2667,7 +2665,6 @@ void spoton::slotRefreshMail(void)
 	m_ui.mailMessage->clear();
 
 	QSqlQuery query(db);
-	int row = 0;
 
 	query.setForwardOnly(true);
 
@@ -2678,82 +2675,86 @@ void spoton::slotRefreshMail(void)
 			      "OID FROM folders WHERE "
 			      "folder_index = %1").
 		      arg(m_ui.folder->currentIndex())))
-	  while(query.next())
-	    {
-	      QString goldbug("");
-	      bool ok = true;
+	  {
+	    int row = 0;
 
-	      goldbug = m_crypts.value("email")->
-		decrypted(QByteArray::
-			  fromBase64(query.
-				     value(4).
-				     toByteArray()),
-			  &ok).constData();
+	    while(query.next())
+	      {
+		QString goldbug("");
+		bool ok = true;
 
-	      if(goldbug.isEmpty())
-		goldbug = "0";
+		goldbug = m_crypts.value("email")->
+		  decrypted(QByteArray::
+			    fromBase64(query.
+				       value(4).
+				       toByteArray()),
+			    &ok).constData();
 
-	      for(int i = 0; i < query.record().count(); i++)
-		{
-		  QTableWidgetItem *item = 0;
+		if(goldbug.isEmpty())
+		  goldbug = "0";
 
-		  if(i == 0)
-		    {
-		      row += 1;
-		      m_ui.mail->setRowCount(row);
-		    }
+		for(int i = 0; i < query.record().count(); i++)
+		  {
+		    QTableWidgetItem *item = 0;
 
-		  if(i == 0 || i == 1 || i == 2 ||
-		     i == 3 || i == 5 || i == 6)
-		    {
-		      if(i == 1 || i == 2 || i == 3 || i == 5)
-			{
-			  if(goldbug == "0")
-			    {
-			      item = new QTableWidgetItem
-				(QString::
-				 fromUtf8(m_crypts.value("email")->
-					  decrypted(QByteArray::
-						    fromBase64(query.
-							       value(i).
-							       toByteArray()),
-						    &ok).constData()));
+		    if(i == 0)
+		      {
+			row += 1;
+			m_ui.mail->setRowCount(row);
+		      }
 
-			      if(!ok)
-				item->setText(tr("error"));
-			    }
-			  else
-			    item = new QTableWidgetItem("#####");
-			}
-		      else
-			{
-			  if(goldbug == "0")
-			    {
-			      item = new QTableWidgetItem
-				(m_crypts.value("email")->
-				 decrypted(QByteArray::
-					   fromBase64(query.
-						      value(i).
-						      toByteArray()),
-					   &ok).constData());
+		    if(i == 0 || i == 1 || i == 2 ||
+		       i == 3 || i == 5 || i == 6)
+		      {
+			if(i == 1 || i == 2 || i == 3 || i == 5)
+			  {
+			    if(goldbug == "0")
+			      {
+				item = new QTableWidgetItem
+				  (QString::
+				   fromUtf8(m_crypts.value("email")->
+					    decrypted(QByteArray::
+						      fromBase64(query.
+								 value(i).
+								 toByteArray()),
+						      &ok).constData()));
 
-			      if(!ok)
-				item->setText(tr("error"));
-			    }
-			  else
-			    item = new QTableWidgetItem("#####");
-			}
-		    }
-		  else if(i == 4)
-		    item = new QTableWidgetItem(goldbug);
-		  else
-		    item = new QTableWidgetItem(query.value(i).toString());
+				if(!ok)
+				  item->setText(tr("error"));
+			      }
+			    else
+			      item = new QTableWidgetItem("#####");
+			  }
+			else
+			  {
+			    if(goldbug == "0")
+			      {
+				item = new QTableWidgetItem
+				  (m_crypts.value("email")->
+				   decrypted(QByteArray::
+					     fromBase64(query.
+							value(i).
+							toByteArray()),
+					     &ok).constData());
 
-		  item->setFlags
-		    (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		  m_ui.mail->setItem(row - 1, i, item);
-		}
-	    }
+				if(!ok)
+				  item->setText(tr("error"));
+			      }
+			    else
+			      item = new QTableWidgetItem("#####");
+			  }
+		      }
+		    else if(i == 4)
+		      item = new QTableWidgetItem(goldbug);
+		    else
+		      item = new QTableWidgetItem(query.value(i).toString());
+
+		    item->setFlags
+		      (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		    m_ui.mail->setItem(row - 1, i, item);
+		  }
+	      }
+	  }
 
 	m_ui.mail->setSortingEnabled(true);
       }
@@ -2789,61 +2790,64 @@ void spoton::slotRefreshPostOffice(void)
 	m_ui.postoffice->setSortingEnabled(false);
 
 	QSqlQuery query(db);
-	int row = 0;
 
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT date_received, "
 		      "message_bundle, recipient_hash "
 		      "FROM post_office"))
-	  while(query.next())
-	    for(int i = 0; i < query.record().count(); i++)
-	      {
-		QTableWidgetItem *item = 0;
-		bool ok = true;
+	  {
+	    int row = 0;
 
-		if(i == 0)
-		  {
-		    row += 1;
-		    m_ui.postoffice->setRowCount(row);
-		  }
+	    while(query.next())
+	      for(int i = 0; i < query.record().count(); i++)
+		{
+		  QTableWidgetItem *item = 0;
+		  bool ok = true;
 
-		if(i == 0)
-		  {
-		    item = new QTableWidgetItem
-		      (m_crypts.value("email")->
-		       decrypted(QByteArray::
-				 fromBase64(query.
-					    value(i).
-					    toByteArray()),
-				 &ok).constData());
+		  if(i == 0)
+		    {
+		      row += 1;
+		      m_ui.postoffice->setRowCount(row);
+		    }
 
-		    if(!ok)
-		      item->setText(tr("error"));
-		  }
-		else if(i == 1)
-		  {
-		    QByteArray bytes
-		      (m_crypts.value("email")->
-		       decrypted(QByteArray::
-				 fromBase64(query.
-					    value(i).
-					    toByteArray()),
-				 &ok));
-
-		    if(ok)
+		  if(i == 0)
+		    {
 		      item = new QTableWidgetItem
-			(QString::number(bytes.length()));
-		    else
-		      item = new QTableWidgetItem(tr("error"));
-		  }
-		else
-		  item = new QTableWidgetItem(query.value(i).toString());
+			(m_crypts.value("email")->
+			 decrypted(QByteArray::
+				   fromBase64(query.
+					      value(i).
+					      toByteArray()),
+				   &ok).constData());
 
-		item->setFlags
-		  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		m_ui.postoffice->setItem(row - 1, i, item);
-	      }
+		      if(!ok)
+			item->setText(tr("error"));
+		    }
+		  else if(i == 1)
+		    {
+		      QByteArray bytes
+			(m_crypts.value("email")->
+			 decrypted(QByteArray::
+				   fromBase64(query.
+					      value(i).
+					      toByteArray()),
+				   &ok));
+
+		      if(ok)
+			item = new QTableWidgetItem
+			  (QString::number(bytes.length()));
+		      else
+			item = new QTableWidgetItem(tr("error"));
+		    }
+		  else
+		    item = new QTableWidgetItem(query.value(i).toString());
+
+		  item->setFlags
+		    (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		  m_ui.postoffice->setItem(row - 1, i, item);
+		}
+	  }
 
 	m_ui.postoffice->setSortingEnabled(true);
       }

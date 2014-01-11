@@ -62,79 +62,82 @@ void spoton_shared_reader::slotTimeout(void)
     if(db.open())
       {
 	QSqlQuery query(db);
-	int processed = 0;
 
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT description, encrypted, title, url "
 		      "FROM urls"))
-	  while(query.next())
-	    {
-	      processed += 1;
+	  {
+	    int processed = 0;
 
-	      if(processed > 100)
-		break;
+	    while(query.next())
+	      {
+		processed += 1;
 
-	      QByteArray description;
-	      QByteArray title;
-	      QByteArray url;
-	      bool encrypted = query.value(1).toBool();
-	      bool ok = true;
+		if(processed > 100)
+		  break;
 
-	      if(encrypted)
-		{
-		  spoton_crypt *s_crypt =
-		    spoton_kernel::s_crypts.value("url", 0);
+		QByteArray description;
+		QByteArray title;
+		QByteArray url;
+		bool encrypted = query.value(1).toBool();
+		bool ok = true;
 
-		  if(!s_crypt)
-		    continue;
+		if(encrypted)
+		  {
+		    spoton_crypt *s_crypt =
+		      spoton_kernel::s_crypts.value("url", 0);
 
-		  /*
-		  ** We need to determine the encryption key that was
-		  ** used to encrypt the URLs shared by another application.
-		  */
+		    if(!s_crypt)
+		      continue;
 
-		  spoton_crypt crypt
-		    ("aes256",
-		     QString(""),
-		     QByteArray(),
-		     QByteArray(),
-		     0,
-		     0,
-		     QString(""));
+		    /*
+		    ** We need to determine the encryption key that was
+		    ** used to encrypt the URLs shared by another application.
+		    */
 
-		  description = crypt.decrypted
-		    (query.value(0).toByteArray(), &ok);
+		    spoton_crypt crypt
+		      ("aes256",
+		       QString(""),
+		       QByteArray(),
+		       QByteArray(),
+		       0,
+		       0,
+		       QString(""));
 
-		  if(ok)
-		    title = crypt.decrypted
-		      (query.value(2).toByteArray(), &ok);
+		    description = crypt.decrypted
+		      (query.value(0).toByteArray(), &ok);
 
-		  if(ok)
-		    url = crypt.decrypted
-		      (query.value(3).toByteArray(), &ok);
-		}
-	      else
-		{
-		  description = query.value(0).toByteArray();
-		  title = query.value(2).toByteArray();
-		  url = query.value(3).toByteArray();
-		}
+		    if(ok)
+		      title = crypt.decrypted
+			(query.value(2).toByteArray(), &ok);
 
-	      if(ok)
-		{
-		  QList<QVariant> variants;
+		    if(ok)
+		      url = crypt.decrypted
+			(query.value(3).toByteArray(), &ok);
+		  }
+		else
+		  {
+		    description = query.value(0).toByteArray();
+		    title = query.value(2).toByteArray();
+		    url = query.value(3).toByteArray();
+		  }
 
-		  variants << description << title << url;
-		  list.append(variants);
-		}
+		if(ok)
+		  {
+		    QList<QVariant> variants;
 
-	      QSqlQuery deleteQuery(db);
+		    variants << description << title << url;
+		    list.append(variants);
+		  }
 
-	      deleteQuery.prepare("DELETE FROM urls WHERE url = ?");
-	      deleteQuery.bindValue(0, query.value(3));
-	      deleteQuery.exec();
-	    }
+		QSqlQuery deleteQuery(db);
+
+		deleteQuery.prepare("DELETE FROM urls WHERE url = ?");
+		deleteQuery.bindValue(0, query.value(3));
+		deleteQuery.exec();
+	      }
+	  }
       }
 
     db.close();

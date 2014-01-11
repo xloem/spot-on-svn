@@ -45,8 +45,8 @@ void spoton_external_address::discover(void)
   reply = get(request);
   connect(reply,
 	  SIGNAL(error(QNetworkReply::NetworkError)),
-	  reply,
-	  SLOT(deleteLater(void)));
+	  this,
+	  SLOT(slotError(QNetworkReply::NetworkError)));
   connect(reply,
 	  SIGNAL(finished(void)),
 	  this,
@@ -73,4 +73,14 @@ void spoton_external_address::slotFinished(void)
 QHostAddress spoton_external_address::address(void) const
 {
   return m_address;
+}
+
+void spoton_external_address::slotError(QNetworkReply::NetworkError error)
+{
+  Q_UNUSED(error);
+
+  QNetworkReply *reply = qobject_cast<QNetworkReply *> (sender());
+
+  if(reply)
+    reply->deleteLater();
 }

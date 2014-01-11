@@ -547,7 +547,7 @@ void spoton_rosetta::slotConvert(void)
       encryptionKeyLength = spoton_crypt::cipherKeyLength
 	(ui.cipher->currentText().toLatin1());
 
-      if(encryptionKeyLength <= 0)
+      if(encryptionKeyLength == 0)
 	{
 	  error = tr("The method spoton_crypt::cipherKeyLength() "
 		     "failed.");

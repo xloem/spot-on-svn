@@ -204,7 +204,6 @@ void spoton::slotPopulateEtpMagnets(void)
 	QSqlQuery query(db);
 	QStringList checked;
 	QWidget *focusWidget = QApplication::focusWidget();
-	int row = 0;
 
 	for(int i = 0; i < m_ui.addTransmittedMagnets->rowCount(); i++)
 	  {
@@ -225,52 +224,56 @@ void spoton::slotPopulateEtpMagnets(void)
 
 	if(query.exec("SELECT magnet, one_time_magnet, "
 		      "OID FROM magnets"))
-	  while(query.next())
-	    {
-	      QByteArray bytes;
-	      bool ok = true;
+	  {
+	    int row = 0;
 
-	      bytes = s_crypt->decrypted
-		(QByteArray::fromBase64(query.value(0).toByteArray()), &ok);
+	    while(query.next())
+	      {
+		QByteArray bytes;
+		bool ok = true;
 
-	      QCheckBox *checkBox = new QCheckBox();
-	      QTableWidgetItem *item = 0;
+		bytes = s_crypt->decrypted
+		  (QByteArray::fromBase64(query.value(0).toByteArray()), &ok);
 
-	      if(ok)
-		item = new QTableWidgetItem(bytes.constData());
-	      else
-		item = new QTableWidgetItem(tr("error"));
+		QCheckBox *checkBox = new QCheckBox();
+		QTableWidgetItem *item = 0;
 
-	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	      m_ui.etpMagnets->setRowCount(row + 1);
-	      m_ui.etpMagnets->setItem(row, 1, item);
-	      checkBox->setChecked(query.value(1).toInt());
-	      checkBox->setProperty
-		("oid", query.value(query.record().count() - 1));
-	      connect(checkBox,
-		      SIGNAL(toggled(bool)),
-		      this,
-		      SLOT(slotStarOTMCheckChange(bool)));
-	      m_ui.etpMagnets->setCellWidget(row, 0, checkBox);
-	      m_ui.addTransmittedMagnets->setRowCount(row + 1);
-	      checkBox = new QCheckBox();
+		if(ok)
+		  item = new QTableWidgetItem(bytes.constData());
+		else
+		  item = new QTableWidgetItem(tr("error"));
 
-	      if(ok)
-		checkBox->setText(bytes.replace("&", "&&").constData());
-	      else
-		checkBox->setText(tr("error"));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui.etpMagnets->setRowCount(row + 1);
+		m_ui.etpMagnets->setItem(row, 1, item);
+		checkBox->setChecked(query.value(1).toInt());
+		checkBox->setProperty
+		  ("oid", query.value(query.record().count() - 1));
+		connect(checkBox,
+			SIGNAL(toggled(bool)),
+			this,
+			SLOT(slotStarOTMCheckChange(bool)));
+		m_ui.etpMagnets->setCellWidget(row, 0, checkBox);
+		m_ui.addTransmittedMagnets->setRowCount(row + 1);
+		checkBox = new QCheckBox();
 
-	      if(checked.contains(checkBox->text()))
-		checkBox->setChecked(true);
+		if(ok)
+		  checkBox->setText(bytes.replace("&", "&&").constData());
+		else
+		  checkBox->setText(tr("error"));
 
-	      m_ui.addTransmittedMagnets->setCellWidget(row, 0, checkBox);
-	      item = new QTableWidgetItem
-		(query.value(query.record().count() - 1).toString());
-	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	      m_ui.etpMagnets->setItem(row, 2, item);
-	      m_ui.addTransmittedMagnets->setItem(row, 1, item->clone());
-	      row += 1;
-	    }
+		if(checked.contains(checkBox->text()))
+		  checkBox->setChecked(true);
+
+		m_ui.addTransmittedMagnets->setCellWidget(row, 0, checkBox);
+		item = new QTableWidgetItem
+		  (query.value(query.record().count() - 1).toString());
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui.etpMagnets->setItem(row, 2, item);
+		m_ui.addTransmittedMagnets->setItem(row, 1, item->clone());
+		row += 1;
+	      }
+	  }
 
 	m_ui.etpMagnets->setSortingEnabled(true);
 	m_ui.addTransmittedMagnets->setSortingEnabled(true);
@@ -660,38 +663,41 @@ void spoton::slotPopulateKernelStatistics(void)
 
 	QSqlQuery query(db);
 	QWidget *focusWidget = QApplication::focusWidget();
-	int row = 0;
 
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT statistic, value FROM kernel_statistics "
 		      "ORDER BY statistic"))
-	  while(query.next())
-	    {
-	      QTableWidgetItem *item = new QTableWidgetItem
-		(query.value(0).toString());
+	  {
+	    int row = 0;
 
-	      item->setFlags
-		(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-	      m_ui.kernelStatistics->setRowCount(row + 1);
-	      m_ui.kernelStatistics->setItem(row, 0, item);
-	      item = new QTableWidgetItem(query.value(1).toString());
-	      item->setFlags
-		(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-	      m_ui.kernelStatistics->setItem(row, 1, item);
+	    while(query.next())
+	      {
+		QTableWidgetItem *item = new QTableWidgetItem
+		  (query.value(0).toString());
 
-	      if(query.value(0).toString().toLower().contains("congestion"))
-		{
-		  if(query.value(1).toInt() <= 50)
-		    item->setBackground
-		      (QBrush(QColor("lightgreen")));
-		  else
-		    item->setBackground
-		      (QBrush(QColor(240, 128, 128)));
-		}
+		item->setFlags
+		  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		m_ui.kernelStatistics->setRowCount(row + 1);
+		m_ui.kernelStatistics->setItem(row, 0, item);
+		item = new QTableWidgetItem(query.value(1).toString());
+		item->setFlags
+		  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		m_ui.kernelStatistics->setItem(row, 1, item);
 
-	      row += 1;
-	    }
+		if(query.value(0).toString().toLower().contains("congestion"))
+		  {
+		    if(query.value(1).toInt() <= 50)
+		      item->setBackground
+			(QBrush(QColor("lightgreen")));
+		    else
+		      item->setBackground
+			(QBrush(QColor(240, 128, 128)));
+		  }
+
+		row += 1;
+	      }
+	  }
 
 	m_ui.kernelStatistics->setSortingEnabled(true);
 	m_ui.kernelStatistics->horizontalHeader()->

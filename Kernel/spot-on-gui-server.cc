@@ -97,10 +97,16 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
       emit newConnection();
     }
   else
-    spoton_misc::logError
-      (QString("spoton_gui_server_tcp_server::"
-	       "spoton_gui_server_tcp_server(): "
-	       "generateSslKeys() failure (%1).").arg(error.remove(".")));
+    {
+      QTcpSocket socket;
+
+      socket.setSocketDescriptor(socketDescriptor);
+      socket.abort();
+      spoton_misc::logError
+	(QString("spoton_gui_server_tcp_server::"
+		 "spoton_gui_server_tcp_server(): "
+		 "generateSslKeys() failure (%1).").arg(error.remove(".")));
+    }
 }
 
 spoton_gui_server::spoton_gui_server(QObject *parent):

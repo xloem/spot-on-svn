@@ -6445,7 +6445,6 @@ void spoton::slotPopulateBuzzFavorites(void)
 		  QByteArray hashKey;
 		  QByteArray hashType;
 		  QList<QByteArray> list(data.split('\n'));
-		  unsigned long iterationCount = 0;
 
 		  channelName = QByteArray::fromBase64(list.value(0)).
 		    trimmed();
@@ -6460,6 +6459,7 @@ void spoton::slotPopulateBuzzFavorites(void)
 		     !hashKey.isEmpty() && !hashType.isEmpty())
 		    {
 		      QByteArray label;
+		      unsigned long iterationCount = 0;
 
 		      channelSalt = QByteArray::fromBase64
 			(list.value(2)).trimmed();

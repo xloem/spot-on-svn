@@ -30,6 +30,7 @@
 
 #include <QHostAddress>
 #include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 class spoton_external_address: public QNetworkAccessManager
 {
@@ -44,6 +45,7 @@ class spoton_external_address: public QNetworkAccessManager
   QHostAddress m_address;
 
  private slots:
+  void slotError(QNetworkReply::NetworkError error);
   void slotFinished(void);
 
  signals:
