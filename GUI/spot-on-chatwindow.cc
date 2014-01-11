@@ -216,13 +216,3 @@ void spoton_chatwindow::slotSetStatus(const QIcon &icon,
 	ui.name->setText(name);
     }
 }
-
-void spoton_chatwindow::activateWindow(void)
-{
-  QWidget *widget = QApplication::activeWindow();
-
-  QMainWindow::activateWindow();
-
-  if(widget)
-    widget->raise();
-}

@@ -2572,16 +2572,6 @@ void spoton::slotCopyEmailKeys(void)
     clipboard->clear();
 }
 
-void spoton::activateWindow(void)
-{
-  QWidget *widget = QApplication::activeWindow();
-
-  QMainWindow::activateWindow();
-
-  if(widget)
-    widget->raise();
-}
-
 void spoton::slotImpersonate(bool state)
 {
   m_settings["gui/impersonate"] = state;
