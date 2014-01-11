@@ -73,6 +73,7 @@
      spoton::pixmapForCountry().
 38.  Congestion control is now mandatory. Removed congestion control
      mechanisms from the UI.
+39.  Removed most activateWindow() references.
 
 0.08 (12/23/2013)
 
