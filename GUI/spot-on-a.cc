@@ -582,14 +582,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotReply(void)));
-  connect(m_ui.congestionControl,
-	  SIGNAL(toggled(bool)),
-	  this,
-	  SLOT(slotCongestionControl(bool)));
-  connect(m_ui.congestionControl,
-	  SIGNAL(toggled(bool)),
-	  m_ui.cost,
-	  SLOT(setEnabled(bool)));
   connect(m_ui.sslListener,
 	  SIGNAL(toggled(bool)),
 	  m_ui.listenerKeySize,
@@ -774,10 +766,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotGeneralTimerTimeout(void)));
-  connect(&m_messagingCachePurgeTimer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotMessagingCachePurge(void)));
   connect(&m_tableTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -862,7 +850,6 @@ spoton::spoton(void):QMainWindow()
   menu = new QMenu(this);
   m_ui.shareBuzzMagnet->setMenu(menu);
   m_generalTimer.start(2500);
-  m_messagingCachePurgeTimer.start(30000);
   m_chatInactivityTimer.start(120000);
   m_tableTimer.setInterval(2500);
   m_emailRetrievalTimer.setInterval
@@ -883,6 +870,7 @@ spoton::spoton(void):QMainWindow()
   QSettings settings;
 
   settings.remove("gui/acceptedIPs");
+  settings.remove("gui/enableCongestionControl");
 
   if(settings.contains("gui/rsaKeySize"))
     {
@@ -1099,9 +1087,6 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/acceptEmailKeys", true).toBool());
   m_ui.acceptUrlKeys->setChecked
     (m_settings.value("gui/acceptUrlKeys", true).toBool());
-  m_ui.congestionControl->setChecked
-    (m_settings.value("gui/enableCongestionControl", true).toBool());
-  m_ui.cost->setEnabled(m_ui.congestionControl->isChecked());
   m_ui.hideOfflineParticipants->setChecked
     (m_settings.value("gui/hideOfflineParticipants", false).toBool());
   m_ui.keepOnlyUserDefinedNeighbors->setChecked
@@ -1480,13 +1465,6 @@ spoton::~spoton()
 void spoton::slotQuit(void)
 {
   saveSettings();
-  m_purgeMutex.lock();
-  m_purge = false;
-  m_purgeMutex.unlock();
-  m_messagingCacheMutex.lock();
-  m_messagingCache.clear();
-  m_messagingCacheMutex.unlock();
-  m_future.waitForFinished();
 
   QHashIterator<QString, spoton_crypt *> it(m_crypts);
 
@@ -3281,9 +3259,6 @@ void spoton::slotPopulateNeighbors(void)
     }
   else
     {
-      m_messagingCacheMutex.lock();
-      m_messagingCache.clear();
-      m_messagingCacheMutex.unlock();
       m_sb.neighbors->setIcon
 	(QIcon(QString(":/%1/status-offline.png").
 	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
@@ -3339,9 +3314,6 @@ void spoton::slotDeactivateKernel(void)
 
   libspoton_close(&libspotonHandle);
   m_kernelSocket.close();
-  m_messagingCacheMutex.lock();
-  m_messagingCache.clear();
-  m_messagingCacheMutex.unlock();
 }
 
 void spoton::slotGeneralTimerTimeout(void)
@@ -4709,9 +4681,6 @@ void spoton::slotKernelSocketState(void)
     {
       m_booleans["buzz_channels_sent_to_kernel"] = false;
       m_booleans["keys_sent_to_kernel"] = false;
-      m_messagingCacheMutex.lock();
-      m_messagingCache.clear();
-      m_messagingCacheMutex.unlock();
       m_sb.kernelstatus->setIcon
 	(QIcon(QString(":/%1/deactivate.png").
 	       arg(m_settings.value("gui/iconSet", "nouve").toString())));

@@ -29,9 +29,6 @@
 #define _spoton_buzzpage_h_
 
 #include <QDateTime>
-#include <QFuture>
-#include <QHash>
-#include <QMutex>
 #include <QPointer>
 #include <QSslSocket>
 #include <QTimer>
@@ -63,8 +60,7 @@ class spoton_buzzpage: public QWidget
   QByteArray hashType(void) const;
   QByteArray key(void) const;
   void userStatus(const QList<QByteArray> &list);
-  void appendMessage(const QByteArray &hash,
-		     const QList<QByteArray> &list);
+  void appendMessage(const QList<QByteArray> &list);
 
  private:
   QByteArray m_channel;
@@ -74,25 +70,14 @@ class spoton_buzzpage: public QWidget
   QByteArray m_hashType;
   QByteArray m_id;
   QByteArray m_key; // Not stored in secure memory.
-  QFuture<void> m_future;
-  QHash<QByteArray, QDateTime> m_messagingCache; /*
-						 ** Prevent duplicate
-						 ** echoed messages.
-						 */
-  QMutex m_messagingCacheMutex;
-  QMutex m_purgeMutex;
   QPointer<QSslSocket> m_kernelSocket;
-  QTimer m_messagingCachePurgeTimer;
   QTimer m_statusTimer;
   Ui_buzzPage ui;
-  bool m_purge;
   spoton_crypt *m_crypt;
   unsigned long m_iterationCount;
-  void purgeMessagingCache(void);
 
  private slots:
   void slotBuzzNameChanged(const QByteArray &name);
-  void slotMessagingCachePurge(void);
   void slotRemove(void);
   void slotSave(void);
   void slotSendMessage(void);

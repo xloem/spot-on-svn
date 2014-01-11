@@ -501,13 +501,9 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(fileChanged(const QString &)),
 	  this,
 	  SLOT(slotSettingsChanged(const QString &)));
-
-  if(setting("gui/enableCongestionControl", true).toBool())
-    {
-      s_messagingCache.reserve
-	(setting("gui/congestionCost", 10000).toInt());
-      m_messagingCachePurgeTimer.start();
-    }
+  s_messagingCache.reserve
+    (setting("gui/congestionCost", 10000).toInt());
+  m_messagingCachePurgeTimer.start();
 
   if(setting("gui/etpReceivers", false).toBool())
     m_starbeamWriter->start();
@@ -1483,29 +1479,17 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
   spoton_misc::enableLog
     (setting("gui/kernelLogEvents", false).toBool());
 
-  if(!setting("gui/enableCongestionControl", true).toBool())
-    {
-      m_messagingCachePurgeTimer.stop();
-      s_messagingCacheMutex.lockForWrite();
-      s_messagingCache.clear();
-      s_messagingCache.reserve(0);
-      s_messagingCacheMap.clear();
-      s_messagingCacheMutex.unlock();
-    }
-  else
-    {
-      int cost = setting("gui/congestionCost", 10000).toInt();
+  int cost = setting("gui/congestionCost", 10000).toInt();
 
-      s_messagingCacheMutex.lockForWrite();
+  s_messagingCacheMutex.lockForWrite();
 
-      if(s_messagingCache.capacity() != cost)
-	s_messagingCache.reserve(cost);
+  if(s_messagingCache.capacity() != cost)
+    s_messagingCache.reserve(cost);
 
-      s_messagingCacheMutex.unlock();
+  s_messagingCacheMutex.unlock();
 
-      if(!m_messagingCachePurgeTimer.isActive())
-	m_messagingCachePurgeTimer.start();
-    }
+  if(!m_messagingCachePurgeTimer.isActive())
+    m_messagingCachePurgeTimer.start();
 
   if(setting("gui/etpReceivers", false).toBool())
     {
@@ -2597,9 +2581,6 @@ void spoton_kernel::purgeMessagingCache(void)
 
 bool spoton_kernel::messagingCacheContains(const QByteArray &data)
 {
-  if(!setting("gui/enableCongestionControl", true).toBool())
-    return false;
-
   spoton_crypt *s_crypt = s_crypts.value("chat", 0);
 
   if(!s_crypt)
@@ -2623,9 +2604,6 @@ bool spoton_kernel::messagingCacheContains(const QByteArray &data)
 
 void spoton_kernel::messagingCacheAdd(const QByteArray &data)
 {
-  if(!setting("gui/enableCongestionControl", true).toBool())
-    return;
-
   spoton_crypt *s_crypt = s_crypts.value("chat", 0);
 
   if(!s_crypt)

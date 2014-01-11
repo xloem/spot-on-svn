@@ -35,7 +35,6 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QFileDialog>
-#include <QFuture>
 #include <QHash>
 #include <QInputDialog>
 #ifdef Q_OS_MAC
@@ -45,7 +44,6 @@
 #endif
 #include <QMainWindow>
 #include <QMessageBox>
-#include <QMutex>
 #ifdef Q_OS_WIN32
 #include <qt_windows.h>
 #include <QtNetwork>
@@ -121,18 +119,11 @@ class spoton: public QMainWindow
   QDateTime m_neighborsLastModificationTime;
   QDateTime m_participantsLastModificationTime;
   QDateTime m_starsLastModificationTime;
-  QFuture<void> m_future;
-  QHash<QByteArray, QDateTime> m_messagingCache; /*
-						 ** Prevent duplicate
-						 ** echoed messages.
-						 */
   QHash<QByteArray, QString> m_neighborToOidMap;
   QHash<QString, QByteArray> m_buzzIds;
   QHash<QString, QPointer<spoton_chatwindow> > m_chatWindows;
   QHash<QString, bool> m_booleans;
   QHash<QString, spoton_crypt *> m_crypts;
-  QMutex m_messagingCacheMutex;
-  QMutex m_purgeMutex;
 #ifdef SPOTON_LINKED_WITH_LIBPHONON
 #if 0
   Phonon::MediaObject *m_mediaObject;
@@ -144,12 +135,10 @@ class spoton: public QMainWindow
   QTimer m_emailRetrievalTimer;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_generalTimer;
-  QTimer m_messagingCachePurgeTimer;
   QTimer m_tableTimer;
   QWidget *m_sbWidget;
   Ui_statusbar m_sb;
   Ui_spoton_mainwindow m_ui;
-  bool m_purge;
   spoton_external_address *m_externalAddress;
   spoton_logviewer m_logViewer;
   spoton_rosetta m_rosetta;
@@ -186,7 +175,6 @@ class spoton: public QMainWindow
   void populateAccounts(const QString &listenerOid);
   void populateListenerIps(const QString &listenerOid);
   void populateNovas(void);
-  void purgeMessagingCache(void);
   void removeFavorite(const bool removeAll);
   void saveDestination(const QString &path);
   void saveGeoIPPath(const QString &path);
@@ -231,7 +219,6 @@ class spoton: public QMainWindow
   void slotClearOutgoingMessage(void);
   void slotCloseBuzzTab(int index);
   void slotComputeFileHash(void);
-  void slotCongestionControl(bool state);
   void slotConnectNeighbor(void);
   void slotCopyAllMyPublicKeys(void);
   void slotCopyEmailFriendshipBundle(void);
@@ -309,7 +296,6 @@ class spoton: public QMainWindow
   void slotMailTabChanged(int index);
   void slotMaxMosaicSize(int value);
   void slotMaximumClientsChanged(int index);
-  void slotMessagingCachePurge(void);
   void slotModeChanged(QSslSocket::SslMode mode);
   void slotNeighborCheckChange(bool state);
   void slotNeighborFullEcho(void);

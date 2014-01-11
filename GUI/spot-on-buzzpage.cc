@@ -31,9 +31,6 @@
 #include <QSettings>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#if QT_VERSION >= 0x050000
-#include <QtConcurrent>
-#endif
 #include <QtCore>
 #include <QtCore/qmath.h>
 
@@ -155,10 +152,6 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSendMessage(void)));
-  connect(&m_messagingCachePurgeTimer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotMessagingCachePurge(void)));
   ui.clients->setColumnHidden(1, true); // ID
   ui.clients->setColumnHidden(2, true); // Time
   ui.clients->horizontalHeader()->setSortIndicator(0, Qt::AscendingOrder);
@@ -177,7 +170,6 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
   data.append("xt=urn:buzz");
   ui.magnet->setText(data);
   slotSetIcons();
-  m_messagingCachePurgeTimer.start(30000);
 
   QByteArray name;
   QSettings settings;
@@ -196,13 +188,6 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 
 spoton_buzzpage::~spoton_buzzpage()
 {
-  m_purgeMutex.lock();
-  m_purge = false;
-  m_purgeMutex.unlock();
-  m_messagingCacheMutex.lock();
-  m_messagingCache.clear();
-  m_messagingCacheMutex.unlock();
-  m_future.waitForFinished();
   spoton_misc::logError(QString("spoton_buzzpage::~spoton_buzzpage(): "
 				"channel %1 closed.").
 			arg(ui.magnet->text()));
@@ -309,8 +294,7 @@ void spoton_buzzpage::slotSendMessage(void)
     QMessageBox::critical(this, tr("Spot-On: Error"), error);
 }
 
-void spoton_buzzpage::appendMessage(const QByteArray &hash,
-				    const QList<QByteArray> &list)
+void spoton_buzzpage::appendMessage(const QList<QByteArray> &list)
 {
   if(list.size() != 3)
     return;
@@ -324,27 +308,6 @@ void spoton_buzzpage::appendMessage(const QByteArray &hash,
     */
 
     return;
-
-  m_purgeMutex.lock();
-  m_purge = false;
-  m_purgeMutex.unlock();
-  m_messagingCacheMutex.lock();
-
-  if(m_messagingCache.contains(hash))
-    {
-      m_messagingCacheMutex.unlock();
-      m_purgeMutex.lock();
-      m_purge = true;
-      m_purgeMutex.unlock();
-      return;
-    }
-  else
-    m_messagingCache.insert(hash, QDateTime::currentDateTime());
-
-  m_messagingCacheMutex.unlock();
-  m_purgeMutex.lock();
-  m_purge = true;
-  m_purgeMutex.unlock();
 
   QByteArray name
     (list.value(0).mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
@@ -575,42 +538,6 @@ void spoton_buzzpage::slotStatusTimeout(void)
 	    }
 	}
     }
-}
-
-void spoton_buzzpage::slotMessagingCachePurge(void)
-{
-  if(m_future.isFinished())
-    if(!m_messagingCache.isEmpty())
-      m_future = QtConcurrent::run
-	(this, &spoton_buzzpage::purgeMessagingCache);
-}
-
-void spoton_buzzpage::purgeMessagingCache(void)
-{
-  if(!m_messagingCacheMutex.tryLock())
-    return;
-
-  QDateTime now(QDateTime::currentDateTime());
-  QMutableHashIterator<QByteArray, QDateTime> it(m_messagingCache);
-
-  while(it.hasNext())
-    {
-      m_purgeMutex.lock();
-
-      if(!m_purge)
-	{
-	  m_purgeMutex.unlock();
-	  break;
-	}
-
-      m_purgeMutex.unlock();
-      it.next();
-
-      if(it.value().secsTo(now) >= 120)
-	it.remove();
-    }
-
-  m_messagingCacheMutex.unlock();
 }
 
 QByteArray spoton_buzzpage::key(void) const

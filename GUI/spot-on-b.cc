@@ -26,10 +26,6 @@
 */
 
 #include <QSslKey>
-#if QT_VERSION >= 0x050000
-#include <QtConcurrent>
-#endif
-#include <QtCore>
 
 #include "spot-on.h"
 #include "spot-on-buzzpage.h"
@@ -174,13 +170,12 @@ void spoton::slotReceivedKernelMessage(void)
 
 	      QList<QByteArray> list(data.split('_'));
 
-	      if(list.size() != 3)
+	      if(list.size() != 2)
 		continue;
 
 	      for(int i = 0; i < list.size(); i++)
 		list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-	      QByteArray hash(list.value(2));
 	      QByteArray key(list.value(1));
 
 	      /*
@@ -214,7 +209,7 @@ void spoton::slotReceivedKernelMessage(void)
 		  if(list.size() == 2)
 		    page->userStatus(list);
 		  else if(list.size() == 3)
-		    page->appendMessage(hash, list);
+		    page->appendMessage(list);
 		}
 	    }
 	  else if(data.startsWith("message_"))
@@ -232,7 +227,6 @@ void spoton::slotReceivedKernelMessage(void)
 		    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
 		  QByteArray hash;
-		  bool duplicate = false;
 		  bool ok = true;
 		  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
 
@@ -249,25 +243,6 @@ void spoton::slotReceivedKernelMessage(void)
 			("spoton::slotReceivedKernelMessage(): "
 			 "hash failure. Using random bytes.");
 		    }
-
-		  m_purgeMutex.lock();
-		  m_purge = false;
-		  m_purgeMutex.unlock();
-		  m_messagingCacheMutex.lock();
-
-		  if(m_messagingCache.contains(hash))
-		    duplicate = true;
-		  else
-		    m_messagingCache.insert(hash,
-					    QDateTime::currentDateTime());
-
-		  m_messagingCacheMutex.unlock();
-		  m_purgeMutex.lock();
-		  m_purge = true;
-		  m_purgeMutex.unlock();
-
-		  if(duplicate)
-		    continue;
 
 		  QByteArray name(list.value(2));
 		  QByteArray message(list.value(3));
@@ -342,6 +317,8 @@ void spoton::slotReceivedKernelMessage(void)
 
 		  msg.append(content);
 
+		  bool found = false;
+
 		  if(m_chatWindows.contains(list.value(1).toBase64()))
 		    {
 		      QPointer<spoton_chatwindow> chat =
@@ -352,7 +329,10 @@ void spoton::slotReceivedKernelMessage(void)
 			  chat->append(msg);
 
 			  if(chat->isVisible())
-			    chat->activateWindow();
+			    {
+			      found = true;
+			      chat->activateWindow();
+			    }
 			}
 		    }
 
@@ -363,7 +343,8 @@ void spoton::slotReceivedKernelMessage(void)
 		  if(m_ui.tab->currentIndex() != 1)
 		    m_sb.chat->setVisible(true);
 
-		  activateWindow();
+		  if(!false)
+		    activateWindow();
 		}
 	    }
 	  else if(data == "newmail")
@@ -3939,15 +3920,6 @@ void spoton::slotPublicizeListenerPlaintext(void)
     m_kernelSocket.flush();
 }
 
-void spoton::slotCongestionControl(bool state)
-{
-  m_settings["gui/enableCongestionControl"] = state;
-
-  QSettings settings;
-
-  settings.setValue("gui/enableCongestionControl", state);
-}
-
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000
 bool spoton::event(QEvent *event)
@@ -4234,41 +4206,6 @@ void spoton::initializeKernelSocket(void)
       (QString("spoton::"
 	       "initializeKernelSocket(): "
 	       "generateSslKeys() failure (%1).").arg(error.remove(".")));
-}
-
-void spoton::slotMessagingCachePurge(void)
-{
-  if(m_future.isFinished())
-    if(!m_messagingCache.isEmpty())
-      m_future = QtConcurrent::run(this, &spoton::purgeMessagingCache);
-}
-
-void spoton::purgeMessagingCache(void)
-{
-  if(!m_messagingCacheMutex.tryLock())
-    return;
-
-  QDateTime now(QDateTime::currentDateTime());
-  QMutableHashIterator<QByteArray, QDateTime> it(m_messagingCache);
-
-  while(it.hasNext())
-    {
-      m_purgeMutex.lock();
-
-      if(!m_purge)
-	{
-	  m_purgeMutex.unlock();
-	  break;
-	}
-
-      m_purgeMutex.unlock();
-      it.next();
-
-      if(it.value().secsTo(now) >= 120)
-	it.remove();
-    }
-
-  m_messagingCacheMutex.unlock();
 }
 
 void spoton::slotBuzzChanged(void)

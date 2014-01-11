@@ -373,8 +373,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>942</width>
-                <height>544</height>
+                <width>654</width>
+                <height>463</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2070,8 +2070,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>273</width>
-                 <height>544</height>
+                 <width>241</width>
+                 <height>404</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3799,20 +3799,17 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QCheckBox" name="congestionControl">
+                    <widget class="QLabel" name="label_73">
                      <property name="text">
-                      <string>&amp;Congestion Control</string>
+                      <string>&amp;Congestion Cost</string>
                      </property>
-                     <property name="checked">
-                      <bool>true</bool>
+                     <property name="buddy">
+                      <cstring>cost</cstring>
                      </property>
                     </widget>
                    </item>
                    <item>
                     <widget class="QSpinBox" name="cost">
-                     <property name="toolTip">
-                      <string>Cost</string>
-                     </property>
                      <property name="minimum">
                       <number>1000</number>
                      </property>
@@ -4386,8 +4383,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>952</width>
-             <height>554</height>
+             <width>478</width>
+             <height>510</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -6238,7 +6235,6 @@
   <tabstop>pid</tabstop>
   <tabstop>deactivateKernel</tabstop>
   <tabstop>kernelCipherType</tabstop>
-  <tabstop>congestionControl</tabstop>
   <tabstop>cost</tabstop>
   <tabstop>kernelLogEvents</tabstop>
   <tabstop>scrambler</tabstop>
