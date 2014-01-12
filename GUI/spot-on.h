@@ -259,6 +259,7 @@ class spoton: public QMainWindow
   void slotEmptyTrash(void);
   void slotEnableRetrieveMail(void);
   void slotEnabledPostOffice(bool state);
+  void slotExportListeners(void);
   void slotExportPublicKeys(void);
   void slotExternalIp(int index);
   void slotFavoritesActivated(int index);

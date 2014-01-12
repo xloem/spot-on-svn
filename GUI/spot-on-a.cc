@@ -534,6 +534,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotChangeTabPosition(void)));
+  connect(m_ui.action_Export_Listeners,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotExportListeners(void)));
   connect(m_ui.action_Export_Public_Keys,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -1204,6 +1208,8 @@ spoton::spoton(void):QMainWindow()
   if(spoton_crypt::passphraseSet())
     {
       m_sb.frame->setEnabled(false);
+      m_ui.action_Export_Listeners->setEnabled(false);
+      m_ui.action_Import_Listeners->setEnabled(false);
       m_ui.action_Export_Public_Keys->setEnabled(false);
       m_ui.action_Import_Public_Keys->setEnabled(false);
       m_ui.action_Rosetta->setEnabled(false);
@@ -1231,6 +1237,8 @@ spoton::spoton(void):QMainWindow()
   else
     {
       m_sb.frame->setEnabled(false);
+      m_ui.action_Export_Listeners->setEnabled(false);
+      m_ui.action_Import_Listeners->setEnabled(false);
       m_ui.action_Export_Public_Keys->setEnabled(false);
       m_ui.action_Import_Public_Keys->setEnabled(false);
       m_ui.action_Rosetta->setEnabled(false);
@@ -4162,6 +4170,8 @@ void spoton::slotSetPassphrase(void)
 	}
 
       m_sb.frame->setEnabled(true);
+      m_ui.action_Export_Listeners->setEnabled(true);
+      m_ui.action_Import_Listeners->setEnabled(true);
       m_ui.action_Export_Public_Keys->setEnabled(true);
       m_ui.action_Import_Public_Keys->setEnabled(true);
       m_ui.action_Rosetta->setEnabled(true);
@@ -4327,6 +4337,8 @@ void spoton::slotValidatePassphrase(void)
 	    sendBuzzKeysToKernel();
 	    sendKeysToKernel();
 	    m_sb.frame->setEnabled(true);
+	    m_ui.action_Export_Listeners->setEnabled(true);
+	    m_ui.action_Import_Listeners->setEnabled(true);
 	    m_ui.action_Export_Public_Keys->setEnabled(true);
 	    m_ui.action_Import_Public_Keys->setEnabled(true);
 	    m_ui.action_Rosetta->setEnabled(true);

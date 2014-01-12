@@ -292,7 +292,8 @@ void spoton_misc::prepareDatabases(void)
 		   "maximum_content_length INTEGER NOT NULL DEFAULT %2, "
 		   "transport TEXT NOT NULL, "
 		   "share_udp_address INTEGER NOT NULL DEFAULT 0, "
-		   "orientation TEXT NOT NULL)").
+		   "orientation TEXT NOT NULL, "
+		   "motd TEXT NOT NULL DEFAULT 'Welcome to Spot-On.')").
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_accounts ("
@@ -392,7 +393,8 @@ void spoton_misc::prepareDatabases(void)
 		   "account_password TEXT NOT NULL, "
 		   "account_authenticated TEXT, "
 		   "transport TEXT NOT NULL, "
-		   "orientation TEXT NOT NULL)").
+		   "orientation TEXT NOT NULL, "
+		   "motd TEXT NOT NULL DEFAULT 'Welcome to Spot-On.')").
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
       }

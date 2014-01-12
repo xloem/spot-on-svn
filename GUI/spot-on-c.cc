@@ -2830,3 +2830,84 @@ void spoton::slotImportPublicKeys(void)
 	  break;
     }
 }
+
+void spoton::slotExportListeners(void)
+{
+  if(m_ui.listeners->rowCount() == 0)
+    {
+      QMessageBox::critical
+	(this, tr("Spot-On: Error"),
+	 tr("Unable to export an empty listeners table."));
+      return;
+    }
+
+  QFileDialog dialog(this);
+
+  dialog.setConfirmOverwrite(true);
+  dialog.setWindowTitle
+    (tr("Spot-On: Select Export File"));
+  dialog.setFileMode(QFileDialog::AnyFile);
+#if QT_VERSION < 0x050000
+  dialog.setDirectory(QDesktopServices::storageLocation(QDesktopServices::
+							DesktopLocation));
+#else
+  dialog.setDirectory(QStandardPaths::
+		      standardLocations(QStandardPaths::DesktopLocation).
+		      value(0));
+#endif
+  dialog.setLabelText(QFileDialog::Accept, tr("&Save"));
+  dialog.setAcceptMode(QFileDialog::AcceptSave);
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+#endif
+#endif
+  dialog.selectFile(QString("spot-on-listeners-export-%1.txt").
+		    arg(QDateTime::currentDateTime().
+			toString("MM-dd-yyyy-hh-mm-ss")));
+
+  if(dialog.exec() == QDialog::Accepted)
+    {
+      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+      QFile file;
+
+      file.setFileName(dialog.selectedFiles().value(0).trimmed());
+
+      if(file.open(QIODevice::Text | QIODevice::Truncate |
+		   QIODevice::WriteOnly))
+	{
+	  QByteArray bytes;
+
+	  for(int i = 0; i < m_ui.listeners->rowCount(); i++)
+	    {
+	      bytes.append("ip_address=");
+	      bytes.append(m_ui.listeners->item(i, 7)->text());
+	      bytes.append("&");
+	      bytes.append("orientation=");
+	      bytes.append(m_ui.listeners->item(i, 18)->text());
+	      bytes.append("&");
+	      bytes.append("port=");
+	      bytes.append(m_ui.listeners->item(i, 4)->text());
+	      bytes.append("&");
+	      bytes.append("protocol=");
+	      bytes.append(m_ui.listeners->item(i, 6)->text());
+	      bytes.append("&");
+	      bytes.append("scope_id=");
+	      bytes.append(m_ui.listeners->item(i, 5)->text());
+	      bytes.append("&");
+	      bytes.append("ssl_key_size=");
+	      bytes.append(m_ui.listeners->item(i, 2)->text());
+	      bytes.append("&");
+	      bytes.append("transport=");
+	      bytes.append(m_ui.listeners->item(i, 15)->text());
+	      file.write(bytes);
+	      file.write("\n");
+	      file.flush();
+	    }
+	}
+
+      file.close();
+      QApplication::restoreOverrideCursor();
+    }
+}
