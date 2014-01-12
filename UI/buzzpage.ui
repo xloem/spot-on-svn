@@ -47,6 +47,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="copy">
+       <property name="text">
+        <string>Copy</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="remove">
        <property name="text">
         <string>Remove Bookmark</string>
@@ -282,8 +289,11 @@
  </customwidgets>
  <tabstops>
   <tabstop>magnet</tabstop>
-  <tabstop>messages</tabstop>
+  <tabstop>favorite</tabstop>
+  <tabstop>copy</tabstop>
+  <tabstop>remove</tabstop>
   <tabstop>clearMessages</tabstop>
+  <tabstop>messages</tabstop>
   <tabstop>clients</tabstop>
   <tabstop>sendMethod</tabstop>
   <tabstop>message</tabstop>

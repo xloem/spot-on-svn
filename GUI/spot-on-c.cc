@@ -2656,10 +2656,14 @@ void spoton::updatePublicKeysLabel(void)
 
 void spoton::slotExportPublicKeys(void)
 {
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
   QByteArray keys(copyMyChatPublicKey() + "@" +
 		  copyMyEmailPublicKey() + "@" +
 		  copyMyRosettaPublicKey() + "@" +
 		  copyMyUrlPublicKey());
+
+  QApplication::restoreOverrideCursor();
 
   if(keys.count("@") == 3)
     /*

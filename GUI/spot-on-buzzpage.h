@@ -78,6 +78,7 @@ class spoton_buzzpage: public QWidget
 
  private slots:
   void slotBuzzNameChanged(const QByteArray &name);
+  void slotCopy(void);
   void slotRemove(void);
   void slotSave(void);
   void slotSendMessage(void);

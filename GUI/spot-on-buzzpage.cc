@@ -25,6 +25,7 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QClipboard>
 #include <QDateTime>
 #include <QMessageBox>
 #include <QScrollBar>
@@ -136,6 +137,10 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 	  SIGNAL(clicked(void)),
 	  ui.messages,
 	  SLOT(clear(void)));
+  connect(ui.copy,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotCopy(void)));
   connect(ui.favorite,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -702,4 +707,14 @@ QByteArray spoton_buzzpage::hashKey(void) const
 QByteArray spoton_buzzpage::hashType(void) const
 {
   return m_hashType;
+}
+
+void spoton_buzzpage::slotCopy(void)
+{
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(!clipboard)
+    return;
+  else
+    clipboard->setText(ui.magnet->text());
 }
