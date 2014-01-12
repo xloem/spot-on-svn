@@ -73,7 +73,9 @@
      spoton::pixmapForCountry().
 38.  Congestion control is now mandatory. Removed congestion control
      mechanisms from the UI.
-39.  Removed most activateWindow() references.
+39.  Added motd to listeners.db and neighbors.db. Please remove the
+     databases. Fields not yet used.
+40.  Removed most activateWindow() references.
 
 0.08 (12/23/2013)
 
