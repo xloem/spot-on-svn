@@ -19,7 +19,7 @@
      is deactivated or deleted. The table shall contain data that has been
      used for authenticating accounts so as to avoid potential replay attacks.
      Data older than 120 seconds are also purged. Please also see item #31.
-9.   Account authentication is now allowed over insecure TCP connections.
+9.   Account authentication is now allowed over plain TCP connections.
 10.  Added various reflection widgets.
 11.  Ability to copy e-mail key pairs of participants. Please note that copied
      data does not include signatures. As a result, spoton::addFriendsKey()
@@ -75,6 +75,7 @@
 39.  Added motd to listeners.db and neighbors.db. Please remove the
      databases. Fields not yet used.
 40.  Removed most activateWindow() references.
+41.  Added the Force Registration option to the Settings tab.
 
 0.08 (12/23/2013)
 
