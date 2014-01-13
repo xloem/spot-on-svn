@@ -57,10 +57,10 @@
 28.  Added re-encoding of gemini data.
 29.  Corrected "Error Opening file GeoIP.dat" messages.
 30.  Added the version command-line option to the kernel.
-31.  Removed UTC timestamps from the account authentication process.
-     Introduced authentication timers. Default timeouts set to 15 seconds.
+31.  Introduced authentication timers. Default timeouts set to 15 seconds.
      Please also see item #8.
-32.  Introduced export and import of public key pairs. Please see the Tools menu.
+32.  Introduced export and import of public key pairs. Please see the
+     Tools menu.
 33.  Modified all kernel QMutex objects to be of type QReadWriteLock.
      Let's hope for some additional concurrency.
 34.  The name field in Rosetta lacked a maximum length. Corrected.
@@ -71,8 +71,7 @@
      fails.
 37.  Removed duplicate 'if(country == "Algeria")' in
      spoton::pixmapForCountry().
-38.  Congestion control is now mandatory. Removed congestion control
-     mechanisms from the UI.
+38.  Congestion control is now mandatory.
 39.  Added motd to listeners.db and neighbors.db. Please remove the
      databases. Fields not yet used.
 40.  Removed most activateWindow() references.
