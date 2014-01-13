@@ -76,6 +76,8 @@
      databases. Fields not yet used.
 40.  Removed most activateWindow() references.
 41.  Added the Force Registration option to the Settings tab.
+42.  Removed PID comparison in libspoton_register_kernel(). A forced
+     registration is now absolute.
 
 0.08 (12/23/2013)
 
