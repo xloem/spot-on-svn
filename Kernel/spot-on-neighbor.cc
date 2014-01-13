@@ -3499,7 +3499,9 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 
 	      if(ok)
 		newSaltedCredentials = spoton_crypt::saltedValue
-		  ("sha512", name + password, salt, &ok);
+		  ("sha512", name + password +
+		   QDateTime::currentDateTime().toUTC().
+		   toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
 
 	      if(ok)
 		{
@@ -3509,6 +3511,27 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 		      m_accountAuthenticated = true;
 		      m_accountTimer.stop();
 		      m_authenticationTimer.stop();
+		    }
+		  else
+		    {
+		      newSaltedCredentials = spoton_crypt::saltedValue
+			("sha512",
+			 name + password +
+			 QDateTime::currentDateTime().toUTC().addSecs(60).
+			 toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
+
+		      if(ok)
+			{
+			  if(spoton_crypt::memcmp(newSaltedCredentials,
+						  saltedCredentials))
+			    {
+			      m_accountAuthenticated = true;
+			      m_accountTimer.stop();
+			      m_authenticationTimer.stop();
+			    }
+			}
+		      else
+			m_accountAuthenticated = false;
 		    }
 		}
 	      else
@@ -4855,7 +4878,10 @@ void spoton_neighbor::slotSendAccountInformation(void)
 	QByteArray message;
 	QByteArray salt(spoton_crypt::strongRandomBytes(512));
 	QByteArray saltedCredentials
-	  (spoton_crypt::saltedValue("sha512", name + password, salt, &ok));
+	  (spoton_crypt::saltedValue("sha512", name + password +
+				     QDateTime::currentDateTime().toUTC().
+				     toString("MMddyyyyhhmm").toLatin1(),
+				     salt, &ok));
 
 	if(ok)
 	  message = spoton_send::message0050(saltedCredentials, salt);
@@ -4897,7 +4923,9 @@ void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
   */
 
   saltedCredentials = spoton_crypt::saltedValue
-    ("sha512", name + password, salt, &ok);
+    ("sha512", name + password +
+     QDateTime::currentDateTime().toUTC().
+     toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
 
   if(ok)
     message = spoton_send::message0051(saltedCredentials, salt);
