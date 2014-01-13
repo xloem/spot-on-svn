@@ -146,7 +146,8 @@ Remaining Items
        e-mail.
 21.    Support ECC, or not.
 22.    Perform calling over geminis.
-23.    Encrypted participants public keys. Keyed hashes? Slow retrieval.
+23.    Encrypted participants public keys. Keyed hashes using the public
+       key as the key? Slow retrieval.
 24.    Add support for crypto++.
 25.    Add SRP for accounts verification.
 26.    Provide a means of exporting and importing keys.
