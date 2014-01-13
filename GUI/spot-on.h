@@ -265,6 +265,7 @@ class spoton: public QMainWindow
   void slotFavoritesActivated(int index);
   void slotFetchMoreAlgo(void);
   void slotFetchMoreButton(void);
+  void slotForceKernelRegistration(bool state);
   void slotGeminiChanged(QTableWidgetItem *item);
   void slotGenerateEtpKeys(int index);
   void slotGeneralTimerTimeout(void);

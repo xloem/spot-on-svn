@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>978</width>
-    <height>656</height>
+    <width>993</width>
+    <height>677</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -373,8 +373,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
-                <height>463</height>
+                <width>959</width>
+                <height>553</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2070,8 +2070,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>241</width>
-                 <height>404</height>
+                 <width>275</width>
+                 <height>553</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3435,8 +3435,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>937</width>
-             <height>789</height>
+             <width>951</width>
+             <height>753</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3713,6 +3713,16 @@
                    <property name="spacing">
                     <number>5</number>
                    </property>
+                   <item>
+                    <widget class="QCheckBox" name="forceRegistration">
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please enable this option if you would like to force kernel registration. By forcing a kernel registration, an existing kernel process that Spot is aware of will be terminated. You may wish to use this option if the kernel was not deactivated properly.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="text">
+                      <string>&amp;Force Registration</string>
+                     </property>
+                    </widget>
+                   </item>
                    <item>
                     <widget class="QPushButton" name="activateKernel">
                      <property name="text">
@@ -4383,8 +4393,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>478</width>
-             <height>510</height>
+             <width>969</width>
+             <height>563</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5912,8 +5922,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>978</width>
-     <height>22</height>
+     <width>993</width>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -6231,6 +6241,7 @@
   <tabstop>kernelSecureMemoryPool</tabstop>
   <tabstop>kernelPath</tabstop>
   <tabstop>selectKernelPath</tabstop>
+  <tabstop>forceRegistration</tabstop>
   <tabstop>activateKernel</tabstop>
   <tabstop>pid</tabstop>
   <tabstop>deactivateKernel</tabstop>

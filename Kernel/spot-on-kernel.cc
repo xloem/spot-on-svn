@@ -248,9 +248,10 @@ int main(int argc, char *argv[])
 			     0,
 			     &libspotonHandle,
 			     integer)) == LIBSPOTON_ERROR_NONE)
-    err = libspoton_register_kernel(QCoreApplication::applicationPid(),
-				    false, // Do not force registration.
-				    &libspotonHandle);
+    err = libspoton_register_kernel
+      (QCoreApplication::applicationPid(),
+       settings.value("gui/forceKernelRegistration", false).toBool(),
+       &libspotonHandle);
 
   libspoton_close(&libspotonHandle);
 

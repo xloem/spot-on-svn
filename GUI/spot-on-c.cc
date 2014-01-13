@@ -2915,3 +2915,12 @@ void spoton::slotExportListeners(void)
       QApplication::restoreOverrideCursor();
     }
 }
+
+void spoton::slotForceKernelRegistration(bool state)
+{
+  m_settings["gui/forceKernelRegistration"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/forceKernelRegistration", state);
+}

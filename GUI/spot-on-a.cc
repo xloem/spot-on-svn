@@ -762,6 +762,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotAcceptBuzzMagnets(bool)));
+  connect(m_ui.forceRegistration,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotForceKernelRegistration(bool)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
