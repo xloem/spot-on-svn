@@ -323,7 +323,8 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
     m_externalAddressDiscovererTimer.setInterval(30000);
 
   if(m_useAccounts)
-    m_accountTimer.start(2500);
+    if(!m_useSsl)
+      m_accountTimer.start(2500);
 
   m_keepAliveTimer.start(30000);
   m_lifetime.start(10 * 60 * 1000);
@@ -1478,12 +1479,11 @@ void spoton_neighbor::slotConnected(void)
     m_keepAliveTimer.start();
 
   if(m_useAccounts)
-    {
-      m_accountTimer.start();
-
-      if(!m_useSsl)
+    if(!m_useSsl)
+      {
+	m_accountTimer.start();
 	m_authenticationTimer.start();
-    }
+      }
 }
 
 void spoton_neighbor::savePublicKey(const QByteArray &keyType,
@@ -4376,8 +4376,10 @@ void spoton_neighbor::slotModeChanged(QSslSocket::SslMode mode)
 	}
 
       if(m_useAccounts)
-	if(!m_authenticationTimer.isActive())
+	{
+	  m_accountTimer.start();
 	  m_authenticationTimer.start();
+	}
     }
 }
 
