@@ -92,6 +92,8 @@ Completed Items
 64.    Separate keys should be used for storing keyed hashes.
 65.    Prevent replay attacks of authenticated sessions.
 66.    Artificial impersonators.
+67.    Add url logic to spoton::addFriendsKey().
+68.    Provide a means of exporting and importing keys.
 
 Ignored Items
 
@@ -115,15 +117,17 @@ Ignored Items
 11.    Entering geminis is difficult.
 12.    Participant count may be possible based on asymmetric ciphertexts.
        Research?
+13.    Optional OTR.
 
 Remaining Items
 
 1.     Zero-knowledge passphrase authentication.
-2.     Cosmic proxy?
+2.     Cosmic proxy.
 3.     Allow for other ciphers besides AES for e-mail.
 4.     Sequencial encryption. Verify that the user's key is independent of
        the random key. Separate cipher algorithms?
-5.     Country flags and names for host names.
+5.     Country flags and names for host names
+       (spoton_misc::countryCodeFromName()).
 6.     Anonymous post office boxes.
 7.     Scramblers are too periodic.
 8.     Hard kernel termination. Control session separation.
@@ -132,8 +136,8 @@ Remaining Items
 11.    Remote kernel termination.
 12.    Artificial trust. All participants must play nicely. Zero-knowledge?
 13.    What to do about corrupt database values?
-14.    Add url logic to spoton::addFriendsKey().
-15.    Echo sub-universes.
+14.    Database entries containing hashes can be maliciously twisted. Encrypt?
+15.    Echo star systems.
 16.    Allow pass-through flow of non-Spot-On data.
 17.    Inbound data should be time-tagged. Nodes must purge
        containers of old data. Otherwise, one could be inundated with
@@ -141,7 +145,7 @@ Remaining Items
 18.    Introduce load balancing of echoes. We're not interested in real-time
        responses. Congestion control is helpful, however, short graphs
        tend to be skewed.
-19.    Optional OTR.
+19.    Accounts and allowed IP addresses suffer selection issues.
 20.    QFSFileEngine::open: No file name specified: created from
        e-mail.
 21.    Support ECC, or not.
@@ -150,7 +154,7 @@ Remaining Items
        key as the key? Slow retrieval.
 24.    Add support for crypto++.
 25.    Add SRP for accounts verification.
-26.    Provide a means of exporting and importing keys.
+26.    Account credentials should not be recorded via reversible encryption.
 27.    Add log filters.
 28.    There may be an issue with the validity of stored e-mail. That is,
        retrieving e-mail from another node may retrieve compromised content.
@@ -169,6 +173,3 @@ Remaining Items
 33.    Wormholes for streamed data.
 34.    Per request, provide an automatic rewind mechanism with a timer.
 35.    Gold Bugs and Novas should have separate hash keys.
-36.    Account credentials should not be recorded via reversible encryption.
-37.    Accounts and allowed IP addresses suffer selection issues.
-38.    Database entries containing hashes can be maliciously twisted. Encrypt?
