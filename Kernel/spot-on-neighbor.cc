@@ -1075,7 +1075,6 @@ void spoton_neighbor::slotReadyRead(void)
 		     "Purging read data.").
 	     arg(m_address.toString()).
 	     arg(m_port));
-	  return;
 	}
 
   if(!data.isEmpty())
