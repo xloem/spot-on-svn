@@ -954,7 +954,7 @@ void spoton_crypt::init(const QString &cipherType,
 				     GCRY_CIPHER_MODE_CBC,
 				     GCRY_CIPHER_CBC_CTS |
 				     GCRY_CIPHER_SECURE)) != 0 ||
-	     !m_cipherAlgorithm)
+	     !m_cipherHandle)
 	    {
 	      if(err != 0)
 		{
