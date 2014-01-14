@@ -542,6 +542,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotExportPublicKeys(void)));
+  connect(m_ui.action_Import_Neighbors,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotImportNeighbors(void)));
   connect(m_ui.action_Import_Public_Keys,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -1213,7 +1217,7 @@ spoton::spoton(void):QMainWindow()
     {
       m_sb.frame->setEnabled(false);
       m_ui.action_Export_Listeners->setEnabled(false);
-      m_ui.action_Import_Listeners->setEnabled(false);
+      m_ui.action_Import_Neighbors->setEnabled(false);
       m_ui.action_Export_Public_Keys->setEnabled(false);
       m_ui.action_Import_Public_Keys->setEnabled(false);
       m_ui.action_Rosetta->setEnabled(false);
@@ -1242,7 +1246,7 @@ spoton::spoton(void):QMainWindow()
     {
       m_sb.frame->setEnabled(false);
       m_ui.action_Export_Listeners->setEnabled(false);
-      m_ui.action_Import_Listeners->setEnabled(false);
+      m_ui.action_Import_Neighbors->setEnabled(false);
       m_ui.action_Export_Public_Keys->setEnabled(false);
       m_ui.action_Import_Public_Keys->setEnabled(false);
       m_ui.action_Rosetta->setEnabled(false);
@@ -2074,19 +2078,25 @@ void spoton::slotAddNeighbor(void)
 	    (24, s_crypt->encrypted(QByteArray(),
 				    &ok).toBase64());
 
-	if(m_ui.neighborTransport->currentIndex() == 0)
-	  query.bindValue
-	    (25, s_crypt->encrypted("tcp", &ok).toBase64());
-	else
-	  query.bindValue
-	    (25, s_crypt->encrypted("udp", &ok).toBase64());
+	if(ok)
+	  {
+	    if(m_ui.neighborTransport->currentIndex() == 0)
+	      query.bindValue
+		(25, s_crypt->encrypted("tcp", &ok).toBase64());
+	    else
+	      query.bindValue
+		(25, s_crypt->encrypted("udp", &ok).toBase64());
+	  }
 
-	if(m_ui.neighborOrientation->currentIndex() == 0)
-	  query.bindValue
-	    (26, s_crypt->encrypted("packet", &ok).toBase64());
-	else
-	  query.bindValue
-	    (26, s_crypt->encrypted("stream", &ok).toBase64());
+	if(ok)
+	  {
+	    if(m_ui.neighborOrientation->currentIndex() == 0)
+	      query.bindValue
+		(26, s_crypt->encrypted("packet", &ok).toBase64());
+	    else
+	      query.bindValue
+		(26, s_crypt->encrypted("stream", &ok).toBase64());
+	  }
 
 	if(ok)
 	  ok = query.exec();
@@ -4175,7 +4185,7 @@ void spoton::slotSetPassphrase(void)
 
       m_sb.frame->setEnabled(true);
       m_ui.action_Export_Listeners->setEnabled(true);
-      m_ui.action_Import_Listeners->setEnabled(true);
+      m_ui.action_Import_Neighbors->setEnabled(true);
       m_ui.action_Export_Public_Keys->setEnabled(true);
       m_ui.action_Import_Public_Keys->setEnabled(true);
       m_ui.action_Rosetta->setEnabled(true);
@@ -4342,7 +4352,7 @@ void spoton::slotValidatePassphrase(void)
 	    sendKeysToKernel();
 	    m_sb.frame->setEnabled(true);
 	    m_ui.action_Export_Listeners->setEnabled(true);
-	    m_ui.action_Import_Listeners->setEnabled(true);
+	    m_ui.action_Import_Neighbors->setEnabled(true);
 	    m_ui.action_Export_Public_Keys->setEnabled(true);
 	    m_ui.action_Import_Public_Keys->setEnabled(true);
 	    m_ui.action_Rosetta->setEnabled(true);

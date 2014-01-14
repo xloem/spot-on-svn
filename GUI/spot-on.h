@@ -283,6 +283,7 @@ class spoton: public QMainWindow
   void slotKernelStatus(void);
   void slotHideOfflineParticipants(bool state);
   void slotImpersonate(bool state);
+  void slotImportNeighbors(void);
   void slotImportPublicKeys(void);
   void slotJoinBuzzChannel(void);
   void slotListenerCheckChange(bool state);

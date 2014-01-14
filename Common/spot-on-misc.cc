@@ -1527,19 +1527,27 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	  query.bindValue
 	    (23, crypt->encrypted(QByteArray(), &ok).toBase64());
 
-	if(transport == "tcp" || transport == "udp")
-	  query.bindValue
-	    (24, crypt->encrypted(transport.toLatin1(), &ok).toBase64());
-	else
-	  query.bindValue
-	    (24, crypt->encrypted("tcp", &ok).toBase64());
+	if(ok)
+	  {
+	    if(transport == "tcp" || transport == "udp")
+	      query.bindValue
+		(24, crypt->encrypted(transport.toLatin1(), &ok).
+		 toBase64());
+	    else
+	      query.bindValue
+		(24, crypt->encrypted("tcp", &ok).toBase64());
+	  }
 
-	if(orientation == "packet" || orientation == "stream")
-	  query.bindValue
-	    (25, crypt->encrypted(orientation.toLatin1(), &ok).toBase64());
-	else
-	  query.bindValue
-	    (25, crypt->encrypted("packet", &ok).toBase64());
+	if(ok)
+	  {
+	    if(orientation == "packet" || orientation == "stream")
+	      query.bindValue
+		(25, crypt->encrypted(orientation.toLatin1(), &ok).
+		 toBase64());
+	    else
+	      query.bindValue
+		(25, crypt->encrypted("packet", &ok).toBase64());
+	  }
 
 	if(ok)
 	  query.exec();

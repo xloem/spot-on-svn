@@ -418,7 +418,7 @@ void spoton::slotSelectDestination(void)
   QFileDialog dialog(this);
 
   dialog.setWindowTitle
-    (tr("Spot-On: Select Destination Path"));
+    (tr("Spot-On: Select StarBeam Destination Path"));
   dialog.setFileMode(QFileDialog::Directory);
   dialog.setDirectory(QDir::homePath());
   dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
@@ -757,7 +757,7 @@ void spoton::slotSelectTransmitFile(void)
   QFileDialog dialog(this);
 
   dialog.setWindowTitle
-    (tr("Spot-On: Select Transmit File"));
+    (tr("Spot-On: Select StarBeam Transmit File"));
   dialog.setFileMode(QFileDialog::ExistingFile);
   dialog.setDirectory(QDir::homePath());
   dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
@@ -2702,7 +2702,7 @@ void spoton::slotExportPublicKeys(void)
 
       dialog.setConfirmOverwrite(true);
       dialog.setWindowTitle
-	(tr("Spot-On: Select Export File"));
+	(tr("Spot-On: Select Public Keys Export File"));
       dialog.setFileMode(QFileDialog::AnyFile);
 #if QT_VERSION < 0x050000
       dialog.setDirectory
@@ -2749,7 +2749,7 @@ void spoton::slotImportPublicKeys(void)
   QFileDialog dialog(this);
 
   dialog.setWindowTitle
-    (tr("Spot-On: Select Import File"));
+    (tr("Spot-On: Select Public Keys Import File"));
   dialog.setFileMode(QFileDialog::ExistingFile);
 #if QT_VERSION < 0x050000
   dialog.setDirectory
@@ -2849,7 +2849,7 @@ void spoton::slotExportListeners(void)
 
   dialog.setConfirmOverwrite(true);
   dialog.setWindowTitle
-    (tr("Spot-On: Select Export File"));
+    (tr("Spot-On: Select Listeners Export File"));
   dialog.setFileMode(QFileDialog::AnyFile);
 #if QT_VERSION < 0x050000
   dialog.setDirectory(QDesktopServices::storageLocation(QDesktopServices::
@@ -2880,36 +2880,37 @@ void spoton::slotExportListeners(void)
 
       if(file.open(QIODevice::Text | QIODevice::Truncate |
 		   QIODevice::WriteOnly))
-	{
-	  QByteArray bytes;
+	for(int i = 0; i < m_ui.listeners->rowCount(); i++)
+	  {
+	    QByteArray bytes;
 
-	  for(int i = 0; i < m_ui.listeners->rowCount(); i++)
-	    {
-	      bytes.append("ip_address=");
-	      bytes.append(m_ui.listeners->item(i, 7)->text());
-	      bytes.append("&");
-	      bytes.append("orientation=");
-	      bytes.append(m_ui.listeners->item(i, 18)->text());
-	      bytes.append("&");
-	      bytes.append("port=");
-	      bytes.append(m_ui.listeners->item(i, 4)->text());
-	      bytes.append("&");
-	      bytes.append("protocol=");
-	      bytes.append(m_ui.listeners->item(i, 6)->text());
-	      bytes.append("&");
-	      bytes.append("scope_id=");
-	      bytes.append(m_ui.listeners->item(i, 5)->text());
-	      bytes.append("&");
-	      bytes.append("ssl_key_size=");
-	      bytes.append(m_ui.listeners->item(i, 2)->text());
-	      bytes.append("&");
-	      bytes.append("transport=");
-	      bytes.append(m_ui.listeners->item(i, 15)->text());
-	      file.write(bytes);
-	      file.write("\n");
-	      file.flush();
-	    }
-	}
+	    bytes.append("echo_mode=");
+	    bytes.append(m_ui.listeners->item(i, 11)->text());
+	    bytes.append("&");
+	    bytes.append("ip_address=");
+	    bytes.append(m_ui.listeners->item(i, 7)->text());
+	    bytes.append("&");
+	    bytes.append("orientation=");
+	    bytes.append(m_ui.listeners->item(i, 18)->text());
+	    bytes.append("&");
+	    bytes.append("port=");
+	    bytes.append(m_ui.listeners->item(i, 4)->text());
+	    bytes.append("&");
+	    bytes.append("protocol=");
+	    bytes.append(m_ui.listeners->item(i, 6)->text());
+	    bytes.append("&");
+	    bytes.append("scope_id=");
+	    bytes.append(m_ui.listeners->item(i, 5)->text().remove("&"));
+	    bytes.append("&");
+	    bytes.append("ssl_key_size=");
+	    bytes.append(m_ui.listeners->item(i, 2)->text());
+	    bytes.append("&");
+	    bytes.append("transport=");
+	    bytes.append(m_ui.listeners->item(i, 15)->text());
+	    bytes.append("\n");
+	    file.write(bytes);
+	    file.flush();
+	  }
 
       file.close();
       QApplication::restoreOverrideCursor();
@@ -2923,4 +2924,375 @@ void spoton::slotForceKernelRegistration(bool state)
   QSettings settings;
 
   settings.setValue("gui/forceKernelRegistration", state);
+}
+
+void spoton::slotImportNeighbors(void)
+{
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object. "
+			       "This is a fatal flaw."));
+      return;
+    }
+
+  QFileDialog dialog(this);
+
+  dialog.setWindowTitle
+    (tr("Spot-On: Select Neighbors Import File"));
+  dialog.setFileMode(QFileDialog::ExistingFile);
+#if QT_VERSION < 0x050000
+  dialog.setDirectory
+    (QDesktopServices::storageLocation(QDesktopServices::
+				       DesktopLocation));
+#else
+  dialog.setDirectory
+    (QStandardPaths::standardLocations(QStandardPaths::DesktopLocation).
+     value(0));
+#endif
+  dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
+  dialog.setAcceptMode(QFileDialog::AcceptOpen);
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+#endif
+#endif
+
+  if(dialog.exec() == QDialog::Accepted)
+    {
+      QFileInfo fileInfo;
+
+      fileInfo.setFile(dialog.directory(),
+		       dialog.selectedFiles().value(0).trimmed());
+
+      if(fileInfo.size() >= 30000)
+	{
+	  QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+	  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+	  mb.setIcon(QMessageBox::Question);
+	  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+	  mb.setWindowModality(Qt::WindowModal);
+	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+	  mb.setText
+	    (tr("The import file contains a lot (%1) of data. Are you "
+		"sure that you wish to process it?").
+	     arg(fileInfo.size()));
+
+	  if(mb.exec() != QMessageBox::Yes)
+	    return;
+	}
+
+      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+      QString connectionName("");
+
+      {
+	QSqlDatabase db = spoton_misc::database(connectionName);
+
+	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			   "neighbors.db");
+
+	if(db.open())
+	  {
+	    QFile file;
+
+	    file.setFileName(fileInfo.filePath());
+
+	    if(file.open(QIODevice::ReadOnly))
+	      {
+		QByteArray bytes(1024, 0);
+		qint64 rc = 0;
+
+		while((rc = file.readLine(bytes.data(),
+					  bytes.length())) > -1)
+		  {
+		    QHash<QString, QByteArray> hash;
+		    QList<QByteArray> list(bytes.mid(0, rc).
+					   trimmed().split('&'));
+		    bool fine = true;
+
+		    while(!list.isEmpty())
+		      {
+			QByteArray token(list.takeFirst().trimmed());
+
+			if(token.startsWith("echo_mode="))
+			  {
+			    token.remove(0, qstrlen("echo_mode="));
+
+			    if(!(token == "full" || token == "half"))
+			      fine = false;
+			    else
+			      hash["echo_mode"] = token;
+			  }
+			else if(token.startsWith("ip_address="))
+			  {
+			    token.remove(0, qstrlen("ip_address="));
+
+			    if(QHostAddress(token.constData()).isNull())
+			      fine = false;
+			    else
+			      hash["ip_address"] = token;
+			  }
+			else if(token.startsWith("orientation="))
+			  {
+			    token.remove(0, qstrlen("orientation="));
+			    token = token.toLower();
+
+			    if(!(token == "packet" || token == "stream"))
+			      fine = false;
+			    else
+			      hash["orientation"] = token;
+			  }
+			else if(token.startsWith("port="))
+			  {
+			    token.remove(0, qstrlen("port="));
+
+			    if(!(token.toInt() > 0 &&
+				 token.toInt() <= 65535))
+			      fine = false;
+			    else
+			      hash["port"] = token;
+			  }
+			else if(token.startsWith("protocol="))
+			  {
+			    token.remove(0, qstrlen("protocol="));
+			    token = token.toLower();
+
+			    if(token == "ipv4")
+			      hash["protocol"] = "IPv4";
+			    else if(token == "ipv6")
+			      hash["protocol"] = "IPv6";
+			    else
+			      fine = false;
+			  }
+			else if(token.startsWith("scope_id="))
+			  {
+			    token.remove(0, qstrlen("scope_id="));
+			    hash["scope_id"] = token;
+			  }
+			else if(token.startsWith("ssl_key_size="))
+			  {
+			    token.remove(0, qstrlen("ssl_key_size="));
+
+			    if(!(token == "0" ||
+				 token == "2048" || token == "3072" ||
+				 token == "4096" || token == "8192"))
+			      fine = false;
+			    else
+			      hash["ssl_key_size"] = token;
+			  }
+			else if(token.startsWith("transport="))
+			  {
+			    token.remove(0, qstrlen("transport="));
+			    token = token.toLower();
+
+			    if(!(token == "tcp" || token == "udp"))
+			      fine = false;
+			    else
+			      hash["transport"] = token;
+			  }
+
+			if(!fine)
+			  break;
+		      }
+
+		    if(hash.count() != 8)
+		      fine = false;
+
+		    if(fine)
+		      {
+			QSqlQuery query(db);
+			bool ok = true;
+
+			query.prepare
+			  ("INSERT INTO neighbors "
+			   "(local_ip_address, "
+			   "local_port, "
+			   "protocol, "
+			   "remote_ip_address, "
+			   "remote_port, "
+			   "sticky, "
+			   "scope_id, "
+			   "hash, "
+			   "status_control, "
+			   "country, "
+			   "remote_ip_address_hash, "
+			   "qt_country_hash, "
+			   "proxy_hostname, "
+			   "proxy_password, "
+			   "proxy_port, "
+			   "proxy_type, "
+			   "proxy_username, "
+			   "uuid, "
+			   "echo_mode, "
+			   "ssl_key_size, "
+			   "allow_exceptions, "
+			   "certificate, "
+			   "ssl_required, "
+			   "account_name, "
+			   "account_password, "
+			   "transport, "
+			   "orientation) "
+			   "VALUES "
+			   "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+			   "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+			query.bindValue(0, QVariant(QVariant::String));
+			query.bindValue(1, QVariant(QVariant::String));
+			query.bindValue
+			  (2, s_crypt->
+			   encrypted(hash["protocol"], &ok).toBase64());
+
+			if(ok)
+			  query.bindValue
+			    (3, s_crypt->
+			     encrypted(hash["ip_address"], &ok).toBase64());
+
+			if(ok)
+			  query.bindValue
+			    (4, s_crypt->
+			     encrypted(hash["port"], &ok).toBase64());
+
+			query.bindValue(5, 1); // Sticky.
+
+			if(ok)
+			  query.bindValue
+			    (6, s_crypt->
+			     encrypted(hash["scope_id"], &ok).toBase64());
+
+			if(ok)
+			  query.bindValue
+			    (7, s_crypt->
+			     keyedHash(QByteArray() + // Proxy Hostname
+				       QByteArray() + // Proxy Port
+				       hash["ip_address"] +
+				       hash["port"] +
+				       hash["scope_id"] +
+				       hash["transport"], &ok).
+			     toBase64());
+
+			query.bindValue(8, "disconnected");
+
+			QString country
+			  (spoton_misc::
+			   countryNameFromIPAddress(hash["ip_address"].
+						    constData()));
+
+			if(ok)
+			  query.bindValue
+			    (9, s_crypt->
+			     encrypted(country.toLatin1(), &ok).toBase64());
+
+			if(ok)
+			  query.bindValue
+			    (10, s_crypt->
+			     keyedHash(hash["ip_address"], &ok).
+			     toBase64());
+
+			if(ok)
+			  query.bindValue
+			    (11, s_crypt->
+			     keyedHash(country.remove(" ").toLatin1(), &ok).
+			     toBase64());
+
+			if(ok)
+			  query.bindValue
+			    (12, s_crypt->
+			     encrypted(QByteArray(), &ok).
+			     toBase64());
+
+			if(ok)
+			  query.bindValue
+			    (13, s_crypt->
+			     encrypted(QByteArray(), &ok).
+			     toBase64());
+
+			if(ok)
+			  query.bindValue
+			    (14, s_crypt->encrypted(QByteArray(),
+						    &ok).toBase64());
+
+			if(ok)
+			  query.bindValue
+			    (15, s_crypt->encrypted(QByteArray("NoProxy"),
+						    &ok).toBase64());
+
+			if(ok)
+			  query.bindValue
+			    (16, s_crypt->encrypted(QByteArray(), &ok).
+			     toBase64());
+
+			if(ok)
+			  query.bindValue
+			    (17, s_crypt->
+			     encrypted("{00000000-0000-0000-0000-"
+				       "000000000000}", &ok).
+			     toBase64());
+
+			if(ok)
+			  query.bindValue
+			    (18, s_crypt->
+			     encrypted(hash["echo_mode"], &ok).toBase64());
+
+			if(hash["transport"] == "tcp")
+			  query.bindValue
+			    (19, hash["ssl_key_size"].toInt());
+			else
+			  query.bindValue(19, 0);
+
+			query.bindValue(20, 0);
+
+			if(ok)
+			  query.bindValue
+			    (21, s_crypt->encrypted(QByteArray(),
+						    &ok).toBase64());
+
+			if(hash["transport"] == "tcp")
+			  query.bindValue(22, 1);
+			else
+			  query.bindValue(22, 0);
+
+			if(ok)
+			  query.bindValue
+			    (23, s_crypt->encrypted(QByteArray(),
+						    &ok).toBase64());
+
+			if(ok)
+			  query.bindValue
+			    (24, s_crypt->encrypted(QByteArray(),
+						    &ok).toBase64());
+
+			if(ok)
+			  query.bindValue
+			    (25,
+			     s_crypt->encrypted(hash["transport"],
+						&ok).toBase64());
+
+			if(ok)
+			  query.bindValue
+			    (26, s_crypt->encrypted(hash["orientation"],
+						    &ok).toBase64());
+
+			if(ok)
+			  query.exec();
+		      }
+		  }
+	      }
+
+	    file.close();
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase(connectionName);
+      QApplication::restoreOverrideCursor();
+    }
 }
