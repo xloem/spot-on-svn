@@ -454,41 +454,49 @@ void spoton_buzzpage::userStatus(const QList<QByteArray> &list)
     }
   else
     {
-      QTableWidgetItem *item = ui.clients->item(items.value(0)->row(), 0);
-
-      if(item)
+      while(!items.isEmpty())
 	{
-	  if(item->text().toUtf8() != name)
+	  QTableWidgetItem *item = ui.clients->item
+	    (items.takeFirst()->row(), 0);
+
+	  if(item)
 	    {
-	      QDateTime now(QDateTime::currentDateTime());
-	      QString msg("");
+	      if(item->text().toUtf8() != name)
+		{
+		  /*
+		  ** Someone's name changed.
+		  */
 
-	      msg.append
-		(QString("[%1:%2<font color=grey>:%3</font>] ").
-		 arg(now.toString("hh")).
-		 arg(now.toString("mm")).
-		 arg(now.toString("ss")));
-	      msg.append(tr("<i>%1 is now known as %2.</i>").
-			 arg(item->text()).
-			 arg(QString::fromUtf8(name.constData(),
-					       name.length())));
-	      ui.messages->append(msg);
-	      ui.messages->verticalScrollBar()->setValue
-		(ui.messages->verticalScrollBar()->maximum());
-	      item->setText(QString::fromUtf8(name.constData(),
-					      name.length()));
-	      emit changed();
+		  QDateTime now(QDateTime::currentDateTime());
+		  QString msg("");
+
+		  msg.append
+		    (QString("[%1:%2<font color=grey>:%3</font>] ").
+		     arg(now.toString("hh")).
+		     arg(now.toString("mm")).
+		     arg(now.toString("ss")));
+		  msg.append(tr("<i>%1 is now known as %2.</i>").
+			     arg(item->text()).
+			     arg(QString::fromUtf8(name.constData(),
+						   name.length())));
+		  ui.messages->append(msg);
+		  ui.messages->verticalScrollBar()->setValue
+		    (ui.messages->verticalScrollBar()->maximum());
+		  item->setText(QString::fromUtf8(name.constData(),
+						  name.length()));
+		  emit changed();
+		}
+
+	      /*
+	      ** Update the client's time.
+	      */
+
+	      item = ui.clients->item(item->row(), 2);
+
+	      if(item) // Not a critical change. Do not notify the UI.
+		item->setText
+		  (QDateTime::currentDateTime().toString(Qt::ISODate));
 	    }
-
-	  /*
-	  ** Update the client's time.
-	  */
-
-	  item = ui.clients->item(items.value(0)->row(), 2);
-
-	  if(item) // Not a critical change. Do not notify the UI.
-	    item->setText
-	      (QDateTime::currentDateTime().toString(Qt::ISODate));
 	}
     }
 
