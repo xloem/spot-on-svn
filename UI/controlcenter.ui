@@ -373,8 +373,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>959</width>
-                <height>553</height>
+                <width>729</width>
+                <height>447</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2070,8 +2070,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>275</width>
-                 <height>553</height>
+                 <width>253</width>
+                 <height>428</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3435,7 +3435,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>951</width>
+             <width>871</width>
              <height>753</height>
             </rect>
            </property>
@@ -4393,8 +4393,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>969</width>
-             <height>563</height>
+             <width>491</width>
+             <height>521</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5962,7 +5962,7 @@
      <string>&amp;Tools</string>
     </property>
     <addaction name="action_Export_Listeners"/>
-    <addaction name="action_Import_Listeners"/>
+    <addaction name="action_Import_Neighbors"/>
     <addaction name="separator"/>
     <addaction name="action_Export_Public_Keys"/>
     <addaction name="action_Import_Public_Keys"/>
@@ -6081,9 +6081,9 @@
     <string>&amp;Export Listeners</string>
    </property>
   </action>
-  <action name="action_Import_Listeners">
+  <action name="action_Import_Neighbors">
    <property name="text">
-    <string>&amp;Import Listeners</string>
+    <string>&amp;Import Neighbors</string>
    </property>
   </action>
  </widget>
