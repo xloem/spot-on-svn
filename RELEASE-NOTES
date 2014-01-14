@@ -78,6 +78,9 @@
 41.  Added the Force Registration option to the Settings tab.
 42.  Removed PID comparison in libspoton_register_kernel(). A forced
      registration is now absolute.
+43.  The method spoton_crypt::init() incorrectly inspected the variable
+     m_cipherAlgorithm after the call to gcry_cipher_open(). The
+     variable m_cipherHandle must be validated instead.
 
 0.08 (12/23/2013)
 
