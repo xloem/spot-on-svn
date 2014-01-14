@@ -81,6 +81,9 @@
 43.  The method spoton_crypt::init() incorrectly inspected the variable
      m_cipherAlgorithm after the call to gcry_cipher_open(). The
      variable m_cipherHandle must be validated instead.
+44.  Because id uniqueness cannot be guaranteed on Buzz channels,
+     spoton_buzzpage::userStatus() has been updated so that it adjusts
+     all discovered clients.
 
 0.08 (12/23/2013)
 
