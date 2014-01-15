@@ -41,13 +41,13 @@
 20.  The method spoton_misc::savePublishedNeighbor() incorrectly trusted
      the transport parameter. Adjusted. Also relaxed inspection of the
      statusControl parameter.
-21.  Corrected a StarBeam issue with respect to the received checkbox. If the
-     kernel was active, enabling receivers did not function properly.
+21.  Corrected a StarBeam issue with respect to the received check box. If
+     the kernel was active, enabling receivers did not function properly.
 22.  Empty Buzz hash keys caused display issues. Corrected.
 23.  Use clang++ on FreeBSD.
 24.  Use QSqlQuery::lastInsertId() instead of custom queries. SQLite does
      support the feature.
-25.  Chat popup windows malfunctioned. Corrected. Also improved text
+25.  Chat pop-up windows malfunctioned. Corrected. Also improved text
      reflections.
 26.  Corrected vanishing SHA-1 hashes of received mosaics. Please remove
      starbeam.db. Please note that computing hashes of live mosaics
@@ -84,6 +84,15 @@
 44.  Because id uniqueness cannot be guaranteed on Buzz channels,
      spoton_buzzpage::userStatus() has been updated so that it adjusts
      all discovered clients.
+45.  Re-enabled the URLs tab. Please note that most of the functionality
+     within this tab is incomplete.
+46.  Added a simple data timer to the spoton_neighbor class. The timer
+     will be activated, if not currently active, whenever new socket
+     data is read. If the read data is deemed acceptable, the timer will
+     be reset. The timer's interval is set to 15 seconds.
+47.  Removed use of Qt::DirectConnection in spoton_neighbor::run().
+     Processing socket data should occur within the spoton_neighbor
+     thread.
 
 0.08 (12/23/2013)
 
