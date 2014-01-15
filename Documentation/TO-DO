@@ -94,6 +94,9 @@ Completed Items
 66.    Artificial impersonators.
 67.    Add url logic to spoton::addFriendsKey().
 68.    Provide a means of exporting and importing keys.
+69.    Inbound data should be time-tagged. Nodes must purge
+       containers of old data. Otherwise, one could be inundated with
+       seemingly-qualified data. Nasty!
 
 Ignored Items
 
@@ -139,9 +142,7 @@ Remaining Items
 14.    Database entries containing hashes can be maliciously twisted. Encrypt?
 15.    Echo star systems.
 16.    Allow pass-through flow of non-Spot-On data.
-17.    Inbound data should be time-tagged. Nodes must purge
-       containers of old data. Otherwise, one could be inundated with
-       seemingly-qualified data. Nasty!
+17.    Message of the day (motd).
 18.    Introduce load balancing of echoes. We're not interested in real-time
        responses. Congestion control is helpful, however, short graphs
        tend to be skewed.

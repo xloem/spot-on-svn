@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>993</width>
-    <height>677</height>
+    <width>1194</width>
+    <height>719</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -373,8 +373,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>729</width>
-                <height>447</height>
+                <width>1160</width>
+                <height>590</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1175,6 +1175,9 @@
                 </property>
                 <property name="verticalScrollBarPolicy">
                  <enum>Qt::ScrollBarAlwaysOn</enum>
+                </property>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
                 </property>
                 <property name="selectionBehavior">
                  <enum>QAbstractItemView::SelectRows</enum>
@@ -2070,8 +2073,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>253</width>
-                 <height>428</height>
+                 <width>300</width>
+                 <height>444</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3435,8 +3438,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>871</width>
-             <height>753</height>
+             <width>1026</width>
+             <height>789</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4393,8 +4396,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>491</width>
-             <height>521</height>
+             <width>1170</width>
+             <height>600</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5257,7 +5260,7 @@
           <item>
            <widget class="QCheckBox" name="acceptUrlKeys">
             <property name="text">
-             <string>Accept public &amp;keys.</string>
+             <string>Accept shared public &amp;keys.</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -5306,15 +5309,15 @@
                  <string>&amp;Name</string>
                 </property>
                 <property name="buddy">
-                 <cstring>urlNodeName</cstring>
+                 <cstring>urlName</cstring>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="urlNodeName"/>
+               <widget class="QLineEdit" name="urlName"/>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton">
+               <widget class="QPushButton" name="saveUrlName">
                 <property name="text">
                  <string>Save</string>
                 </property>
@@ -5322,6 +5325,30 @@
               </item>
               <item>
                <spacer name="horizontalSpacer_39">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QPushButton" name="urlActionMenu">
+                <property name="text">
+                 <string>Context Menu Reflection</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_36">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -5378,23 +5405,16 @@
                 <string>public_key_hash</string>
                </property>
               </column>
-              <column>
-               <property name="text">
-                <string>ignored</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>ignored</string>
-               </property>
-              </column>
              </widget>
             </item>
            </layout>
           </widget>
-          <widget class="QGroupBox" name="groupBox_5">
+          <widget class="QGroupBox" name="urlPolarizers">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="title">
-            <string>URL Distillers</string>
+            <string>URL Polarizers</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
             <property name="spacing">
@@ -5922,8 +5942,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>993</width>
-     <height>24</height>
+     <width>1194</width>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -6301,8 +6321,9 @@
   <tabstop>pulseSize</tabstop>
   <tabstop>transmit</tabstop>
   <tabstop>acceptUrlKeys</tabstop>
-  <tabstop>urlNodeName</tabstop>
-  <tabstop>pushButton</tabstop>
+  <tabstop>urlName</tabstop>
+  <tabstop>saveUrlName</tabstop>
+  <tabstop>urlActionMenu</tabstop>
   <tabstop>urlParticipants</tabstop>
   <tabstop>urlTab</tabstop>
   <tabstop>acceptlistDL</tabstop>

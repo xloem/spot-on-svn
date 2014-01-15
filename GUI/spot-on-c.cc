@@ -2278,6 +2278,7 @@ void spoton::prepareContextMenuMirrors(void)
 	       arg(m_settings.value("gui/iconSet", "nouve").toString())),
 	 tr("&Add participant as friend."),
 	 this, SLOT(slotShareChatPublicKeyWithParticipant(void)));
+      menu->addSeparator();
       menu->addAction(QIcon(QString(":/%1/copy.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
 				toString())),
@@ -2487,6 +2488,30 @@ void spoton::prepareContextMenuMirrors(void)
       menu->addAction(tr("Copy &Magnet"),
 		      this, SLOT(slotCopyTransmittedMagnet(void)));
       m_ui.transmittedActionMenu->setMenu(menu);
+    }
+
+  if(!m_ui.urlActionMenu->menu())
+    {
+      QMenu *menu = new QMenu(this);
+
+      menu->addAction
+	(QIcon(QString(":/%1/add.png").
+	       arg(m_settings.value("gui/iconSet", "nouve").toString())),
+	 tr("&Add participant as friend."),
+	 this, SLOT(slotShareUrlPublicKeyWithParticipant(void)));
+      menu->addSeparator();
+      menu->addAction(QIcon(QString(":/%1/copy.png").
+			    arg(m_settings.value("gui/iconSet", "nouve").
+				toString())),
+		      tr("&Copy Repleo to the clipboard buffer."),
+		      this, SLOT(slotCopyUrlFriendshipBundle(void)));
+      menu->addSeparator();
+      menu->addAction(QIcon(QString(":/%1/clear.png").
+			    arg(m_settings.value("gui/iconSet", "nouve").
+				toString())),
+		      tr("&Remove participant(s)."),
+		      this, SLOT(slotRemoveUrlParticipants(void)));
+      m_ui.urlActionMenu->setMenu(menu);
     }
 }
 
@@ -3295,4 +3320,245 @@ void spoton::slotImportNeighbors(void)
       QSqlDatabase::removeDatabase(connectionName);
       QApplication::restoreOverrideCursor();
     }
+}
+
+void spoton::slotSaveUrlName(void)
+{
+  QString str(m_ui.urlName->text().trimmed());
+
+  if(str.isEmpty())
+    {
+      str = "unknown";
+      m_ui.urlName->setText(str);
+    }
+
+  m_settings["gui/urlName"] = str.toUtf8();
+
+  QSettings settings;
+
+  settings.setValue("gui/urlName", str.toUtf8());
+  m_ui.urlName->selectAll();
+}
+
+void spoton::slotCopyUrlFriendshipBundle(void)
+{
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(!clipboard)
+    return;
+
+  if(!m_crypts.value("url", 0) ||
+     !m_crypts.value("url-signature", 0))
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.urlParticipants->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.urlParticipants->item
+	(row, 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    {
+      clipboard->clear();
+      return;
+    }
+
+  /*
+  ** 1. Generate some symmetric information, S.
+  ** 2. Encrypt S with the participant's public key.
+  ** 3. Encrypt our information (name, public keys, signatures) with the
+  **    symmetric key. Call our information T.
+  ** 4. Compute a keyed hash of T.
+  */
+
+  QString neighborOid("");
+  QByteArray cipherType(m_settings.value("gui/kernelCipherType",
+					 "randomized").toString().
+			toLatin1());
+  QByteArray hashKey;
+  QByteArray keyInformation;
+  QByteArray publicKey;
+  QByteArray symmetricKey;
+  QPair<QByteArray, QByteArray> gemini;
+  bool ok = true;
+
+  if(cipherType == "randomized")
+    cipherType = spoton_crypt::randomCipherType();
+
+  if(cipherType.isEmpty())
+    {
+      clipboard->clear();
+      return;
+    }
+
+  spoton_misc::retrieveSymmetricData(gemini,
+				     publicKey,
+				     symmetricKey,
+				     hashKey,
+				     neighborOid,
+				     cipherType,
+				     oid,
+				     m_crypts.value("url"),
+				     &ok);
+
+  if(!ok || publicKey.isEmpty() || symmetricKey.isEmpty())
+    {
+      clipboard->clear();
+      return;
+    }
+
+  keyInformation = spoton_crypt::publicKeyEncrypt
+    (symmetricKey.toBase64() + "@" +
+     cipherType.toBase64() + "@" +
+     hashKey.toBase64(), publicKey, &ok);
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QByteArray mySPublicKey(m_crypts.value("url-signature")->publicKey(&ok));
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QByteArray mySSignature
+    (m_crypts.value("url-signature")->digitalSignature(mySPublicKey, &ok));
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QByteArray myPublicKey(m_crypts.value("url")->publicKey(&ok));
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QByteArray mySignature(m_crypts.value("url")->
+			 digitalSignature(myPublicKey, &ok));
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QByteArray myName
+    (m_settings.value("gui/urlName", "unknown").toByteArray().
+     trimmed());
+
+  if(myName.isEmpty())
+    myName = "unknown";
+
+  QByteArray data;
+  spoton_crypt crypt(cipherType,
+		     QString("sha512"),
+		     QByteArray(),
+		     symmetricKey,
+		     0,
+		     0,
+		     QString(""));
+
+  data = crypt.encrypted(QByteArray("url").toBase64() + "@" +
+			 myName.toBase64() + "@" +
+			 myPublicKey.toBase64() + "@" +
+			 mySignature.toBase64() + "@" +
+			 mySPublicKey.toBase64() + "@" +
+			 mySSignature.toBase64(), &ok);
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  QByteArray hash(spoton_crypt::keyedHash(data, hashKey, "sha512", &ok));
+
+  if(!ok)
+    {
+      clipboard->clear();
+      return;
+    }
+
+  clipboard->setText("R" +
+		     keyInformation.toBase64() + "@" +
+		     data.toBase64() + "@" +
+		     hash.toBase64());
+}
+
+void spoton::slotRemoveUrlParticipants(void)
+{
+  if(!m_ui.urlParticipants->selectionModel()->hasSelection())
+    return;
+
+  QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+  mb.setIcon(QMessageBox::Question);
+  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+  mb.setWindowModality(Qt::WindowModal);
+  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+  mb.setText(tr("Are you sure that you wish to remove the selected "
+		"participant(s)?"));
+
+  if(mb.exec() != QMessageBox::Yes)
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QModelIndexList list
+	  (m_ui.urlParticipants->selectionModel()->
+	   selectedRows(1)); // OID
+	QSqlQuery query(db);
+
+	while(!list.isEmpty())
+	  {
+	    QVariant data(list.takeFirst().data());
+
+	    if(!data.isNull() && data.isValid())
+	      {
+		query.prepare("DELETE FROM friends_public_keys WHERE "
+			      "OID = ?");
+		query.bindValue(0, data.toString());
+		query.exec();
+	      }
+	  }
+
+	spoton_misc::purgeSignatureRelationships(db);
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }

@@ -231,6 +231,7 @@ class spoton: public QMainWindow
   void slotCopyMyURLPublicKey(void);
   void slotCopyOrPaste(void);
   void slotCopyTransmittedMagnet(void);
+  void slotCopyUrlFriendshipBundle(void);
   void slotCostChanged(int value);
   void slotDaysChanged(int value);
   void slotDeactivateKernel(void);
@@ -327,6 +328,7 @@ class spoton: public QMainWindow
   void slotRegenerateKey(void);
   void slotRemoveEmailParticipants(void);
   void slotRemoveParticipants(void);
+  void slotRemoveUrlParticipants(void);
   void slotReply(void);
   void slotResetAccountInformation(void);
   void slotResetAll(void);
@@ -340,6 +342,7 @@ class spoton: public QMainWindow
   void slotSaveKernelPath(void);
   void slotSaveNodeName(void);
   void slotSaveSslControlString(void);
+  void slotSaveUrlName(void);
   void slotScramble(bool state);
   void slotSecureMemoryPoolChanged(int value);
   void slotSelectDestination(void);

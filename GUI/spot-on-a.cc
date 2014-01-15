@@ -334,6 +334,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSaveNodeName(void)));
+  connect(m_ui.saveUrlName,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSaveUrlName(void)));
   connect(m_ui.saveEmailName,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -366,6 +370,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSaveEmailName(void)));
+  connect(m_ui.urlName,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSaveUrlName(void)));
   connect(m_ui.scrambler,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -878,6 +886,8 @@ spoton::spoton(void):QMainWindow()
     ("QTableWidget {selection-background-color: lightgreen}");
   m_ui.participants->setStyleSheet
     ("QTableWidget {selection-background-color: lightgreen}");
+  m_ui.urlParticipants->setStyleSheet
+    ("QTableWidget {selection-background-color: lightgreen}");
 
   QSettings settings;
 
@@ -1040,8 +1050,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.nodeName->setText
     (QString::fromUtf8(m_settings.value("gui/nodeName", "unknown").
 		       toByteArray()).trimmed());
-  m_ui.urlNodeName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
-  m_ui.urlNodeName->setText
+  m_ui.urlName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
+  m_ui.urlName->setText
     (QString::fromUtf8(m_settings.value("gui/urlName", "unknown").
 		       toByteArray()).trimmed());
   m_ui.receiveNova->setMaxLength
@@ -1211,7 +1221,6 @@ spoton::spoton(void):QMainWindow()
 
   m_ui.saltLength->setValue(m_settings.value("gui/saltLength", 512).toInt());
   m_ui.tab->removeTab(5); // Search
-  m_ui.tab->removeTab(7); // URLs
 
   if(spoton_crypt::passphraseSet())
     {
@@ -1315,7 +1324,12 @@ spoton::spoton(void):QMainWindow()
   m_ui.received->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.transmitted->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.transmittedMagnets->setContextMenuPolicy(Qt::CustomContextMenu);
+  m_ui.urlParticipants->setContextMenuPolicy(Qt::CustomContextMenu);
   connect(m_ui.emailParticipants,
+	  SIGNAL(customContextMenuRequested(const QPoint &)),
+	  this,
+	  SLOT(slotShowContextMenu(const QPoint &)));
+  connect(m_ui.urlParticipants,
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,
 	  SLOT(slotShowContextMenu(const QPoint &)));
@@ -1383,8 +1397,6 @@ spoton::spoton(void):QMainWindow()
   m_ui.urlParticipants->setColumnHidden(1, true); // OID
   m_ui.urlParticipants->setColumnHidden(2, true); // neighbor_oid
   m_ui.urlParticipants->setColumnHidden(3, true); // public_key_hash
-  m_ui.urlParticipants->setColumnHidden(4, true); // ignored
-  m_ui.urlParticipants->setColumnHidden(5, true); // ignored
   m_ui.emailParticipants->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   m_ui.etpMagnets->horizontalHeader()->setSortIndicator
@@ -1431,6 +1443,10 @@ spoton::spoton(void):QMainWindow()
 
   foreach(QAbstractButton *button,
 	  m_ui.participants->findChildren<QAbstractButton *> ())
+    button->setToolTip(tr("Broadcast"));
+
+  foreach(QAbstractButton *button,
+	  m_ui.urlParticipants->findChildren<QAbstractButton *> ())
     button->setToolTip(tr("Broadcast"));
 
   connect(&m_externalAddressDiscovererTimer,
@@ -4583,6 +4599,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 	 tr("&Add participant as friend."),
 	 this, SLOT(slotShareChatPublicKeyWithParticipant(void)));
 
+      menu.addSeparator();
       menu.addAction(QIcon(QString(":/%1/copy.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
@@ -4654,6 +4671,27 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("Copy &Magnet"),
 		     this, SLOT(slotCopyTransmittedMagnet(void)));
       menu.exec(m_ui.transmittedMagnets->mapToGlobal(point));
+    }
+  else if(m_ui.urlParticipants == sender())
+    {
+      menu.addAction
+	(QIcon(QString(":/%1/add.png").
+	       arg(m_settings.value("gui/iconSet", "nouve").toString())),
+	 tr("&Add participant as friend."),
+	 this, SLOT(slotShareUrlPublicKeyWithParticipant(void)));
+      menu.addSeparator();
+      menu.addAction(QIcon(QString(":/%1/copy.png").
+			   arg(m_settings.value("gui/iconSet", "nouve").
+			       toString())),
+		     tr("&Copy Repleo to the clipboard buffer."),
+		     this, SLOT(slotCopyUrlFriendshipBundle(void)));
+      menu.addSeparator();
+      menu.addAction(QIcon(QString(":/%1/clear.png").
+			   arg(m_settings.value("gui/iconSet", "nouve").
+			       toString())),
+		     tr("&Remove participant(s)."),
+		     this, SLOT(slotRemoveUrlParticipants(void)));
+      menu.exec(m_ui.urlParticipants->mapToGlobal(point));
     }
 }
 
@@ -5134,31 +5172,34 @@ void spoton::slotPopulateParticipants(void)
       {
 	updateParticipantsTable(db);
 
-	QList<int> rows;
-	QList<int> rowsE;
+	QList<int> rows;  // Chat
+	QList<int> rowsE; // E-Mail
+	QList<int> rowsU; // URLs
 	QModelIndexList list
 	  (m_ui.participants->selectionModel()->
 	   selectedRows(3)); // public_key_hash
 	QModelIndexList listE
 	  (m_ui.emailParticipants->selectionModel()->
 	   selectedRows(3)); // public_key_hash
+	QModelIndexList listU
+	  (m_ui.urlParticipants->selectionModel()->
+	   selectedRows(3)); // public_key_hash
 	QStringList hashes;
 	QStringList hashesE;
+	QStringList hashesU;
 	int hval = m_ui.participants->horizontalScrollBar()->value();
 	int hvalE = m_ui.emailParticipants->horizontalScrollBar()->value();
+	int hvalU = m_ui.urlParticipants->horizontalScrollBar()->value();
 	int row = 0;
 	int rowE = 0;
+	int rowU = 0;
 	int vval = m_ui.participants->verticalScrollBar()->value();
 	int vvalE = m_ui.emailParticipants->verticalScrollBar()->value();
+	int vvalU = m_ui.urlParticipants->verticalScrollBar()->value();
 
 	while(!list.isEmpty())
 	  {
 	    QVariant data(list.takeFirst().data());
-
-	    /*
-	    ** Do not select participants that are offline if
-	    ** the user does not wish to list them.
-	    */
 
 	    if(!data.isNull() && data.isValid())
 	      hashes.append(data.toString());
@@ -5172,12 +5213,23 @@ void spoton::slotPopulateParticipants(void)
 	      hashesE.append(data.toString());
 	  }
 
+	while(!listU.isEmpty())
+	  {
+	    QVariant data(listU.takeFirst().data());
+
+	    if(!data.isNull() && data.isValid())
+	      hashesU.append(data.toString());
+	  }
+
 	m_ui.emailParticipants->setSortingEnabled(false);
 	m_ui.emailParticipants->clearContents();
 	m_ui.emailParticipants->setRowCount(0);
 	m_ui.participants->setSortingEnabled(false);
 	m_ui.participants->clearContents();
 	m_ui.participants->setRowCount(0);
+	m_ui.urlParticipants->setSortingEnabled(false);
+	m_ui.urlParticipants->clearContents();
+	m_ui.urlParticipants->setRowCount(0);
 	disconnect(m_ui.participants,
 		   SIGNAL(itemChanged(QTableWidgetItem *)),
 		   this,
@@ -5199,7 +5251,7 @@ void spoton::slotPopulateParticipants(void)
 		      "gemini_hash_key, "
 		      "key_type "
 		      "FROM friends_public_keys "
-		      "WHERE key_type = 'chat' OR key_type = 'email'"))
+		      "WHERE key_type IN ('chat', 'email', 'url')"))
 	  while(query.next())
 	    {
 	      QIcon icon;
@@ -5367,7 +5419,7 @@ void spoton::slotPopulateParticipants(void)
 		      else
 			m_ui.participants->setItem(row - 1, i, item);
 		    }
-		  else // E-Mail!
+		  else if(keyType == "email")
 		    {
 		      if(i == 0)
 			{
@@ -5379,7 +5431,8 @@ void spoton::slotPopulateParticipants(void)
 			item = new QTableWidgetItem
 			  (QString::fromUtf8(query.value(i).toByteArray()));
 		      else if(i == 1 || i == 2 || i == 3)
-			item = new QTableWidgetItem(query.value(i).toString());
+			item = new QTableWidgetItem
+			  (query.value(i).toString());
 
 		      if(i == 0)
 			{
@@ -5411,6 +5464,51 @@ void spoton::slotPopulateParticipants(void)
 		      m_ui.emailParticipants->setItem
 			(rowE - 1, i, item);
 		    }
+		  else if(keyType == "url")
+		    {
+		      if(i == 0)
+			{
+			  rowU += 1;
+			  m_ui.urlParticipants->setRowCount(rowU);
+			}
+
+		      if(i == 0)
+			item = new QTableWidgetItem
+			  (QString::fromUtf8(query.value(i).toByteArray()));
+		      else if(i == 1 || i == 2 || i == 3)
+			item = new QTableWidgetItem
+			  (query.value(i).toString());
+
+		      if(i == 0)
+			{
+			  if(temporary)
+			    {
+			      item->setIcon
+				(QIcon(QString(":/%1/add.png").
+				       arg(m_settings.value("gui/iconSet",
+							    "nouve").
+					   toString())));
+			      item->setToolTip
+				(tr("User %1 requests your friendship.").
+				 arg(item->text()));
+			    }
+			  else
+			    item->setToolTip
+			      (query.value(3).toString().mid(0, 16) +
+			       "..." +
+			       query.value(3).toString().right(16));
+			}
+
+		      if(item)
+			{
+			  item->setData(Qt::UserRole, temporary);
+			  item->setFlags
+			    (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+			}
+
+		      m_ui.urlParticipants->setItem
+			(rowU - 1, i, item);
+		    }
 		}
 
 	      if(keyType == "chat")
@@ -5421,6 +5519,9 @@ void spoton::slotPopulateParticipants(void)
 
 	      if(hashesE.contains(query.value(3).toString()))
 		rowsE.append(rowE - 1);
+
+	      if(hashesU.contains(query.value(3).toString()))
+		rowsU.append(rowU - 1);
 	    }
 
 	connect(m_ui.participants,
@@ -5429,13 +5530,19 @@ void spoton::slotPopulateParticipants(void)
 		SLOT(slotGeminiChanged(QTableWidgetItem *)));
 	m_ui.emailParticipants->setSelectionMode
 	  (QAbstractItemView::MultiSelection);
-	m_ui.participants->setSelectionMode(QAbstractItemView::MultiSelection);
+	m_ui.participants->setSelectionMode
+	  (QAbstractItemView::MultiSelection);
+	m_ui.urlParticipants->setSelectionMode
+	  (QAbstractItemView::MultiSelection);
 
 	while(!rows.isEmpty())
 	  m_ui.participants->selectRow(rows.takeFirst());
 
 	while(!rowsE.isEmpty())
 	  m_ui.emailParticipants->selectRow(rowsE.takeFirst());
+
+	while(!rowsU.isEmpty())
+	  m_ui.urlParticipants->selectRow(rowsU.takeFirst());
 
 	m_ui.emailParticipants->setSelectionMode
 	  (QAbstractItemView::ExtendedSelection);
@@ -5452,6 +5559,14 @@ void spoton::slotPopulateParticipants(void)
 	m_ui.participants->horizontalHeader()->setStretchLastSection(true);
 	m_ui.participants->horizontalScrollBar()->setValue(hval);
 	m_ui.participants->verticalScrollBar()->setValue(vval);
+	m_ui.urlParticipants->setSelectionMode
+	  (QAbstractItemView::ExtendedSelection);
+	m_ui.urlParticipants->setSortingEnabled(true);
+	m_ui.urlParticipants->resizeColumnsToContents();
+	m_ui.urlParticipants->horizontalHeader()->
+	  setStretchLastSection(true);
+	m_ui.urlParticipants->horizontalScrollBar()->setValue(hvalU);
+	m_ui.urlParticipants->verticalScrollBar()->setValue(vvalU);
 
 	if(focusWidget)
 	  focusWidget->setFocus();

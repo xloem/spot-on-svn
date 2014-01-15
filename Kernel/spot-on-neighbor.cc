@@ -306,6 +306,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
     (spoton_kernel::
      setting("kernel/server_account_verification_window_msecs",
 	     15000).toInt());
+  m_dataPurgeTimer.setInterval(15000);
 
   if(spoton_kernel::setting("gui/kernelExternalIpInterval", -1).
      toInt() == 30)
@@ -601,6 +602,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
     (spoton_kernel::
      setting("kernel/server_account_verification_window_msecs",
 	     15000).toInt());
+  m_dataPurgeTimer.setInterval(15000);
 
   if(spoton_kernel::setting("gui/kernelExternalIpInterval", -1).
      toInt() == 30)
@@ -1033,18 +1035,37 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 
 void spoton_neighbor::run(void)
 {
+  disconnect(&m_dataPurgeTimer,
+	     SIGNAL(timeout(void)),
+	     this,
+	     SLOT(slotPurgeData(void)));
+  connect(&m_dataPurgeTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotPurgeData(void)));
+
   if(m_tcpSocket)
-    connect(m_tcpSocket,
-	    SIGNAL(readyRead(void)),
-	    this,
-	    SLOT(slotReadyRead(void)),
-	    Qt::DirectConnection);
+    {
+      disconnect(m_tcpSocket,
+		 SIGNAL(readyRead(void)),
+		 this,
+		 SLOT(slotReadyRead(void)));
+      connect(m_tcpSocket,
+	      SIGNAL(readyRead(void)),
+	      this,
+	      SLOT(slotReadyRead(void)));
+    }
   else if(m_udpSocket)
-    connect(m_udpSocket,
-	    SIGNAL(readyRead(void)),
-	    this,
-	    SLOT(slotReadyRead(void)),
-	    Qt::DirectConnection);
+    {
+      disconnect(m_udpSocket,
+		 SIGNAL(readyRead(void)),
+		 this,
+		 SLOT(slotReadyRead(void)));
+      connect(m_udpSocket,
+	      SIGNAL(readyRead(void)),
+	      this,
+	      SLOT(slotReadyRead(void)));
+    }
 
   exec();
 }
@@ -1078,7 +1099,12 @@ void spoton_neighbor::slotReadyRead(void)
 	}
 
   if(!data.isEmpty())
-    m_data.append(data);
+    {
+      m_data.append(data);
+
+      if(m_dataPurgeTimer.isActive())
+	m_dataPurgeTimer.start();
+    }
 
   if(m_data.contains(spoton_send::EOM))
     {
@@ -1096,6 +1122,8 @@ void spoton_neighbor::slotReadyRead(void)
 
 	  if(!data.isEmpty())
 	    {
+	      m_dataPurgeTimer.stop();
+
 	      if(spoton_kernel::messagingCacheContains(data))
 		rst = true;
 	      else
@@ -5088,4 +5116,21 @@ void spoton_neighbor::slotAuthenticationTimerTimeout(void)
      arg(m_address.toString()).
      arg(m_port));
   deleteLater();
+}
+
+void spoton_neighbor::slotPurgeData(void)
+{
+  /*
+  ** This method is executed within the data-processing thread.
+  */
+
+  if(!m_data.isEmpty())
+    spoton_misc::logError
+      (QString("spoton_neighbor::slotPurgeData(): "
+	       "purging %1 bytes from m_data for %2:%3.").
+       arg(m_data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
+
+  m_data.clear();
 }
