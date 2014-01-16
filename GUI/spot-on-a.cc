@@ -134,6 +134,7 @@ spoton::spoton(void):QMainWindow()
 	 SSLeay_version(SSLEAY_VERSION) : "OpenSSL is not supported").
      arg(QT_VERSION_STR).arg(sizeof(void *) * 8).
      arg(GCRYPT_VERSION));
+  m_ui.statisticsBox->setVisible(false);
 #ifndef SPOTON_LINKED_WITH_LIBGEOIP
   m_ui.geoipPath->setEnabled(false);
   m_ui.geoipPath->setToolTip(tr("Spot-On was configured without "
@@ -434,10 +435,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotResetAll(void)));
-  connect(m_ui.resetSpotOn,
+  connect(m_ui.showStatistics,
 	  SIGNAL(clicked(void)),
 	  this,
-	  SLOT(slotResetAll(void)));
+	  SLOT(slotShowStatistics(void)));
   connect(m_ui.sendMail,
 	  SIGNAL(clicked(void)),
 	  this,

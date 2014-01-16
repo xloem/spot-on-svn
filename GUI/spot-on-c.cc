@@ -3562,3 +3562,8 @@ void spoton::slotRemoveUrlParticipants(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 }
+
+void spoton::slotShowStatistics(void)
+{
+  m_ui.statisticsBox->setVisible(!m_ui.statisticsBox->isVisible());
+}

@@ -3516,7 +3516,6 @@ void spoton::slotSetIcons(void)
   m_ui.deactivateKernel->setIcon
     (QIcon(QString(":/%1/deactivate.png").arg(iconSet)));
   m_ui.setPassphrase->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
-  m_ui.resetSpotOn->setIcon(QIcon(QString(":/%1/refresh.png").arg(iconSet)));
 
   // StarBeam
 
