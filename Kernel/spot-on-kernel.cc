@@ -2331,11 +2331,12 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
   saltedPassphraseHash = setting("gui/saltedPassphraseHash", "").
     toByteArray();
 
-  if(saltedPassphraseHash ==
-     spoton_crypt::saltedPassphraseHash(setting("gui/hashType",
-						"sha512").toString(),
-					passphrase,
-					salt, error))
+  if(spoton_crypt::memcmp(saltedPassphraseHash,
+			  spoton_crypt::
+			  saltedPassphraseHash(setting("gui/hashType",
+						       "sha512").toString(),
+					       passphrase,
+					       salt, error)))
     if(error.isEmpty())
       {
 	QPair<QByteArray, QByteArray> keys

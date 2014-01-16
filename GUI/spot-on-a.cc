@@ -4330,10 +4330,11 @@ void spoton::slotValidatePassphrase(void)
   saltedPassphraseHash = m_settings.value("gui/saltedPassphraseHash", "").
     toByteArray();
 
-  if(saltedPassphraseHash ==
-     spoton_crypt::saltedPassphraseHash(m_ui.hashType->currentText(),
-					m_ui.passphrase->text(),
-					salt, error))
+  if(spoton_crypt::memcmp(saltedPassphraseHash,
+			  spoton_crypt::
+			  saltedPassphraseHash(m_ui.hashType->currentText(),
+					       m_ui.passphrase->text(),
+					       salt, error)))
     if(error.isEmpty())
       {
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
