@@ -120,58 +120,64 @@ Ignored Items
 11.    Entering geminis is difficult.
 12.    Participant count may be possible based on asymmetric ciphertexts.
        Research?
-13.    Optional OTR.
-
-Remaining Items
-
-1.     Zero-knowledge passphrase authentication.
-2.     Cosmic proxy.
-3.     Allow for other ciphers besides AES for e-mail.
-4.     Sequencial encryption. Verify that the user's key is independent of
-       the random key. Separate cipher algorithms?
-5.     Country flags and names for host names
-       (spoton_misc::countryCodeFromName()).
-6.     Anonymous post office boxes.
-7.     Scramblers are too periodic.
-8.     Hard kernel termination. Control session separation.
-9.     Colorful HTTP headers.
-10.    Custom protocol messages for rapid redeployment.
-11.    Remote kernel termination.
-12.    Artificial trust. All participants must play nicely. Zero-knowledge?
-13.    What to do about corrupt database values?
-14.    Database entries containing hashes can be maliciously twisted. Encrypt?
-15.    Echo star systems.
-16.    Allow pass-through flow of non-Spot-On data.
-17.    Message of the day (motd).
+13.    Optional OTR because it's so pretty.
+14     Zero-knowledge passphrase authentication.
+15.    Add SRP for account verification. What is this, the NSA?
+16.    Gold Bugs and Novas should have separate hash keys. Not really.
+       The data that's encrypted by gold bugs exists within data that is
+       linked with authentication. Similarly for novas. This is too silly.
+17.    Allow for other ciphers besides AES for e-mail.
 18.    Introduce load balancing of echoes. We're not interested in real-time
        responses. Congestion control is helpful, however, short graphs
        tend to be skewed.
-19.    Accounts and allowed IP addresses suffer selection issues.
-20.    QFSFileEngine::open: No file name specified: created from
+
+Remaining Items
+
+1.     Cosmic proxy.
+2.     Sequencial encryption. Verify that the user's key is independent of
+       the random key. Separate cipher algorithms?
+3.     Country flags and names for host names
+       (spoton_misc::countryCodeFromName()).
+4.     Anonymous post office boxes.
+5.     Scramblers are too periodic.
+6.     Hard kernel termination. Control session separation.
+7.     Colorful HTTP headers. Custom protocol messages for rapid redeployment.
+8.     Remote kernel termination.
+9.     Artificial trust. All participants must play nicely. Zero-knowledge?
+10.    What to do about corrupt database values?
+11.    Database entries containing hashes can be maliciously twisted. Encrypt?
+12.    Echo star systems.
+13.    Allow pass-through flow of non-Spot-On data.
+14.    Message of the day (motd).
+15.    Accounts and allowed IP addresses suffer selection issues.
+16.    QFSFileEngine::open: No file name specified: created from
        e-mail.
-21.    Support ECC, or not.
-22.    Perform calling over geminis.
-23.    Encrypted participants public keys. Keyed hashes using the public
+17.    Support ECC, or not.
+18.    Perform calling over geminis.
+19.    Encrypt participants public keys. Keyed hashes using the public
        key as the key? Slow retrieval.
-24.    Add support for crypto++.
-25.    Add SRP for accounts verification.
-26.    Account credentials should not be recorded via reversible encryption.
-27.    Add log filters.
-28.    There may be an issue with the validity of stored e-mail. That is,
+20.    Add support for crypto++.
+21.    Account credentials should not be recorded via reversible encryption.
+       Derive keys? I really like the two-step mutual authentication.
+22.    Add log filters.
+23.    There may be an issue with the validity of stored e-mail. That is,
        retrieving e-mail from another node may retrieve compromised content.
        Inspect it!
-29.    There is some redundant deciphering of data: findMessageType()
+24.    There is some redundant deciphering of data: findMessageType()
        followed by process() routines.
-30.    Move the kernel off of the local machine. Review all Common and
+25.    Move the kernel off of the local machine. Review all Common and
        GUI source for local database access. libspoton may require
-       changes with respect to kernel presence.
-31.    The timers that support gathering of external IP addresses burden
+       changes with respect to kernel presence. Or, create an access library.
+       Or, PostgreSQL!
+26.    The timers that support gathering of external IP addresses burden
        kernel objects with unnecessary work. If the machine's external IP
        address changes while connections are already established, the
        state timers will eventually cause objects to be reset and therefore
        new attempts will be made to capture the external IP addresses. Review!
-32.    Prevent inserts of own keys in friends_public_keys.db.
-33.    Wormholes for streamed data.
-34.    Per request, provide an automatic rewind mechanism with a timer.
-35.    Gold Bugs and Novas should have separate hash keys.
-36.    User configuration files are not secured.
+27.    Prevent inserts of own keys in friends_public_keys.db.
+28.    Wormholes for streamed data.
+29.    Per request, provide an automatic rewind mechanism with a timer.
+30.    User configuration files are not secured.
+31.    Artificial pauses. Suppose an inbound packet requires t0 time to
+       process. Pause the current thread for T - t0 seconds, where T is some
+       reasonable time.
