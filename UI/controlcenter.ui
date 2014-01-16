@@ -2144,7 +2144,7 @@
                         <string>If checked, the account will be removed after a client sucessfully authenticates itself.</string>
                        </property>
                        <property name="text">
-                        <string>&amp;One Time Account</string>
+                        <string>&amp;One-Time Account</string>
                        </property>
                       </widget>
                      </item>

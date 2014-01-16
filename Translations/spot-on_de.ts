@@ -2928,6 +2928,11 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished">8192</translation>
     </message>
     <message>
+        <location filename="../UI/controlcenter.ui" line="2147"/>
+        <source>&amp;One-Time Account</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../UI/controlcenter.ui" line="2218"/>
         <source>The keyword Any is supported.</source>
         <translation type="unfinished"></translation>
@@ -3368,11 +3373,6 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../UI/controlcenter.ui" line="2144"/>
         <source>If checked, the account will be removed after a client sucessfully authenticates itself.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../UI/controlcenter.ui" line="2147"/>
-        <source>&amp;One Time Account</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -2255,11 +2255,6 @@ Orientation: %23
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="2147"/>
-        <source>&amp;One Time Account</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../UI/controlcenter.ui" line="2218"/>
         <source>The keyword Any is supported.</source>
         <translation type="unfinished"></translation>
@@ -2629,6 +2624,11 @@ Orientation: %23
     <message>
         <location filename="../UI/controlcenter.ui" line="2087"/>
         <source>Accounts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/controlcenter.ui" line="2147"/>
+        <source>&amp;One-Time Account</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
