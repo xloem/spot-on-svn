@@ -93,6 +93,7 @@
 47.  Removed use of Qt::DirectConnection in spoton_neighbor::run().
      Processing socket data should occur within the spoton_neighbor
      thread.
+48.  Modified acceptance of shared key settings. False.
 
 0.08 (12/23/2013)
 
