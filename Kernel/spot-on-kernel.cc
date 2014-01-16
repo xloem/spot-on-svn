@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2011, 2012, 2013 Alexis Megas
+** Copyright (c) 2011 - 2014 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -131,7 +131,7 @@ static void sig_handler(int signum)
 		      &libspotonHandle,
 		      65536) == LIBSPOTON_ERROR_NONE) /*
 						      ** We don't need
-						      ** the stored secure
+						      ** the official secure
 						      ** memory size here.
 						      */
 #ifdef Q_OS_WIN32
@@ -337,7 +337,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	QTextStream cin(stdin);
 	QTextStream cout(stdout);
 
-	cout << "Passphrase: ";
+	cout << "Passphrase, please: ";
 	cout.flush();
 	input = cin.readLine(64);
 
@@ -351,7 +351,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
 #endif
 	qDebug();
-	qDebug() << "Validating... Please remain calm.";
+	qDebug() << "Validating the passphrase... Please remain calm.";
 
 	if(!initializeSecurityContainers(input))
 	  {
@@ -759,8 +759,8 @@ void spoton_kernel::prepareListeners(void)
 		      ** We must also be careful if we've never listened
 		      ** before because serverAddress() and serverPort()
 		      ** will certainly be undefined. Please notice
-		      ** that both methods return the values that
-		      ** were provided to the listener's constructor.
+		      ** that both aforementioned methods return the values
+		      ** that were provided to the listener's constructor.
 		      */
 
 		      if(listener)
