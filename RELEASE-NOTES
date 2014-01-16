@@ -91,9 +91,12 @@
      data is read. If the read data is deemed acceptable, the timer will
      be reset. The timer's interval is set to 15 seconds.
 47.  Removed use of Qt::DirectConnection in spoton_neighbor::run().
-     Processing socket data should occur within the spoton_neighbor
+     Processing socket data must occur within the spoton_neighbor
      thread.
-48.  Modified acceptance of shared key settings. False.
+48.  Modified default acceptance of shared key settings. Default: false.
+49.  Removed archived versions 0.01 through 0.06 from the source tree.
+50.  Ability to hide the Statistics panel in Settings. Removed the extra
+     Reset Spot-On push button.
 
 0.08 (12/23/2013)
 
