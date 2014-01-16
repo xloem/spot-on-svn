@@ -1906,6 +1906,7 @@ QByteArray spoton_crypt::publicKey(bool *ok)
   ** Returns the correct public key from idiotes.db.
   */
 
+  QByteArray data;
   QString connectionName("");
 
   {
@@ -1923,7 +1924,7 @@ QByteArray spoton_crypt::publicKey(bool *ok)
 
 	if(query.exec())
 	  if(query.next())
-	    m_publicKey = QByteArray::fromBase64
+	    data = QByteArray::fromBase64
 	      (query.value(0).toByteArray());
       }
 
@@ -1935,19 +1936,21 @@ QByteArray spoton_crypt::publicKey(bool *ok)
   {
     bool ok = true;
 
-    m_publicKey = decrypted(m_publicKey, &ok);
+    data = decrypted(data, &ok);
   }
 
-  if(m_publicKey.isEmpty())
+  if(data.isEmpty())
     {
       if(ok)
 	*ok = false;
-
-      spoton_misc::logError
-	("spoton_crypt::publicKey(): decrypted() failure.");
     }
-  else if(ok)
-    *ok = true;
+  else
+    {
+      if(ok)
+	*ok = true;
+
+      m_publicKey = data;
+    }
 
   return m_publicKey;
 }

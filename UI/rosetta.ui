@@ -69,7 +69,7 @@
          <string>Copy your public key pairs to the clipboard buffer.</string>
         </property>
         <property name="text">
-         <string>Copy &amp;Rosetta Keys</string>
+         <string>Copy &amp;Rosetta Public Keys</string>
         </property>
        </widget>
       </item>
@@ -193,7 +193,7 @@
       <item>
        <widget class="QPushButton" name="deleteContact">
         <property name="text">
-         <string>Delete</string>
+         <string>Remove</string>
         </property>
        </widget>
       </item>
@@ -392,7 +392,7 @@
      <x>0</x>
      <y>0</y>
      <width>803</width>
-     <height>24</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

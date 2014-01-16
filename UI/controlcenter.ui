@@ -199,7 +199,7 @@
           <item>
            <widget class="QLabel" name="label_33">
             <property name="text">
-             <string>&amp;Channel</string>
+             <string>Channel &amp;Key</string>
             </property>
             <property name="buddy">
              <cstring>channel</cstring>
@@ -245,7 +245,7 @@
           <item>
            <widget class="QLabel" name="label_36">
             <property name="text">
-             <string>&amp;Type</string>
+             <string>Channel &amp;Type</string>
             </property>
             <property name="buddy">
              <cstring>channelType</cstring>
@@ -398,9 +398,6 @@
                     <widget class="QCheckBox" name="acceptChatKeys">
                      <property name="text">
                       <string>Accept shared public &amp;keys.</string>
-                     </property>
-                     <property name="checked">
-                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
@@ -942,9 +939,6 @@
             <property name="text">
              <string>Accept shared public &amp;keys.</string>
             </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
            </widget>
           </item>
           <item>
@@ -1139,7 +1133,10 @@
                 <bool>true</bool>
                </property>
                <property name="textInteractionFlags">
-                <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+               <property name="openLinks">
+                <bool>false</bool>
                </property>
               </widget>
              </widget>
@@ -2073,8 +2070,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>300</width>
-                 <height>444</height>
+                 <width>311</width>
+                 <height>590</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3437,9 +3434,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
-             <width>1026</width>
-             <height>789</height>
+             <y>-223</y>
+             <width>1152</width>
+             <height>823</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -3986,7 +3983,7 @@
                    <item>
                     <widget class="QLabel" name="label">
                      <property name="text">
-                      <string>&amp;Cipher</string>
+                      <string>&amp;Cipher Type</string>
                      </property>
                      <property name="buddy">
                       <cstring>cipherType</cstring>
@@ -4003,7 +4000,7 @@
                    <item>
                     <widget class="QLabel" name="label_14">
                      <property name="text">
-                      <string>&amp;Hash</string>
+                      <string>&amp;Hash Type</string>
                      </property>
                      <property name="buddy">
                       <cstring>hashType</cstring>
@@ -4080,7 +4077,14 @@
                    <property name="spacing">
                     <number>5</number>
                    </property>
-                   <item row="1" column="0">
+                   <item row="4" column="2">
+                    <widget class="QPushButton" name="setPassphrase">
+                     <property name="text">
+                      <string>Set Passphrase</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
                     <widget class="QLabel" name="label_55">
                      <property name="text">
                       <string>P&amp;assphrase</string>
@@ -4090,14 +4094,14 @@
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="1">
+                   <item row="2" column="1">
                     <widget class="QLineEdit" name="passphrase1">
                      <property name="echoMode">
                       <enum>QLineEdit::Password</enum>
                      </property>
                     </widget>
                    </item>
-                   <item row="3" column="0">
+                   <item row="4" column="0">
                     <widget class="QLabel" name="label_56">
                      <property name="text">
                       <string>P&amp;assphrase Confirmation</string>
@@ -4107,26 +4111,32 @@
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="2">
+                   <item row="2" column="2">
                     <widget class="QLabel" name="label_58">
                      <property name="text">
                       <string>Minimum of 16 characters.</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="3" column="1">
+                   <item row="4" column="1">
                     <widget class="QLineEdit" name="passphrase2">
                      <property name="echoMode">
                       <enum>QLineEdit::Password</enum>
                      </property>
                     </widget>
                    </item>
-                   <item row="3" column="2">
-                    <widget class="QPushButton" name="setPassphrase">
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="label_74">
                      <property name="text">
-                      <string>Set Passphrase</string>
+                      <string>&amp;Name</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>username</cstring>
                      </property>
                     </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QLineEdit" name="username"/>
                    </item>
                   </layout>
                  </item>
@@ -4612,7 +4622,7 @@
                         <property name="spacing">
                          <number>5</number>
                         </property>
-                        <item row="0" column="0">
+                        <item row="0" column="4">
                          <widget class="QLabel" name="label_52">
                           <property name="text">
                            <string>&amp;Cipher Type</string>
@@ -4622,27 +4632,40 @@
                           </property>
                          </widget>
                         </item>
-                        <item row="0" column="1">
+                        <item row="1" column="2">
+                         <widget class="QLabel" name="label_51">
+                          <property name="text">
+                           <string>Hash &amp;Key</string>
+                          </property>
+                          <property name="buddy">
+                           <cstring>etpMacKey</cstring>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="5">
                          <widget class="QComboBox" name="etpCipherType">
                           <property name="sizeAdjustPolicy">
                            <enum>QComboBox::AdjustToContents</enum>
                           </property>
                          </widget>
                         </item>
+                        <item row="0" column="3">
+                         <widget class="QLineEdit" name="etpEncryptionKey"/>
+                        </item>
                         <item row="0" column="2">
                          <widget class="QLabel" name="label_50">
                           <property name="text">
-                           <string>&amp;Encryption Key</string>
+                           <string>Encryption &amp;Key</string>
                           </property>
                           <property name="buddy">
                            <cstring>etpEncryptionKey</cstring>
                           </property>
                          </widget>
                         </item>
-                        <item row="0" column="3">
-                         <widget class="QLineEdit" name="etpEncryptionKey"/>
+                        <item row="1" column="3">
+                         <widget class="QLineEdit" name="etpMacKey"/>
                         </item>
-                        <item row="1" column="0">
+                        <item row="1" column="4">
                          <widget class="QLabel" name="label_57">
                           <property name="text">
                            <string>&amp;Hash Type</string>
@@ -4652,25 +4675,12 @@
                           </property>
                          </widget>
                         </item>
-                        <item row="1" column="1">
+                        <item row="1" column="5">
                          <widget class="QComboBox" name="etpHashType">
                           <property name="sizeAdjustPolicy">
                            <enum>QComboBox::AdjustToContents</enum>
                           </property>
                          </widget>
-                        </item>
-                        <item row="1" column="2">
-                         <widget class="QLabel" name="label_51">
-                          <property name="text">
-                           <string>&amp;MAC Key</string>
-                          </property>
-                          <property name="buddy">
-                           <cstring>etpMacKey</cstring>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="1" column="3">
-                         <widget class="QLineEdit" name="etpMacKey"/>
                         </item>
                        </layout>
                       </item>
@@ -5261,9 +5271,6 @@
            <widget class="QCheckBox" name="acceptUrlKeys">
             <property name="text">
              <string>Accept shared public &amp;keys.</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -6276,6 +6283,7 @@
   <tabstop>hashType</tabstop>
   <tabstop>iterationCount</tabstop>
   <tabstop>saltLength</tabstop>
+  <tabstop>username</tabstop>
   <tabstop>passphrase1</tabstop>
   <tabstop>passphrase2</tabstop>
   <tabstop>setPassphrase</tabstop>
@@ -6294,10 +6302,10 @@
   <tabstop>etpMagnet</tabstop>
   <tabstop>pairRadio</tabstop>
   <tabstop>generate</tabstop>
-  <tabstop>etpCipherType</tabstop>
   <tabstop>etpEncryptionKey</tabstop>
-  <tabstop>etpHashType</tabstop>
+  <tabstop>etpCipherType</tabstop>
   <tabstop>etpMacKey</tabstop>
+  <tabstop>etpHashType</tabstop>
   <tabstop>addMagnet</tabstop>
   <tabstop>novas</tabstop>
   <tabstop>receiveNova</tabstop>

@@ -174,3 +174,4 @@ Remaining Items
 33.    Wormholes for streamed data.
 34.    Per request, provide an automatic rewind mechanism with a timer.
 35.    Gold Bugs and Novas should have separate hash keys.
+36.    User configuration files are not secured.

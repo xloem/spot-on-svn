@@ -1523,17 +1523,17 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 {
   if(keyType == "chat")
     {
-      if(!spoton_kernel::setting("gui/acceptChatKeys", true).toBool())
+      if(!spoton_kernel::setting("gui/acceptChatKeys", false).toBool())
 	return;
     }
   else if(keyType == "email")
     {
-      if(!spoton_kernel::setting("gui/acceptEmailKeys", true).toBool())
+      if(!spoton_kernel::setting("gui/acceptEmailKeys", false).toBool())
 	return;
     }
   else
     {
-      if(!spoton_kernel::setting("gui/acceptUrlKeys", true).toBool())
+      if(!spoton_kernel::setting("gui/acceptUrlKeys", false).toBool())
 	return;
     }
 

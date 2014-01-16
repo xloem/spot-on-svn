@@ -1054,6 +1054,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.urlName->setText
     (QString::fromUtf8(m_settings.value("gui/urlName", "unknown").
 		       toByteArray()).trimmed());
+  m_ui.username->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
   m_ui.receiveNova->setMaxLength
     (spoton_crypt::cipherKeyLength("aes256"));
   m_ui.sslControlString->setText
@@ -1104,11 +1105,11 @@ spoton::spoton(void):QMainWindow()
     }
 
   m_ui.acceptChatKeys->setChecked
-    (m_settings.value("gui/acceptChatKeys", true).toBool());
+    (m_settings.value("gui/acceptChatKeys", false).toBool());
   m_ui.acceptEmailKeys->setChecked
-    (m_settings.value("gui/acceptEmailKeys", true).toBool());
+    (m_settings.value("gui/acceptEmailKeys", false).toBool());
   m_ui.acceptUrlKeys->setChecked
-    (m_settings.value("gui/acceptUrlKeys", true).toBool());
+    (m_settings.value("gui/acceptUrlKeys", false).toBool());
   m_ui.hideOfflineParticipants->setChecked
     (m_settings.value("gui/hideOfflineParticipants", false).toBool());
   m_ui.keepOnlyUserDefinedNeighbors->setChecked
@@ -1281,7 +1282,7 @@ spoton::spoton(void):QMainWindow()
 	else
 	  m_ui.tab->setTabEnabled(i, false);
 
-      m_ui.passphrase1->setFocus();
+      m_ui.username->setFocus();
       updatePublicKeysLabel();
     }
 
@@ -3881,6 +3882,7 @@ void spoton::slotSetPassphrase(void)
   bool reencode = false;
   QString str1(m_ui.passphrase1->text());
   QString str2(m_ui.passphrase2->text());
+  QString str3(m_ui.username->text().trimmed());
 
   for(int i = str1.length() - 1; i >= 0; i--)
     if(!str1.at(i).isPrint())
@@ -3905,6 +3907,14 @@ void spoton::slotSetPassphrase(void)
 			    tr("The passphrases are not identical."));
       m_ui.passphrase1->selectAll();
       m_ui.passphrase1->setFocus();
+      return;
+    }
+  else if(str3.isEmpty())
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Please provide a name."));
+      m_ui.username->selectAll();
+      m_ui.username->setFocus();
       return;
     }
 
@@ -4223,7 +4233,9 @@ void spoton::slotSetPassphrase(void)
       ** Save the various entities.
       */
 
+      m_settings["gui/buzzName"] = str3.toUtf8();
       m_settings["gui/cipherType"] = m_ui.cipherType->currentText();
+      m_settings["gui/emailName"] = str3.toUtf8();
 
       if(m_ui.encryptionKeyType->currentIndex() == 0)
 	m_settings["gui/encryptionKey"] = "elg";
@@ -4240,6 +4252,8 @@ void spoton::slotSetPassphrase(void)
 	  m_ui.kernelCipherType->currentText();
 
       m_settings["gui/keySize"] = m_ui.keySize->currentText().toInt();
+      m_settings["gui/nodeName"] = str3.toUtf8();
+      m_settings["gui/rosettaName"] = str3.toUtf8();
       m_settings["gui/salt"] = salt;
       m_settings["gui/saltLength"] = m_ui.saltLength->value();
       m_settings["gui/saltedPassphraseHash"] = saltedPassphraseHash;
@@ -4251,9 +4265,13 @@ void spoton::slotSetPassphrase(void)
       else
 	m_settings["gui/signatureKey"] = "rsa";
 
+      m_settings["gui/urlName"] = str3.toUtf8();
+
       QSettings settings;
 
+      settings.setValue("gui/buzzName", m_settings["gui/buzzName"]);
       settings.setValue("gui/cipherType", m_settings["gui/cipherType"]);
+      settings.setValue("gui/emailName", m_settings["gui/emailName"]);
       settings.setValue("gui/encryptionKey", m_settings["gui/encryptionKey"]);
       settings.setValue("gui/hashType", m_settings["gui/hashType"]);
       settings.setValue("gui/iterationCount",
@@ -4261,12 +4279,19 @@ void spoton::slotSetPassphrase(void)
       settings.setValue("gui/kernelCipherType",
 			m_settings["gui/kernelCipherType"]);
       settings.setValue("gui/keySize", m_settings["gui/keySize"]);
+      settings.setValue("gui/nodeName", m_settings["gui/nodeName"]);
+      settings.setValue("gui/rosettaName", m_settings["gui/rosettaName"]);
       settings.setValue("gui/salt", m_settings["gui/salt"]);
       settings.setValue("gui/saltLength", m_settings["gui/saltLength"]);
       settings.setValue
 	("gui/saltedPassphraseHash", m_settings["gui/saltedPassphraseHash"]);
       settings.setValue
 	("gui/signatureKey", m_settings["gui/signatureKey"]);
+      settings.setValue("gui/urlName", m_settings["gui/urlName"]);
+      m_ui.buzzName->setText(m_ui.username->text());
+      m_ui.emailName->setText(m_ui.username->text());
+      m_ui.nodeName->setText(m_ui.username->text());
+      m_ui.urlName->setText(m_ui.username->text());
 
       QMessageBox::information
 	(this, tr("Spot-On: Information"),
