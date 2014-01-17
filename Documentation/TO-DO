@@ -181,3 +181,4 @@ Remaining Items
 31.    Artificial pauses. Suppose an inbound packet requires t0 time to
        process. Pause the current thread for T - t0 seconds, where T is some
        reasonable time.
+32.    Record received pulses.
