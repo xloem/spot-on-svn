@@ -178,6 +178,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(iconsChanged(void)),
 	  &m_logViewer,
 	  SLOT(slotSetIcons(void)));
+  connect(this,
+	  SIGNAL(iconsChanged(void)),
+	  &m_rosetta,
+	  SLOT(slotSetIcons(void)));
   connect(m_sb.authentication_request,
 	  SIGNAL(clicked(void)),
 	  this,

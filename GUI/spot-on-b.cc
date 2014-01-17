@@ -3558,7 +3558,6 @@ void spoton::slotSetIcons(void)
     (0, QIcon(QString(":/%1/down.png").arg(iconSet)));
   m_ui.urlTab->setTabIcon
     (1, QIcon(QString(":/%1/up.png").arg(iconSet)));
-
   emit iconsChanged();
 }
 
