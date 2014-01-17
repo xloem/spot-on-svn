@@ -3439,12 +3439,6 @@ bool spoton_crypt::memcmp(const QByteArray &bytes1,
 		  */
 }
 
-bool spoton_crypt::validateHashes(const QByteArray &hash1,
-				  const QByteArray &hash2)
-{
-  return spoton_crypt::memcmp(hash1, hash2);
-}
-
 int spoton_crypt::publicKeyCount(void) const
 {
   QString connectionName("");

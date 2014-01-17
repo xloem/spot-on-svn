@@ -1861,7 +1861,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 
 	      if(ok)
 		{
-		  if(spoton_crypt::validateHashes(computedHash, messageCode))
+		  if(spoton_crypt::memcmp(computedHash, messageCode))
 		    {
 		      message = crypt.decrypted(message, &ok);
 
@@ -1955,7 +1955,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 
 	      if(ok)
 		{
-		  if(spoton_crypt::validateHashes(computedHash, messageCode))
+		  if(spoton_crypt::memcmp(computedHash, messageCode))
 		    {
 		      spoton_crypt crypt(symmetricKeyAlgorithm,
 					 QString("sha512"),
@@ -2131,7 +2131,7 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 
 	  if(ok)
 	    {
-	      if(spoton_crypt::validateHashes(computedHash, messageCode))
+	      if(spoton_crypt::memcmp(computedHash, messageCode))
 		{
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
 				     QString("sha512"),
@@ -2391,8 +2391,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 			(data2, hashKey, "sha512", &ok);
 
 		      if(ok)
-			if(!spoton_crypt::validateHashes(computedHash,
-							 messageCode))
+			if(!spoton_crypt::memcmp(computedHash, messageCode))
 			  {
 			    spoton_misc::logError
 			      ("spoton_neighbor::"
@@ -2580,7 +2579,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 
 	  if(ok)
 	    {
-	      if(spoton_crypt::validateHashes(computedHash, messageCode))
+	      if(spoton_crypt::memcmp(computedHash, messageCode))
 		{
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
 				     QString("sha512"),
@@ -2728,7 +2727,7 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 
 	  if(ok)
 	    {
-	      if(spoton_crypt::validateHashes(computedHash, messageCode))
+	      if(spoton_crypt::memcmp(computedHash, messageCode))
 		{
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
 				     QString("sha512"),
@@ -2944,7 +2943,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 
 	      if(ok)
 		{
-		  if(spoton_crypt::validateHashes(computedHash, messageCode))
+		  if(spoton_crypt::memcmp(computedHash, messageCode))
 		    {
 		      message = crypt.decrypted(message, &ok);
 
@@ -3036,7 +3035,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 
 	      if(ok)
 		{
-		  if(spoton_crypt::validateHashes(computedHash, messageCode))
+		  if(spoton_crypt::memcmp(computedHash, messageCode))
 		    {
 		      spoton_crypt crypt(symmetricKeyAlgorithm,
 					 QString("sha512"),

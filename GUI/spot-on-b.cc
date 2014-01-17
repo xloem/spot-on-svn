@@ -1661,7 +1661,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  return;
 	}
 
-      if(!spoton_crypt::validateHashes(computedHash, hash))
+      if(!spoton_crypt::memcmp(computedHash, hash))
 	{
 	  QMessageBox::critical(this, tr("Spot-On: Error"),
 				tr("The computed hash does not match "
