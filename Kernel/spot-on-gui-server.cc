@@ -140,9 +140,6 @@ spoton_gui_server::spoton_gui_server(QObject *parent):
 
 spoton_gui_server::~spoton_gui_server()
 {
-  m_fileSystemWatcher.removePath
-    (spoton_misc::homePath() + QDir::separator() +
-     "kernel.db");
   m_guiSocketData.clear();
 
   QString connectionName("");

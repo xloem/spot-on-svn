@@ -1531,10 +1531,19 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
       if(!spoton_kernel::setting("gui/acceptEmailKeys", false).toBool())
 	return;
     }
-  else
+  else if(keyType == "url")
     {
       if(!spoton_kernel::setting("gui/acceptUrlKeys", false).toBool())
 	return;
+    }
+  else
+    {
+      spoton_misc::logError
+	(QString("spoton_neighbor::savePublicKey(): unexpected key type "
+		 "for %1:%2.").
+	 arg(m_address.toString()).
+	 arg(m_port));
+      return;
     }
 
   /*
@@ -1630,8 +1639,12 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 	    myName = spoton_kernel::setting("gui/nodeName",
 					    "unknown").
 	      toByteArray().trimmed();
-	  else
+	  else if(keyType == "email")
 	    myName = spoton_kernel::setting("gui/emailName",
+					    "unknown").
+	      toByteArray().trimmed();
+	  else
+	    myName = spoton_kernel::setting("gui/urlName",
 					    "unknown").
 	      toByteArray().trimmed();
 

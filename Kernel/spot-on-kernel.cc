@@ -1467,13 +1467,14 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
 
   Q_UNUSED(path);
   s_settingsMutex.lockForWrite();
-  s_settings.clear();
 
   QSettings settings;
 
   for(int i = 0; i < settings.allKeys().size(); i++)
-    s_settings.insert(settings.allKeys().at(i),
-		      settings.value(settings.allKeys().at(i)));
+    if(settings.value(settings.allKeys().at(i)) !=
+       s_settings.value(settings.allKeys().at(i)))
+      s_settings.insert(settings.allKeys().at(i),
+			settings.value(settings.allKeys().at(i)));
 
   spoton_misc::correctSettingsContainer(s_settings);
   s_settingsMutex.unlock();
