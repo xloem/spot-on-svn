@@ -120,6 +120,7 @@ class spoton: public QMainWindow
   QDateTime m_participantsLastModificationTime;
   QDateTime m_starsLastModificationTime;
   QHash<QByteArray, QString> m_neighborToOidMap;
+  QHash<QByteArray, quint64> m_receivedChatSequenceNumbers;
   QHash<QString, QByteArray> m_buzzIds;
   QHash<QString, QPointer<spoton_chatwindow> > m_chatWindows;
   QHash<QString, bool> m_booleans;

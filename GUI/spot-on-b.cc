@@ -220,34 +220,20 @@ void spoton::slotReceivedKernelMessage(void)
 		{
 		  QList<QByteArray> list(data.split('_'));
 
-		  if(list.size() != 6)
+		  if(list.size() != 5)
 		    continue;
 
 		  for(int i = 0; i < list.size(); i++)
 		    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-		  QByteArray hash;
-		  bool ok = true;
-		  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
-
-		  if(s_crypt)
-		    hash = spoton_crypt::keyedHash
-		      (list.value(0), s_crypt->symmetricKey(), "sha512", &ok);
-		  else
-		    hash = spoton_crypt::sha512Hash(list.value(0), &ok);
-
-		  if(!ok)
-		    {
-		      hash = spoton_crypt::weakRandomBytes(64);
-		      spoton_misc::logError
-			("spoton::slotReceivedKernelMessage(): "
-			 "hash failure. Using random bytes.");
-		    }
-
-		  QByteArray name(list.value(2));
-		  QByteArray message(list.value(3));
-		  QByteArray sequenceNumber(list.value(4));
-		  QByteArray utcDate(list.value(5));
+		  QByteArray hash(list.at(0)); /*
+					       ** SHA-512 hash of the sender's
+					       ** public key.
+					       */
+		  QByteArray name(list.value(1));
+		  QByteArray message(list.value(2));
+		  QByteArray sequenceNumber(list.value(3));
+		  QByteArray utcDate(list.value(4));
 		  QDateTime dateTime
 		    (QDateTime::fromString(utcDate.constData(),
 					   "hhmmss"));
@@ -255,6 +241,7 @@ void spoton::slotReceivedKernelMessage(void)
 		  QString content(QString::fromUtf8(message.constData(),
 						    message.length()));
 		  QString msg("");
+		  bool ok = true;
 
 		  if(name.isEmpty())
 		    name = "unknown";
@@ -265,8 +252,8 @@ void spoton::slotReceivedKernelMessage(void)
 		  ok = true;
 		  sequenceNumber.toULongLong(&ok);
 
-		  if(!ok)
-		    sequenceNumber = "-1";
+		  if(!ok || sequenceNumber == "0")
+		    sequenceNumber = "1";
 
 		  msg.append
 		    (QString("[%1:%2<font color=grey>:%3</font>]:").
@@ -284,8 +271,25 @@ void spoton::slotReceivedKernelMessage(void)
 		    msg.append
 		      ("[<font color=red>00:00:00</font>]");
 
-		  msg.append(QString(":%1: ").
-			     arg(sequenceNumber.constData()));
+		  quint64 previousSequenceNumber = 1;
+
+		  if(m_receivedChatSequenceNumbers.contains(hash))
+		    previousSequenceNumber =
+		      m_receivedChatSequenceNumbers[hash];
+		  else
+		    previousSequenceNumber = sequenceNumber.toULongLong() - 1;
+
+		  m_receivedChatSequenceNumbers[hash] =
+		    sequenceNumber.toULongLong();
+
+		  if(sequenceNumber.toULongLong() !=
+		     previousSequenceNumber + 1)
+		    msg.append(QString(":<font color=red>%1</font>: ").
+			       arg(sequenceNumber.constData()));
+		  else
+		    msg.append(QString(":%1: ").
+			       arg(sequenceNumber.constData()));
+
 		  msg.append
 		    (QString("<font color=blue>%1: </font>").
 		     arg(QString::fromUtf8(name.constData(),
@@ -317,10 +321,10 @@ void spoton::slotReceivedKernelMessage(void)
 
 		  msg.append(content);
 
-		  if(m_chatWindows.contains(list.value(1).toBase64()))
+		  if(m_chatWindows.contains(list.value(0).toBase64()))
 		    {
 		      QPointer<spoton_chatwindow> chat =
-			m_chatWindows.value(list.value(1).toBase64());
+			m_chatWindows.value(list.value(0).toBase64());
 
 		      if(chat)
 			{
@@ -571,6 +575,9 @@ void spoton::slotRemoveParticipants(void)
 
 	    if(m_chatSequenceNumbers.contains(data.toInt()))
 	      m_chatSequenceNumbers.remove(data.toInt());
+
+	    if(m_receivedChatSequenceNumbers.contains(hash.toByteArray()))
+	      m_receivedChatSequenceNumbers.remove(hash.toByteArray());
 
 	    if(m_chatWindows.contains(hash.toString()))
 	      {
