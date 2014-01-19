@@ -2017,19 +2017,13 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 				    (list.value(1),  // Name
 				     list.value(0)); // Public Key Hash
 
-				  QByteArray hash
-				    (s_crypt->
-				     keyedHash(originalData, &ok));
-
-				  if(!hash.isEmpty() &&
-				     !list.value(0).isEmpty() &&
+				  if(!list.value(0).isEmpty() &&
 				     !list.value(1).isEmpty() &&
 				     !list.value(2).isEmpty() &&
 				     !list.value(3).isEmpty() &&
 				     !list.value(4).isEmpty())
 				    emit receivedChatMessage
 				      ("message_" +
-				       hash.toBase64() + "_" +
 				       list.value(0).toBase64() + "_" +
 				       list.value(1).toBase64() + "_" +
 				       list.value(2).toBase64() + "_" +
@@ -3616,7 +3610,6 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 		QSqlQuery query(db);
 		bool ok = true;
 
-		query.prepare("PRAGMA synchronous = OFF");
 		query.prepare("UPDATE neighbors SET "
 			      "account_authenticated = ? "
 			      "WHERE OID = ? AND "
