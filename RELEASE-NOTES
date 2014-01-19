@@ -97,6 +97,8 @@
 49.  Removed archived versions 0.01 through 0.06 from the source tree.
 50.  Ability to hide the Statistics panel in Settings. Removed the extra
      Reset Spot-On push button.
+51.  Notify the user of order disturbances in messaging. Removed obsolete
+     hash computations.
 
 0.08 (12/23/2013)
 
