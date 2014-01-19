@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2011, 2012, 2013 Alexis Megas
+** Copyright (c) 2011 - 2014 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -495,7 +495,7 @@ void spoton_misc::logError(const QString &error)
 
   QFile file(homePath() + QDir::separator() + "error_log.dat");
 
-  if(file.size() >= 25 * 1000 * 1024)
+  if(file.size() >= 25 * 1024 * 1024)
     /*
     ** Too large!
     */
@@ -513,7 +513,7 @@ void spoton_misc::logError(const QString &error)
 
       file.write(now.toString().toLatin1());
       file.write(eol.toLatin1());
-      file.write(error.toLatin1());
+      file.write(error.trimmed().toLatin1());
       file.write(eol.toLatin1());
       file.write(eol.toLatin1());
       file.flush();
@@ -1336,18 +1336,21 @@ void spoton_misc::prepareUrlDatabases(void)
 
 void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 					const quint16 port,
-					const QString &transport,
+					const QString &p_transport,
 					const QString &statusControl,
 					const QString &orientation,
 					spoton_crypt *crypt)
 {
-  if(!crypt)
-    return;
-
   if(address.isNull())
+    return;
+  else if(!crypt)
     return;
 
   QString connectionName("");
+  QString transport(p_transport.toLower().trimmed());
+
+  if(!(transport == "tcp" || transport == "udp"))
+    transport = "tcp";
 
   {
     QSqlDatabase db = database(connectionName);
