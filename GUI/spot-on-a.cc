@@ -1422,7 +1422,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.postoffice->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   m_ui.received->horizontalHeader()->setSortIndicator
-    (2, Qt::AscendingOrder);
+    (3, Qt::AscendingOrder);
   m_ui.transmitted->horizontalHeader()->setSortIndicator
     (5, Qt::AscendingOrder);
   m_ui.urlParticipants->horizontalHeader()->setSortIndicator

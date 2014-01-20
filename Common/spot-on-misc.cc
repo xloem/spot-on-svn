@@ -428,20 +428,11 @@ void spoton_misc::prepareDatabases(void)
 							   ** Hash of
 							   ** the file.
 							   */
+		   "pulse_size TEXT NOT NULL, "
 		   "total_size TEXT NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS received_novas ("
 		   "nova TEXT NOT NULL, "
 		   "nova_hash TEXT PRIMARY KEY NOT NULL)"); // Keyed hash.
-	query.exec("CREATE TABLE IF NOT EXISTS received_pulses ("
-		   "position TEXT NOT NULL, "
-		   "position_hash TEXT NOT NULL, " // Keyed hash.
-		   "received_oid INTEGER NOT NULL, "
-		   "PRIMARY KEY (position_hash, received_oid), "
-		   "FOREIGN KEY (received_oid) REFERENCES "
-		   "received (OID))"); /*
-				       ** The foreign key constraint
-				       ** is flawed.
-				       */
 	query.exec("CREATE TABLE IF NOT EXISTS transmitted ("
 		   "file TEXT NOT NULL, "
 		   "hash TEXT NOT NULL, " /*

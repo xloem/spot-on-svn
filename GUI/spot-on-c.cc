@@ -1063,7 +1063,7 @@ void spoton::slotPopulateStars(void)
 	*/
 
 	list = m_ui.received->selectionModel()->selectedRows
-	  (2); // File
+	  (3); // File
 
 	if(!list.isEmpty())
 	  fileName = list.at(0).data().toString();
@@ -1074,7 +1074,8 @@ void spoton::slotPopulateStars(void)
 	m_ui.received->clearContents();
 	m_ui.received->setRowCount(0);
 	row = 0;
-	query.prepare("SELECT total_size, file, hash, OID FROM received");
+	query.prepare("SELECT pulse_size, total_size, file, hash, "
+		      "OID FROM received");
 
 	if(query.exec())
 	  while(query.next())
@@ -1088,7 +1089,7 @@ void spoton::slotPopulateStars(void)
 		{
 		  QTableWidgetItem *item = 0;
 
-		  if(i == 0 || i == 1 || i == 2)
+		  if(i >= 0 && i <= 3)
 		    {
 		      QByteArray bytes;
 
@@ -1103,7 +1104,7 @@ void spoton::slotPopulateStars(void)
 		      else
 			item = new QTableWidgetItem(tr("error"));
 
-		      if(i == 1)
+		      if(i == 2)
 			fileName = item->text();
 		    }
 		  else if(i == query.record().count() - 1)
@@ -1118,8 +1119,8 @@ void spoton::slotPopulateStars(void)
 		    }
 		}
 
-	      QTableWidgetItem *item1 = m_ui.received->item(row, 1);
-	      QTableWidgetItem *item2 = m_ui.received->item(row, 2);
+	      QTableWidgetItem *item1 = m_ui.received->item(row, 2);
+	      QTableWidgetItem *item2 = m_ui.received->item(row, 3);
 
 	      if(item1 && item2)
 		{
@@ -1145,8 +1146,8 @@ void spoton::slotPopulateStars(void)
 		      (row, 0, new QTableWidgetItem("100%"));
 		}
 
-	      if(m_ui.received->item(row, 2) &&
-		 fileName == m_ui.received->item(row, 2)->text())
+	      if(m_ui.received->item(row, 3) &&
+		 fileName == m_ui.received->item(row, 3)->text())
 		m_ui.received->selectRow(row);
 
 	      row += 1;
@@ -1763,7 +1764,6 @@ void spoton::slotDeleteAllReceived(void)
 	QSqlQuery query(db);
 
 	query.exec("DELETE FROM received");
-	query.exec("DELETE FROM received_pulses");
       }
 
     db.close();
@@ -1805,9 +1805,6 @@ void spoton::slotDeleteReceived(void)
 		      "OID = ?");
 	query.bindValue(0, oid);
 	query.exec();
-	query.exec("DELETE FROM received_pulses WHERE "
-		   "received_oid NOT IN "
-		   "(SELECT OID FROM received)");
       }
 
     db.close();
@@ -1932,7 +1929,7 @@ void spoton::slotComputeFileHash(void)
   QTableWidgetItem *item = 0;
 
   if(m_ui.received == table)
-    item = table->item(table->currentRow(), 2); // File
+    item = table->item(table->currentRow(), 3); // File
   else
     item = table->item(table->currentRow(), 5); // File
 
@@ -2037,7 +2034,7 @@ void spoton::slotCopyFileHash(void)
   QTableWidgetItem *item = 0;
 
   if(m_ui.received == table)
-    item = table->item(table->currentRow(), 3); // Hash
+    item = table->item(table->currentRow(), 4); // Hash
   else
     item = table->item(table->currentRow(), 7); // Hash
 

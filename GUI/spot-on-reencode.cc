@@ -1016,7 +1016,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		}
 	    }
 
-	if(query.exec("SELECT file, file_hash, hash, total_size "
+	if(query.exec("SELECT file, file_hash, hash, pulse_size, total_size "
 		      "FROM received"))
 	  while(query.next())
 	    {
@@ -1028,6 +1028,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "SET file = ?, "
 				  "file_hash = ?, "
 				  "hash = ?, "
+				  "pulse_size = ?, "
 				  "total_size = ? "
 				  "WHERE file_hash = ?");
 	      bytes = oldCrypt->decrypted(QByteArray::
@@ -1073,7 +1074,18 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		updateQuery.bindValue
 		  (3, newCrypt->encrypted(bytes, &ok).toBase64());
 
-	      updateQuery.bindValue(4, query.value(1));
+	      if(ok)
+		bytes = oldCrypt->decrypted(QByteArray::
+					    fromBase64(query.
+						       value(4).
+						       toByteArray()),
+					    &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (4, newCrypt->encrypted(bytes, &ok).toBase64());
+
+	      updateQuery.bindValue(5, query.value(1));
 
 	      if(ok)
 		updateQuery.exec();

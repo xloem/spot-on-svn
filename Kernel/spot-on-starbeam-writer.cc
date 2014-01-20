@@ -232,9 +232,9 @@ void spoton_starbeam_writer::slotProcessData(void)
 
 	query.prepare
 	  ("INSERT OR REPLACE INTO received "
-	   "(file, file_hash, hash, total_size) "
+	   "(file, file_hash, hash, pulse_size, total_size) "
 	   "VALUES (?, ?, (SELECT hash FROM received WHERE file_hash = ?), "
-	   "?)");
+	   "?, ?)");
 
 	if(ok)
 	  query.bindValue
@@ -250,7 +250,12 @@ void spoton_starbeam_writer::slotProcessData(void)
 
 	if(ok)
 	  query.bindValue
-	    (3, s_crypt->encrypted(QByteArray::number(totalSize), &ok).
+	    (3, s_crypt->encrypted(QByteArray::number(pulseSize), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (4, s_crypt->encrypted(QByteArray::number(totalSize), &ok).
 	     toBase64());
 
 	if(ok)
