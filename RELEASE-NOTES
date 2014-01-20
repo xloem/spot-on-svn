@@ -99,6 +99,10 @@
      Reset Spot-On push button.
 51.  Notify the user of order disturbances in messaging. Removed obsolete
      hash computations.
+52.  Removed the table received_pulses from starbeam.db. Added
+     pulse_size to the received table. Please remove starbeam.db. It's
+     not practical to record data concerning received pulses. Instead,
+     a future option will locate absent pulses within a mosaic.
 
 0.08 (12/23/2013)
 
