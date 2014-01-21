@@ -2295,7 +2295,7 @@
           <item>
            <widget class="QPushButton" name="toolButtonCopyToClipboard">
             <property name="toolTip">
-             <string>Copy your public keys to the clipboard buffer.</string>
+             <string>Copy your public key pairs to the clipboard buffer.</string>
             </property>
             <property name="text">
              <string>Copy Public Keys</string>
