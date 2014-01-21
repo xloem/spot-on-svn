@@ -102,7 +102,14 @@
 52.  Removed the table received_pulses from starbeam.db. Added
      pulse_size to the received table. Please remove starbeam.db. It's
      not practical to record data concerning received pulses. Instead,
-     a future option will locate absent pulses within a mosaic.
+     a future option will locate discontinuities within a mosaic.
+53.  The method spoton_crypt::saltedPassphraseHash() did not exit properly
+     if the provided passphrase or salt were empty. Corrected. Also, inspect
+     the provided hash type.
+54.  All versions of spoton_crypt::keyedHash() failed to set
+     the validation parameters to true on success. Corrected.
+55.  Some minimal inspection of hashes should be performed before comparing
+     them.
 
 0.08 (12/23/2013)
 
