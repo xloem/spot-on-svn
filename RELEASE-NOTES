@@ -110,6 +110,7 @@
      the validation parameters to true on success. Corrected.
 55.  Some minimal inspection of hashes should be performed before comparing
      them.
+56.  Replaced C-style casts. Removed redundant casts.
 
 0.08 (12/23/2013)
 
