@@ -395,8 +395,8 @@ void spoton_listener::slotTimeout(void)
 			if(m_tcpServer)
 			  if(query.value(1).toInt() != maxPendingConnections())
 			    {
-			      int maximumPendingConnections = query.value(1).
-				toInt();
+			      int maximumPendingConnections =
+				qAbs(query.value(1).toInt());
 
 			      if(!maximumPendingConnections)
 				maximumPendingConnections = 1;

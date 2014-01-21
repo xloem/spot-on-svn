@@ -708,7 +708,7 @@ void spoton_kernel::prepareListeners(void)
 
 		      if(ok)
 			{
-			  int maximumClients = query.value(5).toInt();
+			  int maximumClients = qAbs(query.value(5).toInt());
 
 			  if(!maximumClients)
 			    maximumClients = 1;
