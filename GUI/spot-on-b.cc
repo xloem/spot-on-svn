@@ -85,7 +85,7 @@ void spoton::slotSendMessage(void)
 
       if(!data.isNull() && data.isValid())
 	{
-	  QByteArray message("");
+	  QByteArray message;
 	  QByteArray name(m_settings.value("gui/nodeName", "unknown").
 			  toByteArray().trimmed());
 
@@ -1668,7 +1668,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  return;
 	}
 
-      if(!spoton_crypt::memcmp(computedHash, hash))
+      if(computedHash.isEmpty() || hash.isEmpty() ||
+	 !spoton_crypt::memcmp(computedHash, hash))
 	{
 	  QMessageBox::critical(this, tr("Spot-On: Error"),
 				tr("The computed hash does not match "

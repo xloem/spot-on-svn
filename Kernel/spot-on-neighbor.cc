@@ -795,7 +795,7 @@ void spoton_neighbor::slotTimeout(void)
 						  toByteArray()),
 			   &ok).constData();
 
-			if(m_isUserDefined)
+			if(m_isUserDefined && !m_accountAuthenticated)
 			  {
 			    QByteArray name
 			      (QByteArray::fromBase64(query.value(5).
@@ -811,6 +811,12 @@ void spoton_neighbor::slotTimeout(void)
 			      {
 				m_accountName = name;
 				m_accountPassword = password;
+
+				/*
+				** What if m_accountName or m_accountPassword
+				** is empty?
+				*/
+
 				m_accountTimer.start();
 			      }
 			  }
@@ -1874,7 +1880,8 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 
 	      if(ok)
 		{
-		  if(spoton_crypt::memcmp(computedHash, messageCode))
+		  if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
+		     spoton_crypt::memcmp(computedHash, messageCode))
 		    {
 		      message = crypt.decrypted(message, &ok);
 
@@ -1968,7 +1975,8 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 
 	      if(ok)
 		{
-		  if(spoton_crypt::memcmp(computedHash, messageCode))
+		  if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
+		     spoton_crypt::memcmp(computedHash, messageCode))
 		    {
 		      spoton_crypt crypt(symmetricKeyAlgorithm,
 					 QString("sha512"),
@@ -2138,7 +2146,8 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 
 	  if(ok)
 	    {
-	      if(spoton_crypt::memcmp(computedHash, messageCode))
+	      if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
+		 spoton_crypt::memcmp(computedHash, messageCode))
 		{
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
 				     QString("sha512"),
@@ -2398,7 +2407,8 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 			(data2, hashKey, "sha512", &ok);
 
 		      if(ok)
-			if(!spoton_crypt::memcmp(computedHash, messageCode))
+			if(computedHash.isEmpty() || messageCode.isEmpty() ||
+			   !spoton_crypt::memcmp(computedHash, messageCode))
 			  {
 			    spoton_misc::logError
 			      ("spoton_neighbor::"
@@ -2586,7 +2596,8 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 
 	  if(ok)
 	    {
-	      if(spoton_crypt::memcmp(computedHash, messageCode))
+	      if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
+		 spoton_crypt::memcmp(computedHash, messageCode))
 		{
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
 				     QString("sha512"),
@@ -2734,7 +2745,8 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 
 	  if(ok)
 	    {
-	      if(spoton_crypt::memcmp(computedHash, messageCode))
+	      if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
+		 spoton_crypt::memcmp(computedHash, messageCode))
 		{
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
 				     QString("sha512"),
@@ -2950,7 +2962,8 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 
 	      if(ok)
 		{
-		  if(spoton_crypt::memcmp(computedHash, messageCode))
+		  if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
+		     spoton_crypt::memcmp(computedHash, messageCode))
 		    {
 		      message = crypt.decrypted(message, &ok);
 
@@ -3042,7 +3055,8 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 
 	      if(ok)
 		{
-		  if(spoton_crypt::memcmp(computedHash, messageCode))
+		  if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
+		     spoton_crypt::memcmp(computedHash, messageCode))
 		    {
 		      spoton_crypt crypt(symmetricKeyAlgorithm,
 					 QString("sha512"),
@@ -3538,7 +3552,9 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 
 	      if(ok)
 		{
-		  if(spoton_crypt::memcmp(newSaltedCredentials,
+		  if(!newSaltedCredentials.isEmpty() &&
+		     !saltedCredentials.isEmpty() &&
+		     spoton_crypt::memcmp(newSaltedCredentials,
 					  saltedCredentials))
 		    {
 		      m_accountAuthenticated = true;
@@ -3555,7 +3571,9 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 
 		      if(ok)
 			{
-			  if(spoton_crypt::memcmp(newSaltedCredentials,
+			  if(!newSaltedCredentials.isEmpty() &&
+			     !saltedCredentials.isEmpty() &&
+			     spoton_crypt::memcmp(newSaltedCredentials,
 						  saltedCredentials))
 			    {
 			      m_accountAuthenticated = true;
@@ -4396,6 +4414,12 @@ void spoton_neighbor::slotPeerVerifyError(const QSslError &error)
 	if(!m_allowExceptions)
 	  if(!spoton_crypt::memcmp(m_peerCertificate.toPem(),
 				   m_tcpSocket->peerCertificate().toPem()))
+	    /*
+	    ** Do we really need to verify that m_peerCertificate.toPem()
+	    ** is empty? What if m_tcpSocket->peerCertificate().toPem() is
+	    ** empty? We do verify that both m_peerCertificate and
+	    ** m_tcpSocket->peerCertificate() are not void.
+	    */
 	    {
 	      spoton_misc::logError
 		(QString("spoton_neighbor::slotPeerVerifyError(): "

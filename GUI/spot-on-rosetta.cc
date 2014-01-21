@@ -671,7 +671,8 @@ void spoton_rosetta::slotConvert(void)
 
       if(ok)
 	{
-	  if(!spoton_crypt::memcmp(computedHash, messageCode))
+	  if(computedHash.isEmpty() || messageCode.isEmpty() ||
+	     !spoton_crypt::memcmp(computedHash, messageCode))
 	    {
 	      error = tr("The computed hash does not match the provided "
 			 "hash.");

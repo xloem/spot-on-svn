@@ -960,7 +960,8 @@ QPair<QByteArray, QByteArray> spoton_misc::findGeminiInCosmos
 						   "sha512", &ok));
 
 			if(ok)
-			  if(spoton_crypt::memcmp(computedHash, hash))
+			  if(!computedHash.isEmpty() && !hash.isEmpty() &&
+			     spoton_crypt::memcmp(computedHash, hash))
 			    break; // We have something!
 		      }
 		}
@@ -1907,7 +1908,8 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 		       toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
 
 		  if(ok)
-		    if(spoton_crypt::memcmp(salted, saltedCredentials))
+		    if(!salted.isEmpty() && !saltedCredentials.isEmpty() &&
+		       spoton_crypt::memcmp(salted, saltedCredentials))
 		      {
 			found = true;
 			break;
@@ -1920,7 +1922,8 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 		       toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
 
 		  if(ok)
-		    if(spoton_crypt::memcmp(salted, saltedCredentials))
+		    if(!salted.isEmpty() && !saltedCredentials.isEmpty() &&
+		       spoton_crypt::memcmp(salted, saltedCredentials))
 		      {
 			found = true;
 			break;

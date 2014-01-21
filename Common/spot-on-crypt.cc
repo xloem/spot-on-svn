@@ -332,6 +332,7 @@ QByteArray spoton_crypt::saltedValue(const QString &hashType,
 		      static_cast<void *> (hash.data()),
 		      static_cast<const void *> (salted.constData()),
 		      static_cast<size_t> (salted.length()));
+
  done_label:
   return hash;
 }
@@ -342,15 +343,24 @@ QByteArray spoton_crypt::saltedPassphraseHash(const QString &hashType,
 					      QString &error)
 {
   QByteArray saltedPassphraseHash;
-  QByteArray saltedPassphrase("");
-  int hashAlgorithm = gcry_md_map_name(hashType.toLatin1().constData());
+  QByteArray saltedPassphrase;
+  int hashAlgorithm = 0;
   unsigned int length = 0;
+
+  if(hashType.trimmed().isEmpty())
+    {
+      error = QObject::tr("empty hashType");
+      spoton_misc::logError("spoton_crypt::saltedPassphrase(): "
+			    "empty hashType.");
+      goto done_label;
+    }
 
   if(passphrase.trimmed().isEmpty())
     {
       error = QObject::tr("empty passphrase");
       spoton_misc::logError("spoton_crypt::saltedPassphrase(): "
 			    "empty passphrase.");
+      goto done_label;
     }
 
   if(salt.isEmpty())
@@ -358,7 +368,10 @@ QByteArray spoton_crypt::saltedPassphraseHash(const QString &hashType,
       error = QObject::tr("empty salt");
       spoton_misc::logError("spoton_crypt::saltedPassphrase(): "
 			    "empty salt.");
+      goto done_label;
     }
+
+  hashAlgorithm = gcry_md_map_name(hashType.toLatin1().constData());
 
   if(hashAlgorithm == 0)
     {
@@ -389,6 +402,7 @@ QByteArray spoton_crypt::saltedPassphraseHash(const QString &hashType,
 		      static_cast<const void *> (saltedPassphrase.
 						 constData()),
 		      static_cast<size_t> (saltedPassphrase.length()));
+
  done_label:
   return saltedPassphraseHash;
 }
@@ -1382,6 +1396,9 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data, bool *ok) const
 
 	      if(length > 0)
 		{
+		  if(ok)
+		    *ok = true;
+
 		  hash.resize(length);
 		  memcpy(static_cast<void *> (hash.data()),
 			 static_cast<const void *> (buffer),
@@ -1937,6 +1954,9 @@ QByteArray spoton_crypt::publicKey(bool *ok)
     bool ok = true;
 
     data = decrypted(data, &ok);
+
+    if(!ok)
+      data.clear();
   }
 
   if(data.isEmpty())
@@ -1976,6 +1996,9 @@ QByteArray spoton_crypt::publicKeyHash(bool *ok)
 	bool ok = true;
 
 	hash = shaXHash(m_hashAlgorithm, m_publicKey, &ok);
+
+	if(!ok)
+	  hash.clear();
       }
     }
 
@@ -2260,6 +2283,9 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data,
 
 	      if(length > 0)
 		{
+		  if(ok)
+		    *ok = true;
+
 		  hash.resize(length);
 		  memcpy(static_cast<void *> (hash.data()),
 			 static_cast<const void *> (buffer),
@@ -3434,7 +3460,8 @@ bool spoton_crypt::memcmp(const QByteArray &bytes1,
     rc |= a.at(i) ^ b.at(i);
 
   return rc == 0; /*
-		  ** Return true if bytes1 and bytes2 are identical.
+		  ** Return true if bytes1 and bytes2 are identical or
+		  ** if both bytes1 and bytes2 are empty.
 		  ** Perhaps this final comparison can be enhanced.
 		  */
 }

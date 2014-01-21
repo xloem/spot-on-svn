@@ -2323,21 +2323,18 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 {
-  QByteArray salt;
-  QByteArray saltedPassphraseHash;
+  QByteArray computedHash;
+  QByteArray salt(setting("gui/salt", "").toByteArray());
+  QByteArray saltedPassphraseHash
+    (setting("gui/saltedPassphraseHash", "").toByteArray());
   QString error("");
   bool ok = false;
 
-  salt = setting("gui/salt", "").toByteArray();
-  saltedPassphraseHash = setting("gui/saltedPassphraseHash", "").
-    toByteArray();
+  computedHash = spoton_crypt::saltedPassphraseHash
+    (setting("gui/hashType", "sha512").toString(), passphrase, salt, error);
 
-  if(spoton_crypt::memcmp(saltedPassphraseHash,
-			  spoton_crypt::
-			  saltedPassphraseHash(setting("gui/hashType",
-						       "sha512").toString(),
-					       passphrase,
-					       salt, error)))
+  if(!computedHash.isEmpty() && !saltedPassphraseHash.isEmpty() &&
+     spoton_crypt::memcmp(computedHash, saltedPassphraseHash))
     if(error.isEmpty())
       {
 	QPair<QByteArray, QByteArray> keys
@@ -2721,7 +2718,8 @@ QList<QByteArray> spoton_kernel::findBuzzKey
 	(data, it.value().value(2), it.value().value(3), &ok);
 
       if(ok)
-	if(spoton_crypt::memcmp(computedHash, hash))
+	if(!computedHash.isEmpty() && !hash.isEmpty() &&
+	   spoton_crypt::memcmp(computedHash, hash))
 	  {
 	    list = it.value();
 	    break;

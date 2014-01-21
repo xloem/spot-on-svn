@@ -4326,19 +4326,17 @@ void spoton::slotSetPassphrase(void)
 
 void spoton::slotValidatePassphrase(void)
 {
-  QByteArray salt;
-  QByteArray saltedPassphraseHash;
+  QByteArray computedHash;
+  QByteArray salt(m_settings.value("gui/salt", "").toByteArray());
+  QByteArray saltedPassphraseHash
+    (m_settings.value("gui/saltedPassphraseHash", "").toByteArray());
   QString error("");
 
-  salt = m_settings.value("gui/salt", "").toByteArray();
-  saltedPassphraseHash = m_settings.value("gui/saltedPassphraseHash", "").
-    toByteArray();
+  computedHash = spoton_crypt::saltedPassphraseHash
+    (m_ui.hashType->currentText(), m_ui.passphrase->text(), salt, error);
 
-  if(spoton_crypt::memcmp(saltedPassphraseHash,
-			  spoton_crypt::
-			  saltedPassphraseHash(m_ui.hashType->currentText(),
-					       m_ui.passphrase->text(),
-					       salt, error)))
+  if(!computedHash.isEmpty() && !saltedPassphraseHash.isEmpty() &&
+     spoton_crypt::memcmp(computedHash, saltedPassphraseHash))
     if(error.isEmpty())
       {
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));

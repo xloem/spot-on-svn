@@ -105,7 +105,8 @@ void spoton_starbeam_writer::slotProcessData(void)
 	 &ok);
 
       if(ok)
-	if(spoton_crypt::memcmp(list.value(1), messageCode))
+	if(!list.value(1).isEmpty() && !messageCode.isEmpty() &&
+	   spoton_crypt::memcmp(list.value(1), messageCode))
 	  {
 	    magnet = magnets.at(i);
 	    break;
