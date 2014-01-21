@@ -1360,7 +1360,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	 !m_crypts.value("url", 0))
 	{
 	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Invalid spoton_crypt object. This is "
+				tr("Invalid spoton_crypt object(s). This is "
 				   "a fatal flaw."));
 	  return;
 	}
@@ -1565,7 +1565,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	 !m_crypts.value("url", 0))
 	{
 	  QMessageBox::critical(this, tr("Spot-On: Error"),
-				tr("Invalid spoton_crypt object. This is "
+				tr("Invalid spoton_crypt object(s). This is "
 				   "a fatal flaw."));
 	  return;
 	}

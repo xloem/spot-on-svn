@@ -288,7 +288,7 @@ void spoton_rosetta::slotAddContact(void)
   if(!m_eCrypt || !m_sCrypt)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Invalid spoton_crypt object. This is "
+			    tr("Invalid spoton_crypt object(s). This is "
 			       "a fatal flaw."));
       return;
     }
@@ -555,10 +555,10 @@ void spoton_rosetta::slotConvert(void)
 	}
 
       QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-      encryptionKey.resize(encryptionKeyLength);
+      encryptionKey.resize(static_cast<int> (encryptionKeyLength));
       encryptionKey = spoton_crypt::veryStrongRandomBytes
 	(encryptionKey.length());
-      hashKey.resize(encryptionKeyLength);
+      hashKey.resize(static_cast<int> (encryptionKeyLength));
       hashKey = spoton_crypt::veryStrongRandomBytes(hashKey.length());
       publicKey = ui.contacts->itemData(ui.contacts->currentIndex()).
 	toByteArray();

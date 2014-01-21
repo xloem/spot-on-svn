@@ -198,8 +198,8 @@ void spoton_starbeam_writer::slotProcessData(void)
     {
       if(file.seek(position))
 	{
-	  if(file.write(list.value(5).mid(0, pulseSize).constData(),
-			pulseSize) != pulseSize)
+	  if(file.write(list.value(5).mid(0, static_cast<int> (pulseSize)).
+			constData(), pulseSize) != pulseSize)
 	    spoton_misc::logError
 	      ("spoton_starbeam_writer::slotProcessData(): "
 	       "write() failure.");

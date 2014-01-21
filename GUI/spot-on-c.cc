@@ -1125,9 +1125,12 @@ void spoton::slotPopulateStars(void)
 	      if(item1 && item2)
 		{
 		  int percent = 100 *
-		    qAbs(static_cast<double> (QFileInfo(item2->text()).
-					      size()) /
-			 qMax(1LL, item1->text().toLongLong()));
+		    static_cast<int>
+		    (qAbs(static_cast<double> (QFileInfo(item2->text()).
+					       size()) /
+			  static_cast<double> (qMax(static_cast<long long> (1),
+						    item1->text().
+						    toLongLong()))));
 
 		  if(percent < 100)
 		    {
@@ -1273,8 +1276,11 @@ void spoton::slotPopulateStars(void)
 	      if(item)
 		{
 		  int percent = 100 *
-		    qAbs(static_cast<double> (position) /
-			 qMax(1LL, item->text().toLongLong()));
+		    static_cast<int>
+		    (qAbs(static_cast<double> (position) /
+			  static_cast<double> (qMax(static_cast<long long> (1),
+						    item->text().
+						    toLongLong()))));
 
 		  if(percent < 100)
 		    {
@@ -2155,6 +2161,26 @@ void spoton::sharePublicKeyWithParticipant(const QString &keyType)
 
 void spoton::slotRegenerateKey(void)
 {
+  QString keyType("chat");
+
+  if(m_ui.keys->currentText() == tr("Chat"))
+    keyType = "chat";
+  else if(m_ui.keys->currentText() == tr("E-Mail"))
+    keyType = "email";
+  else if(m_ui.keys->currentText() == tr("Rosetta"))
+    keyType = "rosetta";
+  else if(m_ui.keys->currentText() == tr("URL"))
+    keyType = "url";
+
+  if(!m_crypts.value(keyType, 0) ||
+     !m_crypts.value(QString("%1-signature").arg(keyType), 0))
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object(s). This is "
+			       "a fatal flaw."));
+      return;
+    }
+
   QMessageBox mb(this);
 
 #ifdef Q_OS_MAC
@@ -2167,21 +2193,12 @@ void spoton::slotRegenerateKey(void)
   mb.setWindowModality(Qt::WindowModal);
   mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
   mb.setText(tr("Are you sure that you wish to generate the selected "
-		"key pair?"));
+		"key pair? The kernel will be deactivated."));
 
   if(mb.exec() != QMessageBox::Yes)
     return;
-
-  QString keyType("chat");
-
-  if(m_ui.keys->currentText() == tr("Chat"))
-    keyType = "chat";
-  else if(m_ui.keys->currentText() == tr("E-Mail"))
-    keyType = "email";
-  else if(m_ui.keys->currentText() == tr("Rosetta"))
-    keyType = "rosetta";
-  else if(m_ui.keys->currentText() == tr("URL"))
-    keyType = "url";
+  else
+    slotDeactivateKernel();
 
   QString encryptionKeyType("");
   QString signatureKeyType("");
@@ -3036,8 +3053,9 @@ void spoton::slotImportNeighbors(void)
 					  bytes.length())) > -1)
 		  {
 		    QHash<QString, QByteArray> hash;
-		    QList<QByteArray> list(bytes.mid(0, rc).
-					   trimmed().split('&'));
+		    QList<QByteArray> list
+		      (bytes.mid(0, static_cast<int> (rc)).trimmed().
+		       split('&'));
 		    bool fine = true;
 
 		    while(!list.isEmpty())

@@ -460,7 +460,7 @@ void spoton_gui_server::slotTimeout(void)
 
 	if(query.exec("SELECT port FROM kernel_gui_server"))
 	  if(query.next())
-	    port = query.value(0).toInt();
+	    port = query.value(0).toByteArray().toUShort();
 
 	if(port == 0 || port != serverPort())
 	  {

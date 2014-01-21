@@ -997,6 +997,8 @@ spoton::spoton(void):QMainWindow()
 
   if(m_settings.value("gui/signatureKey", "rsa").toString() == "dsa")
     m_ui.signatureKeyType->setCurrentIndex(0);
+  else if(m_settings.value("gui/signatureKey", "rsa").toString() == "elg")
+    m_ui.signatureKeyType->setCurrentIndex(1);
   else
     m_ui.signatureKeyType->setCurrentIndex(2);
 
@@ -1045,7 +1047,7 @@ spoton::spoton(void):QMainWindow()
     (QString::fromUtf8(m_settings.value("gui/buzzName", "unknown").
 		       toByteArray()).trimmed());
   m_ui.channel->setMaxLength
-    (spoton_crypt::cipherKeyLength("aes256"));
+    (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
   m_ui.emailName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
   m_ui.emailName->setText
     (QString::fromUtf8(m_settings.value("gui/emailName", "unknown").
@@ -1061,17 +1063,17 @@ spoton::spoton(void):QMainWindow()
 		       toByteArray()).trimmed());
   m_ui.username->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
   m_ui.receiveNova->setMaxLength
-    (spoton_crypt::cipherKeyLength("aes256"));
+    (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
   m_ui.sslControlString->setText
     (m_settings.value("gui/sslControlString",
 		      "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH").
      toString());
   m_ui.etpEncryptionKey->setMaxLength
-    (spoton_crypt::cipherKeyLength("aes256"));
+    (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
   m_ui.goldbug->setMaxLength
-    (spoton_crypt::cipherKeyLength("aes256"));
+    (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
   m_ui.transmitNova->setMaxLength
-    (spoton_crypt::cipherKeyLength("aes256"));
+    (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
   m_ui.channelType->clear();
   m_ui.channelType->addItems(spoton_crypt::cipherTypes());
   m_ui.cipherType->clear();
@@ -3453,7 +3455,7 @@ void spoton::slotGeneralTimerTimeout(void)
 	      
 	      if(query.exec("SELECT port FROM kernel_gui_server"))
 		if(query.next())
-		  port = query.value(0).toInt();
+		  port = query.value(0).toByteArray().toUShort();
 	    }
 
 	  db.close();
@@ -6715,7 +6717,8 @@ void spoton::slotFavoritesActivated(int index)
     list.replace(i, QByteArray::fromBase64(list.at(i)));
 
   m_ui.channel->setText(list.value(0));
-  m_ui.buzzIterationCount->setValue(list.value(1).toULong());
+  m_ui.buzzIterationCount->setValue
+    (static_cast<int> (list.value(1).toULong()));
   m_ui.channelSalt->setText(list.value(2));
 
   if(m_ui.channelType->findText(list.value(3)) > -1)

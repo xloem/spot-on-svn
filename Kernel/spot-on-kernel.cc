@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
       act.sa_handler = sig_handler;
       sigemptyset(&act.sa_mask);
       act.sa_flags = 0;
-      sigaction(list.takeFirst(), &act, (struct sigaction *) 0);
+      sigaction(list.takeFirst(), &act, 0);
 #else
       signal(list.takeFirst(), sig_handler);
 #endif
@@ -199,7 +199,7 @@ int main(int argc, char *argv[])
   act.sa_handler = SIG_IGN;
   sigemptyset(&act.sa_mask);
   act.sa_flags = 0;
-  sigaction(SIGPIPE, &act, (struct sigaction *) 0);
+  sigaction(SIGPIPE, &act, 0);
 #endif
 #ifdef SPOTON_USE_HIDDEN_KERNEL_WINDOW
   QApplication qapplication(argc, argv);
@@ -249,7 +249,7 @@ int main(int argc, char *argv[])
 			     &libspotonHandle,
 			     integer)) == LIBSPOTON_ERROR_NONE)
     err = libspoton_register_kernel
-      (QCoreApplication::applicationPid(),
+      (static_cast<pid_t> (QCoreApplication::applicationPid()),
        settings.value("gui/forceKernelRegistration", false).toBool(),
        &libspotonHandle);
 
@@ -555,8 +555,9 @@ void spoton_kernel::cleanup(void)
 		      &libspotonHandle,
 		      setting("kernel/gcryctl_init_secmem", 65536).
 		      toInt()) == LIBSPOTON_ERROR_NONE)
-    libspoton_deregister_kernel(QCoreApplication::applicationPid(),
-				&libspotonHandle);
+    libspoton_deregister_kernel
+      (static_cast<pid_t> (QCoreApplication::applicationPid()),
+			   &libspotonHandle);
 
   libspoton_close(&libspotonHandle);
 }
@@ -1744,10 +1745,10 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 	      if(symmetricKeyLength > 0)
 		{
-		  hashKey.resize(symmetricKeyLength);
+		  hashKey.resize(static_cast<int> (symmetricKeyLength));
 		  hashKey = spoton_crypt::strongRandomBytes
 		    (hashKey.length());
-		  symmetricKey.resize(symmetricKeyLength);
+		  symmetricKey.resize(static_cast<int> (symmetricKeyLength));
 
 		  /*
 		  ** Status messages lack sensitive data.
@@ -1875,7 +1876,7 @@ void spoton_kernel::slotScramble(void)
 
   if(symmetricKeyLength > 0)
     {
-      symmetricKey.resize(symmetricKeyLength);
+      symmetricKey.resize(static_cast<int> (symmetricKeyLength));
       symmetricKey = spoton_crypt::strongRandomBytes
 	(symmetricKey.length());
     }
@@ -1986,10 +1987,10 @@ void spoton_kernel::slotRetrieveMail(void)
 
 	      if(symmetricKeyLength > 0)
 		{
-		  hashKey.resize(symmetricKeyLength);
+		  hashKey.resize(static_cast<int> (symmetricKeyLength));
 		  hashKey = spoton_crypt::strongRandomBytes
 		    (hashKey.length());
-		  symmetricKey.resize(symmetricKeyLength);
+		  symmetricKey.resize(static_cast<int> (symmetricKeyLength));
 		  symmetricKey = spoton_crypt::strongRandomBytes
 		    (symmetricKey.length());
 		}
@@ -2154,10 +2155,10 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	      if(symmetricKeyLength > 0)
 		{
-		  hashKey.resize(symmetricKeyLength);
+		  hashKey.resize(static_cast<int> (symmetricKeyLength));
 		  hashKey = spoton_crypt::strongRandomBytes
 		    (hashKey.length());
-		  symmetricKey.resize(symmetricKeyLength);
+		  symmetricKey.resize(static_cast<int> (symmetricKeyLength));
 		  symmetricKey = spoton_crypt::strongRandomBytes
 		    (symmetricKey.length());
 		}
@@ -2214,7 +2215,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	      if(symmetricKeyLength > 0)
 		{
-		  symmetricKey.resize(symmetricKeyLength);
+		  symmetricKey.resize(static_cast<int> (symmetricKeyLength));
 		  symmetricKey = spoton_crypt::strongRandomBytes
 		    (symmetricKey.length());
 		}
@@ -2826,10 +2827,11 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 
 		  if(symmetricKeyLength > 0)
 		    {
-		      hashKey.resize(symmetricKeyLength);
+		      hashKey.resize(static_cast<int> (symmetricKeyLength));
 		      hashKey = spoton_crypt::strongRandomBytes
 			(hashKey.length());
-		      symmetricKey.resize(symmetricKeyLength);
+		      symmetricKey.resize
+			(static_cast<int> (symmetricKeyLength));
 		      symmetricKey = spoton_crypt::strongRandomBytes
 			(symmetricKey.length());
 		    }

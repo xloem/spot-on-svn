@@ -3716,7 +3716,7 @@
                    <item>
                     <widget class="QCheckBox" name="forceRegistration">
                      <property name="toolTip">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please enable this option if you would like to force kernel registration. By forcing a kernel registration, an existing kernel process that Spot is aware of will be terminated. You may wish to use this option if the kernel was not deactivated properly.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please enable this option if you would like to force kernel registration. By forcing a kernel registration, an existing kernel process that Spot is aware of will be deactivated. You may wish to use this option if the kernel was not deactivated properly.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="text">
                       <string>&amp;Force Registration</string>

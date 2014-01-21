@@ -803,10 +803,11 @@ void spoton_misc::retrieveSymmetricData
 
 		    neighborOid = query.value(1).toString();
 		    publicKey = query.value(2).toByteArray();
-		    symmetricKey.resize(symmetricKeyLength);
+		    symmetricKey.resize
+		      (static_cast<int> (symmetricKeyLength));
 		    symmetricKey = spoton_crypt::strongRandomBytes
 		      (symmetricKey.length());
-		    hashKey.resize(symmetricKeyLength);
+		    hashKey.resize(static_cast<int> (symmetricKeyLength));
 		    hashKey = spoton_crypt::strongRandomBytes
 		      (hashKey.length());
 		  }

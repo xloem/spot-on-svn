@@ -303,7 +303,7 @@ void spoton_starbeam_reader::pulsate(const QString &fileName,
 
 	      if((rc = file.read(buffer.data(), buffer.length())) > 0)
 		{
-		  QByteArray data(buffer.mid(0, rc));
+		  QByteArray data(buffer.mid(0, static_cast<int> (rc)));
 		  QByteArray messageCode;
 		  int size = data.length();
 		  spoton_crypt crypt(elements.value("ct").constData(),

@@ -90,7 +90,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 
   if(keyLength > 0)
     {
-      m_key.resize(keyLength);
+      m_key.resize(static_cast<int> (keyLength));
 
       if(m_channelSalt.isEmpty())
 	{
@@ -113,15 +113,15 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 					   */
 	}
 
-      if(gcry_kdf_derive(static_cast<const void *> (m_channel.constData()),
-			 static_cast<size_t> (m_channel.length()),
+      if(gcry_kdf_derive(m_channel.constData(),
+			 m_channel.length(),
 			 GCRY_KDF_PBKDF2,
 			 GCRY_MD_SHA512,
-			 static_cast<const void *> (m_channelSalt.constData()),
-			 static_cast<size_t> (m_channelSalt.length()),
+			 m_channelSalt.constData(),
+			 m_channelSalt.length(),
 			 m_iterationCount,
 			 keyLength,
-			 static_cast<void *> (m_key.data())) != 0)
+			 m_key.data()) != 0)
 	m_key = m_channel;
     }
   else
