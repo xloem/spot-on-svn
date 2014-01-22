@@ -112,7 +112,7 @@
      them.
 56.  Replaced C-style casts. Removed redundant casts.
 57.  Strip dead code from OS X binaries.
-58.  Upgraded Qt products to version 5.2.0 on W32.
+58.  Upgraded Qt products to version 5.2.0 on OS X and W32.
 
 0.08 (12/23/2013)
 
