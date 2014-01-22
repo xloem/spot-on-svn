@@ -153,7 +153,7 @@
           <item>
            <widget class="QLineEdit" name="demagnetize">
             <property name="toolTip">
-             <string>Demagnetize link.</string>
+             <string>Demagnetize the link.</string>
             </property>
            </widget>
           </item>
@@ -865,7 +865,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Clear contents of current view.</string>
+             <string>Clear the contents of the current view.</string>
             </property>
             <property name="text">
              <string>Clear</string>
@@ -1283,7 +1283,7 @@
               <item>
                <widget class="QPushButton" name="generateGoldBug">
                 <property name="toolTip">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bundle the e-mail with an additional layer of AES-256 encryption. Do remember to notify all recipients of the key.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bundle the e-mail in an additional layer of AES-256 encryption. Do remember to notify all recipients of the key.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="text">
                  <string>Gold Bug</string>
@@ -1316,7 +1316,7 @@
               <item>
                <widget class="QCheckBox" name="emailSignMessages">
                 <property name="toolTip">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The kernel is responsible for signing messages. Because messages are queued, please avoid toggling this checkbox until queued message have been processed by the kernel.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The kernel is responsible for signing messages. Because messages are queued, please avoid toggling this checkbox until queued messages have been processed by the kernel.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="text">
                  <string>Sign &amp;messages.</string>
@@ -2141,7 +2141,7 @@
                      <item row="2" column="1">
                       <widget class="QCheckBox" name="ota">
                        <property name="toolTip">
-                        <string>If checked, the account will be removed after a client sucessfully authenticates itself.</string>
+                        <string>If checked, the account will be removed after a client successfully authenticates itself.</string>
                        </property>
                        <property name="text">
                         <string>&amp;One-Time Account</string>
@@ -2284,9 +2284,6 @@
           </property>
           <item>
            <widget class="QPushButton" name="neighborsActionMenu">
-            <property name="toolTip">
-             <string>Share my specified public key with the selected neighbor.</string>
-            </property>
             <property name="text">
              <string>Context Menu Reflection</string>
             </property>
@@ -2890,7 +2887,7 @@
                  <item>
                   <widget class="QCheckBox" name="requireSsl">
                    <property name="toolTip">
-                    <string>Require secure connections.</string>
+                    <string>Require encrypted connections.</string>
                    </property>
                    <property name="text">
                     <string>&amp;Require SSL</string>
@@ -3716,7 +3713,7 @@
                    <item>
                     <widget class="QCheckBox" name="forceRegistration">
                      <property name="toolTip">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please enable this option if you would like to force kernel registration. By forcing a kernel registration, an existing kernel process that Spot is aware of will be deactivated. You may wish to use this option if the kernel was not deactivated properly.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please enable this option if you would like to force kernel registration. By forcing kernel registration, an existing kernel process that Spot-On is aware of will be deactivated. You may wish to use this option if a kernel was not deactivated properly.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="text">
                       <string>&amp;Force Registration</string>
@@ -3888,7 +3885,7 @@
                    <item>
                     <widget class="QCheckBox" name="superEcho">
                      <property name="toolTip">
-                      <string>If enabled, messages that are deciphered correctly will be forwarded.</string>
+                      <string>If enabled, messages that are deciphered correctly will be echoed.</string>
                      </property>
                      <property name="text">
                       <string>S&amp;uper Echo</string>
@@ -4203,7 +4200,7 @@
                    <item>
                     <widget class="QCheckBox" name="newKeys">
                      <property name="toolTip">
-                      <string>If checked, new RSA key pairs will be generated whenever the passphrase is updated.</string>
+                      <string>If checked, new key pairs will be generated whenever the passphrase is updated.</string>
                      </property>
                      <property name="text">
                       <string>&amp;Key Size</string>
@@ -5189,7 +5186,7 @@
                       <item>
                        <widget class="QPushButton" name="generateNova">
                         <property name="toolTip">
-                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bundle each pulse with an additional layer of AES-256 encryption. Do remember to notify all recipients of the key.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bundle each pulse in an additional layer of AES-256 encryption. Do remember to notify all recipients of the key.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                         </property>
                         <property name="text">
                          <string>Nova</string>

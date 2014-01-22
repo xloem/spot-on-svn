@@ -86,7 +86,7 @@
       <item>
        <widget class="QToolButton" name="buzz">
         <property name="toolTip">
-         <string>Buzz activity!</string>
+         <string>Buzz activity detected!</string>
         </property>
         <property name="iconSize">
          <size>
