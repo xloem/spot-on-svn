@@ -1120,7 +1120,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.hideOfflineParticipants->setChecked
     (m_settings.value("gui/hideOfflineParticipants", false).toBool());
   m_ui.keepOnlyUserDefinedNeighbors->setChecked
-    (m_settings.value("gui/keepOnlyUserDefinedNeighbors", false).toBool());
+    (m_settings.value("gui/keepOnlyUserDefinedNeighbors", true).toBool());
   m_ui.kernelLogEvents->setChecked
     (m_settings.value("gui/kernelLogEvents", false).toBool());
   m_ui.postofficeCheckBox->setChecked
