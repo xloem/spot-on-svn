@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2011, 2012, 2013 Alexis Megas
+** Copyright (c) 2011 - 10^10^10 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -1999,7 +1999,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 				  (i, QByteArray::fromBase64(list.at(i)));
 
 			      if(spoton_misc::
-				 isAcceptedParticipant(list.value(0)))
+				 isAcceptedParticipant(list.value(0), "chat"))
 				{
 				  if(spoton_kernel::setting("gui/chatAccept"
 							    "SignedMessages"
@@ -2170,7 +2170,7 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 			      (i, QByteArray::fromBase64(list.at(i)));
 
 			  if(spoton_misc::
-			     isAcceptedParticipant(list.value(0)))
+			     isAcceptedParticipant(list.value(0), "chat"))
 			    {
 			      if(spoton_kernel::setting("gui/chatAccept"
 							"SignedMessagesOnly",
@@ -2480,8 +2480,10 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	{
 	  if(spoton_kernel::setting("gui/postoffice_enabled",
 				    false).toBool())
-	    if(spoton_misc::isAcceptedParticipant(recipientHash))
-	      if(spoton_misc::isAcceptedParticipant(senderPublicKeyHash1))
+	    if(spoton_misc::
+	       isAcceptedParticipant(recipientHash, "email"))
+	      if(spoton_misc::
+		 isAcceptedParticipant(senderPublicKeyHash1, "email"))
 		{
 		  if(spoton_kernel::setting("gui/coAcceptSignedMessagesOnly",
 					    true).toBool())
@@ -3079,7 +3081,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 				  (i, QByteArray::fromBase64(list.at(i)));
 
 			      if(spoton_misc::
-				 isAcceptedParticipant(list.value(0)))
+				 isAcceptedParticipant(list.value(0), "chat"))
 				{
 				  if(spoton_kernel::setting("gui/chatAccept"
 							    "SignedMessages"
@@ -4133,7 +4135,7 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
   ** for the symmetric key.
   */
 
-  if(!spoton_misc::isAcceptedParticipant(senderPublicKeyHash))
+  if(!spoton_misc::isAcceptedParticipant(senderPublicKeyHash, "email"))
     return;
 
   if(goldbugUsed)

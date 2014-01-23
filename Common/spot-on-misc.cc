@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2011 - 2014 Alexis Megas
+** Copyright (c) 2011 - 10^10^10 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -840,7 +840,8 @@ void spoton_misc::retrieveSymmetricData
   QSqlDatabase::removeDatabase(connectionName);
 }
 
-bool spoton_misc::isAcceptedParticipant(const QByteArray &publicKeyHash)
+bool spoton_misc::isAcceptedParticipant(const QByteArray &publicKeyHash,
+					const QString &keyType)
 {
   QString connectionName("");
   int count = 0;
@@ -858,9 +859,11 @@ bool spoton_misc::isAcceptedParticipant(const QByteArray &publicKeyHash)
 	query.setForwardOnly(true);
 	query.prepare("SELECT COUNT(*) "
 		      "FROM friends_public_keys WHERE "
+		      "key_type = ? AND "
 		      "neighbor_oid = -1 AND "
 		      "public_key_hash = ?");
-	query.bindValue(0, publicKeyHash.toBase64());
+	query.bindValue(0, keyType);
+	query.bindValue(1, publicKeyHash.toBase64());
 
 	if(query.exec())
 	  if(query.next())
