@@ -1,4 +1,4 @@
-0.09 (01/23/2014)
+0.09 (01/27/2014)
 
 1.   Use a separate key for computing local keyed hashes. Keyed hashes provide
      uniqueness to database entries. Please reset Spot. Apologies. Keys
