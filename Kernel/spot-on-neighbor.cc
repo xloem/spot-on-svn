@@ -325,7 +325,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 
   if(m_useAccounts)
     if(!m_useSsl)
-      m_accountTimer.start(2500);
+      {
+	m_accountTimer.start(2500);
+	m_authenticationTimer.start();
+      }
 
   m_keepAliveTimer.start(30000);
   m_lifetime.start(10 * 60 * 1000);
@@ -1108,7 +1111,7 @@ void spoton_neighbor::slotReadyRead(void)
     {
       m_data.append(data);
 
-      if(m_dataPurgeTimer.isActive())
+      if(!m_dataPurgeTimer.isActive())
 	m_dataPurgeTimer.start();
     }
 
