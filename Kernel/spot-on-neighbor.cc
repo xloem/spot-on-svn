@@ -678,7 +678,7 @@ spoton_neighbor::~spoton_neighbor()
 	    query.exec();
 
 	    if(spoton_kernel::setting("gui/keepOnlyUserDefinedNeighbors",
-				      false).toBool())
+				      true).toBool())
 	      {
 		query.prepare("DELETE FROM neighbors WHERE "
 			      "OID = ? AND status_control <> 'blocked' AND "
