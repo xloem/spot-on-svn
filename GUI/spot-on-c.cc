@@ -1048,8 +1048,8 @@ void spoton::slotPopulateStars(void)
     if(db.open())
       {
 	QModelIndexList list;
-	QString fileName("");
 	QString mosaic("");
+	QString selectedFileName("");
 	QSqlQuery query(db);
 	QWidget *focusWidget = QApplication::focusWidget();
 	int hval = 0;
@@ -1066,7 +1066,7 @@ void spoton::slotPopulateStars(void)
 	  (3); // File
 
 	if(!list.isEmpty())
-	  fileName = list.at(0).data().toString();
+	  selectedFileName = list.at(0).data().toString();
 
 	hval = m_ui.received->horizontalScrollBar()->value();
 	vval = m_ui.received->verticalScrollBar()->value();
@@ -1149,7 +1149,7 @@ void spoton::slotPopulateStars(void)
 		}
 
 	      if(m_ui.received->item(row, 3) &&
-		 fileName == m_ui.received->item(row, 3)->text())
+		 selectedFileName == m_ui.received->item(row, 3)->text())
 		m_ui.received->selectRow(row);
 
 	      row += 1;
