@@ -117,9 +117,8 @@
      to true.
 60.  The method spoton_misc::isAcceptedParticipant() lacked a key type
      parameter. Corrected.
-61.  QDataStream writes may fail. Under specific conditions, QDataStream
-     failures may cause gcry_cipher_encrypt() to function properly.
-     Corrected.
+61.  Under certain conditions, QDataStream failures may cause
+     gcry_cipher_encrypt() to function properly. Corrected.
 62.  Corrected Received table selections.
 
 0.08 (12/23/2013)
