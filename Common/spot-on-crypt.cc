@@ -288,6 +288,15 @@ QByteArray spoton_crypt::saltedValue(const QString &hashType,
 			    "empty data.");
     }
 
+  if(hashType.trimmed().isEmpty())
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError("spoton_crypt::saltedValue(): "
+			    "empty hashType.");
+    }
+
   if(salt.isEmpty())
     {
       if(ok)
@@ -817,27 +826,40 @@ void spoton_crypt::reencodeKeys(const QString &newCipher,
 				   static_cast<qreal> (blockLength))), 0);
 
       out << eData.length();
-      eData.append(originalLength);
 
-      if((err = gcry_cipher_encrypt(cipherHandle,
-				    eData.data(),
-				    eData.length(),
-				    0,
-				    0)) != 0)
+      if(out.status() != QDataStream::Ok)
 	{
-	  error = QObject::tr("gcry_cipher_encrypt() returned non-zero");
-
-	  QByteArray buffer(64, 0);
-
-	  gpg_strerror_r(err, buffer.data(), buffer.length());
+	  error = QObject::tr("QDataStream failure");
 	  spoton_misc::logError
-	    (QString("spoton_crypt::reencodeKeys(): "
-		     "gcry_cipher_encrypt() failure (%1).").
-	     arg(buffer.constData()));
+	    (QString("spoton_crypt::encrypted(): "
+		     "QDataStream failure (%1).").
+	     arg(out.status()));
 	  goto done_label;
 	}
       else
-	eData = QByteArray(iv, static_cast<int> (ivLength)) + eData;
+	{
+	  eData.append(originalLength);
+
+	  if((err = gcry_cipher_encrypt(cipherHandle,
+					eData.data(),
+					eData.length(),
+					0,
+					0)) != 0)
+	    {
+	      error = QObject::tr("gcry_cipher_encrypt() returned non-zero");
+
+	      QByteArray buffer(64, 0);
+
+	      gpg_strerror_r(err, buffer.data(), buffer.length());
+	      spoton_misc::logError
+		(QString("spoton_crypt::reencodeKeys(): "
+			 "gcry_cipher_encrypt() failure (%1).").
+		 arg(buffer.constData()));
+	      goto done_label;
+	    }
+	  else
+	    eData = QByteArray(iv, static_cast<int> (ivLength)) + eData;
+	}
 
       encryptedData.append(eData);
       gcry_free(iv);
@@ -869,10 +891,13 @@ void spoton_crypt::reencodeKeys(const QString &newCipher,
 	query.bindValue(2, id);
 
 	if(!query.exec())
-	  spoton_misc::logError
-	    (QString("spoton_crypt::reencodeKeys(): "
-		     "error (%1) updating private_key in the "
-		     "idiotes table.").arg(query.lastError().text()));
+	  {
+	    error = QObject::tr("a database error occurred");
+	    spoton_misc::logError
+	      (QString("spoton_crypt::reencodeKeys(): "
+		       "error (%1) updating keys in the "
+		       "idiotes table.").arg(query.lastError().text()));
+	  }
       }
 
     db.close();
@@ -1189,35 +1214,50 @@ QByteArray spoton_crypt::encrypted(const QByteArray &data, bool *ok)
 	  QDataStream out(&originalLength, QIODevice::WriteOnly);
 
 	  out << data.length();
-	  encrypted.append(originalLength);
 
-	  gcry_error_t err = 0;
-
-	  if((err = gcry_cipher_encrypt(m_cipherHandle,
-					encrypted.data(),
-					encrypted.length(),
-					0,
-					0)) == 0)
-	    {
-	      if(ok)
-		*ok = true;
-
-	      encrypted = iv + encrypted;
-	    }
-	  else
+	  if(out.status() != QDataStream::Ok)
 	    {
 	      if(ok)
 		*ok = false;
 
 	      encrypted.clear();
-
-	      QByteArray buffer(64, 0);
-
-	      gpg_strerror_r(err, buffer.data(), buffer.length());
 	      spoton_misc::logError
 		(QString("spoton_crypt::encrypted(): "
-			 "gcry_cipher_encrypt() failure (%1).").
-		 arg(buffer.constData()));
+			 "QDataStream failure (%1).").
+		 arg(out.status()));
+	    }
+	  else
+	    {
+	      encrypted.append(originalLength);
+
+	      gcry_error_t err = 0;
+
+	      if((err = gcry_cipher_encrypt(m_cipherHandle,
+					    encrypted.data(),
+					    encrypted.length(),
+					    0,
+					    0)) == 0)
+		{
+		  if(ok)
+		    *ok = true;
+
+		  encrypted = iv + encrypted;
+		}
+	      else
+		{
+		  if(ok)
+		    *ok = false;
+
+		  encrypted.clear();
+
+		  QByteArray buffer(64, 0);
+
+		  gpg_strerror_r(err, buffer.data(), buffer.length());
+		  spoton_misc::logError
+		    (QString("spoton_crypt::encrypted(): "
+			     "gcry_cipher_encrypt() failure (%1).").
+		     arg(buffer.constData()));
+		}
 	    }
 	}
     }
@@ -1272,7 +1312,7 @@ bool spoton_crypt::setInitializationVector(QByteArray &bytes,
 	  if(bytes.isEmpty())
 	    {
 	      gcry_fast_random_poll();
-	      gcry_create_nonce(iv, static_cast<int> (ivLength));
+	      gcry_create_nonce(iv, ivLength);
 	      bytes.append(iv, static_cast<int> (ivLength));
 	    }
 	  else
