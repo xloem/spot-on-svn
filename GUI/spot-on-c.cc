@@ -1125,7 +1125,6 @@ void spoton::slotPopulateStars(void)
 	      if(item1 && item2)
 		{
 		  int percent = 100 *
-		    static_cast<int>
 		    (qAbs(static_cast<double> (QFileInfo(item2->text()).
 					       size()) /
 			  static_cast<double> (qMax(static_cast<long long> (1),
@@ -1276,7 +1275,6 @@ void spoton::slotPopulateStars(void)
 	      if(item)
 		{
 		  int percent = 100 *
-		    static_cast<int>
 		    (qAbs(static_cast<double> (position) /
 			  static_cast<double> (qMax(static_cast<long long> (1),
 						    item->text().
