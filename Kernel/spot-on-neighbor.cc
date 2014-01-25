@@ -359,7 +359,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_keepAliveTimer.start(30000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
-  m_processDataTimer.setInterval(100);
   start();
 }
 
@@ -671,7 +670,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 
   m_keepAliveTimer.setInterval(30000);
   m_lifetime.start(10 * 60 * 1000);
-  m_processDataTimer.setInterval(100);
   m_timer.start(2500);
   start();
 }
@@ -1100,11 +1098,10 @@ void spoton_neighbor::run(void)
 {
   spoton_neighbor_worker worker(this);
 
-  connect(&m_processDataTimer,
-	  SIGNAL(timeout(void)),
+  connect(this,
+	  SIGNAL(processData(void)),
 	  &worker,
 	  SLOT(slotProcessData(void)));
-  m_processDataTimer.start();
   exec();
 }
 
@@ -1141,6 +1138,7 @@ void spoton_neighbor::slotReadyRead(void)
       m_dataMutex.lockForWrite();
       m_data.append(data);
       m_dataMutex.unlock();
+      emit processData();
 
       if(!m_dataPurgeTimer.isActive())
 	m_dataPurgeTimer.start();
@@ -1151,11 +1149,11 @@ void spoton_neighbor::slotProcessData(void)
 {
   m_dataMutex.lockForRead();
 
-  bool containsMarker = m_data.contains(spoton_send::EOM);
+  bool containsEOM = m_data.contains(spoton_send::EOM);
 
   m_dataMutex.unlock();
 
-  if(containsMarker)
+  if(containsEOM)
     {
       QList<QByteArray> list;
       bool rst = false;

@@ -175,7 +175,6 @@ class spoton_neighbor: public QThread
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_keepAliveTimer;
   QTimer m_lifetime;
-  QTimer m_processDataTimer;
   QTimer m_timer;
   QUuid m_receivedUuid;
   bool m_accountAuthenticated;
@@ -306,6 +305,7 @@ class spoton_neighbor: public QThread
   void authenticationRequested(const QString &peerInformation);
   void disconnected(void);
   void newEMailArrived(void);
+  void processData(void);
   void publicizeListenerPlaintext(const QByteArray &data, const qint64 id);
   void receivedBuzzMessage(const QByteArrayList &list,
 			   const QByteArrayList &symmetricKeys);
