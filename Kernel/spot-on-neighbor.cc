@@ -5097,11 +5097,6 @@ qint64 spoton_neighbor::write(const char *data, const qint64 size)
       remaining -= sent;
     }
 
-  if(m_tcpSocket)
-    m_tcpSocket->waitForBytesWritten(2500);
-  else if(m_udpSocket)
-    m_udpSocket->waitForBytesWritten(2500);
-
   return size - remaining;
 }
 
