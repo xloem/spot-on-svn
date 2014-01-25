@@ -38,6 +38,7 @@
 #include <QSqlDatabase>
 #include <QTimer>
 
+#include "Common/spot-on-common.h"
 #include "Common/spot-on-send.h"
 
 class spoton_crypt;
@@ -167,11 +168,11 @@ class spoton_kernel: public QObject
 				  const QString &transport,
 				  const QString &orientation);
   void receivedMessage(const QByteArray &data, const qint64 id);
-  void retrieveMail(const QList<QByteArray> &list);
+  void retrieveMail(const QByteArrayList &list);
   void sendBuzz(const QByteArray &buzz);
   void sendMessage(const QByteArray &message);
-  void sendMail(const QList<QPair<QByteArray, qint64> > &mail);
-  void sendStatus(const QList<QByteArray> &status);
+  void sendMail(const QPairListByteArrayQInt64 &mail);
+  void sendStatus(const QByteArrayList &status);
 };
 
 #endif

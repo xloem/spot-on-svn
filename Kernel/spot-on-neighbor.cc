@@ -1044,37 +1044,23 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 
 void spoton_neighbor::run(void)
 {
-  disconnect(&m_dataPurgeTimer,
-	     SIGNAL(timeout(void)),
-	     this,
-	     SLOT(slotPurgeData(void)));
+  spoton_neighbor_worker worker(this);
+
   connect(&m_dataPurgeTimer,
 	  SIGNAL(timeout(void)),
-	  this,
+	  &worker,
 	  SLOT(slotPurgeData(void)));
 
   if(m_tcpSocket)
-    {
-      disconnect(m_tcpSocket,
-		 SIGNAL(readyRead(void)),
-		 this,
-		 SLOT(slotReadyRead(void)));
-      connect(m_tcpSocket,
-	      SIGNAL(readyRead(void)),
-	      this,
-	      SLOT(slotReadyRead(void)));
-    }
+    connect(m_tcpSocket,
+	    SIGNAL(readyRead(void)),
+	    &worker,
+	    SLOT(slotReadyRead(void)));
   else if(m_udpSocket)
-    {
-      disconnect(m_udpSocket,
-		 SIGNAL(readyRead(void)),
-		 this,
-		 SLOT(slotReadyRead(void)));
-      connect(m_udpSocket,
-	      SIGNAL(readyRead(void)),
-	      this,
-	      SLOT(slotReadyRead(void)));
-    }
+    connect(m_udpSocket,
+	    SIGNAL(readyRead(void)),
+	    &worker,
+	    SLOT(slotReadyRead(void)));
 
   exec();
 }
@@ -3734,7 +3720,7 @@ void spoton_neighbor::process0065(int length, const QByteArray &dataIn)
        arg(m_port));
 }
 
-void spoton_neighbor::slotSendStatus(const QList<QByteArray> &list)
+void spoton_neighbor::slotSendStatus(const QByteArrayList &list)
 {
   if(readyToWrite())
     for(int i = 0; i < list.size(); i++)
@@ -4042,7 +4028,7 @@ QUuid spoton_neighbor::receivedUuid(void) const
 }
 
 void spoton_neighbor::slotSendMail
-(const QList<QPair<QByteArray, qint64> > &list)
+(const QPairListByteArrayQInt64 &list)
 {
   QList<qint64> oids;
 
@@ -4287,7 +4273,7 @@ void spoton_neighbor::storeLetter(const QList<QByteArray> &list,
   QSqlDatabase::removeDatabase(connectionName);
 }
 
-void spoton_neighbor::slotRetrieveMail(const QList<QByteArray> &list)
+void spoton_neighbor::slotRetrieveMail(const QByteArrayList &list)
 {
   if(readyToWrite())
     for(int i = 0; i < list.size(); i++)
@@ -5066,6 +5052,11 @@ qint64 spoton_neighbor::write(const char *data, const qint64 size)
       remaining -= sent;
     }
 
+  if(m_tcpSocket)
+    m_tcpSocket->waitForBytesWritten(2500);
+  else if(m_udpSocket)
+    m_udpSocket->waitForBytesWritten(2500);
+
   return size - remaining;
 }
 
@@ -5109,10 +5100,9 @@ quint16 spoton_neighbor::peerPort(void) const
 
 void spoton_neighbor::flush(void)
 {
-  if(m_tcpSocket)
-    m_tcpSocket->flush();
-  else if(m_udpSocket)
-    m_udpSocket->flush();
+  /*
+  ** Empty.
+  */
 }
 
 bool spoton_neighbor::isEncrypted(void) const

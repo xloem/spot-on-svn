@@ -29,6 +29,7 @@
 #define _spoton_starbeam_writer_h_
 
 #include <QHash>
+#include <QPointer>
 #include <QReadWriteLock>
 #include <QThread>
 #include <QTimer>
@@ -56,8 +57,31 @@ class spoton_starbeam_writer: public QThread
   void run(void);
 
  private slots:
-  void slotProcessData(void);
   void slotReadKeys(void);
+
+ public slots:
+  void slotProcessData(void);
+};
+
+class spoton_starbeam_writer_worker: public QObject
+{
+  Q_OBJECT
+
+ public:
+  spoton_starbeam_writer_worker(spoton_starbeam_writer *writer)
+  {
+    m_writer = writer;
+  }
+
+ private:
+  QPointer<spoton_starbeam_writer> m_writer;
+
+ private slots:
+  void slotProcessData(void)
+  {
+    if(m_writer)
+      m_writer->slotProcessData();
+  }
 };
 
 #endif

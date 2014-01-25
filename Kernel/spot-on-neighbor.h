@@ -32,6 +32,7 @@
 #include <QHostAddress>
 #include <QHostInfo>
 #include <QNetworkProxy>
+#include <QPointer>
 #include <QSqlDatabase>
 #include <QSslSocket>
 #include <QThread>
@@ -39,6 +40,7 @@
 #include <QUdpSocket>
 #include <QUuid>
 
+#include "Common/spot-on-common.h"
 #include "Common/spot-on-send.h"
 
 class spoton_external_address;
@@ -98,6 +100,10 @@ class spoton_neighbor: public QThread
   Q_OBJECT
 
  public:
+  spoton_neighbor(void)
+  {
+  }
+
   spoton_neighbor(const QNetworkProxy &proxy,
 		  const QString &ipAddress,
 		  const QString &port,
@@ -273,20 +279,22 @@ class spoton_neighbor: public QThread
 				      const quint16 port,
 				      const QString &transport,
 				      const QString &orientation);
-  void slotPurgeData(void);
-  void slotReadyRead(void);
   void slotReceivedMessage(const QByteArray &data, const qint64 id);
-  void slotRetrieveMail(const QList<QByteArray> &list);
+  void slotRetrieveMail(const QByteArrayList &list);
   void slotSendAccountInformation(void);
   void slotSendAuthenticationRequest(void);
   void slotSendBuzz(const QByteArray &data);
-  void slotSendMail(const QList<QPair<QByteArray, qint64> > &list);
+  void slotSendMail(const QPairListByteArrayQInt64 &list);
   void slotSendMailFromPostOffice(const QByteArray &data);
   void slotSendMessage(const QByteArray &data);
-  void slotSendStatus(const QList<QByteArray> &list);
+  void slotSendStatus(const QByteArrayList &list);
   void slotSendUuid(void);
   void slotSslErrors(const QList<QSslError> &errors);
   void slotTimeout(void);
+
+ public slots:
+  void slotPurgeData(void);
+  void slotReadyRead(void);
 
  signals:
   void accountAuthenticated(const QByteArray &name,
@@ -295,8 +303,8 @@ class spoton_neighbor: public QThread
   void disconnected(void);
   void newEMailArrived(void);
   void publicizeListenerPlaintext(const QByteArray &data, const qint64 id);
-  void receivedBuzzMessage(const QList<QByteArray> &list,
-			   const QList<QByteArray> &symmetricKeys);
+  void receivedBuzzMessage(const QByteArrayList &list,
+			   const QByteArrayList &symmetricKeys);
   void receivedChatMessage(const QByteArray &data);
   void receivedMessage(const QByteArray &data, const qint64 id);
   void receivedPublicKey(const QByteArray &name, const QByteArray publicKey);
@@ -304,6 +312,33 @@ class spoton_neighbor: public QThread
 		    const QByteArray &publicKeyHash,
 		    const QByteArray &signature);
   void scrambleRequest(void);
+};
+
+class spoton_neighbor_worker: public QObject
+{
+  Q_OBJECT
+
+ public:
+  spoton_neighbor_worker(spoton_neighbor *neighbor)
+  {
+    m_neighbor = neighbor;
+  }
+
+ private:
+  QPointer<spoton_neighbor> m_neighbor;
+
+ private slots:
+  void slotPurgeData(void)
+  {
+    if(m_neighbor)
+      m_neighbor->slotPurgeData();
+  }
+
+  void slotReadyRead(void)
+  {
+    if(m_neighbor)
+      m_neighbor->slotReadyRead();
+  }
 };
 
 #endif

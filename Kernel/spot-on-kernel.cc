@@ -275,6 +275,8 @@ int main(int argc, char *argv[])
 
 spoton_kernel::spoton_kernel(void):QObject(0)
 {
+  qRegisterMetaType<QByteArrayList> ("QByteArrayList");
+  qRegisterMetaType<QPairListByteArrayQInt64> ("QPairListByteArrayQInt64");
   m_guiServer = 0;
   m_mailer = 0;
   m_sharedReader = 0;
@@ -1528,42 +1530,50 @@ void spoton_kernel::connectSignalsToNeighbor
   connect(m_mailer,
 	  SIGNAL(sendMailFromPostOffice(const QByteArray &)),
 	  neighbor,
-	  SLOT(slotSendMailFromPostOffice(const QByteArray &)));
+	  SLOT(slotSendMailFromPostOffice(const QByteArray &)),
+	  Qt::UniqueConnection);
   connect(neighbor,
 	  SIGNAL(authenticationRequested(const QString &)),
 	  m_guiServer,
-	  SLOT(slotAuthenticationRequested(const QString &)));
+	  SLOT(slotAuthenticationRequested(const QString &)),
+	  Qt::UniqueConnection);
   connect(neighbor,
 	  SIGNAL(newEMailArrived(void)),
 	  m_guiServer,
-	  SLOT(slotNewEMailArrived(void)));
+	  SLOT(slotNewEMailArrived(void)),
+	  Qt::UniqueConnection);
   connect
     (neighbor,
-     SIGNAL(receivedBuzzMessage(const QList<QByteArray> &,
-				const QList<QByteArray> &)),
+     SIGNAL(receivedBuzzMessage(const QByteArrayList &,
+				const QByteArrayList &)),
      m_guiServer,
-     SLOT(slotReceivedBuzzMessage(const QList<QByteArray> &,
-				  const QList<QByteArray> &)));
+     SLOT(slotReceivedBuzzMessage(const QByteArrayList &,
+				  const QByteArrayList &)),
+     Qt::UniqueConnection);
   connect(neighbor,
 	  SIGNAL(receivedChatMessage(const QByteArray &)),
 	  m_guiServer,
-	  SLOT(slotReceivedChatMessage(const QByteArray &)));
+	  SLOT(slotReceivedChatMessage(const QByteArray &)),
+	  Qt::UniqueConnection);
   connect(neighbor,
 	  SIGNAL(scrambleRequest(void)),
 	  this,
-	  SLOT(slotRequestScramble(void)));
+	  SLOT(slotRequestScramble(void)),
+	  Qt::UniqueConnection);
   connect(neighbor,
 	  SIGNAL(publicizeListenerPlaintext(const QByteArray &,
 					    const qint64)),
 	  this,
 	  SIGNAL(publicizeListenerPlaintext(const QByteArray &,
-					    const qint64)));
+					    const qint64)),
+	  Qt::UniqueConnection);
   connect(neighbor,
 	  SIGNAL(receivedMessage(const QByteArray &,
 				 const qint64)),
 	  this,
 	  SIGNAL(receivedMessage(const QByteArray &,
-				 const qint64)));
+				 const qint64)),
+	  Qt::UniqueConnection);
   connect(neighbor,
 	  SIGNAL(retrieveMail(const QByteArray &,
 			      const QByteArray &,
@@ -1571,17 +1581,20 @@ void spoton_kernel::connectSignalsToNeighbor
 	  m_mailer,
 	  SLOT(slotRetrieveMail(const QByteArray &,
 				const QByteArray &,
-				const QByteArray &)));
+				const QByteArray &)),
+	  Qt::UniqueConnection);
   connect(this,
 	  SIGNAL(callParticipant(const QByteArray &)),
 	  neighbor,
-	  SLOT(slotCallParticipant(const QByteArray &)));
+	  SLOT(slotCallParticipant(const QByteArray &)),
+	  Qt::UniqueConnection);
   connect(this,
 	  SIGNAL(publicizeListenerPlaintext(const QByteArray &,
 					    const qint64)),
 	  neighbor,
 	  SLOT(slotPublicizeListenerPlaintext(const QByteArray &,
-					      const qint64)));
+					      const qint64)),
+	  Qt::UniqueConnection);
   connect(this,
 	  SIGNAL(publicizeListenerPlaintext(const QHostAddress &,
 					    const quint16,
@@ -1591,33 +1604,40 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SLOT(slotPublicizeListenerPlaintext(const QHostAddress &,
 					      const quint16,
 					      const QString &,
-					      const QString &)));
+					      const QString &)),
+	  Qt::UniqueConnection);
   connect(this,
 	  SIGNAL(receivedMessage(const QByteArray &,
 				 const qint64)),
 	  neighbor,
 	  SLOT(slotReceivedMessage(const QByteArray &,
-				   const qint64)));
+				   const qint64)),
+	  Qt::UniqueConnection);
   connect(this,
-	  SIGNAL(retrieveMail(const QList<QByteArray> &)),
+	  SIGNAL(retrieveMail(const QByteArrayList &)),
 	  neighbor,
-	  SLOT(slotRetrieveMail(const QList<QByteArray> &)));
+	  SLOT(slotRetrieveMail(const QByteArrayList &)),
+	  Qt::UniqueConnection);
   connect(this,
 	  SIGNAL(sendBuzz(const QByteArray &)),
 	  neighbor,
-	  SLOT(slotSendBuzz(const QByteArray &)));
+	  SLOT(slotSendBuzz(const QByteArray &)),
+	  Qt::UniqueConnection);
   connect(this,
-	  SIGNAL(sendMail(const QList<QPair<QByteArray, qint64> > &)),
+	  SIGNAL(sendMail(const QPairListByteArrayQInt64 &)),
 	  neighbor,
-	  SLOT(slotSendMail(const QList<QPair<QByteArray, qint64> > &)));
+	  SLOT(slotSendMail(const QPairListByteArrayQInt64 &)),
+	  Qt::UniqueConnection);
   connect(this,
 	  SIGNAL(sendMessage(const QByteArray &)),
 	  neighbor,
-	  SLOT(slotSendMessage(const QByteArray &)));
+	  SLOT(slotSendMessage(const QByteArray &)),
+	  Qt::UniqueConnection);
   connect(this,
-	  SIGNAL(sendStatus(const QList<QByteArray> &)),
+	  SIGNAL(sendStatus(const QByteArrayList &)),
 	  neighbor,
-	  SLOT(slotSendStatus(const QList<QByteArray> &)));
+	  SLOT(slotSendStatus(const QByteArrayList &)),
+	  Qt::UniqueConnection);
 }
 
 void spoton_kernel::slotStatusTimerExpired(void)

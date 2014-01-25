@@ -50,13 +50,11 @@ spoton_starbeam_writer::~spoton_starbeam_writer()
 
 void spoton_starbeam_writer::run(void)
 {
-  disconnect(&m_timer,
-	     SIGNAL(timeout(void)),
-	     this,
-	     SLOT(slotProcessData(void)));
+  spoton_starbeam_writer_worker worker(this);
+
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
-	  this,
+	  &worker,
 	  SLOT(slotProcessData(void)));
   exec();
 }

@@ -25,10 +25,15 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QAbstractSocket>
+
 #ifndef _spoton_common_h_
 #define _spoton_common_h_
 
 #define SPOTON_VERSION_STR "0.09"
+
+typedef QList<QByteArray> QByteArrayList;
+typedef QList<QPair<QByteArray, qint64> > QPairListByteArrayQInt64;
 
 namespace spoton_common
 {
