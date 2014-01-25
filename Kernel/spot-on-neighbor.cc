@@ -297,10 +297,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotSendAuthenticationRequest(void)));
-  connect(&m_dataPurgeTimer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotPurgeData(void)));
   connect(&m_externalAddressDiscovererTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -632,10 +628,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotAuthenticationTimerTimeout(void)));
-  connect(&m_dataPurgeTimer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotPurgeData(void)));
   connect(&m_externalAddressDiscovererTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -1098,10 +1090,14 @@ void spoton_neighbor::run(void)
 {
   spoton_neighbor_worker worker(this);
 
-  connect(this,
-	  SIGNAL(processData(void)),
+  connect(&m_dataPurgeTimer,
+	  SIGNAL(timeout(void)),
 	  &worker,
-	  SLOT(slotProcessData(void)));
+	  SLOT(slotPurgeData(void)));
+  connect(this,
+	  SIGNAL(processData(const QByteArray &)),
+	  &worker,
+	  SLOT(slotProcessData(const QByteArray &)));
   exec();
 }
 
@@ -1135,30 +1131,22 @@ void spoton_neighbor::slotReadyRead(void)
 
   if(!data.isEmpty())
     {
-      m_dataMutex.lockForWrite();
-      m_data.append(data);
-      m_dataMutex.unlock();
-      emit processData();
+      emit processData(data);
 
       if(!m_dataPurgeTimer.isActive())
 	m_dataPurgeTimer.start();
     }
 }
 
-void spoton_neighbor::slotProcessData(void)
+void spoton_neighbor::slotProcessData(const QByteArray &data)
 {
-  m_dataMutex.lockForRead();
+  if(!data.isEmpty())
+    m_data.append(data);
 
-  bool containsEOM = m_data.contains(spoton_send::EOM);
-
-  m_dataMutex.unlock();
-
-  if(containsEOM)
+  if(m_data.contains(spoton_send::EOM))
     {
       QList<QByteArray> list;
       bool rst = false;
-
-      m_dataMutex.lockForWrite();
 
       while(m_data.contains(spoton_send::EOM))
 	{
@@ -1186,22 +1174,16 @@ void spoton_neighbor::slotProcessData(void)
 	    break;
 	}
 
-      m_dataMutex.unlock();
-
       if(rst)
 	resetKeepAlive();
 
       if(list.isEmpty())
-	{
-	  /*
-	  ** We're going to clear the m_data container if the list
-	  ** object is empty.
-	  */
+	/*
+	** We're going to clear the m_data container if the list
+	** object is empty.
+	*/
 
-	  m_dataMutex.lockForWrite();
-	  m_data.clear();
-	  m_dataMutex.unlock();
-	}
+	m_data.clear();
 
       while(!list.isEmpty())
 	{
@@ -1419,8 +1401,6 @@ void spoton_neighbor::slotProcessData(void)
 	}
     }
 
-  m_dataMutex.lockForWrite();
-
   if(m_data.length() > m_maximumBufferSize)
     {
       spoton_misc::logError
@@ -1432,8 +1412,6 @@ void spoton_neighbor::slotProcessData(void)
 	 arg(m_port));
       m_data.clear();
     }
-
-  m_dataMutex.unlock();
 }
 
 void spoton_neighbor::slotConnected(void)
@@ -5211,7 +5189,9 @@ void spoton_neighbor::slotAuthenticationTimerTimeout(void)
 
 void spoton_neighbor::slotPurgeData(void)
 {
-  m_dataMutex.lockForWrite();
+  /*
+  ** Method issued from within the worker thread.
+  */
 
   if(!m_data.isEmpty())
     spoton_misc::logError
@@ -5222,5 +5202,4 @@ void spoton_neighbor::slotPurgeData(void)
        arg(m_port));
 
   m_data.clear();
-  m_dataMutex.unlock();
 }

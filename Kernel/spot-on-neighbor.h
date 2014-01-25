@@ -33,7 +33,6 @@
 #include <QHostInfo>
 #include <QNetworkProxy>
 #include <QPointer>
-#include <QReadWriteLock>
 #include <QSqlDatabase>
 #include <QSslSocket>
 #include <QThread>
@@ -162,7 +161,6 @@ class spoton_neighbor: public QThread
   QDateTime m_lastReadTime;
   QDateTime m_startTime;
   QHostAddress m_address;
-  QReadWriteLock m_dataMutex;
   QSslCertificate m_peerCertificate;
   QString m_echoMode;
   QString m_ipAddress;
@@ -275,7 +273,6 @@ class spoton_neighbor: public QThread
 				      const quint16 port,
 				      const QString &transport,
 				      const QString &orientation);
-  void slotPurgeData(void);
   void slotReadyRead(void);
   void slotReceivedMessage(const QByteArray &data, const qint64 id);
   void slotRetrieveMail(const QByteArrayList &list);
@@ -291,7 +288,8 @@ class spoton_neighbor: public QThread
   void slotTimeout(void);
 
  public slots:
-  void slotProcessData(void);
+  void slotProcessData(const QByteArray &data);
+  void slotPurgeData(void);
   void slotSharePublicKey(const QByteArray &keyType,
 			  const QByteArray &name,
 			  const QByteArray &publicKey,
@@ -305,7 +303,7 @@ class spoton_neighbor: public QThread
   void authenticationRequested(const QString &peerInformation);
   void disconnected(void);
   void newEMailArrived(void);
-  void processData(void);
+  void processData(const QByteArray &data);
   void publicizeListenerPlaintext(const QByteArray &data, const qint64 id);
   void receivedBuzzMessage(const QByteArrayList &list,
 			   const QByteArrayList &symmetricKeys);
@@ -338,10 +336,16 @@ class spoton_neighbor_worker: public QObject
   QPointer<spoton_neighbor> m_neighbor;
 
  private slots:
-  void slotProcessData(void)
+  void slotProcessData(const QByteArray &data)
   {
     if(m_neighbor)
-      m_neighbor->slotProcessData();
+      m_neighbor->slotProcessData(data);
+  }
+
+  void slotPurgeData(void)
+  {
+    if(m_neighbor)
+      m_neighbor->slotPurgeData();
   }
 };
 
