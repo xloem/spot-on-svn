@@ -120,6 +120,13 @@
 61.  Under certain conditions, QDataStream failures may cause
      gcry_cipher_encrypt() to function properly. Corrected.
 62.  Corrected Received table selections.
+63.  The method spoton_kernel::connectSignalsToNeighbor() may be
+     issued several times per neighbor object. Added Qt::UniqueConnection
+     to all connect() instances.
+64.  Discovered a fundamental flaw with the design of the kernel with
+     respect to the thread objects. The kernel was artificially threaded.
+     Corrected. Applied a similar correction to the StarBeam writer.
+65.  Deprecated spoton_neighbor::flush(), per Qt documentation.
 
 0.08 (12/23/2013)
 
