@@ -33,6 +33,7 @@
 #include <QHostInfo>
 #include <QNetworkProxy>
 #include <QPointer>
+#include <QReadWriteLock>
 #include <QSqlDatabase>
 #include <QSslSocket>
 #include <QThread>
@@ -152,12 +153,6 @@ class spoton_neighbor: public QThread
   void addToBytesWritten(const int bytesWritten);
   void flush(void);
   void setId(const qint64 id);
-  void sharePublicKey(const QByteArray &keyType,
-		      const QByteArray &name,
-		      const QByteArray &publicKey,
-		      const QByteArray &signature,
-		      const QByteArray &sPublicKey,
-		      const QByteArray &sSignature);
 
  private:
   QByteArray m_accountName;
@@ -167,6 +162,7 @@ class spoton_neighbor: public QThread
   QDateTime m_lastReadTime;
   QDateTime m_startTime;
   QHostAddress m_address;
+  QReadWriteLock m_dataMutex;
   QSslCertificate m_peerCertificate;
   QString m_echoMode;
   QString m_ipAddress;
@@ -179,6 +175,7 @@ class spoton_neighbor: public QThread
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_keepAliveTimer;
   QTimer m_lifetime;
+  QTimer m_processDataTimer;
   QTimer m_timer;
   QUuid m_receivedUuid;
   bool m_accountAuthenticated;
@@ -279,6 +276,8 @@ class spoton_neighbor: public QThread
 				      const quint16 port,
 				      const QString &transport,
 				      const QString &orientation);
+  void slotPurgeData(void);
+  void slotReadyRead(void);
   void slotReceivedMessage(const QByteArray &data, const qint64 id);
   void slotRetrieveMail(const QByteArrayList &list);
   void slotSendAccountInformation(void);
@@ -293,8 +292,13 @@ class spoton_neighbor: public QThread
   void slotTimeout(void);
 
  public slots:
-  void slotPurgeData(void);
-  void slotReadyRead(void);
+  void slotProcessData(void);
+  void slotSharePublicKey(const QByteArray &keyType,
+			  const QByteArray &name,
+			  const QByteArray &publicKey,
+			  const QByteArray &signature,
+			  const QByteArray &sPublicKey,
+			  const QByteArray &sSignature);
 
  signals:
   void accountAuthenticated(const QByteArray &name,
@@ -312,6 +316,12 @@ class spoton_neighbor: public QThread
 		    const QByteArray &publicKeyHash,
 		    const QByteArray &signature);
   void scrambleRequest(void);
+  void sharePublicKey(const QByteArray &keyType,
+		      const QByteArray &name,
+		      const QByteArray &publicKey,
+		      const QByteArray &signature,
+		      const QByteArray &sPublicKey,
+		      const QByteArray &sSignature);
 };
 
 class spoton_neighbor_worker: public QObject
@@ -328,16 +338,10 @@ class spoton_neighbor_worker: public QObject
   QPointer<spoton_neighbor> m_neighbor;
 
  private slots:
-  void slotPurgeData(void)
+  void slotProcessData(void)
   {
     if(m_neighbor)
-      m_neighbor->slotPurgeData();
-  }
-
-  void slotReadyRead(void)
-  {
-    if(m_neighbor)
-      m_neighbor->slotReadyRead();
+      m_neighbor->slotProcessData();
   }
 };
 

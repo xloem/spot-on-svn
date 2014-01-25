@@ -217,6 +217,20 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  this,
 	  SLOT(slotAccountAuthenticated(const QByteArray &,
 					const QByteArray &)));
+  connect(this,
+	  SIGNAL(sharePublicKey(const QByteArray &,
+				const QByteArray &,
+				const QByteArray &,
+				const QByteArray &,
+				const QByteArray &,
+				const QByteArray &)),
+	  this,
+	  SLOT(slotSharePublicKey(const QByteArray &,
+				  const QByteArray &,
+				  const QByteArray &,
+				  const QByteArray &,
+				  const QByteArray &,
+				  const QByteArray &)));
 
   if(m_tcpSocket)
     {
@@ -240,6 +254,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	      SIGNAL(modeChanged(QSslSocket::SslMode)),
 	      this,
 	      SLOT(slotModeChanged(QSslSocket::SslMode)));
+      connect(m_tcpSocket,
+	      SIGNAL(readyRead(void)),
+	      this,
+	      SLOT(slotReadyRead(void)));
       connect(m_tcpSocket,
 	      SIGNAL(sslErrors(const QList<QSslError> &)),
 	      this,
@@ -265,6 +283,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	      SIGNAL(error(QAbstractSocket::SocketError)),
 	      this,
 	      SLOT(slotError(QAbstractSocket::SocketError)));
+      connect(m_udpSocket,
+	      SIGNAL(readyRead(void)),
+	      this,
+	      SLOT(slotReadyRead(void)));
     }
 
   connect(m_externalAddress,
@@ -275,6 +297,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotSendAuthenticationRequest(void)));
+  connect(&m_dataPurgeTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotPurgeData(void)));
   connect(&m_externalAddressDiscovererTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -333,6 +359,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   m_keepAliveTimer.start(30000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
+  m_processDataTimer.setInterval(100);
   start();
 }
 
@@ -503,7 +530,21 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
       QHostInfo::lookupHost(m_ipAddress,
 			    this, SLOT(slotHostFound(const QHostInfo &)));
 
-  m_address.setScopeId(scopeId);
+  m_address.setScopeId(scopeId);  
+  connect(this,
+	  SIGNAL(sharePublicKey(const QByteArray &,
+				const QByteArray &,
+				const QByteArray &,
+				const QByteArray &,
+				const QByteArray &,
+				const QByteArray &)),
+	  this,
+	  SLOT(slotSharePublicKey(const QByteArray &,
+				  const QByteArray &,
+				  const QByteArray &,
+				  const QByteArray &,
+				  const QByteArray &,
+				  const QByteArray &)));
 
   if(m_tcpSocket)
     {
@@ -542,6 +583,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	      SLOT(slotProxyAuthenticationRequired(const QNetworkProxy &,
 						   QAuthenticator *)));
       connect(m_tcpSocket,
+	      SIGNAL(readyRead(void)),
+	      this,
+	      SLOT(slotReadyRead(void)));
+      connect(m_tcpSocket,
 	      SIGNAL(sslErrors(const QList<QSslError> &)),
 	      this,
 	      SLOT(slotSslErrors(const QList<QSslError> &)));
@@ -570,6 +615,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	      this,
 	      SLOT(slotProxyAuthenticationRequired(const QNetworkProxy &,
 						   QAuthenticator *)));
+      connect(m_udpSocket,
+	      SIGNAL(readyRead(void)),
+	      this,
+	      SLOT(slotReadyRead(void)));
     }
 
   connect(m_externalAddress,
@@ -584,6 +633,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotAuthenticationTimerTimeout(void)));
+  connect(&m_dataPurgeTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotPurgeData(void)));
   connect(&m_externalAddressDiscovererTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -618,6 +671,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 
   m_keepAliveTimer.setInterval(30000);
   m_lifetime.start(10 * 60 * 1000);
+  m_processDataTimer.setInterval(100);
   m_timer.start(2500);
   start();
 }
@@ -1046,22 +1100,11 @@ void spoton_neighbor::run(void)
 {
   spoton_neighbor_worker worker(this);
 
-  connect(&m_dataPurgeTimer,
+  connect(&m_processDataTimer,
 	  SIGNAL(timeout(void)),
 	  &worker,
-	  SLOT(slotPurgeData(void)));
-
-  if(m_tcpSocket)
-    connect(m_tcpSocket,
-	    SIGNAL(readyRead(void)),
-	    &worker,
-	    SLOT(slotReadyRead(void)));
-  else if(m_udpSocket)
-    connect(m_udpSocket,
-	    SIGNAL(readyRead(void)),
-	    &worker,
-	    SLOT(slotReadyRead(void)));
-
+	  SLOT(slotProcessData(void)));
+  m_processDataTimer.start();
   exec();
 }
 
@@ -1095,16 +1138,29 @@ void spoton_neighbor::slotReadyRead(void)
 
   if(!data.isEmpty())
     {
+      m_dataMutex.lockForWrite();
       m_data.append(data);
+      m_dataMutex.unlock();
 
       if(!m_dataPurgeTimer.isActive())
 	m_dataPurgeTimer.start();
     }
+}
 
-  if(m_data.contains(spoton_send::EOM))
+void spoton_neighbor::slotProcessData(void)
+{
+  m_dataMutex.lockForRead();
+
+  bool containsMarker = m_data.contains(spoton_send::EOM);
+
+  m_dataMutex.unlock();
+
+  if(containsMarker)
     {
       QList<QByteArray> list;
       bool rst = false;
+
+      m_dataMutex.lockForWrite();
 
       while(m_data.contains(spoton_send::EOM))
 	{
@@ -1132,16 +1188,22 @@ void spoton_neighbor::slotReadyRead(void)
 	    break;
 	}
 
+      m_dataMutex.unlock();
+
       if(rst)
 	resetKeepAlive();
 
       if(list.isEmpty())
-	/*
-	** We're going to clear the m_data container if the list
-	** object is empty.
-	*/
+	{
+	  /*
+	  ** We're going to clear the m_data container if the list
+	  ** object is empty.
+	  */
 
-	m_data.clear();
+	  m_dataMutex.lockForWrite();
+	  m_data.clear();
+	  m_dataMutex.unlock();
+	}
 
       while(!list.isEmpty())
 	{
@@ -1359,6 +1421,8 @@ void spoton_neighbor::slotReadyRead(void)
 	}
     }
 
+  m_dataMutex.lockForWrite();
+
   if(m_data.length() > m_maximumBufferSize)
     {
       spoton_misc::logError
@@ -1370,6 +1434,8 @@ void spoton_neighbor::slotReadyRead(void)
 	 arg(m_port));
       m_data.clear();
     }
+
+  m_dataMutex.unlock();
 }
 
 void spoton_neighbor::slotConnected(void)
@@ -1663,9 +1729,9 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 	      (mySPublicKey, &ok);
 
 	  if(ok)
-	    sharePublicKey(keyType, myName,
-			   myPublicKey, mySignature,
-			   mySPublicKey, mySSignature);
+	    emit sharePublicKey(keyType, myName,
+				myPublicKey, mySignature,
+				mySPublicKey, mySSignature);
 	}
     }
 }
@@ -1737,12 +1803,12 @@ void spoton_neighbor::slotLifetimeExpired(void)
   deleteLater();
 }
 
-void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
-				     const QByteArray &name,
-				     const QByteArray &publicKey,
-				     const QByteArray &signature,
-				     const QByteArray &sPublicKey,
-				     const QByteArray &sSignature)
+void spoton_neighbor::slotSharePublicKey(const QByteArray &keyType,
+					 const QByteArray &name,
+					 const QByteArray &publicKey,
+					 const QByteArray &signature,
+					 const QByteArray &sPublicKey,
+					 const QByteArray &sSignature)
 {
   if(m_id == -1)
     return;
@@ -1766,7 +1832,7 @@ void spoton_neighbor::sharePublicKey(const QByteArray &keyType,
 
   if(write(message.constData(), message.length()) != message.length())
     spoton_misc::logError
-      (QString("spoton_neighbor::sharePublicKey(): "
+      (QString("spoton_neighbor::slotSharePublicKey(): "
 	       "write() failure for %1:%2.").
        arg(m_address.toString()).
        arg(m_port));
@@ -3895,7 +3961,8 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
 
 	  if(m_tcpSocket)
 	    spoton_misc::logError
-	      (QString("spoton_neighbor::slotError(): socket error (%1) for "
+	      (QString("spoton_neighbor::slotError(): socket error "
+		       "(%1) for "
 		       "%2:%3. "
 		       "Disabling SSL.").arg(m_tcpSocket->errorString()).
 	       arg(m_address.toString()).arg(m_port));
@@ -3906,13 +3973,15 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
 
   if(m_tcpSocket)
     spoton_misc::logError
-      (QString("spoton_neighbor::slotError(): socket error (%1) for %2:%3. "
+      (QString("spoton_neighbor::slotError(): "
+	       "socket error (%1) for %2:%3. "
 	       "Aborting socket.").arg(m_tcpSocket->errorString()).
        arg(m_address.toString()).
        arg(m_port));
   else if(m_udpSocket)
     spoton_misc::logError
-      (QString("spoton_neighbor::slotError(): socket error (%1) for %2:%3. "
+      (QString("spoton_neighbor::slotError(): "
+	       "socket error (%1) for %2:%3. "
 	       "Aborting socket.").arg(m_udpSocket->errorString()).
        arg(m_address.toString()).
        arg(m_port));
@@ -4938,7 +5007,7 @@ void spoton_neighbor::slotSendAccountInformation(void)
 	    if(write(message.constData(), message.length()) !=
 	       message.length())
 	      spoton_misc::logError
-		(QString("spoton_neighbor::sendAccountInformation(): "
+		(QString("spoton_neighbor::slotSendAccountInformation(): "
 			 "write() error for %1:%2.").
 		 arg(m_address.toString()).
 		 arg(m_port));
@@ -5144,9 +5213,7 @@ void spoton_neighbor::slotAuthenticationTimerTimeout(void)
 
 void spoton_neighbor::slotPurgeData(void)
 {
-  /*
-  ** This method is executed within the data-processing thread.
-  */
+  m_dataMutex.lockForWrite();
 
   if(!m_data.isEmpty())
     spoton_misc::logError
@@ -5157,4 +5224,5 @@ void spoton_neighbor::slotPurgeData(void)
        arg(m_port));
 
   m_data.clear();
+  m_dataMutex.unlock();
 }

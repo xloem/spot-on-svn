@@ -1458,7 +1458,7 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
 	}
     }
   else
-    neighbor->sharePublicKey
+    neighbor->slotSharePublicKey
       (keyType, name, publicKey, signature, sPublicKey, sSignature);
 }
 
