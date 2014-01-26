@@ -358,7 +358,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 
   m_keepAliveTimer.start(30000);
   m_lifetime.start(10 * 60 * 1000);
-  m_processDataTimer.setInterval(100);
+  m_processDataTimer.setInterval(250);
   m_timer.start(2500);
   start();
 }
@@ -671,7 +671,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 
   m_keepAliveTimer.setInterval(30000);
   m_lifetime.start(10 * 60 * 1000);
-  m_processDataTimer.setInterval(100);
+  m_processDataTimer.setInterval(250);
   m_timer.start(2500);
   start();
 }
@@ -1165,6 +1165,7 @@ void spoton_neighbor::slotReadyRead(void)
 		rst = true;
 	      else
 		{
+		  spoton_kernel::messagingCacheAdd(data);
 		  m_listMutex.lockForWrite();
 		  m_list.append(data);
 		  m_listMutex.unlock();
@@ -1340,7 +1341,6 @@ void spoton_neighbor::slotProcessData(void)
   else if(length > 0 && data.contains("content="))
     {
       resetKeepAlive();
-      spoton_kernel::messagingCacheAdd(originalData);
 
       /*
       ** Remove some header data.
