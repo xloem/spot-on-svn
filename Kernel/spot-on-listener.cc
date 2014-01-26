@@ -456,7 +456,6 @@ void spoton_listener::slotTimeout(void)
 		foreach(spoton_neighbor *socket,
 			findChildren<spoton_neighbor *> ())
 		  {
-		    socket->flush();
 		    socket->abort();
 		    socket->deleteLater();
 		  }
@@ -469,7 +468,6 @@ void spoton_listener::slotTimeout(void)
 	    foreach(spoton_neighbor *socket,
 		    findChildren<spoton_neighbor *> ())
 	      {
-		socket->flush();
 		socket->abort();
 		socket->deleteLater();
 	      }

@@ -183,10 +183,7 @@ void spoton_chatwindow::slotSendMessage(void)
        arg(m_kernelSocket->peerAddress().toString()).
        arg(m_kernelSocket->peerPort()));
   else
-    {
-      m_kernelSocket->flush();
-      emit messageSent();
-    }
+    emit messageSent();
 
   ui.message->clear();
 

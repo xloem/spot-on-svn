@@ -4818,8 +4818,6 @@ void spoton::sendBuzzKeysToKernel(void)
 		 arg(m_kernelSocket.peerAddress().toString()).
 		 arg(m_kernelSocket.peerPort()));
 	    }
-	  else
-	    m_kernelSocket.flush();
 	}
 
   m_booleans["buzz_channels_sent_to_kernel"] = sent;
@@ -4853,10 +4851,7 @@ void spoton::sendKeysToKernel(void)
 	       arg(m_kernelSocket.peerAddress().toString()).
 	       arg(m_kernelSocket.peerPort()));
 	  else
-	    {
-	      m_booleans["keys_sent_to_kernel"] = true;
-	      m_kernelSocket.flush();
-	    }
+	    m_booleans["keys_sent_to_kernel"] = true;
 	}
 }
 
@@ -5886,8 +5881,6 @@ void spoton::slotDetachListenerNeighbors(void)
 		     "failure for %1:%2.").
 	     arg(m_kernelSocket.peerAddress().toString()).
 	     arg(m_kernelSocket.peerPort()));
-	else
-	  m_kernelSocket.flush();
       }
 }
 
@@ -5924,8 +5917,6 @@ void spoton::slotDisconnectListenerNeighbors(void)
 		     "write() failure for %1:%2.").
 	     arg(m_kernelSocket.peerAddress().toString()).
 	     arg(m_kernelSocket.peerPort()));
-	else
-	  m_kernelSocket.flush();
       }
 }
 
@@ -5976,8 +5967,6 @@ void spoton::slotCallParticipant(void)
       (QString("spoton::slotCallParticipant(): write() failure for %1:%2.").
        arg(m_kernelSocket.peerAddress().toString()).
        arg(m_kernelSocket.peerPort()));
-  else
-    m_kernelSocket.flush();
 }
 
 void spoton::slotSignatureCheckBoxToggled(bool state)

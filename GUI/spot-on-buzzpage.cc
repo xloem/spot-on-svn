@@ -287,8 +287,6 @@ void spoton_buzzpage::slotSendMessage(void)
 		 "write() failure for %1:%2.").
 	 arg(m_kernelSocket->peerAddress().toString()).
 	 arg(m_kernelSocket->peerPort()));
-    else
-      m_kernelSocket->flush();
   }
 
   ui.message->clear();
@@ -383,8 +381,6 @@ void spoton_buzzpage::slotSendStatus(void)
 	       "for %1:%2.").
        arg(m_kernelSocket->peerAddress().toString()).
        arg(m_kernelSocket->peerPort()));
-  else
-    m_kernelSocket->flush();
 }
 
 void spoton_buzzpage::userStatus(const QList<QByteArray> &list)

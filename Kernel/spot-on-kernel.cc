@@ -1415,7 +1415,6 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
 	   arg(neighbor->peerPort()));
       else
 	{
-	  neighbor->flush();
 	  neighbor->addToBytesWritten(data.length());
 
 	  /*
@@ -2681,7 +2680,6 @@ void spoton_kernel::slotDisconnectNeighbors(const qint64 listenerOid)
     foreach(spoton_neighbor *socket,
 	    listener->findChildren<spoton_neighbor *> ())
       {
-	socket->flush();
 	socket->abort();
 	socket->deleteLater();
       }
@@ -3034,10 +3032,7 @@ void spoton_kernel::slotBuzzMagnetReceivedFromUI(const qint64 oid,
        arg(neighbor->peerAddress().toString()).
        arg(neighbor->peerPort()));
   else
-    {
-      neighbor->flush();
-      neighbor->addToBytesWritten(data.length());
-    }
+    neighbor->addToBytesWritten(data.length());
 }
 
 void spoton_kernel::writeToNeighbors(const QByteArray &data, bool *ok)
@@ -3056,7 +3051,6 @@ void spoton_kernel::writeToNeighbors(const QByteArray &data, bool *ok)
 	  if(it.value()->write(data.constData(),
 			       data.length()) == data.length())
 	    {
-	      it.value()->flush();
 	      it.value()->addToBytesWritten(data.length());
 
 	      if(ok)

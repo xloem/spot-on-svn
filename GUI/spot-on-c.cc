@@ -1014,8 +1014,6 @@ void spoton::slotShareBuzzMagnet(void)
 	       "for %1:%2.").
        arg(m_kernelSocket.peerAddress().toString()).
        arg(m_kernelSocket.peerPort()));
-  else
-    m_kernelSocket.flush();
 }
 
 void spoton::slotPopulateStars(void)
@@ -1835,8 +1833,6 @@ void spoton::askKernelToReadStarBeamKeys(void)
 	       "write() failure for %1:%2.").
        arg(m_kernelSocket.peerAddress().toString()).
        arg(m_kernelSocket.peerPort()));
-  else
-    m_kernelSocket.flush();
 }
 
 void spoton::slotRewindFile(void)
@@ -2152,8 +2148,6 @@ void spoton::sharePublicKeyWithParticipant(const QString &keyType)
 		   "write() failure for %1:%2.").
 	   arg(m_kernelSocket.peerAddress().toString()).
 	   arg(m_kernelSocket.peerPort()));
-      else
-	m_kernelSocket.flush();
     }
 }
 

@@ -127,7 +127,6 @@ void spoton::slotSendMessage(void)
 		m_ui.status->setCurrentIndex(3); // Online
 
 	      m_chatInactivityTimer.start();
-	      m_kernelSocket.flush();
 	    }
 	}
     }
@@ -142,7 +141,6 @@ void spoton::slotSendMessage(void)
 
 void spoton::slotReceivedKernelMessage(void)
 {
-  m_kernelSocket.flush();
   m_kernelSocketData.append(m_kernelSocket.readAll());
 
   if(m_kernelSocketData.endsWith('\n'))
@@ -435,8 +433,6 @@ void spoton::slotShareChatPublicKey(void)
 		   "for %1:%2.").
 	   arg(m_kernelSocket.peerAddress().toString()).
 	   arg(m_kernelSocket.peerPort()));
-      else
-	m_kernelSocket.flush();
     }
 }
 
@@ -516,8 +512,6 @@ void spoton::slotShareEmailPublicKey(void)
 		   "for %1:%2.").
 	   arg(m_kernelSocket.peerAddress().toString()).
 	   arg(m_kernelSocket.peerPort()));
-      else
-	m_kernelSocket.flush();
     }
 }
 
@@ -2533,8 +2527,6 @@ void spoton::slotShareURLPublicKey(void)
 		   "for %1:%2.").
 	   arg(m_kernelSocket.peerAddress().toString()).
 	   arg(m_kernelSocket.peerPort()));
-      else
-	m_kernelSocket.flush();
     }
 }
 
@@ -3283,7 +3275,6 @@ void spoton::slotRetrieveMail(void)
 	       arg(m_kernelSocket.peerPort()));
 	  else
 	    {
-	      m_kernelSocket.flush();
 	      m_ui.retrieveMail->setEnabled(false);
 	      QTimer::singleShot
 		(5000, this, SLOT(slotEnableRetrieveMail(void)));
@@ -3872,8 +3863,6 @@ void spoton::slotPublicizeAllListenersPlaintext(void)
 	       "write() failure for %1:%2.").
        arg(m_kernelSocket.peerAddress().toString()).
        arg(m_kernelSocket.peerPort()));
-  else
-    m_kernelSocket.flush();
 }
 
 void spoton::slotPublicizeListenerPlaintext(void)
@@ -3911,8 +3900,6 @@ void spoton::slotPublicizeListenerPlaintext(void)
 	       "write() failure for %1:%2.").
        arg(m_kernelSocket.peerAddress().toString()).
        arg(m_kernelSocket.peerPort()));
-  else
-    m_kernelSocket.flush();
 }
 
 #ifdef Q_OS_MAC
@@ -4107,8 +4094,6 @@ void spoton::slotJoinBuzzChannel(void)
 		     "write() failure for %1:%2.").
 	     arg(m_kernelSocket.peerAddress().toString()).
 	     arg(m_kernelSocket.peerPort()));
-	else
-	  m_kernelSocket.flush();
       }
 
  done_label:
@@ -4151,8 +4136,6 @@ void spoton::slotCloseBuzzTab(int index)
 		     "for %1:%2.").
 	     arg(m_kernelSocket.peerAddress().toString()).
 	     arg(m_kernelSocket.peerPort()));
-	else
-	  m_kernelSocket.flush();
       }
 }
 

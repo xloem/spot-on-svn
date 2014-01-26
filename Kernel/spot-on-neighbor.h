@@ -151,7 +151,6 @@ class spoton_neighbor: public QThread
   quint16 peerPort(void) const;
   void abort(void);
   void addToBytesWritten(const int bytesWritten);
-  void flush(void);
   void setId(const qint64 id);
 
  private:
@@ -162,8 +161,7 @@ class spoton_neighbor: public QThread
   QDateTime m_lastReadTime;
   QDateTime m_startTime;
   QHostAddress m_address;
-  QList<QByteArray> m_list;
-  QReadWriteLock m_listMutex;
+  QReadWriteLock m_dataMutex;
   QSslCertificate m_peerCertificate;
   QString m_echoMode;
   QString m_ipAddress;

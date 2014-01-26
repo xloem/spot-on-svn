@@ -1110,8 +1110,6 @@ void spoton_neighbor::run(void)
 
 void spoton_neighbor::slotReadyRead(void)
 {
-  flush();
-
   QByteArray data;
 
   if(m_tcpSocket)
@@ -1121,276 +1119,264 @@ void spoton_neighbor::slotReadyRead(void)
 
   m_bytesRead += data.length();
 
-  if(m_useSsl)
-    if(!data.isEmpty())
-      if(!isEncrypted())
-	{
-	  data.clear();
-	  spoton_misc::logError
-	    (QString("spoton_neighbor::slotReadyRead(): "
-		     "m_useSsl is true, however, isEncrypted() "
-		     "is false "
-		     "for %1:%2. "
-		     "Purging read data.").
-	     arg(m_address.toString()).
-	     arg(m_port));
-	}
+  if(!data.isEmpty() && !isEncrypted() && m_useSsl)
+    {
+      data.clear();
+      spoton_misc::logError
+	(QString("spoton_neighbor::slotReadyRead(): "
+		 "m_useSsl is true, however, isEncrypted() "
+		 "is false "
+		 "for %1:%2. "
+		 "Purging read data.").
+	 arg(m_address.toString()).
+	 arg(m_port));
+    }
 
   if(!data.isEmpty())
     {
-      m_data.append(data);
+      m_dataMutex.lockForWrite();
+
+      if(data.length() + m_data.length() <= m_maximumBufferSize)
+	m_data.append(data);
+
+      m_dataMutex.unlock();
 
       if(!m_dataPurgeTimer.isActive())
 	m_dataPurgeTimer.start();
-    }
-
-  if(m_data.contains(spoton_send::EOM))
-    {
-      bool rst = false;
-
-      while(m_data.contains(spoton_send::EOM))
-	{
-	  QByteArray data
-	    (m_data.mid(0,
-			m_data.indexOf(spoton_send::EOM) +
-			spoton_send::EOM.length()));
-
-	  m_data.remove(0, data.length());
-
-	  if(!data.isEmpty())
-	    {
-	      m_dataPurgeTimer.stop();
-
-	      if(spoton_kernel::messagingCacheContains(data))
-		rst = true;
-	      else
-		{
-		  spoton_kernel::messagingCacheAdd(data);
-		  m_listMutex.lockForWrite();
-		  m_list.append(data);
-		  m_listMutex.unlock();
-		}
-	    }
-	  else
-	    /*
-	    ** Empty data? Abort!
-	    */
-
-	    break;
-	}
-
-      if(rst)
-	resetKeepAlive();
-    }
-
-  if(m_data.length() > m_maximumBufferSize)
-    {
-      spoton_misc::logError
-	(QString("spoton_neighbor::slotReadyRead(): "
-		 "the m_data container contains too much "
-		 "data (%1) that hasn't been processed for %2:%3. Purging.").
-	 arg(m_data.length()).
-	 arg(m_address.toString()).
-	 arg(m_port));
-      m_data.clear();
     }
 }
 
 void spoton_neighbor::slotProcessData(void)
 {
-  m_listMutex.lockForWrite();
+  m_dataMutex.lockForRead();
 
-  if(m_list.isEmpty())
+  QByteArray data(m_data);
+
+  m_dataMutex.unlock();
+
+  QList<QByteArray> list;
+
+  if(data.contains(spoton_send::EOM))
     {
-      m_listMutex.unlock();
-      return;
-    }
+      bool rst = false;
+      int totalBytes = 0;
 
-  QByteArray data(m_list.takeFirst());
-
-  m_listMutex.unlock();
-
-  QByteArray originalData(data);
-  int length = 0;
-
-  if(data.contains("Content-Length: "))
-    {
-      QByteArray contentLength(data);
-
-      contentLength.remove
-	(0,
-	 contentLength.indexOf("Content-Length: ") +
-	 qstrlen("Content-Length: "));
-      length = contentLength.mid(0, contentLength.indexOf("\r\n")).
-	toInt(); // toInt() failure returns zero.
-    }
-  else
-    {
-      spoton_misc::logError
-	(QString("spoton_neighbor::slotProcessData() "
-		 "data does not contain Content-Length "
-		 "for %1:%2.").
-	 arg(m_address.toString()).
-	 arg(m_port));
-      return;
-    }
-
-  if(length >= m_maximumContentLength)
-    {
-      spoton_misc::logError
-	(QString("spoton_neighbor::slotProcessData(): "
-		 "the Content-Length header from node %1:%2 "
-		 "contains a lot of data (%3). Ignoring. ").
-	 arg(m_address.toString()).
-	 arg(m_port).
-	 arg(length));
-      return;
-    }
-
-  if(!m_isUserDefined)
-    {
-      /*
-      ** We're a server!
-      */
-
-      if(m_useAccounts)
+      while(data.contains(spoton_send::EOM))
 	{
-	  if(length > 0 && data.contains("type=0050&content="))
-	    process0050(length, data);
+	  QByteArray bytes
+	    (data.mid(0,
+		      data.indexOf(spoton_send::EOM) +
+		      spoton_send::EOM.length()));
 
-	  if(!m_accountAuthenticated)
+	  data.remove(0, bytes.length());
+	  totalBytes += bytes.length();
+
+	  if(!bytes.isEmpty())
+	    {
+	      m_dataPurgeTimer.stop();
+
+	      if(spoton_kernel::messagingCacheContains(bytes))
+		rst = true;
+	      else
+		list.append(bytes);
+	    }
+	}
+
+      if(rst)
+	resetKeepAlive();
+
+      if(totalBytes > 0)
+	{
+	  m_dataMutex.lockForWrite();
+	  m_data.remove(0, totalBytes);
+	  m_dataMutex.unlock();
+	}
+    }
+
+  while(!list.isEmpty())
+    {
+      QByteArray data(list.takeFirst());
+      QByteArray originalData(data);
+      int length = 0;
+
+      if(data.contains("Content-Length: "))
+	{
+	  QByteArray contentLength(data);
+
+	  contentLength.remove
+	    (0,
+	     contentLength.indexOf("Content-Length: ") +
+	     qstrlen("Content-Length: "));
+	  length = contentLength.mid(0, contentLength.indexOf("\r\n")).
+	    toInt(); // toInt() failure returns zero.
+	}
+      else
+	{
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::slotProcessData() "
+		     "data does not contain Content-Length "
+		     "for %1:%2.").
+	     arg(m_address.toString()).
+	     arg(m_port));
+	  continue;
+	}
+
+      if(length >= m_maximumContentLength)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::slotProcessData(): "
+		     "the Content-Length header from node %1:%2 "
+		     "contains a lot of data (%3). Ignoring. ").
+	     arg(m_address.toString()).
+	     arg(m_port).
+	     arg(length));
+	  continue;
+	}
+
+      if(!m_isUserDefined)
+	{
+	  /*
+	  ** We're a server!
+	  */
+
+	  if(m_useAccounts)
+	    {
+	      if(length > 0 && data.contains("type=0050&content="))
+		process0050(length, data);
+
+	      if(!m_accountAuthenticated)
+		return;
+	    }
+	  else if(length > 0 && (data.contains("type=0050&content=") ||
+				 data.contains("type=0051&content=") ||
+				 data.contains("type=0052&content=")))
 	    return;
 	}
+      else if(length > 0 && data.contains("type=0051&content="))
+	{
+	  /*
+	  ** The server responded. Let's verify that the server's
+	  ** response is valid.
+	  */
+
+	  if(!m_accountClientSentSalt.isEmpty())
+	    process0051(length, data);
+	  else
+	    m_accountAuthenticated = false;
+	}
+      else if(length > 0 && data.contains("type=0052&content="))
+	{
+	  if(!m_accountAuthenticated)
+	    {
+	      if(m_tcpSocket)
+		{
+		  if(m_tcpSocket->peerAddress().
+		     scopeId().trimmed().isEmpty())
+		    emit authenticationRequested
+		      (QString("%1:%2").
+		       arg(m_tcpSocket->peerAddress().toString()).
+		       arg(m_tcpSocket->peerPort()));
+		  else
+		    emit authenticationRequested
+		      (QString("%1:%2:%3").
+		       arg(m_tcpSocket->peerAddress().toString()).
+		       arg(m_tcpSocket->peerPort()).
+		       arg(m_tcpSocket->peerAddress().scopeId()));
+		}
+	      else if(m_udpSocket)
+		{
+		  if(m_udpSocket->peerAddress().
+		     scopeId().trimmed().isEmpty())
+		    emit authenticationRequested
+		      (QString("%1:%2").
+		       arg(m_udpSocket->peerAddress().toString()).
+		       arg(m_udpSocket->peerPort()));
+		  else
+		    emit authenticationRequested
+		      (QString("%1:%2:%3").
+		       arg(m_udpSocket->peerAddress().toString()).
+		       arg(m_udpSocket->peerPort()).
+		   arg(m_udpSocket->peerAddress().scopeId()));
+		}
+	    }
+	}
+
+      if(m_isUserDefined)
+	if(m_useAccounts)
+	  {
+	    if(!m_accountAuthenticated)
+	      return;
+	  }
+
+      if(length > 0 && data.contains("type=0011&content="))
+	process0011(length, data);
+      else if(length > 0 && data.contains("type=0012&content="))
+	process0012(length, data);
+      else if(length > 0 && data.contains("type=0014&content="))
+	process0014(length, data);
+      else if(length > 0 && data.contains("type=0030&content="))
+	process0030(length, data);
       else if(length > 0 && (data.contains("type=0050&content=") ||
 			     data.contains("type=0051&content=") ||
 			     data.contains("type=0052&content=")))
 	return;
-    }
-  else if(length > 0 && data.contains("type=0051&content="))
-    {
-      /*
-      ** The server responded. Let's verify that the server's
-      ** response is valid.
-      */
-
-      if(!m_accountClientSentSalt.isEmpty())
-	process0051(length, data);
-      else
-	m_accountAuthenticated = false;
-    }
-  else if(length > 0 && data.contains("type=0052&content="))
-    {
-      if(!m_accountAuthenticated)
+      else if(length > 0 && data.contains("type=0065&content="))
+	process0065(length, data);
+      else if(length > 0 && data.contains("content="))
 	{
-	  if(m_tcpSocket)
-	    {
-	      if(m_tcpSocket->peerAddress().
-		 scopeId().trimmed().isEmpty())
-		emit authenticationRequested
-		  (QString("%1:%2").
-		   arg(m_tcpSocket->peerAddress().toString()).
-		   arg(m_tcpSocket->peerPort()));
-	      else
-		emit authenticationRequested
-		  (QString("%1:%2:%3").
-		   arg(m_tcpSocket->peerAddress().toString()).
-		   arg(m_tcpSocket->peerPort()).
-		   arg(m_tcpSocket->peerAddress().scopeId()));
-	    }
-	  else if(m_udpSocket)
-	    {
-	      if(m_udpSocket->peerAddress().
-		 scopeId().trimmed().isEmpty())
-		emit authenticationRequested
-		  (QString("%1:%2").
-		   arg(m_udpSocket->peerAddress().toString()).
-		   arg(m_udpSocket->peerPort()));
-	      else
-		emit authenticationRequested
-		  (QString("%1:%2:%3").
-		   arg(m_udpSocket->peerAddress().toString()).
-		   arg(m_udpSocket->peerPort()).
-		   arg(m_udpSocket->peerAddress().scopeId()));
-	    }
+	  resetKeepAlive();
+	  spoton_kernel::messagingCacheAdd(originalData);
+
+	  /*
+	  ** Remove some header data.
+	  */
+
+	  length -= qstrlen("content=");
+	  data = data.mid(0, data.lastIndexOf("\r\n") + 2);
+	  data.remove(0, data.indexOf("content=") + qstrlen("content="));
+
+	  /*
+	  ** Please note that findMessageType() calls
+	  ** participantCount(). Therefore, the process() methods
+	  ** that would do not.
+	  */
+
+	  QList<QByteArray> symmetricKeys;
+	  QString messageType(findMessageType(data, symmetricKeys));
+
+	  if(messageType == "0000")
+	    process0000(length, data, symmetricKeys);
+	  else if(messageType == "0000a")
+	    process0000a(length, data);
+	  else if(messageType == "0001a")
+	    process0001a(length, data);
+	  else if(messageType == "0001b")
+	    process0001b(length, data);
+	  else if(messageType == "0002")
+	    process0002(length, data);
+	  else if(messageType == "0013")
+	    process0013(length, data, symmetricKeys);
+	  else if(messageType == "0040a")
+	    process0040a(length, data, symmetricKeys);
+	  else if(messageType == "0040b")
+	    process0040b(length, data, symmetricKeys);
+	  else
+	    messageType.clear();
+
+	  if(messageType.isEmpty())
+	    if(data.length() == length)
+	      spoton_kernel::s_kernel->processPotentialStarBeamData(data);
+
+	  if(spoton_kernel::setting("gui/scramblerEnabled", false).toBool())
+	    emit scrambleRequest();
+
+	  if(spoton_kernel::setting("gui/superEcho", false).toBool())
+	    emit receivedMessage(originalData, m_id);
+	  else if(m_echoMode == "full")
+	    if(messageType.isEmpty() ||
+	       messageType == "0040a" || messageType == "0040b")
+	      emit receivedMessage(originalData, m_id);
 	}
-
-      return;
-    }
-
-  if(m_isUserDefined)
-    if(m_useAccounts)
-      {
-	if(!m_accountAuthenticated)
-	  return;
-      }
-
-  if(length > 0 && data.contains("type=0011&content="))
-    process0011(length, data);
-  else if(length > 0 && data.contains("type=0012&content="))
-    process0012(length, data);
-  else if(length > 0 && data.contains("type=0014&content="))
-    process0014(length, data);
-  else if(length > 0 && data.contains("type=0030&content="))
-    process0030(length, data);
-  else if(length > 0 && (data.contains("type=0050&content=") ||
-			 data.contains("type=0051&content=") ||
-			 data.contains("type=0052&content=")))
-    return;
-  else if(length > 0 && data.contains("type=0065&content="))
-    process0065(length, data);
-  else if(length > 0 && data.contains("content="))
-    {
-      resetKeepAlive();
-
-      /*
-      ** Remove some header data.
-      */
-
-      length -= qstrlen("content=");
-      data = data.mid(0, data.lastIndexOf("\r\n") + 2);
-      data.remove(0, data.indexOf("content=") + qstrlen("content="));
-
-      /*
-      ** Please note that findMessageType() calls
-      ** participantCount(). Therefore, the process() methods
-      ** that would do not.
-      */
-
-      QList<QByteArray> symmetricKeys;
-      QString messageType(findMessageType(data, symmetricKeys));
-
-      if(messageType == "0000")
-	process0000(length, data, symmetricKeys);
-      else if(messageType == "0000a")
-	process0000a(length, data);
-      else if(messageType == "0001a")
-	process0001a(length, data);
-      else if(messageType == "0001b")
-	process0001b(length, data);
-      else if(messageType == "0002")
-	process0002(length, data);
-      else if(messageType == "0013")
-	process0013(length, data, symmetricKeys);
-      else if(messageType == "0040a")
-	process0040a(length, data, symmetricKeys);
-      else if(messageType == "0040b")
-	process0040b(length, data, symmetricKeys);
-      else
-	messageType.clear();
-
-      if(messageType.isEmpty())
-	if(data.length() == length)
-	  spoton_kernel::s_kernel->processPotentialStarBeamData(data);
-
-      if(spoton_kernel::setting("gui/scramblerEnabled", false).toBool())
-	emit scrambleRequest();
-
-      if(spoton_kernel::setting("gui/superEcho", false).toBool())
-	emit receivedMessage(originalData, m_id);
-      else if(m_echoMode == "full")
-	if(messageType.isEmpty() ||
-	   messageType == "0040a" || messageType == "0040b")
-	  emit receivedMessage(originalData, m_id);
     }
 }
 
@@ -1714,7 +1700,6 @@ void spoton_neighbor::slotSendMessage(const QByteArray &data)
 	   arg(m_port));
       else
 	{
-	  flush();
 	  addToBytesWritten(data.length());
 	  spoton_kernel::messagingCacheAdd(data);
 	}
@@ -1742,7 +1727,6 @@ void spoton_neighbor::slotReceivedMessage(const QByteArray &data,
 	       arg(m_port));
 	  else
 	    {
-	      flush();
 	      addToBytesWritten(data.length());
 	      spoton_kernel::messagingCacheAdd(data);
 	    }
@@ -1794,7 +1778,6 @@ void spoton_neighbor::slotSharePublicKey(const QByteArray &keyType,
        arg(m_port));
   else
     {
-      flush();
       addToBytesWritten(message.length());
 
       QString connectionName("");
@@ -3757,7 +3740,6 @@ void spoton_neighbor::slotSendStatus(const QByteArrayList &list)
 	     arg(m_port));
 	else
 	  {
-	    flush();
 	    addToBytesWritten(message.length());
 	    spoton_kernel::messagingCacheAdd(message);
 	  }
@@ -3963,10 +3945,7 @@ void spoton_neighbor::slotSendUuid(void)
        arg(m_address.toString()).
        arg(m_port));
   else
-    {
-      flush();
-      addToBytesWritten(message.length());
-    }
+    addToBytesWritten(message.length());
 }
 
 void spoton_neighbor::saveExternalAddress(const QHostAddress &address,
@@ -4073,7 +4052,6 @@ void spoton_neighbor::slotSendMail
 	     arg(m_port));
 	else
 	  {
-	    flush();
 	    addToBytesWritten(message.length());
 	    oids.append(pair.second);
 	    spoton_kernel::messagingCacheAdd(message);
@@ -4102,7 +4080,6 @@ void spoton_neighbor::slotSendMailFromPostOffice(const QByteArray &data)
 	   arg(m_port));
       else
 	{
-	  flush();
 	  addToBytesWritten(message.length());
 	  spoton_kernel::messagingCacheAdd(data);
 	}
@@ -4313,7 +4290,6 @@ void spoton_neighbor::slotRetrieveMail(const QByteArrayList &list)
 	     arg(m_port));
 	else
 	  {
-	    flush();
 	    addToBytesWritten(message.length());
 	    spoton_kernel::messagingCacheAdd(message);
 	  }
@@ -4351,7 +4327,6 @@ void spoton_neighbor::slotPublicizeListenerPlaintext
 	     arg(m_port));
 	else
 	  {
-	    flush();
 	    addToBytesWritten(message.length());
 	    spoton_kernel::messagingCacheAdd(message);
 	  }
@@ -4382,7 +4357,6 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
 	       arg(m_port));
 	  else
 	    {
-	      flush();
 	      addToBytesWritten(message.length());
 	      spoton_kernel::messagingCacheAdd(message);
 	    }
@@ -4654,7 +4628,6 @@ void spoton_neighbor::slotSendBuzz(const QByteArray &data)
 	   arg(m_port));
       else
 	{
-	  flush();
 	  addToBytesWritten(data.length());
 	  spoton_kernel::messagingCacheAdd(data);
 	}
@@ -4848,7 +4821,6 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data)
 	   arg(m_port));
       else
 	{
-	  flush();
 	  addToBytesWritten(message.length());
 	  spoton_kernel::messagingCacheAdd(message);
 	}
@@ -4969,7 +4941,6 @@ void spoton_neighbor::slotSendAccountInformation(void)
 		 arg(m_port));
 	    else
 	      {
-		flush();
 		m_accountClientSentSalt = salt;
 		addToBytesWritten(message.length());
 	      }
@@ -5011,10 +4982,7 @@ void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
 	   arg(m_address.toString()).
 	   arg(m_port));
       else
-	{
-	  flush();
-	  addToBytesWritten(message.length());
-	}
+	addToBytesWritten(message.length());
     }
 }
 
@@ -5032,10 +5000,7 @@ void spoton_neighbor::slotSendAuthenticationRequest(void)
        arg(m_address.toString()).
        arg(m_port));
   else
-    {
-      flush();
-      addToBytesWritten(message.length());
-    }
+    addToBytesWritten(message.length());
 }
 
 qint64 spoton_neighbor::write(const char *data, const qint64 size)
@@ -5116,13 +5081,6 @@ quint16 spoton_neighbor::peerPort(void) const
     return m_udpSocket->peerPort();
   else
     return -1;
-}
-
-void spoton_neighbor::flush(void)
-{
-  /*
-  ** Empty.
-  */
 }
 
 bool spoton_neighbor::isEncrypted(void) const
