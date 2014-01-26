@@ -358,7 +358,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 
   m_keepAliveTimer.start(30000);
   m_lifetime.start(10 * 60 * 1000);
-  m_processDataTimer.setInterval(250);
   m_timer.start(2500);
   start();
 }
@@ -671,7 +670,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 
   m_keepAliveTimer.setInterval(30000);
   m_lifetime.start(10 * 60 * 1000);
-  m_processDataTimer.setInterval(250);
   m_timer.start(2500);
   start();
 }
@@ -1098,13 +1096,14 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 
 void spoton_neighbor::run(void)
 {
+  QTimer timer;
   spoton_neighbor_worker worker(this);
 
-  connect(&m_processDataTimer,
+  connect(&timer,
 	  SIGNAL(timeout(void)),
 	  &worker,
 	  SLOT(slotProcessData(void)));
-  m_processDataTimer.start();
+  timer.start(250);
   exec();
 }
 

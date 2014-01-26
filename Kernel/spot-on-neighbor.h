@@ -174,7 +174,6 @@ class spoton_neighbor: public QThread
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_keepAliveTimer;
   QTimer m_lifetime;
-  QTimer m_processDataTimer;
   QTimer m_timer;
   QUuid m_receivedUuid;
   bool m_accountAuthenticated;
