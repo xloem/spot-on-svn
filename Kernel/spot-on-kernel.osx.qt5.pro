@@ -24,20 +24,20 @@ QMAKE_CLEAN     += ../Spot-On-Kernel ../../../libSpotOn/*.dylib \
 QMAKE_DISTCLEAN += -r temp .qmake.cache .qmake.stash
 QMAKE_CXXFLAGS_DEBUG -= -O2
 QMAKE_CXXFLAGS_DEBUG += -fPIE -fstack-protector-all -fwrapv \
-			-gfull -mtune=generic -pie -Os \
+			-mtune=generic -pie -Os \
 			-Wall -Wcast-align -Wcast-qual \
                         -Werror -Wextra \
 			-Woverloaded-virtual -Wpointer-arith \
 			-Wstack-protector -Wstrict-overflow=4
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -fwrapv \
-			  -gfull -mtune=generic -pie -O3 \
+			  -mtune=generic -pie -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
                           -Werror -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith \
 			  -Wstack-protector -Wstrict-overflow=4
 QMAKE_EXTRA_TARGETS = libspoton purge
-QMAKE_LFLAGS_RELEASE = -dead_strip
+QMAKE_LFLAGS_RELEASE =
 QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../. ../../../. ../../../libGeoIP/Include.osx64 \
                    /usr/local/include \

@@ -1268,8 +1268,7 @@ void spoton_neighbor::slotProcessData(void)
 	    {
 	      if(m_tcpSocket)
 		{
-		  if(m_tcpSocket->peerAddress().
-		     scopeId().trimmed().isEmpty())
+		  if(m_tcpSocket->peerAddress().scopeId().trimmed().isEmpty())
 		    emit authenticationRequested
 		      (QString("%1:%2").
 		       arg(m_tcpSocket->peerAddress().toString()).
@@ -1283,8 +1282,7 @@ void spoton_neighbor::slotProcessData(void)
 		}
 	      else if(m_udpSocket)
 		{
-		  if(m_udpSocket->peerAddress().
-		     scopeId().trimmed().isEmpty())
+		  if(m_udpSocket->peerAddress().scopeId().trimmed().isEmpty())
 		    emit authenticationRequested
 		      (QString("%1:%2").
 		       arg(m_udpSocket->peerAddress().toString()).

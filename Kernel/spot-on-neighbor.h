@@ -274,6 +274,7 @@ class spoton_neighbor: public QThread
 				      const quint16 port,
 				      const QString &transport,
 				      const QString &orientation);
+  void slotPurgeData(void);
   void slotReadyRead(void);
   void slotReceivedMessage(const QByteArray &data, const qint64 id);
   void slotRetrieveMail(const QByteArrayList &list);
@@ -290,7 +291,6 @@ class spoton_neighbor: public QThread
 
  public slots:
   void slotProcessData(void);
-  void slotPurgeData(void);
   void slotSharePublicKey(const QByteArray &keyType,
 			  const QByteArray &name,
 			  const QByteArray &publicKey,
@@ -351,12 +351,6 @@ class spoton_neighbor_worker: public QObject
   {
     if(m_neighbor)
       m_neighbor->slotProcessData();
-  }
-
-  void slotPurgeData(void)
-  {
-    if(m_neighbor)
-      m_neighbor->slotPurgeData();
   }
 };
 

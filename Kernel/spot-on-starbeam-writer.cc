@@ -270,6 +270,10 @@ void spoton_starbeam_writer::stop(void)
 {
   quit();
   wait(30000);
+  m_keyMutex.lockForWrite();
+  m_magnets.clear();
+  m_novas.clear();
+  m_keyMutex.unlock();
   m_mutex.lockForWrite();
   m_data.clear();
   m_mutex.unlock();
@@ -422,6 +426,13 @@ void spoton_starbeam_writer::append(const QByteArray &data)
 	m_data.insert(hash, bytes);
 
       m_mutex.unlock();
+
+      /*
+      ** If the thread is not active, it should be!
+      */
+
+      if(!isRunning())
+	start();
     }
 }
 
