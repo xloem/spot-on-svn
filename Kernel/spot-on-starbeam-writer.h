@@ -73,6 +73,10 @@ class spoton_starbeam_writer_worker: public QObject
 	    SIGNAL(timeout(void)),
 	    this,
 	    SLOT(slotProcessData(void)));
+    connect(m_writer,
+	    SIGNAL(destroyed(void)),
+	    &m_timer,
+	    SLOT(stop(void)));
     m_timer.start(100);
   }
 
