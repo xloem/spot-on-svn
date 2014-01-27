@@ -126,7 +126,7 @@
 64.  Discovered a fundamental flaw with the design of the kernel with
      respect to the thread objects. The kernel was artificially threaded.
      Corrected. Applied a similar correction to the StarBeam writer.
-65.  Deprecated spoton_neighbor::flush(), per Qt documentation.
+65.  Deprecated use of QAbstractSocket::flush(), per Qt documentation.
 
 0.08 (12/23/2013)
 
