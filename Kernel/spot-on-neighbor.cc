@@ -679,6 +679,8 @@ spoton_neighbor::~spoton_neighbor()
   spoton_misc::logError(QString("Neighbor %1:%2 deallocated.").
 			arg(m_address.toString()).
 			arg(m_port));
+  quit();
+  wait(30000);
   abort();
   m_timer.stop();
 
@@ -763,9 +765,6 @@ spoton_neighbor::~spoton_neighbor()
 
       QSqlDatabase::removeDatabase(connectionName);
     }
-
-  quit();
-  wait(30000);
 }
 
 void spoton_neighbor::slotTimeout(void)
@@ -1096,14 +1095,8 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 
 void spoton_neighbor::run(void)
 {
-  QTimer timer;
   spoton_neighbor_worker worker(this);
 
-  connect(&timer,
-	  SIGNAL(timeout(void)),
-	  &worker,
-	  SLOT(slotProcessData(void)));
-  timer.start(250);
   exec();
 }
 

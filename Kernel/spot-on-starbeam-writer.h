@@ -52,8 +52,6 @@ class spoton_starbeam_writer: public QThread
   QList<QByteArray> m_novas;
   QReadWriteLock m_keyMutex;
   QReadWriteLock m_mutex;
-  QTimer m_keyTimer;
-  QTimer m_timer;
   void run(void);
 
  private slots:
@@ -71,10 +69,21 @@ class spoton_starbeam_writer_worker: public QObject
   spoton_starbeam_writer_worker(spoton_starbeam_writer *writer)
   {
     m_writer = writer;
+    connect(&m_timer,
+	    SIGNAL(timeout(void)),
+	    this,
+	    SLOT(slotProcessData(void)));
+    m_timer.start(100);
+  }
+
+  ~spoton_starbeam_writer_worker()
+  {
+    m_timer.stop();
   }
 
  private:
   QPointer<spoton_starbeam_writer> m_writer;
+  QTimer m_timer;
 
  private slots:
   void slotProcessData(void)

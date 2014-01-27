@@ -330,10 +330,21 @@ class spoton_neighbor_worker: public QObject
   spoton_neighbor_worker(spoton_neighbor *neighbor)
   {
     m_neighbor = neighbor;
+    connect(&m_timer,
+	    SIGNAL(timeout(void)),
+	    this,
+	    SLOT(slotProcessData(void)));
+    m_timer.start(250);
+  }
+
+  ~spoton_neighbor_worker()
+  {
+    m_timer.stop();
   }
 
  private:
   QPointer<spoton_neighbor> m_neighbor;
+  QTimer m_timer;
 
  private slots:
   void slotProcessData(void)

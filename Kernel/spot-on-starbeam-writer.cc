@@ -37,13 +37,10 @@
 spoton_starbeam_writer::spoton_starbeam_writer(QObject *parent):
   QThread(parent)
 {
-  m_timer.setInterval(100);
-  QThread::start();
 }
 
 spoton_starbeam_writer::~spoton_starbeam_writer()
 {
-  m_timer.stop();
   quit();
   wait(30000);
 }
@@ -52,10 +49,6 @@ void spoton_starbeam_writer::run(void)
 {
   spoton_starbeam_writer_worker worker(this);
 
-  connect(&m_timer,
-	  SIGNAL(timeout(void)),
-	  &worker,
-	  SLOT(slotProcessData(void)));
   exec();
 }
 
@@ -270,12 +263,13 @@ void spoton_starbeam_writer::slotProcessData(void)
 void spoton_starbeam_writer::start(void)
 {
   slotReadKeys();
-  m_timer.start();
+  QThread::start();
 }
 
 void spoton_starbeam_writer::stop(void)
 {
-  m_timer.stop();
+  quit();
+  wait(30000);
   m_mutex.lockForWrite();
   m_data.clear();
   m_mutex.unlock();
@@ -393,14 +387,12 @@ void spoton_starbeam_writer::slotReadKeys(void)
 
 void spoton_starbeam_writer::append(const QByteArray &data)
 {
+  if(data.isEmpty())
+    return;
+
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   if(!s_crypt)
-    return;
-
-  if(data.isEmpty())
-    return;
-  else if(!m_timer.isActive())
     return;
 
   m_keyMutex.lockForRead();
@@ -415,19 +407,19 @@ void spoton_starbeam_writer::append(const QByteArray &data)
 
   if(spoton_kernel::setting("gui/etpReceivers", false).toBool())
     {
-      QByteArray d(QByteArray::fromBase64(data));
+      QByteArray bytes(QByteArray::fromBase64(data));
       QByteArray hash;
       bool ok = true;
 
-      hash = s_crypt->keyedHash(d, &ok);
+      hash = s_crypt->keyedHash(bytes, &ok);
 
       if(!ok)
-	hash = QCryptographicHash::hash(d, QCryptographicHash::Sha1);
+	hash = QCryptographicHash::hash(bytes, QCryptographicHash::Sha1);
 
       m_mutex.lockForWrite();
 
       if(!m_data.contains(hash))
-	m_data.insert(hash, d);
+	m_data.insert(hash, bytes);
 
       m_mutex.unlock();
     }
@@ -435,5 +427,5 @@ void spoton_starbeam_writer::append(const QByteArray &data)
 
 bool spoton_starbeam_writer::isActive(void) const
 {
-  return m_timer.isActive();
+  return isRunning();
 }
