@@ -140,6 +140,7 @@ spoton_gui_server::spoton_gui_server(QObject *parent):
 
 spoton_gui_server::~spoton_gui_server()
 {
+  m_generalTimer.stop();
   m_guiSocketData.clear();
 
   QString connectionName("");

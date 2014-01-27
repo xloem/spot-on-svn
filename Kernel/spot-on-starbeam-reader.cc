@@ -47,6 +47,8 @@ spoton_starbeam_reader::spoton_starbeam_reader
 
 spoton_starbeam_reader::~spoton_starbeam_reader()
 {
+  m_timer.stop();
+
   QString connectionName("");
 
   {

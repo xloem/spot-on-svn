@@ -46,6 +46,7 @@ spoton_shared_reader::spoton_shared_reader(QObject *parent):QObject(parent)
 
 spoton_shared_reader::~spoton_shared_reader()
 {
+  m_timer.stop();
 }
 
 void spoton_shared_reader::slotTimeout(void)

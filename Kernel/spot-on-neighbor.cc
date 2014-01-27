@@ -682,6 +682,12 @@ spoton_neighbor::~spoton_neighbor()
   quit();
   wait(30000);
   abort();
+  m_accountTimer.stop();
+  m_authenticationTimer.stop();
+  m_dataPurgeTimer.stop();
+  m_externalAddressDiscovererTimer.stop();
+  m_keepAliveTimer.stop();
+  m_lifetime.stop();
   m_timer.stop();
 
   if(m_id != -1)

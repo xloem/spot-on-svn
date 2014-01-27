@@ -62,6 +62,9 @@ spoton_mailer::spoton_mailer(QObject *parent):QObject(parent)
 
 spoton_mailer::~spoton_mailer()
 {
+  m_reaperTimer.stop();
+  m_retrieveMailTimer.stop();
+  m_timer.stop();
 }
 
 void spoton_mailer::slotTimeout(void)
