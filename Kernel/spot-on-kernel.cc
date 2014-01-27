@@ -1068,7 +1068,7 @@ void spoton_kernel::prepareStarbeamReaders(void)
 	      qint64 id = query.value(query.record().count() - 1).
 		toLongLong();
 
-	      if(status != "deleted")
+	      if(status == "transmitting")
 		{
 		  QPointer<spoton_starbeam_reader> starbeam = 0;
 
@@ -1086,7 +1086,9 @@ void spoton_kernel::prepareStarbeamReaders(void)
 		    starbeam->deleteLater();
 
 		  m_starbeamReaders.remove(id);
-		  cleanupStarbeamsDatabase(db);
+
+		  if(status == "deleted")
+		    cleanupStarbeamsDatabase(db);
 		}
 	    }
       }
@@ -2952,6 +2954,11 @@ void spoton_kernel::updateStatistics(void)
 	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
+		      "VALUES ('Active StarBeam Readers', ?)");
+	query.bindValue(0, m_starbeamReaders.size());
+	query.exec();
+	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
+		      "(statistic, value) "
 		      "VALUES ('Attached User Interfaces', ?)");
 	query.bindValue(0, interfaces());
 	query.exec();
@@ -2977,11 +2984,6 @@ void spoton_kernel::updateStatistics(void)
 		      "(statistic, value) "
 		      "VALUES ('Neighbors', ?)");
 	query.bindValue(0, m_neighbors.size());
-	query.exec();
-	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
-		      "(statistic, value) "
-		      "VALUES ('StarBeam Readers', ?)");
-	query.bindValue(0, m_starbeamReaders.size());
 	query.exec();
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
