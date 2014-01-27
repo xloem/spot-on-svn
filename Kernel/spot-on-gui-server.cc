@@ -207,7 +207,6 @@ void spoton_gui_server::slotReadyRead(void)
 
   if(!socket->isEncrypted())
     {
-      socket->flush();
       socket->readAll();
       spoton_misc::logError
 	(QString("spoton_gui_server::slotReadyRead(): "
@@ -221,7 +220,6 @@ void spoton_gui_server::slotReadyRead(void)
   ** What if socketDescriptor() equals negative one?
   */
 
-  socket->flush();
   m_guiSocketData[socket->socketDescriptor()].append
     (socket->readAll());
 
@@ -527,8 +525,6 @@ void spoton_gui_server::slotReceivedBuzzMessage
 		     "write() failure for %1:%2.").
 	     arg(socket->peerAddress().toString()).
 	     arg(socket->peerPort()));
-	else
-	  socket->flush();
       }
     else
       spoton_misc::logError
@@ -550,8 +546,6 @@ void spoton_gui_server::slotReceivedChatMessage(const QByteArray &message)
 		     "write() failure for %1:%2.").
 	     arg(socket->peerAddress().toString()).
 	     arg(socket->peerPort()));
-	else
-	  socket->flush();
       }
     else
       spoton_misc::logError
@@ -575,8 +569,6 @@ void spoton_gui_server::slotNewEMailArrived(void)
 		     "write() failure for %1:%2.").
 	     arg(socket->peerAddress().toString()).
 	     arg(socket->peerPort()));
-	else
-	  socket->flush();
       }
     else
       spoton_misc::logError
@@ -670,8 +662,6 @@ void spoton_gui_server::slotAuthenticationRequested
 		     "write() failure for %1:%2.").
 	     arg(socket->peerAddress().toString()).
 	     arg(socket->peerPort()));
-	else
-	  socket->flush();
       }
     else
       spoton_misc::logError
