@@ -128,6 +128,7 @@
      Corrected. Applied a similar correction to the StarBeam writer.
 65.  Prevent the log viewer from processing too much data. Limit read data
      to 4096 bytes. Also, do not read log data unless the viewer is visible.
+66.  Corrected furious timer (m_accountTimer) in spoton_neighbor.
 
 0.08 (12/23/2013)
 
