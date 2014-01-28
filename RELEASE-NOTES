@@ -112,7 +112,7 @@
      them.
 56.  Replaced C-style casts. Removed redundant casts.
 57.  Strip dead code from OS X binaries.
-58.  Upgraded Qt products to version 5.2.0 on OS X and W32.
+58.  Upgraded Qt products to version 5.2.0 on Windows.
 59.  Changed default value of Keep Only User-Defined Neighbors from false
      to true.
 60.  The method spoton_misc::isAcceptedParticipant() lacked a key type
@@ -126,8 +126,8 @@
 64.  Discovered a fundamental flaw with the design of the kernel with
      respect to the thread objects. The kernel was artificially threaded.
      Corrected. Applied a similar correction to the StarBeam writer.
-65.  Prevent the log viewer from processing too much data. Limit read data
-     to 4096 bytes. Also, do not read log data unless the viewer is visible.
+65.  Prevent the log viewer from processing too much data. Limit the file
+     size to 0.5 MiB. Also, do not read log data unless the viewer is visible.
 66.  Corrected furious timer (m_accountTimer) in spoton_neighbor.
 67.  Updated OpenSSL to version 1.0.1f on Windows.
 
