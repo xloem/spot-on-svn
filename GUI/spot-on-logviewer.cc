@@ -27,6 +27,7 @@
 
 #include <QDir>
 #include <QKeyEvent>
+#include <QScrollBar>
 #include <QSettings>
 
 #include "Common/spot-on-misc.h"
@@ -34,7 +35,6 @@
 
 spoton_logviewer::spoton_logviewer(void):QMainWindow()
 {
-  m_position = 0;
   ui.setupUi(this);
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
@@ -68,18 +68,18 @@ spoton_logviewer::spoton_logviewer(void):QMainWindow()
   ui.actionEnable_Log->setChecked(settings.value("gui/guiLogEvents",
 						 false).toBool());
   spoton_misc::enableLog(ui.actionEnable_Log->isChecked());
-  m_timer.start(2500);
+  m_timer.setInterval(2500);
   slotSetIcons();
 }
 
 void spoton_logviewer::slotClose(void)
 {
   close();
+  m_timer.stop();
 }
 
 void spoton_logviewer::slotClear(void)
 {
-  m_position = 0;
   QFile::remove
     (spoton_misc::homePath() + QDir::separator() + "error_log.dat");
   ui.log->clear();
@@ -108,6 +108,7 @@ void spoton_logviewer::show(QWidget *parent)
 
   QMainWindow::show();
   raise();
+  m_timer.start();
 }
 
 void spoton_logviewer::slotTimeout(void)
@@ -117,29 +118,16 @@ void spoton_logviewer::slotTimeout(void)
 
   if(file.open(QIODevice::ReadOnly))
     {
-      if(file.size() < m_position)
-	{
-	  m_position = 0;
-	  ui.log->clear();
-	}
+      QByteArray bytes(4096, 0);
+      int vValue = ui.log->verticalScrollBar()->value();
 
-      file.seek(m_position);
+      if(file.size() >= 4096)
+	file.seek(qAbs(file.size() - 4096));
 
-      if(!file.atEnd())
-	{
-	  ui.log->append(file.readAll().trimmed());
-	  ui.log->append(QString());
-	  ui.log->textCursor().movePosition(QTextCursor::End);
-	  ui.log->ensureCursorVisible();
-	  m_position = file.pos();
-	}
-
+      bytes = file.read(bytes.size());
+      ui.log->setText(bytes);
+      ui.log->verticalScrollBar()->setValue(vValue);
       file.close();
-    }
-  else
-    {
-      m_position = 0;
-      ui.log->clear();
     }
 }
 

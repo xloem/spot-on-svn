@@ -1219,7 +1219,7 @@ void spoton_neighbor::slotProcessData(void)
 	  continue;
 	}
 
-      if(length >= m_maximumContentLength)
+      if(length > m_maximumContentLength)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::slotProcessData(): "
