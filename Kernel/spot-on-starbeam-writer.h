@@ -85,6 +85,11 @@ class spoton_starbeam_writer_worker: public QObject
     m_timer.stop();
   }
 
+  void stop(void)
+  {
+    m_timer.stop();
+  }
+
  private:
   QPointer<spoton_starbeam_writer> m_writer;
   QTimer m_timer;

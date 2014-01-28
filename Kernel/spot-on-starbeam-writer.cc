@@ -50,6 +50,7 @@ void spoton_starbeam_writer::run(void)
   spoton_starbeam_writer_worker worker(this);
 
   exec();
+  worker.stop();
 }
 
 void spoton_starbeam_writer::slotProcessData(void)

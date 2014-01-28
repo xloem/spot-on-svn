@@ -346,6 +346,11 @@ class spoton_neighbor_worker: public QObject
     m_timer.stop();
   }
 
+  void stop(void)
+  {
+    m_timer.stop();
+  }
+
  private:
   QPointer<spoton_neighbor> m_neighbor;
   QTimer m_timer;

@@ -328,6 +328,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	m_tcpSocket->startServerEncryption();
     }
 
+  m_accountTimer.setInterval(2500);
   m_authenticationTimer.setInterval
     (spoton_kernel::
      setting("kernel/server_account_verification_window_msecs",
@@ -352,7 +353,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   if(m_useAccounts)
     if(!m_useSsl)
       {
-	m_accountTimer.start(2500);
+	m_accountTimer.start();
 	m_authenticationTimer.start();
       }
 
@@ -679,8 +680,6 @@ spoton_neighbor::~spoton_neighbor()
   spoton_misc::logError(QString("Neighbor %1:%2 deallocated.").
 			arg(m_address.toString()).
 			arg(m_port));
-  quit();
-  wait(30000);
   abort();
   m_accountTimer.stop();
   m_authenticationTimer.stop();
@@ -771,6 +770,9 @@ spoton_neighbor::~spoton_neighbor()
 
       QSqlDatabase::removeDatabase(connectionName);
     }
+
+  quit();
+  wait(30000);
 }
 
 void spoton_neighbor::slotTimeout(void)
@@ -1104,6 +1106,7 @@ void spoton_neighbor::run(void)
   spoton_neighbor_worker worker(this);
 
   exec();
+  worker.stop();
 }
 
 void spoton_neighbor::slotReadyRead(void)
@@ -1156,7 +1159,7 @@ void spoton_neighbor::slotProcessData(void)
 
   if(data.contains(spoton_send::EOM))
     {
-      bool rst = false;
+      bool reset = false;
       int totalBytes = 0;
 
       while(data.contains(spoton_send::EOM))
@@ -1171,16 +1174,17 @@ void spoton_neighbor::slotProcessData(void)
 
 	  if(!bytes.isEmpty())
 	    {
-	      m_dataPurgeTimer.stop();
+	      if(m_dataPurgeTimer.isActive())
+		m_dataPurgeTimer.stop();
 
-	      if(spoton_kernel::messagingCacheContains(bytes))
-		rst = true;
-	      else
+	      if(!spoton_kernel::messagingCacheContains(bytes))
 		list.append(bytes);
+	      else
+		reset = true;
 	    }
 	}
 
-      if(rst)
+      if(reset)
 	resetKeepAlive();
 
       if(totalBytes > 0)
@@ -1243,12 +1247,12 @@ void spoton_neighbor::slotProcessData(void)
 		process0050(length, data);
 
 	      if(!m_accountAuthenticated)
-		return;
+		continue;
 	    }
 	  else if(length > 0 && (data.contains("type=0050&content=") ||
 				 data.contains("type=0051&content=") ||
 				 data.contains("type=0052&content=")))
-	    return;
+	    continue;
 	}
       else if(length > 0 && data.contains("type=0051&content="))
 	{
@@ -1301,7 +1305,7 @@ void spoton_neighbor::slotProcessData(void)
 	if(m_useAccounts)
 	  {
 	    if(!m_accountAuthenticated)
-	      return;
+	      continue;
 	  }
 
       if(length > 0 && data.contains("type=0011&content="))
@@ -3519,8 +3523,8 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 
       spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
-      if(list.at(1) != m_accountClientSentSalt &&
-	 !m_accountClientSentSalt.isEmpty())
+      if(!list.at(1).isEmpty() && !m_accountClientSentSalt.isEmpty() &&
+	 !spoton_crypt::memcmp(list.at(1), m_accountClientSentSalt))
 	{
 	  if(s_crypt)
 	    {
