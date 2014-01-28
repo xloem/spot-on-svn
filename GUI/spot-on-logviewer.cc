@@ -118,12 +118,11 @@ void spoton_logviewer::slotTimeout(void)
 
   if(file.open(QIODevice::ReadOnly))
     {
-      QByteArray bytes(256 * 1024, 0);
       int vValue = ui.log->verticalScrollBar()->value();
 
-      file.seek(qAbs(file.size() - 256 * 1024));
-      bytes = file.read(bytes.length());
-      ui.log->setPlainText(bytes);
+      file.seek(qMax(static_cast<long long int> (0),
+		     file.size() - 256 * 1024));
+      ui.log->setPlainText(file.read(256 * 1024));
       ui.log->verticalScrollBar()->setValue(vValue);
       file.close();
     }
