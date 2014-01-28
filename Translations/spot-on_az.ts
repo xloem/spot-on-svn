@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="az_AZ">
+<TS version="2.0" language="az_AZ">
 <context>
     <name>QObject</name>
     <message>

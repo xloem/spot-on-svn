@@ -486,7 +486,7 @@ void spoton_misc::logError(const QString &error)
 
   QFile file(homePath() + QDir::separator() + "error_log.dat");
 
-  if(file.size() >= 25 * 1024 * 1024)
+  if(file.size() > 512 * 1024)
     /*
     ** Too large!
     */
