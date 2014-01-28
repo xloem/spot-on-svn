@@ -126,7 +126,8 @@
 64.  Discovered a fundamental flaw with the design of the kernel with
      respect to the thread objects. The kernel was artificially threaded.
      Corrected. Applied a similar correction to the StarBeam writer.
-65.  Deprecated use of QAbstractSocket::flush(), per Qt documentation.
+65.  Prevent the log viewer from processing too much data. Limit read data
+     to 4096 bytes. Also, do not read log data unless the viewer is visible.
 
 0.08 (12/23/2013)
 
