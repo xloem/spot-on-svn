@@ -129,6 +129,7 @@
 65.  Prevent the log viewer from processing too much data. Limit read data
      to 4096 bytes. Also, do not read log data unless the viewer is visible.
 66.  Corrected furious timer (m_accountTimer) in spoton_neighbor.
+67.  Updated OpenSSL to version 1.0.1f on Windows.
 
 0.08 (12/23/2013)
 
