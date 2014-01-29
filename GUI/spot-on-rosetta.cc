@@ -53,6 +53,14 @@ spoton_rosetta::spoton_rosetta(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotClose(void)));
+  connect(ui.action_Copy,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotCopyOrPaste(void)));
+  connect(ui.action_Paste,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotCopyOrPaste(void)));
   connect(ui.add,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -81,6 +89,10 @@ spoton_rosetta::spoton_rosetta(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotCopyMyRosettaPublicKey(void)));
+  connect(ui.copyConverted,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotCopyConverted(void)));
   connect(ui.decrypt,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -776,4 +788,47 @@ void spoton_rosetta::slotDelete(void)
 
   QSqlDatabase::removeDatabase(connectionName);
   populateContacts();
+}
+
+void spoton_rosetta::slotCopyConverted(void)
+{
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(clipboard)
+    clipboard->setText(ui.output->toPlainText());
+}
+
+void spoton_rosetta::slotCopyOrPaste(void)
+{
+  QAction *action = qobject_cast<QAction *> (sender());
+
+  if(!action)
+    return;
+
+  QWidget *widget = QApplication::focusWidget();
+
+  if(!widget)
+    return;
+
+  QString a("");
+
+  if(action == ui.action_Copy)
+    a = "copy";
+  else
+    a = "paste";
+
+  if(qobject_cast<QLineEdit *> (widget))
+    {
+      if(a == "copy")
+	qobject_cast<QLineEdit *> (widget)->copy();
+      else
+	qobject_cast<QLineEdit *> (widget)->paste();
+    }
+  else if(qobject_cast<QTextEdit *> (widget))
+    {
+      if(a == "copy")
+	qobject_cast<QTextEdit *> (widget)->copy();
+      else
+	qobject_cast<QTextEdit *> (widget)->paste();
+    }
 }

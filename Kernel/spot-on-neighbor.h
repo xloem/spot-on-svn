@@ -195,7 +195,6 @@ class spoton_neighbor: public QThread
   spoton_neighbor_udp_socket *m_udpSocket;
   QString findMessageType(const QByteArray &data,
 			  QList<QByteArray> &symmetricKeys);
-  qint64 readBufferSize(void) const;
   void process0000(int length, const QByteArray &data,
 		   const QList<QByteArray> &symmetricKeys);
   void process0000a(int length, const QByteArray &data);
@@ -239,7 +238,6 @@ class spoton_neighbor: public QThread
   void saveStatistics(const QSqlDatabase &db);
   void saveStatus(const QSqlDatabase &db, const QString &status);
   void saveStatus(const QString &status);
-  void setReadBufferSize(const qint64 size);
   void storeLetter(const QByteArray &symmetricKey,
 		   const QByteArray &symmetricKeyAlgorithm,
 		   const QByteArray &senderPublicKeyHash,

@@ -1244,6 +1244,11 @@ void spoton_neighbor::slotProcessData(void)
 	  if(m_useAccounts)
 	    {
 	      if(length > 0 && data.contains("type=0050&content="))
+		/*
+		** This will certainly emit multiple authentication
+		** approvals to the client.
+		*/
+
 		process0050(length, data);
 
 	      if(!m_accountAuthenticated)
@@ -3596,7 +3601,7 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 	      ("spoton_neighbor::process0051(): "
 	       "the server replied to an authentication message, however, "
 	       "my provided salt is empty.");
-	  else if(list.at(1) == m_accountClientSentSalt)
+	  else if(spoton_crypt::memcmp(list.at(1), m_accountClientSentSalt))
 	    spoton_misc::logError
 	      ("spoton_neighbor::process0051(): "
 	       "the provided salt is identical to the generated salt. "
@@ -5089,20 +5094,6 @@ bool spoton_neighbor::isEncrypted(void) const
     return m_tcpSocket->isEncrypted();
   else
     return false;
-}
-
-void spoton_neighbor::setReadBufferSize(const qint64 size)
-{
-  if(m_tcpSocket)
-    m_tcpSocket->setReadBufferSize(size);
-}
-
-qint64 spoton_neighbor::readBufferSize(void) const
-{
-  if(m_tcpSocket)
-    return m_tcpSocket->readBufferSize();
-  else
-    return -1;
 }
 
 QString spoton_neighbor::transport(void) const

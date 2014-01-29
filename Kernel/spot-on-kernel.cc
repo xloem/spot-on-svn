@@ -1494,9 +1494,6 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
 
   s_messagingCacheMutex.unlock();
 
-  if(!m_messagingCachePurgeTimer.isActive())
-    m_messagingCachePurgeTimer.start();
-
   if(setting("gui/etpReceivers", false).toBool())
     {
       if(!m_starbeamWriter->isActive())

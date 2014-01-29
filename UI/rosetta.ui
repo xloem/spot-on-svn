@@ -382,6 +382,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="copyConverted">
+        <property name="text">
+         <string>Copy</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
@@ -401,7 +408,15 @@
     </property>
     <addaction name="action_Close"/>
    </widget>
+   <widget class="QMenu" name="menu_Edit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="action_Copy"/>
+    <addaction name="action_Paste"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menu_Edit"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_Close">
@@ -420,6 +435,22 @@
    </property>
    <property name="text">
     <string>E&amp;nable Log</string>
+   </property>
+  </action>
+  <action name="action_Copy">
+   <property name="text">
+    <string>&amp;Copy</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="action_Paste">
+   <property name="text">
+    <string>&amp;Paste</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
    </property>
   </action>
  </widget>
