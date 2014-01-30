@@ -130,6 +130,11 @@
      size to 0.5 MiB. Also, do not read log data unless the viewer is visible.
 66.  Corrected furious timer (m_accountTimer) in spoton_neighbor.
 67.  Updated OpenSSL to version 1.0.1f on Windows.
+68.  Removed most instances of AbstractSocket::abort().
+69.  The method spoton_kernel::slotMessagingCachePurge() failed to protect
+     the s_messagingCache object from access by multiple threads. Corrected.
+70.  The method spoton_crypt::randomCipherType() will return aes256 if
+     the random cipher is empty.
 
 0.08 (12/23/2013)
 
