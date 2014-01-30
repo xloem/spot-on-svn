@@ -6037,7 +6037,7 @@ void spoton::slotCopyEmailFriendshipBundle(void)
 
   QString neighborOid("");
   QByteArray cipherType(m_settings.value("gui/kernelCipherType",
-					 "randomized").toString().
+					 "randomized").toString().toLower().
 			toLatin1());
   QByteArray hashKey;
   QByteArray keyInformation;

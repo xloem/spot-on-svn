@@ -994,10 +994,7 @@ void spoton_kernel::prepareNeighbors(void)
 		  neighbor = m_neighbors.value(id);
 
 		  if(neighbor)
-		    {
-		      neighbor->abort();
-		      neighbor->deleteLater();
-		    }
+		    neighbor->deleteLater();
 
 		  m_neighbors.remove(id);
 		  cleanupNeighborsDatabase(db);
@@ -1175,10 +1172,7 @@ void spoton_kernel::checkForTermination(void)
 	    (m_neighbors.keys().at(i));
 
 	  if(neighbor)
-	    {
-	      neighbor->abort();
-	      neighbor->deleteLater();
-	    }
+	    neighbor->deleteLater();
 	}
 
       for(int i = 0; i < m_starbeamReaders.keys().size(); i++)
@@ -1256,7 +1250,7 @@ void spoton_kernel::slotMessageReceivedFromUI
     return;
 
   QByteArray cipherType(setting("gui/kernelCipherType",
-				"randomized").toString().
+				"randomized").toString().toLower().
 			toLatin1());
   QByteArray data;
   QByteArray hashKey;
@@ -1746,7 +1740,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 	      QByteArray cipherType
 		(setting("gui/kernelCipherType",
-			 "randomized").toString().toLatin1());
+			 "randomized").toString().toLower().toLatin1());
 
 	      if(cipherType == "randomized")
 		cipherType = spoton_crypt::randomCipherType();
@@ -1877,7 +1871,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 void spoton_kernel::slotScramble(void)
 {
   QByteArray cipherType(setting("gui/kernelCipherType",
-				"randomized").toString().
+				"randomized").toString().toLower().
 			toLatin1());
 
   if(cipherType == "randomized")
@@ -1985,7 +1979,7 @@ void spoton_kernel::slotRetrieveMail(void)
 	    {
 	      QByteArray cipherType
 		(setting("gui/kernelCipherType",
-			 "randomized").toString().toLatin1());
+			 "randomized").toString().toLower().toLatin1());
 
 	      if(cipherType == "randomized")
 		cipherType = spoton_crypt::randomCipherType();
@@ -2151,7 +2145,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	    {
 	      QByteArray cipherType
 		(setting("gui/kernelCipherType",
-			 "randomized").toString().toLatin1());
+			 "randomized").toString().toLower().toLatin1());
 
 	      if(cipherType == "randomized")
 		cipherType = spoton_crypt::randomCipherType();
@@ -2223,7 +2217,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	      if(setting("gui/kernelCipherType",
 			 "randomized").
-		 toString() == "randomized")
+		 toString().toLower() == "randomized")
 		symmetricKeyAlgorithm = spoton_crypt::randomCipherType();
 	      else
 		symmetricKeyAlgorithm = cipherType;
@@ -2563,8 +2557,17 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &key,
 void spoton_kernel::slotMessagingCachePurge(void)
 {
   if(m_future.isFinished())
-    if(!s_messagingCache.isEmpty())
-      m_future = QtConcurrent::run(this, &spoton_kernel::purgeMessagingCache);
+    {
+      s_messagingCacheMutex.lockForRead();
+
+      bool isEmpty = s_messagingCache.isEmpty();
+
+      s_messagingCacheMutex.unlock();
+
+      if(!isEmpty)
+	m_future = QtConcurrent::run
+	  (this, &spoton_kernel::purgeMessagingCache);
+    }
 }
 
 void spoton_kernel::purgeMessagingCache(void)
@@ -2678,10 +2681,7 @@ void spoton_kernel::slotDisconnectNeighbors(const qint64 listenerOid)
   if(listener)
     foreach(spoton_neighbor *socket,
 	    listener->findChildren<spoton_neighbor *> ())
-      {
-	socket->abort();
-	socket->deleteLater();
-      }
+      socket->deleteLater();
 }
 
 void spoton_kernel::addBuzzKey(const QByteArray &key,

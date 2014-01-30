@@ -46,7 +46,7 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 {
   if(findChildren<spoton_neighbor *> ().size() >= maxPendingConnections())
     {
-      QTcpSocket socket;
+      QAbstractSocket socket(QAbstractSocket::TcpSocket, this);
 
       socket.setSocketDescriptor(socketDescriptor);
       socket.abort();
@@ -73,7 +73,7 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
       if(!spoton_misc::isAcceptedIP(peerAddress, m_id,
 				    spoton_kernel::s_crypts.value("chat", 0)))
 	{
-	  QTcpSocket socket;
+	  QAbstractSocket socket(QAbstractSocket::TcpSocket, this);
 
 	  socket.setSocketDescriptor(socketDescriptor);
 	  socket.abort();
@@ -236,7 +236,7 @@ spoton_listener::~spoton_listener()
   if(m_tcpServer)
     m_tcpServer->close();
   else if(m_udpServer)
-    m_udpServer->abort();
+    m_udpServer->close();
 
   QString connectionName("");
 
@@ -455,10 +455,7 @@ void spoton_listener::slotTimeout(void)
 	      {
 		foreach(spoton_neighbor *socket,
 			findChildren<spoton_neighbor *> ())
-		  {
-		    socket->abort();
-		    socket->deleteLater();
-		  }
+		  socket->deleteLater();
 
 		shouldDelete = true;
 	      }
@@ -467,10 +464,7 @@ void spoton_listener::slotTimeout(void)
 	  {
 	    foreach(spoton_neighbor *socket,
 		    findChildren<spoton_neighbor *> ())
-	      {
-		socket->abort();
-		socket->deleteLater();
-	      }
+	      socket->deleteLater();
 
 	    shouldDelete = true;
 	  }
@@ -610,7 +604,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
     {
       if(m_transport == "tcp")
 	{
-	  QTcpSocket socket;
+	  QAbstractSocket socket(QAbstractSocket::TcpSocket, this);
 
 	  socket.setSocketDescriptor(socketDescriptor);
 	  socket.abort();
@@ -624,7 +618,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 	}
       else if(m_transport == "udp")
 	{
-	  QUdpSocket socket;
+	  QAbstractSocket socket(QAbstractSocket::UdpSocket, this);
 
 	  socket.setSocketDescriptor(socketDescriptor);
 	  socket.abort();

@@ -98,7 +98,7 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
     }
   else
     {
-      QTcpSocket socket;
+      QAbstractSocket socket(QAbstractSocket::TcpSocket, this);
 
       socket.setSocketDescriptor(socketDescriptor);
       socket.abort();

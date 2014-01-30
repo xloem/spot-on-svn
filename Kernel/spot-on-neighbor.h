@@ -149,7 +149,6 @@ class spoton_neighbor: public QThread
   qint64 id(void) const;
   qint64 write(const char *data, qint64 size);
   quint16 peerPort(void) const;
-  void abort(void);
   void addToBytesWritten(const int bytesWritten);
   void setId(const qint64 id);
 
@@ -318,6 +317,7 @@ class spoton_neighbor: public QThread
 		      const QByteArray &signature,
 		      const QByteArray &sPublicKey,
 		      const QByteArray &sSignature);
+  void stopPurgeTimer(void);
 };
 
 class spoton_neighbor_worker: public QObject

@@ -231,6 +231,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				  const QByteArray &,
 				  const QByteArray &,
 				  const QByteArray &)));
+  connect(this,
+	  SIGNAL(stopPurgeTimer(void)),
+	  &m_dataPurgeTimer,
+	  SLOT(stop(void)));
 
   if(m_tcpSocket)
     {
@@ -545,6 +549,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				  const QByteArray &,
 				  const QByteArray &,
 				  const QByteArray &)));
+  connect(this,
+	  SIGNAL(stopPurgeTimer(void)),
+	  &m_dataPurgeTimer,
+	  SLOT(stop(void)));
 
   if(m_tcpSocket)
     {
@@ -680,7 +688,6 @@ spoton_neighbor::~spoton_neighbor()
   spoton_misc::logError(QString("Neighbor %1:%2 deallocated.").
 			arg(m_address.toString()).
 			arg(m_port));
-  abort();
   m_accountTimer.stop();
   m_authenticationTimer.stop();
   m_dataPurgeTimer.stop();
@@ -1174,8 +1181,7 @@ void spoton_neighbor::slotProcessData(void)
 
 	  if(!bytes.isEmpty())
 	    {
-	      if(m_dataPurgeTimer.isActive())
-		m_dataPurgeTimer.stop();
+	      emit stopPurgeTimer();
 
 	      if(!spoton_kernel::messagingCacheContains(bytes))
 		list.append(bytes);
@@ -5058,14 +5064,6 @@ QAbstractSocket::SocketState spoton_neighbor::state(void) const
     return m_udpSocket->state();
   else
     return QAbstractSocket::UnconnectedState;
-}
-
-void spoton_neighbor::abort(void)
-{
-  if(m_tcpSocket)
-    m_tcpSocket->abort();
-  else if(m_udpSocket)
-    m_udpSocket->abort();
 }
 
 QHostAddress spoton_neighbor::peerAddress(void) const

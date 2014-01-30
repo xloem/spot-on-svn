@@ -2357,7 +2357,14 @@ QByteArray spoton_crypt::randomCipherType(void)
   QStringList types(cipherTypes());
 
   if(!types.isEmpty())
-    return types.value(qrand() % types.size()).toLatin1();
+    {
+      QByteArray type(types.value(qrand() % types.size()).toLatin1());
+
+      if(type.isEmpty())
+	return "aes256";
+      else
+	return type;
+    }
   else
     return QByteArray();
 }

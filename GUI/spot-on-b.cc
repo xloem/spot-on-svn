@@ -1969,7 +1969,7 @@ void spoton::slotCopyFriendshipBundle(void)
   QString neighborOid("");
   QByteArray cipherType(m_settings.value("gui/kernelCipherType",
 					 "randomized").
-			toString().toLatin1());
+			toString().toLower().toLatin1());
   QByteArray hashKey;
   QByteArray keyInformation;
   QByteArray publicKey;
