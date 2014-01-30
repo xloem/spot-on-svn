@@ -3551,144 +3551,174 @@ Orientation: %23
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="400"/>
+        <location filename="../UI/rosetta.ui" line="388"/>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/rosetta.ui" line="407"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="409"/>
+        <location filename="../UI/rosetta.ui" line="413"/>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/rosetta.ui" line="424"/>
         <source>&amp;Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="414"/>
+        <location filename="../UI/rosetta.ui" line="429"/>
         <source>&amp;Empty Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="422"/>
+        <location filename="../UI/rosetta.ui" line="437"/>
         <source>E&amp;nable Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="290"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="301"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="309"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="320"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="333"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="394"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="406"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="421"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="625"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="727"/>
-        <source>Spot-On: Error</source>
+        <location filename="../UI/rosetta.ui" line="442"/>
+        <source>&amp;Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/rosetta.ui" line="445"/>
+        <source>Ctrl+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/rosetta.ui" line="450"/>
+        <source>&amp;Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/rosetta.ui" line="453"/>
+        <source>Ctrl+V</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-rosetta.cc" line="302"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="313"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="321"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="332"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="345"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="406"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="418"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="433"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="637"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="739"/>
+        <source>Spot-On: Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/spot-on-rosetta.cc" line="314"/>
         <source>Empty key. Really?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="310"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="322"/>
         <source>Invalid key. The key must start with either the letter K or the letter k.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="321"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="333"/>
         <source>Irregular data. Expecting 6 entries, received %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="334"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="346"/>
         <source>Invalid key type. Expecting &apos;rosetta&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="395"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="407"/>
         <source>You&apos;re attempting to add your own &apos;%1&apos; keys. Please do not do this!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="407"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="419"/>
         <source>Invalid &apos;rosetta&apos; public key signature.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="422"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="434"/>
         <source>Invalid signature public key signature.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="514"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="526"/>
         <source>Empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="537"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="549"/>
         <source>Invalid item data. This is a serious flaw.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="543"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="555"/>
         <source>Please provide an actual message!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="552"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="564"/>
         <source>The method spoton_crypt::cipherKeyLength() failed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="612"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="720"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="624"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="732"/>
         <source>A serious cryptographic error occurred.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="646"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="658"/>
         <source>Empty input data.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="677"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="689"/>
         <source>The computed hash does not match the provided hash.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="711"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="723"/>
         <source>The message was not signed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="715"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="727"/>
         <source>Invalid signature. Perhaps your contacts are not current.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="357"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="380"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="744"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="369"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="392"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="756"/>
         <source>Spot-On: Confirmation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="291"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="303"/>
         <source>Invalid spoton_crypt object(s). This is a fatal flaw.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="360"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="372"/>
         <source>Unable to retrieve your %1 public key for comparison. Continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="383"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="395"/>
         <source>Unable to retrieve your %1 signature public key for comparison. Continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="747"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="759"/>
         <source>Are you sure that you wish to remove the selected contact?</source>
         <translation type="unfinished"></translation>
     </message>
