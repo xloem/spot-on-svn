@@ -247,7 +247,6 @@ void spoton::slotReceivedKernelMessage(void)
 		  if(message.isEmpty())
 		    content = "unknown";
 
-		  ok = true;
 		  sequenceNumber.toULongLong(&ok);
 
 		  if(!ok || sequenceNumber == "0")

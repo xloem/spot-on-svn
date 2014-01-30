@@ -1210,13 +1210,20 @@ void spoton_neighbor::slotProcessData(void)
       if(data.contains("Content-Length: "))
 	{
 	  QByteArray contentLength(data);
+	  int indexOf = -1;
 
 	  contentLength.remove
 	    (0,
 	     contentLength.indexOf("Content-Length: ") +
 	     qstrlen("Content-Length: "));
-	  length = contentLength.mid(0, contentLength.indexOf("\r\n")).
-	    toInt(); // toInt() failure returns zero.
+	  indexOf = contentLength.indexOf("\r\n");
+
+	  if(indexOf > -1)
+	    /*
+	    ** toInt() returns zero on failure.
+	    */
+
+	    length = contentLength.mid(0, indexOf).toInt();
 	}
       else
 	{
@@ -1343,7 +1350,12 @@ void spoton_neighbor::slotProcessData(void)
 	  */
 
 	  length -= qstrlen("content=");
-	  data = data.mid(0, data.lastIndexOf("\r\n") + 2);
+
+	  int indexOf = data.lastIndexOf("\r\n");
+
+	  if(indexOf > -1)
+	    data = data.mid(0, data.lastIndexOf("\r\n") + 2);
+
 	  data.remove(0, data.indexOf("content=") + qstrlen("content="));
 
 	  /*
@@ -2813,17 +2825,25 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 {
+  int indexOf = dataIn.lastIndexOf("\r\n");
+
+  if(indexOf < 0)
+    return;
+
   length -= qstrlen("type=0011&content=");
 
   /*
   ** We may have received a name and a public key.
   */
 
-  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
+  QByteArray data(dataIn.mid(0, indexOf + 2));
 
-  data.remove
-    (0,
-     data.indexOf("type=0011&content=") + qstrlen("type=0011&content="));
+  indexOf = data.indexOf("type=0011&content=");
+
+  if(indexOf < 0)
+    return;
+
+  data.remove(0, indexOf + qstrlen("type=0011&content="));
 
   if(length == data.length())
     {
@@ -2867,17 +2887,25 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
 {
+  int indexOf = dataIn.lastIndexOf("\r\n");
+
+  if(indexOf < 0)
+    return;
+
   length -= qstrlen("type=0012&content=");
 
   /*
   ** We may have received a name and a public key.
   */
 
-  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
+  QByteArray data(dataIn.mid(0, indexOf + 2));
 
-  data.remove
-    (0,
-     data.indexOf("type=0012&content=") + qstrlen("type=0012&content="));
+  indexOf = data.indexOf("type=0012&content=");
+
+  if(indexOf < 0)
+    return;
+
+  data.remove(0, indexOf + qstrlen("type=0012&content="));
 
   if(length == data.length())
     {
@@ -3147,17 +3175,25 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
   if(m_id == -1)
     return;
 
+  int indexOf = dataIn.lastIndexOf("\r\n");
+
+  if(indexOf < 0)
+    return;
+
   length -= qstrlen("type=0014&content=");
 
   /*
   ** We may have received a status message.
   */
 
-  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
+  QByteArray data(dataIn.mid(0, indexOf + 2));
 
-  data.remove
-    (0,
-     data.indexOf("type=0014&content=") + qstrlen("type=0014&content="));
+  indexOf = data.indexOf("type=0014&content=");
+
+  if(indexOf < 0)
+    return;
+
+  data.remove(0, indexOf + qstrlen("type=0014&content="));
 
   if(length == data.length())
     {
@@ -3225,17 +3261,25 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
   if(!s_crypt)
     return;
 
+  int indexOf = dataIn.lastIndexOf("\r\n");
+
+  if(indexOf < 0)
+    return;
+
   length -= qstrlen("type=0030&content=");
 
   /*
   ** We may have received a listener's information.
   */
 
-  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
+  QByteArray data(dataIn.mid(0, indexOf + 2));
 
-  data.remove
-    (0,
-     data.indexOf("type=0030&content=") + qstrlen("type=0030&content="));
+  indexOf = data.indexOf("type=0030&content=");
+
+  if(indexOf < 0)
+    return;
+
+  data.remove(0, indexOf + qstrlen("type=0030&content="));
 
   if(length == data.length())
     {
@@ -3387,17 +3431,25 @@ void spoton_neighbor::process0040b(int length, const QByteArray &dataIn,
 
 void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 {
+  int indexOf = dataIn.lastIndexOf("\r\n");
+
+  if(indexOf < 0)
+    return;
+
   length -= qstrlen("type=0050&content=");
 
   /*
   ** We may have received a name and a password from the client.
   */
 
-  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
+  QByteArray data(dataIn.mid(0, indexOf + 2));
 
-  data.remove
-    (0,
-     data.indexOf("type=0050&content=") + qstrlen("type=0050&content="));
+  indexOf = data.indexOf("type=0050&content=");
+
+  if(indexOf < 0)
+    return;
+
+  data.remove(0, indexOf + qstrlen("type=0050&content="));
 
   if(length == data.length())
     {
@@ -3502,17 +3554,25 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 {
+  int indexOf = dataIn.lastIndexOf("\r\n");
+
+  if(indexOf < 0)
+    return;
+
   length -= qstrlen("type=0051&content=");
 
   /*
   ** We may have received a name and a password from the server.
   */
 
-  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
+  QByteArray data(dataIn.mid(0, indexOf + 2));
 
-  data.remove
-    (0,
-     data.indexOf("type=0051&content=") + qstrlen("type=0051&content="));
+  indexOf = data.indexOf("type=0051&content=");
+
+  if(indexOf < 0)
+    return;
+
+  data.remove(0, indexOf + qstrlen("type=0051&content="));
 
   if(length == data.length())
     {
@@ -3675,13 +3735,25 @@ void spoton_neighbor::process0065(int length, const QByteArray &dataIn)
   if(!s_crypt)
     return;
 
+  /*
+  ** Shared Buzz Magnet?
+  */
+
+  int indexOf = dataIn.lastIndexOf("\r\n");
+
+  if(indexOf < 0)
+    return;
+
   length -= qstrlen("type=0065&content=");
 
-  QByteArray data(dataIn.mid(0, dataIn.lastIndexOf("\r\n") + 2));
+  QByteArray data(dataIn.mid(0, indexOf + 2));
 
-  data.remove
-    (0,
-     data.indexOf("type=0065&content=") + qstrlen("type=0065&content="));
+  indexOf = data.indexOf("type=0065&content=");
+
+  if(indexOf < 0)
+    return;
+
+  data.remove(0, indexOf + qstrlen("type=0065&content="));
 
   if(length == data.length())
     {
@@ -5049,7 +5121,7 @@ qint64 spoton_neighbor::write(const char *data, const qint64 size)
       if(sent <= 0)
 	break;
 
-      data += sent;
+      data += sent; // What should we do if sent is monstrously large?
       remaining -= sent;
     }
 
