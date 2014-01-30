@@ -4727,9 +4727,9 @@ void spoton::slotKernelSocketState(void)
     {
       m_kernelSocket.setSocketOption
 	(QAbstractSocket::LowDelayOption,
-	 m_settings.value("gui/tcp_nodelay", 1).toInt());; /*
-							   ** Disable Nagle?
-							   */
+	 m_settings.value("gui/tcp_nodelay", 1).toInt()); /*
+							  ** Disable Nagle?
+							  */
       if(m_kernelSocket.isEncrypted())
 	{
 	  askKernelToReadStarBeamKeys();
