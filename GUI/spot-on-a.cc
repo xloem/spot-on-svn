@@ -1180,35 +1180,30 @@ spoton::spoton(void):QMainWindow()
   if(m_ui.hashType->count() == 0)
     m_ui.hashType->addItem("n/a");
 
-  str = m_settings.value("gui/cipherType", "aes256").
-    toString().toLower().trimmed();
+  str = m_settings.value("gui/cipherType", "aes256").toString();
 
   if(m_ui.cipherType->findText(str) > -1)
     m_ui.cipherType->setCurrentIndex(m_ui.cipherType->findText(str));
 
-  str = m_settings.value("gui/kernelCipherType", "randomized").
-    toString().toLower().trimmed();
+  str = m_settings.value("gui/kernelCipherType", "randomized").toString();
 
   if(m_ui.kernelCipherType->findText(str) > -1)
     m_ui.kernelCipherType->setCurrentIndex
       (m_ui.kernelCipherType->findText(str));
 
-  str = m_settings.value("gui/hashType", "sha512").
-    toString().toLower().trimmed();
+  str = m_settings.value("gui/hashType", "sha512").toString();
 
   if(m_ui.hashType->findText(str) > -1)
     m_ui.hashType->setCurrentIndex(m_ui.hashType->findText(str));
 
   m_ui.iterationCount->setValue(m_settings.value("gui/iterationCount",
 						 10000).toInt());
-  str = m_settings.value("gui/keySize", "3072").
-    toString().toLower().trimmed();
+  str = m_settings.value("gui/keySize", "3072").toString();
 
   if(m_ui.keySize->findText(str) > -1)
     m_ui.keySize->setCurrentIndex(m_ui.keySize->findText(str));
 
-  str = m_settings.value("gui/guiExternalIpInterval", "-1").
-    toString().toLower().trimmed();
+  str = m_settings.value("gui/guiExternalIpInterval", "-1").toString();
 
   if(str == "30")
     m_ui.guiExternalIpFetch->setCurrentIndex(0);
@@ -1217,8 +1212,7 @@ spoton::spoton(void):QMainWindow()
   else
     m_ui.guiExternalIpFetch->setCurrentIndex(2);
 
-  str = m_settings.value("gui/kernelExternalIpInterval", "-1").
-    toString().toLower().trimmed();
+  str = m_settings.value("gui/kernelExternalIpInterval", "-1").toString();
 
   if(str == "30")
     m_ui.kernelExternalIpFetch->setCurrentIndex(0);
@@ -4010,7 +4004,7 @@ void spoton::slotSetPassphrase(void)
 		    (m_ui.cipherType->currentText(),
 		     derivedKeys.first,
 		     m_settings.value("gui/cipherType", "aes256").
-		     toString().trimmed(),
+		     toString(),
 		     m_crypts.value("chat")->
 		     symmetricKey(), /*
 				     ** All such containers
@@ -6037,7 +6031,7 @@ void spoton::slotCopyEmailFriendshipBundle(void)
 
   QString neighborOid("");
   QByteArray cipherType(m_settings.value("gui/kernelCipherType",
-					 "randomized").toString().toLower().
+					 "randomized").toString().
 			toLatin1());
   QByteArray hashKey;
   QByteArray keyInformation;

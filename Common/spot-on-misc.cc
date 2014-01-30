@@ -1629,6 +1629,13 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = -1;
 
   settings.insert("gui/guiExternalIpInterval", integer);
+  str = settings.value("gui/hashType").toString().trimmed();
+
+  if(!(str == "sha512" || str == "stribog512" ||
+       str == "tiger" || str == "whirlpool"))
+    str = "sha512";
+
+  settings.insert("gui/hashType", str);
   str = settings.value("gui/iconSet", "nouve").toString().trimmed();
 
   if(!(str == "nouve" || str == "nuvola"))

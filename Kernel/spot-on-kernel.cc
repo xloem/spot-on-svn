@@ -1250,8 +1250,7 @@ void spoton_kernel::slotMessageReceivedFromUI
     return;
 
   QByteArray cipherType(setting("gui/kernelCipherType",
-				"randomized").toString().toLower().
-			toLatin1());
+				"randomized").toString().toLatin1());
   QByteArray data;
   QByteArray hashKey;
   QByteArray keyInformation;
@@ -1739,8 +1738,8 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		continue;
 
 	      QByteArray cipherType
-		(setting("gui/kernelCipherType",
-			 "randomized").toString().toLower().toLatin1());
+		(setting("gui/kernelCipherType", "randomized").
+		 toString().toLatin1());
 
 	      if(cipherType == "randomized")
 		cipherType = spoton_crypt::randomCipherType();
@@ -1871,8 +1870,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 void spoton_kernel::slotScramble(void)
 {
   QByteArray cipherType(setting("gui/kernelCipherType",
-				"randomized").toString().toLower().
-			toLatin1());
+				"randomized").toString().toLatin1());
 
   if(cipherType == "randomized")
     cipherType = spoton_crypt::randomCipherType();
@@ -1978,8 +1976,8 @@ void spoton_kernel::slotRetrieveMail(void)
 	  while(query.next())
 	    {
 	      QByteArray cipherType
-		(setting("gui/kernelCipherType",
-			 "randomized").toString().toLower().toLatin1());
+		(setting("gui/kernelCipherType", "randomized").
+		 toString().toLatin1());
 
 	      if(cipherType == "randomized")
 		cipherType = spoton_crypt::randomCipherType();
@@ -2144,8 +2142,8 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	  while(query.next())
 	    {
 	      QByteArray cipherType
-		(setting("gui/kernelCipherType",
-			 "randomized").toString().toLower().toLatin1());
+		(setting("gui/kernelCipherType", "randomized").
+		 toString().toLatin1());
 
 	      if(cipherType == "randomized")
 		cipherType = spoton_crypt::randomCipherType();
@@ -2215,9 +2213,8 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	      if(!ok)
 		continue;
 
-	      if(setting("gui/kernelCipherType",
-			 "randomized").
-		 toString().toLower() == "randomized")
+	      if(setting("gui/kernelCipherType", "randomized").
+		 toString() == "randomized")
 		symmetricKeyAlgorithm = spoton_crypt::randomCipherType();
 	      else
 		symmetricKeyAlgorithm = cipherType;
@@ -2379,9 +2376,9 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 		s_crypts.insert
 		  (list.at(i),
 		   new spoton_crypt(setting("gui/cipherType",
-					    "aes256").toString().trimmed(),
+					    "aes256").toString(),
 				    setting("gui/hashType",
-					    "sha512").toString().trimmed(),
+					    "sha512").toString(),
 				    QByteArray(),
 				    keys.first,
 				    keys.second,

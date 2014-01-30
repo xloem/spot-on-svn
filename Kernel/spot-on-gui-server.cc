@@ -349,11 +349,11 @@ void spoton_gui_server::slotReadyRead(void)
 			 new spoton_crypt(spoton_kernel::
 					  setting("gui/cipherType",
 						  "aes256").
-					  toString().trimmed(),
+					  toString(),
 					  spoton_kernel::
 					  setting("gui/hashType",
 						  "sha512").
-					  toString().trimmed(),
+					  toString(),
 					  QByteArray(),
 					  QByteArray::
 					  fromBase64(list.value(0)),

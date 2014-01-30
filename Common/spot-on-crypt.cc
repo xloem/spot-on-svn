@@ -288,7 +288,7 @@ QByteArray spoton_crypt::saltedValue(const QString &hashType,
 			    "empty data.");
     }
 
-  if(hashType.trimmed().isEmpty())
+  if(hashType.isEmpty())
     {
       if(ok)
 	*ok = false;
@@ -356,7 +356,7 @@ QByteArray spoton_crypt::saltedPassphraseHash(const QString &hashType,
   int hashAlgorithm = 0;
   unsigned int length = 0;
 
-  if(hashType.trimmed().isEmpty())
+  if(hashType.isEmpty())
     {
       error = QObject::tr("empty hashType");
       spoton_misc::logError("spoton_crypt::saltedPassphrase(): "
@@ -364,7 +364,7 @@ QByteArray spoton_crypt::saltedPassphraseHash(const QString &hashType,
       goto done_label;
     }
 
-  if(passphrase.trimmed().isEmpty())
+  if(passphrase.isEmpty())
     {
       error = QObject::tr("empty passphrase");
       spoton_misc::logError("spoton_crypt::saltedPassphrase(): "
