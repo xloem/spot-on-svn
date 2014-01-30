@@ -137,6 +137,7 @@
      the random cipher is empty.
 71.  Adjust gui/hashType in spoton_misc::correctSettingsContainer().
 72.  Removed excessive trimmed().
+73.  Inspect results of indexOf().
 
 0.08 (12/23/2013)
 
