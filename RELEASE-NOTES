@@ -135,6 +135,8 @@
      the s_messagingCache object from access by multiple threads. Corrected.
 70.  The method spoton_crypt::randomCipherType() will return aes256 if
      the random cipher is empty.
+71.  Adjust gui/hashType in spoton_misc::correctSettingsContainer().
+72.  Removed excessive trimmed().
 
 0.08 (12/23/2013)
 
