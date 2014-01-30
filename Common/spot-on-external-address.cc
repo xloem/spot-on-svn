@@ -60,10 +60,19 @@ void spoton_external_address::slotFinished(void)
   if(reply)
     {
       QByteArray bytes(reply->readAll());
+      int indexOf = bytes.indexOf("Current IP Address:");
 
-      bytes.remove(0, bytes.indexOf("Current IP Address:") +
-		   qstrlen("Current IP Address:"));
-      bytes = bytes.mid(0, bytes.indexOf("<")).trimmed();
+      if(indexOf > -1)
+	bytes.remove
+	  (0,
+	   bytes.indexOf("Current IP Address:") +
+	   qstrlen("Current IP Address:"));
+
+      indexOf = bytes.indexOf("<");
+
+      if(indexOf > -1)
+	bytes = bytes.mid(0, indexOf).trimmed();
+
       m_address = QHostAddress(bytes.constData());
       emit ipAddressDiscovered(m_address);
       reply->deleteLater();
