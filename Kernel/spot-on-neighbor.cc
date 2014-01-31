@@ -1354,9 +1354,12 @@ void spoton_neighbor::slotProcessData(void)
 	  int indexOf = data.lastIndexOf("\r\n");
 
 	  if(indexOf > -1)
-	    data = data.mid(0, data.lastIndexOf("\r\n") + 2);
+	    data = data.mid(0, indexOf + 2);
 
-	  data.remove(0, data.indexOf("content=") + qstrlen("content="));
+	  indexOf = data.indexOf("content=");
+
+	  if(indexOf > -1)
+	    data.remove(0, indexOf + qstrlen("content="));
 
 	  /*
 	  ** Please note that findMessageType() calls
