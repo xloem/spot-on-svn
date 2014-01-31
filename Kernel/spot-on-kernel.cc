@@ -2630,6 +2630,7 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data)
 
   QByteArray hash;
   bool ok = true;
+  int cost = setting("gui/congestionCost", 10000).toInt();
 
   hash = s_crypt->keyedHash(data, &ok);
 
@@ -2640,6 +2641,22 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data)
 
   if(!s_messagingCache.contains(hash))
     {
+      if(cost <= s_messagingCache.size())
+	{
+	  /*
+	  ** Remove an old entry.
+	  */
+
+	  QMutableMapIterator<QDateTime, QByteArray> it(s_messagingCacheMap);
+
+	  if(it.hasNext())
+	    {
+	      it.next();
+	      s_messagingCache.remove(it.value());
+	      it.remove();
+	    }
+	}
+
       s_messagingCache.insert(hash, 0);
       s_messagingCacheMap.insert(QDateTime::currentDateTime(), hash);
     }
