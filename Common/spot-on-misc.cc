@@ -1600,7 +1600,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
   if(!ok)
     integer = 10000;
-  else if(integer < 1000)
+  else if(integer < 1000 || integer > 65535)
     integer = 10000;
 
   settings.insert("gui/congestionCost", integer);
@@ -1609,7 +1609,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
   if(!ok)
     integer = 5;
-  else if(integer > 60)
+  else if(integer < 5 || integer > 60)
     integer = 5;
 
   settings.insert("gui/emailRetrievalInterval", integer);
@@ -1617,7 +1617,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
   if(!ok)
     integer = 65536;
-  else if(integer < 65536)
+  else if(integer < 65536 || integer > 999999999)
     integer = 65536;
 
   settings.insert("gui/gcryctl_init_secmem", integer);
@@ -1646,7 +1646,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
   if(!ok)
     integer = 10000;
-  else if(integer < 10000)
+  else if(integer < 10000 || integer > 999999999)
     integer = 10000;
 
   settings.insert("gui/iterationCount", integer);
@@ -1685,6 +1685,14 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 3072;
 
   settings.insert("gui/keySize", integer);
+  integer = qAbs(settings.value("gui/postofficeDays", 1).toInt(&ok));
+
+  if(!ok)
+    integer = 1;
+  else if(integer < 1 || integer > 366)
+    integer = 1;
+
+  settings.insert("gui/postofficeDays", integer);
   integer = qAbs(settings.value("gui/publishedKeySize", 2048).toInt(&ok));
 
   if(!ok)
@@ -1706,7 +1714,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
   if(!ok)
     integer = 512;
-  else if(integer < 512)
+  else if(integer < 512 || integer > 999999999)
     integer = 512;
 
   settings.insert("gui/saltLength", integer);
@@ -1715,7 +1723,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 
   if(!ok)
     integer = 65536;
-  else if(integer < 65536)
+  else if(integer < 65536 || integer > 999999999)
     integer = 65536;
 
   settings.insert("kernel/gcryctl_init_secmem", integer);
@@ -1724,6 +1732,8 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
 		    15000).toInt(&ok));
 
   if(!ok)
+    integer = 15000;
+  else if(integer < 1 || integer > 999999999)
     integer = 15000;
 
   settings.insert
