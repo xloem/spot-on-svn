@@ -136,6 +136,7 @@
 70.  The method spoton_crypt::randomCipherType() will return aes256 if
      the random cipher is empty.
 71.  Adjust gui/hashType in spoton_misc::correctSettingsContainer().
+     Added other various bounds checks.
 72.  Removed excessive trimmed().
 73.  Inspect results of indexOf().
 74.  Respect desired congestion costs. That is, remove older entries
