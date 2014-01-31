@@ -268,6 +268,7 @@ void spoton::slotReceivedKernelMessage(void)
 		    msg.append
 		      ("[<font color=red>00:00:00</font>]");
 
+		  bool strike = false;
 		  quint64 previousSequenceNumber = 1;
 
 		  if(m_receivedChatSequenceNumbers.contains(hash))
@@ -281,8 +282,11 @@ void spoton::slotReceivedKernelMessage(void)
 
 		  if(sequenceNumber.toULongLong() !=
 		     previousSequenceNumber + 1)
-		    msg.append(QString(":<font color=red>%1</font>: ").
-			       arg(sequenceNumber.constData()));
+		    {
+		      strike = true;
+		      msg.append(QString(":<font color=grey>%1</font>: ").
+				 arg(sequenceNumber.constData()));
+		    }
 		  else
 		    msg.append(QString(":%1: ").
 			       arg(sequenceNumber.constData()));
@@ -317,6 +321,12 @@ void spoton::slotReceivedKernelMessage(void)
 		    }
 
 		  msg.append(content);
+
+		  if(strike)
+		    {
+		      msg.prepend("<s>");
+		      msg.append("</s>");
+		    }
 
 		  if(m_chatWindows.contains(list.value(0).toBase64()))
 		    {
