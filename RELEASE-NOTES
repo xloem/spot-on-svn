@@ -140,7 +140,7 @@
 72.  Removed excessive trimmed().
 73.  Inspect results of indexOf().
 74.  Respect desired congestion costs. That is, remove older entries
-     from the messaging cache if the current size is too high.
+     from the messaging cache if the current size is too large.
 
 0.08 (12/23/2013)
 
