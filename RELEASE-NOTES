@@ -141,6 +141,7 @@
 73.  Inspect results of indexOf().
 74.  Respect desired congestion costs. That is, remove older entries
      from the messaging cache if the current size is too large.
+75.  Decreased the maximum name length from 64 to 16 characters.
 
 0.08 (12/23/2013)
 
