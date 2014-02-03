@@ -84,6 +84,7 @@ extern "C"
 #include "spot-on-starbeam-reader.h"
 #include "spot-on-starbeam-writer.h"
 
+QCache<QByteArray, char> spoton_kernel::s_temporaryCache;
 QHash<QByteArray, char> spoton_kernel::s_messagingCache;
 QHash<QByteArray, QList<QByteArray> > spoton_kernel::s_buzzKeys;
 QHash<QString, QVariant> spoton_kernel::s_settings;
@@ -506,6 +507,8 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SLOT(slotSettingsChanged(const QString &)));
   s_messagingCache.reserve
     (setting("gui/congestionCost", 10000).toInt());
+  s_temporaryCache.setMaxCost
+    (setting("gui/congestionCost", 10000).toInt());
   m_messagingCachePurgeTimer.start();
 
   if(setting("gui/etpReceivers", false).toBool())
@@ -521,6 +524,7 @@ spoton_kernel::~spoton_kernel()
   s_messagingCache.clear();
   s_messagingCacheMap.clear();
   s_messagingCacheMutex.unlock();
+  s_temporaryCache.clear();
   m_future.waitForFinished();
   cleanup();
   spoton_misc::cleanupDatabases();
@@ -1035,6 +1039,7 @@ void spoton_kernel::prepareNeighbors(void)
       s_messagingCache.clear();
       s_messagingCacheMap.clear();
       s_messagingCacheMutex.unlock();
+      s_temporaryCache.clear();
     }
 }
 
@@ -1482,10 +1487,13 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
 
   s_messagingCacheMutex.lockForWrite();
 
-  if(s_messagingCache.capacity() != cost)
+  if(cost != s_messagingCache.capacity())
     s_messagingCache.reserve(cost);
 
   s_messagingCacheMutex.unlock();
+
+  if(cost != s_temporaryCache.maxCost())
+    s_temporaryCache.setMaxCost(cost);
 
   if(setting("gui/etpReceivers", false).toBool())
     {
@@ -2977,7 +2985,7 @@ void spoton_kernel::updateStatistics(void)
 		      "(statistic, value) "
 		      "VALUES ('Congestion Container Percent Used', ?)");
 	s_messagingCacheMutex.lockForRead();
-	v1 = s_messagingCache.size();
+	v1 = 2 * s_messagingCache.size();
 	s_messagingCacheMutex.unlock();
 	v2 = setting("gui/congestionCost", 10000).toInt();
 	query.bindValue
@@ -2995,6 +3003,15 @@ void spoton_kernel::updateStatistics(void)
 		      "(statistic, value) "
 		      "VALUES ('Neighbors', ?)");
 	query.bindValue(0, m_neighbors.size());
+	query.exec();
+	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
+		      "(statistic, value) "
+		      "VALUES ('Temporary Cache Percent Used', ?)");
+	query.bindValue
+	  (0,
+	   QString::
+	   number(100 * static_cast<double> (s_temporaryCache.size()) /
+		  qMax(1, s_temporaryCache.maxCost()), 'f', 2).append("%"));
 	query.exec();
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
@@ -3081,4 +3098,40 @@ void spoton_kernel::slotImpersonateTimeout(void)
 {
   slotScramble();
   m_impersonateTimer.setInterval(qrand() % 30000 + 10);
+}
+
+bool spoton_kernel::temporaryCacheContains(const QByteArray &data)
+{
+  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return false;
+
+  QByteArray hash;
+  bool ok = true;
+
+  hash = s_crypt->keyedHash(data, &ok);
+
+  if(!ok)
+    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
+
+  return s_temporaryCache.contains(hash);
+}
+
+void spoton_kernel::temporaryCacheAdd(const QByteArray &data)
+{
+  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QByteArray hash;
+  bool ok = true;
+
+  hash = s_crypt->keyedHash(data, &ok);
+
+  if(!ok)
+    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
+
+  s_temporaryCache.insert(hash, 0);
 }

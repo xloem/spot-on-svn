@@ -1141,17 +1141,19 @@ void spoton_neighbor::slotReadyRead(void)
     }
 
   if(!data.isEmpty())
-    {
-      m_dataMutex.lockForWrite();
+    if(!spoton_kernel::temporaryCacheContains(data))
+      {
+	spoton_kernel::temporaryCacheAdd(data);
+	m_dataMutex.lockForWrite();
 
-      if(data.length() + m_data.length() <= m_maximumBufferSize)
-	m_data.append(data);
+	if(data.length() + m_data.length() <= m_maximumBufferSize)
+	  m_data.append(data);
 
-      m_dataMutex.unlock();
+	m_dataMutex.unlock();
 
-      if(!m_dataPurgeTimer.isActive())
-	m_dataPurgeTimer.start();
-    }
+	if(!m_dataPurgeTimer.isActive())
+	  m_dataPurgeTimer.start();
+      }
 }
 
 void spoton_neighbor::slotProcessData(void)

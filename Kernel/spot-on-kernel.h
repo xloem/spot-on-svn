@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2011, 2012, 2013 Alexis Megas
+** Copyright (c) 2011 - 2014 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
 #ifndef _spoton_kernel_h_
 #define _spoton_kernel_h_
 
+#include <QCache>
 #include <QDateTime>
 #include <QFileSystemWatcher>
 #include <QFuture>
@@ -64,6 +65,7 @@ class spoton_kernel: public QObject
   static QVariant setting(const QString &name,
 			  const QVariant &defaultValue);
   static bool messagingCacheContains(const QByteArray &data);
+  static bool temporaryCacheContains(const QByteArray &data);
   static int interfaces(void);
   static void addBuzzKey(const QByteArray &key,
 			 const QByteArray &channelType,
@@ -72,6 +74,7 @@ class spoton_kernel: public QObject
   static void clearBuzzKeysContainer(void);
   static void messagingCacheAdd(const QByteArray &data);
   static void removeBuzzKey(const QByteArray &data);
+  static void temporaryCacheAdd(const QByteArray &data);
   void processPotentialStarBeamData(const QByteArray &data);
   void writeToNeighbors(const QByteArray &data, bool *ok);
 
@@ -92,6 +95,7 @@ class spoton_kernel: public QObject
   spoton_mailer *m_mailer;
   spoton_shared_reader *m_sharedReader;
   spoton_starbeam_writer *m_starbeamWriter;
+  static QCache<QByteArray, char> s_temporaryCache;
   static QHash<QByteArray, char> s_messagingCache;
   static QHash<QByteArray, QList<QByteArray> > s_buzzKeys;
   static QHash<QString, QVariant> s_settings;
