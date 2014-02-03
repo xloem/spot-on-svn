@@ -214,7 +214,6 @@ class spoton_neighbor: public QThread
   void process0051(int length, const QByteArray &data);
   void process0065(int length, const QByteArray &data);
   void recordCertificateOrAbort(void);
-  void resetKeepAlive(void);
   void run(void);
   void saveExternalAddress(const QHostAddress &address,
 			   const QSqlDatabase &db);
@@ -274,6 +273,7 @@ class spoton_neighbor: public QThread
   void slotPurgeData(void);
   void slotReadyRead(void);
   void slotReceivedMessage(const QByteArray &data, const qint64 id);
+  void slotResetKeepAlive(void);
   void slotRetrieveMail(const QByteArrayList &list);
   void slotSendAccountInformation(void);
   void slotSendAuthenticationRequest(void);
@@ -307,6 +307,7 @@ class spoton_neighbor: public QThread
   void receivedChatMessage(const QByteArray &data);
   void receivedMessage(const QByteArray &data, const qint64 id);
   void receivedPublicKey(const QByteArray &name, const QByteArray publicKey);
+  void resetKeepAlive(void);
   void retrieveMail(const QByteArray &data,
 		    const QByteArray &publicKeyHash,
 		    const QByteArray &signature);

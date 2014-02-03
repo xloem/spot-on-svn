@@ -494,6 +494,11 @@ void spoton_gui_server::slotReceivedBuzzMessage
   ** list[1]: Hash
   */
 
+  if(spoton_kernel::temporaryCacheContains(list.value(1)))
+    return;
+  else
+    spoton_kernel::temporaryCacheAdd(list.value(1));
+
   QByteArray data;
   QByteArray message;
   bool ok = true;
@@ -537,6 +542,11 @@ void spoton_gui_server::slotReceivedBuzzMessage
 
 void spoton_gui_server::slotReceivedChatMessage(const QByteArray &message)
 {
+  if(spoton_kernel::temporaryCacheContains(message))
+    return;
+  else
+    spoton_kernel::temporaryCacheAdd(message);
+
   foreach(QSslSocket *socket, findChildren<QSslSocket *> ())
     if(socket->isEncrypted())
       {

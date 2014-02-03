@@ -3121,7 +3121,7 @@ bool spoton_kernel::temporaryCacheContains(const QByteArray &data)
 
       if(dateTime)
 	{
-	  if(dateTime->msecsTo(QDateTime::currentDateTime()) <= 5000)
+	  if(dateTime->msecsTo(QDateTime::currentDateTime()) <= 60000)
 	    return true;
 	  else
 	    {

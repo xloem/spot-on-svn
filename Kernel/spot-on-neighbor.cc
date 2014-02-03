@@ -218,6 +218,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SLOT(slotAccountAuthenticated(const QByteArray &,
 					const QByteArray &)));
   connect(this,
+	  SIGNAL(resetKeepAlive(void)),
+	  this,
+	  SLOT(slotResetKeepAlive(void)));
+  connect(this,
 	  SIGNAL(sharePublicKey(const QByteArray &,
 				const QByteArray &,
 				const QByteArray &,
@@ -534,7 +538,11 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
       QHostInfo::lookupHost(m_ipAddress,
 			    this, SLOT(slotHostFound(const QHostInfo &)));
 
-  m_address.setScopeId(scopeId);  
+  m_address.setScopeId(scopeId);
+  connect(this,
+	  SIGNAL(resetKeepAlive(void)),
+	  this,
+	  SLOT(slotResetKeepAlive(void)));
   connect(this,
 	  SIGNAL(sharePublicKey(const QByteArray &,
 				const QByteArray &,
@@ -1141,19 +1149,17 @@ void spoton_neighbor::slotReadyRead(void)
     }
 
   if(!data.isEmpty())
-    if(!spoton_kernel::temporaryCacheContains(data))
-      {
-	spoton_kernel::temporaryCacheAdd(data);
-	m_dataMutex.lockForWrite();
+    {
+      m_dataMutex.lockForWrite();
 
-	if(data.length() + m_data.length() <= m_maximumBufferSize)
-	  m_data.append(data);
+      if(data.length() + m_data.length() <= m_maximumBufferSize)
+	m_data.append(data);
 
-	m_dataMutex.unlock();
+      m_dataMutex.unlock();
 
-	if(!m_dataPurgeTimer.isActive())
-	  m_dataPurgeTimer.start();
-      }
+      if(!m_dataPurgeTimer.isActive())
+	m_dataPurgeTimer.start();
+    }
 }
 
 void spoton_neighbor::slotProcessData(void)
@@ -1193,7 +1199,7 @@ void spoton_neighbor::slotProcessData(void)
 	}
 
       if(reset)
-	resetKeepAlive();
+	emit resetKeepAlive();
 
       if(totalBytes > 0)
 	{
@@ -1344,7 +1350,7 @@ void spoton_neighbor::slotProcessData(void)
 	process0065(length, data);
       else if(length > 0 && data.contains("content="))
 	{
-	  resetKeepAlive();
+	  emit resetKeepAlive();
 	  spoton_kernel::messagingCacheAdd(originalData);
 
 	  /*
@@ -2058,7 +2064,8 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 				       list.value(1).toBase64() + "_" +
 				       list.value(2).toBase64() + "_" +
 				       list.value(3).toBase64() + "_" +
-				       list.value(4).toBase64().
+				       list.value(4).toBase64() + "_" +
+				       messageCode.toBase64().
 				       append('\n'));
 				}
 			    }
@@ -2878,7 +2885,7 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 			      "Calling savePublicKey() would be "
 			      "problematic. Ignoring request.");
 
-      resetKeepAlive();
+      emit resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -2933,7 +2940,7 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
       savePublicKey
 	(list.value(0), list.value(1), list.value(2), list.value(3),
 	 list.value(4), list.value(5), -1);
-      resetKeepAlive();
+      emit resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -3247,7 +3254,7 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
 	  QSqlDatabase::removeDatabase(connectionName);
 	}
 
-      resetKeepAlive();
+      emit resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -3336,7 +3343,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 	    }
 	}
 
-      resetKeepAlive();
+      emit resetKeepAlive();
       spoton_kernel::messagingCacheAdd(dataIn);
       emit publicizeListenerPlaintext(originalData, m_id);
     }
@@ -3379,8 +3386,31 @@ void spoton_neighbor::process0040a(int length, const QByteArray &dataIn,
 		     "received %1.").arg(list.size()));
 	  return;
 	}
-      else
-	emit receivedBuzzMessage(list, symmetricKeys);
+
+      QByteArray computedHash;
+      QByteArray messageCode(list.value(1));
+      bool ok = true;
+      spoton_crypt crypt(symmetricKeys.value(1),
+			 QString("sha512"),
+			 QByteArray(),
+			 symmetricKeys.value(0),
+			 0,
+			 0,
+			 QString(""));
+
+      computedHash = crypt.keyedHash(list.value(0), &ok);
+
+      if(ok)
+	{
+	  if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
+	     spoton_crypt::memcmp(computedHash, messageCode))
+	    emit receivedBuzzMessage(list, symmetricKeys);
+	  else
+	    spoton_misc::logError("spoton_neighbor::"
+				  "process0040a(): "
+				  "computed message code does "
+				  "not match provided code.");
+	}
     }
   else
     spoton_misc::logError
@@ -3421,8 +3451,31 @@ void spoton_neighbor::process0040b(int length, const QByteArray &dataIn,
 		     "received %1.").arg(list.size()));
 	  return;
 	}
-      else
-	emit receivedBuzzMessage(list, symmetricKeys);
+
+      QByteArray computedHash;
+      QByteArray messageCode(list.value(1));
+      bool ok = true;
+      spoton_crypt crypt(symmetricKeys.value(1),
+			 QString("sha512"),
+			 QByteArray(),
+			 symmetricKeys.value(0),
+			 0,
+			 0,
+			 QString(""));
+
+      computedHash = crypt.keyedHash(list.value(0), &ok);
+
+      if(ok)
+	{
+	  if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
+	     spoton_crypt::memcmp(computedHash, messageCode))
+	    emit receivedBuzzMessage(list, symmetricKeys);
+	  else
+	    spoton_misc::logError("spoton_neighbor::"
+				  "process0040b(): "
+				  "computed message code does "
+				  "not match provided code.");
+	}
     }
   else
     spoton_misc::logError
@@ -3498,7 +3551,7 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 	}
 
       if(m_accountAuthenticated)
-	resetKeepAlive();
+	emit resetKeepAlive();
 
       spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
@@ -3682,7 +3735,7 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
       m_accountClientSentSalt.clear();
 
       if(m_accountAuthenticated)
-	resetKeepAlive();
+	emit resetKeepAlive();
 
       if(s_crypt)
 	{
@@ -3801,7 +3854,7 @@ void spoton_neighbor::process0065(int length, const QByteArray &dataIn)
 	    QSqlDatabase::removeDatabase(connectionName);
 	  }
 
-      resetKeepAlive();
+      emit resetKeepAlive();
     }
   else
     spoton_misc::logError
@@ -4722,7 +4775,7 @@ void spoton_neighbor::slotSendBuzz(const QByteArray &data)
     }
 }
 
-void spoton_neighbor::resetKeepAlive(void)
+void spoton_neighbor::slotResetKeepAlive(void)
 {
   m_lastReadTime = QDateTime::currentDateTime();
 }

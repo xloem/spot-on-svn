@@ -218,10 +218,14 @@ void spoton::slotReceivedKernelMessage(void)
 		{
 		  QList<QByteArray> list(data.split('_'));
 
-		  if(list.size() != 5)
+		  if(list.size() != 6)
 		    continue;
 
-		  for(int i = 0; i < list.size(); i++)
+		  for(int i = 0; i < list.size() - 1; i++)
+		    /*
+		    ** We'll ignore the message code (list.at(5)).
+		    */
+
 		    list.replace(i, QByteArray::fromBase64(list.at(i)));
 
 		  QByteArray hash(list.at(0)); /*
