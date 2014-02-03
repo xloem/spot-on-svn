@@ -1894,7 +1894,6 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 	    {
 	      QByteArray computedHash;
 	      QByteArray message(list.value(0));
-	      QByteArray messageCode(list.value(1));
 	      spoton_crypt crypt("aes256",
 				 QString("sha512"),
 				 QByteArray(),
@@ -1908,6 +1907,8 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 
 	      if(ok)
 		{
+		  QByteArray messageCode(list.value(1));
+
 		  if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
 		     spoton_crypt::memcmp(computedHash, messageCode))
 		    {
@@ -1994,7 +1995,6 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 	    {
 	      QByteArray data(list.value(1));
 	      QByteArray computedHash;
-	      QByteArray messageCode(list.value(2));
 
 	      computedHash = spoton_crypt::keyedHash(data,
 						     hashKey,
@@ -2003,6 +2003,8 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 
 	      if(ok)
 		{
+		  QByteArray messageCode(list.value(2));
+
 		  if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
 		     spoton_crypt::memcmp(computedHash, messageCode))
 		    {
@@ -2168,13 +2170,14 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 	{
 	  QByteArray data(list.value(1));
 	  QByteArray computedHash;
-	  QByteArray messageCode(list.value(2));
 
 	  computedHash = spoton_crypt::keyedHash(data, hashKey,
 						 "sha512", &ok);
 
 	  if(ok)
 	    {
+	      QByteArray messageCode(list.value(2));
+
 	      if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
 		 spoton_crypt::memcmp(computedHash, messageCode))
 		{
@@ -2615,7 +2618,6 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 	{
 	  QByteArray data(list.value(1));
 	  QByteArray computedHash;
-	  QByteArray messageCode(list.value(2));
 
 	  computedHash = spoton_crypt::keyedHash
 	    (data, hashKey, "sha512", &ok);
@@ -2627,6 +2629,8 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn)
 
 	  if(ok)
 	    {
+	      QByteArray messageCode(list.value(2));
+
 	      if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
 		 spoton_crypt::memcmp(computedHash, messageCode))
 		{
@@ -2764,7 +2768,6 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 	{
 	  QByteArray data(list.value(1));
 	  QByteArray computedHash;
-	  QByteArray messageCode(list.value(2));
 
 	  computedHash = spoton_crypt::keyedHash
 	    (data, hashKey, "sha512", &ok);
@@ -2776,6 +2779,8 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 
 	  if(ok)
 	    {
+	      QByteArray messageCode(list.value(2));
+
 	      if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
 		 spoton_crypt::memcmp(computedHash, messageCode))
 		{
@@ -2995,7 +3000,6 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 	    {
 	      QByteArray computedHash;
 	      QByteArray message(list.value(0));
-	      QByteArray messageCode(list.value(1));
 	      spoton_crypt crypt("aes256",
 				 QString("sha512"),
 				 QByteArray(),
@@ -3009,6 +3013,8 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 
 	      if(ok)
 		{
+		  QByteArray messageCode(list.value(1));
+
 		  if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
 		     spoton_crypt::memcmp(computedHash, messageCode))
 		    {
@@ -3095,13 +3101,14 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 	    {
 	      QByteArray data(list.value(1));
 	      QByteArray computedHash;
-	      QByteArray messageCode(list.value(2));
 
 	      computedHash = spoton_crypt::keyedHash
 		(data, hashKey, "sha512", &ok);
 
 	      if(ok)
 		{
+		  QByteArray messageCode(list.value(2));
+
 		  if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
 		     spoton_crypt::memcmp(computedHash, messageCode))
 		    {
@@ -3387,21 +3394,23 @@ void spoton_neighbor::process0040a(int length, const QByteArray &dataIn,
 	  return;
 	}
 
-      QByteArray computedHash;
-      QByteArray messageCode(list.value(1));
-      bool ok = true;
-      spoton_crypt crypt(symmetricKeys.value(1),
-			 QString("sha512"),
-			 QByteArray(),
-			 symmetricKeys.value(0),
-			 0,
-			 0,
-			 QString(""));
+      /*
+      ** keys[0]: E. Key
+      ** keys[1]: E. Type
+      ** keys[2]: H. Key
+      ** keys[3]: H. Type
+      */
 
-      computedHash = crypt.keyedHash(list.value(0), &ok);
+      QByteArray computedHash;
+      bool ok = true;
+
+      computedHash = spoton_crypt::keyedHash
+	(list.value(0), symmetricKeys.value(2), symmetricKeys.value(3), &ok);
 
       if(ok)
 	{
+	  QByteArray messageCode(list.value(1));
+
 	  if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
 	     spoton_crypt::memcmp(computedHash, messageCode))
 	    emit receivedBuzzMessage(list, symmetricKeys);
@@ -3452,21 +3461,23 @@ void spoton_neighbor::process0040b(int length, const QByteArray &dataIn,
 	  return;
 	}
 
-      QByteArray computedHash;
-      QByteArray messageCode(list.value(1));
-      bool ok = true;
-      spoton_crypt crypt(symmetricKeys.value(1),
-			 QString("sha512"),
-			 QByteArray(),
-			 symmetricKeys.value(0),
-			 0,
-			 0,
-			 QString(""));
+      /*
+      ** keys[0]: E. Key
+      ** keys[1]: E. Type
+      ** keys[2]: H. Key
+      ** keys[3]: H. Type
+      */
 
-      computedHash = crypt.keyedHash(list.value(0), &ok);
+      QByteArray computedHash;
+      bool ok = true;
+
+      computedHash = spoton_crypt::keyedHash
+	(list.value(0), symmetricKeys.value(2), symmetricKeys.value(3), &ok);
 
       if(ok)
 	{
+	  QByteArray messageCode(list.value(1));
+
 	  if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
 	     spoton_crypt::memcmp(computedHash, messageCode))
 	    emit receivedBuzzMessage(list, symmetricKeys);
