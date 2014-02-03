@@ -125,7 +125,9 @@
      to all connect() instances.
 64.  Discovered a fundamental flaw with the design of the kernel with
      respect to the thread objects. The kernel was artificially threaded.
-     Corrected. Applied a similar correction to the StarBeam writer.
+     Corrected. Applied a similar correction to the StarBeam writer. To
+     prevent duplicates, a temporary cache has also been added. The size
+     of the cache will be limited to the size of the congestion container.
 65.  Prevent the log viewer from processing too much data. Limit the file
      size to 0.5 MiB. Also, do not read log data unless the viewer is visible.
 66.  Corrected furious timer (m_accountTimer) in spoton_neighbor.
