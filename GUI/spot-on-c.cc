@@ -685,7 +685,10 @@ void spoton::slotPopulateKernelStatistics(void)
 		  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		m_ui.kernelStatistics->setItem(row, 1, item);
 
-		if(query.value(0).toString().toLower().contains("congestion"))
+		if(query.value(0).toString().toLower().
+		   contains("congestion container") ||
+		   query.value(0).toString().toLower().
+		   contains("temporary cache"))
 		  {
 		    if(query.value(1).toInt() <= 50)
 		      item->setBackground
