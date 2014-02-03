@@ -84,7 +84,7 @@ extern "C"
 #include "spot-on-starbeam-reader.h"
 #include "spot-on-starbeam-writer.h"
 
-QCache<QByteArray, char> spoton_kernel::s_temporaryCache;
+QCache<QByteArray, QDateTime> spoton_kernel::s_temporaryCache;
 QHash<QByteArray, char> spoton_kernel::s_messagingCache;
 QHash<QByteArray, QList<QByteArray> > spoton_kernel::s_buzzKeys;
 QHash<QString, QVariant> spoton_kernel::s_settings;
@@ -3115,7 +3115,25 @@ bool spoton_kernel::temporaryCacheContains(const QByteArray &data)
   if(!ok)
     hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
 
-  return s_temporaryCache.contains(hash);
+  if(s_temporaryCache.contains(hash))
+    {
+      QDateTime *dateTime = s_temporaryCache.object(hash);
+
+      if(dateTime)
+	{
+	  if(dateTime->msecsTo(QDateTime::currentDateTime()) <= 5000)
+	    return true;
+	  else
+	    {
+	      s_temporaryCache.remove(hash);
+	      return false;
+	    }
+	}
+      else
+	return false;
+    }
+  else
+    return false;
 }
 
 void spoton_kernel::temporaryCacheAdd(const QByteArray &data)
@@ -3133,5 +3151,7 @@ void spoton_kernel::temporaryCacheAdd(const QByteArray &data)
   if(!ok)
     hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
 
-  s_temporaryCache.insert(hash, 0);
+  if(!s_temporaryCache.contains(hash))
+    s_temporaryCache.insert
+      (hash, new QDateTime(QDateTime::currentDateTime()));
 }

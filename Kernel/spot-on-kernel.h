@@ -95,7 +95,7 @@ class spoton_kernel: public QObject
   spoton_mailer *m_mailer;
   spoton_shared_reader *m_sharedReader;
   spoton_starbeam_writer *m_starbeamWriter;
-  static QCache<QByteArray, char> s_temporaryCache;
+  static QCache<QByteArray, QDateTime> s_temporaryCache;
   static QHash<QByteArray, char> s_messagingCache;
   static QHash<QByteArray, QList<QByteArray> > s_buzzKeys;
   static QHash<QString, QVariant> s_settings;
