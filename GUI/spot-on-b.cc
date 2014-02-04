@@ -223,7 +223,8 @@ void spoton::slotReceivedKernelMessage(void)
 
 		  for(int i = 0; i < list.size() - 1; i++)
 		    /*
-		    ** We'll ignore the message code (list.at(5)).
+		    ** We'll ignore the message authentication
+		    ** code (list.at(5)).
 		    */
 
 		    list.replace(i, QByteArray::fromBase64(list.at(i)));

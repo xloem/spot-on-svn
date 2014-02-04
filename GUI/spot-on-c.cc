@@ -686,9 +686,7 @@ void spoton::slotPopulateKernelStatistics(void)
 		m_ui.kernelStatistics->setItem(row, 1, item);
 
 		if(query.value(0).toString().toLower().
-		   contains("congestion container") ||
-		   query.value(0).toString().toLower().
-		   contains("temporary cache"))
+		   contains("congestion container"))
 		  {
 		    if(query.value(1).toInt() <= 50)
 		      item->setBackground

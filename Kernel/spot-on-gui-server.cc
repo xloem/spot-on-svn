@@ -495,10 +495,10 @@ void spoton_gui_server::slotReceivedBuzzMessage
   ** list[1]: Hash
   */
 
-  if(spoton_kernel::temporaryCacheContains(list.value(1)))
+  if(spoton_kernel::messagingCacheContains(list.value(1)))
     return;
   else
-    spoton_kernel::temporaryCacheAdd(list.value(1));
+    spoton_kernel::messagingCacheAdd(list.value(1));
 
   QByteArray message;
 
@@ -529,10 +529,14 @@ void spoton_gui_server::slotReceivedBuzzMessage
 
 void spoton_gui_server::slotReceivedChatMessage(const QByteArray &message)
 {
-  if(spoton_kernel::temporaryCacheContains(message))
+  /*
+  ** The message array contains a unique message authentication code.
+  */
+
+  if(spoton_kernel::messagingCacheContains(message))
     return;
   else
-    spoton_kernel::temporaryCacheAdd(message);
+    spoton_kernel::messagingCacheAdd(message);
 
   foreach(QSslSocket *socket, findChildren<QSslSocket *> ())
     if(socket->isEncrypted())

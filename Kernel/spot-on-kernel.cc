@@ -84,7 +84,6 @@ extern "C"
 #include "spot-on-starbeam-reader.h"
 #include "spot-on-starbeam-writer.h"
 
-QCache<QByteArray, QDateTime> spoton_kernel::s_temporaryCache;
 QHash<QByteArray, char> spoton_kernel::s_messagingCache;
 QHash<QByteArray, QList<QByteArray> > spoton_kernel::s_buzzKeys;
 QHash<QString, QVariant> spoton_kernel::s_settings;
@@ -507,8 +506,6 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SLOT(slotSettingsChanged(const QString &)));
   s_messagingCache.reserve
     (setting("gui/congestionCost", 10000).toInt());
-  s_temporaryCache.setMaxCost
-    (setting("gui/congestionCost", 10000).toInt());
   m_messagingCachePurgeTimer.start();
 
   if(setting("gui/etpReceivers", false).toBool())
@@ -524,7 +521,6 @@ spoton_kernel::~spoton_kernel()
   s_messagingCache.clear();
   s_messagingCacheMap.clear();
   s_messagingCacheMutex.unlock();
-  s_temporaryCache.clear();
   m_future.waitForFinished();
   cleanup();
   spoton_misc::cleanupDatabases();
@@ -1039,7 +1035,6 @@ void spoton_kernel::prepareNeighbors(void)
       s_messagingCache.clear();
       s_messagingCacheMap.clear();
       s_messagingCacheMutex.unlock();
-      s_temporaryCache.clear();
     }
 }
 
@@ -1491,9 +1486,6 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
     s_messagingCache.reserve(cost);
 
   s_messagingCacheMutex.unlock();
-
-  if(cost != s_temporaryCache.maxCost())
-    s_temporaryCache.setMaxCost(cost);
 
   if(setting("gui/etpReceivers", false).toBool())
     {
@@ -3006,15 +2998,6 @@ void spoton_kernel::updateStatistics(void)
 	query.exec();
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
-		      "VALUES ('Temporary Cache Percent Used', ?)");
-	query.bindValue
-	  (0,
-	   QString::
-	   number(100 * static_cast<double> (s_temporaryCache.size()) /
-		  qMax(1, s_temporaryCache.maxCost()), 'f', 2).append("%"));
-	query.exec();
-	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
-		      "(statistic, value) "
 		      "VALUES ('Uptime', ?)");
 	query.bindValue
 	  (0, QString("%1 Minutes").
@@ -3098,60 +3081,4 @@ void spoton_kernel::slotImpersonateTimeout(void)
 {
   slotScramble();
   m_impersonateTimer.setInterval(qrand() % 30000 + 10);
-}
-
-bool spoton_kernel::temporaryCacheContains(const QByteArray &data)
-{
-  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
-
-  if(!s_crypt)
-    return false;
-
-  QByteArray hash;
-  bool ok = true;
-
-  hash = s_crypt->keyedHash(data, &ok);
-
-  if(!ok)
-    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
-
-  if(s_temporaryCache.contains(hash))
-    {
-      QDateTime *dateTime = s_temporaryCache.object(hash);
-
-      if(dateTime)
-	{
-	  if(dateTime->msecsTo(QDateTime::currentDateTime()) <= 60000)
-	    return true;
-	  else
-	    {
-	      s_temporaryCache.remove(hash);
-	      return false;
-	    }
-	}
-      else
-	return false;
-    }
-  else
-    return false;
-}
-
-void spoton_kernel::temporaryCacheAdd(const QByteArray &data)
-{
-  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
-
-  if(!s_crypt)
-    return;
-
-  QByteArray hash;
-  bool ok = true;
-
-  hash = s_crypt->keyedHash(data, &ok);
-
-  if(!ok)
-    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
-
-  if(!s_temporaryCache.contains(hash))
-    s_temporaryCache.insert
-      (hash, new QDateTime(QDateTime::currentDateTime()));
 }
