@@ -3078,7 +3078,7 @@ void spoton::slotGeminiChanged(QTableWidgetItem *item)
   if(!item)
     return;
   else if(!(item->column() == 6 ||
-	    item->column() == 7)) // Gemini E. Key, Gemini H. Key
+	    item->column() == 7)) // Gemini Encryption Key, Gemini Hash Key
     return;
   else if(!m_ui.participants->item(item->row(), 1)) // OID
     return;
@@ -3116,8 +3116,10 @@ void spoton::slotGenerateGeminiInChat(void)
     return;
 
   QTableWidgetItem *item1 = m_ui.participants->item(row, 1); // OID
-  QTableWidgetItem *item2 = m_ui.participants->item(row, 6); // Gemini E. Key
-  QTableWidgetItem *item3 = m_ui.participants->item(row, 7); // Gemini H. Key
+  QTableWidgetItem *item2 = m_ui.participants->item
+    (row, 6); // Gemini Encryption Key
+  QTableWidgetItem *item3 = m_ui.participants->item
+    (row, 7); // Gemini Hash Key
 
   if(!item1 || !item2 || !item3)
     return;
@@ -4860,7 +4862,7 @@ void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)
   if(item->data(Qt::UserRole).toBool()) // Temporary friend?
     return;
   else if(item->column() == 6 ||
-	  item->column() == 7) // Gemini E. Key, Gemini H. Key?
+	  item->column() == 7) // Gemini Encryption Key, Gemini Hash Key
     return;
 
   QIcon icon;

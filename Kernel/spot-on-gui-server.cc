@@ -483,14 +483,15 @@ void spoton_gui_server::slotTimeout(void)
 }
 
 void spoton_gui_server::slotReceivedBuzzMessage
-(const QList<QByteArray> &list, const QList<QByteArray> &keys)
+(const QByteArrayList &list,
+ const QByteArrayList &keys)
 {
   /*
-  ** keys[0]: E. Key
-  ** keys[1]: E. Type
-  ** keys[2]: H. Key
-  ** keys[3]: H. Type
-  ** list[0]: Data
+  ** keys[0]: Encryption Key
+  ** keys[1]: Encryption Type
+  ** keys[2]: Hash Key
+  ** keys[3]: Hash Type
+  ** list[0]: Data (Plaintext)
   ** list[1]: Hash
   */
 
@@ -499,26 +500,12 @@ void spoton_gui_server::slotReceivedBuzzMessage
   else
     spoton_kernel::temporaryCacheAdd(list.value(1));
 
-  QByteArray data;
   QByteArray message;
-  bool ok = true;
-  spoton_crypt crypt(keys.value(1),
-		     QString("sha512"),
-		     QByteArray(),
-		     keys.value(0),
-		     0,
-		     0,
-		     QString(""));
-
-  data = crypt.decrypted(list.value(0), &ok);
-
-  if(!ok)
-    return;
 
   message.append("buzz_");
-  message.append(data.toBase64()); // Message
+  message.append(list.value(0).toBase64()); // Message
   message.append("_");
-  message.append(keys.value(0).toBase64()); // Key
+  message.append(keys.value(0).toBase64()); // Encryption Key
   message.append("\n");
 
   foreach(QSslSocket *socket, findChildren<QSslSocket *> ())

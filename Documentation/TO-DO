@@ -182,3 +182,4 @@ Remaining Items
        process. Pause the current thread for T - t0 seconds, where T is some
        reasonable time.
 32.    Record received pulses.
+33.    Lots of kernel activity may cause libgcrypt memory exhaustion.

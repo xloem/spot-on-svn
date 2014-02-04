@@ -5337,7 +5337,10 @@ void spoton::slotPopulateParticipants(void)
 			    item = new QTableWidgetItem(tr("Friend"));
 			}
 		      else if(i == 6 ||
-			      i == 7) // Gemini E. Key, Gemini H. Key
+			      i == 7) /*
+				      ** Gemini Encryption Key
+				      ** Gemini Hash Key
+				      */
 			{
 			  if(query.isNull(i))
 			    item = new QTableWidgetItem();
@@ -5416,7 +5419,10 @@ void spoton::slotPopulateParticipants(void)
 			  icon = item->icon();
 			}
 		      else if(i == 6 ||
-			      i == 7) // Gemini E. Key, Gemini H. Key
+			      i == 7) /*
+				      ** Gemini Encryption Key
+				      ** Gemini Hash Key
+				      */
 			{
 			  if(!temporary)
 			    item->setFlags
