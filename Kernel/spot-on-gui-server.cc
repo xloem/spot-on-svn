@@ -495,10 +495,10 @@ void spoton_gui_server::slotReceivedBuzzMessage
   ** list[1]: Hash
   */
 
-  if(spoton_kernel::messagingCacheContains(list.value(1)))
+  if(spoton_kernel::messagingCacheContains(list.value(1), true))
     return;
   else
-    spoton_kernel::messagingCacheAdd(list.value(1));
+    spoton_kernel::messagingCacheAdd(list.value(1), true);
 
   QByteArray message;
 

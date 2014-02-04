@@ -63,14 +63,16 @@ class spoton_kernel: public QObject
 				       const QByteArray &hash);
   static QVariant setting(const QString &name,
 			  const QVariant &defaultValue);
-  static bool messagingCacheContains(const QByteArray &data);
+  static bool messagingCacheContains(const QByteArray &data,
+				     const bool do_not_hash = false);
   static int interfaces(void);
   static void addBuzzKey(const QByteArray &key,
 			 const QByteArray &channelType,
 			 const QByteArray &hashKey,
 			 const QByteArray &hashType);
   static void clearBuzzKeysContainer(void);
-  static void messagingCacheAdd(const QByteArray &data);
+  static void messagingCacheAdd(const QByteArray &data,
+				const bool do_not_hash = false);
   static void removeBuzzKey(const QByteArray &data);
   void processPotentialStarBeamData(const QByteArray &data);
   void writeToNeighbors(const QByteArray &data, bool *ok);

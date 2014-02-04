@@ -2598,20 +2598,27 @@ void spoton_kernel::purgeMessagingCache(void)
   s_messagingCacheMutex.unlock();
 }
 
-bool spoton_kernel::messagingCacheContains(const QByteArray &data)
+bool spoton_kernel::messagingCacheContains(const QByteArray &data,
+					   const bool do_not_hash)
 {
-  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
-
-  if(!s_crypt)
-    return false;
-
   QByteArray hash;
-  bool ok = true;
 
-  hash = s_crypt->keyedHash(data, &ok);
+  if(!do_not_hash)
+    {
+      spoton_crypt *s_crypt = s_crypts.value("chat", 0);
 
-  if(!ok)
-    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
+      if(!s_crypt)
+	return false;
+
+      bool ok = true;
+
+      hash = s_crypt->keyedHash(data, &ok);
+
+      if(!ok)
+	hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
+    }
+  else
+    hash = data;
 
   bool contains = false;
 
@@ -2621,21 +2628,29 @@ bool spoton_kernel::messagingCacheContains(const QByteArray &data)
   return contains;
 }
 
-void spoton_kernel::messagingCacheAdd(const QByteArray &data)
+void spoton_kernel::messagingCacheAdd(const QByteArray &data,
+				      const bool do_not_hash)
 {
-  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
-
-  if(!s_crypt)
-    return;
-
   QByteArray hash;
-  bool ok = true;
+
+  if(!do_not_hash)
+    {
+      spoton_crypt *s_crypt = s_crypts.value("chat", 0);
+
+      if(!s_crypt)
+	return;
+
+      bool ok = true;
+
+      hash = s_crypt->keyedHash(data, &ok);
+
+      if(!ok)
+	hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
+    }
+  else
+    hash = data;
+
   int cost = setting("gui/congestionCost", 10000).toInt();
-
-  hash = s_crypt->keyedHash(data, &ok);
-
-  if(!ok)
-    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
 
   s_messagingCacheMutex.lockForWrite();
 
