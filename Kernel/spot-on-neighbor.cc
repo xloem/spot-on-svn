@@ -341,7 +341,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
     (spoton_kernel::
      setting("kernel/server_account_verification_window_msecs",
 	     15000).toInt());
-  m_dataPurgeTimer.setInterval(15000);
+  m_dataPurgeTimer.setInterval(30000);
 
   if(spoton_kernel::setting("gui/kernelExternalIpInterval", -1).
      toInt() == 30)
@@ -674,7 +674,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
     (spoton_kernel::
      setting("kernel/server_account_verification_window_msecs",
 	     15000).toInt());
-  m_dataPurgeTimer.setInterval(15000);
+  m_dataPurgeTimer.setInterval(30000);
 
   if(spoton_kernel::setting("gui/kernelExternalIpInterval", -1).
      toInt() == 30)
@@ -1174,7 +1174,8 @@ void spoton_neighbor::slotProcessData(void)
 
   if(data.contains(spoton_send::EOM))
     {
-      bool reset = false;
+      bool reset_keep_alive = false;
+      bool stop_purge_timer = false;
       int totalBytes = 0;
 
       while(data.contains(spoton_send::EOM))
@@ -1189,17 +1190,20 @@ void spoton_neighbor::slotProcessData(void)
 
 	  if(!bytes.isEmpty())
 	    {
-	      emit stopPurgeTimer();
+	      stop_purge_timer = true;
 
 	      if(!spoton_kernel::messagingCacheContains(bytes))
 		list.append(bytes);
 	      else
-		reset = true;
+		reset_keep_alive = true;
 	    }
 	}
 
-      if(reset)
+      if(reset_keep_alive)
 	emit resetKeepAlive();
+
+      if(stop_purge_timer)
+	emit stopPurgeTimer();
 
       if(totalBytes > 0)
 	{
@@ -5288,6 +5292,8 @@ void spoton_neighbor::slotAuthenticationTimerTimeout(void)
 
 void spoton_neighbor::slotPurgeData(void)
 {
+  m_dataMutex.lockForWrite();
+
   if(!m_data.isEmpty())
     spoton_misc::logError
       (QString("spoton_neighbor::slotPurgeData(): "
@@ -5297,4 +5303,5 @@ void spoton_neighbor::slotPurgeData(void)
        arg(m_port));
 
   m_data.clear();
+  m_dataMutex.unlock();
 }
