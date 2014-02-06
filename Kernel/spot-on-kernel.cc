@@ -2632,6 +2632,8 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data,
 				      const bool do_not_hash,
 				      const int add_msecs)
 {
+  QByteArray hash;
+
   if(!do_not_hash)
     {
       spoton_crypt *s_crypt = s_crypts.value("chat", 0);
