@@ -498,7 +498,11 @@ void spoton_gui_server::slotReceivedBuzzMessage
   if(spoton_kernel::messagingCacheContains(list.value(1), true))
     return;
   else
-    spoton_kernel::messagingCacheAdd(list.value(1), true);
+    /*
+    ** Add the message with an expiration date of 30 seconds into the future.
+    */
+
+    spoton_kernel::messagingCacheAdd(list.value(1), true, 30000);
 
   QByteArray message;
 
@@ -536,7 +540,11 @@ void spoton_gui_server::slotReceivedChatMessage(const QByteArray &message)
   if(spoton_kernel::messagingCacheContains(message))
     return;
   else
-    spoton_kernel::messagingCacheAdd(message);
+    /*
+    ** Add the message with an expiration date of 30 seconds into the future.
+    */
+
+    spoton_kernel::messagingCacheAdd(message, false, 30000);
 
   foreach(QSslSocket *socket, findChildren<QSslSocket *> ())
     if(socket->isEncrypted())

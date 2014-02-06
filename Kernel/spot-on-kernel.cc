@@ -2629,10 +2629,9 @@ bool spoton_kernel::messagingCacheContains(const QByteArray &data,
 }
 
 void spoton_kernel::messagingCacheAdd(const QByteArray &data,
-				      const bool do_not_hash)
+				      const bool do_not_hash,
+				      const int add_msecs)
 {
-  QByteArray hash;
-
   if(!do_not_hash)
     {
       spoton_crypt *s_crypt = s_crypts.value("chat", 0);
@@ -2673,7 +2672,8 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data,
 	}
 
       s_messagingCache.insert(hash, 0);
-      s_messagingCacheMap.insert(QDateTime::currentDateTime(), hash);
+      s_messagingCacheMap.insert
+	(QDateTime::currentDateTime().addMSecs(add_msecs), hash);
     }
 
   s_messagingCacheMutex.unlock();

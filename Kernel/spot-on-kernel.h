@@ -72,7 +72,8 @@ class spoton_kernel: public QObject
 			 const QByteArray &hashType);
   static void clearBuzzKeysContainer(void);
   static void messagingCacheAdd(const QByteArray &data,
-				const bool do_not_hash = false);
+				const bool do_not_hash = false,
+				const int add_msecs = 0);
   static void removeBuzzKey(const QByteArray &data);
   void processPotentialStarBeamData(const QByteArray &data);
   void writeToNeighbors(const QByteArray &data, bool *ok);
