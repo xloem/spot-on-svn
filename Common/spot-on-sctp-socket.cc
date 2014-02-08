@@ -28,13 +28,15 @@
 #include <QSocketNotifier>
 
 #ifdef SPOTON_SCTP_ENABLED
-#ifdef Q_OS_MAC
+#ifdef Q_OS_LINUX
+#elif defined(Q_OS_MAC)
 extern "C"
 {
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 }
+#elif defined(Q_OS_WIN32)
 #endif
 #endif
 
