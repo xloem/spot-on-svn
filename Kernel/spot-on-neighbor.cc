@@ -460,17 +460,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
     {
       m_tcpSocket->setProxy(proxy);
       m_tcpSocket->setReadBufferSize(m_maximumBufferSize);
-      m_tcpSocket->setSocketOption
-	(QAbstractSocket::KeepAliveOption, 0); /*
-					       ** We have our
-					       ** own mechanism.
-					       */
-      m_tcpSocket->setSocketOption
-	(QAbstractSocket::LowDelayOption,
-	 spoton_kernel::setting("kernel/tcp_nodelay", 1).
-	 toInt()); /*
-		   ** Disable Nagle?
-		   */
     }
   else if(m_udpSocket)
     m_udpSocket->setProxy(proxy);
@@ -1420,6 +1409,21 @@ void spoton_neighbor::slotProcessData(void)
 
 void spoton_neighbor::slotConnected(void)
 {
+  if(m_tcpSocket)
+    {
+      m_tcpSocket->setSocketOption
+	(QAbstractSocket::KeepAliveOption, 0); /*
+					       ** We have our
+					       ** own mechanism.
+					       */
+      m_tcpSocket->setSocketOption
+	(QAbstractSocket::LowDelayOption,
+	 spoton_kernel::setting("kernel/tcp_nodelay", 1).
+	 toInt()); /*
+		   ** Disable Nagle?
+		   */
+    }
+
   /*
   ** The local address is the address of the proxy. Unfortunately,
   ** we do not have network interfaces that have such an address.

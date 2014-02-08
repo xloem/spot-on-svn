@@ -53,6 +53,7 @@ MOC_DIR = temp/moc
 RCC_DIR = temp/rcc
 
 HEADERS		= ../Common/spot-on-external-address.h \
+		  ../Common/spot-on-sctp-socket.h \
 		  spot-on-gui-server.h \
 		  spot-on-kernel.h \
 		  spot-on-listener.h \
@@ -65,6 +66,7 @@ HEADERS		= ../Common/spot-on-external-address.h \
 SOURCES		= ../Common/spot-on-crypt.cc \
 		  ../Common/spot-on-external-address.cc \
 		  ../Common/spot-on-misc.cc \
+		  ../Common/spot-on-sctp-socket.cc \
 		  ../Common/spot-on-send.cc \
 		  spot-on-gui-server.cc \
 		  spot-on-kernel.cc \
