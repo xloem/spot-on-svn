@@ -28,7 +28,7 @@
 #ifndef _spoton_sctp_socket_h_
 #define _spoton_sctp_socket_h_
 
-#include <QAbstractSocket>
+#include <QHostInfo>
 #include <QIODevice>
 
 class QSocketNotifier;
@@ -38,18 +38,41 @@ class spoton_sctp_socket: public QIODevice
   Q_OBJECT
 
  public:
+  enum SocketOption
+  {
+    KeepAliveOption = 1,
+    LowDelayOption = 0
+  };
+
+  enum SocketState
+  {
+    ConnectedState = 4,
+    ConnectingState = 3,
+    HostLookupState = 2,
+    UnconnectedState = 1
+  };
+
+ public:
   spoton_sctp_socket(QObject *parent);
   ~spoton_sctp_socket();
   void connectToHost(const QString &hostName, const quint16 port,
 		     const OpenMode openMode = ReadWrite);
   void setReadBufferSize(const qint64 size);
-  void setSocketOption(const QAbstractSocket::SocketOption option);
+  void setSocketOption(const SocketOption option);
 
  private:
   QSocketNotifier *m_socketReadNotifier;
   QSocketNotifier *m_socketWriteNotifier;
+  QString m_ipAddress;
+  SocketState m_state;
+  int m_hostLookupId;
   int m_socketDescriptor;
   qint64 m_readBufferSize;
+  quint16 m_port;
+  void connectToHostImplementation(void);
+
+ private slots:
+   void slotHostFound(const QHostInfo &hostInfo);
 };
 
 #endif

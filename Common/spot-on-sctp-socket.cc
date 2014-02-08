@@ -25,13 +25,17 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QSocketNotifier>
+
 #include "spot-on-sctp-socket.h"
 
 spoton_sctp_socket::spoton_sctp_socket(QObject *parent): QIODevice(parent)
 {
+  m_hostLookupId = -1;
   m_socketDescriptor = -1;
   m_socketReadNotifier = 0;
   m_socketWriteNotifier = 0;
+  m_state = UnconnectedState;
 }
 
 spoton_sctp_socket::~spoton_sctp_socket()
@@ -42,18 +46,99 @@ void spoton_sctp_socket::connectToHost(const QString &hostName,
 				       const quint16 port,
 				       const OpenMode openMode)
 {
+#ifdef SPOTON_SCTP_ENABLED
+  QHostInfo::abortHostLookup(m_hostLookupId);
+  close();
+  open(openMode);
+  m_hostLookupId = -1;
+  m_port = port;
+  m_state = UnconnectedState;
+
+  if(m_socketReadNotifier)
+    {
+      m_socketReadNotifier->deleteLater();
+      m_socketReadNotifier = 0;
+    }
+
+  if(m_socketWriteNotifier)
+    {
+      m_socketWriteNotifier->deleteLater();
+      m_socketWriteNotifier = 0;
+    }
+
+  if(QHostAddress(hostName).isNull())
+    {
+      /*
+      ** Perform a host lookup.
+      */
+
+      m_hostLookupId = QHostInfo::lookupHost
+	(hostName, this, SLOT(slotHostFound(const QHostInfo &)));
+      m_state = HostLookupState;
+    }
+  else
+    {
+      m_state = ConnectingState;
+      connectToHostImplementation();
+    }
+#else
   Q_UNUSED(hostName);
-  Q_UNUSED(port);
   Q_UNUSED(openMode);
+  Q_UNUSED(port);
+#endif
+}
+
+void spoton_sctp_socket::connectToHostImplementation(void)
+{
 }
 
 void spoton_sctp_socket::setReadBufferSize(const qint64 size)
 {
+#ifdef SPOTON_SCTP_ENABLED
   m_readBufferSize = size;
+#else
+  Q_UNUSED(size);
+#endif
 }
 
-void spoton_sctp_socket::setSocketOption
-(const QAbstractSocket::SocketOption option)
+void spoton_sctp_socket::setSocketOption(const SocketOption option)
 {
+#if SPOTON_SCTP_ENABLED
+  if(m_state == ConnectedState)
+    {
+      switch(option)
+	{
+	case KeepAliveOption:
+	  {
+	    break;
+	  }
+	case LowDelayOption:
+	  {
+	    break;
+	  }
+	default:
+	  {
+	    break;
+	  }
+	}
+    }
+#else
   Q_UNUSED(option);
+#endif
+}
+
+void spoton_sctp_socket::slotHostFound(const QHostInfo &hostInfo)
+{
+#ifdef SPOTON_SCTP_ENABLED
+  foreach(const QHostAddress &address, hostInfo.addresses())
+    if(!address.isNull())
+      {
+	m_ipAddress = address.toString();
+	m_state = ConnectingState;
+	connectToHostImplementation();
+	break;
+      }
+#else
+  Q_UNUSED(hostInfo);
+#endif
 }
