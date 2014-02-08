@@ -62,6 +62,16 @@ spoton_sctp_socket::spoton_sctp_socket(QObject *parent): QIODevice(parent)
 
 spoton_sctp_socket::~spoton_sctp_socket()
 {
+  close();
+}
+
+QHostAddress spoton_sctp_socket::peerAddress(void) const
+{
+#ifdef SPOTON_SCTP_ENABLED
+  return QHostAddress();
+#else
+  return QHostAddress();
+#endif
 }
 
 void spoton_sctp_socket::close(void)
@@ -78,6 +88,7 @@ void spoton_sctp_socket::close(void)
 
   ::close(m_socketDescriptor);
   m_hostLookupId = -1;
+  m_ipAddress.clear();
   m_socketDescriptor = -1;
   m_state = UnconnectedState;
   emit disconnected();
@@ -89,24 +100,22 @@ void spoton_sctp_socket::connectToHost(const QString &hostName,
 				       const OpenMode openMode)
 {
 #ifdef SPOTON_SCTP_ENABLED
-  close();
+  if(m_state != UnconnectedState)
+    return;
+
+  QIODevice::close();
   open(openMode);
   m_port = port;
-  m_state = UnconnectedState;
 
   if(QHostAddress(hostName).isNull())
     {
-      /*
-      ** Perform a host lookup.
-      */
-
       m_hostLookupId = QHostInfo::lookupHost
 	(hostName, this, SLOT(slotHostFound(const QHostInfo &)));
       m_state = HostLookupState;
     }
   else
     {
-      m_state = ConnectingState;
+      m_ipAddress = hostName;
       connectToHostImplementation();
     }
 #else
@@ -130,30 +139,32 @@ void spoton_sctp_socket::connectToHostImplementation(void)
   else
     m_socketDescriptor = socket(AF_INET6, SOCK_SEQPACKET, IPPROTO_SCTP);
 
-  if(m_socketDescriptor > -1)
-    {
-      struct sockaddr_in servaddr;
+  if(m_socketDescriptor == -1)
+    goto done_label;
 
-      memset(&servaddr, 0, sizeof(servaddr));
-      servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+  struct sockaddr_in servaddr;
 
-      if(protocol == IPv4Protocol)
-	servaddr.sin_family = AF_INET;
-      else
-	servaddr.sin_family = AF_INET6;
+  memset(&servaddr, 0, sizeof(servaddr));
+  servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-      servaddr.sin_port = htons(m_port);
+  if(protocol == IPv4Protocol)
+    servaddr.sin_family = AF_INET;
+  else
+    servaddr.sin_family = AF_INET6;
 
-      if(protocol == IPv4Protocol)
-	rc = inet_pton(AF_INET, m_ipAddress.toLatin1().constData(),
-		       &servaddr.sin_addr);
-      else
-	rc = inet_pton(AF_INET6, m_ipAddress.toLatin1().constData(),
-		       &servaddr.sin_addr);
+  servaddr.sin_port = htons(m_port);
 
-      if(rc != 1)
-	goto done_label;
-    }
+  if(protocol == IPv4Protocol)
+    rc = inet_pton(AF_INET, m_ipAddress.toLatin1().constData(),
+		   &servaddr.sin_addr);
+  else
+    rc = inet_pton(AF_INET6, m_ipAddress.toLatin1().constData(),
+		   &servaddr.sin_addr);
+
+  m_state = ConnectingState;
+
+  if(rc != 1)
+    goto done_label;
 
  done_label:
   if(rc != 0)
@@ -164,7 +175,10 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 void spoton_sctp_socket::setReadBufferSize(const qint64 size)
 {
 #ifdef SPOTON_SCTP_ENABLED
-  m_readBufferSize = size;
+  qint64 optval = size;
+  socklen_t optlen = sizeof(optval);
+
+  setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
 #else
   Q_UNUSED(size);
 #endif
@@ -212,7 +226,6 @@ void spoton_sctp_socket::slotHostFound(const QHostInfo &hostInfo)
     if(!address.isNull())
       {
 	m_ipAddress = address.toString();
-	m_state = ConnectingState;
 	connectToHostImplementation();
 	break;
       }
