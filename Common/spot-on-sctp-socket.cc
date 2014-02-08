@@ -29,12 +29,21 @@
 
 #ifdef SPOTON_SCTP_ENABLED
 #ifdef Q_OS_LINUX
+extern "C"
+{
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <netinet/sctp.h>
+#include <sys/socket.h>
+#include <unistd.h>
+}
 #elif defined(Q_OS_MAC)
 extern "C"
 {
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <unistd.h>
 }
 #elif defined(Q_OS_WIN32)
 #endif
@@ -55,23 +64,35 @@ spoton_sctp_socket::~spoton_sctp_socket()
 {
 }
 
-void spoton_sctp_socket::connectToHost(const QString &hostName,
-				       const quint16 port,
-				       const OpenMode openMode)
+void spoton_sctp_socket::close(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
   QHostInfo::abortHostLookup(m_hostLookupId);
-  close();
-  open(openMode);
-  m_hostLookupId = -1;
-  m_port = port;
-  m_state = UnconnectedState;
+  QIODevice::close();
 
   if(m_socketReadNotifier)
     m_socketReadNotifier->deleteLater();
 
   if(m_socketWriteNotifier)
     m_socketWriteNotifier->deleteLater();
+
+  ::close(m_socketDescriptor);
+  m_hostLookupId = -1;
+  m_socketDescriptor = -1;
+  m_state = UnconnectedState;
+  emit disconnected();
+#endif
+}
+
+void spoton_sctp_socket::connectToHost(const QString &hostName,
+				       const quint16 port,
+				       const OpenMode openMode)
+{
+#ifdef SPOTON_SCTP_ENABLED
+  close();
+  open(openMode);
+  m_port = port;
+  m_state = UnconnectedState;
 
   if(QHostAddress(hostName).isNull())
     {
@@ -98,9 +119,16 @@ void spoton_sctp_socket::connectToHost(const QString &hostName,
 void spoton_sctp_socket::connectToHostImplementation(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
+  NetworkLayerProtocol protocol = IPv4Protocol;
   int rc = 0;
 
-  m_socketDescriptor = socket(AF_INET, SOCK_SEQPACKET, IPPROTO_SCTP);
+  if(QHostAddress(m_ipAddress).protocol() == QAbstractSocket::IPv6Protocol)
+    protocol = IPv6Protocol;
+
+  if(protocol == IPv4Protocol)
+    m_socketDescriptor = socket(AF_INET, SOCK_SEQPACKET, IPPROTO_SCTP);
+  else
+    m_socketDescriptor = socket(AF_INET6, SOCK_SEQPACKET, IPPROTO_SCTP);
 
   if(m_socketDescriptor > -1)
     {
@@ -108,10 +136,20 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
       memset(&servaddr, 0, sizeof(servaddr));
       servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-      servaddr.sin_family = AF_INET;
+
+      if(protocol == IPv4Protocol)
+	servaddr.sin_family = AF_INET;
+      else
+	servaddr.sin_family = AF_INET6;
+
       servaddr.sin_port = htons(m_port);
-      rc = inet_pton(AF_INET, m_ipAddress.toLatin1().constData(),
-		     &servaddr.sin_addr);
+
+      if(protocol == IPv4Protocol)
+	rc = inet_pton(AF_INET, m_ipAddress.toLatin1().constData(),
+		       &servaddr.sin_addr);
+      else
+	rc = inet_pton(AF_INET6, m_ipAddress.toLatin1().constData(),
+		       &servaddr.sin_addr);
 
       if(rc != 1)
 	goto done_label;
@@ -119,7 +157,7 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
  done_label:
   if(rc != 0)
-    ::close(m_socketDescriptor);
+    close();
 #endif
 }
 
@@ -132,29 +170,38 @@ void spoton_sctp_socket::setReadBufferSize(const qint64 size)
 #endif
 }
 
-void spoton_sctp_socket::setSocketOption(const SocketOption option)
+void spoton_sctp_socket::setSocketOption(const SocketOption option,
+					 const QVariant &value)
 {
-#if SPOTON_SCTP_ENABLED
-  if(m_state == ConnectedState)
+#ifdef SPOTON_SCTP_ENABLED
+  switch(option)
     {
-      switch(option)
-	{
-	case KeepAliveOption:
-	  {
-	    break;
-	  }
-	case LowDelayOption:
-	  {
-	    break;
-	  }
-	default:
-	  {
-	    break;
-	  }
-	}
+    case KeepAliveOption:
+      {
+	int optval = value.toInt();
+	socklen_t optlen = sizeof(optval);
+
+	setsockopt(m_socketDescriptor, SOL_SOCKET, SO_KEEPALIVE,
+		   &optval, optlen);
+	break;
+      }
+    case LowDelayOption:
+      {
+	int optval = value.toInt();
+	socklen_t optlen = sizeof(optval);
+
+	setsockopt(m_socketDescriptor, IPPROTO_SCTP, SCTP_NODELAY,
+		   &optval, optlen);	
+	break;
+      }
+    default:
+      {
+	break;
+      }
     }
 #else
   Q_UNUSED(option);
+  Q_UNUSED(value);
 #endif
 }
 

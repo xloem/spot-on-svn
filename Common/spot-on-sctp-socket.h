@@ -39,6 +39,12 @@ class spoton_sctp_socket: public QIODevice
   Q_OBJECT
 
  public:
+  enum NetworkLayerProtocol
+  {
+    IPv4Protocol = 0,
+    IPv6Protocol = 1
+  };
+
   enum SocketOption
   {
     KeepAliveOption = 1,
@@ -56,10 +62,12 @@ class spoton_sctp_socket: public QIODevice
  public:
   spoton_sctp_socket(QObject *parent);
   ~spoton_sctp_socket();
+  void close(void);
   void connectToHost(const QString &hostName, const quint16 port,
 		     const OpenMode openMode = ReadWrite);
   void setReadBufferSize(const qint64 size);
-  void setSocketOption(const SocketOption option);
+  void setSocketOption(const SocketOption option,
+		       const QVariant &value);
 
  private:
   QPointer<QSocketNotifier> m_socketReadNotifier;
@@ -73,7 +81,11 @@ class spoton_sctp_socket: public QIODevice
   void connectToHostImplementation(void);
 
  private slots:
-   void slotHostFound(const QHostInfo &hostInfo);
+  void slotHostFound(const QHostInfo &hostInfo);
+
+ signals:
+  void connected(void);
+  void disconnected(void);
 };
 
 #endif
