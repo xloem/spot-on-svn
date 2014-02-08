@@ -30,6 +30,7 @@
 
 #include <QHostInfo>
 #include <QIODevice>
+#include <QPointer>
 
 class QSocketNotifier;
 
@@ -61,8 +62,8 @@ class spoton_sctp_socket: public QIODevice
   void setSocketOption(const SocketOption option);
 
  private:
-  QSocketNotifier *m_socketReadNotifier;
-  QSocketNotifier *m_socketWriteNotifier;
+  QPointer<QSocketNotifier> m_socketReadNotifier;
+  QPointer<QSocketNotifier> m_socketWriteNotifier;
   QString m_ipAddress;
   SocketState m_state;
   int m_hostLookupId;

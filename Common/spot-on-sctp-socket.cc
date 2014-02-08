@@ -27,6 +27,17 @@
 
 #include <QSocketNotifier>
 
+#ifdef SPOTON_SCTP_ENABLED
+#ifdef Q_OS_MAC
+extern "C"
+{
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+}
+#endif
+#endif
+
 #include "spot-on-sctp-socket.h"
 
 spoton_sctp_socket::spoton_sctp_socket(QObject *parent): QIODevice(parent)
@@ -55,16 +66,10 @@ void spoton_sctp_socket::connectToHost(const QString &hostName,
   m_state = UnconnectedState;
 
   if(m_socketReadNotifier)
-    {
-      m_socketReadNotifier->deleteLater();
-      m_socketReadNotifier = 0;
-    }
+    m_socketReadNotifier->deleteLater();
 
   if(m_socketWriteNotifier)
-    {
-      m_socketWriteNotifier->deleteLater();
-      m_socketWriteNotifier = 0;
-    }
+    m_socketWriteNotifier->deleteLater();
 
   if(QHostAddress(hostName).isNull())
     {
@@ -90,6 +95,30 @@ void spoton_sctp_socket::connectToHost(const QString &hostName,
 
 void spoton_sctp_socket::connectToHostImplementation(void)
 {
+#ifdef SPOTON_SCTP_ENABLED
+  int rc = 0;
+
+  m_socketDescriptor = socket(AF_INET, SOCK_SEQPACKET, IPPROTO_SCTP);
+
+  if(m_socketDescriptor > -1)
+    {
+      struct sockaddr_in servaddr;
+
+      memset(&servaddr, 0, sizeof(servaddr));
+      servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+      servaddr.sin_family = AF_INET;
+      servaddr.sin_port = htons(m_port);
+      rc = inet_pton(AF_INET, m_ipAddress.toLatin1().constData(),
+		     &servaddr.sin_addr);
+
+      if(rc != 1)
+	goto done_label;
+    }
+
+ done_label:
+  if(rc != 0)
+    ::close(m_socketDescriptor);
+#endif
 }
 
 void spoton_sctp_socket::setReadBufferSize(const qint64 size)
