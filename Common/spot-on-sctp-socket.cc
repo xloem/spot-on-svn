@@ -32,17 +32,21 @@
 extern "C"
 {
 #include <arpa/inet.h>
+#include <errno.h>
 #include <netinet/in.h>
 #include <netinet/sctp.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <unistd.h>
 }
 #elif defined(Q_OS_MAC)
 extern "C"
 {
 #include <arpa/inet.h>
+#include <errno.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <unistd.h>
 }
 #elif defined(Q_OS_WIN32)
@@ -103,8 +107,9 @@ void spoton_sctp_socket::connectToHost(const QString &hostName,
   if(m_state != UnconnectedState)
     return;
 
-  QIODevice::close();
-  open(openMode);
+  if(!isOpen())
+    open(openMode);
+
   m_port = port;
 
   if(QHostAddress(hostName).isNull())
@@ -140,7 +145,22 @@ void spoton_sctp_socket::connectToHostImplementation(void)
     m_socketDescriptor = socket(AF_INET6, SOCK_SEQPACKET, IPPROTO_SCTP);
 
   if(m_socketDescriptor == -1)
-    goto done_label;
+    {
+      if(errno == EACCES)
+	emit error(SocketAccessError);
+      else if(errno == EAFNOSUPPORT ||
+	      errno == EPROTONOSUPPORT)
+	emit error(UnsupportedSocketOperationError);
+      else if(errno == EMFILE ||
+	      errno == ENFILE ||
+	      errno == ENOBUFS ||
+	      errno == ENOMEM)
+	emit error(SocketResourceError);
+      else
+	emit error(UnknownSocketError);
+
+      goto done_label;
+    }
 
   struct sockaddr_in servaddr;
 
@@ -161,10 +181,20 @@ void spoton_sctp_socket::connectToHostImplementation(void)
     rc = inet_pton(AF_INET6, m_ipAddress.toLatin1().constData(),
 		   &servaddr.sin_addr);
 
-  m_state = ConnectingState;
-
   if(rc != 1)
-    goto done_label;
+    {
+      if(rc == -1)
+	{
+	  if(errno == EAFNOSUPPORT)
+	    emit error(UnsupportedSocketOperationError);
+	}
+      else
+	emit error(UnknownSocketError);
+
+      goto done_label;
+    }
+
+  m_state = ConnectingState;
 
  done_label:
   if(rc != 0)
@@ -222,6 +252,8 @@ void spoton_sctp_socket::setSocketOption(const SocketOption option,
 void spoton_sctp_socket::slotHostFound(const QHostInfo &hostInfo)
 {
 #ifdef SPOTON_SCTP_ENABLED
+  m_ipAddress.clear();
+
   foreach(const QHostAddress &address, hostInfo.addresses())
     if(!address.isNull())
       {
@@ -229,6 +261,9 @@ void spoton_sctp_socket::slotHostFound(const QHostInfo &hostInfo)
 	connectToHostImplementation();
 	break;
       }
+
+  if(QHostAddress(m_ipAddress).isNull())
+    emit error(HostNotFoundError);
 #else
   Q_UNUSED(hostInfo);
 #endif

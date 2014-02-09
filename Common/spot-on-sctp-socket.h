@@ -45,6 +45,21 @@ class spoton_sctp_socket: public QIODevice
     IPv6Protocol = 1
   };
 
+  enum SocketError
+  {
+    ConnectionRefusedError = 0,
+    DatagramTooLargeError = 6,
+    HostNotFoundError = 2,
+    NetworkError = 7,
+    RemoteHostClosedError = 1,
+    SocketAccessError = 3,
+    SocketResourceError = 4,
+    SocketTimeoutError = 5,
+    UnfinishedSocketOperationError = 11,
+    UnknownSocketError = -1,
+    UnsupportedSocketOperationError = 10
+  };
+
   enum SocketOption
   {
     KeepAliveOption = 1,
@@ -86,6 +101,7 @@ class spoton_sctp_socket: public QIODevice
  signals:
   void connected(void);
   void disconnected(void);
+  void error(const SocketError socketError);
 };
 
 #endif
