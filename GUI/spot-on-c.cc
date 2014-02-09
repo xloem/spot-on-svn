@@ -3126,10 +3126,19 @@ void spoton::slotImportNeighbors(void)
 			    token.remove(0, qstrlen("transport="));
 			    token = token.toLower();
 
+#ifdef SPOTON_SCTP_ENABLED
+			    if(!(token == "sctp" ||
+				 token == "tcp" ||
+				 token == "udp"))
+			      fine = false;
+			    else
+			      hash["transport"] = token;
+#else
 			    if(!(token == "tcp" || token == "udp"))
 			      fine = false;
 			    else
 			      hash["transport"] = token;
+#endif
 			  }
 
 			if(!fine)

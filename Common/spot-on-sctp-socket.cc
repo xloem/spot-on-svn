@@ -78,6 +78,35 @@ QHostAddress spoton_sctp_socket::peerAddress(void) const
 #endif
 }
 
+qint64 spoton_sctp_socket::write(const char *data, const qint64 size)
+{
+#ifdef SPOTON_SCTP_ENABLED
+  ssize_t rc = send(m_socketDescriptor, data, size, MSG_DONTWAIT);
+
+  if(rc == -1)
+    {
+      if(errno == EACCES)
+	emit error(SocketAccessError);
+      else if(errno == ECONNRESET)
+	emit error(RemoteHostClosedError);
+      else if(errno == EMSGSIZE ||
+	      errno == ENOBUFS ||
+	      errno == ENOMEM)
+	emit error(SocketResourceError);
+      else if(errno == ENOTCONN)
+	emit error(NetworkError);
+      else
+	emit error(UnknownSocketError);
+    }
+
+  return static_cast<qint64> (rc);
+#else
+  Q_UNUSED(data);
+  Q_UNUSED(size);
+  return 0;
+#endif
+}
+
 void spoton_sctp_socket::close(void)
 {
 #ifdef SPOTON_SCTP_ENABLED

@@ -1345,8 +1345,13 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
   QString connectionName("");
   QString transport(p_transport.toLower().trimmed());
 
+#ifdef SPOTON_SCTP_ENABLED
+  if(!(transport == "sctp" || transport == "tcp" || transport == "udp"))
+    transport = "tcp";
+#else
   if(!(transport == "tcp" || transport == "udp"))
     transport = "tcp";
+#endif
 
   {
     QSqlDatabase db = database(connectionName);
@@ -1528,7 +1533,13 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 
 	if(ok)
 	  {
+#ifdef SPOTON_SCTP_ENABLED
+	    if(transport == "sctp" ||
+	       transport == "tcp" ||
+	       transport == "udp")
+#else
 	    if(transport == "tcp" || transport == "udp")
+#endif
 	      query.bindValue
 		(24, crypt->encrypted(transport.toLatin1(), &ok).
 		 toBase64());

@@ -1595,10 +1595,19 @@ void spoton::slotAddListener(void)
 	else
 	  protocol = "IPv6";
 
+#ifdef SPOTON_SCTP_ENABLED
+	if(m_ui.listenerTransport->currentIndex() == 0)
+	  transport = "sctp";
+	else if(m_ui.listenerTransport->currentIndex() == 1)
+	  transport = "tcp";
+	else
+	  transport = "udp";
+#else
 	if(m_ui.listenerTransport->currentIndex() == 0)
 	  transport = "tcp";
 	else
 	  transport = "udp";
+#endif
 
 	query.prepare("INSERT INTO listeners "
 		      "(ip_address, "
@@ -1729,12 +1738,24 @@ void spoton::slotAddListener(void)
 	    (10, s_crypt->encrypted(publicKey, &ok).
 	     toBase64());
 
+#ifdef SPOTON_SCTP_ENABLED
+	if(m_ui.listenerTransport->currentIndex() == 0)
+	  query.bindValue
+	    (11, s_crypt->encrypted("sctp", &ok).toBase64());
+	else if(m_ui.listenerTransport->currentIndex() == 1)
+	  query.bindValue
+	    (11, s_crypt->encrypted("tcp", &ok).toBase64());
+	else
+	  query.bindValue
+	    (11, s_crypt->encrypted("udp", &ok).toBase64());
+#else
 	if(m_ui.listenerTransport->currentIndex() == 0)
 	  query.bindValue
 	    (11, s_crypt->encrypted("tcp", &ok).toBase64());
 	else
 	  query.bindValue
 	    (11, s_crypt->encrypted("udp", &ok).toBase64());
+#endif
 
 	if(m_ui.listenerShareAddress->isChecked())
 	  query.bindValue(12, 1);
@@ -1853,10 +1874,19 @@ void spoton::slotAddNeighbor(void)
 	else
 	  protocol = "Dynamic DNS";
 
+#ifdef SPOTON_SCTP_ENABLED
+	if(m_ui.neighborTransport->currentIndex() == 0)
+	  transport = "sctp";
+	else if(m_ui.neighborTransport->currentIndex() == 1)
+	  transport = "tcp";
+	else
+	  transport = "udp";
+#else
 	if(m_ui.neighborTransport->currentIndex() == 0)
 	  transport = "tcp";
 	else
 	  transport = "udp";
+#endif
 
 	query.prepare("INSERT INTO neighbors "
 		      "(local_ip_address, "
@@ -2097,12 +2127,24 @@ void spoton::slotAddNeighbor(void)
 
 	if(ok)
 	  {
+#ifdef SPOTON_SCTP_ENABLED
+	    if(m_ui.neighborTransport->currentIndex() == 0)
+	      query.bindValue
+		(25, s_crypt->encrypted("sctp", &ok).toBase64());
+	    else if(m_ui.neighborTransport->currentIndex() == 1)
+	      query.bindValue
+		(25, s_crypt->encrypted("tcp", &ok).toBase64());
+	    else
+	      query.bindValue
+		(25, s_crypt->encrypted("udp", &ok).toBase64());
+#else
 	    if(m_ui.neighborTransport->currentIndex() == 0)
 	      query.bindValue
 		(25, s_crypt->encrypted("tcp", &ok).toBase64());
 	    else
 	      query.bindValue
 		(25, s_crypt->encrypted("udp", &ok).toBase64());
+#endif
 	  }
 
 	if(ok)

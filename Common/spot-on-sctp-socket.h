@@ -78,6 +78,7 @@ class spoton_sctp_socket: public QIODevice
   spoton_sctp_socket(QObject *parent);
   ~spoton_sctp_socket();
   QHostAddress peerAddress(void) const;
+  qint64 write(const char *data, const qint64 size);
   void close(void);
   void connectToHost(const QString &hostName, const quint16 port,
 		     const OpenMode openMode = ReadWrite);
