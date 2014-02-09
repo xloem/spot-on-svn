@@ -28,7 +28,8 @@
 #include <QSocketNotifier>
 
 #ifdef SPOTON_SCTP_ENABLED
-#ifdef Q_OS_LINUX
+#ifdef Q_OS_FREEBSD
+#elif defined(Q_OS_LINUX)
 extern "C"
 {
 #include <arpa/inet.h>
@@ -94,8 +95,13 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 size)
 	      errno == ENOBUFS ||
 	      errno == ENOMEM)
 	emit error(SocketResourceError);
-      else if(errno == ENOTCONN)
+      else if(errno == EHOSTUNREACH ||
+	      errno == ENETDOWN ||
+	      errno == ENETUNREACH ||
+	      errno == ENOTCONN)
 	emit error(NetworkError);
+      else if(errno == EOPNOTSUPP)
+	emit error(UnsupportedSocketOperationError);
       else
 	emit error(UnknownSocketError);
     }
@@ -170,9 +176,9 @@ void spoton_sctp_socket::connectToHostImplementation(void)
     protocol = IPv6Protocol;
 
   if(protocol == IPv4Protocol)
-    m_socketDescriptor = socket(AF_INET, SOCK_SEQPACKET, IPPROTO_SCTP);
+    m_socketDescriptor = socket(AF_INET, SOCK_STREAM, IPPROTO_SCTP);
   else
-    m_socketDescriptor = socket(AF_INET6, SOCK_SEQPACKET, IPPROTO_SCTP);
+    m_socketDescriptor = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
 
   if(m_socketDescriptor == -1)
     {
@@ -181,7 +187,8 @@ void spoton_sctp_socket::connectToHostImplementation(void)
       else if(errno == EAFNOSUPPORT ||
 	      errno == EPROTONOSUPPORT)
 	emit error(UnsupportedSocketOperationError);
-      else if(errno == EMFILE ||
+      else if(errno == EISCONN ||
+	      errno == EMFILE ||
 	      errno == ENFILE ||
 	      errno == ENOBUFS ||
 	      errno == ENOMEM)
@@ -223,6 +230,8 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
       goto done_label;
     }
+  else
+    rc = 0;
 
   m_state = ConnectingState;
 
