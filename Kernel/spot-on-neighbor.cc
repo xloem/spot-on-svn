@@ -41,6 +41,7 @@
 #include "Common/spot-on-external-address.h"
 #include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
+#include "Common/spot-on-sctp-socket.h"
 #include "spot-on-kernel.h"
 #include "spot-on-neighbor.h"
 
@@ -69,6 +70,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 const QString &orientation,
 				 QObject *parent):QThread(parent)
 {
+  m_sctpSocket = 0;
   m_tcpSocket = 0;
   m_udpSocket = 0;
   m_maximumBufferSize =
@@ -76,7 +78,9 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	   maximumBufferSize,
 	   spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
 
-  if(transport == "tcp")
+  if(transport == "sctp")
+    m_sctpSocket = new spoton_sctp_socket(this);
+  else if(transport == "tcp")
     m_tcpSocket = new spoton_neighbor_tcp_socket(this);
   else if(transport == "udp")
     m_udpSocket = new spoton_neighbor_udp_socket(this);

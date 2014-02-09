@@ -57,12 +57,14 @@ extern "C"
 
 #include "spot-on-sctp-socket.h"
 
-spoton_sctp_socket::spoton_sctp_socket(QObject *parent): QIODevice(parent)
+spoton_sctp_socket::spoton_sctp_socket(QObject *parent):
+  QAbstractSocket(QAbstractSocket::UnknownSocketType, parent)
 {
   m_hostLookupId = -1;
+  m_readBufferSize = 0;
   m_socketDescriptor = -1;
+  m_socketExceptionNotifier = 0;
   m_socketReadNotifier = 0;
-  m_socketWriteNotifier = 0;
   m_state = UnconnectedState;
 }
 
@@ -118,17 +120,18 @@ void spoton_sctp_socket::close(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
   QHostInfo::abortHostLookup(m_hostLookupId);
-  QIODevice::close();
+  QAbstractSocket::close();
+
+  if(m_socketExceptionNotifier)
+    m_socketExceptionNotifier->deleteLater();
 
   if(m_socketReadNotifier)
     m_socketReadNotifier->deleteLater();
 
-  if(m_socketWriteNotifier)
-    m_socketWriteNotifier->deleteLater();
-
   ::close(m_socketDescriptor);
   m_hostLookupId = -1;
   m_ipAddress.clear();
+  m_readBuffer.clear();
   m_socketDescriptor = -1;
   m_state = UnconnectedState;
   emit disconnected();
@@ -224,6 +227,8 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 	{
 	  if(errno == EAFNOSUPPORT)
 	    emit error(UnsupportedSocketOperationError);
+	  else
+	    emit error(UnknownSocketError);
 	}
       else
 	emit error(UnknownSocketError);
@@ -241,9 +246,42 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 #endif
 }
 
+void spoton_sctp_socket::prepareSocketNotifiers(void)
+{
+#ifdef SPOTON_SCTP_ENABLED
+  if(m_socketDescriptor < 0)
+    return;
+
+  if(m_socketExceptionNotifier)
+    m_socketExceptionNotifier->deleteLater();
+
+  if(m_socketReadNotifier)
+    m_socketReadNotifier->deleteLater();
+
+  m_socketExceptionNotifier = new QSocketNotifier(m_socketDescriptor,
+						  QSocketNotifier::Exception,
+						  this);
+  connect(m_socketExceptionNotifier,
+	  SIGNAL(activated(int)),
+	  this,
+	  SLOT(slotSocketNotifierActivated(int)));
+  m_socketExceptionNotifier->setEnabled(true);
+  m_socketReadNotifier = new QSocketNotifier(m_socketDescriptor,
+					     QSocketNotifier::Read,
+					     this);
+  connect(m_socketReadNotifier,
+	  SIGNAL(activated(int)),
+	  this,
+	  SLOT(slotSocketNotifierActivated(int)));
+  m_socketReadNotifier->setEnabled(true);
+#endif
+}
+
 void spoton_sctp_socket::setReadBufferSize(const qint64 size)
 {
 #ifdef SPOTON_SCTP_ENABLED
+  m_readBufferSize = size;
+
   qint64 optval = size;
   socklen_t optlen = sizeof(optval);
 
@@ -305,5 +343,54 @@ void spoton_sctp_socket::slotHostFound(const QHostInfo &hostInfo)
     emit error(HostNotFoundError);
 #else
   Q_UNUSED(hostInfo);
+#endif
+}
+
+void spoton_sctp_socket::slotSocketNotifierActivated(int socket)
+{
+#ifdef SPOTON_SCTP_ENABLED
+  QSocketNotifier *socketNotifier = qobject_cast<QSocketNotifier *>
+    (sender());
+
+  if(!socketNotifier)
+    return;
+
+  socketNotifier->setEnabled(false);
+
+  if(m_socketReadNotifier == socketNotifier)
+    {
+      QByteArray data(static_cast<int> (m_readBufferSize), 0);
+      ssize_t rc = 0;
+
+      rc = recv(socket, data.data(), data.length(), MSG_PEEK);
+
+      if(rc > 0)
+	rc = recv(socket, data.data(),
+		  static_cast<size_t> (rc), MSG_WAITALL);
+
+      if(rc > 0)
+	if(m_readBuffer.size() + static_cast<int> (rc) <= m_readBufferSize)
+	  m_readBuffer.append(data.mid(0, static_cast<int> (rc)));
+
+      if(rc > 0)
+	emit readyRead();
+      else if(rc == -1)
+	{
+	  if(errno == ECONNRESET)
+	    emit error(RemoteHostClosedError);
+	  else if(errno == ENOBUFS)
+	    emit error(SocketResourceError);
+	  else if(errno == ENOTCONN)
+	    emit error(NetworkError);
+	  else if(errno == EOPNOTSUPP)
+	    emit error(UnsupportedSocketOperationError);
+	  else
+	    emit error(UnknownSocketError);
+	}
+    }
+
+  socketNotifier->setEnabled(true);
+#else
+  Q_UNUSED(socket);
 #endif
 }

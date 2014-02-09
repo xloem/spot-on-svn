@@ -45,6 +45,7 @@
 #include "Common/spot-on-send.h"
 
 class spoton_external_address;
+class spoton_sctp_socket;
 
 class spoton_neighbor_tcp_socket: public QSslSocket
 {
@@ -192,6 +193,7 @@ class spoton_neighbor: public QThread
   spoton_external_address *m_externalAddress;
   spoton_neighbor_tcp_socket *m_tcpSocket;
   spoton_neighbor_udp_socket *m_udpSocket;
+  spoton_sctp_socket *m_sctpSocket;
   QString findMessageType(const QByteArray &data,
 			  QList<QByteArray> &symmetricKeys);
   void process0000(int length, const QByteArray &data,
