@@ -55,10 +55,10 @@ extern "C"
 #endif
 #endif
 
+#include "Common/spot-on-common.h"
 #include "spot-on-sctp-socket.h"
 
-spoton_sctp_socket::spoton_sctp_socket(QObject *parent):
-  QAbstractSocket(QAbstractSocket::UnknownSocketType, parent)
+spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QIODevice(parent)
 {
   m_hostLookupId = -1;
   m_readBufferSize = 0;
@@ -82,10 +82,57 @@ QHostAddress spoton_sctp_socket::peerAddress(void) const
 #endif
 }
 
-qint64 spoton_sctp_socket::write(const char *data, const qint64 size)
+qint64 spoton_sctp_socket::readData(char *data, qint64 maxSize)
 {
 #ifdef SPOTON_SCTP_ENABLED
-  ssize_t rc = send(m_socketDescriptor, data, size, MSG_DONTWAIT);
+  if(!data || maxSize <= 0)
+    return 0;
+
+  ssize_t rc = recv
+    (m_socketDescriptor, data, static_cast<size_t> (maxSize), MSG_PEEK);
+
+  if(rc > 0)
+    rc = recv
+      (m_socketDescriptor, data, static_cast<size_t> (rc), MSG_WAITALL);
+
+  if(rc == -1)
+    {
+      if(errno == ECONNRESET)
+	emit error(RemoteHostClosedError);
+      else if(errno == ENOBUFS)
+	emit error(SocketResourceError);
+      else if(errno == ENOTCONN)
+	emit error(NetworkError);
+      else if(errno == EOPNOTSUPP)
+	emit error(UnsupportedSocketOperationError);
+      else
+	emit error(UnknownSocketError);
+    }
+
+  return static_cast<qint64> (rc);
+#else
+  Q_UNUSED(data);
+  Q_UNUSED(maxSize);
+  return 0;
+#endif
+}
+
+qint64 spoton_sctp_socket::write(const char *data, qint64 maxSize)
+{
+#ifdef SPOTON_SCTP_ENABLED
+  return writeData(data, maxSize);
+#else
+  Q_UNUSED(data);
+  Q_UNUSED(maxSize);
+  return 0;
+#endif
+}
+
+qint64 spoton_sctp_socket::writeData(const char *data, const qint64 maxSize)
+{
+#ifdef SPOTON_SCTP_ENABLED
+  ssize_t rc = send
+    (m_socketDescriptor, data, static_cast<size_t> (maxSize), MSG_DONTWAIT);
 
   if(rc == -1)
     {
@@ -111,7 +158,7 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 size)
   return static_cast<qint64> (rc);
 #else
   Q_UNUSED(data);
-  Q_UNUSED(size);
+  Q_UNUSED(maxSize);
   return 0;
 #endif
 }
@@ -120,7 +167,7 @@ void spoton_sctp_socket::close(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
   QHostInfo::abortHostLookup(m_hostLookupId);
-  QAbstractSocket::close();
+  QIODevice::close();
 
   if(m_socketExceptionNotifier)
     m_socketExceptionNotifier->deleteLater();
@@ -280,9 +327,12 @@ void spoton_sctp_socket::prepareSocketNotifiers(void)
 void spoton_sctp_socket::setReadBufferSize(const qint64 size)
 {
 #ifdef SPOTON_SCTP_ENABLED
-  m_readBufferSize = size;
+  m_readBufferSize =
+    qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
+	   size,
+	   spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
 
-  qint64 optval = size;
+  qint64 optval = m_readBufferSize;
   socklen_t optlen = sizeof(optval);
 
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
@@ -349,6 +399,8 @@ void spoton_sctp_socket::slotHostFound(const QHostInfo &hostInfo)
 void spoton_sctp_socket::slotSocketNotifierActivated(int socket)
 {
 #ifdef SPOTON_SCTP_ENABLED
+  Q_UNUSED(socket);
+
   QSocketNotifier *socketNotifier = qobject_cast<QSocketNotifier *>
     (sender());
 
@@ -360,32 +412,14 @@ void spoton_sctp_socket::slotSocketNotifierActivated(int socket)
   if(m_socketReadNotifier == socketNotifier)
     {
       QByteArray data(static_cast<int> (m_readBufferSize), 0);
-      ssize_t rc = 0;
-
-      rc = recv(socket, data.data(), data.length(), MSG_PEEK);
+      qint64 rc = readData(data.data(), data.length());
 
       if(rc > 0)
-	rc = recv(socket, data.data(),
-		  static_cast<size_t> (rc), MSG_WAITALL);
-
-      if(rc > 0)
-	if(m_readBuffer.size() + static_cast<int> (rc) <= m_readBufferSize)
-	  m_readBuffer.append(data.mid(0, static_cast<int> (rc)));
-
-      if(rc > 0)
-	emit readyRead();
-      else if(rc == -1)
 	{
-	  if(errno == ECONNRESET)
-	    emit error(RemoteHostClosedError);
-	  else if(errno == ENOBUFS)
-	    emit error(SocketResourceError);
-	  else if(errno == ENOTCONN)
-	    emit error(NetworkError);
-	  else if(errno == EOPNOTSUPP)
-	    emit error(UnsupportedSocketOperationError);
-	  else
-	    emit error(UnknownSocketError);
+	  if(m_readBuffer.size() + static_cast<int> (rc) <= m_readBufferSize)
+	    m_readBuffer.append(data.mid(0, static_cast<int> (rc)));
+
+	  emit readyRead();
 	}
     }
 

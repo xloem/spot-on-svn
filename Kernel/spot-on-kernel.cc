@@ -734,8 +734,8 @@ void spoton_kernel::prepareListeners(void)
 			     privateKey,
 			     publicKey,
 			     query.value(10).toInt(),
-			     query.value(11).toInt(),
-			     query.value(12).toInt(),
+			     query.value(11).toLongLong(),
+			     query.value(12).toLongLong(),
 			     transport.constData(),
 			     query.value(14).toInt(),
 			     orientation.constData(),
@@ -868,7 +868,7 @@ void spoton_kernel::prepareNeighbors(void)
 			  list.append(query.value(i).toInt());
 			else if(i == 11 || // maximum_buffer_size
 				i == 12)   // maximum_content_length
-			  list.append(query.value(i).toInt());
+			  list.append(query.value(i).toLongLong());
 			else if(i == 15) // allow_exceptions
 			  list.append(query.value(i).toInt());
 			else if(i == 17) // ssl_required
@@ -968,8 +968,8 @@ void spoton_kernel::prepareNeighbors(void)
 			     id,
 			     userDefined,
 			     list.value(10).toInt(),
-			     list.value(11).toInt(),
-			     list.value(12).toInt(),
+			     list.value(11).toLongLong(),
+			     list.value(12).toLongLong(),
 			     list.value(13).toByteArray().constData(),
 			     list.value(14).toByteArray(),
 			     list.value(15).toBool(),

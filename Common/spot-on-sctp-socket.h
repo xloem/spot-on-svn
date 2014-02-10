@@ -28,28 +28,66 @@
 #ifndef _spoton_sctp_socket_h_
 #define _spoton_sctp_socket_h_
 
-#include <QAbstractSocket>
 #include <QHostInfo>
 #include <QIODevice>
 #include <QPointer>
 
 class QSocketNotifier;
 
-class spoton_sctp_socket: public QAbstractSocket
+class spoton_sctp_socket: public QIODevice
 {
   Q_OBJECT
 
  public:
+  enum NetworkLayerProtocol
+  {
+    IPv4Protocol = 0,
+    IPv6Protocol = 1
+  };
+
+  enum SocketError
+  {
+    ConnectionRefusedError = 0,
+    DatagramTooLargeError = 6,
+    HostNotFoundError = 2,
+    NetworkError = 7,
+    RemoteHostClosedError = 1,
+    SocketAccessError = 3,
+    SocketResourceError = 4,
+    SocketTimeoutError = 5,
+    UnfinishedSocketOperationError = 11,
+    UnknownSocketError = 1,
+    UnsupportedSocketOperationError = 10
+  };
+
+  enum SocketOption
+  {
+    KeepAliveOption = 1,
+    LowDelayOption = 0
+  };
+
+  enum SocketState
+  {
+    ConnectedState = 4,
+    ConnectingState = 3,
+    HostLookupState = 2,
+    UnconnectedState = 1
+  };
+
   spoton_sctp_socket(QObject *parent);
   ~spoton_sctp_socket();
   QHostAddress peerAddress(void) const;
-  qint64 write(const char *data, const qint64 size);
+  qint64 write(const char *data, const qint64 maxSize);
   void close(void);
   void connectToHost(const QString &hostName, const quint16 port,
 		     const OpenMode openMode = ReadWrite);
   void setReadBufferSize(const qint64 size);
   void setSocketOption(const SocketOption option,
 		       const QVariant &value);
+
+ protected:
+  qint64 readData(char *data, qint64 maxSize);
+  qint64 writeData(const char *data, qint64 maxSize);
 
  private:
   QByteArray m_readBuffer;
@@ -72,7 +110,6 @@ class spoton_sctp_socket: public QAbstractSocket
   void connected(void);
   void disconnected(void);
   void error(const SocketError socketError);
-  void readyRead(void);
 };
 
 #endif

@@ -46,15 +46,15 @@ namespace spoton_common
 						 ** will be represented in
 						 ** base sixteen.
 						 */
-  static const int MAXIMUM_NEIGHBOR_BUFFER_SIZE =
+  static const qint64 MAXIMUM_NEIGHBOR_BUFFER_SIZE =
     10485760; /*
 	      ** The buffer size
 	      ** should be larger
 	      ** than the content
 	      ** length.
 	      */
-  static const int MAXIMUM_NEIGHBOR_CONTENT_LENGTH = 5242880;
-  static const int MINIMUM_NEIGHBOR_CONTENT_LENGTH = 256;
+  static const qint64 MAXIMUM_NEIGHBOR_CONTENT_LENGTH = 5242880;
+  static const qint64 MINIMUM_NEIGHBOR_CONTENT_LENGTH = 256;
   static const int NAME_MAXIMUM_LENGTH = 16;
 }
 

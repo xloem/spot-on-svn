@@ -113,8 +113,8 @@ class spoton_neighbor: public QThread
 		  const qint64 id,
 		  const bool userDefined,
 		  const int keySize,
-		  const int maximumBufferSize,
-		  const int maximumContentLength,
+		  const qint64 maximumBufferSize,
+		  const qint64 maximumContentLength,
 		  const QString &echoMode,
 		  const QByteArray &peerCertificate,
 		  const bool allowExceptions,
@@ -131,8 +131,8 @@ class spoton_neighbor: public QThread
 		  const QString &echoMode,
 		  const bool useAccounts,
 		  const qint64 listenerOid,
-		  const int maximumBufferSize,
-		  const int maximumContentLength,
+		  const qint64 maximumBufferSize,
+		  const qint64 maximumContentLength,
 		  const QString &transport,
 		  const QString &ipAddress,
 		  const QString &port,
@@ -183,10 +183,10 @@ class spoton_neighbor: public QThread
   bool m_useAccounts;
   bool m_useSsl;
   int m_keySize;
-  int m_maximumBufferSize;
-  int m_maximumContentLength;
   qint64 m_id;
   qint64 m_listenerOid;
+  qint64 m_maximumBufferSize;
+  qint64 m_maximumContentLength;
   quint16 m_port;
   quint64 m_bytesRead;
   quint64 m_bytesWritten;

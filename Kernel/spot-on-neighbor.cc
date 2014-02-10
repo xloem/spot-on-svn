@@ -60,8 +60,8 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 const QString &echoMode,
 				 const bool useAccounts,
 				 const qint64 listenerOid,
-				 const int maximumBufferSize,
-				 const int maximumContentLength,
+				 const qint64 maximumBufferSize,
+				 const qint64 maximumContentLength,
 				 const QString &transport,
 				 const QString &ipAddress,
 				 const QString &port,
@@ -382,8 +382,8 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const qint64 id,
 				 const bool userDefined,
 				 const int keySize,
-				 const int maximumBufferSize,
-				 const int maximumContentLength,
+				 const qint64 maximumBufferSize,
+				 const qint64 maximumContentLength,
 				 const QString &echoMode,
 				 const QByteArray &peerCertificate,
 				 const bool allowExceptions,
@@ -894,11 +894,11 @@ void spoton_neighbor::slotTimeout(void)
 
 		    m_maximumBufferSize =
 		      qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
-			     qAbs(query.value(3).toInt()),
+			     qAbs(query.value(3).toLongLong()),
 			     spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
 		    m_maximumContentLength =
 		      qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
-			     qAbs(query.value(4).toInt()),
+			     qAbs(query.value(4).toLongLong()),
 			     spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
 		  }
 

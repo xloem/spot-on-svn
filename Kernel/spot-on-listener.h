@@ -155,8 +155,8 @@ class spoton_listener: public QObject
 		  const QByteArray &privateKey,
 		  const QByteArray &publicKey,
 		  const bool useAccounts,
-		  const int maximumBufferSize,
-		  const int maximumContentLength,
+		  const qint64 maximumBufferSize,
+		  const qint64 maximumContentLength,
 		  const QString &transport,
 		  const bool shareAddress,
 		  const QString &orientation,
@@ -187,9 +187,9 @@ class spoton_listener: public QObject
   bool m_shareAddress;
   bool m_useAccounts;
   int m_keySize;
-  int m_maximumBufferSize;
-  int m_maximumContentLength;
   qint64 m_id;
+  qint64 m_maximumBufferSize;
+  qint64 m_maximumContentLength;
   quint16 m_externalPort;
   quint16 m_port;
   spoton_external_address *m_externalAddress;

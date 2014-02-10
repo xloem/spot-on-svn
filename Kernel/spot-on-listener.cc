@@ -124,8 +124,8 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 				 const QByteArray &privateKey,
 				 const QByteArray &publicKey,
 				 const bool useAccounts,
-				 const int maximumBufferSize,
-				 const int maximumContentLength,
+				 const qint64 maximumBufferSize,
+				 const qint64 maximumContentLength,
 				 const QString &transport,
 				 const bool shareAddress,
 				 const QString &orientation,
@@ -340,11 +340,11 @@ void spoton_listener::slotTimeout(void)
 		m_useAccounts = query.value(3).toInt();
 		m_maximumBufferSize =
 		  qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
-			 qAbs(query.value(4).toInt()),
+			 qAbs(query.value(4).toLongLong()),
 			 spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
 		m_maximumContentLength =
 		  qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
-			 qAbs(query.value(5).toInt()),
+			 qAbs(query.value(5).toLongLong()),
 			 spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
 
 		if(s_crypt)
