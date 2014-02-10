@@ -94,7 +94,6 @@ class spoton_sctp_socket: public QIODevice
 
  private:
   QByteArray m_readBuffer;
-  QHostAddress peerAddressAndPort(quint16 *port) const;
   QPointer<QSocketNotifier> m_socketExceptionNotifier;
   QPointer<QSocketNotifier> m_socketReadNotifier;
   QString m_ipAddress;
@@ -103,6 +102,7 @@ class spoton_sctp_socket: public QIODevice
   int m_socketDescriptor;
   qint64 m_readBufferSize;
   quint16 m_port;
+  QHostAddress peerAddressAndPort(quint16 *port) const;
   void connectToHostImplementation(void);
   void prepareSocketNotifiers(void);
 

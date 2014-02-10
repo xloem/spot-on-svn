@@ -74,6 +74,7 @@ type_punning_sockaddress_t;
 spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QIODevice(parent)
 {
   m_hostLookupId = -1;
+  m_port = 0;
   m_readBufferSize = 0;
   m_socketDescriptor = -1;
   m_socketExceptionNotifier = 0;
@@ -105,6 +106,9 @@ QHostAddress spoton_sctp_socket::peerAddressAndPort(quint16 *port) const
 
       return QHostAddress();
     }
+
+  if(port)
+    *port = 0;
 
   QHostAddress address;
   socklen_t length = 0;
@@ -170,6 +174,7 @@ bool spoton_sctp_socket::setSocketDescriptor(const int socketDescriptor)
 #ifdef SPOTON_SCTP_ENABLED
   if(socketDescriptor >= 0)
     {
+      close();
       m_socketDescriptor = socketDescriptor;
       return true;
     }
@@ -292,6 +297,7 @@ void spoton_sctp_socket::close(void)
   ::close(m_socketDescriptor);
   m_hostLookupId = -1;
   m_ipAddress.clear();
+  m_port = 0;
   m_readBuffer.clear();
   m_socketDescriptor = -1;
   m_state = UnconnectedState;
@@ -346,6 +352,8 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
   if(m_socketDescriptor == -1)
     {
+      rc = -1;
+
       if(errno == EACCES)
 	emit error(SocketAccessError);
       else if(errno == EAFNOSUPPORT ||
