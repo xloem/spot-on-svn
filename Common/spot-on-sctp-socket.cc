@@ -58,6 +58,19 @@ extern "C"
 #include "Common/spot-on-common.h"
 #include "spot-on-sctp-socket.h"
 
+/*
+** Please see http://gcc.gnu.org/onlinedocs/gcc-4.4.1/gcc/Optimize-Options.html#Type_002dpunning.
+*/
+
+typedef union type_punning_sockaddress
+{
+    struct sockaddr sockaddr;
+    struct sockaddr_in sockaddr_in;
+    struct sockaddr_in6 sockaddr_in6;
+    struct sockaddr_storage sockaddr_storage;
+}
+type_punning_sockaddress_t;
+
 spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QIODevice(parent)
 {
   m_hostLookupId = -1;
@@ -76,9 +89,95 @@ spoton_sctp_socket::~spoton_sctp_socket()
 QHostAddress spoton_sctp_socket::peerAddress(void) const
 {
 #ifdef SPOTON_SCTP_ENABLED
-  return QHostAddress();
+  return peerAddressAndPort(0);
 #else
   return QHostAddress();
+#endif
+}
+
+QHostAddress spoton_sctp_socket::peerAddressAndPort(quint16 *port) const
+{
+#ifdef SPOTON_SCTP_ENABLED
+  if(m_socketDescriptor < 0)
+    {
+      if(port)
+	*port = 0;
+
+      return QHostAddress();
+    }
+
+  QHostAddress address;
+  socklen_t length = 0;
+  struct sockaddr_storage peeraddr;
+
+  length = sizeof(peeraddr);
+
+  if(getpeername(m_socketDescriptor, (struct sockaddr *) &peeraddr,
+		 &length) == 0)
+    {
+      if(peeraddr.ss_family == AF_INET)
+	{
+	  type_punning_sockaddress_t *sockaddr =
+	    (type_punning_sockaddress_t *) &peeraddr;
+
+	  if(sockaddr)
+	    {
+	      address.setAddress
+		(ntohl(sockaddr->sockaddr_in.sin_addr.s_addr));
+
+	      if(port)
+		*port = ntohs(sockaddr->sockaddr_in.sin_port);
+	    }
+	}
+      else
+	{
+	  type_punning_sockaddress_t *sockaddr =
+	    (type_punning_sockaddress_t *) &peeraddr;
+
+	  if(sockaddr)
+	    {
+	      Q_IPV6ADDR tmp;
+
+	      memcpy(&tmp, &sockaddr->sockaddr_in6.sin6_addr.s6_addr,
+		     sizeof(tmp));
+	      address.setAddress(tmp);
+	      address.setScopeId
+		(QString::number(sockaddr->sockaddr_in6.sin6_scope_id));
+
+	      if(port)
+		*port = ntohs(sockaddr->sockaddr_in6.sin6_port);
+	    }
+	}
+    }
+
+  return address;
+#else
+  return QHostAddress();
+#endif
+}
+
+spoton_sctp_socket::SocketState spoton_sctp_socket::state(void) const
+{
+#ifdef SPOTON_SCTP_ENABLED
+  return m_state;
+#else
+  return UnconnectedState;
+#endif
+}
+
+bool spoton_sctp_socket::setSocketDescriptor(const int socketDescriptor)
+{
+#ifdef SPOTON_SCTP_ENABLED
+  if(socketDescriptor >= 0)
+    {
+      m_socketDescriptor = socketDescriptor;
+      return true;
+    }
+  else
+    return false;
+#else
+  Q_UNUSED(socketDescriptor);
+  return true;
 #endif
 }
 
@@ -131,6 +230,9 @@ qint64 spoton_sctp_socket::write(const char *data, qint64 maxSize)
 qint64 spoton_sctp_socket::writeData(const char *data, const qint64 maxSize)
 {
 #ifdef SPOTON_SCTP_ENABLED
+  if(!data || maxSize <= 0)
+    return 0;
+
   ssize_t rc = send
     (m_socketDescriptor, data, static_cast<size_t> (maxSize), MSG_DONTWAIT);
 
@@ -159,6 +261,18 @@ qint64 spoton_sctp_socket::writeData(const char *data, const qint64 maxSize)
 #else
   Q_UNUSED(data);
   Q_UNUSED(maxSize);
+  return 0;
+#endif
+}
+
+quint16 spoton_sctp_socket::peerPort(void) const
+{
+#ifdef SPOTON_SCTP_ENABLED
+  quint16 port = 0;
+
+  peerAddressAndPort(&port);
+  return port;
+#else
   return 0;
 #endif
 }

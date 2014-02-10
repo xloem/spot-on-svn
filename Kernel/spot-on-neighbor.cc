@@ -41,7 +41,6 @@
 #include "Common/spot-on-external-address.h"
 #include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
-#include "Common/spot-on-sctp-socket.h"
 #include "spot-on-kernel.h"
 #include "spot-on-neighbor.h"
 
@@ -85,7 +84,23 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   else if(transport == "udp")
     m_udpSocket = new spoton_neighbor_udp_socket(this);
 
-  if(m_tcpSocket)
+  if(m_sctpSocket)
+    {
+      m_sctpSocket->setReadBufferSize(m_maximumBufferSize);
+      m_sctpSocket->setSocketDescriptor(socketDescriptor);
+      m_sctpSocket->setSocketOption
+	(spoton_sctp_socket::KeepAliveOption, 0); /*
+						  ** We have our
+						  ** own mechanism.
+						  */
+      m_sctpSocket->setSocketOption
+	(spoton_sctp_socket::LowDelayOption,
+	 spoton_kernel::setting("kernel/sctp_nodelay", 1).
+	 toInt()); /*
+		   ** Disable Nagle?
+		   */
+    }
+  else if(m_tcpSocket)
     {
       m_tcpSocket->setReadBufferSize(m_maximumBufferSize);
       m_tcpSocket->setSocketDescriptor(socketDescriptor);
@@ -114,7 +129,9 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
       m_udpSocket->setPeerPort(quint16(port.toInt()));
     }
 
-  if(m_tcpSocket)
+  if(m_sctpSocket)
+    m_address = m_sctpSocket->peerAddress();
+  else if(m_tcpSocket)
     m_address = m_tcpSocket->peerAddress();
   else if(m_udpSocket)
     m_address = ipAddress;
@@ -139,7 +156,9 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	   spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
   m_orientation = orientation;
 
-  if(m_tcpSocket)
+  if(m_sctpSocket)
+    m_port = m_sctpSocket->peerPort();
+  else if(m_tcpSocket)
     m_port = m_tcpSocket->peerPort();
   else if(m_udpSocket)
     m_port = quint16(port.toInt());
@@ -244,7 +263,26 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  &m_dataPurgeTimer,
 	  SLOT(stop(void)));
 
-  if(m_tcpSocket)
+  if(m_sctpSocket)
+    {
+      connect(m_sctpSocket,
+	      SIGNAL(disconnected(void)),
+	      this,
+	      SIGNAL(disconnected(void)));
+      connect(m_sctpSocket,
+	      SIGNAL(disconnected(void)),
+	      this,
+	      SLOT(slotDisconnected(void)));
+      connect(m_sctpSocket,
+	      SIGNAL(error(spoton_sctp_socket::SocketError)),
+	      this,
+	      SLOT(slotError(spoton_sctp_socket::SocketError)));
+      connect(m_sctpSocket,
+	      SIGNAL(readyRead(void)),
+	      this,
+	      SLOT(slotReadyRead(void)));
+    }
+  else if(m_tcpSocket)
     {
       connect(m_tcpSocket,
 	      SIGNAL(disconnected(void)),
@@ -429,8 +467,9 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_protocol = protocol;
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
   m_requireSsl = requireSsl;
-  m_tcpSocket = 0;
+  m_sctpSocket = 0;
   m_startTime = QDateTime::currentDateTime();
+  m_tcpSocket = 0;
   m_transport = transport;
   m_udpSocket = 0;
 
@@ -455,12 +494,16 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   else
     m_useSsl = false;
 
-  if(m_transport == "tcp")
+  if(m_transport == "sctp")
+    m_sctpSocket = new spoton_sctp_socket(this);
+  else if(m_transport == "tcp")
     m_tcpSocket = new spoton_neighbor_tcp_socket(this);
   else if(m_transport == "udp")
     m_udpSocket = new spoton_neighbor_udp_socket(this);
 
-  if(m_tcpSocket)
+  if(m_sctpSocket)
+    m_sctpSocket->setReadBufferSize(m_maximumBufferSize);
+  else if(m_tcpSocket)
     {
       m_tcpSocket->setProxy(proxy);
       m_tcpSocket->setReadBufferSize(m_maximumBufferSize);
@@ -555,7 +598,30 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  &m_dataPurgeTimer,
 	  SLOT(stop(void)));
 
-  if(m_tcpSocket)
+  if(m_sctpSocket)
+    {
+      connect(m_sctpSocket,
+	      SIGNAL(connected(void)),
+	      this,
+	      SLOT(slotConnected(void)));
+      connect(m_sctpSocket,
+	      SIGNAL(disconnected(void)),
+	      this,
+	      SIGNAL(disconnected(void)));
+      connect(m_sctpSocket,
+	      SIGNAL(disconnected(void)),
+	      this,
+	      SLOT(slotDisconnected(void)));
+      connect(m_sctpSocket,
+	      SIGNAL(error(spoton_sctp_socket::SocketError)),
+	      this,
+	      SLOT(slotError(spoton_sctp_socket::SocketError)));
+      connect(m_sctpSocket,
+	      SIGNAL(readyRead(void)),
+	      this,
+	      SLOT(slotReadyRead(void)));
+    }
+  else if(m_tcpSocket)
     {
       connect(m_tcpSocket,
 	      SIGNAL(connected(void)),
@@ -785,7 +851,21 @@ spoton_neighbor::~spoton_neighbor()
 
 void spoton_neighbor::slotTimeout(void)
 {
-  if(m_tcpSocket)
+  if(m_sctpSocket)
+    {
+      if(m_sctpSocket->state() == spoton_sctp_socket::ConnectedState)
+	if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 90)
+	  {
+	    spoton_misc::logError
+	      (QString("spoton_neighbor::slotTimeout(): "
+		       "aborting because of silent connection for %1:%2.").
+	       arg(m_address.toString()).
+	       arg(m_port));
+	    deleteLater();
+	    return;
+	  }
+    }
+  else if(m_tcpSocket)
     {
       if(m_tcpSocket->state() == QAbstractSocket::ConnectedState)
 	if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 90)
@@ -4124,6 +4204,17 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
        arg(m_address.toString()).
        arg(m_port));
 
+  deleteLater();
+}
+
+void spoton_neighbor::slotError(spoton_sctp_socket::SocketError error)
+{
+  spoton_misc::logError
+    (QString("spoton_neighbor::slotError(): "
+	     "socket error (%1) for %2:%3. "
+	     "Aborting socket.").arg(error).
+     arg(m_address.toString()).
+     arg(m_port));
   deleteLater();
 }
 

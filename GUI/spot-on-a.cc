@@ -174,6 +174,10 @@ spoton::spoton(void):QMainWindow()
     ("QToolButton {border: none;}"
      "QToolButton::menu-button {border: none;}");
 #endif
+#ifdef SPOTON_SCTP_ENABLED
+  m_ui.listenerTransport->insertItem(0, tr("SCTP"));
+  m_ui.neighborTransport->insertItem(0, tr("SCTP"));
+#endif
   connect(this,
 	  SIGNAL(iconsChanged(void)),
 	  &m_logViewer,
@@ -1530,7 +1534,11 @@ void spoton::slotAddListener(void)
   QByteArray publicKey;
   QString error("");
 
-  if(m_ui.listenerTransport->currentIndex() == 0 &&
+#ifdef SPOTON_SCTP_ENABLED
+  if(m_ui.listenerTransport->currentIndex() == 1 &&
+#else
+     m_ui.listenerTransport->currentIndex() == 0 &&
+#endif
      m_ui.permanentCertificate->isChecked() &&
      m_ui.sslListener->isChecked())
     {
@@ -1717,11 +1725,19 @@ void spoton::slotAddListener(void)
 		(6, s_crypt->encrypted("half", &ok).toBase64());
 	  }
 
+#ifdef SPOTON_SCTP_ENABLED
+	if(m_ui.listenerTransport->currentIndex() == 1 &&
+	   m_ui.sslListener->isChecked())
+	  query.bindValue(7, m_ui.listenerKeySize->currentText().toInt());
+	else
+	  query.bindValue(7, 0);
+#else
 	if(m_ui.listenerTransport->currentIndex() == 0 &&
 	   m_ui.sslListener->isChecked())
 	  query.bindValue(7, m_ui.listenerKeySize->currentText().toInt());
 	else
 	  query.bindValue(7, 0);
+#endif
 
 	if(ok)
 	  query.bindValue
@@ -2094,26 +2110,47 @@ void spoton::slotAddNeighbor(void)
 		 encrypted("half", &ok).toBase64());
 	  }
 
+#ifdef SPOTON_SCTP_ENABLED
+	if(m_ui.neighborTransport->currentIndex() == 1)
+	  query.bindValue(19, m_ui.neighborKeySize->currentText().toInt());
+	else
+	  query.bindValue(19, 0);
+#else
 	if(m_ui.neighborTransport->currentIndex() == 0)
 	  query.bindValue(19, m_ui.neighborKeySize->currentText().toInt());
 	else
 	  query.bindValue(19, 0);
-
+#endif
+#ifdef SPOTON_SCTP_ENABLED
+	if(m_ui.addException->isChecked() &&
+	   m_ui.neighborTransport->currentIndex() == 1)
+	  query.bindValue(20, 1);
+	else
+	  query.bindValue(20, 0);
+#else
 	if(m_ui.addException->isChecked() &&
 	   m_ui.neighborTransport->currentIndex() == 0)
 	  query.bindValue(20, 1);
 	else
 	  query.bindValue(20, 0);
+#endif
 
 	if(ok)
 	  query.bindValue
 	    (21, s_crypt->encrypted(QByteArray(),
 				    &ok).toBase64());
 
+#ifdef SPOTON_SCTP_ENABLED
+	if(m_ui.neighborTransport->currentIndex() == 1)
+	  query.bindValue(22, m_ui.requireSsl->isChecked() ? 1 : 0);
+	else
+	  query.bindValue(22, 0);
+#else
 	if(m_ui.neighborTransport->currentIndex() == 0)
 	  query.bindValue(22, m_ui.requireSsl->isChecked() ? 1 : 0);
 	else
 	  query.bindValue(22, 0);
+#endif
 
 	if(ok)
 	  query.bindValue

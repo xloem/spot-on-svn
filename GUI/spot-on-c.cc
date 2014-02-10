@@ -585,18 +585,33 @@ void spoton::slotTransportChanged(int index)
 {
   if(m_ui.listenerTransport == sender())
     {
+#ifdef SPOTON_SCTP_ENABLED
+      m_ui.recordIPAddress->setEnabled(index == 1);
+      m_ui.permanentCertificate->setEnabled(index == 1);
+      m_ui.sslListener->setEnabled(index == 1);
+      m_ui.listenerKeySize->setEnabled(index == 1);
+      m_ui.listenerShareAddress->setEnabled(index == 2);
+#else
       m_ui.recordIPAddress->setEnabled(index == 0);
       m_ui.permanentCertificate->setEnabled(index == 0);
       m_ui.sslListener->setEnabled(index == 0);
       m_ui.listenerKeySize->setEnabled(index == 0);
       m_ui.listenerShareAddress->setEnabled(index == 1);
+#endif
     }
   else if(m_ui.neighborTransport == sender())
     {
+#ifdef SPOTON_SCTP_ENABLED
+      m_ui.addException->setEnabled(index == 1);
+      m_ui.requireSsl->setEnabled(index == 1);
+      m_ui.sslKeySizeLabel->setEnabled(index == 1);
+      m_ui.neighborKeySize->setEnabled(index == 1);
+#else
       m_ui.addException->setEnabled(index == 0);
       m_ui.requireSsl->setEnabled(index == 0);
       m_ui.sslKeySizeLabel->setEnabled(index == 0);
       m_ui.neighborKeySize->setEnabled(index == 0);
+#endif
     }
 }
 
