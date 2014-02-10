@@ -249,24 +249,28 @@ void spoton_sctp_socket::connectToHostImplementation(void)
       goto done_label;
     }
 
-  struct sockaddr_in servaddr;
-
-  memset(&servaddr, 0, sizeof(servaddr));
-  servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-
   if(protocol == IPv4Protocol)
-    servaddr.sin_family = AF_INET;
-  else
-    servaddr.sin_family = AF_INET6;
+    {
+      struct sockaddr_in servaddr;
 
-  servaddr.sin_port = htons(m_port);
-
-  if(protocol == IPv4Protocol)
-    rc = inet_pton(AF_INET, m_ipAddress.toLatin1().constData(),
-		   &servaddr.sin_addr);
+      memset(&servaddr, 0, sizeof(servaddr));
+      servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+      servaddr.sin_family = AF_INET;
+      servaddr.sin_port = htons(m_port);
+      rc = inet_pton(AF_INET, m_ipAddress.toLatin1().constData(),
+		     &servaddr.sin_addr);
+    }
   else
-    rc = inet_pton(AF_INET6, m_ipAddress.toLatin1().constData(),
-		   &servaddr.sin_addr);
+    {
+      struct sockaddr_in6 servaddr;
+
+      memset(&servaddr, 0, sizeof(servaddr));
+      servaddr.sin6_addr = in6addr_any;
+      servaddr.sin6_family = AF_INET6;
+      servaddr.sin6_port = htons(m_port);
+      rc = inet_pton(AF_INET6, m_ipAddress.toLatin1().constData(),
+		     &servaddr.sin6_addr);
+    }
 
   if(rc != 1)
     {
