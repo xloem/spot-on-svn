@@ -29,12 +29,12 @@
 #define _spoton_sctp_socket_h_
 
 #include <QHostInfo>
-#include <QIODevice>
+#include <QObject>
 #include <QPointer>
 
 class QSocketNotifier;
 
-class spoton_sctp_socket: public QIODevice
+class spoton_sctp_socket: public QObject
 {
   Q_OBJECT
 
@@ -48,7 +48,6 @@ class spoton_sctp_socket: public QIODevice
   enum SocketError
   {
     ConnectionRefusedError = 0,
-    DatagramTooLargeError = 6,
     HostNotFoundError = 2,
     NetworkError = 7,
     RemoteHostClosedError = 1,
@@ -76,14 +75,16 @@ class spoton_sctp_socket: public QIODevice
 
   spoton_sctp_socket(QObject *parent);
   ~spoton_sctp_socket();
+  QHostAddress localAddress(void) const;
   QHostAddress peerAddress(void) const;
+  QString peerName(void) const;
   SocketState state(void) const;
   bool setSocketDescriptor(const int socketDescriptor);
   qint64 write(const char *data, const qint64 maxSize);
+  quint16 localPort(void) const;
   quint16 peerPort(void) const;
   void close(void);
-  void connectToHost(const QString &hostName, const quint16 port,
-		     const OpenMode openMode = ReadWrite);
+  void connectToHost(const QString &hostName, const quint16 port);
   void setReadBufferSize(const qint64 size);
   void setSocketOption(const SocketOption option,
 		       const QVariant &value);
@@ -94,26 +95,31 @@ class spoton_sctp_socket: public QIODevice
 
  private:
   QByteArray m_readBuffer;
-  QPointer<QSocketNotifier> m_socketExceptionNotifier;
   QPointer<QSocketNotifier> m_socketReadNotifier;
+  QPointer<QSocketNotifier> m_socketWriteNotifier;
   QString m_ipAddress;
+  QString m_peerName;
   SocketState m_state;
   int m_hostLookupId;
   int m_socketDescriptor;
   qint64 m_readBufferSize;
   quint16 m_port;
+  QHostAddress localAddressAndPort(quint16 *port) const;
   QHostAddress peerAddressAndPort(quint16 *port) const;
+  int inspectConnectResult(const int rc, const int errorcode);
   void connectToHostImplementation(void);
   void prepareSocketNotifiers(void);
 
  private slots:
+  void slotClose(void);
   void slotSocketNotifierActivated(int socket);
   void slotHostFound(const QHostInfo &hostInfo);
 
  signals:
   void connected(void);
   void disconnected(void);
-  void error(const SocketError socketError);
+  void error(const spoton_sctp_socket::SocketError socketError);
+  void readyRead(void);
 };
 
 #endif

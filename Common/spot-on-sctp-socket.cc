@@ -59,7 +59,7 @@ extern "C"
 #include "spot-on-sctp-socket.h"
 
 /*
-** Please see http://gcc.gnu.org/onlinedocs/gcc-4.4.1/gcc/Optimize-Options.html#Type_002dpunning.
+** Please read http://gcc.gnu.org/onlinedocs/gcc-4.4.1/gcc/Optimize-Options.html#Type_002dpunning.
 */
 
 typedef union type_punning_sockaddress
@@ -71,20 +71,93 @@ typedef union type_punning_sockaddress
 }
 type_punning_sockaddress_t;
 
-spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QIODevice(parent)
+spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QObject(parent)
 {
   m_hostLookupId = -1;
   m_port = 0;
   m_readBufferSize = 0;
   m_socketDescriptor = -1;
-  m_socketExceptionNotifier = 0;
   m_socketReadNotifier = 0;
+  m_socketWriteNotifier = 0;
   m_state = UnconnectedState;
 }
 
 spoton_sctp_socket::~spoton_sctp_socket()
 {
   close();
+}
+
+QHostAddress spoton_sctp_socket::localAddress(void) const
+{
+#ifdef SPOTON_SCTP_ENABLED
+  return localAddressAndPort(0);
+#else
+  return QHostAddress();
+#endif
+}
+
+QHostAddress spoton_sctp_socket::localAddressAndPort(quint16 *port) const
+{
+#ifdef SPOTON_SCTP_ENABLED
+  if(m_socketDescriptor < 0)
+    {
+      if(port)
+	*port = 0;
+
+      return QHostAddress();
+    }
+
+  if(port)
+    *port = 0;
+
+  QHostAddress address;
+  socklen_t length = 0;
+  struct sockaddr_storage peeraddr;
+
+  length = sizeof(peeraddr);
+
+  if(getsockname(m_socketDescriptor, (struct sockaddr *) &peeraddr,
+		 &length) == 0)
+    {
+      if(peeraddr.ss_family == AF_INET)
+	{
+	  type_punning_sockaddress_t *sockaddr =
+	    (type_punning_sockaddress_t *) &peeraddr;
+
+	  if(sockaddr)
+	    {
+	      address.setAddress
+		(ntohl(sockaddr->sockaddr_in.sin_addr.s_addr));
+
+	      if(port)
+		*port = ntohs(sockaddr->sockaddr_in.sin_port);
+	    }
+	}
+      else
+	{
+	  type_punning_sockaddress_t *sockaddr =
+	    (type_punning_sockaddress_t *) &peeraddr;
+
+	  if(sockaddr)
+	    {
+	      Q_IPV6ADDR tmp;
+
+	      memcpy(&tmp, &sockaddr->sockaddr_in6.sin6_addr.s6_addr,
+		     sizeof(tmp));
+	      address.setAddress(tmp);
+	      address.setScopeId
+		(QString::number(sockaddr->sockaddr_in6.sin6_scope_id));
+
+	      if(port)
+		*port = ntohs(sockaddr->sockaddr_in6.sin6_port);
+	    }
+	}
+    }
+
+  return address;
+#else
+  return QHostAddress();
+#endif
 }
 
 QHostAddress spoton_sctp_socket::peerAddress(void) const
@@ -160,6 +233,15 @@ QHostAddress spoton_sctp_socket::peerAddressAndPort(quint16 *port) const
 #endif
 }
 
+QString spoton_sctp_socket::peerName(void) const
+{
+#ifdef SPOTON_SCTP_ENABLED
+  return m_peerName;
+#else
+  return QString();
+#endif
+}
+
 spoton_sctp_socket::SocketState spoton_sctp_socket::state(void) const
 {
 #ifdef SPOTON_SCTP_ENABLED
@@ -182,7 +264,38 @@ bool spoton_sctp_socket::setSocketDescriptor(const int socketDescriptor)
     return false;
 #else
   Q_UNUSED(socketDescriptor);
-  return true;
+  return false;
+#endif
+}
+
+int spoton_sctp_socket::inspectConnectResult
+(const int rc, const int errorcode)
+{
+#ifdef SPOTON_SCTP_ENABLED
+  if(rc == -1)
+    {
+      if(errorcode == EINPROGRESS)
+	return 0;
+      else if(errorcode == EACCES ||
+	      errorcode == EPERM)
+	emit error(SocketAccessError);
+      else if(errorcode == EALREADY)
+	emit error(UnfinishedSocketOperationError);
+      else if(errorcode == ECONNREFUSED)
+	emit error(ConnectionRefusedError);
+      else if(errorcode == ENETUNREACH)
+	emit error(NetworkError);
+      else
+	emit error(UnknownSocketError);
+
+      return rc;
+    }
+  else
+    return rc;
+#else
+  Q_UNUSED(errorcode);
+  Q_UNUSED(rc);
+  return -1;
 #endif
 }
 
@@ -201,7 +314,16 @@ qint64 spoton_sctp_socket::readData(char *data, qint64 maxSize)
 
   if(rc == -1)
     {
-      if(errno == ECONNRESET)
+      if(errno == EAGAIN ||
+	 errno == EWOULDBLOCK)
+	{
+	  /*
+	  ** We'll ignore this condition.
+	  */
+
+	  rc = 0;
+	}
+      else if(errno == ECONNRESET)
 	emit error(RemoteHostClosedError);
       else if(errno == ENOBUFS)
 	emit error(SocketResourceError);
@@ -245,6 +367,15 @@ qint64 spoton_sctp_socket::writeData(const char *data, const qint64 maxSize)
     {
       if(errno == EACCES)
 	emit error(SocketAccessError);
+      else if(errno == EAGAIN ||
+	      errno == EWOULDBLOCK)
+	{
+	  /*
+	  ** We'll ignore this condition.
+	  */
+
+	  rc = 0;
+	}
       else if(errno == ECONNRESET)
 	emit error(RemoteHostClosedError);
       else if(errno == EMSGSIZE ||
@@ -270,6 +401,18 @@ qint64 spoton_sctp_socket::writeData(const char *data, const qint64 maxSize)
 #endif
 }
 
+quint16 spoton_sctp_socket::localPort(void) const
+{
+#ifdef SPOTON_SCTP_ENABLED
+  quint16 port = 0;
+
+  localAddressAndPort(&port);
+  return port;
+#else
+  return 0;
+#endif
+}
+
 quint16 spoton_sctp_socket::peerPort(void) const
 {
 #ifdef SPOTON_SCTP_ENABLED
@@ -286,17 +429,17 @@ void spoton_sctp_socket::close(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
   QHostInfo::abortHostLookup(m_hostLookupId);
-  QIODevice::close();
-
-  if(m_socketExceptionNotifier)
-    m_socketExceptionNotifier->deleteLater();
 
   if(m_socketReadNotifier)
     m_socketReadNotifier->deleteLater();
 
+  if(m_socketWriteNotifier)
+    m_socketWriteNotifier->deleteLater();
+
   ::close(m_socketDescriptor);
   m_hostLookupId = -1;
   m_ipAddress.clear();
+  m_peerName.clear();
   m_port = 0;
   m_readBuffer.clear();
   m_socketDescriptor = -1;
@@ -306,16 +449,13 @@ void spoton_sctp_socket::close(void)
 }
 
 void spoton_sctp_socket::connectToHost(const QString &hostName,
-				       const quint16 port,
-				       const OpenMode openMode)
+				       const quint16 port)
 {
 #ifdef SPOTON_SCTP_ENABLED
   if(m_state != UnconnectedState)
     return;
 
-  if(!isOpen())
-    open(openMode);
-
+  m_peerName = hostName;
   m_port = port;
 
   if(QHostAddress(hostName).isNull())
@@ -331,7 +471,6 @@ void spoton_sctp_socket::connectToHost(const QString &hostName,
     }
 #else
   Q_UNUSED(hostName);
-  Q_UNUSED(openMode);
   Q_UNUSED(port);
 #endif
 }
@@ -348,9 +487,11 @@ void spoton_sctp_socket::connectToHostImplementation(void)
     protocol = IPv6Protocol;
 
   if(protocol == IPv4Protocol)
-    m_socketDescriptor = socket(AF_INET, SOCK_STREAM, IPPROTO_SCTP);
+    m_socketDescriptor = socket(AF_INET, SOCK_NONBLOCK | SOCK_STREAM,
+				IPPROTO_SCTP);
   else
-    m_socketDescriptor = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
+    m_socketDescriptor = socket(AF_INET6, SOCK_NONBLOCK | SOCK_STREAM,
+				IPPROTO_SCTP);
 
   if(m_socketDescriptor == -1)
     {
@@ -373,50 +514,80 @@ void spoton_sctp_socket::connectToHostImplementation(void)
       goto done_label;
     }
 
+  prepareSocketNotifiers();
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
 
   if(protocol == IPv4Protocol)
     {
+      socklen_t length = 0;
       struct sockaddr_in servaddr;
 
+      length = sizeof(servaddr);
       memset(&servaddr, 0, sizeof(servaddr));
       servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
       servaddr.sin_family = AF_INET;
       servaddr.sin_port = htons(m_port);
       rc = inet_pton(AF_INET, m_ipAddress.toLatin1().constData(),
 		     &servaddr.sin_addr);
+
+      if(rc != 1)
+	{
+	  if(rc == -1)
+	    {
+	      if(errno == EAFNOSUPPORT)
+		emit error(UnsupportedSocketOperationError);
+	      else
+		emit error(UnknownSocketError);
+	    }
+	  else
+	    emit error(UnknownSocketError);
+
+	  goto done_label;
+	}
+      else
+	rc = 0;
+
+      m_state = ConnectingState;
+      rc = ::connect
+	(m_socketDescriptor, (const struct sockaddr *) &servaddr, length);
+      rc = inspectConnectResult(rc, errno);
     }
   else
     {
+      socklen_t length = 0;
       struct sockaddr_in6 servaddr;
 
+      length = sizeof(servaddr);
       memset(&servaddr, 0, sizeof(servaddr));
       servaddr.sin6_addr = in6addr_any;
       servaddr.sin6_family = AF_INET6;
       servaddr.sin6_port = htons(m_port);
       rc = inet_pton(AF_INET6, m_ipAddress.toLatin1().constData(),
 		     &servaddr.sin6_addr);
-    }
 
-  if(rc != 1)
-    {
-      if(rc == -1)
+      if(rc != 1)
 	{
-	  if(errno == EAFNOSUPPORT)
-	    emit error(UnsupportedSocketOperationError);
+	  if(rc == -1)
+	    {
+	      if(errno == EAFNOSUPPORT)
+		emit error(UnsupportedSocketOperationError);
+	      else
+		emit error(UnknownSocketError);
+	    }
 	  else
 	    emit error(UnknownSocketError);
+
+	  goto done_label;
 	}
       else
-	emit error(UnknownSocketError);
+	rc = 0;
 
-      goto done_label;
+      m_state = ConnectingState;
+      rc = ::connect
+	(m_socketDescriptor, (const struct sockaddr *) &servaddr, length);
+      rc = inspectConnectResult(rc, errno);
     }
-  else
-    rc = 0;
-
-  m_state = ConnectingState;
 
  done_label:
   if(rc != 0)
@@ -430,20 +601,12 @@ void spoton_sctp_socket::prepareSocketNotifiers(void)
   if(m_socketDescriptor < 0)
     return;
 
-  if(m_socketExceptionNotifier)
-    m_socketExceptionNotifier->deleteLater();
-
   if(m_socketReadNotifier)
     m_socketReadNotifier->deleteLater();
 
-  m_socketExceptionNotifier = new QSocketNotifier(m_socketDescriptor,
-						  QSocketNotifier::Exception,
-						  this);
-  connect(m_socketExceptionNotifier,
-	  SIGNAL(activated(int)),
-	  this,
-	  SLOT(slotSocketNotifierActivated(int)));
-  m_socketExceptionNotifier->setEnabled(true);
+  if(m_socketWriteNotifier)
+    m_socketWriteNotifier->deleteLater();
+
   m_socketReadNotifier = new QSocketNotifier(m_socketDescriptor,
 					     QSocketNotifier::Read,
 					     this);
@@ -452,6 +615,14 @@ void spoton_sctp_socket::prepareSocketNotifiers(void)
 	  this,
 	  SLOT(slotSocketNotifierActivated(int)));
   m_socketReadNotifier->setEnabled(true);
+  m_socketWriteNotifier = new QSocketNotifier(m_socketDescriptor,
+					      QSocketNotifier::Write,
+					      this);
+  connect(m_socketWriteNotifier,
+	  SIGNAL(activated(int)),
+	  this,
+	  SLOT(slotSocketNotifierActivated(int)));
+  m_socketWriteNotifier->setEnabled(true);
 #endif
 }
 
@@ -502,6 +673,13 @@ void spoton_sctp_socket::setSocketOption(const SocketOption option,
 #endif
 }
 
+void spoton_sctp_socket::slotClose(void)
+{
+#ifdef SPOTON_SCTP_ENABLED
+  close();
+#endif
+}
+
 void spoton_sctp_socket::slotHostFound(const QHostInfo &hostInfo)
 {
 #ifdef SPOTON_SCTP_ENABLED
@@ -510,6 +688,10 @@ void spoton_sctp_socket::slotHostFound(const QHostInfo &hostInfo)
   foreach(const QHostAddress &address, hostInfo.addresses())
     if(!address.isNull())
       {
+	/*
+	** In the future, we'll need attempt several connections.
+	*/
+
 	m_ipAddress = address.toString();
 	connectToHostImplementation();
 	break;
@@ -525,18 +707,16 @@ void spoton_sctp_socket::slotHostFound(const QHostInfo &hostInfo)
 void spoton_sctp_socket::slotSocketNotifierActivated(int socket)
 {
 #ifdef SPOTON_SCTP_ENABLED
-  Q_UNUSED(socket);
-
   QSocketNotifier *socketNotifier = qobject_cast<QSocketNotifier *>
     (sender());
 
   if(!socketNotifier)
     return;
 
-  socketNotifier->setEnabled(false);
-
   if(m_socketReadNotifier == socketNotifier)
     {
+      socketNotifier->setEnabled(false);
+
       QByteArray data(static_cast<int> (m_readBufferSize), 0);
       qint64 rc = readData(data.data(), data.length());
 
@@ -545,11 +725,35 @@ void spoton_sctp_socket::slotSocketNotifierActivated(int socket)
 	  if(m_readBuffer.size() + static_cast<int> (rc) <= m_readBufferSize)
 	    m_readBuffer.append(data.mid(0, static_cast<int> (rc)));
 
-	  emit readyRead();
+	  socketNotifier->setEnabled(true);
 	}
-    }
 
-  socketNotifier->setEnabled(true);
+      if(rc > 0)
+	emit readyRead();
+      else if(rc == 0)
+	close();
+    }
+  else
+    {
+      socketNotifier->setEnabled(false);
+
+      bool shouldEmitConnected = false;
+      int errorcode = 0;
+      int rc = 0;
+      socklen_t length = sizeof(errorcode);
+
+      rc = getsockopt(socket, SOL_SOCKET, SO_ERROR, &errorcode, &length);
+
+      if(rc == 0)
+	{
+	  if(errorcode == 0)
+	    if(m_state == ConnectingState)
+	      shouldEmitConnected = true;
+	}
+
+      if(shouldEmitConnected)
+	emit connected();
+    }
 #else
   Q_UNUSED(socket);
 #endif

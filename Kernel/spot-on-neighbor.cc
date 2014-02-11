@@ -274,9 +274,9 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	      this,
 	      SLOT(slotDisconnected(void)));
       connect(m_sctpSocket,
-	      SIGNAL(error(spoton_sctp_socket::SocketError)),
+	      SIGNAL(error(const spoton_sctp_socket::SocketError)),
 	      this,
-	      SLOT(slotError(spoton_sctp_socket::SocketError)));
+	      SLOT(slotError(const spoton_sctp_socket::SocketError)));
       connect(m_sctpSocket,
 	      SIGNAL(readyRead(void)),
 	      this,
@@ -613,9 +613,9 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	      this,
 	      SLOT(slotDisconnected(void)));
       connect(m_sctpSocket,
-	      SIGNAL(error(spoton_sctp_socket::SocketError)),
+	      SIGNAL(error(const spoton_sctp_socket::SocketError)),
 	      this,
-	      SLOT(slotError(spoton_sctp_socket::SocketError)));
+	      SLOT(slotError(const spoton_sctp_socket::SocketError)));
       connect(m_sctpSocket,
 	      SIGNAL(readyRead(void)),
 	      this,
@@ -1013,7 +1013,15 @@ void spoton_neighbor::slotTimeout(void)
   if(m_isUserDefined)
     if(status == "connected")
       {
-	if(m_tcpSocket)
+	if(m_sctpSocket)
+	  {
+	    if(m_sctpSocket->state() == spoton_sctp_socket::UnconnectedState)
+	      {
+		saveStatus("connecting");
+		m_sctpSocket->connectToHost(m_address.toString(), m_port);
+	      }
+	  }
+	else if(m_tcpSocket)
 	  {
 	    if(m_tcpSocket->state() == QAbstractSocket::UnconnectedState)
 	      {
@@ -1493,7 +1501,21 @@ void spoton_neighbor::slotProcessData(void)
 
 void spoton_neighbor::slotConnected(void)
 {
-  if(m_tcpSocket)
+  if(m_sctpSocket)
+    {
+      m_sctpSocket->setSocketOption
+	(spoton_sctp_socket::KeepAliveOption, 0); /*
+						  ** We have our
+						  ** own mechanism.
+						  */
+      m_sctpSocket->setSocketOption
+	(spoton_sctp_socket::LowDelayOption,
+	 spoton_kernel::setting("kernel/sctp_nodelay", 1).
+	 toInt()); /*
+		   ** Disable Nagle?
+		   */
+    }
+  else if(m_tcpSocket)
     {
       m_tcpSocket->setSocketOption
 	(QAbstractSocket::KeepAliveOption, 0); /*
@@ -1511,8 +1533,9 @@ void spoton_neighbor::slotConnected(void)
   /*
   ** The local address is the address of the proxy. Unfortunately,
   ** we do not have network interfaces that have such an address.
-  ** Hence, m_networkInterface will always be zero. m_networkInterface
-  ** was removed on 11/08/2013. The following logic remains.
+  ** Hence, m_networkInterface will always be zero. The object
+  ** m_networkInterface was removed on 11/08/2013. The following
+  ** logic remains.
   */
 
   if(m_tcpSocket)
@@ -1559,7 +1582,13 @@ void spoton_neighbor::slotConnected(void)
 		QSqlQuery query(db);
 		QString country;
 
-		if(m_tcpSocket)
+		if(m_sctpSocket)
+		  country = spoton_misc::countryNameFromIPAddress
+		    (m_sctpSocket->peerAddress().isNull() ?
+		     m_sctpSocket->peerName() :
+		     m_sctpSocket->peerAddress().
+		     toString());
+		else if(m_tcpSocket)
 		  country = spoton_misc::countryNameFromIPAddress
 		    (m_tcpSocket->peerAddress().isNull() ?
 		     m_tcpSocket->peerName() :
@@ -1585,9 +1614,16 @@ void spoton_neighbor::slotConnected(void)
 		   encrypted(country.toLatin1(), &ok).toBase64());
 		query.bindValue(1, isEncrypted() ? 1 : 0);
 
-		if(m_tcpSocket)
+		if(m_sctpSocket)
 		  {
-		    query.bindValue(2, m_tcpSocket->localAddress().toString());
+		    query.bindValue
+		      (2, m_sctpSocket->localAddress().toString());
+		    query.bindValue(3, m_sctpSocket->localPort());
+		  }
+		else if(m_tcpSocket)
+		  {
+		    query.bindValue
+		      (2, m_tcpSocket->localAddress().toString());
 		    query.bindValue(3, m_tcpSocket->localPort());
 		  }
 		else if(m_udpSocket)
@@ -1623,8 +1659,13 @@ void spoton_neighbor::slotConnected(void)
   if(spoton_kernel::setting("gui/kernelExternalIpInterval", -1).
      toInt() != -1)
     {
-      m_externalAddress->discover();
-      m_externalAddressDiscovererTimer.start();
+      if(m_externalAddress)
+	{
+	  m_externalAddress->discover();
+	  m_externalAddressDiscovererTimer.start();
+	}
+      else
+	m_externalAddressDiscovererTimer.stop();
     }
   else
     m_externalAddressDiscovererTimer.stop();
@@ -4207,7 +4248,7 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
   deleteLater();
 }
 
-void spoton_neighbor::slotError(spoton_sctp_socket::SocketError error)
+void spoton_neighbor::slotError(const spoton_sctp_socket::SocketError error)
 {
   spoton_misc::logError
     (QString("spoton_neighbor::slotError(): "
@@ -4313,8 +4354,9 @@ void spoton_neighbor::slotExternalAddressDiscovered
 
 void spoton_neighbor::slotDiscoverExternalAddress(void)
 {
-  if(state() == QAbstractSocket::ConnectedState)
-    m_externalAddress->discover();
+  if(m_externalAddress)
+    if(state() == QAbstractSocket::ConnectedState)
+      m_externalAddress->discover();
 }
 
 QUuid spoton_neighbor::receivedUuid(void) const
@@ -4745,22 +4787,23 @@ void spoton_neighbor::slotModeChanged(QSslSocket::SslMode mode)
 
 void spoton_neighbor::slotDisconnected(void)
 {
-  if(m_isUserDefined)
-    {
-      int attempts = property("connection-attempts").toInt();
+  if(m_tcpSocket)
+    if(m_isUserDefined)
+      {
+	int attempts = property("connection-attempts").toInt();
 
-      if(attempts < 5)
-	{
-	  attempts += 1;
-	  setProperty("connection-attempts", attempts);
-	  spoton_misc::logError
-	    (QString("spoton_neighbor::slotDisconnected(): "
-		     "retrying %1 of %2 for %3:%4.").arg(attempts).arg(5).
-	     arg(m_address.toString()).
-	     arg(m_port));
-	  return;
-	}
-    }
+	if(attempts < 5)
+	  {
+	    attempts += 1;
+	    setProperty("connection-attempts", attempts);
+	    spoton_misc::logError
+	      (QString("spoton_neighbor::slotDisconnected(): "
+		       "retrying %1 of %2 for %3:%4.").arg(attempts).arg(5).
+	       arg(m_address.toString()).
+	       arg(m_port));
+	    return;
+	  }
+      }
 
   spoton_misc::logError
     (QString("spoton_neighbor::slotDisconnected(): "
@@ -5301,7 +5344,9 @@ qint64 spoton_neighbor::write(const char *data, const qint64 size)
 
   while(remaining > 0)
     {
-      if(m_tcpSocket)
+      if(m_sctpSocket)
+	sent = m_sctpSocket->write(data, remaining);
+      else if(m_tcpSocket)
 	sent = m_tcpSocket->write(data, remaining);
       else if(m_udpSocket)
 	{
@@ -5338,7 +5383,9 @@ qint64 spoton_neighbor::write(const char *data, const qint64 size)
 
 QAbstractSocket::SocketState spoton_neighbor::state(void) const
 {
-  if(m_tcpSocket)
+  if(m_sctpSocket)
+    return QAbstractSocket::SocketState(m_sctpSocket->state());
+  else if(m_tcpSocket)
     return m_tcpSocket->state();
   else if(m_udpSocket)
     return m_udpSocket->state();
@@ -5348,7 +5395,9 @@ QAbstractSocket::SocketState spoton_neighbor::state(void) const
 
 QHostAddress spoton_neighbor::peerAddress(void) const
 {
-  if(m_tcpSocket)
+  if(m_sctpSocket)
+    return m_sctpSocket->peerAddress();
+  else if(m_tcpSocket)
     return m_tcpSocket->peerAddress();
   else if(m_udpSocket)
     return m_udpSocket->peerAddress();
@@ -5358,7 +5407,9 @@ QHostAddress spoton_neighbor::peerAddress(void) const
 
 quint16 spoton_neighbor::peerPort(void) const
 {
-  if(m_tcpSocket)
+  if(m_sctpSocket)
+    return m_sctpSocket->peerPort();
+  else if(m_tcpSocket)
     return m_tcpSocket->peerPort();
   else if(m_udpSocket)
     return m_udpSocket->peerPort();

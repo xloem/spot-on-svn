@@ -3002,7 +3002,7 @@ void spoton_kernel::updateStatistics(void)
 		      "(statistic, value) "
 		      "VALUES ('Congestion Container Percent Used', ?)");
 	s_messagingCacheMutex.lockForRead();
-	v1 = 2 * s_messagingCache.size();
+	v1 = 2 * s_messagingCache.size(); // There are two containers.
 	s_messagingCacheMutex.unlock();
 	v2 = setting("gui/congestionCost", 10000).toInt();
 	query.bindValue
