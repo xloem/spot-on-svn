@@ -62,14 +62,14 @@ extern "C"
 ** Please read http://gcc.gnu.org/onlinedocs/gcc-4.4.1/gcc/Optimize-Options.html#Type_002dpunning.
 */
 
-typedef union type_punning_sockaddress
+typedef union type_punning_sockaddr
 {
     struct sockaddr sockaddr;
     struct sockaddr_in sockaddr_in;
     struct sockaddr_in6 sockaddr_in6;
     struct sockaddr_storage sockaddr_storage;
 }
-type_punning_sockaddress_t;
+type_punning_sockaddr_t;
 
 spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QObject(parent)
 {
@@ -121,8 +121,8 @@ QHostAddress spoton_sctp_socket::localAddressAndPort(quint16 *port) const
     {
       if(peeraddr.ss_family == AF_INET)
 	{
-	  type_punning_sockaddress_t *sockaddr =
-	    (type_punning_sockaddress_t *) &peeraddr;
+	  type_punning_sockaddr_t *sockaddr =
+	    (type_punning_sockaddr_t *) &peeraddr;
 
 	  if(sockaddr)
 	    {
@@ -135,8 +135,8 @@ QHostAddress spoton_sctp_socket::localAddressAndPort(quint16 *port) const
 	}
       else
 	{
-	  type_punning_sockaddress_t *sockaddr =
-	    (type_punning_sockaddress_t *) &peeraddr;
+	  type_punning_sockaddr_t *sockaddr =
+	    (type_punning_sockaddr_t *) &peeraddr;
 
 	  if(sockaddr)
 	    {
@@ -194,8 +194,8 @@ QHostAddress spoton_sctp_socket::peerAddressAndPort(quint16 *port) const
     {
       if(peeraddr.ss_family == AF_INET)
 	{
-	  type_punning_sockaddress_t *sockaddr =
-	    (type_punning_sockaddress_t *) &peeraddr;
+	  type_punning_sockaddr_t *sockaddr =
+	    (type_punning_sockaddr_t *) &peeraddr;
 
 	  if(sockaddr)
 	    {
@@ -208,8 +208,8 @@ QHostAddress spoton_sctp_socket::peerAddressAndPort(quint16 *port) const
 	}
       else
 	{
-	  type_punning_sockaddress_t *sockaddr =
-	    (type_punning_sockaddress_t *) &peeraddr;
+	  type_punning_sockaddr_t *sockaddr =
+	    (type_punning_sockaddr_t *) &peeraddr;
 
 	  if(sockaddr)
 	    {
