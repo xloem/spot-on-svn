@@ -7,6 +7,7 @@
      that SSL/TLS and proxy support is not provided for SCTP.
      The model supported is one-to-one.
 3.   Upgraded Qt products to version 5.2.1 on Windows.
+4.   Abort the kernel on invalid command-line options.
 
 0.09    (02/07/2014)
 
