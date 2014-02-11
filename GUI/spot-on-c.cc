@@ -290,10 +290,10 @@ void spoton::slotPopulateEtpMagnets(void)
 
 void spoton::slotShowEtpMagnetsMenu(const QPoint &point)
 {
-  QMenu menu(this);
-
   if(m_ui.etpMagnets == sender())
     {
+      QMenu menu(this);
+
       menu.addAction(tr("Copy &Magnet"),
 		     this, SLOT(slotCopyEtpMagnet(void)));
       menu.addSeparator();

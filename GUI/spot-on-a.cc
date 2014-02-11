@@ -4582,10 +4582,10 @@ void spoton::slotMaximumClientsChanged(int index)
 
 void spoton::slotShowContextMenu(const QPoint &point)
 {
-  QMenu menu(this);
-
   if(m_ui.emailParticipants == sender())
     {
+      QMenu menu(this);
+
       menu.addAction
 	(QIcon(QString(":/%1/add.png").
 	       arg(m_settings.value("gui/iconSet", "nouve").toString())),
@@ -4612,6 +4612,8 @@ void spoton::slotShowContextMenu(const QPoint &point)
     }
   else if(m_ui.listeners == sender())
     {
+      QMenu menu(this);
+
       menu.addAction(QIcon(QString(":/%1/clear.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
@@ -4638,6 +4640,8 @@ void spoton::slotShowContextMenu(const QPoint &point)
     }
   else if(m_ui.neighbors == sender())
     {
+      QMenu menu(this);
+
       menu.addAction(QIcon(QString(":/%1/share.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
@@ -4696,12 +4700,14 @@ void spoton::slotShowContextMenu(const QPoint &point)
     }
   else if(m_ui.participants == sender())
     {
-      QAction *action = menu.addAction
+      QAction *action = 0;
+      QMenu menu(this);
+
+      menu.addAction
 	(QIcon(QString(":/%1/add.png").
 	       arg(m_settings.value("gui/iconSet", "nouve").toString())),
 	 tr("&Add participant as friend."),
 	 this, SLOT(slotShareChatPublicKeyWithParticipant(void)));
-
       menu.addSeparator();
       menu.addAction(QIcon(QString(":/%1/copy.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
@@ -4729,6 +4735,8 @@ void spoton::slotShowContextMenu(const QPoint &point)
     }
   else if(m_ui.received == sender())
     {
+      QMenu menu(this);
+
       menu.addAction(QIcon(QString(":/%1/clear.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
@@ -4750,6 +4758,8 @@ void spoton::slotShowContextMenu(const QPoint &point)
     }
   else if(m_ui.transmitted == sender())
     {
+      QMenu menu(this);
+
       menu.addAction(QIcon(QString(":/%1/clear.png").
 			   arg(m_settings.value("gui/iconSet", "nouve").
 			       toString())),
@@ -4771,12 +4781,16 @@ void spoton::slotShowContextMenu(const QPoint &point)
     }
   else if(m_ui.transmittedMagnets == sender())
     {
+      QMenu menu(this);
+
       menu.addAction(tr("Copy &Magnet"),
 		     this, SLOT(slotCopyTransmittedMagnet(void)));
       menu.exec(m_ui.transmittedMagnets->mapToGlobal(point));
     }
   else if(m_ui.urlParticipants == sender())
     {
+      QMenu menu(this);
+
       menu.addAction
 	(QIcon(QString(":/%1/add.png").
 	       arg(m_settings.value("gui/iconSet", "nouve").toString())),

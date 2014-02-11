@@ -316,7 +316,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 
   QStringList arguments(QCoreApplication::arguments());
 
-  for(int i = 0; i < arguments.size(); i++)
+  for(int i = 1; i < arguments.size(); i++)
     if(arguments.at(i) == "--passphrase")
       {
 	/*
@@ -367,6 +367,11 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  qDebug() << "Passphrase accepted.";
 
 	break;
+      }
+    else
+      {
+	qDebug() << "Invalid option: " << arguments.at(i) << ". Exiting.";
+	deleteLater();
       }
 
   connect(&m_controlDatabaseTimer,
