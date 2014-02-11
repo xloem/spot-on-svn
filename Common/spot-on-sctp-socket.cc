@@ -34,6 +34,7 @@ extern "C"
 {
 #include <arpa/inet.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <netinet/in.h>
 #include <netinet/sctp.h>
 #include <sys/socket.h>
@@ -45,6 +46,7 @@ extern "C"
 {
 #include <arpa/inet.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <netinet/in.h>
 #include <netinet/sctp.h>
 #include <sys/socket.h>
@@ -487,11 +489,9 @@ void spoton_sctp_socket::connectToHostImplementation(void)
     protocol = IPv6Protocol;
 
   if(protocol == IPv4Protocol)
-    m_socketDescriptor = socket(AF_INET, SOCK_NONBLOCK | SOCK_STREAM,
-				IPPROTO_SCTP);
+    m_socketDescriptor = socket(AF_INET, SOCK_STREAM, IPPROTO_SCTP);
   else
-    m_socketDescriptor = socket(AF_INET6, SOCK_NONBLOCK | SOCK_STREAM,
-				IPPROTO_SCTP);
+    m_socketDescriptor = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
 
   if(m_socketDescriptor == -1)
     {
@@ -514,9 +514,23 @@ void spoton_sctp_socket::connectToHostImplementation(void)
       goto done_label;
     }
 
-  prepareSocketNotifiers();
+  rc = fcntl(m_socketDescriptor, F_GETFL, 0);
+
+  if(rc == -1)
+    {
+      emit error(UnknownSocketError);
+      goto done_label;
+    }
+
+  if(fcntl(m_socketDescriptor, F_SETFL, O_NONBLOCK | rc) == -1)
+    {
+      emit error(UnknownSocketError);
+      goto done_label;
+    }
+
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
+  prepareSocketNotifiers();
 
   if(protocol == IPv4Protocol)
     {
@@ -730,7 +744,7 @@ void spoton_sctp_socket::slotSocketNotifierActivated(int socket)
 
       if(rc > 0)
 	emit readyRead();
-      else if(rc == 0)
+      else
 	close();
     }
   else
