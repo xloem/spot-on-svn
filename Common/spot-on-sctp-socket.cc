@@ -341,6 +341,8 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 #ifdef SPOTON_SCTP_ENABLED
   NetworkLayerProtocol protocol = IPv4Protocol;
   int rc = 0;
+  qint64 optval = 8192;
+  socklen_t optlen = sizeof(optval);
 
   if(QHostAddress(m_ipAddress).protocol() == QAbstractSocket::IPv6Protocol)
     protocol = IPv6Protocol;
@@ -370,6 +372,9 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
       goto done_label;
     }
+
+  setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
+  setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
 
   if(protocol == IPv4Protocol)
     {
@@ -457,11 +462,6 @@ void spoton_sctp_socket::setReadBufferSize(const qint64 size)
     qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
 	   size,
 	   spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
-
-  qint64 optval = m_readBufferSize;
-  socklen_t optlen = sizeof(optval);
-
-  setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
 #else
   Q_UNUSED(size);
 #endif

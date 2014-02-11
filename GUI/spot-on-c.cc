@@ -606,6 +606,7 @@ void spoton::slotTransportChanged(int index)
       m_ui.requireSsl->setEnabled(index == 1);
       m_ui.sslKeySizeLabel->setEnabled(index == 1);
       m_ui.neighborKeySize->setEnabled(index == 1);
+      m_ui.proxy->setEnabled(index != 0);
 #else
       m_ui.addException->setEnabled(index == 0);
       m_ui.requireSsl->setEnabled(index == 0);

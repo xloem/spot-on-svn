@@ -2010,7 +2010,7 @@ void spoton::slotAddNeighbor(void)
 	    (6, s_crypt->
 	     encrypted(scopeId.toLatin1(), &ok).toBase64());
 
-	if(m_ui.proxy->isChecked())
+	if(m_ui.proxy->isChecked() && m_ui.proxy->isEnabled())
 	  {
 	    proxyHostname = m_ui.proxyHostname->text().trimmed();
 	    proxyPort = QString::number(m_ui.proxyPort->value());
@@ -2043,10 +2043,10 @@ void spoton::slotAddNeighbor(void)
 	     keyedHash(country.remove(" ").toLatin1(), &ok).
 	     toBase64());
 
-	if(m_ui.proxy->isChecked())
+	if(m_ui.proxy->isChecked() && m_ui.proxy->isEnabled())
 	  proxyPassword = m_ui.proxyPassword->text();
 
-	if(m_ui.proxy->isChecked())
+	if(m_ui.proxy->isChecked() && m_ui.proxy->isEnabled())
 	  {
 	    /*
 	    ** Avoid translation mishaps.
@@ -2062,7 +2062,7 @@ void spoton::slotAddNeighbor(void)
 	else
 	  proxyType = "NoProxy";
 
-	if(m_ui.proxy->isChecked())
+	if(m_ui.proxy->isChecked() && m_ui.proxy->isEnabled())
 	  proxyUsername = m_ui.proxyUsername->text();
 
 	if(ok)
