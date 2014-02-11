@@ -1537,7 +1537,7 @@ void spoton::slotAddListener(void)
 #ifdef SPOTON_SCTP_ENABLED
   if(m_ui.listenerTransport->currentIndex() == 1 &&
 #else
-     m_ui.listenerTransport->currentIndex() == 0 &&
+  if(m_ui.listenerTransport->currentIndex() == 0 &&
 #endif
      m_ui.permanentCertificate->isChecked() &&
      m_ui.sslListener->isChecked())
