@@ -752,7 +752,10 @@ void spoton_sctp_socket::slotSocketNotifierActivated(int socket)
 	}
 
       if(shouldEmitConnected)
-	emit connected();
+	{
+	  m_state = ConnectedState;
+	  emit connected();
+	}
     }
 #else
   Q_UNUSED(socket);
