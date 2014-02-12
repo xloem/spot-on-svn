@@ -294,8 +294,7 @@ int spoton_sctp_socket::inspectConnectResult
       QString errorstr(QString("inspectConnectResult::errno=%1").
 		       arg(errorcode));
 
-      if(errorcode == EACCES ||
-	      errorcode == EPERM)
+      if(errorcode == EACCES || errorcode == EPERM)
 	emit error(errorstr, SocketAccessError);
       else if(errorcode == EALREADY)
 	emit error(errorstr, UnfinishedSocketOperationError);
@@ -335,8 +334,7 @@ qint64 spoton_sctp_socket::readData(char *data, qint64 maxSize)
       QString errorstr(QString("readData()::recv()::errno=%1").
 		       arg(errno));
 
-      if(errno == EAGAIN ||
-	 errno == EWOULDBLOCK)
+      if(errno == EAGAIN || errno == EWOULDBLOCK)
 	{
 	  /*
 	  ** We'll ignore this condition.
@@ -385,7 +383,7 @@ qint64 spoton_sctp_socket::writeData(const char *data, const qint64 maxSize)
     return 0;
 
   ssize_t rc = send
-    (m_socketDescriptor, data, static_cast<size_t> (maxSize), MSG_DONTWAIT);
+    (m_socketDescriptor, data, static_cast<size_t> (maxSize), 0);
 
   if(rc == -1)
     {
@@ -394,8 +392,7 @@ qint64 spoton_sctp_socket::writeData(const char *data, const qint64 maxSize)
 
       if(errno == EACCES)
 	emit error(errorstr, SocketAccessError);
-      else if(errno == EAGAIN ||
-	      errno == EWOULDBLOCK)
+      else if(errno == EAGAIN || errno == EWOULDBLOCK)
 	{
 	  /*
 	  ** We'll ignore this condition.
@@ -405,14 +402,10 @@ qint64 spoton_sctp_socket::writeData(const char *data, const qint64 maxSize)
 	}
       else if(errno == ECONNRESET)
 	emit error(errorstr, RemoteHostClosedError);
-      else if(errno == EMSGSIZE ||
-	      errno == ENOBUFS ||
-	      errno == ENOMEM)
+      else if(errno == EMSGSIZE || errno == ENOBUFS || errno == ENOMEM)
 	emit error(errorstr, SocketResourceError);
-      else if(errno == EHOSTUNREACH ||
-	      errno == ENETDOWN ||
-	      errno == ENETUNREACH ||
-	      errno == ENOTCONN)
+      else if(errno == EHOSTUNREACH || errno == ENETDOWN ||
+	      errno == ENETUNREACH || errno == ENOTCONN)
 	emit error(errorstr, NetworkError);
       else if(errno == EOPNOTSUPP)
 	emit error(errorstr, UnsupportedSocketOperationError);
@@ -533,13 +526,10 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
       if(errno == EACCES)
 	emit error(errorstr, SocketAccessError);
-      else if(errno == EAFNOSUPPORT ||
-	      errno == EPROTONOSUPPORT)
+      else if(errno == EAFNOSUPPORT || errno == EPROTONOSUPPORT)
 	emit error(errorstr, UnsupportedSocketOperationError);
-      else if(errno == EISCONN ||
-	      errno == EMFILE ||
-	      errno == ENFILE ||
-	      errno == ENOBUFS ||
+      else if(errno == EISCONN || errno == EMFILE ||
+	      errno == ENFILE || errno == ENOBUFS ||
 	      errno == ENOMEM)
 	emit error(errorstr, SocketResourceError);
       else
@@ -609,7 +599,18 @@ void spoton_sctp_socket::connectToHostImplementation(void)
       m_state = ConnectingState;
       rc = ::connect
 	(m_socketDescriptor, (const struct sockaddr *) &servaddr, length);
-      rc = inspectConnectResult(rc, errno);
+
+      if(rc == 0)
+	{
+	  /*
+	  ** The connection was established immediately.
+	  */
+
+	  m_state = ConnectedState;
+	  emit connected();
+	}
+      else
+	rc = inspectConnectResult(rc, errno);
     }
   else
     {
@@ -647,7 +648,18 @@ void spoton_sctp_socket::connectToHostImplementation(void)
       m_state = ConnectingState;
       rc = ::connect
 	(m_socketDescriptor, (const struct sockaddr *) &servaddr, length);
-      rc = inspectConnectResult(rc, errno);
+
+      if(rc == 0)
+	{
+	  /*
+	  ** The connection was established immediately.
+	  */
+
+	  m_state = ConnectingState;
+	  emit connected();
+	}
+      else
+	rc = inspectConnectResult(rc, errno);
     }
 
  done_label:
