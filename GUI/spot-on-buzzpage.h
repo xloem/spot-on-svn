@@ -51,6 +51,7 @@ class spoton_buzzpage: public QWidget
 		  const unsigned long iterationCount,
 		  const QByteArray &hashKey,
 		  const QByteArray &hashType,
+		  const QByteArray &key,
 		  spoton_crypt *crypt,
 		  QWidget *parent);
   ~spoton_buzzpage();

@@ -48,6 +48,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 				 const unsigned long iterationCount,
 				 const QByteArray &hashKey,
 				 const QByteArray &hashType,
+				 const QByteArray &key,
 				 spoton_crypt *crypt,
 				 QWidget *parent):QWidget(parent)
 {
@@ -58,6 +59,10 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
     m_channel = "unknown";
 
   m_channelSalt = channelSalt.trimmed();
+
+  if(m_channelSalt.isEmpty())
+    m_channelSalt = "unknown";
+
   m_channelType = channelType.trimmed();
 
   if(m_channelType.isEmpty())
@@ -82,52 +87,12 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
     m_id = spoton_crypt::strongRandomBytes
       (spoton_common::BUZZ_MAXIMUM_ID_LENGTH / 2).toHex();
 
-  /*
-  ** Generate some awful key.
-  */
-
-  size_t keyLength = spoton_crypt::cipherKeyLength(channelType);
-
-  if(keyLength > 0)
-    {
-      m_key.resize(static_cast<int> (keyLength));
-
-      if(m_channelSalt.isEmpty())
-	{
-	  QByteArray salt;
-	  bool ok = true;
-
-	  salt = spoton_crypt::keyedHash(m_channel + m_channelType,
-					 m_channel, "sha512", &ok);
-
-	  if(!ok)
-	    /*
-	    ** We're doomed!
-	    */
-
-	    salt = m_channel + m_channelType;
-
-	  m_channelSalt = salt.toBase64(); /*
-					   ** We may need to display
-					   ** the salt to the user.
-					   */
-	}
-
-      if(gcry_kdf_derive(m_channel.constData(),
-			 m_channel.length(),
-			 GCRY_KDF_PBKDF2,
-			 GCRY_MD_SHA512,
-			 m_channelSalt.constData(),
-			 m_channelSalt.length(),
-			 m_iterationCount,
-			 keyLength,
-			 m_key.data()) != 0)
-	m_key = m_channel;
-    }
-  else
-    m_key = m_channel;
-
   m_kernelSocket = kernelSocket;
+  m_key = key;
+
+  if(m_key.isEmpty())
+    m_key = "unknown";
+
   m_statusTimer.start(30000);
   connect(&m_statusTimer,
 	  SIGNAL(timeout(void)),

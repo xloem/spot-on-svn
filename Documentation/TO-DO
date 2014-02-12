@@ -97,6 +97,7 @@ Completed Items
 69.    Inbound data should be time-tagged. Nodes must purge
        containers of old data. Otherwise, one could be inundated with
        seemingly-qualified data. Nasty!
+70.    SCTP.
 
 Ignored Items
 
@@ -183,4 +184,3 @@ Remaining Items
        reasonable time.
 32.    Record received pulses.
 33.    Lots of kernel activity may cause libgcrypt memory exhaustion.
-34.    SCTP.

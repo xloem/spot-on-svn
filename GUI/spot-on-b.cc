@@ -3965,7 +3965,7 @@ void spoton::slotPublishedKeySizeChanged(const QString &text)
 void spoton::slotJoinBuzzChannel(void)
 {
   QByteArray channel(m_ui.channel->text().trimmed().toLatin1());
-  QByteArray channelSalt;
+  QByteArray channelSalt(m_ui.channelSalt->text().trimmed().toLatin1());
   QByteArray channelType(m_ui.channelType->currentText().toLatin1());
   QByteArray hashKey(m_ui.buzzHashKey->text().trimmed().toLatin1());
   QByteArray hashType(m_ui.buzzHashType->currentText().toLatin1());
@@ -3986,27 +3986,35 @@ void spoton::slotJoinBuzzChannel(void)
 
   if(channel.isEmpty())
     {
-      error = tr("Please provide a channel name.");
+      error = tr("Please provide a channel key.");
       goto done_label;
     }
 
-  channelSalt = m_ui.channelSalt->text().trimmed().toLatin1();
+  if(hashKey.isEmpty())
+    {
+      error = tr("Please provide a hash key.");
+      goto done_label;
+    }
 
   if(channelSalt.isEmpty())
-    channelSalt = spoton_crypt::keyedHash(channel + channelType,
-					  channel, "sha512", &ok);
-
-  if(!ok)
     {
-      error = tr("Unable to compute a keyed hash.");
-      goto done_label;
+      channelSalt = spoton_crypt::keyedHash
+	(channel + channelType, channel, "sha512", &ok).toBase64();
+
+      if(!ok)
+	{
+	  error = tr("Unable to compute a keyed hash from the "
+		     "channel key and channel type as an "
+		     "artificial salt.");
+	  goto done_label;
+	}
     }
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-  keys = spoton_crypt::derivedKeys(m_ui.channelType->currentText(),
+  keys = spoton_crypt::derivedKeys(channelType,
 				   "sha512",
 				   iterationCount,
-				   m_ui.channel->text().trimmed(),
+				   channel + channelType,
 				   channelSalt,
 				   error);
   QApplication::restoreOverrideCursor();
@@ -4026,9 +4034,6 @@ void spoton::slotJoinBuzzChannel(void)
   if(found)
     goto done_label;
 
-  if(hashKey.isEmpty())
-    hashKey = keys.second.toBase64();
-
   if(m_buzzIds.contains(keys.first))
     id = m_buzzIds[keys.first];
   else
@@ -4038,14 +4043,6 @@ void spoton::slotJoinBuzzChannel(void)
       m_buzzIds[keys.first] = id;
     }
 
-  if(m_ui.channelSalt->text().trimmed().isEmpty())
-    /*
-    ** Reset the channelSalt container. We used it above to avoid
-    ** duplicate Buzz keys.
-    */
-
-    channelSalt.clear();
-
   m_ui.channel->clear();
   m_ui.channelSalt->clear();
   m_ui.channelType->setCurrentIndex(0);
@@ -4054,7 +4051,7 @@ void spoton::slotJoinBuzzChannel(void)
   m_ui.buzzHashType->setCurrentIndex(0);
   page = new spoton_buzzpage
     (&m_kernelSocket, channel, channelSalt, channelType,
-     id, iterationCount, hashKey, hashType, s_crypt, this);
+     id, iterationCount, hashKey, hashType, keys.first, s_crypt, this);
   connect(&m_buzzStatusTimer,
 	  SIGNAL(timeout(void)),
 	  page,

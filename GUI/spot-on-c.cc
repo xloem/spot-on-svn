@@ -456,7 +456,7 @@ void spoton::slotBuzzActionsActivated(int index)
   if(index == 0)
     {
       m_ui.channel->clear();
-      m_ui.iterationCount->setValue(10000);
+      m_ui.buzzIterationCount->setValue(m_ui.buzzIterationCount->minimum());
       m_ui.channelSalt->clear();
       m_ui.channelType->setCurrentIndex(0);
       m_ui.buzzHashKey->clear();
@@ -476,12 +476,12 @@ void spoton::slotBuzzActionsActivated(int index)
   disconnect(m_ui.buzzActions,
 	     SIGNAL(activated(int)),
 	     this,
-	     SLOT(slotGenerateEtpKeys(int)));
+	     SLOT(slotBuzzActionsActivated(int)));
   m_ui.buzzActions->setCurrentIndex(0);
   connect(m_ui.buzzActions,
 	  SIGNAL(activated(int)),
 	  this,
-	  SLOT(slotGenerateEtpKeys(int)));
+	  SLOT(slotBuzzActionsActivated(int)));
 }
 
 void spoton::slotAcceptChatKeys(bool state)
