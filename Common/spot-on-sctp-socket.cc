@@ -489,17 +489,9 @@ void spoton_sctp_socket::connectToHostImplementation(void)
     protocol = IPv6Protocol;
 
   if(protocol == IPv4Protocol)
-#ifndef Q_OS_MAC
     m_socketDescriptor = socket(AF_INET, SOCK_STREAM, IPPROTO_SCTP);
-#else
-    m_socketDescriptor = socket(PF_INET, SOCK_STREAM, IPPROTO_SCTP);
-#endif
-    else
-#ifndef Q_OS_MAC
+  else
     m_socketDescriptor = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
-#else
-    m_socketDescriptor = socket(PF_INET6, SOCK_STREAM, IPPROTO_SCTP);
-#endif
 
   if(m_socketDescriptor == -1)
     {
