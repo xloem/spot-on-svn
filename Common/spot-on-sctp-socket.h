@@ -118,7 +118,8 @@ class spoton_sctp_socket: public QObject
  signals:
   void connected(void);
   void disconnected(void);
-  void error(const spoton_sctp_socket::SocketError socketError);
+  void error(const QString &method,
+	     const spoton_sctp_socket::SocketError socketError);
   void readyRead(void);
 };
 

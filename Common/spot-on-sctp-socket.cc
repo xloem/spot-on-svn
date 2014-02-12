@@ -280,15 +280,15 @@ int spoton_sctp_socket::inspectConnectResult
 	return 0;
       else if(errorcode == EACCES ||
 	      errorcode == EPERM)
-	emit error(SocketAccessError);
+	emit error("inspectConnectResult()", SocketAccessError);
       else if(errorcode == EALREADY)
-	emit error(UnfinishedSocketOperationError);
+	emit error("inspectConnectResult()", UnfinishedSocketOperationError);
       else if(errorcode == ECONNREFUSED)
-	emit error(ConnectionRefusedError);
+	emit error("inspectConnectResult()", ConnectionRefusedError);
       else if(errorcode == ENETUNREACH)
-	emit error(NetworkError);
+	emit error("inspectConnectResult()", NetworkError);
       else
-	emit error(UnknownSocketError);
+	emit error("inspectConnectResult()", UnknownSocketError);
 
       return rc;
     }
@@ -326,15 +326,15 @@ qint64 spoton_sctp_socket::readData(char *data, qint64 maxSize)
 	  rc = 0;
 	}
       else if(errno == ECONNRESET)
-	emit error(RemoteHostClosedError);
+	emit error("readData()", RemoteHostClosedError);
       else if(errno == ENOBUFS)
-	emit error(SocketResourceError);
+	emit error("readData()", SocketResourceError);
       else if(errno == ENOTCONN)
-	emit error(NetworkError);
+	emit error("readData()", NetworkError);
       else if(errno == EOPNOTSUPP)
-	emit error(UnsupportedSocketOperationError);
+	emit error("readData()", UnsupportedSocketOperationError);
       else
-	emit error(UnknownSocketError);
+	emit error("readData()", UnknownSocketError);
     }
 
   return static_cast<qint64> (rc);
@@ -368,7 +368,7 @@ qint64 spoton_sctp_socket::writeData(const char *data, const qint64 maxSize)
   if(rc == -1)
     {
       if(errno == EACCES)
-	emit error(SocketAccessError);
+	emit error("writeData()", SocketAccessError);
       else if(errno == EAGAIN ||
 	      errno == EWOULDBLOCK)
 	{
@@ -379,20 +379,20 @@ qint64 spoton_sctp_socket::writeData(const char *data, const qint64 maxSize)
 	  rc = 0;
 	}
       else if(errno == ECONNRESET)
-	emit error(RemoteHostClosedError);
+	emit error("writeData()", RemoteHostClosedError);
       else if(errno == EMSGSIZE ||
 	      errno == ENOBUFS ||
 	      errno == ENOMEM)
-	emit error(SocketResourceError);
+	emit error("writeData()", SocketResourceError);
       else if(errno == EHOSTUNREACH ||
 	      errno == ENETDOWN ||
 	      errno == ENETUNREACH ||
 	      errno == ENOTCONN)
-	emit error(NetworkError);
+	emit error("writeData()", NetworkError);
       else if(errno == EOPNOTSUPP)
-	emit error(UnsupportedSocketOperationError);
+	emit error("writeData()", UnsupportedSocketOperationError);
       else
-	emit error(UnknownSocketError);
+	emit error("writeData()", UnknownSocketError);
     }
 
   return static_cast<qint64> (rc);
@@ -498,18 +498,19 @@ void spoton_sctp_socket::connectToHostImplementation(void)
       rc = -1;
 
       if(errno == EACCES)
-	emit error(SocketAccessError);
+	emit error("connectToHostImplementation()", SocketAccessError);
       else if(errno == EAFNOSUPPORT ||
 	      errno == EPROTONOSUPPORT)
-	emit error(UnsupportedSocketOperationError);
+	emit error("connectToHostImplementation()",
+		   UnsupportedSocketOperationError);
       else if(errno == EISCONN ||
 	      errno == EMFILE ||
 	      errno == ENFILE ||
 	      errno == ENOBUFS ||
 	      errno == ENOMEM)
-	emit error(SocketResourceError);
+	emit error("connectToHostImplementation()", SocketResourceError);
       else
-	emit error(UnknownSocketError);
+	emit error("connectToHostImplementation()", UnknownSocketError);
 
       goto done_label;
     }
@@ -518,19 +519,19 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
   if(rc == -1)
     {
-      emit error(UnknownSocketError);
+      emit error("connectToHostImplementation()", UnknownSocketError);
       goto done_label;
     }
 
   if(fcntl(m_socketDescriptor, F_SETFL, O_NONBLOCK | rc) == -1)
     {
-      emit error(UnknownSocketError);
+      emit error("connectToHostImplementation()", UnknownSocketError);
       goto done_label;
     }
 
+  prepareSocketNotifiers();
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
-  prepareSocketNotifiers();
 
   if(protocol == IPv4Protocol)
     {
@@ -550,12 +551,15 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 	  if(rc == -1)
 	    {
 	      if(errno == EAFNOSUPPORT)
-		emit error(UnsupportedSocketOperationError);
+		emit error("connectToHostImplementation()",
+			   UnsupportedSocketOperationError);
 	      else
-		emit error(UnknownSocketError);
+		emit error("connectToHostImplementation()",
+			   UnknownSocketError);
 	    }
 	  else
-	    emit error(UnknownSocketError);
+	    emit error("connectToHostImplementation()",
+		       UnknownSocketError);
 
 	  goto done_label;
 	}
@@ -585,12 +589,15 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 	  if(rc == -1)
 	    {
 	      if(errno == EAFNOSUPPORT)
-		emit error(UnsupportedSocketOperationError);
+		emit error("connectToHostImplementation()",
+			   UnsupportedSocketOperationError);
 	      else
-		emit error(UnknownSocketError);
+		emit error("connectToHostImplementation()",
+			   UnknownSocketError);
 	    }
 	  else
-	    emit error(UnknownSocketError);
+	    emit error("connectToHostImplementation()",
+		       UnknownSocketError);
 
 	  goto done_label;
 	}
@@ -712,7 +719,7 @@ void spoton_sctp_socket::slotHostFound(const QHostInfo &hostInfo)
       }
 
   if(QHostAddress(m_ipAddress).isNull())
-    emit error(HostNotFoundError);
+    emit error("slotHostFound()", HostNotFoundError);
 #else
   Q_UNUSED(hostInfo);
 #endif
@@ -745,13 +752,15 @@ void spoton_sctp_socket::slotSocketNotifierActivated(int socket)
       if(rc > 0)
 	emit readyRead();
       else
-	close();
+	{
+	  m_socketWriteNotifier->setEnabled(false);
+	  close();
+	}
     }
   else
     {
       socketNotifier->setEnabled(false);
 
-      bool shouldEmitConnected = false;
       int errorcode = 0;
       int rc = 0;
       socklen_t length = sizeof(errorcode);
@@ -761,14 +770,20 @@ void spoton_sctp_socket::slotSocketNotifierActivated(int socket)
       if(rc == 0)
 	{
 	  if(errorcode == 0)
-	    if(m_state == ConnectingState)
-	      shouldEmitConnected = true;
+	    {
+	      if(m_state == ConnectingState)
+		{
+		  m_state = ConnectedState;
+		  emit connected();
+		}
+	    }
+	  else
+	    socketNotifier->setEnabled(true);
 	}
-
-      if(shouldEmitConnected)
+      else
 	{
-	  m_state = ConnectedState;
-	  emit connected();
+	  m_socketReadNotifier->setEnabled(false);
+	  close();
 	}
     }
 #else

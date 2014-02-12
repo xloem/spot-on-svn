@@ -259,7 +259,8 @@ class spoton_neighbor: public QThread
   void slotDiscoverExternalAddress(void);
   void slotEncrypted(void);
   void slotError(QAbstractSocket::SocketError error);
-  void slotError(spoton_sctp_socket::SocketError error);
+  void slotError(const QString &method,
+		 const spoton_sctp_socket::SocketError error);
   void slotExternalAddressDiscovered(const QHostAddress &address);
   void slotHostFound(const QHostInfo &hostInfo);
   void slotLifetimeExpired(void);

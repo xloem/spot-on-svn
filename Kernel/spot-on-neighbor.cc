@@ -274,9 +274,11 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	      this,
 	      SLOT(slotDisconnected(void)));
       connect(m_sctpSocket,
-	      SIGNAL(error(const spoton_sctp_socket::SocketError)),
+	      SIGNAL(error(const QString &,
+			   const spoton_sctp_socket::SocketError)),
 	      this,
-	      SLOT(slotError(const spoton_sctp_socket::SocketError)));
+	      SLOT(slotError(const QString &,
+			     const spoton_sctp_socket::SocketError)));
       connect(m_sctpSocket,
 	      SIGNAL(readyRead(void)),
 	      this,
@@ -613,9 +615,11 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	      this,
 	      SLOT(slotDisconnected(void)));
       connect(m_sctpSocket,
-	      SIGNAL(error(const spoton_sctp_socket::SocketError)),
+	      SIGNAL(error(const QString &,
+			   const spoton_sctp_socket::SocketError)),
 	      this,
-	      SLOT(slotError(const spoton_sctp_socket::SocketError)));
+	      SLOT(slotError(const QString &,
+			     const spoton_sctp_socket::SocketError)));
       connect(m_sctpSocket,
 	      SIGNAL(readyRead(void)),
 	      this,
@@ -4248,12 +4252,15 @@ void spoton_neighbor::slotError(QAbstractSocket::SocketError error)
   deleteLater();
 }
 
-void spoton_neighbor::slotError(const spoton_sctp_socket::SocketError error)
+void spoton_neighbor::slotError(const QString &method,
+				const spoton_sctp_socket::SocketError error)
 {
   spoton_misc::logError
     (QString("spoton_neighbor::slotError(): "
-	     "socket error (%1) for %2:%3. "
-	     "Aborting socket.").arg(error).
+	     "socket error (%1 - %2) for %3:%4. "
+	     "Aborting socket.").
+     arg(method).
+     arg(error).
      arg(m_address.toString()).
      arg(m_port));
   deleteLater();
