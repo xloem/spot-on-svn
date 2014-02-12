@@ -343,9 +343,12 @@ qint64 spoton_sctp_socket::readData(char *data, qint64 maxSize)
 
 	  rc = 0;
 	}
+      else if(errno == ECONNREFUSED)
+	emit error(errorstr, ConnectionRefusedError);
       else if(errno == ECONNRESET)
 	emit error(errorstr, RemoteHostClosedError);
-      else if(errno == ENOBUFS)
+      else if(errno == ENOBUFS ||
+	      errno == ENOMEM)
 	emit error(errorstr, SocketResourceError);
       else if(errno == ENOTCONN)
 	emit error(errorstr, NetworkError);
