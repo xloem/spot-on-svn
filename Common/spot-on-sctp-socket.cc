@@ -60,15 +60,6 @@ extern "C"
 #include "Common/spot-on-common.h"
 #include "spot-on-sctp-socket.h"
 
-#ifdef Q_OS_MAC
-#ifndef AF_INET
-#define AF_INET PF_INET
-#endif
-#ifndef AF_INET6
-#define AF_INET6 PF_INET6
-#endif
-#endif
-
 /*
 ** Please read http://gcc.gnu.org/onlinedocs/gcc-4.4.1/gcc/Optimize-Options.html#Type_002dpunning.
 */
@@ -498,9 +489,17 @@ void spoton_sctp_socket::connectToHostImplementation(void)
     protocol = IPv6Protocol;
 
   if(protocol == IPv4Protocol)
+#ifndef Q_OS_MAC
     m_socketDescriptor = socket(AF_INET, SOCK_STREAM, IPPROTO_SCTP);
-  else
+#else
+    m_socketDescriptor = socket(PF_INET, SOCK_STREAM, IPPROTO_SCTP);
+#endif
+    else
+#ifndef Q_OS_MAC
     m_socketDescriptor = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
+#else
+    m_socketDescriptor = socket(PF_INET6, SOCK_STREAM, IPPROTO_SCTP);
+#endif
 
   if(m_socketDescriptor == -1)
     {
