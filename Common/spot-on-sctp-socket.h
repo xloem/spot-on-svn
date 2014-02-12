@@ -28,6 +28,7 @@
 #ifndef _spoton_sctp_socket_h_
 #define _spoton_sctp_socket_h_
 
+#include <QAbstractSocket>
 #include <QHostInfo>
 #include <QObject>
 #include <QPointer>
@@ -41,36 +42,38 @@ class spoton_sctp_socket: public QObject
  public:
   enum NetworkLayerProtocol
   {
-    IPv4Protocol = 0,
-    IPv6Protocol = 1
+    IPv4Protocol = QAbstractSocket::IPv4Protocol,
+    IPv6Protocol = QAbstractSocket::IPv6Protocol
   };
 
   enum SocketError
   {
-    ConnectionRefusedError = 0,
-    HostNotFoundError = 2,
-    NetworkError = 7,
-    RemoteHostClosedError = 1,
-    SocketAccessError = 3,
-    SocketResourceError = 4,
-    SocketTimeoutError = 5,
-    UnfinishedSocketOperationError = 11,
-    UnknownSocketError = 1,
-    UnsupportedSocketOperationError = 10
+    ConnectionRefusedError = QAbstractSocket::ConnectionRefusedError,
+    HostNotFoundError = QAbstractSocket::HostNotFoundError,
+    NetworkError = QAbstractSocket::NetworkError,
+    RemoteHostClosedError = QAbstractSocket::RemoteHostClosedError,
+    SocketAccessError = QAbstractSocket::SocketAccessError,
+    SocketResourceError = QAbstractSocket::SocketResourceError,
+    SocketTimeoutError = QAbstractSocket::SocketTimeoutError,
+    UnfinishedSocketOperationError =
+    QAbstractSocket::UnfinishedSocketOperationError,
+    UnknownSocketError = QAbstractSocket::UnknownSocketError,
+    UnsupportedSocketOperationError =
+    QAbstractSocket::UnsupportedSocketOperationError
   };
 
   enum SocketOption
   {
-    KeepAliveOption = 1,
-    LowDelayOption = 0
+    KeepAliveOption = QAbstractSocket::KeepAliveOption,
+    LowDelayOption = QAbstractSocket::LowDelayOption
   };
 
   enum SocketState
   {
-    ConnectedState = 4,
-    ConnectingState = 3,
-    HostLookupState = 2,
-    UnconnectedState = 1
+    ConnectedState = QAbstractSocket::ConnectedState,
+    ConnectingState = QAbstractSocket::ConnectingState,
+    HostLookupState = QAbstractSocket::HostLookupState,
+    UnconnectedState = QAbstractSocket::UnconnectedState
   };
 
   spoton_sctp_socket(QObject *parent);
