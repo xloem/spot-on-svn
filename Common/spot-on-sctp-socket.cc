@@ -29,6 +29,17 @@
 
 #ifdef SPOTON_SCTP_ENABLED
 #ifdef Q_OS_FREEBSD
+extern "C"
+{
+#include <arpa/inet.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <netinet/in.h>
+#include <netinet/sctp.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
+}
 #elif defined(Q_OS_LINUX)
 extern "C"
 {
