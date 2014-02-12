@@ -4257,7 +4257,7 @@ void spoton_neighbor::slotError(const QString &method,
 {
   spoton_misc::logError
     (QString("spoton_neighbor::slotError(): "
-	     "socket error (%1 - %2) for %3:%4. "
+	     "socket error (%1:%2) for %3:%4. "
 	     "Aborting socket.").
      arg(method).
      arg(error).
