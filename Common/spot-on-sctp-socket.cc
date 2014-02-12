@@ -289,17 +289,21 @@ int spoton_sctp_socket::inspectConnectResult
     {
       if(errorcode == EINPROGRESS)
 	return 0;
-      else if(errorcode == EACCES ||
+
+      QString errorstr(QString("inspectConnectResult::errno=%1").
+		       arg(errorcode));
+
+      if(errorcode == EACCES ||
 	      errorcode == EPERM)
-	emit error("inspectConnectResult()", SocketAccessError);
+	emit error(errorstr, SocketAccessError);
       else if(errorcode == EALREADY)
-	emit error("inspectConnectResult()", UnfinishedSocketOperationError);
+	emit error(errorstr, UnfinishedSocketOperationError);
       else if(errorcode == ECONNREFUSED)
-	emit error("inspectConnectResult()", ConnectionRefusedError);
+	emit error(errorstr, ConnectionRefusedError);
       else if(errorcode == ENETUNREACH)
-	emit error("inspectConnectResult()", NetworkError);
+	emit error(errorstr, NetworkError);
       else
-	emit error("inspectConnectResult()", UnknownSocketError);
+	emit error(errorstr, UnknownSocketError);
 
       return rc;
     }
@@ -327,6 +331,9 @@ qint64 spoton_sctp_socket::readData(char *data, qint64 maxSize)
 
   if(rc == -1)
     {
+      QString errorstr(QString("readData()::recv()::errno=%1").
+		       arg(errno));
+
       if(errno == EAGAIN ||
 	 errno == EWOULDBLOCK)
 	{
@@ -337,15 +344,15 @@ qint64 spoton_sctp_socket::readData(char *data, qint64 maxSize)
 	  rc = 0;
 	}
       else if(errno == ECONNRESET)
-	emit error("readData()::recv()", RemoteHostClosedError);
+	emit error(errorstr, RemoteHostClosedError);
       else if(errno == ENOBUFS)
-	emit error("readData()::recv()", SocketResourceError);
+	emit error(errorstr, SocketResourceError);
       else if(errno == ENOTCONN)
-	emit error("readData()::recv()", NetworkError);
+	emit error(errorstr, NetworkError);
       else if(errno == EOPNOTSUPP)
-	emit error("readData()::recv()", UnsupportedSocketOperationError);
+	emit error(errorstr, UnsupportedSocketOperationError);
       else
-	emit error("readData()::recv()", UnknownSocketError);
+	emit error(errorstr, UnknownSocketError);
     }
 
   return static_cast<qint64> (rc);
@@ -378,8 +385,11 @@ qint64 spoton_sctp_socket::writeData(const char *data, const qint64 maxSize)
 
   if(rc == -1)
     {
+      QString errorstr(QString("writeData()::send()::errno=%1").
+		       arg(errno));
+
       if(errno == EACCES)
-	emit error("writeData()::send()", SocketAccessError);
+	emit error(errorstr, SocketAccessError);
       else if(errno == EAGAIN ||
 	      errno == EWOULDBLOCK)
 	{
@@ -390,20 +400,20 @@ qint64 spoton_sctp_socket::writeData(const char *data, const qint64 maxSize)
 	  rc = 0;
 	}
       else if(errno == ECONNRESET)
-	emit error("writeData()::send()", RemoteHostClosedError);
+	emit error(errorstr, RemoteHostClosedError);
       else if(errno == EMSGSIZE ||
 	      errno == ENOBUFS ||
 	      errno == ENOMEM)
-	emit error("writeData()::send()", SocketResourceError);
+	emit error(errorstr, SocketResourceError);
       else if(errno == EHOSTUNREACH ||
 	      errno == ENETDOWN ||
 	      errno == ENETUNREACH ||
 	      errno == ENOTCONN)
-	emit error("writeData()::send()", NetworkError);
+	emit error(errorstr, NetworkError);
       else if(errno == EOPNOTSUPP)
-	emit error("writeData()::send()", UnsupportedSocketOperationError);
+	emit error(errorstr, UnsupportedSocketOperationError);
       else
-	emit error("writeData()::send()", UnknownSocketError);
+	emit error(errorstr, UnknownSocketError);
     }
 
   return static_cast<qint64> (rc);
@@ -506,25 +516,24 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
   if(m_socketDescriptor == -1)
     {
+      QString errorstr
+	(QString("connectToHostImplementation()::socket()::errno=%1").
+	 arg(errno));
       rc = -1;
 
       if(errno == EACCES)
-	emit error("connectToHostImplementation()::socket()",
-		   SocketAccessError);
+	emit error(errorstr, SocketAccessError);
       else if(errno == EAFNOSUPPORT ||
 	      errno == EPROTONOSUPPORT)
-	emit error("connectToHostImplementation()::socket()",
-		   UnsupportedSocketOperationError);
+	emit error(errorstr, UnsupportedSocketOperationError);
       else if(errno == EISCONN ||
 	      errno == EMFILE ||
 	      errno == ENFILE ||
 	      errno == ENOBUFS ||
 	      errno == ENOMEM)
-	emit error("connectToHostImplementation()::socket()",
-		   SocketResourceError);
+	emit error(errorstr, SocketResourceError);
       else
-	emit error("connectToHostImplementation()::socket()",
-		   UnknownSocketError);
+	emit error(errorstr, UnknownSocketError);
 
       goto done_label;
     }
@@ -533,15 +542,19 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
   if(rc == -1)
     {
-      emit error("connectToHostImplementation()::fcntl()",
-		 UnknownSocketError);
+      QString errorstr(QString("connectToHostImplementation()::fcntl()::"
+			       "errno=%1").
+		       arg(errno));
+      emit error(errorstr, UnknownSocketError);
       goto done_label;
     }
 
   if(fcntl(m_socketDescriptor, F_SETFL, O_NONBLOCK | rc) == -1)
     {
-      emit error("connectToHostImplementation()::fcntl()",
-		 UnknownSocketError);
+      QString errorstr(QString("connectToHostImplementation()::fcntl()::"
+			       "errno=%1").
+		       arg(errno));
+      emit error(errorstr, UnknownSocketError);
       goto done_label;
     }
 
