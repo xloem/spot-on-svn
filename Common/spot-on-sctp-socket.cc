@@ -271,6 +271,7 @@ bool spoton_sctp_socket::setSocketDescriptor(const int socketDescriptor)
     {
       close();
       m_socketDescriptor = socketDescriptor;
+      prepareSocketNotifiers();
       return true;
     }
   else
@@ -457,10 +458,16 @@ void spoton_sctp_socket::close(void)
   QHostInfo::abortHostLookup(m_hostLookupId);
 
   if(m_socketReadNotifier)
-    m_socketReadNotifier->deleteLater();
+    {
+      m_socketReadNotifier->setEnabled(false);
+      m_socketReadNotifier->deleteLater();
+    }
 
   if(m_socketWriteNotifier)
-    m_socketWriteNotifier->deleteLater();
+    {
+      m_socketWriteNotifier->setEnabled(false);
+      m_socketWriteNotifier->deleteLater();
+    }
 
   ::close(m_socketDescriptor);
   m_hostLookupId = -1;
