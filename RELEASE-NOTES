@@ -2,12 +2,21 @@
 
 1.   Qt documentation suggests that some socket options should be
      set after the connected() signal is emitted. Corrected.
-2.   SCTP support, where available. The macro SPOTON_SCTP_ENABLED
+2.   Experimental SCTP support, where available. The macro SPOTON_SCTP_ENABLED
      must be specified in the appropriate project file. Please note
      that SSL/TLS and proxy support is not provided for SCTP.
-     The model supported is one-to-one.
+     The model implemented is one-to-one.
 3.   Upgraded Qt products to version 5.2.1 on Windows.
 4.   Abort the kernel on invalid command-line options.
+5.   Buzz hash keys are now mandatory. Corrected a key uniqueness
+     error.
+6.   The connect() and disconnect() methods in
+     spoton::slotBuzzActionsActivated() referenced an incorrect SLOT.
+     Resolved.
+7.   The 2nd Clear option under Buzz reset the wrong Iteration Count
+     widget (Settings).
+8.   The iteration count under Settings assumed an incorrect minimum of
+     1000 instead of 10000. Corrected.
 
 0.09    (02/07/2014)
 
