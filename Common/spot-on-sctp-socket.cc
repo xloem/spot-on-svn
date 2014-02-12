@@ -60,6 +60,15 @@ extern "C"
 #include "Common/spot-on-common.h"
 #include "spot-on-sctp-socket.h"
 
+#ifdef Q_OS_MAC
+#ifndef AF_INET
+#define AF_INET PF_INET
+#endif
+#ifndef AF_INET6
+#define AF_INET6 PF_INET6
+#endif
+#endif
+
 /*
 ** Please read http://gcc.gnu.org/onlinedocs/gcc-4.4.1/gcc/Optimize-Options.html#Type_002dpunning.
 */
