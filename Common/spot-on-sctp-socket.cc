@@ -663,6 +663,7 @@ void spoton_sctp_socket::connectToHostImplementation(void)
     }
 
  done_label:
+
   if(rc != 0)
     close();
 #endif
