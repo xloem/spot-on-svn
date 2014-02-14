@@ -53,6 +53,8 @@ class spoton_sctp_server: public QObject
  private:
   QPointer<QSocketNotifier> m_socketReadNotifier;
   QPointer<QSocketNotifier> m_socketWriteNotifier;
+  QString m_errorString;
+  bool m_isListening;
   int m_backlog;
   int m_socketDescriptor;
   qint64 m_id;

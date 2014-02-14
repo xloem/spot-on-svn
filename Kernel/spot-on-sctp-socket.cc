@@ -86,8 +86,8 @@ type_punning_sockaddr_t;
 
 spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QObject(parent)
 {
+  m_connectToPeerPort = 0;
   m_hostLookupId = -1;
-  m_port = 0;
   m_readBufferSize = 0;
   m_socketDescriptor = -1;
   m_socketReadNotifier = 0;
@@ -112,16 +112,11 @@ QHostAddress spoton_sctp_socket::localAddress(void) const
 QHostAddress spoton_sctp_socket::localAddressAndPort(quint16 *port) const
 {
 #ifdef SPOTON_SCTP_ENABLED
-  if(m_socketDescriptor < 0)
-    {
-      if(port)
-	*port = 0;
-
-      return QHostAddress();
-    }
-
   if(port)
     *port = 0;
+
+  if(m_socketDescriptor < 0)
+    return QHostAddress();
 
   QHostAddress address;
   socklen_t length = 0;
@@ -185,16 +180,11 @@ QHostAddress spoton_sctp_socket::peerAddress(void) const
 QHostAddress spoton_sctp_socket::peerAddressAndPort(quint16 *port) const
 {
 #ifdef SPOTON_SCTP_ENABLED
-  if(m_socketDescriptor < 0)
-    {
-      if(port)
-	*port = 0;
-
-      return QHostAddress();
-    }
-
   if(port)
     *port = 0;
+
+  if(m_socketDescriptor < 0)
+    return QHostAddress();
 
   QHostAddress address;
   socklen_t length = 0;
@@ -249,7 +239,7 @@ QHostAddress spoton_sctp_socket::peerAddressAndPort(quint16 *port) const
 QString spoton_sctp_socket::peerName(void) const
 {
 #ifdef SPOTON_SCTP_ENABLED
-  return m_peerName;
+  return m_connectToPeerName;
 #else
   return QString();
 #endif
@@ -463,10 +453,10 @@ void spoton_sctp_socket::close(void)
     }
 
   ::close(m_socketDescriptor);
+  m_connectToPeerName.clear();
+  m_connectToPeerPort = 0;
   m_hostLookupId = -1;
   m_ipAddress.clear();
-  m_peerName.clear();
-  m_port = 0;
   m_readBuffer.clear();
   m_socketDescriptor = -1;
   m_state = UnconnectedState;
@@ -481,8 +471,8 @@ void spoton_sctp_socket::connectToHost(const QString &hostName,
   if(m_state != UnconnectedState)
     return;
 
-  m_peerName = hostName;
-  m_port = port;
+  m_connectToPeerName = hostName;
+  m_connectToPeerPort = port;
 
   if(QHostAddress(hostName).isNull())
     {
@@ -509,7 +499,8 @@ void spoton_sctp_socket::connectToHostImplementation(void)
   qint64 optval = 0;
   socklen_t optlen = sizeof(optval);
 
-  if(QHostAddress(m_ipAddress).protocol() == QAbstractSocket::IPv6Protocol)
+  if(QHostAddress(m_ipAddress).protocol() ==
+     QAbstractSocket::NetworkLayerProtocol(IPv6Protocol))
     protocol = IPv6Protocol;
 
   if(protocol == IPv4Protocol)
@@ -572,7 +563,7 @@ void spoton_sctp_socket::connectToHostImplementation(void)
       memset(&servaddr, 0, sizeof(servaddr));
       servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
       servaddr.sin_family = AF_INET;
-      servaddr.sin_port = htons(m_port);
+      servaddr.sin_port = htons(m_connectToPeerPort);
       rc = inet_pton(AF_INET, m_ipAddress.toLatin1().constData(),
 		     &servaddr.sin_addr);
 
@@ -621,7 +612,7 @@ void spoton_sctp_socket::connectToHostImplementation(void)
       memset(&servaddr, 0, sizeof(servaddr));
       servaddr.sin6_addr = in6addr_any;
       servaddr.sin6_family = AF_INET6;
-      servaddr.sin6_port = htons(m_port);
+      servaddr.sin6_port = htons(m_connectToPeerPort);
       rc = inet_pton(AF_INET6, m_ipAddress.toLatin1().constData(),
 		     &servaddr.sin6_addr);
 

@@ -100,13 +100,13 @@ class spoton_sctp_socket: public QObject
   QByteArray m_readBuffer;
   QPointer<QSocketNotifier> m_socketReadNotifier;
   QPointer<QSocketNotifier> m_socketWriteNotifier;
+  QString m_connectToPeerName;
   QString m_ipAddress;
-  QString m_peerName;
   SocketState m_state;
   int m_hostLookupId;
   int m_socketDescriptor;
   qint64 m_readBufferSize;
-  quint16 m_port;
+  quint16 m_connectToPeerPort;
   QHostAddress localAddressAndPort(quint16 *port) const;
   QHostAddress peerAddressAndPort(quint16 *port) const;
   int inspectConnectResult(const int rc, const int errorcode);

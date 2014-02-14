@@ -25,6 +25,7 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QAbstractSocket>
 #include <QSocketNotifier>
 
 #ifdef SPOTON_SCTP_ENABLED
@@ -89,6 +90,7 @@ spoton_sctp_server::spoton_sctp_server(const qint64 id,
 {
   m_backlog = 30;
   m_id = id;
+  m_isListening = false;
   m_socketDescriptor = 0;
   m_socketReadNotifier = 0;
   m_socketWriteNotifier = 0;
@@ -102,7 +104,7 @@ spoton_sctp_server::~spoton_sctp_server()
 QString spoton_sctp_server::errorString(void) const
 {
 #ifdef SPOTON_SCTP_ENABLED
-  return QString();
+  return m_errorString;
 #else
   return QString();
 #endif
@@ -111,7 +113,7 @@ QString spoton_sctp_server::errorString(void) const
 bool spoton_sctp_server::isListening(void) const
 {
 #ifdef SPOTON_SCTP_ENABLED
-  return false;
+  return m_isListening;
 #else
   return false;
 #endif
@@ -122,7 +124,67 @@ bool spoton_sctp_server::listen(const QHostAddress &address, quint16 port)
 #ifdef SPOTON_SCTP_ENABLED
   Q_UNUSED(address);
   Q_UNUSED(port);
-  return false;
+
+  if(m_isListening)
+    return true;
+  else if(m_socketDescriptor > -1)
+    return m_isListening;
+
+  QAbstractSocket::NetworkLayerProtocol protocol =
+    QAbstractSocket::IPv4Protocol;
+  int rc = 0;
+  qint64 optval = 0;
+  socklen_t optlen = sizeof(optval);
+
+  if(QHostAddress(address).protocol() == QAbstractSocket::IPv6Protocol)
+    protocol = QAbstractSocket::IPv6Protocol;
+
+  if(protocol == QAbstractSocket::IPv4Protocol)
+    m_socketDescriptor = socket(AF_INET, SOCK_STREAM, IPPROTO_SCTP);
+  else
+    m_socketDescriptor = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
+
+  rc = fcntl(m_socketDescriptor, F_GETFL, 0);
+
+  if(rc == -1)
+    {
+      m_errorString = QString("listen()::fcntl()::errno=%1").arg(errno);
+      goto done_label;
+    }
+
+  if(fcntl(m_socketDescriptor, F_SETFL, O_NONBLOCK | rc) == -1)
+    {
+      m_errorString = QString("listen()::fcntl()::errno=%1").arg(errno);
+      goto done_label;
+    }
+
+  optval = 8192;
+  setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
+  optval = 1;
+  setsockopt(m_socketDescriptor, SOL_SOCKET, SO_REUSEADDR, &optval, optlen);
+  optlen = 8192;
+  setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
+  rc = ::listen(m_socketDescriptor, m_backlog);
+
+  if(rc == 0)
+    m_isListening = true;
+  else
+    {
+      if(errno == EADDRINUSE)
+	m_errorString = "EADDRINUSE";
+      else
+	m_errorString = "listen() error";
+    }
+
+ done_label:
+
+  if(rc != 0)
+    {
+      close();
+      return false;
+    }
+
+  return true;
 #else
   Q_UNUSED(address);
   Q_UNUSED(port);
@@ -155,6 +217,8 @@ void spoton_sctp_server::close(void)
     }
 
   ::close(m_socketDescriptor);
+  m_errorString.clear();
+  m_isListening = false;
   m_socketDescriptor = -1;
 #endif
 }
