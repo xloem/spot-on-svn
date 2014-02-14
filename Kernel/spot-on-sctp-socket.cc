@@ -747,13 +747,6 @@ void spoton_sctp_socket::setSocketOption(const SocketOption option,
 #endif
 }
 
-void spoton_sctp_socket::slotClose(void)
-{
-#ifdef SPOTON_SCTP_ENABLED
-  close();
-#endif
-}
-
 void spoton_sctp_socket::slotHostFound(const QHostInfo &hostInfo)
 {
 #ifdef SPOTON_SCTP_ENABLED

@@ -37,6 +37,7 @@
 #include "Common/spot-on-external-address.h"
 #include "spot-on-kernel.h"
 #include "spot-on-listener.h"
+#include "spot-on-sctp-server.h"
 
 #if QT_VERSION >= 0x050000
 void spoton_listener_tcp_server::incomingConnection(qintptr socketDescriptor)
@@ -131,10 +132,13 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 				 const QString &orientation,
 				 QObject *parent):QObject(parent)
 {
+  m_sctpServer = 0;
   m_tcpServer = 0;
   m_udpServer = 0;
 
-  if(transport == "tcp")
+  if(transport == "sctp")
+    m_sctpServer = new spoton_sctp_server(id, parent);
+  else if(transport == "tcp")
     m_tcpServer = new spoton_listener_tcp_server(id, parent);
   else if(transport == "udp")
     m_udpServer = new spoton_listener_udp_server(id, parent);
@@ -212,7 +216,9 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 	  this,
 	  SLOT(slotExternalAddressDiscovered(const QHostAddress &)));
 
-  if(m_tcpServer)
+  if(m_sctpServer)
+    m_sctpServer->setMaxPendingConnections(maximumClients);
+  else if(m_tcpServer)
     m_tcpServer->setMaxPendingConnections(maximumClients);
 
   connect(&m_timer,
@@ -233,7 +239,9 @@ spoton_listener::~spoton_listener()
 			arg(m_port));
   m_timer.stop();
 
-  if(m_tcpServer)
+  if(m_sctpServer)
+    m_sctpServer->close();
+  else if(m_tcpServer)
     m_tcpServer->close();
   else if(m_udpServer)
     m_udpServer->close();
@@ -1127,7 +1135,9 @@ quint16 spoton_listener::serverPort(void) const
 
 void spoton_listener::close(void)
 {
-  if(m_tcpServer)
+  if(m_sctpServer)
+    m_sctpServer->close();
+  else if(m_tcpServer)
     m_tcpServer->close();
   else if(m_udpServer)
     m_udpServer->close();
@@ -1135,7 +1145,9 @@ void spoton_listener::close(void)
 
 bool spoton_listener::isListening(void) const
 {
-  if(m_tcpServer)
+  if(m_sctpServer)
+    return m_sctpServer->isListening();
+  else if(m_tcpServer)
     return m_tcpServer->isListening();
   else if(m_udpServer)
     return m_udpServer->state() == QAbstractSocket::BoundState;
@@ -1145,7 +1157,9 @@ bool spoton_listener::isListening(void) const
 
 bool spoton_listener::listen(const QHostAddress &address, const quint16 port)
 {
-  if(m_tcpServer)
+  if(m_sctpServer)
+    return m_sctpServer->listen(address, port);
+  else if(m_tcpServer)
     return m_tcpServer->listen(address, port);
   else if(m_udpServer)
     {
@@ -1164,7 +1178,9 @@ bool spoton_listener::listen(const QHostAddress &address, const quint16 port)
 
 QString spoton_listener::errorString(void) const
 {
-  if(m_tcpServer)
+  if(m_sctpServer)
+    return m_sctpServer->errorString();
+  else if(m_tcpServer)
     return m_tcpServer->errorString();
   else if(m_udpServer)
     return m_udpServer->errorString();
@@ -1174,7 +1190,9 @@ QString spoton_listener::errorString(void) const
 
 int spoton_listener::maxPendingConnections(void) const
 {
-  if(m_tcpServer)
+  if(m_sctpServer)
+    return m_sctpServer->maxPendingConnections();
+  else if(m_tcpServer)
     return m_tcpServer->maxPendingConnections();
   else
     return std::numeric_limits<int>::max();

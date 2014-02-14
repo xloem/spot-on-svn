@@ -114,7 +114,6 @@ class spoton_sctp_socket: public QObject
   void prepareSocketNotifiers(void);
 
  private slots:
-  void slotClose(void);
   void slotSocketNotifierActivated(int socket);
   void slotHostFound(const QHostInfo &hostInfo);
 

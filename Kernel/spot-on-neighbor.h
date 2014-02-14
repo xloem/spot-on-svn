@@ -42,8 +42,8 @@
 #include <QUuid>
 
 #include "Common/spot-on-common.h"
-#include "Common/spot-on-sctp-socket.h"
 #include "Common/spot-on-send.h"
+#include "spot-on-sctp-socket.h"
 
 class spoton_external_address;
 

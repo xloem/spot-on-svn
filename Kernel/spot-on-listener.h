@@ -41,6 +41,7 @@
 class QNetworkInterface;
 
 class spoton_external_address;
+class spoton_sctp_server;
 
 class spoton_listener_tcp_server: public QTcpServer
 {
@@ -195,6 +196,7 @@ class spoton_listener: public QObject
   spoton_external_address *m_externalAddress;
   spoton_listener_tcp_server *m_tcpServer;
   spoton_listener_udp_server *m_udpServer;
+  spoton_sctp_server *m_sctpServer;
   qint64 id(void) const;
   QString errorString(void) const;
   int maxPendingConnections(void) const;
