@@ -171,9 +171,9 @@ bool spoton_sctp_server::listen(const QHostAddress &address, quint16 port)
   else
     {
       if(errno == EADDRINUSE)
-	m_errorString = "EADDRINUSE";
+	m_errorString = "listen()::listen()::errno=EADDRINUSE";
       else
-	m_errorString = "listen() error";
+	m_errorString = QString("listen()::listen()::errno=%1").arg(errno);
     }
 
  done_label:
@@ -257,7 +257,7 @@ void spoton_sctp_server::prepareSocketNotifiers(void)
 void spoton_sctp_server::setMaxPendingConnections(const int numConnections)
 {
 #ifdef SPOTON_SCTP_ENABLED
-  m_backlog = qAbs(numConnections);
+  m_backlog = qAbs(qMax(static_cast<int> (SOMAXCONN), numConnections));
 #else
   Q_UNUSED(numConnections);
 #endif

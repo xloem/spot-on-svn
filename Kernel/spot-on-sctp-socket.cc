@@ -468,7 +468,9 @@ void spoton_sctp_socket::connectToHost(const QString &hostName,
 				       const quint16 port)
 {
 #ifdef SPOTON_SCTP_ENABLED
-  if(m_state != UnconnectedState)
+  if(m_socketDescriptor > -1)
+    return;
+  else if(m_state != UnconnectedState)
     return;
 
   m_connectToPeerName = hostName;
@@ -530,6 +532,12 @@ void spoton_sctp_socket::connectToHostImplementation(void)
       goto done_label;
     }
 
+  prepareSocketNotifiers();
+
+  /*
+  ** Set the socket to non-blocking.
+  */
+
   rc = fcntl(m_socketDescriptor, F_GETFL, 0);
 
   if(rc == -1)
@@ -555,7 +563,11 @@ void spoton_sctp_socket::connectToHostImplementation(void)
     }
 
   rc = 0;
-  prepareSocketNotifiers();
+
+  /*
+  ** Set read and write buffer sizes.
+  */
+
   optval = 8192;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
@@ -652,7 +664,7 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 	  ** The connection was established immediately.
 	  */
 
-	  m_state = ConnectingState;
+	  m_state = ConnectedState;
 	  emit connected();
 	}
       else
