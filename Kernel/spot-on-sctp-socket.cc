@@ -510,10 +510,11 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
   if(m_socketDescriptor == -1)
     {
+      rc = -1;
+
       QString errorstr
 	(QString("connectToHostImplementation()::socket()::errno=%1").
 	 arg(errno));
-      rc = -1;
 
       if(errno == EACCES)
 	emit error(errorstr, SocketAccessError);
@@ -536,19 +537,24 @@ void spoton_sctp_socket::connectToHostImplementation(void)
       QString errorstr(QString("connectToHostImplementation()::fcntl()::"
 			       "errno=%1").
 		       arg(errno));
+
       emit error(errorstr, UnknownSocketError);
       goto done_label;
     }
 
-  if(fcntl(m_socketDescriptor, F_SETFL, O_NONBLOCK | rc) == -1)
+  rc = fcntl(m_socketDescriptor, F_SETFL, O_NONBLOCK | rc);
+
+  if(rc == -1)
     {
       QString errorstr(QString("connectToHostImplementation()::fcntl()::"
 			       "errno=%1").
 		       arg(errno));
+
       emit error(errorstr, UnknownSocketError);
       goto done_label;
     }
 
+  rc = 0;
   prepareSocketNotifiers();
   optval = 8192;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
