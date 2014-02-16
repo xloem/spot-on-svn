@@ -435,6 +435,13 @@ quint16 spoton_sctp_socket::peerPort(void) const
 #endif
 }
 
+void spoton_sctp_socket::abort(void)
+{
+#ifdef SPOTON_SCTP_ENABLED
+  close();
+#endif
+}
+
 void spoton_sctp_socket::close(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
@@ -575,15 +582,15 @@ void spoton_sctp_socket::connectToHostImplementation(void)
   if(protocol == IPv4Protocol)
     {
       socklen_t length = 0;
-      struct sockaddr_in servaddr;
+      struct sockaddr_in serveraddr;
 
-      length = sizeof(servaddr);
-      memset(&servaddr, 0, sizeof(servaddr));
-      servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-      servaddr.sin_family = AF_INET;
-      servaddr.sin_port = htons(m_connectToPeerPort);
+      length = sizeof(serveraddr);
+      memset(&serveraddr, 0, sizeof(serveraddr));
+      serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
+      serveraddr.sin_family = AF_INET;
+      serveraddr.sin_port = htons(m_connectToPeerPort);
       rc = inet_pton(AF_INET, m_ipAddress.toLatin1().constData(),
-		     &servaddr.sin_addr);
+		     &serveraddr.sin_addr);
 
       if(rc != 1)
 	{
@@ -607,7 +614,7 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
       m_state = ConnectingState;
       rc = ::connect
-	(m_socketDescriptor, (const struct sockaddr *) &servaddr, length);
+	(m_socketDescriptor, (const struct sockaddr *) &serveraddr, length);
 
       if(rc == 0)
 	{
@@ -624,15 +631,15 @@ void spoton_sctp_socket::connectToHostImplementation(void)
   else
     {
       socklen_t length = 0;
-      struct sockaddr_in6 servaddr;
+      struct sockaddr_in6 serveraddr;
 
-      length = sizeof(servaddr);
-      memset(&servaddr, 0, sizeof(servaddr));
-      servaddr.sin6_addr = in6addr_any;
-      servaddr.sin6_family = AF_INET6;
-      servaddr.sin6_port = htons(m_connectToPeerPort);
+      length = sizeof(serveraddr);
+      memset(&serveraddr, 0, sizeof(serveraddr));
+      serveraddr.sin6_addr = in6addr_any;
+      serveraddr.sin6_family = AF_INET6;
+      serveraddr.sin6_port = htons(m_connectToPeerPort);
       rc = inet_pton(AF_INET6, m_ipAddress.toLatin1().constData(),
-		     &servaddr.sin6_addr);
+		     &serveraddr.sin6_addr);
 
       if(rc != 1)
 	{
@@ -656,7 +663,7 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
       m_state = ConnectingState;
       rc = ::connect
-	(m_socketDescriptor, (const struct sockaddr *) &servaddr, length);
+	(m_socketDescriptor, (const struct sockaddr *) &serveraddr, length);
 
       if(rc == 0)
 	{

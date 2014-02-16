@@ -86,6 +86,7 @@ class spoton_sctp_socket: public QObject
   qint64 write(const char *data, const qint64 maxSize);
   quint16 localPort(void) const;
   quint16 peerPort(void) const;
+  void abort(void);
   void close(void);
   void connectToHost(const QString &hostName, const quint16 port);
   void setReadBufferSize(const qint64 size);

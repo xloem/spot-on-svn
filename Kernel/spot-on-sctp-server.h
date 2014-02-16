@@ -64,6 +64,11 @@ class spoton_sctp_server: public QObject
 
  private slots:
   void slotSocketNotifierActivated(int socket);
+
+ signals:
+  void newConnection(const int socketDescriptor,
+		     const QHostAddress &address,
+		     const quint16 port);
 };
 
 #endif

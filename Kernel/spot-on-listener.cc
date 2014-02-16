@@ -172,6 +172,17 @@ spoton_listener::spoton_listener(const QString &ipAddress,
   m_shareAddress = shareAddress;
   m_transport = transport;
   m_useAccounts = useAccounts;
+
+  if(m_sctpServer)
+    connect(m_sctpServer,
+	    SIGNAL(newConnection(const int,
+				 const QHostAddress &,
+				 const quint16)),
+	    this,
+	    SLOT(slotNewConnection(const int,
+				   const QHostAddress &,
+				   const quint16)));
+
 #if QT_VERSION >= 0x050000
   if(m_tcpServer)
     connect(m_tcpServer,
@@ -614,7 +625,25 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
     }
   else
     {
-      if(m_transport == "tcp")
+      /*
+      ** Some of the following errors should be ignored.
+      */
+
+      if(m_transport == "sctp")
+	{
+	  spoton_sctp_socket socket(this);
+
+	  socket.setSocketDescriptor(socketDescriptor);
+	  socket.abort();
+	  spoton_misc::logError
+	    (QString("spoton_listener::"
+		     "slotNewConnection(): "
+		     "generateSslKeys() failure (%1) for %2:%3.").
+	     arg(error.remove(".")).
+	     arg(m_address.toString()).
+	     arg(m_port));
+	}
+      else if(m_transport == "tcp")
 	{
 	  QAbstractSocket socket(QAbstractSocket::TcpSocket, this);
 

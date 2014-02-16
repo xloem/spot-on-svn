@@ -148,6 +148,7 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
   else
     m_socketDescriptor = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
 
+  prepareSocketNotifiers();
   rc = fcntl(m_socketDescriptor, F_GETFL, 0);
 
   if(rc == -1)
@@ -176,14 +177,14 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
   if(protocol == QAbstractSocket::IPv4Protocol)
     {
       socklen_t length = 0;
-      struct sockaddr_in servaddr;
+      struct sockaddr_in serveraddr;
 
-      length = sizeof(servaddr);
-      memset(&servaddr, 0, sizeof(servaddr));
-      servaddr.sin_family = AF_INET;
-      servaddr.sin_port = htons(port);
+      length = sizeof(serveraddr);
+      memset(&serveraddr, 0, sizeof(serveraddr));
+      serveraddr.sin_family = AF_INET;
+      serveraddr.sin_port = htons(port);
       rc = inet_pton(AF_INET, address.toString().toLatin1().constData(),
-		     &servaddr.sin_addr.s_addr);
+		     &serveraddr.sin_addr.s_addr);
 
       if(rc != 1)
 	{
@@ -199,7 +200,7 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 	rc = 0;
 
       rc = bind
-	(m_socketDescriptor, (const struct sockaddr *) &servaddr, length);
+	(m_socketDescriptor, (const struct sockaddr *) &serveraddr, length);
 
       if(rc != 0)
 	{
@@ -211,14 +212,14 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
   else
     {
       socklen_t length = 0;
-      struct sockaddr_in6 servaddr;
+      struct sockaddr_in6 serveraddr;
 
-      length = sizeof(servaddr);
-      memset(&servaddr, 0, sizeof(servaddr));
-      servaddr.sin6_family = AF_INET6;
-      servaddr.sin6_port = htons(port);
+      length = sizeof(serveraddr);
+      memset(&serveraddr, 0, sizeof(serveraddr));
+      serveraddr.sin6_family = AF_INET6;
+      serveraddr.sin6_port = htons(port);
       rc = inet_pton(AF_INET6, address.toString().toLatin1().constData(),
-		     &servaddr.sin6_addr);
+		     &serveraddr.sin6_addr);
 
       if(rc != 1)
 	{
@@ -234,7 +235,7 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 	rc = 0;
 
       rc = bind
-	(m_socketDescriptor, (const struct sockaddr *) &servaddr, length);
+	(m_socketDescriptor, (const struct sockaddr *) &serveraddr, length);
 
       if(rc != 0)
 	{
@@ -352,6 +353,43 @@ void spoton_sctp_server::slotSocketNotifierActivated(int socket)
 
   if(!socketNotifier)
     return;
+
+  if(socketNotifier == m_socketReadNotifier)
+    {
+      socketNotifier->setEnabled(false);
+
+      QAbstractSocket::NetworkLayerProtocol protocol =
+	QAbstractSocket::IPv4Protocol;
+      QHostAddress address;
+      int socketDescriptor = -1;
+      quint16 port = 0;
+      socklen_t length = 0;
+
+      if(QHostAddress(m_serverAddress).protocol() ==
+	 QAbstractSocket::IPv6Protocol)
+	protocol = QAbstractSocket::IPv6Protocol;
+
+      if(protocol == QAbstractSocket::IPv4Protocol)
+	{
+	  struct sockaddr_in clientaddr;
+
+	  length = sizeof(clientaddr);
+	  socketDescriptor = accept
+	    (m_socketDescriptor, (struct sockaddr *) &clientaddr,
+	     &length);
+
+	  if(socketDescriptor > -1)
+	    port = ntohs(clientaddr.sin_port);
+	}
+      else
+	{
+	}
+
+      socketNotifier->setEnabled(true);
+
+      if(socketDescriptor > -1)
+	emit newConnection(socketDescriptor, address, port);
+    }
 #else
   Q_UNUSED(socket);
 #endif
