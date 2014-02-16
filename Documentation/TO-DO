@@ -182,5 +182,6 @@ Remaining Items
 31.    Artificial pauses. Suppose an inbound packet requires t0 time to
        process. Pause the current thread for T - t0 seconds, where T is some
        reasonable time.
-32.    Record received pulses.
+32.    Feature to discover missing pulses.
 33.    Lots of kernel activity may cause libgcrypt memory exhaustion.
+34.    Allow for single-host connections for listeners.
