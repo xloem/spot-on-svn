@@ -156,7 +156,9 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
       goto done_label;
     }
 
-  if(fcntl(m_socketDescriptor, F_SETFL, O_NONBLOCK | rc) == -1)
+  rc = fcntl(m_socketDescriptor, F_SETFL, O_NONBLOCK | rc);
+
+  if(rc == -1)
     {
       m_errorString = QString("listen()::fcntl()::errno=%1").arg(errno);
       goto done_label;
@@ -319,7 +321,7 @@ void spoton_sctp_server::prepareSocketNotifiers(void)
 void spoton_sctp_server::setMaxPendingConnections(const int numConnections)
 {
 #ifdef SPOTON_SCTP_ENABLED
-  m_backlog = qAbs(qMax(static_cast<int> (SOMAXCONN), numConnections));
+  m_backlog = qBound(1, numConnections, SOMAXCONN);
 #else
   Q_UNUSED(numConnections);
 #endif
@@ -372,7 +374,10 @@ void spoton_sctp_server::slotSocketNotifierActivated(int socket)
 		  port = ntohs(clientaddr.sin_port);
 		}
 	      else
-		shutdown(socketDescriptor, SHUT_RDWR);
+		{
+		  shutdown(socketDescriptor, SHUT_RDWR);
+		  socketDescriptor = -1;
+		}
 	    }
 	}
       else
@@ -401,7 +406,10 @@ void spoton_sctp_server::slotSocketNotifierActivated(int socket)
 		  port = ntohs(clientaddr.sin6_port);
 		}
 	      else
-		shutdown(socketDescriptor, SHUT_RDWR);
+		{
+		  shutdown(socketDescriptor, SHUT_RDWR);
+		  socketDescriptor = -1;
+		}
 	    }
 	}
 
