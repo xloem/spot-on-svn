@@ -438,6 +438,7 @@ quint16 spoton_sctp_socket::peerPort(void) const
 void spoton_sctp_socket::abort(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
+  shutdown(m_socketDescriptor, SHUT_RDWR);
   close();
 #endif
 }

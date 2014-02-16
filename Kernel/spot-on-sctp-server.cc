@@ -93,7 +93,6 @@ spoton_sctp_server::spoton_sctp_server(const qint64 id,
   m_isListening = false;
   m_socketDescriptor = -1;
   m_socketReadNotifier = 0;
-  m_socketWriteNotifier = 0;
 }
 
 spoton_sctp_server::~spoton_sctp_server()
@@ -289,12 +288,6 @@ void spoton_sctp_server::close(void)
       m_socketReadNotifier->deleteLater();
     }
 
-  if(m_socketWriteNotifier)
-    {
-      m_socketWriteNotifier->setEnabled(false);
-      m_socketWriteNotifier->deleteLater();
-    }
-
   ::close(m_socketDescriptor);
   m_errorString.clear();
   m_isListening = false;
@@ -312,9 +305,6 @@ void spoton_sctp_server::prepareSocketNotifiers(void)
   if(m_socketReadNotifier)
     m_socketReadNotifier->deleteLater();
 
-  if(m_socketWriteNotifier)
-    m_socketWriteNotifier->deleteLater();
-
   m_socketReadNotifier = new QSocketNotifier(m_socketDescriptor,
 					     QSocketNotifier::Read,
 					     this);
@@ -323,14 +313,6 @@ void spoton_sctp_server::prepareSocketNotifiers(void)
 	  this,
 	  SLOT(slotSocketNotifierActivated(int)));
   m_socketReadNotifier->setEnabled(true);
-  m_socketWriteNotifier = new QSocketNotifier(m_socketDescriptor,
-					      QSocketNotifier::Write,
-					      this);
-  connect(m_socketWriteNotifier,
-	  SIGNAL(activated(int)),
-	  this,
-	  SLOT(slotSocketNotifierActivated(int)));
-  m_socketWriteNotifier->setEnabled(true);
 #endif
 }
 
@@ -379,10 +361,48 @@ void spoton_sctp_server::slotSocketNotifierActivated(int socket)
 	     &length);
 
 	  if(socketDescriptor > -1)
-	    port = ntohs(clientaddr.sin_port);
+	    {
+	      type_punning_sockaddr_t *sockaddr =
+		(type_punning_sockaddr_t *) &clientaddr;
+
+	      if(sockaddr)
+		{
+		  address.setAddress
+		    (ntohl(sockaddr->sockaddr_in.sin_addr.s_addr));
+		  port = ntohs(clientaddr.sin_port);
+		}
+	      else
+		shutdown(socketDescriptor, SHUT_RDWR);
+	    }
 	}
       else
 	{
+	  struct sockaddr_in6 clientaddr;
+
+	  length = sizeof(clientaddr);
+	  socketDescriptor = accept
+	    (m_socketDescriptor, (struct sockaddr *) &clientaddr,
+	     &length);
+
+	  if(socketDescriptor > -1)
+	    {
+	      type_punning_sockaddr_t *sockaddr =
+		(type_punning_sockaddr_t *) &clientaddr;
+
+	      if(sockaddr)
+		{
+		  Q_IPV6ADDR tmp;
+
+		  memcpy(&tmp, &sockaddr->sockaddr_in6.sin6_addr.s6_addr,
+			 sizeof(tmp));
+		  address.setAddress(tmp);
+		  address.setScopeId
+		    (QString::number(sockaddr->sockaddr_in6.sin6_scope_id));
+		  port = ntohs(clientaddr.sin6_port);
+		}
+	      else
+		shutdown(socketDescriptor, SHUT_RDWR);
+	    }
 	}
 
       socketNotifier->setEnabled(true);
