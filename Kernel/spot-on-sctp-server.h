@@ -42,15 +42,17 @@ class spoton_sctp_server: public QObject
  public:
   spoton_sctp_server(const qint64 id, QObject *parent);
   ~spoton_sctp_server();
+  QHostAddress serverAddress(void) const;
   QString errorString(void) const;
   bool isListening(void) const;
-  bool listen(const QHostAddress &address = QHostAddress::Any,
-	      quint16 port = 0);
+  bool listen(const QHostAddress &address,
+	      const quint16 port);
   int maxPendingConnections(void) const;
   void close(void);
   void setMaxPendingConnections(const int numConnections);
 
  private:
+  QHostAddress m_serverAddress;
   QPointer<QSocketNotifier> m_socketReadNotifier;
   QPointer<QSocketNotifier> m_socketWriteNotifier;
   QString m_errorString;

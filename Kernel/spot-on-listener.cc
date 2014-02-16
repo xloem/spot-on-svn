@@ -400,7 +400,7 @@ void spoton_listener::slotTimeout(void)
 
 		    if(isListening())
 		      {
-			if(m_tcpServer)
+			if(m_sctpServer || m_tcpServer)
 			  if(query.value(1).toInt() != maxPendingConnections())
 			    {
 			      int maximumPendingConnections =
@@ -411,8 +411,12 @@ void spoton_listener::slotTimeout(void)
 			      else if(maximumPendingConnections % 5 != 0)
 				maximumPendingConnections = 1;
 
-			      m_tcpServer->setMaxPendingConnections
-				(maximumPendingConnections);
+			      if(m_sctpServer)
+				m_sctpServer->setMaxPendingConnections
+				  (maximumPendingConnections);
+			      else if(m_tcpServer)
+				m_tcpServer->setMaxPendingConnections
+				  (maximumPendingConnections);
 			    }
 		      }
 		  }
@@ -1008,7 +1012,15 @@ void spoton_listener::prepareNetworkInterface(void)
       QList<QNetworkAddressEntry> addresses(list.at(i).addressEntries());
 
       for(int j = 0; j < addresses.size(); j++)
-	if(m_tcpServer)
+	if(m_sctpServer)
+	  {
+	    if(addresses.at(j).ip() == m_sctpServer->serverAddress())
+	      {
+		m_networkInterface = new QNetworkInterface(list.at(i));
+		break;
+	      }
+	  }
+	else if(m_tcpServer)
 	  {
 	    if(addresses.at(j).ip() == m_tcpServer->serverAddress())
 	      {

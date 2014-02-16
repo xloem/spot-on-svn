@@ -91,7 +91,7 @@ spoton_sctp_server::spoton_sctp_server(const qint64 id,
   m_backlog = 30;
   m_id = id;
   m_isListening = false;
-  m_socketDescriptor = 0;
+  m_socketDescriptor = -1;
   m_socketReadNotifier = 0;
   m_socketWriteNotifier = 0;
 }
@@ -99,6 +99,11 @@ spoton_sctp_server::spoton_sctp_server(const qint64 id,
 spoton_sctp_server::~spoton_sctp_server()
 {
   close();
+}
+
+QHostAddress spoton_sctp_server::serverAddress(void) const
+{
+  return m_serverAddress;
 }
 
 QString spoton_sctp_server::errorString(void) const
@@ -119,12 +124,11 @@ bool spoton_sctp_server::isListening(void) const
 #endif
 }
 
-bool spoton_sctp_server::listen(const QHostAddress &address, quint16 port)
+bool spoton_sctp_server::listen(const QHostAddress &address,
+				const quint16 port)
 {
-#ifdef SPOTON_SCTP_ENABLED
-  Q_UNUSED(address);
-  Q_UNUSED(port);
 
+#ifdef SPOTON_SCTP_ENABLED
   if(m_isListening)
     return true;
   else if(m_socketDescriptor > -1)
@@ -164,17 +168,91 @@ bool spoton_sctp_server::listen(const QHostAddress &address, quint16 port)
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_REUSEADDR, &optval, optlen);
   optlen = 8192;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
+
+  /*
+  ** Let's bind.
+  */
+
+  if(protocol == QAbstractSocket::IPv4Protocol)
+    {
+      socklen_t length = 0;
+      struct sockaddr_in servaddr;
+
+      length = sizeof(servaddr);
+      memset(&servaddr, 0, sizeof(servaddr));
+      servaddr.sin_family = AF_INET;
+      servaddr.sin_port = htons(port);
+      rc = inet_pton(AF_INET, address.toString().toLatin1().constData(),
+		     &servaddr.sin_addr.s_addr);
+
+      if(rc != 1)
+	{
+	  if(rc == -1)
+	    m_errorString = QString
+	      ("listen()::inet_pton()::errno=%1").arg(errno);
+	  else
+	    m_errorString = "listen()::inet_pton()";
+
+	  goto done_label;
+	}
+      else
+	rc = 0;
+
+      rc = bind
+	(m_socketDescriptor, (const struct sockaddr *) &servaddr, length);
+
+      if(rc != 0)
+	{
+	  m_errorString = QString
+	      ("listen()::bind()::errno=%1").arg(errno);
+	  goto done_label;
+	}
+    }
+  else
+    {
+      socklen_t length = 0;
+      struct sockaddr_in6 servaddr;
+
+      length = sizeof(servaddr);
+      memset(&servaddr, 0, sizeof(servaddr));
+      servaddr.sin6_family = AF_INET6;
+      servaddr.sin6_port = htons(port);
+      rc = inet_pton(AF_INET6, address.toString().toLatin1().constData(),
+		     &servaddr.sin6_addr);
+
+      if(rc != 1)
+	{
+	  if(rc == -1)
+	    m_errorString = QString
+	      ("listen()::inet_pton()::errno=%1").arg(errno);
+	  else
+	    m_errorString = "listen()::inet_pton()";
+
+	  goto done_label;
+	}
+      else
+	rc = 0;
+
+      rc = bind
+	(m_socketDescriptor, (const struct sockaddr *) &servaddr, length);
+
+      if(rc != 0)
+	{
+	  m_errorString = QString
+	      ("listen()::bind()::errno=%1").arg(errno);
+	  goto done_label;
+	}
+    }
+
   rc = ::listen(m_socketDescriptor, m_backlog);
 
   if(rc == 0)
-    m_isListening = true;
-  else
     {
-      if(errno == EADDRINUSE)
-	m_errorString = "listen()::listen()::errno=EADDRINUSE";
-      else
-	m_errorString = QString("listen()::listen()::errno=%1").arg(errno);
+      m_isListening = true;
+      m_serverAddress = address;
     }
+  else
+    m_errorString = QString("listen()::listen()::errno=%1").arg(errno);
 
  done_label:
 
@@ -219,6 +297,7 @@ void spoton_sctp_server::close(void)
   ::close(m_socketDescriptor);
   m_errorString.clear();
   m_isListening = false;
+  m_serverAddress.clear();
   m_socketDescriptor = -1;
 #endif
 }
