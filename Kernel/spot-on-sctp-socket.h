@@ -78,6 +78,7 @@ class spoton_sctp_socket: public QObject
 
   spoton_sctp_socket(QObject *parent);
   ~spoton_sctp_socket();
+  QByteArray readAll(void);
   QHostAddress localAddress(void) const;
   QHostAddress peerAddress(void) const;
   QString peerName(void) const;

@@ -48,6 +48,7 @@ class spoton_sctp_server: public QObject
   bool listen(const QHostAddress &address,
 	      const quint16 port);
   int maxPendingConnections(void) const;
+  quint16 serverPort(void) const;
   void close(void);
   void setMaxPendingConnections(const int numConnections);
 
@@ -59,6 +60,7 @@ class spoton_sctp_server: public QObject
   int m_backlog;
   int m_socketDescriptor;
   qint64 m_id;
+  quint16 m_serverPort;
   void prepareSocketNotifiers(void);
 
  private slots:

@@ -100,6 +100,14 @@ spoton_sctp_socket::~spoton_sctp_socket()
   close();
 }
 
+QByteArray spoton_sctp_socket::readAll(void)
+{
+  QByteArray data(m_readBuffer);
+
+  m_readBuffer.clear();
+  return data;
+}
+
 QHostAddress spoton_sctp_socket::localAddress(void) const
 {
 #ifdef SPOTON_SCTP_ENABLED
@@ -261,6 +269,7 @@ bool spoton_sctp_socket::setSocketDescriptor(const int socketDescriptor)
     {
       close();
       m_socketDescriptor = socketDescriptor;
+      m_state = ConnectedState;
       prepareSocketNotifiers();
       return true;
     }
@@ -324,7 +333,7 @@ qint64 spoton_sctp_socket::readData(char *data, qint64 maxSize)
       QString errorstr(QString("readData()::recv()::errno=%1").
 		       arg(errno));
 
-      if(errno == EAGAIN || errno == EWOULDBLOCK)
+      if(errno == EAGAIN || errno == EINPROGRESS || errno == EWOULDBLOCK)
 	{
 	  /*
 	  ** We'll ignore this condition.
@@ -505,8 +514,8 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
   NetworkLayerProtocol protocol = IPv4Protocol;
+  int optval = 0;
   int rc = 0;
-  qint64 optval = 0;
   socklen_t optlen = sizeof(optval);
 
   if(QHostAddress(m_ipAddress).protocol() ==
@@ -573,11 +582,12 @@ void spoton_sctp_socket::connectToHostImplementation(void)
   rc = 0;
 
   /*
-  ** Set read and write buffer sizes.
+  ** Set the read and write buffer sizes.
   */
 
-  optval = 8192;
+  optval = 8 * 8192 - 1;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
+  optval = 8 * 8192 - 1;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
 
   if(protocol == IPv4Protocol)

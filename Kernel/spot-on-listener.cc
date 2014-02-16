@@ -601,28 +601,15 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
     }
 
   if(error.isEmpty())
-    {
-      if(m_tcpServer)
-	neighbor = new spoton_neighbor
-	  (socketDescriptor, certificate, privateKey,
-	   m_echoMode, m_useAccounts, m_id, m_maximumBufferSize,
-	   m_maximumContentLength, m_transport, address.toString(),
-	   QString::number(port),
-	   m_tcpServer->serverAddress().toString(),
-	   QString::number(m_tcpServer->serverPort()),
-	   m_orientation,
-	   this);
-      else if(m_udpServer)
-	neighbor = new spoton_neighbor
-	  (socketDescriptor, certificate, privateKey,
-	   m_echoMode, m_useAccounts, m_id, m_maximumBufferSize,
-	   m_maximumContentLength, m_transport, address.toString(),
-	   QString::number(port),
-	   m_udpServer->localAddress().toString(),
-	   QString::number(m_udpServer->localPort()),
-	   m_orientation,
-	   this);
-    }
+    neighbor = new spoton_neighbor
+      (socketDescriptor, certificate, privateKey,
+       m_echoMode, m_useAccounts, m_id, m_maximumBufferSize,
+       m_maximumContentLength, m_transport, address.toString(),
+       QString::number(port),
+       m_address.toString(),
+       QString::number(m_port),
+       m_orientation,
+       this);
   else
     {
       /*

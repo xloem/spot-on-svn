@@ -1213,7 +1213,9 @@ void spoton_neighbor::slotReadyRead(void)
 {
   QByteArray data;
 
-  if(m_tcpSocket)
+  if(m_sctpSocket)
+    data = m_sctpSocket->readAll();
+  else if(m_tcpSocket)
     data = m_tcpSocket->readAll();
   else if(m_udpSocket)
     data = m_udpSocket->readAll();
@@ -1385,7 +1387,21 @@ void spoton_neighbor::slotProcessData(void)
 	{
 	  if(!m_accountAuthenticated)
 	    {
-	      if(m_tcpSocket)
+	      if(m_sctpSocket)
+		{
+		  if(m_sctpSocket->peerAddress().scopeId().trimmed().isEmpty())
+		    emit authenticationRequested
+		      (QString("%1:%2").
+		       arg(m_sctpSocket->peerAddress().toString()).
+		       arg(m_sctpSocket->peerPort()));
+		  else
+		    emit authenticationRequested
+		      (QString("%1:%2:%3").
+		       arg(m_sctpSocket->peerAddress().toString()).
+		       arg(m_sctpSocket->peerPort()).
+		       arg(m_sctpSocket->peerAddress().scopeId()));
+		}
+	      else if(m_tcpSocket)
 		{
 		  if(m_tcpSocket->peerAddress().scopeId().trimmed().isEmpty())
 		    emit authenticationRequested
@@ -4796,21 +4812,22 @@ void spoton_neighbor::slotDisconnected(void)
 {
   if(m_tcpSocket)
     if(m_isUserDefined)
-      {
-	int attempts = property("connection-attempts").toInt();
+      if(!m_useSsl)
+	{
+	  int attempts = property("connection-attempts").toInt();
 
-	if(attempts < 5)
-	  {
-	    attempts += 1;
-	    setProperty("connection-attempts", attempts);
-	    spoton_misc::logError
-	      (QString("spoton_neighbor::slotDisconnected(): "
-		       "retrying %1 of %2 for %3:%4.").arg(attempts).arg(5).
-	       arg(m_address.toString()).
-	       arg(m_port));
-	    return;
-	  }
-      }
+	  if(attempts < 5)
+	    {
+	      attempts += 1;
+	      setProperty("connection-attempts", attempts);
+	      spoton_misc::logError
+		(QString("spoton_neighbor::slotDisconnected(): "
+			 "retrying %1 of %2 for %3:%4.").arg(attempts).arg(5).
+		 arg(m_address.toString()).
+		 arg(m_port));
+	      return;
+	    }
+	}
 
   spoton_misc::logError
     (QString("spoton_neighbor::slotDisconnected(): "

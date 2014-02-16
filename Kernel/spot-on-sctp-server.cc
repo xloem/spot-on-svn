@@ -91,6 +91,7 @@ spoton_sctp_server::spoton_sctp_server(const qint64 id,
   m_backlog = 30;
   m_id = id;
   m_isListening = false;
+  m_serverPort = 0;
   m_socketDescriptor = -1;
   m_socketReadNotifier = 0;
 }
@@ -135,8 +136,8 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 
   QAbstractSocket::NetworkLayerProtocol protocol =
     QAbstractSocket::IPv4Protocol;
+  int optval = 0;
   int rc = 0;
-  qint64 optval = 0;
   socklen_t optlen = sizeof(optval);
 
   if(QHostAddress(address).protocol() == QAbstractSocket::IPv6Protocol)
@@ -164,11 +165,17 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
       goto done_label;
     }
 
-  optval = 8192;
+  rc = 0;
+
+  /*
+  ** Set the read and write buffer sizes.
+  */
+
+  optval = 8 * 8192 - 1;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
   optval = 1;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_REUSEADDR, &optval, optlen);
-  optlen = 8192;
+  optval = 8 * 8192 - 1;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
 
   /*
@@ -252,6 +259,7 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
     {
       m_isListening = true;
       m_serverAddress = address;
+      m_serverPort  = port;
     }
   else
     m_errorString = QString("listen()::listen()::errno=%1").arg(errno);
@@ -281,6 +289,15 @@ int spoton_sctp_server::maxPendingConnections(void) const
 #endif
 }
 
+quint16 spoton_sctp_server::serverPort(void) const
+{
+#ifdef SPOTON_SCTP_ENABLED
+  return m_serverPort;
+#else
+  return 0;
+#endif
+}
+
 void spoton_sctp_server::close(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
@@ -294,6 +311,7 @@ void spoton_sctp_server::close(void)
   m_errorString.clear();
   m_isListening = false;
   m_serverAddress.clear();
+  m_serverPort = 0;
   m_socketDescriptor = -1;
 #endif
 }
