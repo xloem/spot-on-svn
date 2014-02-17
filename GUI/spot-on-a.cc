@@ -4184,7 +4184,6 @@ void spoton::slotSetPassphrase(void)
 		}
 
 	      QApplication::restoreOverrideCursor();
-	      updatePublicKeysLabel();
 	    }
 	}
     }
@@ -4286,6 +4285,7 @@ void spoton::slotSetPassphrase(void)
 	  populateNovas();
 	  sendBuzzKeysToKernel();
 	  sendKeysToKernel();
+	  updatePublicKeysLabel();
 	}
 
       m_sb.frame->setEnabled(true);
