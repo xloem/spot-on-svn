@@ -165,6 +165,8 @@ void spoton_misc::prepareDatabases(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("ALTER TABLE friends_public_keys "
+		   "ADD name_changed_by_user INTEGER NOT NULL DEFAULT 0");
 	query.exec
 	  ("CREATE TABLE IF NOT EXISTS friends_public_keys ("
 	   "gemini TEXT DEFAULT NULL, "
@@ -187,7 +189,8 @@ void spoton_misc::prepareDatabases(void)
 	   "neighbor_oid INTEGER NOT NULL DEFAULT -1, "
 	   "status TEXT NOT NULL DEFAULT 'offline', "
 	   "last_status_update TEXT NOT NULL DEFAULT 'now', "
-	   "gemini_hash_key TEXT DEFAULT NULL)");
+	   "gemini_hash_key TEXT DEFAULT NULL, "
+	   "name_changed_by_user INTEGER NOT NULL DEFAULT 0)");
 	query.exec
 	  ("CREATE TABLE IF NOT EXISTS relationships_with_signatures ("
 	   "public_key_hash TEXT PRIMARY KEY NOT NULL, " /*

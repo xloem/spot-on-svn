@@ -4584,6 +4584,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 {
   if(m_ui.emailParticipants == sender())
     {
+      QAction *action = 0;
       QMenu menu(this);
 
       menu.addAction
@@ -4608,6 +4609,10 @@ void spoton::slotShowContextMenu(const QPoint &point)
 			       toString())),
 		     tr("&Remove participant(s)."),
 		     this, SLOT(slotRemoveEmailParticipants(void)));
+      menu.addSeparator();
+      action = menu.addAction(tr("&Rename participant."),
+			      this, SLOT(slotRenameParticipant(void)));
+      action->setProperty("type", "email");
       menu.exec(m_ui.emailParticipants->mapToGlobal(point));
     }
   else if(m_ui.listeners == sender())
@@ -4731,6 +4736,10 @@ void spoton::slotShowContextMenu(const QPoint &point)
 			       toString())),
 		     tr("&Remove participant(s)."),
 		     this, SLOT(slotRemoveParticipants(void)));
+      menu.addSeparator();
+      action = menu.addAction(tr("&Rename participant."),
+			      this, SLOT(slotRenameParticipant(void)));
+      action->setProperty("type", "chat");
       menu.exec(m_ui.participants->mapToGlobal(point));
     }
   else if(m_ui.received == sender())
@@ -4789,6 +4798,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
     }
   else if(m_ui.urlParticipants == sender())
     {
+      QAction *action = 0;
       QMenu menu(this);
 
       menu.addAction
@@ -4808,6 +4818,10 @@ void spoton::slotShowContextMenu(const QPoint &point)
 			       toString())),
 		     tr("&Remove participant(s)."),
 		     this, SLOT(slotRemoveUrlParticipants(void)));
+      menu.addSeparator();
+      action = menu.addAction(tr("&Rename participant."),
+			      this, SLOT(slotRenameParticipant(void)));
+      action->setProperty("type", "url");
       menu.exec(m_ui.urlParticipants->mapToGlobal(point));
     }
 }

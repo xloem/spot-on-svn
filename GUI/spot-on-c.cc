@@ -2324,11 +2324,16 @@ void spoton::prepareContextMenuMirrors(void)
 				toString())),
 		      tr("&Remove participant(s)."),
 		      this, SLOT(slotRemoveParticipants(void)));
+      menu->addSeparator();
+      action = menu->addAction(tr("&Rename participant."),
+			       this, SLOT(slotRenameParticipant(void)));
+      action->setProperty("type", "chat");
       m_ui.chatActionMenu->setMenu(menu);
     }
 
   if(!m_ui.emailWriteActionMenu->menu())
     {
+      QAction *action = 0;
       QMenu *menu = new QMenu(this);
 
       menu->addAction
@@ -2353,6 +2358,10 @@ void spoton::prepareContextMenuMirrors(void)
 				toString())),
 		      tr("&Remove participant(s)."),
 		      this, SLOT(slotRemoveEmailParticipants(void)));
+      menu->addSeparator();
+      action = menu->addAction(tr("&Rename participant."),
+			       this, SLOT(slotRenameParticipant(void)));
+      action->setProperty("type", "email");
       m_ui.emailWriteActionMenu->setMenu(menu);
     }
 
@@ -2515,6 +2524,7 @@ void spoton::prepareContextMenuMirrors(void)
 
   if(!m_ui.urlActionMenu->menu())
     {
+      QAction *action = 0;
       QMenu *menu = new QMenu(this);
 
       menu->addAction
@@ -2534,6 +2544,10 @@ void spoton::prepareContextMenuMirrors(void)
 				toString())),
 		      tr("&Remove participant(s)."),
 		      this, SLOT(slotRemoveUrlParticipants(void)));
+      menu->addSeparator();
+      action = menu->addAction(tr("&Rename participant."),
+			       this, SLOT(slotRenameParticipant(void)));
+      action->setProperty("type", "url");
       m_ui.urlActionMenu->setMenu(menu);
     }
 }
@@ -3599,4 +3613,73 @@ void spoton::slotRemoveUrlParticipants(void)
 void spoton::slotShowStatistics(void)
 {
   m_ui.statisticsBox->setVisible(!m_ui.statisticsBox->isVisible());
+}
+
+void spoton::slotRenameParticipant(void)
+{
+  QAction *action = qobject_cast<QAction *> (sender());
+
+  if(!action)
+    return;
+
+  QString type(action->property("type").toString());
+
+  if(!(type == "chat" || type == "email" || type == "url"))
+    return;
+
+  QString name("");
+  bool ok = true;
+
+  name = QInputDialog::getText
+    (this, tr("Spot-On: New Name"), tr("&Name"),
+     QLineEdit::Normal, QString(""), &ok).trimmed();
+  name = name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed();
+
+  if(name.isEmpty() || !ok)
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QModelIndexList list;
+	QSqlQuery query(db);
+
+	if(type == "chat")
+	  list = m_ui.participants->selectionModel()->
+	    selectedRows(1); // OID
+	else if(type == "email")
+	  list = m_ui.emailParticipants->selectionModel()->
+	    selectedRows(1); // OID
+	else
+	  list = m_ui.urlParticipants->selectionModel()->
+	    selectedRows(1); // OID
+
+	while(!list.isEmpty())
+	  {
+	    QVariant data(list.takeFirst().data());
+
+	    if(!data.isNull() && data.isValid())
+	      {
+		query.prepare("UPDATE friends_public_keys "
+			      "SET name = ?, "
+			      "name_changed_by_user = 1 "
+			      "WHERE OID = ?");
+		query.bindValue(0, name);
+		query.bindValue(1, data.toString());
+		query.exec();
+	      }
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }

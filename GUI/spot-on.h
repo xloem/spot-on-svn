@@ -330,6 +330,7 @@ class spoton: public QMainWindow
   void slotRemoveEmailParticipants(void);
   void slotRemoveParticipants(void);
   void slotRemoveUrlParticipants(void);
+  void slotRenameParticipant(void);
   void slotReply(void);
   void slotResetAccountInformation(void);
   void slotResetAll(void);

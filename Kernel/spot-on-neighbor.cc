@@ -4159,16 +4159,23 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 	    else
 	      {
 		query.prepare("UPDATE friends_public_keys SET "
-			      "name = ?, "
 			      "last_status_update = ? "
 			      "WHERE neighbor_oid = -1 AND "
 			      "public_key_hash = ?");
 		query.bindValue
+		  (0, QDateTime::currentDateTime().toString(Qt::ISODate));
+		query.bindValue(1, publicKeyHash.toBase64());
+		query.exec();
+		query.prepare("UPDATE friends_public_keys SET "
+			      "name = ? "
+			      "WHERE name_changed_by_user = 0 AND "
+			      "neighbor_oid = -1 AND "
+			      "public_key_hash = ?");
+		query.bindValue
 		  (0,
 		   name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
-		query.bindValue
-		  (1, QDateTime::currentDateTime().toString(Qt::ISODate));
-		query.bindValue(2, publicKeyHash.toBase64());
+		query.bindValue(1, publicKeyHash.toBase64());
+		query.exec();
 	      }
 	  }
 	else
@@ -4195,11 +4202,14 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 	      }
 	    else
 	      {
+		QDateTime now(QDateTime::currentDateTime());
+
 		query.prepare("UPDATE friends_public_keys SET "
 			      "name = ?, "
 			      "status = ?, "
 			      "last_status_update = ? "
-			      "WHERE neighbor_oid = -1 AND "
+			      "WHERE name_changed_by_user = 0 AND "
+			      "neighbor_oid = -1 AND "
 			      "public_key_hash = ?");
 		query.bindValue
 		  (0,
@@ -4212,8 +4222,25 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 		  query.bindValue(1, "offline");
 
 		query.bindValue
-		  (2, QDateTime::currentDateTime().toString(Qt::ISODate));
+		  (2, now.toString(Qt::ISODate));
 		query.bindValue(3, publicKeyHash.toBase64());
+		query.exec();
+		query.prepare("UPDATE friends_public_keys SET "
+			      "status = ?, "
+			      "last_status_update = ? "
+			      "WHERE neighbor_oid = -1 AND "
+			      "public_key_hash = ?");
+
+		if(status == "away" || status == "busy" ||
+		   status == "offline" || status == "online")
+		  query.bindValue(0, status);
+		else
+		  query.bindValue(0, "offline");
+
+		query.bindValue
+		  (1, now.toString(Qt::ISODate));
+		query.bindValue(2, publicKeyHash.toBase64());
+		query.exec();
 	      }
 	  }
 

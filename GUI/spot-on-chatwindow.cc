@@ -59,14 +59,14 @@ spoton_chatwindow::spoton_chatwindow(const QIcon &icon,
   if(participant.trimmed().isEmpty())
     setWindowTitle(tr("Spot-On: %1").arg("unknown"));
   else
-    setWindowTitle(tr("Spot-On: %1").arg(participant));
+    setWindowTitle(tr("Spot-On: %1").arg(participant.trimmed()));
 
   ui.icon->setPixmap(icon.pixmap(QSize(16, 16)));
 
   if(participant.trimmed().isEmpty())
     ui.name->setText("unknown");
   else
-    ui.name->setText(participant);
+    ui.name->setText(participant.trimmed());
 
   slotSetIcons();
 }
@@ -210,6 +210,14 @@ void spoton_chatwindow::slotSetStatus(const QIcon &icon,
 	ui.icon->setPixmap(icon.pixmap(QSize(16, 16)));
 
       if(!name.trimmed().isEmpty())
-	ui.name->setText(name);
+	{
+	  setWindowTitle(tr("Spot-On: %1").arg(name.trimmed()));
+	  ui.name->setText(name.trimmed());
+	}
+      else
+	{
+	  setWindowTitle(tr("Spot-On: %1").arg("unknown"));
+	  ui.name->setText("unknown");
+	}
     }
 }
