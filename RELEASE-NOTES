@@ -21,6 +21,8 @@
      method is to re-connect to a peer if the peer does not provide
      SSL over TCP and if the client does not require SSL.
 10.  Ability to change user names in Chat, E-Mail, and URLs tabs.
+11.  Corrected spoton_crypt::passphraseSet(). The gui/saltedPassphraseHash
+     is stored as a byte array in the INI file.
 
 0.09    (02/07/2014)
 
