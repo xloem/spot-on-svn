@@ -1,4 +1,4 @@
-0.09.01 (03/01/2014)
+0.09.01 (02/18/2014)
 
 1.   Qt documentation suggests that some socket options should be
      set after the connected() signal is emitted. Corrected.
