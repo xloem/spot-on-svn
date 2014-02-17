@@ -1679,12 +1679,12 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="3634"/>
+        <location filename="../GUI/spot-on-c.cc" line="3649"/>
         <source>Spot-On: New Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-c.cc" line="3634"/>
+        <location filename="../GUI/spot-on-c.cc" line="3649"/>
         <source>&amp;Name</source>
         <translation type="unfinished"></translation>
     </message>

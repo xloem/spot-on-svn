@@ -3627,6 +3627,21 @@ void spoton::slotRenameParticipant(void)
   if(!(type == "chat" || type == "email" || type == "url"))
     return;
 
+  QModelIndexList list;
+
+  if(type == "chat")
+    list = m_ui.participants->selectionModel()->
+      selectedRows(1); // OID
+  else if(type == "email")
+    list = m_ui.emailParticipants->selectionModel()->
+      selectedRows(1); // OID
+  else
+    list = m_ui.urlParticipants->selectionModel()->
+      selectedRows(1); // OID
+
+  if(list.isEmpty())
+    return;
+
   QString name("");
   bool ok = true;
 
@@ -3648,33 +3663,18 @@ void spoton::slotRenameParticipant(void)
 
     if(db.open())
       {
-	QModelIndexList list;
 	QSqlQuery query(db);
+	QVariant data(list.value(0).data());
 
-	if(type == "chat")
-	  list = m_ui.participants->selectionModel()->
-	    selectedRows(1); // OID
-	else if(type == "email")
-	  list = m_ui.emailParticipants->selectionModel()->
-	    selectedRows(1); // OID
-	else
-	  list = m_ui.urlParticipants->selectionModel()->
-	    selectedRows(1); // OID
-
-	while(!list.isEmpty())
+	if(!data.isNull() && data.isValid())
 	  {
-	    QVariant data(list.takeFirst().data());
-
-	    if(!data.isNull() && data.isValid())
-	      {
-		query.prepare("UPDATE friends_public_keys "
-			      "SET name = ?, "
-			      "name_changed_by_user = 1 "
-			      "WHERE OID = ?");
-		query.bindValue(0, name);
-		query.bindValue(1, data.toString());
-		query.exec();
-	      }
+	    query.prepare("UPDATE friends_public_keys "
+			  "SET name = ?, "
+			  "name_changed_by_user = 1 "
+			  "WHERE OID = ?");
+	    query.bindValue(0, name);
+	    query.bindValue(1, data.toString());
+	    query.exec();
 	  }
       }
 
