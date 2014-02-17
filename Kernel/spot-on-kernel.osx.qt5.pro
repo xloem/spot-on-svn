@@ -14,7 +14,8 @@ CONFIG		+= qt release warn_on app_bundle
 # 1.5.0 of the gcrypt library.
 
 DEFINES += SPOTON_LINKED_WITH_LIBGEOIP \
-	   SPOTON_LINKED_WITH_LIBPTHREAD
+	   SPOTON_LINKED_WITH_LIBPTHREAD \
+	   SPOTON_SCTP_ENABLED
 
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of libSpotOn.
