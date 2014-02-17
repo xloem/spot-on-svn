@@ -75,6 +75,7 @@ extern "C"
 ** Please read http://gcc.gnu.org/onlinedocs/gcc-4.4.1/gcc/Optimize-Options.html#Type_002dpunning.
 */
 
+#ifdef SPOTON_SCTP_ENABLED
 typedef union type_punning_sockaddr
 {
     struct sockaddr sockaddr;
@@ -83,6 +84,7 @@ typedef union type_punning_sockaddr
     struct sockaddr_storage sockaddr_storage;
 }
 type_punning_sockaddr_t;
+#endif
 
 spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QObject(parent)
 {
