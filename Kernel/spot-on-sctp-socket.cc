@@ -104,10 +104,14 @@ spoton_sctp_socket::~spoton_sctp_socket()
 
 QByteArray spoton_sctp_socket::readAll(void)
 {
+#ifdef SPOTON_SCTP_ENABLED
   QByteArray data(m_readBuffer);
 
   m_readBuffer.clear();
   return data;
+#else
+  return QByteArray();
+#endif
 }
 
 QHostAddress spoton_sctp_socket::localAddress(void) const

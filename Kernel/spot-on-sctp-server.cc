@@ -105,7 +105,11 @@ spoton_sctp_server::~spoton_sctp_server()
 
 QHostAddress spoton_sctp_server::serverAddress(void) const
 {
+#ifdef SPOTON_SCTP_ENABLED
   return m_serverAddress;
+#else
+  return QHostAddress();
+#endif
 }
 
 QString spoton_sctp_server::errorString(void) const
