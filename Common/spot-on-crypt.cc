@@ -463,7 +463,7 @@ bool spoton_crypt::passphraseSet(void)
 
   return settings.contains("gui/saltedPassphraseHash") &&
     !settings.value("gui/saltedPassphraseHash",
-		    "").toString().trimmed().isEmpty();
+		    "").toByteArray().trimmed().isEmpty();
 }
 
 void spoton_crypt::reencodeKeys(const QString &newCipher,
