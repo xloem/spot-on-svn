@@ -1,4 +1,4 @@
-0.09.01 (02/18/2014)
+0.09.01 (02/20/2014)
 
 1.   Qt documentation suggests that some socket options should be
      set after the connected() signal is emitted. Corrected.
@@ -17,6 +17,10 @@
      widget (Settings).
 8.   The iteration count under Settings assumed an incorrect minimum of
      1000 instead of 10000. Corrected.
+9.   Corrected spoton_neighbor::slotDisconnected(). The intent of the
+     method is to re-connect to a peer if the peer does not provide
+     SSL over TCP and if the client does not require SSL.
+10.  Ability to change user names in Chat, E-Mail, and URLs tabs.
 
 0.09    (02/07/2014)
 
