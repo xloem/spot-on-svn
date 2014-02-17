@@ -45,6 +45,8 @@ HEADERS		= ..\\Common\\spot-on-external-address.h \
 		  spot-on-listener.h \
 		  spot-on-mailer.h \
 		  spot-on-neighbor.h \
+		  spot-on-sctp-server.h \
+		  spot-on-sctp-socket.h \
 		  spot-on-shared-reader.h \
 		  spot-on-starbeam-reader.h \
 		  spot-on-starbeam-writer.h
@@ -58,6 +60,8 @@ SOURCES		= ..\\Common\\spot-on-crypt.cc \
 		  spot-on-listener.cc \
 		  spot-on-mailer.cc \
 		  spot-on-neighbor.cc \
+		  spot-on-sctp-server.cc \
+		  spot-on-sctp-socket.cc \
 		  spot-on-shared-reader.cc \
 		  spot-on-starbeam-reader.cc \
 		  spot-on-starbeam-writer.cc
