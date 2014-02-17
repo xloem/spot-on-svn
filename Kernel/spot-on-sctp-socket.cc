@@ -271,7 +271,19 @@ bool spoton_sctp_socket::setSocketDescriptor(const int socketDescriptor)
       m_socketDescriptor = socketDescriptor;
       m_state = ConnectedState;
       prepareSocketNotifiers();
-      return true;
+
+      /*
+      ** Let's hope that the socket descriptor inherited the server's
+      ** read and write buffer sizes.
+      */
+
+      if(setSocketNonBlocking() != 0)
+	{
+	  close();
+	  return false;
+	}
+      else
+	return true;
     }
   else
     return false;
@@ -304,13 +316,53 @@ int spoton_sctp_socket::inspectConnectResult
       else
 	emit error(errorstr, UnknownSocketError);
 
-      return rc;
+      return -1;
     }
   else
     return rc;
 #else
   Q_UNUSED(errorcode);
   Q_UNUSED(rc);
+  return -1;
+#endif
+}
+
+int spoton_sctp_socket::setSocketNonBlocking(void)
+{
+#ifdef SPOTON_SCTP_ENABLED
+  if(m_socketDescriptor < 0)
+    return -1;
+
+  /*
+  ** Set the socket to non-blocking.
+  */
+
+  int rc = fcntl(m_socketDescriptor, F_GETFL, 0);
+
+  if(rc == -1)
+    {
+      QString errorstr(QString("setSocketNonBlocking()::fcntl()::"
+			       "errno=%1").
+		       arg(errno));
+
+      emit error(errorstr, UnknownSocketError);
+      return -1;
+    }
+
+  rc = fcntl(m_socketDescriptor, F_SETFL, O_NONBLOCK | rc);
+
+  if(rc == -1)
+    {
+      QString errorstr(QString("setSocketNonBlocking()::fcntl()::"
+			       "errno=%1").
+		       arg(errno));
+
+      emit error(errorstr, UnknownSocketError);
+      return -1;
+    }
+
+  return 0;
+#else
   return -1;
 #endif
 }
@@ -334,13 +386,11 @@ qint64 spoton_sctp_socket::readData(char *data, qint64 maxSize)
 		       arg(errno));
 
       if(errno == EAGAIN || errno == EINPROGRESS || errno == EWOULDBLOCK)
-	{
-	  /*
-	  ** We'll ignore this condition.
-	  */
+	/*
+	** We'll ignore this condition.
+	*/
 
-	  rc = 0;
-	}
+	rc = 0;
       else if(errno == ECONNREFUSED)
 	emit error(errorstr, ConnectionRefusedError);
       else if(errno == ECONNRESET)
@@ -381,24 +431,42 @@ qint64 spoton_sctp_socket::writeData(const char *data, const qint64 maxSize)
   if(!data || maxSize <= 0)
     return 0;
 
-  ssize_t rc = send
-    (m_socketDescriptor, data, static_cast<size_t> (maxSize), 0);
+  ssize_t remaining = static_cast<ssize_t> (maxSize);
+  ssize_t sent = 0;
 
-  if(rc == -1)
+  while(remaining > 0)
+    {
+      sent = send
+	(m_socketDescriptor, data, qMin(static_cast<ssize_t> (8192),
+					remaining), 0);
+
+      if(sent == -1)
+	{
+	  if(errno == EAGAIN || errno == EWOULDBLOCK)
+	    {
+	      /*
+	      ** We'll ignore this condition.
+	      */
+
+	      sent = 0;
+	    }
+	  else
+	    break;
+	}
+      else if(sent == 0)
+	break;
+
+      data += sent; // What should we do if sent is monstrously large?
+      remaining -= sent;
+    }
+
+  if(sent == -1)
     {
       QString errorstr(QString("writeData()::send()::errno=%1").
 		       arg(errno));
 
       if(errno == EACCES)
 	emit error(errorstr, SocketAccessError);
-      else if(errno == EAGAIN || errno == EWOULDBLOCK)
-	{
-	  /*
-	  ** We'll ignore this condition.
-	  */
-
-	  rc = 0;
-	}
       else if(errno == ECONNRESET)
 	emit error(errorstr, RemoteHostClosedError);
       else if(errno == EMSGSIZE || errno == ENOBUFS || errno == ENOMEM)
@@ -412,7 +480,7 @@ qint64 spoton_sctp_socket::writeData(const char *data, const qint64 maxSize)
 	emit error(errorstr, UnknownSocketError);
     }
 
-  return static_cast<qint64> (rc);
+  return maxSize - static_cast<qint64> (remaining);
 #else
   Q_UNUSED(data);
   Q_UNUSED(maxSize);
@@ -523,14 +591,12 @@ void spoton_sctp_socket::connectToHostImplementation(void)
     protocol = IPv6Protocol;
 
   if(protocol == IPv4Protocol)
-    m_socketDescriptor = socket(AF_INET, SOCK_STREAM, IPPROTO_SCTP);
+    m_socketDescriptor = rc = socket(AF_INET, SOCK_STREAM, IPPROTO_SCTP);
   else
-    m_socketDescriptor = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
+    m_socketDescriptor = rc = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
 
   if(m_socketDescriptor == -1)
     {
-      rc = -1;
-
       QString errorstr
 	(QString("connectToHostImplementation()::socket()::errno=%1").
 	 arg(errno));
@@ -551,43 +617,16 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
   prepareSocketNotifiers();
 
-  /*
-  ** Set the socket to non-blocking.
-  */
-
-  rc = fcntl(m_socketDescriptor, F_GETFL, 0);
-
-  if(rc == -1)
-    {
-      QString errorstr(QString("connectToHostImplementation()::fcntl()::"
-			       "errno=%1").
-		       arg(errno));
-
-      emit error(errorstr, UnknownSocketError);
-      goto done_label;
-    }
-
-  rc = fcntl(m_socketDescriptor, F_SETFL, O_NONBLOCK | rc);
-
-  if(rc == -1)
-    {
-      QString errorstr(QString("connectToHostImplementation()::fcntl()::"
-			       "errno=%1").
-		       arg(errno));
-
-      emit error(errorstr, UnknownSocketError);
-      goto done_label;
-    }
-
-  rc = 0;
+  if((rc = setSocketNonBlocking()) == -1)
+    goto done_label;
 
   /*
   ** Set the read and write buffer sizes.
   */
 
-  optval = 8 * 8192 - 1;
+  optval = 30 * 1460;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
-  optval = 8 * 8192 - 1;
+  optval = 30 * 1460;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
 
   if(protocol == IPv4Protocol)
@@ -620,8 +659,6 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
 	  goto done_label;
 	}
-      else
-	rc = 0;
 
       m_state = ConnectingState;
       rc = ::connect
@@ -669,8 +706,6 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
 	  goto done_label;
 	}
-      else
-	rc = 0;
 
       m_state = ConnectingState;
       rc = ::connect

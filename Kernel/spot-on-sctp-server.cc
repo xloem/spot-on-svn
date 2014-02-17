@@ -127,7 +127,6 @@ bool spoton_sctp_server::isListening(void) const
 bool spoton_sctp_server::listen(const QHostAddress &address,
 				const quint16 port)
 {
-
 #ifdef SPOTON_SCTP_ENABLED
   if(m_isListening)
     return true;
@@ -171,11 +170,11 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
   ** Set the read and write buffer sizes.
   */
 
-  optval = 8 * 8192 - 1;
+  optval = 30 * 1460;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
   optval = 1;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_REUSEADDR, &optval, optlen);
-  optval = 8 * 8192 - 1;
+  optval = 30 * 1460;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
 
   /*

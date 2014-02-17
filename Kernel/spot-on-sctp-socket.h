@@ -112,6 +112,7 @@ class spoton_sctp_socket: public QObject
   QHostAddress localAddressAndPort(quint16 *port) const;
   QHostAddress peerAddressAndPort(quint16 *port) const;
   int inspectConnectResult(const int rc, const int errorcode);
+  int setSocketNonBlocking(void);
   void connectToHostImplementation(void);
   void prepareSocketNotifiers(void);
 
