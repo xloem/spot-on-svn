@@ -23,6 +23,9 @@
 10.  Ability to change user names in Chat, E-Mail, and URLs tabs.
 11.  Corrected spoton_crypt::passphraseSet(). The gui/saltedPassphraseHash
      is stored as a byte array in the INI file.
+12.  The method spoton::updateListenersTable() attempted to delete
+     listener authentication data that may have already been deleted,
+     causing some impolite noise.
 
 0.09    (02/07/2014)
 
