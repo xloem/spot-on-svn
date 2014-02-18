@@ -26,6 +26,9 @@
 12.  The method spoton::updateListenersTable() attempted to delete
      listener authentication data that may have already been deleted,
      causing some impolite noise.
+13.  E-mail subjects are optional. The method
+     spoton::applyGoldbugToInboxLetter() incorrectly processed empty
+     e-mail subjects.
 
 0.09    (02/07/2014)
 
