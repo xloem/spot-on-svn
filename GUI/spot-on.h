@@ -109,8 +109,9 @@ class spoton: public QMainWindow
   static QPointer<spoton> s_gui;
 
  private:
-  static const int APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL = 1;
-  static const int APPLY_GOLDBUG_TO_INBOX_ERROR_MEMORY = 2;
+  static const int APPLY_GOLDBUG_TO_LETTER_ERROR_DATABASE = 1;
+  static const int APPLY_GOLDBUG_TO_LETTER_ERROR_GENERAL = 2;
+  static const int APPLY_GOLDBUG_TO_LETTER_ERROR_MEMORY = 3;
   QByteArray m_kernelSocketData;
   QDateTime m_buzzFavoritesLastModificationTime;
   QDateTime m_magnetsLastModificationTime;
@@ -157,8 +158,8 @@ class spoton: public QMainWindow
   bool saveGemini(const QPair<QByteArray, QByteArray> &gemini,
 		  const QString &oid);
   bool updateMailStatus(const QString &oid, const QString &status);
-  int applyGoldbugToInboxLetter(const QByteArray &goldbug,
-				const int row);
+  int applyGoldbugToLetter(const QByteArray &goldbug,
+			   const int row);
   void addFriendsKey(const QByteArray &key);
   void authenticate(spoton_crypt *crypt, const QString &oid,
 		    const QString &message = QString(""));

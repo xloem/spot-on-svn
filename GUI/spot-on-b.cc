@@ -241,10 +241,22 @@ void spoton::slotReceivedKernelMessage(void)
 		    (QDateTime::fromString(utcDate.constData(),
 					   "hhmmss"));
 		  QDateTime now(QDateTime::currentDateTime());
+		  QList<QTableWidgetItem *> items
+		    (m_ui.participants->findItems(hash.toBase64(),
+						  Qt::MatchExactly));
 		  QString content(QString::fromUtf8(message.constData(),
 						    message.length()));
 		  QString msg("");
 		  bool ok = true;
+
+		  if(!items.isEmpty())
+		    {
+		      QTableWidgetItem *item = m_ui.participants->
+			item(items.at(0)->row(), 0); // Participant
+
+		      if(item)
+			name = item->text().toUtf8();
+		    }
 
 		  if(name.isEmpty())
 		    name = "unknown";
@@ -2688,13 +2700,32 @@ void spoton::slotRefreshMail(void)
 				  (QString::
 				   fromUtf8(m_crypts.value("email")->
 					    decrypted(QByteArray::
-						      fromBase64(query.
-								 value(i).
-								 toByteArray()),
+						      fromBase64
+						      (query.
+						       value(i).
+						       toByteArray()),
 						      &ok).constData()));
 
 				if(!ok)
 				  item->setText(tr("error"));
+				else if(i == 1) // receiver_sender
+				  {
+				    QList<QTableWidgetItem *> items
+				      (m_ui.emailParticipants->
+				       findItems(query.value(7).
+						 toByteArray(),
+						 Qt::MatchExactly));
+
+				    if(!items.isEmpty())
+				      {
+					QTableWidgetItem *it =
+					  m_ui.emailParticipants->
+					  item(items.at(0)->row(), 0);
+
+					if(it)
+					  item->setText(it->text());
+				      }
+				  }
 			      }
 			    else
 			      item = new QTableWidgetItem("#####");
@@ -2864,16 +2895,22 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
 	if(!ok)
 	  return;
 
-	int rc = applyGoldbugToInboxLetter(goldbug.toLatin1(), row);
+	int rc = applyGoldbugToLetter(goldbug.toLatin1(), row);
 
-	if(rc == APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL)
+	if(rc == APPLY_GOLDBUG_TO_LETTER_ERROR_DATABASE)
+	  {
+	    QMessageBox::critical(this, tr("Spot-On: Error"),
+				  tr("A database error occurred."));
+	    return;
+	  }
+	else if(rc == APPLY_GOLDBUG_TO_LETTER_ERROR_GENERAL)
 	  {
 	    QMessageBox::critical(this, tr("Spot-On: Error"),
 				  tr("The provided goldbug may be "
 				     "incorrect."));
 	    return;
 	  }
-	else if(rc == APPLY_GOLDBUG_TO_INBOX_ERROR_MEMORY)
+	else if(rc == APPLY_GOLDBUG_TO_LETTER_ERROR_MEMORY)
 	  {
 	    QMessageBox::critical(this, tr("Spot-On: Error"),
 				  tr("A severe memory issue occurred."));
@@ -3566,17 +3603,17 @@ void spoton::slotSetIcons(void)
   emit iconsChanged();
 }
 
-int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
-				      const int row)
+int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
+				 const int row)
 {
   if(!m_crypts.value("email", 0))
-    return APPLY_GOLDBUG_TO_INBOX_ERROR_MEMORY;
+    return APPLY_GOLDBUG_TO_LETTER_ERROR_MEMORY;
 
   QTableWidgetItem *item = m_ui.mail->item
     (row, m_ui.mail->columnCount() - 1); // OID
 
   if(!item)
-    return APPLY_GOLDBUG_TO_INBOX_ERROR_MEMORY;
+    return APPLY_GOLDBUG_TO_LETTER_ERROR_MEMORY;
 
   QString connectionName("");
   QString oid(item->text());
@@ -3619,8 +3656,17 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 			       &ok).trimmed());
 
 		if(!ok)
-		  break;
+		  {
+		    if(rc == 0)
+		      rc = APPLY_GOLDBUG_TO_LETTER_ERROR_GENERAL;
+
+		    break;
+		  }
 	      }
+
+	if(!ok)
+	  if(rc == 0)
+	    rc = APPLY_GOLDBUG_TO_LETTER_ERROR_DATABASE;
 
 	if(ok)
 	  {
@@ -3645,7 +3691,12 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 		list.replace(i, crypt.decrypted(list.at(i), &ok));
 
 		if(!ok)
-		  break;
+		  {
+		    if(rc == 0)
+		      rc = APPLY_GOLDBUG_TO_LETTER_ERROR_GENERAL;
+
+		    break;
+		  }
 	      }
 	  }
 
@@ -3701,11 +3752,10 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 		  (4, m_crypts.value("email")->
 		   encrypted(list.value(3), &ok).toBase64());
 
-	    if(!list.value(5).isEmpty())
-	      if(ok)
-		updateQuery.bindValue
-		  (5, m_crypts.value("email")->
-		   encrypted(list.value(5), &ok).toBase64());
+	    if(ok)
+	      updateQuery.bindValue
+		(5, m_crypts.value("email")->
+		 encrypted(list.value(5), &ok).toBase64());
 
 	    updateQuery.bindValue(6, oid);
 
@@ -3714,10 +3764,18 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 		ok = updateQuery.exec();
 
 		if(!ok)
-		  if(updateQuery.lastError().text().
-		     toLower().contains("unique"))
-		    ok = true;
+		  {
+		    if(updateQuery.lastError().text().
+		       toLower().contains("unique"))
+		      ok = true;
+
+		    if(!ok)
+		      if(rc == 0)
+			rc = APPLY_GOLDBUG_TO_LETTER_ERROR_DATABASE;
+		  }
 	      }
+	    else if(rc == 0)
+	      rc = APPLY_GOLDBUG_TO_LETTER_ERROR_GENERAL;
 	  }
 
 	if(ok)
@@ -3732,7 +3790,23 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 	    item = m_ui.mail->item(row, 1); // From / To
 
 	    if(item)
-	      item->setText(list.value(3).constData());
+	      {
+		QList<QTableWidgetItem *> items
+		  (m_ui.emailParticipants->
+		   findItems(list.value(4).toBase64(), Qt::MatchExactly));
+
+		if(!items.isEmpty())
+		  {
+		    QTableWidgetItem *it =
+		      m_ui.emailParticipants->
+		      item(items.at(0)->row(), 0);
+
+		    if(it)
+		      item->setText(it->text());
+		  }
+		else
+		  item->setText(list.value(3).constData());
+	      }
 
 	    item = m_ui.mail->item(row, 3); // Subject
 
@@ -3752,6 +3826,8 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 	    m_ui.mail->setSortingEnabled(true);
 	  }
       }
+    else if(rc == 0)
+      rc = APPLY_GOLDBUG_TO_LETTER_ERROR_DATABASE;
 
     db.close();
   }
@@ -3760,7 +3836,7 @@ int spoton::applyGoldbugToInboxLetter(const QByteArray &goldbug,
 
   if(!ok)
     if(rc == 0)
-      rc = APPLY_GOLDBUG_TO_INBOX_ERROR_GENERAL;
+      rc = APPLY_GOLDBUG_TO_LETTER_ERROR_GENERAL;
 
   return rc;
 }
