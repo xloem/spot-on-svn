@@ -3883,7 +3883,8 @@ void spoton::updateListenersTable(const QSqlDatabase &db)
 	query.exec("DELETE FROM listeners_accounts WHERE "
 		   "listener_oid NOT IN "
 		   "(SELECT OID FROM listeners)");
-	query.exec("DELETE FROM listeners_accounts_consumed_authentications");
+	query.exec("DELETE FROM listeners_accounts_consumed_authentications "
+		   "WHERE listener_oid >= 0");
 	query.exec("DELETE FROM listeners_allowed_ips WHERE "
 		   "listener_oid NOT IN "
 		   "(SELECT OID FROM listeners)");
