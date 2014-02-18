@@ -72,21 +72,6 @@ extern "C"
 #include "Common/spot-on-common.h"
 #include "spot-on-sctp-server.h"
 
-/*
-** Please read http://gcc.gnu.org/onlinedocs/gcc-4.4.1/gcc/Optimize-Options.html#Type_002dpunning.
-*/
-
-#ifdef SPOTON_SCTP_ENABLED
-typedef union type_punning_sockaddr
-{
-    struct sockaddr sockaddr;
-    struct sockaddr_in sockaddr_in;
-    struct sockaddr_in6 sockaddr_in6;
-    struct sockaddr_storage sockaddr_storage;
-}
-type_punning_sockaddr_t;
-#endif
-
 spoton_sctp_server::spoton_sctp_server(const qint64 id,
 				       QObject *parent):QObject(parent)
 {
@@ -387,20 +372,9 @@ void spoton_sctp_server::slotSocketNotifierActivated(int socket)
 
 	  if(socketDescriptor > -1)
 	    {
-	      type_punning_sockaddr_t *sockaddr =
-		(type_punning_sockaddr_t *) &clientaddr;
-
-	      if(sockaddr)
-		{
-		  address.setAddress
-		    (ntohl(sockaddr->sockaddr_in.sin_addr.s_addr));
-		  port = ntohs(clientaddr.sin_port);
-		}
-	      else
-		{
-		  shutdown(socketDescriptor, SHUT_RDWR);
-		  socketDescriptor = -1;
-		}
+	      address.setAddress
+		(ntohl(clientaddr.sin_addr.s_addr));
+	      port = ntohs(clientaddr.sin_port);
 	    }
 	}
       else
@@ -414,25 +388,14 @@ void spoton_sctp_server::slotSocketNotifierActivated(int socket)
 
 	  if(socketDescriptor > -1)
 	    {
-	      type_punning_sockaddr_t *sockaddr =
-		(type_punning_sockaddr_t *) &clientaddr;
+	      Q_IPV6ADDR tmp;
 
-	      if(sockaddr)
-		{
-		  Q_IPV6ADDR tmp;
-
-		  memcpy(&tmp, &sockaddr->sockaddr_in6.sin6_addr.s6_addr,
-			 sizeof(tmp));
-		  address.setAddress(tmp);
-		  address.setScopeId
-		    (QString::number(sockaddr->sockaddr_in6.sin6_scope_id));
-		  port = ntohs(clientaddr.sin6_port);
-		}
-	      else
-		{
-		  shutdown(socketDescriptor, SHUT_RDWR);
-		  socketDescriptor = -1;
-		}
+	      memcpy(&tmp, &clientaddr.sin6_addr.s6_addr,
+		     sizeof(tmp));
+	      address.setAddress(tmp);
+	      address.setScopeId
+		(QString::number(clientaddr.sin6_scope_id));
+	      port = ntohs(clientaddr.sin6_port);
 	    }
 	}
 
