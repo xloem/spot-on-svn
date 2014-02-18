@@ -48,6 +48,7 @@ class spoton_chatwindow: public QMainWindow
   QString id(void) const;
   void append(const QString &text);
   void center(QWidget *parent);
+  void setName(const QString &name);
 
  private:
   QPointer<QSslSocket> m_kernelSocket;

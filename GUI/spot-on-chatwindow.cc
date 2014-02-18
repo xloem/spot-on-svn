@@ -221,3 +221,17 @@ void spoton_chatwindow::slotSetStatus(const QIcon &icon,
 	}
     }
 }
+
+void spoton_chatwindow::setName(const QString &name)
+{
+  if(!name.trimmed().isEmpty())
+    {
+      setWindowTitle(tr("Spot-On: %1").arg(name.trimmed()));
+      ui.name->setText(name.trimmed());
+    }
+  else
+    {
+      setWindowTitle(tr("Spot-On: %1").arg("unknown"));
+      ui.name->setText("unknown");
+    }
+}

@@ -3653,6 +3653,8 @@ void spoton::slotRenameParticipant(void)
   if(name.isEmpty() || !ok)
     return;
 
+  ok = false;
+
   QString connectionName("");
 
   {
@@ -3674,7 +3676,7 @@ void spoton::slotRenameParticipant(void)
 			  "WHERE OID = ?");
 	    query.bindValue(0, name);
 	    query.bindValue(1, data.toString());
-	    query.exec();
+	    ok = query.exec();
 	  }
       }
 
@@ -3682,4 +3684,25 @@ void spoton::slotRenameParticipant(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+
+  if(ok)
+    if(type == "chat")
+      {
+	QTableWidgetItem *item = m_ui.participants->item
+	  (list.value(0).row(), 3); // public_key_hash
+
+	if(item)
+	  {
+	    QString publicKeyHash(item->text());
+
+	    if(m_chatWindows.contains(publicKeyHash))
+	      {
+		QPointer<spoton_chatwindow> chat =
+		  m_chatWindows.value(publicKeyHash);
+
+		if(chat)
+		  chat->setName(name);
+	      }
+	  }
+      }
 }
