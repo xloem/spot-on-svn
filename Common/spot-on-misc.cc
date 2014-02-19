@@ -1049,7 +1049,8 @@ void spoton_misc::cleanupDatabases(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("UPDATE friends_public_keys SET status = 'offline'");
+	query.exec("UPDATE friends_public_keys SET status = 'offline' "
+		   "WHERE status <> 'offline'");
 
 	/*
 	** Delete asymmetric keys that were not completely shared.

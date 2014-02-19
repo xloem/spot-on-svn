@@ -1656,6 +1656,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	query.prepare("UPDATE friends_public_keys SET "
 		      "status = 'offline' WHERE "
 		      "neighbor_oid = -1 AND "
+		      "status <> 'offline' AND "
 		      "strftime('%s', ?) - "
 		      "strftime('%s', last_status_update) > ?");
 	query.bindValue
