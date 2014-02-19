@@ -2345,13 +2345,13 @@ void spoton::prepareContextMenuMirrors(void)
       menu->addAction(QIcon(QString(":/%1/copy.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
 				toString())),
-		      tr("&Copy keys to the clipboard buffer."),
-		      this, SLOT(slotCopyEmailKeys(void)));
+		      tr("&Copy Repleo to the clipboard buffer."),
+		      this, SLOT(slotCopyEmailFriendshipBundle(void)));
       menu->addAction(QIcon(QString(":/%1/copy.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
 				toString())),
-		      tr("&Copy Repleo to the clipboard buffer."),
-		      this, SLOT(slotCopyEmailFriendshipBundle(void)));
+		      tr("&Copy keys to the clipboard buffer."),
+		      this, SLOT(slotCopyEmailKeys(void)));
       menu->addSeparator();
       menu->addAction(QIcon(QString(":/%1/clear.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
