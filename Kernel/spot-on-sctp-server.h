@@ -58,6 +58,7 @@ class spoton_sctp_server: public QObject
   QString m_errorString;
   bool m_isListening;
   int m_backlog;
+  int m_bufferSize;
   int m_socketDescriptor;
   qint64 m_id;
   quint16 m_serverPort;

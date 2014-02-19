@@ -94,10 +94,6 @@ class spoton_sctp_socket: public QObject
   void setSocketOption(const SocketOption option,
 		       const QVariant &value);
 
- protected:
-  qint64 readData(char *data, qint64 maxSize);
-  qint64 writeData(const char *data, qint64 maxSize);
-
  private:
   QByteArray m_readBuffer;
   QPointer<QSocketNotifier> m_socketReadNotifier;
@@ -105,6 +101,7 @@ class spoton_sctp_socket: public QObject
   QString m_connectToPeerName;
   QString m_ipAddress;
   SocketState m_state;
+  int m_bufferSize;
   int m_hostLookupId;
   int m_socketDescriptor;
   qint64 m_readBufferSize;
@@ -113,6 +110,7 @@ class spoton_sctp_socket: public QObject
   QHostAddress peerAddressAndPort(quint16 *port) const;
   int inspectConnectResult(const int rc, const int errorcode);
   int setSocketNonBlocking(void);
+  qint64 read(char *data, const qint64 maxSize);
   void connectToHostImplementation(void);
   void prepareSocketNotifiers(void);
 

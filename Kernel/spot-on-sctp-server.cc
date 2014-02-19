@@ -76,6 +76,7 @@ spoton_sctp_server::spoton_sctp_server(const qint64 id,
 				       QObject *parent):QObject(parent)
 {
   m_backlog = 30;
+  m_bufferSize = 65536;
   m_id = id;
   m_isListening = false;
   m_serverPort = 0;
@@ -161,11 +162,11 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
   ** Set the read and write buffer sizes.
   */
 
-  optval = 30 * 1460;
+  optval = m_bufferSize;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
   optval = 1;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_REUSEADDR, &optval, optlen);
-  optval = 30 * 1460;
+  optval = m_bufferSize;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
 
   /*

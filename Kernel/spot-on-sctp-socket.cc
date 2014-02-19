@@ -88,6 +88,7 @@ type_punning_sockaddr_t;
 
 spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QObject(parent)
 {
+  m_bufferSize = 65536;
   m_connectToPeerPort = 0;
   m_hostLookupId = -1;
   m_readBufferSize = 0;
@@ -373,7 +374,7 @@ int spoton_sctp_socket::setSocketNonBlocking(void)
 #endif
 }
 
-qint64 spoton_sctp_socket::readData(char *data, qint64 maxSize)
+qint64 spoton_sctp_socket::read(char *data, const qint64 maxSize)
 {
 #ifdef SPOTON_SCTP_ENABLED
   if(!data || maxSize <= 0)
@@ -388,7 +389,7 @@ qint64 spoton_sctp_socket::readData(char *data, qint64 maxSize)
 
   if(rc == -1)
     {
-      QString errorstr(QString("readData()::recv()::errno=%1").
+      QString errorstr(QString("read()::recv()::errno=%1").
 		       arg(errno));
 
       if(errno == EAGAIN || errno == EINPROGRESS || errno == EWOULDBLOCK)
@@ -420,18 +421,7 @@ qint64 spoton_sctp_socket::readData(char *data, qint64 maxSize)
 #endif
 }
 
-qint64 spoton_sctp_socket::write(const char *data, qint64 maxSize)
-{
-#ifdef SPOTON_SCTP_ENABLED
-  return writeData(data, maxSize);
-#else
-  Q_UNUSED(data);
-  Q_UNUSED(maxSize);
-  return 0;
-#endif
-}
-
-qint64 spoton_sctp_socket::writeData(const char *data, const qint64 maxSize)
+qint64 spoton_sctp_socket::write(const char *data, const qint64 maxSize)
 {
 #ifdef SPOTON_SCTP_ENABLED
   if(!data || maxSize <= 0)
@@ -442,9 +432,15 @@ qint64 spoton_sctp_socket::writeData(const char *data, const qint64 maxSize)
 
   while(remaining > 0)
     {
+      /*
+      ** We'll send a fraction of the desired buffer size. Otherwise,
+      ** our process may become exhausted.
+      */
+
       sent = send
-	(m_socketDescriptor, data, qMin(static_cast<ssize_t> (8192),
-					remaining), 0);
+	(m_socketDescriptor, data,
+	 qMin(static_cast<ssize_t> (m_bufferSize / 2), remaining),
+	 MSG_DONTWAIT);
 
       if(sent == -1)
 	{
@@ -468,7 +464,7 @@ qint64 spoton_sctp_socket::writeData(const char *data, const qint64 maxSize)
 
   if(sent == -1)
     {
-      QString errorstr(QString("writeData()::send()::errno=%1").
+      QString errorstr(QString("write()::send()::errno=%1").
 		       arg(errno));
 
       if(errno == EACCES)
@@ -630,9 +626,9 @@ void spoton_sctp_socket::connectToHostImplementation(void)
   ** Set the read and write buffer sizes.
   */
 
-  optval = 30 * 1460;
+  optval = m_bufferSize;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
-  optval = 30 * 1460;
+  optval = m_bufferSize;
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
 
   if(protocol == IPv4Protocol)
@@ -853,7 +849,7 @@ void spoton_sctp_socket::slotSocketNotifierActivated(int socket)
       socketNotifier->setEnabled(false);
 
       QByteArray data(static_cast<int> (m_readBufferSize), 0);
-      qint64 rc = readData(data.data(), data.length());
+      qint64 rc = read(data.data(), data.length());
 
       if(rc > 0)
 	{
