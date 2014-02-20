@@ -1368,6 +1368,7 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	QSqlQuery query(db);
 	QString country
 	  (countryNameFromIPAddress(address.toString()));
+	bool ok = true;
 
 	query.exec("INSERT INTO neighbors "
 		   "(local_ip_address, "
@@ -1402,16 +1403,19 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	query.bindValue(1, QVariant(QVariant::String));
 
 	if(address.protocol() == QAbstractSocket::IPv4Protocol)
-	  query.bindValue(2, "IPv4");
+	  query.bindValue
+	    (2, crypt->
+	     encrypted("IPv4", &ok).toBase64());
 	else
-	  query.bindValue(2, "IPv6");
+	  query.bindValue
+	    (2, crypt->
+	     encrypted("IPv6", &ok).toBase64());
 
-	bool ok = true;
-
-	query.bindValue
-	  (3,
-	   crypt->encrypted(address.toString().toLatin1(),
-			    &ok).toBase64());
+	if(ok)
+	  query.bindValue
+	    (3,
+	     crypt->encrypted(address.toString().toLatin1(),
+			      &ok).toBase64());
 
 	if(ok)
 	  query.bindValue

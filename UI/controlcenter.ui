@@ -1557,7 +1557,7 @@
               <item>
                <widget class="QCheckBox" name="publishPeriodically">
                 <property name="text">
-                 <string>Periodically p&amp;ublish plaintext information.</string>
+                 <string>Periodically p&amp;ublish plaintext information. External IP information is required.</string>
                 </property>
                </widget>
               </item>

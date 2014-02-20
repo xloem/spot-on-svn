@@ -769,6 +769,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 	if(neighbor)
 	  {
 	    QSqlQuery query(db);
+	    bool ok = true;
 
 	    query.exec("INSERT INTO neighbors "
 		       "(local_ip_address, "
@@ -806,17 +807,20 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 	    query.bindValue(1, m_port);
 
 	    if(m_address.protocol() == QAbstractSocket::IPv4Protocol)
-	      query.bindValue(2, "IPv4");
+	      query.bindValue
+		(2, s_crypt->
+		 encrypted("IPv4", &ok).toBase64());
 	    else
-	      query.bindValue(2, "IPv6");
+	      query.bindValue
+		(2, s_crypt->
+		 encrypted("IPv6", &ok).toBase64());
 
-	    bool ok = true;
-
-	    query.bindValue
-	      (3,
-	       s_crypt->encrypted(neighbor->peerAddress().
-				  toString().toLatin1(),
-				  &ok).toBase64());
+	    if(ok)
+	      query.bindValue
+		(3,
+		 s_crypt->encrypted(neighbor->peerAddress().
+				    toString().toLatin1(),
+				    &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
