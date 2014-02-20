@@ -31,6 +31,9 @@
      e-mail subjects.
 14.  Avoid setting the status field in friends_public_keys to 'offline'
      if the value of the field is already 'offline'.
+15.  The protocol field in listeners.db and neighbors.db contains encrypted
+     data. The methods spoton_listener::slotNewConnection() and
+     spoton_misc::savePublishedNeighbor() disregarded this detail.
 
 0.09    (02/07/2014)
 
