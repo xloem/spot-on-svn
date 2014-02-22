@@ -4,290 +4,295 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="181"/>
+        <location filename="../Common/spot-on-crypt.cc" line="186"/>
         <source>gcry_cipher_test_algo() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="190"/>
+        <location filename="../Common/spot-on-crypt.cc" line="195"/>
         <source>gcry_md_test_algo() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="199"/>
-        <location filename="../Common/spot-on-crypt.cc" line="619"/>
-        <location filename="../Common/spot-on-crypt.cc" line="795"/>
+        <location filename="../Common/spot-on-crypt.cc" line="204"/>
+        <location filename="../Common/spot-on-crypt.cc" line="627"/>
+        <location filename="../Common/spot-on-crypt.cc" line="813"/>
         <source>gcry_cipher_get_algo_keylen() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="249"/>
+        <location filename="../Common/spot-on-crypt.cc" line="254"/>
         <source>gcry_kdf_derive() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="399"/>
+        <location filename="../Common/spot-on-crypt.cc" line="407"/>
         <source>gcry_md_get_algo_dlen() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="568"/>
+        <location filename="../Common/spot-on-crypt.cc" line="576"/>
         <source>gcry_cipher_open() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="580"/>
+        <location filename="../Common/spot-on-crypt.cc" line="588"/>
         <source>gcry_cipher_open() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="591"/>
-        <location filename="../Common/spot-on-crypt.cc" line="754"/>
-        <location filename="../Common/spot-on-crypt.cc" line="764"/>
+        <location filename="../Common/spot-on-crypt.cc" line="599"/>
+        <location filename="../Common/spot-on-crypt.cc" line="772"/>
+        <location filename="../Common/spot-on-crypt.cc" line="782"/>
         <source>gcry_cipher_get_algo_blklen() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="604"/>
-        <location filename="../Common/spot-on-crypt.cc" line="787"/>
+        <location filename="../Common/spot-on-crypt.cc" line="612"/>
+        <location filename="../Common/spot-on-crypt.cc" line="805"/>
         <source>gcry_cipher_setiv() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="631"/>
-        <location filename="../Common/spot-on-crypt.cc" line="807"/>
+        <location filename="../Common/spot-on-crypt.cc" line="639"/>
+        <location filename="../Common/spot-on-crypt.cc" line="825"/>
         <source>gcry_cipher_setkey() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="369"/>
+        <location filename="../Common/spot-on-crypt.cc" line="377"/>
         <source>empty passphrase</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="361"/>
+        <location filename="../Common/spot-on-crypt.cc" line="369"/>
         <source>empty hashType</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="377"/>
+        <location filename="../Common/spot-on-crypt.cc" line="385"/>
         <source>empty salt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="387"/>
+        <location filename="../Common/spot-on-crypt.cc" line="395"/>
         <source>gcry_md_map_name() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="478"/>
+        <location filename="../Common/spot-on-crypt.cc" line="486"/>
         <source>oldKey is 0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="552"/>
+        <location filename="../Common/spot-on-crypt.cc" line="560"/>
         <source>gcry_cipher_map_name() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="665"/>
+        <location filename="../Common/spot-on-crypt.cc" line="670"/>
+        <source>QDataStream::operator&gt;&gt;() failure</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Common/spot-on-crypt.cc" line="683"/>
         <source>The length of the decrypted data is irregular</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="676"/>
+        <location filename="../Common/spot-on-crypt.cc" line="694"/>
         <source>gcry_cipher_decrypt() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="700"/>
+        <location filename="../Common/spot-on-crypt.cc" line="718"/>
         <source>gcry_sexp_new() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="712"/>
+        <location filename="../Common/spot-on-crypt.cc" line="730"/>
         <source>gcry_sexp_new() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="723"/>
+        <location filename="../Common/spot-on-crypt.cc" line="741"/>
         <source>gcry_pk_testkey() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="744"/>
+        <location filename="../Common/spot-on-crypt.cc" line="762"/>
         <source>gcry_cipher_map_name() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="774"/>
+        <location filename="../Common/spot-on-crypt.cc" line="792"/>
         <source>gcry_calloc() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="832"/>
+        <location filename="../Common/spot-on-crypt.cc" line="850"/>
         <source>QDataStream failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="849"/>
+        <location filename="../Common/spot-on-crypt.cc" line="867"/>
         <source>gcry_cipher_encrypt() returned non-zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="895"/>
+        <location filename="../Common/spot-on-crypt.cc" line="913"/>
         <source>a database error occurred</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2083"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2105"/>
         <source>gcry_sexp_build() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2107"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2129"/>
         <source>gcry_pk_genkey() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2135"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2157"/>
         <source>gcry_sexp_find_token() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2146"/>
-        <location filename="../Common/spot-on-crypt.cc" line="2161"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2168"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2183"/>
         <source>gcry_sexp_sprint() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2179"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2201"/>
         <source>malloc() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2217"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2239"/>
         <source>QSqlQuery::exec() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2226"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2248"/>
         <source>encrypted() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2972"/>
+        <location filename="../Common/spot-on-crypt.cc" line="2994"/>
         <source>BN_new() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2980"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3002"/>
         <source>BN_set_word() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2988"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3010"/>
         <source>RSA_new() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="2996"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3018"/>
         <source>RSA_generate_key_ex() returned negative one</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3004"/>
-        <location filename="../Common/spot-on-crypt.cc" line="3012"/>
-        <location filename="../Common/spot-on-crypt.cc" line="3264"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3026"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3034"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3286"/>
         <source>BIO_new() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3020"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3042"/>
         <source>PEM_write_bio_RSAPrivateKey() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3028"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3050"/>
         <source>PEM_write_bio_RSAPublicKey() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3039"/>
-        <location filename="../Common/spot-on-crypt.cc" line="3053"/>
-        <location filename="../Common/spot-on-crypt.cc" line="3183"/>
-        <location filename="../Common/spot-on-crypt.cc" line="3283"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3061"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3075"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3205"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3305"/>
         <source>calloc() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3117"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3139"/>
         <source>rsa container is zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3125"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3147"/>
         <source>EVP_PKEY_new() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3134"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3156"/>
         <source>X509_new() failure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3143"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3165"/>
         <source>EVP_PKEY_assign_RSA() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3155"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3177"/>
         <source>X509_set_version() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3163"/>
-        <location filename="../Common/spot-on-crypt.cc" line="3171"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3185"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3193"/>
         <source>X509_gmtime_adj() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3200"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3222"/>
         <source>X509_NAME_ENTRY_create_by_NID() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3210"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3232"/>
         <source>X509_NAME_new() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3218"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3240"/>
         <source>X509_NAME_add_entry() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3226"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3248"/>
         <source>X509_set_subject_name() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3236"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3258"/>
         <source>X509_set_issuer_name() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3244"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3266"/>
         <source>X509_set_pubkey() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3252"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3274"/>
         <source>X509_sign() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3272"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3294"/>
         <source>PEM_write_bio_X509() returned zero</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2318,11 +2323,6 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1560"/>
-        <source>Periodically p&amp;ublish plaintext information.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../UI/controlcenter.ui" line="2886"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Spot-On will record peer certificates during initial connections. Subsequent connections will cause Spot-On to inspect peer certificates. If there are discrepancies between recorded certificates and transmitted certificates, Spot-On will sever the connections. Enable this option if you would like Spot-On to ignore discrepancies.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
@@ -2944,6 +2944,11 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../UI/controlcenter.ui" line="1496"/>
         <source>&amp;day(s) will be purged automatically.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/controlcenter.ui" line="1560"/>
+        <source>Periodically p&amp;ublish plaintext information. External IP information is required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3994,6 +3999,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     </message>
     <message>
         <location filename="../UI/rosetta.ui" line="36"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="850"/>
         <source>&amp;Name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4019,8 +4025,8 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     </message>
     <message>
         <location filename="../UI/rosetta.ui" line="125"/>
-        <location filename="../UI/rosetta.ui" line="296"/>
-        <location filename="../UI/rosetta.ui" line="343"/>
+        <location filename="../UI/rosetta.ui" line="303"/>
+        <location filename="../UI/rosetta.ui" line="350"/>
         <source>Clear</source>
         <translation type="unfinished">Löschen</translation>
     </message>
@@ -4054,204 +4060,214 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="222"/>
+        <location filename="../UI/rosetta.ui" line="203"/>
+        <source>Rename</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/rosetta.ui" line="229"/>
         <source>Input</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="239"/>
+        <location filename="../UI/rosetta.ui" line="246"/>
         <source>&amp;Cipher Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="256"/>
+        <location filename="../UI/rosetta.ui" line="263"/>
         <source>&amp;Hash Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="273"/>
+        <location filename="../UI/rosetta.ui" line="280"/>
         <source>&amp;Sign message.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="313"/>
+        <location filename="../UI/rosetta.ui" line="320"/>
         <source>Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="384"/>
+        <location filename="../UI/rosetta.ui" line="391"/>
         <source>Convert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="391"/>
+        <location filename="../UI/rosetta.ui" line="398"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="410"/>
+        <location filename="../UI/rosetta.ui" line="417"/>
         <source>&amp;File</source>
         <translation type="unfinished">Datei</translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="416"/>
+        <location filename="../UI/rosetta.ui" line="423"/>
         <source>&amp;Edit</source>
         <translation type="unfinished">Bearbeiten</translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="427"/>
+        <location filename="../UI/rosetta.ui" line="434"/>
         <source>&amp;Close</source>
         <translation type="unfinished">Schließen</translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="432"/>
+        <location filename="../UI/rosetta.ui" line="439"/>
         <source>&amp;Empty Log</source>
         <translation type="unfinished">Lösche Log</translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="440"/>
+        <location filename="../UI/rosetta.ui" line="447"/>
         <source>E&amp;nable Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="445"/>
+        <location filename="../UI/rosetta.ui" line="452"/>
         <source>&amp;Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="448"/>
+        <location filename="../UI/rosetta.ui" line="455"/>
         <source>Ctrl+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="453"/>
+        <location filename="../UI/rosetta.ui" line="460"/>
         <source>&amp;Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/rosetta.ui" line="456"/>
+        <location filename="../UI/rosetta.ui" line="463"/>
         <source>Ctrl+V</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="302"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="313"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="321"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="332"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="345"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="406"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="418"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="433"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="637"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="739"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="307"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="318"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="326"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="337"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="350"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="411"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="423"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="438"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="642"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="744"/>
         <source>Spot-On: Error</source>
         <translation type="unfinished">Spot-On: Fehler</translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="314"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="319"/>
         <source>Empty key. Really?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="322"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="327"/>
         <source>Invalid key. The key must start with either the letter K or the letter k.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="333"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="338"/>
         <source>Irregular data. Expecting 6 entries, received %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="346"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="351"/>
         <source>Invalid key type. Expecting &apos;rosetta&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="407"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="412"/>
         <source>You&apos;re attempting to add your own &apos;%1&apos; keys. Please do not do this!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="419"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="424"/>
         <source>Invalid &apos;rosetta&apos; public key signature.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="434"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="439"/>
         <source>Invalid signature public key signature.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="526"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="531"/>
         <source>Empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="549"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="554"/>
         <source>Invalid item data. This is a serious flaw.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="555"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="560"/>
         <source>Please provide an actual message!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="564"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="569"/>
         <source>The method spoton_crypt::cipherKeyLength() failed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="624"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="732"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="629"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="737"/>
         <source>A serious cryptographic error occurred.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="658"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="663"/>
         <source>Empty input data.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="689"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="694"/>
         <source>The computed hash does not match the provided hash.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="723"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="728"/>
         <source>The message was not signed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="727"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="732"/>
         <source>Invalid signature. Perhaps your contacts are not current.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="369"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="392"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="756"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="850"/>
+        <source>Spot-On: New Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/spot-on-rosetta.cc" line="374"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="397"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="761"/>
         <source>Spot-On: Confirmation</source>
         <translation type="unfinished">Spot-On: Bestätigung</translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="303"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="308"/>
         <source>Invalid spoton_crypt object(s). This is a fatal flaw.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="372"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="377"/>
         <source>Unable to retrieve your %1 public key for comparison. Continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="395"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="400"/>
         <source>Unable to retrieve your %1 signature public key for comparison. Continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="759"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="764"/>
         <source>Are you sure that you wish to remove the selected contact?</source>
         <translation type="unfinished"></translation>
     </message>
