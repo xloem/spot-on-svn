@@ -68,6 +68,7 @@ class spoton_rosetta: public QMainWindow
   void slotDecryptToggled(bool state);
   void slotDelete(void);
   void slotEncryptToggled(bool state);
+  void slotRename(void);
   void slotSaveName(void);
   void slotSetIcons(void);
 };

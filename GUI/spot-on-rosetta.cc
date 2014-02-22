@@ -28,6 +28,7 @@
 #include <QClipboard>
 #include <QDir>
 #include <QKeyEvent>
+#include <QInputDialog>
 #include <QMessageBox>
 #include <QSettings>
 #include <QSqlQuery>
@@ -109,6 +110,10 @@ spoton_rosetta::spoton_rosetta(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSaveName(void)));
+  connect(ui.rename,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotRename(void)));
   connect(ui.save,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -831,4 +836,54 @@ void spoton_rosetta::slotCopyOrPaste(void)
       else
 	qobject_cast<QTextEdit *> (widget)->paste();
     }
+}
+
+void spoton_rosetta::slotRename(void)
+{
+  if(ui.contacts->itemData(ui.contacts->currentIndex()).isNull())
+    return;
+
+  QString name("");
+  bool ok = true;
+
+  name = QInputDialog::getText
+    (this, tr("Spot-On: New Name"), tr("&Name"),
+     QLineEdit::Normal, QString(""), &ok).trimmed();
+  name = name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed();
+
+  if(name.isEmpty() || !ok)
+    return;
+
+  ok = false;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QByteArray data(ui.contacts->itemData(ui.contacts->currentIndex()).
+			toByteArray());
+	QSqlQuery query(db);
+
+	query.prepare("UPDATE friends_public_keys "
+		      "SET name = ?, "
+		      "name_changed_by_user = 1 "
+		      "WHERE public_key = ?");
+	query.bindValue(0, name);
+	query.bindValue(1, data);
+	ok = query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  if(ok)
+    populateContacts();
 }
