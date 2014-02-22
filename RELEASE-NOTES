@@ -1,3 +1,7 @@
+0.09.02 (03/01/2014)
+
+1.   Review QDataStream::operator>>() results in spoton_crypt.
+
 0.09.01 (02/20/2014)
 
 1.   Qt documentation suggests that some socket options should be
