@@ -1467,7 +1467,7 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
 void spoton_kernel::slotSettingsChanged(const QString &path)
 {
   /*
-  ** Method may be issued several timer per each change.
+  ** Method may be issued several times per each change.
   */
 
   Q_UNUSED(path);
