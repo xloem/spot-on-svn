@@ -1,6 +1,9 @@
 0.09.02 (03/01/2014)
 
 1.   Review QDataStream::operator>>() results in spoton_crypt.
+2.   Prevent multiple calls to SSL_library_init() in spoton_crypt::init().
+3.   The method spoton_crypt::saltedValue() did not properly
+     exit on several failures.
 
 0.09.01 (02/20/2014)
 
