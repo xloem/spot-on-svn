@@ -4,6 +4,7 @@
 2.   Prevent multiple calls to SSL_library_init() in spoton_crypt::init().
 3.   The method spoton_crypt::saltedValue() did not properly
      exit on several failures.
+4.   Allow renaming of Rosetta participants.
 
 0.09.01 (02/20/2014)
 
@@ -688,3 +689,4 @@
 0.00    (08/08/2011)
 
 1.   Spot-On ascends from Ne.R.D.D (registered on 06/27/2010).
+     Perhaps nice things shall follow.
