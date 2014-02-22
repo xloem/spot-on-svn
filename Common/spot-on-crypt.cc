@@ -656,6 +656,16 @@ void spoton_crypt::reencodeKeys(const QString &newCipher,
 	      QDataStream in(&originalLength, QIODevice::ReadOnly);
 
 	      in >> s;
+
+	      if(in.status() != QDataStream::Ok)
+		{
+		  error = QObject::tr("QDataStream::operator>>() "
+				      "failure");
+		  spoton_misc::logError
+		    ("spoton_crypt::reencodeKeys(): QDataStream::"
+		     "operator>>() failure.");
+		  goto done_label;
+		}
 	    }
 
 	  if(s >= 0 && s <= d.length())
@@ -1118,6 +1128,15 @@ QByteArray spoton_crypt::decrypted(const QByteArray &data, bool *ok)
 	      QDataStream in(&originalLength, QIODevice::ReadOnly);
 
 	      in >> s;
+
+	      if(in.status() != QDataStream::Ok)
+		{
+		  if(ok)
+		    *ok = false;
+
+		  decrypted.clear();
+		  return decrypted;
+		}
 	    }
 
 	  if(s >= 0 && s <= decrypted.length())
