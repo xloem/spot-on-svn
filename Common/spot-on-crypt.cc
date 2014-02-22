@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2011, 2012, 2013 Alexis Megas
+** Copyright (c) 2011 - 10^10^10 Alexis Megas
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -105,6 +105,7 @@ struct gcry_thread_cbs gcry_threads_qt =
 #endif
 
 static bool gcryctl_set_thread_cbs_set = false;
+static bool ssl_library_initialized = false;
 
 void spoton_crypt::init(const int secureMemorySize)
 {
@@ -156,7 +157,11 @@ void spoton_crypt::init(const int secureMemorySize)
     spoton_misc::logError
       ("spoton_crypt::init(): libgcrypt is already initialized.");
 
-  SSL_library_init();
+  if(!ssl_library_initialized)
+    {
+      ssl_library_initialized = true;
+      SSL_library_init();
+    }
 }
 
 QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
@@ -286,6 +291,7 @@ QByteArray spoton_crypt::saltedValue(const QString &hashType,
 
       spoton_misc::logError("spoton_crypt::saltedValue(): "
 			    "empty data.");
+      goto done_label;
     }
 
   if(hashType.isEmpty())
@@ -295,6 +301,7 @@ QByteArray spoton_crypt::saltedValue(const QString &hashType,
 
       spoton_misc::logError("spoton_crypt::saltedValue(): "
 			    "empty hashType.");
+      goto done_label;
     }
 
   if(salt.isEmpty())
@@ -304,6 +311,7 @@ QByteArray spoton_crypt::saltedValue(const QString &hashType,
 
       spoton_misc::logError("spoton_crypt::saltedValue(): "
 			    "empty salt.");
+      goto done_label;
     }
 
   if(hashAlgorithm == 0)
@@ -2039,12 +2047,7 @@ QByteArray spoton_crypt::publicKeyHash(bool *ok)
     publicKey(&ok);
   }
 
-  if(m_publicKey.isEmpty())
-    {
-      if(ok)
-	*ok = false;
-    }
-  else
+  if(!m_publicKey.isEmpty())
     {
       {
 	bool ok = true;

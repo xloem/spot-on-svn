@@ -198,6 +198,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="rename">
+        <property name="text">
+         <string>Rename</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer_5">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -402,7 +409,7 @@
      <x>0</x>
      <y>0</y>
      <width>803</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -468,6 +475,7 @@
   <tabstop>encrypt</tabstop>
   <tabstop>contacts</tabstop>
   <tabstop>deleteContact</tabstop>
+  <tabstop>rename</tabstop>
   <tabstop>cipher</tabstop>
   <tabstop>hash</tabstop>
   <tabstop>sign</tabstop>
@@ -476,6 +484,7 @@
   <tabstop>clearOutput</tabstop>
   <tabstop>output</tabstop>
   <tabstop>convert</tabstop>
+  <tabstop>copyConverted</tabstop>
  </tabstops>
  <resources>
   <include location="../Icons/icons.qrc"/>
