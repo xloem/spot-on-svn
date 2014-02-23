@@ -90,6 +90,7 @@ class spoton_kernel: public QObject
   QTimer m_messagingCachePurgeTimer;
   QTimer m_publishAllListenersPlaintextTimer;
   QTimer m_scramblerTimer;
+  QTimer m_settingsTimer;
   QTimer m_statusTimer;
   spoton_gui_server *m_guiServer;
   spoton_mailer *m_mailer;
@@ -161,6 +162,7 @@ class spoton_kernel: public QObject
 		    const qint64 mailOid);
   void slotSettingsChanged(const QString &path);
   void slotStatusTimerExpired(void);
+  void slotUpdateSettings(void);
 
  signals:
   void callParticipant(const QByteArray &data);

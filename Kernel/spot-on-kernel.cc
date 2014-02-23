@@ -394,6 +394,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotScramble(void)));
+  connect(&m_settingsTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotUpdateSettings(void)));
   connect(&m_statusTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -402,7 +406,9 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_impersonateTimer.setInterval(2500);
   m_messagingCachePurgeTimer.setInterval(15000);
   m_publishAllListenersPlaintextTimer.setInterval(10 * 60 * 1000);
+  m_settingsTimer.setInterval(1500);
   m_scramblerTimer.setSingleShot(true);
+  m_settingsTimer.setSingleShot(true);
   m_statusTimer.start(15000);
   m_guiServer = new spoton_gui_server(this);
   m_mailer = new spoton_mailer(this);
@@ -1471,6 +1477,11 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
   */
 
   Q_UNUSED(path);
+  m_settingsTimer.start();
+}
+
+void spoton_kernel::slotUpdateSettings(void)
+{
   s_settingsMutex.lockForWrite();
 
   QSettings settings;
