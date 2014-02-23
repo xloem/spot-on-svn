@@ -5,6 +5,8 @@
 3.   The method spoton_crypt::saltedValue() did not properly
      exit on several failures.
 4.   Allow renaming of Rosetta participants.
+5.   Process use configuration changes in the kernel in a less timely manner.
+     The previous real-time mechanism is not necessary.
 
 0.09.01 (02/20/2014)
 
