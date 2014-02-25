@@ -7,6 +7,8 @@
 4.   Allow renaming of Rosetta participants.
 5.   Process user configuration changes in the kernel in a less timely manner.
      The previous real-time mechanism is not necessary.
+6.   Added the StarBeam Analyzer for discovering missing links. Please
+     see the Tools menu.
 
 0.09.01 (02/20/2014)
 
