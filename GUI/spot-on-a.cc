@@ -186,6 +186,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(iconsChanged(void)),
 	  &m_rosetta,
 	  SLOT(slotSetIcons(void)));
+  connect(this,
+	  SIGNAL(iconsChanged(void)),
+	  &m_starbeamAnalyzer,
+	  SLOT(slotSetIcons(void)));
   connect(m_sb.authentication_request,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -787,6 +791,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotForceKernelRegistration(bool)));
+  connect(m_ui.action_StarBeam_Analyzer,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotShowStarBeamAnalyzer(void)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,

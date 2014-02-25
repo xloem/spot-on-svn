@@ -6006,6 +6006,7 @@
     </widget>
     <addaction name="menu_Icons"/>
     <addaction name="action_Log_Viewer"/>
+    <addaction name="action_StarBeam_Analyzer"/>
     <addaction name="menu_Tab_Position"/>
    </widget>
    <widget class="QMenu" name="menu_Tools">
@@ -6135,6 +6136,11 @@
   <action name="action_Import_Neighbors">
    <property name="text">
     <string>&amp;Import Neighbors</string>
+   </property>
+  </action>
+  <action name="action_StarBeam_Analyzer">
+   <property name="text">
+    <string>&amp;StarBeam Analyzer</string>
    </property>
   </action>
  </widget>

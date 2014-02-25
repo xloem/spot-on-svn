@@ -93,6 +93,7 @@ extern "C"
 #include "spot-on-logviewer.h"
 #include "spot-on-reencode.h"
 #include "spot-on-rosetta.h"
+#include "spot-on-starbeamanalyzer.h"
 #include "ui_controlcenter.h"
 #include "ui_statusbar.h"
 
@@ -144,6 +145,7 @@ class spoton: public QMainWindow
   spoton_external_address *m_externalAddress;
   spoton_logviewer m_logViewer;
   spoton_rosetta m_rosetta;
+  spoton_starbeamanalyzer m_starbeamAnalyzer;
   QByteArray copyMyChatPublicKey(void) const;
   QByteArray copyMyEmailPublicKey(void) const;
   QByteArray copyMyRosettaPublicKey(void) const;
@@ -366,6 +368,7 @@ class spoton: public QMainWindow
   void slotShareURLPublicKey(void);
   void slotShowContextMenu(const QPoint &point);
   void slotShowEtpMagnetsMenu(const QPoint &point);
+  void slotShowStarBeamAnalyzer(void);
   void slotShowStatistics(void);
   void slotSignatureCheckBoxToggled(bool state);
   void slotStarOTMCheckChange(bool state);
