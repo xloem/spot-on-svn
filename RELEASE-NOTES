@@ -47,7 +47,7 @@
      data. The methods spoton_listener::slotNewConnection() and
      spoton_misc::savePublishedNeighbor() disregarded this detail.
 
-0.09    (02/07/2014)
+0.09.00 (02/07/2014)
 
 1.   Use a separate key for computing local keyed hashes. Keyed hashes provide
      uniqueness to database entries. Please reset Spot. Apologies. Keys
@@ -192,10 +192,10 @@
 74.  Respect desired congestion costs. That is, remove older entries
      from the messaging cache if the current size is too large.
 75.  Decreased the maximum name length from 64 to 16 characters.
-76.  Partially neglected to inspect Buzz message authentication codes in the kernel.
-     Corrected.
+76.  Partially neglected to inspect Buzz message authentication codes in the
+     kernel. Corrected.
 
-0.08    (12/23/2013)
+0.08.00 (12/23/2013)
 
 1.   Archived the 0.06 branch.
 2.   Added the Rosetta converter. Please see the Tools menu.
@@ -216,7 +216,7 @@
      consider such cases as errors.
 11.  Corrected digital signatures with respect to DSA and ElGamal.
 
-0.07    (12/19/2013)
+0.07.00 (12/19/2013)
 
 1.   Corrected use of gcry_md_hash_buffer() in spoton_crypt::saltedValue().
      The input buffer was incorrectly resized. The method saltedValue() is
@@ -369,7 +369,7 @@
 76.  The account_authenticated database field will now contain encrypted
      data. Please remove neighbors.db.
 
-0.06    (10/24/2013)
+0.06.00 (10/24/2013)
 
 1.   Allow users of the libspoton library to store enough information
      so that the correct key can be generated. The changes will support
@@ -464,7 +464,7 @@
      redundancy with this method and some of the process() methods. Will be
      looked at in 0.07.
 
-0.05    (09/16/2013)
+0.05.00 (09/16/2013)
 
 1.   Simple IP-based firewall.
 2.   Issue abort() instead of close() for drastic situations.
@@ -518,7 +518,7 @@
 30.  Added ssl_session_cipher to the neighbors database table. Please
      remove neighbors.db. Field contains encrypted data.
 
-0.04    (09/03/2013)
+0.04.00 (09/03/2013)
 
 1.   Per an anonymous e-mail passed on via another e-mail, I should
      perhaps add more keys! Please reset Spot. There shall now
@@ -549,7 +549,7 @@
 16.  Added the Uptime field to the Neighbors table.
 17.  Removed a bunch of "PRAGMA synchronous = OFF" statements.
 
-0.03    (08/26/2013)
+0.03.00 (08/26/2013)
 
 1.   Bundled the Translations directory in the OS X and Windows release
      files.
@@ -583,7 +583,7 @@
      requests.
 18.  Updated user documentation.
 
-0.02    (08/22/2013)
+0.02.00 (08/22/2013)
 
 1.   Listen for SSL mode changes on kernel sockets.
 2.   Abort plaintext kernel sockets.
@@ -686,11 +686,11 @@
      QByteArray::isNull() instances have been replaced by
      QByteArray::isEmpty().
 
-0.01    (07/27/2013)
+0.01.00 (07/27/2013)
 
 1.   Version 0.01 of Spot-On is now available.
 
-0.00    (08/08/2011)
+0.00.00 (08/08/2011)
 
 1.   Spot-On ascends from Ne.R.D.D (registered on 06/27/2010).
      Perhaps nice things shall follow.
