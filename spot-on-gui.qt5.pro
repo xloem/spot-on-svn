@@ -46,6 +46,7 @@ FORMS           = UI/buzzpage.ui \
                   UI/logviewer.ui \
                   UI/passwordprompt.ui \
 		  UI/rosetta.ui \
+                  UI/starbeamanalyzer.ui \
 		  UI/statusbar.ui
 
 UI_HEADERS_DIR  = GUI
