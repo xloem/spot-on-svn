@@ -2493,6 +2493,9 @@ void spoton::prepareContextMenuMirrors(void)
       action = menu->addAction(tr("&Copy File Hash"), this,
 			       SLOT(slotCopyFileHash(void)));
       action->setProperty("widget_of", "received");
+      menu->addSeparator();
+      menu->addAction(tr("Discover &Missing Links"), this,
+		      SLOT(slotDiscoverMissingLinks(void)));
       m_ui.receivedActionMenu->setMenu(menu);
     }
 
