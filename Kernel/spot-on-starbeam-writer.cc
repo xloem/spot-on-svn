@@ -128,7 +128,7 @@ void spoton_starbeam_writer::slotProcessData(void)
 
   m_keyMutex.unlock();
 
-  if(data.split('\n').size() != 6)
+  if(data.split('\n').size() != 7)
     {
       for(int i = 0; i < novas.size(); i++)
 	{
@@ -166,17 +166,18 @@ void spoton_starbeam_writer::slotProcessData(void)
   if(list.value(0) != "0060")
     return;
 
+  int dataSize = qAbs(list.value(3).toLongLong());
+  int pulseSize = qAbs(list.value(6).toLongLong());
   qint64 maximumSize = 1048576 * spoton_kernel::setting
     ("gui/maxMosaicSize", 512).toLongLong();
   qint64 position = qAbs(list.value(2).toLongLong());
-  qint64 pulseSize = qAbs(list.value(3).toLongLong());
   qint64 totalSize = qAbs(list.value(4).toLongLong());
 
-  if(position > totalSize || pulseSize > totalSize)
+  if(dataSize > list.value(5).length())
     return;
-  else if(maximumSize < pulseSize || maximumSize < totalSize)
+  else if(dataSize > maximumSize || totalSize > maximumSize)
     return;
-  else if(pulseSize > list.value(5).length())
+  else if(dataSize > totalSize || position > totalSize)
     return;
 
   QFile file;
@@ -190,8 +191,8 @@ void spoton_starbeam_writer::slotProcessData(void)
     {
       if(file.seek(position))
 	{
-	  if(file.write(list.value(5).mid(0, static_cast<int> (pulseSize)).
-			constData(), pulseSize) != pulseSize)
+	  if(static_cast<int> (file.write(list.value(5).mid(0, dataSize).
+					  constData(), dataSize)) != dataSize)
 	    spoton_misc::logError
 	      ("spoton_starbeam_writer::slotProcessData(): "
 	       "write() failure.");

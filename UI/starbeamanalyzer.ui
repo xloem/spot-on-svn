@@ -50,7 +50,7 @@
       </attribute>
       <column>
        <property name="text">
-        <string>Cancel</string>
+        <string>Pause</string>
        </property>
       </column>
       <column>
@@ -80,6 +80,33 @@
       </column>
      </widget>
     </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>5</number>
+      </property>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="clear">
+        <property name="text">
+         <string>Delete</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -88,7 +115,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>24</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -108,6 +135,7 @@
  </widget>
  <tabstops>
   <tabstop>tableWidget</tabstop>
+  <tabstop>clear</tabstop>
  </tabstops>
  <resources>
   <include location="../Icons/icons.qrc"/>

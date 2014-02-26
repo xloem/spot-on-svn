@@ -324,7 +324,8 @@ void spoton_starbeam_reader::pulsate(const QString &fileName,
 		       QByteArray::number(m_position).toBase64() + "\n" +
 		       QByteArray::number(size).toBase64() + "\n" +
 		       fileSize.toLatin1().toBase64() + "\n" +
-		       data.toBase64(), &ok);
+		       data.toBase64() + "\n" +
+		       pulseSize.toLatin1().toBase64(), &ok);
 		  else
 		    {
 		      {

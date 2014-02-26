@@ -335,6 +335,8 @@ EOL
 4 - Total Size (Base-64)
 EOL
 5 - Pulse Data (Base-64)
+EOL
+6 - Pulse Size (Base-64)
 }
 }
 EOL

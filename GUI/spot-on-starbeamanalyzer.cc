@@ -25,7 +25,10 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QCheckBox>
 #include <QKeyEvent>
+#include <QTableWidgetItem>
+#include <QtCore>
 
 #include "spot-on-starbeamanalyzer.h"
 
@@ -38,10 +41,21 @@ spoton_starbeamanalyzer::spoton_starbeamanalyzer(void):QMainWindow()
 #endif
   statusBar()->setSizeGripEnabled(false);
 #endif
+  ui.tableWidget->setColumnHidden
+    (ui.tableWidget->columnCount() - 1, true); // OID
+  ui.tableWidget->horizontalHeader()->setSortIndicator(1, Qt::AscendingOrder);
   connect(ui.action_Close,
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotClose(void)));
+  connect(this,
+	  SIGNAL(updatePercent(QTableWidgetItem *,
+			       const QString &,
+			       const int)),
+	  this,
+	  SLOT(slotUpdatePercent(QTableWidgetItem *,
+				 const QString &,
+				 const int)));
   slotSetIcons();
 }
 
@@ -88,6 +102,11 @@ void spoton_starbeamanalyzer::keyPressEvent(QKeyEvent *event)
 
 void spoton_starbeamanalyzer::slotSetIcons(void)
 {
+  QSettings settings;
+  QString iconSet(settings.value("gui/iconSet", "nuove").toString().
+		  trimmed());
+
+  ui.clear->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
 }
 
 #ifdef Q_OS_MAC
@@ -113,13 +132,108 @@ bool spoton_starbeamanalyzer::event(QEvent *event)
 #endif
 #endif
 
-void spoton_starbeamanalyzer::add(const QString &fileName,
+bool spoton_starbeamanalyzer::add(const QString &fileName,
 				  const QString &oid,
 				  const QString &pulseSize,
 				  const QString &totalSize)
 {
+  if(fileName.trimmed().isEmpty() || oid.trimmed().isEmpty() ||
+     pulseSize.trimmed().isEmpty() || totalSize.trimmed().isEmpty())
+    return false;
+
+  if(m_hash.contains(fileName))
+    return false;
+
+  ui.tableWidget->setSortingEnabled(false);
+
+  QCheckBox *checkBox = 0;
+  QTableWidgetItem *item = 0;
+  int row = ui.tableWidget->rowCount();
+
+  ui.tableWidget->setRowCount(row + 1);
+  checkBox = new QCheckBox();
+  ui.tableWidget->setCellWidget(row, 0, checkBox);
+  item = new QTableWidgetItem("0");
+  ui.tableWidget->setItem(row, 1, item);
+  item = new QTableWidgetItem(pulseSize);
+  ui.tableWidget->setItem(row, 2, item);
+  item = new QTableWidgetItem(totalSize);
+  ui.tableWidget->setItem(row, 3, item);
+  item = new QTableWidgetItem(fileName);
+  ui.tableWidget->setItem(row, 4, item);
+  item = new QTableWidgetItem(oid);
+  ui.tableWidget->setItem(row, 5, item);
+  ui.tableWidget->setSortingEnabled(true);
+
+  QFuture<void> future = QtConcurrent::run
+    (this,
+     &spoton_starbeamanalyzer::analyze,
+     fileName,
+     pulseSize,
+     totalSize,
+     ui.tableWidget->item(row, 1));
+
+  m_hash.insert(fileName, future);
+  return true;
+}
+
+void spoton_starbeamanalyzer::analyze(const QString &fileName,
+				      const QString &pulseSize,
+				      const QString &totalSize,
+				      QTableWidgetItem *item)
+{
+  int ps = pulseSize.toInt();
+
+  if(ps <= 0)
+    {
+      emit updatePercent(0, fileName, 0);
+      return;
+    }
+
+  qint64 ts = totalSize.toLongLong();
+
+  if(ts <= 0 || ts <= ps)
+    {
+      emit updatePercent(0, fileName, 0);
+      return;
+    }
+
+  QFile file(fileName);
+
+  if(file.open(QIODevice::ReadOnly))
+    {
+      QByteArray bytes(ps, 0);
+      qint64 rc = 0;
+
+      while((rc = file.read(bytes.data(), bytes.length())) > 0)
+	{
+	  if(bytes.count('0') == bytes.length())
+	    {
+	      /*
+	      ** Potential problem.
+	      */
+	    }
+
+	  int percent = 100 * static_cast<double> (file.pos()) /
+	    static_cast<double> (ts);
+
+	  if(percent > 0 && percent % 10)
+	    emit updatePercent(item, fileName, percent);
+	}
+
+      file.close();
+      emit updatePercent(item, fileName, 100);
+    }
+  else
+    emit updatePercent(item, fileName, 0);
+}
+
+void spoton_starbeamanalyzer::slotUpdatePercent(QTableWidgetItem *item,
+						const QString &fileName,
+						const int percent)
+{
   Q_UNUSED(fileName);
-  Q_UNUSED(oid);
-  Q_UNUSED(pulseSize);
-  Q_UNUSED(totalSize);
+
+  if(item)
+    item->setText(QString("%1%").arg(percent));
 }
