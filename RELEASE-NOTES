@@ -10,6 +10,9 @@
 6.   Added the StarBeam Analyzer for discovering missing links. Please
      see the Tools menu.
 7.   Upgraded SQLite libraries to version 3.8.3.1 on Windows.
+8.   Added the Pulse Size field to the 0060 message. This addition will
+     correctly identify pule sizes to receivers because the Data Size
+     may be smaller than the Pule Size.
 
 0.09.01 (02/20/2014)
 
