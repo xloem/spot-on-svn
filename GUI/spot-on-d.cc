@@ -29,6 +29,39 @@
 
 void spoton::slotDiscoverMissingLinks(void)
 {
+  QString fileName("");
+  QString oid("");
+  QString pulseSize("");
+  QString totalSize("");
+  int row = -1;
+
+  if((row = m_ui.received->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = 0;
+
+      item = m_ui.received->item(row, 3); // File
+
+      if(item)
+	fileName = item->text();
+
+      item = m_ui.received->item(row, 1); // Pulse Size
+
+      if(item)
+	pulseSize = item->text();
+
+      item = m_ui.received->item(row, 2); // Total Size
+
+      if(item)
+	totalSize = item->text();
+
+      item = m_ui.received->item
+	(row, m_ui.received->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  m_starbeamAnalyzer.add(fileName, oid, pulseSize, totalSize);
 }
 
 void spoton::slotShowStarBeamAnalyzer(void)

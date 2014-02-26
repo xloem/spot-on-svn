@@ -38,6 +38,10 @@ spoton_starbeamanalyzer::spoton_starbeamanalyzer(void):QMainWindow()
 #endif
   statusBar()->setSizeGripEnabled(false);
 #endif
+  connect(ui.action_Close,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotClose(void)));
   slotSetIcons();
 }
 
@@ -108,3 +112,14 @@ bool spoton_starbeamanalyzer::event(QEvent *event)
 }
 #endif
 #endif
+
+void spoton_starbeamanalyzer::add(const QString &fileName,
+				  const QString &oid,
+				  const QString &pulseSize,
+				  const QString &totalSize)
+{
+  Q_UNUSED(fileName);
+  Q_UNUSED(oid);
+  Q_UNUSED(pulseSize);
+  Q_UNUSED(totalSize);
+}

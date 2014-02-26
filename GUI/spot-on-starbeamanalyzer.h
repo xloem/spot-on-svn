@@ -40,6 +40,8 @@ class spoton_starbeamanalyzer: public QMainWindow
 
  public:
   spoton_starbeamanalyzer(void);
+  void add(const QString &fileName, const QString &oid,
+	   const QString &pulseSize, const QString &totalSize);
   void show(QWidget *parent);
 
  private:
