@@ -9,6 +9,7 @@
      The previous real-time mechanism is not necessary.
 6.   Added the StarBeam Analyzer for discovering missing links. Please
      see the Tools menu.
+7.   Upgraded SQLite libraries to version 3.8.3.1 on Windows.
 
 0.09.01 (02/20/2014)
 
