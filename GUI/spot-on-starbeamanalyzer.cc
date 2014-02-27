@@ -74,7 +74,7 @@ spoton_starbeamanalyzer::~spoton_starbeamanalyzer()
       QPair<QAtomicInt *, QFuture<void> > pair(it.value());
 
       if(pair.first)
-	pair.first->ref();
+	pair.first->fetchAndAddRelaxed(1);
 
       pair.second.waitForFinished();
       delete pair.first;
@@ -302,7 +302,7 @@ void spoton_starbeamanalyzer::slotDelete(void)
   QPair<QAtomicInt *, QFuture<void> > pair = m_hash[item->text()];
 
   if(pair.first)
-    pair.first->ref();
+    pair.first->fetchAndAddRelaxed(1);
 
   pair.second.waitForFinished();
   delete pair.first;
@@ -325,7 +325,7 @@ void spoton_starbeamanalyzer::slotCancel(bool state)
 	[checkBox->property("filename").toString()].first;
 
       if(interrupt)
-	interrupt->ref();
+	interrupt->fetchAndAddRelaxed(1);
     }
 
   checkBox->setEnabled(false);

@@ -904,10 +904,7 @@ void spoton::slotTransmit(void)
 	if(ok)
 	  query.bindValue
 	    (7, s_crypt->
-	     encrypted(QString::
-		       number(QFileInfo(m_ui.transmittedFile->
-					text()).size()).toLatin1(),
-		       &ok).toBase64());
+	     encrypted(QByteArray::number(fileInfo.size()), &ok).toBase64());
 
 	if(ok)
 	  query.exec();
