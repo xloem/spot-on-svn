@@ -118,6 +118,7 @@ spoton::spoton(void):QMainWindow()
   m_listenersLastModificationTime = QDateTime();
   m_neighborsLastModificationTime = QDateTime();
   m_participantsLastModificationTime = QDateTime();
+  m_starbeamAnalyzer = new spoton_starbeamanalyzer(this);
   m_starsLastModificationTime = QDateTime();
   m_ui.setupUi(this);
 
@@ -188,7 +189,7 @@ spoton::spoton(void):QMainWindow()
 	  SLOT(slotSetIcons(void)));
   connect(this,
 	  SIGNAL(iconsChanged(void)),
-	  &m_starbeamAnalyzer,
+	  m_starbeamAnalyzer,
 	  SLOT(slotSetIcons(void)));
   connect(m_sb.authentication_request,
 	  SIGNAL(clicked(void)),
@@ -1521,6 +1522,7 @@ void spoton::slotQuit(void)
     }
 
   m_crypts.clear();
+  m_starbeamAnalyzer->deleteLater();
   spoton_crypt::terminate();
   QApplication::instance()->quit();
 }

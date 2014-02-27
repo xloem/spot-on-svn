@@ -29,6 +29,9 @@
 
 void spoton::slotDiscoverMissingLinks(void)
 {
+  if(!m_starbeamAnalyzer)
+    return;
+
   QString fileName("");
   QString oid("");
   QString pulseSize("");
@@ -61,11 +64,12 @@ void spoton::slotDiscoverMissingLinks(void)
 	oid = item->text();
     }
 
-  if(m_starbeamAnalyzer.add(fileName, oid, pulseSize, totalSize))
-    m_starbeamAnalyzer.show(this);
+  if(m_starbeamAnalyzer->add(fileName, oid, pulseSize, totalSize))
+    m_starbeamAnalyzer->show(this);
 }
 
 void spoton::slotShowStarBeamAnalyzer(void)
 {
-  m_starbeamAnalyzer.show(this);
+  if(m_starbeamAnalyzer)
+    m_starbeamAnalyzer->show(this);
 }

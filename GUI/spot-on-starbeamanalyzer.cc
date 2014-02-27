@@ -32,7 +32,8 @@
 
 #include "spot-on-starbeamanalyzer.h"
 
-spoton_starbeamanalyzer::spoton_starbeamanalyzer(void):QMainWindow()
+spoton_starbeamanalyzer::spoton_starbeamanalyzer(QWidget *parent):
+  QMainWindow(parent)
 {
   ui.setupUi(this);
 #ifdef Q_OS_MAC
@@ -43,20 +44,42 @@ spoton_starbeamanalyzer::spoton_starbeamanalyzer(void):QMainWindow()
 #endif
   ui.tableWidget->setColumnHidden
     (ui.tableWidget->columnCount() - 1, true); // OID
-  ui.tableWidget->horizontalHeader()->setSortIndicator(1, Qt::AscendingOrder);
+  ui.tableWidget->horizontalHeader()->setSortIndicator(4, Qt::AscendingOrder);
   connect(ui.action_Close,
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotClose(void)));
+  connect(ui.clear,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotDelete(void)));
   connect(this,
-	  SIGNAL(updatePercent(QTableWidgetItem *,
-			       const QString &,
+	  SIGNAL(updatePercent(const QString &,
 			       const int)),
 	  this,
-	  SLOT(slotUpdatePercent(QTableWidgetItem *,
-				 const QString &,
+	  SLOT(slotUpdatePercent(const QString &,
 				 const int)));
   slotSetIcons();
+}
+
+spoton_starbeamanalyzer::~spoton_starbeamanalyzer()
+{
+  QMutableHashIterator<QString, QPair<QAtomicInt *, QFuture<void> > >
+    it(m_hash);
+
+  while(it.hasNext())
+    {
+      it.next();
+
+      QPair<QAtomicInt *, QFuture<void> > pair(it.value());
+
+      if(pair.first)
+	pair.first->ref();
+
+      pair.second.waitForFinished();
+      delete pair.first;
+      it.remove();
+    }
 }
 
 void spoton_starbeamanalyzer::slotClose(void)
@@ -152,6 +175,11 @@ bool spoton_starbeamanalyzer::add(const QString &fileName,
 
   ui.tableWidget->setRowCount(row + 1);
   checkBox = new QCheckBox();
+  checkBox->setProperty("filename", fileName);
+  connect(checkBox,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotCancel(bool)));
   ui.tableWidget->setCellWidget(row, 0, checkBox);
   item = new QTableWidgetItem("0");
   ui.tableWidget->setItem(row, 1, item);
@@ -165,36 +193,34 @@ bool spoton_starbeamanalyzer::add(const QString &fileName,
   ui.tableWidget->setItem(row, 5, item);
   ui.tableWidget->setSortingEnabled(true);
 
+  QAtomicInt *interrupt = new QAtomicInt();
   QFuture<void> future = QtConcurrent::run
     (this,
      &spoton_starbeamanalyzer::analyze,
      fileName,
      pulseSize,
      totalSize,
-     ui.tableWidget->item(row, 1));
+     interrupt);
+  QPair<QAtomicInt *, QFuture<void> > pair;
 
-  m_hash.insert(fileName, future);
+  pair.first = interrupt;
+  pair.second = future;
+  m_hash.insert(fileName, pair);
   return true;
 }
 
 void spoton_starbeamanalyzer::analyze(const QString &fileName,
 				      const QString &pulseSize,
 				      const QString &totalSize,
-				      QTableWidgetItem *item)
+				      QAtomicInt *interrupt)
 {
+  Q_UNUSED(totalSize);
+
   int ps = pulseSize.toInt();
 
   if(ps <= 0)
     {
-      emit updatePercent(0, fileName, 0);
-      return;
-    }
-
-  qint64 ts = totalSize.toLongLong();
-
-  if(ts <= 0 || ts <= ps)
-    {
-      emit updatePercent(0, fileName, 0);
+      emit updatePercent(fileName, 0);
       return;
     }
 
@@ -203,6 +229,7 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
   if(file.open(QIODevice::ReadOnly))
     {
       QByteArray bytes(ps, 0);
+      bool interrupted = false;
       qint64 rc = 0;
 
       while((rc = file.read(bytes.data(), bytes.length())) > 0)
@@ -215,25 +242,91 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
 	    }
 
 	  int percent = 100 * static_cast<double> (file.pos()) /
-	    static_cast<double> (ts);
+	    static_cast<double> (file.size());
 
 	  if(percent > 0 && percent % 10)
-	    emit updatePercent(item, fileName, percent);
+	    emit updatePercent(fileName, percent);
+
+	  if(interrupt && interrupt->fetchAndAddRelaxed(0))
+	    {
+	      interrupted = true;
+	      break;
+	    }
 	}
 
       file.close();
-      emit updatePercent(item, fileName, 100);
+
+      if(!interrupted)
+	{
+	  if(rc == -1)
+	    emit updatePercent(fileName, 0);
+	  else
+	    emit updatePercent(fileName, 100);
+	}
     }
   else
-    emit updatePercent(item, fileName, 0);
+    emit updatePercent(fileName, 0);
 }
 
-void spoton_starbeamanalyzer::slotUpdatePercent(QTableWidgetItem *item,
-						const QString &fileName,
+void spoton_starbeamanalyzer::slotUpdatePercent(const QString &fileName,
 						const int percent)
 {
-  Q_UNUSED(fileName);
+  QList<QTableWidgetItem *> list
+    (ui.tableWidget->findItems(fileName, Qt::MatchExactly));
 
-  if(item)
-    item->setText(QString("%1%").arg(percent));
+  if(!list.isEmpty())
+    {
+      QTableWidgetItem *item = ui.tableWidget->item
+	(list.at(0)->row(), 1); // File
+
+      if(item)
+	item->setText(QString("%1%").arg(percent));
+    }
+}
+
+void spoton_starbeamanalyzer::slotDelete(void)
+{
+  int row = ui.tableWidget->currentRow();
+
+  if(row < 0)
+    return;
+
+  QTableWidgetItem *item = ui.tableWidget->item(row, 4); // File
+
+  if(!item)
+    return;
+
+  if(!m_hash.contains(item->text()))
+    return;
+
+  QPair<QAtomicInt *, QFuture<void> > pair = m_hash[item->text()];
+
+  if(pair.first)
+    pair.first->ref();
+
+  pair.second.waitForFinished();
+  delete pair.first;
+  m_hash.remove(item->text());
+  ui.tableWidget->removeRow(row);
+}
+
+void spoton_starbeamanalyzer::slotCancel(bool state)
+{
+  Q_UNUSED(state);
+
+  QCheckBox *checkBox = qobject_cast<QCheckBox *> (sender());
+
+  if(!checkBox)
+    return;
+
+  if(m_hash.contains(checkBox->property("filename").toString()))
+    {
+      QAtomicInt *interrupt = m_hash
+	[checkBox->property("filename").toString()].first;
+
+      if(interrupt)
+	interrupt->ref();
+    }
+
+  checkBox->setEnabled(false);
 }

@@ -145,7 +145,7 @@ class spoton: public QMainWindow
   spoton_external_address *m_externalAddress;
   spoton_logviewer m_logViewer;
   spoton_rosetta m_rosetta;
-  spoton_starbeamanalyzer m_starbeamAnalyzer;
+  spoton_starbeamanalyzer *m_starbeamAnalyzer;
   QByteArray copyMyChatPublicKey(void) const;
   QByteArray copyMyEmailPublicKey(void) const;
   QByteArray copyMyRosettaPublicKey(void) const;

@@ -28,6 +28,7 @@
 #ifndef _spoton_starbeamanalyzer_h_
 #define _spoton_starbeamanalyzer_h_
 
+#include <QAtomicInt>
 #include <QFuture>
 #include <QHash>
 #include <QMainWindow>
@@ -45,13 +46,14 @@ class spoton_starbeamanalyzer: public QMainWindow
   Q_OBJECT
 
  public:
-  spoton_starbeamanalyzer(void);
+  spoton_starbeamanalyzer(QWidget *parent);
+  ~spoton_starbeamanalyzer();
   bool add(const QString &fileName, const QString &oid,
 	   const QString &pulseSize, const QString &totalSize);
   void show(QWidget *parent);
 
  private:
-  QHash<QString, QFuture<void> > m_hash;
+  QHash<QString, QPair<QAtomicInt *, QFuture<void> > > m_hash;
   Ui_spoton_starbeamanalyzer ui;
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000
@@ -59,19 +61,19 @@ class spoton_starbeamanalyzer: public QMainWindow
 #endif
 #endif
   void analyze(const QString &fileName, const QString &pulseSize,
-	       const QString &totalSize, QTableWidgetItem *item);
+	       const QString &totalSize, QAtomicInt *interrupt);
   void keyPressEvent(QKeyEvent *event);
 
  private slots:
+  void slotCancel(bool state);
   void slotClose(void);
+  void slotDelete(void);
   void slotSetIcons(void);
-  void slotUpdatePercent(QTableWidgetItem *item,
-			 const QString &fileName,
+  void slotUpdatePercent(const QString &fileName,
 			 const int percent);
 
  signals:
-  void updatePercent(QTableWidgetItem *item,
-		     const QString &fileName,
+  void updatePercent(const QString &fileName,
 		     const int percent);
 };
 
