@@ -230,7 +230,10 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
     {
       QByteArray bytes(ps, 0);
       bool interrupted = false;
+      int percent = 0;
       qint64 rc = 0;
+      qint64 ts = qMax(static_cast<long long> (1),
+		       qMax(file.size(), totalSize.toLongLong()));
 
       while((rc = file.read(bytes.data(), bytes.length())) > 0)
 	{
@@ -241,10 +244,11 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
 	      */
 	    }
 
-	  int percent = 100 * static_cast<double> (file.pos()) /
-	    static_cast<double> (file.size());
+	  percent = qMin(static_cast<double> (100),
+			 100 * static_cast<double> (file.pos()) /
+			 static_cast<double> (ts));
 
-	  if(percent > 0 && percent % 10)
+	  if(percent > 0 && percent % 5 == 0)
 	    emit updatePercent(fileName, percent);
 
 	  if(interrupt && interrupt->fetchAndAddRelaxed(0))
@@ -255,6 +259,32 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
 	}
 
       file.close();
+
+      /*
+      ** Now that we've reviewed the file, let's review shadow portions.
+      */
+
+      if(!interrupted && percent < 100)
+	{
+	  qint64 pos = file.size();
+
+	  while(percent < 100)
+	    {
+	      pos += ps;
+	      percent = qMin(static_cast<double> (100),
+			     100 * static_cast<double> (pos) /
+			     static_cast<double> (ts));
+
+	      if(percent > 0 && percent % 5 == 0)
+		emit updatePercent(fileName, percent);
+
+	      if(interrupt && interrupt->fetchAndAddRelaxed(0))
+		{
+		  interrupted = true;
+		  break;
+		}
+	    }
+	}
 
       if(!interrupted)
 	{
