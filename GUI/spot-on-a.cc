@@ -4998,10 +4998,9 @@ void spoton::slotConnectNeighbor(void)
 	QSqlQuery query(db);
 
 	query.prepare("UPDATE neighbors SET "
-		      "status_control = ? "
+		      "status_control = 'connected' "
 		      "WHERE OID = ? AND status_control <> 'deleted'");
-	query.bindValue(0, "connected");
-	query.bindValue(1, oid);
+	query.bindValue(0, oid);
 	query.exec();
       }
 
@@ -5041,10 +5040,9 @@ void spoton::slotDisconnectNeighbor(void)
 	QSqlQuery query(db);
 
 	query.prepare("UPDATE neighbors SET "
-		      "status_control = ? "
+		      "status_control = 'disconnected' "
 		      "WHERE OID = ?");
-	query.bindValue(0, "disconnected");
-	query.bindValue(1, oid);
+	query.bindValue(0, oid);
 	query.exec();
       }
 
@@ -5198,8 +5196,7 @@ void spoton::slotUnblockNeighbor(void)
 
 		    updateQuery.prepare("UPDATE neighbors SET "
 					"status_control = 'disconnected' "
-					"WHERE "
-					"OID = ?");
+					"WHERE OID = ?");
 		    updateQuery.bindValue(0, query.value(1));
 		    updateQuery.exec();
 		  }
