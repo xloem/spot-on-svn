@@ -133,8 +133,10 @@ class spoton_crypt
 	       const QString &id);
   ~spoton_crypt();
   QByteArray decrypted(const QByteArray &data, bool *ok);
+  QByteArray decryptedAfterAuthenticated(const QByteArray &data, bool *ok);
   QByteArray digitalSignature(const QByteArray &data, bool *ok);
   QByteArray encrypted(const QByteArray &data, bool *ok);
+  QByteArray encryptedThenHashed(const QByteArray &data, bool *ok);
   QByteArray hashKey(void) const;
   QByteArray keyedHash(const QByteArray &data, bool *ok) const;
   QByteArray publicKey(bool *ok);

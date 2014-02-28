@@ -3557,3 +3557,43 @@ int spoton_crypt::publicKeyCount(void) const
   QSqlDatabase::removeDatabase(connectionName);
   return count;
 }
+
+QByteArray spoton_crypt::encryptedThenHashed(const QByteArray &data,
+					     bool *ok)
+{
+  QByteArray bytes1(encrypted(data, ok));
+  QByteArray bytes2;
+
+  if(!bytes1.isEmpty())
+    bytes2 = keyedHash(bytes1, ok);
+
+  if(bytes1.isEmpty() || bytes2.isEmpty())
+    return QByteArray();
+  else
+    return bytes2 + bytes1;
+}
+
+QByteArray spoton_crypt::decryptedAfterAuthenticated(const QByteArray &data,
+						     bool *ok)
+{
+  unsigned int length = gcry_md_get_algo_dlen(m_hashAlgorithm);
+
+  if(length == 0)
+    {
+      if(ok)
+	*ok = false;
+
+      return QByteArray();
+    }
+
+  QByteArray computedHash;
+  QByteArray hash(data.mid(0, length));
+
+  computedHash = keyedHash(data.mid(length), ok);
+
+  if(!computedHash.isEmpty() &&
+     !hash.isEmpty() && memcmp(computedHash, hash))
+    return decrypted(data.mid(length), ok);
+  else
+    return QByteArray();
+}

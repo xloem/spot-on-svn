@@ -75,9 +75,21 @@
       </column>
       <column>
        <property name="text">
+        <string>Results</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
         <string>OID</string>
        </property>
       </column>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="results">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
     <item>
@@ -115,7 +127,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>24</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -135,6 +147,7 @@
  </widget>
  <tabstops>
   <tabstop>tableWidget</tabstop>
+  <tabstop>results</tabstop>
   <tabstop>clear</tabstop>
  </tabstops>
  <resources>

@@ -44,6 +44,8 @@ spoton_starbeamanalyzer::spoton_starbeamanalyzer(QWidget *parent):
 #endif
   ui.tableWidget->setColumnHidden
     (ui.tableWidget->columnCount() - 1, true); // OID
+  ui.tableWidget->setColumnHidden
+    (ui.tableWidget->columnCount() - 2, true); // Results
   ui.tableWidget->horizontalHeader()->setSortIndicator(4, Qt::AscendingOrder);
   connect(ui.action_Close,
 	  SIGNAL(triggered(void)),
@@ -189,8 +191,10 @@ bool spoton_starbeamanalyzer::add(const QString &fileName,
   ui.tableWidget->setItem(row, 3, item);
   item = new QTableWidgetItem(fileName);
   ui.tableWidget->setItem(row, 4, item);
-  item = new QTableWidgetItem(oid);
+  item = new QTableWidgetItem();
   ui.tableWidget->setItem(row, 5, item);
+  item = new QTableWidgetItem(oid);
+  ui.tableWidget->setItem(row, 6, item);
   ui.tableWidget->setSortingEnabled(true);
 
   QAtomicInt *interrupt = new QAtomicInt();
