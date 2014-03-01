@@ -38,6 +38,7 @@ INCLUDEPATH	+= . ../. ../../../. ../../../libGeoIP/Include.osx64 \
                    /usr/local/ssl/include
 ICON		=
 LIBS		+= -L../../../libGeoIP/Libraries.osx64 -lGeoIP \
+		   -L../../../libSCTP/Libraries.osx64 -lusrsctp \
                    -L../../../libSpotOn -lspoton \
                    -L/usr/local/lib -lgcrypt -lgpg-error \
                    -L/usr/local/ssl/lib -lcrypto -lssl
