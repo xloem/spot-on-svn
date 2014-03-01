@@ -86,13 +86,6 @@
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="results">
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="spacing">
        <number>5</number>
@@ -111,6 +104,13 @@
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="copy">
+        <property name="text">
+         <string>Copy</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="clear">
         <property name="text">
          <string>Delete</string>
@@ -118,6 +118,16 @@
        </widget>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QTextBrowser" name="results">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -147,8 +157,9 @@
  </widget>
  <tabstops>
   <tabstop>tableWidget</tabstop>
-  <tabstop>results</tabstop>
+  <tabstop>copy</tabstop>
   <tabstop>clear</tabstop>
+  <tabstop>results</tabstop>
  </tabstops>
  <resources>
   <include location="../Icons/icons.qrc"/>

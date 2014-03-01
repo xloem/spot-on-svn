@@ -26,6 +26,7 @@
 */
 
 #include <QCheckBox>
+#include <QClipboard>
 #include <QKeyEvent>
 #include <QTableWidgetItem>
 #include <QtCore>
@@ -55,6 +56,20 @@ spoton_starbeamanalyzer::spoton_starbeamanalyzer(QWidget *parent):
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotDelete(void)));
+  connect(ui.copy,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotCopy(void)));
+  connect(ui.tableWidget,
+	  SIGNAL(itemSelectionChanged(void)),
+	  this,
+	  SLOT(slotItemSelected(void)));
+  connect(this,
+	  SIGNAL(potentialProblem(const QString &,
+				  const qint64)),
+	  this,
+	  SLOT(slotPotentialProblem(const QString &,
+				    const qint64)));
   connect(this,
 	  SIGNAL(updatePercent(const QString &,
 			       const int)),
@@ -184,6 +199,7 @@ bool spoton_starbeamanalyzer::add(const QString &fileName,
 	  SLOT(slotCancel(bool)));
   ui.tableWidget->setCellWidget(row, 0, checkBox);
   item = new QTableWidgetItem("0");
+  item->setBackground(QBrush(QColor("lightgreen")));
   ui.tableWidget->setItem(row, 1, item);
   item = new QTableWidgetItem(pulseSize);
   ui.tableWidget->setItem(row, 2, item);
@@ -235,6 +251,7 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
       QByteArray bytes(ps, 0);
       bool interrupted = false;
       int percent = 0;
+      qint64 pos = 0;
       qint64 rc = 0;
       qint64 ts = qMax(static_cast<long long> (1),
 		       qMax(file.size(), totalSize.toLongLong()));
@@ -242,12 +259,13 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
       while((rc = file.read(bytes.data(), bytes.length())) > 0)
 	{
 	  if(bytes.count('0') == bytes.length())
-	    {
-	      /*
-	      ** Potential problem.
-	      */
-	    }
+	    /*
+	    ** Potential problem.
+	    */
 
+	    emit potentialProblem(fileName, pos);
+
+	  pos += ps;
 	  percent = qMin(static_cast<double> (100),
 			 100 * static_cast<double> (file.pos()) /
 			 static_cast<double> (ts));
@@ -269,26 +287,23 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
       */
 
       if(!interrupted && percent < 100)
-	{
-	  qint64 pos = file.size();
+	while(percent < 100)
+	  {
+	    emit potentialProblem(fileName, pos);
+	    pos += ps;
+	    percent = qMin(static_cast<double> (100),
+			   100 * static_cast<double> (pos) /
+			   static_cast<double> (ts));
 
-	  while(percent < 100)
-	    {
-	      pos += ps;
-	      percent = qMin(static_cast<double> (100),
-			     100 * static_cast<double> (pos) /
-			     static_cast<double> (ts));
+	    if(percent > 0 && percent % 5 == 0)
+	      emit updatePercent(fileName, percent);
 
-	      if(percent > 0 && percent % 5 == 0)
-		emit updatePercent(fileName, percent);
-
-	      if(interrupt && interrupt->fetchAndAddRelaxed(0))
-		{
-		  interrupted = true;
-		  break;
-		}
-	    }
-	}
+	    if(interrupt && interrupt->fetchAndAddRelaxed(0))
+	      {
+		interrupted = true;
+		break;
+	      }
+	  }
 
       if(!interrupted)
 	{
@@ -311,7 +326,7 @@ void spoton_starbeamanalyzer::slotUpdatePercent(const QString &fileName,
   if(!list.isEmpty())
     {
       QTableWidgetItem *item = ui.tableWidget->item
-	(list.at(0)->row(), 1); // File
+	(list.at(0)->row(), 1); // Percent
 
       if(item)
 	item->setText(QString("%1%").arg(percent));
@@ -363,4 +378,56 @@ void spoton_starbeamanalyzer::slotCancel(bool state)
     }
 
   checkBox->setEnabled(false);
+}
+
+void spoton_starbeamanalyzer::slotPotentialProblem(const QString &fileName,
+						   const qint64 pos)
+{
+  QList<QTableWidgetItem *> list
+    (ui.tableWidget->findItems(fileName, Qt::MatchExactly));
+
+  if(!list.isEmpty())
+    {
+      QTableWidgetItem *item = ui.tableWidget->item
+	(list.at(0)->row(), 1); // Percent
+
+      if(item)
+	item->setBackground(QBrush(QColor(240, 128, 128)));
+
+      item = ui.tableWidget->item(list.at(0)->row(), 5); // Results
+
+      if(item)
+	{
+	  QString text(item->text());
+
+	  if(!text.isEmpty())
+	    text.append(",");
+
+	  text.append(QString::number(pos));
+	  item->setText(text);
+	}
+    }
+}
+
+void spoton_starbeamanalyzer::slotItemSelected(void)
+{
+  int row = ui.tableWidget->currentRow();
+
+  if(row < 0)
+    return;
+
+  QTableWidgetItem *item = ui.tableWidget->item(row, 5); // Results;
+
+  if(!item)
+    return;
+
+  ui.results->setText(item->text());
+}
+
+void spoton_starbeamanalyzer::slotCopy(void)
+{
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(clipboard)
+    clipboard->setText(ui.results->toPlainText());
 }
