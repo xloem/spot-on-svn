@@ -1,5 +1,8 @@
 OS X
 
+Please note that the SCTP NKE bundle is only supported
+on OS X 10.6.8.
+
 Please download the SCTP extension from
 http://sctp.fh-muenster.de/sctp-nke.html and
 http://sctp.fh-muenster.de/sctp-user-land-stack.html.
