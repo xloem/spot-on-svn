@@ -4317,21 +4317,26 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     </message>
     <message>
         <location filename="../UI/starbeamanalyzer.ui" line="78"/>
+        <source>Results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/starbeamanalyzer.ui" line="83"/>
         <source>OID</source>
         <translation type="unfinished">OID</translation>
     </message>
     <message>
-        <location filename="../UI/starbeamanalyzer.ui" line="104"/>
+        <location filename="../UI/starbeamanalyzer.ui" line="116"/>
         <source>Delete</source>
         <translation type="unfinished">Löschen</translation>
     </message>
     <message>
-        <location filename="../UI/starbeamanalyzer.ui" line="123"/>
+        <location filename="../UI/starbeamanalyzer.ui" line="135"/>
         <source>&amp;File</source>
         <translation type="unfinished">Datei</translation>
     </message>
     <message>
-        <location filename="../UI/starbeamanalyzer.ui" line="132"/>
+        <location filename="../UI/starbeamanalyzer.ui" line="144"/>
         <source>&amp;Close</source>
         <translation type="unfinished">Schließen</translation>
     </message>
