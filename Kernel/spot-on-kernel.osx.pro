@@ -33,6 +33,7 @@ QMAKE_EXTRA_TARGETS = libspoton purge
 QMAKE_LFLAGS_RELEASE =
 QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../. ../../../. ../../../libGeoIP/Include.osx64 \
+		   ../../../libSCTP/Include.osx64 \
                    /usr/local/include \
                    /usr/local/ssl/include
 ICON		=

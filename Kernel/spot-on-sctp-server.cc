@@ -56,7 +56,7 @@ extern "C"
 #elif defined(Q_OS_MAC)
 extern "C"
 {
-#include "sctp.h"
+#include "usrsctp.h"
 
 #include <arpa/inet.h>
 #include <errno.h>
