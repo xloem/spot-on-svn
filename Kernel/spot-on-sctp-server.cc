@@ -196,8 +196,6 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 
 	  goto done_label;
 	}
-      else
-	rc = 0;
 
       rc = bind
 	(m_socketDescriptor, (const struct sockaddr *) &serveraddr, length);
@@ -231,8 +229,6 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 
 	  goto done_label;
 	}
-      else
-	rc = 0;
 
       rc = bind
 	(m_socketDescriptor, (const struct sockaddr *) &serveraddr, length);
@@ -300,7 +296,6 @@ void spoton_sctp_server::close(void)
     }
 
   ::close(m_socketDescriptor);
-  m_errorString.clear();
   m_isListening = false;
   m_serverAddress.clear();
   m_serverPort = 0;
@@ -378,6 +373,10 @@ void spoton_sctp_server::slotSocketNotifierActivated(int socket)
 		(ntohl(clientaddr.sin_addr.s_addr));
 	      port = ntohs(clientaddr.sin_port);
 	    }
+	  else
+	    m_errorString = QString
+	      ("slotSocketNotifierActivated()::accept()::errno=%1").
+	      arg(errno);
 	}
       else
 	{
@@ -399,6 +398,10 @@ void spoton_sctp_server::slotSocketNotifierActivated(int socket)
 		(QString::number(clientaddr.sin6_scope_id));
 	      port = ntohs(clientaddr.sin6_port);
 	    }
+	  else
+	    m_errorString = QString
+	      ("slotSocketNotifierActivated()::accept()::errno=%1").
+	      arg(errno);
 	}
 
       socketNotifier->setEnabled(true);
