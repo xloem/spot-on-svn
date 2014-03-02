@@ -104,7 +104,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 	    QSqlQuery query(db);
 
 	    query.setForwardOnly(true);
-	    query.prepare("SELECT file, nova, position, "
+	    query.prepare("SELECT file, missing_links, nova, position, "
 			  "pulse_size, status_control, total_size "
 			  "FROM transmitted WHERE OID = ?");
 	    query.bindValue(0, m_id);
@@ -112,7 +112,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 	    if(query.exec())
 	      if(query.next())
 		{
-		  QString status(query.value(4).toString());
+		  QString status(query.value(5).toString());
 
 		  if(status == "deleted")
 		    shouldDelete = true;
@@ -136,7 +136,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 			nova = s_crypt->
 			  decrypted(QByteArray::
 				    fromBase64(query.
-					       value(1).
+					       value(2).
 					       toByteArray()),
 				    &ok);
 
@@ -144,7 +144,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 			m_position = s_crypt->
 			  decrypted(QByteArray::
 				    fromBase64(query.
-					       value(2).
+					       value(3).
 					       toByteArray()),
 				    &ok).toLongLong();
 
@@ -152,7 +152,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 			pulseSize = s_crypt->
 			  decrypted(QByteArray::
 				    fromBase64(query.
-					       value(3).
+					       value(4).
 					       toByteArray()),
 				    &ok).
 			  constData();
@@ -161,7 +161,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 			fileSize = s_crypt->
 			  decrypted(QByteArray::
 				    fromBase64(query.
-					       value(5).
+					       value(6).
 					       toByteArray()),
 				    &ok).
 			  constData();
@@ -389,6 +389,8 @@ void spoton_starbeam_reader::pulsate(const QString &fileName,
 
   if(m_position < file.size())
     status = "transmitting";
+  else
+    status = "transmitted";
 
   file.close();
 

@@ -862,9 +862,10 @@ void spoton::slotTransmit(void)
 	QSqlQuery query(db);
 
 	query.prepare("INSERT INTO transmitted "
-		      "(file, hash, mosaic, nova, position, pulse_size, "
+		      "(file, hash, missing_links, mosaic, nova, "
+		      "position, pulse_size, "
 		      "status_control, total_size) "
-		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue
 	  (0, s_crypt->encrypted(m_ui.transmittedFile->text().toUtf8(),
 				 &ok).toBase64());
@@ -876,34 +877,36 @@ void spoton::slotTransmit(void)
 		       sha1FileHash(m_ui.transmittedFile->text()).toHex(),
 		       &ok).toBase64());
 
+	query.bindValue(2, m_ui.missingLinks->text().trimmed());
+
 	if(ok)
 	  {
 	    encryptedMosaic = s_crypt->encrypted(mosaic, &ok);
 
 	    if(ok)
-	      query.bindValue(2, encryptedMosaic.toBase64());
+	      query.bindValue(3, encryptedMosaic.toBase64());
 	  }
 
 	if(ok)
 	  query.bindValue
-	    (3, s_crypt->encrypted(m_ui.transmitNova->text().trimmed().
+	    (4, s_crypt->encrypted(m_ui.transmitNova->text().trimmed().
 				   toLatin1(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (4, s_crypt->encrypted("0", &ok).toBase64());
+	    (5, s_crypt->encrypted("0", &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (5, s_crypt->
+	    (6, s_crypt->
 	     encrypted(QByteArray::number(m_ui.pulseSize->
 					  value()), &ok).toBase64());
 
-	query.bindValue(6, "paused");
+	query.bindValue(7, "paused");
 
 	if(ok)
 	  query.bindValue
-	    (7, s_crypt->
+	    (8, s_crypt->
 	     encrypted(QByteArray::number(fileInfo.size()), &ok).toBase64());
 
 	if(ok)

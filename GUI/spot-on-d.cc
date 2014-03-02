@@ -64,8 +64,8 @@ void spoton::slotDiscoverMissingLinks(void)
 	oid = item->text();
     }
 
-  if(m_starbeamAnalyzer->add(fileName, oid, pulseSize, totalSize))
-    m_starbeamAnalyzer->show(this);
+  m_starbeamAnalyzer->add(fileName, oid, pulseSize, totalSize);
+  m_starbeamAnalyzer->show(this);
 }
 
 void spoton::slotShowStarBeamAnalyzer(void)

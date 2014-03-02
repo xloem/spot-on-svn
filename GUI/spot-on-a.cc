@@ -797,6 +797,10 @@ spoton::spoton(void):QMainWindow()
 	  this,
 	  SLOT(slotShowStarBeamAnalyzer(void)));
   connect(m_ui.missingLinksCheckBox,
+	  SIGNAL(clicked(void)),
+	  m_ui.missingLinks,
+	  SLOT(clear(void)));
+  connect(m_ui.missingLinksCheckBox,
 	  SIGNAL(toggled(bool)),
 	  m_ui.missingLinks,
 	  SLOT(setEnabled(bool)));
