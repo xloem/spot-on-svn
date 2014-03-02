@@ -796,6 +796,18 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotShowStarBeamAnalyzer(void)));
+  connect(m_ui.missingLinksCheckBox,
+	  SIGNAL(toggled(bool)),
+	  m_ui.missingLinks,
+	  SLOT(setEnabled(bool)));
+  connect(m_ui.missingLinksCheckBox,
+	  SIGNAL(toggled(bool)),
+	  m_ui.pulseSize,
+	  SLOT(setDisabled(bool)));
+  connect(m_ui.missingLinksCheckBox,
+	  SIGNAL(toggled(bool)),
+	  m_ui.pulseSizeLabel,
+	  SLOT(setDisabled(bool)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -897,6 +909,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.listenerScopeId->setEnabled(false);
   m_ui.listenerScopeIdLabel->setEnabled(false);
   m_ui.listenerShareAddress->setEnabled(false);
+  m_ui.missingLinks->setEnabled(false);
   m_ui.neighborIP->setInputMask("000.000.000.000; ");
   m_ui.neighborScopeId->setEnabled(false);
   m_ui.neighborScopeIdLabel->setEnabled(false);

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>995</width>
-    <height>680</height>
+    <width>1195</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -373,8 +373,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>729</width>
-                <height>447</height>
+                <width>866</width>
+                <height>457</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2070,8 +2070,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>253</width>
-                 <height>428</height>
+                 <width>299</width>
+                 <height>444</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3438,8 +3438,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>871</width>
-             <height>829</height>
+             <width>1026</width>
+             <height>868</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4425,8 +4425,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>491</width>
-             <height>521</height>
+             <width>1171</width>
+             <height>601</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5202,6 +5202,23 @@
                      </layout>
                     </item>
                     <item>
+                     <layout class="QHBoxLayout" name="horizontalLayout_74">
+                      <property name="spacing">
+                       <number>5</number>
+                      </property>
+                      <item>
+                       <widget class="QCheckBox" name="missingLinksCheckBox">
+                        <property name="text">
+                         <string>&amp;Missing Links</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLineEdit" name="missingLinks"/>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
                      <layout class="QHBoxLayout" name="horizontalLayout_44">
                       <property name="spacing">
                        <number>5</number>
@@ -5227,7 +5244,7 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLabel" name="label_54">
+                       <widget class="QLabel" name="pulseSizeLabel">
                         <property name="text">
                          <string>&amp;Pulse Size</string>
                         </property>
@@ -5973,8 +5990,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>995</width>
-     <height>24</height>
+     <width>1195</width>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -6355,6 +6372,8 @@
   <tabstop>addTransmittedMagnets</tabstop>
   <tabstop>transmitNova</tabstop>
   <tabstop>generateNova</tabstop>
+  <tabstop>missingLinksCheckBox</tabstop>
+  <tabstop>missingLinks</tabstop>
   <tabstop>transmittedFile</tabstop>
   <tabstop>etpSelectFile</tabstop>
   <tabstop>pulseSize</tabstop>
