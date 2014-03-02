@@ -16,6 +16,8 @@
      previous releases.
 9.   Do not disconnect user-defined neighbors when a listener's list of
      acceptable IP addresses is modified.
+10.  Do not clear m_errorString in spoton_sctp_server::close(). Also record
+     more errors.
 
 0.09.01 (02/20/2014)
 
