@@ -37,6 +37,7 @@ spoton_starbeam_reader::spoton_starbeam_reader
 (const qint64 id, QObject *parent):QObject(parent)
 {
   m_id = id;
+  m_missingLinksIterator = 0;
   m_position = 0;
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
@@ -77,6 +78,8 @@ spoton_starbeam_reader::~spoton_starbeam_reader()
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+  delete m_missingLinksIterator;
+  m_missingLinksIterator = 0;
 }
 
 void spoton_starbeam_reader::slotTimeout(void)
@@ -133,6 +136,32 @@ void spoton_starbeam_reader::slotTimeout(void)
 			constData();
 
 		      if(ok)
+			if(!m_missingLinksIterator)
+			  {
+			    QByteArray bytes
+			      (s_crypt->
+			       decrypted(QByteArray::
+					 fromBase64(query.
+						    value(1).
+						    toByteArray()),
+					 &ok));
+
+			    if(ok)
+			      {
+				if(!bytes.isEmpty())
+				  m_missingLinks = bytes.split(',');
+
+				if(!m_missingLinks.isEmpty())
+				  {
+				    m_missingLinksIterator =
+				      new QListIterator<QByteArray> 
+				      (m_missingLinks);
+				    m_missingLinksIterator->toFront();
+				  }
+			      }
+			  }
+
+		      if(ok)
 			nova = s_crypt->
 			  decrypted(QByteArray::
 				    fromBase64(query.
@@ -141,12 +170,23 @@ void spoton_starbeam_reader::slotTimeout(void)
 				    &ok);
 
 		      if(ok)
-			m_position = s_crypt->
-			  decrypted(QByteArray::
-				    fromBase64(query.
-					       value(3).
-					       toByteArray()),
-				    &ok).toLongLong();
+			{
+			  if(!m_missingLinksIterator)
+			    m_position = s_crypt->
+			      decrypted(QByteArray::
+					fromBase64(query.
+						   value(3).
+						   toByteArray()),
+					&ok).toLongLong();
+			  else if(m_missingLinksIterator->hasNext())
+			    {
+			      QByteArray bytes
+				(m_missingLinksIterator->next().trimmed());
+
+			      if(!bytes.isEmpty())
+				m_position = qAbs(bytes.toLongLong());
+			    }
+			}
 
 		      if(ok)
 			pulseSize = s_crypt->
@@ -372,7 +412,15 @@ void spoton_starbeam_reader::pulsate(const QString &fileName,
 		    spoton_kernel::messagingCacheAdd(data);
 
 		  if(ok)
-		    m_position = qAbs(m_position + rc); // +=
+		    {
+		      if(m_missingLinksIterator)
+			{
+			  if(!m_missingLinksIterator->hasNext())
+			    m_position = file.size();
+			}
+		      else
+			m_position = qAbs(m_position + rc); // +=
+		    }
 		}
 	      else if(rc < 0)
 		spoton_misc::logError("spoton_starbeam_reader::pulsate(): "
@@ -389,8 +437,6 @@ void spoton_starbeam_reader::pulsate(const QString &fileName,
 
   if(m_position < file.size())
     status = "transmitting";
-  else
-    status = "transmitted";
 
   file.close();
 

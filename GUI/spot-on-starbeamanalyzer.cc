@@ -356,6 +356,7 @@ void spoton_starbeamanalyzer::slotDelete(void)
   pair.second.waitForFinished();
   delete pair.first;
   m_hash.remove(item->text());
+  ui.results->clear();
   ui.tableWidget->removeRow(row);
 }
 

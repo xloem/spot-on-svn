@@ -45,7 +45,8 @@ class spoton_starbeam_reader: public QObject
 
  private:
   QList<QByteArray> m_magnets;
-  QList<qint64> m_positions;
+  QList<QByteArray> m_missingLinks;
+  QListIterator<QByteArray> *m_missingLinksIterator;
   QTimer m_timer;
   qint64 m_id;
   qint64 m_position;

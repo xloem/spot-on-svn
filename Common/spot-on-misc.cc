@@ -436,13 +436,13 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS received_novas ("
 		   "nova TEXT NOT NULL, "
 		   "nova_hash TEXT PRIMARY KEY NOT NULL)"); // Keyed hash.
-	query.exec("ALTER TABLE transmitted ADD missing_links BLOB");
+	query.exec("ALTER TABLE transmitted ADD missing_links BLOB NOT NULL");
 	query.exec("CREATE TABLE IF NOT EXISTS transmitted ("
 		   "file TEXT NOT NULL, "
 		   "hash TEXT NOT NULL, " /*
 					  ** Keyed hash of the file.
 					  */
-		   "missing_links BLOB, "
+		   "missing_links BLOB NOT NULL, "
 		   "mosaic TEXT PRIMARY KEY NOT NULL, "
 		   "nova TEXT NOT NULL, "
 		   "position TEXT NOT NULL, "

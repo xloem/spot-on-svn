@@ -804,14 +804,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.missingLinks,
 	  SLOT(setEnabled(bool)));
-  connect(m_ui.missingLinksCheckBox,
-	  SIGNAL(toggled(bool)),
-	  m_ui.pulseSize,
-	  SLOT(setDisabled(bool)));
-  connect(m_ui.missingLinksCheckBox,
-	  SIGNAL(toggled(bool)),
-	  m_ui.pulseSizeLabel,
-	  SLOT(setDisabled(bool)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,

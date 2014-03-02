@@ -877,7 +877,10 @@ void spoton::slotTransmit(void)
 		       sha1FileHash(m_ui.transmittedFile->text()).toHex(),
 		       &ok).toBase64());
 
-	query.bindValue(2, m_ui.missingLinks->text().trimmed());
+	if(ok)
+	  query.bindValue
+	    (2, s_crypt->encrypted(m_ui.missingLinks->text().trimmed().
+				   toLatin1(), &ok).toBase64());
 
 	if(ok)
 	  {
@@ -973,6 +976,8 @@ void spoton::slotTransmit(void)
     QMessageBox::critical(this, tr("Spot-On: Error"), error);
   else
     {
+      m_ui.missingLinks->clear();
+      m_ui.missingLinksCheckBox->setChecked(false);
       m_ui.pulseSize->setValue(15000);
       m_ui.transmitNova->clear();
       m_ui.transmittedFile->clear();
