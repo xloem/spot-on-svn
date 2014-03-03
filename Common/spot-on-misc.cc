@@ -622,7 +622,8 @@ void spoton_misc::populateUrlsDatabase(const QList<QList<QVariant> > &list,
 	    query1.bindValue
 	      (0, QDateTime::currentDateTime().toString(Qt::ISODate));
 	    query1.bindValue
-	      (1, crypt->encrypted(variants.value(0).toByteArray(), &ok).
+	      (1, crypt->encryptedThenHashed
+	       (variants.value(0).toByteArray(), &ok).
 	       toBase64());
 
 	    if(ok)
@@ -632,12 +633,14 @@ void spoton_misc::populateUrlsDatabase(const QList<QList<QVariant> > &list,
 
 	    if(ok)
 	      query1.bindValue
-		(3, crypt->encrypted(variants.value(1).toByteArray(), &ok).
+		(3, crypt->encryptedThenHashed
+		 (variants.value(1).toByteArray(), &ok).
 		 toBase64());
 
 	    if(ok)
 	      query1.bindValue
-		(4, crypt->encrypted(variants.value(2).toByteArray(), &ok).
+		(4, crypt->encryptedThenHashed
+		 (variants.value(2).toByteArray(), &ok).
 		 toBase64());
 
 	    if(ok)
@@ -783,7 +786,7 @@ void spoton_misc::retrieveSymmetricData
 		if(symmetricKeyLength > 0)
 		  {
 		    if(!query.isNull(0))
-		      gemini.first = crypt->decrypted
+		      gemini.first = crypt->decryptedAfterAuthenticated
 			(QByteArray::fromBase64(query.
 						value(0).
 						toByteArray()),
@@ -792,7 +795,7 @@ void spoton_misc::retrieveSymmetricData
 		    if(ok && *ok)
 		      {
 			if(!query.isNull(3))
-			  gemini.second = crypt->decrypted
+			  gemini.second = crypt->decryptedAfterAuthenticated
 			    (QByteArray::fromBase64(query.
 						    value(3).
 						    toByteArray()),
@@ -800,7 +803,7 @@ void spoton_misc::retrieveSymmetricData
 		      }
 		    else if(!ok)
 		      if(!query.isNull(3))
-			gemini.second = crypt->decrypted
+			gemini.second = crypt->decryptedAfterAuthenticated
 			  (QByteArray::fromBase64(query.
 						  value(3).
 						  toByteArray()),
@@ -948,14 +951,14 @@ QPair<QByteArray, QByteArray> spoton_misc::findGeminiInCosmos
 		{
 		  bool ok = true;
 
-		  gemini.first = crypt->decrypted
+		  gemini.first = crypt->decryptedAfterAuthenticated
 		    (QByteArray::fromBase64(query.
 					    value(0).
 					    toByteArray()),
 		     &ok);
 
 		  if(ok)
-		    gemini.second = crypt->decrypted
+		    gemini.second = crypt->decryptedAfterAuthenticated
 		      (QByteArray::fromBase64(query.
 					      value(1).
 					      toByteArray()),
@@ -1019,8 +1022,8 @@ void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
 	    if(keep)
 	      {
 		query.bindValue
-		  (0, crypt->encrypted(QObject::tr("Sent").toUtf8(), &ok).
-		   toBase64());
+		  (0, crypt->encryptedThenHashed(QObject::tr("Sent").
+						 toUtf8(), &ok).toBase64());
 		query.bindValue(1, oids.at(i));
 	      }
 	    else
@@ -1407,29 +1410,29 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	if(address.protocol() == QAbstractSocket::IPv4Protocol)
 	  query.bindValue
 	    (2, crypt->
-	     encrypted("IPv4", &ok).toBase64());
+	     encryptedThenHashed("IPv4", &ok).toBase64());
 	else
 	  query.bindValue
 	    (2, crypt->
-	     encrypted("IPv6", &ok).toBase64());
+	     encryptedThenHashed("IPv6", &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
 	    (3,
-	     crypt->encrypted(address.toString().toLatin1(),
-			      &ok).toBase64());
+	     crypt->encryptedThenHashed(address.toString().toLatin1(),
+					&ok).toBase64());
 
 	if(ok)
 	  query.bindValue
 	    (4,
 	     crypt->
-	     encrypted(QByteArray::number(port), &ok).toBase64());
+	     encryptedThenHashed(QByteArray::number(port), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
 	    (5,
-	     crypt->encrypted(address.scopeId().toLatin1(),
-			      &ok).toBase64());
+	     crypt->encryptedThenHashed(address.scopeId().toLatin1(),
+					&ok).toBase64());
 
 	if(statusControl == "connected" || statusControl == "disconnected")
 	  query.bindValue(6, statusControl);
@@ -1449,7 +1452,8 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 
 	if(ok)
 	  query.bindValue
-	    (9, crypt->encrypted(country.toLatin1(), &ok).toBase64());
+	    (9, crypt->encryptedThenHashed(country.toLatin1(),
+					   &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
@@ -1471,38 +1475,38 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 
 	if(ok)
 	  query.bindValue
-	    (13, crypt->encrypted(proxyHostname.toLatin1(), &ok).
+	    (13, crypt->encryptedThenHashed(proxyHostname.toLatin1(), &ok).
 	     toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (14, crypt->encrypted(proxyPassword.toUtf8(), &ok).
+	    (14, crypt->encryptedThenHashed(proxyPassword.toUtf8(), &ok).
 	     toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (15, crypt->encrypted(proxyPort.toLatin1(),
-				  &ok).toBase64());
+	    (15, crypt->encryptedThenHashed(proxyPort.toLatin1(),
+					    &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (16, crypt->encrypted(proxyType.toLatin1(), &ok).
+	    (16, crypt->encryptedThenHashed(proxyType.toLatin1(), &ok).
 	     toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (17, crypt->encrypted(proxyUsername.toUtf8(), &ok).
+	    (17, crypt->encryptedThenHashed(proxyUsername.toUtf8(), &ok).
 	     toBase64());
 
 	if(ok)
 	  query.bindValue
 	    (18, crypt->
-	     encrypted("{00000000-0000-0000-0000-000000000000}", &ok).
-	     toBase64());
+	     encryptedThenHashed("{00000000-0000-0000-0000-000000000000}",
+				 &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (19, crypt->encrypted("full", &ok).toBase64());
+	    (19, crypt->encryptedThenHashed("full", &ok).toBase64());
 
 	if(ok)
 	  {
@@ -1531,15 +1535,15 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 
 	if(ok)
 	  query.bindValue
-	    (21, crypt->encrypted(QByteArray(), &ok).toBase64());
+	    (21, crypt->encryptedThenHashed(QByteArray(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (22, crypt->encrypted(QByteArray(), &ok).toBase64());
+	    (22, crypt->encryptedThenHashed(QByteArray(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (23, crypt->encrypted(QByteArray(), &ok).toBase64());
+	    (23, crypt->encryptedThenHashed(QByteArray(), &ok).toBase64());
 
 	if(ok)
 	  {
@@ -1551,22 +1555,22 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	    if(transport == "tcp" || transport == "udp")
 #endif
 	      query.bindValue
-		(24, crypt->encrypted(transport.toLatin1(), &ok).
+		(24, crypt->encryptedThenHashed(transport.toLatin1(), &ok).
 		 toBase64());
 	    else
 	      query.bindValue
-		(24, crypt->encrypted("tcp", &ok).toBase64());
+		(24, crypt->encryptedThenHashed("tcp", &ok).toBase64());
 	  }
 
 	if(ok)
 	  {
 	    if(orientation == "packet" || orientation == "stream")
 	      query.bindValue
-		(25, crypt->encrypted(orientation.toLatin1(), &ok).
+		(25, crypt->encryptedThenHashed(orientation.toLatin1(), &ok).
 		 toBase64());
 	    else
 	      query.bindValue
-		(25, crypt->encrypted("packet", &ok).toBase64());
+		(25, crypt->encryptedThenHashed("packet", &ok).toBase64());
 	  }
 
 	if(ok)
@@ -1932,13 +1936,13 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 		{
 		  bool ok = true;
 
-		  name = crypt->decrypted
+		  name = crypt->decryptedAfterAuthenticated
 		    (QByteArray::fromBase64(query.value(0).
 					    toByteArray()),
 		     &ok);
 
 		  if(ok)
-		    password = crypt->decrypted
+		    password = crypt->decryptedAfterAuthenticated
 		      (QByteArray::fromBase64(query.value(1).
 					      toByteArray()),
 		       &ok);

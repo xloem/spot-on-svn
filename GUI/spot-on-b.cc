@@ -2199,14 +2199,14 @@ void spoton::slotSendMail(void)
 			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue
 	      (0, m_crypts.value("email")->
-	       encrypted(now.toString(Qt::ISODate).
-			 toLatin1(), &ok).toBase64());
+	       encryptedThenHashed(now.toString(Qt::ISODate).
+				   toLatin1(), &ok).toBase64());
 	    query.bindValue(1, 1); // Sent Folder
 
 	    if(ok)
 	      query.bindValue
 		(2, m_crypts.value("email")->
-		 encrypted(goldbug, &ok).toBase64());
+		 encryptedThenHashed(goldbug, &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
@@ -2216,17 +2216,17 @@ void spoton::slotSendMail(void)
 
 	    if(ok)
 	      query.bindValue(4, m_crypts.value("email")->
-			      encrypted(message, &ok).toBase64());
+			      encryptedThenHashed(message, &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
 		(5, m_crypts.value("email")->
-		 encrypted(QByteArray(), &ok).toBase64());
+		 encryptedThenHashed(QByteArray(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
 		(6, m_crypts.value("email")->
-		 encrypted(names.takeFirst().toUtf8(), &ok).
+		 encryptedThenHashed(names.takeFirst().toUtf8(), &ok).
 		 toBase64());
 
 	    if(ok)
@@ -2236,18 +2236,17 @@ void spoton::slotSendMail(void)
 	    if(ok)
 	      query.bindValue
 		(8, m_crypts.value("email")->
-		 encrypted(tr("Queued").toUtf8(),
-			   &ok).toBase64());
+		 encryptedThenHashed(tr("Queued").toUtf8(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
 		(9, m_crypts.value("email")->
-		 encrypted(subject, &ok).toBase64());
+		 encryptedThenHashed(subject, &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(10, m_crypts.value("email")->encrypted(oid.toLatin1(), &ok).
-		 toBase64());
+		(10, m_crypts.value("email")->
+		 encryptedThenHashed(oid.toLatin1(), &ok).toBase64());
 
 	    if(ok)
 	      query.exec();
@@ -2304,9 +2303,10 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
 	      bool ok = true;
 
 	      ip = s_crypt->
-		decrypted(QByteArray::fromBase64(query.value(0).
-						 toByteArray()),
-			  &ok);
+		decryptedAfterAuthenticated
+		(QByteArray::fromBase64(query.value(0).
+					toByteArray()),
+		 &ok);
 
 	      if(ok)
 		hash.insert(ip, query.value(1).toLongLong());
@@ -2582,9 +2582,10 @@ void spoton::slotDeleteAllUuids(void)
 	      bool ok = true;
 
 	      uuid = s_crypt->
-		decrypted(QByteArray::fromBase64(query.value(0).
-						 toByteArray()),
-			  &ok);
+		decryptedAfterAuthenticated
+		(QByteArray::fromBase64(query.value(0).
+					toByteArray()),
+		 &ok);
 
 	      if(ok)
 		hash.insert(uuid, query.value(1).toLongLong());
@@ -2670,11 +2671,11 @@ void spoton::slotRefreshMail(void)
 		bool ok = true;
 
 		goldbug = m_crypts.value("email")->
-		  decrypted(QByteArray::
-			    fromBase64(query.
-				       value(4).
-				       toByteArray()),
-			    &ok).constData();
+		  decryptedAfterAuthenticated(QByteArray::
+					      fromBase64(query.
+							 value(4).
+							 toByteArray()),
+					      &ok).constData();
 
 		if(goldbug.isEmpty())
 		  goldbug = "0";
@@ -2699,12 +2700,11 @@ void spoton::slotRefreshMail(void)
 				item = new QTableWidgetItem
 				  (QString::
 				   fromUtf8(m_crypts.value("email")->
-					    decrypted(QByteArray::
-						      fromBase64
-						      (query.
-						       value(i).
-						       toByteArray()),
-						      &ok).constData()));
+					    decryptedAfterAuthenticated
+					    (QByteArray::
+					     fromBase64
+					     (query.value(i).toByteArray()),
+					     &ok).constData()));
 
 				if(!ok)
 				  item->setText(tr("error"));
@@ -2736,11 +2736,10 @@ void spoton::slotRefreshMail(void)
 			      {
 				item = new QTableWidgetItem
 				  (m_crypts.value("email")->
-				   decrypted(QByteArray::
-					     fromBase64(query.
-							value(i).
-							toByteArray()),
-					     &ok).constData());
+				   decryptedAfterAuthenticated
+				   (QByteArray::
+				    fromBase64(query.value(i).toByteArray()),
+				    &ok).constData());
 
 				if(!ok)
 				  item->setText(tr("error"));
@@ -2820,11 +2819,10 @@ void spoton::slotRefreshPostOffice(void)
 		    {
 		      item = new QTableWidgetItem
 			(m_crypts.value("email")->
-			 decrypted(QByteArray::
-				   fromBase64(query.
-					      value(i).
-					      toByteArray()),
-				   &ok).constData());
+			 decryptedAfterAuthenticated
+			 (QByteArray::fromBase64(query.value(i).
+						 toByteArray()),
+			  &ok).constData());
 
 		      if(!ok)
 			item->setText(tr("error"));
@@ -2833,11 +2831,10 @@ void spoton::slotRefreshPostOffice(void)
 		    {
 		      QByteArray bytes
 			(m_crypts.value("email")->
-			 decrypted(QByteArray::
-				   fromBase64(query.
-					      value(i).
-					      toByteArray()),
-				   &ok));
+			 decryptedAfterAuthenticated
+			 (QByteArray::fromBase64(query.value(i).
+						 toByteArray()),
+			  &ok));
 
 		      if(ok)
 			item = new QTableWidgetItem
@@ -3075,7 +3072,7 @@ void spoton::slotDeleteMail(void)
 		if(m_crypts.value("email", 0))
 		  query.bindValue
 		    (0, m_crypts.value("email")->
-		     encrypted(tr("Deleted").toUtf8(), &ok).
+		     encryptedThenHashed(tr("Deleted").toUtf8(), &ok).
 		     toBase64());
 		else
 		  ok = false;
@@ -3212,12 +3209,14 @@ bool spoton::saveGemini(const QPair<QByteArray, QByteArray> &gemini,
 	  {
 	    if(m_crypts.value("chat", 0))
 	      {
-		query.bindValue(0, m_crypts.value("chat")->
-				encrypted(gemini.first, &ok).toBase64());
+		query.bindValue
+		  (0, m_crypts.value("chat")->
+		   encryptedThenHashed(gemini.first, &ok).toBase64());
 
 		if(ok)
-		  query.bindValue(1, m_crypts.value("chat")->
-				  encrypted(gemini.second, &ok).toBase64());
+		  query.bindValue
+		    (1, m_crypts.value("chat")->
+		     encryptedThenHashed(gemini.second, &ok).toBase64());
 	      }
 	    else
 	      {
@@ -3410,7 +3409,7 @@ bool spoton::updateMailStatus(const QString &oid, const QString &status)
 		      "OID = ?");
 	query.bindValue
 	  (0, m_crypts.value("email")->
-	   encrypted(status.toUtf8(), &ok).toBase64());
+	   encryptedThenHashed(status.toUtf8(), &ok).toBase64());
 	query.bindValue(1, oid);
 
 	if(ok)
@@ -3649,11 +3648,10 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
 		else
 		  list.append
 		    (m_crypts.value("email")->
-		     decrypted(QByteArray::
-			       fromBase64(query.
-					  value(i).
-					  toByteArray()),
-			       &ok).trimmed());
+		     decryptedAfterAuthenticated
+		     (QByteArray::fromBase64(query.value(i).
+					     toByteArray()),
+		      &ok).trimmed());
 
 		if(!ok)
 		  {
@@ -3725,7 +3723,7 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
 	    if(ok)
 	      updateQuery.bindValue
 		(0, m_crypts.value("email")->
-		 encrypted(QByteArray::number(0), &ok).
+		 encryptedThenHashed(QByteArray::number(0), &ok).
 		 toBase64());
 
 	    if(ok)
@@ -3738,24 +3736,24 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
 	      if(ok)
 		updateQuery.bindValue
 		  (2, m_crypts.value("email")->
-		   encrypted(list.value(1), &ok).toBase64());
+		   encryptedThenHashed(list.value(1), &ok).toBase64());
 
 	    if(!list.value(2).isEmpty())
 	      if(ok)
 		updateQuery.bindValue
 		  (3, m_crypts.value("email")->
-		   encrypted(QByteArray(), &ok).toBase64());
+		   encryptedThenHashed(QByteArray(), &ok).toBase64());
 
 	    if(!list.value(3).isEmpty())
 	      if(ok)
 		updateQuery.bindValue
 		  (4, m_crypts.value("email")->
-		   encrypted(list.value(3), &ok).toBase64());
+		   encryptedThenHashed(list.value(3), &ok).toBase64());
 
 	    if(ok)
 	      updateQuery.bindValue
 		(5, m_crypts.value("email")->
-		 encrypted(list.value(5), &ok).toBase64());
+		 encryptedThenHashed(list.value(5), &ok).toBase64());
 
 	    updateQuery.bindValue(6, oid);
 
@@ -4394,7 +4392,7 @@ void spoton::slotAddAcceptedIP(void)
 	if(m_ui.acceptedIP->text().trimmed() == "Any")
 	  {
 	    query.bindValue
-	      (0, s_crypt->encrypted("Any", &ok).toBase64());
+	      (0, s_crypt->encryptedThenHashed("Any", &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
@@ -4404,8 +4402,8 @@ void spoton::slotAddAcceptedIP(void)
 	else
 	  {
 	    query.bindValue
-	      (0, s_crypt->encrypted(ip.toString().toLatin1(),
-				     &ok).toBase64());
+	      (0, s_crypt->encryptedThenHashed(ip.toString().toLatin1(),
+					       &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
@@ -4655,7 +4653,7 @@ void spoton::slotAddAccount(void)
 		      "one_time_account) "
 		      "VALUES (?, ?, ?, ?, ?)");
 	query.bindValue
-	  (0, s_crypt->encrypted(name.toLatin1(), &ok).toBase64());
+	  (0, s_crypt->encryptedThenHashed(name.toLatin1(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
@@ -4664,7 +4662,8 @@ void spoton::slotAddAccount(void)
 
 	if(ok)
 	  query.bindValue
-	    (2, s_crypt->encrypted(password.toLatin1(), &ok).toBase64());
+	    (2, s_crypt->encryptedThenHashed(password.toLatin1(),
+					     &ok).toBase64());
 
 	query.bindValue(3, oid);
 	query.bindValue(4, m_ui.ota->isChecked() ? 1 : 0);
@@ -4812,11 +4811,9 @@ void spoton::populateAccounts(const QString &listenerOid)
 		QString name("");
 		bool ok = true;
 
-		name = s_crypt->decrypted(QByteArray::
-					  fromBase64(query.
-						     value(0).
-						     toByteArray()),
-					  &ok).constData();
+		name = s_crypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(0).toByteArray()),
+		   &ok).constData();
 
 		if(!name.isEmpty())
 		  names.append(name);
@@ -4884,11 +4881,9 @@ void spoton::populateListenerIps(const QString &listenerOid)
 		QString ip("");
 		bool ok = true;
 
-		ip = s_crypt->decrypted(QByteArray::
-					fromBase64(query.
-						   value(0).
-						   toByteArray()),
-					&ok).constData();
+		ip = s_crypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(0).toByteArray()),
+		   &ok).constData();
 
 		if(!ip.isEmpty())
 		  ips.append(ip);

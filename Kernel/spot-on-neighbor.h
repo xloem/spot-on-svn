@@ -221,7 +221,7 @@ class spoton_neighbor: public QThread
 			   const QSqlDatabase &db);
   void saveGemini(const QByteArray &publicKeyHash,
 		  const QByteArray &gemini,
-		  const QByteArray &geminiMac);
+		  const QByteArray &geminiHashKey);
   void saveParticipantStatus(const QByteArray &publicKeyHash);
   void saveParticipantStatus(const QByteArray &name,
 			     const QByteArray &publicKeyHash);

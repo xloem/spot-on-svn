@@ -107,12 +107,9 @@ class spoton_crypt
 			      QString &error);
   static void init(const int secureMemorySize);
   static void purgeDatabases(void);
-  static void reencodeKeys(const QString &newCipher,
-			   const QByteArray &newKey,
-			   const QString &oldCipher,
-			   const char *oldKey,
-			   const QString &id,
-			   QString &error);
+  static void reencodePrivatePublicKeys
+    (spoton_crypt *newCrypt, spoton_crypt *oldCrypt, const QString &id,
+     QString &error);
   static void setSslCiphers(const QList<QSslCipher> &ciphers,
 			    QSslConfiguration &configuration);
   static void terminate(void);

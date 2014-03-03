@@ -677,10 +677,11 @@ void spoton_kernel::prepareListeners(void)
 			  QByteArray bytes;
 
 			  bytes = s_crypt->
-			    decrypted(QByteArray::fromBase64(query.
-							     value(i).
-							     toByteArray()),
-				      &ok);
+			    decryptedAfterAuthenticated
+			    (QByteArray::fromBase64(query.
+						    value(i).
+						    toByteArray()),
+			     &ok);
 
 			  if(ok)
 			    list.append(bytes);
@@ -689,35 +690,35 @@ void spoton_kernel::prepareListeners(void)
 			}
 
 		      if(ok)
-			certificate = s_crypt->decrypted
+			certificate = s_crypt->decryptedAfterAuthenticated
 			  (QByteArray::fromBase64(query.
 						  value(7).
 						  toByteArray()),
 			   &ok);
 
 		      if(ok)
-			privateKey = s_crypt->decrypted
+			privateKey = s_crypt->decryptedAfterAuthenticated
 			  (QByteArray::fromBase64(query.
 						  value(8).
 						  toByteArray()),
 			   &ok);
 
 		      if(ok)
-			publicKey = s_crypt->decrypted
+			publicKey = s_crypt->decryptedAfterAuthenticated
 			  (QByteArray::fromBase64(query.
 						  value(9).
 						  toByteArray()),
 			   &ok);
 
 		      if(ok)
-			transport =  s_crypt->decrypted
+			transport =  s_crypt->decryptedAfterAuthenticated
 			  (QByteArray::fromBase64(query.
 						  value(13).
 						  toByteArray()),
 			   &ok);
 
 		      if(ok)
-			orientation =  s_crypt->decrypted
+			orientation =  s_crypt->decryptedAfterAuthenticated
 			  (QByteArray::fromBase64(query.
 						  value(15).
 						  toByteArray()),
@@ -899,10 +900,11 @@ void spoton_kernel::prepareNeighbors(void)
 			    bool ok = true;
 
 			    bytes = s_crypt->
-			      decrypted(QByteArray::fromBase64(query.
-							       value(i).
-							       toByteArray()),
-					&ok);
+			      decryptedAfterAuthenticated
+			      (QByteArray::fromBase64(query.
+						      value(i).
+						      toByteArray()),
+			       &ok);
 
 			    if(ok)
 			      list.append(bytes);
@@ -1740,7 +1742,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	      bool ok = true;
 
 	      if(!query.isNull(0))
-		gemini.first = s_crypt1->decrypted
+		gemini.first = s_crypt1->decryptedAfterAuthenticated
 		  (QByteArray::fromBase64(query.
 					  value(0).
 					  toByteArray()),
@@ -1748,7 +1750,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 	      if(ok)
 		if(!query.isNull(2))
-		  gemini.second = s_crypt1->decrypted
+		  gemini.second = s_crypt1->decryptedAfterAuthenticated
 		    (QByteArray::fromBase64(query.
 					    value(2).
 					    toByteArray()),
@@ -2867,7 +2869,7 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 	      QPair<QByteArray, QByteArray> gemini;
 
 	      if(!query.isNull(0))
-		gemini.first = s_crypt1->decrypted
+		gemini.first = s_crypt1->decryptedAfterAuthenticated
 		  (QByteArray::fromBase64(query.
 					  value(0).
 					  toByteArray()),
@@ -2875,7 +2877,7 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 
 	      if(ok)
 		if(!query.isNull(2))
-		  gemini.second = s_crypt1->decrypted
+		  gemini.second = s_crypt1->decryptedAfterAuthenticated
 		    (QByteArray::fromBase64(query.
 					    value(2).
 					    toByteArray()),

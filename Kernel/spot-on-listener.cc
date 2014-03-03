@@ -368,7 +368,7 @@ void spoton_listener::slotTimeout(void)
 
 		if(s_crypt)
 		  {
-		    echoMode = s_crypt->decrypted
+		    echoMode = s_crypt->decryptedAfterAuthenticated
 		      (QByteArray::
 		       fromBase64(query.
 				  value(2).
@@ -809,32 +809,32 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 	    if(m_address.protocol() == QAbstractSocket::IPv4Protocol)
 	      query.bindValue
 		(2, s_crypt->
-		 encrypted("IPv4", &ok).toBase64());
+		 encryptedThenHashed("IPv4", &ok).toBase64());
 	    else
 	      query.bindValue
 		(2, s_crypt->
-		 encrypted("IPv6", &ok).toBase64());
+		 encryptedThenHashed("IPv6", &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
 		(3,
-		 s_crypt->encrypted(neighbor->peerAddress().
-				    toString().toLatin1(),
-				    &ok).toBase64());
+		 s_crypt->encryptedThenHashed(neighbor->peerAddress().
+					      toString().toLatin1(),
+					      &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
 		(4,
 		 s_crypt->
-		 encrypted(QByteArray::number(neighbor->peerPort()),
-			   &ok).toBase64());
+		 encryptedThenHashed(QByteArray::number(neighbor->peerPort()),
+				     &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
 		(5,
-		 s_crypt->encrypted(neighbor->peerAddress().
-				    scopeId().toLatin1(),
-				    &ok).toBase64());
+		 s_crypt->encryptedThenHashed(neighbor->peerAddress().
+					      scopeId().toLatin1(),
+					      &ok).toBase64());
 
 	    query.bindValue(6, "connected");
 
@@ -851,7 +851,8 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 
 	    if(ok)
 	      query.bindValue
-		(9, s_crypt->encrypted(country.toLatin1(), &ok).toBase64());
+		(9, s_crypt->encryptedThenHashed(country.toLatin1(),
+						 &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
@@ -867,16 +868,17 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 	    if(ok)
 	      query.bindValue
 		(12,
-		 s_crypt->encrypted(m_externalAddress->
-				    address().
-				    toString().toLatin1(),
-				    &ok).toBase64());
+		 s_crypt->encryptedThenHashed(m_externalAddress->
+					      address().
+					      toString().toLatin1(),
+					      &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
 		(13,
-		 s_crypt->encrypted(neighbor->receivedUuid().toString().
-				    toLatin1(), &ok).toBase64());
+		 s_crypt->encryptedThenHashed
+		 (neighbor->receivedUuid().toString().
+		  toLatin1(), &ok).toBase64());
 
 	    query.bindValue(14, 0);
 
@@ -888,59 +890,66 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 
 	    if(ok)
 	      query.bindValue
-		(15, s_crypt->encrypted(proxyHostname.toLatin1(), &ok).
+		(15, s_crypt->encryptedThenHashed
+		 (proxyHostname.toLatin1(), &ok).
 		 toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(16, s_crypt->encrypted(proxyPassword.toUtf8(), &ok).
+		(16, s_crypt->encryptedThenHashed(proxyPassword.toUtf8(), &ok).
 		 toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(17, s_crypt->encrypted(proxyPort.toLatin1(),
-					&ok).toBase64());
+		(17, s_crypt->encryptedThenHashed(proxyPort.toLatin1(),
+						  &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(18, s_crypt->encrypted(proxyType.toLatin1(), &ok).
+		(18, s_crypt->encryptedThenHashed(proxyType.toLatin1(), &ok).
 		 toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(19, s_crypt->encrypted(proxyUsername.toUtf8(), &ok).
+		(19, s_crypt->encryptedThenHashed
+		 (proxyUsername.toUtf8(), &ok).
 		 toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(20, s_crypt->encrypted(m_echoMode.toLatin1(),
-					&ok).toBase64());
+		(20, s_crypt->encryptedThenHashed(m_echoMode.toLatin1(),
+						  &ok).toBase64());
 
 	    query.bindValue(21, m_keySize);
 
 	    if(ok)
 	      query.bindValue
-		(22, s_crypt->encrypted(QByteArray(), &ok).toBase64());
+		(22, s_crypt->encryptedThenHashed
+		 (QByteArray(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(23, s_crypt->encrypted(QByteArray(), &ok).toBase64());
+		(23, s_crypt->encryptedThenHashed
+		 (QByteArray(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(24, s_crypt->encrypted(QByteArray(), &ok).toBase64());
+		(24, s_crypt->encryptedThenHashed
+		 (QByteArray(), &ok).toBase64());
 
 	    query.bindValue(25, m_maximumBufferSize);
 	    query.bindValue(26, m_maximumContentLength);
 
 	    if(ok)
 	      query.bindValue
-		(27, s_crypt->encrypted(m_transport.toLatin1(), &ok).
+		(27, s_crypt->encryptedThenHashed
+		 (m_transport.toLatin1(), &ok).
 		 toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(28, s_crypt->encrypted(m_orientation.toLatin1(), &ok).
+		(28, s_crypt->encryptedThenHashed
+		 (m_orientation.toLatin1(), &ok).
 		 toBase64());
 
 	    if(ok)
@@ -1092,8 +1101,8 @@ void spoton_listener::saveExternalAddress(const QHostAddress &address,
 	      query.prepare("UPDATE listeners SET external_ip_address = ? "
 			    "WHERE OID = ?");
 	      query.bindValue
-		(0, s_crypt->encrypted(address.toString().
-				       toLatin1(), &ok).
+		(0, s_crypt->encryptedThenHashed(address.toString().
+						 toLatin1(), &ok).
 		 toBase64());
 	      query.bindValue(1, m_id);
 	    }

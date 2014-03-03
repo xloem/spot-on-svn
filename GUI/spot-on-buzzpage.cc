@@ -570,7 +570,8 @@ void spoton_buzzpage::slotSave(void)
 	query.prepare("INSERT OR REPLACE INTO buzz_channels "
 		      "(data, data_hash) "
 		      "VALUES (?, ?)");
-	query.bindValue(0, m_crypt->encrypted(data, &ok).toBase64());
+	query.bindValue
+	  (0, m_crypt->encryptedThenHashed(data, &ok).toBase64());
 
 	if(ok)
 	  query.bindValue(1, m_crypt->keyedHash(data, &ok).toBase64());

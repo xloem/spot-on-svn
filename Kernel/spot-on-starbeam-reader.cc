@@ -128,11 +128,12 @@ void spoton_starbeam_reader::slotTimeout(void)
 		      bool ok = true;
 
 		      fileName = s_crypt->
-			decrypted(QByteArray::
-				  fromBase64(query.
-					     value(0).
-					     toByteArray()),
-				  &ok).
+			decryptedAfterAuthenticated
+			(QByteArray::
+			 fromBase64(query.
+				    value(0).
+				    toByteArray()),
+			 &ok).
 			constData();
 
 		      if(ok)
@@ -140,11 +141,12 @@ void spoton_starbeam_reader::slotTimeout(void)
 			  {
 			    QByteArray bytes
 			      (s_crypt->
-			       decrypted(QByteArray::
-					 fromBase64(query.
-						    value(1).
-						    toByteArray()),
-					 &ok));
+			       decryptedAfterAuthenticated
+			       (QByteArray::
+				fromBase64(query.
+					   value(1).
+					   toByteArray()),
+				&ok));
 
 			    if(ok)
 			      {
@@ -163,21 +165,23 @@ void spoton_starbeam_reader::slotTimeout(void)
 
 		      if(ok)
 			nova = s_crypt->
-			  decrypted(QByteArray::
-				    fromBase64(query.
-					       value(2).
-					       toByteArray()),
-				    &ok);
+			  decryptedAfterAuthenticated
+			  (QByteArray::
+			   fromBase64(query.
+				      value(2).
+				      toByteArray()),
+			   &ok);
 
 		      if(ok)
 			{
 			  if(!m_missingLinksIterator)
 			    m_position = s_crypt->
-			      decrypted(QByteArray::
-					fromBase64(query.
-						   value(3).
-						   toByteArray()),
-					&ok).toLongLong();
+			      decryptedAfterAuthenticated
+			      (QByteArray::
+			       fromBase64(query.
+					  value(3).
+					  toByteArray()),
+			       &ok).toLongLong();
 			  else if(m_missingLinksIterator->hasNext())
 			    {
 			      QByteArray bytes
@@ -190,20 +194,22 @@ void spoton_starbeam_reader::slotTimeout(void)
 
 		      if(ok)
 			pulseSize = s_crypt->
-			  decrypted(QByteArray::
-				    fromBase64(query.
-					       value(4).
-					       toByteArray()),
-				    &ok).
+			  decryptedAfterAuthenticated
+			  (QByteArray::
+			   fromBase64(query.
+				      value(4).
+				      toByteArray()),
+			   &ok).
 			  constData();
 
 		      if(ok)
 			fileSize = s_crypt->
-			  decrypted(QByteArray::
-				    fromBase64(query.
-					       value(6).
-					       toByteArray()),
-				    &ok).
+			  decryptedAfterAuthenticated
+			  (QByteArray::
+			   fromBase64(query.
+				      value(6).
+				      toByteArray()),
+			   &ok).
 			  constData();
 
 		      if(ok)
@@ -264,7 +270,7 @@ QHash<QString, QByteArray> spoton_starbeam_reader::elementsFromMagnet
   if(!s_crypt)
     goto done_label;
 
-  data = s_crypt->decrypted(magnet, &ok);
+  data = s_crypt->decryptedAfterAuthenticated(magnet, &ok);
 
   if(!ok)
     goto done_label;
@@ -384,7 +390,8 @@ void spoton_starbeam_reader::pulsate(const QString &fileName,
 			   QByteArray::number(m_position).toBase64() + "\n" +
 			   QByteArray::number(size).toBase64() + "\n" +
 			   fileSize.toLatin1().toBase64() + "\n" +
-			   data.toBase64(), &ok);
+			   data.toBase64() + "\n" +
+			   pulseSize.toLatin1().toBase64(), &ok);
 		      }
 
 		      if(ok)
@@ -464,8 +471,8 @@ void spoton_starbeam_reader::savePositionAndStatus(const QString &status,
 		"THEN 'deleted' ELSE ? END "
 		"WHERE OID = ?");
   query.bindValue
-    (0, s_crypt->encrypted(QByteArray::number(m_position),
-			   &ok).toBase64());
+    (0, s_crypt->encryptedThenHashed(QByteArray::number(m_position),
+				     &ok).toBase64());
   query.bindValue(1, status);
   query.bindValue(2, m_id);
 

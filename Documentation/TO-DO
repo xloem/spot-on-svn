@@ -99,6 +99,7 @@ Completed Items
        seemingly-qualified data. Nasty!
 70.    SCTP.
 71.    Feature to discover missing pulses.
+72.    Store MACs of encrypted data along with the encrypted data.
 
 Ignored Items
 
@@ -184,4 +185,3 @@ Remaining Items
        process. Pause the current thread for T - t0 seconds, where T is some
        reasonable time.
 32.    Lots of kernel activity may cause libgcrypt fatigue.
-33.    Store MACs along with encrypted database data.

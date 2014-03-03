@@ -474,461 +474,6 @@ bool spoton_crypt::passphraseSet(void)
 		    "").toByteArray().trimmed().isEmpty();
 }
 
-void spoton_crypt::reencodeKeys(const QString &newCipher,
-				const QByteArray &newKey,
-				const QString &oldCipher,
-				const char *oldKey,
-				const QString &id,
-				QString &error)
-{
-  if(!oldKey)
-    {
-      error = QObject::tr("oldKey is 0");
-      spoton_misc::logError("spoton_crypt::reencodeKeys(): "
-			    "oldKey is 0.");
-      return;
-    }
-
-  QList<QByteArray> data;
-  QString connectionName("");
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "idiotes.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.setForwardOnly(true);
-	query.prepare("SELECT private_key, public_key "
-		      "FROM idiotes WHERE id = ?");
-	query.bindValue(0, id);
-
-	if(query.exec())
-	  if(query.next())
-	    {
-	      data.append(QByteArray::fromBase64(query.value(0).
-						 toByteArray()));
-	      data.append(QByteArray::fromBase64(query.value(1).
-						 toByteArray()));
-	    }
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-
-  if(data.isEmpty())
-    {
-      if(!id.isEmpty())
-	spoton_misc::logError
-	  (QString("spoton_crypt::reencodeKeys(): "
-		   "unable to retrieve data from the idiotes "
-		   "table for id %1.").arg(id));
-      else
-	spoton_misc::logError
-	  ("spoton_crypt::reencodeKeys(): "
-	   "unable to retrieve data from the idiotes "
-	   "table.");
-
-      return;
-    }
-
-  QList<QByteArray> encryptedData;
-  char *iv = 0;
-  gcry_cipher_hd_t cipherHandle = 0;
-  gcry_sexp_t key_t = 0;
-
-  for(int i = 0; i < data.size(); i++)
-    {
-      QByteArray d(data.at(i));
-      QByteArray eData;
-      QByteArray originalLength;
-      QDataStream out(&originalLength, QIODevice::WriteOnly);
-      gcry_error_t err = 0;
-      int algorithm = gcry_cipher_map_name
-	(oldCipher.toLatin1().constData());
-      size_t blockLength = 0;
-      size_t ivLength = 0;
-      size_t keyLength = 0;
-
-      if(algorithm == 0)
-	{
-	  error = QObject::tr("gcry_cipher_map_name() returned non-zero");
-	  spoton_misc::logError
-	    ("spoton_crypt::reencodeKeys(): "
-	     "gcry_cipher_map_name() "
-	     "failure.");
-	  goto done_label;
-	}
-
-      if((err = gcry_cipher_open(&cipherHandle, algorithm,
-				 GCRY_CIPHER_MODE_CBC,
-				 GCRY_CIPHER_CBC_CTS |
-				 GCRY_CIPHER_SECURE)) != 0 ||
-	 !cipherHandle)
-	{
-	  if(err != 0)
-	    {
-	      error = QObject::tr("gcry_cipher_open() returned non-zero");
-
-	      QByteArray buffer(64, 0);
-
-	      gpg_strerror_r(err, buffer.data(), buffer.length());
-	      spoton_misc::logError
-		(QString("spoton_crypt::reencodeKeys(): "
-			 "gcry_cipher_open() "
-			 "failure (%1).").arg(buffer.constData()));
-	    }
-	  else
-	    {
-	      error = QObject::tr("gcry_cipher_open() failure");
-	      spoton_misc::logError
-		("spoton_crypt::reencodeKeys(): gcry_cipher_open() "
-		 "failure.");
-	    }
-
-	  goto done_label;
-	}
-
-      if((ivLength = gcry_cipher_get_algo_blklen(algorithm)) == 0)
-	{
-	  error = QObject::tr("gcry_cipher_get_algo_blklen() returned zero");
-	  spoton_misc::logError
-	    (QString("spoton_crypt::reencodeKeys(): "
-		     "gcry_cipher_get_algo_blklen() "
-		     "failure for %1.").arg(oldCipher));
-	  goto done_label;
-	}
-
-      if((err = gcry_cipher_setiv(cipherHandle,
-				  d.mid(0, static_cast<int> (ivLength)).
-				  constData(),
-				  ivLength)) != 0)
-	{
-	  error = QObject::tr("gcry_cipher_setiv() returned non-zero");
-
-	  QByteArray buffer(64, 0);
-
-	  gpg_strerror_r(err, buffer.data(), buffer.length());
-	  spoton_misc::logError(QString("spoton_crypt::reencodeKeys(): "
-					"gcry_cipher_setiv() failure (%1).").
-				arg(buffer.constData()));
-	  goto done_label;
-	}
-      else
-	d.remove(0, static_cast<int> (ivLength));
-
-      if((keyLength = gcry_cipher_get_algo_keylen(algorithm)) == 0)
-	{
-	  error = QObject::tr("gcry_cipher_get_algo_keylen() returned zero");
-	  spoton_misc::logError
-	    (QString("spoton_crypt::reencodeKeys(): "
-		     "gcry_cipher_get_algo_keylen() "
-		     "failure for %1.").arg(oldCipher));
-	  goto done_label;
-	}
-
-      if((err = gcry_cipher_setkey(cipherHandle,
-				   oldKey,
-				   keyLength)) != 0)
-	{
-	  error = QObject::tr("gcry_cipher_setkey() returned non-zero");
-
-	  QByteArray buffer(64, 0);
-
-	  gpg_strerror_r(err, buffer.data(), buffer.length());
-	  spoton_misc::logError
-	    (QString("spoton_crypt::reencodeKeys(): gcry_cipher_setkey() "
-		     "failure (%1).").arg(buffer.constData()));
-	  goto done_label;
-	}
-
-      if((err = gcry_cipher_decrypt(cipherHandle,
-				    d.data(),
-				    d.length(),
-				    0,
-				    0)) == 0)
-	{
-	  int s = 0;
-	  QByteArray originalLength;
-
-	  if(d.length() >= 4)
-	    originalLength = d.mid(d.length() - 4, 4);
-
-	  if(!originalLength.isEmpty())
-	    {
-	      QDataStream in(&originalLength, QIODevice::ReadOnly);
-
-	      in >> s;
-
-	      if(in.status() != QDataStream::Ok)
-		{
-		  error = QObject::tr("QDataStream::operator>>() "
-				      "failure");
-		  spoton_misc::logError
-		    ("spoton_crypt::reencodeKeys(): QDataStream::"
-		     "operator>>() failure.");
-		  goto done_label;
-		}
-	    }
-
-	  if(s >= 0 && s <= d.length())
-	    d = d.mid(0, s);
-	  else
-	    {
-	      error = QObject::tr("The length of the decrypted data is "
-				  "irregular");
-	      spoton_misc::logError
-		(QString("spoton_crypt::reencodeKeys(): The length (%1) "
-			 "of the "
-			 "decrypted data is irregular.").arg(s));
-	      goto done_label;
-	    }
-	}
-      else
-	{
-	  error = QObject::tr("gcry_cipher_decrypt() returned non-zero");
-
-	  QByteArray buffer(64, 0);
-
-	  gpg_strerror_r(err, buffer.data(), buffer.length());
-	  spoton_misc::logError
-	    (QString("spoton_crypt::reencodeKeys(): "
-		     "gcry_cipher_decrypt() "
-		     "failure (%1).").arg(buffer.constData()));
-	  goto done_label;
-	}
-
-      if(i == 0)
-	{
-	  /*
-	  ** Now let's see if we have a somewhat valid private key.
-	  */
-
-	  if((err = gcry_sexp_new(&key_t,
-				  d.constData(),
-				  d.length(), 1)) != 0 || !key_t)
-	    {
-	      if(err != 0)
-		{
-		  error = QObject::tr("gcry_sexp_new() returned non-zero");
-
-		  QByteArray buffer(64, 0);
-
-		  gpg_strerror_r(err, buffer.data(), buffer.length());
-		  spoton_misc::logError
-		    (QString("spoton_crypt::reencodeKeys(): "
-			     "gcry_sexp_new() "
-			     "failure (%1).").arg(buffer.constData()));
-		}
-	      else
-		{
-		  error = QObject::tr("gcry_sexp_new() failure");
-		  spoton_misc::logError
-		    ("spoton_crypt::reencodeKeys(): gcry_sexp_new() "
-		     "failure.");
-		}
-
-	      goto done_label;
-	    }
-
-	  if((err = gcry_pk_testkey(key_t)) != 0)
-	    {
-	      error = QObject::tr("gcry_pk_testkey() returned non-zero");
-
-	      QByteArray buffer(64, 0);
-
-	      gpg_strerror_r(err, buffer.data(), buffer.length());
-	      spoton_misc::logError
-		(QString("spoton_crypt::reencodeKeys(): "
-			 "gcry_pk_testkey() "
-			 "failure (%1).").arg(buffer.constData()));
-	      goto done_label;
-	    }
-
-	  gcry_sexp_release(key_t);
-	  key_t = 0;
-	}
-
-      gcry_cipher_reset(cipherHandle);
-      algorithm = gcry_cipher_map_name(newCipher.toLatin1().constData());
-
-      if(algorithm == 0)
-	{
-	  error = QObject::tr("gcry_cipher_map_name() returned zero");
-	  spoton_misc::logError
-	    (QString("spoton_crypt::reencodeKeys(): "
-		     "gcry_cipher_map_name() "
-		     "failure for %1.").arg(newCipher));
-	  goto done_label;
-	}
-
-      if((blockLength = gcry_cipher_get_algo_blklen(algorithm)) == 0)
-	{
-	  error = QObject::tr("gcry_cipher_get_algo_blklen() returned zero");
-	  spoton_misc::logError
-	    (QString("spoton_crypt::reencodeKeys(): "
-		     "gcry_cipher_get_algo_blklen() "
-		     "failure for %1.").arg(newCipher));
-	  goto done_label;
-	}
-
-      if((ivLength = gcry_cipher_get_algo_blklen(algorithm)) == 0)
-	{
-	  error = QObject::tr("gcry_cipher_get_algo_blklen() returned zero");
-	  spoton_misc::logError
-	    (QString("spoton_crypt::reencodeKeys(): "
-		     "gcry_cipher_get_algo_blklen() "
-		     "failure for %1.").arg(newCipher));
-	  goto done_label;
-	}
-
-      if(!(iv = static_cast<char *> (gcry_calloc(ivLength, sizeof(char)))))
-	{
-	  error = QObject::tr("gcry_calloc() returned zero");
-	  spoton_misc::logError("spoton_crypt::reencodeKeys(): "
-				"gcry_calloc() returned zero.");
-	  goto done_label;
-	}
-
-      gcry_fast_random_poll();
-      gcry_create_nonce(iv, ivLength);
-
-      if(gcry_cipher_setiv(cipherHandle,
-			   iv,
-			   ivLength) != 0)
-	{
-	  error = QObject::tr("gcry_cipher_setiv() returned non-zero");
-	  spoton_misc::logError("spoton_crypt::reencodeKeys(): "
-				"gcry_cipher_setiv() returned non-zero.");
-	  goto done_label;
-	}
-
-      if((keyLength = gcry_cipher_get_algo_keylen(algorithm)) == 0)
-	{
-	  error = QObject::tr("gcry_cipher_get_algo_keylen() returned zero");
-	  spoton_misc::logError
-	    (QString("spoton_crypt::reencodeKeys(): "
-		     "gcry_cipher_get_algo_keylen() "
-		     "failure for %1.").arg(newCipher));
-	  goto done_label;
-	}
-
-      if((err = gcry_cipher_setkey(cipherHandle,
-				   newKey.constData(),
-				   keyLength)) != 0)
-	{
-	  error = QObject::tr("gcry_cipher_setkey() returned non-zero");
-
-	  QByteArray buffer(64, 0);
-
-	  gpg_strerror_r(err, buffer.data(), buffer.length());
-	  spoton_misc::logError
-	    (QString("spoton_crypt::reencodeKeys(): gcry_cipher_setkey() "
-		     "failure (%1).").arg(buffer.constData()));
-	  goto done_label;
-	}
-
-      eData.append(d);
-
-      if(eData.isEmpty())
-	eData = eData.leftJustified(static_cast<int> (blockLength), 0);
-      else if(static_cast<size_t> (eData.length()) < blockLength)
-	eData = eData.leftJustified
-	  (static_cast<int> (blockLength) *
-	   static_cast<int> (qCeil(static_cast<qreal> (eData.length()) /
-				   static_cast<qreal> (blockLength))), 0);
-
-      out << eData.length();
-
-      if(out.status() != QDataStream::Ok)
-	{
-	  error = QObject::tr("QDataStream failure");
-	  spoton_misc::logError
-	    (QString("spoton_crypt::encrypted(): "
-		     "QDataStream failure (%1).").
-	     arg(out.status()));
-	  goto done_label;
-	}
-      else
-	{
-	  eData.append(originalLength);
-
-	  if((err = gcry_cipher_encrypt(cipherHandle,
-					eData.data(),
-					eData.length(),
-					0,
-					0)) != 0)
-	    {
-	      error = QObject::tr("gcry_cipher_encrypt() returned non-zero");
-
-	      QByteArray buffer(64, 0);
-
-	      gpg_strerror_r(err, buffer.data(), buffer.length());
-	      spoton_misc::logError
-		(QString("spoton_crypt::reencodeKeys(): "
-			 "gcry_cipher_encrypt() failure (%1).").
-		 arg(buffer.constData()));
-	      goto done_label;
-	    }
-	  else
-	    eData = QByteArray(iv, static_cast<int> (ivLength)) + eData;
-	}
-
-      encryptedData.append(eData);
-      gcry_free(iv);
-      iv = 0;
-      gcry_cipher_close(cipherHandle);
-      cipherHandle = 0;
-      gcry_sexp_release(key_t);
-      key_t = 0;
-    }
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "idiotes.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.prepare("UPDATE idiotes SET private_key = ?, "
-		      "public_key = ? WHERE id = ?");
-
-	if(!data.value(0).isEmpty())
-	  query.bindValue(0, encryptedData.value(0).toBase64());
-
-	if(!data.value(1).isEmpty())
-	  query.bindValue(1, encryptedData.value(1).toBase64());
-
-	query.bindValue(2, id);
-
-	if(!query.exec())
-	  {
-	    error = QObject::tr("a database error occurred");
-	    spoton_misc::logError
-	      (QString("spoton_crypt::reencodeKeys(): "
-		       "error (%1) updating keys in the "
-		       "idiotes table.").arg(query.lastError().text()));
-	  }
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-
- done_label:
-  gcry_free(iv);
-  gcry_cipher_close(cipherHandle);
-  gcry_sexp_release(key_t);
-}
-
 spoton_crypt::spoton_crypt(const QString &cipherType,
 			   const QString &hashType,
 			   const QByteArray &passphrase,
@@ -1769,7 +1314,7 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
   {
     bool ok = true;
 
-    keyData = this->decrypted(keyData, &ok);
+    keyData = this->decryptedAfterAuthenticated(keyData, &ok);
 
     if(!ok)
       keyData.clear();
@@ -2015,7 +1560,7 @@ QByteArray spoton_crypt::publicKey(bool *ok)
   {
     bool ok = true;
 
-    data = decrypted(data, &ok);
+    data = decryptedAfterAuthenticated(data, &ok);
 
     if(!ok)
       data.clear();
@@ -2226,11 +1771,13 @@ void spoton_crypt::generatePrivatePublicKeys(const int keySize,
 	query.bindValue(0, m_id);
 
 	if(!privateKey.isEmpty())
-	  query.bindValue(1, encrypted(privateKey, &ok).toBase64());
+	  query.bindValue
+	    (1, encryptedThenHashed(privateKey, &ok).toBase64());
 
 	if(ok)
 	  if(!publicKey.isEmpty())
-	    query.bindValue(2, encrypted(publicKey, &ok).toBase64());
+	    query.bindValue
+	      (2, encryptedThenHashed(publicKey, &ok).toBase64());
 
 	if(ok)
 	  {
@@ -2448,7 +1995,7 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
   {
     bool ok = true;
 
-    keyData = decrypted(keyData, &ok);
+    keyData = decryptedAfterAuthenticated(keyData, &ok);
 
     if(!ok)
       keyData.clear();
@@ -3596,4 +3143,92 @@ QByteArray spoton_crypt::decryptedAfterAuthenticated(const QByteArray &data,
     return decrypted(data.mid(length), ok);
   else
     return QByteArray();
+}
+
+void spoton_crypt::reencodePrivatePublicKeys
+(spoton_crypt *newCrypt, spoton_crypt *oldCrypt, const QString &id,
+ QString &error)
+{
+  if(!newCrypt)
+    {
+      error = QObject::tr("newCrypt is 0");
+      spoton_misc::logError("spoton_crypt::reencodePrivatePublicKeys(): "
+			    "newCrypt is 0.");
+      return;
+    }
+
+  if(!oldCrypt)
+    {
+      error = QObject::tr("oldCrypt is 0");
+      spoton_misc::logError("spoton_crypt::reencodePrivatePublicKeys(): "
+			    "oldCrypt is 0.");
+      return;
+    }
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "idiotes.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT private_key, public_key FROM idiotes "
+		      "WHERE id = ?");
+	query.bindValue(0, id);
+
+	if(query.exec())
+	  if(query.next())
+	    {
+	      QByteArray privateKey
+		(QByteArray::fromBase64(query.value(0).toByteArray()));
+	      QByteArray publicKey
+		(QByteArray::fromBase64(query.value(1).toByteArray()));
+	      QSqlQuery updateQuery(db);
+	      bool ok = true;
+
+	      privateKey = oldCrypt->decryptedAfterAuthenticated
+		(privateKey, &ok);
+
+	      if(ok)
+		publicKey = oldCrypt->decryptedAfterAuthenticated
+		  (publicKey, &ok);
+
+	      if(ok)
+		privateKey = newCrypt->encryptedThenHashed
+		  (privateKey, &ok);
+
+	      if(ok)
+		publicKey = newCrypt->encryptedThenHashed
+		  (publicKey, &ok);
+
+	      if(ok)
+		{
+		  updateQuery.prepare("UPDATE idiotes SET "
+				      "private_key = ?, "
+				      "public_key = ? "
+				      "WHERE id = ?");
+		  updateQuery.bindValue(0, privateKey.toBase64());
+		  updateQuery.bindValue(1, publicKey.toBase64());
+		  updateQuery.bindValue(2, id);
+		}
+	      else
+		{
+		  updateQuery.prepare("DELETE FROM idiotes "
+				      "WHERE id = ?");
+		  updateQuery.bindValue(0, id);
+		}
+
+	      updateQuery.exec();
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }

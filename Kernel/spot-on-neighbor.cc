@@ -483,10 +483,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
       QByteArray password(m_accountPassword);
       bool ok = true;
 
-      name = s_crypt->decrypted(name, &ok);
+      name = s_crypt->decryptedAfterAuthenticated(name, &ok);
 
       if(ok)
-	password = s_crypt->decrypted(password, &ok);
+	password = s_crypt->decryptedAfterAuthenticated(password, &ok);
 
       m_useAccounts = !name.isEmpty() || !password.isEmpty();
     }
@@ -944,7 +944,7 @@ void spoton_neighbor::slotTimeout(void)
 		      {
 			bool ok = true;
 
-			m_echoMode = s_crypt->decrypted
+			m_echoMode = s_crypt->decryptedAfterAuthenticated
 			  (QByteArray::fromBase64(query.value(2).
 						  toByteArray()),
 			   &ok).constData();
@@ -1132,14 +1132,15 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
     {
       query.bindValue
 	(3, spoton_kernel::s_crypts.value("chat")->
-	 encrypted(QString("%1-%2-%3-%4-%5-%6-%7").
-		   arg(cipher.name()).
-		   arg(cipher.authenticationMethod()).
-		   arg(cipher.encryptionMethod()).
-		   arg(cipher.keyExchangeMethod()).
-		   arg(cipher.protocolString()).
-		   arg(cipher.supportedBits()).
-		   arg(cipher.usedBits()).toUtf8(), &ok).toBase64());
+	 encryptedThenHashed(QString("%1-%2-%3-%4-%5-%6-%7").
+			     arg(cipher.name()).
+			     arg(cipher.authenticationMethod()).
+			     arg(cipher.encryptionMethod()).
+			     arg(cipher.keyExchangeMethod()).
+			     arg(cipher.protocolString()).
+			     arg(cipher.supportedBits()).
+			     arg(cipher.usedBits()).toUtf8(), &ok).
+	 toBase64());
 
       if(!ok)
 	query.bindValue(3, QVariant::String);
@@ -1631,7 +1632,7 @@ void spoton_neighbor::slotConnected(void)
 			      "WHERE OID = ?");
 		query.bindValue
 		  (0, s_crypt->
-		   encrypted(country.toLatin1(), &ok).toBase64());
+		   encryptedThenHashed(country.toLatin1(), &ok).toBase64());
 		query.bindValue(1, isEncrypted() ? 1 : 0);
 
 		if(m_sctpSocket)
@@ -3400,8 +3401,8 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
 		query.prepare("UPDATE neighbors SET uuid = ? "
 			      "WHERE OID = ?");
 		query.bindValue
-		  (0, s_crypt->encrypted(uuid.toString().toLatin1(),
-					 &ok).toBase64());
+		  (0, s_crypt->encryptedThenHashed(uuid.toString().toLatin1(),
+						   &ok).toBase64());
 		query.bindValue(1, m_id);
 
 		if(ok)
@@ -3779,14 +3780,14 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 		query.bindValue
 		  (0,
 		   m_accountAuthenticated ?
-		   s_crypt->encrypted(QByteArray::number(1),
-				      &ok).toBase64() :
-		   s_crypt->encrypted(QByteArray::number(0),
-				      &ok).toBase64());
+		   s_crypt->encryptedThenHashed(QByteArray::number(1),
+						&ok).toBase64() :
+		   s_crypt->encryptedThenHashed(QByteArray::number(0),
+						&ok).toBase64());
 
 		if(ok)
 		  query.bindValue
-		    (1, s_crypt->encrypted(name, &ok).toBase64());
+		    (1, s_crypt->encryptedThenHashed(name, &ok).toBase64());
 
 		query.bindValue(2, m_id);
 
@@ -3864,10 +3865,11 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 	      QByteArray saltedCredentials(list.at(0));
 	      bool ok = true;
 
-	      name = s_crypt->decrypted(name, &ok);
+	      name = s_crypt->decryptedAfterAuthenticated(name, &ok);
 
 	      if(ok)
-		password = s_crypt->decrypted(password, &ok);
+		password = s_crypt->decryptedAfterAuthenticated
+		  (password, &ok);
 
 	      if(ok)
 		newSaltedCredentials = spoton_crypt::saltedValue
@@ -3960,10 +3962,10 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 		query.bindValue
 		  (0,
 		   m_accountAuthenticated ?
-		   s_crypt->encrypted(QByteArray::number(1),
-				      &ok).toBase64() :
-		   s_crypt->encrypted(QByteArray::number(0),
-				      &ok).toBase64());
+		   s_crypt->encryptedThenHashed(QByteArray::number(1),
+						&ok).toBase64() :
+		   s_crypt->encryptedThenHashed(QByteArray::number(0),
+						&ok).toBase64());
 		query.bindValue(1, m_id);
 
 		if(ok)
@@ -4038,7 +4040,7 @@ void spoton_neighbor::process0065(int length, const QByteArray &dataIn)
 				"(data, data_hash) "
 				"VALUES (?, ?)");
 		  query.bindValue
-		    (0, s_crypt->encrypted(data, &ok).toBase64());
+		    (0, s_crypt->encryptedThenHashed(data, &ok).toBase64());
 
 		  if(ok)
 		    query.bindValue
@@ -4362,8 +4364,8 @@ void spoton_neighbor::saveExternalAddress(const QHostAddress &address,
 	      query.prepare("UPDATE neighbors SET external_ip_address = ? "
 			    "WHERE OID = ?");
 	      query.bindValue
-		(0, s_crypt->encrypted(address.toString().
-				       toLatin1(), &ok).
+		(0, s_crypt->encryptedThenHashed(address.toString().
+						 toLatin1(), &ok).
 		 toBase64());
 	      query.bindValue(1, m_id);
 	    }
@@ -4538,15 +4540,15 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue
 	  (0, s_crypt->
-	   encrypted(QDateTime::currentDateTime().
-		     toString(Qt::ISODate).
-		     toLatin1(), &ok).toBase64());
+	   encryptedThenHashed(QDateTime::currentDateTime().
+			       toString(Qt::ISODate).
+			       toLatin1(), &ok).toBase64());
 	query.bindValue(1, 0); // Inbox Folder
 
 	if(ok)
 	  query.bindValue
 	    (2, s_crypt->
-	     encrypted(QByteArray::number(goldbugUsed), &ok).
+	     encryptedThenHashed(QByteArray::number(goldbugUsed), &ok).
 	     toBase64());
 
 	if(ok)
@@ -4557,16 +4559,18 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 	if(!message.trimmed().isEmpty())
 	  if(ok)
 	    query.bindValue
-	      (4, s_crypt->encrypted(message.trimmed(), &ok).toBase64());
+	      (4, s_crypt->encryptedThenHashed(message.trimmed(),
+					       &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (5, s_crypt->encrypted(QByteArray(), &ok).toBase64());
+	    (5, s_crypt->encryptedThenHashed(QByteArray(), &ok).toBase64());
 
 	if(!name.trimmed().isEmpty())
 	  if(ok)
 	    query.bindValue
-	      (6, s_crypt->encrypted(name.trimmed(), &ok).toBase64());
+	      (6, s_crypt->encryptedThenHashed(name.trimmed(),
+					       &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
@@ -4575,16 +4579,16 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 	if(ok)
 	  query.bindValue
 	    (8, s_crypt->
-	     encrypted(tr("Unread").toUtf8(), &ok).toBase64());
+	     encryptedThenHashed(tr("Unread").toUtf8(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (9, s_crypt->encrypted(subject, &ok).toBase64());
+	    (9, s_crypt->encryptedThenHashed(subject, &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
 	    (10, s_crypt->
-	     encrypted(QByteArray::number(-1), &ok).
+	     encryptedThenHashed(QByteArray::number(-1), &ok).
 	     toBase64());
 
 	if(ok)
@@ -4625,9 +4629,9 @@ void spoton_neighbor::storeLetter(const QList<QByteArray> &list,
 		      "VALUES (?, ?, ?, ?)");
 	query.bindValue
 	  (0, s_crypt->
-	   encrypted(QDateTime::currentDateTime().
-		     toString(Qt::ISODate).
-		     toLatin1(), &ok).toBase64());
+	   encryptedThenHashed(QDateTime::currentDateTime().
+			       toString(Qt::ISODate).
+			       toLatin1(), &ok).toBase64());
 
 	if(ok)
 	  {
@@ -4638,7 +4642,7 @@ void spoton_neighbor::storeLetter(const QList<QByteArray> &list,
 	      list.value(3).toBase64() + "\n" + // Data
 	      list.value(4).toBase64();         // Message Code
 	    query.bindValue
-	      (1, s_crypt->encrypted(data, &ok).toBase64());
+	      (1, s_crypt->encryptedThenHashed(data, &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
@@ -4945,7 +4949,8 @@ void spoton_neighbor::recordCertificateOrAbort(void)
 	query.prepare
 	  ("UPDATE neighbors SET certificate = ? WHERE OID = ?");
 	query.bindValue
-	  (0, s_crypt->encrypted(certificate.toPem(), &ok).toBase64());
+	  (0, s_crypt->encryptedThenHashed(certificate.toPem(),
+					   &ok).toBase64());
 	query.bindValue(1, m_id);
 
 	if(ok)
@@ -5214,7 +5219,7 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data)
 
 void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 				 const QByteArray &gemini,
-				 const QByteArray &geminiMac)
+				 const QByteArray &geminiHashKey)
 {
   QString connectionName("");
 
@@ -5236,7 +5241,7 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 		      "WHERE neighbor_oid = -1 AND "
 		      "public_key_hash = ?");
 
-	if(gemini.isEmpty() || geminiMac.isEmpty())
+	if(gemini.isEmpty() || geminiHashKey.isEmpty())
 	  {
 	    query.bindValue(0, QVariant(QVariant::String));
 	    query.bindValue(1, QVariant(QVariant::String));
@@ -5249,11 +5254,12 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 	    if(s_crypt)
 	      {
 		query.bindValue
-		  (0, s_crypt->encrypted(gemini, &ok).toBase64());
+		  (0, s_crypt->encryptedThenHashed(gemini, &ok).toBase64());
 
 		if(ok)
 		  query.bindValue
-		    (1, s_crypt->encrypted(geminiMac, &ok).toBase64());
+		    (1, s_crypt->encryptedThenHashed(geminiHashKey,
+						     &ok).toBase64());
 	      }
 	    else
 	      {
@@ -5296,10 +5302,10 @@ void spoton_neighbor::slotSendAccountInformation(void)
   QByteArray password(m_accountPassword);
   bool ok = true;
 
-  name = s_crypt->decrypted(name, &ok);
+  name = s_crypt->decryptedAfterAuthenticated(name, &ok);
 
   if(ok)
-    password = s_crypt->decrypted(password, &ok);
+    password = s_crypt->decryptedAfterAuthenticated(password, &ok);
 
   if(ok)
     if(!name.isEmpty() && password.length() >= 16)

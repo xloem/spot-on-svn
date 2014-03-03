@@ -110,10 +110,9 @@ void spoton_mailer::slotTimeout(void)
 
 	      status = QString::fromUtf8
 		(s_crypt->
-		 decrypted(QByteArray::fromBase64(query.
-						  value(3).
-						  toByteArray()),
-			   &ok).constData());
+		 decryptedAfterAuthenticated
+		 (QByteArray::fromBase64(query.value(3).toByteArray()),
+		  &ok).constData());
 
 	      if(status != tr("Queued"))
 		continue;
@@ -125,25 +124,19 @@ void spoton_mailer::slotTimeout(void)
 	      qint64 mailOid = query.value(5).toLongLong();
 	      qint64 participantOid = -1;
 
-	      goldbug = s_crypt->
-		decrypted(QByteArray::fromBase64(query.
-						 value(0).
-						 toByteArray()),
-			  &ok);
+	      goldbug = s_crypt->decryptedAfterAuthenticated
+		(QByteArray::fromBase64(query.value(0).toByteArray()),
+		 &ok);
 
 	      if(ok)
-		message = s_crypt->
-		  decrypted(QByteArray::fromBase64(query.
-						   value(1).
-						   toByteArray()),
-			    &ok);
+		message = s_crypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(1).toByteArray()),
+		   &ok);
 
 	      if(ok)
-		participantOid = s_crypt->
-		  decrypted(QByteArray::fromBase64(query.
-						   value(2).
-						   toByteArray()),
-			    &ok).toLongLong();
+		participantOid = s_crypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(2).toByteArray()),
+		   &ok).toLongLong();
 
 	      if(ok)
 		{
@@ -163,10 +156,9 @@ void spoton_mailer::slotTimeout(void)
 
 	      if(ok)
 		subject = s_crypt->
-		  decrypted(QByteArray::fromBase64(query.
-						   value(4).
-						   toByteArray()),
-			    &ok);
+		  decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(4).toByteArray()),
+		   &ok);
 
 	      if(ok)
 		{
@@ -287,10 +279,9 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 		    bool ok = true;
 
 		    message = s_crypt->
-		      decrypted(QByteArray::fromBase64(query.
-						       value(0).
-						       toByteArray()),
-				&ok);
+		      decryptedAfterAuthenticated
+		      (QByteArray::fromBase64(query.value(0).toByteArray()),
+		       &ok);
 
 		    if(ok)
 		      {
@@ -352,12 +343,9 @@ void spoton_mailer::slotReap(void)
 	      bool ok = true;
 
 	      dateTime = QDateTime::fromString
-		(s_crypt->decrypted(QByteArray::
-				    fromBase64(query.
-					       value(0).
-					       toByteArray()),
-				    &ok).constData(),
-		 Qt::ISODate);
+		(s_crypt->decryptedAfterAuthenticated
+		 (QByteArray::fromBase64(query.value(0).toByteArray()),
+		  &ok).constData(), Qt::ISODate);
 
 	      if(dateTime.daysTo(now) > days)
 		{

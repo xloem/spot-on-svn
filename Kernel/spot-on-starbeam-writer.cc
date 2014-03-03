@@ -173,7 +173,9 @@ void spoton_starbeam_writer::slotProcessData(void)
   qint64 position = qAbs(list.value(2).toLongLong());
   qint64 totalSize = qAbs(list.value(4).toLongLong());
 
-  if(dataSize > list.value(5).length())
+  if(dataSize > list.value(5).length()) // Data
+    return;
+  else if(dataSize > pulseSize)
     return;
   else if(dataSize > maximumSize || totalSize > maximumSize)
     return;
@@ -232,7 +234,8 @@ void spoton_starbeam_writer::slotProcessData(void)
 
 	if(ok)
 	  query.bindValue
-	    (0, s_crypt->encrypted(fileName.toUtf8(), &ok).toBase64());
+	    (0, s_crypt->
+	     encryptedThenHashed(fileName.toUtf8(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
@@ -244,12 +247,14 @@ void spoton_starbeam_writer::slotProcessData(void)
 
 	if(ok)
 	  query.bindValue
-	    (3, s_crypt->encrypted(QByteArray::number(pulseSize), &ok).
+	    (3, s_crypt->
+	     encryptedThenHashed(QByteArray::number(pulseSize), &ok).
 	     toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (4, s_crypt->encrypted(QByteArray::number(totalSize), &ok).
+	    (4, s_crypt->
+	     encryptedThenHashed(QByteArray::number(totalSize), &ok).
 	     toBase64());
 
 	if(ok)
@@ -315,7 +320,7 @@ void spoton_starbeam_writer::slotReadKeys(void)
 		(QByteArray::fromBase64(query.value(0).toByteArray()));
 	      bool ok = true;
 
-	      data = s_crypt->decrypted(data, &ok);
+	      data = s_crypt->decryptedAfterAuthenticated(data, &ok);
 
 	      if(!ok)
 		continue;
@@ -374,7 +379,7 @@ void spoton_starbeam_writer::slotReadKeys(void)
 		(QByteArray::fromBase64(query.value(0).toByteArray()));
 	      bool ok = true;
 
-	      data = s_crypt->decrypted(data, &ok);
+	      data = s_crypt->decryptedAfterAuthenticated(data, &ok);
 
 	      if(!ok)
 		continue;
