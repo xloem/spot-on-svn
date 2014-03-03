@@ -3223,9 +3223,35 @@ void spoton_crypt::reencodePrivatePublicKeys
 		  updateQuery.bindValue(0, id);
 		}
 
+	      if(!ok)
+		{
+		  error = QObject::tr("decryption or encryption failure");
+		  spoton_misc::logError
+		    ("spoton_crypt::reencodePrivatePublicKeys(): "
+		     "decryption or encryption failure.");
+		}
+
 	      updateQuery.exec();
 	    }
+
+	if(error.isEmpty())
+	  if(query.lastError().isValid())
+	    {
+	      error = query.lastError().text();
+	      spoton_misc::logError
+		(QString("spoton_crypt::reencodePrivatePublicKeys(): "
+			 "database error (%1).").arg(error));
+	    }
       }
+
+    if(error.isEmpty())
+      if(db.lastError().isValid())
+	{
+	  error = db.lastError().text();
+	  spoton_misc::logError
+	    (QString("spoton_crypt::reencodePrivatePublicKeys(): "
+		     "database error (%1).").arg(error));
+	}
 
     db.close();
   }
