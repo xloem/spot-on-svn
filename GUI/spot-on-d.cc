@@ -76,4 +76,24 @@ void spoton::slotShowStarBeamAnalyzer(void)
 
 void spoton::slotDemagnetizeMissingLinks(void)
 {
+  QStringList list
+    (m_ui.missingLinks->text().trimmed().remove("magnet:?").split('&'));
+
+  while(!list.isEmpty())
+    {
+      QString str(list.takeFirst().trimmed());
+
+      if(str.startsWith("fn="))
+	{
+	  str.remove(0, 3);
+	  m_ui.transmittedFile->setText(str);
+	}
+      else if(str.startsWith("ps="))
+	{
+	  str.remove(0, 3);
+	  m_ui.pulseSize->setValue(str.toInt());
+	}
+      else
+	break;
+    }
 }

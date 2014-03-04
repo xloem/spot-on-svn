@@ -441,7 +441,7 @@ void spoton_starbeamanalyzer::slotItemSelected(void)
   data.append(QString("fn=%1&").arg(fileName));
   data.append(QString("ps=%1&").arg(pulseSize));
   data.append(QString("ml=%1&").arg(missingLinks));
-  data.append("xt=urn:starbeam");
+  data.append("xt=urn:starbeam-missing-links");
   ui.results->setText(data);
 }
 

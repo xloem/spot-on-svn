@@ -2393,7 +2393,7 @@ bool spoton_misc::isValidStarBeamMissingLinksMagnet(const QByteArray &magnet)
 	{
 	  str.remove(0, 3);
 
-	  if(str != "urn:starbeam")
+	  if(str != "urn:starbeam-missing-links")
 	    {
 	      valid = false;
 	      goto done_label;

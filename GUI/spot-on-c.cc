@@ -880,10 +880,29 @@ void spoton::slotTransmit(void)
 	      &ok).toBase64());
 
 	if(ok)
-	  query.bindValue
-	    (2, s_crypt->
-	     encryptedThenHashed(m_ui.missingLinks->text().trimmed().
-				 toLatin1(), &ok).toBase64());
+	  {
+	    QString missingLinks;
+	    QStringList list
+	      (m_ui.missingLinks->text().trimmed().
+	       remove("magnet:?").split('&'));
+
+	    while(!list.isEmpty())
+	      {
+		QString str(list.takeFirst().trimmed());
+
+		if(str.startsWith("ml="))
+		  {
+		    str.remove(0, 3);
+		    missingLinks = str;
+		    break;
+		  }
+	      }
+
+	    query.bindValue
+	      (2, s_crypt->
+	       encryptedThenHashed(missingLinks.trimmed().
+				   toLatin1(), &ok).toBase64());
+	  }
 
 	if(ok)
 	  {
