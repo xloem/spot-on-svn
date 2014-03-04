@@ -201,17 +201,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3154"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3162"/>
         <source>newCrypt is 0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3162"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3170"/>
         <source>oldCrypt is 0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3228"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3236"/>
         <source>decryption or encryption failure</source>
         <translation type="unfinished"></translation>
     </message>
