@@ -22,7 +22,8 @@
      For a given database field, the stored data will now be
      H_hash_key(E_encryption_key(x)) || E_encryption_key(x). Please reset
      Spot.
-12.  The method spoton_crypt::reencodeKeys() has been redesigned per item #11.
+12.  The method spoton_crypt::reencodeKeys() has been redesigned per
+     item #11.
 
 0.09.01 (02/20/2014)
 
