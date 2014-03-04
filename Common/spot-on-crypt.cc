@@ -3115,7 +3115,12 @@ QByteArray spoton_crypt::encryptedThenHashed(const QByteArray &data,
     bytes2 = keyedHash(bytes1, ok);
 
   if(bytes1.isEmpty() || bytes2.isEmpty())
-    return QByteArray();
+    {
+      if(ok)
+	*ok = false;
+
+      return QByteArray();
+    }
   else
     return bytes2 + bytes1;
 }
@@ -3133,16 +3138,19 @@ QByteArray spoton_crypt::decryptedAfterAuthenticated(const QByteArray &data,
       return QByteArray();
     }
 
-  QByteArray computedHash;
+  QByteArray computedHash(keyedHash(data.mid(length), ok));
   QByteArray hash(data.mid(0, length));
 
-  computedHash = keyedHash(data.mid(length), ok);
-
-  if(!computedHash.isEmpty() &&
-     !hash.isEmpty() && memcmp(computedHash, hash))
+  if(!computedHash.isEmpty() && !hash.isEmpty() && memcmp(computedHash,
+							  hash))
     return decrypted(data.mid(length), ok);
   else
-    return QByteArray();
+    {
+      if(ok)
+	*ok = false;
+
+      return QByteArray();
+    }
 }
 
 void spoton_crypt::reencodePrivatePublicKeys
