@@ -796,10 +796,18 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotShowStarBeamAnalyzer(void)));
+  connect(m_ui.demagnetizeMissingLinks,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotDemagnetizeMissingLinks(void)));
   connect(m_ui.missingLinksCheckBox,
 	  SIGNAL(clicked(void)),
 	  m_ui.missingLinks,
 	  SLOT(clear(void)));
+  connect(m_ui.missingLinksCheckBox,
+	  SIGNAL(toggled(bool)),
+	  m_ui.demagnetizeMissingLinks,
+	  SLOT(setEnabled(bool)));
   connect(m_ui.missingLinksCheckBox,
 	  SIGNAL(toggled(bool)),
 	  m_ui.missingLinks,
@@ -2432,11 +2440,9 @@ void spoton::slotPopulateListeners(void)
 		bool ok = true;
 
 		certificateDigest = s_crypt->
-		  decryptedAfterAuthenticated(QByteArray::
-					      fromBase64(query.
-							 value(17).
-							 toByteArray()),
-					      &ok);
+		  decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(17).toByteArray()),
+		   &ok);
 
 		if(!ok)
 		  {

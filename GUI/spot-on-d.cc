@@ -45,7 +45,7 @@ void spoton::slotDiscoverMissingLinks(void)
       item = m_ui.received->item(row, 3); // File
 
       if(item)
-	fileName = item->text();
+	fileName = QFileInfo(item->text()).fileName();
 
       item = m_ui.received->item(row, 1); // Pulse Size
 
@@ -72,4 +72,8 @@ void spoton::slotShowStarBeamAnalyzer(void)
 {
   if(m_starbeamAnalyzer)
     m_starbeamAnalyzer->show(this);
+}
+
+void spoton::slotDemagnetizeMissingLinks(void)
+{
 }

@@ -417,12 +417,32 @@ void spoton_starbeamanalyzer::slotItemSelected(void)
   if(row < 0)
     return;
 
-  QTableWidgetItem *item = ui.tableWidget->item(row, 5); // Results;
+  QString data("");
+  QString fileName("");
+  QString missingLinks("");
+  QString pulseSize("");
 
-  if(!item)
-    return;
+  QTableWidgetItem *item = ui.tableWidget->item(row, 2); // Pulse Size
 
-  ui.results->setText(item->text());
+  if(item)
+    pulseSize = item->text();
+
+  item = ui.tableWidget->item(row, 4); // File Name
+
+  if(item)
+    fileName = item->text();
+
+  item = ui.tableWidget->item(row, 5); // Results;
+
+  if(item)
+    missingLinks = item->text();
+
+  data.append("magnet:?");
+  data.append(QString("fn=%1&").arg(fileName));
+  data.append(QString("ps=%1&").arg(pulseSize));
+  data.append(QString("ml=%1&").arg(missingLinks));
+  data.append("xt=urn:starbeam");
+  ui.results->setText(data);
 }
 
 void spoton_starbeamanalyzer::slotCopy(void)

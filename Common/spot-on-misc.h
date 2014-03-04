@@ -72,6 +72,7 @@ class spoton_misc
 			       const QByteArray &publicKeyHash,
 			       const QByteArray &signature);
   static bool isValidStarBeamMagnet(const QByteArray &magnet);
+  static bool isValidStarBeamMissingLinksMagnet(const QByteArray &magnet);
   static bool saveFriendshipBundle(const QByteArray &keyType,
 				   const QByteArray &name,
 				   const QByteArray &publicKey,

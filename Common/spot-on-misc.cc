@@ -787,8 +787,7 @@ void spoton_misc::retrieveSymmetricData
 		  {
 		    if(!query.isNull(0))
 		      gemini.first = crypt->decryptedAfterAuthenticated
-			(QByteArray::fromBase64(query.
-						value(0).
+			(QByteArray::fromBase64(query.value(0).
 						toByteArray()),
 			 ok);
 
@@ -796,16 +795,14 @@ void spoton_misc::retrieveSymmetricData
 		      {
 			if(!query.isNull(3))
 			  gemini.second = crypt->decryptedAfterAuthenticated
-			    (QByteArray::fromBase64(query.
-						    value(3).
+			    (QByteArray::fromBase64(query.value(3).
 						    toByteArray()),
 			     ok);
 		      }
 		    else if(!ok)
 		      if(!query.isNull(3))
 			gemini.second = crypt->decryptedAfterAuthenticated
-			  (QByteArray::fromBase64(query.
-						  value(3).
+			  (QByteArray::fromBase64(query.value(3).
 						  toByteArray()),
 			   ok);
 
@@ -952,15 +949,13 @@ QPair<QByteArray, QByteArray> spoton_misc::findGeminiInCosmos
 		  bool ok = true;
 
 		  gemini.first = crypt->decryptedAfterAuthenticated
-		    (QByteArray::fromBase64(query.
-					    value(0).
+		    (QByteArray::fromBase64(query.value(0).
 					    toByteArray()),
 		     &ok);
 
 		  if(ok)
 		    gemini.second = crypt->decryptedAfterAuthenticated
-		      (QByteArray::fromBase64(query.
-					      value(1).
+		      (QByteArray::fromBase64(query.value(1).
 					      toByteArray()),
 		       &ok);
 
@@ -1937,14 +1932,12 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 		  bool ok = true;
 
 		  name = crypt->decryptedAfterAuthenticated
-		    (QByteArray::fromBase64(query.value(0).
-					    toByteArray()),
+		    (QByteArray::fromBase64(query.value(0).toByteArray()),
 		     &ok);
 
 		  if(ok)
 		    password = crypt->decryptedAfterAuthenticated
-		      (QByteArray::fromBase64(query.value(1).
-					      toByteArray()),
+		      (QByteArray::fromBase64(query.value(1).toByteArray()),
 		       &ok);
 
 		  if(ok)
@@ -2331,6 +2324,86 @@ bool spoton_misc::isValidStarBeamMagnet(const QByteArray &magnet)
     }
 
   if(tokens == 5)
+    valid = true;
+
+ done_label:
+  return valid;
+}
+
+bool spoton_misc::isValidStarBeamMissingLinksMagnet(const QByteArray &magnet)
+{
+  QList<QByteArray> list;
+  bool valid = false;
+  int tokens = 0;
+
+  /*
+  ** Validate the magnet.
+  */
+
+  if(magnet.trimmed().startsWith("magnet:?"))
+    list = magnet.trimmed().mid(qstrlen("magnet:?")).split('&');
+  else
+    goto done_label;
+
+  while(!list.isEmpty())
+    {
+      QString str(list.takeFirst().trimmed());
+
+      if(str.startsWith("fn="))
+	{
+	  str.remove(0, 3);
+
+	  if(str.isEmpty())
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	  else
+	    tokens += 1;
+	}
+      else if(str.startsWith("ps="))
+	{
+	  str.remove(0, 3);
+
+	  bool ok = true;
+
+	  str.toLongLong(&ok);
+
+	  if(!ok)
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	  else
+	    tokens += 1;
+	}
+      else if(str.startsWith("ml="))
+	{
+	  str.remove(0, 3);
+
+	  if(str.isEmpty())
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	  else
+	    tokens += 1;
+	}
+      else if(str.startsWith("xt="))
+	{
+	  str.remove(0, 3);
+
+	  if(str != "urn:starbeam")
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	  else
+	    tokens += 1;
+	}
+    }
+
+  if(tokens == 4)
     valid = true;
 
  done_label:

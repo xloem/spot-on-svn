@@ -5209,7 +5209,7 @@
                       <item>
                        <widget class="QCheckBox" name="missingLinksCheckBox">
                         <property name="text">
-                         <string>&amp;Missing Links</string>
+                         <string>&amp;Missing Links Magnet</string>
                         </property>
                        </widget>
                       </item>
@@ -5217,6 +5217,13 @@
                        <widget class="QLineEdit" name="missingLinks">
                         <property name="toolTip">
                          <string>Please provide a comma-delimited list of file positions.</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="demagnetizeMissingLinks">
+                        <property name="text">
+                         <string>Demagnetize</string>
                         </property>
                        </widget>
                       </item>
@@ -6378,6 +6385,7 @@
   <tabstop>generateNova</tabstop>
   <tabstop>missingLinksCheckBox</tabstop>
   <tabstop>missingLinks</tabstop>
+  <tabstop>demagnetizeMissingLinks</tabstop>
   <tabstop>transmittedFile</tabstop>
   <tabstop>etpSelectFile</tabstop>
   <tabstop>pulseSize</tabstop>
