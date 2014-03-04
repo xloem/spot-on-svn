@@ -45,7 +45,7 @@ void spoton::slotDiscoverMissingLinks(void)
       item = m_ui.received->item(row, 3); // File
 
       if(item)
-	fileName = QFileInfo(item->text()).fileName();
+	fileName = item->text();
 
       item = m_ui.received->item(row, 1); // Pulse Size
 

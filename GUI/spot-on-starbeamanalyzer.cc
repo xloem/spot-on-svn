@@ -430,7 +430,7 @@ void spoton_starbeamanalyzer::slotItemSelected(void)
   item = ui.tableWidget->item(row, 4); // File Name
 
   if(item)
-    fileName = item->text();
+    fileName = QFileInfo(item->text()).fileName();
 
   item = ui.tableWidget->item(row, 5); // Results;
 
