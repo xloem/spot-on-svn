@@ -618,8 +618,8 @@ void spoton_rosetta::slotConvert(void)
 	  (data, hashKey, ui.hash->currentText().toLatin1(), &ok);
 
       if(ok)
-	data = keyInformation.toBase64() + "\n" +
-	  data.toBase64() + "\n" +
+	data = keyInformation.toBase64() + "@" +
+	  data.toBase64() + "@" +
 	  messageCode.toBase64();
 
       QApplication::restoreOverrideCursor();
@@ -664,7 +664,7 @@ void spoton_rosetta::slotConvert(void)
 	  goto done_label2;
 	}
 
-      list = data.split('\n');
+      list = data.split('@');
 
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
@@ -800,7 +800,7 @@ void spoton_rosetta::slotCopyConverted(void)
   QClipboard *clipboard = QApplication::clipboard();
 
   if(clipboard)
-    clipboard->setText(ui.output->toHtml());
+    clipboard->setText(ui.output->toPlainText());
 }
 
 void spoton_rosetta::slotCopyOrPaste(void)
