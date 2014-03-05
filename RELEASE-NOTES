@@ -24,6 +24,7 @@
      Spot.
 12.  The method spoton_crypt::reencodeKeys() has been redesigned per
      item #11.
+13.  Corrected an error with Rosetta text. Newline characters were lost.
 
 0.09.01 (02/20/2014)
 
