@@ -1534,8 +1534,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  mb.setWindowTitle(tr("Spot-On: Confirmation"));
 	  mb.setWindowModality(Qt::WindowModal);
 	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-	  mb.setText(tr("Invalid signature "
-			"public key signature. Accept?"));
+	  mb.setText(tr("Invalid 'chat', 'email', 'rosetta', or 'url' "
+			"signature public key signature. Accept?"));
 
 	  if(mb.exec() != QMessageBox::Yes)
 	    return;
@@ -1603,7 +1603,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("Invalid repleo. The repleo must start with "
+	     tr("Invalid Repleo. The Repleo must start with "
 		"either the letter R or the letter r."));
 	  return;
 	}
@@ -1797,7 +1797,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("Invalid public key signature."));
+	     tr("Invalid 'chat', 'email', 'rosetta', or 'url' "
+		"public key signature."));
 	  return;
 	}
 
@@ -1808,7 +1809,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
-	     tr("Invalid signature public key signature."));
+	     tr("Invalid 'chat', 'email', 'rosetta', or 'url' "
+		"signature public key signature."));
 	  return;
 	}
 
