@@ -800,7 +800,7 @@ void spoton_rosetta::slotCopyConverted(void)
   QClipboard *clipboard = QApplication::clipboard();
 
   if(clipboard)
-    clipboard->setText(ui.output->toPlainText());
+    clipboard->setText(ui.output->toHtml());
 }
 
 void spoton_rosetta::slotCopyOrPaste(void)

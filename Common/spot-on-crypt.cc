@@ -1387,6 +1387,9 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
       if(ok)
 	*ok = false;
 
+      spoton_misc::logError
+	("spoton_crypt::publicKeyDecrypt(): m_privateKey or "
+	 "m_privateKeyLength is 0.");
       goto done_label;
     }
 
