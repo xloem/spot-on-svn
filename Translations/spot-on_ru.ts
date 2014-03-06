@@ -3451,7 +3451,7 @@ Orientation: %23
     </message>
     <message>
         <location filename="../UI/rosetta.ui" line="36"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="850"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="875"/>
         <source>&amp;Name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3601,8 +3601,8 @@ Orientation: %23
         <location filename="../GUI/spot-on-rosetta.cc" line="411"/>
         <location filename="../GUI/spot-on-rosetta.cc" line="423"/>
         <location filename="../GUI/spot-on-rosetta.cc" line="438"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="642"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="744"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="650"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="769"/>
         <source>Spot-On: Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3662,40 +3662,55 @@ Orientation: %23
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="629"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="737"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="592"/>
+        <source>The method spoton_crypt::publicKeyEncrypt() failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/spot-on-rosetta.cc" line="637"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="762"/>
         <source>A serious cryptographic error occurred.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="663"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="671"/>
         <source>Empty input data.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="694"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="685"/>
+        <source>The method spoton_crypt::publicKeyDecrypt() failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/spot-on-rosetta.cc" line="709"/>
+        <source>The method spoton_crypt::keyedHash() failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GUI/spot-on-rosetta.cc" line="719"/>
         <source>The computed hash does not match the provided hash.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="728"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="753"/>
         <source>The message was not signed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="732"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="757"/>
         <source>Invalid signature. Perhaps your contacts are not current.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="850"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="875"/>
         <source>Spot-On: New Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-rosetta.cc" line="374"/>
         <location filename="../GUI/spot-on-rosetta.cc" line="397"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="761"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="786"/>
         <source>Spot-On: Confirmation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3715,7 +3730,7 @@ Orientation: %23
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="764"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="789"/>
         <source>Are you sure that you wish to remove the selected contact?</source>
         <translation type="unfinished"></translation>
     </message>
