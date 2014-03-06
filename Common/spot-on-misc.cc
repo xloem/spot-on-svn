@@ -537,7 +537,7 @@ QString spoton_misc::countryCodeFromIPAddress(const QString &ipAddress)
     code = GeoIP_country_code_by_addr
       (gi, ipAddress.toLatin1().constData());
   else
-    logError("spoton_misc::countryCodeFromIPAddress(): gi is 0.");
+    logError("spoton_misc::countryCodeFromIPAddress(): gi is zero.");
 
   GeoIP_delete(gi);
 #else
@@ -569,7 +569,7 @@ QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
     country = GeoIP_country_name_by_addr
       (gi, ipAddress.toLatin1().constData());
   else
-    logError("spoton_misc::countryNameFromIPAddress(): gi is 0.");
+    logError("spoton_misc::countryNameFromIPAddress(): gi is zero.");
 
   GeoIP_delete(gi);
 #else

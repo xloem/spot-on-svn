@@ -572,7 +572,7 @@ void spoton_crypt::init(const QString &cipherType,
 	}
       else
 	spoton_misc::logError("spoton_crypt::spoton_crypt(): "
-			      "m_cipherAlgorithm is 0.");
+			      "m_cipherAlgorithm is zero.");
 
       if(err == 0)
 	{
@@ -594,14 +594,14 @@ void spoton_crypt::init(const QString &cipherType,
 	    }
 	  else
 	    spoton_misc::logError("spoton_crypt::spoton_crypt(): "
-				  "m_cipherHandle is 0.");
+				  "m_cipherHandle is zero.");
 	}
     }
   else if(m_symmetricKeyLength > 0)
     {
       m_symmetricKeyLength = 0;
       spoton_misc::logError("spoton_crypt::spoton_crypt(): "
-			    "gcry_calloc_secure() returned 0.");
+			    "gcry_calloc_secure() returned zero.");
     }
 }
 
@@ -634,7 +634,7 @@ QByteArray spoton_crypt::decrypted(const QByteArray &data, bool *ok)
 	*ok = false;
 
       spoton_misc::logError("spoton_crypt::decrypted(): m_cipherAlgorithm "
-			    "is 0.");
+			    "is zero.");
       return QByteArray();
     }
 
@@ -644,7 +644,7 @@ QByteArray spoton_crypt::decrypted(const QByteArray &data, bool *ok)
 	*ok = false;
 
       spoton_misc::logError("spoton_crypt::decrypted(): m_cipherHandle "
-			    "is 0.");
+			    "is zero.");
       return QByteArray();
     }
 
@@ -727,7 +727,7 @@ QByteArray spoton_crypt::encrypted(const QByteArray &data, bool *ok)
 	*ok = false;
 
       spoton_misc::logError
-	("spoton_crypt::encrypted(): m_cipherAlgorithm is 0.");
+	("spoton_crypt::encrypted(): m_cipherAlgorithm is zero.");
       return QByteArray();
     }
 
@@ -737,7 +737,7 @@ QByteArray spoton_crypt::encrypted(const QByteArray &data, bool *ok)
 	*ok = false;
 
       spoton_misc::logError
-	("spoton_crypt::encrypted(): m_cipherHandle is 0.");
+	("spoton_crypt::encrypted(): m_cipherHandle is zero.");
       return QByteArray();
     }
 
@@ -853,14 +853,14 @@ bool spoton_crypt::setInitializationVector(QByteArray &bytes,
   if(algorithm == 0)
     {
       spoton_misc::logError("spoton_crypt::setInitializationVector(): "
-			    "algorithm is 0.");
+			    "algorithm is zero.");
       return false;
     }
 
   if(!cipherHandle)
     {
       spoton_misc::logError("spoton_crypt::setInitializationVector(): "
-			    "cipherHandle is 0.");
+			    "cipherHandle is zero.");
       return false;
     }
 
@@ -921,7 +921,7 @@ bool spoton_crypt::setInitializationVector(QByteArray &bytes,
 	{
 	  ok = false;
 	  spoton_misc::logError("spoton_crypt::setInitializationVector(): "
-				"gcry_calloc() returned 0.");
+				"gcry_calloc() returned zero.");
 	}
     }
 
@@ -936,7 +936,7 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data, bool *ok) const
 	*ok = false;
 
       spoton_misc::logError
-	("spoton_crypt::keyedHash(): m_hashAlgorithm is 0.");
+	("spoton_crypt::keyedHash(): m_hashAlgorithm is zero.");
       return QByteArray();
     }
   else if(!m_hashKey || m_hashKeyLength == 0)
@@ -1029,7 +1029,7 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data, bool *ok) const
 		*ok = false;
 
 	      spoton_misc::logError("spoton_crypt::keyedHash(): "
-				    "gcry_md_read() returned 0.");
+				    "gcry_md_read() returned zero.");
 	    }
 	}
     }
@@ -1389,7 +1389,7 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 
       spoton_misc::logError
 	("spoton_crypt::publicKeyDecrypt(): m_privateKey or "
-	 "m_privateKeyLength is 0.");
+	 "m_privateKeyLength is zero.");
       goto done_label;
     }
 
@@ -1915,7 +1915,7 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data,
 		*ok = false;
 
 	      spoton_misc::logError("spoton_crypt::keyedHash(): "
-				    "gcry_md_read() returned 0.");
+				    "gcry_md_read() returned zero.");
 	    }
 	}
     }
@@ -2549,7 +2549,7 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
 
   if(BN_set_word(f4, RSA_F4) != 1)
     {
-      error = QObject::tr("BN_set_word() returned zero");
+      error = QObject::tr("BN_set_word() failure");
       spoton_misc::logError("spoton_crypt::generateSslKeys(): "
 			    "BN_set_word() failure.");
       goto done_label;
@@ -2787,7 +2787,7 @@ void spoton_crypt::generateCertificate(RSA *rsa,
 
   if(X509_NAME_add_entry(subject, commonNameEntry, -1, 0) != 1)
     {
-      error = QObject::tr("X509_NAME_add_entry() returned zero");
+      error = QObject::tr("X509_NAME_add_entry() failure");
       spoton_misc::logError("spoton_crypt::generateCertificate(): "
 			    "X509_NAME_add_entry() failure.");
       goto done_label;
@@ -2795,13 +2795,19 @@ void spoton_crypt::generateCertificate(RSA *rsa,
 
   if(X509_set_subject_name(x509, subject) != 1)
     {
-      error = QObject::tr("X509_set_subject_name() returned zero");
+      error = QObject::tr("X509_set_subject_name() failed");
       spoton_misc::logError("spoton_crypt::generateCertificate(): "
 			    "X509_set_subject_name() failure.");
       goto done_label;
     }
 
-  name = X509_get_subject_name(x509);
+  if((name = X509_get_subject_name(x509)) == 0)
+    {
+      error = QObject::tr("X509_get_subject_name() returned zero");
+      spoton_misc::logError("spoton_crypt::generateCertificate(): "
+			    "X509_get_subject_name() failure.");
+      goto done_label;
+    }
 
   if(X509_set_issuer_name(x509, name) == 0)
     {
@@ -3164,7 +3170,7 @@ void spoton_crypt::reencodePrivatePublicKeys
     {
       error = QObject::tr("newCrypt is 0");
       spoton_misc::logError("spoton_crypt::reencodePrivatePublicKeys(): "
-			    "newCrypt is 0.");
+			    "newCrypt is zero.");
       return;
     }
 
@@ -3172,7 +3178,7 @@ void spoton_crypt::reencodePrivatePublicKeys
     {
       error = QObject::tr("oldCrypt is 0");
       spoton_misc::logError("spoton_crypt::reencodePrivatePublicKeys(): "
-			    "oldCrypt is 0.");
+			    "oldCrypt is zero.");
       return;
     }
 

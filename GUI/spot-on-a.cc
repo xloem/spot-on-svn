@@ -2959,17 +2959,20 @@ void spoton::slotPopulateNeighbors(void)
 		      }
 		  }
 
-		sslSessionCipher = s_crypt->
-		  decryptedAfterAuthenticated(QByteArray::
-					      fromBase64(query.
-							 value(24).
-							 toByteArray()),
-					      &ok);
-
-		if(!ok)
+		if(!query.isNull(24))
 		  {
-		    sslSessionCipher.clear();
-		    sslSessionCipher.append(tr("error"));
+		    sslSessionCipher = s_crypt->
+		      decryptedAfterAuthenticated(QByteArray::
+						  fromBase64(query.
+							     value(24).
+							     toByteArray()),
+						  &ok);
+
+		    if(!ok)
+		      {
+			sslSessionCipher.clear();
+			sslSessionCipher.append(tr("error"));
+		      }
 		  }
 
 		tooltip =
