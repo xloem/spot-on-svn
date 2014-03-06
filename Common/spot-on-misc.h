@@ -89,6 +89,7 @@ class spoton_misc
   static void populateUrlsDatabase(const QList<QList<QVariant> > &list,
 				   spoton_crypt *crypt);
   static void prepareDatabases(void);
+  static void prepareSignalHandler(void (*sig_handler) (int));
   static void prepareUrlDatabases(void);
   static void purgeSignatureRelationships(const QSqlDatabase &db);
   static void retrieveSymmetricData(QPair<QByteArray, QByteArray> &gemini,

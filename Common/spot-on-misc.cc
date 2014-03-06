@@ -50,6 +50,11 @@ extern "C"
 }
 #endif
 
+extern "C"
+{
+#include <signal.h>
+}
+
 QMutex spoton_misc::s_dbMutex;
 bool spoton_misc::s_enableLog = false; // Not protected by a mutex.
 quint64 spoton_misc::s_dbId = 0;
@@ -2408,4 +2413,37 @@ bool spoton_misc::isValidStarBeamMissingLinksMagnet(const QByteArray &magnet)
 
  done_label:
   return valid;
+}
+
+void spoton_misc::prepareSignalHandler(void (*sig_handler) (int))
+{
+  QList<int> list;
+#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+  struct sigaction act;
+#endif
+  list << SIGABRT
+#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+       << SIGBUS
+#endif
+       << SIGFPE
+       << SIGILL
+       << SIGINT
+#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+       << SIGKILL
+       << SIGQUIT
+#endif
+       << SIGSEGV
+       << SIGTERM;
+
+  while(!list.isEmpty())
+    {
+#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
+      act.sa_handler = sig_handler;
+      sigemptyset(&act.sa_mask);
+      act.sa_flags = 0;
+      sigaction(list.takeFirst(), &act, 0);
+#else
+      signal(list.takeFirst(), sig_handler);
+#endif
+    }
 }

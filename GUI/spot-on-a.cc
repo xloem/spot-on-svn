@@ -31,8 +31,22 @@
 
 QPointer<spoton> spoton::s_gui = 0;
 
+static void sig_handler(int signum)
+{
+  Q_UNUSED(signum);
+  spoton_crypt::terminate();
+
+  /*
+  ** _Exit() and _exit() may be safely called from signal handlers.
+  */
+
+  _Exit(EXIT_FAILURE);
+}
+
 int main(int argc, char *argv[])
 {
+  spoton_misc::prepareSignalHandler(sig_handler);
+
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
   QApplication::setStyle(new QMacStyle());

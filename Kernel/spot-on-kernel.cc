@@ -161,40 +161,14 @@ int main(int argc, char *argv[])
 	exit(EXIT_SUCCESS);
       }
 
-  QList<int> list;
-#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
-  struct sigaction act;
-#endif
-  list << SIGABRT
-#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
-       << SIGBUS
-#endif
-       << SIGFPE
-       << SIGILL
-       << SIGINT
-#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
-       << SIGKILL
-       << SIGQUIT
-#endif
-       << SIGSEGV
-       << SIGTERM;
-
-  while(!list.isEmpty())
-    {
-#if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
-      act.sa_handler = sig_handler;
-      sigemptyset(&act.sa_mask);
-      act.sa_flags = 0;
-      sigaction(list.takeFirst(), &act, 0);
-#else
-      signal(list.takeFirst(), sig_handler);
-#endif
-    }
+  spoton_misc::prepareSignalHandler(sig_handler);
 
 #if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
   /*
   ** Ignore SIGPIPE.
   */
+
+  struct sigaction act;
 
   act.sa_handler = SIG_IGN;
   sigemptyset(&act.sa_mask);
