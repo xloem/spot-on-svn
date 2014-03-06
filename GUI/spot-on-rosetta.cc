@@ -585,6 +585,14 @@ void spoton_rosetta::slotConvert(void)
 	 ui.cipher->currentText().toLatin1().toBase64() + "\n" +
 	 ui.hash->currentText().toLatin1().toBase64(),
 	 publicKey, &ok);
+
+      if(!ok)
+	{
+	  QApplication::restoreOverrideCursor();
+	  error = tr("The method spoton_crypt::publicKeyEncrypt() failed.");
+	  goto done_label1;
+	}
+
       crypt = new spoton_crypt(ui.cipher->currentText(),
 			       QString(""),
 			       QByteArray(),
@@ -671,6 +679,14 @@ void spoton_rosetta::slotConvert(void)
 
       data = list.value(1);
       keyInformation = m_eCrypt->publicKeyDecrypt(list.value(0), &ok);
+
+      if(!ok)
+	{
+	  error = tr("The method spoton_crypt::publicKeyDecrypt() "
+		     "failed.");
+	  goto done_label2;
+	}
+
       messageCode = list.value(2);
 
       if(ok)
@@ -684,7 +700,16 @@ void spoton_rosetta::slotConvert(void)
 	}
 
       if(ok)
-	computedHash = spoton_crypt::keyedHash(data, hashKey, hashType, &ok);
+	{
+	  computedHash = spoton_crypt::keyedHash
+	    (data, hashKey, hashType, &ok);
+
+	  if(!ok)
+	    {
+	      error = tr("The method spoton_crypt::keyedHash() failed.");
+	      goto done_label2;
+	    }
+	}
 
       if(ok)
 	{
