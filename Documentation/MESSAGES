@@ -24,7 +24,7 @@ EOL
 EOL
 2 - SHA-512 Hash Key (Base-64)
 EOL
-3 - Symmetric Key Algorithm (Base-64)
+3 - Symmetric Algorithm (Base-64)
 }
 EOL
 Symmetric Key
@@ -58,7 +58,7 @@ EOL
 EOL
 2 - SHA-512 Hash Key (Base-64)
 EOL
-3 - Symmetric Key Algorithm (Base-64)
+3 - Symmetric Algorithm (Base-64)
 }
 EOL
 Symmetric Key
@@ -88,7 +88,7 @@ EOL
 EOL
 2 - SHA-512 Hash Key (Base-64)
 EOL
-3 - Symmetric Key Algorithm (Base64)
+3 - Symmetric Algorithm (Base64)
 }
 EOL
 Symmetric Key
@@ -108,7 +108,7 @@ EOL
 EOL
 2 - SHA-512 Hash Key (Base-64)
 EOL
-3 - Symmetric Key Algorithm (Base-64)
+3 - Symmetric Algorithm (Base-64)
 }
 EOL
 Symmetric Key
@@ -139,7 +139,7 @@ EOL
 EOL
 2 - SHA-512 Hash Key (Base-64)
 EOL
-3 - Symmetric Key Algorithm (Base-64)
+3 - Symmetric Algorithm (Base-64)
 }
 EOL
 Symmetric Key
@@ -173,7 +173,7 @@ EOL
 EOL
 2 - SHA-512 Hash Key (Base-64)
 EOL
-3 - Symmetric Key Algorithm (Base-64)
+3 - Symmetric Algorithm (Base-64)
 }
 EOL
 Symmetric Key
@@ -229,7 +229,7 @@ EOL
 EOL
 2 - SHA-512 Hash Key (Base-64)
 EOL
-3 - Symmetric Key Algorithm (Base-64)
+3 - Symmetric Algorithm (Base-64)
 }
 EOL
 Symmetric Key
