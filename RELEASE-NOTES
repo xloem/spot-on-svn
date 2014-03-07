@@ -30,6 +30,7 @@
      an error under such a condition.
 16.  Added a signal handler to the user interface. The handler is to be used
      for issuing a GCRYCTL_TERM_SECMEM.
+17.  Corrected kernel version information.
 
 0.09.01 (02/20/2014)
 
