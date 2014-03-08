@@ -31,6 +31,12 @@
 16.  Added a signal handler to the user interface. The handler is to be used
      for issuing a GCRYCTL_TERM_SECMEM.
 17.  Corrected kernel version information.
+18.  Corrected query.lastInsertId() conversion in
+     spoton_listener::slotNewConnection(). The id variable is of type
+     qint64 whereas the converted value was of type int.
+19.  QVariant::toInt() may overflow without the overflow being detected.
+     Qt documentation states that Qt 5 will resolve this issue.
+     The new approach is to convert values toLongLong().
 
 0.09.01 (02/20/2014)
 
