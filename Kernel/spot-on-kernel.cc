@@ -700,7 +700,8 @@ void spoton_kernel::prepareListeners(void)
 
 		      if(ok)
 			{
-			  int maximumClients = qAbs(query.value(5).toInt());
+			  int maximumClients = qAbs
+			    (static_cast<int> (query.value(5).toLongLong()));
 
 			  if(!maximumClients)
 			    maximumClients = 1;
@@ -718,15 +719,15 @@ void spoton_kernel::prepareListeners(void)
 			     maximumClients,
 			     id,
 			     list.value(3).constData(),
-			     query.value(6).toInt(),
+			     static_cast<int> (query.value(6).toLongLong()),
 			     certificate,
 			     privateKey,
 			     publicKey,
-			     query.value(10).toInt(),
+			     static_cast<int> (query.value(10).toLongLong()),
 			     query.value(11).toLongLong(),
 			     query.value(12).toLongLong(),
 			     transport.constData(),
-			     query.value(14).toInt(),
+			     static_cast<int> (query.value(14).toLongLong()),
 			     orientation.constData(),
 			     this);
 			}
@@ -854,14 +855,14 @@ void spoton_kernel::prepareNeighbors(void)
 			else if(i == 9) // user_defined
 			  list.append(userDefined);
 			else if(i == 10) // ssl_key_size
-			  list.append(query.value(i).toInt());
+			  list.append(query.value(i).toLongLong());
 			else if(i == 11 || // maximum_buffer_size
 				i == 12)   // maximum_content_length
 			  list.append(query.value(i).toLongLong());
 			else if(i == 15) // allow_exceptions
-			  list.append(query.value(i).toInt());
+			  list.append(query.value(i).toLongLong());
 			else if(i == 17) // ssl_required
-			  list.append(query.value(i).toInt());
+			  list.append(query.value(i).toLongLong());
 			else if(i == 18) // account_name
 			  list.append(QByteArray::fromBase64(query.value(i).
 							     toByteArray()));
@@ -957,7 +958,7 @@ void spoton_kernel::prepareNeighbors(void)
 			     list.value(2).toByteArray().constData(),
 			     id,
 			     userDefined,
-			     list.value(10).toInt(),
+			     static_cast<int> (list.value(10).toLongLong()),
 			     list.value(11).toLongLong(),
 			     list.value(12).toLongLong(),
 			     list.value(13).toByteArray().constData(),

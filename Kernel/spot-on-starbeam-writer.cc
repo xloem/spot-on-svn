@@ -166,8 +166,8 @@ void spoton_starbeam_writer::slotProcessData(void)
   if(list.value(0) != "0060")
     return;
 
-  int dataSize = qAbs(list.value(3).toLongLong());
-  int pulseSize = qAbs(list.value(6).toLongLong());
+  int dataSize = qAbs(static_cast<int> (list.value(3).toLongLong()));
+  int pulseSize = qAbs(static_cast<int> (list.value(6).toLongLong()));
   qint64 maximumSize = 1048576 * spoton_kernel::setting
     ("gui/maxMosaicSize", 512).toLongLong();
   qint64 position = qAbs(list.value(2).toLongLong());

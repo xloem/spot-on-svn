@@ -2523,7 +2523,7 @@ void spoton::slotPopulateListeners(void)
 							     toByteArray()),
 						  &ok).
 		      constData()).
-		  arg(query.value(12).toInt() == 1 ? "Yes" : "No").
+		  arg(query.value(12).toLongLong() ? "Yes" : "No").
 		  arg(QString(s_crypt->
 			      decryptedAfterAuthenticated
 			      (QByteArray::
@@ -2532,7 +2532,7 @@ void spoton::slotPopulateListeners(void)
 					  toByteArray()),
 			       &ok).
 			      constData()).toUpper()).
-		  arg(query.value(16).toInt() == 1 ? "Yes" : "No").
+		  arg(query.value(16).toLongLong() ? "Yes" : "No").
 		  arg(s_crypt->
 		      decryptedAfterAuthenticated(QByteArray::
 						  fromBase64(query.
@@ -2563,9 +2563,9 @@ void spoton::slotPopulateListeners(void)
 			  {
 			    if(query.value(15).toString() == "tcp")
 			      {
-				if(query.value(2).toInt() > 0)
+				if(query.value(2).toLongLong() > 0)
 				  {
-				    if(query.value(i).toInt() == 1)
+				    if(query.value(i).toLongLong())
 				      check->setChecked(true);
 				  }
 				else
@@ -2573,7 +2573,7 @@ void spoton::slotPopulateListeners(void)
 			      }
 			    else
 			      {
-				if(query.value(i).toInt() == 1)
+				if(query.value(i).toLongLong())
 				  check->setChecked(true);
 			      }
 			  }
@@ -2597,7 +2597,7 @@ void spoton::slotPopulateListeners(void)
 		      }
 		    else if(i == 2)
 		      {
-			if(query.value(i).toInt() == 0)
+			if(query.value(i).toLongLong() == 0)
 			  {
 			    item = new QTableWidgetItem("0");
 			    item->setBackground
@@ -2627,15 +2627,16 @@ void spoton::slotPopulateListeners(void)
 			m_ui.listeners->setCellWidget(row, i, box);
 
 			if(std::numeric_limits<int>::max() ==
-			   query.value(i).toInt())
+			   query.value(i).toLongLong())
 			  box->setCurrentIndex(box->count() - 1);
-			else if(box->findText(QString::number(query.
-							      value(i).
-							      toInt())) >= 0)
+			else if(box->findText(QString::
+					      number(query.
+						     value(i).
+						     toLongLong())) >= 0)
 			  box->setCurrentIndex
 			    (box->findText(QString::number(query.
 							   value(i).
-							   toInt())));
+							   toLongLong())));
 			else
 			  box->setCurrentIndex(1); // Default of five.
 
@@ -2672,7 +2673,8 @@ void spoton::slotPopulateListeners(void)
 			box->setProperty
 			  ("oid", query.value(query.record().count() - 1));
 			box->setToolTip(tooltip);
-			box->setValue(query.value(i).toInt());
+			box->setValue
+			  (static_cast<int> (query.value(i).toLongLong()));
 			connect(box,
 				SIGNAL(valueChanged(int)),
 				this,
@@ -3077,10 +3079,11 @@ void spoton::slotPopulateNeighbors(void)
 						  &ok).
 		      constData()).
 		  arg(isEncrypted ? "Secure" : "Insecure").
-		  arg(QString::number(query.value(19).toInt() / 60.0,
-				      'f', 1)).
-		  arg(query.value(21).toInt() == 1 ?
-		      "Yes" : "No").
+		  arg(QString::
+		      number(static_cast<double> (query.value(19).
+						  toLongLong()) /
+			     60.0, 'f', 1)).
+		  arg(query.value(21).toLongLong() ? "Yes" : "No").
 		  arg(query.value(22).toULongLong()).
 		  arg(query.value(23).toULongLong()).
 		  arg(sslSessionCipher.constData()).
@@ -3097,7 +3100,7 @@ void spoton::slotPopulateNeighbors(void)
 		       fromBase64(query.
 				  value(26).
 				  toByteArray()),
-		       &ok).toInt() == 1 ? "Yes": "No").
+		       &ok).toLongLong() ? "Yes": "No").
 		  arg(QString(s_crypt->
 			      decryptedAfterAuthenticated
 			      (QByteArray::
@@ -3124,7 +3127,7 @@ void spoton::slotPopulateNeighbors(void)
 				     "terminated after some internal "
 				     "timer expires."));
 
-		if(query.value(0).toInt() == 1)
+		if(query.value(0).toLongLong())
 		  check->setChecked(true);
 		else
 		  check->setChecked(false);
@@ -3182,7 +3185,7 @@ void spoton::slotPopulateNeighbors(void)
 			      }
 			    else if(i == 3) // SSL Key Size
 			      {
-				if(query.value(i).toInt() == 0)
+				if(query.value(i).toLongLong() == 0)
 				  {
 				    item = new QTableWidgetItem("0");
 				    item->setBackground
@@ -3228,7 +3231,8 @@ void spoton::slotPopulateNeighbors(void)
 			box->setProperty
 			  ("oid", query.value(query.record().count() - 1));
 			box->setToolTip(tooltip);
-			box->setValue(query.value(i).toInt());
+			box->setValue
+			  (static_cast<int> (query.value(i).toLongLong()));
 			connect(box,
 				SIGNAL(valueChanged(int)),
 				this,
@@ -5444,7 +5448,7 @@ void spoton::slotPopulateParticipants(void)
 	      QString status(query.value(4).toString());
 	      bool ok = true;
 	      bool temporary =
-		query.value(2).toInt() == -1 ? false : true;
+		query.value(2).toLongLong() == -1 ? false : true;
 
 	      if(!isKernelActive())
 		status = "offline";

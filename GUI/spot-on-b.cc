@@ -92,7 +92,7 @@ void spoton::slotSendMessage(void)
 	  if(name.isEmpty())
 	    name = "unknown";
 
-	  m_chatSequenceNumbers[data.toInt()] += 1;
+	  m_chatSequenceNumbers[data.toString()] += 1;
 	  message.append("message_");
 	  message.append(QString("%1_").arg(data.toString()));
 	  message.append(name.toBase64());
@@ -101,7 +101,7 @@ void spoton::slotSendMessage(void)
 			 toBase64());
 	  message.append("_");
 	  message.append
-	    (QByteArray::number(m_chatSequenceNumbers[data.toInt()]).
+	    (QByteArray::number(m_chatSequenceNumbers[data.toString()]).
 	     toBase64());
 	  message.append("_");
 	  message.append(QDateTime::currentDateTime().toUTC().
@@ -596,8 +596,8 @@ void spoton::slotRemoveParticipants(void)
 		query.exec();
 	      }
 
-	    if(m_chatSequenceNumbers.contains(data.toInt()))
-	      m_chatSequenceNumbers.remove(data.toInt());
+	    if(m_chatSequenceNumbers.contains(data.toString()))
+	      m_chatSequenceNumbers.remove(data.toString());
 
 	    if(m_receivedChatSequenceNumbers.contains(hash.toByteArray()))
 	      m_receivedChatSequenceNumbers.remove(hash.toByteArray());

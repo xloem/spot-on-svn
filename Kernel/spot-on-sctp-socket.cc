@@ -785,7 +785,7 @@ void spoton_sctp_socket::setSocketOption(const SocketOption option,
     {
     case KeepAliveOption:
       {
-	int optval = value.toInt();
+	int optval = static_cast<int> (value.toLongLong());
 	socklen_t optlen = sizeof(optval);
 
 	setsockopt(m_socketDescriptor, SOL_SOCKET, SO_KEEPALIVE,
@@ -794,7 +794,7 @@ void spoton_sctp_socket::setSocketOption(const SocketOption option,
       }
     case LowDelayOption:
       {
-	int optval = value.toInt();
+	int optval = static_cast<int> (value.toLongLong());
 	socklen_t optlen = sizeof(optval);
 
 	setsockopt(m_socketDescriptor, IPPROTO_SCTP, SCTP_NODELAY,

@@ -124,9 +124,9 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
       m_udpSocket->setSocketDescriptor(_dup(socketDescriptor));
 #endif
       m_udpSocket->setLocalAddress(QHostAddress(localIpAddress));
-      m_udpSocket->setLocalPort(quint16(localPort.toInt()));
+      m_udpSocket->setLocalPort(localPort.toUShort());
       m_udpSocket->setPeerAddress(QHostAddress(ipAddress));
-      m_udpSocket->setPeerPort(quint16(port.toInt()));
+      m_udpSocket->setPeerPort(port.toUShort());
     }
 
   if(m_sctpSocket)
@@ -161,7 +161,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   else if(m_tcpSocket)
     m_port = m_tcpSocket->peerPort();
   else if(m_udpSocket)
-    m_port = quint16(port.toInt());
+    m_port = port.toUShort();
 
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
 
@@ -465,7 +465,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	   spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
   m_orientation = orientation;
   m_peerCertificate = QSslCertificate(peerCertificate);
-  m_port = quint16(port.toInt());
+  m_port = port.toUShort();
   m_protocol = protocol;
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
   m_requireSsl = requireSsl;
@@ -986,7 +986,7 @@ void spoton_neighbor::slotTimeout(void)
 			     spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
 		  }
 
-		if(query.value(1).toInt() == 1)
+		if(query.value(1).toLongLong())
 		  m_lifetime.stop();
 		else if(!m_lifetime.isActive())
 		  m_lifetime.start();
@@ -1782,7 +1782,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 
 	    if(query.exec())
 	      if(query.next())
-		if(query.value(0).toInt() == -1)
+		if(query.value(0).toLongLong() == -1)
 		  share = true;
 
 	    if(!share)
@@ -5142,7 +5142,7 @@ QString spoton_neighbor::findMessageType
     if(!spoton_misc::allParticipantsHaveGeminis())
       if(s_crypt)
 	{
-	  int count = spoton_misc::participantCount("chat");
+	  qint64 count = spoton_misc::participantCount("chat");
 
 	  if(count > 0)
 	    {
@@ -5163,7 +5163,7 @@ QString spoton_neighbor::findMessageType
   if(interfaces > 0 || list.size() == 3 || list.size() == 5)
     if((s_crypt = spoton_kernel::s_crypts.value("email", 0)))
       {
-	int count = spoton_misc::participantCount("email");
+	qint64 count = spoton_misc::participantCount("email");
 
 	if(count > 0)
 	  {

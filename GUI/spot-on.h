@@ -105,7 +105,7 @@ class spoton: public QMainWindow
   spoton(void);
   ~spoton();
   QHash<QString, QVariant> m_settings;
-  QHash<int, quint64> m_chatSequenceNumbers;
+  QHash<QString, quint64> m_chatSequenceNumbers;
   Ui_spoton_mainwindow ui(void) const;
   static QPointer<spoton> s_gui;
 

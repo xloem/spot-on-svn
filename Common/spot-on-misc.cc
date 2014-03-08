@@ -854,7 +854,7 @@ bool spoton_misc::isAcceptedParticipant(const QByteArray &publicKeyHash,
 					const QString &keyType)
 {
   QString connectionName("");
-  int count = 0;
+  qint64 count = 0;
 
   {
     QSqlDatabase db = database(connectionName);
@@ -877,7 +877,7 @@ bool spoton_misc::isAcceptedParticipant(const QByteArray &publicKeyHash,
 
 	if(query.exec())
 	  if(query.next())
-	    count = query.value(0).toInt();
+	    count = query.value(0).toLongLong();
       }
   }
 
@@ -1784,10 +1784,10 @@ void spoton_misc::enableLog(const bool state)
   s_enableLog = state;
 }
 
-int spoton_misc::participantCount(const QString &keyType)
+qint64 spoton_misc::participantCount(const QString &keyType)
 {
   QString connectionName("");
-  int count = 0;
+  qint64 count = 0;
 
   {
     QSqlDatabase db = database(connectionName);
@@ -1806,7 +1806,7 @@ int spoton_misc::participantCount(const QString &keyType)
 
 	if(query.exec())
 	  if(query.next())
-	    count = query.value(0).toInt();
+	    count = query.value(0).toLongLong();
       }
 
     db.close();
@@ -1842,7 +1842,7 @@ bool spoton_misc::isAcceptedIP(const QHostAddress &address,
     return false;
 
   QString connectionName("");
-  int count = 0;
+  qint64 count = 0;
 
   {
     QSqlDatabase db = database(connectionName);
@@ -1872,7 +1872,7 @@ bool spoton_misc::isAcceptedIP(const QHostAddress &address,
 	if(ok)
 	  if(query.exec())
 	    if(query.next())
-	      count = query.value(0).toInt();
+	      count = query.value(0).toLongLong();
       }
 
     db.close();
@@ -1918,7 +1918,7 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 
 	if(query.exec())
 	  if(query.next())
-	    exists = query.value(0).toInt() > 0;
+	    exists = query.value(0).toLongLong() > 0;
 
 	if(!exists)
 	  {
@@ -2033,7 +2033,7 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 bool spoton_misc::allParticipantsHaveGeminis(void)
 {
   QString connectionName("");
-  int count = 0;
+  qint64 count = 0;
 
   {
     QSqlDatabase db = database(connectionName);
@@ -2051,7 +2051,7 @@ bool spoton_misc::allParticipantsHaveGeminis(void)
 		      "gemini IS NULL AND gemini_hash_key IS NULL AND "
 		      "neighbor_oid = -1"))
 	  if(query.next())
-	    count = query.value(0).toInt();
+	    count = query.value(0).toLongLong();
       }
 
     db.close();

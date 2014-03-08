@@ -159,7 +159,7 @@ void spoton_chatwindow::slotSendMessage(void)
   if(name.isEmpty())
     name = "unknown";
 
-  spoton::s_gui->m_chatSequenceNumbers[m_id.toInt()] += 1;
+  spoton::s_gui->m_chatSequenceNumbers[m_id] += 1;
   message.append("message_");
   message.append(QString("%1_").arg(m_id));
   message.append(name.toBase64());
@@ -168,7 +168,7 @@ void spoton_chatwindow::slotSendMessage(void)
 		 toBase64());
   message.append("_");
   message.append
-    (QByteArray::number(spoton::s_gui->m_chatSequenceNumbers[m_id.toInt()]).
+    (QByteArray::number(spoton::s_gui->m_chatSequenceNumbers[m_id]).
      toBase64());
   message.append("_");
   message.append(QDateTime::currentDateTime().toUTC().

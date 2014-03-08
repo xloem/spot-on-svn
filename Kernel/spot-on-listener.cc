@@ -166,7 +166,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 	   spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
   m_networkInterface = 0;
   m_orientation = orientation;
-  m_port = m_externalPort = quint16(port.toInt());
+  m_port = m_externalPort = port.toUShort();
   m_privateKey = privateKey;
   m_publicKey = publicKey;
   m_shareAddress = shareAddress;
@@ -356,7 +356,8 @@ void spoton_listener::slotTimeout(void)
 		spoton_crypt *s_crypt =
 		  spoton_kernel::s_crypts.value("chat", 0);
 
-		m_useAccounts = query.value(3).toInt();
+		m_useAccounts = static_cast<int>
+		  (query.value(3).toLongLong());
 		m_maximumBufferSize =
 		  qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
 			 qAbs(query.value(4).toLongLong()),
@@ -412,10 +413,13 @@ void spoton_listener::slotTimeout(void)
 		    if(isListening())
 		      {
 			if(m_sctpServer || m_tcpServer)
-			  if(query.value(1).toInt() != maxPendingConnections())
+			  if(static_cast<int> (query.value(1).
+					       toLongLong()) !=
+			     maxPendingConnections())
 			    {
 			      int maximumPendingConnections =
-				qAbs(query.value(1).toInt());
+				qAbs(static_cast<int> (query.value(1).
+						       toLongLong()));
 
 			      if(!maximumPendingConnections)
 				maximumPendingConnections = 1;
@@ -704,7 +708,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
   QString country
     (spoton_misc::
      countryNameFromIPAddress(neighbor->peerAddress().toString()));
-  int count = -1;
+  qint64 count = -1;
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -729,7 +733,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 	if(ok)
 	  if(query.exec())
 	    if(query.next())
-	      count = query.value(0).toInt();
+	      count = query.value(0).toLongLong();
       }
 
     db.close();
@@ -957,7 +961,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 		created = query.exec();
 
 		if(created)
-		  id = query.lastInsertId().toInt();
+		  id = query.lastInsertId().toLongLong();
 	      }
 	  }
       }

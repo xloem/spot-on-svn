@@ -3083,10 +3083,10 @@ bool spoton_crypt::memcmp(const QByteArray &bytes1,
 		  */
 }
 
-int spoton_crypt::publicKeyCount(void) const
+qint64 spoton_crypt::publicKeyCount(void) const
 {
   QString connectionName("");
-  int count = 0;
+  qint64 count = 0;
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -3104,7 +3104,7 @@ int spoton_crypt::publicKeyCount(void) const
 
 	if(query.exec())
 	  if(query.next())
-	    count = query.value(0).toInt();
+	    count = query.value(0).toLongLong();
       }
 
     db.close();

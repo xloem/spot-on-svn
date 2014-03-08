@@ -246,7 +246,7 @@ void spoton::slotPopulateEtpMagnets(void)
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui.etpMagnets->setRowCount(row + 1);
 		m_ui.etpMagnets->setItem(row, 1, item);
-		checkBox->setChecked(query.value(1).toInt());
+		checkBox->setChecked(query.value(1).toLongLong());
 		checkBox->setProperty
 		  ("oid", query.value(query.record().count() - 1));
 		connect(checkBox,
@@ -704,7 +704,7 @@ void spoton::slotPopulateKernelStatistics(void)
 		if(query.value(0).toString().toLower().
 		   contains("congestion container"))
 		  {
-		    if(query.value(1).toInt() <= 50)
+		    if(query.value(1).toLongLong() <= 50)
 		      item->setBackground
 			(QBrush(QColor("lightgreen")));
 		    else
@@ -1171,10 +1171,12 @@ void spoton::slotPopulateStars(void)
 
 	      if(item1 && item2)
 		{
-		  int percent = 100 *
-		    (qAbs(static_cast<double> (QFileInfo(item2->text()).
+		  int percent = static_cast<int>
+		    (100 *
+       		     qAbs(static_cast<double> (QFileInfo(item2->text()).
 					       size()) /
-			  static_cast<double> (qMax(static_cast<long long> (1),
+			  static_cast<double> (qMax(static_cast<long long>
+						    (1),
 						    item1->text().
 						    toLongLong()))));
 
@@ -1323,9 +1325,11 @@ void spoton::slotPopulateStars(void)
 
 	      if(item)
 		{
-		  int percent = 100 *
-		    (qAbs(static_cast<double> (position) /
-			  static_cast<double> (qMax(static_cast<long long> (1),
+		  int percent = static_cast<int>
+		    (100 *
+		     qAbs(static_cast<double> (position) /
+			  static_cast<double> (qMax(static_cast<long long>
+						    (1),
 						    item->text().
 						    toLongLong()))));
 

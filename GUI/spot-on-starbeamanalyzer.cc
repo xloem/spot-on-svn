@@ -266,9 +266,10 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
 	    emit potentialProblem(fileName, pos);
 
 	  pos += ps;
-	  percent = qMin(static_cast<double> (100),
-			 100 * static_cast<double> (file.pos()) /
-			 static_cast<double> (ts));
+	  percent = static_cast<int>
+	    (qMin(static_cast<double> (100),
+		  100 * static_cast<double> (file.pos()) /
+		  static_cast<double> (ts)));
 
 	  if(percent > 0 && percent % 5 == 0)
 	    emit updatePercent(fileName, percent);
@@ -291,9 +292,10 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
 	  {
 	    emit potentialProblem(fileName, pos);
 	    pos += ps;
-	    percent = qMin(static_cast<double> (100),
-			   100 * static_cast<double> (pos) /
-			   static_cast<double> (ts));
+	    percent = static_cast<int>
+	      (qMin(static_cast<double> (100),
+		    100 * static_cast<double> (pos) /
+		    static_cast<double> (ts)));
 
 	    if(percent > 0 && percent % 5 == 0)
 	      emit updatePercent(fileName, percent);
