@@ -1,4 +1,4 @@
-0.09.02 (03/10/2014)
+0.09.02 (03/12/2014)
 
 1.   Review QDataStream::operator>>() results in spoton_crypt.
 2.   Prevent multiple calls to SSL_library_init() in spoton_crypt::init().
@@ -16,7 +16,7 @@
      previous releases.
 9.   Do not disconnect user-defined neighbors when a listener's list of
      acceptable IP addresses is modified.
-10.  Do not clear m_errorString in spoton_sctp_server::close(). Also record
+10.  Do not clear m_errorString in spoton_sctp_server::close(). Also, record
      more errors.
 11.  Store authentication information with encrypted data.
      For a given database field, the stored data will now be
@@ -26,8 +26,8 @@
      item #11.
 13.  Corrected an error with Rosetta text. Newline characters were lost.
 14.  The function X509_get_subject_name() may fail. Inspect its return value.
-15.  The ssl_session_cipher database field may be empty. Do not display
-     an error under such a condition.
+15.  The ssl_session_cipher database field may be empty. The interface assumed
+     otherwise.
 16.  Added a signal handler to the user interface. The handler is to be used
      for issuing a GCRYCTL_TERM_SECMEM.
 17.  Corrected kernel version information.
