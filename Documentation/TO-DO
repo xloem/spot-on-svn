@@ -100,6 +100,9 @@ Completed Items
 70.    SCTP.
 71.    Feature to discover missing pulses.
 72.    Store MACs of encrypted data along with the encrypted data.
+73.    There may be an issue with the validity of stored e-mail. That is,
+       retrieving e-mail from another node may retrieve compromised content.
+       Inspect it!
 
 Ignored Items
 
@@ -163,9 +166,7 @@ Remaining Items
 21.    Account credentials should not be recorded via reversible encryption.
        Derive keys? I really like the two-step mutual authentication.
 22.    Add log filters.
-23.    There may be an issue with the validity of stored e-mail. That is,
-       retrieving e-mail from another node may retrieve compromised content.
-       Inspect it!
+23.    Lots of kernel activity may cause libgcrypt fatigue.
 24.    There is some redundant deciphering of data: findMessageType()
        followed by process() routines.
 25.    Move the kernel off of the local machine. Review all Common and
@@ -179,9 +180,8 @@ Remaining Items
        new attempts will be made to capture the external IP addresses. Review!
 27.    Prevent inserts of own keys in friends_public_keys.db.
 28.    Wormholes for streamed data.
-29.    Per request, provide an automatic rewind mechanism with a timer.
+29.    Per request, provide an automatic StarBeam rewind mechanism with a timer.
 30.    User configuration files are not secured.
 31.    Artificial pauses. Suppose an inbound packet requires t0 time to
        process. Pause the current thread for T - t0 seconds, where T is some
        reasonable time.
-32.    Lots of kernel activity may cause libgcrypt fatigue.
