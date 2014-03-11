@@ -210,7 +210,7 @@ void spoton_mailer::slotRetrieveMail(const QByteArray &data,
   if(publicKey.isEmpty())
     return;
 
-  if(!spoton_crypt::isValidSignature(data,
+  if(!spoton_crypt::isValidSignature(publicKeyHash + data,
 				     publicKey,
 				     signature))
     return;

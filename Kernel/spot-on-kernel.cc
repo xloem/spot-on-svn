@@ -1799,9 +1799,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 		    if(setting("gui/chatSignMessages", true).toBool())
 		      signature = s_crypt2->digitalSignature
-			(myPublicKeyHash +
-			 name +
-			 status, &ok);
+			(myPublicKeyHash + name + status, &ok);
 
 		    if(ok)
 		      data = crypt.encrypted
@@ -2026,7 +2024,8 @@ void spoton_kernel::slotRetrieveMail(void)
 		}
 
 	      if(ok)
-		signature = s_crypt->digitalSignature(message, &ok);
+		signature = s_crypt->digitalSignature
+		  (myPublicKeyHash + message, &ok);
 
 	      if(ok)
 		{
