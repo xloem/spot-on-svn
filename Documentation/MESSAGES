@@ -79,14 +79,14 @@ EOL
 Echo Mail
 Echoed? Yes
 
-Groups: 5
+Groups: 6
 Public Key
 {
 0 - 0001a (Base-64)
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL
-2 - SHA-512 Hash Key (Base-64)
+2 - SHA-512 Hash Key 1 (Base-64)
 EOL
 3 - Symmetric Algorithm (Base64)
 }
@@ -106,7 +106,7 @@ Public Key
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL
-2 - SHA-512 Hash Key (Base-64)
+2 - SHA-512 Hash Key 2 (Base-64)
 EOL
 3 - Symmetric Algorithm (Base-64)
 }
@@ -127,7 +127,11 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code (Base-64)
+0 - Keyed 2 SHA-512 Message Code (Base-64)
+}
+EOL
+{
+0 - Keyed 1 SHA-512 Message Code (Base-64)
 }
 
 Groups: 3

@@ -2429,11 +2429,11 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 
       QList<QByteArray> list(data.split('\n'));
 
-      if(list.size() != 5)
+      if(list.size() != 6)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0001a(): "
-		     "received irregular data. Expecting 5 "
+		     "received irregular data. Expecting 6 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
 	  return;
@@ -2444,12 +2444,14 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
+      QByteArray computedHash;
       QByteArray data1(list.value(1));
       QByteArray data2(list.value(3));
       QByteArray hashKey;
       QByteArray keyInformation1(list.value(0));
       QByteArray keyInformation2(list.value(2));
-      QByteArray messageCode(list.value(4));
+      QByteArray messageCode1(list.value(5));
+      QByteArray messageCode2(list.value(4));
       QByteArray recipientHash;
       QByteArray senderPublicKeyHash1;
       QByteArray signature;
@@ -2482,6 +2484,21 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 			 "received %1.").arg(list.size()));
 	      return;
 	    }
+
+	  computedHash = spoton_crypt::keyedHash
+	    (data1 + keyInformation2 + data2, hashKey, "sha512", &ok);
+
+	  if(ok)
+	    if(computedHash.isEmpty() || messageCode1.isEmpty() ||
+	       !spoton_crypt::memcmp(computedHash, messageCode1))
+	      {
+		spoton_misc::logError
+		  ("spoton_neighbor::"
+		   "process0001a(): "
+		   "computed message code 1 does "
+		   "not match provided code.");
+		return;
+	      }
 
 	  QByteArray data;
 	  QByteArray senderPublicKeyHash2;
@@ -2555,10 +2572,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 
 		      if(list.size() == 3)
 			{
-			  /*
-			  ** Ignore the hash key.
-			  */
-
+			  hashKey = QByteArray::fromBase64(list.value(1));
 			  symmetricKey = QByteArray::fromBase64
 			    (list.value(0));
 			  symmetricKeyAlgorithm = QByteArray::fromBase64
@@ -2575,7 +2589,21 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 			  return;
 			}
 
-		      QByteArray computedHash;
+		      computedHash = spoton_crypt::keyedHash
+			(data2, hashKey, "sha512", &ok);
+
+		      if(ok)
+			if(computedHash.isEmpty() || messageCode2.isEmpty() ||
+			   !spoton_crypt::memcmp(computedHash, messageCode2))
+			  {
+			    spoton_misc::logError
+			      ("spoton_neighbor::"
+			       "process0001a(): "
+			       "computed message code 2 does "
+			       "not match provided code.");
+			    return;
+			  }
+
 		      QByteArray message;
 		      QByteArray name;
 		      QByteArray signature;
@@ -2588,21 +2616,6 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 					 0,
 					 0,
 					 QString(""));
-
-		      computedHash = spoton_crypt::keyedHash
-			(data2, hashKey, "sha512", &ok);
-
-		      if(ok)
-			if(computedHash.isEmpty() || messageCode.isEmpty() ||
-			   !spoton_crypt::memcmp(computedHash, messageCode))
-			  {
-			    spoton_misc::logError
-			      ("spoton_neighbor::"
-			       "process0001a(): "
-			       "computed message code does "
-			       "not match provided code.");
-			    return;
-			  }
 
 		      if(ok)
 			data = crypt.decrypted(data2, &ok);
