@@ -42,6 +42,8 @@
      Previous-version compatibility ruined. The corrected approach introduces
      a new hash key that is only known to the participant and not the carrier.
      Separate message codes are also required.
+21.  The method spoton_misc::findGeminiInCosmos() may return invalid results.
+     Corrected.
 
 0.09.01 (02/20/2014)
 
