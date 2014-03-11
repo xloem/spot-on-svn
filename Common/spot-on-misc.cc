@@ -976,6 +976,9 @@ QPair<QByteArray, QByteArray> spoton_misc::findGeminiInCosmos
 			     spoton_crypt::memcmp(computedHash, hash))
 			    break; // We have something!
 		      }
+
+		  gemini.first.clear();
+		  gemini.second.clear();
 		}
 	  }
 
@@ -2058,7 +2061,6 @@ bool spoton_misc::allParticipantsHaveGeminis(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-
   return count == 0;
 }
 
