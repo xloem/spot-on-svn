@@ -24,7 +24,8 @@
      Spot.
 12.  The method spoton_crypt::reencodeKeys() has been redesigned per
      item #11.
-13.  Corrected an error with Rosetta text. Newline characters were lost.
+13.  Corrected an error with Rosetta text. Newline characters were lost
+     because of toPlainText() usage.
 14.  The function X509_get_subject_name() may fail. Inspect its return value.
 15.  The ssl_session_cipher database field may be empty. The interface assumed
      otherwise.
@@ -37,6 +38,10 @@
 19.  QVariant::toInt() may overflow without the overflow being detected.
      Qt documentation states that Qt 5 will resolve this issue.
      The new approach is to convert values toLongLong().
+20.  Corrected message 0001a. The correction introduces another group member.
+     Previous-version compatibility ruined. The corrected approach introduces
+     a new hash key that is only known to the participant and not the carrier.
+     Separate message codes are also required.
 
 0.09.01 (02/20/2014)
 
