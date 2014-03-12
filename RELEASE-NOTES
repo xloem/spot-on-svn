@@ -46,6 +46,8 @@
      Corrected.
 22.  Include the requester's hash when computing the digital signature for
      message 0002 (e-mail retrieval).
+23.  Added Microsoft.VC90.CRT.manifest and msvcr90.dll to
+     libOpenSsl/Libraries.win32.
 
 0.09.01 (02/20/2014)
 
