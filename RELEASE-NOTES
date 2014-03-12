@@ -46,6 +46,8 @@
      Corrected.
 22.  Include the requester's hash when computing the digital signature for message
      0002 (e-mail retrieval).
+23.  libspoton_init_b() should set an error if the provided parameters
+     are somewhat invalid.
 
 0.09.01 (02/20/2014)
 
