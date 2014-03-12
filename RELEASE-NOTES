@@ -44,8 +44,8 @@
      Separate message codes are also required.
 21.  The method spoton_misc::findGeminiInCosmos() may return invalid results.
      Corrected.
-22.  Include the requester's hash when computing the digital signature for message
-     0002 (e-mail retrieval).
+22.  Include the requester's hash when computing the digital signature for
+     message 0002 (e-mail retrieval).
 
 0.09.01 (02/20/2014)
 
