@@ -769,7 +769,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 
     if(db.open())
       {
-	if(neighbor)
+	if(db.transaction() && neighbor)
 	  {
 	    QSqlQuery query(db);
 	    bool ok = true;
@@ -958,9 +958,19 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 	    if(ok)
 	      {
 		if(query.exec())
-		  id = query.lastInsertId().toLongLong();
+		  {
+		    QVariant variant(query.lastInsertId());
+
+		    if(variant.isValid())
+		      id = query.lastInsertId().toLongLong();
+		  }
 	      }
+
+	    query.clear();
 	  }
+
+	if(id == -1)
+	  db.rollback();
       }
 
     db.close();
