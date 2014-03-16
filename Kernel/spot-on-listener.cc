@@ -759,7 +759,6 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
       return;
     }
 
-  bool created = false;
   qint64 id = -1;
 
   {
@@ -958,9 +957,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 
 	    if(ok)
 	      {
-		created = query.exec();
-
-		if(created)
+		if(query.exec())
 		  id = query.lastInsertId().toLongLong();
 	      }
 	  }
@@ -971,7 +968,7 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 
   QSqlDatabase::removeDatabase(connectionName);
 
-  if(created && id != -1)
+  if(id != -1)
     {
       neighbor->setId(id);
       emit newNeighbor(neighbor);
@@ -979,9 +976,6 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
     }
   else
     {
-      if(id != -1)
-	neighbor->setId(id);
-
       neighbor->deleteLater();
       spoton_misc::logError
 	(QString("spoton_listener::slotNewConnection(): "
