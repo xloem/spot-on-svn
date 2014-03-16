@@ -834,7 +834,8 @@ void spoton_kernel::prepareNeighbors(void)
 		      "account_password, "
 		      "transport, "
 		      "orientation, "
-		      "OID FROM neighbors"))
+		      "OID FROM neighbors WHERE "
+		      "user_defined = 1"))
 	  while(query.next())
 	    {
 	      QPointer<spoton_neighbor> neighbor = 0;
