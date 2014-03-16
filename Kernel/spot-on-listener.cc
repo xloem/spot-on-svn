@@ -971,6 +971,8 @@ void spoton_listener::slotNewConnection(const int socketDescriptor,
 
 	if(id == -1)
 	  db.rollback();
+	else
+	  db.commit();
       }
 
     db.close();
