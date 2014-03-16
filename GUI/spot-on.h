@@ -383,6 +383,7 @@ class spoton: public QMainWindow
   void slotTransmittedSelected(void);
   void slotTransportChanged(int index);
   void slotUnblockNeighbor(void);
+  void slotUpdateChatWindows(void);
   void slotValidatePassphrase(void);
   void slotViewLog(void);
   void slotViewRosetta(void);

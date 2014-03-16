@@ -97,3 +97,69 @@ void spoton::slotDemagnetizeMissingLinks(void)
 	break;
     }
 }
+
+void spoton::slotUpdateChatWindows(void)
+{
+  QMutableHashIterator<QString, QPointer<spoton_chatwindow> > it
+    (m_chatWindows);
+
+  while(it.hasNext())
+    {
+      it.next();
+
+      if(!it.value())
+	it.remove();
+    }
+
+  QStringList list;
+
+  for(int i = 0; i < m_ui.participants->rowCount(); i++)
+    {
+      QIcon icon;
+      QString name("");
+      QString oid("");
+      QString publicKeyHash("");
+      QTableWidgetItem *item = 0;
+
+      item = m_ui.participants->item(i, 0);
+
+      if(item)
+	{
+	  icon = item->icon();
+	  name = item->text();
+	}
+
+      item = m_ui.participants->item(i, 1);
+
+      if(item)
+	oid = item->text();
+
+      if(!m_chatWindows.contains(oid))
+	m_chatWindows.remove(oid);
+
+      emit statusChanged(icon, name, oid);
+
+      item = m_ui.participants->item(i, 3);
+
+      if(item)
+	publicKeyHash = item->text();
+
+      if(!publicKeyHash.isEmpty())
+	list.append(publicKeyHash);
+    }
+
+  it.toFront();
+
+  while(it.hasNext())
+    {
+      it.next();
+
+      if(!list.contains(it.key()))
+	{
+	  if(it.value())
+	    it.value()->deleteLater();
+
+	  it.remove();
+	}
+    }
+}

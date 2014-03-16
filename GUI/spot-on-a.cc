@@ -834,6 +834,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotGeneralTimerTimeout(void)));
+  connect(&m_generalTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotUpdateChatWindows(void)));
   connect(&m_tableTimer,
 	  SIGNAL(timeout(void)),
 	  this,
