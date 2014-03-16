@@ -6,6 +6,10 @@
 3.   Added a WHERE clause to spoton_kernel::prepareNeighbors() since
      we're only interested in initializing user-defined neighbors
      within this method.
+4.   QSqlQuery::lastInsertId() may return an invalid value. Modified
+     spoton_listener::slotNewConnection() so that a database transaction
+     is created before a remote neighbor's information is recorded.
+     If lastInsertId() fails, the transaction is canceled.
 
 0.09.02 (03/12/2014)
 
