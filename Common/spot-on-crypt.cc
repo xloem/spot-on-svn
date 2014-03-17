@@ -2870,7 +2870,10 @@ void spoton_crypt::generateCertificate(RSA *rsa,
 
  done_label:
   BIO_free(memory);
-  RSA_up_ref(rsa); // Reference counter.
+
+  if(rsa)
+    RSA_up_ref(rsa); // Reference counter.
+
   EVP_PKEY_free(pk);
   X509_NAME_ENTRY_free(commonNameEntry);
   X509_NAME_free(subject);
