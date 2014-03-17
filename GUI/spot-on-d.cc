@@ -100,6 +100,10 @@ void spoton::slotDemagnetizeMissingLinks(void)
 
 void spoton::slotUpdateChatWindows(void)
 {
+  /*
+  ** Remove m_chatWindows entries that are invalid.
+  */
+
   QMutableHashIterator<QString, QPointer<spoton_chatwindow> > it
     (m_chatWindows);
 
@@ -110,6 +114,10 @@ void spoton::slotUpdateChatWindows(void)
       if(!it.value())
 	it.remove();
     }
+
+  /*
+  ** Update existing chat windows.
+  */
 
   QStringList list;
 
@@ -138,7 +146,6 @@ void spoton::slotUpdateChatWindows(void)
 	m_chatWindows.remove(oid);
 
       emit statusChanged(icon, name, oid);
-
       item = m_ui.participants->item(i, 3);
 
       if(item)
@@ -147,6 +154,11 @@ void spoton::slotUpdateChatWindows(void)
       if(!publicKeyHash.isEmpty())
 	list.append(publicKeyHash);
     }
+
+  /*
+  ** Remove chat windows that do not have corresponding participants
+  ** entries.
+  */
 
   it.toFront();
 
