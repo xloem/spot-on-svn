@@ -154,7 +154,7 @@ static void sig_handler(int signum)
 int main(int argc, char *argv[])
 {
   for(int i = 1; i < argc; i++)
-    if(memcmp(argv[i], "--version", strlen("--version")) == 0)
+    if(argv[i] && memcmp(argv[i], "--version", strlen("--version")) == 0)
       {
 	fprintf(stdout, "Compiled on %s, %s. Version %s.\n",
 		__DATE__, __TIME__, SPOTON_VERSION_STR);
