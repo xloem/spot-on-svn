@@ -10,6 +10,7 @@
      spoton_listener::slotNewConnection() so that a database transaction
      is created before a remote neighbor's information is recorded.
      If lastInsertId() fails, the transaction is canceled.
+5.   RSA_up_ref() must not be given an invalid pointer. Corrected.
 
 0.09.02 (03/12/2014)
 
