@@ -2449,3 +2449,40 @@ void spoton_misc::prepareSignalHandler(void (*sig_handler) (int))
 #endif
     }
 }
+
+void spoton_misc::vacuumAllDatabases(void)
+{
+  QStringList list;
+
+  list << "buzz_channels.db"
+       << "email.db"
+       << "friends_public_keys.db"
+       << "idiotes.db"
+       << "kernel.db"
+       << "listeners.db"
+       << "neighbors.db"
+       << "shared.db"
+       << "starbeam.db";
+
+  while(!list.isEmpty())
+    {
+      QString connectionName("");
+
+      {
+	QSqlDatabase db = database(connectionName);
+
+	db.setDatabaseName(homePath() + QDir::separator() + list.takeFirst());
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+
+	    query.exec("VACUUM");
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase(connectionName);
+    }
+}

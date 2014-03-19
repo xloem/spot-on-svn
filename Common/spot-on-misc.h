@@ -107,6 +107,7 @@ class spoton_misc
 				    const QString &statusControl,
 				    const QString &orientation,
 				    spoton_crypt *crypt);
+  static void vacuumAllDatabases(void);
 
  private:
   static QMutex s_dbMutex;

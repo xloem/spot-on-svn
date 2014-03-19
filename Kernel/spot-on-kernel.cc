@@ -262,6 +262,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
   spoton_misc::cleanupDatabases();
+  spoton_misc::vacuumAllDatabases();
 
   /*
   ** The user interface doesn't yet have a means of preparing advanced
@@ -512,6 +513,7 @@ spoton_kernel::~spoton_kernel()
   m_future.waitForFinished();
   cleanup();
   spoton_misc::cleanupDatabases();
+  spoton_misc::vacuumAllDatabases();
 
   QHashIterator<QString, spoton_crypt *> it(s_crypts);
 
