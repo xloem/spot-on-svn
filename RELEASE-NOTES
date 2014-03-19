@@ -12,6 +12,9 @@
      If lastInsertId() fails, the transaction is canceled.
 5.   RSA_up_ref() must not be given an invalid pointer. Corrected.
 6.   Inspect argv[i] in the main() function of spot-on-kernel.cc.
+7.   Created method spoton_misc::vacuumAllDatabases(). Used within the
+     interface's constructor and destructor as well as the kernel's
+     constructor and destructor.
 
 0.09.02 (03/12/2014)
 
@@ -57,8 +60,9 @@
      Previous-version compatibility ruined. The corrected approach introduces
      a new hash key that is only known to the participant and not the carrier.
      Separate message codes are also required.
-21.  The method spoton_misc::findGeminiInCosmos() may return invalid results.
-     Corrected.
+21.  The method spoton_misc::findGeminiInCosmos() may return results
+     that are incorrect. The local container gemini must be cleared
+     after each loop iteration.
 22.  Include the requester's hash when computing the digital signature for
      message 0002 (e-mail retrieval).
 23.  Added Microsoft.VC90.CRT.manifest and msvcr90.dll to
