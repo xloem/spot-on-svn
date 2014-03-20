@@ -15,6 +15,8 @@
 7.   Created method spoton_misc::vacuumAllDatabases(). Used within the
      interface's constructor and destructor as well as the kernel's
      constructor and destructor.
+8.   Corrected dataSize, pulseSize, etc. comparisons in
+     spoton_starbeam_writer::slotProcessData().
 
 0.09.02 (03/12/2014)
 
