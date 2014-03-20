@@ -173,13 +173,15 @@ void spoton_starbeam_writer::slotProcessData(void)
   qint64 position = qAbs(list.value(2).toLongLong());
   qint64 totalSize = qAbs(list.value(4).toLongLong());
 
-  if(dataSize > list.value(5).length()) // Data
+  if(dataSize != list.value(5).length()) // Data
     return;
   else if(dataSize > pulseSize)
     return;
   else if(dataSize > maximumSize || totalSize > maximumSize)
     return;
-  else if(dataSize > totalSize || position > totalSize)
+  else if(dataSize > totalSize || position >= totalSize)
+    return;
+  else if(pulseSize > maximumSize || pulseSize > totalSize)
     return;
 
   QFile file;

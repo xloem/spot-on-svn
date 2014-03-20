@@ -854,7 +854,8 @@ void spoton_sctp_socket::slotSocketNotifierActivated(int socket)
 
       if(rc > 0)
 	{
-	  if(m_readBuffer.size() + static_cast<int> (rc) <= m_readBufferSize)
+	  if(m_readBuffer.length() + static_cast<int> (rc) <=
+	     m_readBufferSize)
 	    m_readBuffer.append(data.mid(0, static_cast<int> (rc)));
 
 	  socketNotifier->setEnabled(true);

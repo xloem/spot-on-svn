@@ -360,11 +360,11 @@ void spoton_listener::slotTimeout(void)
 		  (query.value(3).toLongLong());
 		m_maximumBufferSize =
 		  qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
-			 qAbs(query.value(4).toLongLong()),
+			 query.value(4).toLongLong(),
 			 spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
 		m_maximumContentLength =
 		  qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
-			 qAbs(query.value(5).toLongLong()),
+			 query.value(5).toLongLong(),
 			 spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
 
 		if(s_crypt)

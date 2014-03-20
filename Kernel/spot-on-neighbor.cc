@@ -978,11 +978,11 @@ void spoton_neighbor::slotTimeout(void)
 
 		    m_maximumBufferSize =
 		      qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
-			     qAbs(query.value(3).toLongLong()),
+			     query.value(3).toLongLong(),
 			     spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE);
 		    m_maximumContentLength =
 		      qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
-			     qAbs(query.value(4).toLongLong()),
+			     query.value(4).toLongLong(),
 			     spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
 		  }
 
@@ -1335,6 +1335,9 @@ void spoton_neighbor::slotProcessData(void)
 	     arg(m_port));
 	  continue;
 	}
+
+      if(length <= 0)
+	continue;
 
       if(length > m_maximumContentLength)
 	{
