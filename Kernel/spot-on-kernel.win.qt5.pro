@@ -14,7 +14,8 @@ CONFIG		+= qt release warn_on
 # 1.5.0 of the gcrypt library.
 
 DEFINES         += SPOTON_LINKED_WITH_LIBGEOIP \
-		   SPOTON_LINKED_WITH_LIBPTHREAD
+		   SPOTON_LINKED_WITH_LIBPTHREAD \
+                   SPOTON_SCTP_ENABLED
 
 # Unfortunately, the clean target assumes too much knowledge
 # about the internals of libSpotOn.
@@ -32,13 +33,15 @@ QMAKE_DISTCLEAN	+= .qmake.cache .qmake.stash
 QMAKE_EXTRA_TARGETS = libspoton purge
 INCLUDEPATH	+= . ..\\. ..\\..\\..\\. ..\\..\\..\\libSpotOn\\Include.win32 \
                    ..\\..\\..\\libGeoIP\\Include.win32 \
-		   ..\\..\\..\\libOpenSsl\\Include.win32
+		   ..\\..\\..\\libOpenSsl\\Include.win32 \
+                   ..\\..\\..\\libSCTP\\SctpDrv.win32\\inc
 LIBS		+= -L..\\..\\..\\libSpotOn \
 		   -L..\\..\\..\\libSpotOn\\Libraries.win32 \
                    -L..\\..\\..\\libGeoIP\\Libraries.win32 \
 		   -L..\\..\\..\\libOpenSsl\\Libraries.win32 \
+                   -L..\\..\\..\\libSCTP\\SctpDrv.win32\\bin \
 		   -lGeoIP-1 -leay32 -lgcrypt-11 -lgpg-error-0 \
-		   -lpthread -lspoton -lssl32 -lws2_32
+		   -lpthread -lsctpsp -lspoton -lssl32 -lws2_32
 PRE_TARGETDEPS = libspoton.dll
 
 HEADERS		= ..\\Common\\spot-on-external-address.h \

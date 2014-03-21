@@ -55,8 +55,6 @@ extern "C"
 #elif defined(Q_OS_MAC)
 extern "C"
 {
-#include "usrsctp.h"
-
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -64,8 +62,14 @@ extern "C"
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <usrsctp.h>
 }
 #elif defined(Q_OS_WIN32)
+extern "C"
+{
+#include <winsock2.h>
+#include <ws2sctp.h>
+}
 #endif
 #endif
 
@@ -345,6 +349,8 @@ int spoton_sctp_socket::setSocketNonBlocking(void)
   ** Set the socket to non-blocking.
   */
 
+#ifdef Q_OS_WIN32
+#else
   int rc = fcntl(m_socketDescriptor, F_GETFL, 0);
 
   if(rc == -1)
@@ -368,6 +374,7 @@ int spoton_sctp_socket::setSocketNonBlocking(void)
       emit error(errorstr, UnknownSocketError);
       return -1;
     }
+#endif
 
   return 0;
 #else
@@ -438,10 +445,16 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 maxSize)
       ** our process may become exhausted.
       */
 
+#ifdef Q_OS_WIN32
+      sent = send
+	(m_socketDescriptor, data,
+	 qMin(static_cast<ssize_t> (m_bufferSize / 2), remaining), 0);
+#else
       sent = send
 	(m_socketDescriptor, data,
 	 qMin(static_cast<ssize_t> (m_bufferSize / 2), remaining),
 	 MSG_DONTWAIT);
+#endif
 
       if(sent == -1)
 	{
@@ -518,7 +531,11 @@ quint16 spoton_sctp_socket::peerPort(void) const
 void spoton_sctp_socket::abort(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
+#ifdef Q_OS_WIN32
+  shutdown(m_socketDescriptor, SD_BOTH);
+#else
   shutdown(m_socketDescriptor, SHUT_RDWR);
+#endif
   close();
 #endif
 }
@@ -540,7 +557,11 @@ void spoton_sctp_socket::close(void)
       m_socketWriteNotifier->deleteLater();
     }
 
+#ifdef Q_OS_WIN32
+  closesocket(m_socketDescriptor);
+#else
   ::close(m_socketDescriptor);
+#endif
   m_connectToPeerName.clear();
   m_connectToPeerPort = 0;
   m_hostLookupId = -1;
@@ -628,9 +649,19 @@ void spoton_sctp_socket::connectToHostImplementation(void)
   */
 
   optval = m_bufferSize;
+#ifdef Q_OS_WIN32
+  setsockopt
+    (m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, (char *) &optval, optlen);
+#else
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
+#endif
   optval = m_bufferSize;
+#ifdef Q_OS_WIN32
+  setsockopt
+    (m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, (char *) &optval, optlen);
+#else
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
+#endif
 
   if(protocol == IPv4Protocol)
     {
@@ -642,6 +673,19 @@ void spoton_sctp_socket::connectToHostImplementation(void)
       serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
       serveraddr.sin_family = AF_INET;
       serveraddr.sin_port = htons(m_connectToPeerPort);
+
+#ifdef Q_OS_WIN32
+      rc = WSAStringToAddress
+	((LPWSTR) const_cast<LPWSTR> (m_ipAddress.toStdWString().c_str()),
+	 AF_INET, 0, (LPSOCKADDR) &serveraddr, &length);
+
+      if(rc != 0)
+	{
+	  emit error("connectToHostImplementation()::WSAStringToAddress()",
+		     UnknownSocketError);
+	  goto done_label;
+	}
+#else
       rc = inet_pton(AF_INET, m_ipAddress.toLatin1().constData(),
 		     &serveraddr.sin_addr);
 
@@ -662,6 +706,7 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
 	  goto done_label;
 	}
+#endif
 
       m_state = ConnectingState;
       rc = ::connect
@@ -689,6 +734,19 @@ void spoton_sctp_socket::connectToHostImplementation(void)
       serveraddr.sin6_addr = in6addr_any;
       serveraddr.sin6_family = AF_INET6;
       serveraddr.sin6_port = htons(m_connectToPeerPort);
+
+#ifdef Q_OS_WIN32
+      rc = WSAStringToAddress
+	((LPWSTR) const_cast<LPWSTR> (m_ipAddress.toStdWString().c_str()),
+	 AF_INET6, 0, (LPSOCKADDR) &serveraddr, &length);
+
+      if(rc != 0)
+	{
+	  emit error("connectToHostImplementation()::WSAStringToAddress()",
+		     UnknownSocketError);
+	  goto done_label;
+	}
+#else
       rc = inet_pton(AF_INET6, m_ipAddress.toLatin1().constData(),
 		     &serveraddr.sin6_addr);
 
@@ -709,6 +767,7 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
 	  goto done_label;
 	}
+#endif
 
       m_state = ConnectingState;
       rc = ::connect
@@ -788,8 +847,13 @@ void spoton_sctp_socket::setSocketOption(const SocketOption option,
 	int optval = static_cast<int> (value.toLongLong());
 	socklen_t optlen = sizeof(optval);
 
+#ifdef Q_OS_WIN32
+	setsockopt(m_socketDescriptor, SOL_SOCKET, SO_KEEPALIVE,
+		   (char *) &optval, optlen);
+#else
 	setsockopt(m_socketDescriptor, SOL_SOCKET, SO_KEEPALIVE,
 		   &optval, optlen);
+#endif
 	break;
       }
     case LowDelayOption:
@@ -797,8 +861,13 @@ void spoton_sctp_socket::setSocketOption(const SocketOption option,
 	int optval = static_cast<int> (value.toLongLong());
 	socklen_t optlen = sizeof(optval);
 
+#ifdef Q_OS_WIN32
 	setsockopt(m_socketDescriptor, IPPROTO_SCTP, SCTP_NODELAY,
-		   &optval, optlen);	
+		   (char *) &optval, optlen);
+#else
+	setsockopt(m_socketDescriptor, IPPROTO_SCTP, SCTP_NODELAY,
+		   &optval, optlen);
+#endif
 	break;
       }
     default:
@@ -877,7 +946,12 @@ void spoton_sctp_socket::slotSocketNotifierActivated(int socket)
       int rc = 0;
       socklen_t length = sizeof(errorcode);
 
+#ifdef Q_OS_WIN32
+      rc = getsockopt
+	(socket, SOL_SOCKET, SO_ERROR, (char *) &errorcode, &length);
+#else
       rc = getsockopt(socket, SOL_SOCKET, SO_ERROR, &errorcode, &length);
+#endif
 
       if(rc == 0)
 	{

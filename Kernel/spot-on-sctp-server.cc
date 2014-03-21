@@ -56,8 +56,6 @@ extern "C"
 #elif defined(Q_OS_MAC)
 extern "C"
 {
-#include "usrsctp.h"
-
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -65,8 +63,14 @@ extern "C"
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <usrsctp.h>
 }
 #elif defined(Q_OS_WIN32)
+extern "C"
+{
+#include <winsock2.h>
+#include <ws2sctp.h>
+}
 #endif
 #endif
 
@@ -141,6 +145,7 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
     m_socketDescriptor = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
 
   prepareSocketNotifiers();
+#ifndef Q_OS_WIN32
   rc = fcntl(m_socketDescriptor, F_GETFL, 0);
 
   if(rc == -1)
@@ -156,7 +161,7 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
       m_errorString = QString("listen()::fcntl()::errno=%1").arg(errno);
       goto done_label;
     }
-
+#endif
   rc = 0;
 
   /*
@@ -164,11 +169,26 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
   */
 
   optval = m_bufferSize;
+#ifdef Q_OS_WIN32
+  setsockopt
+    (m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, (char *) &optval, optlen);
+#else
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
+#endif
   optval = 1;
+#ifdef Q_OS_WIN32
+  setsockopt
+    (m_socketDescriptor, SOL_SOCKET, SO_REUSEADDR, (char *) &optval, optlen);
+#else
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_REUSEADDR, &optval, optlen);
+#endif
   optval = m_bufferSize;
+#ifdef Q_OS_WIN32
+  setsockopt
+    (m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, (char *) &optval, optlen);
+#else
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
+#endif
 
   /*
   ** Let's bind.
@@ -183,9 +203,23 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
       memset(&serveraddr, 0, sizeof(serveraddr));
       serveraddr.sin_family = AF_INET;
       serveraddr.sin_port = htons(port);
+#ifdef Q_OS_WIN32
+      rc = WSAStringToAddress
+	((LPWSTR) const_cast<LPWSTR> (address.toString().toStdWString().
+				      c_str()),
+	 AF_INET, 0, (LPSOCKADDR) &serveraddr, &length);
+#else
       rc = inet_pton(AF_INET, address.toString().toLatin1().constData(),
 		     &serveraddr.sin_addr.s_addr);
+#endif
 
+#ifdef Q_OS_WIN32
+      if(rc != 0)
+	{
+	  m_errorString = "listen()::WSAStringToAddress()";
+	  goto done_label;
+	}
+#else
       if(rc != 1)
 	{
 	  if(rc == -1)
@@ -196,6 +230,7 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 
 	  goto done_label;
 	}
+#endif
 
       rc = bind
 	(m_socketDescriptor, (const struct sockaddr *) &serveraddr, length);
@@ -216,9 +251,23 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
       memset(&serveraddr, 0, sizeof(serveraddr));
       serveraddr.sin6_family = AF_INET6;
       serveraddr.sin6_port = htons(port);
+#ifdef Q_OS_WIN32
+      rc = WSAStringToAddress
+	((LPWSTR) const_cast<LPWSTR> (address.toString().toStdWString().
+				      c_str()),
+	 AF_INET6, 0, (LPSOCKADDR) &serveraddr, &length);
+#else
       rc = inet_pton(AF_INET6, address.toString().toLatin1().constData(),
 		     &serveraddr.sin6_addr);
+#endif
 
+#ifdef Q_OS_WIN32
+      if(rc != 0)
+	{
+	  m_errorString = "listen()::WSAStringToAddress()";
+	  goto done_label;
+	}
+#else
       if(rc != 1)
 	{
 	  if(rc == -1)
@@ -229,6 +278,7 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 
 	  goto done_label;
 	}
+#endif
 
       rc = bind
 	(m_socketDescriptor, (const struct sockaddr *) &serveraddr, length);
@@ -295,7 +345,11 @@ void spoton_sctp_server::close(void)
       m_socketReadNotifier->deleteLater();
     }
 
+#ifdef Q_OS_WIN32
+  closesocket(m_socketDescriptor);
+#else
   ::close(m_socketDescriptor);
+#endif
   m_isListening = false;
   m_serverAddress.clear();
   m_serverPort = 0;
