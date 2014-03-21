@@ -68,6 +68,7 @@ extern "C"
 #elif defined(Q_OS_WIN32)
 extern "C"
 {
+#include <errno.h>
 #include <winsock2.h>
 #include <ws2sctp.h>
 }
@@ -145,7 +146,17 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
     m_socketDescriptor = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
 
   prepareSocketNotifiers();
-#ifndef Q_OS_WIN32
+#ifdef Q_OS_WIN32
+  unsigned long on = 1;
+
+  rc = ioctlsocket(m_socketDescriptor, FIONBIO, &on);
+
+  if(rc != 0)
+    {
+      m_errorString = QString("listen()::ioctlsocket()::rc=%1").arg(rc);
+      goto done_label;
+    }
+#else
   rc = fcntl(m_socketDescriptor, F_GETFL, 0);
 
   if(rc == -1)
@@ -216,7 +227,8 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 #ifdef Q_OS_WIN32
       if(rc != 0)
 	{
-	  m_errorString = "listen()::WSAStringToAddress()";
+	  m_errorString = QString("listen()::WSAStringToAddress()::rc=%1").
+	    arg(rc);
 	  goto done_label;
 	}
 #else
@@ -264,7 +276,8 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 #ifdef Q_OS_WIN32
       if(rc != 0)
 	{
-	  m_errorString = "listen()::WSAStringToAddress()";
+	  m_errorString = QString("listen()::WSAStringToAddress()::rc=%1").
+	    arg(rc);
 	  goto done_label;
 	}
 #else

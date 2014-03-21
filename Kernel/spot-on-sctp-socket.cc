@@ -67,6 +67,7 @@ extern "C"
 #elif defined(Q_OS_WIN32)
 extern "C"
 {
+#include <errno.h>
 #include <winsock2.h>
 #include <ws2sctp.h>
 }
@@ -314,8 +315,8 @@ int spoton_sctp_socket::inspectConnectResult
       if(errorcode == EINPROGRESS)
 	return 0;
 
-      QString errorstr(QString("inspectConnectResult::errno=%1").
-		       arg(errorcode));
+      QString errorstr(QString("inspectConnectResult::errno=%1,socket=%2").
+		       arg(errorcode).arg(m_socketDescriptor));
 
       if(errorcode == EACCES || errorcode == EPERM)
 	emit error(errorstr, SocketAccessError);
@@ -345,13 +346,27 @@ int spoton_sctp_socket::setSocketNonBlocking(void)
   if(m_socketDescriptor < 0)
     return -1;
 
+  int rc = 0;
+
   /*
   ** Set the socket to non-blocking.
   */
 
 #ifdef Q_OS_WIN32
+  unsigned long on = 1;
+
+  rc = ioctlsocket(m_socketDescriptor, FIONBIO, &on);
+
+  if(rc != 0)
+    {
+      QString errorstr(QString("setSocketNonBlocking()::ioctlsocket()::"
+			       "rc=%1").arg(rc));
+
+      emit error(errorstr, UnknownSocketError);
+      return -1;
+    }
 #else
-  int rc = fcntl(m_socketDescriptor, F_GETFL, 0);
+  rc = fcntl(m_socketDescriptor, F_GETFL, 0);
 
   if(rc == -1)
     {
