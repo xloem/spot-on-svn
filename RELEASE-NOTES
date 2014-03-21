@@ -11,7 +11,7 @@
      is created before a remote neighbor's information is recorded.
      If lastInsertId() fails, the transaction is canceled.
 5.   RSA_up_ref() must not be given an invalid pointer. Corrected.
-6.   Inspect argv[i] in the main() function of spot-on-kernel.cc.
+6.   Inspect argv[] in the main() function of spot-on-kernel.cc.
 7.   Created method spoton_misc::vacuumAllDatabases(). Used within the
      interface's constructor and destructor as well as the kernel's
      constructor and destructor.
