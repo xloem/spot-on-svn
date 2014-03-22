@@ -346,27 +346,13 @@ int spoton_sctp_socket::setSocketNonBlocking(void)
   if(m_socketDescriptor < 0)
     return -1;
 
-  int rc = 0;
-
   /*
   ** Set the socket to non-blocking.
   */
 
 #ifdef Q_OS_WIN32
-  unsigned long on = 1;
-
-  rc = ioctlsocket(m_socketDescriptor, FIONBIO, &on);
-
-  if(rc != 0)
-    {
-      QString errorstr(QString("setSocketNonBlocking()::ioctlsocket()::"
-			       "rc=%1").arg(rc));
-
-      emit error(errorstr, UnknownSocketError);
-      return -1;
-    }
 #else
-  rc = fcntl(m_socketDescriptor, F_GETFL, 0);
+  int rc = fcntl(m_socketDescriptor, F_GETFL, 0);
 
   if(rc == -1)
     {
@@ -690,16 +676,18 @@ void spoton_sctp_socket::connectToHostImplementation(void)
       serveraddr.sin_port = htons(m_connectToPeerPort);
 
 #ifdef Q_OS_WIN32
-      rc = WSAStringToAddress
-	((LPWSTR) const_cast<LPWSTR> (m_ipAddress.toStdWString().c_str()),
+      rc = WSAStringToAddressA
+	((LPSTR) m_ipAddress.toLatin1().data(),
 	 AF_INET, 0, (LPSOCKADDR) &serveraddr, &length);
 
       if(rc != 0)
 	{
-	  emit error("connectToHostImplementation()::WSAStringToAddress()",
+	  emit error("connectToHostImplementation()::WSAStringToAddressA()",
 		     UnknownSocketError);
 	  goto done_label;
 	}
+
+      serveraddr.sin_port = htons(m_connectToPeerPort);
 #else
       rc = inet_pton(AF_INET, m_ipAddress.toLatin1().constData(),
 		     &serveraddr.sin_addr);
@@ -751,16 +739,18 @@ void spoton_sctp_socket::connectToHostImplementation(void)
       serveraddr.sin6_port = htons(m_connectToPeerPort);
 
 #ifdef Q_OS_WIN32
-      rc = WSAStringToAddress
-	((LPWSTR) const_cast<LPWSTR> (m_ipAddress.toStdWString().c_str()),
+      rc = WSAStringToAddressA
+	((LPSTR) m_ipAddress.toLatin1().data(),
 	 AF_INET6, 0, (LPSOCKADDR) &serveraddr, &length);
 
       if(rc != 0)
 	{
-	  emit error("connectToHostImplementation()::WSAStringToAddress()",
+	  emit error("connectToHostImplementation()::WSAStringToAddressA()",
 		     UnknownSocketError);
 	  goto done_label;
 	}
+
+      serveraddr.sin6_port = htons(m_connectToPeerPort);
 #else
       rc = inet_pton(AF_INET6, m_ipAddress.toLatin1().constData(),
 		     &serveraddr.sin6_addr);

@@ -147,15 +147,6 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 
   prepareSocketNotifiers();
 #ifdef Q_OS_WIN32
-  unsigned long on = 1;
-
-  rc = ioctlsocket(m_socketDescriptor, FIONBIO, &on);
-
-  if(rc != 0)
-    {
-      m_errorString = QString("listen()::ioctlsocket()::rc=%1").arg(rc);
-      goto done_label;
-    }
 #else
   rc = fcntl(m_socketDescriptor, F_GETFL, 0);
 
@@ -231,6 +222,8 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 	    arg(rc);
 	  goto done_label;
 	}
+
+      serveraddr.sin_port = htons(port);
 #else
       if(rc != 1)
 	{
@@ -280,6 +273,8 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 	    arg(rc);
 	  goto done_label;
 	}
+
+      serveraddr.sin6_port = htons(port);
 #else
       if(rc != 1)
 	{
