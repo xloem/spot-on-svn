@@ -376,7 +376,6 @@ int spoton_sctp_socket::setSocketNonBlocking(void)
       return -1;
     }
 #endif
-
   return 0;
 #else
   return -1;
@@ -710,7 +709,6 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 	  goto done_label;
 	}
 #endif
-
       m_state = ConnectingState;
       rc = ::connect
 	(m_socketDescriptor, (const struct sockaddr *) &serveraddr, length);
@@ -773,7 +771,6 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 	  goto done_label;
 	}
 #endif
-
       m_state = ConnectingState;
       rc = ::connect
 	(m_socketDescriptor, (const struct sockaddr *) &serveraddr, length);
