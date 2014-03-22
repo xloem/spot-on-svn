@@ -206,10 +206,8 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
       serveraddr.sin_family = AF_INET;
       serveraddr.sin_port = htons(port);
 #ifdef Q_OS_WIN32
-      rc = WSAStringToAddress
-	((LPWSTR) const_cast<LPWSTR> (address.toString().toStdWString().
-				      c_str()),
-	 AF_INET, 0, (LPSOCKADDR) &serveraddr, &length);
+      rc = WSAStringToAddressA((LPSTR) address.toLatin().data(),
+			       AF_INET, 0, (LPSOCKADDR) &serveraddr, &length);
 #else
       rc = inet_pton(AF_INET, address.toString().toLatin1().constData(),
 		     &serveraddr.sin_addr.s_addr);
@@ -218,10 +216,14 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 #ifdef Q_OS_WIN32
       if(rc != 0)
 	{
-	  m_errorString = QString("listen()::WSAStringToAddress()::rc=%1").
+	  m_errorString = QString("listen()::WSAStringToAddressA()::rc=%1").
 	    arg(rc);
 	  goto done_label;
 	}
+
+      /*
+      ** Reset sin_port.
+      */
 
       serveraddr.sin_port = htons(port);
 #else
@@ -256,10 +258,8 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
       serveraddr.sin6_family = AF_INET6;
       serveraddr.sin6_port = htons(port);
 #ifdef Q_OS_WIN32
-      rc = WSAStringToAddress
-	((LPWSTR) const_cast<LPWSTR> (address.toString().toStdWString().
-				      c_str()),
-	 AF_INET6, 0, (LPSOCKADDR) &serveraddr, &length);
+      rc = WSAStringToAddressA((LPSTR) address.toLatin1().data(),
+			       AF_INET6, 0, (LPSOCKADDR) &serveraddr, &length);
 #else
       rc = inet_pton(AF_INET6, address.toString().toLatin1().constData(),
 		     &serveraddr.sin6_addr);
@@ -268,10 +268,14 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 #ifdef Q_OS_WIN32
       if(rc != 0)
 	{
-	  m_errorString = QString("listen()::WSAStringToAddress()::rc=%1").
+	  m_errorString = QString("listen()::WSAStringToAddressA()::rc=%1").
 	    arg(rc);
 	  goto done_label;
 	}
+
+      /*
+      ** Reset sin6_port.
+      */
 
       serveraddr.sin6_port = htons(port);
 #else

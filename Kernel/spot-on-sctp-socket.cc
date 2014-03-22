@@ -675,9 +675,8 @@ void spoton_sctp_socket::connectToHostImplementation(void)
       serveraddr.sin_port = htons(m_connectToPeerPort);
 
 #ifdef Q_OS_WIN32
-      rc = WSAStringToAddressA
-	((LPSTR) m_ipAddress.toLatin1().data(),
-	 AF_INET, 0, (LPSOCKADDR) &serveraddr, &length);
+      rc = WSAStringToAddressA((LPSTR) m_ipAddress.toLatin1().data(),
+			       AF_INET, 0, (LPSOCKADDR) &serveraddr, &length);
 
       if(rc != 0)
 	{
@@ -685,6 +684,10 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 		     UnknownSocketError);
 	  goto done_label;
 	}
+
+      /*
+      ** Reset sin_port.
+      */
 
       serveraddr.sin_port = htons(m_connectToPeerPort);
 #else
@@ -737,9 +740,8 @@ void spoton_sctp_socket::connectToHostImplementation(void)
       serveraddr.sin6_port = htons(m_connectToPeerPort);
 
 #ifdef Q_OS_WIN32
-      rc = WSAStringToAddressA
-	((LPSTR) m_ipAddress.toLatin1().data(),
-	 AF_INET6, 0, (LPSOCKADDR) &serveraddr, &length);
+      rc = WSAStringToAddressA((LPSTR) m_ipAddress.toLatin1().data(),
+			       AF_INET6, 0, (LPSOCKADDR) &serveraddr, &length);
 
       if(rc != 0)
 	{
@@ -747,6 +749,10 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 		     UnknownSocketError);
 	  goto done_label;
 	}
+
+      /*
+      ** Reset sin6_port.
+      */
 
       serveraddr.sin6_port = htons(m_connectToPeerPort);
 #else
