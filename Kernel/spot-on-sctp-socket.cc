@@ -549,14 +549,12 @@ void spoton_sctp_socket::close(void)
     {
       m_socketReadNotifier->setEnabled(false);
       m_socketReadNotifier->deleteLater();
-      m_socketReadNotifier = 0;
     }
 
   if(m_socketWriteNotifier)
     {
       m_socketWriteNotifier->setEnabled(false);
       m_socketWriteNotifier->deleteLater();
-      m_socketWriteNotifier = 0;
     }
 
 #ifdef Q_OS_WIN32
@@ -813,14 +811,12 @@ void spoton_sctp_socket::prepareSocketNotifiers(void)
     {
       m_socketReadNotifier->setEnabled(false);
       m_socketReadNotifier->deleteLater();
-      m_socketReadNotifier = 0;
     }
 
   if(m_socketWriteNotifier)
     {
       m_socketWriteNotifier->setEnabled(false);
       m_socketWriteNotifier->deleteLater();
-      m_socketWriteNotifier = 0;
     }
 
   m_socketReadNotifier = new QSocketNotifier(m_socketDescriptor,

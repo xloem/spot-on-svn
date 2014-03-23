@@ -353,7 +353,6 @@ void spoton_sctp_server::close(void)
     {
       m_socketReadNotifier->setEnabled(false);
       m_socketReadNotifier->deleteLater();
-      m_socketReadNotifier = 0;
     }
 
 #ifdef Q_OS_WIN32
@@ -378,7 +377,6 @@ void spoton_sctp_server::prepareSocketNotifiers(void)
     {
       m_socketReadNotifier->setEnabled(false);
       m_socketReadNotifier->deleteLater();
-      m_socketReadNotifier = 0;
     }
 
   m_socketReadNotifier = new QSocketNotifier(m_socketDescriptor,
