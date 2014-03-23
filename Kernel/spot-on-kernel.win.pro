@@ -37,7 +37,7 @@ LIBS		+= -L..\\..\\..\\libSpotOn \
 		   -L..\\..\\..\\libSpotOn\\Libraries.win32 \
                    -L..\\..\\..\\libGeoIP\\Libraries.win32 \
 		   -L..\\..\\..\\libOpenSsl\\Libraries.win32 \
-                   -L..\\..\\..\\libSCTP\\SctpDrv.win32\\bin \
+                   -L..\\..\\..\\libSCTP\\SctpDrv.win32\\lib \
 		   -lGeoIP-1 -leay32 -lgcrypt-11 -lgpg-error-0 \
 		   -lpthread -lsctpsp -lspoton -lssl32 -lws2_32
 PRE_TARGETDEPS = libspoton.dll

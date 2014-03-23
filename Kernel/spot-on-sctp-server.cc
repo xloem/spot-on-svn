@@ -206,7 +206,7 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
       serveraddr.sin_family = AF_INET;
       serveraddr.sin_port = htons(port);
 #ifdef Q_OS_WIN32
-      rc = WSAStringToAddressA((LPSTR) address.toLatin().data(),
+      rc = WSAStringToAddressA((LPSTR) address.toString().toLatin1().data(),
 			       AF_INET, 0, (LPSOCKADDR) &serveraddr, &length);
 #else
       rc = inet_pton(AF_INET, address.toString().toLatin1().constData(),
@@ -258,7 +258,7 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
       serveraddr.sin6_family = AF_INET6;
       serveraddr.sin6_port = htons(port);
 #ifdef Q_OS_WIN32
-      rc = WSAStringToAddressA((LPSTR) address.toLatin1().data(),
+      rc = WSAStringToAddressA((LPSTR) address.toString().toLatin1().data(),
 			       AF_INET6, 0, (LPSOCKADDR) &serveraddr, &length);
 #else
       rc = inet_pton(AF_INET6, address.toString().toLatin1().constData(),
