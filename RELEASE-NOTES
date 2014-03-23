@@ -1,4 +1,4 @@
-0.09.03 (03/21/2014)
+0.09.03 (03/28/2014)
 
 1.   Added a timer to the UI to inspect states of chat windows.
 2.   Corrected default value of keepOnlyUserDefinedNeighbors in
