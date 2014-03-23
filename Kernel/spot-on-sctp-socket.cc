@@ -435,6 +435,9 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 maxSize)
   if(!data || maxSize <= 0)
     return 0;
 
+#ifdef Q_OS_WIN32
+  m_socketWriteNotifier->setEnabled(false);
+#endif
   ssize_t remaining = static_cast<ssize_t> (maxSize);
   ssize_t sent = 0;
 
@@ -496,6 +499,9 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 maxSize)
 	emit error(errorstr, UnknownSocketError);
     }
 
+#ifdef Q_OS_WIN32
+  m_socketWriteNotifier->setEnabled(true);
+#endif
   return maxSize - static_cast<qint64> (remaining);
 #else
   Q_UNUSED(data);
