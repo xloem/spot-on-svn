@@ -374,7 +374,10 @@ void spoton_sctp_server::prepareSocketNotifiers(void)
     return;
 
   if(m_socketReadNotifier)
-    m_socketReadNotifier->deleteLater();
+    {
+      m_socketReadNotifier->setEnabled(false);
+      m_socketReadNotifier->deleteLater();
+    }
 
   m_socketReadNotifier = new QSocketNotifier(m_socketDescriptor,
 					     QSocketNotifier::Read,

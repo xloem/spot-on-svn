@@ -808,10 +808,16 @@ void spoton_sctp_socket::prepareSocketNotifiers(void)
     return;
 
   if(m_socketReadNotifier)
-    m_socketReadNotifier->deleteLater();
+    {
+      m_socketReadNotifier->setEnabled(false);
+      m_socketReadNotifier->deleteLater();
+    }
 
   if(m_socketWriteNotifier)
-    m_socketWriteNotifier->deleteLater();
+    {
+      m_socketWriteNotifier->setEnabled(false);
+      m_socketWriteNotifier->deleteLater();
+    }
 
   m_socketReadNotifier = new QSocketNotifier(m_socketDescriptor,
 					     QSocketNotifier::Read,
