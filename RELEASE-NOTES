@@ -19,7 +19,6 @@
      spoton_starbeam_writer::slotProcessData().
 9.   Experimental SCTP support for Windows.
 10.  Disable SCTP socket notifiers prior to their removal.
-11.  Mark deleted SCTP socket notifiers.
 
 0.09.02 (03/12/2014)
 
