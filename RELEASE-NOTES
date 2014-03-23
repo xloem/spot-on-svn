@@ -18,6 +18,7 @@
 8.   Corrected dataSize, pulseSize, etc. comparisons in
      spoton_starbeam_writer::slotProcessData().
 9.   Experimental SCTP support for Windows.
+10.  Disable socket notifiers prior to their removal.
 
 0.09.02 (03/12/2014)
 
