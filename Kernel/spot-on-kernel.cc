@@ -253,7 +253,10 @@ int main(int argc, char *argv[])
 spoton_kernel::spoton_kernel(void):QObject(0)
 {
   qRegisterMetaType<QByteArrayList> ("QByteArrayList");
+  qRegisterMetaType<QHostAddress> ("QHostAddress");
   qRegisterMetaType<QPairListByteArrayQInt64> ("QPairListByteArrayQInt64");
+  qRegisterMetaType<spoton_sctp_socket::SocketError>
+    ("spoton_sctp_socket::SocketError");
   m_guiServer = 0;
   m_mailer = 0;
   m_sharedReader = 0;

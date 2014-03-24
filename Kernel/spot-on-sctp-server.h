@@ -28,14 +28,10 @@
 #ifndef _spoton_sctp_server_h_
 #define _spoton_sctp_server_h_
 
-#include <QAbstractSocket>
 #include <QHostInfo>
-#include <QObject>
-#include <QPointer>
+#include <QThread>
 
-class QSocketNotifier;
-
-class spoton_sctp_server: public QObject
+class spoton_sctp_server: public QThread
 {
   Q_OBJECT
 
@@ -50,11 +46,11 @@ class spoton_sctp_server: public QObject
   int maxPendingConnections(void) const;
   quint16 serverPort(void) const;
   void close(void);
+  void run(void);
   void setMaxPendingConnections(const int numConnections);
 
  private:
   QHostAddress m_serverAddress;
-  QPointer<QSocketNotifier> m_socketReadNotifier;
   QString m_errorString;
   bool m_isListening;
   int m_backlog;
@@ -62,12 +58,12 @@ class spoton_sctp_server: public QObject
   int m_socketDescriptor;
   qint64 m_id;
   quint16 m_serverPort;
-  void prepareSocketNotifiers(void);
 
  private slots:
-  void slotSocketNotifierActivated(int socket);
+  void slotClosed(void);
 
  signals:
+  void closed(void);
   void newConnection(const int socketDescriptor,
 		     const QHostAddress &address,
 		     const quint16 port);

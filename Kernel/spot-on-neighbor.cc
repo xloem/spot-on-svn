@@ -1250,7 +1250,7 @@ void spoton_neighbor::slotReadyRead(void)
     }
 }
 
-void spoton_neighbor::slotProcessData(void)
+void spoton_neighbor::processData(void)
 {
   m_dataMutex.lockForRead();
 
@@ -1328,7 +1328,7 @@ void spoton_neighbor::slotProcessData(void)
       else
 	{
 	  spoton_misc::logError
-	    (QString("spoton_neighbor::slotProcessData() "
+	    (QString("spoton_neighbor::processData() "
 		     "data does not contain Content-Length "
 		     "for %1:%2.").
 	     arg(m_address.toString()).
@@ -1342,7 +1342,7 @@ void spoton_neighbor::slotProcessData(void)
       if(length > m_maximumContentLength)
 	{
 	  spoton_misc::logError
-	    (QString("spoton_neighbor::slotProcessData(): "
+	    (QString("spoton_neighbor::processData(): "
 		     "the Content-Length header from node %1:%2 "
 		     "contains a lot of data (%3). Ignoring. ").
 	     arg(m_address.toString()).

@@ -151,6 +151,7 @@ class spoton_neighbor: public QThread
   qint64 write(const char *data, qint64 size);
   quint16 peerPort(void) const;
   void addToBytesWritten(const int bytesWritten);
+  void processData(void);
   void setId(const qint64 id);
 
  private:
@@ -291,7 +292,6 @@ class spoton_neighbor: public QThread
   void slotTimeout(void);
 
  public slots:
-  void slotProcessData(void);
   void slotSharePublicKey(const QByteArray &keyType,
 			  const QByteArray &name,
 			  const QByteArray &publicKey,
@@ -362,7 +362,7 @@ class spoton_neighbor_worker: public QObject
   void slotProcessData(void)
   {
     if(m_neighbor)
-      m_neighbor->slotProcessData();
+      m_neighbor->processData();
   }
 };
 

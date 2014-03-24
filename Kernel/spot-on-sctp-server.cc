@@ -26,7 +26,6 @@
 */
 
 #include <QAbstractSocket>
-#include <QSocketNotifier>
 
 #ifdef SPOTON_SCTP_ENABLED
 #ifdef Q_OS_FREEBSD
@@ -76,10 +75,11 @@ extern "C"
 #endif
 
 #include "Common/spot-on-common.h"
+#include "Common/spot-on-misc.h"
 #include "spot-on-sctp-server.h"
 
 spoton_sctp_server::spoton_sctp_server(const qint64 id,
-				       QObject *parent):QObject(parent)
+				       QObject *parent):QThread(parent)
 {
   m_backlog = 30;
   m_bufferSize = 65536;
@@ -87,10 +87,18 @@ spoton_sctp_server::spoton_sctp_server(const qint64 id,
   m_isListening = false;
   m_serverPort = 0;
   m_socketDescriptor = -1;
-  m_socketReadNotifier = 0;
+  connect(this,
+	  SIGNAL(closed(void)),
+	  this,
+	  SLOT(slotClosed(void)));
 }
 
 spoton_sctp_server::~spoton_sctp_server()
+{
+  close();
+}
+
+void spoton_sctp_server::slotClosed(void)
 {
   close();
 }
@@ -145,8 +153,16 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
   else
     m_socketDescriptor = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
 
-  prepareSocketNotifiers();
 #ifdef Q_OS_WIN32
+  unsigned long enabled = 1;
+
+  rc = ioctlsocket(m_socketDescriptor, FIONBIO, &enabled);
+
+  if(rc != 0)
+    {
+      m_errorString = "listen()::fcntl()::ioctlsocket()";
+      goto done_label;
+    }
 #else
   rc = fcntl(m_socketDescriptor, F_GETFL, 0);
 
@@ -214,6 +230,7 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 #endif
 
 #ifdef Q_OS_WIN32
+
       if(rc != 0)
 	{
 	  m_errorString = QString("listen()::WSAStringToAddressA()::rc=%1").
@@ -308,6 +325,7 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
       m_isListening = true;
       m_serverAddress = address;
       m_serverPort  = port;
+      start();
     }
   else
     m_errorString = QString("listen()::listen()::errno=%1").arg(errno);
@@ -349,12 +367,6 @@ quint16 spoton_sctp_server::serverPort(void) const
 void spoton_sctp_server::close(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
-  if(m_socketReadNotifier)
-    {
-      m_socketReadNotifier->setEnabled(false);
-      m_socketReadNotifier->deleteLater();
-    }
-
 #ifdef Q_OS_WIN32
   closesocket(m_socketDescriptor);
 #else
@@ -364,29 +376,8 @@ void spoton_sctp_server::close(void)
   m_serverAddress.clear();
   m_serverPort = 0;
   m_socketDescriptor = -1;
-#endif
-}
-
-void spoton_sctp_server::prepareSocketNotifiers(void)
-{
-#ifdef SPOTON_SCTP_ENABLED
-  if(m_socketDescriptor < 0)
-    return;
-
-  if(m_socketReadNotifier)
-    {
-      m_socketReadNotifier->setEnabled(false);
-      m_socketReadNotifier->deleteLater();
-    }
-
-  m_socketReadNotifier = new QSocketNotifier(m_socketDescriptor,
-					     QSocketNotifier::Read,
-					     this);
-  connect(m_socketReadNotifier,
-	  SIGNAL(activated(int)),
-	  this,
-	  SLOT(slotSocketNotifierActivated(int)));
-  m_socketReadNotifier->setEnabled(true);
+  quit();
+  wait(30000);
 #endif
 }
 
@@ -399,33 +390,23 @@ void spoton_sctp_server::setMaxPendingConnections(const int numConnections)
 #endif
 }
 
-void spoton_sctp_server::slotSocketNotifierActivated(int socket)
+void spoton_sctp_server::run(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
-  Q_UNUSED(socket);
+  QAbstractSocket::NetworkLayerProtocol protocol =
+    QAbstractSocket::IPv4Protocol;
+  QHostAddress address;
+  int socketDescriptor = -1;
+  quint16 port = 0;
+  socklen_t length = 0;
 
-  QSocketNotifier *socketNotifier = qobject_cast<QSocketNotifier *>
-    (sender());
+  if(QHostAddress(m_serverAddress).protocol() ==
+     QAbstractSocket::IPv6Protocol)
+    protocol = QAbstractSocket::IPv6Protocol;
 
-  if(!socketNotifier)
-    return;
-
-  if(socketNotifier == m_socketReadNotifier)
+  if(protocol == QAbstractSocket::IPv4Protocol)
     {
-      socketNotifier->setEnabled(false);
-
-      QAbstractSocket::NetworkLayerProtocol protocol =
-	QAbstractSocket::IPv4Protocol;
-      QHostAddress address;
-      int socketDescriptor = -1;
-      quint16 port = 0;
-      socklen_t length = 0;
-
-      if(QHostAddress(m_serverAddress).protocol() ==
-	 QAbstractSocket::IPv6Protocol)
-	protocol = QAbstractSocket::IPv6Protocol;
-
-      if(protocol == QAbstractSocket::IPv4Protocol)
+      do
 	{
 	  struct sockaddr_in clientaddr;
 
@@ -439,13 +420,23 @@ void spoton_sctp_server::slotSocketNotifierActivated(int socket)
 	      address.setAddress
 		(ntohl(clientaddr.sin_addr.s_addr));
 	      port = ntohs(clientaddr.sin_port);
+	      emit newConnection(socketDescriptor, address, port);
 	    }
-	  else
-	    m_errorString = QString
-	      ("slotSocketNotifierActivated()::accept()::errno=%1").
-	      arg(errno);
+	  else if(!(errno == EAGAIN || errno == EWOULDBLOCK))
+	    {
+	      m_errorString = QString
+		("run()::accept()::errno=%1").
+		arg(errno);
+	      break;
+	    }
+
+	  msleep(100);
 	}
-      else
+      while(true);
+    }
+  else
+    {
+      do
 	{
 	  struct sockaddr_in6 clientaddr;
 
@@ -464,19 +455,23 @@ void spoton_sctp_server::slotSocketNotifierActivated(int socket)
 	      address.setScopeId
 		(QString::number(clientaddr.sin6_scope_id));
 	      port = ntohs(clientaddr.sin6_port);
+	      emit newConnection(socketDescriptor, address, port);
 	    }
-	  else
-	    m_errorString = QString
-	      ("slotSocketNotifierActivated()::accept()::errno=%1").
-	      arg(errno);
+	  else if(!(errno == EAGAIN || errno == EWOULDBLOCK))
+	    {
+	      m_errorString = QString
+		("run()::accept()::errno=%1").
+		arg(errno);
+	      emit closed();
+	      break;
+	    }
+
+	  msleep(100);
 	}
+      while(true);
 
-      socketNotifier->setEnabled(true);
-
-      if(socketDescriptor > -1)
-	emit newConnection(socketDescriptor, address, port);
+      spoton_misc::logError("spoton_sctp_server::run(): exiting accept().");
     }
 #else
-  Q_UNUSED(socket);
 #endif
 }

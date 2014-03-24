@@ -30,12 +30,10 @@
 
 #include <QAbstractSocket>
 #include <QHostInfo>
-#include <QObject>
-#include <QPointer>
+#include <QMutex>
+#include <QThread>
 
-class QSocketNotifier;
-
-class spoton_sctp_socket: public QObject
+class spoton_sctp_socket: public QThread
 {
   Q_OBJECT
 
@@ -90,14 +88,14 @@ class spoton_sctp_socket: public QObject
   void abort(void);
   void close(void);
   void connectToHost(const QString &hostName, const quint16 port);
+  void run(void);
   void setReadBufferSize(const qint64 size);
   void setSocketOption(const SocketOption option,
 		       const QVariant &value);
 
  private:
   QByteArray m_readBuffer;
-  QPointer<QSocketNotifier> m_socketReadNotifier;
-  QPointer<QSocketNotifier> m_socketWriteNotifier;
+  QMutex m_mutex;
   QString m_connectToPeerName;
   QString m_ipAddress;
   SocketState m_state;
@@ -112,13 +110,13 @@ class spoton_sctp_socket: public QObject
   int setSocketNonBlocking(void);
   qint64 read(char *data, const qint64 maxSize);
   void connectToHostImplementation(void);
-  void prepareSocketNotifiers(void);
 
  private slots:
-  void slotSocketNotifierActivated(int socket);
+  void slotClosed(void);
   void slotHostFound(const QHostInfo &hostInfo);
 
  signals:
+  void closed(void);
   void connected(void);
   void disconnected(void);
   void error(const QString &method,

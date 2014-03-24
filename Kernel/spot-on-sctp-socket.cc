@@ -25,7 +25,7 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QSocketNotifier>
+#include <QAbstractSocket>
 
 #ifdef SPOTON_SCTP_ENABLED
 #ifdef Q_OS_FREEBSD
@@ -92,16 +92,18 @@ typedef union type_punning_sockaddr
 type_punning_sockaddr_t;
 #endif
 
-spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QObject(parent)
+spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QThread(parent)
 {
   m_bufferSize = 65536;
   m_connectToPeerPort = 0;
   m_hostLookupId = -1;
   m_readBufferSize = 0;
   m_socketDescriptor = -1;
-  m_socketReadNotifier = 0;
-  m_socketWriteNotifier = 0;
   m_state = UnconnectedState;
+  connect(this,
+	  SIGNAL(closed(void)),
+	  this,
+	  SLOT(slotClosed(void)));
 }
 
 spoton_sctp_socket::~spoton_sctp_socket()
@@ -112,9 +114,12 @@ spoton_sctp_socket::~spoton_sctp_socket()
 QByteArray spoton_sctp_socket::readAll(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
+  m_mutex.lock();
+
   QByteArray data(m_readBuffer);
 
   m_readBuffer.clear();
+  m_mutex.unlock();
   return data;
 #else
   return QByteArray();
@@ -283,7 +288,6 @@ bool spoton_sctp_socket::setSocketDescriptor(const int socketDescriptor)
       close();
       m_socketDescriptor = socketDescriptor;
       m_state = ConnectedState;
-      prepareSocketNotifiers();
 
       /*
       ** Let's hope that the socket descriptor inherited the server's
@@ -296,7 +300,10 @@ bool spoton_sctp_socket::setSocketDescriptor(const int socketDescriptor)
 	  return false;
 	}
       else
-	return true;
+	{
+	  start();
+	  return true;
+	}
     }
   else
     return false;
@@ -350,9 +357,22 @@ int spoton_sctp_socket::setSocketNonBlocking(void)
   ** Set the socket to non-blocking.
   */
 
+  int rc = 0;
+
 #ifdef Q_OS_WIN32
+  unsigned long enabled = 1;
+
+  rc = ioctlsocket(m_socketDescriptor, FIONBIO, &enabled);
+
+  if(rc != 0)
+    {
+      QString errorstr("setSocketNonBlocking()::ioctlsocket()");
+
+      emit error(errorstr, UnknownSocketError);
+      return -1;
+    }
 #else
-  int rc = fcntl(m_socketDescriptor, F_GETFL, 0);
+  rc = fcntl(m_socketDescriptor, F_GETFL, 0);
 
   if(rc == -1)
     {
@@ -435,9 +455,6 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 maxSize)
   if(!data || maxSize <= 0)
     return 0;
 
-#ifdef Q_OS_WIN32
-  m_socketWriteNotifier->setEnabled(false);
-#endif
   ssize_t remaining = static_cast<ssize_t> (maxSize);
   ssize_t sent = 0;
 
@@ -499,9 +516,6 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 maxSize)
 	emit error(errorstr, UnknownSocketError);
     }
 
-#ifdef Q_OS_WIN32
-  m_socketWriteNotifier->setEnabled(true);
-#endif
   return maxSize - static_cast<qint64> (remaining);
 #else
   Q_UNUSED(data);
@@ -550,19 +564,6 @@ void spoton_sctp_socket::close(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
   QHostInfo::abortHostLookup(m_hostLookupId);
-
-  if(m_socketReadNotifier)
-    {
-      m_socketReadNotifier->setEnabled(false);
-      m_socketReadNotifier->deleteLater();
-    }
-
-  if(m_socketWriteNotifier)
-    {
-      m_socketWriteNotifier->setEnabled(false);
-      m_socketWriteNotifier->deleteLater();
-    }
-
 #ifdef Q_OS_WIN32
   closesocket(m_socketDescriptor);
 #else
@@ -572,11 +573,20 @@ void spoton_sctp_socket::close(void)
   m_connectToPeerPort = 0;
   m_hostLookupId = -1;
   m_ipAddress.clear();
+  m_mutex.lock();
   m_readBuffer.clear();
+  m_mutex.unlock();
   m_socketDescriptor = -1;
   m_state = UnconnectedState;
   emit disconnected();
+  quit();
+  wait(30000);
 #endif
+}
+
+void spoton_sctp_socket::slotClosed(void)
+{
+  close();
 }
 
 void spoton_sctp_socket::connectToHost(const QString &hostName,
@@ -644,8 +654,6 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
       goto done_label;
     }
-
-  prepareSocketNotifiers();
 
   if((rc = setSocketNonBlocking()) == -1)
     goto done_label;
@@ -804,43 +812,8 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
   if(rc != 0)
     close();
-#endif
-}
-
-void spoton_sctp_socket::prepareSocketNotifiers(void)
-{
-#ifdef SPOTON_SCTP_ENABLED
-  if(m_socketDescriptor < 0)
-    return;
-
-  if(m_socketReadNotifier)
-    {
-      m_socketReadNotifier->setEnabled(false);
-      m_socketReadNotifier->deleteLater();
-    }
-
-  if(m_socketWriteNotifier)
-    {
-      m_socketWriteNotifier->setEnabled(false);
-      m_socketWriteNotifier->deleteLater();
-    }
-
-  m_socketReadNotifier = new QSocketNotifier(m_socketDescriptor,
-					     QSocketNotifier::Read,
-					     this);
-  connect(m_socketReadNotifier,
-	  SIGNAL(activated(int)),
-	  this,
-	  SLOT(slotSocketNotifierActivated(int)));
-  m_socketReadNotifier->setEnabled(true);
-  m_socketWriteNotifier = new QSocketNotifier(m_socketDescriptor,
-					      QSocketNotifier::Write,
-					      this);
-  connect(m_socketWriteNotifier,
-	  SIGNAL(activated(int)),
-	  this,
-	  SLOT(slotSocketNotifierActivated(int)));
-  m_socketWriteNotifier->setEnabled(true);
+  else
+    start();
 #endif
 }
 
@@ -925,74 +898,62 @@ void spoton_sctp_socket::slotHostFound(const QHostInfo &hostInfo)
 #endif
 }
 
-void spoton_sctp_socket::slotSocketNotifierActivated(int socket)
+void spoton_sctp_socket::run(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
-  QSocketNotifier *socketNotifier = qobject_cast<QSocketNotifier *>
-    (sender());
-
-  if(!socketNotifier)
-    return;
-
-  if(m_socketReadNotifier == socketNotifier)
+  do
     {
-      socketNotifier->setEnabled(false);
+      if(m_state != ConnectedState)
+	{
+	  int errorcode = 0;
+	  int rc = 0;
+	  socklen_t length = sizeof(errorcode);
+
+#ifdef Q_OS_WIN32
+	  rc = getsockopt
+	    (m_socketDescriptor, SOL_SOCKET,
+	     SO_ERROR, (char *) &errorcode, &length);
+#else
+	  rc = getsockopt
+	    (m_socketDescriptor, SOL_SOCKET,
+	     SO_ERROR, &errorcode, &length);
+#endif
+
+	  if(rc == 0)
+	    {
+	      if(errorcode == 0)
+		{
+		  if(m_state == ConnectingState)
+		    {
+		      m_state = ConnectedState;
+		      emit connected();
+		    }
+		}
+	    }
+	}
 
       QByteArray data(static_cast<int> (m_readBufferSize), 0);
       qint64 rc = read(data.data(), data.length());
 
       if(rc > 0)
 	{
+	  m_mutex.lock();
+
 	  if(m_readBuffer.length() + static_cast<int> (rc) <=
 	     m_readBufferSize)
 	    m_readBuffer.append(data.mid(0, static_cast<int> (rc)));
 
-	  socketNotifier->setEnabled(true);
+	  m_mutex.unlock();
+	  emit readyRead();
+	}
+      else if(!(errno == EAGAIN || errno == EWOULDBLOCK))
+	{
+	  emit closed();
+	  break;
 	}
 
-      if(rc > 0)
-	emit readyRead();
-      else
-	{
-	  m_socketWriteNotifier->setEnabled(false);
-	  close();
-	}
+      msleep(100);
     }
-  else
-    {
-      socketNotifier->setEnabled(false);
-
-      int errorcode = 0;
-      int rc = 0;
-      socklen_t length = sizeof(errorcode);
-
-#ifdef Q_OS_WIN32
-      rc = getsockopt
-	(socket, SOL_SOCKET, SO_ERROR, (char *) &errorcode, &length);
-#else
-      rc = getsockopt(socket, SOL_SOCKET, SO_ERROR, &errorcode, &length);
-#endif
-
-      if(rc == 0)
-	{
-	  if(errorcode == 0)
-	    {
-	      if(m_state == ConnectingState)
-		{
-		  m_state = ConnectedState;
-		  emit connected();
-		}
-	    }
-	  else
-	    socketNotifier->setEnabled(true);
-	}
-      else
-	{
-	  m_socketReadNotifier->setEnabled(false);
-	  close();
-	}
-    }
-#else
-  Q_UNUSED(socket);
+  while(true);
 #endif
 }
