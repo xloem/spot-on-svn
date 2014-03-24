@@ -635,7 +635,7 @@ void spoton_sctp_socket::connectToHostImplementation(void)
   else
     m_socketDescriptor = rc = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
 
-  if(m_socketDescriptor == -1)
+  if(rc == -1)
     {
       QString errorstr
 	(QString("connectToHostImplementation()::socket()::errno=%1").

@@ -149,11 +149,11 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
     protocol = QAbstractSocket::IPv6Protocol;
 
   if(protocol == QAbstractSocket::IPv4Protocol)
-    m_socketDescriptor = socket(AF_INET, SOCK_STREAM, IPPROTO_SCTP);
+    m_socketDescriptor = rc = socket(AF_INET, SOCK_STREAM, IPPROTO_SCTP);
   else
-    m_socketDescriptor = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
+    m_socketDescriptor = rc = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
 
-  if(m_socketDescriptor == -1)
+  if(rc == -1)
     {
       m_errorString = QString("listen()::socket()::errno=%1").arg(errno);
       goto done_label;
