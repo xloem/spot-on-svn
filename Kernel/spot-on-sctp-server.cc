@@ -153,6 +153,12 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
   else
     m_socketDescriptor = socket(AF_INET6, SOCK_STREAM, IPPROTO_SCTP);
 
+  if(m_socketDescriptor == -1)
+    {
+      m_errorString = QString("listen()::socket()::errno=%1").arg(errno);
+      goto done_label;
+    }
+
 #ifdef Q_OS_WIN32
   unsigned long enabled = 1;
 
