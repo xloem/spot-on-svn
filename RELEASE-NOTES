@@ -17,8 +17,11 @@
      constructor and destructor.
 8.   Corrected dataSize, pulseSize, etc. comparisons in
      spoton_starbeam_writer::slotProcessData().
-9.   Experimental SCTP support for Windows.
-10.  Disable SCTP socket notifiers prior to their removal.
+9.   Experimental SCTP support for Windows. Please also see item #10.
+10.  Redesigned the SCTP implementation. Socket notifiers are troublesome
+     in Windows. The new implementations shall use artificial threads. Please
+     note that socket state information may not be reflected in a timely manner.
+     Please also see item #9.
 
 0.09.02 (03/12/2014)
 
