@@ -22,6 +22,7 @@
      in Windows. The new implementations shall use artificial threads. Please
      note that socket state information may not be reflected in a timely manner.
      Please also see item #9.
+11.  Review socket() results in spoton_sctp_server::listen().
 
 0.09.02 (03/12/2014)
 
