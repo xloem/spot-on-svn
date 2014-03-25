@@ -227,7 +227,7 @@ int main(int argc, char *argv[])
 			     integer)) == LIBSPOTON_ERROR_NONE)
     err = libspoton_register_kernel
       (static_cast<pid_t> (QCoreApplication::applicationPid()),
-       settings.value("gui/forceKernelRegistration", false).toBool(),
+       settings.value("gui/forceKernelRegistration", true).toBool(),
        &libspotonHandle);
 
   libspoton_close(&libspotonHandle);

@@ -3438,7 +3438,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1026</width>
+             <width>1153</width>
              <height>868</height>
             </rect>
            </property>
@@ -3723,6 +3723,9 @@
                      </property>
                      <property name="text">
                       <string>&amp;Force Registration</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
