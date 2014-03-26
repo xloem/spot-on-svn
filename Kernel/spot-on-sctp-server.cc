@@ -67,7 +67,6 @@ extern "C"
 #elif defined(Q_OS_WIN32)
 extern "C"
 {
-#include <errno.h>
 #include <winsock2.h>
 #include <ws2sctp.h>
 }
@@ -79,7 +78,7 @@ extern "C"
 #include "spot-on-sctp-server.h"
 
 spoton_sctp_server::spoton_sctp_server(const qint64 id,
-				       QObject *parent):QThread(parent)
+				       QObject *parent):QObject(parent)
 {
   m_backlog = 30;
   m_bufferSize = 65536;
@@ -87,18 +86,14 @@ spoton_sctp_server::spoton_sctp_server(const qint64 id,
   m_isListening = false;
   m_serverPort = 0;
   m_socketDescriptor = -1;
-  connect(this,
-	  SIGNAL(closed(void)),
+  m_timer.setInterval(100);
+  connect(&m_timer,
+	  SIGNAL(timeout(void)),
 	  this,
-	  SLOT(slotClosed(void)));
+	  SLOT(slotTimeout(void)));
 }
 
 spoton_sctp_server::~spoton_sctp_server()
-{
-  close();
-}
-
-void spoton_sctp_server::slotClosed(void)
 {
   close();
 }
@@ -158,7 +153,12 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 
   if(rc == -1)
     {
+#ifdef Q_OS_WIN32
+      m_errorString = QString("listen()::socket()::error=%1").arg
+	(WSAGetLastError());
+#else
       m_errorString = QString("listen()::socket()::errno=%1").arg(errno);
+#endif
       goto done_label;
     }
 
@@ -196,21 +196,24 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
   optval = m_bufferSize;
 #ifdef Q_OS_WIN32
   setsockopt
-    (m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, (char *) &optval, optlen);
+    (m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, (const char *) &optval,
+     optlen);
 #else
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
 #endif
   optval = 1;
 #ifdef Q_OS_WIN32
   setsockopt
-    (m_socketDescriptor, SOL_SOCKET, SO_REUSEADDR, (char *) &optval, optlen);
+    (m_socketDescriptor, SOL_SOCKET, SO_REUSEADDR, (const char *) &optval,
+     optlen);
 #else
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_REUSEADDR, &optval, optlen);
 #endif
   optval = m_bufferSize;
 #ifdef Q_OS_WIN32
   setsockopt
-    (m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, (char *) &optval, optlen);
+    (m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, (const char *) &optval,
+     optlen);
 #else
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
 #endif
@@ -240,8 +243,8 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 
       if(rc != 0)
 	{
-	  m_errorString = QString("listen()::WSAStringToAddressA()::rc=%1").
-	    arg(rc);
+	  m_errorString = QString("listen()::WSAStringToAddressA()::"
+				  "error=%1").arg(WSAGetLastError());
 	  goto done_label;
 	}
 
@@ -267,8 +270,13 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 
       if(rc != 0)
 	{
+#ifdef Q_OS_WIN32
+	  m_errorString = QString
+	    ("listen()::bind()::error=%1").arg(WSAGetLastError());
+#else
 	  m_errorString = QString
 	      ("listen()::bind()::errno=%1").arg(errno);
+#endif
 	  goto done_label;
 	}
     }
@@ -319,8 +327,13 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
 
       if(rc != 0)
 	{
+#ifdef Q_OS_WIN32
+	  m_errorString = QString
+	    ("listen()::bind()::error=%1").arg(WSAGetLastError());
+#else
 	  m_errorString = QString
 	      ("listen()::bind()::errno=%1").arg(errno);
+#endif
 	  goto done_label;
 	}
     }
@@ -332,10 +345,15 @@ bool spoton_sctp_server::listen(const QHostAddress &address,
       m_isListening = true;
       m_serverAddress = address;
       m_serverPort  = port;
-      start();
+      m_timer.start();
     }
   else
+#ifdef Q_OS_WIN32
+    m_errorString = QString("listen()::listen()::error=%1").
+      arg(WSAGetLastError());
+#else
     m_errorString = QString("listen()::listen()::errno=%1").arg(errno);
+#endif
 
  done_label:
 
@@ -383,8 +401,7 @@ void spoton_sctp_server::close(void)
   m_serverAddress.clear();
   m_serverPort = 0;
   m_socketDescriptor = -1;
-  quit();
-  wait(30000);
+  m_timer.stop();
 #endif
 }
 
@@ -397,15 +414,11 @@ void spoton_sctp_server::setMaxPendingConnections(const int numConnections)
 #endif
 }
 
-void spoton_sctp_server::run(void)
+void spoton_sctp_server::slotTimeout(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
   QAbstractSocket::NetworkLayerProtocol protocol =
     QAbstractSocket::IPv4Protocol;
-  QHostAddress address;
-  int socketDescriptor = -1;
-  quint16 port = 0;
-  socklen_t length = 0;
 
   if(QHostAddress(m_serverAddress).protocol() ==
      QAbstractSocket::IPv6Protocol)
@@ -413,71 +426,96 @@ void spoton_sctp_server::run(void)
 
   if(protocol == QAbstractSocket::IPv4Protocol)
     {
-      do
+      QHostAddress address;
+      int socketDescriptor = -1;
+      quint16 port = 0;
+      socklen_t length = 0;
+      struct sockaddr_in clientaddr;
+
+      length = sizeof(clientaddr);
+      memset(&clientaddr, 0, sizeof(clientaddr));
+      socketDescriptor = accept
+	(m_socketDescriptor, (struct sockaddr *) &clientaddr,
+	 &length);
+
+      if(socketDescriptor > -1)
 	{
-	  struct sockaddr_in clientaddr;
-
-	  length = sizeof(clientaddr);
-	  socketDescriptor = accept
-	    (m_socketDescriptor, (struct sockaddr *) &clientaddr,
-	     &length);
-
-	  if(socketDescriptor > -1)
-	    {
-	      address.setAddress
-		(ntohl(clientaddr.sin_addr.s_addr));
-	      port = ntohs(clientaddr.sin_port);
-	      emit newConnection(socketDescriptor, address, port);
-	    }
-	  else if(!(errno == EAGAIN || errno == EWOULDBLOCK))
-	    {
-	      m_errorString = QString
-		("run()::accept()::errno=%1").
-		arg(errno);
-	      break;
-	    }
-
-	  msleep(100);
+	  address.setAddress
+	    (ntohl(clientaddr.sin_addr.s_addr));
+	  port = ntohs(clientaddr.sin_port);
+#if QT_VERSION < 0x050000
+	  emit newConnection(socketDescriptor, address, port);
+#else
+	  emit newConnection(static_cast<qintptr> (socketDescriptor),
+			     address, port);
+#endif
 	}
-      while(true);
+#ifdef Q_OS_WIN32
+      else if(WSAGetLastError() != WSAEWOULDBLOCK)
+#else
+      else if(!(errno == EAGAIN || errno == EWOULDBLOCK))
+#endif
+	{
+#ifdef Q_OS_WIN32
+	  m_errorString = QString
+	    ("run()::accept()::error=%1").
+	    arg(WSAGetLastError());
+#else
+	  m_errorString = QString
+	    ("run()::accept()::errno=%1").
+	    arg(errno);
+#endif
+	  close();
+	}
     }
   else
     {
-      do
+      QHostAddress address;
+      int socketDescriptor = -1;
+      quint16 port = 0;
+      socklen_t length = 0;
+      struct sockaddr_in6 clientaddr;
+
+      length = sizeof(clientaddr);
+      memset(&clientaddr, 0, sizeof(clientaddr));
+      socketDescriptor = accept
+	(m_socketDescriptor, (struct sockaddr *) &clientaddr,
+	 &length);
+
+      if(socketDescriptor > -1)
 	{
-	  struct sockaddr_in6 clientaddr;
+	  Q_IPV6ADDR tmp;
 
-	  length = sizeof(clientaddr);
-	  socketDescriptor = accept
-	    (m_socketDescriptor, (struct sockaddr *) &clientaddr,
-	     &length);
-
-	  if(socketDescriptor > -1)
-	    {
-	      Q_IPV6ADDR tmp;
-
-	      memcpy(&tmp, &clientaddr.sin6_addr.s6_addr,
-		     sizeof(tmp));
-	      address.setAddress(tmp);
-	      address.setScopeId
-		(QString::number(clientaddr.sin6_scope_id));
-	      port = ntohs(clientaddr.sin6_port);
-	      emit newConnection(socketDescriptor, address, port);
-	    }
-	  else if(!(errno == EAGAIN || errno == EWOULDBLOCK))
-	    {
-	      m_errorString = QString
-		("run()::accept()::errno=%1").
-		arg(errno);
-	      emit closed();
-	      break;
-	    }
-
-	  msleep(100);
+	  memcpy(&tmp, &clientaddr.sin6_addr.s6_addr,
+		 sizeof(tmp));
+	  address.setAddress(tmp);
+	  address.setScopeId
+	    (QString::number(clientaddr.sin6_scope_id));
+	  port = ntohs(clientaddr.sin6_port);
+#if QT_VERSION < 0x050000
+	  emit newConnection(socketDescriptor, address, port);
+#else
+	  emit newConnection(static_cast<qintptr> (socketDescriptor),
+			     address, port);
+#endif
 	}
-      while(true);
-
-      spoton_misc::logError("spoton_sctp_server::run(): exiting accept().");
+#ifdef Q_OS_WIN32
+      else if(WSAGetLastError() != WSAEWOULDBLOCK)
+#else
+      else if(!(errno == EAGAIN || errno == EWOULDBLOCK))
+#endif
+	{
+#ifdef Q_OS_WIN32
+	  m_errorString = QString
+	    ("run()::accept()::error=%1").
+	    arg(WSAGetLastError());
+#else
+	  m_errorString = QString
+	    ("run()::accept()::errno=%1").
+	    arg(errno);
+#endif
+	  close();
+	}
     }
 #else
 #endif

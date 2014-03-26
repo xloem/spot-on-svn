@@ -180,7 +180,6 @@ int main(int argc, char *argv[])
 #else
   QCoreApplication qapplication(argc, argv);
 #endif
-
   QCoreApplication::setApplicationName("Spot-On");
   QCoreApplication::setOrganizationName("Spot-On");
   QCoreApplication::setOrganizationDomain("spot-on.sf.net");
@@ -255,6 +254,9 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   qRegisterMetaType<QByteArrayList> ("QByteArrayList");
   qRegisterMetaType<QHostAddress> ("QHostAddress");
   qRegisterMetaType<QPairListByteArrayQInt64> ("QPairListByteArrayQInt64");
+#if QT_VERSION >= 0x050000
+  qRegisterMetaType<qintptr> ("qintptr");
+#endif
   qRegisterMetaType<spoton_sctp_socket::SocketError>
     ("spoton_sctp_socket::SocketError");
   m_guiServer = 0;

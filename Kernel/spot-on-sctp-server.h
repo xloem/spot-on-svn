@@ -29,9 +29,9 @@
 #define _spoton_sctp_server_h_
 
 #include <QHostInfo>
-#include <QThread>
+#include <QTimer>
 
-class spoton_sctp_server: public QThread
+class spoton_sctp_server: public QObject
 {
   Q_OBJECT
 
@@ -46,12 +46,12 @@ class spoton_sctp_server: public QThread
   int maxPendingConnections(void) const;
   quint16 serverPort(void) const;
   void close(void);
-  void run(void);
   void setMaxPendingConnections(const int numConnections);
 
  private:
   QHostAddress m_serverAddress;
   QString m_errorString;
+  QTimer m_timer;
   bool m_isListening;
   int m_backlog;
   int m_bufferSize;
@@ -60,13 +60,18 @@ class spoton_sctp_server: public QThread
   quint16 m_serverPort;
 
  private slots:
-  void slotClosed(void);
+  void slotTimeout(void);
 
  signals:
-  void closed(void);
+#if QT_VERSION < 0x050000
   void newConnection(const int socketDescriptor,
 		     const QHostAddress &address,
 		     const quint16 port);
+#else
+  void newConnection(const qintptr socketDescriptor,
+		     const QHostAddress &address,
+		     const quint16 port);
+#endif
 };
 
 #endif

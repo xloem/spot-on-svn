@@ -67,7 +67,6 @@ extern "C"
 #elif defined(Q_OS_WIN32)
 extern "C"
 {
-#include <errno.h>
 #include <winsock2.h>
 #include <ws2sctp.h>
 }
@@ -75,6 +74,7 @@ extern "C"
 #endif
 
 #include "Common/spot-on-common.h"
+#include "Common/spot-on-misc.h"
 #include "spot-on-sctp-socket.h"
 
 /*
@@ -92,7 +92,7 @@ typedef union type_punning_sockaddr
 type_punning_sockaddr_t;
 #endif
 
-spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QThread(parent)
+spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QObject(parent)
 {
   m_bufferSize = 65536;
   m_connectToPeerPort = 0;
@@ -100,10 +100,11 @@ spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QThread(parent)
   m_readBufferSize = 0;
   m_socketDescriptor = -1;
   m_state = UnconnectedState;
-  connect(this,
-	  SIGNAL(closed(void)),
+  m_timer.setInterval(100);
+  connect(&m_timer,
+	  SIGNAL(timeout(void)),
 	  this,
-	  SLOT(slotClosed(void)));
+	  SLOT(slotTimeout(void)));
 }
 
 spoton_sctp_socket::~spoton_sctp_socket()
@@ -114,12 +115,9 @@ spoton_sctp_socket::~spoton_sctp_socket()
 QByteArray spoton_sctp_socket::readAll(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
-  m_mutex.lock();
-
   QByteArray data(m_readBuffer);
 
   m_readBuffer.clear();
-  m_mutex.unlock();
   return data;
 #else
   return QByteArray();
@@ -294,14 +292,14 @@ bool spoton_sctp_socket::setSocketDescriptor(const int socketDescriptor)
       ** read and write buffer sizes.
       */
 
-      if(setSocketNonBlocking() != 0)
+      if(setSocketBlockingOrNon() != 0)
 	{
 	  close();
 	  return false;
 	}
       else
 	{
-	  start();
+	  m_timer.start();
 	  return true;
 	}
     }
@@ -319,6 +317,14 @@ int spoton_sctp_socket::inspectConnectResult
 #ifdef SPOTON_SCTP_ENABLED
   if(rc == -1)
     {
+#ifdef Q_OS_WIN32
+      if(errorcode == WSAEWOULDBLOCK)
+	return 0;
+
+      QString errorstr(QString("inspectConnectResult::error=%1,socket=%2").
+		       arg(errorcode).arg(m_socketDescriptor));
+      emit error(errorstr, UnknownSocketError);
+#else
       if(errorcode == EINPROGRESS)
 	return 0;
 
@@ -335,7 +341,7 @@ int spoton_sctp_socket::inspectConnectResult
 	emit error(errorstr, NetworkError);
       else
 	emit error(errorstr, UnknownSocketError);
-
+#endif
       return -1;
     }
   else
@@ -347,15 +353,15 @@ int spoton_sctp_socket::inspectConnectResult
 #endif
 }
 
-int spoton_sctp_socket::setSocketNonBlocking(void)
+int spoton_sctp_socket::setSocketBlockingOrNon(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
   if(m_socketDescriptor < 0)
-    return -1;
-
-  /*
-  ** Set the socket to non-blocking.
-  */
+    {
+      spoton_misc::logError("spoton_sctp_socket::setSocketBlockingOrNon(): "
+			    "m_socketDescriptor is less than zero.");
+      return -1;
+    }
 
   int rc = 0;
 
@@ -366,7 +372,7 @@ int spoton_sctp_socket::setSocketNonBlocking(void)
 
   if(rc != 0)
     {
-      QString errorstr("setSocketNonBlocking()::ioctlsocket()");
+      QString errorstr("setSocketBlockingOrNon()::ioctlsocket()");
 
       emit error(errorstr, UnknownSocketError);
       return -1;
@@ -376,7 +382,7 @@ int spoton_sctp_socket::setSocketNonBlocking(void)
 
   if(rc == -1)
     {
-      QString errorstr(QString("setSocketNonBlocking()::fcntl()::"
+      QString errorstr(QString("setSocketBlockingOrNon()::fcntl()::"
 			       "errno=%1").
 		       arg(errno));
 
@@ -388,7 +394,7 @@ int spoton_sctp_socket::setSocketNonBlocking(void)
 
   if(rc == -1)
     {
-      QString errorstr(QString("setSocketNonBlocking()::fcntl()::"
+      QString errorstr(QString("setSocketBlockingOrNon()::fcntl()::"
 			       "errno=%1").
 		       arg(errno));
 
@@ -408,15 +414,40 @@ qint64 spoton_sctp_socket::read(char *data, const qint64 maxSize)
   if(!data || maxSize <= 0)
     return 0;
 
-  ssize_t rc = recv
-    (m_socketDescriptor, data, static_cast<size_t> (maxSize), MSG_PEEK);
+  fd_set rfds;
+  ssize_t rc = 0;
+  struct timeval tv;
 
-  if(rc > 0)
+  FD_ZERO(&rfds);
+  FD_SET(m_socketDescriptor, &rfds);
+  tv.tv_sec = 0;
+  tv.tv_usec = 250000;
+
+  if(select(m_socketDescriptor + 1, &rfds, 0, 0, &tv))
     rc = recv
-      (m_socketDescriptor, data, static_cast<size_t> (rc), MSG_WAITALL);
+      (m_socketDescriptor, data, static_cast<size_t> (maxSize), 0);
+  else
+#ifdef Q_OS_WIN32
+    WSASetLastError(WSAEWOULDBLOCK);
+#else
+    errno = EWOULDBLOCK;
+#endif
 
   if(rc == -1)
     {
+#ifdef Q_OS_WIN32
+      QString errorstr(QString("read()::recv()::error=%1").
+		       arg(WSAGetLastError()));
+
+      if(WSAGetLastError() == WSAEWOULDBLOCK)
+	/*
+	** We'll ignore this condition.
+	*/
+
+	rc = 0;
+      else
+	emit error(errorstr, UnknownSocketError);
+#else
       QString errorstr(QString("read()::recv()::errno=%1").
 		       arg(errno));
 
@@ -439,6 +470,7 @@ qint64 spoton_sctp_socket::read(char *data, const qint64 maxSize)
 	emit error(errorstr, UnsupportedSocketOperationError);
       else
 	emit error(errorstr, UnknownSocketError);
+#endif
     }
 
   return static_cast<qint64> (rc);
@@ -478,7 +510,11 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 maxSize)
 
       if(sent == -1)
 	{
+#ifdef Q_OS_WIN32
+	  if(WSAGetLastError() == WSAEWOULDBLOCK)
+#else
 	  if(errno == EAGAIN || errno == EWOULDBLOCK)
+#endif
 	    {
 	      /*
 	      ** We'll ignore this condition.
@@ -498,6 +534,12 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 maxSize)
 
   if(sent == -1)
     {
+#ifdef Q_OS_WIN32
+      QString errorstr(QString("write()::send()::error=%1").
+		       arg(WSAGetLastError()));
+
+      emit error(errorstr, UnknownSocketError);
+#else
       QString errorstr(QString("write()::send()::errno=%1").
 		       arg(errno));
 
@@ -514,6 +556,7 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 maxSize)
 	emit error(errorstr, UnsupportedSocketOperationError);
       else
 	emit error(errorstr, UnknownSocketError);
+#endif
     }
 
   return maxSize - static_cast<qint64> (remaining);
@@ -573,20 +616,12 @@ void spoton_sctp_socket::close(void)
   m_connectToPeerPort = 0;
   m_hostLookupId = -1;
   m_ipAddress.clear();
-  m_mutex.lock();
   m_readBuffer.clear();
-  m_mutex.unlock();
   m_socketDescriptor = -1;
   m_state = UnconnectedState;
+  m_timer.stop();
   emit disconnected();
-  quit();
-  wait(30000);
 #endif
-}
-
-void spoton_sctp_socket::slotClosed(void)
-{
-  close();
 }
 
 void spoton_sctp_socket::connectToHost(const QString &hostName,
@@ -637,6 +672,13 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
   if(rc == -1)
     {
+#ifdef Q_OS_WIN32
+      QString errorstr
+	(QString("connectToHostImplementation()::socket()::error=%1").
+	 arg(WSAGetLastError()));
+
+      emit error(errorstr, UnknownSocketError);
+#else
       QString errorstr
 	(QString("connectToHostImplementation()::socket()::errno=%1").
 	 arg(errno));
@@ -651,11 +693,11 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 	emit error(errorstr, SocketResourceError);
       else
 	emit error(errorstr, UnknownSocketError);
-
+#endif
       goto done_label;
     }
 
-  if((rc = setSocketNonBlocking()) == -1)
+  if((rc = setSocketBlockingOrNon()) == -1)
     goto done_label;
 
   /*
@@ -665,14 +707,16 @@ void spoton_sctp_socket::connectToHostImplementation(void)
   optval = m_bufferSize;
 #ifdef Q_OS_WIN32
   setsockopt
-    (m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, (char *) &optval, optlen);
+    (m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, (const char *) &optval,
+     optlen);
 #else
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
 #endif
   optval = m_bufferSize;
 #ifdef Q_OS_WIN32
   setsockopt
-    (m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, (char *) &optval, optlen);
+    (m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, (const char *) &optval,
+     optlen);
 #else
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
 #endif
@@ -740,7 +784,11 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 	  emit connected();
 	}
       else
+#ifdef Q_OS_WIN32
+	rc = inspectConnectResult(rc, WSAGetLastError());
+#else
 	rc = inspectConnectResult(rc, errno);
+#endif
     }
   else
     {
@@ -805,7 +853,11 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 	  emit connected();
 	}
       else
+#ifdef Q_OS_WIN32
+	rc = inspectConnectResult(rc, WSAGetLastError());
+#else
 	rc = inspectConnectResult(rc, errno);
+#endif
     }
 
  done_label:
@@ -813,7 +865,8 @@ void spoton_sctp_socket::connectToHostImplementation(void)
   if(rc != 0)
     close();
   else
-    start();
+    m_timer.start();
+
 #endif
 }
 
@@ -841,8 +894,9 @@ void spoton_sctp_socket::setSocketOption(const SocketOption option,
 	socklen_t optlen = sizeof(optval);
 
 #ifdef Q_OS_WIN32
-	setsockopt(m_socketDescriptor, SOL_SOCKET, SO_KEEPALIVE,
-		   (char *) &optval, optlen);
+	setsockopt
+	  (m_socketDescriptor, SOL_SOCKET,
+	   SO_KEEPALIVE, (const char *) &optval, optlen);
 #else
 	setsockopt(m_socketDescriptor, SOL_SOCKET, SO_KEEPALIVE,
 		   &optval, optlen);
@@ -855,8 +909,9 @@ void spoton_sctp_socket::setSocketOption(const SocketOption option,
 	socklen_t optlen = sizeof(optval);
 
 #ifdef Q_OS_WIN32
-	setsockopt(m_socketDescriptor, IPPROTO_SCTP, SCTP_NODELAY,
-		   (char *) &optval, optlen);
+	setsockopt
+	  (m_socketDescriptor, IPPROTO_SCTP,
+	   SCTP_NODELAY, (const char *) &optval, optlen);
 #else
 	setsockopt(m_socketDescriptor, IPPROTO_SCTP, SCTP_NODELAY,
 		   &optval, optlen);
@@ -898,62 +953,54 @@ void spoton_sctp_socket::slotHostFound(const QHostInfo &hostInfo)
 #endif
 }
 
-void spoton_sctp_socket::run(void)
+void spoton_sctp_socket::slotTimeout(void)
 {
 #ifdef SPOTON_SCTP_ENABLED
-  do
+  if(m_state != ConnectedState)
     {
-      if(m_state != ConnectedState)
-	{
-	  int errorcode = 0;
-	  int rc = 0;
-	  socklen_t length = sizeof(errorcode);
+      int errorcode = 0;
+      int rc = 0;
+      socklen_t length = sizeof(errorcode);
 
 #ifdef Q_OS_WIN32
-	  rc = getsockopt
-	    (m_socketDescriptor, SOL_SOCKET,
-	     SO_ERROR, (char *) &errorcode, &length);
+      rc = getsockopt
+	(m_socketDescriptor, SOL_SOCKET,
+	 SO_ERROR, (char *) &errorcode, &length);
 #else
-	  rc = getsockopt
-	    (m_socketDescriptor, SOL_SOCKET,
-	     SO_ERROR, &errorcode, &length);
+      rc = getsockopt
+	(m_socketDescriptor, SOL_SOCKET,
+	 SO_ERROR, &errorcode, &length);
 #endif
 
-	  if(rc == 0)
+      if(rc == 0)
+	{
+	  if(errorcode == 0)
 	    {
-	      if(errorcode == 0)
+	      if(m_state == ConnectingState)
 		{
-		  if(m_state == ConnectingState)
-		    {
-		      m_state = ConnectedState;
-		      emit connected();
-		    }
+		  m_state = ConnectedState;
+		  emit connected();
 		}
 	    }
 	}
-
-      QByteArray data(static_cast<int> (m_readBufferSize), 0);
-      qint64 rc = read(data.data(), data.length());
-
-      if(rc > 0)
-	{
-	  m_mutex.lock();
-
-	  if(m_readBuffer.length() + static_cast<int> (rc) <=
-	     m_readBufferSize)
-	    m_readBuffer.append(data.mid(0, static_cast<int> (rc)));
-
-	  m_mutex.unlock();
-	  emit readyRead();
-	}
-      else if(!(errno == EAGAIN || errno == EWOULDBLOCK))
-	{
-	  emit closed();
-	  break;
-	}
-
-      msleep(100);
     }
-  while(true);
+
+  QByteArray data(static_cast<int> (m_readBufferSize), 0);
+  qint64 rc = read(data.data(), data.length());
+
+  if(rc > 0)
+    {
+      if(m_readBuffer.length() + static_cast<int> (rc) <=
+	 m_readBufferSize)
+	m_readBuffer.append(data.mid(0, static_cast<int> (rc)));
+
+      emit readyRead();
+    }
+#ifdef Q_OS_WIN32
+  else if(WSAGetLastError() != WSAEWOULDBLOCK)
+#else
+  else if(!(errno == EAGAIN || errno == EWOULDBLOCK))
+#endif
+    close();
 #endif
 }

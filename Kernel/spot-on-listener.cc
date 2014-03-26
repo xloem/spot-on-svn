@@ -173,6 +173,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
   m_transport = transport;
   m_useAccounts = useAccounts;
 
+#if QT_VERSION < 0x050000
   if(m_sctpServer)
     connect(m_sctpServer,
 	    SIGNAL(newConnection(const int,
@@ -182,43 +183,50 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 	    SLOT(slotNewConnection(const int,
 				   const QHostAddress &,
 				   const quint16)));
-
-#if QT_VERSION >= 0x050000
-  if(m_tcpServer)
+  else if(m_tcpServer)
     connect(m_tcpServer,
-	    SIGNAL(newConnection(const qintptr,
+	    SIGNAL(newConnection(const int,
 				 const QHostAddress &,
 				 const quint16)),
 	    this,
-	    SLOT(slotNewConnection(const qintptr,
+	    SLOT(slotNewConnection(const int,
 				   const QHostAddress &,
 				   const quint16)));
   else if(m_udpServer)
     connect(m_udpServer,
-	    SIGNAL(newConnection(const qintptr,
+	    SIGNAL(newConnection(const int,
 				 const QHostAddress &,
 				 const quint16)),
 	    this,
-	    SLOT(slotNewConnection(const qintptr,
+	    SLOT(slotNewConnection(const int,
 				   const QHostAddress &,
 				   const quint16)));
 #else
-  if(m_tcpServer)
-    connect(m_tcpServer,
-	    SIGNAL(newConnection(const int,
+  if(m_sctpServer)
+    connect(m_sctpServer,
+	    SIGNAL(newConnection(const qintptr,
 				 const QHostAddress &,
 				 const quint16)),
 	    this,
-	    SLOT(slotNewConnection(const int,
+	    SLOT(slotNewConnection(const qintptr,
+				   const QHostAddress &,
+				   const quint16)));
+  if(m_tcpServer)
+    connect(m_tcpServer,
+	    SIGNAL(newConnection(const qintptr,
+				 const QHostAddress &,
+				 const quint16)),
+	    this,
+	    SLOT(slotNewConnection(const qintptr,
 				   const QHostAddress &,
 				   const quint16)));
   else if(m_udpServer)
     connect(m_udpServer,
-	    SIGNAL(newConnection(const int,
+	    SIGNAL(newConnection(const qintptr,
 				 const QHostAddress &,
 				 const quint16)),
 	    this,
-	    SLOT(slotNewConnection(const int,
+	    SLOT(slotNewConnection(const qintptr,
 				   const QHostAddress &,
 				   const quint16)));
 #endif
@@ -574,12 +582,12 @@ void spoton_listener::saveStatus(const QSqlDatabase &db)
   query.exec();
 }
 
-#if QT_VERSION >= 0x050000
-void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
+#if QT_VERSION < 0x050000
+void spoton_listener::slotNewConnection(const int socketDescriptor,
 					const QHostAddress &address,
 					const quint16 port)
 #else
-void spoton_listener::slotNewConnection(const int socketDescriptor,
+void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 					const QHostAddress &address,
 					const quint16 port)
 #endif

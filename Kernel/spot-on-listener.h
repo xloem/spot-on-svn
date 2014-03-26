@@ -68,12 +68,12 @@ class spoton_listener_tcp_server: public QTcpServer
   qint64 m_id;
 
  signals:
-#if QT_VERSION >= 0x050000
-  void newConnection(qintptr socketDescriptor,
+#if QT_VERSION < 0x050000
+  void newConnection(const int socketDescriptor,
 		     const QHostAddress &address,
 		     const quint16 port);
 #else
-  void newConnection(int socketDescriptor,
+  void newConnection(const qintptr socketDescriptor,
 		     const QHostAddress &address,
 		     const quint16 port);
 #endif
@@ -129,12 +129,12 @@ class spoton_listener_udp_server: public QUdpSocket
   void slotReadyRead(void);
 
  signals:
-#if QT_VERSION >= 0x050000
-  void newConnection(qintptr socketDescriptor,
+#if QT_VERSION < 0x050000
+  void newConnection(const int socketDescriptor,
 		     const QHostAddress &address,
 		     const quint16 port);
 #else
-  void newConnection(int socketDescriptor,
+  void newConnection(const qintptr socketDescriptor,
 		     const QHostAddress &address,
 		     const quint16 port);
 #endif
@@ -209,12 +209,12 @@ class spoton_listener: public QObject
   void slotDiscoverExternalAddress(void);
   void slotExternalAddressDiscovered(const QHostAddress &address);
   void slotNeighborDisconnected(void);
-#if QT_VERSION >= 0x050000
-  void slotNewConnection(const qintptr socketDescriptor,
+#if QT_VERSION < 0x050000
+  void slotNewConnection(const int socketDescriptor,
 			 const QHostAddress &address,
 			 const quint16 port);
 #else
-  void slotNewConnection(const int socketDescriptor,
+  void slotNewConnection(const qintptr socketDescriptor,
 			 const QHostAddress &address,
 			 const quint16 port);
 #endif
