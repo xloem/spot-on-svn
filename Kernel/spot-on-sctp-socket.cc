@@ -323,6 +323,7 @@ int spoton_sctp_socket::inspectConnectResult
 
       QString errorstr(QString("inspectConnectResult::error=%1,socket=%2").
 		       arg(errorcode).arg(m_socketDescriptor));
+
       emit error(errorstr, UnknownSocketError);
 #else
       if(errorcode == EINPROGRESS)
