@@ -4906,25 +4906,25 @@ void spoton_neighbor::recordCertificateOrAbort(void)
 	    }
 	  else if(!m_allowExceptions)
 	    {
-	      if(!spoton_crypt::
-		 memcmp(m_peerCertificate.toPem(),
-			m_tcpSocket->peerCertificate().toPem()))
+	      if(m_tcpSocket->peerCertificate().isNull())
 		{
 		  spoton_misc::logError
-		    (QString("spoton_neighbor::recordCertificate(): "
-			     "the stored certificate does not match "
-			     "the peer's certificate for %1:%2. This is a "
-			     "serious problem! Aborting.").
+		    (QString("spoton_neighbor::recordCertificateOrAbort(): "
+			     "null peer certificate for %1:%2. Aborting.").
 		     arg(m_address.toString()).
 		     arg(m_port));
 		  deleteLater();
 		  return;
 		}
-	      else if(m_tcpSocket->peerCertificate().isNull())
+	      else if(!spoton_crypt::
+		      memcmp(m_peerCertificate.toPem(),
+			     m_tcpSocket->peerCertificate().toPem()))
 		{
 		  spoton_misc::logError
-		    (QString("spoton_neighbor::recordCertificate(): "
-			     "null peer certificate for %1:%2. Aborting.").
+		    (QString("spoton_neighbor::recordCertificateOrAbort(): "
+			     "the stored certificate does not match "
+			     "the peer's certificate for %1:%2. This is a "
+			     "serious problem! Aborting.").
 		     arg(m_address.toString()).
 		     arg(m_port));
 		  deleteLater();
