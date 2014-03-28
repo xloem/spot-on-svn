@@ -4793,7 +4793,7 @@ void spoton_neighbor::slotPeerVerifyError(const QSslError &error)
     {
       spoton_misc::logError
 	(QString("spoton_neighbor::slotPeerVerifyError(): instructed "
-		 "to delete neighbor for %1:%2").
+		 "to delete neighbor for %1:%2.").
 	 arg(m_address.toString()).
 	 arg(m_port));
       deleteLater();
