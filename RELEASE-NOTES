@@ -27,6 +27,7 @@
 12.  Kernel registration is now forced by default.
 13.  Corrected version 0.09.02's item #20. A node without an interface
      would not store offline e-mail.
+14.  Improper use of memcmp() in spot-on-kernel.cc. Use qstrncmp() instead.
 
 0.09.02 (03/12/2014)
 
