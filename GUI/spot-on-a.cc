@@ -120,7 +120,6 @@ int main(int argc, char *argv[])
 
 spoton::spoton(void):QMainWindow()
 {
-  spoton_misc::vacuumAllDatabases();
   qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
   m_booleans["buzz_channels_sent_to_kernel"] = false;
@@ -1543,7 +1542,6 @@ spoton::spoton(void):QMainWindow()
 
 spoton::~spoton()
 {
-  spoton_misc::vacuumAllDatabases();
   QApplication::instance()->quit();
 }
 

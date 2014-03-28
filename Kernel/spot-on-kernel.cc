@@ -190,6 +190,10 @@ int main(int argc, char *argv[])
 
   QSettings settings;
 
+  for(int i = 1; i < argc; i++)
+    if(argv[i] && memcmp(argv[i], "--vacuum", strlen("--vacuum")) == 0)
+      spoton_misc::vacuumAllDatabases();
+
   if(!settings.contains("kernel/gcryctl_init_secmem"))
     settings.setValue("kernel/gcryctl_init_secmem", 65536);
 
@@ -267,7 +271,6 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
   spoton_misc::cleanupDatabases();
-  spoton_misc::vacuumAllDatabases();
 
   /*
   ** The user interface doesn't yet have a means of preparing advanced
@@ -347,6 +350,9 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  qDebug() << "Passphrase accepted.";
 
 	break;
+      }
+    else if(arguments.at(i) == "--vacuum")
+      {
       }
     else
       {
@@ -518,7 +524,6 @@ spoton_kernel::~spoton_kernel()
   m_future.waitForFinished();
   cleanup();
   spoton_misc::cleanupDatabases();
-  spoton_misc::vacuumAllDatabases();
 
   QHashIterator<QString, spoton_crypt *> it(s_crypts);
 
