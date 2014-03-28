@@ -12,9 +12,10 @@
      If lastInsertId() fails, the transaction is canceled.
 5.   RSA_up_ref() must not be given an invalid pointer. Corrected.
 6.   Inspect argv[] in the main() function of spot-on-kernel.cc.
-7.   Created method spoton_misc::vacuumAllDatabases(). Used within the
-     interface's constructor and destructor as well as the kernel's
-     constructor and destructor.
+7.   Created the method spoton_misc::vacuumAllDatabases() along with the
+     kernel option vacuum. Please note that this option should not be
+     used if there is an active interface.
+     (https://sqlite.org/lang_vacuum.html)
 8.   Corrected dataSize, pulseSize, etc. comparisons in
      spoton_starbeam_writer::slotProcessData().
 9.   Experimental SCTP support for Windows. Please also see item #10.
