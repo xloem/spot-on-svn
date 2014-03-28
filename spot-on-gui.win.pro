@@ -152,29 +152,3 @@ RC_FILE		= Icons\\Resources\\spot-on.rc
 
 TARGET		= Spot-On
 PROJECTNAME	= Spot-On
-
-geoip_data_install.path	= release\\GeoIP
-geoip_data_install.files= ..\\..\\GeoIP-1.5.0\\data\\GeoIP.dat
-icons.path		= release
-icons.files		= Icons
-libgeoip_install.path   = release
-libgeoip_install.files  = ..\\..\\libGeoIP\\Libraries.win32\\libGeoIP-1.dll
-libspoton_install.path  = release
-libspoton_install.files = ..\\..\\libSpotOn\\libspoton.dll ..\\..\\libSpotOn\\Libraries.win32\\*.def ..\\..\\libSpotOn\\Libraries.win32\\*.dll
-lrelease.extra          = $$[QT_INSTALL_BINS]\\lrelease spot-on-gui.win.pro
-lrelease.path           = .
-lupdate.extra           = $$[QT_INSTALL_BINS]\\lupdate spot-on-gui.win.pro
-lupdate.path            = .
-spoton.path		= release
-spoton.files		= Spot-On.exe
-translations.path 	= release\\Translations
-translations.files	= Translations\\*.qm
-
-INSTALLS	= geoip_data_install \
-		  libgeoip_install \
-                  libspoton_install \
-                  icons \
-                  lupdate \
-                  lrelease \
-		  spoton \
-                  translations
