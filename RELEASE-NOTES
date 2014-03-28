@@ -26,7 +26,7 @@
 11.  Review socket() results in spoton_sctp_server::listen().
 12.  Kernel registration is now forced by default.
 13.  Corrected version 0.09.02's item #20. A node without an interface
-     woud not store offline e-mail.
+     would not store offline e-mail.
 
 0.09.02 (03/12/2014)
 
