@@ -2747,7 +2747,7 @@ void spoton_crypt::generateCertificate(RSA *rsa,
     }
 
   commonName = static_cast<unsigned char *>
-    (calloc(address.toString().length() + 1,
+    (calloc(address.toString().toLatin1().length() + 1,
 	    sizeof(unsigned char)));
 
   if(!commonName)
@@ -2758,7 +2758,7 @@ void spoton_crypt::generateCertificate(RSA *rsa,
       goto done_label;
     }
 
-  length = address.toString().length();
+  length = address.toString().toLatin1().length();
   memcpy(commonName,
 	 address.toString().toLatin1().constData(),
 	 length);
