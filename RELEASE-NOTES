@@ -32,6 +32,8 @@
 16.  Removed the archives directory.
 17.  Replaced malloc() with calloc() in libspoton.c. Version increased
      to 0.05.
+18.  Corrected inconsistent toLatin1() usage in
+     spoton_crypt::generateCertificate().
 
 0.09.02 (03/12/2014)
 
