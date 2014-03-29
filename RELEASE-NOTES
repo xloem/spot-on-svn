@@ -30,6 +30,8 @@
 14.  Improper use of memcmp() in spot-on-kernel.cc. Use qstrncmp() instead.
 15.  Removed install targets from Windows project files.
 16.  Removed the archives directory.
+17.  Replaced malloc() with calloc() in libspoton.c. Version increased
+     to 0.05.
 
 0.09.02 (03/12/2014)
 
