@@ -1,3 +1,7 @@
+0.09.04 (04/04/2014)
+
+1.   Use qstrcmp() instead of qstrncmp().
+
 0.09.03 (03/28/2014)
 
 1.   Added a timer to the UI to inspect states of chat windows.
