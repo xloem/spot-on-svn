@@ -154,7 +154,7 @@ static void sig_handler(int signum)
 int main(int argc, char *argv[])
 {
   for(int i = 1; i < argc; i++)
-    if(argv[i] && qstrncmp(argv[i], "--version", 9) == 0)
+    if(argv[i] && qstrcmp(argv[i], "--version") == 0)
       {
 	fprintf(stdout, "Compiled on %s, %s. Version %s.\n",
 		__DATE__, __TIME__, SPOTON_VERSION_STR);
@@ -191,7 +191,7 @@ int main(int argc, char *argv[])
   QSettings settings;
 
   for(int i = 1; i < argc; i++)
-    if(argv[i] && qstrncmp(argv[i], "--vacuum", 8) == 0)
+    if(argv[i] && qstrcmp(argv[i], "--vacuum") == 0)
       spoton_misc::vacuumAllDatabases();
 
   if(!settings.contains("kernel/gcryctl_init_secmem"))
