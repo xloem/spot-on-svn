@@ -174,8 +174,8 @@ QHostAddress spoton_sctp_socket::localAddressAndPort(quint16 *port) const
 	    {
 	      Q_IPV6ADDR tmp;
 
-	      memcpy(&tmp, &sockaddr->sockaddr_in6.sin6_addr.s6_addr,
-		     sizeof(tmp));
+	      memcpy(&tmp.c, &sockaddr->sockaddr_in6.sin6_addr.s6_addr,
+		     sizeof(tmp.c));
 	      address.setAddress(tmp);
 	      address.setScopeId
 		(QString::number(sockaddr->sockaddr_in6.sin6_scope_id));
@@ -242,8 +242,8 @@ QHostAddress spoton_sctp_socket::peerAddressAndPort(quint16 *port) const
 	    {
 	      Q_IPV6ADDR tmp;
 
-	      memcpy(&tmp, &sockaddr->sockaddr_in6.sin6_addr.s6_addr,
-		     sizeof(tmp));
+	      memcpy(&tmp.c, &sockaddr->sockaddr_in6.sin6_addr.s6_addr,
+		     sizeof(tmp.c));
 	      address.setAddress(tmp);
 	      address.setScopeId
 		(QString::number(sockaddr->sockaddr_in6.sin6_scope_id));
