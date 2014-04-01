@@ -3,6 +3,7 @@
 1.   Use qstrcmp() instead of qstrncmp().
 2.   Corrected memcpy() instances in IPv6 branches of SCTP files.
      (Use memcpy(&tmp.c, ...) instead of memcpy(&tmp, ...).)
+3.   qgetenv() returns a byte array.
 
 0.09.03 (03/28/2014)
 
