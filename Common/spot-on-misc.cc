@@ -61,7 +61,7 @@ quint64 spoton_misc::s_dbId = 0;
 
 QString spoton_misc::homePath(void)
 {
-  QString homepath(qgetenv("SPOTON_HOME").trimmed());
+  QByteArray homepath(qgetenv("SPOTON_HOME").trimmed());
 
   if(homepath.isEmpty())
 #ifdef Q_OS_WIN32
@@ -70,7 +70,7 @@ QString spoton_misc::homePath(void)
     return QDir::homePath() + QDir::separator() + ".spot-on";
 #endif
   else
-    return homepath;
+    return homepath.constData();
 }
 
 bool spoton_misc::isGnome(void)
