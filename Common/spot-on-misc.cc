@@ -1896,7 +1896,6 @@ bool spoton_misc::isAcceptedIP(const QHostAddress &address,
 	bool ok = true;
 
 	query.setForwardOnly(true);
-
 	query.prepare("SELECT COUNT(*) FROM listeners_allowed_ips "
 		      "WHERE ip_address_hash IN (?, ?) AND "
 		      "listener_oid = ?");
