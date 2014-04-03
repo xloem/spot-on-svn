@@ -823,11 +823,15 @@ void spoton_rosetta::slotDelete(void)
 	QByteArray data(ui.contacts->itemData(ui.contacts->currentIndex()).
 			toByteArray());
 	QSqlQuery query(db);
+	bool ok = true;
 
 	query.prepare("DELETE FROM friends_public_keys WHERE "
-		      "public_key = ?");
-	query.bindValue(0, data);
-	query.exec();
+		      "public_key_hash = ?");
+	query.bindValue(0, spoton_crypt::sha512Hash(data, &ok).toBase64());
+
+	if(ok)
+	  query.exec();
+
 	spoton_misc::purgeSignatureRelationships(db);
       }
 
@@ -916,10 +920,12 @@ void spoton_rosetta::slotRename(void)
 	query.prepare("UPDATE friends_public_keys "
 		      "SET name = ?, "
 		      "name_changed_by_user = 1 "
-		      "WHERE public_key = ?");
+		      "WHERE public_key_hash = ?");
 	query.bindValue(0, name);
-	query.bindValue(1, data);
-	ok = query.exec();
+	query.bindValue(1, spoton_crypt::sha512Hash(data, &ok).toBase64());
+
+	if(ok)
+	  ok = query.exec();
       }
 
     db.close();

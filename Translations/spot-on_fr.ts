@@ -3460,7 +3460,7 @@ Orientation: %23
     </message>
     <message>
         <location filename="../UI/rosetta.ui" line="36"/>
-        <location filename="../GUI/spot-on-rosetta.cc" line="893"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="897"/>
         <source>&amp;Name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3712,7 +3712,7 @@ Orientation: %23
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-rosetta.cc" line="893"/>
+        <location filename="../GUI/spot-on-rosetta.cc" line="897"/>
         <source>Spot-On: New Name</source>
         <translation type="unfinished"></translation>
     </message>
