@@ -506,16 +506,31 @@ void spoton_rosetta::populateContacts(void)
 	QSqlQuery query(db);
 
 	ui.contacts->clear();
+	query.setForwardOnly(true);
 
 	if(query.exec("SELECT name, public_key FROM friends_public_keys "
 		      "WHERE key_type = 'rosetta'"))
 	  while(query.next())
-	    names.insert(query.value(0).toString(),
-			 query.value(1).toByteArray());
+	    {
+	      QByteArray publicKey;
+	      bool ok = true;
+
+	      if(m_eCrypt)
+		publicKey = m_eCrypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(1).
+					  toByteArray()),
+		   ok);
+	      else
+		ok = false;
+
+	      if(ok)
+		names.insert(query.value(0).toString(),
+			     publicKey);
+	    }
 
 	QMapIterator<QString, QByteArray> it(names);
 
-	while (it.hasNext())
+	while(it.hasNext())
 	  {
 	    it.next();
 	    ui.contacts->addItem(it.key(), it.value());

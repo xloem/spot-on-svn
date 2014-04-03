@@ -12,6 +12,7 @@ friends_public_keys.db:
 
 gemini
 gemini_hash_key
+public_key
 
 idiotes.db:
 

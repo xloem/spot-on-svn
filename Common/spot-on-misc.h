@@ -42,11 +42,12 @@ class spoton_misc
  public:
   static QPair<QByteArray, QByteArray> findGeminiInCosmos
     (const QByteArray &data, const QByteArray &hash, spoton_crypt *crypt);
-  static QByteArray publicKeyFromHash(const QByteArray &publicKeyHash);
+  static QByteArray publicKeyFromHash(const QByteArray &publicKeyHash,
+				      spoton_crypt *crypt);
   static QByteArray publicKeyFromSignaturePublicKeyHash
-    (const QByteArray &signaturePublicKeyHash);
+    (const QByteArray &signaturePublicKeyHash, spoton_crypt *crypt);
   static QByteArray signaturePublicKeyFromPublicKeyHash
-    (const QByteArray &publicKeyHash);
+    (const QByteArray &publicKeyHash, spoton_crypt *crypt);
   static QSqlDatabase database(QString &connectionName);
   static QString countryCodeFromIPAddress(const QString &ipAddress);
   static QString countryCodeFromName(const QString &country);
@@ -78,7 +79,8 @@ class spoton_misc
 				   const QByteArray &publicKey,
 				   const QByteArray &sPublicKey,
 				   const qint64 neighborOid,
-				   const QSqlDatabase &db);
+				   const QSqlDatabase &db,
+				   spoton_crypt *crypt);
   static qint64 participantCount(const QString &keyType);
   static void cleanupDatabases(void);
   static void correctSettingsContainer(QHash<QString, QVariant> settings);

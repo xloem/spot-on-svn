@@ -2600,6 +2600,11 @@ void spoton::slotCopyEmailKeys(void)
   if(!clipboard)
     return;
 
+  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
   QByteArray name;
   QByteArray publicKeyHash;
   QString oid("");
@@ -2646,6 +2651,7 @@ void spoton::slotCopyEmailKeys(void)
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool ok = true;
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT public_key "
@@ -2655,7 +2661,10 @@ void spoton::slotCopyEmailKeys(void)
 
 	if(query.exec())
 	  if(query.next())
-	    publicKey = query.value(0).toByteArray();
+	    publicKey = crypt->decryptedAfterAuthenticated
+	      (QByteArray::fromBase64(query.value(0).
+				      toByteArray()),
+	       ok);
       }
 
     db.close();

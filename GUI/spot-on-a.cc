@@ -1551,7 +1551,7 @@ void spoton::slotQuit(void)
 
   QHashIterator<QString, spoton_crypt *> it(m_crypts);
 
-  while (it.hasNext())
+  while(it.hasNext())
     {
       it.next();
       delete it.value();
@@ -4309,7 +4309,7 @@ void spoton::slotSetPassphrase(void)
 
 	  QHashIterator<QString, spoton_crypt *> it(m_crypts);
 
-	  while (it.hasNext())
+	  while(it.hasNext())
 	    {
 	      it.next();
 	      delete it.value();
@@ -4493,7 +4493,7 @@ void spoton::slotValidatePassphrase(void)
 	  {
 	    QHashIterator<QString, spoton_crypt *> it(m_crypts);
 
-	    while (it.hasNext())
+	    while(it.hasNext())
 	      {
 		it.next();
 		delete it.value();

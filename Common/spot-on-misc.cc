@@ -170,14 +170,12 @@ void spoton_misc::prepareDatabases(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("ALTER TABLE friends_public_keys "
-		   "ADD name_changed_by_user INTEGER NOT NULL DEFAULT 0");
 	query.exec
 	  ("CREATE TABLE IF NOT EXISTS friends_public_keys ("
 	   "gemini TEXT DEFAULT NULL, "
 	   "key_type TEXT NOT NULL DEFAULT 'chat', "
 	   "name TEXT NOT NULL DEFAULT 'unknown', "
-	   "public_key TEXT NOT NULL, "
+	   "public_key BLOB NOT NULL, "
 	   "public_key_hash TEXT PRIMARY KEY NOT NULL, " /*
 							 ** SHA-512
 							 ** hash of
@@ -441,7 +439,6 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS received_novas ("
 		   "nova TEXT NOT NULL, "
 		   "nova_hash TEXT PRIMARY KEY NOT NULL)"); // Keyed hash.
-	query.exec("ALTER TABLE transmitted ADD missing_links BLOB NOT NULL");
 	query.exec("CREATE TABLE IF NOT EXISTS transmitted ("
 		   "file TEXT NOT NULL, "
 		   "hash TEXT NOT NULL, " /*
@@ -664,9 +661,12 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 				       const QByteArray &publicKey,
 				       const QByteArray &sPublicKey,
 				       const qint64 neighborOid,
-				       const QSqlDatabase &db)
+				       const QSqlDatabase &db,
+				       spoton_crypt *crypt)
 {
   if(!db.isOpen())
+    return false;
+  else if(!crypt)
     return false;
 
   QSqlQuery query(db);
@@ -700,7 +700,9 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
   else // Signature keys will be labeled as their type.
     query.bindValue(3, keyType.constData());
 
-  query.bindValue(4, publicKey);
+  if(ok)
+    query.bindValue
+      (4, crypt->encryptedThenHashed(publicKey, &ok).toBase64());
 
   if(ok)
     query.bindValue
@@ -812,7 +814,18 @@ void spoton_misc::retrieveSymmetricData
 			   ok);
 
 		    neighborOid = query.value(1).toString();
-		    publicKey = query.value(2).toByteArray();
+
+		    if(ok && *ok)
+		      publicKey = crypt->decryptedAfterAuthenticated
+			(QByteArray::fromBase64(query.value(2).
+						toByteArray()),
+			 ok);
+		    else if(!ok)
+		      publicKey = crypt->decryptedAfterAuthenticated
+			(QByteArray::fromBase64(query.value(2).
+						toByteArray()),
+			 ok);
+
 		    symmetricKey.resize
 		      (static_cast<int> (symmetricKeyLength));
 		    symmetricKey = spoton_crypt::strongRandomBytes
@@ -1191,8 +1204,12 @@ QString spoton_misc::countryCodeFromName(const QString &country)
   return code;
 }
 
-QByteArray spoton_misc::publicKeyFromHash(const QByteArray &publicKeyHash)
+QByteArray spoton_misc::publicKeyFromHash(const QByteArray &publicKeyHash,
+					  spoton_crypt *crypt)
 {
+  if(!crypt)
+    return QByteArray();
+
   QByteArray publicKey;
   QString connectionName("");
 
@@ -1205,6 +1222,7 @@ QByteArray spoton_misc::publicKeyFromHash(const QByteArray &publicKeyHash)
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool ok = true;
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT public_key "
@@ -1214,7 +1232,10 @@ QByteArray spoton_misc::publicKeyFromHash(const QByteArray &publicKeyHash)
 
 	if(query.exec())
 	  if(query.next())
-	    publicKey = query.value(0).toByteArray();
+	    publicKey = crypt->decryptedAfterAuthenticated
+	      (QByteArray::fromBase64(query.value(0).
+				      toByteArray()),
+	       ok);
       }
   }
 
@@ -1223,8 +1244,11 @@ QByteArray spoton_misc::publicKeyFromHash(const QByteArray &publicKeyHash)
 }
 
 QByteArray spoton_misc::publicKeyFromSignaturePublicKeyHash
-(const QByteArray &signaturePublicKeyHash)
+(const QByteArray &signaturePublicKeyHash, spoton_crypt *crypt)
 {
+  if(!crypt)
+    return QByteArray();
+
   /*
   ** Gather the public key that's associated with the provided
   ** signature public key hash.
@@ -1242,6 +1266,7 @@ QByteArray spoton_misc::publicKeyFromSignaturePublicKeyHash
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool ok = true;
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT public_key "
@@ -1253,7 +1278,10 @@ QByteArray spoton_misc::publicKeyFromSignaturePublicKeyHash
 
 	if(query.exec())
 	  if(query.next())
-	    publicKey = query.value(0).toByteArray();
+	    publicKey = crypt->decryptedAfterAuthenticated
+	      (QByteArray::fromBase64(query.value(0).
+				      toByteArray()),
+	       ok);
       }
   }
 
@@ -1262,8 +1290,11 @@ QByteArray spoton_misc::publicKeyFromSignaturePublicKeyHash
 }
 
 QByteArray spoton_misc::signaturePublicKeyFromPublicKeyHash
-(const QByteArray &publicKeyHash)
+(const QByteArray &publicKeyHash, spoton_crypt *crypt)
 {
+  if(!crypt)
+    return QByteArray();
+
   /*
   ** Gather the signature public key that's associated with the
   ** provided public key hash.
@@ -1281,6 +1312,7 @@ QByteArray spoton_misc::signaturePublicKeyFromPublicKeyHash
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool ok = true;
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT public_key "
@@ -1293,7 +1325,10 @@ QByteArray spoton_misc::signaturePublicKeyFromPublicKeyHash
 
 	if(query.exec())
 	  if(query.next())
-	    publicKey = query.value(0).toByteArray();
+	    publicKey = crypt->decryptedAfterAuthenticated
+	      (QByteArray::fromBase64(query.value(0).
+				      toByteArray()),
+	       ok);
       }
   }
 

@@ -103,6 +103,7 @@ Completed Items
 73.    There may be an issue with the validity of stored e-mail. That is,
        retrieving e-mail from another node may retrieve compromised content.
        Inspect it!
+74.    Encrypt public keys of other participants.
 
 Ignored Items
 

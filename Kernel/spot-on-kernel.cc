@@ -527,7 +527,7 @@ spoton_kernel::~spoton_kernel()
 
   QHashIterator<QString, spoton_crypt *> it(s_crypts);
 
-  while (it.hasNext())
+  while(it.hasNext())
     {
       it.next();
       delete it.value();
