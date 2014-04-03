@@ -292,41 +292,68 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT gemini, gemini_hash_key, public_key_hash FROM "
+	if(query.exec("SELECT gemini, gemini_hash_key, public_key_hash, "
+		      "public_key FROM "
 		      "friends_public_keys"))
 	  while(query.next())
 	    {
 	      QByteArray gemini;
 	      QByteArray geminiHashKey;
+	      QByteArray publicKey;
 	      QSqlQuery updateQuery(db);
 	      bool ok = true;
 
 	      updateQuery.prepare("UPDATE friends_public_keys "
 				  "SET gemini = ?, "
-				  "gemini_hash_key = ? WHERE "
+				  "gemini_hash_key = ?, "
+				  "public_key = ? WHERE "
 				  "public_key_hash = ?");
-	      gemini = oldCrypt->decryptedAfterAuthenticated
-		(QByteArray::fromBase64(query.value(0).toByteArray()),
-		 &ok);
 
-	      if(ok)
-		geminiHashKey = oldCrypt->decryptedAfterAuthenticated
-		  (QByteArray::fromBase64(query.value(1).toByteArray()),
+	      if(!query.isNull(0))
+		gemini = oldCrypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(0).toByteArray()),
 		   &ok);
 
 	      if(ok)
-		updateQuery.bindValue
-		  (0, newCrypt->encryptedThenHashed(gemini,
-						    &ok).toBase64());
+		if(!query.isNull(1))
+		  geminiHashKey = oldCrypt->decryptedAfterAuthenticated
+		    (QByteArray::fromBase64(query.value(1).toByteArray()),
+		     &ok);
+
+	      if(ok)
+		publicKey = oldCrypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(3).toByteArray()),
+		   &ok);
+
+	      if(ok)
+		{
+		  if(query.isNull(0))
+		    updateQuery.bindValue(0, QVariant::ByteArray);
+		  else
+		    updateQuery.bindValue
+		      (0, newCrypt->encryptedThenHashed(gemini,
+							&ok).toBase64());
+		}
+
+	      if(ok)
+		{
+		  if(query.isNull(1))
+		    updateQuery.bindValue(1, QVariant::ByteArray);
+		  else
+		    updateQuery.bindValue
+		      (1,
+		       newCrypt->encryptedThenHashed(geminiHashKey,
+						     &ok).toBase64());
+		}
 
 	      if(ok)
 		updateQuery.bindValue
-		  (1,
-		   newCrypt->encryptedThenHashed(geminiHashKey,
+		  (2,
+		   newCrypt->encryptedThenHashed(publicKey,
 						 &ok).toBase64());
 
 	      updateQuery.bindValue
-		(2, query.value(2));
+		(3, query.value(2));
 
 	      if(ok)
 		updateQuery.exec();

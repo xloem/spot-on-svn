@@ -1756,6 +1756,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 
   QString connectionName("");
   bool share = false;
+  spoton_crypt *s_crypt1 = spoton_kernel::s_crypts.value(keyType, 0);
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -1776,17 +1777,20 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 	    */
 
 	    QSqlQuery query(db);
+	    bool ok = true;
 
 	    query.setForwardOnly(true);
 	    query.prepare("SELECT neighbor_oid "
 			  "FROM friends_public_keys "
-			  "WHERE public_key = ?");
-	    query.bindValue(0, publicKey);
+			  "WHERE public_key_hash = ?");
+	    query.bindValue(0, spoton_crypt::sha512Hash(publicKey,
+							&ok).toBase64());
 
-	    if(query.exec())
-	      if(query.next())
-		if(query.value(0).toLongLong() == -1)
-		  share = true;
+	    if(ok)
+	      if(query.exec())
+		if(query.next())
+		  if(query.value(0).toLongLong() == -1)
+		    share = true;
 
 	    if(!share)
 	      {
@@ -1796,19 +1800,19 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 
 		spoton_misc::saveFriendshipBundle
 		  (keyType, name, publicKey, sPublicKey,
-		   neighborOid, db);
+		   neighborOid, db, s_crypt1);
 		spoton_misc::saveFriendshipBundle
 		  (keyType + "-signature", name, sPublicKey, QByteArray(),
-		   neighborOid, db);
+		   neighborOid, db, s_crypt1);
 	      }
 	  }
 	else
 	  {
 	    spoton_misc::saveFriendshipBundle
-	      (keyType, name, publicKey, sPublicKey, -1, db);
+	      (keyType, name, publicKey, sPublicKey, -1, db, s_crypt1);
 	    spoton_misc::saveFriendshipBundle
 	      (keyType + "-signature", name, sPublicKey, QByteArray(), -1,
-	       db);
+	       db, s_crypt1);
 	  }
       }
 
@@ -1819,11 +1823,8 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 
   if(share)
     {
-      spoton_crypt *s_crypt1 = 0;
-      spoton_crypt *s_crypt2 = 0;
-
-      s_crypt1 = spoton_kernel::s_crypts.value(keyType, 0);
-      s_crypt2 = spoton_kernel::s_crypts.value(keyType + "-signature", 0);
+      spoton_crypt *s_crypt2 = spoton_kernel::s_crypts.value
+	(keyType + "-signature", 0);
 
       if(s_crypt1 && s_crypt2)
 	{
@@ -2199,7 +2200,8 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 							list.value(3) +
 							list.value(4),
 							list.value(0),
-							list.value(5)))
+							list.value(5),
+							s_crypt))
 				      {
 					spoton_misc::logError
 					  ("spoton_neighbor::"
@@ -2375,7 +2377,8 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 						    list.value(1) +
 						    list.value(2),
 						    list.value(0),
-						    list.value(3)))
+						    list.value(3),
+						    s_crypt))
 				  {
 				    spoton_misc::logError
 				      ("spoton_neighbor::"
@@ -2533,7 +2536,8 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 		       isValidSignature(senderPublicKeyHash1 +
 					recipientHash,
 					senderPublicKeyHash1,
-					signature))
+					signature,
+					s_crypt))
 		      {
 			spoton_misc::logError
 			  ("spoton_neighbor::"
@@ -2693,7 +2697,8 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 		       isValidSignature(senderPublicKeyHash1 +
 					recipientHash,
 					senderPublicKeyHash1,
-					signature))
+					signature,
+					s_crypt))
 		      {
 			spoton_misc::logError
 			  ("spoton_neighbor::"
@@ -3314,7 +3319,8 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 							list.value(1) +
 							list.value(2),
 							list.value(0),
-							list.value(3)))
+							list.value(3),
+							s_crypt))
 				      {
 					spoton_misc::logError
 					  ("spoton_neighbor::"
@@ -4512,7 +4518,7 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 			subject +
 			message,
 			senderPublicKeyHash,
-			signature))
+			signature, s_crypt))
       {
 	spoton_misc::logError
 	  ("spoton_neighbor::"

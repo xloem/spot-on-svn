@@ -90,9 +90,9 @@ void spoton::slotAddEtpMagnet(void)
   QString magnet("");
   QStringList list;
   bool ok = true;
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     {
       error = tr("Invalid spoton_crypt object. This is a fatal flaw.");
       goto done_label;
@@ -135,12 +135,12 @@ void spoton::slotAddEtpMagnet(void)
 	query.prepare("INSERT OR REPLACE INTO "
 		      "magnets (magnet, magnet_hash) "
 		      "VALUES (?, ?)");
-	query.bindValue(0, s_crypt->encryptedThenHashed(magnet.toLatin1(),
-							&ok).toBase64());
+	query.bindValue(0, crypt->encryptedThenHashed(magnet.toLatin1(),
+						      &ok).toBase64());
 
 	if(ok)
-	  query.bindValue(1, s_crypt->keyedHash(magnet.toLatin1(),
-						&ok).toBase64());
+	  query.bindValue(1, crypt->keyedHash(magnet.toLatin1(),
+					      &ok).toBase64());
 
 	if(ok)
 	  ok = query.exec();
@@ -174,9 +174,9 @@ void spoton::slotAddEtpMagnet(void)
 
 void spoton::slotPopulateEtpMagnets(void)
 {
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     return;
 
   QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
@@ -232,7 +232,7 @@ void spoton::slotPopulateEtpMagnets(void)
 		QByteArray bytes;
 		bool ok = true;
 
-		bytes = s_crypt->decryptedAfterAuthenticated
+		bytes = crypt->decryptedAfterAuthenticated
 		  (QByteArray::fromBase64(query.value(0).toByteArray()), &ok);
 
 		QCheckBox *checkBox = new QCheckBox();
@@ -537,9 +537,9 @@ void spoton::slotMailRetrievalIntervalChanged(int value)
 
 void spoton::slotResetCertificate(void)
 {
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     return;
 
   QModelIndexList list;
@@ -568,7 +568,7 @@ void spoton::slotResetCertificate(void)
 		      "WHERE OID = ? AND status = 'disconnected' AND "
 		      "user_defined = 1");
 	query.bindValue
-	  (0, s_crypt->encryptedThenHashed(QByteArray(), &ok).toBase64());
+	  (0, crypt->encryptedThenHashed(QByteArray(), &ok).toBase64());
 	query.bindValue(1, list.at(0).data());
 
 	if(ok)
@@ -807,9 +807,9 @@ void spoton::slotTransmit(void)
   bool ok = true;
   bool zero = true;
 
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     {
       error = tr("Invalid spoton_crypt object. This is a fatal flaw.");
       goto done_label;
@@ -867,13 +867,13 @@ void spoton::slotTransmit(void)
 		      "status_control, total_size) "
 		      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue
-	  (0, s_crypt->
+	  (0, crypt->
 	   encryptedThenHashed(m_ui.transmittedFile->text().toUtf8(),
 			       &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (1, s_crypt->
+	    (1, crypt->
 	     encryptedThenHashed
 	     (spoton_crypt::
 	      sha1FileHash(m_ui.transmittedFile->text()).toHex(),
@@ -899,14 +899,14 @@ void spoton::slotTransmit(void)
 	      }
 
 	    query.bindValue
-	      (2, s_crypt->
+	      (2, crypt->
 	       encryptedThenHashed(missingLinks.trimmed().
 				   toLatin1(), &ok).toBase64());
 	  }
 
 	if(ok)
 	  {
-	    encryptedMosaic = s_crypt->encryptedThenHashed(mosaic, &ok);
+	    encryptedMosaic = crypt->encryptedThenHashed(mosaic, &ok);
 
 	    if(ok)
 	      query.bindValue(3, encryptedMosaic.toBase64());
@@ -914,17 +914,17 @@ void spoton::slotTransmit(void)
 
 	if(ok)
 	  query.bindValue
-	    (4, s_crypt->encryptedThenHashed
+	    (4, crypt->encryptedThenHashed
 	     (m_ui.transmitNova->text().trimmed().
 	      toLatin1(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (5, s_crypt->encryptedThenHashed("0", &ok).toBase64());
+	    (5, crypt->encryptedThenHashed("0", &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (6, s_crypt->
+	    (6, crypt->
 	     encryptedThenHashed(QByteArray::number(m_ui.pulseSize->
 						    value()),
 				 &ok).toBase64());
@@ -933,7 +933,7 @@ void spoton::slotTransmit(void)
 
 	if(ok)
 	  query.bindValue
-	    (8, s_crypt->
+	    (8, crypt->
 	     encryptedThenHashed(QByteArray::number(fileInfo.size()),
 				 &ok).toBase64());
 
@@ -949,12 +949,12 @@ void spoton::slotTransmit(void)
 
 	    if(ok)
 	      query.bindValue
-		(0, s_crypt->
+		(0, crypt->
 		 encryptedThenHashed(magnets.at(i), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(1, s_crypt->keyedHash(magnets.at(i), &ok).toBase64());
+		(1, crypt->keyedHash(magnets.at(i), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue(2, encryptedMosaic.toBase64());
@@ -972,7 +972,7 @@ void spoton::slotTransmit(void)
 
 	    query.prepare("DELETE FROM magnets WHERE "
 			  "magnet_hash = ? and one_time_magnet = 1");
-	    query.bindValue(0, s_crypt->keyedHash(magnets.at(i), &ok).
+	    query.bindValue(0, crypt->keyedHash(magnets.at(i), &ok).
 			    toBase64());
 
 	    if(ok)
@@ -1066,9 +1066,9 @@ void spoton::slotShareBuzzMagnet(void)
 
 void spoton::slotPopulateStars(void)
 {
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     return;
 
   QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
@@ -1140,7 +1140,7 @@ void spoton::slotPopulateStars(void)
 		      QByteArray bytes;
 
 		      if(!query.isNull(i))
-			bytes = s_crypt->
+			bytes = crypt->
 			  decryptedAfterAuthenticated
 			  (QByteArray::fromBase64(query.value(i).
 						  toByteArray()),
@@ -1260,7 +1260,7 @@ void spoton::slotPopulateStars(void)
 		    {
 		    }
 		  else if(i == 1)
-		    position = s_crypt->
+		    position = crypt->
 		      decryptedAfterAuthenticated
 		      (QByteArray::fromBase64(query.value(i).
 					      toByteArray()),
@@ -1268,7 +1268,7 @@ void spoton::slotPopulateStars(void)
 		  else if(i == 2 || i == 3 || i == 5 || i == 7)
 		    {
 		      QByteArray bytes
-			(s_crypt->
+			(crypt->
 			 decryptedAfterAuthenticated
 			 (QByteArray::fromBase64(query.value(i).
 						 toByteArray()),
@@ -1531,9 +1531,9 @@ void spoton::slotSecureMemoryPoolChanged(int value)
 
 void spoton::slotAddReceiveNova(void)
 {
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("Invalid spoton_crypt object. This is "
@@ -1568,12 +1568,12 @@ void spoton::slotAddReceiveNova(void)
 	  ("INSERT OR REPLACE INTO received_novas "
 	   "(nova, nova_hash) VALUES (?, ?)");
 	query.bindValue
-	  (0, s_crypt->encryptedThenHashed(nova.toLatin1(),
-					   &ok).toBase64());
+	  (0, crypt->encryptedThenHashed(nova.toLatin1(),
+					 &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (1, s_crypt->keyedHash(nova.toLatin1(), &ok).
+	    (1, crypt->keyedHash(nova.toLatin1(), &ok).
 	     toBase64());
 
 	if(ok)
@@ -1600,9 +1600,9 @@ void spoton::slotAddReceiveNova(void)
 
 void spoton::populateNovas(void)
 {
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     return;
 
   QString connectionName("");
@@ -1631,7 +1631,7 @@ void spoton::populateNovas(void)
 		QString nova("");
 		bool ok = true;
 
-		nova = s_crypt->
+		nova = crypt->
 		  decryptedAfterAuthenticated(QByteArray::
 					      fromBase64(query.
 							 value(0).
@@ -1657,9 +1657,9 @@ void spoton::populateNovas(void)
 
 void spoton::slotDeleteNova(void)
 {
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("Invalid spoton_crypt object. This is "
@@ -1692,7 +1692,7 @@ void spoton::slotDeleteNova(void)
 	query.prepare("DELETE FROM received_novas WHERE "
 		      "nova_hash = ?");
 	query.bindValue
-	  (0, s_crypt->keyedHash(list.at(0)->text().toLatin1(), &ok).
+	  (0, crypt->keyedHash(list.at(0)->text().toLatin1(), &ok).
 	   toBase64());
 
 	if(ok)
@@ -1718,9 +1718,9 @@ void spoton::slotGenerateNova(void)
 
 void spoton::slotTransmittedSelected(void)
 {
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     return;
 
   QString oid("");
@@ -1767,7 +1767,7 @@ void spoton::slotTransmittedSelected(void)
 		QString magnet("");
 		bool ok = true;
 
-		magnet = s_crypt->
+		magnet = crypt->
 		  decryptedAfterAuthenticated(QByteArray::
 					      fromBase64(query.
 							 value(0).
@@ -1892,9 +1892,9 @@ void spoton::askKernelToReadStarBeamKeys(void)
 
 void spoton::slotRewindFile(void)
 {
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     return;
 
   QString oid("");
@@ -1930,7 +1930,7 @@ void spoton::slotRewindFile(void)
 	   "status_control = 'paused' "
 	   "WHERE OID = ? AND status_control <> 'deleted'");
 	query.bindValue
-	  (0, s_crypt->encryptedThenHashed(QByteArray::number(0), &ok).
+	  (0, crypt->encryptedThenHashed(QByteArray::number(0), &ok).
 	   toBase64());
 	query.bindValue(1, oid);
 
@@ -1946,9 +1946,9 @@ void spoton::slotRewindFile(void)
 
 void spoton::slotComputeFileHash(void)
 {
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     return;
 
   QAction *action = qobject_cast<QAction *> (sender());
@@ -2026,7 +2026,7 @@ void spoton::slotComputeFileHash(void)
 	    ("UPDATE transmitted SET hash = ? WHERE OID = ?");
 
 	query.bindValue
-	  (0, s_crypt->encryptedThenHashed(hash.toHex(), &ok).
+	  (0, crypt->encryptedThenHashed(hash.toHex(), &ok).
 	   toBase64());
 	query.bindValue(1, oid);
 
@@ -2600,9 +2600,9 @@ void spoton::slotCopyEmailKeys(void)
   if(!clipboard)
     return;
 
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     return;
 
   QByteArray name;
@@ -2664,7 +2664,7 @@ void spoton::slotCopyEmailKeys(void)
 	    publicKey = crypt->decryptedAfterAuthenticated
 	      (QByteArray::fromBase64(query.value(0).
 				      toByteArray()),
-	       ok);
+	       &ok);
       }
 
     db.close();
@@ -2672,7 +2672,7 @@ void spoton::slotCopyEmailKeys(void)
 
   QSqlDatabase::removeDatabase(connectionName);
   signatureKey = spoton_misc::signaturePublicKeyFromPublicKeyHash
-    (QByteArray::fromBase64(publicKeyHash));
+    (QByteArray::fromBase64(publicKeyHash), crypt);
 
   if(!publicKey.isEmpty() && !signatureKey.isEmpty())
     clipboard->setText
@@ -3040,9 +3040,9 @@ void spoton::slotForceKernelRegistration(bool state)
 
 void spoton::slotImportNeighbors(void)
 {
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("Invalid spoton_crypt object. "
@@ -3269,19 +3269,19 @@ void spoton::slotImportNeighbors(void)
 			query.bindValue(0, QVariant(QVariant::String));
 			query.bindValue(1, QVariant(QVariant::String));
 			query.bindValue
-			  (2, s_crypt->
+			  (2, crypt->
 			   encryptedThenHashed
 			   (hash["protocol"], &ok).toBase64());
 
 			if(ok)
 			  query.bindValue
-			    (3, s_crypt->
+			    (3, crypt->
 			     encryptedThenHashed
 			     (hash["ip_address"], &ok).toBase64());
 
 			if(ok)
 			  query.bindValue
-			    (4, s_crypt->
+			    (4, crypt->
 			     encryptedThenHashed
 			     (hash["port"], &ok).toBase64());
 
@@ -3289,13 +3289,13 @@ void spoton::slotImportNeighbors(void)
 
 			if(ok)
 			  query.bindValue
-			    (6, s_crypt->
+			    (6, crypt->
 			     encryptedThenHashed
 			     (hash["scope_id"], &ok).toBase64());
 
 			if(ok)
 			  query.bindValue
-			    (7, s_crypt->
+			    (7, crypt->
 			     keyedHash(QByteArray() + // Proxy Hostname
 				       QByteArray() + // Proxy Port
 				       hash["ip_address"] +
@@ -3313,55 +3313,55 @@ void spoton::slotImportNeighbors(void)
 
 			if(ok)
 			  query.bindValue
-			    (9, s_crypt->
+			    (9, crypt->
 			     encryptedThenHashed
 			     (country.toLatin1(), &ok).toBase64());
 
 			if(ok)
 			  query.bindValue
-			    (10, s_crypt->
+			    (10, crypt->
 			     keyedHash(hash["ip_address"], &ok).
 			     toBase64());
 
 			if(ok)
 			  query.bindValue
-			    (11, s_crypt->
+			    (11, crypt->
 			     keyedHash(country.remove(" ").toLatin1(), &ok).
 			     toBase64());
 
 			if(ok)
 			  query.bindValue
-			    (12, s_crypt->
+			    (12, crypt->
 			     encryptedThenHashed(QByteArray(), &ok).
 			     toBase64());
 
 			if(ok)
 			  query.bindValue
-			    (13, s_crypt->
+			    (13, crypt->
 			     encryptedThenHashed(QByteArray(), &ok).
 			     toBase64());
 
 			if(ok)
 			  query.bindValue
-			    (14, s_crypt->encryptedThenHashed
+			    (14, crypt->encryptedThenHashed
 			     (QByteArray(),
 			      &ok).toBase64());
 
 			if(ok)
 			  query.bindValue
-			    (15, s_crypt->encryptedThenHashed
+			    (15, crypt->encryptedThenHashed
 			     (QByteArray("NoProxy"),
 			      &ok).toBase64());
 
 			if(ok)
 			  query.bindValue
-			    (16, s_crypt->encryptedThenHashed
+			    (16, crypt->encryptedThenHashed
 			     (QByteArray(), &ok).
 			     toBase64());
 
 			if(ok)
 			  query.bindValue
-			    (17, s_crypt->
+			    (17, crypt->
 			     encryptedThenHashed
 			     ("{00000000-0000-0000-0000-"
 			      "000000000000}", &ok).
@@ -3369,7 +3369,7 @@ void spoton::slotImportNeighbors(void)
 
 			if(ok)
 			  query.bindValue
-			    (18, s_crypt->
+			    (18, crypt->
 			     encryptedThenHashed
 			     (hash["echo_mode"], &ok).toBase64());
 
@@ -3383,7 +3383,7 @@ void spoton::slotImportNeighbors(void)
 
 			if(ok)
 			  query.bindValue
-			    (21, s_crypt->encryptedThenHashed
+			    (21, crypt->encryptedThenHashed
 			     (QByteArray(),
 			      &ok).toBase64());
 
@@ -3394,26 +3394,26 @@ void spoton::slotImportNeighbors(void)
 
 			if(ok)
 			  query.bindValue
-			    (23, s_crypt->encryptedThenHashed
+			    (23, crypt->encryptedThenHashed
 			     (QByteArray(),
 			      &ok).toBase64());
 
 			if(ok)
 			  query.bindValue
-			    (24, s_crypt->encryptedThenHashed
+			    (24, crypt->encryptedThenHashed
 			     (QByteArray(),
 			      &ok).toBase64());
 
 			if(ok)
 			  query.bindValue
 			    (25,
-			     s_crypt->encryptedThenHashed
+			     crypt->encryptedThenHashed
 			     (hash["transport"],
 			      &ok).toBase64());
 
 			if(ok)
 			  query.bindValue
-			    (26, s_crypt->encryptedThenHashed
+			    (26, crypt->encryptedThenHashed
 			     (hash["orientation"],
 			      &ok).toBase64());
 

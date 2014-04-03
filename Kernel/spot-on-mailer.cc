@@ -151,7 +151,11 @@ void spoton_mailer::slotTimeout(void)
 
 		  if((ok = query.exec()))
 		    if((ok = query.next()))
-		      publicKey = query.value(0).toByteArray();
+		      publicKey = s_crypt->
+			decryptedAfterAuthenticated
+			(QByteArray::fromBase64(query.value(0).
+						toByteArray()),
+			 &ok);
 		}
 
 	      if(ok)
@@ -205,7 +209,10 @@ void spoton_mailer::slotRetrieveMail(const QByteArray &data,
   ** public key.
   */
 
-  QByteArray publicKey(spoton_misc::publicKeyFromHash(publicKeyHash));
+  QByteArray publicKey
+    (spoton_misc::publicKeyFromHash(publicKeyHash,
+				    spoton_kernel::s_crypts.value("email",
+								  0)));
 
   if(publicKey.isEmpty())
     return;
@@ -216,7 +223,7 @@ void spoton_mailer::slotRetrieveMail(const QByteArray &data,
     return;
 
   publicKey = spoton_misc::publicKeyFromSignaturePublicKeyHash
-    (publicKeyHash);
+    (publicKeyHash, spoton_kernel::s_crypts.value("email", 0));
 
   if(publicKey.isEmpty())
     return;

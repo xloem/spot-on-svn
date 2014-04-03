@@ -1726,6 +1726,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	  while(query.next())
 	    {
 	      QByteArray data;
+	      QByteArray publicKey;
 	      QPair<QByteArray, QByteArray> gemini;
 	      bool ok = true;
 
@@ -1733,6 +1734,13 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		gemini.first = s_crypt1->decryptedAfterAuthenticated
 		  (QByteArray::fromBase64(query.
 					  value(0).
+					  toByteArray()),
+		   &ok);
+
+	      if(ok)
+		publicKey = s_crypt1->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.
+					  value(1).
 					  toByteArray()),
 		   &ok);
 
@@ -1758,7 +1766,6 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	      QByteArray keyInformation;
 	      QByteArray name(setting("gui/nodeName", "unknown").
 			      toByteArray().trimmed());
-	      QByteArray publicKey(query.value(1).toByteArray());
 	      QByteArray symmetricKey;
 	      QByteArray symmetricKeyAlgorithm(cipherType);
 	      size_t symmetricKeyLength = spoton_crypt::cipherKeyLength
@@ -1994,14 +2001,17 @@ void spoton_kernel::slotRetrieveMail(void)
 	      QByteArray hashKey;
 	      QByteArray keyInformation;
 	      QByteArray message(spoton_crypt::strongRandomBytes(512));
-	      QByteArray publicKey
-		(query.value(0).toByteArray());
+	      QByteArray publicKey;
 	      QByteArray signature;
 	      QByteArray symmetricKey;
 	      QByteArray symmetricKeyAlgorithm(cipherType);
 	      bool ok = true;
 	      size_t symmetricKeyLength = spoton_crypt::cipherKeyLength
 		(symmetricKeyAlgorithm);
+
+	      publicKey = s_crypt->decryptedAfterAuthenticated
+		(QByteArray::fromBase64(query.value(0).toByteArray()),
+		 &ok);
 
 	      if(symmetricKeyLength > 0)
 		{
@@ -2020,12 +2030,13 @@ void spoton_kernel::slotRetrieveMail(void)
 		  continue;
 		}
 
-	      keyInformation = spoton_crypt::publicKeyEncrypt
-		(QByteArray("0002").toBase64() + "\n" +
-		 symmetricKey.toBase64() + "\n" +
-		 hashKey.toBase64() + "\n" +
-		 symmetricKeyAlgorithm.toBase64(),
-		 publicKey, &ok);
+	      if(ok)
+		keyInformation = spoton_crypt::publicKeyEncrypt
+		  (QByteArray("0002").toBase64() + "\n" +
+		   symmetricKey.toBase64() + "\n" +
+		   hashKey.toBase64() + "\n" +
+		   symmetricKeyAlgorithm.toBase64(),
+		   publicKey, &ok);
 
 	      if(ok)
 		{
@@ -2166,13 +2177,16 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	      QByteArray keyInformation2;
 	      QByteArray messageCode1;
 	      QByteArray messageCode2;
-	      QByteArray participantPublicKey
-		(query.value(0).toByteArray());
+	      QByteArray participantPublicKey;
 	      QByteArray symmetricKey;
 	      QByteArray symmetricKeyAlgorithm(cipherType);
 	      bool ok = true;
 	      size_t symmetricKeyLength = spoton_crypt::cipherKeyLength
 		(symmetricKeyAlgorithm);
+
+	      participantPublicKey = s_crypt1->decryptedAfterAuthenticated
+		(QByteArray::fromBase64(query.value(0).toByteArray()),
+		 &ok);
 
 	      if(symmetricKeyLength > 0)
 		{
@@ -2191,12 +2205,13 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		  continue;
 		}
 
-	      keyInformation1 = spoton_crypt::publicKeyEncrypt
-		(QByteArray("0001a").toBase64() + "\n" +
-		 symmetricKey.toBase64() + "\n" +
-		 hashKey1.toBase64() + "\n" +
-		 symmetricKeyAlgorithm.toBase64(),
-		 participantPublicKey, &ok);
+	      if(ok)
+		keyInformation1 = spoton_crypt::publicKeyEncrypt
+		  (QByteArray("0001a").toBase64() + "\n" +
+		   symmetricKey.toBase64() + "\n" +
+		   hashKey1.toBase64() + "\n" +
+		   symmetricKeyAlgorithm.toBase64(),
+		   participantPublicKey, &ok);
 
 	      if(ok)
 		{
@@ -2864,6 +2879,7 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 	if(query.exec())
 	  if(query.next())
 	    {
+	      QByteArray publicKey;
 	      QPair<QByteArray, QByteArray> gemini;
 
 	      if(!query.isNull(0))
@@ -2871,6 +2887,11 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 		  (QByteArray::fromBase64(query.
 					  value(0).
 					  toByteArray()),
+		   &ok);
+
+	      if(ok)
+		publicKey = s_crypt1->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(1).toByteArray()),
 		   &ok);
 
 	      if(ok)
@@ -2883,7 +2904,6 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 
 	      QByteArray hashKey;
 	      QByteArray keyInformation;
-	      QByteArray publicKey(query.value(1).toByteArray());
 	      QByteArray symmetricKey;
 	      QByteArray symmetricKeyAlgorithm("aes256");
 	      size_t symmetricKeyLength = 0;

@@ -71,7 +71,8 @@ class spoton_misc
   static bool isValidBuzzMagnetData(const QByteArray &data);
   static bool isValidSignature(const QByteArray &data,
 			       const QByteArray &publicKeyHash,
-			       const QByteArray &signature);
+			       const QByteArray &signature,
+			       spoton_crypt *crypt);
   static bool isValidStarBeamMagnet(const QByteArray &magnet);
   static bool isValidStarBeamMissingLinksMagnet(const QByteArray &magnet);
   static bool saveFriendshipBundle(const QByteArray &keyType,

@@ -51,7 +51,7 @@ class spoton_starbeam_reader: public QObject
   qint64 m_id;
   qint64 m_position;
   QHash<QString, QByteArray> elementsFromMagnet(const QByteArray &magnet,
-						spoton_crypt *s_crypt);
+						spoton_crypt *crypt);
   void populateMagnets(const QSqlDatabase &db);
   void pulsate(const QString &fileName,
 	       const QString &pulseSize,
@@ -59,7 +59,7 @@ class spoton_starbeam_reader: public QObject
 	       const QByteArray &magnet,
 	       const QByteArray &nova,
 	       const QSqlDatabase &db,
-	       spoton_crypt *s_crypt);
+	       spoton_crypt *crypt);
   void savePositionAndStatus(const QString &status, const QSqlDatabase &db);
 
  private slots:

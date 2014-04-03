@@ -459,13 +459,15 @@ void spoton_rosetta::slotAddContact(void)
 					     mPublicKey,
 					     sPublicKey,
 					     -1,
-					     db))
+					     db,
+					     m_eCrypt))
 	  if(spoton_misc::saveFriendshipBundle(keyType + "-signature",
 					       name,
 					       sPublicKey,
 					       QByteArray(),
 					       -1,
-					       db))
+					       db,
+					       m_eCrypt))
 	    ui.newContact->selectAll();
       }
 
@@ -519,7 +521,7 @@ void spoton_rosetta::populateContacts(void)
 		publicKey = m_eCrypt->decryptedAfterAuthenticated
 		  (QByteArray::fromBase64(query.value(1).
 					  toByteArray()),
-		   ok);
+		   &ok);
 	      else
 		ok = false;
 
@@ -768,7 +770,8 @@ void spoton_rosetta::slotConvert(void)
 	    error = tr("The message was not signed.");
 	  else if(!spoton_misc::isValidSignature(publicKeyHash + data,
 						 publicKeyHash,
-						 signature))
+						 signature,
+						 m_eCrypt))
 	    error = tr("Invalid signature. Perhaps your contacts are "
 		       "not current.");
 	}

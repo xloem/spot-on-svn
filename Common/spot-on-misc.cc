@@ -1235,7 +1235,7 @@ QByteArray spoton_misc::publicKeyFromHash(const QByteArray &publicKeyHash,
 	    publicKey = crypt->decryptedAfterAuthenticated
 	      (QByteArray::fromBase64(query.value(0).
 				      toByteArray()),
-	       ok);
+	       &ok);
       }
   }
 
@@ -1281,7 +1281,7 @@ QByteArray spoton_misc::publicKeyFromSignaturePublicKeyHash
 	    publicKey = crypt->decryptedAfterAuthenticated
 	      (QByteArray::fromBase64(query.value(0).
 				      toByteArray()),
-	       ok);
+	       &ok);
       }
   }
 
@@ -1328,7 +1328,7 @@ QByteArray spoton_misc::signaturePublicKeyFromPublicKeyHash
 	    publicKey = crypt->decryptedAfterAuthenticated
 	      (QByteArray::fromBase64(query.value(0).
 				      toByteArray()),
-	       ok);
+	       &ok);
       }
   }
 
@@ -1856,7 +1856,8 @@ qint64 spoton_misc::participantCount(const QString &keyType)
 
 bool spoton_misc::isValidSignature(const QByteArray &data,
 				   const QByteArray &publicKeyHash,
-				   const QByteArray &signature)
+				   const QByteArray &signature,
+				   spoton_crypt *crypt)
 {
   /*
   ** We must locate the signature public key that's associated with the
@@ -1864,7 +1865,8 @@ bool spoton_misc::isValidSignature(const QByteArray &data,
   ** non-signature public key.
   */
 
-  QByteArray publicKey(signaturePublicKeyFromPublicKeyHash(publicKeyHash));
+  QByteArray publicKey
+    (signaturePublicKeyFromPublicKeyHash(publicKeyHash, crypt));
 
   if(publicKey.isEmpty())
     return false;

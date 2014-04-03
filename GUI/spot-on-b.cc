@@ -1560,13 +1560,15 @@ void spoton::addFriendsKey(const QByteArray &key)
 						 mPublicKey,
 						 sPublicKey,
 						 -1,
-						 db))
+						 db,
+						 m_crypts.value("chat", 0)))
 	      if(spoton_misc::saveFriendshipBundle(keyType + "-signature",
 						   name,
 						   sPublicKey,
 						   QByteArray(),
 						   -1,
-						   db))
+						   db,
+						   m_crypts.value("chat", 0)))
 		m_ui.friendInformation->selectAll();
 	  }
 
@@ -1831,14 +1833,16 @@ void spoton::addFriendsKey(const QByteArray &key)
 						 list.value(4), // Signature
                                                                 // Public Key
 						 -1,            // Neighbor OID
-						 db))
+						 db,
+						 m_crypts.value("chat", 0)))
 	      if(spoton_misc::
 		 saveFriendshipBundle(list.value(0) + "-signature",
 				      list.value(1), // Name
 				      list.value(4), // Signature Public Key
 				      QByteArray(),  // Signature Public Key
 				      -1,            // Neighbor OID
-				      db))
+				      db,
+				      m_crypts.value("chat", 0)))
 		m_ui.friendInformation->selectAll();
 	  }
 
@@ -2283,9 +2287,9 @@ void spoton::slotSendMail(void)
 
 void spoton::slotDeleteAllBlockedNeighbors(void)
 {
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     return;
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -2317,7 +2321,7 @@ void spoton::slotDeleteAllBlockedNeighbors(void)
 	      QByteArray ip;
 	      bool ok = true;
 
-	      ip = s_crypt->
+	      ip = crypt->
 		decryptedAfterAuthenticated
 		(QByteArray::fromBase64(query.value(0).
 					toByteArray()),
@@ -2563,9 +2567,9 @@ void spoton::slotShareURLPublicKey(void)
 
 void spoton::slotDeleteAllUuids(void)
 {
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     return;
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -2596,7 +2600,7 @@ void spoton::slotDeleteAllUuids(void)
 	      QByteArray uuid;
 	      bool ok = true;
 
-	      uuid = s_crypt->
+	      uuid = crypt->
 		decryptedAfterAuthenticated
 		(QByteArray::fromBase64(query.value(0).
 					toByteArray()),
@@ -4064,10 +4068,10 @@ void spoton::slotJoinBuzzChannel(void)
   bool found = false;
   bool ok = true;
   spoton_buzzpage *page = 0;
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
   unsigned long iterationCount = m_ui.buzzIterationCount->value();
 
-  if(!s_crypt)
+  if(!crypt)
     {
       error = tr("Invalid spoton_crypt object. This is a fatal flaw.");
       goto done_label;
@@ -4140,7 +4144,7 @@ void spoton::slotJoinBuzzChannel(void)
   m_ui.buzzHashType->setCurrentIndex(0);
   page = new spoton_buzzpage
     (&m_kernelSocket, channel, channelSalt, channelType,
-     id, iterationCount, hashKey, hashType, keys.first, s_crypt, this);
+     id, iterationCount, hashKey, hashType, keys.first, crypt, this);
   connect(&m_buzzStatusTimer,
 	  SIGNAL(timeout(void)),
 	  page,
@@ -4344,9 +4348,9 @@ void spoton::slotRemoveEmailParticipants(void)
 
 void spoton::slotAddAcceptedIP(void)
 {
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("Invalid spoton_crypt object. This is "
@@ -4407,23 +4411,23 @@ void spoton::slotAddAcceptedIP(void)
 	if(m_ui.acceptedIP->text().trimmed() == "Any")
 	  {
 	    query.bindValue
-	      (0, s_crypt->encryptedThenHashed("Any", &ok).toBase64());
+	      (0, crypt->encryptedThenHashed("Any", &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(1, s_crypt->keyedHash("Any", &ok).
+		(1, crypt->keyedHash("Any", &ok).
 		 toBase64());
 	  }
 	else
 	  {
 	    query.bindValue
-	      (0, s_crypt->encryptedThenHashed(ip.toString().toLatin1(),
-					       &ok).toBase64());
+	      (0, crypt->encryptedThenHashed(ip.toString().toLatin1(),
+					     &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(1, s_crypt->keyedHash(ip.toString().
-				       toLatin1(), &ok).
+		(1, crypt->keyedHash(ip.toString().
+				     toLatin1(), &ok).
 		 toBase64());
 	  }
 
@@ -4449,9 +4453,9 @@ void spoton::slotAddAcceptedIP(void)
 
 void spoton::slotDeleteAccepedIP(void)
 {
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("Invalid spoton_crypt object. This is "
@@ -4512,8 +4516,8 @@ void spoton::slotDeleteAccepedIP(void)
 	query.prepare("DELETE FROM listeners_allowed_ips WHERE "
 		      "ip_address_hash = ? AND listener_oid = ?");
 	query.bindValue
-	  (0, s_crypt->keyedHash(ip.toLatin1(),
-				 &ok).toBase64());
+	  (0, crypt->keyedHash(ip.toLatin1(),
+			       &ok).toBase64());
 	query.bindValue(1, oid);
 
 	if(ok)
@@ -4549,7 +4553,7 @@ void spoton::slotDeleteAccepedIP(void)
 			  "user_defined = 0");
 	    query.bindValue
 	      (0,
-	       s_crypt->keyedHash(ip.toLatin1(), &ok).
+	       crypt->keyedHash(ip.toLatin1(), &ok).
 	       toBase64());
 
 	    if(ok)
@@ -4607,9 +4611,9 @@ void spoton::slotAddAccount(void)
   QString password(m_ui.accountPassword->text());
   bool ok = true;
   int row = -1;
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     {
       error = tr("Invalid spoton_crypt object. This is a fatal flaw.");
       goto done_label;
@@ -4668,17 +4672,17 @@ void spoton::slotAddAccount(void)
 		      "one_time_account) "
 		      "VALUES (?, ?, ?, ?, ?)");
 	query.bindValue
-	  (0, s_crypt->encryptedThenHashed(name.toLatin1(), &ok).toBase64());
+	  (0, crypt->encryptedThenHashed(name.toLatin1(), &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (1, s_crypt->keyedHash(name.toLatin1(),
-				   &ok).toBase64());
+	    (1, crypt->keyedHash(name.toLatin1(),
+				 &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (2, s_crypt->encryptedThenHashed(password.toLatin1(),
-					     &ok).toBase64());
+	    (2, crypt->encryptedThenHashed(password.toLatin1(),
+					   &ok).toBase64());
 
 	query.bindValue(3, oid);
 	query.bindValue(4, m_ui.ota->isChecked() ? 1 : 0);
@@ -4712,9 +4716,9 @@ void spoton::slotAddAccount(void)
 
 void spoton::slotDeleteAccount(void)
 {
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("Invalid spoton_crypt object. This is "
@@ -4767,7 +4771,7 @@ void spoton::slotDeleteAccount(void)
 	query.prepare("DELETE FROM listeners_accounts WHERE "
 		      "account_name_hash = ? AND listener_oid = ?");
 	query.bindValue
-	  (0, s_crypt->keyedHash(list.at(0)->text().toLatin1(), &ok).
+	  (0, crypt->keyedHash(list.at(0)->text().toLatin1(), &ok).
 	   toBase64());
 	query.bindValue(1, oid);
 
@@ -4784,9 +4788,9 @@ void spoton::slotDeleteAccount(void)
 
 void spoton::populateAccounts(const QString &listenerOid)
 {
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     return;
 
   QString connectionName("");
@@ -4826,7 +4830,7 @@ void spoton::populateAccounts(const QString &listenerOid)
 		QString name("");
 		bool ok = true;
 
-		name = s_crypt->decryptedAfterAuthenticated
+		name = crypt->decryptedAfterAuthenticated
 		  (QByteArray::fromBase64(query.value(0).toByteArray()),
 		   &ok).constData();
 
@@ -4854,9 +4858,9 @@ void spoton::populateAccounts(const QString &listenerOid)
 
 void spoton::populateListenerIps(const QString &listenerOid)
 {
-  spoton_crypt *s_crypt = m_crypts.value("chat", 0);
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
 
-  if(!s_crypt)
+  if(!crypt)
     return;
 
   QString connectionName("");
@@ -4896,7 +4900,7 @@ void spoton::populateListenerIps(const QString &listenerOid)
 		QString ip("");
 		bool ok = true;
 
-		ip = s_crypt->decryptedAfterAuthenticated
+		ip = crypt->decryptedAfterAuthenticated
 		  (QByteArray::fromBase64(query.value(0).toByteArray()),
 		   &ok).constData();
 
