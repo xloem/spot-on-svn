@@ -1112,7 +1112,6 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
 
   int seconds = m_startTime.secsTo(QDateTime::currentDateTime());
 
-  query.prepare("PRAGMA synchronous = OFF");
   query.prepare("UPDATE neighbors SET "
 		"bytes_read = ?, "
 		"bytes_written = ?, "
@@ -3419,7 +3418,6 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
 		QSqlQuery query(db);
 		bool ok = true;
 
-		query.prepare("PRAGMA synchronous = OFF");
 		query.prepare("UPDATE neighbors SET uuid = ? "
 			      "WHERE OID = ?");
 		query.bindValue
@@ -4126,7 +4124,6 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash)
       {
 	QSqlQuery query(db);
 
-	query.prepare("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE friends_public_keys SET "
 		      "last_status_update = ? "
 		      "WHERE neighbor_oid = -1 AND "
@@ -4168,8 +4165,6 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 
 	if(status.isEmpty())
 	  {
-	    query.prepare("PRAGMA synchronous = OFF");
-
 	    if(name.isEmpty())
 	      {
 		query.prepare("UPDATE friends_public_keys SET "
@@ -4204,8 +4199,6 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 	  }
 	else
 	  {
-	    query.prepare("PRAGMA synchronous = OFF");
-
 	    if(name.isEmpty())
 	      {
 		query.prepare("UPDATE friends_public_keys SET "
