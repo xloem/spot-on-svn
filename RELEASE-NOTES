@@ -8,7 +8,8 @@
      remove friends_public_keys.db. Apologies.
 5.   Corrected re-encoding of participants data. The current
      implementation neglected empty gemini data.
-6.   SELECT SQL queries should be forward only.
+6.   Select SQL queries should be forward only.
+7.   All database writes are not synchronized.
 
 0.09.03 (03/28/2014)
 
