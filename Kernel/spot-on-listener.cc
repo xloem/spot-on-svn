@@ -147,7 +147,25 @@ spoton_listener::spoton_listener(const QString &ipAddress,
   m_address.setScopeId(scopeId);
   m_certificate = certificate;
   m_echoMode = echoMode;
-  m_externalAddress = new spoton_external_address(this);
+
+  try
+    {
+      m_externalAddress = new spoton_external_address(this);
+    }
+  catch(std::bad_alloc &exception)
+    {
+      if(m_sctpServer)
+	m_sctpServer->deleteLater();
+
+      if(m_tcpServer)
+	m_tcpServer->deleteLater();
+
+      if(m_udpServer)
+	m_udpServer->deleteLater();
+
+      throw;
+    }
+
   m_keySize = qAbs(keySize);
 
   if(m_keySize != 0)

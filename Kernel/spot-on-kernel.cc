@@ -1012,6 +1012,7 @@ void spoton_kernel::prepareNeighbors(void)
 			    }
 			  catch(std::bad_alloc &exception)
 			    {
+			      neighbor = 0;
 			      spoton_misc::logError
 				("spoton_kernel::prepareNeighbors(): "
 				 "memory failure.");
