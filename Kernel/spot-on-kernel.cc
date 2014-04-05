@@ -237,17 +237,26 @@ int main(int argc, char *argv[])
 
   if(err == LIBSPOTON_ERROR_NONE)
     {
-      spoton_kernel::s_kernel = new spoton_kernel();
-#ifdef SPOTON_USE_HIDDEN_KERNEL_WINDOW
-      QMainWindow window;
+      try
+	{
+	  spoton_kernel::s_kernel = new spoton_kernel();
 
-      window.showMinimized();
-      QObject::connect(&qapplication,
-		       SIGNAL(lastWindowClosed(void)),
-		       spoton_kernel::s_kernel,
-		       SLOT(deleteLater(void)));
+#ifdef SPOTON_USE_HIDDEN_KERNEL_WINDOW
+	  QMainWindow window;
+
+	  window.showMinimized();
+	  QObject::connect(&qapplication,
+			   SIGNAL(lastWindowClosed(void)),
+			   spoton_kernel::s_kernel,
+			   SLOT(deleteLater(void)));
 #endif
-      return qapplication.exec();
+	  return qapplication.exec();
+	}
+      catch(std::bad_alloc &exception)
+	{
+	  qDebug() << "Critical memory failure. Exiting.";
+	  return EXIT_FAILURE;
+	}
     }
   else
     return EXIT_FAILURE;
@@ -724,24 +733,37 @@ void spoton_kernel::prepareListeners(void)
 				maximumClients = 1;
 			    }
 
-			  listener = new spoton_listener
-			    (list.value(0).constData(),
-			     list.value(1).constData(),
-			     list.value(2).constData(),
-			     maximumClients,
-			     id,
-			     list.value(3).constData(),
-			     static_cast<int> (query.value(6).toLongLong()),
-			     certificate,
-			     privateKey,
-			     publicKey,
-			     static_cast<int> (query.value(10).toLongLong()),
-			     query.value(11).toLongLong(),
-			     query.value(12).toLongLong(),
-			     transport.constData(),
-			     static_cast<int> (query.value(14).toLongLong()),
-			     orientation.constData(),
-			     this);
+			  try
+			    {
+			      listener = new spoton_listener
+				(list.value(0).constData(),
+				 list.value(1).constData(),
+				 list.value(2).constData(),
+				 maximumClients,
+				 id,
+				 list.value(3).constData(),
+				 static_cast<int> (query.value(6).
+						   toLongLong()),
+				 certificate,
+				 privateKey,
+				 publicKey,
+				 static_cast<int> (query.value(10).
+						   toLongLong()),
+				 query.value(11).toLongLong(),
+				 query.value(12).toLongLong(),
+				 transport.constData(),
+				 static_cast<int> (query.value(14).
+						   toLongLong()),
+				 orientation.constData(),
+				 this);
+			    }
+			  catch(std::bad_alloc &exception)
+			    {
+			      listener = 0;
+			      spoton_misc::logError
+				("spoton_kernel::prepareListeners(): "
+				 "memory failure.");
+			    }
 			}
 
 		      if(listener)
@@ -964,26 +986,36 @@ void spoton_kernel::prepareNeighbors(void)
 			  else
 			    proxy.setType(QNetworkProxy::NoProxy);
 
-			  neighbor = new spoton_neighbor
-			    (proxy,
-			     list.value(0).toByteArray().constData(),
-			     list.value(1).toByteArray().constData(),
-			     list.value(2).toByteArray().constData(),
-			     id,
-			     userDefined,
-			     static_cast<int> (list.value(10).toLongLong()),
-			     list.value(11).toLongLong(),
-			     list.value(12).toLongLong(),
-			     list.value(13).toByteArray().constData(),
-			     list.value(14).toByteArray(),
-			     list.value(15).toBool(),
-			     list.value(16).toByteArray().constData(),
-			     list.value(17).toBool(),
-			     list.value(18).toByteArray(),
-			     list.value(19).toByteArray(),
-			     list.value(20).toString(),
-			     list.value(21).toString(),
-			     this);
+			  try
+			    {
+			      neighbor = new spoton_neighbor
+				(proxy,
+				 list.value(0).toByteArray().constData(),
+				 list.value(1).toByteArray().constData(),
+				 list.value(2).toByteArray().constData(),
+				 id,
+				 userDefined,
+				 static_cast<int> (list.value(10).
+						   toLongLong()),
+				 list.value(11).toLongLong(),
+				 list.value(12).toLongLong(),
+				 list.value(13).toByteArray().constData(),
+				 list.value(14).toByteArray(),
+				 list.value(15).toBool(),
+				 list.value(16).toByteArray().constData(),
+				 list.value(17).toBool(),
+				 list.value(18).toByteArray(),
+				 list.value(19).toByteArray(),
+				 list.value(20).toString(),
+				 list.value(21).toString(),
+				 this);
+			    }
+			  catch(std::bad_alloc &exception)
+			    {
+			      spoton_misc::logError
+				("spoton_kernel::prepareNeighbors(): "
+				 "memory failure.");
+			    }
 			}
 
 		      if(neighbor)
@@ -1075,8 +1107,15 @@ void spoton_kernel::prepareStarbeamReaders(void)
 
 		  if(!m_starbeamReaders.contains(id))
 		    {
-		      starbeam = new spoton_starbeam_reader(id, this);
-		      m_starbeamReaders.insert(id, starbeam);
+		      starbeam = new (std::nothrow) spoton_starbeam_reader
+			(id, this);
+
+		      if(starbeam)
+			m_starbeamReaders.insert(id, starbeam);
+		      else
+			spoton_misc::logError
+			  ("spoton_misc::prepareStarbeamReaders(): "
+			   "memory failure.");
 		    }
 		}
 	      else
@@ -2410,17 +2449,24 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 	      if(!s_crypts.contains(list.at(i)))
 		s_crypts.insert
 		  (list.at(i),
-		   new spoton_crypt(setting("gui/cipherType",
-					    "aes256").toString(),
-				    setting("gui/hashType",
-					    "sha512").toString(),
-				    QByteArray(),
-				    keys.first,
-				    keys.second,
-				    setting("gui/saltLength", 512).toInt(),
-				    setting("gui/iterationCount",
-					    10000).toInt(),
-				    list.at(i)));
+		   new (std::nothrow) spoton_crypt
+		   (setting("gui/cipherType",
+			    "aes256").toString(),
+		    setting("gui/hashType",
+			    "sha512").toString(),
+		    QByteArray(),
+		    keys.first,
+		    keys.second,
+		    setting("gui/saltLength", 512).toInt(),
+		    setting("gui/iterationCount",
+			    10000).toInt(),
+		    list.at(i)));
+
+	    for(int i = 0; i < list.size(); i++)
+	      if(!s_crypts.value(list.at(i), 0))
+		spoton_misc::logError
+		  ("spoton_kernel::initializeSecurityContainers(): "
+		   "potential memory failure. Critical!");
 	  }
       }
 

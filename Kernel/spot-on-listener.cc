@@ -613,16 +613,26 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
     }
 
   if(error.isEmpty())
-    neighbor = new spoton_neighbor
-      (socketDescriptor, certificate, privateKey,
-       m_echoMode, m_useAccounts, m_id, m_maximumBufferSize,
-       m_maximumContentLength, m_transport, address.toString(),
-       QString::number(port),
-       m_address.toString(),
-       QString::number(m_port),
-       m_orientation,
-       this);
-  else
+    {
+      try
+	{
+	  neighbor = new spoton_neighbor
+	    (socketDescriptor, certificate, privateKey,
+	     m_echoMode, m_useAccounts, m_id, m_maximumBufferSize,
+	     m_maximumContentLength, m_transport, address.toString(),
+	     QString::number(port),
+	     m_address.toString(),
+	     QString::number(m_port),
+	     m_orientation,
+	     this);
+	}
+      catch(std::bad_alloc &exception)
+	{
+	  neighbor = 0;
+	}
+    }
+
+  if(!error.isEmpty() || !neighbor)
     {
       /*
       ** Some of the following errors should be ignored.
@@ -1063,24 +1073,33 @@ void spoton_listener::prepareNetworkInterface(void)
 	  {
 	    if(addresses.at(j).ip() == m_sctpServer->serverAddress())
 	      {
-		m_networkInterface = new QNetworkInterface(list.at(i));
-		break;
+		m_networkInterface = new (std::nothrow)
+		  QNetworkInterface(list.at(i));
+
+		if(m_networkInterface)
+		  break;
 	      }
 	  }
 	else if(m_tcpServer)
 	  {
 	    if(addresses.at(j).ip() == m_tcpServer->serverAddress())
 	      {
-		m_networkInterface = new QNetworkInterface(list.at(i));
-		break;
+		m_networkInterface = new (std::nothrow)
+		  QNetworkInterface(list.at(i));
+
+		if(m_networkInterface)
+		  break;
 	      }
 	  }
 	else if(m_udpServer)
 	  {
 	    if(addresses.at(j).ip() == m_udpServer->localAddress())
 	      {
-		m_networkInterface = new QNetworkInterface(list.at(i));
-		break;
+		m_networkInterface = new (std::nothrow)
+		  QNetworkInterface(list.at(i));
+
+		if(m_networkInterface)
+		  break;
 	      }
 	  }
 	else
