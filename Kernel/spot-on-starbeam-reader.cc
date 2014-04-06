@@ -162,6 +162,10 @@ void spoton_starbeam_reader::slotTimeout(void)
 
 				    if(m_missingLinksIterator)
 				      m_missingLinksIterator->toFront();
+				    else
+				      spoton_misc::logError
+					("spoton_starbeam_reader::"
+					 "slotTimeout(): memory failure.");
 				  }
 			      }
 			  }

@@ -647,6 +647,8 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
       catch(std::bad_alloc &exception)
 	{
 	  neighbor = 0;
+	  spoton_misc::logError("spoton_listener::slotNewConnection(): "
+				"memory failure.");
 	}
     }
 
@@ -1096,6 +1098,10 @@ void spoton_listener::prepareNetworkInterface(void)
 
 		if(m_networkInterface)
 		  break;
+		else
+		  spoton_misc::logError
+		    ("spoton_listener::prepareNetworkInterface(): "
+		     "memory failure.");
 	      }
 	  }
 	else if(m_tcpServer)
@@ -1107,6 +1113,10 @@ void spoton_listener::prepareNetworkInterface(void)
 
 		if(m_networkInterface)
 		  break;
+		else
+		  spoton_misc::logError
+		    ("spoton_listener::prepareNetworkInterface(): "
+		     "memory failure.");
 	      }
 	  }
 	else if(m_udpServer)
@@ -1118,6 +1128,10 @@ void spoton_listener::prepareNetworkInterface(void)
 
 		if(m_networkInterface)
 		  break;
+		else
+		  spoton_misc::logError
+		    ("spoton_listener::prepareNetworkInterface(): "
+		     "memory failure.");
 	      }
 	  }
 	else
