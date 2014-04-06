@@ -2567,15 +2567,7 @@ void spoton::slotPopulateListeners(void)
 
 		    if(i == 0 || i == 12)
 		      {
-			check = new (std::nothrow) QCheckBox();
-
-			if(!check)
-			  {
-			    spoton_misc::logError
-			      ("spoton::slotPopulateListeners(): "
-			       "memory failure.");
-			    continue;
-			  }
+			check = new QCheckBox();
 
 			if(i == 0)
 			  {
@@ -2625,47 +2617,20 @@ void spoton::slotPopulateListeners(void)
 		      {
 			if(query.value(i).toLongLong() == 0)
 			  {
-			    item = new (std::nothrow) QTableWidgetItem("0");
-
-			    if(!item)
-			      {
-				spoton_misc::logError
-				  ("spoton::slotPopulateListeners(): "
-				   "memory failure.");
-				continue;
-			      }
-
+			    item = new QTableWidgetItem("0");
 			    item->setBackground
 			      (QBrush(QColor(240, 128, 128)));
 			  }
 			else
 			  {
-			    item = new (std::nothrow) QTableWidgetItem
+			    item = new QTableWidgetItem
 			      (query.value(i).toString());
-
-			    if(!item)
-			      {
-				spoton_misc::logError
-				  ("spoton::slotPopulateListeners(): "
-				   "memory failure.");
-				continue;
-			      }
-
 			    item->setBackground(QBrush());
 			  }
 		      }
 		    else if(i == 10)
 		      {
-			box = new (std::nothrow) QComboBox();
-
-			if(!box)
-			  {
-			    spoton_misc::logError
-			      ("spoton::slotPopulateListeners(): "
-			       "memory failure.");
-			    continue;
-			  }
-
+			box = new QComboBox();
 			box->setProperty
 			  ("oid", query.value(query.record().count() - 1));
 			box->addItem("1");
@@ -2703,15 +2668,7 @@ void spoton::slotPopulateListeners(void)
 			// maximum_buffer_size
 			// maximum_content_length
 
-			QSpinBox *box = new (std::nothrow) QSpinBox();
-
-			if(!box)
-			  {
-			    spoton_misc::logError
-			      ("spoton::slotPopulateListeners(): "
-			       "memory failure.");
-			    continue;
-			  }
+			QSpinBox *box = new QSpinBox();
 
 			if(i == 13)
 			  {
