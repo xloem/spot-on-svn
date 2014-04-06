@@ -1333,7 +1333,8 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
 
   m_privateKeyLength = keyData.length();
 
-  if((m_privateKey =
+  if(m_privateKeyLength == 0 ||
+     (m_privateKey =
       static_cast<char *> (gcry_calloc_secure(m_privateKeyLength,
 					      sizeof(char)))) == 0)
     {
@@ -1344,7 +1345,7 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
       spoton_misc::logError
 	("spoton_crypt::initializePrivateKeyContainer(): "
 	 "gcry_calloc_secure() "
-	 "failure.");
+	 "failure or m_privateKeyLength is zero.");
       goto done_label;
     }
   else
@@ -2092,7 +2093,10 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
 
   if(keyType == "dsa" || keyType == "elg")
     {
-      hash_p = static_cast<unsigned char *> (malloc(hash.length()));
+      if(hash.length() > 0)
+	hash_p = static_cast<unsigned char *> (malloc(hash.length()));
+      else
+	hash_p = 0;
 
       if(!hash_p)
 	{
@@ -2100,7 +2104,7 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
 	    *ok = false;
 
 	  spoton_misc::logError("spoton_crypt::digitalSignature(): "
-				"malloc() failure.");
+				"hash is empty or malloc() failure.");
 	  goto done_label;
 	}
       else
@@ -2427,13 +2431,16 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
 
   if(keyType == "dsa" || keyType == "elg")
     {
-      hash_p = static_cast<unsigned char *> (malloc(hash.length()));
+      if(hash.length() > 0)
+	hash_p = static_cast<unsigned char *> (malloc(hash.length()));
+      else
+	hash_p = 0;
 
       if(!hash_p)
 	{
 	  ok = false;
 	  spoton_misc::logError("spoton_crypt::isValidSignature(): "
-				"malloc() failure.");
+				"hash is empty or malloc() failure.");
 	  goto done_label;
 	}
       else
@@ -2605,12 +2612,13 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
 
   BIO_get_mem_ptr(privateMemory, &bptr);
 
-  if(!(privateBuffer = static_cast<char *> (calloc(bptr->length + 1,
+  if(bptr->length + 1 <= 0 ||
+     !(privateBuffer = static_cast<char *> (calloc(bptr->length + 1,
 						   sizeof(char)))))
     {
       error = QObject::tr("calloc() returned zero");
       spoton_misc::logError("spoton_crypt::generateSslKeys(): "
-			    "calloc() failure.");
+			    "calloc() failure or bptr->length + 1 is small.");
       goto done_label;
     }
 
@@ -2619,12 +2627,13 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
   privateKey = privateBuffer;
   BIO_get_mem_ptr(publicMemory, &bptr);
 
-  if(!(publicBuffer = static_cast<char *> (calloc(bptr->length + 1,
+  if(bptr->length + 1 <= 0 ||
+     !(publicBuffer = static_cast<char *> (calloc(bptr->length + 1,
 						  sizeof(char)))))
     {
       error = QObject::tr("calloc() returned zero");
       spoton_misc::logError("spoton_crypt::generateSslKeys(): "
-			    "calloc() failure.");
+			    "calloc() failure or bptr->length + 1 is small.");
       goto done_label;
     }
 
@@ -2855,12 +2864,13 @@ void spoton_crypt::generateCertificate(RSA *rsa,
 
   BIO_get_mem_ptr(memory, &bptr);
 
-  if(!(buffer = static_cast<char *> (calloc(bptr->length + 1,
+  if(bptr->length + 1 <= 0 ||
+     !(buffer = static_cast<char *> (calloc(bptr->length + 1,
 					    sizeof(char)))))
     {
       error = QObject::tr("calloc() returned zero");
       spoton_misc::logError("spoton_crypt::generateCertificate(): "
-			    "calloc() failure.");
+			    "calloc() failure or bptr->length + 1 is small.");
       goto done_label;
     }
 
@@ -3043,7 +3053,8 @@ void spoton_crypt::setHashKey(const QByteArray &hashKey)
   m_hashKey = 0;
   m_hashKeyLength = hashKey.length();
 
-  if((m_hashKey =
+  if(m_hashKeyLength > 0 &&
+     (m_hashKey =
       static_cast<char *> (gcry_calloc_secure(m_hashKeyLength,
 					      sizeof(char)))) != 0)
     memcpy(m_hashKey,
