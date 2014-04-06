@@ -1138,6 +1138,7 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
 
   int seconds = m_startTime.secsTo(QDateTime::currentDateTime());
 
+  query.exec("PRAGMA synchronous = OFF");
   query.prepare("UPDATE neighbors SET "
 		"bytes_read = ?, "
 		"bytes_written = ?, "
@@ -1193,6 +1194,7 @@ void spoton_neighbor::saveStatus(const QString &status)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE neighbors SET is_encrypted = ?, status = ? "
 		      "WHERE OID = ? AND status_control <> 'deleted'");
 	query.bindValue(0, isEncrypted() ? 1 : 0);
@@ -1219,6 +1221,7 @@ void spoton_neighbor::saveStatus(const QSqlDatabase &db,
 
   QSqlQuery query(db);
 
+  query.exec("PRAGMA synchronous = OFF");
   query.prepare("UPDATE neighbors SET is_encrypted = ?, status = ? "
 		"WHERE OID = ? AND status_control <> 'deleted'");
   query.bindValue(0, isEncrypted());
@@ -4150,6 +4153,7 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &publicKeyHash)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE friends_public_keys SET "
 		      "last_status_update = ? "
 		      "WHERE neighbor_oid = -1 AND "
@@ -4188,6 +4192,8 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
     if(db.open())
       {
 	QSqlQuery query(db);
+
+	query.exec("PRAGMA synchronous = OFF");
 
 	if(status.isEmpty())
 	  {

@@ -3066,6 +3066,7 @@ void spoton_kernel::updateStatistics(void)
 	QSqlQuery query(db);
 	QVariant v1, v2;
 
+	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
 		      "VALUES ('Active StarBeam Readers', ?)");
