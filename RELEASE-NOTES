@@ -10,7 +10,7 @@
      implementation neglected empty gemini data.
 6.   Select SQL queries should be forward only.
 7.   All database writes are not synchronized.
-8.   Absorb memory failures.
+8.   Absorb memory failures in the kernel.
 
 0.09.03 (03/28/2014)
 
