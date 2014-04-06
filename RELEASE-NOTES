@@ -9,7 +9,7 @@
 5.   Corrected re-encoding of participants data. The current
      implementation neglected empty gemini data.
 6.   Select SQL queries should be forward only.
-7.   All database writes are not synchronized.
+7.   Most database writes will now be synchronized.
 8.   Absorb memory failures in the kernel.
 9.   Avoid zero-length memory allocations.
 
