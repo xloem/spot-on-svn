@@ -17,6 +17,7 @@
 11.  Replaced timer-based excessive data purging from neighbors with
      data-motivated mechanisms.
 12.  Corrected tab key navigation.
+13.  Process kernel statistics in a specialized thread.
 
 0.09.03 (03/28/2014)
 
