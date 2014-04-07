@@ -531,6 +531,7 @@ spoton_kernel::~spoton_kernel()
   s_messagingCacheMap.clear();
   s_messagingCacheMutex.unlock();
   m_future.waitForFinished();
+  m_statisticsFuture.waitForFinished();
   cleanup();
   spoton_misc::cleanupDatabases();
 
@@ -579,8 +580,12 @@ void spoton_kernel::slotPollDatabase(void)
   prepareListeners();
   prepareNeighbors();
   prepareStarbeamReaders();
+
+  if(m_statisticsFuture.isFinished())
+    m_statisticsFuture = QtConcurrent::run
+      (this, &spoton_kernel::updateStatistics);
+
   checkForTermination();
-  updateStatistics();
 }
 
 void spoton_kernel::prepareListeners(void)

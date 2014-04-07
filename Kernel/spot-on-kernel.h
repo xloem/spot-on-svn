@@ -82,6 +82,7 @@ class spoton_kernel: public QObject
   QDateTime m_uptime;
   QFileSystemWatcher m_settingsWatcher;
   QFuture<void> m_future;
+  QFuture<void> m_statisticsFuture;
   QHash<qint64, QPointer<spoton_listener> > m_listeners;
   QHash<qint64, QPointer<spoton_neighbor> > m_neighbors;
   QHash<qint64, QPointer<spoton_starbeam_reader> > m_starbeamReaders;
