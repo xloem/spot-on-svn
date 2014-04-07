@@ -3574,7 +3574,7 @@ void spoton::slotSetIcons(void)
       (i, QIcon(QString(":/%1/%2").arg(iconSet).arg(list.at(i))));
 
   list.clear();
-  list << "read.png" << "write.png" << "database.png";
+  list << "read.png" << "write.png" << "database.png" << "institutions.png";
 
   for(int i = 0; i < list.size(); i++)
     m_ui.mailTab->setTabIcon
