@@ -1141,6 +1141,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.etpCipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.etpHashType->addItems(spoton_crypt::hashTypes());
   m_ui.buzzHashType->addItems(spoton_crypt::hashTypes());
+  m_ui.institutionType->addItems(spoton_crypt::hashTypes());
   m_ui.kernelCipherType->insertSeparator(1);
   m_ui.kernelCipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.cost->setValue(m_settings.value("gui/congestionCost", 10000).toInt());
@@ -1231,8 +1232,11 @@ spoton::spoton(void):QMainWindow()
   if(m_ui.kernelCipherType->count() <= 2)
     m_ui.kernelCipherType->addItem("n/a");
 
-  if(m_ui.buzzHashType->count() <= 2)
+  if(m_ui.buzzHashType->count() == 0)
     m_ui.buzzHashType->addItem("n/a");
+
+  if(m_ui.institutionType->count() == 0)
+    m_ui.institutionType->addItem("n/a");
 
   m_ui.hashType->clear();
   m_ui.hashType->addItems(spoton_crypt::hashTypes());
