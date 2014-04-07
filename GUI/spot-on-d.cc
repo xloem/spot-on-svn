@@ -175,3 +175,202 @@ void spoton::slotUpdateChatWindows(void)
 	}
     }
 }
+
+void spoton::refreshInstitutions(void)
+{
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
+
+  if(!crypt)
+    return;
+
+  m_ui.institutions->clearContents();
+  m_ui.writeInstitutions->clearContents();
+  m_ui.institutions->setRowCount(0);
+  m_ui.writeInstitutions->setRowCount(0);
+  m_ui.institutions->setSortingEnabled(false);
+  m_ui.writeInstitutions->setSortingEnabled(false);
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT name, type FROM institutions"))
+	  while(query.next())
+	    {
+	      m_ui.institutions->setRowCount
+		(m_ui.institutions->rowCount() + 1);
+	      m_ui.writeInstitutions->setRowCount
+		(m_ui.writeInstitutions->rowCount() + 1);
+
+	      QByteArray name;
+	      QByteArray type;
+	      bool ok = true;
+
+	      name = crypt->decryptedAfterAuthenticated
+		(QByteArray::fromBase64(query.value(0).toByteArray()),
+		 &ok);
+
+	      if(ok)
+		type = crypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(1).toByteArray()),
+		   &ok);
+
+	      QTableWidgetItem *item = 0;
+
+	      if(ok)
+		item = new QTableWidgetItem(name.constData());
+	      else
+		item = new QTableWidgetItem(tr("error"));
+
+	      m_ui.institutions->setItem
+		(m_ui.institutions->rowCount() - 1, 0, item);
+	      m_ui.writeInstitutions->setItem
+		(m_ui.writeInstitutions->rowCount() - 1, 0,
+		 item->clone());
+
+	      if(ok)
+		item = new QTableWidgetItem(type.constData());
+	      else
+		item = new QTableWidgetItem(tr("error"));
+
+	      m_ui.institutions->setItem
+		(m_ui.institutions->rowCount() - 1, 1, item);
+	      m_ui.writeInstitutions->setItem
+		(m_ui.writeInstitutions->rowCount() - 1, 1,
+		 item->clone());
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  m_ui.institutions->setSortingEnabled(true);
+  m_ui.writeInstitutions->setSortingEnabled(true);
+}
+
+void spoton::slotAddInstitution(void)
+{
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
+
+  if(!crypt)
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object. "
+			       "This is a fatal flaw."));
+      return;
+    }
+
+  QString name(m_ui.institutionName->text().trimmed());
+
+  if(name.isEmpty())
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Please provide an institution name."));
+      return;
+    }
+
+  QString connectionName("");
+  bool ok = true;
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare
+	  ("INSERT OR REPLACE INTO institutions "
+	   "(hash, name, type) VALUES (?, ?, ?)");
+	query.bindValue
+	  (0, crypt->keyedHash(name.toLatin1(), &ok).
+	   toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (1, crypt->encryptedThenHashed(name.toLatin1(), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (2, crypt->
+	     encryptedThenHashed(m_ui.institutionType->currentText().
+				 toLatin1(), &ok).toBase64());
+
+	if(ok)
+	  ok = query.exec();
+      }
+    else
+      ok = false;
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  if(ok)
+    {
+      m_ui.institutionName->clear();
+      m_ui.institutionType->setCurrentIndex(0);
+      refreshInstitutions();
+    }
+  else
+    QMessageBox::critical(this, tr("Spot-On: Error"),
+			  tr("Unable to record the institution."));
+}
+
+void spoton::slotDeleteInstitution(void)
+{
+  QModelIndexList list
+    (m_ui.institutions->selectionModel()->selectedRows(0)); // Name
+
+  if(list.isEmpty())
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("DELETE FROM institutions WHERE hash = ?");
+
+	if(m_crypts.value("email", 0))
+	  query.bindValue
+	    (0, m_crypts.value("email")->
+	     keyedHash(list.value(0).data().toString().toLatin1(), &ok).
+	     toBase64());
+	else
+	  ok = false;
+
+	if(ok)
+	  query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  refreshInstitutions();
+}

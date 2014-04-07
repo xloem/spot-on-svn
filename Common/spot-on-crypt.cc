@@ -199,9 +199,9 @@ QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
       goto done_label;
     }
 
-  if((cipherKeyLength = gcry_cipher_get_algo_keylen(cipherAlgorithm)) == 0)
+  if((cipherKeyLength = gcry_cipher_get_algo_keylen(cipherAlgorithm)) <= 0)
     {
-      error = QObject::tr("gcry_cipher_get_algo_keylen() returned zero");
+      error = QObject::tr("gcry_cipher_get_algo_keylen() failed");
       spoton_misc::logError
 	(QString("spoton_crypt::derivedKeys(): "
 		 "gcry_cipher_get_algo_keylen() "
@@ -531,12 +531,12 @@ void spoton_crypt::init(const QString &cipherType,
   m_saltLength = saltLength;
   setHashKey(hashKey);
 
-  if(m_symmetricKeyLength)
+  if(m_symmetricKeyLength > 0)
     m_symmetricKey = static_cast<char *>
       (gcry_calloc_secure(m_symmetricKeyLength, sizeof(char)));
   else
     spoton_misc::logError("spoton_crypt::spoton_crypt(): "
-			  "gcry_cipher_get_algo_keylen() returned zero.");
+			  "gcry_cipher_get_algo_keylen() failed.");
 
   if(m_symmetricKey)
     {
@@ -601,7 +601,7 @@ void spoton_crypt::init(const QString &cipherType,
     {
       m_symmetricKeyLength = 0;
       spoton_misc::logError("spoton_crypt::spoton_crypt(): "
-			    "gcry_calloc_secure() returned zero.");
+			    "gcry_calloc_secure() failed.");
     }
 }
 
@@ -673,7 +673,7 @@ QByteArray spoton_crypt::decrypted(const QByteArray &data, bool *ok)
 	  int s = 0;
 	  QByteArray originalLength;
 
-	  if(decrypted.length() >= 4)
+	  if(decrypted.length() > 4)
 	    originalLength = decrypted.mid(decrypted.length() - 4, 4);
 
 	  if(!originalLength.isEmpty())
@@ -690,6 +690,14 @@ QByteArray spoton_crypt::decrypted(const QByteArray &data, bool *ok)
 		  decrypted.clear();
 		  return decrypted;
 		}
+	    }
+	  else
+	    {
+	      if(ok)
+		*ok = false;
+
+	      decrypted.clear();
+	      return decrypted;
 	    }
 
 	  if(s >= 0 && s <= decrypted.length())
@@ -758,7 +766,7 @@ QByteArray spoton_crypt::encrypted(const QByteArray &data, bool *ok)
     {
       size_t blockLength = gcry_cipher_get_algo_blklen(m_cipherAlgorithm);
 
-      if(blockLength == 0)
+      if(blockLength <= 0)
 	{
 	  if(ok)
 	    *ok = false;
@@ -867,7 +875,7 @@ bool spoton_crypt::setInitializationVector(QByteArray &bytes,
   bool ok = true;
   size_t ivLength = 0;
 
-  if((ivLength = gcry_cipher_get_algo_blklen(algorithm)) == 0)
+  if((ivLength = gcry_cipher_get_algo_blklen(algorithm)) <= 0)
     {
       ok = false;
       spoton_misc::logError
@@ -921,7 +929,7 @@ bool spoton_crypt::setInitializationVector(QByteArray &bytes,
 	{
 	  ok = false;
 	  spoton_misc::logError("spoton_crypt::setInitializationVector(): "
-				"gcry_calloc() returned zero.");
+				"gcry_calloc() failed.");
 	}
     }
 
@@ -939,13 +947,14 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data, bool *ok) const
 	("spoton_crypt::keyedHash(): m_hashAlgorithm is zero.");
       return QByteArray();
     }
-  else if(!m_hashKey || m_hashKeyLength == 0)
+  else if(!m_hashKey || m_hashKeyLength <= 0)
     {
       if(ok)
 	*ok = false;
 
       spoton_misc::logError
-	("spoton_crypt::keyedHash(): m_hashKey is not defined.");
+	("spoton_crypt::keyedHash(): m_hashKey is not defined or "
+	 "m_hashKeyLength is peculiar.");
       return QByteArray();
     }
 
@@ -1141,7 +1150,7 @@ QByteArray spoton_crypt::publicKeyEncrypt(const QByteArray &data,
 	      size_t length = gcry_sexp_sprint
 		(encodedData_t, GCRYSEXP_FMT_ADVANCED, 0, 0);
 
-	      if(length)
+	      if(length > 0)
 		{
 		  char *buffer = static_cast<char *> (malloc(length));
 
@@ -1333,7 +1342,7 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
 
   m_privateKeyLength = keyData.length();
 
-  if(m_privateKeyLength == 0 ||
+  if(m_privateKeyLength <= 0 ||
      (m_privateKey =
       static_cast<char *> (gcry_calloc_secure(m_privateKeyLength,
 					      sizeof(char)))) == 0)
@@ -1345,7 +1354,7 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
       spoton_misc::logError
 	("spoton_crypt::initializePrivateKeyContainer(): "
 	 "gcry_calloc_secure() "
-	 "failure or m_privateKeyLength is zero.");
+	 "failure or m_privateKeyLength is peculiar.");
       goto done_label;
     }
   else
@@ -1383,14 +1392,14 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
     initializePrivateKeyContainer(&ok);
   }
 
-  if(!m_privateKey || m_privateKeyLength == 0)
+  if(!m_privateKey || m_privateKeyLength <= 0)
     {
       if(ok)
 	*ok = false;
 
       spoton_misc::logError
 	("spoton_crypt::publicKeyDecrypt(): m_privateKey or "
-	 "m_privateKeyLength is zero.");
+	 "m_privateKeyLength is peculiar.");
       goto done_label;
     }
 
@@ -1712,7 +1721,7 @@ void spoton_crypt::generatePrivatePublicKeys(const int keySize,
 
       length = gcry_sexp_sprint(key_t, GCRYSEXP_FMT_ADVANCED, 0, 0);
 
-      if(!length)
+      if(length <= 0)
 	{
 	  error = QObject::tr("gcry_sexp_sprint() failure");
 	  spoton_misc::logError
@@ -2161,7 +2170,7 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
 	  size_t length = gcry_sexp_sprint
 	    (signature_t, GCRYSEXP_FMT_ADVANCED, 0, 0);
 
-	  if(length)
+	  if(length > 0)
 	    {
 	      char *buffer = static_cast<char *> (malloc(length));
 
@@ -2300,10 +2309,10 @@ size_t spoton_crypt::cipherKeyLength(const QByteArray &cipherType)
 
   if(cipherAlgorithm)
     {
-      if((keyLength = gcry_cipher_get_algo_keylen(cipherAlgorithm)) == 0)
+      if((keyLength = gcry_cipher_get_algo_keylen(cipherAlgorithm)) <= 0)
 	spoton_misc::logError("spoton_crypt::cipherKeyLength(): "
-			      "gcry_cipher_get_algo_keylen() returned "
-			      "zero.");
+			      "gcry_cipher_get_algo_keylen() "
+			      "failed.");
     }
   else
     spoton_misc::logError("spoton_crypt::cipherKeyLength(): "
@@ -2616,7 +2625,7 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
      !(privateBuffer = static_cast<char *> (calloc(bptr->length + 1,
 						   sizeof(char)))))
     {
-      error = QObject::tr("calloc() returned zero");
+      error = QObject::tr("calloc() failure or bptr->length + 1 is small");
       spoton_misc::logError("spoton_crypt::generateSslKeys(): "
 			    "calloc() failure or bptr->length + 1 is small.");
       goto done_label;
@@ -2631,7 +2640,7 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
      !(publicBuffer = static_cast<char *> (calloc(bptr->length + 1,
 						  sizeof(char)))))
     {
-      error = QObject::tr("calloc() returned zero");
+      error = QObject::tr("calloc() failure or bptr->length + 1 is small");
       spoton_misc::logError("spoton_crypt::generateSslKeys(): "
 			    "calloc() failure or bptr->length + 1 is small.");
       goto done_label;
@@ -2868,7 +2877,7 @@ void spoton_crypt::generateCertificate(RSA *rsa,
      !(buffer = static_cast<char *> (calloc(bptr->length + 1,
 					    sizeof(char)))))
     {
-      error = QObject::tr("calloc() returned zero");
+      error = QObject::tr("calloc() failure bptr->length + 1 is small");
       spoton_misc::logError("spoton_crypt::generateCertificate(): "
 			    "calloc() failure or bptr->length + 1 is small.");
       goto done_label;

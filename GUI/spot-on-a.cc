@@ -274,6 +274,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotViewRosetta(void)));
+  connect(m_ui.addInstitution,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotAddInstitution(void)));
   connect(m_ui.addListener,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -514,6 +518,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotClearOutgoingMessage(void)));
+  connect(m_ui.deleteInstitution,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotDeleteInstitution(void)));
   connect(m_ui.pushButtonClearMail,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -1132,6 +1140,7 @@ spoton::spoton(void):QMainWindow()
     (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
   m_ui.goldbug->setMaxLength
     (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
+  m_ui.institutionName->setMaxLength(256);
   m_ui.transmitNova->setMaxLength
     (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
   m_ui.channelType->clear();
@@ -1469,6 +1478,8 @@ spoton::spoton(void):QMainWindow()
     (1, Qt::AscendingOrder);
   m_ui.addTransmittedMagnets->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
+  m_ui.institutions->horizontalHeader()->setSortIndicator
+    (0, Qt::AscendingOrder);
   m_ui.kernelStatistics->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   m_ui.mail->horizontalHeader()->setSortIndicator
@@ -1486,6 +1497,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.transmitted->horizontalHeader()->setSortIndicator
     (5, Qt::AscendingOrder);
   m_ui.urlParticipants->horizontalHeader()->setSortIndicator
+    (0, Qt::AscendingOrder);
+  m_ui.writeInstitutions->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   m_ui.listenersHorizontalSplitter->setStretchFactor(0, 1);
   m_ui.listenersHorizontalSplitter->setStretchFactor(1, 0);

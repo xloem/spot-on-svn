@@ -134,26 +134,31 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	if(query.exec("SELECT date, goldbug, message, message_code, "
 		      "participant_oid, "
-		      "receiver_sender, status, subject, OID FROM folders"))
+		      "receiver_sender, status, subject, "
+		      "institution_name, institution_type, "
+		      "OID FROM folders"))
 	  while(query.next())
 	    {
 	      QList<QByteArray> list;
 	      bool ok = true;
 
-	      for(int i = 0; i < query.record().count(); i++)
-		if(i >= 0 && i <= 7)
-		  {
-		    QByteArray bytes
-		      (oldCrypt->decryptedAfterAuthenticated
-		       (QByteArray::
-			fromBase64(query.value(i).
-				   toByteArray()), &ok));
+	      for(int i = 0; i < query.record().count() - 1; i++)
+		{
+		  QByteArray bytes;
 
-		    if(ok)
-		      list.append(bytes);
-		    else
-		      break;
-		  }
+		  if(query.isNull(i))
+		    list.append(QByteArray());
+		  else
+		    bytes = oldCrypt->decryptedAfterAuthenticated
+		      (QByteArray::
+		       fromBase64(query.value(i).
+				  toByteArray()), &ok);
+
+		  if(ok)
+		    list.append(bytes);
+		  else
+		    break;
+		}
 
 	      if(ok)
 		if(!list.isEmpty())
@@ -166,26 +171,45 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 					"participant_oid = ?, "
 					"receiver_sender = ?, "
 					"status = ?, "
-					"subject = ?, hash = ? "
+					"subject = ?, "
+					"institution_name = ?, "
+					"institution_type = ?, "
+					"hash = ? "
 					"WHERE OID = ?");
 
 		    for(int i = 0; i < list.size(); i++)
 		      if(ok)
-			updateQuery.bindValue
-			  (i, newCrypt->encryptedThenHashed(list.at(i), &ok).
-			   toBase64());
+			{
+			  if(list.at(i).isEmpty())
+			    {
+			      if(i == 8 || i == 9) // Institution Name
+				                   // Institution Type
+				updateQuery.bindValue(i, QVariant::String);
+			      else
+				updateQuery.bindValue
+				  (i, newCrypt->encryptedThenHashed(list.at(i),
+								    &ok).
+				   toBase64());
+			    }
+			  else
+			    updateQuery.bindValue
+			      (i, newCrypt->encryptedThenHashed(list.at(i),
+								&ok).
+			       toBase64());
+			}
 		      else
 			break;
 
 		    if(ok)
 		      updateQuery.bindValue
-			(8, newCrypt->keyedHash(list.value(2) +
-						list.value(7), &ok).
+			(10, newCrypt->keyedHash(list.value(2) +
+						 list.value(7), &ok).
 			 toBase64());
 
 		    if(ok)
 		      {
-			updateQuery.bindValue(9, query.value(8));
+			updateQuery.bindValue
+			  (11, query.value(query.record().count() - 1));
 			updateQuery.exec();
 		      }
 		    else
@@ -194,10 +218,67 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 			deleteQuery.prepare("DELETE FROM folders WHERE "
 					    "OID = ?");
-			deleteQuery.bindValue(0, query.value(8));
+			deleteQuery.bindValue
+			  (0, query.value(query.record().count() - 1));
 			deleteQuery.exec();
 		      }
 		  }
+	    }
+
+	if(query.exec("SELECT name, type, OID FROM institutions"))
+	  while(query.next())
+	    {
+	      QByteArray name;
+	      QByteArray type;
+	      QSqlQuery updateQuery(db);
+	      bool ok = true;
+
+	      updateQuery.prepare("UPDATE institutions "
+				  "SET name = ?, "
+				  "type = ?, "
+				  "hash = ? "
+				  "WHERE "
+				  "OID = ?");
+
+	      name = oldCrypt->decryptedAfterAuthenticated
+		(QByteArray::
+		 fromBase64(query.value(0).toByteArray()),
+		 &ok);
+
+	      if(ok)
+		type = oldCrypt->decryptedAfterAuthenticated
+		  (QByteArray::
+		   fromBase64(query.value(1).toByteArray()),
+		   &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (0, newCrypt->encryptedThenHashed(name,
+						    &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (1, newCrypt->encryptedThenHashed(type,
+						    &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (2, newCrypt->keyedHash(name,
+					  &ok).toBase64());
+
+	      updateQuery.bindValue(3, query.value(2));
+
+	      if(ok)
+		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare("DELETE FROM institutions WHERE "
+				      "OID = ?");
+		  deleteQuery.bindValue(0, query.value(2));
+		  deleteQuery.exec();
+		}
 	    }
 
 	if(query.exec("SELECT date_received, message_bundle, "

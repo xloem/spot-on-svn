@@ -127,6 +127,9 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="tabChangesFocus">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
    </layout>
@@ -137,7 +140,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>27</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

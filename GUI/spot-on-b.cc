@@ -1871,6 +1871,7 @@ void spoton::slotClearOutgoingMessage(void)
       m_ui.outgoingSubject->clear();
       m_ui.goldbug->clear();
       m_ui.outgoingSubject->setFocus();
+      m_ui.writeInstitutions->selectionModel()->clear();
     }
 }
 
@@ -2176,9 +2177,12 @@ void spoton::slotSendMail(void)
     if(db.open())
       {
 	QModelIndexList list;
+	QString instName("");
+	QString instType("");
 	QStringList names;
 	QStringList oids;
 	QStringList publicKeyHashes;
+	int row = m_ui.writeInstitutions->currentRow();
 
 	list = m_ui.emailParticipants->selectionModel()->
 	  selectedRows(0); // Participant
@@ -2198,6 +2202,19 @@ void spoton::slotSendMail(void)
 	while(!list.isEmpty())
 	  publicKeyHashes.append(list.takeFirst().data().toString());
 
+	if(row > -1)
+	  {
+	    QTableWidgetItem *item = m_ui.writeInstitutions->item(row, 0);
+
+	    if(item)
+	      instName = item->text();
+
+	    item = m_ui.writeInstitutions->item(row, 1);
+
+	    if(item)
+	      instType = item->text();
+	  }
+
 	while(!oids.isEmpty())
 	  {
 	    QByteArray goldbug
@@ -2214,8 +2231,9 @@ void spoton::slotSendMail(void)
 			  "(date, folder_index, goldbug, hash, "
 			  "message, message_code, "
 			  "receiver_sender, receiver_sender_hash, "
-			  "status, subject, participant_oid) "
-			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			  "status, subject, participant_oid, "
+			  "institution_name, institution_type) "
+			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue
 	      (0, m_crypts.value("email")->
 	       encryptedThenHashed(now.toString(Qt::ISODate).
@@ -2268,6 +2286,28 @@ void spoton::slotSendMail(void)
 		 encryptedThenHashed(oid.toLatin1(), &ok).toBase64());
 
 	    if(ok)
+	      {
+		if(instName.isEmpty())
+		  query.bindValue(11, QVariant::String);
+		else
+		  query.bindValue
+		    (11, m_crypts.value("email")->
+		     encryptedThenHashed(instName.toLatin1(), &ok).
+		     toBase64());
+	      }
+
+	    if(ok)
+	      {
+		if(instType.isEmpty())
+		  query.bindValue(12, QVariant::String);
+		else
+		  query.bindValue
+		    (12, m_crypts.value("email")->
+		     encryptedThenHashed(instType.toLatin1(), &ok).
+		     toBase64());
+	      }
+
+	    if(ok)
 	      query.exec();
 	  }
 
@@ -2276,6 +2316,7 @@ void spoton::slotSendMail(void)
 	m_ui.outgoingMessage->setCurrentCharFormat(QTextCharFormat());
 	m_ui.outgoingSubject->clear();
 	m_ui.goldbug->clear();
+	m_ui.writeInstitutions->selectionModel()->clear();
       }
 
     db.close();
@@ -2635,7 +2676,13 @@ void spoton::slotDeleteAllUuids(void)
 
 void spoton::slotRefreshMail(void)
 {
-  if(m_ui.mailTab->currentIndex() != 0)
+  if(m_ui.mailTab->currentIndex() == 1 ||
+     m_ui.mailTab->currentIndex() == 3)
+    {
+      refreshInstitutions();
+      return;
+    }
+  else if(m_ui.mailTab->currentIndex() != 0)
     return;
 
   m_ui.reply->setEnabled(m_ui.folder->currentIndex() == 0);
