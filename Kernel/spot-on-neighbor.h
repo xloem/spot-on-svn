@@ -171,7 +171,6 @@ class spoton_neighbor: public QThread
   QString m_transport;
   QTimer m_accountTimer;
   QTimer m_authenticationTimer;
-  QTimer m_dataPurgeTimer;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_keepAliveTimer;
   QTimer m_lifetime;
@@ -275,7 +274,6 @@ class spoton_neighbor: public QThread
 				      const quint16 port,
 				      const QString &transport,
 				      const QString &orientation);
-  void slotPurgeData(void);
   void slotReadyRead(void);
   void slotReceivedMessage(const QByteArray &data, const qint64 id);
   void slotResetKeepAlive(void);
@@ -322,7 +320,6 @@ class spoton_neighbor: public QThread
 		      const QByteArray &signature,
 		      const QByteArray &sPublicKey,
 		      const QByteArray &sSignature);
-  void stopPurgeTimer(void);
 };
 
 class spoton_neighbor_worker: public QObject

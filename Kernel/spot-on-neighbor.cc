@@ -276,10 +276,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				  const QByteArray &,
 				  const QByteArray &,
 				  const QByteArray &)));
-  connect(this,
-	  SIGNAL(stopPurgeTimer(void)),
-	  &m_dataPurgeTimer,
-	  SLOT(stop(void)));
 
   if(m_sctpSocket)
     {
@@ -375,10 +371,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotAuthenticationTimerTimeout(void)));
-  connect(&m_dataPurgeTimer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotPurgeData(void)));
   connect(&m_keepAliveTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -403,7 +395,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
     (spoton_kernel::
      setting("kernel/server_account_verification_window_msecs",
 	     15000).toInt());
-  m_dataPurgeTimer.setInterval(30000);
 
   if(spoton_kernel::setting("gui/kernelExternalIpInterval", -1).
      toInt() == 30)
@@ -621,10 +612,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				  const QByteArray &,
 				  const QByteArray &,
 				  const QByteArray &)));
-  connect(this,
-	  SIGNAL(stopPurgeTimer(void)),
-	  &m_dataPurgeTimer,
-	  SLOT(stop(void)));
 
   if(m_sctpSocket)
     {
@@ -738,10 +725,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotAuthenticationTimerTimeout(void)));
-  connect(&m_dataPurgeTimer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotPurgeData(void)));
   connect(&m_externalAddressDiscovererTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -763,7 +746,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
     (spoton_kernel::
      setting("kernel/server_account_verification_window_msecs",
 	     15000).toInt());
-  m_dataPurgeTimer.setInterval(30000);
 
   if(spoton_kernel::setting("gui/kernelExternalIpInterval", -1).
      toInt() == 30)
@@ -787,7 +769,6 @@ spoton_neighbor::~spoton_neighbor()
 			arg(m_port));
   m_accountTimer.stop();
   m_authenticationTimer.stop();
-  m_dataPurgeTimer.stop();
   m_externalAddressDiscovererTimer.stop();
   m_keepAliveTimer.stop();
   m_lifetime.stop();
@@ -1270,11 +1251,22 @@ void spoton_neighbor::slotReadyRead(void)
 
       if(data.length() + m_data.length() <= m_maximumBufferSize)
 	m_data.append(data);
+      else
+	{
+	  m_data.clear();
+
+	  if(data.length() <= m_maximumBufferSize)
+	    m_data.append(data);
+
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::slotReadyRead(): "
+		     "too much data for %1:%2."
+		     "Purging.").
+	     arg(m_address.toString()).
+	     arg(m_port));
+	}
 
       m_dataMutex.unlock();
-
-      if(!m_dataPurgeTimer.isActive())
-	m_dataPurgeTimer.start();
     }
 }
 
@@ -1291,7 +1283,6 @@ void spoton_neighbor::processData(void)
   if(data.contains(spoton_send::EOM))
     {
       bool reset_keep_alive = false;
-      bool stop_purge_timer = false;
       int totalBytes = 0;
 
       while(data.contains(spoton_send::EOM))
@@ -1306,8 +1297,6 @@ void spoton_neighbor::processData(void)
 
 	  if(!bytes.isEmpty())
 	    {
-	      stop_purge_timer = true;
-
 	      if(!spoton_kernel::messagingCacheContains(bytes))
 		list.append(bytes);
 	      else
@@ -1317,9 +1306,6 @@ void spoton_neighbor::processData(void)
 
       if(reset_keep_alive)
 	emit resetKeepAlive();
-
-      if(stop_purge_timer)
-	emit stopPurgeTimer();
 
       if(totalBytes > 0)
 	{
@@ -5542,20 +5528,4 @@ void spoton_neighbor::slotAuthenticationTimerTimeout(void)
      arg(m_address.toString()).
      arg(m_port));
   deleteLater();
-}
-
-void spoton_neighbor::slotPurgeData(void)
-{
-  m_dataMutex.lockForWrite();
-
-  if(!m_data.isEmpty())
-    spoton_misc::logError
-      (QString("spoton_neighbor::slotPurgeData(): "
-	       "purging %1 bytes from m_data for %2:%3.").
-       arg(m_data.length()).
-       arg(m_address.toString()).
-       arg(m_port));
-
-  m_data.clear();
-  m_dataMutex.unlock();
 }
