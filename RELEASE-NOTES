@@ -1,10 +1,10 @@
-0.09.04 (04/04/2014)
+0.09.04 (04/11/2014)
 
 1.   Use qstrcmp() instead of qstrncmp().
 2.   Corrected memcpy() instances in IPv6 branches of SCTP files.
      (Use memcpy(&tmp.c, ...) instead of memcpy(&tmp, ...).)
 3.   qgetenv() returns a byte array.
-4.   Public keys of other participants will now encrypted. Please
+4.   Public keys of other participants will now be encrypted. Please
      remove friends_public_keys.db. Apologies.
 5.   Corrected re-encoding of participants data. The current
      implementation neglected empty gemini data.
@@ -12,6 +12,8 @@
 7.   Most database writes will now be synchronized.
 8.   Absorb memory failures in the kernel.
 9.   Avoid zero-length memory allocations.
+10.  Added e-mail institutions. This small change attempts to mimic
+     physical entities.
 
 0.09.03 (03/28/2014)
 
