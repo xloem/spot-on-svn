@@ -221,6 +221,7 @@ class spoton: public QMainWindow
   void slotChatSendMethodChanged(int index);
   void slotChatWindowDestroyed(void);
   void slotChatWindowMessageSent(void);
+  void slotClearInstitutionSelection(void);
   void slotClearOutgoingMessage(void);
   void slotCloseBuzzTab(int index);
   void slotComputeFileHash(void);

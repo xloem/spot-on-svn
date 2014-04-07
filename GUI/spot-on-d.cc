@@ -374,3 +374,8 @@ void spoton::slotDeleteInstitution(void)
   QSqlDatabase::removeDatabase(connectionName);
   refreshInstitutions();
 }
+
+void spoton::slotClearInstitutionSelection(void)
+{
+  m_ui.writeInstitutions->selectionModel()->clear();
+}

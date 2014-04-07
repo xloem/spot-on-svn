@@ -2380,6 +2380,10 @@ void spoton::prepareContextMenuMirrors(void)
 	 tr("&Add participant as friend."),
 	 this, SLOT(slotShareEmailPublicKeyWithParticipant(void)));
       menu->addSeparator();
+      menu->addAction
+	(tr("&Clear institution selection."),
+	 this, SLOT(slotClearInstitutionSelection(void)));
+      menu->addSeparator();
       menu->addAction(QIcon(QString(":/%1/copy.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
 				toString())),
