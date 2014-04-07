@@ -13,7 +13,10 @@
 8.   Absorb memory failures in the kernel.
 9.   Avoid zero-length memory allocations.
 10.  Added e-mail institutions. This small change attempts to mimic
-     physical entities.
+     physical entities. Please remove email.db.
+11.  Replaced timer-based excessive data purging from neighbors with
+     data-motivated mechanisms.
+12.  Corrected tab key navigation.
 
 0.09.03 (03/28/2014)
 
