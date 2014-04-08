@@ -14,6 +14,9 @@
 9.   Avoid zero-length memory allocations.
 10.  Added e-mail institutions. This small change attempts to resemble
      physical entities. Please remove email.db. Modified message type 0001b.
+     Institutions will now be able to house 3rd-party e-mail without needing
+     to distribute their public keys. Do note that care should be taken to
+     safeguard the symmetric keys.
 11.  Replaced timer-based excessive data purging from neighbors with
      data-motivated mechanisms.
 12.  Corrected tab key navigation.
