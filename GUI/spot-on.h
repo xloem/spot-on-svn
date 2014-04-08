@@ -309,6 +309,7 @@ class spoton: public QMainWindow
   void slotMailTabChanged(int index);
   void slotMaxMosaicSize(int value);
   void slotMaximumClientsChanged(int index);
+  void slotMaximumEmailFileSizeChanged(int value);
   void slotModeChanged(QSslSocket::SslMode mode);
   void slotNeighborCheckChange(bool state);
   void slotNeighborFullEcho(void);

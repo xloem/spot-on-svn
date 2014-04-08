@@ -69,6 +69,10 @@ spoton_mailer::~spoton_mailer()
 
 void spoton_mailer::slotTimeout(void)
 {
+  /*
+  ** Send mail.
+  */
+
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
 
   if(!s_crypt)
@@ -102,7 +106,8 @@ void spoton_mailer::slotTimeout(void)
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT goldbug, message, participant_oid, status, "
-		      "subject, OID FROM folders WHERE folder_index = 1"))
+		      "subject, OID, institution_name, institution_type "
+		      "FROM folders WHERE folder_index = 1"))
 	  while(query.next())
 	    {
 	      QString status("");
@@ -118,6 +123,8 @@ void spoton_mailer::slotTimeout(void)
 		continue;
 
 	      QByteArray goldbug;
+	      QByteArray institutionName;
+	      QByteArray institutionType;
 	      QByteArray message;
 	      QByteArray publicKey;
 	      QByteArray subject;
@@ -166,6 +173,24 @@ void spoton_mailer::slotTimeout(void)
 
 	      if(ok)
 		{
+		  if(!query.isNull(6))
+		    institutionName = s_crypt->
+		      decryptedAfterAuthenticated
+		      (QByteArray::fromBase64(query.value(6).toByteArray()),
+		       &ok);
+		}
+
+	      if(ok)
+		{
+		  if(!query.isNull(7))
+		    institutionType = s_crypt->
+		      decryptedAfterAuthenticated
+		      (QByteArray::fromBase64(query.value(7).toByteArray()),
+		       &ok);
+		}
+
+	      if(ok)
+		{
 		  QVector<QVariant> vector;
 
 		  vector << goldbug
@@ -173,7 +198,9 @@ void spoton_mailer::slotTimeout(void)
 			 << name
 			 << publicKey
 			 << subject
-			 << mailOid;
+			 << mailOid
+			 << institutionName
+			 << institutionType;
 		  list.append(vector);
 		}
 	    }
@@ -190,12 +217,18 @@ void spoton_mailer::slotTimeout(void)
     {
       QVector<QVariant> vector(list.at(i));
 
+      /*
+      ** So many parameters.
+      */
+
       emit sendMail(vector.value(0).toByteArray(),
 		    vector.value(1).toByteArray(),
 		    vector.value(2).toByteArray(),
 		    vector.value(3).toByteArray(),
 		    vector.value(4).toByteArray(),
-		    vector.value(5).toLongLong());
+		    vector.value(5).toLongLong(),
+		    vector.value(6).toByteArray(),
+		    vector.value(7).toByteArray());
     }
 }
 

@@ -61,6 +61,8 @@ class spoton_kernel: public QObject
   static QPointer<spoton_kernel> s_kernel;
   static QList<QByteArray> findBuzzKey(const QByteArray &data,
 				       const QByteArray &hash);
+  static QList<QByteArray> findInstitutionKey(const QByteArray &data,
+					      const QByteArray &hash);
   static QVariant setting(const QString &name,
 			  const QVariant &defaultValue);
   static bool messagingCacheContains(const QByteArray &data,
@@ -160,7 +162,9 @@ class spoton_kernel: public QObject
 		    const QByteArray &name,
 		    const QByteArray &publicKey,
 		    const QByteArray &subject,
-		    const qint64 mailOid);
+		    const qint64 mailOid,
+		    const QByteArray &institutionName,
+		    const QByteArray &institutionType);
   void slotSettingsChanged(const QString &path);
   void slotStatusTimerExpired(void);
   void slotUpdateSettings(void);
@@ -177,7 +181,8 @@ class spoton_kernel: public QObject
   void retrieveMail(const QByteArrayList &list);
   void sendBuzz(const QByteArray &buzz);
   void sendMessage(const QByteArray &message);
-  void sendMail(const QPairListByteArrayQInt64 &mail);
+  void sendMail(const QPairListByteArrayQInt64 &mail,
+		const QString &messageType);
   void sendStatus(const QByteArrayList &status);
 };
 

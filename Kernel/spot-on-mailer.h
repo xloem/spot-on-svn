@@ -59,7 +59,9 @@ class spoton_mailer: public QObject
 		const QByteArray &name,
 		const QByteArray &publicKey,
 		const QByteArray &subject,
-		const qint64 mailOid);
+		const qint64 mailOid,
+		const QByteArray &institutionName,
+		const QByteArray &institutionType);
   void sendMailFromPostOffice(const QByteArray &message);
 };
 

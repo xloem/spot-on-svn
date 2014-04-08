@@ -500,14 +500,18 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 			  const QByteArray &,
 			  const QByteArray &,
 			  const QByteArray &,
-			  const qint64)),
+			  const qint64,
+			  const QByteArray &,
+			  const QByteArray &)),
 	  this,
 	  SLOT(slotSendMail(const QByteArray &,
 			    const QByteArray &,
 			    const QByteArray &,
 			    const QByteArray &,
 			    const QByteArray &,
-			    const qint64)));
+			    const qint64,
+			    const QByteArray &,
+			    const QByteArray &)));
   m_settingsWatcher.addPath(settings.fileName());
   connect(&m_settingsWatcher,
 	  SIGNAL(fileChanged(const QString &)),
@@ -1669,9 +1673,11 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SLOT(slotSendBuzz(const QByteArray &)),
 	  Qt::UniqueConnection);
   connect(this,
-	  SIGNAL(sendMail(const QPairListByteArrayQInt64 &)),
+	  SIGNAL(sendMail(const QPairListByteArrayQInt64 &,
+			  const QString &)),
 	  neighbor,
-	  SLOT(slotSendMail(const QPairListByteArrayQInt64 &)),
+	  SLOT(slotSendMail(const QPairListByteArrayQInt64 &,
+			    const QString &)),
 	  Qt::UniqueConnection);
   connect(this,
 	  SIGNAL(sendMessage(const QByteArray &)),
@@ -1924,7 +1930,9 @@ void spoton_kernel::slotStatusTimerExpired(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-  emit sendStatus(list);
+
+  if(!list.isEmpty())
+    emit sendStatus(list);
 }
 
 void spoton_kernel::slotScramble(void)
@@ -2132,7 +2140,9 @@ void spoton_kernel::slotRetrieveMail(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-  emit retrieveMail(list);
+
+  if(!list.isEmpty())
+    emit retrieveMail(list);
 }
 
 void spoton_kernel::slotSendMail(const QByteArray &goldbug,
@@ -2140,7 +2150,9 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 				 const QByteArray &name,
 				 const QByteArray &publicKey,
 				 const QByteArray &subject,
-				 const qint64 mailOid)
+				 const qint64 mailOid,
+				 const QByteArray &institutionName,
+				 const QByteArray &institutionType)
 {
   spoton_crypt *s_crypt1 = s_crypts.value("email", 0);
 
@@ -2159,6 +2171,8 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
   ** publicKey - recipient's public key
   ** subject
   ** mailOid
+  ** institution name (encryption key)
+  ** institution type (hash key)
   */
 
   QByteArray myPublicKey;
@@ -2182,6 +2196,153 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
     return;
 
   QList<QPair<QByteArray, qint64> > list;
+
+  if(!institutionName.isEmpty() && !institutionType.isEmpty())
+    {
+      /*
+      ** Much of this is duplicated in the below branch.
+      */
+
+      QByteArray cipherType
+	(setting("gui/kernelCipherType", "randomized").
+	 toString().toLatin1());
+      QByteArray data;
+      QByteArray hashKey;
+      QByteArray keyInformation;
+      QByteArray messageCode1;
+      QByteArray messageCode2;
+      QByteArray recipientHashInformation;
+      QByteArray symmetricKey;
+      QByteArray symmetricKeyAlgorithm;
+
+      if(cipherType == "randomized")
+	cipherType = spoton_crypt::randomCipherType();
+
+      symmetricKeyAlgorithm = cipherType;
+
+      size_t symmetricKeyLength = spoton_crypt::cipherKeyLength
+	(symmetricKeyAlgorithm);
+
+      if(symmetricKeyLength > 0)
+	{
+	  hashKey.resize(static_cast<int> (symmetricKeyLength));
+	  hashKey = spoton_crypt::strongRandomBytes(hashKey.length());
+	  symmetricKey.resize(static_cast<int> (symmetricKeyLength));
+	  symmetricKey = spoton_crypt::strongRandomBytes
+	    (symmetricKey.length());
+	}
+      else
+	{
+	  spoton_misc::logError
+	    ("spoton_kernel::slotSendMail(): "
+	     "cipherKeyLength() failure.");
+	  return;
+	}
+
+      keyInformation = spoton_crypt::publicKeyEncrypt
+	(QByteArray("0001b").toBase64() + "\n" +
+	 symmetricKey.toBase64() + "\n" +
+	 hashKey.toBase64() + "\n" +
+	 symmetricKeyAlgorithm.toBase64(),
+	 publicKey, &ok);
+
+      QList<QByteArray> items;
+
+      if(ok)
+	items << name
+	      << subject
+	      << message;
+
+      if(ok)
+	if(!goldbug.isEmpty())
+	  {
+	    spoton_crypt crypt("aes256",
+			       QString("sha512"),
+			       QByteArray(),
+			       goldbug,
+			       0,
+			       0,
+			       QString(""));
+
+	    for(int i = 0; i < items.size(); i++)
+	      if(ok)
+		items.replace
+		  (i, crypt.encrypted(items.at(i), &ok));
+	      else
+		break;
+	  }
+
+      if(ok)
+	{
+	  QByteArray signature;
+	  spoton_crypt crypt(symmetricKeyAlgorithm,
+			     QString("sha512"),
+			     QByteArray(),
+			     symmetricKey,
+			     0,
+			     0,
+			     QString(""));
+
+	  if(setting("gui/emailSignMessages",
+		     true).toBool())
+	    signature = s_crypt2->digitalSignature
+	      (myPublicKeyHash +
+	       items.value(0) + // Name
+	       items.value(1) + // Subject
+	       items.value(2),  // Message
+	       &ok);
+
+	  if(ok)
+	    data = crypt.encrypted
+	      (myPublicKeyHash.toBase64() + "\n" +
+	       items.value(0).toBase64() + "\n" + // Name
+	       items.value(1).toBase64() + "\n" + // Subject
+	       items.value(2).toBase64() + "\n" + // Message
+	       signature.toBase64() + "\n" +
+	       QVariant(!goldbug.isEmpty()).toByteArray().toBase64(),
+	       &ok);
+
+	  if(ok)
+	    messageCode1 = spoton_crypt::keyedHash
+	      (data, hashKey, "sha512", &ok);
+
+	  if(ok)
+	    {
+	      spoton_crypt crypt(QString("aes256"),
+				 QString("sha512"),
+				 QByteArray(),
+				 institutionName,
+				 0,
+				 0,
+				 QString(""));
+
+	      recipientHashInformation = crypt.encrypted
+		(recipientHash, &ok);
+	    }
+
+	  if(ok)
+	    messageCode2 = spoton_crypt::keyedHash
+	      (keyInformation + data +
+	       messageCode1 + recipientHashInformation,
+	       institutionType, "sha512", &ok);
+
+	  if(ok)
+	    data = keyInformation.toBase64() + "\n" +
+	      data.toBase64() + "\n" +
+	      messageCode1.toBase64() + "\n" +
+	      recipientHashInformation.toBase64() + "\n" +
+	      messageCode2.toBase64();
+	}
+
+      if(!ok)
+	return;
+
+      QPair<QByteArray, qint64> pair(data, mailOid);
+
+      list.append(pair);
+      emit sendMail(list, "0001b");
+    }
+
   QString connectionName("");
 
   {
@@ -2196,7 +2357,8 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	/*
 	** Use all of our participants, including the recipients,
-	** as mail carriers.
+	** as mail carriers unless of course we're sending data
+	** to an institution.
 	*/
 
 	query.setForwardOnly(true);
@@ -2408,7 +2570,9 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-  emit sendMail(list);
+
+  if(!list.isEmpty())
+    emit sendMail(list, "0001a");
 }
 
 bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
@@ -3190,4 +3354,75 @@ void spoton_kernel::slotImpersonateTimeout(void)
 {
   slotScramble();
   m_impersonateTimer.setInterval(qrand() % 30000 + 10);
+}
+
+QList<QByteArray> spoton_kernel::findInstitutionKey
+(const QByteArray &data, const QByteArray &hash)
+{
+  /*
+  ** Unpleasantly slow.
+  */
+
+  if(hash.isEmpty())
+    return QList<QByteArray> ();
+
+  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return QList<QByteArray> ();
+
+  QList<QByteArray> list;
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT name, type FROM institutions"))
+	  while(query.next())
+	    {
+	      QByteArray name;
+	      QByteArray type;
+	      bool ok = true;
+
+	      name = s_crypt->decryptedAfterAuthenticated
+		(QByteArray::fromBase64(query.value(0).toByteArray()),
+		 &ok);
+
+	      if(ok)
+		type = s_crypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(1).toByteArray()),
+		   &ok);
+
+	      if(!ok)
+		continue;
+
+	      QByteArray computedHash;
+
+	      computedHash = spoton_crypt::keyedHash
+		(data, type, "sha512", &ok);
+
+	      if(ok)
+		if(!computedHash.isEmpty() && !hash.isEmpty() &&
+		   spoton_crypt::memcmp(computedHash, hash))
+		  {
+		    list << name << "aes256" << type << "sha512";
+		    break;
+		  }
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  return list;
 }

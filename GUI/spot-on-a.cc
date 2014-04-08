@@ -626,6 +626,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(valueChanged(int)),
 	  this,
 	  SLOT(slotDaysChanged(int)));
+  connect(m_ui.maximumEmailFileSize,
+	  SIGNAL(valueChanged(int)),
+	  this,
+	  SLOT(slotMaximumEmailFileSizeChanged(int)));
   connect(m_ui.etpMaxMosaicSize,
 	  SIGNAL(valueChanged(int)),
 	  this,
@@ -1140,7 +1144,9 @@ spoton::spoton(void):QMainWindow()
     (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
   m_ui.goldbug->setMaxLength
     (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
-  m_ui.institutionName->setMaxLength(256);
+  m_ui.institutionName->setMaxLength
+    (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
+  m_ui.institutionType->setMaxLength(256);
   m_ui.transmitNova->setMaxLength
     (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
   m_ui.channelType->clear();
@@ -1150,7 +1156,6 @@ spoton::spoton(void):QMainWindow()
   m_ui.etpCipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.etpHashType->addItems(spoton_crypt::hashTypes());
   m_ui.buzzHashType->addItems(spoton_crypt::hashTypes());
-  m_ui.institutionType->addItems(spoton_crypt::hashTypes());
   m_ui.kernelCipherType->insertSeparator(1);
   m_ui.kernelCipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.cost->setValue(m_settings.value("gui/congestionCost", 10000).toInt());
@@ -1159,6 +1164,8 @@ spoton::spoton(void):QMainWindow()
 						   512).toInt());
   m_ui.emailRetrievalInterval->setValue
     (m_settings.value("gui/emailRetrievalInterval", 5).toInt());
+  m_ui.maximumEmailFileSize->setValue
+    (m_settings.value("gui/maximumEmailFileSize", 100).toInt());
 
   QString statusControl
     (m_settings.
@@ -1243,9 +1250,6 @@ spoton::spoton(void):QMainWindow()
 
   if(m_ui.buzzHashType->count() == 0)
     m_ui.buzzHashType->addItem("n/a");
-
-  if(m_ui.institutionType->count() == 0)
-    m_ui.institutionType->addItem("n/a");
 
   m_ui.hashType->clear();
   m_ui.hashType->addItems(spoton_crypt::hashTypes());

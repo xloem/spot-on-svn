@@ -43,7 +43,7 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code (Base-64)
+0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
 }
 
 Echo Call
@@ -73,7 +73,7 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code (Base-64)
+0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
 }
 
 Echo Mail
@@ -127,14 +127,14 @@ EOL
 }
 EOL
 {
-0 - Keyed 2 SHA-512 Message Code (Base-64)
+0 - Keyed 2 SHA-512 Message Code of the Fourth Group (Base-64)
 }
 EOL
 {
-0 - Keyed 1 SHA-512 Message Code (Base-64)
+0 - Keyed 1 SHA-512 Message Code of the Second Group (Base-64)
 }
 
-Groups: 3
+Groups: 3, 5
 Public Key
 {
 0 - 0001b (Base-64)
@@ -162,7 +162,17 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code (Base-64)
+0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
+}
+EOL
+Optional Symmetric Key (Institution Encryption Key)
+{
+0 - Recipient's SHA-512 Hash (Base-64)
+}
+EOL
+{
+0 - Optional Keyed (Institution Hash Key) SHA-512
+    Message Code of the Preceding Four Groups (Base-64)
 }
 
 Retrieve Mail
@@ -190,7 +200,7 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code (Base-64)
+0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
 }
 
 Key Exchange
@@ -248,7 +258,7 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code (Base-64)
+0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
 }
 
 UUID Exchange

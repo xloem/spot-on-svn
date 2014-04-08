@@ -3923,6 +3923,15 @@ void spoton::slotDaysChanged(int value)
   settings.setValue("gui/postofficeDays", value);
 }
 
+void spoton::slotMaximumEmailFileSizeChanged(int value)
+{
+  m_settings["gui/maximumEmailFileSize"] = value;
+
+  QSettings settings;
+
+  settings.setValue("gui/maximumEmailFileSize", value);
+}
+
 void spoton::slotReply(void)
 {
   int row = m_ui.mail->currentRow();

@@ -280,6 +280,15 @@ void spoton::slotAddInstitution(void)
       return;
     }
 
+  QString type(m_ui.institutionType->text().trimmed());
+
+  if(type.isEmpty())
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Please provide an institution type."));
+      return;
+    }
+
   QString connectionName("");
   bool ok = true;
 
@@ -308,8 +317,7 @@ void spoton::slotAddInstitution(void)
 	if(ok)
 	  query.bindValue
 	    (2, crypt->
-	     encryptedThenHashed(m_ui.institutionType->currentText().
-				 toLatin1(), &ok).toBase64());
+	     encryptedThenHashed(type.toLatin1(), &ok).toBase64());
 
 	if(ok)
 	  ok = query.exec();
@@ -325,7 +333,7 @@ void spoton::slotAddInstitution(void)
   if(ok)
     {
       m_ui.institutionName->clear();
-      m_ui.institutionType->setCurrentIndex(0);
+      m_ui.institutionType->clear();
       refreshInstitutions();
     }
   else

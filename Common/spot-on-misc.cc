@@ -539,13 +539,15 @@ QString spoton_misc::countryCodeFromIPAddress(const QString &ipAddress)
   fileInfo.setFile(fileName);
 
   if(fileInfo.isReadable())
-    gi = GeoIP_open(fileName.toUtf8().constData(), GEOIP_MEMORY_CACHE);
+    {
+      gi = GeoIP_open(fileName.toUtf8().constData(), GEOIP_MEMORY_CACHE);
 
-  if(gi)
-    code = GeoIP_country_code_by_addr
-      (gi, ipAddress.toLatin1().constData());
-  else
-    logError("spoton_misc::countryCodeFromIPAddress(): gi is zero.");
+      if(gi)
+	code = GeoIP_country_code_by_addr
+	  (gi, ipAddress.toLatin1().constData());
+      else
+	logError("spoton_misc::countryCodeFromIPAddress(): gi is zero.");
+    }
 
   GeoIP_delete(gi);
 #else
@@ -571,13 +573,15 @@ QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
   fileInfo.setFile(fileName);
 
   if(fileInfo.isReadable())
-    gi = GeoIP_open(fileName.toUtf8().constData(), GEOIP_MEMORY_CACHE);
+    {
+      gi = GeoIP_open(fileName.toUtf8().constData(), GEOIP_MEMORY_CACHE);
 
-  if(gi)
-    country = GeoIP_country_name_by_addr
-      (gi, ipAddress.toLatin1().constData());
-  else
-    logError("spoton_misc::countryNameFromIPAddress(): gi is zero.");
+      if(gi)
+	country = GeoIP_country_name_by_addr
+	  (gi, ipAddress.toLatin1().constData());
+      else
+	logError("spoton_misc::countryNameFromIPAddress(): gi is zero.");
+    }
 
   GeoIP_delete(gi);
 #else
@@ -1754,6 +1758,14 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 3072;
 
   settings.insert("gui/keySize", integer);
+  integer = qAbs(settings.value("gui/maximumEmailFileSize", 1).toInt(&ok));
+
+  if(!ok)
+    integer = 100;
+  else if(integer < 1 || integer > 5000)
+    integer = 100;
+
+  settings.insert("gui/maximumEmailFileSize", integer);
   integer = qAbs(settings.value("gui/postofficeDays", 1).toInt(&ok));
 
   if(!ok)
