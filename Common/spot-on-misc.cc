@@ -142,8 +142,6 @@ void spoton_misc::prepareDatabases(void)
 					    ** Deleted, read, etc.
 					    */
 		   "subject BLOB NOT NULL, "
-		   "institution_name TEXT, "
-		   "institution_type TEXT, "
 		   "PRIMARY KEY (folder_index, hash, receiver_sender_hash))");
 	query.exec("CREATE TABLE IF NOT EXISTS institutions ("
 		   "hash TEXT PRIMARY KEY NOT NULL, "

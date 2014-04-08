@@ -1404,7 +1404,6 @@ spoton::spoton(void):QMainWindow()
   m_ui.transmitted->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.transmittedMagnets->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.urlParticipants->setContextMenuPolicy(Qt::CustomContextMenu);
-  m_ui.writeInstitutions->setContextMenuPolicy(Qt::CustomContextMenu);
   connect(m_ui.emailParticipants,
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,
@@ -1438,10 +1437,6 @@ spoton::spoton(void):QMainWindow()
 	  this,
 	  SLOT(slotShowContextMenu(const QPoint &)));
   connect(m_ui.transmittedMagnets,
-	  SIGNAL(customContextMenuRequested(const QPoint &)),
-	  this,
-	  SLOT(slotShowContextMenu(const QPoint &)));
-  connect(m_ui.writeInstitutions,
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,
 	  SLOT(slotShowContextMenu(const QPoint &)));
@@ -1506,8 +1501,6 @@ spoton::spoton(void):QMainWindow()
   m_ui.transmitted->horizontalHeader()->setSortIndicator
     (5, Qt::AscendingOrder);
   m_ui.urlParticipants->horizontalHeader()->setSortIndicator
-    (0, Qt::AscendingOrder);
-  m_ui.writeInstitutions->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   m_ui.listenersHorizontalSplitter->setStretchFactor(0, 1);
   m_ui.listenersHorizontalSplitter->setStretchFactor(1, 0);
@@ -4928,14 +4921,6 @@ void spoton::slotShowContextMenu(const QPoint &point)
 			      this, SLOT(slotRenameParticipant(void)));
       action->setProperty("type", "url");
       menu.exec(m_ui.urlParticipants->mapToGlobal(point));
-    }
-  else if(m_ui.writeInstitutions == sender())
-    {
-      QMenu menu(this);
-
-      menu.addAction(tr("Clear institution selection."),
-		     this, SLOT(slotClearInstitutionSelection(void)));
-      menu.exec(m_ui.writeInstitutions->mapToGlobal(point));
     }
 }
 

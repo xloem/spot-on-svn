@@ -135,7 +135,6 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	if(query.exec("SELECT date, goldbug, message, message_code, "
 		      "participant_oid, "
 		      "receiver_sender, status, subject, "
-		      "institution_name, institution_type, "
 		      "OID FROM folders"))
 	  while(query.next())
 	    {
@@ -146,13 +145,10 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		{
 		  QByteArray bytes;
 
-		  if(query.isNull(i))
-		    list.append(QByteArray());
-		  else
-		    bytes = oldCrypt->decryptedAfterAuthenticated
-		      (QByteArray::
-		       fromBase64(query.value(i).
-				  toByteArray()), &ok);
+		  bytes = oldCrypt->decryptedAfterAuthenticated
+		    (QByteArray::
+		     fromBase64(query.value(i).
+				toByteArray()), &ok);
 
 		  if(ok)
 		    list.append(bytes);
@@ -166,50 +162,36 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		    QSqlQuery updateQuery(db);
 
 		    updateQuery.prepare("UPDATE folders SET "
-					"date = ?, goldbug = ?, "
-					"message = ?, message_code = ?, "
+					"date = ?, "
+					"goldbug = ?, "
+					"message = ?, "
+					"message_code = ?, "
 					"participant_oid = ?, "
 					"receiver_sender = ?, "
 					"status = ?, "
 					"subject = ?, "
-					"institution_name = ?, "
-					"institution_type = ?, "
 					"hash = ? "
 					"WHERE OID = ?");
 
 		    for(int i = 0; i < list.size(); i++)
 		      if(ok)
-			{
-			  if(list.at(i).isEmpty())
-			    {
-			      if(i == 8 || i == 9) // Institution Name
-				                   // Institution Type
-				updateQuery.bindValue(i, QVariant::String);
-			      else
-				updateQuery.bindValue
-				  (i, newCrypt->encryptedThenHashed(list.at(i),
-								    &ok).
-				   toBase64());
-			    }
-			  else
-			    updateQuery.bindValue
-			      (i, newCrypt->encryptedThenHashed(list.at(i),
-								&ok).
-			       toBase64());
-			}
+			updateQuery.bindValue
+			  (i, newCrypt->encryptedThenHashed(list.at(i),
+							    &ok).
+			   toBase64());
 		      else
 			break;
 
 		    if(ok)
 		      updateQuery.bindValue
-			(10, newCrypt->keyedHash(list.value(2) +
-						 list.value(7), &ok).
+			(8, newCrypt->keyedHash(list.value(2) +
+						list.value(7), &ok).
 			 toBase64());
 
 		    if(ok)
 		      {
 			updateQuery.bindValue
-			  (11, query.value(query.record().count() - 1));
+			  (9, query.value(query.record().count() - 1));
 			updateQuery.exec();
 		      }
 		    else

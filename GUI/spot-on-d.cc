@@ -184,11 +184,8 @@ void spoton::refreshInstitutions(void)
     return;
 
   m_ui.institutions->clearContents();
-  m_ui.writeInstitutions->clearContents();
   m_ui.institutions->setRowCount(0);
-  m_ui.writeInstitutions->setRowCount(0);
   m_ui.institutions->setSortingEnabled(false);
-  m_ui.writeInstitutions->setSortingEnabled(false);
 
   QString connectionName("");
 
@@ -209,8 +206,6 @@ void spoton::refreshInstitutions(void)
 	    {
 	      m_ui.institutions->setRowCount
 		(m_ui.institutions->rowCount() + 1);
-	      m_ui.writeInstitutions->setRowCount
-		(m_ui.writeInstitutions->rowCount() + 1);
 
 	      QByteArray name;
 	      QByteArray type;
@@ -234,9 +229,6 @@ void spoton::refreshInstitutions(void)
 
 	      m_ui.institutions->setItem
 		(m_ui.institutions->rowCount() - 1, 0, item);
-	      m_ui.writeInstitutions->setItem
-		(m_ui.writeInstitutions->rowCount() - 1, 0,
-		 item->clone());
 
 	      if(ok)
 		item = new QTableWidgetItem(type.constData());
@@ -245,9 +237,6 @@ void spoton::refreshInstitutions(void)
 
 	      m_ui.institutions->setItem
 		(m_ui.institutions->rowCount() - 1, 1, item);
-	      m_ui.writeInstitutions->setItem
-		(m_ui.writeInstitutions->rowCount() - 1, 1,
-		 item->clone());
 	    }
       }
 
@@ -256,7 +245,6 @@ void spoton::refreshInstitutions(void)
 
   QSqlDatabase::removeDatabase(connectionName);
   m_ui.institutions->setSortingEnabled(true);
-  m_ui.writeInstitutions->setSortingEnabled(true);
 }
 
 void spoton::slotAddInstitution(void)
@@ -381,9 +369,4 @@ void spoton::slotDeleteInstitution(void)
 
   QSqlDatabase::removeDatabase(connectionName);
   refreshInstitutions();
-}
-
-void spoton::slotClearInstitutionSelection(void)
-{
-  m_ui.writeInstitutions->selectionModel()->clear();
 }
