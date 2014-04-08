@@ -12,8 +12,8 @@
 7.   Most database writes will now be synchronized.
 8.   Absorb memory failures in the kernel.
 9.   Avoid zero-length memory allocations.
-10.  Added e-mail institutions. This small change attempts to mimic
-     physical entities. Please remove email.db.
+10.  Added e-mail institutions. This small change attempts to resemble
+     physical entities. Please remove email.db. Modified message type 0001b.
 11.  Replaced timer-based excessive data purging from neighbors with
      data-motivated mechanisms.
 12.  Corrected tab key navigation.
