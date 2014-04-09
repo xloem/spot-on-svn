@@ -123,7 +123,28 @@ QByteArray spoton_send::message0001b(const QByteArray &message)
   return results;
 }
 
-QByteArray spoton_send::message0002(const QByteArray &message)
+QByteArray spoton_send::message0002a(const QByteArray &message)
+{
+  QByteArray results;
+
+  results.append
+    ("POST HTTP/1.1\r\n"
+     "Content-Type: application/x-www-form-urlencoded\r\n"
+     "Content-Length: %1\r\n"
+     "\r\n"
+     "content=%2\r\n"
+     "\r\n\r\n");
+  results.replace
+    ("%1",
+     QByteArray::number(message.toBase64().length() +
+			QString("content=\r\n\r\n\r\n").
+			length()));
+  results.replace
+    ("%2", message.toBase64());
+  return results;
+}
+
+QByteArray spoton_send::message0002b(const QByteArray &message)
 {
   QByteArray results;
 

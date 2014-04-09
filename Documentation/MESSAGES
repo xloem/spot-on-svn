@@ -181,7 +181,7 @@ Echoed? Yes
 Groups: 3
 Public Key
 {
-0 - 0002 (Base-64)
+0 - 0002a (Base-64)
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL
@@ -201,6 +201,23 @@ EOL
 EOL
 {
 0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
+}
+
+Groups: 2
+Symmetric Key (Institution Encryption Key)
+{
+0 - 0002b (Base-64)
+EOL
+1 - Requester's SHA-512 Hash (Base-64)
+EOL
+2 - Random Message (Base-64)
+EOL
+3 - Signature (Base-64)
+}
+EOL
+{
+0 - Keyed (Institution Hash Key) SHA-512 Message Code of
+    the First Group (Base-64)
 }
 
 Key Exchange

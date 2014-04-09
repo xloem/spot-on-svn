@@ -1498,25 +1498,27 @@ void spoton_neighbor::processData(void)
 	  ** that would do not.
 	  */
 
-	  QList<QByteArray> keys;
-	  QString messageType(findMessageType(data, keys));
+	  QList<QByteArray> symmetricKeys;
+	  QString messageType(findMessageType(data, symmetricKeys));
 
 	  if(messageType == "0000")
-	    process0000(length, data, keys);
+	    process0000(length, data, symmetricKeys);
 	  else if(messageType == "0000a")
 	    process0000a(length, data);
 	  else if(messageType == "0001a")
 	    process0001a(length, data);
 	  else if(messageType == "0001b")
-	    process0001b(length, data, keys);
-	  else if(messageType == "0002")
-	    process0002(length, data);
+	    process0001b(length, data, symmetricKeys);
+	  else if(messageType == "0002a")
+	    process0002a(length, data);
+	  else if(messageType == "0002b")
+	    process0002b(length, data, symmetricKeys);
 	  else if(messageType == "0013")
-	    process0013(length, data, keys);
+	    process0013(length, data, symmetricKeys);
 	  else if(messageType == "0040a")
-	    process0040a(length, data, keys);
+	    process0040a(length, data, symmetricKeys);
 	  else if(messageType == "0040b")
-	    process0040b(length, data, keys);
+	    process0040b(length, data, symmetricKeys);
 	  else
 	    messageType.clear();
 
@@ -1530,9 +1532,13 @@ void spoton_neighbor::processData(void)
 	  if(spoton_kernel::setting("gui/superEcho", false).toBool())
 	    emit receivedMessage(originalData, m_id);
 	  else if(m_echoMode == "full")
-	    if(messageType.isEmpty() ||
-	       messageType == "0040a" || messageType == "0040b")
-	      emit receivedMessage(originalData, m_id);
+	    {
+	      if(messageType == "0001b" && data.split('\n').size() == 5)
+		emit receivedMessage(originalData, m_id);
+	      else if(messageType.isEmpty() ||
+		      messageType == "0040a" || messageType == "0040b")
+		emit receivedMessage(originalData, m_id);
+	    }
 	}
     }
 }
@@ -2879,31 +2885,29 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 	}
 
       if(list.size() == 5)
-	{
-	  /*
-	  ** This letter is destined for someone else.
-	  */
+	/*
+	** This letter is destined for someone else.
+	*/
 
-	  if(spoton_kernel::setting("gui/postoffice_enabled",
-				    false).toBool())
-	    {
-	      QByteArray recipientHash;
-	      bool ok = true;
-	      spoton_crypt crypt("aes256",
-				 QString("sha512"),
-				 QByteArray(),
-				 keys.value(0),
-				 0,
-				 0,
-				 QString(""));
+	if(spoton_kernel::setting("gui/postoffice_enabled",
+				  false).toBool())
+	  {
+	    QByteArray recipientHash;
+	    bool ok = true;
+	    spoton_crypt crypt("aes256",
+			       QString("sha512"),
+			       QByteArray(),
+			       keys.value(0),
+			       0,
+			       0,
+			       QString(""));
 
-	      recipientHash = crypt.decrypted(list.value(3), &ok);
+	    recipientHash = crypt.decrypted(list.value(3), &ok);
 
-	      if(ok)
-		if(spoton_misc::isAcceptedParticipant(recipientHash, "email"))
-		  storeLetter(list.mid(0, 3), recipientHash);
-	    }
-	}
+	    if(ok)
+	      if(spoton_misc::isAcceptedParticipant(recipientHash, "email"))
+		storeLetter(list.mid(0, 3), recipientHash);
+	  }
     }
   else
     spoton_misc::logError
@@ -2915,7 +2919,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
        arg(m_port));
 }
 
-void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
+void spoton_neighbor::process0002a(int length, const QByteArray &dataIn)
 {
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
 
@@ -2934,7 +2938,7 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
       if(list.size() != 3)
 	{
 	  spoton_misc::logError
-	    (QString("spoton_neighbor::process0002(): "
+	    (QString("spoton_neighbor::process0002a(): "
 		     "received irregular data. Expecting 3 entries, "
 		     "received %1.").arg(list.size()));
 	  return;
@@ -2976,7 +2980,7 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 	  else
 	    {
 	      spoton_misc::logError
-		(QString("spoton_neighbor::process0002(): "
+		(QString("spoton_neighbor::process0002a(): "
 			 "received irregular data. "
 			 "Expecting 3 "
 			 "entries, "
@@ -3035,7 +3039,7 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 		      else
 			{
 			  spoton_misc::logError
-			    (QString("spoton_neighbor::process0002(): "
+			    (QString("spoton_neighbor::process0002a(): "
 				     "received irregular data. "
 				     "Expecting 3 "
 				     "entries, "
@@ -3045,7 +3049,7 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
 		    }
 		}
 	      else
-		spoton_misc::logError("spoton_neighbor::process0002(): "
+		spoton_misc::logError("spoton_neighbor::process0002a(): "
 				      "computed message code does "
 				      "not match provided code.");
 	    }
@@ -3053,7 +3057,31 @@ void spoton_neighbor::process0002(int length, const QByteArray &dataIn)
     }
   else
     spoton_misc::logError
-      (QString("spoton_neighbor::process0002(): 0002 "
+      (QString("spoton_neighbor::process0002a(): 0002a "
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
+}
+
+void spoton_neighbor::process0002b(int length, const QByteArray &dataIn,
+				   const QList<QByteArray> &keys)
+{
+  Q_UNUSED(keys);
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
+
+  if(!s_crypt)
+    return;
+
+  QByteArray data(dataIn);
+
+  if(length == data.length())
+    {
+    }
+  else
+    spoton_misc::logError
+      (QString("spoton_neighbor::process0002b(): 0002b "
 	       "content-length mismatch (advertised: %1, received: %2) "
 	       "for %3:%4.").
        arg(length).arg(data.length()).
@@ -4752,12 +4780,18 @@ void spoton_neighbor::storeLetter(const QList<QByteArray> &list,
   QSqlDatabase::removeDatabase(connectionName);
 }
 
-void spoton_neighbor::slotRetrieveMail(const QByteArrayList &list)
+void spoton_neighbor::slotRetrieveMail(const QByteArrayList &list,
+				       const QString &messageType)
 {
   if(readyToWrite())
     for(int i = 0; i < list.size(); i++)
       {
-	QByteArray message(spoton_send::message0002(list.at(i)));
+	QByteArray message;
+
+	if(messageType == "0002a")
+	  message = spoton_send::message0002a(list.at(i));
+	else
+	  message = spoton_send::message0002b(list.at(i));
 
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
@@ -5120,7 +5154,7 @@ void spoton_neighbor::slotResetKeepAlive(void)
 }
 
 QString spoton_neighbor::findMessageType
-(const QByteArray &data, QList<QByteArray> &keys)
+(const QByteArray &data, QList<QByteArray> &symmetricKeys)
 {
   QList<QByteArray> list(QByteArray::fromBase64(data).split('\n'));
   QString type("");
@@ -5131,10 +5165,10 @@ QString spoton_neighbor::findMessageType
   ** list[0]: Data
   ** ...
   ** list[list.size - 1]: Hash
-  ** keys[0]: Encryption Key
-  ** keys[1]: Encryption Type
-  ** keys[2]: Hash Key
-  ** keys[3]: Hash Type
+  ** symmetricKeys[0]: Encryption Key
+  ** symmetricKeys[1]: Encryption Type
+  ** symmetricKeys[2]: Hash Key
+  ** symmetricKeys[3]: Hash Type
   */
 
   /*
@@ -5142,20 +5176,20 @@ QString spoton_neighbor::findMessageType
   ** attached to the kernel.
   */
 
-  if(interfaces > 0)
+  if(interfaces > 0 && list.size() == 2)
     {
-      keys = spoton_kernel::findBuzzKey
+      symmetricKeys = spoton_kernel::findBuzzKey
 	(QByteArray::fromBase64(list.value(0)),
 	 QByteArray::fromBase64(list.value(1)));
 
-      if(!keys.isEmpty())
+      if(!symmetricKeys.isEmpty())
 	{
 	  QByteArray data;
 	  bool ok = true;
-	  spoton_crypt crypt(keys.value(1),
+	  spoton_crypt crypt(symmetricKeys.value(1),
 			     QString("sha512"), // Irrelevant.
 			     QByteArray(),
-			     keys.value(0),
+			     symmetricKeys.value(0),
 			     0,
 			     0,
 			     QString(""));
@@ -5168,10 +5202,10 @@ QString spoton_neighbor::findMessageType
 	  if(!type.isEmpty())
 	    goto done_label;
 	  else
-	    keys.clear();
+	    symmetricKeys.clear();
 	}
       else
-	keys.clear();
+	symmetricKeys.clear();
     }
 
   /*
@@ -5179,8 +5213,9 @@ QString spoton_neighbor::findMessageType
   ** attached to the kernel.
   */
 
-  if(interfaces > 0 && spoton_misc::participantCount("chat") > 0)
-    if(s_crypt)
+  if(s_crypt)
+    if(interfaces > 0 && list.size() == 2 &&
+       spoton_misc::participantCount("chat") > 0)
       {
 	QPair<QByteArray, QByteArray> gemini;
 
@@ -5209,17 +5244,17 @@ QString spoton_neighbor::findMessageType
 
 	    if(!type.isEmpty())
 	      {
-		keys.append(gemini.first);
-		keys.append("aes256");
-		keys.append(gemini.second);
-		keys.append("sha512");
+		symmetricKeys.append(gemini.first);
+		symmetricKeys.append("aes256");
+		symmetricKeys.append(gemini.second);
+		symmetricKeys.append("sha512");
 		goto done_label;
 	      }
 	    else
-	      keys.clear();
+	      symmetricKeys.clear();
 	  }
 	else
-	  keys.clear();
+	  symmetricKeys.clear();
       }
 
   /*
@@ -5229,8 +5264,8 @@ QString spoton_neighbor::findMessageType
   ** a letter.
   */
 
-  if(interfaces > 0 && list.size() == 3)
-    if(s_crypt)
+  if(s_crypt)
+    if(interfaces > 0 && list.size() == 3)
       if(!spoton_misc::allParticipantsHaveGeminis())
 	if(spoton_misc::participantCount("chat") > 0)
 	  {
@@ -5247,23 +5282,37 @@ QString spoton_neighbor::findMessageType
 	      goto done_label;
 	  }
 
-  if(list.size() == 5)
+  if(list.size() == 2 || list.size() == 5)
+    /*
+    ** 0001b
+    ** 0002b
+    */
+
     if(spoton_misc::participantCount("email") > 0)
       {
-	keys = spoton_kernel::findInstitutionKey
-	  (QByteArray::fromBase64(list.value(0)) +
-	   QByteArray::fromBase64(list.value(1)) +
-	   QByteArray::fromBase64(list.value(2)) +
-	   QByteArray::fromBase64(list.value(3)),
-	   QByteArray::fromBase64(list.value(4)));
+	if(list.size() == 2)
+	  symmetricKeys = spoton_kernel::findInstitutionKey
+	    (QByteArray::fromBase64(list.value(0)),
+	     QByteArray::fromBase64(list.value(1)));
+	else
+	  symmetricKeys = spoton_kernel::findInstitutionKey
+	    (QByteArray::fromBase64(list.value(0)) +
+	     QByteArray::fromBase64(list.value(1)) +
+	     QByteArray::fromBase64(list.value(2)) +
+	     QByteArray::fromBase64(list.value(3)),
+	     QByteArray::fromBase64(list.value(4)));
 
-	if(!keys.isEmpty())
+	if(!symmetricKeys.isEmpty())
 	  {
-	    type = "0001b";
+	    if(list.size() == 2)
+	      type = "0002b";
+	    else
+	      type = "0001b";
+
 	    goto done_label;
 	  }
 	else
-	  keys.clear();
+	  symmetricKeys.clear();
       }
 
   if(list.size() == 3 || list.size() == 6)

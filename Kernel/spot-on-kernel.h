@@ -176,7 +176,7 @@ class spoton_kernel: public QObject
 				  const QString &transport,
 				  const QString &orientation);
   void receivedMessage(const QByteArray &data, const qint64 id);
-  void retrieveMail(const QByteArrayList &list);
+  void retrieveMail(const QByteArrayList &list, const QString &messageType);
   void sendBuzz(const QByteArray &buzz);
   void sendMessage(const QByteArray &message);
   void sendMail(const QPairListByteArrayQInt64 &mail,

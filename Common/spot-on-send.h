@@ -49,7 +49,8 @@ class spoton_send
      const spoton_send_method sendMethod);
   static QByteArray message0001a(const QByteArray &message);
   static QByteArray message0001b(const QByteArray &message);
-  static QByteArray message0002(const QByteArray &message);
+  static QByteArray message0002a(const QByteArray &message);
+  static QByteArray message0002b(const QByteArray &message);
   static QByteArray message0010(const QByteArray &message);
   static QByteArray message0011(const QByteArray &keyType,
 				const QByteArray &name,

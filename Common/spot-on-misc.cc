@@ -900,6 +900,8 @@ bool spoton_misc::isAcceptedParticipant(const QByteArray &publicKeyHash,
 	  if(query.next())
 	    count = query.value(0).toLongLong();
       }
+
+    db.close();
   }
 
   QSqlDatabase::removeDatabase(connectionName);
@@ -1245,6 +1247,8 @@ QByteArray spoton_misc::publicKeyFromHash(const QByteArray &publicKeyHash,
 				      toByteArray()),
 	       &ok);
       }
+
+    db.close();
   }
 
   QSqlDatabase::removeDatabase(connectionName);
@@ -1291,6 +1295,8 @@ QByteArray spoton_misc::publicKeyFromSignaturePublicKeyHash
 				      toByteArray()),
 	       &ok);
       }
+
+    db.close();
   }
 
   QSqlDatabase::removeDatabase(connectionName);
@@ -1338,6 +1344,8 @@ QByteArray spoton_misc::signaturePublicKeyFromPublicKeyHash
 				      toByteArray()),
 	       &ok);
       }
+
+    db.close();
   }
 
   QSqlDatabase::removeDatabase(connectionName);

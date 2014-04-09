@@ -1659,9 +1659,11 @@ void spoton_kernel::connectSignalsToNeighbor
 				   const qint64)),
 	  Qt::UniqueConnection);
   connect(this,
-	  SIGNAL(retrieveMail(const QByteArrayList &)),
+	  SIGNAL(retrieveMail(const QByteArrayList &,
+			      const QString &)),
 	  neighbor,
-	  SLOT(slotRetrieveMail(const QByteArrayList &)),
+	  SLOT(slotRetrieveMail(const QByteArrayList &,
+				const QString &)),
 	  Qt::UniqueConnection);
   connect(this,
 	  SIGNAL(sendBuzz(const QByteArray &)),
@@ -2026,6 +2028,54 @@ void spoton_kernel::slotRetrieveMail(void)
     QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	/*
+	** Much of this is duplicated in the below branch.
+	*/
+
+	QSqlQuery query(db);
+
+	if(query.exec("SELECT name, type FROM institutions"))
+	  while(query.next())
+	    {
+	      QByteArray data;
+	      QByteArray institutionName;
+	      QByteArray institutionType;
+	      bool ok = true;
+
+	      institutionName = s_crypt->decryptedAfterAuthenticated
+		(QByteArray::fromBase64(query.value(0).toByteArray()),
+		 &ok);
+
+	      if(ok)
+		institutionType = s_crypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(1).toByteArray()),
+		   &ok);
+
+	      if(!ok)
+		continue;
+
+	      if(ok)
+		list.append(data);
+	    }
+      }
+
+    db.close();
+  }
+
+  if(!list.isEmpty())
+    emit retrieveMail(list, "0002b");
+
+  list.clear();
+  QSqlDatabase::removeDatabase(connectionName);
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
 		       "friends_public_keys.db");
 
     if(db.open())
@@ -2081,7 +2131,7 @@ void spoton_kernel::slotRetrieveMail(void)
 
 	      if(ok)
 		keyInformation = spoton_crypt::publicKeyEncrypt
-		  (QByteArray("0002").toBase64() + "\n" +
+		  (QByteArray("0002a").toBase64() + "\n" +
 		   symmetricKey.toBase64() + "\n" +
 		   hashKey.toBase64() + "\n" +
 		   symmetricKeyAlgorithm.toBase64(),
@@ -2138,7 +2188,7 @@ void spoton_kernel::slotRetrieveMail(void)
   QSqlDatabase::removeDatabase(connectionName);
 
   if(!list.isEmpty())
-    emit retrieveMail(list);
+    emit retrieveMail(list, "0002a");
 }
 
 void spoton_kernel::slotSendMail(const QByteArray &goldbug,

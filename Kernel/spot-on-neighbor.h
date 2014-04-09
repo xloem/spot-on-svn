@@ -202,7 +202,9 @@ class spoton_neighbor: public QThread
   void process0001a(int length, const QByteArray &data);
   void process0001b(int length, const QByteArray &data,
 		    const QList<QByteArray> &symmetricKeys);
-  void process0002(int length, const QByteArray &data);
+  void process0002a(int length, const QByteArray &data);
+  void process0002b(int length, const QByteArray &data,
+		    const QList<QByteArray> &symmetricKeys);
   void process0011(int length, const QByteArray &data);
   void process0012(int length, const QByteArray &data);
   void process0013(int length, const QByteArray &data,
@@ -278,7 +280,8 @@ class spoton_neighbor: public QThread
   void slotReadyRead(void);
   void slotReceivedMessage(const QByteArray &data, const qint64 id);
   void slotResetKeepAlive(void);
-  void slotRetrieveMail(const QByteArrayList &list);
+  void slotRetrieveMail(const QByteArrayList &list,
+			const QString &messageType);
   void slotSendAccountInformation(void);
   void slotSendAuthenticationRequest(void);
   void slotSendBuzz(const QByteArray &data);
