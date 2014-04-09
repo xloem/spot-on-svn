@@ -5218,8 +5218,8 @@ QString spoton_neighbor::findMessageType
   */
 
   if(interfaces > 0 && list.size() == 3)
-    if(!spoton_misc::allParticipantsHaveGeminis())
-      if(s_crypt)
+    if(s_crypt)
+      if(!spoton_misc::allParticipantsHaveGeminis())
 	if(spoton_misc::participantCount("chat") > 0)
 	  {
 	    QByteArray data;

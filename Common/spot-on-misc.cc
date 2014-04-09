@@ -2088,7 +2088,7 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 bool spoton_misc::allParticipantsHaveGeminis(void)
 {
   QString connectionName("");
-  qint64 count = 0;
+  qint64 count = -1;
 
   {
     QSqlDatabase db = database(connectionName);
