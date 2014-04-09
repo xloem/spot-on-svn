@@ -21,6 +21,8 @@
      data-motivated mechanisms.
 12.  Corrected tab key navigation.
 13.  Process kernel statistics in a specialized thread.
+14.  The method spoton_misc::allParticipantsHaveGeminis() should return
+     false if the participants pool is empty.
 
 0.09.03 (03/28/2014)
 
