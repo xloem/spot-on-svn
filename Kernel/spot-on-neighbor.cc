@@ -2887,30 +2887,21 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 	  if(spoton_kernel::setting("gui/postoffice_enabled",
 				    false).toBool())
 	    {
-	      QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
-				 "email.db");
-	      qint64 maximumSize = 1048576 * spoton_kernel::setting
-		("gui/maximumEmailFileSize", 100).toLongLong();
+	      QByteArray recipientHash;
+	      bool ok = true;
+	      spoton_crypt crypt("aes256",
+				 QString("sha512"),
+				 QByteArray(),
+				 keys.value(0),
+				 0,
+				 0,
+				 QString(""));
 
-	      if(fileInfo.size() < maximumSize)
-		{
-		  QByteArray recipientHash;
-		  bool ok = true;
-		  spoton_crypt crypt("aes256",
-				     QString("sha512"),
-				     QByteArray(),
-				     keys.value(0),
-				     0,
-				     0,
-				     QString(""));
+	      recipientHash = crypt.decrypted(list.value(3), &ok);
 
-		  recipientHash = crypt.decrypted(list.value(3), &ok);
-
-		  if(ok)
-		    if(spoton_misc::
-		       isAcceptedParticipant(recipientHash, "email"))
-		      storeLetter(list.mid(0, 3), recipientHash);
-		}
+	      if(ok)
+		if(spoton_misc::isAcceptedParticipant(recipientHash, "email"))
+		  storeLetter(list.mid(0, 3), recipientHash);
 	    }
 	}
     }
@@ -4557,6 +4548,18 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 				  const QByteArray &signature,
 				  const bool goldbugUsed)
 {
+  QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
+		     "email.db");
+  qint64 maximumSize = 1048576 * spoton_kernel::setting
+    ("gui/maximumEmailFileSize", 100).toLongLong();
+
+  if(fileInfo.size() >= maximumSize)
+    {
+      spoton_misc::logError("spoton_neighbor::storeLetter(): "
+			    "email.db has exceeded the specified limit.");
+      return;
+    }
+
   Q_UNUSED(symmetricKey);
   Q_UNUSED(symmetricKeyAlgorithm);
 
@@ -4576,9 +4579,7 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 			signature, s_crypt))
       {
 	spoton_misc::logError
-	  ("spoton_neighbor::"
-	   "storeLetter: invalid "
-	   "signature.");
+	  ("spoton_neighbor::storeLetter: invalid signature.");
 	return;
       }
 
@@ -4682,6 +4683,18 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 void spoton_neighbor::storeLetter(const QList<QByteArray> &list,
 				  const QByteArray &recipientHash)
 {
+  QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
+		     "email.db");
+  qint64 maximumSize = 1048576 * spoton_kernel::setting
+    ("gui/maximumEmailFileSize", 100).toLongLong();
+
+  if(fileInfo.size() >= maximumSize)
+    {
+      spoton_misc::logError("spoton_neighbor::storeLetter(): "
+			    "email.db has exceeded the specified limit.");
+      return;
+    }
+
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
 
   if(!s_crypt)

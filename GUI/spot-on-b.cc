@@ -2133,6 +2133,20 @@ Ui_spoton_mainwindow spoton::ui(void) const
 
 void spoton::slotSendMail(void)
 {
+  QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
+		     "email.db");
+  qint64 maximumSize = 1048576 *
+    m_settings.value("gui/maximumEmailFileSize", 100).toLongLong();
+
+  if(fileInfo.size() >= maximumSize)
+    {
+      QMessageBox::critical
+	(this, tr("Spot-On: Error"),
+	 tr("The file email.db has exceeded the specified limit. Please "
+	    "remove some entries."));
+      return;
+    }
+
   if(!m_crypts.value("email", 0))
     return;
 
