@@ -5107,8 +5107,7 @@ void spoton_neighbor::slotResetKeepAlive(void)
 }
 
 QString spoton_neighbor::findMessageType
-(const QByteArray &data,
- QList<QByteArray> &keys)
+(const QByteArray &data, QList<QByteArray> &keys)
 {
   QList<QByteArray> list(QByteArray::fromBase64(data).split('\n'));
   QString type("");

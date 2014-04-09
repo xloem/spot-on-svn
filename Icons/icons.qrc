@@ -229,7 +229,6 @@
 	<file>nouve/heart.png</file>
 	<file>nouve/inbox.png</file>
 	<file>nouve/information.png</file>
-	<file>nouve/institutions.png</file>
 	<file>nouve/lock.png</file>
 	<file>nouve/modify.png</file>
 	<file>nouve/neighbors.png</file>
@@ -268,7 +267,6 @@
 	<file>nuvola/heart.png</file>
 	<file>nuvola/inbox.png</file>
 	<file>nuvola/information.png</file>
-	<file>nuvola/institutions.png</file>
 	<file>nuvola/lock.png</file>
 	<file>nuvola/modify.png</file>
 	<file>nuvola/neighbors.png</file>
