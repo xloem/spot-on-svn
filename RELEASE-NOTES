@@ -23,6 +23,7 @@
 13.  Process kernel statistics in a specialized thread.
 14.  The method spoton_misc::allParticipantsHaveGeminis() should return
      false if the participants pool is empty.
+15.  Upgraded OpenSSL libraries to version 1.0.1g on OS X and Windows.
 
 0.09.03 (03/28/2014)
 
