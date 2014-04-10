@@ -37,6 +37,8 @@
 19.  Terminate timers in destructors.
 20.  Removed random selection of ciphers. The default cipher has been set
      to AES-256.
+21.  Do not review a client's authentication claims if the client has already been
+     authenticated.
 
 0.09.03 (03/28/2014)
 
