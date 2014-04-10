@@ -3686,7 +3686,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>871</width>
+             <width>1153</width>
              <height>829</height>
             </rect>
            </property>
@@ -4055,11 +4055,6 @@
                      <property name="sizeAdjustPolicy">
                       <enum>QComboBox::AdjustToContents</enum>
                      </property>
-                     <item>
-                      <property name="text">
-                       <string>randomized</string>
-                      </property>
-                     </item>
                     </widget>
                    </item>
                    <item>
