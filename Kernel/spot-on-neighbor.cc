@@ -1468,6 +1468,10 @@ void spoton_neighbor::processData(void)
       else if(length > 0 && (data.contains("type=0050&content=") ||
 			     data.contains("type=0051&content=") ||
 			     data.contains("type=0052&content=")))
+	/*
+	** We shouldn't be here!
+	*/
+
 	return;
       else if(length > 0 && data.contains("type=0065&content="))
 	process0065(length, data);
@@ -3913,8 +3917,8 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
       else
 	{
 	  m_accountAuthenticated = false;
-	  emit accountAuthenticated(spoton_crypt::weakRandomBytes(32),
-				    spoton_crypt::weakRandomBytes(32));
+	  emit accountAuthenticated(spoton_crypt::weakRandomBytes(64),
+				    spoton_crypt::weakRandomBytes(64));
 	}
 
       if(m_accountAuthenticated)

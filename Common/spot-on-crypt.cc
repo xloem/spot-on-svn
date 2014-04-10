@@ -1934,23 +1934,6 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data,
   return hash;
 }
 
-QByteArray spoton_crypt::randomCipherType(void)
-{
-  QStringList types(cipherTypes());
-
-  if(!types.isEmpty())
-    {
-      QByteArray type(types.value(qrand() % types.size()).toLatin1());
-
-      if(type.isEmpty())
-	return "aes256";
-      else
-	return type;
-    }
-  else
-    return QByteArray();
-}
-
 QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
 {
   /*

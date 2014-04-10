@@ -1737,7 +1737,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   str = settings.value("gui/kernelCipherType").toString().trimmed();
 
   if(!(str == "aes256" || str == "camellia256" ||
-       str == "gost28147" || str == "randomized" ||
+       str == "gost28147" ||
        str == "serpent256" || str == "twofish"))
     str = "aes256";
 

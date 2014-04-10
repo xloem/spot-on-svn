@@ -1158,7 +1158,6 @@ spoton::spoton(void):QMainWindow()
   m_ui.buzzHashType->addItems(spoton_crypt::hashTypes());
   m_ui.institutionNameType->addItems(spoton_crypt::cipherTypes());
   m_ui.institutionPostalAddressType->addItems(spoton_crypt::hashTypes());
-  m_ui.kernelCipherType->insertSeparator(1);
   m_ui.kernelCipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.cost->setValue(m_settings.value("gui/congestionCost", 10000).toInt());
   m_ui.days->setValue(m_settings.value("gui/postofficeDays", 1).toInt());
@@ -1253,7 +1252,7 @@ spoton::spoton(void):QMainWindow()
   if(m_ui.institutionPostalAddressType->count() == 0)
     m_ui.institutionPostalAddressType->addItem("n/a");
 
-  if(m_ui.kernelCipherType->count() <= 2)
+  if(m_ui.kernelCipherType->count() == 0)
     m_ui.kernelCipherType->addItem("n/a");
 
   if(m_ui.buzzHashType->count() == 0)
@@ -1270,7 +1269,7 @@ spoton::spoton(void):QMainWindow()
   if(m_ui.cipherType->findText(str) > -1)
     m_ui.cipherType->setCurrentIndex(m_ui.cipherType->findText(str));
 
-  str = m_settings.value("gui/kernelCipherType", "randomized").toString();
+  str = m_settings.value("gui/kernelCipherType", "aes256").toString();
 
   if(m_ui.kernelCipherType->findText(str) > -1)
     m_ui.kernelCipherType->setCurrentIndex
@@ -4432,13 +4431,8 @@ void spoton::slotSetPassphrase(void)
 
       m_settings["gui/hashType"] = m_ui.hashType->currentText();
       m_settings["gui/iterationCount"] = m_ui.iterationCount->value();
-
-      if(m_ui.kernelCipherType->currentIndex() == 0)
-	m_settings["gui/kernelCipherType"] = "randomized";
-      else
-	m_settings["gui/kernelCipherType"] =
-	  m_ui.kernelCipherType->currentText();
-
+      m_settings["gui/kernelCipherType"] =
+	m_ui.kernelCipherType->currentText();
       m_settings["gui/keySize"] = m_ui.keySize->currentText().toInt();
       m_settings["gui/nodeName"] = str3.toUtf8();
       m_settings["gui/rosettaName"] = str3.toUtf8();
@@ -6255,7 +6249,7 @@ void spoton::slotCopyEmailFriendshipBundle(void)
 
   QString neighborOid("");
   QByteArray cipherType(m_settings.value("gui/kernelCipherType",
-					 "randomized").toString().
+					 "aes256").toString().
 			toLatin1());
   QByteArray hashKey;
   QByteArray keyInformation;
@@ -6263,9 +6257,6 @@ void spoton::slotCopyEmailFriendshipBundle(void)
   QByteArray symmetricKey;
   QPair<QByteArray, QByteArray> gemini;
   bool ok = true;
-
-  if(cipherType == "randomized")
-    cipherType = spoton_crypt::randomCipherType();
 
   if(cipherType.isEmpty())
     {

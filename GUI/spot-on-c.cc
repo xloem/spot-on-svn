@@ -3494,7 +3494,7 @@ void spoton::slotCopyUrlFriendshipBundle(void)
 
   QString neighborOid("");
   QByteArray cipherType(m_settings.value("gui/kernelCipherType",
-					 "randomized").toString().
+					 "aes256").toString().
 			toLatin1());
   QByteArray hashKey;
   QByteArray keyInformation;
@@ -3502,9 +3502,6 @@ void spoton::slotCopyUrlFriendshipBundle(void)
   QByteArray symmetricKey;
   QPair<QByteArray, QByteArray> gemini;
   bool ok = true;
-
-  if(cipherType == "randomized")
-    cipherType = spoton_crypt::randomCipherType();
 
   if(cipherType.isEmpty())
     {

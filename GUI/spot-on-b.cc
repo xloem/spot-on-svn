@@ -890,11 +890,9 @@ void spoton::slotStatusChanged(int index)
 
 void spoton::slotKernelCipherTypeChanged(int index)
 {
-  if(index == 0)
-    m_settings["gui/kernelCipherType"] = "randomized";
-  else
-    m_settings["gui/kernelCipherType"] =
-      m_ui.kernelCipherType->currentText().toLower();
+  Q_UNUSED(index);
+  m_settings["gui/kernelCipherType"] =
+    m_ui.kernelCipherType->currentText().toLower();
 
   QSettings settings;
 
@@ -2003,7 +2001,7 @@ void spoton::slotCopyFriendshipBundle(void)
 
   QString neighborOid("");
   QByteArray cipherType(m_settings.value("gui/kernelCipherType",
-					 "randomized").
+					 "aes256").
 			toString().toLatin1());
   QByteArray hashKey;
   QByteArray keyInformation;
@@ -2011,9 +2009,6 @@ void spoton::slotCopyFriendshipBundle(void)
   QByteArray symmetricKey;
   QPair<QByteArray, QByteArray> gemini;
   bool ok = true;
-
-  if(cipherType == "randomized")
-    cipherType = spoton_crypt::randomCipherType();
 
   if(cipherType.isEmpty())
     {

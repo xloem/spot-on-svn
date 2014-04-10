@@ -71,7 +71,6 @@ class spoton_crypt
   static QByteArray publicKeyEncrypt(const QByteArray &data,
 				     const QByteArray &publicKey,
 				     bool *ok);
-  static QByteArray randomCipherType(void);
   static QByteArray saltedPassphraseHash(const QString &hashType,
 					 const QString &passphrase,
 					 const QByteArray &salt,
