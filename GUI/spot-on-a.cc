@@ -850,6 +850,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.missingLinks,
 	  SLOT(setEnabled(bool)));
+  connect(m_ui.addInstitutionCheckBox,
+	  SIGNAL(toggled(bool)),
+	  m_ui.addInstitutionLineEdit,
+	  SLOT(setEnabled(bool)));
+  connect(m_ui.addInstitutionCheckBox,
+	  SIGNAL(toggled(bool)),
+	  m_ui.institutionFrame,
+	  SLOT(setDisabled(bool)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -952,6 +960,7 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/emailRetrievalInterval", 5 * 60 * 1000).toInt());
   m_ui.ipv4Listener->setChecked(true);
   m_ui.listenerIP->setInputMask("000.000.000.000; ");
+  m_ui.addInstitutionLineEdit->setEnabled(false);
   m_ui.listenerScopeId->setEnabled(false);
   m_ui.listenerScopeIdLabel->setEnabled(false);
   m_ui.listenerShareAddress->setEnabled(false);
