@@ -1374,12 +1374,13 @@ void spoton_neighbor::processData(void)
 	  if(m_useAccounts)
 	    {
 	      if(length > 0 && data.contains("type=0050&content="))
-		/*
-		** This will certainly emit multiple authentication
-		** approvals to the client.
-		*/
+		if(!m_accountAuthenticated)
+		  /*
+		  ** This will certainly emit multiple authentication
+		  ** approvals to the client.
+		  */
 
-		process0050(length, data);
+		  process0050(length, data);
 
 	      if(!m_accountAuthenticated)
 		continue;
