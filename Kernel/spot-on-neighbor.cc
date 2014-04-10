@@ -2073,7 +2073,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 	      QByteArray computedHash;
 	      QByteArray message(list.value(0));
 	      spoton_crypt crypt("aes256",
-				 QString("sha512"),
+				 "sha512",
 				 QByteArray(),
 				 gemini.first,
 				 0,
@@ -2187,7 +2187,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 		     spoton_crypt::memcmp(computedHash, messageCode))
 		    {
 		      spoton_crypt crypt(symmetricKeyAlgorithm,
-					 QString("sha512"),
+					 "sha512",
 					 QByteArray(),
 					 symmetricKey,
 					 0,
@@ -2361,7 +2361,7 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 		 spoton_crypt::memcmp(computedHash, messageCode))
 		{
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
-				     QString("sha512"),
+				     "sha512",
 				     QByteArray(),
 				     symmetricKey,
 				     0,
@@ -2529,7 +2529,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	  QByteArray data;
 	  QByteArray senderPublicKeyHash2;
 	  spoton_crypt crypt(symmetricKeyAlgorithm,
-			     QString("sha512"),
+			     "sha512",
 			     QByteArray(),
 			     symmetricKey,
 			     0,
@@ -2637,7 +2637,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 		      QByteArray subject;
 		      bool goldbugUsed = false;
 		      spoton_crypt crypt(symmetricKeyAlgorithm,
-					 QString("sha512"),
+					 "sha512",
 					 QByteArray(),
 					 symmetricKey,
 					 0,
@@ -2833,7 +2833,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 		     spoton_crypt::memcmp(computedHash, messageCode))
 		    {
 		      spoton_crypt crypt(symmetricKeyAlgorithm,
-					 QString("sha512"),
+					 "sha512",
 					 QByteArray(),
 					 symmetricKey,
 					 0,
@@ -2895,7 +2895,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 	    QByteArray recipientHash;
 	    bool ok = true;
 	    spoton_crypt crypt("aes256",
-			       QString("sha512"),
+			       "sha512",
 			       QByteArray(),
 			       keys.value(0),
 			       0,
@@ -3010,7 +3010,7 @@ void spoton_neighbor::process0002a(int length, const QByteArray &dataIn)
 		 spoton_crypt::memcmp(computedHash, messageCode))
 		{
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
-				     QString("sha512"),
+				     "sha512",
 				     QByteArray(),
 				     symmetricKey,
 				     0,
@@ -3250,7 +3250,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 	      QByteArray computedHash;
 	      QByteArray message(list.value(0));
 	      spoton_crypt crypt("aes256",
-				 QString("sha512"),
+				 "sha512",
 				 QByteArray(),
 				 gemini.first,
 				 0,
@@ -3362,7 +3362,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 		     spoton_crypt::memcmp(computedHash, messageCode))
 		    {
 		      spoton_crypt crypt(symmetricKeyAlgorithm,
-					 QString("sha512"),
+					 "sha512",
 					 QByteArray(),
 					 symmetricKey,
 					 0,
@@ -3666,7 +3666,7 @@ void spoton_neighbor::process0040a(int length, const QByteArray &dataIn,
 	      QByteArray data(list.value(0));
 	      bool ok = true;
 	      spoton_crypt crypt(keys.value(1),
-				 QString("sha512"),
+				 "sha512",
 				 QByteArray(),
 				 keys.value(0),
 				 0,
@@ -3751,7 +3751,7 @@ void spoton_neighbor::process0040b(int length, const QByteArray &dataIn,
 	      QByteArray data(list.value(0));
 	      bool ok = true;
 	      spoton_crypt crypt(keys.value(1),
-				 QString("sha512"),
+				 "sha512",
 				 QByteArray(),
 				 keys.value(0),
 				 0,
@@ -5187,7 +5187,7 @@ QString spoton_neighbor::findMessageType
 	  QByteArray data;
 	  bool ok = true;
 	  spoton_crypt crypt(symmetricKeys.value(1),
-			     QString("sha512"), // Irrelevant.
+			     "sha512",
 			     QByteArray(),
 			     symmetricKeys.value(0),
 			     0,
@@ -5229,7 +5229,7 @@ QString spoton_neighbor::findMessageType
 	    QByteArray data;
 	    bool ok = true;
 	    spoton_crypt crypt("aes256",
-			       QString("sha512"),
+			       "sha512",
 			       QByteArray(),
 			       gemini.first,
 			       0,

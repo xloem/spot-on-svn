@@ -201,23 +201,36 @@ void spoton::refreshInstitutions(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT name, type FROM institutions"))
+	if(query.exec("SELECT cipher_type, hash_type, "
+		      "name, type FROM institutions"))
 	  while(query.next())
 	    {
 	      m_ui.institutions->setRowCount
 		(m_ui.institutions->rowCount() + 1);
 
+	      QByteArray cipherType;
+	      QByteArray hashType;
 	      QByteArray name;
 	      QByteArray type;
 	      bool ok = true;
 
-	      name = crypt->decryptedAfterAuthenticated
+	      cipherType = crypt->decryptedAfterAuthenticated
 		(QByteArray::fromBase64(query.value(0).toByteArray()),
 		 &ok);
 
 	      if(ok)
-		type = crypt->decryptedAfterAuthenticated
+		hashType = crypt->decryptedAfterAuthenticated
 		  (QByteArray::fromBase64(query.value(1).toByteArray()),
+		   &ok);
+
+	      if(ok)
+		name = crypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(2).toByteArray()),
+		   &ok);
+
+	      if(ok)
+		type = crypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(3).toByteArray()),
 		   &ok);
 
 	      QTableWidgetItem *item = 0;
@@ -231,12 +244,28 @@ void spoton::refreshInstitutions(void)
 		(m_ui.institutions->rowCount() - 1, 0, item);
 
 	      if(ok)
-		item = new QTableWidgetItem(type.constData());
+		item = new QTableWidgetItem(cipherType.constData());
 	      else
 		item = new QTableWidgetItem(tr("error"));
 
 	      m_ui.institutions->setItem
 		(m_ui.institutions->rowCount() - 1, 1, item);
+
+	      if(ok)
+		item = new QTableWidgetItem(type.constData());
+	      else
+		item = new QTableWidgetItem(tr("error"));
+
+	      m_ui.institutions->setItem
+		(m_ui.institutions->rowCount() - 1, 2, item);
+
+	      if(ok)
+		item = new QTableWidgetItem(hashType.constData());
+	      else
+		item = new QTableWidgetItem(tr("error"));
+
+	      m_ui.institutions->setItem
+		(m_ui.institutions->rowCount() - 1, 3, item);
 	    }
       }
 
@@ -292,19 +321,32 @@ void spoton::slotAddInstitution(void)
 
 	query.prepare
 	  ("INSERT OR REPLACE INTO institutions "
-	   "(hash, name, type) VALUES (?, ?, ?)");
+	   "(cipher_type, hash_type, hash, name, type) "
+	   "VALUES (?, ?, ?, ?, ?)");
 	query.bindValue
-	  (0, crypt->keyedHash(name.toLatin1(), &ok).
-	   toBase64());
+	  (0, crypt->encryptedThenHashed(m_ui.institutionNameType->
+					 currentText().toLatin1(),
+					 &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (1, crypt->encryptedThenHashed(name.toLatin1(), &ok).
+	    (1, crypt->encryptedThenHashed(m_ui.institutionTypeType->
+					   currentText().toLatin1(),
+					   &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (2, crypt->keyedHash(name.toLatin1(), &ok).
 	     toBase64());
 
 	if(ok)
 	  query.bindValue
-	    (2, crypt->
+	    (3, crypt->encryptedThenHashed(name.toLatin1(), &ok).
+	     toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (4, crypt->
 	     encryptedThenHashed(type.toLatin1(), &ok).toBase64());
 
 	if(ok)
@@ -321,7 +363,9 @@ void spoton::slotAddInstitution(void)
   if(ok)
     {
       m_ui.institutionName->clear();
+      m_ui.institutionNameType->setCurrentIndex(0);
       m_ui.institutionType->clear();
+      m_ui.institutionTypeType->setCurrentIndex(0);
       refreshInstitutions();
     }
   else

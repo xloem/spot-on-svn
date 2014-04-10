@@ -1340,7 +1340,7 @@ void spoton_kernel::slotMessageReceivedFromUI
 
 	QByteArray signature;
 	spoton_crypt crypt(cipherType,
-			   QString("sha512"),
+			   "sha512",
 			   QByteArray(),
 			   symmetricKey,
 			   0,
@@ -1382,7 +1382,7 @@ void spoton_kernel::slotMessageReceivedFromUI
 	  {
 	    QByteArray messageCode;
 	    spoton_crypt crypt("aes256",
-			       QString("sha512"),
+			       "sha512" ,
 			       QByteArray(),
 			       gemini.first,
 			       0,
@@ -1859,7 +1859,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 		    QByteArray signature;
 		    spoton_crypt crypt(symmetricKeyAlgorithm,
-				       QString("sha512"),
+				       "sha512",
 				       QByteArray(),
 				       symmetricKey,
 				       0,
@@ -1896,7 +1896,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		      {
 			QByteArray messageCode;
 			spoton_crypt crypt("aes256",
-					   QString("sha512"),
+					   "sha512" ,
 					   QByteArray(),
 					   gemini.first,
 					   0,
@@ -1962,7 +1962,7 @@ void spoton_kernel::slotScramble(void)
   if(ok)
     {
       spoton_crypt crypt(symmetricKeyAlgorithm,
-			 QString("sha512"),
+			 "sha512",
 			 QByteArray(),
 			 symmetricKey,
 			 0,
@@ -2038,21 +2038,35 @@ void spoton_kernel::slotRetrieveMail(void)
 
 	QSqlQuery query(db);
 
-	if(query.exec("SELECT name, type FROM institutions"))
+	if(query.exec("SELECT cipher_type, hash_type, "
+		      "name, type FROM institutions"))
 	  while(query.next())
 	    {
 	      QByteArray data;
 	      QByteArray institutionName;
 	      QByteArray institutionType;
+	      QByteArray message(spoton_crypt::strongRandomBytes(512));
+	      QString cipherType("");
+	      QString hashType("");
 	      bool ok = true;
 
-	      institutionName = s_crypt->decryptedAfterAuthenticated
+	      cipherType = s_crypt->decryptedAfterAuthenticated
 		(QByteArray::fromBase64(query.value(0).toByteArray()),
-		 &ok);
+		 &ok).constData();
+
+	      if(ok)
+		hashType = s_crypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(1).toByteArray()),
+		   &ok).constData();
+
+	      if(ok)
+		institutionName = s_crypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(2).toByteArray()),
+		   &ok);
 
 	      if(ok)
 		institutionType = s_crypt->decryptedAfterAuthenticated
-		  (QByteArray::fromBase64(query.value(1).toByteArray()),
+		  (QByteArray::fromBase64(query.value(3).toByteArray()),
 		   &ok);
 
 	      if(!ok)
@@ -2153,7 +2167,7 @@ void spoton_kernel::slotRetrieveMail(void)
 	      if(ok)
 		{
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
-				     QString("sha512"),
+				     "sha512",
 				     QByteArray(),
 				     symmetricKey,
 				     0,
@@ -2254,14 +2268,17 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	QSqlQuery query(db);
 
-	if(query.exec("SELECT name, type FROM institutions"))
+	if(query.exec("SELECT cipher_type, "
+		      "hash_type, name, type FROM institutions"))
 	  while(query.next())
 	    {
 	      QByteArray cipherType
 		(setting("gui/kernelCipherType", "randomized").
 		 toString().toLatin1());
+	      
 	      QByteArray data;
 	      QByteArray hashKey;
+	      QByteArray institutionHashType;
 	      QByteArray institutionName;
 	      QByteArray institutionType;
 	      QByteArray keyInformation;
@@ -2270,15 +2287,26 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	      QByteArray recipientHashInformation;
 	      QByteArray symmetricKey;
 	      QByteArray symmetricKeyAlgorithm;
+	      QString institutionCipherType;
 	      bool ok = true;
 
-	      institutionName = s_crypt1->decryptedAfterAuthenticated
+	      institutionCipherType = s_crypt1->decryptedAfterAuthenticated
 		(QByteArray::fromBase64(query.value(0).toByteArray()),
-		 &ok);
+		 &ok).constData();
+
+	      if(ok)
+		institutionHashType = s_crypt1->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(1).toByteArray()),
+		   &ok);
+
+	      if(ok)
+		institutionName = s_crypt1->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(2).toByteArray()),
+		   &ok);
 
 	      if(ok)
 		institutionType = s_crypt1->decryptedAfterAuthenticated
-		  (QByteArray::fromBase64(query.value(1).toByteArray()),
+		  (QByteArray::fromBase64(query.value(3).toByteArray()),
 		   &ok);
 
 	      if(!ok)
@@ -2326,7 +2354,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		if(!goldbug.isEmpty())
 		  {
 		    spoton_crypt crypt("aes256",
-				       QString("sha512"),
+				       "sha512",
 				       QByteArray(),
 				       goldbug,
 				       0,
@@ -2345,7 +2373,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		{
 		  QByteArray signature;
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
-				     QString("sha512"),
+				     "sha512" ,
 				     QByteArray(),
 				     symmetricKey,
 				     0,
@@ -2377,8 +2405,8 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 		  if(ok)
 		    {
-		      spoton_crypt crypt(QString("aes256"),
-					 QString("sha512"),
+		      spoton_crypt crypt(institutionCipherType,
+					 "sha512",
 					 QByteArray(),
 					 institutionName,
 					 0,
@@ -2393,7 +2421,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		    messageCode2 = spoton_crypt::keyedHash
 		      (keyInformation + data +
 		       messageCode1 + recipientHashInformation,
-		       institutionType, "sha512", &ok);
+		       institutionType, institutionHashType, &ok);
 
 		  if(ok)
 		    data = keyInformation.toBase64() + "\n" +
@@ -2503,7 +2531,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		{
 		  QByteArray signature;
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
-				     QString("sha512"),
+				     "sha512",
 				     QByteArray(),
 				     symmetricKey,
 				     0,
@@ -2574,7 +2602,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		if(!goldbug.isEmpty())
 		  {
 		    spoton_crypt crypt("aes256",
-				       QString("sha512"),
+				       "sha512",
 				       QByteArray(),
 				       goldbug,
 				       0,
@@ -2593,7 +2621,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		{
 		  QByteArray signature;
 		  spoton_crypt crypt(symmetricKeyAlgorithm,
-				     QString("sha512"),
+				     "sha512",
 				     QByteArray(),
 				     symmetricKey,
 				     0,
@@ -2830,7 +2858,7 @@ void spoton_kernel::slotBuzzReceivedFromUI(const QByteArray &key,
   QByteArray messageCode;
   bool ok = true;
   spoton_crypt crypt(channelType,
-		     QString("sha512"),
+		     "sha512",
 		     QByteArray(),
 		     key,
 		     0,
@@ -3244,7 +3272,7 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 
 		    QByteArray signature;
 		    spoton_crypt crypt(symmetricKeyAlgorithm,
-				       QString("sha512"),
+				       "sha512",
 				       QByteArray(),
 				       symmetricKey,
 				       0,
@@ -3465,20 +3493,33 @@ QList<QByteArray> spoton_kernel::findInstitutionKey
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT name, type FROM institutions"))
+	if(query.exec("SELECT cipher_type, hash_type, "
+		      "name, type FROM institutions"))
 	  while(query.next())
 	    {
+	      QByteArray cipherType;
+	      QByteArray hashType;
 	      QByteArray name;
 	      QByteArray type;
 	      bool ok = true;
 
-	      name = s_crypt->decryptedAfterAuthenticated
+	      cipherType = s_crypt->decryptedAfterAuthenticated
 		(QByteArray::fromBase64(query.value(0).toByteArray()),
 		 &ok);
 
 	      if(ok)
-		type = s_crypt->decryptedAfterAuthenticated
+		hashType = s_crypt->decryptedAfterAuthenticated
 		  (QByteArray::fromBase64(query.value(1).toByteArray()),
+		   &ok);
+
+	      if(ok)
+		name = s_crypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(2).toByteArray()),
+		   &ok);
+
+	      if(ok)
+		type = s_crypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(3).toByteArray()),
 		   &ok);
 
 	      if(!ok)
@@ -3487,13 +3528,13 @@ QList<QByteArray> spoton_kernel::findInstitutionKey
 	      QByteArray computedHash;
 
 	      computedHash = spoton_crypt::keyedHash
-		(data, type, "sha512", &ok);
+		(data, type, hashType, &ok);
 
 	      if(ok)
 		if(!computedHash.isEmpty() && !hash.isEmpty() &&
 		   spoton_crypt::memcmp(computedHash, hash))
 		  {
-		    list << name << "aes256" << type << "sha512";
+		    list << name << cipherType << type << hashType;
 		    break;
 		  }
 	    }

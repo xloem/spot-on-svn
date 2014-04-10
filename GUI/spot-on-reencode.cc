@@ -207,48 +207,76 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  }
 	    }
 
-	if(query.exec("SELECT name, type, OID FROM institutions"))
+	if(query.exec("SELECT cipher_type, hash_type, name, type, "
+		      "OID FROM institutions"))
 	  while(query.next())
 	    {
+	      QByteArray cipherType;
+	      QByteArray hashType;
 	      QByteArray name;
 	      QByteArray type;
 	      QSqlQuery updateQuery(db);
 	      bool ok = true;
 
 	      updateQuery.prepare("UPDATE institutions "
-				  "SET name = ?, "
+				  "SET "
+				  "cipher_type = ?, "
+				  "hash_type = ?, "
+				  "name = ?, "
 				  "type = ?, "
 				  "hash = ? "
 				  "WHERE "
 				  "OID = ?");
 
-	      name = oldCrypt->decryptedAfterAuthenticated
+	      cipherType = oldCrypt->decryptedAfterAuthenticated
 		(QByteArray::
 		 fromBase64(query.value(0).toByteArray()),
 		 &ok);
 
 	      if(ok)
-		type = oldCrypt->decryptedAfterAuthenticated
+		hashType = oldCrypt->decryptedAfterAuthenticated
 		  (QByteArray::
 		   fromBase64(query.value(1).toByteArray()),
 		   &ok);
 
 	      if(ok)
+		name = oldCrypt->decryptedAfterAuthenticated
+		  (QByteArray::
+		   fromBase64(query.value(2).toByteArray()),
+		   &ok);
+
+	      if(ok)
+		type = oldCrypt->decryptedAfterAuthenticated
+		  (QByteArray::
+		   fromBase64(query.value(3).toByteArray()),
+		   &ok);
+
+	      if(ok)
 		updateQuery.bindValue
-		  (0, newCrypt->encryptedThenHashed(name,
+		  (0, newCrypt->encryptedThenHashed(cipherType,
 						    &ok).toBase64());
 
 	      if(ok)
 		updateQuery.bindValue
-		  (1, newCrypt->encryptedThenHashed(type,
+		  (1, newCrypt->encryptedThenHashed(hashType,
 						    &ok).toBase64());
 
 	      if(ok)
 		updateQuery.bindValue
-		  (2, newCrypt->keyedHash(name,
+		  (2, newCrypt->encryptedThenHashed(name,
+						    &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (3, newCrypt->encryptedThenHashed(type,
+						    &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (4, newCrypt->keyedHash(name,
 					  &ok).toBase64());
 
-	      updateQuery.bindValue(3, query.value(2));
+	      updateQuery.bindValue(5, query.value(4));
 
 	      if(ok)
 		updateQuery.exec();
@@ -258,7 +286,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 		  deleteQuery.prepare("DELETE FROM institutions WHERE "
 				      "OID = ?");
-		  deleteQuery.bindValue(0, query.value(2));
+		  deleteQuery.bindValue(0, query.value(4));
 		  deleteQuery.exec();
 		}
 	    }

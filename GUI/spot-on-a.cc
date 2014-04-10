@@ -1156,6 +1156,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.etpCipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.etpHashType->addItems(spoton_crypt::hashTypes());
   m_ui.buzzHashType->addItems(spoton_crypt::hashTypes());
+  m_ui.institutionNameType->addItems(spoton_crypt::cipherTypes());
+  m_ui.institutionTypeType->addItems(spoton_crypt::hashTypes());
   m_ui.kernelCipherType->insertSeparator(1);
   m_ui.kernelCipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.cost->setValue(m_settings.value("gui/congestionCost", 10000).toInt());
@@ -1244,6 +1246,12 @@ spoton::spoton(void):QMainWindow()
 
   if(m_ui.etpHashType->count() == 0)
     m_ui.etpHashType->addItem("n/a");
+
+  if(m_ui.institutionNameType->count() == 0)
+    m_ui.institutionNameType->addItem("n/a");
+
+  if(m_ui.institutionTypeType->count() == 0)
+    m_ui.institutionTypeType->addItem("n/a");
 
   if(m_ui.kernelCipherType->count() <= 2)
     m_ui.kernelCipherType->addItem("n/a");
@@ -6329,7 +6337,7 @@ void spoton::slotCopyEmailFriendshipBundle(void)
 
   QByteArray data;
   spoton_crypt crypt(cipherType,
-		     QString("sha512"),
+		     "sha512",
 		     QByteArray(),
 		     symmetricKey,
 		     0,

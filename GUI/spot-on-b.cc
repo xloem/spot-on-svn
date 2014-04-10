@@ -1676,7 +1676,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       QByteArray computedHash;
       spoton_crypt crypt(list.value(1), // Cipher Type
-			 QString("sha512"),
+			 "sha512",
 			 QByteArray(),
 			 list.value(0), // Symmetric Key
 			 0,
@@ -2092,7 +2092,7 @@ void spoton::slotCopyFriendshipBundle(void)
 
   QByteArray data;
   spoton_crypt crypt(cipherType,
-		     QString("sha512"),
+		     "sha512",
 		     QByteArray(),
 		     symmetricKey,
 		     0,
@@ -2649,8 +2649,7 @@ void spoton::slotDeleteAllUuids(void)
 
 void spoton::slotRefreshMail(void)
 {
-  if(m_ui.mailTab->currentIndex() == 1 ||
-     m_ui.mailTab->currentIndex() == 3)
+  if(m_ui.mailTab->currentIndex() == 2)
     {
       refreshInstitutions();
       return;
@@ -3708,7 +3707,7 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
 	if(ok)
 	  {
 	    spoton_crypt crypt("aes256",
-			       QString("sha512"),
+			       "sha512",
 			       QByteArray(),
 			       goldbug,
 			       0,

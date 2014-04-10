@@ -3582,7 +3582,7 @@ void spoton::slotCopyUrlFriendshipBundle(void)
 
   QByteArray data;
   spoton_crypt crypt(cipherType,
-		     QString("sha512"),
+		     "sha512",
 		     QByteArray(),
 		     symmetricKey,
 		     0,
