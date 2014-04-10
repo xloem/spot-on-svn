@@ -41,6 +41,7 @@ class spoton_logviewer: public QMainWindow
 
  public:
   spoton_logviewer(void);
+  ~spoton_logviewer();
   void show(QWidget *parent);
 
  private:

@@ -202,7 +202,7 @@ void spoton::refreshInstitutions(void)
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT cipher_type, hash_type, "
-		      "name, type FROM institutions"))
+		      "name, postal_address FROM institutions"))
 	  while(query.next())
 	    {
 	      m_ui.institutions->setRowCount
@@ -211,7 +211,7 @@ void spoton::refreshInstitutions(void)
 	      QByteArray cipherType;
 	      QByteArray hashType;
 	      QByteArray name;
-	      QByteArray type;
+	      QByteArray postalAddress;
 	      bool ok = true;
 
 	      cipherType = crypt->decryptedAfterAuthenticated
@@ -229,7 +229,7 @@ void spoton::refreshInstitutions(void)
 		   &ok);
 
 	      if(ok)
-		type = crypt->decryptedAfterAuthenticated
+		postalAddress = crypt->decryptedAfterAuthenticated
 		  (QByteArray::fromBase64(query.value(3).toByteArray()),
 		   &ok);
 
@@ -252,7 +252,7 @@ void spoton::refreshInstitutions(void)
 		(m_ui.institutions->rowCount() - 1, 1, item);
 
 	      if(ok)
-		item = new QTableWidgetItem(type.constData());
+		item = new QTableWidgetItem(postalAddress.constData());
 	      else
 		item = new QTableWidgetItem(tr("error"));
 
@@ -297,12 +297,13 @@ void spoton::slotAddInstitution(void)
       return;
     }
 
-  QString type(m_ui.institutionType->text().trimmed());
+  QString postalAddress(m_ui.institutionPostalAddress->text().trimmed());
 
-  if(type.isEmpty())
+  if(postalAddress.isEmpty())
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Please provide an institution type."));
+			    tr("Please provide an institution "
+			       "postal address."));
       return;
     }
 
@@ -321,7 +322,7 @@ void spoton::slotAddInstitution(void)
 
 	query.prepare
 	  ("INSERT OR REPLACE INTO institutions "
-	   "(cipher_type, hash_type, hash, name, type) "
+	   "(cipher_type, hash_type, hash, name, postal_address) "
 	   "VALUES (?, ?, ?, ?, ?)");
 	query.bindValue
 	  (0, crypt->encryptedThenHashed(m_ui.institutionNameType->
@@ -330,9 +331,10 @@ void spoton::slotAddInstitution(void)
 
 	if(ok)
 	  query.bindValue
-	    (1, crypt->encryptedThenHashed(m_ui.institutionTypeType->
-					   currentText().toLatin1(),
-					   &ok).toBase64());
+	    (1, crypt->
+	     encryptedThenHashed(m_ui.institutionPostalAddressType->
+				 currentText().toLatin1(),
+				 &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
@@ -347,7 +349,7 @@ void spoton::slotAddInstitution(void)
 	if(ok)
 	  query.bindValue
 	    (4, crypt->
-	     encryptedThenHashed(type.toLatin1(), &ok).toBase64());
+	     encryptedThenHashed(postalAddress.toLatin1(), &ok).toBase64());
 
 	if(ok)
 	  ok = query.exec();
@@ -364,8 +366,8 @@ void spoton::slotAddInstitution(void)
     {
       m_ui.institutionName->clear();
       m_ui.institutionNameType->setCurrentIndex(0);
-      m_ui.institutionType->clear();
-      m_ui.institutionTypeType->setCurrentIndex(0);
+      m_ui.institutionPostalAddress->clear();
+      m_ui.institutionPostalAddressType->setCurrentIndex(0);
       refreshInstitutions();
     }
   else

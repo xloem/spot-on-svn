@@ -1146,7 +1146,7 @@ spoton::spoton(void):QMainWindow()
     (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
   m_ui.institutionName->setMaxLength
     (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
-  m_ui.institutionType->setMaxLength(256);
+  m_ui.institutionPostalAddress->setMaxLength(256);
   m_ui.transmitNova->setMaxLength
     (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
   m_ui.channelType->clear();
@@ -1157,7 +1157,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.etpHashType->addItems(spoton_crypt::hashTypes());
   m_ui.buzzHashType->addItems(spoton_crypt::hashTypes());
   m_ui.institutionNameType->addItems(spoton_crypt::cipherTypes());
-  m_ui.institutionTypeType->addItems(spoton_crypt::hashTypes());
+  m_ui.institutionPostalAddressType->addItems(spoton_crypt::hashTypes());
   m_ui.kernelCipherType->insertSeparator(1);
   m_ui.kernelCipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.cost->setValue(m_settings.value("gui/congestionCost", 10000).toInt());
@@ -1250,8 +1250,8 @@ spoton::spoton(void):QMainWindow()
   if(m_ui.institutionNameType->count() == 0)
     m_ui.institutionNameType->addItem("n/a");
 
-  if(m_ui.institutionTypeType->count() == 0)
-    m_ui.institutionTypeType->addItem("n/a");
+  if(m_ui.institutionPostalAddressType->count() == 0)
+    m_ui.institutionPostalAddressType->addItem("n/a");
 
   if(m_ui.kernelCipherType->count() <= 2)
     m_ui.kernelCipherType->addItem("n/a");
@@ -1586,6 +1586,12 @@ spoton::~spoton()
 
 void spoton::slotQuit(void)
 {
+  m_buzzStatusTimer.stop();
+  m_chatInactivityTimer.stop();
+  m_emailRetrievalTimer.stop();
+  m_externalAddressDiscovererTimer.stop();
+  m_generalTimer.stop();
+  m_tableTimer.stop();
   saveSettings();
 
   QHashIterator<QString, spoton_crypt *> it(m_crypts);

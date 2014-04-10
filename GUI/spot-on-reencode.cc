@@ -207,14 +207,14 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  }
 	    }
 
-	if(query.exec("SELECT cipher_type, hash_type, name, type, "
+	if(query.exec("SELECT cipher_type, hash_type, name, postal_address, "
 		      "OID FROM institutions"))
 	  while(query.next())
 	    {
 	      QByteArray cipherType;
 	      QByteArray hashType;
 	      QByteArray name;
-	      QByteArray type;
+	      QByteArray postalAddress;
 	      QSqlQuery updateQuery(db);
 	      bool ok = true;
 
@@ -223,7 +223,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "cipher_type = ?, "
 				  "hash_type = ?, "
 				  "name = ?, "
-				  "type = ?, "
+				  "postal_address = ?, "
 				  "hash = ? "
 				  "WHERE "
 				  "OID = ?");
@@ -246,7 +246,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		   &ok);
 
 	      if(ok)
-		type = oldCrypt->decryptedAfterAuthenticated
+		postalAddress = oldCrypt->decryptedAfterAuthenticated
 		  (QByteArray::
 		   fromBase64(query.value(3).toByteArray()),
 		   &ok);
@@ -268,7 +268,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 	      if(ok)
 		updateQuery.bindValue
-		  (3, newCrypt->encryptedThenHashed(type,
+		  (3, newCrypt->encryptedThenHashed(postalAddress,
 						    &ok).toBase64());
 
 	      if(ok)

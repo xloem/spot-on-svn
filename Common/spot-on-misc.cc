@@ -145,10 +145,13 @@ void spoton_misc::prepareDatabases(void)
 		   "PRIMARY KEY (folder_index, hash, receiver_sender_hash))");
 	query.exec("CREATE TABLE IF NOT EXISTS institutions ("
 		   "cipher_type TEXT NOT NULL, "
-		   "hash TEXT PRIMARY KEY NOT NULL, "
+		   "hash TEXT PRIMARY KEY NOT NULL, " /*
+						      ** Hash of the
+						      ** name.
+						      */
 		   "hash_type TEXT NOT NULL, "
 		   "name TEXT NOT NULL, "
-		   "type TEXT NOT NULL)");
+		   "postal_address TEXT NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS post_office ("
 		   "date_received TEXT NOT NULL, "
 		   "message_bundle BLOB NOT NULL, "

@@ -72,6 +72,11 @@ spoton_logviewer::spoton_logviewer(void):QMainWindow()
   slotSetIcons();
 }
 
+spoton_logviewer::~spoton_logviewer()
+{
+  m_timer.stop();
+}
+
 void spoton_logviewer::slotClose(void)
 {
   close();

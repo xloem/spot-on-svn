@@ -158,6 +158,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 
 spoton_buzzpage::~spoton_buzzpage()
 {
+  m_statusTimer.stop();
   spoton_misc::logError(QString("spoton_buzzpage::~spoton_buzzpage(): "
 				"channel %1 closed.").
 			arg(ui.magnet->text()));

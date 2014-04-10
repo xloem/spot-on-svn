@@ -95,6 +95,7 @@ spoton_sctp_server::spoton_sctp_server(const qint64 id,
 
 spoton_sctp_server::~spoton_sctp_server()
 {
+  m_timer.stop();
   close();
 }
 

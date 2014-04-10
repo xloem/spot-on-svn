@@ -274,6 +274,7 @@ spoton_listener::~spoton_listener()
   spoton_misc::logError(QString("Listener %1:%2 deallocated.").
 			arg(m_address.toString()).
 			arg(m_port));
+  m_externalAddressDiscovererTimer.stop();
   m_timer.stop();
 
   if(m_sctpServer)

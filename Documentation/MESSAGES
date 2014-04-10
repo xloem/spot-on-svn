@@ -171,7 +171,7 @@ Optional Symmetric Key (Institution Encryption Key)
 }
 EOL
 {
-0 - Optional Keyed (Institution Hash Key) SHA-512
+0 - Optional Keyed (Institution Hash Key)
     Message Code of the Preceding Four Groups (Base-64)
 }
 
@@ -216,8 +216,7 @@ EOL
 }
 EOL
 {
-0 - Keyed (Institution Hash Key) SHA-512 Message Code of
-    the First Group (Base-64)
+0 - Keyed (Institution Hash Key) Message Code (Base-64)
 }
 
 Key Exchange

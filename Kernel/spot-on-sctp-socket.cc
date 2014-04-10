@@ -109,6 +109,7 @@ spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QObject(parent)
 
 spoton_sctp_socket::~spoton_sctp_socket()
 {
+  m_timer.stop();
   close();
 }
 
