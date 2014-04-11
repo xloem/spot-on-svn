@@ -416,3 +416,19 @@ void spoton::slotDeleteInstitution(void)
   QSqlDatabase::removeDatabase(connectionName);
   refreshInstitutions();
 }
+
+void spoton::slotCopyInstitution(void)
+{
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(!clipboard)
+    return;
+  else
+    clipboard->clear();
+
+  int row = -1;
+
+  if((row = m_ui.institutions->currentRow()) >= 0)
+    {
+    }
+}

@@ -1969,7 +1969,7 @@ void spoton_kernel::slotScramble(void)
 
       if(ok)
 	messageCode = spoton_crypt::keyedHash
-	  (data, spoton_crypt::strongRandomBytes(128), "sha512", &ok);
+	  (data, spoton_crypt::strongRandomBytes(64), "sha512", &ok);
 
       if(ok)
 	{
@@ -2042,7 +2042,9 @@ void spoton_kernel::slotRetrieveMail(void)
 	      QByteArray hashType;
 	      QByteArray institutionName;
 	      QByteArray institutionPostalAddress;
-	      QByteArray message(spoton_crypt::strongRandomBytes(512));
+	      QByteArray message1(spoton_crypt::strongRandomBytes(64));
+	      QByteArray message2(spoton_crypt::strongRandomBytes(64));
+	      QByteArray requesterHashInformation;
 	      QByteArray signature;
 	      QString cipherType("");
 	      bool ok = true;
@@ -2068,8 +2070,13 @@ void spoton_kernel::slotRetrieveMail(void)
 		   &ok);
 
 	      if(ok)
+		requesterHashInformation = spoton_crypt::keyedHash
+		  (message1 + publicKey,
+		   institutionPostalAddress, hashType, &ok);
+
+	      if(ok)
 		signature = s_crypt->digitalSignature
-		  (myPublicKeyHash + message, &ok);
+		  (message1 + requesterHashInformation + message2, &ok);
 
 	      if(!ok)
 		continue;
@@ -2084,8 +2091,9 @@ void spoton_kernel::slotRetrieveMail(void)
 
 	      data = crypt.encrypted
 		(QByteArray("0002b").toBase64() + "\n" +
-		 myPublicKeyHash.toBase64() + "\n" +
-		 message.toBase64() + "\n" +
+		 message1.toBase64() + "\n" +
+		 requesterHashInformation.toBase64() + "\n" +
+		 message2.toBase64() + "\n" +
 		 signature.toBase64(), &ok);
 
 	      if(ok)
@@ -2136,7 +2144,7 @@ void spoton_kernel::slotRetrieveMail(void)
 	      QByteArray data;
 	      QByteArray hashKey;
 	      QByteArray keyInformation;
-	      QByteArray message(spoton_crypt::strongRandomBytes(512));
+	      QByteArray message(spoton_crypt::strongRandomBytes(64));
 	      QByteArray publicKey;
 	      QByteArray signature;
 	      QByteArray symmetricKey;
@@ -2306,6 +2314,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	      QByteArray keyInformation;
 	      QByteArray messageCode1;
 	      QByteArray messageCode2;
+	      QByteArray randomBytes(spoton_crypt::strongRandomBytes(64));
 	      QByteArray recipientHashInformation;
 	      QByteArray symmetricKey;
 	      QByteArray symmetricKeyAlgorithm;
@@ -2424,29 +2433,21 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 		      (data, hashKey, "sha512", &ok);
 
 		  if(ok)
-		    {
-		      spoton_crypt crypt(institutionCipherType,
-					 "sha512",
-					 QByteArray(),
-					 institutionName,
-					 0,
-					 0,
-					 QString(""));
-
-		      recipientHashInformation = crypt.encrypted
-			(recipientHash, &ok);
-		    }
+		    recipientHashInformation = spoton_crypt::keyedHash
+		      (randomBytes + publicKey, institutionPostalAddress,
+		       institutionHashType, &ok);
 
 		  if(ok)
 		    messageCode2 = spoton_crypt::keyedHash
 		      (keyInformation + data +
-		       messageCode1 + recipientHashInformation,
+		       messageCode1 + randomBytes + recipientHashInformation,
 		       institutionPostalAddress, institutionHashType, &ok);
 
 		  if(ok)
 		    data = keyInformation.toBase64() + "\n" +
 		      data.toBase64() + "\n" +
 		      messageCode1.toBase64() + "\n" +
+		      randomBytes.toBase64() + "\n" +
 		      recipientHashInformation.toBase64() + "\n" +
 		      messageCode2.toBase64();
 		}

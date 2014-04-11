@@ -262,6 +262,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotCopyOrPaste(void)));
+  connect(m_ui.copyInstitution,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotCopyInstitution(void)));
   connect(m_ui.action_Quit,
 	  SIGNAL(triggered(void)),
 	  this,

@@ -231,6 +231,7 @@ class spoton: public QMainWindow
   void slotCopyEtpMagnet(void);
   void slotCopyFileHash(void);
   void slotCopyFriendshipBundle(void);
+  void slotCopyInstitution(void);
   void slotCopyMyChatPublicKey(void);
   void slotCopyMyEmailPublicKey(void);
   void slotCopyMyRosettaPublicKey(void);

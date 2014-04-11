@@ -2551,3 +2551,69 @@ void spoton_misc::vacuumAllDatabases(void)
       QSqlDatabase::removeDatabase(connectionName);
     }
 }
+
+QByteArray spoton_misc::findPublicKeyHashGivenHash
+(const QByteArray &randomBytes,
+ const QByteArray &hash, const QByteArray &hashKey,
+ const QByteArray &hashType, spoton_crypt *crypt)
+{
+  /*
+  ** Locate the public key's hash of the public key whose
+  ** hash is identical to the provided hash.
+  */
+
+  if(!crypt)
+    return QByteArray();
+
+  QByteArray publicKeyHash;
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName
+      (homePath() + QDir::separator() + "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT public_key, public_key_hash FROM "
+		      "friends_public_keys WHERE "
+		      "neighbor_oid = -1"))
+	  while(query.next())
+	    {
+	      QByteArray publicKey;
+	      bool ok = true;
+
+	      publicKey = crypt->decryptedAfterAuthenticated
+		(QByteArray::fromBase64(query.value(0).toByteArray()),
+		 &ok);
+
+	      if(ok)
+		{
+		  QByteArray computedHash;
+
+		  computedHash = spoton_crypt::keyedHash
+		    (randomBytes + publicKey, hashKey, hashType, &ok);
+
+		  if(ok)
+		    if(!computedHash.isEmpty() && !hash.isEmpty() &&
+		       spoton_crypt::memcmp(computedHash, hash))
+		      {
+			publicKeyHash = QByteArray::fromBase64
+			  (query.value(1).toByteArray());
+			break;
+		      }
+		}
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  return publicKeyHash;
+}

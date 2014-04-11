@@ -224,18 +224,30 @@ void spoton_mailer::slotRetrieveMail(const QByteArray &data,
 								  0)));
 
   if(publicKey.isEmpty())
-    return;
+    {
+      spoton_misc::logError("spoton_mailer::slotRetrieveMail(): "
+			    "empty public key from hash.");
+      return;
+    }
 
-  if(!spoton_crypt::isValidSignature(publicKeyHash + data,
+  if(!spoton_crypt::isValidSignature(data,
 				     publicKey,
 				     signature))
-    return;
+    {
+      spoton_misc::logError("spoton_mailer::slotRetrieveMail(): "
+			    "invalid signature.");
+      return;
+    }
 
   publicKey = spoton_misc::publicKeyFromSignaturePublicKeyHash
     (publicKeyHash, spoton_kernel::s_crypts.value("email", 0));
 
   if(publicKey.isEmpty())
-    return;
+    {
+      spoton_misc::logError("spoton_mailer::slotRetrieveMail(): "
+			    "empty public key from signature hash.");
+      return;
+    }
 
   QByteArray hash;
   bool ok = true;
