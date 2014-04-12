@@ -93,7 +93,7 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 void spoton_listener_udp_server::slotReadyRead(void)
 {
   /*
-  ** This unfortunately violates our multi-threaded approach.
+  ** This unfortunately violates our multi-threaded approach for UDP sockets.
   */
 
   QHostAddress peerAddress;
@@ -137,11 +137,11 @@ spoton_listener::spoton_listener(const QString &ipAddress,
   m_udpServer = 0;
 
   if(transport == "sctp")
-    m_sctpServer = new spoton_sctp_server(id, parent);
+    m_sctpServer = new spoton_sctp_server(id, this);
   else if(transport == "tcp")
-    m_tcpServer = new spoton_listener_tcp_server(id, parent);
+    m_tcpServer = new spoton_listener_tcp_server(id, this);
   else if(transport == "udp")
-    m_udpServer = new spoton_listener_udp_server(id, parent);
+    m_udpServer = new spoton_listener_udp_server(id, this);
 
   m_address = QHostAddress(ipAddress);
   m_address.setScopeId(scopeId);
