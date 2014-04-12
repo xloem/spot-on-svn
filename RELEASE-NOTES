@@ -42,6 +42,8 @@
 22.  Server objects should belong to listener objects and not
      to the kernel. The correction does not fix an error because
      the parent in this example would be the kernel.
+23.  One ought to remove socket objects from the kernel's interface
+     listener, although the objects are removed during termination.
 
 0.09.03 (03/28/2014)
 
