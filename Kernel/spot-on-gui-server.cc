@@ -59,7 +59,7 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
 
   if(error.isEmpty())
     {
-      QSslSocket *socket = new (std::nothrow) QSslSocket(this);
+      QPointer<QSslSocket> socket = new (std::nothrow) QSslSocket(this);
 
       if(socket)
 	{

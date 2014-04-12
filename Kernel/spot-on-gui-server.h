@@ -30,6 +30,7 @@
 
 #include <QFileSystemWatcher>
 #include <QQueue>
+#include <QPointer>
 #include <QSslSocket>
 #include <QTcpServer>
 #include <QTimer>
@@ -47,7 +48,13 @@ class spoton_gui_server_tcp_server: public QTcpServer
 
   ~spoton_gui_server_tcp_server()
   {
-    m_queue.clear();
+    while(!m_queue.isEmpty())
+      {
+	QPointer<QSslSocket> socket = m_queue.dequeue();
+
+	if(socket)
+	  socket->deleteLater();
+      }
   }
 
   QSslSocket *nextPendingConnection(void)
@@ -65,7 +72,7 @@ class spoton_gui_server_tcp_server: public QTcpServer
 #endif
 
  private:
-  QQueue<QSslSocket *> m_queue;
+  QQueue<QPointer<QSslSocket> > m_queue;
 
  signals:
   void modeChanged(QSslSocket::SslMode mode);
