@@ -121,39 +121,40 @@ void spoton::slotUpdateChatWindows(void)
 
   QStringList list;
 
-  for(int i = 0; i < m_ui.participants->rowCount(); i++)
-    {
-      QIcon icon;
-      QString name("");
-      QString oid("");
-      QString publicKeyHash("");
-      QTableWidgetItem *item = 0;
+  if(!m_chatWindows.isEmpty())
+    for(int i = 0; i < m_ui.participants->rowCount(); i++)
+      {
+	QIcon icon;
+	QString name("");
+	QString oid("");
+	QString publicKeyHash("");
+	QTableWidgetItem *item = 0;
 
-      item = m_ui.participants->item(i, 0);
+	item = m_ui.participants->item(i, 0);
 
-      if(item)
-	{
-	  icon = item->icon();
-	  name = item->text();
-	}
+	if(item)
+	  {
+	    icon = item->icon();
+	    name = item->text();
+	  }
 
-      item = m_ui.participants->item(i, 1);
+	item = m_ui.participants->item(i, 1);
 
-      if(item)
-	oid = item->text();
+	if(item)
+	  oid = item->text();
 
-      if(!m_chatWindows.contains(oid))
-	m_chatWindows.remove(oid);
+	if(!m_chatWindows.contains(oid))
+	  m_chatWindows.remove(oid);
 
-      emit statusChanged(icon, name, oid);
-      item = m_ui.participants->item(i, 3);
+	emit statusChanged(icon, name, oid);
+	item = m_ui.participants->item(i, 3);
 
-      if(item)
-	publicKeyHash = item->text();
+	if(item)
+	  publicKeyHash = item->text();
 
-      if(!publicKeyHash.isEmpty())
-	list.append(publicKeyHash);
-    }
+	if(!publicKeyHash.isEmpty())
+	  list.append(publicKeyHash);
+      }
 
   /*
   ** Remove chat windows that do not have corresponding participants
