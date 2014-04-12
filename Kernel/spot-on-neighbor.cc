@@ -1129,8 +1129,8 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
 		"WHERE OID = ? AND "
 		"status = 'connected' "
 		"AND ? - uptime >= 10");
-  query.bindValue(0, m_bytesRead);
-  query.bindValue(1, m_bytesWritten);
+  query.bindValue(0, m_bytesRead.load());
+  query.bindValue(1, m_bytesWritten.load());
   query.bindValue(2, isEncrypted() ? 1 : 0);
 
   if(cipher.isNull() || !spoton_kernel::s_crypts.value("chat", 0))

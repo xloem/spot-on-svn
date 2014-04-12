@@ -41,6 +41,8 @@
 #include <QUdpSocket>
 #include <QUuid>
 
+#include <atomic>
+
 #include "Common/spot-on-common.h"
 #include "Common/spot-on-send.h"
 #include "spot-on-sctp-socket.h"
@@ -162,6 +164,10 @@ class spoton_neighbor: public QThread
   QDateTime m_lastReadTime;
   QDateTime m_startTime;
   QHostAddress m_address;
+  QPointer<spoton_external_address> m_externalAddress;
+  QPointer<spoton_neighbor_tcp_socket> m_tcpSocket;
+  QPointer<spoton_neighbor_udp_socket> m_udpSocket;
+  QPointer<spoton_sctp_socket> m_sctpSocket;
   QReadWriteLock m_dataMutex;
   QSslCertificate m_peerCertificate;
   QString m_echoMode;
@@ -176,24 +182,20 @@ class spoton_neighbor: public QThread
   QTimer m_lifetime;
   QTimer m_timer;
   QUuid m_receivedUuid;
-  bool m_accountAuthenticated;
   bool m_allowExceptions;
   bool m_isUserDefined;
   bool m_requireSsl;
   bool m_useAccounts;
-  bool m_useSsl;
   int m_keySize;
   qint64 m_id;
   qint64 m_listenerOid;
   qint64 m_maximumBufferSize;
   qint64 m_maximumContentLength;
   quint16 m_port;
-  quint64 m_bytesRead;
-  quint64 m_bytesWritten;
-  QPointer<spoton_external_address> m_externalAddress;
-  QPointer<spoton_neighbor_tcp_socket> m_tcpSocket;
-  QPointer<spoton_neighbor_udp_socket> m_udpSocket;
-  QPointer<spoton_sctp_socket> m_sctpSocket;
+  std::atomic<bool> m_accountAuthenticated;
+  std::atomic<bool> m_useSsl;
+  std::atomic<quint64> m_bytesRead;
+  std::atomic<quint64> m_bytesWritten;
   QString findMessageType(const QByteArray &data,
 			  QList<QByteArray> &symmetricKeys);
   void process0000(int length, const QByteArray &data,

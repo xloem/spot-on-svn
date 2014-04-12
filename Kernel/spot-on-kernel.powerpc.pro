@@ -24,7 +24,7 @@ QMAKE_CLEAN     += ../Spot-On-Kernel ../../../libSpotOn/*.o \
 QMAKE_DISTCLEAN += -r temp
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -fwrapv -mabi=altivec \
-			  -mpowerpc -mtune=powerpc -pie -O3 \
+			  -mpowerpc -mtune=powerpc -pie -std=c++11 -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
 			  -Werror -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith \

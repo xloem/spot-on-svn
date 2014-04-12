@@ -22,7 +22,7 @@ QMAKE_CLEAN     += ../../release/Spot-On-Kernel \
 		   ../../../libSpotOn/libspotn.dll \
 		   ../../../libSpotOn/*.o ../../../libSpotOn/test.exe
 QMAKE_CXXFLAGS_RELEASE -= -O2
-QMAKE_CXXFLAGS_RELEASE += -mtune=generic -fwrapv -pie -O3 \
+QMAKE_CXXFLAGS_RELEASE += -mtune=generic -fwrapv -pie -std=c++11 -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
 			  -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith \
