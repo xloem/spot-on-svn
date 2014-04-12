@@ -882,9 +882,8 @@ void spoton::slotTransmit(void)
 	if(ok)
 	  {
 	    QString missingLinks;
-	    QStringList list
-	      (m_ui.missingLinks->text().trimmed().
-	       remove("magnet:?").split('&'));
+	    QStringList list(m_ui.missingLinks->text().trimmed().
+			     remove("magnet:?").split("&"));
 
 	    while(!list.isEmpty())
 	      {

@@ -77,7 +77,7 @@ void spoton::slotShowStarBeamAnalyzer(void)
 void spoton::slotDemagnetizeMissingLinks(void)
 {
   QStringList list
-    (m_ui.missingLinks->text().trimmed().remove("magnet:?").split('&'));
+    (m_ui.missingLinks->text().trimmed().remove("magnet:?").split("&"));
 
   while(!list.isEmpty())
     {
@@ -288,7 +288,53 @@ void spoton::slotAddInstitution(void)
       return;
     }
 
-  QString name(m_ui.institutionName->text().trimmed());
+  QString name("");
+  QString postalAddress("");
+
+  if(m_ui.addInstitutionCheckBox->isChecked())
+    {
+      QStringList list(m_ui.addInstitutionLineEdit->text().
+		       trimmed().remove("magnet:?").split("&"));
+
+      for(int i = 0; i < list.size(); i++)
+	{
+	  QString str(list.at(i).trimmed());
+
+	  if(str.startsWith("in="))
+	    {
+	      str.remove(0, 3);
+	      name = str;
+	    }
+	  else if(str.startsWith("ct="))
+	    {
+	      str.remove(0, 3);
+
+	      int index = m_ui.institutionNameType->findText(str);
+
+	      if(index > -1)
+		m_ui.institutionNameType->setCurrentIndex(index);
+	    }
+	  else if(str.startsWith("pa="))
+	    {
+	      str.remove(0, 3);
+	      postalAddress = str;
+	    }
+	  else if(str.startsWith("ht="))
+	    {
+	      str.remove(0, 3);
+
+	      int index = m_ui.institutionPostalAddressType->findText(str);
+
+	      if(index > -1)
+		m_ui.institutionPostalAddressType->setCurrentIndex(index);
+	    }
+	}
+    }
+  else
+    {
+      name = m_ui.institutionName->text().trimmed();
+      postalAddress = m_ui.institutionPostalAddress->text().trimmed();
+    }
 
   if(name.isEmpty())
     {
@@ -296,8 +342,6 @@ void spoton::slotAddInstitution(void)
 			    tr("Please provide an institution name."));
       return;
     }
-
-  QString postalAddress(m_ui.institutionPostalAddress->text().trimmed());
 
   if(postalAddress.isEmpty())
     {
@@ -364,6 +408,7 @@ void spoton::slotAddInstitution(void)
 
   if(ok)
     {
+      m_ui.addInstitutionLineEdit->clear();
       m_ui.institutionName->clear();
       m_ui.institutionNameType->setCurrentIndex(0);
       m_ui.institutionPostalAddress->clear();
@@ -430,5 +475,25 @@ void spoton::slotCopyInstitution(void)
 
   if((row = m_ui.institutions->currentRow()) >= 0)
     {
+      QTableWidgetItem *item1 = m_ui.institutions->item(row, 0);
+      QTableWidgetItem *item2 = m_ui.institutions->item(row, 1);
+      QTableWidgetItem *item3 = m_ui.institutions->item(row, 2);
+      QTableWidgetItem *item4 = m_ui.institutions->item(row, 3);
+
+      if(item1 && item2 && item3 && item4)
+	{
+	  QString magnet(QString("magnet:?"
+				 "in=%1&"
+				 "ct=%2&"
+				 "pa=%3&"
+				 "ht=%4&"
+				 "xt=urn:institution").
+			 arg(item1->text()).
+			 arg(item2->text()).
+			 arg(item3->text()).
+			 arg(item4->text()));
+
+	  clipboard->setText(magnet);
+	}
     }
 }

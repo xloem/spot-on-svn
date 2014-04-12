@@ -1372,10 +1372,8 @@ void spoton_kernel::slotMessageReceivedFromUI
 	      (spoton_crypt::keyedHash(data, hashKey, "sha512", &ok));
 
 	    if(ok)
-	      data = keyInformation.toBase64() +
-		"\n" +
-		data.toBase64() +
-		"\n" +
+	      data = keyInformation.toBase64() + "\n" +
+		data.toBase64() + "\n" +
 		messageCode.toBase64();
 	  }
       }

@@ -321,6 +321,18 @@ void spoton::slotReceivedKernelMessage(void)
 		      content = str;
 		    }
 		  else if(spoton_misc::
+			  isValidInstitutionMagnet(content.toLatin1()))
+		    {
+		      QString str("");
+
+		      str.prepend("<a href='");
+		      str.append(content);
+		      str.append("'>");
+		      str.append(content);
+		      str.append("</a>");
+		      content = str;
+		    }
+		  else if(spoton_misc::
 			  isValidStarBeamMagnet(content.toLatin1()))
 		    {
 		      QString str("");

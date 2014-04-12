@@ -7050,7 +7050,7 @@ void spoton::magnetize(void)
 void spoton::demagnetize(void)
 {
   QStringList list
-    (m_ui.demagnetize->text().trimmed().remove("magnet:?").split('&'));
+    (m_ui.demagnetize->text().trimmed().remove("magnet:?").split("&"));
 
   while(!list.isEmpty())
     {

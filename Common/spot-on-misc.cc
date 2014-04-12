@@ -2617,3 +2617,91 @@ QByteArray spoton_misc::findPublicKeyHashGivenHash
   QSqlDatabase::removeDatabase(connectionName);
   return publicKeyHash;
 }
+
+bool spoton_misc::isValidInstitutionMagnet(const QByteArray &magnet)
+{
+  QList<QByteArray> list;
+  bool valid = false;
+  int tokens = 0;
+
+  /*
+  ** Validate the magnet.
+  */
+
+  if(magnet.trimmed().startsWith("magnet:?"))
+    list = magnet.trimmed().mid(qstrlen("magnet:?")).split('&');
+  else
+    goto done_label;
+
+  while(!list.isEmpty())
+    {
+      QString str(list.takeFirst().trimmed());
+
+      if(str.startsWith("in="))
+	{
+	  str.remove(0, 3);
+
+	  if(str.isEmpty())
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	  else
+	    tokens += 1;
+	}
+      else if(str.startsWith("ct="))
+	{
+	  str.remove(0, 3);
+
+	  if(!spoton_crypt::cipherTypes().contains(str))
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	  else
+	    tokens += 1;
+	}
+      else if(str.startsWith("pa="))
+	{
+	  str.remove(0, 3);
+
+	  if(str.isEmpty())
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	  else
+	    tokens += 1;
+	}
+      else if(str.startsWith("ht="))
+	{
+	  str.remove(0, 3);
+
+	  if(!spoton_crypt::hashTypes().contains(str))
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	  else
+	    tokens += 1;
+	}
+      else if(str.startsWith("xt="))
+	{
+	  str.remove(0, 3);
+
+	  if(str != "urn:institution")
+	    {
+	      valid = false;
+	      goto done_label;
+	    }
+	  else
+	    tokens += 1;
+	}
+    }
+
+  if(tokens == 5)
+    valid = true;
+
+ done_label:
+  return valid;
+}

@@ -1473,7 +1473,7 @@ void spoton_neighbor::processData(void)
 	** We shouldn't be here!
 	*/
 
-	return;
+	continue;
       else if(length > 0 && data.contains("type=0065&content="))
 	process0065(length, data);
       else if(length > 0 && data.contains("content="))
