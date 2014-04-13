@@ -41,7 +41,7 @@
 #include <QUdpSocket>
 #include <QUuid>
 
-#if defined Q_OS_FREEBSD || defined Q_OS_MAC
+#if defined Q_OS_FREEBSD || defined Q_OS_MAC || defined Q_OS_OS2
 #undef SPOTON_ENABLE_CPP11 
 #else
 #define SPOTON_ENABLE_CPP11 1
