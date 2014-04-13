@@ -32,6 +32,8 @@
 #include <QSqlQuery>
 #include <QtCore/qmath.h>
 
+#include <limits>
+
 #include "spot-on-crypt.h"
 #include "spot-on-misc.h"
 
@@ -2605,12 +2607,15 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
   BIO_get_mem_ptr(privateMemory, &bptr);
 
   if(bptr->length + 1 <= 0 ||
+     bptr->length >= std::numeric_limits<size_t>::max() - 1 ||
      !(privateBuffer = static_cast<char *> (calloc(bptr->length + 1,
 						   sizeof(char)))))
     {
-      error = QObject::tr("calloc() failure or bptr->length + 1 is small");
+      error = QObject::tr("calloc() failure or bptr->length + 1 is "
+			  "irregular");
       spoton_misc::logError("spoton_crypt::generateSslKeys(): "
-			    "calloc() failure or bptr->length + 1 is small.");
+			    "calloc() failure or bptr->length + 1 is "
+			    "irregular.");
       goto done_label;
     }
 
@@ -2620,12 +2625,15 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
   BIO_get_mem_ptr(publicMemory, &bptr);
 
   if(bptr->length + 1 <= 0 ||
+     bptr->length >= std::numeric_limits<size_t>::max() - 1 ||
      !(publicBuffer = static_cast<char *> (calloc(bptr->length + 1,
 						  sizeof(char)))))
     {
-      error = QObject::tr("calloc() failure or bptr->length + 1 is small");
+      error = QObject::tr("calloc() failure or bptr->length + 1 is "
+			  "irregular");
       spoton_misc::logError("spoton_crypt::generateSslKeys(): "
-			    "calloc() failure or bptr->length + 1 is small.");
+			    "calloc() failure or bptr->length + 1 is "
+			    "irregular.");
       goto done_label;
     }
 
@@ -2857,12 +2865,15 @@ void spoton_crypt::generateCertificate(RSA *rsa,
   BIO_get_mem_ptr(memory, &bptr);
 
   if(bptr->length + 1 <= 0 ||
+     bptr->length >= std::numeric_limits<size_t>::max() - 1 ||
      !(buffer = static_cast<char *> (calloc(bptr->length + 1,
 					    sizeof(char)))))
     {
-      error = QObject::tr("calloc() failure bptr->length + 1 is small");
+      error = QObject::tr("calloc() failure bptr->length + 1 is "
+			  "irregular");
       spoton_misc::logError("spoton_crypt::generateCertificate(): "
-			    "calloc() failure or bptr->length + 1 is small.");
+			    "calloc() failure or bptr->length + 1 is "
+			    "irregular.");
       goto done_label;
     }
 
