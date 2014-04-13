@@ -41,7 +41,9 @@
 #include <QUdpSocket>
 #include <QUuid>
 
+#ifndef Q_OS_MAC
 #include <atomic>
+#endif
 
 #include "Common/spot-on-common.h"
 #include "Common/spot-on-send.h"
@@ -182,20 +184,28 @@ class spoton_neighbor: public QThread
   QTimer m_lifetime;
   QTimer m_timer;
   QUuid m_receivedUuid;
+#ifdef Q_OS_MAC
+  bool m_accountAuthenticated;
+#endif
   bool m_allowExceptions;
   bool m_isUserDefined;
   bool m_requireSsl;
   bool m_useAccounts;
+#ifdef Q_OS_MAC
+  bool m_useSsl;
+#endif
   int m_keySize;
   qint64 m_id;
   qint64 m_listenerOid;
   qint64 m_maximumBufferSize;
   qint64 m_maximumContentLength;
   quint16 m_port;
+#ifndef Q_OS_MAC
   std::atomic<bool> m_accountAuthenticated;
   std::atomic<bool> m_useSsl;
   std::atomic<quint64> m_bytesRead;
   std::atomic<quint64> m_bytesWritten;
+#endif
   QString findMessageType(const QByteArray &data,
 			  QList<QByteArray> &symmetricKeys);
   void process0000(int length, const QByteArray &data,
