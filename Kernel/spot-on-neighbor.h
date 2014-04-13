@@ -199,6 +199,10 @@ class spoton_neighbor: public QThread
   qint64 m_listenerOid;
   qint64 m_maximumBufferSize;
   qint64 m_maximumContentLength;
+#ifdef Q_OS_MAC
+  quint64 m_bytesRead;
+  quint64 m_bytesWritten;
+#endif
   quint16 m_port;
 #ifndef Q_OS_MAC
   std::atomic<bool> m_accountAuthenticated;
