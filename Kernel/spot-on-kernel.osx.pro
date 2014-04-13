@@ -22,7 +22,6 @@ DEFINES += SPOTON_LINKED_WITH_LIBGEOIP \
 QMAKE_CLEAN     += ../Spot-On-Kernel ../../../libSpotOn/*.dylib \
 		   ../../../libSpotOn/*.o ../../../libSpotOn/test
 QMAKE_DISTCLEAN += -r temp
-QMAKE_CXX	= clang++
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -fwrapv \
 			  -mtune=generic -pie -O3 \
