@@ -9,3 +9,8 @@ http://sctp.fh-muenster.de/sctp-user-land-stack.html.
 
 Please load the kernel extension via sudo kextload
 /System/Library/Extensions/SCTP.kext.
+
+Windows
+
+The SCTP driver for Windows was downloaded from
+http://www.bluestop.org/SctpDrv. Please install the package.
