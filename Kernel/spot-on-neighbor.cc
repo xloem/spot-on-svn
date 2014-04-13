@@ -1129,7 +1129,7 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
 		"WHERE OID = ? AND "
 		"status = 'connected' "
 		"AND ? - uptime >= 10");
-#ifdef Q_OS_MAC
+#ifndef SPOTON_ENABLE_CPP11
   query.bindValue(0, m_bytesRead);
   query.bindValue(1, m_bytesWritten);
 #else
