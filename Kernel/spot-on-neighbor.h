@@ -41,7 +41,13 @@
 #include <QUdpSocket>
 #include <QUuid>
 
-#ifndef Q_OS_MAC
+#if defined Q_OS_FREEBSD || defined Q_OS_MAC
+#undefine SPOTON_ENABLE_CPP11 
+#else
+#define SPOTON_ENABLE_CPP11 1
+#endif
+
+#ifdef SPOTON_ENABLE_CPP11
 #include <atomic>
 #endif
 
@@ -184,14 +190,14 @@ class spoton_neighbor: public QThread
   QTimer m_lifetime;
   QTimer m_timer;
   QUuid m_receivedUuid;
-#ifdef Q_OS_MAC
+#ifndef SPOTON_ENABLE_CPP11
   bool m_accountAuthenticated;
 #endif
   bool m_allowExceptions;
   bool m_isUserDefined;
   bool m_requireSsl;
   bool m_useAccounts;
-#ifdef Q_OS_MAC
+#ifndef SPOTON_ENABLE_CPP11
   bool m_useSsl;
 #endif
   int m_keySize;
@@ -199,12 +205,12 @@ class spoton_neighbor: public QThread
   qint64 m_listenerOid;
   qint64 m_maximumBufferSize;
   qint64 m_maximumContentLength;
-#ifdef Q_OS_MAC
+#ifndef SPOTON_ENABLE_CPP11
   quint64 m_bytesRead;
   quint64 m_bytesWritten;
 #endif
   quint16 m_port;
-#ifndef Q_OS_MAC
+#ifdef SPOTON_ENABLE_CPP11
   std::atomic<bool> m_accountAuthenticated;
   std::atomic<bool> m_useSsl;
   std::atomic<quint64> m_bytesRead;
