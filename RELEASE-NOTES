@@ -45,7 +45,7 @@
 23.  One ought to remove socket objects from the kernel's interface
      listener, although the objects are removed during termination.
 24.  C++11 is now required in support of atomic types, where available.
-     Currently enabled on Linux, OS/2, and Windows.
+     Currently enabled on Linux and Windows.
 25   Modified several boolean and integer types in spoton_neighbor to
      be atomic types.
 26.  Version 0.09.03's item #3 introduced several errors. Corrected.
