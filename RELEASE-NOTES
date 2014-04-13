@@ -48,6 +48,7 @@
      Currently enabled on FreeBSD, Linux, OS/2, and Windows.
 25   Modified several boolean and integer types in spoton_neighbor to
      be atomic types.
+26.  Version 0.09.03's item #3 introduced several errors. Corrected.
 
 0.09.03 (03/28/2014)
 
