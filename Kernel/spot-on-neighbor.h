@@ -42,7 +42,7 @@
 #include <QUuid>
 
 #if defined Q_OS_FREEBSD || defined Q_OS_MAC
-#undefine SPOTON_ENABLE_CPP11 
+#undef SPOTON_ENABLE_CPP11 
 #else
 #define SPOTON_ENABLE_CPP11 1
 #endif
