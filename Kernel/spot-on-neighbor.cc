@@ -1133,7 +1133,9 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
 		"status = 'connected' "
 		"AND ? - uptime >= 10");
   query.bindValue(0, m_bytesRead);
+  m_bytesWrittenMutex.lockForRead();
   query.bindValue(1, m_bytesWritten);
+  m_bytesWrittenMutex.unlock();
   query.bindValue(2, isEncrypted() ? 1 : 0);
 
   if(cipher.isNull() || !spoton_kernel::s_crypts.value("chat", 0))
@@ -5555,7 +5557,9 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 
 void spoton_neighbor::addToBytesWritten(const int bytesWritten)
 {
+  m_bytesWrittenMutex.lockForWrite();
   m_bytesWritten += qAbs(bytesWritten);
+  m_bytesWrittenMutex.unlock();
 }
 
 void spoton_neighbor::slotSendAccountInformation(void)
