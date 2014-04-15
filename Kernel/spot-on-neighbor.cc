@@ -956,7 +956,10 @@ void spoton_neighbor::slotTimeout(void)
 						  toByteArray()),
 			   &ok).constData();
 
-			if(m_isUserDefined && !m_accountAuthenticated)
+			if(m_isUserDefined &&
+			   !spoton_misc::readSharedResource
+			   (&m_accountAuthenticated,
+			    m_accountAuthenticatedMutex))
 			  {
 			    QByteArray name
 			      (QByteArray::fromBase64(query.value(5).
@@ -1129,13 +1132,8 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
 		"WHERE OID = ? AND "
 		"status = 'connected' "
 		"AND ? - uptime >= 10");
-#ifndef SPOTON_ENABLE_CPP11
   query.bindValue(0, m_bytesRead);
   query.bindValue(1, m_bytesWritten);
-#else
-  query.bindValue(0, m_bytesRead.load());
-  query.bindValue(1, m_bytesWritten.load());
-#endif
   query.bindValue(2, isEncrypted() ? 1 : 0);
 
   if(cipher.isNull() || !spoton_kernel::s_crypts.value("chat", 0))
@@ -1379,7 +1377,8 @@ void spoton_neighbor::processData(void)
 	  if(m_useAccounts)
 	    {
 	      if(length > 0 && data.contains("type=0050&content="))
-		if(!m_accountAuthenticated)
+		if(!spoton_misc::readSharedResource
+		   (&m_accountAuthenticated, m_accountAuthenticatedMutex))
 		  /*
 		  ** This will certainly emit multiple authentication
 		  ** approvals to the client.
@@ -1387,7 +1386,8 @@ void spoton_neighbor::processData(void)
 
 		  process0050(length, data);
 
-	      if(!m_accountAuthenticated)
+	      if(!spoton_misc::readSharedResource
+		 (&m_accountAuthenticated, m_accountAuthenticatedMutex))
 		continue;
 	    }
 	  else if(length > 0 && (data.contains("type=0050&content=") ||
@@ -1405,11 +1405,13 @@ void spoton_neighbor::processData(void)
 	  if(!m_accountClientSentSalt.isEmpty())
 	    process0051(length, data);
 	  else
-	    m_accountAuthenticated = false;
+	    spoton_misc::setSharedResource
+	      (&m_accountAuthenticated, false, m_accountAuthenticatedMutex);
 	}
       else if(length > 0 && data.contains("type=0052&content="))
 	{
-	  if(!m_accountAuthenticated)
+	  if(!spoton_misc::readSharedResource(&m_accountAuthenticated,
+					      m_accountAuthenticatedMutex))
 	    {
 	      if(m_sctpSocket)
 		{
@@ -1459,7 +1461,8 @@ void spoton_neighbor::processData(void)
       if(m_isUserDefined)
 	if(m_useAccounts)
 	  {
-	    if(!m_accountAuthenticated)
+	    if(!spoton_misc::readSharedResource(&m_accountAuthenticated,
+						m_accountAuthenticatedMutex))
 	      continue;
 	  }
 
@@ -3932,19 +3935,22 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 					  spoton_kernel::
 					  s_crypts.value("chat", 0)))
 	{
-	  m_accountAuthenticated = true;
+	  spoton_misc::setSharedResource
+	    (&m_accountAuthenticated, true, m_accountAuthenticatedMutex);
 	  m_accountTimer.stop();
 	  m_authenticationTimer.stop();
 	  emit accountAuthenticated(name, password);
 	}
       else
 	{
-	  m_accountAuthenticated = false;
+	  spoton_misc::setSharedResource
+	    (&m_accountAuthenticated, false, m_accountAuthenticatedMutex);
 	  emit accountAuthenticated(spoton_crypt::weakRandomBytes(64),
 				    spoton_crypt::weakRandomBytes(64));
 	}
 
-      if(m_accountAuthenticated)
+      if(spoton_misc::readSharedResource(&m_accountAuthenticated,
+					 m_accountAuthenticatedMutex))
 	emit resetKeepAlive();
 
       spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
@@ -3972,7 +3978,9 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 			      "user_defined = 0");
 		query.bindValue
 		  (0,
-		   m_accountAuthenticated ?
+		   spoton_misc::
+		   readSharedResource(&m_accountAuthenticated,
+				      m_accountAuthenticatedMutex) ?
 		   s_crypt->encryptedThenHashed(QByteArray::number(1),
 						&ok).toBase64() :
 		   s_crypt->encryptedThenHashed(QByteArray::number(0),
@@ -4077,7 +4085,9 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 		     spoton_crypt::memcmp(newSaltedCredentials,
 					  saltedCredentials))
 		    {
-		      m_accountAuthenticated = true;
+		      spoton_misc::setSharedResource
+			(&m_accountAuthenticated, true,
+			 m_accountAuthenticatedMutex);
 		      m_accountTimer.stop();
 		      m_authenticationTimer.stop();
 		    }
@@ -4096,24 +4106,33 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 			     spoton_crypt::memcmp(newSaltedCredentials,
 						  saltedCredentials))
 			    {
-			      m_accountAuthenticated = true;
+			      spoton_misc::setSharedResource
+				(&m_accountAuthenticated, true,
+				 m_accountAuthenticatedMutex);
 			      m_accountTimer.stop();
 			      m_authenticationTimer.stop();
 			    }
 			}
 		      else
-			m_accountAuthenticated = false;
+			spoton_misc::setSharedResource
+			  (&m_accountAuthenticated, false,
+			   m_accountAuthenticatedMutex);
 		    }
 		}
 	      else
-		m_accountAuthenticated = false;
+		spoton_misc::setSharedResource
+		  (&m_accountAuthenticated, false,
+		   m_accountAuthenticatedMutex);
 	    }
 	  else
-	    m_accountAuthenticated = false;
+	    spoton_misc::setSharedResource
+	      (&m_accountAuthenticated, false,
+	       m_accountAuthenticatedMutex);
 	}
       else
 	{
-	  m_accountAuthenticated = false;
+	  spoton_misc::setSharedResource
+	    (&m_accountAuthenticated, false, m_accountAuthenticatedMutex);
 
 	  if(m_accountClientSentSalt.isEmpty())
 	    spoton_misc::logError
@@ -4129,7 +4148,8 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 
       m_accountClientSentSalt.clear();
 
-      if(m_accountAuthenticated)
+      if(spoton_misc::readSharedResource(&m_accountAuthenticated,
+					 m_accountAuthenticatedMutex))
 	emit resetKeepAlive();
 
       if(s_crypt)
@@ -4154,7 +4174,9 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 			      "user_defined = 1");
 		query.bindValue
 		  (0,
-		   m_accountAuthenticated ?
+		   spoton_misc::
+		   readSharedResource(&m_accountAuthenticated,
+				      m_accountAuthenticatedMutex) ?
 		   s_crypt->encryptedThenHashed(QByteArray::number(1),
 						&ok).toBase64() :
 		   s_crypt->encryptedThenHashed(QByteArray::number(0),
@@ -5206,21 +5228,23 @@ void spoton_neighbor::slotProxyAuthenticationRequired
     }
 }
 
-bool spoton_neighbor::readyToWrite(void) const
+bool spoton_neighbor::readyToWrite(void)
 {
   if(state() != QAbstractSocket::ConnectedState)
     return false;
   else if(isEncrypted() && m_useSsl)
     {
       if(m_useAccounts)
-	return m_accountAuthenticated;
+	return spoton_misc::readSharedResource(&m_accountAuthenticated,
+					       m_accountAuthenticatedMutex);
       else
 	return true;
     }
   else if(!isEncrypted() && !m_useSsl)
     {
       if(m_useAccounts)
-	return m_accountAuthenticated;
+	return spoton_misc::readSharedResource(&m_accountAuthenticated,
+					       m_accountAuthenticatedMutex);
       else
 	return true;
     }

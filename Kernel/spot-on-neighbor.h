@@ -41,16 +41,6 @@
 #include <QUdpSocket>
 #include <QUuid>
 
-#if defined Q_OS_FREEBSD || defined Q_OS_MAC || defined Q_OS_OS2
-#undef SPOTON_ENABLE_CPP11 
-#else
-#define SPOTON_ENABLE_CPP11 1
-#endif
-
-#ifdef SPOTON_ENABLE_CPP11
-#include <atomic>
-#endif
-
 #include "Common/spot-on-common.h"
 #include "Common/spot-on-send.h"
 #include "spot-on-sctp-socket.h"
@@ -156,7 +146,7 @@ class spoton_neighbor: public QThread
   QString transport(void) const;
   QUuid receivedUuid(void) const;
   bool isEncrypted(void) const;
-  bool readyToWrite(void) const;
+  bool readyToWrite(void);
   qint64 id(void) const;
   qint64 write(const char *data, qint64 size);
   quint16 peerPort(void) const;
@@ -176,6 +166,7 @@ class spoton_neighbor: public QThread
   QPointer<spoton_neighbor_tcp_socket> m_tcpSocket;
   QPointer<spoton_neighbor_udp_socket> m_udpSocket;
   QPointer<spoton_sctp_socket> m_sctpSocket;
+  QReadWriteLock m_accountAuthenticatedMutex;
   QReadWriteLock m_dataMutex;
   QSslCertificate m_peerCertificate;
   QString m_echoMode;
@@ -190,32 +181,20 @@ class spoton_neighbor: public QThread
   QTimer m_lifetime;
   QTimer m_timer;
   QUuid m_receivedUuid;
-#ifndef SPOTON_ENABLE_CPP11
   bool m_accountAuthenticated;
-#endif
   bool m_allowExceptions;
   bool m_isUserDefined;
   bool m_requireSsl;
   bool m_useAccounts;
-#ifndef SPOTON_ENABLE_CPP11
   bool m_useSsl;
-#endif
   int m_keySize;
   qint64 m_id;
   qint64 m_listenerOid;
   qint64 m_maximumBufferSize;
   qint64 m_maximumContentLength;
-#ifndef SPOTON_ENABLE_CPP11
   quint64 m_bytesRead;
   quint64 m_bytesWritten;
-#endif
   quint16 m_port;
-#ifdef SPOTON_ENABLE_CPP11
-  std::atomic<bool> m_accountAuthenticated;
-  std::atomic<bool> m_useSsl;
-  std::atomic<quint64> m_bytesRead;
-  std::atomic<quint64> m_bytesWritten;
-#endif
   QString findMessageType(const QByteArray &data,
 			  QList<QByteArray> &symmetricKeys);
   void process0000(int length, const QByteArray &data,

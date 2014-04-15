@@ -31,6 +31,7 @@
 #include <QHostAddress>
 #include <QMutex>
 #include <QPair>
+#include <QReadWriteLock>
 #include <QSqlDatabase>
 #include <QString>
 #include <QVariant>
@@ -117,6 +118,30 @@ class spoton_misc
 				    const QString &orientation,
 				    spoton_crypt *crypt);
   static void vacuumAllDatabases(void);
+  template<typename T>
+    static T readSharedResource(T *resource, QReadWriteLock &mutex)
+    {
+      T value = T();
+
+      mutex.lockForRead();
+
+      if(resource)
+	value = *resource;
+
+      mutex.unlock();
+      return value;
+    }
+  template<typename T>
+    static void setSharedResource(T *resource, const T &value,
+				  QReadWriteLock &mutex)
+    {
+      mutex.lockForWrite();
+
+      if(resource)
+	*resource = value;
+
+      mutex.unlock();
+    }
 
  private:
   static QMutex s_dbMutex;
