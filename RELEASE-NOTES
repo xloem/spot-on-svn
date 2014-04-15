@@ -45,6 +45,7 @@
 23.  One ought to remove socket objects from the kernel's interface
      listener, although the objects are removed during termination.
 24.  Version 0.09.03's item #3 introduced several errors. Corrected.
+25.  More protection of shared data in spoton_neighbor.
 
 0.09.03 (03/28/2014)
 
