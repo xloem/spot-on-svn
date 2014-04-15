@@ -374,6 +374,7 @@ class spoton: public QMainWindow
   void slotShareURLPublicKey(void);
   void slotShowContextMenu(const QPoint &point);
   void slotShowEtpMagnetsMenu(const QPoint &point);
+  void slotShowMinimalDisplay(bool state);
   void slotShowStarBeamAnalyzer(void);
   void slotShowStatistics(void);
   void slotSignatureCheckBoxToggled(bool state);

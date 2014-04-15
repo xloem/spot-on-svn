@@ -373,8 +373,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>866</width>
-                <height>457</height>
+                <width>729</width>
+                <height>447</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2348,8 +2348,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>299</width>
-                 <height>444</height>
+                 <width>253</width>
+                 <height>428</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3725,8 +3725,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>994</width>
-             <height>868</height>
+             <width>851</width>
+             <height>829</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4713,8 +4713,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1171</width>
-             <height>605</height>
+             <width>491</width>
+             <height>521</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -6304,7 +6304,7 @@
      <x>0</x>
      <y>0</y>
      <width>1195</width>
-     <height>27</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -6336,6 +6336,7 @@
     </widget>
     <addaction name="menu_Icons"/>
     <addaction name="action_Log_Viewer"/>
+    <addaction name="action_Minimal_Display"/>
     <addaction name="menu_Tab_Position"/>
    </widget>
    <widget class="QMenu" name="menu_Tools">
@@ -6472,6 +6473,14 @@
   <action name="action_StarBeam_Analyzer">
    <property name="text">
     <string>&amp;StarBeam Analyzer</string>
+   </property>
+  </action>
+  <action name="action_Minimal_Display">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Minimal Display</string>
    </property>
   </action>
  </widget>

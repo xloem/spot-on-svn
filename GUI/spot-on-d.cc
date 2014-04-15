@@ -498,3 +498,8 @@ void spoton::slotCopyInstitution(void)
 	}
     }
 }
+
+void spoton::slotShowMinimalDisplay(bool state)
+{
+  Q_UNUSED(state);
+}

@@ -278,6 +278,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotViewRosetta(void)));
+  connect(m_ui.action_Minimal_Display,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotShowMinimalDisplay(bool)));
   connect(m_ui.addInstitution,
 	  SIGNAL(clicked(void)),
 	  this,
