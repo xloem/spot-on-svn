@@ -46,6 +46,8 @@
      listener, although the objects are removed during termination.
 24.  Version 0.09.03's item #3 introduced several errors. Corrected.
 25.  More protection of shared data in spoton_neighbor.
+26.  Per Schmidt, added the Minimal option beneath the View menu.
+     Incomplete.
 
 0.09.03 (03/28/2014)
 
