@@ -31,9 +31,7 @@ QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -fwrapv \
 			  -Werror -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith \
                           -Wstack-protector -Wstrict-overflow=4
-QMAKE_LFLAGS_RELEASE += -Wl,-rpath,/usr/local/spot-on/Lib
 QMAKE_EXTRA_TARGETS = libspoton purge
-QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../. ../../../.
 LIBS		+= -L../../../libSpotOn -L/usr/local/lib -lGeoIP \
                    -lcrypto -lgcrypt -lgpg-error -lspoton -lssl
