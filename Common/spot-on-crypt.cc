@@ -2132,7 +2132,7 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
 	}
 
       err = gcry_sexp_build(&data_t, 0,
-			    "(data (flags raw) (value %m))",
+			    "(data (flags raw)(value %m))",
 			    hash_t);
     }
   else
@@ -2467,7 +2467,7 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
 	}
 
       err = gcry_sexp_build(&data_t, 0,
-			    "(data (flags raw) (value %m))",
+			    "(data (flags raw)(value %m))",
 			    hash_t);
     }
   else
