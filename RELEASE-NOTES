@@ -1,4 +1,4 @@
-0.09.04 (04/16/2014)
+0.09.04 (04/17/2014)
 
 1.   Use qstrcmp() instead of qstrncmp().
 2.   Corrected memcpy() instances in IPv6 branches of SCTP files.
