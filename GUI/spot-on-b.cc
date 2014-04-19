@@ -4101,7 +4101,6 @@ void spoton::slotJoinBuzzChannel(void)
   QPair<QByteArray, QByteArray> keys;
   QString error("");
   bool found = false;
-  bool ok = true;
   spoton_buzzpage *page = 0;
   spoton_crypt *crypt = m_crypts.value("chat", 0);
   unsigned long iterationCount = m_ui.buzzIterationCount->value();
@@ -4118,24 +4117,16 @@ void spoton::slotJoinBuzzChannel(void)
       goto done_label;
     }
 
+  if(channelSalt.isEmpty())
+    {
+      error = tr("Please provide a channel salt.");
+      goto done_label;
+    }
+
   if(hashKey.isEmpty())
     {
       error = tr("Please provide a hash key.");
       goto done_label;
-    }
-
-  if(channelSalt.isEmpty())
-    {
-      channelSalt = spoton_crypt::keyedHash
-	(channel + channelType, channel, "sha512", &ok).toBase64();
-
-      if(!ok)
-	{
-	  error = tr("Unable to compute a keyed hash from the "
-		     "channel key and channel type as an "
-		     "artificial salt.");
-	  goto done_label;
-	}
     }
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
