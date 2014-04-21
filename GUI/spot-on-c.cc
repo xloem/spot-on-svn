@@ -2339,9 +2339,7 @@ void spoton::prepareContextMenuMirrors(void)
 	 tr("&Add participant as friend."),
 	 this, SLOT(slotShareChatPublicKeyWithParticipant(void)));
       menu->addSeparator();
-      menu->addAction(QIcon(QString(":/%1/copy.png").
-			    arg(m_settings.value("gui/iconSet", "nouve").
-				toString())),
+      menu->addAction(QIcon(":/generic/repleo-chat.png"),
 		      tr("&Copy Repleo to the clipboard buffer."),
 		      this, SLOT(slotCopyFriendshipBundle(void)));
       menu->addSeparator();
@@ -2379,9 +2377,7 @@ void spoton::prepareContextMenuMirrors(void)
 	 tr("&Add participant as friend."),
 	 this, SLOT(slotShareEmailPublicKeyWithParticipant(void)));
       menu->addSeparator();
-      menu->addAction(QIcon(QString(":/%1/copy.png").
-			    arg(m_settings.value("gui/iconSet", "nouve").
-				toString())),
+      menu->addAction(QIcon(":/generic/repleo-email.png"),
 		      tr("&Copy Repleo to the clipboard buffer."),
 		      this, SLOT(slotCopyEmailFriendshipBundle(void)));
       menu->addAction(QIcon(QString(":/%1/copy.png").
@@ -2573,9 +2569,7 @@ void spoton::prepareContextMenuMirrors(void)
 	 tr("&Add participant as friend."),
 	 this, SLOT(slotShareUrlPublicKeyWithParticipant(void)));
       menu->addSeparator();
-      menu->addAction(QIcon(QString(":/%1/copy.png").
-			    arg(m_settings.value("gui/iconSet", "nouve").
-				toString())),
+      menu->addAction(QIcon(":/generic/repleo-url.png"),
 		      tr("&Copy Repleo to the clipboard buffer."),
 		      this, SLOT(slotCopyUrlFriendshipBundle(void)));
       menu->addSeparator();
