@@ -501,5 +501,7 @@ void spoton::slotCopyInstitution(void)
 
 void spoton::slotShowMinimalDisplay(bool state)
 {
-  Q_UNUSED(state);
+  m_sb.errorlog->setHidden(state);
+  m_ui.chatSendMethod->setHidden(state);
+  m_ui.neighborSummary->setHidden(state);
 }
