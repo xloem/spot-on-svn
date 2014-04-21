@@ -210,6 +210,9 @@
         <file>Logo/spoton-dalmatinerlogo.png</file>
         <file>Logo/spoton-logo-transparent.png</file>
         <file>Resources/spotonbutton64.ico</file>
+	<file>generic/repleo-chat.png</file>
+	<file>generic/repleo-email.png</file>
+	<file>generic/repleo-url.png</file>
 	<file>nouve/activate.png</file>
         <file>nouve/add.png</file>
 	<file>nouve/add-listener.png</file>
