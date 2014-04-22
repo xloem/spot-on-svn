@@ -1334,8 +1334,6 @@ spoton::spoton(void):QMainWindow()
       m_ui.action_Import_Public_Keys->setEnabled(false);
       m_ui.action_Rosetta->setEnabled(false);
       m_ui.encryptionKeyType->setEnabled(false);
-      m_ui.passphrase1->setText("0000000000");
-      m_ui.passphrase2->setText("0000000000");
       m_ui.keySize->setEnabled(false);
       m_ui.keys->setEnabled(true);
       m_ui.regenerate->setEnabled(true);
@@ -4136,8 +4134,8 @@ void spoton::slotSetPassphrase(void)
 
       if(mb.exec() != QMessageBox::Yes)
 	{
-	  m_ui.passphrase1->setText("0000000000");
-	  m_ui.passphrase2->setText("0000000000");
+	  m_ui.passphrase1->setText(m_ui.passphrase->text());
+	  m_ui.passphrase2->setText(m_ui.passphrase->text());
 	  return;
 	}
       else
@@ -4424,8 +4422,10 @@ void spoton::slotSetPassphrase(void)
       m_ui.keySize->setEnabled(false);
       m_ui.keys->setEnabled(true);
       m_ui.newKeys->setEnabled(true);
-      m_ui.passphrase1->setText("0000000000");
-      m_ui.passphrase2->setText("0000000000");
+      m_ui.passphrase1->setText
+	(QString(2 * m_ui.passphrase1->text().length(), '0'));
+      m_ui.passphrase2->setText
+	(QString(2 * m_ui.passphrase2->text().length(), '0'));
       m_ui.regenerate->setEnabled(true);
       m_ui.signatureKeyType->setEnabled(false);
       m_ui.newKeys->setChecked(false);
@@ -4525,6 +4525,7 @@ void spoton::slotValidatePassphrase(void)
   QByteArray saltedPassphraseHash
     (m_settings.value("gui/saltedPassphraseHash", "").toByteArray());
   QString error("");
+  bool authenticated = false;
 
   computedHash = spoton_crypt::saltedPassphraseHash
     (m_ui.hashType->currentText(), m_ui.passphrase->text(), salt, error);
@@ -4533,6 +4534,7 @@ void spoton::slotValidatePassphrase(void)
      spoton_crypt::memcmp(computedHash, saltedPassphraseHash))
     if(error.isEmpty())
       {
+	authenticated = true;
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	QPair<QByteArray, QByteArray> keys
@@ -4600,7 +4602,10 @@ void spoton::slotValidatePassphrase(void)
 	    m_ui.keySize->setEnabled(false);
 	    m_ui.keys->setEnabled(true);
 	    m_ui.newKeys->setEnabled(true);
-	    m_ui.passphrase->clear();
+	    m_ui.passphrase->setText
+	      (QString(2 * m_ui.passphrase->text().length(), '0'));
+	    m_ui.passphrase1->setText(m_ui.passphrase->text());
+	    m_ui.passphrase2->setText(m_ui.passphrase->text());
 	    m_ui.passphrase->setEnabled(false);
 	    m_ui.passphraseButton->setEnabled(false);
 	    m_ui.passphraseLabel->setEnabled(false);
@@ -4616,7 +4621,12 @@ void spoton::slotValidatePassphrase(void)
 	  }
       }
 
-  m_ui.passphrase->clear();
+  m_ui.passphrase->setText
+    (QString(2 * m_ui.passphrase->text().length(), '0'));
+
+  if(!authenticated)
+    m_ui.passphrase->selectAll();
+
   m_ui.passphrase->setFocus();
   updatePublicKeysLabel();
 }

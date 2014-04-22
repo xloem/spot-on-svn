@@ -358,6 +358,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	else
 	  qDebug() << "Passphrase accepted.";
 
+	input.replace(0, input.length(), '0');
 	break;
       }
     else if(arguments.at(i) == "--vacuum")
