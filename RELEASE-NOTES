@@ -2,6 +2,8 @@
 
 1.   Buzz salts are now mandatory.
 2.   Added logic provided by the Schmidt for minimal displays.
+3.   Removed logging from spoton_buzzpage's destructor as the text includes
+     key information.
 
 0.09.04 (04/17/2014)
 
