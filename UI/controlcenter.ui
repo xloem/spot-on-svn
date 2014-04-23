@@ -401,8 +401,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1046</width>
-                <height>611</height>
+                <width>866</width>
+                <height>457</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -879,8 +879,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>621</height>
+             <width>1036</width>
+             <height>614</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1879,8 +1879,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>621</height>
+             <width>982</width>
+             <height>360</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2428,8 +2428,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>286</width>
-                     <height>583</height>
+                     <width>299</width>
+                     <height>444</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2658,8 +2658,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1167</width>
-             <height>612</height>
+             <width>1180</width>
+             <height>609</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -2670,11 +2670,11 @@
              <number>5</number>
             </property>
             <item>
-             <widget class="QSplitter" name="splitter_3">
+             <widget class="QSplitter" name="neighborsVerticalSplitter">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
-              <widget class="QWidget" name="">
+              <widget class="QWidget" name="layoutWidget">
                <layout class="QVBoxLayout" name="verticalLayout_57">
                 <property name="spacing">
                  <number>5</number>
@@ -3062,7 +3062,7 @@
                 </item>
                </layout>
               </widget>
-              <widget class="QSplitter" name="neighborsVerticalSplitter">
+              <widget class="QSplitter" name="splitter_3">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
                </property>
@@ -3715,8 +3715,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>621</height>
+             <width>280</width>
+             <height>166</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -3870,7 +3870,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1038</width>
+             <width>994</width>
              <height>868</height>
             </rect>
            </property>
@@ -4858,8 +4858,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>621</height>
+             <width>565</width>
+             <height>537</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5765,8 +5765,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>621</height>
+             <width>280</width>
+             <height>422</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -6244,8 +6244,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>621</height>
+             <width>293</width>
+             <height>160</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
