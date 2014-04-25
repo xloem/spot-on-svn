@@ -4,6 +4,9 @@
 2.   Added logic provided by the Schmidt for minimal displays.
 3.   Removed logging from spoton_buzzpage's destructor as the text includes
      key information. Problem is apparent if logging is enabled in the user interface.
+4.   Purging silent neighbors should occur regardless of connection
+     states.
+5.   Corrected the kernel's OS X Qt 5.x project file.
 
 0.09.04 (04/17/2014)
 
