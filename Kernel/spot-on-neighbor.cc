@@ -864,31 +864,29 @@ void spoton_neighbor::slotTimeout(void)
 {
   if(m_sctpSocket)
     {
-      if(m_sctpSocket->state() == spoton_sctp_socket::ConnectedState)
-	if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 90)
-	  {
-	    spoton_misc::logError
-	      (QString("spoton_neighbor::slotTimeout(): "
-		       "aborting because of silent connection for %1:%2.").
-	       arg(m_address.toString()).
-	       arg(m_port));
-	    deleteLater();
-	    return;
-	  }
+      if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 90)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::slotTimeout(): "
+		     "aborting because of silent connection for %1:%2.").
+	     arg(m_address.toString()).
+	     arg(m_port));
+	  deleteLater();
+	  return;
+	}
     }
   else if(m_tcpSocket)
     {
-      if(m_tcpSocket->state() == QAbstractSocket::ConnectedState)
-	if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 90)
-	  {
-	    spoton_misc::logError
-	      (QString("spoton_neighbor::slotTimeout(): "
-		       "aborting because of silent connection for %1:%2.").
-	       arg(m_address.toString()).
-	       arg(m_port));
-	    deleteLater();
-	    return;
-	  }
+      if(m_lastReadTime.secsTo(QDateTime::currentDateTime()) >= 90)
+	{
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::slotTimeout(): "
+		     "aborting because of silent connection for %1:%2.").
+	     arg(m_address.toString()).
+	     arg(m_port));
+	  deleteLater();
+	  return;
+	}
     }
   else if(m_udpSocket)
     {
