@@ -536,8 +536,14 @@ QString spoton_misc::countryCodeFromIPAddress(const QString &ipAddress)
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
   GeoIP *gi = 0;
   QFileInfo fileInfo;
+  QHostAddress address(ipAddress);
   QSettings settings;
-  QString fileName(settings.value("gui/geoipPath", "GeoIP.dat").toString());
+  QString fileName("");
+
+  if(address.protocol() == QAbstractSocket::IPv4Protocol)
+    fileName = settings.value("gui/geoipPath4", "GeoIP.dat").toString();
+  else
+    fileName = settings.value("gui/geoipPath6", "GeoIP.dat").toString();
 
   fileInfo.setFile(fileName);
 
@@ -570,8 +576,14 @@ QString spoton_misc::countryNameFromIPAddress(const QString &ipAddress)
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
   GeoIP *gi = 0;
   QFileInfo fileInfo;
+  QHostAddress address(ipAddress);
   QSettings settings;
-  QString fileName(settings.value("gui/geoipPath", "GeoIP.dat").toString());
+  QString fileName("");
+
+  if(address.protocol() == QAbstractSocket::IPv4Protocol)
+    fileName = settings.value("gui/geoipPath4", "GeoIP.dat").toString();
+  else
+    fileName = settings.value("gui/geoipPath6", "GeoIP.dat").toString();
 
   fileInfo.setFile(fileName);
 

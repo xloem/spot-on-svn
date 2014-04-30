@@ -326,7 +326,11 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSelectDestination(void)));
-  connect(m_ui.selectGeoIP,
+  connect(m_ui.selectGeoIP4,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSelectGeoIPPath(void)));
+  connect(m_ui.selectGeoIP6,
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSelectGeoIPPath(void)));
@@ -346,7 +350,11 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSaveDestination(void)));
-  connect(m_ui.geoipPath,
+  connect(m_ui.geoipPath4,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSaveGeoIPPath(void)));
+  connect(m_ui.geoipPath6,
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSaveGeoIPPath(void)));
@@ -987,6 +995,7 @@ spoton::spoton(void):QMainWindow()
 
   settings.remove("gui/acceptedIPs");
   settings.remove("gui/enableCongestionControl");
+  settings.remove("gui/geoipPath");
 
   if(settings.contains("gui/rsaKeySize"))
     {
@@ -1045,8 +1054,19 @@ spoton::spoton(void):QMainWindow()
     restoreGeometry(m_settings.value("gui/geometry").toByteArray());
 
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
-  m_ui.geoipPath->setText
-    (m_settings.value("gui/geoipPath", "GeoIP.dat").toString().trimmed());
+#if defined(Q_OS_LINUX)
+  m_ui.geoipPath4->setText
+    (m_settings.value("gui/geoipPath4",
+		      "/usr/share/GeoIP/GeoIP.dat").toString().trimmed());
+  m_ui.geoipPath6->setText
+    (m_settings.value("gui/geoipPath6",
+		      "/usr/share/GeoIP/GeoIP.dat").toString().trimmed());
+#elif defined(Q_OS_WIN32)
+  m_ui.geoipPath4->setText
+    (m_settings.value("gui/geoipPath4", "GeoIP.dat").toString().trimmed());
+  m_ui.geoipPath6->setText
+    (m_settings.value("gui/geoipPath6", "GeoIP.dat").toString().trimmed());
+#endif
 #endif
   m_ui.magnetRadio->setChecked(true);
   m_ui.generate->setEnabled(false);
@@ -1121,8 +1141,11 @@ spoton::spoton(void):QMainWindow()
     m_ui.status->setCurrentIndex(3);
 
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
-  if(!m_ui.geoipPath->text().isEmpty())
-    m_ui.geoipPath->setToolTip(m_ui.geoipPath->text());
+  if(!m_ui.geoipPath4->text().isEmpty())
+    m_ui.geoipPath4->setToolTip(m_ui.geoipPath4->text());
+
+  if(!m_ui.geoipPath6->text().isEmpty())
+    m_ui.geoipPath6->setToolTip(m_ui.geoipPath6->text());
 #endif
 
   /*
@@ -3697,7 +3720,12 @@ void spoton::slotSelectGeoIPPath(void)
 #endif
 
   if(dialog.exec() == QDialog::Accepted)
-    saveGeoIPPath(dialog.selectedFiles().value(0).trimmed());
+    {
+      if(m_ui.selectGeoIP4 == sender())
+	saveGeoIPPath(4, dialog.selectedFiles().value(0).trimmed());
+      else
+	saveGeoIPPath(6, dialog.selectedFiles().value(0).trimmed());
+    }
 }
 
 void spoton::slotSelectKernelPath(void)
@@ -3722,7 +3750,10 @@ void spoton::slotSelectKernelPath(void)
 
 void spoton::slotSaveGeoIPPath(void)
 {
-  saveGeoIPPath(m_ui.geoipPath->text().trimmed());
+  if(m_ui.geoipPath4 == sender())
+    saveGeoIPPath(4, m_ui.geoipPath4->text().trimmed());
+  else
+    saveGeoIPPath(6, m_ui.geoipPath6->text().trimmed());
 }
 
 void spoton::slotSaveKernelPath(void)
@@ -3730,18 +3761,34 @@ void spoton::slotSaveKernelPath(void)
   saveKernelPath(m_ui.kernelPath->text().trimmed());
 }
 
-void spoton::saveGeoIPPath(const QString &path)
+void spoton::saveGeoIPPath(const int version, const QString &path)
 {
   if(!path.isEmpty())
     {
-      m_settings["gui/geoipPath"] = path;
+      if(version == 4)
+	m_settings["gui/geoipPath4"] = path;
+      else
+	m_settings["gui/geoipPath6"] = path;
 
       QSettings settings;
-      
-      settings.setValue("gui/geoipPath", path);
-      m_ui.geoipPath->setText(path);
-      m_ui.geoipPath->setToolTip(path);
-      m_ui.geoipPath->selectAll();
+
+      if(version == 4)
+	settings.setValue("gui/geoipPath4", path);
+      else
+	settings.setValue("gui/geoipPath6", path);
+
+      if(version == 4)
+	{
+	  m_ui.geoipPath4->setText(path);
+	  m_ui.geoipPath4->setToolTip(path);
+	  m_ui.geoipPath4->selectAll();
+	}
+      else
+	{
+	  m_ui.geoipPath6->setText(path);
+	  m_ui.geoipPath6->setToolTip(path);
+	  m_ui.geoipPath6->selectAll();
+	}
     }
 }
 
@@ -4304,6 +4351,8 @@ void spoton::slotSetPassphrase(void)
 
 		  if(!error2.isEmpty())
 		    break;
+		  else
+		    update();
 		}
 
 	      QApplication::restoreOverrideCursor();
