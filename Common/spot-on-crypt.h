@@ -144,7 +144,6 @@ class spoton_crypt
   void generatePrivatePublicKeys(const int keySize,
 				 const QString &keyType,
 				 QString &error);
-  void initializePrivateKeyContainer(bool *ok);
 
  private:
   QByteArray m_publicKey;
@@ -171,6 +170,7 @@ class spoton_crypt
 	    const int saltLength,
 	    const unsigned long iterationCount,
 	    const QString &id);
+  void initializePrivateKeyContainer(bool *ok);
   void setHashKey(const QByteArray &hashKey);
   static bool setInitializationVector(QByteArray &iv,
 				      const int algorithm,

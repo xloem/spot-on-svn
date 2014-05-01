@@ -2731,12 +2731,12 @@ void spoton::slotCopyOrPaste(void)
 void spoton::updatePublicKeysLabel(void)
 {
   QString str
-    (tr("<b>Chat Key Pair:</b> %1, <b>Chat Signature Key Pair:</b> %2, "
-	"<b>E-Mail Key Pair:</b> %3, "
-	"<b>E-Mail Signature Key Pair:</b> %4, "
-	"<b>Rosetta Key Pair:</b> %5, "
-	"<b>Rosetta Signature Key Pair:</b> %6, "
-	"<b>URL Key Pair:</b> %7, <b>URL Signature Key Pair:</b> %8."));
+    (tr("<b>Chat Key:</b> %1, <b>Chat Signature Key:</b> %2, "
+	"<b>E-Mail Key:</b> %3, "
+	"<b>E-Mail Signature Key:</b> %4, "
+	"<b>Rosetta Key:</b> %5, "
+	"<b>Rosetta Signature Key:</b> %6, "
+	"<b>URL Key:</b> %7, <b>URL Signature Key:</b> %8."));
   QStringList list;
 
   list << "chat"

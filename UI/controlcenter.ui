@@ -2428,7 +2428,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>286</width>
+                     <width>299</width>
                      <height>583</height>
                     </rect>
                    </property>
@@ -3869,7 +3869,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
+             <y>-283</y>
              <width>1038</width>
              <height>904</height>
             </rect>
@@ -4651,7 +4651,7 @@
                  <item>
                   <widget class="QLabel" name="publicKeysInformation">
                    <property name="text">
-                    <string>Chat Key Pair: 0, Chat Signature Key Pair: 0, E-Mail Key Pair: 0, E-Mail Signature Key Pair: 0, Rosetta Key Pair: 0, Rosetta Signature Key Pair: 0, URL Key Pair: 0, URL Signature Key Pair: 0.</string>
+                    <string>Chat Key: 0, Chat Signature Key: 0, E-Mail Key: 0, E-Mail Signature Key: 0, Rosetta Key: 0, Rosetta Signature Key: 0, URL Key: 0, URL Signature Key: 0.</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>

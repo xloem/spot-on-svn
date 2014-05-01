@@ -4622,9 +4622,10 @@ void spoton::slotTestSslControlString(void)
   if(!str.isEmpty())
     {
       mb.setDetailedText(str);
-      mb.setText(tr("The following ciphers were discovered. Please "
-		    "note that Spot-On may neglect discovered ciphers "
-		    "if the ciphers are not supported by Qt."));
+      mb.setText
+	(tr("The following ciphers are supported by your OpenSSL library. "
+	    "Please note that Spot-On may neglect discovered ciphers "
+	    "if the ciphers are not also understood by Qt."));
     }
   else
     mb.setText(tr("Empty cipher list."));

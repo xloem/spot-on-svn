@@ -1338,7 +1338,17 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
 
       spoton_misc::logError
 	("spoton_crypt::initializePrivateKeyContainer(): "
-	 "decrypted() failure.");
+	 "decryptedAfterAuthenticated() failure.");
+      goto done_label;
+    }
+  else if(!keyData.contains("(private-key"))
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	("spoton_crypt::initializePrivateKeyContainer(): "
+	 "keyData does not contain private-key.");
       goto done_label;
     }
 
@@ -1432,9 +1442,22 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
       goto done_label;
     }
 
-  /*
-  ** We once tested the private key via gcry_pk_testkey() here.
-  */
+  if((err = gcry_pk_testkey(key_t)) != 0)
+    {
+      if(ok)
+	*ok = false;
+
+      QByteArray buffer(64, 0);
+
+      gpg_strerror_r(err, buffer.data(), buffer.length());
+      spoton_misc::logError
+	(QString("spoton_crypt::publicKeyDecrypt(): gcry_pk_testkey() "
+		 "failure (%1).").arg(buffer.constData()));
+      gcry_free(m_privateKey);
+      m_privateKey = 0;
+      m_privateKeyLength = 0;
+      goto done_label;
+    }
 
   if((err = gcry_sexp_new(&data_t,
 			  data.constData(),
@@ -1585,6 +1608,15 @@ QByteArray spoton_crypt::publicKey(bool *ok)
     {
       if(ok)
 	*ok = false;
+
+      m_publicKey.clear();
+    }
+  else if(!data.contains("(public-key"))
+    {
+      if(ok)
+	*ok = false;
+
+      m_publicKey.clear();
     }
   else
     {
@@ -1644,6 +1676,7 @@ void spoton_crypt::generatePrivatePublicKeys(const int keySize,
   gcry_free(m_privateKey);
   m_privateKey = 0;
   m_privateKeyLength = 0;
+  m_publicKey.clear();
 
   if(keyType == "dsa")
     genkey = QString("(genkey (dsa (nbits %1:%2)))").
@@ -1807,10 +1840,10 @@ void spoton_crypt::generatePrivatePublicKeys(const int keySize,
 	  }
 	else
 	  {
-	    error = QObject::tr("encrypted() failure");
+	    error = QObject::tr("encryptedThenHashed() failure");
 	    spoton_misc::logError
 	      ("spoton_crypt::generatePrivatePublicKeys(): "
-	       "encrypted() failure.");
+	       "encryptedThenHashed() failure.");
 	  }
       }
 
@@ -2005,7 +2038,18 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
 	*ok = false;
 
       spoton_misc::logError
-	("spoton_crypt::digitalSignature(): decrypted() failure.");
+	("spoton_crypt::digitalSignature(): decryptedAfterAuthenticated() "
+	 "failure.");
+      goto done_label;
+    }
+  else if(!keyData.contains("(private-key"))
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	("spoton_crypt::digitalSignature(): keyData does not contain "
+	 "private-key.");
       goto done_label;
     }
 
@@ -3233,12 +3277,24 @@ void spoton_crypt::reencodePrivatePublicKeys
 		  (publicKey, &ok);
 
 	      if(ok)
-		privateKey = newCrypt->encryptedThenHashed
-		  (privateKey, &ok);
+		{
+		  privateKey = newCrypt->encryptedThenHashed
+		    (privateKey, &ok);
+
+		  if(ok)
+		    if(!privateKey.contains("(private-key"))
+		      ok = false;
+		}
 
 	      if(ok)
-		publicKey = newCrypt->encryptedThenHashed
-		  (publicKey, &ok);
+		{
+		  publicKey = newCrypt->encryptedThenHashed
+		    (publicKey, &ok);
+
+		  if(ok)
+		    if(!publicKey.contains("(public-key"))
+		      ok = false;
+		}
 
 	      if(ok)
 		{
@@ -3259,10 +3315,12 @@ void spoton_crypt::reencodePrivatePublicKeys
 
 	      if(!ok)
 		{
-		  error = QObject::tr("decryption or encryption failure");
+		  error = QObject::tr("decryption or encryption failure, or "
+				      "the keys are malformed");
 		  spoton_misc::logError
 		    ("spoton_crypt::reencodePrivatePublicKeys(): "
-		     "decryption or encryption failure.");
+		     "decryption or encryption failure, or the keys "
+		     "are malformed.");
 		}
 
 	      updateQuery.exec();
