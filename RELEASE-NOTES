@@ -5,13 +5,26 @@
 3.   Removed logging from spoton_buzzpage's destructor as the text includes
      key information. Problem is apparent if logging is enabled in the user
      interface.
-4.   Purging silent neighbors should occur regardless of connection
+4.   Purging of silent neighbors should occur regardless of connection
      states.
 5.   Corrected the kernel's OS X Qt 5.x project file.
 6.   Upgraded Qt to 4.8.6 on OS X.
 7.   Added GeoIP IPv6 path. On Linux platforms, the location of
      the GeoIP.dat files will now default to /usr/share/GeoIP.
      Thanks to maandree.
+8.   Corrected error text in spot-on-crypt.cc.
+9.   The method spoton_crypt::initializePrivateKeyContainer() should be
+     private.
+10.  spoton_crypt::publicKeyDecrypt() should verify that the private
+     key is valid via gcry_pk_testkey(). On failure, m_privateKey
+     should be purged.
+11.  Although idiotes.db contains encrypted data, private_key and
+     public_key data may be swapped. spot-on-crypt retrieval methods
+     ought to inspect data before sharing it.
+12.  Corrected label text with respect to key count information.
+13.  The method spoton_crypt::generatePrivatePublicKeys() must reset
+     the m_publicKey container. Otherwise, stale data may be returned
+     by spoton_crypt::publicKey().
 
 0.09.04 (04/17/2014)
 
