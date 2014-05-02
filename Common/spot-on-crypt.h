@@ -50,6 +50,7 @@ extern "C"
 #include <QByteArray>
 #include <QHostAddress>
 #include <QMutex>
+#include <QReadWriteLock>
 #include <QSslCipher>
 #include <QSslConfiguration>
 #include <QStringList>
@@ -133,12 +134,12 @@ class spoton_crypt
   QByteArray digitalSignature(const QByteArray &data, bool *ok);
   QByteArray encrypted(const QByteArray &data, bool *ok);
   QByteArray encryptedThenHashed(const QByteArray &data, bool *ok);
-  QByteArray hashKey(void) const;
-  QByteArray keyedHash(const QByteArray &data, bool *ok) const;
+  QByteArray hashKey(void);
+  QByteArray keyedHash(const QByteArray &data, bool *ok);
   QByteArray publicKey(bool *ok);
   QByteArray publicKeyDecrypt(const QByteArray &data, bool *ok);
   QByteArray publicKeyHash(bool *ok);
-  QByteArray symmetricKey(void) const;
+  QByteArray symmetricKey(void);
   QString cipherType(void) const;
   qint64 publicKeyCount(void) const;
   void generatePrivatePublicKeys(const int keySize,
@@ -148,6 +149,10 @@ class spoton_crypt
  private:
   QByteArray m_publicKey;
   QMutex m_cipherMutex;
+  QReadWriteLock m_hashKeyMutex;
+  QReadWriteLock m_privateKeyMutex;
+  QReadWriteLock m_publicKeyMutex;
+  QReadWriteLock m_symmetricKeyMutex;
   QString m_cipherType;
   QString m_hashType;
   QString m_id;
