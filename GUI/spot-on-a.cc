@@ -1066,6 +1066,11 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/geoipPath4", "GeoIP.dat").toString().trimmed());
   m_ui.geoipPath6->setText
     (m_settings.value("gui/geoipPath6", "GeoIP.dat").toString().trimmed());
+#else
+  m_ui.geoipPath4->setText
+    (m_settings.value("gui/geoipPath4", "GeoIP.dat").toString().trimmed());
+  m_ui.geoipPath6->setText
+    (m_settings.value("gui/geoipPath6", "GeoIP.dat").toString().trimmed());
 #endif
 #endif
   m_ui.magnetRadio->setChecked(true);
