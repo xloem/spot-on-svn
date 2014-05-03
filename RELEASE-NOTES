@@ -154,7 +154,7 @@
      qint64 whereas the converted value was of type int.
 19.  QVariant::toInt() may overflow without the overflow being detected.
      Qt documentation states that Qt 5 will resolve this issue.
-     The new approach is to convert values toLongLong().
+     The new approach is to convert values to long-long.
 20.  Corrected message 0001a. The correction introduces another group member.
      Previous-version compatibility ruined. The corrected approach introduces
      a new hash key that is only known to the participant and not the carrier.
