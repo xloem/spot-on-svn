@@ -737,10 +737,6 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   connect(&m_keepAliveTimer,
 	  SIGNAL(timeout(void)),
 	  this,
-	  SLOT(slotSendMOTD(void)));
-  connect(&m_keepAliveTimer,
-	  SIGNAL(timeout(void)),
-	  this,
 	  SLOT(slotSendUuid(void)));
   connect(&m_lifetime,
 	  SIGNAL(timeout(void)),
