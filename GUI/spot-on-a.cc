@@ -1518,6 +1518,8 @@ spoton::spoton(void):QMainWindow()
     (m_ui.neighbors->columnCount() - 2, true); // certificate
   m_ui.neighbors->setColumnHidden
     (m_ui.neighbors->columnCount() - 3, true); // is_encrypted
+  m_ui.neighbors->setColumnHidden
+    (m_ui.neighbors->columnCount() - 4, true); // motd
   m_ui.participants->setColumnHidden(1, true); // OID
   m_ui.participants->setColumnHidden(2, true); // neighbor_oid
   m_ui.participants->setColumnHidden(3, true); // public_key_hash
@@ -3021,6 +3023,7 @@ void spoton::slotPopulateNeighbors(void)
 		      "account_authenticated, "
 		      "transport, "
 		      "orientation, "
+		      "motd, "
 		      "is_encrypted, "
 		      "0, " // Certificate
 		      "OID "
@@ -3377,7 +3380,7 @@ void spoton::slotPopulateNeighbors(void)
 			      (QBrush(QColor(240, 128, 128)));
 			  }
 		      }
-		    else if(i == 30) // Certificate
+		    else if(i == 31) // Certificate
 		      item = new QTableWidgetItem(certificate.constData());
 		    else
 		      item = new QTableWidgetItem
@@ -6539,7 +6542,8 @@ void spoton::slotNeighborSelected(void)
 	 arg(list.value(22)).
 	 arg(list.value(23)).
 	 arg(list.value(24)).
-	 arg(list.value(25)));
+	 arg(list.value(25)).
+	 arg(list.value(26)));
       int h = m_ui.neighborSummary->horizontalScrollBar()->value();
       int v = m_ui.neighborSummary->verticalScrollBar()->value();
 
