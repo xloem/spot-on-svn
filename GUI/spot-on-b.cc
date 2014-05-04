@@ -4981,6 +4981,7 @@ void spoton::slotListenerSelected(void)
 
   populateAccounts(oid);
   populateListenerIps(oid);
+  populateMOTD(oid);
 }
 
 void spoton::slotParticipantDoubleClicked(QTableWidgetItem *item)

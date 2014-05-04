@@ -505,3 +505,92 @@ void spoton::slotShowMinimalDisplay(bool state)
   m_ui.chatSendMethod->setHidden(state);
   m_ui.neighborSummary->setHidden(state);
 }
+
+void spoton::slotSaveMOTD(void)
+{
+  QString connectionName("");
+  QString error("");
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.listeners->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.listeners->item
+	(row, m_ui.listeners->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    {
+      error = tr("Invalid listener OID. Please select a listener.");
+      goto done_label;
+    }
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "listeners.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	QString str(m_ui.motd->toPlainText().trimmed());
+
+	if(str.isEmpty())
+	  str = "Welcome to Spot-On.";
+
+	query.prepare("UPDATE listeners SET motd = ? WHERE OID = ?");
+	query.bindValue(0, str);
+	query.bindValue(1, oid);
+
+	if(!query.exec())
+	  error = tr("Database error. Unable to save the message of the day.");
+      }
+    else
+      error = tr("Unable to open listeners.db.");
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+ done_label:
+
+  if(!error.isEmpty())
+    QMessageBox::critical(this, tr("Spot-On: Error"), error);
+}
+
+void spoton::populateMOTD(const QString &listenerOid)
+{
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "listeners.db");
+
+    if(db.open())
+      {
+	m_ui.motd->clear();
+
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT motd FROM listeners "
+		      "WHERE OID = ?");
+	query.bindValue(0, listenerOid);
+
+	if(query.exec())
+	  if(query.next())
+	    m_ui.motd->setPlainText(query.value(0).toString());
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}

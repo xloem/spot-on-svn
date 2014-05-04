@@ -177,6 +177,7 @@ class spoton: public QMainWindow
   void prepareListenerIPCombo(void);
   void populateAccounts(const QString &listenerOid);
   void populateListenerIps(const QString &listenerOid);
+  void populateMOTD(const QString &listenerOid);
   void populateNovas(void);
   void refreshInstitutions(void);
   void removeFavorite(const bool removeAll);
@@ -352,6 +353,7 @@ class spoton: public QMainWindow
   void slotSaveEmailName(void);
   void slotSaveGeoIPPath(void);
   void slotSaveKernelPath(void);
+  void slotSaveMOTD(void);
   void slotSaveNodeName(void);
   void slotSaveSslControlString(void);
   void slotSaveUrlName(void);

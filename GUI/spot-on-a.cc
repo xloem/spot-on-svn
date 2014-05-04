@@ -794,6 +794,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotDeleteAccepedIP(void)));
+  connect(m_ui.saveMOTD,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSaveMOTD(void)));
   connect(m_ui.deleteNova,
 	  SIGNAL(clicked(void)),
 	  this,

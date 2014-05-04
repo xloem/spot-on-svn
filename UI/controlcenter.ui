@@ -72,8 +72,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>621</height>
+             <width>1054</width>
+             <height>638</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -401,8 +401,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1046</width>
-                <height>611</height>
+                <width>1044</width>
+                <height>628</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -879,8 +879,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>621</height>
+             <width>1054</width>
+             <height>638</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1879,8 +1879,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>621</height>
+             <width>1054</width>
+             <height>638</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2428,8 +2428,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>299</width>
-                     <height>583</height>
+                     <width>281</width>
+                     <height>618</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2620,6 +2620,48 @@
                       </layout>
                      </widget>
                     </item>
+                    <item>
+                     <widget class="QGroupBox" name="groupBox_10">
+                      <property name="title">
+                       <string>Message of the Day</string>
+                      </property>
+                      <layout class="QVBoxLayout" name="verticalLayout_62">
+                       <property name="margin">
+                        <number>5</number>
+                       </property>
+                       <item>
+                        <widget class="QPlainTextEdit" name="motd"/>
+                       </item>
+                       <item>
+                        <layout class="QHBoxLayout" name="horizontalLayout_80">
+                         <property name="spacing">
+                          <number>5</number>
+                         </property>
+                         <item>
+                          <spacer name="horizontalSpacer_63">
+                           <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                            <size>
+                             <width>40</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                          </spacer>
+                         </item>
+                         <item>
+                          <widget class="QPushButton" name="saveMOTD">
+                           <property name="text">
+                            <string>Save</string>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
                    </layout>
                   </widget>
                  </widget>
@@ -2658,8 +2700,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1180</width>
-             <height>609</height>
+             <width>1054</width>
+             <height>638</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -3715,8 +3757,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>621</height>
+             <width>1054</width>
+             <height>638</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -3869,9 +3911,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-283</y>
-             <width>1038</width>
-             <height>904</height>
+             <y>0</y>
+             <width>1039</width>
+             <height>882</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4885,8 +4927,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>621</height>
+             <width>1054</width>
+             <height>638</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5792,8 +5834,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>621</height>
+             <width>1054</width>
+             <height>638</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -6271,8 +6313,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>621</height>
+             <width>1054</width>
+             <height>638</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -6532,7 +6574,7 @@
      <x>0</x>
      <y>0</y>
      <width>1080</width>
-     <height>27</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -6829,6 +6871,8 @@
   <tabstop>acceptedIP</tabstop>
   <tabstop>addAcceptedIP</tabstop>
   <tabstop>deleteAcceptedIP</tabstop>
+  <tabstop>motd</tabstop>
+  <tabstop>saveMOTD</tabstop>
   <tabstop>scrollArea_8</tabstop>
   <tabstop>neighborsActionMenu</tabstop>
   <tabstop>toolButtonCopyToClipboard</tabstop>
