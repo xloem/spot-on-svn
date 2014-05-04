@@ -387,3 +387,9 @@ Echoed? No
 
 Message Type ("0065")
 0 - Buzz Magnet (Base-64)
+
+Message of the Day
+Echoed? No
+
+Message Type ("0070")
+MOTD (Base-64)

@@ -130,6 +130,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 				 const QString &transport,
 				 const bool shareAddress,
 				 const QString &orientation,
+				 const QString &motd,
 				 QObject *parent):QObject(parent)
 {
   m_sctpServer = 0;
@@ -182,6 +183,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
     qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
 	   maximumContentLength,
 	   spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
+  m_motd = motd;
   m_networkInterface = 0;
   m_orientation = orientation;
   m_port = m_externalPort = port.toUShort();
@@ -369,7 +371,7 @@ void spoton_listener::slotTimeout(void)
 	query.exec();
 	query.prepare("SELECT status_control, maximum_clients, "
 		      "echo_mode, use_accounts, maximum_buffer_size, "
-		      "maximum_content_length "
+		      "maximum_content_length, motd "
 		      "FROM listeners WHERE OID = ?");
 	query.bindValue(0, m_id);
 
@@ -393,6 +395,7 @@ void spoton_listener::slotTimeout(void)
 		  qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
 			 query.value(5).toLongLong(),
 			 spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
+		m_motd = query.value(6).toString();
 
 		if(s_crypt)
 		  {
@@ -643,6 +646,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 	     m_address.toString(),
 	     QString::number(m_port),
 	     m_orientation,
+	     m_motd,
 	     this);
 	}
       catch(std::bad_alloc &exception)
@@ -842,9 +846,10 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 		       "maximum_buffer_size, "
 		       "maximum_content_length, "
 		       "transport, "
-		       "orientation) "
+		       "orientation, "
+		       "motd) "
 		       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue(0, m_address.toString());
 	    query.bindValue(1, m_port);
 
@@ -993,6 +998,8 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 		(28, s_crypt->encryptedThenHashed
 		 (m_orientation.toLatin1(), &ok).
 		 toBase64());
+
+	    query.bindValue(29, m_motd);
 
 	    if(ok)
 	      {

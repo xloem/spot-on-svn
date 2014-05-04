@@ -67,6 +67,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 				 const QString &localIpAddress,
 				 const QString &localPort,
 				 const QString &orientation,
+				 const QString &motd,
 				 QObject *parent):QThread(parent)
 {
   m_sctpSocket = 0;
@@ -172,6 +173,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
     qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
 	   maximumContentLength,
 	   spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
+  m_motd = motd;
   m_orientation = orientation;
 
   if(m_sctpSocket)
@@ -374,6 +376,10 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   connect(&m_keepAliveTimer,
 	  SIGNAL(timeout(void)),
 	  this,
+	  SLOT(slotSendMOTD(void)));
+  connect(&m_keepAliveTimer,
+	  SIGNAL(timeout(void)),
+	  this,
 	  SLOT(slotSendUuid(void)));
   connect(&m_lifetime,
 	  SIGNAL(timeout(void)),
@@ -442,6 +448,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const QByteArray &accountPassword,
 				 const QString &transport,
 				 const QString &orientation,
+				 const QString &motd,
 				 QObject *parent):QThread(parent)
 {
   m_accountAuthenticated = false;
@@ -472,6 +479,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
     qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
 	   maximumContentLength,
 	   spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
+  m_motd = motd;
   m_orientation = orientation;
   m_peerCertificate = QSslCertificate(peerCertificate);
   m_port = port.toUShort();
@@ -729,6 +737,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotDiscoverExternalAddress(void)));
+  connect(&m_keepAliveTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotSendMOTD(void)));
   connect(&m_keepAliveTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -1484,6 +1496,8 @@ void spoton_neighbor::processData(void)
 	continue;
       else if(length > 0 && data.contains("type=0065&content="))
 	process0065(length, data);
+      else if(length > 0 && data.contains("type=0070&content="))
+	process0070(length, data);
       else if(length > 0 && data.contains("content="))
 	{
 	  emit resetKeepAlive();
@@ -3553,7 +3567,7 @@ void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
   length -= qstrlen("type=0014&content=");
 
   /*
-  ** We may have received a status message.
+  ** We may have received a uuid.
   */
 
   QByteArray data(dataIn.mid(0, indexOf + 2));
@@ -4283,6 +4297,75 @@ void spoton_neighbor::process0065(int length, const QByteArray &dataIn)
        arg(m_port));
 }
 
+void spoton_neighbor::process0070(int length, const QByteArray &dataIn)
+{
+  if(m_id == -1)
+    return;
+
+  int indexOf = dataIn.lastIndexOf("\r\n");
+
+  if(indexOf < 0)
+    return;
+
+  length -= qstrlen("type=0070&content=");
+
+  /*
+  ** We may have received a message of the day.
+  */
+
+  QByteArray data(dataIn.mid(0, indexOf + 2));
+
+  indexOf = data.indexOf("type=0070&content=");
+
+  if(indexOf < 0)
+    return;
+
+  data.remove(0, indexOf + qstrlen("type=0070&content="));
+
+  if(length == data.length())
+    {
+      data = QByteArray::fromBase64(data);
+
+      QByteArray motd(data.trimmed());
+
+      if(motd.isEmpty())
+	motd = "Welcome to Spot-On.";
+
+      QString connectionName("");
+
+      {
+	QSqlDatabase db = spoton_misc::database(connectionName);
+
+	db.setDatabaseName
+	  (spoton_misc::homePath() + QDir::separator() +
+	   "neighbors.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+
+	    query.prepare("UPDATE neighbors SET motd = ? WHERE OID = ?");
+	    query.bindValue(0, motd);
+	    query.bindValue(1, m_id);
+	    query.exec();
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase(connectionName);
+      emit resetKeepAlive();
+    }
+  else
+    spoton_misc::logError
+      (QString("spoton_neighbor::process0070(): 0070 "
+	       "content-length mismatch (advertised: %1, received: %2) "
+	       "for %3:%4.").
+       arg(length).arg(data.length()).
+       arg(m_address.toString()).
+       arg(m_port));
+}
+
 void spoton_neighbor::slotSendStatus(const QByteArrayList &list)
 {
   if(readyToWrite())
@@ -4539,6 +4622,22 @@ void spoton_neighbor::slotSendUuid(void)
   if(write(message.constData(), message.length()) != message.length())
     spoton_misc::logError
       (QString("spoton_neighbor::slotSendUuid(): write() error for %1:%2.").
+       arg(m_address.toString()).
+       arg(m_port));
+  else
+    addToBytesWritten(message.length());
+}
+
+void spoton_neighbor::slotSendMOTD(void)
+{
+  if(state() != QAbstractSocket::ConnectedState)
+    return;
+
+  QByteArray message(spoton_send::message0070(m_motd.toUtf8()));
+
+  if(write(message.constData(), message.length()) != message.length())
+    spoton_misc::logError
+      (QString("spoton_neighbor::slotSendMOTD(): write() error for %1:%2.").
        arg(m_address.toString()).
        arg(m_port));
   else

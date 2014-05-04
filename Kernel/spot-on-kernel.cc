@@ -634,6 +634,7 @@ void spoton_kernel::prepareListeners(void)
 		      "transport, "
 		      "share_udp_address, "
 		      "orientation, "
+		      "motd, "
 		      "OID "
 		      "FROM listeners"))
 	  while(query.next())
@@ -768,6 +769,7 @@ void spoton_kernel::prepareListeners(void)
 				 static_cast<int> (query.value(14).
 						   toLongLong()),
 				 orientation.constData(),
+				 query.value(16).toString(),
 				 this);
 			    }
 			  catch(std::bad_alloc &exception)
@@ -881,6 +883,7 @@ void spoton_kernel::prepareNeighbors(void)
 		      "account_password, "
 		      "transport, "
 		      "orientation, "
+		      "motd, "
 		      "OID FROM neighbors"))
 	  while(query.next())
 	    {
@@ -916,6 +919,8 @@ void spoton_kernel::prepareNeighbors(void)
 			else if(i == 19) // account_password
 			  list.append(QByteArray::fromBase64(query.value(i).
 							     toByteArray()));
+			else if(i == 22) // motd
+			  list.append(query.value(i).toString());
 			else
 			  {
 			    QByteArray bytes;
@@ -1020,6 +1025,7 @@ void spoton_kernel::prepareNeighbors(void)
 				 list.value(19).toByteArray(),
 				 list.value(20).toString(),
 				 list.value(21).toString(),
+				 list.value(22).toString(),
 				 this);
 			    }
 			  catch(std::bad_alloc &exception)

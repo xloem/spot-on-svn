@@ -497,3 +497,23 @@ QByteArray spoton_send::message0065(const QByteArray &magnet)
     ("%2", magnet.toBase64());
   return results;
 }
+
+QByteArray spoton_send::message0070(const QByteArray &motd)
+{
+  QByteArray results;
+
+  results.append
+    ("POST HTTP/1.1\r\n"
+     "Content-Type: application/x-www-form-urlencoded\r\n"
+     "Content-Length: %1\r\n"
+     "\r\n"
+     "type=0070&content=%2\r\n"
+     "\r\n\r\n");
+  results.replace
+    ("%1",
+     QByteArray::number(motd.toBase64().length() +
+			QString("type=0070&content=\r\n\r\n\r\n").length()));
+  results.replace
+    ("%2", motd.toBase64());
+  return results;
+}

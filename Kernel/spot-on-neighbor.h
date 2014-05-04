@@ -124,6 +124,7 @@ class spoton_neighbor: public QThread
 		  const QByteArray &accountPassword,
 		  const QString &transport,
 		  const QString &orientation,
+		  const QString &motd,
 		  QObject *parent);
   spoton_neighbor(const int socketDescriptor,
 		  const QByteArray &certificate,
@@ -139,6 +140,7 @@ class spoton_neighbor: public QThread
 		  const QString &localIpAddress,
 		  const QString &localPort,
 		  const QString &orientation,
+		  const QString &motd,
 		  QObject *parent);
   ~spoton_neighbor();
   QAbstractSocket::SocketState state(void) const;
@@ -172,6 +174,7 @@ class spoton_neighbor: public QThread
   QSslCertificate m_peerCertificate;
   QString m_echoMode;
   QString m_ipAddress;
+  QString m_motd;
   QString m_orientation;
   QString m_protocol;
   QString m_transport;
@@ -220,6 +223,7 @@ class spoton_neighbor: public QThread
   void process0050(int length, const QByteArray &data);
   void process0051(int length, const QByteArray &data);
   void process0065(int length, const QByteArray &data);
+  void process0070(int length, const QByteArray &data);
   void recordCertificateOrAbort(void);
   void run(void);
   void saveExternalAddress(const QHostAddress &address,
@@ -287,6 +291,7 @@ class spoton_neighbor: public QThread
   void slotSendAccountInformation(void);
   void slotSendAuthenticationRequest(void);
   void slotSendBuzz(const QByteArray &data);
+  void slotSendMOTD(void);
   void slotSendMail(const QPairListByteArrayQInt64 &list,
 		    const QString &messageType);
   void slotSendMailFromPostOffice(const QByteArray &data);
