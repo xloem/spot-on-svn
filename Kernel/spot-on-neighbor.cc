@@ -4321,7 +4321,7 @@ void spoton_neighbor::process0070(int length, const QByteArray &dataIn)
     {
       data = QByteArray::fromBase64(data);
 
-      QByteArray motd(data.trimmed());
+      QString motd(QString::fromUtf8(data.trimmed().constData()));
 
       if(motd.isEmpty())
 	motd = "Welcome to Spot-On.";
