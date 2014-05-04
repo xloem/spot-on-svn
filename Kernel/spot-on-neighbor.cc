@@ -376,10 +376,6 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
   connect(&m_keepAliveTimer,
 	  SIGNAL(timeout(void)),
 	  this,
-	  SLOT(slotSendMOTD(void)));
-  connect(&m_keepAliveTimer,
-	  SIGNAL(timeout(void)),
-	  this,
 	  SLOT(slotSendUuid(void)));
   connect(&m_lifetime,
 	  SIGNAL(timeout(void)),
@@ -424,6 +420,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
 	m_authenticationTimer.start();
       }
 
+  QTimer::singleShot(30000, this, SLOT(slotSendMOTD(void)));
   m_keepAliveTimer.start(30000);
   m_lifetime.start(10 * 60 * 1000);
   m_timer.start(2500);
@@ -1753,6 +1750,8 @@ void spoton_neighbor::slotConnected(void)
 	m_accountTimer.start();
 	m_authenticationTimer.start();
       }
+
+  QTimer::singleShot(30000, this, SLOT(slotSendMOTD(void)));
 }
 
 void spoton_neighbor::savePublicKey(const QByteArray &keyType,
