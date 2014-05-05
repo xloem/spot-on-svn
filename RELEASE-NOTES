@@ -26,7 +26,9 @@
      the m_publicKey container. Otherwise, stale data may be returned
      by spoton_crypt::publicKey().
 14.  Added access guards to several spoton_crypt class members.
-15.  Removed SIGKILL handler.
+15.  Completed messages of the day. Plaintext messages are sent about
+     thirty seconds after connections are established.
+16.  Removed SIGKILL handler.
 
 0.09.04 (04/17/2014)
 
