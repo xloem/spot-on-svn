@@ -2508,7 +2508,6 @@ void spoton_misc::prepareSignalHandler(void (*sig_handler) (int))
        << SIGILL
        << SIGINT
 #if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
-       << SIGKILL
        << SIGQUIT
 #endif
        << SIGSEGV
