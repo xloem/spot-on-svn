@@ -4252,25 +4252,26 @@ void spoton::slotCloseBuzzTab(int index)
       page->deleteLater();
     }
 
-  if(!count)
+  if(count <= 0)
     m_buzzStatusTimer.stop();
 
-  if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
-    if(m_kernelSocket.isEncrypted())
-      {
-	QByteArray message("removebuzz_");
+  if(!key.isEmpty())
+    if(m_kernelSocket.state() == QAbstractSocket::ConnectedState)
+      if(m_kernelSocket.isEncrypted())
+	{
+	  QByteArray message("removebuzz_");
 
-	message.append(key.toBase64());
-	message.append("\n");
+	  message.append(key.toBase64());
+	  message.append("\n");
 
-	if(m_kernelSocket.write(message.constData(), message.length()) !=
-	   message.length())
-	  spoton_misc::logError
-	    (QString("spoton::slotCloseBuzzTab(): write() failure "
-		     "for %1:%2.").
-	     arg(m_kernelSocket.peerAddress().toString()).
-	     arg(m_kernelSocket.peerPort()));
-      }
+	  if(m_kernelSocket.write(message.constData(), message.length()) !=
+	     message.length())
+	    spoton_misc::logError
+	      (QString("spoton::slotCloseBuzzTab(): write() failure "
+		       "for %1:%2.").
+	       arg(m_kernelSocket.peerAddress().toString()).
+	       arg(m_kernelSocket.peerPort()));
+	}
 }
 
 void spoton::initializeKernelSocket(void)

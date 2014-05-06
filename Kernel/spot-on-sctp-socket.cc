@@ -410,10 +410,12 @@ int spoton_sctp_socket::setSocketBlockingOrNon(void)
 #endif
 }
 
-qint64 spoton_sctp_socket::read(char *data, const qint64 maxSize)
+qint64 spoton_sctp_socket::read(char *data, const qint64 size)
 {
 #ifdef SPOTON_SCTP_ENABLED
-  if(!data || maxSize <= 0)
+  if(!data || size < 0)
+    return -1;
+  else if(size == 0)
     return 0;
 
   fd_set rfds;
@@ -427,7 +429,7 @@ qint64 spoton_sctp_socket::read(char *data, const qint64 maxSize)
 
   if(select(m_socketDescriptor + 1, &rfds, 0, 0, &tv))
     rc = recv
-      (m_socketDescriptor, data, static_cast<size_t> (maxSize), 0);
+      (m_socketDescriptor, data, static_cast<size_t> (size), 0);
   else
 #ifdef Q_OS_WIN32
     WSASetLastError(WSAEWOULDBLOCK);
@@ -478,18 +480,20 @@ qint64 spoton_sctp_socket::read(char *data, const qint64 maxSize)
   return static_cast<qint64> (rc);
 #else
   Q_UNUSED(data);
-  Q_UNUSED(maxSize);
+  Q_UNUSED(size);
   return 0;
 #endif
 }
 
-qint64 spoton_sctp_socket::write(const char *data, const qint64 maxSize)
+qint64 spoton_sctp_socket::write(const char *data, const qint64 size)
 {
 #ifdef SPOTON_SCTP_ENABLED
-  if(!data || maxSize <= 0)
+  if(!data || size < 0)
+    return -1;
+  else if(size == 0)
     return 0;
 
-  ssize_t remaining = static_cast<ssize_t> (maxSize);
+  ssize_t remaining = static_cast<ssize_t> (size);
   ssize_t sent = 0;
 
   while(remaining > 0)
@@ -527,10 +531,10 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 maxSize)
 	  else
 	    break;
 	}
-      else if(sent == 0)
+      else if(sent == 0 || sent > size)
 	break;
 
-      data += sent; // What should we do if sent is monstrously large?
+      data += sent;
       remaining -= sent;
     }
 
@@ -561,10 +565,10 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 maxSize)
 #endif
     }
 
-  return maxSize - static_cast<qint64> (remaining);
+  return size - static_cast<qint64> (remaining);
 #else
   Q_UNUSED(data);
-  Q_UNUSED(maxSize);
+  Q_UNUSED(size);
   return 0;
 #endif
 }

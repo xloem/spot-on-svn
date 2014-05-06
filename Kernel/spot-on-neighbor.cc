@@ -5762,6 +5762,11 @@ void spoton_neighbor::slotSendAuthenticationRequest(void)
 
 qint64 spoton_neighbor::write(const char *data, const qint64 size)
 {
+  if(!data || size < 0)
+    return -1;
+  else if(size == 0)
+    return 0;
+
   qint64 remaining = size;
   qint64 sent = 0;
 
@@ -5794,10 +5799,10 @@ qint64 spoton_neighbor::write(const char *data, const qint64 size)
       else
 	sent = 0;
 
-      if(sent <= 0)
+      if(sent <= 0 || sent > size)
 	break;
 
-      data += sent; // What should we do if sent is monstrously large?
+      data += sent;
       remaining -= sent;
     }
 

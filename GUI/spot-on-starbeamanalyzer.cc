@@ -331,7 +331,14 @@ void spoton_starbeamanalyzer::slotUpdatePercent(const QString &fileName,
 	(list.at(0)->row(), 1); // Percent
 
       if(item)
-	item->setText(QString("%1%").arg(percent));
+	{
+	  if(percent >= 0 && percent <= 100)
+	    item->setText(QString("%1%").arg(percent));
+	  else if(percent < 0)
+	    item->setText("0%");
+	  else
+	    item->setText("100%");
+	}
     }
 }
 
