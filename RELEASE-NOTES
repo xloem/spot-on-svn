@@ -29,6 +29,8 @@
 15.  Completed messages of the day. Plaintext messages are sent about
      thirty seconds after connections are established.
 16.  Removed SIGKILL handler.
+17.  Inspect data pointers in read() and write() methods. Verify that
+     size variables are non-negative. Field large write() values.
 
 0.09.04 (04/17/2014)
 
