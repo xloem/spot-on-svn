@@ -31,6 +31,7 @@
 16.  Removed SIGKILL handler.
 17.  Inspect data pointers in read() and write() methods. Verify that
      size variables are non-negative. Field large write() values.
+18.  Relaxed definition of spoton_misc::isGnome().
 
 0.09.04 (04/17/2014)
 
