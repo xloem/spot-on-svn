@@ -53,8 +53,6 @@ int main(int argc, char *argv[])
 
   if(style)
     QApplication::setStyle(style);
-#else
-  QApplication::setStyle("fusion");
 #endif
 #endif
 
