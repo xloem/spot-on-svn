@@ -33,6 +33,7 @@
      size variables are non-negative. Field large write() values.
 18.  Relaxed definition of spoton_misc::isGnome().
 19.  Upgraded Qt to version 5.2.1 on OS X. Removed use of fusion on OS X.
+20.  Corrected congestion containers percent used arithmetic.
 
 0.09.04 (04/17/2014)
 
