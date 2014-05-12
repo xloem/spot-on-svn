@@ -3356,7 +3356,9 @@ void spoton_kernel::updateStatistics(void)
     if(db.open())
       {
 	QSqlQuery query(db);
-	QVariant v1, v2;
+	qint64 v1 = 0;
+	qint64 v2 = 0;
+	qint64 v3 = 0;
 
 	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
@@ -3371,16 +3373,18 @@ void spoton_kernel::updateStatistics(void)
 	query.exec();
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
-		      "VALUES ('Congestion Container Percent Used', ?)");
+		      "VALUES ('Congestion Containers Percent Used', ?)");
 	s_messagingCacheMutex.lockForRead();
-	v1 = 2 * s_messagingCache.size(); // There are two containers.
+	v1 = s_messagingCache.size();
+	v2 = s_messagingCacheMap.size();
 	s_messagingCacheMutex.unlock();
-	v2 = setting("gui/congestionCost", 10000).toInt();
+	v3 = qMax(1, setting("gui/congestionCost", 10000).toInt());
 	query.bindValue
 	  (0,
 	   QString::
-	   number(100 * static_cast<double> (v1.toInt()) /
-		  qMax(1, v2.toInt()), 'f', 2).append("%"));
+	   number(100 * static_cast<double> (v1) / v3 +
+		  100 * static_cast<double> (v2) / v3, 'f', 2).
+	   append("%"));
 	query.exec();
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
