@@ -183,11 +183,10 @@ Remaining Items
 27.    Prevent inserts of own keys in friends_public_keys.db.
 28.    Wormholes for streamed data.
 29.    Per request, provide an automatic StarBeam rewind mechanism with a timer.
-30.    User configuration files are not secured.
+30.    User configuration files are not encrypted.
 31.    Artificial pauses. Suppose an inbound packet requires t0 time to
        process. Pause the current thread for T - t0 seconds, where T is some
        reasonable time.
 32.    Purge items from post_office if their dates are invalid.
 33.    Limit the number of entries that are allowed to be inserted into
        a database.
-
