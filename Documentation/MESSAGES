@@ -319,7 +319,7 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code (Base-64)
+0 - Keyed Message Code (Base-64)
 }
 
 Groups: 2
@@ -335,7 +335,7 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code (Base-64)
+0 - Keyed Message Code (Base-64)
 }
 
 Account Authentication
