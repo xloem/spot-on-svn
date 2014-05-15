@@ -190,3 +190,4 @@ Remaining Items
 32.    Purge items from post_office if their dates are invalid.
 33.    Limit the number of entries that are allowed to be inserted into
        a database.
+34.    Counting users is possible.
