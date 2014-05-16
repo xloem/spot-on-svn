@@ -901,7 +901,7 @@ void spoton_kernel::prepareNeighbors(void)
 
 		      for(int i = 0; i < query.record().count() - 1; i++)
 			if(i == 3) // status_control
-			  list.append("connected");
+			  list.append(query.value(i).toString());
 			else if(i == 9) // user_defined
 			  list.append(userDefined);
 			else if(i == 10) // ssl_key_size
@@ -1026,6 +1026,7 @@ void spoton_kernel::prepareNeighbors(void)
 				 list.value(20).toString(),
 				 list.value(21).toString(),
 				 list.value(22).toString(),
+				 list.value(3).toString(),
 				 this);
 			    }
 			  catch(std::bad_alloc &exception)

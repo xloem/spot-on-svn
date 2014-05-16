@@ -184,6 +184,7 @@ spoton_neighbor::spoton_neighbor(const int socketDescriptor,
     m_port = port.toUShort();
 
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
+  m_statusControl = "connected";
 
   if(m_transport == "tcp")
     m_requireSsl = true;
@@ -446,6 +447,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const QString &transport,
 				 const QString &orientation,
 				 const QString &motd,
+				 const QString &statusControl,
 				 QObject *parent):QThread(parent)
 {
   m_accountAuthenticated = false;
@@ -485,6 +487,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_requireSsl = requireSsl;
   m_sctpSocket = 0;
   m_startTime = QDateTime::currentDateTime();
+  m_statusControl = statusControl;
   m_tcpSocket = 0;
   m_transport = transport;
   m_udpSocket = 0;

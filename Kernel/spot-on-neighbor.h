@@ -125,6 +125,7 @@ class spoton_neighbor: public QThread
 		  const QString &transport,
 		  const QString &orientation,
 		  const QString &motd,
+		  const QString &statusControl,
 		  QObject *parent);
   spoton_neighbor(const int socketDescriptor,
 		  const QByteArray &certificate,
@@ -177,6 +178,7 @@ class spoton_neighbor: public QThread
   QString m_motd;
   QString m_orientation;
   QString m_protocol;
+  QString m_statusControl;
   QString m_transport;
   QTimer m_accountTimer;
   QTimer m_authenticationTimer;
