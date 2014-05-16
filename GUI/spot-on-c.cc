@@ -2339,6 +2339,9 @@ void spoton::prepareContextMenuMirrors(void)
 	 tr("&Add participant as friend."),
 	 this, SLOT(slotShareChatPublicKeyWithParticipant(void)));
       menu->addSeparator();
+      menu->addAction(tr("Chat &popup."), this,
+		      SLOT(slotChatPopup(void)));
+      menu->addSeparator();
       menu->addAction(QIcon(":/generic/repleo-chat.png"),
 		      tr("&Copy Repleo to the clipboard buffer."),
 		      this, SLOT(slotCopyFriendshipBundle(void)));
@@ -2502,6 +2505,9 @@ void spoton::prepareContextMenuMirrors(void)
 		      this, SLOT(slotNeighborFullEcho(void)));
       menu->addAction(tr("&Half Echo"),
 		      this, SLOT(slotNeighborHalfEcho(void)));
+      menu->addSeparator();
+      menu->addAction(tr("&Pause / &Resume Echo"),
+		      this, SLOT(slotPauseResumeNeighbor(void)));
       m_ui.neighborsActionMenu->setMenu(menu);
     }
 

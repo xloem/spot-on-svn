@@ -4888,6 +4888,9 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotNeighborFullEcho(void)));
       menu.addAction(tr("&Half Echo"),
 		     this, SLOT(slotNeighborHalfEcho(void)));
+      menu.addSeparator();
+      menu.addAction(tr("&Pause / &Resume Echo"),
+		     this, SLOT(slotPauseResumeNeighbor(void)));
       menu.exec(m_ui.neighbors->mapToGlobal(point));
     }
   else if(m_ui.participants == sender())
@@ -4900,6 +4903,9 @@ void spoton::slotShowContextMenu(const QPoint &point)
 	       arg(m_settings.value("gui/iconSet", "nouve").toString())),
 	 tr("&Add participant as friend."),
 	 this, SLOT(slotShareChatPublicKeyWithParticipant(void)));
+      menu.addSeparator();
+      menu.addAction(tr("Chat &popup."), this,
+		      SLOT(slotChatPopup(void)));
       menu.addSeparator();
       menu.addAction(QIcon(":/generic/repleo-chat.png"),
 		     tr("&Copy Repleo to the clipboard buffer."),

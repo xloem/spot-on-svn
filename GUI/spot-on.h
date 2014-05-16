@@ -219,6 +219,7 @@ class spoton: public QMainWindow
   void slotCallParticipant(void);
   void slotChangeTabPosition(void);
   void slotChatInactivityTimeout(void);
+  void slotChatPopup(void);
   void slotChatSendMethodChanged(int index);
   void slotChatWindowDestroyed(void);
   void slotChatWindowMessageSent(void);
@@ -318,6 +319,7 @@ class spoton: public QMainWindow
   void slotNeighborMaximumChanged(int value);
   void slotNeighborSelected(void);
   void slotParticipantDoubleClicked(QTableWidgetItem *item);
+  void slotPauseResumeNeighbor(void);
   void slotPopulateBuzzFavorites(void);
   void slotPopulateEtpMagnets(void);
   void slotPopulateKernelStatistics(void);

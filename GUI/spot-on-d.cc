@@ -594,3 +594,11 @@ void spoton::populateMOTD(const QString &listenerOid)
 
   QSqlDatabase::removeDatabase(connectionName);
 }
+
+void spoton::slotChatPopup(void)
+{
+}
+
+void spoton::slotPauseResumeNeighbor(void)
+{
+}
