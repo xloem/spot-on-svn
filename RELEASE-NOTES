@@ -36,6 +36,8 @@
 20.  Corrected congestion containers percent arithmetic.
 21.  Corrected Documentation/MESSAGES, 0040a and 0040b. Algorithms
      such as Stribog, Tiger, and Whirlpool are also supported.
+22.  Introduced pause and resume requests. If enabled, echo communications
+     between two nodes will be paused.
 
 0.09.04 (04/17/2014)
 
