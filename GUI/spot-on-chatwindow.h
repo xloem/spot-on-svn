@@ -55,6 +55,7 @@ class spoton_chatwindow: public QMainWindow
   QString m_id;
   Ui_chatwindow ui;
   void closeEvent(QCloseEvent *event);
+  void keyPressEvent(QKeyEvent *event);
 
  private slots:
   void slotSendMessage(void);

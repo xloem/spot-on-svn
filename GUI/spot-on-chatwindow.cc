@@ -235,3 +235,14 @@ void spoton_chatwindow::setName(const QString &name)
       ui.name->setText("unknown");
     }
 }
+
+void spoton_chatwindow::keyPressEvent(QKeyEvent *event)
+{
+  if(event)
+    {
+      if(event->key() == Qt::Key_Escape)
+	close();
+    }
+
+  QMainWindow::keyPressEvent(event);
+}

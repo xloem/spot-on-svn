@@ -249,7 +249,7 @@ void spoton::slotReceivedKernelMessage(void)
 		  QString msg("");
 		  bool ok = true;
 
-		  if(!items.isEmpty())
+		  if(!items.isEmpty() && items.at(0))
 		    {
 		      QTableWidgetItem *item = m_ui.participants->
 			item(items.at(0)->row(), 0); // Participant
@@ -2773,7 +2773,7 @@ void spoton::slotRefreshMail(void)
 						 toByteArray(),
 						 Qt::MatchExactly));
 
-				    if(!items.isEmpty())
+				    if(!items.isEmpty() && items.at(0))
 				      {
 					QTableWidgetItem *it =
 					  m_ui.emailParticipants->
@@ -3850,7 +3850,7 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
 		  (m_ui.emailParticipants->
 		   findItems(list.value(4).toBase64(), Qt::MatchExactly));
 
-		if(!items.isEmpty())
+		if(!items.isEmpty() && items.at(0))
 		  {
 		    QTableWidgetItem *it =
 		      m_ui.emailParticipants->
@@ -4788,7 +4788,7 @@ void spoton::slotDeleteAccount(void)
 
   QList<QListWidgetItem *> list(m_ui.accounts->selectedItems());
 
-  if(list.isEmpty())
+  if(list.isEmpty() || !list.at(0))
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("Please select an account to delete."));

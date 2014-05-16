@@ -597,6 +597,11 @@ void spoton::populateMOTD(const QString &listenerOid)
 
 void spoton::slotChatPopup(void)
 {
+  QList<QTableWidgetItem *> items(m_ui.participants->selectedItems());
+
+  if(!items.isEmpty() && items.at(0))
+    slotParticipantDoubleClicked
+      (m_ui.participants->item(items.at(0)->row(), 0));
 }
 
 void spoton::slotPauseResumeNeighbor(void)

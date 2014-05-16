@@ -1668,7 +1668,7 @@ void spoton::slotDeleteNova(void)
 
   QList<QListWidgetItem *> list(m_ui.novas->selectedItems());
 
-  if(list.isEmpty())
+  if(list.isEmpty() || !list.at(0))
     {
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("Please select a nova to delete."));
