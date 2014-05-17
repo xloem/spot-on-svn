@@ -393,9 +393,3 @@ Echoed? No
 
 Message Type ("0070")
 MOTD (Base-64)
-
-Pause/Resume
-Echoed? No
-
-Message Type ("0080")
-0/1 (Base-64)

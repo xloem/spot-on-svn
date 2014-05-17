@@ -319,7 +319,6 @@ class spoton: public QMainWindow
   void slotNeighborMaximumChanged(int value);
   void slotNeighborSelected(void);
   void slotParticipantDoubleClicked(QTableWidgetItem *item);
-  void slotPauseResumeNeighbor(void);
   void slotPopulateBuzzFavorites(void);
   void slotPopulateEtpMagnets(void);
   void slotPopulateKernelStatistics(void);

@@ -2505,9 +2505,6 @@ void spoton::prepareContextMenuMirrors(void)
 		      this, SLOT(slotNeighborFullEcho(void)));
       menu->addAction(tr("&Half Echo"),
 		      this, SLOT(slotNeighborHalfEcho(void)));
-      menu->addSeparator();
-      menu->addAction(tr("&Pause / &Resume Echo"),
-		      this, SLOT(slotPauseResumeNeighbor(void)));
       m_ui.neighborsActionMenu->setMenu(menu);
     }
 

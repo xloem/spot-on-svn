@@ -4888,9 +4888,6 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotNeighborFullEcho(void)));
       menu.addAction(tr("&Half Echo"),
 		     this, SLOT(slotNeighborHalfEcho(void)));
-      menu.addSeparator();
-      menu.addAction(tr("&Pause / &Resume Echo"),
-		     this, SLOT(slotPauseResumeNeighbor(void)));
       menu.exec(m_ui.neighbors->mapToGlobal(point));
     }
   else if(m_ui.participants == sender())

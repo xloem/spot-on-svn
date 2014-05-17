@@ -603,7 +603,3 @@ void spoton::slotChatPopup(void)
     slotParticipantDoubleClicked
       (m_ui.participants->item(items.at(0)->row(), 0));
 }
-
-void spoton::slotPauseResumeNeighbor(void)
-{
-}
