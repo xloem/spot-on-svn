@@ -651,6 +651,13 @@ void spoton::slotStarOTMCheckChange(bool state)
 
 void spoton::slotPopulateKernelStatistics(void)
 {
+  if(!m_ui.showStatistics->isChecked())
+    /*
+    ** Ignore kernel.db changes.
+    */
+
+    return;
+
   QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
 		     "kernel.db");
 
