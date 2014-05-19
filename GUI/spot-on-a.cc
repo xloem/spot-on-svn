@@ -508,6 +508,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(itemDoubleClicked(QTableWidgetItem *)),
 	  this,
 	  SLOT(slotParticipantDoubleClicked(QTableWidgetItem *)));
+  connect(m_ui.commonBuzzChannels,
+	  SIGNAL(itemDoubleClicked(QTableWidgetItem *)),
+	  this,
+	  SLOT(slotCommonBuzzChannelsDoubleClicked(QTableWidgetItem *)));
   connect(m_ui.generateGoldBug,
 	  SIGNAL(clicked(void)),
 	  this,

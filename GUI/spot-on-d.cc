@@ -603,3 +603,14 @@ void spoton::slotChatPopup(void)
     slotParticipantDoubleClicked
       (m_ui.participants->item(items.at(0)->row(), 0));
 }
+
+void spoton::slotCommonBuzzChannelsDoubleClicked(QTableWidgetItem *item)
+{
+  if(!item)
+    return;
+
+  m_ui.demagnetize->setText(item->text());
+  demagnetize();
+  m_ui.demagnetize->clear();
+  m_ui.buzzActions->setCurrentIndex(0);
+}

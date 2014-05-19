@@ -72,8 +72,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1054</width>
-             <height>638</height>
+             <width>1056</width>
+             <height>626</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -109,6 +109,52 @@
                </spacer>
               </item>
              </layout>
+            </item>
+            <item>
+             <widget class="QTableWidget" name="commonBuzzChannels">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>100</height>
+               </size>
+              </property>
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+              <property name="horizontalScrollMode">
+               <enum>QAbstractItemView::ScrollPerPixel</enum>
+              </property>
+              <property name="sortingEnabled">
+               <bool>true</bool>
+              </property>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+              <row>
+               <property name="text">
+                <string>1</string>
+               </property>
+              </row>
+              <column>
+               <property name="text">
+                <string>Common Channels</string>
+               </property>
+              </column>
+              <item row="0" column="0">
+               <property name="text">
+                <string notr="true">magnet:?rn=Spot-On Developer's Channel Key&amp;xf=10000&amp;xs=Spot-On Developer's Channel Salt&amp;ct=aes256&amp;hk=Spot-On Developer's Channel Hash Key&amp;ht=sha512&amp;xt=urn:buzz</string>
+               </property>
+              </item>
+             </widget>
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_41">
@@ -401,8 +447,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
-                <height>463</height>
+                <width>729</width>
+                <height>447</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -879,8 +925,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>820</width>
-             <height>578</height>
+             <width>862</width>
+             <height>587</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1879,8 +1925,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>811</width>
-             <height>339</height>
+             <width>826</width>
+             <height>341</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2428,8 +2474,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>244</width>
-                     <height>558</height>
+                     <width>253</width>
+                     <height>580</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2700,8 +2746,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1054</width>
-             <height>638</height>
+             <width>979</width>
+             <height>572</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -3762,8 +3808,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>248</width>
-             <height>170</height>
+             <width>265</width>
+             <height>163</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -3917,8 +3963,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>830</width>
-             <height>898</height>
+             <width>851</width>
+             <height>863</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4932,8 +4978,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>478</width>
-             <height>510</height>
+             <width>491</width>
+             <height>521</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5279,6 +5325,9 @@
                       </property>
                       <property name="selectionBehavior">
                        <enum>QAbstractItemView::SelectRows</enum>
+                      </property>
+                      <property name="horizontalScrollMode">
+                       <enum>QAbstractItemView::ScrollPerPixel</enum>
                       </property>
                      </widget>
                     </item>
@@ -5673,6 +5722,9 @@
                       <property name="selectionMode">
                        <enum>QAbstractItemView::SingleSelection</enum>
                       </property>
+                      <property name="selectionBehavior">
+                       <enum>QAbstractItemView::SelectRows</enum>
+                      </property>
                       <property name="horizontalScrollMode">
                        <enum>QAbstractItemView::ScrollPerPixel</enum>
                       </property>
@@ -5839,8 +5891,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>233</width>
-             <height>419</height>
+             <width>247</width>
+             <height>409</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -6318,8 +6370,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>228</width>
-             <height>156</height>
+             <width>248</width>
+             <height>152</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -6579,7 +6631,7 @@
      <x>0</x>
      <y>0</y>
      <width>1080</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -6776,6 +6828,7 @@
   <tabstop>tab</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>acceptBuzzMagnets</tabstop>
+  <tabstop>commonBuzzChannels</tabstop>
   <tabstop>buzzName</tabstop>
   <tabstop>saveBuzzName</tabstop>
   <tabstop>favorites</tabstop>
