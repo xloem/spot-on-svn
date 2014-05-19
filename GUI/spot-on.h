@@ -228,6 +228,7 @@ class spoton: public QMainWindow
   void slotCloseBuzzTab(int index);
   void slotCommonBuzzChannelsDoubleClicked(QTableWidgetItem *item);
   void slotComputeFileHash(void);
+  void slotConnectAllNeighbors(void);
   void slotConnectNeighbor(void);
   void slotCopyAllMyPublicKeys(void);
   void slotCopyEmailFriendshipBundle(void);
@@ -265,6 +266,7 @@ class spoton: public QMainWindow
   void slotDeleteTransmitted(void);
   void slotDemagnetizeMissingLinks(void);
   void slotDetachListenerNeighbors(void);
+  void slotDisconnectAllNeighbors(void);
   void slotDisconnectListenerNeighbors(void);
   void slotDisconnectNeighbor(void);
   void slotDiscoverExternalAddress(void);

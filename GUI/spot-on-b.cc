@@ -4581,7 +4581,7 @@ void spoton::slotDeleteAccepedIP(void)
 	if(ip == "Any")
 	  query.exec
 	    ("UPDATE neighbors SET status_control = 'disconnected' "
-	     "WHERE user_defined = 0");
+	     "WHERE status_control <> 'deleted' AND user_defined = 0");
 	else
 	  {
 	    bool ok = true;
@@ -4589,6 +4589,7 @@ void spoton::slotDeleteAccepedIP(void)
 	    query.prepare("UPDATE neighbors SET "
 			  "status_control = 'disconnected' "
 			  "WHERE remote_ip_address_hash = ? AND "
+			  "status_control <> 'deleted' AND "
 			  "user_defined = 0");
 	    query.bindValue
 	      (0,

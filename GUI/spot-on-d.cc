@@ -614,3 +614,56 @@ void spoton::slotCommonBuzzChannelsDoubleClicked(QTableWidgetItem *item)
   m_ui.demagnetize->clear();
   m_ui.buzzActions->setCurrentIndex(0);
 }
+
+void spoton::slotConnectAllNeighbors(void)
+{
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare
+	  ("UPDATE neighbors SET status_control = 'connected' "
+	   "WHERE status_control <> 'deleted' AND "
+	   "user_defined = 1");
+	query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton::slotDisconnectAllNeighbors(void)
+{
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare
+	  ("UPDATE neighbors SET status_control = 'disconnected' "
+	   "WHERE status_control <> 'deleted'");
+	query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}

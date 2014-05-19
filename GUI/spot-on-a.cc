@@ -4873,6 +4873,11 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("&Disconnect"),
 		     this, SLOT(slotDisconnectNeighbor(void)));
       menu.addSeparator();
+      menu.addAction(tr("&Connect All"),
+		     this, SLOT(slotConnectAllNeighbors(void)));
+      menu.addAction(tr("&Disconnect All"),
+		     this, SLOT(slotDisconnectAllNeighbors(void)));
+      menu.addSeparator();
       menu.addAction
 	(tr("&Authenticate"),
 	 this,
@@ -4892,7 +4897,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotDeleteNeighbor(void)));
       menu.addAction(tr("Delete &All"),
 		     this, SLOT(slotDeleteAllNeighbors(void)));
-      menu.addAction(tr("Delete All Non-Unique &Blocked Neighbors"),
+      menu.addAction(tr("Delete All Non-Unique &Blocked"),
 		     this, SLOT(slotDeleteAllBlockedNeighbors(void)));
       menu.addAction(tr("Delete All Non-Unique &UUIDs"),
 		     this, SLOT(slotDeleteAllUuids(void)));
@@ -5236,7 +5241,7 @@ void spoton::slotDisconnectNeighbor(void)
 
 	query.prepare("UPDATE neighbors SET "
 		      "status_control = 'disconnected' "
-		      "WHERE OID = ?");
+		      "WHERE OID = ? AND status_control <> 'deleted'");
 	query.bindValue(0, oid);
 	query.exec();
       }
@@ -5314,7 +5319,8 @@ void spoton::slotBlockNeighbor(void)
 
 		    updateQuery.prepare("UPDATE neighbors SET "
 					"status_control = 'blocked' WHERE "
-					"OID = ?");
+					"OID = ? AND "
+					"status_control <> 'deleted'");
 		    updateQuery.bindValue(0, query.value(1));
 		    updateQuery.exec();
 		  }
@@ -5394,7 +5400,8 @@ void spoton::slotUnblockNeighbor(void)
 
 		    updateQuery.prepare("UPDATE neighbors SET "
 					"status_control = 'disconnected' "
-					"WHERE OID = ?");
+					"WHERE OID = ? AND "
+					"status_control <> 'deleted'");
 		    updateQuery.bindValue(0, query.value(1));
 		    updateQuery.exec();
 		  }

@@ -2479,6 +2479,11 @@ void spoton::prepareContextMenuMirrors(void)
       menu->addAction(tr("&Disconnect"),
 		      this, SLOT(slotDisconnectNeighbor(void)));
       menu->addSeparator();
+      menu->addAction(tr("&Connect All"),
+		      this, SLOT(slotConnectAllNeighbors(void)));
+      menu->addAction(tr("&Disconnect All"),
+		      this, SLOT(slotDisconnectAllNeighbors(void)));
+      menu->addSeparator();
       menu->addAction
 	(tr("&Authenticate"),
 	 this,
@@ -2498,7 +2503,7 @@ void spoton::prepareContextMenuMirrors(void)
 		      this, SLOT(slotDeleteNeighbor(void)));
       menu->addAction(tr("Delete &All"),
 		      this, SLOT(slotDeleteAllNeighbors(void)));
-      menu->addAction(tr("Delete All Non-Unique &Blocked Neighbors"),
+      menu->addAction(tr("Delete All Non-Unique &Blocked"),
 		      this, SLOT(slotDeleteAllBlockedNeighbors(void)));
       menu->addAction(tr("Delete All Non-Unique &UUIDs"),
 		      this, SLOT(slotDeleteAllUuids(void)));
