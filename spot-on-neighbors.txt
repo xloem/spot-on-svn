@@ -3,4 +3,4 @@
 # Spot will modify the initialization file and set the parameter
 # spot_on_neighbors_txt_processed to true.
 
-echo_mode=full&ip_address=tulip.cloud.tilaa.com&orientation=packet&port=4710&protocol=IPv4&scope_id=&ssl_key_size=3072&transport=tcp
+echo_mode=full&ip_address=tulip.cloud.tilaa.com&orientation=packet&port=4710&protocol=Dynamic DNS&scope_id=&ssl_key_size=3072&transport=tcp
