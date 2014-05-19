@@ -1,4 +1,4 @@
-0.09.05 (05/17/2014)
+0.09.05 (05/21/2014)
 
 1.   Buzz salts are now mandatory.
 2.   Added logic provided by the Schmidt for minimal displays.
@@ -38,6 +38,13 @@
      such as Stribog, Tiger, and Whirlpool are also supported.
 22.  Decreased the general and table timers from 2.5 seconds to 5.0 seconds
      in the user interface.
+23.  Added the file spot-on-neighbors.txt. Spot will process the contents
+     of the file after a new installation or unless the configuration option
+     spot_on_neighbors_txt_processed is set to false. Neighbor connection
+     states will be set to disconnected. Please note that the location of the
+     file is expected to reside within the directory that houses the Spot-On
+     executable.
+24.  Added a default Buzz developer's channel.
 
 0.09.04 (04/17/2014)
 
