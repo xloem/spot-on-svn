@@ -4523,6 +4523,7 @@ void spoton::slotSetPassphrase(void)
       else
 	m_settings["gui/signatureKey"] = "rsa";
 
+      m_settings["gui/spot_on_neighbors_txt_processed"] = true;
       m_settings["gui/urlName"] = str3.toUtf8();
 
       QSettings settings;
@@ -4545,12 +4546,13 @@ void spoton::slotSetPassphrase(void)
 	("gui/saltedPassphraseHash", m_settings["gui/saltedPassphraseHash"]);
       settings.setValue
 	("gui/signatureKey", m_settings["gui/signatureKey"]);
+      settings.setValue("gui/spot_on_neighbors_txt_processed", true);
       settings.setValue("gui/urlName", m_settings["gui/urlName"]);
       m_ui.buzzName->setText(m_ui.username->text());
       m_ui.emailName->setText(m_ui.username->text());
       m_ui.nodeName->setText(m_ui.username->text());
       m_ui.urlName->setText(m_ui.username->text());
-
+      importNeighbors("spot-on-neighbors.txt");
       QMessageBox::information
 	(this, tr("Spot-On: Information"),
 	 tr("Your confidential information has been saved. "
@@ -4677,6 +4679,18 @@ void spoton::slotValidatePassphrase(void)
 	    m_ui.tab->setCurrentIndex
 	      (m_settings.value("gui/currentTabIndex", m_ui.tab->count() - 1).
 	       toInt());
+
+	    if(!m_settings.value("gui/spot_on_neighbors_txt_processed",
+				 false).toBool())
+	      {
+		importNeighbors("spot-on-neighbors.txt");
+
+		QSettings settings;
+
+		settings.setValue("gui/spot_on_neighbors_txt_processed",
+				  true);
+		m_settings["gui/spot_on_neighbors_txt_processed"] = true;
+	      }
 	  }
       }
 

@@ -171,6 +171,7 @@ class spoton: public QMainWindow
   void closeEvent(QCloseEvent *event);
   void demagnetize(void);
   void highlightPaths(void);
+  void importNeighbors(const QString &filePath);
   void initializeKernelSocket(void);
   void magnetize(void);
   void prepareContextMenuMirrors(void);
