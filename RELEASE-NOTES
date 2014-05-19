@@ -41,8 +41,8 @@
 23.  Added the file spot-on-neighbors.txt. Spot will process the contents
      of the file after a new installation or if the configuration option
      spot_on_neighbors_txt_processed is set to false. Neighbor connection
-     states will be set to disconnected. Please note that the location of the
-     file is expected to reside within the directory that houses the Spot-On
+     states will be set to disconnected. Please note that the file is
+     expected to reside within the directory that houses the Spot-On
      executable.
 24.  Added a default Buzz developer's channel.
 
