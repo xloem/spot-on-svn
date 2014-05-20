@@ -164,6 +164,8 @@ QMAKE_STRIP	= echo
 
 spoton.path		= /Applications/Spot-On.d/Spot-On.app
 spoton.files		= Spot-On.app/*
+install1.path           = /Applications/Spot-On.d
+install1.files          = spot-on-neighbors.txt
 libgeoip_data_install.path = /Applications/Spot-On.d/GeoIP
 libgeoip_data_install.files = ../../GeoIP-1.5.1/data/GeoIP.dat
 libgeoip_install.path   = .
@@ -185,6 +187,7 @@ translations.files	= Translations/*.qm
 
 QMAKE_STRIP	= echo
 INSTALLS	= macdeployqt \
+                  install1 \
                   libgeoip_data_install \
                   libgeoip_install \
                   libspoton_install \
