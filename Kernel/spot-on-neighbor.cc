@@ -1496,9 +1496,6 @@ void spoton_neighbor::processData(void)
 	process0070(length, data);
       else if(length > 0 && data.contains("content="))
 	{
-	  emit resetKeepAlive();
-	  spoton_kernel::messagingCacheAdd(originalData);
-
 	  /*
 	  ** Remove some header data.
 	  */
@@ -1514,6 +1511,14 @@ void spoton_neighbor::processData(void)
 
 	  if(indexOf > -1)
 	    data.remove(0, indexOf + qstrlen("content="));
+
+	  if(data.length() == length)
+	    {
+	      emit resetKeepAlive();
+	      spoton_kernel::messagingCacheAdd(originalData);
+	    }
+	  else
+	    continue;
 
 	  /*
 	  ** Please note that findMessageType() calls
@@ -1546,8 +1551,7 @@ void spoton_neighbor::processData(void)
 	    messageType.clear();
 
 	  if(messageType.isEmpty())
-	    if(data.length() == length)
-	      spoton_kernel::s_kernel->processPotentialStarBeamData(data);
+	    spoton_kernel::s_kernel->processPotentialStarBeamData(data);
 
 	  if(spoton_kernel::setting("gui/scramblerEnabled", false).toBool())
 	    emit scrambleRequest();
