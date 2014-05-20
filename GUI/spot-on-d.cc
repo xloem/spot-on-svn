@@ -604,15 +604,22 @@ void spoton::slotChatPopup(void)
       (m_ui.participants->item(items.at(0)->row(), 0));
 }
 
-void spoton::slotCommonBuzzChannelsDoubleClicked(QTableWidgetItem *item)
+void spoton::slotCommonBuzzChannelsActivated(const QString &text)
 {
-  if(!item)
-    return;
-
-  m_ui.demagnetize->setText(item->text());
+  repaint();
+  m_ui.demagnetize->setText(text);
   demagnetize();
   m_ui.demagnetize->clear();
   m_ui.buzzActions->setCurrentIndex(0);
+  disconnect(m_ui.commonBuzzChannels,
+	     SIGNAL(activated(const QString &)),
+	     this,
+	     SLOT(slotCommonBuzzChannelsActivated(const QString &)));
+  m_ui.commonBuzzChannels->setCurrentIndex(0);
+  connect(m_ui.commonBuzzChannels,
+	  SIGNAL(activated(const QString &)),
+	  this,
+	  SLOT(slotCommonBuzzChannelsActivated(const QString &)));
 }
 
 void spoton::slotConnectAllNeighbors(void)

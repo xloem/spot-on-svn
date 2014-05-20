@@ -72,8 +72,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1054</width>
-             <height>638</height>
+             <width>1056</width>
+             <height>621</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -111,50 +111,46 @@
              </layout>
             </item>
             <item>
-             <widget class="QTableWidget" name="commonBuzzChannels">
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>100</height>
-               </size>
-              </property>
-              <property name="editTriggers">
-               <set>QAbstractItemView::NoEditTriggers</set>
-              </property>
-              <property name="alternatingRowColors">
-               <bool>true</bool>
-              </property>
-              <property name="selectionMode">
-               <enum>QAbstractItemView::SingleSelection</enum>
-              </property>
-              <property name="selectionBehavior">
-               <enum>QAbstractItemView::SelectRows</enum>
-              </property>
-              <property name="horizontalScrollMode">
-               <enum>QAbstractItemView::ScrollPerPixel</enum>
-              </property>
-              <property name="sortingEnabled">
-               <bool>true</bool>
-              </property>
-              <attribute name="horizontalHeaderStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-              <row>
-               <property name="text">
-                <string>1</string>
-               </property>
-              </row>
-              <column>
-               <property name="text">
-                <string>Common Channels</string>
-               </property>
-              </column>
-              <item row="0" column="0">
-               <property name="text">
-                <string notr="true">magnet:?rn=Spot-On Developer's Channel Key&amp;xf=10000&amp;xs=Spot-On Developer's Channel Salt&amp;ct=aes256&amp;hk=Spot-On Developer's Channel Hash Key&amp;ht=sha512&amp;xt=urn:buzz</string>
-               </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_34">
+              <item>
+               <widget class="QLabel" name="label_82">
+                <property name="text">
+                 <string>&amp;Common Channels</string>
+                </property>
+                <property name="buddy">
+                 <cstring>commonBuzzChannels</cstring>
+                </property>
+               </widget>
               </item>
-             </widget>
+              <item>
+               <widget class="QComboBox" name="commonBuzzChannels">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>magnet:?rn=Spot-On Developer's Channel Key&amp;xf=10000&amp;xs=Spot-On Developer's Channel Salt&amp;ct=aes256&amp;hk=Spot-On Developer's Channel Hash Key&amp;ht=sha512&amp;xt=urn:buzz</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_64">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_41">
@@ -447,8 +443,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1044</width>
-                <height>628</height>
+                <width>1046</width>
+                <height>611</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -925,8 +921,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1054</width>
-             <height>638</height>
+             <width>1056</width>
+             <height>621</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1925,8 +1921,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1054</width>
-             <height>638</height>
+             <width>1056</width>
+             <height>621</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2474,8 +2470,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>281</width>
-                     <height>618</height>
+                     <width>286</width>
+                     <height>598</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2746,8 +2742,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1054</width>
-             <height>638</height>
+             <width>1180</width>
+             <height>609</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -3808,8 +3804,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1054</width>
-             <height>638</height>
+             <width>1056</width>
+             <height>621</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -3963,8 +3959,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1039</width>
-             <height>882</height>
+             <width>1038</width>
+             <height>904</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4981,8 +4977,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1054</width>
-             <height>638</height>
+             <width>1056</width>
+             <height>621</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5894,8 +5890,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1054</width>
-             <height>638</height>
+             <width>1056</width>
+             <height>621</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -6373,8 +6369,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1054</width>
-             <height>638</height>
+             <width>1056</width>
+             <height>621</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -6634,7 +6630,7 @@
      <x>0</x>
      <y>0</y>
      <width>1080</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
