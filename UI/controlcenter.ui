@@ -72,8 +72,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>626</height>
+             <width>1054</width>
+             <height>638</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -447,8 +447,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>729</width>
-                <height>447</height>
+                <width>1044</width>
+                <height>628</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -488,7 +488,7 @@
                    <item>
                     <widget class="QCheckBox" name="impersonate">
                      <property name="toolTip">
-                      <string>Broadcast odd messages at odd times.</string>
+                      <string>Broadcast odd messages at odd times. Please note that this option will advertise your presence.</string>
                      </property>
                      <property name="text">
                       <string>&amp;Impersonate me.</string>
@@ -925,8 +925,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>862</width>
-             <height>587</height>
+             <width>1054</width>
+             <height>638</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1925,8 +1925,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>826</width>
-             <height>341</height>
+             <width>1054</width>
+             <height>638</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2474,8 +2474,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>253</width>
-                     <height>580</height>
+                     <width>281</width>
+                     <height>618</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2746,8 +2746,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>979</width>
-             <height>572</height>
+             <width>1054</width>
+             <height>638</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -3808,8 +3808,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>265</width>
-             <height>163</height>
+             <width>1054</width>
+             <height>638</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -3963,8 +3963,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>851</width>
-             <height>863</height>
+             <width>1039</width>
+             <height>882</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4393,6 +4393,9 @@
                    </item>
                    <item>
                     <widget class="QCheckBox" name="scrambler">
+                     <property name="toolTip">
+                      <string>Please note that this option will advertise your presence.</string>
+                     </property>
                      <property name="text">
                       <string>&amp;Scrambler</string>
                      </property>
@@ -4441,7 +4444,7 @@
                    <item>
                     <widget class="QCheckBox" name="superEcho">
                      <property name="toolTip">
-                      <string>If enabled, messages that are deciphered correctly will be echoed.</string>
+                      <string>If enabled, messages that are deciphered correctly will be echoed. Please note that this option will advertise your presence.</string>
                      </property>
                      <property name="text">
                       <string>S&amp;uper Echo</string>
@@ -4978,8 +4981,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>491</width>
-             <height>521</height>
+             <width>1054</width>
+             <height>638</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5891,8 +5894,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>247</width>
-             <height>409</height>
+             <width>1054</width>
+             <height>638</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -6370,8 +6373,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>248</width>
-             <height>152</height>
+             <width>1054</width>
+             <height>638</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -6631,7 +6634,7 @@
      <x>0</x>
      <y>0</y>
      <width>1080</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
