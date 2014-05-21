@@ -36,7 +36,7 @@
 20.  Corrected congestion containers percent arithmetic.
 21.  Corrected Documentation/MESSAGES, 0040a and 0040b. Algorithms
      such as Stribog, Tiger, and Whirlpool are also supported.
-22.  Increased the general and table timers from 2.5 seconds to 5.0 seconds
+22.  Increased the general and table timers from 2.5 seconds to 3.5 seconds
      in the user interface.
 23.  Added the file spot-on-neighbors.txt. Spot will process the contents
      of the file after a new installation or if the configuration option
@@ -47,6 +47,9 @@
 24.  Added a default Buzz developer's channel.
 25.  Ignore abstract messages having inconsistent lengths. Such messages
      are not to be echoed.
+26.  Modified the thread model. The new approach uses more events
+     and less timer cycles. Let's hope we don't have some delicious
+     race conditions.
 
 0.09.04 (04/17/2014)
 
