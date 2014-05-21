@@ -148,6 +148,7 @@ class spoton_neighbor: public QThread
   QHostAddress peerAddress(void) const;
   QString transport(void) const;
   QUuid receivedUuid(void) const;
+  bool hasData(void);
   bool isEncrypted(void) const;
   bool readyToWrite(void);
   qint64 id(void) const;
@@ -316,6 +317,7 @@ class spoton_neighbor: public QThread
 			    const QByteArray &password);
   void authenticationRequested(const QString &peerInformation);
   void disconnected(void);
+  void newData(void);
   void newEMailArrived(void);
   void publicizeListenerPlaintext(const QByteArray &data, const qint64 id);
   void receivedBuzzMessage(const QByteArrayList &list,
@@ -344,6 +346,7 @@ class spoton_neighbor_worker: public QObject
   spoton_neighbor_worker(spoton_neighbor *neighbor)
   {
     m_neighbor = neighbor;
+    m_timer.setInterval(100);
     connect(m_neighbor,
 	    SIGNAL(destroyed(void)),
 	    &m_timer,
@@ -352,7 +355,6 @@ class spoton_neighbor_worker: public QObject
 	    SIGNAL(timeout(void)),
 	    this,
 	    SLOT(slotProcessData(void)));
-    m_timer.start(100);
   }
 
   ~spoton_neighbor_worker()
@@ -370,10 +372,21 @@ class spoton_neighbor_worker: public QObject
   QTimer m_timer;
 
  private slots:
+  void slotNewData(void)
+  {
+    if(!m_timer.isActive())
+      m_timer.start();
+  }
+
   void slotProcessData(void)
   {
     if(m_neighbor)
-      m_neighbor->processData();
+      {
+	m_neighbor->processData();
+
+	if(!m_neighbor->hasData())
+	  m_timer.stop();
+      }
   }
 };
 

@@ -1226,6 +1226,10 @@ void spoton_neighbor::run(void)
 {
   spoton_neighbor_worker worker(this);
 
+  connect(this,
+	  SIGNAL(newData(void)),
+	  &worker,
+	  SLOT(slotNewData(void)));
   exec();
   worker.stop();
 }
@@ -1258,16 +1262,24 @@ void spoton_neighbor::slotReadyRead(void)
 
   if(!data.isEmpty())
     {
+      bool new_data = false;
+
       m_dataMutex.lockForWrite();
 
       if(data.length() <= m_maximumBufferSize - m_data.length())
-	m_data.append(data);
+	{
+	  m_data.append(data);
+	  new_data = true;
+	}
       else
 	{
 	  m_data.clear();
 
 	  if(data.length() <= m_maximumBufferSize)
-	    m_data.append(data);
+	    {
+	      m_data.append(data);
+	      new_data = true;
+	    }
 
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::slotReadyRead(): "
@@ -1278,6 +1290,9 @@ void spoton_neighbor::slotReadyRead(void)
 	}
 
       m_dataMutex.unlock();
+
+      if(new_data)
+	emit newData();
     }
 }
 
@@ -5873,4 +5888,14 @@ void spoton_neighbor::slotAuthenticationTimerTimeout(void)
      arg(m_address.toString()).
      arg(m_port));
   deleteLater();
+}
+
+bool spoton_neighbor::hasData(void)
+{
+  m_dataMutex.lockForRead();
+
+  bool has_data = !m_data.isEmpty();
+
+  m_dataMutex.unlock();
+  return has_data;
 }

@@ -49,11 +49,15 @@ void spoton_starbeam_writer::run(void)
 {
   spoton_starbeam_writer_worker worker(this);
 
+  connect(this,
+	  SIGNAL(newData(void)),
+	  &worker,
+	  SLOT(slotNewData(void)));
   exec();
   worker.stop();
 }
 
-void spoton_starbeam_writer::slotProcessData(void)
+void spoton_starbeam_writer::processData(void)
 {
   m_mutex.lockForWrite();
 
@@ -198,13 +202,13 @@ void spoton_starbeam_writer::slotProcessData(void)
 	  if(static_cast<int> (file.write(list.value(5).mid(0, dataSize).
 					  constData(), dataSize)) != dataSize)
 	    spoton_misc::logError
-	      ("spoton_starbeam_writer::slotProcessData(): "
+	      ("spoton_starbeam_writer::processData(): "
 	       "write() failure.");
 
 	  file.flush();
 	}
       else
-	spoton_misc::logError("spoton_starbeam_writer::slotProcessData(): "
+	spoton_misc::logError("spoton_starbeam_writer::processData(): "
 			      "seek() failure.");
     }
 
@@ -422,6 +426,7 @@ void spoton_starbeam_writer::append(const QByteArray &data)
     {
       QByteArray bytes(QByteArray::fromBase64(data));
       QByteArray hash;
+      bool new_data = false;
       bool ok = true;
 
       hash = s_crypt->keyedHash(bytes, &ok);
@@ -432,7 +437,10 @@ void spoton_starbeam_writer::append(const QByteArray &data)
       m_mutex.lockForWrite();
 
       if(!m_data.contains(hash))
-	m_data.insert(hash, bytes);
+	{
+	  m_data.insert(hash, bytes);
+	  new_data = true;
+	}
 
       m_mutex.unlock();
 
@@ -442,10 +450,23 @@ void spoton_starbeam_writer::append(const QByteArray &data)
 
       if(!isRunning())
 	start();
+
+      if(new_data)
+	emit newData();
     }
 }
 
 bool spoton_starbeam_writer::isActive(void) const
 {
   return isRunning();
+}
+
+bool spoton_starbeam_writer::hasData(void)
+{
+  m_mutex.lockForRead();
+
+  bool has_data = !m_data.isEmpty();
+
+  m_mutex.unlock();
+  return has_data;
 }

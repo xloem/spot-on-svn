@@ -41,8 +41,10 @@ class spoton_starbeam_writer: public QThread
  public:
   spoton_starbeam_writer(QObject *parent);
   ~spoton_starbeam_writer();
+  bool hasData(void);
   bool isActive(void) const;
   void append(const QByteArray &data);
+  void processData(void);
   void start(void);
   void stop(void);
 
@@ -57,8 +59,8 @@ class spoton_starbeam_writer: public QThread
  private slots:
   void slotReadKeys(void);
 
- public slots:
-  void slotProcessData(void);
+ signals:
+  void newData(void);
 };
 
 class spoton_starbeam_writer_worker: public QObject
@@ -69,6 +71,7 @@ class spoton_starbeam_writer_worker: public QObject
   spoton_starbeam_writer_worker(spoton_starbeam_writer *writer)
   {
     m_writer = writer;
+    m_timer.setInterval(100);
     connect(&m_timer,
 	    SIGNAL(timeout(void)),
 	    this,
@@ -77,7 +80,6 @@ class spoton_starbeam_writer_worker: public QObject
 	    SIGNAL(destroyed(void)),
 	    &m_timer,
 	    SLOT(stop(void)));
-    m_timer.start(100);
   }
 
   ~spoton_starbeam_writer_worker()
@@ -95,10 +97,21 @@ class spoton_starbeam_writer_worker: public QObject
   QTimer m_timer;
 
  private slots:
+  void slotNewData(void)
+  {
+    if(!m_timer.isActive())
+      m_timer.start();
+  }
+
   void slotProcessData(void)
   {
     if(m_writer)
-      m_writer->slotProcessData();
+      {
+	m_writer->processData();
+
+	if(!m_writer->hasData())
+	  m_timer.stop();
+      }
   }
 };
 

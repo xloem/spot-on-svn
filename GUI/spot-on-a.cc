@@ -975,9 +975,9 @@ spoton::spoton(void):QMainWindow()
   m_ui.toolButtonCopyToClipboard->setMenu(menu);
   menu = new QMenu(this);
   m_ui.shareBuzzMagnet->setMenu(menu);
-  m_generalTimer.start(5000);
+  m_generalTimer.start(3500);
   m_chatInactivityTimer.start(120000);
-  m_tableTimer.setInterval(5000);
+  m_tableTimer.setInterval(3500);
   m_emailRetrievalTimer.setInterval
     (m_settings.value("gui/emailRetrievalInterval", 5 * 60 * 1000).toInt());
   m_ui.ipv4Listener->setChecked(true);
