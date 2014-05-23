@@ -48,7 +48,7 @@ class spoton_logviewer: public QMainWindow
   QTimer m_timer;
   Ui_spoton_logviewer ui;
 #ifdef Q_OS_MAC
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= 0x050000 && QT_VERSION < 0x050300
   bool event(QEvent *event);
 #endif
 #endif

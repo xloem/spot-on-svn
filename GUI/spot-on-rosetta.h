@@ -50,7 +50,7 @@ class spoton_rosetta: public QMainWindow
   spoton_crypt *m_sCrypt; // Signature
   QByteArray copyMyRosettaPublicKey(void) const;
 #ifdef Q_OS_MAC
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= 0x050000 && QT_VERSION < 0x050300
   bool event(QEvent *event);
 #endif
 #endif

@@ -54,6 +54,11 @@ class spoton_chatwindow: public QMainWindow
   QPointer<QSslSocket> m_kernelSocket;
   QString m_id;
   Ui_chatwindow ui;
+#ifdef Q_OS_MAC
+#if QT_VERSION >= 0x050000 && QT_VERSION < 0x050300
+  bool event(QEvent *event);
+#endif
+#endif
   void closeEvent(QCloseEvent *event);
   void keyPressEvent(QKeyEvent *event);
 

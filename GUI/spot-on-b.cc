@@ -4049,7 +4049,7 @@ void spoton::slotPublicizeListenerPlaintext(void)
 }
 
 #ifdef Q_OS_MAC
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= 0x050000 && QT_VERSION < 0x050300
 bool spoton::event(QEvent *event)
 {
   if(event)
