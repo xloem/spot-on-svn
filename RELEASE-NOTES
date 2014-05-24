@@ -50,6 +50,7 @@
 26.  Modified the thread model. The new approach uses more events
      and less timer cycles. Let's hope we don't have some delicious
      race conditions.
+27.  Qt 5.3 preparations for OS X.
 
 0.09.04 (04/17/2014)
 
