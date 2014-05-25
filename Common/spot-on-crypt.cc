@@ -2717,7 +2717,7 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
   BIO_get_mem_ptr(privateMemory, &bptr);
 
   if(bptr->length + 1 <= 0 ||
-     bptr->length >= std::numeric_limits<size_t>::max() - 1 ||
+     std::numeric_limits<size_t>::max() - bptr->length < 1 ||
      !(privateBuffer = static_cast<char *> (calloc(bptr->length + 1,
 						   sizeof(char)))))
     {
@@ -2735,7 +2735,7 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
   BIO_get_mem_ptr(publicMemory, &bptr);
 
   if(bptr->length + 1 <= 0 ||
-     bptr->length >= std::numeric_limits<size_t>::max() - 1 ||
+     std::numeric_limits<size_t>::max() - bptr->length < 1 ||
      !(publicBuffer = static_cast<char *> (calloc(bptr->length + 1,
 						  sizeof(char)))))
     {
@@ -2865,15 +2865,19 @@ void spoton_crypt::generateCertificate(RSA *rsa,
       goto done_label;
     }
 
-  commonName = static_cast<unsigned char *>
-    (calloc(address.toString().toLatin1().length() + 1,
-	    sizeof(unsigned char)));
+  if(std::numeric_limits<size_t>::max() - address.toString().toLatin1().
+     length() < 1)
+    commonName = 0;
+  else
+    commonName = static_cast<unsigned char *>
+      (calloc(address.toString().toLatin1().length() + 1,
+	      sizeof(unsigned char)));
 
   if(!commonName)
     {
       error = QObject::tr("calloc() returned zero");
       spoton_misc::logError("spoton_crypt::generateCertificate(): "
-			    "calloc() failure.");
+			    "calloc() failure or irregular address.");
       goto done_label;
     }
 
@@ -2975,7 +2979,7 @@ void spoton_crypt::generateCertificate(RSA *rsa,
   BIO_get_mem_ptr(memory, &bptr);
 
   if(bptr->length + 1 <= 0 ||
-     bptr->length >= std::numeric_limits<size_t>::max() - 1 ||
+     std::numeric_limits<size_t>::max() - bptr->length < 1 ||
      !(buffer = static_cast<char *> (calloc(bptr->length + 1,
 					    sizeof(char)))))
     {
