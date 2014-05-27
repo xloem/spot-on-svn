@@ -68,6 +68,7 @@ SOURCES		= Common\\spot-on-crypt.cc \
 		  GUI\\spot-on-d.cc \
 		  GUI\\spot-on-buzzpage.cc \
 		  GUI\\spot-on-chatwindow.cc \
+		  GUI\\spot-on-derivative.cc \
 		  GUI\\spot-on-logviewer.cc \
 		  GUI\\spot-on-reencode.cc \
 		  GUI\\spot-on-rosetta.cc \

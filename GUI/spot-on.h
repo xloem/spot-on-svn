@@ -170,6 +170,7 @@ class spoton: public QMainWindow
   void changeEchoMode(const QString &mode, QTableWidget *tableWidget);
   void closeEvent(QCloseEvent *event);
   void demagnetize(void);
+  void derivativeUpdates(void);
   void highlightPaths(void);
   void importNeighbors(const QString &filePath);
   void initializeKernelSocket(void);
