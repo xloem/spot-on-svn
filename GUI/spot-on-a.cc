@@ -3639,6 +3639,7 @@ void spoton::slotGeneralTimerTimeout(void)
 	  palette.setColor(m_ui.pid->backgroundRole(), color);
 	  m_ui.pid->setPalette(palette);
 	  m_ui.pid->setText(QString::number(pid));
+	  derivativeUpdates();
 	}
     }
   else
@@ -4706,6 +4707,7 @@ void spoton::slotValidatePassphrase(void)
 
   m_ui.passphrase->setFocus();
   updatePublicKeysLabel();
+  derivativeUpdates();
 }
 
 void spoton::slotTabChanged(int index)
