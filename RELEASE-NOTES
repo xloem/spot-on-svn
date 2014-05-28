@@ -1,5 +1,8 @@
 0.09.06 (06/06/2014)
 
+1.   Added a convenience function to the Chat tab's Messages in order
+     to simplify magnet adds.
+
 0.09.05.01 (05/25/2014)
 
 1.   Prevent integer wraparounds.
