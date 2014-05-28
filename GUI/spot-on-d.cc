@@ -277,7 +277,7 @@ void spoton::refreshInstitutions(void)
   m_ui.institutions->setSortingEnabled(true);
 }
 
-void spoton::slotAddInstitution(void)
+void spoton::slotAddInstitution(const QString &magnet)
 {
   spoton_crypt *crypt = m_crypts.value("chat", 0);
 
@@ -290,12 +290,19 @@ void spoton::slotAddInstitution(void)
     }
 
   QString name("");
+  QString nameType("");
   QString postalAddress("");
+  QString postalAddressType("");
 
-  if(m_ui.addInstitutionCheckBox->isChecked())
+  if(m_ui.addInstitutionCheckBox->isChecked() || !magnet.isEmpty())
     {
-      QStringList list(m_ui.addInstitutionLineEdit->text().
-		       trimmed().remove("magnet:?").split("&"));
+      QStringList list;
+
+      if(magnet.isEmpty())
+	list = m_ui.addInstitutionLineEdit->text().
+	  trimmed().remove("magnet:?").split("&");
+      else
+	list = magnet.trimmed().remove("magnet:?").split("&");
 
       for(int i = 0; i < list.size(); i++)
 	{
@@ -309,11 +316,7 @@ void spoton::slotAddInstitution(void)
 	  else if(str.startsWith("ct="))
 	    {
 	      str.remove(0, 3);
-
-	      int index = m_ui.institutionNameType->findText(str);
-
-	      if(index > -1)
-		m_ui.institutionNameType->setCurrentIndex(index);
+	      nameType = str;
 	    }
 	  else if(str.startsWith("pa="))
 	    {
@@ -323,18 +326,16 @@ void spoton::slotAddInstitution(void)
 	  else if(str.startsWith("ht="))
 	    {
 	      str.remove(0, 3);
-
-	      int index = m_ui.institutionPostalAddressType->findText(str);
-
-	      if(index > -1)
-		m_ui.institutionPostalAddressType->setCurrentIndex(index);
+	      postalAddressType = str;
 	    }
 	}
     }
   else
     {
       name = m_ui.institutionName->text().trimmed();
+      nameType = m_ui.institutionNameType->currentText();
       postalAddress = m_ui.institutionPostalAddress->text().trimmed();
+      postalAddressType = m_ui.institutionPostalAddressType->currentText();
     }
 
   if(name.isEmpty())
@@ -370,15 +371,13 @@ void spoton::slotAddInstitution(void)
 	   "(cipher_type, hash_type, hash, name, postal_address) "
 	   "VALUES (?, ?, ?, ?, ?)");
 	query.bindValue
-	  (0, crypt->encryptedThenHashed(m_ui.institutionNameType->
-					 currentText().toLatin1(),
+	  (0, crypt->encryptedThenHashed(nameType.toLatin1(),
 					 &ok).toBase64());
 
 	if(ok)
 	  query.bindValue
 	    (1, crypt->
-	     encryptedThenHashed(m_ui.institutionPostalAddressType->
-				 currentText().toLatin1(),
+	     encryptedThenHashed(postalAddressType.toLatin1(),
 				 &ok).toBase64());
 
 	if(ok)
@@ -409,11 +408,15 @@ void spoton::slotAddInstitution(void)
 
   if(ok)
     {
-      m_ui.addInstitutionLineEdit->clear();
-      m_ui.institutionName->clear();
-      m_ui.institutionNameType->setCurrentIndex(0);
-      m_ui.institutionPostalAddress->clear();
-      m_ui.institutionPostalAddressType->setCurrentIndex(0);
+      if(magnet.isEmpty())
+	{
+	  m_ui.addInstitutionLineEdit->clear();
+	  m_ui.institutionName->clear();
+	  m_ui.institutionNameType->setCurrentIndex(0);
+	  m_ui.institutionPostalAddress->clear();
+	  m_ui.institutionPostalAddressType->setCurrentIndex(0);
+	}
+
       refreshInstitutions();
     }
   else
@@ -673,4 +676,29 @@ void spoton::slotDisconnectAllNeighbors(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton::slotMessagesAnchorClicked(const QUrl &link)
+{
+  QMenu menu(this);
+
+  QAction *action = menu.addAction(tr("&Add magnet."),
+				   this,
+				   SLOT(slotAddMagnet(void)));
+
+  action->setProperty("url", link);
+  menu.exec(QCursor::pos());
+}
+
+void spoton::slotAddMagnet(void)
+{
+  QAction *action = qobject_cast<QAction *> (sender());
+
+  if(!action)
+    return;
+
+  QUrl url(action->property("url").toUrl());
+
+  if(spoton_misc::isValidInstitutionMagnet(url.toString().toLatin1()))
+    slotAddInstitution(url.toString());
 }

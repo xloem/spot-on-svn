@@ -206,9 +206,10 @@ class spoton: public QMainWindow
   void slotAddAccount(void);
   void slotAddBootstrapper(void);
   void slotAddEtpMagnet(void);
-  void slotAddInstitution(void);
-  void slotAddListener(void);
   void slotAddFriendsKey(void);
+  void slotAddInstitution(const QString &magnet = QString());
+  void slotAddListener(void);
+  void slotAddMagnet(void);
   void slotAddNeighbor(void);
   void slotAddReceiveNova(void);
   void slotAuthenticate(void);
@@ -317,6 +318,7 @@ class spoton: public QMainWindow
   void slotMaxMosaicSize(int value);
   void slotMaximumClientsChanged(int index);
   void slotMaximumEmailFileSizeChanged(int value);
+  void slotMessagesAnchorClicked(const QUrl &url);
   void slotModeChanged(QSslSocket::SslMode mode);
   void slotNeighborCheckChange(bool state);
   void slotNeighborFullEcho(void);

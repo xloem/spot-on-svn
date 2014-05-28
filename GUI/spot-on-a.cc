@@ -1476,6 +1476,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,
 	  SLOT(slotShowContextMenu(const QPoint &)));
+  connect(m_ui.messages,
+	  SIGNAL(anchorClicked(const QUrl &)),
+	  this,
+	  SLOT(slotMessagesAnchorClicked(const QUrl &)));
   connect(m_ui.neighbors,
 	  SIGNAL(customContextMenuRequested(const QPoint &)),
 	  this,
