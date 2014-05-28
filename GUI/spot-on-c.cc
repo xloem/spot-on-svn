@@ -83,7 +83,7 @@ void spoton::slotGenerateEtpKeys(int index)
     }
 }
 
-void spoton::slotAddEtpMagnet(void)
+void spoton::slotAddEtpMagnet(const QString &text)
 {
   QString connectionName("");
   QString error("");
@@ -98,8 +98,13 @@ void spoton::slotAddEtpMagnet(void)
       goto done_label;
     }
 
-  if(m_ui.magnetRadio->isChecked())
-    magnet = m_ui.etpMagnet->toPlainText().trimmed();
+  if(m_ui.magnetRadio->isChecked() || !text.isEmpty())
+    {
+      if(text.isEmpty())
+	magnet = m_ui.etpMagnet->toPlainText().trimmed();
+      else
+	magnet = text;
+    }
   else
     magnet = QString("magnet:?"
 		     "ct=%1&"
@@ -157,11 +162,14 @@ void spoton::slotAddEtpMagnet(void)
     error = tr("A database error occurred.");
   else
     {
-      m_ui.etpCipherType->setCurrentIndex(0);
-      m_ui.etpEncryptionKey->clear();
-      m_ui.etpHashType->setCurrentIndex(0);
-      m_ui.etpMacKey->clear();
-      m_ui.etpMagnet->clear();
+      if(text.isEmpty())
+	{
+	  m_ui.etpCipherType->setCurrentIndex(0);
+	  m_ui.etpEncryptionKey->clear();
+	  m_ui.etpHashType->setCurrentIndex(0);
+	  m_ui.etpMacKey->clear();
+	  m_ui.etpMagnet->clear();
+	}
     }
 
  done_label:

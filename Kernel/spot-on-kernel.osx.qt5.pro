@@ -22,10 +22,11 @@ DEFINES += SPOTON_LINKED_WITH_LIBGEOIP \
 
 QMAKE_CLEAN     += ../Spot-On-Kernel ../../../libSpotOn/*.dylib \
 		   ../../../libSpotOn/*.o ../../../libSpotOn/test
+QMAKE_CXX = clang++
 QMAKE_DISTCLEAN += -r temp .qmake.cache .qmake.stash
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -fwrapv \
-			  -mtune=generic -pie -O3 \
+			  -mtune=generic -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
                           -Werror -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith \

@@ -277,7 +277,7 @@ void spoton::refreshInstitutions(void)
   m_ui.institutions->setSortingEnabled(true);
 }
 
-void spoton::slotAddInstitution(const QString &magnet)
+void spoton::slotAddInstitution(const QString &text)
 {
   spoton_crypt *crypt = m_crypts.value("chat", 0);
 
@@ -294,15 +294,15 @@ void spoton::slotAddInstitution(const QString &magnet)
   QString postalAddress("");
   QString postalAddressType("");
 
-  if(m_ui.addInstitutionCheckBox->isChecked() || !magnet.isEmpty())
+  if(m_ui.addInstitutionCheckBox->isChecked() || !text.isEmpty())
     {
       QStringList list;
 
-      if(magnet.isEmpty())
+      if(text.isEmpty())
 	list = m_ui.addInstitutionLineEdit->text().
 	  trimmed().remove("magnet:?").split("&");
       else
-	list = magnet.trimmed().remove("magnet:?").split("&");
+	list = text.trimmed().remove("magnet:?").split("&");
 
       for(int i = 0; i < list.size(); i++)
 	{
@@ -408,7 +408,7 @@ void spoton::slotAddInstitution(const QString &magnet)
 
   if(ok)
     {
-      if(magnet.isEmpty())
+      if(text.isEmpty())
 	{
 	  m_ui.addInstitutionLineEdit->clear();
 	  m_ui.institutionName->clear();
@@ -680,12 +680,25 @@ void spoton::slotDisconnectAllNeighbors(void)
 
 void spoton::slotMessagesAnchorClicked(const QUrl &link)
 {
+  QString type("");
+
+  if(spoton_misc::isValidBuzzMagnet(link.toString().toLatin1()))
+    type = "buzz";
+  else if(spoton_misc::isValidInstitutionMagnet(link.toString().toLatin1()))
+    type = "institution";
+  else if(spoton_misc::isValidStarBeamMagnet(link.toString().toLatin1()))
+    type = "starbeam";
+
+  if(type.isEmpty())
+    return;
+
+  QAction *action = 0;
   QMenu menu(this);
 
-  QAction *action = menu.addAction(tr("&Add magnet."),
-				   this,
-				   SLOT(slotAddMagnet(void)));
-
+  action = menu.addAction(tr("&Add magnet."),
+			  this,
+			  SLOT(slotAddMagnet(void)));
+  action->setProperty("type", type);
   action->setProperty("url", link);
   menu.exec(QCursor::pos());
 }
@@ -697,8 +710,11 @@ void spoton::slotAddMagnet(void)
   if(!action)
     return;
 
+  QString type(action->property("type").toString().trimmed());
   QUrl url(action->property("url").toUrl());
 
-  if(spoton_misc::isValidInstitutionMagnet(url.toString().toLatin1()))
+  if(type == "institution")
     slotAddInstitution(url.toString());
+  else if(type == "starbeam")
+    slotAddEtpMagnet(url.toString());
 }

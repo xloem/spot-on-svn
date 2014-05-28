@@ -205,9 +205,9 @@ class spoton: public QMainWindow
   void slotAddAcceptedIP(void);
   void slotAddAccount(void);
   void slotAddBootstrapper(void);
-  void slotAddEtpMagnet(void);
+  void slotAddEtpMagnet(const QString &text = QString());
   void slotAddFriendsKey(void);
-  void slotAddInstitution(const QString &magnet = QString());
+  void slotAddInstitution(const QString &text = QString());
   void slotAddListener(void);
   void slotAddMagnet(void);
   void slotAddNeighbor(void);
