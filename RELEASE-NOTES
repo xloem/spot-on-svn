@@ -1,7 +1,9 @@
 0.09.06 (06/06/2014)
 
 1.   Added a convenience function to the Chat tab's Messages in order
-     to simplify magnet adds.
+     to simplify magnet addition.
+2.   Qt products have been upgraded to version 5.3.0 on OS X and
+     Windows.
 
 0.09.05.01 (05/25/2014)
 
