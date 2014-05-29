@@ -84,10 +84,12 @@ extern "C"
 #include "spot-on-starbeam-reader.h"
 #include "spot-on-starbeam-writer.h"
 
-QHash<QByteArray, char> spoton_kernel::s_messagingCache;
+QDateTime spoton_kernel::s_institutionLastModificationTime;
 QHash<QByteArray, QList<QByteArray> > spoton_kernel::s_buzzKeys;
+QHash<QByteArray, char> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
+QList<QList<QByteArray > > spoton_kernel::s_institutionKeys;
 QMultiMap<QDateTime, QByteArray> spoton_kernel::s_messagingCacheMap;
 QPointer<spoton_kernel> spoton_kernel::s_kernel = 0;
 QReadWriteLock spoton_kernel::s_buzzKeysMutex;
@@ -277,6 +279,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_sharedReader = 0;
   m_starbeamWriter = 0;
   m_uptime = QDateTime::currentDateTime();
+  s_institutionLastModificationTime = QDateTime();
   qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
   spoton_misc::cleanupDatabases();
@@ -3487,10 +3490,6 @@ void spoton_kernel::slotImpersonateTimeout(void)
 QList<QByteArray> spoton_kernel::findInstitutionKey
 (const QByteArray &data, const QByteArray &hash)
 {
-  /*
-  ** Unpleasantly slow.
-  */
-
   if(hash.isEmpty())
     return QList<QByteArray> ();
 
@@ -3499,20 +3498,82 @@ QList<QByteArray> spoton_kernel::findInstitutionKey
   if(!s_crypt)
     return QList<QByteArray> ();
 
+  QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
+		     "email.db");
+
+  if(fileInfo.exists())
+    {
+      if(fileInfo.lastModified() <= s_institutionLastModificationTime)
+	{
+	  /*
+	  ** Locate the institution keys in our container.
+	  */
+
+	  QList<QByteArray> list;
+
+	  for(int i = 0; i < s_institutionKeys.size(); i++)
+	    {
+	      QByteArray cipherType;
+	      QByteArray hashType;
+	      QByteArray name;
+	      QByteArray postalAddress;
+	      bool ok = true;
+
+	      cipherType = s_crypt->decryptedAfterAuthenticated
+		(s_institutionKeys.at(i).value(0), &ok);
+
+	      if(ok)
+		hashType = s_crypt->decryptedAfterAuthenticated
+		  (s_institutionKeys.at(i).value(1), &ok);
+
+	      if(ok)
+		name = s_crypt->decryptedAfterAuthenticated
+		  (s_institutionKeys.at(i).value(2), &ok);
+
+	      if(ok)
+		postalAddress = s_crypt->decryptedAfterAuthenticated
+		  (s_institutionKeys.at(i).value(3), &ok);
+
+	      if(ok)
+		{
+		  QByteArray computedHash;
+
+		  computedHash = spoton_crypt::keyedHash
+		    (data, postalAddress, hashType, &ok);
+
+		  if(ok)
+		    if(!computedHash.isEmpty() && !hash.isEmpty() &&
+		       spoton_crypt::memcmp(computedHash, hash))
+		      {
+			list << name << cipherType
+			     << postalAddress << hashType;
+			break;
+		      }
+		}
+	    }
+
+	  return list;
+	}
+      else
+	s_institutionLastModificationTime = fileInfo.lastModified();
+    }
+  else
+    s_institutionLastModificationTime = QDateTime();
+
   QList<QByteArray> list;
   QString connectionName("");
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
 
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "email.db");
+    db.setDatabaseName(fileInfo.absoluteFilePath());
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
+	s_institutionKeys.clear();
 
 	if(query.exec("SELECT cipher_type, hash_type, "
 		      "name, postal_address FROM institutions"))
@@ -3546,18 +3607,23 @@ QList<QByteArray> spoton_kernel::findInstitutionKey
 	      if(!ok)
 		continue;
 
+	      s_institutionKeys.append
+		(QList<QByteArray>()
+		 << QByteArray::fromBase64(query.value(0).toByteArray())
+		 << QByteArray::fromBase64(query.value(1).toByteArray())
+		 << QByteArray::fromBase64(query.value(2).toByteArray())
+		 << QByteArray::fromBase64(query.value(3).toByteArray()));
+
 	      QByteArray computedHash;
 
 	      computedHash = spoton_crypt::keyedHash
 		(data, postalAddress, hashType, &ok);
 
 	      if(ok)
-		if(!computedHash.isEmpty() && !hash.isEmpty() &&
-		   spoton_crypt::memcmp(computedHash, hash))
-		  {
+		if(list.isEmpty())
+		  if(!computedHash.isEmpty() && !hash.isEmpty() &&
+		     spoton_crypt::memcmp(computedHash, hash))
 		    list << name << cipherType << postalAddress << hashType;
-		    break;
-		  }
 	    }
       }
 
