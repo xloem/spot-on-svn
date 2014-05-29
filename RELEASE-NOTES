@@ -4,6 +4,8 @@
      to simplify magnet addition.
 2.   Qt products have been upgraded to version 5.3.0 on OS X and
      Windows.
+3.   Modified the mechanism that's responsible for fetching institution
+     keys. The new version attempts to decrease database reads.
 
 0.09.05.01 (05/25/2014)
 
