@@ -3830,10 +3830,13 @@ void spoton::saveSettings(void)
 {
   QSettings settings;
 
-  if(spoton_misc::isGnome())
-    settings.setValue("gui/geometry", geometry());
-  else
-    settings.setValue("gui/geometry", saveGeometry());
+  if(!isFullScreen())
+    {
+      if(spoton_misc::isGnome())
+	settings.setValue("gui/geometry", geometry());
+      else
+	settings.setValue("gui/geometry", saveGeometry());
+    }
 
   settings.setValue("gui/chatHorizontalSplitter",
 		    m_ui.chatHorizontalSplitter->saveState());
