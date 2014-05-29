@@ -1174,6 +1174,9 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
 
 void spoton_neighbor::saveStatus(const QString &status)
 {
+  if(m_id == -1)
+    return;
+
   QString connectionName("");
 
   {
@@ -1402,11 +1405,6 @@ void spoton_neighbor::processData(void)
 	      if(length > 0 && data.contains("type=0050&content="))
 		if(!spoton_misc::readSharedResource
 		   (&m_accountAuthenticated, m_accountAuthenticatedMutex))
-		  /*
-		  ** This will certainly emit multiple authentication
-		  ** approvals to the client.
-		  */
-
 		  process0050(length, data);
 
 	      if(!spoton_misc::readSharedResource
@@ -3917,6 +3915,9 @@ void spoton_neighbor::process0040b(int length, const QByteArray &dataIn,
 
 void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 {
+  if(m_id == -1)
+    return;
+
   int indexOf = dataIn.lastIndexOf("\r\n");
 
   if(indexOf < 0)
@@ -4045,6 +4046,9 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 
 void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 {
+  if(m_id == -1)
+    return;
+
   int indexOf = dataIn.lastIndexOf("\r\n");
 
   if(indexOf < 0)
