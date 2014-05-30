@@ -112,9 +112,14 @@ int main(int argc, char *argv[])
   if(!settings.contains("gui/tcp_nodelay"))
     settings.setValue("gui/tcp_nodelay", 1);
 
-  spoton_crypt::init
-    (qMax(qAbs(settings.value("gui/gcryctl_init_secmem", 65536).
-	       toInt()), 65536));
+  bool ok = true;
+  int integer = settings.value("gui/gcryctl_init_secmem", 65536).
+    toInt(&ok);
+
+  if(integer <= 0 || integer > 65536 || !ok)
+    integer = 65536;
+
+  spoton_crypt::init(integer);
 
   try
     {
