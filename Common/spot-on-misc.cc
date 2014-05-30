@@ -2160,7 +2160,10 @@ bool spoton_misc::isValidBuzzMagnetData(const QByteArray &data)
 	}
       else if(i == 1) // Iteration Count
 	{
-	  if(str.toInt() < 10000)
+	  bool ok = true;
+	  int integer = str.toInt(&ok);
+
+	  if(integer < 10000 || integer > 999999999 || !ok)
 	    {
 	      valid = false;
 	      goto done_label;
@@ -2285,7 +2288,10 @@ bool spoton_misc::isValidBuzzMagnet(const QByteArray &magnet)
 	{
 	  str.remove(0, 3);
 
-	  if(str.toInt() < 10000)
+	  bool ok = true;
+	  int integer = str.toInt(&ok);
+
+	  if(integer < 10000 || integer > 999999999 || !ok)
 	    {
 	      valid = false;
 	      goto done_label;
@@ -2450,10 +2456,9 @@ bool spoton_misc::isValidStarBeamMissingLinksMagnet(const QByteArray &magnet)
 	  str.remove(0, 3);
 
 	  bool ok = true;
+	  qint64 integer = str.toLongLong(&ok);
 
-	  str.toLongLong(&ok);
-
-	  if(!ok)
+	  if(integer < 1024 || !ok) // Please see controlcenter.ui.
 	    {
 	      valid = false;
 	      goto done_label;
