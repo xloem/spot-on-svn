@@ -8,6 +8,7 @@
      keys. The new version attempts to decrease database reads.
 4.   Corrected the demagnetization process of Buzz magnets. The hash
      type was ignored.
+5.   Improved validation of magnets in spot-on-misc.cc methods.
 
 0.09.05.01 (05/25/2014)
 
