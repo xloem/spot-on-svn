@@ -7189,7 +7189,7 @@ void spoton::demagnetize(void)
 	  str.remove(0, 3);
 	  m_ui.buzzHashKey->setText(str);
 	}
-      else if(str.startsWith("kt="))
+      else if(str.startsWith("ht="))
 	{
 	  str.remove(0, 3);
 

@@ -713,7 +713,122 @@ void spoton::slotAddMagnet(void)
   QString type(action->property("type").toString().trimmed());
   QUrl url(action->property("url").toUrl());
 
-  if(type == "institution")
+  if(type == "buzz")
+    {
+      spoton_crypt *crypt = m_crypts.value("chat", 0);
+
+      if(!crypt)
+	{
+	  QMessageBox::critical(this, tr("Spot-On: Error"),
+				tr("Invalid spoton_crypt object. This is "
+				   "a fatal flaw."));
+	  return;
+	}
+
+      QByteArray channel;
+      QByteArray channelSalt;
+      QByteArray channelType;
+      QByteArray hashKey;
+      QByteArray hashType;
+      QByteArray iterationCount;
+      QStringList list
+	(url.toString().trimmed().remove("magnet:?").split("&"));
+
+      while(!list.isEmpty())
+	{
+	  QString str(list.takeFirst().trimmed());
+
+	  if(str.startsWith("rn="))
+	    {
+	      str.remove(0, 3);
+	      channel = str.toLatin1();
+	    }
+	  else if(str.startsWith("xf="))
+	    {
+	      str.remove(0, 3);
+	      iterationCount = str.toLatin1();
+	    }
+	  else if(str.startsWith("xs="))
+	    {
+	      str.remove(0, 3);
+	      channelSalt = str.toLatin1();
+	    }
+	  else if(str.startsWith("ct="))
+	    {
+	      str.remove(0, 3);
+	      channelType = str.toLatin1();
+	    }
+	  else if(str.startsWith("hk="))
+	    {
+	      str.remove(0, 3);
+	      hashKey = str.toLatin1();
+	    }
+	  else if(str.startsWith("ht="))
+	    {
+	      str.remove(0, 3);
+	      hashType = str.toLatin1();
+	    }
+	  else if(str.startsWith("xt="))
+	    {
+	    }
+	}
+
+      QString connectionName("");
+      bool ok = true;
+
+      {
+	QSqlDatabase db = spoton_misc::database(connectionName);
+
+	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			   "buzz_channels.db");
+
+	if(db.open())
+	  {
+	    QByteArray data;
+	    QSqlQuery query(db);
+
+	    data.append(channel.toBase64());
+	    data.append("\n");
+	    data.append(iterationCount.toBase64());
+	    data.append("\n");
+	    data.append(channelSalt.toBase64());
+	    data.append("\n");
+	    data.append(channelType.toBase64());
+	    data.append("\n");
+	    data.append(hashKey.toBase64());
+	    data.append("\n");
+	    data.append(hashType.toBase64());
+	    data.append("\n");
+	    data.append(QByteArray("urn:buzz").toBase64());
+	    query.prepare("INSERT OR REPLACE INTO buzz_channels "
+			  "(data, data_hash) "
+			  "VALUES (?, ?)");
+	    query.bindValue
+	      (0, crypt->encryptedThenHashed(data, &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue(1, crypt->keyedHash(data, &ok).toBase64());
+
+	    if(ok)
+	      ok = query.exec();
+	  }
+	else
+	  ok = false;
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase(connectionName);
+
+      if(!ok)
+	QMessageBox::critical(this, tr("Spot-On: Error"),
+			      tr("An error occurred while attempting to "
+				 "save the channel data. Please enable "
+				 "logging via the Log Viewer and try again."));
+      else
+	slotPopulateBuzzFavorites();
+    }
+  else if(type == "institution")
     slotAddInstitution(url.toString());
   else if(type == "starbeam")
     slotAddEtpMagnet(url.toString());
