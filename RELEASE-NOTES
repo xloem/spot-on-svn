@@ -9,6 +9,8 @@
 4.   Corrected the demagnetization process of Buzz magnets. The hash
      type was ignored.
 5.   Improved validation of magnets in spot-on-misc.cc methods.
+6.   Avoid sending status broadcasts if the kernel does not have
+     at least one attached interface.
 
 0.09.05.01 (05/25/2014)
 
