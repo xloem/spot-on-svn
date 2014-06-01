@@ -1736,6 +1736,9 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 
+  if(!interfaces())
+    return;
+
   QByteArray status(setting("gui/my_status", "Online").
 		    toByteArray().toLower());
 
