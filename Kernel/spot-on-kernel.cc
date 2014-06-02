@@ -1769,9 +1769,6 @@ void spoton_kernel::slotStatusTimerExpired(void)
   if(!ok)
     return;
 
-  if(m_guiServer->findChildren<QSslSocket *> ().isEmpty())
-    status = "offline";
-
   QList<QByteArray> list;
 
   {
@@ -3173,7 +3170,15 @@ void spoton_kernel::clearBuzzKeysContainer(void)
 int spoton_kernel::interfaces(void)
 {
   if(s_kernel)
-    return s_kernel->m_guiServer->findChildren<QSslSocket *> ().size();
+    {
+      int count = 0;
+
+      foreach(QSslSocket *socket, s_kernel->m_guiServer->
+	      findChildren<QSslSocket *> ())
+	count += socket->isEncrypted();
+
+      return count;
+    }
   else
     return 0;
 }
