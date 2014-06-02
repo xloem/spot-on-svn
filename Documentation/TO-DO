@@ -191,3 +191,5 @@ Remaining Items
 33.    Limit the number of entries that are allowed to be inserted into
        a database.
 34.    Counting users is possible.
+35.    Echo Polite. See also Echo Star Systems. Configured Spot nodes
+       will direct traffic based on secret tokens.
