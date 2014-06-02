@@ -10,7 +10,9 @@
      type was ignored.
 5.   Improved validation of magnets in spot-on-misc.cc methods.
 6.   Avoid sending status broadcasts if the kernel does not have
-     at least one attached interface.
+     at least one attached interface. The interfaces() method should
+     also determine whether or not the discovered sockets offer encrypted
+     communications.
 
 0.09.05.01 (05/25/2014)
 
