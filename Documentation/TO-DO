@@ -105,6 +105,7 @@ Completed Items
        Inspect it!
 74.    Encrypt public keys of other participants.
 75.    Semi-anonymous post office boxes. Please see Institutions.
+76.    Message of the day (motd).
 
 Ignored Items
 
@@ -156,7 +157,8 @@ Remaining Items
 11.    Database entries containing hashes can be maliciously twisted. Encrypt?
 12.    Echo star systems.
 13.    Allow pass-through flow of non-Spot-On data.
-14.    Message of the day (motd).
+14.    Echo Polite. See also Echo Star Systems. Configured Spot nodes
+       will direct traffic based on secret tokens.
 15.    Accounts and allowed IP addresses suffer selection issues.
 16.    QFSFileEngine::open: No file name specified: created from
        e-mail.
@@ -191,5 +193,4 @@ Remaining Items
 33.    Limit the number of entries that are allowed to be inserted into
        a database.
 34.    Counting users is possible.
-35.    Echo Polite. See also Echo Star Systems. Configured Spot nodes
-       will direct traffic based on secret tokens.
+35.    Store the id field in idiotes.db in a secure manner.
