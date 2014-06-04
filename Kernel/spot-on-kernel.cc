@@ -84,6 +84,12 @@ extern "C"
 #include "spot-on-starbeam-reader.h"
 #include "spot-on-starbeam-writer.h"
 
+#ifdef Q_OS_MAC
+#if QT_VERSION >= 0x050000
+#include "Common/CocoaInitializer.h"
+#endif
+#endif
+
 QDateTime spoton_kernel::s_institutionLastModificationTime;
 QHash<QByteArray, QList<QByteArray> > spoton_kernel::s_buzzKeys;
 QHash<QByteArray, char> spoton_kernel::s_messagingCache;
@@ -187,6 +193,17 @@ int main(int argc, char *argv[])
 #else
   QCoreApplication qapplication(argc, argv);
 #endif
+  
+#ifdef Q_OS_MAC
+#if QT_VERSION >= 0x050000
+  /*
+  ** Eliminate pool errors on OS X.
+  */
+
+  CocoaInitializer ci;
+#endif
+#endif
+
   QCoreApplication::setApplicationName("Spot-On");
   QCoreApplication::setOrganizationName("Spot-On");
   QCoreApplication::setOrganizationDomain("spot-on.sf.net");

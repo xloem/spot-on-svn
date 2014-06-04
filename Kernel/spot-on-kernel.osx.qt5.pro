@@ -43,7 +43,8 @@ LIBS		+= -L../../../libGeoIP/Libraries.osx64 -lGeoIP \
 		   -L../../../libSCTP/Libraries.osx64 -lusrsctp \
 		   -L../../../libSpotOn -L/usr/local/lib \
 		   -lgcrypt -lgpg-error -lspoton \
-                   -L/usr/local/ssl/lib -lcrypto -lssl
+                   -L/usr/local/ssl/lib -lcrypto -lssl \
+                   -framework Cocoa
 PRE_TARGETDEPS = libspoton.dylib
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui
@@ -76,6 +77,9 @@ SOURCES		= ../Common/spot-on-crypt.cc \
 		  spot-on-shared-reader.cc \
 		  spot-on-starbeam-reader.cc \
 		  spot-on-starbeam-writer.cc
+
+OBJECTIVE_HEADERS += ../Common/Cocoainitializer.h
+OBJECTIVE_SOURCES += ../Common/Cocoainitializer.mm
 
 TRANSLATIONS    =
 

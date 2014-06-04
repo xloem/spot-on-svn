@@ -80,7 +80,7 @@ extern "C"
 
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000
-#include "CocoaInitializer.h"
+#include "Common/CocoaInitializer.h"
 #endif
 #endif
 

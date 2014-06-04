@@ -85,8 +85,8 @@ SOURCES		= Common/spot-on-crypt.cc \
 		  GUI/spot-on-tabwidget.cc \
 		  GUI/spot-on-textedit.cc
 
-OBJECTIVE_HEADERS += GUI/Cocoainitializer.h
-OBJECTIVE_SOURCES += GUI/Cocoainitializer.mm
+OBJECTIVE_HEADERS += Common/Cocoainitializer.h
+OBJECTIVE_SOURCES += Common/Cocoainitializer.mm
 
 TRANSLATIONS    = Translations/spot-on_af.ts \
                   Translations/spot-on_al.ts \
