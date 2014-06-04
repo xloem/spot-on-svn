@@ -40,6 +40,7 @@
 extern "C"
 {
 #ifdef SPOTON_SCTP_ENABLED
+#include <netinet/in.h>
 #include <netinet/sctp.h>
 #endif
 #include <netinet/tcp.h>
@@ -48,6 +49,7 @@ extern "C"
 #elif defined(Q_OS_LINUX)
 extern "C"
 {
+#include <netinet/in.h>
 #ifdef SPOTON_SCTP_ENABLED
 #include <netinet/sctp.h>
 #endif
