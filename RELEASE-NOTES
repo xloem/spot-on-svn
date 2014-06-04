@@ -13,6 +13,8 @@
      at least one attached interface. The interfaces() method should
      also determine whether or not the discovered sockets offer encrypted
      communications.
+7.   Prevent recursive invocations of signal handlers. Also wish to
+     pass the signal number to _Exit().
 
 0.09.05.01 (05/25/2014)
 
