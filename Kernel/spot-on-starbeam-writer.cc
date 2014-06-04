@@ -185,7 +185,7 @@ void spoton_starbeam_writer::processData(void)
     return;
   else if(dataSize > totalSize || position >= totalSize)
     return;
-  else if(pulseSize > maximumSize || pulseSize > totalSize)
+  else if(pulseSize > maximumSize)
     return;
 
   QFile file;
