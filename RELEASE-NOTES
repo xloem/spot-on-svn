@@ -15,6 +15,9 @@
      communications.
 7.   Prevent recursive invocations of signal handlers. Also wish to
      pass the signal number to _Exit().
+8.   Corrected a flaw with the StarBeam implementation. The mechanism
+     prohibited transferring of files having sizes less than the specified
+     pulse size.
 
 0.09.05.01 (05/25/2014)
 
