@@ -13,6 +13,8 @@
      at least one attached interface. The interfaces() method should
      also determine whether or not the discovered sockets offer encrypted
      communications.
+7.   Set SCTP_NODELAY and TCP_NODELAY on listener socket descriptors.
+     Does not apply to the UI server's socket descriptor.
 
 0.09.05.01 (05/25/2014)
 
