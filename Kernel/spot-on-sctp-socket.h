@@ -82,6 +82,7 @@ class spoton_sctp_socket: public QObject
   QString peerName(void) const;
   SocketState state(void) const;
   bool setSocketDescriptor(const int socketDescriptor);
+  int socketDescriptor(void) const;
   qint64 write(const char *data, const qint64 maxSize);
   quint16 localPort(void) const;
   quint16 peerPort(void) const;

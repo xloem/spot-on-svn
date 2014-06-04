@@ -410,6 +410,11 @@ int spoton_sctp_socket::setSocketBlockingOrNon(void)
 #endif
 }
 
+int spoton_sctp_socket::socketDescriptor(void) const
+{
+  return m_socketDescriptor;
+}
+
 qint64 spoton_sctp_socket::read(char *data, const qint64 size)
 {
 #ifdef SPOTON_SCTP_ENABLED

@@ -381,6 +381,11 @@ int spoton_sctp_server::maxPendingConnections(void) const
 #endif
 }
 
+int spoton_sctp_server::socketDescriptor(void) const
+{
+  return m_socketDescriptor;
+}
+
 quint16 spoton_sctp_server::serverPort(void) const
 {
 #ifdef SPOTON_SCTP_ENABLED
