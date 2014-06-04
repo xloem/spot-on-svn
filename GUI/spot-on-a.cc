@@ -3553,7 +3553,6 @@ void spoton::slotPopulateNeighbors(void)
 
 void spoton::slotActivateKernel(void)
 {
-  QProcess process;
   QString program(m_ui.kernelPath->text());
 
 #ifdef Q_OS_MAC
@@ -3564,14 +3563,14 @@ void spoton::slotActivateKernel(void)
       list << "-a"
 	   << program
 	   << "-g";
-      process.startDetached("open", list);
+      QProcess::startDetached("open", list);
     }
   else
-    process.startDetached(program);
+    QProcess::startDetached(program);
 #elif defined(Q_OS_WIN32)
-  process.startDetached(QString("\"%1\"").arg(program));
+  QProcess::startDetached(QString("\"%1\"").arg(program));
 #else
-  process.startDetached(program);
+  QProcess::startDetached(program);
 #endif
 }
 
