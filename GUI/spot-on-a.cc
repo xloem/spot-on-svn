@@ -33,14 +33,19 @@ QPointer<spoton> spoton::s_gui = 0;
 
 static void sig_handler(int signum)
 {
-  Q_UNUSED(signum);
+  static int fatal_error = 0;
+
+  if(fatal_error)
+    _Exit(signum);
+
+  fatal_error = 1;
   spoton_crypt::terminate();
 
   /*
   ** _Exit() and _exit() may be safely called from signal handlers.
   */
 
-  _Exit(EXIT_FAILURE);
+  _Exit(signum);
 }
 
 int main(int argc, char *argv[])
