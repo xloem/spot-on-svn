@@ -36,45 +36,6 @@
 #include <QSqlQuery>
 #include <QString>
 
-#ifdef Q_OS_FREEBSD
-extern "C"
-{
-#ifdef SPOTON_SCTP_ENABLED
-#include <netinet/in.h>
-#include <netinet/sctp.h>
-#endif
-#include <netinet/tcp.h>
-#include <sys/socket.h>
-}
-#elif defined(Q_OS_LINUX)
-extern "C"
-{
-#include <netinet/in.h>
-#ifdef SPOTON_SCTP_ENABLED
-#include <netinet/sctp.h>
-#endif
-#include <netinet/tcp.h>
-#include <sys/socket.h>
-}
-#elif defined(Q_OS_MAC)
-extern "C"
-{
-#include <netinet/tcp.h>
-#include <sys/socket.h>
-#ifdef SPOTON_SCTP_ENABLED
-#include <usrsctp.h>
-#endif
-}
-#elif defined(Q_OS_WIN32)
-extern "C"
-{
-#include <winsock2.h>
-#ifdef SPOTON_SCTP_ENABLED
-#include <ws2sctp.h>
-#endif
-}
-#endif
-
 #include <limits>
 
 #include "spot-on-common.h"
@@ -2759,34 +2720,4 @@ bool spoton_misc::isValidInstitutionMagnet(const QByteArray &magnet)
 
  done_label:
   return valid;
-}
-
-void spoton_misc::setSctpNoDelay(const int socket)
-{
-#ifdef SPOTON_SCTP_ENABLED
-  int optval = 1;
-  socklen_t optlen = sizeof(optval);
-
-#ifdef Q_OS_WIN32
-  setsockopt
-    (socket, IPPROTO_SCTP, SCTP_NODELAY, (const char *) &optval, optlen);
-#else
-  setsockopt(socket, IPPROTO_SCTP, SCTP_NODELAY, &optval, optlen);
-#endif
-#else
-  Q_UNUSED(socket);
-#endif
-}
-
-void spoton_misc::setTcpNoDelay(const int socket)
-{
-  int optval = 1;
-  socklen_t optlen = sizeof(optval);
-
-#ifdef Q_OS_WIN32
-  setsockopt
-    (socket, IPPROTO_TCP, TCP_NODELAY, (const char *) &optval, optlen);
-#else
-  setsockopt(socket, IPPROTO_TCP, TCP_NODELAY, &optval, optlen);
-#endif
 }

@@ -1276,23 +1276,9 @@ bool spoton_listener::isListening(void) const
 bool spoton_listener::listen(const QHostAddress &address, const quint16 port)
 {
   if(m_sctpServer)
-    {
-      bool ok = m_sctpServer->listen(address, port);
-
-      if(isListening())
-	spoton_misc::setSctpNoDelay(m_sctpServer->socketDescriptor());
-
-      return ok;
-    }
+    return m_sctpServer->listen(address, port);
   else if(m_tcpServer)
-    {
-      bool ok = m_tcpServer->listen(address, port);
-
-      if(isListening())
-	spoton_misc::setTcpNoDelay(m_tcpServer->socketDescriptor());
-
-      return ok;
-    }
+    return m_tcpServer->listen(address, port);
   else if(m_udpServer)
     {
       if(m_shareAddress)

@@ -117,8 +117,6 @@ class spoton_misc
 				    const QString &statusControl,
 				    const QString &orientation,
 				    spoton_crypt *crypt);
-  static void setSctpNoDelay(const int socket);
-  static void setTcpNoDelay(const int socket);
   static void vacuumAllDatabases(void);
   template<typename T>
     static T readSharedResource(T *resource, QReadWriteLock &mutex)
