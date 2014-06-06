@@ -21,6 +21,7 @@
 10.  Removed use of Qt's geometry() and setGeometry(). Use restoreGeometry()
      and saveGeometry() instead. Used previously for Gnome support.
      Removed spoton_misc::isGnome().
+11.  Removed Cocoa memory leaks on OS X and Qt 5.
 
 0.09.05.01 (05/25/2014)
 
