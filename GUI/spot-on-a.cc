@@ -1063,10 +1063,8 @@ spoton::spoton(void):QMainWindow()
   m_sb.neighbors->setIcon
     (QIcon(QString(":/%1/status-offline.png").
 	   arg(m_settings.value("gui/iconSet", "nouve").toString())));
-
-  if(spoton_misc::isGnome())
-    setGeometry(m_settings.value("gui/geometry").toRect());
-  else
+  
+  if(m_settings.contains("gui/geometry"))
     restoreGeometry(m_settings.value("gui/geometry").toByteArray());
 
 #ifdef SPOTON_LINKED_WITH_LIBGEOIP
@@ -3840,12 +3838,7 @@ void spoton::saveSettings(void)
   QSettings settings;
 
   if(!isFullScreen())
-    {
-      if(spoton_misc::isGnome())
-	settings.setValue("gui/geometry", geometry());
-      else
-	settings.setValue("gui/geometry", saveGeometry());
-    }
+    settings.setValue("gui/geometry", saveGeometry());
 
   settings.setValue("gui/chatHorizontalSplitter",
 		    m_ui.chatHorizontalSplitter->saveState());

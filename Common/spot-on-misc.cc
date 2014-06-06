@@ -73,16 +73,6 @@ QString spoton_misc::homePath(void)
     return homepath.constData();
 }
 
-bool spoton_misc::isGnome(void)
-{
-  QString session(qgetenv("DESKTOP_SESSION").toLower().trimmed());
-
-  if(session.contains("gnome") || session.contains("ubuntu"))
-    return true;
-  else
-    return false;
-}
-
 void spoton_misc::prepareDatabases(void)
 {
   QString connectionName("");
