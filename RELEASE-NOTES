@@ -1,4 +1,4 @@
-0.09.06 (06/06/2014)
+0.09.06 (06/13/2014)
 
 1.   Added a convenience function to the Chat tab's Messages in order
      to simplify magnet addition.
@@ -18,6 +18,9 @@
      prohibited transferring of files having sizes less than the specified
      pulse sizes.
 9.   Upgraded SQLite to version 3.8.5 on Windows.
+10.  Removed use of Qt's geometry() and setGeometry(). Use restoreGeometry()
+     and saveGeometry() instead. Used previously for Gnome support.
+     Removed spoton_misc::isGnome().
 
 0.09.05.01 (05/25/2014)
 
