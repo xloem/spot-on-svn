@@ -28,9 +28,11 @@
 13.  Placed lock guards over read-write locks in order to unlock the locks
      if critical sections throw exceptions. Write-access only.
 14.  Corrected flawed if-statements. Spot nodes are allowed to be
-     configured such that private key are not required. Spot should not
+     configured such that private keys are not required. Spot should not
      prohibit users from adding participant keys if such configurations
      exist.
+15.  Improved the IP blocking mechanism. The new implementation aborts
+     blocked connections immediately after connections are established.
 
 0.09.05.01 (05/25/2014)
 
