@@ -2712,3 +2712,44 @@ bool spoton_misc::isValidInstitutionMagnet(const QByteArray &magnet)
  done_label:
   return valid;
 }
+
+bool spoton_misc::isIpBlocked(const QHostAddress &address,
+			      spoton_crypt *crypt)
+{
+  if(!crypt)
+    return false;
+
+  QString connectionName("");
+  qint64 count = -1;
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT COUNT(*) FROM neighbors WHERE "
+		      "remote_ip_address_hash = ? AND "
+		      "status_control = 'blocked'");
+	query.bindValue
+	  (0, crypt->
+	   keyedHash(address.toString().toLatin1(), &ok).toBase64());
+
+	if(ok)
+	  if(query.exec())
+	    if(query.next())
+	      count = query.value(0).toLongLong();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  return count > 0;
+}

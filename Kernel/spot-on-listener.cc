@@ -85,6 +85,21 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 	     arg(serverAddress().toString()).
 	     arg(serverPort()));
 	}
+      else if(spoton_misc::isIpBlocked(peerAddress,
+				       spoton_kernel::s_crypts.
+				       value("chat", 0)))
+	{
+	  QAbstractSocket socket(QAbstractSocket::TcpSocket, this);
+
+	  socket.setSocketDescriptor(socketDescriptor);
+	  socket.abort();
+	  spoton_misc::logError
+	    (QString("spoton_listener_tcp_server::incomingConnection(): "
+		     "connection from %1 blocked for %2:%3.").
+	     arg(peerAddress.toString()).
+	     arg(serverAddress().toString()).
+	     arg(serverPort()));
+	}
       else
 	emit newConnection(socketDescriptor, QHostAddress(), 0);
     }
@@ -751,57 +766,6 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
   QString country
     (spoton_misc::
      countryNameFromIPAddress(neighbor->peerAddress().toString()));
-  qint64 count = -1;
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-
-    db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() + "neighbors.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-	bool ok = true;
-
-	query.setForwardOnly(true);
-	query.prepare("SELECT COUNT(*) FROM neighbors WHERE "
-		      "remote_ip_address_hash = ? AND "
-		      "status_control = 'blocked'");
-	query.bindValue
-	  (0, s_crypt->
-	   keyedHash(neighbor->peerAddress().
-		     toString().toLatin1(), &ok).toBase64());
-
-	if(ok)
-	  if(query.exec())
-	    if(query.next())
-	      count = query.value(0).toLongLong();
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-
-  if(count == -1)
-    spoton_misc::logError(QString("spoton_listener::slotNewConnection(): "
-				  "unable to determine if IP address %1 "
-				  "is blocked. Accepting "
-				  "connection from %1:%2.").
-			  arg(neighbor->peerAddress().toString()).
-			  arg(neighbor->peerPort()));
-  else if(count > 0)
-    {
-      spoton_misc::logError(QString("spoton_listener::slotNewConnection(): "
-				    "IP address %1 is blocked. Terminating "
-				    "connection from %1:%2.").
-			    arg(neighbor->peerAddress().toString()).
-			    arg(neighbor->peerPort()));
-      neighbor->deleteLater();
-      return;
-    }
-
   qint64 id = -1;
 
   {

@@ -71,6 +71,8 @@ class spoton_misc
 			   spoton_crypt *crypt);
   static bool isAcceptedParticipant(const QByteArray &publicKeyHash,
 				    const QString &keyType);
+  static bool isIpBlocked(const QHostAddress &address,
+			  spoton_crypt *crypt);
   static bool isPrivateNetwork(const QHostAddress &address);
   static bool isValidBuzzMagnet(const QByteArray &magnet);
   static bool isValidBuzzMagnetData(const QByteArray &data);
