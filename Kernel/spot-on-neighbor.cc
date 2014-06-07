@@ -1265,9 +1265,8 @@ void spoton_neighbor::slotReadyRead(void)
 
   if(!data.isEmpty())
     {
+      QWriteLocker locker(&m_dataMutex);
       bool new_data = false;
-
-      m_dataMutex.lockForWrite();
 
       if(data.length() <= m_maximumBufferSize - m_data.length())
 	{
@@ -1292,7 +1291,7 @@ void spoton_neighbor::slotReadyRead(void)
 	     arg(m_port));
 	}
 
-      m_dataMutex.unlock();
+      locker.unlock();
 
       if(new_data)
 	emit newData();
@@ -1338,9 +1337,9 @@ void spoton_neighbor::processData(void)
 
       if(totalBytes > 0)
 	{
-	  m_dataMutex.lockForWrite();
+	  QWriteLocker locker(&m_dataMutex);
+
 	  m_data.remove(0, totalBytes);
-	  m_dataMutex.unlock();
 	}
     }
 
@@ -5675,9 +5674,9 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 
 void spoton_neighbor::addToBytesWritten(const int bytesWritten)
 {
-  m_bytesWrittenMutex.lockForWrite();
+  QWriteLocker locker(&m_bytesWrittenMutex);
+
   m_bytesWritten += qAbs(bytesWritten);
-  m_bytesWrittenMutex.unlock();
 }
 
 void spoton_neighbor::slotSendAccountInformation(void)

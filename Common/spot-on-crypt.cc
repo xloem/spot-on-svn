@@ -1323,12 +1323,13 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool ok = true;
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT private_key FROM idiotes WHERE id = ?");
-	query.bindValue(0, m_id);
+	query.prepare("SELECT private_key FROM idiotes WHERE id_hash = ?");
+	query.bindValue(0, keyedHash(m_id.toLatin1(), &ok).toBase64());
 
-	if(query.exec())
+	if(ok && query.exec())
 	  if(query.next())
 	    keyData = QByteArray::fromBase64
 	      (query.value(0).toByteArray());
@@ -1347,7 +1348,7 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
       spoton_misc::logError
 	("spoton_crypt::initializePrivateKeyContainer(): "
 	 "empty private key.");
-      goto done_label;
+      return;
     }
 
   {
@@ -1367,7 +1368,7 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
       spoton_misc::logError
 	("spoton_crypt::initializePrivateKeyContainer(): "
 	 "decryptedAfterAuthenticated() failure.");
-      goto done_label;
+      return;
     }
   else if(!keyData.contains("(private-key"))
     {
@@ -1377,10 +1378,11 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
       spoton_misc::logError
 	("spoton_crypt::initializePrivateKeyContainer(): "
 	 "keyData does not contain private-key.");
-      goto done_label;
+      return;
     }
 
-  m_privateKeyMutex.lockForWrite();
+  QWriteLocker locker(&m_privateKeyMutex);
+
   m_privateKeyLength = keyData.length();
 
   if(m_privateKeyLength <= 0 ||
@@ -1392,25 +1394,22 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
 	*ok = false;
 
       m_privateKeyLength = 0;
-      m_privateKeyMutex.unlock();
+      locker.unlock();
       spoton_misc::logError
 	("spoton_crypt::initializePrivateKeyContainer(): "
 	 "gcry_calloc_secure() "
 	 "failure or m_privateKeyLength is peculiar.");
-      goto done_label;
+      return;
     }
   else
     memcpy(m_privateKey,
 	   keyData.constData(),
 	   m_privateKeyLength);
 
-  m_privateKeyMutex.unlock();
+  locker.unlock();
 
   if(ok)
     *ok = true;
-
- done_label:
-  return;
 }
 
 QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
@@ -1460,11 +1459,12 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
       if(ok)
 	*ok = false;
 
-      m_privateKeyMutex.lockForWrite();
+      QWriteLocker locker(&m_privateKeyMutex);
+
       gcry_free(m_privateKey);
       m_privateKey = 0;
       m_privateKeyLength = 0;
-      m_privateKeyMutex.unlock();
+      locker.unlock();
 
       if(err != 0)
 	{
@@ -1495,11 +1495,13 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
       spoton_misc::logError
 	(QString("spoton_crypt::publicKeyDecrypt(): gcry_pk_testkey() "
 		 "failure (%1).").arg(buffer.constData()));
-      m_privateKeyMutex.lockForWrite();
+
+      QWriteLocker locker(&m_privateKeyMutex);
+
       gcry_free(m_privateKey);
       m_privateKey = 0;
       m_privateKeyLength = 0;
-      m_privateKeyMutex.unlock();
+      locker.unlock();
       goto done_label;
     }
 
@@ -1630,12 +1632,13 @@ QByteArray spoton_crypt::publicKey(bool *ok)
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool ok = true;
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT public_key FROM idiotes WHERE id = ?");
-	query.bindValue(0, m_id);
+	query.prepare("SELECT public_key FROM idiotes WHERE id_hash = ?");
+	query.bindValue(0, keyedHash(m_id.toLatin1(), &ok).toBase64());
 
-	if(query.exec())
+	if(ok && query.exec())
 	  if(query.next())
 	    data = QByteArray::fromBase64
 	      (query.value(0).toByteArray());
@@ -1660,9 +1663,9 @@ QByteArray spoton_crypt::publicKey(bool *ok)
       if(ok)
 	*ok = false;
 
-      m_publicKeyMutex.lockForWrite();
+      QWriteLocker locker(&m_publicKeyMutex);
+
       m_publicKey.clear();
-      m_publicKeyMutex.unlock();
     }
   else if(!data.contains("(public-key"))
     {
@@ -1670,18 +1673,19 @@ QByteArray spoton_crypt::publicKey(bool *ok)
 	*ok = false;
 
       data.clear();
-      m_publicKeyMutex.lockForWrite();
+
+      QWriteLocker locker(&m_publicKeyMutex);
+
       m_publicKey.clear();
-      m_publicKeyMutex.unlock();
     }
   else
     {
       if(ok)
 	*ok = true;
 
-      m_publicKeyMutex.lockForWrite();
+      QWriteLocker locker(&m_publicKeyMutex);
+
       m_publicKey = data;
-      m_publicKeyMutex.unlock();
     }
 
   return data;
@@ -1735,14 +1739,21 @@ void spoton_crypt::generatePrivatePublicKeys(const int keySize,
   gcry_sexp_t parameters_t = 0;
   size_t length = 0;
 
-  m_privateKeyMutex.lockForWrite();
+  /*
+  ** Use lock guards.
+  */
+
+  QWriteLocker locker1(&m_privateKeyMutex);
+
   gcry_free(m_privateKey);
   m_privateKey = 0;
   m_privateKeyLength = 0;
-  m_privateKeyMutex.unlock();
-  m_publicKeyMutex.lockForWrite();
+  locker1.unlock();
+
+  QWriteLocker locker2(&m_publicKeyMutex);
+
   m_publicKey.clear();
-  m_publicKeyMutex.unlock();
+  locker2.unlock();
 
   if(keyType == "dsa")
     genkey = QString("(genkey (dsa (nbits %1:%2)))").
@@ -1880,18 +1891,24 @@ void spoton_crypt::generatePrivatePublicKeys(const int keySize,
 	bool ok = true;
 
 	query.prepare
-	  ("INSERT OR REPLACE INTO idiotes (id, private_key, public_key) "
-	   "VALUES (?, ?, ?)");
-	query.bindValue(0, m_id);
+	  ("INSERT OR REPLACE INTO idiotes (id, id_hash, "
+	   "private_key, public_key) "
+	   "VALUES (?, ?, ?, ?)");
+	query.bindValue(0, encryptedThenHashed(m_id.toLatin1(),
+					       &ok).toBase64());
 
-	if(!privateKey.isEmpty())
-	  query.bindValue
-	    (1, encryptedThenHashed(privateKey, &ok).toBase64());
+	if(ok)
+	  query.bindValue(1, keyedHash(m_id.toLatin1(), &ok).toBase64());
+
+	if(ok)
+	  if(!privateKey.isEmpty())
+	    query.bindValue
+	      (2, encryptedThenHashed(privateKey, &ok).toBase64());
 
 	if(ok)
 	  if(!publicKey.isEmpty())
 	    query.bindValue
-	      (2, encryptedThenHashed(publicKey, &ok).toBase64());
+	      (3, encryptedThenHashed(publicKey, &ok).toBase64());
 
 	if(ok)
 	  {
@@ -2063,12 +2080,13 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool ok = true;
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT private_key FROM idiotes WHERE id = ?");
-	query.bindValue(0, m_id);
+	query.prepare("SELECT private_key FROM idiotes WHERE id_hash = ?");
+	query.bindValue(0, keyedHash(m_id.toLatin1(), &ok).toBase64());
 
-	if(query.exec())
+	if(ok && query.exec())
 	  if(query.next())
 	    keyData = QByteArray::fromBase64
 	      (query.value(0).toByteArray());
@@ -3166,7 +3184,8 @@ QByteArray spoton_crypt::sha1FileHash(const QString &fileName)
 
 void spoton_crypt::setHashKey(const QByteArray &hashKey)
 {
-  m_hashKeyMutex.lockForWrite();
+  QWriteLocker locker(&m_hashKeyMutex);
+
   gcry_free(m_hashKey);
   m_hashKey = 0;
   m_hashKeyLength = hashKey.length();
@@ -3180,8 +3199,6 @@ void spoton_crypt::setHashKey(const QByteArray &hashKey)
 	   m_hashKeyLength);
   else
     m_hashKeyLength = 0;
-
-  m_hashKeyMutex.unlock();
 }
 
 QByteArray spoton_crypt::hashKey(void)
@@ -3227,7 +3244,7 @@ bool spoton_crypt::memcmp(const QByteArray &bytes1,
 		  */
 }
 
-qint64 spoton_crypt::publicKeyCount(void) const
+qint64 spoton_crypt::publicKeyCount(void)
 {
   QString connectionName("");
   qint64 count = 0;
@@ -3240,13 +3257,14 @@ qint64 spoton_crypt::publicKeyCount(void) const
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool ok = true;
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT COUNT(*) "
-		      "FROM idiotes WHERE id = ?");
-	query.bindValue(0, m_id);
+		      "FROM idiotes WHERE id_hash = ?");
+	query.bindValue(0, keyedHash(m_id.toLatin1(), &ok).toBase64());
 
-	if(query.exec())
+	if(ok && query.exec())
 	  if(query.next())
 	    count = query.value(0).toLongLong();
       }
@@ -3336,32 +3354,33 @@ void spoton_crypt::reencodePrivatePublicKeys
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool ok = true;
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT private_key, public_key FROM idiotes "
-		      "WHERE id = ?");
-	query.bindValue(0, id);
+	query.prepare("SELECT id, private_key, public_key FROM idiotes "
+		      "WHERE id_hash = ?");
+	query.bindValue
+	  (0, oldCrypt->keyedHash(id.toLatin1(), &ok).toBase64());
 
-	if(query.exec())
+	if(ok && query.exec())
 	  if(query.next())
 	    {
-	      QByteArray privateKey
+	      QByteArray id
 		(QByteArray::fromBase64(query.value(0).toByteArray()));
-	      QByteArray publicKey
+	      QByteArray idHash;
+	      QByteArray privateKey
 		(QByteArray::fromBase64(query.value(1).toByteArray()));
+	      QByteArray publicKey
+		(QByteArray::fromBase64(query.value(2).toByteArray()));
 	      QSqlQuery updateQuery(db);
 	      bool ok = true;
 
-	      privateKey = oldCrypt->decryptedAfterAuthenticated
-		(privateKey, &ok);
-
-	      if(ok)
-		publicKey = oldCrypt->decryptedAfterAuthenticated
-		  (publicKey, &ok);
+	      id = oldCrypt->decryptedAfterAuthenticated
+		(id, &ok);
 
 	      if(ok)
 		{
-		  privateKey = newCrypt->encryptedThenHashed
+		  privateKey = oldCrypt->decryptedAfterAuthenticated
 		    (privateKey, &ok);
 
 		  if(ok)
@@ -3371,7 +3390,7 @@ void spoton_crypt::reencodePrivatePublicKeys
 
 	      if(ok)
 		{
-		  publicKey = newCrypt->encryptedThenHashed
+		  publicKey = oldCrypt->decryptedAfterAuthenticated
 		    (publicKey, &ok);
 
 		  if(ok)
@@ -3380,20 +3399,38 @@ void spoton_crypt::reencodePrivatePublicKeys
 		}
 
 	      if(ok)
+		idHash = newCrypt->keyedHash(id, &ok);
+
+	      if(ok)
+		id = newCrypt->encryptedThenHashed(id, &ok);
+
+	      if(ok)
+		privateKey = newCrypt->encryptedThenHashed
+		  (privateKey, &ok);
+
+	      if(ok)
+		publicKey = newCrypt->encryptedThenHashed
+		  (publicKey, &ok);
+
+	      if(ok)
 		{
 		  updateQuery.prepare("UPDATE idiotes SET "
+				      "id = ?, "
+				      "id_hash = ?, "
 				      "private_key = ?, "
 				      "public_key = ? "
 				      "WHERE id = ?");
-		  updateQuery.bindValue(0, privateKey.toBase64());
-		  updateQuery.bindValue(1, publicKey.toBase64());
-		  updateQuery.bindValue(2, id);
+		  updateQuery.bindValue(0, id.toBase64());
+		  updateQuery.bindValue(1, idHash.toBase64());
+		  updateQuery.bindValue(2, privateKey.toBase64());
+		  updateQuery.bindValue(3, publicKey.toBase64());
+		  updateQuery.bindValue(4, query.value(0));
 		}
 	      else
 		{
 		  updateQuery.prepare("DELETE FROM idiotes "
 				      "WHERE id = ?");
-		  updateQuery.bindValue(0, id);
+		  updateQuery.bindValue(0, query.value(0));
 		}
 
 	      if(!ok)

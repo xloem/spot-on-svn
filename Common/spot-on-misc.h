@@ -134,12 +134,10 @@ class spoton_misc
     static void setSharedResource(T *resource, const T &value,
 				  QReadWriteLock &mutex)
     {
-      mutex.lockForWrite();
+      QWriteLocker locker(&mutex);
 
       if(resource)
 	*resource = value;
-
-      mutex.unlock();
     }
 
  private:

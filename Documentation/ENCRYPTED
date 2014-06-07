@@ -6,7 +6,8 @@ data
 
 email.db:
 
-all, save for folder_index, hash, receiver_sender_hash, and recipient_hash
+all fields, save for folder_index, hash, receiver_sender_hash, and
+recipient_hash
 
 friends_public_keys.db:
 
@@ -16,8 +17,7 @@ public_key
 
 idiotes.db:
 
-private_key
-public_key
+all fields, save for id_hash
 
 listeners.db:
 

@@ -59,17 +59,14 @@ void spoton_starbeam_writer::run(void)
 
 void spoton_starbeam_writer::processData(void)
 {
-  m_mutex.lockForWrite();
+  QWriteLocker locker(&m_mutex);
 
   if(m_data.isEmpty())
-    {
-      m_mutex.unlock();
-      return;
-    }
+    return;
 
   QByteArray data(m_data.take(m_data.keys().value(0)));
 
-  m_mutex.unlock();
+  locker.unlock();
 
   QList<QByteArray> list(data.split('\n'));
 
@@ -283,13 +280,17 @@ void spoton_starbeam_writer::stop(void)
 {
   quit();
   wait(30000);
-  m_keyMutex.lockForWrite();
+
+  QWriteLocker locker1(&m_keyMutex);
+
   m_magnets.clear();
   m_novas.clear();
-  m_keyMutex.unlock();
-  m_mutex.lockForWrite();
+  locker1.unlock();
+
+  QWriteLocker locker2(&m_mutex);
+
   m_data.clear();
-  m_mutex.unlock();
+  locker2.unlock();
 }
 
 void spoton_starbeam_writer::slotReadKeys(void)
@@ -309,10 +310,11 @@ void spoton_starbeam_writer::slotReadKeys(void)
 
     if(db.open())
       {
-	m_keyMutex.lockForWrite();
+	QWriteLocker locker(&m_keyMutex);
+
 	m_magnets.clear();
 	m_novas.clear();
-	m_keyMutex.unlock();
+	locker.unlock();
 
 	QSqlQuery query(db);
 
@@ -370,9 +372,9 @@ void spoton_starbeam_writer::slotReadKeys(void)
 
 	      if(elements.contains("xt"))
 		{
-		  m_keyMutex.lockForWrite();
+		  QWriteLocker locker(&m_keyMutex);
+
 		  m_magnets.append(elements);
-		  m_keyMutex.unlock();
 		}
 	    }
 
@@ -390,9 +392,9 @@ void spoton_starbeam_writer::slotReadKeys(void)
 	      if(!ok)
 		continue;
 
-	      m_keyMutex.lockForWrite();
+	      QWriteLocker locker(&m_keyMutex);
+
 	      m_novas.append(data);
-	      m_keyMutex.unlock();
 	    }
       }
 
@@ -434,7 +436,7 @@ void spoton_starbeam_writer::append(const QByteArray &data)
       if(!ok)
 	hash = QCryptographicHash::hash(bytes, QCryptographicHash::Sha1);
 
-      m_mutex.lockForWrite();
+      QWriteLocker locker(&m_mutex);
 
       if(!m_data.contains(hash))
 	{
@@ -442,7 +444,7 @@ void spoton_starbeam_writer::append(const QByteArray &data)
 	  new_data = true;
 	}
 
-      m_mutex.unlock();
+      locker.unlock();
 
       /*
       ** If the thread is not active, it should be!

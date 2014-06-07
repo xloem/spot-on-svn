@@ -34,7 +34,6 @@
 #ifdef SPOTON_USE_HIDDEN_KERNEL_WINDOW
 #include <QMainWindow>
 #endif
-#include <QMutexLocker>
 #include <QNetworkProxy>
 #include <QSettings>
 #include <QSqlDatabase>
@@ -562,10 +561,12 @@ spoton_kernel::~spoton_kernel()
   m_scramblerTimer.stop();
   m_settingsTimer.stop();
   m_statusTimer.stop();
-  s_messagingCacheMutex.lockForWrite();
+
+  QWriteLocker locker(&s_messagingCacheMutex);
+
   s_messagingCache.clear();
   s_messagingCacheMap.clear();
-  s_messagingCacheMutex.unlock();
+  locker.unlock();
   m_future.waitForFinished();
   m_statisticsFuture.waitForFinished();
   cleanup();
@@ -1115,10 +1116,10 @@ void spoton_kernel::prepareNeighbors(void)
 
   if(disconnected == m_neighbors.size() || m_neighbors.isEmpty())
     {
-      s_messagingCacheMutex.lockForWrite();
+      QWriteLocker locker(&s_messagingCacheMutex);
+
       s_messagingCache.clear();
       s_messagingCacheMap.clear();
-      s_messagingCacheMutex.unlock();
     }
 }
 
@@ -1554,9 +1555,8 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
 
 void spoton_kernel::slotUpdateSettings(void)
 {
-  s_settingsMutex.lockForWrite();
-
   QSettings settings;
+  QWriteLocker locker1(&s_settingsMutex);
 
   for(int i = 0; i < settings.allKeys().size(); i++)
     if(settings.value(settings.allKeys().at(i)) !=
@@ -1565,18 +1565,18 @@ void spoton_kernel::slotUpdateSettings(void)
 			settings.value(settings.allKeys().at(i)));
 
   spoton_misc::correctSettingsContainer(s_settings);
-  s_settingsMutex.unlock();
+  locker1.unlock();
   spoton_misc::enableLog
     (setting("gui/kernelLogEvents", false).toBool());
 
   int cost = setting("gui/congestionCost", 10000).toInt();
 
-  s_messagingCacheMutex.lockForWrite();
+  QWriteLocker locker2(&s_messagingCacheMutex);
 
   if(cost != s_messagingCache.capacity())
     s_messagingCache.reserve(cost);
 
-  s_messagingCacheMutex.unlock();
+  locker2.unlock();
 
   if(setting("gui/etpReceivers", false).toBool())
     {
@@ -2972,8 +2972,11 @@ void spoton_kernel::slotMessagingCachePurge(void)
 
 void spoton_kernel::purgeMessagingCache(void)
 {
-  if(!s_messagingCacheMutex.tryLockForWrite())
-    return;
+  QWriteLocker locker(&s_messagingCacheMutex);
+
+  /*
+  ** Remove old cache items.
+  */
 
   QDateTime now(QDateTime::currentDateTime());
   QMutableMapIterator<QDateTime, QByteArray> it(s_messagingCacheMap);
@@ -2997,8 +3000,6 @@ void spoton_kernel::purgeMessagingCache(void)
       else
 	break;
     }
-
-  s_messagingCacheMutex.unlock();
 }
 
 bool spoton_kernel::messagingCacheContains(const QByteArray &data,
@@ -3056,7 +3057,7 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data,
 
   int cost = setting("gui/congestionCost", 10000).toInt();
 
-  s_messagingCacheMutex.lockForWrite();
+  QWriteLocker locker(&s_messagingCacheMutex);
 
   if(!s_messagingCache.contains(hash))
     {
@@ -3080,8 +3081,6 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data,
       s_messagingCacheMap.insert
 	(QDateTime::currentDateTime().addMSecs(add_msecs), hash);
     }
-
-  s_messagingCacheMutex.unlock();
 }
 
 void spoton_kernel::slotDetachNeighbors(const qint64 listenerOid)
@@ -3130,16 +3129,17 @@ void spoton_kernel::addBuzzKey(const QByteArray &key,
   QList<QByteArray> list;
 
   list << key << channelType << hashKey << hashType;
-  s_buzzKeysMutex.lockForWrite();
+
+  QWriteLocker locker(&s_buzzKeysMutex);
+
   s_buzzKeys.insert(key, list);
-  s_buzzKeysMutex.unlock();
 }
 
 void spoton_kernel::removeBuzzKey(const QByteArray &key)
 {
-  s_buzzKeysMutex.lockForWrite();
+  QWriteLocker locker(&s_buzzKeysMutex);
+
   s_buzzKeys.remove(key);
-  s_buzzKeysMutex.unlock();
 }
 
 QList<QByteArray> spoton_kernel::findBuzzKey
@@ -3184,9 +3184,9 @@ QList<QByteArray> spoton_kernel::findBuzzKey
 
 void spoton_kernel::clearBuzzKeysContainer(void)
 {
-  s_buzzKeysMutex.lockForWrite();
+  QWriteLocker locker(&s_buzzKeysMutex);
+
   s_buzzKeys.clear();
-  s_buzzKeysMutex.unlock();
 }
 
 int spoton_kernel::interfaces(void)
