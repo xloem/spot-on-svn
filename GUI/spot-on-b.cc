@@ -1504,7 +1504,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 	    return;
 	}
 
-      if(mPublicKey == myPublicKey || mSignature == mySPublicKey)
+      if((mPublicKey == myPublicKey && !myPublicKey.isEmpty()) ||
+	 (mSignature == mySPublicKey && !mySPublicKey.isEmpty()))
 	{
 	  QMessageBox::critical
 	    (this, tr("Spot-On: Error"),
@@ -1800,8 +1801,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 	    }
 
 	  if(ok)
-	    if(list.value(2) == myPublicKey ||
-	       list.value(4) == mySPublicKey)
+	    if((list.value(2) == myPublicKey && !myPublicKey.isEmpty()) ||
+	       (list.value(4) == mySPublicKey && !mySPublicKey.isEmpty()))
 	      ok = false;
 
 	  if(!ok)

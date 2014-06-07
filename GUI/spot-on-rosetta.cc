@@ -406,7 +406,8 @@ void spoton_rosetta::slotAddContact(void)
 	return;
     }
 
-  if(mPublicKey == myPublicKey || mSignature == mySPublicKey)
+  if((mPublicKey == myPublicKey && !myPublicKey.isEmpty()) ||
+     (mSignature == mySPublicKey && !mySPublicKey.isEmpty()))
     {
       QMessageBox::critical
 	(this, tr("Spot-On: Error"),
