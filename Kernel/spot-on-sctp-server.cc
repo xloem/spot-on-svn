@@ -75,6 +75,7 @@ extern "C"
 
 #include "Common/spot-on-common.h"
 #include "Common/spot-on-misc.h"
+#include "spot-on-kernel.h"
 #include "spot-on-sctp-server.h"
 
 spoton_sctp_server::spoton_sctp_server(const qint64 id,
@@ -449,11 +450,45 @@ void spoton_sctp_server::slotTimeout(void)
 	  address.setAddress
 	    (ntohl(clientaddr.sin_addr.s_addr));
 	  port = ntohs(clientaddr.sin_port);
-#if QT_VERSION < 0x050000
-	  emit newConnection(socketDescriptor, address, port);
+
+	  if(!spoton_misc::isAcceptedIP(address, m_id,
+					spoton_kernel::s_crypts.
+					value("chat", 0)))
+	    {
+#ifdef Q_OS_WIN32
+	      closesocket(socketDescriptor);
 #else
-	  emit newConnection(static_cast<qintptr> (socketDescriptor),
-			     address, port);
+	      ::close(socketDescriptor);
+#endif
+	      spoton_misc::logError
+		(QString("spoton_sctp_server::slotTimeout(): "
+			 "connection from %1 denied for %2:%3.").
+		 arg(address.toString()).
+		 arg(serverAddress().toString()).
+		 arg(serverPort()));
+	    }
+	  else if(spoton_misc::isIpBlocked(address,
+					   spoton_kernel::s_crypts.
+					   value("chat", 0)))
+	    {
+#ifdef Q_OS_WIN32
+	      closesocket(socketDescriptor);
+#else
+	      ::close(socketDescriptor);
+#endif
+	      spoton_misc::logError
+		(QString("spoton_sctp_server::slotTimeout(): "
+			 "connection from %1 blocked for %2:%3.").
+		 arg(address.toString()).
+		 arg(serverAddress().toString()).
+		 arg(serverPort()));
+	    }
+	  else
+#if QT_VERSION < 0x050000
+	    emit newConnection(socketDescriptor, address, port);
+#else
+	    emit newConnection(static_cast<qintptr> (socketDescriptor),
+			       address, port);
 #endif
 	}
 #ifdef Q_OS_WIN32
@@ -498,11 +533,45 @@ void spoton_sctp_server::slotTimeout(void)
 	  address.setScopeId
 	    (QString::number(clientaddr.sin6_scope_id));
 	  port = ntohs(clientaddr.sin6_port);
-#if QT_VERSION < 0x050000
-	  emit newConnection(socketDescriptor, address, port);
+
+	  if(!spoton_misc::isAcceptedIP(address, m_id,
+					spoton_kernel::s_crypts.
+					value("chat", 0)))
+	    {
+#ifdef Q_OS_WIN32
+	      closesocket(socketDescriptor);
 #else
-	  emit newConnection(static_cast<qintptr> (socketDescriptor),
-			     address, port);
+	      ::close(socketDescriptor);
+#endif
+	      spoton_misc::logError
+		(QString("spoton_sctp_server::slotTimeout(): "
+			 "connection from %1 denied for %2:%3.").
+		 arg(address.toString()).
+		 arg(serverAddress().toString()).
+		 arg(serverPort()));
+	    }
+	  else if(spoton_misc::isIpBlocked(address,
+					   spoton_kernel::s_crypts.
+					   value("chat", 0)))
+	    {
+#ifdef Q_OS_WIN32
+	      closesocket(socketDescriptor);
+#else
+	      ::close(socketDescriptor);
+#endif
+	      spoton_misc::logError
+		(QString("spoton_sctp_server::slotTimeout(): "
+			 "connection from %1 blocked for %2:%3.").
+		 arg(address.toString()).
+		 arg(serverAddress().toString()).
+		 arg(serverPort()));
+	    }
+	  else
+#if QT_VERSION < 0x050000
+	    emit newConnection(socketDescriptor, address, port);
+#else
+	    emit newConnection(static_cast<qintptr> (socketDescriptor),
+			       address, port);
 #endif
 	}
 #ifdef Q_OS_WIN32

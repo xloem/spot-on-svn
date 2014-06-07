@@ -124,6 +124,15 @@ void spoton_listener_udp_server::slotReadyRead(void)
        arg(peerAddress.toString()).
        arg(localAddress().toString()).
        arg(localPort()));
+  else if(spoton_misc::isIpBlocked(peerAddress,
+				   spoton_kernel::s_crypts.
+				   value("chat", 0)))
+    spoton_misc::logError
+      (QString("spoton_listener_udp_server::incomingConnection(): "
+	       "connection from %1 blocked for %2:%3.").
+       arg(peerAddress.toString()).
+       arg(localAddress().toString()).
+       arg(localPort()));
   else if(!clientExists(peerAddress, peerPort))
     emit newConnection
       (socketDescriptor(), peerAddress, peerPort);
