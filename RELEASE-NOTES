@@ -33,6 +33,8 @@
      exist.
 15.  Improved the IP blocking mechanism. The new implementation aborts
      blocked connections immediately after connections are established.
+16.  Added support for allowing connections from accepted IP addresses
+     as well as blocking connections for SCTP servers.
 
 0.09.05.01 (05/25/2014)
 
