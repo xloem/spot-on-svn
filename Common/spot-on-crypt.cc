@@ -970,8 +970,8 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data, bool *ok)
 	*ok = false;
 
       spoton_misc::logError
-	("spoton_crypt::keyedHash(): m_hashKey is not defined or "
-	 "m_hashKeyLength is peculiar.");
+	(QString("spoton_crypt::keyedHash(): m_hashKey is not defined or "
+	         "m_hashKeyLength is peculiar (%1).").arg(m_id));
       return QByteArray();
     }
 
@@ -1346,8 +1346,8 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
 	*ok = false;
 
       spoton_misc::logError
-	("spoton_crypt::initializePrivateKeyContainer(): "
-	 "empty private key.");
+	(QString("spoton_crypt::initializePrivateKeyContainer(): "
+	         "empty %1 private key.").arg(m_id));
       return;
     }
 
@@ -1396,9 +1396,9 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
       m_privateKeyLength = 0;
       locker.unlock();
       spoton_misc::logError
-	("spoton_crypt::initializePrivateKeyContainer(): "
-	 "gcry_calloc_secure() "
-	 "failure or m_privateKeyLength is peculiar.");
+	(QString("spoton_crypt::initializePrivateKeyContainer(): "
+	         "gcry_calloc_secure() "
+	         "failure or m_privateKeyLength is peculiar (%1).").arg(m_id));
       return;
     }
   else
@@ -1445,8 +1445,8 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 	*ok = false;
 
       spoton_misc::logError
-	("spoton_crypt::publicKeyDecrypt(): m_privateKey or "
-	 "m_privateKeyLength is peculiar.");
+	(QString("spoton_crypt::publicKeyDecrypt(): m_privateKey or "
+	         "m_privateKeyLength is peculiar (%1).").arg(m_id));
       goto done_label;
     }
 
