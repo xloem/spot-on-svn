@@ -22,6 +22,11 @@
      and saveGeometry() instead. Used previously for Gnome support.
      Removed spoton_misc::isGnome().
 11.  Removed Cocoa memory leaks on OS X and Qt 5.
+12.  The id field in idiotes.db will now contain encrypted and authenticated
+     data. Please remove idiotes.db. Also corrected re-encoding of
+     idiotes.db.
+13.  Placed lock guards over read-write locks in order to unlock the locks
+     if critical sections throw exceptions. Write-access only.
 
 0.09.05.01 (05/25/2014)
 
