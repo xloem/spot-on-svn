@@ -4391,6 +4391,7 @@ void spoton::slotSetPassphrase(void)
   if(!error1.remove(".").trimmed().isEmpty())
     {
       spoton_crypt::purgeDatabases();
+      updatePublicKeysLabel();
       QMessageBox::critical
 	(this, tr("Spot-On: Error"),
 	 tr("An error (%1) occurred with spoton_crypt::"
@@ -4399,6 +4400,7 @@ void spoton::slotSetPassphrase(void)
   else if(!error2.remove(".").trimmed().isEmpty())
     {
       spoton_crypt::purgeDatabases();
+      updatePublicKeysLabel();
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("An error (%1) occurred with "
 			       "spoton_crypt::"
@@ -4410,6 +4412,7 @@ void spoton::slotSetPassphrase(void)
   else if(!error3.remove(".").trimmed().isEmpty())
     {
       spoton_crypt::purgeDatabases();
+      updatePublicKeysLabel();
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("An error (%1) occurred with spoton_crypt::"
 			       "saltedPassphraseHash().").
