@@ -41,7 +41,9 @@ spoton_starbeamanalyzer::spoton_starbeamanalyzer(QWidget *parent):
 #if QT_VERSION < 0x050000
   setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
+#if QT_VERSION >= 0x050000
   setWindowFlags(windowFlags() & ~Qt::WindowFullscreenButtonHint);
+#endif
   statusBar()->setSizeGripEnabled(false);
 #endif
   ui.tableWidget->setColumnHidden
