@@ -106,6 +106,9 @@ Completed Items
 74.    Encrypt public keys of other participants.
 75.    Semi-anonymous post office boxes. Please see Institutions.
 76.    Message of the day (motd).
+77.    Store the id field in idiotes.db in a secure manner.
+78.    Encrypt participants public keys. Keyed hashes using the public
+       key as the key? Slow retrieval.
 
 Ignored Items
 
@@ -164,8 +167,7 @@ Remaining Items
        e-mail.
 17.    Support ECC, or not.
 18.    Perform calling over geminis.
-19.    Encrypt participants public keys. Keyed hashes using the public
-       key as the key? Slow retrieval.
+19.    Counting users is possible.
 20.    Add support for crypto++.
 21.    Account credentials should not be recorded via reversible encryption.
        Derive keys? I really like the two-step mutual authentication.
@@ -192,5 +194,3 @@ Remaining Items
 32.    Purge items from post_office if their dates are invalid.
 33.    Limit the number of entries that are allowed to be inserted into
        a database.
-34.    Counting users is possible.
-35.    Store the id field in idiotes.db in a secure manner.
