@@ -5591,10 +5591,10 @@ void spoton::slotPopulateParticipants(void)
 
 	QSqlQuery query(db);
 	QWidget *focusWidget = QApplication::focusWidget();
+	bool ok = true;
 
 	query.setForwardOnly(true);
-
-	if(query.exec("SELECT "
+	query.prepare("SELECT "
 		      "name, "
 		      "OID, "
 		      "neighbor_oid, "
@@ -5605,17 +5605,33 @@ void spoton::slotPopulateParticipants(void)
 		      "gemini_hash_key, "
 		      "key_type "
 		      "FROM friends_public_keys "
-		      "WHERE key_type IN ('chat', 'email', 'url')"))
+		      "WHERE key_type_hash IN (?, ?, ?)");
+	query.bindValue
+	  (0, crypt->keyedHash(QByteArray("chat"), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (1, crypt->keyedHash(QByteArray("email"), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (2, crypt->keyedHash(QByteArray("url"), &ok).toBase64());
+
+	if(ok && query.exec())
 	  while(query.next())
 	    {
 	      QIcon icon;
-	      QString keyType(query.value(8).toString());
+	      QString keyType("");
 	      QString name("");
 	      QString oid("");
 	      QString status(query.value(4).toString());
 	      bool ok = true;
 	      bool temporary =
 		query.value(2).toLongLong() == -1 ? false : true;
+
+	      keyType = crypt->decryptedAfterAuthenticated
+		(QByteArray::fromBase64(query.value(8).toByteArray()),
+		 &ok).constData();
 
 	      if(!isKernelActive())
 		status = "offline";

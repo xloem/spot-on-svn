@@ -510,12 +510,18 @@ void spoton_rosetta::populateContacts(void)
       {
 	QMultiMap<QString, QByteArray> names;
 	QSqlQuery query(db);
+	bool ok = true;
 
 	ui.contacts->clear();
 	query.setForwardOnly(true);
+	query.prepare("SELECT name, public_key FROM friends_public_keys "
+		      "WHERE key_type_hash = ?");
 
-	if(query.exec("SELECT name, public_key FROM friends_public_keys "
-		      "WHERE key_type = 'rosetta'"))
+	if(m_eCrypt)
+	  query.bindValue(0, m_eCrypt->keyedHash(QByteArray("rosetta"), &ok).
+			  toBase64());
+
+	if(ok && query.exec())
 	  while(query.next())
 	    {
 	      QByteArray publicKey;
@@ -836,7 +842,7 @@ void spoton_rosetta::slotDelete(void)
 	if(ok)
 	  query.exec();
 
-	spoton_misc::purgeSignatureRelationships(db);
+	spoton_misc::purgeSignatureRelationships(db, m_eCrypt);
       }
 
     db.close();

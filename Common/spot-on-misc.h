@@ -70,7 +70,8 @@ class spoton_misc
 			   const qint64 id,
 			   spoton_crypt *crypt);
   static bool isAcceptedParticipant(const QByteArray &publicKeyHash,
-				    const QString &keyType);
+				    const QString &keyType,
+				    spoton_crypt *crypt);
   static bool isIpBlocked(const QHostAddress &address,
 			  spoton_crypt *crypt);
   static bool isPrivateNetwork(const QHostAddress &address);
@@ -90,8 +91,9 @@ class spoton_misc
 				   const qint64 neighborOid,
 				   const QSqlDatabase &db,
 				   spoton_crypt *crypt);
-  static qint64 participantCount(const QString &keyType);
-  static void cleanupDatabases(void);
+  static qint64 participantCount(const QString &keyType,
+				 spoton_crypt *crypt);
+  static void cleanupDatabases(spoton_crypt *crypt);
   static void correctSettingsContainer(QHash<QString, QVariant> settings);
   static void enableLog(const bool state);
   static void logError(const QString &error);
@@ -102,7 +104,8 @@ class spoton_misc
   static void prepareDatabases(void);
   static void prepareSignalHandler(void (*sig_handler) (int));
   static void prepareUrlDatabases(void);
-  static void purgeSignatureRelationships(const QSqlDatabase &db);
+  static void purgeSignatureRelationships(const QSqlDatabase &db,
+					  spoton_crypt *crypt);
   static void retrieveSymmetricData(QPair<QByteArray, QByteArray> &gemini,
 				    QByteArray &publicKey,
 				    QByteArray &symmetricKey,

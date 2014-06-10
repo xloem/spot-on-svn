@@ -172,7 +172,8 @@ void spoton_misc::prepareDatabases(void)
 	query.exec
 	  ("CREATE TABLE IF NOT EXISTS friends_public_keys ("
 	   "gemini TEXT DEFAULT NULL, "
-	   "key_type TEXT NOT NULL DEFAULT 'chat', "
+	   "key_type TEXT NOT NULL, "
+	   "key_type_hash TEXT NOT NULL, " // Keyed hash.
 	   "name TEXT NOT NULL DEFAULT 'unknown', "
 	   "public_key BLOB NOT NULL, "
 	   "public_key_hash TEXT PRIMARY KEY NOT NULL, " /*
@@ -689,44 +690,48 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
   bool ok = true;
 
   query.prepare("INSERT OR REPLACE INTO friends_public_keys "
-		"(gemini, gemini_hash_key, key_type, name, public_key, "
-		"public_key_hash, "
+		"(gemini, gemini_hash_key, key_type, key_type_hash, "
+		"name, public_key, public_key_hash, "
 		"neighbor_oid, last_status_update) "
 		"VALUES ((SELECT gemini FROM friends_public_keys WHERE "
 		"public_key_hash = ?), "
 		"(SELECT gemini_hash_key FROM friends_public_keys WHERE "
 		"public_key_hash = ?), "
-		"?, ?, ?, ?, ?, ?)");
+		"?, ?, ?, ?, ?, ?, ?)");
   query.bindValue(0, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
 
   if(ok)
     query.bindValue(1, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
 
-  query.bindValue(2, keyType.constData());
+  if(ok)
+    query.bindValue(2, crypt->encryptedThenHashed(keyType, &ok).toBase64());
+
+  if(ok)
+    query.bindValue(3, crypt->keyedHash(keyType, &ok).toBase64());
 
   if(keyType == "chat" || keyType == "email" ||
      keyType == "rosetta" || keyType == "url")
     {
       if(name.isEmpty())
-	query.bindValue(3, "unknown");
+	query.bindValue(4, "unknown");
       else
 	query.bindValue
-	  (3, name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
+	  (4, name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
     }
-  else // Signature keys will be labeled as their type.
-    query.bindValue(3, keyType.constData());
+  else if(ok) // Signature keys will be labeled as their type.
+    query.bindValue(4, crypt->keyedHash(keyType, &ok).toBase64());
 
   if(ok)
     query.bindValue
-      (4, crypt->encryptedThenHashed(publicKey, &ok).toBase64());
+      (5, crypt->encryptedThenHashed(publicKey, &ok).toBase64());
 
   if(ok)
     query.bindValue
-      (5, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
+      (6, spoton_crypt::sha512Hash(publicKey, &ok).toBase64());
 
-  query.bindValue(6, neighborOid);
+  query.bindValue(7, neighborOid);
   query.bindValue
-    (7, QDateTime::currentDateTime().toString(Qt::ISODate));
+    (8, QDateTime::currentDateTime().toString(Qt::ISODate));
 
   if(ok)
     ok = query.exec();
@@ -880,8 +885,12 @@ void spoton_misc::retrieveSymmetricData
 }
 
 bool spoton_misc::isAcceptedParticipant(const QByteArray &publicKeyHash,
-					const QString &keyType)
+					const QString &keyType,
+					spoton_crypt *crypt)
 {
+  if(!crypt)
+    return false;
+
   QString connectionName("");
   qint64 count = 0;
 
@@ -894,17 +903,19 @@ bool spoton_misc::isAcceptedParticipant(const QByteArray &publicKeyHash,
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool ok = true;
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT COUNT(*) "
 		      "FROM friends_public_keys WHERE "
-		      "key_type = ? AND "
+		      "key_type_hash = ? AND "
 		      "neighbor_oid = -1 AND "
 		      "public_key_hash = ?");
-	query.bindValue(0, keyType);
+	query.bindValue
+	  (0, crypt->keyedHash(keyType.toLatin1(), &ok).toBase64());
 	query.bindValue(1, publicKeyHash.toBase64());
 
-	if(query.exec())
+	if(ok && query.exec())
 	  if(query.next())
 	    count = query.value(0).toLongLong();
       }
@@ -971,15 +982,20 @@ QPair<QByteArray, QByteArray> spoton_misc::findGeminiInCosmos
 	if(db.open())
 	  {
 	    QSqlQuery query(db);
+	    bool ok = true;
 
 	    query.setForwardOnly(true);
 
-	    if(query.exec("SELECT gemini, gemini_hash_key "
+	    query.prepare("SELECT gemini, gemini_hash_key "
 			  "FROM friends_public_keys WHERE "
 			  "gemini IS NOT NULL AND "
 			  "gemini_hash_key IS NOT NULL AND "
-			  "key_type = 'chat' AND "
-			  "neighbor_oid = -1"))
+			  "key_type_hash = ? AND "
+			  "neighbor_oid = -1");
+	    query.bindValue(0, crypt->keyedHash(QByteArray("chat"), &ok).
+			    toBase64());
+
+	    if(ok && query.exec())
 	      while(query.next())
 		{
 		  bool ok = true;
@@ -1074,7 +1090,7 @@ void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
   QSqlDatabase::removeDatabase(connectionName);
 }
 
-void spoton_misc::cleanupDatabases(void)
+void spoton_misc::cleanupDatabases(spoton_crypt *crypt)
 {
   QString connectionName("");
 
@@ -1097,7 +1113,7 @@ void spoton_misc::cleanupDatabases(void)
 
 	query.exec("DELETE FROM friends_public_keys WHERE "
 		   "neighbor_oid <> -1");
-	purgeSignatureRelationships(db);
+	purgeSignatureRelationships(db, crypt);
       }
 
     db.close();
@@ -1645,32 +1661,59 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
   QSqlDatabase::removeDatabase(connectionName);
 }
 
-void spoton_misc::purgeSignatureRelationships(const QSqlDatabase &db)
+void spoton_misc::purgeSignatureRelationships(const QSqlDatabase &db,
+					      spoton_crypt *crypt)
 {
-  if(!db.isOpen())
+  if(!crypt)
+    return;
+  else if(!db.isOpen())
     return;
 
-  QSqlQuery query(db);
+  QList<QByteArray> list;
 
-  /*
-  ** Delete relationships that do not have corresponding entries
-  ** in the friends_public_keys table.
-  */
+  list << "chat"
+       << "email"
+       << "rosetta"
+       << "url";
 
-  query.exec("DELETE FROM relationships_with_signatures WHERE "
-	     "public_key_hash NOT IN "
-	     "(SELECT public_key_hash FROM friends_public_keys WHERE "
-	     "key_type NOT LIKE '%signature')");
+  for(int i = 0; i < list.size(); i++)
+    {
+      QSqlQuery query(db);
+      bool ok = true;
 
-  /*
-  ** Delete signature public keys from friends_public_keys that
-  ** do not have relationships.
-  */
+      /*
+      ** Delete relationships that do not have corresponding entries
+      ** in the friends_public_keys table.
+      */
 
-  query.exec("DELETE FROM friends_public_keys WHERE "
-	     "key_type LIKE '%signature' AND public_key_hash NOT IN "
-	     "(SELECT signature_public_key_hash FROM "
-	     "relationships_with_signatures)");
+      query.prepare("DELETE FROM relationships_with_signatures WHERE "
+		    "public_key_hash NOT IN "
+		    "(SELECT public_key_hash FROM friends_public_keys WHERE "
+		    "key_type <> ?)");
+      query.bindValue
+	(0, crypt->keyedHash(list.at(i) + "-signature", &ok).toBase64());
+
+      if(ok)
+	query.exec();
+
+      /*
+      ** Delete signature public keys from friends_public_keys that
+      ** do not have relationships.
+      */
+
+      query.prepare
+	("DELETE FROM friends_public_keys WHERE "
+	 "key_type = ? AND public_key_hash NOT IN "
+	 "(SELECT signature_public_key_hash FROM "
+	 "relationships_with_signatures)");
+
+      if(ok)
+	query.bindValue
+	  (0, crypt->keyedHash(list.at(i) + "-signature", &ok).toBase64());
+
+      if(ok)
+	query.exec();
+    }
 }
 
 void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
@@ -1854,8 +1897,12 @@ void spoton_misc::enableLog(const bool state)
   s_enableLog = state;
 }
 
-qint64 spoton_misc::participantCount(const QString &keyType)
+qint64 spoton_misc::participantCount(const QString &keyType,
+				     spoton_crypt *crypt)
 {
+  if(!crypt)
+    return 0;
+
   QString connectionName("");
   qint64 count = 0;
 
@@ -1868,13 +1915,15 @@ qint64 spoton_misc::participantCount(const QString &keyType)
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool ok = true;
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT COUNT(*) FROM friends_public_keys "
-		      "WHERE key_type = ? AND neighbor_oid = -1");
-	query.bindValue(0, keyType);
+		      "WHERE key_type_hash = ? AND neighbor_oid = -1");
+	query.bindValue
+	  (0, crypt->keyedHash(keyType.toLatin1(), &ok).toBase64());
 
-	if(query.exec())
+	if(ok && query.exec())
 	  if(query.next())
 	    count = query.value(0).toLongLong();
       }

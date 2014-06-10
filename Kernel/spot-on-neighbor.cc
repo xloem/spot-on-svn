@@ -809,7 +809,8 @@ spoton_neighbor::~spoton_neighbor()
 			  "neighbor_oid = ?");
 	    query.bindValue(0, m_id);
 	    query.exec();
-	    spoton_misc::purgeSignatureRelationships(db);
+	    spoton_misc::purgeSignatureRelationships
+	      (db, spoton_kernel::s_crypts.value("chat", 0));
 	  }
 
 	db.close();
@@ -2034,6 +2035,11 @@ void spoton_neighbor::slotSharePublicKey(const QByteArray &keyType,
     {
       addToBytesWritten(message.length());
 
+      spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
+
+      if(!s_crypt)
+	return;
+
       QString connectionName("");
 
       {
@@ -2046,21 +2052,32 @@ void spoton_neighbor::slotSharePublicKey(const QByteArray &keyType,
 	if(db.open())
 	  {
 	    QSqlQuery query(db);
+	    bool ok = true;
 
 	    query.prepare("UPDATE friends_public_keys SET "
 			  "neighbor_oid = -1 WHERE "
-			  "key_type = ? AND "
+			  "key_type_hash = ? AND "
 			  "neighbor_oid = ?");
-	    query.bindValue(0, keyType.constData());
+	    query.bindValue(0, s_crypt->keyedHash(keyType, &ok).toBase64());
 	    query.bindValue(1, m_id);
-	    query.exec();
+
+	    if(ok)
+	      query.exec();
+
 	    query.prepare("UPDATE friends_public_keys SET "
 			  "neighbor_oid = -1 WHERE "
-			  "key_type = ? AND "
+			  "key_type_hash = ? AND "
 			  "neighbor_oid = ?");
-	    query.bindValue(0, (keyType + "-signature").constData());
+
+	    if(ok)
+	      query.bindValue
+		(0, s_crypt->keyedHash(keyType + "-signature", &ok).
+		 toBase64());
+
 	    query.bindValue(1, m_id);
-	    query.exec();
+
+	    if(ok)
+	      query.exec();
 	  }
 
 	db.close();
@@ -2249,7 +2266,8 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 				  (i, QByteArray::fromBase64(list.at(i)));
 
 			      if(spoton_misc::
-				 isAcceptedParticipant(list.value(0), "chat"))
+				 isAcceptedParticipant(list.value(0), "chat",
+						       s_crypt))
 				{
 				  if(spoton_kernel::setting("gui/chatAccept"
 							    "SignedMessages"
@@ -2420,7 +2438,8 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 			      (i, QByteArray::fromBase64(list.at(i)));
 
 			  if(spoton_misc::
-			     isAcceptedParticipant(list.value(0), "chat"))
+			     isAcceptedParticipant(list.value(0), "chat",
+						   s_crypt))
 			    {
 			      if(spoton_kernel::setting("gui/chatAccept"
 							"SignedMessagesOnly",
@@ -2743,9 +2762,9 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	if(spoton_kernel::setting("gui/postoffice_enabled",
 				  false).toBool())
 	  if(spoton_misc::
-	     isAcceptedParticipant(recipientHash, "email"))
+	     isAcceptedParticipant(recipientHash, "email", s_crypt))
 	    if(spoton_misc::
-	       isAcceptedParticipant(senderPublicKeyHash1, "email"))
+	       isAcceptedParticipant(senderPublicKeyHash1, "email", s_crypt))
 	      {
 		if(spoton_kernel::setting("gui/coAcceptSignedMessagesOnly",
 					  true).toBool())
@@ -2940,7 +2959,8 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 						       s_crypt));
 
 	    if(!publicKeyHash.isEmpty())
-	      if(spoton_misc::isAcceptedParticipant(publicKeyHash, "email"))
+	      if(spoton_misc::isAcceptedParticipant(publicKeyHash, "email",
+						    s_crypt))
 		storeLetter(list.mid(0, 3), publicKeyHash);
 	  }
     }
@@ -3514,7 +3534,8 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 				  (i, QByteArray::fromBase64(list.at(i)));
 
 			      if(spoton_misc::
-				 isAcceptedParticipant(list.value(0), "chat"))
+				 isAcceptedParticipant(list.value(0), "chat",
+						       s_crypt))
 				{
 				  if(spoton_kernel::setting("gui/chatAccept"
 							    "SignedMessages"
@@ -4856,7 +4877,8 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
   ** for the symmetric key.
   */
 
-  if(!spoton_misc::isAcceptedParticipant(senderPublicKeyHash, "email"))
+  if(!spoton_misc::isAcceptedParticipant(senderPublicKeyHash, "email",
+					 s_crypt))
     return;
 
   if(goldbugUsed)
@@ -5454,7 +5476,7 @@ QString spoton_neighbor::findMessageType
 
   if(s_crypt)
     if(interfaces > 0 && list.size() == 2 &&
-       spoton_misc::participantCount("chat") > 0)
+       spoton_misc::participantCount("chat", s_crypt) > 0)
       {
 	QPair<QByteArray, QByteArray> gemini;
 
@@ -5506,7 +5528,7 @@ QString spoton_neighbor::findMessageType
   if(s_crypt)
     if(interfaces > 0 && list.size() == 3)
       if(!spoton_misc::allParticipantsHaveGeminis())
-	if(spoton_misc::participantCount("chat") > 0)
+	if(spoton_misc::participantCount("chat", s_crypt) > 0)
 	  {
 	    QByteArray data;
 	    bool ok = true;
@@ -5527,7 +5549,9 @@ QString spoton_neighbor::findMessageType
     ** 0002b
     */
 
-    if(spoton_misc::participantCount("email") > 0)
+    if(spoton_misc::participantCount("email",
+				     spoton_kernel::s_crypts.
+				     value("email", 0)) > 0)
       {
 	if(list.size() == 2)
 	  symmetricKeys = spoton_kernel::findInstitutionKey
@@ -5555,7 +5579,7 @@ QString spoton_neighbor::findMessageType
 
   if(list.size() == 3 || list.size() == 6)
     if((s_crypt = spoton_kernel::s_crypts.value("email", 0)))
-      if(spoton_misc::participantCount("email") > 0)
+      if(spoton_misc::participantCount("email", s_crypt) > 0)
 	{
 	  QByteArray data;
 	  bool ok = true;

@@ -3703,7 +3703,8 @@ void spoton::slotRemoveUrlParticipants(void)
 	      }
 	  }
 
-	spoton_misc::purgeSignatureRelationships(db);
+	spoton_misc::purgeSignatureRelationships
+	  (db, m_crypts.value("chat", 0));
       }
 
     db.close();

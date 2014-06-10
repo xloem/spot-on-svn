@@ -280,12 +280,17 @@ int main(int argc, char *argv[])
 	}
       catch(std::bad_alloc &exception)
 	{
-	  qDebug() << "Critical memory failure. Exiting.";
+	  qDebug() << "Critical memory failure. Exiting kernel.";
 	  return EXIT_FAILURE;
 	}
     }
   else
-    return EXIT_FAILURE;
+    {
+      qDebug() << "Critical kernel error ("
+	       << libspoton_strerror(err)
+	       << ") with libspoton_init_b().";
+      return EXIT_FAILURE;
+    }
 }
 
 spoton_kernel::spoton_kernel(void):QObject(0)
@@ -306,7 +311,6 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   s_institutionLastModificationTime = QDateTime();
   qsrand(QTime(0, 0, 0).secsTo(QTime::currentTime()));
   QDir().mkdir(spoton_misc::homePath());
-  spoton_misc::cleanupDatabases();
 
   /*
   ** The user interface doesn't yet have a means of preparing advanced
@@ -383,7 +387,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	    deleteLater();
 	  }
 	else
-	  qDebug() << "Passphrase accepted.";
+	  {
+	    qDebug() << "Passphrase accepted.";
+	    spoton_misc::cleanupDatabases(s_crypts.value("chat", 0));
+	  }
 
 	input.replace(0, input.length(), '0');
 	break;
@@ -570,7 +577,7 @@ spoton_kernel::~spoton_kernel()
   m_future.waitForFinished();
   m_statisticsFuture.waitForFinished();
   cleanup();
-  spoton_misc::cleanupDatabases();
+  spoton_misc::cleanupDatabases(s_crypts.value("chat", 0));
 
   QHashIterator<QString, spoton_crypt *> it(s_crypts);
 
@@ -1499,6 +1506,11 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
 	{
 	  neighbor->addToBytesWritten(data.length());
 
+	  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
+
+	  if(!s_crypt)
+	    return;
+
 	  /*
 	  ** Now let's update friends_public_keys if the peer also
 	  ** shared their key.
@@ -1515,21 +1527,33 @@ void spoton_kernel::slotPublicKeyReceivedFromUI(const qint64 oid,
 	    if(db.open())
 	      {
 		QSqlQuery query(db);
+		bool ok = true;
 
 		query.prepare("UPDATE friends_public_keys SET "
 			      "neighbor_oid = -1 "
-			      "WHERE key_type = ? AND "
+			      "WHERE key_type_hash = ? AND "
 			      "neighbor_oid = ?");
-		query.bindValue(0, keyType.constData());
+		query.bindValue
+		  (0, s_crypt->keyedHash(keyType, &ok).toBase64());
 		query.bindValue(1, oid);
-		query.exec();
+
+		if(ok)
+		  query.exec();
+
 		query.prepare("UPDATE friends_public_keys SET "
 			      "neighbor_oid = -1 "
-			      "WHERE key_type = ? AND "
+			      "WHERE key_type_hash = ? AND "
 			      "neighbor_oid = ?");
-		query.bindValue(0, (keyType + "-signature").constData());
+
+		if(ok)
+		  query.bindValue
+		    (0, s_crypt->keyedHash(keyType + "-signature",
+					   &ok).toBase64());
+
 		query.bindValue(1, oid);
-		query.exec();
+
+		if(ok)
+		  query.exec();
 	      }
 
 	    db.close();
@@ -1802,13 +1826,17 @@ void spoton_kernel::slotStatusTimerExpired(void)
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool ok = true;
 
 	query.setForwardOnly(true);
-
-	if(query.exec("SELECT gemini, public_key, "
+	query.prepare("SELECT gemini, public_key, "
 		      "gemini_hash_key "
 		      "FROM friends_public_keys WHERE "
-		      "key_type = 'chat' AND neighbor_oid = -1"))
+		      "key_type_hash = ? AND neighbor_oid = -1");
+	query.bindValue(0, s_crypt1->keyedHash(QByteArray("chat"),
+					       &ok).toBase64());
+
+	if(ok && query.exec())
 	  while(query.next())
 	    {
 	      QByteArray data;
@@ -2163,12 +2191,16 @@ void spoton_kernel::slotRetrieveMail(void)
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool ok = true;
 
 	query.setForwardOnly(true);
-
-	if(query.exec("SELECT public_key "
+	query.prepare("SELECT public_key "
 		      "FROM friends_public_keys WHERE "
-		      "key_type = 'email' AND neighbor_oid = -1"))
+		      "key_type_hash = ? AND neighbor_oid = -1");
+	query.bindValue(0, s_crypt->keyedHash(QByteArray("email"), &ok).
+			toBase64());
+
+	if(ok && query.exec())
 	  while(query.next())
 	    {
 	      QByteArray cipherType
@@ -2512,6 +2544,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
     if(db.open())
       {
 	QSqlQuery query(db);
+	bool ok = true;
 
 	/*
 	** Use all of our participants, including the recipients,
@@ -2520,10 +2553,13 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	*/
 
 	query.setForwardOnly(true);
-
-	if(query.exec("SELECT public_key "
+	query.prepare("SELECT public_key "
 		      "FROM friends_public_keys WHERE "
-		      "key_type = 'email' AND neighbor_oid = -1"))
+		      "key_type_hash = ? AND neighbor_oid = -1");
+	query.bindValue(0, s_crypt1->keyedHash(QByteArray("email"),
+					       &ok).toBase64());
+
+	if(ok && query.exec())
 	  while(query.next())
 	    {
 	      QByteArray cipherType
@@ -3248,11 +3284,13 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 	query.prepare("SELECT gemini, public_key, "
 		      "gemini_hash_key "
 		      "FROM friends_public_keys WHERE "
-		      "key_type = 'chat' AND neighbor_oid = -1 AND "
+		      "key_type_hash = ? AND neighbor_oid = -1 AND "
 		      "OID = ?");
-	query.bindValue(0, oid);
+	query.bindValue(0, s_crypt1->keyedHash(QByteArray("chat"),
+					       &ok).toBase64());
+	query.bindValue(1, oid);
 
-	if(query.exec())
+	if(ok && query.exec())
 	  if(query.next())
 	    {
 	      QByteArray publicKey;

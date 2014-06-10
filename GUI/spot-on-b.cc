@@ -610,9 +610,17 @@ void spoton::slotRemoveParticipants(void)
 
 	    if(m_chatSequenceNumbers.contains(data.toString()))
 	      m_chatSequenceNumbers.remove(data.toString());
+	    else
+	      qDebug() << "m_chatSequenceNumbers does not contain "
+		       << data << ".";
 
-	    if(m_receivedChatSequenceNumbers.contains(hash.toByteArray()))
-	      m_receivedChatSequenceNumbers.remove(hash.toByteArray());
+	    if(m_receivedChatSequenceNumbers.contains
+	       (QByteArray::fromBase64(hash.toByteArray())))
+	      m_receivedChatSequenceNumbers.
+		remove(QByteArray::fromBase64(hash.toByteArray()));
+	    else
+	      qDebug() << "m_receivedChatSequenceNumbers does not contain "
+		       << hash.toByteArray().toBase64() << ".";
 
 	    if(m_chatWindows.contains(hash.toString()))
 	      {
@@ -626,7 +634,8 @@ void spoton::slotRemoveParticipants(void)
 	      }
 	  }
 
-	spoton_misc::purgeSignatureRelationships(db);
+	spoton_misc::purgeSignatureRelationships
+	  (db, m_crypts.value("chat", 0));
       }
 
     db.close();
@@ -4377,7 +4386,8 @@ void spoton::slotRemoveEmailParticipants(void)
 	      }
 	  }
 
-	spoton_misc::purgeSignatureRelationships(db);
+	spoton_misc::purgeSignatureRelationships
+	  (db, m_crypts.value("chat", 0));
       }
 
     db.close();
