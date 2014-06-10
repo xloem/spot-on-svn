@@ -25,7 +25,7 @@
 12.  The id field in idiotes.db will now contain encrypted and authenticated
      data. Please remove idiotes.db. Also corrected re-encoding of
      idiotes.db.
-13.  Placed lock guards over read-write locks in order to unlock the locks
+13.  Placed lock guards over read-write locks so that locks are unlocked
      if critical sections throw exceptions. Write-access only.
 14.  Corrected flawed if-statements. Spot nodes are allowed to be
      configured such that private keys are not required. Spot should not
@@ -35,6 +35,9 @@
      blocked connections immediately after connections are established.
 16.  Added support for allowing connections from accepted IP addresses
      as well as blocking connections for SCTP servers.
+17.  Key types are now encrypted in friends_public_keys.db. Please remove the
+     database.
+18.  Updated OpenSSL to version 1.0.1h on OS X and Windows.
 
 0.09.05.01 (05/25/2014)
 
