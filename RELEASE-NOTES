@@ -40,8 +40,9 @@
 18.  Updated OpenSSL to version 1.0.1h on OS X and Windows.
 19.  Corrected removal of m_receivedChatSequenceNumbers items during
      participant removal.
-20.  Added flag -Wl,-z,relro to spot-on-kernel.powerpc.pro,
-     spot-on-kernel.pro, and spot-on-kernel.qt5.pro.
+20.  Added flag -Wl,-z,relro to spot-on-kernel.arm.pro,
+     spot-on-kernel.powerpc.pro, spot-on-kernel.pro,
+     and spot-on-kernel.qt5.pro.
 
 0.09.05.01 (05/25/2014)
 
