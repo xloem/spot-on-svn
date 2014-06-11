@@ -185,6 +185,8 @@ lupdate.extra           = $$[QT_INSTALL_BINS]/lupdate spot-on-gui.osx.qt5.pro
 lupdate.path            = .
 macdeployqt.path        = ./Spot-On.app
 macdeployqt.extra       = $$[QT_INSTALL_BINS]/macdeployqt ./Spot-On.app -verbose=0
+preinstall.path         = /Applications/Spot-On.d
+preinstall.extra        = rm -rf /Applications/Spot-On.d/Spot-On.app/*
 postinstall.path	= /Applications/Spot-On.d
 postinstall.extra	= find /Applications/Spot-On.d -name .svn -exec rm -rf {} \\; 2>/dev/null; echo
 translations.path 	= /Applications/Spot-On.d/Translations
@@ -194,6 +196,7 @@ translations.files	= Translations/*.qm
 
 QMAKE_STRIP	= echo
 INSTALLS	= macdeployqt \
+                  preinstall \
                   install1 \
                   libgeoip_data_install \
                   libgeoip_install \

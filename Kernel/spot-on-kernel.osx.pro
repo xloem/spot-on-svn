@@ -94,6 +94,8 @@ libspoton_install.path  = .
 libspoton_install.extra = cp ../../../libSpotOn/libspoton.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change /usr/local/lib/libgcrypt.11.dylib @loader_path/libgcrypt.11.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change ../../../libSpotOn/libspoton.dylib @executable_path/../Frameworks/libspoton.dylib ../Spot-On-Kernel.app/Contents/MacOS/Spot-On-Kernel
 macdeployqt.path        = ../Spot-On-Kernel.app
 macdeployqt.extra       = $$[QT_INSTALL_BINS]/macdeployqt ../Spot-On-Kernel.app -verbose=0
+preinstall.path         = /Applications/Spot-On.d
+preinstall.extra        = rm -rf /Applications/Spot-On.d/Spot-On-Kernel.app/*
 postinstall.path	= /Applications/Spot-On.d
 postinstall.extra	= find /Applications/Spot-On.d -name .svn -exec rm -rf {} \\; 2>/dev/null; echo
 
@@ -101,6 +103,7 @@ postinstall.extra	= find /Applications/Spot-On.d -name .svn -exec rm -rf {} \\; 
 
 QMAKE_STRIP	= echo
 INSTALLS	= macdeployqt \
+                  preinstall \
                   libgeoip_data_install \
                   libgeoip_install \
                   libspoton_install \
