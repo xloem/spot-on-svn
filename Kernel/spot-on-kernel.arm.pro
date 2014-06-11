@@ -24,7 +24,7 @@ QMAKE_DISTCLEAN += -r temp
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -fwrapv -pie -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
-			  -Werror -Wextra \
+			  -Werror -Wextra -Wl,-z,relro \
 			  -Woverloaded-virtual -Wpointer-arith \
                           -Wstack-protector -Wstrict-overflow=4
 QMAKE_EXTRA_TARGETS = libspoton purge
