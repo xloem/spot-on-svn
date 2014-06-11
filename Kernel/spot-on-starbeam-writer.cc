@@ -59,14 +59,14 @@ void spoton_starbeam_writer::run(void)
 
 void spoton_starbeam_writer::processData(void)
 {
-  QWriteLocker locker(&m_mutex);
+  QWriteLocker locker1(&m_mutex);
 
   if(m_data.isEmpty())
     return;
 
   QByteArray data(m_data.take(m_data.keys().value(0)));
 
-  locker.unlock();
+  locker1.unlock();
 
   QList<QByteArray> list(data.split('\n'));
 
@@ -79,12 +79,11 @@ void spoton_starbeam_writer::processData(void)
     list.replace(i, QByteArray::fromBase64(list.at(i)));
 
   QHash<QString, QByteArray> magnet;
+  QList<QHash<QString, QByteArray> > magnets;
+  QReadLocker locker2(&m_keyMutex);
 
-  m_keyMutex.lockForRead();
-
-  QList<QHash<QString, QByteArray> > magnets(m_magnets);
-
-  m_keyMutex.unlock();
+  magnets = m_magnets;
+  locker2.unlock();
 
   for(int i = 0; i < magnets.size(); i++)
     {
@@ -123,11 +122,11 @@ void spoton_starbeam_writer::processData(void)
   if(!ok)
     return;
 
-  m_keyMutex.lockForRead();
+  QList<QByteArray> novas;
+  QReadLocker locker3(&m_keyMutex);
 
-  QList<QByteArray> novas(m_novas);
-
-  m_keyMutex.unlock();
+  novas = m_novas;
+  locker3.unlock();
 
   if(data.split('\n').size() != 7)
     {
@@ -414,15 +413,12 @@ void spoton_starbeam_writer::append(const QByteArray &data)
   if(!s_crypt)
     return;
 
-  m_keyMutex.lockForRead();
+  QReadLocker locker(&m_keyMutex);
 
   if(m_magnets.isEmpty())
-    {
-      m_keyMutex.unlock();
-      return;
-    }
+    return;
 
-  m_keyMutex.unlock();
+  locker.unlock();
 
   if(spoton_kernel::setting("gui/etpReceivers", false).toBool())
     {
@@ -465,10 +461,7 @@ bool spoton_starbeam_writer::isActive(void) const
 
 bool spoton_starbeam_writer::hasData(void)
 {
-  m_mutex.lockForRead();
+  QReadLocker locker(&m_mutex);
 
-  bool has_data = !m_data.isEmpty();
-
-  m_mutex.unlock();
-  return has_data;
+  return !m_data.isEmpty();
 }

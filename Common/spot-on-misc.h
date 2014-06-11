@@ -125,14 +125,13 @@ class spoton_misc
   template<typename T>
     static T readSharedResource(T *resource, QReadWriteLock &mutex)
     {
-      T value = T();
+      QReadLocker locker(&mutex);
 
-      mutex.lockForRead();
+      T value = T();
 
       if(resource)
 	value = *resource;
 
-      mutex.unlock();
       return value;
     }
   template<typename T>

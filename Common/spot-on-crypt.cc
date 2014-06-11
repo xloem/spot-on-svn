@@ -849,21 +849,13 @@ QByteArray spoton_crypt::encrypted(const QByteArray &data, bool *ok)
 
 QByteArray spoton_crypt::symmetricKey(void)
 {
-  m_symmetricKeyMutex.lockForRead();
+  QReadLocker locker(&m_symmetricKeyMutex);
 
   if(m_symmetricKey)
-    {
-      QByteArray bytes(m_symmetricKey,
-		       static_cast<int> (m_symmetricKeyLength));
-
-      m_symmetricKeyMutex.unlock();
-      return bytes;
-    }
+    return QByteArray
+      (m_symmetricKey, static_cast<int> (m_symmetricKeyLength));
   else
-    {
-      m_symmetricKeyMutex.unlock();
-      return QByteArray();
-    }
+    return QByteArray();
 }
 
 bool spoton_crypt::setInitializationVector(QByteArray &bytes,
@@ -960,12 +952,10 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data, bool *ok)
       return QByteArray();
     }
 
-  m_hashKeyMutex.lockForRead();
+  QReadLocker locker(&m_hashKeyMutex);
 
   if(!m_hashKey || m_hashKeyLength <= 0)
     {
-      m_hashKeyMutex.unlock();
-
       if(ok)
 	*ok = false;
 
@@ -975,7 +965,7 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data, bool *ok)
       return QByteArray();
     }
 
-  m_hashKeyMutex.unlock();
+  locker.unlock();
 
   QByteArray hash;
   gcry_error_t err = 0;
@@ -1003,13 +993,13 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data, bool *ok)
     }
   else
     {
-      m_hashKeyMutex.lockForRead();
+      QReadLocker locker(&m_hashKeyMutex);
 
       if((err = gcry_md_setkey(hd,
 			       m_hashKey,
 			       m_hashKeyLength)) != 0)
 	{
-	  m_hashKeyMutex.unlock();
+	  locker.unlock();
 
 	  if(ok)
 	    *ok = false;
@@ -1023,7 +1013,7 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data, bool *ok)
 	}
       else
 	{
-	  m_hashKeyMutex.unlock();
+	  locker.unlock();
 	  gcry_md_write
 	    (hd,
 	     data.constData(),
@@ -1298,19 +1288,17 @@ QByteArray spoton_crypt::publicKeyEncrypt(const QByteArray &data,
 
 void spoton_crypt::initializePrivateKeyContainer(bool *ok)
 {
-  m_privateKeyMutex.lockForRead();
+  QReadLocker locker1(&m_privateKeyMutex);
 
   if(m_privateKey || m_privateKeyLength > 0)
     {
-      m_privateKeyMutex.unlock();
-
       if(ok)
 	*ok = true;
 
       return;
     }
 
-  m_privateKeyMutex.unlock();
+  locker1.unlock();
 
   QByteArray keyData;
   QString connectionName("");
@@ -1381,7 +1369,7 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
       return;
     }
 
-  QWriteLocker locker(&m_privateKeyMutex);
+  QWriteLocker locker2(&m_privateKeyMutex);
 
   m_privateKeyLength = keyData.length();
 
@@ -1394,7 +1382,6 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
 	*ok = false;
 
       m_privateKeyLength = 0;
-      locker.unlock();
       spoton_misc::logError
 	(QString("spoton_crypt::initializePrivateKeyContainer(): "
 	         "gcry_calloc_secure() "
@@ -1406,7 +1393,7 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
 	   keyData.constData(),
 	   m_privateKeyLength);
 
-  locker.unlock();
+  locker2.unlock();
 
   if(ok)
     *ok = true;
@@ -1435,11 +1422,11 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
     initializePrivateKeyContainer(&ok);
   }
 
-  m_privateKeyMutex.lockForRead();
+  QReadLocker locker1(&m_privateKeyMutex);
 
   if(!m_privateKey || m_privateKeyLength <= 0)
     {
-      m_privateKeyMutex.unlock();
+      locker1.unlock();
 
       if(ok)
 	*ok = false;
@@ -1454,17 +1441,17 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 			  m_privateKey,
 			  m_privateKeyLength, 1)) != 0 || !key_t)
     {
-      m_privateKeyMutex.unlock();
+      locker1.unlock();
 
       if(ok)
 	*ok = false;
 
-      QWriteLocker locker(&m_privateKeyMutex);
+      QWriteLocker locker2(&m_privateKeyMutex);
 
       gcry_free(m_privateKey);
       m_privateKey = 0;
       m_privateKeyLength = 0;
-      locker.unlock();
+      locker2.unlock();
 
       if(err != 0)
 	{
@@ -1482,7 +1469,7 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
       goto done_label;
     }
 
-  m_privateKeyMutex.unlock();
+  locker1.unlock();
 
   if((err = gcry_pk_testkey(key_t)) != 0)
     {
@@ -1602,20 +1589,17 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 
 QByteArray spoton_crypt::publicKey(bool *ok)
 {
-  m_publicKeyMutex.lockForRead();
+  QReadLocker locker(&m_publicKeyMutex);
 
   if(!m_publicKey.isEmpty())
     {
       if(ok)
 	*ok = true;
 
-      QByteArray bytes(m_publicKey);
-
-      m_publicKeyMutex.unlock();
-      return bytes;
+      return m_publicKey;
     }
 
-  m_publicKeyMutex.unlock();
+  locker.unlock();
 
   /*
   ** Returns the correct public key from idiotes.db.
@@ -1701,7 +1685,7 @@ QByteArray spoton_crypt::publicKeyHash(bool *ok)
     publicKey(&ok);
   }
 
-  m_publicKeyMutex.lockForRead();
+  QReadLocker locker(&m_publicKeyMutex);
 
   if(!m_publicKey.isEmpty())
     {
@@ -1715,7 +1699,7 @@ QByteArray spoton_crypt::publicKeyHash(bool *ok)
       }
     }
 
-  m_publicKeyMutex.unlock();
+  locker.unlock();
 
   if(hash.isEmpty())
     if(ok)
@@ -3203,20 +3187,12 @@ void spoton_crypt::setHashKey(const QByteArray &hashKey)
 
 QByteArray spoton_crypt::hashKey(void)
 {
-  m_hashKeyMutex.lockForRead();
+  QReadLocker locker(&m_hashKeyMutex);
 
   if(m_hashKey)
-    {
-      QByteArray bytes(m_hashKey, static_cast<int> (m_hashKeyLength));
-
-      m_hashKeyMutex.unlock();
-      return bytes;
-    }
+    return QByteArray(m_hashKey, static_cast<int> (m_hashKeyLength));
   else
-    {
-      m_hashKeyMutex.unlock();
-      return QByteArray();
-    }
+    return QByteArray();
 }
 
 bool spoton_crypt::memcmp(const QByteArray &bytes1,

@@ -1140,9 +1140,11 @@ void spoton_neighbor::saveStatistics(const QSqlDatabase &db)
 		"status = 'connected' "
 		"AND ? - uptime >= 10");
   query.bindValue(0, m_bytesRead);
-  m_bytesWrittenMutex.lockForRead();
+
+  QReadLocker locker(&m_bytesWrittenMutex);
+
   query.bindValue(1, m_bytesWritten);
-  m_bytesWrittenMutex.unlock();
+  locker.unlock();
   query.bindValue(2, isEncrypted() ? 1 : 0);
 
   if(cipher.isNull() || !spoton_kernel::s_crypts.value("chat", 0))
@@ -1301,11 +1303,11 @@ void spoton_neighbor::slotReadyRead(void)
 
 void spoton_neighbor::processData(void)
 {
-  m_dataMutex.lockForRead();
+  QByteArray data;
+  QReadLocker locker(&m_dataMutex);
 
-  QByteArray data(m_data);
-
-  m_dataMutex.unlock();
+  data = m_data;
+  locker.unlock();
 
   QList<QByteArray> list;
 
@@ -5919,10 +5921,7 @@ void spoton_neighbor::slotAuthenticationTimerTimeout(void)
 
 bool spoton_neighbor::hasData(void)
 {
-  m_dataMutex.lockForRead();
+  QReadLocker locker(&m_dataMutex);
 
-  bool has_data = !m_data.isEmpty();
-
-  m_dataMutex.unlock();
-  return has_data;
+  return !m_data.isEmpty();
 }

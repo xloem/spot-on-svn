@@ -2994,11 +2994,11 @@ void spoton_kernel::slotMessagingCachePurge(void)
 {
   if(m_future.isFinished())
     {
-      s_messagingCacheMutex.lockForRead();
+      QReadLocker locker(&s_messagingCacheMutex);
 
       bool isEmpty = s_messagingCache.isEmpty();
 
-      s_messagingCacheMutex.unlock();
+      locker.unlock();
 
       if(!isEmpty)
 	m_future = QtConcurrent::run
@@ -3060,12 +3060,9 @@ bool spoton_kernel::messagingCacheContains(const QByteArray &data,
   else
     hash = data;
 
-  bool contains = false;
+  QReadLocker locker(&s_messagingCacheMutex);
 
-  s_messagingCacheMutex.lockForRead();
-  contains = s_messagingCache.contains(hash);
-  s_messagingCacheMutex.unlock();
-  return contains;
+  return s_messagingCache.contains(hash);
 }
 
 void spoton_kernel::messagingCacheAdd(const QByteArray &data,
@@ -3184,13 +3181,10 @@ QList<QByteArray> spoton_kernel::findBuzzKey
   if(hash.isEmpty())
     return QList<QByteArray> ();
 
-  s_buzzKeysMutex.lockForRead();
+  QReadLocker locker(&s_buzzKeysMutex);
 
   if(s_buzzKeys.isEmpty())
-    {
-      s_buzzKeysMutex.unlock();
-      return QList<QByteArray> ();
-    }
+    return QList<QByteArray> ();
 
   QHashIterator<QByteArray, QList<QByteArray> > it(s_buzzKeys);
   QList<QByteArray> list;
@@ -3214,7 +3208,6 @@ QList<QByteArray> spoton_kernel::findBuzzKey
 	  }
     }
 
-  s_buzzKeysMutex.unlock();
   return list;
 }
 
@@ -3410,12 +3403,9 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 QVariant spoton_kernel::setting(const QString &name,
 				const QVariant &defaultValue)
 {
-  QVariant value;
+  QReadLocker locker(&s_settingsMutex);
 
-  s_settingsMutex.lockForRead();
-  value = s_settings.value(name, defaultValue);
-  s_settingsMutex.unlock();
-  return value;
+  return s_settings.value(name, defaultValue);
 }
 
 void spoton_kernel::updateStatistics(void)
@@ -3449,10 +3439,12 @@ void spoton_kernel::updateStatistics(void)
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
 		      "VALUES ('Congestion Containers Percent Used', ?)");
-	s_messagingCacheMutex.lockForRead();
+
+	QReadLocker locker(&s_messagingCacheMutex);
+
 	v1 = s_messagingCache.size();
 	v2 = s_messagingCacheMap.size();
-	s_messagingCacheMutex.unlock();
+	locker.unlock();
 	v3 = qMax(1, setting("gui/congestionCost", 10000).toInt());
 	query.bindValue
 	  (0,
