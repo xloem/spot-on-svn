@@ -43,6 +43,8 @@
 20.  Added flag -Wl,-z,relro to spot-on-kernel.arm.pro,
      spot-on-kernel.powerpc.pro, spot-on-kernel.pro,
      and spot-on-kernel.qt5.pro.
+21.  Corrected conditional-compilation errors with respect to
+     SPOTON_LINKED_WITH_LIBGEOIP.
 
 0.09.05.01 (05/25/2014)
 
