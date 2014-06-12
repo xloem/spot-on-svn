@@ -3671,7 +3671,7 @@ QList<QByteArray> spoton_kernel::findInstitutionKey
 		continue;
 
 	      s_institutionKeys.append
-		(QList<QByteArray>()
+		(QList<QByteArray> ()
 		 << QByteArray::fromBase64(query.value(0).toByteArray())
 		 << QByteArray::fromBase64(query.value(1).toByteArray())
 		 << QByteArray::fromBase64(query.value(2).toByteArray())
