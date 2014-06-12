@@ -171,12 +171,18 @@ spoton::spoton(void):QMainWindow()
      arg(GCRYPT_VERSION));
   m_ui.statisticsBox->setVisible(false);
 #ifndef SPOTON_LINKED_WITH_LIBGEOIP
-  m_ui.geoipPath->setEnabled(false);
-  m_ui.geoipPath->setToolTip(tr("Spot-On was configured without "
-				"libGeoIP."));
-  m_ui.selectGeoIP->setEnabled(false);
-  m_ui.selectGeoIP->setToolTip(tr("Spot-On was configured without "
-				  "libGeoIP."));
+  m_ui.geoipPath4->setEnabled(false);
+  m_ui.geoipPath4->setToolTip(tr("Spot-On was configured without "
+				 "libGeoIP."));
+  m_ui.geoipPath6->setEnabled(false);
+  m_ui.geoipPath6->setToolTip(tr("Spot-On was configured without "
+				 "libGeoIP."));
+  m_ui.selectGeoIP4->setEnabled(false);
+  m_ui.selectGeoIP4->setToolTip(tr("Spot-On was configured without "
+				   "libGeoIP."));
+  m_ui.selectGeoIP6->setEnabled(false);
+  m_ui.selectGeoIP6->setToolTip(tr("Spot-On was configured without "
+				   "libGeoIP."));
 #endif
 #ifndef SPOTON_LINKED_WITH_LIBPHONON
 #if 0

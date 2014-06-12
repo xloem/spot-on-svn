@@ -189,6 +189,7 @@ QHostAddress spoton_sctp_socket::localAddressAndPort(quint16 *port) const
 
   return address;
 #else
+  Q_UNUSED(port);
   return QHostAddress();
 #endif
 }
@@ -257,6 +258,7 @@ QHostAddress spoton_sctp_socket::peerAddressAndPort(quint16 *port) const
 
   return address;
 #else
+  Q_UNUSED(port);
   return QHostAddress();
 #endif
 }
