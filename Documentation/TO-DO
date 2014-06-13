@@ -160,7 +160,7 @@ Remaining Items
 11.    Database entries containing hashes can be maliciously twisted. Encrypt?
 12.    Echo star systems.
 13.    Allow pass-through flow of non-Spot-On data.
-14.    Echo Polite. See also Echo Star Systems. Configured Spot nodes
+14.    Adaptive Echo. See also Echo Star Systems. Configured Spot nodes
        will direct traffic based on secret tokens.
 15.    Accounts and allowed IP addresses suffer selection issues.
 16.    QFSFileEngine::open: No file name specified: created from
