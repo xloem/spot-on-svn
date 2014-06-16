@@ -1,3 +1,11 @@
+0.09.07 (07/01/2014)
+
+1.   Removed some debug statements.
+2.   Adaptive echo.
+3.   Public encryption key type, signature key type, and size will not
+     be retained. A future enhancement will provide richer details.
+     Please see the Settings panel.
+
 0.09.06 (06/14/2014)
 
 1.   Added a convenience function to the Chat tab's Messages in order
