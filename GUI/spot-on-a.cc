@@ -1017,14 +1017,11 @@ spoton::spoton(void):QMainWindow()
 
   settings.remove("gui/acceptedIPs");
   settings.remove("gui/enableCongestionControl");
+  settings.remove("gui/encryptionKey");
   settings.remove("gui/geoipPath");
-
-  if(settings.contains("gui/rsaKeySize"))
-    {
-      settings.setValue("gui/keySize",
-			settings.value("gui/rsaKeySize"));
-      settings.remove("gui/rsaKeySize");
-    }
+  settings.remove("gui/keySize");
+  settings.remove("gui/rsaKeySize");
+  settings.remove("gui/signatureKey");
 
   if(!settings.contains("gui/saveCopy"))
     settings.setValue("gui/saveCopy", true);
@@ -1123,18 +1120,6 @@ spoton::spoton(void):QMainWindow()
     m_ui.chatSendMethod->setCurrentIndex(1);
   else
     m_ui.chatSendMethod->setCurrentIndex(0);
-
-  if(m_settings.value("gui/encryptionKey", "rsa").toString() == "elg")
-    m_ui.encryptionKeyType->setCurrentIndex(0);
-  else
-    m_ui.encryptionKeyType->setCurrentIndex(1);
-
-  if(m_settings.value("gui/signatureKey", "rsa").toString() == "dsa")
-    m_ui.signatureKeyType->setCurrentIndex(0);
-  else if(m_settings.value("gui/signatureKey", "rsa").toString() == "elg")
-    m_ui.signatureKeyType->setCurrentIndex(1);
-  else
-    m_ui.signatureKeyType->setCurrentIndex(2);
 
   QString keySize
     (m_settings.value("gui/kernelKeySize", "2048").toString());
@@ -1347,11 +1332,6 @@ spoton::spoton(void):QMainWindow()
 
   m_ui.iterationCount->setValue(m_settings.value("gui/iterationCount",
 						 10000).toInt());
-  str = m_settings.value("gui/keySize", "3072").toString();
-
-  if(m_ui.keySize->findText(str) > -1)
-    m_ui.keySize->setCurrentIndex(m_ui.keySize->findText(str));
-
   str = m_settings.value("gui/guiExternalIpInterval", "-1").toString();
 
   if(str == "30")
@@ -4522,30 +4502,15 @@ void spoton::slotSetPassphrase(void)
       m_settings["gui/buzzName"] = str3.toUtf8();
       m_settings["gui/cipherType"] = m_ui.cipherType->currentText();
       m_settings["gui/emailName"] = str3.toUtf8();
-
-      if(m_ui.encryptionKeyType->currentIndex() == 0)
-	m_settings["gui/encryptionKey"] = "elg";
-      else
-	m_settings["gui/encryptionKey"] = "rsa";
-
       m_settings["gui/hashType"] = m_ui.hashType->currentText();
       m_settings["gui/iterationCount"] = m_ui.iterationCount->value();
       m_settings["gui/kernelCipherType"] =
 	m_ui.kernelCipherType->currentText();
-      m_settings["gui/keySize"] = m_ui.keySize->currentText().toInt();
       m_settings["gui/nodeName"] = str3.toUtf8();
       m_settings["gui/rosettaName"] = str3.toUtf8();
       m_settings["gui/salt"] = salt;
       m_settings["gui/saltLength"] = m_ui.saltLength->value();
       m_settings["gui/saltedPassphraseHash"] = saltedPassphraseHash;
-
-      if(m_ui.signatureKeyType->currentIndex() == 0)
-	m_settings["gui/signatureKey"] = "dsa";
-      else if(m_ui.signatureKeyType->currentIndex() == 1)
-	m_settings["gui/signatureKey"] = "elg";
-      else
-	m_settings["gui/signatureKey"] = "rsa";
-
       m_settings["gui/spot_on_neighbors_txt_processed"] = true;
       m_settings["gui/urlName"] = str3.toUtf8();
 
@@ -4554,21 +4519,17 @@ void spoton::slotSetPassphrase(void)
       settings.setValue("gui/buzzName", m_settings["gui/buzzName"]);
       settings.setValue("gui/cipherType", m_settings["gui/cipherType"]);
       settings.setValue("gui/emailName", m_settings["gui/emailName"]);
-      settings.setValue("gui/encryptionKey", m_settings["gui/encryptionKey"]);
       settings.setValue("gui/hashType", m_settings["gui/hashType"]);
       settings.setValue("gui/iterationCount",
 			m_settings["gui/iterationCount"]);
       settings.setValue("gui/kernelCipherType",
 			m_settings["gui/kernelCipherType"]);
-      settings.setValue("gui/keySize", m_settings["gui/keySize"]);
       settings.setValue("gui/nodeName", m_settings["gui/nodeName"]);
       settings.setValue("gui/rosettaName", m_settings["gui/rosettaName"]);
       settings.setValue("gui/salt", m_settings["gui/salt"]);
       settings.setValue("gui/saltLength", m_settings["gui/saltLength"]);
       settings.setValue
 	("gui/saltedPassphraseHash", m_settings["gui/saltedPassphraseHash"]);
-      settings.setValue
-	("gui/signatureKey", m_settings["gui/signatureKey"]);
       settings.setValue("gui/spot_on_neighbors_txt_processed", true);
       settings.setValue("gui/urlName", m_settings["gui/urlName"]);
       m_ui.buzzName->setText(m_ui.username->text());
