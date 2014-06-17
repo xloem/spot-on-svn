@@ -311,10 +311,7 @@ void spoton_misc::prepareDatabases(void)
 		   "one_time_account INTEGER NOT NULL DEFAULT 0, "
 		   "PRIMARY KEY (listener_oid, account_name_hash), "
 		   "FOREIGN KEY (listener_oid) REFERENCES "
-		   "listeners (OID))"); /*
-					** The foreign key constraint
-					** is flawed.
-					*/
+		   "listeners (OID) ON DELETE CASCADE)");
 	query.exec("CREATE TABLE IF NOT EXISTS "
 		   "listeners_accounts_consumed_authentications ("
 		   "data TEXT NOT NULL, "
@@ -322,20 +319,26 @@ void spoton_misc::prepareDatabases(void)
 		   "listener_oid INTEGER NOT NULL, "
 		   "PRIMARY KEY (listener_oid, data), "
 		   "FOREIGN KEY (listener_oid) REFERENCES "
-		   "listeners (OID))"); /*
-					** The foreign key constraint
-					** is flawed.
-					*/
+		   "listeners (OID) ON DELETE CASCADE)");
+	query.exec("CREATE TABLE IF NOT EXISTS "
+		   "listeners_adaptive_echo_tokens ("
+		   "token TEXT NOT NULL, "
+		   "token_hash TEXT NOT NULL, "
+		   "token_type TEXT NOT NULL, " /*
+						** Keyed hash of the token
+						** and token type.
+						*/
+		   "listener_oid INTEGER NOT NULL, "
+		   "PRIMARY KEY (listener_oid, token_hash), "
+		   "FOREIGN KEY (listener_oid) REFERENCES "
+		   "listeners (OID) ON DELETE CASCADE)");
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_allowed_ips ("
 		   "ip_address TEXT NOT NULL, "
 		   "ip_address_hash TEXT NOT NULL, " // Keyed hash.
 		   "listener_oid INTEGER NOT NULL, "
 		   "PRIMARY KEY (ip_address_hash, listener_oid), "
 		   "FOREIGN KEY (listener_oid) REFERENCES "
-		   "listeners (OID))"); /*
-					** The foreign key constraint
-					** is flawed.
-					*/
+		   "listeners (OID) ON DELETE CASCADE)");
       }
 
     db.close();
@@ -1154,6 +1157,9 @@ void spoton_misc::cleanupDatabases(spoton_crypt *crypt)
 		   "listener_oid NOT IN "
 		   "(SELECT OID FROM listeners)");
 	query.exec("DELETE FROM listeners_accounts_consumed_authentications");
+	query.exec("DELETE FROM listeners_adaptive_echo_tokens WHERE "
+		   "listener_oid NOT IN "
+		   "(SELECT OID FROM listeners)");
 	query.exec("DELETE FROM listeners_allowed_ips WHERE "
 		   "listener_oid NOT IN "
 		   "(SELECT OID FROM listeners)");

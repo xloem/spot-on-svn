@@ -177,6 +177,7 @@ class spoton: public QMainWindow
   void magnetize(void);
   void prepareContextMenuMirrors(void);
   void prepareListenerIPCombo(void);
+  void populateAETokens(const QString &listenerOid);
   void populateAccounts(const QString &listenerOid);
   void populateListenerIps(const QString &listenerOid);
   void populateMOTD(const QString &listenerOid);
@@ -202,6 +203,7 @@ class spoton: public QMainWindow
   void slotAcceptPublicizedListeners(void);
   void slotAcceptUrlKeys(bool state);
   void slotActivateKernel(void);
+  void slotAddAEToken(void);
   void slotAddAcceptedIP(void);
   void slotAddAccount(void);
   void slotAddBootstrapper(void);
@@ -249,6 +251,7 @@ class spoton: public QMainWindow
   void slotCostChanged(int value);
   void slotDaysChanged(int value);
   void slotDeactivateKernel(void);
+  void slotDeleteAEToken(void);
   void slotDeleteAccepedIP(void);
   void slotDeleteAccount(void);
   void slotDeleteAllBlockedNeighbors(void);

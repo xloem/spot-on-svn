@@ -184,10 +184,6 @@ void spoton::refreshInstitutions(void)
   if(!crypt)
     return;
 
-  m_ui.institutions->clearContents();
-  m_ui.institutions->setRowCount(0);
-  m_ui.institutions->setSortingEnabled(false);
-
   QString connectionName("");
 
   {
@@ -198,6 +194,10 @@ void spoton::refreshInstitutions(void)
 
     if(db.open())
       {
+	m_ui.institutions->clearContents();
+	m_ui.institutions->setRowCount(0);
+	m_ui.institutions->setSortingEnabled(false);
+
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
@@ -268,13 +268,14 @@ void spoton::refreshInstitutions(void)
 	      m_ui.institutions->setItem
 		(m_ui.institutions->rowCount() - 1, 3, item);
 	    }
+
+	m_ui.institutions->setSortingEnabled(true);
       }
 
     db.close();
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-  m_ui.institutions->setSortingEnabled(true);
 }
 
 void spoton::slotAddInstitution(const QString &text)
@@ -832,4 +833,277 @@ void spoton::slotAddMagnet(void)
     slotAddInstitution(url.toString());
   else if(type == "starbeam")
     slotAddEtpMagnet(url.toString());
+}
+
+void spoton::slotAddAEToken(void)
+{
+  QString connectionName("");
+  QString error("");
+  QString oid("");
+  QString token(m_ui.ae_token->text().trimmed());
+  QString type(m_ui.ae_type->currentText());
+  bool ok = true;
+  int row = -1;
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
+
+  if(!crypt)
+    {
+      error = tr("Invalid spoton_crypt object. This is a fatal flaw.");
+      goto done_label;
+    }
+
+  if((row = m_ui.listeners->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.listeners->item
+	(row, m_ui.listeners->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    {
+      error = tr("Invalid listener OID. Please select a listener.");
+      goto done_label;
+    }
+
+  if(token.isEmpty() || type == "n/a")
+    {
+      error = tr("Please provide a token and a token type.");
+      goto done_label;
+    }
+  else if(token.length() < 16)
+    {
+      error = tr("Please provide a token that contains at "
+		 "least sixteen characters.");
+      goto done_label;
+    }
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "listeners.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare
+	  ("INSERT OR REPLACE INTO listeners_adaptive_echo_tokens "
+	   "(token, "
+	   "token_hash, "
+	   "token_type, "
+	   "listener_oid) "
+	   "VALUES (?, ?, ?, ?)");
+	query.bindValue
+	  (0, crypt->encryptedThenHashed(token.toLatin1(), &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (1, crypt->keyedHash((token + type).toLatin1(),
+				 &ok).toBase64());
+
+	if(ok)
+	  query.bindValue
+	    (2, crypt->encryptedThenHashed(type.toLatin1(),
+					   &ok).toBase64());
+
+	query.bindValue(3, oid);
+
+	if(ok)
+	  query.exec();
+      }
+    else
+      ok = false;
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  if(!ok)
+    error = tr("A database error has occurred.");
+
+ done_label:
+
+  if(!error.isEmpty())
+    QMessageBox::critical(this, tr("Spot-On: Error"), error);
+  else
+    {
+      m_ui.ae_token->clear();
+      m_ui.ae_type->setCurrentIndex(0);
+      populateAETokens(oid);
+    }
+}
+
+void spoton::slotDeleteAEToken(void)
+{
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
+
+  if(!crypt)
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object. This is "
+			       "a fatal flaw."));
+      return;
+    }
+
+  QString oid("");
+  int row = -1;
+
+  if((row = m_ui.listeners->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.listeners->item
+	(row, m_ui.listeners->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+    }
+
+  if(oid.isEmpty())
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid listener OID. "
+			       "Please select a listener."));
+      return;
+    }
+
+  QList<QTableWidgetItem *> list(m_ui.ae_tokens->selectedItems());
+
+  if(list.size() != 2 || !list.at(0) || !list.at(1))
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Please select a token to delete."));
+      return;
+    }
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "listeners.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.prepare("DELETE FROM listeners_adaptive_echo_tokens WHERE "
+		      "token_hash = ? AND listener_oid = ?");
+	query.bindValue
+	  (0, crypt->keyedHash((list.at(0)->text() +
+				list.at(1)->text()).toLatin1(), &ok).
+	   toBase64());
+	query.bindValue(1, oid);
+
+	if(ok)
+	  query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  populateAETokens(oid);
+}
+
+void spoton::populateAETokens(const QString &listenerOid)
+{
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
+
+  if(!crypt)
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "listeners.db");
+
+    if(db.open())
+      {
+	QByteArray bytes1;
+	QByteArray bytes2;
+	QModelIndexList list;
+
+	list = m_ui.ae_tokens->selectionModel()->selectedRows
+	  (0);
+
+	if(!list.isEmpty())
+	  bytes1 = list.at(0).data().toByteArray();
+
+	list = m_ui.ae_tokens->selectionModel()->selectedRows
+	  (1);
+
+	if(!list.isEmpty())
+	  bytes2 = list.at(0).data().toByteArray();
+
+	m_ui.ae_tokens->setSortingEnabled(false);
+	m_ui.ae_tokens->clearContents();
+	m_ui.ae_tokens->setRowCount(0);
+
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare
+	  ("SELECT token, token_type FROM listeners_adaptive_echo_tokens "
+	   "WHERE listener_oid = ? AND listener_oid IN "
+	   "(SELECT OID FROM listeners WHERE status_control <> "
+	   "'deleted' AND OID = ?)");
+	query.bindValue(0, listenerOid);
+	query.bindValue(1, listenerOid);
+
+	if(query.exec())
+	  while(query.next())
+	    {
+	      m_ui.ae_tokens->setRowCount(m_ui.ae_tokens->rowCount() + 1);
+
+	      QByteArray token;
+	      QByteArray type;
+	      bool ok = true;
+
+	      token = crypt->decryptedAfterAuthenticated
+		(QByteArray::fromBase64(query.value(0).toByteArray()),
+		 &ok);
+
+	      if(ok)
+		type = crypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(1).toByteArray()),
+		   &ok);
+
+	      QTableWidgetItem *item = 0;
+
+	      if(ok)
+		item = new QTableWidgetItem(token.constData());
+	      else
+		item = new QTableWidgetItem(tr("error"));
+
+	      m_ui.ae_tokens->setItem
+		(m_ui.ae_tokens->rowCount() - 1, 0, item);
+
+	      if(ok)
+		item = new QTableWidgetItem(type.constData());
+	      else
+		item = new QTableWidgetItem(tr("error"));
+
+	      m_ui.ae_tokens->setItem
+		(m_ui.ae_tokens->rowCount() - 1, 1, item);
+
+	      if(token == bytes1 && type == bytes2)
+		m_ui.ae_tokens->selectRow
+		  (m_ui.ae_tokens->rowCount() - 1);
+	    }
+
+	m_ui.ae_tokens->setSortingEnabled(true);
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }

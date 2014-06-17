@@ -736,6 +736,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotAddAcceptedIP(void)));
+  connect(m_ui.addAEToken,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotAddAEToken(void)));
+  connect(m_ui.deleteAEToken,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotDeleteAEToken(void)));
   connect(m_ui.sslControlString,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -1204,6 +1212,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.cipherType->clear();
   m_ui.cipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.etpCipherType->addItems(spoton_crypt::cipherTypes());
+  m_ui.ae_type->addItems(spoton_crypt::hashTypes());
   m_ui.etpHashType->addItems(spoton_crypt::hashTypes());
   m_ui.buzzHashType->addItems(spoton_crypt::hashTypes());
   m_ui.institutionNameType->addItems(spoton_crypt::cipherTypes());
@@ -1283,6 +1292,9 @@ spoton::spoton(void):QMainWindow()
   /*
   ** Please don't translate n/a.
   */
+
+  if(m_ui.ae_type->count() == 0)
+    m_ui.ae_type->addItem("n/a");
 
   if(m_ui.channelType->count() == 0)
     m_ui.channelType->addItem("n/a");
@@ -1532,6 +1544,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.urlParticipants->setColumnHidden(1, true); // OID
   m_ui.urlParticipants->setColumnHidden(2, true); // neighbor_oid
   m_ui.urlParticipants->setColumnHidden(3, true); // public_key_hash
+  m_ui.ae_tokens->horizontalHeader()->setSortIndicator
+    (0, Qt::AscendingOrder);
   m_ui.emailParticipants->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   m_ui.etpMagnets->horizontalHeader()->setSortIndicator
@@ -3902,6 +3916,11 @@ void spoton::slotDeleteListener(void)
 	       "WHERE listener_oid = ?");
 	    query.bindValue(0, oid);
 	    query.exec();
+	    query.prepare
+	      ("DELETE FROM listeners_adaptive_echo_tokens "
+	       "WHERE listener_oid = ?");
+	    query.bindValue(0, oid);
+	    query.exec();
 	    query.prepare("DELETE FROM listeners_allowed_ips WHERE "
 			  "listener_oid = ?");
 	    query.bindValue(0, oid);
@@ -3913,7 +3932,6 @@ void spoton::slotDeleteListener(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-  m_ui.accounts->clear();
 }
 
 void spoton::slotDeleteNeighbor(void)
@@ -4058,6 +4076,9 @@ void spoton::updateListenersTable(const QSqlDatabase &db)
 		   "(SELECT OID FROM listeners)");
 	query.exec("DELETE FROM listeners_accounts_consumed_authentications "
 		   "WHERE listener_oid >= 0");
+	query.exec("DELETE FROM listeners_adaptive_echo_tokens WHERE "
+		   "listener_oid NOT IN "
+		   "(SELECT OID FROM listeners)");
 	query.exec("DELETE FROM listeners_allowed_ips WHERE "
 		   "listener_oid NOT IN "
 		   "(SELECT OID FROM listeners)");
@@ -5416,6 +5437,7 @@ void spoton::slotDeleteAllListeners(void)
 	    query.exec("DELETE FROM listeners_accounts");
 	    query.exec
 	      ("DELETE FROM listeners_accounts_consumed_authentications");
+	    query.exec("DELETE FROM listeners_adaptive_echo_tokens");
 	    query.exec("DELETE FROM listeners_allowed_ips");
 	  }
 	else
@@ -5429,8 +5451,6 @@ void spoton::slotDeleteAllListeners(void)
 
   QSqlDatabase::removeDatabase(connectionName);
   m_ui.accounts->clear();
-  m_ui.accountName->clear();
-  m_ui.accountPassword->clear();
 }
 
 void spoton::slotDeleteAllNeighbors(void)
