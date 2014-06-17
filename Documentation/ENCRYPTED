@@ -41,6 +41,11 @@ listeners_accounts
 account_name
 account_password
 
+listeners_adaptive_echo_tokens
+
+token
+token_type
+
 listeners_allowed_ips
 
 ip_address
