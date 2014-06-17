@@ -5,6 +5,7 @@
 3.   Public encryption key type, signature key type, and size will not
      be retained. A future enhancement will provide richer details.
      Please see the Settings panel.
+4.   Corrected foreign key support. New installations only.
 
 0.09.06 (06/14/2014)
 
