@@ -1805,16 +1805,6 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 2048;
 
   settings.insert("gui/kernelKeySize", integer);
-  integer = qAbs(settings.value("gui/keySize", 3072).toInt(&ok));
-
-  if(!ok)
-    integer = 3072;
-  else if(!(integer == 2048 || integer == 3072 ||
-	    integer == 4096 || integer == 7680 ||
-	    integer == 8192 || integer == 15360))
-    integer = 3072;
-
-  settings.insert("gui/keySize", integer);
   integer = qAbs(settings.value("gui/maximumEmailFileSize", 1).toInt(&ok));
 
   if(!ok)
