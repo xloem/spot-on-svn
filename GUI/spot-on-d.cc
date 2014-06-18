@@ -1110,6 +1110,38 @@ void spoton::populateAETokens(const QString &listenerOid)
 
 void spoton::slotResetAETokenInformation(void)
 {
+  QModelIndexList list;
+
+  list = m_ui.neighbors->selectionModel()->selectedRows
+    (m_ui.neighbors->columnCount() - 1); // OID
+
+  if(list.isEmpty())
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare("UPDATE neighbors SET "
+		      "ae_token = NULL, "
+		      "ae_token_type = NULL "
+		      "WHERE OID = ? AND user_defined = 1");
+	query.bindValue(0, list.at(0).data());
+	query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }
 
 void spoton::slotSetAETokenInformation(void)
