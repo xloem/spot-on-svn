@@ -37,7 +37,8 @@ LIBS		+= -L..\\..\\libSpotOn -L..\\..\\libSpotOn\\Libraries.win32 \
 		   -lpthread -lspoton -lssl32
 PRE_TARGETDEPS = libspoton.dll
 
-FORMS           = UI\\buzzpage.ui \
+FORMS           = UI\\adaptiveechoprompt.ui \
+		  UI\\buzzpage.ui \
 		  UI\\chatwindow.ui \
 		  UI\\controlcenter.ui \
                   UI\\logviewer.ui \

@@ -38,7 +38,8 @@ UI_DIR = temp/ui
 MOC_DIR = temp/moc
 RCC_DIR = temp/rcc
 
-FORMS           = UI/buzzpage.ui \
+FORMS           = UI/adaptiveechoprompt.ui \
+		  UI/buzzpage.ui \
 		  UI/chatwindow.ui \
 		  UI/controlcenter.ui \
                   UI/logviewer.ui \
