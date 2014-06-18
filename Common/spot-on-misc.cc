@@ -404,9 +404,13 @@ void spoton_misc::prepareDatabases(void)
 		   "account_authenticated TEXT, "
 		   "transport TEXT NOT NULL, "
 		   "orientation TEXT NOT NULL, "
-		   "motd TEXT NOT NULL DEFAULT 'Welcome to Spot-On.')").
+		   "motd TEXT NOT NULL DEFAULT 'Welcome to Spot-On.', "
+		   "ae_token TEXT, "
+		   "ae_token_type TEXT)").
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
+	query.exec("ALTER TABLE neighbors ADD ae_token TEXT");
+	query.exec("ALTER TABLE neighbors ADD ae_token_type TEXT");
       }
 
     db.close();

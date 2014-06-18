@@ -4913,6 +4913,11 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotNeighborFullEcho(void)));
       menu.addAction(tr("&Half Echo"),
 		     this, SLOT(slotNeighborHalfEcho(void)));
+      menu.addSeparator();
+      menu.addAction(tr("&Set Adaptive Echo Token Information"),
+		     this, SLOT(slotSetAETokenInformation(void)));
+      menu.addAction(tr("&Reset Adaptive Echo Token Information"),
+		     this, SLOT(slotResetAETokenInformation(void)));
       menu.exec(m_ui.neighbors->mapToGlobal(point));
     }
   else if(m_ui.participants == sender())

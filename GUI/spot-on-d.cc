@@ -1107,3 +1107,11 @@ void spoton::populateAETokens(const QString &listenerOid)
 
   QSqlDatabase::removeDatabase(connectionName);
 }
+
+void spoton::slotResetAETokenInformation(void)
+{
+}
+
+void spoton::slotSetAETokenInformation(void)
+{
+}

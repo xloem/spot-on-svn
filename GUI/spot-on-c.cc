@@ -2504,6 +2504,11 @@ void spoton::prepareContextMenuMirrors(void)
 		      this, SLOT(slotNeighborFullEcho(void)));
       menu->addAction(tr("&Half Echo"),
 		      this, SLOT(slotNeighborHalfEcho(void)));
+      menu->addSeparator();
+      menu->addAction(tr("&Set Adaptive Echo Token Information"),
+		      this, SLOT(slotSetAETokenInformation(void)));
+      menu->addAction(tr("&Reset Adaptive Echo Token Information"),
+		      this, SLOT(slotResetAETokenInformation(void)));
       m_ui.neighborsActionMenu->setMenu(menu);
     }
 

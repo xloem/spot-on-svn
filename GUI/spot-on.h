@@ -354,6 +354,7 @@ class spoton: public QMainWindow
   void slotRemoveUrlParticipants(void);
   void slotRenameParticipant(void);
   void slotReply(void);
+  void slotResetAETokenInformation(void);
   void slotResetAccountInformation(void);
   void slotResetAll(void);
   void slotResetCertificate(void);
@@ -376,6 +377,7 @@ class spoton: public QMainWindow
   void slotSelectTransmitFile(void);
   void slotSendMail(void);
   void slotSendMessage(void);
+  void slotSetAETokenInformation(void);
   void slotSetIcons(void);
   void slotSetPassphrase(void);
   void slotShareBuzzMagnet(void);
