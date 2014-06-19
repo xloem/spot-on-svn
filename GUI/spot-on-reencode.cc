@@ -427,7 +427,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      if(ok)
 		{
 		  if(query.isNull(0))
-		    updateQuery.bindValue(0, QVariant::ByteArray);
+		    updateQuery.bindValue(0, QVariant::String);
 		  else
 		    updateQuery.bindValue
 		      (0, newCrypt->encryptedThenHashed(gemini,
@@ -437,7 +437,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      if(ok)
 		{
 		  if(query.isNull(1))
-		    updateQuery.bindValue(1, QVariant::ByteArray);
+		    updateQuery.bindValue(1, QVariant::String);
 		  else
 		    updateQuery.bindValue
 		      (1,
@@ -683,6 +683,10 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  deleteQuery.exec("DELETE FROM listeners_accounts "
 				   "WHERE listener_oid NOT IN "
 				   "(SELECT OID FROM listeners)");
+		  deleteQuery.exec
+		    ("DELETE FROM listeners_adaptive_echo_tokens "
+		     "WHERE listener_oid NOT IN "
+		     "(SELECT OID FROM listeners)");
 		  deleteQuery.exec("DELETE FROM listeners_allowed_ips "
 				   "WHERE listener_oid NOT IN "
 				   "(SELECT OID FROM listeners)");
@@ -741,6 +745,65 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 
 		  deleteQuery.prepare("DELETE FROM listeners_accounts WHERE "
 				      "account_name_hash = ?");
+		  deleteQuery.bindValue(0, query.value(1));
+		  deleteQuery.exec();		  
+		}
+	    }
+
+	if(query.exec("SELECT token, token_hash, token_type "
+		      "FROM listeners_adaptive_echo_tokens"))
+	  while(query.next())
+	    {
+	      QByteArray token;
+	      QByteArray tokenType;
+	      QSqlQuery updateQuery(db);
+	      bool ok = true;
+
+	      updateQuery.prepare("UPDATE listeners_adaptive_echo_tokens "
+				  "SET token = ?, "
+				  "token_hash = ?, "
+				  "token_type = ? "
+				  "WHERE token_hash = ?");
+	      token = oldCrypt->decryptedAfterAuthenticated
+		(QByteArray::
+		 fromBase64(query.
+			    value(0).
+			    toByteArray()),
+		 &ok);
+
+	      if(ok)
+		tokenType = oldCrypt->decryptedAfterAuthenticated
+		  (QByteArray::
+		   fromBase64(query.
+			      value(2).
+			      toByteArray()),
+		   &ok);
+
+	      if(ok)
+		updateQuery.bindValue
+		  (0, newCrypt->encryptedThenHashed(token, &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (1, newCrypt->keyedHash(token + tokenType,
+					  &ok).toBase64());
+
+	      if(ok)
+		updateQuery.bindValue
+		  (2, newCrypt->encryptedThenHashed(tokenType,
+						    &ok).toBase64());
+
+	      updateQuery.bindValue(3, query.value(1));
+
+	      if(ok)
+		updateQuery.exec();
+	      else
+		{
+		  QSqlQuery deleteQuery(db);
+
+		  deleteQuery.prepare
+		    ("DELETE FROM listeners_adaptive_echo_tokens WHERE "
+		     "token_hash = ?");
 		  deleteQuery.bindValue(0, query.value(1));
 		  deleteQuery.exec();		  
 		}
@@ -816,7 +879,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		      "proxy_username, uuid, "
 		      "echo_mode, certificate, protocol, "
 		      "account_name, account_password, transport, "
-		      "orientation "
+		      "orientation, ae_token, ae_token_type "
 		      "FROM neighbors"))
 	  while(query.next())
 	    {
@@ -825,6 +888,8 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      QSqlQuery updateQuery(db);
 	      QString accountName("");
 	      QString accountPassword("");
+	      QString aeToken("");
+	      QString aeTokenType("");
 	      QString country("");
 	      QString echoMode("");
 	      QString ipAddress("");
@@ -862,7 +927,9 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				  "account_password = ?, "
 				  "account_authenticated = NULL, "
 				  "transport = ?, "
-				  "orientation = ? "
+				  "orientation = ?, "
+				  "ae_token = ?, "
+				  "ae_token_type = ? "
 				  "WHERE hash = ?");
 	      ipAddress = oldCrypt->decryptedAfterAuthenticated
 		(QByteArray::
@@ -997,6 +1064,24 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		   &ok).constData();
 
 	      if(ok)
+		if(!query.isNull(18))
+		  aeToken = oldCrypt->decryptedAfterAuthenticated
+		    (QByteArray::
+		     fromBase64(query.
+				value(18).
+				toByteArray()),
+		     &ok).constData();
+
+	      if(ok)
+		if(!query.isNull(19))
+		  aeTokenType = oldCrypt->decryptedAfterAuthenticated
+		    (QByteArray::
+		     fromBase64(query.
+				value(19).
+				toByteArray()),
+		     &ok).constData();
+
+	      if(ok)
 		updateQuery.bindValue
 		  (0, newCrypt->encryptedThenHashed(ipAddress.
 						    toLatin1(),
@@ -1106,8 +1191,30 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		   encryptedThenHashed(orientation.toLatin1(), &ok).
 		   toBase64());
 
+	      if(ok)
+		{
+		  if(aeToken.isEmpty())
+		    updateQuery.bindValue(20, QVariant::String);
+		  else
+		    updateQuery.bindValue
+		      (20, newCrypt->
+		       encryptedThenHashed(aeToken.toLatin1(), &ok).
+		       toBase64());
+		}
+
+	      if(ok)
+		{
+		  if(aeTokenType.isEmpty())
+		    updateQuery.bindValue(21, QVariant::String);
+		  else
+		    updateQuery.bindValue
+		      (21, newCrypt->
+		       encryptedThenHashed(aeTokenType.toLatin1(), &ok).
+		       toBase64());
+		}
+
 	      updateQuery.bindValue
-		(20, query.value(4));
+		(22, query.value(4));
 
 	      if(ok)
 		updateQuery.exec();
@@ -1230,7 +1337,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 	      if(ok)
 		{
 		  if(query.isNull(2))
-		    updateQuery.bindValue(2, QVariant::ByteArray);
+		    updateQuery.bindValue(2, QVariant::String);
 		  else
 		    updateQuery.bindValue
 		      (2, newCrypt->

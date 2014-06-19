@@ -4557,30 +4557,35 @@ void spoton::slotSetPassphrase(void)
       m_ui.emailName->setText(m_ui.username->text());
       m_ui.nodeName->setText(m_ui.username->text());
       m_ui.urlName->setText(m_ui.username->text());
-      importNeighbors("spot-on-neighbors.txt");
+
+      if(!m_settings.value("gui/spot_on_neighbors_txt_processed",
+			   false).toBool())
+	importNeighbors("spot-on-neighbors.txt");
+
       QMessageBox::information
 	(this, tr("Spot-On: Information"),
 	 tr("Your confidential information has been saved. "
 	    "You are now ready to use the full power of Spot-On. Enjoy!"));
 
-      if(QFileInfo(m_ui.kernelPath->text().trimmed()).isExecutable())
-	{
-	  QMessageBox mb(this);
+      if(m_ui.pid->text() == "0")
+	if(QFileInfo(m_ui.kernelPath->text().trimmed()).isExecutable())
+	  {
+	    QMessageBox mb(this);
 
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
-	  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+	    mb.setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
 #endif
-	  mb.setIcon(QMessageBox::Question);
-	  mb.setWindowTitle(tr("Spot-On: Question"));
-	  mb.setWindowModality(Qt::WindowModal);
-	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-	  mb.setText(tr("Would you like the kernel to be activated?"));
+	    mb.setIcon(QMessageBox::Question);
+	    mb.setWindowTitle(tr("Spot-On: Question"));
+	    mb.setWindowModality(Qt::WindowModal);
+	    mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+	    mb.setText(tr("Would you like the kernel to be activated?"));
 
-	  if(mb.exec() == QMessageBox::Yes)
-	    slotActivateKernel();
-	}
+	    if(mb.exec() == QMessageBox::Yes)
+	      slotActivateKernel();
+	  }
     }
 }
 

@@ -3290,7 +3290,6 @@ void spoton::importNeighbors(const QString &filePath)
 		       "VALUES "
 		       "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
 		       "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
 		    query.bindValue(0, QVariant(QVariant::String));
 		    query.bindValue(1, QVariant(QVariant::String));
 		    query.bindValue

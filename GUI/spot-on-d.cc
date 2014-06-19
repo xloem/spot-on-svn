@@ -26,6 +26,7 @@
 */
 
 #include "spot-on.h"
+#include "ui_adaptiveechoprompt.h"
 
 void spoton::slotDiscoverMissingLinks(void)
 {
@@ -1146,4 +1147,99 @@ void spoton::slotResetAETokenInformation(void)
 
 void spoton::slotSetAETokenInformation(void)
 {
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
+
+  if(!crypt)
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid spoton_crypt object. "
+			       "This is a fatal flaw."));
+      return;
+    }
+
+  QModelIndexList list;
+  QString oid("");
+
+  list = m_ui.neighbors->selectionModel()->selectedRows
+    (m_ui.neighbors->columnCount() - 1); // OID
+
+  if(list.isEmpty())
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("Invalid neighbor OID. "
+			       "Please select a neighbor."));
+      return;
+    }
+  else
+    oid = list.at(0).data().toString();
+
+  QStringList types(spoton_crypt::hashTypes());
+
+  if(types.isEmpty())
+    {
+      QMessageBox::critical(this, tr("Spot-On: Error"),
+			    tr("The method spoton_crypt::hashTypes() has "
+			       "failed. "
+			       "This is a fatal flaw."));
+      return;
+    }
+
+  QDialog dialog(this);
+  Ui_adaptiveechoprompt ui;
+
+  ui.setupUi(&dialog);
+#ifdef Q_OS_MAC
+  dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+#endif
+  ui.token_type->addItems(types);
+
+  if(dialog.exec() == QDialog::Accepted)
+    {
+      QString token(ui.token->text().trimmed());
+      QString tokenType(ui.token_type->currentText());
+
+      if(token.length() >= 16)
+	{
+	  QString connectionName("");
+
+	  {
+	    QSqlDatabase db = spoton_misc::database(connectionName);
+
+	    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			       "neighbors.db");
+
+	    if(db.open())
+	      {
+		QSqlQuery query(db);
+		bool ok = true;
+
+		query.prepare("UPDATE neighbors SET "
+			      "ae_token = ?, "
+			      "ae_token_type = ? "
+			      "WHERE OID = ? AND user_defined = 1");
+		query.bindValue
+		  (0, crypt->encryptedThenHashed(token.toLatin1(),
+						 &ok).toBase64());
+
+		if(ok)
+		  query.bindValue
+		    (1, crypt->encryptedThenHashed(tokenType.toLatin1(),
+						   &ok).toBase64());
+
+		query.bindValue(2, oid);
+
+		if(ok)
+		  query.exec();
+	      }
+
+	    db.close();
+	  }
+
+	  QSqlDatabase::removeDatabase(connectionName);
+	}
+      else
+	QMessageBox::critical(this, tr("Spot-On: Error"),
+			      tr("The token must contain "
+				 "at least sixteen characters."));
+    }
 }
