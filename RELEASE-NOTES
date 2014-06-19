@@ -3,9 +3,13 @@
 1.   Removed some debug statements.
 2.   Adaptive echo.
 3.   Public encryption key type, signature key type, and size will not
-     be retained. A future enhancement will provide richer details.
-     Please see the Settings panel.
-4.   Corrected foreign key support. New installations only.
+     be retained in the INI file. A future enhancement will provide richer
+     details.
+4.   Corrected SQLite foreign key support. New installations only.
+5.   Corrected binding of NULL values: QVariant::ByteArray for BLOB,
+     QVariant::String for TEXT.
+6.   The file spot-on-neighbors.txt should not be processed after
+     re-encoding if spot_on_neighbors_txt_processed is true.
 
 0.09.06 (06/14/2014)
 
