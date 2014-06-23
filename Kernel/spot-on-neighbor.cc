@@ -2644,7 +2644,9 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 	      if(ok)
 		publicKeyHash = spoton_crypt::sha512Hash(publicKey, &ok);
 
-	      if(publicKeyHash == recipientHash)
+	      if(ok &&
+		 !publicKeyHash.isEmpty() && !recipientHash.isEmpty() &&
+		 spoton_crypt::memcmp(publicKeyHash, recipientHash))
 		{
 		  keyInformation2 = s_crypt->
 		    publicKeyDecrypt(keyInformation2, &ok);

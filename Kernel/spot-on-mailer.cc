@@ -129,9 +129,10 @@ void spoton_mailer::slotTimeout(void)
 	      qint64 mailOid = query.value(5).toLongLong();
 	      qint64 participantOid = -1;
 
-	      goldbug = s_crypt->decryptedAfterAuthenticated
-		(QByteArray::fromBase64(query.value(0).toByteArray()),
-		 &ok);
+	      if(ok)
+		goldbug = s_crypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(0).toByteArray()),
+		   &ok);
 
 	      if(ok)
 		message = s_crypt->decryptedAfterAuthenticated
