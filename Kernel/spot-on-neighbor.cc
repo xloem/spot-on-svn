@@ -505,7 +505,10 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
       if(ok)
 	password = s_crypt->decryptedAfterAuthenticated(password, &ok);
 
-      m_useAccounts = !name.isEmpty() || !password.isEmpty();
+      if(ok)
+	m_useAccounts = !name.isEmpty() && !password.isEmpty();
+      else
+	m_useAccounts = false;
     }
 
   if(m_transport == "tcp")
