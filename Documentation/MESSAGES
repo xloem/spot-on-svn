@@ -12,7 +12,9 @@ EOL
 }
 EOL
 {
-0 - Keyed (Gemini Hash Key) SHA-512 Message Code (Base-64)
+0 - Keyed (Gemini Hash Key) SHA-512 Message Code (Base-64) +
+    Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data (Base-64)
 }
 
 Groups: 3
@@ -43,7 +45,9 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
+0 - Keyed SHA-512 Message Code of the Second Group (Base-64) +
+    Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data (Base-64)
 }
 
 Echo Call
@@ -73,7 +77,9 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
+0 - Keyed SHA-512 Message Code of the Second Group (Base-64) +
+    Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data (Base-64)
 }
 
 Echo Mail
@@ -131,7 +137,9 @@ EOL
 }
 EOL
 {
-0 - Keyed 1 SHA-512 Message Code of the Second Group (Base-64)
+0 - Keyed 1 SHA-512 Message Code of the Second Group (Base-64) +
+    Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data (Base-64)
 }
 
 Groups: 3, 6
@@ -162,7 +170,9 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
+0 - Keyed SHA-512 Message Code of the Second Group (Base-64) +
+    Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data (Base-64)
 }
 EOL
 {
@@ -177,7 +187,9 @@ EOL
 EOL
 {
 0 - Optional Keyed (Institution Hash Key)
-    Message Code of the Preceding Five Groups (Base-64)
+    Message Code of the Preceding Five Groups (Base-64) +
+    Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data (Base-64)
 }
 
 Retrieve Mail
@@ -205,7 +217,9 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
+0 - Keyed SHA-512 Message Code of the Second Group (Base-64) +
+    Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data (Base-64)
 }
 
 Groups: 2
@@ -224,7 +238,9 @@ EOL
 }
 EOL
 {
-0 - Keyed (Institution Hash Key) Message Code (Base-64)
+0 - Keyed (Institution Hash Key) Message Code (Base-64) +
+    Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data (Base-64)
 }
 
 Key Exchange
@@ -243,7 +259,7 @@ EOL
 EOL
 5 - Sender's Signature Public Key Signature (Base-64)
 
-Status
+Participant Status
 Echoed? Yes
 
 Groups: 2
@@ -255,7 +271,9 @@ EOL
 }
 EOL
 {
-0 - Keyed (Gemini Hash Key) SHA-512 Message Code (Base-64)
+0 - Keyed (Gemini Hash Key) SHA-512 Message Code (Base-64) +
+    Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data (Base-64)
 }
 
 Groups: 3
@@ -282,7 +300,9 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
+0 - Keyed SHA-512 Message Code of the Second Group (Base-64) +
+    Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data (Base-64)
 }
 
 UUID Exchange
@@ -319,7 +339,9 @@ EOL
 }
 EOL
 {
-0 - Keyed Message Code (Base-64)
+0 - Keyed Message Code (Base-64) +
+    Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data (Base-64)
 }
 
 Groups: 2
@@ -335,7 +357,9 @@ EOL
 }
 EOL
 {
-0 - Keyed Message Code (Base-64)
+0 - Keyed Message Code (Base-64) +
+    Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data (Base-64)
 }
 
 Account Authentication
@@ -379,7 +403,9 @@ EOL
 }
 EOL
 {
-0 - Keyed SHA-512 Message Code (Base-64)
+0 - Keyed SHA-512 Message Code (Base-64) +
+    Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data (Base-64)
 }
 
 Buzz Magnet Share
