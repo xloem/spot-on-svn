@@ -142,6 +142,7 @@ class spoton_neighbor: public QThread
 		  const QString &localPort,
 		  const QString &orientation,
 		  const QString &motd,
+		  const QList<QPair<QByteArray, QByteArray> > &aePairs,
 		  QObject *parent);
   ~spoton_neighbor();
   QAbstractSocket::SocketState state(void) const;
@@ -166,6 +167,7 @@ class spoton_neighbor: public QThread
   QDateTime m_lastReadTime;
   QDateTime m_startTime;
   QHostAddress m_address;
+  QList<QPair<QByteArray, QByteArray> > m_aePairs;
   QPointer<spoton_external_address> m_externalAddress;
   QPointer<spoton_neighbor_tcp_socket> m_tcpSocket;
   QPointer<spoton_neighbor_udp_socket> m_udpSocket;
@@ -298,7 +300,8 @@ class spoton_neighbor: public QThread
   void slotSendMail(const QPairListByteArrayQInt64 &list,
 		    const QString &messageType);
   void slotSendMailFromPostOffice(const QByteArray &data);
-  void slotSendMessage(const QByteArray &data);
+  void slotSendMessage(const QByteArray &data,
+		       const spoton_send::spoton_send_method sendMethod);
   void slotSendStatus(const QByteArrayList &list);
   void slotSendUuid(void);
   void slotSslErrors(const QList<QSslError> &errors);

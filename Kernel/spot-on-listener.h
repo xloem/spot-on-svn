@@ -180,6 +180,7 @@ class spoton_listener: public QObject
   QByteArray m_privateKey;
   QByteArray m_publicKey;
   QHostAddress m_address;
+  QList<QPair<QByteArray, QByteArray> > m_aePairs;
   QNetworkInterface *m_networkInterface;
   QString m_echoMode;
   QString m_motd;

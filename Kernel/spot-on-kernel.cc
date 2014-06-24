@@ -1454,15 +1454,9 @@ void spoton_kernel::slotMessageReceivedFromUI
 	  if(setting("gui/chatSendMethod",
 		     "Artificial_GET").toString().
 	     trimmed() == "Artificial_GET")
-	    emit sendMessage
-	      (spoton_send::message0000(data,
-					spoton_send::
-					ARTIFICIAL_GET));
+	    emit sendMessage(data, spoton_send::ARTIFICIAL_GET);
 	  else
-	    emit sendMessage
-	      (spoton_send::message0000(data,
-					spoton_send::
-					NORMAL_POST));
+	    emit sendMessage(data, spoton_send::NORMAL_POST);
 	}
     }
 }
@@ -1739,9 +1733,11 @@ void spoton_kernel::connectSignalsToNeighbor
 			    const QString &)),
 	  Qt::UniqueConnection);
   connect(this,
-	  SIGNAL(sendMessage(const QByteArray &)),
+	  SIGNAL(sendMessage(const QByteArray &,
+			     const spoton_send::spoton_send_method)),
 	  neighbor,
-	  SLOT(slotSendMessage(const QByteArray &)),
+	  SLOT(slotSendMessage(const QByteArray &,
+			       const spoton_send::spoton_send_method)),
 	  Qt::UniqueConnection);
   connect(this,
 	  SIGNAL(sendStatus(const QByteArrayList &)),
@@ -2044,15 +2040,9 @@ void spoton_kernel::slotScramble(void)
     {
       if(setting("gui/chatSendMethod",
 		 "Artificial_GET").toString().trimmed() == "Artificial_GET")
-	emit sendMessage
-	  (spoton_send::message0000(data,
-				    spoton_send::
-				    ARTIFICIAL_GET));
+	emit sendMessage(data, spoton_send::ARTIFICIAL_GET);
       else
-	emit sendMessage
-	  (spoton_send::message0000(data,
-				    spoton_send::
-				    NORMAL_POST));
+	emit sendMessage(data, spoton_send::NORMAL_POST);
     }
 }
 

@@ -180,7 +180,8 @@ class spoton_kernel: public QObject
   void receivedMessage(const QByteArray &data, const qint64 id);
   void retrieveMail(const QByteArrayList &list, const QString &messageType);
   void sendBuzz(const QByteArray &buzz);
-  void sendMessage(const QByteArray &message);
+  void sendMessage(const QByteArray &message,
+		   const spoton_send::spoton_send_method sendMethod);
   void sendMail(const QPairListByteArrayQInt64 &mail,
 		const QString &messageType);
   void sendStatus(const QByteArrayList &status);

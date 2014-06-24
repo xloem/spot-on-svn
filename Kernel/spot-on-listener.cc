@@ -393,6 +393,52 @@ void spoton_listener::slotTimeout(void)
 	query.bindValue(1, 120);
 	query.bindValue(2, m_id);
 	query.exec();
+	query.prepare("SELECT token, token_type FROM "
+		      "listeners_adaptive_echo_tokens "
+		      "WHERE listener_oid = ?");
+	query.bindValue(0, m_id);
+
+	if(query.exec())
+	  {
+	    spoton_crypt *s_crypt =
+	      spoton_kernel::s_crypts.value("chat", 0);
+
+	    if(s_crypt)
+	      {
+		m_aePairs.clear();
+
+		while(query.next())
+		  {
+		    QByteArray token;
+		    QByteArray tokenType;
+		    QPair<QByteArray, QByteArray> pair;
+		    bool ok = true;
+
+		    token = s_crypt->decryptedAfterAuthenticated
+		      (QByteArray::
+		       fromBase64(query.
+				  value(0).
+				  toByteArray()),
+		       &ok);
+
+		    if(ok)
+		      tokenType = s_crypt->decryptedAfterAuthenticated
+			(QByteArray::
+			 fromBase64(query.
+				    value(1).
+				    toByteArray()),
+			 &ok);
+
+		    if(!ok)
+		      continue;
+
+		    pair.first = token;
+		    pair.second = tokenType;
+		    m_aePairs.append(pair);
+		  }
+	      }
+	  }
+
 	query.prepare("SELECT status_control, maximum_clients, "
 		      "echo_mode, use_accounts, maximum_buffer_size, "
 		      "maximum_content_length, motd "
@@ -671,6 +717,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 	     QString::number(m_port),
 	     m_orientation,
 	     m_motd,
+	     m_aePairs,
 	     this);
 	}
       catch(std::bad_alloc &exception)

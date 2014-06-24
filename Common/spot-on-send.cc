@@ -27,14 +27,28 @@
 
 #include <QString>
 
+#include "spot-on-crypt.h"
 #include "spot-on-send.h"
 
 QByteArray spoton_send::EOM = "\r\n\r\n\r\n";
 
-QByteArray spoton_send::message0000(const QByteArray &message,
-				    const spoton_send_method sendMethod)
+QByteArray spoton_send::message0000
+(const QByteArray &message,
+ const spoton_send_method sendMethod,
+ const QPair<QByteArray, QByteArray> &aePair)
 {
+  QByteArray authenticated;
   QByteArray results;
+  bool ok = true;
+
+  authenticated = spoton_crypt::keyedHash
+    (message, aePair.first, aePair.second, &ok);
+
+  if(ok)
+    authenticated = message + "\n" + authenticated.toBase64();
+  else
+    authenticated = message + "\n" +
+      spoton_crypt::weakRandomBytes(64).toBase64();
 
   if(sendMethod == ARTIFICIAL_GET)
     results.append("HTTP/1.1 200 OK\r\n");
@@ -49,17 +63,30 @@ QByteArray spoton_send::message0000(const QByteArray &message,
      "\r\n\r\n");
   results.replace
     ("%1",
-     QByteArray::number(message.toBase64().length() +
+     QByteArray::number(authenticated.toBase64().length() +
 			QString("content=\r\n\r\n\r\n").length()));
   results.replace
-    ("%2", message.toBase64());
+    ("%2", authenticated.toBase64());
   return results;
 }
 
-QByteArray spoton_send::message0000a(const QByteArray &message,
-				     const spoton_send_method sendMethod)
+QByteArray spoton_send::message0000a
+(const QByteArray &message,
+ const spoton_send_method sendMethod,
+ const QPair<QByteArray, QByteArray> &aePair)
 {
+  QByteArray authenticated;
   QByteArray results;
+  bool ok = true;
+
+  authenticated = spoton_crypt::keyedHash
+    (message, aePair.first, aePair.second, &ok);
+
+  if(ok)
+    authenticated = message + "\n" + authenticated.toBase64();
+  else
+    authenticated = message + "\n" +
+      spoton_crypt::weakRandomBytes(64).toBase64();
 
   if(sendMethod == ARTIFICIAL_GET)
     results.append("HTTP/1.1 200 OK\r\n");
@@ -74,10 +101,10 @@ QByteArray spoton_send::message0000a(const QByteArray &message,
      "\r\n\r\n");
   results.replace
     ("%1",
-     QByteArray::number(message.toBase64().length() +
+     QByteArray::number(authenticated.toBase64().length() +
 			QString("content=\r\n\r\n\r\n").length()));
   results.replace
-    ("%2", message.toBase64());
+    ("%2", authenticated.toBase64());
   return results;
 }
 
@@ -244,9 +271,22 @@ QByteArray spoton_send::message0012(const QByteArray &message)
   return results;
 }
 
-QByteArray spoton_send::message0013(const QByteArray &message)
+QByteArray spoton_send::message0013
+(const QByteArray &message,
+ const QPair<QByteArray, QByteArray> &aePair)
 {
+  QByteArray authenticated;
   QByteArray results;
+  bool ok = true;
+
+  authenticated = spoton_crypt::keyedHash
+    (message, aePair.first, aePair.second, &ok);
+
+  if(ok)
+    authenticated = message + "\n" + authenticated.toBase64();
+  else
+    authenticated = message + "\n" +
+      spoton_crypt::weakRandomBytes(64).toBase64();
 
   results.append
     ("POST HTTP/1.1\r\n"
@@ -257,10 +297,10 @@ QByteArray spoton_send::message0013(const QByteArray &message)
      "\r\n\r\n");
   results.replace
     ("%1",
-     QByteArray::number(message.toBase64().length() +
+     QByteArray::number(authenticated.toBase64().length() +
 			QString("content=\r\n\r\n\r\n").length()));
   results.replace
-    ("%2", message.toBase64());
+    ("%2", authenticated.toBase64());
   return results;
 }
 
