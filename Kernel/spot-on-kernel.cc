@@ -3505,7 +3505,7 @@ void spoton_kernel::slotBuzzMagnetReceivedFromUI(const qint64 oid,
     neighbor->addToBytesWritten(data.length());
 }
 
-void spoton_kernel::writeToNeighbors(const QByteArray &data, bool *ok)
+void spoton_kernel::writeMessage0060(const QByteArray &data, bool *ok)
 {
   if(*ok)
     *ok = false;
@@ -3518,11 +3518,8 @@ void spoton_kernel::writeToNeighbors(const QByteArray &data, bool *ok)
 
       if(it.value())
 	if(it.value()->readyToWrite())
-	  if(it.value()->write(data.constData(),
-			       data.length()) == data.length())
+	  if(it.value()->writeMessage0060(data))
 	    {
-	      it.value()->addToBytesWritten(data.length());
-
 	      if(ok)
 		*ok = true;
 	    }

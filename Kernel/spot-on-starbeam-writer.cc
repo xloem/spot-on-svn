@@ -70,7 +70,7 @@ void spoton_starbeam_writer::processData(void)
 
   QList<QByteArray> list(data.split('\n'));
 
-  if(list.size() != 2)
+  if(list.size() != 3)
     return;
 
   QByteArray originalData(data);

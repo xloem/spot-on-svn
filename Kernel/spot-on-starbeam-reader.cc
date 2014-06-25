@@ -413,17 +413,10 @@ void spoton_starbeam_reader::pulsate(const QString &fileName,
 		       &ok);
 
 		  if(ok)
-		    data = data.toBase64() + "\n" +
-		      messageCode.toBase64();
+		    data = data.toBase64() + "\n" + messageCode.toBase64();
 
 		  if(ok)
-		    data = spoton_send::message0060(data);
-
-		  if(ok)
-		    spoton_kernel::s_kernel->writeToNeighbors(data, &ok);
-
-		  if(ok)
-		    spoton_kernel::messagingCacheAdd(data);
+		    spoton_kernel::s_kernel->writeMessage0060(data, &ok);
 
 		  if(ok)
 		    {

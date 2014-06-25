@@ -85,7 +85,9 @@ class spoton_send
   static QByteArray message0051(const QByteArray &saltedCredentials,
 				const QByteArray &salt);
   static QByteArray message0052(void);
-  static QByteArray message0060(const QByteArray &message);
+  static QByteArray message0060
+    (const QByteArray &message,
+     const QPair<QByteArray, QByteArray> &aePair);
   static QByteArray message0065(const QByteArray &magnet);
   static QByteArray message0070(const QByteArray &motd);
 

@@ -78,7 +78,7 @@ class spoton_kernel: public QObject
 				const int add_msecs = 0);
   static void removeBuzzKey(const QByteArray &data);
   void processPotentialStarBeamData(const QByteArray &data);
-  void writeToNeighbors(const QByteArray &data, bool *ok);
+  void writeMessage0060(const QByteArray &data, bool *ok);
 
  private:
   QDateTime m_uptime;

@@ -5907,6 +5907,34 @@ qint64 spoton_neighbor::write(const char *data, const qint64 size)
   return size - remaining;
 }
 
+bool spoton_neighbor::writeMessage0060(const QByteArray &data)
+{
+  bool ok = true;
+
+  if((ok = readyToWrite()))
+    {
+      QByteArray message
+	(spoton_send::message0060(data, m_aePairs.value(0)));
+
+      if(write(message.constData(), message.length()) != message.length())
+	{
+	  ok = false;
+	  spoton_misc::logError
+	    (QString("spoton_neighbor::writeMessage0060(): write() error "
+		     "for %1:%2.").
+	     arg(m_address.toString()).
+	     arg(m_port));
+	}
+      else
+	{
+	  addToBytesWritten(message.length());
+	  spoton_kernel::messagingCacheAdd(message);
+	}
+    }
+
+  return ok;
+}
+
 QAbstractSocket::SocketState spoton_neighbor::state(void) const
 {
   if(m_sctpSocket)
