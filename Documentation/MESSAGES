@@ -94,7 +94,7 @@ EOL
 Echo Mail
 Echoed? Yes
 
-Groups: 6
+Groups: 7
 Public Key
 {
 0 - 0001a (Base-64)
@@ -148,8 +148,13 @@ EOL
 {
 0 - Keyed 1 SHA-512 Message Code of the Second Group (Base-64)
 }
+EOL
+{
+0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data (Base-64)
+}
 
-Groups: 3, 6
+Groups: 4, 7
 Public Key
 {
 0 - 0001b (Base-64)
@@ -194,11 +199,16 @@ EOL
 0 - Optional Keyed (Institution Hash Key)
     Message Code of the Preceding Five Groups (Base-64)
 }
+EOL
+{
+0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data (Base-64)
+}
 
 Retrieve Mail
 Echoed? Yes
 
-Groups: 3
+Groups: 4
 Public Key
 {
 0 - 0002a (Base-64)
@@ -222,8 +232,13 @@ EOL
 {
 0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
 }
+EOL
+{
+0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data (Base-64)
+}
 
-Groups: 2
+Groups: 3
 Symmetric Key (Institution Encryption Key)
 {
 0 - 0002b (Base-64)
@@ -240,6 +255,11 @@ EOL
 EOL
 {
 0 - Keyed (Institution Hash Key) Message Code (Base-64)
+}
+EOL
+{
+0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data (Base-64)
 }
 
 Key Exchange

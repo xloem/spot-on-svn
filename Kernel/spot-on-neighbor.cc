@@ -1616,7 +1616,7 @@ void spoton_neighbor::processData(void)
 	    emit receivedMessage(originalData, m_id);
 	  else if(m_echoMode == "full")
 	    {
-	      if(messageType == "0001b" && data.split('\n').size() == 6)
+	      if(messageType == "0001b" && data.split('\n').size() == 7)
 		emit receivedMessage(originalData, m_id);
 	      else if(messageType.isEmpty() ||
 		      messageType == "0002b" ||
@@ -2556,11 +2556,11 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 
       QList<QByteArray> list(data.split('\n'));
 
-      if(list.size() != 6)
+      if(list.size() != 7)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0001a(): "
-		     "received irregular data. Expecting 6 "
+		     "received irregular data. Expecting 7 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
 	  return;
@@ -2864,11 +2864,11 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
       QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
 
-      if(!(list.size() == 3 || list.size() == 6))
+      if(!(list.size() == 4 || list.size() == 7))
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0001b(): "
-		     "received irregular data. Expecting 3 or 6 "
+		     "received irregular data. Expecting 4 or 7 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
 	  return;
@@ -2877,7 +2877,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
-      if(list.size() == 3)
+      if(list.size() == 4)
 	{
 	  QByteArray hashKey;
 	  QByteArray keyInformation(list.value(0));
@@ -2990,7 +2990,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
       ** symmetricKeys[3]: Hash Type
       */
 
-      if(list.size() == 6)
+      if(list.size() == 7)
 	/*
 	** This letter is destined for someone else.
 	*/
@@ -3037,11 +3037,11 @@ void spoton_neighbor::process0002a(int length, const QByteArray &dataIn)
       QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
 
-      if(list.size() != 3)
+      if(list.size() != 4)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0002a(): "
-		     "received irregular data. Expecting 3 entries, "
+		     "received irregular data. Expecting 4 entries, "
 		     "received %1.").arg(list.size()));
 	  return;
 	}
@@ -3177,11 +3177,11 @@ void spoton_neighbor::process0002b(int length, const QByteArray &dataIn,
       QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
 
-      if(list.size() != 2)
+      if(list.size() != 3)
 	{
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::process0002b(): "
-		     "received irregular data. Expecting 2 entries, "
+		     "received irregular data. Expecting 3 entries, "
 		     "received %1.").arg(list.size()));
 	  return;
 	}
@@ -4826,9 +4826,9 @@ void spoton_neighbor::slotSendMail
 	QPair<QByteArray, qint64> pair(list.at(i));
 
 	if(messageType == "0001a")
-	  message = spoton_send::message0001a(pair.first);
+	  message = spoton_send::message0001a(pair.first, m_aePairs.value(0));
 	else
-	  message = spoton_send::message0001b(pair.first);
+	  message = spoton_send::message0001b(pair.first, m_aePairs.value(0));
 
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
@@ -4856,7 +4856,7 @@ void spoton_neighbor::slotSendMailFromPostOffice(const QByteArray &data)
 {
   if(readyToWrite())
     {
-      QByteArray message(spoton_send::message0001b(data));
+      QByteArray message(spoton_send::message0001b(data, m_aePairs.value(0)));
 
       if(write(message.constData(), message.length()) != message.length())
 	spoton_misc::logError
@@ -5095,9 +5095,11 @@ void spoton_neighbor::slotRetrieveMail(const QByteArrayList &list,
 	QByteArray message;
 
 	if(messageType == "0002a")
-	  message = spoton_send::message0002a(list.at(i));
+	  message = spoton_send::message0002a(list.at(i),
+					      m_aePairs.value(0));
 	else
-	  message = spoton_send::message0002b(list.at(i));
+	  message = spoton_send::message0002b(list.at(i),
+					      m_aePairs.value(0));
 
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
@@ -5588,7 +5590,7 @@ QString spoton_neighbor::findMessageType
 	      goto done_label;
 	  }
 
-  if(list.size() == 2 || list.size() == 6)
+  if(list.size() == 3 || list.size() == 7)
     /*
     ** 0001b
     ** 0002b
@@ -5598,7 +5600,7 @@ QString spoton_neighbor::findMessageType
 				     spoton_kernel::s_crypts.
 				     value("email", 0)) > 0)
       {
-	if(list.size() == 2)
+	if(list.size() == 3)
 	  symmetricKeys = spoton_kernel::findInstitutionKey
 	    (QByteArray::fromBase64(list.value(0)),
 	     QByteArray::fromBase64(list.value(1)));
@@ -5613,7 +5615,7 @@ QString spoton_neighbor::findMessageType
 
 	if(!symmetricKeys.isEmpty())
 	  {
-	    if(list.size() == 2)
+	    if(list.size() == 3)
 	      type = "0002b";
 	    else
 	      type = "0001b";
@@ -5622,7 +5624,7 @@ QString spoton_neighbor::findMessageType
 	  }
       }
 
-  if(list.size() == 3 || list.size() == 6)
+  if(list.size() == 4 || list.size() == 7)
     if((s_crypt = spoton_kernel::s_crypts.value("email", 0)))
       if(spoton_misc::participantCount("email", s_crypt) > 0)
 	{
