@@ -151,7 +151,6 @@ class spoton_neighbor: public QThread
   QUuid receivedUuid(void) const;
   bool hasData(void);
   bool isEncrypted(void) const;
-  bool readyToWrite(void);
   bool writeMessage0060(const QByteArray &data);
   qint64 id(void) const;
   qint64 write(const char *data, qint64 size);
@@ -207,6 +206,7 @@ class spoton_neighbor: public QThread
   quint16 m_port;
   QString findMessageType(const QByteArray &data,
 			  QList<QByteArray> &symmetricKeys);
+  bool readyToWrite(void);
   void process0000(int length, const QByteArray &data,
 		   const QList<QByteArray> &symmetricKeys);
   void process0000a(int length, const QByteArray &data);

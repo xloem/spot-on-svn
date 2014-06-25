@@ -3517,12 +3517,11 @@ void spoton_kernel::writeMessage0060(const QByteArray &data, bool *ok)
       it.next();
 
       if(it.value())
-	if(it.value()->readyToWrite())
-	  if(it.value()->writeMessage0060(data))
-	    {
-	      if(ok)
-		*ok = true;
-	    }
+	if(it.value()->writeMessage0060(data))
+	  {
+	    if(ok)
+	      *ok = true;
+	  }
     }
 }
 
