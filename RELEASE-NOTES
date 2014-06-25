@@ -13,6 +13,7 @@
      re-encoding if spot_on_neighbors_txt_processed is true.
 7.   Corrected hash comparison in spot-on-neighbor.cc; use a constant-time
      comparison method.
+8.   Improved exception management in the kernel.
 
 0.09.06 (06/14/2014)
 
