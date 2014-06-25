@@ -726,6 +726,14 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 	  spoton_misc::logError("spoton_listener::slotNewConnection(): "
 				"memory failure.");
 	}
+      catch(...)
+	{
+	  if(neighbor)
+	    neighbor->deleteLater();
+
+	  spoton_misc::logError("spoton_listener::slotNewConnection(): "
+				"critical failure.");
+	}
     }
 
   if(!error.isEmpty() || !neighbor)

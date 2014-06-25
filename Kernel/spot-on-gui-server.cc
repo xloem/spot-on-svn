@@ -63,40 +63,48 @@ void spoton_gui_server_tcp_server::incomingConnection(int socketDescriptor)
 
       if(socket)
 	{
-	  socket->setSocketDescriptor(socketDescriptor);
-	  socket->setSocketOption
-	    (QAbstractSocket::LowDelayOption,
-	     spoton_kernel::setting("kernel/tcp_nodelay", 1).
-	     toInt()); /*
-		       ** Disable Nagle?
-		       */
-	  connect(socket,
-		  SIGNAL(encrypted(void)),
-		  this,
-		  SLOT(slotEncrypted(void)));
-	  connect(socket,
-		  SIGNAL(modeChanged(QSslSocket::SslMode)),
-		  this,
-		  SIGNAL(modeChanged(QSslSocket::SslMode)));
+	  try
+	    {
+	      socket->setSocketDescriptor(socketDescriptor);
+	      socket->setSocketOption
+		(QAbstractSocket::LowDelayOption,
+		 spoton_kernel::setting("kernel/tcp_nodelay", 1).
+		 toInt()); /*
+			   ** Disable Nagle?
+			   */
+	      connect(socket,
+		      SIGNAL(encrypted(void)),
+		      this,
+		      SLOT(slotEncrypted(void)));
+	      connect(socket,
+		      SIGNAL(modeChanged(QSslSocket::SslMode)),
+		      this,
+		      SIGNAL(modeChanged(QSslSocket::SslMode)));
 
-	  QSslConfiguration configuration;
+	      QSslConfiguration configuration;
 
-	  configuration.setLocalCertificate(QSslCertificate(certificate));
-	  configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
+	      configuration.setLocalCertificate(QSslCertificate(certificate));
+	      configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
 #if QT_VERSION >= 0x040800
-	  configuration.setSslOption
-	    (QSsl::SslOptionDisableCompression, true);
-	  configuration.setSslOption
-	    (QSsl::SslOptionDisableEmptyFragments, true);
-	  configuration.setSslOption
-	    (QSsl::SslOptionDisableLegacyRenegotiation, true);
+	      configuration.setSslOption
+		(QSsl::SslOptionDisableCompression, true);
+	      configuration.setSslOption
+		(QSsl::SslOptionDisableEmptyFragments, true);
+	      configuration.setSslOption
+		(QSsl::SslOptionDisableLegacyRenegotiation, true);
 #endif
-	  spoton_crypt::setSslCiphers
-	    (socket->supportedCiphers(), configuration);
-	  socket->setSslConfiguration(configuration);
-	  socket->startServerEncryption();
-	  m_queue.enqueue(socket);
-	  emit newConnection();
+	      spoton_crypt::setSslCiphers
+		(socket->supportedCiphers(), configuration);
+	      socket->setSslConfiguration(configuration);
+	      socket->startServerEncryption();
+	      m_queue.enqueue(socket);
+	      emit newConnection();
+	    }
+	  catch(...)
+	    {
+	      m_queue.removeOne(socket);
+	      socket->deleteLater();
+	    }
 	}
       else
 	{
@@ -356,29 +364,43 @@ void spoton_gui_server::slotReadyRead(void)
 
 		  for(int i = 0; i < names.size(); i++)
 		    if(!spoton_kernel::s_crypts.contains(names.at(i)))
-		      spoton_kernel::s_crypts.insert
-			(names.at(i),
-			 new (std::nothrow) spoton_crypt
-			 (spoton_kernel::
-			  setting("gui/cipherType",
-				  "aes256").
-			  toString(),
-			  spoton_kernel::
-			  setting("gui/hashType",
-				  "sha512").
-			  toString(),
-			  QByteArray(),
-			  QByteArray::
-			  fromBase64(list.value(0)),
-			  QByteArray::
-			  fromBase64(list.value(1)),
-			  spoton_kernel::
-			  setting("gui/saltLength",
-				  512).toInt(),
-			  spoton_kernel::
-			  setting("gui/iterationCount",
-				  10000).toInt(),
-			  names.at(i)));
+		      {
+			spoton_crypt *crypt = 0;
+
+			try
+			  {
+			    crypt = new (std::nothrow) spoton_crypt
+			      (spoton_kernel::
+			       setting("gui/cipherType",
+				       "aes256").
+			       toString(),
+			       spoton_kernel::
+			       setting("gui/hashType",
+				       "sha512").
+			       toString(),
+			       QByteArray(),
+			       QByteArray::
+			       fromBase64(list.value(0)),
+			       QByteArray::
+			       fromBase64(list.value(1)),
+			       spoton_kernel::
+			       setting("gui/saltLength",
+				       512).toInt(),
+			       spoton_kernel::
+			       setting("gui/iterationCount",
+				       10000).toInt(),
+			       names.at(i));
+			    spoton_kernel::s_crypts.insert
+			      (names.at(i), crypt);
+			  }
+			catch(...)
+			  {
+			    if(crypt)
+			      delete crypt;
+
+			    spoton_kernel::s_crypts.remove(names.at(i));
+			  }
+		      }
 
 		  for(int i = 0; i < names.size(); i++)
 		    if(!spoton_kernel::s_crypts.value(names.at(i), 0))

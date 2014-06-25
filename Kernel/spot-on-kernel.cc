@@ -283,6 +283,11 @@ int main(int argc, char *argv[])
 	  qDebug() << "Critical memory failure. Exiting kernel.";
 	  return EXIT_FAILURE;
 	}
+      catch(...)
+	{
+	  qDebug() << "Critical failure. Exiting kernel.";
+	  return EXIT_FAILURE;
+	}
     }
   else
     {
@@ -815,6 +820,15 @@ void spoton_kernel::prepareListeners(void)
 				("spoton_kernel::prepareListeners(): "
 				 "memory failure.");
 			    }
+			  catch(...)
+			    {
+			      if(listener)
+				listener->deleteLater();
+
+			      spoton_misc::logError
+				("spoton_kernel::prepareListeners(): "
+				 "critical failure.");
+			    }
 			}
 
 		      if(listener)
@@ -1072,6 +1086,15 @@ void spoton_kernel::prepareNeighbors(void)
 				("spoton_kernel::prepareNeighbors(): "
 				 "memory failure.");
 			    }
+			  catch(...)
+			    {
+			      if(neighbor)
+				neighbor->deleteLater();
+
+			      spoton_misc::logError
+				("spoton_kernel::prepareNeighbors(): "
+				 "critical failure.");
+			    }
 			}
 
 		      if(neighbor)
@@ -1163,15 +1186,28 @@ void spoton_kernel::prepareStarbeamReaders(void)
 
 		  if(!m_starbeamReaders.contains(id))
 		    {
-		      starbeam = new (std::nothrow) spoton_starbeam_reader
-			(id, this);
+		      try
+			{
+			  starbeam = new (std::nothrow) spoton_starbeam_reader
+			    (id, this);
 
-		      if(starbeam)
-			m_starbeamReaders.insert(id, starbeam);
-		      else
-			spoton_misc::logError
-			  ("spoton_misc::prepareStarbeamReaders(): "
-			   "memory failure.");
+			  if(starbeam)
+			    m_starbeamReaders.insert(id, starbeam);
+			  else
+			    spoton_misc::logError
+			      ("spoton_misc::prepareStarbeamReaders(): "
+			       "memory failure.");
+			}
+		      catch(...)
+			{
+			  if(starbeam)
+			    starbeam->deleteLater();
+
+			  m_starbeamReaders.remove(id);
+			  spoton_misc::logError
+			    ("spoton_misc::prepareStarbeamReaders(): "
+			     "critical failure.");
+			}
 		    }
 		}
 	      else
@@ -2795,20 +2831,33 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
 
 	    for(int i = 0; i < list.size(); i++)
 	      if(!s_crypts.contains(list.at(i)))
-		s_crypts.insert
-		  (list.at(i),
-		   new (std::nothrow) spoton_crypt
-		   (setting("gui/cipherType",
-			    "aes256").toString(),
-		    setting("gui/hashType",
-			    "sha512").toString(),
-		    QByteArray(),
-		    keys.first,
-		    keys.second,
-		    setting("gui/saltLength", 512).toInt(),
-		    setting("gui/iterationCount",
-			    10000).toInt(),
-		    list.at(i)));
+		{
+		  spoton_crypt *crypt = 0;
+
+		  try
+		    {
+		      crypt = new (std::nothrow) spoton_crypt
+			(setting("gui/cipherType",
+				 "aes256").toString(),
+			 setting("gui/hashType",
+				 "sha512").toString(),
+			 QByteArray(),
+			 keys.first,
+			 keys.second,
+			 setting("gui/saltLength", 512).toInt(),
+			 setting("gui/iterationCount",
+				 10000).toInt(),
+			 list.at(i));
+		      s_crypts.insert(list.at(i), crypt);
+		    }
+		  catch(...)
+		    {
+		      if(crypt)
+			delete crypt;
+
+		      s_crypts.remove(list.at(i));
+		    }
+		}
 
 	    for(int i = 0; i < list.size(); i++)
 	      if(!s_crypts.value(list.at(i), 0))
