@@ -2802,3 +2802,24 @@ bool spoton_misc::isIpBlocked(const QHostAddress &address,
   QSqlDatabase::removeDatabase(connectionName);
   return count > 0;
 }
+
+QPair<QByteArray, QByteArray> spoton_misc::decryptedAdaptiveEchoPair
+(const QPair<QByteArray, QByteArray> pair, spoton_crypt *crypt)
+{
+  if(!crypt)
+    return QPair<QByteArray, QByteArray> ();
+
+  QByteArray t1(pair.first);
+  QByteArray t2(pair.second);
+  bool ok = true;
+
+  t1 = crypt->decryptedAfterAuthenticated(t1, &ok);
+
+  if(ok)
+    t2 = crypt->decryptedAfterAuthenticated(t2, &ok);
+
+  if(ok)
+    return QPair<QByteArray, QByteArray> (t1, t2);
+  else
+    return QPair<QByteArray, QByteArray> ();
+}

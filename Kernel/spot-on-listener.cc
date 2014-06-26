@@ -409,31 +409,10 @@ void spoton_listener::slotTimeout(void)
 
 		while(query.next())
 		  {
-		    QByteArray token;
-		    QByteArray tokenType;
 		    QPair<QByteArray, QByteArray> pair;
-		    bool ok = true;
 
-		    token = s_crypt->decryptedAfterAuthenticated
-		      (QByteArray::
-		       fromBase64(query.
-				  value(0).
-				  toByteArray()),
-		       &ok);
-
-		    if(ok)
-		      tokenType = s_crypt->decryptedAfterAuthenticated
-			(QByteArray::
-			 fromBase64(query.
-				    value(1).
-				    toByteArray()),
-			 &ok);
-
-		    if(!ok)
-		      continue;
-
-		    pair.first = token;
-		    pair.second = tokenType;
+		    pair.first = query.value(0).toByteArray();
+		    pair.second = query.value(1).toByteArray();
 		    m_aePairs.append(pair);
 		  }
 	      }

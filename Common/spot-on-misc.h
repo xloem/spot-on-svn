@@ -54,6 +54,8 @@ class spoton_misc
     (const QByteArray &signaturePublicKeyHash, spoton_crypt *crypt);
   static QByteArray signaturePublicKeyFromPublicKeyHash
     (const QByteArray &publicKeyHash, spoton_crypt *crypt);
+  static QPair<QByteArray, QByteArray> decryptedAdaptiveEchoPair
+    (const QPair<QByteArray, QByteArray>, spoton_crypt *crypt);
   static QSqlDatabase database(QString &connectionName);
   static QString countryCodeFromIPAddress(const QString &ipAddress);
   static QString countryCodeFromName(const QString &country);
