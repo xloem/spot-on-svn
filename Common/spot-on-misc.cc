@@ -323,15 +323,11 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS "
 		   "listeners_adaptive_echo_tokens ("
 		   "token TEXT NOT NULL, "
-		   "token_hash TEXT NOT NULL, "
-		   "token_type TEXT NOT NULL, " /*
-						** Keyed hash of the token
-						** and token type.
-						*/
-		   "listener_oid INTEGER NOT NULL, "
-		   "PRIMARY KEY (listener_oid, token_hash), "
-		   "FOREIGN KEY (listener_oid) REFERENCES "
-		   "listeners (OID) ON DELETE CASCADE)");
+		   "token_hash TEXT PRIMARY KEY NOT NULL, "
+		   "token_type TEXT NOT NULL)"); /*
+						 ** Keyed hash of the token
+						 ** and token type.
+						 */
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_allowed_ips ("
 		   "ip_address TEXT NOT NULL, "
 		   "ip_address_hash TEXT NOT NULL, " // Keyed hash.
@@ -1161,9 +1157,6 @@ void spoton_misc::cleanupDatabases(spoton_crypt *crypt)
 		   "listener_oid NOT IN "
 		   "(SELECT OID FROM listeners)");
 	query.exec("DELETE FROM listeners_accounts_consumed_authentications");
-	query.exec("DELETE FROM listeners_adaptive_echo_tokens WHERE "
-		   "listener_oid NOT IN "
-		   "(SELECT OID FROM listeners)");
 	query.exec("DELETE FROM listeners_allowed_ips WHERE "
 		   "listener_oid NOT IN "
 		   "(SELECT OID FROM listeners)");

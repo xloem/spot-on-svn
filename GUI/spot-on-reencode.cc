@@ -683,10 +683,6 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  deleteQuery.exec("DELETE FROM listeners_accounts "
 				   "WHERE listener_oid NOT IN "
 				   "(SELECT OID FROM listeners)");
-		  deleteQuery.exec
-		    ("DELETE FROM listeners_adaptive_echo_tokens "
-		     "WHERE listener_oid NOT IN "
-		     "(SELECT OID FROM listeners)");
 		  deleteQuery.exec("DELETE FROM listeners_allowed_ips "
 				   "WHERE listener_oid NOT IN "
 				   "(SELECT OID FROM listeners)");

@@ -69,13 +69,11 @@ spoton_neighbor::spoton_neighbor
  const QString &localPort,
  const QString &orientation,
  const QString &motd,
- const QList<QPair<QByteArray, QByteArray> > &aePairs,
  QObject *parent):QThread(parent)
 {
   m_sctpSocket = 0;
   m_tcpSocket = 0;
   m_udpSocket = 0;
-  m_aePairs = aePairs;
   m_maximumBufferSize =
     qBound(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH,
 	   maximumBufferSize,
@@ -975,7 +973,7 @@ void spoton_neighbor::slotTimeout(void)
 
 			if(m_isUserDefined)
 			  {
-			    m_aePairs.clear();
+			    m_aePair.first = m_aePair.second = QByteArray();
 
 			    if(!query.isNull(7) && !query.isNull(8))
 			      {
@@ -983,7 +981,7 @@ void spoton_neighbor::slotTimeout(void)
 				  (query.value(7).toByteArray(),
 				   query.value(8).toByteArray());
 
-				m_aePairs.append(pair);
+				m_aePair = pair;
 			      }
 			  }
 
@@ -1566,7 +1564,9 @@ void spoton_neighbor::processData(void)
 	  */
 
 	  QList<QByteArray> symmetricKeys;
-	  QString messageType(findMessageType(data, symmetricKeys));
+	  QPair<QByteArray, QByteArray> discoveredAEPair;
+	  QString messageType(findMessageType(data, symmetricKeys,
+					      discoveredAEPair));
 
 	  if(messageType == "0000")
 	    process0000(length, data, symmetricKeys);
@@ -1977,7 +1977,7 @@ void spoton_neighbor::slotSendMessage
     {
       QByteArray message;
       QPair<QByteArray, QByteArray> ae
-	(spoton_misc::decryptedAdaptiveEchoPair(m_aePairs.value(0),
+	(spoton_misc::decryptedAdaptiveEchoPair(m_aePair,
 						spoton_kernel::s_crypts.
 						value("chat")));
 
@@ -4446,7 +4446,7 @@ void spoton_neighbor::slotSendStatus(const QByteArrayList &list)
       {
 	QByteArray message;
 	QPair<QByteArray, QByteArray> ae
-	  (spoton_misc::decryptedAdaptiveEchoPair(m_aePairs.value(0),
+	  (spoton_misc::decryptedAdaptiveEchoPair(m_aePair,
 						  spoton_kernel::s_crypts.
 						  value("chat")));
 
@@ -4817,7 +4817,7 @@ void spoton_neighbor::slotSendMail
       {
 	QByteArray message;
 	QPair<QByteArray, QByteArray> ae
-	  (spoton_misc::decryptedAdaptiveEchoPair(m_aePairs.value(0),
+	  (spoton_misc::decryptedAdaptiveEchoPair(m_aePair,
 						  spoton_kernel::s_crypts.
 						  value("chat")));
 	QPair<QByteArray, qint64> pair(list.at(i));
@@ -4855,7 +4855,7 @@ void spoton_neighbor::slotSendMailFromPostOffice(const QByteArray &data)
     {
       QByteArray message;
       QPair<QByteArray, QByteArray> ae
-	(spoton_misc::decryptedAdaptiveEchoPair(m_aePairs.value(0),
+	(spoton_misc::decryptedAdaptiveEchoPair(m_aePair,
 						spoton_kernel::s_crypts.
 						value("chat")));
 
@@ -5097,7 +5097,7 @@ void spoton_neighbor::slotRetrieveMail(const QByteArrayList &list,
       {
 	QByteArray message;
 	QPair<QByteArray, QByteArray> ae
-	  (spoton_misc::decryptedAdaptiveEchoPair(m_aePairs.value(0),
+	  (spoton_misc::decryptedAdaptiveEchoPair(m_aePair,
 						  spoton_kernel::s_crypts.
 						  value("chat")));
 
@@ -5469,7 +5469,9 @@ void spoton_neighbor::slotResetKeepAlive(void)
 }
 
 QString spoton_neighbor::findMessageType
-(const QByteArray &data, QList<QByteArray> &symmetricKeys)
+(const QByteArray &data,
+ QList<QByteArray> &symmetricKeys,
+ QPair<QByteArray, QByteArray> &discoveredAEPair)
 {
   QList<QByteArray> list(QByteArray::fromBase64(data).split('\n'));
   QString type("");
@@ -5568,6 +5570,8 @@ QString spoton_neighbor::findMessageType
 	  }
 	else
 	  symmetricKeys.clear();
+
+	discoverAEPair(QByteArray::fromBase64(data), discoveredAEPair);
       }
 
   /*
@@ -5656,7 +5660,7 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data)
     {
       QByteArray message;
       QPair<QByteArray, QByteArray> ae
-	(spoton_misc::decryptedAdaptiveEchoPair(m_aePairs.value(0),
+	(spoton_misc::decryptedAdaptiveEchoPair(m_aePair,
 						spoton_kernel::s_crypts.
 						value("chat")));
 
@@ -5924,7 +5928,7 @@ bool spoton_neighbor::writeMessage0060(const QByteArray &data)
     {
       QByteArray message;
       QPair<QByteArray, QByteArray> ae
-	(spoton_misc::decryptedAdaptiveEchoPair(m_aePairs.value(0),
+	(spoton_misc::decryptedAdaptiveEchoPair(m_aePair,
 						spoton_kernel::s_crypts.
 						value("chat")));
 
@@ -6013,4 +6017,12 @@ bool spoton_neighbor::hasData(void)
   QReadLocker locker(&m_dataMutex);
 
   return !m_data.isEmpty();
+}
+
+void spoton_neighbor::discoverAEPair
+(const QByteArray &data,
+ QPair<QByteArray, QByteArray> &discoveredAEPair)
+{
+  Q_UNUSED(data);
+  Q_UNUSED(discoveredAEPair);
 }

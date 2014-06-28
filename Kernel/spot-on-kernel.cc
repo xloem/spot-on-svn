@@ -95,6 +95,7 @@ QHash<QByteArray, char> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
 QList<QList<QByteArray > > spoton_kernel::s_institutionKeys;
+QList<QPair<QByteArray, QByteArray> > spoton_kernel::s_aePairs;
 QMultiMap<QDateTime, QByteArray> spoton_kernel::s_messagingCacheMap;
 QPointer<spoton_kernel> spoton_kernel::s_kernel = 0;
 QReadWriteLock spoton_kernel::s_buzzKeysMutex;
@@ -657,6 +658,27 @@ void spoton_kernel::prepareListeners(void)
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
+	query.prepare("SELECT token, token_type FROM "
+		      "listeners_adaptive_echo_tokens");
+
+	if(query.exec())
+	  {
+	    spoton_crypt *s_crypt = s_crypts.value("chat", 0);
+
+	    if(s_crypt)
+	      {
+		s_aePairs.clear();
+
+		while(query.next())
+		  {
+		    QPair<QByteArray, QByteArray> pair;
+
+		    pair.first = query.value(0).toByteArray();
+		    pair.second = query.value(1).toByteArray();
+		    s_aePairs.append(pair);
+		  }
+	      }
+	  }
 
 	if(query.exec("SELECT "
 		      "ip_address, "

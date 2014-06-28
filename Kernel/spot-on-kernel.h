@@ -58,6 +58,7 @@ class spoton_kernel: public QObject
   spoton_kernel(void);
   ~spoton_kernel();
   static QHash<QString, spoton_crypt *> s_crypts;
+  static QList<QPair<QByteArray, QByteArray> > s_aePairs;
   static QPointer<spoton_kernel> s_kernel;
   static QList<QByteArray> findBuzzKey(const QByteArray &data,
 				       const QByteArray &hash);

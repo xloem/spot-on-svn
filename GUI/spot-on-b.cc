@@ -4986,7 +4986,6 @@ void spoton::slotListenerSelected(void)
 	oid = item->text();
     }
 
-  populateAETokens(oid);
   populateAccounts(oid);
   populateListenerIps(oid);
   populateMOTD(oid);

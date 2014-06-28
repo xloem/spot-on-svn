@@ -840,31 +840,14 @@ void spoton::slotAddAEToken(void)
 {
   QString connectionName("");
   QString error("");
-  QString oid("");
   QString token(m_ui.ae_token->text().trimmed());
   QString type(m_ui.ae_type->currentText());
   bool ok = true;
-  int row = -1;
   spoton_crypt *crypt = m_crypts.value("chat", 0);
 
   if(!crypt)
     {
       error = tr("Invalid spoton_crypt object. This is a fatal flaw.");
-      goto done_label;
-    }
-
-  if((row = m_ui.listeners->currentRow()) >= 0)
-    {
-      QTableWidgetItem *item = m_ui.listeners->item
-	(row, m_ui.listeners->columnCount() - 1); // OID
-
-      if(item)
-	oid = item->text();
-    }
-
-  if(oid.isEmpty())
-    {
-      error = tr("Invalid listener OID. Please select a listener.");
       goto done_label;
     }
 
@@ -894,9 +877,8 @@ void spoton::slotAddAEToken(void)
 	  ("INSERT OR REPLACE INTO listeners_adaptive_echo_tokens "
 	   "(token, "
 	   "token_hash, "
-	   "token_type, "
-	   "listener_oid) "
-	   "VALUES (?, ?, ?, ?)");
+	   "token_type) "
+	   "VALUES (?, ?, ?)");
 	query.bindValue
 	  (0, crypt->encryptedThenHashed(token.toLatin1(), &ok).toBase64());
 
@@ -909,8 +891,6 @@ void spoton::slotAddAEToken(void)
 	  query.bindValue
 	    (2, crypt->encryptedThenHashed(type.toLatin1(),
 					   &ok).toBase64());
-
-	query.bindValue(3, oid);
 
 	if(ok)
 	  query.exec();
@@ -934,7 +914,7 @@ void spoton::slotAddAEToken(void)
     {
       m_ui.ae_token->clear();
       m_ui.ae_type->setCurrentIndex(0);
-      populateAETokens(oid);
+      populateAETokens();
     }
 }
 
@@ -947,26 +927,6 @@ void spoton::slotDeleteAEToken(void)
       QMessageBox::critical(this, tr("Spot-On: Error"),
 			    tr("Invalid spoton_crypt object. This is "
 			       "a fatal flaw."));
-      return;
-    }
-
-  QString oid("");
-  int row = -1;
-
-  if((row = m_ui.listeners->currentRow()) >= 0)
-    {
-      QTableWidgetItem *item = m_ui.listeners->item
-	(row, m_ui.listeners->columnCount() - 1); // OID
-
-      if(item)
-	oid = item->text();
-    }
-
-  if(oid.isEmpty())
-    {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
-			    tr("Invalid listener OID. "
-			       "Please select a listener."));
       return;
     }
 
@@ -993,12 +953,11 @@ void spoton::slotDeleteAEToken(void)
 	bool ok = true;
 
 	query.prepare("DELETE FROM listeners_adaptive_echo_tokens WHERE "
-		      "token_hash = ? AND listener_oid = ?");
+		      "token_hash = ?");
 	query.bindValue
 	  (0, crypt->keyedHash((list.at(0)->text() +
 				list.at(1)->text()).toLatin1(), &ok).
 	   toBase64());
-	query.bindValue(1, oid);
 
 	if(ok)
 	  query.exec();
@@ -1008,10 +967,10 @@ void spoton::slotDeleteAEToken(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-  populateAETokens(oid);
+  populateAETokens();
 }
 
-void spoton::populateAETokens(const QString &listenerOid)
+void spoton::populateAETokens(void)
 {
   spoton_crypt *crypt = m_crypts.value("chat", 0);
 
@@ -1052,12 +1011,7 @@ void spoton::populateAETokens(const QString &listenerOid)
 
 	query.setForwardOnly(true);
 	query.prepare
-	  ("SELECT token, token_type FROM listeners_adaptive_echo_tokens "
-	   "WHERE listener_oid = ? AND listener_oid IN "
-	   "(SELECT OID FROM listeners WHERE status_control <> "
-	   "'deleted' AND OID = ?)");
-	query.bindValue(0, listenerOid);
-	query.bindValue(1, listenerOid);
+	  ("SELECT token, token_type FROM listeners_adaptive_echo_tokens");
 
 	if(query.exec())
 	  while(query.next())

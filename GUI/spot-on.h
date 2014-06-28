@@ -177,7 +177,7 @@ class spoton: public QMainWindow
   void magnetize(void);
   void prepareContextMenuMirrors(void);
   void prepareListenerIPCombo(void);
-  void populateAETokens(const QString &listenerOid);
+  void populateAETokens(void);
   void populateAccounts(const QString &listenerOid);
   void populateListenerIps(const QString &listenerOid);
   void populateMOTD(const QString &listenerOid);

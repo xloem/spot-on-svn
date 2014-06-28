@@ -142,7 +142,6 @@ class spoton_neighbor: public QThread
 		  const QString &localPort,
 		  const QString &orientation,
 		  const QString &motd,
-		  const QList<QPair<QByteArray, QByteArray> > &aePairs,
 		  QObject *parent);
   ~spoton_neighbor();
   QAbstractSocket::SocketState state(void) const;
@@ -167,7 +166,8 @@ class spoton_neighbor: public QThread
   QDateTime m_lastReadTime;
   QDateTime m_startTime;
   QHostAddress m_address;
-  QList<QPair<QByteArray, QByteArray> > m_aePairs;
+  QList<QPair<QByteArray, QByteArray> > m_learnedAEPairs;
+  QPair<QByteArray, QByteArray> m_aePair;
   QPointer<spoton_external_address> m_externalAddress;
   QPointer<spoton_neighbor_tcp_socket> m_tcpSocket;
   QPointer<spoton_neighbor_udp_socket> m_udpSocket;
@@ -205,8 +205,11 @@ class spoton_neighbor: public QThread
   quint64 m_bytesWritten;
   quint16 m_port;
   QString findMessageType(const QByteArray &data,
-			  QList<QByteArray> &symmetricKeys);
+			  QList<QByteArray> &symmetricKeys,
+			  QPair<QByteArray, QByteArray> &discoveredAEPair);
   bool readyToWrite(void);
+  void discoverAEPair(const QByteArray &data,
+		      QPair<QByteArray, QByteArray> &discoverAEPair);
   void process0000(int length, const QByteArray &data,
 		   const QList<QByteArray> &symmetricKeys);
   void process0000a(int length, const QByteArray &data);
