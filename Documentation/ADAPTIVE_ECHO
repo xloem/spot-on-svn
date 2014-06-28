@@ -1,16 +1,18 @@
 Adaptive Echo
 
 Adaptive Echo allows auxiliary nodes to direct data via pseudo-private
-tokens. Please consider the following example.
+tokens. Please consider the following examples.
+
+Example #1
 
 Let A, B, C, and D be four auxiliary nodes and let a, b, c, and d be four
 private nodes.
 
 Suppose the network topology is as follows (a drawing will help):
 
-a – A – B – b
-B – C – c
-C – D – d
+a - A - B - b
+B - C - c
+C - D - d
 
 Let t_B_1 and t_B_2 be two tokens that B is aware of.
 
@@ -24,3 +26,19 @@ signatures from A to C and from C to A. Until node b provides a special
 signature, it will not receive data from either A or C if that data includes
 the special signature. Although nodes b and c do not know t_B_1, they will be
 able to communicate via B.
+
+Example #2
+
+Let a, b, c, e, and f be pseudo-private nodes. Let S and d be server nodes.
+Suppose S, a, c, and f are aware of the secret token t_1. Also, S connects
+to d.
+
+The network topology is as follows (again, a drawing will help):
+
+f - e - a - S
+d - S
+b - S
+c - S
+
+If f transmits a message intended for d, d will receive the message via S
+because S connects to d.
