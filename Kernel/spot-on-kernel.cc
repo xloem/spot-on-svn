@@ -98,6 +98,7 @@ QList<QList<QByteArray > > spoton_kernel::s_institutionKeys;
 QList<QPair<QByteArray, QByteArray> > spoton_kernel::s_aePairs;
 QMultiMap<QDateTime, QByteArray> spoton_kernel::s_messagingCacheMap;
 QPointer<spoton_kernel> spoton_kernel::s_kernel = 0;
+QReadWriteLock spoton_kernel::s_aeMutex;
 QReadWriteLock spoton_kernel::s_buzzKeysMutex;
 QReadWriteLock spoton_kernel::s_messagingCacheMutex;
 QReadWriteLock spoton_kernel::s_settingsMutex;
@@ -663,20 +664,17 @@ void spoton_kernel::prepareListeners(void)
 
 	if(query.exec())
 	  {
-	    spoton_crypt *s_crypt = s_crypts.value("chat", 0);
+	    QWriteLocker locker(&s_aeMutex);
 
-	    if(s_crypt)
+	    s_aePairs.clear();
+
+	    while(query.next())
 	      {
-		s_aePairs.clear();
+		QPair<QByteArray, QByteArray> pair;
 
-		while(query.next())
-		  {
-		    QPair<QByteArray, QByteArray> pair;
-
-		    pair.first = query.value(0).toByteArray();
-		    pair.second = query.value(1).toByteArray();
-		    s_aePairs.append(pair);
-		  }
+		pair.first = query.value(0).toByteArray();
+		pair.second = query.value(1).toByteArray();
+		s_aePairs.append(pair);
 	      }
 	  }
 
