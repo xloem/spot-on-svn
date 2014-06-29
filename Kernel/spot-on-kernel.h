@@ -74,6 +74,8 @@ class spoton_kernel: public QObject
 			 const QByteArray &hashKey,
 			 const QByteArray &hashType);
   static void clearBuzzKeysContainer(void);
+  static void discoverAEPair(const QByteArray &data,
+			     QPair<QByteArray, QByteArray> &discoverAEPair);
   static void messagingCacheAdd(const QByteArray &data,
 				const bool do_not_hash = false,
 				const int add_msecs = 0);
@@ -179,7 +181,8 @@ class spoton_kernel: public QObject
 				  const quint16 port,
 				  const QString &transport,
 				  const QString &orientation);
-  void receivedMessage(const QByteArray &data, const qint64 id);
+  void receivedMessage(const QByteArray &data, const qint64 id,
+		       const QPairByteArrayByteArray &aePair);
   void retrieveMail(const QByteArrayList &list, const QString &messageType);
   void sendBuzz(const QByteArray &buzz);
   void sendMessage(const QByteArray &message,

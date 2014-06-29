@@ -304,6 +304,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 {
   qRegisterMetaType<QByteArrayList> ("QByteArrayList");
   qRegisterMetaType<QHostAddress> ("QHostAddress");
+  qRegisterMetaType<QPairByteArrayByteArray> ("QPairByteArrayByteArray");
   qRegisterMetaType<QPairListByteArrayQInt64> ("QPairListByteArrayQInt64");
 #if QT_VERSION >= 0x050000
   qRegisterMetaType<qintptr> ("qintptr");
@@ -659,10 +660,9 @@ void spoton_kernel::prepareListeners(void)
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT token, token_type FROM "
-		      "listeners_adaptive_echo_tokens");
 
-	if(query.exec())
+	if(query.exec("SELECT token, token_type FROM "
+		      "listeners_adaptive_echo_tokens"))
 	  {
 	    QWriteLocker locker(&s_aeMutex);
 
@@ -672,8 +672,10 @@ void spoton_kernel::prepareListeners(void)
 	      {
 		QPair<QByteArray, QByteArray> pair;
 
-		pair.first = query.value(0).toByteArray();
-		pair.second = query.value(1).toByteArray();
+		pair.first = QByteArray::fromBase64
+		  (query.value(0).toByteArray());
+		pair.second = QByteArray::fromBase64
+		  (query.value(1).toByteArray());
 		s_aePairs.append(pair);
 	      }
 	  }
@@ -1725,10 +1727,12 @@ void spoton_kernel::connectSignalsToNeighbor
 	  Qt::UniqueConnection);
   connect(neighbor,
 	  SIGNAL(receivedMessage(const QByteArray &,
-				 const qint64)),
+				 const qint64,
+				 const QPairByteArrayByteArray &)),
 	  this,
 	  SIGNAL(receivedMessage(const QByteArray &,
-				 const qint64)),
+				 const qint64,
+				 const QPairByteArrayByteArray &)),
 	  Qt::UniqueConnection);
   connect(neighbor,
 	  SIGNAL(retrieveMail(const QByteArray &,
@@ -1764,10 +1768,12 @@ void spoton_kernel::connectSignalsToNeighbor
 	  Qt::UniqueConnection);
   connect(this,
 	  SIGNAL(receivedMessage(const QByteArray &,
-				 const qint64)),
+				 const qint64,
+				 const QPairByteArrayByteArray &)),
 	  neighbor,
 	  SLOT(slotReceivedMessage(const QByteArray &,
-				   const qint64)),
+				   const qint64,
+				   const QPairByteArrayByteArray &)),
 	  Qt::UniqueConnection);
   connect(this,
 	  SIGNAL(retrieveMail(const QByteArrayList &,
@@ -3750,4 +3756,50 @@ QList<QByteArray> spoton_kernel::findInstitutionKey
 
   QSqlDatabase::removeDatabase(connectionName);
   return list;
+}
+
+void spoton_kernel::discoverAEPair
+(const QByteArray &data,
+ QPair<QByteArray, QByteArray> &discoverAEPair)
+{
+  QReadLocker locker(&s_aeMutex);
+
+  if(s_aePairs.isEmpty())
+    return;
+
+  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QByteArray messageCode(QByteArray::fromBase64(data.split('\n').last()));
+
+  for(int i = 0; i < s_aePairs.size(); i++)
+    {
+      QByteArray token(s_aePairs.at(i).first);
+      QByteArray tokenType(s_aePairs.at(i).second);
+      bool ok = true;
+
+      token = s_crypt->decryptedAfterAuthenticated(token, &ok);
+
+      if(ok)
+	tokenType = s_crypt->decryptedAfterAuthenticated(tokenType, &ok);
+
+      if(!ok)
+	continue;
+
+      QByteArray computedHash
+	(spoton_crypt::keyedHash(data.mid(0, data.lastIndexOf('\n')),
+				 token, tokenType, &ok));
+
+      if(!ok)
+	continue;
+
+      if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
+	 spoton_crypt::memcmp(computedHash, messageCode))
+	{
+	  discoverAEPair = s_aePairs.at(i);
+	  break;
+	}
+    }
 }

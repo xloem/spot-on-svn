@@ -978,8 +978,10 @@ void spoton_neighbor::slotTimeout(void)
 			    if(!query.isNull(7) && !query.isNull(8))
 			      {
 				QPair<QByteArray, QByteArray> pair
-				  (query.value(7).toByteArray(),
-				   query.value(8).toByteArray());
+				  (QByteArray::fromBase64(query.value(7).
+							  toByteArray()),
+				   QByteArray::fromBase64(query.value(8).
+							  toByteArray()));
 
 				m_aePair = pair;
 			      }
@@ -1596,15 +1598,16 @@ void spoton_neighbor::processData(void)
 	    emit scrambleRequest();
 
 	  if(spoton_kernel::setting("gui/superEcho", false).toBool())
-	    emit receivedMessage(originalData, m_id);
+	    emit receivedMessage
+	      (originalData, m_id, QPair<QByteArray, QByteArray> ());
 	  else if(m_echoMode == "full")
 	    {
 	      if(messageType == "0001b" && data.split('\n').size() == 7)
-		emit receivedMessage(originalData, m_id);
+		emit receivedMessage(originalData, m_id, discoveredAEPair);
 	      else if(messageType.isEmpty() ||
 		      messageType == "0002b" ||
 		      messageType == "0040a" || messageType == "0040b")
-		emit receivedMessage(originalData, m_id);
+		emit receivedMessage(originalData, m_id, discoveredAEPair);
 	    }
 	}
     }
@@ -1997,31 +2000,40 @@ void spoton_neighbor::slotSendMessage
     }
 }
 
-void spoton_neighbor::slotReceivedMessage(const QByteArray &data,
-					  const qint64 id)
+void spoton_neighbor::slotReceivedMessage
+(const QByteArray &data,
+ const qint64 id,
+ const QPairByteArrayByteArray &aePair)
 {
   /*
   ** A neighbor (id) received a message. This neighbor now needs
   ** to send the message to its peer.
   */
 
+  bool adaptiveEcho = false;
+
+  if(aePair == QPair<QByteArray, QByteArray> () ||
+     m_learnedAEPairs.contains(aePair))
+    adaptiveEcho = true;
+
   if(id != m_id)
-    if(m_echoMode == "full" ||
-       spoton_kernel::setting("gui/superEcho", false).toBool())
-      if(readyToWrite())
-	{
-	  if(write(data.constData(), data.length()) != data.length())
-	    spoton_misc::logError
-	      (QString("spoton_neighbor::slotReceivedMessage(): write() "
-		       "error for %1:%2.").
-	       arg(m_address.toString()).
-	       arg(m_port));
-	  else
-	    {
-	      addToBytesWritten(data.length());
-	      spoton_kernel::messagingCacheAdd(data);
-	    }
-	}
+    if(adaptiveEcho)
+      if(m_echoMode == "full" ||
+	 spoton_kernel::setting("gui/superEcho", false).toBool())
+	if(readyToWrite())
+	  {
+	    if(write(data.constData(), data.length()) != data.length())
+	      spoton_misc::logError
+		(QString("spoton_neighbor::slotReceivedMessage(): write() "
+			 "error for %1:%2.").
+		 arg(m_address.toString()).
+		 arg(m_port));
+	    else
+	      {
+		addToBytesWritten(data.length());
+		spoton_kernel::messagingCacheAdd(data);
+	      }
+	  }
 }
 
 void spoton_neighbor::slotLifetimeExpired(void)
@@ -5570,8 +5582,6 @@ QString spoton_neighbor::findMessageType
 	  }
 	else
 	  symmetricKeys.clear();
-
-	discoverAEPair(QByteArray::fromBase64(data), discoveredAEPair);
       }
 
   /*
@@ -5651,6 +5661,15 @@ QString spoton_neighbor::findMessageType
 	}
 
  done_label:
+
+  spoton_kernel::discoverAEPair
+    (QByteArray::fromBase64(data), discoveredAEPair);
+
+  if(!discoveredAEPair.first.isEmpty() &&
+     !discoveredAEPair.second.isEmpty())
+    if(!m_learnedAEPairs.contains(discoveredAEPair))
+      m_learnedAEPairs.append(discoveredAEPair);
+
   return type;
 }
 
@@ -6017,12 +6036,4 @@ bool spoton_neighbor::hasData(void)
   QReadLocker locker(&m_dataMutex);
 
   return !m_data.isEmpty();
-}
-
-void spoton_neighbor::discoverAEPair
-(const QByteArray &data,
- QPair<QByteArray, QByteArray> &discoveredAEPair)
-{
-  Q_UNUSED(data);
-  Q_UNUSED(discoveredAEPair);
 }

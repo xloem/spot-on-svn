@@ -5433,13 +5433,14 @@ void spoton::slotDeleteAllListeners(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("DELETE FROM listeners_adaptive_echo_tokens");
+
 	if(!isKernelActive())
 	  {
 	    query.exec("DELETE FROM listeners");
 	    query.exec("DELETE FROM listeners_accounts");
 	    query.exec
 	      ("DELETE FROM listeners_accounts_consumed_authentications");
-	    query.exec("DELETE FROM listeners_adaptive_echo_tokens");
 	    query.exec("DELETE FROM listeners_allowed_ips");
 	  }
 	else

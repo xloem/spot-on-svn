@@ -208,8 +208,6 @@ class spoton_neighbor: public QThread
 			  QList<QByteArray> &symmetricKeys,
 			  QPair<QByteArray, QByteArray> &discoveredAEPair);
   bool readyToWrite(void);
-  void discoverAEPair(const QByteArray &data,
-		      QPair<QByteArray, QByteArray> &discoverAEPair);
   void process0000(int length, const QByteArray &data,
 		   const QList<QByteArray> &symmetricKeys);
   void process0000a(int length, const QByteArray &data);
@@ -293,7 +291,8 @@ class spoton_neighbor: public QThread
 				      const QString &transport,
 				      const QString &orientation);
   void slotReadyRead(void);
-  void slotReceivedMessage(const QByteArray &data, const qint64 id);
+  void slotReceivedMessage(const QByteArray &data, const qint64 id,
+			   const QPairByteArrayByteArray &aePair);
   void slotResetKeepAlive(void);
   void slotRetrieveMail(const QByteArrayList &list,
 			const QString &messageType);
@@ -330,7 +329,8 @@ class spoton_neighbor: public QThread
   void receivedBuzzMessage(const QByteArrayList &list,
 			   const QByteArrayList &symmetricKeys);
   void receivedChatMessage(const QByteArray &data);
-  void receivedMessage(const QByteArray &data, const qint64 id);
+  void receivedMessage(const QByteArray &data, const qint64 id,
+		       const QPairByteArrayByteArray &aePair);
   void receivedPublicKey(const QByteArray &name, const QByteArray publicKey);
   void resetKeepAlive(void);
   void retrieveMail(const QByteArray &data,

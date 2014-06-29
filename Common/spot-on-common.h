@@ -34,6 +34,7 @@
 
 typedef QList<QByteArray> QByteArrayList;
 typedef QList<QPair<QByteArray, qint64> > QPairListByteArrayQInt64;
+typedef QPair<QByteArray, QByteArray> QPairByteArrayByteArray;
 
 namespace spoton_common
 {
