@@ -5454,6 +5454,7 @@ void spoton::slotDeleteAllListeners(void)
 
   QSqlDatabase::removeDatabase(connectionName);
   m_ui.accounts->clear();
+  m_ui.ae_tokens->clearContents();
 }
 
 void spoton::slotDeleteAllNeighbors(void)
