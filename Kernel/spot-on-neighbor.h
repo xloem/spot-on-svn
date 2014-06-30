@@ -166,8 +166,8 @@ class spoton_neighbor: public QThread
   QDateTime m_lastReadTime;
   QDateTime m_startTime;
   QHostAddress m_address;
-  QList<QPair<QByteArray, QByteArray> > m_learnedAEPairs;
-  QPair<QByteArray, QByteArray> m_aePair;
+  QList<QPair<QByteArray, QByteArray> > m_learnedAdaptiveEchoPairs;
+  QPair<QByteArray, QByteArray> m_adaptiveEchoPair;
   QPointer<spoton_external_address> m_externalAddress;
   QPointer<spoton_neighbor_tcp_socket> m_tcpSocket;
   QPointer<spoton_neighbor_udp_socket> m_udpSocket;
@@ -204,9 +204,10 @@ class spoton_neighbor: public QThread
   quint64 m_bytesRead;
   quint64 m_bytesWritten;
   quint16 m_port;
-  QString findMessageType(const QByteArray &data,
-			  QList<QByteArray> &symmetricKeys,
-			  QPair<QByteArray, QByteArray> &discoveredAEPair);
+  QString findMessageType
+    (const QByteArray &data,
+     QList<QByteArray> &symmetricKeys,
+     QPair<QByteArray, QByteArray> &discoveredAdaptiveEchoPair);
   bool readyToWrite(void);
   void process0000(int length, const QByteArray &data,
 		   const QList<QByteArray> &symmetricKeys);
@@ -292,7 +293,7 @@ class spoton_neighbor: public QThread
 				      const QString &orientation);
   void slotReadyRead(void);
   void slotReceivedMessage(const QByteArray &data, const qint64 id,
-			   const QPairByteArrayByteArray &aePair);
+			   const QPairByteArrayByteArray &adaptiveEchoPair);
   void slotResetKeepAlive(void);
   void slotRetrieveMail(const QByteArrayList &list,
 			const QString &messageType);
@@ -330,7 +331,7 @@ class spoton_neighbor: public QThread
 			   const QByteArrayList &symmetricKeys);
   void receivedChatMessage(const QByteArray &data);
   void receivedMessage(const QByteArray &data, const qint64 id,
-		       const QPairByteArrayByteArray &aePair);
+		       const QPairByteArrayByteArray &adaptiveEchoPair);
   void receivedPublicKey(const QByteArray &name, const QByteArray publicKey);
   void resetKeepAlive(void);
   void retrieveMail(const QByteArray &data,
@@ -382,7 +383,10 @@ class spoton_neighbor_worker: public QObject
   void slotNewData(void)
   {
     if(!m_timer.isActive())
-      m_timer.start();
+      {
+	m_timer.start(1);
+	m_timer.setInterval(100);
+      }
   }
 
   void slotProcessData(void)

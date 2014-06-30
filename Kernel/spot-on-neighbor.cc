@@ -973,7 +973,8 @@ void spoton_neighbor::slotTimeout(void)
 
 			if(m_isUserDefined)
 			  {
-			    m_aePair.first = m_aePair.second = QByteArray();
+			    m_adaptiveEchoPair.first =
+			      m_adaptiveEchoPair.second = QByteArray();
 
 			    if(!query.isNull(7) && !query.isNull(8))
 			      {
@@ -983,7 +984,7 @@ void spoton_neighbor::slotTimeout(void)
 				   QByteArray::fromBase64(query.value(8).
 							  toByteArray()));
 
-				m_aePair = pair;
+				m_adaptiveEchoPair = pair;
 			      }
 			  }
 
@@ -1566,9 +1567,9 @@ void spoton_neighbor::processData(void)
 	  */
 
 	  QList<QByteArray> symmetricKeys;
-	  QPair<QByteArray, QByteArray> discoveredAEPair;
+	  QPair<QByteArray, QByteArray> discoveredAdaptiveEchoPair;
 	  QString messageType(findMessageType(data, symmetricKeys,
-					      discoveredAEPair));
+					      discoveredAdaptiveEchoPair));
 
 	  if(messageType == "0000")
 	    process0000(length, data, symmetricKeys);
@@ -1603,11 +1604,13 @@ void spoton_neighbor::processData(void)
 	  else if(m_echoMode == "full")
 	    {
 	      if(messageType == "0001b" && data.split('\n').size() == 7)
-		emit receivedMessage(originalData, m_id, discoveredAEPair);
+		emit receivedMessage
+		  (originalData, m_id, discoveredAdaptiveEchoPair);
 	      else if(messageType.isEmpty() ||
 		      messageType == "0002b" ||
 		      messageType == "0040a" || messageType == "0040b")
-		emit receivedMessage(originalData, m_id, discoveredAEPair);
+		emit receivedMessage
+		  (originalData, m_id, discoveredAdaptiveEchoPair);
 	    }
 	}
     }
@@ -1980,7 +1983,7 @@ void spoton_neighbor::slotSendMessage
     {
       QByteArray message;
       QPair<QByteArray, QByteArray> ae
-	(spoton_misc::decryptedAdaptiveEchoPair(m_aePair,
+	(spoton_misc::decryptedAdaptiveEchoPair(m_adaptiveEchoPair,
 						spoton_kernel::s_crypts.
 						value("chat")));
 
@@ -2003,7 +2006,7 @@ void spoton_neighbor::slotSendMessage
 void spoton_neighbor::slotReceivedMessage
 (const QByteArray &data,
  const qint64 id,
- const QPairByteArrayByteArray &aePair)
+ const QPairByteArrayByteArray &adaptiveEchoPair)
 {
   /*
   ** A neighbor (id) received a message. This neighbor now needs
@@ -2012,8 +2015,8 @@ void spoton_neighbor::slotReceivedMessage
 
   bool adaptiveEcho = false;
 
-  if(aePair == QPair<QByteArray, QByteArray> () ||
-     m_learnedAEPairs.contains(aePair))
+  if(adaptiveEchoPair == QPair<QByteArray, QByteArray> () ||
+     m_learnedAdaptiveEchoPairs.contains(adaptiveEchoPair))
     adaptiveEcho = true;
 
   if(id != m_id)
@@ -4458,7 +4461,7 @@ void spoton_neighbor::slotSendStatus(const QByteArrayList &list)
       {
 	QByteArray message;
 	QPair<QByteArray, QByteArray> ae
-	  (spoton_misc::decryptedAdaptiveEchoPair(m_aePair,
+	  (spoton_misc::decryptedAdaptiveEchoPair(m_adaptiveEchoPair,
 						  spoton_kernel::s_crypts.
 						  value("chat")));
 
@@ -4829,7 +4832,7 @@ void spoton_neighbor::slotSendMail
       {
 	QByteArray message;
 	QPair<QByteArray, QByteArray> ae
-	  (spoton_misc::decryptedAdaptiveEchoPair(m_aePair,
+	  (spoton_misc::decryptedAdaptiveEchoPair(m_adaptiveEchoPair,
 						  spoton_kernel::s_crypts.
 						  value("chat")));
 	QPair<QByteArray, qint64> pair(list.at(i));
@@ -4867,7 +4870,7 @@ void spoton_neighbor::slotSendMailFromPostOffice(const QByteArray &data)
     {
       QByteArray message;
       QPair<QByteArray, QByteArray> ae
-	(spoton_misc::decryptedAdaptiveEchoPair(m_aePair,
+	(spoton_misc::decryptedAdaptiveEchoPair(m_adaptiveEchoPair,
 						spoton_kernel::s_crypts.
 						value("chat")));
 
@@ -5109,7 +5112,7 @@ void spoton_neighbor::slotRetrieveMail(const QByteArrayList &list,
       {
 	QByteArray message;
 	QPair<QByteArray, QByteArray> ae
-	  (spoton_misc::decryptedAdaptiveEchoPair(m_aePair,
+	  (spoton_misc::decryptedAdaptiveEchoPair(m_adaptiveEchoPair,
 						  spoton_kernel::s_crypts.
 						  value("chat")));
 
@@ -5483,7 +5486,7 @@ void spoton_neighbor::slotResetKeepAlive(void)
 QString spoton_neighbor::findMessageType
 (const QByteArray &data,
  QList<QByteArray> &symmetricKeys,
- QPair<QByteArray, QByteArray> &discoveredAEPair)
+ QPair<QByteArray, QByteArray> &discoveredAdaptiveEchoPair)
 {
   QList<QByteArray> list(QByteArray::fromBase64(data).split('\n'));
   QString type("");
@@ -5662,13 +5665,13 @@ QString spoton_neighbor::findMessageType
 
  done_label:
 
-  spoton_kernel::discoverAEPair
-    (QByteArray::fromBase64(data), discoveredAEPair);
+  spoton_kernel::discoverAdaptiveEchoPair
+    (QByteArray::fromBase64(data), discoveredAdaptiveEchoPair);
 
-  if(!discoveredAEPair.first.isEmpty() &&
-     !discoveredAEPair.second.isEmpty())
-    if(!m_learnedAEPairs.contains(discoveredAEPair))
-      m_learnedAEPairs.append(discoveredAEPair);
+  if(!discoveredAdaptiveEchoPair.first.isEmpty() &&
+     !discoveredAdaptiveEchoPair.second.isEmpty())
+    if(!m_learnedAdaptiveEchoPairs.contains(discoveredAdaptiveEchoPair))
+      m_learnedAdaptiveEchoPairs.append(discoveredAdaptiveEchoPair);
 
   return type;
 }
@@ -5679,7 +5682,7 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data)
     {
       QByteArray message;
       QPair<QByteArray, QByteArray> ae
-	(spoton_misc::decryptedAdaptiveEchoPair(m_aePair,
+	(spoton_misc::decryptedAdaptiveEchoPair(m_adaptiveEchoPair,
 						spoton_kernel::s_crypts.
 						value("chat")));
 
@@ -5947,7 +5950,7 @@ bool spoton_neighbor::writeMessage0060(const QByteArray &data)
     {
       QByteArray message;
       QPair<QByteArray, QByteArray> ae
-	(spoton_misc::decryptedAdaptiveEchoPair(m_aePair,
+	(spoton_misc::decryptedAdaptiveEchoPair(m_adaptiveEchoPair,
 						spoton_kernel::s_crypts.
 						value("chat")));
 

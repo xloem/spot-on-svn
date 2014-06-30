@@ -95,10 +95,10 @@ QHash<QByteArray, char> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
 QList<QList<QByteArray > > spoton_kernel::s_institutionKeys;
-QList<QPair<QByteArray, QByteArray> > spoton_kernel::s_aePairs;
+QList<QPair<QByteArray, QByteArray> > spoton_kernel::s_adaptiveEchoPairs;
 QMultiMap<QDateTime, QByteArray> spoton_kernel::s_messagingCacheMap;
 QPointer<spoton_kernel> spoton_kernel::s_kernel = 0;
-QReadWriteLock spoton_kernel::s_aeMutex;
+QReadWriteLock spoton_kernel::s_adaptiveEchoPairsMutex;
 QReadWriteLock spoton_kernel::s_buzzKeysMutex;
 QReadWriteLock spoton_kernel::s_messagingCacheMutex;
 QReadWriteLock spoton_kernel::s_settingsMutex;
@@ -664,9 +664,9 @@ void spoton_kernel::prepareListeners(void)
 	if(query.exec("SELECT token, token_type FROM "
 		      "listeners_adaptive_echo_tokens"))
 	  {
-	    QWriteLocker locker(&s_aeMutex);
+	    QWriteLocker locker(&s_adaptiveEchoPairsMutex);
 
-	    s_aePairs.clear();
+	    s_adaptiveEchoPairs.clear();
 
 	    while(query.next())
 	      {
@@ -676,7 +676,7 @@ void spoton_kernel::prepareListeners(void)
 		  (query.value(0).toByteArray());
 		pair.second = QByteArray::fromBase64
 		  (query.value(1).toByteArray());
-		s_aePairs.append(pair);
+		s_adaptiveEchoPairs.append(pair);
 	      }
 	  }
 
@@ -3758,13 +3758,13 @@ QList<QByteArray> spoton_kernel::findInstitutionKey
   return list;
 }
 
-void spoton_kernel::discoverAEPair
+void spoton_kernel::discoverAdaptiveEchoPair
 (const QByteArray &data,
- QPair<QByteArray, QByteArray> &discoverAEPair)
+ QPair<QByteArray, QByteArray> &discoveredAdaptiveEchoPair)
 {
-  QReadLocker locker(&s_aeMutex);
+  QReadLocker locker(&s_adaptiveEchoPairsMutex);
 
-  if(s_aePairs.isEmpty())
+  if(s_adaptiveEchoPairs.isEmpty())
     return;
 
   spoton_crypt *s_crypt = s_crypts.value("chat", 0);
@@ -3772,12 +3772,13 @@ void spoton_kernel::discoverAEPair
   if(!s_crypt)
     return;
 
+  QByteArray d(data.mid(0, data.lastIndexOf('\n')));
   QByteArray messageCode(QByteArray::fromBase64(data.split('\n').last()));
 
-  for(int i = 0; i < s_aePairs.size(); i++)
+  for(int i = 0; i < s_adaptiveEchoPairs.size(); i++)
     {
-      QByteArray token(s_aePairs.at(i).first);
-      QByteArray tokenType(s_aePairs.at(i).second);
+      QByteArray token(s_adaptiveEchoPairs.at(i).first);
+      QByteArray tokenType(s_adaptiveEchoPairs.at(i).second);
       bool ok = true;
 
       token = s_crypt->decryptedAfterAuthenticated(token, &ok);
@@ -3789,8 +3790,7 @@ void spoton_kernel::discoverAEPair
 	continue;
 
       QByteArray computedHash
-	(spoton_crypt::keyedHash(data.mid(0, data.lastIndexOf('\n')),
-				 token, tokenType, &ok));
+	(spoton_crypt::keyedHash(d, token, tokenType, &ok));
 
       if(!ok)
 	continue;
@@ -3798,7 +3798,7 @@ void spoton_kernel::discoverAEPair
       if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
 	 spoton_crypt::memcmp(computedHash, messageCode))
 	{
-	  discoverAEPair = s_aePairs.at(i);
+	  discoveredAdaptiveEchoPair = s_adaptiveEchoPairs.at(i);
 	  break;
 	}
     }

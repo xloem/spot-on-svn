@@ -58,7 +58,7 @@ class spoton_kernel: public QObject
   spoton_kernel(void);
   ~spoton_kernel();
   static QHash<QString, spoton_crypt *> s_crypts;
-  static QList<QPair<QByteArray, QByteArray> > s_aePairs;
+  static QList<QPair<QByteArray, QByteArray> > s_adaptiveEchoPairs;
   static QPointer<spoton_kernel> s_kernel;
   static QList<QByteArray> findBuzzKey(const QByteArray &data,
 				       const QByteArray &hash);
@@ -74,8 +74,9 @@ class spoton_kernel: public QObject
 			 const QByteArray &hashKey,
 			 const QByteArray &hashType);
   static void clearBuzzKeysContainer(void);
-  static void discoverAEPair(const QByteArray &data,
-			     QPair<QByteArray, QByteArray> &discoverAEPair);
+  static void discoverAdaptiveEchoPair
+    (const QByteArray &data,
+     QPair<QByteArray, QByteArray> &discoveredAdaptiveEchoPair);
   static void messagingCacheAdd(const QByteArray &data,
 				const bool do_not_hash = false,
 				const int add_msecs = 0);
@@ -108,7 +109,7 @@ class spoton_kernel: public QObject
   static QHash<QString, QVariant> s_settings;
   static QList<QList<QByteArray > > s_institutionKeys;
   static QMultiMap<QDateTime, QByteArray> s_messagingCacheMap;
-  static QReadWriteLock s_aeMutex;
+  static QReadWriteLock s_adaptiveEchoPairsMutex;
   static QReadWriteLock s_buzzKeysMutex;
   static QReadWriteLock s_messagingCacheMutex;
   static QReadWriteLock s_settingsMutex;
@@ -182,7 +183,7 @@ class spoton_kernel: public QObject
 				  const QString &transport,
 				  const QString &orientation);
   void receivedMessage(const QByteArray &data, const qint64 id,
-		       const QPairByteArrayByteArray &aePair);
+		       const QPairByteArrayByteArray &adaptiveEchoPair);
   void retrieveMail(const QByteArrayList &list, const QString &messageType);
   void sendBuzz(const QByteArray &buzz);
   void sendMessage(const QByteArray &message,
