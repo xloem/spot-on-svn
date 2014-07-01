@@ -87,6 +87,7 @@ int main(int argc, char *argv[])
   myappTranslator.load("spot-on_" + QLocale::system().name(),
 		       "Translations");
   qapplication.installTranslator(&myappTranslator);
+  QCoreApplication::setApplicationName("Spot-On");
   QCoreApplication::setOrganizationName("Spot-On");
   QCoreApplication::setOrganizationDomain("spot-on.sf.net");
   QCoreApplication::setApplicationVersion(SPOTON_VERSION_STR);
