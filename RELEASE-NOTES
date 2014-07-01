@@ -1,4 +1,4 @@
-0.09.07 (07/01/2014)
+0.09.07 (07/04/2014)
 
 1.   Removed some debug statements.
 2.   Adaptive echo. Please note that version 0.09.07 removes
@@ -16,7 +16,7 @@
 8.   Improved exception management in the kernel.
 9.   Set m_echoMode to full if decryptedAfterAuthenticated() fails in
      spoton_neighbor::slotTimeout().
-10.  Added an SCTP neighbor to spot-on-neighbors.txt.
+10.  Added an SCTP listener to spot-on-neighbors.txt.
 11.  Corrected error logging in spoton_listener::slotNewConnection().
 12.  Respect the backlog parameter of SCTP and UDP servers. Added the container
      spoton_kernel::s_connectionCounts.
