@@ -257,7 +257,8 @@ void spoton_buzzpage::slotSendMessage(void)
  done_label:
 
   if(!error.isEmpty())
-    QMessageBox::critical(this, tr("Spot-On: Error"), error);
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(QCoreApplication::applicationName()), error);
 }
 
 void spoton_buzzpage::appendMessage(const QList<QByteArray> &list)
@@ -530,7 +531,8 @@ void spoton_buzzpage::slotSave(void)
 {
   if(!m_crypt)
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Invalid spoton_crypt object. This is "
 			       "a fatal flaw."));
       return;
@@ -586,7 +588,8 @@ void spoton_buzzpage::slotSave(void)
   QSqlDatabase::removeDatabase(connectionName);
 
   if(!ok)
-    QMessageBox::critical(this, tr("Spot-On: Error"),
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(QCoreApplication::applicationName()),
 			  tr("An error occurred while attempting to "
 			     "save the channel data. Please enable "
 			     "logging via the Log Viewer and try again."));
@@ -598,7 +601,8 @@ void spoton_buzzpage::slotRemove(void)
 {
   if(!m_crypt)
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Invalid spoton_crypt object. This is a "
 			       "fatal flaw."));
       return;
@@ -649,7 +653,8 @@ void spoton_buzzpage::slotRemove(void)
   QSqlDatabase::removeDatabase(connectionName);
 
   if(!ok)
-    QMessageBox::critical(this, tr("Spot-On: Error"),
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(QCoreApplication::applicationName()),
 			  tr("An error occurred while attempting to "
 			     "remove the channel data. Please enable "
 			     "logging via the Log Viewer and try again."));

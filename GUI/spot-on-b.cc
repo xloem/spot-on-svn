@@ -136,7 +136,8 @@ void spoton::slotSendMessage(void)
  done_label:
 
   if(!error.isEmpty())
-    QMessageBox::critical(this, tr("Spot-On: Error"), error);
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(QCoreApplication::applicationName()), error);
 }
 
 void spoton::slotReceivedKernelMessage(void)
@@ -569,7 +570,8 @@ void spoton::slotRemoveParticipants(void)
 #endif
 #endif
   mb.setIcon(QMessageBox::Question);
-  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+  mb.setWindowTitle(tr("%1: Confirmation").
+		    arg(QCoreApplication::applicationName()));
   mb.setWindowModality(Qt::WindowModal);
   mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
   mb.setText(tr("Are you sure that you wish to remove the selected "
@@ -1407,14 +1409,16 @@ void spoton::addFriendsKey(const QByteArray &key)
 	 !m_crypts.value("rosetta", 0) ||
 	 !m_crypts.value("url", 0))
 	{
-	  QMessageBox::critical(this, tr("Spot-On: Error"),
+	  QMessageBox::critical(this, tr("%1: Error").
+				arg(QCoreApplication::applicationName()),
 				tr("Invalid spoton_crypt object(s). This is "
 				   "a fatal flaw."));
 	  return;
 	}
       else if(key.trimmed().isEmpty())
 	{
-	  QMessageBox::critical(this, tr("Spot-On: Error"),
+	  QMessageBox::critical(this, tr("%1: Error").
+				arg(QCoreApplication::applicationName()),
 				tr("Empty key. Really?"));
 	  return;
 	}
@@ -1422,7 +1426,8 @@ void spoton::addFriendsKey(const QByteArray &key)
       if(!(key.startsWith("K") || key.startsWith("k")))
 	{
 	  QMessageBox::critical
-	    (this, tr("Spot-On: Error"),
+	    (this, tr("%1: Error").
+	     arg(QCoreApplication::applicationName()),
 	     tr("Invalid key. The key must start with either the letter "
 		"K or the letter k."));
 	  return;
@@ -1433,7 +1438,8 @@ void spoton::addFriendsKey(const QByteArray &key)
       if(list.size() != 6)
 	{
 	  QMessageBox::critical
-	    (this, tr("Spot-On: Error"),
+	    (this, tr("%1: Error").
+	     arg(QCoreApplication::applicationName()),
 	     tr("Irregular data. Expecting 6 entries, received %1.").
 	     arg(list.size()));
 	  return;
@@ -1447,7 +1453,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 	   keyType == "rosetta" || keyType == "url"))
 	{
 	  QMessageBox::critical
-	    (this, tr("Spot-On: Error"),
+	    (this, tr("%1: Error").
+	     arg(QCoreApplication::applicationName()),
 	     tr("Invalid key type. Expecting 'chat', 'email', 'rosetta', "
 		"or 'url'."));
 	  return;
@@ -1472,7 +1479,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 #endif
 #endif
 	  mb.setIcon(QMessageBox::Question);
-	  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+	  mb.setWindowTitle(tr("%1: Confirmation").
+			    arg(QCoreApplication::applicationName()));
 	  mb.setWindowModality(Qt::WindowModal);
 	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
 	  mb.setText(tr("Unable to retrieve your %1 "
@@ -1496,7 +1504,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 #endif
 #endif
 	  mb.setIcon(QMessageBox::Question);
-	  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+	  mb.setWindowTitle(tr("%1: Confirmation").
+			    arg(QCoreApplication::applicationName()));
 	  mb.setWindowModality(Qt::WindowModal);
 	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
 	  mb.setText(tr("Unable to retrieve your %1 signature "
@@ -1511,7 +1520,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 	 (mSignature == mySPublicKey && !mySPublicKey.isEmpty()))
 	{
 	  QMessageBox::critical
-	    (this, tr("Spot-On: Error"),
+	    (this, tr("%1: Error").
+	     arg(QCoreApplication::applicationName()),
 	     tr("You're attempting to add your own '%1' keys. "
 		"Please do not do this!").arg(keyType.constData()));
 	  return;
@@ -1530,7 +1540,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 #endif
 #endif
 	  mb.setIcon(QMessageBox::Question);
-	  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+	  mb.setWindowTitle(tr("%1: Confirmation").
+			    arg(QCoreApplication::applicationName()));
 	  mb.setWindowModality(Qt::WindowModal);
 	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
 	  mb.setText(tr("Invalid 'chat', 'email', 'rosetta', or 'url' "
@@ -1557,7 +1568,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 #endif
 #endif
 	  mb.setIcon(QMessageBox::Question);
-	  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+	  mb.setWindowTitle(tr("%1: Confirmation").
+			    arg(QCoreApplication::applicationName()));
 	  mb.setWindowModality(Qt::WindowModal);
 	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
 	  mb.setText(tr("Invalid 'chat', 'email', 'rosetta', or 'url' "
@@ -1615,14 +1627,16 @@ void spoton::addFriendsKey(const QByteArray &key)
 	 !m_crypts.value("rosetta", 0) ||
 	 !m_crypts.value("url", 0))
 	{
-	  QMessageBox::critical(this, tr("Spot-On: Error"),
+	  QMessageBox::critical(this, tr("%1: Error").
+				arg(QCoreApplication::applicationName()),
 				tr("Invalid spoton_crypt object(s). This is "
 				   "a fatal flaw."));
 	  return;
 	}
       else if(key.trimmed().isEmpty())
 	{
-	  QMessageBox::critical(this, tr("Spot-On: Error"),
+	  QMessageBox::critical(this, tr("%1: Error").
+				arg(QCoreApplication::applicationName()),
 				tr("Empty key. Really?"));
 	  return;
 	}
@@ -1630,7 +1644,8 @@ void spoton::addFriendsKey(const QByteArray &key)
       if(!(key.startsWith("R") || key.startsWith("r")))
 	{
 	  QMessageBox::critical
-	    (this, tr("Spot-On: Error"),
+	    (this, tr("%1: Error").
+	     arg(QCoreApplication::applicationName()),
 	     tr("Invalid Repleo. The Repleo must start with "
 		"either the letter R or the letter r."));
 	  return;
@@ -1641,7 +1656,8 @@ void spoton::addFriendsKey(const QByteArray &key)
       if(list.size() != 3)
 	{
 	  QMessageBox::critical
-	    (this, tr("Spot-On: Error"),
+	    (this, tr("%1: Error").
+	     arg(QCoreApplication::applicationName()),
 	     tr("Irregular data. Expecting 3 entries, received %1.").
 	     arg(list.size()));
 	  return;
@@ -1676,7 +1692,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 		  if(!ok)
 		    {
 		      QMessageBox::critical
-			(this, tr("Spot-On: Error"),
+			(this, tr("%1: Error").
+			 arg(QCoreApplication::applicationName()),
 			 tr("Asymmetric decryption failure. "
 			    "Are you attempting "
 			    "to add a repleo that you gathered?"));
@@ -1691,7 +1708,8 @@ void spoton::addFriendsKey(const QByteArray &key)
       if(list.size() != 3)
 	{
 	  QMessageBox::critical
-	    (this, tr("Spot-On: Error"),
+	    (this, tr("%1: Error").
+	     arg(QCoreApplication::applicationName()),
 	     tr("Irregular data. Expecting 3 entries, received %1.").
 	     arg(list.size()));
 	  return;
@@ -1714,7 +1732,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 
       if(!ok)
 	{
-	  QMessageBox::critical(this, tr("Spot-On: Error"),
+	  QMessageBox::critical(this, tr("%1: Error").
+				arg(QCoreApplication::applicationName()),
 				tr("Unable to compute a keyed hash."));
 	  return;
 	}
@@ -1722,7 +1741,8 @@ void spoton::addFriendsKey(const QByteArray &key)
       if(computedHash.isEmpty() || hash.isEmpty() ||
 	 !spoton_crypt::memcmp(computedHash, hash))
 	{
-	  QMessageBox::critical(this, tr("Spot-On: Error"),
+	  QMessageBox::critical(this, tr("%1: Error").
+				arg(QCoreApplication::applicationName()),
 				tr("The computed hash does not match "
 				   "the provided hash."));
 	  return;
@@ -1733,7 +1753,8 @@ void spoton::addFriendsKey(const QByteArray &key)
       if(!ok)
 	{
 	  QMessageBox::critical
-	    (this, tr("Spot-On: Error"),
+	    (this, tr("%1: Error").
+	     arg(QCoreApplication::applicationName()),
 	     tr("Symmetric decryption failure. Serious!"));
 	  return;
 	}
@@ -1743,7 +1764,8 @@ void spoton::addFriendsKey(const QByteArray &key)
       if(list.size() != 6)
 	{
 	  QMessageBox::critical
-	    (this, tr("Spot-On: Error"),
+	    (this, tr("%1: Error").
+	     arg(QCoreApplication::applicationName()),
 	     tr("Irregular data. Expecting 6 entries, received %1.").
 	     arg(list.size()));
 	  return;
@@ -1758,7 +1780,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 	   list.value(0) == "url"))
 	{
 	  QMessageBox::critical
-	    (this, tr("Spot-On: Error"),
+	    (this, tr("%1: Error").
+	     arg(QCoreApplication::applicationName()),
 	     tr("Invalid key type. Expecting 'chat', 'email', 'rosetta', "
 		"or 'url'."));
 	  return;
@@ -1811,10 +1834,12 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  if(!ok)
 	    {
 	      QMessageBox::critical
-		(this, tr("Spot-On: Error"),
+		(this, tr("%1: Error").
+		 arg(QCoreApplication::applicationName()),
 		 tr("You're attempting to add your own keys or "
-		    "Spot-On was not able to retrieve your keys for "
-		    "comparison."));
+		    "%1 was not able to retrieve your keys for "
+		    "comparison.").
+		 arg(QCoreApplication::applicationName()));
 	      return;
 	    }
 	}
@@ -1824,7 +1849,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 					 list.value(3))) // Signature
 	{
 	  QMessageBox::critical
-	    (this, tr("Spot-On: Error"),
+	    (this, tr("%1: Error").
+	     arg(QCoreApplication::applicationName()),
 	     tr("Invalid 'chat', 'email', 'rosetta', or 'url' "
 		"public key signature."));
 	  return;
@@ -1836,7 +1862,8 @@ void spoton::addFriendsKey(const QByteArray &key)
 			  list.value(5))) // Signature
 	{
 	  QMessageBox::critical
-	    (this, tr("Spot-On: Error"),
+	    (this, tr("%1: Error").
+	     arg(QCoreApplication::applicationName()),
 	     tr("Invalid 'chat', 'email', 'rosetta', or 'url' "
 		"signature public key signature."));
 	  return;
@@ -1910,11 +1937,13 @@ void spoton::slotResetAll(void)
 #endif
 #endif
   mb.setIcon(QMessageBox::Question);
-  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+  mb.setWindowTitle(tr("%1: Confirmation").
+		    arg(QCoreApplication::applicationName()));
   mb.setWindowModality(Qt::WindowModal);
   mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-  mb.setText(tr("Are you sure that you wish to reset Spot-On? All "
-		"data will be lost. Forever."));
+  mb.setText(tr("Are you sure that you wish to reset %1? All "
+		"data will be lost. Forever.").
+	     arg(QCoreApplication::applicationName()));
 
   if(mb.exec() != QMessageBox::Yes)
     return;
@@ -2164,7 +2193,8 @@ void spoton::slotSendMail(void)
   if(fileInfo.size() >= maximumSize)
     {
       QMessageBox::critical
-	(this, tr("Spot-On: Error"),
+	(this, tr("%1: Error").
+	 arg(QCoreApplication::applicationName()),
 	 tr("The file email.db has exceeded the specified limit. Please "
 	    "remove some entries."));
       return;
@@ -2180,7 +2210,8 @@ void spoton::slotSendMail(void)
   if(!m_ui.emailParticipants->selectionModel()->hasSelection())
     {
       QMessageBox::critical
-	(this, tr("Spot-On: Error"),
+	(this, tr("%1: Error").
+	 arg(QCoreApplication::applicationName()),
 	 tr("Please select at least one participant."));
       m_ui.emailParticipants->setFocus();
       return;
@@ -2188,7 +2219,8 @@ void spoton::slotSendMail(void)
   else if(m_ui.outgoingMessage->toPlainText().trimmed().isEmpty())
     {
       QMessageBox::critical
-	(this, tr("Spot-On: Error"),
+	(this, tr("%1: Error").
+	 arg(QCoreApplication::applicationName()),
 	 tr("Please compose an actual letter."));
       m_ui.outgoingMessage->setFocus();
       return;
@@ -2947,7 +2979,8 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
 	bool ok = true;
 
 	goldbug = QInputDialog::getText
-	  (this, tr("Spot-On: Goldbug"), tr("&Goldbug"),
+	  (this, tr("%1: Goldbug").
+	   arg(QCoreApplication::applicationName()), tr("&Goldbug"),
 	   QLineEdit::Password, QString(""), &ok).trimmed();
 
 	if(!ok)
@@ -2957,20 +2990,23 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
 
 	if(rc == APPLY_GOLDBUG_TO_LETTER_ERROR_DATABASE)
 	  {
-	    QMessageBox::critical(this, tr("Spot-On: Error"),
+	    QMessageBox::critical(this, tr("%1: Error").
+				  arg(QCoreApplication::applicationName()),
 				  tr("A database error occurred."));
 	    return;
 	  }
 	else if(rc == APPLY_GOLDBUG_TO_LETTER_ERROR_GENERAL)
 	  {
-	    QMessageBox::critical(this, tr("Spot-On: Error"),
+	    QMessageBox::critical(this, tr("%1: Error").
+				  arg(QCoreApplication::applicationName()),
 				  tr("The provided goldbug may be "
 				     "incorrect."));
 	    return;
 	  }
 	else if(rc == APPLY_GOLDBUG_TO_LETTER_ERROR_MEMORY)
 	  {
-	    QMessageBox::critical(this, tr("Spot-On: Error"),
+	    QMessageBox::critical(this, tr("%1: Error").
+				  arg(QCoreApplication::applicationName()),
 				  tr("A severe memory issue occurred."));
 	    return;
 	  }
@@ -3318,7 +3354,8 @@ void spoton::slotEmptyTrash(void)
 #endif
 #endif
   mb.setIcon(QMessageBox::Question);
-  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+  mb.setWindowTitle(tr("%1: Confirmation").
+		    arg(QCoreApplication::applicationName()));
   mb.setWindowModality(Qt::WindowModal);
   mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
   mb.setText(tr("Are you sure that you wish to empty the Trash folder?"));
@@ -3391,7 +3428,8 @@ void spoton::slotRetrieveMail(void)
 
   if(m_ui.retrieveMail == sender())
     if(!error.isEmpty())
-      QMessageBox::critical(this, tr("Spot-On: Error"), error);
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()), error);
 }
 
 void spoton::slotKernelStatus(void)
@@ -4237,7 +4275,8 @@ void spoton::slotJoinBuzzChannel(void)
  done_label:
 
   if(!error.isEmpty())
-    QMessageBox::critical(this, tr("Spot-On: Error"), error);
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(QCoreApplication::applicationName()), error);
 }
 
 void spoton::slotCloseBuzzTab(int index)
@@ -4343,7 +4382,8 @@ void spoton::slotRemoveEmailParticipants(void)
 #endif
 #endif
   mb.setIcon(QMessageBox::Question);
-  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+  mb.setWindowTitle(tr("%1: Confirmation").
+		    arg(QCoreApplication::applicationName()));
   mb.setWindowModality(Qt::WindowModal);
   mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
   mb.setText(tr("Are you sure that you wish to remove the selected "
@@ -4396,7 +4436,8 @@ void spoton::slotAddAcceptedIP(void)
 
   if(!crypt)
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Invalid spoton_crypt object. This is "
 			       "a fatal flaw."));
       return;
@@ -4417,7 +4458,7 @@ void spoton::slotAddAcceptedIP(void)
   if(oid.isEmpty())
     {
       QMessageBox::critical
-	(this, tr("Spot-On: Error"),
+	(this, tr("%1: Error").arg(QCoreApplication::applicationName()),
 	 tr("Invalid listener OID. Please select a listener."));
       return;
     }
@@ -4427,7 +4468,8 @@ void spoton::slotAddAcceptedIP(void)
   if(m_ui.acceptedIP->text().trimmed() != "Any")
     if(ip.isNull())
       {
-	QMessageBox::critical(this, tr("Spot-On: Error"),
+	QMessageBox::critical(this, tr("%1: Error").
+			      arg(QCoreApplication::applicationName()),
 			      tr("Please provide an IP address or "
 				 "the keyword Any."));
 	return;
@@ -4491,7 +4533,8 @@ void spoton::slotAddAcceptedIP(void)
   if(ok)
     m_ui.acceptedIP->clear();
   else
-    QMessageBox::critical(this, tr("Spot-On: Error"),
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(QCoreApplication::applicationName()),
 			  tr("Unable to record the IP address."));
 }
 
@@ -4501,7 +4544,8 @@ void spoton::slotDeleteAccepedIP(void)
 
   if(!crypt)
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Invalid spoton_crypt object. This is "
 			       "a fatal flaw."));
       return;
@@ -4521,7 +4565,8 @@ void spoton::slotDeleteAccepedIP(void)
 
   if(oid.isEmpty())
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Invalid listener OID. "
 			       "Please select a listener."));
       return;
@@ -4539,7 +4584,8 @@ void spoton::slotDeleteAccepedIP(void)
 
   if(ip.isEmpty())
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Please select an address to delete."));
       return;
     }
@@ -4631,14 +4677,16 @@ void spoton::slotTestSslControlString(void)
       mb.setDetailedText(str);
       mb.setText
 	(tr("The following ciphers are supported by your OpenSSL library. "
-	    "Please note that Spot-On may neglect discovered ciphers "
-	    "if the ciphers are not also understood by Qt."));
+	    "Please note that %1 may neglect discovered ciphers "
+	    "if the ciphers are not also understood by Qt.").
+	 arg(QCoreApplication::applicationName()));
     }
   else
     mb.setText(tr("Empty cipher list."));
 
   mb.setStandardButtons(QMessageBox::Ok);
-  mb.setWindowTitle(tr("Spot-On: Information"));
+  mb.setWindowTitle(tr("%1: Information").
+		    arg(QCoreApplication::applicationName()));
   mb.exec();
 }
 
@@ -4750,7 +4798,8 @@ void spoton::slotAddAccount(void)
  done_label:
 
   if(!error.isEmpty())
-    QMessageBox::critical(this, tr("Spot-On: Error"), error);
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(QCoreApplication::applicationName()), error);
   else
     {
       m_ui.accountName->clear();
@@ -4766,7 +4815,8 @@ void spoton::slotDeleteAccount(void)
 
   if(!crypt)
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Invalid spoton_crypt object. This is "
 			       "a fatal flaw."));
       return;
@@ -4786,7 +4836,8 @@ void spoton::slotDeleteAccount(void)
 
   if(oid.isEmpty())
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Invalid listener OID. "
 			       "Please select a listener."));
       return;
@@ -4796,7 +4847,8 @@ void spoton::slotDeleteAccount(void)
 
   if(list.isEmpty() || !list.at(0))
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Please select an account to delete."));
       return;
     }

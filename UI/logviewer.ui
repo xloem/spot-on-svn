@@ -10,9 +10,6 @@
     <height>600</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Spot-On: Log Viewer</string>
-  </property>
   <property name="windowIcon">
    <iconset resource="../Icons/icons.qrc">
     <normaloff>:/Logo/spoton-button-32.png</normaloff>:/Logo/spoton-button-32.png</iconset>
@@ -73,7 +70,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>27</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

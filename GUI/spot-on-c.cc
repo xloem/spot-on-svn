@@ -175,7 +175,8 @@ void spoton::slotAddEtpMagnet(const QString &text)
  done_label:
 
   if(!error.isEmpty())
-    QMessageBox::critical(this, tr("Spot-On: Error"), error);
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(QCoreApplication::applicationName()), error);
   else
     askKernelToReadStarBeamKeys();
 }
@@ -426,7 +427,8 @@ void spoton::slotSelectDestination(void)
   QFileDialog dialog(this);
 
   dialog.setWindowTitle
-    (tr("Spot-On: Select StarBeam Destination Path"));
+    (tr("%1: Select StarBeam Destination Path").
+     arg(QCoreApplication::applicationName()));
   dialog.setFileMode(QFileDialog::Directory);
   dialog.setDirectory(QDir::homePath());
   dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
@@ -789,7 +791,8 @@ void spoton::slotSelectTransmitFile(void)
   QFileDialog dialog(this);
 
   dialog.setWindowTitle
-    (tr("Spot-On: Select StarBeam Transmit File"));
+    (tr("%1: Select StarBeam Transmit File").
+     arg(QCoreApplication::applicationName()));
   dialog.setFileMode(QFileDialog::ExistingFile);
   dialog.setDirectory(QDir::homePath());
   dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
@@ -1013,7 +1016,8 @@ void spoton::slotTransmit(void)
  done_label:
 
   if(!error.isEmpty())
-    QMessageBox::critical(this, tr("Spot-On: Error"), error);
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(QCoreApplication::applicationName()), error);
   else
     {
       m_ui.missingLinks->clear();
@@ -1549,7 +1553,8 @@ void spoton::slotAddReceiveNova(void)
 
   if(!crypt)
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Invalid spoton_crypt object. This is "
 			       "a fatal flaw."));
       return;
@@ -1559,7 +1564,8 @@ void spoton::slotAddReceiveNova(void)
 
   if(nova.isEmpty())
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Please provide a nova. Reach for the "
 			       "stars!"));
       return;
@@ -1608,7 +1614,8 @@ void spoton::slotAddReceiveNova(void)
       askKernelToReadStarBeamKeys();
     }
   else
-    QMessageBox::critical(this, tr("Spot-On: Error"),
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(QCoreApplication::applicationName()),
 			  tr("Unable to store the nova."));
 }
 
@@ -1675,7 +1682,8 @@ void spoton::slotDeleteNova(void)
 
   if(!crypt)
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Invalid spoton_crypt object. This is "
 			       "a fatal flaw."));
       return;
@@ -1685,7 +1693,8 @@ void spoton::slotDeleteNova(void)
 
   if(list.isEmpty() || !list.at(0))
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Please select a nova to delete."));
       return;
     }
@@ -2236,7 +2245,8 @@ void spoton::slotRegenerateKey(void)
   if(!m_crypts.value(keyType, 0) ||
      !m_crypts.value(QString("%1-signature").arg(keyType), 0))
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Invalid spoton_crypt object(s). This is "
 			       "a fatal flaw."));
       return;
@@ -2250,7 +2260,8 @@ void spoton::slotRegenerateKey(void)
 #endif
 #endif
   mb.setIcon(QMessageBox::Question);
-  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+  mb.setWindowTitle(tr("%1: Confirmation").
+		    arg(QCoreApplication::applicationName()));
   mb.setWindowModality(Qt::WindowModal);
   mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
   mb.setText(tr("Are you sure that you wish to generate the selected "
@@ -2313,7 +2324,8 @@ void spoton::slotRegenerateKey(void)
 	sendKeysToKernel();
     }
   else
-    QMessageBox::critical(this, tr("Spot-On: Error"),
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(QCoreApplication::applicationName()),
 			  tr("An error (%1) occurred with "
 			     "spoton_crypt::"
 			     "generatePrivatePublicKeys().").
@@ -2783,7 +2795,8 @@ void spoton::slotExportPublicKeys(void)
     */
 
     QMessageBox::critical
-      (this, tr("Spot-On: Error"),
+      (this, tr("%1: Error").
+       arg(QCoreApplication::applicationName()),
        tr("A deep failure occurred while gathering your public key pairs. "
 	  "Do you have public keys? Please inspect the Settings tab."));
   else
@@ -2798,7 +2811,8 @@ void spoton::slotExportPublicKeys(void)
 #endif
 #endif
 	  mb.setIcon(QMessageBox::Question);
-	  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+	  mb.setWindowTitle(tr("%1: Confirmation").
+			    arg(QCoreApplication::applicationName()));
 	  mb.setWindowModality(Qt::WindowModal);
 	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
 	  mb.setText
@@ -2814,7 +2828,8 @@ void spoton::slotExportPublicKeys(void)
 
       dialog.setConfirmOverwrite(true);
       dialog.setWindowTitle
-	(tr("Spot-On: Select Public Keys Export File"));
+	(tr("%1: Select Public Keys Export File").
+	 arg(QCoreApplication::applicationName()));
       dialog.setFileMode(QFileDialog::AnyFile);
 #if QT_VERSION < 0x050000
       dialog.setDirectory
@@ -2861,7 +2876,8 @@ void spoton::slotImportPublicKeys(void)
   QFileDialog dialog(this);
 
   dialog.setWindowTitle
-    (tr("Spot-On: Select Public Keys Import File"));
+    (tr("%1: Select Public Keys Import File").
+     arg(QCoreApplication::applicationName()));
   dialog.setFileMode(QFileDialog::ExistingFile);
 #if QT_VERSION < 0x050000
   dialog.setDirectory
@@ -2897,7 +2913,8 @@ void spoton::slotImportPublicKeys(void)
 #endif
 #endif
 	  mb.setIcon(QMessageBox::Question);
-	  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+	  mb.setWindowTitle(tr("%1: Confirmation").
+			    arg(QCoreApplication::applicationName()));
 	  mb.setWindowModality(Qt::WindowModal);
 	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
 	  mb.setText
@@ -2952,7 +2969,8 @@ void spoton::slotExportListeners(void)
   if(m_ui.listeners->rowCount() == 0)
     {
       QMessageBox::critical
-	(this, tr("Spot-On: Error"),
+	(this, tr("%1: Error").
+	 arg(QCoreApplication::applicationName()),
 	 tr("Unable to export an empty listeners table."));
       return;
     }
@@ -2961,7 +2979,8 @@ void spoton::slotExportListeners(void)
 
   dialog.setConfirmOverwrite(true);
   dialog.setWindowTitle
-    (tr("Spot-On: Select Listeners Export File"));
+    (tr("%1: Select Listeners Export File").
+     arg(QCoreApplication::applicationName()));
   dialog.setFileMode(QFileDialog::AnyFile);
 #if QT_VERSION < 0x050000
   dialog.setDirectory(QDesktopServices::storageLocation(QDesktopServices::
@@ -3044,7 +3063,8 @@ void spoton::slotImportNeighbors(void)
 
   if(!crypt)
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Invalid spoton_crypt object. "
 			       "This is a fatal flaw."));
       return;
@@ -3053,7 +3073,8 @@ void spoton::slotImportNeighbors(void)
   QFileDialog dialog(this);
 
   dialog.setWindowTitle
-    (tr("Spot-On: Select Neighbors Import File"));
+    (tr("%1: Select Neighbors Import File").
+     arg(QCoreApplication::applicationName()));
   dialog.setFileMode(QFileDialog::ExistingFile);
 #if QT_VERSION < 0x050000
   dialog.setDirectory
@@ -3089,7 +3110,8 @@ void spoton::slotImportNeighbors(void)
 #endif
 #endif
 	  mb.setIcon(QMessageBox::Question);
-	  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+	  mb.setWindowTitle(tr("%1: Confirmation").
+			    arg(QCoreApplication::applicationName()));
 	  mb.setWindowModality(Qt::WindowModal);
 	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
 	  mb.setText
@@ -3649,7 +3671,8 @@ void spoton::slotRemoveUrlParticipants(void)
 #endif
 #endif
   mb.setIcon(QMessageBox::Question);
-  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+  mb.setWindowTitle(tr("%1: Confirmation").
+		    arg(QCoreApplication::applicationName()));
   mb.setWindowModality(Qt::WindowModal);
   mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
   mb.setText(tr("Are you sure that you wish to remove the selected "
@@ -3732,7 +3755,8 @@ void spoton::slotRenameParticipant(void)
   bool ok = true;
 
   name = QInputDialog::getText
-    (this, tr("Spot-On: New Name"), tr("&Name"),
+    (this, tr("%1: New Name"), tr("&Name").
+     arg(QCoreApplication::applicationName()),
      QLineEdit::Normal, QString(""), &ok).trimmed();
   name = name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed();
 

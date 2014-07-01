@@ -285,7 +285,8 @@ void spoton::slotAddInstitution(const QString &text)
 
   if(!crypt)
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Invalid spoton_crypt object. "
 			       "This is a fatal flaw."));
       return;
@@ -342,14 +343,16 @@ void spoton::slotAddInstitution(const QString &text)
 
   if(name.isEmpty())
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Please provide an institution name."));
       return;
     }
 
   if(postalAddress.isEmpty())
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Please provide an institution "
 			       "postal address."));
       return;
@@ -422,7 +425,8 @@ void spoton::slotAddInstitution(const QString &text)
       refreshInstitutions();
     }
   else
-    QMessageBox::critical(this, tr("Spot-On: Error"),
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(QCoreApplication::applicationName()),
 			  tr("Unable to record the institution."));
 }
 
@@ -545,7 +549,8 @@ void spoton::slotSaveMOTD(void)
 	QString str(m_ui.motd->toPlainText().trimmed());
 
 	if(str.isEmpty())
-	  str = "Welcome to Spot-On.";
+	  str = QString("Welcome to %1.").
+	    arg(QCoreApplication::applicationName());
 
 	query.prepare("UPDATE listeners SET motd = ? WHERE OID = ?");
 	query.bindValue(0, str);
@@ -565,7 +570,8 @@ void spoton::slotSaveMOTD(void)
  done_label:
 
   if(!error.isEmpty())
-    QMessageBox::critical(this, tr("Spot-On: Error"), error);
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(QCoreApplication::applicationName()), error);
 }
 
 void spoton::populateMOTD(const QString &listenerOid)
@@ -721,7 +727,8 @@ void spoton::slotAddMagnet(void)
 
       if(!crypt)
 	{
-	  QMessageBox::critical(this, tr("Spot-On: Error"),
+	  QMessageBox::critical(this, tr("%1: Error").
+				arg(QCoreApplication::applicationName()),
 				tr("Invalid spoton_crypt object. This is "
 				   "a fatal flaw."));
 	  return;
@@ -823,7 +830,8 @@ void spoton::slotAddMagnet(void)
       QSqlDatabase::removeDatabase(connectionName);
 
       if(!ok)
-	QMessageBox::critical(this, tr("Spot-On: Error"),
+	QMessageBox::critical(this, tr("%1: Error").
+			      arg(QCoreApplication::applicationName()),
 			      tr("An error occurred while attempting to "
 				 "save the channel data. Please enable "
 				 "logging via the Log Viewer and try again."));
@@ -909,7 +917,8 @@ void spoton::slotAddAEToken(void)
  done_label:
 
   if(!error.isEmpty())
-    QMessageBox::critical(this, tr("Spot-On: Error"), error);
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(QCoreApplication::applicationName()), error);
   else
     {
       m_ui.ae_token->clear();
@@ -924,7 +933,8 @@ void spoton::slotDeleteAEToken(void)
 
   if(!crypt)
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Invalid spoton_crypt object. This is "
 			       "a fatal flaw."));
       return;
@@ -934,7 +944,8 @@ void spoton::slotDeleteAEToken(void)
 
   if(list.size() != 2 || !list.at(0) || !list.at(1))
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Please select a token to delete."));
       return;
     }
@@ -1105,7 +1116,8 @@ void spoton::slotSetAETokenInformation(void)
 
   if(!crypt)
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Invalid spoton_crypt object. "
 			       "This is a fatal flaw."));
       return;
@@ -1119,7 +1131,8 @@ void spoton::slotSetAETokenInformation(void)
 
   if(list.isEmpty())
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Invalid neighbor OID. "
 			       "Please select a neighbor."));
       return;
@@ -1131,7 +1144,8 @@ void spoton::slotSetAETokenInformation(void)
 
   if(types.isEmpty())
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("The method spoton_crypt::hashTypes() has "
 			       "failed. "
 			       "This is a fatal flaw."));
@@ -1141,6 +1155,9 @@ void spoton::slotSetAETokenInformation(void)
   QDialog dialog(this);
   Ui_adaptiveechoprompt ui;
 
+  dialog.setWindowTitle
+    (tr("%1: Adaptive Echo Information").
+     arg(QCoreApplication::applicationName()));
   ui.setupUi(&dialog);
 #ifdef Q_OS_MAC
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
@@ -1192,7 +1209,8 @@ void spoton::slotSetAETokenInformation(void)
 	  QSqlDatabase::removeDatabase(connectionName);
 	}
       else
-	QMessageBox::critical(this, tr("Spot-On: Error"),
+	QMessageBox::critical(this, tr("%1: Error").
+			      arg(QCoreApplication::applicationName()),
 			      tr("The token must contain "
 				 "at least sixteen characters."));
     }

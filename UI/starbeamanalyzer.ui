@@ -10,9 +10,6 @@
     <height>600</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Spot-On: StarBeam Analyzer</string>
-  </property>
   <property name="windowIcon">
    <iconset resource="../Icons/icons.qrc">
     <normaloff>:/Logo/spoton-button-32.png</normaloff>:/Logo/spoton-button-32.png</iconset>

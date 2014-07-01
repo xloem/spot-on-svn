@@ -36,6 +36,9 @@
 spoton_logviewer::spoton_logviewer(void):QMainWindow()
 {
   ui.setupUi(this);
+  setWindowTitle
+    (tr("%1: Log Viewer").
+     arg(QCoreApplication::applicationName()));
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
   setAttribute(Qt::WA_MacMetalStyle, true);

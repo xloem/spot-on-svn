@@ -37,6 +37,9 @@ spoton_starbeamanalyzer::spoton_starbeamanalyzer(QWidget *parent):
   QMainWindow(parent)
 {
   ui.setupUi(this);
+  setWindowTitle
+    (tr("%1: StarBeam Analyzer").
+     arg(QCoreApplication::applicationName()));
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
   setAttribute(Qt::WA_MacMetalStyle, true);

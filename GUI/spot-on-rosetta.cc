@@ -43,6 +43,9 @@ spoton_rosetta::spoton_rosetta(void):QMainWindow()
   m_eCrypt = 0;
   m_sCrypt = 0;
   ui.setupUi(this);
+  setWindowTitle
+    (tr("%1: Rosetta").
+     arg(QCoreApplication::applicationName()));
   ui.name->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
@@ -307,7 +310,8 @@ void spoton_rosetta::slotAddContact(void)
 {
   if(!m_eCrypt || !m_sCrypt)
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Invalid spoton_crypt object(s). This is "
 			       "a fatal flaw."));
       return;
@@ -318,7 +322,8 @@ void spoton_rosetta::slotAddContact(void)
 
   if(key.trimmed().isEmpty())
     {
-      QMessageBox::critical(this, tr("Spot-On: Error"),
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(QCoreApplication::applicationName()),
 			    tr("Empty key. Really?"));
       return;
     }
@@ -326,7 +331,8 @@ void spoton_rosetta::slotAddContact(void)
   if(!(key.startsWith("K") || key.startsWith("k")))
     {
       QMessageBox::critical
-	(this, tr("Spot-On: Error"),
+	(this, tr("%1: Error").
+	 arg(QCoreApplication::applicationName()),
 	 tr("Invalid key. The key must start with either the letter "
 	    "K or the letter k."));
       return;
@@ -337,7 +343,8 @@ void spoton_rosetta::slotAddContact(void)
   if(list.size() != 6)
     {
       QMessageBox::critical
-	(this, tr("Spot-On: Error"),
+	(this, tr("%1: Error").
+	 arg(QCoreApplication::applicationName()),
 	 tr("Irregular data. Expecting 6 entries, received %1.").
 	 arg(list.size()));
       return;
@@ -350,7 +357,8 @@ void spoton_rosetta::slotAddContact(void)
   if(keyType != "rosetta")
     {
       QMessageBox::critical
-	(this, tr("Spot-On: Error"),
+	(this, tr("%1: Error").
+	 arg(QCoreApplication::applicationName()),
 	 tr("Invalid key type. Expecting 'rosetta'."));
       return;
     }
@@ -374,7 +382,8 @@ void spoton_rosetta::slotAddContact(void)
 #endif
 #endif
       mb.setIcon(QMessageBox::Question);
-      mb.setWindowTitle(tr("Spot-On: Confirmation"));
+      mb.setWindowTitle(tr("%1: Confirmation").
+			arg(QCoreApplication::applicationName()));
       mb.setWindowModality(Qt::WindowModal);
       mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
       mb.setText(tr("Unable to retrieve your %1 "
@@ -397,7 +406,8 @@ void spoton_rosetta::slotAddContact(void)
 #endif
 #endif
       mb.setIcon(QMessageBox::Question);
-      mb.setWindowTitle(tr("Spot-On: Confirmation"));
+      mb.setWindowTitle(tr("%1: Confirmation").
+			arg(QCoreApplication::applicationName()));
       mb.setWindowModality(Qt::WindowModal);
       mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
       mb.setText(tr("Unable to retrieve your %1 signature "
@@ -412,7 +422,8 @@ void spoton_rosetta::slotAddContact(void)
      (mSignature == mySPublicKey && !mySPublicKey.isEmpty()))
     {
       QMessageBox::critical
-	(this, tr("Spot-On: Error"),
+	(this, tr("%1: Error").
+	 arg(QCoreApplication::applicationName()),
 	 tr("You're attempting to add your own '%1' keys. "
 	    "Please do not do this!").arg(keyType.constData()));
       return;
@@ -424,7 +435,8 @@ void spoton_rosetta::slotAddContact(void)
 				     mSignature))
     {
       QMessageBox::critical
-	(this, tr("Spot-On: Error"),
+	(this, tr("%1: Error").
+	 arg(QCoreApplication::applicationName()),
 	 tr("Invalid 'rosetta' public key signature."));
       return;
     }
@@ -439,7 +451,8 @@ void spoton_rosetta::slotAddContact(void)
 				     sSignature))
     {
       QMessageBox::critical
-	(this, tr("Spot-On: Error"),
+	(this, tr("%1: Error").
+	 arg(QCoreApplication::applicationName()),
 	 tr("Invalid signature public key signature."));
       return;
     }
@@ -674,7 +687,9 @@ void spoton_rosetta::slotConvert(void)
     done_label1:
 
       if(!error.isEmpty())
-	QMessageBox::critical(this, tr("Spot-On: Error"), error);
+	QMessageBox::critical(this, tr("%1: Error").
+			      arg(QCoreApplication::applicationName()),
+			      error);
     }
   else
     {
@@ -794,7 +809,9 @@ void spoton_rosetta::slotConvert(void)
     done_label2:
 
       if(!error.isEmpty())
-	QMessageBox::critical(this, tr("Spot-On: Error"), error);
+	QMessageBox::critical(this, tr("%1: Error").
+			      arg(QCoreApplication::applicationName()),
+			      error);
     }
 }
 
@@ -811,7 +828,8 @@ void spoton_rosetta::slotDelete(void)
 #endif
 #endif
   mb.setIcon(QMessageBox::Question);
-  mb.setWindowTitle(tr("Spot-On: Confirmation"));
+  mb.setWindowTitle(tr("%1: Confirmation").
+		    arg(QCoreApplication::applicationName()));
   mb.setWindowModality(Qt::WindowModal);
   mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
   mb.setText(tr("Are you sure that you wish to remove the selected "
@@ -904,7 +922,8 @@ void spoton_rosetta::slotRename(void)
   bool ok = true;
 
   name = QInputDialog::getText
-    (this, tr("Spot-On: New Name"), tr("&Name"),
+    (this, tr("%1: New Name").
+     arg(QCoreApplication::applicationName()), tr("&Name"),
      QLineEdit::Normal, QString(""), &ok).trimmed();
   name = name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed();
 
