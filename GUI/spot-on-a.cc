@@ -2907,6 +2907,7 @@ void spoton::slotPopulateListeners(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+  populateAETokens();
 
   if(active > 0)
     {
