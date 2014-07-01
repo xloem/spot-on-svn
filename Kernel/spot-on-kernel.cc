@@ -355,54 +355,84 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	** Attempt to disable input echo.
 	*/
 
+	bool error = false;
+
 #ifdef Q_OS_WIN32
 	DWORD mode = 0;
 	HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
 
-	GetConsoleMode(hStdin, &mode);
-	SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT));
+	if(GetConsoleMode(hStdin, &mode) == 0)
+	  {
+	    qDebug() << "Unable to retrieve the terminal's mode. Exiting.";
+	    deleteLater();
+	    break;
+	  }
+
+	if(SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT)) == 0)
+	  error = true;
 #else
 	termios newt;
 	termios oldt;
 
-	tcgetattr(STDIN_FILENO, &oldt);
+	if(tcgetattr(STDIN_FILENO, &oldt) != 0)
+	  {
+	    qDebug() << "Unable to retrieve the terminal's mode. Exiting.";
+	    deleteLater();
+	    break;
+	  }
+
 	newt = oldt;
 	newt.c_lflag &= ~ECHO;
-	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+
+	if(tcsetattr(STDIN_FILENO, TCSANOW, &newt) != 0)
+	  error = true;
 #endif
 	QString input("");
-	QTextStream cin(stdin);
-	QTextStream cout(stdout);
 
-	cout << "Passphrase, please: ";
-	cout.flush();
-	input = cin.readLine(64);
+	if(!error)
+	  {
+	    QTextStream cin(stdin);
+	    QTextStream cout(stdout);
 
-	for(int i = input.length() - 1; i >= 0; i--)
-	  if(!input.at(i).isPrint())
-	    input.remove(i, 1);
+	    cout << "Passphrase, please: ";
+	    cout.flush();
+	    input = cin.readLine(64);
+
+	    for(int i = input.length() - 1; i >= 0; i--)
+	      if(!input.at(i).isPrint())
+		input.remove(i, 1);
+	  }
 
 #ifdef Q_OS_WIN32
 	SetConsoleMode(hStdin, mode);
 #else
 	tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
 #endif
-	qDebug();
-	qDebug() << "Validating the passphrase... Please remain calm.";
 
-	if(!initializeSecurityContainers(input))
+	if(!error)
 	  {
-	    qDebug() << "Invalid passphrase?";
-	    deleteLater();
+	    qDebug();
+	    qDebug() << "Validating the passphrase... Please remain calm.";
+
+	    if(!initializeSecurityContainers(input))
+	      {
+		qDebug() << "Invalid passphrase?";
+		deleteLater();
+	      }
+	    else
+	      {
+		qDebug() << "Passphrase accepted.";
+		spoton_misc::cleanupDatabases(s_crypts.value("chat", 0));
+	      }
+
+	    input.replace(0, input.length(), '0');
+	    break;
 	  }
 	else
 	  {
-	    qDebug() << "Passphrase accepted.";
-	    spoton_misc::cleanupDatabases(s_crypts.value("chat", 0));
+	    qDebug() << "Unable to silence the terminal's echo. Exiting.";
+	    deleteLater();
 	  }
-
-	input.replace(0, input.length(), '0');
-	break;
       }
     else if(arguments.at(i) == "--vacuum")
       {

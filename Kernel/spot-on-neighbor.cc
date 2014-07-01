@@ -2015,7 +2015,8 @@ void spoton_neighbor::slotReceivedMessage
 
   bool adaptiveEcho = false;
 
-  if(adaptiveEchoPair == QPair<QByteArray, QByteArray> () ||
+  if(adaptiveEchoPair == QPair<QByteArray, QByteArray> () // Super Echo!
+     ||
      m_learnedAdaptiveEchoPairs.contains(adaptiveEchoPair))
     adaptiveEcho = true;
 
