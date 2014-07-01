@@ -447,6 +447,16 @@ void spoton_sctp_server::slotTimeout(void)
 
       if(socketDescriptor > -1)
 	{
+	  if(spoton_kernel::s_connectionCounts.value(m_id, 0) >= m_backlog)
+	    {
+#ifdef Q_OS_WIN32
+	      closesocket(socketDescriptor);
+#else
+	      ::close(socketDescriptor);
+#endif
+	      return;
+	    }
+
 	  address.setAddress
 	    (ntohl(clientaddr.sin_addr.s_addr));
 	  port = ntohs(clientaddr.sin_port);
@@ -525,6 +535,16 @@ void spoton_sctp_server::slotTimeout(void)
 
       if(socketDescriptor > -1)
 	{
+	  if(spoton_kernel::s_connectionCounts.value(m_id, 0) >= m_backlog)
+	    {
+#ifdef Q_OS_WIN32
+	      closesocket(socketDescriptor);
+#else
+	      ::close(socketDescriptor);
+#endif
+	      return;
+	    }
+
 	  Q_IPV6ADDR tmp;
 
 	  memcpy(&tmp.c, &clientaddr.sin6_addr.s6_addr,

@@ -88,6 +88,7 @@ class spoton_listener_udp_server: public QUdpSocket
 			     QObject *parent):QUdpSocket(parent)
   {
     m_id = id;
+    m_maxPendingConnections = 5;
     connect(this,
 	    SIGNAL(readyRead(void)),
 	    this,
@@ -106,13 +107,24 @@ class spoton_listener_udp_server: public QUdpSocket
 			      arg(port));
   }
 
+  int maxPendingConnections(void) const
+  {
+    return m_maxPendingConnections;
+  }
+
   void addClientAddress(const QString &address)
   {
     m_clients.insert(address, 0);
   }
 
+  void setMaxPendingConnections(const int maxPendingConnections)
+  {
+    m_maxPendingConnections = qBound(1, maxPendingConnections, SOMAXCONN);
+  }
+
  private:
   QHash<QString, char> m_clients;
+  int m_maxPendingConnections;
   qint64 m_id;
 
  private slots:

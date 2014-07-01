@@ -2749,7 +2749,9 @@ void spoton::slotPopulateListeners(void)
 			box->addItem(tr("Unlimited"));
 			box->setMaximumWidth
 			  (box->fontMetrics().width(tr("Unlimited")) + 50);
-			box->setToolTip(tooltip);
+			box->setToolTip
+			  (tr("Please deactivate the listener before "
+			      "changing the maximum connections value."));
 			m_ui.listeners->setCellWidget(row, i, box);
 
 			if(std::numeric_limits<int>::max() ==

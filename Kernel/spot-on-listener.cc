@@ -45,7 +45,8 @@ void spoton_listener_tcp_server::incomingConnection(qintptr socketDescriptor)
 void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 #endif
 {
-  if(findChildren<spoton_neighbor *> ().size() >= maxPendingConnections())
+  if(spoton_kernel::s_connectionCounts.value(m_id, 0) >=
+     maxPendingConnections())
     {
       QAbstractSocket socket(QAbstractSocket::TcpSocket, this);
 
@@ -116,7 +117,11 @@ void spoton_listener_udp_server::slotReadyRead(void)
 
   readDatagram(0, 0, &peerAddress, &peerPort); // Discard the datagram.
 
-  if(!spoton_misc::isAcceptedIP(peerAddress, m_id,
+  if(spoton_kernel::s_connectionCounts.value(m_id, 0) >=
+     maxPendingConnections())
+    {
+    }
+  else if(!spoton_misc::isAcceptedIP(peerAddress, m_id,
 				spoton_kernel::s_crypts.value("chat", 0)))
     spoton_misc::logError
       (QString("spoton_listener_udp_server::incomingConnection(): "
@@ -283,6 +288,8 @@ spoton_listener::spoton_listener(const QString &ipAddress,
     m_sctpServer->setMaxPendingConnections(maximumClients);
   else if(m_tcpServer)
     m_tcpServer->setMaxPendingConnections(maximumClients);
+  else if(m_udpServer)
+    m_udpServer->setMaxPendingConnections(maximumClients);
 
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
@@ -465,29 +472,29 @@ void spoton_listener::slotTimeout(void)
 		      }
 
 		    if(isListening())
-		      {
-			if(m_sctpServer || m_tcpServer)
-			  if(static_cast<int> (query.value(1).
-					       toLongLong()) !=
-			     maxPendingConnections())
-			    {
-			      int maximumPendingConnections =
-				qAbs(static_cast<int> (query.value(1).
-						       toLongLong()));
+		      if(static_cast<int> (query.value(1).
+					   toLongLong()) !=
+			 maxPendingConnections())
+			{
+			  int maximumPendingConnections =
+			    qAbs(static_cast<int> (query.value(1).
+						   toLongLong()));
 
-			      if(!maximumPendingConnections)
-				maximumPendingConnections = 1;
-			      else if(maximumPendingConnections % 5 != 0)
-				maximumPendingConnections = 1;
+			  if(!maximumPendingConnections)
+			    maximumPendingConnections = 1;
+			  else if(maximumPendingConnections % 5 != 0)
+			    maximumPendingConnections = 1;
 
-			      if(m_sctpServer)
-				m_sctpServer->setMaxPendingConnections
-				  (maximumPendingConnections);
-			      else if(m_tcpServer)
-				m_tcpServer->setMaxPendingConnections
-				  (maximumPendingConnections);
-			    }
-		      }
+			  if(m_sctpServer)
+			    m_sctpServer->setMaxPendingConnections
+			      (maximumPendingConnections);
+			  else if(m_tcpServer)
+			    m_tcpServer->setMaxPendingConnections
+			      (maximumPendingConnections);
+			  else if(m_udpServer)
+			    m_udpServer->setMaxPendingConnections
+			      (maximumPendingConnections);
+			}
 		  }
 
 		if(isListening())
@@ -608,14 +615,8 @@ void spoton_listener::saveStatus(const QSqlDatabase &db)
 
   query.prepare("UPDATE listeners SET connections = ?, status = ? "
 		"WHERE OID = ? AND status <> ?");
-
-  /*
-  ** Please note that findChildren() will not locate neighbors that have
-  ** been detached.
-  */
-
   query.bindValue
-    (0, QString::number(findChildren<spoton_neighbor *> ().size()));
+    (0, QString::number(spoton_kernel::s_connectionCounts.value(m_id, 0)));
 
   if(isListening())
     status = "online";
@@ -691,23 +692,21 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 
   if(!error.isEmpty() || !neighbor)
     {
-      /*
-      ** Some of the following errors should be ignored.
-      */
-
       if(m_transport == "sctp")
 	{
 	  spoton_sctp_socket socket(this);
 
 	  socket.setSocketDescriptor(socketDescriptor);
 	  socket.abort();
-	  spoton_misc::logError
-	    (QString("spoton_listener::"
-		     "slotNewConnection(): "
-		     "generateSslKeys() failure (%1) for %2:%3.").
-	     arg(error.remove(".")).
-	     arg(m_address.toString()).
-	     arg(m_port));
+
+	  if(!error.isEmpty())
+	    spoton_misc::logError
+	      (QString("spoton_listener::"
+		       "slotNewConnection(): "
+		       "generateSslKeys() failure (%1) for %2:%3.").
+	       arg(error.remove(".")).
+	       arg(m_address.toString()).
+	       arg(m_port));
 	}
       else if(m_transport == "tcp")
 	{
@@ -715,13 +714,15 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 
 	  socket.setSocketDescriptor(socketDescriptor);
 	  socket.abort();
-	  spoton_misc::logError
-	    (QString("spoton_listener::"
-		     "slotNewConnection(): "
-		     "generateSslKeys() failure (%1) for %2:%3.").
-	     arg(error.remove(".")).
-	     arg(m_address.toString()).
-	     arg(m_port));
+
+	  if(!error.isEmpty())
+	    spoton_misc::logError
+	      (QString("spoton_listener::"
+		       "slotNewConnection(): "
+		       "generateSslKeys() failure (%1) for %2:%3.").
+	       arg(error.remove(".")).
+	       arg(m_address.toString()).
+	       arg(m_port));
 	}
       else if(m_transport == "udp")
 	{
@@ -729,13 +730,15 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 
 	  socket.setSocketDescriptor(socketDescriptor);
 	  socket.abort();
-	  spoton_misc::logError
-	    (QString("spoton_listener::"
-		     "slotNewConnection(): "
-		     "generateSslKeys() failure (%1) for %2:%3.").
-	     arg(error.remove(".")).
-	     arg(m_address.toString()).
-	     arg(m_port));
+
+	  if(!error.isEmpty())
+	    spoton_misc::logError
+	      (QString("spoton_listener::"
+		       "slotNewConnection(): "
+		       "generateSslKeys() failure (%1) for %2:%3.").
+	       arg(error.remove(".")).
+	       arg(m_address.toString()).
+	       arg(m_port));
 	}
     }
 
@@ -1011,6 +1014,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
     {
       neighbor->setId(id);
       emit newNeighbor(neighbor);
+      spoton_kernel::s_connectionCounts[m_id] += 1;
       updateConnectionCount();
     }
   else
@@ -1042,7 +1046,8 @@ void spoton_listener::updateConnectionCount(void)
 	query.prepare("UPDATE listeners SET connections = ? "
 		      "WHERE OID = ?");
 	query.bindValue
-	  (0, QString::number(findChildren<spoton_neighbor *> ().size()));
+	  (0, QString::number(spoton_kernel::s_connectionCounts.
+			      value(m_id, 0)));
 	query.bindValue(1, m_id);
 	query.exec();
       }
@@ -1055,6 +1060,11 @@ void spoton_listener::updateConnectionCount(void)
 
 void spoton_listener::slotNeighborDisconnected(void)
 {
+  spoton_kernel::s_connectionCounts[m_id] -= 1;
+
+  if(spoton_kernel::s_connectionCounts.value(m_id, 0) < 0)
+    spoton_kernel::s_connectionCounts[m_id] = 0;
+
   updateConnectionCount();
 }
 
@@ -1293,8 +1303,10 @@ int spoton_listener::maxPendingConnections(void) const
     return m_sctpServer->maxPendingConnections();
   else if(m_tcpServer)
     return m_tcpServer->maxPendingConnections();
+  else if(m_udpServer)
+    return m_udpServer->maxPendingConnections();
   else
-    return std::numeric_limits<int>::max();
+    return 0;
 }
 
 QString spoton_listener::transport(void) const

@@ -94,6 +94,7 @@ QHash<QByteArray, QList<QByteArray> > spoton_kernel::s_buzzKeys;
 QHash<QByteArray, char> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
+QHash<qint64, int> spoton_kernel::s_connectionCounts;
 QList<QList<QByteArray > > spoton_kernel::s_institutionKeys;
 QList<QPair<QByteArray, QByteArray> > spoton_kernel::s_adaptiveEchoPairs;
 QMultiMap<QDateTime, QByteArray> spoton_kernel::s_messagingCacheMap;
