@@ -21,6 +21,7 @@
 12.  Respect the backlog parameter of SCTP and UDP servers. Added the container
      spoton_kernel::s_connectionCounts.
 13.  Upgraded Qt to version 5.3.1 on Windows.
+14.  Field terminal echo failures in the kernel (--passphrase).
 
 0.09.06 (06/14/2014)
 
