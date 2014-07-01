@@ -31,7 +31,7 @@ QMAKE_LFLAGS_RELEASE += -Wl,-rpath,/usr/local/spot-on/Lib
 QMAKE_EXTRA_TARGETS = libspoton purge
 QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../../. GUI
-LIBS		+= -L/usr/local/lib -L../../libSpotOn -lGeoIP -lcrypto -lgcrypt -lgpg-error \
+LIBS		+= -L../../libSpotOn -lGeoIP -lcrypto -lgcrypt -lgpg-error \
 		   -lspoton -lssl
 PRE_TARGETDEPS = libspoton.so
 OBJECTS_DIR = temp/obj
