@@ -16,6 +16,7 @@
 8.   Improved exception management in the kernel.
 9.   Set m_echoMode to full if decryptedAfterAuthenticated() fails in
      spoton_neighbor::slotTimeout().
+10.  Added an SCTP neighbor to spot-on-neighbors.txt.
 
 0.09.06 (06/14/2014)
 
