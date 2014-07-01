@@ -58,6 +58,11 @@ class spoton_listener_tcp_server: public QTcpServer
   {
   }
 
+  void setMaxPendingConnections(const int maxPendingConnections)
+  {
+    QTcpServer::setMaxPendingConnections(qMax(1, maxPendingConnections));
+  }
+
 #if QT_VERSION >= 0x050000
   void incomingConnection(qintptr socketDescriptor);
 #else
@@ -119,7 +124,7 @@ class spoton_listener_udp_server: public QUdpSocket
 
   void setMaxPendingConnections(const int maxPendingConnections)
   {
-    m_maxPendingConnections = qBound(1, maxPendingConnections, SOMAXCONN);
+    m_maxPendingConnections = qMax(1, maxPendingConnections);
   }
 
  private:

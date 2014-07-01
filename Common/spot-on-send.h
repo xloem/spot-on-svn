@@ -44,23 +44,23 @@ class spoton_send
   static QByteArray message0000
     (const QByteArray &message,
      const spoton_send_method sendMethod,
-     const QPair<QByteArray, QByteArray> &aePair);
+     const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
   static QByteArray message0000a
     (const QByteArray &message,
      const spoton_send_method sendMethod,
-     const QPair<QByteArray, QByteArray> &aePair);
+     const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
   static QByteArray message0001a
     (const QByteArray &message,
-     const QPair<QByteArray, QByteArray> &aePair);
+     const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
   static QByteArray message0001b
     (const QByteArray &message,
-     const QPair<QByteArray, QByteArray> &aePair);
+     const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
   static QByteArray message0002a
     (const QByteArray &message,
-     const QPair<QByteArray, QByteArray> &aePair);
+     const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
   static QByteArray message0002b
     (const QByteArray &message,
-     const QPair<QByteArray, QByteArray> &aePair);
+     const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
   static QByteArray message0010(const QByteArray &message);
   static QByteArray message0011(const QByteArray &keyType,
 				const QByteArray &name,
@@ -69,8 +69,9 @@ class spoton_send
 				const QByteArray &sPublicKey,
 				const QByteArray &sSignature);
   static QByteArray message0012(const QByteArray &message);
-  static QByteArray message0013(const QByteArray &message,
-				const QPair<QByteArray, QByteArray> &aePair);
+  static QByteArray message0013
+    (const QByteArray &message,
+     const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
   static QByteArray message0014(const QByteArray &uuid);
   static QByteArray message0030(const QByteArray &message);
   static QByteArray message0030(const QHostAddress &address,
@@ -87,7 +88,7 @@ class spoton_send
   static QByteArray message0052(void);
   static QByteArray message0060
     (const QByteArray &message,
-     const QPair<QByteArray, QByteArray> &aePair);
+     const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
   static QByteArray message0065(const QByteArray &magnet);
   static QByteArray message0070(const QByteArray &motd);
 

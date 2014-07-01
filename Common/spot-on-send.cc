@@ -35,14 +35,14 @@ QByteArray spoton_send::EOM = "\r\n\r\n\r\n";
 QByteArray spoton_send::message0000
 (const QByteArray &message,
  const spoton_send_method sendMethod,
- const QPair<QByteArray, QByteArray> &aePair)
+ const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
   QByteArray authenticated;
   QByteArray results;
   bool ok = true;
 
   authenticated = spoton_crypt::keyedHash
-    (message, aePair.first, aePair.second, &ok);
+    (message, adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
 
   if(ok)
     authenticated = message + "\n" + authenticated.toBase64();
@@ -73,14 +73,14 @@ QByteArray spoton_send::message0000
 QByteArray spoton_send::message0000a
 (const QByteArray &message,
  const spoton_send_method sendMethod,
- const QPair<QByteArray, QByteArray> &aePair)
+ const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
   QByteArray authenticated;
   QByteArray results;
   bool ok = true;
 
   authenticated = spoton_crypt::keyedHash
-    (message, aePair.first, aePair.second, &ok);
+    (message, adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
 
   if(ok)
     authenticated = message + "\n" + authenticated.toBase64();
@@ -110,14 +110,14 @@ QByteArray spoton_send::message0000a
 
 QByteArray spoton_send::message0001a
 (const QByteArray &message,
- const QPair<QByteArray, QByteArray> &aePair)
+ const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
   QByteArray authenticated;
   QByteArray results;
   bool ok = true;
 
   authenticated = spoton_crypt::keyedHash
-    (message, aePair.first, aePair.second, &ok);
+    (message, adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
 
   if(ok)
     authenticated = message + "\n" + authenticated.toBase64();
@@ -144,14 +144,14 @@ QByteArray spoton_send::message0001a
 
 QByteArray spoton_send::message0001b
 (const QByteArray &message,
- const QPair<QByteArray, QByteArray> &aePair)
+ const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
   QByteArray authenticated;
   QByteArray results;
   bool ok = true;
 
   authenticated = spoton_crypt::keyedHash
-    (message, aePair.first, aePair.second, &ok);
+    (message, adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
 
   if(ok)
     authenticated = message + "\n" + authenticated.toBase64();
@@ -178,14 +178,14 @@ QByteArray spoton_send::message0001b
 
 QByteArray spoton_send::message0002a
 (const QByteArray &message,
- const QPair<QByteArray, QByteArray> &aePair)
+ const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
   QByteArray authenticated;
   QByteArray results;
   bool ok = true;
 
   authenticated = spoton_crypt::keyedHash
-    (message, aePair.first, aePair.second, &ok);
+    (message, adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
 
   if(ok)
     authenticated = message + "\n" + authenticated.toBase64();
@@ -212,14 +212,14 @@ QByteArray spoton_send::message0002a
 
 QByteArray spoton_send::message0002b
 (const QByteArray &message,
- const QPair<QByteArray, QByteArray> &aePair)
+ const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
   QByteArray authenticated;
   QByteArray results;
   bool ok = true;
 
   authenticated = spoton_crypt::keyedHash
-    (message, aePair.first, aePair.second, &ok);
+    (message, adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
 
   if(ok)
     authenticated = message + "\n" + authenticated.toBase64();
@@ -325,14 +325,14 @@ QByteArray spoton_send::message0012(const QByteArray &message)
 
 QByteArray spoton_send::message0013
 (const QByteArray &message,
- const QPair<QByteArray, QByteArray> &aePair)
+ const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
   QByteArray authenticated;
   QByteArray results;
   bool ok = true;
 
   authenticated = spoton_crypt::keyedHash
-    (message, aePair.first, aePair.second, &ok);
+    (message, adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
 
   if(ok)
     authenticated = message + "\n" + authenticated.toBase64();
@@ -550,14 +550,14 @@ QByteArray spoton_send::message0052(void)
 
 QByteArray spoton_send::message0060
 (const QByteArray &message,
- const QPair<QByteArray, QByteArray> &aePair)
+ const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
   QByteArray authenticated;
   QByteArray results;
   bool ok = true;
 
   authenticated = spoton_crypt::keyedHash
-    (message, aePair.first, aePair.second, &ok);
+    (message, adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
 
   if(ok)
     authenticated = message + "\n" + authenticated.toBase64();
