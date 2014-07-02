@@ -26,7 +26,7 @@ QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -fwrapv -pie -O3 \
 			  -Woverloaded-virtual -Wpointer-arith \
                           -Wstack-protector -Wstrict-overflow=4
 QMAKE_EXTRA_TARGETS = libspoton purge
-INCLUDEPATH	+= . ../../. GUI
+INCLUDEPATH	+= /usr/include . ../../. GUI
 LIBS		+= -L../../libSpotOn -lGeoIP -lcrypto -lgcrypt -lgpg-error \
 		   -lspoton -lssl
 PRE_TARGETDEPS = libspoton.so
