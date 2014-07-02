@@ -10,8 +10,7 @@ CONFIG		+= qt release warn_on
 # The function gcry_kdf_derive() is available in version
 # 1.5.0 of the gcrypt library.
 
-DEFINES += SPOTON_LINKED_WITH_LIBGEOIP \
-	   SPOTON_LINKED_WITH_LIBPTHREAD \
+DEFINES += SPOTON_LINKED_WITH_LIBPTHREAD \
            SPOTON_SCTP_ENABLED
 QMAKE_CLEAN     += ../Spot-On-Kernel
 QMAKE_DISTCLEAN += -r temp .qmake.cache .qmake.stash
@@ -26,7 +25,7 @@ QMAKE_LFLAGS_RELEASE += -Wl,-rpath,/usr/local/spot-on/Lib -L/usr/local/lib
 QMAKE_EXTRA_TARGETS = purge
 QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= /usr/include . ../. ../../../.
-LIBS		+= -L/usr/local/lib -lGeoIP \
+LIBS		+= -L/usr/local/lib \
 		   -lcrypto -lgcrypt -lgpg-error -lssl
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui
