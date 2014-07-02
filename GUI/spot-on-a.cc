@@ -25,8 +25,6 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-extern void _Exit(int status);
-
 #include "spot-on.h"
 #include "spot-on-buzzpage.h"
 #include "ui_passwordprompt.h"
