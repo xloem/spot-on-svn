@@ -1,7 +1,4 @@
 cache()
-libspoton.target = libspoton.so
-libspoton.commands = $(MAKE) -C ../../../libSpotOn library
-libspoton.depends =
 purge.commands = rm -f *~
 
 TEMPLATE	= app
@@ -16,12 +13,7 @@ CONFIG		+= qt release warn_on
 DEFINES += SPOTON_LINKED_WITH_LIBGEOIP \
 	   SPOTON_LINKED_WITH_LIBPTHREAD \
            SPOTON_SCTP_ENABLED
-
-# Unfortunately, the clean target assumes too much knowledge
-# about the internals of libSpotOn.
-
-QMAKE_CLEAN     += ../Spot-On-Kernel ../../../libSpotOn/*.o \
-		   ../../../libSpotOn/*.so ../../../libSpotOn/test
+QMAKE_CLEAN     += ../Spot-On-Kernel
 QMAKE_DISTCLEAN += -r temp .qmake.cache .qmake.stash
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -fwrapv \
@@ -31,18 +23,18 @@ QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -fwrapv \
 			  -Woverloaded-virtual -Wpointer-arith \
                           -Wstack-protector -Wstrict-overflow=4
 QMAKE_LFLAGS_RELEASE += -Wl,-rpath,/usr/local/spot-on/Lib -L/usr/local/lib
-QMAKE_EXTRA_TARGETS = libspoton purge
+QMAKE_EXTRA_TARGETS = purge
 QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= /usr/include . ../. ../../../.
-LIBS		+= -L../../../libSpotOn -L/usr/local/lib -lGeoIP \
-		   -lcrypto -lgcrypt -lgpg-error -lspoton -lssl
-PRE_TARGETDEPS = libspoton.so
+LIBS		+= -L/usr/local/lib -lGeoIP \
+		   -lcrypto -lgcrypt -lgpg-error -lssl
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui
 MOC_DIR = temp/moc
 RCC_DIR = temp/rcc
 
-HEADERS		= ../Common/spot-on-external-address.h \
+HEADERS		= ../../../libSpotOn/libspoton.h \ 
+                  ../Common/spot-on-external-address.h \
 		  spot-on-gui-server.h \
 		  spot-on-kernel.h \
 		  spot-on-listener.h \
@@ -54,7 +46,8 @@ HEADERS		= ../Common/spot-on-external-address.h \
 		  spot-on-starbeam-reader.h \
 		  spot-on-starbeam-writer.h
 
-SOURCES		= ../Common/spot-on-crypt.cc \
+SOURCES		= ../../../libSpotOn/libspoton.c \
+                  ../Common/spot-on-crypt.cc \
 		  ../Common/spot-on-external-address.cc \
 		  ../Common/spot-on-misc.cc \
 		  ../Common/spot-on-send.cc \
