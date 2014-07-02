@@ -100,7 +100,10 @@ class spoton_starbeam_writer_worker: public QObject
   void slotNewData(void)
   {
     if(!m_timer.isActive())
-      m_timer.start();
+      {
+	m_timer.start(1);
+	m_timer.setInterval(100);
+      }
   }
 
   void slotProcessData(void)
