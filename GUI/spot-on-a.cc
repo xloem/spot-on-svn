@@ -25,6 +25,10 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifdef ANDROID
+extern void _Exit(int status);
+#endif
+
 #include "spot-on.h"
 #include "spot-on-buzzpage.h"
 #include "ui_passwordprompt.h"
