@@ -31,6 +31,8 @@
 #include <QObject>
 #include <QTimer>
 
+#include "Common/spot-on-common.h"
+
 class spoton_mailer: public QObject
 {
   Q_OBJECT
@@ -40,16 +42,18 @@ class spoton_mailer: public QObject
   ~spoton_mailer();
 
  private:
-  QList<QByteArray> m_publicKeyHashes;
+  QList<QList<QByteArray> > m_publicKeyHashesAdaptiveEchoPairs;
   QTimer m_reaperTimer;
   QTimer m_retrieveMailTimer;
   QTimer m_timer;
 
  private slots:
   void slotReap(void);
-  void slotRetrieveMail(const QByteArray &data,
-			const QByteArray &publicKeyHash,
-			const QByteArray &signature);
+  void slotRetrieveMail
+    (const QByteArray &data,
+     const QByteArray &publicKeyHash,
+     const QByteArray &signature,
+     const QPairByteArrayByteArray &adaptiveEchoPair);
   void slotRetrieveMailTimeout(void);
   void slotTimeout(void);
 
@@ -60,7 +64,9 @@ class spoton_mailer: public QObject
 		const QByteArray &publicKey,
 		const QByteArray &subject,
 		const qint64 mailOid);
-  void sendMailFromPostOffice(const QByteArray &message);
+  void sendMailFromPostOffice
+    (const QByteArray &message,
+     const QPairByteArrayByteArray &adaptiveEchoPair);
 };
 
 #endif

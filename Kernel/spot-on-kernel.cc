@@ -1717,9 +1717,11 @@ void spoton_kernel::connectSignalsToNeighbor
     return;
 
   connect(m_mailer,
-	  SIGNAL(sendMailFromPostOffice(const QByteArray &)),
+	  SIGNAL(sendMailFromPostOffice(const QByteArray &,
+					const QPairByteArrayByteArray &)),
 	  neighbor,
-	  SLOT(slotSendMailFromPostOffice(const QByteArray &)),
+	  SLOT(slotSendMailFromPostOffice(const QByteArray &,
+					  const QPairByteArrayByteArray &)),
 	  Qt::UniqueConnection);
   connect(neighbor,
 	  SIGNAL(authenticationRequested(const QString &)),
@@ -1768,11 +1770,13 @@ void spoton_kernel::connectSignalsToNeighbor
   connect(neighbor,
 	  SIGNAL(retrieveMail(const QByteArray &,
 			      const QByteArray &,
-			      const QByteArray &)),
+			      const QByteArray &,
+			      const QPairByteArrayByteArray &)),
 	  m_mailer,
 	  SLOT(slotRetrieveMail(const QByteArray &,
 				const QByteArray &,
-				const QByteArray &)),
+				const QByteArray &,
+				const QPairByteArrayByteArray &)),
 	  Qt::UniqueConnection);
   connect(this,
 	  SIGNAL(callParticipant(const QByteArray &)),

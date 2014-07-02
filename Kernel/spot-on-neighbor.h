@@ -215,9 +215,11 @@ class spoton_neighbor: public QThread
   void process0001a(int length, const QByteArray &data);
   void process0001b(int length, const QByteArray &data,
 		    const QList<QByteArray> &symmetricKeys);
-  void process0002a(int length, const QByteArray &data);
+  void process0002a(int length, const QByteArray &data,
+		    const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
   void process0002b(int length, const QByteArray &data,
-		    const QList<QByteArray> &symmetricKeys);
+		    const QList<QByteArray> &symmetricKeys,
+		    const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
   void process0011(int length, const QByteArray &data);
   void process0012(int length, const QByteArray &data);
   void process0013(int length, const QByteArray &data,
@@ -303,7 +305,9 @@ class spoton_neighbor: public QThread
   void slotSendMOTD(void);
   void slotSendMail(const QPairListByteArrayQInt64 &list,
 		    const QString &messageType);
-  void slotSendMailFromPostOffice(const QByteArray &data);
+  void slotSendMailFromPostOffice
+    (const QByteArray &data,
+     const QPairByteArrayByteArray &adaptiveEchoPair);
   void slotSendMessage(const QByteArray &data,
 		       const spoton_send::spoton_send_method sendMethod);
   void slotSendStatus(const QByteArrayList &list);
@@ -336,7 +340,8 @@ class spoton_neighbor: public QThread
   void resetKeepAlive(void);
   void retrieveMail(const QByteArray &data,
 		    const QByteArray &publicKeyHash,
-		    const QByteArray &signature);
+		    const QByteArray &signature,
+		    const QPairByteArrayByteArray &adaptiveEchoPair);
   void scrambleRequest(void);
   void sharePublicKey(const QByteArray &keyType,
 		      const QByteArray &name,

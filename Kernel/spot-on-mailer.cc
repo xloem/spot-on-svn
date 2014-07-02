@@ -209,9 +209,11 @@ void spoton_mailer::slotTimeout(void)
     }
 }
 
-void spoton_mailer::slotRetrieveMail(const QByteArray &data,
-				     const QByteArray &publicKeyHash,
-				     const QByteArray &signature)
+void spoton_mailer::slotRetrieveMail
+(const QByteArray &data,
+ const QByteArray &publicKeyHash,
+ const QByteArray &signature,
+ const QPairByteArrayByteArray &adaptiveEchoPair)
 {
   /*
   ** We must locate the public key that's associated with the provided
@@ -258,8 +260,12 @@ void spoton_mailer::slotRetrieveMail(const QByteArray &data,
   if(!ok)
     return;
 
-  if(!m_publicKeyHashes.contains(hash))
-    m_publicKeyHashes.append(hash);
+  QList<QByteArray> list;
+
+  list << hash << adaptiveEchoPair.first << adaptiveEchoPair.second;
+
+  if(!m_publicKeyHashesAdaptiveEchoPairs.contains(list))
+    m_publicKeyHashesAdaptiveEchoPairs.append(list);
 
   if(!m_retrieveMailTimer.isActive())
     m_retrieveMailTimer.start();
@@ -283,7 +289,8 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 
     if(db.open())
       {
-	QByteArray publicKeyHash(m_publicKeyHashes.first());
+	QByteArray publicKeyHash(m_publicKeyHashesAdaptiveEchoPairs.
+				 first().value(0));
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
@@ -314,7 +321,13 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 
 		    if(ok)
 		      {
-			emit sendMailFromPostOffice(message);
+			QPair<QByteArray, QByteArray> pair;
+
+			pair.first = m_publicKeyHashesAdaptiveEchoPairs.
+			  first().value(1);
+			pair.second = m_publicKeyHashesAdaptiveEchoPairs.
+			  first().value(2);
+			emit sendMailFromPostOffice(message, pair);
 			
 			QSqlQuery deleteQuery(db);
 
@@ -328,7 +341,7 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 		  }
 	      }
 	    else
-	      m_publicKeyHashes.takeFirst();
+	      m_publicKeyHashesAdaptiveEchoPairs.takeFirst();
 	  }
       }
 
@@ -337,7 +350,7 @@ void spoton_mailer::slotRetrieveMailTimeout(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 
-  if(m_publicKeyHashes.isEmpty())
+  if(m_publicKeyHashesAdaptiveEchoPairs.isEmpty())
     m_retrieveMailTimer.stop();
 }
 

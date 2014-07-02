@@ -1580,9 +1580,10 @@ void spoton_neighbor::processData(void)
 	  else if(messageType == "0001b")
 	    process0001b(length, data, symmetricKeys);
 	  else if(messageType == "0002a")
-	    process0002a(length, data);
+	    process0002a(length, data, discoveredAdaptiveEchoPair);
 	  else if(messageType == "0002b")
-	    process0002b(length, data, symmetricKeys);
+	    process0002b
+	      (length, data, symmetricKeys, discoveredAdaptiveEchoPair);
 	  else if(messageType == "0013")
 	    process0013(length, data, symmetricKeys);
 	  else if(messageType == "0040a")
@@ -2015,8 +2016,7 @@ void spoton_neighbor::slotReceivedMessage
 
   bool adaptiveEcho = false;
 
-  if(adaptiveEchoPair == QPair<QByteArray, QByteArray> () // Super Echo!
-     ||
+  if(adaptiveEchoPair == QPair<QByteArray, QByteArray> () ||
      m_learnedAdaptiveEchoPairs.contains(adaptiveEchoPair))
     adaptiveEcho = true;
 
@@ -3025,7 +3025,9 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
        arg(m_port));
 }
 
-void spoton_neighbor::process0002a(int length, const QByteArray &dataIn)
+void spoton_neighbor::process0002a
+(int length, const QByteArray &dataIn,
+ const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
 
@@ -3135,7 +3137,8 @@ void spoton_neighbor::process0002a(int length, const QByteArray &dataIn)
 			  emit retrieveMail
 			    (list.value(0) + list.value(1), // Data
 			     list.value(0),                 // Public Key Hash
-			     list.value(2));                // Signature
+			     list.value(2),                 // Signature
+			     adaptiveEchoPair);
 			}
 		      else
 			spoton_misc::logError
@@ -3163,8 +3166,10 @@ void spoton_neighbor::process0002a(int length, const QByteArray &dataIn)
        arg(m_port));
 }
 
-void spoton_neighbor::process0002b(int length, const QByteArray &dataIn,
-				   const QList<QByteArray> &symmetricKeys)
+void spoton_neighbor::process0002b
+(int length, const QByteArray &dataIn,
+ const QList<QByteArray> &symmetricKeys,
+ const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
   Q_UNUSED(symmetricKeys);
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
@@ -3259,7 +3264,8 @@ void spoton_neighbor::process0002b(int length, const QByteArray &dataIn,
 				 list.value(2) +
 				 list.value(3),  // Data
 				 publicKeyHash,  // Public Key Hash
-				 list.value(4)); // Signature
+				 list.value(4),  // Signature
+				 adaptiveEchoPair);
 			    }
 			}
 		      else
@@ -4865,9 +4871,17 @@ void spoton_neighbor::slotSendMail
     }
 }
 
-void spoton_neighbor::slotSendMailFromPostOffice(const QByteArray &data)
+void spoton_neighbor::slotSendMailFromPostOffice
+(const QByteArray &data,
+ const QPairByteArrayByteArray &adaptiveEchoPair)
 {
-  if(readyToWrite())
+  bool adaptiveEcho = false;
+
+  if(adaptiveEchoPair == QPair<QByteArray, QByteArray> () ||
+     m_learnedAdaptiveEchoPairs.contains(adaptiveEchoPair))
+    adaptiveEcho = true;
+
+  if(adaptiveEcho && readyToWrite())
     {
       QByteArray message;
       QPair<QByteArray, QByteArray> ae
