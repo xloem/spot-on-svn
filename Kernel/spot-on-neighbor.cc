@@ -1607,11 +1607,16 @@ void spoton_neighbor::processData(void)
 	      if(messageType == "0001b" && data.split('\n').size() == 7)
 		emit receivedMessage
 		  (originalData, m_id, discoveredAdaptiveEchoPair);
-	      else if(messageType.isEmpty() ||
-		      messageType == "0002b" ||
-		      messageType == "0040a" || messageType == "0040b")
+	      else if(messageType.isEmpty() || messageType == "0002b")
 		emit receivedMessage
 		  (originalData, m_id, discoveredAdaptiveEchoPair);
+	      else if(messageType == "0040a" || messageType == "0040b")
+		/*
+		** Buzz.
+		*/
+
+		emit receivedMessage
+		  (originalData, m_id, QPair<QByteArray, QByteArray> ());
 	    }
 	}
     }
