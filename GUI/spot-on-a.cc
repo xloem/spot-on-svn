@@ -2582,6 +2582,7 @@ void spoton::slotPopulateListeners(void)
 
 		QByteArray certificateDigest;
 		QString tooltip("");
+		QString transport("");
 		bool ok = true;
 
 		certificateDigest = crypt->
@@ -2604,6 +2605,16 @@ void spoton::slotPopulateListeners(void)
 		      if(!ok)
 			certificateDigest.clear();
 		    }
+
+		if(ok)
+		  transport = QString(crypt->
+				      decryptedAfterAuthenticated
+				      (QByteArray::
+				       fromBase64(query.
+						  value(15).
+						  toByteArray()),
+				       &ok).
+				      constData()).toUpper();
 
 		tooltip = QString
 		  (tr("Status: %1\n"
@@ -2655,14 +2666,7 @@ void spoton::slotPopulateListeners(void)
 						  &ok).
 		      constData()).
 		  arg(query.value(12).toLongLong() ? "Yes" : "No").
-		  arg(QString(crypt->
-			      decryptedAfterAuthenticated
-			      (QByteArray::
-			       fromBase64(query.
-					  value(15).
-					  toByteArray()),
-			       &ok).
-			      constData()).toUpper()).
+		  arg(transport).
 		  arg(query.value(16).toLongLong() ? "Yes" : "No").
 		  arg(crypt->
 		      decryptedAfterAuthenticated(QByteArray::
@@ -2744,39 +2748,48 @@ void spoton::slotPopulateListeners(void)
 		    else if(i == 10)
 		      {
 			box = new QComboBox();
-			box->setProperty
-			  ("oid", query.value(query.record().count() - 1));
-			box->addItem("1");
 
-			for(int j = 1; j <= 10; j++)
-			  box->addItem(QString::number(5 * j));
+			if(transport != "UDP")
+			  {
+			    box->setProperty
+			      ("oid", query.value(query.record().count() - 1));
+			    box->addItem("1");
 
-			box->addItem(tr("Unlimited"));
-			box->setMaximumWidth
-			  (box->fontMetrics().width(tr("Unlimited")) + 50);
-			box->setToolTip
-			  (tr("Please deactivate the listener before "
-			      "changing the maximum connections value."));
-			m_ui.listeners->setCellWidget(row, i, box);
+			    for(int j = 1; j <= 10; j++)
+			      box->addItem(QString::number(5 * j));
 
-			if(std::numeric_limits<int>::max() ==
-			   query.value(i).toLongLong())
-			  box->setCurrentIndex(box->count() - 1);
-			else if(box->findText(QString::
-					      number(query.
-						     value(i).
-						     toLongLong())) >= 0)
-			  box->setCurrentIndex
-			    (box->findText(QString::number(query.
-							   value(i).
-							   toLongLong())));
+			    box->addItem(tr("Unlimited"));
+			    box->setMaximumWidth
+			      (box->fontMetrics().width(tr("Unlimited")) + 50);
+			    box->setToolTip
+			      (tr("Please deactivate the listener before "
+				  "changing the maximum connections value."));
+			    m_ui.listeners->setCellWidget(row, i, box);
+
+			    if(std::numeric_limits<int>::max() ==
+			       query.value(i).toLongLong())
+			      box->setCurrentIndex(box->count() - 1);
+			    else if(box->findText(QString::
+						  number(query.
+							 value(i).
+							 toLongLong())) >= 0)
+			      box->setCurrentIndex
+				(box->findText(QString::number(query.
+							       value(i).
+							       toLongLong())));
+			    else
+			      box->setCurrentIndex(1); // Default of five.
+
+			    connect(box,
+				    SIGNAL(currentIndexChanged(int)),
+				    this,
+				    SLOT(slotMaximumClientsChanged(int)));
+			  }
 			else
-			  box->setCurrentIndex(1); // Default of five.
-
-			connect(box,
-				SIGNAL(currentIndexChanged(int)),
-				this,
-				SLOT(slotMaximumClientsChanged(int)));
+			  {
+			    box->addItem("1");
+			    box->setEnabled(false);
+			  }
 		      }
 		    else if(i == 13 || i == 14)
 		      {

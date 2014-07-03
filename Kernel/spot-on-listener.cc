@@ -117,11 +117,7 @@ void spoton_listener_udp_server::slotReadyRead(void)
 
   readDatagram(0, 0, &peerAddress, &peerPort); // Discard the datagram.
 
-  if(spoton_kernel::s_connectionCounts.value(m_id, 0) >=
-     maxPendingConnections())
-    {
-    }
-  else if(!spoton_misc::isAcceptedIP(peerAddress, m_id,
+  if(!spoton_misc::isAcceptedIP(peerAddress, m_id,
 				spoton_kernel::s_crypts.value("chat", 0)))
     spoton_misc::logError
       (QString("spoton_listener_udp_server::incomingConnection(): "
