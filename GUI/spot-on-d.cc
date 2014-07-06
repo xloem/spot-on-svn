@@ -1215,3 +1215,21 @@ void spoton::slotSetAETokenInformation(void)
 				 "at least sixteen characters."));
     }
 }
+
+void spoton::joinDefaultBuzzChannel(void)
+{
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+  m_sb.status->setText(tr("Joining a default Buzz channel. "
+			  "Please be patient."));
+  m_sb.status->repaint();
+
+  int index = m_ui.commonBuzzChannels->findText
+    ("Spot-On_Developer's_Channel_Key", Qt::MatchContains);
+
+  if(index >= 0)
+    slotCommonBuzzChannelsActivated
+      (m_ui.commonBuzzChannels->itemText(index));
+
+  m_sb.status->clear();
+  QApplication::restoreOverrideCursor();
+}

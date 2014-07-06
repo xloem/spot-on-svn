@@ -174,6 +174,7 @@ class spoton: public QMainWindow
   void highlightPaths(void);
   void importNeighbors(const QString &filePath);
   void initializeKernelSocket(void);
+  void joinDefaultBuzzChannel(void);
   void magnetize(void);
   void prepareContextMenuMirrors(void);
   void prepareListenerIPCombo(void);

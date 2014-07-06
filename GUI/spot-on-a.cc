@@ -4604,6 +4604,8 @@ void spoton::slotSetPassphrase(void)
 	  m_settings["gui/spot_on_neighbors_txt_processed"] = true;
 	}
 
+      joinDefaultBuzzChannel();
+
       QMessageBox::information
 	(this, tr("%1: Information").
 	 arg(QCoreApplication::applicationName()),
@@ -4746,6 +4748,8 @@ void spoton::slotValidatePassphrase(void)
 				  true);
 		m_settings["gui/spot_on_neighbors_txt_processed"] = true;
 	      }
+
+	    joinDefaultBuzzChannel();
 	  }
       }
 
