@@ -110,6 +110,8 @@ Completed Items
 78.    Encrypt participants public keys. Keyed hashes using the public
        key as the key? Slow retrieval.
 79.    Echo star systems.
+80.    Adaptive Echo. See also Echo Star Systems. Configured Spot nodes
+       will direct traffic based on secret tokens.
 
 Ignored Items
 
@@ -164,8 +166,7 @@ Remaining Items
 12.    Limit the number of entries that are allowed to be inserted into
        a database.
 13.    Allow pass-through flow of non-Spot-On data.
-14.    Adaptive Echo. See also Echo Star Systems. Configured Spot nodes
-       will direct traffic based on secret tokens.
+14.    Android build.
 15.    Accounts and allowed IP addresses suffer selection issues.
 16.    QFSFileEngine::open: No file name specified: created from
        e-mail.
@@ -199,4 +200,3 @@ Remaining Items
 32.    Purge items from post_office if their dates are invalid.
 33.    IMAP and Rosetta.
 34.    Weather feeds.
-35.    Android build.

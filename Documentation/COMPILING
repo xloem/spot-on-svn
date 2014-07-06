@@ -1,5 +1,5 @@
 Requirements: Qt 4.8.x, libGeoIP, libcrypto, libeay, libgcrypt,
-libgpg-error, libssl. Qt 4.8.5 is highly recommended.
+libgpg-error, libssl. Qt 5.x is also supported.
 
 If header (h) or interface (ui) files have changed, please perform
 a distclean before building Spot-On.

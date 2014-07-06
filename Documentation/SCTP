@@ -1,3 +1,7 @@
+FreeBSD, Linux
+
+Packages are available. Please see your distribution.
+
 OS X
 
 Please note that the SCTP NKE bundle is only supported
@@ -9,6 +13,18 @@ http://sctp.fh-muenster.de/sctp-user-land-stack.html.
 
 Please load the kernel extension via sudo kextload
 /System/Library/Extensions/SCTP.kext.
+
+Lion
+
+https://nplab.fh-muenster.de/groups/wiki/wiki/3d084/SCTP_on_Lion.html
+
+Mavericks
+
+https://nplab.fh-muenster.de/groups/wiki/wiki/bf935/SCTP_on_Mavericks.html
+
+Mountain Lion
+
+https://nplab.fh-muenster.de/groups/wiki/wiki/f366c/SCTP_on_Mountain_Lion.html
 
 Windows
 
