@@ -4567,7 +4567,6 @@ void spoton::slotSetPassphrase(void)
       m_settings["gui/salt"] = salt;
       m_settings["gui/saltLength"] = m_ui.saltLength->value();
       m_settings["gui/saltedPassphraseHash"] = saltedPassphraseHash;
-      m_settings["gui/spot_on_neighbors_txt_processed"] = true;
       m_settings["gui/urlName"] = str3.toUtf8();
 
       QSettings settings;
@@ -4595,7 +4594,15 @@ void spoton::slotSetPassphrase(void)
 
       if(!m_settings.value("gui/spot_on_neighbors_txt_processed",
 			   false).toBool())
-	importNeighbors("spot-on-neighbors.txt");
+	{
+	  importNeighbors("spot-on-neighbors.txt");
+
+	  QSettings settings;
+
+	  settings.setValue("gui/spot_on_neighbors_txt_processed",
+			    true);
+	  m_settings["gui/spot_on_neighbors_txt_processed"] = true;
+	}
 
       QMessageBox::information
 	(this, tr("%1: Information").
