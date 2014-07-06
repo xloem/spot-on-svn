@@ -129,7 +129,7 @@
                 </property>
                 <item>
                  <property name="text">
-                  <string notr="true">magnet:?rn=Spot-On_Developer's_Channel_Key&amp;xf=10000&amp;xs=Spot-On_Developer's_Channel_Salt&amp;ct=aes256&amp;hk=Spot-On_Developer's_Channel_Hash_Key&amp;ht=sha512&amp;xt=urn:buzz</string>
+                  <string notr="true">magnet:?rn=Spot-On_Developer_Channel_Key&amp;xf=10000&amp;xs=Spot-On_Developer_Channel_Salt&amp;ct=aes256&amp;hk=Spot-On_Developer_Channel_Hash_Key&amp;ht=sha512&amp;xt=urn:buzz</string>
                  </property>
                 </item>
                </widget>

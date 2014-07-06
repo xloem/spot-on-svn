@@ -1224,7 +1224,7 @@ void spoton::joinDefaultBuzzChannel(void)
   m_sb.status->repaint();
 
   int index = m_ui.commonBuzzChannels->findText
-    ("Spot-On_Developer's_Channel_Key", Qt::MatchContains);
+    ("Spot-On_Developer_Channel_Key", Qt::MatchContains);
 
   if(index >= 0)
     slotCommonBuzzChannelsActivated
