@@ -372,6 +372,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSetPassphrase(void)));
+  connect(m_ui.passphrase1,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSetPassphrase(void)));
+  connect(m_ui.passphrase2,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSetPassphrase(void)));
   connect(m_ui.destination,
 	  SIGNAL(returnPressed(void)),
 	  this,
