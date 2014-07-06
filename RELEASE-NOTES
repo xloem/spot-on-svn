@@ -23,7 +23,7 @@
 13.  Upgraded Qt to version 5.3.1 on Windows.
 14.  Field terminal echo failures in the kernel (passphrase command-line
      option).
-15.  Spot will now join the default Common Buzzl channel automatically.
+15.  Spot will now join the default Common Buzz channel automatically.
 
 0.09.06 (06/14/2014)
 
