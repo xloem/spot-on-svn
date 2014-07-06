@@ -1,12 +1,14 @@
 Adaptive Echo
 
 Adaptive Echo allows auxiliary nodes to direct data via pseudo-private
-tokens. Please consider the following examples.
+tokens. Buzz data is not directed.
+
+Please consider the following examples.
 
 Example #1
 
-Let A, B, C, and D be four auxiliary nodes and let a, b, c, and d be four
-private nodes.
+Let A, B, C, and D be server nodes and let a, b, c, and d be four
+client nodes.
 
 Suppose the network topology is as follows (a drawing will help):
 
@@ -29,9 +31,9 @@ able to communicate via B.
 
 Example #2
 
-Let a, b, c, e, and f be pseudo-private nodes. Let S and d be server nodes.
-Suppose S, a, c, and f are aware of the secret token t_1. Also, S connects
-to d.
+Let S, a, and e be client and server nodes. Let b, c, d, and f be client
+nodes. Let d be a server node. Suppose S, a, c, and f are aware of
+the secret token t_1.
 
 The network topology is as follows (again, a drawing will help):
 
