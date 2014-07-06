@@ -3158,9 +3158,11 @@ void spoton::importNeighbors(const QString &filePath)
 	    while((rc = file.readLine(bytes.data(),
 				      bytes.length())) > -1)
 	      {
-		if(bytes.trimmed().startsWith("#"))
+		bytes = bytes.trimmed();
+
+		if(bytes.isEmpty() || bytes.startsWith("#"))
 		  /*
-		  ** Comment, ignore!
+		  ** Comment, or an empty line, ignore!
 		  */
 
 		  continue;
