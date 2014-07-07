@@ -4,7 +4,7 @@
 **
 ** Redistribution and use in source and binary forms, with or without
 ** modification, are permitted provided that the following conditions
-** are met:
+** are met
 ** 1. Redistributions of source code must retain the above copyright
 **    notice, this list of conditions and the following disclaimer.
 ** 2. Redistributions in binary form must reproduce the above copyright
@@ -25,42 +25,4 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _spoton_logviewer_h_
-#define _spoton_logviewer_h_
-
-#include <QMainWindow>
-#include <QTimer>
-
-#include "spot-on-application-name.h"
-#include "ui_logviewer.h"
-
-class QKeyEvent;
-
-class spoton_logviewer: public QMainWindow
-{
-  Q_OBJECT
-
- public:
-  spoton_logviewer(void);
-  ~spoton_logviewer();
-  void show(QWidget *parent);
-
- private:
-  QTimer m_timer;
-  Ui_spoton_logviewer ui;
-#ifdef Q_OS_MAC
-#if QT_VERSION >= 0x050000 && QT_VERSION < 0x050300
-  bool event(QEvent *event);
-#endif
-#endif
-  void keyPressEvent(QKeyEvent *event);
-
- private slots:
-  void slotClear(void);
-  void slotClose(void);
-  void slotEnableLog(bool state);
-  void slotSetIcons(void);
-  void slotTimeout(void);
-};
-
-#endif
+#define SPOTON_APPLICATION_NAME "Spot-On"

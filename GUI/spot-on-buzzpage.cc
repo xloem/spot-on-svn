@@ -38,6 +38,7 @@
 #include "Common/spot-on-common.h"
 #include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
+#include "spot-on-application-name.h"
 #include "spot-on-buzzpage.h"
 
 spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
@@ -258,7 +259,7 @@ void spoton_buzzpage::slotSendMessage(void)
 
   if(!error.isEmpty())
     QMessageBox::critical(this, tr("%1: Error").
-			  arg(QCoreApplication::applicationName()), error);
+			  arg(SPOTON_APPLICATION_NAME), error);
 }
 
 void spoton_buzzpage::appendMessage(const QList<QByteArray> &list)
@@ -532,7 +533,7 @@ void spoton_buzzpage::slotSave(void)
   if(!m_crypt)
     {
       QMessageBox::critical(this, tr("%1: Error").
-			    arg(QCoreApplication::applicationName()),
+			    arg(SPOTON_APPLICATION_NAME),
 			    tr("Invalid spoton_crypt object. This is "
 			       "a fatal flaw."));
       return;
@@ -589,7 +590,7 @@ void spoton_buzzpage::slotSave(void)
 
   if(!ok)
     QMessageBox::critical(this, tr("%1: Error").
-			  arg(QCoreApplication::applicationName()),
+			  arg(SPOTON_APPLICATION_NAME),
 			  tr("An error occurred while attempting to "
 			     "save the channel data. Please enable "
 			     "logging via the Log Viewer and try again."));
@@ -602,7 +603,7 @@ void spoton_buzzpage::slotRemove(void)
   if(!m_crypt)
     {
       QMessageBox::critical(this, tr("%1: Error").
-			    arg(QCoreApplication::applicationName()),
+			    arg(SPOTON_APPLICATION_NAME),
 			    tr("Invalid spoton_crypt object. This is a "
 			       "fatal flaw."));
       return;
@@ -654,7 +655,7 @@ void spoton_buzzpage::slotRemove(void)
 
   if(!ok)
     QMessageBox::critical(this, tr("%1: Error").
-			  arg(QCoreApplication::applicationName()),
+			  arg(SPOTON_APPLICATION_NAME),
 			  tr("An error occurred while attempting to "
 			     "remove the channel data. Please enable "
 			     "logging via the Log Viewer and try again."));

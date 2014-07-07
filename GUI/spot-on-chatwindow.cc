@@ -67,11 +67,11 @@ spoton_chatwindow::spoton_chatwindow(const QIcon &icon,
 
   if(participant.trimmed().isEmpty())
     setWindowTitle(tr("%1: %2").
-		   arg(QCoreApplication::applicationName()).
+		   arg(SPOTON_APPLICATION_NAME).
 		   arg("unknown"));
   else
     setWindowTitle(tr("%1: %2").
-		   arg(QCoreApplication::applicationName()).
+		   arg(SPOTON_APPLICATION_NAME).
 		   arg(participant.trimmed()));
 
   ui.icon->setPixmap(icon.pixmap(QSize(16, 16)));
@@ -204,7 +204,7 @@ void spoton_chatwindow::slotSendMessage(void)
 
   if(!error.isEmpty())
     QMessageBox::critical(this, tr("%1: Error").
-			  arg(QCoreApplication::applicationName()), error);
+			  arg(SPOTON_APPLICATION_NAME), error);
 }
 
 void spoton_chatwindow::append(const QString &text)
@@ -227,14 +227,14 @@ void spoton_chatwindow::slotSetStatus(const QIcon &icon,
 	{
 	  setWindowTitle
 	    (tr("%1: %2").
-	     arg(QCoreApplication::applicationName()).
+	     arg(SPOTON_APPLICATION_NAME).
 	     arg(name.trimmed()));
 	  ui.name->setText(name.trimmed());
 	}
       else
 	{
 	  setWindowTitle(tr("%1: %2").
-			 arg(QCoreApplication::applicationName()).
+			 arg(SPOTON_APPLICATION_NAME).
 			 arg("unknown"));
 	  ui.name->setText("unknown");
 	}
@@ -246,14 +246,14 @@ void spoton_chatwindow::setName(const QString &name)
   if(!name.trimmed().isEmpty())
     {
       setWindowTitle(tr("%1: %2").
-		     arg(QCoreApplication::applicationName()).
+		     arg(SPOTON_APPLICATION_NAME).
 		     arg(name.trimmed()));
       ui.name->setText(name.trimmed());
     }
   else
     {
       setWindowTitle(tr("%1: %2").
-		     arg(QCoreApplication::applicationName()).
+		     arg(SPOTON_APPLICATION_NAME).
 		     arg("unknown"));
       ui.name->setText("unknown");
     }

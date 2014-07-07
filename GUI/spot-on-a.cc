@@ -160,7 +160,7 @@ spoton::spoton(void):QMainWindow()
   m_starsLastModificationTime = QDateTime();
   m_ui.setupUi(this);
   setWindowTitle
-    (tr("%1").arg(QCoreApplication::applicationName()));
+    (tr("%1").arg(SPOTON_APPLICATION_NAME));
 
   bool sslSupported = QSslSocket::supportsSsl();
 
@@ -180,30 +180,30 @@ spoton::spoton(void):QMainWindow()
   m_ui.geoipPath4->setEnabled(false);
   m_ui.geoipPath4->setToolTip
     (tr("%1 was configured without "
-	"libGeoIP.").arg(QCoreApplication::applicationName()));
+	"libGeoIP.").arg(SPOTON_APPLICATION_NAME));
   m_ui.geoipPath6->setEnabled(false);
   m_ui.geoipPath6->setToolTip
     (tr("%1 was configured without "
-	"libGeoIP.").arg(QCoreApplication::applicationName()));
+	"libGeoIP.").arg(SPOTON_APPLICATION_NAME));
   m_ui.selectGeoIP4->setEnabled(false);
   m_ui.selectGeoIP4->setToolTip
     (tr("%1 was configured without "
-	"libGeoIP.").arg(QCoreApplication::applicationName()));
+	"libGeoIP.").arg(SPOTON_APPLICATION_NAME));
   m_ui.selectGeoIP6->setEnabled(false);
   m_ui.selectGeoIP6->setToolTip
     (tr("%1 was configured without "
-	"libGeoIP.").arg(QCoreApplication::applicationName()));
+	"libGeoIP.").arg(SPOTON_APPLICATION_NAME));
 #endif
 #ifndef SPOTON_LINKED_WITH_LIBPHONON
 #if 0
   m_ui.buzzSound->setEnabled(false);
   m_ui.buzzSound->setToolTip
     (tr("%1 was configured without "
-	"libphoton.").arg(QCoreApplication::applicationName()));
+	"libphoton.").arg(SPOTON_APPLICATION_NAME));
   m_ui.chatSound->setEnabled(false);
   m_ui.chatSound->setToolTip
     (tr("%1 was configured without "
-	"libphoton.").arg(QCoreApplication::applicationName()));
+	"libphoton.").arg(SPOTON_APPLICATION_NAME));
 #endif
 #else
 #if 0
@@ -2010,13 +2010,13 @@ void spoton::slotAddListener(void)
     m_ui.listenerIP->selectAll();
   else if(error.isEmpty())
     QMessageBox::critical(this, tr("%1: Error").
-			  arg(QCoreApplication::applicationName()),
+			  arg(SPOTON_APPLICATION_NAME),
 			  tr("Unable to add the specified listener. "
 			     "Please enable logging via the Log Viewer "
 			     "and try again."));
   else
     QMessageBox::critical(this, tr("%1: Error").
-			  arg(QCoreApplication::applicationName()),
+			  arg(SPOTON_APPLICATION_NAME),
 			  tr("An error (%1) occurred while attempting "
 			     "to add the specified listener. "
 			     "Please enable logging via the Log Viewer "
@@ -2030,7 +2030,7 @@ void spoton::slotAddNeighbor(void)
   if(!crypt)
     {
       QMessageBox::critical(this, tr("%1: Error").
-			    arg(QCoreApplication::applicationName()),
+			    arg(SPOTON_APPLICATION_NAME),
 			    tr("Invalid spoton_crypt object. "
 			       "This is a fatal flaw."));
       return;
@@ -2395,13 +2395,13 @@ void spoton::slotAddNeighbor(void)
     m_ui.neighborIP->selectAll();
   else if(error.isEmpty())
     QMessageBox::critical(this, tr("%1: Error").
-			  arg(QCoreApplication::applicationName()),
+			  arg(SPOTON_APPLICATION_NAME),
 			  tr("Unable to add the specified neighbor. "
 			     "Please enable logging via the Log Viewer "
 			     "and try again."));
   else
     QMessageBox::critical(this, tr("%1: Error").
-			  arg(QCoreApplication::applicationName()),
+			  arg(SPOTON_APPLICATION_NAME),
 			  tr("An error (%1) occurred while attempting "
 			     "to add the specified neighbor. "
 			     "Please enable logging via the Log Viewer "
@@ -3777,7 +3777,7 @@ void spoton::slotSelectGeoIPPath(void)
 
   dialog.setWindowTitle
     (tr("%1: Select GeoIP Data Path").
-     arg(QCoreApplication::applicationName()));
+     arg(SPOTON_APPLICATION_NAME));
   dialog.setFileMode(QFileDialog::ExistingFile);
   dialog.setDirectory(QDir::homePath());
   dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
@@ -3803,7 +3803,7 @@ void spoton::slotSelectKernelPath(void)
 
   dialog.setWindowTitle
     (tr("%1: Select Kernel Path").
-     arg(QCoreApplication::applicationName()));
+     arg(SPOTON_APPLICATION_NAME));
   dialog.setFileMode(QFileDialog::ExistingFile);
   dialog.setDirectory(QDir::homePath());
   dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
@@ -4205,7 +4205,7 @@ void spoton::slotSetPassphrase(void)
   if(str1.length() < 16 || str2.length() < 16)
     {
       QMessageBox::critical(this, tr("%1: Error").
-			    arg(QCoreApplication::applicationName()),
+			    arg(SPOTON_APPLICATION_NAME),
 			    tr("The passphrases must contain at least "
 			       "sixteen characters each."));
       m_ui.passphrase1->selectAll();
@@ -4215,7 +4215,7 @@ void spoton::slotSetPassphrase(void)
   else if(str1 != str2)
     {
       QMessageBox::critical(this, tr("%1: Error").
-			    arg(QCoreApplication::applicationName()),
+			    arg(SPOTON_APPLICATION_NAME),
 			    tr("The passphrases are not identical."));
       m_ui.passphrase1->selectAll();
       m_ui.passphrase1->setFocus();
@@ -4224,7 +4224,7 @@ void spoton::slotSetPassphrase(void)
   else if(str3.isEmpty())
     {
       QMessageBox::critical(this, tr("%1: Error").
-			    arg(QCoreApplication::applicationName()),
+			    arg(SPOTON_APPLICATION_NAME),
 			    tr("Please provide a name."));
       m_ui.username->selectAll();
       m_ui.username->setFocus();
@@ -4242,7 +4242,7 @@ void spoton::slotSetPassphrase(void)
 #endif
       mb.setIcon(QMessageBox::Question);
       mb.setWindowTitle(tr("%1: Confirmation").
-			arg(QCoreApplication::applicationName()));
+			arg(SPOTON_APPLICATION_NAME));
       mb.setWindowModality(Qt::WindowModal);
       mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
       mb.setText(tr("Are you sure that you wish to replace the "
@@ -4352,7 +4352,7 @@ void spoton::slotSetPassphrase(void)
 #endif
 	  mb.setIcon(QMessageBox::Question);
 	  mb.setWindowTitle(tr("%1: Question").
-			    arg(QCoreApplication::applicationName()));
+			    arg(SPOTON_APPLICATION_NAME));
 	  mb.setWindowModality(Qt::WindowModal);
 	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
 	  mb.setText(tr("Would you like to generate public key pairs?"));
@@ -4441,7 +4441,7 @@ void spoton::slotSetPassphrase(void)
       spoton_crypt::purgeDatabases();
       updatePublicKeysLabel();
       QMessageBox::critical
-	(this, tr("%1: Error").arg(QCoreApplication::applicationName()),
+	(this, tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
 	 tr("An error (%1) occurred with spoton_crypt::"
 	    "derivedKeys().").arg(error1.remove(".").trimmed()));
     }
@@ -4450,7 +4450,7 @@ void spoton::slotSetPassphrase(void)
       spoton_crypt::purgeDatabases();
       updatePublicKeysLabel();
       QMessageBox::critical(this, tr("%1: Error").
-			    arg(QCoreApplication::applicationName()),
+			    arg(SPOTON_APPLICATION_NAME),
 			    tr("An error (%1) occurred with "
 			       "spoton_crypt::"
 			       "generatePrivatePublicKeys() or "
@@ -4463,7 +4463,7 @@ void spoton::slotSetPassphrase(void)
       spoton_crypt::purgeDatabases();
       updatePublicKeysLabel();
       QMessageBox::critical(this, tr("%1: Error").
-			    arg(QCoreApplication::applicationName()),
+			    arg(SPOTON_APPLICATION_NAME),
 			    tr("An error (%1) occurred with spoton_crypt::"
 			       "saltedPassphraseHash().").
 			    arg(error3.remove(".").trimmed()));
@@ -4616,10 +4616,10 @@ void spoton::slotSetPassphrase(void)
 
       QMessageBox::information
 	(this, tr("%1: Information").
-	 arg(QCoreApplication::applicationName()),
+	 arg(SPOTON_APPLICATION_NAME),
 	 tr("Your confidential information has been saved. "
 	    "You are now ready to use the full power of %1. Enjoy!").
-	 arg(QCoreApplication::applicationName()));
+	 arg(SPOTON_APPLICATION_NAME));
 
       if(m_ui.pid->text() == "0")
 	if(QFileInfo(m_ui.kernelPath->text().trimmed()).isExecutable())
@@ -4633,7 +4633,7 @@ void spoton::slotSetPassphrase(void)
 #endif
 	    mb.setIcon(QMessageBox::Question);
 	    mb.setWindowTitle(tr("%1: Question").
-			      arg(QCoreApplication::applicationName()));
+			      arg(SPOTON_APPLICATION_NAME));
 	    mb.setWindowModality(Qt::WindowModal);
 	    mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
 	    mb.setText(tr("Would you like the kernel to be activated?"));
@@ -6830,7 +6830,7 @@ void spoton::slotAuthenticate(void)
   if(!crypt)
     {
       QMessageBox::critical(this, tr("%1: Error").
-			    arg(QCoreApplication::applicationName()),
+			    arg(SPOTON_APPLICATION_NAME),
 			    tr("Invalid spoton_crypt object. "
 			       "This is a fatal flaw."));
       return;
@@ -6844,7 +6844,7 @@ void spoton::slotAuthenticate(void)
   if(list.isEmpty())
     {
       QMessageBox::critical(this, tr("%1: Error").
-			    arg(QCoreApplication::applicationName()),
+			    arg(SPOTON_APPLICATION_NAME),
 			    tr("Invalid neighbor OID. "
 			       "Please select a neighbor."));
       return;
@@ -6866,7 +6866,7 @@ void spoton::authenticate(spoton_crypt *crypt, const QString &oid,
 
   dialog.setWindowTitle
     (tr("%1: Please Authenticate").
-     arg(QCoreApplication::applicationName()));
+     arg(SPOTON_APPLICATION_NAME));
   ui.setupUi(&dialog);
 #ifdef Q_OS_MAC
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
@@ -6922,7 +6922,7 @@ void spoton::authenticate(spoton_crypt *crypt, const QString &oid,
 	}
       else
 	QMessageBox::critical(this, tr("%1: Error").
-			      arg(QCoreApplication::applicationName()),
+			      arg(SPOTON_APPLICATION_NAME),
 			      tr("The account name must be non-empty "
 				 "and the account password must contain "
 				 "at least sixteen characters."));
@@ -7185,7 +7185,7 @@ void spoton::removeFavorite(const bool removeAll)
 
   if(!error.isEmpty())
     QMessageBox::critical(this, tr("%1: Error").
-			  arg(QCoreApplication::applicationName()), error);
+			  arg(SPOTON_APPLICATION_NAME), error);
   else
     {
       slotPopulateBuzzFavorites();
@@ -7234,7 +7234,7 @@ void spoton::magnetize(void)
 
   if(!error.isEmpty())
     QMessageBox::critical(this, tr("%1: Error").
-			  arg(QCoreApplication::applicationName()), error);
+			  arg(SPOTON_APPLICATION_NAME), error);
 }
 
 void spoton::demagnetize(void)
