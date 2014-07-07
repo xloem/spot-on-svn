@@ -2517,7 +2517,7 @@ void spoton::slotPopulateListeners(void)
 	QString ip("");
 	QString port("");
 	QString scopeId("");
-	QString transport("");
+	QString transportS("");
 	QWidget *focusWidget = QApplication::focusWidget();
 	int columnIP = 3;
 	int columnPORT = 4;
@@ -2549,7 +2549,7 @@ void spoton::slotPopulateListeners(void)
 	  (columnTRANSPORT);
 
 	if(!list.isEmpty())
-	  transport = list.at(0).data().toString();
+	  transportS = list.at(0).data().toString();
 
 	m_ui.listeners->setSortingEnabled(false);
 	m_ui.listeners->clearContents();
@@ -2904,10 +2904,10 @@ void spoton::slotPopulateListeners(void)
 		bytes4 = crypt->decryptedAfterAuthenticated
 		  (QByteArray::fromBase64(query.value(columnTRANSPORT).
 					  toByteArray()),
-		   &ok);
+		   &ok).constData();
 
 		if(ip == bytes1 && port == bytes2 && scopeId == bytes3 &&
-		   transport == bytes4)
+		   transportS == bytes4)
 		  m_ui.listeners->selectRow(row);
 
 		row += 1;
