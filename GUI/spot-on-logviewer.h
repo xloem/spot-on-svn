@@ -31,7 +31,6 @@
 #include <QMainWindow>
 #include <QTimer>
 
-#include "spot-on-application-name.h"
 #include "ui_logviewer.h"
 
 class QKeyEvent;

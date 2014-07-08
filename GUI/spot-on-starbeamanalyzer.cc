@@ -31,7 +31,7 @@
 #include <QTableWidgetItem>
 #include <QtCore>
 
-#include "spot-on-application-name.h"
+#include "spot-on-defines.h"
 #include "spot-on-starbeamanalyzer.h"
 
 spoton_starbeamanalyzer::spoton_starbeamanalyzer(QWidget *parent):

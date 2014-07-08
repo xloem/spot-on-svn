@@ -38,8 +38,8 @@
 #include "Common/spot-on-common.h"
 #include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
-#include "spot-on-application-name.h"
 #include "spot-on-buzzpage.h"
+#include "spot-on-defines.h"
 
 spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 				 const QByteArray &channel,

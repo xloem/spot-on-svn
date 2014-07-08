@@ -36,7 +36,7 @@
 #include "Common/spot-on-common.h"
 #include "Common/spot-on-crypt.h"
 #include "Common/spot-on-misc.h"
-#include "spot-on-application-name.h"
+#include "spot-on-defines.h"
 #include "spot-on-rosetta.h"
 
 spoton_rosetta::spoton_rosetta(void):QMainWindow()

@@ -31,6 +31,7 @@
 #include <QSettings>
 
 #include "Common/spot-on-misc.h"
+#include "spot-on-defines.h"
 #include "spot-on-logviewer.h"
 
 spoton_logviewer::spoton_logviewer(void):QMainWindow()
