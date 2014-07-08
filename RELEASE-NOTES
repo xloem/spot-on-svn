@@ -25,6 +25,7 @@
      option).
 15.  Spot will now join the default Common Buzz channel automatically.
 16.  Added SPOTON_APPLICATION_NAME in GUI/spot-on-defines.h.
+17.  Per request, added source applicable to the GoldBug project.
 
 0.09.06 (06/14/2014)
 
