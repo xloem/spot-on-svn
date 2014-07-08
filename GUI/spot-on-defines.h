@@ -26,3 +26,4 @@
 */
 
 #define SPOTON_APPLICATION_NAME "Spot-On"
+#define SPOTON_GOLDBUG 0
