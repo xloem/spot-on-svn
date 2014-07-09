@@ -6760,9 +6760,11 @@ void spoton::slotChangeTabPosition(void)
 				** the checked action.
 				*/
 
+#if SPOTON_GOLDBUG == 0
       for(int i = 0; i < m_ui.menu_Tab_Position->actions().size(); i++)
 	if(action != m_ui.menu_Tab_Position->actions().at(i))
 	  m_ui.menu_Tab_Position->actions().at(i)->setChecked(false);
+#endif
     }
 
   if(action == m_ui.action_East)
