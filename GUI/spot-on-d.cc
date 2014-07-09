@@ -526,7 +526,6 @@ void spoton::slotShowMinimalDisplay(bool state)
   m_ui.pid->setHidden(state);
   m_ui.label_17->setHidden(state);
   m_ui.line_4->setHidden(state);
-  m_ui.line_5->setHidden(state);
   m_ui.label_4->setHidden(state);
   m_ui.cipherType->setHidden(state);
   m_ui.hashType->setHidden(state);

@@ -34,6 +34,15 @@ extern void _Exit(int status);
 #include "spot-on-buzzpage.h"
 #include "ui_passwordprompt.h"
 
+#if SPOTON_GOLDBUG == 1
+#if QT_VERSION >= 0x050000
+#include <QCoreApplication>
+#include <QMediaPlayer>
+#include <QtConcurrent>
+#include <QtCore>
+#endif
+#endif
+
 QPointer<spoton> spoton::s_gui = 0;
 
 static void sig_handler(int signum)
@@ -1072,7 +1081,11 @@ spoton::spoton(void):QMainWindow()
 
   spoton_misc::correctSettingsContainer(m_settings);
 
+#if SPOTON_GOLDBUG == 1
+  QString str(m_settings.value("gui/tabPosition", "east").toString());
+#else
   QString str(m_settings.value("gui/tabPosition", "north").toString());
+#endif
 
   if(str == "east")
     {
@@ -1388,10 +1401,15 @@ spoton::spoton(void):QMainWindow()
     m_ui.kernelExternalIpFetch->setCurrentIndex(2);
 
   m_ui.saltLength->setValue(m_settings.value("gui/saltLength", 512).toInt());
+#if SPOTON_GOLDBUG == 1
   m_ui.tab->removeTab(5); // Search
+#endif
 
   if(spoton_crypt::passphraseSet())
     {
+      m_sb.neighbors->setEnabled(false);
+      m_sb.listeners->setEnabled(false);
+      m_sb.kernelstatus->setEnabled(false);
       m_sb.frame->setEnabled(false);
       m_ui.action_Export_Listeners->setEnabled(false);
       m_ui.action_Import_Neighbors->setEnabled(false);
@@ -1420,6 +1438,11 @@ spoton::spoton(void):QMainWindow()
   else
     {
       m_sb.frame->setEnabled(false);
+#if SPOTON_GOLDBUG == 1
+      m_sb.neighbors->setEnabled(false);
+      m_sb.listeners->setEnabled(false);
+      m_sb.kernelstatus->setEnabled(false);
+#endif
       m_ui.action_Export_Listeners->setEnabled(false);
       m_ui.action_Import_Neighbors->setEnabled(false);
       m_ui.action_Export_Public_Keys->setEnabled(false);
@@ -1437,7 +1460,11 @@ spoton::spoton(void):QMainWindow()
       m_ui.kernelBox->setEnabled(false);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
+#if SPOTON_GOLDBUG == 0
 	if(i == 5) // Settings
+#else
+	if(i == 7) // Settings
+#endif
 	  {
 	    m_ui.tab->blockSignals(true);
 	    m_ui.tab->setCurrentIndex(i);
@@ -1560,6 +1587,9 @@ spoton::spoton(void):QMainWindow()
   m_ui.participants->setColumnHidden(1, true); // OID
   m_ui.participants->setColumnHidden(2, true); // neighbor_oid
   m_ui.participants->setColumnHidden(3, true); // public_key_hash
+#if SPOTON_GOLDBUG == 1
+  m_ui.participants->setColumnHidden(5, true); // Last Status Change
+#endif
   m_ui.participants->resizeColumnsToContents();
   m_ui.received->setColumnHidden(m_ui.received->columnCount() - 1,
 				 true); // OID
@@ -3650,6 +3680,16 @@ void spoton::slotDeactivateKernel(void)
 
   libspoton_close(&libspotonHandle);
   m_kernelSocket.close();
+#if SPOTON_GOLDBUG == 1
+  m_ui.activateKernel->setStyleSheet("background-color: #ff717e;"
+				     "color: white;"
+				     "border-style: outset;"
+				     "border-width: 2px;"
+				     "border-radius: 10px;"
+				     "border-color: black;"
+				     "min-width: 5em;"
+				     "padding: 6px");
+#endif
 }
 
 void spoton::slotGeneralTimerTimeout(void)
@@ -3705,6 +3745,15 @@ void spoton::slotGeneralTimerTimeout(void)
 	  m_ui.pid->setPalette(palette);
 	  m_ui.pid->setText(QString::number(pid));
 	  derivativeUpdates();
+#if SPOTON_GOLDBUG == 1
+	  m_ui.activateKernel->setStyleSheet("background-color: lightgreen;"
+					     "border-style: outset;"
+					     "border-width: 2px;"
+					     "border-radius: 10px;"
+					     "border-color: black;"
+					     "min-width: 5em;"
+					     "padding: 6px");
+#endif
 	}
     }
   else
@@ -4779,6 +4828,25 @@ void spoton::slotValidatePassphrase(void)
   if(!authenticated)
     m_ui.passphrase->selectAll();
 
+#if SPOTON_GOLDBUG == 1
+#if QT_VERSION >= 0x050000
+  QMediaPlayer *player = 0;
+  QString str
+    (QDir::cleanPath(QCoreApplication::applicationDirPath() +
+		     QDir::separator() + "Sounds" + QDir::separator() +
+		     "login.wav"));
+
+  player = findChild<QMediaPlayer *> ("login.wav");
+
+  if(!player)
+    player = new QMediaPlayer(this);
+
+  player->setMedia(QUrl::fromLocalFile(str));
+  player->setObjectName("login.wav");
+  player->setVolume(50);
+  player->play();
+#endif
+#endif
   m_ui.passphrase->setFocus();
   updatePublicKeysLabel();
   derivativeUpdates();
