@@ -5008,7 +5008,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 			      tr("MELODICA: &Call friend with new "
 				 "Gemini pair."),
 			      this, SLOT(slotCallParticipant(void)));
-      action->setProperty("type", "calling"); 
+      action->setProperty("type", "calling");
 #else
       action = menu.addAction(tr("&Call participant."),
 			      this, SLOT(slotCallParticipant(void)));

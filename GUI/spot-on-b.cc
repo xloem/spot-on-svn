@@ -2431,7 +2431,7 @@ void spoton::slotSendMail(void)
 	mb.setText(tr("E-mail has been sent."));
 	mb.setWindowModality(Qt::WindowModal);
 	mb.setWindowTitle(tr("GoldBug: Confirmation"));
-	mb.exec(); 
+	mb.exec();
 #endif
       }
 
@@ -3683,7 +3683,7 @@ void spoton::slotSetIcons(void)
   m_ui.action_Quit->setIcon
     (QIcon(QString(":/%1/quit.png").arg(iconSet)));
   m_ui.menu_Icons->setIcon
-    (QIcon(QString(":/%1/icons.png").arg(iconSet))); 
+    (QIcon(QString(":/%1/icons.png").arg(iconSet)));
 #endif
 
   QStringList list;
@@ -3699,7 +3699,7 @@ void spoton::slotSetIcons(void)
   m_ui.copyrepleo_chat->setIcon(QIcon(QString(":/%1/repleo.png").
 				      arg(iconSet)));
   m_ui.melodica->setIcon(QIcon(QString(":/%1/melodica.png").
-			       arg(iconSet))); 
+			       arg(iconSet)));
 #endif
   m_ui.clearMessages->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
   m_ui.saveEmailName->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
