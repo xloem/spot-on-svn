@@ -25,6 +25,9 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include "spot-on.h"
+#include "spot-on-defines.h"
+
 #include <QCheckBox>
 #if QT_VERSION < 0x050000
 #include <QDesktopServices>
@@ -35,8 +38,6 @@
 #include <QStandardPaths>
 #endif
 #include <QTableWidgetItem>
-
-#include "spot-on.h"
 
 void spoton::slotGenerateEtpKeys(int index)
 {
@@ -2352,7 +2353,7 @@ void spoton::prepareContextMenuMirrors(void)
 		      tr("&Copy Repleo to the clipboard buffer."),
 		      this, SLOT(slotCopyFriendshipBundle(void)));
       menu->addSeparator();
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
       action = menu->addAction(QIcon(QString(":/%1/melodica.png").
 				     arg(m_settings.value("gui/iconSet",
 							  "nouve").
@@ -2370,7 +2371,7 @@ void spoton::prepareContextMenuMirrors(void)
 			       this, SLOT(slotCallParticipant(void)));
       action->setProperty("type", "terminating");
       menu->addSeparator();
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
       menu->addAction
 	(tr("&Generate random Gemini pair "
 	    "(AES-256 Key, SHA-512 Key) (without a call)."),

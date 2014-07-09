@@ -26,6 +26,7 @@
 */
 
 #include "spot-on.h"
+#include "spot-on-defines.h"
 #include "ui_adaptiveechoprompt.h"
 
 void spoton::slotDiscoverMissingLinks(void)

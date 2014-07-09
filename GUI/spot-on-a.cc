@@ -30,6 +30,7 @@ extern void _Exit(int status);
 #endif
 
 #include "spot-on.h"
+#include "spot-on-defines.h"
 #include "spot-on-buzzpage.h"
 #include "ui_passwordprompt.h"
 
@@ -4999,7 +5000,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     tr("&Copy Repleo to the clipboard buffer."),
 		     this, SLOT(slotCopyFriendshipBundle(void)));
       menu.addSeparator();
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
       action = menu.addAction(QIcon(QString(":/%1/melodica.png").
 				    arg(m_settings.value("gui/iconSet",
 							 "nouve").
@@ -5017,7 +5018,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 			      this, SLOT(slotCallParticipant(void)));
       action->setProperty("type", "terminating");
       menu.addSeparator();
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
       menu.addAction
 	(tr("&Generate random Gemini pair "
 	    "(AES-256 Key, SHA-512 Key) (without a call)."),

@@ -25,7 +25,11 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#if SPOTON_GOLDBUG != 0
+#include "spot-on.h"
+#include "spot-on-buzzpage.h"
+#include "spot-on-defines.h"
+
+#if SPOTON_GOLDBUG == 1
 #if QT_VERSION >= 0x050000
 #include <QCoreApplication>
 #include <QMediaPlayer>
@@ -34,9 +38,6 @@
 #endif
 #endif
 #include <QSslKey>
-
-#include "spot-on.h"
-#include "spot-on-buzzpage.h"
 
 void spoton::slotSendMessage(void)
 {
@@ -143,7 +144,7 @@ void spoton::slotSendMessage(void)
 
  done_label:
 
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
 #if QT_VERSION >= 0x050000
   QMediaPlayer *player = 0;
   QString str
@@ -407,7 +408,7 @@ void spoton::slotReceivedKernelMessage(void)
 		  m_ui.messages->verticalScrollBar()->setValue
 		    (m_ui.messages->verticalScrollBar()->maximum());
 
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
 #if QT_VERSION >= 0x050000
 		  QMediaPlayer *player = 0;
 		  QString str
@@ -426,7 +427,7 @@ void spoton::slotReceivedKernelMessage(void)
 		  player->play();
 #endif
 #endif
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
 		  if(m_ui.tab->currentIndex() != 0)
 #else
 		  if(m_ui.tab->currentIndex() != 1)
@@ -436,7 +437,7 @@ void spoton::slotReceivedKernelMessage(void)
 	    }
 	  else if(data == "newmail")
 	    {
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
 #if QT_VERSION >= 0x050000
 	      QMediaPlayer *player = 0;
 	      QString str
@@ -2418,7 +2419,7 @@ void spoton::slotSendMail(void)
 	m_ui.outgoingSubject->clear();
 	m_ui.goldbug->clear();
 
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
 	QMessageBox mb(this);
 
 #ifdef Q_OS_MAC
@@ -3561,7 +3562,7 @@ void spoton::slotStatusButtonClicked(void)
   else if(toolButton == m_sb.chat)
     {
       m_sb.chat->setVisible(false);
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
       m_ui.tab->setCurrentIndex(0);
 #else
       m_ui.tab->setCurrentIndex(1);
@@ -3572,7 +3573,7 @@ void spoton::slotStatusButtonClicked(void)
       m_sb.email->setVisible(false);
       m_ui.folder->setCurrentIndex(0);
       m_ui.mailTab->setCurrentIndex(0);
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
       m_ui.tab->setCurrentIndex(1);
 #else
       m_ui.tab->setCurrentIndex(2);
@@ -3656,7 +3657,7 @@ void spoton::slotSetIcons(void)
 
       QSettings settings;
 
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
       if(action == m_ui.actionEveraldo)
 	iconSet = "everaldo";
       else
@@ -3678,7 +3679,7 @@ void spoton::slotSetIcons(void)
 
   m_ui.action_Log_Viewer->setIcon
     (QIcon(QString(":/%1/information.png").arg(iconSet)));
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
   m_ui.action_Quit->setIcon
     (QIcon(QString(":/%1/quit.png").arg(iconSet)));
   m_ui.menu_Icons->setIcon
@@ -3694,7 +3695,7 @@ void spoton::slotSetIcons(void)
 
   // Chat
 
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
   m_ui.copyrepleo_chat->setIcon(QIcon(QString(":/%1/repleo.png").
 				      arg(iconSet)));
   m_ui.melodica->setIcon(QIcon(QString(":/%1/melodica.png").
@@ -3713,7 +3714,7 @@ void spoton::slotSetIcons(void)
 
   // Email
 
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
   m_ui.copyrepleo_email->setIcon(QIcon(QString(":/%1/repleo-email.png").
 				       arg(iconSet)));
 #endif
@@ -3794,7 +3795,7 @@ void spoton::slotSetIcons(void)
   m_ui.addNeighbor->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
   m_ui.addFriend->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
   m_ui.clearFriend->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
   m_ui.addFriendSymmetricBundleRadio->setIcon
     (QIcon(QString(":/%1/repleo.png").arg(iconSet)));
   m_ui.addFriendPublicKeyRadio->setIcon
@@ -4537,7 +4538,7 @@ void spoton::slotBuzzChanged(void)
 #endif
     m_sb.buzz->setVisible(true);
 
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
 #if QT_VERSION >= 0x050000
   QMediaPlayer *player = 0;
   QString str

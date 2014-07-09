@@ -25,8 +25,13 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include "Common/spot-on-misc.h"
+#include "spot-on.h"
+#include "spot-on-chatwindow.h"
+#include "spot-on-defines.h"
+
 #include <QDateTime>
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
 #if QT_VERSION >= 0x050000
 #include <QMediaMessage>
 #endif
@@ -34,10 +39,6 @@
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QSettings>
-
-#include "Common/spot-on-misc.h"
-#include "spot-on.h"
-#include "spot-on-chatwindow.h"
 
 spoton_chatwindow::spoton_chatwindow(const QIcon &icon,
 				     const QString &id,
@@ -207,7 +208,7 @@ void spoton_chatwindow::slotSendMessage(void)
 
  done_label:
 
-#if SPOTON_GOLDBUG != 0
+#if SPOTON_GOLDBUG == 1
 #if QT_VERSION >= 0x050000
   QMediaPlayer *player = 0;
   QString str
