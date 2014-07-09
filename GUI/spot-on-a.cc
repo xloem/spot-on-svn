@@ -1407,9 +1407,6 @@ spoton::spoton(void):QMainWindow()
 
   if(spoton_crypt::passphraseSet())
     {
-      m_sb.neighbors->setEnabled(false);
-      m_sb.listeners->setEnabled(false);
-      m_sb.kernelstatus->setEnabled(false);
       m_sb.frame->setEnabled(false);
       m_ui.action_Export_Listeners->setEnabled(false);
       m_ui.action_Import_Neighbors->setEnabled(false);
@@ -1438,11 +1435,6 @@ spoton::spoton(void):QMainWindow()
   else
     {
       m_sb.frame->setEnabled(false);
-#if SPOTON_GOLDBUG == 1
-      m_sb.neighbors->setEnabled(false);
-      m_sb.listeners->setEnabled(false);
-      m_sb.kernelstatus->setEnabled(false);
-#endif
       m_ui.action_Export_Listeners->setEnabled(false);
       m_ui.action_Import_Neighbors->setEnabled(false);
       m_ui.action_Export_Public_Keys->setEnabled(false);
