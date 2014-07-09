@@ -1,4 +1,4 @@
-0.09.07 (07/09/2014)
+0.09.07 (07/10/2014)
 
 1.   Removed some debug statements.
 2.   Adaptive echo. Please note that version 0.09.07 removes
@@ -24,8 +24,8 @@
 14.  Field terminal echo failures in the kernel (passphrase command-line
      option).
 15.  Spot will now join the default Common Buzz channel automatically.
-16.  Added SPOTON_APPLICATION_NAME in GUI/spot-on-defines.h.
-17.  Per request, merged GoldBug source.
+16.  Added GUI/spot-on-defines.h.
+17.  Per request, merged some GoldBug source.
 
 0.09.06 (06/14/2014)
 
