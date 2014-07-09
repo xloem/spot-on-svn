@@ -5,4 +5,3 @@ IDI_ICON1               ICON    DISCARDABLE     "spotonbutton64.ico"
 #if SPOTON_GOLDBUG == 1
 IDI_ICON1               ICON    DISCARDABLE     "goldbug.ico"
 #endif
-
