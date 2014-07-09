@@ -625,6 +625,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotKeepCopy(bool)));
+  connect(m_ui.actionEveraldo,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotSetIcons(void)));
   connect(m_ui.actionNouve,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -1636,17 +1640,25 @@ spoton::spoton(void):QMainWindow()
 	m_externalAddressDiscovererTimer.start(60000);
     }
 
-  if(m_ui.menu_Icons->actions().size() == 2)
+  if(m_ui.menu_Icons->actions().size() == 3)
     {
-      if(m_settings.value("gui/iconSet", "nouve").toString() == "nouve")
+      QString str(m_settings.value("gui/iconSet", "nouve").
+		  toString());
+
+      if(str == "everaldo")
 	{
 	  m_ui.menu_Icons->actions().at(0)->setChecked(true);
 	  m_ui.menu_Icons->actions().at(0)->trigger();
 	}
-      else
+      else if(str == "nouve")
 	{
 	  m_ui.menu_Icons->actions().at(1)->setChecked(true);
 	  m_ui.menu_Icons->actions().at(1)->trigger();
+	}
+      else
+	{
+	  m_ui.menu_Icons->actions().at(2)->setChecked(true);
+	  m_ui.menu_Icons->actions().at(2)->trigger();
 	}
     }
 

@@ -6767,6 +6767,7 @@
      <property name="title">
       <string>&amp;Icons</string>
      </property>
+     <addaction name="actionEveraldo"/>
      <addaction name="actionNouve"/>
      <addaction name="actionNuvola"/>
     </widget>
@@ -6925,6 +6926,14 @@
    </property>
    <property name="text">
     <string>&amp;Minimal Display</string>
+   </property>
+  </action>
+  <action name="actionEveraldo">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Everaldo</string>
    </property>
   </action>
  </widget>

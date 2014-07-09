@@ -3657,12 +3657,9 @@ void spoton::slotSetIcons(void)
 
       QSettings settings;
 
-#if SPOTON_GOLDBUG == 1
       if(action == m_ui.actionEveraldo)
 	iconSet = "everaldo";
-      else
-#endif
-      if(action == m_ui.actionNouve)
+      else if(action == m_ui.actionNouve)
 	iconSet = "nouve";
       else
 	iconSet = "nuvola";

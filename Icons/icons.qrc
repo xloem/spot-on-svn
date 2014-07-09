@@ -213,6 +213,49 @@
 	<file>generic/repleo-chat.png</file>
 	<file>generic/repleo-email.png</file>
 	<file>generic/repleo-url.png</file>
+	<file>everaldo/activate.png</file>
+	<file>everaldo/add.png</file>
+	<file>everaldo/add-listener.png</file>
+	<file>everaldo/add-url.png</file>
+	<file>everaldo/away.png</file>
+	<file>everaldo/busy.png</file>
+	<file>everaldo/buzz.png</file>
+	<file>everaldo/chat.png</file>
+	<file>everaldo/chat_t.png</file>
+	<file>everaldo/clear.png</file>
+	<file>everaldo/copy.png</file>
+	<file>everaldo/database.png</file>
+	<file>everaldo/deactivate.png</file>
+	<file>everaldo/delete.png</file>
+	<file>everaldo/documentation.png</file>
+	<file>everaldo/down.png</file>
+	<file>everaldo/email.png</file>
+	<file>everaldo/empty-trash.png</file>
+	<file>everaldo/full-trash.png</file>
+	<file>everaldo/goldbug.png</file>
+	<file>everaldo/heart.png</file>
+	<file>everaldo/icons.png</file>
+	<file>everaldo/inbox.png</file>
+	<file>everaldo/information.png</file>
+	<file>everaldo/lock.png</file>
+	<file>everaldo/modify.png</file>
+	<file>everaldo/neighbors.png</file>
+	<file>everaldo/offline.png</file>
+	<file>everaldo/ok.png</file>
+	<file>everaldo/online.png</file>
+	<file>everaldo/outbox.png</file>
+	<file>everaldo/quit.png</file>
+	<file>everaldo/read.png</file>
+	<file>everaldo/refresh.png</file>
+	<file>everaldo/search.png</file>
+	<file>everaldo/settings.png</file>
+	<file>everaldo/share.png</file>
+	<file>everaldo/starbeam.png</file>
+	<file>everaldo/status-offline.png</file>
+	<file>everaldo/status-online.png</file>
+	<file>everaldo/up.png</file>
+	<file>everaldo/urls.png</file>
+	<file>everaldo/write.png</file>
 	<file>nouve/activate.png</file>
         <file>nouve/add.png</file>
 	<file>nouve/add-listener.png</file>
