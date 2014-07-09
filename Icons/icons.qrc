@@ -268,10 +268,12 @@
 	<file>nouve/copy.png</file>
 	<file>nouve/database.png</file>
 	<file>nouve/deactivate.png</file>
+	<file>nouve/delete.png</file>
 	<file>nouve/down.png</file>
 	<file>nouve/email.png</file>
 	<file>nouve/empty-trash.png</file>
 	<file>nouve/full-trash.png</file>
+	<file>nouve/goldbug.png</file>
 	<file>nouve/heart.png</file>
 	<file>nouve/inbox.png</file>
 	<file>nouve/information.png</file>
@@ -310,6 +312,7 @@
 	<file>nuvola/email.png</file>
 	<file>nuvola/empty-trash.png</file>
 	<file>nuvola/full-trash.png</file>
+	<file>nuvola/goldbug.png</file>
 	<file>nuvola/heart.png</file>
 	<file>nuvola/inbox.png</file>
 	<file>nuvola/information.png</file>
