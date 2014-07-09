@@ -33,7 +33,7 @@
 #include <QDateTime>
 #if SPOTON_GOLDBUG == 1
 #if QT_VERSION >= 0x050000
-#include <QMediaMessage>
+#include <QMediaPlayer>
 #endif
 #endif
 #include <QMessageBox>
