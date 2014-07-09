@@ -26,6 +26,11 @@
 */
 
 #include <QDateTime>
+#if SPOTON_GOLDBUG != 0
+#if QT_VERSION >= 0x050000
+#include <QMediaMessage>
+#endif
+#endif
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QSettings>
@@ -201,6 +206,25 @@ void spoton_chatwindow::slotSendMessage(void)
   ui.message->clear();
 
  done_label:
+
+#if SPOTON_GOLDBUG != 0
+#if QT_VERSION >= 0x050000
+  QMediaPlayer *player = 0;
+  QString str
+    (QDir::cleanPath(QCoreApplication::applicationDirPath() +
+		     QDir::separator() + "Sounds" + QDir::separator() +
+		     "send.wav"));
+
+  player = findChild<QMediaPlayer *> (this);
+
+  if(!player)
+    player = new QMediaPlayer(this);
+
+  player->setMedia(QUrl::fromLocalFile(str));
+  player->setVolume(50);
+  player->play();
+#endif
+#endif
 
   if(!error.isEmpty())
     QMessageBox::critical(this, tr("%1: Error").

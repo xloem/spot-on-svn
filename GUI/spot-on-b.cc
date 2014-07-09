@@ -25,6 +25,14 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#if SPOTON_GOLDBUG != 0
+#if QT_VERSION >= 0x050000
+#include <QCoreApplication>
+#include <QMediaPlayer>
+#include <QtConcurrent>
+#include <QtCore>
+#endif
+#endif
 #include <QSslKey>
 
 #include "spot-on.h"
@@ -134,6 +142,26 @@ void spoton::slotSendMessage(void)
   m_ui.message->clear();
 
  done_label:
+
+#if SPOTON_GOLDBUG != 0
+#if QT_VERSION >= 0x050000
+  QMediaPlayer *player = 0;
+  QString str
+    (QDir::cleanPath(QCoreApplication::applicationDirPath() +
+		     QDir::separator() + "Sounds" + QDir::separator() +
+		     "send.wav"));
+
+  player = findChild<QMediaPlayer *> ("send.wav");
+
+  if(!player)
+    player = new QMediaPlayer(this);
+
+  player->setMedia(QUrl::fromLocalFile(str));
+  player->setObjectName("send.wav");
+  player->setVolume(50);
+  player->play();
+#endif
+#endif
 
   if(!error.isEmpty())
     QMessageBox::critical(this, tr("%1: Error").
@@ -379,12 +407,56 @@ void spoton::slotReceivedKernelMessage(void)
 		  m_ui.messages->verticalScrollBar()->setValue
 		    (m_ui.messages->verticalScrollBar()->maximum());
 
+#if SPOTON_GOLDBUG != 0
+#if QT_VERSION >= 0x050000
+		  QMediaPlayer *player = 0;
+		  QString str
+		    (QDir::cleanPath(QCoreApplication::applicationDirPath() +
+				     QDir::separator() + "Sounds" +
+				     QDir::separator() + "receive.wav"));
+
+		  player = findChild<QMediaPlayer *> ("receive.wav");
+
+		  if(!player)
+		    player = new QMediaPlayer(this);
+
+		  player->setMedia(QUrl::fromLocalFile(str));
+		  player->setObjectName("receive.wav");
+		  player->setVolume(50);
+		  player->play();
+#endif
+#endif
+#if SPOTON_GOLDBUG != 0
+		  if(m_ui.tab->currentIndex() != 0)
+#else
 		  if(m_ui.tab->currentIndex() != 1)
+#endif
 		    m_sb.chat->setVisible(true);
 		}
 	    }
 	  else if(data == "newmail")
-	    m_sb.email->setVisible(true);
+	    {
+#if SPOTON_GOLDBUG != 0
+#if QT_VERSION >= 0x050000
+	      QMediaPlayer *player = 0;
+	      QString str
+		(QDir::cleanPath(QCoreApplication::applicationDirPath() +
+				 QDir::separator() + "Sounds" +
+				 QDir::separator() + "echo.wav"));
+
+	      player = findChild<QMediaPlayer *> ("echo.wav");
+
+	      if(!player)
+		player = new QMediaPlayer(this);
+
+	      player->setMedia(QUrl::fromLocalFile(str));
+	      player->setObjectName("echo.wav");
+	      player->setVolume(50);
+	      player->play();
+#endif
+#endif
+	      m_sb.email->setVisible(true);
+	    }
 	}
     }
   else if(m_kernelSocketData.length() > 50000)
@@ -2345,6 +2417,21 @@ void spoton::slotSendMail(void)
 	m_ui.outgoingMessage->setCurrentCharFormat(QTextCharFormat());
 	m_ui.outgoingSubject->clear();
 	m_ui.goldbug->clear();
+
+#if SPOTON_GOLDBUG != 0
+	QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+	mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+	mb.setIcon(QMessageBox::Information);
+	mb.setText(tr("E-mail has been sent."));
+	mb.setWindowModality(Qt::WindowModal);
+	mb.setWindowTitle(tr("GoldBug: Confirmation"));
+	mb.exec(); 
+#endif
       }
 
     db.close();
@@ -3465,25 +3552,45 @@ void spoton::slotStatusButtonClicked(void)
   if(toolButton == m_sb.buzz)
     {
       m_sb.buzz->setVisible(false);
+#if SPOTON_GOLDBUG == 0
       m_ui.tab->setCurrentIndex(0);
+#else
+      m_ui.tab->setCurrentIndex(2);
+#endif
     }
   else if(toolButton == m_sb.chat)
     {
       m_sb.chat->setVisible(false);
+#if SPOTON_GOLDBUG != 0
+      m_ui.tab->setCurrentIndex(0);
+#else
       m_ui.tab->setCurrentIndex(1);
+#endif
     }
   else if(toolButton == m_sb.email)
     {
       m_sb.email->setVisible(false);
       m_ui.folder->setCurrentIndex(0);
       m_ui.mailTab->setCurrentIndex(0);
+#if SPOTON_GOLDBUG != 0
+      m_ui.tab->setCurrentIndex(1);
+#else
       m_ui.tab->setCurrentIndex(2);
+#endif
       slotRefreshMail();
     }
   else if(toolButton == m_sb.listeners)
+#if SPOTON_GOLDBUG == 0
     m_ui.tab->setCurrentIndex(3);
+#else
+    m_ui.tab->setCurrentIndex(6);
+#endif
   else if(toolButton == m_sb.neighbors)
+#if SPOTON_GOLDBUG == 0
     m_ui.tab->setCurrentIndex(4);
+#else
+    m_ui.tab->setCurrentIndex(5);
+#endif
 }
 
 bool spoton::updateMailStatus(const QString &oid, const QString &status)
@@ -3549,6 +3656,11 @@ void spoton::slotSetIcons(void)
 
       QSettings settings;
 
+#if SPOTON_GOLDBUG != 0
+      if(action == m_ui.actionEveraldo)
+	iconSet = "everaldo";
+      else
+#endif
       if(action == m_ui.actionNouve)
 	iconSet = "nouve";
       else
