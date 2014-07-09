@@ -2352,16 +2352,34 @@ void spoton::prepareContextMenuMirrors(void)
 		      tr("&Copy Repleo to the clipboard buffer."),
 		      this, SLOT(slotCopyFriendshipBundle(void)));
       menu->addSeparator();
+#if SPOTON_GOLDBUG != 0
+      action = menu->addAction(QIcon(QString(":/%1/melodica.png").
+				     arg(m_settings.value("gui/iconSet",
+							  "nouve").
+					 toString())),
+			       tr("MELODICA: &Call friend with new "
+				  "Gemini pair."),
+			       this, SLOT(slotCallParticipant(void)));
+      action->setProperty("type", "calling"); 
+#else
       action = menu->addAction(tr("&Call participant."),
 			       this, SLOT(slotCallParticipant(void)));
       action->setProperty("type", "calling");
+#endif
       action = menu->addAction(tr("&Terminate call."),
 			       this, SLOT(slotCallParticipant(void)));
       action->setProperty("type", "terminating");
       menu->addSeparator();
-      action = menu->addAction(tr("&Generate random Gemini pair "
-				  "(AES-256 Key, SHA-512 Key)."),
-			       this, SLOT(slotGenerateGeminiInChat(void)));
+#if SPOTON_GOLDBUG != 0
+      menu->addAction
+	(tr("&Generate random Gemini pair "
+	    "(AES-256 Key, SHA-512 Key) (without a call)."),
+	 this, SLOT(slotGenerateGeminiInChat(void)));
+#else
+      menu->addAction(tr("&Generate random Gemini pair "
+			 "(AES-256 Key, SHA-512 Key)."),
+		      this, SLOT(slotGenerateGeminiInChat(void)));
+#endif
       menu->addSeparator();
       menu->addAction(QIcon(QString(":/%1/clear.png").
 			    arg(m_settings.value("gui/iconSet", "nouve").
@@ -2526,6 +2544,7 @@ void spoton::prepareContextMenuMirrors(void)
 
   if(!m_ui.receivedActionMenu->menu())
     {
+      QAction *action = 0;
       QMenu *menu = new QMenu(this);
 
       menu->addAction(QIcon(QString(":/%1/clear.png").
@@ -2536,10 +2555,8 @@ void spoton::prepareContextMenuMirrors(void)
       menu->addAction(tr("Delete &All"), this,
 		      SLOT(slotDeleteAllReceived(void)));
       menu->addSeparator();
-
-      QAction *action = menu->addAction(tr("&Compute SHA-1 Hash"), this,
-					SLOT(slotComputeFileHash(void)));
-
+      action = menu->addAction(tr("&Compute SHA-1 Hash"), this,
+			       SLOT(slotComputeFileHash(void)));
       action->setProperty("widget_of", "received");
       menu->addSeparator();
       action = menu->addAction(tr("&Copy File Hash"), this,
