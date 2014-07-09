@@ -3678,6 +3678,12 @@ void spoton::slotSetIcons(void)
 
   m_ui.action_Log_Viewer->setIcon
     (QIcon(QString(":/%1/information.png").arg(iconSet)));
+#if SPOTON_GOLDBUG != 0
+  m_ui.action_Quit->setIcon
+    (QIcon(QString(":/%1/quit.png").arg(iconSet)));
+  m_ui.menu_Icons->setIcon
+    (QIcon(QString(":/%1/icons.png").arg(iconSet))); 
+#endif
 
   QStringList list;
 
@@ -3688,6 +3694,12 @@ void spoton::slotSetIcons(void)
 
   // Chat
 
+#if SPOTON_GOLDBUG != 0
+  m_ui.copyrepleo_chat->setIcon(QIcon(QString(":/%1/repleo.png").
+				      arg(iconSet)));
+  m_ui.melodica->setIcon(QIcon(QString(":/%1/melodica.png").
+			       arg(iconSet))); 
+#endif
   m_ui.clearMessages->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
   m_ui.saveEmailName->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
   m_ui.saveNodeName->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
@@ -3701,15 +3713,29 @@ void spoton::slotSetIcons(void)
 
   // Email
 
+#if SPOTON_GOLDBUG != 0
+  m_ui.copyrepleo_email->setIcon(QIcon(QString(":/%1/repleo-email.png").
+				       arg(iconSet)));
+#endif
+#if SPOTON_GOLDBUG == 0
   m_ui.pushButtonClearMail->setIcon
     (QIcon(QString(":/%1/clear.png").arg(iconSet)));
+#else
+  m_ui.pushButtonClearMail->setIcon
+    (QIcon(QString(":/%1/delete.png").arg(iconSet)));
+#endif
   m_ui.refreshMail->setIcon(QIcon(QString(":/%1/refresh.png").arg(iconSet)));
   m_ui.reply->setIcon(QIcon(QString(":/%1/reply.png").arg(iconSet)));
   m_ui.retrieveMail->setIcon(QIcon(QString(":/%1/down.png").arg(iconSet)));
   m_ui.emptyTrash->setIcon
     (QIcon(QString(":/%1/empty-trash.png").arg(iconSet)));
+#if SPOTON_GOLDBUG == 0
   m_ui.generateGoldBug->setIcon
     (QIcon(QString(":/%1/lock.png").arg(iconSet)));
+#else
+  m_ui.generateGoldBug->setIcon
+    (QIcon(QString(":/%1/goldbug.png").arg(iconSet)));
+#endif
   m_ui.sendMail->setIcon(QIcon(QString(":/%1/email.png").arg(iconSet)));
   list.clear();
   list << "inbox.png" << "outbox.png" << "full-trash.png";
@@ -3719,7 +3745,11 @@ void spoton::slotSetIcons(void)
       (i, QIcon(QString(":/%1/%2").arg(iconSet).arg(list.at(i))));
 
   list.clear();
+#if SPOTON_GOLDBUG == 0
   list << "read.png" << "write.png" << "database.png";
+#else
+  list << "email.png" << "write.png";
+#endif
 
   for(int i = 0; i < list.size(); i++)
     m_ui.mailTab->setTabIcon
@@ -3740,20 +3770,36 @@ void spoton::slotSetIcons(void)
 
   // Login
 
+#if SPOTON_GOLDBUG == 0
   m_ui.passphraseButton->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
+#else
+  m_ui.passphraseButton->setIcon(QIcon(QString(":/%1/goldbug.png").
+				       arg(iconSet)));
+#endif
   m_listenersLastModificationTime = QDateTime();
   m_neighborsLastModificationTime = QDateTime();
   m_participantsLastModificationTime = QDateTime();
 
   // Neighbors
 
+#if SPOTON_GOLDBUG == 0
   m_ui.toolButtonCopyToClipboard->setIcon
     (QIcon(QString(":/%1/copy.png").arg(iconSet)));
+#else
+  m_ui.toolButtonMakeFriends->setIcon
+    (QIcon(QString(":/%1/share.png").arg(iconSet)));
+#endif
   m_ui.shareBuzzMagnet->setIcon
     (QIcon(QString(":/%1/share.png").arg(iconSet)));
   m_ui.addNeighbor->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
   m_ui.addFriend->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
   m_ui.clearFriend->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
+#if SPOTON_GOLDBUG != 0
+  m_ui.addFriendSymmetricBundleRadio->setIcon
+    (QIcon(QString(":/%1/repleo.png").arg(iconSet)));
+  m_ui.addFriendPublicKeyRadio->setIcon
+    (QIcon(QString(":/%1/key.png").arg(iconSet)));
+#endif
 
   // Search
 
@@ -3792,9 +3838,16 @@ void spoton::slotSetIcons(void)
   // Tab
 
   list.clear();
+
+#if SPOTON_GOLDBUG == 0
   list << "buzz.png" << "chat.png" << "email.png"
        << "add-listener.png" << "neighbors.png"
        << "settings.png" << "starbeam.png" << "urls.png";
+#else
+  list << "chat_t.png" << "email_t.png" << "buzz_t.png"
+       << "starbeam.png" << "key_t.png" << "connect_t.png"
+       << "server_t.png" << "settings_t.png" << "spoton-button-32.png";
+#endif
 
   for(int i = 0; i < list.size(); i++)
     m_ui.tab->setTabIcon
@@ -4477,8 +4530,32 @@ void spoton::initializeKernelSocket(void)
 
 void spoton::slotBuzzChanged(void)
 {
+#if SPOTON_GOLDBUG == 0
   if(m_ui.tab->currentIndex() != 0)
+#else
+  if(m_ui.tab->currentIndex() != 2)
+#endif
     m_sb.buzz->setVisible(true);
+
+#if SPOTON_GOLDBUG != 0
+#if QT_VERSION >= 0x050000
+  QMediaPlayer *player = 0;
+  QString str
+    (QDir::cleanPath(QCoreApplication::applicationDirPath() +
+		     QDir::separator() + "Sounds" + QDir::separator() +
+		     "buzz.wav"));
+
+  player = findChild<QMediaPlayer *> ("buzz.wav");
+
+  if(!player)
+    player = new QMediaPlayer(this);
+
+  player->setMedia(QUrl::fromLocalFile(str));
+  player->setObjectName("buzz.wav");
+  player->setVolume(50);
+  player->play();
+#endif
+#endif
 }
 
 void spoton::slotRemoveEmailParticipants(void)
