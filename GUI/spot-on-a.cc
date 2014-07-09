@@ -1401,7 +1401,7 @@ spoton::spoton(void):QMainWindow()
     m_ui.kernelExternalIpFetch->setCurrentIndex(2);
 
   m_ui.saltLength->setValue(m_settings.value("gui/saltLength", 512).toInt());
-#if SPOTON_GOLDBUG == 1
+#if SPOTON_GOLDBUG == 0
   m_ui.tab->removeTab(5); // Search
 #endif
 
