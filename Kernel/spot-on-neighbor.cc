@@ -6060,3 +6060,13 @@ bool spoton_neighbor::hasData(void)
 
   return !m_data.isEmpty();
 }
+
+void spoton_neighbor::abort(void)
+{
+  if(m_sctpSocket)
+    m_sctpSocket->abort();
+  else if(m_tcpSocket)
+    m_tcpSocket->abort();
+  else if(m_udpSocket)
+    m_udpSocket->abort();
+}

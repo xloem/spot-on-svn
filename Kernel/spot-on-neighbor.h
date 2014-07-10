@@ -154,6 +154,7 @@ class spoton_neighbor: public QThread
   qint64 id(void) const;
   qint64 write(const char *data, qint64 size);
   quint16 peerPort(void) const;
+  void abort(void);
   void addToBytesWritten(const int bytesWritten);
   void processData(void);
   void setId(const qint64 id);

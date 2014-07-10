@@ -434,7 +434,7 @@ qint64 spoton_sctp_socket::read(char *data, const qint64 size)
   tv.tv_sec = 0;
   tv.tv_usec = 250000;
 
-  if(select(m_socketDescriptor + 1, &rfds, 0, 0, &tv))
+  if(select(m_socketDescriptor + 1, &rfds, 0, 0, &tv) > 0)
     rc = recv
       (m_socketDescriptor, data, static_cast<size_t> (size), 0);
   else
@@ -986,16 +986,14 @@ void spoton_sctp_socket::slotTimeout(void)
 #endif
 
       if(rc == 0)
-	{
-	  if(errorcode == 0)
-	    {
-	      if(m_state == ConnectingState)
-		{
-		  m_state = ConnectedState;
-		  emit connected();
-		}
-	    }
-	}
+	if(errorcode == 0)
+	  {
+	    if(m_state == ConnectingState)
+	      {
+		m_state = ConnectedState;
+		emit connected();
+	      }
+	  }
     }
 
   QByteArray data(static_cast<int> (m_readBufferSize), 0);
