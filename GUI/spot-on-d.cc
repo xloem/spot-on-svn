@@ -591,7 +591,6 @@ void spoton::slotShowMinimalDisplay(bool state)
   m_ui.acceptChatKeys->setHidden(state);
   m_ui.chatSignMessages->setHidden(state);
   m_ui.participants->setColumnHidden(4, state);
-  m_ui.participants->setColumnHidden(5, state);
   m_ui.participants->setColumnHidden(7, state);
   m_ui.mail->setColumnHidden(0, state);
   m_ui.mail->setColumnHidden(2, state);
