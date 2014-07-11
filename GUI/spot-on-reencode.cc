@@ -742,7 +742,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  deleteQuery.prepare("DELETE FROM listeners_accounts WHERE "
 				      "account_name_hash = ?");
 		  deleteQuery.bindValue(0, query.value(1));
-		  deleteQuery.exec();		  
+		  deleteQuery.exec();
 		}
 	    }
 
@@ -801,7 +801,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		    ("DELETE FROM listeners_adaptive_echo_tokens WHERE "
 		     "token_hash = ?");
 		  deleteQuery.bindValue(0, query.value(1));
-		  deleteQuery.exec();		  
+		  deleteQuery.exec();
 		}
 	    }
 
@@ -844,7 +844,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 				      "WHERE "
 				      "ip_address_hash = ?");
 		  deleteQuery.bindValue(0, query.value(1));
-		  deleteQuery.exec();		  
+		  deleteQuery.exec();
 		}
 	    }
       }
@@ -1010,7 +1010,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		echoMode = oldCrypt->decryptedAfterAuthenticated
 		  (QByteArray::fromBase64(query.value(11).toByteArray()),
 		   &ok).constData();
-	      
+      
 	      if(ok)
 		peerCertificate = oldCrypt->decryptedAfterAuthenticated
 		  (QByteArray::

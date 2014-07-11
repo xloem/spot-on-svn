@@ -195,7 +195,6 @@ int main(int argc, char *argv[])
 #else
   QCoreApplication qapplication(argc, argv);
 #endif
-  
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000
   /*

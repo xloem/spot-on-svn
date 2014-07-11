@@ -1112,7 +1112,7 @@ spoton::spoton(void):QMainWindow()
   m_sb.neighbors->setIcon
     (QIcon(QString(":/%1/status-offline.png").
 	   arg(m_settings.value("gui/iconSet", "nouve").toString())));
-  
+
   if(m_settings.contains("gui/geometry"))
     restoreGeometry(m_settings.value("gui/geometry").toByteArray());
 
@@ -2484,7 +2484,7 @@ void spoton::slotProtocolRadioToggled(bool state)
 	  m_ui.neighborScopeIdLabel->setEnabled(false);
 	}
     }
-  else 
+  else
     {
       if(radio == m_ui.ipv6Listener)
 	{
@@ -3784,7 +3784,7 @@ void spoton::slotGeneralTimerTimeout(void)
 	      QSqlQuery query(db);
 
 	      query.setForwardOnly(true);
-	      
+
 	      if(query.exec("SELECT port FROM kernel_gui_server"))
 		if(query.next())
 		  port = query.value(0).toByteArray().toUShort();
@@ -3922,7 +3922,7 @@ void spoton::saveKernelPath(const QString &path)
       m_settings["gui/kernelPath"] = path;
 
       QSettings settings;
-      
+
       settings.setValue("gui/kernelPath", path);
       m_ui.kernelPath->setText(path);
       m_ui.kernelPath->setToolTip(path);

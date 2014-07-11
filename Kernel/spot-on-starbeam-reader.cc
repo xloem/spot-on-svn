@@ -159,7 +159,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 				      {
 					m_missingLinksIterator =
 					  new (std::nothrow)
-					  QListIterator<QByteArray> 
+					  QListIterator<QByteArray>
 					  (m_missingLinks);
 
 					if(m_missingLinksIterator)
