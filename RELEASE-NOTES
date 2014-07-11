@@ -26,6 +26,8 @@
 15.  Spot will now join the default Common Buzz channel automatically.
 16.  Added GUI/spot-on-defines.h.
 17.  Per request, merged some GoldBug source.
+18.  Improved the SCTP implementation with respect to large data
+     transfers.
 
 0.09.06 (06/14/2014)
 
