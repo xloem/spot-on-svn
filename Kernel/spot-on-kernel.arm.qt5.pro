@@ -32,7 +32,7 @@ UI_DIR = temp/ui
 MOC_DIR = temp/moc
 RCC_DIR = temp/rcc
 
-HEADERS		= ../../../libSpotOn/libspoton.h \ 
+HEADERS		= ../../../libSpotOn/libspoton.h \
                   ../Common/spot-on-external-address.h \
 		  spot-on-gui-server.h \
 		  spot-on-kernel.h \
