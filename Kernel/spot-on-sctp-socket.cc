@@ -425,18 +425,31 @@ qint64 spoton_sctp_socket::read(char *data, const qint64 size)
   else if(size == 0)
     return 0;
 
-  fd_set rfds;
+  fd_set efds, rfds, wfds;
   ssize_t rc = 0;
   struct timeval tv;
 
+  FD_ZERO(&efds);
   FD_ZERO(&rfds);
+  FD_ZERO(&wfds);
+  FD_SET(m_socketDescriptor, &efds);
   FD_SET(m_socketDescriptor, &rfds);
+  FD_SET(m_socketDescriptor, &wfds);
   tv.tv_sec = 0;
   tv.tv_usec = 250000;
 
-  if(select(m_socketDescriptor + 1, &rfds, 0, 0, &tv) > 0)
-    rc = recv
-      (m_socketDescriptor, data, static_cast<size_t> (size), 0);
+  if(select(m_socketDescriptor + 1, &rfds, &wfds, &efds, &tv) > 0)
+    {
+      if(FD_ISSET(m_socketDescriptor, &rfds))
+	rc = recv
+	  (m_socketDescriptor, data, static_cast<size_t> (size), 0);
+      else
+#ifdef Q_OS_WIN32
+	WSASetLastError(WSAEWOULDBLOCK);
+#else
+        errno = EWOULDBLOCK;
+#endif
+    }
   else
 #ifdef Q_OS_WIN32
     WSASetLastError(WSAEWOULDBLOCK);
@@ -511,14 +524,12 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 size)
       */
 
 #ifdef Q_OS_WIN32
-      sent = send
-	(m_socketDescriptor, data,
-	 qMin(static_cast<ssize_t> (m_bufferSize / 2), remaining), 0);
+      sent = send(m_socketDescriptor, data,
+		  qMin(static_cast<ssize_t> (m_bufferSize), remaining), 0);
 #else
-      sent = send
-	(m_socketDescriptor, data,
-	 qMin(static_cast<ssize_t> (m_bufferSize / 2), remaining),
-	 MSG_DONTWAIT);
+      sent = send(m_socketDescriptor, data,
+		  qMin(static_cast<ssize_t> (m_bufferSize), remaining),
+		  MSG_DONTWAIT);
 #endif
 
       if(sent == -1)
@@ -534,6 +545,7 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 size)
 	      */
 
 	      sent = 0;
+	      break;
 	    }
 	  else
 	    break;
@@ -719,17 +731,15 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 
   optval = m_bufferSize;
 #ifdef Q_OS_WIN32
-  setsockopt
-    (m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, (const char *) &optval,
-     optlen);
+  setsockopt(m_socketDescriptor, SOL_SOCKET,
+	     SO_RCVBUF, (const char *) &optval, optlen);
 #else
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_RCVBUF, &optval, optlen);
 #endif
   optval = m_bufferSize;
 #ifdef Q_OS_WIN32
-  setsockopt
-    (m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, (const char *) &optval,
-     optlen);
+  setsockopt(m_socketDescriptor, SOL_SOCKET,
+	     SO_SNDBUF, (const char *) &optval, optlen);
 #else
   setsockopt(m_socketDescriptor, SOL_SOCKET, SO_SNDBUF, &optval, optlen);
 #endif
