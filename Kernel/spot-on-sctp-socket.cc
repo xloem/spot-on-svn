@@ -289,6 +289,7 @@ bool spoton_sctp_socket::setSocketDescriptor(const int socketDescriptor)
       close();
       m_socketDescriptor = socketDescriptor;
       m_state = ConnectedState;
+      m_writeBufferSize = 65535;
 
       /*
       ** Let's hope that the socket descriptor inherited the server's
@@ -513,8 +514,23 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 size)
   else if(size == 0)
     return 0;
 
-  m_writeBuffer.append(data, size);
-  return size;
+  if(static_cast<int> (size) <=
+     spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE - m_writeBuffer.length())
+    {
+      m_writeBuffer.append(data, size);
+      return size;
+    }
+  else
+    {
+      int n = qMin
+	(static_cast<int> (spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE) -
+	 m_writeBuffer.length(), static_cast<int> (size));
+
+      if(n > 0)
+	m_writeBuffer.append(data, n);
+
+      return n;
+    }
 #else
   Q_UNUSED(data);
   Q_UNUSED(size);
@@ -735,6 +751,7 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 	  */
 
 	  m_state = ConnectedState;
+	  m_writeBufferSize = 65535;
 	  emit connected();
 	}
       else
@@ -804,6 +821,7 @@ void spoton_sctp_socket::connectToHostImplementation(void)
 	  */
 
 	  m_state = ConnectedState;
+	  m_writeBufferSize = 65535;
 	  emit connected();
 	}
       else
@@ -942,9 +960,17 @@ void spoton_sctp_socket::slotTimeout(void)
 
   if(rc > 0)
     {
-      if(m_readBuffer.length() + static_cast<int> (rc) <=
-	 m_readBufferSize)
+      if(static_cast<int> (rc) <= m_readBufferSize - m_readBuffer.length())
 	m_readBuffer.append(data.mid(0, static_cast<int> (rc)));
+      else
+	{
+	  int n = qMin
+	    (static_cast<int> (m_readBufferSize) - m_readBuffer.length(),
+	     static_cast<int> (rc));
+
+	  if(n > 0)
+	    m_readBuffer.append(data.mid(0, n));
+	}
 
       emit readyRead();
     }
@@ -1001,7 +1027,7 @@ void spoton_sctp_socket::write(void)
 #else
       else if(errno == EMSGSIZE)
 #endif
-	m_writeBufferSize = qMax(4096, m_writeBufferSize / 4);
+	m_writeBufferSize = qMax(4096, m_writeBufferSize / 2);
     }
   else if(sent > 0)
     m_writeBuffer.remove(0, static_cast<int> (sent));
