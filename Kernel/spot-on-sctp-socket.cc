@@ -517,7 +517,7 @@ qint64 spoton_sctp_socket::write(const char *data, const qint64 size)
   if(static_cast<int> (size) <=
      spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE - m_writeBuffer.length())
     {
-      m_writeBuffer.append(data, size);
+      m_writeBuffer.append(data, static_cast<int> (size));
       return size;
     }
   else

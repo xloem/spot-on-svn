@@ -82,7 +82,7 @@ spoton_sctp_server::spoton_sctp_server(const qint64 id,
 				       QObject *parent):QObject(parent)
 {
   m_backlog = 30;
-  m_bufferSize = 65536;
+  m_bufferSize = 65535;
   m_id = id;
   m_isListening = false;
   m_serverPort = 0;

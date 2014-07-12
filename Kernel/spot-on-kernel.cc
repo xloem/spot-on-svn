@@ -3551,8 +3551,10 @@ void spoton_kernel::updateStatistics(void)
 	query.bindValue
 	  (0,
 	   QString::
-	   number(100 * static_cast<double> (v1) / v3 +
-		  100 * static_cast<double> (v2) / v3, 'f', 2).
+	   number(100.0 * static_cast<double> (v1) /
+		  static_cast<double> (v3) +
+		  100.0 * static_cast<double> (v2) /
+		  static_cast<double> (v3), 'f', 2).
 	   append("%"));
 	query.exec();
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
