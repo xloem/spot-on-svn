@@ -1,7 +1,1 @@
-#if SPOTON_GOLDBUG == 0
 IDI_ICON1               ICON    DISCARDABLE     "spotonbutton64.ico"
-#endif
-
-#if SPOTON_GOLDBUG == 1
-IDI_ICON1               ICON    DISCARDABLE     "goldbug.ico"
-#endif
