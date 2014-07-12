@@ -625,6 +625,10 @@ void spoton::slotShowMinimalDisplay(bool state)
   m_ui.missingLinksCheckBox->setHidden(state);
   m_ui.missingLinks->setHidden(state);
   m_ui.demagnetizeMissingLinks->setHidden(state);
+  m_ui.label_85->setHidden(state);
+  m_ui.ae_type->setHidden(state);
+  m_ui.deleteAEToken->setHidden(state);
+  m_ui.label_86->setHidden(state);
 #else
   m_sb.errorlog->setHidden(state);
   m_ui.chatSendMethod->setHidden(state);
