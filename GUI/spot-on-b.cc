@@ -146,21 +146,24 @@ void spoton::slotSendMessage(void)
 
 #if SPOTON_GOLDBUG == 1
 #if QT_VERSION >= 0x050000
-  QMediaPlayer *player = 0;
-  QString str
-    (QDir::cleanPath(QCoreApplication::applicationDirPath() +
-		     QDir::separator() + "Sounds" + QDir::separator() +
-		     "send.wav"));
+  if(error.isEmpty())
+    {
+      QMediaPlayer *player = 0;
+      QString str
+	(QDir::cleanPath(QCoreApplication::applicationDirPath() +
+			 QDir::separator() + "Sounds" + QDir::separator() +
+			 "send.wav"));
 
-  player = findChild<QMediaPlayer *> ("send.wav");
+      player = findChild<QMediaPlayer *> ("send.wav");
 
-  if(!player)
-    player = new QMediaPlayer(this);
+      if(!player)
+	player = new QMediaPlayer(this);
 
-  player->setMedia(QUrl::fromLocalFile(str));
-  player->setObjectName("send.wav");
-  player->setVolume(50);
-  player->play();
+      player->setMedia(QUrl::fromLocalFile(str));
+      player->setObjectName("send.wav");
+      player->setVolume(50);
+      player->play();
+    }
 #endif
 #endif
 
@@ -409,6 +412,13 @@ void spoton::slotReceivedKernelMessage(void)
 		    (m_ui.messages->verticalScrollBar()->maximum());
 
 #if SPOTON_GOLDBUG == 1
+		  if(m_ui.tab->currentIndex() != 0)
+#else
+		  if(m_ui.tab->currentIndex() != 1)
+#endif
+		    m_sb.chat->setVisible(true);
+
+#if SPOTON_GOLDBUG == 1
 #if QT_VERSION >= 0x050000
 		  QMediaPlayer *player = 0;
 		  QString str
@@ -427,16 +437,12 @@ void spoton::slotReceivedKernelMessage(void)
 		  player->play();
 #endif
 #endif
-#if SPOTON_GOLDBUG == 1
-		  if(m_ui.tab->currentIndex() != 0)
-#else
-		  if(m_ui.tab->currentIndex() != 1)
-#endif
-		    m_sb.chat->setVisible(true);
 		}
 	    }
 	  else if(data == "newmail")
 	    {
+	      m_sb.email->setVisible(true);
+
 #if SPOTON_GOLDBUG == 1
 #if QT_VERSION >= 0x050000
 	      QMediaPlayer *player = 0;
@@ -456,7 +462,6 @@ void spoton::slotReceivedKernelMessage(void)
 	      player->play();
 #endif
 #endif
-	      m_sb.email->setVisible(true);
 	    }
 	}
     }

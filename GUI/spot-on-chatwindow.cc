@@ -210,21 +210,24 @@ void spoton_chatwindow::slotSendMessage(void)
 
 #if SPOTON_GOLDBUG == 1
 #if QT_VERSION >= 0x050000
-  QMediaPlayer *player = 0;
-  QString str
-    (QDir::cleanPath(QCoreApplication::applicationDirPath() +
-		     QDir::separator() + "Sounds" + QDir::separator() +
-		     "send.wav"));
+  if(error.isEmpty())
+    {
+      QMediaPlayer *player = 0;
+      QString str
+	(QDir::cleanPath(QCoreApplication::applicationDirPath() +
+			 QDir::separator() + "Sounds" + QDir::separator() +
+			 "send.wav"));
 
-  player = findChild<QMediaPlayer *> ("send.wav");
+      player = findChild<QMediaPlayer *> ("send.wav");
 
-  if(!player)
-    player = new QMediaPlayer(this);
+      if(!player)
+	player = new QMediaPlayer(this);
 
-  player->setMedia(QUrl::fromLocalFile(str));
-  player->setObjectName("send.wav");
-  player->setVolume(50);
-  player->play();
+      player->setMedia(QUrl::fromLocalFile(str));
+      player->setObjectName("send.wav");
+      player->setVolume(50);
+      player->play();
+    }
 #endif
 #endif
 

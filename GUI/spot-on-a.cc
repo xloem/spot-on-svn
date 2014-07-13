@@ -4820,6 +4820,9 @@ void spoton::slotValidatePassphrase(void)
   if(!authenticated)
     m_ui.passphrase->selectAll();
 
+  m_ui.passphrase->setFocus();
+  updatePublicKeysLabel();
+  derivativeUpdates();
 #if SPOTON_GOLDBUG == 1
 #if QT_VERSION >= 0x050000
   QMediaPlayer *player = 0;
@@ -4839,9 +4842,6 @@ void spoton::slotValidatePassphrase(void)
   player->play();
 #endif
 #endif
-  m_ui.passphrase->setFocus();
-  updatePublicKeysLabel();
-  derivativeUpdates();
 }
 
 void spoton::slotTabChanged(int index)
