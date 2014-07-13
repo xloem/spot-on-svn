@@ -4690,10 +4690,32 @@ void spoton::slotSetPassphrase(void)
 	    mb.setText(tr("Would you like the kernel to be activated?"));
 
 	    if(mb.exec() == QMessageBox::Yes)
-	      slotActivateKernel();
+	      {
+		slotActivateKernel();
+		joinDefaultBuzzChannel();
+	      }
 	  }
 
-      joinDefaultBuzzChannel();
+#if SPOTON_GOLDBUG == 1
+      slotConnectAllNeighbors(); // This is not wise!
+#if QT_VERSION >= 0x050000
+      QMediaPlayer *player = 0;
+      QString str
+	(QDir::cleanPath(QCoreApplication::applicationDirPath() +
+			 QDir::separator() + "Sounds" + QDir::separator() +
+			 "login.wav"));
+
+      player = findChild<QMediaPlayer *> ("login.wav");
+
+      if(!player)
+	player = new QMediaPlayer(this);
+
+      player->setMedia(QUrl::fromLocalFile(str));
+      player->setObjectName("login.wav");
+      player->setVolume(50);
+      player->play();
+#endif
+#endif
     }
 }
 
@@ -4820,10 +4842,10 @@ void spoton::slotValidatePassphrase(void)
   if(!authenticated)
     m_ui.passphrase->selectAll();
 
-  m_ui.passphrase->setFocus();
-  updatePublicKeysLabel();
-  derivativeUpdates();
 #if SPOTON_GOLDBUG == 1
+  slotActivateKernel();
+  slotConnectAllNeighbors(); // This is not wise!
+  m_ui.action_Minimal_Display->toggle();
 #if QT_VERSION >= 0x050000
   QMediaPlayer *player = 0;
   QString str
@@ -4842,6 +4864,9 @@ void spoton::slotValidatePassphrase(void)
   player->play();
 #endif
 #endif
+  m_ui.passphrase->setFocus();
+  updatePublicKeysLabel();
+  derivativeUpdates();
 }
 
 void spoton::slotTabChanged(int index)
@@ -5237,9 +5262,15 @@ void spoton::slotKernelSocketState(void)
 	   arg(m_kernelSocket.peerPort()).
 	   arg(m_kernelSocket.localPort()));
 
+#if SPOTON_GOLDBUG == 1
+      m_sb.kernelstatus->setIcon
+	(QIcon(QString(":/%1/status-online.png").
+	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
+#else
       m_sb.kernelstatus->setIcon
 	(QIcon(QString(":/%1/activate.png").
 	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
+#endif
     }
   else if(state == QAbstractSocket::UnconnectedState)
     {

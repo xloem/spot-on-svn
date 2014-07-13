@@ -1010,7 +1010,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		echoMode = oldCrypt->decryptedAfterAuthenticated
 		  (QByteArray::fromBase64(query.value(11).toByteArray()),
 		   &ok).constData();
-      
+
 	      if(ok)
 		peerCertificate = oldCrypt->decryptedAfterAuthenticated
 		  (QByteArray::
