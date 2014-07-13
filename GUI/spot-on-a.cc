@@ -4697,7 +4697,7 @@ void spoton::slotSetPassphrase(void)
 	  }
 
 #if SPOTON_GOLDBUG == 1
-      slotConnectAllNeighbors(); // This is not wise!
+      slotConnectAllNeighbors();
 #if QT_VERSION >= 0x050000
       QMediaPlayer *player = 0;
       QString str
@@ -4844,7 +4844,7 @@ void spoton::slotValidatePassphrase(void)
 
 #if SPOTON_GOLDBUG == 1
   slotActivateKernel();
-  slotConnectAllNeighbors(); // This is not wise!
+  slotConnectAllNeighbors();
   m_ui.action_Minimal_Display->toggle();
 #if QT_VERSION >= 0x050000
   QMediaPlayer *player = 0;
