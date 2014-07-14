@@ -101,6 +101,7 @@ QMultiMap<QDateTime, QByteArray> spoton_kernel::s_messagingCacheMap;
 QPointer<spoton_kernel> spoton_kernel::s_kernel = 0;
 QReadWriteLock spoton_kernel::s_adaptiveEchoPairsMutex;
 QReadWriteLock spoton_kernel::s_buzzKeysMutex;
+QReadWriteLock spoton_kernel::s_institutionKeysMutex;
 QReadWriteLock spoton_kernel::s_messagingCacheMutex;
 QReadWriteLock spoton_kernel::s_settingsMutex;
 
@@ -3666,13 +3667,20 @@ QList<QByteArray> spoton_kernel::findInstitutionKey
 
   if(fileInfo.exists())
     {
-      if(fileInfo.lastModified() <= s_institutionLastModificationTime)
+      QDateTime dateTime;
+      QReadLocker locker(&s_institutionKeysMutex);
+
+      dateTime = s_institutionLastModificationTime;
+      locker.unlock();
+
+      if(fileInfo.lastModified() <= dateTime)
 	{
 	  /*
 	  ** Locate the institution keys in our container.
 	  */
 
 	  QList<QByteArray> list;
+	  QReadLocker locker(&s_institutionKeysMutex);
 
 	  for(int i = 0; i < s_institutionKeys.size(); i++)
 	    {
@@ -3718,10 +3726,18 @@ QList<QByteArray> spoton_kernel::findInstitutionKey
 	  return list;
 	}
       else
-	s_institutionLastModificationTime = fileInfo.lastModified();
+	{
+	  QWriteLocker locker(&s_institutionKeysMutex);
+
+	  s_institutionLastModificationTime = fileInfo.lastModified();
+	}
     }
   else
-    s_institutionLastModificationTime = QDateTime();
+    {
+      QWriteLocker locker(&s_institutionKeysMutex);
+
+      s_institutionLastModificationTime = QDateTime();
+    }
 
   QList<QByteArray> list;
   QString connectionName("");
@@ -3736,7 +3752,11 @@ QList<QByteArray> spoton_kernel::findInstitutionKey
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
+
+	QWriteLocker locker(&s_institutionKeysMutex);
+
 	s_institutionKeys.clear();
+	s_institutionKeysMutex.unlock();
 
 	if(query.exec("SELECT cipher_type, hash_type, "
 		      "name, postal_address FROM institutions"))
@@ -3770,12 +3790,15 @@ QList<QByteArray> spoton_kernel::findInstitutionKey
 	      if(!ok)
 		continue;
 
+	      QWriteLocker locker(&s_institutionKeysMutex);
+
 	      s_institutionKeys.append
 		(QList<QByteArray> ()
 		 << QByteArray::fromBase64(query.value(0).toByteArray())
 		 << QByteArray::fromBase64(query.value(1).toByteArray())
 		 << QByteArray::fromBase64(query.value(2).toByteArray())
 		 << QByteArray::fromBase64(query.value(3).toByteArray()));
+	      locker.unlock();
 
 	      QByteArray computedHash;
 

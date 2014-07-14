@@ -3844,11 +3844,11 @@ void spoton::slotSetIcons(void)
 
 #if SPOTON_GOLDBUG == 0
   list << "buzz.png" << "chat.png" << "email.png"
-       << "add-listener.png" << "neighbors.png"
+       << "add-listener.png" << "neighbors.png" << "search.png"
        << "settings.png" << "starbeam.png" << "urls.png";
 #else
   list << "chat_t.png" << "email_t.png" << "buzz_t.png"
-       << "starbeam.png" << "key_t.png" << "connect_t.png"
+       << "starbeam.png" << "key_t.png" << "connect_t.png" << "search.png"
        << "server_t.png" << "settings_t.png" << "spoton-button-32.png";
 #endif
 

@@ -112,6 +112,7 @@ class spoton_kernel: public QObject
   static QMultiMap<QDateTime, QByteArray> s_messagingCacheMap;
   static QReadWriteLock s_adaptiveEchoPairsMutex;
   static QReadWriteLock s_buzzKeysMutex;
+  static QReadWriteLock s_institutionKeysMutex;
   static QReadWriteLock s_messagingCacheMutex;
   static QReadWriteLock s_settingsMutex;
   bool initializeSecurityContainers(const QString &passphrase);
