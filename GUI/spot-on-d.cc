@@ -1354,3 +1354,12 @@ void spoton::joinDefaultBuzzChannel(void)
   m_sb.status->clear();
   QApplication::restoreOverrideCursor();
 }
+
+void spoton::slotSaveBuzzAutoJoin(bool state)
+{
+  m_settings["gui/buzzAutoJoin"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/buzzAutoJoin", state);
+}

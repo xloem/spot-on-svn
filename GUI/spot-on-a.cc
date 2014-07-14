@@ -330,6 +330,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotAddNeighbor(void)));
+  connect(m_ui.buzzAutoJoin,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotSaveBuzzAutoJoin(bool)));
   connect(m_ui.dynamicdns,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -1292,6 +1296,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/acceptEmailKeys", false).toBool());
   m_ui.acceptUrlKeys->setChecked
     (m_settings.value("gui/acceptUrlKeys", false).toBool());
+  m_ui.buzzAutoJoin->setChecked
+    (m_settings.value("gui/buzzAutoJoin", true).toBool());
   m_ui.hideOfflineParticipants->setChecked
     (m_settings.value("gui/hideOfflineParticipants", false).toBool());
   m_ui.keepOnlyUserDefinedNeighbors->setChecked
@@ -4685,7 +4691,9 @@ void spoton::slotSetPassphrase(void)
 	    if(mb.exec() == QMessageBox::Yes)
 	      {
 		slotActivateKernel();
-		joinDefaultBuzzChannel();
+
+		if(m_settings.value("gui/buzzAutoJoin", true).toBool())
+		  joinDefaultBuzzChannel();
 	      }
 	  }
 
@@ -4825,7 +4833,8 @@ void spoton::slotValidatePassphrase(void)
 		m_settings["gui/spot_on_neighbors_txt_processed"] = true;
 	      }
 
-	    joinDefaultBuzzChannel();
+	    if(m_settings.value("gui/buzzAutoJoin", true).toBool())
+	      joinDefaultBuzzChannel();
 	  }
       }
 
