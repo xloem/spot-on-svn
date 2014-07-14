@@ -4860,6 +4860,7 @@ void spoton_neighbor::slotSendMail
 	    QWriteLocker locker(&m_dataMutex);
 
 	    m_data.append(message);
+	    emit newData();
 	  }
 
 	if(write(message.constData(), message.length()) != message.length())
