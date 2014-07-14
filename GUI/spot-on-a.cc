@@ -1401,9 +1401,6 @@ spoton::spoton(void):QMainWindow()
     m_ui.kernelExternalIpFetch->setCurrentIndex(2);
 
   m_ui.saltLength->setValue(m_settings.value("gui/saltLength", 512).toInt());
-#if SPOTON_GOLDBUG == 0
-  m_ui.tab->removeTab(5); // Search
-#endif
 
   if(spoton_crypt::passphraseSet())
     {
@@ -1452,11 +1449,7 @@ spoton::spoton(void):QMainWindow()
       m_ui.kernelBox->setEnabled(false);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
-#if SPOTON_GOLDBUG == 0
-	if(i == 5) // Settings
-#else
-	if(i == 7) // Settings
-#endif
+	if(m_ui.tab->tabText(i) == tr("S&ettings"))
 	  {
 	    m_ui.tab->blockSignals(true);
 	    m_ui.tab->setCurrentIndex(i);
