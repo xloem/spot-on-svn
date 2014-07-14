@@ -135,9 +135,12 @@
                </widget>
               </item>
               <item>
-               <widget class="QCheckBox" name="buzzJoinAuto">
+               <widget class="QCheckBox" name="buzzAutoJoin">
                 <property name="text">
                  <string>&amp;Join automatically.</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -6700,7 +6703,7 @@
               <item>
                <widget class="QLabel" name="label_35">
                 <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://sourceforge.net/p/spot-on/code/HEAD/tree/branches/Documentation/RELEASE-NOTES&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Version 0.09.07&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://sourceforge.net/p/spot-on/code/HEAD/tree/branches/Documentation/RELEASE-NOTES&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Version 0.09.08&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="textFormat">
                  <enum>Qt::AutoText</enum>
@@ -6962,7 +6965,7 @@
   <tabstop>scrollArea_5</tabstop>
   <tabstop>acceptBuzzMagnets</tabstop>
   <tabstop>commonBuzzChannels</tabstop>
-  <tabstop>buzzJoinAuto</tabstop>
+  <tabstop>buzzAutoJoin</tabstop>
   <tabstop>buzzName</tabstop>
   <tabstop>saveBuzzName</tabstop>
   <tabstop>favorites</tabstop>
