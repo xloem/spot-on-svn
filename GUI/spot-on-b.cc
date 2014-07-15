@@ -3072,8 +3072,8 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
 	bool ok = true;
 
 	goldbug = QInputDialog::getText
-	  (this, tr("%1: Goldbug").
-	   arg(SPOTON_APPLICATION_NAME), tr("&Goldbug"),
+	  (this, tr("%1: Goldbug").arg(SPOTON_APPLICATION_NAME),
+	   tr("&Goldbug"),
 	   QLineEdit::Password, QString(""), &ok).trimmed();
 
 	if(!ok)

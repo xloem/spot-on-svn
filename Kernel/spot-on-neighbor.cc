@@ -4854,15 +4854,6 @@ void spoton_neighbor::slotSendMail
 	else
 	  message = spoton_send::message0001b(pair.first, ae);
 
-	if(spoton_kernel::setting("gui/postoffice_enabled",
-				  false).toBool())
-	  {
-	    QWriteLocker locker(&m_dataMutex);
-
-	    m_data.append(message);
-	    emit newData();
-	  }
-
 	if(write(message.constData(), message.length()) != message.length())
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::slotSendMail(): write() "
@@ -4873,10 +4864,7 @@ void spoton_neighbor::slotSendMail
 	  {
 	    addToBytesWritten(message.length());
 	    oids.append(pair.second);
-
-	    if(!spoton_kernel::setting("gui/postoffice_enabled",
-				       false).toBool())
-	      spoton_kernel::messagingCacheAdd(message);
+	    spoton_kernel::messagingCacheAdd(message);
 	  }
       }
 

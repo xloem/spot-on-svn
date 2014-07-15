@@ -545,11 +545,11 @@ void spoton_sctp_server::slotTimeout(void)
 	      return;
 	    }
 
-	  Q_IPV6ADDR tmp;
+	  Q_IPV6ADDR temp;
 
-	  memcpy(&tmp.c, &clientaddr.sin6_addr.s6_addr,
-		 sizeof(tmp.c));
-	  address.setAddress(tmp);
+	  memcpy(&temp.c, &clientaddr.sin6_addr.s6_addr,
+		 sizeof(temp.c));
+	  address.setAddress(temp);
 	  address.setScopeId
 	    (QString::number(clientaddr.sin6_scope_id));
 	  port = ntohs(clientaddr.sin6_port);
