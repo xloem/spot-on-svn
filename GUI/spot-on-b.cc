@@ -3848,7 +3848,7 @@ void spoton::slotSetIcons(void)
        << "settings.png" << "starbeam.png" << "urls.png";
 #else
   list << "chat_t.png" << "email_t.png" << "buzz_t.png"
-       << "starbeam.png" << "key_t.png" << "connect_t.png" << "search.png"
+       << "starbeam.png" << "key_t.png" << "connect_t.png"
        << "server_t.png" << "settings_t.png" << "spoton-button-32.png";
 #endif
 
