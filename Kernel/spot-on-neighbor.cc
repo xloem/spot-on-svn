@@ -4862,6 +4862,21 @@ void spoton_neighbor::slotSendMail
 	     arg(m_port));
 	else
 	  {
+	    /*
+	    ** We may need to store the letter that this node sent if
+	    ** the node is also a post office box.
+	    */
+
+	    if(spoton_kernel::setting("gui/postoffice_enabled",
+				      false).toBool())
+	      {
+		QWriteLocker locker(&m_dataMutex);
+
+		m_data.append(message);
+		locker.unlock();
+		processData();
+	      }
+
 	    addToBytesWritten(message.length());
 	    oids.append(pair.second);
 	    spoton_kernel::messagingCacheAdd(message);
