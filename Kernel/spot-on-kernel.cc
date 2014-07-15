@@ -2633,6 +2633,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
     if(db.open())
       {
+	QList<QByteArray> keys;
 	QSqlQuery query(db);
 	bool ok = true;
 
@@ -2650,198 +2651,214 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 					       &ok).toBase64());
 
 	if(ok && query.exec())
-	  while(query.next())
-	    {
-	      QByteArray cipherType
-		(setting("gui/kernelCipherType", "aes256").
-		 toString().toLatin1());
-	      QByteArray data;
-	      QByteArray data1;
-	      QByteArray data2;
-	      QByteArray hashKey1;
-	      QByteArray hashKey2;
-	      QByteArray keyInformation1;
-	      QByteArray keyInformation2;
-	      QByteArray messageCode1;
-	      QByteArray messageCode2;
-	      QByteArray participantPublicKey;
-	      QByteArray symmetricKey;
-	      QByteArray symmetricKeyAlgorithm(cipherType);
-	      bool ok = true;
-	      size_t symmetricKeyLength = spoton_crypt::cipherKeyLength
-		(symmetricKeyAlgorithm);
+	  {
+	    if(spoton_kernel::setting("gui/postoffice_enabled",
+				      false).toBool())
+	      keys.append(myPublicKey);
 
-	      participantPublicKey = s_crypt1->decryptedAfterAuthenticated
-		(QByteArray::fromBase64(query.value(0).toByteArray()),
-		 &ok);
+	    while(query.next())
+	      {
+		QByteArray publicKey;
+		bool ok = true;
 
-	      if(!ok)
-		continue;
+		publicKey = s_crypt1->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(0).toByteArray()),
+		   &ok);
 
-	      if(symmetricKeyLength > 0)
-		{
-		  hashKey1.resize(static_cast<int> (symmetricKeyLength));
-		  hashKey1 = spoton_crypt::strongRandomBytes
-		    (hashKey1.length());
-		  symmetricKey.resize(static_cast<int> (symmetricKeyLength));
-		  symmetricKey = spoton_crypt::strongRandomBytes
-		    (symmetricKey.length());
-		}
-	      else
-		{
-		  spoton_misc::logError
-		    ("spoton_kernel::slotSendMail(): "
-		     "cipherKeyLength() failure.");
+		if(!ok)
 		  continue;
-		}
 
-	      if(ok)
-		keyInformation1 = spoton_crypt::publicKeyEncrypt
-		  (QByteArray("0001a").toBase64() + "\n" +
-		   symmetricKey.toBase64() + "\n" +
-		   hashKey1.toBase64() + "\n" +
-		   symmetricKeyAlgorithm.toBase64(),
-		   participantPublicKey, &ok);
+		keys.append(publicKey);
+	      }
+	  }
 
-	      if(ok)
-		{
-		  QByteArray signature;
-		  spoton_crypt crypt(symmetricKeyAlgorithm,
-				     "sha512",
-				     QByteArray(),
-				     symmetricKey,
-				     0,
-				     0,
-				     QString(""));
+	while(!keys.isEmpty())
+	  {
+	    QByteArray cipherType
+	      (setting("gui/kernelCipherType", "aes256").
+	       toString().toLatin1());
+	    QByteArray data;
+	    QByteArray data1;
+	    QByteArray data2;
+	    QByteArray hashKey1;
+	    QByteArray hashKey2;
+	    QByteArray keyInformation1;
+	    QByteArray keyInformation2;
+	    QByteArray messageCode1;
+	    QByteArray messageCode2;
+	    QByteArray participantPublicKey;
+	    QByteArray symmetricKey;
+	    QByteArray symmetricKeyAlgorithm(cipherType);
+	    bool ok = true;
+	    size_t symmetricKeyLength = spoton_crypt::cipherKeyLength
+	      (symmetricKeyAlgorithm);
 
-		  if(setting("gui/emailSignMessages",
-			     true).toBool())
-		    signature = s_crypt2->digitalSignature
-		      (myPublicKeyHash + recipientHash, &ok);
+	    participantPublicKey = keys.takeFirst();
 
-		  if(ok)
-		    data1 = crypt.encrypted
-		      (myPublicKeyHash.toBase64() + "\n" +
-		       recipientHash.toBase64() + "\n" +
-		       signature.toBase64(), &ok);
-		}
-
-	      if(!ok)
+	    if(symmetricKeyLength > 0)
+	      {
+		hashKey1.resize(static_cast<int> (symmetricKeyLength));
+		hashKey1 = spoton_crypt::strongRandomBytes
+		  (hashKey1.length());
+		symmetricKey.resize(static_cast<int> (symmetricKeyLength));
+		symmetricKey = spoton_crypt::strongRandomBytes
+		  (symmetricKey.length());
+	      }
+	    else
+	      {
+		spoton_misc::logError
+		  ("spoton_kernel::slotSendMail(): "
+		   "cipherKeyLength() failure.");
 		continue;
+	      }
 
-	      symmetricKeyAlgorithm = cipherType;
-	      symmetricKeyLength = spoton_crypt::cipherKeyLength
-		(symmetricKeyAlgorithm);
-
-	      if(symmetricKeyLength > 0)
-		{
-		  hashKey2.resize(static_cast<int> (symmetricKeyLength));
-		  hashKey2 = spoton_crypt::strongRandomBytes
-		    (hashKey2.length());
-		  symmetricKey.resize(static_cast<int> (symmetricKeyLength));
-		  symmetricKey = spoton_crypt::strongRandomBytes
-		    (symmetricKey.length());
-		}
-	      else
-		{
-		  spoton_misc::logError
-		    ("spoton_kernel::slotSendMail(): "
-		     "cipherKeyLength() failure.");
-		  continue;
-		}
-
-	      keyInformation2 = spoton_crypt::publicKeyEncrypt
-		/*
-		** We need to store the message type 0001b here as
-		** the data may be stored in a post office.
-		*/
-
-		(QByteArray("0001b").toBase64() + "\n" +
+	    if(ok)
+	      keyInformation1 = spoton_crypt::publicKeyEncrypt
+		(QByteArray("0001a").toBase64() + "\n" +
 		 symmetricKey.toBase64() + "\n" +
-		 hashKey2.toBase64() + "\n" +
+		 hashKey1.toBase64() + "\n" +
 		 symmetricKeyAlgorithm.toBase64(),
-		 publicKey, &ok);
+		 participantPublicKey, &ok);
 
-	      QList<QByteArray> items;
+	    if(ok)
+	      {
+		QByteArray signature;
+		spoton_crypt crypt(symmetricKeyAlgorithm,
+				   "sha512",
+				   QByteArray(),
+				   symmetricKey,
+				   0,
+				   0,
+				   QString(""));
 
-	      if(ok)
-		items << name
-		      << subject
-		      << message;
+		if(setting("gui/emailSignMessages",
+			   true).toBool())
+		  signature = s_crypt2->digitalSignature
+		    (myPublicKeyHash + recipientHash, &ok);
 
-	      if(ok)
-		if(!goldbug.isEmpty())
-		  {
-		    spoton_crypt crypt("aes256",
-				       "sha512",
-				       QByteArray(),
-				       goldbug,
-				       0,
-				       0,
-				       QString(""));
+		if(ok)
+		  data1 = crypt.encrypted
+		    (myPublicKeyHash.toBase64() + "\n" +
+		     recipientHash.toBase64() + "\n" +
+		     signature.toBase64(), &ok);
+	      }
 
-		    for(int i = 0; i < items.size(); i++)
-		      if(ok)
-			items.replace
-			  (i, crypt.encrypted(items.at(i), &ok));
-		      else
-			break;
-		  }
+	    if(!ok)
+	      continue;
 
-	      if(ok)
+	    symmetricKeyAlgorithm = cipherType;
+	    symmetricKeyLength = spoton_crypt::cipherKeyLength
+	      (symmetricKeyAlgorithm);
+
+	    if(symmetricKeyLength > 0)
+	      {
+		hashKey2.resize(static_cast<int> (symmetricKeyLength));
+		hashKey2 = spoton_crypt::strongRandomBytes
+		  (hashKey2.length());
+		symmetricKey.resize(static_cast<int> (symmetricKeyLength));
+		symmetricKey = spoton_crypt::strongRandomBytes
+		  (symmetricKey.length());
+	      }
+	    else
+	      {
+		spoton_misc::logError
+		  ("spoton_kernel::slotSendMail(): "
+		   "cipherKeyLength() failure.");
+		continue;
+	      }
+
+	    keyInformation2 = spoton_crypt::publicKeyEncrypt
+	      /*
+	      ** We need to store the message type 0001b here as
+	      ** the data may be stored in a post office.
+	      */
+
+	      (QByteArray("0001b").toBase64() + "\n" +
+	       symmetricKey.toBase64() + "\n" +
+	       hashKey2.toBase64() + "\n" +
+	       symmetricKeyAlgorithm.toBase64(),
+	       publicKey, &ok);
+
+	    QList<QByteArray> items;
+
+	    if(ok)
+	      items << name
+		    << subject
+		    << message;
+
+	    if(ok)
+	      if(!goldbug.isEmpty())
 		{
-		  QByteArray signature;
-		  spoton_crypt crypt(symmetricKeyAlgorithm,
+		  spoton_crypt crypt("aes256",
 				     "sha512",
 				     QByteArray(),
-				     symmetricKey,
+				     goldbug,
 				     0,
 				     0,
 				     QString(""));
 
-		  if(setting("gui/emailSignMessages",
-			     true).toBool())
-		    signature = s_crypt2->digitalSignature
-		      (myPublicKeyHash +
-		       items.value(0) + // Name
-		       items.value(1) + // Subject
-		       items.value(2),  // Message
-		       &ok);
-
-		  if(ok)
-		    data2 = crypt.encrypted
-		      (myPublicKeyHash.toBase64() + "\n" +
-		       items.value(0).toBase64() + "\n" + // Name
-		       items.value(1).toBase64() + "\n" + // Subject
-		       items.value(2).toBase64() + "\n" + // Message
-		       signature.toBase64() + "\n" +
-		       QVariant(!goldbug.isEmpty()).toByteArray().toBase64(),
-		       &ok);
-
-		  if(ok)
-		    messageCode1 = spoton_crypt::keyedHash
-		      (data1 + keyInformation2 + data2,
-		       hashKey1, "sha512", &ok);
-
-		  if(ok)
-		    messageCode2 = spoton_crypt::keyedHash
-		      (data2, hashKey2, "sha512", &ok);
+		  for(int i = 0; i < items.size(); i++)
+		    if(ok)
+		      items.replace
+			(i, crypt.encrypted(items.at(i), &ok));
+		    else
+		      break;
 		}
 
-	      if(ok)
-		{
-		  data = keyInformation1.toBase64() + "\n" +
-		    data1.toBase64() + "\n" +
-		    keyInformation2.toBase64() + "\n" +
-		    data2.toBase64() + "\n" +
-		    messageCode2.toBase64() + "\n" +
-		    messageCode1.toBase64();
+	    if(ok)
+	      {
+		QByteArray signature;
+		spoton_crypt crypt(symmetricKeyAlgorithm,
+				   "sha512",
+				   QByteArray(),
+				   symmetricKey,
+				   0,
+				   0,
+				   QString(""));
 
-		  QPair<QByteArray, qint64> pair(data, mailOid);
+		if(setting("gui/emailSignMessages",
+			   true).toBool())
+		  signature = s_crypt2->digitalSignature
+		    (myPublicKeyHash +
+		     items.value(0) + // Name
+		     items.value(1) + // Subject
+		     items.value(2),  // Message
+		     &ok);
 
-		  list.append(pair);
-		}
-	    }
+		if(ok)
+		  data2 = crypt.encrypted
+		    (myPublicKeyHash.toBase64() + "\n" +
+		     items.value(0).toBase64() + "\n" + // Name
+		     items.value(1).toBase64() + "\n" + // Subject
+		     items.value(2).toBase64() + "\n" + // Message
+		     signature.toBase64() + "\n" +
+		     QVariant(!goldbug.isEmpty()).toByteArray().toBase64(),
+		     &ok);
+
+		if(ok)
+		  messageCode1 = spoton_crypt::keyedHash
+		    (data1 + keyInformation2 + data2,
+		     hashKey1, "sha512", &ok);
+
+		if(ok)
+		  messageCode2 = spoton_crypt::keyedHash
+		    (data2, hashKey2, "sha512", &ok);
+	      }
+
+	    if(ok)
+	      {
+		data = keyInformation1.toBase64() + "\n" +
+		  data1.toBase64() + "\n" +
+		  keyInformation2.toBase64() + "\n" +
+		  data2.toBase64() + "\n" +
+		  messageCode2.toBase64() + "\n" +
+		  messageCode1.toBase64();
+
+		QPair<QByteArray, qint64> pair(data, mailOid);
+
+		list.append(pair);
+	      }
+	  }
       }
 
     db.close();
