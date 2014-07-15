@@ -1262,7 +1262,6 @@ void spoton_neighbor::run(void)
 	  &worker,
 	  SLOT(slotNewData(void)));
   exec();
-  worker.stop();
 }
 
 void spoton_neighbor::slotReadyRead(void)
@@ -2235,7 +2234,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 		}
 	    }
 	  else
-	    ok = false; // A gemini was not discovered. We need to echo.
+	    return; // A gemini was not discovered. We need to echo.
 	}
       else if(list.size() != 4)
 	{
@@ -3510,7 +3509,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 		}
 	    }
 	  else
-	    ok = false; // A gemini was not discovered. We need to echo.
+	    return; // A gemini was not discovered. We need to echo.
 	}
       else if(list.size() != 4)
 	{
@@ -6067,13 +6066,6 @@ void spoton_neighbor::slotAuthenticationTimerTimeout(void)
      arg(m_address.toString()).
      arg(m_port));
   deleteLater();
-}
-
-bool spoton_neighbor::hasData(void)
-{
-  QReadLocker locker(&m_dataMutex);
-
-  return !m_data.isEmpty();
 }
 
 void spoton_neighbor::abort(void)

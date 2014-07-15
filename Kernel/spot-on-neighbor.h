@@ -148,7 +148,6 @@ class spoton_neighbor: public QThread
   QHostAddress peerAddress(void) const;
   QString transport(void) const;
   QUuid receivedUuid(void) const;
-  bool hasData(void);
   bool isEncrypted(void) const;
   bool writeMessage0060(const QByteArray &data);
   qint64 id(void) const;
@@ -360,50 +359,20 @@ class spoton_neighbor_worker: public QObject
   spoton_neighbor_worker(spoton_neighbor *neighbor)
   {
     m_neighbor = neighbor;
-    m_timer.setInterval(100);
-    connect(m_neighbor,
-	    SIGNAL(destroyed(void)),
-	    &m_timer,
-	    SLOT(stop(void)));
-    connect(&m_timer,
-	    SIGNAL(timeout(void)),
-	    this,
-	    SLOT(slotProcessData(void)));
   }
 
   ~spoton_neighbor_worker()
   {
-    m_timer.stop();
-  }
-
-  void stop(void)
-  {
-    m_timer.stop();
   }
 
  private:
   QPointer<spoton_neighbor> m_neighbor;
-  QTimer m_timer;
 
  private slots:
   void slotNewData(void)
   {
-    if(!m_timer.isActive())
-      {
-	m_timer.start(1);
-	m_timer.setInterval(100);
-      }
-  }
-
-  void slotProcessData(void)
-  {
     if(m_neighbor)
-      {
-	m_neighbor->processData();
-
-	if(!m_neighbor->hasData())
-	  m_timer.stop();
-      }
+      m_neighbor->processData();
   }
 };
 

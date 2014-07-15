@@ -32,7 +32,6 @@
 #include <QPointer>
 #include <QReadWriteLock>
 #include <QThread>
-#include <QTimer>
 
 class spoton_starbeam_writer: public QThread
 {
@@ -41,7 +40,6 @@ class spoton_starbeam_writer: public QThread
  public:
   spoton_starbeam_writer(QObject *parent);
   ~spoton_starbeam_writer();
-  bool hasData(void);
   bool isActive(void) const;
   void append(const QByteArray &data);
   void processData(void);
@@ -71,50 +69,20 @@ class spoton_starbeam_writer_worker: public QObject
   spoton_starbeam_writer_worker(spoton_starbeam_writer *writer)
   {
     m_writer = writer;
-    m_timer.setInterval(100);
-    connect(&m_timer,
-	    SIGNAL(timeout(void)),
-	    this,
-	    SLOT(slotProcessData(void)));
-    connect(m_writer,
-	    SIGNAL(destroyed(void)),
-	    &m_timer,
-	    SLOT(stop(void)));
   }
 
   ~spoton_starbeam_writer_worker()
   {
-    m_timer.stop();
-  }
-
-  void stop(void)
-  {
-    m_timer.stop();
   }
 
  private:
   QPointer<spoton_starbeam_writer> m_writer;
-  QTimer m_timer;
 
  private slots:
   void slotNewData(void)
   {
-    if(!m_timer.isActive())
-      {
-	m_timer.start(1);
-	m_timer.setInterval(100);
-      }
-  }
-
-  void slotProcessData(void)
-  {
     if(m_writer)
-      {
-	m_writer->processData();
-
-	if(!m_writer->hasData())
-	  m_timer.stop();
-      }
+      m_writer->processData();
   }
 };
 

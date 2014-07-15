@@ -54,7 +54,6 @@ void spoton_starbeam_writer::run(void)
 	  &worker,
 	  SLOT(slotNewData(void)));
   exec();
-  worker.stop();
 }
 
 void spoton_starbeam_writer::processData(void)
@@ -457,11 +456,4 @@ void spoton_starbeam_writer::append(const QByteArray &data)
 bool spoton_starbeam_writer::isActive(void) const
 {
   return isRunning();
-}
-
-bool spoton_starbeam_writer::hasData(void)
-{
-  QReadLocker locker(&m_mutex);
-
-  return !m_data.isEmpty();
 }
