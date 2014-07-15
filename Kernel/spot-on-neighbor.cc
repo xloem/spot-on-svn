@@ -4873,7 +4873,10 @@ void spoton_neighbor::slotSendMail
 	  {
 	    addToBytesWritten(message.length());
 	    oids.append(pair.second);
-	    spoton_kernel::messagingCacheAdd(message);
+
+	    if(!spoton_kernel::setting("gui/postoffice_enabled",
+				       false).toBool())
+	      spoton_kernel::messagingCacheAdd(message);
 	  }
       }
 
