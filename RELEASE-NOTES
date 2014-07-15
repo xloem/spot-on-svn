@@ -5,7 +5,8 @@
 3.   Nodes supporting post offices should store letters that originate
      from them.
 4.   Guard institution objects in the kernel.
-5.   Corrected input dialog's title when renaming participants.
+5.   Corrected input dialog titles.
+6.   Removed timer-based data processing.
 
 0.09.07 (07/13/2014)
 
