@@ -1401,10 +1401,6 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
 
 QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 {
-  /*
-  ** We need to decipher the private key.
-  */
-
   QByteArray decrypted;
   QByteArray random(64, 0); // Output size of SHA-512 divided by 8.
   QString keyType("");
@@ -2038,16 +2034,10 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data,
 
 QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
 {
-  /*
-  ** We need to decipher the private key.
-  */
-
   QByteArray hash(64, 0); // Output size of SHA-512 divided by 8.
-  QByteArray keyData;
   QByteArray random(20, 0);
   QByteArray signature;
   QString keyType("");
-  QString connectionName("");
   gcry_error_t err = 0;
   gcry_mpi_t hash_t = 0;
   gcry_sexp_t data_t = 0;
@@ -2057,80 +2047,41 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
   unsigned char *hash_p = 0;
 
   {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "idiotes.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-	bool ok = true;
-
-	query.setForwardOnly(true);
-	query.prepare("SELECT private_key FROM idiotes WHERE id_hash = ?");
-	query.bindValue(0, keyedHash(m_id.toLatin1(), &ok).toBase64());
-
-	if(ok && query.exec())
-	  if(query.next())
-	    keyData = QByteArray::fromBase64
-	      (query.value(0).toByteArray());
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-
-  if(keyData.isEmpty())
-    {
-      if(ok)
-	*ok = false;
-
-      spoton_misc::logError
-	("spoton_crypt::digitalSignature(): empty private key.");
-      goto done_label;
-    }
-
-  {
     bool ok = true;
 
-    keyData = decryptedAfterAuthenticated(keyData, &ok);
-
-    if(!ok)
-      keyData.clear();
+    initializePrivateKeyContainer(&ok);
   }
 
-  if(keyData.isEmpty())
+  QReadLocker locker1(&m_privateKeyMutex);
+
+  if(!m_privateKey || m_privateKeyLength <= 0)
     {
+      locker1.unlock();
+
       if(ok)
 	*ok = false;
 
       spoton_misc::logError
-	("spoton_crypt::digitalSignature(): decryptedAfterAuthenticated() "
-	 "failure.");
+	(QString("spoton_crypt::digitalSignature(): m_privateKey or "
+	         "m_privateKeyLength is peculiar (%1).").arg(m_id));
       goto done_label;
     }
-  else if(!keyData.contains("(private-key"))
-    {
-      if(ok)
-	*ok = false;
-
-      spoton_misc::logError
-	("spoton_crypt::digitalSignature(): keyData does not contain "
-	 "private-key.");
-      goto done_label;
-    }
-
-  /*
-  ** Now let's see if we have a somewhat valid private key.
-  */
 
   if((err = gcry_sexp_new(&key_t,
-			  keyData.constData(),
-			  keyData.length(), 1)) != 0 || !key_t)
+			  m_privateKey,
+			  m_privateKeyLength, 1)) != 0 || !key_t)
     {
+      locker1.unlock();
+
       if(ok)
 	*ok = false;
+
+      QWriteLocker locker2(&m_privateKeyMutex);
+
+      gcry_free(m_privateKey);
+      m_privateKey = 0;
+      m_privateKeyLength = 0;
+      locker2.unlock();
 
       if(err != 0)
 	{
@@ -2148,6 +2099,8 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
       goto done_label;
     }
 
+  locker1.unlock();
+
   if((err = gcry_pk_testkey(key_t)) != 0)
     {
       if(ok)
@@ -2159,6 +2112,13 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
       spoton_misc::logError
 	(QString("spoton_crypt::digitalSignature(): gcry_pk_testkey() "
 		 "failure (%1).").arg(buffer.constData()));
+
+      QWriteLocker locker(&m_privateKeyMutex);
+
+      gcry_free(m_privateKey);
+      m_privateKey = 0;
+      m_privateKeyLength = 0;
+      locker.unlock();
       goto done_label;
     }
 
