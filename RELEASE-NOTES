@@ -4,9 +4,11 @@
 2.   Show all UI tabs, regardless of implementation status.
 3.   Nodes supporting post offices should store letters that originate
      from them.
-4.   Guard institution objects in the kernel.
+4.   Guard institution containers in the kernel.
 5.   Corrected input dialog titles.
 6.   Removed timer-based data processing.
+7.   Improved spoton_crypt::digitalSignature(). Avoid querying
+     the idiotes.db database.
 
 0.09.07 (07/13/2014)
 
