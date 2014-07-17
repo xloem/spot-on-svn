@@ -1,3 +1,9 @@
+0.09.09 (07/19/2014)
+
+1.   Include a timestamp when computing A.E. hashes. This will help
+     avoid some replay attacks. The timestamps has thirty seconds
+     resolutions.
+
 0.09.08 (07/16/2014)
 
 1.   Optional automatic join of Buzz channel.
