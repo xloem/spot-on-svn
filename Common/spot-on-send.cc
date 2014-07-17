@@ -42,7 +42,10 @@ QByteArray spoton_send::message0000
   bool ok = true;
 
   authenticated = spoton_crypt::keyedHash
-    (message, adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
+    (message +
+     QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmm").
+     toLatin1(),
+     adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
 
   if(ok)
     authenticated = message + "\n" + authenticated.toBase64();
@@ -80,7 +83,10 @@ QByteArray spoton_send::message0000a
   bool ok = true;
 
   authenticated = spoton_crypt::keyedHash
-    (message, adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
+    (message +
+     QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmm").
+     toLatin1(),
+     adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
 
   if(ok)
     authenticated = message + "\n" + authenticated.toBase64();
@@ -117,7 +123,10 @@ QByteArray spoton_send::message0001a
   bool ok = true;
 
   authenticated = spoton_crypt::keyedHash
-    (message, adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
+    (message +
+     QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmm").
+     toLatin1(),
+     adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
 
   if(ok)
     authenticated = message + "\n" + authenticated.toBase64();
@@ -151,7 +160,10 @@ QByteArray spoton_send::message0001b
   bool ok = true;
 
   authenticated = spoton_crypt::keyedHash
-    (message, adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
+    (message +
+     QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmm").
+     toLatin1(),
+     adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
 
   if(ok)
     authenticated = message + "\n" + authenticated.toBase64();
@@ -185,7 +197,10 @@ QByteArray spoton_send::message0002a
   bool ok = true;
 
   authenticated = spoton_crypt::keyedHash
-    (message, adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
+    (message +
+     QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmm").
+     toLatin1(),
+     adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
 
   if(ok)
     authenticated = message + "\n" + authenticated.toBase64();
@@ -219,7 +234,10 @@ QByteArray spoton_send::message0002b
   bool ok = true;
 
   authenticated = spoton_crypt::keyedHash
-    (message, adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
+    (message +
+     QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmm").
+     toLatin1(),
+     adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
 
   if(ok)
     authenticated = message + "\n" + authenticated.toBase64();
@@ -332,7 +350,10 @@ QByteArray spoton_send::message0013
   bool ok = true;
 
   authenticated = spoton_crypt::keyedHash
-    (message, adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
+    (message +
+     QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmm").
+     toLatin1(),
+     adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
 
   if(ok)
     authenticated = message + "\n" + authenticated.toBase64();
@@ -557,7 +578,10 @@ QByteArray spoton_send::message0060
   bool ok = true;
 
   authenticated = spoton_crypt::keyedHash
-    (message, adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
+    (message +
+     QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmm").
+     toLatin1(),
+     adaptiveEchoPair.first, adaptiveEchoPair.second, &ok);
 
   if(ok)
     authenticated = message + "\n" + authenticated.toBase64();
