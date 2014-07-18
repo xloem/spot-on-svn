@@ -3884,12 +3884,18 @@ void spoton_kernel::discoverAdaptiveEchoPair
 	  QDateTime dateTime
 	    (QDateTime::fromString(decrypted.mid(64).constData(),
 				   "MMddyyyyhhmmss"));
+
+	  if(!dateTime.isValid())
+	    continue;
+
 	  QDateTime now(QDateTime::currentDateTimeUtc());
 
 	  dateTime.setTimeSpec(Qt::UTC);
 	  now.setTimeSpec(Qt::UTC);
 
-	  if(now.secsTo(dateTime) <= 5)
+	  int secsTo = now.secsTo(dateTime);
+
+	  if(secsTo >= 0 && secsTo <= 5)
 	    {
 	      discoveredAdaptiveEchoPair = s_adaptiveEchoPairs.at(i);
 	      break;
