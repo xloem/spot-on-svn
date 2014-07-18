@@ -1,8 +1,10 @@
 0.09.09 (07/19/2014)
 
 1.   Include a timestamp when computing A.E. hashes. This will help
-     avoid some replay attacks. The timestamps has thirty seconds
-     resolutions.
+     avoid some replay attacks. The delta between timestamps must be
+     less than or equal to five seconds. Please remove your A.E. tokens.
+     Compute E(H(x) + timestamp), where H(x) is the SHA-512 hash of
+     the message.
 
 0.09.08 (07/16/2014)
 
