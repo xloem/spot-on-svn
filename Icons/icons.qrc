@@ -213,10 +213,36 @@
 	<file>Logo/spoton-dalmatinerlogo.png</file>
 	<file>Logo/spoton-logo-transparent.png</file>
 	<file>Resources/spotonbutton64.ico</file>
-	<file>generic/AE.png</file>
-	<file>generic/repleo-chat.png</file>
-	<file>generic/repleo-email.png</file>
-	<file>generic/repleo-url.png</file>
+	<file>emoticons/angel.png</file>
+	<file>emoticons/angry.png</file>
+	<file>emoticons/bad.png</file>
+	<file>emoticons/cake.png</file>
+	<file>emoticons/coffee.png</file>
+	<file>emoticons/coins.png</file>
+	<file>emoticons/confused.png</file>
+	<file>emoticons/crying.png</file>
+	<file>emoticons/cyclops.png</file>
+	<file>emoticons/devil.png</file>
+	<file>emoticons/doc.png</file>
+	<file>emoticons/glasses-cool.png</file>
+	<file>emoticons/good.png</file>
+	<file>emoticons/happy.png</file>
+	<file>emoticons/kiss.png</file>
+	<file>emoticons/laugh.png</file>
+	<file>emoticons/monkey.png</file>
+	<file>emoticons/neutral.png</file>
+	<file>emoticons/phone.png</file>
+	<file>emoticons/pizza.png</file>
+	<file>emoticons/rose.png</file>
+	<file>emoticons/sad.png</file>
+	<file>emoticons/shocked.png</file>
+	<file>emoticons/skywalker.png</file>
+	<file>emoticons/smile.png</file>
+	<file>emoticons/star.png</file>
+	<file>emoticons/sun.png</file>
+	<file>emoticons/thinking.png</file>
+	<file>emoticons/toungue.png</file>
+	<file>emoticons/wink.png</file>
 	<file>everaldo/activate.png</file>
 	<file>everaldo/add.png</file>
 	<file>everaldo/add-listener.png</file>
@@ -279,6 +305,10 @@
 	<file>everaldo/up.png</file>
 	<file>everaldo/urls.png</file>
 	<file>everaldo/write.png</file>
+	<file>generic/AE.png</file>
+	<file>generic/repleo-chat.png</file>
+	<file>generic/repleo-email.png</file>
+	<file>generic/repleo-url.png</file>
 	<file>nouve/activate.png</file>
 	<file>nouve/add.png</file>
 	<file>nouve/add-listener.png</file>
