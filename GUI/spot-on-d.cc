@@ -1261,7 +1261,7 @@ void spoton::slotSetAETokenInformation(void)
   else
     oid = list.at(0).data().toString();
 
-  QStringList types(spoton_crypt::hashTypes());
+  QStringList types(spoton_crypt::cipherTypes());
 
   if(types.isEmpty())
     {
@@ -1283,6 +1283,8 @@ void spoton::slotSetAETokenInformation(void)
 #ifdef Q_OS_MAC
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #endif
+  ui.token->setMaxLength
+    (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
   ui.token_type->addItems(types);
 
   if(dialog.exec() == QDialog::Accepted)

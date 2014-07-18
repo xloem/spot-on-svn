@@ -3175,7 +3175,6 @@ void spoton_neighbor::process0002b
  const QList<QByteArray> &symmetricKeys,
  const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
-  Q_UNUSED(symmetricKeys);
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
 
   if(!s_crypt)

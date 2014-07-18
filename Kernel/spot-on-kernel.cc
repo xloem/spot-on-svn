@@ -3841,7 +3841,7 @@ void spoton_kernel::discoverAdaptiveEchoPair
     return;
 
   QByteArray d(data.mid(0, data.lastIndexOf('\n')));
-  QByteArray messageCode(QByteArray::fromBase64(data.split('\n').last()));
+  QByteArray encrypted(QByteArray::fromBase64(data.split('\n').last()));
 
   for(int i = 0; i < s_adaptiveEchoPairs.size(); i++)
     {
@@ -3857,17 +3857,43 @@ void spoton_kernel::discoverAdaptiveEchoPair
       if(!ok)
 	continue;
 
-      QByteArray computedHash
-	(spoton_crypt::keyedHash(d, token, tokenType, &ok));
+      QByteArray decrypted;
+      spoton_crypt crypt(tokenType,
+			 "sha512",
+			 QByteArray(),
+			 token,
+			 0,
+			 0,
+			 QString(""));
+
+      decrypted = crypt.decrypted(encrypted, &ok);
 
       if(!ok)
 	continue;
 
+      QByteArray computedHash(spoton_crypt::sha512Hash(d, &ok));
+
+      if(!ok)
+	continue;
+
+      QByteArray messageCode(decrypted.mid(0, 64));
+
       if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
 	 spoton_crypt::memcmp(computedHash, messageCode))
 	{
-	  discoveredAdaptiveEchoPair = s_adaptiveEchoPairs.at(i);
-	  break;
+	  QDateTime dateTime
+	    (QDateTime::fromString(decrypted.mid(64).constData(),
+				   "MMddyyyyhhmmss"));
+	  QDateTime now(QDateTime::currentDateTimeUtc());
+
+	  dateTime.setTimeSpec(Qt::UTC);
+	  now.setTimeSpec(Qt::UTC);
+
+	  if(now.secsTo(dateTime) <= 5)
+	    {
+	      discoveredAdaptiveEchoPair = s_adaptiveEchoPairs.at(i);
+	      break;
+	    }
 	}
     }
 }
