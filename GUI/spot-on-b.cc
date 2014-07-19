@@ -391,6 +391,7 @@ void spoton::slotReceivedKernelMessage(void)
 		      content = str;
 		    }
 
+		  content = mapIconToEmoticon(content);
 		  msg.append(content);
 
 		  if(m_chatWindows.contains(list.value(0).toBase64()))
