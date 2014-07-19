@@ -3850,7 +3850,11 @@ void spoton_kernel::discoverAdaptiveEchoPair
   if(last.isEmpty())
     return;
 
-  QByteArray messageCode(last.mid(0, 64));
+  /*
+  ** H(E(x) + E(timestamp)) + E(timestamp).
+  */
+
+  QByteArray messageCode(last.mid(0, 64)); // SHA-512, etc., output size.
 
   if(messageCode.isEmpty())
     return;
@@ -3886,6 +3890,10 @@ void spoton_kernel::discoverAdaptiveEchoPair
       ** last.mid(64) = E(timestamp)
       */
 
+      /*
+      ** 64 = SHA-512, etc., output size.
+      */
+
       computedHash = crypt.keyedHash(d + last.mid(64), &ok);
 
       if(!ok)
@@ -3894,6 +3902,10 @@ void spoton_kernel::discoverAdaptiveEchoPair
       if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
 	 spoton_crypt::memcmp(computedHash, messageCode))
 	{
+	  /*
+	  ** 64 = SHA-512, etc., output size.
+	  */
+
 	  QByteArray timestamp(crypt.decrypted(last.mid(64), &ok));
 
 	  if(!ok)

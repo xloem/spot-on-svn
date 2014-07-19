@@ -70,12 +70,13 @@ QByteArray spoton_send::adaptiveEchoAuthentication
     authenticated = message + "\n" + authenticated.toBase64();
   else
     authenticated = message + "\n" +
-      spoton_crypt::weakRandomBytes(98).toBase64(); /*
-						    ** 64 (hash) +
-						    ** 14 (timestamp) +
-						    ** 4 (length) +
-						    ** 16 (init. vector)
-						    */
+      spoton_crypt::weakRandomBytes(100).toBase64(); /*
+						     ** 64 (hash) +
+						     ** 14 (timestamp) +
+						     ** 2 (block size minimum)
+						     ** 4 (length) +
+						     ** 16 (init. vector)
+						     */
 
   return authenticated;
 }

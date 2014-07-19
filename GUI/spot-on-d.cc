@@ -1317,8 +1317,6 @@ void spoton::slotSetAETokenInformation(void)
 #ifdef Q_OS_MAC
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #endif
-  ui.token->setMaxLength
-    (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
   ui.token_e_type->addItems(etypes);
   ui.token_h_type->addItems(htypes);
 
@@ -1328,7 +1326,7 @@ void spoton::slotSetAETokenInformation(void)
       QString tokenType(ui.token_e_type->currentText() + "\n" +
 			ui.token_h_type->currentText());
 
-      if(token.length() >= 16)
+      if(token.length() >= 48)
 	{
 	  QString connectionName("");
 
