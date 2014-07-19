@@ -3841,7 +3841,19 @@ void spoton_kernel::discoverAdaptiveEchoPair
     return;
 
   QByteArray d(data.mid(0, data.lastIndexOf('\n')));
-  QByteArray encrypted(QByteArray::fromBase64(data.split('\n').last()));
+
+  if(d.isEmpty())
+    return;
+
+  QByteArray last(QByteArray::fromBase64(data.split('\n').last()));
+
+  if(last.isEmpty())
+    return;
+
+  QByteArray messageCode(last.mid(0, 64));
+
+  if(messageCode.isEmpty())
+    return;
 
   for(int i = 0; i < s_adaptiveEchoPairs.size(); i++)
     {
@@ -3857,32 +3869,38 @@ void spoton_kernel::discoverAdaptiveEchoPair
       if(!ok)
 	continue;
 
-      QByteArray decrypted;
-      spoton_crypt crypt(tokenType,
-			 "sha512",
+      QByteArray computedHash;
+      int length = static_cast<int>
+	(spoton_crypt::cipherKeyLength("aes256"));
+      spoton_crypt crypt(tokenType.split('\n').value(0),
+			 tokenType.split('\n').value(1),
 			 QByteArray(),
-			 token,
+			 token.mid(0, length),
+			 token.mid(length),
 			 0,
 			 0,
 			 QString(""));
 
-      decrypted = crypt.decrypted(encrypted, &ok);
+      /*
+      ** d = E(x)
+      ** last.mid(64) = E(timestamp)
+      */
+
+      computedHash = crypt.keyedHash(d + last.mid(64), &ok);
 
       if(!ok)
 	continue;
-
-      QByteArray computedHash(spoton_crypt::sha512Hash(d, &ok));
-
-      if(!ok)
-	continue;
-
-      QByteArray messageCode(decrypted.mid(0, 64));
 
       if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
 	 spoton_crypt::memcmp(computedHash, messageCode))
 	{
+	  QByteArray timestamp(crypt.decrypted(last.mid(64), &ok));
+
+	  if(!ok)
+	    continue;
+
 	  QDateTime dateTime
-	    (QDateTime::fromString(decrypted.mid(64).constData(),
+	    (QDateTime::fromString(timestamp.constData(),
 				   "MMddyyyyhhmmss"));
 
 	  if(!dateTime.isValid())

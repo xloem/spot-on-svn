@@ -410,8 +410,6 @@ void spoton_misc::prepareDatabases(void)
 		   "ae_token_type TEXT)").
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
-	query.exec("ALTER TABLE neighbors ADD ae_token TEXT");
-	query.exec("ALTER TABLE neighbors ADD ae_token_type TEXT");
       }
 
     db.close();

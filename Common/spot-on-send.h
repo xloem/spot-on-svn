@@ -94,6 +94,9 @@ class spoton_send
 
  private:
   spoton_send(void);
+  static QByteArray adaptiveEchoAuthentication
+    (const QByteArray &message,
+     const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
 };
 
 #endif

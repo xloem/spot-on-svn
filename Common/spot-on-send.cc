@@ -34,33 +34,34 @@
 
 QByteArray spoton_send::EOM = "\r\n\r\n\r\n";
 
-QByteArray spoton_send::message0000
+QByteArray spoton_send::adaptiveEchoAuthentication
 (const QByteArray &message,
- const spoton_send_method sendMethod,
  const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
-  QByteArray authenticated;
-  QByteArray results;
+  QByteArray authenticated;  
   bool ok = true;
 
   if(!adaptiveEchoPair.first.isEmpty() && !adaptiveEchoPair.second.isEmpty())
     {
-      QByteArray hash;
-      spoton_crypt crypt(adaptiveEchoPair.second,
-			 "sha512",
+      QByteArray timestamp
+	(QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmmss").
+	 toLatin1());
+      int length = static_cast<int>
+	(spoton_crypt::cipherKeyLength("aes256"));
+      spoton_crypt crypt(adaptiveEchoPair.second.split('\n').value(0),
+			 adaptiveEchoPair.second.split('\n').value(1),
 			 QByteArray(),
-			 adaptiveEchoPair.first,
+			 adaptiveEchoPair.first.mid(0, length),
+			 adaptiveEchoPair.first.mid(length),
 			 0,
 			 0,
 			 QString(""));
 
-      hash = crypt.sha512Hash(message, &ok);
+      timestamp = crypt.encrypted(timestamp, &ok);
 
       if(ok)
-	authenticated = crypt.encrypted
-	  (hash +
-	   QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmmss").
-	   toLatin1(), &ok);
+	authenticated = crypt.keyedHash(message + timestamp, &ok) +
+	  timestamp;
     }
   else
     ok = false;
@@ -75,6 +76,18 @@ QByteArray spoton_send::message0000
 						    ** 4 (length) +
 						    ** 16 (init. vector)
 						    */
+
+  return authenticated;
+}
+
+QByteArray spoton_send::message0000
+(const QByteArray &message,
+ const spoton_send_method sendMethod,
+ const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
+{
+  QByteArray authenticated
+    (adaptiveEchoAuthentication(message, adaptiveEchoPair));
+  QByteArray results;
 
   if(sendMethod == ARTIFICIAL_GET)
     results.append("HTTP/1.1 200 OK\r\n");
@@ -101,42 +114,9 @@ QByteArray spoton_send::message0000a
  const spoton_send_method sendMethod,
  const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
-  QByteArray authenticated;
+  QByteArray authenticated
+    (adaptiveEchoAuthentication(message, adaptiveEchoPair));
   QByteArray results;
-  bool ok = true;
-
-  if(!adaptiveEchoPair.first.isEmpty() && !adaptiveEchoPair.second.isEmpty())
-    {
-      QByteArray hash;
-      spoton_crypt crypt(adaptiveEchoPair.second,
-			 "sha512",
-			 QByteArray(),
-			 adaptiveEchoPair.first,
-			 0,
-			 0,
-			 QString(""));
-
-      hash = crypt.sha512Hash(message, &ok);
-
-      if(ok)
-	authenticated = crypt.encrypted
-	  (hash +
-	   QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmmss").
-	   toLatin1(), &ok);
-    }
-  else
-    ok = false;
-
-  if(ok)
-    authenticated = message + "\n" + authenticated.toBase64();
-  else
-    authenticated = message + "\n" +
-      spoton_crypt::weakRandomBytes(98).toBase64(); /*
-						    ** 64 (hash) +
-						    ** 14 (timestamp) +
-						    ** 4 (length) +
-						    ** 16 (init. vector)
-						    */
 
   if(sendMethod == ARTIFICIAL_GET)
     results.append("HTTP/1.1 200 OK\r\n");
@@ -162,42 +142,9 @@ QByteArray spoton_send::message0001a
 (const QByteArray &message,
  const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
-  QByteArray authenticated;
+  QByteArray authenticated
+    (adaptiveEchoAuthentication(message, adaptiveEchoPair));
   QByteArray results;
-  bool ok = true;
-
-  if(!adaptiveEchoPair.first.isEmpty() && !adaptiveEchoPair.second.isEmpty())
-    {
-      QByteArray hash;
-      spoton_crypt crypt(adaptiveEchoPair.second,
-			 "sha512",
-			 QByteArray(),
-			 adaptiveEchoPair.first,
-			 0,
-			 0,
-			 QString(""));
-
-      hash = crypt.sha512Hash(message, &ok);
-
-      if(ok)
-	authenticated = crypt.encrypted
-	  (hash +
-	   QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmmss").
-	   toLatin1(), &ok);
-    }
-  else
-    ok = false;
-
-  if(ok)
-    authenticated = message + "\n" + authenticated.toBase64();
-  else
-    authenticated = message + "\n" +
-      spoton_crypt::weakRandomBytes(98).toBase64(); /*
-						    ** 64 (hash) +
-						    ** 14 (timestamp) +
-						    ** 4 (length) +
-						    ** 16 (init. vector)
-						    */
 
   results.append
     ("POST HTTP/1.1\r\n"
@@ -220,42 +167,9 @@ QByteArray spoton_send::message0001b
 (const QByteArray &message,
  const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
-  QByteArray authenticated;
+  QByteArray authenticated
+    (adaptiveEchoAuthentication(message, adaptiveEchoPair));
   QByteArray results;
-  bool ok = true;
-
-  if(!adaptiveEchoPair.first.isEmpty() && !adaptiveEchoPair.second.isEmpty())
-    {
-      QByteArray hash;
-      spoton_crypt crypt(adaptiveEchoPair.second,
-			 "sha512",
-			 QByteArray(),
-			 adaptiveEchoPair.first,
-			 0,
-			 0,
-			 QString(""));
-
-      hash = crypt.sha512Hash(message, &ok);
-
-      if(ok)
-	authenticated = crypt.encrypted
-	  (hash +
-	   QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmmss").
-	   toLatin1(), &ok);
-    }
-  else
-    ok = false;
-
-  if(ok)
-    authenticated = message + "\n" + authenticated.toBase64();
-  else
-    authenticated = message + "\n" +
-      spoton_crypt::weakRandomBytes(98).toBase64(); /*
-						    ** 64 (hash) +
-						    ** 14 (timestamp) +
-						    ** 4 (length) +
-						    ** 16 (init. vector)
-						    */
 
   results.append
     ("POST HTTP/1.1\r\n"
@@ -278,42 +192,9 @@ QByteArray spoton_send::message0002a
 (const QByteArray &message,
  const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
-  QByteArray authenticated;
+  QByteArray authenticated
+    (adaptiveEchoAuthentication(message, adaptiveEchoPair));
   QByteArray results;
-  bool ok = true;
-
-  if(!adaptiveEchoPair.first.isEmpty() && !adaptiveEchoPair.second.isEmpty())
-    {
-      QByteArray hash;
-      spoton_crypt crypt(adaptiveEchoPair.second,
-			 "sha512",
-			 QByteArray(),
-			 adaptiveEchoPair.first,
-			 0,
-			 0,
-			 QString(""));
-
-      hash = crypt.sha512Hash(message, &ok);
-
-      if(ok)
-	authenticated = crypt.encrypted
-	  (hash +
-	   QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmmss").
-	   toLatin1(), &ok);
-    }
-  else
-    ok = false;
-
-  if(ok)
-    authenticated = message + "\n" + authenticated.toBase64();
-  else
-    authenticated = message + "\n" +
-      spoton_crypt::weakRandomBytes(98).toBase64(); /*
-						    ** 64 (hash) +
-						    ** 14 (timestamp) +
-						    ** 4 (length) +
-						    ** 16 (init. vector)
-						    */
 
   results.append
     ("POST HTTP/1.1\r\n"
@@ -336,42 +217,9 @@ QByteArray spoton_send::message0002b
 (const QByteArray &message,
  const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
-  QByteArray authenticated;
+  QByteArray authenticated
+    (adaptiveEchoAuthentication(message, adaptiveEchoPair));
   QByteArray results;
-  bool ok = true;
-
-  if(!adaptiveEchoPair.first.isEmpty() && !adaptiveEchoPair.second.isEmpty())
-    {
-      QByteArray hash;
-      spoton_crypt crypt(adaptiveEchoPair.second,
-			 "sha512",
-			 QByteArray(),
-			 adaptiveEchoPair.first,
-			 0,
-			 0,
-			 QString(""));
-
-      hash = crypt.sha512Hash(message, &ok);
-
-      if(ok)
-	authenticated = crypt.encrypted
-	  (hash +
-	   QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmmss").
-	   toLatin1(), &ok);
-    }
-  else
-    ok = false;
-
-  if(ok)
-    authenticated = message + "\n" + authenticated.toBase64();
-  else
-    authenticated = message + "\n" +
-      spoton_crypt::weakRandomBytes(98).toBase64(); /*
-						    ** 64 (hash) +
-						    ** 14 (timestamp) +
-						    ** 4 (length) +
-						    ** 16 (init. vector)
-						    */
 
   results.append
     ("POST HTTP/1.1\r\n"
@@ -473,42 +321,9 @@ QByteArray spoton_send::message0013
 (const QByteArray &message,
  const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
-  QByteArray authenticated;
+  QByteArray authenticated
+    (adaptiveEchoAuthentication(message, adaptiveEchoPair));
   QByteArray results;
-  bool ok = true;
-
-  if(!adaptiveEchoPair.first.isEmpty() && !adaptiveEchoPair.second.isEmpty())
-    {
-      QByteArray hash;
-      spoton_crypt crypt(adaptiveEchoPair.second,
-			 "sha512",
-			 QByteArray(),
-			 adaptiveEchoPair.first,
-			 0,
-			 0,
-			 QString(""));
-
-      hash = crypt.sha512Hash(message, &ok);
-
-      if(ok)
-	authenticated = crypt.encrypted
-	  (hash +
-	   QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmmss").
-	   toLatin1(), &ok);
-    }
-  else
-    ok = false;
-
-  if(ok)
-    authenticated = message + "\n" + authenticated.toBase64();
-  else
-    authenticated = message + "\n" +
-      spoton_crypt::weakRandomBytes(98).toBase64(); /*
-						    ** 64 (hash) +
-						    ** 14 (timestamp) +
-						    ** 4 (length) +
-						    ** 16 (init. vector)
-						    */
 
   results.append
     ("POST HTTP/1.1\r\n"
@@ -722,42 +537,9 @@ QByteArray spoton_send::message0060
 (const QByteArray &message,
  const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
-  QByteArray authenticated;
+  QByteArray authenticated
+    (adaptiveEchoAuthentication(message, adaptiveEchoPair));
   QByteArray results;
-  bool ok = true;
-
-  if(!adaptiveEchoPair.first.isEmpty() && !adaptiveEchoPair.second.isEmpty())
-    {
-      QByteArray hash;
-      spoton_crypt crypt(adaptiveEchoPair.second,
-			 "sha512",
-			 QByteArray(),
-			 adaptiveEchoPair.first,
-			 0,
-			 0,
-			 QString(""));
-
-      hash = crypt.sha512Hash(message, &ok);
-
-      if(ok)
-	authenticated = crypt.encrypted
-	  (hash +
-	   QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmmss").
-	   toLatin1(), &ok);
-    }
-  else
-    ok = false;
-
-  if(ok)
-    authenticated = message + "\n" + authenticated.toBase64();
-  else
-    authenticated = message + "\n" +
-      spoton_crypt::weakRandomBytes(98).toBase64(); /*
-						    ** 64 (hash) +
-						    ** 14 (timestamp) +
-						    ** 4 (length) +
-						    ** 16 (init. vector)
-						    */
 
   results.append
     ("POST HTTP/1.1\r\n"
