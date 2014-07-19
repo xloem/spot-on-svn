@@ -938,8 +938,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>751</width>
-             <height>575</height>
+             <width>1056</width>
+             <height>627</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1938,8 +1938,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>725</width>
-             <height>333</height>
+             <width>1056</width>
+             <height>627</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2487,8 +2487,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>228</width>
-                     <height>778</height>
+                     <width>296</width>
+                     <height>808</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2649,7 +2649,7 @@
                          </column>
                          <column>
                           <property name="text">
-                           <string>Type</string>
+                           <string>Token Type</string>
                           </property>
                          </column>
                         </widget>
@@ -2675,15 +2675,32 @@
                          <item row="1" column="0">
                           <widget class="QLabel" name="label_84">
                            <property name="text">
-                            <string>T&amp;ype</string>
+                            <string>Encryption Token T&amp;ype</string>
                            </property>
                            <property name="buddy">
-                            <cstring>ae_type</cstring>
+                            <cstring>ae_e_type</cstring>
                            </property>
                           </widget>
                          </item>
                          <item row="1" column="1">
-                          <widget class="QComboBox" name="ae_type">
+                          <widget class="QComboBox" name="ae_e_type">
+                           <property name="sizeAdjustPolicy">
+                            <enum>QComboBox::AdjustToContents</enum>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="0">
+                          <widget class="QLabel" name="label_85">
+                           <property name="text">
+                            <string>Hash Token T&amp;ype</string>
+                           </property>
+                           <property name="buddy">
+                            <cstring>ae_h_type</cstring>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="1">
+                          <widget class="QComboBox" name="ae_h_type">
                            <property name="sizeAdjustPolicy">
                             <enum>QComboBox::AdjustToContents</enum>
                            </property>
@@ -2880,8 +2897,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>855</width>
-             <height>559</height>
+             <width>1056</width>
+             <height>627</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -3942,8 +3959,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>247</width>
-             <height>160</height>
+             <width>1056</width>
+             <height>627</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4097,8 +4114,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>758</width>
-             <height>855</height>
+             <width>1041</width>
+             <height>841</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -5115,8 +5132,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>481</width>
-             <height>514</height>
+             <width>1056</width>
+             <height>627</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -6028,8 +6045,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>232</width>
-             <height>402</height>
+             <width>1056</width>
+             <height>627</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -6507,8 +6524,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>244</width>
-             <height>150</height>
+             <width>1056</width>
+             <height>627</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -7075,7 +7092,8 @@
   <tabstop>deleteAccount</tabstop>
   <tabstop>ae_tokens</tabstop>
   <tabstop>ae_token</tabstop>
-  <tabstop>ae_type</tabstop>
+  <tabstop>ae_e_type</tabstop>
+  <tabstop>ae_h_type</tabstop>
   <tabstop>addAEToken</tabstop>
   <tabstop>deleteAEToken</tabstop>
   <tabstop>acceptedIPList</tabstop>

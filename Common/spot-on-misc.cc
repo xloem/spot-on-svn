@@ -326,7 +326,12 @@ void spoton_misc::prepareDatabases(void)
 		   "token_hash TEXT PRIMARY KEY NOT NULL, "
 		   "token_type TEXT NOT NULL)"); /*
 						 ** Keyed hash of the token
-						 ** and token type.
+						 ** and token type. Please
+						 ** note that the table
+						 ** houses both encryption
+						 ** and hash keys. Apologies
+						 ** for violating some
+						 ** database principles.
 						 */
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_allowed_ips ("
 		   "ip_address TEXT NOT NULL, "

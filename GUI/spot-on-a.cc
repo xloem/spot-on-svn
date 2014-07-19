@@ -1218,8 +1218,6 @@ spoton::spoton(void):QMainWindow()
   */
 
   m_ui.kernelPath->setToolTip(m_ui.kernelPath->text());
-  m_ui.ae_token->setMaxLength
-    (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
   m_ui.buzzName->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
   m_ui.buzzName->setText
     (QString::fromUtf8(m_settings.value("gui/buzzName", "unknown").
@@ -1260,7 +1258,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.cipherType->clear();
   m_ui.cipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.etpCipherType->addItems(spoton_crypt::cipherTypes());
-  m_ui.ae_type->addItems(spoton_crypt::cipherTypes());
+  m_ui.ae_e_type->addItems(spoton_crypt::cipherTypes());
+  m_ui.ae_h_type->addItems(spoton_crypt::hashTypes());
   m_ui.etpHashType->addItems(spoton_crypt::hashTypes());
   m_ui.buzzHashType->addItems(spoton_crypt::hashTypes());
   m_ui.institutionNameType->addItems(spoton_crypt::cipherTypes());
@@ -1345,8 +1344,11 @@ spoton::spoton(void):QMainWindow()
   ** Please don't translate n/a.
   */
 
-  if(m_ui.ae_type->count() == 0)
-    m_ui.ae_type->addItem("n/a");
+  if(m_ui.ae_e_type->count() == 0)
+    m_ui.ae_e_type->addItem("n/a");
+
+  if(m_ui.ae_h_type->count() == 0)
+    m_ui.ae_h_type->addItem("n/a");
 
   if(m_ui.channelType->count() == 0)
     m_ui.channelType->addItem("n/a");

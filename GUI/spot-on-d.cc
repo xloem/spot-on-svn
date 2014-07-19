@@ -626,7 +626,8 @@ void spoton::slotShowMinimalDisplay(bool state)
   m_ui.missingLinks->setHidden(state);
   m_ui.demagnetizeMissingLinks->setHidden(state);
   m_ui.label_85->setHidden(state);
-  m_ui.ae_type->setHidden(state);
+  m_ui.ae_e_type->setHidden(state);
+  m_ui.ae_h_type->setHidden(state);
   m_ui.deleteAEToken->setHidden(state);
   m_ui.label_86->setHidden(state);
 #else
@@ -970,7 +971,8 @@ void spoton::slotAddAEToken(void)
   QString connectionName("");
   QString error("");
   QString token(m_ui.ae_token->text().trimmed());
-  QString type(m_ui.ae_type->currentText());
+  QString type(m_ui.ae_e_type->currentText() + "\n" +
+	       m_ui.ae_h_type->currentText());
   bool ok = true;
   spoton_crypt *crypt = m_crypts.value("chat", 0);
 
@@ -985,10 +987,10 @@ void spoton::slotAddAEToken(void)
       error = tr("Please provide a token and a token type.");
       goto done_label;
     }
-  else if(token.length() < 16)
+  else if(token.length() < 48)
     {
       error = tr("Please provide a token that contains at "
-		 "least sixteen characters.");
+		 "least forty-eight characters.");
       goto done_label;
     }
 
@@ -1043,7 +1045,8 @@ void spoton::slotAddAEToken(void)
   else
     {
       m_ui.ae_token->clear();
-      m_ui.ae_type->setCurrentIndex(0);
+      m_ui.ae_e_type->setCurrentIndex(0);
+      m_ui.ae_h_type->setCurrentIndex(0);
       populateAETokens();
     }
 }
@@ -1163,6 +1166,9 @@ void spoton::populateAETokens(void)
 		  (QByteArray::fromBase64(query.value(1).toByteArray()),
 		   &ok);
 
+	      if(ok)
+		type.replace("\n", " | ");
+
 	      QTableWidgetItem *item = 0;
 
 	      if(ok)
@@ -1261,9 +1267,21 @@ void spoton::slotSetAETokenInformation(void)
   else
     oid = list.at(0).data().toString();
 
-  QStringList types(spoton_crypt::cipherTypes());
+  QStringList etypes(spoton_crypt::cipherTypes());
 
-  if(types.isEmpty())
+  if(etypes.isEmpty())
+    {
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(SPOTON_APPLICATION_NAME),
+			    tr("The method spoton_crypt::cipherTypes() has "
+			       "failed. "
+			       "This is a fatal flaw."));
+      return;
+    }
+
+  QStringList htypes(spoton_crypt::hashTypes());
+
+  if(htypes.isEmpty())
     {
       QMessageBox::critical(this, tr("%1: Error").
 			    arg(SPOTON_APPLICATION_NAME),
@@ -1285,12 +1303,14 @@ void spoton::slotSetAETokenInformation(void)
 #endif
   ui.token->setMaxLength
     (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
-  ui.token_type->addItems(types);
+  ui.token_e_type->addItems(etypes);
+  ui.token_h_type->addItems(htypes);
 
   if(dialog.exec() == QDialog::Accepted)
     {
       QString token(ui.token->text().trimmed());
-      QString tokenType(ui.token_type->currentText());
+      QString tokenType(ui.token_e_type->currentText() + "\n" +
+			ui.token_h_type->currentText());
 
       if(token.length() >= 16)
 	{
