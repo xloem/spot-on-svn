@@ -281,6 +281,7 @@ class spoton: public QMainWindow
   void slotDisplayLocalSearchResults(void);
   void slotDoSearch(void);
   void slotEmptyTrash(void);
+  void slotEnableChatEmoticons(bool state);
   void slotEnableRetrieveMail(void);
   void slotEnabledPostOffice(bool state);
   void slotExportListeners(void);

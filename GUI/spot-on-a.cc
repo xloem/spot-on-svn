@@ -630,6 +630,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentChanged(int)),
 	  this,
 	  SLOT(slotMailTabChanged(int)));
+  connect(m_ui.enableChatEmoticons,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotEnableChatEmoticons(bool)));
   connect(m_ui.postofficeCheckBox,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -1300,6 +1304,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/acceptUrlKeys", false).toBool());
   m_ui.buzzAutoJoin->setChecked
     (m_settings.value("gui/buzzAutoJoin", true).toBool());
+  m_ui.enableChatEmoticons->setChecked
+    (m_settings.value("gui/enableChatEmoticons", false).toBool());
   m_ui.hideOfflineParticipants->setChecked
     (m_settings.value("gui/hideOfflineParticipants", false).toBool());
   m_ui.keepOnlyUserDefinedNeighbors->setChecked

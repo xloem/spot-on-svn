@@ -70,7 +70,7 @@
              <x>0</x>
              <y>0</y>
              <width>1056</width>
-             <height>626</height>
+             <height>627</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -450,8 +450,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>729</width>
-                <height>447</height>
+                <width>1046</width>
+                <height>617</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -544,6 +544,16 @@
                        <property name="spacing">
                         <number>5</number>
                        </property>
+                       <item>
+                        <widget class="QCheckBox" name="enableChatEmoticons">
+                         <property name="toolTip">
+                          <string>Broadcast odd messages at odd times. Please note that this option will advertise your presence.</string>
+                         </property>
+                         <property name="text">
+                          <string>Enable &amp;emoticons.</string>
+                         </property>
+                        </widget>
+                       </item>
                        <item>
                         <spacer name="horizontalSpacer_23">
                          <property name="orientation">
@@ -928,8 +938,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>862</width>
-             <height>587</height>
+             <width>751</width>
+             <height>575</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1928,8 +1938,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>826</width>
-             <height>341</height>
+             <width>725</width>
+             <height>333</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2477,8 +2487,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>253</width>
-                     <height>795</height>
+                     <width>228</width>
+                     <height>778</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2870,8 +2880,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>979</width>
-             <height>572</height>
+             <width>855</width>
+             <height>559</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -3932,8 +3942,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>265</width>
-             <height>163</height>
+             <width>247</width>
+             <height>160</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4087,8 +4097,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>851</width>
-             <height>863</height>
+             <width>758</width>
+             <height>855</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -5105,8 +5115,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>491</width>
-             <height>521</height>
+             <width>481</width>
+             <height>514</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -6018,8 +6028,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>247</width>
-             <height>409</height>
+             <width>232</width>
+             <height>402</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -6497,8 +6507,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>248</width>
-             <height>152</height>
+             <width>244</width>
+             <height>150</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -6758,7 +6768,7 @@
      <x>0</x>
      <y>0</y>
      <width>1080</width>
-     <height>24</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -6985,6 +6995,7 @@
   <tabstop>chatAcceptSigned</tabstop>
   <tabstop>impersonate</tabstop>
   <tabstop>chatSignMessages</tabstop>
+  <tabstop>enableChatEmoticons</tabstop>
   <tabstop>clearMessages</tabstop>
   <tabstop>messages</tabstop>
   <tabstop>nodeName</tabstop>

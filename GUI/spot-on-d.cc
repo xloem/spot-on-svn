@@ -1366,51 +1366,49 @@ void spoton::slotSaveBuzzAutoJoin(bool state)
   settings.setValue("gui/buzzAutoJoin", state);
 }
 
+void spoton::slotEnableChatEmoticons(bool state)
+{
+  m_settings["gui/enableChatEmoticons"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/enableChatEmoticons", state);
+}
+
 QString spoton::mapIconToEmoticon(const QString &content) const
 {
   QMap<QString, QString> map;
   QString str(content);
 
-  map[":-)"] = map[":)"] = map[":o)"] = map[":]"] = map[":3"] =
-    map[":c)"] = map[":>"] = map["=]"] = map["8)"] = map["=)"] =
-    map[":}"] = map[":^)"] =
+  map[":-)"] = map[":)"] = map[":o)"] = map[":]"] = map[":>"] = map[":}"] =
     "<img src=\":/emoticons/smile.png\"></img>";
-  map[":-D"] = map[":D"] = map["8-D"] = map["8D"] = map["x-D"] =
-    map["xD"] = map["X-D"] = map["XD"] = map["=-D"] =
-    map["=D"] = map["=-3"] = map["=3"] = map["B^D"] =
+  map[":-D"] = map[":D"] =
     "<img src=\":/emoticons/laugh.png\"></img>";
   map[":-))"] = "<img src=\":/emoticons/happy.png\"></img>";
-  map[">:["] = map[":-("] = map[":("] = map[":-c"] = map[":c"] =
+  map[">:["] = map[":-("] = map[":("] =
     map[":-<"] = map[":<"] = map[":-["] = map[":["] =
     map[":{"] =
     "<img src=\":/emoticons/sad.png\"></img>";
   map[";)"] = "<img src=\":/emoticons/wink.png\"></img>";
-  map[":-||"] = map[":@"] = map[">:("] =
+  map[":-||"] = map[">:("] =
     "<img src=\":/emoticons/angry.png\"></img>";
   map[":'-("] = map[":'("] =
     "<img src=\":/emoticons/crying.png\"></img>";
   map[">:O"] = map[":-O"] = map[":O"] = map[":-o"] = map[":o"] =
-    map["8-0"] = map["O_O"] = map["o-o"] = map["O_o"] = map["o_O"] =
-    map["o_o"] = map["O-O"] =
     "<img src=\":/emoticons/shocked.png\"></img>";
   map[":*"] = map[":^*"] = map["'}{'"] =
     "<img src=\":/emoticons/kiss.png\"></img>";
-  map[">:P"] = map[":-P"] = map[":P"] = map["X-P"] = map["x-p"] =
-    map["xp"] = map["XP"] = map[":-p"] = map[":p"] = map["=p"] =
-    map[":-b"] = map[":b"] = map["d:"] =
+  map[">:P"] = map[":-P"] = map[":P"] = map[":-p"] = map[":p"] =
     "<img src=\":/emoticons/toungue.png\"></img>";
-  map[">:\\"] = map[":-/"] = map[":-."] =
-    map[":\\"] = map["=/"] = map["=\\"] = map[":L"] = map["=L"] =
-    map[":S"] = map[">.<"] =
+  map[">:\\"] = map[":-/"] = map[":\\"] =
     "<img src=\":/emoticons/confused.png\"></img>";
   map[":|"] = map[":-|"] =
     "<img src=\":/emoticons/neutral.png\"></img>";
-  map["O:-)"] = map["0:-3"] = map["0:3"] = map["0:-)"] =
-    map["0:)"] = map["0;^)"] =
+  map["O:-)"] = map["0:-)"] = map["0:)"] = map["0;^)"] =
     "<img src=\":/emoticons/angel.png\"></img>";
-  map["}:-)"] = map["}:)"] = map["3:-)"] = map["3:)"] =
+  map["}:-)"] = map["}:)"] =
     "<img src=\":/emoticons/devil.png\"></img>";
-  map["|;-)"] = map["|-O"] =
+  map["|;-)"] =
     "<img src=\":/emoticons/glasses-cool.png\"></img>";
   map["@}-;-'---"] = map["@>-->--"] =
     "<img src=\":/emoticons/rose.png\"></img>";
