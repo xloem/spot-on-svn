@@ -1066,7 +1066,7 @@ void spoton::slotDeleteAEToken(void)
 
   QList<QTableWidgetItem *> list(m_ui.ae_tokens->selectedItems());
 
-  if(list.size() != 2 || !list.at(0) || !list.at(1))
+  if(list.size() != 3 || !list.at(0) || !list.at(1) || !list.at(2))
     {
       QMessageBox::critical(this, tr("%1: Error").
 			    arg(SPOTON_APPLICATION_NAME),
@@ -1091,7 +1091,9 @@ void spoton::slotDeleteAEToken(void)
 		      "token_hash = ?");
 	query.bindValue
 	  (0, crypt->keyedHash((list.at(0)->text() +
-				list.at(1)->text()).toLatin1(), &ok).
+				list.at(1)->text() +
+				"\n" +
+				list.at(2)->text()).toLatin1(), &ok).
 	   toBase64());
 
 	if(ok)
@@ -1153,6 +1155,8 @@ void spoton::populateAETokens(void)
 	    {
 	      m_ui.ae_tokens->setRowCount(m_ui.ae_tokens->rowCount() + 1);
 
+	      QByteArray eType;
+	      QByteArray hType;
 	      QByteArray token;
 	      QByteArray type;
 	      bool ok = true;
@@ -1167,7 +1171,10 @@ void spoton::populateAETokens(void)
 		   &ok);
 
 	      if(ok)
-		type.replace("\n", " | ");
+		{
+		  eType = type.split('\n').value(0);
+		  hType = type.split('\n').value(1);
+		}
 
 	      QTableWidgetItem *item = 0;
 
@@ -1180,12 +1187,20 @@ void spoton::populateAETokens(void)
 		(m_ui.ae_tokens->rowCount() - 1, 0, item);
 
 	      if(ok)
-		item = new QTableWidgetItem(type.constData());
+		item = new QTableWidgetItem(eType.constData());
 	      else
 		item = new QTableWidgetItem(tr("error"));
 
 	      m_ui.ae_tokens->setItem
 		(m_ui.ae_tokens->rowCount() - 1, 1, item);
+
+	      if(ok)
+		item = new QTableWidgetItem(hType.constData());
+	      else
+		item = new QTableWidgetItem(tr("error"));
+
+	      m_ui.ae_tokens->setItem
+		(m_ui.ae_tokens->rowCount() - 1, 2, item);
 
 	      if(token == bytes1 && type == bytes2)
 		m_ui.ae_tokens->selectRow
@@ -1193,6 +1208,7 @@ void spoton::populateAETokens(void)
 	    }
 
 	m_ui.ae_tokens->setSortingEnabled(true);
+	m_ui.neighbors->horizontalHeader()->setStretchLastSection(true);
       }
 
     db.close();
