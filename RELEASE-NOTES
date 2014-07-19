@@ -8,6 +8,7 @@
      delta. Replaying a recorded message will circumvent the verification
      if the server has not viewed the particular message (congestion control)
      and if the timestamp difference is within the acceptance window.
+2.   Some emoticons.
 
 0.09.08 (07/16/2014)
 
