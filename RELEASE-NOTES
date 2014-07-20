@@ -1,10 +1,10 @@
-0.09.09 (07/20/2014)
+0.09.09 (07/23/2014)
 
-1.   Include a timestamp when computing A.E. hashes. This will help
+1.   Include timestamps when computing A.E. hashes. This will help
      avoid some replay attacks. The delta between timestamps must be
      less than or equal to five seconds. Please remove your A.E. tokens.
      Client: compute E(timestamp) and H(E(x) + E(timestamp)).
-     Server: verify H(x), compute D(E(...)) and verify timestamp
+     Server: verify H(...), compute D(E(...)) and verify timestamp
      delta. Replaying a recorded message will circumvent the verification
      if the server has not viewed the particular message (congestion control)
      and if the timestamp difference is within the acceptance window.
