@@ -1424,22 +1424,21 @@ QString spoton::mapIconToEmoticon(const QString &content)
   map[";)"] = "<img src=\":/emoticons/wink.png\"></img>";
   map[">:("] = map[":-||"] = "<img src=\":/emoticons/angry.png\"></img>";
   map[":'-("] = map[":'("] = "<img src=\":/emoticons/crying.png\"></img>";
-  map[">:O"] = map[":-O"] = map[":O"] = map[":-o"] = map[":o"] =
+  map[">:O"] = map[":-O"] = map[":O"] =
     "<img src=\":/emoticons/shocked.png\"></img>";
   map[":*"] = map[":^*"] = map["':-)(-:'"] =
    "<img src=\":/emoticons/kiss.png\"></img>";
-  map[">:P"] = map[":-P"] = map[":P"] = map[":-p"] = map[":p"] =
-    "<img src=\":/emoticons/toungue.png\"></img>";
+  map[">:P"] = map[":-P"] = map[":P"] =
+    "<img src=\":/emoticons/tongue.png\"></img>";
   map[">:\\"] = map[":-/"] = map[":\\"] =
     "<img src=\":/emoticons/confused.png\"></img>";
   map[":|"] = map[":-|"] = "<img src=\":/emoticons/neutral.png\"></img>";
   map["O:-)"] = map["0:-)"] = map["0:)"] = map["0;^)"] =
    "<img src=\":/emoticons/angel.png\"></img>";
   map["}:)"] = map["}:-)"] = "<img src=\":/emoticons/devil.png\"></img>";
-  map["o-)"] =  map["O-)"] = "<img src=\":/emoticons/cyclops.png\"></img>";
-  map["(t)"] = map["(T)"] = "<img src=\":/emoticons/phone.png\"></img>";
-  map["C:-)"] = map["c:-)"] = map["C:)"] = map["c:)"] =
-   "<img src=\":/emoticons/skywalker.png\"></img>";
+  map["O-)"] = "<img src=\":/emoticons/cyclops.png\"></img>";
+  map["(T)"] = "<img src=\":/emoticons/phone.png\"></img>";
+  map["C:-)"] = map["C:)"] = "<img src=\":/emoticons/skywalker.png\"></img>";
   map["8-)"] = map["B-)"] = map["|;-)"] =
     "<img src=\":/emoticons/glasses-cool.png\"></img>";
   map["@>-->--"] = map["@}-;-'---"] =
@@ -1451,8 +1450,8 @@ QString spoton::mapIconToEmoticon(const QString &content)
     {
       it.next();
 
-      if(str.contains(it.key()))
-	str.replace(it.key(), it.value());
+      if(str.toUpper().contains(it.key()))
+	str.replace(it.key(), it.value(), Qt::CaseInsensitive);
     }
 
   return str;
