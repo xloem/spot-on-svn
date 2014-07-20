@@ -72,8 +72,16 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 
       peerAddress = QHostAddress(&nativeAddress);
 
-      if(!spoton_misc::isAcceptedIP(peerAddress, m_id,
-				    spoton_kernel::s_crypts.value("chat", 0)))
+      if(!spoton_kernel::acceptRemoteConnection(peerAddress))
+	{
+	  QAbstractSocket socket(QAbstractSocket::TcpSocket, this);
+
+	  socket.setSocketDescriptor(socketDescriptor);
+	  socket.abort();
+	}
+      else if(!spoton_misc::
+	      isAcceptedIP(peerAddress, m_id,
+			   spoton_kernel::s_crypts.value("chat", 0)))
 	{
 	  QAbstractSocket socket(QAbstractSocket::TcpSocket, this);
 
@@ -102,7 +110,7 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 	     arg(serverPort()));
 	}
       else
-	emit newConnection(socketDescriptor, QHostAddress(), 0);
+	emit newConnection(socketDescriptor, peerAddress, 0);
     }
 }
 
@@ -117,8 +125,12 @@ void spoton_listener_udp_server::slotReadyRead(void)
 
   readDatagram(0, 0, &peerAddress, &peerPort); // Discard the datagram.
 
-  if(!spoton_misc::isAcceptedIP(peerAddress, m_id,
-				spoton_kernel::s_crypts.value("chat", 0)))
+  if(!spoton_kernel::acceptRemoteConnection(peerAddress))
+    {
+    }
+  else if(!spoton_misc::
+	  isAcceptedIP(peerAddress, m_id,
+		       spoton_kernel::s_crypts.value("chat", 0)))
     spoton_misc::logError
       (QString("spoton_listener_udp_server::incomingConnection(): "
 	       "connection from %1 denied for %2:%3.").
@@ -256,7 +268,7 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 	    SLOT(slotNewConnection(const qintptr,
 				   const QHostAddress &,
 				   const quint16)));
-  if(m_tcpServer)
+  else if(m_tcpServer)
     connect(m_tcpServer,
 	    SIGNAL(newConnection(const qintptr,
 				 const QHostAddress &,
@@ -635,6 +647,14 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 					const quint16 port)
 #endif
 {
+  /*
+  ** Record the IP address of the client as soon as possible.
+  */
+
+  if(spoton_kernel::setting("gui/limitConnections", false).toBool())
+    if(!address.toString().isEmpty())
+      spoton_kernel::s_remoteConnections.append(address.toString());
+
   QByteArray certificate(m_certificate);
   QByteArray privateKey(m_privateKey);
   QPointer<spoton_neighbor> neighbor = 0;
@@ -672,6 +692,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 	}
       catch(std::bad_alloc &exception)
 	{
+	  error = "memory allocation failure";
 	  neighbor = 0;
 	  spoton_misc::logError("spoton_listener::slotNewConnection(): "
 				"memory failure.");
@@ -681,6 +702,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 	  if(neighbor)
 	    neighbor->deleteLater();
 
+	  error = "odd exception";
 	  spoton_misc::logError("spoton_listener::slotNewConnection(): "
 				"critical failure.");
 	}
@@ -739,7 +761,10 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
     }
 
   if(!neighbor)
-    return;
+    {
+      spoton_kernel::s_remoteConnections.removeAll(address.toString());
+      return;
+    }
 
   connect(neighbor,
 	  SIGNAL(disconnected(void)),
@@ -770,6 +795,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 
   if(!s_crypt)
     {
+      spoton_kernel::s_remoteConnections.removeAll(address.toString());
       spoton_misc::logError
 	(QString("spoton_listener::slotNewConnection(): "
 		 "chat key is missing for %1:%2.").
@@ -1016,6 +1042,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
   else
     {
       neighbor->deleteLater();
+      spoton_kernel::s_remoteConnections.removeAll(address.toString());
       spoton_misc::logError
 	(QString("spoton_listener::slotNewConnection(): "
 		 "severe error(s). Purging neighbor "

@@ -350,6 +350,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotProtocolRadioToggled(bool)));
+  connect(m_ui.limitConnections,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotLimitConnections(bool)));
   connect(m_ui.ipv6Neighbor,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -1311,6 +1315,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/keepOnlyUserDefinedNeighbors", true).toBool());
   m_ui.kernelLogEvents->setChecked
     (m_settings.value("gui/kernelLogEvents", false).toBool());
+  m_ui.limitConnections->setChecked
+    (m_settings.value("gui/limitConnections", false).toBool());
   m_ui.postofficeCheckBox->setChecked
     (m_settings.value("gui/postoffice_enabled", false).toBool());
   m_ui.publishPeriodically->setChecked

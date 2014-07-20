@@ -97,6 +97,7 @@ QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
 QHash<qint64, int> spoton_kernel::s_connectionCounts;
 QList<QList<QByteArray > > spoton_kernel::s_institutionKeys;
 QList<QPair<QByteArray, QByteArray> > spoton_kernel::s_adaptiveEchoPairs;
+QList<QString> spoton_kernel::s_remoteConnections;
 QMultiMap<QDateTime, QByteArray> spoton_kernel::s_messagingCacheMap;
 QPointer<spoton_kernel> spoton_kernel::s_kernel = 0;
 QReadWriteLock spoton_kernel::s_adaptiveEchoPairsMutex;
@@ -1205,6 +1206,8 @@ void spoton_kernel::prepareNeighbors(void)
 
       s_messagingCache.clear();
       s_messagingCacheMap.clear();
+      locker.unlock();
+      s_remoteConnections.clear();
     }
 }
 
@@ -3932,4 +3935,12 @@ void spoton_kernel::discoverAdaptiveEchoPair
 	    }
 	}
     }
+}
+
+bool spoton_kernel::acceptRemoteConnection(const QHostAddress &address)
+{
+  if(setting("gui/limitConnections", false).toBool())
+    return !s_remoteConnections.contains(address.toString());
+  else
+    return true;
 }

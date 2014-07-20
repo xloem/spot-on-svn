@@ -311,6 +311,7 @@ class spoton: public QMainWindow
   void slotImportNeighbors(void);
   void slotImportPublicKeys(void);
   void slotJoinBuzzChannel(void);
+  void slotLimitConnections(bool state);
   void slotListenerCheckChange(bool state);
   void slotListenerFullEcho(void);
   void slotListenerHalfEcho(void);

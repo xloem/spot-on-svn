@@ -60,6 +60,7 @@ class spoton_kernel: public QObject
   static QHash<QString, spoton_crypt *> s_crypts;
   static QHash<qint64, int> s_connectionCounts;
   static QList<QPair<QByteArray, QByteArray> > s_adaptiveEchoPairs;
+  static QList<QString> s_remoteConnections;
   static QPointer<spoton_kernel> s_kernel;
   static QList<QByteArray> findBuzzKey(const QByteArray &data,
 				       const QByteArray &hash);
@@ -67,6 +68,7 @@ class spoton_kernel: public QObject
 					      const QByteArray &hash);
   static QVariant setting(const QString &name,
 			  const QVariant &defaultValue);
+  static bool acceptRemoteConnection(const QHostAddress &address);
   static bool messagingCacheContains(const QByteArray &data,
 				     const bool do_not_hash = false);
   static int interfaces(void);

@@ -871,6 +871,7 @@ spoton_neighbor::~spoton_neighbor()
 
   quit();
   wait(30000);
+  spoton_kernel::s_remoteConnections.removeAll(m_address.toString());
 }
 
 void spoton_neighbor::slotTimeout(void)
