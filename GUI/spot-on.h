@@ -108,6 +108,7 @@ class spoton: public QMainWindow
   QHash<QString, quint64> m_chatSequenceNumbers;
   Ui_spoton_mainwindow ui(void) const;
   static QPointer<spoton> s_gui;
+  static QString mapIconToEmoticon(const QString &content);
 
  private:
   static const int APPLY_GOLDBUG_TO_LETTER_ERROR_DATABASE = 1;
@@ -151,7 +152,6 @@ class spoton: public QMainWindow
   QByteArray copyMyRosettaPublicKey(void) const;
   QByteArray copyMyUrlPublicKey(void) const;
   QPixmap pixmapForCountry(const QString &country) const;
-  QString mapIconToEmoticon(const QString &content) const;
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000 && QT_VERSION < 0x050300
   bool event(QEvent *event);

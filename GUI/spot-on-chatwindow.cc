@@ -140,6 +140,7 @@ void spoton_chatwindow::slotSendMessage(void)
   QByteArray message;
   QByteArray name;
   QDateTime now(QDateTime::currentDateTime());
+  QSettings settings;
   QString error("");
 
   if(m_kernelSocket->state() != QAbstractSocket::ConnectedState)
@@ -166,7 +167,13 @@ void spoton_chatwindow::slotSendMessage(void)
      arg(now.toString("mm")).
      arg(now.toString("ss")));
   message.append(tr("<b>me:</b> "));
-  message.append(ui.message->toPlainText().trimmed());
+
+  if(settings.value("gui/enableChatEmoticons", false).toBool())
+    message.append
+      (spoton::mapIconToEmoticon(ui.message->toPlainText().trimmed()));
+  else
+    message.append(ui.message->toPlainText().trimmed());
+
   ui.messages->append(message);
   ui.messages->verticalScrollBar()->setValue
     (ui.messages->verticalScrollBar()->maximum());

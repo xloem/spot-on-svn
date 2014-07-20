@@ -81,7 +81,12 @@ void spoton::slotSendMessage(void)
      arg(now.toString("mm")).
      arg(now.toString("ss")));
   msg.append(tr("<b>me:</b> "));
-  msg.append(m_ui.message->toPlainText().trimmed());
+
+  if(m_settings.value("gui/enableChatEmoticons", false).toBool())
+    msg.append(mapIconToEmoticon(m_ui.message->toPlainText().trimmed()));
+  else
+    msg.append(m_ui.message->toPlainText().trimmed());
+
   m_ui.messages->append(msg);
   m_ui.messages->verticalScrollBar()->setValue
     (m_ui.messages->verticalScrollBar()->maximum());

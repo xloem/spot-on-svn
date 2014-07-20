@@ -1409,42 +1409,40 @@ void spoton::slotEnableChatEmoticons(bool state)
   settings.setValue("gui/enableChatEmoticons", state);
 }
 
-QString spoton::mapIconToEmoticon(const QString &content) const
+QString spoton::mapIconToEmoticon(const QString &content)
 {
   QMap<QString, QString> map;
   QString str(content);
 
   map[":-)"] = map[":)"] = map[":o)"] = map[":]"] = map[":>"] = map[":}"] =
     "<img src=\":/emoticons/smile.png\"></img>";
-  map[":-D"] = map[":D"] =
-    "<img src=\":/emoticons/laugh.png\"></img>";
+  map[":-D"] = map[":D"] = "<img src=\":/emoticons/laugh.png\"></img>";
   map[":-))"] = "<img src=\":/emoticons/happy.png\"></img>";
   map[">:["] = map[":-("] = map[":("] =
     map[":-<"] = map[":<"] = map[":-["] = map[":["] =
-    map[":{"] =
-    "<img src=\":/emoticons/sad.png\"></img>";
+    map[":{"] = "<img src=\":/emoticons/sad.png\"></img>";
   map[";)"] = "<img src=\":/emoticons/wink.png\"></img>";
-  map[":-||"] = map[">:("] =
-    "<img src=\":/emoticons/angry.png\"></img>";
-  map[":'-("] = map[":'("] =
-    "<img src=\":/emoticons/crying.png\"></img>";
+  map[">:("] = map[":-||"] = "<img src=\":/emoticons/angry.png\"></img>";
+  map[":'-("] = map[":'("] = "<img src=\":/emoticons/crying.png\"></img>";
   map[">:O"] = map[":-O"] = map[":O"] = map[":-o"] = map[":o"] =
     "<img src=\":/emoticons/shocked.png\"></img>";
-  map[":*"] = map[":^*"] = map["'}{'"] =
-    "<img src=\":/emoticons/kiss.png\"></img>";
+  map[":*"] = map[":^*"] = map["':-)(-:'"] =
+   "<img src=\":/emoticons/kiss.png\"></img>";
   map[">:P"] = map[":-P"] = map[":P"] = map[":-p"] = map[":p"] =
     "<img src=\":/emoticons/toungue.png\"></img>";
   map[">:\\"] = map[":-/"] = map[":\\"] =
     "<img src=\":/emoticons/confused.png\"></img>";
-  map[":|"] = map[":-|"] =
-    "<img src=\":/emoticons/neutral.png\"></img>";
+  map[":|"] = map[":-|"] = "<img src=\":/emoticons/neutral.png\"></img>";
   map["O:-)"] = map["0:-)"] = map["0:)"] = map["0;^)"] =
-    "<img src=\":/emoticons/angel.png\"></img>";
-  map["}:-)"] = map["}:)"] =
-    "<img src=\":/emoticons/devil.png\"></img>";
-  map["|;-)"] =
+   "<img src=\":/emoticons/angel.png\"></img>";
+  map["}:)"] = map["}:-)"] = "<img src=\":/emoticons/devil.png\"></img>";
+  map["o-)"] =  map["O-)"] = "<img src=\":/emoticons/cyclops.png\"></img>";
+  map["(t)"] = map["(T)"] = "<img src=\":/emoticons/phone.png\"></img>";
+  map["C:-)"] = map["c:-)"] = map["C:)"] = map["c:)"] =
+   "<img src=\":/emoticons/skywalker.png\"></img>";
+  map["8-)"] = map["B-)"] = map["|;-)"] =
     "<img src=\":/emoticons/glasses-cool.png\"></img>";
-  map["@}-;-'---"] = map["@>-->--"] =
+  map["@>-->--"] = map["@}-;-'---"] =
     "<img src=\":/emoticons/rose.png\"></img>";
 
   QMapIterator<QString, QString> it(map);

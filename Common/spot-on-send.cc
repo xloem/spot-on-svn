@@ -38,7 +38,7 @@ QByteArray spoton_send::adaptiveEchoAuthentication
 (const QByteArray &message,
  const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
-  QByteArray authenticated;  
+  QByteArray authenticated;
   bool ok = true;
 
   if(!adaptiveEchoPair.first.isEmpty() && !adaptiveEchoPair.second.isEmpty())
