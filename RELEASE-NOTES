@@ -19,6 +19,7 @@
      host address.
 6.   The method spoton_listener_tcp_server::incomingConnection() neglected
      to provide a peer port to newConnection().
+7.   Data containing valid A.E. information must not be super echoed.
 
 0.09.08 (07/16/2014)
 
