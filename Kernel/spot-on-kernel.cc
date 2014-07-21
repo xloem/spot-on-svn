@@ -3947,8 +3947,10 @@ bool spoton_kernel::acceptRemoteConnection(const QHostAddress &localAddress,
 	  if(localAddress.isNull() || localAddress.toString().isEmpty() ||
 	     peerAddress.isNull() || peerAddress.toString().isEmpty())
 	    return false;
-	  else
+	  else if(spoton_misc::isPrivateNetwork(localAddress))
 	    return true;
+	  else
+	    return false;
 	}
       else if(peerAddress.isNull() || peerAddress.toString().isEmpty())
 	return false;
