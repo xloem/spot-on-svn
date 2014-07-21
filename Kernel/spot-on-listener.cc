@@ -56,23 +56,13 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
   else
     {
       QHostAddress peerAddress;
-      sockaddr nativeAddress;
-#ifdef Q_OS_OS2
-      int length = sizeof(nativeAddress);
-#else
-      socklen_t length = sizeof(nativeAddress);
-#endif
+      quint16 peerPort = 0;
 
-      if(getpeername(socketDescriptor, &nativeAddress, &length) != 0)
-	spoton_misc::logError
-	  (QString("spoton_listener_tcp_server::incomingConnection: "
-		   "getpeername() failure for %1:%2.").
-	   arg(serverAddress().toString()).
-	   arg(serverPort()));
+      peerAddress = spoton_misc::peerAddressAndPort
+	(static_cast<int> (socketDescriptor), &peerPort);
 
-      peerAddress = QHostAddress(&nativeAddress);
-
-      if(!spoton_kernel::acceptRemoteConnection(peerAddress))
+      if(!spoton_kernel::acceptRemoteConnection(serverAddress(),
+						peerAddress))
 	{
 	  QAbstractSocket socket(QAbstractSocket::TcpSocket, this);
 
@@ -110,7 +100,7 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 	     arg(serverPort()));
 	}
       else
-	emit newConnection(socketDescriptor, peerAddress, 0);
+	emit newConnection(socketDescriptor, peerAddress, peerPort);
     }
 }
 
@@ -125,7 +115,8 @@ void spoton_listener_udp_server::slotReadyRead(void)
 
   readDatagram(0, 0, &peerAddress, &peerPort); // Discard the datagram.
 
-  if(!spoton_kernel::acceptRemoteConnection(peerAddress))
+  if(!spoton_kernel::acceptRemoteConnection(localAddress(),
+					    peerAddress))
     {
     }
   else if(!spoton_misc::
@@ -652,8 +643,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
   */
 
   if(spoton_kernel::setting("gui/limitConnections", false).toBool())
-    if(!address.toString().isEmpty())
-      spoton_kernel::s_remoteConnections.append(address.toString());
+    spoton_kernel::s_remoteConnections.append(address.toString());
 
   QByteArray certificate(m_certificate);
   QByteArray privateKey(m_privateKey);

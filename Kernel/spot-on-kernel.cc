@@ -3937,10 +3937,24 @@ void spoton_kernel::discoverAdaptiveEchoPair
     }
 }
 
-bool spoton_kernel::acceptRemoteConnection(const QHostAddress &address)
+bool spoton_kernel::acceptRemoteConnection(const QHostAddress &localAddress,
+					   const QHostAddress &peerAddress)
 {
   if(setting("gui/limitConnections", false).toBool())
-    return !s_remoteConnections.contains(address.toString());
+    {
+      if(localAddress == peerAddress)
+	{
+	  if(localAddress.isNull() || localAddress.toString().isEmpty() ||
+	     peerAddress.isNull() || peerAddress.toString().isEmpty())
+	    return false;
+	  else
+	    return true;
+	}
+      else if(peerAddress.isNull() || peerAddress.toString().isEmpty())
+	return false;
+      else
+	return !s_remoteConnections.contains(peerAddress.toString());
+    }
   else
     return true;
 }

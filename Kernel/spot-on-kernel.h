@@ -68,7 +68,8 @@ class spoton_kernel: public QObject
 					      const QByteArray &hash);
   static QVariant setting(const QString &name,
 			  const QVariant &defaultValue);
-  static bool acceptRemoteConnection(const QHostAddress &address);
+  static bool acceptRemoteConnection(const QHostAddress &localAddress,
+				     const QHostAddress &peerAddress);
   static bool messagingCacheContains(const QByteArray &data,
 				     const bool do_not_hash = false);
   static int interfaces(void);

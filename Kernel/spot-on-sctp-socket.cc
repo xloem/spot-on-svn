@@ -77,21 +77,6 @@ extern "C"
 #include "Common/spot-on-misc.h"
 #include "spot-on-sctp-socket.h"
 
-/*
-** Please read http://gcc.gnu.org/onlinedocs/gcc-4.4.1/gcc/Optimize-Options.html#Type_002dpunning.
-*/
-
-#ifdef SPOTON_SCTP_ENABLED
-typedef union type_punning_sockaddr
-{
-    struct sockaddr sockaddr;
-    struct sockaddr_in sockaddr_in;
-    struct sockaddr_in6 sockaddr_in6;
-    struct sockaddr_storage sockaddr_storage;
-}
-type_punning_sockaddr_t;
-#endif
-
 spoton_sctp_socket::spoton_sctp_socket(QObject *parent):QObject(parent)
 {
   m_bufferSize = m_writeBufferSize = 65535;
@@ -154,8 +139,8 @@ QHostAddress spoton_sctp_socket::localAddressAndPort(quint16 *port) const
     {
       if(peeraddr.ss_family == AF_INET)
 	{
-	  type_punning_sockaddr_t *sockaddr =
-	    (type_punning_sockaddr_t *) &peeraddr;
+	  spoton_type_punning_sockaddr_t *sockaddr =
+	    (spoton_type_punning_sockaddr_t *) &peeraddr;
 
 	  if(sockaddr)
 	    {
@@ -168,8 +153,8 @@ QHostAddress spoton_sctp_socket::localAddressAndPort(quint16 *port) const
 	}
       else
 	{
-	  type_punning_sockaddr_t *sockaddr =
-	    (type_punning_sockaddr_t *) &peeraddr;
+	  spoton_type_punning_sockaddr_t *sockaddr =
+	    (spoton_type_punning_sockaddr_t *) &peeraddr;
 
 	  if(sockaddr)
 	    {
@@ -212,51 +197,7 @@ QHostAddress spoton_sctp_socket::peerAddressAndPort(quint16 *port) const
   if(m_socketDescriptor < 0)
     return QHostAddress();
 
-  QHostAddress address;
-  socklen_t length = 0;
-  struct sockaddr_storage peeraddr;
-
-  length = sizeof(peeraddr);
-
-  if(getpeername(m_socketDescriptor, (struct sockaddr *) &peeraddr,
-		 &length) == 0)
-    {
-      if(peeraddr.ss_family == AF_INET)
-	{
-	  type_punning_sockaddr_t *sockaddr =
-	    (type_punning_sockaddr_t *) &peeraddr;
-
-	  if(sockaddr)
-	    {
-	      address.setAddress
-		(ntohl(sockaddr->sockaddr_in.sin_addr.s_addr));
-
-	      if(port)
-		*port = ntohs(sockaddr->sockaddr_in.sin_port);
-	    }
-	}
-      else
-	{
-	  type_punning_sockaddr_t *sockaddr =
-	    (type_punning_sockaddr_t *) &peeraddr;
-
-	  if(sockaddr)
-	    {
-	      Q_IPV6ADDR temp;
-
-	      memcpy(&temp.c, &sockaddr->sockaddr_in6.sin6_addr.s6_addr,
-		     sizeof(temp.c));
-	      address.setAddress(temp);
-	      address.setScopeId
-		(QString::number(sockaddr->sockaddr_in6.sin6_scope_id));
-
-	      if(port)
-		*port = ntohs(sockaddr->sockaddr_in6.sin6_port);
-	    }
-	}
-    }
-
-  return address;
+  return spoton_misc::peerAddressAndPort(m_socketDescriptor, port);
 #else
   Q_UNUSED(port);
   return QHostAddress();

@@ -36,13 +36,36 @@
 #include <QString>
 #include <QVariant>
 
+#ifdef Q_OS_WIN32
+extern "C"
+{
+#include <winsock2.h>
+}
+#else
+extern "C"
+{
+#include <netinet/in.h>
+}
+#endif
+
+/*
+** Please read http://gcc.gnu.org/onlinedocs/gcc-4.4.1/gcc/Optimize-Options.html#Type_002dpunning.
+*/
+
+typedef union spoton_type_punning_sockaddr
+{
+    struct sockaddr sockaddr;
+    struct sockaddr_in sockaddr_in;
+    struct sockaddr_in6 sockaddr_in6;
+    struct sockaddr_storage sockaddr_storage;
+}
+spoton_type_punning_sockaddr_t;
+
 class spoton_crypt;
 
 class spoton_misc
 {
  public:
-  static QPair<QByteArray, QByteArray> findGeminiInCosmos
-    (const QByteArray &data, const QByteArray &hash, spoton_crypt *crypt);
   static QByteArray findPublicKeyHashGivenHash(const QByteArray &randomBytes,
 					       const QByteArray &hash,
 					       const QByteArray &hashKey,
@@ -54,8 +77,12 @@ class spoton_misc
     (const QByteArray &signaturePublicKeyHash, spoton_crypt *crypt);
   static QByteArray signaturePublicKeyFromPublicKeyHash
     (const QByteArray &publicKeyHash, spoton_crypt *crypt);
+  static QHostAddress peerAddressAndPort(const int socketDescriptor,
+					 quint16 *port);
   static QPair<QByteArray, QByteArray> decryptedAdaptiveEchoPair
     (const QPair<QByteArray, QByteArray>, spoton_crypt *crypt);
+  static QPair<QByteArray, QByteArray> findGeminiInCosmos
+    (const QByteArray &data, const QByteArray &hash, spoton_crypt *crypt);
   static QSqlDatabase database(QString &connectionName);
   static QString countryCodeFromIPAddress(const QString &ipAddress);
   static QString countryCodeFromName(const QString &country);

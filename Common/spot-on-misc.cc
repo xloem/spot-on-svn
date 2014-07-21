@@ -1955,7 +1955,9 @@ bool spoton_misc::isAcceptedIP(const QHostAddress &address,
 			       const qint64 id,
 			       spoton_crypt *crypt)
 {
-  if(!crypt)
+  if(address.isNull() || address.toString().isEmpty())
+    return false;
+  else if(!crypt)
     return false;
 
   QString connectionName("");
@@ -2761,8 +2763,10 @@ bool spoton_misc::isValidInstitutionMagnet(const QByteArray &magnet)
 bool spoton_misc::isIpBlocked(const QHostAddress &address,
 			      spoton_crypt *crypt)
 {
-  if(!crypt)
-    return false;
+  if(address.isNull() || address.toString().isEmpty())
+    return true;
+  else if(!crypt)
+    return true;
 
   QString connectionName("");
   qint64 count = -1;
@@ -2818,4 +2822,54 @@ QPair<QByteArray, QByteArray> spoton_misc::decryptedAdaptiveEchoPair
     return QPair<QByteArray, QByteArray> (t1, t2);
   else
     return QPair<QByteArray, QByteArray> ();
+}
+
+QHostAddress spoton_misc::peerAddressAndPort(const int socketDescriptor,
+					     quint16 *port)
+{
+  QHostAddress address;
+  socklen_t length = 0;
+  struct sockaddr_storage peeraddr;
+
+  length = sizeof(peeraddr);
+
+  if(getpeername(socketDescriptor, (struct sockaddr *) &peeraddr,
+		 &length) == 0)
+    {
+      if(peeraddr.ss_family == AF_INET)
+	{
+	  spoton_type_punning_sockaddr_t *sockaddr =
+	    (spoton_type_punning_sockaddr_t *) &peeraddr;
+
+	  if(sockaddr)
+	    {
+	      address.setAddress
+		(ntohl(sockaddr->sockaddr_in.sin_addr.s_addr));
+
+	      if(port)
+		*port = ntohs(sockaddr->sockaddr_in.sin_port);
+	    }
+	}
+      else
+	{
+	  spoton_type_punning_sockaddr_t *sockaddr =
+	    (spoton_type_punning_sockaddr_t *) &peeraddr;
+
+	  if(sockaddr)
+	    {
+	      Q_IPV6ADDR temp;
+
+	      memcpy(&temp.c, &sockaddr->sockaddr_in6.sin6_addr.s6_addr,
+		     sizeof(temp.c));
+	      address.setAddress(temp);
+	      address.setScopeId
+		(QString::number(sockaddr->sockaddr_in6.sin6_scope_id));
+
+	      if(port)
+		*port = ntohs(sockaddr->sockaddr_in6.sin6_port);
+	    }
+	}
+    }
+
+  return address;
 }
