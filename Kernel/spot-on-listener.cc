@@ -643,7 +643,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
   */
 
   if(spoton_kernel::setting("gui/limitConnections", false).toBool())
-    spoton_kernel::s_remoteConnections.append(address.toString());
+    spoton_kernel::s_remoteConnections.append(address);
 
   QByteArray certificate(m_certificate);
   QByteArray privateKey(m_privateKey);
@@ -752,7 +752,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 
   if(!neighbor)
     {
-      spoton_kernel::s_remoteConnections.removeAll(address.toString());
+      spoton_kernel::s_remoteConnections.removeOne(address);
       return;
     }
 
@@ -785,7 +785,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 
   if(!s_crypt)
     {
-      spoton_kernel::s_remoteConnections.removeAll(address.toString());
+      spoton_kernel::s_remoteConnections.removeOne(address);
       spoton_misc::logError
 	(QString("spoton_listener::slotNewConnection(): "
 		 "chat key is missing for %1:%2.").
@@ -1032,7 +1032,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
   else
     {
       neighbor->deleteLater();
-      spoton_kernel::s_remoteConnections.removeAll(address.toString());
+      spoton_kernel::s_remoteConnections.removeOne(address);
       spoton_misc::logError
 	(QString("spoton_listener::slotNewConnection(): "
 		 "severe error(s). Purging neighbor "

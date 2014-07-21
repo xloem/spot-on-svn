@@ -527,6 +527,9 @@ void spoton_gui_server::slotReceivedBuzzMessage
 (const QByteArrayList &list,
  const QByteArrayList &keys)
 {
+  if(spoton_kernel::buzzKeyCount() == 0 || spoton_kernel::interfaces() == 0)
+    return;
+
   /*
   ** keys[0]: Encryption Key
   ** keys[1]: Encryption Type
@@ -574,6 +577,9 @@ void spoton_gui_server::slotReceivedBuzzMessage
 
 void spoton_gui_server::slotReceivedChatMessage(const QByteArray &message)
 {
+  if(spoton_kernel::interfaces() == 0)
+    return;
+
   /*
   ** The message array contains a unique message authentication code.
   */

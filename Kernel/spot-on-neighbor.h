@@ -157,6 +157,8 @@ class spoton_neighbor: public QThread
   void addToBytesWritten(const int bytesWritten);
   void processData(void);
   void setId(const qint64 id);
+  void write(const QByteArray &data, const qint64 id,
+	     const QPairByteArrayByteArray &adaptiveEchoPair);
 
  private:
   QByteArray m_accountName;
@@ -294,8 +296,6 @@ class spoton_neighbor: public QThread
 				      const QString &transport,
 				      const QString &orientation);
   void slotReadyRead(void);
-  void slotReceivedMessage(const QByteArray &data, const qint64 id,
-			   const QPairByteArrayByteArray &adaptiveEchoPair);
   void slotResetKeepAlive(void);
   void slotRetrieveMail(const QByteArrayList &list,
 			const QString &messageType);

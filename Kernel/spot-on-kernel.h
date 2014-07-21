@@ -59,8 +59,8 @@ class spoton_kernel: public QObject
   ~spoton_kernel();
   static QHash<QString, spoton_crypt *> s_crypts;
   static QHash<qint64, int> s_connectionCounts;
+  static QList<QHostAddress> s_remoteConnections;
   static QList<QPair<QByteArray, QByteArray> > s_adaptiveEchoPairs;
-  static QList<QString> s_remoteConnections;
   static QPointer<spoton_kernel> s_kernel;
   static QList<QByteArray> findBuzzKey(const QByteArray &data,
 				       const QByteArray &hash);
@@ -72,6 +72,7 @@ class spoton_kernel: public QObject
 				     const QHostAddress &peerAddress);
   static bool messagingCacheContains(const QByteArray &data,
 				     const bool do_not_hash = false);
+  static int buzzKeyCount(void);
   static int interfaces(void);
   static void addBuzzKey(const QByteArray &key,
 			 const QByteArray &channelType,
@@ -166,6 +167,8 @@ class spoton_kernel: public QObject
 				   const QString &messageType);
   void slotPublicizeAllListenersPlaintext(void);
   void slotPublicizeListenerPlaintext(const qint64 oid);
+  void slotReceivedMessage(const QByteArray &data, const qint64 id,
+			   const QPairByteArrayByteArray &adaptiveEchoPair);
   void slotRequestScramble(void);
   void slotRetrieveMail(void);
   void slotScramble(void);
@@ -187,8 +190,6 @@ class spoton_kernel: public QObject
 				  const quint16 port,
 				  const QString &transport,
 				  const QString &orientation);
-  void receivedMessage(const QByteArray &data, const qint64 id,
-		       const QPairByteArrayByteArray &adaptiveEchoPair);
   void retrieveMail(const QByteArrayList &list, const QString &messageType);
   void sendBuzz(const QByteArray &buzz);
   void sendMessage(const QByteArray &message,

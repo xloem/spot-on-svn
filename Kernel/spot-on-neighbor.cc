@@ -871,7 +871,7 @@ spoton_neighbor::~spoton_neighbor()
 
   quit();
   wait(30000);
-  spoton_kernel::s_remoteConnections.removeAll(m_address.toString());
+  spoton_kernel::s_remoteConnections.removeOne(m_address);
 }
 
 void spoton_neighbor::slotTimeout(void)
@@ -2010,10 +2010,8 @@ void spoton_neighbor::slotSendMessage
     }
 }
 
-void spoton_neighbor::slotReceivedMessage
-(const QByteArray &data,
- const qint64 id,
- const QPairByteArrayByteArray &adaptiveEchoPair)
+void spoton_neighbor::write(const QByteArray &data, const qint64 id,
+			    const QPairByteArrayByteArray &adaptiveEchoPair)
 {
   /*
   ** A neighbor (id) received a message. This neighbor now needs
@@ -2034,7 +2032,7 @@ void spoton_neighbor::slotReceivedMessage
 	  {
 	    if(write(data.constData(), data.length()) != data.length())
 	      spoton_misc::logError
-		(QString("spoton_neighbor::slotReceivedMessage(): write() "
+		(QString("spoton_neighbor::write(): write() "
 			 "error for %1:%2.").
 		 arg(m_address.toString()).
 		 arg(m_port));

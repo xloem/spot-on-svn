@@ -95,9 +95,9 @@ QHash<QByteArray, char> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
 QHash<qint64, int> spoton_kernel::s_connectionCounts;
+QList<QHostAddress> spoton_kernel::s_remoteConnections;
 QList<QList<QByteArray > > spoton_kernel::s_institutionKeys;
 QList<QPair<QByteArray, QByteArray> > spoton_kernel::s_adaptiveEchoPairs;
-QList<QString> spoton_kernel::s_remoteConnections;
 QMultiMap<QDateTime, QByteArray> spoton_kernel::s_messagingCacheMap;
 QPointer<spoton_kernel> spoton_kernel::s_kernel = 0;
 QReadWriteLock spoton_kernel::s_adaptiveEchoPairsMutex;
@@ -304,6 +304,8 @@ int main(int argc, char *argv[])
 
 spoton_kernel::spoton_kernel(void):QObject(0)
 {
+  qRegisterMetaType<QAbstractSocket::SocketError>
+    ("QAbstractSocket::SocketError");
   qRegisterMetaType<QByteArrayList> ("QByteArrayList");
   qRegisterMetaType<QHostAddress> ("QHostAddress");
   qRegisterMetaType<QPairByteArrayByteArray> ("QPairByteArrayByteArray");
@@ -1767,15 +1769,6 @@ void spoton_kernel::connectSignalsToNeighbor
 					    const qint64)),
 	  Qt::UniqueConnection);
   connect(neighbor,
-	  SIGNAL(receivedMessage(const QByteArray &,
-				 const qint64,
-				 const QPairByteArrayByteArray &)),
-	  this,
-	  SIGNAL(receivedMessage(const QByteArray &,
-				 const qint64,
-				 const QPairByteArrayByteArray &)),
-	  Qt::UniqueConnection);
-  connect(neighbor,
 	  SIGNAL(retrieveMail(const QByteArray &,
 			      const QByteArray &,
 			      const QByteArray &,
@@ -1809,11 +1802,11 @@ void spoton_kernel::connectSignalsToNeighbor
 					      const QString &,
 					      const QString &)),
 	  Qt::UniqueConnection);
-  connect(this,
+  connect(neighbor,
 	  SIGNAL(receivedMessage(const QByteArray &,
 				 const qint64,
 				 const QPairByteArrayByteArray &)),
-	  neighbor,
+	  this,
 	  SLOT(slotReceivedMessage(const QByteArray &,
 				   const qint64,
 				   const QPairByteArrayByteArray &)),
@@ -3940,23 +3933,49 @@ void spoton_kernel::discoverAdaptiveEchoPair
 bool spoton_kernel::acceptRemoteConnection(const QHostAddress &localAddress,
 					   const QHostAddress &peerAddress)
 {
-  if(setting("gui/limitConnections", false).toBool())
+  if(peerAddress.isNull() || peerAddress.toString().isEmpty())
+    return false;
+  else if(localAddress == peerAddress)
     {
-      if(localAddress == peerAddress)
-	{
-	  if(localAddress.isNull() || localAddress.toString().isEmpty() ||
-	     peerAddress.isNull() || peerAddress.toString().isEmpty())
-	    return false;
-	  else if(spoton_misc::isPrivateNetwork(localAddress))
-	    return true;
-	  else
-	    return false;
-	}
-      else if(peerAddress.isNull() || peerAddress.toString().isEmpty())
+      if(localAddress.isNull() || localAddress.toString().isEmpty() ||
+	 peerAddress.isNull() || peerAddress.toString().isEmpty())
 	return false;
+      else if(spoton_misc::isPrivateNetwork(localAddress))
+	return true;
       else
-	return !s_remoteConnections.contains(peerAddress.toString());
+	return false;
     }
   else
-    return true;
+    {
+      if(setting("gui/limitConnections", 10).toInt() >
+	 s_remoteConnections.count(peerAddress))
+	return true;
+      else
+	return false;
+    }
+}
+
+int spoton_kernel::buzzKeyCount(void)
+{
+  QReadLocker locker(&s_buzzKeysMutex);
+
+  return s_buzzKeys.size();
+}
+
+void spoton_kernel::slotReceivedMessage
+(const QByteArray &data, const qint64 id,
+ const QPairByteArrayByteArray &adaptiveEchoPair)
+{
+  QHashIterator<qint64, QPointer<spoton_neighbor> > it
+    (m_neighbors);
+  spoton_neighbor *neighbor = qobject_cast<spoton_neighbor *> (sender());
+
+  while(it.hasNext())
+    {
+      it.next();
+
+      if(it.value())
+	if(it.value() != neighbor)
+	  it.value()->write(data, id, adaptiveEchoPair);
+    }
 }

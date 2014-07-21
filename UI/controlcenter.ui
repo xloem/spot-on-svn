@@ -1972,12 +1972,28 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="limitConnections">
-                    <property name="toolTip">
-                     <string>Allow only one connection from a given IP address. Local connections are not limited.</string>
-                    </property>
+                   <widget class="QLabel" name="label_86">
                     <property name="text">
-                     <string>&amp;Limit connections.</string>
+                     <string>&amp;Limit connections</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>limitConnections</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QSpinBox" name="limitConnections">
+                    <property name="toolTip">
+                     <string>Limit the number of connections per client IP. Set to zero for unlimited.</string>
+                    </property>
+                    <property name="minimum">
+                     <number>1</number>
+                    </property>
+                    <property name="maximum">
+                     <number>50</number>
+                    </property>
+                    <property name="value">
+                     <number>10</number>
                     </property>
                    </widget>
                   </item>

@@ -1409,13 +1409,13 @@ void spoton::slotEnableChatEmoticons(bool state)
   settings.setValue("gui/enableChatEmoticons", state);
 }
 
-void spoton::slotLimitConnections(bool state)
+void spoton::slotLimitConnections(int value)
 {
-  m_settings["gui/limitConnections"] = state;
+  m_settings["gui/limitConnections"] = value;
 
   QSettings settings;
 
-  settings.setValue("gui/limitConnections", state);
+  settings.setValue("gui/limitConnections", value);
 }
 
 QString spoton::mapIconToEmoticon(const QString &content)
