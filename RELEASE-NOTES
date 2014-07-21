@@ -11,7 +11,14 @@
 2.   Some emoticons.
 3.   Removed ALTER TABLE statements from spot-on-misc.cc.
 4.   Limit the number of connections from identical IPs to one.
-     Default is disabled. Please see the Listeners tab.
+     Default is disabled. Please see the Listeners tab. Local to local
+     connections are not limited.
+5.   The method spoton_misc::isAcceptedIP() must return false if it's
+     provided an invalid host address. The method
+     spoton_misc::isIpBlocked() must return true if it's provided an invalid
+     host address.
+6.   The method spoton_listener_tcp_server::incomingConnection() neglected
+     to provide a peer port to newConnection().
 
 0.09.08 (07/16/2014)
 
