@@ -14,9 +14,6 @@
    <iconset resource="../Icons/icons.qrc">
     <normaloff>:/Logo/spoton-button-32.png</normaloff>:/Logo/spoton-button-32.png</iconset>
   </property>
-  <property name="toolTip">
-   <string>Allow only one connection from a given IP address.</string>
-  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <property name="spacing">
@@ -73,7 +70,7 @@
              <x>0</x>
              <y>0</y>
              <width>1056</width>
-             <height>627</height>
+             <height>626</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -454,7 +451,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1046</width>
-                <height>617</height>
+                <height>616</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -942,7 +939,7 @@
              <x>0</x>
              <y>0</y>
              <width>1056</width>
-             <height>627</height>
+             <height>626</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1942,7 +1939,7 @@
              <x>0</x>
              <y>0</y>
              <width>1056</width>
-             <height>627</height>
+             <height>626</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -1976,6 +1973,9 @@
                   </item>
                   <item>
                    <widget class="QCheckBox" name="limitConnections">
+                    <property name="toolTip">
+                     <string>Allow only one connection from a given IP address. Local connections are not limited.</string>
+                    </property>
                     <property name="text">
                      <string>&amp;Limit connections.</string>
                     </property>
@@ -2497,8 +2497,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>260</width>
-                     <height>808</height>
+                     <width>265</width>
+                     <height>826</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2916,7 +2916,7 @@
              <x>0</x>
              <y>0</y>
              <width>1056</width>
-             <height>627</height>
+             <height>626</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -3978,7 +3978,7 @@
              <x>0</x>
              <y>0</y>
              <width>1056</width>
-             <height>627</height>
+             <height>626</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4132,8 +4132,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1041</width>
-             <height>841</height>
+             <width>1038</width>
+             <height>848</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -5151,7 +5151,7 @@
              <x>0</x>
              <y>0</y>
              <width>1056</width>
-             <height>627</height>
+             <height>626</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -6064,7 +6064,7 @@
              <x>0</x>
              <y>0</y>
              <width>1056</width>
-             <height>627</height>
+             <height>626</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -6543,7 +6543,7 @@
              <x>0</x>
              <y>0</y>
              <width>1056</width>
-             <height>627</height>
+             <height>626</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -6803,7 +6803,7 @@
      <x>0</x>
      <y>0</y>
      <width>1080</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

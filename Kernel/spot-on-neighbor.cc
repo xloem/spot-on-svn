@@ -1599,7 +1599,8 @@ void spoton_neighbor::processData(void)
 	  if(spoton_kernel::setting("gui/scramblerEnabled", false).toBool())
 	    emit scrambleRequest();
 
-	  if(spoton_kernel::setting("gui/superEcho", false).toBool())
+	  if(discoveredAdaptiveEchoPair == QPair<QByteArray, QByteArray> () &&
+	     spoton_kernel::setting("gui/superEcho", false).toBool())
 	    emit receivedMessage
 	      (originalData, m_id, QPair<QByteArray, QByteArray> ());
 	  else if(m_echoMode == "full")
