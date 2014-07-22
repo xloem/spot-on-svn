@@ -421,7 +421,7 @@ void spoton_starbeam_writer::append(const QByteArray &data)
 
   if(spoton_kernel::setting("gui/etpReceivers", false).toBool())
     {
-      QByteArray bytes(QByteArray::fromBase64(data));
+      QByteArray bytes(data.trimmed());
       QByteArray hash;
       bool new_data = false;
       bool ok = true;

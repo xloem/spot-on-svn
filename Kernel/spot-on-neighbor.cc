@@ -2155,7 +2155,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 
   if(length == data.length())
     {
-      data = QByteArray::fromBase64(data);
+      data = data.trimmed();
 
       QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
@@ -2402,7 +2402,7 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 
   if(length == data.length())
     {
-      data = QByteArray::fromBase64(data);
+      data = data.trimmed();
 
       QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
@@ -2560,7 +2560,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 
   if(length == data.length())
     {
-      data = QByteArray::fromBase64(data);
+      data = data.trimmed();
 
       QList<QByteArray> list(data.split('\n'));
 
@@ -2867,7 +2867,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 
   if(length == data.length())
     {
-      data = QByteArray::fromBase64(data);
+      data = data.trimmed();
 
       QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
@@ -3042,7 +3042,7 @@ void spoton_neighbor::process0002a
 
   if(length == data.length())
     {
-      data = QByteArray::fromBase64(data);
+      data = data.trimmed();
 
       QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
@@ -3184,7 +3184,7 @@ void spoton_neighbor::process0002b
 
   if(length == data.length())
     {
-      data = QByteArray::fromBase64(data);
+      data = data.trimmed();
 
       QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
@@ -3325,7 +3325,7 @@ void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
 
   if(length == data.length())
     {
-      data = QByteArray::fromBase64(data);
+      data = data.trimmed();
 
       QList<QByteArray> list(data.split('\n'));
 
@@ -3387,7 +3387,7 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
 
   if(length == data.length())
     {
-      data = QByteArray::fromBase64(data);
+      data = data.trimmed();
 
       QList<QByteArray> list(data.split('\n'));
 
@@ -3430,7 +3430,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 
   if(length == data.length())
     {
-      data = QByteArray::fromBase64(data);
+      data = data.trimmed();
 
       QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
@@ -3758,7 +3758,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 
   if(length == data.length())
     {
-      data = QByteArray::fromBase64(data);
+      data = data.trimmed();
 
       QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
@@ -3832,7 +3832,7 @@ void spoton_neighbor::process0040a(int length, const QByteArray &dataIn,
 
   if(length == data.length())
     {
-      data = QByteArray::fromBase64(data);
+      data = data.trimmed();
 
       QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
@@ -3917,7 +3917,7 @@ void spoton_neighbor::process0040b(int length, const QByteArray &dataIn,
 
   if(length == data.length())
     {
-      data = QByteArray::fromBase64(data);
+      data = data.trimmed();
 
       QByteArray originalData(data);
       QList<QByteArray> list(data.split('\n'));
@@ -4017,7 +4017,7 @@ void spoton_neighbor::process0050(int length, const QByteArray &dataIn)
 
   if(length == data.length())
     {
-      data = QByteArray::fromBase64(data);
+      data = data.trimmed();
 
       QList<QByteArray> list(data.split('\n'));
 
@@ -4148,7 +4148,7 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 
   if(length == data.length())
     {
-      data = QByteArray::fromBase64(data);
+      data = data.trimmed();
 
       QList<QByteArray> list(data.split('\n'));
 
@@ -5521,7 +5521,7 @@ QString spoton_neighbor::findMessageType
  QList<QByteArray> &symmetricKeys,
  QPair<QByteArray, QByteArray> &discoveredAdaptiveEchoPair)
 {
-  QList<QByteArray> list(QByteArray::fromBase64(data).split('\n'));
+  QList<QByteArray> list(data.trimmed().split('\n'));
   QString type("");
   int interfaces = spoton_kernel::interfaces();
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
