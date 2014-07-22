@@ -1984,7 +1984,7 @@
                   <item>
                    <widget class="QSpinBox" name="limitConnections">
                     <property name="toolTip">
-                     <string>Limit the number of connections per client IP. Set to zero for unlimited.</string>
+                     <string>Limit the number of connections per client IP address.</string>
                     </property>
                     <property name="minimum">
                      <number>1</number>
