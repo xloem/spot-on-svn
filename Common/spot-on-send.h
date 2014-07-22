@@ -61,7 +61,6 @@ class spoton_send
   static QByteArray message0002b
     (const QByteArray &message,
      const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
-  static QByteArray message0010(const QByteArray &message);
   static QByteArray message0011(const QByteArray &keyType,
 				const QByteArray &name,
 				const QByteArray &publicKey,
