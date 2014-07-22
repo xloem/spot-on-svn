@@ -29,6 +29,11 @@
 #include "spot-on-defines.h"
 #include "ui_adaptiveechoprompt.h"
 
+static bool lengthGreaterThan(const QString &string1, const QString &string2)
+{
+  return string1.toLower() > string2.toLower();
+}
+
 void spoton::slotDiscoverMissingLinks(void)
 {
   if(!m_starbeamAnalyzer)
@@ -1420,10 +1425,11 @@ void spoton::slotLimitConnections(int value)
 
 QString spoton::mapIconToEmoticon(const QString &content)
 {
+  QList<QString> list;
   QMap<QString, QString> map;
   QString str(content);
 
-  map[":-)"] = map[":)"] = map[":o)"] = map[":]"] = map[":>"] = map[":}"] =
+  map[":-)"] = map[":)"] = map[":O)"] = map[":]"] = map[":>"] = map[":}"] =
     "<img src=\":/emoticons/smile.png\"></img>";
   map[":-D"] = map[":D"] = "<img src=\":/emoticons/laugh.png\"></img>";
   map[":-))"] = "<img src=\":/emoticons/happy.png\"></img>";
@@ -1435,14 +1441,14 @@ QString spoton::mapIconToEmoticon(const QString &content)
   map[":'-("] = map[":'("] = "<img src=\":/emoticons/crying.png\"></img>";
   map[">:O"] = map[":-O"] = map[":O"] =
     "<img src=\":/emoticons/shocked.png\"></img>";
-  map[":*"] = map[":^*"] = map["':-)(-:'"] =
+  map[":*"] = map[":^*"] = map[":-)(-:"] =
    "<img src=\":/emoticons/kiss.png\"></img>";
   map[">:P"] = map[":-P"] = map[":P"] =
     "<img src=\":/emoticons/tongue.png\"></img>";
   map[">:\\"] = map[":-/"] = map[":\\"] =
     "<img src=\":/emoticons/confused.png\"></img>";
   map[":|"] = map[":-|"] = "<img src=\":/emoticons/neutral.png\"></img>";
-  map["O:-)"] = map["0:-)"] = map["0:)"] = map["0;^)"] =
+  map["O:-)"] =
    "<img src=\":/emoticons/angel.png\"></img>";
   map["}:)"] = map["}:-)"] = "<img src=\":/emoticons/devil.png\"></img>";
   map["O-)"] = "<img src=\":/emoticons/cyclops.png\"></img>";
@@ -1453,15 +1459,11 @@ QString spoton::mapIconToEmoticon(const QString &content)
   map["@>-->--"] = map["@}-;-'---"] =
     "<img src=\":/emoticons/rose.png\"></img>";
 
-  QMapIterator<QString, QString> it(map);
+  list = map.keys();
+  qSort(list.begin(), list.end(), lengthGreaterThan);
 
-  while(it.hasNext())
-    {
-      it.next();
-
-      if(str.toUpper().contains(it.key()))
-	str.replace(it.key(), it.value(), Qt::CaseInsensitive);
-    }
+  for(int i = 0; i < list.size(); i++)
+    str.replace(list.at(i), map[list.at(i)], Qt::CaseInsensitive);
 
   return str;
 }
