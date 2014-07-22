@@ -21,6 +21,10 @@
      to provide a peer port to newConnection().
 7.   Data containing valid A.E. information must not be super echoed.
 8.   Eliminated the bridge signal spoton_kernel::receivedMessage().
+9.   Removed excess base-64 computations. The changes will save computing and
+     networking resources. For example, a 2485-byte array may require 3316 bytes
+     of storage. That's like a 25.06% consumption increase. Previous compatibility lost.
+     Apologies.
 
 0.09.08 (07/16/2014)
 
