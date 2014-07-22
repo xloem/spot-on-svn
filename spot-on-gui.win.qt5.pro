@@ -36,7 +36,7 @@ LIBS		+= -L..\\..\\libSpotOn -L..\\..\\libSpotOn\\Libraries.win32 \
 		   -L..\\..\\libGeoIP\\Libraries.win32 \
 		   -L..\\..\\libOpenSsl\\Libraries.win32 \
 		   -lGeoIP-1 -leay32 -lgcrypt-11 -lgpg-error-0 \
-		   -lpthread -lspoton -lssl32
+		   -lpthread -lspoton -lssl32 -lws2_32
 PRE_TARGETDEPS = libspoton.dll
 
 FORMS           = UI\\adaptiveechoprompt.ui \
