@@ -399,7 +399,7 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 
 	    cout << "Passphrase, please: ";
 	    cout.flush();
-	    input = cin.readLine(64);
+	    input = cin.readLine(spoton_common::PASSPHRASE_MAXIMUM_LENGTH);
 
 	    for(int i = input.length() - 1; i >= 0; i--)
 	      if(!input.at(i).isPrint())
@@ -3850,7 +3850,12 @@ void spoton_kernel::discoverAdaptiveEchoPair
   ** H(E(x) + E(timestamp)) + E(timestamp).
   */
 
-  QByteArray messageCode(last.mid(0, 64)); // SHA-512, etc., output size.
+  QByteArray messageCode
+    (last.mid(0,
+	      spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES)); /*
+							   ** SHA-512, etc.,
+							   ** output size.
+							   */
 
   if(messageCode.isEmpty())
     return;
@@ -3890,7 +3895,8 @@ void spoton_kernel::discoverAdaptiveEchoPair
       ** 64 = SHA-512, etc., output size.
       */
 
-      computedHash = crypt.keyedHash(d + last.mid(64), &ok);
+      computedHash = crypt.keyedHash
+	(d + last.mid(spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES), &ok);
 
       if(!ok)
 	continue;
@@ -3902,7 +3908,10 @@ void spoton_kernel::discoverAdaptiveEchoPair
 	  ** 64 = SHA-512, etc., output size.
 	  */
 
-	  QByteArray timestamp(crypt.decrypted(last.mid(64), &ok));
+	  QByteArray timestamp
+	    (crypt.decrypted(last.
+			     mid(spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES),
+			     &ok));
 
 	  if(!ok)
 	    continue;

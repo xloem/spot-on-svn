@@ -1255,6 +1255,10 @@ spoton::spoton(void):QMainWindow()
   m_ui.institutionName->setMaxLength
     (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
   m_ui.institutionPostalAddress->setMaxLength(256);
+  m_ui.passphrase1->setMaxLength
+    (spoton_common::PASSPHRASE_MAXIMUM_LENGTH);
+   m_ui.passphrase2->setMaxLength
+    (spoton_common::PASSPHRASE_MAXIMUM_LENGTH);
   m_ui.transmitNova->setMaxLength
     (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
   m_ui.channelType->clear();
