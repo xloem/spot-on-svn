@@ -3783,6 +3783,8 @@ void spoton::slotSetIcons(void)
 				    arg(iconSet)));
   m_ui.deleteAcceptedIP->setIcon(QIcon(QString(":/%1/clear.png").
 				       arg(iconSet)));
+  m_ui.saveMOTD->setIcon(QIcon(QString(":/%1/ok.png").
+			       arg(iconSet)));
 
   // Login
 
