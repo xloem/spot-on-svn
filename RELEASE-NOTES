@@ -1,4 +1,4 @@
-0.09.09 (07/23/2014)
+0.09.09 (07/26/2014)
 
 1.   Include timestamps when computing A.E. hashes. This will help
      avoid some replay attacks. The delta between timestamps must be
@@ -11,8 +11,8 @@
 2.   Some emoticons.
 3.   Removed ALTER TABLE statements from spot-on-misc.cc.
 4.   Limit the number of connections per client IP.
-     Default is 10. The maximum is 50. Please see the Listeners tab. Local to local
-     connections are not limited.
+     Default is 10. The maximum is 50. Please see the Listeners tab.
+     Local to local connections are not limited.
 5.   The method spoton_misc::isAcceptedIP() must return false if it's
      provided an invalid host address. The method
      spoton_misc::isIpBlocked() must return true if it's provided an invalid
@@ -20,11 +20,12 @@
 6.   The method spoton_listener_tcp_server::incomingConnection() neglected
      to provide a peer port to newConnection().
 7.   Data containing valid A.E. information must not be super echoed.
-8.   Eliminated the bridge signal spoton_kernel::receivedMessage().
+8.   Eliminated the expensive bridge signal spoton_kernel::receivedMessage().
 9.   Removed excess base-64 computations. The changes will save computing and
-     networking resources. For example, a 2485-byte array may require 3316 bytes
-     of storage. That's like a 25.06% consumption increase. Previous compatibility lost.
-     Apologies.
+     networking resources. For example, a 2485-byte array may require
+     3316 bytes of storage. That's like a 25.06% consumption increase.
+     Previous compatibility lost. Apologies.
+10.  Maximum passphrase length has been set to 128.
 
 0.09.08 (07/16/2014)
 
