@@ -98,7 +98,7 @@ QHash<qint64, int> spoton_kernel::s_connectionCounts;
 QList<QHostAddress> spoton_kernel::s_remoteConnections;
 QList<QList<QByteArray > > spoton_kernel::s_institutionKeys;
 QList<QPair<QByteArray, QByteArray> > spoton_kernel::s_adaptiveEchoPairs;
-QMultiMap<QDateTime, QByteArray> spoton_kernel::s_messagingCacheMap;
+QMultiMap<uint, QByteArray> spoton_kernel::s_messagingCacheMap;
 QPointer<spoton_kernel> spoton_kernel::s_kernel = 0;
 QReadWriteLock spoton_kernel::s_adaptiveEchoPairsMutex;
 QReadWriteLock spoton_kernel::s_buzzKeysMutex;
@@ -3115,10 +3115,10 @@ void spoton_kernel::purgeMessagingCache(void)
   ** Remove old cache items.
   */
 
-  QDateTime now(QDateTime::currentDateTime());
-  QMutableMapIterator<QDateTime, QByteArray> it(s_messagingCacheMap);
+  QMutableMapIterator<uint, QByteArray> it(s_messagingCacheMap);
   int i = 0;
   int maximum = qMax(250, qCeil(0.15 * s_messagingCacheMap.size()));
+  uint now = QDateTime::currentDateTime().toTime_t();
 
   while(it.hasNext())
     {
@@ -3129,7 +3129,7 @@ void spoton_kernel::purgeMessagingCache(void)
 
       it.next();
 
-      if(it.key().secsTo(now) > 30)
+      if(now - it.key() > 30)
 	{
 	  s_messagingCache.remove(it.value());
 	  it.remove();
@@ -3201,7 +3201,7 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data,
 	  ** Remove an old entry.
 	  */
 
-	  QMutableMapIterator<QDateTime, QByteArray> it(s_messagingCacheMap);
+	  QMutableMapIterator<uint, QByteArray> it(s_messagingCacheMap);
 
 	  if(it.hasNext())
 	    {
@@ -3213,7 +3213,7 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data,
 
       s_messagingCache.insert(hash, 0);
       s_messagingCacheMap.insert
-	(QDateTime::currentDateTime().addMSecs(add_msecs), hash);
+	(QDateTime::currentDateTime().addMSecs(add_msecs).toTime_t(), hash);
     }
 }
 
