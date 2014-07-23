@@ -511,6 +511,8 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
       else
 	m_useAccounts = false;
     }
+  else
+    m_useAccounts = false;
 
   if(m_transport == "tcp")
     m_useSsl = true;
@@ -937,9 +939,14 @@ void spoton_neighbor::slotTimeout(void)
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT status_control, sticky, echo_mode, "
-		      "maximum_buffer_size, maximum_content_length, "
-		      "account_name, account_password, ae_token, "
+	query.prepare("SELECT status_control, "
+		      "sticky, "
+		      "echo_mode, "
+		      "maximum_buffer_size, "
+		      "maximum_content_length, "
+		      "account_name, "
+		      "account_password, "
+		      "ae_token, "
 		      "ae_token_type "
 		      "FROM neighbors WHERE OID = ?");
 	query.bindValue(0, m_id);
@@ -1006,15 +1013,34 @@ void spoton_neighbor::slotTimeout(void)
 			       !spoton_crypt::
 			       memcmp(password, m_accountPassword))
 			      {
+				bool ok = true;
+
 				m_accountName = name;
 				m_accountPassword = password;
+				name = s_crypt->decryptedAfterAuthenticated
+				  (name, &ok);
 
-				/*
-				** What if m_accountName or m_accountPassword
-				** is empty?
-				*/
+				if(ok)
+				  password = s_crypt->
+				    decryptedAfterAuthenticated
+				    (password, &ok);
 
-				m_accountTimer.start();
+				if(ok)
+				  m_useAccounts = !name.isEmpty() &&
+				    !password.isEmpty();
+				else
+				  m_useAccounts = false;
+
+				if(m_useAccounts)
+				  {
+				    m_accountTimer.start();
+				    m_authenticationTimer.start();
+				  }
+				else
+				  {
+				    m_accountTimer.stop();
+				    m_authenticationTimer.stop();
+				  }
 			      }
 			  }
 		      }
