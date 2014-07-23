@@ -3769,12 +3769,16 @@ void spoton::slotSetIcons(void)
 
   // Listeners
 
+  m_ui.addAEToken->setIcon(QIcon(QString(":/%1/add.png").
+				 arg(iconSet)));
   m_ui.addAcceptedIP->setIcon(QIcon(QString(":/%1/add.png").
 				    arg(iconSet)));
   m_ui.addAccount->setIcon(QIcon(QString(":/%1/add.png").
 				 arg(iconSet)));
   m_ui.addListener->setIcon(QIcon(QString(":/%1/add-listener.png").
 				  arg(iconSet)));
+  m_ui.deleteAEToken->setIcon(QIcon(QString(":/%1/clear.png").
+				    arg(iconSet)));
   m_ui.deleteAccount->setIcon(QIcon(QString(":/%1/clear.png").
 				    arg(iconSet)));
   m_ui.deleteAcceptedIP->setIcon(QIcon(QString(":/%1/clear.png").
