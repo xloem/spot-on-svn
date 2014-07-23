@@ -385,11 +385,18 @@ void spoton_mailer::slotReap(void)
 	      bool ok = true;
 
 	      dateTime = QDateTime::fromString
-		(s_crypt->decryptedAfterAuthenticated
-		 (QByteArray::fromBase64(query.value(0).toByteArray()),
-		  &ok).constData(), Qt::ISODate);
+		(s_crypt->
+		 decryptedAfterAuthenticated(QByteArray::
+					     fromBase64(query.value(0).
+							toByteArray()),
+					     &ok).constData(),
+		 Qt::ISODate);
 
-	      if(dateTime.daysTo(now) > days)
+	      if(!ok)
+		dateTime = QDateTime();
+
+	      if(dateTime.isNull() || !dateTime.isValid() ||
+		 dateTime.daysTo(now) > days)
 		{
 		  QSqlQuery deleteQuery(db);
 

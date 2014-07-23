@@ -112,6 +112,8 @@ Completed Items
 79.    Echo star systems.
 80.    Adaptive Echo. See also Echo Star Systems. Configured Spot nodes
        will direct traffic based on secret tokens.
+81.    Limit client connections by IP address.
+82.    Purge items from post_office if their dates are invalid.
 
 Ignored Items
 
@@ -147,6 +149,8 @@ Ignored Items
        tend to be skewed.
 19.    Per request, provide an automatic StarBeam rewind mechanism with a
        timer.
+20.    Account credentials should not be recorded via reversible encryption.
+       Derive keys? I really like the two-step mutual authentication.
 
 Remaining Items
 
@@ -174,8 +178,7 @@ Remaining Items
 18.    Perform calling over geminis.
 19.    Counting users is possible.
 20.    Add support for crypto++.
-21.    Account credentials should not be recorded via reversible encryption.
-       Derive keys? I really like the two-step mutual authentication.
+21.    1-N SCTP support.
 22.    Add log filters.
 23.    Lots of kernel activity may cause libgcrypt fatigue.
 24.    There is some redundant deciphering of data: findMessageType()
@@ -197,8 +200,5 @@ Remaining Items
 31.    Artificial pauses. Suppose an inbound packet requires t0 time to
        process. Pause the current thread for T - t0 seconds, where T is some
        reasonable time.
-32.    Purge items from post_office if their dates are invalid.
-33.    IMAP and Rosetta.
-34.    Weather feeds.
-35.    1-N SCTP support.
-36.    Limit client connections by IP address.
+32.    IMAP and Rosetta.
+33.    Weather feeds.
