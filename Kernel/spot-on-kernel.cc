@@ -91,7 +91,6 @@ extern "C"
 
 QDateTime spoton_kernel::s_institutionLastModificationTime;
 QHash<QByteArray, QList<QByteArray> > spoton_kernel::s_buzzKeys;
-QHash<QByteArray, char> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
 QHash<qint64, int> spoton_kernel::s_connectionCounts;
@@ -590,8 +589,6 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(fileChanged(const QString &)),
 	  this,
 	  SLOT(slotSettingsChanged(const QString &)));
-  s_messagingCache.reserve
-    (setting("gui/congestionCost", 10000).toInt());
   m_messagingCachePurgeTimer.start();
 
   if(setting("gui/etpReceivers", false).toBool())
@@ -613,7 +610,6 @@ spoton_kernel::~spoton_kernel()
 
   QWriteLocker locker(&s_messagingCacheMutex);
 
-  s_messagingCache.clear();
   s_messagingCacheMap.clear();
   locker.unlock();
   m_future.waitForFinished();
@@ -1206,7 +1202,6 @@ void spoton_kernel::prepareNeighbors(void)
     {
       QWriteLocker locker(&s_messagingCacheMutex);
 
-      s_messagingCache.clear();
       s_messagingCacheMap.clear();
       locker.unlock();
       s_remoteConnections.clear();
@@ -1685,15 +1680,6 @@ void spoton_kernel::slotUpdateSettings(void)
   locker1.unlock();
   spoton_misc::enableLog
     (setting("gui/kernelLogEvents", false).toBool());
-
-  int cost = setting("gui/congestionCost", 10000).toInt();
-
-  QWriteLocker locker2(&s_messagingCacheMutex);
-
-  if(cost != s_messagingCache.capacity())
-    s_messagingCache.reserve(cost);
-
-  locker2.unlock();
 
   if(setting("gui/etpReceivers", false).toBool())
     {
@@ -3097,7 +3083,7 @@ void spoton_kernel::slotMessagingCachePurge(void)
     {
       QReadLocker locker(&s_messagingCacheMutex);
 
-      bool isEmpty = s_messagingCache.isEmpty();
+      bool isEmpty = s_messagingCacheMap.isEmpty();
 
       locker.unlock();
 
@@ -3130,10 +3116,7 @@ void spoton_kernel::purgeMessagingCache(void)
       it.next();
 
       if(now - it.key() > 30)
-	{
-	  s_messagingCache.remove(it.value());
-	  it.remove();
-	}
+	it.remove();
       else
 	break;
     }
@@ -3163,7 +3146,7 @@ bool spoton_kernel::messagingCacheContains(const QByteArray &data,
 
   QReadLocker locker(&s_messagingCacheMutex);
 
-  return s_messagingCache.contains(hash);
+  return s_messagingCacheMap.values().contains(hash);
 }
 
 void spoton_kernel::messagingCacheAdd(const QByteArray &data,
@@ -3193,9 +3176,9 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data,
 
   QWriteLocker locker(&s_messagingCacheMutex);
 
-  if(!s_messagingCache.contains(hash))
+  if(!s_messagingCacheMap.values().contains(hash))
     {
-      if(cost <= s_messagingCache.size())
+      if(cost <= s_messagingCacheMap.size())
 	{
 	  /*
 	  ** Remove an old entry.
@@ -3206,12 +3189,10 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data,
 	  if(it.hasNext())
 	    {
 	      it.next();
-	      s_messagingCache.remove(it.value());
 	      it.remove();
 	    }
 	}
 
-      s_messagingCache.insert(hash, 0);
       s_messagingCacheMap.insert
 	(QDateTime::currentDateTime().addMSecs(add_msecs).toTime_t(), hash);
     }
@@ -3524,7 +3505,6 @@ void spoton_kernel::updateStatistics(void)
 	QSqlQuery query(db);
 	qint64 v1 = 0;
 	qint64 v2 = 0;
-	qint64 v3 = 0;
 
 	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
@@ -3543,17 +3523,14 @@ void spoton_kernel::updateStatistics(void)
 
 	QReadLocker locker(&s_messagingCacheMutex);
 
-	v1 = s_messagingCache.size();
-	v2 = s_messagingCacheMap.size();
+	v1 = s_messagingCacheMap.size();
 	locker.unlock();
-	v3 = qMax(1, setting("gui/congestionCost", 10000).toInt());
+	v2 = qMax(1, setting("gui/congestionCost", 10000).toInt());
 	query.bindValue
 	  (0,
 	   QString::
 	   number(100.0 * static_cast<double> (v1) /
-		  static_cast<double> (v3) +
-		  100.0 * static_cast<double> (v2) /
-		  static_cast<double> (v3), 'f', 2).
+		  static_cast<double> (v2), 'f', 2).
 	   append("%"));
 	query.exec();
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "

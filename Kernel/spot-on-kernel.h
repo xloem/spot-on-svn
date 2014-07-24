@@ -110,7 +110,6 @@ class spoton_kernel: public QObject
   spoton_starbeam_writer *m_starbeamWriter;
   static QDateTime s_institutionLastModificationTime;
   static QHash<QByteArray, QList<QByteArray> > s_buzzKeys;
-  static QHash<QByteArray, char> s_messagingCache;
   static QHash<QString, QVariant> s_settings;
   static QList<QList<QByteArray > > s_institutionKeys;
   static QMultiMap<uint, QByteArray> s_messagingCacheMap;
