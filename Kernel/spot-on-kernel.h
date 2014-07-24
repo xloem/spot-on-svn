@@ -112,7 +112,7 @@ class spoton_kernel: public QObject
   static QHash<QByteArray, QList<QByteArray> > s_buzzKeys;
   static QHash<QString, QVariant> s_settings;
   static QList<QList<QByteArray > > s_institutionKeys;
-  static QMultiMap<uint, QByteArray> s_messagingCacheMap;
+  static QHash<QByteArray, uint> s_messagingCache;
   static QReadWriteLock s_adaptiveEchoPairsMutex;
   static QReadWriteLock s_buzzKeysMutex;
   static QReadWriteLock s_institutionKeysMutex;
