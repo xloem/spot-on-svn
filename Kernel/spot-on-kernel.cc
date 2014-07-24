@@ -3115,8 +3115,9 @@ void spoton_kernel::purgeMessagingCache(void)
 
       it.next();
 
-      if(now - it.value() > 30)
-	it.remove();
+      if(now > it.value())
+	if(now - it.value() > 30)
+	  it.remove();
     }
 }
 
