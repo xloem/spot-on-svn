@@ -453,7 +453,6 @@ QStringList spoton_crypt::hashTypes(void)
 
   types << "sha512"
 	<< "stribog512"
-	<< "tiger"
 	<< "whirlpool";
 
   for(int i = types.size() - 1; i >= 0; i--)
