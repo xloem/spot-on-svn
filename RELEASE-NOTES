@@ -34,6 +34,7 @@
      account credentials modified.
 14.  Removed the extra hash congestion container. Also, instead of storing
      QDateTime objects, store uint values.
+15.  Removed support for the Tiger hash algorithm.
 
 0.09.08 (07/16/2014)
 
