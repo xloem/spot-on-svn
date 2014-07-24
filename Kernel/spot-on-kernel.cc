@@ -1546,8 +1546,7 @@ void spoton_kernel::slotMessageReceivedFromUI
       if(ok)
 	{
 	  if(setting("gui/chatSendMethod",
-		     "Artificial_GET").toString().
-	     trimmed() == "Artificial_GET")
+		     "Artificial_GET").toString() == "Artificial_GET")
 	    emit sendMessage(data, spoton_send::ARTIFICIAL_GET);
 	  else
 	    emit sendMessage(data, spoton_send::NORMAL_POST);
@@ -1955,7 +1954,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 	      QByteArray hashKey;
 	      QByteArray keyInformation;
 	      QByteArray name(setting("gui/nodeName", "unknown").
-			      toByteArray().trimmed());
+			      toByteArray());
 	      QByteArray symmetricKey;
 	      QByteArray symmetricKeyAlgorithm(cipherType);
 	      size_t symmetricKeyLength = spoton_crypt::cipherKeyLength
@@ -2123,7 +2122,7 @@ void spoton_kernel::slotScramble(void)
   if(ok)
     {
       if(setting("gui/chatSendMethod",
-		 "Artificial_GET").toString().trimmed() == "Artificial_GET")
+		 "Artificial_GET").toString() == "Artificial_GET")
 	emit sendMessage(data, spoton_send::ARTIFICIAL_GET);
       else
 	emit sendMessage(data, spoton_send::NORMAL_POST);

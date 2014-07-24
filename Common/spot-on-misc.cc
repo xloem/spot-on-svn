@@ -61,7 +61,7 @@ quint64 spoton_misc::s_dbId = 0;
 
 QString spoton_misc::homePath(void)
 {
-  QByteArray homepath(qgetenv("SPOTON_HOME").trimmed());
+  QByteArray homepath(qgetenv("SPOTON_HOME"));
 
   if(homepath.isEmpty())
 #ifdef Q_OS_WIN32
@@ -722,7 +722,7 @@ bool spoton_misc::saveFriendshipBundle(const QByteArray &keyType,
 	query.bindValue(4, "unknown");
       else
 	query.bindValue
-	  (4, name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
+	  (4, name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH));
     }
   else if(ok) // Signature keys will be labeled as their type.
     query.bindValue(4, crypt->keyedHash(keyType, &ok).toBase64());
@@ -1436,7 +1436,7 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
     return;
 
   QString connectionName("");
-  QString transport(p_transport.toLower().trimmed());
+  QString transport(p_transport.toLower());
 
 #ifdef SPOTON_SCTP_ENABLED
   if(!(transport == "sctp" || transport == "tcp" || transport == "udp"))
@@ -1765,14 +1765,14 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = -1;
 
   settings.insert("gui/guiExternalIpInterval", integer);
-  str = settings.value("gui/hashType").toString().trimmed();
+  str = settings.value("gui/hashType").toString();
 
   if(!(str == "sha512" || str == "stribog512" ||
        str == "tiger" || str == "whirlpool"))
     str = "sha512";
 
   settings.insert("gui/hashType", str);
-  str = settings.value("gui/iconSet", "nouve").toString().trimmed();
+  str = settings.value("gui/iconSet", "nouve").toString();
 
   if(!(str == "nouve" || str == "nuvola"))
     str = "nouve";
@@ -1786,7 +1786,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 10000;
 
   settings.insert("gui/iterationCount", integer);
-  str = settings.value("gui/kernelCipherType").toString().trimmed();
+  str = settings.value("gui/kernelCipherType").toString();
 
   if(!(str == "aes256" || str == "camellia256" ||
        str == "gost28147" ||
@@ -2189,12 +2189,12 @@ bool spoton_misc::allParticipantsHaveGeminis(void)
 
 bool spoton_misc::isValidBuzzMagnetData(const QByteArray &data)
 {
-  QList<QByteArray> list(data.trimmed().split('\n'));
+  QList<QByteArray> list(data.split('\n'));
   bool valid = false;
 
   for(int i = 0; i < 7; i++)
     {
-      QByteArray str(QByteArray::fromBase64(list.value(i).trimmed()));
+      QByteArray str(QByteArray::fromBase64(list.value(i)));
 
       if(i == 0) // Channel
 	{
@@ -2273,14 +2273,14 @@ bool spoton_misc::isValidBuzzMagnet(const QByteArray &magnet)
   ** Validate the magnet.
   */
 
-  if(magnet.trimmed().startsWith("magnet:?"))
-    list = magnet.trimmed().mid(qstrlen("magnet:?")).split('&');
+  if(magnet.startsWith("magnet:?"))
+    list = magnet.mid(qstrlen("magnet:?")).split('&');
   else
     goto done_label;
 
   while(!list.isEmpty())
     {
-      QString str(list.takeFirst().trimmed());
+      QString str(list.takeFirst());
 
       if(str.startsWith("ct="))
 	{
@@ -2388,14 +2388,14 @@ bool spoton_misc::isValidStarBeamMagnet(const QByteArray &magnet)
   ** Validate the magnet.
   */
 
-  if(magnet.trimmed().startsWith("magnet:?"))
-    list = magnet.trimmed().mid(qstrlen("magnet:?")).split('&');
+  if(magnet.startsWith("magnet:?"))
+    list = magnet.mid(qstrlen("magnet:?")).split('&');
   else
     goto done_label;
 
   while(!list.isEmpty())
     {
-      QString str(list.takeFirst().trimmed());
+      QString str(list.takeFirst());
 
       if(str.startsWith("ct="))
 	{
@@ -2476,14 +2476,14 @@ bool spoton_misc::isValidStarBeamMissingLinksMagnet(const QByteArray &magnet)
   ** Validate the magnet.
   */
 
-  if(magnet.trimmed().startsWith("magnet:?"))
-    list = magnet.trimmed().mid(qstrlen("magnet:?")).split('&');
+  if(magnet.startsWith("magnet:?"))
+    list = magnet.mid(qstrlen("magnet:?")).split('&');
   else
     goto done_label;
 
   while(!list.isEmpty())
     {
-      QString str(list.takeFirst().trimmed());
+      QString str(list.takeFirst());
 
       if(str.startsWith("fn="))
 	{
@@ -2690,14 +2690,14 @@ bool spoton_misc::isValidInstitutionMagnet(const QByteArray &magnet)
   ** Validate the magnet.
   */
 
-  if(magnet.trimmed().startsWith("magnet:?"))
-    list = magnet.trimmed().mid(qstrlen("magnet:?")).split('&');
+  if(magnet.startsWith("magnet:?"))
+    list = magnet.mid(qstrlen("magnet:?")).split('&');
   else
     goto done_label;
 
   while(!list.isEmpty())
     {
-      QString str(list.takeFirst().trimmed());
+      QString str(list.takeFirst());
 
       if(str.startsWith("in="))
 	{

@@ -96,7 +96,7 @@ void spoton_mailer::slotTimeout(void)
       {
 	QByteArray name
 	  (spoton_kernel::setting("gui/emailName", "unknown").
-	   toByteArray().trimmed());
+	   toByteArray());
 	QSqlQuery query(db1);
 
 	/*

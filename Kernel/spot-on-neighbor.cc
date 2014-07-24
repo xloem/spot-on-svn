@@ -1489,7 +1489,7 @@ void spoton_neighbor::processData(void)
 	    {
 	      if(m_sctpSocket)
 		{
-		  if(m_sctpSocket->peerAddress().scopeId().trimmed().isEmpty())
+		  if(m_sctpSocket->peerAddress().scopeId().isEmpty())
 		    emit authenticationRequested
 		      (QString("%1:%2").
 		       arg(m_sctpSocket->peerAddress().toString()).
@@ -1503,7 +1503,7 @@ void spoton_neighbor::processData(void)
 		}
 	      else if(m_tcpSocket)
 		{
-		  if(m_tcpSocket->peerAddress().scopeId().trimmed().isEmpty())
+		  if(m_tcpSocket->peerAddress().scopeId().isEmpty())
 		    emit authenticationRequested
 		      (QString("%1:%2").
 		       arg(m_tcpSocket->peerAddress().toString()).
@@ -1517,7 +1517,7 @@ void spoton_neighbor::processData(void)
 		}
 	      else if(m_udpSocket)
 		{
-		  if(m_udpSocket->peerAddress().scopeId().trimmed().isEmpty())
+		  if(m_udpSocket->peerAddress().scopeId().isEmpty())
 		    emit authenticationRequested
 		      (QString("%1:%2").
 		       arg(m_udpSocket->peerAddress().toString()).
@@ -1619,7 +1619,8 @@ void spoton_neighbor::processData(void)
 	  else
 	    messageType.clear();
 
-	  if(messageType.isEmpty())
+	  if(messageType.isEmpty() &&
+	     data.trimmed().split('\n').size() == 3)
 	    spoton_kernel::s_kernel->processPotentialStarBeamData(data);
 
 	  if(spoton_kernel::setting("gui/scramblerEnabled", false).toBool())
@@ -1631,7 +1632,8 @@ void spoton_neighbor::processData(void)
 	      (originalData, m_id, QPair<QByteArray, QByteArray> ());
 	  else if(m_echoMode == "full")
 	    {
-	      if(messageType == "0001b" && data.split('\n').size() == 7)
+	      if(messageType == "0001b" &&
+		 data.trimmed().split('\n').size() == 7)
 		emit receivedMessage
 		  (originalData, m_id, discoveredAdaptiveEchoPair);
 	      else if(messageType.isEmpty() || messageType == "0002b")
@@ -1961,15 +1963,15 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 	  if(keyType == "chat")
 	    myName = spoton_kernel::setting("gui/nodeName",
 					    "unknown").
-	      toByteArray().trimmed();
+	      toByteArray();
 	  else if(keyType == "email")
 	    myName = spoton_kernel::setting("gui/emailName",
 					    "unknown").
-	      toByteArray().trimmed();
+	      toByteArray();
 	  else
 	    myName = spoton_kernel::setting("gui/urlName",
 					    "unknown").
-	      toByteArray().trimmed();
+	      toByteArray();
 
 	  QByteArray myPublicKey;
 	  QByteArray mySignature;
@@ -3806,7 +3808,7 @@ void spoton_neighbor::process0030(int length, const QByteArray &dataIn)
 	  QString statusControl
 	    (spoton_kernel::setting("gui/acceptPublicizedListeners",
 				    "ignored").toString().
-	     toLower().trimmed());
+	     toLower());
 
 	  if(statusControl == "connected" || statusControl == "disconnected")
 	    {
@@ -4450,7 +4452,7 @@ void spoton_neighbor::process0070(int length, const QByteArray &dataIn)
     {
       data = QByteArray::fromBase64(data);
 
-      QString motd(QString::fromUtf8(data.trimmed().constData()));
+      QString motd(QString::fromUtf8(data.constData()));
 
       if(motd.isEmpty())
 	motd = "Welcome to Spot-On.";
@@ -4603,7 +4605,7 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 			      "public_key_hash = ?");
 		query.bindValue
 		  (0,
-		   name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
+		   name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH));
 		query.bindValue(1, publicKeyHash.toBase64());
 		query.exec();
 	      }
@@ -4641,7 +4643,7 @@ void spoton_neighbor::saveParticipantStatus(const QByteArray &name,
 			      "public_key_hash = ?");
 		query.bindValue
 		  (0,
-		   name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed());
+		   name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH));
 
 		if(status == "away" || status == "busy" ||
 		   status == "offline" || status == "online")
@@ -5042,13 +5044,13 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 
 	if(ok)
 	  query.bindValue
-	    (3, s_crypt->keyedHash(message.trimmed() + subject.trimmed(),
+	    (3, s_crypt->keyedHash(message + subject,
 				   &ok).toBase64());
 
 	if(ok)
-	  if(!message.trimmed().isEmpty())
+	  if(!message.isEmpty())
 	    query.bindValue
-	      (4, s_crypt->encryptedThenHashed(message.trimmed(),
+	      (4, s_crypt->encryptedThenHashed(message,
 					       &ok).toBase64());
 
 	if(ok)
@@ -5056,9 +5058,9 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 	    (5, s_crypt->encryptedThenHashed(QByteArray(), &ok).toBase64());
 
 	if(ok)
-	  if(!name.trimmed().isEmpty())
+	  if(!name.isEmpty())
 	    query.bindValue
-	      (6, s_crypt->encryptedThenHashed(name.trimmed(),
+	      (6, s_crypt->encryptedThenHashed(name,
 					       &ok).toBase64());
 
 	if(ok)
@@ -5746,8 +5748,8 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data)
 						value("chat")));
 
       if(spoton_kernel::setting("gui/chatSendMethod",
-				"Artificial_GET").toString().
-	 trimmed() == "Artificial_GET")
+				"Artificial_GET").
+	 toString() == "Artificial_GET")
 	message = spoton_send::message0000a(data,
 					    spoton_send::
 					    ARTIFICIAL_GET,
