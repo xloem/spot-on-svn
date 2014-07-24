@@ -3519,7 +3519,7 @@ void spoton_kernel::updateStatistics(void)
 	query.exec();
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
-		      "VALUES ('Congestion Containers Percent Used', ?)");
+		      "VALUES ('Congestion Container Percent Used', ?)");
 
 	QReadLocker locker(&s_messagingCacheMutex);
 
