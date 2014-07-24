@@ -32,7 +32,8 @@
 13.  spoton_neighbor's m_useAccounts variable must be set correctly if
      an active neighbor that has not yet authenticated an account has its
      account credentials modified.
-14.  Decreased memory usage of congestion containers.
+14.  Removed the extra hash congestion container. Also, instead of storing
+     QDateTime objects, store uint values.
 
 0.09.08 (07/16/2014)
 
