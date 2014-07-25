@@ -195,6 +195,9 @@ void spoton_rosetta::slotSetIcons(void)
   QString iconSet(settings.value("gui/iconSet", "nuove").toString().
 		  trimmed());
 
+  if(!(iconSet == "everaldo" || iconSet == "nouve" || iconSet == "nuvola"))
+    iconSet = "nouve";
+
   ui.add->setIcon(QIcon(QString(":/%1/add.png").arg(iconSet)));
   ui.clearContact->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
   ui.clearInput->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));

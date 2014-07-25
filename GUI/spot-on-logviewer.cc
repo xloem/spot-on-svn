@@ -157,6 +157,9 @@ void spoton_logviewer::slotSetIcons(void)
   QString iconSet(settings.value("gui/iconSet", "nuove").toString().
 		  trimmed());
 
+  if(!(iconSet == "everaldo" || iconSet == "nouve" || iconSet == "nuvola"))
+    iconSet = "nouve";
+
   ui.clear->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
 }
 
