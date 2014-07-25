@@ -36,6 +36,8 @@
      QDateTime objects, store uint values.
 15.  Removed support for the Tiger hash algorithm.
 16.  Use trimmed() wisely.
+17.  The various slotSetIcons() methods must validate the gui/iconSet
+     value.
 
 0.09.08 (07/16/2014)
 
