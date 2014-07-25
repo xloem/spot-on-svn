@@ -134,7 +134,7 @@ void spoton_logviewer::slotTimeout(void)
 
       file.seek(qMax(static_cast<long long int> (0),
 		     file.size() - 256 * 1024));
-      ui.log->setPlainText(file.read(256 * 1024));
+      ui.log->setPlainText(file.read(256 * 1024).trimmed());
       ui.log->verticalScrollBar()->setValue(vValue);
       file.close();
     }
@@ -154,8 +154,7 @@ void spoton_logviewer::keyPressEvent(QKeyEvent *event)
 void spoton_logviewer::slotSetIcons(void)
 {
   QSettings settings;
-  QString iconSet(settings.value("gui/iconSet", "nuove").toString().
-		  trimmed());
+  QString iconSet(settings.value("gui/iconSet", "nuove").toString());
 
   if(!(iconSet == "everaldo" || iconSet == "nouve" || iconSet == "nuvola"))
     iconSet = "nouve";

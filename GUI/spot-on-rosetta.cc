@@ -192,8 +192,7 @@ void spoton_rosetta::keyPressEvent(QKeyEvent *event)
 void spoton_rosetta::slotSetIcons(void)
 {
   QSettings settings;
-  QString iconSet(settings.value("gui/iconSet", "nuove").toString().
-		  trimmed());
+  QString iconSet(settings.value("gui/iconSet", "nuove").toString());
 
   if(!(iconSet == "everaldo" || iconSet == "nouve" || iconSet == "nuvola"))
     iconSet = "nouve";
@@ -246,13 +245,15 @@ void spoton_rosetta::slotClear(void)
 
 void spoton_rosetta::slotSaveName(void)
 {
-  QString str(ui.name->text().trimmed());
+  QString str(ui.name->text());
 
-  if(str.isEmpty())
+  if(str.trimmed().isEmpty())
     {
       str = "unknown";
       ui.name->setText(str);
     }
+  else
+    ui.name->setText(str.trimmed());
 
   QSettings settings;
 
@@ -280,8 +281,7 @@ QByteArray spoton_rosetta::copyMyRosettaPublicKey(void) const
   QSettings settings;
   bool ok = true;
 
-  name = settings.value("gui/rosettaName", "unknown").toByteArray().
-    trimmed();
+  name = settings.value("gui/rosettaName", "unknown").toByteArray();
   mPublicKey = m_eCrypt->publicKey(&ok);
 
   if(ok)
@@ -322,9 +322,9 @@ void spoton_rosetta::slotAddContact(void)
     }
 
   QByteArray key
-    (ui.newContact->toPlainText().trimmed().toLatin1());
+    (ui.newContact->toPlainText().toLatin1());
 
-  if(key.trimmed().isEmpty())
+  if(key.isEmpty())
     {
       QMessageBox::critical(this, tr("%1: Error").
 			    arg(SPOTON_APPLICATION_NAME),
@@ -562,7 +562,13 @@ void spoton_rosetta::populateContacts(void)
 	while(it.hasNext())
 	  {
 	    it.next();
-	    ui.contacts->addItem(it.key(), it.value());
+
+	    QString str(it.key().trimmed());
+
+	    if(str.isEmpty())
+	      ui.contacts->addItem("unknown", it.value());
+	    else
+	      ui.contacts->addItem(str, it.value());
 	  }
       }
 
@@ -599,7 +605,7 @@ void spoton_rosetta::slotConvert(void)
 	  goto done_label1;
 	}
 
-      if(ui.input->toPlainText().trimmed().isEmpty())
+      if(ui.input->toPlainText().isEmpty())
 	{
 	  error = tr("Please provide an actual message!");
 	  goto done_label1;
@@ -655,14 +661,14 @@ void spoton_rosetta::slotConvert(void)
 
 	  if(ok)
 	    signature = m_sCrypt->digitalSignature
-	      (myPublicKeyHash + ui.input->toPlainText().trimmed().toUtf8(),
+	      (myPublicKeyHash + ui.input->toPlainText().toUtf8(),
 	       &ok);
 	}
 
       if(ok)
 	data = crypt->encrypted
 	  (myPublicKeyHash.toBase64() + "\n" +
-	   ui.input->toPlainText().trimmed().toUtf8().toBase64() + "\n" +
+	   ui.input->toPlainText().toUtf8().toBase64() + "\n" +
 	   signature.toBase64(), &ok);
 
       if(ok)
@@ -699,7 +705,7 @@ void spoton_rosetta::slotConvert(void)
     {
       QByteArray cipherType;
       QByteArray computedHash;
-      QByteArray data(ui.input->toPlainText().trimmed().toLatin1());
+      QByteArray data(ui.input->toPlainText().toLatin1());
       QByteArray encryptionKey;
       QByteArray hashKey;
       QByteArray hashType;
@@ -808,7 +814,7 @@ void spoton_rosetta::slotConvert(void)
       if(!ok)
 	error = tr("A serious cryptographic error occurred.");
       else
-	ui.output->setText(QString::fromUtf8(data.constData()).trimmed());
+	ui.output->setText(QString::fromUtf8(data.constData()));
 
     done_label2:
 
@@ -928,8 +934,8 @@ void spoton_rosetta::slotRename(void)
   name = QInputDialog::getText
     (this, tr("%1: New Name").
      arg(SPOTON_APPLICATION_NAME), tr("&Name"),
-     QLineEdit::Normal, QString(""), &ok).trimmed();
-  name = name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed();
+     QLineEdit::Normal, QString(""), &ok);
+  name = name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH);
 
   if(name.isEmpty() || !ok)
     return;
