@@ -150,8 +150,7 @@ void spoton_starbeamanalyzer::keyPressEvent(QKeyEvent *event)
 void spoton_starbeamanalyzer::slotSetIcons(void)
 {
   QSettings settings;
-  QString iconSet(settings.value("gui/iconSet", "nuove").toString().
-		  trimmed());
+  QString iconSet(settings.value("gui/iconSet", "nuove").toString());
 
   if(!(iconSet == "everaldo" || iconSet == "nouve" || iconSet == "nuvola"))
     iconSet = "nouve";
@@ -187,7 +186,7 @@ bool spoton_starbeamanalyzer::add(const QString &fileName,
 				  const QString &pulseSize,
 				  const QString &totalSize)
 {
-  if(fileName.trimmed().isEmpty() || oid.trimmed().isEmpty() ||
+  if(fileName.isEmpty() || oid.trimmed().isEmpty() ||
      pulseSize.trimmed().isEmpty() || totalSize.trimmed().isEmpty())
     return false;
 
@@ -211,15 +210,15 @@ bool spoton_starbeamanalyzer::add(const QString &fileName,
   item = new QTableWidgetItem("0");
   item->setBackground(QBrush(QColor("lightgreen")));
   ui.tableWidget->setItem(row, 1, item);
-  item = new QTableWidgetItem(pulseSize);
+  item = new QTableWidgetItem(pulseSize.trimmed());
   ui.tableWidget->setItem(row, 2, item);
-  item = new QTableWidgetItem(totalSize);
+  item = new QTableWidgetItem(totalSize.trimmed());
   ui.tableWidget->setItem(row, 3, item);
   item = new QTableWidgetItem(fileName);
   ui.tableWidget->setItem(row, 4, item);
   item = new QTableWidgetItem();
   ui.tableWidget->setItem(row, 5, item);
-  item = new QTableWidgetItem(oid);
+  item = new QTableWidgetItem(oid.trimmed());
   ui.tableWidget->setItem(row, 6, item);
   ui.tableWidget->setSortingEnabled(true);
 
@@ -244,9 +243,7 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
 				      const QString &totalSize,
 				      QAtomicInt *interrupt)
 {
-  Q_UNUSED(totalSize);
-
-  int ps = pulseSize.toInt();
+  int ps = pulseSize.trimmed().toInt();
 
   if(ps <= 0)
     {
@@ -264,7 +261,7 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
       qint64 pos = 0;
       qint64 rc = 0;
       qint64 ts = qMax(static_cast<long long> (1),
-		       qMax(file.size(), totalSize.toLongLong()));
+		       qMax(file.size(), totalSize.trimmed().toLongLong()));
 
       while((rc = file.read(bytes.data(), bytes.length())) > 0)
 	{
