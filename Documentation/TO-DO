@@ -203,3 +203,5 @@ Remaining Items
 32.    IMAP and Rosetta.
 33.    Weather feeds.
 34.    Implement a Qt class in support of DTLS.
+35.    Do something about whitespace. There are many input paths that
+       ought to be considered.
