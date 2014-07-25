@@ -2990,7 +2990,7 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
   if(controlString.isEmpty())
     controlString = settings.value
       ("gui/sslControlString",
-       "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH").toString();
+       "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH").toString().trimmed();
 
   for(int i = 1; i <= 4; i++)
     {
