@@ -207,7 +207,7 @@ void spoton_starbeam_reader::slotTimeout(void)
 			  else if(m_missingLinksIterator->hasNext())
 			    {
 			      QByteArray bytes
-				(m_missingLinksIterator->next().trimmed());
+				(m_missingLinksIterator->next());
 
 			      if(!bytes.isEmpty())
 				m_position = qAbs(bytes.toLongLong());
