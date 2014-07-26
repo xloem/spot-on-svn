@@ -156,14 +156,14 @@ void spoton_chatwindow::slotSendMessage(void)
       error = tr("The connection to the kernel is not encrypted.");
       goto done_label;
     }
-  else if(ui.message->toPlainText().trimmed().isEmpty())
+  else if(ui.message->toPlainText().isEmpty())
     {
       error = tr("Please provide a real message.");
       goto done_label;
     }
 
   name = spoton::s_gui->m_settings.
-    value("gui/nodeName", "unknown").toByteArray().trimmed();
+    value("gui/nodeName", "unknown").toByteArray();
   message.append
     (QString("[%1:%2<font color=grey>:%3</font>] ").
      arg(now.toString("hh")).
@@ -173,9 +173,9 @@ void spoton_chatwindow::slotSendMessage(void)
 
   if(settings.value("gui/enableChatEmoticons", false).toBool())
     message.append
-      (spoton::mapIconToEmoticon(ui.message->toPlainText().trimmed()));
+      (spoton::mapIconToEmoticon(ui.message->toPlainText()));
   else
-    message.append(ui.message->toPlainText().trimmed());
+    message.append(ui.message->toPlainText());
 
   ui.messages->append(message);
   ui.messages->verticalScrollBar()->setValue
@@ -193,8 +193,7 @@ void spoton_chatwindow::slotSendMessage(void)
   message.append(QString("%1_").arg(m_id));
   message.append(name.toBase64());
   message.append("_");
-  message.append(ui.message->toPlainText().trimmed().toUtf8().
-		 toBase64());
+  message.append(ui.message->toPlainText().toUtf8().toBase64());
   message.append("_");
   message.append
     (QByteArray::number(spoton::s_gui->m_chatSequenceNumbers[m_id]).
