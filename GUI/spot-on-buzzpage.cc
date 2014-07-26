@@ -272,6 +272,10 @@ void spoton_buzzpage::appendMessage(const QList<QByteArray> &list)
   QByteArray id
     (list.value(1).mid(0, spoton_common::BUZZ_MAXIMUM_ID_LENGTH).trimmed());
 
+  if(id.isEmpty())
+    id = spoton_crypt::
+      strongRandomBytes(spoton_common::BUZZ_MAXIMUM_ID_LENGTH / 2).toHex();
+
   if(id == m_id)
     /*
     ** Ignore myself.
