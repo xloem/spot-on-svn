@@ -54,17 +54,17 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
 				 QWidget *parent):QWidget(parent)
 {
   ui.setupUi(this);
-  m_channel = channel.trimmed();
+  m_channel = channel;
 
   if(m_channel.isEmpty())
     m_channel = "unknown";
 
-  m_channelSalt = channelSalt.trimmed();
+  m_channelSalt = channelSalt;
 
   if(m_channelSalt.isEmpty())
     m_channelSalt = "unknown";
 
-  m_channelType = channelType.trimmed();
+  m_channelType = channelType;
 
   if(m_channelType.isEmpty())
     m_channelType = "aes256";
@@ -145,7 +145,7 @@ spoton_buzzpage::spoton_buzzpage(QSslSocket *kernelSocket,
   QByteArray name;
   QSettings settings;
 
-  name = settings.value("gui/buzzName", "unknown").toByteArray().trimmed();
+  name = settings.value("gui/buzzName", "unknown").toByteArray();
 
   if(name.isEmpty())
     name = "unknown";
@@ -166,6 +166,9 @@ void spoton_buzzpage::slotSetIcons(void)
 {
   QSettings settings;
   QString iconSet(settings.value("gui/iconSet", "nouve").toString());
+
+  if(!(iconSet == "everaldo" || iconSet == "nouve" || iconSet == "nuvola"))
+    iconSet = "nouve";
 
   ui.clearMessages->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
   ui.sendMessage->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
@@ -195,7 +198,7 @@ void spoton_buzzpage::slotSendMessage(void)
       error = tr("The connection to the kernel is not encrypted.");
       goto done_label;
     }
-  else if(ui.message->toPlainText().trimmed().isEmpty())
+  else if(ui.message->toPlainText().isEmpty())
     {
       error = tr("Please provide a real message.");
       goto done_label;
@@ -207,7 +210,7 @@ void spoton_buzzpage::slotSendMessage(void)
      arg(now.toString("mm")).
      arg(now.toString("ss")));
   message.append(tr("<b>me:</b> "));
-  message.append(ui.message->toPlainText().trimmed());
+  message.append(ui.message->toPlainText());
   ui.messages->append(message);
   ui.messages->verticalScrollBar()->setValue
     (ui.messages->verticalScrollBar()->maximum());
@@ -217,7 +220,7 @@ void spoton_buzzpage::slotSendMessage(void)
   else
     sendMethod = "Artificial_GET";
 
-  name = settings.value("gui/buzzName", "unknown").toByteArray().trimmed();
+  name = settings.value("gui/buzzName", "unknown").toByteArray();
 
   if(name.isEmpty())
     name = "unknown";
@@ -234,8 +237,7 @@ void spoton_buzzpage::slotSendMessage(void)
     message.append("_");
     message.append(m_id.toBase64());
     message.append("_");
-    message.append(ui.message->toPlainText().trimmed().toUtf8().
-		   toBase64());
+    message.append(ui.message->toPlainText().toUtf8().toBase64());
     message.append("_");
     message.append(sendMethod.toBase64());
     message.append("_");
@@ -319,7 +321,7 @@ void spoton_buzzpage::slotSendStatus(void)
   QByteArray message;
   QSettings settings;
 
-  name = settings.value("gui/buzzName", "unknown").toByteArray().trimmed();
+  name = settings.value("gui/buzzName", "unknown").toByteArray();
 
   if(name.isEmpty())
     name = "unknown";
