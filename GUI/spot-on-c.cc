@@ -102,7 +102,7 @@ void spoton::slotAddEtpMagnet(const QString &text)
   if(m_ui.magnetRadio->isChecked() || !text.isEmpty())
     {
       if(text.isEmpty())
-	magnet = m_ui.etpMagnet->toPlainText().trimmed();
+	magnet = m_ui.etpMagnet->toPlainText();
       else
 	magnet = text;
     }
@@ -114,9 +114,9 @@ void spoton::slotAddEtpMagnet(const QString &text)
 		     "mk=%4&"
 		     "xt=urn:starbeam").
       arg(m_ui.etpCipherType->currentText()).
-      arg(m_ui.etpEncryptionKey->text().trimmed()).
+      arg(m_ui.etpEncryptionKey->text()).
       arg(m_ui.etpHashType->currentText()).
-      arg(m_ui.etpMacKey->text().trimmed());
+      arg(m_ui.etpMacKey->text());
 
   /*
   ** Validate the magnet.
@@ -405,7 +405,7 @@ void spoton::slotCopyEtpMagnet(void)
 
 void spoton::slotSaveDestination(void)
 {
-  saveDestination(m_ui.destination->text().trimmed());
+  saveDestination(m_ui.destination->text());
 }
 
 void spoton::saveDestination(const QString &path)
@@ -441,7 +441,7 @@ void spoton::slotSelectDestination(void)
 #endif
 
   if(dialog.exec() == QDialog::Accepted)
-    saveDestination(dialog.selectedFiles().value(0).trimmed());
+    saveDestination(dialog.selectedFiles().value(0));
 }
 
 void spoton::slotReceiversClicked(bool state)
@@ -807,7 +807,7 @@ void spoton::slotSelectTransmitFile(void)
   if(dialog.exec() == QDialog::Accepted)
     {
       m_ui.transmittedFile->setText
-	(dialog.selectedFiles().value(0).trimmed());
+	(dialog.selectedFiles().value(0));
       m_ui.transmittedFile->setToolTip(m_ui.transmittedFile->text());
     }
 }
@@ -834,13 +834,13 @@ void spoton::slotTransmit(void)
       goto done_label;
     }
 
-  if(m_ui.transmittedFile->text().trimmed().isEmpty())
+  if(m_ui.transmittedFile->text().isEmpty())
     {
       error = tr("Please select a file to transfer.");
       goto done_label;
     }
 
-  fileInfo.setFile(m_ui.transmittedFile->text().trimmed());
+  fileInfo.setFile(m_ui.transmittedFile->text());
 
   if(!fileInfo.exists() || !fileInfo.isReadable())
     {
@@ -901,12 +901,12 @@ void spoton::slotTransmit(void)
 	if(ok)
 	  {
 	    QString missingLinks;
-	    QStringList list(m_ui.missingLinks->text().trimmed().
+	    QStringList list(m_ui.missingLinks->text().
 			     remove("magnet:?").split("&"));
 
 	    while(!list.isEmpty())
 	      {
-		QString str(list.takeFirst().trimmed());
+		QString str(list.takeFirst());
 
 		if(str.startsWith("ml="))
 		  {
@@ -918,7 +918,7 @@ void spoton::slotTransmit(void)
 
 	    query.bindValue
 	      (2, crypt->
-	       encryptedThenHashed(missingLinks.trimmed().
+	       encryptedThenHashed(missingLinks.
 				   toLatin1(), &ok).toBase64());
 	  }
 
@@ -933,7 +933,7 @@ void spoton::slotTransmit(void)
 	if(ok)
 	  query.bindValue
 	    (4, crypt->encryptedThenHashed
-	     (m_ui.transmitNova->text().trimmed().
+	     (m_ui.transmitNova->text().
 	      toLatin1(), &ok).toBase64());
 
 	if(ok)
@@ -1561,7 +1561,7 @@ void spoton::slotAddReceiveNova(void)
       return;
     }
 
-  QString nova(m_ui.receiveNova->text().trimmed());
+  QString nova(m_ui.receiveNova->text());
 
   if(nova.isEmpty())
     {
@@ -2193,13 +2193,13 @@ void spoton::sharePublicKeyWithParticipant(const QString &keyType)
 
       if(keyType == "chat")
 	name = m_settings.value("gui/nodeName", "unknown").
-	  toByteArray().trimmed();
+	  toByteArray();
       else if(keyType == "email")
 	name = m_settings.value("gui/emailName", "unknown").
-	  toByteArray().trimmed();
+	  toByteArray();
       else if(keyType == "url")
 	name = name = m_settings.value("gui/urlName", "unknown").
-	  toByteArray().trimmed();
+	  toByteArray();
 
       if(name.isEmpty())
 	name = "unknown";
@@ -2875,7 +2875,7 @@ void spoton::slotExportPublicKeys(void)
 
 	  QFile file;
 
-	  file.setFileName(dialog.selectedFiles().value(0).trimmed());
+	  file.setFileName(dialog.selectedFiles().value(0));
 
 	  if(file.open(QIODevice::Truncate | QIODevice::WriteOnly))
 	    {
@@ -2919,7 +2919,7 @@ void spoton::slotImportPublicKeys(void)
       QFileInfo fileInfo;
 
       fileInfo.setFile(dialog.directory(),
-		       dialog.selectedFiles().value(0).trimmed());
+		       dialog.selectedFiles().value(0));
 
       if(fileInfo.size() >= 30000)
 	{
@@ -3025,7 +3025,7 @@ void spoton::slotExportListeners(void)
 
       QFile file;
 
-      file.setFileName(dialog.selectedFiles().value(0).trimmed());
+      file.setFileName(dialog.selectedFiles().value(0));
 
       if(file.open(QIODevice::Text | QIODevice::Truncate |
 		   QIODevice::WriteOnly))
@@ -3116,7 +3116,7 @@ void spoton::slotImportNeighbors(void)
       QFileInfo fileInfo;
 
       fileInfo.setFile(dialog.directory(),
-		       dialog.selectedFiles().value(0).trimmed());
+		       dialog.selectedFiles().value(0));
 
       if(fileInfo.size() >= 30000)
 	{
@@ -3501,13 +3501,15 @@ void spoton::importNeighbors(const QString &filePath)
 
 void spoton::slotSaveUrlName(void)
 {
-  QString str(m_ui.urlName->text().trimmed());
+  QString str(m_ui.urlName->text());
 
-  if(str.isEmpty())
+  if(str.trimmed().isEmpty())
     {
       str = "unknown";
       m_ui.urlName->setText(str);
     }
+  else
+    m_ui.urlName->setText(str.trimmed());
 
   m_settings["gui/urlName"] = str.toUtf8();
 
@@ -3636,8 +3638,7 @@ void spoton::slotCopyUrlFriendshipBundle(void)
     }
 
   QByteArray myName
-    (m_settings.value("gui/urlName", "unknown").toByteArray().
-     trimmed());
+    (m_settings.value("gui/urlName", "unknown").toByteArray());
 
   if(myName.isEmpty())
     myName = "unknown";
@@ -3776,8 +3777,8 @@ void spoton::slotRenameParticipant(void)
 
   name = QInputDialog::getText
     (this, tr("%1: New Name").arg(SPOTON_APPLICATION_NAME), tr("&Name"),
-     QLineEdit::Normal, QString(""), &ok).trimmed();
-  name = name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH).trimmed();
+     QLineEdit::Normal, QString(""), &ok);
+  name = name.mid(0, spoton_common::NAME_MAXIMUM_LENGTH);
 
   if(name.isEmpty() || !ok)
     return;

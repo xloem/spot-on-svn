@@ -59,7 +59,7 @@ void spoton::slotSendMessage(void)
       error = tr("The connection to the kernel is not encrypted.");
       goto done_label;
     }
-  else if(m_ui.message->toPlainText().trimmed().isEmpty())
+  else if(m_ui.message->toPlainText().isEmpty())
     {
       error = tr("Please provide a real message.");
       goto done_label;
@@ -83,9 +83,9 @@ void spoton::slotSendMessage(void)
   msg.append(tr("<b>me:</b> "));
 
   if(m_settings.value("gui/enableChatEmoticons", false).toBool())
-    msg.append(mapIconToEmoticon(m_ui.message->toPlainText().trimmed()));
+    msg.append(mapIconToEmoticon(m_ui.message->toPlainText()));
   else
-    msg.append(m_ui.message->toPlainText().trimmed());
+    msg.append(m_ui.message->toPlainText());
 
   m_ui.messages->append(msg);
   m_ui.messages->verticalScrollBar()->setValue
@@ -101,7 +101,7 @@ void spoton::slotSendMessage(void)
 	{
 	  QByteArray message;
 	  QByteArray name(m_settings.value("gui/nodeName", "unknown").
-			  toByteArray().trimmed());
+			  toByteArray());
 
 	  if(name.isEmpty())
 	    name = "unknown";
@@ -111,7 +111,7 @@ void spoton::slotSendMessage(void)
 	  message.append(QString("%1_").arg(data.toString()));
 	  message.append(name.toBase64());
 	  message.append("_");
-	  message.append(m_ui.message->toPlainText().trimmed().toUtf8().
+	  message.append(m_ui.message->toPlainText().toUtf8().
 			 toBase64());
 	  message.append("_");
 	  message.append
@@ -534,7 +534,7 @@ void spoton::slotShareChatPublicKey(void)
     {
       QByteArray message;
       QByteArray name(m_settings.value("gui/nodeName", "unknown").
-		      toByteArray().trimmed());
+		      toByteArray());
 
       if(name.isEmpty())
 	name = "unknown";
@@ -613,7 +613,7 @@ void spoton::slotShareEmailPublicKey(void)
     {
       QByteArray message;
       QByteArray name(m_settings.value("gui/emailName", "unknown").
-		      toByteArray().trimmed());
+		      toByteArray());
 
       if(name.isEmpty())
 	name = "unknown";
@@ -729,13 +729,15 @@ void spoton::slotRemoveParticipants(void)
 
 void spoton::slotSaveBuzzName(void)
 {
-  QString str(m_ui.buzzName->text().trimmed());
+  QString str(m_ui.buzzName->text());
 
-  if(str.isEmpty())
+  if(str.trimmed().isEmpty())
     {
       str = "unknown";
       m_ui.buzzName->setText(str);
     }
+  else
+    m_ui.buzzName->setText(str.trimmed());
 
   m_settings["gui/buzzName"] = str.toUtf8();
 
@@ -748,13 +750,15 @@ void spoton::slotSaveBuzzName(void)
 
 void spoton::slotSaveEmailName(void)
 {
-  QString str(m_ui.emailName->text().trimmed());
+  QString str(m_ui.emailName->text());
 
-  if(str.isEmpty())
+  if(str.trimmed().isEmpty())
     {
       str = "unknown";
       m_ui.emailName->setText(str);
     }
+  else
+    m_ui.emailName->setText(str.trimmed());
 
   m_settings["gui/emailName"] = str.toUtf8();
 
@@ -766,13 +770,15 @@ void spoton::slotSaveEmailName(void)
 
 void spoton::slotSaveNodeName(void)
 {
-  QString str(m_ui.nodeName->text().trimmed());
+  QString str(m_ui.nodeName->text());
 
-  if(str.isEmpty())
+  if(str.trimmed().isEmpty())
     {
       str = "unknown";
       m_ui.nodeName->setText(str);
     }
+  else
+    m_ui.nodeName->setText(str.trimmed());
 
   m_settings["gui/nodeName"] = str.toUtf8();
 
@@ -1042,8 +1048,7 @@ QByteArray spoton::copyMyChatPublicKey(void) const
   QByteArray sSignature;
   bool ok = true;
 
-  name = m_settings.value("gui/nodeName", "unknown").toByteArray().
-    trimmed();
+  name = m_settings.value("gui/nodeName", "unknown").toByteArray();
   mPublicKey = m_crypts.value("chat")->publicKey(&ok);
 
   if(ok)
@@ -1456,7 +1461,7 @@ void spoton::slotFetchMoreButton(void)
 void spoton::slotAddFriendsKey(void)
 {
   QByteArray key
-    (m_ui.friendInformation->toPlainText().trimmed().toLatin1());
+    (m_ui.friendInformation->toPlainText().toLatin1());
 
   if(key.startsWith("K") || key.startsWith("k"))
     {
@@ -1502,7 +1507,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 				   "a fatal flaw."));
 	  return;
 	}
-      else if(key.trimmed().isEmpty())
+      else if(key.isEmpty())
 	{
 	  QMessageBox::critical(this, tr("%1: Error").
 				arg(SPOTON_APPLICATION_NAME),
@@ -1720,7 +1725,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 				   "a fatal flaw."));
 	  return;
 	}
-      else if(key.trimmed().isEmpty())
+      else if(key.isEmpty())
 	{
 	  QMessageBox::critical(this, tr("%1: Error").
 				arg(SPOTON_APPLICATION_NAME),
@@ -2223,8 +2228,7 @@ void spoton::slotCopyFriendshipBundle(void)
     }
 
   QByteArray myName
-    (m_settings.value("gui/nodeName", "unknown").toByteArray().
-     trimmed());
+    (m_settings.value("gui/nodeName", "unknown").toByteArray());
 
   if(myName.isEmpty())
     myName = "unknown";
@@ -2303,7 +2307,7 @@ void spoton::slotSendMail(void)
       m_ui.emailParticipants->setFocus();
       return;
     }
-  else if(m_ui.outgoingMessage->toPlainText().trimmed().isEmpty())
+  else if(m_ui.outgoingMessage->toPlainText().isEmpty())
     {
       QMessageBox::critical
 	(this, tr("%1: Error").
@@ -2314,7 +2318,7 @@ void spoton::slotSendMail(void)
     }
 
   QByteArray message
-    (m_ui.outgoingMessage->toHtml().trimmed().toUtf8());
+    (m_ui.outgoingMessage->toHtml().toUtf8());
 
   /*
   ** Bundle the love letter and send it to the email.db file. The
@@ -2357,10 +2361,10 @@ void spoton::slotSendMail(void)
 	while(!oids.isEmpty())
 	  {
 	    QByteArray goldbug
-	      (m_ui.goldbug->text().trimmed().toLatin1());
+	      (m_ui.goldbug->text().toLatin1());
 	    QByteArray publicKeyHash(publicKeyHashes.takeFirst().toLatin1());
 	    QByteArray subject
-	      (m_ui.outgoingSubject->text().trimmed().toUtf8());
+	      (m_ui.outgoingSubject->text().toUtf8());
 	    QDateTime now(QDateTime::currentDateTime());
 	    QSqlQuery query(db);
 	    QString oid(oids.takeFirst());
@@ -2554,8 +2558,7 @@ QByteArray spoton::copyMyEmailPublicKey(void) const
   QByteArray sSignature;
   bool ok = true;
 
-  name = m_settings.value("gui/emailName", "unknown").toByteArray().
-    trimmed();
+  name = m_settings.value("gui/emailName", "unknown").toByteArray();
   mPublicKey = m_crypts.value("email")->publicKey(&ok);
 
   if(ok)
@@ -2590,8 +2593,7 @@ QByteArray spoton::copyMyRosettaPublicKey(void) const
   QByteArray sSignature;
   bool ok = true;
 
-  name = m_settings.value("gui/rosettaName", "unknown").toByteArray().
-    trimmed();
+  name = m_settings.value("gui/rosettaName", "unknown").toByteArray();
   mPublicKey = m_crypts.value("rosetta")->publicKey(&ok);
 
   if(ok)
@@ -2626,8 +2628,7 @@ QByteArray spoton::copyMyUrlPublicKey(void) const
   QByteArray sSignature;
   bool ok = true;
 
-  name = m_settings.value("gui/urlName", "unknown").toByteArray().
-    trimmed();
+  name = m_settings.value("gui/urlName", "unknown").toByteArray();
   mPublicKey = m_crypts.value("url")->publicKey(&ok);
 
   if(ok)
@@ -2705,7 +2706,7 @@ void spoton::slotShareURLPublicKey(void)
     {
       QByteArray message;
       QByteArray name(m_settings.value("gui/urlName", "unknown").
-		      toByteArray().trimmed());
+		      toByteArray());
 
       if(name.isEmpty())
 	name = "unknown";
@@ -3083,7 +3084,7 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
 	goldbug = QInputDialog::getText
 	  (this, tr("%1: Goldbug").arg(SPOTON_APPLICATION_NAME),
 	   tr("&Goldbug"),
-	   QLineEdit::Password, QString(""), &ok).trimmed();
+	   QLineEdit::Password, QString(""), &ok);
 
 	if(!ok)
 	  return;
@@ -3336,8 +3337,8 @@ void spoton::slotGeminiChanged(QTableWidgetItem *item)
 
   QPair<QByteArray, QByteArray> gemini;
 
-  gemini.first = item1->text().trimmed().toLatin1();
-  gemini.second = item2->text().trimmed().toLatin1();
+  gemini.first = item1->text().toLatin1();
+  gemini.second = item2->text().toLatin1();
   saveGemini(gemini,
 	     m_ui.participants->item(item->row(), 1)->text()); // OID
 }
@@ -3926,7 +3927,7 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
 		if(i == 2 || i == 4)
 		  list.append
 		    (QByteArray::fromBase64(query.value(i).
-					    toByteArray()).trimmed());
+					    toByteArray()));
 		else
 		  list.append
 		    (m_crypts.value("email")->
@@ -4329,10 +4330,10 @@ void spoton::slotPublishedKeySizeChanged(const QString &text)
 
 void spoton::slotJoinBuzzChannel(void)
 {
-  QByteArray channel(m_ui.channel->text().trimmed().toLatin1());
-  QByteArray channelSalt(m_ui.channelSalt->text().trimmed().toLatin1());
+  QByteArray channel(m_ui.channel->text().toLatin1());
+  QByteArray channelSalt(m_ui.channelSalt->text().toLatin1());
   QByteArray channelType(m_ui.channelType->currentText().toLatin1());
-  QByteArray hashKey(m_ui.buzzHashKey->text().trimmed().toLatin1());
+  QByteArray hashKey(m_ui.buzzHashKey->text().toLatin1());
   QByteArray hashType(m_ui.buzzHashType->currentText().toLatin1());
   QByteArray id;
   QPair<QByteArray, QByteArray> keys;
@@ -4907,7 +4908,7 @@ void spoton::slotAddAccount(void)
 {
   QString connectionName("");
   QString error("");
-  QString name(m_ui.accountName->text().trimmed());
+  QString name(m_ui.accountName->text());
   QString oid("");
   QString password(m_ui.accountPassword->text());
   bool ok = true;

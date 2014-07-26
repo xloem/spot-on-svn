@@ -84,11 +84,11 @@ void spoton::slotShowStarBeamAnalyzer(void)
 void spoton::slotDemagnetizeMissingLinks(void)
 {
   QStringList list
-    (m_ui.missingLinks->text().trimmed().remove("magnet:?").split("&"));
+    (m_ui.missingLinks->text().remove("magnet:?").split("&"));
 
   while(!list.isEmpty())
     {
-      QString str(list.takeFirst().trimmed());
+      QString str(list.takeFirst());
 
       if(str.startsWith("fn="))
 	{
@@ -309,13 +309,13 @@ void spoton::slotAddInstitution(const QString &text)
 
       if(text.isEmpty())
 	list = m_ui.addInstitutionLineEdit->text().
-	  trimmed().remove("magnet:?").split("&");
+	  remove("magnet:?").split("&");
       else
-	list = text.trimmed().remove("magnet:?").split("&");
+	list = text.mid(0).remove("magnet:?").split("&");
 
       for(int i = 0; i < list.size(); i++)
 	{
-	  QString str(list.at(i).trimmed());
+	  QString str(list.at(i));
 
 	  if(str.startsWith("in="))
 	    {
@@ -341,9 +341,9 @@ void spoton::slotAddInstitution(const QString &text)
     }
   else
     {
-      name = m_ui.institutionName->text().trimmed();
+      name = m_ui.institutionName->text();
       nameType = m_ui.institutionNameType->currentText();
-      postalAddress = m_ui.institutionPostalAddress->text().trimmed();
+      postalAddress = m_ui.institutionPostalAddress->text();
       postalAddressType = m_ui.institutionPostalAddressType->currentText();
     }
 
@@ -673,7 +673,7 @@ void spoton::slotSaveMOTD(void)
     if(db.open())
       {
 	QSqlQuery query(db);
-	QString str(m_ui.motd->toPlainText().trimmed());
+	QString str(m_ui.motd->toPlainText());
 
 	if(str.isEmpty())
 	  str = QString("Welcome to %1.").
@@ -845,7 +845,7 @@ void spoton::slotAddMagnet(void)
   if(!action)
     return;
 
-  QString type(action->property("type").toString().trimmed());
+  QString type(action->property("type").toString());
   QUrl url(action->property("url").toUrl());
 
   if(type == "buzz")
@@ -868,11 +868,11 @@ void spoton::slotAddMagnet(void)
       QByteArray hashType;
       QByteArray iterationCount;
       QStringList list
-	(url.toString().trimmed().remove("magnet:?").split("&"));
+	(url.toString().remove("magnet:?").split("&"));
 
       while(!list.isEmpty())
 	{
-	  QString str(list.takeFirst().trimmed());
+	  QString str(list.takeFirst());
 
 	  if(str.startsWith("rn="))
 	    {
@@ -975,7 +975,7 @@ void spoton::slotAddAEToken(void)
 {
   QString connectionName("");
   QString error("");
-  QString token(m_ui.ae_token->text().trimmed());
+  QString token(m_ui.ae_token->text());
   QString type(m_ui.ae_e_type->currentText() + "\n" +
 	       m_ui.ae_h_type->currentText());
   bool ok = true;
@@ -1327,7 +1327,7 @@ void spoton::slotSetAETokenInformation(void)
 
   if(dialog.exec() == QDialog::Accepted)
     {
-      QString token(ui.token->text().trimmed());
+      QString token(ui.token->text());
       QString tokenType(ui.token_e_type->currentText() + "\n" +
 			ui.token_h_type->currentText());
 

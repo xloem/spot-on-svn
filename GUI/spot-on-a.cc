@@ -1132,20 +1132,20 @@ spoton::spoton(void):QMainWindow()
 #if defined(Q_OS_LINUX)
   m_ui.geoipPath4->setText
     (m_settings.value("gui/geoipPath4",
-		      "/usr/share/GeoIP/GeoIP.dat").toString().trimmed());
+		      "/usr/share/GeoIP/GeoIP.dat").toString());
   m_ui.geoipPath6->setText
     (m_settings.value("gui/geoipPath6",
-		      "/usr/share/GeoIP/GeoIP.dat").toString().trimmed());
+		      "/usr/share/GeoIP/GeoIP.dat").toString());
 #elif defined(Q_OS_WIN32)
   m_ui.geoipPath4->setText
-    (m_settings.value("gui/geoipPath4", "GeoIP.dat").toString().trimmed());
+    (m_settings.value("gui/geoipPath4", "GeoIP.dat").toString());
   m_ui.geoipPath6->setText
-    (m_settings.value("gui/geoipPath6", "GeoIP.dat").toString().trimmed());
+    (m_settings.value("gui/geoipPath6", "GeoIP.dat").toString());
 #else
   m_ui.geoipPath4->setText
-    (m_settings.value("gui/geoipPath4", "GeoIP.dat").toString().trimmed());
+    (m_settings.value("gui/geoipPath4", "GeoIP.dat").toString());
   m_ui.geoipPath6->setText
-    (m_settings.value("gui/geoipPath6", "GeoIP.dat").toString().trimmed());
+    (m_settings.value("gui/geoipPath6", "GeoIP.dat").toString());
 #endif
 #endif
   m_ui.magnetRadio->setChecked(true);
@@ -1153,10 +1153,9 @@ spoton::spoton(void):QMainWindow()
   m_ui.pairFrame->setEnabled(false);
 
   if(m_settings.contains("gui/kernelPath") &&
-     QFileInfo(m_settings.value("gui/kernelPath").toString().trimmed()).
+     QFileInfo(m_settings.value("gui/kernelPath").toString()).
      isExecutable())
-    m_ui.kernelPath->setText(m_settings.value("gui/kernelPath").toString().
-			     trimmed());
+    m_ui.kernelPath->setText(m_settings.value("gui/kernelPath").toString());
   else
     {
 #ifndef Q_OS_MAC
@@ -1285,7 +1284,7 @@ spoton::spoton(void):QMainWindow()
   QString statusControl
     (m_settings.
      value("gui/acceptPublicizedListeners",
-	   "ignored").toString().toLower().trimmed());
+	   "ignored").toString().toLower());
 
   if(statusControl == "connected")
     {
@@ -1518,7 +1517,7 @@ spoton::spoton(void):QMainWindow()
       (m_settings.value("gui/urlsVerticalSplitter").toByteArray());
 
   m_ui.destination->setText(m_settings.value("gui/etpDestinationPath", "").
-			    toString().trimmed());
+			    toString());
   m_ui.guiSecureMemoryPool->setValue
     (m_settings.value("gui/gcryctl_init_secmem", 65536).toInt());
   m_ui.kernelSecureMemoryPool->setValue
@@ -1825,7 +1824,7 @@ void spoton::slotAddListener(void)
 
 	QString port(QString::number(m_ui.listenerPort->value()));
 	QString protocol("");
-	QString scopeId(m_ui.listenerScopeId->text().trimmed());
+	QString scopeId(m_ui.listenerScopeId->text());
 	QString status("online");
 	QString transport("");
 	QSqlQuery query(db);
@@ -2113,7 +2112,7 @@ void spoton::slotAddNeighbor(void)
 	QString proxyPort("1");
 	QString proxyType("");
 	QString proxyUsername("");
-	QString scopeId(m_ui.neighborScopeId->text().trimmed());
+	QString scopeId(m_ui.neighborScopeId->text());
 	QString status("connected");
 	QString transport("");
 	QSqlQuery query(db);
@@ -3867,9 +3866,9 @@ void spoton::slotSelectGeoIPPath(void)
   if(dialog.exec() == QDialog::Accepted)
     {
       if(m_ui.selectGeoIP4 == sender())
-	saveGeoIPPath(4, dialog.selectedFiles().value(0).trimmed());
+	saveGeoIPPath(4, dialog.selectedFiles().value(0));
       else
-	saveGeoIPPath(6, dialog.selectedFiles().value(0).trimmed());
+	saveGeoIPPath(6, dialog.selectedFiles().value(0));
     }
 }
 
@@ -3891,20 +3890,20 @@ void spoton::slotSelectKernelPath(void)
 #endif
 
   if(dialog.exec() == QDialog::Accepted)
-    saveKernelPath(dialog.selectedFiles().value(0).trimmed());
+    saveKernelPath(dialog.selectedFiles().value(0));
 }
 
 void spoton::slotSaveGeoIPPath(void)
 {
   if(m_ui.geoipPath4 == sender())
-    saveGeoIPPath(4, m_ui.geoipPath4->text().trimmed());
+    saveGeoIPPath(4, m_ui.geoipPath4->text());
   else
-    saveGeoIPPath(6, m_ui.geoipPath6->text().trimmed());
+    saveGeoIPPath(6, m_ui.geoipPath6->text());
 }
 
 void spoton::slotSaveKernelPath(void)
 {
-  saveKernelPath(m_ui.kernelPath->text().trimmed());
+  saveKernelPath(m_ui.kernelPath->text());
 }
 
 void spoton::saveGeoIPPath(const int version, const QString &path)
@@ -4696,7 +4695,7 @@ void spoton::slotSetPassphrase(void)
 	 arg(SPOTON_APPLICATION_NAME));
 
       if(m_ui.pid->text() == "0")
-	if(QFileInfo(m_ui.kernelPath->text().trimmed()).isExecutable())
+	if(QFileInfo(m_ui.kernelPath->text()).isExecutable())
 	  {
 	    QMessageBox mb(this);
 
@@ -6665,8 +6664,7 @@ void spoton::slotCopyEmailFriendshipBundle(void)
     }
 
   QByteArray myName
-    (m_settings.value("gui/emailName", "unknown").toByteArray().
-     trimmed());
+    (m_settings.value("gui/emailName", "unknown").toByteArray());
 
   if(myName.isEmpty())
     myName = "unknown";
@@ -6720,12 +6718,12 @@ void spoton::slotCopyAllMyPublicKeys(void)
 
 void spoton::slotSaveSslControlString(void)
 {
-  QString str(m_ui.sslControlString->text().trimmed());
+  QString str(m_ui.sslControlString->text());
 
-  if(str.isEmpty())
+  if(str.trimmed().isEmpty())
     str = "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH";
 
-  m_ui.sslControlString->setText(str);
+  m_ui.sslControlString->setText(str.trimmed());
   m_ui.sslControlString->selectAll();
   m_settings["gui/sslControlString"] = str;
 
@@ -7129,14 +7127,10 @@ void spoton::slotPopulateBuzzFavorites(void)
 		  QByteArray hashType;
 		  QList<QByteArray> list(data.split('\n'));
 
-		  channelName = QByteArray::fromBase64(list.value(0)).
-		    trimmed();
-		  channelType = QByteArray::fromBase64(list.value(3)).
-		    trimmed();
-		  hashKey = QByteArray::fromBase64(list.value(4)).
-		    trimmed();
-		  hashType = QByteArray::fromBase64(list.value(5)).
-		    trimmed();
+		  channelName = QByteArray::fromBase64(list.value(0));
+		  channelType = QByteArray::fromBase64(list.value(3));
+		  hashKey = QByteArray::fromBase64(list.value(4));
+		  hashType = QByteArray::fromBase64(list.value(5));
 
 		  if(!channelName.isEmpty() && !channelType.isEmpty() &&
 		     !hashKey.isEmpty() && !hashType.isEmpty())
@@ -7145,7 +7139,7 @@ void spoton::slotPopulateBuzzFavorites(void)
 		      unsigned long iterationCount = 0;
 
 		      channelSalt = QByteArray::fromBase64
-			(list.value(2)).trimmed();
+			(list.value(2));
 		      iterationCount = qMax
 			(QByteArray::fromBase64(list.value(1)).
 			 toULong(), static_cast<unsigned long> (10000));
@@ -7387,11 +7381,11 @@ void spoton::magnetize(void)
 void spoton::demagnetize(void)
 {
   QStringList list
-    (m_ui.demagnetize->text().trimmed().remove("magnet:?").split("&"));
+    (m_ui.demagnetize->text().remove("magnet:?").split("&"));
 
   while(!list.isEmpty())
     {
-      QString str(list.takeFirst().trimmed());
+      QString str(list.takeFirst());
 
       if(str.startsWith("rn="))
 	{
