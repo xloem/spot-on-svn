@@ -2981,7 +2981,7 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 
   QList<QSslCipher> list;
   QSettings settings;
-  QString controlString(scs);
+  QString controlString(scs.trimmed());
   SSL *ssl = 0;
   SSL_CTX *ctx = 0;
   const char *next = 0;
