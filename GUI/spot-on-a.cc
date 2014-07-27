@@ -3492,6 +3492,9 @@ void spoton::slotPopulateNeighbors(void)
 			      (QBrush(QColor(240, 128, 128)));
 			  }
 		      }
+		    else if(i == 29) // MOTD
+		      item = new QTableWidgetItem
+			(query.value(i).toString().trimmed());
 		    else if(i == 31) // Certificate
 		      item = new QTableWidgetItem(certificate.constData());
 		    else

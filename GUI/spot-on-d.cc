@@ -724,7 +724,7 @@ void spoton::populateMOTD(const QString &listenerOid)
 
 	if(query.exec())
 	  if(query.next())
-	    m_ui.motd->setPlainText(query.value(0).toString());
+	    m_ui.motd->setPlainText(query.value(0).toString().trimmed());
       }
 
     db.close();
