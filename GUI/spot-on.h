@@ -158,6 +158,7 @@ class spoton: public QMainWindow
 #endif
 #endif
   bool isKernelActive(void) const;
+  bool promptBeforeExit(void);
   bool saveGemini(const QPair<QByteArray, QByteArray> &gemini,
 		  const QString &oid);
   bool updateMailStatus(const QString &oid, const QString &status);
@@ -169,6 +170,7 @@ class spoton: public QMainWindow
   void askKernelToReadStarBeamKeys(void);
   void authenticationRequested(const QByteArray &data);
   void changeEchoMode(const QString &mode, QTableWidget *tableWidget);
+  void cleanup(void);
   void closeEvent(QCloseEvent *event);
   void demagnetize(void);
   void derivativeUpdates(void);
@@ -177,13 +179,13 @@ class spoton: public QMainWindow
   void initializeKernelSocket(void);
   void joinDefaultBuzzChannel(void);
   void magnetize(void);
-  void prepareContextMenuMirrors(void);
-  void prepareListenerIPCombo(void);
   void populateAETokens(void);
   void populateAccounts(const QString &listenerOid);
   void populateListenerIps(const QString &listenerOid);
   void populateMOTD(const QString &listenerOid);
   void populateNovas(void);
+  void prepareContextMenuMirrors(void);
+  void prepareListenerIPCombo(void);
   void refreshInstitutions(void);
   void removeFavorite(const bool removeAll);
   void saveDestination(const QString &path);

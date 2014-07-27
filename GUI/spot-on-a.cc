@@ -1736,6 +1736,19 @@ spoton::~spoton()
 
 void spoton::slotQuit(void)
 {
+  /*
+  ** closeEvent() calls slotQuit().
+  */
+
+  if(sender())
+    if(promptBeforeExit())
+      return;
+
+  cleanup();
+}
+
+void spoton::cleanup(void)
+{
   m_buzzStatusTimer.stop();
   m_chatInactivityTimer.stop();
   m_emailRetrievalTimer.stop();
@@ -1755,7 +1768,6 @@ void spoton::slotQuit(void)
   m_crypts.clear();
   m_starbeamAnalyzer->deleteLater();
   spoton_crypt::terminate();
-  close();
   deleteLater();
 }
 
@@ -3991,6 +4003,14 @@ void spoton::saveSettings(void)
 
 void spoton::closeEvent(QCloseEvent *event)
 {
+  if(promptBeforeExit())
+    {
+      if(event)
+	event->ignore();
+
+      return;
+    }
+
   QMainWindow::closeEvent(event);
   slotQuit();
 }

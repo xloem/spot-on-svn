@@ -1476,3 +1476,29 @@ void spoton::slotAutoAddSharedSBMagnets(bool state)
 
   settings.setValue("gui/autoAddSharedSBMagnets", state);
 }
+
+bool spoton::promptBeforeExit(void)
+{
+  if(m_ui.pid->text().toInt() > 0)
+    {
+      QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+      mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+      mb.setIcon(QMessageBox::Question);
+      mb.setWindowTitle(tr("%1: Question").
+			arg(SPOTON_APPLICATION_NAME));
+      mb.setWindowModality(Qt::WindowModal);
+      mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+      mb.setText(tr("The kernel appears to be active. Closing Spot-On "
+		    "will not deactivate the kernel. Continue?"));
+
+      if(mb.exec() != QMessageBox::Yes)
+	return true;
+    }
+
+  return false;
+}
