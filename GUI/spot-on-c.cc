@@ -809,11 +809,8 @@ void spoton::slotSelectTransmitFile(void)
 #endif
 
   if(dialog.exec() == QDialog::Accepted)
-    {
-      m_ui.transmittedFile->setText
-	(dialog.selectedFiles().value(0));
-      m_ui.transmittedFile->setToolTip(m_ui.transmittedFile->text());
-    }
+    m_ui.transmittedFile->setText
+      (dialog.selectedFiles().value(0));
 }
 
 void spoton::slotTransmit(void)
