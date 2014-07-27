@@ -1467,3 +1467,12 @@ QString spoton::mapIconToEmoticon(const QString &content)
 
   return str;
 }
+
+void spoton::slotAutoAddSharedSBMagnets(bool state)
+{
+  m_settings["gui/autoAddSharedSBMagnets"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/autoAddSharedSBMagnets", state);
+}

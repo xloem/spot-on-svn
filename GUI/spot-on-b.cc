@@ -373,6 +373,10 @@ void spoton::slotReceivedKernelMessage(void)
 		  else if(spoton_misc::
 			  isValidStarBeamMagnet(content.toLatin1()))
 		    {
+		      if(m_settings.value("gui/autoAddSharedSBMagnets",
+					  false).toBool())
+			slotAddEtpMagnet(content, false);
+
 		      QString str("");
 
 		      str.prepend("<a href='");

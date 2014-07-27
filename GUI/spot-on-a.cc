@@ -330,6 +330,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotAddNeighbor(void)));
+  connect(m_ui.autoAddSharedSBMagnets,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotAutoAddSharedSBMagnets(bool)));
   connect(m_ui.buzzAutoJoin,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -1060,12 +1064,14 @@ spoton::spoton(void):QMainWindow()
   m_ui.neighborIP->setInputMask("000.000.000.000; ");
   m_ui.neighborScopeId->setEnabled(false);
   m_ui.neighborScopeIdLabel->setEnabled(false);
+#ifdef Q_OS_WIN32
   m_ui.emailParticipants->setStyleSheet
     ("QTableWidget {selection-background-color: lightgreen}");
   m_ui.participants->setStyleSheet
     ("QTableWidget {selection-background-color: lightgreen}");
   m_ui.urlParticipants->setStyleSheet
     ("QTableWidget {selection-background-color: lightgreen}");
+#endif
 
   QSettings settings;
 
@@ -1308,6 +1314,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/acceptEmailKeys", false).toBool());
   m_ui.acceptUrlKeys->setChecked
     (m_settings.value("gui/acceptUrlKeys", false).toBool());
+  m_ui.autoAddSharedSBMagnets->setChecked
+    (m_settings.value("gui/autoAddSharedSBMagnets", false).toBool());
   m_ui.buzzAutoJoin->setChecked
     (m_settings.value("gui/buzzAutoJoin", true).toBool());
   m_ui.enableChatEmoticons->setChecked
@@ -1450,6 +1458,10 @@ spoton::spoton(void):QMainWindow()
 	    m_ui.tab->setTabEnabled(i, true);
 	  }
 	else
+	  /*
+	  ** About.
+	  */
+
 	  m_ui.tab->setTabEnabled(i, false);
 
       m_ui.passphrase->setFocus();
@@ -1475,7 +1487,7 @@ spoton::spoton(void):QMainWindow()
 
       for(int i = 0; i < m_ui.tab->count(); i++)
 #if SPOTON_GOLDBUG == 0
-	if(m_ui.tab->tabText(i) == tr("S&ettings"))
+	if(m_ui.tab->tabToolTip(i) == tr("Settings"))
 #else
 	if(i == 7) // Settings.
 #endif
@@ -4270,7 +4282,15 @@ void spoton::slotSetPassphrase(void)
   bool reencode = false;
   QString str1(m_ui.passphrase1->text());
   QString str2(m_ui.passphrase2->text());
-  QString str3(m_ui.username->text().trimmed());
+  QString str3(m_ui.username->text());
+
+  if(str3.trimmed().isEmpty())
+    {
+      str3 = "unknown";
+      m_ui.username->setText(str3);
+    }
+  else
+    m_ui.username->setText(str3.trimmed());
 
   for(int i = str1.length() - 1; i >= 0; i--)
     if(!str1.at(i).isPrint())

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1080</width>
-    <height>740</height>
+    <width>900</width>
+    <height>550</height>
    </rect>
   </property>
   <property name="windowIcon">
@@ -47,7 +47,10 @@
       </property>
       <widget class="QWidget" name="tab_8">
        <attribute name="title">
-        <string>&amp;Buzz</string>
+        <string/>
+       </attribute>
+       <attribute name="toolTip">
+        <string>Buzz</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_9">
         <property name="spacing">
@@ -69,8 +72,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>626</height>
+             <width>876</width>
+             <height>437</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -413,7 +416,10 @@
       </widget>
       <widget class="QWidget" name="tab_chat">
        <attribute name="title">
-        <string>&amp;Chat</string>
+        <string/>
+       </attribute>
+       <attribute name="toolTip">
+        <string>Chat</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_18">
         <property name="spacing">
@@ -450,8 +456,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1046</width>
-                <height>616</height>
+                <width>636</width>
+                <height>444</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -916,7 +922,10 @@
       </widget>
       <widget class="QWidget" name="tab_email">
        <attribute name="title">
-        <string>&amp;E-Mail</string>
+        <string/>
+       </attribute>
+       <attribute name="toolTip">
+        <string>E-Mail</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_26">
         <property name="spacing">
@@ -938,8 +947,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>626</height>
+             <width>751</width>
+             <height>575</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1916,7 +1925,10 @@
       </widget>
       <widget class="QWidget" name="tab_7">
        <attribute name="title">
-        <string>&amp;Listeners</string>
+        <string/>
+       </attribute>
+       <attribute name="toolTip">
+        <string>Listeners</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_33">
         <property name="spacing">
@@ -1938,8 +1950,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>626</height>
+             <width>892</width>
+             <height>333</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2513,8 +2525,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>265</width>
-                     <height>826</height>
+                     <width>239</width>
+                     <height>808</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2909,7 +2921,10 @@
       </widget>
       <widget class="QWidget" name="tab_neighbors">
        <attribute name="title">
-        <string>&amp;Neighbors</string>
+        <string/>
+       </attribute>
+       <attribute name="toolTip">
+        <string>Neighbors</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_34">
         <property name="spacing">
@@ -2931,8 +2946,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>626</height>
+             <width>855</width>
+             <height>559</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -3971,7 +3986,10 @@
       </widget>
       <widget class="QWidget" name="tab_search">
        <attribute name="title">
-        <string>&amp;Search</string>
+        <string/>
+       </attribute>
+       <attribute name="toolTip">
+        <string>Search</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
         <property name="spacing">
@@ -3993,8 +4011,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>626</height>
+             <width>247</width>
+             <height>160</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4126,7 +4144,10 @@
       </widget>
       <widget class="QWidget" name="tab_settings">
        <attribute name="title">
-        <string>S&amp;ettings</string>
+        <string/>
+       </attribute>
+       <attribute name="toolTip">
+        <string>Settings</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_15">
         <property name="spacing">
@@ -4148,8 +4169,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1038</width>
-             <height>848</height>
+             <width>758</width>
+             <height>855</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -5144,7 +5165,10 @@
       </widget>
       <widget class="QWidget" name="tab_9">
        <attribute name="title">
-        <string>S&amp;tarBeam</string>
+        <string/>
+       </attribute>
+       <attribute name="toolTip">
+        <string>StarBeam</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_39">
         <property name="spacing">
@@ -5166,8 +5190,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>626</height>
+             <width>861</width>
+             <height>542</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5177,6 +5201,33 @@
             <property name="margin">
              <number>5</number>
             </property>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_82">
+              <property name="spacing">
+               <number>5</number>
+              </property>
+              <item>
+               <widget class="QCheckBox" name="autoAddSharedSBMagnets">
+                <property name="text">
+                 <string>&amp;Automatically accept shared magnets.</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_66">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
             <item>
              <widget class="QTabWidget" name="etpTab">
               <property name="currentIndex">
@@ -6057,7 +6108,10 @@
       </widget>
       <widget class="QWidget" name="tab_cultivation">
        <attribute name="title">
-        <string>&amp;URLs</string>
+        <string/>
+       </attribute>
+       <attribute name="toolTip">
+        <string>URLs</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_10">
         <property name="spacing">
@@ -6079,8 +6133,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>626</height>
+             <width>232</width>
+             <height>402</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -6538,6 +6592,9 @@
        <attribute name="title">
         <string/>
        </attribute>
+       <attribute name="toolTip">
+        <string>About</string>
+       </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_60">
         <property name="spacing">
          <number>5</number>
@@ -6558,8 +6615,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1056</width>
-             <height>626</height>
+             <width>244</width>
+             <height>150</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -6818,8 +6875,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1080</width>
-     <height>24</height>
+     <width>900</width>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -7219,6 +7276,7 @@
   <tabstop>keys</tabstop>
   <tabstop>regenerate</tabstop>
   <tabstop>scrollArea_4</tabstop>
+  <tabstop>autoAddSharedSBMagnets</tabstop>
   <tabstop>etpTab</tabstop>
   <tabstop>magnetsActionMenu</tabstop>
   <tabstop>etpMagnets</tabstop>

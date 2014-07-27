@@ -84,7 +84,8 @@ void spoton::slotGenerateEtpKeys(int index)
     }
 }
 
-void spoton::slotAddEtpMagnet(const QString &text)
+void spoton::slotAddEtpMagnet(const QString &text,
+			      const bool displayError)
 {
   QString connectionName("");
   QString error("");
@@ -176,8 +177,11 @@ void spoton::slotAddEtpMagnet(const QString &text)
  done_label:
 
   if(!error.isEmpty())
-    QMessageBox::critical(this, tr("%1: Error").
-			  arg(SPOTON_APPLICATION_NAME), error);
+    {
+      if(displayError)
+	QMessageBox::critical(this, tr("%1: Error").
+			      arg(SPOTON_APPLICATION_NAME), error);
+    }
   else
     askKernelToReadStarBeamKeys();
 }

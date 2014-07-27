@@ -209,7 +209,8 @@ class spoton: public QMainWindow
   void slotAddAcceptedIP(void);
   void slotAddAccount(void);
   void slotAddBootstrapper(void);
-  void slotAddEtpMagnet(const QString &text = QString());
+  void slotAddEtpMagnet(const QString &text = QString(),
+			const bool displayError = true);
   void slotAddFriendsKey(void);
   void slotAddInstitution(const QString &text = QString());
   void slotAddListener(void);
@@ -218,6 +219,7 @@ class spoton: public QMainWindow
   void slotAddReceiveNova(void);
   void slotAuthenticate(void);
   void slotAuthenticationRequestButtonClicked(void);
+  void slotAutoAddSharedSBMagnets(bool state);
   void slotAutoRetrieveEmail(bool state);
   void slotBlockNeighbor(void);
   void slotBuzzActionsActivated(int index);
