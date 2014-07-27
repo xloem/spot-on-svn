@@ -5860,9 +5860,13 @@ void spoton::slotPopulateParticipants(void)
 
 		      if(i == 0) // Name
 			{
-			  item = new QTableWidgetItem
-			    (QString::fromUtf8(query.value(i).toByteArray()));
-			  name = item->text();
+			  name = QString::fromUtf8(query.value(i).
+						   toByteArray()).trimmed();
+
+			  if(name.isEmpty())
+			    name = "unknown";
+
+			  item = new QTableWidgetItem(name);
 			}
 		      else if(i == 4) // Status
 			{
@@ -6003,8 +6007,16 @@ void spoton::slotPopulateParticipants(void)
 			}
 
 		      if(i == 0)
-			item = new QTableWidgetItem
-			  (QString::fromUtf8(query.value(i).toByteArray()));
+			{
+			  QString str
+			    (QString::fromUtf8(query.value(i).
+					       toByteArray()).trimmed());
+
+			  if(str.isEmpty())
+			    str = "unknown";
+
+			  item = new QTableWidgetItem(str);
+			}
 		      else if(i == 1 || i == 2 || i == 3)
 			item = new QTableWidgetItem
 			  (query.value(i).toString());
@@ -6048,8 +6060,16 @@ void spoton::slotPopulateParticipants(void)
 			}
 
 		      if(i == 0)
-			item = new QTableWidgetItem
-			  (QString::fromUtf8(query.value(i).toByteArray()));
+			{
+			  QString str
+			    (QString::fromUtf8(query.value(i).
+					       toByteArray()).trimmed());
+
+			  if(str.isEmpty())
+			    str = "unknown";
+
+			  item = new QTableWidgetItem(str);
+			}
 		      else if(i == 1 || i == 2 || i == 3)
 			item = new QTableWidgetItem
 			  (query.value(i).toString());

@@ -293,7 +293,7 @@ void spoton::slotReceivedKernelMessage(void)
 			item(items.at(0)->row(), 0); // Participant
 
 		      if(item)
-			name = item->text().trimmed().toUtf8();
+			name = item->text().toUtf8().trimmed();
 		    }
 
 		  if(name.isEmpty())
