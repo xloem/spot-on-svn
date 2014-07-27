@@ -271,7 +271,7 @@ void spoton::slotReceivedKernelMessage(void)
 					       ** SHA-512 hash of the sender's
 					       ** public key.
 					       */
-		  QByteArray name(list.value(1));
+		  QByteArray name(list.value(1).trimmed());
 		  QByteArray message(list.value(2));
 		  QByteArray sequenceNumber(list.value(3));
 		  QByteArray utcDate(list.value(4));
@@ -293,7 +293,7 @@ void spoton::slotReceivedKernelMessage(void)
 			item(items.at(0)->row(), 0); // Participant
 
 		      if(item)
-			name = item->text().toUtf8();
+			name = item->text().trimmed().toUtf8();
 		    }
 
 		  if(name.isEmpty())
