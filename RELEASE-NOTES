@@ -1,4 +1,4 @@
-0.09.09 (07/27/2014)
+0.09.09 (08/02/2014)
 
 1.   Include timestamps when computing A.E. hashes. This will help
      avoid some replay attacks. The delta between timestamps must be
@@ -38,6 +38,8 @@
 16.  Use trimmed() wisely.
 17.  The various slotSetIcons() methods must validate the gui/iconSet
      value.
+18.  Replaced tab texts with tool tips.
+19.  Added an option for automatically accepting shared StarBeam magnets.
 
 0.09.08 (07/16/2014)
 
