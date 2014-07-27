@@ -40,6 +40,8 @@
      value.
 18.  Replaced tab texts with tool tips.
 19.  Added an option for automatically accepting shared StarBeam magnets.
+20.  Remind the user if a kernel is active before the interface is
+     closed.
 
 0.09.08 (07/16/2014)
 
