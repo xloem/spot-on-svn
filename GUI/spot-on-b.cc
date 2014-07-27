@@ -2893,14 +2893,24 @@ void spoton::slotRefreshMail(void)
 			  {
 			    if(goldbug == "0")
 			      {
-				item = new QTableWidgetItem
-				  (QString::
-				   fromUtf8(m_crypts.value("email")->
-					    decryptedAfterAuthenticated
-					    (QByteArray::
-					     fromBase64
-					     (query.value(i).toByteArray()),
-					     &ok).constData()));
+				if(i == 3) // subject
+				  item = new QTableWidgetItem
+				    (QString::
+				     fromUtf8(m_crypts.value("email")->
+					      decryptedAfterAuthenticated
+					      (QByteArray::
+					       fromBase64
+					       (query.value(i).toByteArray()),
+					       &ok).constData()).trimmed());
+				else
+				  item = new QTableWidgetItem
+				    (QString::
+				     fromUtf8(m_crypts.value("email")->
+					      decryptedAfterAuthenticated
+					      (QByteArray::
+					       fromBase64
+					       (query.value(i).toByteArray()),
+					       &ok).constData()));
 
 				if(!ok)
 				  item->setText(tr("error"));
@@ -3928,13 +3938,20 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
 		  list.append
 		    (QByteArray::fromBase64(query.value(i).
 					    toByteArray()));
-		else
+		else if(i == 5) // subject
 		  list.append
 		    (m_crypts.value("email")->
 		     decryptedAfterAuthenticated
 		     (QByteArray::fromBase64(query.value(i).
 					     toByteArray()),
 		      &ok).trimmed());
+		else
+		  list.append
+		    (m_crypts.value("email")->
+		     decryptedAfterAuthenticated
+		     (QByteArray::fromBase64(query.value(i).
+					     toByteArray()),
+		      &ok));
 
 		if(!ok)
 		  {
