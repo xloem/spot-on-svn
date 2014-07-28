@@ -5209,7 +5209,7 @@
               <item>
                <widget class="QCheckBox" name="autoAddSharedSBMagnets">
                 <property name="text">
-                 <string>&amp;Automatically accept shared magnets.</string>
+                 <string>Automatically accept shared &amp;magnets.</string>
                 </property>
                </widget>
               </item>
