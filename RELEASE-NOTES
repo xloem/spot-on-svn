@@ -42,6 +42,11 @@
 19.  Added an option for automatically accepting shared StarBeam magnets.
 20.  Remind the user if a kernel is active before the interface is
      closed.
+21.  Use keyed hashes in account authentication. The account name and
+     password must now contain at least thirty-two characters each. Please
+     remove your accounts.
+22.  Increased the Gemini SHA-512 hash key size to 64 bytes. Other hash key
+     sizes have also been increased.
 
 0.09.08 (07/16/2014)
 
