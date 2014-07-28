@@ -1433,23 +1433,23 @@ QString spoton::mapIconToEmoticon(const QString &content)
     "<img src=\":/emoticons/smile.png\"></img>";
   map[":-D"] = map[":D"] = "<img src=\":/emoticons/laugh.png\"></img>";
   map[":-))"] = "<img src=\":/emoticons/happy.png\"></img>";
-  map[">:["] = map[":-("] = map[":("] =
-    map[":-<"] = map[":<"] = map[":-["] = map[":["] =
+  map[":-("] = map[":("] =
+    map[":-["] = map[":["] =
     map[":{"] = "<img src=\":/emoticons/sad.png\"></img>";
   map[";)"] = "<img src=\":/emoticons/wink.png\"></img>";
-  map[">:("] = map[":-||"] = "<img src=\":/emoticons/angry.png\"></img>";
+  map[":-||"] = "<img src=\":/emoticons/angry.png\"></img>";
   map[":'-("] = map[":'("] = "<img src=\":/emoticons/crying.png\"></img>";
-  map[">:O"] = map[":-O"] = map[":O"] =
+  map[":-O"] = map[":O"] =
     "<img src=\":/emoticons/shocked.png\"></img>";
   map[":*"] = map[":^*"] = map[":-)(-:"] =
-   "<img src=\":/emoticons/kiss.png\"></img>";
-  map[">:P"] = map[":-P"] = map[":P"] =
+    "<img src=\":/emoticons/kiss.png\"></img>";
+  map[":-P"] = map[":P"] =
     "<img src=\":/emoticons/tongue.png\"></img>";
-  map[">:\\"] = map[":-/"] = map[":\\"] =
+  map[":-/"] = map[":\\"] =
     "<img src=\":/emoticons/confused.png\"></img>";
   map[":|"] = map[":-|"] = "<img src=\":/emoticons/neutral.png\"></img>";
   map["O:-)"] =
-   "<img src=\":/emoticons/angel.png\"></img>";
+    "<img src=\":/emoticons/angel.png\"></img>";
   map["}:)"] = map["}:-)"] = "<img src=\":/emoticons/devil.png\"></img>";
   map["O-)"] = "<img src=\":/emoticons/cyclops.png\"></img>";
   map["(T)"] = "<img src=\":/emoticons/phone.png\"></img>";
