@@ -387,12 +387,12 @@ Account Authentication
 Echoed? No
 
 Message Type ("0050") (Client Request)
-0 - SHA-512 Hash (Base-64)
+0 - Keyed SHA-512 Hash (Base-64)
 EOL
 1 - Random Data (Base-64)
 
 Message Type ("0051") (Server Response)
-0 - SHA-512 Hash (Base-64)
+0 - Keyed SHA-512 Hash (Base-64)
 EOL
 1 - Random Data (Base-64)
 
