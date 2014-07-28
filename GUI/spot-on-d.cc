@@ -1429,7 +1429,7 @@ QString spoton::mapIconToEmoticon(const QString &content)
   QMap<QString, QString> map;
   QString str(content);
 
-  map[":-)"] = map[":)"] = map[":O)"] = map[":]"] = map[":>"] = map[":}"] =
+  map[":-)"] = map[":)"] = map[":O)"] = map[":]"] = map[":}"] =
     "<img src=\":/emoticons/smile.png\"></img>";
   map[":-D"] = map[":D"] = "<img src=\":/emoticons/laugh.png\"></img>";
   map[":-))"] = "<img src=\":/emoticons/happy.png\"></img>";
