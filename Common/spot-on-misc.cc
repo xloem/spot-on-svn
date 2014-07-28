@@ -857,7 +857,8 @@ void spoton_misc::retrieveSymmetricData
 		      (static_cast<int> (symmetricKeyLength));
 		    symmetricKey = spoton_crypt::strongRandomBytes
 		      (symmetricKey.length());
-		    hashKey.resize(static_cast<int> (symmetricKeyLength));
+		    hashKey.resize
+		      (spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES);
 		    hashKey = spoton_crypt::strongRandomBytes
 		      (hashKey.length());
 		  }
@@ -2011,7 +2012,7 @@ bool spoton_misc::isAcceptedIP(const QHostAddress &address,
 bool spoton_misc::authenticateAccount(QByteArray &name,
 				      QByteArray &password,
 				      const qint64 listenerOid,
-				      const QByteArray &saltedCredentials,
+				      const QByteArray &hash,
 				      const QByteArray &salt,
 				      spoton_crypt *crypt)
 {
@@ -2039,7 +2040,7 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 	query.prepare("SELECT COUNT(*) FROM "
 		      "listeners_accounts_consumed_authentications "
 		      "WHERE data = ? AND listener_oid = ?");
-	query.bindValue(0, saltedCredentials.toBase64());
+	query.bindValue(0, hash.toBase64());
 	query.bindValue(1, listenerOid);
 
 	if(query.exec())
@@ -2048,7 +2049,7 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 
 	if(!exists)
 	  {
-	    QByteArray salted;
+	    QByteArray newHash;
 	    QSqlQuery query(db);
 
 	    query.setForwardOnly(true);
@@ -2072,28 +2073,28 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 		       &ok);
 
 		  if(ok)
-		    salted = spoton_crypt::saltedValue
-		      ("sha512", name + password +
-		       QDateTime::currentDateTime().toUTC().
-		       toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
+		    newHash = spoton_crypt::keyedHash
+		      (QDateTime::currentDateTime().toUTC().
+		       toString("MMddyyyyhhmm").
+		       toLatin1() + salt, name + password, "sha512", &ok);
 
 		  if(ok)
-		    if(!salted.isEmpty() && !saltedCredentials.isEmpty() &&
-		       spoton_crypt::memcmp(salted, saltedCredentials))
+		    if(!hash.isEmpty() && !newHash.isEmpty() &&
+		       spoton_crypt::memcmp(hash, newHash))
 		      {
 			found = true;
 			break;
 		      }
 
 		  if(ok)
-		    salted = spoton_crypt::saltedValue
-		      ("sha512", name + password +
-		       QDateTime::currentDateTime().toUTC().addSecs(60).
-		       toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
+		    newHash = spoton_crypt::keyedHash
+		      (QDateTime::currentDateTime().toUTC().addSecs(60).
+		       toString("MMddyyyyhhmm").
+		       toLatin1() + salt, name + password, "sha512", &ok);
 
 		  if(ok)
-		    if(!salted.isEmpty() && !saltedCredentials.isEmpty() &&
-		       spoton_crypt::memcmp(salted, saltedCredentials))
+		    if(!hash.isEmpty() && !newHash.isEmpty() &&
+		       spoton_crypt::memcmp(hash, newHash))
 		      {
 			found = true;
 			break;
@@ -2132,7 +2133,7 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 		       "listeners_accounts_consumed_authentications "
 		       "(data, insert_date, listener_oid) "
 		       "VALUES (?, ?, ?)");
-		    query.bindValue(0, saltedCredentials.toBase64());
+		    query.bindValue(0, hash.toBase64());
 		    query.bindValue
 		      (1, QDateTime::currentDateTime().toString(Qt::ISODate));
 		    query.bindValue(2, listenerOid);

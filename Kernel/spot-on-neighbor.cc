@@ -4199,11 +4199,11 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 	{
 	  if(s_crypt)
 	    {
+	      QByteArray hash(list.at(0));
 	      QByteArray name(m_accountName);
+	      QByteArray newHash;
 	      QByteArray password(m_accountPassword);
-	      QByteArray newSaltedCredentials;
 	      QByteArray salt(list.at(1));
-	      QByteArray saltedCredentials(list.at(0));
 	      bool ok = true;
 
 	      name = s_crypt->decryptedAfterAuthenticated(name, &ok);
@@ -4213,17 +4213,15 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 		  (password, &ok);
 
 	      if(ok)
-		newSaltedCredentials = spoton_crypt::saltedValue
-		  ("sha512", name + password +
-		   QDateTime::currentDateTime().toUTC().
-		   toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
+		newHash = spoton_crypt::keyedHash
+		  (QDateTime::currentDateTime().toUTC().
+		   toString("MMddyyyyhhmm").
+		   toLatin1() + salt, name + password, "sha512", &ok);
 
 	      if(ok)
 		{
-		  if(!newSaltedCredentials.isEmpty() &&
-		     !saltedCredentials.isEmpty() &&
-		     spoton_crypt::memcmp(newSaltedCredentials,
-					  saltedCredentials))
+		  if(!hash.isEmpty() && !newHash.isEmpty() &&
+		     spoton_crypt::memcmp(hash, newHash))
 		    {
 		      spoton_misc::setSharedResource
 			(&m_accountAuthenticated, true,
@@ -4233,18 +4231,15 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 		    }
 		  else
 		    {
-		      newSaltedCredentials = spoton_crypt::saltedValue
-			("sha512",
-			 name + password +
-			 QDateTime::currentDateTime().toUTC().addSecs(60).
-			 toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
+		      newHash = spoton_crypt::keyedHash
+			(QDateTime::currentDateTime().toUTC().addSecs(60).
+			 toString("MMddyyyyhhmm").
+			 toLatin1() + salt, name + password, "sha512", &ok);
 
 		      if(ok)
 			{
-			  if(!newSaltedCredentials.isEmpty() &&
-			     !saltedCredentials.isEmpty() &&
-			     spoton_crypt::memcmp(newSaltedCredentials,
-						  saltedCredentials))
+			  if(!hash.isEmpty() && !newHash.isEmpty() &&
+			     spoton_crypt::memcmp(hash, newHash))
 			    {
 			      spoton_misc::setSharedResource
 				(&m_accountAuthenticated, true,
@@ -5868,18 +5863,18 @@ void spoton_neighbor::slotSendAccountInformation(void)
     password = s_crypt->decryptedAfterAuthenticated(password, &ok);
 
   if(ok)
-    if(!name.isEmpty() && password.length() >= 16)
+    if(name.length() >= 32 && password.length() >= 32)
       {
+	QByteArray hash;
 	QByteArray message;
 	QByteArray salt(spoton_crypt::strongRandomBytes(512));
-	QByteArray saltedCredentials
-	  (spoton_crypt::saltedValue("sha512", name + password +
-				     QDateTime::currentDateTime().toUTC().
-				     toString("MMddyyyyhhmm").toLatin1(),
-				     salt, &ok));
+
+	hash = spoton_crypt::keyedHash
+	  (QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmm").
+	   toLatin1() + salt, name + password, "sha512", &ok);
 
 	if(ok)
-	  message = spoton_send::message0050(saltedCredentials, salt);
+	  message = spoton_send::message0050(hash, salt);
 
 	if(ok)
 	  {
@@ -5904,25 +5899,26 @@ void spoton_neighbor::slotAccountAuthenticated(const QByteArray &name,
 {
   if(state() != QAbstractSocket::ConnectedState)
     return;
+  else if(name.length() < 32 || password.length() < 32)
+    return;
 
+  QByteArray hash;
   QByteArray message;
   QByteArray salt(spoton_crypt::strongRandomBytes(512));
-  QByteArray saltedCredentials;
   bool ok = true;
 
   /*
   ** The server authenticated the client's credentials. We'll
   ** now create a similar response so that the client can
-  ** verify the server.
+  ** verify the server. We are the server.
   */
 
-  saltedCredentials = spoton_crypt::saltedValue
-    ("sha512", name + password +
-     QDateTime::currentDateTime().toUTC().
-     toString("MMddyyyyhhmm").toLatin1(), salt, &ok);
+  hash = spoton_crypt::keyedHash
+    (QDateTime::currentDateTime().toUTC().toString("MMddyyyyhhmm").
+     toLatin1() + salt, name + password, "sha512", &ok);
 
   if(ok)
-    message = spoton_send::message0051(saltedCredentials, salt);
+    message = spoton_send::message0051(hash, salt);
 
   if(ok)
     {

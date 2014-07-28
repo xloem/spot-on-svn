@@ -441,7 +441,7 @@ QByteArray spoton_send::message0040b(const QByteArray &message,
   return results;
 }
 
-QByteArray spoton_send::message0050(const QByteArray &saltedCredentials,
+QByteArray spoton_send::message0050(const QByteArray &hash,
 				    const QByteArray &salt)
 {
   QByteArray content;
@@ -454,7 +454,7 @@ QByteArray spoton_send::message0050(const QByteArray &saltedCredentials,
      "\r\n"
      "type=0050&content=%2\r\n"
      "\r\n\r\n");
-  content.append(saltedCredentials.toBase64());
+  content.append(hash.toBase64());
   content.append("\n");
   content.append(salt.toBase64());
   results.replace
@@ -467,7 +467,7 @@ QByteArray spoton_send::message0050(const QByteArray &saltedCredentials,
   return results;
 }
 
-QByteArray spoton_send::message0051(const QByteArray &saltedCredentials,
+QByteArray spoton_send::message0051(const QByteArray &hash,
 				    const QByteArray &salt)
 {
   QByteArray content;
@@ -480,7 +480,7 @@ QByteArray spoton_send::message0051(const QByteArray &saltedCredentials,
      "\r\n"
      "type=0051&content=%2\r\n"
      "\r\n\r\n");
-  content.append(saltedCredentials.toBase64());
+  content.append(hash.toBase64());
   content.append("\n");
   content.append(salt.toBase64());
   results.replace

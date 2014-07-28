@@ -1144,16 +1144,33 @@ QByteArray spoton_crypt::publicKeyEncrypt(const QByteArray &data,
 			      data.constData());
       else
 	{
-	  QByteArray random(64, 0); // Output size of SHA-512 divided by 8.
+	  QByteArray random;
+	  unsigned int nbits = gcry_pk_get_nbits(key_t);
 
-	  random = strongRandomBytes(random.length());
-	  err = gcry_sexp_build(&data_t, 0,
-				"(data (flags oaep)(hash-algo sha512)"
-				"(value %b)(random-override %b))",
-				data.length(),
-				data.constData(),
-				random.length(),
-				random.constData());
+	  if(nbits == 2048)
+	    {
+	      random.resize(48);
+	      random = strongRandomBytes(random.length());
+	      err = gcry_sexp_build(&data_t, 0,
+				    "(data (flags oaep)(hash-algo sha384)"
+				    "(value %b)(random-override %b))",
+				    data.length(),
+				    data.constData(),
+				    random.length(),
+				    random.constData());
+	    }
+	  else
+	    {
+	      random.resize(64);
+	      random = strongRandomBytes(random.length());
+	      err = gcry_sexp_build(&data_t, 0,
+				    "(data (flags oaep)(hash-algo sha512)"
+				    "(value %b)(random-override %b))",
+				    data.length(),
+				    data.constData(),
+				    random.length(),
+				    random.constData());
+	    }
 	}
 
       if(err == 0 && data_t)
@@ -1402,7 +1419,7 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
 QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 {
   QByteArray decrypted;
-  QByteArray random(64, 0); // Output size of SHA-512 divided by 8.
+  QByteArray random;
   QString keyType("");
   const char *buffer = 0;
   gcry_error_t err = 0;
@@ -1536,12 +1553,30 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 			  "(enc-val (flags) %S)",
 			  raw_t);
   else
-    err = gcry_sexp_build(&data_t, 0,
-			  "(enc-val (flags oaep)"
-			  "(hash-algo sha512)(random-override %b) %S)",
-			  random.length(),
-			  random.constData(),
-			  raw_t);
+    {
+      unsigned int nbits = gcry_pk_get_nbits(key_t);
+
+      if(nbits == 2048)
+	{
+	  random.resize(48);
+	  err = gcry_sexp_build(&data_t, 0,
+				"(enc-val (flags oaep)"
+				"(hash-algo sha384)(random-override %b) %S)",
+				random.length(),
+				random.constData(),
+				raw_t);
+	}
+      else
+	{
+	  random.resize(64);
+	  err = gcry_sexp_build(&data_t, 0,
+				"(enc-val (flags oaep)"
+				"(hash-algo sha512)(random-override %b) %S)",
+				random.length(),
+				random.constData(),
+				raw_t);
+	}
+    }
 
   if(err != 0 || !data_t)
     {

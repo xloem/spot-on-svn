@@ -992,10 +992,10 @@ void spoton::slotAddAEToken(void)
       error = tr("Please provide a token and a token type.");
       goto done_label;
     }
-  else if(token.length() < 48)
+  else if(token.length() < 96)
     {
       error = tr("Please provide a token that contains at "
-		 "least forty-eight characters.");
+		 "least ninety-six characters.");
       goto done_label;
     }
 

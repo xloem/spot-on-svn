@@ -1962,7 +1962,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
 
 	      if(symmetricKeyLength > 0)
 		{
-		  hashKey.resize(static_cast<int> (symmetricKeyLength));
+		  hashKey.resize(spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES);
 		  hashKey = spoton_crypt::strongRandomBytes
 		    (hashKey.length());
 		  symmetricKey.resize(static_cast<int> (symmetricKeyLength));
@@ -2297,7 +2297,7 @@ void spoton_kernel::slotRetrieveMail(void)
 
 	      if(symmetricKeyLength > 0)
 		{
-		  hashKey.resize(static_cast<int> (symmetricKeyLength));
+		  hashKey.resize(spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES);
 		  hashKey = spoton_crypt::strongRandomBytes
 		    (hashKey.length());
 		  symmetricKey.resize(static_cast<int> (symmetricKeyLength));
@@ -2489,7 +2489,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	      if(symmetricKeyLength > 0)
 		{
-		  hashKey.resize(static_cast<int> (symmetricKeyLength));
+		  hashKey.resize(spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES);
 		  hashKey = spoton_crypt::strongRandomBytes(hashKey.length());
 		  symmetricKey.resize(static_cast<int> (symmetricKeyLength));
 		  symmetricKey = spoton_crypt::strongRandomBytes
@@ -2663,7 +2663,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	      if(symmetricKeyLength > 0)
 		{
-		  hashKey1.resize(static_cast<int> (symmetricKeyLength));
+		  hashKey1.resize(spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES);
 		  hashKey1 = spoton_crypt::strongRandomBytes
 		    (hashKey1.length());
 		  symmetricKey.resize(static_cast<int> (symmetricKeyLength));
@@ -2718,7 +2718,7 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 
 	      if(symmetricKeyLength > 0)
 		{
-		  hashKey2.resize(static_cast<int> (symmetricKeyLength));
+		  hashKey2.resize(spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES);
 		  hashKey2 = spoton_crypt::strongRandomBytes
 		    (hashKey2.length());
 		  symmetricKey.resize(static_cast<int> (symmetricKeyLength));
@@ -3402,7 +3402,8 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 
 		  if(symmetricKeyLength > 0)
 		    {
-		      hashKey.resize(static_cast<int> (symmetricKeyLength));
+		      hashKey.resize
+			(spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES);
 		      hashKey = spoton_crypt::strongRandomBytes
 			(hashKey.length());
 		      symmetricKey.resize

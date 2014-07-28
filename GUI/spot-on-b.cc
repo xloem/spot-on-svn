@@ -3378,7 +3378,7 @@ void spoton::slotGenerateGeminiInChat(void)
   gemini.first = spoton_crypt::
     strongRandomBytes(spoton_crypt::cipherKeyLength("aes256"));
   gemini.second = spoton_crypt::strongRandomBytes
-    (spoton_crypt::cipherKeyLength("aes256"));
+    (spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES);
 
   if(saveGemini(gemini, item1->text()))
     {
@@ -4965,15 +4965,15 @@ void spoton::slotAddAccount(void)
     if(!password.at(i).isPrint())
       password.remove(i, 1);
 
-  if(name.isEmpty() || password.isEmpty())
+  if(name.length() < 32)
     {
-      error = tr("Please provide an account name and an account password.");
-      goto done_label;
+      error = tr("Please provide an account name that contains at "
+		 "least thirty-two characters.");
     }
-  else if(password.length() < 16)
+  else if(password.length() < 32)
     {
       error = tr("Please provide an account password that contains at "
-		 "least sixteen characters.");
+		 "least thirty-two characters.");
       goto done_label;
     }
 

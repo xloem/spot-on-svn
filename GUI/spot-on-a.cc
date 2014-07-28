@@ -7088,7 +7088,7 @@ void spoton::authenticate(spoton_crypt *crypt, const QString &oid,
       QString name(ui.name->text().trimmed());
       QString password(ui.password->text());
 
-      if(!name.isEmpty() && password.length() >= 16)
+      if(name.length() >= 32 && password.length() >= 32)
 	{
 	  QString connectionName("");
 
