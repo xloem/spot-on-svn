@@ -3614,9 +3614,9 @@ void spoton_kernel::writeMessage0060(const QByteArray &data, bool *ok)
     }
 }
 
-void spoton_kernel::processPotentialStarBeamData(const QByteArray &data)
+bool spoton_kernel::processPotentialStarBeamData(const QByteArray &data)
 {
-  m_starbeamWriter->append(data);
+  return m_starbeamWriter->append(data);
 }
 
 void spoton_kernel::slotImpersonateTimeout(void)

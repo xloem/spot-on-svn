@@ -1619,17 +1619,20 @@ void spoton_neighbor::processData(void)
 	  else
 	    messageType.clear();
 
-	  if(messageType.isEmpty() &&
-	     data.trimmed().split('\n').size() == 3)
-	    spoton_kernel::s_kernel->processPotentialStarBeamData(data);
+	  if(messageType.isEmpty() && data.trimmed().split('\n').size() == 3)
+	    if(spoton_kernel::s_kernel->processPotentialStarBeamData(data))
+	      messageType == "0060";
 
 	  if(spoton_kernel::setting("gui/scramblerEnabled", false).toBool())
 	    emit scrambleRequest();
 
 	  if(discoveredAdaptiveEchoPair == QPair<QByteArray, QByteArray> () &&
 	     spoton_kernel::setting("gui/superEcho", false).toBool())
-	    emit receivedMessage
-	      (originalData, m_id, QPair<QByteArray, QByteArray> ());
+	    {
+	      if(messageType != "0060") // StarBeam
+		emit receivedMessage
+		  (originalData, m_id, QPair<QByteArray, QByteArray> ());
+	    }
 	  else if(m_echoMode == "full")
 	    {
 	      if(messageType == "0001b" &&

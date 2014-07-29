@@ -40,8 +40,8 @@ class spoton_starbeam_writer: public QThread
  public:
   spoton_starbeam_writer(QObject *parent);
   ~spoton_starbeam_writer();
+  bool append(const QByteArray &data);
   bool isActive(void) const;
-  void append(const QByteArray &data);
   void processData(void);
   void start(void);
   void stop(void);

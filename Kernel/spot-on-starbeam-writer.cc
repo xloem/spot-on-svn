@@ -402,24 +402,50 @@ void spoton_starbeam_writer::slotReadKeys(void)
   QSqlDatabase::removeDatabase(connectionName);
 }
 
-void spoton_starbeam_writer::append(const QByteArray &data)
+bool spoton_starbeam_writer::append(const QByteArray &data)
 {
   if(data.isEmpty())
-    return;
+    return false;
 
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   if(!s_crypt)
-    return;
+    return false;
 
   QReadLocker locker(&m_keyMutex);
 
   if(m_magnets.isEmpty())
-    return;
+    return false;
+
+  QList<QByteArray> list(data.trimmed().split('\n'));
+  bool found = false;
+
+  for(int i = 0; i < list.size(); i++)
+    list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+  for(int i = 0; i < m_magnets.size(); i++)
+    {
+      QByteArray messageCode;
+      bool ok = true;
+
+      messageCode = spoton_crypt::keyedHash
+	(list.value(0),
+	 m_magnets.at(i).value("mk"),
+	 m_magnets.at(i).value("ht"),
+	 &ok);
+
+      if(ok)
+	if(!list.value(1).isEmpty() && !messageCode.isEmpty() &&
+	   spoton_crypt::memcmp(list.value(1), messageCode))
+	  {
+	    found = true;
+	    break;
+	  }
+    }
 
   locker.unlock();
 
-  if(spoton_kernel::setting("gui/etpReceivers", false).toBool())
+  if(found && spoton_kernel::setting("gui/etpReceivers", false).toBool())
     {
       QByteArray bytes(data.trimmed());
       QByteArray hash;
@@ -451,6 +477,8 @@ void spoton_starbeam_writer::append(const QByteArray &data)
       if(new_data)
 	emit newData();
     }
+
+  return found;
 }
 
 bool spoton_starbeam_writer::isActive(void) const
