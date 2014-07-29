@@ -47,6 +47,7 @@
      remove your accounts.
 22.  Increased the Gemini SHA-512 hash key size to 64 bytes. Other hash key
      sizes have also been increased.
+23.  Do not echo approved StarBeam data.
 
 0.09.08 (07/16/2014)
 
