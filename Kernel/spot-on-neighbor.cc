@@ -4859,7 +4859,7 @@ QUuid spoton_neighbor::receivedUuid(void) const
 }
 
 void spoton_neighbor::slotSendMail
-(const QPairListByteArrayQInt64 &list, const QString &messageType)
+(const QPairByteArrayInt64List &list, const QString &messageType)
 {
   QList<qint64> oids;
 

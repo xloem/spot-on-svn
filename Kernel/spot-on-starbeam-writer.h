@@ -33,6 +33,8 @@
 #include <QReadWriteLock>
 #include <QThread>
 
+#include "Common/spot-on-common.h"
+
 class spoton_starbeam_writer: public QThread
 {
   Q_OBJECT
@@ -42,7 +44,8 @@ class spoton_starbeam_writer: public QThread
   ~spoton_starbeam_writer();
   bool append(const QByteArray &data);
   bool isActive(void) const;
-  void processData(const QByteArray &data);
+  void processData(const QByteArray &data,
+		   const QStringByteArrayHash &magnet);
   void start(void);
   void stop(void);
 
@@ -56,7 +59,8 @@ class spoton_starbeam_writer: public QThread
   void slotReadKeys(void);
 
  signals:
-  void newData(const QByteArray &data);
+  void newData(const QByteArray &data,
+	       const QStringByteArrayHash &magnet);
 };
 
 class spoton_starbeam_writer_worker: public QObject
@@ -77,10 +81,11 @@ class spoton_starbeam_writer_worker: public QObject
   QPointer<spoton_starbeam_writer> m_writer;
 
  private slots:
-  void slotNewData(const QByteArray &data)
+  void slotNewData(const QByteArray &data,
+		   const QStringByteArrayHash &magnet)
   {
     if(m_writer)
-      m_writer->processData(data);
+      m_writer->processData(data, magnet);
   }
 };
 

@@ -303,7 +303,7 @@ class spoton_neighbor: public QThread
   void slotSendAuthenticationRequest(void);
   void slotSendBuzz(const QByteArray &data);
   void slotSendMOTD(void);
-  void slotSendMail(const QPairListByteArrayQInt64 &list,
+  void slotSendMail(const QPairByteArrayInt64List &list,
 		    const QString &messageType);
   void slotSendMailFromPostOffice
     (const QByteArray &data,

@@ -32,8 +32,9 @@
 
 #define SPOTON_VERSION_STR "0.09.09"
 
+typedef QHash<QString, QByteArray> QStringByteArrayHash;
 typedef QList<QByteArray> QByteArrayList;
-typedef QList<QPair<QByteArray, qint64> > QPairListByteArrayQInt64;
+typedef QList<QPair<QByteArray, qint64> > QPairByteArrayInt64List;
 typedef QPair<QByteArray, QByteArray> QPairByteArrayByteArray;
 
 namespace spoton_common

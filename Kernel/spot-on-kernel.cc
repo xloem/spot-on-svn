@@ -308,7 +308,8 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   qRegisterMetaType<QByteArrayList> ("QByteArrayList");
   qRegisterMetaType<QHostAddress> ("QHostAddress");
   qRegisterMetaType<QPairByteArrayByteArray> ("QPairByteArrayByteArray");
-  qRegisterMetaType<QPairListByteArrayQInt64> ("QPairListByteArrayQInt64");
+  qRegisterMetaType<QPairByteArrayInt64List> ("QPairByteArrayInt64List");
+  qRegisterMetaType<QStringByteArrayHash> ("QStringByteArrayHash");
 #if QT_VERSION >= 0x050000
   qRegisterMetaType<qintptr> ("qintptr");
 #endif
@@ -1809,10 +1810,10 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SLOT(slotSendBuzz(const QByteArray &)),
 	  Qt::UniqueConnection);
   connect(this,
-	  SIGNAL(sendMail(const QPairListByteArrayQInt64 &,
+	  SIGNAL(sendMail(const QPairByteArrayInt64List &,
 			  const QString &)),
 	  neighbor,
-	  SLOT(slotSendMail(const QPairListByteArrayQInt64 &,
+	  SLOT(slotSendMail(const QPairByteArrayInt64List &,
 			    const QString &)),
 	  Qt::UniqueConnection);
   connect(this,

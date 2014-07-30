@@ -193,7 +193,7 @@ class spoton_kernel: public QObject
   void sendBuzz(const QByteArray &buzz);
   void sendMessage(const QByteArray &message,
 		   const spoton_send::spoton_send_method sendMethod);
-  void sendMail(const QPairListByteArrayQInt64 &mail,
+  void sendMail(const QPairByteArrayInt64List &mail,
 		const QString &messageType);
   void sendStatus(const QByteArrayList &status);
 };
