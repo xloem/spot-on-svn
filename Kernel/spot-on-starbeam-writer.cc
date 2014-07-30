@@ -50,39 +50,32 @@ void spoton_starbeam_writer::run(void)
   spoton_starbeam_writer_worker worker(this);
 
   connect(this,
-	  SIGNAL(newData(void)),
+	  SIGNAL(newData(const QByteArray &)),
 	  &worker,
-	  SLOT(slotNewData(void)));
+	  SLOT(slotNewData(const QByteArray &)));
   exec();
 }
 
-void spoton_starbeam_writer::processData(void)
+void spoton_starbeam_writer::processData(const QByteArray &d)
 {
-  QWriteLocker locker1(&m_mutex);
-
-  if(m_data.isEmpty())
+  if(d.isEmpty())
     return;
 
-  QByteArray data(m_data.take(m_data.keys().value(0)));
-
-  locker1.unlock();
-
+  QByteArray data(d.trimmed());
   QList<QByteArray> list(data.split('\n'));
 
   if(list.size() != 3)
     return;
-
-  QByteArray originalData(data);
 
   for(int i = 0; i < list.size(); i++)
     list.replace(i, QByteArray::fromBase64(list.at(i)));
 
   QHash<QString, QByteArray> magnet;
   QList<QHash<QString, QByteArray> > magnets;
-  QReadLocker locker2(&m_keyMutex);
+  QReadLocker locker(&m_keyMutex);
 
   magnets = m_magnets;
-  locker2.unlock();
+  locker.unlock();
 
   for(int i = 0; i < magnets.size(); i++)
     {
@@ -279,16 +272,11 @@ void spoton_starbeam_writer::stop(void)
   quit();
   wait(30000);
 
-  QWriteLocker locker1(&m_keyMutex);
+  QWriteLocker locker(&m_keyMutex);
 
   m_magnets.clear();
   m_novas.clear();
-  locker1.unlock();
-
-  QWriteLocker locker2(&m_mutex);
-
-  m_data.clear();
-  locker2.unlock();
+  locker.unlock();
 }
 
 void spoton_starbeam_writer::slotReadKeys(void)
@@ -447,26 +435,6 @@ bool spoton_starbeam_writer::append(const QByteArray &data)
 
   if(found && spoton_kernel::setting("gui/etpReceivers", false).toBool())
     {
-      QByteArray bytes(data.trimmed());
-      QByteArray hash;
-      bool new_data = false;
-      bool ok = true;
-
-      hash = s_crypt->keyedHash(bytes, &ok);
-
-      if(!ok)
-	hash = QCryptographicHash::hash(bytes, QCryptographicHash::Sha1);
-
-      QWriteLocker locker(&m_mutex);
-
-      if(!m_data.contains(hash))
-	{
-	  m_data.insert(hash, bytes);
-	  new_data = true;
-	}
-
-      locker.unlock();
-
       /*
       ** If the thread is not active, it should be!
       */
@@ -474,8 +442,7 @@ bool spoton_starbeam_writer::append(const QByteArray &data)
       if(!isRunning())
 	start();
 
-      if(new_data)
-	emit newData();
+      emit newData(data);
     }
 
   return found;

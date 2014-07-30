@@ -42,23 +42,21 @@ class spoton_starbeam_writer: public QThread
   ~spoton_starbeam_writer();
   bool append(const QByteArray &data);
   bool isActive(void) const;
-  void processData(void);
+  void processData(const QByteArray &data);
   void start(void);
   void stop(void);
 
  private:
-  QHash<QByteArray, QByteArray> m_data;
   QList<QHash<QString, QByteArray> > m_magnets;
   QList<QByteArray> m_novas;
   QReadWriteLock m_keyMutex;
-  QReadWriteLock m_mutex;
   void run(void);
 
  private slots:
   void slotReadKeys(void);
 
  signals:
-  void newData(void);
+  void newData(const QByteArray &data);
 };
 
 class spoton_starbeam_writer_worker: public QObject
@@ -79,10 +77,10 @@ class spoton_starbeam_writer_worker: public QObject
   QPointer<spoton_starbeam_writer> m_writer;
 
  private slots:
-  void slotNewData(void)
+  void slotNewData(const QByteArray &data)
   {
     if(m_writer)
-      m_writer->processData();
+      m_writer->processData(data);
   }
 };
 
