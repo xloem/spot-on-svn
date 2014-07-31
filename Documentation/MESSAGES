@@ -16,7 +16,8 @@ EOL
 }
 EOL
 {
-0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+0 - Encrypted Timestamp (Base-64)
+1 - Keyed (Adaptive Echo Hash Key) Message Code of the
     Preceding Data (Base-64)
 }
 
@@ -52,7 +53,8 @@ EOL
 }
 EOL
 {
-0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+0 - Encrypted Timestamp (Base-64)
+1 - Keyed (Adaptive Echo Hash Key) Message Code of the
     Preceding Data (Base-64)
 }
 
@@ -87,7 +89,8 @@ EOL
 }
 EOL
 {
-0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+0 - Encrypted Timestamp (Base-64)
+1 - Keyed (Adaptive Echo Hash Key) Message Code of the
     Preceding Data (Base-64)
 }
 
@@ -150,7 +153,8 @@ EOL
 }
 EOL
 {
-0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+0 - Encrypted Timestamp (Base-64)
+1 - Keyed (Adaptive Echo Hash Key) Message Code of the
     Preceding Data (Base-64)
 }
 
@@ -201,7 +205,8 @@ EOL
 }
 EOL
 {
-0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+0 - Encrypted Timestamp (Base-64)
+1 - Keyed (Adaptive Echo Hash Key) Message Code of the
     Preceding Data (Base-64)
 }
 
@@ -234,7 +239,8 @@ EOL
 }
 EOL
 {
-0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+0 - Encrypted Timestamp (Base-64)
+1 - Keyed (Adaptive Echo Hash Key) Message Code of the
     Preceding Data (Base-64)
 }
 
@@ -258,7 +264,8 @@ EOL
 }
 EOL
 {
-0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+0 - Encrypted Timestamp (Base-64)
+1 - Keyed (Adaptive Echo Hash Key) Message Code of the
     Preceding Data (Base-64)
 }
 
@@ -294,7 +301,8 @@ EOL
 }
 EOL
 {
-0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+0 - Encrypted Timestamp (Base-64)
+1 - Keyed (Adaptive Echo Hash Key) Message Code of the
     Preceding Data (Base-64)
 }
 
@@ -326,7 +334,8 @@ EOL
 }
 EOL
 {
-0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+0 - Encrypted Timestamp (Base-64)
+1 - Keyed (Adaptive Echo Hash Key) Message Code of the
     Preceding Data (Base-64)
 }
 
@@ -428,7 +437,8 @@ EOL
 }
 EOL
 {
-0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+0 - Encrypted Timestamp (Base-64)
+1 - Keyed (Adaptive Echo Hash Key) Message Code of the
     Preceding Data (Base-64)
 }
 
