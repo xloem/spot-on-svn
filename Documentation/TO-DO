@@ -176,7 +176,7 @@ Remaining Items
        e-mail.
 17.    Support ECC, or not.
 18.    Perform calling over geminis.
-19.    Counting users is possible.
+19.    Counting users is possible. See group information in MESSAGES.
 20.    Add support for crypto++.
 21.    1-N SCTP support.
 22.    Add log filters.
