@@ -26,7 +26,7 @@
      3316 bytes of storage. That's like a 25.06% consumption increase.
      Previous compatibility lost. Apologies.
 10.  Maximum passphrase length has been set to 128.
-11.  Removed entries from the post_office table if their dates are invalid.
+11.  Remove entries from the post_office table if their dates are invalid.
 12.  Use GCRY_MD_FLAG_SECURE in gcry_md_open() as it is not clear
      if gcry_md_setkey() maintains the provided key in secure memory.
 13.  spoton_neighbor's m_useAccounts variable must be set correctly if
