@@ -17,7 +17,8 @@ EOL
 EOL
 {
 0 - Keyed (Adaptive Echo Hash Key) Message Code of the
-    Preceding Data, Encrypted Timestamp
+    Preceding Data and Encrypted Timestamp,
+    Encrypted Timestamp (Base-64)
 }
 
 Groups: 4
@@ -53,7 +54,8 @@ EOL
 EOL
 {
 0 - Keyed (Adaptive Echo Hash Key) Message Code of the
-    Preceding Data, Encrypted Timestamp (Base-64)
+    Preceding Data and Encrypted Timestamp,
+    Encrypted Timestamp (Base-64)
 }
 
 Echo Call
@@ -88,7 +90,8 @@ EOL
 EOL
 {
 0 - Keyed (Adaptive Echo Hash Key) Message Code of the
-    Preceding Data, Encrypted Timestamp (Base-64)
+    Preceding Data and Encrypted Timestamp,
+    Encrypted Timestamp (Base-64)
 }
 
 Echo Mail
@@ -151,7 +154,8 @@ EOL
 EOL
 {
 0 - Keyed (Adaptive Echo Hash Key) Message Code of the
-    Preceding Data, Encrypted Timestamp (Base-64)
+    Preceding Data and Encrypted Timestamp,
+    Encrypted Timestamp (Base-64)
 }
 
 Groups: 4, 7
@@ -202,7 +206,8 @@ EOL
 EOL
 {
 0 - Keyed (Adaptive Echo Hash Key) Message Code of the
-    Preceding Data, Encrypted Timestamp (Base-64)
+    Preceding Data and Encrypted Timestamp,
+    Encrypted Timestamp (Base-64)
 }
 
 Retrieve Mail
@@ -235,7 +240,8 @@ EOL
 EOL
 {
 0 - Keyed (Adaptive Echo Hash Key) Message Code of the
-    Preceding Data, Encrypted Timestamp (Base-64)
+    Preceding Data and Encrypted Timestamp,
+    Encrypted Timestamp (Base-64)
 }
 
 Groups: 3
@@ -259,7 +265,8 @@ EOL
 EOL
 {
 0 - Keyed (Adaptive Echo Hash Key) Message Code of the
-    Preceding Data, Encrypted Timestamp (Base-64)
+    Preceding Data and Encrypted Timestamp,
+    Encrypted Timestamp (Base-64)
 }
 
 Key Exchange
@@ -295,7 +302,8 @@ EOL
 EOL
 {
 0 - Keyed (Adaptive Echo Hash Key) Message Code of the
-    Preceding Data, Encrypted Timestamp (Base-64)
+    Preceding Data and Encrypted Timestamp,
+    Encrypted Timestamp (Base-64)
 }
 
 Groups: 4
@@ -327,7 +335,8 @@ EOL
 EOL
 {
 0 - Keyed (Adaptive Echo Hash Key) Message Code of the
-    Preceding Data, Encrypted Timestamp (Base-64)
+    Preceding Data and Encrypted Timestamp,
+    Encrypted Timestamp (Base-64)
 }
 
 UUID Exchange
@@ -429,7 +438,8 @@ EOL
 EOL
 {
 0 - Keyed (Adaptive Echo Hash Key) Message Code of the
-    Preceding Data, Encrypted Timestamp (Base-64)
+    Preceding Data and Encrypted Timestamp,
+    Encrypted Timestamp (Base-64)
 }
 
 Buzz Magnet Share
