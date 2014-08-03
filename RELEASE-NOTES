@@ -48,6 +48,9 @@
 22.  Increased the Gemini SHA-512 hash key size to 64 bytes. Other hash key
      sizes have also been increased.
 23.  Do not echo approved StarBeam data.
+24.  Corrected buddies in various UI files.
+25.  Added a hash type menu in the Kernel section of the Settings panel.
+     Not yet functional.
 
 0.09.08 (07/16/2014)
 
