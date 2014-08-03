@@ -1803,6 +1803,12 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = -1;
 
   settings.insert("gui/kernelExternalIpInterval", integer);
+  str = settings.value("gui/kernelHashType").toString();
+
+  if(!(str == "sha512" || str == "stribog512" || str == "whirlpool"))
+    str = "sha512";
+
+  settings.insert("gui/kernelHashType", str);
   integer = qAbs(settings.value("gui/kernelKeySize", 2048).toInt(&ok));
 
   if(!ok)

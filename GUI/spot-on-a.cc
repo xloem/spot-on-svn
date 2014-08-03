@@ -538,6 +538,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
 	  SLOT(slotKernelCipherTypeChanged(int)));
+  connect(m_ui.kernelHashType,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotKernelHashTypeChanged(int)));
   connect(m_ui.addFriend,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -1278,6 +1282,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.institutionNameType->addItems(spoton_crypt::cipherTypes());
   m_ui.institutionPostalAddressType->addItems(spoton_crypt::hashTypes());
   m_ui.kernelCipherType->addItems(spoton_crypt::cipherTypes());
+  m_ui.kernelHashType->addItems(spoton_crypt::hashTypes());
   m_ui.cost->setValue(m_settings.value("gui/congestionCost", 10000).toInt());
   m_ui.days->setValue(m_settings.value("gui/postofficeDays", 1).toInt());
   m_ui.etpMaxMosaicSize->setValue(m_settings.value("gui/maxMosaicSize",
@@ -1388,6 +1393,9 @@ spoton::spoton(void):QMainWindow()
   if(m_ui.kernelCipherType->count() == 0)
     m_ui.kernelCipherType->addItem("n/a");
 
+  if(m_ui.kernelHashType->count() == 0)
+    m_ui.kernelHashType->addItem("n/a");
+
   if(m_ui.buzzHashType->count() == 0)
     m_ui.buzzHashType->addItem("n/a");
 
@@ -1407,6 +1415,12 @@ spoton::spoton(void):QMainWindow()
   if(m_ui.kernelCipherType->findText(str) > -1)
     m_ui.kernelCipherType->setCurrentIndex
       (m_ui.kernelCipherType->findText(str));
+
+  str = m_settings.value("gui/kernelHashType", "sha512").toString();
+
+  if(m_ui.kernelHashType->findText(str) > -1)
+    m_ui.kernelHashType->setCurrentIndex
+      (m_ui.kernelHashType->findText(str));
 
   str = m_settings.value("gui/hashType", "sha512").toString();
 
@@ -4688,6 +4702,8 @@ void spoton::slotSetPassphrase(void)
       m_settings["gui/iterationCount"] = m_ui.iterationCount->value();
       m_settings["gui/kernelCipherType"] =
 	m_ui.kernelCipherType->currentText();
+      m_settings["gui/kernelHashType"] =
+	m_ui.kernelHashType->currentText();
       m_settings["gui/nodeName"] = str3.toUtf8();
       m_settings["gui/rosettaName"] = str3.toUtf8();
       m_settings["gui/salt"] = salt;
@@ -4705,6 +4721,8 @@ void spoton::slotSetPassphrase(void)
 			m_settings["gui/iterationCount"]);
       settings.setValue("gui/kernelCipherType",
 			m_settings["gui/kernelCipherType"]);
+      settings.setValue("gui/kernelHashType",
+			m_settings["gui/kernelHashType"]);
       settings.setValue("gui/nodeName", m_settings["gui/nodeName"]);
       settings.setValue("gui/rosettaName", m_settings["gui/rosettaName"]);
       settings.setValue("gui/salt", m_settings["gui/salt"]);

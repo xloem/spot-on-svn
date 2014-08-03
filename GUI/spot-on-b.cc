@@ -1026,6 +1026,18 @@ void spoton::slotKernelCipherTypeChanged(int index)
     ("gui/kernelCipherType", m_settings.value("gui/kernelCipherType"));
 }
 
+void spoton::slotKernelHashTypeChanged(int index)
+{
+  Q_UNUSED(index);
+  m_settings["gui/kernelHashType"] =
+    m_ui.kernelHashType->currentText().toLower();
+
+  QSettings settings;
+
+  settings.setValue
+    ("gui/kernelHashType", m_settings.value("gui/kernelHashType"));
+}
+
 bool spoton::isKernelActive(void) const
 {
   return m_ui.pid->text().toInt() > 0;

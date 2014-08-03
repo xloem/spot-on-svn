@@ -304,6 +304,7 @@ class spoton: public QMainWindow
   void slotKeepCopy(bool state);
   void slotKeepOnlyUserDefinedNeighbors(bool state);
   void slotKernelCipherTypeChanged(int index);
+  void slotKernelHashTypeChanged(int index);
   void slotKernelKeySizeChanged(const QString &text);
   void slotKernelLogEvents(bool state);
   void slotKernelSocketError(QAbstractSocket::SocketError error);
