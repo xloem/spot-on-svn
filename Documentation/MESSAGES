@@ -133,13 +133,13 @@ Symmetric Key
 {
 0 - Sender's SHA-512 Hash (Base-64)
 EOL
-1 - Sender's Name (Base-64) (Optional Gold Bug)
+1 - Sender's Name (Optional Gold Bug) (Base-64)
 EOL
-2 - Subject (Base-64) (Optional Gold Bug)
+2 - Subject (Optional Gold Bug) (Base-64)
 EOL
-3 - Message (Base-64) (Optional Gold Bug)
+3 - Message (Optional Gold Bug) (Base-64)
 EOL
-4 - Signature (Base-64) (Optional Gold Bug)
+4 - Signature (Optional Gold Bug) (Base-64)
 EOL
 5 - Gold Bug Used? (Base-64)
 }
@@ -174,13 +174,13 @@ Symmetric Key
 {
 0 - Sender's SHA-512 Hash (Base-64)
 EOL
-1 - Sender's Name (Base-64) (Optional Gold Bug)
+1 - Sender's Name (Optional Gold Bug) (Base-64)
 EOL
-2 - Subject (Base-64) (Optional Gold Bug)
+2 - Subject (Optional Gold Bug) (Base-64)
 EOL
-3 - Message (Base-64) (Optional Gold Bug)
+3 - Message (Optional Gold Bug) (Base-64)
 EOL
-4 - Signature (Base-64) (Optional Gold Bug)
+4 - Signature (Optional Gold Bug) (Base-64)
 EOL
 5 - Gold Bug Used? (Base-64)
 }
