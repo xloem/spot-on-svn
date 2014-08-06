@@ -8,6 +8,7 @@
      delta. Replaying a recorded message will circumvent the verification
      if the server has not viewed the particular message (congestion control)
      and if the timestamp difference is within the acceptance window.
+     Tokens must contain at least ninety-six characters.
 2.   Some emoticons.
 3.   Removed ALTER TABLE statements from spot-on-misc.cc.
 4.   Limit the number of connections per client IP.
@@ -51,6 +52,7 @@
 24.  Corrected buddies in various UI files.
 25.  Added a hash type menu in the Kernel section of the Settings panel.
      Not yet functional.
+26.  Include authentication information in data encrypted via novas.
 
 0.09.08 (07/16/2014)
 
