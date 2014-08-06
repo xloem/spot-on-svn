@@ -429,8 +429,10 @@ EOL
 5 - Pulse Data (Base-64)
 EOL
 6 - Pulse Size (Base-64)
-EOL
-7 - Keyed SHA-512 Hash (Base-64)
+}
+Optional Nova SHA-512
+{
+0 - Keyed Hash (Base-64)
 }
 }
 EOL
