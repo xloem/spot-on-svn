@@ -1252,7 +1252,7 @@ spoton::spoton(void):QMainWindow()
 		       toByteArray()).trimmed());
   m_ui.username->setMaxLength(spoton_common::NAME_MAXIMUM_LENGTH);
   m_ui.receiveNova->setMaxLength
-    (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
+    (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")) + 512);
   m_ui.sslControlString->setText
     (m_settings.value("gui/sslControlString",
 		      "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH").
@@ -1269,7 +1269,7 @@ spoton::spoton(void):QMainWindow()
    m_ui.passphrase2->setMaxLength
     (spoton_common::PASSPHRASE_MAXIMUM_LENGTH);
   m_ui.transmitNova->setMaxLength
-    (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
+    (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")) + 512);
   m_ui.channelType->clear();
   m_ui.channelType->addItems(spoton_crypt::cipherTypes());
   m_ui.cipherType->clear();
@@ -7147,11 +7147,12 @@ void spoton::authenticate(spoton_crypt *crypt, const QString &oid,
 	  QSqlDatabase::removeDatabase(connectionName);
 	}
       else
-	QMessageBox::critical(this, tr("%1: Error").
-			      arg(SPOTON_APPLICATION_NAME),
-			      tr("The account name must be non-empty "
-				 "and the account password must contain "
-				 "at least sixteen characters."));
+	QMessageBox::critical
+	  (this, tr("%1: Error").
+	   arg(SPOTON_APPLICATION_NAME),
+	   tr("The account name and the account password "
+	      "must contain at least thirty-two characters "
+	      "each."));
     }
 }
 

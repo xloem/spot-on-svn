@@ -89,35 +89,55 @@ void spoton_starbeam_writer::processData
     return;
 
   QList<QByteArray> novas;
-  QReadLocker locker3(&m_keyMutex);
+  QReadLocker locker(&m_keyMutex);
 
   novas = m_novas;
-  locker3.unlock();
+  locker.unlock();
 
   if(data.split('\n').size() != 7)
     {
+      QByteArray d
+	(data.mid(0, data.length() -
+		  spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES));
+      QByteArray messageCode(data.mid(d.length()));
+
       for(int i = 0; i < novas.size(); i++)
 	{
 	  QByteArray bytes;
+	  QByteArray computedHash;
 	  bool ok = true;
-	  spoton_crypt crypt("aes256",
-			     QString(""),
-			     QByteArray(),
-			     novas.at(i),
-			     0,
-			     0,
-			     QString(""));
+	  spoton_crypt crypt
+	    ("aes256",
+	     "sha512",
+	     QByteArray(),
+	     novas.at(i).mid(0,
+			     static_cast<int> (spoton_crypt::
+					       cipherKeyLength("aes256"))),
+	     novas.at(i).mid(static_cast<int> (spoton_crypt::
+					       cipherKeyLength("aes256"))),
+	     0,
+	     0,
+	     QString(""));
 
-	  bytes = crypt.decrypted(data, &ok);
+	  computedHash = crypt.keyedHash(d, &ok);
 
-	  if(ok)
+	  if(!ok)
+	    continue;
+
+	  if(!computedHash.isEmpty() && !messageCode.isEmpty() &&
+	     spoton_crypt::memcmp(computedHash, messageCode))
 	    {
-	      list = bytes.split('\n');
+	      bytes = crypt.decrypted(d, &ok);
 
-	      for(int i = 0; i < list.size(); i++)
-		list.replace(i, QByteArray::fromBase64(list.at(i)));
+	      if(ok)
+		{
+		  list = bytes.split('\n');
 
-	      break;
+		  for(int i = 0; i < list.size(); i++)
+		    list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+		  break;
+		}
 	    }
 	}
     }

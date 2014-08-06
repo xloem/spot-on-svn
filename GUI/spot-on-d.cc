@@ -1374,7 +1374,7 @@ void spoton::slotSetAETokenInformation(void)
 	QMessageBox::critical(this, tr("%1: Error").
 			      arg(SPOTON_APPLICATION_NAME),
 			      tr("The token must contain "
-				 "at least sixteen characters."));
+				 "at least forty-eight characters."));
     }
 }
 

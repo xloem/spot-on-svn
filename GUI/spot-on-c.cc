@@ -1564,12 +1564,14 @@ void spoton::slotAddReceiveNova(void)
 
   QString nova(m_ui.receiveNova->text());
 
-  if(nova.isEmpty())
+  if(nova.length() < 48)
     {
-      QMessageBox::critical(this, tr("%1: Error").
-			    arg(SPOTON_APPLICATION_NAME),
-			    tr("Please provide a nova. Reach for the "
-			       "stars!"));
+      QMessageBox::critical
+	(this, tr("%1: Error").
+	 arg(SPOTON_APPLICATION_NAME),
+	 tr("Please provide a nova that contains at least "
+	    "forty-eight characters. Reach for the "
+	    "stars!"));
       return;
     }
 
@@ -1736,7 +1738,9 @@ void spoton::slotGenerateNova(void)
 {
   QByteArray nova
     (spoton_crypt::
-     strongRandomBytes(spoton_crypt::cipherKeyLength("aes256")));
+     strongRandomBytes(spoton_crypt::cipherKeyLength("aes256")) +
+     spoton_crypt::
+     strongRandomBytes(spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES));
 
   m_ui.transmitNova->setText(nova.toBase64());
 }

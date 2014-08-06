@@ -444,7 +444,14 @@ void spoton_misc::prepareDatabases(void)
 		   "pulse_size TEXT NOT NULL, "
 		   "total_size TEXT NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS received_novas ("
-		   "nova TEXT NOT NULL, "
+		   "nova TEXT NOT NULL, " /*
+					  ** Please
+					  ** note that the table
+					  ** houses both encryption
+					  ** and hash keys. Apologies
+					  ** for violating some
+					  ** database principles.
+					  */
 		   "nova_hash TEXT PRIMARY KEY NOT NULL)"); // Keyed hash.
 	query.exec("CREATE TABLE IF NOT EXISTS transmitted ("
 		   "file TEXT NOT NULL, "
@@ -453,7 +460,14 @@ void spoton_misc::prepareDatabases(void)
 					  */
 		   "missing_links BLOB NOT NULL, "
 		   "mosaic TEXT PRIMARY KEY NOT NULL, "
-		   "nova TEXT NOT NULL, "
+		   "nova TEXT NOT NULL, " /*
+					  ** Please
+					  ** note that the table
+					  ** houses both encryption
+					  ** and hash keys. Apologies
+					  ** for violating some
+					  ** database principles.
+					  */
 		   "position TEXT NOT NULL, "
 		   "pulse_size TEXT NOT NULL, "
 		   "status_control TEXT NOT NULL DEFAULT 'paused', "
@@ -464,20 +478,14 @@ void spoton_misc::prepareDatabases(void)
 		   "transmitted_oid INTEGER NOT NULL, "
 		   "PRIMARY KEY (magnet_hash, transmitted_oid), "
 		   "FOREIGN KEY (transmitted_oid) REFERENCES "
-		   "transmitted (OID))"); /*
-					  ** The foreign key constraint
-					  ** is flawed.
-					  */
+		   "transmitted (OID))");
 	query.exec("CREATE TABLE IF NOT EXISTS transmitted_scheduled_pulses ("
 		   "position TEXT NOT NULL, "
 		   "position_hash TEXT NOT NULL, " // Keyed hash.
 		   "transmitted_oid INTEGER NOT NULL, "
 		   "PRIMARY KEY (position_hash, transmitted_oid), "
 		   "FOREIGN KEY (transmitted_oid) REFERENCES "
-		   "transmitted (OID))"); /*
-					  ** The foreign key constraint
-					  ** is flawed.
-					  */
+		   "transmitted (OID))");
       }
 
     db.close();

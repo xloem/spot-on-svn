@@ -414,7 +414,7 @@ Echoed? Yes
 Groups: 3
 Symmetric Key
 {
-Optional Nova
+Optional Nova AES-256
 {
 0 - 0060 (Base-64)
 EOL
@@ -429,6 +429,8 @@ EOL
 5 - Pulse Data (Base-64)
 EOL
 6 - Pulse Size (Base-64)
+EOL
+7 - Keyed SHA-512 Hash (Base-64)
 }
 }
 EOL

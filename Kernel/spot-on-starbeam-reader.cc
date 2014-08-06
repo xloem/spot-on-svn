@@ -396,11 +396,19 @@ void spoton_starbeam_reader::pulsate(const QString &fileName,
 		       pulseSize.toLatin1().toBase64(), &ok);
 		  else
 		    {
+		      QPair<QByteArray, QByteArray> pair;
+
+		      pair.first = nova.mid
+			(0, static_cast<int> (spoton_crypt::
+					      cipherKeyLength("aes256")));
+		      pair.second = nova.mid(pair.first.length());
+
 		      {
 			spoton_crypt crypt("aes256",
-					   QString(""),
+					   "sha512",
 					   QByteArray(),
-					   nova,
+					   pair.first,
+					   pair.second,
 					   0,
 					   0,
 					   QString(""));
@@ -414,6 +422,9 @@ void spoton_starbeam_reader::pulsate(const QString &fileName,
 			   fileSize.toLatin1().toBase64() + "\n" +
 			   data.toBase64() + "\n" +
 			   pulseSize.toLatin1().toBase64(), &ok);
+
+			if(ok)
+			  data = data + crypt.keyedHash(data, &ok);
 		      }
 
 		      if(ok)
