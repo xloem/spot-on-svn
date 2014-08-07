@@ -835,6 +835,14 @@ void spoton::slotTransmit(void)
       goto done_label;
     }
 
+  if(!m_ui.transmitNova->text().isEmpty())
+    if(m_ui.transmitNova->text().length() < 48)
+      {
+	error = tr("Please provide a nova that contains at least "
+		   "forty-eight characters.");
+	goto done_label;
+      }
+
   if(m_ui.transmittedFile->text().isEmpty())
     {
       error = tr("Please select a file to transfer.");
