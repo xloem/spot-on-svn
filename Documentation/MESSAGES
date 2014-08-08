@@ -432,7 +432,7 @@ EOL
 }
 Optional Nova SHA-512
 {
-0 - Keyed Hash (Base-64)
+0 - Keyed Message Code (Base-64)
 }
 }
 EOL
@@ -457,3 +457,60 @@ Echoed? No
 
 Message Type ("0070")
 MOTD (Base-64)
+
+Request Weather Station's Public Keys
+Echoed? No
+
+Message Type ("0080")
+0 (Base-64)
+
+Request Weather Data
+Echoed? Yes
+
+Groups: 4
+Public Key
+{
+0 - 0081 (Base-64)
+EOL
+1 - Encryption Symmetric Key (Base-64)
+EOL
+2 - SHA-512 Hash Key (Base-64)
+EOL
+3 - Symmetric Algorithm (Base-64)
+}
+EOL
+Symmetric Key
+{
+0 - URL (Base-64)
+EOL
+1 - Location Attributes (Base-64)
+}
+EOL
+{
+0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
+}
+EOL
+{
+0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data and Encrypted Timestamp,
+    Encrypted Timestamp (Base-64)
+}
+
+Receive Weather Data
+Echoed? Yes
+
+Groups: 3
+Symmetric Key
+{
+0 - RSS (Base-64)
+}
+EOL
+{
+0 - Keyed SHA-512 Message Code (Base-64)
+}
+EOL
+{
+0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data and Encrypted Timestamp,
+    Encrypted Timestamp (Base-64)
+}
