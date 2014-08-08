@@ -26,7 +26,7 @@
     <message>
         <location filename="../Common/spot-on-crypt.cc" line="379"/>
         <source>empty passphrase</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">leere Passphrase</translation>
     </message>
     <message>
         <location filename="../Common/spot-on-crypt.cc" line="206"/>
@@ -36,12 +36,12 @@
     <message>
         <location filename="../Common/spot-on-crypt.cc" line="371"/>
         <source>empty hashType</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">leerer Hash Type</translation>
     </message>
     <message>
         <location filename="../Common/spot-on-crypt.cc" line="387"/>
         <source>empty salt</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">leerer Salz Wert</translation>
     </message>
     <message>
         <location filename="../Common/spot-on-crypt.cc" line="397"/>
@@ -226,7 +226,7 @@
     <message>
         <location filename="../Common/spot-on-crypt.cc" line="3410"/>
         <source>decryption or encryption failure, or the keys are malformed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ent- oder Ver-Schlüsselungs-Fehler, oder die Schlüssel sind im unkorrekten Layout.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-reencode.cc" line="120"/>
@@ -261,7 +261,7 @@
     <message>
         <location filename="../Common/spot-on-misc.cc" line="1082"/>
         <source>Sent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gesendet</translation>
     </message>
 </context>
 <context>
@@ -269,22 +269,22 @@
     <message>
         <location filename="../UI/adaptiveechoprompt.ui" line="27"/>
         <source>Please provide the following information. The token must contain at least forty-eight characters.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte geben Sie folgende Informationen ein. Der Token muss mindestens 48 Zeichen enthalten.</translation>
     </message>
     <message>
         <location filename="../UI/adaptiveechoprompt.ui" line="42"/>
         <source>&amp;Token</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Token</translation>
     </message>
     <message>
         <location filename="../UI/adaptiveechoprompt.ui" line="55"/>
         <source>Token Encryption T&amp;ype</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Token Verschlüsselungs-T&amp;yp</translation>
     </message>
     <message>
         <location filename="../UI/adaptiveechoprompt.ui" line="85"/>
         <source>Token Hash T&amp;ype</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Token Hash-T&amp;yp</translation>
     </message>
 </context>
 <context>
@@ -297,27 +297,27 @@
     <message>
         <location filename="../UI/buzzpage.ui" line="61"/>
         <source>Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lesezeichen</translation>
     </message>
     <message>
         <location filename="../UI/buzzpage.ui" line="75"/>
         <source>Remove Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Entferne Lesezeichen</translation>
     </message>
     <message>
         <location filename="../UI/buzzpage.ui" line="47"/>
         <source>Magnet</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Magnet</translation>
     </message>
     <message>
         <location filename="../UI/buzzpage.ui" line="32"/>
         <source>Please be considerate of others and announce your departure. Departure notifications are not immediate.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte sei höflich zu anderen und verabschiede Dich, wenn Du den Raum verläßt. Abschiedsworte werden oft erst später gelesen.</translation>
     </message>
     <message>
         <location filename="../UI/buzzpage.ui" line="68"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kopiere</translation>
     </message>
     <message>
         <location filename="../UI/buzzpage.ui" line="88"/>
@@ -332,7 +332,7 @@
     <message>
         <location filename="../UI/buzzpage.ui" line="141"/>
         <source>Clients</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Teilnehmer</translation>
     </message>
     <message>
         <location filename="../UI/buzzpage.ui" line="166"/>
@@ -342,17 +342,17 @@
     <message>
         <location filename="../UI/buzzpage.ui" line="171"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ID</translation>
     </message>
     <message>
         <location filename="../UI/buzzpage.ui" line="176"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zeit</translation>
     </message>
     <message>
         <location filename="../UI/buzzpage.ui" line="220"/>
         <source>&amp;Preferred Method</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bevorzugte Methode</translation>
     </message>
     <message>
         <location filename="../UI/buzzpage.ui" line="240"/>
@@ -380,7 +380,7 @@
     <message>
         <location filename="../UI/chatwindow.ui" line="40"/>
         <source>Icon</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Icon</translation>
     </message>
     <message>
         <location filename="../UI/chatwindow.ui" line="60"/>
@@ -390,7 +390,7 @@
     <message>
         <location filename="../UI/chatwindow.ui" line="103"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;table border=&quot;0&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;&quot; width=&quot;754&quot; cellspacing=&quot;2&quot; cellpadding=&quot;0&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt; font-weight:600;&quot;&gt;List of Emoticons&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width=&quot;20&quot; rowspan=&quot;10&quot; bgcolor=&quot;#66cc99&quot;/&gt;&lt;td width=&quot;120&quot; bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:-)(-:&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width=&quot;110&quot; bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;kiss&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width=&quot;70&quot; bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/kiss.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td width=&quot;120&quot; bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;O:-)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width=&quot;110&quot; bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;angel&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width=&quot;70&quot; bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/angel.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:|&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;neutral&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/neutral.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt; background-color:#ffffca;&quot;&gt;:-||&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;angry&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/angry.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;(t)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;phone&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/phone.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:-/ &lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;confused&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/confused.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;@&amp;gt;--&amp;gt;--&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;rose&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/rose.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;8-)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;cool&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/glasses-cool.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:-(&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;sad&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/sad.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:&apos;(&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;crying&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/crying.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:-O&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;shocked&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/shocked.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;o-)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;cyclops&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/cyclops.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;C:-)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;skywalker&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/skywalker.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;}:)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;devil&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/devil.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:-)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;smile&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/smile.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:-D&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;laugh&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/laugh.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:-P&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;tongue&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/tongue.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:-))&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;happy&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/happy.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;;)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;wink&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/wink.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;/style&gt;&lt;body&gt;&lt;table border=&quot;0&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;&quot; width=&quot;754&quot; cellspacing=&quot;2&quot; cellpadding=&quot;0&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt; font-weight:600;&quot;&gt;Liste der Emotikons&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width=&quot;20&quot; rowspan=&quot;10&quot; bgcolor=&quot;#66cc99&quot;/&gt;&lt;td width=&quot;120&quot; bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:-)(-:&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width=&quot;110&quot; bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;Kuss&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width=&quot;70&quot; bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/kiss.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td width=&quot;120&quot; bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;O:-)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width=&quot;110&quot; bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;Engel&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width=&quot;70&quot; bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/angel.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:|&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;neutral&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/neutral.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt; background-color:#ffffca;&quot;&gt;:-||&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;wütend&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/angry.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;(t)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;Telefon&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/phone.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:-/ &lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;konfus&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/confused.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;@&amp;gt;--&amp;gt;--&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;Rose&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/rose.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;8-)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;cool&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/glasses-cool.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:-(&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;traurig&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/sad.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:&apos;(&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;heulen&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/crying.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:-O&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;geschockt&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/shocked.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;o-)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;Cyclop&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/cyclops.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;C:-)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;Skywalker&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/skywalker.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;}:)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;Teufel&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/devil.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:-)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span class=&quot;Stil1&quot;&gt;l&amp;auml;cheln&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/smile.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:-D&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;lachen&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/laugh.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:-P&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;Zunge&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/tongue.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;:-))&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;fröhlich&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/happy.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;;)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;Zwinkern&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffffca&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;:/emoticons/wink.png&quot;/&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../UI/chatwindow.ui" line="106"/>
@@ -403,17 +403,17 @@
     <message>
         <location filename="../UI/passwordprompt.ui" line="27"/>
         <source>Please provide the following credentials.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte gebe die folgenden Sicherheitsmerkmale ein.</translation>
     </message>
     <message>
         <location filename="../UI/passwordprompt.ui" line="39"/>
         <source>Account &amp;Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Account &amp;Name</translation>
     </message>
     <message>
         <location filename="../UI/passwordprompt.ui" line="52"/>
         <source>Account &amp;Password</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Account &amp;Password</translation>
     </message>
 </context>
 <context>
@@ -512,29 +512,29 @@
         <location filename="../GUI/spot-on-a.cc" line="1028"/>
         <location filename="../GUI/spot-on-a.cc" line="3033"/>
         <source>Listeners are offline.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Listeners sind offline.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="1029"/>
         <location filename="../GUI/spot-on-a.cc" line="3673"/>
         <source>Neighbors are offline.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nachbarn sind offline.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="1047"/>
         <source>Copy &amp;All Public Keys</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kopiere alle öffentliche Schlüssel</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5097"/>
         <location filename="../GUI/spot-on-c.cc" line="2493"/>
         <source>Share &amp;URL Public Key</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Teile öffentlichen Schlüssel für URLs</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="1725"/>
         <source>Preparing databases. Please be patient.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bereite die Datenbanken vor. Bitte um Geduld.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="173"/>
@@ -559,27 +559,27 @@
         <location filename="../GUI/spot-on-a.cc" line="241"/>
         <location filename="../GUI/spot-on-a.cc" line="242"/>
         <source>SCTP</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SCTP</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="1034"/>
         <source>Copy &amp;Chat Public Keys</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kopiere öffentlichen Schlüssel für Chat</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="1037"/>
         <source>Copy &amp;E-Mail Public Keys</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kopiere öffentlichen Schlüssel für E-Mail</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="1040"/>
         <source>Copy &amp;Rosetta Public Keys</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kopiere öffentlichen Schlüssel für das Rosetta CryptoPad</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="1043"/>
         <source>Copy &amp;URL Public Keys</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kopiere öffentlichen Schlüssel für URLs</translation>
     </message>
     <message>
         <source>S&amp;ettings</source>
@@ -676,12 +676,12 @@
     <message>
         <location filename="../GUI/spot-on-a.cc" line="1807"/>
         <source>Generating SSL data for listener. Please be patient.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Generiere SSL Daten für den Listener. Bitte um Geduld.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="2094"/>
         <source>Unable to add the specified listener. Please enable logging via the Log Viewer and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lann den spzifischen Listener nicht hinzufügen. Bitte aktiviere das Logging über die Log-Ansicht und versuche es erneut.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="2100"/>
@@ -733,7 +733,7 @@
     <message>
         <location filename="../GUI/spot-on-a.cc" line="3026"/>
         <source>There is (are) %1 active listener(s).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Es gibt %1 aktive Listener.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="3231"/>
@@ -756,27 +756,45 @@ Account Authenticated: %21
 Transport: %22
 Orientation: %23
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">UUID: %1
+Status: %2
+SSL Schlüsselgröße: %3
+Lokale IP: %4 Lokaler Port: %5
+Externe IP: %6
+Land: %7 Remote IP: %8 Remote Port: %9 Scope ID: %10
+Proxy Hostname: %11 Proxy Port: %12
+Echo Modus: %13
+Communications Mode: %14
+Laufzeit: %15 Minutes
+Erlaube Zertifikat-Ausnahmen: %16
+Bytes Gelesen: %17
+Bytes Geschrieben: %18
+SSL Sitzungs-Ziffer: %19
+Account Name: %20
+Account Authentifiziert: %21
+Transport: %22
+Ausrichtung: %23
+</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="3665"/>
         <source>There is (are) %1 connected neighbor(s).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Es gibt %1 verbundene Nachbarn.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="3871"/>
         <source>External IP: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Externe IP: %1.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4337"/>
         <source>The passphrases are not identical.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Die Passphrasen sind nicht identisch.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4346"/>
         <source>Please provide a name.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte geben einen Namen ein.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4362"/>
@@ -794,12 +812,12 @@ Orientation: %23
         <location filename="../GUI/spot-on-c.cc" line="3132"/>
         <location filename="../GUI/spot-on-c.cc" line="3696"/>
         <source>%1: Confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1: Bestätigung</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4366"/>
         <source>Are you sure that you wish to replace the existing passphrase? Please note that URL data must be re-encoded via a separate tool. Please see the future Tools folder.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bist Du sicher, dass Du die bestehende Passphrase ersetzen willst? Bitte beachte, dass URL Daten mit einem seperaten Werkzeug erneut verschlüsselt werden müssen. Bitte schaue im Pfad für Werkzeuge.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4439"/>
@@ -811,18 +829,18 @@ Orientation: %23
         <location filename="../GUI/spot-on-a.cc" line="4751"/>
         <location filename="../GUI/spot-on-d.cc" line="1492"/>
         <source>%1: Question</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1: Frage</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4476"/>
         <source>Would you like to generate public key pairs?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Möchtest Du nun öffentliche Schlüssel-Paare erstellen?</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4508"/>
         <location filename="../GUI/spot-on-c.cc" line="2293"/>
         <source>Generating public key pairs.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erstelle öffentliche Schlüssel-Paare.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4572"/>
@@ -843,13 +861,13 @@ Orientation: %23
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4736"/>
         <source>Your confidential information has been saved. You are now ready to use the full power of %1. Enjoy!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Deine vertraulichen Informationen wurden konfiguriert. Du bist nun in der Lage, alle Funktionen vollständig zu nutzen. Viel Spaß!</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5038"/>
         <location filename="../GUI/spot-on-c.cc" line="2415"/>
         <source>&amp;Copy keys to the clipboard buffer.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kopiere die Schlüssel in die Zwischenablage.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5047"/>
@@ -859,31 +877,31 @@ Orientation: %23
         <location filename="../GUI/spot-on-c.cc" line="2424"/>
         <location filename="../GUI/spot-on-c.cc" line="2620"/>
         <source>&amp;Rename participant.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Benenne den Teilnehmer um.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5105"/>
         <location filename="../GUI/spot-on-c.cc" line="2501"/>
         <source>&amp;Connect All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verbinde alle</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5107"/>
         <location filename="../GUI/spot-on-c.cc" line="2503"/>
         <source>&amp;Disconnect All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Stoppe die Verbindung zu allen.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5114"/>
         <location filename="../GUI/spot-on-c.cc" line="2510"/>
         <source>&amp;Reset Account Information</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Reset der Account Information</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5118"/>
         <location filename="../GUI/spot-on-c.cc" line="2514"/>
         <source>&amp;Reset Certificate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Reset des Zertifikats.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5129"/>
@@ -913,19 +931,19 @@ Orientation: %23
         <location filename="../GUI/spot-on-a.cc" line="5173"/>
         <location filename="../GUI/spot-on-c.cc" line="2362"/>
         <source>MELODICA: &amp;Call friend with new Gemini pair.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">MELODICA: &amp;Rufe Freund mit neuem Gemini Schlüssel-Paar an.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5188"/>
         <location filename="../GUI/spot-on-c.cc" line="2377"/>
         <source>&amp;Generate random Gemini pair (AES-256 Key, SHA-512 Key) (without a call).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Erstelle zufälliges Gemini Paar (AES-256 Key, SHA-512 Key) (ohne Übermittlung an Freund).</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5192"/>
         <location filename="../GUI/spot-on-c.cc" line="2381"/>
         <source>&amp;Generate random Gemini pair (AES-256 Key, SHA-512 Key).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Erstelle zufälliges Gemini Paar (AES-256 Key, SHA-512 Key).</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5221"/>
@@ -933,18 +951,18 @@ Orientation: %23
         <location filename="../GUI/spot-on-c.cc" line="2560"/>
         <location filename="../GUI/spot-on-c.cc" line="2586"/>
         <source>&amp;Compute SHA-1 Hash</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ermittle SHA-1 Hash</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5229"/>
         <location filename="../GUI/spot-on-c.cc" line="2568"/>
         <source>Discover &amp;Missing Links</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Finde fehlende Chunks</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5319"/>
         <source>Connected securely to the kernel on port %1 from local port %2 via cipher %3.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mit sicherer Verbindung zum Kernel verbunden an Port %1, ausgehend vom lokal Port %2 mit der Verschlüsselungs-Ziffer %3.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="6870"/>
@@ -960,41 +978,41 @@ Orientation: %23
     <message>
         <location filename="../GUI/spot-on-a.cc" line="7076"/>
         <source>%1: Please Authenticate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1: Bitte Authentifiziere</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="7134"/>
         <source>The account name must be non-empty and the account password must contain at least sixteen characters.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Der Account Name darf nicht leer sein und das Account-Passwort muss mindestens sechzehn Zeichen umfassen.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="7295"/>
         <location filename="../GUI/spot-on-a.cc" line="7407"/>
         <source>Empty</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Leer</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="7386"/>
         <location filename="../GUI/spot-on-b.cc" line="3112"/>
         <location filename="../GUI/spot-on-c.cc" line="164"/>
         <source>A database error occurred.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ein Datenbank Fehler ist aufgetreten.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="7417"/>
         <source>Invalid clipboard object. This is a fatal flaw.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ungültiges Object aus der Zwischenablage. Dieses ist eine fatale Ungenauigkeit.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5064"/>
         <location filename="../GUI/spot-on-c.cc" line="2442"/>
         <source>Detach &amp;Neighbors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Entkopple die Nachbarn.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="1490"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Einstellungen</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="1782"/>
@@ -1031,27 +1049,36 @@ Use Accounts: %9
 Transport: %10
 Share Address: %11
 Orientation: %12</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Status: %1
+SSL Schlüsselgröße: %2
+Lokale IP: %3 Lokaler Port: %4 Scope ID: %5
+Externe IP: %6
+Verbindungen: %7
+Echo Modus: %8
+Nutze Accounts: %9
+Transport: %10
+Teile Addresse: %11
+Ausrichtung: %12</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="3881"/>
         <source>%1: Select GeoIP Data Path</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1: Wähle den Pfad zur GeoIP.dat Datei</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="3907"/>
         <source>%1: Select Kernel Path</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1: Wähle den Kernel Pfad</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4383"/>
         <source>Generating derived keys. Please be patient.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erstelle abgeleitete Schlüssel. Bitte um Geduld.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4514"/>
         <source>Generating public key %1 of %2. Please be patient.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erstelle öffentlichen Schlüssel %1 von %2. Bitte um Geduld.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="4563"/>
@@ -1062,7 +1089,7 @@ Orientation: %12</source>
         <location filename="../GUI/spot-on-a.cc" line="5066"/>
         <location filename="../GUI/spot-on-c.cc" line="2444"/>
         <source>Disconnect &amp;Neighbors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Disconnect &amp;Nachbarn</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5069"/>
@@ -1092,13 +1119,13 @@ Orientation: %12</source>
         <location filename="../GUI/spot-on-a.cc" line="5134"/>
         <location filename="../GUI/spot-on-c.cc" line="2530"/>
         <source>B&amp;lock</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Blocken</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5136"/>
         <location filename="../GUI/spot-on-c.cc" line="2532"/>
         <source>U&amp;nblock</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ent-Blocken</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5225"/>
@@ -1106,12 +1133,12 @@ Orientation: %12</source>
         <location filename="../GUI/spot-on-c.cc" line="2564"/>
         <location filename="../GUI/spot-on-c.cc" line="2590"/>
         <source>&amp;Copy File Hash</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kopiere den Datei-Hash</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5327"/>
         <source>Connected insecurely to the kernel on port %1 from local port %2. Communications between the interface and the kernel have been disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unsicher verbunden zum Kernel am Port %1, ausgehed vom lokalen Port %2. Kommunikation zwischen der Benutzeroberfläche und dem Kernel wurde abgeschaltet.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5074"/>
@@ -1119,7 +1146,7 @@ Orientation: %12</source>
         <location filename="../GUI/spot-on-c.cc" line="2452"/>
         <location filename="../GUI/spot-on-c.cc" line="2535"/>
         <source>&amp;Full Echo</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Volles Echo</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5076"/>
@@ -1127,13 +1154,13 @@ Orientation: %12</source>
         <location filename="../GUI/spot-on-c.cc" line="2454"/>
         <location filename="../GUI/spot-on-c.cc" line="2537"/>
         <source>&amp;Half Echo</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Halbes Echo</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5178"/>
         <location filename="../GUI/spot-on-c.cc" line="2367"/>
         <source>&amp;Call participant.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Rufe Teilnehmer.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5033"/>
@@ -1143,7 +1170,7 @@ Orientation: %12</source>
         <location filename="../GUI/spot-on-c.cc" line="2410"/>
         <location filename="../GUI/spot-on-c.cc" line="2611"/>
         <source>&amp;Copy Repleo to the clipboard buffer.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Kopiere Repleo in die Zwischenablage.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5182"/>
@@ -1159,19 +1186,19 @@ Orientation: %12</source>
         <location filename="../GUI/spot-on-c.cc" line="2421"/>
         <location filename="../GUI/spot-on-c.cc" line="2617"/>
         <source>&amp;Remove participant(s).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Entferne Teilnehmer</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5087"/>
         <location filename="../GUI/spot-on-c.cc" line="2483"/>
         <source>Share &amp;Chat Public Key</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Teile öffentlichen Schlüssel für &amp;Chat.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5092"/>
         <location filename="../GUI/spot-on-c.cc" line="2488"/>
         <source>Share &amp;E-Mail Public Key</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Teile öffentlichen Schlüssel für &amp;E-Mail.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-a.cc" line="5933"/>
@@ -1358,24 +1385,24 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <location filename="../GUI/spot-on-b.cc" line="74"/>
         <location filename="../GUI/spot-on-b.cc" line="2310"/>
         <source>Please select at least one participant.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte wähle wenigstens einen Teilnehmer.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="59"/>
         <location filename="../GUI/spot-on-b.cc" line="3541"/>
         <source>The connection to the kernel is not encrypted.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Die VErbindung zum Kernel ist nicht verschlüsselt.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="64"/>
         <source>Please provide a real message.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte gebe eine echte Nachricht ein.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="1518"/>
         <location filename="../GUI/spot-on-b.cc" line="1736"/>
         <source>Empty key. Really?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Leerer Schlüssel. Wirklich?</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="1539"/>
@@ -1412,17 +1439,17 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-b.cc" line="2319"/>
         <source>Please compose an actual letter.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte erstelle eine aktuellen Brief.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="2422"/>
         <source>Queued</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Der Warteschlange hinzugefügt.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="2827"/>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Von</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="2830"/>
@@ -1432,7 +1459,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-b.cc" line="2832"/>
         <source>From/To</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Von/An</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="3100"/>
@@ -1442,28 +1469,28 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-b.cc" line="4375"/>
         <source>Please provide a channel key.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte geben einen Channel-Schlüssel ein.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="4387"/>
         <source>Please provide a hash key.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte gebe einen Hash-Schlüssel ein.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="4767"/>
         <source>Unable to record the IP address.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kann die IP-Adresse nicht aufzeichnen.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="4914"/>
         <source>Empty cipher list.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Leere Ziffern-Liste.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="54"/>
         <location filename="../GUI/spot-on-b.cc" line="3544"/>
         <source>Not connected to the kernel.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nicht mit dem Kernel verbunden.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="1510"/>
@@ -1475,7 +1502,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-b.cc" line="1621"/>
         <source>You&apos;re attempting to add your own &apos;%1&apos; keys. Please do not do this!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Du versuchst Deinen eigenen Schlüssel hinzuzufügen:&apos;%1&apos;. Bitte versuche dieses nicht!</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="1643"/>
@@ -1520,7 +1547,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-b.cc" line="2453"/>
         <source>E-mail has been sent.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">E-Mail wurde gesendet.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="2455"/>
@@ -1545,49 +1572,49 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-b.cc" line="3171"/>
         <source>&lt;b&gt;From:&lt;/b&gt; </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;b&gt;Von:&lt;/b&gt; </translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="3174"/>
         <source>&lt;b&gt;To:&lt;/b&gt; me</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;b&gt;An:&lt;/b&gt; mich</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="3176"/>
         <location filename="../GUI/spot-on-b.cc" line="3204"/>
         <location filename="../GUI/spot-on-b.cc" line="3220"/>
         <source>&lt;b&gt;Subject:&lt;/b&gt; </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;b&gt;Thema:&lt;/b&gt; </translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="3179"/>
         <location filename="../GUI/spot-on-b.cc" line="3207"/>
         <location filename="../GUI/spot-on-b.cc" line="3223"/>
         <source>&lt;b&gt;Sent: &lt;/b&gt; </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;b&gt;Gesendet: &lt;/b&gt; </translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="3186"/>
         <location filename="../GUI/spot-on-b.cc" line="3192"/>
         <location filename="../GUI/spot-on-b.cc" line="3194"/>
         <source>Read</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gelesen</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="3199"/>
         <source>&lt;b&gt;From:&lt;/b&gt; me</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;b&gt;Von:&lt;/b&gt; mir</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="3201"/>
         <source>&lt;b&gt;To:&lt;/b&gt; </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;b&gt;An:&lt;/b&gt; </translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="3214"/>
         <location filename="../GUI/spot-on-b.cc" line="3217"/>
         <source>&lt;b&gt;From/To:&lt;/b&gt; </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;b&gt;Von/An:&lt;/b&gt; </translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="3228"/>
@@ -1595,12 +1622,12 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <location filename="../GUI/spot-on-b.cc" line="3236"/>
         <location filename="../GUI/spot-on-b.cc" line="3289"/>
         <source>Deleted</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gelöscht</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="3478"/>
         <source>Are you sure that you wish to empty the Trash folder?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bist Du sicher, dass Du den Mülleimer löschen willst?</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="4215"/>
@@ -1610,12 +1637,12 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-b.cc" line="4381"/>
         <source>Please provide a channel salt.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte geben einen Salz-Wert für den Channel ein.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="4529"/>
         <source>Generating SSL data for kernel socket. Please be patient.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erstelle SSL Daten für den Kernel Sockel. Bitte um Geduld.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-b.cc" line="4691"/>
@@ -1665,7 +1692,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-b.cc" line="5384"/>
         <source>Remote user %1 is requesting authentication credentials.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Der Remote-Nutzer %1 erfragt Login-Daten zur Authentifizierung.</translation>
     </message>
     <message>
         <source>Spot-On: Key Information</source>
@@ -1697,7 +1724,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <location filename="../GUI/spot-on-c.cc" line="2463"/>
         <location filename="../GUI/spot-on-c.cc" line="2594"/>
         <source>Copy &amp;Magnet</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kopiere &amp;Magnet</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-c.cc" line="128"/>
@@ -1717,12 +1744,12 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-c.cc" line="840"/>
         <source>Please select a file to transfer.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte wähle eine Datei zur Übertragung aus.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-c.cc" line="848"/>
         <source>The provided file cannot be accessed.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Es besteht kein Zugang zur vorgesehenen Datei.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-c.cc" line="2238"/>
@@ -1732,7 +1759,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-c.cc" line="2240"/>
         <source>E-Mail</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">E-Mail</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-c.cc" line="2242"/>
@@ -1768,28 +1795,28 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-c.cc" line="3001"/>
         <source>%1: Select Listeners Export File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1: Wähle Export-Datei für Listener</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-c.cc" line="3095"/>
         <source>%1: Select Neighbors Import File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1: Wähle Import-Datei für Nachbarn</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-c.cc" line="3780"/>
         <source>%1: New Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1: Neuer Name</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-c.cc" line="3780"/>
         <source>&amp;Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Name</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-c.cc" line="2862"/>
         <location filename="../GUI/spot-on-c.cc" line="3012"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Speichern</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-c.cc" line="1571"/>
@@ -1814,12 +1841,12 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-c.cc" line="2850"/>
         <source>%1: Select Public Keys Export File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1: Wähle Export-Datei für öffentliche Schlüssel</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-c.cc" line="2898"/>
         <source>%1: Select Public Keys Import File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1: Wähle Import-Datei für öffentliche Schlüssel</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-c.cc" line="2940"/>
@@ -1835,7 +1862,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-c.cc" line="867"/>
         <source>Please select at least one magnet.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte wähle mindestens einen Magneten.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-c.cc" line="1005"/>
@@ -1851,17 +1878,17 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-d.cc" line="354"/>
         <source>Please provide an institution name.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte gebe einen Namen für die Institution ein.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-d.cc" line="362"/>
         <source>Please provide an institution postal address.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte gebe eine Post-Adresse für die Institution ein.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-d.cc" line="436"/>
         <source>Unable to record the institution.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kann die Institution nicht aufzeichnen.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-d.cc" line="687"/>
@@ -1876,7 +1903,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-d.cc" line="833"/>
         <source>&amp;Add magnet.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Magnet hinzufügen.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-d.cc" line="962"/>
@@ -1886,12 +1913,12 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-d.cc" line="992"/>
         <source>Please provide a token and a token type.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte gebe einen Token und Token-Typ ein.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-d.cc" line="997"/>
         <source>Please provide a token that contains at least ninety-six characters.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte gebe einen Token mit mindestens 96 Zeichen ein.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-d.cc" line="1078"/>
@@ -1916,17 +1943,17 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-d.cc" line="1376"/>
         <source>The token must contain at least sixteen characters.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Der Token muss mindestens sechszehn Zeichen umfassen.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-d.cc" line="1384"/>
         <source>Joining a default Buzz channel. Please be patient.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Öffne einen vorgegeben Buzz-Channel. Bitte um Geduld.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-d.cc" line="1496"/>
         <source>The kernel appears to be active. Closing Spot-On will not deactivate the kernel. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Der Kernel scheint aktiv zu sein. Die Schließung von Spot-On wird den Kernel nicht deaktivieren. Fortfahren?</translation>
     </message>
 </context>
 <context>
@@ -1972,17 +1999,17 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-buzzpage.cc" line="412"/>
         <source>&lt;i&gt;%1 has joined %2.&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;i&gt;%1 ist dem Raum %2 beigetreten.&lt;/i&gt;</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-buzzpage.cc" line="445"/>
         <source>&lt;i&gt;%1 is now known as %2.&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;i&gt;%1 ist nun bekannt als %2.&lt;/i&gt;</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-buzzpage.cc" line="507"/>
         <source>&lt;i&gt;%1 has left %2.&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;i&gt;%1 hat den Raum %2 verlassen.&lt;/i&gt;</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-buzzpage.cc" line="543"/>
@@ -2026,7 +2053,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../GUI/spot-on-chatwindow.cc" line="161"/>
         <source>Please provide a real message.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bitte gebe eine echte Nachricht ein.</translation>
     </message>
     <message>
         <location filename="../GUI/spot-on-chatwindow.cc" line="172"/>
@@ -2139,12 +2166,12 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../UI/controlcenter.ui" line="1438"/>
         <source>&amp;Save copies.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Speichere Kopien.</translation>
     </message>
     <message>
         <location filename="../UI/controlcenter.ui" line="1558"/>
         <source>&amp;Enable C/O service.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Ermögliche C/O Service.</translation>
     </message>
     <message>
         <source>&amp;Neighbors</source>
@@ -4392,12 +4419,12 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../UI/rosetta.ui" line="66"/>
         <source>Copy your public key pairs to the clipboard buffer.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kopiere Deine öffentlichen Schlüssel in die Zwischenablage.</translation>
     </message>
     <message>
         <location filename="../UI/rosetta.ui" line="176"/>
         <source>&amp;Participant</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Teilnehmer</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -4441,12 +4468,12 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../UI/rosetta.ui" line="388"/>
         <source>Convert</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Konvertiere</translation>
     </message>
     <message>
         <location filename="../UI/rosetta.ui" line="395"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kopiere</translation>
     </message>
     <message>
         <location filename="../UI/rosetta.ui" line="414"/>
@@ -4717,17 +4744,17 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../UI/statusbar.ui" line="89"/>
         <source>Buzz activity detected!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Buzz Aktivität für Dich!</translation>
     </message>
     <message>
         <location filename="../UI/statusbar.ui" line="102"/>
         <source>You have received a new message.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Du hast eine neue Nachricht erhalten.</translation>
     </message>
     <message>
         <location filename="../UI/statusbar.ui" line="118"/>
         <source>New e-mail has arrived!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Neue E-Mails sind angekommen.</translation>
     </message>
     <message>
         <location filename="../UI/statusbar.ui" line="147"/>
