@@ -1456,12 +1456,14 @@ void spoton_neighbor::processData(void)
 	  if(m_useAccounts)
 	    {
 	      if(length > 0 && data.contains("type=0050&content="))
-		if(!spoton_misc::readSharedResource
-		   (&m_accountAuthenticated, m_accountAuthenticatedMutex))
+		if(!spoton_misc::
+		   readSharedResource(&m_accountAuthenticated,
+				      m_accountAuthenticatedMutex))
 		  process0050(length, data);
 
-	      if(!spoton_misc::readSharedResource
-		 (&m_accountAuthenticated, m_accountAuthenticatedMutex))
+	      if(!spoton_misc::
+		 readSharedResource(&m_accountAuthenticated,
+				    m_accountAuthenticatedMutex))
 		continue;
 	    }
 	  else if(length > 0 && (data.contains("type=0050&content=") ||
@@ -1469,20 +1471,26 @@ void spoton_neighbor::processData(void)
 				 data.contains("type=0052&content=")))
 	    continue;
 	}
-      else if(length > 0 && data.contains("type=0051&content="))
+      else if(m_useAccounts &&
+	      length > 0 && data.contains("type=0051&content="))
 	{
 	  /*
-	  ** The server responded. Let's verify that the server's
-	  ** response is valid.
+	  ** The server responded. Let's determine if the server's
+	  ** response is valid. What if the server solicits a response
+	  ** without the client having requested the authentication?
 	  */
 
-	  if(!m_accountClientSentSalt.isEmpty())
-	    process0051(length, data);
-	  else
-	    spoton_misc::setSharedResource
-	      (&m_accountAuthenticated, false, m_accountAuthenticatedMutex);
+	  if(!spoton_misc::readSharedResource(&m_accountAuthenticated,
+					      m_accountAuthenticatedMutex))
+	    if(!m_accountClientSentSalt.isEmpty())
+	      process0051(length, data);
+
+	  if(!spoton_misc::readSharedResource(&m_accountAuthenticated,
+					      m_accountAuthenticatedMutex))
+	    continue;
 	}
-      else if(length > 0 && data.contains("type=0052&content="))
+      else if(m_useAccounts &&
+	      length > 0 && data.contains("type=0052&content="))
 	{
 	  if(!spoton_misc::readSharedResource(&m_accountAuthenticated,
 					      m_accountAuthenticatedMutex))
@@ -4283,8 +4291,6 @@ void spoton_neighbor::process0051(int length, const QByteArray &dataIn)
 	       "the provided salt is identical to the generated salt. "
 	       "The server may be devious.");
 	}
-
-      m_accountClientSentSalt.clear();
 
       if(spoton_misc::readSharedResource(&m_accountAuthenticated,
 					 m_accountAuthenticatedMutex))
