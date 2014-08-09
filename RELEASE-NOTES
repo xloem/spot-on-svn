@@ -52,7 +52,8 @@
 24.  Corrected buddies in various UI files.
 25.  Added a hash type menu in the Kernel section of the Settings panel.
      Not yet functional.
-26.  Include authentication information in data encrypted via novas.
+26.  Include authentication information in StarBeam data encrypted via novas.
+27.  Upgraded Qt to version 5.3.1 on OS X.
 
 0.09.08 (07/16/2014)
 
