@@ -54,6 +54,8 @@
      Not yet functional.
 26.  Include authentication information in StarBeam data encrypted via novas.
 27.  Upgraded Qt to version 5.3.1 on OS X.
+28.  A server may solicit account information from a client without
+     a client initiating the authentication. Corrected.
 
 0.09.08 (07/16/2014)
 
