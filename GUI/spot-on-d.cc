@@ -1331,7 +1331,7 @@ void spoton::slotSetAETokenInformation(void)
       QString tokenType(ui.token_e_type->currentText() + "\n" +
 			ui.token_h_type->currentText());
 
-      if(token.length() >= 48)
+      if(token.length() >= 96)
 	{
 	  QString connectionName("");
 
@@ -1374,7 +1374,7 @@ void spoton::slotSetAETokenInformation(void)
 	QMessageBox::critical(this, tr("%1: Error").
 			      arg(SPOTON_APPLICATION_NAME),
 			      tr("The token must contain "
-				 "at least forty-eight characters."));
+				 "at least ninety-six characters."));
     }
 }
 

@@ -73,7 +73,7 @@
              <x>0</x>
              <y>0</y>
              <width>876</width>
-             <height>436</height>
+             <height>437</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -456,8 +456,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>729</width>
-                <height>447</height>
+                <width>851</width>
+                <height>444</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -947,8 +947,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>862</width>
-             <height>587</height>
+             <width>861</width>
+             <height>575</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1947,8 +1947,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>786</width>
-             <height>341</height>
+             <width>876</width>
+             <height>437</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2525,8 +2525,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>277</width>
-                     <height>826</height>
+                     <width>241</width>
+                     <height>1334</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2558,6 +2558,16 @@
                          </property>
                          <property name="horizontalScrollMode">
                           <enum>QAbstractItemView::ScrollPerPixel</enum>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_88">
+                         <property name="text">
+                          <string>The account name and the account password must contain at least thirty-two characters each.</string>
+                         </property>
+                         <property name="wordWrap">
+                          <bool>true</bool>
                          </property>
                         </widget>
                        </item>
@@ -2698,6 +2708,16 @@
                            <string>Token Hash Type</string>
                           </property>
                          </column>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_89">
+                         <property name="text">
+                          <string>The token must contain at least ninety-six characters.</string>
+                         </property>
+                         <property name="wordWrap">
+                          <bool>true</bool>
+                         </property>
                         </widget>
                        </item>
                        <item>
@@ -2946,8 +2966,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>979</width>
-             <height>572</height>
+             <width>861</width>
+             <height>559</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4011,8 +4031,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>265</width>
-             <height>163</height>
+             <width>876</width>
+             <height>437</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4169,8 +4189,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>858</width>
-             <height>896</height>
+             <width>861</width>
+             <height>873</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -5228,8 +5248,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>858</width>
-             <height>549</height>
+             <width>861</width>
+             <height>542</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -5605,6 +5625,13 @@
                       </property>
                       <property name="horizontalScrollMode">
                        <enum>QAbstractItemView::ScrollPerPixel</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_90">
+                      <property name="text">
+                       <string>Novas must contain at least forty-eight characters.</string>
                       </property>
                      </widget>
                     </item>
@@ -6027,6 +6054,13 @@
                      </widget>
                     </item>
                     <item>
+                     <widget class="QLabel" name="label_91">
+                      <property name="text">
+                       <string>Novas must contain at least forty-eight characters.</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <layout class="QHBoxLayout" name="horizontalLayout_68">
                       <property name="spacing">
                        <number>5</number>
@@ -6171,8 +6205,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>247</width>
-             <height>409</height>
+             <width>876</width>
+             <height>437</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -6653,8 +6687,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>248</width>
-             <height>152</height>
+             <width>861</width>
+             <height>473</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -6914,7 +6948,7 @@
      <x>0</x>
      <y>0</y>
      <width>900</width>
-     <height>24</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

@@ -4981,6 +4981,7 @@ void spoton::slotAddAccount(void)
     {
       error = tr("Please provide an account name that contains at "
 		 "least thirty-two characters.");
+      goto done_label;
     }
   else if(password.length() < 32)
     {
