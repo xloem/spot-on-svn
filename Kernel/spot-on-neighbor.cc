@@ -1489,8 +1489,7 @@ void spoton_neighbor::processData(void)
 					      m_accountAuthenticatedMutex))
 	    continue;
 	}
-      else if(m_useAccounts &&
-	      length > 0 && data.contains("type=0052&content="))
+      else if(length > 0 && data.contains("type=0052&content="))
 	{
 	  if(!spoton_misc::readSharedResource(&m_accountAuthenticated,
 					      m_accountAuthenticatedMutex))
