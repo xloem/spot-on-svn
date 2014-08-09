@@ -1621,7 +1621,7 @@ void spoton_neighbor::processData(void)
 
 	  if(messageType.isEmpty() && data.trimmed().split('\n').size() == 3)
 	    if(spoton_kernel::s_kernel->processPotentialStarBeamData(data))
-	      messageType == "0060";
+	      messageType = "0060";
 
 	  if(spoton_kernel::setting("gui/scramblerEnabled", false).toBool())
 	    emit scrambleRequest();
