@@ -1,4 +1,4 @@
-0.09.09 (08/09/2014)
+0.09.09 (08/10/2014)
 
 1.   Include timestamps when computing A.E. hashes. This will help
      avoid some replay attacks. The delta between timestamps must be
@@ -124,7 +124,7 @@
 10.  Removed use of Qt's geometry() and setGeometry(). Use restoreGeometry()
      and saveGeometry() instead. Used previously for Gnome support.
      Removed spoton_misc::isGnome().
-11.  Removed Cocoa memory leaks on OS X and Qt 5.
+11.  Removed Cocoa memory mismanagement on OS X and Qt 5.
 12.  The id field in idiotes.db will now contain encrypted and authenticated
      data. Please remove idiotes.db. Also corrected re-encoding of
      idiotes.db.
