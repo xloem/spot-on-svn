@@ -1,4 +1,4 @@
-0.09.09 (08/10/2014)
+0.09.09 (08/16/2014)
 
 1.   Include timestamps when computing A.E. hashes. This will help
      avoid some replay attacks. The delta between timestamps must be
@@ -56,6 +56,10 @@
 27.  Upgraded Qt to version 5.3.1 on OS X.
 28.  A server may solicit account information from a client without
      a client initiating the authentication. Corrected.
+29.  Upgraded OpenSSL products to version 1.0.1i on OS X and Windows
+     platforms.
+30.  Upgraded libgcrypt to version 1.5.4 on OS X and Windows platforms.
+31.  Upgraded libgpg-error to version 1.13 on OS X and Windows platforms.
 
 0.09.08 (07/16/2014)
 
