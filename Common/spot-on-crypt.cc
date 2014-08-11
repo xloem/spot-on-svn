@@ -2182,7 +2182,9 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
     }
   else
     {
-      ok = false;
+      if(ok)
+	*ok = false;
+
       spoton_misc::logError("spoton_crypt::digitalSignature(): "
 			    "unable to determine the private key's type.");
       goto done_label;
