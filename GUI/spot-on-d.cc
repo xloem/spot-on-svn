@@ -1502,3 +1502,43 @@ bool spoton::promptBeforeExit(void)
 
   return false;
 }
+
+void spoton::slotSignatureKeyTypeChanged(int index)
+{
+  QStringList list;
+
+  if(index == 0)
+    list << "2048"
+	 << "3072"
+	 << "4096"
+	 << "7680"
+	 << "8192"
+	 << "15360";
+  else if(index == 1)
+    list << "224"
+	 << "256"
+	 << "384"
+	 << "521";
+  else if(index == 2)
+    list << "Ed25519";
+  else if(index == 3)
+    list << "2048"
+	 << "3072"
+	 << "4096"
+	 << "7680"
+	 << "8192"
+	 << "15360";
+  else
+    list << "2048"
+	 << "3072"
+	 << "4096"
+	 << "7680"
+	 << "8192"
+	 << "15360";
+
+  m_ui.signatureKeySize->clear();
+  m_ui.signatureKeySize->addItems(list);
+
+  if(index != 2)
+    m_ui.signatureKeySize->setCurrentIndex(1);
+}

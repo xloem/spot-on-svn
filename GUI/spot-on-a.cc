@@ -696,7 +696,11 @@ spoton::spoton(void):QMainWindow()
 	  SLOT(slotImportPublicKeys(void)));
   connect(m_ui.newKeys,
 	  SIGNAL(toggled(bool)),
-	  m_ui.keySize,
+	  m_ui.encryptionKeySize,
+	  SLOT(setEnabled(bool)));
+  connect(m_ui.newKeys,
+	  SIGNAL(toggled(bool)),
+	  m_ui.signatureKeySize,
 	  SLOT(setEnabled(bool)));
   connect(m_ui.newKeys,
 	  SIGNAL(toggled(bool)),
@@ -706,6 +710,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.signatureKeyType,
 	  SLOT(setEnabled(bool)));
+  connect(m_ui.signatureKeyType,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotSignatureKeyTypeChanged(int)));
   connect(m_ui.cost,
 	  SIGNAL(valueChanged(int)),
 	  this,
@@ -1458,7 +1466,8 @@ spoton::spoton(void):QMainWindow()
       m_ui.action_Import_Public_Keys->setEnabled(false);
       m_ui.action_Rosetta->setEnabled(false);
       m_ui.encryptionKeyType->setEnabled(false);
-      m_ui.keySize->setEnabled(false);
+      m_ui.encryptionKeySize->setEnabled(false);
+      m_ui.signatureKeySize->setEnabled(false);
       m_ui.keys->setEnabled(true);
       m_ui.regenerate->setEnabled(true);
       m_ui.signatureKeyType->setEnabled(false);
@@ -4505,6 +4514,10 @@ void spoton::slotSetPassphrase(void)
 	      if(m_ui.signatureKeyType->currentIndex() == 0)
 		signatureKeyType = "dsa";
 	      else if(m_ui.signatureKeyType->currentIndex() == 1)
+		signatureKeyType = "ecdsa";
+	      else if(m_ui.signatureKeyType->currentIndex() == 2)
+		signatureKeyType = "eddsa";
+	      else if(m_ui.signatureKeyType->currentIndex() == 3)
 		signatureKeyType = "elg";
 	      else
 		signatureKeyType = "rsa";
@@ -4542,12 +4555,12 @@ void spoton::slotSetPassphrase(void)
 
 		  if(!list.at(i).contains("signature"))
 		    crypt.generatePrivatePublicKeys
-		      (m_ui.keySize->currentText().toInt(),
+		      (m_ui.encryptionKeySize->currentText().toInt(),
 		       encryptionKeyType,
 		       error2);
 		  else
 		    crypt.generatePrivatePublicKeys
-		      (m_ui.keySize->currentText().toInt(),
+		      (m_ui.signatureKeySize->currentText().toInt(),
 		       signatureKeyType,
 		       error2);
 
@@ -4677,7 +4690,8 @@ void spoton::slotSetPassphrase(void)
       m_ui.action_Rosetta->setEnabled(true);
       m_ui.encryptionKeyType->setEnabled(false);
       m_ui.kernelBox->setEnabled(true);
-      m_ui.keySize->setEnabled(false);
+      m_ui.encryptionKeySize->setEnabled(false);
+      m_ui.signatureKeyType->setEnabled(false);
       m_ui.keys->setEnabled(true);
       m_ui.newKeys->setEnabled(true);
       m_ui.passphrase1->setText
@@ -4885,7 +4899,8 @@ void spoton::slotValidatePassphrase(void)
 	    m_ui.action_Rosetta->setEnabled(true);
 	    m_ui.encryptionKeyType->setEnabled(false);
 	    m_ui.kernelBox->setEnabled(true);
-	    m_ui.keySize->setEnabled(false);
+	    m_ui.encryptionKeySize->setEnabled(false);
+	    m_ui.signatureKeySize->setEnabled(false);
 	    m_ui.keys->setEnabled(true);
 	    m_ui.newKeys->setEnabled(true);
 	    m_ui.passphrase->setText

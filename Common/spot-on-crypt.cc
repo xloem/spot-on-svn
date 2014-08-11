@@ -276,86 +276,6 @@ QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
   return keys;
 }
 
-QByteArray spoton_crypt::saltedValue(const QString &hashType,
-				     const QByteArray &data,
-				     const QByteArray &salt,
-				     bool *ok)
-{
-  QByteArray hash;
-  QByteArray salted;
-  int hashAlgorithm = gcry_md_map_name(hashType.toLatin1().constData());
-  unsigned int length = 0;
-
-  if(data.isEmpty())
-    {
-      if(ok)
-	*ok = false;
-
-      spoton_misc::logError("spoton_crypt::saltedValue(): "
-			    "empty data.");
-      goto done_label;
-    }
-
-  if(hashType.isEmpty())
-    {
-      if(ok)
-	*ok = false;
-
-      spoton_misc::logError("spoton_crypt::saltedValue(): "
-			    "empty hashType.");
-      goto done_label;
-    }
-
-  if(salt.isEmpty())
-    {
-      if(ok)
-	*ok = false;
-
-      spoton_misc::logError("spoton_crypt::saltedValue(): "
-			    "empty salt.");
-      goto done_label;
-    }
-
-  if(hashAlgorithm == 0)
-    {
-      if(ok)
-	*ok = false;
-
-      spoton_misc::logError
-	(QString("spoton_crypt::saltedValue(): "
-		 "gcry_md_map_name() "
-		 "returned zero for %1.").arg(hashType));
-      goto done_label;
-    }
-
-  length = gcry_md_get_algo_dlen(hashAlgorithm);
-
-  if(length == 0)
-    {
-      if(ok)
-	*ok = false;
-
-      spoton_misc::logError
-	(QString("spoton_crypt::saltedValue(): "
-		 "gcry_md_get_algo_dlen() "
-		 "returned zero for %1.").arg(hashType));
-      goto done_label;
-    }
-
-  if(ok)
-    *ok = true;
-
-  hash.resize(length);
-  salted.append(data).append(salt);
-  gcry_md_hash_buffer(hashAlgorithm,
-		      hash.data(),
-		      salted.constData(),
-		      salted.length());
-
- done_label:
-  return hash;
-}
-
 QByteArray spoton_crypt::saltedPassphraseHash(const QString &hashType,
 					      const QString &passphrase,
 					      const QByteArray &salt,
@@ -1774,6 +1694,12 @@ void spoton_crypt::generatePrivatePublicKeys(const int keySize,
     genkey = QString("(genkey (dsa (nbits %1:%2)))").
       arg(qFloor(log10(keySize)) + 1).
       arg(keySize);
+  else if(keyType == "ecdsa")
+    genkey = QString("(genkey (ecc (nbits %1:%2)))").
+      arg(qFloor(log10(keySize)) + 1).
+      arg(keySize);
+  else if(keyType == "eddsa")
+    genkey = "(genkey (ecc (curve \"Ed25519\")(flags eddsa)))";
   else if(keyType == "elg")
     genkey = QString("(genkey (elg (nbits %1:%2)))").
       arg(qFloor(log10(keySize)) + 1).
@@ -2073,12 +1999,12 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
   QByteArray hash(64, 0); // Output size of SHA-512 divided by 8.
   QByteArray random(20, 0);
   QByteArray signature;
+  QStringList list;
   QString keyType("");
   gcry_error_t err = 0;
   gcry_mpi_t hash_t = 0;
   gcry_sexp_t data_t = 0;
   gcry_sexp_t key_t = 0;
-  gcry_sexp_t raw_t = 0;
   gcry_sexp_t signature_t = 0;
   unsigned char *hash_p = 0;
 
@@ -2158,34 +2084,28 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
       goto done_label;
     }
 
-  raw_t = gcry_sexp_find_token(key_t, "dsa", 0);
+  list << "dsa"
+       << "ecc"
+       << "elg"
+       << "rsa";
 
-  if(raw_t)
-    keyType = "dsa";
-  else
-    {
-      raw_t = gcry_sexp_find_token(key_t, "elg", 0);
+  for(int i = 0; i < list.size(); i++)
+    if(strstr(m_privateKey,
+	      QString("(%1").arg(list.at(i)).toLatin1().constData()))
+      {
+	if(list.at(i) == "ecc")
+	  {
+	    if(!strstr(m_privateKey, "(flags eddsa)"))
+	      keyType = "ecdsa";
+	    else
+	      keyType = "eddsa";
 
-      if(raw_t)
-	keyType = "elg";
-      else
-	{
-	  raw_t = gcry_sexp_find_token(key_t, "rsa", 0);
+	    break;
+	  }
 
-	  if(raw_t)
-	    keyType = "rsa";
-	}
-    }
-
-  if(!raw_t)
-    {
-      if(ok)
-	*ok = false;
-
-      spoton_misc::logError
-	("spoton_crypt::digitalSignature(): gcry_sexp_find_token() failure.");
-      goto done_label;
-    }
+	keyType = list.at(i);
+	break;
+      }
 
   gcry_md_hash_buffer
     (GCRY_MD_SHA512,
@@ -2193,7 +2113,7 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
      data.constData(),
      data.length());
 
-  if(keyType == "dsa" || keyType == "elg")
+  if(keyType == "dsa" || keyType == "ecdsa" || keyType == "elg")
     {
       if(hash.length() > 0)
 	hash_p = static_cast<unsigned char *> (malloc(hash.length()));
@@ -2243,7 +2163,13 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
 			    "(data (flags raw)(value %m))",
 			    hash_t);
     }
-  else
+  else if(keyType == "eddsa")
+    err = gcry_sexp_build(&data_t, 0,
+			  "(data (flags eddsa)(hash-algo sha512)"
+			  "(value %b))",
+			  hash.length(),
+			  hash.constData());
+  else if(keyType == "rsa")
     {
       random = strongRandomBytes(random.length());
       err = gcry_sexp_build(&data_t, 0,
@@ -2253,6 +2179,13 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
 			    hash.constData(),
 			    random.length(),
 			    random.constData());
+    }
+  else
+    {
+      ok = false;
+      spoton_misc::logError("spoton_crypt::digitalSignature(): "
+			    "unable to determine the private key's type.");
+      goto done_label;
     }
 
   if(err == 0 && data_t)
@@ -2363,7 +2296,6 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
   gcry_mpi_release(hash_t);
   gcry_sexp_release(data_t);
   gcry_sexp_release(key_t);
-  gcry_sexp_release(raw_t);
   gcry_sexp_release(signature_t);
   return signature;
 }
@@ -2431,13 +2363,13 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
 {
   QByteArray hash(64, 0); // Output size of SHA-512 divided by 8.
   QByteArray random(20, 0);
+  QStringList list;
   QString keyType("");
   bool ok = true;
   gcry_error_t err = 0;
   gcry_mpi_t hash_t = 0;
   gcry_sexp_t data_t = 0;
   gcry_sexp_t key_t = 0;
-  gcry_sexp_t raw_t = 0;
   gcry_sexp_t signature_t = 0;
   unsigned char *hash_p = 0;
 
@@ -2497,33 +2429,27 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
       goto done_label;
     }
 
-  raw_t = gcry_sexp_find_token(key_t, "dsa", 0);
+  list << "dsa"
+       << "ecc"
+       << "elg"
+       << "rsa";
 
-  if(raw_t)
-    keyType = "dsa";
-  else
-    {
-      raw_t = gcry_sexp_find_token(key_t, "elg", 0);
+  for(int i = 0; i < list.size(); i++)
+    if(publicKey.contains(QString("(%1").arg(list.at(i)).toLatin1()))
+      {
+	if(list.at(i) == "ecc")
+	  {
+	    if(!publicKey.contains("(flags eddsa)"))
+	      keyType = "ecdsa";
+	    else
+	      keyType = "eddsa";
 
-      if(raw_t)
-	keyType = "elg";
-      else
-	{
-	  raw_t = gcry_sexp_find_token(key_t, "rsa", 0);
+	    break;
+	  }
 
-	  if(raw_t)
-	    keyType = "rsa";
-	}
-    }
-
-  if(!raw_t)
-    {
-      ok = false;
-      spoton_misc::logError
-	("spoton_crypt()::isValidSignature(): gcry_sexp_find_token() "
-	 "failure.");
-      goto done_label;
-    }
+	keyType = list.at(i);
+	break;
+      }
 
   gcry_md_hash_buffer
     (GCRY_MD_SHA512,
@@ -2531,7 +2457,7 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
      data.constData(),
      data.length());
 
-  if(keyType == "dsa" || keyType == "elg")
+  if(keyType == "dsa" || keyType == "ecdsa" || keyType == "elg")
     {
       if(hash.length() > 0)
 	hash_p = static_cast<unsigned char *> (malloc(hash.length()));
@@ -2578,7 +2504,13 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
 			    "(data (flags raw)(value %m))",
 			    hash_t);
     }
-  else
+  else if(keyType == "eddsa")
+    err = gcry_sexp_build(&data_t, 0,
+			  "(data (flags eddsa)(hash-algo sha512)"
+			  "(value %b))",
+			  hash.length(),
+			  hash.constData());
+  else if(keyType == "rsa")
     err = gcry_sexp_build(&data_t, 0,
 			  "(data (flags pss)(hash sha512 %b)"
 			  "(random-override %b))",
@@ -2586,6 +2518,13 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
 			  hash.constData(),
 			  random.length(),
 			  random.constData());
+  else
+    {
+      ok = false;
+      spoton_misc::logError("spoton_crypt::isValidSignature(): "
+			    "unable to determine the public key's type.");
+      goto done_label;
+    }
 
   if(err != 0 || !data_t)
     {
@@ -2627,7 +2566,6 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
   gcry_mpi_release(hash_t);
   gcry_sexp_release(data_t);
   gcry_sexp_release(key_t);
-  gcry_sexp_release(raw_t);
   gcry_sexp_release(signature_t);
   return ok;
 }

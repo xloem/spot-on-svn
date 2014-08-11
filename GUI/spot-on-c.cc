@@ -2297,6 +2297,10 @@ void spoton::slotRegenerateKey(void)
   if(m_ui.signatureKeyType->currentIndex() == 0)
     signatureKeyType = "dsa";
   else if(m_ui.signatureKeyType->currentIndex() == 1)
+    signatureKeyType = "ecdsa";
+  else if(m_ui.signatureKeyType->currentIndex() == 2)
+    signatureKeyType = "eddsa";
+  else if(m_ui.signatureKeyType->currentIndex() == 3)
     signatureKeyType = "elg";
   else
     signatureKeyType = "rsa";
@@ -2310,7 +2314,7 @@ void spoton::slotRegenerateKey(void)
 
   if(crypt)
     crypt->generatePrivatePublicKeys
-      (m_ui.keySize->currentText().toInt(),
+      (m_ui.encryptionKeySize->currentText().toInt(),
        encryptionKeyType,
        error);
 
@@ -2320,7 +2324,7 @@ void spoton::slotRegenerateKey(void)
 
       if(crypt)
 	crypt->generatePrivatePublicKeys
-	  (m_ui.keySize->currentText().toInt(),
+	  (m_ui.signatureKeySize->currentText().toInt(),
 	   signatureKeyType,
 	   error);
     }

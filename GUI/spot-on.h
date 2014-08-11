@@ -403,6 +403,7 @@ class spoton: public QMainWindow
   void slotShowStarBeamAnalyzer(void);
   void slotShowStatistics(void);
   void slotSignatureCheckBoxToggled(bool state);
+  void slotSignatureKeyTypeChanged(int index);
   void slotStarOTMCheckChange(bool state);
   void slotStatusButtonClicked(void);
   void slotStatusChanged(int index);

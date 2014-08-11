@@ -73,7 +73,7 @@
              <x>0</x>
              <y>0</y>
              <width>876</width>
-             <height>437</height>
+             <height>436</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -456,8 +456,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>851</width>
-                <height>444</height>
+                <width>848</width>
+                <height>447</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -947,8 +947,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>861</width>
-             <height>575</height>
+             <width>862</width>
+             <height>587</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1948,7 +1948,7 @@
              <x>0</x>
              <y>0</y>
              <width>876</width>
-             <height>437</height>
+             <height>436</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2525,8 +2525,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>241</width>
-                     <height>1334</height>
+                     <width>265</width>
+                     <height>1345</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2966,8 +2966,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>861</width>
-             <height>559</height>
+             <width>979</width>
+             <height>572</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4032,7 +4032,7 @@
              <x>0</x>
              <y>0</y>
              <width>876</width>
-             <height>437</height>
+             <height>436</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4188,9 +4188,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
-             <width>861</width>
-             <height>873</height>
+             <y>-460</y>
+             <width>871</width>
+             <height>896</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -5034,7 +5034,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QComboBox" name="keySize">
+                    <widget class="QComboBox" name="encryptionKeySize">
                      <property name="currentIndex">
                       <number>1</number>
                      </property>
@@ -5104,6 +5104,56 @@
                     </widget>
                    </item>
                    <item>
+                    <widget class="QLabel" name="label_92">
+                     <property name="text">
+                      <string>&amp;KeySize</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>signatureKeySize</cstring>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QComboBox" name="signatureKeySize">
+                     <property name="currentIndex">
+                      <number>1</number>
+                     </property>
+                     <property name="sizeAdjustPolicy">
+                      <enum>QComboBox::AdjustToContents</enum>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>2048</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>3072</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>4096</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>7680</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>8192</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>15360</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QLabel" name="label_46">
                      <property name="text">
                       <string>&amp;Signature</string>
@@ -5116,7 +5166,7 @@
                    <item>
                     <widget class="QComboBox" name="signatureKeyType">
                      <property name="currentIndex">
-                      <number>2</number>
+                      <number>4</number>
                      </property>
                      <property name="sizeAdjustPolicy">
                       <enum>QComboBox::AdjustToContents</enum>
@@ -5124,6 +5174,16 @@
                      <item>
                       <property name="text">
                        <string>DSA</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>ECDSA</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>EdDSA</string>
                       </property>
                      </item>
                      <item>
@@ -5248,8 +5308,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>861</width>
-             <height>542</height>
+             <width>858</width>
+             <height>549</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -6206,7 +6266,7 @@
              <x>0</x>
              <y>0</y>
              <width>876</width>
-             <height>437</height>
+             <height>436</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -6687,8 +6747,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>861</width>
-             <height>473</height>
+             <width>858</width>
+             <height>475</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -6948,7 +7008,7 @@
      <x>0</x>
      <y>0</y>
      <width>900</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -7343,8 +7403,9 @@
   <tabstop>passphrase2</tabstop>
   <tabstop>setPassphrase</tabstop>
   <tabstop>newKeys</tabstop>
-  <tabstop>keySize</tabstop>
+  <tabstop>encryptionKeySize</tabstop>
   <tabstop>encryptionKeyType</tabstop>
+  <tabstop>signatureKeySize</tabstop>
   <tabstop>signatureKeyType</tabstop>
   <tabstop>keys</tabstop>
   <tabstop>regenerate</tabstop>
