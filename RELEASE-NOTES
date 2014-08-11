@@ -60,6 +60,8 @@
      platforms.
 30.  Upgraded libgcrypt to version 1.5.4 on OS X and Windows platforms.
 31.  Upgraded libgpg-error to version 1.13 on OS X and Windows platforms.
+32.  Added basic support for ECDSA and EdDSA.
+33.  Removed spoton_crypt::saltedValue().
 
 0.09.08 (07/16/2014)
 
