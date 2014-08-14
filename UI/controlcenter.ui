@@ -130,6 +130,9 @@
                   <height>0</height>
                  </size>
                 </property>
+                <property name="sizeAdjustPolicy">
+                 <enum>QComboBox::AdjustToContents</enum>
+                </property>
                 <item>
                  <property name="text">
                   <string notr="true">magnet:?rn=Spot-On_Developer_Channel_Key&amp;xf=10000&amp;xs=Spot-On_Developer_Channel_Salt&amp;ct=aes256&amp;hk=Spot-On_Developer_Channel_Hash_Key&amp;ht=sha512&amp;xt=urn:buzz</string>
@@ -2524,7 +2527,7 @@
                    <property name="geometry">
                     <rect>
                      <x>0</x>
-                     <y>0</y>
+                     <y>-917</y>
                      <width>241</width>
                      <height>1334</height>
                     </rect>
@@ -5116,6 +5119,9 @@
                      <property name="sizeAdjustPolicy">
                       <enum>QComboBox::AdjustToContents</enum>
                      </property>
+                     <property name="minimumContentsLength">
+                      <number>10</number>
+                     </property>
                      <item>
                       <property name="text">
                        <string>2048</string>
@@ -5241,6 +5247,19 @@
                       <string>&amp;Key Size</string>
                      </property>
                     </widget>
+                   </item>
+                   <item row="1" column="12">
+                    <spacer name="horizontalSpacer_47">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
                    </item>
                   </layout>
                  </item>
