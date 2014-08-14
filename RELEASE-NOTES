@@ -62,6 +62,8 @@
 31.  Upgraded libgpg-error to version 1.13 on OS X and Windows platforms.
 32.  Added basic support for ECDSA and EdDSA.
 33.  Removed spoton_crypt::saltedValue().
+34.  Corrected listeners' maximum number of clients setting with respect
+     to unlimited values.
 
 0.09.08 (07/16/2014)
 
