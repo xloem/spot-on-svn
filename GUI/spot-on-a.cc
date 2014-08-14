@@ -2877,8 +2877,7 @@ void spoton::slotPopulateListeners(void)
 				  "changing the maximum connections value."));
 			    m_ui.listeners->setCellWidget(row, i, box);
 
-			    if(std::numeric_limits<int>::max() ==
-			       query.value(i).toLongLong())
+			    if(query.value(i).toLongLong() <= 0)
 			      box->setCurrentIndex(box->count() - 1);
 			    else if(box->findText(QString::
 						  number(query.
@@ -5036,7 +5035,7 @@ void spoton::slotMaximumClientsChanged(int index)
 	    if(index != comboBox->count() - 1)
 	      query.bindValue(0, comboBox->itemText(index).toInt());
 	    else
-	      query.bindValue(0, std::numeric_limits<int>::max());
+	      query.bindValue(0, 0);
 
 	    query.bindValue(1, comboBox->property("oid"));
 	    query.exec();

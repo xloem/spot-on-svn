@@ -282,13 +282,17 @@ spoton_listener::spoton_listener(const QString &ipAddress,
 	  SIGNAL(ipAddressDiscovered(const QHostAddress &)),
 	  this,
 	  SLOT(slotExternalAddressDiscovered(const QHostAddress &)));
+  m_maximumClients = maximumClients;
+
+  if(m_maximumClients <= 0)
+    m_maximumClients = std::numeric_limits<int>::max();
 
   if(m_sctpServer)
-    m_sctpServer->setMaxPendingConnections(maximumClients);
+    m_sctpServer->setMaxPendingConnections(m_maximumClients);
   else if(m_tcpServer)
-    m_tcpServer->setMaxPendingConnections(maximumClients);
+    m_tcpServer->setMaxPendingConnections(m_maximumClients);
   else if(m_udpServer)
-    m_udpServer->setMaxPendingConnections(maximumClients);
+    m_udpServer->setMaxPendingConnections(m_maximumClients);
 
   connect(&m_timer,
 	  SIGNAL(timeout(void)),
@@ -479,10 +483,14 @@ void spoton_listener::slotTimeout(void)
 			    qAbs(static_cast<int> (query.value(1).
 						   toLongLong()));
 
-			  if(!maximumPendingConnections)
-			    maximumPendingConnections = 1;
-			  else if(maximumPendingConnections % 5 != 0)
-			    maximumPendingConnections = 1;
+			  if(maximumPendingConnections > 0)
+			    {
+			      if(maximumPendingConnections % 5 != 0)
+				maximumPendingConnections = 1;
+			    }
+			  else
+			    maximumPendingConnections =
+			      std::numeric_limits<int>::max();
 
 			  if(m_sctpServer)
 			    m_sctpServer->setMaxPendingConnections

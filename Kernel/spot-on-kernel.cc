@@ -831,17 +831,16 @@ void spoton_kernel::prepareListeners(void)
 
 		      if(ok)
 			{
-			  int maximumClients = qAbs
-			    (static_cast<int> (query.value(5).toLongLong()));
+			  int maximumClients =
+			    static_cast<int> (query.value(5).toLongLong());
 
-			  if(!maximumClients)
-			    maximumClients = 1;
-			  else if(maximumClients !=
-				  std::numeric_limits<int>::max())
+			  if(maximumClients > 0)
 			    {
 			      if(maximumClients % 5 != 0)
 				maximumClients = 1;
 			    }
+			  else
+			    maximumClients = 0;
 
 			  try
 			    {

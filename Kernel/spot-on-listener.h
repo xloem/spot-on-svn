@@ -207,6 +207,7 @@ class spoton_listener: public QObject
   bool m_shareAddress;
   bool m_useAccounts;
   int m_keySize;
+  int m_maximumClients;
   qint64 m_id;
   qint64 m_maximumBufferSize;
   qint64 m_maximumContentLength;
