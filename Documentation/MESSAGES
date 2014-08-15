@@ -35,7 +35,7 @@ EOL
 EOL
 Symmetric Key
 {
-0 - Sender's SHA-512 Hash (Base-64)
+0 - Dispatcher's SHA-512 Hash (Base-64)
 EOL
 1 - Name (Base-64)
 EOL
@@ -75,7 +75,7 @@ EOL
 EOL
 Symmetric Key
 {
-0 - Sender's SHA-512 Hash (Base-64)
+0 - Dispatcher's SHA-512 Hash (Base-64)
 EOL
 1 - Gemini Encryption Key (Base-64)
 EOL
@@ -111,7 +111,7 @@ EOL
 EOL
 Symmetric Key
 {
-0 - Sender's SHA-512 Hash (Base-64)
+0 - Dispatcher's SHA-512 Hash (Base-64)
 EOL
 1 - Recipient's SHA-512 Hash (Base-64)
 EOL
@@ -131,9 +131,9 @@ EOL
 EOL
 Symmetric Key
 {
-0 - Sender's SHA-512 Hash (Base-64)
+0 - Dispatcher's SHA-512 Hash (Base-64)
 EOL
-1 - Sender's Name (Optional Gold Bug) (Base-64)
+1 - Dispatcher's Name (Optional Gold Bug) (Base-64)
 EOL
 2 - Subject (Optional Gold Bug) (Base-64)
 EOL
@@ -172,9 +172,9 @@ EOL
 EOL
 Symmetric Key
 {
-0 - Sender's SHA-512 Hash (Base-64)
+0 - Dispatcher's SHA-512 Hash (Base-64)
 EOL
-1 - Sender's Name (Optional Gold Bug) (Base-64)
+1 - Dispatcher's Name (Optional Gold Bug) (Base-64)
 EOL
 2 - Subject (Optional Gold Bug) (Base-64)
 EOL
@@ -275,15 +275,15 @@ Echoed? No
 Message Type ("0011" or "0012")
 0 - Key Type (Base-64)
 EOL
-1 - Sender's Name (Base-64)
+1 - Dispatcher's Name (Base-64)
 EOL
-2 - Sender's Public Key (Base-64)
+2 - Dispatcher's Public Key (Base-64)
 EOL
-3 - Sender's Public Key Signature (Base-64)
+3 - Dispatcher's Public Key Signature (Base-64)
 EOL
-4 - Sender's Signature Public Key (Base-64)
+4 - Dispatcher's Signature Public Key (Base-64)
 EOL
-5 - Sender's Signature Public Key Signature (Base-64)
+5 - Dispatcher's Signature Public Key Signature (Base-64)
 
 Participant Status
 Echoed? Yes
@@ -320,7 +320,7 @@ EOL
 EOL
 Symmetric Key
 {
-0 - Sender's SHA-512 Hash (Base-64)
+0 - Dispatcher's SHA-512 Hash (Base-64)
 EOL
 1 - Name (Base-64)
 EOL
