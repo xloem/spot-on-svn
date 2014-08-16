@@ -1637,24 +1637,24 @@ void spoton_neighbor::processData(void)
 	     spoton_kernel::setting("gui/superEcho", false).toBool())
 	    {
 	      if(messageType != "0060") // StarBeam
-		emit receivedMessage
+		spoton_kernel::receivedMessage
 		  (originalData, m_id, QPair<QByteArray, QByteArray> ());
 	    }
 	  else if(m_echoMode == "full")
 	    {
 	      if(messageType == "0001b" &&
 		 data.trimmed().split('\n').size() == 7)
-		emit receivedMessage
+		spoton_kernel::receivedMessage
 		  (originalData, m_id, discoveredAdaptiveEchoPair);
 	      else if(messageType.isEmpty() || messageType == "0002b")
-		emit receivedMessage
+		spoton_kernel::receivedMessage
 		  (originalData, m_id, discoveredAdaptiveEchoPair);
 	      else if(messageType == "0040a" || messageType == "0040b")
 		/*
 		** Buzz.
 		*/
 
-		emit receivedMessage
+		spoton_kernel::receivedMessage
 		  (originalData, m_id, QPair<QByteArray, QByteArray> ());
 	    }
 	}

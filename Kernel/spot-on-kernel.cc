@@ -96,14 +96,17 @@ QHash<QString, QVariant> spoton_kernel::s_settings;
 QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
 QHash<qint64, int> spoton_kernel::s_connectionCounts;
 QList<QHostAddress> spoton_kernel::s_remoteConnections;
-QList<QList<QByteArray > > spoton_kernel::s_institutionKeys;
+QList<QList<QByteArray> > spoton_kernel::s_institutionKeys;
+QList<QList<QVariant> > spoton_kernel::s_messagesToProcess;
 QList<QPair<QByteArray, QByteArray> > spoton_kernel::s_adaptiveEchoPairs;
 QPointer<spoton_kernel> spoton_kernel::s_kernel = 0;
 QReadWriteLock spoton_kernel::s_adaptiveEchoPairsMutex;
 QReadWriteLock spoton_kernel::s_buzzKeysMutex;
 QReadWriteLock spoton_kernel::s_institutionKeysMutex;
+QReadWriteLock spoton_kernel::s_messagesToProcessMutex;
 QReadWriteLock spoton_kernel::s_messagingCacheMutex;
 QReadWriteLock spoton_kernel::s_settingsMutex;
+QTimer spoton_kernel::s_processReceivedMessagesTimer;
 
 static void sig_handler(int signum)
 {
@@ -474,6 +477,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotStatusTimerExpired(void)));
+  connect(&s_processReceivedMessagesTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotProcessReceivedMessages(void)));
   m_controlDatabaseTimer.start(2500);
   m_impersonateTimer.setInterval(2500);
   m_messagingCachePurgeTimer.setInterval(15000);
@@ -486,6 +493,8 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_mailer = new spoton_mailer(this);
   m_sharedReader = new spoton_shared_reader(this);
   m_starbeamWriter = new spoton_starbeam_writer(this);
+  s_processReceivedMessagesTimer.setInterval(100);
+  s_processReceivedMessagesTimer.setSingleShot(true);
   connect(m_guiServer,
 	  SIGNAL(buzzMagnetReceivedFromUI(const qint64,
 					  const QByteArray &)),
@@ -608,11 +617,17 @@ spoton_kernel::~spoton_kernel()
   m_scramblerTimer.stop();
   m_settingsTimer.stop();
   m_statusTimer.stop();
+  s_processReceivedMessagesTimer.stop();
 
-  QWriteLocker locker(&s_messagingCacheMutex);
+  QWriteLocker locker1(&s_messagesToProcessMutex);
+
+  s_messagesToProcess.clear();
+  locker1.unlock();
+
+  QWriteLocker locker2(&s_messagingCacheMutex);
 
   s_messagingCache.clear();
-  locker.unlock();
+  locker2.unlock();
   m_future.waitForFinished();
   m_statisticsFuture.waitForFinished();
   cleanup();
@@ -1200,10 +1215,15 @@ void spoton_kernel::prepareNeighbors(void)
 
   if(disconnected == m_neighbors.size() || m_neighbors.isEmpty())
     {
-      QWriteLocker locker(&s_messagingCacheMutex);
+      QWriteLocker locker1(&s_messagesToProcessMutex);
+
+      s_messagesToProcess.clear();
+      locker1.unlock();
+
+      QWriteLocker locker2(&s_messagingCacheMutex);
 
       s_messagingCache.clear();
-      locker.unlock();
+      locker2.unlock();
       s_remoteConnections.clear();
     }
 }
@@ -1786,15 +1806,6 @@ void spoton_kernel::connectSignalsToNeighbor
 					      const quint16,
 					      const QString &,
 					      const QString &)),
-	  Qt::UniqueConnection);
-  connect(neighbor,
-	  SIGNAL(receivedMessage(const QByteArray &,
-				 const qint64,
-				 const QPairByteArrayByteArray &)),
-	  this,
-	  SLOT(slotReceivedMessage(const QByteArray &,
-				   const qint64,
-				   const QPairByteArrayByteArray &)),
 	  Qt::UniqueConnection);
   connect(this,
 	  SIGNAL(retrieveMail(const QByteArrayList &,
@@ -3947,20 +3958,52 @@ int spoton_kernel::buzzKeyCount(void)
   return s_buzzKeys.size();
 }
 
-void spoton_kernel::slotReceivedMessage
-(const QByteArray &data, const qint64 id,
- const QPairByteArrayByteArray &adaptiveEchoPair)
+void spoton_kernel::slotProcessReceivedMessages(void)
 {
-  QHashIterator<qint64, QPointer<spoton_neighbor> > it
-    (m_neighbors);
-  spoton_neighbor *neighbor = qobject_cast<spoton_neighbor *> (sender());
-
-  while(it.hasNext())
+  while(true)
     {
-      it.next();
+      QList<QVariant> list;
+      QWriteLocker locker(&s_messagesToProcessMutex);
 
-      if(it.value())
-	if(it.value() != neighbor)
-	  it.value()->write(data, id, adaptiveEchoPair);
+      if(!s_messagesToProcess.isEmpty())
+	list = s_messagesToProcess.takeFirst();
+      else
+	break;
+
+      locker.unlock();
+
+      QHashIterator<qint64, QPointer<spoton_neighbor> > it(m_neighbors);
+
+      while(it.hasNext())
+	{
+	  it.next();
+
+	  if(it.value())
+	    if(it.value()->id() != list.value(1).toLongLong())
+	      it.value()->write
+		(list.value(0).toByteArray(),
+		 list.value(1).toLongLong(),
+		 QPair<QByteArray, QByteArray> (list.value(2).toByteArray(),
+						list.value(3).toByteArray()));
+	}
     }
+}
+
+void spoton_kernel::receivedMessage
+(const QByteArray &data, const qint64 id,
+ const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
+{
+  QList<QVariant> list;
+
+  list.append(data);
+  list.append(id);
+  list.append(adaptiveEchoPair.first);
+  list.append(adaptiveEchoPair.second);
+
+  QWriteLocker locker(&s_messagesToProcessMutex);
+
+  s_messagesToProcess.append(list);
+
+  if(!s_processReceivedMessagesTimer.isActive())
+    s_processReceivedMessagesTimer.start();
 }

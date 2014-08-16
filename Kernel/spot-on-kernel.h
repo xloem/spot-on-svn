@@ -85,6 +85,9 @@ class spoton_kernel: public QObject
   static void messagingCacheAdd(const QByteArray &data,
 				const bool do_not_hash = false,
 				const int add_msecs = 0);
+  static void receivedMessage
+    (const QByteArray &data, const qint64 id,
+     const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
   static void removeBuzzKey(const QByteArray &data);
   bool processPotentialStarBeamData(const QByteArray &data);
   void writeMessage0060(const QByteArray &data, bool *ok);
@@ -111,13 +114,16 @@ class spoton_kernel: public QObject
   static QDateTime s_institutionLastModificationTime;
   static QHash<QByteArray, QList<QByteArray> > s_buzzKeys;
   static QHash<QString, QVariant> s_settings;
-  static QList<QList<QByteArray > > s_institutionKeys;
+  static QList<QList<QByteArray> > s_institutionKeys;
+  static QList<QList<QVariant> > s_messagesToProcess;
   static QHash<QByteArray, uint> s_messagingCache;
   static QReadWriteLock s_adaptiveEchoPairsMutex;
   static QReadWriteLock s_buzzKeysMutex;
   static QReadWriteLock s_institutionKeysMutex;
+  static QReadWriteLock s_messagesToProcessMutex;
   static QReadWriteLock s_messagingCacheMutex;
   static QReadWriteLock s_settingsMutex;
+  static QTimer s_processReceivedMessagesTimer;
   bool initializeSecurityContainers(const QString &passphrase);
   void checkForTermination(void);
   void cleanup(void);
@@ -156,6 +162,7 @@ class spoton_kernel: public QObject
 				 const QByteArray &utcDate);
   void slotNewNeighbor(QPointer<spoton_neighbor> neighbor);
   void slotPollDatabase(void);
+  void slotProcessReceivedMessages(void);
   void slotPublicKeyReceivedFromUI(const qint64 oid,
 				   const QByteArray &keyType,
 				   const QByteArray &name,
@@ -166,8 +173,6 @@ class spoton_kernel: public QObject
 				   const QString &messageType);
   void slotPublicizeAllListenersPlaintext(void);
   void slotPublicizeListenerPlaintext(const qint64 oid);
-  void slotReceivedMessage(const QByteArray &data, const qint64 id,
-			   const QPairByteArrayByteArray &adaptiveEchoPair);
   void slotRequestScramble(void);
   void slotRetrieveMail(void);
   void slotScramble(void);
