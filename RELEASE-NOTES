@@ -58,8 +58,8 @@
      a client initiating the authentication. Corrected.
 29.  Upgraded OpenSSL products to version 1.0.1i on OS X and Windows
      platforms.
-30.  Upgraded libgcrypt to version 1.5.4 on OS X and Windows platforms.
-31.  Upgraded libgpg-error to version 1.13 on OS X and Windows platforms.
+30.  Upgraded libgcrypt to version 1.5.4 on OS X.
+31.  Upgraded libgpg-error to version 1.13 on OS X.
 32.  Added basic support for ECDSA and EdDSA.
 33.  Removed spoton_crypt::saltedValue().
 34.  Corrected listeners' maximum number of clients setting with respect
