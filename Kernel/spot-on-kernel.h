@@ -135,6 +135,7 @@ class spoton_kernel: public QObject
   void prepareListeners(void);
   void prepareNeighbors(void);
   void prepareStarbeamReaders(void);
+  void processReceivedMessages(void);
   void purgeMessagingCache(void);
   void updateStatistics(void);
 
@@ -201,6 +202,8 @@ class spoton_kernel: public QObject
   void sendMail(const QPairByteArrayInt64List &mail,
 		const QString &messageType);
   void sendStatus(const QByteArrayList &status);
+  void write(const QByteArray &data, const qint64 id,
+	     const QPairByteArrayByteArray &adaptiveEchoPair);
 };
 
 #endif

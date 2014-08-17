@@ -372,6 +372,13 @@ class spoton_neighbor_worker: public QObject
     if(m_neighbor)
       m_neighbor->processData();
   }
+
+  void slotWrite(const QByteArray &data, const qint64 id,
+		 const QPairByteArrayByteArray &adaptiveEchoPair)
+  {
+    if(m_neighbor)
+      m_neighbor->write(data, id, adaptiveEchoPair);
+  }
 };
 
 #endif

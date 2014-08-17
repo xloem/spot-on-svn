@@ -1284,6 +1284,12 @@ void spoton_neighbor::run(void)
 {
   spoton_neighbor_worker worker(this);
 
+  connect(parent(),
+	  SIGNAL(write(const QByteArray &, const qint64,
+		       const QPairByteArrayByteArray &)),
+	  &worker,
+	  SLOT(slotWrite(const QByteArray &, const qint64,
+			 const QPairByteArrayByteArray &)));
   connect(this,
 	  SIGNAL(newData(void)),
 	  &worker,
@@ -2048,8 +2054,9 @@ void spoton_neighbor::slotSendMessage
     }
 }
 
-void spoton_neighbor::write(const QByteArray &data, const qint64 id,
-			    const QPairByteArrayByteArray &adaptiveEchoPair)
+void spoton_neighbor::write
+(const QByteArray &data, const qint64 id,
+ const QPairByteArrayByteArray &adaptiveEchoPair)
 {
   /*
   ** A neighbor (id) received a message. This neighbor now needs

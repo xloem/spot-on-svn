@@ -3960,6 +3960,12 @@ int spoton_kernel::buzzKeyCount(void)
 
 void spoton_kernel::slotProcessReceivedMessages(void)
 {
+  QFuture<void> future = QtConcurrent::run
+    (this, &spoton_kernel::processReceivedMessages);
+}
+
+void spoton_kernel::processReceivedMessages(void)
+{
   while(true)
     {
       QList<QVariant> list;
@@ -3971,21 +3977,11 @@ void spoton_kernel::slotProcessReceivedMessages(void)
 	break;
 
       locker.unlock();
-
-      QHashIterator<qint64, QPointer<spoton_neighbor> > it(m_neighbors);
-
-      while(it.hasNext())
-	{
-	  it.next();
-
-	  if(it.value())
-	    if(it.value()->id() != list.value(1).toLongLong())
-	      it.value()->write
-		(list.value(0).toByteArray(),
-		 list.value(1).toLongLong(),
-		 QPair<QByteArray, QByteArray> (list.value(2).toByteArray(),
-						list.value(3).toByteArray()));
-	}
+      emit write
+	(list.value(0).toByteArray(),
+	 list.value(1).toLongLong(),
+	 QPair<QByteArray, QByteArray> (list.value(2).toByteArray(),
+					list.value(3).toByteArray()));
     }
 }
 
