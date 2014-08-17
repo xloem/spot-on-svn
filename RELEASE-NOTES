@@ -1,4 +1,4 @@
-0.09.09 (08/16/2014)
+0.09.09 (08/17/2014)
 
 1.   Include timestamps when computing A.E. hashes. This will help
      avoid some replay attacks. The delta between timestamps must be
