@@ -208,3 +208,4 @@ Remaining Items
        ought to be considered.
 36.    E-mail institutions do not require dispatcher signatures.
 37.    Derive keys from master GoldBug keys.
+38.    Notify user of potential replays.
