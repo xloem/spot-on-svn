@@ -5731,7 +5731,7 @@ QString spoton_neighbor::findMessageType
  done_label:
 
   spoton_kernel::discoverAdaptiveEchoPair
-    (QByteArray::fromBase64(data), discoveredAdaptiveEchoPair);
+    (data.trimmed(), discoveredAdaptiveEchoPair);
 
   if(!discoveredAdaptiveEchoPair.first.isEmpty() &&
      !discoveredAdaptiveEchoPair.second.isEmpty())

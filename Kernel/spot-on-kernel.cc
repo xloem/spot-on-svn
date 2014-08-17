@@ -3842,7 +3842,7 @@ void spoton_kernel::discoverAdaptiveEchoPair
 							   ** output size.
 							   */
 
-  if(messageCode.isEmpty())
+  if(messageCode.size() < spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES)
     return;
 
   for(int i = 0; i < s_adaptiveEchoPairs.size(); i++)
