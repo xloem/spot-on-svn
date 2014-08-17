@@ -1284,7 +1284,7 @@ void spoton_neighbor::run(void)
 {
   spoton_neighbor_worker worker(this);
 
-  connect(parent(),
+  connect(spoton_kernel::s_kernel,
 	  SIGNAL(write(const QByteArray &, const qint64,
 		       const QPairByteArrayByteArray &)),
 	  &worker,
