@@ -158,7 +158,7 @@ class spoton_neighbor: public QThread
   void processData(void);
   void setId(const qint64 id);
   void write(const QByteArray &data, const qint64 id,
-	     const QPairByteArrayByteArray &adaptiveEchoPair);
+	     const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
 
  private:
   QByteArray m_accountName;
@@ -371,13 +371,6 @@ class spoton_neighbor_worker: public QObject
   {
     if(m_neighbor)
       m_neighbor->processData();
-  }
-
-  void slotWrite(const QByteArray &data, const qint64 id,
-		 const QPairByteArrayByteArray &adaptiveEchoPair)
-  {
-    if(m_neighbor)
-      m_neighbor->write(data, id, adaptiveEchoPair);
   }
 };
 

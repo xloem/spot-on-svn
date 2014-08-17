@@ -103,6 +103,7 @@ class spoton_kernel: public QObject
   QTimer m_controlDatabaseTimer;
   QTimer m_impersonateTimer;
   QTimer m_messagingCachePurgeTimer;
+  QTimer m_processReceivedMessagesTimer;
   QTimer m_publishAllListenersPlaintextTimer;
   QTimer m_scramblerTimer;
   QTimer m_settingsTimer;
@@ -123,7 +124,6 @@ class spoton_kernel: public QObject
   static QReadWriteLock s_messagesToProcessMutex;
   static QReadWriteLock s_messagingCacheMutex;
   static QReadWriteLock s_settingsMutex;
-  static QTimer s_processReceivedMessagesTimer;
   bool initializeSecurityContainers(const QString &passphrase);
   void checkForTermination(void);
   void cleanup(void);
@@ -135,7 +135,6 @@ class spoton_kernel: public QObject
   void prepareListeners(void);
   void prepareNeighbors(void);
   void prepareStarbeamReaders(void);
-  void processReceivedMessages(void);
   void purgeMessagingCache(void);
   void updateStatistics(void);
 
@@ -202,8 +201,6 @@ class spoton_kernel: public QObject
   void sendMail(const QPairByteArrayInt64List &mail,
 		const QString &messageType);
   void sendStatus(const QByteArrayList &status);
-  void write(const QByteArray &data, const qint64 id,
-	     const QPairByteArrayByteArray &adaptiveEchoPair);
 };
 
 #endif
