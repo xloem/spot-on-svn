@@ -72,13 +72,9 @@ spoton_chatwindow::spoton_chatwindow(const QIcon &icon,
 	  SLOT(slotSendMessage(void)));
 
   if(participant.trimmed().isEmpty())
-    setWindowTitle(tr("%1: %2").
-		   arg(SPOTON_APPLICATION_NAME).
-		   arg("unknown"));
+    setWindowTitle("unknown");
   else
-    setWindowTitle(tr("%1: %2").
-		   arg(SPOTON_APPLICATION_NAME).
-		   arg(participant.trimmed()));
+    setWindowTitle(participant.trimmed());
 
   ui.icon->setPixmap(icon.pixmap(QSize(16, 16)));
 
@@ -263,17 +259,12 @@ void spoton_chatwindow::slotSetStatus(const QIcon &icon,
 
       if(!name.trimmed().isEmpty())
 	{
-	  setWindowTitle
-	    (tr("%1: %2").
-	     arg(SPOTON_APPLICATION_NAME).
-	     arg(name.trimmed()));
+	  setWindowTitle(name.trimmed());
 	  ui.name->setText(name.trimmed());
 	}
       else
 	{
-	  setWindowTitle(tr("%1: %2").
-			 arg(SPOTON_APPLICATION_NAME).
-			 arg("unknown"));
+	  setWindowTitle("unknown");
 	  ui.name->setText("unknown");
 	}
     }
@@ -283,16 +274,12 @@ void spoton_chatwindow::setName(const QString &name)
 {
   if(!name.trimmed().isEmpty())
     {
-      setWindowTitle(tr("%1: %2").
-		     arg(SPOTON_APPLICATION_NAME).
-		     arg(name.trimmed()));
+      setWindowTitle(name.trimmed());
       ui.name->setText(name.trimmed());
     }
   else
     {
-      setWindowTitle(tr("%1: %2").
-		     arg(SPOTON_APPLICATION_NAME).
-		     arg("unknown"));
+      setWindowTitle("unknown");
       ui.name->setText("unknown");
     }
 }
