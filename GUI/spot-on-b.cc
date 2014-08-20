@@ -3815,12 +3815,7 @@ void spoton::slotSetIcons(void)
 
   // Login
 
-#if SPOTON_GOLDBUG == 0
   m_ui.passphraseButton->setIcon(QIcon(QString(":/%1/ok.png").arg(iconSet)));
-#else
-  m_ui.passphraseButton->setIcon(QIcon(QString(":/%1/goldbug.png").
-				       arg(iconSet)));
-#endif
   m_listenersLastModificationTime = QDateTime();
   m_neighborsLastModificationTime = QDateTime();
   m_participantsLastModificationTime = QDateTime();
