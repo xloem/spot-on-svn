@@ -526,7 +526,9 @@ Echoed? Yes
 Groups: 3
 Symmetric Key
 {
-0 - RSS (Base-64)
+0 - 0082 (Base-64)
+EOL
+1 - RSS (Base-64)
 }
 EOL
 {
