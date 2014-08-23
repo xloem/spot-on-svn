@@ -114,6 +114,7 @@ Completed Items
        will direct traffic based on secret tokens.
 81.    Limit client connections by IP address.
 82.    Purge items from post_office if their dates are invalid.
+83.    Perform calling over geminis.
 
 Ignored Items
 
@@ -175,7 +176,7 @@ Remaining Items
 16.    QFSFileEngine::open: No file name specified: created from
        e-mail.
 17.    Support ECC, or not.
-18.    Perform calling over geminis.
+18.    Notify user of potential replays.
 19.    Counting users is possible. Gathering message attributes is
        also possible. See group information in MESSAGES.
 20.    Add support for crypto++.
@@ -208,4 +209,3 @@ Remaining Items
        ought to be considered.
 36.    E-mail institutions do not require dispatcher signatures.
 37.    Derive keys from master GoldBug keys.
-38.    Notify user of potential replays.

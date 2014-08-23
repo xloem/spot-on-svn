@@ -5206,10 +5206,23 @@ void spoton::slotShowContextMenu(const QPoint &point)
 				 "Gemini pair."),
 			      this, SLOT(slotCallParticipant(void)));
       action->setProperty("type", "calling");
+      action = menu.addAction(QIcon(QString(":/%1/melodica.png").
+				    arg(m_settings.value("gui/iconSet",
+							 "nouve").
+					toString())),
+			      tr("MELODICA: &Call friend with new "
+				 "Gemini pair using the "
+				 "existing Gemini pair."),
+			      this, SLOT(slotCallParticipant(void)));
+      action->setProperty("type", "calling_using_gemini");
 #else
       action = menu.addAction(tr("&Call participant."),
 			      this, SLOT(slotCallParticipant(void)));
       action->setProperty("type", "calling");
+      action = menu.addAction
+	(tr("&Call participant using the existing Gemini pair."),
+	 this, SLOT(slotCallParticipant(void)));
+      action->setProperty("type", "calling_using_gemini");
 #endif
       action = menu.addAction(tr("&Terminate call."),
 			      this, SLOT(slotCallParticipant(void)));
@@ -6597,12 +6610,19 @@ void spoton::slotCallParticipant(void)
 
   if(type == "calling")
     slotGenerateGeminiInChat();
+  else if(type == "calling_using_gemini")
+    {
+    }
   else
     saveGemini(QPair<QByteArray, QByteArray> (), oid);
 
   QByteArray message;
 
-  message.append("call_participant_");
+  if(type == "calling_using_gemini")
+    message.append("call_participant_using_gemini_");
+  else
+    message.append("call_participant_");
+
   message.append(oid);
   message.append("\n");
 

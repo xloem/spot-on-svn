@@ -524,6 +524,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  this,
 	  SLOT(slotCallParticipant(const qint64)));
   connect(m_guiServer,
+	  SIGNAL(callParticipantUsingGemini(const qint64)),
+	  this,
+	  SLOT(slotCallParticipantUsingGemini(const qint64)));
+  connect(m_guiServer,
 	  SIGNAL(detachNeighbors(const qint64)),
 	  this,
 	  SLOT(slotDetachNeighbors(const qint64)));
@@ -1783,9 +1787,11 @@ void spoton_kernel::connectSignalsToNeighbor
 				const QPairByteArrayByteArray &)),
 	  Qt::UniqueConnection);
   connect(this,
-	  SIGNAL(callParticipant(const QByteArray &)),
+	  SIGNAL(callParticipant(const QByteArray &,
+				 const QString &)),
 	  neighbor,
-	  SLOT(slotCallParticipant(const QByteArray &)),
+	  SLOT(slotCallParticipant(const QByteArray &,
+				   const QString &)),
 	  Qt::UniqueConnection);
   connect(this,
 	  SIGNAL(publicizeListenerPlaintext(const QByteArray &,
@@ -3487,7 +3493,165 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
   QSqlDatabase::removeDatabase(connectionName);
 
   if(ok)
-    emit callParticipant(data);
+    emit callParticipant(data, "0000a");
+}
+
+void spoton_kernel::slotCallParticipantUsingGemini(const qint64 oid)
+{
+  spoton_crypt *s_crypt1 = s_crypts.value("chat", 0);
+
+  if(!s_crypt1)
+    return;
+
+  spoton_crypt *s_crypt2 = s_crypts.value("chat-signature", 0);
+
+  if(!s_crypt2)
+    return;
+
+  QByteArray publicKey;
+  QByteArray myPublicKeyHash;
+  bool ok = true;
+
+  publicKey = s_crypt1->publicKey(&ok);
+
+  if(!ok)
+    return;
+
+  myPublicKeyHash = spoton_crypt::sha512Hash(publicKey, &ok);
+
+  if(!ok)
+    return;
+
+  QByteArray data;
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "friends_public_keys.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT gemini, public_key, "
+		      "gemini_hash_key "
+		      "FROM friends_public_keys WHERE "
+		      "key_type_hash = ? AND neighbor_oid = -1 AND "
+		      "OID = ?");
+	query.bindValue(0, s_crypt1->keyedHash(QByteArray("chat"),
+					       &ok).toBase64());
+	query.bindValue(1, oid);
+
+	if(ok && query.exec())
+	  if(query.next())
+	    {
+	      QByteArray publicKey;
+	      QPair<QByteArray, QByteArray> gemini;
+
+	      if(!query.isNull(0))
+		gemini.first = s_crypt1->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.
+					  value(0).
+					  toByteArray()),
+		   &ok);
+
+	      if(ok)
+		publicKey = s_crypt1->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(1).toByteArray()),
+		   &ok);
+
+	      if(ok)
+		if(!query.isNull(2))
+		  gemini.second = s_crypt1->decryptedAfterAuthenticated
+		    (QByteArray::fromBase64(query.
+					    value(2).
+					    toByteArray()),
+		     &ok);
+
+	      QByteArray hashKey;
+	      QByteArray symmetricKey;
+	      QByteArray symmetricKeyAlgorithm("aes256");
+	      size_t symmetricKeyLength = 0;
+
+	      if(ok)
+		{
+		  symmetricKeyLength = spoton_crypt::cipherKeyLength
+		    (symmetricKeyAlgorithm);
+
+		  if(symmetricKeyLength > 0)
+		    {
+		      hashKey.resize
+			(spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES);
+		      hashKey = spoton_crypt::strongRandomBytes
+			(hashKey.length());
+		      symmetricKey.resize
+			(static_cast<int> (symmetricKeyLength));
+		      symmetricKey = spoton_crypt::strongRandomBytes
+			(symmetricKey.length());
+		    }
+		  else
+		    {
+		      ok = false;
+		      spoton_misc::logError
+			("spoton_kernel::slotCallParticipantUsingGemini(): "
+			 "cipherKeyLength() failure.");
+		    }
+		}
+
+	      if(ok)
+		{
+		  {
+		    /*
+		    ** We want crypt to be destroyed as soon as possible.
+		    */
+
+		    QByteArray signature;
+		    spoton_crypt crypt(symmetricKeyAlgorithm,
+				       "sha512",
+				       QByteArray(),
+				       gemini.first,
+				       0,
+				       0,
+				       QString(""));
+
+		    if(setting("gui/chatSignMessages", true).toBool())
+		      signature = s_crypt2->digitalSignature
+			("0000b" + myPublicKeyHash + symmetricKey + hashKey,
+			 &ok);
+
+		    if(ok)
+		      data = crypt.encrypted
+			(QByteArray("0000b").toBase64() + "\n" +
+			 myPublicKeyHash.toBase64() + "\n" +
+			 symmetricKey.toBase64() + "\n" +
+			 hashKey.toBase64() + "\n" +
+			 signature.toBase64(), &ok);
+
+		    if(ok)
+		      {
+			QByteArray messageCode
+			  (spoton_crypt::keyedHash(data, gemini.second,
+						   "sha512", &ok));
+
+			if(ok)
+			  data = data.toBase64() + "\n" +
+			    messageCode.toBase64();
+		      }
+		  }
+		}
+	    }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  if(ok)
+    emit callParticipant(data, "0000b");
 }
 
 QVariant spoton_kernel::setting(const QString &name,

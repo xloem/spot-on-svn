@@ -94,6 +94,30 @@ EOL
     Encrypted Timestamp (Base-64)
 }
 
+Groups: 3
+Gemini Encryption Key
+{
+0 - 0000b (Base-64)
+EOL
+1 - Dispatcher's SHA-512 Hash (Base-64)
+EOL
+2 - Gemini Encryption Key (Base-64)
+EOL
+3 - Gemini Hash Key (Base-64)
+EOL
+4 - Signature (Base-64)
+}
+EOL
+{
+0 - Keyed (Gemini Hash Key) SHA-512 Message Code (Base-64)
+}
+EOL
+{
+0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data and Encrypted Timestamp,
+    Encrypted Timestamp (Base-64)
+}
+
 Echo Mail
 Echoed? Yes
 

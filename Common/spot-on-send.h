@@ -49,6 +49,10 @@ class spoton_send
     (const QByteArray &message,
      const spoton_send_method sendMethod,
      const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
+  static QByteArray message0000b
+    (const QByteArray &message,
+     const spoton_send_method sendMethod,
+     const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
   static QByteArray message0001a
     (const QByteArray &message,
      const QPair<QByteArray, QByteArray> &adaptiveEchoPair);

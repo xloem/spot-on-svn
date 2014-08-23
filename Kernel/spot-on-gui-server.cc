@@ -327,6 +327,13 @@ void spoton_gui_server::slotReadyRead(void)
 	      if(!message.isEmpty())
 		emit callParticipant(message.toLongLong());
 	    }
+	  else if(message.startsWith("call_participant_using_gemini_"))
+	    {
+	      message.remove(0, qstrlen("call_participant_using_gemini_"));
+
+	      if(!message.isEmpty())
+		emit callParticipantUsingGemini(message.toLongLong());
+	    }
 	  else if(message.startsWith("detach_listener_neighbors_"))
 	    {
 	      message.remove(0, qstrlen("detach_listener_neighbors_"));

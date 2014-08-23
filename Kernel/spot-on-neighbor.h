@@ -274,7 +274,8 @@ class spoton_neighbor: public QThread
   void slotAccountAuthenticated(const QByteArray &name,
 				const QByteArray &password);
   void slotAuthenticationTimerTimeout(void);
-  void slotCallParticipant(const QByteArray &data);
+  void slotCallParticipant(const QByteArray &data,
+			   const QString &messageType);
   void slotConnected(void);
   void slotDisconnected(void);
   void slotDiscoverExternalAddress(void);

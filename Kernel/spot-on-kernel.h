@@ -151,6 +151,7 @@ class spoton_kernel: public QObject
 			      const QByteArray &hashKey,
 			      const QByteArray &hashType);
   void slotCallParticipant(const qint64 oid);
+  void slotCallParticipantUsingGemini(const qint64 oid);
   void slotDetachNeighbors(const qint64 listenerOid);
   void slotDisconnectNeighbors(const qint64 listenerOid);
   void slotImpersonateTimeout(void);
@@ -187,7 +188,8 @@ class spoton_kernel: public QObject
   void slotUpdateSettings(void);
 
  signals:
-  void callParticipant(const QByteArray &data);
+  void callParticipant(const QByteArray &data,
+		       const QString &messageType);
   void publicizeListenerPlaintext(const QByteArray &data,
 				  const qint64 id);
   void publicizeListenerPlaintext(const QHostAddress &address,

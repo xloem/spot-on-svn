@@ -5741,7 +5741,8 @@ QString spoton_neighbor::findMessageType
   return type;
 }
 
-void spoton_neighbor::slotCallParticipant(const QByteArray &data)
+void spoton_neighbor::slotCallParticipant(const QByteArray &data,
+					  const QString &messageType)
 {
   if(readyToWrite())
     {
@@ -5754,15 +5755,31 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data)
       if(spoton_kernel::setting("gui/chatSendMethod",
 				"Artificial_GET").
 	 toString() == "Artificial_GET")
-	message = spoton_send::message0000a(data,
-					    spoton_send::
-					    ARTIFICIAL_GET,
-					    ae);
+	{
+	  if(messageType == "0000a")
+	    message = spoton_send::message0000a(data,
+						spoton_send::
+						ARTIFICIAL_GET,
+						ae);
+	  else
+	    message = spoton_send::message0000b(data,
+						spoton_send::
+						ARTIFICIAL_GET,
+						ae);
+	}
       else
-	message = spoton_send::message0000a(data,
-					    spoton_send::
-					    NORMAL_POST,
-					    ae);
+	{
+	  if(messageType == "0000a")
+	    message = spoton_send::message0000a(data,
+						spoton_send::
+						NORMAL_POST,
+						ae);
+	  else
+	    message = spoton_send::message0000b(data,
+						spoton_send::
+						NORMAL_POST,
+						ae);
+	}
 
       if(write(message.constData(),
 	       message.length()) != message.length())
