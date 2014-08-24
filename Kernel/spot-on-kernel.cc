@@ -1498,7 +1498,7 @@ void spoton_kernel::slotMessageReceivedFromUI
     {
       {
 	/*
-	** We want crypt to be destroyed as soon as possible.
+	** We would like crypt to be destroyed as soon as possible.
 	*/
 
 	QByteArray signature;
@@ -2009,7 +2009,8 @@ void spoton_kernel::slotStatusTimerExpired(void)
 		{
 		  {
 		    /*
-		    ** We want crypt to be destroyed as soon as possible.
+		    ** We would like crypt to be destroyed as
+		    ** soon as possible.
 		    */
 
 		    QByteArray signature;
@@ -3447,7 +3448,8 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 		{
 		  {
 		    /*
-		    ** We want crypt to be destroyed as soon as possible.
+		    ** We would like crypt to be destroyed as
+		    ** soon as possible.
 		    */
 
 		    QByteArray signature;
@@ -3523,6 +3525,8 @@ void spoton_kernel::slotCallParticipantUsingGemini(const qint64 oid)
     return;
 
   QByteArray data;
+  QByteArray hashKey;
+  QByteArray symmetricKey;
   QString connectionName("");
 
   {
@@ -3571,8 +3575,6 @@ void spoton_kernel::slotCallParticipantUsingGemini(const qint64 oid)
 					    toByteArray()),
 		     &ok);
 
-	      QByteArray hashKey;
-	      QByteArray symmetricKey;
 	      QByteArray symmetricKeyAlgorithm("aes256");
 	      size_t symmetricKeyLength = 0;
 
@@ -3605,7 +3607,8 @@ void spoton_kernel::slotCallParticipantUsingGemini(const qint64 oid)
 		{
 		  {
 		    /*
-		    ** We want crypt to be destroyed as soon as possible.
+		    ** We would like crypt to be destroyed as
+		    ** soon as possible.
 		    */
 
 		    QByteArray signature;
@@ -3654,12 +3657,11 @@ void spoton_kernel::slotCallParticipantUsingGemini(const qint64 oid)
     {
       QPair<QByteArray, QByteArray> gemini;
 
-      gemini.first = spoton_crypt::
-	strongRandomBytes(spoton_crypt::cipherKeyLength("aes256"));
-      gemini.second = spoton_crypt::strongRandomBytes
-	(spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES);
-      spoton_misc::saveGemini(gemini, QString::number(oid), s_crypt1);
-      emit callParticipant(data, "0000b");
+      gemini.first = symmetricKey;
+      gemini.second = hashKey;
+
+      if(spoton_misc::saveGemini(gemini, QString::number(oid), s_crypt1))
+	emit callParticipant(data, "0000b");
     }
 }
 
