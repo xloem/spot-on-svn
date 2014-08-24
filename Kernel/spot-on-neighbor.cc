@@ -2622,6 +2622,13 @@ void spoton_neighbor::process0000b(int length, const QByteArray &dataIn,
       for(int i = 0; i < list.size(); i++)
 	list.replace(i, QByteArray::fromBase64(list.at(i)));
 
+      /*
+      ** The method findMessageType() verified that the computed
+      ** hash is identical to the provided hash during the
+      ** discovery of the gemini pair. Most other
+      ** process() methods perform redundant tests.
+      */
+
       spoton_crypt crypt("aes256",
 			 "sha512",
 			 QByteArray(),
