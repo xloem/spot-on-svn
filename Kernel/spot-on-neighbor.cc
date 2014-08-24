@@ -2625,7 +2625,7 @@ void spoton_neighbor::process0000b(int length, const QByteArray &dataIn,
       /*
       ** The method findMessageType() verified that the computed
       ** hash is identical to the provided hash during the
-      ** discovery of the gemini pair. Most other
+      ** discovery of the gemini pair. Other
       ** process() methods perform redundant tests.
       */
 
