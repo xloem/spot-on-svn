@@ -6621,7 +6621,7 @@ void spoton::slotCallParticipant(void)
   if(type == "calling_using_gemini")
     message.append("call_participant_using_gemini_");
   else
-    message.append("call_participant_");
+    message.append("call_participant_using_public_key_");
 
   message.append(oid);
   message.append("\n");

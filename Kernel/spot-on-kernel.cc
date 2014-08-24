@@ -3651,7 +3651,16 @@ void spoton_kernel::slotCallParticipantUsingGemini(const qint64 oid)
   QSqlDatabase::removeDatabase(connectionName);
 
   if(ok)
-    emit callParticipant(data, "0000b");
+    {
+      QPair<QByteArray, QByteArray> gemini;
+
+      gemini.first = spoton_crypt::
+	strongRandomBytes(spoton_crypt::cipherKeyLength("aes256"));
+      gemini.second = spoton_crypt::strongRandomBytes
+	(spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES);
+      spoton_misc::saveGemini(gemini, QString::number(oid), s_crypt1);
+      emit callParticipant(data, "0000b");
+    }
 }
 
 QVariant spoton_kernel::setting(const QString &name,

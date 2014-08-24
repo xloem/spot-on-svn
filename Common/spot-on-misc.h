@@ -121,6 +121,9 @@ class spoton_misc
 				   const qint64 neighborOid,
 				   const QSqlDatabase &db,
 				   spoton_crypt *crypt);
+  static bool saveGemini(const QPair<QByteArray, QByteArray> &gemini,
+			 const QString &oid,
+			 spoton_crypt *crypt);
   static qint64 participantCount(const QString &keyType,
 				 spoton_crypt *crypt);
   static void cleanupDatabases(spoton_crypt *crypt);

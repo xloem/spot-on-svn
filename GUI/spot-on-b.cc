@@ -3410,58 +3410,7 @@ void spoton::slotGenerateGeminiInChat(void)
 bool spoton::saveGemini(const QPair<QByteArray, QByteArray> &gemini,
 			const QString &oid)
 {
-  QString connectionName("");
-  bool ok = true;
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-
-    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-		       "friends_public_keys.db");
-
-    if((ok = db.open()))
-      {
-	QSqlQuery query(db);
-
-	query.prepare("UPDATE friends_public_keys SET "
-		      "gemini = ?, gemini_hash_key = ? WHERE OID = ?");
-
-	if(gemini.first.isEmpty() || gemini.second.isEmpty())
-	  {
-	    query.bindValue(0, QVariant(QVariant::String));
-	    query.bindValue(1, QVariant(QVariant::String));
-	  }
-	else
-	  {
-	    if(m_crypts.value("chat", 0))
-	      {
-		query.bindValue
-		  (0, m_crypts.value("chat")->
-		   encryptedThenHashed(gemini.first, &ok).toBase64());
-
-		if(ok)
-		  query.bindValue
-		    (1, m_crypts.value("chat")->
-		     encryptedThenHashed(gemini.second, &ok).toBase64());
-	      }
-	    else
-	      {
-		query.bindValue(0, QVariant(QVariant::String));
-		query.bindValue(1, QVariant(QVariant::String));
-	      }
-	  }
-
-	query.bindValue(2, oid);
-
-	if(ok)
-	  ok = query.exec();
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-  return ok;
+  return spoton_misc::saveGemini(gemini, oid, m_crypts.value("chat", 0));
 }
 
 void spoton::slotGenerateGoldBug(void)
