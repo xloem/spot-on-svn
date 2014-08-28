@@ -961,6 +961,9 @@ void spoton_kernel::prepareListeners(void)
 	  it.remove();
 	}
     }
+
+  if(m_listeners.isEmpty())
+    s_connectionCounts.clear();
 }
 
 void spoton_kernel::prepareNeighbors(void)
