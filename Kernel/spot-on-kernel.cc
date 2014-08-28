@@ -773,6 +773,7 @@ void spoton_kernel::prepareListeners(void)
 		    }
 
 		  m_listeners.remove(id);
+		  s_connectionCounts.remove(id);
 		  cleanupListenersDatabase(db);
 		}
 	      else if(status == "offline")
@@ -1183,6 +1184,21 @@ void spoton_kernel::prepareNeighbors(void)
 		    neighbor->deleteLater();
 
 		  m_neighbors.remove(id);
+
+		  QByteArray bytes;
+		  bool ok = true;
+
+		  bytes = s_crypt->
+		    decryptedAfterAuthenticated
+		    (QByteArray::fromBase64(query.
+					    value(0).
+					    toByteArray()),
+		     &ok);
+
+		  if(ok)
+		    s_remoteConnections.removeOne
+		      (QHostAddress(bytes.constData()));
+
 		  cleanupNeighborsDatabase(db);
 		}
 	    }

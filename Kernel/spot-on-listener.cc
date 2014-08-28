@@ -361,6 +361,8 @@ spoton_listener::~spoton_listener()
 
   if(m_networkInterface)
     delete m_networkInterface;
+
+  spoton_kernel::s_connectionCounts.remove(m_id);
 }
 
 void spoton_listener::slotTimeout(void)
