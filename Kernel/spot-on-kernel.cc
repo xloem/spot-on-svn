@@ -897,6 +897,7 @@ void spoton_kernel::prepareListeners(void)
 			      if(listener)
 				listener->deleteLater();
 
+			      s_connectionCounts.remove(id);
 			      spoton_misc::logError
 				("spoton_kernel::prepareListeners(): "
 				 "critical failure.");
@@ -1162,6 +1163,20 @@ void spoton_kernel::prepareNeighbors(void)
 			    {
 			      if(neighbor)
 				neighbor->deleteLater();
+
+			      QByteArray bytes;
+			      bool ok = true;
+
+			      bytes = s_crypt->
+				decryptedAfterAuthenticated
+				(QByteArray::fromBase64(query.
+							value(0).
+							toByteArray()),
+				 &ok);
+
+			      if(ok)
+				s_remoteConnections.removeOne
+				  (QHostAddress(bytes.constData()));
 
 			      spoton_misc::logError
 				("spoton_kernel::prepareNeighbors(): "
