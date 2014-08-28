@@ -1,7 +1,8 @@
 0.10 (10/01/2014)
 
-1.   Weather data.
-2.   Calling over geminis.
+1.   Calling over geminis.
+2.   Corrected management of spoton_kernel::s_connectionCounts and
+     s_remoteConnections.
 
 0.09.09 (08/17/2014)
 
