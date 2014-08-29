@@ -1,4 +1,4 @@
-0.10 (10/01/2014)
+0.10 (09/05/2014)
 
 1.   Calling over geminis.
 2.   Corrected management of spoton_kernel::s_connectionCounts and
@@ -7,6 +7,7 @@
 4.   Modified the key sharing protocol. The previous implementation
      would automatically cause sharing of public key pairs with participants
      that were previously accepted.
+5.   Clear sensitive containers in spot-on-crypt.cc.
 
 0.09.09 (08/17/2014)
 
