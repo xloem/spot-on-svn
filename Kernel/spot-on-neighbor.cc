@@ -1897,8 +1897,7 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
   */
 
   QString connectionName("");
-  bool share = false;
-  spoton_crypt *s_crypt1 = spoton_kernel::s_crypts.value(keyType, 0);
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value(keyType, 0);
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -1914,11 +1913,10 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 	    /*
 	    ** We have received a request for friendship.
 	    ** Do we already have the neighbor's public key?
-	    ** If we've already accepted the public key, we should
-	    ** respond with our public key.
 	    */
 
 	    QSqlQuery query(db);
+	    bool exists = false;
 	    bool ok = true;
 
 	    query.setForwardOnly(true);
@@ -1932,9 +1930,9 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 	      if(query.exec())
 		if(query.next())
 		  if(query.value(0).toLongLong() == -1)
-		    share = true;
+		    exists = true;
 
-	    if(!share)
+	    if(!exists)
 	      {
 		/*
 		** An error occurred or we do not have the public key.
@@ -1942,19 +1940,19 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
 
 		spoton_misc::saveFriendshipBundle
 		  (keyType, name, publicKey, sPublicKey,
-		   neighborOid, db, s_crypt1);
+		   neighborOid, db, s_crypt);
 		spoton_misc::saveFriendshipBundle
-		  (keyType + "-signature", name, sPublicKey, QByteArray(),
-		   neighborOid, db, s_crypt1);
+		  (keyType + "-signature", name, sPublicKey,
+		   QByteArray(), neighborOid, db, s_crypt);
 	      }
 	  }
 	else
 	  {
 	    spoton_misc::saveFriendshipBundle
-	      (keyType, name, publicKey, sPublicKey, -1, db, s_crypt1);
+	      (keyType, name, publicKey, sPublicKey, -1, db, s_crypt);
 	    spoton_misc::saveFriendshipBundle
 	      (keyType + "-signature", name, sPublicKey, QByteArray(), -1,
-	       db, s_crypt1);
+	       db, s_crypt);
 	  }
       }
 
@@ -1962,54 +1960,6 @@ void spoton_neighbor::savePublicKey(const QByteArray &keyType,
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-
-  if(share)
-    {
-      spoton_crypt *s_crypt2 = spoton_kernel::s_crypts.value
-	(keyType + "-signature", 0);
-
-      if(s_crypt1 && s_crypt2)
-	{
-	  QByteArray myName;
-
-	  if(keyType == "chat")
-	    myName = spoton_kernel::setting("gui/nodeName",
-					    "unknown").
-	      toByteArray();
-	  else if(keyType == "email")
-	    myName = spoton_kernel::setting("gui/emailName",
-					    "unknown").
-	      toByteArray();
-	  else
-	    myName = spoton_kernel::setting("gui/urlName",
-					    "unknown").
-	      toByteArray();
-
-	  QByteArray myPublicKey;
-	  QByteArray mySignature;
-	  QByteArray mySPublicKey;
-	  QByteArray mySSignature;
-	  bool ok = true;
-
-	  myPublicKey = s_crypt1->publicKey(&ok);
-
-	  if(ok)
-	    mySignature = s_crypt1->digitalSignature
-	      (myPublicKey, &ok);
-
-	  if(ok)
-	    mySPublicKey = s_crypt2->publicKey(&ok);
-
-	  if(ok)
-	    mySSignature = s_crypt2->digitalSignature
-	      (mySPublicKey, &ok);
-
-	  if(ok)
-	    emit sharePublicKey(keyType, myName,
-				myPublicKey, mySignature,
-				mySPublicKey, mySSignature);
-	}
-    }
 }
 
 qint64 spoton_neighbor::id(void) const
