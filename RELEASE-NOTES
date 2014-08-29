@@ -4,6 +4,9 @@
 2.   Corrected management of spoton_kernel::s_connectionCounts and
      s_remoteConnections.
 3.   File encryption tool.
+4.   Modified the key sharing protocol. The previous implementation
+     would automatically cause sharing of public key pairs with participants
+     that were previously accepted.
 
 0.09.09 (08/17/2014)
 
