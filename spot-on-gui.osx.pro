@@ -48,6 +48,7 @@ FORMS           = UI/adaptiveechoprompt.ui \
 		  UI/buzzpage.ui \
 		  UI/chatwindow.ui \
 		  UI/controlcenter.ui \
+		  UI/encryptfile.ui \
                   UI/logviewer.ui \
                   UI/passwordprompt.ui \
 		  UI/rosetta.ui \
@@ -60,6 +61,7 @@ HEADERS		= Common/spot-on-external-address.h \
 		  GUI/spot-on.h \
 		  GUI/spot-on-buzzpage.h \
 		  GUI/spot-on-chatwindow.h \
+		  GUI/spot-on-encryptfile.h \
 		  GUI/spot-on-logviewer.h \
 		  GUI/spot-on-rosetta.h \
                   GUI/spot-on-starbeamanalyzer.h \
@@ -76,6 +78,7 @@ SOURCES		= Common/spot-on-crypt.cc \
 		  GUI/spot-on-buzzpage.cc \
 		  GUI/spot-on-chatwindow.cc \
 		  GUI/spot-on-derivative.cc \
+		  GUI/spot-on-encryptfile.cc \
 		  GUI/spot-on-logviewer.cc \
 		  GUI/spot-on-reencode.cc \
 		  GUI/spot-on-rosetta.cc \

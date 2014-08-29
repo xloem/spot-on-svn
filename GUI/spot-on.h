@@ -90,6 +90,7 @@ extern "C"
 #include "Common/spot-on-misc.h"
 #include "Common/spot-on-send.h"
 #include "spot-on-chatwindow.h"
+#include "spot-on-encryptfile.h"
 #include "spot-on-logviewer.h"
 #include "spot-on-reencode.h"
 #include "spot-on-rosetta.h"
@@ -143,6 +144,7 @@ class spoton: public QMainWindow
   QWidget *m_sbWidget;
   Ui_statusbar m_sb;
   Ui_spoton_mainwindow m_ui;
+  spoton_encryptfile m_encryptFile;
   spoton_external_address *m_externalAddress;
   spoton_logviewer m_logViewer;
   spoton_rosetta m_rosetta;
@@ -398,6 +400,7 @@ class spoton: public QMainWindow
   void slotShareUrlPublicKeyWithParticipant(void);
   void slotShareURLPublicKey(void);
   void slotShowContextMenu(const QPoint &point);
+  void slotShowEncryptFile(void);
   void slotShowEtpMagnetsMenu(const QPoint &point);
   void slotShowMinimalDisplay(bool state);
   void slotShowStarBeamAnalyzer(void);

@@ -1542,3 +1542,8 @@ void spoton::slotSignatureKeyTypeChanged(int index)
   if(index != 2)
     m_ui.signatureKeySize->setCurrentIndex(1);
 }
+
+void spoton::slotShowEncryptFile(void)
+{
+  m_encryptFile.show(this);
+}

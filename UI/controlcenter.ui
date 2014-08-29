@@ -73,7 +73,7 @@
              <x>0</x>
              <y>0</y>
              <width>876</width>
-             <height>437</height>
+             <height>436</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -459,8 +459,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>851</width>
-                <height>444</height>
+                <width>729</width>
+                <height>447</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -950,8 +950,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>861</width>
-             <height>575</height>
+             <width>862</width>
+             <height>587</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1950,8 +1950,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>876</width>
-             <height>437</height>
+             <width>786</width>
+             <height>341</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2527,9 +2527,9 @@
                    <property name="geometry">
                     <rect>
                      <x>0</x>
-                     <y>-917</y>
-                     <width>241</width>
-                     <height>1334</height>
+                     <y>0</y>
+                     <width>277</width>
+                     <height>1345</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2969,8 +2969,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>861</width>
-             <height>559</height>
+             <width>979</width>
+             <height>572</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4034,8 +4034,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>876</width>
-             <height>437</height>
+             <width>265</width>
+             <height>163</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4191,9 +4191,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-437</y>
-             <width>861</width>
-             <height>903</height>
+             <y>0</y>
+             <width>800</width>
+             <height>927</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -5314,8 +5314,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>861</width>
-             <height>542</height>
+             <width>491</width>
+             <height>549</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -6271,8 +6271,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>876</width>
-             <height>437</height>
+             <width>247</width>
+             <height>409</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -6753,8 +6753,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>861</width>
-             <height>473</height>
+             <width>248</width>
+             <height>152</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -7014,7 +7014,7 @@
      <x>0</x>
      <y>0</y>
      <width>900</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -7059,6 +7059,8 @@
     <addaction name="separator"/>
     <addaction name="action_Export_Public_Keys"/>
     <addaction name="action_Import_Public_Keys"/>
+    <addaction name="separator"/>
+    <addaction name="action_File_Encryption"/>
     <addaction name="separator"/>
     <addaction name="action_Rosetta"/>
     <addaction name="separator"/>
@@ -7200,6 +7202,11 @@
    </property>
    <property name="text">
     <string>Everaldo</string>
+   </property>
+  </action>
+  <action name="action_File_Encryption">
+   <property name="text">
+    <string>&amp;File Encryption</string>
    </property>
   </action>
  </widget>

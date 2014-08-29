@@ -243,6 +243,10 @@ spoton::spoton(void):QMainWindow()
 #endif
   connect(this,
 	  SIGNAL(iconsChanged(void)),
+	  &m_encryptFile,
+	  SLOT(slotSetIcons(void)));
+  connect(this,
+	  SIGNAL(iconsChanged(void)),
 	  &m_logViewer,
 	  SLOT(slotSetIcons(void)));
   connect(this,
@@ -294,6 +298,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotCopyOrPaste(void)));
+  connect(m_ui.action_File_Encryption,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotShowEncryptFile(void)));
   connect(m_ui.action_Paste,
 	  SIGNAL(triggered(void)),
 	  this,
