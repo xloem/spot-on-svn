@@ -3,6 +3,7 @@
 1.   Calling over geminis.
 2.   Corrected management of spoton_kernel::s_connectionCounts and
      s_remoteConnections.
+3.   File encryption tool.
 
 0.09.09 (08/17/2014)
 
