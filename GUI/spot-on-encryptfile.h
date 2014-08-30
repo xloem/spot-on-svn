@@ -64,6 +64,7 @@ class spoton_encryptfile: public QMainWindow
   void slotCompleted(const QString &error);
   void slotCompleted(const int percentage);
   void slotConvert(void);
+  void slotReset(void);
   void slotSelect(void);
   void slotSetIcons(void);
 

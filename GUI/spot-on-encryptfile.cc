@@ -81,6 +81,10 @@ spoton_encryptfile::spoton_encryptfile(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  ui.sign,
 	  SLOT(setEnabled(bool)));
+  connect(ui.reset,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotReset(void)));
   connect(ui.select,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -536,4 +540,19 @@ void spoton_encryptfile::slotCompleted(const QString &error)
 void spoton_encryptfile::slotCompleted(const int percentage)
 {
   ui.progressBar->setValue(percentage);
+}
+
+void spoton_encryptfile::slotReset(void)
+{
+  if(!m_future.isFinished())
+    return;
+
+  ui.cipher->setCurrentIndex(0);
+  ui.encrypt->setChecked(true);
+  ui.file->clear();
+  ui.hash->setCurrentIndex(0);
+  ui.password->clear();
+  ui.pin->clear();
+  ui.sign->setChecked(true);
+  ui.file->setFocus();
 }
