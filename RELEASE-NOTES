@@ -3,9 +3,10 @@
 1.   Calling over geminis.
 2.   Corrected management of spoton_kernel::s_connectionCounts and
      s_remoteConnections.
-3.   File encryption tool.
+3.   File encryption tool. The encrypted file will be approximately 0.5%
+     larger than the original file.
 4.   Modified the key sharing protocol. The previous implementation
-     would automatically cause sharing of public key pairs with participants
+     would automatically share public key pairs with participants
      that were previously accepted.
 5.   Clear sensitive containers in spot-on-crypt.cc.
 6.   Corrected dialog titles.
