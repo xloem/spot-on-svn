@@ -28,6 +28,7 @@
 #ifndef _spoton_encryptfile_h_
 #define _spoton_encryptfile_h_
 
+#include <QFuture>
 #include <QMainWindow>
 
 #include "ui_encryptfile.h"
@@ -44,17 +45,31 @@ class spoton_encryptfile: public QMainWindow
   void show(QWidget *parent);
 
  private:
+  QFuture<void> m_future;
   Ui_spoton_encryptfile ui;
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000 && QT_VERSION < 0x050300
   bool event(QEvent *event);
 #endif
 #endif
+  void decrypt(const QString &fileName,
+	       const QList<QVariant> &credentials);
+  void encrypt(const bool sign, const QString &fileName,
+	       const QList<QVariant> &credentials);
   void keyPressEvent(QKeyEvent *event);
 
  private slots:
+  void slotCancel(void);
   void slotClose(void);
+  void slotCompleted(const QString &error);
+  void slotCompleted(const int percentage);
+  void slotConvert(void);
+  void slotSelect(void);
   void slotSetIcons(void);
+
+ signals:
+  void completed(const QString &error);
+  void completed(const int percentage);
 };
 
 #endif

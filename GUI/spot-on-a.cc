@@ -1808,10 +1808,9 @@ void spoton::slotAddListener(void)
 
   if(!crypt)
     {
-      QMessageBox::critical(this, tr("%1: Error").
-			    arg(QCoreApplication::applicationDirPath()),
-			    tr("Invalid spoton_crypt object. "
-			       "This is a fatal flaw."));
+      QMessageBox::critical
+	(this, tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
+	 tr("Invalid spoton_crypt object. This is a fatal flaw."));
       return;
     }
 
@@ -1835,7 +1834,7 @@ void spoton::slotAddListener(void)
 
       QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
       m_sb.status->setText
-	(tr("Generating SSL data for listener. Please be patient."));
+	(tr("Generating SSL data. Please be patient."));
       spoton_crypt::generateSslKeys
 	(m_ui.kernelKeySize->currentText().toInt(),
 	 certificate,
