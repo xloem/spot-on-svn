@@ -89,6 +89,10 @@ spoton_encryptfile::spoton_encryptfile(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSelect(void)));
+  connect(ui.selectDestination,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSelect(void)));
   ui.cipher->addItems(spoton_crypt::cipherTypes());
   ui.hash->addItems(spoton_crypt::hashTypes());
 
@@ -193,6 +197,7 @@ void spoton_encryptfile::slotConvert(void)
   if(!m_future.isFinished())
     return;
 
+  QFileInfo destination(ui.destination->text());
   QFileInfo fileInfo(ui.file->text());
   QList<QVariant> list;
   QPair<QByteArray, QByteArray> derivedKeys;
@@ -200,15 +205,28 @@ void spoton_encryptfile::slotConvert(void)
   QString password(ui.password->text());
   QString pin(ui.pin->text());
 
+  if(destination.absoluteFilePath().isEmpty())
+    {
+      error = tr("Please provide a valid destination file.");
+      goto done_label;
+    }
+
   if(!fileInfo.isReadable())
     {
-      error = tr("Please provide a valid file.");
+      error = tr("Please provide a valid origin file.");
+      goto done_label;
+    }
+
+  if(destination == fileInfo)
+    {
+      error = tr("The destination and origin should be distinct.");
       goto done_label;
     }
 
   if(password.length() < 16)
     {
-      error = tr("Please provide a password.");
+      error = tr("Please provide a password that contains at least "
+		 "sixteen characters.");
       goto done_label;
     }
 
@@ -250,12 +268,14 @@ void spoton_encryptfile::slotConvert(void)
     m_future = QtConcurrent::run
       (this, &spoton_encryptfile::decrypt,
        fileInfo.absoluteFilePath(),
+       destination.absoluteFilePath(),
        list);
   else
     m_future = QtConcurrent::run
       (this, &spoton_encryptfile::encrypt,
        ui.sign->isChecked(),
        fileInfo.absoluteFilePath(),
+       destination.absoluteFilePath(),
        list);
 
  done_label:
@@ -266,15 +286,13 @@ void spoton_encryptfile::slotConvert(void)
 }
 
 void spoton_encryptfile::decrypt(const QString &fileName,
+				 const QString &destination,
 				 const QList<QVariant> &credentials)
 {
   QFile file1(fileName);
-  QFile file2(fileName);
+  QFile file2(destination);
   QString error("");
   bool sign = true;
-
-  if(fileName.endsWith(".enc"))
-    file2.setFileName(fileName.mid(0, fileName.length() - 4));
 
   if(file1.open(QIODevice::ReadOnly) && file2.open(QIODevice::Truncate |
 						   QIODevice::WriteOnly))
@@ -391,10 +409,11 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 
 void spoton_encryptfile::encrypt(const bool sign,
 				 const QString &fileName,
+				 const QString &destination,
 				 const QList<QVariant> &credentials)
 {
   QFile file1(fileName);
-  QFile file2(fileName + ".enc");
+  QFile file2(destination);
   QString error("");
 
   if(file1.open(QIODevice::ReadOnly) && file2.open(QIODevice::Truncate |
@@ -504,7 +523,12 @@ void spoton_encryptfile::slotSelect(void)
   dialog.setWindowTitle
     (tr("%1: Select File").
      arg(SPOTON_APPLICATION_NAME));
-  dialog.setFileMode(QFileDialog::ExistingFile);
+
+  if(sender() == ui.select)
+    dialog.setFileMode(QFileDialog::ExistingFile);
+  else
+    dialog.setFileMode(QFileDialog::AnyFile);
+
   dialog.setDirectory(QDir::homePath());
   dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
   dialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -515,7 +539,24 @@ void spoton_encryptfile::slotSelect(void)
 #endif
 
   if(dialog.exec() == QDialog::Accepted)
-    ui.file->setText(dialog.selectedFiles().value(0));
+    {
+      if(sender() == ui.select)
+	{
+	  QString str(dialog.selectedFiles().value(0));
+
+	  ui.file->setText(str);
+
+	  if(ui.destination->text().trimmed().isEmpty())
+	    {
+	      if(ui.encrypt->isChecked())
+		ui.destination->setText(str + ".enc");
+	      else if(str.endsWith(".enc"))
+		ui.destination->setText(str.mid(0, str.length() - 4));
+	    }
+	}
+      else
+	ui.destination->setText(dialog.selectedFiles().value(0));
+    }
 }
 
 void spoton_encryptfile::slotCompleted(const QString &error)
@@ -552,11 +593,12 @@ void spoton_encryptfile::slotReset(void)
     return;
 
   ui.cipher->setCurrentIndex(0);
+  ui.destination->clear();
   ui.encrypt->setChecked(true);
   ui.file->clear();
   ui.hash->setCurrentIndex(0);
   ui.password->clear();
   ui.pin->clear();
   ui.sign->setChecked(true);
-  ui.file->setFocus();
+  ui.destination->setFocus();
 }
