@@ -3,7 +3,7 @@
 1.   Calling over geminis.
 2.   Corrected management of spoton_kernel::s_connectionCounts and
      s_remoteConnections.
-3.   File encryption tool. The encrypted file will be approximately 0.5%
+3.   File encryption tool. The encrypted file may be approximately 0.5%
      larger than the original file.
 4.   Modified the key sharing protocol. The previous implementation
      would automatically share public key pairs with participants
