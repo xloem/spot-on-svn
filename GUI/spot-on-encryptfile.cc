@@ -79,7 +79,15 @@ spoton_encryptfile::spoton_encryptfile(void):QMainWindow()
 	  SLOT(slotConvert(void)));
   connect(ui.encrypt,
 	  SIGNAL(toggled(bool)),
+	  ui.multiple,
+	  SLOT(setEnabled(bool)));
+  connect(ui.encrypt,
+	  SIGNAL(toggled(bool)),
 	  ui.sign,
+	  SLOT(setEnabled(bool)));
+  connect(ui.encrypt,
+	  SIGNAL(toggled(bool)),
+	  ui.single,
 	  SLOT(setEnabled(bool)));
   connect(ui.reset,
 	  SIGNAL(clicked(void)),
@@ -421,7 +429,7 @@ void spoton_encryptfile::encrypt(const bool sign,
   if(file1.open(QIODevice::ReadOnly) && file2.open(QIODevice::Truncate |
 						   QIODevice::WriteOnly))
     {
-      QByteArray bytes(4096, 0);
+      QByteArray bytes;
       QByteArray hashes;
       QByteArray iv;
       qint64 rc = 0;
@@ -452,25 +460,16 @@ void spoton_encryptfile::encrypt(const bool sign,
 	    }
 	  else
 	    {
-	      error = tr("Unable to create initialization vector.");
+	      error = tr("Unable to create an initialization vector.");
 	      goto done_label;
 	    }
 	}
 
-      if(sign)
-	rc = file2.write("1", 1); // Signed.
-      else
-	rc = file2.write("0", 1); // Not signed.
+      bytes.append(QByteArray::number(sign));
+      bytes.append(QByteArray::number(how));
+      rc = file2.write(bytes.constData(), bytes.length());
 
-      if(rc == 1)
-	{
-	  if(how == 0)
-	    rc = file2.write("0", 1); // Multiple IVs.
-	  else
-	    rc = file2.write("1", 1); // Single IV.
-	}
-
-      if(rc != 1)
+      if(rc != 2)
 	{
 	  error = tr("File write error.");
 	  goto done_label;
@@ -486,6 +485,9 @@ void spoton_encryptfile::encrypt(const bool sign,
 	      goto done_label;
 	    }
 	}
+
+      bytes.clear();
+      bytes.resize(4096);
 
       while((rc = file1.read(bytes.data(), bytes.length())) > 0)
 	{
