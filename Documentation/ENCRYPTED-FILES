@@ -1,10 +1,12 @@
-Byte Offset	Value
-0		0 (Not signed.)
-		1 (Signed.)
-1		0 (Multiple IVs)
-		1 (Single IV.)
-2		IV
+Byte Offset			Value
+0				0 (Not signed.)
+				1 (Signed.)
+1				0 (Multiple IVs)
+				1 (Single IV.)
+2				IV (Optional.)
 ...
-3 + IV_size	Encrypted Data
+3, if IV_size equals zero	Encrypted Data
+else
+3 + IV_size - 1
 ...
-N		Hash
+N				Hash
