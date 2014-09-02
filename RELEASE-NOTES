@@ -10,6 +10,7 @@
      that were previously accepted.
 5.   Clear sensitive containers in spot-on-crypt.cc.
 6.   Corrected dialog titles.
+7.   Removed support for the gost28147 cipher.
 
 0.09.09 (08/17/2014)
 
