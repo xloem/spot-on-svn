@@ -274,6 +274,7 @@ void spoton_encryptfile::slotConvert(void)
     m_future = QtConcurrent::run
       (this, &spoton_encryptfile::encrypt,
        ui.sign->isChecked(),
+       ui.single->isChecked() ? 1 : 0,
        fileInfo.absoluteFilePath(),
        destination.absoluteFilePath(),
        list);
@@ -408,6 +409,7 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 }
 
 void spoton_encryptfile::encrypt(const bool sign,
+				 const int how,
 				 const QString &fileName,
 				 const QString &destination,
 				 const QList<QVariant> &credentials)
@@ -421,6 +423,7 @@ void spoton_encryptfile::encrypt(const bool sign,
     {
       QByteArray bytes(4096, 0);
       QByteArray hashes;
+      QByteArray iv;
       qint64 rc = 0;
       spoton_crypt crypt(credentials.value(0).toString(),
 			 credentials.value(1).toString(),
@@ -431,62 +434,109 @@ void spoton_encryptfile::encrypt(const bool sign,
 			 0,
 			 QString(""));
 
-      if(sign)
-	rc = file2.write("1", 1);
-      else
-	rc = file2.write("0", 1);
+      if(how == 1) // Single IV.
+	{
+	  bool ok = true;
 
-      if(rc != 1)
-	error = tr("File write error.");
+	  iv = crypt.initializationVector(&ok);
+
+	  if(ok)
+	    {
+	      crypt.setInitializationVector(iv, &ok);
+
+	      if(!ok)
+		{
+		  error = tr("Unable to set the initialization vector.");
+		  goto done_label;
+		}
+	    }
+	  else
+	    {
+	      error = tr("Unable to create initialization vector.");
+	      goto done_label;
+	    }
+	}
+
+      if(sign)
+	rc = file2.write("1", 1); // Signed.
+      else
+	rc = file2.write("0", 1); // Not signed.
 
       if(rc == 1)
-	while((rc = file1.read(bytes.data(), bytes.length())) > 0)
-	  {
-	    if(m_future.isCanceled())
-	      {
-		error = tr("Operation canceled.");
-		break;
-	      }
+	{
+	  if(how == 0)
+	    rc = file2.write("0", 1); // Multiple IVs.
+	  else
+	    rc = file2.write("1", 1); // Single IV.
+	}
 
-	    QByteArray data(bytes.mid(0, static_cast<int> (rc)));
-	    bool ok = true;
+      if(rc != 1)
+	{
+	  error = tr("File write error.");
+	  goto done_label;
+	}
 
+      if(how == 1) // Single IV.
+	{
+	  rc = file2.write(iv.constData(), iv.length());
+
+	  if(iv.length() != rc)
+	    {
+	      error = tr("File write error.");
+	      goto done_label;
+	    }
+	}
+
+      while((rc = file1.read(bytes.data(), bytes.length())) > 0)
+	{
+	  if(m_future.isCanceled())
+	    {
+	      error = tr("Operation canceled.");
+	      break;
+	    }
+
+	  QByteArray data(bytes.mid(0, static_cast<int> (rc)));
+	  bool ok = true;
+
+	  if(how == 0) // Multiple IVs.
 	    data = crypt.encrypted(data, &ok);
+	  else
+	    data = crypt.encryptedSequential(data, &ok);
 
-	    if(!ok)
-	      {
-		error = tr("Encryption failure.");
-		break;
-	      }
-	    else
-	      rc = file2.write(data, data.length());
+	  if(!ok)
+	    {
+	      error = tr("Encryption failure.");
+	      break;
+	    }
+	  else
+	    rc = file2.write(data, data.length());
 
-	    if(data.length() != rc)
-	      {
-		error = tr("File write error.");
-		break;
-	      }
-	    else
-	      {
-		if(sign)
-		  {
-		    QByteArray hash = crypt.keyedHash(data, &ok);
+	  if(data.length() != rc)
+	    {
+	      error = tr("File write error.");
+	      break;
+	    }
+	  else
+	    {
+	      if(sign)
+		{
+		  QByteArray hash = crypt.keyedHash(data, &ok);
 
-		    if(!ok)
-		      {
-			error = tr("Hash failure.");
-			break;
-		      }
+		  if(!ok)
+		    {
+		      error = tr("Hash failure.");
+		      break;
+		    }
 
-		    hashes.append(hash);
-		  }
+		  hashes.append(hash);
+		}
 
-		emit completed
-		  (static_cast<int> (100.0 * file1.pos() /
-				     qMax(static_cast<qint64> (1),
-					  file1.size())));
-	      }
-	  }
+	      emit completed
+		(static_cast<int> (100.0 * file1.pos() /
+				   qMax(static_cast<qint64> (1),
+					file1.size())));
+	    }
+	}
 
       if(error.isEmpty() && rc == -1)
 	error = tr("File read error.");
@@ -511,6 +561,7 @@ void spoton_encryptfile::encrypt(const bool sign,
   else
     error = tr("File open error.");
 
+ done_label:
   file1.close();
   file2.close();
   emit completed(error);
@@ -600,5 +651,6 @@ void spoton_encryptfile::slotReset(void)
   ui.password->clear();
   ui.pin->clear();
   ui.sign->setChecked(true);
+  ui.single->setChecked(true);
   ui.destination->setFocus();
 }

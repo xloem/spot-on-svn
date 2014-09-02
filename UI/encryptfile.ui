@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>805</width>
-    <height>240</height>
+    <height>277</height>
    </rect>
   </property>
   <property name="windowIcon">
@@ -22,16 +22,6 @@
     <property name="margin">
      <number>5</number>
     </property>
-    <item>
-     <widget class="QLabel" name="label_7">
-      <property name="text">
-       <string>The first byte of the encrypted file will contain a 0 if a signature is not included or a 1 if a signature is included. If a signature is included, it will be appended to the end of the file.</string>
-      </property>
-      <property name="wordWrap">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
@@ -144,6 +134,32 @@
         <property name="checked">
          <bool>true</bool>
         </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string/>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QRadioButton" name="multiple">
+           <property name="text">
+            <string>&amp;Multiple IVs</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="single">
+           <property name="text">
+            <string>&amp;Single IV</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
@@ -317,6 +333,8 @@
   <tabstop>pin</tabstop>
   <tabstop>decrypt</tabstop>
   <tabstop>encrypt</tabstop>
+  <tabstop>multiple</tabstop>
+  <tabstop>single</tabstop>
   <tabstop>cipher</tabstop>
   <tabstop>hash</tabstop>
   <tabstop>cancel</tabstop>

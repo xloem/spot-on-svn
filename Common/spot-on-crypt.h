@@ -130,8 +130,10 @@ class spoton_crypt
   QByteArray decryptedAfterAuthenticated(const QByteArray &data, bool *ok);
   QByteArray digitalSignature(const QByteArray &data, bool *ok);
   QByteArray encrypted(const QByteArray &data, bool *ok);
+  QByteArray encryptedSequential(const QByteArray &data, bool *ok);
   QByteArray encryptedThenHashed(const QByteArray &data, bool *ok);
   QByteArray hashKey(void);
+  QByteArray initializationVector(bool *ok) const;
   QByteArray keyedHash(const QByteArray &data, bool *ok);
   QByteArray publicKey(bool *ok);
   QByteArray publicKeyDecrypt(const QByteArray &data, bool *ok);
@@ -142,6 +144,7 @@ class spoton_crypt
   void generatePrivatePublicKeys(const int keySize,
 				 const QString &keyType,
 				 QString &error);
+  void setInitializationVector(const QByteArray &iv, bool *ok);
 
  private:
   QByteArray m_publicKey;

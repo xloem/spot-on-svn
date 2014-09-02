@@ -3421,3 +3421,207 @@ void spoton_crypt::reencodePrivatePublicKeys
 
   QSqlDatabase::removeDatabase(connectionName);
 }
+
+QByteArray spoton_crypt::initializationVector(bool *ok) const
+{
+  QByteArray iv;
+
+  if(m_cipherAlgorithm == 0)
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError("spoton_crypt::initializationVector(): "
+			    "m_cipherAlgorithm is zero.");
+      return iv;
+    }
+
+  size_t ivLength = 0;
+
+  if((ivLength = gcry_cipher_get_algo_blklen(m_cipherAlgorithm)) <= 0)
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	(QString("spoton_crypt::initializationVector(): "
+		 "gcry_cipher_get_algo_blklen() "
+		 "failure for cipher algorithm %1.").arg(m_cipherAlgorithm));
+      return iv;
+    }
+
+  char *i = static_cast<char *> (gcry_calloc(ivLength, sizeof(char)));
+
+  if(i)
+    {
+      gcry_fast_random_poll();
+      gcry_create_nonce(i, ivLength);
+      iv.append(i, static_cast<int> (ivLength));
+      gcry_free(i);
+    }
+  else
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError("spoton_crypt::initializationVector(): "
+			    "gcry_calloc() failed.");
+      return iv;
+    }
+
+  return iv;
+}
+
+void spoton_crypt::setInitializationVector(const QByteArray &iv, bool *ok)
+{
+  size_t ivLength = 0;
+
+  if((ivLength = gcry_cipher_get_algo_blklen(m_cipherAlgorithm)) <= 0)
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	(QString("spoton_crypt::setInitializationVector(): "
+		 "gcry_cipher_get_algo_blklen() "
+		 "failure for cipher algorithm %1.").arg(m_cipherAlgorithm));
+      return;
+    }
+
+  char *i = static_cast<char *> (gcry_calloc(ivLength, sizeof(char)));
+
+  if(i)
+    {
+      memcpy(i, iv.constData(),
+	     qMin(ivLength, static_cast<size_t> (iv.length())));
+      gcry_cipher_reset(m_cipherHandle);
+
+      gcry_error_t err = 0;
+
+      if((err = gcry_cipher_setiv(m_cipherHandle, i, ivLength)) != 0)
+	{
+	  if(ok)
+	    *ok = false;
+
+	  QByteArray buffer(64, 0);
+
+	  gpg_strerror_r(err, buffer.data(), buffer.length());
+	  spoton_misc::logError
+	    (QString("spoton_crypt::setInitializationVector(): "
+		     "gcry_cipher_setiv() failure (%1).").
+	     arg(buffer.constData()));
+	}
+
+      gcry_free(i);
+    }
+  else
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError("spoton_crypt::setInitializationVector(): "
+			    "gcry_calloc() failed.");
+    }
+}
+
+QByteArray spoton_crypt::encryptedSequential
+(const QByteArray &data, bool *ok)
+{
+  if(m_cipherAlgorithm == 0)
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	("spoton_crypt::encryptedSequential(): m_cipherAlgorithm is zero.");
+      return QByteArray();
+    }
+
+  if(!m_cipherHandle)
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	("spoton_crypt::encryptedSequential(): m_cipherHandle is zero.");
+      return QByteArray();
+    }
+
+  QByteArray encrypted(data);
+  size_t blockLength = gcry_cipher_get_algo_blklen(m_cipherAlgorithm);
+
+  if(blockLength <= 0)
+    {
+      if(ok)
+	*ok = false;
+
+      encrypted.clear();
+      spoton_misc::logError
+	(QString("spoton_crypt::encryptedSequential(): "
+		 "gcry_cipher_get_algo_blklen() "
+		 "failure for %1.").arg(m_cipherType));
+    }
+  else
+    {
+      if(encrypted.isEmpty())
+	encrypted = encrypted.leftJustified
+	  (static_cast<int> (blockLength), 0);
+      else if(static_cast<size_t> (encrypted.length()) < blockLength)
+	encrypted = encrypted.leftJustified
+	  (static_cast<int> (blockLength) *
+	   static_cast<int> (qCeil(static_cast<qreal> (encrypted.
+						       length()) /
+				   static_cast<qreal> (blockLength))),
+	   0);
+
+      QByteArray originalLength;
+      QDataStream out(&originalLength, QIODevice::WriteOnly);
+
+      out << data.length();
+
+      if(out.status() != QDataStream::Ok)
+	{
+	  if(ok)
+	    *ok = false;
+
+	  encrypted.clear();
+	  spoton_misc::logError
+	    (QString("spoton_crypt::encryptedSequential(): "
+		     "QDataStream failure (%1).").
+	     arg(out.status()));
+	}
+      else
+	{
+	  encrypted.append(originalLength);
+
+	  gcry_error_t err = 0;
+
+	  if((err = gcry_cipher_encrypt(m_cipherHandle,
+					encrypted.data(),
+					encrypted.length(),
+					0,
+					0)) == 0)
+	    {
+	      if(ok)
+		*ok = true;
+	    }
+	  else
+	    {
+	      if(ok)
+		*ok = false;
+
+	      encrypted.clear();
+
+	      QByteArray buffer(64, 0);
+
+	      gpg_strerror_r(err, buffer.data(), buffer.length());
+	      spoton_misc::logError
+		(QString("spoton_crypt::encryptedSequential(): "
+			 "gcry_cipher_encrypt() failure (%1).").
+		 arg(buffer.constData()));
+	    }
+	}
+    }
+
+  return encrypted;
+}
