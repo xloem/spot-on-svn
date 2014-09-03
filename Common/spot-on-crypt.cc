@@ -2019,7 +2019,7 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data,
 
 QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
 {
-  QByteArray hash(64, 0); // Output size of SHA-512 divided by 8.
+  QByteArray hash(64, 0); // Output length of SHA-512 divided by 8.
   QByteArray random(20, 0);
   QByteArray signature;
   QStringList list;
@@ -2388,7 +2388,7 @@ bool spoton_crypt::isValidSignature(const QByteArray &data,
 				    const QByteArray &publicKey,
 				    const QByteArray &signature)
 {
-  QByteArray hash(64, 0); // Output size of SHA-512 divided by 8.
+  QByteArray hash(64, 0); // Output length of SHA-512 divided by 8.
   QByteArray random(20, 0);
   QStringList list;
   QString keyType("");
