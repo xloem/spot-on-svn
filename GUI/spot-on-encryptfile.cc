@@ -65,6 +65,10 @@ spoton_encryptfile::spoton_encryptfile(void):QMainWindow()
 	  SIGNAL(completed(const int)),
 	  this,
 	  SLOT(slotCompleted(const int)));
+  connect(this,
+	  SIGNAL(status(const QString &)),
+	  this,
+	  SLOT(slotStatus(const QString &)));
   connect(ui.action_Close,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -357,6 +361,8 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 
       if(sign)
 	{
+	  emit status(tr("Verifying the hash."));
+
 	  if(file1.seek(file1.size() -
 			spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES))
 	    {
@@ -447,6 +453,8 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 	    emit completed(0);
 	}
 
+      emit status("Decrypting the file.");
+
       while((rc = file1.read(bytes.data(), bytes.length())) > 0)
 	{
 	  if(m_future.isCanceled())
@@ -506,6 +514,7 @@ void spoton_encryptfile::decrypt(const QString &fileName,
     error = tr("File open error.");
 
  done_label:
+  emit status("");
   file1.close();
   file2.close();
 
@@ -766,4 +775,10 @@ void spoton_encryptfile::slotReset(void)
   ui.sign->setChecked(true);
   ui.single->setChecked(true);
   ui.destination->setFocus();
+}
+
+void spoton_encryptfile::slotStatus(const QString &status)
+{
+  statusBar()->showMessage(status);
+  statusBar()->repaint();
 }
