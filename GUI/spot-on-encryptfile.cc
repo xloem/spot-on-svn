@@ -308,7 +308,7 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 						   QIODevice::WriteOnly))
     {
       QByteArray bytes(2, 0);
-      QByteArray hash;
+      QByteArray hash(spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES, 0);
       QByteArray hashes;
       QByteArray iv;
       int how = 1; // Single IV, default.
@@ -355,6 +355,98 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 	  goto done_label;
 	}
 
+      if(sign)
+	{
+	  if(file1.seek(file1.size() -
+			spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES))
+	    {
+	      rc = file1.read(hash.data(),
+			      spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES);
+
+	      if(rc != spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES)
+		{
+		  error = tr("File read failure.");
+		  goto done_label;
+		}
+	    }
+	  else
+	    {
+	      error = tr("File seek failure.");
+	      goto done_label;
+	    }
+
+	  if(!file1.seek(2 + iv.length()))
+	    {
+	      error = tr("File seek failure.");
+	      goto done_label;
+	    }
+
+	  while((rc = file1.read(bytes.data(), bytes.length())) > 0)
+	    {
+	      if(m_future.isCanceled())
+		{
+		  error = tr("Operation canceled.");
+		  break;
+		}
+
+	      QByteArray data(bytes.mid(0, static_cast<int> (rc)));
+
+	      if(file1.atEnd())
+		data = data.mid
+		  (0, data.length() -
+		   spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES);
+
+	      {
+		QByteArray hash;
+		bool ok = true;
+
+		hash = crypt.keyedHash(iv + data, &ok);
+
+		if(!ok)
+		  {
+		    error = tr("Hash failure.");
+		    break;
+		  }
+		else
+		  hashes.append(hash);
+	      }
+
+	      emit completed
+		(static_cast<int> (100.0 * file1.pos() /
+				   qMax(static_cast<qint64> (1),
+					file1.size())));
+	    }
+
+	  if(error.isEmpty() && rc == -1)
+	    error = tr("File read error.");
+
+	  if(error.isEmpty())
+	    {
+	      bool ok = true;
+
+	      hashes = crypt.keyedHash(hashes, &ok);
+
+	      if(!ok)
+		error = tr("Hash failure.");
+	      else
+		{
+		  if(!spoton_crypt::memcmp(hash, hashes))
+		    error = tr("Incorrect signature.");
+		}
+	    }
+
+	  if(!error.isEmpty())
+	    goto done_label;
+
+	  if(!file1.seek(2 + iv.length()))
+	    {
+	      error = tr("File seek failure.");
+	      goto done_label;
+	    }
+	  else
+	    emit completed(0);
+	}
+
       while((rc = file1.read(bytes.data(), bytes.length())) > 0)
 	{
 	  if(m_future.isCanceled())
@@ -367,32 +459,10 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 
 	  if(sign)
 	    if(file1.atEnd())
-	      {
-		hash = data.right
-		  (spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES);
-		data.resize(data.length() - hash.length());
-	      }
+	      data = data.mid(0, data.length() -
+			      spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES);
 
 	  bool ok = true;
-
-	  if(sign)
-	    {
-	      if(file1.atEnd())
-		{
-		  emit completed(100);
-		  break;
-		}
-
-	      QByteArray hash(crypt.keyedHash(iv + data, &ok));
-
-	      if(!ok)
-		{
-		  error = tr("Hash failure.");
-		  break;
-		}
-	      else
-		hashes.append(hash);
-	    }
 
 	  if(how == 0) // Multiple IVs.
 	    data = crypt.decrypted(data, &ok);
@@ -431,21 +501,6 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 
       if(error.isEmpty() && rc == -1)
 	error = tr("File read error.");
-
-      if(error.isEmpty() && sign)
-	{
-	  bool ok = true;
-
-	  hashes = crypt.keyedHash(hashes, &ok);
-
-	  if(!ok)
-	    error = tr("Hash failure.");
-	  else
-	    {
-	      if(!spoton_crypt::memcmp(hash, hashes))
-		error = tr("Incorrect signature.");
-	    }
-	}
     }
   else
     error = tr("File open error.");
