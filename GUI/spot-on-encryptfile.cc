@@ -306,12 +306,11 @@ void spoton_encryptfile::decrypt(const QString &fileName,
   if(file1.open(QIODevice::ReadOnly) && file2.open(QIODevice::Truncate |
 						   QIODevice::WriteOnly))
     {
-      QByteArray bytes(4096 + 16 + 4, 0); /*
-					  ** 16 = size of init. vector.
-					  ** 4 = size of original length.
-					  */
+      QByteArray bytes(2, 0);
       QByteArray hash;
       QByteArray hashes;
+      QByteArray iv(16, 0);
+      int how = 1; // Single IV, default.
       qint64 rc = 0;
       spoton_crypt crypt(credentials.value(0).toString(),
 			 credentials.value(1).toString(),
@@ -322,68 +321,112 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 			 0,
 			 QString(""));
 
-      rc = file1.read(bytes.data(), 1);
+      rc = file1.read(bytes.data(), bytes.length());
 
-      if(rc == 1)
-	sign = bytes.toInt();
-      else
-	error = tr("File read error.");
+      if(bytes.length() == rc)
+	{
+	  how = bytes.mid(1, 1).toInt();
+	  sign = bytes.mid(0, 1).toInt();
+	  bytes.clear();
 
-      if(rc == 1)
-	while((rc = file1.read(bytes.data(), bytes.length())) > 0)
-	  {
-	    if(m_future.isCanceled())
-	      {
-		error = tr("Operation canceled.");
-		break;
-	      }
+	  if(how == 0) // Multiple IVs.
+	    {
+	      bytes.resize(4096 + 16 + 4); /*
+					   ** 16 = size of initialization
+					   **      vector.
+					   ** 4 = size of original length.
+					   */
+	      iv.clear();
+	    }
+	  else // Single IV.
+	    {
+	      rc = file1.read(iv.data(), iv.length());
 
-	    QByteArray data(bytes.mid(0, static_cast<int> (rc)));
-
-	    if(sign)
-	      if(file1.atEnd())
+	      if(iv.length() != rc)
 		{
-		  hash = data.right
-		    (spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES);
-		  data.resize(data.length() - hash.length());
+		  error = tr("File read error.");
+		  goto done_label;
 		}
 
-	    bool ok = true;
+	      bool ok = true;
 
-	    if(sign)
+	      crypt.setInitializationVector(iv, &ok);
+
+	      if(!ok)
+		{
+		  error = tr("Unable to set the initialization vector.");
+		  goto done_label;
+		}
+
+	      bytes.clear();
+	      bytes.resize(4096 + 4); // 4 = size of original length.
+	    }
+	}
+      else
+	{
+	  error = tr("File read error.");
+	  goto done_label;
+	}
+
+      while((rc = file1.read(bytes.data(), bytes.length())) > 0)
+	{
+	  if(m_future.isCanceled())
+	    {
+	      error = tr("Operation canceled.");
+	      break;
+	    }
+
+	  QByteArray data(bytes.mid(0, static_cast<int> (rc)));
+
+	  if(sign)
+	    if(file1.atEnd())
 	      {
-		QByteArray hash(crypt.keyedHash(data, &ok));
-
-		if(!ok)
-		  {
-		    error = tr("Hash failure.");
-		    break;
-		  }
-		else
-		  hashes.append(hash);
+		hash = data.right
+		  (spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES);
+		data.resize(data.length() - hash.length());
 	      }
 
+	  bool ok = true;
+
+	  if(sign)
+	    {
+	      QByteArray hash(crypt.keyedHash(iv + data, &ok));
+
+	      iv.clear();
+
+	      if(!ok)
+		{
+		  error = tr("Hash failure.");
+		  break;
+		}
+	      else
+		hashes.append(hash);
+	    }
+
+	  if(how == 0) // Multiple IVs.
 	    data = crypt.decrypted(data, &ok);
+	  else // Single IV.
+	    data = crypt.decryptedSequential(data, &ok);
 
-	    if(!ok)
-	      {
-		error = tr("Decryption failure.");
-		break;
-	      }
-	    else
-	      rc = file2.write(data, data.length());
+	  if(!ok)
+	    {
+	      error = tr("Decryption failure.");
+	      break;
+	    }
+	  else
+	    rc = file2.write(data, data.length());
 
-	    if(data.length() != rc)
-	      {
-		error = tr("File write error.");
-		break;
-	      }
-	    else
-	      emit completed
-		(static_cast<int> (100.0 * file1.pos() /
-				   qMax(static_cast<qint64> (1),
-					file1.size())));
-	  }
+	  if(data.length() != rc)
+	    {
+	      error = tr("File write error.");
+	      break;
+	    }
+	  else
+	    emit completed
+	      (static_cast<int> (100.0 * file1.pos() /
+				 qMax(static_cast<qint64> (1),
+				      file1.size())));
+	}
 
       if(error.isEmpty() && rc == -1)
 	error = tr("File read error.");
@@ -406,6 +449,7 @@ void spoton_encryptfile::decrypt(const QString &fileName,
   else
     error = tr("File open error.");
 
+ done_label:
   file1.close();
   file2.close();
 
@@ -469,7 +513,7 @@ void spoton_encryptfile::encrypt(const bool sign,
       bytes.append(QByteArray::number(how));
       rc = file2.write(bytes.constData(), bytes.length());
 
-      if(rc != 2)
+      if(bytes.length() != rc)
 	{
 	  error = tr("File write error.");
 	  goto done_label;
@@ -502,7 +546,7 @@ void spoton_encryptfile::encrypt(const bool sign,
 
 	  if(how == 0) // Multiple IVs.
 	    data = crypt.encrypted(data, &ok);
-	  else
+	  else // Single IV;
 	    data = crypt.encryptedSequential(data, &ok);
 
 	  if(!ok)
@@ -522,7 +566,9 @@ void spoton_encryptfile::encrypt(const bool sign,
 	    {
 	      if(sign)
 		{
-		  QByteArray hash = crypt.keyedHash(data, &ok);
+		  QByteArray hash = crypt.keyedHash(iv + data, &ok);
+
+		  iv.clear();
 
 		  if(!ok)
 		    {

@@ -128,6 +128,7 @@ class spoton_crypt
   ~spoton_crypt();
   QByteArray decrypted(const QByteArray &data, bool *ok);
   QByteArray decryptedAfterAuthenticated(const QByteArray &data, bool *ok);
+  QByteArray decryptedSequential(const QByteArray &data, bool *ok);
   QByteArray digitalSignature(const QByteArray &data, bool *ok);
   QByteArray encrypted(const QByteArray &data, bool *ok);
   QByteArray encryptedSequential(const QByteArray &data, bool *ok);

@@ -550,7 +550,7 @@ QByteArray spoton_crypt::decrypted(const QByteArray &data, bool *ok)
   if(data.isEmpty())
     {
       if(ok)
-	*ok = true;
+	*ok = false;
 
       return QByteArray();
     }
@@ -3494,6 +3494,9 @@ void spoton_crypt::setInitializationVector(const QByteArray &iv, bool *ok)
     {
       memcpy(i, iv.constData(),
 	     qMin(ivLength, static_cast<size_t> (iv.length())));
+
+      QMutexLocker locker(&m_cipherMutex);
+
       gcry_cipher_reset(m_cipherHandle);
 
       gcry_error_t err = 0;
@@ -3548,6 +3551,7 @@ QByteArray spoton_crypt::encryptedSequential
     }
 
   QByteArray encrypted(data);
+  QMutexLocker locker(&m_cipherMutex);
   size_t blockLength = gcry_cipher_get_algo_blklen(m_cipherAlgorithm);
 
   if(blockLength <= 0)
@@ -3624,4 +3628,90 @@ QByteArray spoton_crypt::encryptedSequential
     }
 
   return encrypted;
+}
+
+QByteArray spoton_crypt::decryptedSequential(const QByteArray &data, bool *ok)
+{
+  if(data.isEmpty())
+    {
+      if(ok)
+	*ok = false;
+
+      return QByteArray();
+    }
+
+  if(!m_cipherHandle)
+    {
+      if(ok)
+	*ok = false;
+
+      spoton_misc::logError
+	("spoton_crypt::decryptedSequential(): m_cipherHandle is zero.");
+      return QByteArray();
+    }
+
+  QByteArray decrypted(data);
+  QMutexLocker locker(&m_cipherMutex);
+  gcry_error_t err = 0;
+
+  if((err = gcry_cipher_decrypt(m_cipherHandle,
+				decrypted.data(),
+				decrypted.length(),
+				0,
+				0)) == 0)
+    {
+      int s = 0;
+      QByteArray originalLength;
+
+      if(decrypted.length() > 4)
+	originalLength = decrypted.mid(decrypted.length() - 4, 4);
+
+      if(!originalLength.isEmpty())
+	{
+	  QDataStream in(&originalLength, QIODevice::ReadOnly);
+
+	  in >> s;
+
+	  if(in.status() != QDataStream::Ok)
+	    {
+	      if(ok)
+		*ok = false;
+
+	      decrypted.clear();
+	      return decrypted;
+	    }
+	}
+      else
+	{
+	  if(ok)
+	    *ok = false;
+
+	  decrypted.clear();
+	  return decrypted;
+	}
+
+      if(s >= 0 && s <= decrypted.length())
+	{
+	  if(ok)
+	    *ok = true;
+
+	  decrypted = decrypted.mid(0, s);
+	}
+      else
+	{
+	  if(ok)
+	    *ok = false;
+
+	  decrypted.clear();
+	}
+    }
+  else
+    {
+      if(ok)
+	*ok = false;
+
+      decrypted.clear();
+    }
+
+  return decrypted;
 }
