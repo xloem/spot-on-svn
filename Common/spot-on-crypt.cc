@@ -250,7 +250,8 @@ QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
 	      keys.second = key.mid(keys.first.length());
 	    }
 
-	  temporaryKey.replace(0, temporaryKey.length(), QByteArray("0"));
+	  temporaryKey.replace
+	    (0, temporaryKey.length(), QByteArray(temporaryKey.length(), 0));
 	  temporaryKey.clear();
 	}
 
@@ -272,13 +273,16 @@ QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
 
   if(!error.isEmpty())
     {
-      keys.first.replace(0, keys.first.length(), "0");
+      keys.first.replace
+	(0, keys.first.length(), QByteArray(keys.first.length(), 0));
       keys.first.clear();
-      keys.second.replace(0, keys.second.length(), "0");
+      keys.second.replace
+	(0, keys.second.length(), QByteArray(keys.second.length(), 0));
       keys.second.clear();
     }
 
-  temporaryKey.replace(0, temporaryKey.length(), QByteArray("0"));
+  temporaryKey.replace
+    (0, temporaryKey.length(), QByteArray(temporaryKey.length(), 0));
   temporaryKey.clear();
   return keys;
 }
@@ -1340,7 +1344,8 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
 	   m_privateKeyLength);
 
   locker2.unlock();
-  keyData.replace(0, keyData.length(), "0");
+  keyData.replace
+    (0, keyData.length(), QByteArray(keyData.length(), 0));
   keyData.clear();
 
   if(ok)
@@ -1889,9 +1894,11 @@ void spoton_crypt::generatePrivatePublicKeys(const int keySize,
   QSqlDatabase::removeDatabase(connectionName);
 
  done_label:
-  privateKey.replace(0, privateKey.length(), "0");
+  privateKey.replace
+    (0, privateKey.length(), QByteArray(privateKey.length(), 0));
   privateKey.clear();
-  publicKey.replace(0, publicKey.length(), "0");
+  publicKey.replace
+    (0, publicKey.length(), QByteArray(publicKey.length(), 0));
   publicKey.clear();
   free(buffer);
   gcry_free(key_t);
@@ -2712,11 +2719,14 @@ void spoton_crypt::generateSslKeys(const int rsaKeySize,
 
   if(!error.isEmpty())
     {
-      certificate.replace(0, certificate.length(), "0");
+      certificate.replace
+	(0, certificate.length(), QByteArray(certificate.length(), 0));
       certificate.clear();
-      privateKey.replace(0, privateKey.length(), "0");
+      privateKey.replace
+	(0, privateKey.length(), QByteArray(privateKey.length(), 0));
       privateKey.clear();
-      publicKey.replace(0, publicKey.length(), "0");
+      publicKey.replace
+	(0, publicKey.length(), QByteArray(publicKey.length(), 0));
       publicKey.clear();
     }
 
@@ -2967,7 +2977,8 @@ void spoton_crypt::generateCertificate(RSA *rsa,
 
   if(!error.isEmpty())
     {
-      certificate.replace(0, certificate.length(), "0");
+      certificate.replace
+	(0, certificate.length(), QByteArray(certificate.length(), 0));
       certificate.clear();
     }
 
@@ -3391,9 +3402,11 @@ void spoton_crypt::reencodePrivatePublicKeys
 		}
 
 	      updateQuery.exec();
-	      privateKey.replace(0, privateKey.length(), "0");
+	      privateKey.replace
+		(0, privateKey.length(), QByteArray(privateKey.length(), 0));
 	      privateKey.clear();
-	      publicKey.replace(0, publicKey.length(), "0");
+	      publicKey.replace
+		(0, publicKey.length(), QByteArray(publicKey.length(), 0));
 	      publicKey.clear();
 	    }
 
