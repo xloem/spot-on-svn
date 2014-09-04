@@ -557,17 +557,7 @@ void spoton_encryptfile::encrypt(const bool sign,
 
 	  iv = crypt.initializationVector(&ok);
 
-	  if(ok)
-	    {
-	      crypt.setInitializationVector(iv, &ok);
-
-	      if(!ok)
-		{
-		  error = tr("Unable to set the initialization vector.");
-		  goto done_label;
-		}
-	    }
-	  else
+	  if(!ok)
 	    {
 	      error = tr("Unable to create an initialization vector.");
 	      goto done_label;
