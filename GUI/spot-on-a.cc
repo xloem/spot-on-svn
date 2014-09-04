@@ -2978,7 +2978,7 @@ void spoton::slotPopulateListeners(void)
 		    if(item)
 		      {
 			item->setFlags
-			  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+			  (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			item->setToolTip(tooltip);
 			m_ui.listeners->setItem(row, i, item);
 
@@ -3557,7 +3557,7 @@ void spoton::slotPopulateNeighbors(void)
 		    if(item)
 		      {
 			item->setFlags
-			  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+			  (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 
 			if(i == 2)
 			  {
@@ -6017,7 +6017,7 @@ void spoton::slotPopulateParticipants(void)
 			}
 
 		      item->setFlags
-			(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+			(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 
 		      if(i == 0) // Name
 			{
@@ -6140,7 +6140,7 @@ void spoton::slotPopulateParticipants(void)
 			{
 			  item->setData(Qt::UserRole, temporary);
 			  item->setFlags
-			    (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+			    (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			}
 
 		      m_ui.emailParticipants->setItem
@@ -6193,7 +6193,7 @@ void spoton::slotPopulateParticipants(void)
 			{
 			  item->setData(Qt::UserRole, temporary);
 			  item->setFlags
-			    (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+			    (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			}
 
 		      m_ui.urlParticipants->setItem

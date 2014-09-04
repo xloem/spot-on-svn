@@ -209,16 +209,22 @@ bool spoton_starbeamanalyzer::add(const QString &fileName,
   ui.tableWidget->setCellWidget(row, 0, checkBox);
   item = new QTableWidgetItem("0");
   item->setBackground(QBrush(QColor("lightgreen")));
+  item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
   ui.tableWidget->setItem(row, 1, item);
   item = new QTableWidgetItem(pulseSize.trimmed());
+  item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
   ui.tableWidget->setItem(row, 2, item);
   item = new QTableWidgetItem(totalSize.trimmed());
+  item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
   ui.tableWidget->setItem(row, 3, item);
   item = new QTableWidgetItem(fileName);
+  item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
   ui.tableWidget->setItem(row, 4, item);
   item = new QTableWidgetItem();
+  item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
   ui.tableWidget->setItem(row, 5, item);
   item = new QTableWidgetItem(oid.trimmed());
+  item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
   ui.tableWidget->setItem(row, 6, item);
   ui.tableWidget->setSortingEnabled(true);
 

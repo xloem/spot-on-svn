@@ -2976,7 +2976,7 @@ void spoton::slotRefreshMail(void)
 		      item = new QTableWidgetItem(query.value(i).toString());
 
 		    item->setFlags
-		      (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		      (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		    m_ui.mail->setItem(row - 1, i, item);
 		  }
 	      }
@@ -3068,7 +3068,7 @@ void spoton::slotRefreshPostOffice(void)
 		    item = new QTableWidgetItem(query.value(i).toString());
 
 		  item->setFlags
-		    (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		    (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		  m_ui.postoffice->setItem(row - 1, i, item);
 		}
 	  }

@@ -248,6 +248,7 @@ void spoton::refreshInstitutions(void)
 	      else
 		item = new QTableWidgetItem(tr("error"));
 
+	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.institutions->setItem
 		(m_ui.institutions->rowCount() - 1, 0, item);
 
@@ -256,6 +257,7 @@ void spoton::refreshInstitutions(void)
 	      else
 		item = new QTableWidgetItem(tr("error"));
 
+	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.institutions->setItem
 		(m_ui.institutions->rowCount() - 1, 1, item);
 
@@ -264,6 +266,7 @@ void spoton::refreshInstitutions(void)
 	      else
 		item = new QTableWidgetItem(tr("error"));
 
+	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.institutions->setItem
 		(m_ui.institutions->rowCount() - 1, 2, item);
 
@@ -272,6 +275,7 @@ void spoton::refreshInstitutions(void)
 	      else
 		item = new QTableWidgetItem(tr("error"));
 
+	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.institutions->setItem
 		(m_ui.institutions->rowCount() - 1, 3, item);
 	    }
@@ -1131,19 +1135,23 @@ void spoton::populateAETokens(void)
       {
 	QByteArray bytes1;
 	QByteArray bytes2;
+	QByteArray bytes3;
 	QModelIndexList list;
 
-	list = m_ui.ae_tokens->selectionModel()->selectedRows
-	  (0);
+	list = m_ui.ae_tokens->selectionModel()->selectedRows(0);
 
 	if(!list.isEmpty())
 	  bytes1 = list.at(0).data().toByteArray();
 
-	list = m_ui.ae_tokens->selectionModel()->selectedRows
-	  (1);
+	list = m_ui.ae_tokens->selectionModel()->selectedRows(1);
 
 	if(!list.isEmpty())
 	  bytes2 = list.at(0).data().toByteArray();
+
+	list = m_ui.ae_tokens->selectionModel()->selectedRows(2);
+
+	if(!list.isEmpty())
+	  bytes3 = list.at(0).data().toByteArray();
 
 	m_ui.ae_tokens->setSortingEnabled(false);
 	m_ui.ae_tokens->clearContents();
@@ -1188,6 +1196,8 @@ void spoton::populateAETokens(void)
 	      else
 		item = new QTableWidgetItem(tr("error"));
 
+	      item->setFlags
+		(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.ae_tokens->setItem
 		(m_ui.ae_tokens->rowCount() - 1, 0, item);
 
@@ -1196,6 +1206,8 @@ void spoton::populateAETokens(void)
 	      else
 		item = new QTableWidgetItem(tr("error"));
 
+	      item->setFlags
+		(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.ae_tokens->setItem
 		(m_ui.ae_tokens->rowCount() - 1, 1, item);
 
@@ -1204,10 +1216,12 @@ void spoton::populateAETokens(void)
 	      else
 		item = new QTableWidgetItem(tr("error"));
 
+	      item->setFlags
+		(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.ae_tokens->setItem
 		(m_ui.ae_tokens->rowCount() - 1, 2, item);
 
-	      if(token == bytes1 && type == bytes2)
+	      if(bytes1 == token && bytes2 == eType && bytes3 == hType)
 		m_ui.ae_tokens->selectRow
 		  (m_ui.ae_tokens->rowCount() - 1);
 	    }

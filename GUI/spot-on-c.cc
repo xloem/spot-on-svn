@@ -715,12 +715,12 @@ void spoton::slotPopulateKernelStatistics(void)
 		  (query.value(0).toString());
 
 		item->setFlags
-		  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		  (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui.kernelStatistics->setRowCount(row + 1);
 		m_ui.kernelStatistics->setItem(row, 0, item);
 		item = new QTableWidgetItem(query.value(1).toString());
 		item->setFlags
-		  (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		  (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui.kernelStatistics->setItem(row, 1, item);
 
 		if(query.value(0).toString().toLower().
@@ -1221,8 +1221,13 @@ void spoton::slotPopulateStars(void)
 		      m_ui.received->setCellWidget(row, 0, progressBar);
 		    }
 		  else
-		    m_ui.received->setItem
-		      (row, 0, new QTableWidgetItem("100%"));
+		    {
+		      QTableWidgetItem *item = new QTableWidgetItem("100%");
+
+		      item->setFlags
+			(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		      m_ui.received->setItem(row, 0, item);
+		    }
 		}
 
 	      if(m_ui.received->item(row, 3) &&
@@ -1375,8 +1380,13 @@ void spoton::slotPopulateStars(void)
 			(row, 1, progressBar);
 		    }
 		  else
-		    m_ui.transmitted->setItem
-		      (row, 1, new QTableWidgetItem("100%"));
+		    {
+		      QTableWidgetItem *item = new QTableWidgetItem("100%");
+
+		      item->setFlags
+			(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		      m_ui.transmitted->setItem(row, 1, item);
+		    }
 		}
 
 	      connect(checkBox,
