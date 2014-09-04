@@ -514,7 +514,6 @@ void spoton_encryptfile::decrypt(const QString &fileName,
     error = tr("File open error.");
 
  done_label:
-  emit status("");
   file1.close();
   file2.close();
 
@@ -598,6 +597,7 @@ void spoton_encryptfile::encrypt(const bool sign,
 
       bytes.clear();
       bytes.resize(4096);
+      emit status("Encrypting the file.");
 
       while((rc = file1.read(bytes.data(), bytes.length())) > 0)
 	{
@@ -734,6 +734,7 @@ void spoton_encryptfile::slotSelect(void)
 
 void spoton_encryptfile::slotCompleted(const QString &error)
 {
+  statusBar()->clearMessage();
   ui.cancel->setVisible(false);
   ui.convert->setEnabled(true);
   ui.progressBar->setVisible(false);
