@@ -387,6 +387,8 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 	      goto done_label;
 	    }
 
+	  bool first = true;
+
 	  while((rc = file1.read(bytes.data(), bytes.length())) > 0)
 	    {
 	      if(m_future.isCanceled())
@@ -406,7 +408,12 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 		QByteArray hash;
 		bool ok = true;
 
-		hash = crypt.keyedHash(iv + data, &ok);
+		if(first)
+		  hash = crypt.keyedHash(iv + data, &ok);
+		else
+		  hash = crypt.keyedHash(data, &ok);
+
+		first = false;
 
 		if(!ok)
 		  {
@@ -484,6 +491,7 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 		  break;
 		}
 
+	      iv = data.right(iv.length());
 	      data = crypt.decryptedSequential(data, &ok);
 	    }
 
@@ -589,6 +597,8 @@ void spoton_encryptfile::encrypt(const bool sign,
       bytes.resize(4096);
       emit status("Encrypting the file.");
 
+      bool first = true;
+
       while((rc = file1.read(bytes.data(), bytes.length())) > 0)
 	{
 	  if(m_future.isCanceled())
@@ -632,9 +642,18 @@ void spoton_encryptfile::encrypt(const bool sign,
 	    {
 	      if(sign)
 		{
-		  QByteArray hash = crypt.keyedHash(iv + data, &ok);
+		  QByteArray hash;
 
-		  if(!ok)
+		  if(first)
+		    hash = crypt.keyedHash(iv + data, &ok);
+		  else
+		    hash = crypt.keyedHash(data, &ok);
+
+		  first = false;
+
+		  if(ok)
+		    iv = data.right(iv.length());
+		  else
 		    {
 		      error = tr("Hash failure.");
 		      break;
