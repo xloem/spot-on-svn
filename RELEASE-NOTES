@@ -13,6 +13,8 @@
 7.   Removed support for the gost28147 cipher.
 8.   spoton_crypt::decrypted() must return an error if provided an
      empty data array.
+9.   Corrected selection of adaptive echo tokens in the UI.
+10.  Corrected various QTableWidgetItem flags.
 
 0.09.09 (08/17/2014)
 
