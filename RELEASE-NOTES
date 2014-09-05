@@ -15,6 +15,7 @@
      empty data array.
 9.   Corrected selection of adaptive echo tokens in the UI.
 10.  Corrected various QTableWidgetItem flags.
+11.  Upgraded SQLite to version 3.8.6 on Windows.
 
 0.09.09 (08/17/2014)
 
