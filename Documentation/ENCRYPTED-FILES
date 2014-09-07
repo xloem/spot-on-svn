@@ -1,9 +1,9 @@
 Byte Offset			Value
-0				0 (Not signed.)
-				1 (Signed.)
+0				0 (Not signed)
+				1 (Signed)
 1				0 (Multiple IVs)
-				1 (Single IV.)
-2				IV (Optional.)
+				1 (Single IV)
+2				IV (Optional)
 ...
 3, if IV_size equals zero	Encrypted Data
 else
