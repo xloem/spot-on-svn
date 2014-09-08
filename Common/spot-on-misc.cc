@@ -1834,7 +1834,7 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
     integer = 10;
 
   settings.insert("gui/limitConnections", integer);
-  integer = qAbs(settings.value("gui/maximumEmailFileSize", 1).toInt(&ok));
+  integer = qAbs(settings.value("gui/maximumEmailFileSize", 100).toInt(&ok));
 
   if(!ok)
     integer = 100;

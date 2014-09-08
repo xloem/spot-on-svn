@@ -2115,7 +2115,7 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
 <context>
     <name>spoton_encryptfile</name>
     <message>
-        <location filename="../UI/encryptfile.ui" line="285"/>
+        <location filename="../UI/encryptfile.ui" line="259"/>
         <source>&amp;File</source>
         <translation type="unfinished">Datei</translation>
     </message>
@@ -2161,77 +2161,67 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/encryptfile.ui" line="148"/>
-        <source>&amp;Multiple IVs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../UI/encryptfile.ui" line="155"/>
-        <source>&amp;Single IV</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../UI/encryptfile.ui" line="168"/>
+        <location filename="../UI/encryptfile.ui" line="142"/>
         <source>&amp;Cipher Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/encryptfile.ui" line="185"/>
+        <location filename="../UI/encryptfile.ui" line="159"/>
         <source>&amp;Hash Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/encryptfile.ui" line="242"/>
+        <location filename="../UI/encryptfile.ui" line="216"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/encryptfile.ui" line="249"/>
+        <location filename="../UI/encryptfile.ui" line="223"/>
         <source>&amp;Sign file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/encryptfile.ui" line="259"/>
+        <location filename="../UI/encryptfile.ui" line="233"/>
         <source>Convert</source>
         <translation type="unfinished">Konvertiere</translation>
     </message>
     <message>
-        <location filename="../UI/encryptfile.ui" line="266"/>
+        <location filename="../UI/encryptfile.ui" line="240"/>
         <source>Reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/encryptfile.ui" line="294"/>
+        <location filename="../UI/encryptfile.ui" line="268"/>
         <source>&amp;Close</source>
         <translation type="unfinished">Schließen</translation>
     </message>
     <message>
-        <location filename="../UI/encryptfile.ui" line="299"/>
+        <location filename="../UI/encryptfile.ui" line="273"/>
         <source>&amp;Empty Log</source>
         <translation type="unfinished">Lösche Log</translation>
     </message>
     <message>
-        <location filename="../UI/encryptfile.ui" line="307"/>
+        <location filename="../UI/encryptfile.ui" line="281"/>
         <source>E&amp;nable Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/encryptfile.ui" line="312"/>
+        <location filename="../UI/encryptfile.ui" line="286"/>
         <source>&amp;Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/encryptfile.ui" line="315"/>
+        <location filename="../UI/encryptfile.ui" line="289"/>
         <source>Ctrl+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/encryptfile.ui" line="320"/>
+        <location filename="../UI/encryptfile.ui" line="294"/>
         <source>&amp;Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/encryptfile.ui" line="323"/>
+        <location filename="../UI/encryptfile.ui" line="297"/>
         <source>Ctrl+V</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2241,151 +2231,138 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="247"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="239"/>
         <source>Please provide a PIN.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="253"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="245"/>
         <source>Generating derived keys. Please be patient.</source>
         <translation type="unfinished">Erstelle abgeleitete Schlüssel. Bitte um Geduld.</translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="266"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="258"/>
         <source>An error occurred while deriving keys.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="298"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="289"/>
         <source>%1: Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="351"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="358"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="434"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="519"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="673"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="333"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="409"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="480"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="595"/>
         <source>File read error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="396"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="469"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="606"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="371"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="444"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="541"/>
         <source>Operation canceled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="420"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="443"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="658"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="682"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="395"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="418"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="580"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="604"/>
         <source>Hash failure.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="500"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="461"/>
         <source>Decryption failure.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="508"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="581"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="591"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="638"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="688"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="469"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="527"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="560"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="610"/>
         <source>File write error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="447"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="422"/>
         <source>Incorrect signature.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="222"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="214"/>
         <source>Please provide a valid destination file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="228"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="220"/>
         <source>Please provide a valid origin file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="234"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="226"/>
         <source>The destination and origin should be distinct.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="240"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="232"/>
         <source>Please provide a password that contains at least sixteen characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="364"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="339"/>
         <source>Verifying the hash.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="374"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="349"/>
         <source>File read failure.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="380"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="386"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="456"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="355"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="361"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="431"/>
         <source>File seek failure.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="490"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="621"/>
-        <source>Unable to set the initialization vector.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="522"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="693"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="483"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="615"/>
         <source>File open error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="570"/>
-        <source>Unable to create an initialization vector.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="630"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="552"/>
         <source>Encryption failure.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="706"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="628"/>
         <source>%1: Select File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="715"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="637"/>
         <source>&amp;Select</source>
         <translation type="unfinished">Wähle</translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="753"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="759"/>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="764"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="675"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="681"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="686"/>
         <source>%1: Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="755"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="677"/>
         <source>The conversion process completed successfully. A signature was not included.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../GUI/spot-on-encryptfile.cc" line="761"/>
+        <location filename="../GUI/spot-on-encryptfile.cc" line="683"/>
         <source>The conversion process completed successfully.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3663,6 +3640,11 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../UI/controlcenter.ui" line="6972"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://sourceforge.net/p/spot-on/code/HEAD/tree/branches/Documentation/RELEASE-NOTES&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Version 0.11&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../UI/controlcenter.ui" line="7198"/>
         <source>&amp;StarBeam Analyzer</source>
         <translation type="unfinished"></translation>
@@ -3944,12 +3926,6 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../UI/controlcenter.ui" line="1077"/>
-        <location filename="../UI/controlcenter.ui" line="5815"/>
-        <source> MB</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../UI/controlcenter.ui" line="5999"/>
         <source>Percent Transmitted</source>
         <translation type="unfinished"></translation>
@@ -4010,6 +3986,12 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../UI/controlcenter.ui" line="562"/>
         <source>Enable &amp;emoticons.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../UI/controlcenter.ui" line="1077"/>
+        <location filename="../UI/controlcenter.ui" line="5815"/>
+        <source> MiB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4282,11 +4264,6 @@ Wenn nicht aktiviert, wird die Verbindung zum Nachbar beendet, nachdem eine inte
     <message>
         <location filename="../UI/controlcenter.ui" line="6744"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../UI/controlcenter.ui" line="6972"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://sourceforge.net/p/spot-on/code/HEAD/tree/branches/Documentation/RELEASE-NOTES&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Version 0.10&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
