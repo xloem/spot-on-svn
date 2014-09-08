@@ -137,32 +137,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox">
-        <property name="title">
-         <string/>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QRadioButton" name="multiple">
-           <property name="text">
-            <string>&amp;Multiple IVs</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QRadioButton" name="single">
-           <property name="text">
-            <string>&amp;Single IV</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>&amp;Cipher Type</string>
@@ -333,8 +307,6 @@
   <tabstop>pin</tabstop>
   <tabstop>decrypt</tabstop>
   <tabstop>encrypt</tabstop>
-  <tabstop>multiple</tabstop>
-  <tabstop>single</tabstop>
   <tabstop>cipher</tabstop>
   <tabstop>hash</tabstop>
   <tabstop>cancel</tabstop>
