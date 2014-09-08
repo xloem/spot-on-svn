@@ -1,3 +1,7 @@
+0.11 (09/10/2014)
+
+1.   Removed single IV file encryption as the implementation is incorrect.
+
 0.10 (09/05/2014)
 
 1.   Calling over geminis.
