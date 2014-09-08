@@ -83,15 +83,7 @@ spoton_encryptfile::spoton_encryptfile(void):QMainWindow()
 	  SLOT(slotConvert(void)));
   connect(ui.encrypt,
 	  SIGNAL(toggled(bool)),
-	  ui.multiple,
-	  SLOT(setEnabled(bool)));
-  connect(ui.encrypt,
-	  SIGNAL(toggled(bool)),
 	  ui.sign,
-	  SLOT(setEnabled(bool)));
-  connect(ui.encrypt,
-	  SIGNAL(toggled(bool)),
-	  ui.single,
 	  SLOT(setEnabled(bool)));
   connect(ui.reset,
 	  SIGNAL(clicked(void)),
@@ -286,7 +278,6 @@ void spoton_encryptfile::slotConvert(void)
     m_future = QtConcurrent::run
       (this, &spoton_encryptfile::encrypt,
        ui.sign->isChecked(),
-       ui.single->isChecked() ? 1 : 0,
        fileInfo.absoluteFilePath(),
        destination.absoluteFilePath(),
        list);
@@ -311,11 +302,10 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 						   QIODevice::Unbuffered |
 						   QIODevice::WriteOnly))
     {
-      QByteArray bytes(2, 0);
+      QByteArray bytes(1, 0);
       QByteArray hash(spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES, 0);
       QByteArray hashes;
       QByteArray iv;
-      int how = 1; // Single IV, default.
       qint64 rc = 0;
       spoton_crypt crypt(credentials.value(0).toString(),
 			 credentials.value(1).toString(),
@@ -330,28 +320,13 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 
       if(bytes.length() == rc)
 	{
-	  how = bytes.mid(1, 1).toInt();
 	  sign = bytes.mid(0, 1).toInt();
 	  bytes.clear();
-
-	  if(how == 0) // Multiple IVs.
-	    bytes.resize(4096 + 16 + 4); /*
-					 ** 16 = length of initialization
-					 **      vector.
-					 ** 4 = length of original buffer.
-					 */
-	  else // Single IV.
-	    {
-	      bytes.resize(4096 + 4); // 4 = length of original buffer.
-	      iv.resize(16);
-	      rc = file1.read(iv.data(), iv.length());
-
-	      if(iv.length() != rc)
-		{
-		  error = tr("File read error.");
-		  goto done_label;
-		}
-	    }
+	  bytes.resize(4096 + 16 + 4); /*
+				       ** 16 = length of initialization
+				       **      vector.
+				       ** 4 = length of original buffer.
+				       */
 	}
       else
 	{
@@ -381,7 +356,7 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 	      goto done_label;
 	    }
 
-	  if(!file1.seek(2 + iv.length()))
+	  if(!file1.seek(1 + iv.length()))
 	    {
 	      error = tr("File seek failure.");
 	      goto done_label;
@@ -451,7 +426,7 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 	  if(!error.isEmpty())
 	    goto done_label;
 
-	  if(!file1.seek(2 + iv.length()))
+	  if(!file1.seek(1 + iv.length()))
 	    {
 	      error = tr("File seek failure.");
 	      goto done_label;
@@ -479,21 +454,7 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 
 	  bool ok = true;
 
-	  if(how == 0) // Multiple IVs.
-	    data = crypt.decrypted(data, &ok);
-	  else // Single IV.
-	    {
-	      crypt.setInitializationVector(iv, &ok);
-
-	      if(!ok)
-		{
-		  error = tr("Unable to set the initialization vector.");
-		  break;
-		}
-
-	      iv = data.right(iv.length());
-	      data = crypt.decryptedSequential(data, &ok);
-	    }
+	  data = crypt.decrypted(data, &ok);
 
 	  if(!ok)
 	    {
@@ -533,7 +494,6 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 }
 
 void spoton_encryptfile::encrypt(const bool sign,
-				 const int how,
 				 const QString &fileName,
 				 const QString &destination,
 				 const QList<QVariant> &credentials)
@@ -559,38 +519,13 @@ void spoton_encryptfile::encrypt(const bool sign,
 			 0,
 			 QString(""));
 
-      if(how == 1) // Single IV.
-	{
-	  bool ok = true;
-
-	  iv = crypt.initializationVector(&ok);
-
-	  if(!ok)
-	    {
-	      error = tr("Unable to create an initialization vector.");
-	      goto done_label;
-	    }
-	}
-
       bytes.append(QByteArray::number(sign));
-      bytes.append(QByteArray::number(how));
       rc = file2.write(bytes.constData(), bytes.length());
 
       if(bytes.length() != rc)
 	{
 	  error = tr("File write error.");
 	  goto done_label;
-	}
-
-      if(how == 1) // Single IV.
-	{
-	  rc = file2.write(iv.constData(), iv.length());
-
-	  if(iv.length() != rc)
-	    {
-	      error = tr("File write error.");
-	      goto done_label;
-	    }
 	}
 
       bytes.clear();
@@ -610,20 +545,7 @@ void spoton_encryptfile::encrypt(const bool sign,
 	  QByteArray data(bytes.mid(0, static_cast<int> (rc)));
 	  bool ok = true;
 
-	  if(how == 0) // Multiple IVs.
-	    data = crypt.encrypted(data, &ok);
-	  else // Single IV;
-	    {
-	      crypt.setInitializationVector(iv, &ok);
-
-	      if(!ok)
-		{
-		  error = tr("Unable to set the initialization vector.");
-		  break;
-		}
-
-	      data = crypt.encryptedSequential(data, &ok);
-	    }
+	  data = crypt.encrypted(data, &ok);
 
 	  if(!ok)
 	    {
@@ -783,7 +705,6 @@ void spoton_encryptfile::slotReset(void)
   ui.password->clear();
   ui.pin->clear();
   ui.sign->setChecked(true);
-  ui.single->setChecked(true);
   ui.destination->setFocus();
 }
 

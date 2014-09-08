@@ -56,7 +56,6 @@ class spoton_encryptfile: public QMainWindow
 	       const QString &destination,
 	       const QList<QVariant> &credentials);
   void encrypt(const bool sign,
-	       const int how,
 	       const QString &fileName,
 	       const QString &destination,
 	       const QList<QVariant> &credentials);
