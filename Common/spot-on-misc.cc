@@ -133,6 +133,12 @@ void spoton_misc::prepareDatabases(void)
 					    */
 		   "subject BLOB NOT NULL, "
 		   "PRIMARY KEY (folder_index, hash, receiver_sender_hash))");
+	query.exec("CREATE TABLE IF NOT EXISTS "
+		   "folders_attachment ("
+		   "data BLOB NOT NULL, "
+		   "folders_oid INTEGER NOT NULL, "
+		   "FOREIGN KEY (folders_oid) REFERENCES "
+		   "folders (OID) ON DELETE CASCADE)");
 	query.exec("CREATE TABLE IF NOT EXISTS institutions ("
 		   "cipher_type TEXT NOT NULL, "
 		   "hash TEXT PRIMARY KEY NOT NULL, " /*
