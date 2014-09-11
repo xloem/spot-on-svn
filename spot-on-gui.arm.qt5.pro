@@ -1,4 +1,7 @@
 cache()
+libspoton.target = libspoton.so
+libspoton.commands = $(MAKE) -C ../../libSpotOn library
+libspoton.depends =
 
 TEMPLATE	= app
 LANGUAGE	= C++
@@ -10,7 +13,12 @@ CONFIG		+= qt release warn_on
 
 DEFINES	+= SPOTON_LINKED_WITH_LIBPTHREAD \
 	   SPOTON_SCTP_ENABLED
-QMAKE_CLEAN     += Spot-On
+
+# Unfortunately, the clean target assumes too much knowledge
+# about the internals of libSpotOn.
+
+QMAKE_CLEAN     += Spot-On ../../libSpotOn/*.o ../../libSpotOn/*.so \
+		   ../../libSpotOn/test
 QMAKE_DISTCLEAN += -r temp .qmake.cache .qmake.stash
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -fwrapv \
@@ -20,10 +28,12 @@ QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -fwrapv \
 			  -Woverloaded-virtual -Wpointer-arith \
                           -Wstack-protector -Wstrict-overflow=4
 QMAKE_LFLAGS_RELEASE += -Wl,-rpath,/usr/local/spot-on/Lib
-QMAKE_EXTRA_TARGETS = purge
+QMAKE_EXTRA_TARGETS = libspoton purge
 QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= /usr/include . ../../. GUI
-LIBS		+= -lcrypto -lgcrypt -lgpg-error -lssl
+LIBS		+= -L../../libSpotOn -lcrypto -lgcrypt -lgpg-error \
+		   -lspoton -lssl
+PRE_TARGETDEPS = libspoton.so
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui
 MOC_DIR = temp/moc
@@ -42,8 +52,7 @@ FORMS           = UI/adaptiveechoprompt.ui \
 
 UI_HEADERS_DIR  = GUI
 
-HEADERS		= ../../libSpotOn/libspoton.h \
-                  Common/spot-on-external-address.h \
+HEADERS		= Common/spot-on-external-address.h \
 		  GUI/spot-on.h \
 		  GUI/spot-on-buzzpage.h \
 		  GUI/spot-on-chatwindow.h \
@@ -54,8 +63,7 @@ HEADERS		= ../../libSpotOn/libspoton.h \
 		  GUI/spot-on-tabwidget.h \
 		  GUI/spot-on-textedit.h
 
-SOURCES		= ../../libSpotOn/libspoton.c \
-                  Common/spot-on-crypt.cc \
+SOURCES		= Common/spot-on-crypt.cc \
 		  Common/spot-on-external-address.cc \
 		  Common/spot-on-misc.cc \
 		  GUI/spot-on-a.cc \
