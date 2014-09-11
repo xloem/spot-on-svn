@@ -705,7 +705,6 @@ void spoton_encryptfile::slotReset(void)
   ui.password->clear();
   ui.pin->clear();
   ui.sign->setChecked(true);
-  ui.destination->setFocus();
 }
 
 void spoton_encryptfile::slotStatus(const QString &status)

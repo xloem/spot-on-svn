@@ -2447,6 +2447,7 @@ void spoton::slotSendMail(void)
 	      query.exec();
 	  }
 
+	m_ui.attachment->clear();
 	m_ui.emailParticipants->selectionModel()->clear();
 	m_ui.outgoingMessage->clear();
 	m_ui.outgoingMessage->setCurrentCharFormat(QTextCharFormat());

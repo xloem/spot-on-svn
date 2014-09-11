@@ -950,7 +950,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>862</width>
+             <width>866</width>
              <height>587</height>
             </rect>
            </property>
@@ -1209,6 +1209,13 @@
                     </property>
                    </widget>
                   </item>
+                  <item>
+                   <widget class="QPushButton" name="saveAttachment">
+                    <property name="text">
+                     <string>Save Attachment</string>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </item>
                 <item>
@@ -1401,7 +1408,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="4" column="1">
+                <item row="5" column="1">
                  <layout class="QHBoxLayout" name="horizontalLayout_31">
                   <property name="spacing">
                    <number>5</number>
@@ -1464,7 +1471,7 @@
                   </item>
                  </layout>
                 </item>
-                <item row="4" column="0">
+                <item row="5" column="0">
                  <widget class="QLabel" name="label_6">
                   <property name="text">
                    <string>&amp;Optional</string>
@@ -1533,6 +1540,30 @@
                 </item>
                 <item row="2" column="1">
                  <widget class="QLineEdit" name="outgoingSubject"/>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="label_94">
+                  <property name="text">
+                   <string>&amp;Attachment</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>attachment</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <layout class="QHBoxLayout" name="horizontalLayout_51">
+                  <item>
+                   <widget class="QLineEdit" name="attachment"/>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="selectAttachment">
+                    <property name="text">
+                     <string>Select</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </widget>
@@ -2527,7 +2558,7 @@
                    <property name="geometry">
                     <rect>
                      <x>0</x>
-                     <y>-286</y>
+                     <y>0</y>
                      <width>265</width>
                      <height>1381</height>
                     </rect>
@@ -7283,6 +7314,7 @@
   <tabstop>folder</tabstop>
   <tabstop>emailAcceptSigned</tabstop>
   <tabstop>reply</tabstop>
+  <tabstop>saveAttachment</tabstop>
   <tabstop>mail</tabstop>
   <tabstop>mailMessage</tabstop>
   <tabstop>emailName</tabstop>
@@ -7291,6 +7323,8 @@
   <tabstop>emailParticipants</tabstop>
   <tabstop>outgoingSubject</tabstop>
   <tabstop>outgoingMessage</tabstop>
+  <tabstop>attachment</tabstop>
+  <tabstop>selectAttachment</tabstop>
   <tabstop>goldbug</tabstop>
   <tabstop>generateGoldBug</tabstop>
   <tabstop>saveCopy</tabstop>
