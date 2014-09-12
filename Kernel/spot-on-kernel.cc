@@ -95,7 +95,6 @@ QHash<QByteArray, uint> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
 QHash<qint64, int> spoton_kernel::s_connectionCounts;
-QList<QHostAddress> spoton_kernel::s_remoteConnections;
 QList<QList<QByteArray> > spoton_kernel::s_institutionKeys;
 QList<QList<QVariant> > spoton_kernel::s_messagesToProcess;
 QList<QPair<QByteArray, QByteArray> > spoton_kernel::s_adaptiveEchoPairs;
@@ -1167,20 +1166,6 @@ void spoton_kernel::prepareNeighbors(void)
 			      if(neighbor)
 				neighbor->deleteLater();
 
-			      QByteArray bytes;
-			      bool ok = true;
-
-			      bytes = s_crypt->
-				decryptedAfterAuthenticated
-				(QByteArray::fromBase64(query.
-							value(0).
-							toByteArray()),
-				 &ok);
-
-			      if(ok)
-				s_remoteConnections.removeOne
-				  (QHostAddress(bytes.constData()));
-
 			      spoton_misc::logError
 				("spoton_kernel::prepareNeighbors(): "
 				 "critical failure.");
@@ -1202,21 +1187,6 @@ void spoton_kernel::prepareNeighbors(void)
 		    neighbor->deleteLater();
 
 		  m_neighbors.remove(id);
-
-		  QByteArray bytes;
-		  bool ok = true;
-
-		  bytes = s_crypt->
-		    decryptedAfterAuthenticated
-		    (QByteArray::fromBase64(query.
-					    value(0).
-					    toByteArray()),
-		     &ok);
-
-		  if(ok)
-		    s_remoteConnections.removeOne
-		      (QHostAddress(bytes.constData()));
-
 		  cleanupNeighborsDatabase(db);
 		}
 	    }
@@ -1260,7 +1230,6 @@ void spoton_kernel::prepareNeighbors(void)
 
       s_messagingCache.clear();
       locker2.unlock();
-      s_remoteConnections.clear();
     }
 }
 
@@ -4150,11 +4119,26 @@ bool spoton_kernel::acceptRemoteConnection(const QHostAddress &localAddress,
     }
   else
     {
-      if(setting("gui/limitConnections", 10).toInt() >
-	 s_remoteConnections.count(peerAddress))
-	return true;
-      else
+      int count = 0;
+      int value = setting("gui/limitConnections", 10).toInt();
+
+      QMutableHashIterator<qint64, QPointer<spoton_neighbor> > it
+	(m_neighbors);
+
+      while(it.hasNext())
+	{
+	  it.next();
+
+	  if(it.value() &&
+	     it.value()->state() == QAbstractSocket::ConnectedState)
+	    if(it.value()->peerAddress() == peerAddress)
+	      count += 1;
+	}
+
+      if(count > value)
 	return false;
+      else
+	return true;
     }
 }
 

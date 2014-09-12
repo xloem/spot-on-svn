@@ -61,8 +61,8 @@ void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
       peerAddress = spoton_misc::peerAddressAndPort
 	(static_cast<int> (socketDescriptor), &peerPort);
 
-      if(!spoton_kernel::acceptRemoteConnection(serverAddress(),
-						peerAddress))
+      if(!spoton_kernel::s_kernel->acceptRemoteConnection(serverAddress(),
+							  peerAddress))
 	{
 	  QAbstractSocket socket(QAbstractSocket::TcpSocket, this);
 
@@ -115,8 +115,8 @@ void spoton_listener_udp_server::slotReadyRead(void)
 
   readDatagram(0, 0, &peerAddress, &peerPort); // Discard the datagram.
 
-  if(!spoton_kernel::acceptRemoteConnection(localAddress(),
-					    peerAddress))
+  if(!spoton_kernel::s_kernel->acceptRemoteConnection(localAddress(),
+						      peerAddress))
     {
     }
   else if(!spoton_misc::
@@ -652,9 +652,6 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
   ** Record the IP address of the client as soon as possible.
   */
 
-  if(spoton_kernel::setting("gui/limitConnections", false).toBool())
-    spoton_kernel::s_remoteConnections.append(address);
-
   QByteArray certificate(m_certificate);
   QByteArray privateKey(m_privateKey);
   QPointer<spoton_neighbor> neighbor = 0;
@@ -761,10 +758,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
     }
 
   if(!neighbor)
-    {
-      spoton_kernel::s_remoteConnections.removeOne(address);
-      return;
-    }
+    return;
 
   connect(neighbor,
 	  SIGNAL(disconnected(void)),
@@ -795,7 +789,6 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 
   if(!s_crypt)
     {
-      spoton_kernel::s_remoteConnections.removeOne(address);
       spoton_misc::logError
 	(QString("spoton_listener::slotNewConnection(): "
 		 "chat key is missing for %1:%2.").
@@ -1042,7 +1035,6 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
   else
     {
       neighbor->deleteLater();
-      spoton_kernel::s_remoteConnections.removeOne(address);
       spoton_misc::logError
 	(QString("spoton_listener::slotNewConnection(): "
 		 "severe error(s). Purging neighbor "

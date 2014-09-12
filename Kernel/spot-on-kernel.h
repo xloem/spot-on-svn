@@ -59,7 +59,6 @@ class spoton_kernel: public QObject
   ~spoton_kernel();
   static QHash<QString, spoton_crypt *> s_crypts;
   static QHash<qint64, int> s_connectionCounts;
-  static QList<QHostAddress> s_remoteConnections;
   static QList<QPair<QByteArray, QByteArray> > s_adaptiveEchoPairs;
   static QPointer<spoton_kernel> s_kernel;
   static QList<QByteArray> findBuzzKey(const QByteArray &data,
@@ -68,8 +67,6 @@ class spoton_kernel: public QObject
 					      const QByteArray &hash);
   static QVariant setting(const QString &name,
 			  const QVariant &defaultValue);
-  static bool acceptRemoteConnection(const QHostAddress &localAddress,
-				     const QHostAddress &peerAddress);
   static bool messagingCacheContains(const QByteArray &data,
 				     const bool do_not_hash = false);
   static int buzzKeyCount(void);
@@ -89,6 +86,8 @@ class spoton_kernel: public QObject
     (const QByteArray &data, const qint64 id,
      const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
   static void removeBuzzKey(const QByteArray &data);
+  bool acceptRemoteConnection(const QHostAddress &localAddress,
+			      const QHostAddress &peerAddress);
   bool processPotentialStarBeamData(const QByteArray &data);
   void writeMessage0060(const QByteArray &data, bool *ok);
 
