@@ -974,6 +974,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.institutionFrame,
 	  SLOT(setDisabled(bool)));
+  connect(m_ui.displayPopups,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotDisplayPopups(bool)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -1377,6 +1381,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/acceptBuzzMagnets", false).toBool());
   m_ui.impersonate->setChecked
     (m_settings.value("gui/impersonate", false).toBool());
+  m_ui.displayPopups->setChecked
+    (m_settings.value("gui/displayPopupsAutomatically", true).toBool());
 
   /*
   ** Please don't translate n/a.

@@ -1561,3 +1561,12 @@ void spoton::slotShowEncryptFile(void)
 {
   m_encryptFile.show(this);
 }
+
+void spoton::slotDisplayPopups(bool state)
+{
+  m_settings["gui/displayPopupsAutomatically"] = state;
+
+  QSettings settings;
+
+  settings.setValue("gui/displayPopupsAutomatically", state);
+}

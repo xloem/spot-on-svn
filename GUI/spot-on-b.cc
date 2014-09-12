@@ -262,7 +262,7 @@ void spoton::slotReceivedKernelMessage(void)
 		  for(int i = 0; i < list.size() - 1; i++)
 		    /*
 		    ** We'll ignore the message authentication
-		    ** code (list.at(5)).
+		    ** code.
 		    */
 
 		    list.replace(i, QByteArray::fromBase64(list.at(i)));
@@ -323,13 +323,18 @@ void spoton::slotReceivedKernelMessage(void)
 		    msg.append
 		      ("[<font color=red>00:00:00</font>]");
 
+		  bool first = false;
 		  quint64 previousSequenceNumber = 1;
 
 		  if(m_receivedChatSequenceNumbers.contains(hash))
 		    previousSequenceNumber =
 		      m_receivedChatSequenceNumbers[hash];
 		  else
-		    previousSequenceNumber = sequenceNumber.toULongLong() - 1;
+		    {
+		      first = true;
+		      previousSequenceNumber =
+			sequenceNumber.toULongLong() - 1;
+		    }
 
 		  m_receivedChatSequenceNumbers[hash] =
 		    sequenceNumber.toULongLong();
@@ -405,6 +410,11 @@ void spoton::slotReceivedKernelMessage(void)
 		    content = mapIconToEmoticon(content);
 
 		  msg.append(content);
+
+		  if(m_ui.displayPopups->isChecked())
+		    if(first)
+		      if(!m_chatWindows.contains(list.value(0).toBase64()))
+			slotParticipantDoubleClicked(items.at(0));
 
 		  if(m_chatWindows.contains(list.value(0).toBase64()))
 		    {
