@@ -4119,11 +4119,10 @@ bool spoton_kernel::acceptRemoteConnection(const QHostAddress &localAddress,
     }
   else
     {
+      QHashIterator<qint64, QPointer<spoton_neighbor> > it
+	(m_neighbors);
       int count = 0;
       int value = setting("gui/limitConnections", 10).toInt();
-
-      QMutableHashIterator<qint64, QPointer<spoton_neighbor> > it
-	(m_neighbors);
 
       while(it.hasNext())
 	{
@@ -4135,7 +4134,7 @@ bool spoton_kernel::acceptRemoteConnection(const QHostAddress &localAddress,
 	      count += 1;
 	}
 
-      if(count > value)
+      if(count >= value)
 	return false;
       else
 	return true;
