@@ -2845,6 +2845,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 			    return;
 			  }
 
+		      QByteArray attachment;
 		      QByteArray message;
 		      QByteArray name;
 		      QByteArray signature;
@@ -2865,7 +2866,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 			{
 			  QList<QByteArray> list(data.split('\n'));
 
-			  if(list.size() == 6)
+			  if(list.size() == 7)
 			    {
 			      senderPublicKeyHash2 =
 				QByteArray::fromBase64(list.value(0));
@@ -2875,11 +2876,13 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 				QByteArray::fromBase64(list.value(2));
 			      message =
 				QByteArray::fromBase64(list.value(3));
-			      signature =
+			      attachment =
 				QByteArray::fromBase64(list.value(4));
+			      signature =
+				QByteArray::fromBase64(list.value(5));
 			      goldbugUsed =
 				QVariant
-				(QByteArray::fromBase64(list.value(5))).
+				(QByteArray::fromBase64(list.value(6))).
 				toBool();
 			    }
 			  else
@@ -2887,7 +2890,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 			      spoton_misc::logError
 				(QString("spoton_neighbor::process0001a(): "
 					 "received irregular data. "
-					 "Expecting 6 "
+					 "Expecting 7 "
 					 "entries, "
 					 "received %1.").arg(list.size()));
 			      return;
@@ -2907,6 +2910,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 				      name,
 				      subject,
 				      message,
+				      attachment,
 				      signature,
 				      goldbugUsed);
 			  return;
@@ -3053,7 +3057,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 			{
 			  QList<QByteArray> list(data.split('\n'));
 
-			  if(list.size() == 6)
+			  if(list.size() == 7)
 			    {
 			      for(int i = 0; i < list.size(); i++)
 				list.replace
@@ -3066,8 +3070,9 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 				 list.value(1),  // Name
 				 list.value(2),  // Subject
 				 list.value(3),  // Message
-				 list.value(4),  // Signature
-				 QVariant(list.value(5)).
+				 list.value(4),  // Attachment
+				 list.value(5),  // Signature
+				 QVariant(list.value(6)).
 				 toBool());      // Gold Bug Used?
 			      return;
 			    }
@@ -3076,7 +3081,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 			      spoton_misc::logError
 				(QString("spoton_neighbor::process0001b(): "
 					 "received irregular data. "
-					 "Expecting 6 "
+					 "Expecting 7 "
 					 "entries, "
 					 "received %1.").arg(list.size()));
 			      return;
@@ -5025,6 +5030,7 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 				  const QByteArray &name,
 				  const QByteArray &subject,
 				  const QByteArray &message,
+				  const QByteArray &attachment,
 				  const QByteArray &signature,
 				  const bool goldbugUsed)
 {
@@ -5054,7 +5060,8 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
        isValidSignature(senderPublicKeyHash +
 			name +
 			subject +
-			message,
+			message +
+			attachment,
 			senderPublicKeyHash,
 			signature, s_crypt))
       {
@@ -5152,7 +5159,23 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 
 	if(ok)
 	  if(query.exec())
-	    emit newEMailArrived();
+	    {
+	      QVariant variant(query.lastInsertId());
+	      qint64 id = query.lastInsertId().toLongLong();
+
+	      if(variant.isValid())
+		{
+		  query.prepare("INSERT INTO folders_attachment "
+				"(data, folders_oid) "
+				"VALUES (?, ?)");
+		  query.bindValue(0, id);
+		  query.bindValue
+		    (1, s_crypt->encryptedThenHashed(attachment,
+						     &ok).toBase64());
+		}
+
+	      emit newEMailArrived();
+	    }
       }
 
     db.close();

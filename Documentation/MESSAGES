@@ -163,9 +163,11 @@ EOL
 EOL
 3 - Message (Optional Gold Bug) (Base-64)
 EOL
-4 - Signature (Optional Gold Bug) (Base-64)
+4 - Attachment (Optional Gold Bug) (Base-64)
 EOL
-5 - Gold Bug Used? (Base-64)
+5 - Signature (Optional Gold Bug) (Base-64)
+EOL
+6 - Gold Bug Used? (Base-64)
 }
 EOL
 {
@@ -204,9 +206,11 @@ EOL
 EOL
 3 - Message (Optional Gold Bug) (Base-64)
 EOL
-4 - Signature (Optional Gold Bug) (Base-64)
+4 - Attachment (Optional Gold Bug) (Base-64)
 EOL
-5 - Gold Bug Used? (Base-64)
+5 - Signature (Optional Gold Bug) (Base-64)
+EOL
+6 - Gold Bug Used? (Base-64)
 }
 EOL
 {

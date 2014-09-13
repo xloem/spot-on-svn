@@ -122,6 +122,7 @@ void spoton_mailer::slotTimeout(void)
 	      if(status != tr("Queued"))
 		continue;
 
+	      QByteArray attachment;
 	      QByteArray goldbug;
 	      QByteArray message;
 	      QByteArray publicKey;
@@ -172,6 +173,24 @@ void spoton_mailer::slotTimeout(void)
 
 	      if(ok)
 		{
+		  QSqlQuery query(db1);
+		  bool ok = true;
+
+		  query.setForwardOnly(true);
+		  query.prepare("SELECT data FROM folders_attachment "
+				"WHERE OID = ?");
+		  query.bindValue(0, mailOid);
+
+		  if(query.exec())
+		    if(query.next())
+		      attachment = s_crypt->
+			decryptedAfterAuthenticated
+			(QByteArray::fromBase64(query.value(0).toByteArray()),
+			 &ok);
+		}
+
+	      if(ok)
+		{
 		  QVector<QVariant> vector;
 
 		  vector << goldbug
@@ -179,6 +198,7 @@ void spoton_mailer::slotTimeout(void)
 			 << name
 			 << publicKey
 			 << subject
+			 << attachment
 			 << mailOid;
 		  list.append(vector);
 		}
@@ -205,6 +225,7 @@ void spoton_mailer::slotTimeout(void)
 		    vector.value(2).toByteArray(),
 		    vector.value(3).toByteArray(),
 		    vector.value(4).toByteArray(),
+		    vector.value(5).toByteArray(),
 		    vector.value(5).toLongLong());
     }
 }

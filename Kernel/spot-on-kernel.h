@@ -181,6 +181,7 @@ class spoton_kernel: public QObject
 		    const QByteArray &name,
 		    const QByteArray &publicKey,
 		    const QByteArray &subject,
+		    const QByteArray &attachment,
 		    const qint64 mailOid);
   void slotSettingsChanged(const QString &path);
   void slotStatusTimerExpired(void);
