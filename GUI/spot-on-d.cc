@@ -1570,3 +1570,59 @@ void spoton::slotDisplayPopups(bool state)
 
   settings.setValue("gui/displayPopupsAutomatically", state);
 }
+
+void spoton::slotAddAttachment(void)
+{
+  QFileDialog dialog(this);
+
+  dialog.setWindowTitle
+    (tr("%1: Select Attachment").
+     arg(SPOTON_APPLICATION_NAME));
+  dialog.setFileMode(QFileDialog::ExistingFile);
+  dialog.setDirectory(QDir::homePath());
+  dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
+  dialog.setAcceptMode(QFileDialog::AcceptOpen);
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+#endif
+#endif
+
+  if(dialog.exec() == QDialog::Accepted)
+    m_ui.attachment->setText(dialog.selectedFiles().value(0));
+}
+
+void spoton::slotSaveAttachment(void)
+{
+  QModelIndexList list;
+
+  list = m_ui.mail->selectionModel()->selectedRows(4); // Attachment(s)
+
+  if(list.isEmpty() || list.at(0).data().toInt() <= 0)
+    return;
+
+  list = m_ui.mail->selectionModel()->selectedRows
+    (m_ui.mail->columnCount() - 1); // OID
+
+  if(list.isEmpty())
+    return;
+
+  QFileDialog dialog(this);
+
+  dialog.setWindowTitle
+    (tr("%1: Save Attachment").
+     arg(SPOTON_APPLICATION_NAME));
+  dialog.setFileMode(QFileDialog::AnyFile);
+  dialog.setDirectory(QDir::homePath());
+  dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
+  dialog.setAcceptMode(QFileDialog::AcceptOpen);
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+#endif
+#endif
+
+  if(dialog.exec() == QDialog::Accepted)
+    {
+    }
+}

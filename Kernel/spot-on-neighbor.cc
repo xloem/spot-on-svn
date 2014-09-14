@@ -5160,18 +5160,22 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 	if(ok)
 	  if(query.exec())
 	    {
-	      QVariant variant(query.lastInsertId());
-	      qint64 id = query.lastInsertId().toLongLong();
-
-	      if(variant.isValid())
+	      if(!attachment.isEmpty())
 		{
-		  query.prepare("INSERT INTO folders_attachment "
-				"(data, folders_oid) "
-				"VALUES (?, ?)");
-		  query.bindValue(0, id);
-		  query.bindValue
-		    (1, s_crypt->encryptedThenHashed(attachment,
-						     &ok).toBase64());
+		  QVariant variant(query.lastInsertId());
+		  qint64 id = query.lastInsertId().toLongLong();
+
+		  if(variant.isValid())
+		    {
+		      query.prepare("INSERT INTO folders_attachment "
+				    "(data, folders_oid) "
+				    "VALUES (?, ?)");
+		      query.bindValue
+			(0, s_crypt->encryptedThenHashed(attachment,
+							 &ok).toBase64());
+		      query.bindValue(1, id);
+		      query.exec();
+		    }
 		}
 
 	      emit newEMailArrived();

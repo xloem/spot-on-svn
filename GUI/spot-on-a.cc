@@ -346,6 +346,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotSaveBuzzAutoJoin(bool)));
+  connect(m_ui.saveAttachment,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSaveAttachment(void)));
   connect(m_ui.dynamicdns,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -978,6 +982,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotDisplayPopups(bool)));
+  connect(m_ui.selectAttachment,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotAddAttachment(void)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -1632,11 +1640,11 @@ spoton::spoton(void):QMainWindow()
 				   true); // OID
   m_ui.addTransmittedMagnets->setColumnHidden
     (m_ui.addTransmittedMagnets->columnCount() - 1, true); // OID
-  m_ui.mail->setColumnHidden(4, true); // goldbug
-  m_ui.mail->setColumnHidden(5, true); // message
-  m_ui.mail->setColumnHidden(6, true); // message_code
-  m_ui.mail->setColumnHidden(7, true); // receiver_sender_hash
-  m_ui.mail->setColumnHidden(8, true); // OID
+  m_ui.mail->setColumnHidden(5, true); // goldbug
+  m_ui.mail->setColumnHidden(6, true); // message
+  m_ui.mail->setColumnHidden(7, true); // message_code
+  m_ui.mail->setColumnHidden(8, true); // receiver_sender_hash
+  m_ui.mail->setColumnHidden(9, true); // OID
   m_ui.listeners->setColumnHidden(m_ui.listeners->columnCount() - 1,
 				  true); // OID
   m_ui.neighbors->setColumnHidden

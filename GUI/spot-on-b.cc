@@ -2317,7 +2317,42 @@ void spoton::slotSendMail(void)
       return;
     }
 
-  if(!m_crypts.value("email", 0))
+  QByteArray attachment;
+
+  if(!m_ui.attachment->text().isEmpty())
+    {
+      fileInfo = QFileInfo(m_ui.attachment->text());
+
+      if(fileInfo.size() > 10 * 1024 * 1024)
+	{
+	  QMessageBox::critical
+	    (this, tr("%1: Error").
+	     arg(SPOTON_APPLICATION_NAME),
+	     tr("The attachment is too large."));
+	  return;
+	}
+
+      QFile file(fileInfo.absoluteFilePath());
+
+      if(file.open(QIODevice::ReadOnly))
+	attachment = file.readAll();
+
+      file.close();
+
+      if(attachment.isEmpty() ||
+	 attachment.length() != static_cast<int> (fileInfo.size()))
+	{
+	  QMessageBox::critical
+	    (this, tr("%1: Error").
+	     arg(SPOTON_APPLICATION_NAME),
+	     tr("An error occurred while reading the attachment."));
+	  return;
+	}
+    }
+
+  spoton_crypt *crypt = m_crypts.value("email", 0);
+
+  if(!crypt)
     return;
 
   /*
@@ -2403,34 +2438,34 @@ void spoton::slotSendMail(void)
 			  "status, subject, participant_oid) "
 			  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    query.bindValue
-	      (0, m_crypts.value("email")->
+	      (0, crypt->
 	       encryptedThenHashed(now.toString(Qt::ISODate).
 				   toLatin1(), &ok).toBase64());
 	    query.bindValue(1, 1); // Sent Folder
 
 	    if(ok)
 	      query.bindValue
-		(2, m_crypts.value("email")->
+		(2, crypt->
 		 encryptedThenHashed(goldbug, &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(3, m_crypts.value("email")->
+		(3, crypt->
 		 keyedHash(now.toString().toLatin1() +
 			   message + subject, &ok).toBase64());
 
 	    if(ok)
-	      query.bindValue(4, m_crypts.value("email")->
+	      query.bindValue(4, crypt->
 			      encryptedThenHashed(message, &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(5, m_crypts.value("email")->
+		(5, crypt->
 		 encryptedThenHashed(QByteArray(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(6, m_crypts.value("email")->
+		(6, crypt->
 		 encryptedThenHashed(names.takeFirst().toUtf8(), &ok).
 		 toBase64());
 
@@ -2440,21 +2475,38 @@ void spoton::slotSendMail(void)
 
 	    if(ok)
 	      query.bindValue
-		(8, m_crypts.value("email")->
+		(8, crypt->
 		 encryptedThenHashed(tr("Queued").toUtf8(), &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(9, m_crypts.value("email")->
+		(9, crypt->
 		 encryptedThenHashed(subject, &ok).toBase64());
 
 	    if(ok)
 	      query.bindValue
-		(10, m_crypts.value("email")->
+		(10, crypt->
 		 encryptedThenHashed(oid.toLatin1(), &ok).toBase64());
 
 	    if(ok)
-	      query.exec();
+	      if(query.exec())
+		if(!attachment.isEmpty())
+		  {
+		    QVariant variant(query.lastInsertId());
+		    qint64 id = query.lastInsertId().toLongLong();
+
+		    if(variant.isValid())
+		      {
+			query.prepare("INSERT INTO folders_attachment "
+				      "(data, folders_oid) "
+				      "VALUES (?, ?)");
+			query.bindValue
+			  (0, crypt->encryptedThenHashed(attachment,
+							 &ok).toBase64());
+			query.bindValue(1, id);
+			query.exec();
+		      }
+		  }
 	  }
 
 	m_ui.attachment->clear();
@@ -2473,7 +2525,7 @@ void spoton::slotSendMail(void)
 #endif
 #endif
 	mb.setIcon(QMessageBox::Information);
-	mb.setText(tr("E-mail has been sent."));
+	mb.setText(tr("E-mail has been queued."));
 	mb.setWindowModality(Qt::WindowModal);
 	mb.setWindowTitle(tr("GoldBug: Confirmation"));
 	mb.exec();
@@ -2878,12 +2930,15 @@ void spoton::slotRefreshMail(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec(QString("SELECT date, receiver_sender, status, "
-			      "subject, goldbug, "
-			      "message, message_code, "
-			      "receiver_sender_hash, "
-			      "OID FROM folders WHERE "
-			      "folder_index = %1").
+	if(query.exec(QString("SELECT f.date, f.receiver_sender, f.status, "
+			      "f.subject, "
+			      "(SELECT COUNT(*) FROM folders_attachment a "
+			      "WHERE a.folders_oid = f.OID), "
+			      "f.goldbug, "
+			      "f.message, f.message_code, "
+			      "f.receiver_sender_hash, "
+			      "f.OID FROM folders f WHERE "
+			      "f.folder_index = %1").
 		      arg(m_ui.folder->currentIndex())))
 	  {
 	    int row = 0;
@@ -2896,7 +2951,7 @@ void spoton::slotRefreshMail(void)
 		goldbug = m_crypts.value("email")->
 		  decryptedAfterAuthenticated(QByteArray::
 					      fromBase64(query.
-							 value(4).
+							 value(5).
 							 toByteArray()),
 					      &ok).constData();
 
@@ -2914,9 +2969,9 @@ void spoton::slotRefreshMail(void)
 		      }
 
 		    if(i == 0 || i == 1 || i == 2 ||
-		       i == 3 || i == 5 || i == 6)
+		       i == 3 || i == 6 || i == 7)
 		      {
-			if(i == 1 || i == 2 || i == 3 || i == 5)
+			if(i == 1 || i == 2 || i == 3 || i == 6)
 			  {
 			    if(goldbug == "0")
 			      {
@@ -2945,7 +3000,7 @@ void spoton::slotRefreshMail(void)
 				  {
 				    QList<QTableWidgetItem *> items
 				      (m_ui.emailParticipants->
-				       findItems(query.value(7).
+				       findItems(query.value(8).
 						 toByteArray(),
 						 Qt::MatchExactly));
 
@@ -2981,7 +3036,7 @@ void spoton::slotRefreshMail(void)
 			      item = new QTableWidgetItem("#####");
 			  }
 		      }
-		    else if(i == 4)
+		    else if(i == 5)
 		      item = new QTableWidgetItem(goldbug);
 		    else
 		      item = new QTableWidgetItem(query.value(i).toString());
@@ -3109,7 +3164,7 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
 
   {
     QString goldbug("");
-    QTableWidgetItem *item = m_ui.mail->item(row, 4); // Goldbug
+    QTableWidgetItem *item = m_ui.mail->item(row, 5); // Goldbug
 
     if(item)
       goldbug = item->text();
@@ -3183,7 +3238,7 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
     if(item)
       subject = item->text();
 
-    item = m_ui.mail->item(row, 5); // Message
+    item = m_ui.mail->item(row, 6); // Message
 
     if(item)
       message = item->text();
@@ -4082,12 +4137,12 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
 	    if(item)
 	      item->setText(list.value(5).constData());
 
-	    item = m_ui.mail->item(row, 4); // Goldbug
+	    item = m_ui.mail->item(row, 5); // Goldbug
 
 	    if(item)
 	      item->setText("0");
 
-	    item = m_ui.mail->item(row, 5); // Message
+	    item = m_ui.mail->item(row, 6); // Message
 
 	    if(item)
 	      item->setText(list.value(1).constData());
@@ -4144,7 +4199,7 @@ void spoton::slotReply(void)
   if(row < 0)
     return;
 
-  QTableWidgetItem *item = m_ui.mail->item(row, 4); // Goldbug
+  QTableWidgetItem *item = m_ui.mail->item(row, 5); // Goldbug
 
   if(!item)
     return;
@@ -4163,7 +4218,7 @@ void spoton::slotReply(void)
 
   QString message(item->text());
 
-  item = m_ui.mail->item(row, 7); // receiver_sender_hash
+  item = m_ui.mail->item(row, 8); // receiver_sender_hash
 
   if(!item)
     return;
