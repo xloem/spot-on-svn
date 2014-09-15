@@ -116,7 +116,6 @@ Completed Items
 82.    Purge items from post_office if their dates are invalid.
 83.    Perform calling over geminis.
 84.    Accounts and allowed IP addresses suffer selection issues.
-85.    Enable SQLite foreign key support via PRAGMA foreign_keys = ON.
 
 Ignored Items
 
@@ -154,6 +153,7 @@ Ignored Items
        timer.
 20.    Account credentials should not be recorded via reversible encryption.
        Derive keys? I really like the two-step mutual authentication.
+21.    Enable SQLite foreign key support via PRAGMA foreign_keys = ON.
 
 Remaining Items
 

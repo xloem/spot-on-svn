@@ -198,9 +198,14 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		      {
 			QSqlQuery deleteQuery(db);
 
-			query.exec("PRAGMA foreign_keys = ON");
 			deleteQuery.prepare("DELETE FROM folders WHERE "
 					    "OID = ?");
+			deleteQuery.bindValue
+			  (0, query.value(query.record().count() - 1));
+			deleteQuery.exec();
+			deleteQuery.prepare
+			  ("DELETE FROM folders_attachment WHERE "
+			   "folders_oid = ?");
 			deleteQuery.bindValue
 			  (0, query.value(query.record().count() - 1));
 			deleteQuery.exec();
@@ -677,7 +682,6 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		{
 		  QSqlQuery deleteQuery(db);
 
-		  query.exec("PRAGMA foreign_keys = ON");
 		  deleteQuery.prepare("DELETE FROM listeners WHERE "
 				      "hash = ?");
 		  deleteQuery.bindValue(0, query.value(10));
@@ -1520,11 +1524,18 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		{
 		  QSqlQuery deleteQuery(db);
 
-		  query.exec("PRAGMA foreign_keys = ON");
 		  deleteQuery.prepare("DELETE FROM transmitted WHERE "
 				      "mosaic = ?");
 		  deleteQuery.bindValue(0, query.value(2));
 		  deleteQuery.exec();
+		  deleteQuery.exec
+		    ("DELETE FROM transmitted_magnets WHERE "
+		     "transmitted_oid NOT IN "
+		     "(SELECT OID FROM transmitted)");
+		  deleteQuery.exec
+		    ("DELETE FROM transmitted_scheduled_pulses WHERE "
+		     "transmitted_oid NOT IN "
+		     "(SELECT OID FROM transmitted)");
 		}
 	    }
 

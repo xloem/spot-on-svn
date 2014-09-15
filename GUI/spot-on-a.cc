@@ -4091,7 +4091,6 @@ void spoton::slotDeleteListener(void)
 	if(!isKernelActive())
 	  {
 	    deleteListener = true;
-	    query.exec("PRAGMA foreign_keys = ON");
 	    query.prepare("DELETE FROM listeners WHERE "
 			  "OID = ?");
 	  }
@@ -4262,7 +4261,6 @@ void spoton::updateListenersTable(const QSqlDatabase &db)
 	** information.
 	*/
 
-	query.exec("PRAGMA foreign_keys = ON");
 	query.exec("DELETE FROM listeners WHERE "
 		   "status_control = 'deleted'");
 	query.exec("DELETE FROM listeners_accounts WHERE "
@@ -5757,7 +5755,6 @@ void spoton::slotDeleteAllListeners(void)
 
 	if(!isKernelActive())
 	  {
-	    query.exec("PRAGMA foreign_keys = ON");
 	    query.exec("DELETE FROM listeners");
 	    query.exec("DELETE FROM listeners_accounts");
 	    query.exec

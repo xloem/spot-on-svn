@@ -62,7 +62,6 @@ spoton_starbeam_reader::~spoton_starbeam_reader()
       {
 	QSqlQuery query(db);
 
-	query.exec("PRAGMA foreign_keys = ON");
 	query.prepare("DELETE FROM transmitted WHERE OID = ? AND "
 		      "status_control = 'deleted'");
 	query.bindValue(0, m_id);

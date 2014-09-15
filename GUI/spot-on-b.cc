@@ -3352,7 +3352,6 @@ void spoton::slotDeleteMail(void)
 
 	    if(m_ui.folder->currentIndex() == 2) // Trash
 	      {
-		query.exec("PRAGMA foreign_keys = ON");
 		query.prepare("DELETE FROM folders WHERE OID = ?");
 		query.bindValue(0, oid);
 	      }
@@ -3374,24 +3373,40 @@ void spoton::slotDeleteMail(void)
 	      }
 
 	    if(ok)
-	      if(!query.exec())
-		/*
-		** We may be attempting to delete a letter from the
-		** inbox that also exists in the trash. This can occur
-		** whenever we request e-mail from other offices that was
-		** also delivered to us.
-		** The letter's date in the trash folder will be stale.
-		*/
+	      {
+		if(!query.exec())
+		  {
+		    /*
+		    ** We may be attempting to delete a letter from the
+		    ** inbox that also exists in the trash. This can occur
+		    ** whenever we request e-mail from other offices that was
+		    ** also delivered to us.
+		    ** The letter's date in the trash folder will be stale.
+		    */
 
-		if(query.lastError().text().toLower().contains("unique"))
+		    if(query.lastError().text().toLower().contains("unique"))
+		      {
+			QSqlQuery query(db);
+
+			query.prepare("DELETE FROM folders WHERE OID = ?");
+			query.bindValue(0, oid);
+			query.exec();
+			query.prepare("DELETE FROM folders_attachment "
+				      "WHERE folders_oid = ?");
+			query.bindValue(0, oid);
+			query.exec();
+		      }
+		  }
+		else if(m_ui.folder->currentIndex() == 2) // Trash
 		  {
 		    QSqlQuery query(db);
 
-		    query.exec("PRAGMA foreign_keys = ON");
-		    query.prepare("DELETE FROM folders WHERE OID = ?");
+		    query.prepare("DELETE FROM folders_attachment "
+				  "WHERE folders_oid = ?");
 		    query.bindValue(0, oid);
 		    query.exec();
 		  }
+	      }
 	  }
       }
 
@@ -3521,8 +3536,9 @@ void spoton::slotEmptyTrash(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("PRAGMA foreign_keys = ON");
 	query.exec("DELETE FROM folders WHERE folder_index = 2");
+	query.exec("DELETE FROM folders_attachment WHERE folders_oid "
+		   "NOT IN (SELECT OID FROM folders)");
       }
 
     db.close();
