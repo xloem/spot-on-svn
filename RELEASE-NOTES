@@ -3,9 +3,11 @@
 1.   Corrected ARM project files.
 2.   Single e-mail attachments. Limited in size.
 3.   Removed -L/usr/local/lib from spot-on-gui.pro. Incorrect.
-4.   Display initial message popup.
+4.   Display initial chat message popup.
 5.   Removed spoton_kernel::s_remoteConnections because its maintenance is
      problematic.
+6.   Enabled foreign key support.
+     Please see http://www.sqlite.org/foreignkeys.html.
 
 0.11 (09/08/2014)
 
