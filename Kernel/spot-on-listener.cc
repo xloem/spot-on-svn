@@ -332,6 +332,7 @@ spoton_listener::~spoton_listener()
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA foreign_keys = ON");
 	query.prepare("DELETE FROM listeners WHERE OID = ? AND "
 		      "status_control = 'deleted'");
 	query.bindValue(0, m_id);

@@ -116,6 +116,7 @@ Completed Items
 82.    Purge items from post_office if their dates are invalid.
 83.    Perform calling over geminis.
 84.    Accounts and allowed IP addresses suffer selection issues.
+85.    Enable SQLite foreign key support via PRAGMA foreign_keys = ON.
 
 Ignored Items
 
@@ -209,4 +210,3 @@ Remaining Items
 35.    Do something about whitespace. There are many input paths that
        ought to be considered.
 36.    E-mail institutions do not require dispatcher signatures.
-37.    Enable SQLite foreign key support via PRAGMA foreign_keys = ON.

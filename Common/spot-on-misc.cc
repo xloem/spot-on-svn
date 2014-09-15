@@ -1084,7 +1084,10 @@ void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
 	  query.prepare("UPDATE folders SET status = ? WHERE "
 			"OID = ?");
 	else
-	  query.prepare("DELETE FROM folders WHERE OID = ?");
+	  {
+	    query.exec("PRAGMA foreign_keys = ON");
+	    query.prepare("DELETE FROM folders WHERE OID = ?");
+	  }
 
 	for(int i = 0; i < oids.size(); i++)
 	  {
@@ -1169,6 +1172,7 @@ void spoton_misc::cleanupDatabases(spoton_crypt *crypt)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA foreign_keys = ON");
 	query.exec("DELETE FROM listeners WHERE "
 		   "status_control = 'deleted'");
 	query.exec("DELETE FROM listeners_accounts WHERE "
@@ -1233,6 +1237,7 @@ void spoton_misc::cleanupDatabases(spoton_crypt *crypt)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA foreign_keys = ON");
 	query.exec("DELETE FROM transmitted WHERE "
 		   "status_control = 'deleted'");
 	query.exec("DELETE FROM transmitted_magnets WHERE "
@@ -2130,6 +2135,7 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
 		QSqlQuery query(db);
 		bool ok = true;
 
+		query.exec("PRAGMA foreign_keys = ON");
 		query.prepare("DELETE FROM listeners_accounts "
 			      "WHERE account_name_hash = ? AND "
 			      "listener_oid = ? AND one_time_account = 1");

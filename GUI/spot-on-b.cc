@@ -3352,6 +3352,7 @@ void spoton::slotDeleteMail(void)
 
 	    if(m_ui.folder->currentIndex() == 2) // Trash
 	      {
+		query.exec("PRAGMA foreign_keys = ON");
 		query.prepare("DELETE FROM folders WHERE OID = ?");
 		query.bindValue(0, oid);
 	      }
@@ -3386,6 +3387,7 @@ void spoton::slotDeleteMail(void)
 		  {
 		    QSqlQuery query(db);
 
+		    query.exec("PRAGMA foreign_keys = ON");
 		    query.prepare("DELETE FROM folders WHERE OID = ?");
 		    query.bindValue(0, oid);
 		    query.exec();
@@ -3519,6 +3521,7 @@ void spoton::slotEmptyTrash(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA foreign_keys = ON");
 	query.exec("DELETE FROM folders WHERE folder_index = 2");
       }
 
