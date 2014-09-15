@@ -8,6 +8,8 @@
      problematic.
 6.   Remove broken transmitted_magnets and transmitted_scheduled_pulses
      entries in spot-on-reencode.cc.
+7.   Removed foreign key support for new installations. The previous
+     usage was incorrect and redundant.
 
 0.11 (09/08/2014)
 
