@@ -3036,7 +3036,15 @@ void spoton::slotRefreshMail(void)
 			      item = new QTableWidgetItem("#####");
 			  }
 		      }
-		    else if(i == 5)
+		    else if(i == 4) // attachment(s) count
+		      {
+			if(goldbug == "0")
+			  item = new QTableWidgetItem
+			    (query.value(i).toString());
+			else
+			  item = new QTableWidgetItem("#####");
+		      }
+		    else if(i == 5) // goldbug
 		      item = new QTableWidgetItem(goldbug);
 		    else
 		      item = new QTableWidgetItem(query.value(i).toString());
