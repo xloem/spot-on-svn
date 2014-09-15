@@ -1594,6 +1594,17 @@ void spoton::slotAddAttachment(void)
 
 void spoton::slotSaveAttachment(void)
 {
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
+
+  if(!crypt)
+    {
+      QMessageBox::critical(this, tr("%1: Error").
+			    arg(SPOTON_APPLICATION_NAME),
+			    tr("Invalid spoton_crypt object. "
+			       "This is a fatal flaw."));
+      return;
+    }
+
   QModelIndexList list;
 
   list = m_ui.mail->selectionModel()->selectedRows(4); // Attachment(s)
@@ -1624,5 +1635,48 @@ void spoton::slotSaveAttachment(void)
 
   if(dialog.exec() == QDialog::Accepted)
     {
+      QString connectionName("");
+
+      {
+	QSqlDatabase db = spoton_misc::database(connectionName);
+
+	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			   "email.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+
+	    query.setForwardOnly(true);
+	    query.prepare("SELECT data FROM folders_attachment "
+			  "WHERE folders_oid = ?");
+	    query.bindValue(0, list.value(0).data().toString());
+
+	    if(query.exec())
+	      if(query.next())
+		{
+		  QByteArray attachment;
+		  bool ok = true;
+
+		  attachment = crypt->decryptedAfterAuthenticated
+		    (QByteArray::fromBase64(query.value(0).toByteArray()),
+		     &ok);
+
+		  if(ok)
+		    {
+		      QFile file(dialog.selectedFiles().value(0));
+
+		      if(file.open(QIODevice::WriteOnly))
+			file.write(attachment, attachment.length());
+
+		      file.close();
+		    }
+		}
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase(connectionName);
     }
 }
