@@ -136,9 +136,7 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS "
 		   "folders_attachment ("
 		   "data BLOB NOT NULL, "
-		   "folders_oid INTEGER NOT NULL, "
-		   "FOREIGN KEY (folders_oid) REFERENCES "
-		   "folders (OID) ON DELETE CASCADE)");
+		   "folders_oid INTEGER NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS institutions ("
 		   "cipher_type TEXT NOT NULL, "
 		   "hash TEXT PRIMARY KEY NOT NULL, " /*
@@ -315,17 +313,13 @@ void spoton_misc::prepareDatabases(void)
 		   "account_password TEXT NOT NULL, "
 		   "listener_oid INTEGER NOT NULL, "
 		   "one_time_account INTEGER NOT NULL DEFAULT 0, "
-		   "PRIMARY KEY (listener_oid, account_name_hash), "
-		   "FOREIGN KEY (listener_oid) REFERENCES "
-		   "listeners (OID) ON DELETE CASCADE)");
+		   "PRIMARY KEY (listener_oid, account_name_hash))");
 	query.exec("CREATE TABLE IF NOT EXISTS "
 		   "listeners_accounts_consumed_authentications ("
 		   "data TEXT NOT NULL, "
 		   "insert_date TEXT NOT NULL DEFAULT 'now', "
 		   "listener_oid INTEGER NOT NULL, "
-		   "PRIMARY KEY (listener_oid, data), "
-		   "FOREIGN KEY (listener_oid) REFERENCES "
-		   "listeners (OID) ON DELETE CASCADE)");
+		   "PRIMARY KEY (listener_oid, data))");
 	query.exec("CREATE TABLE IF NOT EXISTS "
 		   "listeners_adaptive_echo_tokens ("
 		   "token TEXT NOT NULL, "
@@ -343,9 +337,7 @@ void spoton_misc::prepareDatabases(void)
 		   "ip_address TEXT NOT NULL, "
 		   "ip_address_hash TEXT NOT NULL, " // Keyed hash.
 		   "listener_oid INTEGER NOT NULL, "
-		   "PRIMARY KEY (ip_address_hash, listener_oid), "
-		   "FOREIGN KEY (listener_oid) REFERENCES "
-		   "listeners (OID) ON DELETE CASCADE)");
+		   "PRIMARY KEY (ip_address_hash, listener_oid))");
       }
 
     db.close();
@@ -482,16 +474,12 @@ void spoton_misc::prepareDatabases(void)
 		   "magnet BLOB NOT NULL, "
 		   "magnet_hash TEXT NOT NULL, " // Keyed hash.
 		   "transmitted_oid INTEGER NOT NULL, "
-		   "PRIMARY KEY (magnet_hash, transmitted_oid), "
-		   "FOREIGN KEY (transmitted_oid) REFERENCES "
-		   "transmitted (OID))");
+		   "PRIMARY KEY (magnet_hash, transmitted_oid))");
 	query.exec("CREATE TABLE IF NOT EXISTS transmitted_scheduled_pulses ("
 		   "position TEXT NOT NULL, "
 		   "position_hash TEXT NOT NULL, " // Keyed hash.
 		   "transmitted_oid INTEGER NOT NULL, "
-		   "PRIMARY KEY (position_hash, transmitted_oid), "
-		   "FOREIGN KEY (transmitted_oid) REFERENCES "
-		   "transmitted (OID))");
+		   "PRIMARY KEY (position_hash, transmitted_oid))");
       }
 
     db.close();
