@@ -174,11 +174,10 @@ void spoton_mailer::slotTimeout(void)
 	      if(ok)
 		{
 		  QSqlQuery query(db1);
-		  bool ok = true;
 
 		  query.setForwardOnly(true);
 		  query.prepare("SELECT data FROM folders_attachment "
-				"WHERE OID = ?");
+				"WHERE folders_oid = ?");
 		  query.bindValue(0, mailOid);
 
 		  if(query.exec())
@@ -226,7 +225,7 @@ void spoton_mailer::slotTimeout(void)
 		    vector.value(3).toByteArray(),
 		    vector.value(4).toByteArray(),
 		    vector.value(5).toByteArray(),
-		    vector.value(5).toLongLong());
+		    vector.value(6).toLongLong());
     }
 }
 

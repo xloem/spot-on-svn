@@ -1094,8 +1094,9 @@ void spoton_misc::moveSentMailToSentFolder(const QList<qint64> &oids,
 		  {
 		    QSqlQuery query(db);
 
-		    query.prepare("DELETE FROM folders_attachment WHERE "
-				  "folders_oid = ?");
+		    query.prepare
+		      ("DELETE FROM folders_attachment WHERE "
+		       "folders_oid = ?");
 		    query.bindValue(0, oids.at(i));
 		    query.exec();
 		  }
