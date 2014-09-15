@@ -6,8 +6,8 @@
 4.   Display initial chat message popup.
 5.   Removed spoton_kernel::s_remoteConnections because its maintenance is
      problematic.
-6.   Enabled foreign key support.
-     Please see http://www.sqlite.org/foreignkeys.html.
+6.   Remove broken transmitted_magnets and transmitted_scheduled_pulses
+     entries in spot-on-reencode.cc.
 
 0.11 (09/08/2014)
 
