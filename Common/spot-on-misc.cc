@@ -136,7 +136,8 @@ void spoton_misc::prepareDatabases(void)
 	query.exec("CREATE TABLE IF NOT EXISTS "
 		   "folders_attachment ("
 		   "data BLOB NOT NULL, "
-		   "folders_oid INTEGER NOT NULL)");
+		   "folders_oid INTEGER NOT NULL, "
+		   "name TEXT NOT NULL)");
 	query.exec("CREATE TABLE IF NOT EXISTS institutions ("
 		   "cipher_type TEXT NOT NULL, "
 		   "hash TEXT PRIMARY KEY NOT NULL, " /*

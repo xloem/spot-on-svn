@@ -268,6 +268,7 @@ class spoton_neighbor: public QThread
 		   const QByteArray &subject,
 		   const QByteArray &message,
 		   const QByteArray &attachment,
+		   const QByteArray &attachmentName,
 		   const QByteArray &signature,
 		   const bool goldbugUsed);
   void storeLetter(const QList<QByteArray> &list,
