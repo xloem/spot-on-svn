@@ -3183,7 +3183,15 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
 
 	int rc = applyGoldbugToLetter(goldbug.toLatin1(), row);
 
-	if(rc == APPLY_GOLDBUG_TO_LETTER_ERROR_DATABASE)
+	if(rc == APPLY_GOLDBUG_TO_LETTER_ERROR_ATTACHMENTS)
+	  {
+	    QMessageBox::critical(this, tr("%1: Error").
+				  arg(SPOTON_APPLICATION_NAME),
+				  tr("An error occurred while processing "
+				     "the attachments."));
+	    return;
+	  }
+	else if(rc == APPLY_GOLDBUG_TO_LETTER_ERROR_DATABASE)
 	  {
 	    QMessageBox::critical(this, tr("%1: Error").
 				  arg(SPOTON_APPLICATION_NAME),
@@ -3967,13 +3975,18 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
       {
 	QList<QByteArray> list;
 	QSqlQuery query(db);
+	int attachmentsCount = 0;
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT date, message, message_code, "
 		      "receiver_sender, receiver_sender_hash, "
-		      "subject FROM folders "
+		      "subject, "
+		      "(SELECT COUNT(*) FROM folders_attachment WHERE "
+		      "folders_oid = ?) "
+		      "FROM folders "
 		      "WHERE OID = ?");
 	query.bindValue(0, oid);
+	query.bindValue(1, oid);
 
 	if((ok = query.exec()))
 	  if((ok = query.next()))
@@ -3983,13 +3996,8 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
 		  list.append
 		    (QByteArray::fromBase64(query.value(i).
 					    toByteArray()));
-		else if(i == 5) // subject
-		  list.append
-		    (m_crypts.value("email")->
-		     decryptedAfterAuthenticated
-		     (QByteArray::fromBase64(query.value(i).
-					     toByteArray()),
-		      &ok).trimmed());
+		else if(i == 6) // attachment(s)
+		  list.append(query.value(i).toString().toLatin1());
 		else
 		  list.append
 		    (m_crypts.value("email")->
@@ -4023,10 +4031,10 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
 
 	    for(int i = 0; i < list.size(); i++)
 	      {
-		if(i == 0 || i == 2 || i == 4)
+		if(i == 0 || i == 2 || i == 4 || i == 6)
 		  /*
-		  ** Ignore the date, message_code, and
-		  ** receiver_sender_hash columns.
+		  ** Ignore the date, message_code,
+		  ** receiver_sender_hash, and attachment(s) count columns.
 		  */
 
 		  continue;
@@ -4041,6 +4049,20 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
 		    break;
 		  }
 	      }
+
+	    if(ok)
+	      {
+		/*
+		** Let's prepare the attachments.
+		*/
+
+		applyGoldbugToAttachments
+		  (oid, db, &attachmentsCount, &crypt, &ok);
+
+		if(!ok)
+		  if(rc == 0)
+		    rc = APPLY_GOLDBUG_TO_LETTER_ERROR_ATTACHMENTS;
+	      }
 	  }
 
 	if(ok)
@@ -4052,6 +4074,7 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
 	    ** list[3]: receiver_sender
 	    ** list[4]: receiver_sender_hash
 	    ** list[5]: subject
+	    ** list[6]: attachment(s) count
 	    */
 
 	    QSqlQuery updateQuery(db);
@@ -4155,6 +4178,11 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
 
 	    if(item)
 	      item->setText(list.value(5).constData());
+
+	    item = m_ui.mail->item(row, 4); // Attachment(s)
+
+	    if(item)
+	      item->setText(QString::number(attachmentsCount));
 
 	    item = m_ui.mail->item(row, 5); // Goldbug
 

@@ -1626,7 +1626,7 @@ void spoton::slotSaveAttachment(void)
   dialog.setFileMode(QFileDialog::AnyFile);
   dialog.setDirectory(QDir::homePath());
   dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
-  dialog.setAcceptMode(QFileDialog::AcceptOpen);
+  dialog.setAcceptMode(QFileDialog::AcceptSave);
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
@@ -1679,4 +1679,125 @@ void spoton::slotSaveAttachment(void)
 
       QSqlDatabase::removeDatabase(connectionName);
     }
+}
+
+void spoton::applyGoldbugToAttachments(const QString &folderOid,
+				       const QSqlDatabase &db,
+				       int *count,
+				       spoton_crypt *crypt1,
+				       bool *ok1)
+{
+  if(!count || !crypt1)
+    {
+      if(ok1)
+	*ok1 = false;
+
+      return;
+    }
+ 
+  spoton_crypt *crypt2 = m_crypts.value("email", 0);
+
+  if(!crypt2)
+    {
+      if(ok1)
+	*ok1 = false;
+
+      return;
+    }
+
+  QSqlQuery query(db);
+
+  query.setForwardOnly(true);
+  query.prepare("SELECT data, OID FROM folders_attachment WHERE "
+		"folders_oid = ?");
+  query.bindValue(0, folderOid);
+
+  if(query.exec())
+    {
+      while(query.next())
+	{
+	  QByteArray attachment
+	    (QByteArray::fromBase64(query.value(0).toByteArray()));
+	  bool ok2 = true;
+
+	  attachment = crypt2->decryptedAfterAuthenticated(attachment, &ok2);
+
+	  if(ok2)
+	    {
+	      attachment = crypt1->decrypted(attachment, &ok2);
+
+	      if(ok2)
+		{
+		  if(!attachment.isEmpty())
+		    {
+		      *count = *count + 1;
+
+		      QSqlQuery updateQuery(db);
+
+		      updateQuery.prepare("UPDATE folders_attachment "
+					  "SET data = ? "
+					  "WHERE OID = ?");
+		      updateQuery.bindValue
+			(0, crypt2->encryptedThenHashed(attachment, &ok2).
+			 toBase64());
+		      updateQuery.bindValue(1, query.value(1));
+
+		      if(ok2)
+			{
+			  if(updateQuery.exec())
+			    {
+			    }
+			  else
+			    {
+			      if(*ok1)
+				*ok1 = false;
+
+			      break;
+			    }
+			}
+		      else
+			{
+			  if(ok1)
+			    *ok1 = false;
+
+			  break;
+			}
+		    }
+		  else
+		    {
+		      QSqlQuery deleteQuery(db);
+
+		      deleteQuery.prepare("DELETE FROM folders_attachment "
+					  "WHERE OID = ?");
+		      deleteQuery.bindValue(0, query.value(1));
+
+		      if(deleteQuery.exec())
+			{
+			}
+		      else
+			{
+			  if(ok1)
+			    *ok1 = false;
+			}
+		    }
+		}
+	      else
+		{
+		  if(ok1)
+		    *ok1 = false;
+
+		  break;
+		}
+	    }
+	  else
+	    {
+	      if(*ok1)
+		*ok1 = false;
+
+	      break;
+	    }
+	}
+    }
+  else if(ok1)
+    *ok1 = false;
 }

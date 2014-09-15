@@ -112,9 +112,10 @@ class spoton: public QMainWindow
   static QString mapIconToEmoticon(const QString &content);
 
  private:
-  static const int APPLY_GOLDBUG_TO_LETTER_ERROR_DATABASE = 1;
-  static const int APPLY_GOLDBUG_TO_LETTER_ERROR_GENERAL = 2;
-  static const int APPLY_GOLDBUG_TO_LETTER_ERROR_MEMORY = 3;
+  static const int APPLY_GOLDBUG_TO_LETTER_ERROR_ATTACHMENTS = 1;
+  static const int APPLY_GOLDBUG_TO_LETTER_ERROR_DATABASE = 2;
+  static const int APPLY_GOLDBUG_TO_LETTER_ERROR_GENERAL = 3;
+  static const int APPLY_GOLDBUG_TO_LETTER_ERROR_MEMORY = 4;
   QByteArray m_kernelSocketData;
   QDateTime m_buzzFavoritesLastModificationTime;
   QDateTime m_magnetsLastModificationTime;
@@ -167,9 +168,14 @@ class spoton: public QMainWindow
   int applyGoldbugToLetter(const QByteArray &goldbug,
 			   const int row);
   void addFriendsKey(const QByteArray &key);
+  void applyGoldbugToAttachments(const QString &folderOid,
+				 const QSqlDatabase &db,
+				 int *count,
+				 spoton_crypt *crypt,
+				 bool *ok);
+  void askKernelToReadStarBeamKeys(void);
   void authenticate(spoton_crypt *crypt, const QString &oid,
 		    const QString &message = QString(""));
-  void askKernelToReadStarBeamKeys(void);
   void authenticationRequested(const QByteArray &data);
   void changeEchoMode(const QString &mode, QTableWidget *tableWidget);
   void cleanup(void);
