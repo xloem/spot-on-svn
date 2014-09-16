@@ -123,6 +123,7 @@ void spoton_mailer::slotTimeout(void)
 		continue;
 
 	      QByteArray attachment;
+	      QByteArray attachmentName;
 	      QByteArray goldbug;
 	      QByteArray message;
 	      QByteArray publicKey;
@@ -176,16 +177,25 @@ void spoton_mailer::slotTimeout(void)
 		  QSqlQuery query(db1);
 
 		  query.setForwardOnly(true);
-		  query.prepare("SELECT data FROM folders_attachment "
+		  query.prepare("SELECT data, name FROM folders_attachment "
 				"WHERE folders_oid = ?");
 		  query.bindValue(0, mailOid);
 
 		  if(query.exec())
 		    if(query.next())
-		      attachment = s_crypt->
-			decryptedAfterAuthenticated
-			(QByteArray::fromBase64(query.value(0).toByteArray()),
-			 &ok);
+		      {
+			attachment = s_crypt->
+			  decryptedAfterAuthenticated
+			  (QByteArray::fromBase64(query.value(0).toByteArray()),
+			   &ok);
+
+			if(ok)
+			  attachmentName = s_crypt->
+			    decryptedAfterAuthenticated
+			    (QByteArray::fromBase64(query.value(1).
+						    toByteArray()),
+			     &ok);
+		      }
 		}
 
 	      if(ok)
@@ -198,6 +208,7 @@ void spoton_mailer::slotTimeout(void)
 			 << publicKey
 			 << subject
 			 << attachment
+			 << attachmentName
 			 << mailOid;
 		  list.append(vector);
 		}
@@ -225,7 +236,8 @@ void spoton_mailer::slotTimeout(void)
 		    vector.value(3).toByteArray(),
 		    vector.value(4).toByteArray(),
 		    vector.value(5).toByteArray(),
-		    vector.value(6).toLongLong());
+		    vector.value(6).toByteArray(),
+		    vector.value(7).toLongLong());
     }
 }
 

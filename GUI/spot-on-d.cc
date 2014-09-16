@@ -1618,67 +1618,81 @@ void spoton::slotSaveAttachment(void)
   if(list.isEmpty())
     return;
 
-  QFileDialog dialog(this);
+  {
+    QString connectionName("");
 
-  dialog.setWindowTitle
-    (tr("%1: Save Attachment").
-     arg(SPOTON_APPLICATION_NAME));
-  dialog.setFileMode(QFileDialog::AnyFile);
-  dialog.setDirectory(QDir::homePath());
-  dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
-  dialog.setAcceptMode(QFileDialog::AcceptSave);
+    {
+      QSqlDatabase db = spoton_misc::database(connectionName);
+
+      db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			 "email.db");
+
+      if(db.open())
+	{
+	  QSqlQuery query(db);
+
+	  query.setForwardOnly(true);
+	  query.prepare("SELECT data, name FROM folders_attachment "
+			"WHERE folders_oid = ?");
+	  query.bindValue(0, list.value(0).data().toString());
+
+	  if(query.exec())
+	    if(query.next())
+	      {
+		QString attachmentName;
+		bool ok = true;
+
+		attachmentName = QString::fromUtf8
+		  (crypt->
+		   decryptedAfterAuthenticated(QByteArray::
+					       fromBase64(query.value(1).
+							  toByteArray()),
+					       &ok));
+
+		if(ok)
+		  {
+		    QFileDialog dialog(this);
+
+		    dialog.setWindowTitle
+		      (tr("%1: Save Attachment").
+		       arg(SPOTON_APPLICATION_NAME));
+		    dialog.setFileMode(QFileDialog::AnyFile);
+		    dialog.setDirectory(QDir::homePath());
+		    dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
+		    dialog.setAcceptMode(QFileDialog::AcceptSave);
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
-  dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+		    dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #endif
 #endif
+		    if(dialog.exec() == QDialog::Accepted)
+		      {
+			QByteArray attachment;
 
-  if(dialog.exec() == QDialog::Accepted)
-    {
-      QString connectionName("");
+			attachment = crypt->decryptedAfterAuthenticated
+		          (QByteArray::fromBase64(query.value(0).
+						  toByteArray()),
+			   &ok);
 
-      {
-	QSqlDatabase db = spoton_misc::database(connectionName);
+			if(ok)
+			  {
+			    QFile file(dialog.selectedFiles().value(0));
 
-	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
-			   "email.db");
+			    if(file.open(QIODevice::WriteOnly))
+			      file.write(attachment, attachment.length());
 
-	if(db.open())
-	  {
-	    QSqlQuery query(db);
+			    file.close();
+			  }
+		      }
+		  }
+	      }
+	}
 
-	    query.setForwardOnly(true);
-	    query.prepare("SELECT data FROM folders_attachment "
-			  "WHERE folders_oid = ?");
-	    query.bindValue(0, list.value(0).data().toString());
-
-	    if(query.exec())
-	      if(query.next())
-		{
-		  QByteArray attachment;
-		  bool ok = true;
-
-		  attachment = crypt->decryptedAfterAuthenticated
-		    (QByteArray::fromBase64(query.value(0).toByteArray()),
-		     &ok);
-
-		  if(ok)
-		    {
-		      QFile file(dialog.selectedFiles().value(0));
-
-		      if(file.open(QIODevice::WriteOnly))
-			file.write(attachment, attachment.length());
-
-		      file.close();
-		    }
-		}
-	  }
-
-	db.close();
-      }
-
-      QSqlDatabase::removeDatabase(connectionName);
+      db.close();
     }
+
+    QSqlDatabase::removeDatabase(connectionName);
+  }
 }
 
 void spoton::applyGoldbugToAttachments(const QString &folderOid,
@@ -1708,7 +1722,7 @@ void spoton::applyGoldbugToAttachments(const QString &folderOid,
   QSqlQuery query(db);
 
   query.setForwardOnly(true);
-  query.prepare("SELECT data, OID FROM folders_attachment WHERE "
+  query.prepare("SELECT data, name, OID FROM folders_attachment WHERE "
 		"folders_oid = ?");
   query.bindValue(0, folderOid);
 
@@ -1718,13 +1732,22 @@ void spoton::applyGoldbugToAttachments(const QString &folderOid,
 	{
 	  QByteArray attachment
 	    (QByteArray::fromBase64(query.value(0).toByteArray()));
+	  QByteArray attachmentName
+	    (QByteArray::fromBase64(query.value(1).toByteArray()));
 	  bool ok2 = true;
 
 	  attachment = crypt2->decryptedAfterAuthenticated(attachment, &ok2);
 
 	  if(ok2)
+	    attachmentName = crypt2->decryptedAfterAuthenticated
+	      (attachmentName, &ok2);
+
+	  if(ok2)
 	    {
 	      attachment = crypt1->decrypted(attachment, &ok2);
+
+	      if(ok2)
+		attachmentName = crypt1->decrypted(attachmentName, &ok2);
 
 	      if(ok2)
 		{
@@ -1735,12 +1758,20 @@ void spoton::applyGoldbugToAttachments(const QString &folderOid,
 		      QSqlQuery updateQuery(db);
 
 		      updateQuery.prepare("UPDATE folders_attachment "
-					  "SET data = ? "
+					  "SET data = ?, "
+					  "name = ? "
 					  "WHERE OID = ?");
 		      updateQuery.bindValue
 			(0, crypt2->encryptedThenHashed(attachment, &ok2).
 			 toBase64());
-		      updateQuery.bindValue(1, query.value(1));
+
+		      if(ok2)
+			updateQuery.bindValue
+			  (1, crypt2->encryptedThenHashed(attachmentName,
+							  &ok2).
+			   toBase64());
+
+		      updateQuery.bindValue(2, query.value(1));
 
 		      if(ok2)
 			{

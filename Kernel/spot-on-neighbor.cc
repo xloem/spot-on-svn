@@ -2883,8 +2883,7 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
 			        QByteArray::fromBase64(list.value(5));
 			      signature =
 				QByteArray::fromBase64(list.value(6));
-			      goldbugUsed =
-				QVariant
+			      goldbugUsed = QVariant
 				(QByteArray::fromBase64(list.value(7))).
 				toBool();
 			    }
@@ -5176,7 +5175,7 @@ void spoton_neighbor::storeLetter(const QByteArray &symmetricKey,
 		    {
 		      query.prepare("INSERT INTO folders_attachment "
 				    "(data, folders_oid, name) "
-				    "VALUES (?, ?)");
+				    "VALUES (?, ?, ?)");
 		      query.bindValue
 			(0, s_crypt->encryptedThenHashed(attachment,
 							 &ok).toBase64());

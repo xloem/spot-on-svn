@@ -2318,6 +2318,7 @@ void spoton::slotSendMail(void)
     }
 
   QByteArray attachment;
+  QString fileName;
 
   if(!m_ui.attachment->text().isEmpty())
     {
@@ -2348,6 +2349,8 @@ void spoton::slotSendMail(void)
 	     tr("An error occurred while reading the attachment."));
 	  return;
 	}
+
+      fileName = fileInfo.fileName();
     }
 
   spoton_crypt *crypt = m_crypts.value("email", 0);
@@ -2498,13 +2501,20 @@ void spoton::slotSendMail(void)
 		    if(variant.isValid())
 		      {
 			query.prepare("INSERT INTO folders_attachment "
-				      "(data, folders_oid) "
-				      "VALUES (?, ?)");
+				      "(data, folders_oid, name) "
+				      "VALUES (?, ?, ?)");
 			query.bindValue
 			  (0, crypt->encryptedThenHashed(attachment,
 							 &ok).toBase64());
 			query.bindValue(1, id);
-			query.exec();
+
+			if(ok)
+			  query.bindValue
+			    (2, crypt->encryptedThenHashed(fileName.toUtf8(),
+							   &ok).toBase64());
+
+			if(ok)
+			  query.exec();
 		      }
 		  }
 	  }
