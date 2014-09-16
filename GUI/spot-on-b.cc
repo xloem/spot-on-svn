@@ -4200,7 +4200,7 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
 	    item = m_ui.mail->item(row, 4); // Attachment(s)
 
 	    if(item)
-	      item->setText(QString::number(attachmentsCount));
+	      item->setText(QString::number(qMax(0, attachmentsCount)));
 
 	    item = m_ui.mail->item(row, 5); // Goldbug
 
@@ -4276,7 +4276,7 @@ void spoton::slotReply(void)
 
     return;
 
-  item = m_ui.mail->item(row, 5); // Message
+  item = m_ui.mail->item(row, 6); // Message
 
   if(!item)
     return;

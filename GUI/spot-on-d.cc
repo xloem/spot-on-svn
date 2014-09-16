@@ -1653,6 +1653,7 @@ void spoton::slotSaveAttachment(void)
 		  {
 		    QFileDialog dialog(this);
 
+		    dialog.selectFile(attachmentName);
 		    dialog.setWindowTitle
 		      (tr("%1: Save Attachment").
 		       arg(SPOTON_APPLICATION_NAME));
@@ -1753,8 +1754,6 @@ void spoton::applyGoldbugToAttachments(const QString &folderOid,
 		{
 		  if(!attachment.isEmpty())
 		    {
-		      *count = *count + 1;
-
 		      QSqlQuery updateQuery(db);
 
 		      updateQuery.prepare("UPDATE folders_attachment "
@@ -1771,13 +1770,12 @@ void spoton::applyGoldbugToAttachments(const QString &folderOid,
 							  &ok2).
 			   toBase64());
 
-		      updateQuery.bindValue(2, query.value(1));
+		      updateQuery.bindValue(2, query.value(2));
 
 		      if(ok2)
 			{
 			  if(updateQuery.exec())
-			    {
-			    }
+			    *count += 1;
 			  else
 			    {
 			      if(*ok1)
@@ -1800,15 +1798,16 @@ void spoton::applyGoldbugToAttachments(const QString &folderOid,
 
 		      deleteQuery.prepare("DELETE FROM folders_attachment "
 					  "WHERE OID = ?");
-		      deleteQuery.bindValue(0, query.value(1));
+		      deleteQuery.bindValue(0, query.value(2));
 
 		      if(deleteQuery.exec())
-			{
-			}
+			*count -= 1;
 		      else
 			{
 			  if(ok1)
 			    *ok1 = false;
+
+			  break;
 			}
 		    }
 		}
