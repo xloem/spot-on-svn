@@ -3049,8 +3049,15 @@ void spoton::slotRefreshMail(void)
 		    else if(i == 4) // attachment(s) count
 		      {
 			if(goldbug == "0")
-			  item = new QTableWidgetItem
-			    (query.value(i).toString());
+			  {
+			    if(query.value(i).toLongLong() > 0)
+			      {
+				item = new QTableWidgetItem();
+				item->setIcon(QIcon(":/generic/attach.png"));
+			      }
+			    else
+			      item = new QTableWidgetItem();
+			  }
 			else
 			  item = new QTableWidgetItem("#####");
 		      }
@@ -4200,7 +4207,8 @@ int spoton::applyGoldbugToLetter(const QByteArray &goldbug,
 	    item = m_ui.mail->item(row, 4); // Attachment(s)
 
 	    if(item)
-	      item->setText(QString::number(qMax(0, attachmentsCount)));
+	      if(attachmentsCount > 0)
+		item->setIcon(QIcon(":/generic/attach.png"));
 
 	    item = m_ui.mail->item(row, 5); // Goldbug
 
