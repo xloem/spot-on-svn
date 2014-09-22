@@ -3,6 +3,8 @@
 1.   The method spoton_misc::authenticateAccount() should assume that
      the provided hash exists in listeners_accounts_consumed_authentications.
      This assumption will strengthen the method against SQLite failures.
+2.   NTRU support for FreeBSD, Linux, OS X, and Windows. Please see
+     spot-on-gui.pro for sample integration.
 
 0.12 (09/19/2014)
 
