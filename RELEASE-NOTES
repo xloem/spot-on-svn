@@ -1,3 +1,9 @@
+0.13 (10/01/2014)
+
+1.   The method spoton_misc::authenticateAccount() should assume that
+     the provided hash exists in listeners_accounts_consumed_authentications.
+     This assumption will strengthen the method against SQLite failures.
+
 0.12 (09/19/2014)
 
 1.   Corrected ARM project files.
