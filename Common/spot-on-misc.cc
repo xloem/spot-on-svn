@@ -2053,7 +2053,7 @@ bool spoton_misc::authenticateAccount(QByteArray &name,
     if(db.open())
       {
 	QSqlQuery query(db);
-	bool exists = false;
+	bool exists = true;
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT COUNT(*) FROM "
