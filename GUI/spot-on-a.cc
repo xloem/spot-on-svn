@@ -237,6 +237,9 @@ spoton::spoton(void):QMainWindow()
     ("QToolButton {border: none;}"
      "QToolButton::menu-button {border: none;}");
 #endif
+#ifdef SPOTON_LINKED_WITH_LIBNTRU
+  m_ui.encryptionKeyType->insertItem(1, tr("NTRU"));
+#endif
 #ifdef SPOTON_SCTP_ENABLED
   m_ui.listenerTransport->insertItem(0, tr("SCTP"));
   m_ui.neighborTransport->insertItem(0, tr("SCTP"));
@@ -722,6 +725,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.signatureKeyType,
 	  SLOT(setEnabled(bool)));
+  connect(m_ui.encryptionKeyType,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotEncryptionKeyTypeChanged(int)));
   connect(m_ui.signatureKeyType,
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
@@ -4526,10 +4533,19 @@ void spoton::slotSetPassphrase(void)
 	      QString signatureKeyType("");
 	      QStringList list;
 
+#ifdef SPOTON_LINKED_WITH_LIBNTRU
+	      if(m_ui.encryptionKeyType->currentIndex() == 0)
+		encryptionKeyType = "elg";
+	      else if(m_ui.encryptionKeyType->currentIndex() == 1)
+		encryptionKeyType = "ntru";
+	      else
+		encryptionKeyType = "rsa";
+#else
 	      if(m_ui.encryptionKeyType->currentIndex() == 0)
 		encryptionKeyType = "elg";
 	      else
 		encryptionKeyType = "rsa";
+#endif
 
 	      if(m_ui.signatureKeyType->currentIndex() == 0)
 		signatureKeyType = "dsa";
@@ -4575,12 +4591,12 @@ void spoton::slotSetPassphrase(void)
 
 		  if(!list.at(i).contains("signature"))
 		    crypt.generatePrivatePublicKeys
-		      (m_ui.encryptionKeySize->currentText().toInt(),
+		      (m_ui.encryptionKeySize->currentText(),
 		       encryptionKeyType,
 		       error2);
 		  else
 		    crypt.generatePrivatePublicKeys
-		      (m_ui.signatureKeySize->currentText().toInt(),
+		      (m_ui.signatureKeySize->currentText(),
 		       signatureKeyType,
 		       error2);
 

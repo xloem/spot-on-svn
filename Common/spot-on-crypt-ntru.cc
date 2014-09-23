@@ -26,3 +26,246 @@
 */
 
 #include "spot-on-crypt.h"
+#include "spot-on-misc.h"
+
+void spoton_crypt::generateNTRUKeys(const QString &keySize,
+				    QByteArray &privateKey,
+				    QByteArray &publicKey,
+				    bool *ok)
+{
+  if(ok)
+    *ok = false;
+
+#ifdef SPOTON_LINKED_WITH_LIBNTRU
+  Q_UNUSED(keySize);
+
+  NtruEncKeyPair kp;
+  int index = 0;
+  struct NtruEncParams parameters[] = {EES1087EP2,
+				       EES1171EP1,
+				       EES1499EP1};
+
+  if(keySize == "EES1087EP2")
+    index = 0;
+  else if(keySize == "EES1171EP1")
+    index = 1;
+  else
+    index = 2;
+
+  if(ntru_gen_key_pair(&parameters[index], &kp,
+#ifdef Q_OS_WIN32
+		       ntru_rand_default
+#else
+		       ntru_rand_devrandom
+#endif
+		       ) == NTRU_SUCCESS)
+    {
+      uint8_t *privateKey_array = 0;
+      uint8_t *publicKey_array = 0;
+      uint16_t length1 = ntru_priv_len(&parameters[index]);
+      uint16_t length2 = ntru_pub_len(&parameters[index]);
+
+      privateKey_array = new (std::nothrow) uint8_t[length1];
+      publicKey_array = new (std::nothrow) uint8_t[length2];
+
+      if(privateKey_array && publicKey_array)
+	{
+	  if(ok)
+	    *ok = true;
+
+	  ntru_export_priv(&kp.priv, privateKey_array);
+	  ntru_export_pub(&kp.pub, publicKey_array);
+	  privateKey.resize(length1);
+	  memcpy(privateKey.data(), privateKey_array, length1);
+	  privateKey.prepend
+	    (QString("%1-%2-").arg("ntru-private-key").
+	     arg(keySize).toLatin1());
+	  publicKey.resize(length2);
+	  memcpy(publicKey.data(), publicKey_array, length2);
+	  publicKey.prepend
+	    (QString("%1-%2-").arg("ntru-public-key").
+	     arg(keySize).toLatin1());
+	  memset(privateKey_array, 0, length1);
+	  memset(publicKey_array, 0, length2);
+	}
+
+      delete []privateKey_array;
+      delete []publicKey_array;
+    }
+#else
+  Q_UNUSED(keySize);
+  Q_UNUSED(privateKey);
+  Q_UNUSED(publicKey);
+#endif
+}
+
+QByteArray spoton_crypt::publicKeyDecryptNTRU
+(const QByteArray &data, bool *ok)
+{
+  if(ok)
+    *ok = false;
+
+#ifdef SPOTON_LINKED_WITH_LIBNTRU
+  if(data.isEmpty() || !m_privateKey || m_privateKeyLength <= 0 ||
+     m_privateKeyLength - qstrlen("ntru-private-key-0000000000-") <= 0 ||
+     m_publicKey.length() - qstrlen("ntru-public-key-0000000000-") <= 0)
+    return QByteArray();
+
+  QByteArray decrypted;
+  int index = 0;
+  struct NtruEncParams parameters[] = {EES1087EP2,
+				       EES1171EP1,
+				       EES1499EP1};
+
+  if(m_publicKey.startsWith("ntru-public-key-EES1087EP2-"))
+    index = 0;
+  else if(m_publicKey.startsWith("ntru-public-key-EES1171EP1-"))
+    index = 1;
+  else
+    index = 2;
+
+  uint8_t *d = 0;
+  uint8_t *e = 0;
+  uint8_t *privateKey_array = 0;
+  uint8_t *publicKey_array = 0;
+  uint8_t length = ntru_max_msg_len(&parameters[index]);
+
+  if(length <= 0)
+    return decrypted;
+
+  d = new (std::nothrow) uint8_t[length];
+  e = new (std::nothrow) uint8_t[data.size()];
+  privateKey_array = new (std::nothrow)
+    uint8_t[m_privateKeyLength - qstrlen("ntru-private-key-0000000000-")];
+  publicKey_array = new (std::nothrow)
+    uint8_t[m_publicKey.length() - qstrlen("ntru-public-key-0000000000-")];
+
+  if(d && e && privateKey_array && publicKey_array)
+    {
+      NtruEncKeyPair kp;
+      QByteArray privateKey;
+      QByteArray publicKey;
+
+      privateKey.append(m_privateKey, m_privateKeyLength);
+      privateKey.remove(0, qstrlen("ntru-private-key-0000000000-"));
+      memcpy(privateKey_array, privateKey.constData(), privateKey.length());
+      ntru_import_priv(privateKey_array, &kp.priv);
+      privateKey.replace
+	(0, privateKey.length(), QByteArray(privateKey.length(), 0));
+      privateKey.clear();
+      publicKey.append(m_publicKey, m_publicKey.length());
+      publicKey.remove(0, qstrlen("ntru-public-key-0000000000-"));
+      memcpy(publicKey_array, publicKey.constData(), publicKey.length());
+      ntru_import_pub(publicKey_array, &kp.pub);
+      memcpy(e, data.constData(), data.length());
+      memset(privateKey_array, 0, privateKey.length());
+
+      uint16_t decrypted_len = 0;
+
+      if(ntru_decrypt(e, &kp, &parameters[index],
+		      d, &decrypted_len) == NTRU_SUCCESS)
+	{
+	  if(ok)
+	    *ok = true;
+
+	  decrypted.resize(decrypted_len);
+	  memcpy(decrypted.data(), d, decrypted_len);
+	}
+      else
+	spoton_misc::logError
+	  ("spoton_crypt::publicKeyDecryptNTRU(): ntru_decrypt() failure.");
+    }
+  else
+    spoton_misc::logError
+      ("spoton_crypt::publicKeyDecryptNTRU(): memory failure.");
+
+  delete []d;
+  delete []e;
+  delete []privateKey_array;
+  delete []publicKey_array;
+  return decrypted;
+#else
+  Q_UNUSED(data);
+  return QByteArray();
+#endif
+}
+
+QByteArray spoton_crypt::publicKeyEncryptNTRU(const QByteArray &data,
+					      const QByteArray &publicKey,
+					      bool *ok)
+{
+  if(ok)
+    *ok = false;
+
+#ifdef SPOTON_LINKED_WITH_LIBNTRU
+  QByteArray encrypted;
+  int index = 0;
+  struct NtruEncParams parameters[] = {EES1087EP2,
+				       EES1171EP1,
+				       EES1499EP1};
+
+  if(publicKey.startsWith("ntru-public-key-EES1087EP2-"))
+    index = 0;
+  else if(publicKey.startsWith("ntru-public-key-EES1171EP1-"))
+    index = 1;
+  else
+    index = 2;qDebug()<<publicKey;
+
+  uint8_t *data_array = 0;
+  uint8_t *e = 0;
+  uint8_t *publicKey_array = 0;
+  uint16_t length = ntru_enc_len(&parameters[index]);
+
+  if(data.isEmpty() || length <= 0)
+    return encrypted;
+
+  data_array = new (std::nothrow) uint8_t[data.length()];
+  e = new (std::nothrow) uint8_t[length];
+  publicKey_array = new (std::nothrow)
+    uint8_t[publicKey.mid(qstrlen("ntru-public-key-0000000000-")).length()];
+
+  if(data_array && e && publicKey_array)
+    {
+      NtruEncPubKey pk;
+
+      memcpy(data_array, data.constData(), data.length());
+      memcpy(publicKey_array,
+	     publicKey.
+	     mid(qstrlen("ntru-public-key-0000000000-")).constData(),
+	     publicKey.length() - qstrlen("ntru-public-key-0000000000-"));
+      ntru_import_pub(publicKey_array, &pk);
+
+      if(ntru_encrypt(data_array,
+		      static_cast<uint16_t> (data.length()),
+		      &pk, &parameters[index],
+#ifdef Q_OS_WIN32
+		      ntru_rand_default,
+#else
+		      ntru_rand_devrandom,
+#endif
+		      e) == NTRU_SUCCESS)
+	{
+	  if(ok)
+	    *ok = true;
+
+	  encrypted.resize(length);
+	  memcpy(encrypted.data(), e, length);
+	}
+      else
+	spoton_misc::logError
+	  ("spoton_crypt::publicKeyEncryptNTRU(): ntru_encrypt() failure.");
+    }
+  else
+    spoton_misc::logError
+      ("spoton_crypt::publicKeyEncryptNTRU(): memory failure.");
+
+  delete []data_array;
+  delete []e;
+  delete []publicKey_array;
+  return encrypted;
+#else
+  Q_UNUSED(data);
+  Q_UNUSED(publicKey);
+  return QByteArray();
+#endif
+}

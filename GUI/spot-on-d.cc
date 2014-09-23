@@ -1831,3 +1831,39 @@ void spoton::applyGoldbugToAttachments(const QString &folderOid,
   else if(ok1)
     *ok1 = false;
 }
+
+void spoton::slotEncryptionKeyTypeChanged(int index)
+{
+  QStringList list;
+
+#ifdef SPOTON_LINKED_WITH_LIBNTRU
+  if(index == 0 || index == 2)
+    list << "2048"
+	 << "3072"
+	 << "4096"
+	 << "7680"
+	 << "8192"
+	 << "15360";
+  else
+    list << "EES1087EP2"
+	 << "EES1171EP1"
+	 << "EES1499EP1";
+#else
+  list << "2048"
+       << "3072"
+       << "4096"
+       << "7680"
+       << "8192"
+       << "15360";
+#endif
+
+  m_ui.encryptionKeySize->clear();
+  m_ui.encryptionKeySize->addItems(list);
+
+#ifdef SPOTON_LINKED_WITH_LIBNTRU
+  if(index == 0 || index == 2)
+    m_ui.encryptionKeySize->setCurrentIndex(1);
+#else
+  m_ui.encryptionKeySize->setCurrentIndex(1);
+#endif
+}

@@ -116,6 +116,7 @@ Completed Items
 82.    Purge items from post_office if their dates are invalid.
 83.    Perform calling over geminis.
 84.    Accounts and allowed IP addresses suffer selection issues.
+85.    NTRU support.
 
 Ignored Items
 
@@ -162,7 +163,8 @@ Remaining Items
        the random key. Separate cipher algorithms?
 3.     Country flags and names for host names
        (spoton_misc::countryCodeFromName()).
-4.     NTRU support.
+4.     Do something about whitespace. There are many input paths that
+       ought to be considered.
 5.     Scramblers are too periodic.
 6.     Hard kernel termination. Control session separation.
 7.     Colorful HTTP headers. Custom protocol messages for rapid redeployment.
@@ -207,6 +209,4 @@ Remaining Items
 32.    IMAP and Rosetta.
 33.    Weather feeds.
 34.    Implement a Qt class in support of DTLS.
-35.    Do something about whitespace. There are many input paths that
-       ought to be considered.
-36.    E-mail institutions do not require dispatcher signatures.
+35.    E-mail institutions do not require dispatcher signatures.

@@ -400,9 +400,10 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 	      }
 
 	      emit completed
-		(static_cast<int> (100.0 * file1.pos() /
-				   qMax(static_cast<qint64> (1),
-					file1.size())));
+		(static_cast<int> (100.0 * static_cast<double> (file1.pos()) /
+				   static_cast<double>
+				   (qMax(static_cast<qint64> (1),
+					 file1.size()))));
 	    }
 
 	  if(error.isEmpty() && rc == -1)
@@ -471,9 +472,10 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 	    }
 	  else
 	    emit completed
-	      (static_cast<int> (100.0 * file1.pos() /
-				 qMax(static_cast<qint64> (1),
-				      file1.size())));
+	      (static_cast<int> (100.0 * static_cast<double> (file1.pos()) /
+				 static_cast<double>
+				 (qMax(static_cast<qint64> (1),
+				       file1.size()))));
 	}
 
       if(error.isEmpty() && rc == -1)
@@ -585,9 +587,10 @@ void spoton_encryptfile::encrypt(const bool sign,
 		}
 
 	      emit completed
-		(static_cast<int> (100.0 * file1.pos() /
-				   qMax(static_cast<qint64> (1),
-					file1.size())));
+		(static_cast<int> (100.0 * static_cast<double> (file1.pos()) /
+				   static_cast<double>
+				   (qMax(static_cast<qint64> (1),
+					 file1.size()))));
 	    }
 	}
 

@@ -28,6 +28,13 @@
 #ifndef _spoton_crypt_h_
 #define _spoton_crypt_h_
 
+#ifdef SPOTON_LINKED_WITH_LIBNTRU
+extern "C"
+{
+#include "../../libNTRU/src/ntru.h"
+}
+#endif
+
 extern "C"
 {
   /*
@@ -95,6 +102,10 @@ class spoton_crypt
   static bool passphraseSet(void);
   static const int SHA512_OUTPUT_SIZE_IN_BYTES = 64;
   static size_t cipherKeyLength(const QByteArray &cipherType);
+  static void generateNTRUKeys(const QString &keySize,
+			       QByteArray &privateKey,
+			       QByteArray &publicKey,
+			       bool *ok);
   static void generateSslKeys(const int rsaKeySize,
 			      QByteArray &certificate,
 			      QByteArray &privateKey,
@@ -139,7 +150,7 @@ class spoton_crypt
   QByteArray symmetricKey(void);
   QString cipherType(void) const;
   qint64 publicKeyCount(void);
-  void generatePrivatePublicKeys(const int keySize,
+  void generatePrivatePublicKeys(const QString &keySize,
 				 const QString &keyType,
 				 QString &error);
 
@@ -164,6 +175,7 @@ class spoton_crypt
   size_t m_privateKeyLength;
   size_t m_symmetricKeyLength;
   unsigned long m_iterationCount;
+  QByteArray publicKeyDecryptNTRU(const QByteArray &data, bool *ok);
   void init(const QString &cipherType,
 	    const QString &hashType,
 	    const QByteArray &passphrase,
@@ -182,6 +194,9 @@ class spoton_crypt
 				  const QHostAddress &address,
 				  const long days,
 				  QString &error);
+  static QByteArray publicKeyEncryptNTRU(const QByteArray &data,
+					 const QByteArray &publicKey,
+					 bool *ok);
 };
 
 #endif

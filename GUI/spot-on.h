@@ -298,6 +298,7 @@ class spoton: public QMainWindow
   void slotEnableChatEmoticons(bool state);
   void slotEnableRetrieveMail(void);
   void slotEnabledPostOffice(bool state);
+  void slotEncryptionKeyTypeChanged(int index);
   void slotExportListeners(void);
   void slotExportPublicKeys(void);
   void slotExternalIp(int index);

@@ -1040,6 +1040,9 @@ QByteArray spoton_crypt::publicKeyEncrypt(const QByteArray &data,
 					  const QByteArray &publicKey,
 					  bool *ok)
 {
+  if(publicKey.startsWith("ntru-public-key-"))
+    return publicKeyEncryptNTRU(data, publicKey, ok);
+
   QByteArray encrypted;
   gcry_error_t err = 0;
   gcry_sexp_t key_t = 0;
@@ -1307,7 +1310,12 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
 	 "decryptedAfterAuthenticated() failure.");
       return;
     }
-  else if(!keyData.contains("(private-key"))
+
+  if(keyData.contains("(private-key") ||
+     keyData.startsWith("ntru-private-key-"))
+    {
+    }
+  else
     {
       if(ok)
 	*ok = false;
@@ -1354,17 +1362,6 @@ void spoton_crypt::initializePrivateKeyContainer(bool *ok)
 
 QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 {
-  QByteArray decrypted;
-  QByteArray random;
-  QString keyType("");
-  const char *buffer = 0;
-  gcry_error_t err = 0;
-  gcry_sexp_t data_t = 0;
-  gcry_sexp_t decrypted_t = 0;
-  gcry_sexp_t key_t = 0;
-  gcry_sexp_t raw_t = 0;
-  size_t length = 0;
-
   {
     bool ok = true;
 
@@ -1383,8 +1380,33 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
       spoton_misc::logError
 	(QString("spoton_crypt::publicKeyDecrypt(): m_privateKey or "
 	         "m_privateKeyLength is peculiar (%1).").arg(m_id));
-      goto done_label;
+      return QByteArray();
     }
+
+  QByteArray array;
+
+  array.append(m_privateKey, m_privateKeyLength);
+
+  if(array.startsWith("ntru-private-key-"))
+    {
+      array.replace(0, array.length(), QByteArray(array.length(), 0));
+      array.clear();
+      return publicKeyDecryptNTRU(data, ok);
+    }
+
+  array.replace(0, array.length(), QByteArray(array.length(), 0));
+  array.clear();
+
+  QByteArray decrypted;
+  QByteArray random;
+  QString keyType("");
+  const char *buffer = 0;
+  gcry_error_t err = 0;
+  gcry_sexp_t data_t = 0;
+  gcry_sexp_t decrypted_t = 0;
+  gcry_sexp_t key_t = 0;
+  gcry_sexp_t raw_t = 0;
+  size_t length = 0;
 
   if((err = gcry_sexp_new(&key_t,
 			  m_privateKey,
@@ -1617,8 +1639,20 @@ QByteArray spoton_crypt::publicKey(bool *ok)
       QWriteLocker locker(&m_publicKeyMutex);
 
       m_publicKey.clear();
+      return QByteArray();
     }
-  else if(!data.contains("(public-key"))
+
+  if(data.contains("(public-key") ||
+     data.startsWith("ntru-public-key-"))
+    {
+      if(ok)
+	*ok = true;
+
+      QWriteLocker locker(&m_publicKeyMutex);
+
+      m_publicKey = data;
+    }
+  else
     {
       if(ok)
 	*ok = false;
@@ -1628,15 +1662,6 @@ QByteArray spoton_crypt::publicKey(bool *ok)
       QWriteLocker locker(&m_publicKeyMutex);
 
       m_publicKey.clear();
-    }
-  else
-    {
-      if(ok)
-	*ok = true;
-
-      QWriteLocker locker(&m_publicKeyMutex);
-
-      m_publicKey = data;
     }
 
   return data;
@@ -1675,7 +1700,7 @@ QByteArray spoton_crypt::publicKeyHash(bool *ok)
   return hash;
 }
 
-void spoton_crypt::generatePrivatePublicKeys(const int keySize,
+void spoton_crypt::generatePrivatePublicKeys(const QString &keySize,
 					     const QString &keyType,
 					     QString &error)
 {
@@ -1688,6 +1713,7 @@ void spoton_crypt::generatePrivatePublicKeys(const int keySize,
   gcry_sexp_t key_t = 0;
   gcry_sexp_t keyPair_t = 0;
   gcry_sexp_t parameters_t = 0;
+  int ks = keySize.toInt();
   size_t length = 0;
 
   /*
@@ -1706,24 +1732,51 @@ void spoton_crypt::generatePrivatePublicKeys(const int keySize,
   m_publicKey.clear();
   locker2.unlock();
 
-  if(keyType == "dsa")
+  if(ks <= 0 || ks > 15360)
+    ks = 3072;
+
+  if(keyType.toLower() == "dsa")
     genkey = QString("(genkey (dsa (nbits %1:%2)))").
-      arg(qFloor(log10(keySize)) + 1).
-      arg(keySize);
-  else if(keyType == "ecdsa")
-    genkey = QString("(genkey (ecc (nbits %1:%2)))").
-      arg(qFloor(log10(keySize)) + 1).
-      arg(keySize);
-  else if(keyType == "eddsa")
+      arg(qFloor(log10(ks)) + 1).
+      arg(ks);
+  else if(keyType.toLower() == "ecdsa")
+    {
+      if(ks <= 0 || ks > 521)
+	ks = 521;
+
+      genkey = QString("(genkey (ecc (nbits %1:%2)))").
+	arg(qFloor(log10(ks)) + 1).
+	arg(ks);
+    }
+  else if(keyType.toLower() == "eddsa")
     genkey = "(genkey (ecc (curve \"Ed25519\")(flags eddsa)))";
-  else if(keyType == "elg")
+  else if(keyType.toLower() == "elg")
     genkey = QString("(genkey (elg (nbits %1:%2)))").
-      arg(qFloor(log10(keySize)) + 1).
-      arg(keySize);
-  else if(keyType == "rsa")
+      arg(qFloor(log10(ks)) + 1).
+      arg(ks);
+  else if(keyType.toLower() == "ntru")
+    {
+      bool ok = true;
+
+      generateNTRUKeys(keySize, privateKey, publicKey, &ok);
+
+      if(ok)
+	goto save_keys_label;
+      else
+	goto done_label;
+    }
+  else if(keyType.toLower() == "rsa")
     genkey = QString("(genkey (rsa (nbits %1:%2)))").
-      arg(qFloor(log10(keySize)) + 1).
-      arg(keySize);
+      arg(qFloor(log10(ks)) + 1).
+      arg(ks);
+  else
+    {
+      error = QObject::tr("unsupported key type");
+      spoton_misc::logError
+	("spoton_crypt::generatePrivatePublicKeys(): "
+	 "unsupported key type.");
+      goto done_label;
+    }
 
   if((err = gcry_sexp_build(&parameters_t, 0,
 			    genkey.toLatin1().constData()) != 0) ||
@@ -1837,6 +1890,8 @@ void spoton_crypt::generatePrivatePublicKeys(const int keySize,
       gcry_free(key_t);
       key_t = 0;
     }
+
+ save_keys_label:
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -2019,18 +2074,6 @@ QByteArray spoton_crypt::keyedHash(const QByteArray &data,
 
 QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
 {
-  QByteArray hash(64, 0); // Output length of SHA-512 divided by 8.
-  QByteArray random(20, 0);
-  QByteArray signature;
-  QStringList list;
-  QString keyType("");
-  gcry_error_t err = 0;
-  gcry_mpi_t hash_t = 0;
-  gcry_sexp_t data_t = 0;
-  gcry_sexp_t key_t = 0;
-  gcry_sexp_t signature_t = 0;
-  unsigned char *hash_p = 0;
-
   {
     bool ok = true;
 
@@ -2049,8 +2092,35 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
       spoton_misc::logError
 	(QString("spoton_crypt::digitalSignature(): m_privateKey or "
 	         "m_privateKeyLength is peculiar (%1).").arg(m_id));
-      goto done_label;
+      return QByteArray();
     }
+
+  QByteArray array;
+
+  array.append(m_privateKey, m_privateKeyLength);
+
+  if(array.startsWith("ntru-private-key-"))
+    {
+      if(ok)
+	*ok = true;
+
+      return QByteArray();
+    }
+
+  array.replace(0, array.length(), QByteArray(array.length(), 0));
+  array.clear();
+
+  QByteArray hash(64, 0); // Output length of SHA-512 divided by 8.
+  QByteArray random(20, 0);
+  QByteArray signature;
+  QStringList list;
+  QString keyType("");
+  gcry_error_t err = 0;
+  gcry_mpi_t hash_t = 0;
+  gcry_sexp_t data_t = 0;
+  gcry_sexp_t key_t = 0;
+  gcry_sexp_t signature_t = 0;
+  unsigned char *hash_p = 0;
 
   if((err = gcry_sexp_new(&key_t,
 			  m_privateKey,
@@ -3342,8 +3412,14 @@ void spoton_crypt::reencodePrivatePublicKeys
 		    (privateKey, &ok);
 
 		  if(ok)
-		    if(!privateKey.contains("(private-key"))
-		      ok = false;
+		    {
+		      if(privateKey.contains("(private-key") ||
+			 privateKey.startsWith("ntru-private-key-"))
+			{
+			}
+		      else
+			ok = false;
+		    }
 		}
 
 	      if(ok)
@@ -3352,8 +3428,14 @@ void spoton_crypt::reencodePrivatePublicKeys
 		    (publicKey, &ok);
 
 		  if(ok)
-		    if(!publicKey.contains("(public-key"))
-		      ok = false;
+		    {
+		      if(publicKey.contains("(public-key") ||
+			 publicKey.startsWith("ntru-public-key-"))
+			{
+			}
+		      else
+			ok = false;
+		    }
 		}
 
 	      if(ok)
