@@ -1609,7 +1609,7 @@ void spoton::slotSaveAttachment(void)
 
   list = m_ui.mail->selectionModel()->selectedRows(4); // Attachment(s)
 
-  if(list.isEmpty() || !list.value(0).data().toString().isEmpty())
+  if(list.isEmpty() || list.value(0).data(Qt::UserRole).toInt() <= 0)
     return;
 
   list = m_ui.mail->selectionModel()->selectedRows

@@ -3053,10 +3053,14 @@ void spoton::slotRefreshMail(void)
 			    if(query.value(i).toLongLong() > 0)
 			      {
 				item = new QTableWidgetItem();
+				item->setData(Qt::UserRole, 1);
 				item->setIcon(QIcon(":/generic/attach.png"));
 			      }
 			    else
-			      item = new QTableWidgetItem(tr("None"));
+			      {
+				item = new QTableWidgetItem();
+				item->setData(Qt::UserRole, 0);
+			      }
 			  }
 			else
 			  item = new QTableWidgetItem("#####");
