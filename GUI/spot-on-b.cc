@@ -3056,7 +3056,7 @@ void spoton::slotRefreshMail(void)
 				item->setIcon(QIcon(":/generic/attach.png"));
 			      }
 			    else
-			      item = new QTableWidgetItem();
+			      item = new QTableWidgetItem(tr("None"));
 			  }
 			else
 			  item = new QTableWidgetItem("#####");

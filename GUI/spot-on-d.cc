@@ -1609,7 +1609,7 @@ void spoton::slotSaveAttachment(void)
 
   list = m_ui.mail->selectionModel()->selectedRows(4); // Attachment(s)
 
-  if(list.isEmpty() || list.at(0).data().toInt() <= 0)
+  if(list.isEmpty() || !list.value(0).data().toString().isEmpty())
     return;
 
   list = m_ui.mail->selectionModel()->selectedRows
