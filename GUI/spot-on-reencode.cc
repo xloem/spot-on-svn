@@ -213,6 +213,65 @@ void spoton_reencode::reencode(Ui_statusbar sb,
 		  }
 	    }
 
+	if(query.exec("SELECT data, name, OID FROM folders_attachment"))
+	  while(query.next())
+	    {
+	      QList<QByteArray> list;
+	      bool ok = true;
+
+	      for(int i = 0; i < query.record().count() - 1; i++)
+		{
+		  QByteArray bytes;
+
+		  bytes = oldCrypt->decryptedAfterAuthenticated
+		    (QByteArray::
+		     fromBase64(query.value(i).
+				toByteArray()), &ok);
+
+		  if(ok)
+		    list.append(bytes);
+		  else
+		    break;
+		}
+
+	      if(ok)
+		if(!list.isEmpty())
+		  {
+		    QSqlQuery updateQuery(db);
+
+		    updateQuery.prepare("UPDATE folders_attachment SET "
+					"data = ?, "
+					"name = ? "
+					"WHERE OID = ?");
+
+		    for(int i = 0; i < list.size(); i++)
+		      if(ok)
+			updateQuery.bindValue
+			  (i, newCrypt->encryptedThenHashed(list.at(i),
+							    &ok).
+			   toBase64());
+		      else
+			break;
+
+		    updateQuery.bindValue
+		      (2, query.value(2));
+
+		    if(ok)
+		      updateQuery.exec();
+		    else
+		      {
+			QSqlQuery deleteQuery(db);
+
+			deleteQuery.prepare
+			  ("DELETE FROM folders_attachment WHERE "
+			   "OID = ?");
+			deleteQuery.bindValue
+			  (0, query.value(query.record().count() - 1));
+			deleteQuery.exec();
+		      }
+		  }
+	    }
+
 	if(query.exec("SELECT cipher_type, hash_type, name, postal_address, "
 		      "OID FROM institutions"))
 	  while(query.next())
