@@ -1,4 +1,4 @@
-libntru.target = libntru.so
+libntru.target = libntru.dylib
 libntru.commands = $(MAKE) -C ../../libNTRU
 libntru.depends =
 libspoton.target = libspoton.dylib
