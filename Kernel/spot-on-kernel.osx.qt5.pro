@@ -49,7 +49,8 @@ LIBS		+= -L../../../libGeoIP/Libraries.osx64 -lGeoIP \
 		   -L../../../libSCTP/Libraries.osx64 -lusrsctp \
                    -L../../../libSpotOn -lspoton \
                    -L/usr/local/lib -lgcrypt -lgpg-error \
-                   -L/usr/local/ssl/lib -lcrypto -lssl
+                   -L/usr/local/ssl/lib -lcrypto -lssl \
+                   -framework Cocoa
 PRE_TARGETDEPS = libntru.dylib libspoton.dylib
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui
