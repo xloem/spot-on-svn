@@ -1,3 +1,6 @@
+libntru.target = libntru.dylib
+libntru.commands = $(MAKE) -C ../../../libNTRU
+libntru.depends =
 libspoton.target = libspoton.dylib
 libspoton.commands = $(MAKE) -C ../../../libSpotOn library
 libspoton.depends =
@@ -13,13 +16,15 @@ CONFIG		+= qt release warn_on app_bundle
 # 1.5.0 of the gcrypt library.
 
 DEFINES += SPOTON_LINKED_WITH_LIBGEOIP \
+           SPOTON_LINKED_WITH_LIBNTRU \
 	   SPOTON_LINKED_WITH_LIBPTHREAD \
 	   SPOTON_SCTP_ENABLED
 
 # Unfortunately, the clean target assumes too much knowledge
-# about the internals of libSpotOn.
+# about the internals of libNTRU and libSpotOn.
 
-QMAKE_CLEAN     += ../Spot-On-Kernel ../../../libSpotOn/*.dylib \
+QMAKE_CLEAN     += ../Spot-On-Kernel ../../../libNTRU/*.dylib \
+                   ../../../libNTRU/src/*.o ../../../libSpotOn/*.dylib \
 		   ../../../libSpotOn/*.o ../../../libSpotOn/test
 QMAKE_DISTCLEAN += -r temp
 QMAKE_CXXFLAGS_RELEASE -= -O2
@@ -29,7 +34,7 @@ QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -fwrapv \
                           -Werror -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith \
 			  -Wstack-protector -Wstrict-overflow=4
-QMAKE_EXTRA_TARGETS = libspoton purge
+QMAKE_EXTRA_TARGETS = libntru libspoton purge
 QMAKE_LFLAGS_RELEASE =
 QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../. ../../../. ../../../libGeoIP/Include.osx64 \
@@ -38,11 +43,12 @@ INCLUDEPATH	+= . ../. ../../../. ../../../libGeoIP/Include.osx64 \
                    /usr/local/ssl/include
 ICON		=
 LIBS		+= -L../../../libGeoIP/Libraries.osx64 -lGeoIP \
+                   -L../../../libNTRU -lntru \
 		   -L../../../libSCTP/Libraries.osx64 -lusrsctp \
                    -L../../../libSpotOn -lspoton \
                    -L/usr/local/lib -lgcrypt -lgpg-error \
                    -L/usr/local/ssl/lib -lcrypto -lssl
-PRE_TARGETDEPS = libspoton.dylib
+PRE_TARGETDEPS = libntru.dylib libspoton.dylib
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui
 MOC_DIR = temp/moc
@@ -91,6 +97,8 @@ libgeoip_data_install.path = /Applications/Spot-On.d/GeoIP
 libgeoip_data_install.files = ../../../GeoIP-1.5.1/data/GeoIP.dat
 libgeoip_install.path  = .
 libgeoip_install.extra = cp ../../../libGeoIP/Libraries.osx64/libGeoIP.1.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libGeoIP.1.dylib && install_name_tool -change ../../../libGeoIP/Libraries.osx64/libGeoIP.1.dylib @executable_path/../Frameworks/libGeoIP.1.dylib ../Spot-On-Kernel.app/Contents/MacOS/Spot-On-Kernel
+libntru_install.path  = .
+libntru_install.extra = cp ../../../libNTRU/libntru.dylib ./Spot-On-Kernel.app/Contents/Frameworks/libntru.dylib && install_name_tool -change /usr/local/lib/libgcrypt.11.dylib @loader_path/libgcrypt.11.dylib ./Spot-On-Kernel.app/Contents/Frameworks/libntru.dylib && install_name_tool -change ../../../libNTRU/libntru.dylib @executable_path/../Frameworks/libntru.dylib ./Spot-On-Kernel.app/Contents/MacOS/Spot-On-Kernel
 libspoton_install.path  = .
 libspoton_install.extra = cp ../../../libSpotOn/libspoton.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change /usr/local/lib/libgcrypt.11.dylib @loader_path/libgcrypt.11.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change ../../../libSpotOn/libspoton.dylib @executable_path/../Frameworks/libspoton.dylib ../Spot-On-Kernel.app/Contents/MacOS/Spot-On-Kernel
 macdeployqt.path        = ../Spot-On-Kernel.app
@@ -107,6 +115,7 @@ INSTALLS	= macdeployqt \
                   preinstall \
                   libgeoip_data_install \
                   libgeoip_install \
+                  libntru_install \
                   libspoton_install \
                   spoton \
                   postinstall
