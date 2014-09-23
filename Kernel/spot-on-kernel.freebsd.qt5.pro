@@ -54,6 +54,7 @@ HEADERS		= ../Common/spot-on-external-address.h \
 		  spot-on-starbeam-writer.h
 
 SOURCES		= ../Common/spot-on-crypt.cc
+		  ../Common/spot-on-crypt-ntru.cc \
 		  ../Common/spot-on-external-address.cc \
 		  ../Common/spot-on-misc.cc \
 		  ../Common/spot-on-send.cc \
