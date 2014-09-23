@@ -1,3 +1,6 @@
+libntru.target = libntru.so
+libntru.commands = gmake -C ../../libNTRU
+libntru.depends =
 libspoton.target = libspoton.so
 libspoton.commands = gmake -C ../../libSpotOn library
 libspoton.depends =
@@ -10,29 +13,31 @@ CONFIG		+= qt release warn_on
 # The function gcry_kdf_derive() is available in version
 # 1.5.0 of the gcrypt library.
 
-DEFINES += SPOTON_LINKED_WITH_LIBGEOIP \
+DEFINES	+= SPOTON_LINKED_WITH_LIBGEOIP \
+	   SPOTON_LINKED_WITH_LIBNTRU \
 	   SPOTON_LINKED_WITH_LIBPTHREAD \
 	   SPOTON_SCTP_ENABLED
 
 # Unfortunately, the clean target assumes too much knowledge
-# about the internals of libSpotOn.
+# about the internals of libNTRU and libSpotOn.
 
-QMAKE_CXX	= clang++
-QMAKE_CLEAN     += Spot-On ../../libSpotOn/*.o ../../libSpotOn/*.so \
+QMAKE_CLEAN     += Spot-On ../../libNTRU/*.so ../../libNTRU/src/*.o \
+		   ../../libSpotOn/*.o ../../libSpotOn/*.so \
 		   ../../libSpotOn/test
+QMAKE_CXX = clang++
 QMAKE_DISTCLEAN += -r temp
 QMAKE_CXXFLAGS_RELEASE -= -O2
-QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -fwrapv
-			  -mtune=generic -O3 \
+QMAKE_CXXFLAGS_RELEASE += -fPIE -fstack-protector-all -fwrapv \
+                          -mtune=generic -O3 \
 			  -Wall -Wcast-align -Wcast-qual \
 			  -Werror -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith \
                           -Wstack-protector -Wstrict-overflow=4
-QMAKE_EXTRA_TARGETS = libspoton purge
+QMAKE_EXTRA_TARGETS = libntru libspoton purge
 INCLUDEPATH	+= . ../../. GUI
-LIBS		+= -L../../libSpotOn -lGeoIP -lcrypto -lgcrypt -lgpg-error \
-		   -lspoton -lssl
-PRE_TARGETDEPS = libspoton.so
+LIBS		+= -L../../libNTRU -L../../libSpotOn \
+		   -lGeoIP -lcrypto -lgcrypt -lgpg-error -lntru -lspoton -lssl
+PRE_TARGETDEPS = libntru.so libspoton.so
 OBJECTS_DIR = temp/obj
 UI_DIR = temp/ui
 MOC_DIR = temp/moc
@@ -46,7 +51,7 @@ FORMS           = UI/adaptiveechoprompt.ui \
                   UI/logviewer.ui \
                   UI/passwordprompt.ui \
 		  UI/rosetta.ui \
-		  UI/starbeamanalyzer.ui \
+                  UI/starbeamanalyzer.ui \
 		  UI/statusbar.ui
 
 UI_HEADERS_DIR  = GUI
@@ -152,7 +157,6 @@ TRANSLATIONS    = Translations/spot-on_af.ts \
                   Translations/spot-on_zh_HK.ts
 
 RESOURCES	= Icons/icons.qrc \
-		  Sounds/sounds.qrc \
 		  Translations/translations.qrc
 
 TARGET		= Spot-On
