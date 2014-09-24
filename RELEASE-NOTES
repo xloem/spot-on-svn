@@ -8,6 +8,9 @@
      implemented.
 3.   Added support for re-encoding e-mail attachments.
 4.   Corrected saving of attachments.
+5.   Curve Ed25519 is not available in pre-1.6.x libgcrypt. Corrected. Also
+     moved support for ECDSA to libgcrypt 1.6.x.
+6.   Upgraded libgcrypt to version 1.6.1 on Windows.
 
 0.12 (09/19/2014)
 
