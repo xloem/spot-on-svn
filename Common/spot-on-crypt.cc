@@ -1385,7 +1385,7 @@ QByteArray spoton_crypt::publicKeyDecrypt(const QByteArray &data, bool *ok)
 
   QByteArray array;
 
-  array.append(m_privateKey, m_privateKeyLength);
+  array.append(m_privateKey, static_cast<int> (m_privateKeyLength));
 
   if(array.startsWith("ntru-private-key-"))
     {
@@ -2097,7 +2097,7 @@ QByteArray spoton_crypt::digitalSignature(const QByteArray &data, bool *ok)
 
   QByteArray array;
 
-  array.append(m_privateKey, m_privateKeyLength);
+  array.append(m_privateKey, static_cast<int> (m_privateKeyLength));
 
   if(array.startsWith("ntru-private-key-"))
     {

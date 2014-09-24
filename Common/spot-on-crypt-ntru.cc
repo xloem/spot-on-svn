@@ -150,7 +150,7 @@ QByteArray spoton_crypt::publicKeyDecryptNTRU
       QByteArray privateKey;
       QByteArray publicKey;
 
-      privateKey.append(m_privateKey, m_privateKeyLength);
+      privateKey.append(m_privateKey, static_cast<int> (m_privateKeyLength));
       privateKey.remove(0, qstrlen("ntru-private-key-0000000000-"));
       memcpy(privateKey_array, privateKey.constData(), privateKey.length());
       ntru_import_priv(privateKey_array, &kp.priv);
