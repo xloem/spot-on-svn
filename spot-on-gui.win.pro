@@ -1,3 +1,6 @@
+libntru.target = libntru.dll
+libntru.commands = $(MAKE) -C ..\\..\\libNTRU library
+libntru.depends =
 libspoton.target = libspoton.dll
 libspoton.commands = $(MAKE) -C ..\\..\\libSpotOn library
 libspoton.depends =
@@ -11,13 +14,15 @@ CONFIG		+= qt release warn_on
 # 1.5.0 of the gcrypt library.
 
 DEFINES         += SPOTON_LINKED_WITH_LIBGEOIP \
+                   SPOTON_LINKED_WITH_LIBNTRU \
 		   SPOTON_LINKED_WITH_LIBPTHREAD \
                    SPOTON_SCTP_ENABLED
 
 # Unfortunately, the clean target assumes too much knowledge
-# about the internals of libSpotOn.
+# about the internals of libNTRU and libSpotOn.
 
-QMAKE_CLEAN     += Spot-On ..\\..\\libSpotOn\\libspoton.dll \
+QMAKE_CLEAN     += Spot-On ..\\..\\libNTRU.dll ..\\..\\libNTRU\\src\\*.o \
+                   ..\\..\\libSpotOn\\libspoton.dll \
 		   ..\\..\\libSpotOn\\*.o \
 		   ..\\..\\libSpotOn\\test.exe
 QMAKE_CXXFLAGS_RELEASE -= -O2
@@ -26,16 +31,17 @@ QMAKE_CXXFLAGS_RELEASE += -fwrapv -mtune=generic -pie -O3 \
 			  -Werror -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith \
 			  -Wstrict-overflow=4
-QMAKE_EXTRA_TARGETS = libspoton purge
+QMAKE_EXTRA_TARGETS = libntru libspoton purge
 INCLUDEPATH	+= . ..\\..\\. GUI ..\\..\\libSpotOn\\Include.win32 \
 		   ..\\..\\libGeoIP\\Include.win32 \
 		   ..\\..\\libOpenSSL\\Include.win32
-LIBS		+= -L..\\..\\libSpotOn -L..\\..\\libSpotOn\\Libraries.win32 \
+LIBS		+= -L..\\..\\libNTRU \
+                   -L..\\..\\libSpotOn -L..\\..\\libSpotOn\\Libraries.win32 \
 		   -L..\\..\\libGeoIP\\Libraries.win32 \
 		   -L..\\..\\libOpenSSL\\Libraries.win32 \
 		   -lGeoIP-1 -leay32 -lgcrypt-11 -lgpg-error-0 \
-		   -lpthread -lspoton -lssl32 -lws2_32
-PRE_TARGETDEPS = libspoton.dll
+		   -lntru -lpthread -lspoton -lssl32 -lws2_32
+PRE_TARGETDEPS = libntru.dll libspoton.dll
 
 FORMS           = UI\\adaptiveechoprompt.ui \
 		  UI\\buzzpage.ui \
