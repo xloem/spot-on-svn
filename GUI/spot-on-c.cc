@@ -2299,19 +2299,12 @@ void spoton::slotRegenerateKey(void)
   QString encryptionKeyType("");
   QString signatureKeyType("");
 
-#ifdef SPOTON_LINKED_WITH_LIBNTRU
   if(m_ui.encryptionKeyType->currentIndex() == 0)
     encryptionKeyType = "elg";
   else if(m_ui.encryptionKeyType->currentIndex() == 1)
     encryptionKeyType = "ntru";
   else
     encryptionKeyType = "rsa";
-#else
-  if(m_ui.encryptionKeyType->currentIndex() == 0)
-    encryptionKeyType = "elg";
-  else
-    encryptionKeyType = "rsa";
-#endif
 
   if(m_ui.signatureKeyType->currentIndex() == 0)
     signatureKeyType = "dsa";
