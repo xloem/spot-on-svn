@@ -11,6 +11,7 @@
 5.   Curve Ed25519 is not available in pre-1.6.x libgcrypt. Corrected. Also
      moved support for ECDSA to libgcrypt 1.6.x.
 6.   Upgraded libgcrypt to version 1.6.1 on Windows.
+7.   Improved some interface attributes.
 
 0.12 (09/19/2014)
 
