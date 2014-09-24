@@ -37,9 +37,6 @@ void spoton_crypt::generateNTRUKeys(const QString &keySize,
     *ok = false;
 
 #ifdef SPOTON_LINKED_WITH_LIBNTRU
-  Q_UNUSED(keySize);
-
-  NtruEncKeyPair kp;
   int index = 0;
   struct NtruEncParams parameters[] = {EES1087EP2,
 				       EES1171EP1,
@@ -49,8 +46,12 @@ void spoton_crypt::generateNTRUKeys(const QString &keySize,
     index = 0;
   else if(keySize == "EES1171EP1")
     index = 1;
-  else
+  else if(keySize == "EES1499EP1")
     index = 2;
+  else
+    return;
+
+  NtruEncKeyPair kp;
 
   if(ntru_gen_key_pair(&parameters[index], &kp,
 #ifdef Q_OS_WIN32
@@ -111,7 +112,6 @@ QByteArray spoton_crypt::publicKeyDecryptNTRU
      m_publicKey.length() - qstrlen("ntru-public-key-0000000000-") <= 0)
     return QByteArray();
 
-  QByteArray decrypted;
   int index = 0;
   struct NtruEncParams parameters[] = {EES1087EP2,
 				       EES1171EP1,
@@ -121,17 +121,21 @@ QByteArray spoton_crypt::publicKeyDecryptNTRU
     index = 0;
   else if(m_publicKey.startsWith("ntru-public-key-EES1171EP1-"))
     index = 1;
-  else
+  else if(m_publicKey.startsWith("ntru-public-key-EES1499EP1-"))
     index = 2;
+  else
+    return QByteArray();
 
+  uint8_t length = ntru_max_msg_len(&parameters[index]);
+
+  if(length <= 0)
+    return QByteArray();
+
+  QByteArray decrypted;
   uint8_t *d = 0;
   uint8_t *e = 0;
   uint8_t *privateKey_array = 0;
   uint8_t *publicKey_array = 0;
-  uint8_t length = ntru_max_msg_len(&parameters[index]);
-
-  if(length <= 0)
-    return decrypted;
 
   d = new (std::nothrow) uint8_t[length];
   e = new (std::nothrow) uint8_t[data.size()];
@@ -198,7 +202,10 @@ QByteArray spoton_crypt::publicKeyEncryptNTRU(const QByteArray &data,
     *ok = false;
 
 #ifdef SPOTON_LINKED_WITH_LIBNTRU
-  QByteArray encrypted;
+  if(data.isEmpty() ||
+     publicKey.length() - qstrlen("ntru-public-key-0000000000-") <= 0)
+    return QByteArray();
+
   int index = 0;
   struct NtruEncParams parameters[] = {EES1087EP2,
 				       EES1171EP1,
@@ -208,16 +215,20 @@ QByteArray spoton_crypt::publicKeyEncryptNTRU(const QByteArray &data,
     index = 0;
   else if(publicKey.startsWith("ntru-public-key-EES1171EP1-"))
     index = 1;
+  else if(publicKey.startsWith("ntru-public-key-EES1499EP1-"))
+    index = 2;
   else
-    index = 2;qDebug()<<publicKey;
+    return QByteArray();
 
+  uint16_t length = ntru_enc_len(&parameters[index]);
+
+  if(length <= 0)
+    return QByteArray();
+
+  QByteArray encrypted;
   uint8_t *data_array = 0;
   uint8_t *e = 0;
   uint8_t *publicKey_array = 0;
-  uint16_t length = ntru_enc_len(&parameters[index]);
-
-  if(data.isEmpty() || length <= 0)
-    return encrypted;
 
   data_array = new (std::nothrow) uint8_t[data.length()];
   e = new (std::nothrow) uint8_t[length];
