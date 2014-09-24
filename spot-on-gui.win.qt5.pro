@@ -1,6 +1,6 @@
 cache()
 libntru.target = libntru.dll
-libntru.commands = $(MAKE) -C ..\\..\\libNTRU library
+libntru.commands = $(MAKE) -C ..\\..\\libNTRU
 libntru.depends =
 libspoton.target = libspoton.dll
 libspoton.commands = $(MAKE) -C ..\\..\\libSpotOn library
