@@ -1,4 +1,7 @@
 cache()
+libntru.target = libntru.dll
+libntru.commands = $(MAKE) -C ..\\..\\..\\libNTRU
+libntru.depends =
 libspoton.target = libspoton.dll
 libspoton.commands = $(MAKE) -C ..\\..\\..\\libSpotOn library
 libspoton.depends =
@@ -18,9 +21,11 @@ DEFINES         += SPOTON_LINKED_WITH_LIBGEOIP \
                    SPOTON_SCTP_ENABLED
 
 # Unfortunately, the clean target assumes too much knowledge
-# about the internals of libSpotOn.
+# about the internals of libNTRU and libSpotOn.
 
 QMAKE_CLEAN     += ..\\..\\release\\Spot-On-Kernel \
+                   ..\\..\\..\\libNTRU\\libntru.dll \
+                   ..\\..\\..\\libNTRU\\src\\*.o \
 		   ..\\..\\..\\libSpotOn\\libspoton.dll \
 		   ..\\..\\..\\libSpotOn\\*.o ..\\..\\..\\libSpotOn\\test.exe
 QMAKE_CXXFLAGS_RELEASE -= -O2
@@ -29,20 +34,19 @@ QMAKE_CXXFLAGS_RELEASE += -fwrapv -mtune=generic -pie -O3 \
 			  -Wextra \
 			  -Woverloaded-virtual -Wpointer-arith \
 			  -Wstrict-overflow=4
-QMAKE_DISTCLEAN	+= .qmake.cache .qmake.stash
-QMAKE_EXTRA_TARGETS = libspoton purge
+QMAKE_EXTRA_TARGETS = libntru libspoton purge
 INCLUDEPATH	+= . ..\\. ..\\..\\..\\. ..\\..\\..\\libSpotOn\\Include.win32 \
                    ..\\..\\..\\libGeoIP\\Include.win32 \
 		   ..\\..\\..\\libOpenSSL\\Include.win32 \
                    ..\\..\\..\\libSCTP\\SctpDrv.win32\\inc
-LIBS		+= -L..\\..\\..\\libSpotOn \
+LIBS		+= -L..\\..\\..\\libNTRU -L..\\..\\..\\libSpotOn \
 		   -L..\\..\\..\\libSpotOn\\Libraries.win32 \
                    -L..\\..\\..\\libGeoIP\\Libraries.win32 \
 		   -L..\\..\\..\\libOpenSSL\\Libraries.win32 \
                    -L..\\..\\..\\libSCTP\\SctpDrv.win32\\lib \
 		   -lGeoIP-1 -leay32 -lgcrypt-11 -lgpg-error-0 \
-		   -lpthread -lsctpsp -lspoton -lssl32 -lws2_32
-PRE_TARGETDEPS = libspoton.dll
+		   -lntru -lpthread -lsctpsp -lspoton -lssl32 -lws2_32
+PRE_TARGETDEPS = libntru.dll libspoton.dll
 
 HEADERS		= ..\\Common\\spot-on-external-address.h \
 		  spot-on-gui-server.h \
@@ -56,7 +60,7 @@ HEADERS		= ..\\Common\\spot-on-external-address.h \
 		  spot-on-starbeam-reader.h \
 		  spot-on-starbeam-writer.h
 
-SOURCES		= ..\\Common\spot-on-crypt.cc \
+SOURCES		= ..\\Common\\spot-on-crypt.cc \
 		  ..\\Common\\spot-on-crypt-ntru.cc \
 		  ..\\Common\\spot-on-external-address.cc \
 		  ..\\Common\\spot-on-misc.cc \
