@@ -43,7 +43,7 @@ LIBS		+= -L..\\..\\..\\libNTRU -L..\\..\\..\\libSpotOn \
                    -L..\\..\\..\\libGeoIP\\Libraries.win32 \
 		   -L..\\..\\..\\libOpenSSL\\Libraries.win32 \
                    -L..\\..\\..\\libSCTP\\SctpDrv.win32\\lib \
-		   -lGeoIP-1 -leay32 -lgcrypt-11 -lgpg-error-0 \
+		   -lGeoIP-1 -leay32 -lgcrypt-20 -lgpg-error-0 \
 		   -lntru -lpthread -lsctpsp -lspoton -lssl32 -lws2_32
 PRE_TARGETDEPS = libntru.dll libspoton.dll
 
