@@ -224,6 +224,7 @@ class spoton: public QMainWindow
 			const bool displayError = true);
   void slotAddFriendsKey(void);
   void slotAddInstitution(const QString &text = QString());
+  void slotAddInstitutionCheckBoxToggled(bool state);
   void slotAddListener(void);
   void slotAddMagnet(void);
   void slotAddNeighbor(void);
@@ -335,6 +336,7 @@ class spoton: public QMainWindow
   void slotListenerMaximumChanged(int value);
   void slotListenerSelected(void);
   void slotListenerUseAccounts(bool state);
+  void slotMagnetRadioToggled(bool state);
   void slotMailRetrievalIntervalChanged(int value);
   void slotMailSelected(QTableWidgetItem *item);
   void slotMailTabChanged(int index);
@@ -348,6 +350,7 @@ class spoton: public QMainWindow
   void slotNeighborHalfEcho(void);
   void slotNeighborMaximumChanged(int value);
   void slotNeighborSelected(void);
+  void slotNewKeys(bool state);
   void slotParticipantDoubleClicked(QTableWidgetItem *item);
   void slotPopulateBuzzFavorites(void);
   void slotPopulateEtpMagnets(void);

@@ -1856,3 +1856,39 @@ void spoton::slotEncryptionKeyTypeChanged(int index)
   else
     m_ui.encryptionKeySize->setCurrentIndex(0);
 }
+
+void spoton::slotAddInstitutionCheckBoxToggled(bool state)
+{
+  if(state)
+    {
+      m_ui.institutionName->clear();
+      m_ui.institutionNameType->setCurrentIndex(0);
+      m_ui.institutionPostalAddress->clear();
+      m_ui.institutionPostalAddressType->setCurrentIndex(0);
+    }
+  else
+    m_ui.addInstitutionLineEdit->clear();
+}
+
+void spoton::slotNewKeys(bool state)
+{
+  Q_UNUSED(state);
+  m_ui.encryptionKeySize->setCurrentIndex(1);
+  m_ui.encryptionKeyType->setCurrentIndex(2);
+  m_ui.keys->setCurrentIndex(0);
+  m_ui.signatureKeySize->setCurrentIndex(1);
+  m_ui.signatureKeyType->setCurrentIndex(4);
+}
+
+void spoton::slotMagnetRadioToggled(bool state)
+{
+  if(state)
+    {
+      m_ui.etpCipherType->setCurrentIndex(0);
+      m_ui.etpEncryptionKey->clear();
+      m_ui.etpHashType->setCurrentIndex(0);
+      m_ui.etpMacKey->clear();
+    }
+  else
+    m_ui.etpMagnet->clear();
+}

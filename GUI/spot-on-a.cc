@@ -735,6 +735,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.signatureKeyType,
 	  SLOT(setEnabled(bool)));
+  connect(m_ui.newKeys,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotNewKeys(bool)));
   connect(m_ui.encryptionKeyType,
 	  SIGNAL(currentIndexChanged(int)),
 	  this,
@@ -927,6 +931,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.etpMagnet,
 	  SLOT(setEnabled(bool)));
+  connect(m_ui.magnetRadio,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotMagnetRadioToggled(bool)));
   connect(m_ui.pairRadio,
 	  SIGNAL(toggled(bool)),
 	  m_ui.pairFrame,
@@ -995,6 +1003,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.institutionFrame,
 	  SLOT(setDisabled(bool)));
+  connect(m_ui.addInstitutionCheckBox,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotAddInstitutionCheckBoxToggled(bool)));
   connect(m_ui.displayPopups,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -6313,11 +6325,20 @@ void spoton::slotProxyTypeChanged(int index)
 
 void spoton::slotProxyChecked(bool state)
 {
-  Q_UNUSED(state);
   m_ui.proxyHostname->clear();
+  m_ui.proxyHostname->setEnabled(state);
   m_ui.proxyPassword->clear();
+  m_ui.proxyPort->setEnabled(state);
   m_ui.proxyPort->setValue(m_ui.proxyPort->minimum());
+  disconnect(m_ui.proxyType,
+	     SIGNAL(currentIndexChanged(int)),
+	     this,
+	     SLOT(slotProxyTypeChanged(int)));
   m_ui.proxyType->setCurrentIndex(0);
+  connect(m_ui.proxyType,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotProxyTypeChanged(int)));
   m_ui.proxyUsername->clear();
 }
 

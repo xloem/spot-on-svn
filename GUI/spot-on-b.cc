@@ -2036,6 +2036,7 @@ void spoton::slotClearOutgoingMessage(void)
 {
   if(m_ui.mailTab->currentIndex() == 1)
     {
+      m_ui.attachment->clear();
       m_ui.emailParticipants->selectionModel()->clear();
       m_ui.outgoingMessage->clear();
       m_ui.outgoingMessage->setCurrentCharFormat(QTextCharFormat());
