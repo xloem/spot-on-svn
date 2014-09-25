@@ -40,7 +40,9 @@
 extern "C"
 {
 #ifdef SPOTON_LINKED_WITH_LIBPTHREAD
+#ifndef GCRYPT_VERSION_NUMBER
   GCRY_THREAD_OPTION_PTHREAD_IMPL;
+#endif
 #endif
 
 #include "libSpotOn/libspoton.h"
@@ -115,7 +117,12 @@ void spoton_crypt::init(const int secureMemorySize)
     {
       gcryctl_set_thread_cbs_set = true;
 #ifdef SPOTON_LINKED_WITH_LIBPTHREAD
+      /*
+      ** libgcrypt 1.6.x compatibility.
+      */
+#ifndef GCRYPT_VERSION_NUMBER
       gcry_control(GCRYCTL_SET_THREAD_CBS, &gcry_threads_pthread, 0);
+#endif
 #else
       gcry_control(GCRYCTL_SET_THREAD_CBS, &gcry_threads_qt, 0);
 #endif
