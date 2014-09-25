@@ -746,22 +746,23 @@ void spoton::slotChatPopup(void)
       (m_ui.participants->item(items.at(0)->row(), 0));
 }
 
-void spoton::slotCommonBuzzChannelsActivated(const QString &text)
+void spoton::slotCommonBuzzChannelsActivated(int index)
 {
   repaint();
-  m_ui.demagnetize->setText(text);
+  m_ui.demagnetize->setText
+    (m_ui.commonBuzzChannels->itemData(index).toString());
   demagnetize();
   m_ui.demagnetize->clear();
   m_ui.buzzActions->setCurrentIndex(0);
   disconnect(m_ui.commonBuzzChannels,
-	     SIGNAL(activated(const QString &)),
+	     SIGNAL(activated(int)),
 	     this,
-	     SLOT(slotCommonBuzzChannelsActivated(const QString &)));
+	     SLOT(slotCommonBuzzChannelsActivated(int)));
   m_ui.commonBuzzChannels->setCurrentIndex(0);
   connect(m_ui.commonBuzzChannels,
-	  SIGNAL(activated(const QString &)),
+	  SIGNAL(activated(int)),
 	  this,
-	  SLOT(slotCommonBuzzChannelsActivated(const QString &)));
+	  SLOT(slotCommonBuzzChannelsActivated(int)));
 }
 
 void spoton::slotConnectAllNeighbors(void)
@@ -1399,12 +1400,11 @@ void spoton::joinDefaultBuzzChannel(void)
 			  "Please be patient."));
   m_sb.status->repaint();
 
-  int index = m_ui.commonBuzzChannels->findText
-    ("Spot-On_Developer_Channel_Key", Qt::MatchContains);
+  int index = m_ui.commonBuzzChannels->findData
+    ("Spot-On_Developer_Channel_Key", Qt::UserRole, Qt::MatchContains);
 
   if(index >= 0)
-    slotCommonBuzzChannelsActivated
-      (m_ui.commonBuzzChannels->itemText(index));
+    slotCommonBuzzChannelsActivated(index);
 
   m_sb.status->clear();
   QApplication::restoreOverrideCursor();

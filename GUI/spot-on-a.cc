@@ -241,15 +241,16 @@ spoton::spoton(void):QMainWindow()
   m_ui.encryptionKeyType->model()->setData
     (m_ui.encryptionKeyType->model()->index(1, 0), 0, Qt::UserRole - 1);
 #endif
+#ifndef GCRYPT_VERSION_NUMBER
+  /*
+  ** libgcrypt 1.6.x required!
+  */
 
-  if(!(QString(GCRYPT_VERSION) >= "1.6"))
-    {
-      m_ui.signatureKeyType->model()->setData
-	(m_ui.signatureKeyType->model()->index(1, 0), 0, Qt::UserRole - 1);
-      m_ui.signatureKeyType->model()->setData
-	(m_ui.signatureKeyType->model()->index(2, 0), 0, Qt::UserRole - 1);
-    }
-
+  m_ui.signatureKeyType->model()->setData
+    (m_ui.signatureKeyType->model()->index(1, 0), 0, Qt::UserRole - 1);
+  m_ui.signatureKeyType->model()->setData
+    (m_ui.signatureKeyType->model()->index(2, 0), 0, Qt::UserRole - 1);
+#endif
 #ifdef SPOTON_SCTP_ENABLED
   m_ui.listenerTransport->insertItem(0, tr("SCTP"));
   m_ui.neighborTransport->insertItem(0, tr("SCTP"));
@@ -596,9 +597,9 @@ spoton::spoton(void):QMainWindow()
 	  this,
 	  SLOT(slotParticipantDoubleClicked(QTableWidgetItem *)));
   connect(m_ui.commonBuzzChannels,
-	  SIGNAL(activated(const QString &)),
+	  SIGNAL(activated(int)),
 	  this,
-	  SLOT(slotCommonBuzzChannelsActivated(const QString &)));
+	  SLOT(slotCommonBuzzChannelsActivated(int)));
   connect(m_ui.generateGoldBug,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -1107,6 +1108,11 @@ spoton::spoton(void):QMainWindow()
   connect
     (menu->addAction(tr("Copy &All Public Keys")),
      SIGNAL(triggered(void)), this, SLOT(slotCopyAllMyPublicKeys(void)));
+  m_ui.commonBuzzChannels->setItemData
+    (0,
+     "magnet:?rn=Spot-On_Developer_Channel_Key&xf=10000&"
+     "xs=Spot-On_Developer_Channel_Salt&ct=aes256&"
+     "hk=Spot-On_Developer_Channel_Hash_Key&ht=sha512&xt=urn:buzz");
   m_ui.toolButtonCopyToClipboard->setMenu(menu);
   menu = new QMenu(this);
   m_ui.shareBuzzMagnet->setMenu(menu);
