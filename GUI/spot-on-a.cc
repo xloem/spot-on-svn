@@ -241,7 +241,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.encryptionKeyType->model()->setData
     (m_ui.encryptionKeyType->model()->index(1, 0), 0, Qt::UserRole - 1);
 #endif
-#ifndef GCRYPT_VERSION_NUMBER
+#if !defined(GCRYPT_VERSION_NUMBER) || GCRYPT_VERSION_NUMBER < 0x010600
   /*
   ** libgcrypt 1.6.x required!
   */
