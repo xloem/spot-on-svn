@@ -12,6 +12,7 @@
      moved support for ECDSA to libgcrypt 1.6.x.
 6.   Upgraded libgcrypt to version 1.6.1 on Windows.
 7.   Improved some interface attributes.
+8.   Added libgcrypt 1.6.x compatibility.
 
 0.12 (09/19/2014)
 
