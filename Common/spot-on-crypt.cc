@@ -3334,9 +3334,25 @@ QByteArray spoton_crypt::encryptedThenHashed(const QByteArray &data,
 QByteArray spoton_crypt::decryptedAfterAuthenticated(const QByteArray &data,
 						     bool *ok)
 {
+  if(data.isEmpty())
+    {
+      if(ok)
+	*ok = false;
+
+      return QByteArray();
+    }
+
   unsigned int length = gcry_md_get_algo_dlen(m_hashAlgorithm);
 
   if(length == 0)
+    {
+      if(ok)
+	*ok = false;
+
+      return QByteArray();
+    }
+
+  if(data.mid(length).isEmpty())
     {
       if(ok)
 	*ok = false;
