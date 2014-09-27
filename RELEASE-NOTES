@@ -1,4 +1,4 @@
-0.13 (09/26/2014)
+0.13 (09/27/2014)
 
 1.   The method spoton_misc::authenticateAccount() should assume that
      the provided hash exists in listeners_accounts_consumed_authentications.
@@ -13,6 +13,9 @@
 6.   Upgraded libgcrypt to version 1.6.1 on Windows.
 7.   Improved some interface attributes.
 8.   Added libgcrypt 1.6.x compatibility.
+9.   Modified spoton_crypt::decryptedAfterAuthenticated so that the
+     method returns a failure if the provided data parameter is empty
+     or if the provided data parameter's encrypted portion is empty.
 
 0.12 (09/19/2014)
 
