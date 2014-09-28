@@ -16,6 +16,7 @@
 9.   Modified spoton_crypt::decryptedAfterAuthenticated so that the
      method returns a failure if the provided data parameter is empty
      or if the provided data parameter's encrypted portion is empty.
+10.  Corrected compilation error on FreeBSD.
 
 0.12 (09/19/2014)
 
