@@ -46,6 +46,7 @@ extern "C"
 extern "C"
 {
 #include <netinet/in.h>
+#include <sys/socket.h>
 }
 #endif
 
