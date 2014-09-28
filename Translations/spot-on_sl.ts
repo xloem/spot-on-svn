@@ -219,17 +219,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3368"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3384"/>
         <source>newCrypt is 0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3376"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3392"/>
         <source>oldCrypt is 0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../Common/spot-on-crypt.cc" line="3485"/>
+        <location filename="../Common/spot-on-crypt.cc" line="3501"/>
         <source>decryption or encryption failure, or the keys are malformed</source>
         <translation type="unfinished"></translation>
     </message>
