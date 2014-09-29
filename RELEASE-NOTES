@@ -1,3 +1,7 @@
+0.14 (10/03/2014)
+
+1.   Per request, integrated interface files from GoldBug.
+
 0.13 (09/27/2014)
 
 1.   The method spoton_misc::authenticateAccount() should assume that
