@@ -4962,6 +4962,7 @@ void spoton::slotValidatePassphrase(void)
 	    m_ui.newKeys->setEnabled(true);
 	    m_ui.passphrase->setText
 	      (QString(2 * m_ui.passphrase->text().length(), '0'));
+	    m_ui.passphrase->clear();
 	    m_ui.passphrase1->setText(m_ui.passphrase->text());
 	    m_ui.passphrase2->setText(m_ui.passphrase->text());
 	    m_ui.passphrase->setEnabled(false);
@@ -4996,6 +4997,7 @@ void spoton::slotValidatePassphrase(void)
 
   m_ui.passphrase->setText
     (QString(2 * m_ui.passphrase->text().length(), '0'));
+  m_ui.passphrase->clear();
 
   if(!authenticated)
     m_ui.passphrase->selectAll();
