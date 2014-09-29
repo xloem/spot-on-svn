@@ -305,7 +305,6 @@ void spoton_encryptfile::decrypt(const QString &fileName,
       QByteArray bytes(1, 0);
       QByteArray hash(spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES, 0);
       QByteArray hashes;
-      QByteArray iv;
       qint64 rc = 0;
       spoton_crypt crypt(credentials.value(0).toString(),
 			 credentials.value(1).toString(),
@@ -356,13 +355,11 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 	      goto done_label;
 	    }
 
-	  if(!file1.seek(1 + iv.length()))
+	  if(!file1.seek(1))
 	    {
 	      error = tr("File seek failure.");
 	      goto done_label;
 	    }
-
-	  bool first = true;
 
 	  while((rc = file1.read(bytes.data(), bytes.length())) > 0)
 	    {
@@ -383,12 +380,7 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 		QByteArray hash;
 		bool ok = true;
 
-		if(first)
-		  hash = crypt.keyedHash(iv + data, &ok);
-		else
-		  hash = crypt.keyedHash(data, &ok);
-
-		first = false;
+		hash = crypt.keyedHash(data, &ok);
 
 		if(!ok)
 		  {
@@ -427,7 +419,7 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 	  if(!error.isEmpty())
 	    goto done_label;
 
-	  if(!file1.seek(1 + iv.length()))
+	  if(!file1.seek(1))
 	    {
 	      error = tr("File seek failure.");
 	      goto done_label;
@@ -510,7 +502,6 @@ void spoton_encryptfile::encrypt(const bool sign,
     {
       QByteArray bytes;
       QByteArray hashes;
-      QByteArray iv;
       qint64 rc = 0;
       spoton_crypt crypt(credentials.value(0).toString(),
 			 credentials.value(1).toString(),
@@ -533,8 +524,6 @@ void spoton_encryptfile::encrypt(const bool sign,
       bytes.clear();
       bytes.resize(4096);
       emit status("Encrypting the file.");
-
-      bool first = true;
 
       while((rc = file1.read(bytes.data(), bytes.length())) > 0)
 	{
@@ -566,18 +555,9 @@ void spoton_encryptfile::encrypt(const bool sign,
 	    {
 	      if(sign)
 		{
-		  QByteArray hash;
+		  QByteArray hash(crypt.keyedHash(data, &ok));
 
-		  if(first)
-		    hash = crypt.keyedHash(iv + data, &ok);
-		  else
-		    hash = crypt.keyedHash(data, &ok);
-
-		  first = false;
-
-		  if(ok)
-		    iv = data.right(iv.length());
-		  else
+		  if(!ok)
 		    {
 		      error = tr("Hash failure.");
 		      break;
@@ -678,7 +658,7 @@ void spoton_encryptfile::slotCompleted(const QString &error)
       (this, tr("%1: Information").
        arg(SPOTON_APPLICATION_NAME),
        tr("The conversion process completed successfully. A signature "
-	  "was not included."));
+	  "was not discovered."));
   else if(error.isEmpty())
     QMessageBox::information
       (this, tr("%1: Information").
