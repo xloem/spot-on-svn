@@ -1662,8 +1662,9 @@ void spoton::addFriendsKey(const QByteArray &key)
 			    arg(SPOTON_APPLICATION_NAME));
 	  mb.setWindowModality(Qt::WindowModal);
 	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-	  mb.setText(tr("Invalid 'chat', 'email', 'rosetta', or 'url' "
-			"public key signature. Accept?"));
+	  mb.setText(tr("Invalid %1 "
+			"public key signature. Accept?").
+		     arg(keyType.constData()));
 
 	  if(mb.exec() != QMessageBox::Yes)
 	    return;
@@ -1690,8 +1691,9 @@ void spoton::addFriendsKey(const QByteArray &key)
 			    arg(SPOTON_APPLICATION_NAME));
 	  mb.setWindowModality(Qt::WindowModal);
 	  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-	  mb.setText(tr("Invalid 'chat', 'email', 'rosetta', or 'url' "
-			"signature public key signature. Accept?"));
+	  mb.setText(tr("Invalid %1 "
+			"signature public key signature. Accept?").
+		     arg(keyType.constData()));
 
 	  if(mb.exec() != QMessageBox::Yes)
 	    return;
