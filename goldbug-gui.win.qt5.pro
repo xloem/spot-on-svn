@@ -14,7 +14,8 @@ CONFIG		+= qt release warn_on
 # The function gcry_kdf_derive() is available in version
 # 1.5.0 of the gcrypt library.
 
-DEFINES         += SPOTON_LINKED_WITH_LIBGEOIP \
+DEFINES         += SPOTON_GOLDBUG \
+		   SPOTON_LINKED_WITH_LIBGEOIP \
                    SPOTON_LINKED_WITH_LIBNTRU \
 		   SPOTON_LINKED_WITH_LIBPTHREAD \
                    SPOTON_SCTP_ENABLED
@@ -163,7 +164,7 @@ RESOURCES	= Icons\\icons.qrc \
                   Sounds\\sounds.qrc \
                   Translations\\translations.qrc
 
-RC_FILE		= Icons\\Resources\\spot-on.rc
+RC_FILE		= Icons\\Resources\\goldbug.rc
 
 TARGET		= GoldBug
 PROJECTNAME	= GoldBug
