@@ -117,6 +117,7 @@ Completed Items
 83.    Perform calling over geminis.
 84.    Accounts and allowed IP addresses suffer selection issues.
 85.    NTRU support.
+86.    Support ECC, or not. Signatures supported.
 
 Ignored Items
 
@@ -155,6 +156,7 @@ Ignored Items
 20.    Account credentials should not be recorded via reversible encryption.
        Derive keys? I really like the two-step mutual authentication.
 21.    Enable SQLite foreign key support via PRAGMA foreign_keys = ON.
+22.    Database entries containing hashes can be maliciously twisted. Encrypt?
 
 Remaining Items
 
@@ -171,7 +173,7 @@ Remaining Items
 8.     Remote kernel termination.
 9.     Artificial trust. All participants must play nicely. Zero-knowledge?
 10.    What to do about corrupt database values?
-11.    Database entries containing hashes can be maliciously twisted. Encrypt?
+11.    Implement a Qt class in support of DTLS.
 12.    Limit the number of entries that are allowed to be inserted into
        a database.
 13.    Allow pass-through flow of non-Spot-On data.
@@ -179,7 +181,7 @@ Remaining Items
 15.    Derive keys from master GoldBug keys.
 16.    QFSFileEngine::open: No file name specified: created from
        e-mail.
-17.    Support ECC, or not.
+17.    E-mail institutions do not require dispatcher signatures.
 18.    Notify user of potential replays.
 19.    Counting users is possible. Gathering message attributes is
        also possible. See group information in MESSAGES.
@@ -208,5 +210,3 @@ Remaining Items
        reasonable time.
 32.    IMAP and Rosetta.
 33.    Weather feeds.
-34.    Implement a Qt class in support of DTLS.
-35.    E-mail institutions do not require dispatcher signatures.
