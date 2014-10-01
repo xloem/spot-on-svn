@@ -54,16 +54,16 @@ UI_DIR = temp/ui
 MOC_DIR = temp/moc
 RCC_DIR = temp/rcc
 
-FORMS           = UI/adaptiveechoprompt.ui \
-		  UI/buzzpage.ui \
-		  UI/chatwindow.ui \
-		  UI/controlcenter.ui \
-		  UI/encryptfile.ui \
-                  UI/logviewer.ui \
-                  UI/passwordprompt.ui \
-		  UI/rosetta.ui \
-                  UI/starbeamanalyzer.ui \
-		  UI/statusbar.ui
+FORMS           = GoldBug-UI/adaptiveechoprompt.ui \
+                  GoldBug-UI/buzzpage.ui \
+                  GoldBug-UI/chatwindow.ui \
+                  GoldBug-UI/controlcenter.ui \
+                  GoldBug-UI/encryptfile.ui \
+                  GoldBug-UI/logviewer.ui \
+                  GoldBug-UI/passwordprompt.ui \
+                  GoldBug-UI/rosetta.ui \
+                  GoldBug-UI/starbeamanalyzer.ui \
+                  GoldBug-UI/statusbar.ui
 
 UI_HEADERS_DIR  = GUI
 
