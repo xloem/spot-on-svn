@@ -70,7 +70,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>24</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -105,7 +105,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>E&amp;nable Log</string>
+    <string>Enable UI &amp;Logging</string>
    </property>
   </action>
  </widget>

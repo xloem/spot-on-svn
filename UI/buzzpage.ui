@@ -44,7 +44,10 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Magnet</string>
+        <string>&amp;Magnet</string>
+       </property>
+       <property name="buddy">
+        <cstring>magnet</cstring>
        </property>
       </widget>
      </item>
@@ -210,12 +213,6 @@
        </item>
        <item>
         <widget class="QLabel" name="label_9">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="text">
           <string>&amp;Preferred Method</string>
          </property>

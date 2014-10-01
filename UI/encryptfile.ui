@@ -220,7 +220,7 @@
       <item>
        <widget class="QCheckBox" name="sign">
         <property name="text">
-         <string>&amp;Sign file.</string>
+         <string>&amp;Sign the file.</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -251,7 +251,7 @@
      <x>0</x>
      <y>0</y>
      <width>805</width>
-     <height>24</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
