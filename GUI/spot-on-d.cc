@@ -1507,8 +1507,9 @@ bool spoton::promptBeforeExit(void)
 			arg(SPOTON_APPLICATION_NAME));
       mb.setWindowModality(Qt::WindowModal);
       mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-      mb.setText(tr("The kernel appears to be active. Closing Spot-On "
-		    "will not deactivate the kernel. Continue?"));
+      mb.setText(tr("The kernel appears to be active. Closing %1 "
+		    "will not deactivate the kernel. Continue?").
+		 arg(SPOTON_APPLICATION_NAME));
 
       if(mb.exec() != QMessageBox::Yes)
 	return true;

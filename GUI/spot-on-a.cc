@@ -1084,6 +1084,12 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(sslErrors(const QList<QSslError> &)),
 	  this,
 	  SLOT(slotKernelSocketSslErrors(const QList<QSslError> &)));
+#if SPOTON_GOLDBUG == 1
+  connect(m_ui.deleteAllListeners,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotDeleteAllListeners(void)));
+#endif
   m_sb.kernelstatus->setToolTip
     (tr("Not connected to the kernel. Is the kernel "
 	"active?"));
@@ -5003,9 +5009,7 @@ void spoton::slotValidatePassphrase(void)
     m_ui.passphrase->selectAll();
 
 #if SPOTON_GOLDBUG == 1
-  slotActivateKernel();
   slotConnectAllNeighbors();
-  m_ui.action_Minimal_Display->toggle();
 #if QT_VERSION >= 0x050000
   QMediaPlayer *player = 0;
   QString str

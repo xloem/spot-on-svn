@@ -2266,8 +2266,11 @@ void spoton::slotRegenerateKey(void)
   else if(m_ui.keys->currentText() == tr("URL"))
     keyType = "url";
 
-  if(!m_crypts.value(keyType, 0) ||
-     !m_crypts.value(QString("%1-signature").arg(keyType), 0))
+  spoton_crypt *crypt1 = m_crypts.value(keyType, 0);
+  spoton_crypt *crypt2 = m_crypts.value
+    (QString("%1-signature").arg(keyType), 0);
+
+  if(!crypt1 || !crypt2)
     {
       QMessageBox::critical(this, tr("%1: Error").
 			    arg(SPOTON_APPLICATION_NAME),
@@ -2322,24 +2325,17 @@ void spoton::slotRegenerateKey(void)
   m_sb.status->repaint();
 
   QString error("");
-  spoton_crypt *crypt = m_crypts.value(keyType, 0);
 
-  if(crypt)
-    crypt->generatePrivatePublicKeys
-      (m_ui.encryptionKeySize->currentText(),
-       encryptionKeyType,
-       error);
+  crypt1->generatePrivatePublicKeys
+    (m_ui.encryptionKeySize->currentText(),
+     encryptionKeyType,
+     error);
 
   if(error.isEmpty())
-    {
-      crypt = m_crypts.value(QString("%1-signature").arg(keyType), 0);
-
-      if(crypt)
-	crypt->generatePrivatePublicKeys
-	  (m_ui.signatureKeySize->currentText(),
-	   signatureKeyType,
-	   error);
-    }
+    crypt2->generatePrivatePublicKeys
+      (m_ui.signatureKeySize->currentText(),
+       signatureKeyType,
+       error);
 
   m_sb.status->clear();
   QApplication::restoreOverrideCursor();
