@@ -75,12 +75,6 @@
          </property>
          <item>
           <widget class="QPushButton" name="favorite">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
            <property name="toolTip">
             <string>Bookmark Magnet</string>
            </property>
@@ -105,12 +99,6 @@
          </item>
          <item>
           <widget class="QPushButton" name="remove">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
            <property name="toolTip">
             <string>Remove Magnet</string>
            </property>
@@ -190,12 +178,6 @@
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
         <widget class="spoton_textedit" name="message">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -222,11 +204,6 @@
            <width>0</width>
            <height>48</height>
           </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>16</pointsize>
-          </font>
          </property>
          <property name="styleSheet">
           <string notr="true">QPushButton {

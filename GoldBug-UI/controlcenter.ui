@@ -216,7 +216,7 @@ color: rgb(255, 255, 255);
                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
@@ -528,11 +528,6 @@ QPushButton:pressed {
                       <width>0</width>
                       <height>48</height>
                      </size>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <pointsize>16</pointsize>
-                     </font>
                     </property>
                     <property name="toolTip">
                      <string>Send message.</string>
@@ -1349,11 +1344,6 @@ QPushButton:pressed {
                      <height>48</height>
                     </size>
                    </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>16</pointsize>
-                    </font>
-                   </property>
                    <property name="toolTip">
                     <string>Set the folder.</string>
                    </property>
@@ -1411,11 +1401,6 @@ QPushButton:pressed {
                      <width>48</width>
                      <height>48</height>
                     </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>16</pointsize>
-                    </font>
                    </property>
                    <property name="toolTip">
                     <string>Relpy to the selected email.</string>
@@ -4974,7 +4959,7 @@ QPushButton#pushButtonCopytoClipboard_All:pressed {
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="overwriteMode">
@@ -5839,7 +5824,7 @@ color: rgb(255, 255, 255);</string>
             <widget class="QPushButton" name="addNeighbor">
              <property name="minimumSize">
               <size>
-               <width>176</width>
+               <width>186</width>
                <height>48</height>
               </size>
              </property>
@@ -7513,7 +7498,7 @@ QPushButton:pressed {
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>96</width>
+                   <width>101</width>
                    <height>48</height>
                   </size>
                  </property>
@@ -10720,7 +10705,7 @@ QPushButton:pressed {
               </property>
               <property name="minimumSize">
                <size>
-                <width>168</width>
+                <width>178</width>
                 <height>32</height>
                </size>
               </property>
@@ -10965,7 +10950,7 @@ QPushButton:pressed {
      <x>0</x>
      <y>0</y>
      <width>486</width>
-     <height>24</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>469</width>
-    <height>825</height>
+    <width>519</width>
+    <height>815</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -544,11 +544,6 @@ QPushButton:pressed {
             </property>
             <item>
              <widget class="QLabel" name="label_2">
-              <property name="font">
-               <font>
-                <pointsize>6</pointsize>
-               </font>
-              </property>
               <property name="text">
                <string>&amp;Cipher Type:</string>
               </property>
@@ -571,11 +566,6 @@ QPushButton:pressed {
             </item>
             <item>
              <widget class="QLabel" name="label_3">
-              <property name="font">
-               <font>
-                <pointsize>6</pointsize>
-               </font>
-              </property>
               <property name="text">
                <string>&amp;Hash Type:</string>
               </property>
@@ -840,8 +830,8 @@ QPushButton:pressed {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>469</width>
-     <height>24</height>
+     <width>519</width>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
