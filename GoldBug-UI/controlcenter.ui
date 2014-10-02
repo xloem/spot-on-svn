@@ -10980,9 +10980,9 @@ QPushButton:pressed {
       <iconset resource="../Icons/icons.qrc">
        <normaloff>:/nouve/icons.png</normaloff>:/nouve/icons.png</iconset>
      </property>
+     <addaction name="actionEveraldo"/>
      <addaction name="actionNouve"/>
      <addaction name="actionNuvola"/>
-     <addaction name="actionEveraldo"/>
     </widget>
     <addaction name="action_Quit"/>
     <addaction name="separator"/>
