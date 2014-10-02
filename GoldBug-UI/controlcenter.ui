@@ -4974,7 +4974,7 @@ QPushButton#pushButtonCopytoClipboard_All:pressed {
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="overwriteMode">
@@ -5839,7 +5839,7 @@ color: rgb(255, 255, 255);</string>
             <widget class="QPushButton" name="addNeighbor">
              <property name="minimumSize">
               <size>
-               <width>186</width>
+               <width>176</width>
                <height>48</height>
               </size>
              </property>
@@ -6308,6 +6308,9 @@ background-position: top center; } </string>
                       </property>
                       <property name="text">
                        <string>Create Permanent Certificate</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
@@ -7510,7 +7513,7 @@ QPushButton:pressed {
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>101</width>
+                   <width>96</width>
                    <height>48</height>
                   </size>
                  </property>
@@ -7762,10 +7765,7 @@ QPushButton:pressed {
                   </font>
                  </property>
                  <property name="currentIndex">
-                  <number>0</number>
-                 </property>
-                 <property name="sizeAdjustPolicy">
-                  <enum>QComboBox::AdjustToContents</enum>
+                  <number>2</number>
                  </property>
                  <item>
                   <property name="text">
@@ -8009,7 +8009,7 @@ QPushButton:pressed {
                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If checked, new key pairs will be generated.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="text">
-                  <string>&amp; Encryption Key Size:</string>
+                  <string>&amp;Encryption Key Size:</string>
                  </property>
                 </widget>
                </item>
@@ -10720,7 +10720,7 @@ QPushButton:pressed {
               </property>
               <property name="minimumSize">
                <size>
-                <width>178</width>
+                <width>168</width>
                 <height>32</height>
                </size>
               </property>
@@ -10965,7 +10965,7 @@ QPushButton:pressed {
      <x>0</x>
      <y>0</y>
      <width>486</width>
-     <height>25</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
