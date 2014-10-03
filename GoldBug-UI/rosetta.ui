@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>519</width>
+    <width>522</width>
     <height>815</height>
    </rect>
   </property>
@@ -32,13 +32,6 @@
         <width>0</width>
         <height>40</height>
        </size>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
       </property>
       <property name="autoFillBackground">
        <bool>false</bool>
@@ -85,14 +78,7 @@ color: rgb(255, 255, 255);
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="name">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
+       <widget class="QLineEdit" name="name"/>
       </item>
       <item>
        <widget class="QPushButton" name="save">
@@ -554,11 +540,6 @@ QPushButton:pressed {
             </item>
             <item>
              <widget class="QComboBox" name="cipher">
-              <property name="font">
-               <font>
-                <pointsize>6</pointsize>
-               </font>
-              </property>
               <property name="sizeAdjustPolicy">
                <enum>QComboBox::AdjustToContents</enum>
               </property>
@@ -576,11 +557,6 @@ QPushButton:pressed {
             </item>
             <item>
              <widget class="QComboBox" name="hash">
-              <property name="font">
-               <font>
-                <pointsize>6</pointsize>
-               </font>
-              </property>
               <property name="sizeAdjustPolicy">
                <enum>QComboBox::AdjustToContents</enum>
               </property>
@@ -588,11 +564,6 @@ QPushButton:pressed {
             </item>
             <item>
              <widget class="QCheckBox" name="sign">
-              <property name="font">
-               <font>
-                <pointsize>6</pointsize>
-               </font>
-              </property>
               <property name="text">
                <string>&amp;Sign message.</string>
               </property>
@@ -743,12 +714,6 @@ QPushButton:pressed {
           </property>
           <item>
            <widget class="QPushButton" name="convert">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>45</height>
-             </size>
-            </property>
             <property name="styleSheet">
              <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -785,12 +750,6 @@ QPushButton:pressed {
       </item>
       <item row="3" column="1">
        <widget class="QPushButton" name="copyConverted">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>45</height>
-         </size>
-        </property>
         <property name="styleSheet">
          <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -830,7 +789,7 @@ QPushButton:pressed {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>519</width>
+     <width>522</width>
      <height>25</height>
     </rect>
    </property>

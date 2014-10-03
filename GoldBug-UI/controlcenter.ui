@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>486</width>
-    <height>840</height>
+    <width>650</width>
+    <height>887</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -50,23 +50,6 @@
      <widget class="spoton_tabwidget" name="tab">
       <property name="enabled">
        <bool>true</bool>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>8</pointsize>
-       </font>
       </property>
       <property name="styleSheet">
        <string notr="true"/>
@@ -126,13 +109,6 @@
                <width>0</width>
                <height>40</height>
               </size>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>12</pointsize>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
              </property>
              <property name="autoFillBackground">
               <bool>false</bool>
@@ -216,19 +192,13 @@ color: rgb(255, 255, 255);
                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="spoton_textedit" name="message">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
                   <property name="maximumSize">
                    <size>
                     <width>16777215</width>
@@ -257,24 +227,6 @@ p, li { white-space: pre-wrap; }
                   </property>
                   <item>
                    <widget class="QPushButton" name="clearMessages">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>48</width>
-                      <height>48</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>16777215</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
                     <property name="toolTip">
                      <string>Clear Chat.</string>
                     </property>
@@ -320,24 +272,6 @@ QPushButton:pressed {
                   </item>
                   <item>
                    <widget class="QPushButton" name="copyrepleo_chat">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>48</width>
-                      <height>48</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>16777215</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
                     <property name="toolTip">
                      <string>Copy the Chat-Repleo of one! selected friend.</string>
                     </property>
@@ -383,18 +317,6 @@ QPushButton:pressed {
                   </item>
                   <item>
                    <widget class="QComboBox" name="status">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>48</height>
-                     </size>
-                    </property>
                     <property name="toolTip">
                      <string>Set your status.</string>
                     </property>
@@ -464,18 +386,6 @@ background-position: top center; } </string>
                   </item>
                   <item>
                    <widget class="QPushButton" name="melodica">
-                    <property name="minimumSize">
-                     <size>
-                      <width>48</width>
-                      <height>48</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>16777215</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
                     <property name="toolTip">
                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;table border=&quot;0&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;&quot; width=&quot;350&quot; cellspacing=&quot;2&quot; cellpadding=&quot;0&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;p&gt;MELODICA: Call Friend with new Gemini&lt;br/&gt;(&lt;span style=&quot; text-decoration: underline;&quot;&gt;M&lt;/span&gt;ulti &lt;span style=&quot; text-decoration: underline;&quot;&gt;E&lt;/span&gt;ncrypted &lt;span style=&quot; text-decoration: underline;&quot;&gt;LO&lt;/span&gt;ng &lt;span style=&quot; text-decoration: underline;&quot;&gt;DI&lt;/span&gt;stance &lt;span style=&quot; text-decoration: underline;&quot;&gt;CA&lt;/span&gt;lling).&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;p&gt;(Creates for selected friend an Auto-Gemini at both sides for instant perfect forward secrecy (IPFS)). It is renewed whenever you click MELDICA, and not only once per online-session.&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
@@ -517,18 +427,6 @@ QPushButton:pressed {
                   </item>
                   <item>
                    <widget class="QPushButton" name="sendMessage">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>48</height>
-                     </size>
-                    </property>
                     <property name="toolTip">
                      <string>Send message.</string>
                     </property>
@@ -631,10 +529,10 @@ QPushButton:pressed {
                    <bool>true</bool>
                   </property>
                   <attribute name="horizontalHeaderDefaultSectionSize">
-                   <number>120</number>
+                   <number>125</number>
                   </attribute>
                   <attribute name="horizontalHeaderMinimumSectionSize">
-                   <number>25</number>
+                   <number>125</number>
                   </attribute>
                   <attribute name="horizontalHeaderStretchLastSection">
                    <bool>true</bool>
@@ -740,18 +638,6 @@ QPushButton:pressed {
                      </property>
                      <item>
                       <widget class="QPushButton" name="saveNodeName">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>48</width>
-                         <height>48</height>
-                        </size>
-                       </property>
                        <property name="toolTip">
                         <string>Save my name.</string>
                        </property>
@@ -886,12 +772,6 @@ QPushButton:pressed {
                </item>
                <item>
                 <widget class="QPushButton" name="chatActionMenu">
-                 <property name="minimumSize">
-                  <size>
-                   <width>48</width>
-                   <height>48</height>
-                  </size>
-                 </property>
                  <property name="toolTip">
                   <string>Right mouse context menu as a button for tablets.</string>
                  </property>
@@ -957,13 +837,6 @@ QPushButton:pressed {
             <height>40</height>
            </size>
           </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
           <property name="styleSheet">
            <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.023, y1:0.988636, x2:0.028, y2:0.011, stop:0 rgba(218, 232, 255, 255), stop:1 rgba(170, 85, 255, 255));
 color: rgb(255, 255, 255);</string>
@@ -1027,12 +900,6 @@ color: rgb(255, 255, 255);</string>
              </item>
              <item>
               <widget class="QPushButton" name="refreshMail">
-               <property name="minimumSize">
-                <size>
-                 <width>48</width>
-                 <height>48</height>
-                </size>
-               </property>
                <property name="toolTip">
                 <string>Refresh</string>
                </property>
@@ -1091,12 +958,6 @@ QPushButton:pressed {
              </item>
              <item>
               <widget class="QPushButton" name="retrieveMail">
-               <property name="minimumSize">
-                <size>
-                 <width>48</width>
-                 <height>48</height>
-                </size>
-               </property>
                <property name="toolTip">
                 <string>Request undelivered e-mail from other participants.</string>
                </property>
@@ -1155,12 +1016,6 @@ QPushButton:pressed {
              </item>
              <item>
               <widget class="QPushButton" name="pushButtonClearMail">
-               <property name="minimumSize">
-                <size>
-                 <width>48</width>
-                 <height>48</height>
-                </size>
-               </property>
                <property name="toolTip">
                 <string>Clear the contents of the current view.</string>
                </property>
@@ -1218,12 +1073,6 @@ QPushButton:pressed {
              </item>
              <item>
               <widget class="QPushButton" name="emptyTrash">
-               <property name="minimumSize">
-                <size>
-                 <width>48</width>
-                 <height>48</height>
-                </size>
-               </property>
                <property name="toolTip">
                 <string>Empty Trash</string>
                </property>
@@ -1280,12 +1129,6 @@ QPushButton:pressed {
            </item>
            <item>
             <widget class="QTabWidget" name="mailTab">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
              <property name="tabPosition">
               <enum>QTabWidget::North</enum>
              </property>
@@ -1299,12 +1142,6 @@ QPushButton:pressed {
               </size>
              </property>
              <widget class="QWidget" name="tab_4">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
               <attribute name="icon">
                <iconset resource="../Icons/icons.qrc">
                 <normaloff>:/nuvola/email.png</normaloff>:/nuvola/email.png</iconset>
@@ -1332,18 +1169,6 @@ QPushButton:pressed {
                 <layout class="QHBoxLayout" name="horizontalLayout_19">
                  <item>
                   <widget class="QComboBox" name="folder">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>48</width>
-                     <height>48</height>
-                    </size>
-                   </property>
                    <property name="toolTip">
                     <string>Set the folder.</string>
                    </property>
@@ -1389,18 +1214,6 @@ QPushButton:pressed {
                   <widget class="QPushButton" name="reply">
                    <property name="enabled">
                     <bool>true</bool>
-                   </property>
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>48</width>
-                     <height>48</height>
-                    </size>
                    </property>
                    <property name="toolTip">
                     <string>Relpy to the selected email.</string>
@@ -1483,12 +1296,6 @@ QPushButton:pressed {
                   <enum>Qt::Horizontal</enum>
                  </property>
                  <widget class="QSplitter" name="readVerticalSplitter">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
                   </property>
@@ -1496,12 +1303,6 @@ QPushButton:pressed {
                    <bool>false</bool>
                   </property>
                   <widget class="QTableWidget" name="mail">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
                    <property name="verticalScrollBarPolicy">
                     <enum>Qt::ScrollBarAlwaysOff</enum>
                    </property>
@@ -1524,19 +1325,16 @@ QPushButton:pressed {
                     <bool>true</bool>
                    </property>
                    <attribute name="horizontalHeaderDefaultSectionSize">
-                    <number>15</number>
+                    <number>125</number>
                    </attribute>
                    <attribute name="horizontalHeaderMinimumSectionSize">
-                    <number>2</number>
+                    <number>125</number>
                    </attribute>
                    <attribute name="horizontalHeaderStretchLastSection">
                     <bool>true</bool>
                    </attribute>
                    <attribute name="verticalHeaderVisible">
                     <bool>false</bool>
-                   </attribute>
-                   <attribute name="verticalHeaderDefaultSectionSize">
-                    <number>30</number>
                    </attribute>
                    <column>
                     <property name="text">
@@ -1696,18 +1494,6 @@ QPushButton:pressed {
                    </property>
                    <item>
                     <widget class="QPushButton" name="generateGoldBug">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>16777215</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
                      <property name="toolTip">
                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add with the GoldBug an additional layer of encryption to the e-mail. &lt;br&gt;Do remember to notify all recipients of the GoldBug-Password.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
@@ -1757,14 +1543,7 @@ QPushButton:pressed {
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLineEdit" name="goldbug">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                    </widget>
+                    <widget class="QLineEdit" name="goldbug"/>
                    </item>
                   </layout>
                  </item>
@@ -1799,24 +1578,6 @@ QPushButton:pressed {
                       <layout class="QHBoxLayout" name="horizontalLayout_17">
                        <item>
                         <widget class="QPushButton" name="copyrepleo_email">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="minimumSize">
-                          <size>
-                           <width>48</width>
-                           <height>48</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>28</width>
-                           <height>16777215</height>
-                          </size>
-                         </property>
                          <property name="toolTip">
                           <string>Copy the Email-Repleo of one! selected friend.</string>
                          </property>
@@ -1906,18 +1667,6 @@ QPushButton:pressed {
                      </property>
                      <item>
                       <widget class="QPushButton" name="emailWriteActionMenu">
-                       <property name="minimumSize">
-                        <size>
-                         <width>48</width>
-                         <height>48</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>44</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
                        <property name="toolTip">
                         <string>Right mouse context menu as a button for tablets.</string>
                        </property>
@@ -1988,18 +1737,6 @@ QPushButton:pressed {
                  </item>
                  <item row="2" column="1">
                   <widget class="QTableWidget" name="emailParticipants">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
                    <property name="verticalScrollBarPolicy">
                     <enum>Qt::ScrollBarAlwaysOn</enum>
                    </property>
@@ -2025,7 +1762,10 @@ QPushButton:pressed {
                     <bool>false</bool>
                    </attribute>
                    <attribute name="horizontalHeaderDefaultSectionSize">
-                    <number>150</number>
+                    <number>125</number>
+                   </attribute>
+                   <attribute name="horizontalHeaderMinimumSectionSize">
+                    <number>125</number>
                    </attribute>
                    <attribute name="horizontalHeaderStretchLastSection">
                     <bool>true</bool>
@@ -2154,12 +1894,6 @@ QPushButton:pressed {
                  </item>
                  <item>
                   <widget class="Line" name="line_18">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
                    <property name="lineWidth">
                     <number>0</number>
                    </property>
@@ -2170,23 +1904,6 @@ QPushButton:pressed {
                  </item>
                  <item>
                   <widget class="QPushButton" name="sendMail">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>48</width>
-                     <height>48</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>16</pointsize>
-                    </font>
-                   </property>
                    <property name="toolTip">
                     <string>Send your email.</string>
                    </property>
@@ -2267,7 +1984,10 @@ QPushButton:pressed {
                   <bool>true</bool>
                  </property>
                  <attribute name="horizontalHeaderDefaultSectionSize">
-                  <number>51</number>
+                  <number>125</number>
+                 </attribute>
+                 <attribute name="horizontalHeaderMinimumSectionSize">
+                  <number>125</number>
                  </attribute>
                  <attribute name="horizontalHeaderStretchLastSection">
                   <bool>true</bool>
@@ -2308,12 +2028,6 @@ QPushButton:pressed {
                     </property>
                     <item>
                      <widget class="QTableWidget" name="institutions">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
                       <property name="alternatingRowColors">
                        <bool>true</bool>
                       </property>
@@ -2330,7 +2044,10 @@ QPushButton:pressed {
                        <bool>true</bool>
                       </property>
                       <attribute name="horizontalHeaderDefaultSectionSize">
-                       <number>100</number>
+                       <number>125</number>
+                      </attribute>
+                      <attribute name="horizontalHeaderMinimumSectionSize">
+                       <number>125</number>
                       </attribute>
                       <attribute name="horizontalHeaderStretchLastSection">
                        <bool>true</bool>
@@ -2364,12 +2081,6 @@ QPushButton:pressed {
                       </property>
                       <item>
                        <widget class="QPushButton" name="copyInstitution">
-                        <property name="minimumSize">
-                         <size>
-                          <width>48</width>
-                          <height>32</height>
-                         </size>
-                        </property>
                         <property name="styleSheet">
                          <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -2403,12 +2114,6 @@ QPushButton:pressed {
                       </item>
                       <item>
                        <widget class="QPushButton" name="deleteInstitution">
-                        <property name="minimumSize">
-                         <size>
-                          <width>48</width>
-                          <height>32</height>
-                         </size>
-                        </property>
                         <property name="styleSheet">
                          <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -2568,11 +2273,6 @@ QPushButton:pressed {
                           </item>
                           <item row="0" column="2">
                            <widget class="QLabel" name="label_79">
-                            <property name="font">
-                             <font>
-                              <pointsize>6</pointsize>
-                             </font>
-                            </property>
                             <property name="text">
                              <string>&amp;Cipher Type</string>
                             </property>
@@ -2583,11 +2283,6 @@ QPushButton:pressed {
                           </item>
                           <item row="1" column="2">
                            <widget class="QLabel" name="label_80">
-                            <property name="font">
-                             <font>
-                              <pointsize>6</pointsize>
-                             </font>
-                            </property>
                             <property name="text">
                              <string>&amp;Hash Type</string>
                             </property>
@@ -2621,12 +2316,6 @@ QPushButton:pressed {
                        </item>
                        <item>
                         <widget class="QPushButton" name="addInstitution">
-                         <property name="minimumSize">
-                          <size>
-                           <width>48</width>
-                           <height>48</height>
-                          </size>
-                         </property>
                          <property name="styleSheet">
                           <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -2718,12 +2407,6 @@ QPushButton:pressed {
                     </property>
                     <item>
                      <widget class="QCheckBox" name="autoEmailRetrieve">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
                       <property name="text">
                        <string>&amp;Auto-Retrieve e-mail every</string>
                       </property>
@@ -2731,12 +2414,6 @@ QPushButton:pressed {
                     </item>
                     <item>
                      <widget class="QSpinBox" name="emailRetrievalInterval">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
                       <property name="minimum">
                        <number>5</number>
                       </property>
@@ -2767,12 +2444,6 @@ QPushButton:pressed {
                     </property>
                     <item>
                      <widget class="QLabel" name="label_76">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
                       <property name="text">
                        <string>&amp;Maximum email.db-database file size:</string>
                       </property>
@@ -2783,12 +2454,6 @@ QPushButton:pressed {
                     </item>
                     <item>
                      <widget class="QSpinBox" name="maximumEmailFileSize">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
                       <property name="suffix">
                        <string> MB</string>
                       </property>
@@ -2852,13 +2517,6 @@ QPushButton:pressed {
             <width>0</width>
             <height>40</height>
            </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
           </property>
           <property name="styleSheet">
            <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.023, y1:0.988636, x2:0.028, y2:0.011, stop:0 rgba(218, 232, 255, 255), stop:1 rgba(170, 85, 255, 255));
@@ -2948,18 +2606,6 @@ QPushButton:pressed {
           </item>
           <item>
            <widget class="QComboBox" name="commonBuzzChannels">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>32</height>
-             </size>
-            </property>
             <item>
              <property name="text">
               <string>Spot-On Developer Channel</string>
@@ -3088,12 +2734,6 @@ QPushButton:pressed {
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="minimumSize">
-             <size>
-              <width>48</width>
-              <height>48</height>
-             </size>
-            </property>
             <property name="sizeAdjustPolicy">
              <enum>QComboBox::AdjustToContents</enum>
             </property>
@@ -3113,12 +2753,6 @@ QPushButton:pressed {
           </property>
           <item>
            <widget class="QComboBox" name="buzzTools">
-            <property name="minimumSize">
-             <size>
-              <width>48</width>
-              <height>48</height>
-             </size>
-            </property>
             <property name="styleSheet">
              <string notr="true">QComboBox#buzzTools {
  border: 2px solid gray;
@@ -3171,12 +2805,6 @@ background-position: top center; } </string>
           </item>
           <item>
            <widget class="QPushButton" name="join">
-            <property name="minimumSize">
-             <size>
-              <width>48</width>
-              <height>48</height>
-             </size>
-            </property>
             <property name="styleSheet">
              <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -3259,13 +2887,6 @@ QPushButton:pressed {
             <height>40</height>
            </size>
           </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
           <property name="styleSheet">
            <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.023, y1:0.988636, x2:0.028, y2:0.011, stop:0 rgba(218, 232, 255, 255), stop:1 rgba(170, 85, 255, 255));
 color: rgb(255, 255, 255);</string>
@@ -3287,11 +2908,6 @@ color: rgb(255, 255, 255);</string>
         </item>
         <item>
          <widget class="QTabWidget" name="etpTab">
-          <property name="font">
-           <font>
-            <pointsize>9</pointsize>
-           </font>
-          </property>
           <property name="currentIndex">
            <number>0</number>
           </property>
@@ -3340,7 +2956,10 @@ color: rgb(255, 255, 255);</string>
                <bool>true</bool>
               </property>
               <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>40</number>
+               <number>125</number>
+              </attribute>
+              <attribute name="horizontalHeaderMinimumSectionSize">
+               <number>125</number>
               </attribute>
               <attribute name="horizontalHeaderStretchLastSection">
                <bool>true</bool>
@@ -3370,17 +2989,6 @@ color: rgb(255, 255, 255);</string>
             </item>
             <item>
              <widget class="QPushButton" name="magnetsActionMenu">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>48</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
               <property name="toolTip">
                <string>Right mouse context menu as a button for tablets.</string>
               </property>
@@ -3473,12 +3081,6 @@ QPushButton:pressed {
                  </item>
                  <item>
                   <widget class="QTextEdit" name="etpMagnet">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
                    <property name="toolTip">
                     <string>Add a StarBeam-Magnet.</string>
                    </property>
@@ -3554,11 +3156,6 @@ QPushButton:pressed {
                </item>
                <item>
                 <widget class="QFrame" name="pairFrame">
-                 <property name="font">
-                  <font>
-                   <pointsize>8</pointsize>
-                  </font>
-                 </property>
                  <property name="frameShape">
                   <enum>QFrame::NoFrame</enum>
                  </property>
@@ -3680,17 +3277,6 @@ QPushButton:pressed {
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>48</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>16</pointsize>
-                 </font>
-                </property>
                 <property name="styleSheet">
                  <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -3731,12 +3317,6 @@ QPushButton:pressed {
             </item>
             <item>
              <widget class="QGroupBox" name="groupBox_8">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
               <property name="title">
                <string>Add Novas</string>
               </property>
@@ -3758,11 +3338,6 @@ QPushButton:pressed {
                </property>
                <item>
                 <widget class="QLabel" name="label_83">
-                 <property name="font">
-                  <font>
-                   <pointsize>7</pointsize>
-                  </font>
-                 </property>
                  <property name="toolTip">
                   <string>You get the Nova from a sender of a file.</string>
                  </property>
@@ -3773,18 +3348,6 @@ QPushButton:pressed {
                </item>
                <item>
                 <widget class="QListWidget" name="novas">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>90</height>
-                  </size>
-                 </property>
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
                  </property>
@@ -3812,12 +3375,6 @@ QPushButton:pressed {
                  </item>
                  <item>
                   <widget class="QPushButton" name="addNova">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
                    <property name="styleSheet">
                     <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -3896,12 +3453,6 @@ QPushButton:pressed {
             </property>
             <item>
              <widget class="QGroupBox" name="receivers">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
               <property name="title">
                <string>Receiving</string>
               </property>
@@ -3950,7 +3501,10 @@ QPushButton:pressed {
                   <bool>true</bool>
                  </property>
                  <attribute name="horizontalHeaderDefaultSectionSize">
-                  <number>55</number>
+                  <number>125</number>
+                 </attribute>
+                 <attribute name="horizontalHeaderMinimumSectionSize">
+                  <number>125</number>
                  </attribute>
                  <attribute name="horizontalHeaderStretchLastSection">
                   <bool>true</bool>
@@ -3992,17 +3546,6 @@ QPushButton:pressed {
                </item>
                <item>
                 <widget class="QPushButton" name="receivedActionMenu">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>48</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>8</pointsize>
-                  </font>
-                 </property>
                  <property name="toolTip">
                   <string>Right mouse context menu as a button for tablets.</string>
                  </property>
@@ -4039,12 +3582,6 @@ QPushButton:pressed {
                  </property>
                  <item>
                   <widget class="QLabel" name="label_63">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
                    <property name="text">
                     <string>DL &amp;Folder:</string>
                    </property>
@@ -4054,14 +3591,7 @@ QPushButton:pressed {
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLineEdit" name="destination">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                  </widget>
+                  <widget class="QLineEdit" name="destination"/>
                  </item>
                  <item>
                   <widget class="QPushButton" name="etpSelectDestination">
@@ -4176,11 +3706,6 @@ QPushButton:pressed {
                </property>
                <item>
                 <widget class="QLabel" name="label_60">
-                 <property name="font">
-                  <font>
-                   <pointsize>8</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string>Select a file, choose magnet(s) and press transmit.</string>
                  </property>
@@ -4206,12 +3731,6 @@ QPushButton:pressed {
                  </item>
                  <item>
                   <widget class="QPushButton" name="etpSelectFile">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>48</height>
-                    </size>
-                   </property>
                    <property name="toolTip">
                     <string>Select a file from your hard disc.</string>
                    </property>
@@ -4263,6 +3782,12 @@ QPushButton:pressed {
                  <property name="sortingEnabled">
                   <bool>true</bool>
                  </property>
+                 <attribute name="horizontalHeaderDefaultSectionSize">
+                  <number>125</number>
+                 </attribute>
+                 <attribute name="horizontalHeaderMinimumSectionSize">
+                  <number>125</number>
+                 </attribute>
                  <attribute name="horizontalHeaderStretchLastSection">
                   <bool>true</bool>
                  </attribute>
@@ -4280,11 +3805,6 @@ QPushButton:pressed {
                </item>
                <item>
                 <widget class="QLabel" name="label_69">
-                 <property name="font">
-                  <font>
-                   <pointsize>7</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string>Optional: Create a Nova-password for your file-magnet.</string>
                  </property>
@@ -4306,11 +3826,6 @@ QPushButton:pressed {
                  </item>
                  <item>
                   <widget class="QPushButton" name="generateNova">
-                   <property name="font">
-                    <font>
-                     <pointsize>8</pointsize>
-                    </font>
-                   </property>
                    <property name="toolTip">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bundle each pulse with an additional layer of AES-256 encryption. Do remember to notify all recipients of the key/password, you created for this transfer-magnet.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
@@ -4352,12 +3867,6 @@ QPushButton:pressed {
                  </property>
                  <item>
                   <widget class="QLabel" name="label_54">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
                    <property name="text">
                     <string>Chunk Size:</string>
                    </property>
@@ -4368,12 +3877,6 @@ QPushButton:pressed {
                  </item>
                  <item>
                   <widget class="QSpinBox" name="pulseSize">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
                    <property name="suffix">
                     <string> Bytes</string>
                    </property>
@@ -4432,17 +3935,6 @@ QPushButton:pressed {
                </item>
                <item>
                 <widget class="QPushButton" name="transmit">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>48</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>16</pointsize>
-                  </font>
-                 </property>
                  <property name="styleSheet">
                   <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -4509,6 +4001,9 @@ QPushButton:pressed {
                   <attribute name="horizontalHeaderDefaultSectionSize">
                    <number>200</number>
                   </attribute>
+                  <attribute name="horizontalHeaderMinimumSectionSize">
+                   <number>200</number>
+                  </attribute>
                   <attribute name="horizontalHeaderStretchLastSection">
                    <bool>true</bool>
                   </attribute>
@@ -4559,12 +4054,6 @@ QPushButton:pressed {
                   </column>
                  </widget>
                  <widget class="QListWidget" name="transmittedMagnets">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
                   <property name="toolTip">
                    <string>Copy the magnet and share it with your friend(s).</string>
                   </property>
@@ -4596,24 +4085,6 @@ QPushButton:pressed {
                  </property>
                  <item>
                   <widget class="QPushButton" name="transmittedActionMenu">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>48</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
                    <property name="styleSheet">
                     <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -4646,18 +4117,6 @@ QPushButton:pressed {
                  </item>
                  <item>
                   <widget class="QPushButton" name="rewind">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>48</height>
-                    </size>
-                   </property>
                    <property name="styleSheet">
                     <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -4731,13 +4190,6 @@ QPushButton:pressed {
             <height>40</height>
            </size>
           </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
           <property name="styleSheet">
            <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.023, y1:0.988636, x2:0.028, y2:0.011, stop:0 rgba(218, 232, 255, 255), stop:1 rgba(170, 85, 255, 255));
 color: rgb(255, 255, 255);</string>
@@ -4792,17 +4244,6 @@ color: rgb(255, 255, 255);</string>
                  </property>
                  <item>
                   <widget class="QPushButton" name="toolButtonCopyToClipboard">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>48</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>16</pointsize>
-                    </font>
-                   </property>
                    <property name="toolTip">
                     <string>Copy your public key pairs to the clipboard buffer.</string>
                    </property>
@@ -4959,7 +4400,7 @@ QPushButton#pushButtonCopytoClipboard_All:pressed {
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="overwriteMode">
@@ -4993,23 +4434,6 @@ p, li { white-space: pre-wrap; }
                </item>
                <item>
                 <widget class="QPushButton" name="addFriend">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>48</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>16</pointsize>
-                  </font>
-                 </property>
                  <property name="toolTip">
                   <string>Add the key of your friend.</string>
                  </property>
@@ -5135,13 +4559,6 @@ QPushButton:pressed {
             <height>40</height>
            </size>
           </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
           <property name="styleSheet">
            <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.023, y1:0.988636, x2:0.028, y2:0.011, stop:0 rgba(218, 232, 255, 255), stop:1 rgba(170, 85, 255, 255));
 color: rgb(255, 255, 255);</string>
@@ -5163,11 +4580,6 @@ color: rgb(255, 255, 255);</string>
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_addip">
-          <property name="font">
-           <font>
-            <pointsize>8</pointsize>
-           </font>
-          </property>
           <property name="styleSheet">
            <string notr="true"/>
           </property>
@@ -5191,11 +4603,6 @@ color: rgb(255, 255, 255);</string>
              </property>
              <item row="0" column="0">
               <widget class="QRadioButton" name="ipv4Neighbor">
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                </font>
-               </property>
                <property name="layoutDirection">
                 <enum>Qt::LeftToRight</enum>
                </property>
@@ -5209,11 +4616,6 @@ color: rgb(255, 255, 255);</string>
              </item>
              <item row="5" column="0">
               <widget class="QLabel" name="label_13">
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                </font>
-               </property>
                <property name="layoutDirection">
                 <enum>Qt::RightToLeft</enum>
                </property>
@@ -5227,17 +4629,6 @@ color: rgb(255, 255, 255);</string>
              </item>
              <item row="2" column="0">
               <widget class="QLabel" name="label_24">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                </font>
-               </property>
                <property name="layoutDirection">
                 <enum>Qt::RightToLeft</enum>
                </property>
@@ -5254,11 +4645,6 @@ color: rgb(255, 255, 255);</string>
              </item>
              <item row="0" column="2">
               <widget class="QRadioButton" name="dynamicdns">
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                </font>
-               </property>
                <property name="toolTip">
                 <string>Dynamic DNS</string>
                </property>
@@ -5269,11 +4655,6 @@ color: rgb(255, 255, 255);</string>
              </item>
              <item row="0" column="1">
               <widget class="QRadioButton" name="ipv6Neighbor">
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                </font>
-               </property>
                <property name="layoutDirection">
                 <enum>Qt::LeftToRight</enum>
                </property>
@@ -5284,11 +4665,6 @@ color: rgb(255, 255, 255);</string>
              </item>
              <item row="5" column="1">
               <widget class="QSpinBox" name="neighborPort">
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                </font>
-               </property>
                <property name="minimum">
                 <number>1</number>
                </property>
@@ -5301,21 +4677,10 @@ color: rgb(255, 255, 255);</string>
               </widget>
              </item>
              <item row="3" column="1" colspan="3">
-              <widget class="QLineEdit" name="neighborScopeId">
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                </font>
-               </property>
-              </widget>
+              <widget class="QLineEdit" name="neighborScopeId"/>
              </item>
              <item row="2" column="1" colspan="3">
               <widget class="QLineEdit" name="neighborIP">
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                </font>
-               </property>
                <property name="styleSheet">
                 <string notr="true">QLineEdit#neighborIP {
      background-color: rgb(255, 255, 195);
@@ -5333,11 +4698,6 @@ color: rgb(255, 255, 255);</string>
              </item>
              <item row="3" column="0">
               <widget class="QLabel" name="neighborScopeIdLabel">
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                </font>
-               </property>
                <property name="text">
                 <string>&amp;Scope ID:</string>
                </property>
@@ -5383,11 +4743,6 @@ color: rgb(255, 255, 255);</string>
                 </property>
                 <item>
                  <widget class="QComboBox" name="neighborTransport">
-                  <property name="font">
-                   <font>
-                    <pointsize>6</pointsize>
-                   </font>
-                  </property>
                   <property name="sizeAdjustPolicy">
                    <enum>QComboBox::AdjustToContents</enum>
                   </property>
@@ -5405,11 +4760,6 @@ color: rgb(255, 255, 255);</string>
                 </item>
                 <item>
                  <widget class="QComboBox" name="neighborOrientation">
-                  <property name="font">
-                   <font>
-                    <pointsize>6</pointsize>
-                   </font>
-                  </property>
                   <property name="sizeAdjustPolicy">
                    <enum>QComboBox::AdjustToContents</enum>
                   </property>
@@ -5429,11 +4779,6 @@ color: rgb(255, 255, 255);</string>
               </item>
               <item>
                <widget class="QCheckBox" name="requireSsl">
-                <property name="font">
-                 <font>
-                  <pointsize>6</pointsize>
-                 </font>
-                </property>
                 <property name="toolTip">
                  <string>Require secure connections.</string>
                 </property>
@@ -5447,11 +4792,6 @@ color: rgb(255, 255, 255);</string>
               </item>
               <item>
                <widget class="QCheckBox" name="addException">
-                <property name="font">
-                 <font>
-                  <pointsize>6</pointsize>
-                 </font>
-                </property>
                 <property name="text">
                  <string>Allow Exceptions of Permanent SSL-Cert-Checks.</string>
                 </property>
@@ -5467,17 +4807,6 @@ color: rgb(255, 255, 255);</string>
                 </property>
                 <item>
                  <widget class="QLabel" name="sslKeySizeLabel">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>6</pointsize>
-                   </font>
-                  </property>
                   <property name="text">
                    <string>&amp;SSL Key Size for this connection</string>
                   </property>
@@ -5493,11 +4822,6 @@ color: rgb(255, 255, 255);</string>
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>6</pointsize>
-                   </font>
                   </property>
                   <property name="sizeAdjustPolicy">
                    <enum>QComboBox::AdjustToContents</enum>
@@ -5523,11 +4847,6 @@ color: rgb(255, 255, 255);</string>
               </item>
               <item>
                <widget class="QComboBox" name="neighborsEchoMode">
-                <property name="font">
-                 <font>
-                  <pointsize>6</pointsize>
-                 </font>
-                </property>
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToContents</enum>
                 </property>
@@ -5545,11 +4864,6 @@ color: rgb(255, 255, 255);</string>
               </item>
               <item>
                <widget class="QLabel" name="label_28">
-                <property name="font">
-                 <font>
-                  <pointsize>6</pointsize>
-                 </font>
-                </property>
                 <property name="text">
                  <string>Accept in general only Neighbors with min. SSL Keysize:</string>
                 </property>
@@ -5559,17 +4873,6 @@ color: rgb(255, 255, 255);</string>
                <widget class="QComboBox" name="publishedKeySize">
                 <property name="enabled">
                  <bool>true</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>6</pointsize>
-                 </font>
                 </property>
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToContents</enum>
@@ -5612,11 +4915,6 @@ color: rgb(255, 255, 255);</string>
            </item>
            <item>
             <widget class="QGroupBox" name="proxy">
-             <property name="font">
-              <font>
-               <pointsize>8</pointsize>
-              </font>
-             </property>
              <property name="layoutDirection">
               <enum>Qt::LeftToRight</enum>
              </property>
@@ -5638,11 +4936,6 @@ color: rgb(255, 255, 255);</string>
               </property>
               <item row="0" column="0" colspan="2">
                <widget class="QLabel" name="label_23">
-                <property name="font">
-                 <font>
-                  <pointsize>6</pointsize>
-                 </font>
-                </property>
                 <property name="lineWidth">
                  <number>1</number>
                 </property>
@@ -5653,11 +4946,6 @@ color: rgb(255, 255, 255);</string>
               </item>
               <item row="2" column="0">
                <widget class="QLabel" name="label_7">
-                <property name="font">
-                 <font>
-                  <pointsize>8</pointsize>
-                 </font>
-                </property>
                 <property name="text">
                  <string>Hostname:</string>
                 </property>
@@ -5668,11 +4956,6 @@ color: rgb(255, 255, 255);</string>
               </item>
               <item row="3" column="1">
                <widget class="QSpinBox" name="proxyPort">
-                <property name="font">
-                 <font>
-                  <pointsize>8</pointsize>
-                 </font>
-                </property>
                 <property name="minimum">
                  <number>1</number>
                 </property>
@@ -5686,11 +4969,6 @@ color: rgb(255, 255, 255);</string>
               </item>
               <item row="1" column="0">
                <widget class="QLabel" name="label_3">
-                <property name="font">
-                 <font>
-                  <pointsize>8</pointsize>
-                 </font>
-                </property>
                 <property name="text">
                  <string>&amp;Type:</string>
                 </property>
@@ -5700,21 +4978,10 @@ color: rgb(255, 255, 255);</string>
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QLineEdit" name="proxyHostname">
-                <property name="font">
-                 <font>
-                  <pointsize>8</pointsize>
-                 </font>
-                </property>
-               </widget>
+               <widget class="QLineEdit" name="proxyHostname"/>
               </item>
               <item row="4" column="0">
                <widget class="QLabel" name="label_19">
-                <property name="font">
-                 <font>
-                  <pointsize>8</pointsize>
-                 </font>
-                </property>
                 <property name="text">
                  <string>&amp;Username:</string>
                 </property>
@@ -5725,11 +4992,6 @@ color: rgb(255, 255, 255);</string>
               </item>
               <item row="1" column="1">
                <widget class="QComboBox" name="proxyType">
-                <property name="font">
-                 <font>
-                  <pointsize>8</pointsize>
-                 </font>
-                </property>
                 <item>
                  <property name="text">
                   <string>HTTP</string>
@@ -5749,11 +5011,6 @@ color: rgb(255, 255, 255);</string>
               </item>
               <item row="5" column="1">
                <widget class="QLineEdit" name="proxyPassword">
-                <property name="font">
-                 <font>
-                  <pointsize>8</pointsize>
-                 </font>
-                </property>
                 <property name="text">
                  <string/>
                 </property>
@@ -5764,11 +5021,6 @@ color: rgb(255, 255, 255);</string>
               </item>
               <item row="5" column="0">
                <widget class="QLabel" name="label_20">
-                <property name="font">
-                 <font>
-                  <pointsize>8</pointsize>
-                 </font>
-                </property>
                 <property name="text">
                  <string>&amp;Password:</string>
                 </property>
@@ -5779,11 +5031,6 @@ color: rgb(255, 255, 255);</string>
               </item>
               <item row="3" column="0">
                <widget class="QLabel" name="label_8">
-                <property name="font">
-                 <font>
-                  <pointsize>8</pointsize>
-                 </font>
-                </property>
                 <property name="text">
                  <string>&amp;Port:</string>
                 </property>
@@ -5793,13 +5040,7 @@ color: rgb(255, 255, 255);</string>
                </widget>
               </item>
               <item row="4" column="1">
-               <widget class="QLineEdit" name="proxyUsername">
-                <property name="font">
-                 <font>
-                  <pointsize>8</pointsize>
-                 </font>
-                </property>
-               </widget>
+               <widget class="QLineEdit" name="proxyUsername"/>
               </item>
              </layout>
             </widget>
@@ -5822,17 +5063,6 @@ color: rgb(255, 255, 255);</string>
            </item>
            <item>
             <widget class="QPushButton" name="addNeighbor">
-             <property name="minimumSize">
-              <size>
-               <width>186</width>
-               <height>48</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>16</pointsize>
-              </font>
-             </property>
              <property name="toolTip">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Harry, add this neighbor (with Floo-Powder).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
@@ -5921,13 +5151,6 @@ QPushButton#addNeighbor:pressed {
             <height>40</height>
            </size>
           </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
           <property name="styleSheet">
            <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.023, y1:0.988636, x2:0.028, y2:0.011, stop:0 rgba(218, 232, 255, 255), stop:1 rgba(170, 85, 255, 255));
 color: rgb(255, 255, 255);</string>
@@ -5949,11 +5172,6 @@ color: rgb(255, 255, 255);</string>
         </item>
         <item>
          <widget class="QGroupBox" name="listenersBox">
-          <property name="font">
-           <font>
-            <pointsize>8</pointsize>
-           </font>
-          </property>
           <property name="title">
            <string>Create own Chat-Server</string>
           </property>
@@ -6003,21 +5221,10 @@ color: rgb(255, 255, 255);</string>
                   </widget>
                  </item>
                  <item row="7" column="1" colspan="13">
-                  <widget class="QLineEdit" name="listenerScopeId">
-                   <property name="font">
-                    <font>
-                     <pointsize>8</pointsize>
-                    </font>
-                   </property>
-                  </widget>
+                  <widget class="QLineEdit" name="listenerScopeId"/>
                  </item>
                  <item row="0" column="1">
                   <widget class="QRadioButton" name="ipv6Listener">
-                   <property name="font">
-                    <font>
-                     <pointsize>8</pointsize>
-                    </font>
-                   </property>
                    <property name="layoutDirection">
                     <enum>Qt::LeftToRight</enum>
                    </property>
@@ -6028,11 +5235,6 @@ color: rgb(255, 255, 255);</string>
                  </item>
                  <item row="0" column="0">
                   <widget class="QRadioButton" name="ipv4Listener">
-                   <property name="font">
-                    <font>
-                     <pointsize>8</pointsize>
-                    </font>
-                   </property>
                    <property name="layoutDirection">
                     <enum>Qt::LeftToRight</enum>
                    </property>
@@ -6046,17 +5248,6 @@ color: rgb(255, 255, 255);</string>
                  </item>
                  <item row="5" column="0" rowspan="2">
                   <widget class="QLabel" name="label_11">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>8</pointsize>
-                    </font>
-                   </property>
                    <property name="layoutDirection">
                     <enum>Qt::RightToLeft</enum>
                    </property>
@@ -6069,21 +5260,10 @@ color: rgb(255, 255, 255);</string>
                   </widget>
                  </item>
                  <item row="6" column="1" colspan="13">
-                  <widget class="QLineEdit" name="listenerIP">
-                   <property name="font">
-                    <font>
-                     <pointsize>8</pointsize>
-                    </font>
-                   </property>
-                  </widget>
+                  <widget class="QLineEdit" name="listenerIP"/>
                  </item>
                  <item row="7" column="0">
                   <widget class="QLabel" name="listenerScopeIdLabel">
-                   <property name="font">
-                    <font>
-                     <pointsize>8</pointsize>
-                    </font>
-                   </property>
                    <property name="text">
                     <string>&amp;Scope ID:</string>
                    </property>
@@ -6094,17 +5274,6 @@ color: rgb(255, 255, 255);</string>
                  </item>
                  <item row="0" column="2" colspan="12">
                   <widget class="QComboBox" name="listenerIPCombo">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>8</pointsize>
-                    </font>
-                   </property>
                    <property name="styleSheet">
                     <string notr="true">QComboBox#listenerIPCombo {
      background-color: rgb(195, 215, 255);
@@ -6134,11 +5303,6 @@ background-position: top center; } </string>
                  </item>
                  <item row="8" column="0">
                   <widget class="QLabel" name="label_12">
-                   <property name="font">
-                    <font>
-                     <pointsize>8</pointsize>
-                    </font>
-                   </property>
                    <property name="layoutDirection">
                     <enum>Qt::RightToLeft</enum>
                    </property>
@@ -6152,11 +5316,6 @@ background-position: top center; } </string>
                  </item>
                  <item row="8" column="1" colspan="4">
                   <widget class="QSpinBox" name="listenerPort">
-                   <property name="font">
-                    <font>
-                     <pointsize>8</pointsize>
-                    </font>
-                   </property>
                    <property name="toolTip">
                     <string>Please forward this port in your router/nat.</string>
                    </property>
@@ -6173,11 +5332,6 @@ background-position: top center; } </string>
                  </item>
                  <item row="9" column="1" colspan="4">
                   <widget class="QComboBox" name="listenerTransport">
-                   <property name="font">
-                    <font>
-                     <pointsize>6</pointsize>
-                    </font>
-                   </property>
                    <property name="sizeAdjustPolicy">
                     <enum>QComboBox::AdjustToContents</enum>
                    </property>
@@ -6202,11 +5356,6 @@ background-position: top center; } </string>
                  </item>
                  <item row="9" column="6" colspan="8">
                   <widget class="QComboBox" name="listenerOrientation">
-                   <property name="font">
-                    <font>
-                     <pointsize>7</pointsize>
-                    </font>
-                   </property>
                    <property name="sizeAdjustPolicy">
                     <enum>QComboBox::AdjustToContents</enum>
                    </property>
@@ -6233,17 +5382,6 @@ background-position: top center; } </string>
                </item>
                <item>
                 <widget class="QGroupBox" name="groupBox_5">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>8</pointsize>
-                  </font>
-                 </property>
                  <property name="title">
                   <string>Listener Security Options</string>
                  </property>
@@ -6261,11 +5399,6 @@ background-position: top center; } </string>
                     </property>
                     <item>
                      <widget class="QComboBox" name="listenersEchoMode">
-                      <property name="font">
-                       <font>
-                        <pointsize>6</pointsize>
-                       </font>
-                      </property>
                       <property name="sizeAdjustPolicy">
                        <enum>QComboBox::AdjustToContents</enum>
                       </property>
@@ -6283,11 +5416,6 @@ background-position: top center; } </string>
                     </item>
                     <item>
                      <widget class="QCheckBox" name="permanentCertificate">
-                      <property name="font">
-                       <font>
-                        <pointsize>6</pointsize>
-                       </font>
-                      </property>
                       <property name="toolTip">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a Permanent Certificate, which identifies, &lt;/p&gt;&lt;p&gt;when an unknown neighbor connects &lt;/p&gt;&lt;p&gt;and the cert is different from the known. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
@@ -6308,17 +5436,6 @@ background-position: top center; } </string>
                     </property>
                     <item>
                      <widget class="QCheckBox" name="sslListener">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>6</pointsize>
-                       </font>
-                      </property>
                       <property name="toolTip">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create and use always 2 listeners / ports for both: SSL (HTTPS) and non-SSL (HTTP) incoming connections.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
@@ -6332,17 +5449,6 @@ background-position: top center; } </string>
                     </item>
                     <item>
                      <widget class="QComboBox" name="listenerKeySize">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>6</pointsize>
-                       </font>
-                      </property>
                       <item>
                        <property name="text">
                         <string>2048</string>
@@ -6369,11 +5475,6 @@ background-position: top center; } </string>
                     </property>
                     <item>
                      <widget class="QCheckBox" name="listenerShareAddress">
-                      <property name="font">
-                       <font>
-                        <pointsize>6</pointsize>
-                       </font>
-                      </property>
                       <property name="text">
                        <string>&amp;Share IP Address (UDP)</string>
                       </property>
@@ -6381,11 +5482,6 @@ background-position: top center; } </string>
                     </item>
                     <item>
                      <widget class="QCheckBox" name="recordIPAddress">
-                      <property name="font">
-                       <font>
-                        <pointsize>6</pointsize>
-                       </font>
-                      </property>
                       <property name="toolTip">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Record the current external IP address in the listener's certificate. Please do not use this option if you have a dynamic IP address.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
@@ -6403,11 +5499,6 @@ background-position: top center; } </string>
                     </property>
                     <item>
                      <widget class="QLabel" name="label_87">
-                      <property name="font">
-                       <font>
-                        <pointsize>6</pointsize>
-                       </font>
-                      </property>
                       <property name="text">
                        <string>&amp;Limit connections:</string>
                       </property>
@@ -6418,11 +5509,6 @@ background-position: top center; } </string>
                     </item>
                     <item>
                      <widget class="QSpinBox" name="limitConnections">
-                      <property name="font">
-                       <font>
-                        <pointsize>6</pointsize>
-                       </font>
-                      </property>
                       <property name="toolTip">
                        <string>Limit the number of connections per client IP address.</string>
                       </property>
@@ -6452,23 +5538,6 @@ background-position: top center; } </string>
                  </property>
                  <item>
                   <widget class="QPushButton" name="addListener">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>16</pointsize>
-                    </font>
-                   </property>
                    <property name="toolTip">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Echoed Messaging and Presence Protocol (EMPP): Create own Chat Server.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
@@ -6511,18 +5580,6 @@ QPushButton#addListener:pressed {
                  </item>
                  <item>
                   <widget class="QPushButton" name="listenerAnnounce">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
-                   </property>
                    <property name="toolTip">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Go Live sends the Listener / Chat-Server information (that means your IP and Port) to connected neighbors. Your peers will be able to connect, if you have not set 'accounts' for this Listener an sent to a dedicated friend.&lt;/p&gt;&lt;p&gt;Wilkie Twycross, apparition instructor in Hogwards, shows regularly in a workshop about &amp;quot;Going Live with a Listener&amp;quot;, how easy it is, to set up a Chat Server for your friends - with or without a chat-account. Apparition is possible.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
@@ -6569,17 +5626,6 @@ QPushButton#listenerAnnounce:pressed {
                  </item>
                  <item>
                   <widget class="QPushButton" name="deleteAllListeners">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>8</pointsize>
-                    </font>
-                   </property>
                    <property name="styleSheet">
                     <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -6615,23 +5661,6 @@ QPushButton:pressed {
                </item>
                <item>
                 <widget class="QTableWidget" name="listeners">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>100</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>6</pointsize>
-                  </font>
-                 </property>
                  <property name="verticalScrollBarPolicy">
                   <enum>Qt::ScrollBarAlwaysOff</enum>
                  </property>
@@ -6654,7 +5683,10 @@ QPushButton:pressed {
                   <bool>true</bool>
                  </property>
                  <attribute name="horizontalHeaderDefaultSectionSize">
-                  <number>70</number>
+                  <number>125</number>
+                 </attribute>
+                 <attribute name="horizontalHeaderMinimumSectionSize">
+                  <number>125</number>
                  </attribute>
                  <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
                   <bool>true</bool>
@@ -6769,17 +5801,6 @@ QPushButton:pressed {
                </item>
                <item>
                 <widget class="QPushButton" name="listenersActionMenu">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>48</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>8</pointsize>
-                  </font>
-                 </property>
                  <property name="toolTip">
                   <string>Right mouse context menu as a button for tablets.</string>
                  </property>
@@ -6854,21 +5875,10 @@ QPushButton:pressed {
                      <number>3</number>
                     </property>
                     <item row="1" column="1">
-                     <widget class="QLineEdit" name="accountName">
-                      <property name="font">
-                       <font>
-                        <pointsize>6</pointsize>
-                       </font>
-                      </property>
-                     </widget>
+                     <widget class="QLineEdit" name="accountName"/>
                     </item>
                     <item row="1" column="0">
                      <widget class="QLabel" name="label_47">
-                      <property name="font">
-                       <font>
-                        <pointsize>8</pointsize>
-                       </font>
-                      </property>
                       <property name="text">
                        <string>&amp;Name:</string>
                       </property>
@@ -6884,11 +5894,6 @@ QPushButton:pressed {
                       </property>
                       <item>
                        <widget class="QLineEdit" name="accountPassword">
-                        <property name="font">
-                         <font>
-                          <pointsize>6</pointsize>
-                         </font>
-                        </property>
                         <property name="echoMode">
                          <enum>QLineEdit::Password</enum>
                         </property>
@@ -6896,23 +5901,6 @@ QPushButton:pressed {
                       </item>
                       <item>
                        <widget class="QPushButton" name="addAccount">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="minimumSize">
-                         <size>
-                          <width>55</width>
-                          <height>0</height>
-                         </size>
-                        </property>
-                        <property name="font">
-                         <font>
-                          <pointsize>8</pointsize>
-                         </font>
-                        </property>
                         <property name="styleSheet">
                          <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -6948,11 +5936,6 @@ QPushButton:pressed {
                     </item>
                     <item row="2" column="0">
                      <widget class="QLabel" name="label_48">
-                      <property name="font">
-                       <font>
-                        <pointsize>8</pointsize>
-                       </font>
-                      </property>
                       <property name="text">
                        <string>&amp;Password:</string>
                       </property>
@@ -6963,17 +5946,6 @@ QPushButton:pressed {
                     </item>
                     <item row="0" column="0" colspan="2">
                      <widget class="QLabel" name="label_66">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>6</pointsize>
-                       </font>
-                      </property>
                       <property name="text">
                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;Accounts prevent unknow nodes to connect and enable the creation of a web of trust. The account name and the account password must contain at least thirty-two characters each.&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
@@ -7000,12 +5972,6 @@ QPushButton:pressed {
                     </property>
                     <item>
                      <widget class="QListWidget" name="accounts">
-                      <property name="maximumSize">
-                       <size>
-                        <width>16777215</width>
-                        <height>55</height>
-                       </size>
-                      </property>
                       <property name="selectionBehavior">
                        <enum>QAbstractItemView::SelectRows</enum>
                       </property>
@@ -7021,17 +5987,6 @@ QPushButton:pressed {
                       </property>
                       <item>
                        <widget class="QPushButton" name="deleteAccount">
-                        <property name="minimumSize">
-                         <size>
-                          <width>55</width>
-                          <height>0</height>
-                         </size>
-                        </property>
-                        <property name="font">
-                         <font>
-                          <pointsize>8</pointsize>
-                         </font>
-                        </property>
                         <property name="styleSheet">
                          <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -7163,12 +6118,6 @@ QPushButton:pressed {
                     </property>
                     <item>
                      <widget class="QPushButton" name="addAEToken">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
                       <property name="styleSheet">
                        <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -7191,12 +6140,6 @@ QPushButton:pressed {
                     </item>
                     <item>
                      <widget class="QPushButton" name="deleteAEToken">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
                       <property name="styleSheet">
                        <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -7239,6 +6182,12 @@ QPushButton:pressed {
                     <property name="sortingEnabled">
                      <bool>true</bool>
                     </property>
+                    <attribute name="horizontalHeaderDefaultSectionSize">
+                     <number>200</number>
+                    </attribute>
+                    <attribute name="horizontalHeaderMinimumSectionSize">
+                     <number>200</number>
+                    </attribute>
                     <attribute name="horizontalHeaderStretchLastSection">
                      <bool>true</bool>
                     </attribute>
@@ -7345,13 +6294,6 @@ QPushButton:pressed {
               <height>40</height>
              </size>
             </property>
-            <property name="font">
-             <font>
-              <pointsize>12</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
             <property name="styleSheet">
              <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.023, y1:0.988636, x2:0.028, y2:0.011, stop:0 rgba(218, 232, 255, 255), stop:1 rgba(170, 85, 255, 255));
 color: rgb(255, 255, 255);</string>
@@ -7373,17 +6315,6 @@ color: rgb(255, 255, 255);</string>
           </item>
           <item>
            <widget class="QGroupBox" name="kernelBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
             <property name="title">
              <string>Kernel-Activation</string>
             </property>
@@ -7404,11 +6335,6 @@ color: rgb(255, 255, 255);</string>
                </property>
                <item>
                 <widget class="QLabel" name="label_18">
-                 <property name="font">
-                  <font>
-                   <pointsize>8</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string>Path to Kernel:</string>
                  </property>
@@ -7418,28 +6344,10 @@ color: rgb(255, 255, 255);</string>
                 </widget>
                </item>
                <item>
-                <widget class="QLineEdit" name="kernelPath">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                </widget>
+                <widget class="QLineEdit" name="kernelPath"/>
                </item>
                <item>
                 <widget class="QPushButton" name="selectKernelPath">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>8</pointsize>
-                  </font>
-                 </property>
                  <property name="styleSheet">
                   <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -7490,23 +6398,6 @@ QPushButton:pressed {
                </property>
                <item>
                 <widget class="QPushButton" name="activateKernel">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>101</width>
-                   <height>48</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>16</pointsize>
-                  </font>
-                 </property>
                  <property name="styleSheet">
                   <string notr="true">QPushButton#activateKernel {
      background-color: #FF717E;
@@ -7559,12 +6450,6 @@ background-position: top center;
                  </property>
                  <item>
                   <widget class="QLineEdit" name="pid">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
                    <property name="text">
                     <string>0</string>
                    </property>
@@ -7685,17 +6570,6 @@ QPushButton:pressed {
           </item>
           <item>
            <widget class="QGroupBox" name="passphraseGroupBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
             <property name="title">
              <string>Create Passphrase and Public Keys</string>
             </property>
@@ -7719,11 +6593,6 @@ QPushButton:pressed {
                </property>
                <item row="4" column="0">
                 <widget class="QLabel" name="label_37">
-                 <property name="font">
-                  <font>
-                   <pointsize>8</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string>&amp;Encryption Algorithm:</string>
                  </property>
@@ -7744,11 +6613,6 @@ QPushButton:pressed {
                </item>
                <item row="4" column="1">
                 <widget class="QComboBox" name="encryptionKeyType">
-                 <property name="font">
-                  <font>
-                   <pointsize>8</pointsize>
-                  </font>
-                 </property>
                  <property name="currentIndex">
                   <number>2</number>
                  </property>
@@ -7771,17 +6635,6 @@ QPushButton:pressed {
                </item>
                <item row="4" column="2">
                 <widget class="QLabel" name="label_36">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>8</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string>&amp;Signature Alg.:</string>
                  </property>
@@ -7792,11 +6645,6 @@ QPushButton:pressed {
                </item>
                <item row="4" column="3">
                 <widget class="QComboBox" name="signatureKeyType">
-                 <property name="font">
-                  <font>
-                   <pointsize>8</pointsize>
-                  </font>
-                 </property>
                  <property name="currentIndex">
                   <number>4</number>
                  </property>
@@ -7832,17 +6680,6 @@ QPushButton:pressed {
                </item>
                <item row="6" column="0">
                 <widget class="QLabel" name="label_40">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>6</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string>&amp;Hashtype:</string>
                  </property>
@@ -7853,11 +6690,6 @@ QPushButton:pressed {
                </item>
                <item row="6" column="1">
                 <widget class="QComboBox" name="hashType">
-                 <property name="font">
-                  <font>
-                   <pointsize>6</pointsize>
-                  </font>
-                 </property>
                  <property name="toolTip">
                   <string/>
                  </property>
@@ -7865,11 +6697,6 @@ QPushButton:pressed {
                </item>
                <item row="6" column="3">
                 <widget class="QComboBox" name="cipherType">
-                 <property name="font">
-                  <font>
-                   <pointsize>6</pointsize>
-                  </font>
-                 </property>
                  <property name="toolTip">
                   <string/>
                  </property>
@@ -7877,17 +6704,6 @@ QPushButton:pressed {
                </item>
                <item row="6" column="2">
                 <widget class="QLabel" name="label_38">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>6</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string>&amp;Cipher:</string>
                  </property>
@@ -7898,11 +6714,6 @@ QPushButton:pressed {
                </item>
                <item row="7" column="3">
                 <widget class="QSpinBox" name="iterationCount">
-                 <property name="font">
-                  <font>
-                   <pointsize>6</pointsize>
-                  </font>
-                 </property>
                  <property name="toolTip">
                   <string/>
                  </property>
@@ -7919,11 +6730,6 @@ QPushButton:pressed {
                </item>
                <item row="7" column="1">
                 <widget class="QSpinBox" name="saltLength">
-                 <property name="font">
-                  <font>
-                   <pointsize>6</pointsize>
-                  </font>
-                 </property>
                  <property name="toolTip">
                   <string/>
                  </property>
@@ -7937,17 +6743,6 @@ QPushButton:pressed {
                </item>
                <item row="7" column="0">
                 <widget class="QLabel" name="label_42">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>6</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string>&amp;Salt Length:</string>
                  </property>
@@ -7958,17 +6753,6 @@ QPushButton:pressed {
                </item>
                <item row="7" column="2">
                 <widget class="QLabel" name="label_41">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>6</pointsize>
-                  </font>
-                 </property>
                  <property name="text">
                   <string>&amp;Iteration Count:</string>
                  </property>
@@ -7979,17 +6763,6 @@ QPushButton:pressed {
                </item>
                <item row="0" column="0">
                 <widget class="QCheckBox" name="newKeys">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>8</pointsize>
-                  </font>
-                 </property>
                  <property name="toolTip">
                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If checked, new key pairs will be generated.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
@@ -8040,11 +6813,6 @@ QPushButton:pressed {
                </item>
                <item row="1" column="1" colspan="3">
                 <widget class="QComboBox" name="signatureKeySize">
-                 <property name="font">
-                  <font>
-                   <pointsize>8</pointsize>
-                  </font>
-                 </property>
                  <property name="currentIndex">
                   <number>1</number>
                  </property>
@@ -8115,12 +6883,6 @@ QPushButton:pressed {
                </item>
                <item>
                 <widget class="QComboBox" name="keys">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
                  <property name="sizeAdjustPolicy">
                   <enum>QComboBox::AdjustToContents</enum>
                  </property>
@@ -8148,12 +6910,6 @@ QPushButton:pressed {
                </item>
                <item>
                 <widget class="QPushButton" name="regenerate">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
                  <property name="toolTip">
                   <string>Creates a new Key Pair and deletes the old.</string>
                  </property>
@@ -8189,12 +6945,6 @@ QPushButton:pressed {
              </item>
              <item>
               <widget class="QGroupBox" name="groupBox_15">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>99</height>
-                </size>
-               </property>
                <property name="styleSheet">
                 <string notr="true">
 QGroupBox { 
@@ -8225,11 +6975,6 @@ padding: 7px;
                  <layout class="QGridLayout" name="gridLayout">
                   <item row="2" column="0">
                    <widget class="QLabel" name="label_55">
-                    <property name="font">
-                     <font>
-                      <pointsize>8</pointsize>
-                     </font>
-                    </property>
                     <property name="text">
                      <string>P&amp;assphrase:</string>
                     </property>
@@ -8240,11 +6985,6 @@ padding: 7px;
                   </item>
                   <item row="2" column="1">
                    <widget class="QLineEdit" name="passphrase1">
-                    <property name="font">
-                     <font>
-                      <pointsize>6</pointsize>
-                     </font>
-                    </property>
                     <property name="styleSheet">
                      <string notr="true"/>
                     </property>
@@ -8255,11 +6995,6 @@ padding: 7px;
                   </item>
                   <item row="5" column="1">
                    <widget class="QLineEdit" name="passphrase2">
-                    <property name="font">
-                     <font>
-                      <pointsize>6</pointsize>
-                     </font>
-                    </property>
                     <property name="styleSheet">
                      <string notr="true"/>
                     </property>
@@ -8284,11 +7019,6 @@ padding: 7px;
                   </item>
                   <item row="5" column="0">
                    <widget class="QLabel" name="label_56">
-                    <property name="font">
-                     <font>
-                      <pointsize>8</pointsize>
-                     </font>
-                    </property>
                     <property name="text">
                      <string>Confirmation:</string>
                     </property>
@@ -8299,11 +7029,6 @@ padding: 7px;
                   </item>
                   <item row="1" column="1">
                    <widget class="QLabel" name="label_58">
-                    <property name="font">
-                     <font>
-                      <pointsize>8</pointsize>
-                     </font>
-                    </property>
                     <property name="text">
                      <string>Minimum of 16 characters:</string>
                     </property>
@@ -8316,11 +7041,6 @@ padding: 7px;
                 </item>
                 <item>
                  <widget class="QPushButton" name="setPassphrase">
-                  <property name="font">
-                   <font>
-                    <pointsize>16</pointsize>
-                   </font>
-                  </property>
                   <property name="styleSheet">
                    <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -8367,16 +7087,10 @@ QPushButton:pressed {
                <property name="enabled">
                 <bool>true</bool>
                </property>
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
                <property name="maximumSize">
                 <size>
-                 <width>10</width>
-                 <height>1</height>
+                 <width>16777215</width>
+                 <height>0</height>
                 </size>
                </property>
                <property name="title">
@@ -8443,12 +7157,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QGroupBox" name="groupBox_7">
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>0</height>
-                   </size>
-                  </property>
                   <property name="title">
                    <string>URLS</string>
                   </property>
@@ -8868,12 +7576,6 @@ QPushButton:pressed {
                      </item>
                      <item>
                       <widget class="QPushButton" name="selectGeoIP4">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
                        <property name="styleSheet">
                         <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -9199,11 +7901,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QTableWidget" name="neighbors">
-                  <property name="font">
-                   <font>
-                    <pointsize>6</pointsize>
-                   </font>
-                  </property>
                   <property name="verticalScrollBarPolicy">
                    <enum>Qt::ScrollBarAlwaysOff</enum>
                   </property>
@@ -9628,14 +8325,7 @@ QPushButton:pressed {
                  </widget>
                 </item>
                 <item>
-                 <widget class="QTextBrowser" name="neighborSummary">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                 </widget>
+                 <widget class="QTextBrowser" name="neighborSummary"/>
                 </item>
                 <item>
                  <widget class="QLineEdit" name="acceptedIP"/>
@@ -9677,12 +8367,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QCheckBox" name="showOnlyOnlineListeners">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
                   <property name="text">
                    <string>Show Online Listeners</string>
                   </property>
@@ -9727,12 +8411,6 @@ QPushButton:pressed {
                  <layout class="QVBoxLayout" name="verticalLayout">
                   <item>
                    <widget class="QRadioButton" name="ignorePublished">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
                     <property name="text">
                      <string>&amp;Ignore Published Listeners</string>
                     </property>
@@ -9743,12 +8421,6 @@ QPushButton:pressed {
                   </item>
                   <item>
                    <widget class="QRadioButton" name="acceptPublishedDisconnected">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
                     <property name="toolTip">
                      <string>Selection this option if you would like to accept published listeners.</string>
                     </property>
@@ -9762,12 +8434,6 @@ QPushButton:pressed {
                   </item>
                   <item>
                    <widget class="QRadioButton" name="acceptPublishedConnected">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
                     <property name="toolTip">
                      <string>Select this option if you would like to accept and connect to published listeners.</string>
                     </property>
@@ -9845,12 +8511,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QPushButton" name="resetSpotOn">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
                   <property name="text">
                    <string>Reset Spot-On</string>
                   </property>
@@ -9862,12 +8522,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QSpinBox" name="days">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
                   <property name="minimum">
                    <number>8</number>
                   </property>
@@ -9885,12 +8539,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QCheckBox" name="keepOnlyUserDefinedNeighbors">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
                   <property name="text">
                    <string>&amp;Keep Only User-Defined Ns</string>
                   </property>
@@ -9904,14 +8552,7 @@ QPushButton:pressed {
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="keywords">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                 </widget>
+                 <widget class="QLineEdit" name="keywords"/>
                 </item>
                 <item>
                  <widget class="QToolButton" name="toolButtonMakeFriends">
@@ -9935,12 +8576,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QLabel" name="label_2">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
                   <property name="text">
                    <string>&lt; 1 .. 1 &gt;</string>
                   </property>
@@ -9951,12 +8586,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QComboBox" name="chatSendMethod">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
                   <property name="sizeAdjustPolicy">
                    <enum>QComboBox::AdjustToContents</enum>
                   </property>
@@ -9974,12 +8603,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QPushButton" name="deleteURL">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
                   <property name="text">
                    <string/>
                   </property>
@@ -9995,24 +8618,6 @@ QPushButton:pressed {
                    <enum>Qt::Horizontal</enum>
                   </property>
                   <widget class="QPushButton" name="modifyURL">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>25</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -10022,18 +8627,6 @@ QPushButton:pressed {
                    </property>
                   </widget>
                   <widget class="QPushButton" name="searchURL">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>25</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -10046,12 +8639,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QPushButton" name="deleteListener">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
                   <property name="text">
                    <string>Delete</string>
                   </property>
@@ -10063,20 +8650,8 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QTabWidget" name="urlTab">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777215</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
                   <property name="currentIndex">
-                   <number>0</number>
+                   <number>1</number>
                   </property>
                   <widget class="QWidget" name="tab_2">
                    <attribute name="icon">
@@ -10102,12 +8677,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QListWidget" name="listWidget">
-                  <property name="maximumSize">
-                   <size>
-                    <width>100</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
                   <property name="alternatingRowColors">
                    <bool>true</bool>
                   </property>
@@ -10162,12 +8731,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QPushButton" name="addDLDistiller">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
                   <property name="text">
                    <string>Delete</string>
                   </property>
@@ -10179,12 +8742,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QPushButton" name="delDLDistiller">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
                   <property name="text">
                    <string>Add</string>
                   </property>
@@ -10200,12 +8757,6 @@ QPushButton:pressed {
                    <enum>Qt::Horizontal</enum>
                   </property>
                   <widget class="QListWidget" name="listWidget_2">
-                   <property name="maximumSize">
-                    <size>
-                     <width>100</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
                    <property name="alternatingRowColors">
                     <bool>true</bool>
                    </property>
@@ -10223,12 +8774,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QPushButton" name="delULDistiller">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
                   <property name="text">
                    <string>Add</string>
                   </property>
@@ -10240,12 +8785,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QPushButton" name="addULDistiller">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
                   <property name="text">
                    <string>Delete</string>
                   </property>
@@ -10285,18 +8824,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QTextBrowser" name="textBrowser_2">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>100</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
                   <property name="tabChangesFocus">
                    <bool>true</bool>
                   </property>
@@ -10304,12 +8831,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QSpinBox" name="cost">
-                  <property name="maximumSize">
-                   <size>
-                    <width>100</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
                   <property name="minimum">
                    <number>1000</number>
                   </property>
@@ -10323,18 +8844,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QListWidget" name="countries">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>100</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
                   <property name="alternatingRowColors">
                    <bool>true</bool>
                   </property>
@@ -10342,12 +8851,6 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QGroupBox" name="Box_URLParticipant">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
                   <property name="title">
                    <string>url Participants</string>
                   </property>
@@ -10525,14 +9028,6 @@ QPushButton:pressed {
           </item>
           <item>
            <widget class="QLabel" name="label">
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string/>
-            </property>
             <property name="text">
              <string> Secure Instant Messenger</string>
             </property>
@@ -10697,18 +9192,6 @@ QPushButton:pressed {
             </item>
             <item>
              <widget class="QLineEdit" name="passphrase">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>178</width>
-                <height>32</height>
-               </size>
-              </property>
               <property name="toolTip">
                <string>Passphrase</string>
               </property>
@@ -10764,18 +9247,6 @@ background-color: qlineargradient(spread:pad, x1:0.968, y1:0.932, x2:0.513, y2:0
             </item>
             <item>
              <widget class="QPushButton" name="passphraseButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>32</height>
-               </size>
-              </property>
               <property name="styleSheet">
                <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -10859,11 +9330,6 @@ QPushButton:pressed {
             </item>
             <item>
              <widget class="QLabel" name="label_39">
-              <property name="font">
-               <font>
-                <pointsize>7</pointsize>
-               </font>
-              </property>
               <property name="toolTip">
                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;A minimalistic &lt;br/&gt;Desktop Messenger GUI&lt;br/&gt;for the messaging library of&lt;br/&gt;http://spot-on.sf.net&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
@@ -10895,11 +9361,6 @@ QPushButton:pressed {
           </item>
           <item>
            <widget class="QLabel" name="label_73">
-            <property name="font">
-             <font>
-              <pointsize>6</pointsize>
-             </font>
-            </property>
             <property name="styleSheet">
              <string notr="true"> color:#666666;</string>
             </property>
@@ -10919,11 +9380,6 @@ QPushButton:pressed {
           </item>
           <item>
            <widget class="QLabel" name="buildInformation">
-            <property name="font">
-             <font>
-              <pointsize>6</pointsize>
-             </font>
-            </property>
             <property name="styleSheet">
              <string notr="true"> color:#666666;</string>
             </property>
@@ -10949,7 +9405,7 @@ QPushButton:pressed {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>486</width>
+     <width>650</width>
      <height>25</height>
     </rect>
    </property>
