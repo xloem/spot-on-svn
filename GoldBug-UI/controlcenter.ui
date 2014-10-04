@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>532</width>
-    <height>853</height>
+    <width>577</width>
+    <height>866</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -174,7 +174,7 @@ color: rgb(255, 255, 255);
                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
@@ -455,12 +455,6 @@ QPushButton:pressed {
               </widget>
              </widget>
              <widget class="QGroupBox" name="groupBox">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
               <property name="title">
                <string>Friends</string>
               </property>
@@ -3280,9 +3274,6 @@ QPushButton:pressed {
               <property name="spacing">
                <number>0</number>
               </property>
-              <property name="margin">
-               <number>0</number>
-              </property>
               <item>
                <widget class="QPushButton" name="addMagnet">
                 <property name="sizePolicy">
@@ -4414,7 +4405,7 @@ QPushButton#pushButtonCopytoClipboard_All:pressed {
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="overwriteMode">
@@ -5169,79 +5160,109 @@ color: rgb(255, 255, 255);</string>
               </attribute>
               <layout class="QVBoxLayout" name="verticalLayout_30">
                <item>
-                <layout class="QGridLayout" name="gridLayout_2">
-                 <property name="margin">
-                  <number>3</number>
+                <widget class="QScrollArea" name="scrollArea">
+                 <property name="widgetResizable">
+                  <bool>true</bool>
                  </property>
-                 <property name="spacing">
-                  <number>3</number>
-                 </property>
-                 <item row="9" column="0">
-                  <widget class="QLabel" name="label_65">
-                   <property name="text">
-                    <string>&amp;Transport:</string>
-                   </property>
-                   <property name="buddy">
-                    <cstring>listenerTransport</cstring>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="7" column="1" colspan="13">
-                  <widget class="QLineEdit" name="listenerScopeId"/>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QRadioButton" name="ipv6Listener">
-                   <property name="layoutDirection">
-                    <enum>Qt::LeftToRight</enum>
-                   </property>
-                   <property name="text">
-                    <string>IPv&amp;6</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QRadioButton" name="ipv4Listener">
-                   <property name="layoutDirection">
-                    <enum>Qt::LeftToRight</enum>
-                   </property>
-                   <property name="text">
-                    <string>IPv&amp;4</string>
-                   </property>
-                   <property name="checked">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="0" rowspan="2">
-                  <widget class="QLabel" name="label_11">
-                   <property name="layoutDirection">
-                    <enum>Qt::RightToLeft</enum>
-                   </property>
-                   <property name="text">
-                    <string>My IP:</string>
-                   </property>
-                   <property name="buddy">
-                    <cstring>listenerIP</cstring>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="6" column="1" colspan="13">
-                  <widget class="QLineEdit" name="listenerIP"/>
-                 </item>
-                 <item row="7" column="0">
-                  <widget class="QLabel" name="listenerScopeIdLabel">
-                   <property name="text">
-                    <string>&amp;Scope ID:</string>
-                   </property>
-                   <property name="buddy">
-                    <cstring>listenerScopeId</cstring>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="2" colspan="12">
-                  <widget class="QComboBox" name="listenerIPCombo">
-                   <property name="styleSheet">
-                    <string notr="true">QComboBox#listenerIPCombo {
+                 <widget class="QWidget" name="scrollAreaWidgetContents_2">
+                  <property name="geometry">
+                   <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>473</width>
+                    <height>917</height>
+                   </rect>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_38">
+                   <item>
+                    <layout class="QGridLayout" name="gridLayout_2">
+                     <property name="margin">
+                      <number>3</number>
+                     </property>
+                     <property name="spacing">
+                      <number>3</number>
+                     </property>
+                     <item row="8" column="5" colspan="9">
+                      <widget class="QLabel" name="label_15">
+                       <property name="text">
+                        <string>(to be forwarded in your router)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="9" column="6" colspan="8">
+                      <widget class="QComboBox" name="listenerOrientation">
+                       <property name="sizeAdjustPolicy">
+                        <enum>QComboBox::AdjustToContents</enum>
+                       </property>
+                       <item>
+                        <property name="text">
+                         <string>Packet</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>Stream</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                     <item row="9" column="5">
+                      <widget class="QLabel" name="label_71">
+                       <property name="text">
+                        <string>Orientation:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="9" column="1" colspan="4">
+                      <widget class="QComboBox" name="listenerTransport">
+                       <property name="sizeAdjustPolicy">
+                        <enum>QComboBox::AdjustToContents</enum>
+                       </property>
+                       <item>
+                        <property name="text">
+                         <string>TCP</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>UDP</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                     <item row="8" column="1" colspan="4">
+                      <widget class="QSpinBox" name="listenerPort">
+                       <property name="toolTip">
+                        <string>Please forward this port in your router/nat.</string>
+                       </property>
+                       <property name="minimum">
+                        <number>1</number>
+                       </property>
+                       <property name="maximum">
+                        <number>65535</number>
+                       </property>
+                       <property name="value">
+                        <number>4710</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="8" column="0">
+                      <widget class="QLabel" name="label_12">
+                       <property name="layoutDirection">
+                        <enum>Qt::RightToLeft</enum>
+                       </property>
+                       <property name="text">
+                        <string>&amp;Port:</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>listenerPort</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="2" colspan="12">
+                      <widget class="QComboBox" name="listenerIPCombo">
+                       <property name="styleSheet">
+                        <string notr="true">QComboBox#listenerIPCombo {
      background-color: rgb(195, 215, 255);
      border-style: outset;
      border-width: 2px;
@@ -5256,259 +5277,244 @@ QComboBox#listenerIPCombo:hover {
 background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                    stop: 0 rgb(254,229,172), stop: 1 #FFFFFF);
 background-position: top center; } </string>
-                   </property>
-                   <property name="sizeAdjustPolicy">
-                    <enum>QComboBox::AdjustToContents</enum>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string>Custom</string>
-                    </property>
+                       </property>
+                       <property name="sizeAdjustPolicy">
+                        <enum>QComboBox::AdjustToContents</enum>
+                       </property>
+                       <item>
+                        <property name="text">
+                         <string>Custom</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                     <item row="7" column="0">
+                      <widget class="QLabel" name="listenerScopeIdLabel">
+                       <property name="text">
+                        <string>&amp;Scope ID:</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>listenerScopeId</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="6" column="1" colspan="13">
+                      <widget class="QLineEdit" name="listenerIP"/>
+                     </item>
+                     <item row="5" column="0" rowspan="2">
+                      <widget class="QLabel" name="label_11">
+                       <property name="layoutDirection">
+                        <enum>Qt::RightToLeft</enum>
+                       </property>
+                       <property name="text">
+                        <string>My IP:</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>listenerIP</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QRadioButton" name="ipv4Listener">
+                       <property name="layoutDirection">
+                        <enum>Qt::LeftToRight</enum>
+                       </property>
+                       <property name="text">
+                        <string>IPv&amp;4</string>
+                       </property>
+                       <property name="checked">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QRadioButton" name="ipv6Listener">
+                       <property name="layoutDirection">
+                        <enum>Qt::LeftToRight</enum>
+                       </property>
+                       <property name="text">
+                        <string>IPv&amp;6</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="7" column="1" colspan="13">
+                      <widget class="QLineEdit" name="listenerScopeId"/>
+                     </item>
+                     <item row="9" column="0">
+                      <widget class="QLabel" name="label_65">
+                       <property name="text">
+                        <string>&amp;Transport:</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>listenerTransport</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
-                  </widget>
-                 </item>
-                 <item row="8" column="0">
-                  <widget class="QLabel" name="label_12">
-                   <property name="layoutDirection">
-                    <enum>Qt::RightToLeft</enum>
-                   </property>
-                   <property name="text">
-                    <string>&amp;Port:</string>
-                   </property>
-                   <property name="buddy">
-                    <cstring>listenerPort</cstring>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="8" column="1" colspan="4">
-                  <widget class="QSpinBox" name="listenerPort">
-                   <property name="toolTip">
-                    <string>Please forward this port in your router/nat.</string>
-                   </property>
-                   <property name="minimum">
-                    <number>1</number>
-                   </property>
-                   <property name="maximum">
-                    <number>65535</number>
-                   </property>
-                   <property name="value">
-                    <number>4710</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="9" column="1" colspan="4">
-                  <widget class="QComboBox" name="listenerTransport">
-                   <property name="sizeAdjustPolicy">
-                    <enum>QComboBox::AdjustToContents</enum>
-                   </property>
                    <item>
-                    <property name="text">
-                     <string>TCP</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>UDP</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item row="9" column="5">
-                  <widget class="QLabel" name="label_71">
-                   <property name="text">
-                    <string>Orientation:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="9" column="6" colspan="8">
-                  <widget class="QComboBox" name="listenerOrientation">
-                   <property name="sizeAdjustPolicy">
-                    <enum>QComboBox::AdjustToContents</enum>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string>Packet</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Stream</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item row="8" column="5" colspan="9">
-                  <widget class="QLabel" name="label_15">
-                   <property name="text">
-                    <string>(to be forwarded in your router)</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <widget class="QGroupBox" name="groupBox_5">
-                 <property name="title">
-                  <string>Listener Security Options</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_40">
-                  <property name="spacing">
-                   <number>3</number>
-                  </property>
-                  <property name="margin">
-                   <number>3</number>
-                  </property>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_65">
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
-                     <widget class="QComboBox" name="listenersEchoMode">
-                      <property name="sizeAdjustPolicy">
-                       <enum>QComboBox::AdjustToContents</enum>
+                    <widget class="QGroupBox" name="groupBox_5">
+                     <property name="title">
+                      <string>Listener Security Options</string>
+                     </property>
+                     <layout class="QVBoxLayout" name="verticalLayout_40">
+                      <property name="spacing">
+                       <number>3</number>
+                      </property>
+                      <property name="margin">
+                       <number>3</number>
                       </property>
                       <item>
-                       <property name="text">
-                        <string>Full Echo</string>
-                       </property>
+                       <layout class="QHBoxLayout" name="horizontalLayout_65">
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QComboBox" name="listenersEchoMode">
+                          <property name="sizeAdjustPolicy">
+                           <enum>QComboBox::AdjustToContents</enum>
+                          </property>
+                          <item>
+                           <property name="text">
+                            <string>Full Echo</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Half Echo</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="permanentCertificate">
+                          <property name="toolTip">
+                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a Permanent Certificate, which identifies, &lt;/p&gt;&lt;p&gt;when an unknown neighbor connects &lt;/p&gt;&lt;p&gt;and the cert is different from the known. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                          </property>
+                          <property name="text">
+                           <string>Create Permanent Certificate</string>
+                          </property>
+                          <property name="checked">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
                       </item>
                       <item>
-                       <property name="text">
-                        <string>Half Echo</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="permanentCertificate">
-                      <property name="toolTip">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a Permanent Certificate, which identifies, &lt;/p&gt;&lt;p&gt;when an unknown neighbor connects &lt;/p&gt;&lt;p&gt;and the cert is different from the known. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                      <property name="text">
-                       <string>Create Permanent Certificate</string>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_37">
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
-                     <widget class="QCheckBox" name="sslListener">
-                      <property name="toolTip">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create and use always 2 listeners / ports for both: SSL (HTTPS) and non-SSL (HTTP) incoming connections.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                      <property name="text">
-                       <string>Use SSL with this Key Size: </string>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="listenerKeySize">
-                      <item>
-                       <property name="text">
-                        <string>2048</string>
-                       </property>
+                       <layout class="QHBoxLayout" name="horizontalLayout_37">
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QCheckBox" name="sslListener">
+                          <property name="toolTip">
+                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create and use always 2 listeners / ports for both: SSL (HTTPS) and non-SSL (HTTP) incoming connections.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                          </property>
+                          <property name="text">
+                           <string>Use SSL with this Key Size: </string>
+                          </property>
+                          <property name="checked">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QComboBox" name="listenerKeySize">
+                          <item>
+                           <property name="text">
+                            <string>2048</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>3072</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>4096</string>
+                           </property>
+                          </item>
+                         </widget>
+                        </item>
+                       </layout>
                       </item>
                       <item>
-                       <property name="text">
-                        <string>3072</string>
-                       </property>
+                       <layout class="QHBoxLayout" name="horizontalLayout_66">
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QCheckBox" name="listenerShareAddress">
+                          <property name="text">
+                           <string>&amp;Share IP Address (UDP)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="recordIPAddress">
+                          <property name="toolTip">
+                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Record the current external IP address in the listener's certificate. Please do not use this option if you have a dynamic IP address.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                          </property>
+                          <property name="text">
+                           <string>&amp;Include IP Address in Listener SSL Cert</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
                       </item>
                       <item>
-                       <property name="text">
-                        <string>4096</string>
-                       </property>
+                       <layout class="QHBoxLayout" name="horizontalLayout_67">
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QLabel" name="label_87">
+                          <property name="text">
+                           <string>&amp;Limit connections:</string>
+                          </property>
+                          <property name="buddy">
+                           <cstring>limitConnections</cstring>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QSpinBox" name="limitConnections">
+                          <property name="toolTip">
+                           <string>Limit the number of connections per client IP address.</string>
+                          </property>
+                          <property name="minimum">
+                           <number>1</number>
+                          </property>
+                          <property name="maximum">
+                           <number>50</number>
+                          </property>
+                          <property name="value">
+                           <number>10</number>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
                       </item>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_66">
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
-                     <widget class="QCheckBox" name="listenerShareAddress">
-                      <property name="text">
-                       <string>&amp;Share IP Address (UDP)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="recordIPAddress">
-                      <property name="toolTip">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Record the current external IP address in the listener's certificate. Please do not use this option if you have a dynamic IP address.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                      <property name="text">
-                       <string>&amp;Include IP Address in Listener SSL Cert</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_67">
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
-                     <widget class="QLabel" name="label_87">
-                      <property name="text">
-                       <string>&amp;Limit connections:</string>
-                      </property>
-                      <property name="buddy">
-                       <cstring>limitConnections</cstring>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QSpinBox" name="limitConnections">
-                      <property name="toolTip">
-                       <string>Limit the number of connections per client IP address.</string>
-                      </property>
-                      <property name="minimum">
-                       <number>1</number>
-                      </property>
-                      <property name="maximum">
-                       <number>50</number>
-                      </property>
-                      <property name="value">
-                       <number>10</number>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout">
-                 <property name="spacing">
-                  <number>3</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <item>
-                  <widget class="QPushButton" name="addListener">
-                   <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Echoed Messaging and Presence Protocol (EMPP): Create own Chat Server.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">QPushButton#addListener {
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout">
+                     <property name="spacing">
+                      <number>3</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QPushButton" name="addListener">
+                       <property name="toolTip">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Echoed Messaging and Presence Protocol (EMPP): Create own Chat Server.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QPushButton#addListener {
      background-color: rgb(195, 215, 255);
      border-style: outset;
      border-width: 2px;
@@ -5528,29 +5534,29 @@ QPushButton#addListener:pressed {
      background-color: darkgrey;
      border-style: inset;
  }</string>
-                   </property>
-                   <property name="text">
-                    <string>Set</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="../Icons/icons.qrc">
-                     <normaloff>:/nuvola/ok.png</normaloff>:/nuvola/ok.png</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>24</width>
-                     <height>24</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="listenerAnnounce">
-                   <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Go Live sends the Listener / Chat-Server information (that means your IP and Port) to connected neighbors. Your peers will be able to connect, if you have not set 'accounts' for this Listener an sent to a dedicated friend.&lt;/p&gt;&lt;p&gt;Wilkie Twycross, apparition instructor in Hogwards, shows regularly in a workshop about &amp;quot;Going Live with a Listener&amp;quot;, how easy it is, to set up a Chat Server for your friends - with or without a chat-account. Apparition is possible.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">QPushButton#listenerAnnounce {
+                       </property>
+                       <property name="text">
+                        <string>Set</string>
+                       </property>
+                       <property name="icon">
+                        <iconset resource="../Icons/icons.qrc">
+                         <normaloff>:/nuvola/ok.png</normaloff>:/nuvola/ok.png</iconset>
+                       </property>
+                       <property name="iconSize">
+                        <size>
+                         <width>24</width>
+                         <height>24</height>
+                        </size>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="listenerAnnounce">
+                       <property name="toolTip">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Go Live sends the Listener / Chat-Server information (that means your IP and Port) to connected neighbors. Your peers will be able to connect, if you have not set 'accounts' for this Listener an sent to a dedicated friend.&lt;/p&gt;&lt;p&gt;Wilkie Twycross, apparition instructor in Hogwards, shows regularly in a workshop about &amp;quot;Going Live with a Listener&amp;quot;, how easy it is, to set up a Chat Server for your friends - with or without a chat-account. Apparition is possible.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QPushButton#listenerAnnounce {
      background-color: rgb(195, 215, 255);
      border-style: outset;
      border-width: 2px;
@@ -5574,26 +5580,26 @@ QPushButton#listenerAnnounce:pressed {
  }
 
 </string>
-                   </property>
-                   <property name="text">
-                    <string>Go Live</string>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="../Icons/icons.qrc">
-                     <normaloff>:/nuvola/refresh.png</normaloff>:/nuvola/refresh.png</iconset>
-                   </property>
-                   <property name="iconSize">
-                    <size>
-                     <width>24</width>
-                     <height>24</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="deleteAllListeners">
-                   <property name="styleSheet">
-                    <string notr="true">QPushButton {
+                       </property>
+                       <property name="text">
+                        <string>Go Live</string>
+                       </property>
+                       <property name="icon">
+                        <iconset resource="../Icons/icons.qrc">
+                         <normaloff>:/nuvola/refresh.png</normaloff>:/nuvola/refresh.png</iconset>
+                       </property>
+                       <property name="iconSize">
+                        <size>
+                         <width>24</width>
+                         <height>24</height>
+                        </size>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="deleteAllListeners">
+                       <property name="styleSheet">
+                        <string notr="true">QPushButton {
  border: 2px solid gray;
  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                    stop: 0 #E0E0E0, stop: 1 #FFFFFF);
@@ -5617,161 +5623,161 @@ QPushButton:pressed {
      border-style: inset;
  }
 </string>
-                   </property>
-                   <property name="text">
-                    <string>Delete all</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <widget class="QTableWidget" name="listeners">
-                 <property name="verticalScrollBarPolicy">
-                  <enum>Qt::ScrollBarAlwaysOff</enum>
-                 </property>
-                 <property name="horizontalScrollBarPolicy">
-                  <enum>Qt::ScrollBarAsNeeded</enum>
-                 </property>
-                 <property name="alternatingRowColors">
-                  <bool>true</bool>
-                 </property>
-                 <property name="selectionMode">
-                  <enum>QAbstractItemView::SingleSelection</enum>
-                 </property>
-                 <property name="selectionBehavior">
-                  <enum>QAbstractItemView::SelectRows</enum>
-                 </property>
-                 <property name="horizontalScrollMode">
-                  <enum>QAbstractItemView::ScrollPerPixel</enum>
-                 </property>
-                 <property name="sortingEnabled">
-                  <bool>true</bool>
-                 </property>
-                 <attribute name="horizontalHeaderDefaultSectionSize">
-                  <number>125</number>
-                 </attribute>
-                 <attribute name="horizontalHeaderMinimumSectionSize">
-                  <number>125</number>
-                 </attribute>
-                 <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-                  <bool>true</bool>
-                 </attribute>
-                 <attribute name="horizontalHeaderStretchLastSection">
-                  <bool>true</bool>
-                 </attribute>
-                 <attribute name="verticalHeaderMinimumSectionSize">
-                  <number>17</number>
-                 </attribute>
-                 <column>
-                  <property name="text">
-                   <string>Activate</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Status</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>SSL Key Size</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Local IP</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Local Port</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Scope ID</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Protocol</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>External IP</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>External Port</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Connections</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Max. Conn.</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Echo Mode</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Use Accounts</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Max. Buffer Size (Bytes)</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Max. Content Length (Bytes)</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Transport</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Share Address</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Certificate SHA-512 Hash</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Orientation</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>OID</string>
-                  </property>
-                 </column>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="listenersActionMenu">
-                 <property name="toolTip">
-                  <string>Right mouse context menu as a button for tablets.</string>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">QPushButton {
+                       </property>
+                       <property name="text">
+                        <string>Delete all</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <widget class="QTableWidget" name="listeners">
+                     <property name="verticalScrollBarPolicy">
+                      <enum>Qt::ScrollBarAlwaysOff</enum>
+                     </property>
+                     <property name="horizontalScrollBarPolicy">
+                      <enum>Qt::ScrollBarAsNeeded</enum>
+                     </property>
+                     <property name="alternatingRowColors">
+                      <bool>true</bool>
+                     </property>
+                     <property name="selectionMode">
+                      <enum>QAbstractItemView::SingleSelection</enum>
+                     </property>
+                     <property name="selectionBehavior">
+                      <enum>QAbstractItemView::SelectRows</enum>
+                     </property>
+                     <property name="horizontalScrollMode">
+                      <enum>QAbstractItemView::ScrollPerPixel</enum>
+                     </property>
+                     <property name="sortingEnabled">
+                      <bool>true</bool>
+                     </property>
+                     <attribute name="horizontalHeaderDefaultSectionSize">
+                      <number>125</number>
+                     </attribute>
+                     <attribute name="horizontalHeaderMinimumSectionSize">
+                      <number>125</number>
+                     </attribute>
+                     <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+                      <bool>true</bool>
+                     </attribute>
+                     <attribute name="horizontalHeaderStretchLastSection">
+                      <bool>true</bool>
+                     </attribute>
+                     <attribute name="verticalHeaderMinimumSectionSize">
+                      <number>17</number>
+                     </attribute>
+                     <column>
+                      <property name="text">
+                       <string>Activate</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Status</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>SSL Key Size</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Local IP</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Local Port</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Scope ID</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Protocol</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>External IP</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>External Port</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Connections</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Max. Conn.</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Echo Mode</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Use Accounts</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Max. Buffer Size (Bytes)</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Max. Content Length (Bytes)</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Transport</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Share Address</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Certificate SHA-512 Hash</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Orientation</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>OID</string>
+                      </property>
+                     </column>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="listenersActionMenu">
+                     <property name="toolTip">
+                      <string>Right mouse context menu as a button for tablets.</string>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">QPushButton {
  border: 2px solid gray;
  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                    stop: 0 #E0E0E0, stop: 1 #FFFFFF);
@@ -5795,166 +5801,153 @@ QPushButton:pressed {
      border-style: inset;
  }
 </string>
-                 </property>
-                 <property name="text">
-                  <string>Context Menu Reflection</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="verticalSpacer_18">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>1</width>
-                   <height>1</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QGroupBox" name="accountsGB">
-                 <property name="title">
-                  <string>Create Accounts for existing Listener Connections</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_41">
-                  <property name="spacing">
-                   <number>3</number>
-                  </property>
-                  <property name="leftMargin">
-                   <number>3</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>3</number>
-                  </property>
-                  <property name="rightMargin">
-                   <number>3</number>
-                  </property>
-                  <property name="bottomMargin">
-                   <number>0</number>
-                  </property>
-                  <item>
-                   <layout class="QGridLayout" name="gridLayout_6">
-                    <property name="spacing">
-                     <number>3</number>
-                    </property>
-                    <item row="1" column="1">
-                     <widget class="QLineEdit" name="accountName"/>
-                    </item>
-                    <item row="1" column="0">
-                     <widget class="QLabel" name="label_47">
-                      <property name="text">
-                       <string>&amp;Name:</string>
+                     </property>
+                     <property name="text">
+                      <string>Context Menu Reflection</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QGroupBox" name="accountsGB">
+                     <property name="title">
+                      <string>Create Accounts for existing Listener Connections</string>
+                     </property>
+                     <layout class="QVBoxLayout" name="verticalLayout_41">
+                      <property name="spacing">
+                       <number>3</number>
                       </property>
-                      <property name="buddy">
-                       <cstring>accountName</cstring>
+                      <property name="leftMargin">
+                       <number>3</number>
                       </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="1">
-                     <layout class="QHBoxLayout" name="horizontalLayout_35">
-                      <property name="topMargin">
-                       <number>0</number>
-                      </property>
-                      <item>
-                       <widget class="QLineEdit" name="accountPassword">
-                        <property name="echoMode">
-                         <enum>QLineEdit::Password</enum>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QPushButton" name="addAccount">
-                        <property name="styleSheet">
-                         <string notr="true">QPushButton {
- border: 2px solid gray;
- background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                   stop: 0 #E0E0E0, stop: 1 #FFFFFF);
- border-radius: 5px;
- margin: 2px;
- padding: 2px;
- }
-
-
-
-
-QPushButton:hover { 
-background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                   stop: 0 rgb(254,229,172), stop: 1 #FFFFFF);
-background-position: top center; } 
-
-
-
-QPushButton:pressed {
-     background-color: darkgrey;
-     border-style: inset;
- }
-</string>
-                        </property>
-                        <property name="text">
-                         <string>Add</string>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
-                    </item>
-                    <item row="2" column="0">
-                     <widget class="QLabel" name="label_48">
-                      <property name="text">
-                       <string>&amp;Password:</string>
-                      </property>
-                      <property name="buddy">
-                       <cstring>accountPassword</cstring>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="0" colspan="2">
-                     <widget class="QLabel" name="label_66">
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;Accounts prevent unknow nodes to connect and enable the creation of a web of trust. The account name and the account password must contain at least thirty-two characters each.&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignCenter</set>
-                      </property>
-                      <property name="wordWrap">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_12">
-                    <property name="spacing">
-                     <number>3</number>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
-                     <widget class="QListWidget" name="accounts">
-                      <property name="selectionBehavior">
-                       <enum>QAbstractItemView::SelectRows</enum>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <layout class="QVBoxLayout" name="verticalLayout_42">
                       <property name="topMargin">
                        <number>3</number>
                       </property>
                       <property name="rightMargin">
                        <number>3</number>
                       </property>
+                      <property name="bottomMargin">
+                       <number>0</number>
+                      </property>
                       <item>
-                       <widget class="QPushButton" name="deleteAccount">
-                        <property name="styleSheet">
-                         <string notr="true">QPushButton {
+                       <layout class="QGridLayout" name="gridLayout_6">
+                        <property name="spacing">
+                         <number>3</number>
+                        </property>
+                        <item row="1" column="1">
+                         <widget class="QLineEdit" name="accountName"/>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QLabel" name="label_47">
+                          <property name="text">
+                           <string>&amp;Name:</string>
+                          </property>
+                          <property name="buddy">
+                           <cstring>accountName</cstring>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="2" column="1">
+                         <layout class="QHBoxLayout" name="horizontalLayout_35">
+                          <property name="topMargin">
+                           <number>0</number>
+                          </property>
+                          <item>
+                           <widget class="QLineEdit" name="accountPassword">
+                            <property name="echoMode">
+                             <enum>QLineEdit::Password</enum>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QPushButton" name="addAccount">
+                            <property name="styleSheet">
+                             <string notr="true">QPushButton {
+ border: 2px solid gray;
+ background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                   stop: 0 #E0E0E0, stop: 1 #FFFFFF);
+ border-radius: 5px;
+ margin: 2px;
+ padding: 2px;
+ }
+
+
+
+
+QPushButton:hover { 
+background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                   stop: 0 rgb(254,229,172), stop: 1 #FFFFFF);
+background-position: top center; } 
+
+
+
+QPushButton:pressed {
+     background-color: darkgrey;
+     border-style: inset;
+ }
+</string>
+                            </property>
+                            <property name="text">
+                             <string>Add</string>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
+                        </item>
+                        <item row="2" column="0">
+                         <widget class="QLabel" name="label_48">
+                          <property name="text">
+                           <string>&amp;Password:</string>
+                          </property>
+                          <property name="buddy">
+                           <cstring>accountPassword</cstring>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="0" colspan="2">
+                         <widget class="QLabel" name="label_66">
+                          <property name="text">
+                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;Accounts prevent unknow nodes to connect and enable the creation of a web of trust. The account name and the account password must contain at least thirty-two characters each.&lt;/body&gt;&lt;/html&gt;</string>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignCenter</set>
+                          </property>
+                          <property name="wordWrap">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <layout class="QHBoxLayout" name="horizontalLayout_12">
+                        <property name="spacing">
+                         <number>3</number>
+                        </property>
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="rightMargin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QListWidget" name="accounts">
+                          <property name="selectionBehavior">
+                           <enum>QAbstractItemView::SelectRows</enum>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <layout class="QVBoxLayout" name="verticalLayout_42">
+                          <property name="topMargin">
+                           <number>3</number>
+                          </property>
+                          <property name="rightMargin">
+                           <number>3</number>
+                          </property>
+                          <item>
+                           <widget class="QPushButton" name="deleteAccount">
+                            <property name="styleSheet">
+                             <string notr="true">QPushButton {
  border: 2px solid gray;
  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                    stop: 0 #E0E0E0, stop: 1 #FFFFFF);
@@ -5980,17 +5973,21 @@ QPushButton:pressed {
 
 
 </string>
-                        </property>
-                        <property name="text">
-                         <string>Delete</string>
-                        </property>
-                       </widget>
+                            </property>
+                            <property name="text">
+                             <string>Delete</string>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
+                        </item>
+                       </layout>
                       </item>
                      </layout>
-                    </item>
-                   </layout>
-                  </item>
-                 </layout>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
                 </widget>
                </item>
               </layout>
@@ -9474,8 +9471,8 @@ QPushButton:pressed {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>532</width>
-     <height>23</height>
+     <width>577</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -9859,6 +9856,7 @@ QPushButton:pressed {
   <tabstop>proxyPassword</tabstop>
   <tabstop>addNeighbor</tabstop>
   <tabstop>tabWidget</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>ipv4Listener</tabstop>
   <tabstop>ipv6Listener</tabstop>
   <tabstop>listenerIPCombo</tabstop>
