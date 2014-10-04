@@ -1,9 +1,10 @@
-0.14 (10/03/2014)
+0.14 (10/04/2014)
 
 1.   Per ticket, integrated interface files from GoldBug.
 2.   Per ticket, clear the passphrase widget upon successful authentication.
 3.   Removed stale logic in spot-on-encryptfile.cc.
 4.   More descriptive error messages.
+5.   Ability to use question/answer authentication.
 
 0.13 (09/27/2014)
 
