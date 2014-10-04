@@ -596,6 +596,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSendMail(void)));
+  connect(m_ui.resend,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotResendMail(void)));
   connect(m_ui.participants,
 	  SIGNAL(itemChanged(QTableWidgetItem *)),
 	  this,
@@ -1148,6 +1152,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.answer_authenticate->setEnabled(false);
   m_ui.question->setEnabled(false);
   m_ui.question_authenticate->setEnabled(false);
+  m_ui.resend->setEnabled(false);
   m_sb.kernelstatus->setToolTip
     (tr("Not connected to the kernel. Is the kernel "
 	"active?"));

@@ -1918,3 +1918,59 @@ void spoton::slotPassphraseAuthenticateRadioToggled(bool state)
   else
     m_ui.passphrase->clear();
 }
+
+void spoton::slotResendMail(void)
+{
+  if(!(m_ui.folder->currentIndex() == 1 ||
+       m_ui.folder->currentIndex() == 2))
+    return;
+
+  QModelIndexList list
+    (m_ui.mail->selectionModel()->
+     selectedRows(m_ui.mail->columnCount() - 1)); // OID
+
+  if(list.isEmpty())
+    return;
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "email.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	while(!list.isEmpty())
+	  {
+	    QString oid(list.takeFirst().data().toString());
+	    bool ok = true;
+
+	    query.prepare("UPDATE folders SET folder_index = 1, "
+			  "status = ? WHERE "
+			  "OID = ?");
+
+	    if(m_crypts.value("email", 0))
+	      query.bindValue
+		(0, m_crypts.value("email")->
+		 encryptedThenHashed(tr("Queued").toUtf8(), &ok).
+		 toBase64());
+	    else
+	      ok = false;
+
+	    query.bindValue(1, oid);
+
+	    if(ok)
+	      query.exec();
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+  slotRefreshMail();
+}

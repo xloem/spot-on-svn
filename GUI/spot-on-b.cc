@@ -2908,6 +2908,7 @@ void spoton::slotRefreshMail(void)
     return;
 
   m_ui.reply->setEnabled(m_ui.folder->currentIndex() == 0);
+  m_ui.resend->setEnabled(m_ui.folder->currentIndex() != 0);
 
   if(m_ui.folder->currentIndex() == 0)
     {
@@ -3849,6 +3850,7 @@ void spoton::slotSetIcons(void)
   m_ui.generateGoldBug->setIcon
     (QIcon(QString(":/%1/goldbug.png").arg(iconSet)));
 #endif
+  m_ui.resend->setIcon(QIcon(QString(":/%1/reply.png").arg(iconSet)));
   m_ui.sendMail->setIcon(QIcon(QString(":/%1/email.png").arg(iconSet)));
   list.clear();
   list << "inbox.png" << "outbox.png" << "full-trash.png";
