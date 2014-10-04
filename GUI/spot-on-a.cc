@@ -5095,6 +5095,7 @@ void spoton::slotValidatePassphrase(void)
 	    sendBuzzKeysToKernel();
 	    sendKeysToKernel();
 	    m_sb.frame->setEnabled(true);
+	    m_ui.passphrase_rb_authenticate->setChecked(true);
 	    m_ui.action_Export_Listeners->setEnabled(true);
 	    m_ui.action_Import_Neighbors->setEnabled(true);
 	    m_ui.action_Export_Public_Keys->setEnabled(true);
