@@ -448,6 +448,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotValidatePassphrase(void)));
+  connect(m_ui.answer_authenticate,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotValidatePassphrase(void)));
+  connect(m_ui.question_authenticate,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotValidatePassphrase(void)));
   connect(m_ui.passphraseButton,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -852,6 +860,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotAddReceiveNova(void)));
+  connect(m_ui.answer,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSetPassphrase(void)));
+  connect(m_ui.question,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSetPassphrase(void)));
   connect(m_ui.saveSslControlString,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -1016,6 +1032,42 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotAddAttachment(void)));
+  connect(m_ui.passphrase_rb,
+	  SIGNAL(toggled(bool)),
+	  m_ui.passphrase1,
+	  SLOT(setEnabled(bool)));
+  connect(m_ui.passphrase_rb,
+	  SIGNAL(toggled(bool)),
+	  m_ui.passphrase2,
+	  SLOT(setEnabled(bool)));
+  connect(m_ui.passphrase_rb,
+	  SIGNAL(toggled(bool)),
+	  m_ui.question,
+	  SLOT(setDisabled(bool)));
+  connect(m_ui.passphrase_rb,
+	  SIGNAL(toggled(bool)),
+	  m_ui.answer,
+	  SLOT(setDisabled(bool)));
+  connect(m_ui.passphrase_rb_authenticate,
+	  SIGNAL(toggled(bool)),
+	  m_ui.passphrase,
+	  SLOT(setEnabled(bool)));
+  connect(m_ui.passphrase_rb_authenticate,
+	  SIGNAL(toggled(bool)),
+	  m_ui.question_authenticate,
+	  SLOT(setDisabled(bool)));
+  connect(m_ui.passphrase_rb_authenticate,
+	  SIGNAL(toggled(bool)),
+	  m_ui.answer_authenticate,
+	  SLOT(setDisabled(bool)));
+  connect(m_ui.passphrase_rb,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotPassphraseRadioToggled(bool)));
+  connect(m_ui.passphrase_rb_authenticate,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotPassphraseAuthenticateRadioToggled(bool)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -1090,6 +1142,12 @@ spoton::spoton(void):QMainWindow()
 	  this,
 	  SLOT(slotDeleteAllListeners(void)));
 #endif
+  m_ui.passphrase_rb->setChecked(true);
+  m_ui.passphrase_rb_authenticate->setChecked(true);
+  m_ui.answer->setEnabled(false);
+  m_ui.answer_authenticate->setEnabled(false);
+  m_ui.question->setEnabled(false);
+  m_ui.question_authenticate->setEnabled(false);
   m_sb.kernelstatus->setToolTip
     (tr("Not connected to the kernel. Is the kernel "
 	"active?"));
@@ -1560,15 +1618,16 @@ spoton::spoton(void):QMainWindow()
       m_ui.action_Export_Public_Keys->setEnabled(false);
       m_ui.action_Import_Public_Keys->setEnabled(false);
       m_ui.action_Rosetta->setEnabled(false);
+      m_ui.answer_authenticate->setEnabled(false);
       m_ui.encryptionKeyType->setEnabled(false);
       m_ui.keys->setEnabled(false);
-      m_ui.newKeys->setEnabled(false);
+      m_ui.newKeys->setEnabled(true);
       m_ui.passphrase->setEnabled(false);
       m_ui.passphraseButton->setEnabled(false);
-      m_ui.passphraseLabel->setEnabled(false);
+      m_ui.passphrase_rb_authenticate->setEnabled(false);
+      m_ui.question_rb_authenticate->setEnabled(false);
       m_ui.regenerate->setEnabled(false);
       m_ui.signatureKeyType->setEnabled(false);
-      m_ui.newKeys->setChecked(true);
       m_ui.kernelBox->setEnabled(false);
 
       for(int i = 0; i < m_ui.tab->count(); i++)
@@ -4396,6 +4455,12 @@ void spoton::slotSetPassphrase(void)
   else
     m_ui.username->setText(str3.trimmed());
 
+  if(!m_ui.passphrase_rb->isChecked())
+    {
+      str1 = m_ui.question->text();
+      str2 = m_ui.answer->text();
+    }
+
   for(int i = str1.length() - 1; i >= 0; i--)
     if(!str1.at(i).isPrint())
       str1.remove(i, 1);
@@ -4406,15 +4471,33 @@ void spoton::slotSetPassphrase(void)
 
   if(str1.length() < 16 || str2.length() < 16)
     {
-      QMessageBox::critical(this, tr("%1: Error").
-			    arg(SPOTON_APPLICATION_NAME),
-			    tr("The passphrases must contain at least "
-			       "sixteen characters each."));
-      m_ui.passphrase1->selectAll();
-      m_ui.passphrase1->setFocus();
+      if(m_ui.passphrase_rb->isChecked())
+	QMessageBox::critical(this, tr("%1: Error").
+			      arg(SPOTON_APPLICATION_NAME),
+			      tr("The passphrases must contain at least "
+				 "sixteen characters each."));
+      else
+	QMessageBox::critical(this, tr("%1: Error").
+			      arg(SPOTON_APPLICATION_NAME),
+			      tr("The answer and question must contain "
+				 "at least sixteen characters each."));
+
+      if(m_ui.passphrase_rb->isChecked())
+	{
+	  m_ui.passphrase1->selectAll();
+	  m_ui.passphrase1->setFocus();
+	}
+      else
+	{
+	  m_ui.question->selectAll();
+	  m_ui.question->setFocus();
+	}
+
       return;
     }
-  else if(str1 != str2)
+
+  if(m_ui.passphrase_rb->isChecked() &&
+     str1 != str2)
     {
       QMessageBox::critical(this, tr("%1: Error").
 			    arg(SPOTON_APPLICATION_NAME),
@@ -4423,7 +4506,8 @@ void spoton::slotSetPassphrase(void)
       m_ui.passphrase1->setFocus();
       return;
     }
-  else if(str3.isEmpty())
+
+  if(str3.isEmpty())
     {
       QMessageBox::critical(this, tr("%1: Error").
 			    arg(SPOTON_APPLICATION_NAME),
@@ -4447,15 +4531,25 @@ void spoton::slotSetPassphrase(void)
 			arg(SPOTON_APPLICATION_NAME));
       mb.setWindowModality(Qt::WindowModal);
       mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-      mb.setText(tr("Are you sure that you wish to replace the "
-		    "existing passphrase? Please note that URL data must "
-		    "be re-encoded via a separate tool. Please see "
-		    "the future Tools folder."));
+
+      if(m_ui.passphrase_rb->isChecked())
+	mb.setText(tr("Are you sure that you wish to replace the "
+		      "existing passphrase? Please note that URL data must "
+		      "be re-encoded via a separate tool. Please see "
+		      "the future Tools folder."));
+      else
+	mb.setText(tr("Are you sure that you wish to replace the "
+		      "existing answer/question? Please note that URL "
+		      "data must "
+		      "be re-encoded via a separate tool. Please see "
+		      "the future Tools folder."));
 
       if(mb.exec() != QMessageBox::Yes)
 	{
-	  m_ui.passphrase1->setText(m_ui.passphrase->text());
-	  m_ui.passphrase2->setText(m_ui.passphrase->text());
+	  m_ui.answer->clear();
+	  m_ui.passphrase1->clear();
+	  m_ui.passphrase2->clear();
+	  m_ui.question->clear();
 	  return;
 	}
       else
@@ -4476,13 +4570,24 @@ void spoton::slotSetPassphrase(void)
   salt.resize(m_ui.saltLength->value());
   salt = spoton_crypt::strongRandomBytes(salt.length());
 
-  QPair<QByteArray, QByteArray> derivedKeys
-    (spoton_crypt::derivedKeys(m_ui.cipherType->currentText(),
-			       m_ui.hashType->currentText(),
-			       m_ui.iterationCount->value(),
-			       str1,
-			       salt,
-			       error1));
+  QPair<QByteArray, QByteArray> derivedKeys;
+
+  if(m_ui.passphrase_rb->isChecked())
+    derivedKeys =
+      spoton_crypt::derivedKeys(m_ui.cipherType->currentText(),
+				m_ui.hashType->currentText(),
+				m_ui.iterationCount->value(),
+				str1,
+				salt,
+				error1);
+  else
+    derivedKeys =
+      spoton_crypt::derivedKeys(m_ui.cipherType->currentText(),
+				m_ui.hashType->currentText(),
+				m_ui.iterationCount->value(),
+				str1 + str2,
+				salt,
+				error1);
 
   m_sb.status->clear();
   QApplication::restoreOverrideCursor();
@@ -4641,8 +4746,22 @@ void spoton::slotSetPassphrase(void)
     }
 
   if(error1.isEmpty() && error2.isEmpty())
-    saltedPassphraseHash = spoton_crypt::saltedPassphraseHash
-      (m_ui.hashType->currentText(), str1, salt, error3);
+    {
+      if(m_ui.passphrase_rb->isChecked())
+	saltedPassphraseHash = spoton_crypt::saltedPassphraseHash
+	  (m_ui.hashType->currentText(), str1, salt, error3);
+      else
+	{
+	  bool ok = true;
+
+	  saltedPassphraseHash = spoton_crypt::keyedHash
+	    (str1.toUtf8(), str2.toUtf8(),
+	     m_ui.hashType->currentText().toLatin1(), &ok);
+
+	  if(!ok)
+	    error3 = "keyed hash failure";
+	}
+    }
 
   if(!error1.remove(".").trimmed().isEmpty())
     {
@@ -4672,7 +4791,10 @@ void spoton::slotSetPassphrase(void)
       updatePublicKeysLabel();
       QMessageBox::critical(this, tr("%1: Error").
 			    arg(SPOTON_APPLICATION_NAME),
-			    tr("An error (%1) occurred with spoton_crypt::"
+			    tr("An error (%1) occurred with "
+			       "spoton_crypt::"
+			       "keyedHash() or "
+			       "spoton_crypt::"
 			       "saltedPassphraseHash().").
 			    arg(error3.remove(".").trimmed()));
     }
@@ -4751,16 +4873,16 @@ void spoton::slotSetPassphrase(void)
       m_ui.action_Export_Public_Keys->setEnabled(true);
       m_ui.action_Import_Public_Keys->setEnabled(true);
       m_ui.action_Rosetta->setEnabled(true);
+      m_ui.answer->clear();
       m_ui.encryptionKeyType->setEnabled(false);
       m_ui.kernelBox->setEnabled(true);
       m_ui.encryptionKeySize->setEnabled(false);
       m_ui.signatureKeyType->setEnabled(false);
       m_ui.keys->setEnabled(true);
       m_ui.newKeys->setEnabled(true);
-      m_ui.passphrase1->setText
-	(QString(2 * m_ui.passphrase1->text().length(), '0'));
-      m_ui.passphrase2->setText
-	(QString(2 * m_ui.passphrase2->text().length(), '0'));
+      m_ui.passphrase1->clear();
+      m_ui.passphrase2->clear();
+      m_ui.question->clear();
       m_ui.regenerate->setEnabled(true);
       m_ui.signatureKeyType->setEnabled(false);
       m_ui.newKeys->setChecked(false);
@@ -4890,8 +5012,21 @@ void spoton::slotValidatePassphrase(void)
   QString error("");
   bool authenticated = false;
 
-  computedHash = spoton_crypt::saltedPassphraseHash
-    (m_ui.hashType->currentText(), m_ui.passphrase->text(), salt, error);
+  if(m_ui.passphrase_rb_authenticate->isChecked())
+    computedHash = spoton_crypt::saltedPassphraseHash
+      (m_ui.hashType->currentText(), m_ui.passphrase->text(), salt, error);
+  else
+    {
+      bool ok = true;
+
+      computedHash= spoton_crypt::keyedHash
+	(m_ui.question_authenticate->text().toUtf8(),
+	 m_ui.answer_authenticate->text().toUtf8(),
+	 m_ui.hashType->currentText().toLatin1(), &ok);
+
+      if(!ok)
+	error = "keyed hash failure";
+    }
 
   if(!computedHash.isEmpty() && !saltedPassphraseHash.isEmpty() &&
      spoton_crypt::memcmp(computedHash, saltedPassphraseHash))
@@ -4960,20 +5095,24 @@ void spoton::slotValidatePassphrase(void)
 	    m_ui.action_Export_Public_Keys->setEnabled(true);
 	    m_ui.action_Import_Public_Keys->setEnabled(true);
 	    m_ui.action_Rosetta->setEnabled(true);
+	    m_ui.answer->clear();
+	    m_ui.answer_authenticate->clear();
 	    m_ui.encryptionKeyType->setEnabled(false);
 	    m_ui.kernelBox->setEnabled(true);
 	    m_ui.encryptionKeySize->setEnabled(false);
 	    m_ui.signatureKeySize->setEnabled(false);
 	    m_ui.keys->setEnabled(true);
 	    m_ui.newKeys->setEnabled(true);
-	    m_ui.passphrase->setText
-	      (QString(2 * m_ui.passphrase->text().length(), '0'));
 	    m_ui.passphrase->clear();
-	    m_ui.passphrase1->setText(m_ui.passphrase->text());
-	    m_ui.passphrase2->setText(m_ui.passphrase->text());
+	    m_ui.passphrase->clear();
+	    m_ui.passphrase1->clear();
+	    m_ui.passphrase2->clear();
 	    m_ui.passphrase->setEnabled(false);
 	    m_ui.passphraseButton->setEnabled(false);
-	    m_ui.passphraseLabel->setEnabled(false);
+	    m_ui.passphrase_rb_authenticate->setEnabled(false);
+	    m_ui.question->clear();
+	    m_ui.question_authenticate->clear();
+	    m_ui.question_rb_authenticate->setEnabled(false);
 	    m_ui.regenerate->setEnabled(true);
 	    m_ui.signatureKeyType->setEnabled(false);
 
@@ -5001,9 +5140,9 @@ void spoton::slotValidatePassphrase(void)
 	  }
       }
 
-  m_ui.passphrase->setText
-    (QString(2 * m_ui.passphrase->text().length(), '0'));
+  m_ui.answer->clear();
   m_ui.passphrase->clear();
+  m_ui.question->clear();
 
   if(!authenticated)
     m_ui.passphrase->selectAll();

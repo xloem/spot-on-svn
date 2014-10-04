@@ -352,6 +352,8 @@ class spoton: public QMainWindow
   void slotNeighborSelected(void);
   void slotNewKeys(bool state);
   void slotParticipantDoubleClicked(QTableWidgetItem *item);
+  void slotPassphraseAuthenticateRadioToggled(bool state);
+  void slotPassphraseRadioToggled(bool state);
   void slotPopulateBuzzFavorites(void);
   void slotPopulateEtpMagnets(void);
   void slotPopulateKernelStatistics(void);

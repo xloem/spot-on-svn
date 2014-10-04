@@ -73,7 +73,7 @@
              <x>0</x>
              <y>0</y>
              <width>876</width>
-             <height>435</height>
+             <height>437</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -453,8 +453,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1031</width>
-                <height>449</height>
+                <width>851</width>
+                <height>444</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -948,8 +948,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>913</width>
-             <height>594</height>
+             <width>861</width>
+             <height>575</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1991,8 +1991,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>912</width>
-             <height>417</height>
+             <width>876</width>
+             <height>437</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2576,8 +2576,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>283</width>
-                     <height>1403</height>
+                     <width>231</width>
+                     <height>1368</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3027,8 +3027,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1066</width>
-             <height>583</height>
+             <width>861</width>
+             <height>559</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4093,7 +4093,7 @@
              <x>0</x>
              <y>0</y>
              <width>876</width>
-             <height>435</height>
+             <height>437</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4250,8 +4250,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>858</width>
-             <height>939</height>
+             <width>861</width>
+             <height>1015</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -4991,14 +4991,7 @@
                    <property name="spacing">
                     <number>5</number>
                    </property>
-                   <item row="4" column="2">
-                    <widget class="QPushButton" name="setPassphrase">
-                     <property name="text">
-                      <string>Set Passphrase</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="0">
+                   <item row="3" column="0">
                     <widget class="QLabel" name="label_55">
                      <property name="text">
                       <string>P&amp;assphrase</string>
@@ -5008,14 +5001,14 @@
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="1">
+                   <item row="3" column="1">
                     <widget class="QLineEdit" name="passphrase1">
                      <property name="echoMode">
                       <enum>QLineEdit::Password</enum>
                      </property>
                     </widget>
                    </item>
-                   <item row="4" column="0">
+                   <item row="5" column="0">
                     <widget class="QLabel" name="label_56">
                      <property name="text">
                       <string>P&amp;assphrase Confirmation</string>
@@ -5025,14 +5018,14 @@
                      </property>
                     </widget>
                    </item>
-                   <item row="2" column="2">
+                   <item row="3" column="2">
                     <widget class="QLabel" name="label_58">
                      <property name="text">
                       <string>Minimum of 16 characters.</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="4" column="1">
+                   <item row="5" column="1">
                     <widget class="QLineEdit" name="passphrase2">
                      <property name="echoMode">
                       <enum>QLineEdit::Password</enum>
@@ -5049,8 +5042,58 @@
                      </property>
                     </widget>
                    </item>
+                   <item row="2" column="0">
+                    <widget class="QRadioButton" name="passphrase_rb">
+                     <property name="text">
+                      <string>P&amp;assphrase</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="1" column="1">
                     <widget class="QLineEdit" name="username"/>
+                   </item>
+                   <item row="6" column="0">
+                    <widget class="QRadioButton" name="question_rb">
+                     <property name="text">
+                      <string>&amp;Question/Answer</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="7" column="0">
+                    <widget class="QLabel" name="label_97">
+                     <property name="text">
+                      <string>&amp;Question</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>question</cstring>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="7" column="1">
+                    <widget class="QLineEdit" name="question"/>
+                   </item>
+                   <item row="8" column="0">
+                    <widget class="QLabel" name="label_98">
+                     <property name="text">
+                      <string>&amp;Answer</string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>answer</cstring>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="8" column="1">
+                    <widget class="QLineEdit" name="answer"/>
+                   </item>
+                   <item row="8" column="2">
+                    <widget class="QPushButton" name="setPassphrase">
+                     <property name="text">
+                      <string>Save</string>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </item>
@@ -5377,8 +5420,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>858</width>
-             <height>554</height>
+             <width>861</width>
+             <height>542</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -6335,7 +6378,7 @@
              <x>0</x>
              <y>0</y>
              <width>876</width>
-             <height>435</height>
+             <height>437</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -6816,8 +6859,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>858</width>
-             <height>478</height>
+             <width>861</width>
+             <height>505</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -6913,12 +6956,12 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QLabel" name="passphraseLabel">
+                 <widget class="QRadioButton" name="passphrase_rb_authenticate">
                   <property name="text">
                    <string>P&amp;assphrase</string>
                   </property>
-                  <property name="buddy">
-                   <cstring>passphrase</cstring>
+                  <property name="checked">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -6948,6 +6991,33 @@
                    </size>
                   </property>
                  </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_84">
+                <item>
+                 <widget class="QRadioButton" name="question_rb_authenticate">
+                  <property name="text">
+                   <string>&amp;Question</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="question_authenticate"/>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_100">
+                  <property name="text">
+                   <string>&amp;Answer</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>answer_authenticate</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="answer_authenticate"/>
                 </item>
                </layout>
               </item>
@@ -7077,7 +7147,7 @@
      <x>0</x>
      <y>0</y>
      <width>900</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -7479,8 +7549,12 @@
   <tabstop>iterationCount</tabstop>
   <tabstop>saltLength</tabstop>
   <tabstop>username</tabstop>
+  <tabstop>passphrase_rb</tabstop>
   <tabstop>passphrase1</tabstop>
   <tabstop>passphrase2</tabstop>
+  <tabstop>question_rb</tabstop>
+  <tabstop>question</tabstop>
+  <tabstop>answer</tabstop>
   <tabstop>setPassphrase</tabstop>
   <tabstop>newKeys</tabstop>
   <tabstop>encryptionKeySize</tabstop>
@@ -7545,8 +7619,12 @@
   <tabstop>delULDistiller</tabstop>
   <tabstop>listWidget_2</tabstop>
   <tabstop>scrollArea_11</tabstop>
+  <tabstop>passphrase_rb_authenticate</tabstop>
   <tabstop>passphrase</tabstop>
   <tabstop>passphraseButton</tabstop>
+  <tabstop>question_rb_authenticate</tabstop>
+  <tabstop>question_authenticate</tabstop>
+  <tabstop>answer_authenticate</tabstop>
  </tabstops>
  <resources>
   <include location="../Icons/icons.qrc"/>

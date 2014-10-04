@@ -1893,3 +1893,28 @@ void spoton::slotMagnetRadioToggled(bool state)
   else
     m_ui.etpMagnet->clear();
 }
+
+void spoton::slotPassphraseRadioToggled(bool state)
+{
+  if(state)
+    {
+      m_ui.answer->clear();
+      m_ui.question->clear();
+    }
+  else
+    {
+      m_ui.passphrase1->clear();
+      m_ui.passphrase2->clear();
+    }
+}
+
+void spoton::slotPassphraseAuthenticateRadioToggled(bool state)
+{
+  if(state)
+    {
+      m_ui.answer_authenticate->clear();
+      m_ui.question_authenticate->clear();
+    }
+  else
+    m_ui.passphrase->clear();
+}
