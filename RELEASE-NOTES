@@ -5,6 +5,7 @@
 3.   Removed stale logic in spot-on-encryptfile.cc.
 4.   More descriptive error messages.
 5.   Ability to use question/answer authentication.
+6.   Resend mail mechanism.
 
 0.13 (09/27/2014)
 
