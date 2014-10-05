@@ -46,7 +46,7 @@
        <enum>QTabWidget::East</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>7</number>
       </property>
       <property name="iconSize">
        <size>
@@ -3782,20 +3782,13 @@ QPushButton:pressed {
                   <number>3</number>
                  </property>
                  <item>
-                  <widget class="QLabel" name="label_59">
-                   <property name="toolTip">
-                    <string>The pieces (also called links) of the mosaic create the file.</string>
-                   </property>
-                   <property name="text">
-                    <string>&amp;Maximum Mosaic Size:</string>
-                   </property>
-                   <property name="buddy">
-                    <cstring>etpMaxMosaicSize</cstring>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
                   <widget class="QSpinBox" name="etpMaxMosaicSize">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="suffix">
                     <string> MB</string>
                    </property>
@@ -3811,17 +3804,23 @@ QPushButton:pressed {
                   </widget>
                  </item>
                  <item>
-                  <spacer name="horizontalSpacer_44">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
+                  <widget class="QLabel" name="label_59">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
                    </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>1</width>
-                     <height>1</height>
-                    </size>
+                   <property name="toolTip">
+                    <string>The pieces (also called links) of the mosaic create the file.</string>
                    </property>
-                  </spacer>
+                   <property name="text">
+                    <string>&amp;Maximum Mosaic Size.</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>etpMaxMosaicSize</cstring>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -5411,7 +5410,7 @@ color: rgb(255, 255, 255);</string>
            <item>
             <widget class="QTabWidget" name="tabWidget">
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
              <property name="iconSize">
               <size>
@@ -6069,6 +6068,19 @@ QPushButton:pressed {
                   </widget>
                  </item>
                 </layout>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_6">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
                </item>
                <item>
                 <widget class="QGroupBox" name="accountsGB">
@@ -6745,6 +6757,12 @@ background-position: top center;
                </item>
                <item>
                 <widget class="QPushButton" name="deactivateKernel">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="styleSheet">
                   <string notr="true">QPushButton {
  border: 2px solid gray;
@@ -9802,9 +9820,20 @@ background-color: qlineargradient(spread:pad, x1:0.968, y1:0.932, x2:0.513, y2:0
  border: 2px solid gray;
  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                    stop: 0 #E0E0E0, stop: 1 #FFFFFF);
- border-radius: 5px;
+
  margin: 2px;
- padding: 2px;
+
+
+
+
+  border-style: outset;
+     border-width: 2px;
+     border-radius: 10px;
+     border-color: grey;
+     min-width: 10em;
+     padding: 2px;
+
+
  }
 
 
@@ -10304,7 +10333,6 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
   <tabstop>receivedActionMenu</tabstop>
   <tabstop>destination</tabstop>
   <tabstop>etpSelectDestination</tabstop>
-  <tabstop>etpMaxMosaicSize</tabstop>
   <tabstop>transmittedFile</tabstop>
   <tabstop>etpSelectFile</tabstop>
   <tabstop>addTransmittedMagnets</tabstop>
