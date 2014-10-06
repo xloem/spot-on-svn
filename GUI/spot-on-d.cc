@@ -639,6 +639,9 @@ void spoton::slotShowMinimalDisplay(bool state)
   m_ui.ae_h_type->setHidden(state);
   m_ui.deleteAEToken->setHidden(state);
   m_ui.label_86->setHidden(state);
+  m_ui.resend->setHidden(state);
+  m_ui.label_59->setHidden(state);
+  m_ui.etpMaxMosaicSize->setHidden(state);
 #else
   m_sb.errorlog->setHidden(state);
   m_ui.chatSendMethod->setHidden(state);
@@ -1710,7 +1713,7 @@ void spoton::applyGoldbugToAttachments(const QString &folderOid,
 
       return;
     }
- 
+
   spoton_crypt *crypt2 = m_crypts.value("email", 0);
 
   if(!crypt2)
