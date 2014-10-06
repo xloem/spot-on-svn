@@ -211,3 +211,4 @@ Remaining Items
 32.    IMAP and Rosetta.
 33.    Weather feeds.
 34.    Create a user's configuration database. Store key types too.
+35.    Hybrid group communications based on deterministic key pairs.
