@@ -146,7 +146,7 @@ QByteArray spoton_crypt::publicKeyDecryptNTRU
       publicKey.remove(0, qstrlen("ntru-public-key-"));
       memcpy(publicKey_array, publicKey.constData(), publicKey.length());
       ntru_import_pub(publicKey_array, &kp.pub);
-      qToBigEndian(data, e);
+      memcpy(e, data.constData(), data.length());
       memset(privateKey_array, 0, privateKey.length());
 
       int index = 0;
@@ -238,7 +238,7 @@ QByteArray spoton_crypt::publicKeyEncryptNTRU(const QByteArray &data,
     {
       NtruEncPubKey pk;
 
-      qToBigEndian(data, data_array);
+      memcpy(data_array, data.constData(), data.length());
       memcpy(publicKey_array,
 	     publicKey.
 	     mid(qstrlen("ntru-public-key-")).constData(),
