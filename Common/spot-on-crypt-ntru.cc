@@ -28,6 +28,8 @@
 #include "spot-on-crypt.h"
 #include "spot-on-misc.h"
 
+#include <QtEndian>
+
 void spoton_crypt::generateNTRUKeys(const QString &keySize,
 				    QByteArray &privateKey,
 				    QByteArray &publicKey,
@@ -144,7 +146,7 @@ QByteArray spoton_crypt::publicKeyDecryptNTRU
       publicKey.remove(0, qstrlen("ntru-public-key-"));
       memcpy(publicKey_array, publicKey.constData(), publicKey.length());
       ntru_import_pub(publicKey_array, &kp.pub);
-      memcpy(e, data.constData(), data.length());
+      qToBigEndian(data, e);
       memset(privateKey_array, 0, privateKey.length());
 
       int index = 0;
@@ -236,7 +238,7 @@ QByteArray spoton_crypt::publicKeyEncryptNTRU(const QByteArray &data,
     {
       NtruEncPubKey pk;
 
-      memcpy(data_array, data.constData(), data.length());
+      qToBigEndian(data, data_array);
       memcpy(publicKey_array,
 	     publicKey.
 	     mid(qstrlen("ntru-public-key-")).constData(),
