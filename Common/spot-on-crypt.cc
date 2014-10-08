@@ -1778,10 +1778,10 @@ void spoton_crypt::generatePrivatePublicKeys(const QString &keySize,
       arg(ks);
   else
     {
-      error = QObject::tr("unsupported key type");
+      error = QObject::tr("key type is not supported");
       spoton_misc::logError
 	("spoton_crypt::generatePrivatePublicKeys(): "
-	 "unsupported key type.");
+	 "key type is not supported.");
       goto done_label;
     }
 

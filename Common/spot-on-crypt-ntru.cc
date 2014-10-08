@@ -51,7 +51,7 @@ void spoton_crypt::generateNTRUKeys(const QString &keySize,
   else
     {
       spoton_misc::logError
-	("spoton_crypt::generateNTRUKeys(): unsupported parameter.");
+	("spoton_crypt::generateNTRUKeys(): parameter is not supported.");
       return;
     }
 
