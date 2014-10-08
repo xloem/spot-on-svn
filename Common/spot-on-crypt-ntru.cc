@@ -115,7 +115,11 @@ QByteArray spoton_crypt::publicKeyDecryptNTRU
   if(data.isEmpty() || !m_privateKey || m_privateKeyLength <= 0 ||
      m_privateKeyLength - qstrlen("ntru-private-key-") <= 0 ||
      m_publicKey.length() - qstrlen("ntru-public-key-") <= 0)
-    return QByteArray();
+    {
+      spoton_misc::logError
+	("spoton_crypt::publicKeyDecryptNTRU(): something peculiar!");
+      return QByteArray();
+    }
 
   QByteArray decrypted;
   uint8_t *d = 0;
@@ -223,7 +227,11 @@ QByteArray spoton_crypt::publicKeyEncryptNTRU(const QByteArray &data,
 #ifdef SPOTON_LINKED_WITH_LIBNTRU
   if(data.isEmpty() ||
      publicKey.length() - qstrlen("ntru-public-key-") <= 0)
-    return QByteArray();
+    {
+      spoton_misc::logError
+	("spoton_crypt::publicKeyEncryptNTRU(): something peculiar!");
+      return QByteArray();
+    }
 
   QByteArray encrypted;
   uint8_t *data_array = 0;
