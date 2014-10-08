@@ -5045,13 +5045,24 @@ void spoton::slotValidatePassphrase(void)
 	authenticated = true;
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-	QPair<QByteArray, QByteArray> keys
-	  (spoton_crypt::derivedKeys(m_ui.cipherType->currentText(),
-				     m_ui.hashType->currentText(),
-				     m_ui.iterationCount->value(),
-				     m_ui.passphrase->text(),
-				     salt,
-				     error));
+	QPair<QByteArray, QByteArray> keys;
+
+	if(m_ui.passphrase_rb_authenticate->isChecked())
+	  keys = spoton_crypt::derivedKeys(m_ui.cipherType->currentText(),
+					   m_ui.hashType->currentText(),
+					   m_ui.iterationCount->value(),
+					   m_ui.passphrase->text(),
+					   salt,
+					   error);
+	else
+	  keys = spoton_crypt::derivedKeys
+	    (m_ui.cipherType->currentText(),
+	     m_ui.hashType->currentText(),
+	     m_ui.iterationCount->value(),
+	     m_ui.question_authenticate->text() +
+	     m_ui.answer_authenticate->text(),
+	     salt,
+	     error);
 
 	QApplication::restoreOverrideCursor();
 
