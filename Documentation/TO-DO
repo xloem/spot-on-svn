@@ -208,7 +208,7 @@ Remaining Items
 31.    Artificial pauses. Suppose an inbound packet requires t0 time to
        process. Pause the current thread for T - t0 seconds, where T is some
        reasonable time.
-32.    IMAP and Rosetta.
+32.    IMAP.
 33.    Weather feeds.
 34.    Create a user's configuration database. Store key types too.
 35.    Hybrid group communications based on deterministic key pairs.
