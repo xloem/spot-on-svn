@@ -6,6 +6,8 @@
 4.   More descriptive error messages.
 5.   Ability to use question/answer authentication.
 6.   Resending of mail mechanism.
+7.   The kernel's project files for Windows neglected the
+     SPOTON_LINKED_WITH_LIBNTRU macro. Corrected.
 
 0.13 (09/27/2014)
 
