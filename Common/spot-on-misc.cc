@@ -995,7 +995,6 @@ QPair<QByteArray, QByteArray> spoton_misc::findGeminiInCosmos
 	    bool ok = true;
 
 	    query.setForwardOnly(true);
-
 	    query.prepare("SELECT gemini, gemini_hash_key "
 			  "FROM friends_public_keys WHERE "
 			  "gemini IS NOT NULL AND "

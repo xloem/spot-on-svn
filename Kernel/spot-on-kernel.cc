@@ -1865,6 +1865,7 @@ void spoton_kernel::slotStatusTimerExpired(void)
       {
 	QSqlQuery query(db);
 
+	query.exec("PRAGMA synchronous = OFF");
 	query.prepare("UPDATE friends_public_keys SET "
 		      "status = 'offline' WHERE "
 		      "neighbor_oid = -1 AND "
@@ -2191,6 +2192,8 @@ void spoton_kernel::slotRetrieveMail(void)
 
 	QSqlQuery query(db);
 
+	query.setForwardOnly(true);
+
 	if(query.exec("SELECT cipher_type, hash_type, "
 		      "name, postal_address FROM institutions"))
 	  while(query.next())
@@ -2463,6 +2466,8 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
 	*/
 
 	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
 
 	if(query.exec("SELECT cipher_type, "
 		      "hash_type, name, postal_address FROM institutions"))
