@@ -1151,6 +1151,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotDeleteAllListeners(void)));
+  connect(m_ui.deleteAllNeighbors,
+          SIGNAL(clicked(void)),
+          this,
+          SLOT(slotDeleteAllNeighbors(void)));
 #endif
   m_ui.passphrase_rb->setChecked(true);
   m_ui.passphrase_rb_authenticate->setChecked(true);
