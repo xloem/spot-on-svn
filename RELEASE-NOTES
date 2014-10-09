@@ -10,7 +10,7 @@
      SPOTON_LINKED_WITH_LIBNTRU macro. Corrected.
 8.   Allow portions of the user interface to read database
      data that has not been committed. This will eliminate
-     some blocking.
+     some blocking. Also enable sharing of the SQLite cache.
 
 0.13 (09/27/2014)
 
