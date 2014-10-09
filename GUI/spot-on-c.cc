@@ -235,6 +235,7 @@ void spoton::slotPopulateEtpMagnets(void)
 	m_ui.addTransmittedMagnets->clearContents();
 	m_ui.addTransmittedMagnets->setRowCount(0);
 	query.setForwardOnly(true);
+	query.exec("PRAGMA read_uncommitted = True");
 
 	if(query.exec("SELECT magnet, one_time_magnet, "
 		      "OID FROM magnets"))
@@ -703,6 +704,7 @@ void spoton::slotPopulateKernelStatistics(void)
 	QWidget *focusWidget = QApplication::focusWidget();
 
 	query.setForwardOnly(true);
+	query.exec("PRAGMA read_uncommitted = True");	
 
 	if(query.exec("SELECT statistic, value FROM kernel_statistics "
 		      "ORDER BY statistic"))
@@ -1148,6 +1150,7 @@ void spoton::slotPopulateStars(void)
 	m_ui.received->clearContents();
 	m_ui.received->setRowCount(0);
 	row = 0;
+	query.exec("PRAGMA read_uncommitted = True");
 	query.prepare("SELECT pulse_size, total_size, file, hash, "
 		      "OID FROM received");
 

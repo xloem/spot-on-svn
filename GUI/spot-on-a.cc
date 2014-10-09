@@ -2791,7 +2791,8 @@ void spoton::slotPopulateListeners(void)
 
 	QSqlQuery query(db);
 
-	query.setForwardOnly(true);
+	query.setForwardOnly(true);	
+	query.exec("PRAGMA read_uncommitted = True");
 
 	if(query.exec("SELECT "
 		      "status_control, "
@@ -3282,6 +3283,7 @@ void spoton::slotPopulateNeighbors(void)
 	QSqlQuery query(db);
 
 	query.setForwardOnly(true);
+	query.exec("PRAGMA read_uncommitted = True");
 
 	if(query.exec("SELECT sticky, "
 		      "uuid, "
