@@ -8,6 +8,9 @@
 6.   Resending of mail mechanism.
 7.   The kernel's project files for Windows neglected the
      SPOTON_LINKED_WITH_LIBNTRU macro. Corrected.
+8.   Allow portions of the user interface to read database
+     data that has not been committed. This will eliminate
+     some blocking.
 
 0.13 (09/27/2014)
 
