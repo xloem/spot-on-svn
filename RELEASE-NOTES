@@ -11,6 +11,7 @@
 8.   Allow portions of the user interface to read database
      data that has not been committed. This will eliminate
      some blocking. Also enable sharing of the SQLite cache.
+9.   Do not issue waitForConnected() after a connection attempt in the kernel.
 
 0.13 (09/27/2014)
 
