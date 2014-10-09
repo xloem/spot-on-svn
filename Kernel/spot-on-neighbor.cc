@@ -1104,17 +1104,6 @@ void spoton_neighbor::slotTimeout(void)
 		    (m_address.toString(), m_port);
 		else
 		  m_tcpSocket->connectToHost(m_address, m_port);
-
-		int timeout = 2500;
-
-		if(m_tcpSocket->proxy().type() != QNetworkProxy::NoProxy)
-		  timeout = 5000;
-
-		if(!m_tcpSocket->waitForConnected(timeout))
-		  {
-		    deleteLater();
-		    return;
-		  }
 	      }
 	  }
 	else if(m_udpSocket)
