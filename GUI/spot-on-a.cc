@@ -64,6 +64,7 @@ static void sig_handler(int signum)
 
 int main(int argc, char *argv[])
 {
+  libspoton_enable_sqlite_cache();
   spoton_misc::prepareSignalHandler(sig_handler);
 
 #ifdef Q_OS_MAC
@@ -2791,7 +2792,7 @@ void spoton::slotPopulateListeners(void)
 
 	QSqlQuery query(db);
 
-	query.setForwardOnly(true);	
+	query.setForwardOnly(true);
 	query.exec("PRAGMA read_uncommitted = True");
 
 	if(query.exec("SELECT "
@@ -6109,6 +6110,7 @@ void spoton::slotPopulateParticipants(void)
 	bool ok = true;
 
 	query.setForwardOnly(true);
+	query.exec("PRAGMA read_uncommitted = True");
 	query.prepare("SELECT "
 		      "name, "
 		      "OID, "

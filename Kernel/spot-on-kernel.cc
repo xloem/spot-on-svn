@@ -178,6 +178,7 @@ int main(int argc, char *argv[])
 	exit(EXIT_SUCCESS);
       }
 
+  libspoton_enable_sqlite_cache();
   spoton_misc::prepareSignalHandler(sig_handler);
 
 #if defined Q_OS_LINUX || defined Q_OS_MAC || defined Q_OS_UNIX
@@ -926,7 +927,7 @@ void spoton_kernel::prepareListeners(void)
 		      ** destroy it. We need to be able to listen() again.
 		      ** We must also be careful if we've never listened
 		      ** before because serverAddress() and serverPort()
-		      ** will certainly be undefined. Please notice
+		      ** may not be defined properly. Please notice
 		      ** that both aforementioned methods return the values
 		      ** that were provided to the listener's constructor.
 		      */

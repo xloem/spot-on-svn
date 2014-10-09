@@ -704,7 +704,7 @@ void spoton::slotPopulateKernelStatistics(void)
 	QWidget *focusWidget = QApplication::focusWidget();
 
 	query.setForwardOnly(true);
-	query.exec("PRAGMA read_uncommitted = True");	
+	query.exec("PRAGMA read_uncommitted = True");
 
 	if(query.exec("SELECT statistic, value FROM kernel_statistics "
 		      "ORDER BY statistic"))
