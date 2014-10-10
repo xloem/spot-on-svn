@@ -1816,7 +1816,7 @@ void spoton::addFriendsKey(const QByteArray &key)
 			 arg(SPOTON_APPLICATION_NAME),
 			 tr("Asymmetric decryption failure. "
 			    "Are you attempting "
-			    "to add a repleo that you gathered?"));
+			    "to add a Repleo that you gathered?"));
 		      return;
 		    }
 		}
@@ -1907,61 +1907,57 @@ void spoton::addFriendsKey(const QByteArray &key)
 	  return;
 	}
 
-      for(int i = 1; i <= 4; i++)
+      QByteArray myPublicKey;
+      QByteArray mySPublicKey;
+
+      if(list.value(0) == "chat")
 	{
-	  QByteArray myPublicKey;
-	  QByteArray mySPublicKey;
-	  bool ok = true;
-
-	  if(i == 1)
-	    {
-	      myPublicKey = m_crypts.value("chat")->publicKey(&ok);
-
-	      if(ok)
-		mySPublicKey = m_crypts.value("chat-signature")->
-		  publicKey(&ok);
-	    }
-	  else if(i == 2)
-	    {
-	      myPublicKey = m_crypts.value("email")->publicKey(&ok);
-
-	      if(ok)
-		mySPublicKey = m_crypts.value("email-signature")->
-		  publicKey(&ok);
-	    }
-	  else if(i == 3)
-	    {
-	      myPublicKey = m_crypts.value("rosetta")->publicKey(&ok);
-
-	      if(ok)
-		mySPublicKey = m_crypts.value("rosetta-signature")->
-		  publicKey(&ok);
-	    }
-	  else if(i == 4)
-	    {
-	      myPublicKey = m_crypts.value("url")->publicKey(&ok);
-
-	      if(ok)
-		mySPublicKey = m_crypts.value("url-signature")->
-		  publicKey(&ok);
-	    }
+	  myPublicKey = m_crypts.value("chat")->publicKey(&ok);
 
 	  if(ok)
-	    if((list.value(2) == myPublicKey && !myPublicKey.isEmpty()) ||
-	       (list.value(4) == mySPublicKey && !mySPublicKey.isEmpty()))
-	      ok = false;
+	    mySPublicKey = m_crypts.value("chat-signature")->
+	      publicKey(&ok);
+	}
+      else if(list.value(0) == "email")
+	{
+	  myPublicKey = m_crypts.value("email")->publicKey(&ok);
 
-	  if(!ok)
-	    {
-	      QMessageBox::critical
-		(this, tr("%1: Error").
-		 arg(SPOTON_APPLICATION_NAME),
-		 tr("You're attempting to add your own keys or "
-		    "%1 was not able to retrieve your keys for "
-		    "comparison.").
-		 arg(SPOTON_APPLICATION_NAME));
-	      return;
-	    }
+	  if(ok)
+	    mySPublicKey = m_crypts.value("email-signature")->
+	      publicKey(&ok);
+	}
+      else if(list.value(0) == "rosetta")
+	{
+	  myPublicKey = m_crypts.value("rosetta")->publicKey(&ok);
+
+	  if(ok)
+	    mySPublicKey = m_crypts.value("rosetta-signature")->
+	      publicKey(&ok);
+	}
+      else if(list.value(0) == "url")
+	{
+	  myPublicKey = m_crypts.value("url")->publicKey(&ok);
+
+	  if(ok)
+	    mySPublicKey = m_crypts.value("url-signature")->
+	      publicKey(&ok);
+	}
+
+      if(ok)
+	if((list.value(2) == myPublicKey && !myPublicKey.isEmpty()) ||
+	   (list.value(4) == mySPublicKey && !mySPublicKey.isEmpty()))
+	  ok = false;
+
+      if(!ok)
+	{
+	  QMessageBox::critical
+	    (this, tr("%1: Error").
+	     arg(SPOTON_APPLICATION_NAME),
+	     tr("You're attempting to add your own keys or "
+		"%1 was not able to retrieve your keys for "
+		"comparison.").
+	     arg(SPOTON_APPLICATION_NAME));
+	  return;
 	}
 
       if(!spoton_crypt::isValidSignature(list.value(2),  // Data
