@@ -73,7 +73,7 @@
              <x>0</x>
              <y>0</y>
              <width>876</width>
-             <height>435</height>
+             <height>437</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -453,8 +453,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1031</width>
-                <height>449</height>
+                <width>851</width>
+                <height>444</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -948,8 +948,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>913</width>
-             <height>594</height>
+             <width>861</width>
+             <height>575</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1998,8 +1998,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>912</width>
-             <height>346</height>
+             <width>876</width>
+             <height>437</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2583,8 +2583,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>294</width>
-                     <height>1403</height>
+                     <width>231</width>
+                     <height>1368</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3034,8 +3034,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1066</width>
-             <height>583</height>
+             <width>861</width>
+             <height>559</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4099,8 +4099,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>858</width>
-             <height>441</height>
+             <width>876</width>
+             <height>437</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4130,6 +4130,23 @@
                </widget>
               </item>
               <item>
+               <widget class="Line" name="line">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="importUrls">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Import URL data from the shared.db database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Import URLs</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <spacer name="horizontalSpacer_71">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -4141,6 +4158,47 @@
                  </size>
                 </property>
                </spacer>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_103">
+                <property name="text">
+                 <string>Databases Size</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="urlDatabasesSize">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="maximum">
+                 <number>999999999</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_104">
+                <property name="text">
+                 <string>URL Count</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="urlCount">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="maximum">
+                 <number>999999999</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="gatherStatistics">
+                <property name="text">
+                 <string>Gather Statistics</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
@@ -4268,6 +4326,18 @@
                </item>
                <item row="4" column="1">
                 <widget class="QTextEdit" name="urlDescription">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>50</height>
+                  </size>
+                 </property>
                  <property name="tabChangesFocus">
                   <bool>true</bool>
                  </property>
@@ -4449,8 +4519,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>856</width>
-             <height>1057</height>
+             <width>861</width>
+             <height>1015</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -5619,8 +5689,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>522</width>
-             <height>554</height>
+             <width>861</width>
+             <height>542</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -6576,8 +6646,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>265</width>
-             <height>412</height>
+             <width>876</width>
+             <height>437</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7058,8 +7128,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>280</width>
-             <height>189</height>
+             <width>861</width>
+             <height>505</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -7349,7 +7419,7 @@
      <x>0</x>
      <y>0</y>
      <width>900</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -7717,6 +7787,10 @@
   <tabstop>scrollArea_9</tabstop>
   <tabstop>deleteAllUrls</tabstop>
   <tabstop>prepareUrlDatabases</tabstop>
+  <tabstop>importUrls</tabstop>
+  <tabstop>urlDatabasesSize</tabstop>
+  <tabstop>urlCount</tabstop>
+  <tabstop>gatherStatistics</tabstop>
   <tabstop>addUrl</tabstop>
   <tabstop>modifyUrl</tabstop>
   <tabstop>url</tabstop>
