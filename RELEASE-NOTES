@@ -1,6 +1,10 @@
+0.16 (11/01/2014)
+
+1.   Local searches of URLs.
+
 0.15 (10/10/2014)
 
-1.   Corrected repleo processing.
+1.   Corrected Repleo processing.
 
 0.14 (10/09/2014)
 
@@ -1040,7 +1044,7 @@
 25.  The digital signature that's created during e-mail retrieval has
      been modified so that the signature is generated from a random
      message.
-26.  Inspect the signature public key's signature during repleo processing.
+26.  Inspect the signature public key's signature during Repleo processing.
 27.  Corrected log entries.
 28.  Added Buzz channel types.
 29.  The Hash Type combination box was incorrectly populated if libgcrypt
