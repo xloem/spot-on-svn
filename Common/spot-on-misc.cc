@@ -1400,6 +1400,30 @@ void spoton_misc::prepareUrlDatabases(QProgressDialog *progress)
 {
   QDir().mkdir(homePath() + QDir::separator() + "spot-on_URLs");
 
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName
+      (homePath() + QDir::separator() + "spot-on_URLs" +
+       QDir::separator() + "spot-on_keyword_indices");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("CREATE TABLE IF NOT EXISTS keywords ("
+		   "database TEXT NOT NULL, "
+		   "keyword_hash TEXT NOT NULL, "
+		   "PRIMARY KEY (database, keyword_hash))");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
   for(int c = 0, i = 0; i < 26; i++)
     for(int j = 0; j < 26; j++)
       {
@@ -1424,9 +1448,9 @@ void spoton_misc::prepareUrlDatabases(QProgressDialog *progress)
 	      QSqlQuery query(db);
 
 	      query.exec("CREATE TABLE IF NOT EXISTS keywords ("
-			 "keyword TEXT NOT NULL, "
+			 "keyword_hash TEXT NOT NULL, "
 			 "url_hash TEXT NOT NULL, "
-			 "PRIMARY KEY (keyword, url_hash))");
+			 "PRIMARY KEY (keyword_hash, url_hash))");
 	      query.exec("CREATE TABLE IF NOT EXISTS urls ("
 			 "date_time_inserted TEXT NOT NULL, "
 			 "description BLOB, "

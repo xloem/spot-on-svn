@@ -88,11 +88,15 @@ void spoton::deleteAllUrls(void)
   QDir dir(spoton_misc::homePath());
 
   if(dir.cd("spot-on_URLs"))
-    for(int i = 0; i < 26; i++)
-      for(int j = 0; j < 26; j++)
-	dir.remove(QString("spot-on_urls_%1%2.db").
-		   arg(static_cast<char> (i + 97)).
-		   arg(static_cast<char> (j + 97)));
+    {
+      for(int i = 0; i < 26; i++)
+	for(int j = 0; j < 26; j++)
+	  dir.remove(QString("spot-on_urls_%1%2.db").
+		     arg(static_cast<char> (i + 97)).
+		     arg(static_cast<char> (j + 97)));
+
+      dir.remove("spot-on_keyword_indices");
+    }
 
   QDir(spoton_misc::homePath()).rmdir("spot-on_URLs");
 }
