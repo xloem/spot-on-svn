@@ -7,7 +7,6 @@ purge.commands = rm -f *~
 TEMPLATE	= app
 LANGUAGE	= C++
 QT		+= concurrent core network sql
-QT		-= gui
 CONFIG		+= qt release warn_on
 
 # The function gcry_kdf_derive() is available in version

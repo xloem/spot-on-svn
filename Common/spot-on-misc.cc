@@ -30,6 +30,7 @@
 #include <QFile>
 #include <QLocale>
 #include <QNetworkProxy>
+#include <QProgressDialog>
 #include <QSettings>
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -1395,13 +1396,17 @@ QByteArray spoton_misc::signaturePublicKeyFromPublicKeyHash
   return publicKey;
 }
 
-void spoton_misc::prepareUrlDatabases(void)
+void spoton_misc::prepareUrlDatabases(QProgressDialog *progress)
 {
   QDir().mkdir(homePath() + QDir::separator() + "spot-on_URLs");
 
-  for(int i = 0; i < 26; i++)
+  for(int c = 0, i = 0; i < 26; i++)
     for(int j = 0; j < 26; j++)
       {
+	if(progress)
+	  if(c <= progress->maximum())
+	    progress->setValue(c++);
+
 	QString connectionName("");
 
 	{
@@ -1434,7 +1439,17 @@ void spoton_misc::prepareUrlDatabases(void)
 	}
 
 	QSqlDatabase::removeDatabase(connectionName);
+
+	if(progress)
+	  progress->update();
+
+	if(progress)
+	  if(progress->wasCanceled())
+	    goto done_label;
       }
+
+ done_label:
+  return;
 }
 
 void spoton_misc::savePublishedNeighbor(const QHostAddress &address,

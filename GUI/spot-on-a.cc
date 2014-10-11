@@ -277,6 +277,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(iconsChanged(void)),
 	  m_starbeamAnalyzer,
 	  SLOT(slotSetIcons(void)));
+  connect(this,
+	  SIGNAL(urlStatisticsGathered(const qint64, const quint64)),
+	  this,
+	  SLOT(slotUrlStatisticsGathered(const qint64, const quint64)));
   connect(m_sb.authentication_request,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -1086,6 +1090,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotDeleteAllUrls(void)));
+  connect(m_ui.gatherStatistics,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotGatherUrlStatistics(void)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,

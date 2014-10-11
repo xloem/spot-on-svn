@@ -35,6 +35,7 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QFileDialog>
+#include <QFuture>
 #include <QHash>
 #include <QInputDialog>
 #ifdef Q_OS_MAC
@@ -124,6 +125,7 @@ class spoton: public QMainWindow
   QDateTime m_neighborsLastModificationTime;
   QDateTime m_participantsLastModificationTime;
   QDateTime m_starsLastModificationTime;
+  QFuture<void> m_gatherUrlStatisticsFuture;
   QHash<QByteArray, QString> m_neighborToOidMap;
   QHash<QByteArray, quint64> m_receivedChatSequenceNumbers;
   QHash<QString, QByteArray> m_buzzIds;
@@ -183,6 +185,7 @@ class spoton: public QMainWindow
   void deleteAllUrls(void);
   void demagnetize(void);
   void derivativeUpdates(void);
+  void gatherUrlStatistics(void);
   void highlightPaths(void);
   void importNeighbors(const QString &filePath);
   void initializeKernelSocket(void);
@@ -309,6 +312,7 @@ class spoton: public QMainWindow
   void slotFetchMoreAlgo(void);
   void slotFetchMoreButton(void);
   void slotForceKernelRegistration(bool state);
+  void slotGatherUrlStatistics(void);
   void slotGeminiChanged(QTableWidgetItem *item);
   void slotGenerateEtpKeys(int index);
   void slotGeneralTimerTimeout(void);
@@ -438,6 +442,7 @@ class spoton: public QMainWindow
   void slotTransportChanged(int index);
   void slotUnblockNeighbor(void);
   void slotUpdateChatWindows(void);
+  void slotUrlStatisticsGathered(const qint64 count, const quint64 size);
   void slotValidatePassphrase(void);
   void slotViewLog(void);
   void slotViewRosetta(void);
@@ -448,6 +453,7 @@ class spoton: public QMainWindow
   void statusChanged(const QIcon &icon,
 		     const QString &name,
 		     const QString &id);
+  void urlStatisticsGathered(const qint64 count, const quint64 size);
 };
 
 #endif
