@@ -1397,7 +1397,7 @@ QByteArray spoton_misc::signaturePublicKeyFromPublicKeyHash
 
 void spoton_misc::prepareUrlDatabases(void)
 {
-  QDir().mkdir(homePath() + QDir::separator() + "URLs");
+  QDir().mkdir(homePath() + QDir::separator() + "spot-on_URLs");
 
   for(int i = 0; i < 26; i++)
     for(int j = 0; j < 26; j++)
@@ -1408,8 +1408,9 @@ void spoton_misc::prepareUrlDatabases(void)
 	  QSqlDatabase db = database(connectionName);
 
 	  db.setDatabaseName
-	    (homePath() + QDir::separator() + "URLs" + QDir::separator() +
-	     QString("urls_%1%2.db").
+	    (homePath() + QDir::separator() + "spot-on_URLs" +
+	     QDir::separator() +
+	     QString("spot-on_urls_%1%2.db").
 	     arg(static_cast<char> (i + 97)).
 	     arg(static_cast<char> (j + 97)));
 
@@ -1424,9 +1425,9 @@ void spoton_misc::prepareUrlDatabases(void)
 	      query.exec("CREATE TABLE IF NOT EXISTS urls ("
 			 "date_time_inserted TEXT NOT NULL, "
 			 "description BLOB, "
-			 "url_hash TEXT PRIMARY KEY NOT NULL, "
 			 "title BLOB NOT NULL, "
-			 "url BLOB NOT NULL)");
+			 "url BLOB NOT NULL, "
+			 "url_hash TEXT PRIMARY KEY NOT NULL)");
 	    }
 
 	  db.close();

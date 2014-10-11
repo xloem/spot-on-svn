@@ -1078,6 +1078,14 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotPassphraseAuthenticateRadioToggled(bool)));
+  connect(m_ui.prepareUrlDatabases,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotPrepareUrlDatabases(void)));
+  connect(m_ui.deleteAllUrls,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotDeleteAllUrls(void)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,

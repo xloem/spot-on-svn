@@ -180,6 +180,7 @@ class spoton: public QMainWindow
   void changeEchoMode(const QString &mode, QTableWidget *tableWidget);
   void cleanup(void);
   void closeEvent(QCloseEvent *event);
+  void deleteAllUrls(void);
   void demagnetize(void);
   void derivativeUpdates(void);
   void highlightPaths(void);
@@ -275,6 +276,7 @@ class spoton: public QMainWindow
   void slotDeleteAllNeighbors(void);
   void slotDeleteAllReceived(void);
   void slotDeleteAllTransmitted(void);
+  void slotDeleteAllUrls(void);
   void slotDeleteAllUuids(void);
   void slotDeleteEtpAllMagnets(void);
   void slotDeleteEtpMagnet(void);
@@ -361,6 +363,7 @@ class spoton: public QMainWindow
   void slotPopulateNeighbors(void);
   void slotPopulateParticipants(void);
   void slotPopulateStars(void);
+  void slotPrepareUrlDatabases(void);
   void slotProtocolRadioToggled(bool state);
   void slotProxyChecked(bool state);
   void slotProxyTypeChanged(int index);

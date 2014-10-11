@@ -8737,7 +8737,7 @@ QPushButton:pressed {
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
-               <widget class="QPushButton" name="modifyURL">
+               <widget class="QPushButton" name="commitUrlChange">
                 <property name="text">
                  <string/>
                 </property>
@@ -10172,7 +10172,7 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
   <tabstop>acceptPublishedDisconnected</tabstop>
   <tabstop>acceptPublishedConnected</tabstop>
   <tabstop>denylistRadioButton</tabstop>
-  <tabstop>modifyURL</tabstop>
+  <tabstop>commitUrlChange</tabstop>
   <tabstop>urlParticipants</tabstop>
   <tabstop>listWidget_2</tabstop>
   <tabstop>publishPeriodically</tabstop>

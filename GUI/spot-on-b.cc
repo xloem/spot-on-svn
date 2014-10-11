@@ -2084,24 +2084,7 @@ void spoton::slotResetAll(void)
     QFile::remove
       (spoton_misc::homePath() + QDir::separator() + list.takeFirst());
 
-  /*
-  ** Remove the URL databases.
-  */
-
-  for(int i = 0; i < 26; i++)
-    for(int j = 0; j < 26; j++)
-      list.append(QString("urls_%1%2.db").
-		  arg(static_cast<char> (i + 97)).
-		  arg(static_cast<char> (j + 97)));
-
-  while(!list.isEmpty())
-    QFile::remove
-      (spoton_misc::homePath() + QDir::separator() +
-       "URLs" + QDir::separator() + list.takeFirst());
-
-  QDir dir(spoton_misc::homePath());
-
-  dir.rmdir("URLs");
+  deleteAllUrls();
 
   QSettings settings;
 
@@ -3915,8 +3898,9 @@ void spoton::slotSetIcons(void)
 
   // Search
 
+  m_ui.commitUrlChange->setIcon(QIcon(QString(":/%1/modify.png").
+				      arg(iconSet)));
   m_ui.deleteURL->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
-  m_ui.modifyURL->setIcon(QIcon(QString(":/%1/modify.png").arg(iconSet)));
   m_ui.searchURL->setIcon(QIcon(QString(":/%1/search.png").arg(iconSet)));
 
   // Settings
