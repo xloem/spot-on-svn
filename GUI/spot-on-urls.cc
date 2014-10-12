@@ -277,3 +277,8 @@ void spoton::slotImportUrlProcessed(const int processed)
   if(processed >= 0 && processed <= m_ui.importUrlProgress->maximum())
     m_ui.importUrlProgress->setValue(processed);
 }
+
+void spoton::slotShowUrlSettings(void)
+{
+  m_ui.urlSettings->setVisible(!m_ui.urlSettings->isVisible());
+}

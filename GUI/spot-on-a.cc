@@ -193,6 +193,7 @@ spoton::spoton(void):QMainWindow()
      arg(GCRYPT_VERSION));
   m_ui.importUrlFrame->setVisible(false);
   m_ui.statisticsBox->setVisible(false);
+  m_ui.urlSettings->setVisible(false);
 #ifndef SPOTON_LINKED_WITH_LIBGEOIP
   m_ui.geoipPath4->setEnabled(false);
   m_ui.geoipPath4->setToolTip
@@ -607,6 +608,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotShowStatistics(void)));
+  connect(m_ui.showUrlSettings,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotShowUrlSettings(void)));
   connect(m_ui.sendMail,
 	  SIGNAL(clicked(void)),
 	  this,

@@ -352,7 +352,8 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   QStringList arguments(QCoreApplication::arguments());
 
   for(int i = 1; i < arguments.size(); i++)
-    if(arguments.at(i) == "--passphrase")
+    if(arguments.at(i) == "--passphrase" ||
+       arguments.at(i) == "--question-answer")
       {
 	/*
 	** Attempt to disable input echo.
@@ -390,20 +391,46 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	if(tcsetattr(STDIN_FILENO, TCSANOW, &newt) != 0)
 	  error = true;
 #endif
-	QString input("");
+	QString input1("");
+	QString input2("");
 
 	if(!error)
 	  {
 	    QTextStream cin(stdin);
 	    QTextStream cout(stdout);
 
-	    cout << "Passphrase, please: ";
-	    cout.flush();
-	    input = cin.readLine(spoton_common::PASSPHRASE_MAXIMUM_LENGTH);
+	    if(arguments.at(i) == "--passphrase")
+	      {
+		cout << "Passphrase, please: ";
+		cout.flush();
+		input1 = cin.readLine
+		  (spoton_common::PASSPHRASE_MAXIMUM_LENGTH);
 
-	    for(int i = input.length() - 1; i >= 0; i--)
-	      if(!input.at(i).isPrint())
-		input.remove(i, 1);
+		for(int i = input1.length() - 1; i >= 0; i--)
+		  if(!input1.at(i).isPrint())
+		    input1.remove(i, 1);
+	      }
+	    else
+	      {
+		cout << "Question, please: ";
+		cout.flush();
+		input1 = cin.readLine
+		  (spoton_common::QUESTIONANSWER_MAXIMUM_LENGTH);
+
+		for(int i = input1.length() - 1; i >= 0; i--)
+		  if(!input1.at(i).isPrint())
+		    input1.remove(i, 1);
+
+		cout << endl;
+		cout << "Answer, please: ";
+		cout.flush();
+		input2 = cin.readLine
+		  (spoton_common::QUESTIONANSWER_MAXIMUM_LENGTH);
+
+		for(int i = input2.length() - 1; i >= 0; i--)
+		  if(!input2.at(i).isPrint())
+		    input2.remove(i, 1);
+	      }
 	  }
 
 #ifdef Q_OS_WIN32
@@ -415,20 +442,19 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	if(!error)
 	  {
 	    qDebug();
-	    qDebug() << "Validating the passphrase... Please remain calm.";
+	    qDebug() << "Validating the input... Please remain calm.";
 
-	    if(!initializeSecurityContainers(input))
+	    if(!initializeSecurityContainers(input1, input2))
 	      {
-		qDebug() << "Invalid passphrase?";
+		qDebug() << "Invalid input?";
 		deleteLater();
 	      }
 	    else
 	      {
-		qDebug() << "Passphrase accepted.";
+		qDebug() << "Input validated.";
 		spoton_misc::cleanupDatabases(s_crypts.value("chat", 0));
 	      }
 
-	    input.replace(0, input.length(), '0');
 	    break;
 	  }
 	else
@@ -2878,7 +2904,8 @@ void spoton_kernel::slotSendMail(const QByteArray &goldbug,
     emit sendMail(list, "0001a");
 }
 
-bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
+bool spoton_kernel::initializeSecurityContainers(const QString &passphrase,
+						 const QString &answer)
 {
   QByteArray computedHash;
   QByteArray salt(setting("gui/salt", "").toByteArray());
@@ -2887,8 +2914,20 @@ bool spoton_kernel::initializeSecurityContainers(const QString &passphrase)
   QString error("");
   bool ok = false;
 
-  computedHash = spoton_crypt::saltedPassphraseHash
-    (setting("gui/hashType", "sha512").toString(), passphrase, salt, error);
+  if(answer.isEmpty())
+    computedHash = spoton_crypt::saltedPassphraseHash
+      (setting("gui/hashType", "sha512").toString(), passphrase, salt, error);
+  else
+    {
+      bool ok = true;
+
+      computedHash = spoton_crypt::keyedHash
+	(passphrase.toUtf8(), answer.toUtf8(),
+	 setting("gui/hashType", "sha512").toByteArray(), &ok);
+
+      if(!ok)
+	error = "keyed hash failure";
+    }
 
   if(!computedHash.isEmpty() && !saltedPassphraseHash.isEmpty() &&
      spoton_crypt::memcmp(computedHash, saltedPassphraseHash))

@@ -153,9 +153,15 @@ spoton_gui_server::spoton_gui_server(QObject *parent):
 	  this,
 	  SLOT(slotTimeout(void)));
   m_generalTimer.start(2500);
-  m_fileSystemWatcher.addPath
-    (spoton_misc::homePath() + QDir::separator() +
-     "kernel.db");
+
+  QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
+		     "kernel.db");
+
+  if(fileInfo.isReadable())
+    m_fileSystemWatcher.addPath(fileInfo.absoluteFilePath());
+  else
+    spoton_misc::logError("spoton_gui_server::spoton_gui_server(): "
+			  "could not locate kernel.db.");
 }
 
 spoton_gui_server::~spoton_gui_server()

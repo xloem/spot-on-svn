@@ -121,7 +121,8 @@ class spoton_kernel: public QObject
   static QReadWriteLock s_messagesToProcessMutex;
   static QReadWriteLock s_messagingCacheMutex;
   static QReadWriteLock s_settingsMutex;
-  bool initializeSecurityContainers(const QString &passphrase);
+  bool initializeSecurityContainers(const QString &passphrase,
+				    const QString &answer);
   void checkForTermination(void);
   void cleanup(void);
   void cleanupDatabases(void);

@@ -4116,14 +4116,11 @@
                <number>5</number>
               </property>
               <item>
-               <widget class="QPushButton" name="urlSettings">
+               <widget class="QPushButton" name="showUrlSettings">
                 <property name="text">
                  <string>Settings</string>
                 </property>
                 <property name="checkable">
-                 <bool>true</bool>
-                </property>
-                <property name="checked">
                  <bool>true</bool>
                 </property>
                </widget>
@@ -4144,7 +4141,7 @@
              </layout>
             </item>
             <item>
-             <widget class="QScrollArea" name="scrollArea_12">
+             <widget class="QScrollArea" name="urlSettings">
               <property name="frameShape">
                <enum>QFrame::NoFrame</enum>
               </property>
@@ -4155,7 +4152,7 @@
                <property name="geometry">
                 <rect>
                  <x>0</x>
-                 <y>0</y>
+                 <y>-89</y>
                  <width>938</width>
                  <height>247</height>
                 </rect>
@@ -4541,6 +4538,19 @@
                            <string>Cancel Import</string>
                           </property>
                          </widget>
+                        </item>
+                        <item>
+                         <spacer name="horizontalSpacer_76">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
                         </item>
                        </layout>
                       </widget>
@@ -8208,7 +8218,7 @@
   <tabstop>addFriend</tabstop>
   <tabstop>clearFriend</tabstop>
   <tabstop>scrollArea_9</tabstop>
-  <tabstop>urlSettings</tabstop>
+  <tabstop>showUrlSettings</tabstop>
   <tabstop>prepareUrlDatabases</tabstop>
   <tabstop>urlIniPath</tabstop>
   <tabstop>selectURLIni</tabstop>
