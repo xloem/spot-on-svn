@@ -79,7 +79,6 @@ extern "C"
 #include "spot-on-listener.h"
 #include "spot-on-mailer.h"
 #include "spot-on-neighbor.h"
-#include "spot-on-shared-reader.h"
 #include "spot-on-starbeam-reader.h"
 #include "spot-on-starbeam-writer.h"
 
@@ -319,7 +318,6 @@ spoton_kernel::spoton_kernel(void):QObject(0)
     ("spoton_sctp_socket::SocketError");
   m_guiServer = 0;
   m_mailer = 0;
-  m_sharedReader = 0;
   m_starbeamWriter = 0;
   m_uptime = QDateTime::currentDateTime();
   s_institutionLastModificationTime = QDateTime();
@@ -491,7 +489,6 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_statusTimer.start(15000);
   m_guiServer = new spoton_gui_server(this);
   m_mailer = new spoton_mailer(this);
-  m_sharedReader = new spoton_shared_reader(this);
   m_starbeamWriter = new spoton_starbeam_writer(this);
   connect(m_guiServer,
 	  SIGNAL(buzzMagnetReceivedFromUI(const qint64,

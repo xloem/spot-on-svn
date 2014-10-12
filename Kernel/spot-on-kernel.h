@@ -46,7 +46,6 @@ class spoton_gui_server;
 class spoton_listener;
 class spoton_mailer;
 class spoton_neighbor;
-class spoton_shared_reader;
 class spoton_starbeam_reader;
 class spoton_starbeam_writer;
 
@@ -109,7 +108,6 @@ class spoton_kernel: public QObject
   QTimer m_statusTimer;
   spoton_gui_server *m_guiServer;
   spoton_mailer *m_mailer;
-  spoton_shared_reader *m_sharedReader;
   spoton_starbeam_writer *m_starbeamWriter;
   static QDateTime s_institutionLastModificationTime;
   static QHash<QByteArray, QList<QByteArray> > s_buzzKeys;

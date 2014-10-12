@@ -1094,6 +1094,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotGatherUrlStatistics(void)));
+  connect(m_ui.importUrls,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotImportUrls(void)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -1929,6 +1933,8 @@ void spoton::cleanup(void)
   m_chatInactivityTimer.stop();
   m_emailRetrievalTimer.stop();
   m_externalAddressDiscovererTimer.stop();
+  m_gatherUrlStatisticsFuture.cancel();
+  m_gatherUrlStatisticsFuture.waitForFinished();
   m_generalTimer.stop();
   m_tableTimer.stop();
   saveSettings();

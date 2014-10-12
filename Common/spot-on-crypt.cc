@@ -1770,7 +1770,13 @@ void spoton_crypt::generatePrivatePublicKeys(const QString &keySize,
       if(ok)
 	goto save_keys_label;
       else
-	goto done_label;
+	{
+	  error = QObject::tr("generateNTRUKeys() failure");
+	  spoton_misc::logError
+	    ("spoton_crypt::generatePrivatePublicKeys(): "
+	     "generateNTRUKeys() failure.");
+	  goto done_label;
+	}
     }
   else if(keyType.toLower() == "rsa")
     genkey = QString("(genkey (rsa (nbits %1:%2)))").

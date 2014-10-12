@@ -119,6 +119,9 @@ void spoton::gatherUrlStatistics(void)
   for(int i = 0; i < 26; i++)
     for(int j = 0; j < 26; j++)
       {
+	if(m_gatherUrlStatisticsFuture.isCanceled())
+	  goto done_label;
+
 	QFileInfo fileInfo
 	  (QString("%1%2%3%2spot-on_urls_%4%5.db").
 	   arg(spoton_misc::homePath()).
@@ -151,7 +154,10 @@ void spoton::gatherUrlStatistics(void)
 	QSqlDatabase::removeDatabase(connectionName);
       }
 
-  emit urlStatisticsGathered(count, size);
+ done_label:
+
+  if(!m_gatherUrlStatisticsFuture.isCanceled())
+    emit urlStatisticsGathered(count, size);
 }
 
 void spoton::slotUrlStatisticsGathered(const qint64 count,
@@ -160,4 +166,105 @@ void spoton::slotUrlStatisticsGathered(const qint64 count,
   m_ui.gatherStatistics->setEnabled(true);
   m_ui.urlCount->setValue(static_cast<int> (count));
   m_ui.urlDatabasesSize->setValue(static_cast<int> (size / (1024 * 1024)));
+}
+
+void spoton::slotImportUrls(void)
+{
+  QList<QList<QVariant> > list;
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() + "shared.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT description, encrypted, title, url "
+		      "FROM urls"))
+	  {
+	    int processed = 0;
+
+	    while(query.next())
+	      {
+		processed += 1;
+
+		if(processed > 100)
+		  break;
+
+		QByteArray description;
+		QByteArray title;
+		QByteArray url;
+		bool encrypted = query.value(1).toBool();
+		bool ok = true;
+
+		if(encrypted)
+		  {
+		    spoton_crypt *s_crypt = m_crypts.value("url", 0);
+
+		    if(!s_crypt)
+		      continue;
+
+		    /*
+		    ** We need to determine the encryption key that was
+		    ** used to encrypt the URLs shared by another application.
+		    */
+
+		    spoton_crypt crypt
+		      ("aes256",
+		       QString(""),
+		       QByteArray(),
+		       QByteArray(),
+		       0,
+		       0,
+		       QString(""));
+
+		    description = crypt.decrypted
+		      (query.value(0).toByteArray(), &ok);
+
+		    if(ok)
+		      title = crypt.decrypted
+			(query.value(2).toByteArray(), &ok);
+
+		    if(ok)
+		      url = crypt.decrypted
+			(query.value(3).toByteArray(), &ok);
+		  }
+		else
+		  {
+		    description = query.value(0).toByteArray();
+		    title = query.value(2).toByteArray();
+		    url = query.value(3).toByteArray();
+		  }
+
+		if(ok)
+		  {
+		    QList<QVariant> variants;
+
+		    variants << description << title << url;
+		    list.append(variants);
+		  }
+
+		QSqlQuery deleteQuery(db);
+
+		deleteQuery.prepare("DELETE FROM urls WHERE url = ?");
+		deleteQuery.bindValue(0, query.value(3));
+		deleteQuery.exec();
+	      }
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  spoton_crypt *s_crypt = m_crypts.value("url", 0);
+
+  spoton_misc::populateUrlsDatabase(list, s_crypt);
 }

@@ -333,6 +333,7 @@ class spoton: public QMainWindow
   void slotImpersonate(bool state);
   void slotImportNeighbors(void);
   void slotImportPublicKeys(void);
+  void slotImportUrls(void);
   void slotJoinBuzzChannel(void);
   void slotLimitConnections(int value);
   void slotListenerCheckChange(bool state);
