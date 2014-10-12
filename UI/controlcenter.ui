@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
-    <height>550</height>
+    <width>990</width>
+    <height>783</height>
    </rect>
   </property>
   <property name="windowIcon">
@@ -72,8 +72,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>876</width>
-             <height>437</height>
+             <width>966</width>
+             <height>668</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -453,8 +453,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>835</width>
-                <height>444</height>
+                <width>1031</width>
+                <height>640</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -948,8 +948,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>728</width>
-             <height>575</height>
+             <width>966</width>
+             <height>668</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1998,8 +1998,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>760</width>
-             <height>333</height>
+             <width>966</width>
+             <height>668</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2583,8 +2583,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>239</width>
-                     <height>1368</height>
+                     <width>283</width>
+                     <height>1403</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3034,8 +3034,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>855</width>
-             <height>559</height>
+             <width>1066</width>
+             <height>650</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4099,8 +4099,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>876</width>
-             <height>437</height>
+             <width>966</width>
+             <height>668</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4111,43 +4111,25 @@
              <number>5</number>
             </property>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_87">
+             <layout class="QHBoxLayout" name="horizontalLayout_95">
               <property name="spacing">
                <number>5</number>
               </property>
               <item>
-               <widget class="QPushButton" name="deleteAllUrls">
+               <widget class="QPushButton" name="urlSettings">
                 <property name="text">
-                 <string>Delete Databases</string>
+                 <string>Settings</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="prepareUrlDatabases">
-                <property name="text">
-                 <string>Prepare Databases</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="Line" name="line">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="importUrls">
-                <property name="toolTip">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Import URL data from the shared.db database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-                <property name="text">
-                 <string>Import URLs</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_71">
+               <spacer name="horizontalSpacer_73">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -4159,51 +4141,418 @@
                 </property>
                </spacer>
               </item>
-              <item>
-               <widget class="QLabel" name="label_103">
-                <property name="text">
-                 <string>Databases Size</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QSpinBox" name="urlDatabasesSize">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="suffix">
-                 <string> MiB</string>
-                </property>
-                <property name="maximum">
-                 <number>999999999</number>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_104">
-                <property name="text">
-                 <string>URL Count</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QSpinBox" name="urlCount">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="maximum">
-                 <number>999999999</number>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="gatherStatistics">
-                <property name="text">
-                 <string>Gather Statistics</string>
-                </property>
-               </widget>
-              </item>
              </layout>
+            </item>
+            <item>
+             <widget class="QScrollArea" name="scrollArea_12">
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
+              <property name="widgetResizable">
+               <bool>true</bool>
+              </property>
+              <widget class="QWidget" name="scrollAreaWidgetContents_12">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>938</width>
+                 <height>247</height>
+                </rect>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_65">
+                <property name="spacing">
+                 <number>5</number>
+                </property>
+                <property name="margin">
+                 <number>5</number>
+                </property>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_87">
+                  <property name="spacing">
+                   <number>5</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="label_105">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">QLabel {
+ border: 1px solid gray;
+ background-color: lightgreen;
+ border-radius: 10px;
+ margin: 2px;
+ padding: 2px;
+ }</string>
+                    </property>
+                    <property name="text">
+                     <string>1</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="prepareUrlDatabases">
+                    <property name="text">
+                     <string>Prepare Databases</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_71">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBox_13">
+                  <property name="styleSheet">
+                   <string notr="true">QGroupBox::QLabel {\n border: 1px solid gray;\n background-color: lightgreen;\n border-radius: 10px;\n margin: 2px;\n padding: 2px;\n }
+</string>
+                  </property>
+                  <property name="title">
+                   <string>Passphrase Information</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_64">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <property name="margin">
+                    <number>5</number>
+                   </property>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_90">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="label_107">
+                       <property name="text">
+                        <string>&amp;INI Path</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>urlIniPath</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="urlIniPath"/>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_108">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QLabel {
+ border: 1px solid gray;
+ background-color: lightgreen;
+ border-radius: 10px;
+ margin: 2px;
+ padding: 2px;
+ }</string>
+                       </property>
+                       <property name="text">
+                        <string>2</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="selectURLIni">
+                       <property name="text">
+                        <string>Select</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_93">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="label_109">
+                       <property name="text">
+                        <string>&amp;Cipher Type</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>urlCipher</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="urlCipher">
+                       <property name="sizeAdjustPolicy">
+                        <enum>QComboBox::AdjustToContents</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_110">
+                       <property name="text">
+                        <string>&amp;Hash Type</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>urlHash</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="urlHash">
+                       <property name="sizeAdjustPolicy">
+                        <enum>QComboBox::AdjustToContents</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_111">
+                       <property name="text">
+                        <string>Iteraction &amp;Count</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>urlIteration</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSpinBox" name="urlIteration">
+                       <property name="minimum">
+                        <number>10000</number>
+                       </property>
+                       <property name="maximum">
+                        <number>999999999</number>
+                       </property>
+                       <property name="value">
+                        <number>10000</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_75">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_92">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="label_113">
+                       <property name="text">
+                        <string>&amp;Passphrase</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>urlPassphrase</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="urlPassphrase">
+                       <property name="echoMode">
+                        <enum>QLineEdit::Password</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_112">
+                       <property name="text">
+                        <string>&amp;Salt</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>urlSalt</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="urlSalt"/>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_94">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
+                     <item>
+                      <spacer name="horizontalSpacer_74">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_114">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QLabel {
+ border: 1px solid gray;
+ background-color: lightgreen;
+ border-radius: 10px;
+ margin: 2px;
+ padding: 2px;
+ }</string>
+                       </property>
+                       <property name="text">
+                        <string>3</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="verify">
+                       <property name="toolTip">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generate a cryptographic key and verify it by decrypting a single entry in shared.db. The verification test cannot be conclusive.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                       <property name="text">
+                        <string>Verify</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_115">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QLabel {
+ border: 1px solid gray;
+ background-color: lightgreen;
+ border-radius: 10px;
+ margin: 2px;
+ padding: 2px;
+ }</string>
+                       </property>
+                       <property name="text">
+                        <string>4</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="saveUrlPassphrase">
+                       <property name="text">
+                        <string>Save</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_91">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="label_106">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QLabel {
+ border: 1px solid gray;
+ background-color: lightgreen;
+ border-radius: 10px;
+ margin: 2px;
+ padding: 2px;
+ }</string>
+                       </property>
+                       <property name="text">
+                        <string>5</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="importUrls">
+                       <property name="toolTip">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Import URL data from the shared.db database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                       <property name="text">
+                        <string>Import URLs</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QFrame" name="importUrlFrame">
+                       <property name="frameShape">
+                        <enum>QFrame::NoFrame</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Raised</enum>
+                       </property>
+                       <layout class="QHBoxLayout" name="horizontalLayout_88">
+                        <property name="spacing">
+                         <number>5</number>
+                        </property>
+                        <property name="margin">
+                         <number>5</number>
+                        </property>
+                        <item>
+                         <widget class="QProgressBar" name="importUrlProgress">
+                          <property name="value">
+                           <number>24</number>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QPushButton" name="cancelUrlImport">
+                          <property name="text">
+                           <string>Cancel Import</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </widget>
             </item>
             <item>
              <widget class="QGroupBox" name="groupBox_12">
@@ -4314,9 +4663,6 @@
                <item row="2" column="1">
                 <widget class="QLineEdit" name="url"/>
                </item>
-               <item row="3" column="1">
-                <widget class="QLineEdit" name="urlTitle"/>
-               </item>
                <item row="2" column="0">
                 <widget class="QLabel" name="label_99">
                  <property name="text">
@@ -4345,6 +4691,9 @@
                   <bool>true</bool>
                  </property>
                 </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QLineEdit" name="urlTitle"/>
                </item>
               </layout>
              </widget>
@@ -4447,7 +4796,7 @@
               <item>
                <widget class="QPushButton" name="deleteURL">
                 <property name="text">
-                 <string>Delete</string>
+                 <string>Delete URL(s)</string>
                 </property>
                </widget>
               </item>
@@ -4476,6 +4825,77 @@
               </item>
               <item>
                <spacer name="horizontalSpacer_13">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_89">
+              <property name="spacing">
+               <number>5</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="deleteAllUrls">
+                <property name="text">
+                 <string>Delete Databases</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_103">
+                <property name="text">
+                 <string>Databases Size</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="urlDatabasesSize">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="suffix">
+                 <string> MiB</string>
+                </property>
+                <property name="maximum">
+                 <number>999999999</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_104">
+                <property name="text">
+                 <string>URL Count</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="urlCount">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="maximum">
+                 <number>999999999</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="gatherStatistics">
+                <property name="text">
+                 <string>Gather Statistics</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_72">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -4521,9 +4941,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
-             <width>695</width>
-             <height>1029</height>
+             <y>-337</y>
+             <width>948</width>
+             <height>1057</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -5692,8 +6112,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>481</width>
-             <height>542</height>
+             <width>966</width>
+             <height>668</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -6649,8 +7069,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>232</width>
-             <height>402</height>
+             <width>966</width>
+             <height>668</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7131,8 +7551,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>266</width>
-             <height>182</height>
+             <width>966</width>
+             <height>668</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -7421,8 +7841,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>900</width>
-     <height>23</height>
+     <width>990</width>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -7788,12 +8208,19 @@
   <tabstop>addFriend</tabstop>
   <tabstop>clearFriend</tabstop>
   <tabstop>scrollArea_9</tabstop>
-  <tabstop>deleteAllUrls</tabstop>
+  <tabstop>urlSettings</tabstop>
   <tabstop>prepareUrlDatabases</tabstop>
+  <tabstop>urlIniPath</tabstop>
+  <tabstop>selectURLIni</tabstop>
+  <tabstop>urlCipher</tabstop>
+  <tabstop>urlHash</tabstop>
+  <tabstop>urlIteration</tabstop>
+  <tabstop>urlPassphrase</tabstop>
+  <tabstop>urlSalt</tabstop>
+  <tabstop>verify</tabstop>
+  <tabstop>saveUrlPassphrase</tabstop>
   <tabstop>importUrls</tabstop>
-  <tabstop>urlDatabasesSize</tabstop>
-  <tabstop>urlCount</tabstop>
-  <tabstop>gatherStatistics</tabstop>
+  <tabstop>cancelUrlImport</tabstop>
   <tabstop>addUrl</tabstop>
   <tabstop>modifyUrl</tabstop>
   <tabstop>url</tabstop>
@@ -7804,6 +8231,10 @@
   <tabstop>searchURL</tabstop>
   <tabstop>urls</tabstop>
   <tabstop>deleteURL</tabstop>
+  <tabstop>deleteAllUrls</tabstop>
+  <tabstop>urlDatabasesSize</tabstop>
+  <tabstop>urlCount</tabstop>
+  <tabstop>gatherStatistics</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>guiExternalIpFetch</tabstop>
   <tabstop>guiSecureMemoryPool</tabstop>

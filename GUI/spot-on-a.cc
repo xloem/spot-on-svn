@@ -191,6 +191,7 @@ spoton::spoton(void):QMainWindow()
 	 SSLeay_version(SSLEAY_VERSION) : "OpenSSL is not supported").
      arg(QT_VERSION_STR).arg(sizeof(void *) * 8).
      arg(GCRYPT_VERSION));
+  m_ui.importUrlFrame->setVisible(false);
   m_ui.statisticsBox->setVisible(false);
 #ifndef SPOTON_LINKED_WITH_LIBGEOIP
   m_ui.geoipPath4->setEnabled(false);
@@ -281,6 +282,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(urlStatisticsGathered(const qint64, const quint64)),
 	  this,
 	  SLOT(slotUrlStatisticsGathered(const qint64, const quint64)));
+  connect(this,
+	  SIGNAL(importUrlSize(const int)),
+	  this,
+	  SLOT(slotImportUrlSize(const int)));
   connect(m_sb.authentication_request,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -1936,6 +1941,8 @@ void spoton::cleanup(void)
   m_gatherUrlStatisticsFuture.cancel();
   m_gatherUrlStatisticsFuture.waitForFinished();
   m_generalTimer.stop();
+  m_importUrlsFuture.cancel();
+  m_importUrlsFuture.waitForFinished();
   m_tableTimer.stop();
   saveSettings();
 

@@ -170,20 +170,16 @@ void spoton::slotUrlStatisticsGathered(const qint64 count,
 
 void spoton::slotImportUrls(void)
 {
-  QProgressDialog progress(this);
+  if(!m_importUrlsFuture.isFinished())
+    return;
 
-#ifdef Q_OS_MAC
-#if QT_VERSION < 0x050000
-  progress.setAttribute(Qt::WA_MacMetalStyle, true);
-#endif
-#endif
-  progress.setLabelText(tr("Importing URLs..."));
-  progress.setMinimum(0);
-  progress.setWindowTitle(tr("%1: Importing URLs").
-    arg(SPOTON_APPLICATION_NAME));
-  progress.show();
-  progress.update();
+  m_ui.importUrls->setEnabled(false);
+  m_importUrlsFuture = QtConcurrent::run
+    (this, &spoton::importUrls);
+}
 
+void spoton::importUrls(void)
+{
   QString connectionName("");
 
   {
@@ -200,7 +196,7 @@ void spoton::slotImportUrls(void)
 
 	if(query.exec("SELECT COUNT(*) from urls"))
 	  if(query.next())
-	    progress.setMaximum(query.value(0).toInt());
+	    emit importUrlSize(query.value(0).toInt());
 
 	if(query.exec("SELECT description, encrypted, title, url "
 		      "FROM urls"))
@@ -209,9 +205,6 @@ void spoton::slotImportUrls(void)
 
 	    while(query.next())
 	      {
-		if(processed + 1 <= progress.maximum())
-		  progress.setValue(processed + 1);
-
 		QByteArray description;
 		QByteArray title;
 		QByteArray url;
@@ -262,7 +255,8 @@ void spoton::slotImportUrls(void)
 		deleteQuery.prepare("DELETE FROM urls WHERE url = ?");
 		deleteQuery.bindValue(0, query.value(3));
 		deleteQuery.exec();
-		progress.update();
+		processed += 1;
+		emit importUrlProcessed(processed);
 	      }
 	  }
       }
@@ -271,4 +265,15 @@ void spoton::slotImportUrls(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton::slotImportUrlSize(const int size)
+{
+  m_ui.importUrlProgress->setMaximum(size);
+}
+
+void spoton::slotImportUrlProcessed(const int processed)
+{
+  if(processed >= 0 && processed <= m_ui.importUrlProgress->maximum())
+    m_ui.importUrlProgress->setValue(processed);
 }

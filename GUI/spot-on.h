@@ -126,6 +126,7 @@ class spoton: public QMainWindow
   QDateTime m_participantsLastModificationTime;
   QDateTime m_starsLastModificationTime;
   QFuture<void> m_gatherUrlStatisticsFuture;
+  QFuture<void> m_importUrlsFuture;
   QHash<QByteArray, QString> m_neighborToOidMap;
   QHash<QByteArray, quint64> m_receivedChatSequenceNumbers;
   QHash<QString, QByteArray> m_buzzIds;
@@ -188,6 +189,7 @@ class spoton: public QMainWindow
   void gatherUrlStatistics(void);
   void highlightPaths(void);
   void importNeighbors(const QString &filePath);
+  void importUrls(void);
   void initializeKernelSocket(void);
   void joinDefaultBuzzChannel(void);
   void magnetize(void);
@@ -333,6 +335,8 @@ class spoton: public QMainWindow
   void slotImpersonate(bool state);
   void slotImportNeighbors(void);
   void slotImportPublicKeys(void);
+  void slotImportUrlProcessed(const int processed);
+  void slotImportUrlSize(const int size);
   void slotImportUrls(void);
   void slotJoinBuzzChannel(void);
   void slotLimitConnections(int value);
@@ -451,6 +455,8 @@ class spoton: public QMainWindow
  signals:
   void buzzNameChanged(const QByteArray &name);
   void iconsChanged(void);
+  void importUrlProcessed(const int processed);
+  void importUrlSize(const int size);
   void statusChanged(const QIcon &icon,
 		     const QString &name,
 		     const QString &id);
