@@ -170,7 +170,20 @@ void spoton::slotUrlStatisticsGathered(const qint64 count,
 
 void spoton::slotImportUrls(void)
 {
-  QList<QList<QVariant> > list;
+  QProgressDialog progress(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  progress.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+  progress.setLabelText(tr("Importing URLs..."));
+  progress.setMinimum(0);
+  progress.setWindowTitle(tr("%1: Importing URLs").
+    arg(SPOTON_APPLICATION_NAME));
+  progress.show();
+  progress.update();
+
   QString connectionName("");
 
   {
@@ -185,6 +198,10 @@ void spoton::slotImportUrls(void)
 
 	query.setForwardOnly(true);
 
+	if(query.exec("SELECT COUNT(*) from urls"))
+	  if(query.next())
+	    progress.setMaximum(query.value(0).toInt());
+
 	if(query.exec("SELECT description, encrypted, title, url "
 		      "FROM urls"))
 	  {
@@ -192,10 +209,8 @@ void spoton::slotImportUrls(void)
 
 	    while(query.next())
 	      {
-		processed += 1;
-
-		if(processed > 100)
-		  break;
+		if(processed + 1 <= progress.maximum())
+		  progress.setValue(processed + 1);
 
 		QByteArray description;
 		QByteArray title;
@@ -242,19 +257,12 @@ void spoton::slotImportUrls(void)
 		    url = query.value(3).toByteArray();
 		  }
 
-		if(ok)
-		  {
-		    QList<QVariant> variants;
-
-		    variants << description << title << url;
-		    list.append(variants);
-		  }
-
 		QSqlQuery deleteQuery(db);
 
 		deleteQuery.prepare("DELETE FROM urls WHERE url = ?");
 		deleteQuery.bindValue(0, query.value(3));
 		deleteQuery.exec();
+		progress.update();
 	      }
 	  }
       }
@@ -263,8 +271,4 @@ void spoton::slotImportUrls(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-
-  spoton_crypt *s_crypt = m_crypts.value("url", 0);
-
-  spoton_misc::populateUrlsDatabase(list, s_crypt);
 }
