@@ -1,6 +1,8 @@
 0.16 (11/01/2014)
 
 1.   Local searches of URLs.
+2.   Set the error parameter in spoton_crypt::generatePrivatePublicKeys()
+     upon failures generateNTRUKeys().
 
 0.15 (10/10/2014)
 
