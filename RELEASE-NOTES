@@ -5,8 +5,9 @@
      if generateNTRUKeys() fails. A failure will be properly contained,
      however, it will not be reported correctly to the user.
 3.   Added the terminal option question-answer to the kernel in support
-     of changes produced in 0.14.
+     of changes produced in version 0.14.
 4.   Removed ARM and PowerPC project files.
+5.   Added A.E. tokens to client neighbors. Please see the Neighbors tab.
 
 0.15 (10/10/2014)
 
