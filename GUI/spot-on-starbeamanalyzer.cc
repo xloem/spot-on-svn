@@ -271,7 +271,7 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
 
       while((rc = file.read(bytes.data(), bytes.length())) > 0)
 	{
-	  if(bytes.count('0') == bytes.length())
+	  if(bytes.count('\0') == bytes.length())
 	    /*
 	    ** Potential problem.
 	    */

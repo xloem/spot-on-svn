@@ -179,6 +179,9 @@ void spoton_starbeam_writer::processData
 
   if(file.open(QIODevice::ReadWrite))
     {
+      if(position > file.size())
+	file.resize(position);
+
       if(file.seek(position))
 	{
 	  if(static_cast<int> (file.write(list.value(5).mid(0, dataSize).
