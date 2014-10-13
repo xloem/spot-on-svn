@@ -3418,6 +3418,16 @@
                     </column>
                     <column>
                      <property name="text">
+                      <string>Adaptive Echo Token</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Adaptive Echo Token Type</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
                       <string>OID</string>
                      </property>
                     </column>
@@ -4152,7 +4162,7 @@
                <property name="geometry">
                 <rect>
                  <x>0</x>
-                 <y>-57</y>
+                 <y>0</y>
                  <width>938</width>
                  <height>237</height>
                 </rect>

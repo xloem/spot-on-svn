@@ -323,16 +323,23 @@ void spoton_misc::prepareDatabases(void)
 		   "PRIMARY KEY (listener_oid, data))");
 	query.exec("CREATE TABLE IF NOT EXISTS "
 		   "listeners_adaptive_echo_tokens ("
-		   "token TEXT NOT NULL, "
-		   "token_hash TEXT PRIMARY KEY NOT NULL, "
+		   "token TEXT NOT NULL, " /*
+					   ** Please
+					   ** note that the table
+					   ** houses both encryption
+					   ** and hash keys. Apologies
+					   ** for violating some
+					   ** database principles.
+					   */
+		   "token_hash TEXT PRIMARY KEY NOT NULL, " /*
+							    ** Keyed hash of
+							    ** the token and
+							    ** the token type.
+							    */
 		   "token_type TEXT NOT NULL)"); /*
-						 ** Keyed hash of the token
-						 ** and token type. Please
-						 ** note that the table
-						 ** houses both encryption
-						 ** and hash keys. Apologies
-						 ** for violating some
-						 ** database principles.
+						 ** The token_type contains
+						 ** both cipher and hash
+						 ** algorithm information.
 						 */
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_allowed_ips ("
 		   "ip_address TEXT NOT NULL, "
@@ -405,8 +412,20 @@ void spoton_misc::prepareDatabases(void)
 		   "transport TEXT NOT NULL, "
 		   "orientation TEXT NOT NULL, "
 		   "motd TEXT NOT NULL DEFAULT 'Welcome to Spot-On.', "
-		   "ae_token TEXT, "
-		   "ae_token_type TEXT)").
+		   "ae_token TEXT, " /*
+				     ** Please
+				     ** note that the table
+				     ** houses both encryption
+				     ** and hash keys of adaptive
+				     ** echo tokens. Apologies
+				     ** for violating some
+				     ** database principles.
+				     */
+		   "ae_token_type TEXT)"). /*
+					   ** The ae_token_type contains
+					   ** both cipher and hash
+					   ** algorithm information.
+					   */
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
       }

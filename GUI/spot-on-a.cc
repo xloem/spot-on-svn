@@ -1802,11 +1802,15 @@ spoton::spoton(void):QMainWindow()
   m_ui.neighbors->setColumnHidden
     (m_ui.neighbors->columnCount() - 1, true); // OID
   m_ui.neighbors->setColumnHidden
-    (m_ui.neighbors->columnCount() - 2, true); // certificate
+    (m_ui.neighbors->columnCount() - 2, true); // ae_token_type
   m_ui.neighbors->setColumnHidden
-    (m_ui.neighbors->columnCount() - 3, true); // is_encrypted
+    (m_ui.neighbors->columnCount() - 3, true); // ae_token
   m_ui.neighbors->setColumnHidden
-    (m_ui.neighbors->columnCount() - 4, true); // motd
+    (m_ui.neighbors->columnCount() - 4, true); // certificate
+  m_ui.neighbors->setColumnHidden
+    (m_ui.neighbors->columnCount() - 5, true); // is_encrypted
+  m_ui.neighbors->setColumnHidden
+    (m_ui.neighbors->columnCount() - 6, true); // motd
   m_ui.participants->setColumnHidden(1, true); // OID
   m_ui.participants->setColumnHidden(2, true); // neighbor_oid
   m_ui.participants->setColumnHidden(3, true); // public_key_hash
@@ -3361,6 +3365,8 @@ void spoton::slotPopulateNeighbors(void)
 		      "motd, "
 		      "is_encrypted, "
 		      "0, " // Certificate
+		      "ae_token, "
+		      "ae_token_type, "
 		      "OID "
 		      "FROM neighbors WHERE status_control <> 'deleted'"))
 	  {
@@ -3588,7 +3594,8 @@ void spoton::slotPopulateNeighbors(void)
 		    if(i == 1 || i == 3 ||
 		       i == 7 || (i >= 9 && i <= 13) || (i >= 14 &&
 							 i <= 15) ||
-		       i == 18 || i == 25 || i == 27 || i == 28)
+		       i == 18 || i == 25 || i == 27 || i == 28 ||
+		       i == 32 || i == 33)
 		      {
 			if(query.isNull(i))
 			  item = new QTableWidgetItem();
@@ -7141,65 +7148,36 @@ void spoton::slotNeighborSelected(void)
     {
       QSslCertificate certificate;
       QString label("");
-      QStringList list;
       int row = item->row();
 
-      if(m_ui.neighbors->item(row, m_ui.neighbors->columnCount() - 2))
+      if(m_ui.neighbors->item(row, 31))
 	certificate = QSslCertificate
 	  (QByteArray::fromBase64(m_ui.neighbors->
-				  item(row,
-				       m_ui.neighbors->columnCount() - 2)->
-				  text().toLatin1()));
+				  item(row, 31)->text().toLatin1()));
 
-      for(int i = 0; i < m_ui.neighbors->columnCount() - 3; i++)
+      for(int i = 0; i < m_ui.neighbors->columnCount() - 1; i++)
 	{
+	  QTableWidgetItem *h = m_ui.neighbors->horizontalHeaderItem(i);
+
+	  if(!h)
+	    continue;
+	  else if(!(h->text().length() > 0 && h->text().at(0).isUpper()))
+	    continue;
+
 	  QTableWidgetItem *item = m_ui.neighbors->item(row, i);
 
 	  if(item)
-	    {
-	      label.append
-		("<b>" +
-		 m_ui.neighbors->horizontalHeaderItem(i)->text() +
-		 ":</b> %" +
-		 QString::number(i) + "<br>");
-	      list << item->text();
-	    }
+	    label.append
+	      (QString("<b>" +
+		       m_ui.neighbors->horizontalHeaderItem(i)->text() +
+		       ":</b> %1" + "<br>").arg(item->text()));
 	}
 
-      QString str
-	(label.
-	 arg(list.value(0)).
-	 arg(list.value(1)).
-	 arg(list.value(2)).
-	 arg(list.value(3)).
-	 arg(list.value(4)).
-	 arg(list.value(5)).
-	 arg(list.value(6)).
-	 arg(list.value(7)).
-	 arg(list.value(8)).
-	 arg(list.value(9)).
-	 arg(list.value(10)).
-	 arg(list.value(11)).
-	 arg(list.value(12)).
-	 arg(list.value(13)).
-	 arg(list.value(14)).
-	 arg(list.value(15)).
-	 arg(list.value(16)).
-	 arg(list.value(17)).
-	 arg(list.value(18)).
-	 arg(list.value(19)).
-	 arg(list.value(20)).
-	 arg(list.value(21)).
-	 arg(list.value(22)).
-	 arg(list.value(23)).
-	 arg(list.value(24)).
-	 arg(list.value(25)).
-	 arg(list.value(26)));
       int h = m_ui.neighborSummary->horizontalScrollBar()->value();
       int v = m_ui.neighborSummary->verticalScrollBar()->value();
 
       if(!certificate.isNull())
-	str.append
+	label.append
 	  (tr("<b>Cert. Effective Date:</b> %1<br>"
 	      "<b>Cert. Expiration Date:</b> %2<br>"
 	      "<b>Cert. Issuer Organization:</b> %3<br>"
@@ -7267,7 +7245,7 @@ void spoton::slotNeighborSelected(void)
 	       value(0)).
 #endif
 	   arg(certificate.version().constData()));
-      m_ui.neighborSummary->setText(str);
+      m_ui.neighborSummary->setText(label);
       m_ui.neighborSummary->horizontalScrollBar()->setValue(h);
       m_ui.neighborSummary->verticalScrollBar()->setValue(v);
     }
