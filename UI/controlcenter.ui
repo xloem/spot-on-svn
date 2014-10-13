@@ -2583,7 +2583,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>294</width>
+                     <width>283</width>
                      <height>1403</height>
                     </rect>
                    </property>
@@ -4152,9 +4152,9 @@
                <property name="geometry">
                 <rect>
                  <x>0</x>
-                 <y>0</y>
+                 <y>-57</y>
                  <width>938</width>
-                 <height>247</height>
+                 <height>237</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -4511,38 +4511,6 @@
                        <property name="text">
                         <string>Import URLs</string>
                        </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QFrame" name="importUrlFrame">
-                       <property name="frameShape">
-                        <enum>QFrame::NoFrame</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Raised</enum>
-                       </property>
-                       <layout class="QHBoxLayout" name="horizontalLayout_88">
-                        <property name="spacing">
-                         <number>5</number>
-                        </property>
-                        <property name="margin">
-                         <number>5</number>
-                        </property>
-                        <item>
-                         <widget class="QProgressBar" name="importUrlProgress">
-                          <property name="value">
-                           <number>24</number>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QPushButton" name="cancelUrlImport">
-                          <property name="text">
-                           <string>Cancel Import</string>
-                          </property>
-                         </widget>
-                        </item>
-                       </layout>
                       </widget>
                      </item>
                      <item>
@@ -8233,7 +8201,6 @@
   <tabstop>verify</tabstop>
   <tabstop>saveUrlPassphrase</tabstop>
   <tabstop>importUrls</tabstop>
-  <tabstop>cancelUrlImport</tabstop>
   <tabstop>addUrl</tabstop>
   <tabstop>modifyUrl</tabstop>
   <tabstop>url</tabstop>
