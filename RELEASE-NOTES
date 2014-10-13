@@ -8,6 +8,9 @@
      of changes produced in version 0.14.
 4.   Removed ARM and PowerPC project files.
 5.   Added A.E. tokens to client neighbors. Please see the Neighbors tab.
+6.   Must issue a QFile::resize() if a pulse's position is beyond the
+     boundaries of a mosaic. The resize() will set the new bytes to zero.
+     Also corrected the StarBeam Analyzer.
 
 0.15 (10/10/2014)
 
