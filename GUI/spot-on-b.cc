@@ -857,6 +857,15 @@ void spoton::highlightPaths(void)
 
   palette.setColor(m_ui.kernelPath->backgroundRole(), color);
   m_ui.kernelPath->setPalette(palette);
+  fileInfo.setFile(m_ui.urlIniPath->text());
+
+  if(fileInfo.isReadable() && fileInfo.size() > 0)
+    color = QColor(144, 238, 144);
+  else
+    color = QColor(240, 128, 128); // Light coral!
+
+  palette.setColor(m_ui.urlIniPath->backgroundRole(), color);
+  m_ui.urlIniPath->setPalette(palette);
 }
 
 void spoton::slotAcceptPublicizedListeners(void)

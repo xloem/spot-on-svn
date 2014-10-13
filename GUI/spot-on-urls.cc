@@ -137,7 +137,7 @@ void spoton::gatherUrlStatistics(void)
 	{
 	  QSqlDatabase db = spoton_misc::database(connectionName);
 
-	  db.setDatabaseName(fileInfo.absolutePath());
+	  db.setDatabaseName(fileInfo.absoluteFilePath());
 
 	  if(db.open())
 	    {
@@ -281,4 +281,74 @@ void spoton::slotImportUrlProcessed(const int processed)
 void spoton::slotShowUrlSettings(void)
 {
   m_ui.urlSettings->setVisible(!m_ui.urlSettings->isVisible());
+}
+
+void spoton::slotSelectUrlIniPath(void)
+{
+  QFileDialog dialog(this);
+
+  dialog.setWindowTitle
+    (tr("%1: Select INI Path").
+     arg(SPOTON_APPLICATION_NAME));
+  dialog.setFileMode(QFileDialog::ExistingFile);
+  dialog.setFilter(QDir::AllEntries | QDir::Hidden);
+  dialog.setDirectory(QDir::homePath());
+  dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
+  dialog.setAcceptMode(QFileDialog::AcceptOpen);
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+#endif
+#endif
+
+  if(dialog.exec() == QDialog::Accepted)
+    saveUrlIniPath(dialog.selectedFiles().value(0));
+}
+
+void spoton::saveUrlIniPath(const QString &path)
+{
+  if(path.isEmpty())
+    return;
+
+  m_settings["gui/urlIniPath"] = path;
+
+  QSettings settings;
+
+  settings.setValue("gui/urlIniPath", path);
+  m_ui.urlIniPath->setText(path);
+  m_ui.urlIniPath->setToolTip(path);
+  m_ui.urlIniPath->selectAll();
+
+  {
+    QSettings settings(path, QSettings::IniFormat);
+
+    for(int i = 0; i < settings.allKeys().size(); i++)
+      {
+	QString key(settings.allKeys().at(i));
+	QVariant value(settings.value(key));
+
+	if(key.toLower().contains("ciphertype"))
+	  {
+	    if(m_ui.urlCipher->findText(value.toString()) >= 0)
+	      m_ui.urlCipher->setCurrentIndex
+		(m_ui.urlCipher->findText(value.toString()));
+	  }
+	else if(key.toLower().contains("hashtype"))
+	  {
+	    if(m_ui.urlHash->findText(value.toString()) >= 0)
+	      m_ui.urlHash->setCurrentIndex
+		(m_ui.urlHash->findText(value.toString()));
+	  }
+	else if(key.toLower().contains("iteration"))
+	  m_ui.urlIteration->setValue(value.toInt());
+	else if(key.toLower().contains("salt") &&
+		value.toByteArray().length() >= 100)
+	  m_ui.urlSalt->setText(value.toByteArray().toHex());
+      }
+  }
+}
+
+void spoton::slotSetUrlIniPath(void)
+{
+  saveUrlIniPath(m_ui.urlIniPath->text());
 }

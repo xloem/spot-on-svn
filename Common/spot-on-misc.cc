@@ -25,6 +25,7 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QApplication>
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
@@ -1428,6 +1429,10 @@ void spoton_misc::prepareUrlDatabases(QProgressDialog *progress)
     for(int j = 0; j < 26; j++)
       {
 	if(progress)
+	  if(progress->wasCanceled())
+	    goto done_label;
+
+	if(progress)
 	  if(c <= progress->maximum())
 	    progress->setValue(c++);
 
@@ -1467,9 +1472,10 @@ void spoton_misc::prepareUrlDatabases(QProgressDialog *progress)
 	if(progress)
 	  progress->update();
 
+#ifndef Q_OS_MAC
 	if(progress)
-	  if(progress->wasCanceled())
-	    goto done_label;
+	  QApplication::processEvents();
+#endif
       }
 
  done_label:

@@ -206,6 +206,7 @@ class spoton: public QMainWindow
   void saveGeoIPPath(const int version, const QString &path);
   void saveKernelPath(const QString &path);
   void saveSettings(void);
+  void saveUrlIniPath(const QString &path);
   void sendBuzzKeysToKernel(void);
   void sendKeysToKernel(void);
   void sharePublicKeyWithParticipant(const QString &keyType);
@@ -415,11 +416,13 @@ class spoton: public QMainWindow
   void slotSelectGeoIPPath(void);
   void slotSelectKernelPath(void);
   void slotSelectTransmitFile(void);
+  void slotSelectUrlIniPath(void);
   void slotSendMail(void);
   void slotSendMessage(void);
   void slotSetAETokenInformation(void);
   void slotSetIcons(void);
   void slotSetPassphrase(void);
+  void slotSetUrlIniPath(void);
   void slotShareBuzzMagnet(void);
   void slotShareChatPublicKey(void);
   void slotShareChatPublicKeyWithParticipant(void);

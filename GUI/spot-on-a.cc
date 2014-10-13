@@ -432,6 +432,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSelectTransmitFile(void)));
+  connect(m_ui.selectUrlIni,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSelectUrlIniPath(void)));
   connect(m_ui.setPassphrase,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -892,6 +896,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSetPassphrase(void)));
+  connect(m_ui.urlIniPath,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSetUrlIniPath(void)));
   connect(m_ui.saveSslControlString,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -1330,6 +1338,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/geoipPath6", "GeoIP.dat").toString());
 #endif
 #endif
+  m_ui.urlIniPath->setText
+    (m_settings.value("gui/urlIniPath", "").toString());
   m_ui.magnetRadio->setChecked(true);
   m_ui.generate->setEnabled(false);
   m_ui.pairFrame->setEnabled(false);
@@ -1455,6 +1465,8 @@ spoton::spoton(void):QMainWindow()
   m_ui.institutionPostalAddressType->addItems(spoton_crypt::hashTypes());
   m_ui.kernelCipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.kernelHashType->addItems(spoton_crypt::hashTypes());
+  m_ui.urlCipher->addItems(spoton_crypt::cipherTypes());
+  m_ui.urlHash->addItems(spoton_crypt::hashTypes());
   m_ui.cost->setValue(m_settings.value("gui/congestionCost", 10000).toInt());
   m_ui.days->setValue(m_settings.value("gui/postofficeDays", 1).toInt());
   m_ui.etpMaxMosaicSize->setValue(m_settings.value("gui/maxMosaicSize",
