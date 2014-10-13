@@ -25,13 +25,11 @@
 ** SPOT-ON, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QApplication>
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
 #include <QLocale>
 #include <QNetworkProxy>
-#include <QProgressDialog>
 #include <QSettings>
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -1395,117 +1393,6 @@ QByteArray spoton_misc::signaturePublicKeyFromPublicKeyHash
 
   QSqlDatabase::removeDatabase(connectionName);
   return publicKey;
-}
-
-void spoton_misc::prepareUrlDatabases(QProgressDialog *progress)
-{
-  QDir().mkdir(homePath() + QDir::separator() + "spot-on_URLs");
-
-  QString connectionName("");
-
-  {
-    QSqlDatabase db = database(connectionName);
-
-    db.setDatabaseName
-      (homePath() + QDir::separator() + "spot-on_URLs" +
-       QDir::separator() + "spot-on_key_information.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.exec("CREATE TABLE IF NOT EXISTS key_information ("
-		   "cipher_type TEXT NOT NULL, "
-		   "symmetric_key TEXT PRIMARY KEY NOT NULL)");
-	query.exec("CREATE TRIGGER IF NOT EXISTS key_information_trigger "
-		   "BEFORE INSERT ON key_information "
-		   "BEGIN "
-		   "DELETE FROM key_information; "
-		   "END");
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-
-  {
-    QSqlDatabase db = database(connectionName);
-
-    db.setDatabaseName
-      (homePath() + QDir::separator() + "spot-on_URLs" +
-       QDir::separator() + "spot-on_keyword_indices.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	query.exec("CREATE TABLE IF NOT EXISTS keywords ("
-		   "database_hash TEXT NOT NULL, "
-		   "keyword_hash TEXT NOT NULL, "
-		   "PRIMARY KEY (database, keyword_hash))");
-      }
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-
-  for(int c = 0, i = 0; i < 26; i++)
-    for(int j = 0; j < 26; j++)
-      {
-	if(progress)
-	  if(progress->wasCanceled())
-	    goto done_label;
-
-	if(progress)
-	  if(c <= progress->maximum())
-	    progress->setValue(c++);
-
-	QString connectionName("");
-
-	{
-	  QSqlDatabase db = database(connectionName);
-
-	  db.setDatabaseName
-	    (homePath() + QDir::separator() + "spot-on_URLs" +
-	     QDir::separator() +
-	     QString("spot-on_urls_%1%2.db").
-	     arg(static_cast<char> (i + 97)).
-	     arg(static_cast<char> (j + 97)));
-
-	  if(db.open())
-	    {
-	      QSqlQuery query(db);
-
-	      query.exec("CREATE TABLE IF NOT EXISTS keywords ("
-			 "keyword_hash TEXT NOT NULL, "
-			 "url_hash TEXT NOT NULL, "
-			 "PRIMARY KEY (keyword_hash, url_hash))");
-	      query.exec("CREATE TABLE IF NOT EXISTS urls ("
-			 "date_time_inserted TEXT NOT NULL, "
-			 "description BLOB, "
-			 "title BLOB NOT NULL, "
-			 "url BLOB NOT NULL, "
-			 "url_hash TEXT PRIMARY KEY NOT NULL)");
-	    }
-
-	  db.close();
-	}
-
-	QSqlDatabase::removeDatabase(connectionName);
-
-	if(progress)
-	  progress->update();
-
-#ifndef Q_OS_MAC
-	if(progress)
-	  QApplication::processEvents();
-#endif
-      }
-
- done_label:
-  return;
 }
 
 void spoton_misc::savePublishedNeighbor(const QHostAddress &address,

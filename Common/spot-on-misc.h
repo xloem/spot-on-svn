@@ -63,7 +63,6 @@ typedef union spoton_type_punning_sockaddr
 }
 spoton_type_punning_sockaddr_t;
 
-class QProgressDialog;
 class spoton_crypt;
 
 class spoton_misc
@@ -138,7 +137,6 @@ class spoton_misc
 				   spoton_crypt *crypt);
   static void prepareDatabases(void);
   static void prepareSignalHandler(void (*sig_handler) (int));
-  static void prepareUrlDatabases(QProgressDialog *progress);
   static void purgeSignatureRelationships(const QSqlDatabase &db,
 					  spoton_crypt *crypt);
   static void retrieveSymmetricData(QPair<QByteArray, QByteArray> &gemini,

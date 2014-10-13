@@ -99,6 +99,8 @@ extern "C"
 #include "ui_controlcenter.h"
 #include "ui_statusbar.h"
 
+class QProgressDialog;
+
 class spoton: public QMainWindow
 {
   Q_OBJECT
@@ -200,6 +202,7 @@ class spoton: public QMainWindow
   void populateNovas(void);
   void prepareContextMenuMirrors(void);
   void prepareListenerIPCombo(void);
+  void prepareUrlDatabases(QProgressDialog *progress);
   void refreshInstitutions(void);
   void removeFavorite(const bool removeAll);
   void saveDestination(const QString &path);
