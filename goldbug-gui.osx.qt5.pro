@@ -41,7 +41,7 @@ QMAKE_LFLAGS_RPATH =
 INCLUDEPATH	+= . ../../. GUI ../../libGeoIP/Include.osx64 \
                    /usr/local/include \
                    /usr/local/ssl/include
-ICON		= Icons/Logo/spoton-logo-transparent.icns
+ICON		= Icons/Logo/goldbug-transparent.icns
 LIBS		+= -L../../libGeoIP/Libraries.osx64 -lGeoIP \
                    -L../../libNTRU -lntru \
                    -L../../libSpotOn -lspoton \
