@@ -2583,7 +2583,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>283</width>
+                     <width>294</width>
                      <height>1403</height>
                     </rect>
                    </property>
@@ -4152,7 +4152,7 @@
                <property name="geometry">
                 <rect>
                  <x>0</x>
-                 <y>-67</y>
+                 <y>0</y>
                  <width>938</width>
                  <height>247</height>
                 </rect>
@@ -4380,7 +4380,7 @@
                      <item>
                       <widget class="QLabel" name="label_112">
                        <property name="text">
-                        <string>&amp;Salt</string>
+                        <string>&amp;Salt (Hex)</string>
                        </property>
                        <property name="buddy">
                         <cstring>urlSalt</cstring>
@@ -4466,6 +4466,9 @@
                      </item>
                      <item>
                       <widget class="QPushButton" name="saveUrlPassphrase">
+                       <property name="toolTip">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Save the generated key and relevant information.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
                        <property name="text">
                         <string>Save</string>
                        </property>
@@ -4951,7 +4954,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-389</y>
+             <y>0</y>
              <width>948</width>
              <height>1057</height>
             </rect>

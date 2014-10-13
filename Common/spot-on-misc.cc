@@ -1408,14 +1408,40 @@ void spoton_misc::prepareUrlDatabases(QProgressDialog *progress)
 
     db.setDatabaseName
       (homePath() + QDir::separator() + "spot-on_URLs" +
-       QDir::separator() + "spot-on_keyword_indices");
+       QDir::separator() + "spot-on_key_information.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.exec("CREATE TABLE IF NOT EXISTS key_information ("
+		   "cipher_type TEXT NOT NULL, "
+		   "symmetric_key TEXT PRIMARY KEY NOT NULL)");
+	query.exec("CREATE TRIGGER IF NOT EXISTS key_information_trigger "
+		   "BEFORE INSERT ON key_information "
+		   "BEGIN "
+		   "DELETE FROM key_information; "
+		   "END");
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  {
+    QSqlDatabase db = database(connectionName);
+
+    db.setDatabaseName
+      (homePath() + QDir::separator() + "spot-on_URLs" +
+       QDir::separator() + "spot-on_keyword_indices.db");
 
     if(db.open())
       {
 	QSqlQuery query(db);
 
 	query.exec("CREATE TABLE IF NOT EXISTS keywords ("
-		   "database TEXT NOT NULL, "
+		   "database_hash TEXT NOT NULL, "
 		   "keyword_hash TEXT NOT NULL, "
 		   "PRIMARY KEY (database, keyword_hash))");
       }

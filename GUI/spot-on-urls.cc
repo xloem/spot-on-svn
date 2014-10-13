@@ -95,7 +95,8 @@ void spoton::deleteAllUrls(void)
 		     arg(static_cast<char> (i + 97)).
 		     arg(static_cast<char> (j + 97)));
 
-      dir.remove("spot-on_keyword_indices");
+      dir.remove("spot-on_key_information.db");
+      dir.remove("spot-on_keyword_indices.db");
     }
 
   QDir(spoton_misc::homePath()).rmdir("spot-on_URLs");
