@@ -2,7 +2,7 @@
 
 1.   Local searches of URLs.
 2.   Set the error parameter in spoton_crypt::generatePrivatePublicKeys()
-     upon generateNTRUKeys() failures.
+     if generateNTRUKeys() fails.
 3.   Added the terminal option question-answer to the kernel.
 
 0.15 (10/10/2014)
