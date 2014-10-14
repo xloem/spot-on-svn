@@ -69,12 +69,14 @@ class spoton_starbeamanalyzer: public QMainWindow
   void slotClose(void);
   void slotCopy(void);
   void slotDelete(void);
+  void slotExcessiveProblems(const QString &fileName);
   void slotItemSelected(void);
   void slotPotentialProblem(const QString &fileName, const qint64 pos);
   void slotSetIcons(void);
   void slotUpdatePercent(const QString &fileName, const int percent);
 
  signals:
+  void excessiveProblems(const QString &fileName);
   void potentialProblem(const QString &fileName, const qint64 pos);
   void updatePercent(const QString &fileName, const int percent);
 };

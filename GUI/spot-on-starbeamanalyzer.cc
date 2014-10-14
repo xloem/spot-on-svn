@@ -262,21 +262,39 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
   if(file.open(QIODevice::ReadOnly))
     {
       QByteArray bytes(ps, 0);
+      bool excessive = false;
       bool interrupted = false;
       int percent = 0;
+      int problems = 0;
+      qint64 nPulses = 0;
       qint64 pos = 0;
       qint64 rc = 0;
       qint64 ts = qMax(static_cast<long long> (1),
 		       qMax(file.size(), totalSize.trimmed().toLongLong()));
 
+      nPulses = ts / ps;
+
       while((rc = file.read(bytes.data(), bytes.length())) > 0)
 	{
 	  if(bytes.count('\0') == bytes.length())
-	    /*
-	    ** Potential problem.
-	    */
+	    {
+	      problems += 1;
 
-	    emit potentialProblem(fileName, pos);
+	      double p = 100 * (static_cast<double> (nPulses) /
+				static_cast<double> (problems));
+
+	      if(p >= 75)
+		{
+		  excessive = true;
+		  break;
+		}
+
+	      /*
+	      ** Potential problem.
+	      */
+
+	      emit potentialProblem(fileName, pos);
+	    }
 
 	  pos += ps;
 	  percent = static_cast<int>
@@ -300,9 +318,20 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
       ** Now that we've reviewed the file, let's review shadow portions.
       */
 
-      if(!interrupted && percent < 100)
+      if(!excessive && !interrupted)
 	while(percent < 100)
 	  {
+	    problems += 1;
+
+	    double p = 100 * (static_cast<double> (nPulses) /
+			      static_cast<double> (problems));
+
+	    if(p >= 75)
+	      {
+		excessive = true;
+		break;
+	      }
+
 	    emit potentialProblem(fileName, pos);
 	    pos += ps;
 	    percent = static_cast<int>
@@ -320,7 +349,9 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
 	      }
 	  }
 
-      if(!interrupted)
+      if(excessive)
+	emit excessiveProblems(fileName);
+      else if(!interrupted)
 	{
 	  if(rc == -1)
 	    emit updatePercent(fileName, 0);
@@ -473,4 +504,21 @@ void spoton_starbeamanalyzer::slotCopy(void)
 
   if(clipboard)
     clipboard->setText(ui.results->toPlainText());
+}
+
+void spoton_starbeamanalyzer::slotExcessiveProblems(const QString &fileName)
+{
+  QList<QTableWidgetItem *> list
+    (ui.tableWidget->findItems(fileName, Qt::MatchExactly));
+
+  if(!list.isEmpty())
+    {
+      QTableWidgetItem *item =
+	ui.tableWidget->item(list.at(0)->row(), 5); // Results
+
+      if(item)
+	item->setText
+	  (tr("The number of pulses that are missing is "
+	      "excessive (missing pulses / total pulses >= 75%)."));
+    }
 }
