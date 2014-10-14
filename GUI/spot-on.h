@@ -160,6 +160,7 @@ class spoton: public QMainWindow
   QByteArray copyMyUrlPublicKey(void) const;
   QPixmap pixmapForCountry(const QString &country) const;
   QStringList parseAEMagnet(const QString &magnet) const;
+  bool deleteAllUrls(void) const;
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000 && QT_VERSION < 0x050300
   bool event(QEvent *event);
@@ -185,7 +186,6 @@ class spoton: public QMainWindow
   void changeEchoMode(const QString &mode, QTableWidget *tableWidget);
   void cleanup(void);
   void closeEvent(QCloseEvent *event);
-  void deleteAllUrls(void);
   void demagnetize(void);
   void derivativeUpdates(void);
   void gatherUrlStatistics(void);

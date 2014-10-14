@@ -172,27 +172,54 @@ void spoton::slotDeleteAllUrls(void)
     return;
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-  deleteAllUrls();
+  bool deleted = deleteAllUrls();
   QApplication::restoreOverrideCursor();
+
+  if(!deleted)
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(SPOTON_APPLICATION_NAME),
+			  tr("An error occurred while attempting to remove "
+			     "the URL databases."));
 }
 
-void spoton::deleteAllUrls(void)
+bool spoton::deleteAllUrls(void) const
 {
   QDir dir(spoton_misc::homePath());
+
+  if(!dir.exists("spot-on_URLs"))
+    return true;
+
+  bool deleted = true;
 
   if(dir.cd("spot-on_URLs"))
     {
       for(int i = 0; i < 26; i++)
 	for(int j = 0; j < 26; j++)
-	  dir.remove(QString("spot-on_urls_%1%2.db").
-		     arg(static_cast<char> (i + 97)).
-		     arg(static_cast<char> (j + 97)));
+	  {
+	    QString fileName(QString("spot-on_urls_%1%2.db").
+			     arg(static_cast<char> (i + 97)).
+			     arg(static_cast<char> (j + 97)));
 
-      dir.remove("spot-on_key_information.db");
-      dir.remove("spot-on_keyword_indices.db");
+	    if(dir.exists(fileName))
+	      if(!dir.remove(fileName))
+		deleted = false;
+	  }
+
+      if(dir.exists("spot-on_key_information.db"))
+	if(!dir.remove("spot-on_key_information.db"))
+	  deleted = false;
+
+      if(dir.exists("spot-on_keyword_indices.db"))
+	if(!dir.remove("spot-on_keyword_indices.db"))
+	  deleted = false;
     }
+  else
+    deleted = false;
 
-  QDir(spoton_misc::homePath()).rmdir("spot-on_URLs");
+  if(!QDir(spoton_misc::homePath()).rmdir("spot-on_URLs"))
+    deleted = false;
+
+  return deleted;
 }
 
 void spoton::slotGatherUrlStatistics(void)
