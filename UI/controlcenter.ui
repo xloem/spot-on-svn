@@ -2581,8 +2581,8 @@
                   <widget class="QWidget" name="scrollAreaWidgetContents_3">
                    <property name="geometry">
                     <rect>
-                     <x>-60</x>
-                     <y>-271</y>
+                     <x>0</x>
+                     <y>0</y>
                      <width>265</width>
                      <height>1407</height>
                     </rect>
@@ -4169,9 +4169,9 @@
                <property name="geometry">
                 <rect>
                  <x>0</x>
-                 <y>0</y>
+                 <y>-20</y>
                  <width>938</width>
-                 <height>235</height>
+                 <height>268</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -4394,6 +4394,26 @@
                        </property>
                       </widget>
                      </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_88">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="label_116">
+                       <property name="text">
+                        <string>Hash (Hex)</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>urlIniHash</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="urlIniHash"/>
+                     </item>
                      <item>
                       <widget class="QLabel" name="label_112">
                        <property name="text">
@@ -4452,7 +4472,7 @@
                      <item>
                       <widget class="QPushButton" name="verify">
                        <property name="toolTip">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generate a cryptographic key and verify it by decrypting a single entry in shared.db. The verification test cannot be conclusive.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Computed a salted hash of the provided passphrase and compare it with the hash in the provided INI.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                        </property>
                        <property name="text">
                         <string>Verify</string>
@@ -8224,6 +8244,7 @@
   <tabstop>urlHash</tabstop>
   <tabstop>urlIteration</tabstop>
   <tabstop>urlPassphrase</tabstop>
+  <tabstop>urlIniHash</tabstop>
   <tabstop>urlSalt</tabstop>
   <tabstop>verify</tabstop>
   <tabstop>saveUrlPassphrase</tabstop>
