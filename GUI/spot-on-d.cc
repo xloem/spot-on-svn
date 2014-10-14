@@ -2054,7 +2054,17 @@ QStringList spoton::parseAEMagnet(const QString &magnet) const
 
 void spoton::slotCopyAEMagnet(void)
 {
-  int row = m_ui.neighbors->currentRow();
+  QAction *action = qobject_cast<QAction *> (sender());
+
+  if(!action)
+    return;
+
+  int row = -1;
+
+  if(action->property("from") == "listeners")
+    row = m_ui.ae_tokens->currentRow();
+  else
+    row = m_ui.neighbors->currentRow();
 
   if(row < 0)
     return;
@@ -2066,24 +2076,49 @@ void spoton::slotCopyAEMagnet(void)
   else
     clipboard->clear();
 
-  QTableWidgetItem *item1 = m_ui.neighbors->item
-    (row, 32); // Adaptive Echo Token
-  QTableWidgetItem *item2 = m_ui.neighbors->item
-    (row, 33); // Adaptive Echo Token Type
+  QString magnet("");
+  QTableWidgetItem *item1 = 0;
+  QTableWidgetItem *item2 = 0;
+  QTableWidgetItem *item3 = 0;
 
-  if(item1 && item2)
+  if(action->property("from") == "listeners")
     {
-      QString magnet(QString("magnet:?"
-			     "ct=%1&"
-			     "ht=%2&"
-			     "to=%3&"
-			     "xt=urn:adaptive-echo").
-		     arg(item2->text().split("\n").value(0).trimmed()).
-		     arg(item2->text().split("\n").value(1)).
-		     arg(item1->text()));
+      item1 = m_ui.ae_tokens->item
+	(row, 0); // Adaptive Echo Token
+      item2 = m_ui.ae_tokens->item
+	(row, 1); // Adaptive Echo Token Encryption Type
+      item3 = m_ui.ae_tokens->item
+	(row, 2); // Adaptive Echo Token Hash Type
 
-      clipboard->setText(magnet);
+      if(item1 && item2 && item3)
+	magnet = QString("magnet:?"
+			 "ct=%1&"
+			 "ht=%2&"
+			 "to=%3&"
+			 "xt=urn:adaptive-echo").
+	  arg(item2->text()).
+	  arg(item3->text()).
+	  arg(item1->text());
     }
+  else
+    {
+      item1 = m_ui.neighbors->item
+	(row, 32); // Adaptive Echo Token
+      item2 = m_ui.neighbors->item
+	(row, 33); // Adaptive Echo Token Type
+
+      if(item1 && item2)
+	magnet = QString("magnet:?"
+			 "ct=%1&"
+			 "ht=%2&"
+			 "to=%3&"
+			 "xt=urn:adaptive-echo").
+	  arg(item2->text().split("\n").value(0).trimmed()).
+	  arg(item2->text().split("\n").value(1)).
+	  arg(item1->text());
+    }
+
+  clipboard->setText(magnet);
 }
 
 void spoton::slotClearClipboardBuffer(void)

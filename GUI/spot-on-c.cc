@@ -2469,6 +2469,7 @@ void spoton::prepareContextMenuMirrors(void)
 
   if(!m_ui.listenersActionMenu->menu())
     {
+      QAction *action = 0;
       QMenu *menu = new QMenu(this);
 
       menu->addAction(QIcon(QString(":/%1/clear.png").
@@ -2493,6 +2494,10 @@ void spoton::prepareContextMenuMirrors(void)
 		      this, SLOT(slotListenerFullEcho(void)));
       menu->addAction(tr("&Half Echo"),
 		      this, SLOT(slotListenerHalfEcho(void)));
+      menu->addSeparator();
+      action = menu->addAction(tr("&Copy Adaptive Echo Magnet"),
+			       this, SLOT(slotCopyAEMagnet(void)));
+      action->setProperty("from", "listeners");
       m_ui.listenersActionMenu->setMenu(menu);
     }
 
@@ -2515,6 +2520,7 @@ void spoton::prepareContextMenuMirrors(void)
 
   if(!m_ui.neighborsActionMenu->menu())
     {
+      QAction *action = 0;
       QMenu *menu = new QMenu(this);
 
       menu->addAction(QIcon(QString(":/%1/share.png").
@@ -2577,8 +2583,9 @@ void spoton::prepareContextMenuMirrors(void)
       menu->addAction(tr("&Half Echo"),
 		      this, SLOT(slotNeighborHalfEcho(void)));
       menu->addSeparator();
-      menu->addAction(tr("&Copy Adaptive Echo Magnet"),
-		      this, SLOT(slotCopyAEMagnet(void)));
+      action = menu->addAction(tr("&Copy Adaptive Echo Magnet"),
+			       this, SLOT(slotCopyAEMagnet(void)));
+      action->setProperty("from", "neighbors");
       menu->addAction(tr("&Set Adaptive Echo Token Information"),
 		      this, SLOT(slotSetAETokenInformation(void)));
       menu->addAction(tr("&Reset Adaptive Echo Token Information"),

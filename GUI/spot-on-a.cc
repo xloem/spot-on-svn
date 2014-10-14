@@ -5393,6 +5393,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
     }
   else if(m_ui.neighbors == sender())
     {
+      QAction *action = 0;
       QMenu menu(this);
 
       menu.addAction(QIcon(QString(":/%1/share.png").
@@ -5455,8 +5456,9 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("&Half Echo"),
 		     this, SLOT(slotNeighborHalfEcho(void)));
       menu.addSeparator();
-      menu.addAction(tr("&Copy Adaptive Echo Magnet"),
-		     this, SLOT(slotCopyAEMagnet(void)));
+      action = menu.addAction(tr("&Copy Adaptive Echo Magnet"),
+			      this, SLOT(slotCopyAEMagnet(void)));
+      action->setProperty("from", "neighbors");
       menu.addAction(tr("&Set Adaptive Echo Token Information"),
 		     this, SLOT(slotSetAETokenInformation(void)));
       menu.addAction(tr("&Reset Adaptive Echo Token Information"),
