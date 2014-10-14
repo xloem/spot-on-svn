@@ -2577,6 +2577,8 @@ void spoton::prepareContextMenuMirrors(void)
       menu->addAction(tr("&Half Echo"),
 		      this, SLOT(slotNeighborHalfEcho(void)));
       menu->addSeparator();
+      menu->addAction(tr("&Copy Adaptive Echo Magnet"),
+		      this, SLOT(slotCopyAEMagnet(void)));
       menu->addAction(tr("&Set Adaptive Echo Token Information"),
 		      this, SLOT(slotSetAETokenInformation(void)));
       menu->addAction(tr("&Reset Adaptive Echo Token Information"),

@@ -986,6 +986,7 @@ void spoton::slotAddAEToken(void)
   QString token(m_ui.ae_token->text());
   QString type(m_ui.ae_e_type->currentText() + "\n" +
 	       m_ui.ae_h_type->currentText());
+  QStringList list;
   bool ok = true;
   spoton_crypt *crypt = m_crypts.value("chat", 0);
 
@@ -993,6 +994,22 @@ void spoton::slotAddAEToken(void)
     {
       error = tr("Invalid spoton_crypt object. This is a fatal flaw.");
       goto done_label;
+    }
+
+  if(m_ui.ae_listeners_magnet->isChecked())
+    {
+      list = parseAEMagnet(token);
+
+      if(list.isEmpty())
+	{
+	  error = tr("Invalid Adaptive Echo magnet.");
+	  goto done_label;
+	}
+      else
+	{
+	  token = list.value(2);
+	  type = list.value(0) + "\n" + list.value(1);
+	}
     }
 
   if(token.isEmpty() || type == "n/a")
@@ -1057,9 +1074,10 @@ void spoton::slotAddAEToken(void)
 			  arg(SPOTON_APPLICATION_NAME), error);
   else
     {
-      m_ui.ae_token->clear();
       m_ui.ae_e_type->setCurrentIndex(0);
       m_ui.ae_h_type->setCurrentIndex(0);
+      m_ui.ae_listeners_magnet->setChecked(false);
+      m_ui.ae_token->clear();
       populateAETokens();
     }
 }
@@ -1348,6 +1366,23 @@ void spoton::slotSetAETokenInformation(void)
       QString token(ui.token->text());
       QString tokenType(ui.token_e_type->currentText() + "\n" +
 			ui.token_h_type->currentText());
+      QStringList list;
+
+      if(ui.magnet->isChecked())
+	{
+	  list = parseAEMagnet(token);
+
+	  if(list.isEmpty())
+	    {
+	      token.clear();
+	      tokenType.clear();
+	    }
+	  else
+	    {
+	      token = list.value(2);
+	      tokenType = list.value(0) + "\n" + list.value(1);
+	    }
+	}
 
       if(token.length() >= 96)
 	{
@@ -1976,4 +2011,85 @@ void spoton::slotResendMail(void)
 
   QSqlDatabase::removeDatabase(connectionName);
   slotRefreshMail();
+}
+
+QStringList spoton::parseAEMagnet(const QString &magnet) const
+{
+  QStringList list1(QString(magnet).remove("magnet:?").split("&"));
+  QStringList list2;
+
+  while(!list1.isEmpty())
+    {
+      QString str(list1.takeFirst());
+
+      if(str.startsWith("ct="))
+	{
+	  str.remove(0, 3);
+	  list2.append(str);
+	}
+      else if(str.startsWith("ht="))
+	{
+	  str.remove(0, 3);
+	  list2.append(str);
+	}
+      else if(str.startsWith("to="))
+	{
+	  str.remove(0, 3);
+	  list2.append(str);
+	}
+      else if(str.startsWith("xt="))
+	{
+	  str.remove(0, 3);
+	  list2.append("urn:adaptive-echo");
+	}
+      else
+	break;
+    }
+
+  if(!list2.contains("urn:adaptive-echo"))
+    list2.clear();
+
+  return list2;
+}
+
+void spoton::slotCopyAEMagnet(void)
+{
+  int row = m_ui.neighbors->currentRow();
+
+  if(row < 0)
+    return;
+
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(!clipboard)
+    return;
+  else
+    clipboard->clear();
+
+  QTableWidgetItem *item1 = m_ui.neighbors->item
+    (row, 32); // Adaptive Echo Token
+  QTableWidgetItem *item2 = m_ui.neighbors->item
+    (row, 33); // Adaptive Echo Token Type
+
+  if(item1 && item2)
+    {
+      QString magnet(QString("magnet:?"
+			     "ct=%1&"
+			     "ht=%2&"
+			     "to=%3&"
+			     "xt=urn:adaptive-echo").
+		     arg(item2->text().split("\n").value(0).trimmed()).
+		     arg(item2->text().split("\n").value(1)).
+		     arg(item1->text()));
+
+      clipboard->setText(magnet);
+    }
+}
+
+void spoton::slotClearClipboardBuffer(void)
+{
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(clipboard)
+    clipboard->clear();
 }

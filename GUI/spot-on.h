@@ -159,6 +159,7 @@ class spoton: public QMainWindow
   QByteArray copyMyRosettaPublicKey(void) const;
   QByteArray copyMyUrlPublicKey(void) const;
   QPixmap pixmapForCountry(const QString &country) const;
+  QStringList parseAEMagnet(const QString &magnet) const;
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000 && QT_VERSION < 0x050300
   bool event(QEvent *event);
@@ -251,12 +252,14 @@ class spoton: public QMainWindow
   void slotChatSendMethodChanged(int index);
   void slotChatWindowDestroyed(void);
   void slotChatWindowMessageSent(void);
+  void slotClearClipboardBuffer(void);
   void slotClearOutgoingMessage(void);
   void slotCloseBuzzTab(int index);
   void slotCommonBuzzChannelsActivated(int index);
   void slotComputeFileHash(void);
   void slotConnectAllNeighbors(void);
   void slotConnectNeighbor(void);
+  void slotCopyAEMagnet(void);
   void slotCopyAllMyPublicKeys(void);
   void slotCopyEmailFriendshipBundle(void);
   void slotCopyEmailKeys(void);

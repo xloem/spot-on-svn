@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>990</width>
-    <height>783</height>
+    <height>785</height>
    </rect>
   </property>
   <property name="windowIcon">
@@ -73,7 +73,7 @@
              <x>0</x>
              <y>0</y>
              <width>966</width>
-             <height>668</height>
+             <height>671</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -453,8 +453,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1031</width>
-                <height>640</height>
+                <width>956</width>
+                <height>661</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -949,7 +949,7 @@
              <x>0</x>
              <y>0</y>
              <width>966</width>
-             <height>668</height>
+             <height>671</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1999,7 +1999,7 @@
              <x>0</x>
              <y>0</y>
              <width>966</width>
-             <height>668</height>
+             <height>671</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2581,10 +2581,10 @@
                   <widget class="QWidget" name="scrollAreaWidgetContents_3">
                    <property name="geometry">
                     <rect>
-                     <x>0</x>
-                     <y>0</y>
-                     <width>283</width>
-                     <height>1403</height>
+                     <x>-60</x>
+                     <y>-271</y>
+                     <width>265</width>
+                     <height>1407</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -2840,6 +2840,13 @@
                            </property>
                           </widget>
                          </item>
+                         <item row="3" column="1">
+                          <widget class="QCheckBox" name="ae_listeners_magnet">
+                           <property name="text">
+                            <string>&amp;Magnet</string>
+                           </property>
+                          </widget>
+                         </item>
                         </layout>
                        </item>
                        <item>
@@ -3034,8 +3041,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1066</width>
-             <height>650</height>
+             <width>979</width>
+             <height>653</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4110,7 +4117,7 @@
              <x>0</x>
              <y>0</y>
              <width>966</width>
-             <height>668</height>
+             <height>671</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4164,7 +4171,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>938</width>
-                 <height>237</height>
+                 <height>235</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -4934,7 +4941,7 @@
              <x>0</x>
              <y>0</y>
              <width>948</width>
-             <height>1057</height>
+             <height>1041</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -6104,7 +6111,7 @@
              <x>0</x>
              <y>0</y>
              <width>966</width>
-             <height>668</height>
+             <height>671</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -7061,7 +7068,7 @@
              <x>0</x>
              <y>0</y>
              <width>966</width>
-             <height>668</height>
+             <height>671</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7543,7 +7550,7 @@
              <x>0</x>
              <y>0</y>
              <width>966</width>
-             <height>668</height>
+             <height>671</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -7833,7 +7840,7 @@
      <x>0</x>
      <y>0</y>
      <width>990</width>
-     <height>25</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -7889,6 +7896,7 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <addaction name="actionClear_Clipboard_Buffer"/>
     <addaction name="action_Copy"/>
     <addaction name="action_Paste"/>
    </widget>
@@ -8028,6 +8036,14 @@
     <string>&amp;File Encryption</string>
    </property>
   </action>
+  <action name="actionClear_Clipboard_Buffer">
+   <property name="text">
+    <string>Clear Clipboard &amp;Buffer</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -8155,6 +8171,7 @@
   <tabstop>ae_token</tabstop>
   <tabstop>ae_e_type</tabstop>
   <tabstop>ae_h_type</tabstop>
+  <tabstop>ae_listeners_magnet</tabstop>
   <tabstop>addAEToken</tabstop>
   <tabstop>deleteAEToken</tabstop>
   <tabstop>acceptedIPList</tabstop>
@@ -8333,6 +8350,7 @@
   <tabstop>question_rb_authenticate</tabstop>
   <tabstop>question_authenticate</tabstop>
   <tabstop>answer_authenticate</tabstop>
+  <tabstop>urlSettings</tabstop>
  </tabstops>
  <resources>
   <include location="../Icons/icons.qrc"/>

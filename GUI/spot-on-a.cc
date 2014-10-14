@@ -319,6 +319,10 @@ spoton::spoton(void):QMainWindow()
 			     "border: none; "
 			     "}");
   statusBar()->setMaximumHeight(m_sbWidget->height());
+  connect(m_ui.actionClear_Clipboard_Buffer,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotClearClipboardBuffer(void)));
   connect(m_ui.action_Copy,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -5451,6 +5455,8 @@ void spoton::slotShowContextMenu(const QPoint &point)
       menu.addAction(tr("&Half Echo"),
 		     this, SLOT(slotNeighborHalfEcho(void)));
       menu.addSeparator();
+      menu.addAction(tr("&Copy Adaptive Echo Magnet"),
+		     this, SLOT(slotCopyAEMagnet(void)));
       menu.addAction(tr("&Set Adaptive Echo Token Information"),
 		     this, SLOT(slotSetAETokenInformation(void)));
       menu.addAction(tr("&Reset Adaptive Echo Token Information"),
