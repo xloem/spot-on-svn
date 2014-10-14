@@ -181,7 +181,7 @@ color: rgb(255, 255, 255);
                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
@@ -4455,7 +4455,7 @@ QPushButton#pushButtonCopytoClipboard_All:pressed {
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="overwriteMode">
@@ -6154,6 +6154,13 @@ QPushButton:pressed {
                       </property>
                       <property name="buddy">
                        <cstring>ae_h_type</cstring>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="1">
+                     <widget class="QCheckBox" name="ae_listeners_magnet">
+                      <property name="text">
+                       <string>&amp;Magnet</string>
                       </property>
                      </widget>
                     </item>
@@ -8216,6 +8223,16 @@ QPushButton:pressed {
                </column>
                <column>
                 <property name="text">
+                 <string>Adaptive Echo Token</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Adaptive Echo Token Type</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
                  <string>OID</string>
                 </property>
                </column>
@@ -9700,7 +9717,7 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
      <x>0</x>
      <y>0</y>
      <width>594</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -10111,6 +10128,7 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
   <tabstop>ae_token</tabstop>
   <tabstop>ae_e_type</tabstop>
   <tabstop>ae_h_type</tabstop>
+  <tabstop>ae_listeners_magnet</tabstop>
   <tabstop>addAEToken</tabstop>
   <tabstop>deleteAEToken</tabstop>
   <tabstop>ae_tokens</tabstop>
@@ -10244,6 +10262,8 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
   <tabstop>buzzHashType</tabstop>
   <tabstop>buzzActions</tabstop>
   <tabstop>channelType</tabstop>
+  <tabstop>addNeighbor</tabstop>
+  <tabstop>deleteAllNeighbors</tabstop>
  </tabstops>
  <resources>
   <include location="../Icons/icons.qrc"/>
