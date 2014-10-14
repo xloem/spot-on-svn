@@ -72,6 +72,10 @@ spoton_starbeamanalyzer::spoton_starbeamanalyzer(QWidget *parent):
 	  this,
 	  SLOT(slotItemSelected(void)));
   connect(this,
+	  SIGNAL(excessiveProblems(const QString &)),
+	  this,
+	  SLOT(slotExcessiveProblems(const QString &)));
+  connect(this,
 	  SIGNAL(potentialProblem(const QString &,
 				  const qint64)),
 	  this,
@@ -280,8 +284,8 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
 	    {
 	      problems += 1;
 
-	      double p = 100 * (static_cast<double> (nPulses) /
-				static_cast<double> (problems));
+	      double p = 100 * (static_cast<double> (problems) /
+				static_cast<double> (nPulses));
 
 	      if(p >= 75)
 		{
@@ -323,8 +327,8 @@ void spoton_starbeamanalyzer::analyze(const QString &fileName,
 	  {
 	    problems += 1;
 
-	    double p = 100 * (static_cast<double> (nPulses) /
-			      static_cast<double> (problems));
+	    double p = 100 * (static_cast<double> (problems) /
+			      static_cast<double> (nPulses));
 
 	    if(p >= 75)
 	      {
