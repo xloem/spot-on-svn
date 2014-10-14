@@ -40,6 +40,7 @@
 void spoton::slotPrepareUrlDatabases(void)
 {
   QProgressDialog progress(this);
+  bool created = true;
 
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
@@ -68,15 +69,20 @@ void spoton::slotPrepareUrlDatabases(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("CREATE TABLE IF NOT EXISTS key_information ("
-		   "cipher_type TEXT NOT NULL, "
-		   "symmetric_key TEXT PRIMARY KEY NOT NULL)");
-	query.exec("CREATE TRIGGER IF NOT EXISTS key_information_trigger "
-		   "BEFORE INSERT ON key_information "
-		   "BEGIN "
-		   "DELETE FROM key_information; "
-		   "END");
+	if(!query.exec("CREATE TABLE IF NOT EXISTS key_information ("
+		       "cipher_type TEXT NOT NULL, "
+		       "symmetric_key TEXT PRIMARY KEY NOT NULL)"))
+	  created = false;
+
+	if(!query.exec("CREATE TRIGGER IF NOT EXISTS key_information_trigger "
+		       "BEFORE INSERT ON key_information "
+		       "BEGIN "
+		       "DELETE FROM key_information; "
+		       "END"))
+	  created = false;
       }
+    else
+      created = false;
 
     db.close();
   }
@@ -94,11 +100,14 @@ void spoton::slotPrepareUrlDatabases(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("CREATE TABLE IF NOT EXISTS keywords ("
-		   "database_hash TEXT NOT NULL, "
-		   "keyword_hash TEXT NOT NULL, "
-		   "PRIMARY KEY (database, keyword_hash))");
+	if(!query.exec("CREATE TABLE IF NOT EXISTS keywords ("
+		       "database_hash TEXT NOT NULL, "
+		       "keyword_hash TEXT NOT NULL, "
+		       "PRIMARY KEY (database_hash, keyword_hash))"))
+	  created = false;
       }
+    else
+      created = false;
 
     db.close();
   }
@@ -127,17 +136,22 @@ void spoton::slotPrepareUrlDatabases(void)
 	    {
 	      QSqlQuery query(db);
 
-	      query.exec("CREATE TABLE IF NOT EXISTS keywords ("
-			 "keyword_hash TEXT NOT NULL, "
-			 "url_hash TEXT NOT NULL, "
-			 "PRIMARY KEY (keyword_hash, url_hash))");
-	      query.exec("CREATE TABLE IF NOT EXISTS urls ("
-			 "date_time_inserted TEXT NOT NULL, "
-			 "description BLOB, "
-			 "title BLOB NOT NULL, "
-			 "url BLOB NOT NULL, "
-			 "url_hash TEXT PRIMARY KEY NOT NULL)");
+	      if(!query.exec("CREATE TABLE IF NOT EXISTS keywords ("
+			     "keyword_hash TEXT NOT NULL, "
+			     "url_hash TEXT NOT NULL, "
+			     "PRIMARY KEY (keyword_hash, url_hash))"))
+		created = false;
+
+	      if(!query.exec("CREATE TABLE IF NOT EXISTS urls ("
+			     "date_time_inserted TEXT NOT NULL, "
+			     "description BLOB, "
+			     "title BLOB NOT NULL, "
+			     "url BLOB NOT NULL, "
+			     "url_hash TEXT PRIMARY KEY NOT NULL)"))
+		created = false;
 	    }
+	  else
+	    created = false;
 
 	  db.close();
 	}
@@ -149,6 +163,12 @@ void spoton::slotPrepareUrlDatabases(void)
 	QApplication::processEvents();
 #endif
       }
+
+  if(!created)
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(SPOTON_APPLICATION_NAME),
+			  tr("One or more errors occurred while attempting "
+			     "to create the URL databases."));
 }
 
 void spoton::slotDeleteAllUrls(void)
@@ -178,8 +198,8 @@ void spoton::slotDeleteAllUrls(void)
   if(!deleted)
     QMessageBox::critical(this, tr("%1: Error").
 			  arg(SPOTON_APPLICATION_NAME),
-			  tr("An error occurred while attempting to remove "
-			     "the URL databases."));
+			  tr("One or more errors occurred while "
+			     "attempting to remove the URL databases."));
 }
 
 bool spoton::deleteAllUrls(void) const
