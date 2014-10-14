@@ -180,7 +180,9 @@ void spoton_starbeam_writer::processData
   if(file.open(QIODevice::ReadWrite))
     {
       if(position > file.size())
-	file.resize(position);
+	if(!file.resize(position))
+	  spoton_misc::logError("spoton_starbeam_writer::processData(): "
+				"resize() failure.");
 
       if(file.seek(position))
 	{
