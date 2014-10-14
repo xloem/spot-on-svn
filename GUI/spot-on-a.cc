@@ -6016,8 +6016,6 @@ void spoton::slotDeleteAllListeners(void)
       {
 	QSqlQuery query(db);
 
-	query.exec("DELETE FROM listeners_adaptive_echo_tokens");
-
 	if(!isKernelActive())
 	  {
 	    query.exec("DELETE FROM listeners");
