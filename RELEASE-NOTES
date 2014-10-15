@@ -15,6 +15,7 @@
      (# missing pulses / # total pulses >= 75%)
 8.   Defined Adaptive Echo magnets.
 9.   Do not purge Adaptive Echo tokens if all of the listeners are removed.
+10.  Removed support for SSLv*. TLS is required.
 
 0.15 (10/10/2014)
 
