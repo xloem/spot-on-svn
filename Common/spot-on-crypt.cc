@@ -3086,6 +3086,7 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
   QList<QSslCipher> list;
   QSettings settings;
   QString controlString(scs.trimmed());
+  QStringList protocols;
   SSL *ssl = 0;
   SSL_CTX *ctx = 0;
   const char *next = 0;
@@ -3096,12 +3097,18 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
       ("gui/sslControlString",
        "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH").toString().trimmed();
 
-  for(int i = 1; i <= 4; i++)
+  protocols << "TlsV1_2"
+	    << "TlsV1_1"
+	    << "TlsV1_0";
+
+  while(!protocols.isEmpty())
     {
+      QString protocol(protocols.takeFirst());
+
       index = 0;
       next = 0;
 
-      if(i == 1)
+      if(protocol == "TlsV1_2")
 	{
 #ifdef TLS1_2_VERSION
 	  if(!(ctx = SSL_CTX_new(TLSv1_2_method())))
@@ -3112,7 +3119,7 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 	    }
 #endif
 	}
-      else if(i == 2)
+      else if(protocol == "TlsV1_1")
 	{
 #ifdef TLS1_1_VERSION
 	  if(!(ctx = SSL_CTX_new(TLSv1_1_method())))
@@ -3123,18 +3130,9 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 	    }
 #endif
 	}
-      else if(i == 3)
+      else if(protocol == "TlsV1_0")
 	{
 	  if(!(ctx = SSL_CTX_new(TLSv1_method())))
-	    {
-	      spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
-				    "SSL_CTX_new() failure.");
-	      goto done_label;
-	    }
-	}
-      else
-	{
-	  if(!(ctx = SSL_CTX_new(SSLv3_method())))
 	    {
 	      spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
 				    "SSL_CTX_new() failure.");
@@ -3164,20 +3162,21 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 	{
 	  if((next = SSL_get_cipher_list(ssl, index)))
 	    {
-	      if(i <= 3)
-		{
-		  QSslCipher cipher(next, QSsl::UnknownProtocol);
+#if QT_VERSION < 0x050000
+	      QSslCipher cipher(next, QSsl::UnknownProtocol);
+#else
+	      QSslCipher cipher;
 
-		  if(!cipher.isNull())
-		    list.append(cipher);
-		}
+	      if(protocol == "TlsV1_2")
+		cipher = QSslCipher(next, QSsl::TlsV1_2);
+	      else if(protocol == "TlsV1_1")
+		cipher = QSslCipher(next, QSsl::TlsV1_1);
 	      else
-		{
-		  QSslCipher cipher(next, QSsl::SslV3);
+		cipher = QSslCipher(next, QSsl::TlsV1_0);
+#endif
 
-		  if(!cipher.isNull())
-		    list.append(cipher);
-		}
+	      if(!cipher.isNull())
+		list.append(cipher);
 	    }
 
 	  index += 1;
