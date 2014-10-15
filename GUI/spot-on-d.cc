@@ -2128,3 +2128,151 @@ void spoton::slotClearClipboardBuffer(void)
   if(clipboard)
     clipboard->clear();
 }
+
+void spoton::slotAssignNewIPToNeighbor(void)
+{
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
+
+  if(!crypt)
+    return;
+
+  int row = m_ui.neighbors->currentRow();
+
+  if(row < 0)
+    return;
+
+  QTableWidgetItem *item = m_ui.neighbors->item(row, 12); // Protocol
+
+  if(!item)
+    return;
+
+  QString oid("");
+  QString protocol("");
+  QString proxyHostName("");
+  QString proxyPort("");
+  QString remoteIP("");
+  QString remotePort("");
+  QString scopeId("");
+  QString transport("");
+
+  for(int i = 0; i < m_ui.neighbors->columnCount(); i++)
+    {
+      QTableWidgetItem *item = m_ui.neighbors->item(row, i);
+
+      if(!item)
+	continue;
+
+      if(i == 10)
+	remoteIP = item->text();
+      else if(i == 11)
+	remotePort = item->text();
+      else if(i == 12)
+	scopeId = item->text();
+      else if(i == 13)
+	protocol = item->text();
+      else if(i == 14)
+	proxyHostName = item->text();
+      else if(i == 15)
+	proxyPort = item->text();
+      else if(i == 27)
+	transport = item->text();
+      else if(i == m_ui.neighbors->columnCount() - 1)
+	oid = item->text();
+    }
+
+  QInputDialog dialog(this);
+  QLineEdit *lineEdit = 0;
+
+  dialog.setInputMode(QInputDialog::TextInput);
+  dialog.setLabelText(tr("IP Information"));
+  dialog.setWindowTitle
+    (tr("%1: Neighbor IP Information").
+     arg(SPOTON_APPLICATION_NAME));
+  dialog.show();
+
+  foreach(QLineEdit *le, dialog.findChildren<QLineEdit *> ())
+    if(le->isVisible())
+      {
+	lineEdit = le;
+	break;
+      }
+
+  if(!lineEdit)
+    {
+      dialog.close();
+      return;
+    }
+
+  if(protocol == tr("IPv4"))
+    lineEdit->setInputMask("000.000.000.000; ");
+  else if(protocol == tr("IPv6"))
+    lineEdit->setInputMask("hhhh:hhhh:hhhh:hhhh:hhhh:hhhh:hhhh:hhhh; ");
+
+  if(dialog.exec() == QDialog::Accepted)
+    {
+      QString ip(dialog.textValue().trimmed());
+
+      if(ip.isEmpty())
+	return;
+
+      QString connectionName("");
+
+      {
+	QSqlDatabase db = spoton_misc::database(connectionName);
+	QString country
+	  (spoton_misc::countryNameFromIPAddress(ip));
+
+	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			   "neighbors.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+	    bool ok = true;
+
+	    query.prepare("UPDATE neighbors SET "
+			  "country = ?, "
+			  "hash = ?, "
+			  "qt_country_hash = ?, "
+			  "remote_ip_address = ?, "
+			  "remote_ip_address_hash = ? "
+			  "WHERE OID = ?");
+	    query.bindValue
+	      (0, crypt->encryptedThenHashed(country.toLatin1(), &ok).
+	       toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(1,
+		 crypt->keyedHash((remoteIP +
+				   remotePort +
+				   scopeId +
+				   transport).toLatin1(), &ok).
+		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(2, crypt->keyedHash(country.remove(" ").toLatin1(),
+				     &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(3, crypt->encryptedThenHashed(ip.toLatin1(), &ok).
+		 toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(4, crypt->keyedHash(ip.toLatin1(), &ok).toBase64());
+
+	    query.bindValue(5, oid);
+
+	    if(ok)
+	      query.exec();
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase(connectionName);
+    }
+}

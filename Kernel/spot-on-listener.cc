@@ -885,6 +885,10 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
 	    query.bindValue(6, "connected");
 
 	    if(ok)
+	      /*
+	      ** We do not have proxy information.
+	      */
+
 	      query.bindValue
 		(7,
 		 s_crypt->keyedHash((neighbor->peerAddress().toString() +

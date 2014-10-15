@@ -1515,6 +1515,10 @@ void spoton_misc::savePublishedNeighbor(const QHostAddress &address,
 	  query.bindValue(6, "disconnected");
 
 	if(ok)
+	  /*
+	  ** We do not have proxy information.
+	  */
+
 	  query.bindValue
 	    (7,
 	     crypt->keyedHash((address.toString() +
