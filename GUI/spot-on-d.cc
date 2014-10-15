@@ -28,6 +28,7 @@
 #include "spot-on.h"
 #include "spot-on-defines.h"
 #include "ui_adaptiveechoprompt.h"
+#include "ui_ipinformation.h"
 
 static bool lengthGreaterThan(const QString &string1, const QString &string2)
 {
@@ -2180,37 +2181,29 @@ void spoton::slotAssignNewIPToNeighbor(void)
 	oid = item->text();
     }
 
-  QInputDialog dialog(this);
-  QLineEdit *lineEdit = 0;
+  QDialog dialog(this);
+  Ui_ipinformation ui;
 
-  dialog.setInputMode(QInputDialog::TextInput);
-  dialog.setLabelText(tr("IP Information"));
   dialog.setWindowTitle
     (tr("%1: Neighbor IP Information").
      arg(SPOTON_APPLICATION_NAME));
-  dialog.show();
-
-  foreach(QLineEdit *le, dialog.findChildren<QLineEdit *> ())
-    if(le->isVisible())
-      {
-	lineEdit = le;
-	break;
-      }
-
-  if(!lineEdit)
-    {
-      dialog.close();
-      return;
-    }
+  ui.setupUi(&dialog);
 
   if(protocol == tr("IPv4"))
-    lineEdit->setInputMask("000.000.000.000; ");
+    ui.ip->setInputMask("000.000.000.000; ");
   else if(protocol == tr("IPv6"))
-    lineEdit->setInputMask("hhhh:hhhh:hhhh:hhhh:hhhh:hhhh:hhhh:hhhh; ");
+    ui.ip->setInputMask("hhhh:hhhh:hhhh:hhhh:hhhh:hhhh:hhhh:hhhh; ");
+
+  ui.ip->setText(remoteIP);
+  ui.port->setValue(remotePort.toInt());
+  ui.scope->setText(scopeId);
 
   if(dialog.exec() == QDialog::Accepted)
     {
-      QString ip(dialog.textValue().trimmed());
+      QString ip(ui.ip->text().trimmed());
+
+      remotePort = QString::number(ui.port->value());
+      scopeId = ui.scope->text();
 
       if(ip.isEmpty())
 	return;
@@ -2244,7 +2237,7 @@ void spoton::slotAssignNewIPToNeighbor(void)
 	    if(ok)
 	      query.bindValue
 		(1,
-		 crypt->keyedHash((remoteIP +
+		 crypt->keyedHash((ip +
 				   remotePort +
 				   scopeId +
 				   transport).toLatin1(), &ok).

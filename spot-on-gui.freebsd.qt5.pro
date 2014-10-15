@@ -49,6 +49,7 @@ FORMS           = UI/adaptiveechoprompt.ui \
 		  UI/chatwindow.ui \
 		  UI/controlcenter.ui \
 		  UI/encryptfile.ui \
+		  UI/ipinformation.ui \
                   UI/logviewer.ui \
                   UI/passwordprompt.ui \
 		  UI/rosetta.ui \

@@ -5412,7 +5412,7 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     tr("Share &URL Public Key"),
 		     this, SLOT(slotShareURLPublicKey(void)));
       menu.addSeparator();
-      menu.addAction(tr("&Assign New IP"),
+      menu.addAction(tr("&Assign New IP Information"),
 		     this, SLOT(slotAssignNewIPToNeighbor(void)));
       menu.addAction(tr("&Connect"),
 		     this, SLOT(slotConnectNeighbor(void)));
