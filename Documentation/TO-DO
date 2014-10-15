@@ -213,3 +213,4 @@ Remaining Items
 34.    Create a user's configuration database. Store key types too.
 35.    Hybrid group communications based on deterministic key pairs.
 36.    The data stored in shared.db is not authenticated.
+37.    Provide GCM mode. libgcrypt 1.6.x is required.
