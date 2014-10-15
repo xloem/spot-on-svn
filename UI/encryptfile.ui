@@ -24,6 +24,9 @@
     </property>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <property name="spacing">
+       <number>5</number>
+      </property>
       <item>
        <widget class="QLabel" name="label_8">
         <property name="text">
@@ -48,6 +51,9 @@
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>5</number>
+      </property>
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
@@ -72,6 +78,9 @@
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>5</number>
+      </property>
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
@@ -151,6 +160,41 @@
         <property name="sizeAdjustPolicy">
          <enum>QComboBox::AdjustToContents</enum>
         </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="frame">
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <property name="spacing">
+          <number>5</number>
+         </property>
+         <property name="margin">
+          <number>5</number>
+         </property>
+         <item>
+          <widget class="QRadioButton" name="cbc">
+           <property name="text">
+            <string>&amp;CBC</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="gcm">
+           <property name="text">
+            <string>&amp;GCM</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
@@ -308,6 +352,8 @@
   <tabstop>decrypt</tabstop>
   <tabstop>encrypt</tabstop>
   <tabstop>cipher</tabstop>
+  <tabstop>cbc</tabstop>
+  <tabstop>gcm</tabstop>
   <tabstop>hash</tabstop>
   <tabstop>cancel</tabstop>
   <tabstop>sign</tabstop>

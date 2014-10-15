@@ -61,6 +61,9 @@
      </item>
      <item row="2" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="spacing">
+        <number>5</number>
+       </property>
        <item>
         <widget class="QComboBox" name="token_h_type"/>
        </item>
@@ -81,6 +84,9 @@
      </item>
      <item row="1" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>5</number>
+       </property>
        <item>
         <widget class="QComboBox" name="token_e_type"/>
        </item>

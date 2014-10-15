@@ -54,11 +54,13 @@ class spoton_encryptfile: public QMainWindow
 #endif
   void decrypt(const QString &fileName,
 	       const QString &destination,
-	       const QList<QVariant> &credentials);
+	       const QList<QVariant> &credentials,
+	       const QString &modeOfOperation);
   void encrypt(const bool sign,
 	       const QString &fileName,
 	       const QString &destination,
-	       const QList<QVariant> &credentials);
+	       const QList<QVariant> &credentials,
+	       const QString &modeOfOperation);
   void keyPressEvent(QKeyEvent *event);
 
  private slots:

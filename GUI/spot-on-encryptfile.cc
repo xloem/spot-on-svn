@@ -48,6 +48,9 @@ spoton_encryptfile::spoton_encryptfile(void):QMainWindow()
   setWindowTitle
     (tr("%1: File Encryption").
      arg(SPOTON_APPLICATION_NAME));
+#if GCRYPT_VERSION_NUMBER < 0x010600
+  ui.gcm->setEnabled(false);
+#endif
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
   setAttribute(Qt::WA_MacMetalStyle, true);
@@ -206,6 +209,7 @@ void spoton_encryptfile::slotConvert(void)
   QList<QVariant> list;
   QPair<QByteArray, QByteArray> derivedKeys;
   QString error("");
+  QString modeOfOperation("");
   QString password(ui.password->text());
   QString pin(ui.pin->text());
 
@@ -268,19 +272,26 @@ void spoton_encryptfile::slotConvert(void)
   ui.progressBar->setValue(0);
   ui.progressBar->setVisible(true);
 
+  if(ui.cbc->isChecked())
+    modeOfOperation = "cbc";
+  else
+    modeOfOperation = "gcm";
+
   if(ui.decrypt->isChecked())
     m_future = QtConcurrent::run
       (this, &spoton_encryptfile::decrypt,
        fileInfo.absoluteFilePath(),
        destination.absoluteFilePath(),
-       list);
+       list,
+       modeOfOperation);
   else
     m_future = QtConcurrent::run
       (this, &spoton_encryptfile::encrypt,
        ui.sign->isChecked(),
        fileInfo.absoluteFilePath(),
        destination.absoluteFilePath(),
-       list);
+       list,
+       modeOfOperation);
 
  done_label:
 
@@ -291,7 +302,8 @@ void spoton_encryptfile::slotConvert(void)
 
 void spoton_encryptfile::decrypt(const QString &fileName,
 				 const QString &destination,
-				 const QList<QVariant> &credentials)
+				 const QList<QVariant> &credentials,
+				 const QString &modeOfOperation)
 {
   QFile file1(fileName);
   QFile file2(destination);
@@ -313,7 +325,8 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 			 credentials.value(3).toByteArray(),
 			 0,
 			 0,
-			 QString(""));
+			 QString(""),
+			 modeOfOperation);
 
       rc = file1.read(bytes.data(), bytes.length());
 
@@ -490,7 +503,8 @@ void spoton_encryptfile::decrypt(const QString &fileName,
 void spoton_encryptfile::encrypt(const bool sign,
 				 const QString &fileName,
 				 const QString &destination,
-				 const QList<QVariant> &credentials)
+				 const QList<QVariant> &credentials,
+				 const QString &modeOfOperation)
 {
   QFile file1(fileName);
   QFile file2(destination);
@@ -510,7 +524,8 @@ void spoton_encryptfile::encrypt(const bool sign,
 			 credentials.value(3).toByteArray(),
 			 0,
 			 0,
-			 QString(""));
+			 QString(""),
+			 modeOfOperation);
 
       bytes.append(QByteArray::number(sign));
       rc = file2.write(bytes.constData(), bytes.length());
@@ -680,6 +695,7 @@ void spoton_encryptfile::slotReset(void)
   if(!m_future.isFinished())
     return;
 
+  ui.cbc->setChecked(true);
   ui.cipher->setCurrentIndex(0);
   ui.destination->clear();
   ui.encrypt->setChecked(true);

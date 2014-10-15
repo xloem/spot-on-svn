@@ -133,10 +133,15 @@ void spoton_crypt::init(const int secureMemorySize)
       gcry_control(GCRYCTL_ENABLE_M_GUARD);
 
       if(!gcry_check_version(GCRYPT_VERSION))
-	spoton_misc::logError
-	  ("spoton_crypt::init(): gcry_check_version() "
-	   "failure. Perhaps you should verify some "
-	   "settings.");
+	{
+	  qDebug() << "spoton_crypt::init(): gcry_check_version() "
+	    "failure. Perhaps you should verify some "
+	    "settings.";
+	  spoton_misc::logError
+	    ("spoton_crypt::init(): gcry_check_version() "
+	     "failure. Perhaps you should verify some "
+	     "settings.");
+	}
       else
 	{
 	  gcry_control(GCRYCTL_SUSPEND_SECMEM_WARN);
@@ -421,7 +426,7 @@ spoton_crypt::spoton_crypt(const QString &cipherType,
 			   const QString &id)
 {
   init(cipherType, hashType, passphrase, symmetricKey, QByteArray(),
-       saltLength, iterationCount, id);
+       saltLength, iterationCount, id, "cbc");
 }
 
 spoton_crypt::spoton_crypt(const QString &cipherType,
@@ -434,7 +439,21 @@ spoton_crypt::spoton_crypt(const QString &cipherType,
 			   const QString &id)
 {
   init(cipherType, hashType, passphrase, symmetricKey, hashKey,
-       saltLength, iterationCount, id);
+       saltLength, iterationCount, id, "cbc");
+}
+
+spoton_crypt::spoton_crypt(const QString &cipherType,
+			   const QString &hashType,
+			   const QByteArray &passphrase,
+			   const QByteArray &symmetricKey,
+			   const QByteArray &hashKey,
+			   const int saltLength,
+			   const unsigned long iterationCount,
+			   const QString &id,
+			   const QString &modeOfOperation)
+{
+  init(cipherType, hashType, passphrase, symmetricKey, hashKey,
+       saltLength, iterationCount, id, modeOfOperation);
 }
 
 void spoton_crypt::init(const QString &cipherType,
@@ -444,7 +463,8 @@ void spoton_crypt::init(const QString &cipherType,
 			const QByteArray &hashKey,
 			const int saltLength,
 			const unsigned long iterationCount,
-			const QString &id)
+			const QString &id,
+			const QString &modeOfOperation)
 {
   Q_UNUSED(passphrase);
   m_cipherAlgorithm = gcry_cipher_map_name(cipherType.toLatin1().
@@ -487,11 +507,21 @@ void spoton_crypt::init(const QString &cipherType,
 
       if(m_cipherAlgorithm)
 	{
-	  if((err = gcry_cipher_open(&m_cipherHandle, m_cipherAlgorithm,
-				     GCRY_CIPHER_MODE_CBC,
-				     GCRY_CIPHER_CBC_CTS |
-				     GCRY_CIPHER_SECURE)) != 0 ||
-	     !m_cipherHandle)
+	  if(modeOfOperation.toLower() == "cbc")
+	    err = gcry_cipher_open(&m_cipherHandle, m_cipherAlgorithm,
+				   GCRY_CIPHER_MODE_CBC,
+				   GCRY_CIPHER_CBC_CTS | GCRY_CIPHER_SECURE);
+#if GCRYPT_VERSION_NUMBER >= 0x010600
+	  else if(modeOfOperation.toLower() == "gcm")
+	    err = gcry_cipher_open(&m_cipherHandle, m_cipherAlgorithm,
+				   GCRY_CIPHER_MODE_GCM,
+				   GCRY_CIPHER_SECURE);
+#endif
+	  else
+	    spoton_misc::logError
+	      ("spoton_crypt::init(): mode of operation is not supported.");
+
+	  if(err != 0 || !m_cipherHandle)
 	    {
 	      if(err != 0)
 		{

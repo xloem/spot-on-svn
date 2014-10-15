@@ -136,6 +136,15 @@ class spoton_crypt
 	       const int saltLength,
 	       const unsigned long iterationCount,
 	       const QString &id);
+  spoton_crypt(const QString &cipherType,
+	       const QString &hashType,
+	       const QByteArray &passphrase,
+	       const QByteArray &symmetricKey,
+	       const QByteArray &hashKey,
+	       const int saltLength,
+	       const unsigned long iterationCount,
+	       const QString &id,
+	       const QString &modeOfOperation);
   ~spoton_crypt();
   QByteArray decrypted(const QByteArray &data, bool *ok);
   QByteArray decryptedAfterAuthenticated(const QByteArray &data, bool *ok);
@@ -183,7 +192,8 @@ class spoton_crypt
 	    const QByteArray &hashKey,
 	    const int saltLength,
 	    const unsigned long iterationCount,
-	    const QString &id);
+	    const QString &id,
+	    const QString &modeOfOperation);
   void initializePrivateKeyContainer(bool *ok);
   void setHashKey(const QByteArray &hashKey);
   static bool setInitializationVector(QByteArray &iv,
