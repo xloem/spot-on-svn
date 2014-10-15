@@ -22,7 +22,7 @@
 13.  Modified the SSL control string to:
      "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH".
 14.  Added an IPv6 listener to spot-on-neighbors.txt. Renamed hosts.
-15.  Allow assigning of new IP names to existing neighbors.
+15.  Allow assigning of new IP information to existing neighbors.
 
 0.15 (10/10/2014)
 
