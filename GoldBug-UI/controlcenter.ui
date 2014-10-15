@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>594</width>
-    <height>861</height>
+    <width>536</width>
+    <height>856</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,7 +46,7 @@
        <enum>QTabWidget::East</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>7</number>
       </property>
       <property name="iconSize">
        <size>
@@ -72,7 +72,16 @@
         <property name="spacing">
          <number>3</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item>
@@ -87,7 +96,16 @@
            <property name="spacing">
             <number>3</number>
            </property>
-           <property name="margin">
+           <property name="leftMargin">
+            <number>3</number>
+           </property>
+           <property name="topMargin">
+            <number>3</number>
+           </property>
+           <property name="rightMargin">
+            <number>3</number>
+           </property>
+           <property name="bottomMargin">
             <number>3</number>
            </property>
            <item>
@@ -163,7 +181,16 @@ color: rgb(255, 255, 255);
                 <property name="spacing">
                  <number>3</number>
                 </property>
-                <property name="margin">
+                <property name="leftMargin">
+                 <number>3</number>
+                </property>
+                <property name="topMargin">
+                 <number>3</number>
+                </property>
+                <property name="rightMargin">
+                 <number>3</number>
+                </property>
+                <property name="bottomMargin">
                  <number>3</number>
                 </property>
                 <item>
@@ -181,8 +208,8 @@ color: rgb(255, 255, 255);
                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
                 </item>
@@ -481,7 +508,16 @@ QPushButton:pressed {
                <property name="spacing">
                 <number>3</number>
                </property>
-               <property name="margin">
+               <property name="leftMargin">
+                <number>3</number>
+               </property>
+               <property name="topMargin">
+                <number>3</number>
+               </property>
+               <property name="rightMargin">
+                <number>3</number>
+               </property>
+               <property name="bottomMargin">
                 <number>3</number>
                </property>
                <item>
@@ -815,7 +851,16 @@ QPushButton:pressed {
         <property name="spacing">
          <number>3</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>3</number>
+        </property>
+        <property name="topMargin">
+         <number>3</number>
+        </property>
+        <property name="rightMargin">
+         <number>3</number>
+        </property>
+        <property name="bottomMargin">
          <number>3</number>
         </property>
         <item>
@@ -2050,7 +2095,16 @@ QPushButton:pressed {
                   <property name="spacing">
                    <number>3</number>
                   </property>
-                  <property name="margin">
+                  <property name="leftMargin">
+                   <number>3</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>3</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>3</number>
+                  </property>
+                  <property name="bottomMargin">
                    <number>3</number>
                   </property>
                   <item>
@@ -2211,7 +2265,16 @@ QPushButton:pressed {
                         <property name="spacing">
                          <number>3</number>
                         </property>
-                        <property name="margin">
+                        <property name="leftMargin">
+                         <number>3</number>
+                        </property>
+                        <property name="topMargin">
+                         <number>3</number>
+                        </property>
+                        <property name="rightMargin">
+                         <number>3</number>
+                        </property>
+                        <property name="bottomMargin">
                          <number>3</number>
                         </property>
                         <item>
@@ -2403,7 +2466,16 @@ QPushButton:pressed {
                   <property name="spacing">
                    <number>3</number>
                   </property>
-                  <property name="margin">
+                  <property name="leftMargin">
+                   <number>3</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>3</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>3</number>
+                  </property>
+                  <property name="bottomMargin">
                    <number>3</number>
                   </property>
                   <item>
@@ -2539,7 +2611,16 @@ QPushButton:pressed {
         <property name="spacing">
          <number>3</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>3</number>
+        </property>
+        <property name="topMargin">
+         <number>3</number>
+        </property>
+        <property name="rightMargin">
+         <number>3</number>
+        </property>
+        <property name="bottomMargin">
          <number>3</number>
         </property>
         <item>
@@ -2917,7 +2998,16 @@ QPushButton:pressed {
         <property name="spacing">
          <number>3</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>3</number>
+        </property>
+        <property name="topMargin">
+         <number>3</number>
+        </property>
+        <property name="rightMargin">
+         <number>3</number>
+        </property>
+        <property name="bottomMargin">
          <number>3</number>
         </property>
         <item>
@@ -2977,7 +3067,16 @@ color: rgb(255, 255, 255);</string>
             <property name="spacing">
              <number>3</number>
             </property>
-            <property name="margin">
+            <property name="leftMargin">
+             <number>3</number>
+            </property>
+            <property name="topMargin">
+             <number>3</number>
+            </property>
+            <property name="rightMargin">
+             <number>3</number>
+            </property>
+            <property name="bottomMargin">
              <number>3</number>
             </property>
             <item>
@@ -3493,7 +3592,16 @@ QPushButton:pressed {
             <property name="spacing">
              <number>3</number>
             </property>
-            <property name="margin">
+            <property name="leftMargin">
+             <number>3</number>
+            </property>
+            <property name="topMargin">
+             <number>3</number>
+            </property>
+            <property name="rightMargin">
+             <number>3</number>
+            </property>
+            <property name="bottomMargin">
              <number>3</number>
             </property>
             <item>
@@ -3733,7 +3841,16 @@ QPushButton:pressed {
             <property name="spacing">
              <number>3</number>
             </property>
-            <property name="margin">
+            <property name="leftMargin">
+             <number>3</number>
+            </property>
+            <property name="topMargin">
+             <number>3</number>
+            </property>
+            <property name="rightMargin">
+             <number>3</number>
+            </property>
+            <property name="bottomMargin">
              <number>3</number>
             </property>
             <item>
@@ -3745,7 +3862,16 @@ QPushButton:pressed {
                <property name="spacing">
                 <number>3</number>
                </property>
-               <property name="margin">
+               <property name="leftMargin">
+                <number>3</number>
+               </property>
+               <property name="topMargin">
+                <number>3</number>
+               </property>
+               <property name="rightMargin">
+                <number>3</number>
+               </property>
+               <property name="bottomMargin">
                 <number>3</number>
                </property>
                <item>
@@ -4217,7 +4343,16 @@ QPushButton:pressed {
         <property name="spacing">
          <number>3</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>3</number>
+        </property>
+        <property name="topMargin">
+         <number>3</number>
+        </property>
+        <property name="rightMargin">
+         <number>3</number>
+        </property>
+        <property name="bottomMargin">
          <number>3</number>
         </property>
         <item>
@@ -4268,7 +4403,16 @@ color: rgb(255, 255, 255);</string>
              <property name="spacing">
               <number>3</number>
              </property>
-             <property name="margin">
+             <property name="leftMargin">
+              <number>3</number>
+             </property>
+             <property name="topMargin">
+              <number>3</number>
+             </property>
+             <property name="rightMargin">
+              <number>3</number>
+             </property>
+             <property name="bottomMargin">
               <number>3</number>
              </property>
              <item>
@@ -4455,8 +4599,8 @@ QPushButton#pushButtonCopytoClipboard_All:pressed {
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="overwriteMode">
                 <bool>false</bool>
@@ -4597,7 +4741,16 @@ QPushButton:pressed {
         <property name="spacing">
          <number>3</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>3</number>
+        </property>
+        <property name="topMargin">
+         <number>3</number>
+        </property>
+        <property name="rightMargin">
+         <number>3</number>
+        </property>
+        <property name="bottomMargin">
          <number>3</number>
         </property>
         <item>
@@ -4646,12 +4799,30 @@ color: rgb(255, 255, 255);</string>
            <property name="spacing">
             <number>3</number>
            </property>
-           <property name="margin">
+           <property name="leftMargin">
+            <number>3</number>
+           </property>
+           <property name="topMargin">
+            <number>3</number>
+           </property>
+           <property name="rightMargin">
+            <number>3</number>
+           </property>
+           <property name="bottomMargin">
             <number>3</number>
            </property>
            <item>
             <layout class="QGridLayout" name="gridLayout_3">
-             <property name="margin">
+             <property name="leftMargin">
+              <number>3</number>
+             </property>
+             <property name="topMargin">
+              <number>3</number>
+             </property>
+             <property name="rightMargin">
+              <number>3</number>
+             </property>
+             <property name="bottomMargin">
               <number>3</number>
              </property>
              <property name="spacing">
@@ -4773,7 +4944,16 @@ color: rgb(255, 255, 255);</string>
               <property name="spacing">
                <number>3</number>
               </property>
-              <property name="margin">
+              <property name="leftMargin">
+               <number>3</number>
+              </property>
+              <property name="topMargin">
+               <number>3</number>
+              </property>
+              <property name="rightMargin">
+               <number>3</number>
+              </property>
+              <property name="bottomMargin">
                <number>3</number>
               </property>
               <item>
@@ -4952,7 +5132,16 @@ color: rgb(255, 255, 255);</string>
               <bool>false</bool>
              </property>
              <layout class="QGridLayout" name="gridLayout_5">
-              <property name="margin">
+              <property name="leftMargin">
+               <number>3</number>
+              </property>
+              <property name="topMargin">
+               <number>3</number>
+              </property>
+              <property name="rightMargin">
+               <number>3</number>
+              </property>
+              <property name="bottomMargin">
                <number>3</number>
               </property>
               <property name="spacing">
@@ -5200,7 +5389,16 @@ QPushButton:pressed {
         <property name="spacing">
          <number>3</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>3</number>
+        </property>
+        <property name="topMargin">
+         <number>3</number>
+        </property>
+        <property name="rightMargin">
+         <number>3</number>
+        </property>
+        <property name="bottomMargin">
          <number>3</number>
         </property>
         <item>
@@ -5246,7 +5444,16 @@ color: rgb(255, 255, 255);</string>
            <property name="spacing">
             <number>3</number>
            </property>
-           <property name="margin">
+           <property name="leftMargin">
+            <number>3</number>
+           </property>
+           <property name="topMargin">
+            <number>3</number>
+           </property>
+           <property name="rightMargin">
+            <number>3</number>
+           </property>
+           <property name="bottomMargin">
             <number>3</number>
            </property>
            <item>
@@ -5454,7 +5661,16 @@ QPushButton:pressed {
                   <property name="spacing">
                    <number>3</number>
                   </property>
-                  <property name="margin">
+                  <property name="leftMargin">
+                   <number>3</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>3</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>3</number>
+                  </property>
+                  <property name="bottomMargin">
                    <number>3</number>
                   </property>
                   <item>
@@ -5598,7 +5814,16 @@ QPushButton:pressed {
                </item>
                <item>
                 <layout class="QGridLayout" name="gridLayout_2">
-                 <property name="margin">
+                 <property name="leftMargin">
+                  <number>3</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>3</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>3</number>
+                 </property>
+                 <property name="bottomMargin">
                   <number>3</number>
                  </property>
                  <property name="spacing">
@@ -6095,7 +6320,16 @@ QPushButton:pressed {
                   <property name="spacing">
                    <number>5</number>
                   </property>
-                  <property name="margin">
+                  <property name="leftMargin">
+                   <number>5</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>5</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>5</number>
+                  </property>
+                  <property name="bottomMargin">
                    <number>5</number>
                   </property>
                   <item>
@@ -6417,7 +6651,16 @@ color: rgb(255, 255, 255);</string>
              <property name="spacing">
               <number>0</number>
              </property>
-             <property name="margin">
+             <property name="leftMargin">
+              <number>3</number>
+             </property>
+             <property name="topMargin">
+              <number>3</number>
+             </property>
+             <property name="rightMargin">
+              <number>3</number>
+             </property>
+             <property name="bottomMargin">
               <number>3</number>
              </property>
              <item>
@@ -6668,19 +6911,37 @@ QPushButton:pressed {
              <property name="spacing">
               <number>4</number>
              </property>
-             <property name="margin">
+             <property name="leftMargin">
+              <number>3</number>
+             </property>
+             <property name="topMargin">
+              <number>3</number>
+             </property>
+             <property name="rightMargin">
+              <number>3</number>
+             </property>
+             <property name="bottomMargin">
               <number>3</number>
              </property>
              <item>
               <layout class="QGridLayout" name="gridLayout_10">
+               <property name="leftMargin">
+                <number>3</number>
+               </property>
+               <property name="topMargin">
+                <number>3</number>
+               </property>
+               <property name="rightMargin">
+                <number>3</number>
+               </property>
+               <property name="bottomMargin">
+                <number>3</number>
+               </property>
                <property name="horizontalSpacing">
                 <number>0</number>
                </property>
                <property name="verticalSpacing">
                 <number>1</number>
-               </property>
-               <property name="margin">
-                <number>3</number>
                </property>
                <item row="4" column="0">
                 <widget class="QLabel" name="label_37">
@@ -7227,16 +7488,608 @@ QPushButton:pressed {
              <property name="spacing">
               <number>3</number>
              </property>
-             <property name="margin">
+             <property name="leftMargin">
               <number>3</number>
              </property>
+             <property name="topMargin">
+              <number>3</number>
+             </property>
+             <property name="rightMargin">
+              <number>3</number>
+             </property>
+             <property name="bottomMargin">
+              <number>3</number>
+             </property>
+             <item>
+              <widget class="QGroupBox" name="groupBox_16">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="title">
+                <string>GroupBox-URLS</string>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_38">
+                <item>
+                 <widget class="QPushButton" name="deleteURL_2">
+                  <property name="text">
+                   <string>Delete URL(s)</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="prepareUrlDatabases">
+                  <property name="text">
+                   <string>Prepare Databases</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="showUrlSettings">
+                  <property name="text">
+                   <string>Settings</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="urlDatabasesSize">
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                  <property name="suffix">
+                   <string> MiB</string>
+                  </property>
+                  <property name="maximum">
+                   <number>999999999</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="urlCount">
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                  <property name="maximum">
+                   <number>999999999</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="deleteAllUrls">
+                  <property name="text">
+                   <string>Delete Databases</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="gatherStatistics">
+                  <property name="text">
+                   <string>Gather Statistics</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="deleteURL_3">
+                  <property name="text">
+                   <string>Delete URL(s)</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_104">
+                  <property name="text">
+                   <string>URL Count</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_103">
+                  <property name="text">
+                   <string>Databases Size</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_89">
+                  <property name="spacing">
+                   <number>5</number>
+                  </property>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_26">
+                  <property name="spacing">
+                   <number>5</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="label_66">
+                    <property name="text">
+                     <string>&lt; 1 .. 1 &gt;</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <widget class="QScrollArea" name="urlSettings">
+                  <property name="frameShape">
+                   <enum>QFrame::NoFrame</enum>
+                  </property>
+                  <property name="widgetResizable">
+                   <bool>true</bool>
+                  </property>
+                  <widget class="QWidget" name="scrollAreaWidgetContents_12">
+                   <property name="geometry">
+                    <rect>
+                     <x>-20</x>
+                     <y>-160</y>
+                     <width>662</width>
+                     <height>227</height>
+                    </rect>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_67">
+                    <property name="spacing">
+                     <number>5</number>
+                    </property>
+                    <property name="leftMargin">
+                     <number>5</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>5</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>5</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>5</number>
+                    </property>
+                    <item>
+                     <layout class="QHBoxLayout" name="horizontalLayout_87">
+                      <property name="spacing">
+                       <number>5</number>
+                      </property>
+                      <item>
+                       <widget class="QLabel" name="label_105">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="styleSheet">
+                         <string notr="true">QLabel {
+ border: 1px solid gray;
+ background-color: lightgreen;
+ border-radius: 10px;
+ margin: 2px;
+ padding: 2px;
+ }</string>
+                        </property>
+                        <property name="text">
+                         <string>1</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QGroupBox" name="groupBox_17">
+                        <property name="styleSheet">
+                         <string notr="true">QGroupBox::QLabel {\n border: 1px solid gray;\n background-color: lightgreen;\n border-radius: 10px;\n margin: 2px;\n padding: 2px;\n }
+</string>
+                        </property>
+                        <property name="title">
+                         <string>Passphrase Information</string>
+                        </property>
+                        <layout class="QVBoxLayout" name="verticalLayout_68">
+                         <property name="spacing">
+                          <number>5</number>
+                         </property>
+                         <property name="leftMargin">
+                          <number>5</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>5</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>5</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>5</number>
+                         </property>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_90">
+                           <property name="spacing">
+                            <number>5</number>
+                           </property>
+                           <item>
+                            <widget class="QLabel" name="label_107">
+                             <property name="text">
+                              <string>&amp;INI Path</string>
+                             </property>
+                             <property name="buddy">
+                              <cstring>urlIniPath</cstring>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="urlIniPath"/>
+                           </item>
+                           <item>
+                            <widget class="QLabel" name="label_108">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                             <property name="styleSheet">
+                              <string notr="true">QLabel {
+ border: 1px solid gray;
+ background-color: lightgreen;
+ border-radius: 10px;
+ margin: 2px;
+ padding: 2px;
+ }</string>
+                             </property>
+                             <property name="text">
+                              <string>2</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QPushButton" name="selectUrlIni">
+                             <property name="text">
+                              <string>Select</string>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_93">
+                           <property name="spacing">
+                            <number>5</number>
+                           </property>
+                           <item>
+                            <widget class="QLabel" name="label_109">
+                             <property name="text">
+                              <string>&amp;Cipher Type</string>
+                             </property>
+                             <property name="buddy">
+                              <cstring>urlCipher</cstring>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QComboBox" name="urlCipher">
+                             <property name="sizeAdjustPolicy">
+                              <enum>QComboBox::AdjustToContents</enum>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLabel" name="label_110">
+                             <property name="text">
+                              <string>&amp;Hash Type</string>
+                             </property>
+                             <property name="buddy">
+                              <cstring>urlHash</cstring>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QComboBox" name="urlHash">
+                             <property name="sizeAdjustPolicy">
+                              <enum>QComboBox::AdjustToContents</enum>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLabel" name="label_111">
+                             <property name="text">
+                              <string>Iteraction &amp;Count</string>
+                             </property>
+                             <property name="buddy">
+                              <cstring>urlIteration</cstring>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QSpinBox" name="urlIteration">
+                             <property name="minimum">
+                              <number>10000</number>
+                             </property>
+                             <property name="maximum">
+                              <number>999999999</number>
+                             </property>
+                             <property name="value">
+                              <number>10000</number>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <spacer name="horizontalSpacer_75">
+                             <property name="orientation">
+                              <enum>Qt::Horizontal</enum>
+                             </property>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>40</width>
+                               <height>20</height>
+                              </size>
+                             </property>
+                            </spacer>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_92">
+                           <property name="spacing">
+                            <number>5</number>
+                           </property>
+                           <item>
+                            <widget class="QLabel" name="label_113">
+                             <property name="text">
+                              <string>&amp;Passphrase</string>
+                             </property>
+                             <property name="buddy">
+                              <cstring>urlPassphrase</cstring>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="urlPassphrase">
+                             <property name="echoMode">
+                              <enum>QLineEdit::Password</enum>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_88">
+                           <property name="spacing">
+                            <number>5</number>
+                           </property>
+                           <item>
+                            <widget class="QLabel" name="label_116">
+                             <property name="text">
+                              <string>Hash (Hex)</string>
+                             </property>
+                             <property name="buddy">
+                              <cstring>urlIniHash</cstring>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="urlIniHash"/>
+                           </item>
+                           <item>
+                            <widget class="QLabel" name="label_112">
+                             <property name="text">
+                              <string>&amp;Salt (Hex)</string>
+                             </property>
+                             <property name="buddy">
+                              <cstring>urlSalt</cstring>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="urlSalt"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_94">
+                           <property name="spacing">
+                            <number>5</number>
+                           </property>
+                           <item>
+                            <spacer name="horizontalSpacer_74">
+                             <property name="orientation">
+                              <enum>Qt::Horizontal</enum>
+                             </property>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>40</width>
+                               <height>20</height>
+                              </size>
+                             </property>
+                            </spacer>
+                           </item>
+                           <item>
+                            <widget class="QLabel" name="label_114">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                             <property name="styleSheet">
+                              <string notr="true">QLabel {
+ border: 1px solid gray;
+ background-color: lightgreen;
+ border-radius: 10px;
+ margin: 2px;
+ padding: 2px;
+ }</string>
+                             </property>
+                             <property name="text">
+                              <string>3</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QPushButton" name="verify">
+                             <property name="toolTip">
+                              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Computed a salted hash of the provided passphrase and compare it with the hash in the provided INI.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                             </property>
+                             <property name="text">
+                              <string>Verify</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLabel" name="label_115">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                             <property name="styleSheet">
+                              <string notr="true">QLabel {
+ border: 1px solid gray;
+ background-color: lightgreen;
+ border-radius: 10px;
+ margin: 2px;
+ padding: 2px;
+ }</string>
+                             </property>
+                             <property name="text">
+                              <string>4</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QPushButton" name="saveUrlPassphrase">
+                             <property name="toolTip">
+                              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Save the generated key and relevant information.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                             </property>
+                             <property name="text">
+                              <string>Save</string>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </item>
+                         <item>
+                          <layout class="QHBoxLayout" name="horizontalLayout_91">
+                           <property name="spacing">
+                            <number>5</number>
+                           </property>
+                           <item>
+                            <widget class="QLabel" name="label_106">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                             <property name="styleSheet">
+                              <string notr="true">QLabel {
+ border: 1px solid gray;
+ background-color: lightgreen;
+ border-radius: 10px;
+ margin: 2px;
+ padding: 2px;
+ }</string>
+                             </property>
+                             <property name="text">
+                              <string>5</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QPushButton" name="importUrls">
+                             <property name="toolTip">
+                              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Import URL data from the shared.db database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                             </property>
+                             <property name="text">
+                              <string>Import URLs</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <spacer name="horizontalSpacer_76">
+                             <property name="orientation">
+                              <enum>Qt::Horizontal</enum>
+                             </property>
+                             <property name="sizeHint" stdset="0">
+                              <size>
+                               <width>40</width>
+                               <height>20</height>
+                              </size>
+                             </property>
+                            </spacer>
+                           </item>
+                          </layout>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="prepareUrlDatabases_2">
+                        <property name="text">
+                         <string>Prepare Databases</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer_71">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </item>
+                   </layout>
+                  </widget>
+                 </widget>
+                </item>
+               </layout>
+               <zorder>showUrlSettings</zorder>
+               <zorder>prepareUrlDatabases</zorder>
+               <zorder>deleteURL_2</zorder>
+               <zorder>label_103</zorder>
+               <zorder>urlSettings</zorder>
+               <zorder>layoutWidget</zorder>
+               <zorder>layoutWidget_2</zorder>
+               <zorder>label_103</zorder>
+               <zorder>urlDatabasesSize</zorder>
+               <zorder>urlCount</zorder>
+               <zorder>deleteAllUrls</zorder>
+               <zorder>gatherStatistics</zorder>
+               <zorder>label_104</zorder>
+               <zorder>deleteURL_3</zorder>
+              </widget>
+             </item>
              <item>
               <widget class="QGroupBox" name="groupBox_14">
                <property name="title">
                 <string>Message of the Day</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_63">
-                <property name="margin">
+                <property name="leftMargin">
+                 <number>5</number>
+                </property>
+                <property name="topMargin">
+                 <number>5</number>
+                </property>
+                <property name="rightMargin">
+                 <number>5</number>
+                </property>
+                <property name="bottomMargin">
                  <number>5</number>
                 </property>
                 <item>
@@ -7300,7 +8153,16 @@ QPushButton:pressed {
                    <property name="spacing">
                     <number>5</number>
                    </property>
-                   <property name="margin">
+                   <property name="leftMargin">
+                    <number>5</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>5</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>5</number>
+                   </property>
+                   <property name="bottomMargin">
                     <number>5</number>
                    </property>
                    <item>
@@ -7316,7 +8178,16 @@ QPushButton:pressed {
                        <property name="spacing">
                         <number>5</number>
                        </property>
-                       <property name="margin">
+                       <property name="leftMargin">
+                        <number>5</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>5</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>5</number>
+                       </property>
+                       <property name="bottomMargin">
                         <number>5</number>
                        </property>
                        <item>
@@ -7439,7 +8310,16 @@ QPushButton:pressed {
                        <property name="spacing">
                         <number>5</number>
                        </property>
-                       <property name="margin">
+                       <property name="leftMargin">
+                        <number>5</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>5</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>5</number>
+                       </property>
+                       <property name="bottomMargin">
                         <number>5</number>
                        </property>
                        <item>
@@ -7568,7 +8448,16 @@ QPushButton:pressed {
                    <property name="spacing">
                     <number>5</number>
                    </property>
-                   <property name="margin">
+                   <property name="leftMargin">
+                    <number>5</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>5</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>5</number>
+                   </property>
+                   <property name="bottomMargin">
                     <number>5</number>
                    </property>
                    <item>
@@ -7775,7 +8664,16 @@ QPushButton:pressed {
                 <property name="spacing">
                  <number>5</number>
                 </property>
-                <property name="margin">
+                <property name="leftMargin">
+                 <number>5</number>
+                </property>
+                <property name="topMargin">
+                 <number>5</number>
+                </property>
+                <property name="rightMargin">
+                 <number>5</number>
+                </property>
+                <property name="bottomMargin">
                  <number>5</number>
                 </property>
                 <item>
@@ -8250,7 +9148,16 @@ QPushButton:pressed {
                 <property name="spacing">
                  <number>5</number>
                 </property>
-                <property name="margin">
+                <property name="leftMargin">
+                 <number>5</number>
+                </property>
+                <property name="topMargin">
+                 <number>5</number>
+                </property>
+                <property name="rightMargin">
+                 <number>5</number>
+                </property>
+                <property name="bottomMargin">
                  <number>5</number>
                 </property>
                 <item>
@@ -9120,7 +10027,16 @@ QPushButton:pressed {
         <property name="spacing">
          <number>3</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>3</number>
+        </property>
+        <property name="topMargin">
+         <number>3</number>
+        </property>
+        <property name="rightMargin">
+         <number>3</number>
+        </property>
+        <property name="bottomMargin">
          <number>3</number>
         </property>
         <item>
@@ -9716,8 +10632,8 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>594</width>
-     <height>24</height>
+     <width>536</width>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -9768,6 +10684,8 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
     </property>
     <addaction name="action_Copy"/>
     <addaction name="action_Paste"/>
+    <addaction name="separator"/>
+    <addaction name="actionClear_Clipboard_Buffer"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menuEdit"/>
@@ -9949,6 +10867,11 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
    </property>
    <property name="text">
     <string>File Encryption</string>
+   </property>
+  </action>
+  <action name="actionClear_Clipboard_Buffer">
+   <property name="text">
+    <string>Clear Clipboard &amp;Buffer</string>
    </property>
   </action>
  </widget>
