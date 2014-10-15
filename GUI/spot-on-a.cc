@@ -1436,7 +1436,7 @@ spoton::spoton(void):QMainWindow()
     (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")) + 512);
   m_ui.sslControlString->setText
     (m_settings.value("gui/sslControlString",
-		      "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH").
+		      "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH").
      toString());
   m_ui.etpEncryptionKey->setMaxLength
     (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")));
@@ -7130,7 +7130,7 @@ void spoton::slotSaveSslControlString(void)
   QString str(m_ui.sslControlString->text());
 
   if(str.trimmed().isEmpty())
-    str = "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH";
+    str = "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH";
 
   m_ui.sslControlString->setText(str.trimmed());
   m_ui.sslControlString->selectAll();
