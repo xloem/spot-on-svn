@@ -2539,7 +2539,7 @@ void spoton::prepareContextMenuMirrors(void)
 		      tr("Share &URL Public Key"),
 		      this, SLOT(slotShareURLPublicKey(void)));
       menu->addSeparator();
-      menu->addAction(tr("&Assign New IP Information"),
+      menu->addAction(tr("&Assign New Remote IP Information"),
 		      this, SLOT(slotAssignNewIPToNeighbor(void)));
       menu->addAction(tr("&Connect"),
 		      this, SLOT(slotConnectNeighbor(void)));

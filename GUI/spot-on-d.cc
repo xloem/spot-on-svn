@@ -2142,6 +2142,7 @@ void spoton::slotAssignNewIPToNeighbor(void)
   if(row < 0)
     return;
 
+  QString ip("");
   QString oid("");
   QString protocol("");
   QString proxyHostName("");
@@ -2198,7 +2199,10 @@ void spoton::slotAssignNewIPToNeighbor(void)
 
   if(dialog.exec() == QDialog::Accepted)
     {
-      QString ip(ui.ip->text().trimmed());
+      if(protocol == "Dynamic DNS")
+	ip = ui.ip->text().trimmed();
+      else
+	ip = QHostAddress(ui.ip->text().trimmed()).toString();
 
       remotePort = QString::number(ui.port->value());
       scopeId = ui.scope->text();
