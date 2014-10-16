@@ -2229,7 +2229,7 @@ void spoton::slotAssignNewIPToNeighbor(void)
 			  "qt_country_hash = ?, "
 			  "remote_ip_address = ?, "
 			  "remote_ip_address_hash = ? "
-			  "WHERE OID = ?");
+			  "WHERE OID = ? AND user_defined = 1");
 	    query.bindValue
 	      (0, crypt->encryptedThenHashed(country.toLatin1(), &ok).
 	       toBase64());
