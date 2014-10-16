@@ -2189,9 +2189,12 @@ void spoton::slotAssignNewIPToNeighbor(void)
      arg(SPOTON_APPLICATION_NAME));
   ui.setupUi(&dialog);
 
-  if(protocol == tr("IPv4"))
-    ui.ip->setInputMask("000.000.000.000; ");
-  else if(protocol == tr("IPv6"))
+  if(protocol == "IPv4")
+    {
+      ui.ip->setInputMask("000.000.000.000; ");
+      ui.scope->setEnabled(false);
+    }
+  else if(protocol == "IPv6")
     ui.ip->setInputMask("hhhh:hhhh:hhhh:hhhh:hhhh:hhhh:hhhh:hhhh; ");
 
   ui.ip->setText(remoteIP);
