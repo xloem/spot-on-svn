@@ -2204,11 +2204,11 @@ void spoton::slotAssignNewIPToNeighbor(void)
       else
 	ip = QHostAddress(ui.ip->text().trimmed()).toString();
 
-      remotePort = QString::number(ui.port->value());
-      scopeId = ui.scope->text();
-
       if(ip.isEmpty())
 	return;
+
+      remotePort = QString::number(ui.port->value());
+      scopeId = ui.scope->text();
 
       QString connectionName("");
 
