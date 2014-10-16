@@ -19,10 +19,11 @@
 11.  Introduced GCM encryption to the file encryption tool. libgcrypt
      1.6.x is required.
 12.  Added libgcrypt 1.6.x compatibility to libspoton.
-13.  Modified the SSL control string to:
+13.  Modified the default SSL control string to:
      "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH".
 14.  Added an IPv6 listener to spot-on-neighbors.txt. Renamed hosts.
-15.  Allow assigning of new IP information to existing neighbors.
+15.  Allow assigning of new remote IP information to existing neighbors.
+16.  Updated OpenSSL products to version 1.0.1j on OS X and Windows.
 
 0.15 (10/10/2014)
 
