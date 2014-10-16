@@ -2142,11 +2142,6 @@ void spoton::slotAssignNewIPToNeighbor(void)
   if(row < 0)
     return;
 
-  QTableWidgetItem *item = m_ui.neighbors->item(row, 12); // Protocol
-
-  if(!item)
-    return;
-
   QString oid("");
   QString protocol("");
   QString proxyHostName("");
@@ -2185,7 +2180,7 @@ void spoton::slotAssignNewIPToNeighbor(void)
   Ui_ipinformation ui;
 
   dialog.setWindowTitle
-    (tr("%1: Neighbor IP Information").
+    (tr("%1: Neighbor Remote IP Information").
      arg(SPOTON_APPLICATION_NAME));
   ui.setupUi(&dialog);
 
@@ -2231,7 +2226,9 @@ void spoton::slotAssignNewIPToNeighbor(void)
 			  "hash = ?, "
 			  "qt_country_hash = ?, "
 			  "remote_ip_address = ?, "
-			  "remote_ip_address_hash = ? "
+			  "remote_ip_address_hash = ?, "
+			  "remote_port = ?, "
+			  "scope_id = ? "
 			  "WHERE OID = ? AND user_defined = 1");
 	    query.bindValue
 	      (0, crypt->encryptedThenHashed(country.toLatin1(), &ok).
@@ -2260,7 +2257,17 @@ void spoton::slotAssignNewIPToNeighbor(void)
 	      query.bindValue
 		(4, crypt->keyedHash(ip.toLatin1(), &ok).toBase64());
 
-	    query.bindValue(5, oid);
+	    if(ok)
+	      query.bindValue
+		(5, crypt->encryptedThenHashed(remotePort.toLatin1(),
+					       &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(6, crypt->encryptedThenHashed(scopeId.toLatin1(), &ok).
+		 toBase64());
+
+	    query.bindValue(7, oid);
 
 	    if(ok)
 	      query.exec();
