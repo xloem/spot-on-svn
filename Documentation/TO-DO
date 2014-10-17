@@ -214,3 +214,6 @@ Remaining Items
 35.    Hybrid group communications based on deterministic key pairs.
 36.    The data stored in shared.db is not authenticated.
 37.    Provide GCM mode. libgcrypt 1.6.x is required.
+38.    Allow user to bookmark search results. Also allow searching of
+       bookmarked entries. Perhaps provide a means of searching the
+       global databases as well as bookmarked entries.
