@@ -159,6 +159,7 @@ class spoton: public QMainWindow
   QByteArray copyMyRosettaPublicKey(void) const;
   QByteArray copyMyUrlPublicKey(void) const;
   QPixmap pixmapForCountry(const QString &country) const;
+  QString currentTabName(void) const;
   QStringList parseAEMagnet(const QString &magnet) const;
   bool deleteAllUrls(void) const;
 #ifdef Q_OS_MAC

@@ -3945,8 +3945,6 @@ void spoton::slotDeactivateKernel(void)
 
 void spoton::slotGeneralTimerTimeout(void)
 {
-  spoton_misc::prepareDatabases();
-
   QColor color(240, 128, 128); // Light coral!
   QPalette pidPalette(m_ui.pid->palette());
   QString sharedPath(spoton_misc::homePath() + QDir::separator() +

@@ -2283,3 +2283,32 @@ void spoton::slotAssignNewIPToNeighbor(void)
       QSqlDatabase::removeDatabase(connectionName);
     }
 }
+
+QString spoton::currentTabName(void) const
+{
+  QString name("");
+  int index = m_ui.tab->currentIndex();
+
+  if(index == 0)
+    name = "buzz";
+  else if(index == 1)
+    name = "chat";
+  else if(index == 2)
+    name = "email";
+  else if(index == 3)
+    name = "listeners";
+  else if(index == 4)
+    name = "neighbors";
+  else if(index == 5)
+    name = "search";
+  else if(index == 6)
+    name = "settings";
+  else if(index == 7)
+    name = "starbeam";
+  else if(index == 8)
+    name = "urls";
+  else
+    name = "about";
+
+  return name;
+}

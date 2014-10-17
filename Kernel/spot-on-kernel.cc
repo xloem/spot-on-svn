@@ -703,7 +703,6 @@ void spoton_kernel::cleanup(void)
 
 void spoton_kernel::slotPollDatabase(void)
 {
-  spoton_misc::prepareDatabases();
   prepareListeners();
   prepareNeighbors();
   prepareStarbeamReaders();
