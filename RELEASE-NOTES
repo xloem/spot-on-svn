@@ -24,6 +24,8 @@
 14.  Added an IPv6 listener to spot-on-neighbors.txt. Renamed hosts.
 15.  Allow assigning of new remote IP information to existing neighbors.
 16.  Updated OpenSSL products to version 1.0.1j on OS X and Windows.
+17.  Removed persistent initialization of databases from the kernel and
+     user interface.
 
 0.15 (10/10/2014)
 
