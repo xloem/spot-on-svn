@@ -360,6 +360,7 @@ class spoton: public QMainWindow
   void slotMaximumEmailFileSizeChanged(int value);
   void slotMessagesAnchorClicked(const QUrl &url);
   void slotModeChanged(QSslSocket::SslMode mode);
+  void slotMosaicLocked(bool state);
   void slotNeighborCheckChange(bool state);
   void slotNeighborFullEcho(void);
   void slotNeighborHalfEcho(void);
@@ -456,6 +457,7 @@ class spoton: public QMainWindow
   void slotUpdateChatWindows(void);
   void slotUrlStatisticsGathered(const qint64 count, const quint64 size);
   void slotValidatePassphrase(void);
+  void slotVerify(void);
   void slotViewLog(void);
   void slotViewRosetta(void);
 

@@ -477,6 +477,9 @@ void spoton::saveUrlIniPath(const QString &path)
 	      m_ui.urlCipher->setCurrentIndex
 		(m_ui.urlCipher->findText(value.toString()));
 	  }
+	else if(key.toLower().contains("hash") &&
+		value.toByteArray().length() >= 64)
+	  m_ui.urlIniHash->setText(value.toByteArray().toHex());
 	else if(key.toLower().contains("hashtype"))
 	  {
 	    if(m_ui.urlHash->findText(value.toString()) >= 0)
@@ -495,4 +498,35 @@ void spoton::saveUrlIniPath(const QString &path)
 void spoton::slotSetUrlIniPath(void)
 {
   saveUrlIniPath(m_ui.urlIniPath->text());
+}
+
+void spoton::slotVerify(void)
+{
+  QByteArray computedHash;
+  QByteArray salt
+    (QByteArray::fromHex(m_ui.urlSalt->text().toLatin1()));
+  QByteArray saltedPassphraseHash
+    (QByteArray::fromHex(m_ui.urlIniHash->text().toLatin1()));
+  QString error("");
+  bool ok = false;
+
+  computedHash = spoton_crypt::saltedPassphraseHash
+    (m_ui.urlHash->currentText(), m_ui.urlPassphrase->text(), salt, error);
+
+  if(!computedHash.isEmpty() && !saltedPassphraseHash.isEmpty() &&
+     spoton_crypt::memcmp(computedHash, saltedPassphraseHash))
+    if(error.isEmpty())
+      ok = true;
+
+  if(ok)
+    QMessageBox::information
+      (this, tr("%1: Information").
+       arg(SPOTON_APPLICATION_NAME),
+       tr("The provided credentials appear correct. Please save the "
+	  "information."));
+  else
+    QMessageBox::information
+      (this, tr("%1: Information").
+       arg(SPOTON_APPLICATION_NAME),
+       tr("The provided credentials appear incorrect."));
 }

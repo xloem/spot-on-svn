@@ -188,6 +188,9 @@ void spoton::slotAddEtpMagnet(const QString &text,
 
 void spoton::slotPopulateEtpMagnets(void)
 {
+  if(currentTabName() != "starbeam")
+    return;
+
   spoton_crypt *crypt = m_crypts.value("chat", 0);
 
   if(!crypt)
@@ -667,13 +670,6 @@ void spoton::slotStarOTMCheckChange(bool state)
 
 void spoton::slotPopulateKernelStatistics(void)
 {
-  if(!m_ui.showStatistics->isChecked())
-    /*
-    ** Ignore kernel.db changes.
-    */
-
-    return;
-
   QFileInfo fileInfo(spoton_misc::homePath() + QDir::separator() +
 		     "kernel.db");
 
@@ -688,6 +684,8 @@ void spoton::slotPopulateKernelStatistics(void)
     m_kernelStatisticsLastModificationTime = QDateTime();
 
   QString connectionName("");
+  int activeListeners = 0;
+  int activeNeighbors = 0;
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -735,6 +733,10 @@ void spoton::slotPopulateKernelStatistics(void)
 		      item->setBackground
 			(QBrush(QColor(240, 128, 128)));
 		  }
+		else if(query.value(0).toString().toLower() == "listeners")
+		  activeListeners = query.value(1).toInt();
+		else if(query.value(0).toString().toLower() == "neighbors")
+		  activeNeighbors = query.value(1).toInt();
 
 		row += 1;
 	      }
@@ -752,6 +754,39 @@ void spoton::slotPopulateKernelStatistics(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+
+  if(activeListeners > 0)
+    {
+      m_sb.listeners->setIcon
+	(QIcon(QString(":/%1/status-online.png").
+	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
+      m_sb.listeners->setToolTip
+	(tr("There is (are) %1 active listener(s).").arg(activeListeners));
+    }
+  else
+    {
+      m_sb.listeners->setIcon
+	(QIcon(QString(":/%1/status-offline.png").
+	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
+      m_sb.listeners->setToolTip(tr("Listeners are offline."));
+    }
+
+  if(activeNeighbors > 0)
+    {
+      m_sb.neighbors->setIcon
+	(QIcon(QString(":/%1/status-online.png").
+	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
+      m_sb.neighbors->setToolTip
+	(tr("There is (are) %1 connected neighbor(s).").
+	 arg(activeNeighbors));
+    }
+  else
+    {
+      m_sb.neighbors->setIcon
+	(QIcon(QString(":/%1/status-offline.png").
+	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
+      m_sb.neighbors->setToolTip(tr("Neighbors are offline."));
+    }
 }
 
 void spoton::slotExternalIp(int index)
@@ -1096,6 +1131,9 @@ void spoton::slotShareBuzzMagnet(void)
 
 void spoton::slotPopulateStars(void)
 {
+  if(currentTabName() != "starbeam")
+    return;
+
   spoton_crypt *crypt = m_crypts.value("chat", 0);
 
   if(!crypt)
@@ -1139,7 +1177,7 @@ void spoton::slotPopulateStars(void)
 	*/
 
 	list = m_ui.received->selectionModel()->selectedRows
-	  (3); // File
+	  (4); // File
 
 	if(!list.isEmpty())
 	  selectedFileName = list.at(0).data().toString();
@@ -1151,7 +1189,7 @@ void spoton::slotPopulateStars(void)
 	m_ui.received->setRowCount(0);
 	row = 0;
 	query.exec("PRAGMA read_uncommitted = True");
-	query.prepare("SELECT pulse_size, total_size, file, hash, "
+	query.prepare("SELECT locked, pulse_size, total_size, file, hash, "
 		      "OID FROM received");
 
 	if(query.exec())
@@ -1159,6 +1197,7 @@ void spoton::slotPopulateStars(void)
 	    {
 	      m_ui.received->setRowCount(row + 1);
 
+	      QCheckBox *check = 0;
 	      QString fileName("");
 	      bool ok = true;
 
@@ -1166,7 +1205,24 @@ void spoton::slotPopulateStars(void)
 		{
 		  QTableWidgetItem *item = 0;
 
-		  if(i >= 0 && i <= 3)
+		  if(i == 0)
+		    {
+		      check = new QCheckBox();
+
+		      if(query.value(i).toInt())
+			check->setChecked(true);
+		      else
+			check->setChecked(false);
+
+		      check->setProperty
+			("oid", query.value(query.record().count() - 1));
+		      connect(check,
+			      SIGNAL(toggled(bool)),
+			      this,
+			      SLOT(slotMosaicLocked(bool)));
+		      m_ui.received->setCellWidget(row, 0, check);
+		    }
+		  else if(i >= 1 && i <= 4)
 		    {
 		      QByteArray bytes;
 
@@ -1182,7 +1238,7 @@ void spoton::slotPopulateStars(void)
 		      else
 			item = new QTableWidgetItem(tr("error"));
 
-		      if(i == 2)
+		      if(i == 3)
 			fileName = item->text();
 		    }
 		  else if(i == query.record().count() - 1)
@@ -1197,8 +1253,11 @@ void spoton::slotPopulateStars(void)
 		    }
 		}
 
-	      QTableWidgetItem *item1 = m_ui.received->item(row, 2);
-	      QTableWidgetItem *item2 = m_ui.received->item(row, 3);
+	      if(check)
+		check->setProperty("filename", fileName);
+
+	      QTableWidgetItem *item1 = m_ui.received->item(row, 3);
+	      QTableWidgetItem *item2 = m_ui.received->item(row, 4);
 
 	      if(item1 && item2)
 		{
@@ -1221,7 +1280,7 @@ void spoton::slotPopulateStars(void)
 			(QString("%1% - %2").
 			 arg(percent).
 			 arg(QFileInfo(fileName).fileName()));
-		      m_ui.received->setCellWidget(row, 0, progressBar);
+		      m_ui.received->setCellWidget(row, 1, progressBar);
 		    }
 		  else
 		    {
@@ -1229,12 +1288,12 @@ void spoton::slotPopulateStars(void)
 
 		      item->setFlags
 			(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		      m_ui.received->setItem(row, 0, item);
+		      m_ui.received->setItem(row, 1, item);
 		    }
 		}
 
-	      if(m_ui.received->item(row, 3) &&
-		 selectedFileName == m_ui.received->item(row, 3)->text())
+	      if(m_ui.received->item(row, 4) &&
+		 selectedFileName == m_ui.received->item(row, 4)->text())
 		m_ui.received->selectRow(row);
 
 	      row += 1;
@@ -2034,7 +2093,7 @@ void spoton::slotComputeFileHash(void)
   QTableWidgetItem *item = 0;
 
   if(m_ui.received == table)
-    item = table->item(table->currentRow(), 3); // File
+    item = table->item(table->currentRow(), 4); // File
   else
     item = table->item(table->currentRow(), 5); // File
 
@@ -2139,7 +2198,7 @@ void spoton::slotCopyFileHash(void)
   QTableWidgetItem *item = 0;
 
   if(m_ui.received == table)
-    item = table->item(table->currentRow(), 4); // Hash
+    item = table->item(table->currentRow(), 5); // Hash
   else
     item = table->item(table->currentRow(), 7); // Hash
 

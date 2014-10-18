@@ -1115,6 +1115,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotImportUrls(void)));
+  connect(m_ui.verify,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotVerify(void)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -1852,7 +1856,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.postoffice->horizontalHeader()->setSortIndicator
     (0, Qt::AscendingOrder);
   m_ui.received->horizontalHeader()->setSortIndicator
-    (3, Qt::AscendingOrder);
+    (4, Qt::AscendingOrder);
   m_ui.transmitted->horizontalHeader()->setSortIndicator
     (5, Qt::AscendingOrder);
   m_ui.urlParticipants->horizontalHeader()->setSortIndicator
@@ -2769,6 +2773,9 @@ void spoton::slotScramble(bool state)
 
 void spoton::slotPopulateListeners(void)
 {
+  if(currentTabName() != "listeners")
+    return;
+
   spoton_crypt *crypt = m_crypts.value("chat", 0);
 
   if(!crypt)
@@ -2788,7 +2795,6 @@ void spoton::slotPopulateListeners(void)
     m_listenersLastModificationTime = QDateTime();
 
   QString connectionName("");
-  int active = 0;
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -2985,9 +2991,6 @@ void spoton::slotPopulateListeners(void)
 			  {
 			    if(query.value(0).toString() == "online")
 			      check->setChecked(true);
-
-			    if(query.value(1).toString() == "online")
-			      active += 1;
 			  }
 			else
 			  {
@@ -3222,26 +3225,13 @@ void spoton::slotPopulateListeners(void)
 
   QSqlDatabase::removeDatabase(connectionName);
   populateAETokens();
-
-  if(active > 0)
-    {
-      m_sb.listeners->setIcon
-	(QIcon(QString(":/%1/status-online.png").
-	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
-      m_sb.listeners->setToolTip
-	(tr("There is (are) %1 active listener(s).").arg(active));
-    }
-  else
-    {
-      m_sb.listeners->setIcon
-	(QIcon(QString(":/%1/status-offline.png").
-	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
-      m_sb.listeners->setToolTip(tr("Listeners are offline."));
-    }
 }
 
 void spoton::slotPopulateNeighbors(void)
 {
+  if(currentTabName() != "neighbors")
+    return;
+
   spoton_crypt *crypt = m_crypts.value("chat", 0);
 
   if(!crypt)
@@ -3261,7 +3251,6 @@ void spoton::slotPopulateNeighbors(void)
     m_neighborsLastModificationTime = QDateTime();
 
   QString connectionName("");
-  int active = 0;
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -3589,12 +3578,6 @@ void spoton::slotPopulateNeighbors(void)
 		  {
 		    QTableWidgetItem *item = 0;
 
-		    if(i == 2)
-		      {
-			if(query.value(i).toString() == "connected")
-			  active += 1;
-		      }
-
 		    if(i == 1 || i == 3 ||
 		       i == 7 || (i >= 9 && i <= 13) || (i >= 14 &&
 							 i <= 15) ||
@@ -3865,23 +3848,6 @@ void spoton::slotPopulateNeighbors(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-
-  if(active > 0)
-    {
-      m_sb.neighbors->setIcon
-	(QIcon(QString(":/%1/status-online.png").
-	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
-      m_sb.neighbors->setToolTip
-	(tr("There is (are) %1 connected neighbor(s).").
-	 arg(active));
-    }
-  else
-    {
-      m_sb.neighbors->setIcon
-	(QIcon(QString(":/%1/status-offline.png").
-	       arg(m_settings.value("gui/iconSet", "nouve").toString())));
-      m_sb.neighbors->setToolTip(tr("Neighbors are offline."));
-    }
 }
 
 void spoton::slotActivateKernel(void)
@@ -5251,6 +5217,16 @@ void spoton::slotValidatePassphrase(void)
 
 void spoton::slotTabChanged(int index)
 {
+  if(currentTabName() == "listeners")
+    m_listenersLastModificationTime = QDateTime();
+  else if(currentTabName() == "neighbors")
+    m_neighborsLastModificationTime = QDateTime();
+  else if(currentTabName() == "starbeam")
+    {
+      m_magnetsLastModificationTime = QDateTime();
+      m_starsLastModificationTime = QDateTime();
+    }
+
   if(index == 0)
     m_sb.buzz->setVisible(false);
   else if(index == 1)

@@ -50,17 +50,17 @@ void spoton::slotDiscoverMissingLinks(void)
     {
       QTableWidgetItem *item = 0;
 
-      item = m_ui.received->item(row, 3); // File
+      item = m_ui.received->item(row, 4); // File
 
       if(item)
 	fileName = item->text();
 
-      item = m_ui.received->item(row, 1); // Pulse Size
+      item = m_ui.received->item(row, 2); // Pulse Size
 
       if(item)
 	pulseSize = item->text();
 
-      item = m_ui.received->item(row, 2); // Total Size
+      item = m_ui.received->item(row, 3); // Total Size
 
       if(item)
 	totalSize = item->text();
@@ -2289,6 +2289,26 @@ QString spoton::currentTabName(void) const
   QString name("");
   int index = m_ui.tab->currentIndex();
 
+#if SPOTON_GOLDBUG == 1
+  if(index == 0)
+    name = "chat";
+  else if(index == 1)
+    name = "email";
+  else if(index == 2)
+    name = "buzz";
+  else if(index == 3)
+    name = "starbeam";
+  else if(index == 4)
+    name = "addfriend";
+  else if(index == 5)
+    name = "neighbors";
+  else if(index == 6)
+    name = "listeners";
+  else if(index == 7)
+    name = "settings";
+  else
+    name = "about";
+#else
   if(index == 0)
     name = "buzz";
   else if(index == 1)
@@ -2309,6 +2329,81 @@ QString spoton::currentTabName(void) const
     name = "urls";
   else
     name = "about";
+#endif
 
   return name;
+}
+
+void spoton::slotMosaicLocked(bool state)
+{
+  QCheckBox *check = qobject_cast<QCheckBox *> (sender());
+
+  if(!check)
+    return;
+
+  QFile file(check->property("filename").toString());
+
+  if(state)
+    {
+      QFile::Permissions g(file.permissions());
+      QFile::Permissions s = 0;
+
+      if(g & QFile::ExeOther)
+	s |= QFile::ExeOther;
+
+      if(g & QFile::WriteOther)
+	s |= QFile::WriteOther;
+
+      if(g & QFile::ReadOther)
+	s |= QFile::ReadOther;
+
+      if(g & QFile::ExeGroup)
+	s |= QFile::ExeGroup;
+
+      if(g & QFile::WriteGroup)
+	s |= QFile::WriteGroup;
+
+      if(g & QFile::ReadGroup)
+	s |= QFile::ReadGroup;
+
+      if(g & QFile::ExeUser)
+	s |= QFile::ExeUser;
+
+      if(g & QFile::ReadUser)
+	s |= QFile::ReadUser;
+
+      if(g & QFile::ExeOwner)
+	s |= QFile::ExeOwner;
+
+      if(g & QFile::ReadOwner)
+	s |= QFile::ReadOwner;
+
+      file.setPermissions(s);
+    }
+  else
+    file.setPermissions(file.permissions() | QFile::WriteOwner);
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "starbeam.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare
+	  ("UPDATE received SET locked = ? WHERE OID = ?");
+	query.bindValue(0, state);
+	query.bindValue(1, check->property("oid"));
+	query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
 }

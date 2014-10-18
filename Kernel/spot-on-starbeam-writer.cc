@@ -152,6 +152,44 @@ void spoton_starbeam_writer::processData
   if(list.value(0) != "0060")
     return;
 
+  QString connectionName("");
+  QString fileName
+    (spoton_kernel::setting("gui/etpDestinationPath", QDir::homePath()).
+     toString() + QDir::separator() + QString::fromUtf8(list.value(1)));
+  int locked = 0;
+  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
+
+  if(s_crypt)
+    {
+      {
+	QSqlDatabase db = spoton_misc::database(connectionName);
+
+	db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+			   "starbeam.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+	    bool ok = true;
+
+	    query.prepare("SELECT locked FROM received WHERE file_hash = ?");
+	    query.bindValue
+	      (0, s_crypt->keyedHash(fileName.toUtf8(), &ok).toBase64());
+
+	    if(ok)
+	      if(query.exec() && query.next())
+		locked = query.value(0).toInt();
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase(connectionName);
+
+      if(locked)
+	return;
+    }
+
   int dataSize = qAbs(static_cast<int> (list.value(3).toLongLong()));
   int pulseSize = qAbs(static_cast<int> (list.value(6).toLongLong()));
   qint64 maximumSize = 1048576 * spoton_kernel::setting
@@ -171,42 +209,50 @@ void spoton_starbeam_writer::processData
     return;
 
   QFile file;
-  QString fileName
-    (spoton_kernel::setting("gui/etpDestinationPath", QDir::homePath()).
-     toString() + QDir::separator() + QString::fromUtf8(list.value(1)));
 
   file.setFileName(fileName);
+
+  if(!(file.permissions() & QFile::WriteOwner))
+    return;
 
   if(file.open(QIODevice::ReadWrite))
     {
       if(position > file.size())
 	if(!file.resize(position))
-	  spoton_misc::logError("spoton_starbeam_writer::processData(): "
-				"resize() failure.");
+	  {
+	    ok = false;
+	    spoton_misc::logError("spoton_starbeam_writer::processData(): "
+				  "resize() failure.");
+	  }
 
       if(file.seek(position))
 	{
 	  if(static_cast<int> (file.write(list.value(5).mid(0, dataSize).
 					  constData(), dataSize)) != dataSize)
-	    spoton_misc::logError
-	      ("spoton_starbeam_writer::processData(): "
-	       "write() failure.");
+	    {
+	      ok = false;
+	      spoton_misc::logError
+		("spoton_starbeam_writer::processData(): "
+		 "write() failure.");
+	    }
 
 	  file.flush();
 	}
       else
-	spoton_misc::logError("spoton_starbeam_writer::processData(): "
-			      "seek() failure.");
+	{
+	  ok = false;
+	  spoton_misc::logError("spoton_starbeam_writer::processData(): "
+				"seek() failure.");
+	}
     }
 
   file.close();
 
-  spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
+  if(!ok)
+    return;
 
   if(!s_crypt)
     return;
-
-  QString connectionName("");
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
