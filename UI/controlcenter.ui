@@ -499,7 +499,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1031</width>
-                <height>642</height>
+                <height>449</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1029,8 +1029,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>966</width>
-             <height>670</height>
+             <width>913</width>
+             <height>594</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -2151,8 +2151,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>966</width>
-             <height>670</height>
+             <width>900</width>
+             <height>346</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2763,7 +2763,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>282</width>
+                     <width>293</width>
                      <height>1430</height>
                     </rect>
                    </property>
@@ -3276,7 +3276,7 @@
              <x>0</x>
              <y>0</y>
              <width>1063</width>
-             <height>652</height>
+             <height>583</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4459,7 +4459,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>938</width>
-                 <height>271</height>
+                 <height>312</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -4552,6 +4552,16 @@
                    <property name="bottomMargin">
                     <number>5</number>
                    </property>
+                   <item>
+                    <widget class="QLabel" name="label_118">
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The INI path may reference the absolute path of the Dooble.ini file. On Unix systems, this file usually resides in ~/.dooble. On Windows systems, the Dooble.ini file usually resides in the directory that also houses the Dooble.exe file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_90">
                      <property name="spacing">
@@ -5284,7 +5294,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>948</width>
+             <width>859</width>
              <height>1057</height>
             </rect>
            </property>
@@ -6508,8 +6518,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>966</width>
-             <height>670</height>
+             <width>524</width>
+             <height>554</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -7570,8 +7580,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>966</width>
-             <height>670</height>
+             <width>263</width>
+             <height>412</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -8106,8 +8116,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>966</width>
-             <height>670</height>
+             <width>278</width>
+             <height>189</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">

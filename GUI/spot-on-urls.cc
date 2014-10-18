@@ -528,5 +528,5 @@ void spoton::slotVerify(void)
     QMessageBox::information
       (this, tr("%1: Information").
        arg(SPOTON_APPLICATION_NAME),
-       tr("The provided credentials appear incorrect."));
+       tr("The provided credentials are incorrect."));
 }
