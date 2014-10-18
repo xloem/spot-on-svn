@@ -3667,6 +3667,11 @@ QPushButton:pressed {
                  </attribute>
                  <column>
                   <property name="text">
+                   <string>Locked</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
                    <string>Percent Received</string>
                   </property>
                  </column>
@@ -7637,7 +7642,7 @@ QPushButton:pressed {
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>816</width>
+                     <width>847</width>
                      <height>239</height>
                     </rect>
                    </property>

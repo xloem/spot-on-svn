@@ -212,8 +212,9 @@ void spoton_starbeam_writer::processData
 
   file.setFileName(fileName);
 
-  if(!(file.permissions() & QFile::WriteOwner))
-    return;
+  if(file.exists())
+    if(!(file.permissions() & QFile::WriteOwner))
+      return;
 
   if(file.open(QIODevice::ReadWrite))
     {
