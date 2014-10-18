@@ -184,7 +184,7 @@ spoton::spoton(void):QMainWindow()
     (QString("Compiled on %1, %2.\n"
 	     "%3.\n"
 	     "Qt %4, %5-bit.\n"
-	     "gcrypt %6.").
+	     "libgcrypt %6.").
      arg(__DATE__).
      arg(__TIME__).
      arg(sslSupported ?
