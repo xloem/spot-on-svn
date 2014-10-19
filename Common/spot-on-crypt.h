@@ -72,6 +72,14 @@ class spoton_crypt
      const QString &passphrase,
      const QByteArray &salt,
      QString &error);
+  static QPair<QByteArray, QByteArray> derivedKeys
+    (const QString &cipherType,
+     const QString &hashType,
+     const unsigned long iterationCount,
+     const QString &passphrase,
+     const QByteArray &salt,
+     const int hashKeySize,
+     QString &error);
   static QByteArray keyedHash(const QByteArray &data,
 			      const QByteArray &key,
 			      const QByteArray &hashType,

@@ -1119,6 +1119,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotVerify(void)));
+  connect(m_ui.saveUrlCredentials,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSaveUrlCredentials(void)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,

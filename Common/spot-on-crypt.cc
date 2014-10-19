@@ -186,6 +186,19 @@ QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
  const QByteArray &salt,
  QString &error)
 {
+  return derivedKeys
+    (cipherType, hashType, iterationCount, passphrase, salt, 256, error);
+}
+
+QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
+(const QString &cipherType,
+ const QString &hashType,
+ const unsigned long iterationCount,
+ const QString &passphrase,
+ const QByteArray &salt,
+ const int hashKeySize,
+ QString &error)
+{
   QByteArray key;
   QByteArray temporaryKey;
   QPair<QByteArray, QByteArray> keys;
@@ -223,7 +236,7 @@ QPair<QByteArray, QByteArray> spoton_crypt::derivedKeys
       goto done_label;
     }
 
-  key.resize(static_cast<int> (cipherKeyLength) + 256);
+  key.resize(static_cast<int> (cipherKeyLength) + hashKeySize);
   keys.first.resize(static_cast<int> (cipherKeyLength));
   keys.second.resize(key.length() - static_cast<int> (cipherKeyLength));
   temporaryKey.resize(key.length());

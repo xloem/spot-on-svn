@@ -530,3 +530,30 @@ void spoton::slotVerify(void)
        arg(SPOTON_APPLICATION_NAME),
        tr("The provided credentials are incorrect."));
 }
+
+void spoton::slotSaveUrlCredentials(void)
+{
+  QByteArray salt
+    (QByteArray::fromHex(m_ui.urlSalt->text().toLatin1()));
+  QPair<QByteArray, QByteArray> keys;
+  QString error("");
+
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+  keys = spoton_crypt::derivedKeys(m_ui.urlCipher->currentText(),
+				   m_ui.urlHash->currentText(),
+				   m_ui.urlIteration->value(),
+				   m_ui.urlPassphrase->text(),
+				   salt,
+				   64, // Agrees with Dooble.
+				   error);
+  QApplication::restoreOverrideCursor();
+
+  if(error.isEmpty())
+    {
+    }
+  else
+    QMessageBox::critical(this, tr("%1: Error").
+			  arg(SPOTON_APPLICATION_NAME),
+			  tr("An error occurred while "
+			     "generating the key."));
+}
