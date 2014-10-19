@@ -24,7 +24,10 @@
    <item>
     <widget class="QLabel" name="message">
      <property name="text">
-      <string>Please provide the following information.</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please provide the following information. The neighbor will be disconnected if the modifications are accepted.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
