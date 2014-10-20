@@ -87,6 +87,7 @@ class spoton_kernel: public QObject
   static void removeBuzzKey(const QByteArray &data);
   bool acceptRemoteConnection(const QHostAddress &localAddress,
 			      const QHostAddress &peerAddress);
+  bool areNeighborsLocal(const qint64 fromId, const qint64 toId);
   bool processPotentialStarBeamData(const QByteArray &data);
   void writeMessage0060(const QByteArray &data, bool *ok);
 

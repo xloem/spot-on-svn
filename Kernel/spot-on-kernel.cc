@@ -4255,3 +4255,42 @@ void spoton_kernel::receivedMessage
 
   s_messagesToProcess.append(list);
 }
+
+bool spoton_kernel::areNeighborsLocal(const qint64 fromId, const qint64 toId)
+{
+  QHostAddress fromLocalAddress;
+  QHostAddress toLocalAddress;
+  QHostAddress toRemoteAddress;
+  QPointer<spoton_neighbor> fromNeighbor = 0;
+  QPointer<spoton_neighbor> toNeighbor = 0;
+
+  if(m_neighbors.contains(toId))
+    toNeighbor = m_neighbors[toId];
+
+  if(!toNeighbor)
+    return false;
+
+  toLocalAddress = toNeighbor->localAddress();
+  toRemoteAddress = toNeighbor->peerAddress();
+
+  if(spoton_misc::isPrivateNetwork(toLocalAddress) &&
+     spoton_misc::isPrivateNetwork(toRemoteAddress))
+    return true;
+
+  if(m_neighbors.contains(fromId))
+    fromNeighbor = m_neighbors[fromId];
+
+  if(!fromNeighbor)
+    return false;
+
+  fromLocalAddress = fromNeighbor->localAddress();
+
+  if(!fromLocalAddress.isNull() &&
+     !toLocalAddress.isNull() &&
+     !toRemoteAddress.isNull() &&
+     fromLocalAddress == toLocalAddress &&
+     toLocalAddress == toRemoteAddress)
+    return true;
+
+  return false;
+}

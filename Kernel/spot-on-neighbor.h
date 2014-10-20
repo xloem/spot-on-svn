@@ -145,6 +145,7 @@ class spoton_neighbor: public QThread
 		  QObject *parent);
   ~spoton_neighbor();
   QAbstractSocket::SocketState state(void) const;
+  QHostAddress localAddress(void) const;
   QHostAddress peerAddress(void) const;
   QString transport(void) const;
   QUuid receivedUuid(void) const;

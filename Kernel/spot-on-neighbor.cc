@@ -1624,7 +1624,7 @@ void spoton_neighbor::processData(void)
 	    emit scrambleRequest();
 
 	  if(discoveredAdaptiveEchoPair == QPair<QByteArray, QByteArray> () &&
-	     spoton_kernel::setting("gui/superEcho", false).toBool())
+	     spoton_kernel::setting("gui/superEcho", 2).toInt() != 2)
 	    {
 	      if(messageType != "0060") // StarBeam
 		spoton_kernel::receivedMessage
@@ -1998,15 +1998,29 @@ void spoton_neighbor::write
   */
 
   bool adaptiveEcho = false;
+  bool superEcho = false;
+  int value = spoton_kernel::setting("gui/superEcho", 2).toInt();
 
   if(adaptiveEchoPair == QPair<QByteArray, QByteArray> () ||
      m_learnedAdaptiveEchoPairs.contains(adaptiveEchoPair))
     adaptiveEcho = true;
 
+  if(value == 0)
+    /*
+    ** Complete.
+    */
+
+    superEcho = true;
+  else if(value == 1)
+    /*
+    ** Local network.
+    */
+
+    superEcho = spoton_kernel::s_kernel->areNeighborsLocal(id, m_id);
+
   if(id != m_id)
     if(adaptiveEcho)
-      if(m_echoMode == "full" ||
-	 spoton_kernel::setting("gui/superEcho", false).toBool())
+      if(m_echoMode == "full" || superEcho)
 	if(readyToWrite())
 	  {
 	    if(write(data.constData(), data.length()) != data.length())
@@ -5338,9 +5352,24 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
   ** This neighbor now needs to send the message to its peer.
   */
 
+  bool superEcho = false;
+  int value = spoton_kernel::setting("gui/superEcho", 2).toInt();
+
+  if(value == 0)
+    /*
+    ** Complete.
+    */
+
+    superEcho = true;
+  else if(value == 1)
+    /*
+    ** Local network.
+    */
+
+    superEcho = spoton_kernel::s_kernel->areNeighborsLocal(id, m_id);
+
   if(id != m_id)
-    if(m_echoMode == "full" ||
-       spoton_kernel::setting("gui/superEcho", false).toBool())
+    if(m_echoMode == "full" || superEcho)
       if(readyToWrite())
 	{
 	  QByteArray message(spoton_send::message0030(data));
@@ -6161,6 +6190,18 @@ QAbstractSocket::SocketState spoton_neighbor::state(void) const
     return m_udpSocket->state();
   else
     return QAbstractSocket::UnconnectedState;
+}
+
+QHostAddress spoton_neighbor::localAddress(void) const
+{
+  if(m_sctpSocket)
+    return m_sctpSocket->localAddress();
+  else if(m_tcpSocket)
+    return m_tcpSocket->localAddress();
+  else if(m_udpSocket)
+    return m_udpSocket->localAddress();
+  else
+    return QHostAddress();
 }
 
 QHostAddress spoton_neighbor::peerAddress(void) const

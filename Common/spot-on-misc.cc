@@ -961,7 +961,9 @@ bool spoton_misc::isPrivateNetwork(const QHostAddress &address)
 {
   bool isPrivate = false;
 
-  if(address.protocol() == QAbstractSocket::IPv4Protocol)
+  if(address.isNull())
+    return isPrivate;
+  else if(address.protocol() == QAbstractSocket::IPv4Protocol)
     {
       QPair<QHostAddress, int> pair1
 	(QHostAddress::parseSubnet("10.0.0.0/8"));
