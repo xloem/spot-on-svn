@@ -447,7 +447,7 @@ class spoton: public QMainWindow
   void slotStarOTMCheckChange(bool state);
   void slotStatusButtonClicked(void);
   void slotStatusChanged(int index);
-  void slotSuperEcho(bool state);
+  void slotSuperEcho(int index);
   void slotTabChanged(int index);
   void slotTestSslControlString(void);
   void slotTransmit(void);

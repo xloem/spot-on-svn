@@ -848,9 +848,9 @@ spoton::spoton(void):QMainWindow()
 	  this,
 	  SLOT(slotKernelKeySizeChanged(const QString &)));
   connect(m_ui.superEcho,
-	  SIGNAL(toggled(bool)),
+	  SIGNAL(currentIndexChanged(int)),
 	  this,
-	  SLOT(slotSuperEcho(bool)));
+	  SLOT(slotSuperEcho(int)));
   connect(m_ui.kernelLogEvents,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -1532,8 +1532,8 @@ spoton::spoton(void):QMainWindow()
     (m_settings.value("gui/saveCopy", true).toBool());
   m_ui.scrambler->setChecked
     (m_settings.value("gui/scramblerEnabled", false).toBool());
-  m_ui.superEcho->setChecked
-    (m_settings.value("gui/superEcho", false).toBool());
+  m_ui.superEcho->setCurrentIndex
+    (m_settings.value("gui/superEcho", 2).toInt());
   m_ui.chatAcceptSigned->setChecked
     (m_settings.value("gui/chatAcceptSignedMessagesOnly", true).toBool());
   m_ui.chatSignMessages->setChecked

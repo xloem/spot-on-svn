@@ -4411,13 +4411,13 @@ bool spoton::event(QEvent *event)
 #endif
 #endif
 
-void spoton::slotSuperEcho(bool state)
+void spoton::slotSuperEcho(int index)
 {
-  m_settings["gui/superEcho"] = state;
+  m_settings["gui/superEcho"] = index;
 
   QSettings settings;
 
-  settings.setValue("gui/superEcho", state);
+  settings.setValue("gui/superEcho", index);
 }
 
 void spoton::slotKernelKeySizeChanged(const QString &text)
