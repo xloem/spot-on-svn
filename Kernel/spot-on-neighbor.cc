@@ -1327,8 +1327,9 @@ void spoton_neighbor::slotReadyRead(void)
 
 	  spoton_misc::logError
 	    (QString("spoton_neighbor::slotReadyRead(): "
-		     "too much data for %1:%2."
+		     "too much data (%1 bytes) for %2:%3. "
 		     "Purging.").
+	     arg(data.length()).
 	     arg(m_address.toString()).
 	     arg(m_port));
 	}
