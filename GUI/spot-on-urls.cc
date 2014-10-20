@@ -365,9 +365,9 @@ void spoton::slotImportUrls(void)
 
 		if(encrypted)
 		  {
-		    spoton_crypt *s_crypt = m_crypts.value("url", 0);
+		    spoton_crypt *l_crypt = m_crypts.value("url", 0);
 
-		    if(!s_crypt)
+		    if(!l_crypt)
 		      continue;
 
 		    /*
@@ -537,6 +537,13 @@ void spoton::slotSaveUrlCredentials(void)
     (QByteArray::fromHex(m_ui.urlSalt->text().toLatin1()));
   QPair<QByteArray, QByteArray> keys;
   QString error("");
+  spoton_crypt *crypt = m_crypts.value("url", 0);
+
+  if(!crypt)
+    {
+      error = tr("Invalid spoton_crypt object. This is a fatal flaw.");
+      goto done_label;
+    }
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   keys = spoton_crypt::derivedKeys(m_ui.urlCipher->currentText(),
@@ -544,16 +551,64 @@ void spoton::slotSaveUrlCredentials(void)
 				   m_ui.urlIteration->value(),
 				   m_ui.urlPassphrase->text(),
 				   salt,
-				   64, // Agrees with Dooble.
+				   64, // Dooble.
 				   error);
   QApplication::restoreOverrideCursor();
 
   if(error.isEmpty())
     {
+      QString connectionName("");
+
+      {
+	QSqlDatabase db = spoton_misc::database(connectionName);
+
+	db.setDatabaseName
+	  (spoton_misc::homePath() + QDir::separator() + "spot-on_URLs" +
+	   QDir::separator() + "spot-on_key_information.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+	    bool ok = true;
+
+	    query.prepare
+	      ("INSERT OR REPLACE INTO key_information "
+	       "(cipher_type, symmetric_key) "
+	       "VALUES (?, ?)");
+	    query.bindValue
+	      (0, crypt->encryptedThenHashed(m_ui.urlCipher->currentText().
+					     toLatin1(),
+					     &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(1, crypt->
+		 encryptedThenHashed(keys.first, &ok).toBase64());
+
+	    if(ok)
+	      {
+		if(!query.exec())
+		  error = tr("Database write error.");
+	      }
+	    else
+	      error = tr("An error occurred with "
+			 "spoton_crypt::encryptedThenHashed().");
+	  }
+	else
+	  error = tr("Unable to access spot-on_key_information.db.");
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase(connectionName);
     }
   else
-    QMessageBox::critical(this, tr("%1: Error").
-			  arg(SPOTON_APPLICATION_NAME),
-			  tr("An error occurred while "
-			     "generating the key."));
+    error = tr("Key generation failure.");
+
+ done_label:
+
+  if(!error.isEmpty())
+    QMessageBox::critical(this,
+			  tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
+			  error);
 }
