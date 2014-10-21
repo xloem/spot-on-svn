@@ -1,4 +1,4 @@
--- CREATE USER spot_on_user PASSWORD 'spot_on_user';
+CREATE USER spot_on_user PASSWORD 'spot_on_user';
 
 DO $$
 BEGIN
@@ -11,8 +11,8 @@ BEGIN
 			description BYTEA,
 			title BYTEA NOT NULL,
 			url BYTEA NOT NULL,
-			url_hash TEXT PRIMARY KEY NOT NULL
-	    		)');
+			url_hash TEXT PRIMARY KEY NOT NULL)'
+		       );
 	    END LOOP;
 	END LOOP;
 END;
