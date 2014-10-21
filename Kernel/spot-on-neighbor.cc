@@ -1590,6 +1590,12 @@ void spoton_neighbor::processData(void)
 
 	  QList<QByteArray> symmetricKeys;
 	  QPair<QByteArray, QByteArray> discoveredAdaptiveEchoPair;
+
+	  /*
+	  ** The findMessageType() method does not detect StarBeam
+	  ** data.
+	  */
+
 	  QString messageType(findMessageType(data, symmetricKeys,
 					      discoveredAdaptiveEchoPair));
 
