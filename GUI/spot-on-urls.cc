@@ -311,6 +311,66 @@ void spoton::slotUrlStatisticsGathered(const qint64 count,
 
 void spoton::slotImportUrls(void)
 {
+  spoton_crypt *l_crypt = m_crypts.value("url", 0);
+
+  if(!l_crypt)
+    {
+      QMessageBox::critical
+	(this,
+	 tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
+	 tr("Invalid spoton_crypt object. This is a fatal flaw."));
+      return;
+    }
+
+  /*
+  ** We need to determine the encryption key that was
+  ** used to encrypt the URLs shared by another application.
+  */
+
+  QByteArray symmetricKey;
+  QString cipherType("");
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() + "spot-on_URLs" +
+       QDir::separator() + "spot-on_key_information.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+	bool ok = true;
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT cipher_type, symmetric_key "
+			 "FROM key_information") &&
+	   query.next())
+	  {
+	    cipherType = l_crypt->decryptedAfterAuthenticated
+	      (QByteArray::fromBase64(query.value(0).
+				      toByteArray()),
+	       &ok).constData();
+
+	    if(ok)
+	      symmetricKey = l_crypt->decryptedAfterAuthenticated
+		(QByteArray::fromBase64(query.value(1).
+					toByteArray()),
+		 &ok);
+	  }
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  if(cipherType.isEmpty() || symmetricKey.isEmpty())
+    {
+    }
+
   QProgressDialog progress(this);
 
 #ifdef Q_OS_MAC
@@ -318,15 +378,12 @@ void spoton::slotImportUrls(void)
   progress.setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
 #endif
-  progress.setLabelText(tr("Creating URL databases..."));
-  progress.setMaximum(26 * 26);
+  progress.setLabelText(tr("Importing URLs..."));
   progress.setMinimum(0);
-  progress.setWindowTitle(tr("%1: Creating URL Databases").
-    arg(SPOTON_APPLICATION_NAME));
+  progress.setWindowTitle(tr("%1: Importing URLs").
+			  arg(SPOTON_APPLICATION_NAME));
   progress.show();
   progress.update();
-
-  QString connectionName("");
 
   {
     QSqlDatabase db = spoton_misc::database(connectionName);
@@ -361,25 +418,15 @@ void spoton::slotImportUrls(void)
 		QByteArray title;
 		QByteArray url;
 		bool encrypted = query.value(1).toBool();
-		bool ok = true;
 
 		if(encrypted)
 		  {
-		    spoton_crypt *l_crypt = m_crypts.value("url", 0);
-
-		    if(!l_crypt)
-		      continue;
-
-		    /*
-		    ** We need to determine the encryption key that was
-		    ** used to encrypt the URLs shared by another application.
-		    */
-
+		    bool ok = true;
 		    spoton_crypt crypt
-		      ("aes256",
+		      (cipherType,
 		       QString(""),
 		       QByteArray(),
-		       QByteArray(),
+		       symmetricKey,
 		       0,
 		       0,
 		       QString(""));
@@ -406,7 +453,6 @@ void spoton::slotImportUrls(void)
 
 		deleteQuery.prepare("DELETE FROM urls WHERE url = ?");
 		deleteQuery.bindValue(0, query.value(3));
-		deleteQuery.exec();
 		processed += 1;
 		progress.update();
 #ifndef Q_OS_MAC
