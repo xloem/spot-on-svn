@@ -192,6 +192,9 @@ class spoton: public QMainWindow
   void gatherUrlStatistics(void);
   void highlightPaths(void);
   void importNeighbors(const QString &filePath);
+  void importUrl(const QByteArray &description,
+		 const QByteArray &title,
+		 const QByteArray &url);
   void initializeKernelSocket(void);
   void joinDefaultBuzzChannel(void);
   void magnetize(void);

@@ -63,6 +63,31 @@ void spoton::slotPrepareUrlDatabases(void)
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "spot-on_URLs" +
+       QDir::separator() + "spot-on_keyword_indices.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	if(!query.exec("CREATE TABLE IF NOT EXISTS keywords ("
+		       "database_hash TEXT NOT NULL, "
+		       "keyword_hash TEXT NOT NULL, "
+		       "PRIMARY KEY (database_hash, keyword_hash))"))
+	  created = false;
+      }
+    else
+      created = false;
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() + "spot-on_URLs" +
        QDir::separator() + "spot-on_key_information.db");
 
     if(db.open())
@@ -79,31 +104,6 @@ void spoton::slotPrepareUrlDatabases(void)
 		       "BEGIN "
 		       "DELETE FROM key_information; "
 		       "END"))
-	  created = false;
-      }
-    else
-      created = false;
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-
-    db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() + "spot-on_URLs" +
-       QDir::separator() + "spot-on_keyword_indices.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	if(!query.exec("CREATE TABLE IF NOT EXISTS keywords ("
-		       "database_hash TEXT NOT NULL, "
-		       "keyword_hash TEXT NOT NULL, "
-		       "PRIMARY KEY (database_hash, keyword_hash))"))
 	  created = false;
       }
     else
@@ -369,6 +369,11 @@ void spoton::slotImportUrls(void)
 
   if(cipherType.isEmpty() || symmetricKey.isEmpty())
     {
+      QMessageBox::critical
+	(this,
+	 tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
+	 tr("Unable to retrieve the cipher type and symmetric key."));
+      return;
     }
 
   QProgressDialog progress(this);
@@ -418,10 +423,10 @@ void spoton::slotImportUrls(void)
 		QByteArray title;
 		QByteArray url;
 		bool encrypted = query.value(1).toBool();
+		bool ok = true;
 
 		if(encrypted)
 		  {
-		    bool ok = true;
 		    spoton_crypt crypt
 		      (cipherType,
 		       QString(""),
@@ -448,6 +453,9 @@ void spoton::slotImportUrls(void)
 		    title = query.value(2).toByteArray();
 		    url = query.value(3).toByteArray();
 		  }
+
+		if(ok)
+		  importUrl(description, title, url);
 
 		QSqlQuery deleteQuery(db);
 
@@ -657,4 +665,13 @@ void spoton::slotSaveUrlCredentials(void)
     QMessageBox::critical(this,
 			  tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
 			  error);
+}
+
+void spoton::importUrl(const QByteArray &description,
+		       const QByteArray &title,
+		       const QByteArray &url)
+{
+  Q_UNUSED(description);
+  Q_UNUSED(title);
+  Q_UNUSED(url);
 }
