@@ -4236,7 +4236,7 @@ void spoton_kernel::slotProcessReceivedMessages(void)
 		 list.value(1).toLongLong(),
 		 QPair<QByteArray, QByteArray> (list.value(2).toByteArray(),
 						list.value(3).toByteArray()),
-		 list.value(4));
+		 list.value(4).toString());
 	}
     }
 }

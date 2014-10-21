@@ -1998,54 +1998,74 @@ void spoton_neighbor::write
  const QPair<QByteArray, QByteArray> &adaptiveEchoPair,
  const QString &messageType)
 {
+  if(id == m_id)
+    return;
+
   /*
-  ** A neighbor (id) received a message. This neighbor now needs
+  ** A neighbor (id) received a message. The neighbor now needs
   ** to send the message to its peer.
   */
 
-  /*
-  ** If the messageType is not empty, the data was processed correctly.
-  ** by the node having an ID of id.
-  */
+  if(!(adaptiveEchoPair == QPair<QByteArray, QByteArray> () ||
+       m_learnedAdaptiveEchoPairs.contains(adaptiveEchoPair)))
+    return;
 
-  bool adaptiveEcho = false;
-  bool superEcho = false;
-  int value = spoton_kernel::setting("gui/superEcho", 2).toInt();
+  bool ok = false;
 
-  if(adaptiveEchoPair == QPair<QByteArray, QByteArray> () ||
-     m_learnedAdaptiveEchoPairs.contains(adaptiveEchoPair))
-    adaptiveEcho = true;
+  if(messageType.isEmpty())
+    {
+      if(m_echoMode == "full")
+	ok = true;
+    }
+  else if(m_echoMode == "full") /*
+				** The echo mode supersedes the super
+				** echo setting.
+				*/
+    {
+      /*
+      ** If the messageType is not empty, the data was processed correctly
+      ** by the node having an ID of id.
+      */
 
-  if(value == 0)
-    /*
-    ** Complete.
-    */
+      int superEcho = spoton_kernel::setting("gui/superEcho", 2).toInt();
 
-    superEcho = true;
-  else if(value == 1)
-    /*
-    ** Local network.
-    */
+      if(superEcho == 0)
+	/*
+	** Complete.
+	*/
 
-    superEcho = spoton_kernel::s_kernel->areNeighborsLocal(id, m_id);
+	ok = true;
+      else if(superEcho == 1)
+	/*
+	** Local network.
+	*/
 
-  if(id != m_id)
-    if(adaptiveEcho)
-      if(m_echoMode == "full" || superEcho)
-	if(readyToWrite())
-	  {
-	    if(write(data.constData(), data.length()) != data.length())
-	      spoton_misc::logError
-		(QString("spoton_neighbor::write(): write() "
-			 "error for %1:%2.").
-		 arg(m_address.toString()).
-		 arg(m_port));
-	    else
-	      {
-		addToBytesWritten(data.length());
-		spoton_kernel::messagingCacheAdd(data);
-	      }
-	  }
+	ok = spoton_kernel::s_kernel->areNeighborsLocal(id, m_id);
+      else
+	/*
+	** None.
+	*/
+
+	ok = false;
+    }
+
+  if(!ok)
+    return;
+
+  if(readyToWrite())
+    {
+      if(write(data.constData(), data.length()) != data.length())
+	spoton_misc::logError
+	  (QString("spoton_neighbor::write(): write() "
+		   "error for %1:%2.").
+	   arg(m_address.toString()).
+	   arg(m_port));
+      else
+	{
+	  addToBytesWritten(data.length());
+	  spoton_kernel::messagingCacheAdd(data);
+	}
+    }
 }
 
 void spoton_neighbor::slotLifetimeExpired(void)
@@ -5363,24 +5383,8 @@ void spoton_neighbor::slotPublicizeListenerPlaintext(const QByteArray &data,
   ** This neighbor now needs to send the message to its peer.
   */
 
-  bool superEcho = false;
-  int value = spoton_kernel::setting("gui/superEcho", 2).toInt();
-
-  if(value == 0)
-    /*
-    ** Complete.
-    */
-
-    superEcho = true;
-  else if(value == 1)
-    /*
-    ** Local network.
-    */
-
-    superEcho = spoton_kernel::s_kernel->areNeighborsLocal(id, m_id);
-
   if(id != m_id)
-    if(m_echoMode == "full" || superEcho)
+    if(m_echoMode == "full")
       if(readyToWrite())
 	{
 	  QByteArray message(spoton_send::message0030(data));

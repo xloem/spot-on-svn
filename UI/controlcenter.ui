@@ -454,7 +454,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>956</width>
-                <height>447</height>
+                <height>458</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -1999,7 +1999,7 @@
              <x>0</x>
              <y>0</y>
              <width>856</width>
-             <height>341</height>
+             <height>468</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2583,7 +2583,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>275</width>
+                     <width>265</width>
                      <height>1407</height>
                     </rect>
                    </property>
@@ -4169,7 +4169,7 @@
                <property name="geometry">
                 <rect>
                  <x>0</x>
-                 <y>-205</y>
+                 <y>0</y>
                  <width>730</width>
                  <height>287</height>
                 </rect>
@@ -4915,7 +4915,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>810</width>
+             <width>780</width>
              <height>1041</height>
             </rect>
            </property>
@@ -5442,6 +5442,9 @@
                    </item>
                    <item>
                     <widget class="QComboBox" name="superEcho">
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Courier New,courier';&quot;&gt;If enabled, messages that are deciphered correctly will be echoed. Please note that this option will advertise your presence. This option does not supersede a half-echo agreement.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
                      <property name="currentIndex">
                       <number>2</number>
                      </property>
@@ -6109,7 +6112,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>491</width>
+             <width>758</width>
              <height>549</height>
             </rect>
            </property>
@@ -7081,8 +7084,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>247</width>
-             <height>409</height>
+             <width>776</width>
+             <height>486</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7563,8 +7566,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>265</width>
-             <height>185</height>
+             <width>758</width>
+             <height>508</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
