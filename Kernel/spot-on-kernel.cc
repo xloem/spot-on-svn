@@ -4235,14 +4235,16 @@ void spoton_kernel::slotProcessReceivedMessages(void)
 		(list.value(0).toByteArray(),
 		 list.value(1).toLongLong(),
 		 QPair<QByteArray, QByteArray> (list.value(2).toByteArray(),
-						list.value(3).toByteArray()));
+						list.value(3).toByteArray()),
+		 list.value(4));
 	}
     }
 }
 
 void spoton_kernel::receivedMessage
 (const QByteArray &data, const qint64 id,
- const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
+ const QPair<QByteArray, QByteArray> &adaptiveEchoPair,
+ const QString &messageType)
 {
   QList<QVariant> list;
 
@@ -4250,6 +4252,7 @@ void spoton_kernel::receivedMessage
   list.append(id);
   list.append(adaptiveEchoPair.first);
   list.append(adaptiveEchoPair.second);
+  list.append(messageType);
 
   QWriteLocker locker(&s_messagesToProcessMutex);
 

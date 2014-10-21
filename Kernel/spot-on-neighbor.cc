@@ -1629,24 +1629,28 @@ void spoton_neighbor::processData(void)
 	    {
 	      if(messageType != "0060") // StarBeam
 		spoton_kernel::receivedMessage
-		  (originalData, m_id, QPair<QByteArray, QByteArray> ());
+		  (originalData, m_id, QPair<QByteArray, QByteArray> (),
+		   messageType);
 	    }
 	  else if(m_echoMode == "full")
 	    {
 	      if(messageType == "0001b" &&
 		 data.trimmed().split('\n').size() == 7)
 		spoton_kernel::receivedMessage
-		  (originalData, m_id, discoveredAdaptiveEchoPair);
+		  (originalData, m_id, discoveredAdaptiveEchoPair,
+		   messageType);
 	      else if(messageType.isEmpty() || messageType == "0002b")
 		spoton_kernel::receivedMessage
-		  (originalData, m_id, discoveredAdaptiveEchoPair);
+		  (originalData, m_id, discoveredAdaptiveEchoPair,
+		   messageType);
 	      else if(messageType == "0040a" || messageType == "0040b")
 		/*
 		** Buzz.
 		*/
 
 		spoton_kernel::receivedMessage
-		  (originalData, m_id, QPair<QByteArray, QByteArray> ());
+		  (originalData, m_id, QPair<QByteArray, QByteArray> (),
+		   messageType);
 	    }
 	}
     }
@@ -1991,11 +1995,17 @@ void spoton_neighbor::slotSendMessage
 
 void spoton_neighbor::write
 (const QByteArray &data, const qint64 id,
- const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
+ const QPair<QByteArray, QByteArray> &adaptiveEchoPair,
+ const QString &messageType)
 {
   /*
   ** A neighbor (id) received a message. This neighbor now needs
   ** to send the message to its peer.
+  */
+
+  /*
+  ** If the messageType is not empty, the data was processed correctly.
+  ** by the node having an ID of id.
   */
 
   bool adaptiveEcho = false;

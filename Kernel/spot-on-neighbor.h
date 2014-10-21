@@ -159,7 +159,8 @@ class spoton_neighbor: public QThread
   void processData(void);
   void setId(const qint64 id);
   void write(const QByteArray &data, const qint64 id,
-	     const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
+	     const QPair<QByteArray, QByteArray> &adaptiveEchoPair,
+	     const QString &messageType);
 
  private:
   QByteArray m_accountName;

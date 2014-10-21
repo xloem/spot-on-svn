@@ -83,7 +83,8 @@ class spoton_kernel: public QObject
 				const int add_msecs = 0);
   static void receivedMessage
     (const QByteArray &data, const qint64 id,
-     const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
+     const QPair<QByteArray, QByteArray> &adaptiveEchoPair,
+     const QString &messageType);
   static void removeBuzzKey(const QByteArray &data);
   bool acceptRemoteConnection(const QHostAddress &localAddress,
 			      const QHostAddress &peerAddress);
