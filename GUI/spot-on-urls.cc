@@ -63,31 +63,6 @@ void spoton::slotPrepareUrlDatabases(void)
 
     db.setDatabaseName
       (spoton_misc::homePath() + QDir::separator() + "spot-on_URLs" +
-       QDir::separator() + "spot-on_keyword_indices.db");
-
-    if(db.open())
-      {
-	QSqlQuery query(db);
-
-	if(!query.exec("CREATE TABLE IF NOT EXISTS keywords ("
-		       "database_hash TEXT NOT NULL, "
-		       "keyword_hash TEXT NOT NULL, "
-		       "PRIMARY KEY (database_hash, keyword_hash))"))
-	  created = false;
-      }
-    else
-      created = false;
-
-    db.close();
-  }
-
-  QSqlDatabase::removeDatabase(connectionName);
-
-  {
-    QSqlDatabase db = spoton_misc::database(connectionName);
-
-    db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() + "spot-on_URLs" +
        QDir::separator() + "spot-on_key_information.db");
 
     if(db.open())
@@ -120,21 +95,9 @@ void spoton::slotPrepareUrlDatabases(void)
 	if(processed <= progress.maximum())
 	  progress.setValue(processed);
 
-	QString connectionName("");
-
-	{
-	  QSqlDatabase db = spoton_misc::database(connectionName);
-
-	  db.setDatabaseName
-	    (spoton_misc::homePath() + QDir::separator() + "spot-on_URLs" +
-	     QDir::separator() +
-	     QString("spot-on_urls_%1%2.db").
-	     arg(static_cast<char> (i + 97)).
-	     arg(static_cast<char> (j + 97)));
-
-	  if(db.open())
+	  if(m_urlDatabase.open())
 	    {
-	      QSqlQuery query(db);
+	      QSqlQuery query(m_urlDatabase);
 
 	      if(!query.exec("CREATE TABLE IF NOT EXISTS keywords ("
 			     "keyword_hash TEXT NOT NULL, "
@@ -152,11 +115,8 @@ void spoton::slotPrepareUrlDatabases(void)
 	    }
 	  else
 	    created = false;
-
-	  db.close();
 	}
 
-	QSqlDatabase::removeDatabase(connectionName);
 	processed += 1;
 	progress.update();
 #ifndef Q_OS_MAC
