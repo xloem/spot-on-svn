@@ -139,6 +139,7 @@ class spoton: public QMainWindow
   Phonon::MediaObject *m_mediaObject;
 #endif
 #endif
+  QSqlDatabase m_urlDatabase;
   QSslSocket m_kernelSocket;
   QTimer m_buzzStatusTimer;
   QTimer m_chatInactivityTimer;
