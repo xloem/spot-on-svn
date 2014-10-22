@@ -162,7 +162,7 @@ class spoton: public QMainWindow
   QPixmap pixmapForCountry(const QString &country) const;
   QString currentTabName(void) const;
   QStringList parseAEMagnet(const QString &magnet) const;
-  bool deleteAllUrls(void) const;
+  bool deleteAllUrls(void);
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000 && QT_VERSION < 0x050300
   bool event(QEvent *event);

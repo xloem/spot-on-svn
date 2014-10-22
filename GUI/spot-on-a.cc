@@ -193,6 +193,19 @@ spoton::spoton(void):QMainWindow()
      arg(GCRYPT_VERSION));
   m_ui.statisticsBox->setVisible(false);
   m_ui.urlSettings->setVisible(false);
+  m_ui.postgresqlConnect->setEnabled(false);
+
+  foreach(QString driver, QSqlDatabase::drivers())
+    if(driver.toLower().contains("qpsql"))
+      {
+	m_ui.postgresqlConnect->setEnabled(true);
+	break;
+      }
+
+  if(!m_ui.postgresqlConnect->isEnabled())
+    m_ui.postgresqlConnect->setToolTip(tr("Unable to locate the QPSQL "
+					  "database driver."));
+
 #ifndef SPOTON_LINKED_WITH_LIBGEOIP
   m_ui.geoipPath4->setEnabled(false);
   m_ui.geoipPath4->setToolTip
