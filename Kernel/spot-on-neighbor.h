@@ -213,23 +213,23 @@ class spoton_neighbor: public QThread
      QList<QByteArray> &symmetricKeys,
      QPair<QByteArray, QByteArray> &discoveredAdaptiveEchoPair);
   bool readyToWrite(void);
-  void process0000(int length, const QByteArray &data,
+  bool process0000(int length, const QByteArray &data,
+		   const QList<QByteArray> &symmetricKeys);
+  bool process0000b(int length, const QByteArray &data,
+		    const QList<QByteArray> &symmetricKeys);
+  bool process0001b(int length, const QByteArray &data,
+		    const QList<QByteArray> &symmetricKeys);
+  bool process0002b(int length, const QByteArray &data,
+		    const QList<QByteArray> &symmetricKeys,
+		    const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
+  bool process0013(int length, const QByteArray &data,
 		   const QList<QByteArray> &symmetricKeys);
   void process0000a(int length, const QByteArray &data);
-  void process0000b(int length, const QByteArray &data,
-		    const QList<QByteArray> &symmetricKeys);
   void process0001a(int length, const QByteArray &data);
-  void process0001b(int length, const QByteArray &data,
-		    const QList<QByteArray> &symmetricKeys);
   void process0002a(int length, const QByteArray &data,
-		    const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
-  void process0002b(int length, const QByteArray &data,
-		    const QList<QByteArray> &symmetricKeys,
 		    const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
   void process0011(int length, const QByteArray &data);
   void process0012(int length, const QByteArray &data);
-  void process0013(int length, const QByteArray &data,
-		   const QList<QByteArray> &symmetricKeys);
   void process0014(int length, const QByteArray &data);
   void process0030(int length, const QByteArray &data);
   void process0040a(int length, const QByteArray &data,

@@ -630,4 +630,24 @@ void spoton::slotPostgreSQLConnect(void)
 #ifdef Q_OS_MAC
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #endif
+
+  if(dialog.exec() == QDialog::Accepted)
+    {
+      m_urlDatabase.close();
+      m_urlDatabase = QSqlDatabase();
+
+      if(QSqlDatabase::contains("PostgreSQL"))
+	QSqlDatabase::removeDatabase("PostgreSQL");
+
+      m_urlDatabase = QSqlDatabase::addDatabase("PostgreSQL");
+      m_urlDatabase.setHostName(ui.host->text());
+      m_urlDatabase.setDatabaseName(ui.database->text());
+      m_urlDatabase.open(ui.name->text(), ui.password->text());
+
+      if(!m_urlDatabase.isOpen())
+	{
+	  m_urlDatabase = QSqlDatabase();
+	  QSqlDatabase::removeDatabase("PostgreSQL");
+	}
+    }
 }

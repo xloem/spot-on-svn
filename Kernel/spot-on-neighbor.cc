@@ -1600,22 +1600,37 @@ void spoton_neighbor::processData(void)
 					      discoveredAdaptiveEchoPair));
 
 	  if(messageType == "0000")
-	    process0000(length, data, symmetricKeys);
+	    {
+	      if(!process0000(length, data, symmetricKeys))
+		messageType.clear();
+	    }
 	  else if(messageType == "0000a")
 	    process0000a(length, data);
 	  else if(messageType == "0000b")
-	    process0000b(length, data, symmetricKeys);
+	    {
+	      if(!process0000b(length, data, symmetricKeys))
+		messageType.clear();
+	    }
 	  else if(messageType == "0001a")
 	    process0001a(length, data);
 	  else if(messageType == "0001b")
-	    process0001b(length, data, symmetricKeys);
+	    {
+	      if(!process0001b(length, data, symmetricKeys))
+		messageType.clear();
+	    }
 	  else if(messageType == "0002a")
 	    process0002a(length, data, discoveredAdaptiveEchoPair);
 	  else if(messageType == "0002b")
-	    process0002b
-	      (length, data, symmetricKeys, discoveredAdaptiveEchoPair);
+	    {
+	      if(!process0002b(length, data, symmetricKeys,
+			       discoveredAdaptiveEchoPair))
+		messageType.clear();
+	    }
 	  else if(messageType == "0013")
-	    process0013(length, data, symmetricKeys);
+	    {
+	      if(!process0013(length, data, symmetricKeys))
+		messageType.clear();
+	    }
 	  else if(messageType == "0040a")
 	    process0040a(length, data, symmetricKeys);
 	  else if(messageType == "0040b")
@@ -2173,13 +2188,13 @@ void spoton_neighbor::slotSharePublicKey(const QByteArray &keyType,
     }
 }
 
-void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
+bool spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 				  const QList<QByteArray> &symmetricKeys)
 {
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   if(!s_crypt)
-    return;
+    return false;
 
   QByteArray data(dataIn);
 
@@ -2250,7 +2265,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 				     "Expecting 3 "
 				     "entries, "
 				     "received %1.").arg(list.size()));
-			  return;
+			  return false;
 			}
 		    }
 		  else
@@ -2259,12 +2274,12 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 					    "process0000(): "
 					    "computed message code does "
 					    "not match provided code.");
-		      return;
+		      return false;
 		    }
 		}
 	    }
 	  else
-	    return; // A gemini was not discovered. We need to echo.
+	    return false; // A gemini was not discovered. We need to echo.
 	}
       else if(list.size() != 4)
 	{
@@ -2273,7 +2288,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 		     "received irregular data. Expecting 4 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
-	  return;
+	  return false;
 	}
 
       for(int i = 0; i < list.size(); i++)
@@ -2308,7 +2323,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 			 "Expecting 3 "
 			 "entries, "
 			 "received %1.").arg(list.size()));
-	      return;
+	      return false;
 	    }
 	}
 
@@ -2371,7 +2386,7 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 				      ("spoton_neighbor::"
 				       "process0000(): invalid "
 				       "signature.");
-				    return;
+				    return false;
 				  }
 
 			      saveParticipantStatus
@@ -2383,15 +2398,18 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
 				 !list.value(2).isEmpty() &&
 				 !list.value(3).isEmpty() &&
 				 !list.value(4).isEmpty())
-				emit receivedChatMessage
-				  ("message_" +
-				   list.value(0).toBase64() + "_" +
-				   list.value(1).toBase64() + "_" +
-				   list.value(2).toBase64() + "_" +
-				   list.value(3).toBase64() + "_" +
-				   list.value(4).toBase64() + "_" +
-				   messageCode.toBase64().
-				   append('\n'));
+				{
+				  emit receivedChatMessage
+				    ("message_" +
+				     list.value(0).toBase64() + "_" +
+				     list.value(1).toBase64() + "_" +
+				     list.value(2).toBase64() + "_" +
+				     list.value(3).toBase64() + "_" +
+				     list.value(4).toBase64() + "_" +
+				     messageCode.toBase64().
+				     append('\n'));
+				  return true;
+				}
 			    }
 			}
 		      else
@@ -2419,6 +2437,8 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
        arg(length).arg(data.length()).
        arg(m_address.toString()).
        arg(m_port));
+
+  return false;
 }
 
 void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
@@ -2579,13 +2599,13 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
        arg(m_port));
 }
 
-void spoton_neighbor::process0000b(int length, const QByteArray &dataIn,
+bool spoton_neighbor::process0000b(int length, const QByteArray &dataIn,
 				   const QList<QByteArray> &symmetricKeys)
 {
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   if(!s_crypt)
-    return;
+    return false;
 
   QByteArray data(dataIn);
 
@@ -2603,7 +2623,7 @@ void spoton_neighbor::process0000b(int length, const QByteArray &dataIn,
 		     "received irregular data. Expecting 3 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
-	  return;
+	  return false;
 	}
 
       bool ok = true;
@@ -2666,11 +2686,12 @@ void spoton_neighbor::process0000b(int length, const QByteArray &dataIn,
 			  ("spoton_neighbor::"
 			   "process0000b(): invalid "
 			   "signature.");
-			return;
+			return false;
 		      }
 
 		  saveGemini(list.value(1), list.value(2),
 			     list.value(3));
+		  return true;
 		}
 	    }
 	  else
@@ -2690,6 +2711,8 @@ void spoton_neighbor::process0000b(int length, const QByteArray &dataIn,
        arg(length).arg(data.length()).
        arg(m_address.toString()).
        arg(m_port));
+
+  return false;
 }
 
 void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
@@ -3005,13 +3028,13 @@ void spoton_neighbor::process0001a(int length, const QByteArray &dataIn)
        arg(m_port));
 }
 
-void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
+bool spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 				   const QList<QByteArray> &symmetricKeys)
 {
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
 
   if(!s_crypt)
-    return;
+    return false;
 
   QByteArray data(dataIn);
 
@@ -3029,7 +3052,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 		     "received irregular data. Expecting 4 or 7 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
-	  return;
+	  return false;
 	}
 
       for(int i = 0; i < list.size(); i++)
@@ -3067,7 +3090,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 			     "Expecting 3 "
 			     "entries, "
 			     "received %1.").arg(list.size()));
-		  return;
+		  return false;
 		}
 	    }
 
@@ -3118,7 +3141,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 				 list.value(6),  // Signature
 				 QVariant(list.value(7)).
 				 toBool());      // Gold Bug Used?
-			      return;
+			      return true;
 			    }
 			  else
 			    {
@@ -3128,7 +3151,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 					 "Expecting 8 "
 					 "entries, "
 					 "received %1.").arg(list.size()));
-			      return;
+			      return false;
 			    }
 			}
 		    }
@@ -3137,7 +3160,7 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 		      spoton_misc::logError("spoton_neighbor::process0001b(): "
 					    "computed message code does "
 					    "not match provided code.");
-		      return;
+		      return false;
 		    }
 		}
 	    }
@@ -3168,7 +3191,10 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
 	    if(!publicKeyHash.isEmpty())
 	      if(spoton_misc::isAcceptedParticipant(publicKeyHash, "email",
 						    s_crypt))
-		storeLetter(list.mid(0, 3), publicKeyHash);
+		{
+		  storeLetter(list.mid(0, 3), publicKeyHash);
+		  return true;
+		}
 	  }
     }
   else
@@ -3179,6 +3205,8 @@ void spoton_neighbor::process0001b(int length, const QByteArray &dataIn,
        arg(length).arg(data.length()).
        arg(m_address.toString()).
        arg(m_port));
+
+  return false;
 }
 
 void spoton_neighbor::process0002a
@@ -3322,7 +3350,7 @@ void spoton_neighbor::process0002a
        arg(m_port));
 }
 
-void spoton_neighbor::process0002b
+bool spoton_neighbor::process0002b
 (int length, const QByteArray &dataIn,
  const QList<QByteArray> &symmetricKeys,
  const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
@@ -3330,7 +3358,7 @@ void spoton_neighbor::process0002b
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("email", 0);
 
   if(!s_crypt)
-    return;
+    return false;
 
   QByteArray data(dataIn);
 
@@ -3347,7 +3375,7 @@ void spoton_neighbor::process0002b
 	    (QString("spoton_neighbor::process0002b(): "
 		     "received irregular data. Expecting 3 entries, "
 		     "received %1.").arg(list.size()));
-	  return;
+	  return false;
 	}
 
       bool ok = true;
@@ -3421,6 +3449,7 @@ void spoton_neighbor::process0002b
 				 publicKeyHash,  // Public Key Hash
 				 list.value(4),  // Signature
 				 adaptiveEchoPair);
+			      return true;
 			    }
 			}
 		      else
@@ -3451,6 +3480,8 @@ void spoton_neighbor::process0002b
        arg(length).arg(data.length()).
        arg(m_address.toString()).
        arg(m_port));
+
+  return false;
 }
 
 void spoton_neighbor::process0011(int length, const QByteArray &dataIn)
@@ -3570,13 +3601,13 @@ void spoton_neighbor::process0012(int length, const QByteArray &dataIn)
        arg(m_port));
 }
 
-void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
+bool spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 				  const QList<QByteArray> &symmetricKeys)
 {
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
   if(!s_crypt)
-    return;
+    return false;
 
   QByteArray data(dataIn);
 
@@ -3646,7 +3677,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 				     "Expecting 3 "
 				     "entries, "
 				     "received %1.").arg(list.size()));
-			  return;
+			  return false;
 			}
 		    }
 		  else
@@ -3655,12 +3686,12 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 					    "process0013(): "
 					    "computed message code does "
 					    "not match provided code.");
-		      return;
+		      return false;
 		    }
 		}
 	    }
 	  else
-	    return; // A gemini was not discovered. We need to echo.
+	    return false; // A gemini was not discovered. We need to echo.
 	}
       else if(list.size() != 4)
 	{
@@ -3669,7 +3700,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 		     "received irregular data. Expecting 4 "
 		     "entries, "
 		     "received %1.").arg(list.size()));
-	  return;
+	  return false;
 	}
 
       for(int i = 0; i < list.size(); i++)
@@ -3704,7 +3735,7 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 			 "Expecting 3 "
 			 "entries, "
 			 "received %1.").arg(list.size()));
-	      return;
+	      return false;
 	    }
 	}
 
@@ -3763,13 +3794,14 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
 				      ("spoton_neighbor::"
 				       "process0013(): invalid "
 				       "signature.");
-				    return;
+				    return false;
 				  }
 
 			      saveParticipantStatus
 				(list.value(1),  // Name
 				 list.value(0),  // Public Key Hash
 				 list.value(2)); // Status
+			      return true;
 			    }
 			}
 		      else
@@ -3796,6 +3828,8 @@ void spoton_neighbor::process0013(int length, const QByteArray &dataIn,
        arg(length).arg(data.length()).
        arg(m_address.toString()).
        arg(m_port));
+
+  return false;
 }
 
 void spoton_neighbor::process0014(int length, const QByteArray &dataIn)
