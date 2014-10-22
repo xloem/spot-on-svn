@@ -1123,6 +1123,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSaveUrlCredentials(void)));
+  connect(m_ui.postgresqlConnect,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotPostgreSQLConnect(void)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,

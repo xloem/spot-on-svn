@@ -36,6 +36,7 @@
 
 #include "spot-on.h"
 #include "spot-on-defines.h"
+#include "ui_postgresqlconnect.h"
 
 void spoton::slotPrepareUrlDatabases(void)
 {
@@ -99,28 +100,30 @@ void spoton::slotPrepareUrlDatabases(void)
 	    {
 	      QSqlQuery query(m_urlDatabase);
 
-	      if(!query.exec("CREATE TABLE IF NOT EXISTS keywords ("
-			     "keyword_hash TEXT NOT NULL, "
-			     "url_hash TEXT NOT NULL, "
-			     "PRIMARY KEY (keyword_hash, url_hash))"))
+	      if(!query.exec(QString("CREATE TABLE IF NOT EXISTS "
+				     "keywords_%1%2 ("
+				     "keyword_hash TEXT NOT NULL, "
+				     "url_hash TEXT NOT NULL, "
+				     "PRIMARY KEY (keyword_hash, url_hash))").
+			     arg(QChar(i + 97)).arg(QChar(j + 97))))
 		created = false;
 
-	      if(!query.exec("CREATE TABLE IF NOT EXISTS urls ("
-			     "date_time_inserted TEXT NOT NULL, "
-			     "description BLOB, "
-			     "title BLOB NOT NULL, "
-			     "url BLOB NOT NULL, "
-			     "url_hash TEXT PRIMARY KEY NOT NULL)"))
+	      if(!query.exec(QString("CREATE TABLE IF NOT EXISTS urls_%1%2 ("
+				     "date_time_inserted TEXT NOT NULL, "
+				     "description BLOB, "
+				     "title BLOB NOT NULL, "
+				     "url BLOB NOT NULL, "
+				     "url_hash TEXT PRIMARY KEY NOT NULL)").
+			     arg(QChar(i + 97)).arg(QChar(j + 97))))
 		created = false;
 	    }
 	  else
 	    created = false;
-	}
 
-	processed += 1;
-	progress.update();
+	  processed += 1;
+	  progress.update();
 #ifndef Q_OS_MAC
-	QApplication::processEvents();
+	  QApplication::processEvents();
 #endif
       }
 
@@ -188,10 +191,6 @@ bool spoton::deleteAllUrls(void) const
       if(dir.exists("spot-on_key_information.db"))
 	if(!dir.remove("spot-on_key_information.db"))
 	  deleted = false;
-
-      if(dir.exists("spot-on_keyword_indices.db"))
-	if(!dir.remove("spot-on_keyword_indices.db"))
-	  deleted = false;
     }
   else
     deleted = false;
@@ -206,6 +205,11 @@ void spoton::slotGatherUrlStatistics(void)
 {
   if(!m_gatherUrlStatisticsFuture.isFinished())
     return;
+  else if(!m_urlDatabase.isOpen())
+    {
+      emit urlStatisticsGathered(0, 0);
+      return;
+    }
 
   m_ui.gatherStatistics->setEnabled(false);
   m_gatherUrlStatisticsFuture = QtConcurrent::run
@@ -223,36 +227,12 @@ void spoton::gatherUrlStatistics(void)
 	if(m_gatherUrlStatisticsFuture.isCanceled())
 	  goto done_label;
 
-	QFileInfo fileInfo
-	  (QString("%1%2%3%2spot-on_urls_%4%5.db").
-	   arg(spoton_misc::homePath()).
-	   arg(QDir::separator()).
-	   arg("spot-on_URLs").
-	   arg(static_cast<char> (i + 97)).
-	   arg(static_cast<char> (j + 97)));
+	QSqlQuery query(m_urlDatabase);
 
-	size += fileInfo.size();
-
-	QString connectionName("");
-
-	{
-	  QSqlDatabase db = spoton_misc::database(connectionName);
-
-	  db.setDatabaseName(fileInfo.absoluteFilePath());
-
-	  if(db.open())
-	    {
-	      QSqlQuery query(db);
-
-	      if(query.exec("SELECT COUNT(*) FROM urls"))
-		if(query.next())
-		  count += query.value(0).toLongLong();
-	    }
-
-	  db.close();
-	}
-
-	QSqlDatabase::removeDatabase(connectionName);
+	if(query.exec(QString("SELECT COUNT(*) FROM urls_%1%2").
+		      arg(QChar(i + 97)).arg(QChar(i + 97))))
+	  if(query.next())
+	    count += query.value(0).toLongLong();
       }
 
  done_label:
@@ -625,6 +605,8 @@ void spoton::slotSaveUrlCredentials(void)
     QMessageBox::critical(this,
 			  tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
 			  error);
+  else
+    m_ui.urlPassphrase->clear();
 }
 
 void spoton::importUrl(const QByteArray &description,
@@ -634,4 +616,18 @@ void spoton::importUrl(const QByteArray &description,
   Q_UNUSED(description);
   Q_UNUSED(title);
   Q_UNUSED(url);
+}
+
+void spoton::slotPostgreSQLConnect(void)
+{
+  QDialog dialog(this);
+  Ui_postgresqlconnect ui;
+
+  dialog.setWindowTitle
+    (tr("%1: PostgreSQL Connect").
+     arg(SPOTON_APPLICATION_NAME));
+  ui.setupUi(&dialog);
+#ifdef Q_OS_MAC
+  dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+#endif
 }

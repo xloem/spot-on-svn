@@ -381,6 +381,7 @@ class spoton: public QMainWindow
   void slotPopulateNeighbors(void);
   void slotPopulateParticipants(void);
   void slotPopulateStars(void);
+  void slotPostgreSQLConnect(void);
   void slotPrepareUrlDatabases(void);
   void slotProtocolRadioToggled(bool state);
   void slotProxyChecked(bool state);
