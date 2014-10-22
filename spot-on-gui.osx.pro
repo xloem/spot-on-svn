@@ -58,6 +58,7 @@ FORMS           = UI/adaptiveechoprompt.ui \
 		  UI/ipinformation.ui \
                   UI/logviewer.ui \
                   UI/passwordprompt.ui \
+		  UI/postgresqlconnect.ui \
 		  UI/rosetta.ui \
                   UI/starbeamanalyzer.ui \
 		  UI/statusbar.ui
