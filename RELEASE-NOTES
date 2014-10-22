@@ -31,18 +31,7 @@
      the starbeam.db database.
 19.  Do not update Listeners, Neighbors, and StarBeam widgets unless the
      widgets are visible.
-20.  The Super Echo now supports two modes: complete and local network.
-     Because the previous implementation supported Boolean values, please
-     inspect the translated value under the Settings tab.
-     Test case 1.
-     Suppose server S has Local Network Super Echo enabled. Neighbors
-     (192, 37), (192, 38), and (192, 192) are connected to S. S will echo messages
-     from (192, 74) to (192, 192). The Super Echo will enable S and (192, 192)
-     to possess identical keys.
-     Test case 2.
-     Suppose server S has Local Network Supper Echo enabled. Neighbors
-     (37, 90), (37, 91), and (37, 37) are connected to S. S will echo messages
-     from (37, 90) to (37, 37).
+20.  The Super Echo must not interfere with echo modes.
 
 0.15 (10/10/2014)
 
