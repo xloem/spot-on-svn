@@ -4235,16 +4235,14 @@ void spoton_kernel::slotProcessReceivedMessages(void)
 		(list.value(0).toByteArray(),
 		 list.value(1).toLongLong(),
 		 QPair<QByteArray, QByteArray> (list.value(2).toByteArray(),
-						list.value(3).toByteArray()),
-		 list.value(4).toString());
+						list.value(3).toByteArray()));
 	}
     }
 }
 
 void spoton_kernel::receivedMessage
 (const QByteArray &data, const qint64 id,
- const QPair<QByteArray, QByteArray> &adaptiveEchoPair,
- const QString &messageType)
+ const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
   QList<QVariant> list;
 
@@ -4252,48 +4250,8 @@ void spoton_kernel::receivedMessage
   list.append(id);
   list.append(adaptiveEchoPair.first);
   list.append(adaptiveEchoPair.second);
-  list.append(messageType);
 
   QWriteLocker locker(&s_messagesToProcessMutex);
 
   s_messagesToProcess.append(list);
-}
-
-bool spoton_kernel::areNeighborsLocal(const qint64 fromId, const qint64 toId)
-{
-  QHostAddress fromLocalAddress;
-  QHostAddress toLocalAddress;
-  QHostAddress toRemoteAddress;
-  QPointer<spoton_neighbor> fromNeighbor = 0;
-  QPointer<spoton_neighbor> toNeighbor = 0;
-
-  if(m_neighbors.contains(toId))
-    toNeighbor = m_neighbors[toId];
-
-  if(!toNeighbor)
-    return false;
-
-  toLocalAddress = toNeighbor->localAddress();
-  toRemoteAddress = toNeighbor->peerAddress();
-
-  if(spoton_misc::isPrivateNetwork(toLocalAddress) &&
-     spoton_misc::isPrivateNetwork(toRemoteAddress))
-    return true;
-
-  if(m_neighbors.contains(fromId))
-    fromNeighbor = m_neighbors[fromId];
-
-  if(!fromNeighbor)
-    return false;
-
-  fromLocalAddress = fromNeighbor->localAddress();
-
-  if(!fromLocalAddress.isNull() &&
-     !toLocalAddress.isNull() &&
-     !toRemoteAddress.isNull() &&
-     fromLocalAddress == toLocalAddress &&
-     toLocalAddress == toRemoteAddress)
-    return true;
-
-  return false;
 }

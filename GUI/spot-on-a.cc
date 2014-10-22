@@ -1537,7 +1537,7 @@ spoton::spoton(void):QMainWindow()
   m_ui.scrambler->setChecked
     (m_settings.value("gui/scramblerEnabled", false).toBool());
   m_ui.superEcho->setCurrentIndex
-    (m_settings.value("gui/superEcho", 2).toInt());
+    (m_settings.value("gui/superEcho", 1).toInt());
   m_ui.chatAcceptSigned->setChecked
     (m_settings.value("gui/chatAcceptSignedMessagesOnly", true).toBool());
   m_ui.chatSignMessages->setChecked
