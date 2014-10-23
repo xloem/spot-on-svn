@@ -212,25 +212,22 @@ bool spoton::deleteAllUrls(void)
 #endif
       }
 
-  if(deleted)
+  QDir dir(spoton_misc::homePath());
+
+  if(!dir.exists("spot-on_URLs"))
+    return deleted;
+
+  if(dir.cd("spot-on_URLs"))
     {
-      QDir dir(spoton_misc::homePath());
-
-      if(!dir.exists("spot-on_URLs"))
-	return true;
-
-      if(dir.cd("spot-on_URLs"))
-	{
-	  if(dir.exists("spot-on_key_information.db"))
-	    if(!dir.remove("spot-on_key_information.db"))
-	      deleted = false;
-	}
-      else
-	deleted = false;
-
-      if(!QDir(spoton_misc::homePath()).rmdir("spot-on_URLs"))
-	deleted = false;
+      if(dir.exists("spot-on_key_information.db"))
+	if(!dir.remove("spot-on_key_information.db"))
+	  deleted = false;
     }
+  else
+    deleted = false;
+
+  if(!QDir(spoton_misc::homePath()).rmdir("spot-on_URLs"))
+    deleted = false;
 
   return deleted;
 }
