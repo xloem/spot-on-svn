@@ -262,7 +262,7 @@ void spoton::gatherUrlStatistics(void)
 
 	QSqlQuery query(m_urlDatabase);
 
-	if(query.exec(QString("SELECT COUNT(*) FROM urls_%1%2").
+	if(query.exec(QString("SELECT COUNT(*) FROM spot_on_urls_%1%2").
 		      arg(QChar(i + 97)).arg(QChar(i + 97))))
 	  if(query.next())
 	    count += query.value(0).toLongLong();
@@ -653,9 +653,10 @@ void spoton::importUrl(const QByteArray &description,
 
 void spoton::slotPostgreSQLConnect(void)
 {
-  if(m_ui.postgresqlConnect->property("text") == "disconnect")
+  if(m_ui.postgresqlConnect->
+     property("user_text").toString() == "disconnect")
     {
-      m_ui.postgresqlConnect->setProperty("text", "connect");
+      m_ui.postgresqlConnect->setProperty("user_text", "connect");
       m_ui.postgresqlConnect->setText(tr("PostgreSQL Connect"));
       m_urlDatabase = QSqlDatabase();
 
@@ -702,7 +703,7 @@ void spoton::slotPostgreSQLConnect(void)
 	}
       else
 	{
-	  m_ui.postgresqlConnect->setProperty("text", "disconnect");
+	  m_ui.postgresqlConnect->setProperty("user_text", "disconnect");
 	  m_ui.postgresqlConnect->setText(tr("PostgreSQL Disconnect"));
 	}
     }
