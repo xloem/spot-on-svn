@@ -1327,16 +1327,27 @@ spoton::spoton(void):QMainWindow()
       (settings.allKeys().at(i));
 
   spoton_misc::correctSettingsContainer(m_settings);
+
+  m_ui.chatUpdateInterval->setValue
+    (m_settings.value("gui/participantsUpdateTimer", 3.50).toDouble());
+  m_ui.kernelUpdateInterval->setValue
+    (m_settings.value("gui/kernelUpdateTimer", 3.50).toDouble());
+  m_ui.listenersUpdateInterval->setValue
+    (m_settings.value("gui/listenersUpdateTimer", 3.50).toDouble());
+  m_ui.neighborsUpdateInterval->setValue
+    (m_settings.value("gui/neighborsUpdateTimer", 3.50).toDouble());
+  m_ui.starbeamUpdateInterval->setValue
+    (m_settings.value("gui/starbeamUpdateTimer", 3.50).toDouble());
   m_kernelUpdateTimer.start
-    (m_settings.value("gui/kernelUpdateTimer", 3500).toInt());
+    (static_cast<int> (1000 * m_ui.kernelUpdateInterval->value()));
   m_listenersUpdateTimer.start
-    (m_settings.value("gui/listenersUpdateTimer", 3500).toInt());
+    (static_cast<int> (1000 * m_ui.listenersUpdateInterval->value()));
   m_neighborsUpdateTimer.start
-    (m_settings.value("gui/neighborsUpdateTimer", 3500).toInt());
+    (static_cast<int> (1000 * m_ui.neighborsUpdateInterval->value()));
   m_participantsUpdateTimer.start
-    (m_settings.value("gui/participantsUpdateTimer", 3500).toInt());
+    (static_cast<int> (1000 * m_ui.chatUpdateInterval->value()));
   m_starbeamUpdateTimer.start
-    (m_settings.value("gui/starbeamUpdateTimer", 3500).toInt());
+    (static_cast<int> (1000 * m_ui.starbeamUpdateInterval->value()));
   m_tableTimer.start(3500);
 
 #if SPOTON_GOLDBUG == 1
