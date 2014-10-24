@@ -146,6 +146,11 @@ class spoton: public QMainWindow
   QTimer m_emailRetrievalTimer;
   QTimer m_externalAddressDiscovererTimer;
   QTimer m_generalTimer;
+  QTimer m_kernelUpdateTimer;
+  QTimer m_listenersUpdateTimer;
+  QTimer m_neighborsUpdateTimer;
+  QTimer m_participantsUpdateTimer;
+  QTimer m_starbeamUpdateTimer;
   QTimer m_tableTimer;
   QWidget *m_sbWidget;
   Ui_statusbar m_sb;
@@ -461,6 +466,7 @@ class spoton: public QMainWindow
   void slotTransportChanged(int index);
   void slotUnblockNeighbor(void);
   void slotUpdateChatWindows(void);
+  void slotUpdateSpinBoxChanged(double value);
   void slotUrlStatisticsGathered(const qint64 count, const quint64 size);
   void slotValidatePassphrase(void);
   void slotVerify(void);

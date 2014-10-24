@@ -432,7 +432,7 @@ void spoton_reencode::reencode(Ui_statusbar sb,
   }
 
   QSqlDatabase::removeDatabase(connectionName);
-    sb.status->setText
+  sb.status->setText
     (QObject::tr("Re-encoding friends_public_keys.db."));
   sb.status->repaint();
 

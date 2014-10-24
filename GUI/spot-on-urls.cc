@@ -128,6 +128,8 @@ void spoton::slotPrepareUrlDatabases(void)
 #endif
       }
 
+  progress.hide();
+
   if(!created)
     QMessageBox::critical(this, tr("%1: Error").
 			  arg(SPOTON_APPLICATION_NAME),
@@ -651,6 +653,18 @@ void spoton::importUrl(const QByteArray &description,
 
 void spoton::slotPostgreSQLConnect(void)
 {
+  if(m_ui.postgresqlConnect->property("text") == "disconnect")
+    {
+      m_ui.postgresqlConnect->setProperty("text", "connect");
+      m_ui.postgresqlConnect->setText(tr("PostgreSQL Connect"));
+      m_urlDatabase = QSqlDatabase();
+
+      if(QSqlDatabase::contains("PostgreSQL"))
+	QSqlDatabase::removeDatabase("PostgreSQL");
+
+      return;
+    }
+
   QDialog dialog(this);
   Ui_postgresqlconnect ui;
 
@@ -678,10 +692,18 @@ void spoton::slotPostgreSQLConnect(void)
       if(!m_urlDatabase.isOpen())
 	{
 	  m_urlDatabase = QSqlDatabase();
-	  QSqlDatabase::removeDatabase("PostgreSQL");
+
+	  if(QSqlDatabase::contains("PostgreSQL"))
+	    QSqlDatabase::removeDatabase("PostgreSQL");
+
 	  QMessageBox::critical(this, tr("%1: Error").
 				arg(SPOTON_APPLICATION_NAME),
 				tr("Could not open a database connection."));
+	}
+      else
+	{
+	  m_ui.postgresqlConnect->setProperty("text", "disconnect");
+	  m_ui.postgresqlConnect->setText(tr("PostgreSQL Disconnect"));
 	}
     }
 }

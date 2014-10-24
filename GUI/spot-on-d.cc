@@ -2409,3 +2409,40 @@ void spoton::slotMosaicLocked(bool state)
 
   QSqlDatabase::removeDatabase(connectionName);
 }
+
+void spoton::slotUpdateSpinBoxChanged(double value)
+{
+  QDoubleSpinBox *doubleSpinBox = qobject_cast<QDoubleSpinBox *> (sender());
+  QSettings settings;
+
+  if(doubleSpinBox == m_ui.chatUpdateInterval)
+    {
+      m_participantsUpdateTimer.setInterval(static_cast<int> (1000 * value));
+      m_settings["gui/participantsUpdateTimer"] = value;
+      settings.setValue("gui/participantsUpdateTimer", value);
+    }
+  else if(doubleSpinBox == m_ui.kernelUpdateInterval)
+    {
+      m_kernelUpdateTimer.setInterval(static_cast<int> (1000 * value));
+      m_settings["gui/kernelUpdateTimer"] = value;
+      settings.setValue("gui/kernelUpdateTimer", value);
+    }
+  else if(doubleSpinBox == m_ui.listenersUpdateInterval)
+    {
+      m_listenersUpdateTimer.setInterval(static_cast<int> (1000 * value));
+      m_settings["gui/listenersUpdateTimer"] = value;
+      settings.setValue("gui/listenersUpdateTimer", value);
+    }
+  else if(doubleSpinBox == m_ui.neighborsUpdateInterval)
+    {
+      m_neighborsUpdateTimer.setInterval(static_cast<int> (1000 * value));
+      m_settings["gui/neighborsUpdateTimer"] = value;
+      settings.setValue("gui/neighborsUpdateTimer", value);
+    }
+  else if(doubleSpinBox == m_ui.starbeamUpdateInterval)
+    {
+      m_starbeamUpdateTimer.setInterval(static_cast<int> (1000 * value));
+      m_settings["gui/starbeamUpdateTimer"] = value;
+      settings.setValue("gui/starbeamUpdateTimer", value);
+    }
+}

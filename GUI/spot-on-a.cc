@@ -29,6 +29,8 @@
 extern void _Exit(int status);
 #endif
 
+#include <QProgressDialog>
+
 #include "spot-on.h"
 #include "spot-on-defines.h"
 #include "spot-on-buzzpage.h"
@@ -1140,6 +1142,26 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotPostgreSQLConnect(void)));
+  connect(m_ui.chatUpdateInterval,
+	  SIGNAL(valueChanged(double)),
+	  this,
+	  SLOT(slotUpdateSpinBoxChanged(double)));
+  connect(m_ui.kernelUpdateInterval,
+	  SIGNAL(valueChanged(double)),
+	  this,
+	  SLOT(slotUpdateSpinBoxChanged(double)));
+  connect(m_ui.listenersUpdateInterval,
+	  SIGNAL(valueChanged(double)),
+	  this,
+	  SLOT(slotUpdateSpinBoxChanged(double)));
+  connect(m_ui.neighborsUpdateInterval,
+	  SIGNAL(valueChanged(double)),
+	  this,
+	  SLOT(slotUpdateSpinBoxChanged(double)));
+  connect(m_ui.starbeamUpdateInterval,
+	  SIGNAL(valueChanged(double)),
+	  this,
+	  SLOT(slotUpdateSpinBoxChanged(double)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -1156,27 +1178,27 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotPopulateBuzzFavorites(void)));
-  connect(&m_tableTimer,
+  connect(&m_starbeamUpdateTimer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotPopulateEtpMagnets(void)));
-  connect(&m_tableTimer,
+  connect(&m_kernelUpdateTimer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotPopulateKernelStatistics(void)));
-  connect(&m_tableTimer,
+  connect(&m_listenersUpdateTimer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotPopulateListeners(void)));
-  connect(&m_tableTimer,
+  connect(&m_neighborsUpdateTimer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotPopulateNeighbors(void)));
-  connect(&m_tableTimer,
+  connect(&m_participantsUpdateTimer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotPopulateParticipants(void)));
-  connect(&m_tableTimer,
+  connect(&m_starbeamUpdateTimer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotPopulateStars(void)));
@@ -1259,7 +1281,6 @@ spoton::spoton(void):QMainWindow()
   m_ui.shareBuzzMagnet->setMenu(menu);
   m_generalTimer.start(3500);
   m_chatInactivityTimer.start(120000);
-  m_tableTimer.setInterval(3500);
   m_emailRetrievalTimer.setInterval
     (m_settings.value("gui/emailRetrievalInterval", 5 * 60 * 1000).toInt());
   m_ui.ipv4Listener->setChecked(true);
@@ -1306,6 +1327,17 @@ spoton::spoton(void):QMainWindow()
       (settings.allKeys().at(i));
 
   spoton_misc::correctSettingsContainer(m_settings);
+  m_kernelUpdateTimer.start
+    (m_settings.value("gui/kernelUpdateTimer", 3500).toInt());
+  m_listenersUpdateTimer.start
+    (m_settings.value("gui/listenersUpdateTimer", 3500).toInt());
+  m_neighborsUpdateTimer.start
+    (m_settings.value("gui/neighborsUpdateTimer", 3500).toInt());
+  m_participantsUpdateTimer.start
+    (m_settings.value("gui/participantsUpdateTimer", 3500).toInt());
+  m_starbeamUpdateTimer.start
+    (m_settings.value("gui/starbeamUpdateTimer", 3500).toInt());
+  m_tableTimer.start(3500);
 
 #if SPOTON_GOLDBUG == 1
   QString str(m_settings.value("gui/tabPosition", "east").toString());
@@ -1986,6 +2018,11 @@ void spoton::cleanup(void)
   m_gatherUrlStatisticsFuture.cancel();
   m_gatherUrlStatisticsFuture.waitForFinished();
   m_generalTimer.stop();
+  m_kernelUpdateTimer.stop();
+  m_listenersUpdateTimer.stop();
+  m_neighborsUpdateTimer.stop();
+  m_participantsUpdateTimer.stop();
+  m_starbeamUpdateTimer.stop();
   m_tableTimer.stop();
   saveSettings();
 
@@ -2036,6 +2073,7 @@ void spoton::slotAddListener(void)
       QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
       m_sb.status->setText
 	(tr("Generating SSL data. Please be patient."));
+      m_sb.status->repaint();
       spoton_crypt::generateSslKeys
 	(m_ui.kernelKeySize->currentText().toInt(),
 	 certificate,
@@ -4066,6 +4104,7 @@ void spoton::slotGeneralTimerTimeout(void)
     (tr("External IP: %1.").
      arg(m_externalAddress->address().isNull() ?
 	 "unknown" : m_externalAddress->address().toString()));
+  m_sb.status->repaint();
 }
 
 void spoton::slotSelectGeoIPPath(void)
@@ -4718,7 +4757,9 @@ void spoton::slotSetPassphrase(void)
 
 	  if(mb.exec() == QMessageBox::Yes)
 	    {
-	      QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+#ifndef Q_OS_MAC
+	      QApplication::processEvents();
+#endif
 
 	      QString encryptionKeyType("");
 	      QString signatureKeyType("");
@@ -4751,17 +4792,25 @@ void spoton::slotSetPassphrase(void)
 		   << "url"
 		   << "url-signature";
 
-	      m_sb.status->setText
-		(tr("Generating public key pairs."));
-	      m_sb.status->repaint();
+	      QProgressDialog progress(this);
 
-	      for(int i = 0; i < list.size(); i++)
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+	      progress.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+	      progress.setLabelText(tr("Generating key pairs..."));
+	      progress.setMaximum(list.size());
+	      progress.setMinimum(0);
+	      progress.setWindowTitle(tr("%1: Generating Key Pairs").
+				      arg(SPOTON_APPLICATION_NAME));
+	      progress.show();
+	      progress.update();
+
+	      for(int i = 0; i < list.size() && !progress.wasCanceled(); i++)
 		{
-		  m_sb.status->setText
-		    (tr("Generating public key %1 of %2. "
-			"Please be patient.").
-		     arg(i + 1).arg(list.size()));
-		  m_sb.status->repaint();
+		  if(i + 1<= progress.maximum())
+		    progress.setValue(i + 1);
 
 		  spoton_crypt crypt
 		    (m_ui.cipherType->currentText(),
@@ -4784,15 +4833,16 @@ void spoton::slotSetPassphrase(void)
 		       signatureKeyType,
 		       error2);
 
-		  m_sb.status->clear();
-
 		  if(!error2.isEmpty())
 		    break;
-		  else
-		    update();
+
+		  progress.update();
+#ifndef Q_OS_MAC
+		  QApplication::processEvents();
+#endif
 		}
 
-	      QApplication::restoreOverrideCursor();
+	      progress.hide();
 	    }
 	}
     }
@@ -4868,10 +4918,8 @@ void spoton::slotSetPassphrase(void)
 
 	      spoton_reencode reencode;
 
-	      m_tableTimer.stop();
 	      reencode.reencode(m_sb, crypt, m_crypts.value("chat"));
 	      delete crypt;
-	      m_tableTimer.start();
 	    }
 
 	  QHashIterator<QString, spoton_crypt *> it(m_crypts);
@@ -4908,10 +4956,6 @@ void spoton::slotSetPassphrase(void)
 
 	  m_rosetta.setCryptObjects(m_crypts.value("rosetta", 0),
 				    m_crypts.value("rosetta-signature", 0));
-
-	  if(!m_tableTimer.isActive())
-	    m_tableTimer.start();
-
 	  askKernelToReadStarBeamKeys();
 	  populateNovas();
 	  sendBuzzKeysToKernel();
@@ -5144,10 +5188,6 @@ void spoton::slotValidatePassphrase(void)
 
 	    m_rosetta.setCryptObjects(m_crypts.value("rosetta", 0),
 				      m_crypts.value("rosetta-signature", 0));
-
-	    if(!m_tableTimer.isActive())
-	      m_tableTimer.start();
-
 	    askKernelToReadStarBeamKeys();
 	    populateNovas();
 	    sendBuzzKeysToKernel();
