@@ -217,3 +217,11 @@ Remaining Items
 38.    Allow user to bookmark search results. Also allow searching of
        bookmarked entries. Perhaps provide a means of searching the
        global databases as well as bookmarked entries.
+39.    Allow programs such as netcat to feed data to Spot-On. Specific
+       private listeners would be capable of transforming the data
+       into StarBeam pulses.
+40.    Create a commanding language. The language could be used to
+       navigate private Spot-On nodes.
+41.    Buzz channels derived from deterministic public keys.
+42.    An interface for custom functions. Such an interface could be used
+       to transform YouTube data into MP3s.
