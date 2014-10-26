@@ -414,6 +414,7 @@ class spoton: public QMainWindow
   void slotSaveAttachment(void);
   void slotSaveBuzzAutoJoin(bool state);
   void slotSaveBuzzName(void);
+  void slotSaveCommonUrlCredentials(void);
   void slotSaveDestination(void);
   void slotSaveEmailName(void);
   void slotSaveGeoIPPath(void);

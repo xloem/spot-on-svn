@@ -1134,6 +1134,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSaveUrlCredentials(void)));
+  connect(m_ui.saveCommonUrlCredentials,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSaveCommonUrlCredentials(void)));
   connect(m_ui.postgresqlConnect,
 	  SIGNAL(clicked(void)),
 	  this,

@@ -657,7 +657,14 @@ void spoton::slotSaveUrlCredentials(void)
 			  tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
 			  error);
   else
-    m_ui.urlPassphrase->clear();
+    {
+      m_ui.urlCipher->setCurrentIndex(0);
+      m_ui.urlHash->setCurrentIndex(0);
+      m_ui.urlIniHash->clear();
+      m_ui.urlIteration->setValue(10000);
+      m_ui.urlPassphrase->clear();
+      m_ui.urlSalt->clear();
+    }
 }
 
 void spoton::importUrl(const QByteArray &description,
@@ -724,5 +731,105 @@ void spoton::slotPostgreSQLConnect(void)
 	  m_ui.postgresqlConnect->setProperty("user_text", "disconnect");
 	  m_ui.postgresqlConnect->setText(tr("PostgreSQL Disconnect"));
 	}
+    }
+}
+
+void spoton::slotSaveCommonUrlCredentials(void)
+{
+  QPair<QByteArray, QByteArray> keys;
+  QString error("");
+  spoton_crypt *crypt = m_crypts.value("url", 0);
+
+  if(!crypt)
+    {
+      error = tr("Invalid spoton_crypt object. This is a fatal flaw.");
+      goto done_label;
+    }
+
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+  keys = spoton_crypt::derivedKeys(m_ui.commonUrlCipher->currentText(),
+				   m_ui.commonUrlHash->currentText(),
+				   m_ui.commonUrlIterationCount->value(),
+				   m_ui.commonUrlPassphrase->text(),
+				   m_ui.commonUrlPin->text().toUtf8(),
+				   error);
+  QApplication::restoreOverrideCursor();
+
+  if(error.isEmpty())
+    {
+      QString connectionName("");
+
+      {
+	QSqlDatabase db = spoton_misc::database(connectionName);
+
+	db.setDatabaseName
+	  (spoton_misc::homePath() + QDir::separator() + "spot-on_URLs" +
+	   QDir::separator() + "spot-on_key_information.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+	    bool ok = true;
+
+	    query.prepare
+	      ("INSERT OR REPLACE INTO remote_key_information "
+	       "(cipher_type, encryption_key, hash_key, hash_type) "
+	       "VALUES (?, ?, ?, ?)");
+	    query.bindValue
+	      (0,
+	       crypt->encryptedThenHashed(m_ui.commonUrlCipher->currentText().
+					  toLatin1(),
+					  &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(1, crypt->
+		 encryptedThenHashed(keys.first, &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(2, crypt->
+		 encryptedThenHashed(keys.second, &ok).toBase64());
+
+	    if(ok)
+	      query.bindValue
+		(3, crypt->
+		 encryptedThenHashed(m_ui.commonUrlHash->currentText().
+				     toLatin1(),
+				     &ok).toBase64());
+
+	    if(ok)
+	      {
+		if(!query.exec())
+		  error = tr("Database write error.");
+	      }
+	    else
+	      error = tr("An error occurred with "
+			 "spoton_crypt::encryptedThenHashed().");
+	  }
+	else
+	  error = tr("Unable to access spot-on_key_information.db.");
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase(connectionName);
+    }
+  else
+    error = tr("Key generation failure.");
+
+ done_label:
+
+  if(!error.isEmpty())
+    QMessageBox::critical(this,
+			  tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
+			  error);
+  else
+    {
+      m_ui.commonUrlCipher->setCurrentIndex(0);
+      m_ui.commonUrlHash->setCurrentIndex(0);
+      m_ui.commonUrlIterationCount->setValue(10000);
+      m_ui.commonUrlPassphrase->clear();
+      m_ui.commonUrlPin->clear();
     }
 }
