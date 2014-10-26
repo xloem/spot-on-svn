@@ -32,6 +32,7 @@
 #include <QSqlQuery>
 #include <QtCore/qmath.h>
 
+#include <bitset>
 #include <limits>
 
 #include "spot-on-crypt.h"
@@ -3314,7 +3315,19 @@ bool spoton_crypt::memcmp(const QByteArray &bytes1,
   */
 
   for(int i = 0; i < length; i++)
-    rc |= a.at(i) ^ b.at(i);
+    {
+      std::bitset<8> ba1(a.at(i));
+      std::bitset<8> ba2(b.at(i));
+
+      rc |= ba1[0] ^ ba2[0];
+      rc |= ba1[1] ^ ba2[1];
+      rc |= ba1[2] ^ ba2[2];
+      rc |= ba1[3] ^ ba2[3];
+      rc |= ba1[4] ^ ba2[4];
+      rc |= ba1[5] ^ ba2[5];
+      rc |= ba1[6] ^ ba2[6];
+      rc |= ba1[7] ^ ba2[7];
+    }
 
   return rc == 0; /*
 		  ** Return true if bytes1 and bytes2 are identical or
