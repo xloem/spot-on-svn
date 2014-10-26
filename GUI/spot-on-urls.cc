@@ -70,15 +70,31 @@ void spoton::slotPrepareUrlDatabases(void)
       {
 	QSqlQuery query(db);
 
-	if(!query.exec("CREATE TABLE IF NOT EXISTS key_information ("
+	if(!query.exec("CREATE TABLE IF NOT EXISTS import_key_information ("
 		       "cipher_type TEXT NOT NULL, "
-		       "symmetric_key TEXT PRIMARY KEY NOT NULL)"))
+		       "symmetric_key TEXT NOT NULL)"))
 	  created = false;
 
-	if(!query.exec("CREATE TRIGGER IF NOT EXISTS key_information_trigger "
-		       "BEFORE INSERT ON key_information "
+	if(!query.exec("CREATE TRIGGER IF NOT EXISTS "
+		       "import_key_information_trigger "
+		       "BEFORE INSERT ON import_key_information "
 		       "BEGIN "
-		       "DELETE FROM key_information; "
+		       "DELETE FROM import_key_information; "
+		       "END"))
+	  created = false;
+
+	if(!query.exec("CREATE TABLE IF NOT EXISTS remote_key_information ("
+		       "cipher_type TEXT NOT NULL, "
+		       "encryption_key TEXT NOT NULL, "
+		       "hash_key TEXT NOT NULL, "
+		       "hash_type TEXT NOT NULL)"))
+	  created = false;
+
+	if(!query.exec("CREATE TRIGGER IF NOT EXISTS "
+		       "remote_key_information_trigger "
+		       "BEFORE INSERT ON remote_key_information "
+		       "BEGIN "
+		       "DELETE FROM remote_key_information; "
 		       "END"))
 	  created = false;
       }
@@ -321,7 +337,7 @@ void spoton::slotImportUrls(void)
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT cipher_type, symmetric_key "
-			 "FROM key_information") &&
+		      "FROM import_key_information") &&
 	   query.next())
 	  {
 	    cipherType = l_crypt->decryptedAfterAuthenticated
@@ -601,7 +617,7 @@ void spoton::slotSaveUrlCredentials(void)
 	    bool ok = true;
 
 	    query.prepare
-	      ("INSERT OR REPLACE INTO key_information "
+	      ("INSERT OR REPLACE INTO import_key_information "
 	       "(cipher_type, symmetric_key) "
 	       "VALUES (?, ?)");
 	    query.bindValue

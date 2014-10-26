@@ -1515,10 +1515,10 @@ spoton::spoton(void):QMainWindow()
     (spoton_common::PASSPHRASE_MAXIMUM_LENGTH);
   m_ui.transmitNova->setMaxLength
     (static_cast<int> (spoton_crypt::cipherKeyLength("aes256")) + 512);
-  m_ui.channelType->clear();
   m_ui.channelType->addItems(spoton_crypt::cipherTypes());
-  m_ui.cipherType->clear();
   m_ui.cipherType->addItems(spoton_crypt::cipherTypes());
+  m_ui.commonUrlCipher->addItems(spoton_crypt::cipherTypes());
+  m_ui.commonUrlHash->addItems(spoton_crypt::hashTypes());
   m_ui.etpCipherType->addItems(spoton_crypt::cipherTypes());
   m_ui.ae_e_type->addItems(spoton_crypt::cipherTypes());
   m_ui.ae_h_type->addItems(spoton_crypt::hashTypes());
@@ -1631,6 +1631,12 @@ spoton::spoton(void):QMainWindow()
   if(m_ui.cipherType->count() == 0)
     m_ui.cipherType->addItem("n/a");
 
+  if(m_ui.commonUrlCipher->count() == 0)
+    m_ui.commonUrlCipher->addItem("n/a");
+
+  if(m_ui.commonUrlHash->count() == 0)
+    m_ui.commonUrlHash->addItem("n/a");
+
   if(m_ui.etpCipherType->count() == 0)
     m_ui.etpCipherType->addItem("n/a");
 
@@ -1652,7 +1658,6 @@ spoton::spoton(void):QMainWindow()
   if(m_ui.buzzHashType->count() == 0)
     m_ui.buzzHashType->addItem("n/a");
 
-  m_ui.hashType->clear();
   m_ui.hashType->addItems(spoton_crypt::hashTypes());
 
   if(m_ui.hashType->count() == 0)
