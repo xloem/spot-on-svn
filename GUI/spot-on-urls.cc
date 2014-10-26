@@ -236,30 +236,12 @@ bool spoton::deleteAllUrls(void)
 
 void spoton::slotGatherUrlStatistics(void)
 {
-  if(!m_gatherUrlStatisticsFuture.isFinished())
-    return;
-  else if(!m_urlDatabase.isOpen())
-    {
-      emit urlStatisticsGathered(0, 0);
-      return;
-    }
-
-  m_ui.gatherStatistics->setEnabled(false);
-  m_gatherUrlStatisticsFuture = QtConcurrent::run
-    (this, &spoton::gatherUrlStatistics);
-}
-
-void spoton::gatherUrlStatistics(void)
-{
   qint64 count = 0;
   quint64 size = 0;
 
   for(int i = 0; i < 26; i++)
     for(int j = 0; j < 26; j++)
       {
-	if(m_gatherUrlStatisticsFuture.isCanceled())
-	  goto done_label;
-
 	QSqlQuery query(m_urlDatabase);
 
 	if(query.exec(QString("SELECT COUNT(*) FROM spot_on_urls_%1%2").
@@ -268,16 +250,6 @@ void spoton::gatherUrlStatistics(void)
 	    count += query.value(0).toLongLong();
       }
 
- done_label:
-
-  if(!m_gatherUrlStatisticsFuture.isCanceled())
-    emit urlStatisticsGathered(count, size);
-}
-
-void spoton::slotUrlStatisticsGathered(const qint64 count,
-				       const quint64 size)
-{
-  m_ui.gatherStatistics->setEnabled(true);
   m_ui.urlCount->setValue(static_cast<int> (count));
   m_ui.urlDatabasesSize->setValue(static_cast<int> (size / (1024 * 1024)));
 }

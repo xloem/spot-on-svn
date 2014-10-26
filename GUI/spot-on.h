@@ -127,7 +127,6 @@ class spoton: public QMainWindow
   QDateTime m_neighborsLastModificationTime;
   QDateTime m_participantsLastModificationTime;
   QDateTime m_starsLastModificationTime;
-  QFuture<void> m_gatherUrlStatisticsFuture;
   QHash<QByteArray, QString> m_neighborToOidMap;
   QHash<QByteArray, quint64> m_receivedChatSequenceNumbers;
   QHash<QString, QByteArray> m_buzzIds;
@@ -195,7 +194,6 @@ class spoton: public QMainWindow
   void closeEvent(QCloseEvent *event);
   void demagnetize(void);
   void derivativeUpdates(void);
-  void gatherUrlStatistics(void);
   void highlightPaths(void);
   void importNeighbors(const QString &filePath);
   void importUrl(const QByteArray &description,
@@ -467,7 +465,6 @@ class spoton: public QMainWindow
   void slotUnblockNeighbor(void);
   void slotUpdateChatWindows(void);
   void slotUpdateSpinBoxChanged(double value);
-  void slotUrlStatisticsGathered(const qint64 count, const quint64 size);
   void slotValidatePassphrase(void);
   void slotVerify(void);
   void slotViewLog(void);
@@ -479,7 +476,6 @@ class spoton: public QMainWindow
   void statusChanged(const QIcon &icon,
 		     const QString &name,
 		     const QString &id);
-  void urlStatisticsGathered(const qint64 count, const quint64 size);
 };
 
 #endif
