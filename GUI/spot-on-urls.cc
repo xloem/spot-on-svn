@@ -236,18 +236,48 @@ bool spoton::deleteAllUrls(void)
 
 void spoton::slotGatherUrlStatistics(void)
 {
+  QProgressDialog progress(this);
+  int processed = 0;
   qint64 count = 0;
   quint64 size = 0;
 
-  for(int i = 0; i < 26; i++)
-    for(int j = 0; j < 26; j++)
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  progress.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+  progress.setLabelText(tr("Removing URL databases..."));
+  progress.setMaximum(26 * 26);
+  progress.setMinimum(0);
+  progress.setWindowTitle(tr("%1: Removing URL Databases").
+    arg(SPOTON_APPLICATION_NAME));
+  progress.show();
+  progress.update();
+
+  for(int i = 0; i < 26 && !progress.wasCanceled(); i++)
+    for(int j = 0; j < 26 && !progress.wasCanceled(); j++)
       {
+	if(processed <= progress.maximum())
+	  progress.setValue(processed);
+
 	QSqlQuery query(m_urlDatabase);
 
 	if(query.exec(QString("SELECT COUNT(*) FROM spot_on_urls_%1%2").
 		      arg(QChar(i + 97)).arg(QChar(i + 97))))
 	  if(query.next())
 	    count += query.value(0).toLongLong();
+
+	if(query.exec(QString("SELECT pg_total_relation_size"
+			      "('\"spot_on_urls_%1%2\"')").
+		      arg(QChar(i + 97)).arg(QChar(i + 97))))
+	  if(query.next())
+	    size += query.value(0).toLongLong();
+
+	processed += 1;
+	progress.update();
+#ifndef Q_OS_MAC
+	QApplication::processEvents();
+#endif
       }
 
   m_ui.urlCount->setValue(static_cast<int> (count));
