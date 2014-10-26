@@ -1,7 +1,6 @@
 0.16 (11/01/2014)
 
-1.   Implemented URL import and search. This completes Dooble integration.
-     Please note that PostgreSQL is required.
+1.   Lots of URL work. Please note that PostgreSQL will be required.
 2.   Set the error parameter in spoton_crypt::generatePrivatePublicKeys()
      if generateNTRUKeys() fails. A failure will be properly contained,
      however, it will not be reported correctly to the user.
@@ -32,6 +31,8 @@
 19.  Do not update Listeners, Neighbors, and StarBeam widgets unless the
      widgets are visible.
 20.  The Super Echo must not interfere with echo modes.
+21.  Improved spoton_crypt::memcmp() by introducing time-constant
+     bit comparisons.
 
 0.15 (10/10/2014)
 
