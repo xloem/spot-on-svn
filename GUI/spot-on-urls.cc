@@ -105,6 +105,7 @@ void spoton::slotPrepareUrlDatabases(void)
   }
 
   QSqlDatabase::removeDatabase(connectionName);
+  progress.update();
 
   for(int i = 0, processed = 0; i < 26 && !progress.wasCanceled(); i++)
     for(int j = 0; j < 26 && !progress.wasCanceled(); j++)
