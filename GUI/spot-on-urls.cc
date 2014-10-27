@@ -299,9 +299,6 @@ void spoton::slotGatherUrlStatistics(void)
 	QApplication::processEvents();
 #endif
       }
-
-  m_ui.urlCount->setValue(static_cast<int> (count));
-  m_ui.urlDatabasesSize->setValue(static_cast<int> (size / (1024 * 1024)));
 }
 
 void spoton::slotImportUrls(void)
@@ -474,7 +471,6 @@ void spoton::slotImportUrls(void)
 void spoton::slotShowUrlSettings(void)
 {
   m_ui.urlSettings->setVisible(!m_ui.urlSettings->isVisible());
-  m_ui.addModifyUrl->setVisible(!m_ui.urlSettings->isVisible());
   m_ui.urlsBox->setVisible(!m_ui.urlSettings->isVisible());
 }
 

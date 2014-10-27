@@ -3907,9 +3907,6 @@ void spoton::slotSetIcons(void)
 
   // Search
 
-  m_ui.commitUrlChange->setIcon(QIcon(QString(":/%1/modify.png").
-				      arg(iconSet)));
-  m_ui.deleteURL->setIcon(QIcon(QString(":/%1/clear.png").arg(iconSet)));
   m_ui.searchURL->setIcon(QIcon(QString(":/%1/search.png").arg(iconSet)));
 
   // Settings

@@ -1118,10 +1118,6 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotDeleteAllUrls(void)));
-  connect(m_ui.gatherStatistics,
-	  SIGNAL(clicked(void)),
-	  this,
-	  SLOT(slotGatherUrlStatistics(void)));
   connect(m_ui.importUrls,
 	  SIGNAL(clicked(void)),
 	  this,

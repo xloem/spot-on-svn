@@ -454,7 +454,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>956</width>
-                <height>458</height>
+                <height>629</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -979,7 +979,7 @@
              <x>0</x>
              <y>0</y>
              <width>844</width>
-             <height>587</height>
+             <height>639</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -2029,7 +2029,7 @@
              <x>0</x>
              <y>0</y>
              <width>856</width>
-             <height>468</height>
+             <height>639</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -3122,7 +3122,7 @@
              <x>0</x>
              <y>0</y>
              <width>979</width>
-             <height>577</height>
+             <height>639</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4225,9 +4225,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-67</y>
-             <width>758</width>
-             <height>553</height>
+             <y>0</y>
+             <width>776</width>
+             <height>657</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4279,9 +4279,9 @@
                <property name="geometry">
                 <rect>
                  <x>0</x>
-                 <y>-335</y>
-                 <width>730</width>
-                 <height>462</height>
+                 <y>0</y>
+                 <width>748</width>
+                 <height>480</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -4292,68 +4292,80 @@
                  <number>5</number>
                 </property>
                 <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_87">
-                  <property name="spacing">
-                   <number>5</number>
+                 <widget class="QGroupBox" name="">
+                  <property name="title">
+                   <string>Database</string>
                   </property>
-                  <item>
-                   <widget class="QLabel" name="label_105">
-                    <property name="styleSheet">
-                     <string notr="true">QLabel {
+                  <layout class="QHBoxLayout" name="horizontalLayout_87">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_105">
+                     <property name="styleSheet">
+                      <string notr="true">QLabel {
  border: 1px solid gray;
  background-color: lightgreen;
  margin: 2px;
  padding: 2px;
  }</string>
-                    </property>
-                    <property name="text">
-                     <string>1</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="postgresqlConnect">
-                    <property name="text">
-                     <string>PostgreSQL Connect</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_120">
-                    <property name="styleSheet">
-                     <string notr="true">QLabel {
+                     </property>
+                     <property name="text">
+                      <string>1</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="postgresqlConnect">
+                     <property name="text">
+                      <string>PostgreSQL Connect</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label_120">
+                     <property name="styleSheet">
+                      <string notr="true">QLabel {
  border: 1px solid gray;
  background-color: lightgreen;
  margin: 2px;
  padding: 2px;
  }</string>
-                    </property>
-                    <property name="text">
-                     <string>2</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="prepareUrlDatabases">
-                    <property name="text">
-                     <string>Prepare Databases</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer_71">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
+                     </property>
+                     <property name="text">
+                      <string>2</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="prepareUrlDatabases">
+                     <property name="text">
+                      <string>Prepare Databases</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_71">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="deleteAllUrls">
+                     <property name="text">
+                      <string>Delete Databases</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
                 </item>
                 <item>
                  <widget class="QGroupBox" name="groupBox_14">
@@ -4851,150 +4863,6 @@
              </widget>
             </item>
             <item>
-             <widget class="QGroupBox" name="addModifyUrl">
-              <layout class="QGridLayout" name="gridLayout_12">
-               <property name="margin">
-                <number>5</number>
-               </property>
-               <property name="spacing">
-                <number>5</number>
-               </property>
-               <item row="0" column="1">
-                <layout class="QHBoxLayout" name="horizontalLayout_86">
-                 <property name="spacing">
-                  <number>5</number>
-                 </property>
-                 <item>
-                  <spacer name="horizontalSpacer_69">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item>
-                  <widget class="QRadioButton" name="addUrl">
-                   <property name="text">
-                    <string>&amp;Add</string>
-                   </property>
-                   <property name="checked">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QRadioButton" name="modifyUrl">
-                   <property name="text">
-                    <string>&amp;Modify</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_70">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
-               </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_102">
-                 <property name="text">
-                  <string>&amp;Description</string>
-                 </property>
-                 <property name="buddy">
-                  <cstring>urlDescription</cstring>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="1">
-                <layout class="QHBoxLayout" name="horizontalLayout_85">
-                 <property name="spacing">
-                  <number>5</number>
-                 </property>
-                 <item>
-                  <spacer name="horizontalSpacer_68">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="commitUrlChange">
-                   <property name="text">
-                    <string>Add</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_101">
-                 <property name="text">
-                  <string>&amp;Title</string>
-                 </property>
-                 <property name="buddy">
-                  <cstring>urlTitle</cstring>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QLineEdit" name="url"/>
-               </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_99">
-                 <property name="text">
-                  <string>&amp;URL</string>
-                 </property>
-                 <property name="buddy">
-                  <cstring>url</cstring>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="1">
-                <widget class="QTextEdit" name="urlDescription">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>50</height>
-                  </size>
-                 </property>
-                 <property name="tabChangesFocus">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QLineEdit" name="urlTitle"/>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
              <widget class="QGroupBox" name="urlsBox">
               <layout class="QVBoxLayout" name="verticalLayout_68">
                <property name="spacing">
@@ -5099,13 +4967,6 @@
                   <number>5</number>
                  </property>
                  <item>
-                  <widget class="QPushButton" name="deleteURL">
-                   <property name="text">
-                    <string>Delete URL(s)</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
                   <spacer name="horizontalSpacer_12">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
@@ -5145,77 +5006,6 @@
                </item>
               </layout>
              </widget>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_89">
-              <property name="spacing">
-               <number>5</number>
-              </property>
-              <item>
-               <widget class="QPushButton" name="deleteAllUrls">
-                <property name="text">
-                 <string>Delete Databases</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_103">
-                <property name="text">
-                 <string>Databases Size</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QSpinBox" name="urlDatabasesSize">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="suffix">
-                 <string> MiB</string>
-                </property>
-                <property name="maximum">
-                 <number>999999999</number>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_104">
-                <property name="text">
-                 <string>URL Count</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QSpinBox" name="urlCount">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="maximum">
-                 <number>999999999</number>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="gatherStatistics">
-                <property name="text">
-                 <string>Gather Statistics</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_72">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
             </item>
            </layout>
           </widget>
@@ -6492,8 +6282,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>758</width>
-             <height>554</height>
+             <width>776</width>
+             <height>657</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -7495,7 +7285,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>486</height>
+             <height>657</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7976,8 +7766,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>758</width>
-             <height>508</height>
+             <width>776</width>
+             <height>657</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -8650,6 +8440,7 @@
   <tabstop>urlSettings</tabstop>
   <tabstop>postgresqlConnect</tabstop>
   <tabstop>prepareUrlDatabases</tabstop>
+  <tabstop>deleteAllUrls</tabstop>
   <tabstop>commonUrlPassphrase</tabstop>
   <tabstop>commonUrlPin</tabstop>
   <tabstop>commonUrlCipher</tabstop>
@@ -8667,20 +8458,9 @@
   <tabstop>verify</tabstop>
   <tabstop>saveUrlCredentials</tabstop>
   <tabstop>importUrls</tabstop>
-  <tabstop>addUrl</tabstop>
-  <tabstop>modifyUrl</tabstop>
-  <tabstop>url</tabstop>
-  <tabstop>urlTitle</tabstop>
-  <tabstop>urlDescription</tabstop>
-  <tabstop>commitUrlChange</tabstop>
   <tabstop>keywords</tabstop>
   <tabstop>searchURL</tabstop>
   <tabstop>urls</tabstop>
-  <tabstop>deleteURL</tabstop>
-  <tabstop>deleteAllUrls</tabstop>
-  <tabstop>urlDatabasesSize</tabstop>
-  <tabstop>urlCount</tabstop>
-  <tabstop>gatherStatistics</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>guiExternalIpFetch</tabstop>
   <tabstop>guiSecureMemoryPool</tabstop>
