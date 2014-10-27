@@ -117,7 +117,7 @@ void spoton::slotPrepareUrlDatabases(void)
 	  {
 	    QSqlQuery query(m_urlDatabase);
 
-	    if(!query.exec(QString("CREATE TABLE IF NOT EXISTS "
+	    if(!query.exec(QString("CREATE TABLE "
 				   "spot_on_keywords_%1%2 ("
 				   "keyword_hash TEXT NOT NULL, "
 				   "url_hash TEXT NOT NULL, "
@@ -125,7 +125,7 @@ void spoton::slotPrepareUrlDatabases(void)
 			   arg(QChar(i + 97)).arg(QChar(j + 97))))
 	      created = false;
 
-	    if(!query.exec(QString("CREATE TABLE IF NOT EXISTS "
+	    if(!query.exec(QString("CREATE TABLE "
 				   "spot_on_urls_%1%2 ("
 				   "date_time_inserted TEXT NOT NULL, "
 				   "description BYTEA, "
@@ -277,18 +277,21 @@ void spoton::slotGatherUrlStatistics(void)
 	if(processed <= progress.maximum())
 	  progress.setValue(processed);
 
-	QSqlQuery query(m_urlDatabase);
+	if(m_urlDatabase.isOpen())
+	  {
+	    QSqlQuery query(m_urlDatabase);
 
-	if(query.exec(QString("SELECT COUNT(*) FROM spot_on_urls_%1%2").
-		      arg(QChar(i + 97)).arg(QChar(i + 97))))
-	  if(query.next())
-	    count += query.value(0).toLongLong();
+	    if(query.exec(QString("SELECT COUNT(*) FROM spot_on_urls_%1%2").
+			  arg(QChar(i + 97)).arg(QChar(i + 97))))
+	      if(query.next())
+		count += query.value(0).toLongLong();
 
-	if(query.exec(QString("SELECT pg_total_relation_size"
-			      "('\"spot_on_urls_%1%2\"')").
-		      arg(QChar(i + 97)).arg(QChar(i + 97))))
-	  if(query.next())
-	    size += query.value(0).toLongLong();
+	    if(query.exec(QString("SELECT pg_total_relation_size"
+				  "('\"spot_on_urls_%1%2\"')").
+			  arg(QChar(i + 97)).arg(QChar(i + 97))))
+	      if(query.next())
+		size += query.value(0).toLongLong();
+	  }
 
 	processed += 1;
 	progress.update();
@@ -471,6 +474,8 @@ void spoton::slotImportUrls(void)
 void spoton::slotShowUrlSettings(void)
 {
   m_ui.urlSettings->setVisible(!m_ui.urlSettings->isVisible());
+  m_ui.addModifyUrl->setVisible(!m_ui.urlSettings->isVisible());
+  m_ui.urlsBox->setVisible(!m_ui.urlSettings->isVisible());
 }
 
 void spoton::slotSelectUrlIniPath(void)

@@ -73,7 +73,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>485</height>
+             <height>486</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -453,8 +453,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>974</width>
-                <height>451</height>
+                <width>956</width>
+                <height>458</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -978,8 +978,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>866</width>
-             <height>588</height>
+             <width>844</width>
+             <height>587</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -2028,8 +2028,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>883</width>
-             <height>377</height>
+             <width>856</width>
+             <height>468</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2663,8 +2663,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>280</width>
-                     <height>1426</height>
+                     <width>265</width>
+                     <height>1407</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3121,8 +3121,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1003</width>
-             <height>585</height>
+             <width>979</width>
+             <height>577</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4225,9 +4225,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
-             <width>761</width>
-             <height>522</height>
+             <y>-67</y>
+             <width>758</width>
+             <height>553</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4279,9 +4279,9 @@
                <property name="geometry">
                 <rect>
                  <x>0</x>
-                 <y>-92</y>
-                 <width>736</width>
-                 <height>425</height>
+                 <y>-335</y>
+                 <width>730</width>
+                 <height>462</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -4830,6 +4830,19 @@
                      </item>
                     </layout>
                    </item>
+                   <item>
+                    <spacer name="verticalSpacer_10">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
                   </layout>
                  </widget>
                 </item>
@@ -4838,7 +4851,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QGroupBox" name="groupBox_12">
+             <widget class="QGroupBox" name="addModifyUrl">
               <layout class="QGridLayout" name="gridLayout_12">
                <property name="margin">
                 <number>5</number>
@@ -4982,144 +4995,156 @@
              </widget>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_7">
-              <property name="spacing">
-               <number>5</number>
-              </property>
-              <item>
-               <spacer name="horizontalSpacer_4">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="keywords">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>28</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="searchURL">
-                <property name="text">
-                 <string>Discover!</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_5">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <widget class="QTableWidget" name="urls">
-              <property name="alternatingRowColors">
-               <bool>true</bool>
-              </property>
-              <property name="selectionMode">
-               <enum>QAbstractItemView::SingleSelection</enum>
-              </property>
-              <property name="selectionBehavior">
-               <enum>QAbstractItemView::SelectRows</enum>
-              </property>
-              <property name="horizontalScrollMode">
-               <enum>QAbstractItemView::ScrollPerPixel</enum>
-              </property>
-              <property name="sortingEnabled">
-               <bool>true</bool>
-              </property>
-              <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>200</number>
-              </attribute>
-              <attribute name="horizontalHeaderStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-              <column>
-               <property name="text">
-                <string>Title</string>
+             <widget class="QGroupBox" name="urlsBox">
+              <layout class="QVBoxLayout" name="verticalLayout_68">
+               <property name="spacing">
+                <number>5</number>
                </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>URL</string>
+               <property name="margin">
+                <number>5</number>
                </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Description</string>
-               </property>
-              </column>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_7">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <item>
+                  <spacer name="horizontalSpacer_4">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="keywords">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>28</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="searchURL">
+                   <property name="text">
+                    <string>Discover!</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_5">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QTableWidget" name="urls">
+                 <property name="alternatingRowColors">
+                  <bool>true</bool>
+                 </property>
+                 <property name="selectionMode">
+                  <enum>QAbstractItemView::SingleSelection</enum>
+                 </property>
+                 <property name="selectionBehavior">
+                  <enum>QAbstractItemView::SelectRows</enum>
+                 </property>
+                 <property name="horizontalScrollMode">
+                  <enum>QAbstractItemView::ScrollPerPixel</enum>
+                 </property>
+                 <property name="sortingEnabled">
+                  <bool>true</bool>
+                 </property>
+                 <attribute name="horizontalHeaderDefaultSectionSize">
+                  <number>200</number>
+                 </attribute>
+                 <attribute name="horizontalHeaderStretchLastSection">
+                  <bool>true</bool>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>Title</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>URL</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Description</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_16">
+                 <property name="spacing">
+                  <number>5</number>
+                 </property>
+                 <item>
+                  <widget class="QPushButton" name="deleteURL">
+                   <property name="text">
+                    <string>Delete URL(s)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_12">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_2">
+                   <property name="text">
+                    <string>&lt; 1 .. 1 &gt;</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_13">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+              </layout>
              </widget>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_16">
-              <property name="spacing">
-               <number>5</number>
-              </property>
-              <item>
-               <widget class="QPushButton" name="deleteURL">
-                <property name="text">
-                 <string>Delete URL(s)</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_12">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_2">
-                <property name="text">
-                 <string>&lt; 1 .. 1 &gt;</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_13">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_89">
@@ -5225,8 +5250,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>809</width>
-             <height>1090</height>
+             <width>759</width>
+             <height>1074</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -6467,8 +6492,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>544</width>
-             <height>556</height>
+             <width>758</width>
+             <height>554</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -7469,8 +7494,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>257</width>
-             <height>406</height>
+             <width>776</width>
+             <height>486</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7951,8 +7976,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>305</width>
-             <height>188</height>
+             <width>758</width>
+             <height>508</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -8242,7 +8267,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>25</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
