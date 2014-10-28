@@ -5237,6 +5237,7 @@ void spoton::slotValidatePassphrase(void)
 	    for(int i = 0; i < m_ui.tab->count(); i++)
 	      m_ui.tab->setTabEnabled(i, true);
 
+	    prepareUrlLabels();
 	    m_ui.tab->setCurrentIndex
 	      (m_settings.value("gui/currentTabIndex", m_ui.tab->count() - 1).
 	       toInt());

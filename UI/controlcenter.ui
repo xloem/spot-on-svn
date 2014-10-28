@@ -454,7 +454,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>956</width>
-                <height>629</height>
+                <height>458</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -979,7 +979,7 @@
              <x>0</x>
              <y>0</y>
              <width>844</width>
-             <height>639</height>
+             <height>587</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -2029,7 +2029,7 @@
              <x>0</x>
              <y>0</y>
              <width>856</width>
-             <height>639</height>
+             <height>468</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -3122,7 +3122,7 @@
              <x>0</x>
              <y>0</y>
              <width>979</width>
-             <height>639</height>
+             <height>577</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4227,7 +4227,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>657</height>
+             <height>486</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4279,9 +4279,9 @@
                <property name="geometry">
                 <rect>
                  <x>0</x>
-                 <y>0</y>
+                 <y>-4</y>
                  <width>748</width>
-                 <height>480</height>
+                 <height>539</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -4292,7 +4292,7 @@
                  <number>5</number>
                 </property>
                 <item>
-                 <widget class="QGroupBox" name="">
+                 <widget class="QGroupBox" name="groupBox">
                   <property name="title">
                    <string>Database</string>
                   </property>
@@ -4376,6 +4376,19 @@
                    <property name="margin">
                     <number>5</number>
                    </property>
+                   <item>
+                    <widget class="QLabel" name="commonCredentialsLabel">
+                     <property name="font">
+                      <font>
+                       <weight>75</weight>
+                       <bold>true</bold>
+                      </font>
+                     </property>
+                     <property name="text">
+                      <string>Common credentials have not been set.</string>
+                     </property>
+                    </widget>
+                   </item>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_96">
                      <property name="spacing">
@@ -4561,6 +4574,19 @@
                    <property name="margin">
                     <number>5</number>
                    </property>
+                   <item>
+                    <widget class="QLabel" name="importCredentialsLabel">
+                     <property name="font">
+                      <font>
+                       <weight>75</weight>
+                       <bold>true</bold>
+                      </font>
+                     </property>
+                     <property name="text">
+                      <string>Import credentials have not been set.</string>
+                     </property>
+                    </widget>
+                   </item>
                    <item>
                     <widget class="QLabel" name="label_118">
                      <property name="text">
@@ -6282,8 +6308,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>657</height>
+             <width>758</width>
+             <height>554</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -7285,7 +7311,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>657</height>
+             <height>486</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7766,8 +7792,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>657</height>
+             <width>758</width>
+             <height>508</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">

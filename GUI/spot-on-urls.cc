@@ -38,6 +38,78 @@
 #include "spot-on-defines.h"
 #include "ui_postgresqlconnect.h"
 
+void spoton::prepareUrlLabels(void)
+{
+  QString connectionName("");
+  int importCount = 0;
+  int remoteCount = 0;
+  spoton_crypt *crypt = m_crypts.value("chat", 0);
+
+  if(crypt)
+    {
+      {
+	QSqlDatabase db = spoton_misc::database(connectionName);
+
+	db.setDatabaseName
+	  (spoton_misc::homePath() + QDir::separator() + "spot-on_URLs" +
+	   QDir::separator() + "spot-on_key_information.db");
+
+	if(db.open())
+	  {
+	    QSqlQuery query(db);
+	    QStringList queries;
+	    bool ok = true;
+	    int counts[2] = {0, 0};
+
+	    query.setForwardOnly(true);
+	    queries << "SELECT * FROM import_key_information"
+		    << "SELECT * FROM remote_key_information";
+
+	    for(int i = 0; i < queries.size(); i++)
+	      if(query.exec(queries.at(i)) && query.next())
+		for(int j = 0; j < query.record().count(); j++)
+		  {
+		    QByteArray bytes;
+
+		    bytes = crypt->decryptedAfterAuthenticated
+		      (QByteArray::fromBase64(query.value(j).
+					      toByteArray()),
+		       &ok).constData();
+
+		    if(ok)
+		      counts[i] = 1;
+		    else
+		      {
+			counts[i] = 0;
+			break;
+		      }
+		  }
+
+	    importCount = counts[0];
+	    remoteCount = counts[1];
+	  }
+
+	db.close();
+      }
+
+      QSqlDatabase::removeDatabase(connectionName);
+    }
+
+  if(importCount > 0)
+    m_ui.importCredentialsLabel->setText
+      (tr("Import credentials have been prepared."));
+  else
+    m_ui.importCredentialsLabel->setText
+      (tr("Import credentials have not been set."));
+
+  if(remoteCount > 0)
+    m_ui.commonCredentialsLabel->setText
+      (tr("Common credentials have been prepared."));
+  else
+    m_ui.commonCredentialsLabel->setText
+      (tr("Common credentials have not been set."));
+}
+
 void spoton::slotPrepareUrlDatabases(void)
 {
   QProgressDialog progress(this);
@@ -175,6 +247,8 @@ void spoton::slotDeleteAllUrls(void)
     return;
 
   bool deleted = deleteAllUrls();
+
+  prepareUrlLabels();
 
   if(!deleted)
     QMessageBox::critical(this, tr("%1: Error").
@@ -453,6 +527,7 @@ void spoton::slotImportUrls(void)
 
 		deleteQuery.prepare("DELETE FROM urls WHERE url = ?");
 		deleteQuery.bindValue(0, query.value(3));
+		deleteQuery.exec();
 		processed += 1;
 		progress.update();
 #ifndef Q_OS_MAC
@@ -666,16 +741,31 @@ void spoton::slotSaveUrlCredentials(void)
       m_ui.urlIteration->setValue(10000);
       m_ui.urlPassphrase->clear();
       m_ui.urlSalt->clear();
+      prepareUrlLabels();
     }
 }
 
-void spoton::importUrl(const QByteArray &description,
-		       const QByteArray &title,
-		       const QByteArray &url)
+void spoton::importUrl(const QByteArray &d, // Description
+		       const QByteArray &t, // Title
+		       const QByteArray &u) // URL
 {
-  Q_UNUSED(description);
-  Q_UNUSED(title);
-  Q_UNUSED(url);
+  QUrl url(QUrl::fromUserInput(u));
+
+  if(url.isEmpty() || !url.isValid())
+    return;
+
+  QByteArray description(d);
+  QByteArray title(t);
+  bool separate = true;
+
+  if(description.isEmpty())
+    {
+      description = url.toString().toUtf8();
+      separate = false;
+    }
+
+  if(title.isEmpty())
+    title = url.toString().toUtf8();
 }
 
 void spoton::slotPostgreSQLConnect(void)
@@ -833,5 +923,6 @@ void spoton::slotSaveCommonUrlCredentials(void)
       m_ui.commonUrlIterationCount->setValue(10000);
       m_ui.commonUrlPassphrase->clear();
       m_ui.commonUrlPin->clear();
+      prepareUrlLabels();
     }
 }

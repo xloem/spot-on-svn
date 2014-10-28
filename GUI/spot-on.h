@@ -209,6 +209,7 @@ class spoton: public QMainWindow
   void populateNovas(void);
   void prepareContextMenuMirrors(void);
   void prepareListenerIPCombo(void);
+  void prepareUrlLabels(void);
   void refreshInstitutions(void);
   void removeFavorite(const bool removeAll);
   void saveDestination(const QString &path);
