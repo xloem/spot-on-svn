@@ -171,6 +171,7 @@ spoton::spoton(void):QMainWindow()
   m_participantsLastModificationTime = QDateTime();
   m_starbeamAnalyzer = new spoton_starbeamanalyzer(this);
   m_starsLastModificationTime = QDateTime();
+  m_urlCommonCrypt = 0;
   m_ui.setupUi(this);
   setWindowTitle
     (tr("%1").arg(SPOTON_APPLICATION_NAME));
@@ -2038,7 +2039,14 @@ void spoton::cleanup(void)
   m_participantsUpdateTimer.stop();
   m_starbeamUpdateTimer.stop();
   m_tableTimer.stop();
+  m_urlDatabase.close();
+  m_urlDatabase = QSqlDatabase();
+
+  if(QSqlDatabase::contains("PostgreSQL"))
+    QSqlDatabase::removeDatabase("PostgreSQL");
+
   saveSettings();
+  delete m_urlCommonCrypt;
 
   QHashIterator<QString, spoton_crypt *> it(m_crypts);
 
@@ -5237,6 +5245,7 @@ void spoton::slotValidatePassphrase(void)
 	    for(int i = 0; i < m_ui.tab->count(); i++)
 	      m_ui.tab->setTabEnabled(i, true);
 
+	    prepareUrlContainers();
 	    prepareUrlLabels();
 	    m_ui.tab->setCurrentIndex
 	      (m_settings.value("gui/currentTabIndex", m_ui.tab->count() - 1).

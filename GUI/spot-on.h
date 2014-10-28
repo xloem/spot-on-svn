@@ -154,6 +154,7 @@ class spoton: public QMainWindow
   QWidget *m_sbWidget;
   Ui_statusbar m_sb;
   Ui_spoton_mainwindow m_ui;
+  spoton_crypt *m_urlCommonCrypt;
   spoton_encryptfile m_encryptFile;
   spoton_external_address *m_externalAddress;
   spoton_logviewer m_logViewer;
@@ -209,6 +210,7 @@ class spoton: public QMainWindow
   void populateNovas(void);
   void prepareContextMenuMirrors(void);
   void prepareListenerIPCombo(void);
+  void prepareUrlContainers(void);
   void prepareUrlLabels(void);
   void refreshInstitutions(void);
   void removeFavorite(const bool removeAll);

@@ -121,7 +121,7 @@ void spoton::slotPrepareUrlDatabases(void)
 #endif
 #endif
   progress.setLabelText(tr("Creating URL databases..."));
-  progress.setMaximum(26 * 26);
+  progress.setMaximum(10 * 10 + 6 * 6);
   progress.setMinimum(0);
   progress.setWindowTitle(tr("%1: Creating URL Databases").
     arg(SPOTON_APPLICATION_NAME));
@@ -179,22 +179,34 @@ void spoton::slotPrepareUrlDatabases(void)
   QSqlDatabase::removeDatabase(connectionName);
   progress.update();
 
-  for(int i = 0, processed = 0; i < 26 && !progress.wasCanceled(); i++)
-    for(int j = 0; j < 26 && !progress.wasCanceled(); j++)
+  for(int i = 0, processed = 0; i < 10 + 6 && !progress.wasCanceled(); i++)
+    for(int j = 0; j < 10 + 6 && !progress.wasCanceled(); j++)
       {
 	if(processed <= progress.maximum())
 	  progress.setValue(processed);
 
 	if(m_urlDatabase.isOpen())
 	  {
+	    QChar c1;
+	    QChar c2;
 	    QSqlQuery query(m_urlDatabase);
+
+	    if(i <= 9)
+	      c1 = QChar(i + 48);
+	    else
+	      c1 = QChar(i + 97 - 10);
+
+	    if(j <= 9)
+	      c2 = QChar(j + 48);
+	    else
+	      c2 = QChar(j + 97 - 10);
 
 	    if(!query.exec(QString("CREATE TABLE "
 				   "spot_on_keywords_%1%2 ("
 				   "keyword_hash TEXT NOT NULL, "
 				   "url_hash TEXT NOT NULL, "
 				   "PRIMARY KEY (keyword_hash, url_hash))").
-			   arg(QChar(i + 97)).arg(QChar(j + 97))))
+			   arg(c1.toAscii()).arg(c2.toAscii())))
 	      created = false;
 
 	    if(!query.exec(QString("CREATE TABLE "
@@ -204,7 +216,7 @@ void spoton::slotPrepareUrlDatabases(void)
 				   "title BYTEA NOT NULL, "
 				   "url BYTEA NOT NULL, "
 				   "url_hash TEXT PRIMARY KEY NOT NULL)").
-			   arg(QChar(i + 97)).arg(QChar(j + 97))))
+			   arg(c1.toAscii()).arg(c2.toAscii())))
 	      created = false;
 	  }
 	else
@@ -240,7 +252,7 @@ void spoton::slotDeleteAllUrls(void)
 		    arg(SPOTON_APPLICATION_NAME));
   mb.setWindowModality(Qt::WindowModal);
   mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
-  mb.setText(tr("Are you sure that you wish to remove all of the "
+  mb.setText(tr("Are you sure that you wish to vacuum all of the "
 		"URL databases?"));
 
   if(mb.exec() != QMessageBox::Yes)
@@ -268,35 +280,47 @@ bool spoton::deleteAllUrls(void)
 #endif
 #endif
   progress.setLabelText(tr("Removing URL databases..."));
-  progress.setMaximum(26 * 26);
+  progress.setMaximum(10 * 10 + 6 * 6);
   progress.setMinimum(0);
   progress.setWindowTitle(tr("%1: Removing URL Databases").
     arg(SPOTON_APPLICATION_NAME));
   progress.show();
   progress.update();
 
-  for(int i = 0, processed = 0; i < 26 && !progress.wasCanceled(); i++)
-    for(int j = 0; j < 26 && !progress.wasCanceled(); j++)
+  for(int i = 0, processed = 0; i < 10 + 6 && !progress.wasCanceled(); i++)
+    for(int j = 0; j < 10 + 6 && !progress.wasCanceled(); j++)
       {
 	if(processed <= progress.maximum())
 	  progress.setValue(processed);
 
-	  if(m_urlDatabase.isOpen())
+	if(m_urlDatabase.isOpen())
 	    {
+	      QChar c1;
+	      QChar c2;
 	      QSqlQuery query(m_urlDatabase);
 
-	      if(!query.exec(QString("DROP TABLE IF EXISTS "
+	      if(i <= 9)
+		c1 = QChar(i + 48);
+	      else
+		c1 = QChar(i + 97 - 10);
+
+	      if(j <= 9)
+		c2 = QChar(j + 48);
+	      else
+		c2 = QChar(j + 97 - 10);
+
+	      if(!query.exec(QString("DELETE FROM "
 				     "spot_on_keywords_%1%2").
-			     arg(QChar(i + 97)).arg(QChar(j + 97))))
+			     arg(c1.toAscii()).arg(c2.toAscii())))
 		deleted = false;
 
-	      if(!query.exec(QString("DROP TABLE IF EXISTS "
+	      if(!query.exec(QString("DELETE FROM "
 				     "spot_on_urls_%1%2").
-			     arg(QChar(i + 97)).arg(QChar(j + 97))))
+			     arg(c1.toAscii()).arg(c2.toAscii())))
 		deleted = false;
 	    }
-	  else
-	    deleted = false;
+	else
+	  deleted = false;
 
 	  processed += 1;
 	  progress.update();
@@ -304,6 +328,8 @@ bool spoton::deleteAllUrls(void)
 	  QApplication::processEvents();
 #endif
       }
+
+  m_urlDatabase.commit();
 
   QDir dir(spoton_misc::homePath());
 
@@ -338,31 +364,43 @@ void spoton::slotGatherUrlStatistics(void)
 #endif
 #endif
   progress.setLabelText(tr("Removing URL databases..."));
-  progress.setMaximum(26 * 26);
+  progress.setMaximum(10 * 10 + 6 * 6);
   progress.setMinimum(0);
   progress.setWindowTitle(tr("%1: Removing URL Databases").
     arg(SPOTON_APPLICATION_NAME));
   progress.show();
   progress.update();
 
-  for(int i = 0; i < 26 && !progress.wasCanceled(); i++)
-    for(int j = 0; j < 26 && !progress.wasCanceled(); j++)
+  for(int i = 0; i < 10 + 6 && !progress.wasCanceled(); i++)
+    for(int j = 0; j < 10 + 6 && !progress.wasCanceled(); j++)
       {
 	if(processed <= progress.maximum())
 	  progress.setValue(processed);
 
 	if(m_urlDatabase.isOpen())
 	  {
+	    QChar c1;
+	    QChar c2;
 	    QSqlQuery query(m_urlDatabase);
 
+	    if(i <= 9)
+	      c1 = QChar(i + 48);
+	    else
+	      c1 = QChar(i + 97 - 10);
+
+	    if(j <= 9)
+	      c2 = QChar(j + 48);
+	    else
+	      c2 = QChar(j + 97 - 10);
+
 	    if(query.exec(QString("SELECT COUNT(*) FROM spot_on_urls_%1%2").
-			  arg(QChar(i + 97)).arg(QChar(i + 97))))
+			  arg(c1.toAscii()).arg(c2.toAscii())))
 	      if(query.next())
 		count += query.value(0).toLongLong();
 
 	    if(query.exec(QString("SELECT pg_total_relation_size"
 				  "('\"spot_on_urls_%1%2\"')").
-			  arg(QChar(i + 97)).arg(QChar(i + 97))))
+			  arg(c1.toAscii()).arg(c2.toAscii())))
 	      if(query.next())
 		size += query.value(0).toLongLong();
 	  }
@@ -749,13 +787,23 @@ void spoton::importUrl(const QByteArray &d, // Description
 		       const QByteArray &t, // Title
 		       const QByteArray &u) // URL
 {
+  /*
+  ** We do not use explicit database transactions.
+  */
+
+  if(!m_urlCommonCrypt)
+    return;
+
+  if(!m_urlDatabase.isOpen())
+    return;
+
   QUrl url(QUrl::fromUserInput(u));
 
   if(url.isEmpty() || !url.isValid())
     return;
 
-  QByteArray description(d);
-  QByteArray title(t);
+  QByteArray description(d.trimmed());
+  QByteArray title(t.trimmed());
   bool separate = true;
 
   if(description.isEmpty())
@@ -766,6 +814,75 @@ void spoton::importUrl(const QByteArray &d, // Description
 
   if(title.isEmpty())
     title = url.toString().toUtf8();
+
+  QByteArray urlHash;
+  bool ok = true;
+
+  urlHash = m_urlCommonCrypt->keyedHash(url.toEncoded(), &ok).toHex();
+
+  if(!ok)
+    return;
+
+  QSqlQuery query(m_urlDatabase);
+
+  query.prepare
+    (QString("INSERT INTO spot_on_urls_%1 ("
+	     "date_time_inserted, "
+	     "description, "
+	     "title, "
+	     "url, "
+	     "url_hash) VALUES (?, ?, ?, ?, ?)").
+     arg(urlHash.mid(0, 2).constData()));
+  query.bindValue(0, QDateTime::currentDateTime().toString(Qt::ISODate));
+
+  if(ok)
+    query.bindValue
+      (1, m_urlCommonCrypt->encryptedThenHashed(description, &ok).
+       toBase64());
+
+  if(ok)
+    query.bindValue
+      (2, m_urlCommonCrypt->encryptedThenHashed(title, &ok).toBase64());
+
+  if(ok)
+    query.bindValue
+      (3, m_urlCommonCrypt->encryptedThenHashed(url.toEncoded(), &ok).
+       toBase64());
+
+  if(ok)
+    query.bindValue(4, urlHash.constData());
+
+  if(ok)
+    ok = query.exec();
+
+  if(ok && separate)
+    {
+      QStringList keywords
+	(QString::fromUtf8(description.constData()).
+	 split(QRegExp("\\W+"), QString::SkipEmptyParts));
+
+      for(int i = 0; i < keywords.size(); i++)
+	{
+	  QByteArray keywordHash;
+	  QSqlQuery query(m_urlDatabase);
+
+	  keywordHash = m_urlCommonCrypt->keyedHash
+	    (keywords.at(i).toUtf8(), &ok).toHex();
+
+	  if(!ok)
+	    break;
+
+	  query.prepare
+	    (QString("INSERT INTO spot_on_keywords_%1 ("
+		     "keyword_hash, "
+		     "url_hash) "
+		     "VALUES (?, ?)").arg(keywordHash.mid(0, 2).
+					  constData()));
+	  query.bindValue(0, keywordHash.constData());
+	  query.bindValue(1, urlHash.constData());
+	  query.exec();
+	}
+    }
 }
 
 void spoton::slotPostgreSQLConnect(void)
@@ -923,6 +1040,7 @@ void spoton::slotSaveCommonUrlCredentials(void)
       m_ui.commonUrlIterationCount->setValue(10000);
       m_ui.commonUrlPassphrase->clear();
       m_ui.commonUrlPin->clear();
+      prepareUrlContainers();
       prepareUrlLabels();
     }
 }

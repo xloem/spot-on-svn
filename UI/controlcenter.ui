@@ -4359,8 +4359,11 @@
                    </item>
                    <item>
                     <widget class="QPushButton" name="deleteAllUrls">
+                     <property name="toolTip">
+                      <string>Delete all PostgreSQL database entries. Remove SQLite database files.</string>
+                     </property>
                      <property name="text">
-                      <string>Delete Databases</string>
+                      <string>Vacuum Databases</string>
                      </property>
                     </widget>
                    </item>
