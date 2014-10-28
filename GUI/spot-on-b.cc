@@ -2087,7 +2087,8 @@ void spoton::slotResetAll(void)
        << "listeners.db"
        << "neighbors.db"
        << "shared.db"
-       << "starbeam.db";
+       << "starbeam.db"
+       << "urls_key_information.db";
 
   while(!list.isEmpty())
     QFile::remove

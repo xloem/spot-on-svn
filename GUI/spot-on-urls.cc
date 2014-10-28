@@ -51,8 +51,8 @@ void spoton::prepareUrlLabels(void)
 	QSqlDatabase db = spoton_misc::database(connectionName);
 
 	db.setDatabaseName
-	  (spoton_misc::homePath() + QDir::separator() + "spot-on_URLs" +
-	   QDir::separator() + "spot-on_key_information.db");
+	  (spoton_misc::homePath() + QDir::separator() +
+	   "urls_key_information.db");
 
 	if(db.open())
 	  {
@@ -135,8 +135,8 @@ void spoton::slotPrepareUrlDatabases(void)
     QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() + "spot-on_URLs" +
-       QDir::separator() + "spot-on_key_information.db");
+      (spoton_misc::homePath() + QDir::separator() +
+       "urls_key_information.db");
 
     if(db.open())
       {
@@ -206,7 +206,7 @@ void spoton::slotPrepareUrlDatabases(void)
 				   "keyword_hash TEXT NOT NULL, "
 				   "url_hash TEXT NOT NULL, "
 				   "PRIMARY KEY (keyword_hash, url_hash))").
-			   arg(c1.toAscii()).arg(c2.toAscii())))
+			   arg(c1).arg(c2)))
 	      created = false;
 
 	    if(!query.exec(QString("CREATE TABLE "
@@ -216,7 +216,7 @@ void spoton::slotPrepareUrlDatabases(void)
 				   "title BYTEA NOT NULL, "
 				   "url BYTEA NOT NULL, "
 				   "url_hash TEXT PRIMARY KEY NOT NULL)").
-			   arg(c1.toAscii()).arg(c2.toAscii())))
+			   arg(c1).arg(c2)))
 	      created = false;
 	  }
 	else
@@ -311,12 +311,12 @@ bool spoton::deleteAllUrls(void)
 
 	      if(!query.exec(QString("DELETE FROM "
 				     "spot_on_keywords_%1%2").
-			     arg(c1.toAscii()).arg(c2.toAscii())))
+			     arg(c1).arg(c2)))
 		deleted = false;
 
 	      if(!query.exec(QString("DELETE FROM "
 				     "spot_on_urls_%1%2").
-			     arg(c1.toAscii()).arg(c2.toAscii())))
+			     arg(c1).arg(c2)))
 		deleted = false;
 	    }
 	else
@@ -329,25 +329,32 @@ bool spoton::deleteAllUrls(void)
 #endif
       }
 
-  m_urlDatabase.commit();
+  QString connectionName("");
 
-  QDir dir(spoton_misc::homePath());
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
 
-  if(!dir.exists("spot-on_URLs"))
-    return deleted;
+    db.setDatabaseName
+      (spoton_misc::homePath() + QDir::separator() +
+       "urls_key_information.db");
 
-  if(dir.cd("spot-on_URLs"))
-    {
-      if(dir.exists("spot-on_key_information.db"))
-	if(!dir.remove("spot-on_key_information.db"))
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	if(!query.exec("DELETE FROM import_key_information"))
 	  deleted = false;
-    }
-  else
-    deleted = false;
 
-  if(!QDir(spoton_misc::homePath()).rmdir("spot-on_URLs"))
-    deleted = false;
+	if(!query.exec("DELETE FROM remote_key_information"))
+	  deleted = false;
+      }
+    else
+      deleted = false;
 
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
   return deleted;
 }
 
@@ -394,13 +401,13 @@ void spoton::slotGatherUrlStatistics(void)
 	      c2 = QChar(j + 97 - 10);
 
 	    if(query.exec(QString("SELECT COUNT(*) FROM spot_on_urls_%1%2").
-			  arg(c1.toAscii()).arg(c2.toAscii())))
+			  arg(c1).arg(c2)))
 	      if(query.next())
 		count += query.value(0).toLongLong();
 
 	    if(query.exec(QString("SELECT pg_total_relation_size"
 				  "('\"spot_on_urls_%1%2\"')").
-			  arg(c1.toAscii()).arg(c2.toAscii())))
+			  arg(c1).arg(c2)))
 	      if(query.next())
 		size += query.value(0).toLongLong();
 	  }
@@ -439,8 +446,8 @@ void spoton::slotImportUrls(void)
     QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() + "spot-on_URLs" +
-       QDir::separator() + "spot-on_key_information.db");
+      (spoton_misc::homePath() + QDir::separator() +
+       "urls_key_information.db");
 
     if(db.open())
       {
@@ -723,8 +730,8 @@ void spoton::slotSaveUrlCredentials(void)
 	QSqlDatabase db = spoton_misc::database(connectionName);
 
 	db.setDatabaseName
-	  (spoton_misc::homePath() + QDir::separator() + "spot-on_URLs" +
-	   QDir::separator() + "spot-on_key_information.db");
+	  (spoton_misc::homePath() + QDir::separator() +
+	   "urls_key_information.db");
 
 	if(db.open())
 	  {
@@ -755,7 +762,7 @@ void spoton::slotSaveUrlCredentials(void)
 			 "spoton_crypt::encryptedThenHashed().");
 	  }
 	else
-	  error = tr("Unable to access spot-on_key_information.db.");
+	  error = tr("Unable to access urls_key_information.db.");
 
 	db.close();
       }
@@ -972,8 +979,8 @@ void spoton::slotSaveCommonUrlCredentials(void)
 	QSqlDatabase db = spoton_misc::database(connectionName);
 
 	db.setDatabaseName
-	  (spoton_misc::homePath() + QDir::separator() + "spot-on_URLs" +
-	   QDir::separator() + "spot-on_key_information.db");
+	  (spoton_misc::homePath() + QDir::separator() +
+	   "urls_key_information.db");
 
 	if(db.open())
 	  {
@@ -1017,7 +1024,7 @@ void spoton::slotSaveCommonUrlCredentials(void)
 			 "spoton_crypt::encryptedThenHashed().");
 	  }
 	else
-	  error = tr("Unable to access spot-on_key_information.db.");
+	  error = tr("Unable to access urls_key_information.db.");
 
 	db.close();
       }
