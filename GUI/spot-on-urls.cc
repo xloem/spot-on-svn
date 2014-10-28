@@ -127,7 +127,6 @@ void spoton::slotPrepareUrlDatabases(void)
     arg(SPOTON_APPLICATION_NAME));
   progress.show();
   progress.update();
-  QDir().mkdir(spoton_misc::homePath() + QDir::separator() + "spot-on_URLs");
 
   QString connectionName("");
 
