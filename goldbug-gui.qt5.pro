@@ -90,7 +90,8 @@ SOURCES		= Common/spot-on-crypt.cc \
 		  GUI/spot-on-starbeamanalyzer.cc \
 		  GUI/spot-on-tabwidget.cc \
 		  GUI/spot-on-textedit.cc \
-		  GUI/spot-on-urls.cc
+		  GUI/spot-on-urls.cc \
+		  GUI/spot-on-urls-search.cc
 
 TRANSLATIONS    = Translations/spot-on_af.ts \
                   Translations/spot-on_al.ts \

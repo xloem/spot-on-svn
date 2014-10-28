@@ -96,7 +96,8 @@ SOURCES		= Common/spot-on-crypt.cc \
                   GUI/spot-on-starbeamanalyzer.cc \
 		  GUI/spot-on-tabwidget.cc \
 		  GUI/spot-on-textedit.cc \
-		  GUI/spot-on-urls.cc
+		  GUI/spot-on-urls.cc \
+		  GUI/spot-on-urls-search.cc
 
 OBJECTIVE_HEADERS += Common/Cocoainitializer.h
 OBJECTIVE_SOURCES += Common/Cocoainitializer.mm
