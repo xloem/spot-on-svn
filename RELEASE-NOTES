@@ -1,6 +1,7 @@
 0.16 (11/01/2014)
 
 1.   Lots of URL work. Please note that PostgreSQL will be required.
+     Re-encoding does not exist.
 2.   Set the error parameter in spoton_crypt::generatePrivatePublicKeys()
      if generateNTRUKeys() fails. A failure will be properly contained,
      however, it will not be reported correctly to the user.
