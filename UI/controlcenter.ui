@@ -499,7 +499,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1031</width>
-                <height>454</height>
+                <height>457</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2182,7 +2182,7 @@
              <x>0</x>
              <y>0</y>
              <width>900</width>
-             <height>380</height>
+             <height>467</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -5239,7 +5239,7 @@
                   </spacer>
                  </item>
                  <item>
-                  <widget class="QLineEdit" name="keywords">
+                  <widget class="QLineEdit" name="search">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -5249,7 +5249,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="searchURL">
+                  <widget class="QPushButton" name="discover">
                    <property name="text">
                     <string>Discover!</string>
                    </property>
@@ -5271,43 +5271,13 @@
                 </layout>
                </item>
                <item>
-                <widget class="QTableWidget" name="urls">
-                 <property name="alternatingRowColors">
+                <widget class="QTextBrowser" name="urls">
+                 <property name="tabChangesFocus">
                   <bool>true</bool>
                  </property>
-                 <property name="selectionMode">
-                  <enum>QAbstractItemView::SingleSelection</enum>
+                 <property name="textInteractionFlags">
+                  <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
                  </property>
-                 <property name="selectionBehavior">
-                  <enum>QAbstractItemView::SelectRows</enum>
-                 </property>
-                 <property name="horizontalScrollMode">
-                  <enum>QAbstractItemView::ScrollPerPixel</enum>
-                 </property>
-                 <property name="sortingEnabled">
-                  <bool>true</bool>
-                 </property>
-                 <attribute name="horizontalHeaderDefaultSectionSize">
-                  <number>200</number>
-                 </attribute>
-                 <attribute name="horizontalHeaderStretchLastSection">
-                  <bool>true</bool>
-                 </attribute>
-                 <column>
-                  <property name="text">
-                   <string>Title</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>URL</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Description</string>
-                  </property>
-                 </column>
                 </widget>
                </item>
                <item>
@@ -5329,9 +5299,9 @@
                   </spacer>
                  </item>
                  <item>
-                  <widget class="QLabel" name="label_2">
+                  <widget class="QLabel" name="url_pages">
                    <property name="text">
-                    <string>&lt; 1 .. 1 &gt;</string>
+                    <string>&lt; 1 &gt;</string>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignCenter</set>
@@ -6694,7 +6664,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>577</width>
+             <width>758</width>
              <height>559</height>
             </rect>
            </property>
@@ -7786,8 +7756,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>263</width>
-             <height>412</height>
+             <width>776</width>
+             <height>485</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -8322,8 +8292,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>278</width>
-             <height>189</height>
+             <width>776</width>
+             <height>485</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -9023,8 +8993,8 @@
   <tabstop>verify</tabstop>
   <tabstop>saveUrlCredentials</tabstop>
   <tabstop>importUrls</tabstop>
-  <tabstop>keywords</tabstop>
-  <tabstop>searchURL</tabstop>
+  <tabstop>search</tabstop>
+  <tabstop>discover</tabstop>
   <tabstop>urls</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>guiExternalIpFetch</tabstop>

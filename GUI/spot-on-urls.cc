@@ -808,18 +808,20 @@ void spoton::importUrl(const QByteArray &d, // Description
   if(url.isEmpty() || !url.isValid())
     return;
 
+  QByteArray all_keywords;
   QByteArray description(d.trimmed());
   QByteArray title(t.trimmed());
   bool separate = true;
 
   if(description.isEmpty())
-    {
-      description = url.toString().toUtf8();
-      separate = false;
-    }
+    description = url.toString().toUtf8();
+  else
+    all_keywords = description;
 
   if(title.isEmpty())
     title = url.toString().toUtf8();
+  else
+    all_keywords.append(" ").append(title);
 
   QByteArray urlHash;
   bool ok = true;
@@ -861,10 +863,14 @@ void spoton::importUrl(const QByteArray &d, // Description
   if(ok)
     ok = query.exec();
 
+  if(ok)
+    if(all_keywords.isEmpty())
+      separate = false;
+
   if(ok && separate)
     {
       QStringList keywords
-	(QString::fromUtf8(description.constData()).
+	(QString::fromUtf8(all_keywords.toLower().constData()).
 	 split(QRegExp("\\W+"), QString::SkipEmptyParts));
 
       for(int i = 0; i < keywords.size(); i++)

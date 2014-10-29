@@ -3908,7 +3908,7 @@ void spoton::slotSetIcons(void)
 
   // Search
 
-  m_ui.searchURL->setIcon(QIcon(QString(":/%1/search.png").arg(iconSet)));
+  m_ui.discover->setIcon(QIcon(QString(":/%1/search.png").arg(iconSet)));
 
   // Settings
 

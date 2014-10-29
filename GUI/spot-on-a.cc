@@ -911,6 +911,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSetUrlIniPath(void)));
+  connect(m_ui.search,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotDiscover(void)));
   connect(m_ui.saveSslControlString,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -1159,6 +1163,12 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(valueChanged(double)),
 	  this,
 	  SLOT(slotUpdateSpinBoxChanged(double)));
+  connect(m_ui.discover,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotDiscover(void)));
+  connect(m_ui.url_pages, SIGNAL(linkActivated(const QString &)),
+	  this, SLOT(slotPageClicked(const QString &)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,

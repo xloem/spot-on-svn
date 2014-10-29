@@ -26,3 +26,304 @@
 */
 
 #include "spot-on.h"
+#include "spot-on-defines.h"
+
+void spoton::slotDiscover(void)
+{
+  if(!m_urlCommonCrypt)
+    {
+      QMessageBox::critical
+	(this,
+	 tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
+	 tr("Invalid spoton_crypt object. This is a fatal flaw."));
+      return;
+    }
+
+  if(!m_urlDatabase.isOpen())
+    {
+      QMessageBox::critical
+	(this,
+	 tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
+	 tr("Please connect to a PostgreSQL database."));
+      return;
+    }
+
+  m_ui.urls->clear();
+  m_ui.url_pages->setText("< 1 >");
+
+  QString querystr("");
+  QString search(m_ui.search->text().trimmed());
+
+  m_urlCurrentPage = 1;
+  m_urlLimit = 10;
+  m_urlOffset = 0;
+  m_urlPages = 0;
+  m_urlQuery.clear();
+
+  if(search.isEmpty())
+    {
+      for(int i = 0; i < 10 + 6; i++)
+	for(int j = 0; j < 10 + 6; j++)
+	  {
+	    QChar c1;
+	    QChar c2;
+
+	    if(i <= 9)
+	      c1 = QChar(i + 48);
+	    else
+	      c1 = QChar(i + 97 - 10);
+
+	    if(j <= 9)
+	      c2 = QChar(j + 48);
+	    else
+	      c2 = QChar(j + 97 - 10);
+
+	    if(i == 15 && j == 15)
+	      querystr.append
+		(QString("SELECT title, url, description, date_time_inserted "
+			 "FROM spot_on_urls_%1%2 ").arg(c1).arg(c2));
+	    else
+	      querystr.append
+		(QString("SELECT title, url, description, date_time_inserted "
+			 "FROM spot_on_urls_%1%2 UNION ").arg(c1).arg(c2));
+	  }
+
+      querystr.append(" ORDER BY 4 DESC ");
+      querystr.append(QString(" LIMIT %1 ").arg(m_urlLimit));
+      querystr.append(QString(" OFFSET %1 ").arg(m_urlOffset));
+    }
+  else
+    {
+      QString keywordclause("");
+      QStringList keywords
+	(search.toLower().split(QRegExp("\\W+"), QString::SkipEmptyParts));
+      bool ok = true;
+
+      for(int i = 0; i < keywords.size(); i++)
+	{
+	  QByteArray keywordHash
+	    (m_urlCommonCrypt->keyedHash(keywords.at(i).toUtf8(), &ok).
+	     toHex());
+
+	  if(!ok)
+	    continue;
+
+	  if(i == keywords.size() - 1)
+	    keywordclause.append
+	      (QString("SELECT url_hash FROM "
+		       "spot_on_keywords_%1 WHERE keyword_hash = '%2' ").
+	       arg(keywordHash.mid(0, 2).constData()).
+	       arg(keywordHash.constData()));
+	  else
+	    keywordclause.append
+	      (QString("SELECT url_hash FROM "
+		       "spot_on_keywords_%1 WHERE keyword_hash = '%2' UNION ").
+	       arg(keywordHash.mid(0, 2).constData()).
+	       arg(keywordHash.constData()));
+	}
+
+      for(int i = 0; i < 10 + 6; i++)
+	for(int j = 0; j < 10 + 6; j++)
+	  {
+	    QChar c1;
+	    QChar c2;
+
+	    if(i <= 9)
+	      c1 = QChar(i + 48);
+	    else
+	      c1 = QChar(i + 97 - 10);
+
+	    if(j <= 9)
+	      c2 = QChar(j + 48);
+	    else
+	      c2 = QChar(j + 97 - 10);
+
+	    /*
+	    ** For absolute correctness, we ought to use parameters in
+	    ** the SQL queries.
+	    */
+
+	    if(i == 15 && j == 15)
+	      querystr.append
+		(QString("SELECT title, url, description, date_time_inserted "
+			 "FROM spot_on_urls_%1%2 WHERE "
+			 "url_hash IN (%3) ").
+		 arg(c1).arg(c2).arg(keywordclause));
+	    else
+	      querystr.append
+		(QString("SELECT title, url, description, date_time_inserted "
+			 "FROM spot_on_urls_%1%2 WHERE "
+			 "url_hash IN (%3) UNION ").
+		 arg(c1).arg(c2).arg(keywordclause));
+	  }
+
+      querystr.append(" ORDER BY 4 DESC ");
+      querystr.append(QString(" LIMIT %1 ").arg(m_urlLimit));
+      querystr.append(QString(" OFFSET %1 ").arg(m_urlOffset));
+    }
+
+  m_urlQuery = querystr;
+  showUrls(">");
+}
+
+void spoton::showUrls(const QString &link)
+{
+  if(!m_urlDatabase.isOpen())
+    return;
+
+  QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+  QSqlQuery query(m_urlDatabase);
+  quint64 count = 0;
+
+  query.prepare(m_urlQuery);
+
+  if(query.exec())
+    {
+      while(query.next())
+	{
+	  if(!count)
+	    m_ui.urls->clear();
+
+	  QString description("");
+	  QString title("");
+	  QString url("");
+	  bool ok = true;
+
+	  description = QString::fromUtf8
+	    (m_urlCommonCrypt->
+	     decryptedAfterAuthenticated(QByteArray::
+					 fromBase64(query.value(2).
+						    toByteArray()),
+					 &ok));
+
+	  if(ok)
+	    title = QString::fromUtf8
+	      (m_urlCommonCrypt->
+	       decryptedAfterAuthenticated(QByteArray::
+					   fromBase64(query.value(0).
+						      toByteArray()),
+					   &ok));
+
+	  if(ok)
+	    url = QString::fromUtf8
+	      (m_urlCommonCrypt->
+	       decryptedAfterAuthenticated(QByteArray::
+					   fromBase64(query.value(1).
+						      toByteArray()),
+					   &ok));
+
+	  if(ok)
+	    {
+	      QString html("");
+
+	      html.append(QString("<a href=\"%1\">%2</a>").
+			  arg(url).arg(title));
+	      html.append("<br>");
+	      html.append(QString("<font color=\"green\" size=2>%1</font>").
+			  arg(url));
+	      html.append("<br>");
+	      html.append(QString("<font color=\"gray\" size=2>%1</font>").
+			  arg(description));
+	      html.append("<br>");
+	      html.append(QString("<font color=\"gray\" size=2>%1</font>").
+			  arg(query.value(3).toString()));
+	      html.append("<br>");
+	      m_ui.urls->append(html);
+	      count += 1;
+	    }
+	}
+
+      if(count > 0)
+	if(link == ">")
+	  if(m_urlOffset / m_urlLimit >= m_urlPages)
+	    m_urlPages += 1;
+
+      m_ui.urls->horizontalScrollBar()->setValue(0);
+      m_ui.urls->verticalScrollBar()->setValue(0);
+    }
+
+  QApplication::restoreOverrideCursor();
+
+  if(!count)
+    {
+      if(link == ">")
+	{
+	  QString str(m_ui.url_pages->text());
+
+	  str.remove(tr("Next"));
+	  m_ui.url_pages->setText(str.trimmed());
+	}
+
+      return;
+    }
+
+  QString str("");
+  quint64 lower = 0;
+  quint64 upper = 0;
+
+  // 1  ... 10.
+  // 11 ... 20.
+  // Find the lower and upper bounds.
+
+  lower = m_urlOffset / m_urlLimit + 1;
+  upper = lower + m_urlLimit;
+
+  if(m_urlPages < upper)
+    upper = m_urlPages;
+
+  if(upper > m_urlLimit) // Number of pages to display.
+    lower = upper - m_urlLimit;
+  else
+    lower = 1;
+
+  for(quint64 i = lower; i <= upper; i++)
+    if(i != m_urlCurrentPage)
+      str.append(QString(" <a href=\"%1\">%1</a> ").arg(i));
+    else
+      str.append(QString(" %1 ").arg(i));
+
+  if(count >= m_urlLimit)
+    str.append(tr(" <a href=\">\">Next</a> "));
+
+  if(m_urlCurrentPage != 1)
+    str.prepend(tr(" <a href=\"<\">Previous</a> "));
+
+  m_ui.url_pages->setText(str.trimmed());
+}
+
+void spoton::slotPageClicked(const QString &link)
+{
+  if(link == "<")
+    {
+      if(m_urlCurrentPage > 1)
+	m_urlCurrentPage -= 1;
+      else
+	m_urlCurrentPage = 1;
+
+      if(m_urlOffset > m_urlLimit)
+	m_urlOffset -= m_urlLimit;
+      else
+	m_urlOffset = 0;
+
+      m_urlQuery.remove(m_urlQuery.indexOf(" OFFSET "), m_urlQuery.length());
+      m_urlQuery.append(QString(" OFFSET %1 ").arg(m_urlOffset));
+      showUrls(link);
+    }
+  else if(link == ">")
+    {
+      m_urlCurrentPage += 1;
+      m_urlOffset += m_urlLimit;
+      m_urlQuery.remove(m_urlQuery.indexOf(" OFFSET "), m_urlQuery.length());
+      m_urlQuery.append(QString(" OFFSET %1 ").arg(m_urlOffset));
+      showUrls(link);
+    }    
+  else
+    {
+      m_urlCurrentPage = link.toULongLong();
+      m_urlOffset = m_urlLimit * (m_urlCurrentPage - 1);
+      m_urlQuery.remove(m_urlQuery.indexOf(" OFFSET "), m_urlQuery.length());
+      m_urlQuery.append(QString(" OFFSET %1 ").arg(m_urlOffset));
+      showUrls(link);
+    }
+}

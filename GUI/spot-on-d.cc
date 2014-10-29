@@ -2460,8 +2460,8 @@ void spoton::prepareUrlContainers(void)
     QSqlDatabase db = spoton_misc::database(connectionName);
 
     db.setDatabaseName
-      (spoton_misc::homePath() + QDir::separator() + "spot-on_URLs" +
-       QDir::separator() + "spot-on_key_information.db");
+      (spoton_misc::homePath() + QDir::separator() +
+       "urls_key_information.db");
 
     if(db.open())
       {

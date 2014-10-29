@@ -140,6 +140,7 @@ class spoton: public QMainWindow
 #endif
   QSqlDatabase m_urlDatabase;
   QSslSocket m_kernelSocket;
+  QString m_urlQuery;
   QTimer m_buzzStatusTimer;
   QTimer m_chatInactivityTimer;
   QTimer m_emailRetrievalTimer;
@@ -154,6 +155,10 @@ class spoton: public QMainWindow
   QWidget *m_sbWidget;
   Ui_statusbar m_sb;
   Ui_spoton_mainwindow m_ui;
+  quint64 m_urlCurrentPage;
+  quint64 m_urlLimit;
+  quint64 m_urlOffset;
+  quint64 m_urlPages;
   spoton_crypt *m_urlCommonCrypt;
   spoton_encryptfile m_encryptFile;
   spoton_external_address *m_externalAddress;
@@ -222,6 +227,7 @@ class spoton: public QMainWindow
   void sendBuzzKeysToKernel(void);
   void sendKeysToKernel(void);
   void sharePublicKeyWithParticipant(const QString &keyType);
+  void showUrls(const QString &link);
   void updateListenersTable(const QSqlDatabase &db);
   void updateNeighborsTable(const QSqlDatabase &db);
   void updateParticipantsTable(const QSqlDatabase &db);
@@ -313,6 +319,7 @@ class spoton: public QMainWindow
   void slotDisconnectAllNeighbors(void);
   void slotDisconnectListenerNeighbors(void);
   void slotDisconnectNeighbor(void);
+  void slotDiscover(void);
   void slotDiscoverExternalAddress(void);
   void slotDiscoverMissingLinks(void);
   void slotDisplayLocalSearchResults(void);
@@ -377,6 +384,7 @@ class spoton: public QMainWindow
   void slotNeighborMaximumChanged(int value);
   void slotNeighborSelected(void);
   void slotNewKeys(bool state);
+  void slotPageClicked(const QString &link);
   void slotParticipantDoubleClicked(QTableWidgetItem *item);
   void slotPassphraseAuthenticateRadioToggled(bool state);
   void slotPassphraseRadioToggled(bool state);
