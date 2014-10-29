@@ -911,6 +911,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSetUrlIniPath(void)));
+  connect(m_ui.reloadIni,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSetUrlIniPath(void)));
   connect(m_ui.search,
 	  SIGNAL(returnPressed(void)),
 	  this,
