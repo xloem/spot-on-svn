@@ -934,18 +934,23 @@ void spoton::slotPostgreSQLConnect(void)
       m_urlDatabase = QSqlDatabase::addDatabase("QPSQL", "PostgreSQL");
       m_urlDatabase.setHostName(ui.host->text());
       m_urlDatabase.setDatabaseName(ui.database->text());
+      m_urlDatabase.setPort(ui.port->value());
       m_urlDatabase.open(ui.name->text(), ui.password->text());
 
       if(!m_urlDatabase.isOpen())
 	{
+	  QString str(m_urlDatabase.lastError().text().trimmed());
+
 	  m_urlDatabase = QSqlDatabase();
 
 	  if(QSqlDatabase::contains("PostgreSQL"))
 	    QSqlDatabase::removeDatabase("PostgreSQL");
 
-	  QMessageBox::critical(this, tr("%1: Error").
-				arg(SPOTON_APPLICATION_NAME),
-				tr("Could not open a database connection."));
+	  QMessageBox::critical
+	    (this, tr("%1: Error").
+	     arg(SPOTON_APPLICATION_NAME),
+	     tr("Could not open (%1) a database connection.").
+	     arg(str));
 	}
       else
 	{
