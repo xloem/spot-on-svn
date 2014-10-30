@@ -465,7 +465,10 @@ void spoton::slotReceivedKernelMessage(void)
 	  else if(data == "newmail")
 	    {
 	      m_sb.email->setVisible(true);
-	      slotRefreshMail();
+
+	      if(m_ui.mailTab->currentIndex() == 0)
+		if(m_ui.folder->currentIndex() == 0)
+		  slotRefreshMail();
 
 #if SPOTON_GOLDBUG == 1
 #if QT_VERSION >= 0x050000
