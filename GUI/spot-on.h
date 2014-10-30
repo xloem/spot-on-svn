@@ -212,6 +212,7 @@ class spoton: public QMainWindow
   void populateAccounts(const QString &listenerOid);
   void populateListenerIps(const QString &listenerOid);
   void populateMOTD(const QString &listenerOid);
+  void populateMail(void);
   void populateNovas(void);
   void prepareContextMenuMirrors(void);
   void prepareListenerIPCombo(void);

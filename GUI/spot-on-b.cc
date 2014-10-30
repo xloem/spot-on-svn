@@ -465,10 +465,7 @@ void spoton::slotReceivedKernelMessage(void)
 	  else if(data == "newmail")
 	    {
 	      m_sb.email->setVisible(true);
-
-	      if(m_ui.mailTab->currentIndex() == 0)
-		if(m_ui.folder->currentIndex() == 0)
-		  slotRefreshMail();
+	      populateMail();
 
 #if SPOTON_GOLDBUG == 1
 #if QT_VERSION >= 0x050000
@@ -2900,6 +2897,11 @@ void spoton::slotRefreshMail(void)
   else if(m_ui.mailTab->currentIndex() != 0)
     return;
 
+  populateMail();
+}
+
+void spoton::populateMail(void)
+{
   m_ui.reply->setEnabled(m_ui.folder->currentIndex() == 0);
   m_ui.resend->setEnabled(m_ui.folder->currentIndex() != 0);
 
