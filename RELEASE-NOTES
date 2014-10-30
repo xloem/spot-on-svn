@@ -34,6 +34,8 @@
 20.  The Super Echo must not interfere with echo modes.
 21.  Improved spoton_crypt::memcmp() by introducing time-constant
      bit comparisons.
+22.  Corrected OS X kernel project files as they were missing SCTP
+     instructions in the install targets.
 
 0.15 (10/10/2014)
 
