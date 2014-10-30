@@ -28,8 +28,6 @@
 #include "spot-on-crypt.h"
 #include "spot-on-misc.h"
 
-#include <QtEndian>
-
 void spoton_crypt::generateNTRUKeys(const QString &keySize,
 				    QByteArray &privateKey,
 				    QByteArray &publicKey,
