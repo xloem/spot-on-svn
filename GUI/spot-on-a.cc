@@ -1422,13 +1422,24 @@ spoton::spoton(void):QMainWindow()
   m_ui.generate->setEnabled(false);
   m_ui.pairFrame->setEnabled(false);
 
+#ifdef Q_OS_MAC
   if(m_settings.contains("gui/kernelPath") &&
      QFileInfo(m_settings.value("gui/kernelPath").toString()).
-     isExecutable())
+     isBundle())
+    m_ui.kernelPath->setText(m_settings.value("gui/kernelPath").toString());
+  else if(m_settings.contains("gui/kernelPath") &&
+	  QFileInfo(m_settings.value("gui/kernelPath").toString()).
+	  isExecutable())
+    m_ui.kernelPath->setText(m_settings.value("gui/kernelPath").toString());
+  else
+    m_ui.kernelPath->setText
+      ("/Applications/Spot-On.d/Spot-On-Kernel.app");
+#else
+  if(m_settings.contains("gui/kernelPath") &&
+     QFileInfo(m_settings.value("gui/kernelPath").toString()).isExecutable())
     m_ui.kernelPath->setText(m_settings.value("gui/kernelPath").toString());
   else
     {
-#ifndef Q_OS_MAC
       QString path(QCoreApplication::applicationDirPath() +
 		   QDir::separator() +
 #if defined(Q_OS_WIN32)
@@ -1439,8 +1450,8 @@ spoton::spoton(void):QMainWindow()
 		   );
 
       m_ui.kernelPath->setText(path);
-#endif
     }
+#endif
 
   if(m_settings.value("gui/chatSendMethod", "Artificial_GET").
      toString() == "Artificial_GET")
