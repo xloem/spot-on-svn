@@ -96,6 +96,8 @@ libgeoip_install.path  = .
 libgeoip_install.extra = cp ../../../libGeoIP/Libraries.osx64/libGeoIP.1.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libGeoIP.1.dylib && install_name_tool -change ../../../libGeoIP/Libraries.osx64/libGeoIP.1.dylib @executable_path/../Frameworks/libGeoIP.1.dylib ../Spot-On-Kernel.app/Contents/MacOS/Spot-On-Kernel
 libntru_install.path  = .
 libntru_install.extra = cp ../../../libNTRU/libntru.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libntru.dylib && install_name_tool -change ../../../libNTRU/libntru.dylib @executable_path/../Frameworks/libntru.dylib ../Spot-On-Kernel.app/Contents/MacOS/Spot-On-Kernel
+libsctp_install.path  = .
+libsctp_install.extra = cp ../../../libSCTP/Libraries.osx64/libusrsctp.0.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libusrsctp.0.dylib && install_name_tool -change ../../../libSCTP/Libraries.osx64/libusrsctp.0.dylib @executable_path../Frameworks/libusrsctp.0.dylib ../Spot-On-Kernel.app/Contents/MacOS/Spot-On-Kernel
 libspoton_install.path  = .
 libspoton_install.extra = cp ../../../libSpotOn/libspoton.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change /usr/local/lib/libgcrypt.11.dylib @loader_path/libgcrypt.11.dylib ../Spot-On-Kernel.app/Contents/Frameworks/libspoton.dylib && install_name_tool -change ../../../libSpotOn/libspoton.dylib @executable_path/../Frameworks/libspoton.dylib ../Spot-On-Kernel.app/Contents/MacOS/Spot-On-Kernel
 macdeployqt.path        = ../Spot-On-Kernel.app
@@ -113,6 +115,7 @@ INSTALLS	= macdeployqt \
                   libgeoip_data_install \
                   libgeoip_install \
                   libntru_install \
+		  libsctp_install \
                   libspoton_install \
                   spoton \
                   postinstall
