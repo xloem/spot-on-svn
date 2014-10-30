@@ -1,7 +1,9 @@
 0.16 (11/01/2014)
 
 1.   URL integration with Dooble has been completed.
-     Please note that PostgreSQL will be required. Re-encoding does not exist.
+     Please note that PostgreSQL will be required. Re-encoding it not
+     supported. Please also note that libspoton.so does not provide
+     authenticated encryption.
 2.   Set the error parameter in spoton_crypt::generatePrivatePublicKeys()
      if generateNTRUKeys() fails. A failure will be properly contained,
      however, it will not be reported correctly to the user.
@@ -26,9 +28,11 @@
 15.  Allow assigning of new remote IP information to existing neighbors.
 16.  Updated OpenSSL products to version 1.0.1j on OS X and Windows.
 17.  Removed persistent initialization of databases from the kernel and
-     user interface.
+     user interface. Spot-On should not assume complete responsibility
+     for user decisions.
 18.  Per Schmidt, ability to lock StarBeam mosaics. Please remove
-     the starbeam.db database.
+     the starbeam.db database. Because of the asynchronous nature of Spot-On,
+     write permissions of native files are discarded if mosaics are locked.
 19.  Do not update Listeners, Neighbors, and StarBeam widgets unless the
      widgets are visible.
 20.  The Super Echo must not interfere with echo modes.
@@ -36,6 +40,8 @@
      bit comparisons.
 22.  Corrected OS X kernel project files as they were missing SCTP
      instructions in the install targets.
+23.  Attempt to set the kernel's path in the UI for mangled or
+     new OS X installations.
 
 0.15 (10/10/2014)
 
