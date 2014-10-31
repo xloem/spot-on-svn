@@ -42,6 +42,9 @@
      instructions in the install targets.
 23.  Attempt to set the kernel's path in the UI for mangled or
      new OS X installations.
+24.  Corrected kernel statistics. The previous implementation did not
+     inspect the states of listeners and neighbors. Also, be careful of
+     threads.
 
 0.15 (10/10/2014)
 
