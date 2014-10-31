@@ -3139,7 +3139,8 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 
   protocols << "TlsV1_2"
 	    << "TlsV1_1"
-	    << "TlsV1_0";
+	    << "TlsV1_0"
+	    << "Sslv3";
 
   while(!protocols.isEmpty())
     {
@@ -3179,6 +3180,15 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 	      goto done_label;
 	    }
 	}
+      else
+	{
+	  if(!(ctx = SSL_CTX_new(SSLv3_method())))
+	    {
+	      spoton_misc::logError("spoton_crypt::defaultSslCiphers(): "
+				    "SSL_CTX_new() failure.");
+	      goto done_label;
+	    }
+	}
 
       if(!ctx)
 	continue;
@@ -3211,10 +3221,11 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 		cipher = QSslCipher(next, QSsl::TlsV1_2);
 	      else if(protocol == "TlsV1_1")
 		cipher = QSslCipher(next, QSsl::TlsV1_1);
-	      else
+	      else if(protocol == "TlsV1_0")
 		cipher = QSslCipher(next, QSsl::TlsV1_0);
+	      else
+		cipher = QSslCipher(next, QSsl::SslV3);
 #endif
-
 	      if(!cipher.isNull())
 		list.append(cipher);
 	    }
