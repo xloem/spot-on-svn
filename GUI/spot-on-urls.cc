@@ -128,6 +128,9 @@ void spoton::slotPrepareUrlDatabases(void)
   progress.show();
   progress.update();
 
+  if(m_ui.sqlite->isChecked())
+    slotPostgreSQLDisconnect(true);;
+
   QString connectionName("");
 
   {
@@ -200,23 +203,47 @@ void spoton::slotPrepareUrlDatabases(void)
 	    else
 	      c2 = QChar(j + 97 - 10);
 
-	    if(!query.exec(QString("CREATE TABLE "
-				   "spot_on_keywords_%1%2 ("
-				   "keyword_hash TEXT NOT NULL, "
-				   "url_hash TEXT NOT NULL, "
-				   "PRIMARY KEY (keyword_hash, url_hash))").
-			   arg(c1).arg(c2)))
-	      created = false;
+	    if(m_urlDatabase.driverName() == "QPSQL")
+	      {
+		if(!query.exec(QString("CREATE TABLE "
+				       "spot_on_keywords_%1%2 ("
+				       "keyword_hash TEXT NOT NULL, "
+				       "url_hash TEXT NOT NULL, "
+				       "PRIMARY KEY (keyword_hash, url_hash))").
+			       arg(c1).arg(c2)))
+		  created = false;
+	      }
+	    else
+	      if(!query.exec(QString("CREATE TABLE IF NOT EXISTS "
+				     "spot_on_keywords_%1%2 ("
+				     "keyword_hash TEXT NOT NULL, "
+				     "url_hash TEXT NOT NULL, "
+				     "PRIMARY KEY (keyword_hash, url_hash))").
+			     arg(c1).arg(c2)))
+		created = false;
 
-	    if(!query.exec(QString("CREATE TABLE "
-				   "spot_on_urls_%1%2 ("
-				   "date_time_inserted TEXT NOT NULL, "
-				   "description BYTEA, "
-				   "title BYTEA NOT NULL, "
-				   "url BYTEA NOT NULL, "
-				   "url_hash TEXT PRIMARY KEY NOT NULL)").
-			   arg(c1).arg(c2)))
-	      created = false;
+	    if(m_urlDatabase.driverName() == "QPSQL")
+	      {
+		if(!query.exec(QString("CREATE TABLE "
+				       "spot_on_urls_%1%2 ("
+				       "date_time_inserted TEXT NOT NULL, "
+				       "description BYTEA, "
+				       "title BYTEA NOT NULL, "
+				       "url BYTEA NOT NULL, "
+				       "url_hash TEXT PRIMARY KEY NOT NULL)").
+			       arg(c1).arg(c2)))
+		  created = false;
+	      }
+	    else
+	      if(!query.exec(QString("CREATE TABLE IF NOT EXISTS "
+				     "spot_on_urls_%1%2 ("
+				     "date_time_inserted TEXT NOT NULL, "
+				     "description BYTEA, "
+				     "title BYTEA NOT NULL, "
+				     "url BYTEA NOT NULL, "
+				     "url_hash TEXT PRIMARY KEY NOT NULL)").
+			     arg(c1).arg(c2)))
+		created = false;
 	  }
 	else
 	  created = false;
