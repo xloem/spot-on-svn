@@ -286,6 +286,8 @@ void spoton::slotDeleteAllUrls(void)
 
   bool deleted = deleteAllUrls();
 
+  delete m_urlCommonCrypt;
+  m_urlCommonCrypt = 0;
   prepareUrlLabels();
 
   if(!deleted)
