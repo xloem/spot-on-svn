@@ -106,6 +106,9 @@ class spoton_kernel: public QObject
   QTimer m_scramblerTimer;
   QTimer m_settingsTimer;
   QTimer m_statusTimer;
+  int m_activeListeners;
+  int m_activeNeighbors;
+  int m_activeStarbeams;
   spoton_gui_server *m_guiServer;
   spoton_mailer *m_mailer;
   spoton_starbeam_writer *m_starbeamWriter;
@@ -134,7 +137,10 @@ class spoton_kernel: public QObject
   void prepareNeighbors(void);
   void prepareStarbeamReaders(void);
   void purgeMessagingCache(void);
-  void updateStatistics(void);
+  void updateStatistics(const QDateTime &uptime,
+			const int listeners,
+			const int neighbors,
+			const int starbeams);
 
  private slots:
   void slotBuzzMagnetReceivedFromUI(const qint64 oid,

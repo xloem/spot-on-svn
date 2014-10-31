@@ -733,9 +733,11 @@ void spoton::slotPopulateKernelStatistics(void)
 		      item->setBackground
 			(QBrush(QColor(240, 128, 128)));
 		  }
-		else if(query.value(0).toString().toLower() == "listeners")
+		else if(query.value(0).toString().toLower().
+			contains("listeners"))
 		  activeListeners = query.value(1).toInt();
-		else if(query.value(0).toString().toLower() == "neighbors")
+		else if(query.value(0).toString().toLower().
+			contains("neighbors"))
 		  activeNeighbors = query.value(1).toInt();
 
 		row += 1;

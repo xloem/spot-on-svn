@@ -316,6 +316,9 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 #endif
   qRegisterMetaType<spoton_sctp_socket::SocketError>
     ("spoton_sctp_socket::SocketError");
+  m_activeListeners = 0;
+  m_activeNeighbors = 0;
+  m_activeStarbeams = 0;
   m_guiServer = 0;
   m_mailer = 0;
   m_starbeamWriter = 0;
@@ -709,7 +712,8 @@ void spoton_kernel::slotPollDatabase(void)
 
   if(m_statisticsFuture.isFinished())
     m_statisticsFuture = QtConcurrent::run
-      (this, &spoton_kernel::updateStatistics);
+      (this, &spoton_kernel::updateStatistics,
+       m_uptime, m_activeListeners, m_activeNeighbors, m_activeStarbeams);
 
   checkForTermination();
 }
@@ -971,6 +975,8 @@ void spoton_kernel::prepareListeners(void)
   QMutableHashIterator<qint64, QPointer<spoton_listener> > it
     (m_listeners);
 
+  m_activeListeners = 0;
+
   while(it.hasNext())
     {
       it.next();
@@ -986,6 +992,8 @@ void spoton_kernel::prepareListeners(void)
 	     arg(it.key()));
 	  it.remove();
 	}
+      else if(it.value()->isListening())
+	m_activeListeners += 1;
     }
 
   if(m_listeners.isEmpty())
@@ -1228,6 +1236,8 @@ void spoton_kernel::prepareNeighbors(void)
     (m_neighbors);
   int disconnected = 0;
 
+  m_activeNeighbors = 0;
+
   while(it.hasNext())
     {
       it.next();
@@ -1244,6 +1254,8 @@ void spoton_kernel::prepareNeighbors(void)
 	}
       else if(it.value()->state() == QAbstractSocket::UnconnectedState)
 	disconnected += 1;
+      else if(it.value()->state() == QAbstractSocket::ConnectedState)
+	m_activeNeighbors += 1;
     }
 
   if(disconnected == m_neighbors.size() || m_neighbors.isEmpty())
@@ -1340,6 +1352,8 @@ void spoton_kernel::prepareStarbeamReaders(void)
   QMutableHashIterator<qint64, QPointer<spoton_starbeam_reader> > it
     (m_starbeamReaders);
 
+  m_activeStarbeams = 0;
+
   while(it.hasNext())
     {
       it.next();
@@ -1355,6 +1369,8 @@ void spoton_kernel::prepareStarbeamReaders(void)
 	     arg(it.key()));
 	  it.remove();
 	}
+      else
+	m_activeStarbeams += 1;
     }
 }
 
@@ -3737,7 +3753,10 @@ QVariant spoton_kernel::setting(const QString &name,
   return s_settings.value(name, defaultValue);
 }
 
-void spoton_kernel::updateStatistics(void)
+void spoton_kernel::updateStatistics(const QDateTime &uptime,
+				     const int listeners,
+				     const int neighbors,
+				     const int starbeams)
 {
   QString connectionName("");
 
@@ -3757,7 +3776,7 @@ void spoton_kernel::updateStatistics(void)
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
 		      "VALUES ('Active StarBeam Readers', ?)");
-	query.bindValue(0, m_starbeamReaders.size());
+	query.bindValue(0, starbeams);
 	query.exec();
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
@@ -3782,20 +3801,20 @@ void spoton_kernel::updateStatistics(void)
 	query.exec();
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
-		      "VALUES ('Listeners', ?)");
-	query.bindValue(0, m_listeners.size());
+		      "VALUES ('Live Listeners', ?)");
+	query.bindValue(0, listeners);
 	query.exec();
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
-		      "VALUES ('Neighbors', ?)");
-	query.bindValue(0, m_neighbors.size());
+		      "VALUES ('Live Neighbors', ?)");
+	query.bindValue(0, neighbors);
 	query.exec();
 	query.prepare("INSERT OR REPLACE INTO kernel_statistics "
 		      "(statistic, value) "
 		      "VALUES ('Uptime', ?)");
 	query.bindValue
 	  (0, QString("%1 Minutes").
-	   arg(QString::number(m_uptime.
+	   arg(QString::number(uptime.
 			       secsTo(QDateTime::currentDateTime()) / 60.0,
 			       'f', 1)));
 	query.exec();
