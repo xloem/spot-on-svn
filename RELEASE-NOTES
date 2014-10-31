@@ -1,7 +1,7 @@
 0.16 (11/01/2014)
 
 1.   URL integration with Dooble has been completed.
-     Please note that PostgreSQL will be required. Re-encoding it not
+     Please note that PostgreSQL is optional. Re-encoding it not
      supported. Please also note that libspoton.so does not provide
      authenticated encryption.
 2.   Set the error parameter in spoton_crypt::generatePrivatePublicKeys()
@@ -60,6 +60,7 @@
 8.   Allow portions of the user interface to read database
      data that has not been committed. This will eliminate
      some blocking. Also enable sharing of the SQLite cache.
+     The cache is not enabled on OS X.
 9.   Do not issue waitForConnected() after a connection attempt in the kernel.
 
 0.13 (09/27/2014)
