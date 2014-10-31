@@ -44,7 +44,7 @@ void spoton::slotDiscover(void)
       QMessageBox::critical
 	(this,
 	 tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
-	 tr("Please connect to a PostgreSQL database."));
+	 tr("Please connect to a URL database."));
       return;
     }
 
@@ -163,10 +163,10 @@ void spoton::slotDiscover(void)
     }
 
   m_urlQuery = querystr;
-  showUrls(">");
+  showUrls(">", m_urlQuery);
 }
 
-void spoton::showUrls(const QString &link)
+void spoton::showUrls(const QString &link, const QString &querystr)
 {
   if(!m_urlDatabase.isOpen())
     return;
@@ -176,7 +176,7 @@ void spoton::showUrls(const QString &link)
   QSqlQuery query(m_urlDatabase);
   quint64 count = 0;
 
-  query.prepare(m_urlQuery);
+  query.prepare(querystr);
 
   if(query.exec())
     {
@@ -308,7 +308,7 @@ void spoton::slotPageClicked(const QString &link)
 
       m_urlQuery.remove(m_urlQuery.indexOf(" OFFSET "), m_urlQuery.length());
       m_urlQuery.append(QString(" OFFSET %1 ").arg(m_urlOffset));
-      showUrls(link);
+      showUrls(link, m_urlQuery);
     }
   else if(link == ">")
     {
@@ -316,14 +316,14 @@ void spoton::slotPageClicked(const QString &link)
       m_urlOffset += m_urlLimit;
       m_urlQuery.remove(m_urlQuery.indexOf(" OFFSET "), m_urlQuery.length());
       m_urlQuery.append(QString(" OFFSET %1 ").arg(m_urlOffset));
-      showUrls(link);
-    }    
+      showUrls(link, m_urlQuery);
+    }
   else
     {
       m_urlCurrentPage = link.toULongLong();
       m_urlOffset = m_urlLimit * (m_urlCurrentPage - 1);
       m_urlQuery.remove(m_urlQuery.indexOf(" OFFSET "), m_urlQuery.length());
       m_urlQuery.append(QString(" OFFSET %1 ").arg(m_urlOffset));
-      showUrls(link);
+      showUrls(link, m_urlQuery);
     }
 }

@@ -206,9 +206,15 @@ spoton::spoton(void):QMainWindow()
       }
 
   if(!m_ui.postgresqlConnect->isEnabled())
-    m_ui.postgresqlConnect->setToolTip(tr("Unable to locate the QPSQL "
-					  "database driver."));
+    {
+      m_ui.postgresqlConnect->setToolTip(tr("Unable to locate the QPSQL "
+					    "database driver."));
+      m_ui.sqlite->setEnabled(false);
+    }
+  else
+    m_ui.postgresqlConnect->setEnabled(false);
 
+  slotPostgreSQLDisconnect(true); // Open the SQLite database.
 #ifndef SPOTON_LINKED_WITH_LIBGEOIP
   m_ui.geoipPath4->setEnabled(false);
   m_ui.geoipPath4->setToolTip
@@ -1173,6 +1179,10 @@ spoton::spoton(void):QMainWindow()
 	  SLOT(slotDiscover(void)));
   connect(m_ui.url_pages, SIGNAL(linkActivated(const QString &)),
 	  this, SLOT(slotPageClicked(const QString &)));
+  connect(m_ui.sqlite, SIGNAL(toggled(bool)),
+	  m_ui.postgresqlConnect, SLOT(setDisabled(bool)));
+  connect(m_ui.sqlite, SIGNAL(toggled(bool)),
+	  this, SLOT(slotPostgreSQLDisconnect(bool)));
   connect(&m_chatInactivityTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -2067,8 +2077,8 @@ void spoton::cleanup(void)
   m_urlDatabase.close();
   m_urlDatabase = QSqlDatabase();
 
-  if(QSqlDatabase::contains("PostgreSQL"))
-    QSqlDatabase::removeDatabase("PostgreSQL");
+  if(QSqlDatabase::contains("URLDatabase"))
+    QSqlDatabase::removeDatabase("URLDatabase");
 
   saveSettings();
   delete m_urlCommonCrypt;

@@ -2519,3 +2519,20 @@ void spoton::prepareUrlContainers(void)
 
   QSqlDatabase::removeDatabase(connectionName);
 }
+
+void spoton::slotPostgreSQLDisconnect(bool state)
+{
+  m_urlDatabase.close();
+  m_urlDatabase = QSqlDatabase();
+
+  if(QSqlDatabase::contains("URLDatabase"))
+    QSqlDatabase::removeDatabase("URLDatabase");
+
+  if(state)
+    {
+      m_urlDatabase = QSqlDatabase::addDatabase("QSQLITE", "URLDatabase");
+      m_urlDatabase.setDatabaseName
+	(spoton_misc::homePath() + QDir::separator() + "urls.db");
+      m_urlDatabase.open();
+    }
+}

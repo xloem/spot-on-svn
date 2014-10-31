@@ -293,31 +293,31 @@ bool spoton::deleteAllUrls(void)
 	  progress.setValue(processed);
 
 	if(m_urlDatabase.isOpen())
-	    {
-	      QChar c1;
-	      QChar c2;
-	      QSqlQuery query(m_urlDatabase);
+	  {
+	    QChar c1;
+	    QChar c2;
+	    QSqlQuery query(m_urlDatabase);
 
-	      if(i <= 9)
-		c1 = QChar(i + 48);
-	      else
-		c1 = QChar(i + 97 - 10);
+	    if(i <= 9)
+	      c1 = QChar(i + 48);
+	    else
+	      c1 = QChar(i + 97 - 10);
 
-	      if(j <= 9)
-		c2 = QChar(j + 48);
-	      else
-		c2 = QChar(j + 97 - 10);
+	    if(j <= 9)
+	      c2 = QChar(j + 48);
+	    else
+	      c2 = QChar(j + 97 - 10);
 
-	      if(!query.exec(QString("DELETE FROM "
-				     "spot_on_keywords_%1%2").
-			     arg(c1).arg(c2)))
-		deleted = false;
+	    if(!query.exec(QString("DELETE FROM "
+				   "spot_on_keywords_%1%2").
+			   arg(c1).arg(c2)))
+	      deleted = false;
 
-	      if(!query.exec(QString("DELETE FROM "
-				     "spot_on_urls_%1%2").
-			     arg(c1).arg(c2)))
-		deleted = false;
-	    }
+	    if(!query.exec(QString("DELETE FROM "
+				   "spot_on_urls_%1%2").
+			   arg(c1).arg(c2)))
+	      deleted = false;
+	  }
 	else
 	  deleted = false;
 
@@ -904,10 +904,11 @@ void spoton::slotPostgreSQLConnect(void)
     {
       m_ui.postgresqlConnect->setProperty("user_text", "connect");
       m_ui.postgresqlConnect->setText(tr("PostgreSQL Connect"));
+      m_urlDatabase.close();
       m_urlDatabase = QSqlDatabase();
 
-      if(QSqlDatabase::contains("PostgreSQL"))
-	QSqlDatabase::removeDatabase("PostgreSQL");
+      if(QSqlDatabase::contains("URLDatabase"))
+	QSqlDatabase::removeDatabase("URLDatabase");
 
       return;
     }
@@ -928,10 +929,17 @@ void spoton::slotPostgreSQLConnect(void)
       m_urlDatabase.close();
       m_urlDatabase = QSqlDatabase();
 
-      if(QSqlDatabase::contains("PostgreSQL"))
-	QSqlDatabase::removeDatabase("PostgreSQL");
+      if(QSqlDatabase::contains("URLDatabase"))
+	QSqlDatabase::removeDatabase("URLDatabase");
 
-      m_urlDatabase = QSqlDatabase::addDatabase("QPSQL", "PostgreSQL");
+      m_urlDatabase = QSqlDatabase::addDatabase("QPSQL", "URLDatabase");
+
+      QString str("connect_timeout=10;keepalives_idle=10;");
+
+      if(ui.ssltls->isChecked())
+	str.append(";requiressl=1");
+
+      m_urlDatabase.setConnectOptions(str);
       m_urlDatabase.setHostName(ui.host->text());
       m_urlDatabase.setDatabaseName(ui.database->text());
       m_urlDatabase.setPort(ui.port->value());
@@ -943,8 +951,8 @@ void spoton::slotPostgreSQLConnect(void)
 
 	  m_urlDatabase = QSqlDatabase();
 
-	  if(QSqlDatabase::contains("PostgreSQL"))
-	    QSqlDatabase::removeDatabase("PostgreSQL");
+	  if(QSqlDatabase::contains("URLDatabase"))
+	    QSqlDatabase::removeDatabase("URLDatabase");
 
 	  QMessageBox::critical
 	    (this, tr("%1: Error").

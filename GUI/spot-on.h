@@ -228,7 +228,7 @@ class spoton: public QMainWindow
   void sendBuzzKeysToKernel(void);
   void sendKeysToKernel(void);
   void sharePublicKeyWithParticipant(const QString &keyType);
-  void showUrls(const QString &link);
+  void showUrls(const QString &link, const QString &querystr);
   void updateListenersTable(const QSqlDatabase &db);
   void updateNeighborsTable(const QSqlDatabase &db);
   void updateParticipantsTable(const QSqlDatabase &db);
@@ -397,6 +397,7 @@ class spoton: public QMainWindow
   void slotPopulateParticipants(void);
   void slotPopulateStars(void);
   void slotPostgreSQLConnect(void);
+  void slotPostgreSQLDisconnect(bool state);
   void slotPrepareUrlDatabases(void);
   void slotProtocolRadioToggled(bool state);
   void slotProxyChecked(bool state);
