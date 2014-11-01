@@ -4279,9 +4279,9 @@
                <property name="geometry">
                 <rect>
                  <x>0</x>
-                 <y>0</y>
+                 <y>-189</y>
                  <width>748</width>
-                 <height>593</height>
+                 <height>638</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -4425,6 +4425,12 @@
                      </property>
                      <item>
                       <widget class="QLabel" name="label_134">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
                        <property name="styleSheet">
                         <string notr="true">QLabel {
  border: 1px solid gray;
@@ -4441,22 +4447,12 @@
                      <item>
                       <widget class="QLabel" name="label_131">
                        <property name="text">
-                        <string>You may access the URL databases from several devices if common credentials are prepared.</string>
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You may access the URL databases from several devices if common credentials are prepared. The credentials are stored in an SQLite database. The vacuum process will remove the credentials.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                       <property name="wordWrap">
+                        <bool>true</bool>
                        </property>
                       </widget>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_77">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
                      </item>
                     </layout>
                    </item>
@@ -4615,7 +4611,7 @@
                    <item>
                     <widget class="QLabel" name="label_118">
                      <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The INI path may reference the absolute path of the Dooble.ini file. On Unix systems, this file usually resides in ~/.dooble. On Windows systems, the Dooble.ini file usually resides in the directory that also houses the Dooble.exe file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The INI path may reference the absolute path of the Dooble.ini file. On Unix systems, this file usually resides in ~/.dooble. On Windows systems, the Dooble.ini file usually resides in the directory that also houses the Dooble.exe file. The credentials are stored in an SQLite database. The vacuum process will remove the credentials.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                      <property name="wordWrap">
                       <bool>true</bool>
