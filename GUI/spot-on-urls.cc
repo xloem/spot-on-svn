@@ -129,7 +129,7 @@ void spoton::slotPrepareUrlDatabases(void)
   progress.update();
 
   if(m_ui.sqlite->isChecked())
-    slotPostgreSQLDisconnect(true);;
+    slotPostgreSQLDisconnect(true);
 
   QString connectionName("");
 
