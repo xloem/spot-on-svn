@@ -45,6 +45,7 @@
 24.  Corrected kernel statistics. The previous implementation did not
      inspect the states of listeners and neighbors. Also, be careful of
      threads.
+25.  Improper use of SSL key sizes during listener preparation. Corrected.
 
 0.15 (10/10/2014)
 
