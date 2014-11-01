@@ -2132,7 +2132,7 @@ void spoton::slotAddListener(void)
 	(tr("Generating SSL data. Please be patient."));
       m_sb.status->repaint();
       spoton_crypt::generateSslKeys
-	(m_ui.kernelKeySize->currentText().toInt(),
+	(m_ui.listenerKeySize->currentText().toInt(),
 	 certificate,
 	 privateKey,
 	 publicKey,
