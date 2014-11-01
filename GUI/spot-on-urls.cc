@@ -963,7 +963,7 @@ void spoton::slotPostgreSQLConnect(void)
 
       m_urlDatabase = QSqlDatabase::addDatabase("QPSQL", "URLDatabase");
 
-      QString str("connect_timeout=10;keepalives_idle=10;");
+      QString str("connect_timeout=10;keepalives_idle=10");
 
       if(ui.ssltls->isChecked())
 	str.append(";requiressl=1");
