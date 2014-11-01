@@ -18,7 +18,7 @@
      (# missing pulses / # total pulses >= 75%)
 8.   Defined Adaptive Echo magnets.
 9.   Do not purge Adaptive Echo tokens if all of the listeners are removed.
-10.  Limited support for SSLv*. SSLv3 is discouraged because of POODLE.
+10.  Removed support for SSL because of POODLE.
 11.  Introduced GCM encryption to the file encryption tool. libgcrypt
      1.6.x is required.
 12.  Added libgcrypt 1.6.x compatibility to libspoton.
