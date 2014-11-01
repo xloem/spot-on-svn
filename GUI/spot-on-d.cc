@@ -2522,6 +2522,8 @@ void spoton::prepareUrlContainers(void)
 
 void spoton::slotPostgreSQLDisconnect(bool state)
 {
+  m_ui.postgresqlConnect->setProperty("user_text", "connect");
+  m_ui.postgresqlConnect->setText(tr("PostgreSQL Connect"));
   m_urlDatabase.close();
   m_urlDatabase = QSqlDatabase();
 
