@@ -35,7 +35,7 @@ void spoton::slotDiscover(void)
       QMessageBox::critical
 	(this,
 	 tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
-	 tr("Invalid spoton_crypt object. This is a fatal flaw."));
+	 tr("Did you prepare common credentials?"));
       return;
     }
 

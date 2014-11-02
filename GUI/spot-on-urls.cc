@@ -279,7 +279,7 @@ void spoton::slotDeleteAllUrls(void)
   mb.setWindowModality(Qt::WindowModal);
   mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
   mb.setText(tr("Are you sure that you wish to vacuum all of the "
-		"URL databases?"));
+		"URL databases? Your credentials will also be removed."));
 
   if(mb.exec() != QMessageBox::Yes)
     return;
@@ -294,7 +294,7 @@ void spoton::slotDeleteAllUrls(void)
     QMessageBox::critical(this, tr("%1: Error").
 			  arg(SPOTON_APPLICATION_NAME),
 			  tr("One or more errors occurred while "
-			     "attempting to remove the URL databases."));
+			     "attempting to vacuum the URL databases."));
 }
 
 bool spoton::deleteAllUrls(void)
@@ -307,10 +307,10 @@ bool spoton::deleteAllUrls(void)
   progress.setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
 #endif
-  progress.setLabelText(tr("Removing URL databases..."));
+  progress.setLabelText(tr("Vacuuming URL databases..."));
   progress.setMaximum(10 * 10 + 6 * 6);
   progress.setMinimum(0);
-  progress.setWindowTitle(tr("%1: Removing URL Databases").
+  progress.setWindowTitle(tr("%1: Vacuuming URL Databases").
     arg(SPOTON_APPLICATION_NAME));
   progress.show();
   progress.update();
@@ -398,10 +398,10 @@ void spoton::slotGatherUrlStatistics(void)
   progress.setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
 #endif
-  progress.setLabelText(tr("Removing URL databases..."));
+  progress.setLabelText(tr("Gathering URL statistics..."));
   progress.setMaximum(10 * 10 + 6 * 6);
   progress.setMinimum(0);
-  progress.setWindowTitle(tr("%1: Removing URL Databases").
+  progress.setWindowTitle(tr("%1: Gathering URL Statistics").
     arg(SPOTON_APPLICATION_NAME));
   progress.show();
   progress.update();
@@ -450,14 +450,23 @@ void spoton::slotGatherUrlStatistics(void)
 
 void spoton::slotImportUrls(void)
 {
-  spoton_crypt *l_crypt = m_crypts.value("url", 0);
+  spoton_crypt *crypt = m_crypts.value("url", 0);
 
-  if(!l_crypt)
+  if(!crypt)
     {
       QMessageBox::critical
 	(this,
 	 tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
 	 tr("Invalid spoton_crypt object. This is a fatal flaw."));
+      return;
+    }
+
+  if(!m_urlDatabase.isOpen())
+    {
+      QMessageBox::critical
+	(this,
+	 tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
+	 tr("Please connect to a URL database."));
       return;
     }
 
@@ -488,13 +497,13 @@ void spoton::slotImportUrls(void)
 		      "FROM import_key_information") &&
 	   query.next())
 	  {
-	    cipherType = l_crypt->decryptedAfterAuthenticated
+	    cipherType = crypt->decryptedAfterAuthenticated
 	      (QByteArray::fromBase64(query.value(0).
 				      toByteArray()),
 	       &ok).constData();
 
 	    if(ok)
-	      symmetricKey = l_crypt->decryptedAfterAuthenticated
+	      symmetricKey = crypt->decryptedAfterAuthenticated
 		(QByteArray::fromBase64(query.value(1).
 					toByteArray()),
 		 &ok);
@@ -511,7 +520,7 @@ void spoton::slotImportUrls(void)
       QMessageBox::critical
 	(this,
 	 tr("%1: Error").arg(SPOTON_APPLICATION_NAME),
-	 tr("Unable to retrieve the cipher type and symmetric key."));
+	 tr("Unable to retrieve the import cipher type and symmetric key."));
       return;
     }
 
@@ -717,8 +726,8 @@ void spoton::slotVerify(void)
     QMessageBox::information
       (this, tr("%1: Information").
        arg(SPOTON_APPLICATION_NAME),
-       tr("The provided credentials appear correct. Please save the "
-	  "information."));
+       tr("The provided credentials are correct. Please save the "
+	  "information!"));
   else
     QMessageBox::information
       (this, tr("%1: Information").

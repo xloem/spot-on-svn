@@ -454,7 +454,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1031</width>
-                <height>457</height>
+                <height>454</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2029,7 +2029,7 @@
              <x>0</x>
              <y>0</y>
              <width>912</width>
-             <height>467</height>
+             <height>380</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2663,7 +2663,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>283</width>
+                     <width>294</width>
                      <height>1430</height>
                     </rect>
                    </property>
@@ -4279,7 +4279,7 @@
                <property name="geometry">
                 <rect>
                  <x>0</x>
-                 <y>-189</y>
+                 <y>0</y>
                  <width>748</width>
                  <height>638</height>
                 </rect>
@@ -4447,7 +4447,7 @@
                      <item>
                       <widget class="QLabel" name="label_131">
                        <property name="text">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You may access the URL databases from several devices if common credentials are prepared. The credentials are stored in an SQLite database. The vacuum process will remove the credentials.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You may access the PostgreSQL URL database from multiple devices if common credentials are prepared. The credentials are stored in an SQLite database. The vacuum process will remove the credentials.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                        </property>
                        <property name="wordWrap">
                         <bool>true</bool>
@@ -6306,7 +6306,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>758</width>
+             <width>575</width>
              <height>559</height>
             </rect>
            </property>
@@ -7308,8 +7308,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>485</height>
+             <width>265</width>
+             <height>412</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7790,8 +7790,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>758</width>
-             <height>512</height>
+             <width>280</width>
+             <height>189</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
