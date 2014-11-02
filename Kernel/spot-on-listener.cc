@@ -45,8 +45,7 @@ void spoton_listener_tcp_server::incomingConnection(qintptr socketDescriptor)
 void spoton_listener_tcp_server::incomingConnection(int socketDescriptor)
 #endif
 {
-  if(spoton_kernel::s_connectionCounts.value(m_id, 0) >=
-     maxPendingConnections())
+  if(spoton_kernel::s_connectionCounts.count(m_id) >= maxPendingConnections())
     {
       QAbstractSocket socket(QAbstractSocket::TcpSocket, this);
 
@@ -625,7 +624,7 @@ void spoton_listener::saveStatus(const QSqlDatabase &db)
   query.prepare("UPDATE listeners SET connections = ?, status = ? "
 		"WHERE OID = ? AND status <> ?");
   query.bindValue
-    (0, QString::number(spoton_kernel::s_connectionCounts.value(m_id, 0)));
+    (0, QString::number(spoton_kernel::s_connectionCounts.count(m_id)));
 
   if(isListening())
     status = "online";
@@ -1033,7 +1032,7 @@ void spoton_listener::slotNewConnection(const qintptr socketDescriptor,
     {
       neighbor->setId(id);
       emit newNeighbor(neighbor);
-      spoton_kernel::s_connectionCounts[m_id] += 1;
+      spoton_kernel::s_connectionCounts.insert(m_id, neighbor);
       updateConnectionCount();
     }
   else
@@ -1065,8 +1064,8 @@ void spoton_listener::updateConnectionCount(void)
 	query.prepare("UPDATE listeners SET connections = ? "
 		      "WHERE OID = ?");
 	query.bindValue
-	  (0, QString::number(spoton_kernel::s_connectionCounts.
-			      value(m_id, 0)));
+	  (0, QString::number(spoton_kernel::
+			      s_connectionCounts.count(m_id)));
 	query.bindValue(1, m_id);
 	query.exec();
       }
@@ -1079,11 +1078,10 @@ void spoton_listener::updateConnectionCount(void)
 
 void spoton_listener::slotNeighborDisconnected(void)
 {
-  spoton_kernel::s_connectionCounts[m_id] -= 1;
+  QPointer<spoton_neighbor> neighbor =
+    qobject_cast<spoton_neighbor *> (sender());
 
-  if(spoton_kernel::s_connectionCounts.value(m_id, 0) < 0)
-    spoton_kernel::s_connectionCounts[m_id] = 0;
-
+  spoton_kernel::s_connectionCounts.remove(m_id, neighbor);
   updateConnectionCount();
 }
 

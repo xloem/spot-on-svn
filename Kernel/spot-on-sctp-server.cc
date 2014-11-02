@@ -447,7 +447,7 @@ void spoton_sctp_server::slotTimeout(void)
 
       if(socketDescriptor > -1)
 	{
-	  if(spoton_kernel::s_connectionCounts.value(m_id, 0) >= m_backlog)
+	  if(spoton_kernel::s_connectionCounts.count(m_id) >= m_backlog)
 	    {
 #ifdef Q_OS_WIN32
 	      closesocket(socketDescriptor);
@@ -544,7 +544,7 @@ void spoton_sctp_server::slotTimeout(void)
 
       if(socketDescriptor > -1)
 	{
-	  if(spoton_kernel::s_connectionCounts.value(m_id, 0) >= m_backlog)
+	  if(spoton_kernel::s_connectionCounts.count(m_id) >= m_backlog)
 	    {
 #ifdef Q_OS_WIN32
 	      closesocket(socketDescriptor);
