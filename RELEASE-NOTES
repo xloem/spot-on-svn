@@ -48,6 +48,7 @@
 25.  Improper use of SSL key sizes during listener preparation. Corrected.
      Listeners should be redefined.
 26.  sqlite3_enable_shared_cache() is deprecated on OS X (at least 10.7.5).
+27.  Yet another correction to neighbor counts.
 
 0.15 (10/10/2014)
 
