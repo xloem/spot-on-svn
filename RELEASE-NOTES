@@ -2,7 +2,9 @@
 
 1.   Include expiry times in message types that change
      communication states. For example, Geminis. Previous
-     functionality will be disrupted.
+     functionality will be disrupted. Hashes of shared Geminis
+     will be retained for 90 seconds. Replayed Geminis will
+     be discarded.
 
 0.16 (11/02/2014)
 
