@@ -5912,9 +5912,9 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
   dateTime.setTimeSpec(Qt::UTC);
   now.setTimeSpec(Qt::UTC);
 
-  int secsTo = now.secsTo(dateTime);
+  int secsTo = qAbs(now.secsTo(dateTime));
 
-  if(!(secsTo >= 0 && secsTo <= 90))
+  if(!(secsTo <= 90))
     return;
   else if(spoton_kernel::duplicateGeminis(publicKeyHash +
 					  gemini +

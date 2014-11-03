@@ -4207,9 +4207,9 @@ void spoton_kernel::discoverAdaptiveEchoPair
 	  dateTime.setTimeSpec(Qt::UTC);
 	  now.setTimeSpec(Qt::UTC);
 
-	  int secsTo = now.secsTo(dateTime);
+	  int secsTo = qAbs(now.secsTo(dateTime));
 
-	  if(secsTo >= 0 && secsTo <= 5)
+	  if(secsTo <= 5)
 	    {
 	      discoveredAdaptiveEchoPair = s_adaptiveEchoPairs.at(i);
 	      break;
