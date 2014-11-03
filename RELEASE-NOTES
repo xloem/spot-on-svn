@@ -5,6 +5,7 @@
      functionality will be disrupted. Hashes of shared Geminis
      will be retained for 90 seconds. Replayed Geminis will
      be discarded.
+2.   Corrected A.E. time delta computations.
 
 0.16 (11/02/2014)
 
