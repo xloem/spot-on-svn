@@ -3546,15 +3546,15 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 		    if(setting("gui/chatSignMessages", true).toBool())
 		      signature = s_crypt2->digitalSignature
 			(myPublicKeyHash + gemini.first + gemini.second +
-			 dateTime.toUTC().toString("MMddyyyyhhmm").toLatin1(),
-			 &ok);
+			 dateTime.toUTC().toString("MMddyyyyhhmmss").
+			 toLatin1(), &ok);
 
 		    if(ok)
 		      data = crypt.encrypted
 			(myPublicKeyHash.toBase64() + "\n" +
 			 gemini.first.toBase64() + "\n" +
 			 gemini.second.toBase64() + "\n" +
-			 dateTime.toUTC().toString("MMddyyyyhhmm").
+			 dateTime.toUTC().toString("MMddyyyyhhmmss").
 			 toLatin1().toBase64() + "\n" +
 			 signature.toBase64(), &ok);
 
@@ -3709,8 +3709,8 @@ void spoton_kernel::slotCallParticipantUsingGemini(const qint64 oid)
 		    if(setting("gui/chatSignMessages", true).toBool())
 		      signature = s_crypt2->digitalSignature
 			("0000b" + myPublicKeyHash + symmetricKey + hashKey +
-			 dateTime.toUTC().toString("MMddyyyyhhmm").toLatin1(),
-			 &ok);
+			 dateTime.toUTC().toString("MMddyyyyhhmmss").
+			 toLatin1(), &ok);
 
 		    if(ok)
 		      data = crypt.encrypted
@@ -3718,7 +3718,7 @@ void spoton_kernel::slotCallParticipantUsingGemini(const qint64 oid)
 			 myPublicKeyHash.toBase64() + "\n" +
 			 symmetricKey.toBase64() + "\n" +
 			 hashKey.toBase64() + "\n" +
-			 dateTime.toUTC().toString("MMddyyyyhhmm").
+			 dateTime.toUTC().toString("MMddyyyyhhmmss").
 			 toLatin1().toBase64() + "\n" +
 			 signature.toBase64(), &ok);
 
