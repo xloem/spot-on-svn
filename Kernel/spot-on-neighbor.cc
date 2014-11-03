@@ -5915,11 +5915,20 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
   int secsTo = qAbs(now.secsTo(dateTime));
 
   if(!(secsTo <= 90))
-    return;
+    {
+      spoton_misc::logError
+	(QString("spoton_neighbor::saveGemini(): "
+		 "large time delta (%1).").arg(secsTo));
+      return;
+    }
   else if(spoton_kernel::duplicateGeminis(publicKeyHash +
 					  gemini +
 					  geminiHashKey))
-    return;
+    {
+      spoton_misc::logError
+	("spoton_neighbor::saveGemini(): duplicate keys.");
+      return;
+    }
 
   QString connectionName("");
 
