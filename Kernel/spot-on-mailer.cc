@@ -403,7 +403,6 @@ void spoton_mailer::slotReap(void)
 
     if(db.open())
       {
-	QDateTime now(QDateTime::currentDateTime());
 	QSqlQuery query(db);
 	int days = spoton_kernel::setting
 	  ("gui/postofficeDays", 1).toInt();
@@ -414,6 +413,7 @@ void spoton_mailer::slotReap(void)
 	  while(query.next())
 	    {
 	      QDateTime dateTime;
+	      QDateTime now(QDateTime::currentDateTime());
 	      bool ok = true;
 
 	      dateTime = QDateTime::fromString

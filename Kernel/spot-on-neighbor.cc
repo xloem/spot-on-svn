@@ -5914,7 +5914,11 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 
   int secsTo = now.secsTo(dateTime);
 
-  if(!(secsTo >= 0 && secsTo <= 5))
+  if(!(secsTo >= 0 && secsTo <= 90))
+    return;
+  else if(spoton_kernel::duplicateGeminis(publicKeyHash +
+					  gemini +
+					  geminiHashKey))
     return;
 
   QString connectionName("");
@@ -5969,8 +5973,10 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 	query.bindValue(3, publicKeyHash.toBase64());
 
 	if(ok)
-	  query.exec();
-
+	  if(query.exec())
+	    spoton_kernel::geminisCacheAdd(publicKeyHash +
+					   gemini +
+					   geminiHashKey);
       }
 
     db.close();

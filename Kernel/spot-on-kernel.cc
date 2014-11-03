@@ -90,6 +90,7 @@ extern "C"
 
 QDateTime spoton_kernel::s_institutionLastModificationTime;
 QHash<QByteArray, QList<QByteArray> > spoton_kernel::s_buzzKeys;
+QHash<QByteArray, uint> spoton_kernel::s_geminisCache;
 QHash<QByteArray, uint> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
 QHash<QString, spoton_crypt *> spoton_kernel::s_crypts;
@@ -101,6 +102,7 @@ QList<QPair<QByteArray, QByteArray> > spoton_kernel::s_adaptiveEchoPairs;
 QPointer<spoton_kernel> spoton_kernel::s_kernel = 0;
 QReadWriteLock spoton_kernel::s_adaptiveEchoPairsMutex;
 QReadWriteLock spoton_kernel::s_buzzKeysMutex;
+QReadWriteLock spoton_kernel::s_geminisCacheMutex;
 QReadWriteLock spoton_kernel::s_institutionKeysMutex;
 QReadWriteLock spoton_kernel::s_messagesToProcessMutex;
 QReadWriteLock spoton_kernel::s_messagingCacheMutex;
@@ -3191,29 +3193,46 @@ void spoton_kernel::slotMessagingCachePurge(void)
 
 void spoton_kernel::purgeMessagingCache(void)
 {
-  QWriteLocker locker(&s_messagingCacheMutex);
+  QWriteLocker locker1(&s_geminisCacheMutex);
+  QMutableHashIterator<QByteArray, uint> it1(s_geminisCache);
+
+  while(it1.hasNext())
+    {
+      it1.next();
+
+      uint now = QDateTime::currentDateTime().toTime_t();
+
+      if(now > it1.value())
+	if(now - it1.value() > 90)
+	  it1.remove();
+    }
+
+  locker1.unlock();
+
+  QWriteLocker locker2(&s_messagingCacheMutex);
 
   /*
   ** Remove old cache items.
   */
 
-  QMutableHashIterator<QByteArray, uint> it(s_messagingCache);
+  QMutableHashIterator<QByteArray, uint> it2(s_messagingCache);
   int i = 0;
   int maximum = qMax(250, qCeil(0.15 * s_messagingCache.size()));
-  uint now = QDateTime::currentDateTime().toTime_t();
 
-  while(it.hasNext())
+  while(it2.hasNext())
     {
       i += 1;
 
       if(i >= maximum)
 	break;
 
-      it.next();
+      it2.next();
 
-      if(now > it.value())
-	if(now - it.value() > 30)
-	  it.remove();
+      uint now = QDateTime::currentDateTime().toTime_t();
+
+      if(now > it2.value())
+	if(now - it2.value() > 30)
+	  it2.remove();
     }
 }
 
@@ -3234,7 +3253,11 @@ bool spoton_kernel::messagingCacheContains(const QByteArray &data,
       hash = s_crypt->keyedHash(data, &ok);
 
       if(!ok)
+#if QT_VERSION < 0x050000
 	hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
+#else
+        hash = QCryptographicHash::hash(data, QCryptographicHash::Sha512);
+#endif
     }
   else
     hash = data;
@@ -3262,7 +3285,11 @@ void spoton_kernel::messagingCacheAdd(const QByteArray &data,
       hash = s_crypt->keyedHash(data, &ok);
 
       if(!ok)
+#if QT_VERSION < 0x050000
 	hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
+#else
+        hash = QCryptographicHash::hash(data, QCryptographicHash::Sha512);
+#endif
     }
   else
     hash = data;
@@ -4282,4 +4309,54 @@ void spoton_kernel::receivedMessage
   QWriteLocker locker(&s_messagesToProcessMutex);
 
   s_messagesToProcess.append(list);
+}
+
+bool spoton_kernel::duplicateGeminis(const QByteArray &data)
+{
+  QByteArray hash;
+
+  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return false;
+
+  bool ok = true;
+
+  hash = s_crypt->keyedHash(data, &ok);
+
+  if(!ok)
+#if QT_VERSION < 0x050000
+    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
+#else
+    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha512);
+#endif
+
+  QReadLocker locker(&s_geminisCacheMutex);
+
+  return s_geminisCache.contains(hash);
+}
+
+void spoton_kernel::geminisCacheAdd(const QByteArray &data)
+{
+  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QByteArray hash;
+  bool ok = true;
+
+  hash = s_crypt->keyedHash(data, &ok);
+
+  if(!ok)
+#if QT_VERSION < 0x050000
+    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
+#else
+    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha512);
+#endif
+
+  QWriteLocker locker(&s_geminisCacheMutex);
+
+  s_geminisCache.insert
+    (hash, QDateTime::currentDateTime().toTime_t());
 }

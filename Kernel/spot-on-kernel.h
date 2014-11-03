@@ -66,6 +66,7 @@ class spoton_kernel: public QObject
 					      const QByteArray &hash);
   static QVariant setting(const QString &name,
 			  const QVariant &defaultValue);
+  static bool duplicateGeminis(const QByteArray &data);
   static bool messagingCacheContains(const QByteArray &data,
 				     const bool do_not_hash = false);
   static int buzzKeyCount(void);
@@ -78,6 +79,7 @@ class spoton_kernel: public QObject
   static void discoverAdaptiveEchoPair
     (const QByteArray &data,
      QPair<QByteArray, QByteArray> &discoveredAdaptiveEchoPair);
+  static void geminisCacheAdd(const QByteArray &data);
   static void messagingCacheAdd(const QByteArray &data,
 				const bool do_not_hash = false,
 				const int add_msecs = 0);
@@ -117,9 +119,11 @@ class spoton_kernel: public QObject
   static QHash<QString, QVariant> s_settings;
   static QList<QList<QByteArray> > s_institutionKeys;
   static QList<QList<QVariant> > s_messagesToProcess;
+  static QHash<QByteArray, uint> s_geminisCache;
   static QHash<QByteArray, uint> s_messagingCache;
   static QReadWriteLock s_adaptiveEchoPairsMutex;
   static QReadWriteLock s_buzzKeysMutex;
+  static QReadWriteLock s_geminisCacheMutex;
   static QReadWriteLock s_institutionKeysMutex;
   static QReadWriteLock s_messagesToProcessMutex;
   static QReadWriteLock s_messagingCacheMutex;
