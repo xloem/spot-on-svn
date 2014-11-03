@@ -2468,7 +2468,7 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 		    {
 		      QList<QByteArray> list(data.split('\n'));
 
-		      if(list.size() == 4)
+		      if(list.size() == 5)
 			{
 			  for(int i = 0; i < list.size(); i++)
 			    list.replace
@@ -2486,14 +2486,16 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 				   ** 0 - Sender's SHA-512 Hash
 				   ** 1 - Gemini Encryption Key
 				   ** 2 - Gemini Hash Key
-				   ** 3 - Signature
+				   ** 3 - Timestamp
+				   ** 4 - Signature
 				   */
 
 				   isValidSignature(list.value(0) +
 						    list.value(1) +
-						    list.value(2),
-						    list.value(0),
+						    list.value(2) +
 						    list.value(3),
+						    list.value(0),
+						    list.value(4),
 						    s_crypt))
 				  {
 				    spoton_misc::logError
@@ -2504,14 +2506,14 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 				  }
 
 			      saveGemini(list.value(0), list.value(1),
-					 list.value(2));
+					 list.value(2), list.value(3));
 			    }
 			}
 		      else
 			spoton_misc::logError
 			  (QString("spoton_neighbor::process0000a(): "
 				   "received irregular data. "
-				   "Expecting 4 "
+				   "Expecting 5 "
 				   "entries, "
 				   "received %1.").arg(list.size()));
 		    }
@@ -2586,7 +2588,7 @@ void spoton_neighbor::process0000b(int length, const QByteArray &dataIn,
 	{
 	  QList<QByteArray> list(data.split('\n'));
 
-	  if(list.size() == 5)
+	  if(list.size() == 6)
 	    {
 	      for(int i = 0; i < list.size(); i++)
 		list.replace
@@ -2605,15 +2607,17 @@ void spoton_neighbor::process0000b(int length, const QByteArray &dataIn,
 		       ** 1 - Sender's SHA-512 Hash
 		       ** 2 - Gemini Encryption Key
 		       ** 3 - Gemini Hash Key
-		       ** 4 - Signature
+		       ** 4 - Timestamp
+		       ** 5 - Signature
 		       */
 
 		       isValidSignature(list.value(0) +
 					list.value(1) +
 					list.value(2) +
-					list.value(3),
-					list.value(1),
+					list.value(3) +
 					list.value(4),
+					list.value(1),
+					list.value(5),
 					s_crypt))
 		      {
 			spoton_misc::logError
@@ -2624,14 +2628,14 @@ void spoton_neighbor::process0000b(int length, const QByteArray &dataIn,
 		      }
 
 		  saveGemini(list.value(1), list.value(2),
-			     list.value(3));
+			     list.value(3), list.value(4));
 		}
 	    }
 	  else
 	    spoton_misc::logError
 	      (QString("spoton_neighbor::process0000b(): "
 		       "received irregular data. "
-		       "Expecting 5 "
+		       "Expecting 6 "
 		       "entries, "
 		       "received %1.").arg(list.size()));
 	}
@@ -5894,8 +5898,25 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data,
 
 void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 				 const QByteArray &gemini,
-				 const QByteArray &geminiHashKey)
+				 const QByteArray &geminiHashKey,
+				 const QByteArray &timestamp)
 {
+  QDateTime dateTime
+    (QDateTime::fromString(timestamp.constData(), "MMddyyyyhhmmss"));
+
+  if(!dateTime.isValid())
+    return;
+
+  QDateTime now(QDateTime::currentDateTimeUtc());
+
+  dateTime.setTimeSpec(Qt::UTC);
+  now.setTimeSpec(Qt::UTC);
+
+  int secsTo = now.secsTo(dateTime);
+
+  if(!(secsTo >= 0 && secsTo <= 5))
+    return;
+
   QString connectionName("");
 
   {

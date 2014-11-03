@@ -3534,6 +3534,7 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 		    */
 
 		    QByteArray signature;
+		    QDateTime dateTime(QDateTime::currentDateTime());
 		    spoton_crypt crypt(symmetricKeyAlgorithm,
 				       "sha512",
 				       QByteArray(),
@@ -3544,7 +3545,8 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 
 		    if(setting("gui/chatSignMessages", true).toBool())
 		      signature = s_crypt2->digitalSignature
-			(myPublicKeyHash + gemini.first + gemini.second,
+			(myPublicKeyHash + gemini.first + gemini.second +
+			 dateTime.toUTC().toString("MMddyyyyhhmm").toLatin1(),
 			 &ok);
 
 		    if(ok)
@@ -3552,6 +3554,8 @@ void spoton_kernel::slotCallParticipant(const qint64 oid)
 			(myPublicKeyHash.toBase64() + "\n" +
 			 gemini.first.toBase64() + "\n" +
 			 gemini.second.toBase64() + "\n" +
+			 dateTime.toUTC().toString("MMddyyyyhhmm").
+			 toLatin1().toBase64() + "\n" +
 			 signature.toBase64(), &ok);
 
 		    if(ok)
@@ -3693,6 +3697,7 @@ void spoton_kernel::slotCallParticipantUsingGemini(const qint64 oid)
 		    */
 
 		    QByteArray signature;
+		    QDateTime dateTime(QDateTime::currentDateTime());
 		    spoton_crypt crypt(symmetricKeyAlgorithm,
 				       "sha512",
 				       QByteArray(),
@@ -3703,7 +3708,8 @@ void spoton_kernel::slotCallParticipantUsingGemini(const qint64 oid)
 
 		    if(setting("gui/chatSignMessages", true).toBool())
 		      signature = s_crypt2->digitalSignature
-			("0000b" + myPublicKeyHash + symmetricKey + hashKey,
+			("0000b" + myPublicKeyHash + symmetricKey + hashKey +
+			 dateTime.toUTC().toString("MMddyyyyhhmm").toLatin1(),
 			 &ok);
 
 		    if(ok)
@@ -3712,6 +3718,8 @@ void spoton_kernel::slotCallParticipantUsingGemini(const qint64 oid)
 			 myPublicKeyHash.toBase64() + "\n" +
 			 symmetricKey.toBase64() + "\n" +
 			 hashKey.toBase64() + "\n" +
+			 dateTime.toUTC().toString("MMddyyyyhhmm").
+			 toLatin1().toBase64() + "\n" +
 			 signature.toBase64(), &ok);
 
 		    if(ok)

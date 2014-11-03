@@ -81,7 +81,9 @@ EOL
 EOL
 2 - Gemini Hash Key (Base-64)
 EOL
-3 - Signature (Base-64)
+3 - Timestamp (Base-64)
+EOL
+4 - Signature (Base-64)
 }
 EOL
 {
@@ -105,7 +107,9 @@ EOL
 EOL
 3 - Gemini Hash Key (Base-64)
 EOL
-4 - Signature (Base-64)
+4 - Timestamp (Base-64)
+EOL
+5 - Signature (Base-64)
 }
 EOL
 {
