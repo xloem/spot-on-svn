@@ -1,7 +1,7 @@
 0.16 (11/02/2014)
 
 1.   URL integration with Dooble has been completed.
-     Please note that PostgreSQL is optional. Re-encoding it not
+     Please note that PostgreSQL is optional. Re-encoding is not
      supported. Please also note that libspoton.so does not provide
      authenticated encryption.
 2.   Set the error parameter in spoton_crypt::generatePrivatePublicKeys()
