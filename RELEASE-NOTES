@@ -14,7 +14,7 @@
 6.   Must issue a QFile::resize() if a pulse's position is beyond the
      boundaries of a mosaic. The resize() will set the new bytes to zero.
      Also corrected the StarBeam Analyzer.
-7.   Modified the StartBeam Analyzer so that it aborts on excessive errors.
+7.   Modified the StarBeam Analyzer so that it aborts on excessive errors.
      (# missing pulses / # total pulses >= 75%)
 8.   Defined Adaptive Echo magnets.
 9.   Do not purge Adaptive Echo tokens if all of the listeners are removed.
