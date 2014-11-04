@@ -122,6 +122,41 @@ EOL
     Encrypted Timestamp (Base-64)
 }
 
+Groups: 4
+Public Key
+{
+0 - 0000{c|d} (Base-64)
+EOL
+1 - Encryption Symmetric Key (Base-64)
+EOL
+2 - SHA-512 Hash Key (Base-64)
+EOL
+3 - Symmetric Algorithm (Base-64)
+}
+EOL
+Symmetric Key
+{
+0 - Dispatcher's SHA-512 Hash (Base-64)
+EOL
+1 - 1/2 Gemini Encryption Key (Base-64)
+EOL
+2 - 1/2 Gemini Hash Key (Base-64)
+EOL
+3 - Timestamp (Base-64)
+EOL
+4 - Signature (Base-64)
+}
+EOL
+{
+0 - Keyed SHA-512 Message Code of the Second Group (Base-64)
+}
+EOL
+{
+0 - Keyed (Adaptive Echo Hash Key) Message Code of the
+    Preceding Data and Encrypted Timestamp,
+    Encrypted Timestamp (Base-64)
+}
+
 Echo Mail
 Echoed? Yes
 
