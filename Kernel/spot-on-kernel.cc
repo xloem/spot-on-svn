@@ -513,7 +513,8 @@ spoton_kernel::spoton_kernel(void):QObject(0)
   m_controlDatabaseTimer.start(2500);
   m_impersonateTimer.setInterval(2500);
   m_messagingCachePurgeTimer.setInterval(15000);
-  m_processReceivedMessagesTimer.start(100);
+  m_processReceivedMessagesTimer.setInterval(10);
+  m_processReceivedMessagesTimer.setSingleShot(true);
   m_publishAllListenersPlaintextTimer.setInterval(10 * 60 * 1000);
   m_settingsTimer.setInterval(1500);
   m_scramblerTimer.setSingleShot(true);
@@ -1265,6 +1266,7 @@ void spoton_kernel::prepareNeighbors(void)
     {
       QWriteLocker locker1(&s_messagesToProcessMutex);
 
+      m_processReceivedMessagesTimer.stop();
       s_messagesToProcess.clear();
       locker1.unlock();
 
@@ -4307,6 +4309,9 @@ void spoton_kernel::receivedMessage
   list.append(adaptiveEchoPair.second);
 
   QWriteLocker locker(&s_messagesToProcessMutex);
+
+  if(!m_processReceivedMessagesTimer.isActive())
+    m_processReceivedMessagesTimer.start();
 
   s_messagesToProcess.append(list);
 }
