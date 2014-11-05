@@ -1997,7 +1997,7 @@ void spoton_neighbor::slotSendMessage
 
 void spoton_neighbor::slotWrite
 (const QByteArray &data, const qint64 id,
- const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
+ const QPairByteArrayByteArray &adaptiveEchoPair)
 {
   if(id == m_id)
     return;

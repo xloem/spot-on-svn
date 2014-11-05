@@ -320,7 +320,7 @@ class spoton_neighbor: public QThread
   void slotSslErrors(const QList<QSslError> &errors);
   void slotTimeout(void);
   void slotWrite(const QByteArray &data, const qint64 id,
-		 const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
+		 const QPairByteArrayByteArray &adaptiveEchoPair);
 
  public slots:
   void slotSharePublicKey(const QByteArray &keyType,
