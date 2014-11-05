@@ -1741,7 +1741,7 @@ void spoton_kernel::slotSettingsChanged(const QString &path)
 void spoton_kernel::slotUpdateSettings(void)
 {
   QSettings settings;
-  QWriteLocker locker1(&s_settingsMutex);
+  QWriteLocker locker(&s_settingsMutex);
 
   for(int i = 0; i < settings.allKeys().size(); i++)
     if(settings.value(settings.allKeys().at(i)) !=
@@ -1750,7 +1750,7 @@ void spoton_kernel::slotUpdateSettings(void)
 			settings.value(settings.allKeys().at(i)));
 
   spoton_misc::correctSettingsContainer(s_settings);
-  locker1.unlock();
+  locker.unlock();
   spoton_misc::enableLog
     (setting("gui/kernelLogEvents", false).toBool());
 
