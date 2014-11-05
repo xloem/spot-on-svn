@@ -9,6 +9,8 @@
 3.   Must initialize databases from within the kernel. Refer
      to version 0.16's item #17.
 4.   Use ntru_rand_devurandom, otherwise processes may be stalled.
+     Non-Windows only.
+5.   SSLv3 support. Please avoid using it.
 
 0.16 (11/02/2014)
 
