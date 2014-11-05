@@ -1640,7 +1640,7 @@ void spoton_neighbor::processData(void)
 		  QMetaObject::invokeMethod
 		    (spoton_kernel::s_kernel,
 		     "receivedMessage",
-		     Qt::QueuedConnection,
+		     Qt::AutoConnection,
 		     Q_ARG(const QByteArray &, originalData),
 		     Q_ARG(const qint64, m_id),
 		     Q_ARG(const QByteArray &, a.first),
@@ -1654,7 +1654,7 @@ void spoton_neighbor::processData(void)
 		QMetaObject::invokeMethod
 		  (spoton_kernel::s_kernel,
 		   "receivedMessage",
-		   Qt::QueuedConnection,
+		   Qt::AutoConnection,
 		   Q_ARG(const QByteArray &, originalData),
 		   Q_ARG(const qint64, m_id),
 		   Q_ARG(const QByteArray &,
@@ -1665,7 +1665,7 @@ void spoton_neighbor::processData(void)
 		QMetaObject::invokeMethod
 		  (spoton_kernel::s_kernel,
 		   "receivedMessage",
-		   Qt::QueuedConnection,
+		   Qt::AutoConnection,
 		   Q_ARG(const QByteArray &, originalData),
 		   Q_ARG(const qint64, m_id),
 		   Q_ARG(const QByteArray &,
@@ -1683,7 +1683,7 @@ void spoton_neighbor::processData(void)
 		  QMetaObject::invokeMethod
 		    (spoton_kernel::s_kernel,
 		     "receivedMessage",
-		     Qt::QueuedConnection,
+		     Qt::AutoConnection,
 		     Q_ARG(const QByteArray &, originalData),
 		     Q_ARG(const qint64, m_id),
 		     Q_ARG(const QByteArray &, a.first),
