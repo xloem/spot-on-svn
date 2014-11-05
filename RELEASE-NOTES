@@ -6,7 +6,7 @@
      will be retained for 90 seconds. Replayed Geminis will
      be discarded.
 2.   Corrected A.E. time delta computations.
-3.   Improved the signal mechanism within the kernel with respect to echoes.
+3.   Must initialize databases from within the kernel.
 
 0.16 (11/02/2014)
 
@@ -37,7 +37,7 @@
 14.  Added an IPv6 listener to spot-on-neighbors.txt. Renamed hosts.
 15.  Allow assigning of new remote IP information to existing neighbors.
 16.  Updated OpenSSL products to version 1.0.1j on OS X and Windows.
-17.  Removed persistent initialization of databases from the kernel and
+17.  Removed persistent initialization of databases from the
      user interface. Spot-On should not assume complete responsibility
      for user decisions.
 18.  Per Schmidt, ability to lock StarBeam mosaics. Please remove
