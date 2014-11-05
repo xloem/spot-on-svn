@@ -1795,6 +1795,15 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SLOT(slotReceivedChatMessage(const QByteArray &)),
 	  Qt::UniqueConnection);
   connect(neighbor,
+	  SIGNAL(receivedMessage(const QByteArray &,
+				 const qint64,
+				 const QPairByteArrayByteArray &)),
+	  this,
+	  SLOT(slotReceivedMessage(const QByteArray &,
+				   const qint64,
+				   const QPairByteArrayByteArray &)),
+	  Qt::UniqueConnection);
+  connect(neighbor,
 	  SIGNAL(scrambleRequest(void)),
 	  this,
 	  SLOT(slotRequestScramble(void)),
@@ -4246,11 +4255,10 @@ int spoton_kernel::buzzKeyCount(void)
   return s_buzzKeys.size();
 }
 
-void spoton_kernel::receivedMessage
+void spoton_kernel::slotReceivedMessage
 (const QByteArray &data,
  const qint64 id,
- const QByteArray &adaptiveEchoPairKeys,
- const QByteArray &adaptiveEchoPairTypes)
+ const QPairByteArrayByteArray &adaptiveEchoPair)
 {
   QHashIterator<qint64, QPointer<spoton_neighbor> > it(m_neighbors);
 
@@ -4260,9 +4268,7 @@ void spoton_kernel::receivedMessage
 
       if(it.value())
 	if(it.value()->id() != id)
-	  it.value()->write
-	    (data, id, QPair<QByteArray, QByteArray> (adaptiveEchoPairKeys,
-						      adaptiveEchoPairTypes));
+	  it.value()->write(data, id, adaptiveEchoPair);
     }
 }
 

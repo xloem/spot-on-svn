@@ -341,6 +341,8 @@ class spoton_neighbor: public QThread
   void receivedBuzzMessage(const QByteArrayList &list,
 			   const QByteArrayList &symmetricKeys);
   void receivedChatMessage(const QByteArray &data);
+  void receivedMessage(const QByteArray &data, const qint64 id,
+		       const QPairByteArrayByteArray &adaptiveEchoPair);
   void receivedPublicKey(const QByteArray &name, const QByteArray publicKey);
   void resetKeepAlive(void);
   void retrieveMail(const QByteArray &data,

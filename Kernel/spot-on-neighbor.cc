@@ -1634,61 +1634,25 @@ void spoton_neighbor::processData(void)
 	     spoton_kernel::setting("gui/superEcho", 1).toInt() != 1)
 	    {
 	      if(messageType != "0060") // StarBeam
-		{
-		  QPair<QByteArray, QByteArray> a;
-
-		  QMetaObject::invokeMethod
-		    (spoton_kernel::s_kernel,
-		     "receivedMessage",
-		     Qt::AutoConnection,
-		     Q_ARG(const QByteArray &, originalData),
-		     Q_ARG(const qint64, m_id),
-		     Q_ARG(const QByteArray &, a.first),
-		     Q_ARG(const QByteArray &, a.second));
-		}
+		emit receivedMessage(originalData, m_id,
+				     QPair<QByteArray, QByteArray> ());
 	    }
 	  else if(m_echoMode == "full")
 	    {
 	      if(messageType == "0001b" &&
 		 data.trimmed().split('\n').size() == 7)
-		QMetaObject::invokeMethod
-		  (spoton_kernel::s_kernel,
-		   "receivedMessage",
-		   Qt::AutoConnection,
-		   Q_ARG(const QByteArray &, originalData),
-		   Q_ARG(const qint64, m_id),
-		   Q_ARG(const QByteArray &,
-			 discoveredAdaptiveEchoPair.first),
-		   Q_ARG(const QByteArray &,
-			 discoveredAdaptiveEchoPair.second));
+		emit receivedMessage(originalData, m_id,
+				     discoveredAdaptiveEchoPair);
 	      else if(messageType.isEmpty() || messageType == "0002b")
-		QMetaObject::invokeMethod
-		  (spoton_kernel::s_kernel,
-		   "receivedMessage",
-		   Qt::AutoConnection,
-		   Q_ARG(const QByteArray &, originalData),
-		   Q_ARG(const qint64, m_id),
-		   Q_ARG(const QByteArray &,
-			 discoveredAdaptiveEchoPair.first),
-		   Q_ARG(const QByteArray &,
-			 discoveredAdaptiveEchoPair.second));
+		emit receivedMessage(originalData, m_id,
+				     discoveredAdaptiveEchoPair);
 	      else if(messageType == "0040a" || messageType == "0040b")
-		{
-		  /*
-		  ** Buzz.
-		  */
+		/*
+		** Buzz.
+		*/
 
-		  QPair<QByteArray, QByteArray> a;
-
-		  QMetaObject::invokeMethod
-		    (spoton_kernel::s_kernel,
-		     "receivedMessage",
-		     Qt::AutoConnection,
-		     Q_ARG(const QByteArray &, originalData),
-		     Q_ARG(const qint64, m_id),
-		     Q_ARG(const QByteArray &, a.first),
-		     Q_ARG(const QByteArray &, a.second));
-		}
+		emit receivedMessage(originalData, m_id,
+				     QPair<QByteArray, QByteArray> ());
 	    }
 	}
     }

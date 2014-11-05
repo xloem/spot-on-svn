@@ -60,9 +60,6 @@ class spoton_kernel: public QObject
   static QList<QPair<QByteArray, QByteArray> > s_adaptiveEchoPairs;
   static QMultiHash<qint64, QPointer<spoton_neighbor> > s_connectionCounts;
   static QPointer<spoton_kernel> s_kernel;
-  Q_INVOKABLE void receivedMessage
-    (const QByteArray &data, const qint64 id,
-     const QByteArray &adaptiveEchoKeys, const QByteArray &adaptiveEchoTypes);
   static QList<QByteArray> findBuzzKey(const QByteArray &data,
 				       const QByteArray &hash);
   static QList<QByteArray> findInstitutionKey(const QByteArray &data,
@@ -178,6 +175,8 @@ class spoton_kernel: public QObject
 				   const QString &messageType);
   void slotPublicizeAllListenersPlaintext(void);
   void slotPublicizeListenerPlaintext(const qint64 oid);
+  void slotReceivedMessage(const QByteArray &data, const qint64 id,
+			   const QPairByteArrayByteArray &adaptiveEchoPair);
   void slotRequestScramble(void);
   void slotRetrieveMail(void);
   void slotScramble(void);
