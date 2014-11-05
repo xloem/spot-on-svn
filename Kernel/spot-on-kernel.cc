@@ -4302,13 +4302,13 @@ void spoton_kernel::receivedMessage
 (const QByteArray &data, const qint64 id,
  const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
+  QList<QVariant> list;
+
+  list << data << id << adaptiveEchoPair.first << adaptiveEchoPair.second;
+
   QWriteLocker locker(&s_messagesToProcessMutex);
 
-  s_messagesToProcess.append(QList<QVariant> ()
-			     << data
-			     << id
-			     << adaptiveEchoPair.first
-			     << adaptiveEchoPair.second);
+  s_messagesToProcess.append(list);
 }
 
 bool spoton_kernel::duplicateGeminis(const QByteArray &data)
