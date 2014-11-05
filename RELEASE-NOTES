@@ -6,7 +6,10 @@
      will be retained for 90 seconds. Replayed Geminis will
      be discarded.
 2.   Corrected A.E. time delta computations.
-3.   Must initialize databases from within the kernel.
+3.   Must initialize databases from within the kernel. Refer
+     to version 0.16's item #17.
+4.   Do not pass the vacuum argument when launching the kernel from
+     the UI.
 
 0.16 (11/02/2014)
 
