@@ -4252,48 +4252,42 @@ void spoton::slotSaveKernelPath(void)
 
 void spoton::saveGeoIPPath(const int version, const QString &path)
 {
-  if(!path.isEmpty())
+  if(version == 4)
+    m_settings["gui/geoipPath4"] = path;
+  else
+    m_settings["gui/geoipPath6"] = path;
+
+  QSettings settings;
+
+  if(version == 4)
+    settings.setValue("gui/geoipPath4", path);
+  else
+    settings.setValue("gui/geoipPath6", path);
+
+  if(version == 4)
     {
-      if(version == 4)
-	m_settings["gui/geoipPath4"] = path;
-      else
-	m_settings["gui/geoipPath6"] = path;
-
-      QSettings settings;
-
-      if(version == 4)
-	settings.setValue("gui/geoipPath4", path);
-      else
-	settings.setValue("gui/geoipPath6", path);
-
-      if(version == 4)
-	{
-	  m_ui.geoipPath4->setText(path);
-	  m_ui.geoipPath4->setToolTip(path);
-	  m_ui.geoipPath4->selectAll();
-	}
-      else
-	{
-	  m_ui.geoipPath6->setText(path);
-	  m_ui.geoipPath6->setToolTip(path);
-	  m_ui.geoipPath6->selectAll();
-	}
+      m_ui.geoipPath4->setText(path);
+      m_ui.geoipPath4->setToolTip(path);
+      m_ui.geoipPath4->selectAll();
+    }
+  else
+    {
+      m_ui.geoipPath6->setText(path);
+      m_ui.geoipPath6->setToolTip(path);
+      m_ui.geoipPath6->selectAll();
     }
 }
 
 void spoton::saveKernelPath(const QString &path)
 {
-  if(!path.isEmpty())
-    {
-      m_settings["gui/kernelPath"] = path;
+  m_settings["gui/kernelPath"] = path;
 
-      QSettings settings;
+  QSettings settings;
 
-      settings.setValue("gui/kernelPath", path);
-      m_ui.kernelPath->setText(path);
-      m_ui.kernelPath->setToolTip(path);
-      m_ui.kernelPath->selectAll();
-    }
+  settings.setValue("gui/kernelPath", path);
+  m_ui.kernelPath->setText(path);
+  m_ui.kernelPath->setToolTip(path);
+  m_ui.kernelPath->selectAll();
 }
 
 void spoton::saveSettings(void)

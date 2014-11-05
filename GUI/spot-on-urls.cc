@@ -655,9 +655,6 @@ void spoton::slotSelectUrlIniPath(void)
 
 void spoton::saveUrlIniPath(const QString &path)
 {
-  if(path.isEmpty())
-    return;
-
   m_settings["gui/urlIniPath"] = path;
 
   QSettings settings;

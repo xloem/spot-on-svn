@@ -418,17 +418,14 @@ void spoton::slotSaveDestination(void)
 
 void spoton::saveDestination(const QString &path)
 {
-  if(!path.isEmpty())
-    {
-      m_settings["gui/etpDestinationPath"] = path;
+  m_settings["gui/etpDestinationPath"] = path;
 
-      QSettings settings;
+  QSettings settings;
 
-      settings.setValue("gui/etpDestinationPath", path);
-      m_ui.destination->setText(path);
-      m_ui.destination->setToolTip(path);
-      m_ui.destination->selectAll();
-    }
+  settings.setValue("gui/etpDestinationPath", path);
+  m_ui.destination->setText(path);
+  m_ui.destination->setToolTip(path);
+  m_ui.destination->selectAll();
 }
 
 void spoton::slotSelectDestination(void)
