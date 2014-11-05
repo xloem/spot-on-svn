@@ -9,7 +9,8 @@
 3.   Must initialize databases from within the kernel. Refer
      to version 0.16's item #17.
 4.   Do not pass the vacuum argument when launching the kernel from
-     the UI.
+     the UI. The user may provide the option (--vacuum), however.
+5.   Use ntru_rand_devurandom, otherwise processes may be stalled.
 
 0.16 (11/02/2014)
 
