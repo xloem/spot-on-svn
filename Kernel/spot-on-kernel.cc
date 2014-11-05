@@ -641,6 +641,8 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 
   if(setting("gui/impersonate", false).toBool())
     m_impersonateTimer.start();
+
+  spoton_misc::prepareDatabases();
 }
 
 spoton_kernel::~spoton_kernel()
@@ -709,6 +711,7 @@ void spoton_kernel::cleanup(void)
 
 void spoton_kernel::slotPollDatabase(void)
 {
+  spoton_misc::prepareDatabases();
   prepareListeners();
   prepareNeighbors();
   prepareStarbeamReaders();
