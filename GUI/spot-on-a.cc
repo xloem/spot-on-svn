@@ -4009,14 +4009,24 @@ void spoton::slotActivateKernel(void)
       QProcess::startDetached("open", list);
     }
   else
-    QProcess::startDetached(program.value(0),
-			    QStringList(program.value(1)));
+    {
+      if(program.size() > 1)
+	QProcess::startDetached(program.value(0),
+				QStringList(program.value(1)));
+      else
+	QProcess::startDetached(program.value(0));
+    }
 #elif defined(Q_OS_WIN32)
-  QProcess::startDetached(QString("\"%1\"").arg(program.value(0)),
-			  QStringList(program.value(1)));
+  if(program.size() > 1)
+    QProcess::startDetached(QString("\"%1\"").arg(program.value(0)),
+			    QStringList(program.value(1)));
+  else
+    QProcess::startDetached(QString("\"%1\"").arg(program.value(0)));
 #else
-  QProcess::startDetached(program.value(0),
-			  QStringList(program.value(1)));
+  if(program.size() > 1)
+    QProcess::startDetached(program.value(0), QStringList(program.value(1)));
+  else
+    QProcess::startDetached(program.value(0));
 #endif
 }
 

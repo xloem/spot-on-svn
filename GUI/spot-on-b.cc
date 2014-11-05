@@ -843,7 +843,7 @@ void spoton::highlightPaths(void)
 #endif
   palette.setColor(m_ui.geoipPath6->backgroundRole(), color);
   m_ui.geoipPath6->setPalette(palette);
-  fileInfo.setFile(m_ui.kernelPath->text());
+  fileInfo.setFile(m_ui.kernelPath->text().split(" ").value(0));
 
 #if defined(Q_OS_MAC)
   if((fileInfo.isBundle() || fileInfo.isExecutable()) && fileInfo.size() > 0)
