@@ -175,8 +175,6 @@ class spoton_kernel: public QObject
 				   const QString &messageType);
   void slotPublicizeAllListenersPlaintext(void);
   void slotPublicizeListenerPlaintext(const qint64 oid);
-  void slotReceivedMessage(const QByteArray &data, const qint64 id,
-			   const QPairByteArrayByteArray &adaptiveEchoPair);
   void slotRequestScramble(void);
   void slotRetrieveMail(void);
   void slotScramble(void);
@@ -201,6 +199,8 @@ class spoton_kernel: public QObject
 				  const quint16 port,
 				  const QString &transport,
 				  const QString &orientation);
+  void receivedMessage(const QByteArray &data, const qint64 id,
+		       const QPairByteArrayByteArray &adaptiveEchoPair);
   void retrieveMail(const QByteArrayList &list, const QString &messageType);
   void sendBuzz(const QByteArray &buzz);
   void sendMessage(const QByteArray &message,

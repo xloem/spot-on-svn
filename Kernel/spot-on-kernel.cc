@@ -1799,9 +1799,9 @@ void spoton_kernel::connectSignalsToNeighbor
 				 const qint64,
 				 const QPairByteArrayByteArray &)),
 	  this,
-	  SLOT(slotReceivedMessage(const QByteArray &,
-				   const qint64,
-				   const QPairByteArrayByteArray &)),
+	  SIGNAL(receivedMessage(const QByteArray &,
+				 const qint64,
+				 const QPairByteArrayByteArray &)),
 	  Qt::UniqueConnection);
   connect(neighbor,
 	  SIGNAL(scrambleRequest(void)),
@@ -1881,6 +1881,15 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SIGNAL(sendStatus(const QByteArrayList &)),
 	  neighbor,
 	  SLOT(slotSendStatus(const QByteArrayList &)),
+	  Qt::UniqueConnection);
+  connect(this,
+	  SIGNAL(receivedMessage(const QByteArray &,
+				 const qint64,
+				 const QPairByteArrayByteArray &)),
+	  neighbor,
+	  SLOT(slotWrite(const QByteArray &,
+			 const qint64,
+			 const QPairByteArrayByteArray &)),
 	  Qt::UniqueConnection);
 }
 
@@ -4253,23 +4262,6 @@ int spoton_kernel::buzzKeyCount(void)
   QReadLocker locker(&s_buzzKeysMutex);
 
   return s_buzzKeys.size();
-}
-
-void spoton_kernel::slotReceivedMessage
-(const QByteArray &data,
- const qint64 id,
- const QPairByteArrayByteArray &adaptiveEchoPair)
-{
-  QHashIterator<qint64, QPointer<spoton_neighbor> > it(m_neighbors);
-
-  while(it.hasNext())
-    {
-      it.next();
-
-      if(it.value())
-	if(it.value()->id() != id)
-	  it.value()->write(data, id, adaptiveEchoPair);
-    }
 }
 
 bool spoton_kernel::duplicateGeminis(const QByteArray &data)

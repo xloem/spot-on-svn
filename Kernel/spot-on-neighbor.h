@@ -158,8 +158,6 @@ class spoton_neighbor: public QThread
   void addToBytesWritten(const int bytesWritten);
   void processData(void);
   void setId(const qint64 id);
-  void write(const QByteArray &data, const qint64 id,
-	     const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
 
  private:
   QByteArray m_accountName;
@@ -321,6 +319,8 @@ class spoton_neighbor: public QThread
   void slotSendUuid(void);
   void slotSslErrors(const QList<QSslError> &errors);
   void slotTimeout(void);
+  void slotWrite(const QByteArray &data, const qint64 id,
+		 const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
 
  public slots:
   void slotSharePublicKey(const QByteArray &keyType,
