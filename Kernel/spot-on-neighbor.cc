@@ -1634,25 +1634,61 @@ void spoton_neighbor::processData(void)
 	     spoton_kernel::setting("gui/superEcho", 1).toInt() != 1)
 	    {
 	      if(messageType != "0060") // StarBeam
-		spoton_kernel::receivedMessage
-		  (originalData, m_id, QPair<QByteArray, QByteArray> ());
+		{
+		  QPair<QByteArray, QByteArray> a;
+
+		  QMetaObject::invokeMethod
+		    (spoton_kernel::s_kernel,
+		     "receivedMessage",
+		     Qt::QueuedConnection,
+		     Q_ARG(const QByteArray &, originalData),
+		     Q_ARG(const qint64, m_id),
+		     Q_ARG(const QByteArray &, a.first),
+		     Q_ARG(const QByteArray &, a.second));
+		}
 	    }
 	  else if(m_echoMode == "full")
 	    {
 	      if(messageType == "0001b" &&
 		 data.trimmed().split('\n').size() == 7)
-		spoton_kernel::receivedMessage
-		  (originalData, m_id, discoveredAdaptiveEchoPair);
+		QMetaObject::invokeMethod
+		  (spoton_kernel::s_kernel,
+		   "receivedMessage",
+		   Qt::QueuedConnection,
+		   Q_ARG(const QByteArray &, originalData),
+		   Q_ARG(const qint64, m_id),
+		   Q_ARG(const QByteArray &,
+			 discoveredAdaptiveEchoPair.first),
+		   Q_ARG(const QByteArray &,
+			 discoveredAdaptiveEchoPair.second));
 	      else if(messageType.isEmpty() || messageType == "0002b")
-		spoton_kernel::receivedMessage
-		  (originalData, m_id, discoveredAdaptiveEchoPair);
+		QMetaObject::invokeMethod
+		  (spoton_kernel::s_kernel,
+		   "receivedMessage",
+		   Qt::QueuedConnection,
+		   Q_ARG(const QByteArray &, originalData),
+		   Q_ARG(const qint64, m_id),
+		   Q_ARG(const QByteArray &,
+			 discoveredAdaptiveEchoPair.first),
+		   Q_ARG(const QByteArray &,
+			 discoveredAdaptiveEchoPair.second));
 	      else if(messageType == "0040a" || messageType == "0040b")
-		/*
-		** Buzz.
-		*/
+		{
+		  /*
+		  ** Buzz.
+		  */
 
-		spoton_kernel::receivedMessage
-		  (originalData, m_id, QPair<QByteArray, QByteArray> ());
+		  QPair<QByteArray, QByteArray> a;
+
+		  QMetaObject::invokeMethod
+		    (spoton_kernel::s_kernel,
+		     "receivedMessage",
+		     Qt::QueuedConnection,
+		     Q_ARG(const QByteArray &, originalData),
+		     Q_ARG(const qint64, m_id),
+		     Q_ARG(const QByteArray &, a.first),
+		     Q_ARG(const QByteArray &, a.second));
+		}
 	    }
 	}
     }

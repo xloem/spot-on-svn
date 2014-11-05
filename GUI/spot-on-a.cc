@@ -833,6 +833,18 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotReply(void)));
+  connect(m_ui.requireSsl,
+	  SIGNAL(toggled(bool)),
+	  m_ui.addException,
+	  SLOT(setEnabled(bool)));
+  connect(m_ui.requireSsl,
+	  SIGNAL(toggled(bool)),
+	  m_ui.neighborKeySize,
+	  SLOT(setEnabled(bool)));
+  connect(m_ui.requireSsl,
+	  SIGNAL(toggled(bool)),
+	  m_ui.sslKeySizeLabel,
+	  SLOT(setEnabled(bool)));
   connect(m_ui.sslListener,
 	  SIGNAL(toggled(bool)),
 	  m_ui.listenerKeySize,
@@ -2696,12 +2708,24 @@ void spoton::slotAddNeighbor(void)
 
 #ifdef SPOTON_SCTP_ENABLED
 	if(m_ui.neighborTransport->currentIndex() == 1)
-	  query.bindValue(19, m_ui.neighborKeySize->currentText().toInt());
+	  {
+	    if(m_ui.requireSsl->isChecked())
+	      query.bindValue
+		(19, m_ui.neighborKeySize->currentText().toInt());
+	    else
+	      query.bindValue(19, 0);
+	  }
 	else
 	  query.bindValue(19, 0);
 #else
 	if(m_ui.neighborTransport->currentIndex() == 0)
-	  query.bindValue(19, m_ui.neighborKeySize->currentText().toInt());
+	  {
+	    if(m_ui.requireSsl->isChecked())
+	      query.bindValue
+		(19, m_ui.neighborKeySize->currentText().toInt());
+	    else
+	      query.bindValue(19, 0);
+	  }
 	else
 	  query.bindValue(19, 0);
 #endif
