@@ -3999,7 +3999,7 @@ void spoton::slotActivateKernel(void)
     {
       QStringList list;
 
-      list << "-a" << program.value(0) << "-g"
+      list << "-a" << program << "-g"
 	   << "--args" << "--vacuum";
 
       QProcess::startDetached("open", list);
