@@ -61,7 +61,7 @@ void spoton_crypt::generateNTRUKeys(const QString &keySize,
 #ifdef Q_OS_WIN32
 		       ntru_rand_default
 #else
-		       ntru_rand_devrandom
+		       ntru_rand_devurandom
 #endif
 		       ) == NTRU_SUCCESS)
     {
@@ -291,7 +291,7 @@ QByteArray spoton_crypt::publicKeyEncryptNTRU(const QByteArray &data,
 #ifdef Q_OS_WIN32
 		      ntru_rand_default,
 #else
-		      ntru_rand_devrandom,
+		      ntru_rand_devurandom,
 #endif
 		      e) == NTRU_SUCCESS)
 	{

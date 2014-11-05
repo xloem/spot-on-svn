@@ -454,7 +454,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1031</width>
-                <height>454</height>
+                <height>457</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -2029,7 +2029,7 @@
              <x>0</x>
              <y>0</y>
              <width>912</width>
-             <height>380</height>
+             <height>467</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2663,7 +2663,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>294</width>
+                     <width>283</width>
                      <height>1430</height>
                     </rect>
                    </property>
@@ -5353,7 +5353,11 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLineEdit" name="kernelPath"/>
+                    <widget class="QLineEdit" name="kernelPath">
+                     <property name="toolTip">
+                      <string>The vacuum argument is supported.</string>
+                     </property>
+                    </widget>
                    </item>
                    <item>
                     <widget class="QPushButton" name="selectKernelPath">
@@ -6306,7 +6310,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>575</width>
+             <width>758</width>
              <height>559</height>
             </rect>
            </property>
@@ -7308,8 +7312,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>265</width>
-             <height>412</height>
+             <width>776</width>
+             <height>485</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7790,8 +7794,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>280</width>
-             <height>189</height>
+             <width>758</width>
+             <height>512</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
