@@ -1634,25 +1634,25 @@ void spoton_neighbor::processData(void)
 	     spoton_kernel::setting("gui/superEcho", 1).toInt() != 1)
 	    {
 	      if(messageType != "0060") // StarBeam
-		emit receivedMessage(originalData, m_id,
-				     QPair<QByteArray, QByteArray> ());
+		spoton_kernel::receivedMessage
+		  (originalData, m_id, QPair<QByteArray, QByteArray> ());
 	    }
 	  else if(m_echoMode == "full")
 	    {
 	      if(messageType == "0001b" &&
 		 data.trimmed().split('\n').size() == 7)
-		emit receivedMessage(originalData, m_id,
-				     discoveredAdaptiveEchoPair);
+		spoton_kernel::receivedMessage
+		  (originalData, m_id, discoveredAdaptiveEchoPair);
 	      else if(messageType.isEmpty() || messageType == "0002b")
-		emit receivedMessage(originalData, m_id,
-				     discoveredAdaptiveEchoPair);
+		spoton_kernel::receivedMessage
+		  (originalData, m_id, discoveredAdaptiveEchoPair);
 	      else if(messageType == "0040a" || messageType == "0040b")
 		/*
 		** Buzz.
 		*/
 
-		emit receivedMessage(originalData, m_id,
-				     QPair<QByteArray, QByteArray> ());
+		spoton_kernel::receivedMessage
+		  (originalData, m_id, QPair<QByteArray, QByteArray> ());
 	    }
 	}
     }
@@ -1995,9 +1995,9 @@ void spoton_neighbor::slotSendMessage
     }
 }
 
-void spoton_neighbor::slotWrite
+void spoton_neighbor::write
 (const QByteArray &data, const qint64 id,
- const QPairByteArrayByteArray &adaptiveEchoPair)
+ const QPair<QByteArray, QByteArray> &adaptiveEchoPair)
 {
   if(id == m_id)
     return;
@@ -2016,7 +2016,7 @@ void spoton_neighbor::slotWrite
       {
 	if(write(data.constData(), data.length()) != data.length())
 	  spoton_misc::logError
-	    (QString("spoton_neighbor::slotWrite(): write() "
+	    (QString("spoton_neighbor::write(): write() "
 		     "error for %1:%2.").
 	     arg(m_address.toString()).
 	     arg(m_port));

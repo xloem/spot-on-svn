@@ -60,6 +60,7 @@ class spoton_kernel: public QObject
   static QList<QPair<QByteArray, QByteArray> > s_adaptiveEchoPairs;
   static QMultiHash<qint64, QPointer<spoton_neighbor> > s_connectionCounts;
   static QPointer<spoton_kernel> s_kernel;
+  static QTimer s_processReceivedMessagesTimer;
   static QList<QByteArray> findBuzzKey(const QByteArray &data,
 				       const QByteArray &hash);
   static QList<QByteArray> findInstitutionKey(const QByteArray &data,
@@ -83,6 +84,9 @@ class spoton_kernel: public QObject
   static void messagingCacheAdd(const QByteArray &data,
 				const bool do_not_hash = false,
 				const int add_msecs = 0);
+  static void receivedMessage
+    (const QByteArray &data, const qint64 id,
+     const QPair<QByteArray, QByteArray> &adaptiveEchoPair);
   static void removeBuzzKey(const QByteArray &data);
   bool acceptRemoteConnection(const QHostAddress &localAddress,
 			      const QHostAddress &peerAddress);
@@ -114,12 +118,14 @@ class spoton_kernel: public QObject
   static QHash<QByteArray, QList<QByteArray> > s_buzzKeys;
   static QHash<QString, QVariant> s_settings;
   static QList<QList<QByteArray> > s_institutionKeys;
+  static QList<QList<QVariant> > s_messagesToProcess;
   static QHash<QByteArray, uint> s_geminisCache;
   static QHash<QByteArray, uint> s_messagingCache;
   static QReadWriteLock s_adaptiveEchoPairsMutex;
   static QReadWriteLock s_buzzKeysMutex;
   static QReadWriteLock s_geminisCacheMutex;
   static QReadWriteLock s_institutionKeysMutex;
+  static QReadWriteLock s_messagesToProcessMutex;
   static QReadWriteLock s_messagingCacheMutex;
   static QReadWriteLock s_settingsMutex;
   bool initializeSecurityContainers(const QString &passphrase,
@@ -165,6 +171,7 @@ class spoton_kernel: public QObject
 				 const QByteArray &utcDate);
   void slotNewNeighbor(QPointer<spoton_neighbor> neighbor);
   void slotPollDatabase(void);
+  void slotProcessReceivedMessages(void);
   void slotPublicKeyReceivedFromUI(const qint64 oid,
 				   const QByteArray &keyType,
 				   const QByteArray &name,
@@ -199,8 +206,6 @@ class spoton_kernel: public QObject
 				  const quint16 port,
 				  const QString &transport,
 				  const QString &orientation);
-  void receivedMessage(const QByteArray &data, const qint64 id,
-		       const QPairByteArrayByteArray &adaptiveEchoPair);
   void retrieveMail(const QByteArrayList &list, const QString &messageType);
   void sendBuzz(const QByteArray &buzz);
   void sendMessage(const QByteArray &message,
