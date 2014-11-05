@@ -5353,11 +5353,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLineEdit" name="kernelPath">
-                     <property name="toolTip">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The vacuum option is supported. Please do not use spaces in the kernel's name.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                    </widget>
+                    <widget class="QLineEdit" name="kernelPath"/>
                    </item>
                    <item>
                     <widget class="QPushButton" name="selectKernelPath">
@@ -6310,7 +6306,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>575</width>
+             <width>758</width>
              <height>559</height>
             </rect>
            </property>
@@ -7312,8 +7308,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>265</width>
-             <height>412</height>
+             <width>776</width>
+             <height>485</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">

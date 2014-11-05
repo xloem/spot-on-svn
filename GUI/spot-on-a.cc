@@ -3992,41 +3992,26 @@ void spoton::slotPopulateNeighbors(void)
 
 void spoton::slotActivateKernel(void)
 {
-  QStringList program(m_ui.kernelPath->text().
-		      split(" ", QString::SkipEmptyParts));
+  QString program(m_ui.kernelPath->text());
 
 #ifdef Q_OS_MAC
-  if(QFileInfo(program.value(0)).isBundle())
+  if(QFileInfo(program).isBundle())
     {
       QStringList list;
 
-      if(program.size() > 1)
-	list << "-a" << program.value(0) << "-g"
-	     << "--args" << program.value(1);
-      else
-	list << "-a" << program.value(0) << "-g";
+      list << "-a" << program.value(0) << "-g"
+	   << "--args" << "--vacuum";
 
       QProcess::startDetached("open", list);
     }
   else
-    {
-      if(program.size() > 1)
-	QProcess::startDetached(program.value(0),
-				QStringList(program.value(1)));
-      else
-	QProcess::startDetached(program.value(0));
-    }
+    QProcess::startDetached(program,
+			    QStringList("--vacuum"));
 #elif defined(Q_OS_WIN32)
-  if(program.size() > 1)
-    QProcess::startDetached(QString("\"%1\"").arg(program.value(0)),
-			    QStringList(program.value(1)));
-  else
-    QProcess::startDetached(QString("\"%1\"").arg(program.value(0)));
+  QProcess::startDetached(QString("\"%1\"").arg(program),
+			  QStringList("--vacuum"));
 #else
-  if(program.size() > 1)
-    QProcess::startDetached(program.value(0), QStringList(program.value(1)));
-  else
-    QProcess::startDetached(program.value(0));
+  QProcess::startDetached(program, QStringList("--vacuum"));
 #endif
 }
 
