@@ -60,7 +60,6 @@ class spoton_kernel: public QObject
   static QList<QPair<QByteArray, QByteArray> > s_adaptiveEchoPairs;
   static QMultiHash<qint64, QPointer<spoton_neighbor> > s_connectionCounts;
   static QPointer<spoton_kernel> s_kernel;
-  static QTimer s_processReceivedMessagesTimer;
   static QList<QByteArray> findBuzzKey(const QByteArray &data,
 				       const QByteArray &hash);
   static QList<QByteArray> findInstitutionKey(const QByteArray &data,
@@ -104,6 +103,7 @@ class spoton_kernel: public QObject
   QTimer m_controlDatabaseTimer;
   QTimer m_impersonateTimer;
   QTimer m_messagingCachePurgeTimer;
+  QTimer m_processReceivedMessagesTimer;
   QTimer m_publishAllListenersPlaintextTimer;
   QTimer m_scramblerTimer;
   QTimer m_settingsTimer;

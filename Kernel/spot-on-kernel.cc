@@ -107,7 +107,6 @@ QReadWriteLock spoton_kernel::s_institutionKeysMutex;
 QReadWriteLock spoton_kernel::s_messagesToProcessMutex;
 QReadWriteLock spoton_kernel::s_messagingCacheMutex;
 QReadWriteLock spoton_kernel::s_settingsMutex;
-QTimer spoton_kernel::s_processReceivedMessagesTimer;
 
 static void sig_handler(int signum)
 {
@@ -491,6 +490,10 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotMessagingCachePurge(void)));
+  connect(&m_processReceivedMessagesTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotProcessReceivedMessages(void)));
   connect(&m_publishAllListenersPlaintextTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -507,20 +510,15 @@ spoton_kernel::spoton_kernel(void):QObject(0)
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotStatusTimerExpired(void)));
-  connect(&s_processReceivedMessagesTimer,
-	  SIGNAL(timeout(void)),
-	  this,
-	  SLOT(slotProcessReceivedMessages(void)));
   m_controlDatabaseTimer.start(2500);
   m_impersonateTimer.setInterval(2500);
   m_messagingCachePurgeTimer.setInterval(15000);
+  m_processReceivedMessagesTimer.start(100);
   m_publishAllListenersPlaintextTimer.setInterval(10 * 60 * 1000);
   m_settingsTimer.setInterval(1500);
   m_scramblerTimer.setSingleShot(true);
   m_settingsTimer.setSingleShot(true);
   m_statusTimer.start(15000);
-  s_processReceivedMessagesTimer.setInterval(10);
-  s_processReceivedMessagesTimer.setSingleShot(true);
   m_guiServer = new spoton_gui_server(this);
   m_mailer = new spoton_mailer(this);
   m_starbeamWriter = new spoton_starbeam_writer(this);
@@ -650,11 +648,11 @@ spoton_kernel::~spoton_kernel()
   m_controlDatabaseTimer.stop();
   m_impersonateTimer.stop();
   m_messagingCachePurgeTimer.stop();
+  m_processReceivedMessagesTimer.stop();
   m_publishAllListenersPlaintextTimer.stop();
   m_scramblerTimer.stop();
   m_settingsTimer.stop();
   m_statusTimer.stop();
-  s_processReceivedMessagesTimer.stop();
 
   QWriteLocker locker1(&s_messagesToProcessMutex);
 
@@ -1267,7 +1265,6 @@ void spoton_kernel::prepareNeighbors(void)
     {
       QWriteLocker locker1(&s_messagesToProcessMutex);
 
-      s_processReceivedMessagesTimer.stop();
       s_messagesToProcess.clear();
       locker1.unlock();
 
@@ -4309,9 +4306,6 @@ void spoton_kernel::receivedMessage
 			     << id
 			     << adaptiveEchoPair.first
 			     << adaptiveEchoPair.second);
-
-  if(!s_processReceivedMessagesTimer.isActive())
-    s_processReceivedMessagesTimer.start();
 }
 
 bool spoton_kernel::duplicateGeminis(const QByteArray &data)
