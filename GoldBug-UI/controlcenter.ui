@@ -1675,10 +1675,13 @@ QPushButton:pressed {
                    <item>
                     <widget class="QLabel" name="label_10">
                      <property name="text">
-                      <string>To:</string>
+                      <string>&amp;To:</string>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="buddy">
+                      <cstring>emailParticipants</cstring>
                      </property>
                     </widget>
                    </item>
@@ -1917,7 +1920,7 @@ QPushButton:pressed {
                     <enum>Qt::RightToLeft</enum>
                    </property>
                    <property name="text">
-                    <string>Sign</string>
+                    <string>&amp;Sign</string>
                    </property>
                    <property name="checked">
                     <bool>true</bool>
@@ -4976,7 +4979,7 @@ color: rgb(255, 255, 255);</string>
               <item row="2" column="0">
                <widget class="QLabel" name="label_7">
                 <property name="text">
-                 <string>Hostname:</string>
+                 <string>&amp;Hostname:</string>
                 </property>
                 <property name="buddy">
                  <cstring>proxyHostname</cstring>
@@ -6380,6 +6383,13 @@ QPushButton:pressed {
            <number>3</number>
           </property>
           <item>
+           <widget class="QCheckBox" name="sqlite">
+            <property name="text">
+             <string>CheckBox</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="label_61">
             <property name="minimumSize">
              <size>
@@ -6645,7 +6655,7 @@ QPushButton:pressed {
                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Send out random fake messages from time to time.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="text">
-                  <string>Simulacra</string>
+                  <string>&amp;Simulacra</string>
                  </property>
                 </widget>
                </item>
@@ -6655,7 +6665,7 @@ QPushButton:pressed {
                   <string>Broadcast odd messages at odd times - like a human is chatting.</string>
                  </property>
                  <property name="text">
-                  <string>Impersonate</string>
+                  <string>&amp;Impersonate</string>
                  </property>
                 </widget>
                </item>
@@ -7088,7 +7098,10 @@ padding: 7px;
                <item row="0" column="0">
                 <widget class="QLabel" name="label_14">
                  <property name="text">
-                  <string>My Nickname:</string>
+                  <string>&amp;My Nickname:</string>
+                 </property>
+                 <property name="buddy">
+                  <cstring>username</cstring>
                  </property>
                 </widget>
                </item>
@@ -11062,6 +11075,8 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
   <tabstop>proxyPort</tabstop>
   <tabstop>proxyUsername</tabstop>
   <tabstop>proxyPassword</tabstop>
+  <tabstop>addNeighbor</tabstop>
+  <tabstop>deleteAllNeighbors</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>listeners</tabstop>
   <tabstop>listenersActionMenu</tabstop>
@@ -11224,8 +11239,46 @@ spot-on-kernel&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; color:#666666;&quot;&
   <tabstop>buzzHashType</tabstop>
   <tabstop>buzzActions</tabstop>
   <tabstop>channelType</tabstop>
-  <tabstop>addNeighbor</tabstop>
-  <tabstop>deleteAllNeighbors</tabstop>
+  <tabstop>reloadIni</tabstop>
+  <tabstop>deleteURL_2</tabstop>
+  <tabstop>kernelUpdateInterval</tabstop>
+  <tabstop>chatUpdateInterval</tabstop>
+  <tabstop>listenersUpdateInterval</tabstop>
+  <tabstop>neighborsUpdateInterval</tabstop>
+  <tabstop>starbeamUpdateInterval</tabstop>
+  <tabstop>urlCipher</tabstop>
+  <tabstop>urlHash</tabstop>
+  <tabstop>commonUrlIterationCount</tabstop>
+  <tabstop>commonUrlPassphrase</tabstop>
+  <tabstop>commonUrlPin</tabstop>
+  <tabstop>prepareUrlDatabases</tabstop>
+  <tabstop>showUrlSettings</tabstop>
+  <tabstop>urlDatabasesSize</tabstop>
+  <tabstop>urlCount</tabstop>
+  <tabstop>deleteAllUrls</tabstop>
+  <tabstop>gatherStatistics</tabstop>
+  <tabstop>postgresqlConnect</tabstop>
+  <tabstop>search</tabstop>
+  <tabstop>saveCommonUrlCredentials</tabstop>
+  <tabstop>search_2</tabstop>
+  <tabstop>discover</tabstop>
+  <tabstop>urls</tabstop>
+  <tabstop>superEcho</tabstop>
+  <tabstop>deleteURL_3</tabstop>
+  <tabstop>urlSettings</tabstop>
+  <tabstop>urlIniPath</tabstop>
+  <tabstop>selectUrlIni</tabstop>
+  <tabstop>commonUrlCipher</tabstop>
+  <tabstop>commonUrlHash</tabstop>
+  <tabstop>urlIteration</tabstop>
+  <tabstop>urlPassphrase</tabstop>
+  <tabstop>urlIniHash</tabstop>
+  <tabstop>urlSalt</tabstop>
+  <tabstop>verify</tabstop>
+  <tabstop>saveUrlCredentials</tabstop>
+  <tabstop>importUrls</tabstop>
+  <tabstop>prepareUrlDatabases_2</tabstop>
+  <tabstop>sqlite</tabstop>
  </tabstops>
  <resources>
   <include location="../Icons/icons.qrc"/>
