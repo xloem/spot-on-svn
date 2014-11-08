@@ -274,7 +274,7 @@ void spoton::slotReceivedKernelMessage(void)
 		     arg(now.toString("hh")).
 		     arg(now.toString("mm")).
 		     arg(now.toString("ss")));
-		  msg.append(QString("<font color=green>%1</font>").
+		  msg.append(QString("<i>%1</i>").
 			     arg(list.at(1).constData()));
 
 		  if(m_chatWindows.contains(list.value(0).toBase64()))
