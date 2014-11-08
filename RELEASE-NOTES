@@ -11,6 +11,8 @@
 4.   Use ntru_rand_devurandom, otherwise processes may be stalled.
      Non-Windows only.
 5.   SSLv3 support. Please avoid using it.
+6.   Introduced a two-way two-pass calling feature.
+7.   Added chat status messages.
 
 0.16 (11/02/2014)
 
