@@ -1,10 +1,10 @@
-0.16a (11/07/2014)
+0.16a (11/08/2014)
 
 1.   Include expiry times in message types that change
      communication states. For example, Geminis. Previous
      functionality will be disrupted. Hashes of shared Geminis
      will be retained for 90 seconds. Replayed Geminis will
-     be discarded.
+     be discarded. Call termination is included within this process.
 2.   Corrected A.E. time delta computations.
 3.   Must initialize databases from within the kernel. Refer
      to version 0.16's item #17.
