@@ -64,7 +64,7 @@ Echoed? Yes
 Groups: 4
 Public Key
 {
-0 - 0000a (Base-64)
+0 - 0000{a|c} (Base-64)
 EOL
 1 - Encryption Symmetric Key (Base-64)
 EOL

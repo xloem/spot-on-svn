@@ -1601,8 +1601,8 @@ void spoton_neighbor::processData(void)
 
 	  if(messageType == "0000")
 	    process0000(length, data, symmetricKeys);
-	  else if(messageType == "0000a")
-	    process0000a(length, data);
+	  else if(messageType == "0000a" || messageType == "0000c")
+	    process0000a(length, data, messageType);
 	  else if(messageType == "0000b")
 	    process0000b(length, data, symmetricKeys);
 	  else if(messageType == "0001a")
@@ -2375,7 +2375,8 @@ void spoton_neighbor::process0000(int length, const QByteArray &dataIn,
        arg(m_port));
 }
 
-void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
+void spoton_neighbor::process0000a(int length, const QByteArray &dataIn,
+				   const QString &messageType)
 {
   spoton_crypt *s_crypt = spoton_kernel::s_crypts.value("chat", 0);
 
@@ -2507,7 +2508,7 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 
 			      saveGemini(list.value(0), list.value(1),
 					 list.value(2), list.value(3),
-					 "0000a");
+					 messageType);
 			    }
 			}
 		      else
@@ -5858,7 +5859,7 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data,
 				"Artificial_GET").
 	 toString() == "Artificial_GET")
 	{
-	  if(messageType == "0000a")
+	  if(messageType == "0000a" || messageType == "0000c")
 	    message = spoton_send::message0000a(data,
 						spoton_send::
 						ARTIFICIAL_GET,
@@ -5871,7 +5872,7 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data,
 	}
       else
 	{
-	  if(messageType == "0000a")
+	  if(messageType == "0000a" || messageType == "0000c")
 	    message = spoton_send::message0000a(data,
 						spoton_send::
 						NORMAL_POST,
@@ -5961,6 +5962,22 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 	       geminiHashKey.length() ==
 	       spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES / 2)
 	      {
+		bytes1 = spoton_crypt::strongRandomBytes
+		  (spoton_crypt::cipherKeyLength("aes256") / 2);
+		bytes2 = spoton_crypt::strongRandomBytes
+		  (spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES / 2);
+		geminis.first.append(bytes1);
+		geminis.second.append(bytes2);
+		respond = true;
+	      }
+
+	if(messageType == "0000c")
+	  if(!gemini.isEmpty() && !geminiHashKey.isEmpty())
+	    if(static_cast<size_t> (gemini.length()) ==
+	       spoton_crypt::cipherKeyLength("aes256") / 2 &&
+	       geminiHashKey.length() ==
+	       spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES / 2)
+	      {
 		/*
 		** We may be processing a two-way call.
 		*/
@@ -5994,28 +6011,14 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 
 			if(ok)
 			  {
-			    if(bytes1.isEmpty() || bytes2.isEmpty())
-			      {
-				bytes1 = spoton_crypt::
-				  strongRandomBytes
-				  (spoton_crypt::
-				   cipherKeyLength("aes256") / 2);
-				bytes2 = spoton_crypt::strongRandomBytes
-				  (spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES /
-				   2);
-				geminis.first.append(bytes1);
-				geminis.second.append(bytes2);
-				respond = true;
-			      }
-			    else
-			      {
-				/*
-				** This is a response.
-				*/
+			    /*
+			    ** This is a response.
+			    */
 
-				geminis.first.prepend(bytes1);
-				geminis.second.prepend(bytes2);
-			      }
+			    geminis.first.prepend
+			      (bytes1.mid(0, gemini.length()));
+			    geminis.second.prepend
+			      (bytes2.mid(0, geminiHashKey.length()));
 			  }
 		      }
 		  }
@@ -6066,7 +6069,7 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 		 geminis.second.isEmpty())
 		emit statusMessageReceived
 		  (publicKeyHash,
-		   tr("The participant (%1...%2) terminated the call.").
+		   tr("The participant %1...%2 terminated the call.").
 		   arg(publicKeyHash.toBase64().mid(0, 16).constData()).
 		   arg(publicKeyHash.toBase64().right(16).constData()));
 	      else if(messageType == "0000a")
@@ -6074,22 +6077,29 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 		  if(respond)
 		    emit statusMessageReceived
 		      (publicKeyHash,
-		       tr("The participant (%1...%2) may have "
+		       tr("The participant %1...%2 may have "
 			  "initiated a two-way call. Response dispatched.").
 		       arg(publicKeyHash.toBase64().mid(0, 16).constData()).
 		       arg(publicKeyHash.toBase64().right(16).constData()));
 		  else
 		    emit statusMessageReceived
 		      (publicKeyHash,
-		       tr("The participant (%1...%2) initiated a call.").
+		       tr("The participant %1...%2 initiated a call.").
 		       arg(publicKeyHash.toBase64().mid(0, 16).constData()).
 		       arg(publicKeyHash.toBase64().right(16).constData()));
 		}
 	      else if(messageType == "0000b")
 		emit statusMessageReceived
 		  (publicKeyHash,
-		   tr("The participant (%1...%2) initiated a call "
+		   tr("The participant %1...%2 initiated a call "
 		      "within a call.").
+		   arg(publicKeyHash.toBase64().mid(0, 16).constData()).
+		   arg(publicKeyHash.toBase64().right(16).constData()));
+	      else if(messageType == "0000c")
+		emit statusMessageReceived
+		  (publicKeyHash,
+		   tr("Received a two-way call response from "
+		      "participant %1...%2.").
 		   arg(publicKeyHash.toBase64().mid(0, 16).constData()).
 		   arg(publicKeyHash.toBase64().right(16).constData()));
 

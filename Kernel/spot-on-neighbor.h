@@ -214,7 +214,8 @@ class spoton_neighbor: public QThread
   bool readyToWrite(void);
   void process0000(int length, const QByteArray &data,
 		   const QList<QByteArray> &symmetricKeys);
-  void process0000a(int length, const QByteArray &data);
+  void process0000a(int length, const QByteArray &data,
+		    const QString &messageType);
   void process0000b(int length, const QByteArray &data,
 		    const QList<QByteArray> &symmetricKeys);
   void process0001a(int length, const QByteArray &data);

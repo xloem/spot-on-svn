@@ -4471,7 +4471,7 @@ void spoton_kernel::slotCallParticipant(const QByteArray &publicKeyHash,
 
 	      if(ok)
 		keyInformation = spoton_crypt::publicKeyEncrypt
-		  (QByteArray("0000a").toBase64() + "\n" +
+		  (QByteArray("0000c").toBase64() + "\n" +
 		   symmetricKey.toBase64() + "\n" +
 		   hashKey.toBase64() + "\n" +
 		   symmetricKeyAlgorithm.toBase64(),
@@ -4532,5 +4532,5 @@ void spoton_kernel::slotCallParticipant(const QByteArray &publicKeyHash,
   QSqlDatabase::removeDatabase(connectionName);
 
   if(ok)
-    emit callParticipant(data, "0000a");
+    emit callParticipant(data, "0000c");
 }
