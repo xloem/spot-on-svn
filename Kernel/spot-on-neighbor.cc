@@ -5934,6 +5934,8 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
       return;
     }
 
+  spoton_kernel::geminisCacheAdd(publicKeyHash + gemini + geminiHashKey);
+
   QString connectionName("");
 
   {
@@ -6102,10 +6104,6 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 		      "participant %1...%2.").
 		   arg(publicKeyHash.toBase64().mid(0, 16).constData()).
 		   arg(publicKeyHash.toBase64().right(16).constData()));
-
-	      spoton_kernel::geminisCacheAdd(publicKeyHash +
-					     geminis.first +
-					     geminis.second);
 
 	      /*
 	      ** Respond to this call with a new pair of half keys.
