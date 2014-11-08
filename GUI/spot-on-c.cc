@@ -2457,6 +2457,14 @@ void spoton::prepareContextMenuMirrors(void)
 				  "Gemini pair."),
 			       this, SLOT(slotCallParticipant(void)));
       action->setProperty("type", "calling_using_gemini");
+      action = menu->addAction(QIcon(QString(":/%1/melodica.png").
+				     arg(m_settings.value("gui/iconSet",
+							  "nouve").
+					 toString())),
+			       tr("MELODICA Two-Way: &Call friend with new "
+				  "Gemini pair."),
+			       this, SLOT(slotCallParticipant(void)));
+      action->setProperty("type", "calling_two_way");
 #else
       action = menu->addAction(tr("&Call participant."),
 			       this, SLOT(slotCallParticipant(void)));
@@ -2465,6 +2473,9 @@ void spoton::prepareContextMenuMirrors(void)
 				  "existing Gemini pair."),
 			       this, SLOT(slotCallParticipant(void)));
       action->setProperty("type", "calling_using_gemini");
+      action = menu->addAction(tr("&Two-way calling."),
+			       this, SLOT(slotCallParticipant(void)));
+      action->setProperty("type", "calling_two_way");
 #endif
       action = menu->addAction(tr("&Terminate call."),
 			       this, SLOT(slotCallParticipant(void)));

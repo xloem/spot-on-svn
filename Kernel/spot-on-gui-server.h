@@ -104,6 +104,8 @@ class spoton_gui_server: public spoton_gui_server_tcp_server
   void slotReceivedBuzzMessage(const QByteArrayList &list,
 			       const QByteArrayList &keys);
   void slotReceivedChatMessage(const QByteArray &message);
+  void slotStatusMessageReceived(const QByteArray &publicKeyHash,
+				 const QString &status);
   void slotTimeout(void);
 
  signals:

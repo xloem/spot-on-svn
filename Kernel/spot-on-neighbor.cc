@@ -2506,7 +2506,8 @@ void spoton_neighbor::process0000a(int length, const QByteArray &dataIn)
 				  }
 
 			      saveGemini(list.value(0), list.value(1),
-					 list.value(2), list.value(3));
+					 list.value(2), list.value(3),
+					 "0000a");
 			    }
 			}
 		      else
@@ -2628,7 +2629,8 @@ void spoton_neighbor::process0000b(int length, const QByteArray &dataIn,
 		      }
 
 		  saveGemini(list.value(1), list.value(2),
-			     list.value(3), list.value(4));
+			     list.value(3), list.value(4),
+			     "0000b");
 		}
 	    }
 	  else
@@ -5899,7 +5901,8 @@ void spoton_neighbor::slotCallParticipant(const QByteArray &data,
 void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 				 const QByteArray &gemini,
 				 const QByteArray &geminiHashKey,
-				 const QByteArray &timestamp)
+				 const QByteArray &timestamp,
+				 const QString &messageType)
 {
   QDateTime dateTime
     (QDateTime::fromString(timestamp.constData(), "MMddyyyyhhmmss"));
@@ -5941,8 +5944,82 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 
     if(db.open())
       {
+	QByteArray bytes1;
+	QByteArray bytes2;
+	QPair<QByteArray, QByteArray> geminis;
 	QSqlQuery query(db);
 	bool ok = true;
+	bool respond = false;
+
+	geminis.first = gemini;
+	geminis.second = geminiHashKey;
+
+	if(messageType == "0000a")
+	  if(!gemini.isEmpty() && !geminiHashKey.isEmpty())
+	    if(static_cast<size_t> (gemini.length()) ==
+	       spoton_crypt::cipherKeyLength("aes256") / 2 &&
+	       geminiHashKey.length() ==
+	       spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES / 2)
+	      {
+		/*
+		** We may be processing a two-way call.
+		*/
+
+		spoton_crypt *s_crypt =
+		  spoton_kernel::s_crypts.value("chat", 0);
+
+		if(s_crypt)
+		  {
+		    query.setForwardOnly(true);
+		    query.prepare("SELECT gemini, gemini_hash_key "
+				  "FROM friends_public_keys WHERE "
+				  "neighbor_oid = -1 AND "
+				  "public_key_hash = ?");
+		    query.bindValue(0, publicKeyHash.toBase64());
+
+		    if(query.exec() && query.next())
+		      {
+			if(!query.isNull(0))
+			  bytes1 = s_crypt->decryptedAfterAuthenticated
+			    (QByteArray::fromBase64(query.value(0).
+						    toByteArray()),
+			     &ok);
+
+			if(ok)
+			  if(!query.isNull(1))
+			    bytes2 = s_crypt->decryptedAfterAuthenticated
+			      (QByteArray::fromBase64(query.value(1).
+						      toByteArray()),
+			       &ok);
+
+			if(ok)
+			  {
+			    if(bytes1.isEmpty() || bytes2.isEmpty())
+			      {
+				bytes1 = spoton_crypt::
+				  strongRandomBytes
+				  (spoton_crypt::
+				   cipherKeyLength("aes256") / 2);
+				bytes2 = spoton_crypt::strongRandomBytes
+				  (spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES /
+				   2);
+				geminis.first.append(bytes1);
+				geminis.second.append(bytes2);
+				respond = true;
+			      }
+			    else
+			      {
+				/*
+				** This is a response.
+				*/
+
+				geminis.first.prepend(bytes1);
+				geminis.second.prepend(bytes2);
+			      }
+			  }
+		      }
+		  }
+	      }
 
 	query.prepare("UPDATE friends_public_keys SET "
 		      "gemini = ?, gemini_hash_key = ?, "
@@ -5950,7 +6027,7 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 		      "WHERE neighbor_oid = -1 AND "
 		      "public_key_hash = ?");
 
-	if(gemini.isEmpty() || geminiHashKey.isEmpty())
+	if(geminis.first.isEmpty() || geminis.second.isEmpty())
 	  {
 	    query.bindValue(0, QVariant(QVariant::String));
 	    query.bindValue(1, QVariant(QVariant::String));
@@ -5963,11 +6040,12 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 	    if(s_crypt)
 	      {
 		query.bindValue
-		  (0, s_crypt->encryptedThenHashed(gemini, &ok).toBase64());
+		  (0, s_crypt->encryptedThenHashed(geminis.first, &ok).
+		   toBase64());
 
 		if(ok)
 		  query.bindValue
-		    (1, s_crypt->encryptedThenHashed(geminiHashKey,
+		    (1, s_crypt->encryptedThenHashed(geminis.second,
 						     &ok).toBase64());
 	      }
 	    else
@@ -5983,9 +6061,49 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
 
 	if(ok)
 	  if(query.exec())
-	    spoton_kernel::geminisCacheAdd(publicKeyHash +
-					   gemini +
-					   geminiHashKey);
+	    {
+	      if(geminis.first.isEmpty() ||
+		 geminis.second.isEmpty())
+		emit statusMessageReceived
+		  (publicKeyHash,
+		   tr("The participant (%1...%2) terminated the call.").
+		   arg(publicKeyHash.toBase64().mid(0, 16).constData()).
+		   arg(publicKeyHash.toBase64().right(16).constData()));
+	      else if(messageType == "0000a")
+		{
+		  if(respond)
+		    emit statusMessageReceived
+		      (publicKeyHash,
+		       tr("The participant (%1...%2) may have "
+			  "initiated a two-way call. Response dispatched.").
+		       arg(publicKeyHash.toBase64().mid(0, 16).constData()).
+		       arg(publicKeyHash.toBase64().right(16).constData()));
+		  else
+		    emit statusMessageReceived
+		      (publicKeyHash,
+		       tr("The participant (%1...%2) initiated a call.").
+		       arg(publicKeyHash.toBase64().mid(0, 16).constData()).
+		       arg(publicKeyHash.toBase64().right(16).constData()));
+		}
+	      else if(messageType == "0000b")
+		emit statusMessageReceived
+		  (publicKeyHash,
+		   tr("The participant (%1...%2) initiated a call "
+		      "within a call.").
+		   arg(publicKeyHash.toBase64().mid(0, 16).constData()).
+		   arg(publicKeyHash.toBase64().right(16).constData()));
+
+	      spoton_kernel::geminisCacheAdd(publicKeyHash +
+					     geminis.first +
+					     geminis.second);
+
+	      /*
+	      ** Respond to this call with a new pair of half keys.
+	      */
+
+	      if(respond)
+		emit callParticipant(publicKeyHash, bytes1, bytes2);
+	    }
       }
 
     db.close();

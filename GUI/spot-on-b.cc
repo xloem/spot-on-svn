@@ -248,6 +248,81 @@ void spoton::slotReceivedKernelMessage(void)
 		    page->appendMessage(list);
 		}
 	    }
+	  else if(data.startsWith("chat_status_"))
+	    {
+	      data.remove(0, qstrlen("chat_status_"));
+
+	      if(!data.isEmpty())
+		{
+		  QList<QByteArray> list(data.split('_'));
+
+		  if(list.size() != 2)
+		    continue;
+
+		  for(int i = 0; i < list.size() - 1; i++)
+		    /*
+		    ** We'll ignore the status message.
+		    */
+
+		    list.replace(i, QByteArray::fromBase64(list.at(i)));
+
+		  QDateTime now(QDateTime::currentDateTime());
+		  QString msg("");
+
+		  msg.append
+		    (QString("[%1:%2<font color=grey>:%3</font>] ").
+		     arg(now.toString("hh")).
+		     arg(now.toString("mm")).
+		     arg(now.toString("ss")));
+		  msg.append(QString("<font color=green>%1</font>").
+			     arg(list.at(1).constData()));
+
+		  if(m_chatWindows.contains(list.value(0).toBase64()))
+		    {
+		      QPointer<spoton_chatwindow> chat =
+			m_chatWindows.value(list.value(0).toBase64());
+
+		      if(chat)
+			{
+			  chat->append(msg);
+
+			  if(chat->isVisible())
+			    chat->activateWindow();
+			}
+		    }
+
+		  m_ui.messages->append(msg);
+		  m_ui.messages->verticalScrollBar()->setValue
+		    (m_ui.messages->verticalScrollBar()->maximum());
+
+#if SPOTON_GOLDBUG == 1
+		  if(m_ui.tab->currentIndex() != 0)
+#else
+		  if(m_ui.tab->currentIndex() != 1)
+#endif
+		    m_sb.chat->setVisible(true);
+
+#if SPOTON_GOLDBUG == 1
+#if QT_VERSION >= 0x050000
+		  QMediaPlayer *player = 0;
+		  QString str
+		    (QDir::cleanPath(QCoreApplication::applicationDirPath() +
+				     QDir::separator() + "Sounds" +
+				     QDir::separator() + "receive.wav"));
+
+		  player = findChild<QMediaPlayer *> ("receive.wav");
+
+		  if(!player)
+		    player = new QMediaPlayer(this);
+
+		  player->setMedia(QUrl::fromLocalFile(str));
+		  player->setObjectName("receive.wav");
+		  player->setVolume(50);
+		  player->play();
+#endif
+#endif
+		}
+	    }
 	  else if(data.startsWith("message_"))
 	    {
 	      data.remove(0, qstrlen("message_"));

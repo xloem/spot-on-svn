@@ -741,3 +741,32 @@ void spoton_gui_server::slotAuthenticationRequested
 	 arg(socket->peerAddress().toString()).
 	 arg(socket->peerPort()));
 }
+
+void spoton_gui_server::slotStatusMessageReceived
+(const QByteArray &publicKeyHash, const QString &status)
+{
+  QByteArray message("chat_status_");
+
+  message.append(publicKeyHash.toBase64().constData());
+  message.append("_");
+  message.append(status);
+  message.append("\n");
+
+  foreach(QSslSocket *socket, findChildren<QSslSocket *> ())
+    if(socket->isEncrypted())
+      {
+	if(socket->write(message.constData(),
+			 message.length()) != message.length())
+	  spoton_misc::logError
+	    (QString("spoton_gui_server::slotStatusMessageReceived(): "
+		     "write() failure for %1:%2.").
+	     arg(socket->peerAddress().toString()).
+	     arg(socket->peerPort()));
+      }
+    else
+      spoton_misc::logError
+	(QString("spoton_gui_server::spoton_gui_server(): "
+		 "socket %1:%2 is not encrypted. Ignoring write() request.").
+	 arg(socket->peerAddress().toString()).
+	 arg(socket->peerPort()));
+}

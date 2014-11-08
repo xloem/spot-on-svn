@@ -246,7 +246,8 @@ class spoton_neighbor: public QThread
   void saveGemini(const QByteArray &publicKeyHash,
 		  const QByteArray &gemini,
 		  const QByteArray &geminiHashKey,
-		  const QByteArray &timestamp);
+		  const QByteArray &timestamp,
+		  const QString &messageType);
   void saveParticipantStatus(const QByteArray &publicKeyHash);
   void saveParticipantStatus(const QByteArray &name,
 			     const QByteArray &publicKeyHash);
@@ -334,6 +335,9 @@ class spoton_neighbor: public QThread
   void accountAuthenticated(const QByteArray &name,
 			    const QByteArray &password);
   void authenticationRequested(const QString &peerInformation);
+  void callParticipant(const QByteArray &publicKeyHash,
+		       const QByteArray &gemini,
+		       const QByteArray &geminiHashKey);
   void disconnected(void);
   void newData(void);
   void newEMailArrived(void);
@@ -354,6 +358,8 @@ class spoton_neighbor: public QThread
 		      const QByteArray &signature,
 		      const QByteArray &sPublicKey,
 		      const QByteArray &sSignature);
+  void statusMessageReceived(const QByteArray &publicKeyHash,
+			     const QString &status);
 };
 
 class spoton_neighbor_worker: public QObject

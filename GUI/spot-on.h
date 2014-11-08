@@ -200,6 +200,7 @@ class spoton: public QMainWindow
   void closeEvent(QCloseEvent *event);
   void demagnetize(void);
   void derivativeUpdates(void);
+  void generateHalfGeminis(void);
   void highlightPaths(void);
   void importNeighbors(const QString &filePath);
   void importUrl(const QByteArray &description,

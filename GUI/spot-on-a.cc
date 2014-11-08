@@ -1796,6 +1796,7 @@ spoton::spoton(void):QMainWindow()
       m_ui.action_Import_Public_Keys->setEnabled(false);
       m_ui.action_Rosetta->setEnabled(false);
       m_ui.answer_authenticate->setEnabled(false);
+      m_ui.encryptionKeySize->setEnabled(false);
       m_ui.encryptionKeyType->setEnabled(false);
       m_ui.keys->setEnabled(false);
       m_ui.newKeys->setEnabled(true);
@@ -1804,6 +1805,7 @@ spoton::spoton(void):QMainWindow()
       m_ui.passphrase_rb_authenticate->setEnabled(false);
       m_ui.question_rb_authenticate->setEnabled(false);
       m_ui.regenerate->setEnabled(false);
+      m_ui.signatureKeySize->setEnabled(false);
       m_ui.signatureKeyType->setEnabled(false);
       m_ui.kernelBox->setEnabled(false);
 
@@ -5617,6 +5619,14 @@ void spoton::slotShowContextMenu(const QPoint &point)
 				 "existing Gemini pair."),
 			      this, SLOT(slotCallParticipant(void)));
       action->setProperty("type", "calling_using_gemini");
+      action = menu.addAction(QIcon(QString(":/%1/melodica.png").
+				    arg(m_settings.value("gui/iconSet",
+							 "nouve").
+					toString())),
+			      tr("MELODICA Two-Way: &Call friend with new "
+				 "Gemini pair."),
+			      this, SLOT(slotCallParticipant(void)));
+      action->setProperty("type", "calling_two_way");
 #else
       action = menu.addAction(tr("&Call participant."),
 			      this, SLOT(slotCallParticipant(void)));
@@ -5625,6 +5635,9 @@ void spoton::slotShowContextMenu(const QPoint &point)
 	(tr("&Call participant using the existing Gemini pair."),
 	 this, SLOT(slotCallParticipant(void)));
       action->setProperty("type", "calling_using_gemini");
+      action = menu.addAction(tr("&Two-way calling."),
+			      this, SLOT(slotCallParticipant(void)));
+      action->setProperty("type", "calling_two_way");
 #endif
       action = menu.addAction(tr("&Terminate call."),
 			      this, SLOT(slotCallParticipant(void)));
@@ -7020,6 +7033,8 @@ void spoton::slotCallParticipant(void)
 
   if(type == "calling")
     slotGenerateGeminiInChat();
+  else if(type == "calling_two_way")
+    generateHalfGeminis();
   else if(type == "calling_using_gemini")
     {
     }

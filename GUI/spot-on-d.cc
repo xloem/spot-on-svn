@@ -2538,3 +2538,41 @@ void spoton::slotPostgreSQLDisconnect(bool state)
       m_urlDatabase.open();
     }
 }
+
+void spoton::generateHalfGeminis(void)
+{
+  int row = m_ui.participants->currentRow();
+
+  if(row < 0)
+    return;
+
+  QTableWidgetItem *item1 = m_ui.participants->item(row, 1); // OID
+  QTableWidgetItem *item2 = m_ui.participants->item
+    (row, 6); // Gemini Encryption Key
+  QTableWidgetItem *item3 = m_ui.participants->item
+    (row, 7); // Gemini Hash Key
+
+  if(!item1 || !item2 || !item3)
+    return;
+
+  QPair<QByteArray, QByteArray> gemini;
+
+  gemini.first = spoton_crypt::
+    strongRandomBytes(spoton_crypt::cipherKeyLength("aes256") / 2);
+  gemini.second = spoton_crypt::strongRandomBytes
+    (spoton_crypt::SHA512_OUTPUT_SIZE_IN_BYTES / 2);
+
+  if(saveGemini(gemini, item1->text()))
+    {
+      disconnect(m_ui.participants,
+		 SIGNAL(itemChanged(QTableWidgetItem *)),
+		 this,
+		 SLOT(slotGeminiChanged(QTableWidgetItem *)));
+      item2->setText(gemini.first.toBase64());
+      item3->setText(gemini.second.toBase64());
+      connect(m_ui.participants,
+	      SIGNAL(itemChanged(QTableWidgetItem *)),
+	      this,
+	      SLOT(slotGeminiChanged(QTableWidgetItem *)));
+    }
+}
