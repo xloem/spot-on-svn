@@ -273,7 +273,7 @@ class spoton: public QMainWindow
   void slotChatWindowDestroyed(void);
   void slotChatWindowMessageSent(void);
   void slotClearClipboardBuffer(void);
-  void slotClearOutgoingMessage(void);
+  void slotClearOutgoingMessage(int index);
   void slotCloseBuzzTab(int index);
   void slotCommonBuzzChannelsActivated(int index);
   void slotComputeFileHash(void);
@@ -311,7 +311,7 @@ class spoton: public QMainWindow
   void slotDeleteEtpMagnet(void);
   void slotDeleteInstitution(void);
   void slotDeleteListener(void);
-  void slotDeleteMail(void);
+  void slotDeleteMail(int index);
   void slotDeleteNeighbor(void);
   void slotDeleteNova(void);
   void slotDeleteReceived(void);

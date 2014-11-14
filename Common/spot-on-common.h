@@ -52,13 +52,13 @@ namespace spoton_common
   static const int PASSPHRASE_MAXIMUM_LENGTH = 128;
   static const int QUESTIONANSWER_MAXIMUM_LENGTH = 512;
   static const qint64 MAXIMUM_NEIGHBOR_BUFFER_SIZE =
-    10485760; /*
+    20971520; /*
 	      ** The buffer size
 	      ** should be larger
 	      ** than the content
 	      ** length.
 	      */
-  static const qint64 MAXIMUM_NEIGHBOR_CONTENT_LENGTH = 5242880;
+  static const qint64 MAXIMUM_NEIGHBOR_CONTENT_LENGTH = 10485760;
   static const qint64 MINIMUM_NEIGHBOR_CONTENT_LENGTH = 256;
 }
 

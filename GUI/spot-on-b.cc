@@ -2115,10 +2115,13 @@ void spoton::slotDisplayLocalSearchResults(void)
 {
 }
 
-void spoton::slotClearOutgoingMessage(void)
+void spoton::slotClearOutgoingMessage(int index)
 {
-  if(m_ui.mailTab->currentIndex() == 1)
+  if(index == 1)
     {
+      m_ui.clearEmail->blockSignals(true);
+      m_ui.clearEmail->setCurrentIndex(0);
+      m_ui.clearEmail->blockSignals(false);
       m_ui.attachment->clear();
       m_ui.emailParticipants->selectionModel()->clear();
       m_ui.outgoingMessage->clear();
@@ -2965,13 +2968,11 @@ void spoton::slotDeleteAllUuids(void)
 
 void spoton::slotRefreshMail(void)
 {
-  if(m_ui.mailTab->currentIndex() == 2)
+  if(m_ui.mailTab->currentIndex() == 1)
     {
       refreshInstitutions();
       return;
     }
-  else if(m_ui.mailTab->currentIndex() != 0)
-    return;
 
   populateMail();
 }
@@ -3163,7 +3164,7 @@ void spoton::slotRefreshPostOffice(void)
 {
   if(!m_crypts.value("email", 0))
     return;
-  else if(m_ui.mailTab->currentIndex() != 2)
+  else if(m_ui.mailTab->currentIndex() != 1)
     return;
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -3430,10 +3431,14 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
   m_ui.mailMessage->verticalScrollBar()->setValue(0);
 }
 
-void spoton::slotDeleteMail(void)
+void spoton::slotDeleteMail(int index)
 {
-  if(m_ui.mailTab->currentIndex() != 0)
+  if(index != 0)
     return;
+
+  m_ui.clearEmail->blockSignals(true);
+  m_ui.clearEmail->setCurrentIndex(0);
+  m_ui.clearEmail->blockSignals(false);
 
   QModelIndexList list
     (m_ui.mail->selectionModel()->
@@ -3718,7 +3723,7 @@ void spoton::slotMailTabChanged(int index)
   ** Change states of some widgets.
   */
 
-  m_ui.pushButtonClearMail->setEnabled(index != 2);
+  m_ui.clearEmail->setEnabled(index != 1);
 }
 
 void spoton::slotEnabledPostOffice(bool state)
@@ -3899,13 +3904,6 @@ void spoton::slotSetIcons(void)
   m_ui.copyrepleo_email->setIcon(QIcon(QString(":/%1/repleo-email.png").
 				       arg(iconSet)));
 #endif
-#if SPOTON_GOLDBUG == 0
-  m_ui.pushButtonClearMail->setIcon
-    (QIcon(QString(":/%1/clear.png").arg(iconSet)));
-#else
-  m_ui.pushButtonClearMail->setIcon
-    (QIcon(QString(":/%1/delete.png").arg(iconSet)));
-#endif
   m_ui.refreshMail->setIcon(QIcon(QString(":/%1/refresh.png").arg(iconSet)));
   m_ui.reply->setIcon(QIcon(QString(":/%1/reply.png").arg(iconSet)));
   m_ui.retrieveMail->setIcon(QIcon(QString(":/%1/down.png").arg(iconSet)));
@@ -3929,9 +3927,9 @@ void spoton::slotSetIcons(void)
 
   list.clear();
 #if SPOTON_GOLDBUG == 0
-  list << "read.png" << "write.png" << "database.png";
+  list << "email.png" << "database.png";
 #else
-  list << "email.png" << "write.png";
+  list << "email.png";
 #endif
 
   for(int i = 0; i < list.size(); i++)
@@ -4383,7 +4381,6 @@ void spoton::slotReply(void)
   message = "<br><span style=\"font-size:large;\">" + message + "</span>";
   m_ui.outgoingMessage->setHtml(message);
   m_ui.outgoingSubject->setText(tr("Re: ") + subject);
-  m_ui.mailTab->setCurrentIndex(1);
 
   /*
   ** The original author may have vanished.
