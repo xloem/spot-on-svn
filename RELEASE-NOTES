@@ -1,6 +1,8 @@
 0.17 (12/25/2014)
 
 1.   POP3.
+2.   Increased buffer sizes for new installations. Existing installations
+     must manually increase their buffer sizes.
 
 0.16a (11/08/2014)
 
