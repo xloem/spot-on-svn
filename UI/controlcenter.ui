@@ -454,7 +454,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>1031</width>
-                <height>454</height>
+                <height>457</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -794,6 +794,9 @@
                        </item>
                        <item>
                         <widget class="QDoubleSpinBox" name="chatUpdateInterval">
+                         <property name="suffix">
+                          <string> s.</string>
+                         </property>
                          <property name="minimum">
                           <double>0.500000000000000</double>
                          </property>
@@ -802,13 +805,6 @@
                          </property>
                          <property name="value">
                           <double>3.500000000000000</double>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="label_122">
-                         <property name="text">
-                          <string>seconds.</string>
                          </property>
                         </widget>
                        </item>
@@ -2029,7 +2025,7 @@
              <x>0</x>
              <y>0</y>
              <width>912</width>
-             <height>380</height>
+             <height>467</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2663,7 +2659,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>294</width>
+                     <width>283</width>
                      <height>1430</height>
                     </rect>
                    </property>
@@ -4226,8 +4222,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>154</width>
-             <height>305</height>
+             <width>776</width>
+             <height>485</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4280,7 +4276,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>741</width>
+                 <width>748</width>
                  <height>638</height>
                 </rect>
                </property>
@@ -5064,7 +5060,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>829</width>
+             <width>861</width>
              <height>1091</height>
             </rect>
            </property>
@@ -7790,8 +7786,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>280</width>
-             <height>189</height>
+             <width>776</width>
+             <height>485</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
