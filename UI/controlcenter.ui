@@ -73,7 +73,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>485</height>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -456,8 +456,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>1031</width>
-                <height>457</height>
+                <width>835</width>
+                <height>462</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -976,9 +976,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
-             <width>945</width>
-             <height>594</height>
+             <y>-83</y>
+             <width>897</width>
+             <height>575</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -1085,6 +1085,16 @@
               <property name="spacing">
                <number>5</number>
               </property>
+              <item>
+               <widget class="QCheckBox" name="emailAcceptSigned">
+                <property name="text">
+                 <string>&amp;Accept only signed messages.</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
               <item>
                <widget class="QCheckBox" name="acceptEmailKeys">
                 <property name="text">
@@ -1234,16 +1244,6 @@
                        </spacer>
                       </item>
                      </layout>
-                    </item>
-                    <item>
-                     <widget class="QCheckBox" name="emailAcceptSigned">
-                      <property name="text">
-                       <string>&amp;Accept only signed messages.</string>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
                     </item>
                     <item>
                      <layout class="QHBoxLayout" name="horizontalLayout_85">
@@ -1420,6 +1420,9 @@
                       <property name="text">
                        <string>&amp;Subject</string>
                       </property>
+                      <property name="margin">
+                       <number>7</number>
+                      </property>
                       <property name="buddy">
                        <cstring>outgoingSubject</cstring>
                       </property>
@@ -1454,6 +1457,9 @@
                       <property name="text">
                        <string>&amp;From</string>
                       </property>
+                      <property name="margin">
+                       <number>7</number>
+                      </property>
                       <property name="buddy">
                        <cstring>emailName</cstring>
                       </property>
@@ -1463,6 +1469,9 @@
                      <widget class="QLabel" name="label_6">
                       <property name="text">
                        <string>&amp;Optional</string>
+                      </property>
+                      <property name="margin">
+                       <number>7</number>
                       </property>
                       <property name="buddy">
                        <cstring>goldbug</cstring>
@@ -1539,6 +1548,9 @@
                      <widget class="QLabel" name="label_94">
                       <property name="text">
                        <string>&amp;Attachment</string>
+                      </property>
+                      <property name="margin">
+                       <number>7</number>
                       </property>
                       <property name="buddy">
                        <cstring>attachment</cstring>
@@ -1624,6 +1636,9 @@
                       <property name="text">
                        <string>&amp;Message</string>
                       </property>
+                      <property name="margin">
+                       <number>7</number>
+                      </property>
                       <property name="buddy">
                        <cstring>outgoingMessage</cstring>
                       </property>
@@ -1633,6 +1648,9 @@
                      <widget class="QLabel" name="label_10">
                       <property name="text">
                        <string>&amp;To</string>
+                      </property>
+                      <property name="margin">
+                       <number>7</number>
                       </property>
                       <property name="buddy">
                        <cstring>emailParticipants</cstring>
@@ -2059,8 +2077,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>912</width>
-             <height>467</height>
+             <width>776</width>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2694,8 +2712,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>283</width>
-                     <height>1429</height>
+                     <width>233</width>
+                     <height>1393</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3155,8 +3173,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>1066</width>
-             <height>588</height>
+             <width>855</width>
+             <height>563</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -4261,7 +4279,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>485</height>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4314,8 +4332,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>748</width>
-                 <height>627</height>
+                 <width>751</width>
+                 <height>558</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -5104,8 +5122,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>829</width>
-             <height>1091</height>
+             <width>761</width>
+             <height>1061</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -6346,8 +6364,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>758</width>
-             <height>559</height>
+             <width>761</width>
+             <height>546</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -7349,7 +7367,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>485</height>
+             <height>487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7830,8 +7848,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>758</width>
-             <height>512</height>
+             <width>761</width>
+             <height>505</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -8121,7 +8139,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -8379,9 +8397,11 @@
   <tabstop>message</tabstop>
   <tabstop>sendMessage</tabstop>
   <tabstop>scrollArea_6</tabstop>
+  <tabstop>clearEmail</tabstop>
   <tabstop>emptyTrash</tabstop>
   <tabstop>refreshMail</tabstop>
   <tabstop>retrieveMail</tabstop>
+  <tabstop>emailAcceptSigned</tabstop>
   <tabstop>acceptEmailKeys</tabstop>
   <tabstop>maximumEmailFileSize</tabstop>
   <tabstop>autoEmailRetrieve</tabstop>

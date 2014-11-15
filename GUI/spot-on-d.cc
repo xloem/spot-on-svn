@@ -1658,6 +1658,10 @@ void spoton::slotSaveAttachment(void)
   if(list.isEmpty())
     return;
 
+  QByteArray attachment;
+  QString attachmentName("");
+  bool ok = false;
+
   {
     QString connectionName("");
 
@@ -1679,53 +1683,18 @@ void spoton::slotSaveAttachment(void)
 	  if(query.exec())
 	    if(query.next())
 	      {
-		QString attachmentName;
-		bool ok = true;
-
-		attachmentName = QString::fromUtf8
-		  (crypt->
-		   decryptedAfterAuthenticated(QByteArray::
-					       fromBase64(query.value(1).
-							  toByteArray()),
-					       &ok));
+		attachment = crypt->decryptedAfterAuthenticated
+		  (QByteArray::fromBase64(query.value(0).
+					  toByteArray()),
+		   &ok);
 
 		if(ok)
-		  {
-		    QFileDialog dialog(this);
-
-		    dialog.selectFile(attachmentName);
-		    dialog.setWindowTitle
-		      (tr("%1: Save Attachment").
-		       arg(SPOTON_APPLICATION_NAME));
-		    dialog.setFileMode(QFileDialog::AnyFile);
-		    dialog.setDirectory(QDir::homePath());
-		    dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
-		    dialog.setAcceptMode(QFileDialog::AcceptSave);
-#ifdef Q_OS_MAC
-#if QT_VERSION < 0x050000
-		    dialog.setAttribute(Qt::WA_MacMetalStyle, false);
-#endif
-#endif
-		    if(dialog.exec() == QDialog::Accepted)
-		      {
-			QByteArray attachment;
-
-			attachment = crypt->decryptedAfterAuthenticated
-		          (QByteArray::fromBase64(query.value(0).
-						  toByteArray()),
-			   &ok);
-
-			if(ok)
-			  {
-			    QFile file(dialog.selectedFiles().value(0));
-
-			    if(file.open(QIODevice::WriteOnly))
-			      file.write(attachment, attachment.length());
-
-			    file.close();
-			  }
-		      }
-		  }
+		  attachmentName = QString::fromUtf8
+		    (crypt->
+		     decryptedAfterAuthenticated(QByteArray::
+						 fromBase64(query.value(1).
+							    toByteArray()),
+						 &ok));
 	      }
 	}
 
@@ -1734,6 +1703,35 @@ void spoton::slotSaveAttachment(void)
 
     QSqlDatabase::removeDatabase(connectionName);
   }
+
+  if(ok)
+    {
+      QFileDialog dialog(this);
+
+      dialog.setAcceptMode(QFileDialog::AcceptSave);
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+      dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+#endif
+#endif
+      dialog.setConfirmOverwrite(true);
+      dialog.setDirectory(QDir::homePath());
+      dialog.setFileMode(QFileDialog::AnyFile);
+      dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
+      dialog.selectFile(attachmentName);
+      dialog.setWindowTitle(tr("%1: Save Attachment").
+			    arg(SPOTON_APPLICATION_NAME));
+
+      if(dialog.exec() == QDialog::Accepted)
+	{
+	  QFile file(dialog.selectedFiles().value(0));
+
+	  if(file.open(QIODevice::WriteOnly))
+	    file.write(attachment, attachment.length());
+
+	  file.close();
+	}
+    }
 }
 
 void spoton::applyGoldbugToAttachments(const QString &folderOid,
