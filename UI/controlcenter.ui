@@ -457,7 +457,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>835</width>
-                <height>462</height>
+                <height>448</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -976,8 +976,8 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-83</y>
-             <width>897</width>
+             <y>0</y>
+             <width>887</width>
              <height>575</height>
             </rect>
            </property>
@@ -1114,6 +1114,9 @@
               </item>
               <item>
                <widget class="QSpinBox" name="maximumEmailFileSize">
+                <property name="suffix">
+                 <string> MiB.</string>
+                </property>
                 <property name="minimum">
                  <number>1</number>
                 </property>
@@ -1126,13 +1129,6 @@
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="label_78">
-                <property name="text">
-                 <string>MiB.</string>
-                </property>
-               </widget>
-              </item>
-              <item>
                <widget class="QCheckBox" name="autoEmailRetrieve">
                 <property name="text">
                  <string>&amp;Retrieve e-mail every</string>
@@ -1141,21 +1137,14 @@
               </item>
               <item>
                <widget class="QSpinBox" name="emailRetrievalInterval">
+                <property name="suffix">
+                 <string> minutes.</string>
+                </property>
                 <property name="minimum">
                  <number>5</number>
                 </property>
                 <property name="maximum">
                  <number>60</number>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_64">
-                <property name="text">
-                 <string>&amp;minutes.</string>
-                </property>
-                <property name="buddy">
-                 <cstring>emailRetrievalInterval</cstring>
                 </property>
                </widget>
               </item>
@@ -2077,8 +2066,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>487</height>
+             <width>760</width>
+             <height>365</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2185,6 +2174,9 @@
                   </item>
                   <item>
                    <widget class="QDoubleSpinBox" name="listenersUpdateInterval">
+                    <property name="suffix">
+                     <string> seconds.</string>
+                    </property>
                     <property name="minimum">
                      <double>0.500000000000000</double>
                     </property>
@@ -2193,13 +2185,6 @@
                     </property>
                     <property name="value">
                      <double>3.500000000000000</double>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_124">
-                    <property name="text">
-                     <string>seconds.</string>
                     </property>
                    </widget>
                   </item>
@@ -2712,7 +2697,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>233</width>
+                     <width>241</width>
                      <height>1393</height>
                     </rect>
                    </property>
@@ -3358,6 +3343,9 @@
                   </item>
                   <item>
                    <widget class="QDoubleSpinBox" name="neighborsUpdateInterval">
+                    <property name="suffix">
+                     <string> seconds.</string>
+                    </property>
                     <property name="minimum">
                      <double>0.500000000000000</double>
                     </property>
@@ -3366,13 +3354,6 @@
                     </property>
                     <property name="value">
                      <double>3.500000000000000</double>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_126">
-                    <property name="text">
-                     <string>seconds.</string>
                     </property>
                    </widget>
                   </item>
@@ -4278,8 +4259,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>487</height>
+             <width>178</width>
+             <height>299</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4332,8 +4313,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>751</width>
-                 <height>558</height>
+                 <width>619</width>
+                 <height>588</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -5122,7 +5103,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>761</width>
+             <width>699</width>
              <height>1061</height>
             </rect>
            </property>
@@ -5744,6 +5725,9 @@
                       </item>
                       <item>
                        <widget class="QDoubleSpinBox" name="kernelUpdateInterval">
+                        <property name="suffix">
+                         <string> seconds.</string>
+                        </property>
                         <property name="minimum">
                          <double>0.500000000000000</double>
                         </property>
@@ -5752,13 +5736,6 @@
                         </property>
                         <property name="value">
                          <double>3.500000000000000</double>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QLabel" name="label_128">
-                        <property name="text">
-                         <string>seconds.</string>
                         </property>
                        </widget>
                       </item>
@@ -6399,6 +6376,9 @@
               </item>
               <item>
                <widget class="QDoubleSpinBox" name="starbeamUpdateInterval">
+                <property name="suffix">
+                 <string> seconds.</string>
+                </property>
                 <property name="minimum">
                  <double>0.500000000000000</double>
                 </property>
@@ -6407,13 +6387,6 @@
                 </property>
                 <property name="value">
                  <double>3.500000000000000</double>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_130">
-                <property name="text">
-                 <string>seconds.</string>
                 </property>
                </widget>
               </item>
@@ -7551,7 +7524,7 @@
                 <item>
                  <widget class="QTabWidget" name="urlTab">
                   <property name="currentIndex">
-                   <number>1</number>
+                   <number>0</number>
                   </property>
                   <widget class="QWidget" name="tab_2">
                    <attribute name="title">
@@ -7848,8 +7821,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>761</width>
-             <height>505</height>
+             <width>266</width>
+             <height>182</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
