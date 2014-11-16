@@ -3366,7 +3366,7 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
       text.append("<br>");
       text.append(tr("<b>Sent: </b> "));
       text.append(date);
-      text.append("<br>");
+      text.append("<hr>");
       text.append("<span style=\"font-size:large;\">");
       text.append(message);
       text.append("</span>");
@@ -3394,7 +3394,7 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
       text.append("<br>");
       text.append(tr("<b>Sent: </b> "));
       text.append(date);
-      text.append("<br>");
+      text.append("<hr>");
       text.append(message);
     }
   else // Trash
@@ -3410,7 +3410,7 @@ void spoton::slotMailSelected(QTableWidgetItem *item)
       text.append("<br>");
       text.append(tr("<b>Sent: </b> "));
       text.append(date);
-      text.append("<br>");
+      text.append("<hr>");
       text.append(message);
 
       if(status != tr("Deleted"))
