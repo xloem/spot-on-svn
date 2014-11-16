@@ -2980,7 +2980,7 @@ void spoton::slotRefreshMail(void)
 void spoton::populateMail(void)
 {
   m_ui.reply->setEnabled(m_ui.folder->currentIndex() == 0);
-  m_ui.resend->setEnabled(m_ui.folder->currentIndex() != 0);
+  m_ui.resend->setEnabled(m_ui.folder->currentIndex() == 1);
 
   if(m_ui.folder->currentIndex() == 0)
     m_ui.mail->horizontalHeaderItem(1)->setText(tr("From"));

@@ -977,7 +977,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>887</width>
+             <width>883</width>
              <height>575</height>
             </rect>
            </property>
@@ -1249,6 +1249,19 @@
                          <string>Resend</string>
                         </property>
                        </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer_69">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
                       </item>
                       <item>
                        <widget class="QPushButton" name="saveAttachment">
@@ -6341,7 +6354,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>761</width>
+             <width>481</width>
              <height>546</height>
             </rect>
            </property>
@@ -7339,8 +7352,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>487</height>
+             <width>232</width>
+             <height>402</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
