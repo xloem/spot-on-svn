@@ -2851,7 +2851,11 @@ QHostAddress spoton_misc::peerAddressAndPort(const int socketDescriptor,
   if(getpeername(socketDescriptor, (struct sockaddr *) &peeraddr,
 		 &length) == 0)
     {
+#ifdef Q_OS_OS2
+      if(true)
+#else
       if(peeraddr.ss_family == AF_INET)
+#endif
 	{
 	  spoton_type_punning_sockaddr_t *sockaddr =
 	    (spoton_type_punning_sockaddr_t *) &peeraddr;
