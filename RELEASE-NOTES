@@ -4,6 +4,7 @@
      must manually increase their buffer sizes.
 2.   Corrected Resend widget state.
 3.   Include expiry times in e-mail request messages.
+     Previous functionality will be disrupted.
 4.   Updated NTRU files with 6e0c93312caac96e626f6622b4ef9b9758978309.
      Please see https://github.com/tbuktu/libntru.
 
