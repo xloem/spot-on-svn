@@ -1787,7 +1787,6 @@ void spoton_misc::correctSettingsContainer(QHash<QString, QVariant> settings)
   str = settings.value("gui/kernelCipherType").toString();
 
   if(!(str == "aes256" || str == "camellia256" ||
-       str == "gost28147" ||
        str == "serpent256" || str == "twofish"))
     str = "aes256";
 
@@ -2864,6 +2863,7 @@ QHostAddress spoton_misc::peerAddressAndPort(const int socketDescriptor,
 	}
       else
 	{
+#ifndef Q_OS_OS2
 	  spoton_type_punning_sockaddr_t *sockaddr =
 	    (spoton_type_punning_sockaddr_t *) &peeraddr;
 
@@ -2880,6 +2880,7 @@ QHostAddress spoton_misc::peerAddressAndPort(const int socketDescriptor,
 	      if(port)
 		*port = ntohs(sockaddr->sockaddr_in6.sin6_port);
 	    }
+#endif
 	}
     }
 

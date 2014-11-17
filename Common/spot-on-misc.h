@@ -58,8 +58,12 @@ typedef union spoton_type_punning_sockaddr
 {
     struct sockaddr sockaddr;
     struct sockaddr_in sockaddr_in;
+#ifndef Q_OS_OS2
     struct sockaddr_in6 sockaddr_in6;
     struct sockaddr_storage sockaddr_storage;
+#else
+    struct sockaddr sockaddr_storage;
+#endif
 }
 spoton_type_punning_sockaddr_t;
 

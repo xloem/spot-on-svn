@@ -1273,6 +1273,10 @@ spoton::spoton(void):QMainWindow()
           this,
           SLOT(slotDeleteAllNeighbors(void)));
 #endif
+#ifdef Q_OS_OS2
+  m_ui.ipv6Listener->setEnabled(false);
+  m_ui.ipv6Neighbor->setEnabled(false);
+#endif
   m_ui.passphrase_rb->setChecked(true);
   m_ui.passphrase_rb_authenticate->setChecked(true);
   m_ui.answer->setEnabled(false);

@@ -3151,6 +3151,7 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 
       if(protocol == "TlsV1_2")
 	{
+#ifndef Q_OS_OS2
 #ifdef TLS1_2_VERSION
 	  if(!(ctx = SSL_CTX_new(TLSv1_2_method())))
 	    {
@@ -3159,9 +3160,11 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 	      goto done_label;
 	    }
 #endif
+#endif
 	}
       else if(protocol == "TlsV1_1")
 	{
+#ifndef Q_OS_OS2
 #ifdef TLS1_1_VERSION
 	  if(!(ctx = SSL_CTX_new(TLSv1_1_method())))
 	    {
@@ -3169,6 +3172,7 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 				    "SSL_CTX_new() failure.");
 	      goto done_label;
 	    }
+#endif
 #endif
 	}
       else if(protocol == "TlsV1_0")
