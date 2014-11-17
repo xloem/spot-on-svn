@@ -50,6 +50,10 @@ extern "C"
 }
 #endif
 
+#ifdef Q_OS_OS2
+typedef int socklen_t;
+#endif
+
 /*
 ** Please read http://gcc.gnu.org/onlinedocs/gcc-4.4.1/gcc/Optimize-Options.html#Type_002dpunning.
 */
