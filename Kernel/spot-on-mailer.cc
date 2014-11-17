@@ -244,6 +244,7 @@ void spoton_mailer::slotTimeout(void)
 void spoton_mailer::slotRetrieveMail
 (const QByteArray &data,
  const QByteArray &publicKeyHash,
+ const QByteArray &timestamp,
  const QByteArray &signature,
  const QPairByteArrayByteArray &adaptiveEchoPair)
 {
@@ -291,6 +292,35 @@ void spoton_mailer::slotRetrieveMail
 
   if(!ok)
     return;
+
+  QDateTime dateTime
+    (QDateTime::fromString(timestamp.constData(), "MMddyyyyhhmmss"));
+
+  if(!dateTime.isValid())
+    return;
+
+  QDateTime now(QDateTime::currentDateTimeUtc());
+
+  dateTime.setTimeSpec(Qt::UTC);
+  now.setTimeSpec(Qt::UTC);
+
+  int secsTo = qAbs(now.secsTo(dateTime));
+
+  if(!(secsTo <= 90))
+    {
+      spoton_misc::logError
+	(QString("spoton_mailer(): slotRetrieveMail(): "
+		 "large time delta (%1).").arg(secsTo));
+      return;
+    }
+  else if(spoton_kernel::duplicateEmailRequests(data))
+    {
+      spoton_misc::logError
+	("spoton_mailer::slotRetrieveMail(): duplicate keys.");
+      return;
+    }
+
+  spoton_kernel::emailRequestCacheAdd(data);
 
   QList<QByteArray> list;
 

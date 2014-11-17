@@ -66,6 +66,7 @@ class spoton_kernel: public QObject
 					      const QByteArray &hash);
   static QVariant setting(const QString &name,
 			  const QVariant &defaultValue);
+  static bool duplicateEmailRequests(const QByteArray &data);
   static bool duplicateGeminis(const QByteArray &data);
   static bool messagingCacheContains(const QByteArray &data,
 				     const bool do_not_hash = false);
@@ -79,6 +80,7 @@ class spoton_kernel: public QObject
   static void discoverAdaptiveEchoPair
     (const QByteArray &data,
      QPair<QByteArray, QByteArray> &discoveredAdaptiveEchoPair);
+  static void emailRequestCacheAdd(const QByteArray &data);
   static void geminisCacheAdd(const QByteArray &data);
   static void messagingCacheAdd(const QByteArray &data,
 				const bool do_not_hash = false,
@@ -116,13 +118,15 @@ class spoton_kernel: public QObject
   spoton_starbeam_writer *m_starbeamWriter;
   static QDateTime s_institutionLastModificationTime;
   static QHash<QByteArray, QList<QByteArray> > s_buzzKeys;
+  static QHash<QByteArray, uint> s_emailRequestCache;
+  static QHash<QByteArray, uint> s_geminisCache;
+  static QHash<QByteArray, uint> s_messagingCache;
   static QHash<QString, QVariant> s_settings;
   static QList<QList<QByteArray> > s_institutionKeys;
   static QList<QList<QVariant> > s_messagesToProcess;
-  static QHash<QByteArray, uint> s_geminisCache;
-  static QHash<QByteArray, uint> s_messagingCache;
   static QReadWriteLock s_adaptiveEchoPairsMutex;
   static QReadWriteLock s_buzzKeysMutex;
+  static QReadWriteLock s_emailRequestCacheMutex;
   static QReadWriteLock s_geminisCacheMutex;
   static QReadWriteLock s_institutionKeysMutex;
   static QReadWriteLock s_messagesToProcessMutex;

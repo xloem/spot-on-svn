@@ -350,6 +350,7 @@ class spoton_neighbor: public QThread
   void resetKeepAlive(void);
   void retrieveMail(const QByteArray &data,
 		    const QByteArray &publicKeyHash,
+		    const QByteArray &timestamp,
 		    const QByteArray &signature,
 		    const QPairByteArrayByteArray &adaptiveEchoPair);
   void scrambleRequest(void);

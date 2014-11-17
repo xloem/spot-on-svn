@@ -90,6 +90,7 @@ extern "C"
 
 QDateTime spoton_kernel::s_institutionLastModificationTime;
 QHash<QByteArray, QList<QByteArray> > spoton_kernel::s_buzzKeys;
+QHash<QByteArray, uint> spoton_kernel::s_emailRequestCache;
 QHash<QByteArray, uint> spoton_kernel::s_geminisCache;
 QHash<QByteArray, uint> spoton_kernel::s_messagingCache;
 QHash<QString, QVariant> spoton_kernel::s_settings;
@@ -102,6 +103,7 @@ QList<QPair<QByteArray, QByteArray> > spoton_kernel::s_adaptiveEchoPairs;
 QPointer<spoton_kernel> spoton_kernel::s_kernel = 0;
 QReadWriteLock spoton_kernel::s_adaptiveEchoPairsMutex;
 QReadWriteLock spoton_kernel::s_buzzKeysMutex;
+QReadWriteLock spoton_kernel::s_emailRequestCacheMutex;
 QReadWriteLock spoton_kernel::s_geminisCacheMutex;
 QReadWriteLock spoton_kernel::s_institutionKeysMutex;
 QReadWriteLock spoton_kernel::s_messagesToProcessMutex;
@@ -1847,9 +1849,11 @@ void spoton_kernel::connectSignalsToNeighbor
 	  SIGNAL(retrieveMail(const QByteArray &,
 			      const QByteArray &,
 			      const QByteArray &,
+			      const QByteArray &,
 			      const QPairByteArrayByteArray &)),
 	  m_mailer,
 	  SLOT(slotRetrieveMail(const QByteArray &,
+				const QByteArray &,
 				const QByteArray &,
 				const QByteArray &,
 				const QPairByteArrayByteArray &)),
@@ -2295,9 +2299,14 @@ void spoton_kernel::slotRetrieveMail(void)
 		  (message1 + publicKey,
 		   institutionPostalAddress, hashType, &ok);
 
+	      QDateTime dateTime(QDateTime::currentDateTime());
+
 	      if(ok)
 		signature = s_crypt->digitalSignature
-		  (message1 + requesterHashInformation + message2, &ok);
+		  (QByteArray("0002b") +
+		   message1 + requesterHashInformation + message2 +
+		   dateTime.toUTC().toString("MMddyyyyhhmmss").
+		   toLatin1(), &ok);
 
 	      if(!ok)
 		continue;
@@ -2315,6 +2324,8 @@ void spoton_kernel::slotRetrieveMail(void)
 		 message1.toBase64() + "\n" +
 		 requesterHashInformation.toBase64() + "\n" +
 		 message2.toBase64() + "\n" +
+		 dateTime.toUTC().toString("MMddyyyyhhmmss").
+		 toLatin1().toBase64() + "\n" +
 		 signature.toBase64(), &ok);
 
 	      if(ok)
@@ -2416,9 +2427,13 @@ void spoton_kernel::slotRetrieveMail(void)
 		  data.append("\n");
 		}
 
+	      QDateTime dateTime(QDateTime::currentDateTime());
+
 	      if(ok)
 		signature = s_crypt->digitalSignature
-		  (myPublicKeyHash + message, &ok);
+		  (myPublicKeyHash + message + 
+		   dateTime.toUTC().toString("MMddyyyyhhmmss").
+		   toLatin1(), &ok);
 
 	      if(ok)
 		{
@@ -2430,9 +2445,12 @@ void spoton_kernel::slotRetrieveMail(void)
 				     0,
 				     QString(""));
 
-		  data = crypt.encrypted(myPublicKeyHash.toBase64() + "\n" +
-					 message.toBase64() + "\n" +
-					 signature.toBase64(), &ok);
+		  data = crypt.encrypted
+		    (myPublicKeyHash.toBase64() + "\n" +
+		     message.toBase64() + "\n" +
+		     dateTime.toUTC().toString("MMddyyyyhhmmss").
+		     toLatin1().toBase64() + "\n" +
+		     signature.toBase64(), &ok);
 
 		  if(ok)
 		    {
@@ -3212,8 +3230,8 @@ void spoton_kernel::slotMessagingCachePurge(void)
 
 void spoton_kernel::purgeMessagingCache(void)
 {
-  QWriteLocker locker1(&s_geminisCacheMutex);
-  QMutableHashIterator<QByteArray, uint> it1(s_geminisCache);
+  QWriteLocker locker1(&s_emailRequestCacheMutex);
+  QMutableHashIterator<QByteArray, uint> it1(s_emailRequestCache);
 
   while(it1.hasNext())
     {
@@ -3228,30 +3246,46 @@ void spoton_kernel::purgeMessagingCache(void)
 
   locker1.unlock();
 
-  QWriteLocker locker2(&s_messagingCacheMutex);
+  QWriteLocker locker2(&s_geminisCacheMutex);
+  QMutableHashIterator<QByteArray, uint> it2(s_geminisCache);
+
+  while(it2.hasNext())
+    {
+      it2.next();
+
+      uint now = QDateTime::currentDateTime().toTime_t();
+
+      if(now > it2.value())
+	if(now - it2.value() > 90)
+	  it2.remove();
+    }
+
+  locker2.unlock();
+
+  QWriteLocker locker3(&s_messagingCacheMutex);
 
   /*
   ** Remove old cache items.
   */
 
-  QMutableHashIterator<QByteArray, uint> it2(s_messagingCache);
+  QMutableHashIterator<QByteArray, uint> it3(s_messagingCache);
   int i = 0;
   int maximum = qMax(250, qCeil(0.15 * s_messagingCache.size()));
 
-  while(it2.hasNext())
+  while(it3.hasNext())
     {
       i += 1;
 
       if(i >= maximum)
 	break;
 
-      it2.next();
+      it3.next();
 
       uint now = QDateTime::currentDateTime().toTime_t();
 
-      if(now > it2.value())
-	if(now - it2.value() > 30)
-	  it2.remove();
+      if(now > it3.value())
+	if(now - it3.value() > 30)
+	  it3.remove();
     }
 }
 
@@ -4327,6 +4361,31 @@ void spoton_kernel::receivedMessage
   s_messagesToProcess.append(list);
 }
 
+bool spoton_kernel::duplicateEmailRequests(const QByteArray &data)
+{
+  QByteArray hash;
+
+  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return false;
+
+  bool ok = true;
+
+  hash = s_crypt->keyedHash(data, &ok);
+
+  if(!ok)
+#if QT_VERSION < 0x050000
+    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
+#else
+    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha512);
+#endif
+
+  QReadLocker locker(&s_emailRequestCacheMutex);
+
+  return s_emailRequestCache.contains(hash);
+}
+
 bool spoton_kernel::duplicateGeminis(const QByteArray &data)
 {
   QByteArray hash;
@@ -4350,6 +4409,31 @@ bool spoton_kernel::duplicateGeminis(const QByteArray &data)
   QReadLocker locker(&s_geminisCacheMutex);
 
   return s_geminisCache.contains(hash);
+}
+
+void spoton_kernel::emailRequestCacheAdd(const QByteArray &data)
+{
+  spoton_crypt *s_crypt = s_crypts.value("chat", 0);
+
+  if(!s_crypt)
+    return;
+
+  QByteArray hash;
+  bool ok = true;
+
+  hash = s_crypt->keyedHash(data, &ok);
+
+  if(!ok)
+#if QT_VERSION < 0x050000
+    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha1);
+#else
+    hash = QCryptographicHash::hash(data, QCryptographicHash::Sha512);
+#endif
+
+  QWriteLocker locker(&s_emailRequestCacheMutex);
+
+  s_emailRequestCache.insert
+    (hash, QDateTime::currentDateTime().toTime_t());
 }
 
 void spoton_kernel::geminisCacheAdd(const QByteArray &data)

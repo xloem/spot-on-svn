@@ -3242,7 +3242,7 @@ void spoton_neighbor::process0002a
 		    {
 		      QList<QByteArray> list(data.split('\n'));
 
-		      if(list.size() == 3)
+		      if(list.size() == 4)
 			{
 			  for(int i = 0; i < list.size(); i++)
 			    list.replace
@@ -3251,16 +3251,18 @@ void spoton_neighbor::process0002a
 			  saveParticipantStatus
 			    (list.value(0)); // Public Key Hash
 			  emit retrieveMail
-			    (list.value(0) + list.value(1), // Data
-			     list.value(0),                 // Public Key Hash
-			     list.value(2),                 // Signature
+			    (list.value(0) + list.value(1) +
+			     list.value(2), // Data
+			     list.value(0), // Public Key Hash
+			     list.value(2), // Timestamp
+			     list.value(3), // Signature
 			     adaptiveEchoPair);
 			}
 		      else
 			spoton_misc::logError
 			  (QString("spoton_neighbor::process0002a(): "
 				   "received irregular data. "
-				   "Expecting 3 "
+				   "Expecting 4 "
 				   "entries, "
 				   "received %1.").arg(list.size()));
 		    }
@@ -3356,7 +3358,7 @@ void spoton_neighbor::process0002b
 		{
 		  QList<QByteArray> list(data.split('\n'));
 
-		  if(list.size() == 5)
+		  if(list.size() == 6)
 		    {
 		      for(int i = 0; i < list.size(); i++)
 			list.replace
@@ -3375,11 +3377,14 @@ void spoton_neighbor::process0002b
 			      saveParticipantStatus
 				(publicKeyHash); // Public Key Hash
 			      emit retrieveMail
-				(list.value(1) +
+				(list.value(0) +
+				 list.value(1) +
 				 list.value(2) +
-				 list.value(3),  // Data
+				 list.value(3) +
+				 list.value(4),  // Data
 				 publicKeyHash,  // Public Key Hash
-				 list.value(4),  // Signature
+				 list.value(4),  // Timestamp
+				 list.value(5),  // Signature
 				 adaptiveEchoPair);
 			    }
 			}
@@ -3392,7 +3397,7 @@ void spoton_neighbor::process0002b
 		    spoton_misc::logError
 		      (QString("spoton_neighbor::process0002b(): "
 			       "received irregular data. "
-			       "Expecting 5 "
+			       "Expecting 6 "
 			       "entries, "
 			       "received %1.").arg(list.size()));
 		}
