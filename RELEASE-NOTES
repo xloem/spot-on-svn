@@ -4,6 +4,7 @@
      must manually increase their buffer sizes.
 2.   Corrected Resend widget state.
 3.   Include expiry times in e-mail request messages.
+4.   Updated NTRU files.
 
 0.16a (11/08/2014)
 
