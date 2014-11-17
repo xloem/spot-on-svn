@@ -52,6 +52,7 @@ extern "C"
 
 #ifdef Q_OS_OS2
 typedef int socklen_t;
+typedef struct sockaddr sockaddr_storage;
 #endif
 
 /*
@@ -66,7 +67,7 @@ typedef union spoton_type_punning_sockaddr
     struct sockaddr_in6 sockaddr_in6;
     struct sockaddr_storage sockaddr_storage;
 #else
-    struct sockaddr sockaddr_storage;
+    struct sockaddr_storage sockaddr_storage;
 #endif
 }
 spoton_type_punning_sockaddr_t;
