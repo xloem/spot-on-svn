@@ -267,7 +267,9 @@ Symmetric Key
 EOL
 1 - Random Message (Base-64)
 EOL
-2 - Signature (Base-64)
+2 - Timestamp (Base-64)
+EOL
+3 - Signature (Base-64)
 }
 EOL
 {
@@ -292,7 +294,9 @@ EOL
 EOL
 3 - Random Message (Base-64)
 EOL
-4 - Signature (Base-64)
+4 - Timestamp (Base-64)
+EOL
+5 - Signature (Base-64)
 }
 EOL
 {
