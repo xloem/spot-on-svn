@@ -673,18 +673,18 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotKeepOnlyUserDefinedNeighbors(bool)));
-  connect(m_ui.pushButtonClearMail,
-	  SIGNAL(clicked(void)),
+  connect(m_ui.clearEmail,
+	  SIGNAL(activated(int)),
 	  this,
-	  SLOT(slotClearOutgoingMessage(void)));
+	  SLOT(slotClearOutgoingMessage(int)));
   connect(m_ui.deleteInstitution,
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotDeleteInstitution(void)));
-  connect(m_ui.pushButtonClearMail,
-	  SIGNAL(clicked(void)),
+  connect(m_ui.clearEmail,
+	  SIGNAL(activated(int)),
 	  this,
-	  SLOT(slotDeleteMail(void)));
+	  SLOT(slotDeleteMail(int)));
   connect(m_ui.refreshMail,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -3248,6 +3248,9 @@ void spoton::slotPopulateListeners(void)
 			  box->setMaximum
 			    (spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
 
+			box->setCorrectionMode
+			  (QAbstractSpinBox::CorrectToNearestValue);
+			box->setWrapping(true);
 			box->setMaximumWidth
 			  (box->fontMetrics().
 			   width(QString::
@@ -3792,6 +3795,9 @@ void spoton::slotPopulateNeighbors(void)
 			  box->setMaximum
 			    (spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
 
+			box->setCorrectionMode
+			  (QAbstractSpinBox::CorrectToNearestValue);
+			box->setWrapping(true);
 			box->setMaximumWidth
 			  (box->fontMetrics().
 			   width(QString::
