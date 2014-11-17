@@ -1,9 +1,9 @@
-0.17 (12/25/2014)
+0.16b (11/21/2014)
 
-1.   POP3.
-2.   Increased buffer sizes for new installations. Existing installations
+1.   Increased buffer sizes for new installations. Existing installations
      must manually increase their buffer sizes.
-3.   Corrected Resend widget state.
+2.   Corrected Resend widget state.
+3.   Include expiry times in e-mail request messages.
 
 0.16a (11/08/2014)
 
