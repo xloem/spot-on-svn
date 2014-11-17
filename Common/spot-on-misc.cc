@@ -2840,7 +2840,11 @@ QHostAddress spoton_misc::peerAddressAndPort(const int socketDescriptor,
 {
   QHostAddress address;
   socklen_t length = 0;
+#ifdef Q_OS_OS2
+  struct sockaddr peeraddr;
+#else
   struct sockaddr_storage peeraddr;
+#endif
 
   length = sizeof(peeraddr);
 
