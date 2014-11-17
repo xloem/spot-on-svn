@@ -5914,7 +5914,11 @@ void spoton_neighbor::saveGemini(const QByteArray &publicKeyHash,
     (QDateTime::fromString(timestamp.constData(), "MMddyyyyhhmmss"));
 
   if(!dateTime.isValid())
-    return;
+    {
+      spoton_misc::logError
+	("spoton_neighbor(): saveGemini(): invalid date-time object.");
+      return;
+    }
 
   QDateTime now(QDateTime::currentDateTimeUtc());
 

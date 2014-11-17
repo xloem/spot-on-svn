@@ -291,13 +291,23 @@ void spoton_mailer::slotRetrieveMail
   hash = spoton_crypt::sha512Hash(publicKey, &ok);
 
   if(!ok)
-    return;
+    {
+      spoton_misc::logError
+	("spoton_mailer(): slotRetrieveMail(): "
+	 "spoton_crypt::sha512Hash() failure.");
+      return;
+    }
 
   QDateTime dateTime
     (QDateTime::fromString(timestamp.constData(), "MMddyyyyhhmmss"));
 
   if(!dateTime.isValid())
-    return;
+    {
+      spoton_misc::logError
+	("spoton_mailer(): slotRetrieveMail(): "
+	 "invalid date-time object.");
+      return;
+    }
 
   QDateTime now(QDateTime::currentDateTimeUtc());
 
@@ -316,7 +326,7 @@ void spoton_mailer::slotRetrieveMail
   else if(spoton_kernel::duplicateEmailRequests(data))
     {
       spoton_misc::logError
-	("spoton_mailer::slotRetrieveMail(): duplicate keys.");
+	("spoton_mailer::slotRetrieveMail(): duplicate requests.");
       return;
     }
 
