@@ -2848,12 +2848,13 @@ QHostAddress spoton_misc::peerAddressAndPort(const int socketDescriptor,
 
   length = sizeof(peeraddr);
 
+  if(port)
+    *port = 0;
+
   if(getpeername(socketDescriptor, (struct sockaddr *) &peeraddr,
 		 &length) == 0)
     {
-#ifdef Q_OS_OS2
-      if(true)
-#else
+#ifndef Q_OS_OS2
       if(peeraddr.ss_family == AF_INET)
 #endif
 	{
@@ -2869,9 +2870,9 @@ QHostAddress spoton_misc::peerAddressAndPort(const int socketDescriptor,
 		*port = ntohs(sockaddr->sockaddr_in.sin_port);
 	    }
 	}
+#ifndef Q_OS_OS2
       else
 	{
-#ifndef Q_OS_OS2
 	  spoton_type_punning_sockaddr_t *sockaddr =
 	    (spoton_type_punning_sockaddr_t *) &peeraddr;
 
@@ -2888,8 +2889,8 @@ QHostAddress spoton_misc::peerAddressAndPort(const int socketDescriptor,
 	      if(port)
 		*port = ntohs(sockaddr->sockaddr_in6.sin6_port);
 	    }
-#endif
 	}
+#endif
     }
 
   return address;
