@@ -2,11 +2,17 @@
 
 1.   Increased buffer sizes for new installations. Existing installations
      must manually increase their buffer sizes.
-2.   Corrected Resend widget state.
+2.   Corrected the Resend widget's state.
 3.   Include expiry times in e-mail request messages.
      Previous functionality will be disrupted.
 4.   Updated NTRU files with 6e0c93312caac96e626f6622b4ef9b9758978309.
      Please see https://github.com/tbuktu/libntru.
+5.   Corrected the Adaptive Echo implementation with respect to StarBeam
+     data.
+6.   Initialize NTRU's randomness machine before use. Cancel after use.
+7.   StarBeam data that is marked by an Adaptive Echo token will be echoed
+     to properly-identified neighbors. The change partially disagrees
+     with version 0.09.09's item #23.
 
 0.16a (11/08/2014)
 
