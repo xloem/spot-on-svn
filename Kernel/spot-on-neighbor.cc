@@ -1663,7 +1663,9 @@ void spoton_neighbor::processData(void)
 
 		spoton_kernel::receivedMessage
 		  (originalData, m_id, QPair<QByteArray, QByteArray> ());
-	      else if(messageType == "0060")
+	      else if(messageType == "0060" &&
+		      !discoveredAdaptiveEchoPair.first.isEmpty() &&
+		      !discoveredAdaptiveEchoPair.second.isEmpty())
 		spoton_kernel::receivedMessage
 		  (originalData, m_id, discoveredAdaptiveEchoPair);
 	    }
