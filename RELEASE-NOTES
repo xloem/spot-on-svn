@@ -13,6 +13,7 @@
 7.   StarBeam data that is marked by an Adaptive Echo token will be echoed
      to properly-identified neighbors. The change partially disagrees
      with version 0.09.09's item #23.
+8.   OS/2 corrections.
 
 0.16a (11/08/2014)
 
