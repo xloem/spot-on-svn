@@ -441,7 +441,9 @@ void spoton_starbeam_writer::slotReadKeys(void)
   QSqlDatabase::removeDatabase(connectionName);
 }
 
-bool spoton_starbeam_writer::append(const QByteArray &data)
+bool spoton_starbeam_writer::append
+(const QByteArray &data,
+ QPair<QByteArray, QByteArray> &discoveredAdaptiveEchoPair)
 {
   if(data.isEmpty())
     return false;
@@ -450,6 +452,9 @@ bool spoton_starbeam_writer::append(const QByteArray &data)
 
   if(!s_crypt)
     return false;
+
+  spoton_kernel::discoverAdaptiveEchoPair
+    (data.trimmed(), discoveredAdaptiveEchoPair);
 
   QReadLocker locker(&m_keyMutex);
 

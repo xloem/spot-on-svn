@@ -1624,8 +1624,18 @@ void spoton_neighbor::processData(void)
 	    messageType.clear();
 
 	  if(messageType.isEmpty() && data.trimmed().split('\n').size() == 3)
-	    if(spoton_kernel::s_kernel->processPotentialStarBeamData(data))
-	      messageType = "0060";
+	    if(spoton_kernel::s_kernel->
+	       processPotentialStarBeamData(data, discoveredAdaptiveEchoPair))
+	      {
+		if(!discoveredAdaptiveEchoPair.first.isEmpty() &&
+		   !discoveredAdaptiveEchoPair.second.isEmpty())
+		  if(!m_learnedAdaptiveEchoPairs.
+		     contains(discoveredAdaptiveEchoPair))
+		    m_learnedAdaptiveEchoPairs.
+		      append(discoveredAdaptiveEchoPair);
+
+		messageType = "0060";
+	      }
 
 	  if(spoton_kernel::setting("gui/scramblerEnabled", false).toBool())
 	    emit scrambleRequest();
@@ -1653,6 +1663,9 @@ void spoton_neighbor::processData(void)
 
 		spoton_kernel::receivedMessage
 		  (originalData, m_id, QPair<QByteArray, QByteArray> ());
+	      else if(messageType == "0060")
+		spoton_kernel::receivedMessage
+		  (originalData, m_id, discoveredAdaptiveEchoPair);
 	    }
 	}
     }
