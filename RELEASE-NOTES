@@ -18,6 +18,7 @@
 10.  Correct flawed timer intervals in
      spoton_misc::correctSettingsContainer().
 11.  Corrected errant timer in spot-on-gui-server.cc.
+12.  Enable secure deletion on SQLite databases.
 
 0.16a (11/08/2014)
 
