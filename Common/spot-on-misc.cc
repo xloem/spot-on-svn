@@ -410,7 +410,7 @@ void spoton_misc::prepareDatabases(void)
 		   "bytes_read INTEGER NOT NULL DEFAULT 0, "
 		   "bytes_written INTEGER NOT NULL DEFAULT 0, "
 		   "ssl_control_string TEXT NOT NULL DEFAULT "
-		   "'HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH'"
+		   "'HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH', "
 		   "ssl_session_cipher TEXT, "
 		   "ssl_required INTEGER NOT NULL DEFAULT 1, "
 		   "account_name TEXT NOT NULL, "
