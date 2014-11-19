@@ -69,6 +69,7 @@ spoton_neighbor::spoton_neighbor
  const QString &localPort,
  const QString &orientation,
  const QString &motd,
+ const QString &sslControlString,
  QObject *parent):QThread(parent)
 {
   m_sctpSocket = 0;
@@ -185,6 +186,11 @@ spoton_neighbor::spoton_neighbor
     m_port = port.toUShort();
 
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
+  m_sslControlString = sslControlString.trimmed();
+
+  if(m_sslControlString.isEmpty())
+    m_sslControlString = "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH";
+
   m_statusControl = "connected";
 
   if(m_transport == "tcp")
@@ -230,7 +236,8 @@ spoton_neighbor::spoton_neighbor
 		    (QSsl::SslOptionDisableLegacyRenegotiation, true);
 #endif
 		  spoton_crypt::setSslCiphers
-		    (m_tcpSocket->supportedCiphers(), configuration);
+		    (m_tcpSocket->supportedCiphers(), m_sslControlString,
+		     configuration);
 		  m_tcpSocket->setSslConfiguration(configuration);
 		}
 	      else
@@ -449,6 +456,7 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 				 const QString &orientation,
 				 const QString &motd,
 				 const QString &statusControl,
+				 const QString &sslControlString,
 				 QObject *parent):QThread(parent)
 {
   m_accountAuthenticated = false;
@@ -487,6 +495,11 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
   m_receivedUuid = "{00000000-0000-0000-0000-000000000000}";
   m_requireSsl = requireSsl;
   m_sctpSocket = 0;
+  m_sslControlString = sslControlString.trimmed();
+
+  if(m_sslControlString.isEmpty())
+    m_sslControlString = "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH";
+
   m_startTime = QDateTime::currentDateTime();
   m_statusControl = statusControl;
   m_tcpSocket = 0;
@@ -587,7 +600,8 @@ spoton_neighbor::spoton_neighbor(const QNetworkProxy &proxy,
 #endif
 	      configuration.setPeerVerifyMode(QSslSocket::QueryPeer);
 	      spoton_crypt::setSslCiphers
-		(m_tcpSocket->supportedCiphers(), configuration);
+		(m_tcpSocket->supportedCiphers(), m_sslControlString,
+		 configuration);
 	      m_tcpSocket->setSslConfiguration(configuration);
 	    }
 	  else
@@ -946,7 +960,8 @@ void spoton_neighbor::slotTimeout(void)
 		      "account_name, "
 		      "account_password, "
 		      "ae_token, "
-		      "ae_token_type "
+		      "ae_token_type, "
+		      "ssl_control_string "
 		      "FROM neighbors WHERE OID = ?");
 	query.bindValue(0, m_id);
 
@@ -1052,6 +1067,11 @@ void spoton_neighbor::slotTimeout(void)
 		      qBound(spoton_common::MINIMUM_NEIGHBOR_CONTENT_LENGTH,
 			     query.value(4).toLongLong(),
 			     spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH);
+		    m_sslControlString = query.value(9).toString();
+
+		    if(m_sslControlString.isEmpty())
+		      m_sslControlString =
+			"HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH";
 		  }
 
 		if(query.value(1).toLongLong())

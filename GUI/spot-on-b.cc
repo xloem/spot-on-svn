@@ -4715,6 +4715,7 @@ void spoton::initializeKernelSocket(void)
   if(error.isEmpty())
     {
       QSslConfiguration configuration;
+      QString sslCS(m_ui.sslControlString->text().trimmed());
 
       configuration.setPrivateKey(QSslKey(privateKey, QSsl::Rsa));
 #if QT_VERSION >= 0x040800
@@ -4726,6 +4727,7 @@ void spoton::initializeKernelSocket(void)
 	(QSsl::SslOptionDisableLegacyRenegotiation, true);
 #endif
       spoton_crypt::setSslCiphers(QSslSocket::supportedCiphers(),
+				  sslCS,
 				  configuration);
       m_kernelSocket.setSslConfiguration(configuration);
     }

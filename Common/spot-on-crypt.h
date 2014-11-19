@@ -100,7 +100,7 @@ class spoton_crypt
   static QByteArray veryStrongRandomBytes(const size_t size);
   static QByteArray weakRandomBytes(const size_t size);
   static QList<QSslCipher> defaultSslCiphers
-    (const QString &sslControlString = QString(""));
+    (const QString &sslControlString);
   static QStringList cipherTypes(void);
   static QStringList hashTypes(void);
   static bool isValidSignature(const QByteArray &data,
@@ -127,6 +127,7 @@ class spoton_crypt
     (spoton_crypt *newCrypt, spoton_crypt *oldCrypt, const QString &id,
      QString &error);
   static void setSslCiphers(const QList<QSslCipher> &ciphers,
+			    const QString &sslControlString,
 			    QSslConfiguration &configuration);
   static void terminate(void);
   spoton_crypt(const QString &cipherType,

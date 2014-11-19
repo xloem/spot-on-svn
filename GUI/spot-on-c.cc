@@ -2567,6 +2567,9 @@ void spoton::prepareContextMenuMirrors(void)
       action = menu->addAction(tr("&Copy Adaptive Echo Magnet"),
 			       this, SLOT(slotCopyAEMagnet(void)));
       action->setProperty("from", "listeners");
+      menu->addSeparator();
+      menu->addAction(tr("Set &SSL Control String"),
+		      this, SLOT(slotSetListenerSSLControlString(void)));
       m_ui.listenersActionMenu->setMenu(menu);
     }
 
@@ -2661,6 +2664,9 @@ void spoton::prepareContextMenuMirrors(void)
 		      this, SLOT(slotSetAETokenInformation(void)));
       menu->addAction(tr("&Reset Adaptive Echo Token Information"),
 		      this, SLOT(slotResetAETokenInformation(void)));
+      menu->addSeparator();
+      menu->addAction(tr("Set &SSL Control String"),
+		      this, SLOT(slotSetNeighborSSLControlString(void)));
       m_ui.neighborsActionMenu->setMenu(menu);
     }
 

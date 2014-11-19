@@ -3258,9 +3258,10 @@ QList<QSslCipher> spoton_crypt::defaultSslCiphers(const QString &scs)
 }
 
 void spoton_crypt::setSslCiphers(const QList<QSslCipher> &ciphers,
+				 const QString &sslControlString,
 				 QSslConfiguration &configuration)
 {
-  QList<QSslCipher> preferred(defaultSslCiphers());
+  QList<QSslCipher> preferred(defaultSslCiphers(sslControlString));
 
   for(int i = preferred.size() - 1; i >= 0; i--)
     if(!ciphers.contains(preferred.at(i)))

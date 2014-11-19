@@ -73,7 +73,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>487</height>
+             <height>485</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_54">
@@ -456,8 +456,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>835</width>
-                <height>448</height>
+                <width>1031</width>
+                <height>454</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_25">
@@ -977,8 +977,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>883</width>
-             <height>575</height>
+             <width>1105</width>
+             <height>594</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_55">
@@ -2066,8 +2066,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>760</width>
-             <height>365</height>
+             <width>912</width>
+             <height>414</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_56">
@@ -2325,6 +2325,11 @@
                   <column>
                    <property name="text">
                     <string>Orientation</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>SSL Control String</string>
                    </property>
                   </column>
                   <column>
@@ -2618,6 +2623,30 @@
                     </layout>
                    </item>
                    <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_86">
+                     <property name="spacing">
+                      <number>5</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="label_64">
+                       <property name="text">
+                        <string>&amp;SSL Control String</string>
+                       </property>
+                       <property name="buddy">
+                        <cstring>listenersSslControlString</cstring>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="listenersSslControlString">
+                       <property name="text">
+                        <string>HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_73">
                      <property name="spacing">
                       <number>5</number>
@@ -2697,8 +2726,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>241</width>
-                     <height>1393</height>
+                     <width>294</width>
+                     <height>1429</height>
                     </rect>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_38">
@@ -3158,8 +3187,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>855</width>
-             <height>563</height>
+             <width>1066</width>
+             <height>622</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -3558,7 +3587,7 @@
                     </column>
                     <column>
                      <property name="text">
-                      <string>is_encrypted</string>
+                      <string>Encrypted</string>
                      </property>
                     </column>
                     <column>
@@ -3574,6 +3603,11 @@
                     <column>
                      <property name="text">
                       <string>Adaptive Echo Token Type</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>SSL Control String</string>
                      </property>
                     </column>
                     <column>
@@ -3878,6 +3912,30 @@
                           <string>8192</string>
                          </property>
                         </item>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item>
+                     <layout class="QHBoxLayout" name="horizontalLayout_89">
+                      <property name="spacing">
+                       <number>5</number>
+                      </property>
+                      <item>
+                       <widget class="QLabel" name="label_78">
+                        <property name="text">
+                         <string>&amp;SSL Control String</string>
+                        </property>
+                        <property name="buddy">
+                         <cstring>neighborsSslControlString</cstring>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLineEdit" name="neighborsSslControlString">
+                        <property name="text">
+                         <string>HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH</string>
+                        </property>
                        </widget>
                       </item>
                      </layout>
@@ -4259,8 +4317,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>178</width>
-             <height>299</height>
+             <width>154</width>
+             <height>305</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -4313,8 +4371,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>619</width>
-                 <height>588</height>
+                 <width>741</width>
+                 <height>627</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_65">
@@ -5103,8 +5161,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>699</width>
-             <height>1061</height>
+             <width>861</width>
+             <height>1091</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -5261,7 +5319,7 @@
               <item>
                <widget class="QLineEdit" name="sslControlString">
                 <property name="text">
-                 <string>HIGH:!aNULL:!eNULL:!3DES:!EXPORT:@STRENGTH</string>
+                 <string>HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH</string>
                 </property>
                </widget>
               </item>
@@ -6341,8 +6399,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>481</width>
-             <height>546</height>
+             <width>575</width>
+             <height>559</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_43">
@@ -7339,8 +7397,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>232</width>
-             <height>402</height>
+             <width>265</width>
+             <height>412</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_58">
@@ -7821,8 +7879,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>266</width>
-             <height>182</height>
+             <width>280</width>
+             <height>189</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -8112,7 +8170,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -8432,6 +8490,7 @@
   <tabstop>permanentCertificate</tabstop>
   <tabstop>sslListener</tabstop>
   <tabstop>listenerKeySize</tabstop>
+  <tabstop>listenersSslControlString</tabstop>
   <tabstop>listenerOrientation</tabstop>
   <tabstop>addListener</tabstop>
   <tabstop>scrollArea_3</tabstop>
@@ -8477,6 +8536,7 @@
   <tabstop>addException</tabstop>
   <tabstop>requireSsl</tabstop>
   <tabstop>neighborKeySize</tabstop>
+  <tabstop>neighborsSslControlString</tabstop>
   <tabstop>neighborOrientation</tabstop>
   <tabstop>proxy</tabstop>
   <tabstop>proxyType</tabstop>

@@ -786,6 +786,7 @@ void spoton_kernel::prepareListeners(void)
 		      "share_udp_address, "
 		      "orientation, "
 		      "motd, "
+		      "ssl_control_string, "
 		      "OID "
 		      "FROM listeners"))
 	  while(query.next())
@@ -921,6 +922,7 @@ void spoton_kernel::prepareListeners(void)
 						   toLongLong()),
 				 orientation.constData(),
 				 query.value(16).toString(),
+				 query.value(17).toString(),
 				 this);
 			    }
 			  catch(std::bad_alloc &exception)
@@ -1052,6 +1054,7 @@ void spoton_kernel::prepareNeighbors(void)
 		      "transport, "
 		      "orientation, "
 		      "motd, "
+		      "ssl_control_string, "
 		      "OID FROM neighbors"))
 	  while(query.next())
 	    {
@@ -1088,6 +1091,8 @@ void spoton_kernel::prepareNeighbors(void)
 			  list.append(QByteArray::fromBase64(query.value(i).
 							     toByteArray()));
 			else if(i == 22) // motd
+			  list.append(query.value(i).toString());
+			else if(i == 23) // ssl_control_string
 			  list.append(query.value(i).toString());
 			else
 			  {
@@ -1195,6 +1200,7 @@ void spoton_kernel::prepareNeighbors(void)
 				 list.value(21).toString(),
 				 list.value(22).toString(),
 				 list.value(3).toString(),
+				 list.value(23).toString(),
 				 this);
 			    }
 			  catch(std::bad_alloc &exception)
@@ -2431,7 +2437,7 @@ void spoton_kernel::slotRetrieveMail(void)
 
 	      if(ok)
 		signature = s_crypt->digitalSignature
-		  (myPublicKeyHash + message + 
+		  (myPublicKeyHash + message +
 		   dateTime.toUTC().toString("MMddyyyyhhmmss").
 		   toLatin1(), &ok);
 

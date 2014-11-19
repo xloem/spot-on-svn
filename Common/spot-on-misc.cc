@@ -294,6 +294,8 @@ void spoton_misc::prepareDatabases(void)
 						      ** the scope id, and
 						      ** the transport.
 						      */
+		   "ssl_control_string TEXT NOT NULL DEFAULT "
+		   "'HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH', "
 		   "ssl_key_size INTEGER NOT NULL DEFAULT 2048, "
 		   "echo_mode TEXT NOT NULL, "
 		   "certificate BLOB NOT NULL, "
@@ -308,6 +310,9 @@ void spoton_misc::prepareDatabases(void)
 		   "motd TEXT NOT NULL DEFAULT 'Welcome to Spot-On.')").
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
+	query.exec("ALTER TABLE listeners ADD COLUMN "
+		   "ssl_control_string TEXT NOT NULL DEFAULT "
+		   "'HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH'");
 	query.exec("CREATE TABLE IF NOT EXISTS listeners_accounts ("
 		   "account_name TEXT NOT NULL, "
 		   "account_name_hash TEXT NOT NULL, " // Keyed hash.
@@ -404,6 +409,8 @@ void spoton_misc::prepareDatabases(void)
 		   "allow_exceptions INTEGER NOT NULL DEFAULT 0, "
 		   "bytes_read INTEGER NOT NULL DEFAULT 0, "
 		   "bytes_written INTEGER NOT NULL DEFAULT 0, "
+		   "ssl_control_string TEXT NOT NULL DEFAULT "
+		   "'HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH'"
 		   "ssl_session_cipher TEXT, "
 		   "ssl_required INTEGER NOT NULL DEFAULT 1, "
 		   "account_name TEXT NOT NULL, "
@@ -428,6 +435,9 @@ void spoton_misc::prepareDatabases(void)
 					   */
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_BUFFER_SIZE).
 	   arg(spoton_common::MAXIMUM_NEIGHBOR_CONTENT_LENGTH));
+	query.exec("ALTER TABLE neighbors ADD COLUMN "
+		   "ssl_control_string TEXT NOT NULL DEFAULT "
+		   "'HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH'");
       }
 
     db.close();

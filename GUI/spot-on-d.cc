@@ -2574,3 +2574,157 @@ void spoton::generateHalfGeminis(void)
 	      SLOT(slotGeminiChanged(QTableWidgetItem *)));
     }
 }
+
+void spoton::slotSetListenerSSLControlString(void)
+{
+  QString oid("");
+  QString sslCS("");
+  QString transport("");
+  int row = -1;
+
+  if((row = m_ui.listeners->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.listeners->item
+	(row, m_ui.listeners->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+
+      item = m_ui.listeners->item
+	(row, m_ui.listeners->columnCount() - 2); // SSL Control String
+
+      if(item)
+	sslCS = item->text();
+
+      item = m_ui.listeners->item(row, 15); // Transport
+
+      if(item)
+	transport = item->text().toUpper();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  bool ok = true;
+
+  if(transport != "TCP")
+    sslCS = "N/A";
+
+  sslCS = QInputDialog::getText
+    (this, tr("%1: SSL Control String").arg(SPOTON_APPLICATION_NAME),
+     tr("&SSL Control String"),
+     QLineEdit::Normal, sslCS, &ok);
+
+  if(!ok)
+    return;
+
+  if(sslCS.isEmpty())
+    sslCS = m_ui.listenersSslControlString->text().trimmed();
+
+  if(sslCS.isEmpty())
+    sslCS = "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH";
+
+  if(transport != "TCP")
+    sslCS = "N/A";
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "listeners.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare("UPDATE listeners SET ssl_control_string = ? "
+		      "WHERE OID = ?");
+	query.bindValue(0, sslCS);
+	query.bindValue(1, oid);
+	query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}
+
+void spoton::slotSetNeighborSSLControlString(void)
+{
+  QString oid("");
+  QString sslCS("");
+  QString transport("");
+  int row = -1;
+
+  if((row = m_ui.neighbors->currentRow()) >= 0)
+    {
+      QTableWidgetItem *item = m_ui.neighbors->item
+	(row, m_ui.neighbors->columnCount() - 1); // OID
+
+      if(item)
+	oid = item->text();
+
+      item = m_ui.neighbors->item
+	(row, m_ui.neighbors->columnCount() - 2); // SSL Control String
+
+      if(item)
+	sslCS = item->text();
+
+      item = m_ui.neighbors->item(row, 27); // Transport
+
+      if(item)
+	transport = item->text().toUpper();
+    }
+
+  if(oid.isEmpty())
+    return;
+
+  bool ok = true;
+
+  if(transport != "TCP")
+    sslCS = "N/A";
+
+  sslCS = QInputDialog::getText
+    (this, tr("%1: SSL Control String").arg(SPOTON_APPLICATION_NAME),
+     tr("&SSL Control String"),
+     QLineEdit::Normal, sslCS, &ok);
+
+  if(!ok)
+    return;
+
+  if(sslCS.isEmpty())
+    sslCS = m_ui.neighborsSslControlString->text().trimmed();
+
+  if(sslCS.isEmpty())
+    sslCS = "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH";
+
+  if(transport != "TCP")
+    sslCS = "N/A";
+
+  QString connectionName("");
+
+  {
+    QSqlDatabase db = spoton_misc::database(connectionName);
+
+    db.setDatabaseName(spoton_misc::homePath() + QDir::separator() +
+		       "neighbors.db");
+
+    if(db.open())
+      {
+	QSqlQuery query(db);
+
+	query.prepare("UPDATE neighbors SET ssl_control_string = ? "
+		      "WHERE OID = ? AND user_defined = 1");
+	query.bindValue(0, sslCS);
+	query.bindValue(1, oid);
+	query.exec();
+      }
+
+    db.close();
+  }
+
+  QSqlDatabase::removeDatabase(connectionName);
+}

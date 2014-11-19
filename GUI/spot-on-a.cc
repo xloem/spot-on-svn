@@ -845,6 +845,10 @@ spoton::spoton(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  m_ui.sslKeySizeLabel,
 	  SLOT(setEnabled(bool)));
+  connect(m_ui.requireSsl,
+	  SIGNAL(toggled(bool)),
+	  m_ui.neighborsSslControlString,
+	  SLOT(setEnabled(bool)));
   connect(m_ui.sslListener,
 	  SIGNAL(toggled(bool)),
 	  m_ui.listenerKeySize,
@@ -856,6 +860,10 @@ spoton::spoton(void):QMainWindow()
   connect(m_ui.sslListener,
 	  SIGNAL(toggled(bool)),
 	  m_ui.recordIPAddress,
+	  SLOT(setEnabled(bool)));
+  connect(m_ui.sslListener,
+	  SIGNAL(toggled(bool)),
+	  m_ui.listenersSslControlString,
 	  SLOT(setEnabled(bool)));
   connect(m_ui.publishPeriodically,
 	  SIGNAL(toggled(bool)),
@@ -1933,15 +1941,9 @@ spoton::spoton(void):QMainWindow()
   m_ui.neighbors->setColumnHidden
     (m_ui.neighbors->columnCount() - 1, true); // OID
   m_ui.neighbors->setColumnHidden
-    (m_ui.neighbors->columnCount() - 2, true); // ae_token_type
+    (m_ui.neighbors->columnCount() - 5, true); // certificate
   m_ui.neighbors->setColumnHidden
-    (m_ui.neighbors->columnCount() - 3, true); // ae_token
-  m_ui.neighbors->setColumnHidden
-    (m_ui.neighbors->columnCount() - 4, true); // certificate
-  m_ui.neighbors->setColumnHidden
-    (m_ui.neighbors->columnCount() - 5, true); // is_encrypted
-  m_ui.neighbors->setColumnHidden
-    (m_ui.neighbors->columnCount() - 6, true); // motd
+    (m_ui.neighbors->columnCount() - 7, true); // motd
   m_ui.participants->setColumnHidden(1, true); // OID
   m_ui.participants->setColumnHidden(2, true); // neighbor_oid
   m_ui.participants->setColumnHidden(3, true); // public_key_hash
@@ -2193,6 +2195,7 @@ void spoton::slotAddListener(void)
 	QString port(QString::number(m_ui.listenerPort->value()));
 	QString protocol("");
 	QString scopeId(m_ui.listenerScopeId->text());
+	QString sslCS(m_ui.listenersSslControlString->text().trimmed());
 	QString status("online");
 	QString transport("");
 	QSqlQuery query(db);
@@ -2230,9 +2233,10 @@ void spoton::slotAddListener(void)
 		      "public_key, "
 		      "transport, "
 		      "share_udp_address, "
-		      "orientation) "
+		      "orientation, "
+		      "ssl_control_string) "
 		      "VALUES "
-		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	if(ip.isEmpty())
 	  query.bindValue
@@ -2384,6 +2388,14 @@ void spoton::slotAddListener(void)
 	  query.bindValue
 	    (13, crypt->encryptedThenHashed("stream", &ok).toBase64());
 
+	if(sslCS.isEmpty())
+	  sslCS = "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH";
+
+	if(transport != "tcp")
+	  sslCS = "N/A";
+
+	query.bindValue(14, sslCS);
+
 	if(ok)
 	  ok = query.exec();
 
@@ -2481,6 +2493,7 @@ void spoton::slotAddNeighbor(void)
 	QString proxyType("");
 	QString proxyUsername("");
 	QString scopeId(m_ui.neighborScopeId->text());
+	QString sslCS(m_ui.neighborsSslControlString->text().trimmed());
 	QString status("connected");
 	QString transport("");
 	QSqlQuery query(db);
@@ -2533,10 +2546,11 @@ void spoton::slotAddNeighbor(void)
 		      "account_name, "
 		      "account_password, "
 		      "transport, "
-		      "orientation) "
+		      "orientation, "
+		      "ssl_control_string) "
 		      "VALUES "
 		      "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-		      "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		      "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	query.bindValue(0, QVariant(QVariant::String));
 	query.bindValue(1, QVariant(QVariant::String));
@@ -2808,6 +2822,14 @@ void spoton::slotAddNeighbor(void)
 		(26, crypt->encryptedThenHashed("stream", &ok).toBase64());
 	  }
 
+	if(sslCS.isEmpty())
+	  sslCS = "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH";
+
+	if(transport != "tcp")
+	  sslCS = "N/A";
+
+	query.bindValue(27, sslCS);
+
 	if(ok)
 	  ok = query.exec();
 
@@ -3018,6 +3040,7 @@ void spoton::slotPopulateListeners(void)
 		      "share_udp_address, "
 		      "certificate, "
 		      "orientation, "
+		      "ssl_control_string, "
 		      "OID "
 		      "FROM listeners WHERE status_control <> 'deleted'"))
 	  {
@@ -3073,7 +3096,8 @@ void spoton::slotPopulateListeners(void)
 		      "Use Accounts: %9\n"
 		      "Transport: %10\n"
 		      "Share Address: %11\n"
-		      "Orientation: %12")).
+		      "Orientation: %12\n"
+		      "SSL Control String: %13")).
 		  arg(query.value(1).toString()).
 		  arg(query.value(2).toString()).
 		  arg(crypt->
@@ -3121,7 +3145,8 @@ void spoton::slotPopulateListeners(void)
 							     value(18).
 							     toByteArray()),
 						  &ok).
-		      constData());
+		      constData()).
+		  arg(query.value(19).toString());
 
 		for(int i = 0; i < query.record().count(); i++)
 		  {
@@ -3509,6 +3534,7 @@ void spoton::slotPopulateNeighbors(void)
 		      "0, " // Certificate
 		      "ae_token, "
 		      "ae_token_type, "
+		      "ssl_control_string, "
 		      "OID "
 		      "FROM neighbors WHERE status_control <> 'deleted'"))
 	  {
@@ -3593,7 +3619,8 @@ void spoton::slotPopulateNeighbors(void)
 		      "Account Name: %20\n"
 		      "Account Authenticated: %21\n"
 		      "Transport: %22\n"
-		      "Orientation: %23\n")).
+		      "Orientation: %23\n"
+		      "SSL Control String: %24")).
 		  arg(crypt->
 		      decryptedAfterAuthenticated(QByteArray::
 						  fromBase64(query.
@@ -3698,7 +3725,8 @@ void spoton::slotPopulateNeighbors(void)
 							     value(28).
 							     toByteArray()),
 						  &ok).
-		      constData());
+		      constData()).
+		  arg(query.value(34).toString());
 
 		QCheckBox *check = 0;
 
@@ -5515,6 +5543,9 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotListenerFullEcho(void)));
       menu.addAction(tr("&Half Echo"),
 		     this, SLOT(slotListenerHalfEcho(void)));
+      menu.addSeparator();
+      menu.addAction(tr("Set &SSL Control String"),
+		     this, SLOT(slotSetListenerSSLControlString(void)));
       menu.exec(m_ui.listeners->mapToGlobal(point));
     }
   else if(m_ui.neighbors == sender())
@@ -5591,6 +5622,9 @@ void spoton::slotShowContextMenu(const QPoint &point)
 		     this, SLOT(slotSetAETokenInformation(void)));
       menu.addAction(tr("&Reset Adaptive Echo Token Information"),
 		     this, SLOT(slotResetAETokenInformation(void)));
+      menu.addSeparator();
+      menu.addAction(tr("Set &SSL Control String"),
+		     this, SLOT(slotSetNeighborSSLControlString(void)));
       menu.exec(m_ui.neighbors->mapToGlobal(point));
     }
   else if(m_ui.participants == sender())
@@ -7273,6 +7307,8 @@ void spoton::slotSaveSslControlString(void)
   if(str.trimmed().isEmpty())
     str = "HIGH:!aNULL:!eNULL:!3DES:!EXPORT:!SSLv3:@STRENGTH";
 
+  m_ui.listenersSslControlString->setText(str.trimmed());
+  m_ui.neighborsSslControlString->setText(str.trimmed());
   m_ui.sslControlString->setText(str.trimmed());
   m_ui.sslControlString->selectAll();
   m_settings["gui/sslControlString"] = str;
@@ -7297,7 +7333,7 @@ void spoton::slotNeighborSelected(void)
       QString label("");
       int row = item->row();
 
-      if(m_ui.neighbors->item(row, 31))
+      if(m_ui.neighbors->item(row, 31)) // Certificate
 	certificate = QSslCertificate
 	  (QByteArray::fromBase64(m_ui.neighbors->
 				  item(row, 31)->text().toLatin1()));
